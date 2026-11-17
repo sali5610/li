@@ -158,12 +158,12 @@ try{
 }catch(e){toast(T[state.locale].copyFailed);}
 }
 function render(){
- const L=T[state.locale];document.documentElement.lang=state.locale;
+ const L=T[state.locale];root.setAttribute("lang",state.locale);
  ["vi","en"].forEach(k=>{const b=$(k);b.setAttribute("aria-pressed",String(k===state.locale));});
  for(const id of ["title","intro","status","goalsTitle","goalLabel","theoryKicker","theoryTitle","biasTitle","variationTitle",
  "figKicker","figTitle","fig1","fig1Note","fig2","fig2Note","exKicker","exTitle","exBody","exShow","challengeKicker","challengeTitle",
  "hintButton","saveHint","submit","clear","rubricKicker","rubricTitle","rubricLead","rubricBefore","scoreLabel",
- "saveReview","sourcesKicker","sourcesTitle","sourcesLead","queriesTitle","allPrompt","openChat","sourceNote",
+ "saveReview","answerTitle","sourcesKicker","sourcesTitle","sourcesLead","queriesTitle","allPrompt","openChat","sourceNote",
  "sidebarTitle","sidebarLead","sidebarExtra","sidebarMethods","sidebarCatalog","back"]){
   sText(id,L[id]);
  }
@@ -207,7 +207,8 @@ function render(){
   });
  }
  $("saveReview").hidden=!!state.reviewed;
- $("guidedHint").hidden=!$("guidedHint").dataset.open; 
+ $("guidedHint").hidden=!$("guidedHint").dataset.open;
+ sText("guidedToggle",$("guidedHint").hidden?L.exShow:L.exHide); 
  const stage=state.reviewed?1:0;
  sText("progress",stage?L.sidebarProgressAfter:L.sidebarProgressBefore);
  $("progressBar").setAttribute("aria-valuenow",String(stage));

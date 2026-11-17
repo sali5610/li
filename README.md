@@ -23,15 +23,15 @@ The original app saves Bút Ký entries, saved Gương questions (Dấu Trang), 
 
 **No data from the old origin can be read automatically.** The JSON is handled locally in the browser and is never uploaded to a server.
 
-## Typography & spacing v0.2
+## Typography & spacing v0.3 — canonical runtime tokens
 
-Read the [design-system type/spacing contract](design-system/typography-spacing.md) and [mobile-responsive visual specimen](site/design-system-preview.html). Typography follows Material 3 role principles, retains Crimson Text + system sans, and uses 16/24 body copy, 14/20 supporting text, and 4px spacing tokens. The new shared CSS drives Home, Guide, Settings, Library, lesson families and other editorial views; historical non-grid declarations remain migration debt. The visual specimen is review material, **not G2/physical-device acceptance**.
+Read the [design-system type/spacing contract](design-system/typography-spacing.md) and [mobile-responsive visual specimen](site/design-system-preview.html). Typography follows Material 3 role principles, retains Crimson Text + system sans, and uses 16/24 body copy, 14/20 supporting text, and 4px spacing tokens. The source of truth is `design-system/tokens.json`, which deterministically generates `site/assets/design-tokens.css` using `python3 tools/generate_design_tokens.py`; check drift with `--check`. Six old `<style>` blocks were extracted to `site/assets/li-layout.css` (original cascade order), common component roles live in `site/assets/ui-foundations.css`, and Wave1 lessons use the same token vocabulary. **No `<style>` blocks remain in `index.html`.** All audited numeric margin/padding/gap literals in app/lesson CSS are on the 4px grid. The specimen is review material, **not G2/physical-device acceptance**.
 
 ## High-fi parity and checks
 
 The application contains 13 techniques in Sổ Tay Thần Chú; four explicit Nhịp học choices tied to Lão Lý; the existing routes; notebook, bookmarks, draft persistence and other current prototype interactions. S107 fixes relocate export to Settings, improve Settings card spacing and user-facing copy, and make the Guide illustration larger without resizing its card.
 
-`tools/validate_site.py` checks asset presence, 13 techniques, four mode choices, the S107 Settings export/import controls and event handler, all five Settings cards, the responsive 28px/30px gaps, privacy/backup copy, and inline JavaScript syntax. It is **not** a substitute for device, accessibility, or end-to-end browser testing. User acceptance remains open.
+`tools/validate_site.py` checks asset presence, 13 techniques, four mode choices, the S107 Settings export/import controls and event handler, all five Settings cards, the canonical 32px Settings gaps, privacy/backup copy, and inline JavaScript syntax. It is **not** a substitute for device, accessibility, or end-to-end browser testing. User acceptance remains open.
 
 ## Source recovery
 
@@ -43,4 +43,4 @@ Original Vercel URL: https://li-step15-arborium-hifi-review.vercel.app/
 
 Before changing visual layouts or controls, read **[design-system/README.md](design-system/README.md)**, **[components.md](design-system/components.md)** and **[qa-checklist.md](design-system/qa-checklist.md)**. Shared design tokens are machine-readable in **[tokens.json](design-system/tokens.json)**; run `python3 tools/validate_design_system.py` for the free source-level regression smoke test.
 
-The contract covers the **currently implemented** high-fi UI and specific PO decisions; **G2 overall visual signoff and physical-device accessibility/visual QA are still open**. It does not yet extract the inline CSS into a standalone component library or certify design consistency by itself. Decision approvals live in Notion, implementation in GitHub.
+The contract covers the **currently implemented** high-fi UI and specific PO decisions. CSS extraction is in place: JSON → generated tokens → preserved layout and art → shared Wave1 lesson CSS → reusable component-role CSS. [v0.3 remediation report](design-system/audits/2026-11-18-css-refactor-v03.md) records the remaining historical scene rules. CI also runs actual headless Chrome computed-style checks at seven responsive widths alongside native route/lesson regression. **G2 overall visual signoff and physical-device accessibility/visual QA remain open.** Decision approvals live in Notion, implementation in GitHub.

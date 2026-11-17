@@ -9,6 +9,32 @@ for name in assets:
     p=site/"assets"/name
     assert p.is_file() and p.stat().st_size>1000, f"Missing {name}"
     if name.endswith(".png"):assert p.read_bytes().startswith(b"\x89PNG\r\n\x1a\n"),f"Invalid {name}"
+# S143: touch devices never paint Safari's rectangular tap highlight on icon
+# buttons or nested SVGs; focus-visible affordance and selected pills stay available.
+touch_start=html.index("/* S143 · Shared iOS touch feedback contract.")
+touch_end=html.index("/* S139 · Sticky top navigation",touch_start)
+assert 0 < touch_start < touch_end, "Shared iOS touch reset must override older rules"
+touch_css=html[touch_start:touch_end]
+for rule in (
+    'button, a, [role="button"], summary,',
+    'button *, a *, [role="button"] *{',
+    '-webkit-tap-highlight-color:transparent!important;',
+    '.header .tool-button,',
+    '.mobile-nav .nav-btn,',
+    '#page-home .mirror-controls .mirror-refresh,',
+    '#laoly-fab{',
+    '@media (hover:none) and (pointer:coarse){',
+    '.header .tool-button:is(:hover,:active,:focus),',
+    '.mobile-nav .nav-btn:is(:hover,:active,:focus),',
+    'background:transparent!important;',
+    'box-shadow:none!important;',
+):
+    assert rule in touch_css, f"Safari touch override missing: {rule}"
+assert "outline:none" not in touch_css, "Cannot suppress keyboard focus outlines in touch reset"
+assert '.header .tool-button:focus-visible{outline:2px solid var(--wood);outline-offset:2px}' in html
+assert '.mobile-nav .nav-btn:focus-visible{outline:2px solid #806D49;outline-offset:-3px}' in html
+assert '.header .tool-button.active::before,' in html and '.header .tool-button[aria-current="page"]::before{opacity:1}' in html
+
 # S142: utility header selection uses the identical sand tint as bottom tabs,
 # with dark moss glyphs. State is synchronized by navigate() for Search/Capture/Settings.
 for rule in (

@@ -936,7 +936,7 @@ body:has(#buddy-modal.open) .laoly-support{visibility:hidden!important;opacity:0
 #page-guide .editorial-grid{display:grid;grid-template-columns:minmax(0,1fr)!important;gap:12px}
 #page-guide .editorial-grid>*,#page-guide .editorial-grid .stack-sm{min-width:0;width:100%;box-sizing:border-box}
 /* Match mentor frame with method tile borders, excluding decorative shadows. */
-#page-guide .editorial-grid>.guide-mentor{margin-left:3px;margin-right:6px;width:calc(100% - 9px)!important;max-width:calc(100% - 9px)!important;box-sizing:border-box}
+#page-guide .editorial-grid>.guide-mentor{margin-left:3px!important;margin-right:6px!important;width:auto!important;max-width:none!important;min-width:0;justify-self:stretch;box-sizing:border-box}
 #page-guide #method-search{width:100%;min-width:0;box-sizing:border-box}
 #page-guide #method-filters{display:flex;flex-wrap:nowrap!important;align-items:center;min-width:0;width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;gap:8px;padding:3px 0 10px;white-space:nowrap}
 #page-guide #method-filters .filter{flex:0 0 auto;white-space:nowrap;min-height:44px}
@@ -955,7 +955,7 @@ body:has(#buddy-modal.open) .laoly-support{visibility:hidden!important;opacity:0
 }
 @media(max-width:360px){
 #page-guide #method-cards{column-gap:14px;row-gap:18px;padding:3px 5px 8px 2px}
-#page-guide .editorial-grid>.guide-mentor{margin-left:2px;margin-right:5px;width:calc(100% - 7px)!important;max-width:calc(100% - 7px)!important}
+#page-guide .editorial-grid>.guide-mentor{margin-left:2px!important;margin-right:5px!important}
 #page-guide #method-cards>.method-card{padding:10px 9px;min-height:190px}
 #page-guide #method-cards>.method-card h3{font-size:18px}
 }
@@ -1183,6 +1183,27 @@ width:70px!important;height:100px!important;left:3px!important;bottom:-3px!impor
  color:var(--muted);font-size:12px;line-height:1.5;overflow-wrap:anywhere;
 }
 
+
+/* S128 · One visual contract for every multi-line writing surface.
+   Keep notebook ruling aligned with a 31px text line on touch devices. */
+:root{--li-notebook-line-height:31px;--li-notebook-rule:#D2C5A9}
+textarea,.notebook{
+  display:block;
+  box-sizing:border-box;
+  max-width:100%;
+  font-size:15px;
+  line-height:var(--li-notebook-line-height)!important;
+  padding:8px 13px;
+  color:var(--ink);
+  background-color:var(--cream)!important;
+  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 30px,var(--li-notebook-rule) 30px,var(--li-notebook-rule) 31px)!important;
+  background-position:0 8px;
+  background-attachment:local;
+  background-repeat:repeat;
+  -webkit-appearance:none;
+  appearance:none;
+}
+textarea::placeholder{color:var(--muted);opacity:.8}
 </style><link rel="stylesheet" href="./assets/lesson-l09-hifi.css"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
 <symbol id="i-tree" viewBox="0 0 24 24"><path d="m12 2 4 5h-2l4 5h-3l4 6H5l4-6H6l4-5H8zM12 18v4"/></symbol>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7c-4-3-8-3-10-2v15c3-1 7 0 10 2 3-2 7-3 10-2V5c-2-1-6-1-10 2ZM12 7v15"/></symbol>

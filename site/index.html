@@ -1351,6 +1351,38 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 .header .tool-button:focus-visible{outline:2px solid var(--wood);outline-offset:2px}
 @media(prefers-reduced-motion:reduce){.header .tool-button::before{transition:none}}
 
+/* S143 · Shared iOS touch feedback contract.
+   Suppress Safari's rectangular native tap overlay for ALL controls, including
+   nested Lucide SVGs. Preserve designed active pills and keyboard focus rings. */
+button, a, [role="button"], summary,
+button *, a *, [role="button"] *{
+  -webkit-tap-highlight-color:transparent!important;
+}
+.header .tool-button,
+.mobile-nav .nav-btn,
+#page-home .mirror-controls .mirror-refresh,
+#laoly-fab{
+  -webkit-appearance:none;
+  appearance:none;
+  -webkit-touch-callout:none;
+  -webkit-tap-highlight-color:transparent!important;
+}
+@media (hover:none) and (pointer:coarse){
+  /* Touch browsers may retain :hover after tapping. Do not paint a square
+     over the selected-state pill or behind icon-only hit targets. */
+  .header .tool-button:is(:hover,:active,:focus),
+  .mobile-nav .nav-btn:is(:hover,:active,:focus),
+  #page-home .mirror-controls .mirror-refresh:is(:hover,:active,:focus),
+  #laoly-fab:is(:hover,:active,:focus){
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+  /* The label/ink and pill remain state-driven, not :hover-driven. */
+  .header .tool-button:is(:hover,:active,:focus){
+    color:var(--moss)!important;
+  }
+}
+
 /* S139 · Sticky top navigation, fixed touch-viewport scale.
    Preserve content flow and existing PWA/mobile bottom navigation. */
 html{

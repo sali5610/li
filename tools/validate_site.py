@@ -3,7 +3,12 @@
 from pathlib import Path
 import re, subprocess, tempfile
 site=Path(__file__).resolve().parents[1]/"site"
-html=(site/"index.html").read_text(encoding="utf-8")
+page_html=(site/"index.html").read_text(encoding="utf-8")
+layout_css=(site/"assets"/"li-layout.css").read_text(encoding="utf-8")
+html=page_html+"\n"+layout_css
+assert "<style>" not in page_html and "</style>" not in page_html, "No inline CSS blocks in app HTML"
+head=page_html.split("</head>",1)[0]
+assert head.index("./assets/design-tokens.css") < head.index("./assets/li-layout.css") < head.index("./assets/lesson-l09-hifi.css") < head.index("./assets/ui-foundations.css")
 assets=["lucide.min.js","laoly-neutral.png","laoly-guide-rest.png","laoly-mode-start.png","laoly-mode-focus.png","laoly-mode-overload.png","laoly-mode-recover.png"]
 for name in assets:
     p=site/"assets"/name

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="1110" viewBox="0 0 640 1110" role="img" aria-labelledby="title desc">
+<title id="title">Four clocks for one Arrival — EN</title>
+<desc id="desc">PLANNED: 10:00, Scheduled Arrival, Not evidence that it occurred. ETA: 11:20, Estimated as of 09:00, A prediction, not confirmation. ACTUAL: 11:45, Reported event-occurrence time, Not the report-receipt time. RECEIPT: 12:00, When the system received the report, Not when the truck arrived. An arrival can occur before its report reaches the system.</desc>
+<rect width="640" height="1110" fill="#F7F6F1"/>
+<rect x="32" y="28" width="116" height="32" rx="16" fill="#263A2E"/>
+<text x="51" y="50" fill="#FFF" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">li. / L15-2-3</text>
+<text x="32" y="110" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="bold">Four clocks for one Arrival</text>
+<text x="32" y="143" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="16">Fictional teaching case · Same day · UTC+7 · Not live shipment data</text>
+<g role="group" aria-label="PLANNED 10:00. Scheduled Arrival. Not evidence that it occurred">
+<rect x="32" y="172" width="576" height="183" rx="18" fill="#EAEFE9" stroke="#BAC4BB" stroke-width="1.4"/>
+<text x="53" y="198" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold">01 / 04</text>
+<text x="53" y="221" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="bold" letter-spacing="0.4">PLANNED</text>
+<text x="53" y="284" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="47" font-weight="bold">10:00</text>
+<text x="53" y="317" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="17">Scheduled Arrival</text><text x="53" y="341" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="17">Not evidence that it occurred</text></g>
+<g role="group" aria-label="ETA 11:20. Estimated as of 09:00. A prediction, not confirmation">
+<rect x="32" y="370" width="576" height="183" rx="18" fill="#F0E9DC" stroke="#BAC4BB" stroke-width="1.4"/>
+<text x="53" y="396" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold">02 / 04</text>
+<text x="53" y="419" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="bold" letter-spacing="0.4">ETA</text>
+<text x="53" y="482" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="47" font-weight="bold">11:20</text>
+<text x="53" y="515" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="17">Estimated as of 09:00</text><text x="53" y="539" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="17">A prediction, not confirmation</text></g>
+<g role="group" aria-label="ACTUAL 11:45. Reported event-occurrence time. Not the report-receipt time">
+<rect x="32" y="568" width="576" height="183" rx="18" fill="#DDEBE4" stroke="#BAC4BB" stroke-width="1.4"/>
+<text x="53" y="594" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold">03 / 04</text>
+<text x="53" y="617" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="bold" letter-spacing="0.4">ACTUAL</text>
+<text x="53" y="680" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="47" font-weight="bold">11:45</text>
+<text x="53" y="713" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="17">Reported event-occurrence time</text><text x="53" y="737" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="17">Not the report-receipt time</text></g>
+<g role="group" aria-label="RECEIPT 12:00. When the system received the report. Not when the truck arrived">
+<rect x="32" y="766" width="576" height="183" rx="18" fill="#E9E8EE" stroke="#BAC4BB" stroke-width="1.4"/>
+<text x="53" y="792" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold">04 / 04</text>
+<text x="53" y="815" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="bold" letter-spacing="0.4">RECEIPT</text>
+<text x="53" y="878" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="47" font-weight="bold">12:00</text>
+<text x="53" y="911" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="17">When the system received the report</text><text x="53" y="935" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="17">Not when the truck arrived</text></g>
+<line x1="32" x2="608" y1="961" y2="961" stroke="#BAC4BB" stroke-width="1.5"/>
+<text x="32" y="995" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="bold">An arrival can occur before its report reaches the system.</text>
+<text x="32" y="1025" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="17">Prediction ≠ event evidence · Receipt ≠ Actual</text>
+<text x="32" y="1081" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="13">Original diagram by li. · Fictional timestamps · Terminology reference: Oracle OTM</text>
+</svg>

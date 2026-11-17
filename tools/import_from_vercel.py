@@ -25,7 +25,14 @@ def build():
     for name in ASSETS:
         context=html.find(name)
         print("Asset lookup",name,"HTML reference:",repr(html[max(0,context-115):context+len(name)+35]),flush=True)
-        asset=fetch("assets/"+name)
+        if name=="lucide.min.js":
+            remote="https://unpkg.com/lucide@1.50.0/dist/umd/lucide.min.js"
+            request=urllib.request.Request(remote,headers={"User-Agent":"li-hifi-migration/1.0"})
+            with urllib.request.urlopen(request,timeout=60) as response:
+                asset=response.read()
+            html=html.replace('src="'+remote+'"','src="./assets/lucide.min.js"')
+        else:
+            asset=fetch("assets/"+name)
         if name.endswith(".png") and not asset.startswith(b"\x89PNG\r\n\x1a\n"):
             raise RuntimeError(f"Not PNG: {name}")
         (OUT/"assets"/name).write_bytes(asset)

@@ -1288,6 +1288,11 @@ textarea::placeholder{color:var(--muted);opacity:.8}
     font-size:clamp(18px,5.2vw,20px)!important;
   }
 }
+/* S138 · Swipe directly on the mirror text area. pan-y preserves page scrolling. */
+#page-home .mirror-message{
+  pointer-events:auto;
+  touch-action:pan-y;
+}
 /* Both arrow controls stay still; only the question uses li-mirror-copy-float. */
 #page-home .mirror-controls{
   display:flex;
@@ -1590,6 +1595,26 @@ function shiftMirrorQuestion(direction){
 }
 document.getElementById("previous-question").addEventListener("click",()=>shiftMirrorQuestion(-1));
 document.getElementById("shuffle").addEventListener("click",()=>shiftMirrorQuestion(1));
+/* S138 · Horizontal touch gestures on the mirror, without blocking vertical scrolling.
+   Swipe left = next, right = previous; arrows remain an accessible alternative. */
+const mirrorSwipeSurface=document.querySelector("#page-home .mirror-message");
+let mirrorSwipeStart=null;
+mirrorSwipeSurface.addEventListener("touchstart",event=>{
+  mirrorSwipeStart=null;
+  if(event.touches.length!==1||event.target?.closest?.("button"))return;
+  const touch=event.touches[0];
+  mirrorSwipeStart={x:touch.clientX,y:touch.clientY};
+},{passive:true});
+mirrorSwipeSurface.addEventListener("touchend",event=>{
+  const start=mirrorSwipeStart;
+  mirrorSwipeStart=null;
+  if(!start||event.changedTouches.length!==1)return;
+  const end=event.changedTouches[0];
+  const dx=end.clientX-start.x,dy=end.clientY-start.y;
+  if(Math.abs(dx)<42||Math.abs(dx)<Math.abs(dy)*1.3)return;
+  shiftMirrorQuestion(dx<0?1:-1);
+},{passive:true});
+mirrorSwipeSurface.addEventListener("touchcancel",()=>{mirrorSwipeStart=null},{passive:true});
 document.getElementById("finish-case").addEventListener("click",()=>{const v=document.getElementById("case-revision").value.trim();if(!selectedCaseAnswer){toast("Chưa Chọn · Hãy chọn một nhận định hoặc tạm gác.");return}if(v.length<12){toast("Luận Kết còn thiếu · Hãy viết lại nhận định ít nhất 12 ký tự.");return}const item={id:liNewId(),title:"90% người dùng hài lòng — Sampling Bias",correct:selectedCaseAnswer==="right",revision:v,savedAt:new Date().toISOString()};
 processedCases.unshift(item);
 if(!liWriteState()){processedCases.shift();toast("Không thể lưu Bút Ký trên thiết bị. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.");return}

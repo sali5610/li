@@ -28,7 +28,9 @@ assert 'class="stack-sm l09-stack"' in mount
 assert mount.count('class="surface"')>=4
 assert 'class="surface tinted"' in mount
 assert 'class="action"' in mount
-assert 'class="text-editor"' not in mount or 'class="text-editor"' in logic
+# A guided response is a native textarea in markup, with its draft saved by lesson logic.
+assert 'id="l09-guidedDraft" class="text-editor"' in mount
+assert 'state.guidedDraft' in logic and 'localStorage.setItem(KEY' in logic
 assert 'data-page="lessonL09"' in mount
 assert 'shelf.id="li-l09-library-entry"' in mount
 assert 'data-page="catalog"' in mount and 'data-page="guide"' in mount

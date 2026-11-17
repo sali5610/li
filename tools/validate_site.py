@@ -69,7 +69,7 @@ assert 'Xóa dữ liệu trang web có thể làm mất Bút Ký' not in setting
 assert '<article class="surface" id="settings-buddy-card">' in settings
 assert '<div class="folio-art roots" style="height:154px;margin-top:12px"></div>' not in settings
 assert settings.count('class="settings-buddy-illustration"') == 1
-assert 'src="./assets/laoly-guide-rest.png"' in settings
+assert 'class="settings-buddy-illustration" src="./assets/laoly-neutral.png"' in settings
 assert settings.count('data-buddy="1"') == 1
 assert '#settings-buddy-card .settings-buddy-footer' in html
 assert '#settings-buddy-card .settings-buddy-illustration' in html

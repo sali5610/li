@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="color-scheme" content="light"><title>理 · li. — Thư viện tri thức</title>
 <link rel="icon" type="image/svg+xml" href="./assets/li-seal.svg?v=moss-243a29">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1327,6 +1327,15 @@ textarea::placeholder{color:var(--muted);opacity:.8}
     will-change:auto;
   }
 }
+/* S139 · Sticky top navigation, fixed touch-viewport scale.
+   Preserve content flow and existing PWA/mobile bottom navigation. */
+html{touch-action:pan-x pan-y}
+.header{
+  position:sticky;
+  top:0;
+  z-index:42;
+  background:var(--paper);
+}
 </style><link rel="stylesheet" href="./assets/lesson-l09-hifi.css"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
 <symbol id="i-tree" viewBox="0 0 24 24"><path d="m12 2 4 5h-2l4 5h-3l4 6H5l4-6H6l4-5H8zM12 18v4"/></symbol>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7c-4-3-8-3-10-2v15c3-1 7 0 10 2 3-2 7-3 10-2V5c-2-1-6-1-10 2ZM12 7v15"/></symbol>
@@ -1584,6 +1593,14 @@ function closeModal(id){const el=document.getElementById(id);el.classList.remove
 document.querySelectorAll(".page").forEach(e=>e.setAttribute("aria-label",e.id.replace("page-","")));
 document.getElementById("method-filters").innerHTML=categories.map((c,i)=>'<button class="filter" data-cat="'+c+'" aria-pressed="'+(i===0)+'">'+c+'</button>').join("");
 document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.hasAttribute("data-nav-back")){goBack();return}if(t.dataset.page){navigate(t.dataset.page);if(t.dataset.focus){const field=document.getElementById(t.dataset.focus);document.getElementById("notebook-section")?.scrollIntoView?.({block:"start"});field?.focus?.({preventScroll:true})}return}if(t.dataset.method){showMethod(t.dataset.method);return}if(t.dataset.cat){currentCategory=t.dataset.cat;document.querySelectorAll("[data-cat]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));renderMethods();return}if(t.dataset.branch){document.getElementById("branch-feedback").textContent="Hãy kiểm chứng: "+t.dataset.branch;return}if(t.dataset.answer){const isCase=t.closest("section.page").id==="page-case";if(isCase)selectedCaseAnswer=t.dataset.answer;const id=isCase?"case-feedback":"lesson-feedback";document.getElementById(id).textContent=t.dataset.answer==="right"?"Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.":"Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.";return}if(t.dataset.demo){toast(t.dataset.demo);return}if(t.dataset.buddy){openLaoLy(t);return}});
+/* S139 · iOS Safari supports gesturestart/gesturechange for pinch gestures.
+   Do not intercept single-finger scrolling or horizontal mirror swipe events. */
+document.addEventListener("gesturestart",event=>event.preventDefault(),{passive:false});
+document.addEventListener("gesturechange",event=>event.preventDefault(),{passive:false});
+document.addEventListener("touchmove",event=>{
+ if(event.touches?.length>1)event.preventDefault();
+},{passive:false});
+
 /* S137 · Bidirectional mirror carousel. Both directions keep question, context and mentor in sync. */
 function shiftMirrorQuestion(direction){
  if(!scenarios.length)return;

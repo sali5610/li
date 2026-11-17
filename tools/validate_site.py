@@ -318,8 +318,8 @@ for name,expected in [
     sha=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\0"+data).hexdigest()
     assert sha==expected,(name,"approved artwork mismatch")
 assert html.count("/* S119 · Approved S106 Home art") == 1
-assert html.count('url("./assets/home-mystic-cool-mobile.webp")') == 1
-assert html.count('url("./assets/home-mystic-cool-desktop.webp")') == 1
+assert layout_css.count('url("./home-mystic-cool-mobile.webp")') == 1, "CSS-relative artwork URL must resolve from assets/"
+assert layout_css.count('url("./home-mystic-cool-desktop.webp")') == 1, "CSS-relative artwork URL must resolve from assets/"
 home=section("home")
 for identifier in ['id="mirror-question"','id="home-scene"','id="save-question"','id="previous-question"','id="shuffle"']:
     assert home.count(identifier)==1,identifier

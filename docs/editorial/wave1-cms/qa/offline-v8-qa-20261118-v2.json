@@ -1,0 +1,332 @@
+{
+  "schema": "li.wave1.offline-v8-qa.v2",
+  "date": "2026-11-18",
+  "tool": "isolated ECMAScript V8 (connector-backed source; no browser, no production runtime)",
+  "scope": [
+    "3 Wave1 PO-locked lessons",
+    "285 raw content blocks",
+    "126 assessment atomic records",
+    "39 source references",
+    "3 staged JSON snapshots"
+  ],
+  "results": [
+    {
+      "id": "L09-1-2_snapshot_exists",
+      "result": "PASS",
+      "detail": "Staging JSON read back from GitHub and Google Sheet"
+    },
+    {
+      "id": "L09-1-2_json_parity",
+      "result": "PASS",
+      "detail": "GitHub staging equals Google Sheets JSON field-for-field"
+    },
+    {
+      "id": "L09-1-2_source_sha",
+      "result": "PASS",
+      "detail": "GitHub current main blob SHA matches captured source SHA"
+    },
+    {
+      "id": "L09-1-2_vi_exact_source",
+      "result": "PASS",
+      "detail": "VI/EN all review, prompt and context strings identical to source JS"
+    },
+    {
+      "id": "L09-1-2_vi_four_questions",
+      "result": "PASS",
+      "detail": "4 nonempty independent question prompts"
+    },
+    {
+      "id": "L09-1-2_vi_four_rubrics",
+      "result": "PASS",
+      "detail": "4 (label, criterion) rubric pairs"
+    },
+    {
+      "id": "L09-1-2_vi_no_early_key",
+      "result": "PASS",
+      "detail": "pre-submit projected content excludes model answer and rubric"
+    },
+    {
+      "id": "L09-1-2_vi_model_state",
+      "result": "PASS",
+      "detail": "pure-model transition: reject empty, allow valid attempt, post-submit review, locale switch preserves state"
+    },
+    {
+      "id": "L09-1-2_en_exact_source",
+      "result": "PASS",
+      "detail": "VI/EN all review, prompt and context strings identical to source JS"
+    },
+    {
+      "id": "L09-1-2_en_four_questions",
+      "result": "PASS",
+      "detail": "4 nonempty independent question prompts"
+    },
+    {
+      "id": "L09-1-2_en_four_rubrics",
+      "result": "PASS",
+      "detail": "4 (label, criterion) rubric pairs"
+    },
+    {
+      "id": "L09-1-2_en_no_early_key",
+      "result": "PASS",
+      "detail": "pre-submit projected content excludes model answer and rubric"
+    },
+    {
+      "id": "L09-1-2_en_model_state",
+      "result": "PASS",
+      "detail": "pure-model transition: reject empty, allow valid attempt, post-submit review, locale switch preserves state"
+    },
+    {
+      "id": "L09-1-2_runtime_answer_gate",
+      "result": "PASS",
+      "detail": "static source: answerBox and rubricArea hidden until submitted"
+    },
+    {
+      "id": "L09-1-2_runtime_hint_guard",
+      "result": "PASS",
+      "detail": "static source: hint not available after submit"
+    },
+    {
+      "id": "L09-1-2_runtime_min_input",
+      "result": "PASS",
+      "detail": "static source: 12 trimmed character min for each independent answer"
+    },
+    {
+      "id": "L09-1-2_distinct_worked_case",
+      "result": "PASS",
+      "detail": "Corrected test data localization: independent finance banner 1.200 vs guided learning-app 400 trên 500; both found in source exactly."
+    },
+    {
+      "id": "L03-1-2_snapshot_exists",
+      "result": "PASS",
+      "detail": "Staging JSON read back from GitHub and Google Sheet"
+    },
+    {
+      "id": "L03-1-2_json_parity",
+      "result": "PASS",
+      "detail": "GitHub staging equals Google Sheets JSON field-for-field"
+    },
+    {
+      "id": "L03-1-2_source_sha",
+      "result": "PASS",
+      "detail": "GitHub current main blob SHA matches captured source SHA"
+    },
+    {
+      "id": "L03-1-2_vi_exact_source",
+      "result": "PASS",
+      "detail": "VI/EN all review, prompt and context strings identical to source JS"
+    },
+    {
+      "id": "L03-1-2_vi_four_questions",
+      "result": "PASS",
+      "detail": "4 nonempty independent question prompts"
+    },
+    {
+      "id": "L03-1-2_vi_four_rubrics",
+      "result": "PASS",
+      "detail": "4 (label, criterion) rubric pairs"
+    },
+    {
+      "id": "L03-1-2_vi_no_early_key",
+      "result": "PASS",
+      "detail": "pre-submit projected content excludes model answer and rubric"
+    },
+    {
+      "id": "L03-1-2_vi_model_state",
+      "result": "PASS",
+      "detail": "pure-model transition: reject empty, allow valid attempt, post-submit review, locale switch preserves state"
+    },
+    {
+      "id": "L03-1-2_en_exact_source",
+      "result": "PASS",
+      "detail": "VI/EN all review, prompt and context strings identical to source JS"
+    },
+    {
+      "id": "L03-1-2_en_four_questions",
+      "result": "PASS",
+      "detail": "4 nonempty independent question prompts"
+    },
+    {
+      "id": "L03-1-2_en_four_rubrics",
+      "result": "PASS",
+      "detail": "4 (label, criterion) rubric pairs"
+    },
+    {
+      "id": "L03-1-2_en_no_early_key",
+      "result": "PASS",
+      "detail": "pre-submit projected content excludes model answer and rubric"
+    },
+    {
+      "id": "L03-1-2_en_model_state",
+      "result": "PASS",
+      "detail": "pure-model transition: reject empty, allow valid attempt, post-submit review, locale switch preserves state"
+    },
+    {
+      "id": "L03-1-2_runtime_answer_gate",
+      "result": "PASS",
+      "detail": "static source: answerBox and rubricArea hidden until submitted"
+    },
+    {
+      "id": "L03-1-2_runtime_hint_guard",
+      "result": "PASS",
+      "detail": "static source: hint not available after submit"
+    },
+    {
+      "id": "L03-1-2_runtime_min_input",
+      "result": "PASS",
+      "detail": "static source: 12 trimmed character min for each independent answer"
+    },
+    {
+      "id": "L03-1-2_distinct_worked_case",
+      "result": "PASS",
+      "detail": "independent example is distinct from worked example in existing source"
+    },
+    {
+      "id": "L15-2-2_snapshot_exists",
+      "result": "PASS",
+      "detail": "Staging JSON read back from GitHub and Google Sheet"
+    },
+    {
+      "id": "L15-2-2_json_parity",
+      "result": "PASS",
+      "detail": "GitHub staging equals Google Sheets JSON field-for-field"
+    },
+    {
+      "id": "L15-2-2_source_sha",
+      "result": "PASS",
+      "detail": "GitHub current main blob SHA matches captured source SHA"
+    },
+    {
+      "id": "L15-2-2_vi_exact_source",
+      "result": "PASS",
+      "detail": "VI/EN all review, prompt and context strings identical to source JS"
+    },
+    {
+      "id": "L15-2-2_vi_four_questions",
+      "result": "PASS",
+      "detail": "4 nonempty independent question prompts"
+    },
+    {
+      "id": "L15-2-2_vi_four_rubrics",
+      "result": "PASS",
+      "detail": "4 (label, criterion) rubric pairs"
+    },
+    {
+      "id": "L15-2-2_vi_no_early_key",
+      "result": "PASS",
+      "detail": "pre-submit projected content excludes model answer and rubric"
+    },
+    {
+      "id": "L15-2-2_vi_model_state",
+      "result": "PASS",
+      "detail": "pure-model transition: reject empty, allow valid attempt, post-submit review, locale switch preserves state"
+    },
+    {
+      "id": "L15-2-2_en_exact_source",
+      "result": "PASS",
+      "detail": "VI/EN all review, prompt and context strings identical to source JS"
+    },
+    {
+      "id": "L15-2-2_en_four_questions",
+      "result": "PASS",
+      "detail": "4 nonempty independent question prompts"
+    },
+    {
+      "id": "L15-2-2_en_four_rubrics",
+      "result": "PASS",
+      "detail": "4 (label, criterion) rubric pairs"
+    },
+    {
+      "id": "L15-2-2_en_no_early_key",
+      "result": "PASS",
+      "detail": "pre-submit projected content excludes model answer and rubric"
+    },
+    {
+      "id": "L15-2-2_en_model_state",
+      "result": "PASS",
+      "detail": "pure-model transition: reject empty, allow valid attempt, post-submit review, locale switch preserves state"
+    },
+    {
+      "id": "L15-2-2_runtime_answer_gate",
+      "result": "PASS",
+      "detail": "static source: answerBox and rubricArea hidden until submitted"
+    },
+    {
+      "id": "L15-2-2_runtime_hint_guard",
+      "result": "PASS",
+      "detail": "static source: hint not available after submit"
+    },
+    {
+      "id": "L15-2-2_runtime_min_input",
+      "result": "PASS",
+      "detail": "static source: 12 trimmed character min for each independent answer"
+    },
+    {
+      "id": "L15-2-2_distinct_worked_case",
+      "result": "PASS",
+      "detail": "independent example is distinct from worked example in existing source"
+    },
+    {
+      "id": "full_285_mapping",
+      "result": "PASS",
+      "detail": "all original raw block IDs have exactly one semantic map"
+    },
+    {
+      "id": "mapping_protected",
+      "result": "PASS",
+      "detail": "answer/rubric blocks post-submit only"
+    },
+    {
+      "id": "source_39",
+      "result": "PASS",
+      "detail": "all original source references audited separately"
+    },
+    {
+      "id": "atomic_126",
+      "result": "PASS",
+      "detail": "unique atomic records across 3 lessons"
+    },
+    {
+      "id": "locale_63_pairs",
+      "result": "PASS",
+      "detail": "63 semantic pairs, VI/EN"
+    },
+    {
+      "id": "staging_sheets_not_runtime",
+      "result": "PASS",
+      "detail": "source classification has no unclassified roles"
+    }
+  ],
+  "summary": {
+    "total": 57,
+    "pass": 57,
+    "fail": 0
+  },
+  "exceptions": [],
+  "sourceFiles": {
+    "L09-1-2": {
+      "sourceSha": "a3ec039c365ba65f473b9b9cd158703a8e91a448",
+      "stagingSha": "bf890704625a459170589e16044a6f805d91e37c"
+    },
+    "L03-1-2": {
+      "sourceSha": "446b9493e9ecf91bd3cb84e8a3938d67e125699d",
+      "stagingSha": "36b99a005e179bc36df6cf69b79211c3e6e99272"
+    },
+    "L15-2-2": {
+      "sourceSha": "446b9493e9ecf91bd3cb84e8a3938d67e125699d",
+      "stagingSha": "541cdeed584de844bc36cbb26bd8372550c1166f"
+    }
+  },
+  "limitations": [
+    "These tests execute staging invariants in an isolated JS environment, not the GitHub Node .mjs script.",
+    "No browser DOM, iOS Safari, PWA, VoiceOver, network image bytes, production cutover or academic signoff tested.",
+    "Model state transitions are independent simulations, not observed UI behavior."
+  ],
+  "correction": {
+    "prior_file": "docs/editorial/wave1-cms/qa/offline-v8-qa-20261118.json",
+    "prior_run_result": "56/57",
+    "prior_failure": "L09-1-2_distinct_worked_case",
+    "root_cause": "Test expected literal 400/500; actual locked Vietnamese source says '400 trên 500'. The cases are distinct; no content defect.",
+    "verification": "Rechecked original source and snapshot SHA; exact data values and different scenarios confirmed.",
+    "content_changes": "NONE"
+  }
+}

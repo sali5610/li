@@ -61,6 +61,19 @@ assert all('tinted' not in element for element in re.findall(
     r'<article class="surface(?: tinted)?"(?: id="[^"]+")?>', settings
 ))
 
+# S116: two compact mobile Guide tiles, with Guide-only scope and no duplicate S99 rule.
+guide=section("guide")
+assert guide.count('id="method-count"') == 1
+assert 'id="method-cards" class="method-grid"' in guide
+assert html.count("/* S116 · Guide compact two-column method tiles on phones (consolidated S99) */") == 1
+assert "/* S99 guidebook responsive fix */" not in html
+assert "/* S99 responsive Thần Chú - scoped to Guide route */" not in html
+assert "#page-guide #method-cards{display:grid!important;width:100%!important;min-width:0;max-width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;" in html
+assert "#page-guide #method-cards>.method-card{width:100%!important;min-width:0;max-width:100%!important;box-sizing:border-box;padding:11px 10px;min-height:194px" in html
+assert "#page-guide #method-cards>.method-card .purpose{" in html
+assert "function renderMethods(){" in html and "function showMethod(id){" in html
+assert "/* S114 — restrained Lão Lý peek:" in html
+
 # S112 — context-aware companion must be present, parse and pass UI-plan QA.
 companion=site/"assets"/"laoly-context-s112.js"
 assert companion.is_file() and companion.stat().st_size>4000

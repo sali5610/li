@@ -37,7 +37,7 @@ exKicker:"IV · THỬ TỰ GIẢI THÍCH",exTitle:"400/500 người thích nhắ
 exBody:"Một app học tập khảo sát trong nhóm Facebook của những người học rất tích cực. Có 400 trên 500 người trả lời thích thông báo nhắc học. Một PM muốn viết: “80% người dùng tương lai đều thích notification mỗi ngày.”",
 exQuestion:"<b>Tự hỏi:</b> Kết luận đã nhảy từ nhóm nào sang nhóm nào? Kể cả khi lấy mẫu xác suất đúng tổng thể, vẫn còn rủi ro gì?",
 exHelp:"Người trả lời trong một hội học tập tích cực không tương đương toàn bộ người dùng tương lai. Tuyển đúng khung mẫu tốt hơn vẫn phải kiểm tra nonresponse và cách hỏi.",
-exShow:"Xem gợi ý phân tích",exHide:"Ẩn gợi ý phân tích",
+exShow:"Xem gợi ý phân tích",exHide:"Ẩn gợi ý phân tích",guidedLabel:"Thử giải thích bằng lời của bạn",guidedPlaceholder:"Mẫu này có đại diện cho người dùng tương lai không? Vì sao?",guidedSaveNote:"Ý tự giải thích được lưu trên thiết bị. Phần này không tính điểm.",
 challengeKicker:"V · THỬ SỨC ĐỘC LẬP",challengeTitle:"Khảo sát banner trong ứng dụng tài chính",
 caseText:"Một app tài chính chỉ hiển thị banner khảo sát cho người mở app ít nhất <b>5 lần mỗi tuần</b>. Có <b>1.200</b> người trả lời; <b>78%</b> nhận xét tính năng mới là <b>hữu ích</b>.",
 caseClaim:"Nhóm sản phẩm định kết luận: “78% tất cả khách hàng hài lòng với tính năng này.”",
@@ -89,7 +89,7 @@ exKicker:"IV · GUIDED SELF-EXPLANATION",exTitle:"400/500 favor reminders. Is th
 exBody:"An education app surveys a Facebook group of highly engaged learners. Of 500 respondents, 400 favor daily notifications. A PM writes: “80% of all future users want reminders every day.”",
 exQuestion:"<b>Ask yourself:</b> From which observed group to which intended population has the claim jumped? Even with suitable probability sampling, what else could introduce bias?",
 exHelp:"Respondents from a highly engaged group are not all future users. Better recruitment still needs checks for nonresponse and question wording.",
-exShow:"Show the guided hint",exHide:"Hide guided hint",
+exShow:"Show the guided hint",exHide:"Hide guided hint",guidedLabel:"Explain it in your own words",guidedPlaceholder:"Does this sample represent future app users? Why or why not?",guidedSaveNote:"Your guided explanation is saved on this device. This part is unscored.",
 challengeKicker:"V · INDEPENDENT CHALLENGE",challengeTitle:"Finance-app banner survey",
 caseText:"A finance app shows a survey banner <b>only to people who open it at least 5 times a week</b>. There are <b>1,200 respondents</b>; <b>78%</b> say a new feature is <b>useful</b>.",
 caseClaim:"The team plans to announce: “78% of all customers are satisfied with the feature.”",
@@ -115,13 +115,14 @@ copied:"Prompt copied.",copyFailed:"Clipboard unavailable. Check permissions.",r
 }
 };
 const $=id=>document.getElementById("l09-"+id);
-function initial(){return {locale:"vi",draft:["","","",""],hint:false,assisted:false,submitted:false,submittedAt:null,submission:null,submissionLocale:null,ratings:[null,null,null,null],reviewed:false};}
+function initial(){return {locale:"vi",draft:["","","",""],guidedDraft:"",hint:false,assisted:false,submitted:false,submittedAt:null,submission:null,submissionLocale:null,ratings:[null,null,null,null],reviewed:false};}
 let state=initial();let storageAvailable=true;
 try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&typeof v==="object"){
 state={...state,...v};
 if(!Array.isArray(state.draft)||state.draft.length!==4)state.draft=["","","",""];
 if(!Array.isArray(state.ratings)||state.ratings.length!==4)state.ratings=[null,null,null,null];
 if(!["vi","en"].includes(state.locale))state.locale="vi";
+if(typeof state.guidedDraft!=="string")state.guidedDraft="";
 }}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){storageAvailable=false;return false;}}
 function sText(id,s){const el=$(id);if(el)el.textContent=s;}
@@ -170,6 +171,11 @@ function render(){
   sText(id,L[id]);
  }
  sHtml("theoryLead",L.theoryLead);sHtml("limit",L.limit);sHtml("exQuestion",L.exQuestion);
+ sHtml("guidedHint",L.exHelp);
+ sText("guidedLabel",L.guidedLabel);
+ sText("guidedSaveNote",L.guidedSaveNote);
+ $("guidedDraft").placeholder=L.guidedPlaceholder;
+ $("guidedDraft").value=state.guidedDraft;
  sHtml("caseText",L.caseText);sText("caseClaim",L.caseClaim);sHtml("hint",L.hint);
  sHtml("answer",L.answer);sHtml("answerCaution",L.answerCaution);
  $("stats").querySelectorAll(".l09-stat-desc").forEach((e,i)=>e.textContent=L.stats[i]);
@@ -210,7 +216,8 @@ function render(){
  }
  $("saveReview").hidden=!!state.reviewed;
  $("guidedHint").hidden=!$("guidedHint").dataset.open;
- sText("guidedToggle",$("guidedHint").hidden?L.exShow:L.exHide); 
+ sText("guidedToggle",$("guidedHint").hidden?L.exShow:L.exHide);
+ $("guidedToggle").setAttribute("aria-expanded",String(!$("guidedHint").hidden)); 
  const stage=state.reviewed?1:0;
  sText("progress",stage?L.sidebarProgressAfter:L.sidebarProgressBefore);
  $("progressBar").setAttribute("aria-valuenow",String(stage));
@@ -245,10 +252,15 @@ function changeLocale(locale){
 }
 $("vi").addEventListener("click",()=>changeLocale("vi"));
 $("en").addEventListener("click",()=>changeLocale("en"));
+$("guidedDraft").addEventListener("input",()=>{
+ state.guidedDraft=$("guidedDraft").value;
+ persist();
+});
 $("guidedToggle").addEventListener("click",()=>{
  const h=$("guidedHint");const now=h.hidden;h.hidden=!now;
  if(now)h.dataset.open="1";else delete h.dataset.open;
  sText("guidedToggle",now?T[state.locale].exHide:T[state.locale].exShow);
+ $("guidedToggle").setAttribute("aria-expanded",String(now));
 });
 $("hintButton").addEventListener("click",()=>{
  if(state.submitted)return;state.hint=true;state.assisted=true;persist();

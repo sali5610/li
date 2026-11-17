@@ -251,6 +251,28 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 }
 #page-home .hero-actions .secondary-row { gap: var(--li-space-3); }
 
+/* Visible Home supporting UI also follows readable roles. */
+#page-home .hero-left p {
+  font-size: var(--li-type-support);
+  line-height: var(--li-leading-support);
+}
+#page-home .hero-left .tiny-note {
+  font-size: var(--li-type-caption);
+  line-height: var(--li-leading-caption);
+  padding: var(--li-space-2) var(--li-space-3);
+  gap: var(--li-space-2);
+}
+#page-home .hero-left .home-checkin {
+  font-size: var(--li-type-support);
+  line-height: var(--li-leading-support);
+  min-height: 48px;
+  padding: var(--li-space-3) var(--li-space-4);
+  gap: var(--li-space-2);
+}
+#buddy-modal .dialog p { font-size: var(--li-type-body); line-height: var(--li-leading-body); }
+.ly-mode-heading { font-size: var(--li-type-support); line-height: var(--li-leading-support); margin-bottom: var(--li-space-3); }
+.page .branch .branch-index { font-size: var(--li-type-support); line-height: var(--li-leading-support); }
+
 /* Native Wave 1 lesson surfaces share the same scale, not an independent 10px one. */
 :is(#page-lessonL09,#page-lessonL03,#page-lessonL15) :is(
   .l09-points li, .l09-goal-list li, .l09-q-row label, .l09-review-row label,

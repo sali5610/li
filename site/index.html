@@ -935,6 +935,8 @@ body:has(#buddy-modal.open) .laoly-support{visibility:hidden!important;opacity:0
 #page-guide,#page-guide .section-shell{min-width:0;max-width:100%}
 #page-guide .editorial-grid{display:grid;grid-template-columns:minmax(0,1fr)!important;gap:12px}
 #page-guide .editorial-grid>*,#page-guide .editorial-grid .stack-sm{min-width:0;width:100%;box-sizing:border-box}
+/* Match mentor frame with method tile borders, excluding decorative shadows. */
+#page-guide .editorial-grid>.guide-mentor{margin-left:3px;margin-right:6px;width:calc(100% - 9px)!important;max-width:calc(100% - 9px)!important;box-sizing:border-box}
 #page-guide #method-search{width:100%;min-width:0;box-sizing:border-box}
 #page-guide #method-filters{display:flex;flex-wrap:nowrap!important;align-items:center;min-width:0;width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;gap:8px;padding:3px 0 10px;white-space:nowrap}
 #page-guide #method-filters .filter{flex:0 0 auto;white-space:nowrap;min-height:44px}
@@ -953,6 +955,7 @@ body:has(#buddy-modal.open) .laoly-support{visibility:hidden!important;opacity:0
 }
 @media(max-width:360px){
 #page-guide #method-cards{column-gap:14px;row-gap:18px;padding:3px 5px 8px 2px}
+#page-guide .editorial-grid>.guide-mentor{margin-left:2px;margin-right:5px;width:calc(100% - 7px)!important;max-width:calc(100% - 7px)!important}
 #page-guide #method-cards>.method-card{padding:10px 9px;min-height:190px}
 #page-guide #method-cards>.method-card h3{font-size:18px}
 }

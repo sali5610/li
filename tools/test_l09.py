@@ -30,7 +30,7 @@ assert 'class="surface tinted"' in mount
 assert 'class="action"' in mount
 assert 'class="text-editor"' not in mount or 'class="text-editor"' in logic
 assert 'data-page="lessonL09"' in mount
-assert 'id="li-l09-library-entry"' in mount
+assert 'shelf.id="li-l09-library-entry"' in mount
 assert 'data-page="catalog"' in mount and 'data-page="guide"' in mount
 assert 'new URLSearchParams(window.location.search).get("lesson")==="L09-1-2"' in mount
 assert 'typeof navigate==="function"' in mount

@@ -152,5 +152,11 @@ assert 'function goBack(){' in html
 assert 'if(t.hasAttribute("data-nav-back")){goBack();return}' in html
 subprocess.run(["node",str(site.parent/"tools"/"test_navigation.js")],check=True,cwd=site.parent)
 
+# S120: Tủ Riêng Bút Ký matches the same neutral paper surface as cards 03 and 04.
+library_section=section("library")
+assert '<article id="notebook-section" class="surface" tabindex="-1"' in library_section
+assert '<article id="notebook-section" class="surface tinted"' not in library_section
+assert library_section.count('<div class="surface-grid cols2"><article class="surface">')==1
+
 assert (site/".nojekyll").is_file()
 print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and 28/30px gaps, privacy copy, JS parsing")

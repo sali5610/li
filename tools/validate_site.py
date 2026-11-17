@@ -98,5 +98,19 @@ subprocess.run(["node",str(site.parent/"tools"/"test_buddy.js")],check=True,cwd=
 # Wave1 L09 bilingual lesson source-safety and syntax gate (not device QA).
 subprocess.run(["python3", str(site.parent/"tools"/"test_l09.py")],check=True,cwd=site.parent)
 
+# S118: the three top-navigation utility destinations have an accessible
+# in-app Back action, and Settings uses the exact neutral portrait from Gương.
+for page_name in ("settings","search","capture"):
+    utility=section(page_name)
+    assert utility.count('data-nav-back aria-label="Quay lại màn trước"')==1,page_name
+assert html.count('data-nav-back aria-label="Quay lại màn trước"')==3
+assert 'class="settings-buddy-illustration" src="./assets/laoly-neutral.png"' in settings
+assert 'class="settings-buddy-illustration" src="./assets/laoly-guide-rest.png"' not in settings
+assert '<span class="hero-dialogue-avatar" aria-hidden="true"><img src="./assets/laoly-neutral.png"' in html
+assert 'const pageHistory=[];' in html
+assert 'function goBack(){' in html
+assert 'if(t.hasAttribute("data-nav-back")){goBack();return}' in html
+subprocess.run(["node",str(site.parent/"tools"/"test_navigation.js")],check=True,cwd=site.parent)
+
 assert (site/".nojekyll").is_file()
 print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and 28/30px gaps, privacy copy, JS parsing")

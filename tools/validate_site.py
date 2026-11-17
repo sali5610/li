@@ -118,7 +118,7 @@ assert '<div class="mirror-controls" role="group" aria-label="Chuyển câu hỏ
 assert 'id="previous-question" class="mirror-refresh" type="button" aria-label="Câu hỏi trước"' in html
 assert 'id="shuffle" class="mirror-refresh" type="button" aria-label="Câu hỏi tiếp theo"' in html
 assert 'data-lucide="refresh-cw" class="icon sm"' not in html
-assert '#page-home .mirror-refresh:focus-visible {outline:2px solid #F7E9BD;outline-offset:2px}' in html
+assert '#page-home .mirror-refresh:focus-visible {outline:2px solid var(--li-color-mirror-focus-light);outline-offset:2px}' in html
 subprocess.run(["node", str(site.parent/"tools"/"test_mirror_navigation.js")],check=True,cwd=site.parent)
 
 # S133: seal, wordmark and three header buttons have one 44px vertical alignment axis.

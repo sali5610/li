@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1096" height="626" viewBox="0 0 1096 626" role="img" aria-labelledby="title desc">
+<title id="title">Bốn đồng hồ của một lần Arrival — VI</title>
+<desc id="desc">PLANNED: 10:00, Giờ Arrival theo kế hoạch, Không phải bằng chứng đã tới. ETA: 11:20, Dự báo tại 09:00 (as-of), Có thể đổi trước Arrival. ACTUAL: 11:45, Giờ sự kiện được báo là xảy ra, Không phải giờ nhận bản tin. RECEIPT: 12:00, Giờ hệ thống nhận bản tin, Không phải giờ xe thực tới. Xe có thể tới trước khi hệ thống nhận được tin.</desc>
+<rect width="1096" height="626" fill="#F7F6F1"/>
+<rect x="38" y="30" width="125" height="32" rx="16" fill="#263A2E"/>
+<text x="56" y="51" fill="#FFF" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold">li. / L15-2-3</text>
+<text x="38" y="120" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="bold">Bốn đồng hồ của một lần Arrival</text>
+<text x="38" y="153" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="17">Ví dụ giả định · Cùng ngày · UTC+7 · Không phải dữ liệu vận tải thật</text>
+<g role="group" aria-label="PLANNED 10:00. Giờ Arrival theo kế hoạch. Không phải bằng chứng đã tới">
+<rect x="38" y="185" width="246" height="277" rx="18" fill="#EAEFE9" stroke="#BAC4BB" stroke-width="1.4"/>
+<text x="59" y="211" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">01 / 04</text>
+<text x="59" y="243" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" letter-spacing="0.4">PLANNED</text>
+<text x="59" y="336" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="bold">10:00</text>
+<text x="59" y="390" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="16">Giờ Arrival theo kế hoạch</text><text x="59" y="417" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="16">Không phải bằng chứng đã tới</text></g>
+<g role="group" aria-label="ETA 11:20. Dự báo tại 09:00 (as-of). Có thể đổi trước Arrival">
+<rect x="302" y="185" width="246" height="277" rx="18" fill="#F0E9DC" stroke="#BAC4BB" stroke-width="1.4"/>
+<text x="323" y="211" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">02 / 04</text>
+<text x="323" y="243" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" letter-spacing="0.4">ETA</text>
+<text x="323" y="336" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="bold">11:20</text>
+<text x="323" y="390" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="16">Dự báo tại 09:00 (as-of)</text><text x="323" y="417" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="16">Có thể đổi trước Arrival</text></g>
+<g role="group" aria-label="ACTUAL 11:45. Giờ sự kiện được báo là xảy ra. Không phải giờ nhận bản tin">
+<rect x="566" y="185" width="246" height="277" rx="18" fill="#DDEBE4" stroke="#BAC4BB" stroke-width="1.4"/>
+<text x="587" y="211" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">03 / 04</text>
+<text x="587" y="243" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" letter-spacing="0.4">ACTUAL</text>
+<text x="587" y="336" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="bold">11:45</text>
+<text x="587" y="390" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="16">Giờ sự kiện được báo là xảy ra</text><text x="587" y="417" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="16">Không phải giờ nhận bản tin</text></g>
+<g role="group" aria-label="RECEIPT 12:00. Giờ hệ thống nhận bản tin. Không phải giờ xe thực tới">
+<rect x="830" y="185" width="246" height="277" rx="18" fill="#E9E8EE" stroke="#BAC4BB" stroke-width="1.4"/>
+<text x="851" y="211" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold">04 / 04</text>
+<text x="851" y="243" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" letter-spacing="0.4">RECEIPT</text>
+<text x="851" y="336" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="bold">12:00</text>
+<text x="851" y="390" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="16">Giờ hệ thống nhận bản tin</text><text x="851" y="417" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="16">Không phải giờ xe thực tới</text></g>
+<line x1="38" x2="1058" y1="481" y2="481" stroke="#BAC4BB" stroke-width="1.5"/>
+<text x="38" y="515" fill="#263A2E" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="bold">Xe có thể tới trước khi hệ thống nhận được tin.</text>
+<text x="38" y="545" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="17">Dự báo ≠ sự kiện đã xảy ra · Receipt ≠ Actual</text>
+<text x="38" y="602" fill="#526357" font-family="Arial, Helvetica, sans-serif" font-size="13">Hình nguyên bản do li. biên soạn · Mốc thời gian giả định · Nội dung tham chiếu: Oracle OTM</text>
+</svg>

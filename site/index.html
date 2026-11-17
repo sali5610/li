@@ -930,7 +930,7 @@ body:has(#buddy-modal.open) .laoly-support{visibility:hidden!important;opacity:0
  background:none;border:0;box-shadow:none;
  filter:drop-shadow(1px 2px 1px rgba(35,39,27,.12));
 }
-</style><style>/* S116 · Guide compact two-column method tiles on phones (consolidated S99) */
+</style><style>/* S118 · Guide two-up mobile tiles with deliberate outer gutters (consolidated S99/S116) */
 @media(max-width:640px){
 #page-guide,#page-guide .section-shell{min-width:0;max-width:100%}
 #page-guide .editorial-grid{display:grid;grid-template-columns:minmax(0,1fr)!important;gap:12px}
@@ -941,7 +941,7 @@ body:has(#buddy-modal.open) .laoly-support{visibility:hidden!important;opacity:0
 #page-guide .editorial-grid aside.surface{min-width:0;padding:12px 14px!important}
 #page-guide .editorial-grid aside .laoly-side-avatar{margin-bottom:5px}
 #page-guide #method-count{margin:10px 0 4px}
-#page-guide #method-cards{display:grid!important;width:100%!important;min-width:0;max-width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px;margin:13px 0 0;box-sizing:border-box}
+#page-guide #method-cards{display:grid!important;width:100%!important;min-width:0;max-width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:18px;row-gap:20px;padding:3px 6px 8px 3px;margin:18px 0 0;box-sizing:border-box}
 #page-guide #method-cards>.method-card{width:100%!important;min-width:0;max-width:100%!important;box-sizing:border-box;padding:11px 10px;min-height:194px;overflow-wrap:anywhere}
 #page-guide #method-cards>.method-card h3{font-size:clamp(19px,5.2vw,23px);line-height:1.1;margin:8px 0 6px;overflow-wrap:anywhere}
 #page-guide #method-cards>.method-card .method-icon,
@@ -952,7 +952,7 @@ body:has(#buddy-modal.open) .laoly-support{visibility:hidden!important;opacity:0
 #page-guide #method-cards>.method-card .end{margin-top:auto;padding-top:8px;font-size:10px;line-height:1.2}
 }
 @media(max-width:360px){
-#page-guide #method-cards{gap:8px}
+#page-guide #method-cards{column-gap:14px;row-gap:18px;padding:3px 5px 8px 2px}
 #page-guide #method-cards>.method-card{padding:10px 9px;min-height:190px}
 #page-guide #method-cards>.method-card h3{font-size:18px}
 }

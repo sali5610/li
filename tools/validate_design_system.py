@@ -32,6 +32,7 @@ def check(condition: bool, description: str) -> None:
 def main() -> int:
     for relative in [
         "site/assets/design-tokens.css",
+        "site/assets/li-layout.css",
         "tools/generate_design_tokens.py",
         "AGENTS.md",
         "design-system/README.md",
@@ -48,6 +49,8 @@ def main() -> int:
         return 1
 
     html = HTML_FILE.read_text(encoding="utf-8")
+    layout_css = (ROOT / "site" / "assets" / "li-layout.css").read_text(encoding="utf-8")
+    source = html + "\n" + layout_css
     tokens = json.loads(TOKEN_FILE.read_text(encoding="utf-8"))
     generated_css = (ROOT / "site" / "assets" / "design-tokens.css").read_text(encoding="utf-8")
     colors = tokens["colors"]
@@ -74,31 +77,33 @@ def main() -> int:
         "selected navigation moss ink remains represented",
     )
     check(
-        bool(re.search(r"\.header\s+\.tool-button\[aria-current", html)),
+        bool(re.search(r"\.header\s+\.tool-button\[aria-current", source)),
         "header utility has route-selected state selector",
     )
     check(
-        bool(re.search(r"\.mobile-nav\s+\.nav-btn\[aria-current", html)),
+        bool(re.search(r"\.mobile-nav\s+\.nav-btn\[aria-current", source)),
         "bottom nav has route-selected state selector",
     )
-    check("aria-current" in html, "route selection updates aria-current")
+    check("aria-current" in source, "route selection updates aria-current")
+    check("<style>" not in html and "</style>" not in html, "HTML has no inline style blocks")
+    check("./assets/li-layout.css" in html.split("</head>",1)[0], "consolidated layout CSS linked")
     check('./assets/design-tokens.css' in html.split("</head>",1)[0], "generated token file loaded")
     check('--paper:' not in html.split("</head>",1)[0], "root palette is no longer duplicated in index")
     check(
-        "-webkit-tap-highlight-color:transparent" in html.replace(" ", ""),
+        "-webkit-tap-highlight-color:transparent" in source.replace(" ", ""),
         "iOS tap-highlight suppression is present",
     )
-    check(":focus-visible" in html, "keyboard focus-visible styles remain")
+    check(":focus-visible" in source, "keyboard focus-visible styles remain")
     check(
-        "prefers-reduced-motion:reduce" in html,
+        "prefers-reduced-motion:reduce" in source,
         "reduced-motion styles remain",
     )
     check(
-        "min-height:44px" in html,
+        "min-height:44px" in source,
         "at least one shared 44px touch target baseline remains",
     )
     check(
-        "#page-home .hero" in html,
+        "#page-home .hero" in source,
         "Home full-bleed hero override remains represented",
     )
     check("./assets/apple-touch-icon.png" in html, "iOS Home Screen icon linked")

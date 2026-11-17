@@ -13,22 +13,30 @@ for name in assets:
 assert html.count('<div class="mirror-label">Gương Vạn Vấn</div>') == 1
 assert '<div class="mirror-label"><i data-lucide="search"' not in html
 
-# S135: mirror text and refresh float as a synchronized pair; mobile text stays within mirror;
-# iOS tap background is suppressed while keyboard focus visibility remains intact.
-assert html.count("/* S135 · Mobile mirror: narrower centered question + synchronized floating text and refresh.") == 1
+# S137: previous/next arrows cycle questions in both directions; buttons remain stationary.
+assert html.count("/* S135/S137 · Mobile mirror: narrower centered question, stationary navigation arrows.") == 1
 for needle in (
     "width:min(59%,224px)!important;",
     "width:min(62%,210px)!important;",
-    "@keyframes li-mirror-float{",
-    "#page-home .mirror-message h2,\n#page-home .mirror-message .mirror-refresh{",
-    "animation:li-mirror-float 4s ease-in-out infinite;",
+    ".mirror-controls{",
+    "#page-home .mirror-controls .mirror-refresh{",
+    "animation:none!important;",
+    "translate:none!important;",
     "-webkit-tap-highlight-color:transparent!important;",
     "#page-home .mirror-refresh:focus:not(:focus-visible){",
-    "@media(prefers-reduced-motion:reduce){",
+    "function shiftMirrorQuestion(direction){",
+    "qIndex=(qIndex+direction+scenarios.length)%scenarios.length;",
+    'document.getElementById("previous-question").addEventListener("click",()=>shiftMirrorQuestion(-1));',
+    'document.getElementById("shuffle").addEventListener("click",()=>shiftMirrorQuestion(1));',
 ):
-    assert needle in html, f"Mirror accessibility/animation rule missing: {needle}"
-assert 'id="shuffle" class="mirror-refresh" type="button"' in html
+    assert needle in html, f"Mirror arrows/accessibility rule missing: {needle}"
+assert "animation:li-mirror-float 4s ease-in-out infinite;" not in html, "Old synchronized refresh float must be removed"
+assert '<div class="mirror-controls" role="group" aria-label="Chuyển câu hỏi">' in html
+assert 'id="previous-question" class="mirror-refresh" type="button" aria-label="Câu hỏi trước"' in html
+assert 'id="shuffle" class="mirror-refresh" type="button" aria-label="Câu hỏi tiếp theo"' in html
+assert 'data-lucide="refresh-cw" class="icon sm"' not in html
 assert '#page-home .mirror-refresh:focus-visible {outline:2px solid #F7E9BD;outline-offset:2px}' in html
+subprocess.run(["node", str(site.parent/"tools"/"test_mirror_navigation.js")],check=True,cwd=site.parent)
 
 # S133: seal, wordmark and three header buttons have one 44px vertical alignment axis.
 assert html.count("/* S133 · Header shared vertical alignment contract (mobile, tablet, desktop).") == 1
@@ -222,7 +230,7 @@ assert html.count("/* S119 · Approved S106 Home art") == 1
 assert html.count('url("./assets/home-mystic-cool-mobile.webp")') == 1
 assert html.count('url("./assets/home-mystic-cool-desktop.webp")') == 1
 home=section("home")
-for identifier in ['id="mirror-question"','id="home-scene"','id="save-question"','id="shuffle"']:
+for identifier in ['id="mirror-question"','id="home-scene"','id="save-question"','id="previous-question"','id="shuffle"']:
     assert home.count(identifier)==1,identifier
 assert 'data-page="research"' in home
 assert "Muốn nhớ: thử T01/T02" not in (site/"assets"/"laoly-context-s112.js").read_text(encoding="utf-8")

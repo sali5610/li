@@ -21,7 +21,7 @@
 - **Latest state wins:** if Notion or new PO feedback differs from the above, update this contract **and** every affected implementation/screenshot fixture together. Never quietly make the docs say something old.
 
 ### Icon role separation (latest code evidence)
-- **Browser tab favicon:** `site/assets/li-favicon.svg` uses the carved 理 stamp on moss.
+- **Browser tab favicon (newest S146 main):** exact same SVG URL as the header seal, `site/assets/li-seal.svg?v=exact-header-s146`; older `li-favicon.svg` remains a historical asset but is no longer the live browser icon. This is unrelated to typography.
 - **iOS Add to Home Screen:** `site/assets/apple-touch-icon.png` is a **separate asset**. The latest `main` validator is labeled S145 and describes a **typography-only 理** icon on moss, superseding the earlier S142 seal-based iOS touch icon. Do not infer that all icon contexts must use one identical PNG/SVG. Reconfirm the newest PO approval in Notion before changing either asset.
 - The root brand seal displayed in the app is a third placement; updating the favicon must not silently replace the header logo.
 

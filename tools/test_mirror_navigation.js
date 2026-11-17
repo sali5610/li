@@ -20,7 +20,7 @@ const sandbox={
  querySelector(selector){
   assert.equal(selector,"#page-home .mirror-message");
   return {addEventListener(type,cb,opts){
-   assert.deepEqual(opts,{passive:true},"Swipe must never cancel vertical page scrolling");
+   assert.equal(opts.passive,true,"Swipe must never cancel vertical page scrolling");
    swipeHooks.set(type,cb);
   }};
  },

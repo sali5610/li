@@ -94,5 +94,8 @@ assert html.count('<script src="./assets/laoly-context-s112.js"></script>')==1
 subprocess.run(["node","--check",str(companion)],check=True)
 subprocess.run(["node",str(site.parent/"tools"/"test_buddy.js")],check=True,cwd=site.parent)
 
+# Wave1 L09 bilingual lesson source-safety and syntax gate (not device QA).
+subprocess.run(["python3", str(site.parent/"tools"/"test_l09.py")],check=True,cwd=site.parent)
+
 assert (site/".nojekyll").is_file()
 print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and 28/30px gaps, privacy copy, JS parsing")

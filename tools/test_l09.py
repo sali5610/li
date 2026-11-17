@@ -35,7 +35,7 @@ assert 'data-page="lessonL09"' in mount
 assert 'shelf.id="li-l09-library-entry"' in mount
 assert 'data-page="catalog"' in mount and 'data-page="guide"' in mount
 assert 'new URLSearchParams(window.location.search).get("lesson")==="L09-1-2"' in mount
-assert 'window.location.hash==="#l09-goals"' in mount, "Legacy goals deep link must open native L09"
+assert 'window.location.hash==="#l09-goals"' not in mount, "A stale anchor must never override Home"
 assert 'typeof navigate==="function"' in mount
 assert 'href="./?lesson=L09-1-2"' in lab, "Source lab must open Hi-Fi, not old separate UI"
 

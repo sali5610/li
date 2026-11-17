@@ -125,5 +125,6 @@ const shelf=document.createElement("article");
 shelf.className="surface";shelf.id="li-l09-library-entry";
 shelf.innerHTML=`<div class="kicker">TIẾP TỤC HỌC · DATA SCIENCE</div><h2>Sampling Bias</h2><p>Data &amp; Statistical Foundations · L09-1-2 · VI/EN</p><span class="status-chip" id="li-l09-resume-status">Đang học</span><div class="action-row"><button type="button" class="action" data-page="lessonL09" id="l09-resume">Mở tiếp bài Sampling Bias</button></div>`;
 library.prepend(shelf);
-if(new URLSearchParams(window.location.search).get("lesson")==="L09-1-2"&&typeof navigate==="function"){navigate("lessonL09",{focus:true});}
+const openL09=new URLSearchParams(window.location.search).get("lesson")==="L09-1-2" || window.location.hash==="#l09-goals";
+ if(openL09&&typeof navigate==="function"){navigate("lessonL09",{focus:true});}
 })();

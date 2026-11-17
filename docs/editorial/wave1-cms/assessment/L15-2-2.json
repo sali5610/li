@@ -1,0 +1,114 @@
+{
+  "schema": "li.assessment.v1.staging",
+  "lesson_id": "L15-2-2",
+  "source": {
+    "file_path": "site/assets/lesson-wave1-core.js",
+    "blob_sha": "446b9493e9ecf91bd3cb84e8a3938d67e125699d"
+  },
+  "contract": {
+    "question_count": 4,
+    "rubric_count": 4,
+    "score_per_criterion": [
+      0,
+      1,
+      2
+    ],
+    "min_trimmed_chars": 12,
+    "hint_marks_assisted": true,
+    "answer_visible_after_submit": true,
+    "rubric_visible_after_submit": true,
+    "does_not_autograde": true
+  },
+  "locales": {
+    "vi": {
+      "challenge": {
+        "title": "Kiểm tra ngưỡng tái đặt",
+        "intro": "Một xưởng sửa chữa cần <b>18 bộ linh kiện/ngày</b>, lead time giả định <b>7 ngày cố định</b>, safety stock theo chính sách là <b>34 bộ</b>. Inventory position hiện tại <b>158 bộ</b>.",
+        "claim": "Bạn cần xác định ngưỡng đặt hàng, thời điểm phát lệnh và giới hạn của mô hình này; đừng tự giả định đây là bài toán tối ưu tồn kho đầy đủ.",
+        "questions": [
+          "Tính demand during lead time và ROP; ghi rõ phép tính và đơn vị.",
+          "Với inventory position = 158, đã chạm ngưỡng đặt hàng theo continuous review chưa? Vì sao?",
+          "Nếu lead time thực tế dao động từ 3 đến 12 ngày, giả định nào của mô hình không còn chắc chắn?",
+          "Dữ liệu hiện có đã đủ tính order quantity tối ưu hoặc xác suất không stockout chưa? Giải thích."
+        ]
+      },
+      "support": {
+        "guided_hint": "Câu hỏi <b>khi nào</b> cần tái đặt theo ngưỡng <b>inventory position</b> khác câu hỏi <b>đặt bao nhiêu</b>. Số lượng mua còn phụ thuộc chính sách order quantity riêng.",
+        "hint": "Hãy tách đơn vị trước khi tính: <b>bộ/ngày × ngày</b> ra số bộ. Sau đó cộng buffer và so sánh với inventory position. Đừng suy ra lượng đặt hoặc xác suất khi đề không có dữ liệu đó.",
+        "submit_validation": "Viết lời giải có nghĩa cho đủ bốn câu trước khi nộp."
+      },
+      "review": {
+        "answer_title": "ĐÁP ÁN MẪU · SAU LẦN THỬ",
+        "model_answer": "<b>1.</b> Demand during lead time = 18 bộ/ngày × 7 ngày = <b>126 bộ</b>. ROP = 126 + 34 = <b>160 bộ</b>.<br><b>2.</b> Inventory position 158 ≤ 160 nên đã đến ngưỡng kích hoạt đặt thêm.<br><b>3.</b> Nếu lead time có thể từ 3 đến 12 ngày, giả định lead time cố định 7 ngày không còn chắc; cần đánh giá lại mô hình và safety stock.<br><b>4.</b> Chưa đủ dữ liệu về lot size, chi phí và độ bất định để suy ra lượng đặt tối ưu hay xác suất không stockout.",
+        "answer_note": "<b>Giới hạn:</b> 160 là ngưỡng tái đặt, không có nghĩa phải mua 160 bộ; không tự tuyên bố 95% service level. Chỉ là mô hình học tập, không dùng dữ liệu SAP nội bộ.",
+        "rubric_title": "Rubric tự đánh giá 0–8",
+        "rubric_lead": "Bốn tiêu chí, mỗi tiêu chí 0–2. Đây là self-review chưa hiệu chuẩn, không phải phép chấm điểm tối ưu kho hàng.",
+        "rubric_before": "Hãy nộp lời giải trước khi mở đáp án và rubric.",
+        "rubric_items": [
+          [
+            "Nhu cầu trong lead time",
+            "2: 126 bộ đúng và có đơn vị; 1: số đúng nhưng thiếu giải thích; 0: sai."
+          ],
+          [
+            "ROP & quyết định đặt",
+            "2: 160 bộ và 158 ≤ 160, kết luận trigger đúng; 1: một phần; 0: nhầm ngưỡng và lượng đặt."
+          ],
+          [
+            "Giới hạn giả định",
+            "2: nhận ra lead time biến động ảnh hưởng; 1: nói chung chung cần thêm dữ liệu; 0: khẳng định chắc chắn."
+          ],
+          [
+            "Điều không suy ra được",
+            "2: không bịa EOQ hoặc xác suất stockout; 1: chỉ nói thiếu dữ liệu; 0: tự tạo kết quả."
+          ]
+        ],
+        "review_validation": "Chấm đủ bốn tiêu chí trước khi hoàn tất."
+      }
+    },
+    "en": {
+      "challenge": {
+        "title": "Evaluate the reorder trigger",
+        "intro": "A repair facility requires <b>18 component sets/day</b>, assumed fixed lead time <b>7 days</b> and policy safety stock <b>34 sets</b>. Current inventory position is <b>158 sets</b>.",
+        "claim": "Determine the reorder threshold, whether ordering should be triggered, and model limitations. No full stochastic optimization model is supplied.",
+        "questions": [
+          "Compute lead-time demand and ROP; show calculations and units.",
+          "With inventory position 158, does the simulated continuous-review policy trigger an order? Explain.",
+          "If actual lead time ranges from 3 to 12 days, what simplifying assumption becomes unreliable?",
+          "Can you derive the optimal order quantity or probability of no stockout from the data provided? Why?"
+        ]
+      },
+      "support": {
+        "guided_hint": "<b>When</b> inventory position reaches the threshold is a separate question from <b>how many</b> to order. Quantity requires a distinct replenishment policy.",
+        "hint": "First check dimensional units: <b>sets/day × days</b> gives sets. Add the specified buffer, then compare with inventory position. Do not infer order quantity or probabilities from missing data.",
+        "submit_validation": "Provide meaningful answers to all four questions before submission."
+      },
+      "review": {
+        "answer_title": "MODEL SOLUTION · AFTER ATTEMPT",
+        "model_answer": "<b>1.</b> Lead-time demand = 18 sets/day × 7 days = <b>126 sets</b>. ROP = 126 + 34 = <b>160 sets</b>.<br><b>2.</b> Inventory position 158 ≤ 160, so the simplified continuous-review policy triggers replenishment.<br><b>3.</b> Lead time changing from 3 to 12 days invalidates confidence in a fixed 7-day lead time; the demand-in-lead-time assumptions and buffer policy require review.<br><b>4.</b> Available data do not determine optimal lot size or stockout probabilities; cost, variability and a model are missing.",
+        "answer_note": "<b>Boundary:</b> The 160-set reorder threshold is not a 160-set purchase quantity. Do not invent a 95% service level or SAP-internal case from the supplied assumptions.",
+        "rubric_title": "0–8 editorial self-rating",
+        "rubric_lead": "Four dimensions × 0–2. Uncalibrated, not an AI grade or supply-chain professional certification.",
+        "rubric_before": "Submit a valid solution before seeing the model answer and rubric.",
+        "rubric_items": [
+          [
+            "Lead-time demand",
+            "2: 126 sets with correct units; 1: correct number with weak explanation; 0: incorrect."
+          ],
+          [
+            "ROP and trigger",
+            "2: 160 sets and 158 ≤ 160, correctly triggers; 1: partial; 0: confuses timing and quantity."
+          ],
+          [
+            "Model assumptions",
+            "2: identifies effect of variable lead time; 1: generic missing-data remark; 0: unjustified certainty."
+          ],
+          [
+            "Unavailable outputs",
+            "2: rejects invented EOQ/stockout probabilities; 1: says only 'not enough'; 0: fabricates results."
+          ]
+        ],
+        "review_validation": "Rate all four dimensions first."
+      }
+    }
+  }
+}

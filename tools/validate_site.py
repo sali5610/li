@@ -54,5 +54,12 @@ assert html.count('margin-top: 20px;')>=2
 assert html.count('margin-top: 16px;')>=2
 assert '<label class="select-row">Nhắc lịch ngủ' in settings
 assert '<label class="select-row">Im Lặng' in settings
+# S112: preserve current Hi-Fi while validating companion separately.
+companion=site/"assets"/"laoly-context-s112.js"
+assert companion.is_file() and companion.stat().st_size>4000
+assert html.count('<script src="./assets/laoly-context-s112.js"></script>')==1
+subprocess.run(["node","--check",str(companion)],check=True)
+subprocess.run(["node",str(site.parent/"tools"/"test_buddy.js")],check=True,cwd=site.parent)
+
 assert (site/".nojekyll").is_file()
 print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and 28/30px gaps, privacy copy, JS parsing")

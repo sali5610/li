@@ -30,6 +30,7 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 | Evidence & trust | Draft/published/source labels accurate; genuine save state; no fabricated research results |
 
 ## 3. Evidence of done
+- [ ] Run `python3 tools/audit_design_tokens.py --check-baseline` across **all first-party HTML/CSS/JS**; new raw token/off-grid debt must not grow, and a pass does **not** imply the legacy baseline is zero. See [UX-DS-03 audit](audits/2026-11-18-full-app-token-mapping.md).
 - [ ] Run `python3 tools/validate_ui_foundations.py` (new type/spacing CSS)
 - [ ] Run `python3 tools/validate_design_system.py`
 - [ ] Run `python3 tools/validate_site.py`

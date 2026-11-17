@@ -18,7 +18,7 @@ This is a plain HTML/CSS/JS high-fi prototype, **not** a framework component lib
 2. Inventory all instances of the affected component across Home, Catalog, Guide, Library, Research, Search, Capture, Settings and lesson views; use one shared contract for its variants.
 3. Update the shared `site/assets/ui-foundations.css` and `design-system/tokens.json` for typography/spacing, not another late `<style>` override. All new margin/padding/gap values must be divisible by 4px. Prefer modifying/reusing the canonical rule over appending yet another last-minute CSS override. If a deviation is intentional, record the scope and reason.
 4. Check component states (default/hover/active/selected/focus-visible/disabled/error) and narrow + wide responsive breakpoints, with long VI/EN text.
-5. Execute `python3 tools/validate_design_system.py`, `python3 tools/validate_ui_foundations.py` and `python3 tools/validate_site.py`; run relevant existing interaction tests. Source checks are **not** actual browser/Safari/VoiceOver QA.
+5. Execute `python3 tools/validate_design_system.py`, `python3 tools/validate_ui_foundations.py`, `python3 tools/audit_design_tokens.py --check-baseline` and `python3 tools/validate_site.py`; run relevant existing interaction tests. Source checks are **not** actual browser/Safari/VoiceOver QA.
 6. Report Git diff, observed tests, affected screens, any remaining physical-device or G2 gate, and sync real progress to Notion.
 
 Avoid fabricated acceptance, fake saved confirmations, blanket “WCAG pass”, or silent user-flow changes. Maintain zero incremental paid costs.

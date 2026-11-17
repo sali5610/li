@@ -74,3 +74,6 @@
 /* The existing catalog expands from 3 to 4 fields; keep its native cards in a balanced 2×2 arrangement. */
 #page-catalog .surface-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:650px){#page-catalog .surface-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* Source-note separation shared across all three locked Wave1 lesson shells. */
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-source-note {margin-top:var(--li-space-5)}

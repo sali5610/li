@@ -1264,6 +1264,60 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 @media(prefers-reduced-motion:reduce){
   #page-home .mirror-message h2{animation:none!important;will-change:auto}
 }
+
+/* S135 · Mobile mirror: narrower centered question + synchronized floating text and refresh.
+   Do not animate the entire container: its translate(-50%,-50%) controls centering. */
+@media(max-width:600px){
+  #page-home .mirror-message{
+    left:50%!important;
+    width:min(59%,224px)!important;
+    max-width:224px!important;
+  }
+  #page-home .mirror-message h2{
+    width:100%;max-width:100%;
+    font-size:clamp(19px,5.1vw,22px)!important;
+    line-height:1.18;
+  }
+}
+@media(max-width:360px){
+  #page-home .mirror-message{
+    width:min(62%,210px)!important;
+    max-width:210px!important;
+  }
+  #page-home .mirror-message h2{
+    font-size:clamp(18px,5.2vw,20px)!important;
+  }
+}
+@keyframes li-mirror-float{
+  0%,100%{translate:0 0}
+  50%{translate:0 -5px}
+}
+#page-home .mirror-message h2,
+#page-home .mirror-message .mirror-refresh{
+  animation:li-mirror-float 4s ease-in-out infinite;
+  will-change:translate;
+}
+#page-home .mirror-refresh,
+#page-home .mirror-refresh:hover,
+#page-home .mirror-refresh:active,
+#page-home .mirror-refresh:focus{
+  -webkit-tap-highlight-color:transparent!important;
+  -webkit-appearance:none;
+  appearance:none;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#page-home .mirror-refresh:focus:not(:focus-visible){
+  outline:none;
+}
+@media(prefers-reduced-motion:reduce){
+  #page-home .mirror-message h2,
+  #page-home .mirror-message .mirror-refresh{
+    animation:none!important;
+    translate:none;
+    will-change:auto;
+  }
+}
 </style><link rel="stylesheet" href="./assets/lesson-l09-hifi.css"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
 <symbol id="i-tree" viewBox="0 0 24 24"><path d="m12 2 4 5h-2l4 5h-3l4 6H5l4-6H6l4-5H8zM12 18v4"/></symbol>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7c-4-3-8-3-10-2v15c3-1 7 0 10 2 3-2 7-3 10-2V5c-2-1-6-1-10 2ZM12 7v15"/></symbol>

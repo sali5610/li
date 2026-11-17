@@ -47,7 +47,7 @@ function plan(page){
 }
 function updateLabel(){
  const c=context();if(!c)return;
- const node=document.getElementById("li-lesson-mentor-stage");
+ const node=displayedLesson()?.root.querySelector("[data-lesson-mentor-stage]")||displayedLesson()?.root.querySelector("#li-lesson-mentor-stage");
  if(node)node.textContent=c.wording.label+" · "+c.wording.prompt;
 }
 function valid(data,id,root){
@@ -69,7 +69,7 @@ async function load(root){
   registry.set(root.id,{root,data});
   updateLabel();
  }catch(error){
-  const note=root.querySelector("#li-lesson-mentor-stage");
+  const note=root.querySelector("[data-lesson-mentor-stage]")||root.querySelector("#li-lesson-mentor-stage");
   if(note)note.textContent="Nội dung Lão Lý chưa khả dụng; bài học không bị thay đổi.";
   console.warn("li. lesson companion:",error.message);
  }
@@ -84,7 +84,7 @@ function refresh(){
 window.addEventListener("scroll",refresh,{passive:true});
 window.addEventListener("resize",refresh,{passive:true});
 document.addEventListener("click",event=>{
- const element=event.target.closest?.("[data-page], #l09-submit, #l09-vi, #l09-en, .l09-index a");
+ const element=event.target.closest?.("[data-page], [data-buddy], #l09-submit, #l09-vi, #l09-en, #l03-submit, #l03-vi, #l03-en, #l15-submit, #l15-vi, #l15-en, .l09-index a");
  if(element)Promise.resolve().then(refresh);
 });
 })();

@@ -18,8 +18,9 @@ seal_root=ET.fromstring(seal)
 assert seal_root.attrib.get("viewBox")=="0 0 256 256"
 assert seal.count("<path ")==1 and "<text" not in seal, "Logo reverted to text glyph"
 assert "理" in seal_root.attrib.get("aria-label","")
-assert html.count('src="./assets/li-seal.svg"')==1, "Header brand image not connected"
-assert html.count('rel="icon" type="image/svg+xml" href="./assets/li-seal.svg"')==1
+assert 'fill="#243A29"' in seal, "Logo ink must match approved moss theme"
+assert html.count('src="./assets/li-seal.svg?v=moss-243a29"')==1, "Approved brand image not connected"
+assert html.count('rel="icon" type="image/svg+xml" href="./assets/li-seal.svg?v=moss-243a29"')==1
 assert '<span class="brand-stamp">理</span>' not in html
 assert '.brand-stamp{display:block;width:42px;height:42px;object-fit:contain;flex:none}' in html
 assert '.header .brand-stamp{height:38px;width:38px}' in html

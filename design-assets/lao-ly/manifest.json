@@ -226,11 +226,13 @@
       "mode": null,
       "review": "Needs PO review",
       "declared_filename": "lao_ly_10_suy_nghi_outside.png",
-      "notion_uploaded_filename": "lao_ly_02_chan_doi_mirror.png",
+      "notion_uploaded_filename": "lao_ly_10_suy_nghi_outside.png",
       "width": 1024,
       "height": 1024,
-      "bytes": 956049,
-      "sha256": "060e06e8a4b48aea2548a4c31f5c4ecd683cd7518cbc8586a413b928392d57f0"
+      "bytes": 929413,
+      "sha256": "4b2ddeaeffd9c7152792a575f1c16ebafdcb977c72676df33088afec663af88b",
+      "png_color_type": 6,
+      "source_repair": "Restored exact PNG from user-provided lao_ly_21_transparent_assets_v1(1).zip, and replaced incorrect Notion Artwork attachment on 2026-11-18."
     },
     {
       "path": "design-assets/lao-ly/trong-guong/lao_ly_01_ngac_nhien_mirror.png",

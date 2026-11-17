@@ -1,0 +1,21 @@
+name: Probe Lao Ly staged PNG
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/probe-laoly-staging-once.yml']
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check downloadable PNG
+        run: |
+          python3 - <<'PY'
+          import urllib.request
+          url='https://li-step15-arborium-hifi-review-26auh0i78-yungho-8219s-projects.vercel.app/laoly-chat-test.png'
+          with urllib.request.urlopen(url,timeout=30) as r:
+              data=r.read(100000)
+              print("HTTP",r.status,"BYTES",len(data))
+          assert data.startswith(bytes([137,80,78,71,13,10,26,10]))
+          PY

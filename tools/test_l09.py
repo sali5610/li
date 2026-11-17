@@ -60,6 +60,10 @@ assert 'if(state.submitted)return' in html
 assert 'const source=[' in html and html.count('https://www.cdc.gov/casper/php/overview/')>=2
 assert 'https://www.google.com/search?q=' in html
 assert 'giả vờ' in html and 'never fabricate' in html
+assert '.rubric th:nth-child(2),.rubric td:nth-child(2){display:none}' not in html, "Mobile rubric hides criteria"
+assert '.rubric tbody,.rubric tr,.rubric td,.rubric th{display:block;width:100%}' in html
+assert "Học xong, bạn làm được gì?" in html
+
 
 script=re.findall(r'<script>(.*?)</script>',html,flags=re.S)
 assert len(script)==1, "Lesson must have one self-contained JS block"

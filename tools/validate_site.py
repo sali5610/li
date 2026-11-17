@@ -88,6 +88,27 @@ assert "#page-guide #method-cards>.method-card .purpose{" in html
 assert "function renderMethods(){" in html and "function showMethod(id){" in html
 assert "/* S114 — restrained Lão Lý peek:" in html
 
+# S120: all 13 Thần Chú methods share this same Guide Detail template.
+# Guard semantic spacing around section labels, step list, references and back CTA.
+guide_detail=section("guideDetail")
+assert guide_detail.count('id="detail-title"')==1
+assert guide_detail.count('id="detail-purpose"')==1
+assert guide_detail.count('class="path-list"')==1
+assert guide_detail.count('III · GIẢI CHÚ')==1 and guide_detail.count('IV · DẪN CHỨNG')==1
+assert '<div class="kicker">IV · DẪN CHỨNG</div><div class="state-note">' in guide_detail
+assert '<button class="action alt" data-page="guide">Xem pháp khác</button>' in guide_detail
+assert html.count("/* S120 · Guide detail semantic spacing") == 1
+for selector,spacing in (
+    ("#page-guideDetail .editorial-grid > .surface > .kicker + h2","margin-top:12px"),
+    ("#page-guideDetail .editorial-grid > .surface > .kicker + .path-list","margin-top:14px"),
+    ("#page-guideDetail .editorial-grid > .surface > h2 + p","margin:12px 0 0"),
+    ("#page-guideDetail .editorial-grid > .surface > p + .kicker","margin-top:24px"),
+    ("#page-guideDetail .editorial-grid > .surface > .kicker + .state-note","margin-top:12px"),
+    ("#page-guideDetail .editorial-grid > .surface > .state-note + .action","margin-top:18px"),
+    ("#page-guideDetail .path-item p","margin:0"),
+):
+    assert re.search(re.escape(selector)+r"\s*\{\s*"+re.escape(spacing)+r";?\s*\}",html),selector
+
 # S112 — context-aware companion must be present, parse and pass UI-plan QA.
 companion=site/"assets"/"laoly-context-s112.js"
 assert companion.is_file() and companion.stat().st_size>4000

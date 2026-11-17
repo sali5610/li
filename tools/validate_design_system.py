@@ -98,7 +98,12 @@ def main() -> int:
         "Home full-bleed hero override remains represented",
     )
     check("./assets/apple-touch-icon.png" in html, "iOS Home Screen icon linked")
-    check("./assets/li-favicon.svg" in html, "SVG favicon linked")
+    # S146 latest logo/fav-icon reference vs S142 older dedicated favicon.
+    # Keep brand behavior as currently chosen; typography does not change icons.
+    check(
+        any('href="./assets/' + filename in html for filename in ("li-seal.svg", "li-favicon.svg")),
+        "current approved SVG favicon variant linked",
+    )
 
     print(f"\n{passed} checks passed; {len(errors)} failed.")
     if errors:

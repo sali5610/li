@@ -1,4 +1,6 @@
-# li. UI/UX Design Library — foundation v0.1
+# li. UI/UX Design Library — foundation v0.2
+
+**v0.2 update:** [Readable typography & 4px spacing](typography-spacing.md) is now wired into the actual app through `site/assets/ui-foundations.css`. Review the live type/spacing specimen at [design-system-preview.html](../site/design-system-preview.html) (after main deployment: https://sali5610.github.io/li/design-system-preview.html). Legacy inline CSS still contains unresolved off-grid declarations, so this is a controlled migration, **not** proof that every historic declaration has been normalized.
 
 **Scope:** A versioned, testable reference for the current [li. (理) GitHub Pages high-fi](https://sali5610.github.io/li/). This is **not yet an extracted runtime CSS/component package**. The live prototype currently keeps most styles and markup inside `site/index.html`, with additional lesson CSS. Foundation v0.1 captures observed implementation plus existing PO decisions to prevent drift during the next refactor.
 
@@ -13,6 +15,9 @@
 ## Files and responsibilities
 | File | What it controls |
 | --- | --- |
+| [typography-spacing.md](typography-spacing.md) | M3-inspired readable type scale and strict 4px spatial grid, responsive mapping and migration boundary |
+| [../site/assets/ui-foundations.css](../site/assets/ui-foundations.css) | Canonical runtime layer, loaded last in app head |
+| [../tools/validate_ui_foundations.py](../tools/validate_ui_foundations.py) | Mechanical spacing/type checks for new CSS; source only |
 | [tokens.json](tokens.json) | Machine-readable implemented color, geometry, typography and touch baseline |
 | [components.md](components.md) | Canonical component purpose, variants, states and code selectors |
 | [qa-checklist.md](qa-checklist.md) | Mandatory full-system review + screen/state/device matrix |
@@ -36,7 +41,7 @@
 - Touch: accessible intended hit area at least **44×44 CSS px**, no iOS square highlight on icon controls; preserve visible keyboard focus. Text, buttons and layouts must accommodate Vietnamese/English lengths.
 - Lessons must not imply published/proven/approved content when source or release state is draft. No fake persistence, metrics, diagnoses or academic signoff.
 
-## Migration backlog — NOT done by this foundation
+## Migration backlog — beyond v0.2
 1. Audit duplicated late-cascade rules in `site/index.html` and all lesson styles; catalog collisions before deleting anything.
 2. Extract color/spacing/typography to canonical CSS custom properties, then real reusable control styles/component primitives, with visual-diff checks.
 3. Add Storybook-like static **component showcase** or equivalent visual fixtures for all states, if possible with free tooling.

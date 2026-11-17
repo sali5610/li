@@ -21,7 +21,7 @@
 - **Latest state wins:** if Notion or new PO feedback differs from the above, update this contract **and** every affected implementation/screenshot fixture together. Never quietly make the docs say something old.
 
 ### Icon role separation (latest code evidence)
-- **Browser tab favicon:** `site/assets/li-favicon.svg` uses the carved 理 stamp on moss.
+- **Browser tab favicon (newest S146 main):** exact same SVG URL as the header seal, `site/assets/li-seal.svg?v=exact-header-s146`; older `li-favicon.svg` remains a historical asset but is no longer the live browser icon. This is unrelated to typography.
 - **iOS Add to Home Screen:** `site/assets/apple-touch-icon.png` is a **separate asset**. The latest `main` validator is labeled S145 and describes a **typography-only 理** icon on moss, superseding the earlier S142 seal-based iOS touch icon. Do not infer that all icon contexts must use one identical PNG/SVG. Reconfirm the newest PO approval in Notion before changing either asset.
 - The root brand seal displayed in the app is a third placement; updating the favicon must not silently replace the header logo.
 
@@ -34,3 +34,11 @@
 
 ### Technical debt explicitly tracked
 The current high-fi is still a large inline-styled static document with later CSS overrides; the design library is a **reference + automated baseline**, not a true single-source runtime component package. A follow-up extraction should consolidate selectors and shared styles without altering frozen WF-BASE or claiming G2 approval.
+
+## v0.2 typography and spacing — shared implementation rule
+- **Runtime CSS:** `site/assets/ui-foundations.css` is the canonical migration layer (loaded last in the app), not a new framework.
+- **Default:** 16px/24px reading text, 14px/20px essential supporting text, 12px/16px only metadata; Crimson Text editorial headings 24/32 and up. All line heights are multiples of 4px.
+- **Grid:** space tokens 0/4/8/12/16/20/24/32/40/48/64/80/96 CSS px. Every new padding, margin and gap must use a token or a value divisible by 4. Touch target goal 48px.
+- **Guide:** adaptive method cards replace 9–10.5px copy and forced two-line clipping; one column when necessary, not shrinking type.
+- **Scope:** Home, Catalog, Guide, Library, Research, Search, Capture, Settings, Lão Lý and published Wave1 lesson families all share type/spacing roles. Preserve special artwork geometry, selected sand pill and speech bubble.
+- **Limit:** older inline CSS still contains off-grid local rules. Central foundation supersedes touched shared surfaces; complete legacy cleanup needs a separate safe visual regression pass. See [type/spacing spec](typography-spacing.md).

@@ -8,7 +8,7 @@ GitHub Pages is enabled. The existing workflow publishes the exact `site/` direc
 
 https://sali5610.github.io/li/
 
-**GitHub `main` is the source of truth.** Its S107 version already places **Xuất bản sao / Nhập bản sao** under **Cài đặt → Dữ liệu & Đồng bộ** (not in Bút Ký), with **28px mobile and 30px desktop gaps** between Settings cards. These changes are already in `site/index.html`; do not apply the older Vercel S107 patch again.
+**GitHub `main` is the source of truth for the deployed app.** S107 placed **Xuất bản sao / Nhập bản sao** under **Cài đặt → Dữ liệu & Đồng bộ** (not in Bút Ký). Its historical inline CSS used 28px mobile and 30px desktop Settings gaps; the newer **v0.2 4px spacing system supersedes both with 32px**, loaded via `site/assets/ui-foundations.css`. Do not reapply older Vercel/S107 styling patches.
 
 The original Vercel application is retained as an independent backup.
 
@@ -22,6 +22,10 @@ The original app saves Bút Ký entries, saved Gương questions (Dấu Trang), 
 4. Import replaces any existing local entries in that browser, but only after explicit confirmation. Export a copy first if you already have data on the new domain.
 
 **No data from the old origin can be read automatically.** The JSON is handled locally in the browser and is never uploaded to a server.
+
+## Typography & spacing v0.2
+
+Read the [design-system type/spacing contract](design-system/typography-spacing.md) and [mobile-responsive visual specimen](site/design-system-preview.html). Typography follows Material 3 role principles, retains Crimson Text + system sans, and uses 16/24 body copy, 14/20 supporting text, and 4px spacing tokens. The new shared CSS drives Home, Guide, Settings, Library, lesson families and other editorial views; historical non-grid declarations remain migration debt. The visual specimen is review material, **not G2/physical-device acceptance**.
 
 ## High-fi parity and checks
 

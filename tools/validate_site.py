@@ -36,7 +36,7 @@ assert settings.count('id="import-personal-data"')==1
 assert 'id="export-personal-data"' not in library and 'id="export-library"' not in html
 assert 'document.getElementById("export-personal-data")' in html
 assert 'const importTrigger=' in html and 'li-du-lieu-' in html
-assert 'Xóa dữ liệu trang web có thể làm mất Bút Ký, câu hỏi đã lưu và bản nháp.' in settings
+assert 'Trước khi xóa dữ liệu trang web hoặc đổi thiết bị, website, hãy xuất bản sao để có thể nhập lại ghi chép.' in settings
 assert 'Ghi chép của bạn không tự động được gửi tới dịch vụ AI bên ngoài.' in settings
 assert 'Bạn có thể xuất bản sao trong Tủ Riêng.' not in html
 for selector in (
@@ -60,6 +60,19 @@ assert '<article class="surface tinted"><div class="kicker">NHẮC NHỞ</div>' 
 assert all('tinted' not in element for element in re.findall(
     r'<article class="surface(?: tinted)?"(?: id="[^"]+")?>', settings
 ))
+
+# S117: Settings uses exactly one concise migration/data-loss hint,
+# and Lão Lý remains a compact illustrated character with accessible controls.
+assert settings.count('Trước khi xóa dữ liệu trang web hoặc đổi thiết bị, website, hãy xuất bản sao để có thể nhập lại ghi chép.') == 1
+assert 'Đổi thiết bị hoặc website?' not in settings
+assert 'Xóa dữ liệu trang web có thể làm mất Bút Ký' not in settings
+assert '<article class="surface" id="settings-buddy-card">' in settings
+assert '<div class="folio-art roots" style="height:154px;margin-top:12px"></div>' not in settings
+assert settings.count('class="settings-buddy-illustration"') == 1
+assert 'src="./assets/laoly-guide-rest.png"' in settings
+assert settings.count('data-buddy="1"') == 1
+assert '#settings-buddy-card .settings-buddy-footer' in html
+assert '#settings-buddy-card .settings-buddy-illustration' in html
 
 # S116: two compact mobile Guide tiles, with Guide-only scope and no duplicate S99 rule.
 guide=section("guide")

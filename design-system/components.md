@@ -34,3 +34,11 @@
 
 ### Technical debt explicitly tracked
 The current high-fi is still a large inline-styled static document with later CSS overrides; the design library is a **reference + automated baseline**, not a true single-source runtime component package. A follow-up extraction should consolidate selectors and shared styles without altering frozen WF-BASE or claiming G2 approval.
+
+## v0.2 typography and spacing — shared implementation rule
+- **Runtime CSS:** `site/assets/ui-foundations.css` is the canonical migration layer (loaded last in the app), not a new framework.
+- **Default:** 16px/24px reading text, 14px/20px essential supporting text, 12px/16px only metadata; Crimson Text editorial headings 24/32 and up. All line heights are multiples of 4px.
+- **Grid:** space tokens 0/4/8/12/16/20/24/32/40/48/64/80/96 CSS px. Every new padding, margin and gap must use a token or a value divisible by 4. Touch target goal 48px.
+- **Guide:** adaptive method cards replace 9–10.5px copy and forced two-line clipping; one column when necessary, not shrinking type.
+- **Scope:** Home, Catalog, Guide, Library, Research, Search, Capture, Settings, Lão Lý and published Wave1 lesson families all share type/spacing roles. Preserve special artwork geometry, selected sand pill and speech bubble.
+- **Limit:** older inline CSS still contains off-grid local rules. Central foundation supersedes touched shared surfaces; complete legacy cleanup needs a separate safe visual regression pass. See [type/spacing spec](typography-spacing.md).

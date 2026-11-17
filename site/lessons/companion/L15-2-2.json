@@ -1,0 +1,280 @@
+{
+  "schema": 1,
+  "lesson_id": "L15-2-2",
+  "title": "Reorder Points and Safety Stock",
+  "topics": [
+    "supply",
+    "systems",
+    "models",
+    "evidence",
+    "practice",
+    "methods",
+    "reading",
+    "reflection"
+  ],
+  "objectives": [
+    "Tính ROP theo giả định nhu cầu và lead time cố định",
+    "Phân biệt điểm đặt hàng với lượng đặt hàng",
+    "Không bịa service level hoặc kết quả tối ưu hóa từ dữ liệu thiếu"
+  ],
+  "editorial": {
+    "status": "review",
+    "provenance": "Based on the canonical bilingual L15-2-2 Wave1B lesson in Notion, including 24×5+30, guided 12×3+15, independent 18×7+34 and inventory position 158. No SAP-confidential data is used.",
+    "spoiler_policy": "All pre-submission mentor copy is about units, assumptions and inventory reasoning process without disclosing the independent exercise's numeric calculations or trigger decision. Reflection is gated by state.submitted.",
+    "review_gate": "Wave1 content editorial locked by Human PO, but conditional Wave1B domain-specialist/quantitative review, G2 UI and release gates remain open."
+  },
+  "moments": [
+    {
+      "stage": "opening",
+      "anchor": "l15-goals",
+      "quote_id": "zhuangzi-craft",
+      "quote_ids": [
+        "zhuangzi-craft",
+        "smith-incentive",
+        "bacon-cause",
+        "box-models"
+      ],
+      "relevance": "A focus on systems and practical craft fits the learner's need to understand when replenishment must start rather than simply counting boxes.",
+      "vi": {
+        "label": "Trước khi đặt hàng",
+        "prompt": "Tiểu hữu định đợi kho trống mới gọi nhà cung cấp à? Hàng đâu có dịch chuyển bằng ý chí.",
+        "quote_comment": "Đọc bài này để phân biệt một ngưỡng hành động với số lượng cần mua — hai quyết định khác nhau.",
+        "actions": [
+          {
+            "label": "Vì sao phải đặt sớm?",
+            "reply": "Khi nhà cung cấp cần thời gian giao, nhu cầu tiếp tục tiêu thụ trong lúc chờ. Quyết định phải tính cả thời gian đó."
+          },
+          {
+            "label": "Bài này giới hạn ở đâu?",
+            "reply": "Đây là mô hình học tập với giả định nói rõ; chưa đủ thông tin để tối ưu toàn bộ chính sách tồn kho."
+          }
+        ]
+      },
+      "en": {
+        "label": "Before reordering",
+        "prompt": "Young scholar, are you waiting until the shelf is empty before calling your supplier? Goods do not teleport.",
+        "quote_comment": "This lesson separates an action threshold from the quantity to buy: two different decisions.",
+        "actions": [
+          {
+            "label": "Why order early?",
+            "reply": "Demand continues while the supplier takes time to deliver, so the trigger must consider that interval."
+          },
+          {
+            "label": "What is the scope?",
+            "reply": "This is a teaching model with explicit assumptions, not a complete inventory-optimization system."
+          }
+        ]
+      }
+    },
+    {
+      "stage": "concept",
+      "anchor": "l15-concept",
+      "quote_id": "box-models",
+      "quote_ids": [
+        "box-models",
+        "zhuangzi-craft",
+        "bacon-cause",
+        "analects-think"
+      ],
+      "relevance": "Box's warning about models is particularly relevant to a simplified reorder-point equation with fixed lead time and assumed safety stock.",
+      "vi": {
+        "label": "Hiểu mô hình",
+        "prompt": "Đừng nhìn ROP rồi hỏi “mua bấy nhiêu hả?”. Lão nhắc: đó là ngưỡng báo động, không phải số lượng đặt.",
+        "quote_comment": "Công thức chỉ có ích khi kiểm tra đúng đơn vị, lead time và chính sách buffer đã được giả định.",
+        "actions": [
+          {
+            "label": "Phân biệt hai số?",
+            "reply": "Ngưỡng đặt cho biết khi nào kích hoạt quyết định. Lượng đặt còn tùy quy tắc replenishment, lot size và chi phí."
+          },
+          {
+            "label": "Inventory position là gì?",
+            "reply": "Trong mô hình đơn giản, cộng tồn hiện có với hàng đang đặt rồi trừ backorders; nhìn riêng tồn kho vật lý có thể dẫn tới đặt trùng."
+          }
+        ]
+      },
+      "en": {
+        "label": "Understand the model",
+        "prompt": "Do not see ROP and ask “Buy that many units?” That is an action threshold, not the order size.",
+        "quote_comment": "The formula helps only after checking units, lead time and assumed buffer policy.",
+        "actions": [
+          {
+            "label": "Two different numbers?",
+            "reply": "The threshold determines when to act. How many units to buy depends on replenishment, lot size and costs."
+          },
+          {
+            "label": "What is inventory position?",
+            "reply": "In this simple model, on-hand plus open orders minus backorders; checking only physical stock can cause duplicate orders."
+          }
+        ]
+      }
+    },
+    {
+      "stage": "guided",
+      "anchor": "l15-guided",
+      "quote_id": "zhuangzi-craft",
+      "quote_ids": [
+        "zhuangzi-craft",
+        "analects-practice",
+        "box-models",
+        "bacon-cause"
+      ],
+      "relevance": "Worked practice and unit checking fit the guided spare-parts example and the distinction between order timing and quantity.",
+      "vi": {
+        "label": "Làm ví dụ có hướng dẫn",
+        "prompt": "Ví dụ phụ tùng đã có phép tính để ngươi soi quy trình. Giờ giải thích vì sao kết quả là mốc hành động, không phải danh sách mua hàng.",
+        "quote_comment": "Lão quan tâm ngươi hiểu ý nghĩa của phép tính hơn là đọc lại một con số đã có trên trang.",
+        "actions": [
+          {
+            "label": "Thử nói lại?",
+            "reply": "Hãy tách câu hỏi “khi nào phát lệnh?” khỏi câu hỏi “mua bao nhiêu?”; dùng inventory position để giải thích bước đầu."
+          },
+          {
+            "label": "Có cách kiểm nhanh?",
+            "reply": "Kiểm tra đơn vị: nhu cầu theo ngày nhân với số ngày cho số đơn vị, rồi cộng phần dự phòng cùng đơn vị."
+          }
+        ]
+      },
+      "en": {
+        "label": "Work through the example",
+        "prompt": "The spare-parts calculation is already shown. Explain why it gives an action threshold, not a shopping list.",
+        "quote_comment": "Understanding what the number means matters more than repeating the arithmetic on the page.",
+        "actions": [
+          {
+            "label": "Explain it back?",
+            "reply": "Separate “when to issue an order?” from “how many units to purchase?” and bring inventory position into the first question."
+          },
+          {
+            "label": "Quick sanity check?",
+            "reply": "Check dimensions: units per day times days gives units; add a buffer measured in those same units."
+          }
+        ]
+      }
+    },
+    {
+      "stage": "independent",
+      "anchor": "l15-challenge",
+      "quote_id": "bacon-cause",
+      "quote_ids": [
+        "bacon-cause",
+        "analects-think",
+        "box-models",
+        "mencius-sources"
+      ],
+      "relevance": "Independent calculations should start from causal structure, dimensional consistency and model limitations, not memorized numeric results.",
+      "vi": {
+        "label": "Tự giải bài toán",
+        "prompt": "Bài này tới lượt ngươi. Lão sẽ không bật mí ngưỡng, dấu so sánh hay kết luận đặt hàng trước khi ngươi nộp.",
+        "quote_comment": "Hãy bắt đầu từ dữ kiện và đơn vị, rồi tự xét những thứ công thức chưa thể cho biết.",
+        "actions": [
+          {
+            "label": "Đi theo thứ tự nào?",
+            "reply": "Xác định nhu cầu trong thời gian giao, cộng phần đệm theo chính sách, rồi so ngưỡng với inventory position theo mô hình đề bài."
+          },
+          {
+            "label": "Nếu đề thiếu dữ liệu?",
+            "reply": "Hãy nói chính xác điều nào chưa thể tính thay vì mượn một tỷ lệ service level cho đẹp bảng báo cáo."
+          }
+        ]
+      },
+      "en": {
+        "label": "Independent calculation",
+        "prompt": "Your turn. I won't reveal the threshold, comparison or reorder decision before you submit.",
+        "quote_comment": "Start from the given units and assumptions, then identify what the simplified formula cannot establish.",
+        "actions": [
+          {
+            "label": "What is the sequence?",
+            "reply": "Compute expected demand during lead time, add the policy buffer, then compare with inventory position under the stated model."
+          },
+          {
+            "label": "What if inputs are missing?",
+            "reply": "Name what cannot be calculated from the supplied data rather than inventing a convenient service-level percentage."
+          }
+        ]
+      }
+    },
+    {
+      "stage": "reflection",
+      "anchor": "l15-rubric",
+      "quote_id": "analects-honesty",
+      "quote_ids": [
+        "analects-honesty",
+        "box-models",
+        "darwin-confidence",
+        "analects-review"
+      ],
+      "relevance": "Honest model checking and acknowledging unknown inventory outcomes are essential after the learner submits quantitative reasoning.",
+      "vi": {
+        "label": "Soi lời giải sau nộp",
+        "prompt": "Giờ mới nhìn đáp án nhé. Đúng số mà sai ý nghĩa thì vẫn là đặt hàng theo cảm tính, tiểu hữu.",
+        "quote_comment": "Dùng rubric kiểm cả đơn vị, ngưỡng kích hoạt, giả định và điều không đủ dữ liệu để suy ra.",
+        "actions": [
+          {
+            "label": "Chấm những gì?",
+            "reply": "Đối chiếu kết quả tính nhu cầu trong lead time, ROP/trigger, rủi ro lead time biến động và giới hạn kết luận tối ưu hóa."
+          },
+          {
+            "label": "Nếu tính đúng mà kết luận sai?",
+            "reply": "Kiểm tra ngươi có nhầm ngưỡng đặt với lượng cần mua, hay đã bỏ qua inventory position và những điều kiện ban đầu."
+          }
+        ]
+      },
+      "en": {
+        "label": "Review the calculation",
+        "prompt": "Now you can open the model solution. Correct arithmetic with the wrong interpretation is still poor inventory reasoning.",
+        "quote_comment": "Check units, the threshold decision, stated assumptions and unavailable outputs before self-rating.",
+        "actions": [
+          {
+            "label": "What to score?",
+            "reply": "Compare lead-time demand, reorder trigger, variability assumptions and limits on optimization claims."
+          },
+          {
+            "label": "Right number, wrong decision?",
+            "reply": "Check whether you confused a reorder threshold with order quantity or ignored inventory position and model assumptions."
+          }
+        ]
+      }
+    },
+    {
+      "stage": "extension",
+      "anchor": "l15-sources",
+      "quote_id": "bacon-studies",
+      "quote_ids": [
+        "bacon-studies",
+        "zhuangzi-limits",
+        "zhuangzi-craft",
+        "bacon-cause"
+      ],
+      "relevance": "Studying the boundary between a simple deterministic example and real inventory uncertainty calls for careful deeper reading and testing models.",
+      "vi": {
+        "label": "Đào sâu supply chain",
+        "prompt": "Mở tài liệu IBM hay MIT rồi nhớ kiểm mô hình họ đang giả định gì. Không phải thấy công thức là bê về mọi cái kho.",
+        "quote_comment": "Đọc nguồn để phân biệt chính sách inventory thật với ví dụ số đơn giản, đồng thời nhận ra thêm dữ liệu nào còn thiếu.",
+        "actions": [
+          {
+            "label": "Tìm sâu chuyện gì?",
+            "reply": "Đọc thêm demand variability, lead-time variability và inventory position; kiểm tra công thức nguồn có cùng giả định bài hay không."
+          },
+          {
+            "label": "Nhớ kiến thức ra sao?",
+            "reply": "Đóng tài liệu, tự giải thích bằng lời vì sao ROP không phải lượng đặt, rồi nêu một tình huống làm giả định cố định thất bại."
+          }
+        ]
+      },
+      "en": {
+        "label": "Go deeper into inventory",
+        "prompt": "Read IBM or MIT critically and check their assumptions. A formula is not a universal warehouse spell.",
+        "quote_comment": "Compare source models against this simple exercise and note what additional information a real decision would require.",
+        "actions": [
+          {
+            "label": "What should I study?",
+            "reply": "Look into demand variability, lead-time variability and inventory position; check whether each source shares this lesson's assumptions."
+          },
+          {
+            "label": "How to retain it?",
+            "reply": "Close the source, explain why ROP differs from order quantity, and describe a scenario where fixed lead time fails."
+          }
+        ]
+      }
+    }
+  ]
+}

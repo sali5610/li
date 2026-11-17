@@ -30,6 +30,8 @@ def build():
         html=re.sub(r'(?:\./[^"<>]*?_files/|(?<=src=")/)'+re.escape(name),
                     './assets/'+name,html)
         html=html.replace('src="'+name+'"','src="./assets/'+name+'"')
+    # GitHub project Pages lives under /li/; absolute root /assets would break mode avatars.
+    html=html.replace('image:"/assets/', 'image:"./assets/')
     html=re.sub(r'<!-- saved from url=.*? -->\s*','',html,count=1)
     # Keep the original live JS and 13-method data; modify only scoped S107 items.
     btnpattern=r'<button\s+class="action alt"\s+id="export-library".*?</button>'

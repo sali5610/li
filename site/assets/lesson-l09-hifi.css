@@ -70,3 +70,6 @@
 #page-lessonL09 .l09-review-row{grid-template-columns:minmax(0,1fr) 90px}
 #page-lessonL09 .l09-stack{gap:18px}
 }
+/* The existing catalog expands from 3 to 4 fields; keep its native cards in a balanced 2×2 arrangement. */
+#page-catalog .surface-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:650px){#page-catalog .surface-grid{grid-template-columns:minmax(0,1fr)}}

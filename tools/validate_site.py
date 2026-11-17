@@ -9,6 +9,31 @@ for name in assets:
     p=site/"assets"/name
     assert p.is_file() and p.stat().st_size>1000, f"Missing {name}"
     if name.endswith(".png"):assert p.read_bytes().startswith(b"\x89PNG\r\n\x1a\n"),f"Invalid {name}"
+# S142: utility header selection uses the identical sand tint as bottom tabs,
+# with dark moss glyphs. State is synchronized by navigate() for Search/Capture/Settings.
+for rule in (
+    '/* S142 · Header utility selected state mirrors the bottom-nav sand pill.',
+    'background:#E5D8BA;opacity:0;z-index:-1;pointer-events:none;',
+    '.header .tool-button.active::before,',
+    '.header .tool-button[aria-current="page"]::before{opacity:1}',
+    'color:var(--moss)!important;',
+    'document.querySelectorAll(".header .tool-button").forEach(x=>{const active=x.dataset.page===id;',
+):
+    assert rule in html, f"Header selected state missing: {rule}"
+assert html.count('class="tool-button" data-page=')==3
+# S141: iOS Add to Home Screen needs actual PNG, not an SVG browser favicon.
+# Exact approved glyph raster on dark moss, 180x180 in HTML and GitHub Pages.
+from hashlib import sha256
+touch=site/"assets"/"apple-touch-icon.png"
+assert touch.is_file(), "iOS Home Screen touch icon missing"
+icon_bytes=touch.read_bytes()
+assert icon_bytes.startswith(b"\x89PNG\r\n\x1a\n"), "Touch icon not PNG"
+assert (int.from_bytes(icon_bytes[16:20],"big"),int.from_bytes(icon_bytes[20:24],"big"))==(180,180)
+assert sha256(icon_bytes).hexdigest()=="535463f73bfd83c7998d24464690a37114045ce7885988b5850f9a16eb39cbf5", "Wrong approved seal variant"
+assert html.count('<link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png?v=moss-20261118">')==1
+assert '<meta name="apple-mobile-web-app-title" content="li.">' in html
+assert '<meta name="theme-color" content="#243A29">' in html
+
 # S136: mirror label is typographic only, not a search control.
 assert html.count('<div class="mirror-label">Gương Vạn Vấn</div>') == 1
 assert '<div class="mirror-label"><i data-lucide="search"' not in html

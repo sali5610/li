@@ -1,0 +1,114 @@
+{
+  "schema": "li.assessment.v1.staging",
+  "lesson_id": "L03-1-2",
+  "source": {
+    "file_path": "site/assets/lesson-wave1-core.js",
+    "blob_sha": "446b9493e9ecf91bd3cb84e8a3938d67e125699d"
+  },
+  "contract": {
+    "question_count": 4,
+    "rubric_count": 4,
+    "score_per_criterion": [
+      0,
+      1,
+      2
+    ],
+    "min_trimmed_chars": 12,
+    "hint_marks_assisted": true,
+    "answer_visible_after_submit": true,
+    "rubric_visible_after_submit": true,
+    "does_not_autograde": true
+  },
+  "locales": {
+    "vi": {
+      "challenge": {
+        "title": "Nghiên cứu Process Monitor",
+        "intro": "Một nhóm UX muốn hiểu vì sao nhân viên ít sử dụng màn Process Monitor. Người phỏng vấn định hỏi:",
+        "claim": "1. “Dashboard của chúng tôi đủ trực quan rồi, sao bạn vẫn không dùng?”<br>2. “Bạn thấy bộ lọc quốc gia mới rất hữu ích đúng không?”<br>3. “Tại sao bảng Report hiện tại làm bạn chậm?”",
+        "questions": [
+          "Chọn bất kỳ hai câu trong ba câu trên. Nêu giả định hoặc áp lực dẫn dắt trong từng câu bạn chọn.",
+          "Viết lại câu hỏi thứ nhất bạn chọn thành câu hỏi trung lập về tình huống thật.",
+          "Viết lại câu hỏi thứ hai bạn chọn; thêm một follow-up trung lập giúp hiểu hành vi.",
+          "Nêu điều không được suy diễn chỉ từ ba cuộc phỏng vấn như vậy."
+        ]
+      },
+      "support": {
+        "guided_hint": "Câu đầu có cụm <b>“tiện hơn nhiều”</b> và lời mời xác nhận. Câu thứ hai hướng người dùng tới một sự kiện cụ thể; vẫn có thể dùng follow-up trung lập như “Điều gì xảy ra tiếp theo?”",
+        "hint": "Đừng đoán người tham gia thích hay ghét tính năng. Hãy tìm <b>giả định được nói trước</b>, rồi hỏi về <b>lần gần nhất</b> họ thực hiện tác vụ. Chưa có dữ liệu thì đừng suy tỷ lệ toàn tổ chức.",
+        "submit_validation": "Cần trả lời đủ bốn phần bằng ý của bạn trước khi nộp."
+      },
+      "review": {
+        "answer_title": "ĐÁP ÁN MẪU · SAU LƯỢT THỬ",
+        "model_answer": "<b>Cả ba câu đều có định hướng/tiền giả định;</b> chọn bất kỳ hai nếu giải thích đúng. Ví dụ: (1) thay bằng “Lần gần nhất cần kiểm tra một process, bạn dùng công cụ nào và đi qua các bước nào?”; (2) thay bằng “Khi cần xem dữ liệu theo quốc gia, bạn tìm hoặc lọc thông tin như thế nào?”; (3) thay bằng “Khi tra Report gần đây, có bước nào mất nhiều thời gian không? Kể lại giúp tôi.” Follow-up trung lập: “Điều gì xảy ra tiếp theo?” Ba cuộc phỏng vấn không tự cho biết tỷ lệ phần trăm tất cả người dùng.",
+        "answer_note": "<b>Chấm theo lập luận:</b> Không nhất thiết trùng câu chữ đáp án. Câu hỏi mở vẫn có thể dẫn dắt, và trích lời một người không tự chứng minh nhận định phổ quát.",
+        "rubric_title": "Rubric tự đánh giá 0–8",
+        "rubric_lead": "Bốn tiêu chí × 0–2 điểm. Đây là bài tự chấm, chưa hiệu chuẩn bằng người học và không phải điểm AI.",
+        "rubric_before": "Nộp bài trước để mở rubric và đáp án.",
+        "rubric_items": [
+          [
+            "Nhận diện bias",
+            "2: tìm đúng tiền giả định/định hướng; 1: phát hiện chung chung; 0: không phát hiện."
+          ],
+          [
+            "Viết lại trung lập",
+            "2: bỏ tiền giả định và không gợi đáp án; 1: cải thiện nhưng còn dẫn dắt; 0: giữ nguyên bias."
+          ],
+          [
+            "Khai thác hành vi",
+            "2: hỏi sự kiện gần nhất, trình tự và follow-up; 1: hỏi chung; 0: chỉ hỏi ý kiến có hướng."
+          ],
+          [
+            "Giới hạn suy luận",
+            "2: không suy tỷ lệ dân số từ vài phỏng vấn; 1: chỉ nói mẫu nhỏ; 0: suy rộng vô căn cứ."
+          ]
+        ],
+        "review_validation": "Chọn điểm cho đủ cả bốn tiêu chí."
+      }
+    },
+    "en": {
+      "challenge": {
+        "title": "Process Monitor interviews",
+        "intro": "A UX team wants to know why staff rarely use Process Monitor. The interview guide proposes:",
+        "claim": "1. “Our dashboard is already intuitive, so why don't you use it?”<br>2. “You find the new country filter very useful, right?”<br>3. “Why does the current Report table slow you down?”",
+        "questions": [
+          "Select any two of these three questions and identify the assumptions or response pressure in both.",
+          "Rewrite your first selected question into a neutral prompt about a real situation.",
+          "Rewrite your second selected question and add a neutral behavioral follow-up.",
+          "Explain one inference you cannot draw from just three interviews."
+        ]
+      },
+      "support": {
+        "guided_hint": "The first prompt presupposes the feature is <b>easier</b> and invites agreement. The second asks for a concrete event, followed by neutral probes like “What happened next?”",
+        "hint": "Don't assume the user likes or dislikes the tool. First isolate the <b>assumption embedded in the wording</b>; then ask about the <b>last actual task</b>. Do not invent an organization-wide percentage.",
+        "submit_validation": "Please respond meaningfully to all four parts before submitting."
+      },
+      "review": {
+        "answer_title": "MODEL RESPONSE · AFTER FIRST ATTEMPT",
+        "model_answer": "<b>All three prompts contain leading assumptions;</b> any two may be selected if explained well. For example: (1) “The last time you needed to check a process, which tool did you use and what steps did you take?”; (2) “When you needed to see data by country, how did you find or filter it?”; (3) “When you recently consulted the Report, did any step take a long time? Tell me about it.” A neutral follow-up is “What happened next?” Three interviews cannot establish the percentage of all organizational users who face the issue.",
+        "answer_note": "<b>Evaluation:</b> Wording can differ; judge whether the presupposition has been removed and the question invites a real account. Qualitative interview responses do not automatically estimate prevalence.",
+        "rubric_title": "Self-rating rubric, 0–8",
+        "rubric_lead": "Four dimensions scored 0–2, not calibrated and not automatically AI-graded.",
+        "rubric_before": "Submit an attempt before revealing the rubric and model response.",
+        "rubric_items": [
+          [
+            "Detect leading bias",
+            "2: names assumptions and pressures; 1: vague recognition; 0: no relevant detection."
+          ],
+          [
+            "Neutral rewrite",
+            "2: removes presupposition and answer cues; 1: improved but still leading; 0: unchanged bias."
+          ],
+          [
+            "Behavioral focus",
+            "2: past episode, sequence and follow-up; 1: generalized question; 0: guided opinion only."
+          ],
+          [
+            "Inference boundary",
+            "2: no prevalence claim based on three interviews; 1: vague small-sample warning; 0: unjustified generalization."
+          ]
+        ],
+        "review_validation": "Rate all four dimensions first."
+      }
+    }
+  }
+}

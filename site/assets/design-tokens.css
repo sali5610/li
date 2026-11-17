@@ -1,0 +1,65 @@
+/* GENERATED from design-system/tokens.json by tools/generate_design_tokens.py.
+   Do not edit this CSS manually; change the JSON then regenerate.
+   G2 global visual identity remains pending PO approval. */
+:root {
+  --paper: #F3EBDC;
+  --paper-2: #E7DCC3;
+  --paper-3: #D9CBAF;
+  --ink: #272A23;
+  --moss: #243A29;
+  --moss-2: #344B35;
+  --forest: #102218;
+  --sage: #BAC9A7;
+  --wood: #856D4B;
+  --muted: #615F51;
+  --rule: #C3B69B;
+  --cream: #FBF7EB;
+  --shadow-ink: #172D20;
+  --shadow-wood: #6B563B;
+  /* Semantic colors retain the currently accepted visual values. */
+  --li-color-nav-selected-fill: #E5D8BA;
+  --li-color-nav-selected-ink: #243A29;
+  --li-color-focus-ring: #7E984F;
+  --li-color-focus-warm: #806D49;
+  --li-color-danger-fill: #7D4330;
+  --li-color-on-image-cream: #F5ECD7;
+  --li-color-mirror-ink: #F7F6E6;
+  --li-color-speech-surface: #FFF8E9;
+  --li-color-speech-stroke: #37543C;
+  --li-color-muted-on-moss: #D3DDCB;
+  /* Material-inspired readable typography roles. */
+  --li-type-display: 48px;
+  --li-leading-display: 56px;
+  --li-type-headline: 36px;
+  --li-leading-headline: 44px;
+  --li-type-title-lg: 28px;
+  --li-leading-title-lg: 36px;
+  --li-type-title-md: 24px;
+  --li-leading-title-md: 32px;
+  --li-type-title-sm: 20px;
+  --li-leading-title-sm: 28px;
+  --li-type-body-lg: 18px;
+  --li-leading-body-lg: 28px;
+  --li-type-body: 16px;
+  --li-leading-body: 24px;
+  --li-type-support: 14px;
+  --li-leading-support: 20px;
+  --li-type-caption: 12px;
+  --li-leading-caption: 16px;
+  --li-font-editorial: "Crimson Text", Georgia, "Times New Roman", serif;
+  --li-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  /* 4px spacing grid; suffix equals grid index, not literal pixels. */
+  --li-space-0: 0px;
+  --li-space-1: 4px;
+  --li-space-2: 8px;
+  --li-space-3: 12px;
+  --li-space-4: 16px;
+  --li-space-5: 20px;
+  --li-space-6: 24px;
+  --li-space-8: 32px;
+  --li-space-10: 40px;
+  --li-space-12: 48px;
+  --li-space-16: 64px;
+  --li-space-20: 80px;
+  --li-space-24: 96px;
+}

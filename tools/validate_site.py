@@ -47,5 +47,12 @@ for selector in (
 ):
     assert selector in html, f"Missing Settings spacing rule: {selector}"
 
+# S114: both missing internal Settings gaps are explicit and isolated.
+assert '#page-settings .surface > .select-row + .state-note' in html
+assert '#page-settings .surface > .select-row + .action' in html
+assert html.count('margin-top: 20px;')>=2
+assert html.count('margin-top: 16px;')>=2
+assert '<label class="select-row">Nhắc lịch ngủ' in settings
+assert '<label class="select-row">Im Lặng' in settings
 assert (site/".nojekyll").is_file()
 print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and 28/30px gaps, privacy copy, JS parsing")

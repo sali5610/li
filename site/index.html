@@ -1026,6 +1026,20 @@ body:has(#buddy-modal.open) .laoly-support{visibility:hidden!important;opacity:0
 #page-settings > .section-shell > .editorial-grid>.stack-sm{gap:28px!important}
 #page-settings .settings-data-actions>.action{flex:1}
 }
+/* S114 · Settings controls to feedback and CTA gap.
+   The reminder notice and Lão Lý preview button must not touch the final
+   checkbox divider; retain the S107 gap between sibling cards unchanged. */
+#page-settings .surface > .select-row + .state-note,
+#page-settings .surface > .select-row + .action {
+  margin-top: 20px;
+}
+@media(max-width:600px){
+  #page-settings .surface > .select-row + .state-note,
+  #page-settings .surface > .select-row + .action {
+    margin-top: 16px;
+  }
+}
+
 /* S108 — art fills its own transparent crop, crown overflows top, feet meet the unchanged card base. */
 #page-guide .guide-mentor{position:relative;overflow:visible!important}
 #page-guide .guide-mentor .guide-mentor-illustration{

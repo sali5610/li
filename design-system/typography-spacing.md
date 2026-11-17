@@ -71,6 +71,8 @@ The stylesheet **must load after all original head styles and lesson CSS**. It i
 - Browser CSS/source checks cannot verify actual computed contrast, text zoom, iPhone PWA or VoiceOver. Existing request to lock pinch zoom is a distinct accessibility risk; not resolved by these type changes.
 - G2 visual identity acceptance, actual-device QA, academic G4, privacy G3 and human-study gates remain separate.
 
+**Visual specimen (noninteractive):** [Preview typography & spacing](../site/design-system-preview.html) after publishing. It exists for Human PO review; preview rendering does not count as actual device QA.
+
 ## 6. Acceptance checklist
 
 - [ ] At 320/375/390/402/600/820/1440 widths, all essential copy ≥14px; reading default 16px and 24px leading.

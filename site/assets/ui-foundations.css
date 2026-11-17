@@ -1,0 +1,317 @@
+/* li. (理) · readable foundations v0.2 · 2026-11-18
+   Canonical runtime typography/spacing layer. Loaded AFTER legacy inline styles
+   and lesson CSS; use this layer rather than adding another emergency <style>.
+   Geometry, approved artwork, colors and interaction behaviors are preserved.
+   Material 3 type-role inspiration + Material 4/8 grid; this is NOT Material UI.
+*/
+:root {
+  /* Every spatial token is a multiple of 4 CSS px. */
+  --li-space-0: 0px;
+  --li-space-1: 4px;
+  --li-space-2: 8px;
+  --li-space-3: 12px;
+  --li-space-4: 16px;
+  --li-space-5: 20px;
+  --li-space-6: 24px;
+  --li-space-8: 32px;
+  --li-space-10: 40px;
+  --li-space-12: 48px;
+  --li-space-16: 64px;
+  --li-space-20: 80px;
+  --li-space-24: 96px;
+
+  /* Font sizes need not be divisible by 4; line heights follow the 4px rhythm. */
+  --li-type-display: 48px;
+  --li-leading-display: 56px;
+  --li-type-headline: 36px;
+  --li-leading-headline: 44px;
+  --li-type-title-lg: 28px;
+  --li-leading-title-lg: 36px;
+  --li-type-title-md: 24px;
+  --li-leading-title-md: 32px;
+  --li-type-title-sm: 20px;
+  --li-leading-title-sm: 28px;
+  --li-type-body-lg: 18px;
+  --li-leading-body-lg: 28px;
+  --li-type-body: 16px;
+  --li-leading-body: 24px;
+  --li-type-support: 14px;
+  --li-leading-support: 20px;
+  --li-type-caption: 12px;
+  --li-leading-caption: 16px;
+  --li-font-editorial: "Crimson Text", Georgia, "Times New Roman", serif;
+  --li-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --li-page-gutter: var(--li-space-4);
+  --li-card-pad: var(--li-space-5);
+  --li-stack-gap: var(--li-space-6);
+  --li-section-gap: var(--li-space-8);
+}
+
+/* Reusable roles for every new component. */
+.li-type-display { font: 600 var(--li-type-display)/var(--li-leading-display) var(--li-font-editorial); }
+.li-type-headline { font: 600 var(--li-type-headline)/var(--li-leading-headline) var(--li-font-editorial); }
+.li-type-title { font: 600 var(--li-type-title-md)/var(--li-leading-title-md) var(--li-font-editorial); }
+.li-type-body { font: 400 var(--li-type-body)/var(--li-leading-body) var(--li-font-ui); }
+.li-type-support { font: 400 var(--li-type-support)/var(--li-leading-support) var(--li-font-ui); }
+.li-type-caption { font: 500 var(--li-type-caption)/var(--li-leading-caption) var(--li-font-ui); }
+
+/* App reading rhythm; not a global reset of illustration coordinates. */
+body { font-size: var(--li-type-body); line-height: var(--li-leading-body); }
+.app { padding-inline: var(--li-page-gutter); padding-bottom: var(--li-space-16); }
+.page .section-shell { padding-block: var(--li-space-8) var(--li-space-16); }
+.page .editorial-grid { gap: var(--li-section-gap); margin-top: var(--li-space-6); }
+.page .stack-sm, .page .stack { gap: var(--li-stack-gap); }
+.page .surface, .page .panel { padding: var(--li-card-pad); }
+.page .surface p, .page .panel p, .page .intro, .page .page-heading p,
+.page .branch-output, .page .evidence-list li, .page .spell p {
+  font-size: var(--li-type-body);
+  line-height: var(--li-leading-body);
+}
+.page .surface > p + p, .page .panel > p + p { margin-top: var(--li-space-3); }
+.page .surface > h2, .page .panel h2 { line-height: var(--li-leading-headline); }
+.page .surface > h3, .page .spell h3 { line-height: var(--li-leading-title-md); }
+
+/* Essential reading copy should not be shrunk to decorate cards. */
+.page :is(.state-note, .home-caption, .dest-desc, .spell-bottom, .small, .note-tools small,
+  .method-card .original, .method-card .purpose, .method-card .end, .footer,
+  .status-banner span, .source-status) {
+  font-size: var(--li-type-support);
+  line-height: var(--li-leading-support);
+}
+.page :is(.eyebrow, .kicker, .rule-label, .status-chip, .deck-tag, .dest-index,
+  .spell-kicker, .mirror-label, .hero-dialogue-label, .hero-dialogue-meta) {
+  font-size: var(--li-type-caption);
+  line-height: var(--li-leading-caption);
+}
+.footer { font-size: var(--li-type-support); line-height: var(--li-leading-support); }
+.note-label { font-size: var(--li-type-body); line-height: var(--li-leading-body); }
+.status { font-size: var(--li-type-caption); line-height: var(--li-leading-caption); }
+.page .surface :is(h2,h3,p,li), .page .panel :is(h2,h3,p,li) { overflow-wrap: break-word; }
+
+/* Controls: readable labels, larger targets, a shared 4px inset rhythm. */
+.page :is(.action, .flat-button, .filter, .secondary, .primary, .utility-back),
+.header .tool-button {
+  min-height: 48px;
+}
+.page :is(.action, .flat-button, .filter, .secondary, .primary, .utility-back) {
+  font-size: var(--li-type-body);
+  line-height: var(--li-leading-body);
+  padding: var(--li-space-3) var(--li-space-4);
+  gap: var(--li-space-2);
+}
+.page :is(.pill, .select-row, .path-item, .branch, .searchbox) {
+  font-size: var(--li-type-support);
+  line-height: var(--li-leading-support);
+}
+.page .branch { padding: var(--li-space-3) var(--li-space-4); gap: var(--li-space-3); }
+.page .filter { min-height: 48px; }
+.page .status-banner { gap: var(--li-space-3); padding: var(--li-space-4); }
+.page .status-banner strong { font-size: var(--li-type-body); line-height: var(--li-leading-body); }
+.page .note-tools { gap: var(--li-space-3); margin-top: var(--li-space-4); }
+input:not([type="checkbox"]):not([type="radio"]), select, textarea, .notebook {
+  font-size: var(--li-type-body);
+}
+:root { --li-notebook-line-height: 32px; }
+textarea, .notebook {
+  font-size: var(--li-type-body);
+  line-height: var(--li-notebook-line-height) !important;
+  padding: var(--li-space-2) var(--li-space-4);
+}
+textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
+
+/* Global information hierarchy. */
+.page .page-heading { gap: var(--li-space-6); padding: var(--li-space-8) 0 var(--li-space-6); }
+.page .page-heading p, .page .intro { max-width: 66ch; }
+.page .pills { gap: var(--li-space-2); margin-bottom: var(--li-space-4); }
+.page .spell-grid, .page .destination-grid, .page .surface-grid {
+  gap: var(--li-space-6);
+}
+.page .dest-text, .page .spell-content { padding: var(--li-space-5); gap: var(--li-space-2); }
+.page .home-tile .tile-text { padding: var(--li-space-4); gap: var(--li-space-2); }
+.page .home-tile small, .page .dest-desc {
+  font-size: var(--li-type-support); line-height: var(--li-leading-support);
+}
+.page .spell .spell-bottom { padding-top: var(--li-space-4); }
+
+/* Method cards: remove the 9–10.5px text / forced two-line truncation debt. */
+#page-guide #method-cards {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)) !important;
+  gap: var(--li-space-6) !important;
+  padding: var(--li-space-2) var(--li-space-1) var(--li-space-3) !important;
+  margin: var(--li-space-6) 0 0 !important;
+}
+#page-guide #method-cards > .method-card {
+  padding: var(--li-space-5) !important;
+  min-height: 0 !important;
+  gap: var(--li-space-2);
+}
+#page-guide #method-cards > .method-card h3 {
+  font-size: var(--li-type-title-md) !important;
+  line-height: var(--li-leading-title-md) !important;
+  margin: var(--li-space-3) 0 var(--li-space-2);
+}
+#page-guide #method-cards > .method-card :is(.original, .purpose, .end) {
+  font-size: var(--li-type-support) !important;
+  line-height: var(--li-leading-support) !important;
+  overflow-wrap: anywhere;
+}
+#page-guide #method-cards > .method-card .purpose {
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+  overflow: visible !important;
+  margin-top: var(--li-space-2);
+}
+#page-guide #method-cards > .method-card .kicker {
+  font-size: var(--li-type-caption) !important;
+  line-height: var(--li-leading-caption) !important;
+  overflow-wrap: anywhere;
+}
+#page-guide #method-cards > .method-card .end { padding-top: var(--li-space-3); }
+#page-guide .editorial-grid { gap: var(--li-space-6) !important; }
+#page-guide #method-filters {
+  gap: var(--li-space-2);
+  padding: var(--li-space-2) 0 var(--li-space-3) !important;
+  margin: var(--li-space-3) 0 0 !important;
+}
+#page-guide .editorial-grid aside.surface { padding: var(--li-space-5) !important; }
+#page-guide .guide-mentor {
+  grid-template-columns: 80px minmax(0, 1fr) !important;
+  column-gap: var(--li-space-4) !important;
+  padding: var(--li-space-4) !important;
+  min-height: 128px !important;
+}
+#page-guide .guide-mentor-copy .kicker,
+#page-guide .guide-mentor .guide-method-count {
+  font-size: var(--li-type-caption) !important;
+  line-height: var(--li-leading-caption) !important;
+  margin-bottom: var(--li-space-2) !important;
+}
+#page-guide .guide-mentor #guide-mode-copy {
+  font-size: var(--li-type-body) !important;
+  line-height: var(--li-leading-body) !important;
+}
+
+/* Settings: 28/30px local patches become the same 32px section rhythm. */
+#page-settings > .section-shell > .editorial-grid,
+#page-settings > .section-shell > .editorial-grid > .stack-sm {
+  gap: var(--li-space-8) !important;
+}
+#page-settings .settings-data-actions { gap: var(--li-space-3); margin: var(--li-space-4) 0 var(--li-space-3); }
+#page-guideDetail .editorial-grid > .surface > .kicker + .path-list { margin-top: var(--li-space-4); }
+#page-guideDetail .editorial-grid > .surface > .state-note + .action { margin-top: var(--li-space-5); }
+
+/* Lão Lý: enlarge explanatory copy and choices without changing speech-bubble shape. */
+#buddy-modal .dialog { padding: var(--li-space-6); }
+#buddy-modal .buddy-scroll { padding-right: var(--li-space-2); }
+#buddy-modal .ly-cultural .small, #buddy-modal .li-quote-context {
+  font-size: var(--li-type-support);
+  line-height: var(--li-leading-support);
+}
+#buddy-modal .action-row { gap: var(--li-space-3); margin-top: var(--li-space-4); }
+#buddy-modal .action-row .action {
+  min-height: 56px;
+  padding: var(--li-space-3) !important;
+  gap: var(--li-space-2);
+  font-size: var(--li-type-support) !important;
+  line-height: var(--li-leading-support) !important;
+}
+.ly-mode-panel { padding-top: var(--li-space-5); margin-top: var(--li-space-5); }
+.ly-mode-grid { gap: var(--li-space-2); }
+.ly-mode-choice {
+  min-height: 104px;
+  padding: var(--li-space-3) var(--li-space-2);
+  gap: var(--li-space-2);
+  font-size: var(--li-type-support) !important;
+  line-height: var(--li-leading-support);
+}
+#ly-mode-feedback { margin-top: var(--li-space-3); font-size: var(--li-type-support); line-height: var(--li-leading-support); }
+
+/* Home exceptions: the live mirror text must still remain inside the art. */
+#page-home .hero-dialogue-bubble { padding: var(--li-space-3) var(--li-space-4); }
+#page-home .hero-dialogue-bubble p {
+  font-size: var(--li-type-support) !important;
+  line-height: var(--li-leading-support) !important;
+}
+#page-home .hero-dialogue-label,
+#page-home .hero-dialogue-label .example-label,
+#page-home .hero-dialogue-meta,
+#page-home .mirror-message .mirror-label {
+  font-size: var(--li-type-caption) !important;
+  line-height: var(--li-leading-caption) !important;
+}
+#page-home .hero-actions { gap: var(--li-space-3) !important; }
+#page-home .hero-actions .primary,
+#page-home .hero-actions .secondary {
+  min-height: 52px;
+  padding: var(--li-space-3) !important;
+  gap: var(--li-space-2) !important;
+  font-size: var(--li-type-body) !important;
+  line-height: var(--li-leading-body) !important;
+}
+#page-home .hero-actions .secondary-row { gap: var(--li-space-3); }
+
+/* Native Wave 1 lesson surfaces share the same scale, not an independent 10px one. */
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) :is(
+  .l09-points li, .l09-goal-list li, .l09-q-row label, .l09-review-row label,
+  .l09-figure figcaption p, .l09-compare p
+) { font-size: var(--li-type-body); line-height: var(--li-leading-body); }
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) :is(
+  .l09-stats span, .l09-figure figcaption a, .l09-img-fallback,
+  .l09-source-actions .action, .l09-keywords a, .l09-index a,
+  .l09-subtitle, .l09-status-line, .l09-sidebar .action, #l09-score-line
+) { font-size: var(--li-type-support); line-height: var(--li-leading-support); }
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-stack { gap: var(--li-space-8); }
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-hero-tools { gap: var(--li-space-3); margin-top: var(--li-space-4); }
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-stats { gap: var(--li-space-4); margin: var(--li-space-6) 0; }
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-stats .path-item { padding: var(--li-space-4) var(--li-space-3); }
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-compare { gap: var(--li-space-5); margin: var(--li-space-6) 0; }
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-figures { gap: var(--li-space-5); margin-top: var(--li-space-6); }
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-source { gap: var(--li-space-3); padding: var(--li-space-4) 0; }
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-review-row { gap: var(--li-space-4); margin: var(--li-space-4) 0; }
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-lang-switch .action,
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-source-actions .action { min-height: 48px; }
+
+/* Header/nav preserves the latest approved sand selected-pill ink and icon sizes. */
+.header { gap: var(--li-space-4); }
+.header .tool-button { min-width: 48px; min-height: 48px; }
+@media (max-width: 600px) {
+  .mobile-nav .nav-btn {
+    font-size: var(--li-type-support) !important;
+    line-height: var(--li-leading-support) !important;
+    grid-template-rows: 24px 20px !important;
+    gap: var(--li-space-1) !important;
+    min-height: 64px !important;
+    padding: var(--li-space-2) var(--li-space-1) !important;
+    margin-top: 0 !important;
+  }
+}
+
+/* Responsive density: preserve usable width rather than reverting to 10px labels. */
+@media (min-width: 601px) {
+  :root { --li-page-gutter: var(--li-space-6); --li-card-pad: var(--li-space-6); }
+}
+@media (min-width: 1200px) {
+  :root { --li-page-gutter: var(--li-space-10); --li-section-gap: var(--li-space-10); }
+}
+@media (max-width: 600px) {
+  :root { --li-card-pad: var(--li-space-5); --li-section-gap: var(--li-space-6); }
+  .page .section-shell { padding-block: var(--li-space-6) var(--li-space-16); }
+  .page .page-heading { gap: var(--li-space-4); padding: var(--li-space-6) 0 var(--li-space-5); }
+  .page .spell-grid { grid-template-columns: minmax(0, 1fr); }
+  #page-guide .guide-mentor { grid-template-columns: 72px minmax(0,1fr) !important; }
+  #page-home .hero-dialogue-bubble { padding: var(--li-space-2) var(--li-space-3); }
+  #page-home .mirror-message h2 {
+    font-size: clamp(22px, 6vw, 26px) !important;
+    line-height: 1.18 !important;
+    overflow-wrap: break-word;
+  }
+  #page-home .mirror-message { width: min(68%, 224px) !important; max-width: 224px !important; }
+}
+@media (max-width: 360px) {
+  #page-guide .guide-mentor { grid-template-columns: 64px minmax(0,1fr) !important; }
+  #page-home .hero-actions .primary, #page-home .hero-actions .secondary {
+    font-size: var(--li-type-support) !important;
+    line-height: var(--li-leading-support) !important;
+  }
+}

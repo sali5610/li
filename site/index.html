@@ -1216,7 +1216,7 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 .header{align-items:center}
 .header .brand,.header .tools{display:flex;align-items:center;height:44px;box-sizing:border-box}
 .header .brand-copy{display:flex;justify-content:center;height:44px}
-.header .logo{display:block;line-height:1;transform:translateY(-1px)}
+.header .logo{display:block;line-height:1;transform:translateY(2px)}
 .header .brand-stamp{display:block;align-self:center;object-fit:contain}
 .header .tools .tool-button{display:grid;place-items:center;align-self:center;padding:0}
 </style><link rel="stylesheet" href="./assets/lesson-l09-hifi.css"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
@@ -1451,7 +1451,20 @@ function renderSavedQuestions(){
  });
 }
 const pageHistory=[];
-function navigate(id,{focus=true,remember=true}={}){const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library"){renderCaseArchive();renderSavedQuestions();}if(id==="research")syncResearch();refreshLucide();placeCompanion();}
+const LI_LESSON_ROUTES={lessonL09:"L09-1-2",lessonL03:"L03-1-2",lessonL15:"L15-2-2"};
+/* S134: A lesson URL is explicit; returning to Home must not replay a stale lesson on reload. */
+function syncLiRoute(id){
+ if(!window.history?.replaceState||!window.location?.href)return;
+ const url=new URL(window.location.href);
+ const lesson=LI_LESSON_ROUTES[id];
+ if(lesson)url.searchParams.set("lesson",lesson);
+ else url.searchParams.delete("lesson");
+ url.hash="";
+ const target=url.pathname+url.search+url.hash;
+ if(target!==window.location.pathname+window.location.search+window.location.hash)
+  window.history.replaceState(window.history.state,"",target);
+}
+function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library"){renderCaseArchive();renderSavedQuestions();}if(id==="research")syncResearch();refreshLucide();placeCompanion();}
 function goBack(){while(pageHistory.length){const previous=pageHistory.pop();if(previous!==currentPage&&document.getElementById("page-"+previous)){navigate(previous,{remember:false});return}}navigate("home",{remember:false})}
 function renderMethods(){const el=document.getElementById("method-cards");const q=(document.getElementById("method-search").value||"").trim().toLocaleLowerCase("vi");const preset=STUDY_MODES[studyMode].suggestions;const visible=methods.filter(m=>{const match=(!q||(m.join(" ").toLocaleLowerCase("vi").includes(q)));const cat=currentCategory==="Tất cả"||m[4]===currentCategory;const picked=Boolean(q)||currentCategory!=="Tất cả"||!preset||preset.includes(m[0]);return match&&cat&&picked});el.innerHTML=visible.length?visible.map(m=>'<button class="method-card" data-method="'+m[0]+'"><i data-lucide="'+(m[4]==="Luận Chứng Thuật"?"git-branch":m[4]==="Phá Giải Thuật"?"puzzle":m[4]==="Minh Giải Thuật"?"lightbulb":m[4]==="Tự Chủ Thuật"?"brain-circuit":"book-open-check")+'" class="method-icon" aria-hidden="true"></i><span class="kicker">'+m[0]+' · '+m[4]+'</span><h3>'+m[1]+'</h3><span class="original">'+m[2]+'</span><span class="purpose">'+m[3]+'</span><span class="end">CHÚ GIẢI →</span></button>').join(""):'<div class="surface">Không tìm thấy. Thử đổi bộ lọc hoặc tìm bằng tên học thuật.</div>';
 document.getElementById("method-count").textContent="Hiển thị "+visible.length+"/13 phương pháp"+(q?" · kết quả tìm kiếm trên cả 13":currentCategory!=="Tất cả"?" · theo nhóm":STUDY_MODES[studyMode].suggestions?" · "+STUDY_MODES[studyMode].label:" · đầy đủ");
@@ -1571,7 +1584,8 @@ window.addEventListener("resize",placeCompanion,{passive:true});
  });
  if(liStorageError)toast("Không đọc được dữ liệu đã lưu. Tạm dừng ghi mới để tránh ghi đè.");
 })();
-navigate("home",{focus:false});
+const liInitialLesson=new URLSearchParams(window.location.search).get("lesson");
+navigate("home",{focus:false,syncUrl:!Object.values(LI_LESSON_ROUTES).includes(liInitialLesson)});
 setStudyMode(studyMode,{persist:false});
 window.addEventListener("load",()=>{refreshLucide();placeCompanion();});
 </script><script src="./assets/laoly-context-s112.js"></script><script src="./assets/laoly-quotes-s121.js"></script><script src="./assets/lesson-l09-hifi-markup.js"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js"></script><script src="./assets/lesson-l15-hifi-markup.js"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script></body></html>

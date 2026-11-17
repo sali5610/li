@@ -1186,9 +1186,8 @@ width:70px!important;height:100px!important;left:3px!important;bottom:-3px!impor
 
 /* S128/S134 · Shared ruled writing paper.
    A gradient without explicit background-size fills the textarea, so shifting
-   background-position has no visible effect. Tile the 31px rule instead.
-   First visible rule = 8px top offset + 30px = 38px, beneath text ink. */
-:root{--li-notebook-line-height:31px;--li-notebook-rule:#D2C5A9}
+   background-position has no visible effect. Tile a 32px rule to match
+   the tokenized 32px writing line. First visible rule = 8 + 31 = 39px. */
 textarea,.notebook{
   display:block;
   box-sizing:border-box;
@@ -1200,7 +1199,7 @@ textarea,.notebook{
   background-color:var(--cream)!important;
   background-image:
     linear-gradient(to bottom,var(--cream) 0 16px,transparent 16px),
-    linear-gradient(to bottom,transparent 0 30px,var(--li-notebook-rule) 30px 31px)!important;
+    linear-gradient(to bottom,transparent 0 31px,var(--li-color-notebook-rule) 31px 32px)!important;
   background-size:100% 16px,100% var(--li-notebook-line-height)!important;
   background-position:0 0,0 8px!important;
   background-repeat:no-repeat,repeat!important;

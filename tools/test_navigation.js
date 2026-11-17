@@ -8,10 +8,12 @@ const start=html.indexOf("const pageHistory=[];");
 const end=html.indexOf("function renderMethods(){",start);
 assert(start>=0&&end>start,"Expected navigation functions");
 const code=html.slice(start,end);
-const ids=[...html.matchAll(/<section id="page-([^"]+)"/g)].map(x=>x[1]);
+const ids=[...html.matchAll(/<section id="page-([^"]+)"/g)].map(x=>x[1]).concat(["lessonL09","lessonL03","lessonL15"]);
 const pages=new Map(ids.map(id=>[id,{id:"page-"+id,classList:{toggle(){}},focus(){}}]));
 const tabs=ids.map(id=>({dataset:{page:id},classList:{toggle(){}},setAttribute(){},removeAttribute(){}}));
 const calls={guide:0,library:0,research:0};
+const location=new URL("https://sali5610.github.io/li/?utm_source=chatgpt.com&lesson=L09-1-2#l09-goals");
+const urlReplacements=[];
 const sandbox={
  currentPage:"home",
  document:{
@@ -22,7 +24,18 @@ const sandbox={
      throw Error("Unexpected selector: "+selector);
    }
  },
- window:{scrollTo(){}},
+ URL,
+ window:{
+   scrollTo(){},
+   location,
+   history:{
+     state:null,
+     replaceState(state,title,path){
+       location.href=new URL(path,location.origin).href;
+       urlReplacements.push(path);
+     }
+   }
+ },
  renderMethods(){calls.guide++},
  renderCaseArchive(){calls.library++},
  renderSavedQuestions(){},
@@ -36,6 +49,9 @@ const active=()=>sandbox.currentPage;
 const length=()=>vm.runInContext("pageHistory.length",sandbox);
 assert.equal(active(),"home");
 sandbox.navigate("settings");assert.equal(active(),"settings");assert.equal(length(),1);
+assert.equal(location.searchParams.has("lesson"),false,"Leaving a lesson clears stale lesson query");
+assert.equal(location.hash,"","Leaving a lesson clears old goal hash");
+assert.equal(location.searchParams.get("utm_source"),"chatgpt.com","Preserve unrelated query params");
 sandbox.goBack();assert.equal(active(),"home");assert.equal(length(),0);
 sandbox.navigate("catalog");
 sandbox.navigate("search");
@@ -57,4 +73,10 @@ sandbox.goBack();assert.equal(active(),"guide");
 sandbox.goBack();assert.equal(active(),"home");
 sandbox.goBack();assert.equal(active(),"home","empty history fallback");
 assert.equal(length(),0);
+sandbox.navigate("lessonL09");assert.equal(location.searchParams.get("lesson"),"L09-1-2");
+sandbox.navigate("home");assert.equal(location.searchParams.get("lesson"),null,"Home URL must remain Home after refresh");
+sandbox.navigate("lessonL03");assert.equal(location.searchParams.get("lesson"),"L03-1-2");
+sandbox.navigate("lessonL15");assert.equal(location.searchParams.get("lesson"),"L15-2-2");
+sandbox.navigate("home");assert.equal(location.searchParams.has("lesson"),false);
+assert.ok(urlReplacements.length>=5,"Route updates should be captured without reloading");
 console.log("PASS S118 back navigation: Settings, Search, Capture, chained routes, duplicate prevention, fallback and Guide/Library/Research hooks");

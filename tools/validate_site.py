@@ -123,7 +123,7 @@ for selector in (
     ".header .brand-copy{display:flex;justify-content:center;height:44px}",
     ".header .logo{display:block;line-height:1;transform:translateY(2px)}",
     ".header .brand-stamp{display:block;align-self:center;object-fit:contain}",
-    ".header .tools .tool-button{display:grid;place-items:center;align-self:center;padding:0}",
+    ".header .tools .tool-button{display:grid;place-items:center;align-self:center;padding:var(--li-space-0)}",
 ):
     assert selector in html, f"Header alignment rule missing: {selector}"
 assert html.count('class="tool-button" data-page=') == 3

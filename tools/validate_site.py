@@ -69,7 +69,7 @@ assert 'Xóa dữ liệu trang web có thể làm mất Bút Ký' not in setting
 assert '<article class="surface" id="settings-buddy-card">' in settings
 assert '<div class="folio-art roots" style="height:154px;margin-top:12px"></div>' not in settings
 assert settings.count('class="settings-buddy-illustration"') == 1
-assert 'class="settings-buddy-illustration" src="./assets/laoly-neutral.png"' in settings
+assert 'class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"' in settings
 assert settings.count('data-buddy="1"') == 1
 assert '#settings-buddy-card .settings-buddy-footer' in html
 assert '#settings-buddy-card .settings-buddy-illustration' in html
@@ -144,7 +144,7 @@ for page_name in ("settings","search","capture"):
     utility=section(page_name)
     assert utility.count('data-nav-back aria-label="Quay lại màn trước"')==1,page_name
 assert html.count('data-nav-back aria-label="Quay lại màn trước"')==3
-assert 'class="settings-buddy-illustration" src="./assets/laoly-neutral.png"' in settings
+assert 'class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"' in settings
 assert 'class="settings-buddy-illustration" src="./assets/laoly-guide-rest.png"' not in settings
 assert '<span class="hero-dialogue-avatar" aria-hidden="true"><img src="./assets/laoly-neutral.png"' in html
 assert 'const pageHistory=[];' in html
@@ -157,6 +157,18 @@ library_section=section("library")
 assert '<article id="notebook-section" class="surface" tabindex="-1"' in library_section
 assert '<article id="notebook-section" class="surface tinted"' not in library_section
 assert library_section.count('<div class="surface-grid cols2"><article class="surface">')==1
+
+# S120: mirror-variant illustration stored locally and not silently downgraded
+# to a chat icon; Bút Ký uses same paper surface as cards 03-04.
+illustrated=site/"assets"/"laoly-mirror-suy-nghi.png"
+assert illustrated.is_file() and illustrated.stat().st_size > 100000
+raw_illustrated=illustrated.read_bytes()
+assert raw_illustrated[:8] == bytes([137,80,78,71,13,10,26,10])
+assert (int.from_bytes(raw_illustrated[16:20],"big"), int.from_bytes(raw_illustrated[20:24],"big")) == (1024,1024)
+assert 'class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"' in settings
+assert 'class="settings-buddy-illustration" src="./assets/laoly-neutral.png"' not in settings
+assert '<article id="notebook-section" class="surface" tabindex="-1"' in library
+assert '<article id="notebook-section" class="surface tinted"' not in library
 
 assert (site/".nojekyll").is_file()
 print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and 28/30px gaps, privacy copy, JS parsing")

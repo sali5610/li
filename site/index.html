@@ -1049,7 +1049,7 @@ width:70px!important;height:100px!important;left:3px!important;bottom:-3px!impor
 /* S117 · Settings: Lão Lý is a character illustration, not a full-width scenery banner. */
 #settings-buddy-card .settings-buddy-footer {
   display:grid;
-  grid-template-columns:minmax(0,1fr) 100px;
+  grid-template-columns:minmax(0,1fr) 148px;
   align-items:end;
   column-gap:12px;
   margin-top:20px;
@@ -1063,24 +1063,24 @@ width:70px!important;height:100px!important;left:3px!important;bottom:-3px!impor
 }
 #settings-buddy-card .settings-buddy-illustration {
   display:block;
-  width:100px;
-  height:114px;
-  object-fit:cover;
+  width:148px;
+  height:166px;
+  object-fit:contain;
   object-position:center bottom;
   pointer-events:none;
   user-select:none;
 }
 @media(max-width:600px){
   #settings-buddy-card .settings-buddy-footer {
-    grid-template-columns:minmax(0,1fr) 84px;
+    grid-template-columns:minmax(0,1fr) 118px;
     gap:10px;
     margin-top:16px;
   }
-  #settings-buddy-card .settings-buddy-illustration {width:84px;height:100px}
+  #settings-buddy-card .settings-buddy-illustration {width:118px;height:132px}
 }
 @media(max-width:360px){
-  #settings-buddy-card .settings-buddy-footer {grid-template-columns:minmax(0,1fr) 72px}
-  #settings-buddy-card .settings-buddy-illustration {width:72px;height:86px}
+  #settings-buddy-card .settings-buddy-footer {grid-template-columns:minmax(0,1fr) 100px}
+  #settings-buddy-card .settings-buddy-illustration {width:100px;height:116px}
 }
 
 /* S118 · in-app back links for utility screens, with reliable tap target on iPhone. */
@@ -1115,7 +1115,7 @@ width:70px!important;height:100px!important;left:3px!important;bottom:-3px!impor
 #page-settings .utility-back svg,
 #page-search .utility-back svg,
 #page-capture .utility-back svg {width:16px;height:16px;flex:none}
-/* The Gương / home portrait is reused in the Settings Lão Lý card. */
+/* S120: Settings uses the real illustrated 'Trong gương' character, not the 128px chat icon. */
 #settings-buddy-card .settings-buddy-illustration {object-fit:contain}
 
 
@@ -1237,7 +1237,7 @@ width:70px!important;height:100px!important;left:3px!important;bottom:-3px!impor
 <section id="page-dashboard" class="page" tabindex="-1"><div class="section-shell"><button class="action alt" data-page="library">← Tủ Riêng</button><h1 class="display-title" style="margin-top:20px">Nhật Ký</h1><p class="intro">Chưa có hoạt động nào được ghi nhận.</p><div class="surface-grid cols2"><article class="surface"><div class="kicker">HOẠT ĐỘNG GẦN ĐÂY</div><h2>Chưa có dữ liệu</h2></article><article class="surface"><div class="kicker">SỨC KHỎE & NHỊP SINH HOẠT</div><h2>Chỉ khi tự nguyện</h2><p>Bạn quyết định điều gì đáng theo dõi trong nhịp sinh hoạt của mình.</p><button class="action alt" data-page="settings">Cài đặt quyền riêng tư</button></article></div></div></section>
 <section id="page-settings" class="page" tabindex="-1"><div class="section-shell"><button class="utility-back" type="button" data-nav-back aria-label="Quay lại màn trước"><i data-lucide="arrow-left" aria-hidden="true"></i><span>Quay lại</span></button><div class="kicker">CÀI ĐẶT</div><h1 class="display-title">Cài đặt</h1><p class="intro">Điều chỉnh nhịp học và cách Lão Lý đồng hành.</p><div class="editorial-grid"><div class="stack-sm"><article class="surface"><div class="kicker">DỮ LIỆU &amp; ĐỒNG BỘ</div><h2>Lưu trữ</h2><div class="path-list"><div class="path-item"><div><b>Lưu trên thiết bị</b><p class="small">Đang lưu trong trình duyệt này.</p></div></div><div class="path-item"><div><b>Đồng bộ giữa các thiết bị</b><p class="small">Chưa hỗ trợ.</p></div></div></div><div class="settings-data-actions"><button class="action alt" id="export-personal-data" type="button"><i data-lucide="download" aria-hidden="true"></i> Xuất bản sao</button><button class="action alt" id="import-personal-trigger" type="button">Nhập bản sao</button><input id="import-personal-data" type="file" accept=".json,application/json" aria-label="Chọn bản sao JSON li." class="visually-hidden-file"></div><p class="small">Trước khi xóa dữ liệu trang web hoặc đổi thiết bị, website, hãy xuất bản sao để có thể nhập lại ghi chép.</p></article><article class="surface" id="study-mode-settings"><div class="kicker">NHỊP HỌC</div><h2>Chọn nhịp học</h2><p class="small">Lão Lý đồng hành theo nhịp bạn chọn.</p><div class="ly-mode-grid" role="group" aria-label="Chọn một trong bốn nhịp học"><button type="button" class="ly-mode-choice" data-ly-mode="start" aria-pressed="true" aria-label="Vào nhịp · Bắt đầu nhẹ nhàng"><img src="./assets/laoly-mode-start.png" width="42" height="42" alt=""><span>Vào nhịp</span></button><button type="button" class="ly-mode-choice" data-ly-mode="focus" aria-pressed="false" aria-label="Đào sâu · Khám phá đầy đủ"><img src="./assets/laoly-mode-focus.png" width="42" height="42" alt=""><span>Đào sâu</span></button><button type="button" class="ly-mode-choice" data-ly-mode="overload" aria-pressed="false" aria-label="Quá tải · Giảm gợi ý và cho phép nghỉ"><img src="./assets/laoly-mode-overload.png" width="42" height="42" alt=""><span>Quá tải</span></button><button type="button" class="ly-mode-choice" data-ly-mode="recover" aria-pressed="false" aria-label="Hồi trí · Quay lại với nhịp nhẹ"><img src="./assets/laoly-mode-recover.png" width="42" height="42" alt=""><span>Hồi trí</span></button></div><div id="mode-feedback" class="state-note" aria-live="polite">Gợi ý 6 phương pháp để bắt đầu. Có thể tìm đủ 13 phương pháp.</div></article>
 <article class="surface"><div class="kicker">NHẮC NHỞ</div><h2>Nhắc nhở riêng</h2><p>Chọn lời nhắc bạn muốn nhận.</p><label class="select-row">Nhắc nghỉ ngơi <input type="checkbox" class="preview-toggle" /></label><label class="select-row">Nhắc vận động <input type="checkbox" class="preview-toggle" /></label><label class="select-row">Nhắc lịch ngủ <input type="checkbox" class="preview-toggle" /></label><p class="state-note">Lời nhắc trên thiết bị hiện chưa khả dụng.</p></article></div>
-<div class="stack-sm"><article class="surface" id="settings-buddy-card"><div class="kicker">NGƯỜI TRÔNG COI THƯ VIỆN</div><h2>Lão Lý</h2><p>Lão hơi tự phụ, đãng trí và có thể nhận sai khi bị phản bác bằng lý lẽ hợp lệ.</p><label class="select-row">Giọng Dịu <input type="checkbox" id="calm-toggle" aria-label="Giọng Dịu — giảm cà khịa, giữ nguyên giải thích"/></label><label class="select-row">Im Lặng <input type="checkbox" id="mute-toggle" aria-label="Im Lặng — tắt lời thoại Lão Lý, không tắt nội dung chính"/></label><div class="settings-buddy-footer"><button class="action alt" data-buddy="1">Xem mẫu câu thoại</button><img class="settings-buddy-illustration" src="./assets/laoly-neutral.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div></article><article class="surface"><div class="kicker">DỮ LIỆU & RIÊNG TƯ</div><h2>Kiểm soát thuộc về bạn</h2><p>Lão Lý hiện dùng hội thoại có sẵn. Ghi chép của bạn không tự động được gửi tới dịch vụ AI bên ngoài.</p></article></div></div></div></section>
+<div class="stack-sm"><article class="surface" id="settings-buddy-card"><div class="kicker">NGƯỜI TRÔNG COI THƯ VIỆN</div><h2>Lão Lý</h2><p>Lão hơi tự phụ, đãng trí và có thể nhận sai khi bị phản bác bằng lý lẽ hợp lệ.</p><label class="select-row">Giọng Dịu <input type="checkbox" id="calm-toggle" aria-label="Giọng Dịu — giảm cà khịa, giữ nguyên giải thích"/></label><label class="select-row">Im Lặng <input type="checkbox" id="mute-toggle" aria-label="Im Lặng — tắt lời thoại Lão Lý, không tắt nội dung chính"/></label><div class="settings-buddy-footer"><button class="action alt" data-buddy="1">Xem mẫu câu thoại</button><img class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div></article><article class="surface"><div class="kicker">DỮ LIỆU & RIÊNG TƯ</div><h2>Kiểm soát thuộc về bạn</h2><p>Lão Lý hiện dùng hội thoại có sẵn. Ghi chép của bạn không tự động được gửi tới dịch vụ AI bên ngoài.</p></article></div></div></div></section>
 <section id="page-search" class="page" tabindex="-1"><div class="section-shell"><button class="utility-back" type="button" data-nav-back aria-label="Quay lại màn trước"><i data-lucide="arrow-left" aria-hidden="true"></i><span>Quay lại</span></button><div class="kicker">TÌM TRONG THƯ VIỆN</div><h1 class="display-title">Tra Cứu</h1><input class="searchbox" id="global-search" placeholder="Ví dụ: Retrieval Practice, Sociology, Sampling Bias"/><div class="surface" style="margin-top:20px"><h2>Kết quả tra cứu</h2><div id="global-results" class="path-list">Nhập điều bạn muốn tìm.</div></div></div></section>
 <section id="page-capture" class="page" tabindex="-1"><div class="section-shell"><button class="utility-back" type="button" data-nav-back aria-label="Quay lại màn trước"><i data-lucide="arrow-left" aria-hidden="true"></i><span>Quay lại</span></button><div class="kicker">NHẶT Ý</div><h1 class="display-title">Nhặt ý</h1><div class="editorial-grid"><article class="surface tinted"><h2>Nhặt một ý cần kiểm chứng</h2><label for="capture-note" class="small">Ý nghĩ, câu sách hoặc nhận định chưa được kiểm chứng</label><textarea id="capture-note" class="text-editor" placeholder="Mình vừa đọc thấy…"></textarea><div class="action-row"><button class="action" data-demo="Chưa lưu được ý này. Hãy sao chép trước khi rời trang.">Nhặt ý</button></div></article><article class="surface"><h2>Đừng nhầm chuyện được kể với bằng chứng.</h2><p>Giữ lại câu hỏi và nguồn bạn gặp để tiện kiểm chứng sau.</p><span class="status-chip">Nguồn cá nhân · Chưa xác minh</span></article></div></div></section>
 </main><footer class="footer"><b>li. (理)</b><span class="footer-tagline">THE WORLD OF KNOWING WHY</span></footer>

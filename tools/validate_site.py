@@ -61,5 +61,12 @@ assert all('tinted' not in element for element in re.findall(
     r'<article class="surface(?: tinted)?"(?: id="[^"]+")?>', settings
 ))
 
+# S112 — context-aware companion must be present, parse and pass UI-plan QA.
+companion=site/"assets"/"laoly-context-s112.js"
+assert companion.is_file() and companion.stat().st_size>4000
+assert html.count('<script src="./assets/laoly-context-s112.js"></script>')==1
+subprocess.run(["node","--check",str(companion)],check=True)
+subprocess.run(["node",str(site.parent/"tools"/"test_buddy.js")],check=True,cwd=site.parent)
+
 assert (site/".nojekyll").is_file()
 print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and 28/30px gaps, privacy copy, JS parsing")

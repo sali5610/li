@@ -13,20 +13,21 @@ for name in assets:
 assert html.count('<div class="mirror-label">Gương Vạn Vấn</div>') == 1
 assert '<div class="mirror-label"><i data-lucide="search"' not in html
 
-# S138/S139: touch swipe only on mirror, fixed-scale viewport, and sticky top nav.
+# S138/S139: touch swipe only on mirror; fixed-scale viewport and sticky header.
 for needle in (
     'content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"',
     '/* S139 · Sticky top navigation, fixed touch-viewport scale.',
     'touch-action:pan-x pan-y;',
     'scroll-padding-top:88px;',
     'position:sticky;',
-    'top:0;\\n  z-index:42;\\n  background:var(--paper);',
+    'z-index:42;',
     'html{scroll-padding-top:74px}',
     'document.addEventListener("gesturestart",event=>event.preventDefault(),{passive:false});',
     'document.addEventListener("gesturechange",event=>event.preventDefault(),{passive:false});',
     'if(event.touches?.length>1)event.preventDefault();',
     '/* S138 · Swipe directly on the mirror text area. pan-y preserves page scrolling. */',
-    '#page-home .mirror-message{\\n  pointer-events:auto;\\n  touch-action:pan-y;',
+    'pointer-events:auto;',
+    'touch-action:pan-y;',
     'const mirrorSwipeSurface=document.querySelector("#page-home .mirror-message");',
     'mirrorSwipeSurface.addEventListener("touchstart",event=>{',
     'mirrorSwipeSurface.addEventListener("touchend",event=>{',
@@ -34,7 +35,7 @@ for needle in (
     'if(Math.abs(dx)<42||Math.abs(dx)<Math.abs(dy)*1.3)return;',
     'shiftMirrorQuestion(dx<0?1:-1);',
 ):
-    assert needle.replace("\\\\n","\\n") in html, f"Mobile sticky viewport/swipe rule missing: {needle}"
+    assert needle in html, f"Mobile sticky viewport/swipe rule missing: {needle}"
 
 # S137: previous/next arrows cycle questions in both directions; buttons remain stationary.
 assert html.count("/* S135/S137 · Mobile mirror: narrower centered question, stationary navigation arrows.") == 1

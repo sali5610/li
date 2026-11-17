@@ -15,6 +15,7 @@ on:
       - 'site/**'
       - 'design-system/**'
       - 'tools/validate_design_system.py'
+      - 'tools/validate_ui_foundations.py'
       - 'AGENTS.md'
       - '.github/workflows/li-design-contract.yml'
   workflow_dispatch:

@@ -34,3 +34,9 @@ The application contains 13 techniques in Sổ Tay Thần Chú; four explicit Nh
 `tools/import_from_vercel.py` recovers the legacy Vercel HTML/assets and applies the approved migration fixes. The recovered frozen production snapshot is committed in `site/`, so future hosting no longer depends on Vercel. The restore workflow is scoped to the migration review branch; the publish workflow is scoped to `main`.
 
 Original Vercel URL: https://li-step15-arborium-hifi-review.vercel.app/
+
+## UI/UX design contract (new baseline)
+
+Before changing visual layouts or controls, read **[design-system/README.md](design-system/README.md)**, **[components.md](design-system/components.md)** and **[qa-checklist.md](design-system/qa-checklist.md)**. Shared design tokens are machine-readable in **[tokens.json](design-system/tokens.json)**; run `python3 tools/validate_design_system.py` for the free source-level regression smoke test.
+
+The contract covers the **currently implemented** high-fi UI and specific PO decisions; **G2 overall visual signoff and physical-device accessibility/visual QA are still open**. It does not yet extract the inline CSS into a standalone component library or certify design consistency by itself. Decision approvals live in Notion, implementation in GitHub.

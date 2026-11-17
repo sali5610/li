@@ -35,6 +35,6 @@ jobs:
       - name: Validate readable type and 4px layout grid
         run: python3 tools/validate_ui_foundations.py
       - name: Inventory remaining legacy hard-coded design declarations (report only)
-        run: python3 tools/audit_design_tokens.py
+        run: python3 tools/audit_design_tokens.py --check-baseline
       - name: Validate full app routes and native lessons before merge
         run: python3 tools/validate_site.py

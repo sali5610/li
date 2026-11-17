@@ -1,5 +1,5 @@
 <!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>li. v0.3 Browser Computed Style Smoke</title>
-<style>html,body{margin:0;padding:0}iframe{display:block;width:100%;height:900px;border:0}#result{white-space:pre-wrap;font:12px monospace}</style></head>
+<style>html,body{margin:0;padding:0}iframe{display:block;width:var(--test-width,100%);height:900px;border:0}#result{white-space:pre-wrap;font:12px monospace}</style><script>document.documentElement.style.setProperty("--test-width",(Number(new URLSearchParams(location.search).get("w"))||390)+"px");</script></head>
 <body><pre id="result">LI_RENDER_PENDING</pre><iframe id="app" src="../site/index.html" title="li. app fixture"></iframe>
 <script>
 (function(){
@@ -12,7 +12,7 @@
  function finish(){
    if(done)return;done=true;
    const errors=window.__checks.filter(x=>!x.passed);
-   const summary={width:window.innerWidth,passed:window.__checks.length-errors.length,total:window.__checks.length,errors,checks:window.__checks};
+   const summary={width:frame.contentWindow ? frame.contentWindow.innerWidth : -1,passed:window.__checks.length-errors.length,total:window.__checks.length,errors,checks:window.__checks};
    out.textContent=(errors.length?"LI_RENDER_FAIL ":"LI_RENDER_PASS ")+JSON.stringify(summary);
  }
  frame.addEventListener("load",function(){
@@ -30,7 +30,7 @@
     const scene=doc.querySelector("#page-home .hero");
     const image=scene?w.getComputedStyle(scene,"::before").backgroundImage:"";
     report("Approved Home illustration loaded from new CSS-relative path",image.includes("home-mystic-cool-"),image.slice(0,170));
-    if(window.innerWidth<=600){
+    if(w.innerWidth<=600){
      const nav=doc.querySelector(".mobile-nav .nav-btn");
      report("Mobile bottom nav support label 14px",!!nav&&w.getComputedStyle(nav).fontSize==="14px",nav?w.getComputedStyle(nav).fontSize:"missing");
     }

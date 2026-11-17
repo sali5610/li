@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "capturedFromCommit": "d6ebb9f587f782c3ec187120cd3f8e3a1b6d6876",
+  "capturedDate": "2026-11-18",
+  "purpose": "Static declaration debt ceilings, not an approval or a computed-style report. New file defaults to 0 unmapped.",
+  "core": {
+    "site/index.html": {
+      "color": {
+        "without_var": 145
+      },
+      "typography": {
+        "without_var": 291
+      },
+      "spacing": {
+        "without_var": 369,
+        "offgrid_px_occurrences": 313
+      },
+      "offgrid_inline_spacing_declarations": 5
+    },
+    "site/assets/lesson-l09-hifi.css": {
+      "color": {
+        "without_var": 1
+      },
+      "typography": {
+        "without_var": 29
+      },
+      "spacing": {
+        "without_var": 53,
+        "offgrid_px_occurrences": 40
+      },
+      "offgrid_inline_spacing_declarations": 0
+    },
+    "site/assets/ui-foundations.css": {
+      "color": {
+        "without_var": 0
+      },
+      "typography": {
+        "without_var": 2
+      },
+      "spacing": {
+        "without_var": 1,
+        "offgrid_px_occurrences": 0
+      },
+      "offgrid_inline_spacing_declarations": 0
+    }
+  },
+  "secondary_tools": {
+    "site/design-system-preview.html": {
+      "color": {
+        "without_var": 1
+      },
+      "typography": {
+        "without_var": 36
+      },
+      "spacing": {
+        "without_var": 32,
+        "offgrid_px_occurrences": 0
+      },
+      "offgrid_inline_spacing_declarations": 0
+    },
+    "site/lesson-source-lab.html": {
+      "color": {
+        "without_var": 21
+      },
+      "typography": {
+        "without_var": 12
+      },
+      "spacing": {
+        "without_var": 21,
+        "offgrid_px_occurrences": 17
+      },
+      "offgrid_inline_spacing_declarations": 0
+    }
+  },
+  "lesson_templates": {
+    "site/assets/lesson-l03-hifi-markup.js": {
+      "color": {
+        "without_var": 0
+      },
+      "typography": {
+        "without_var": 0
+      },
+      "spacing": {
+        "without_var": 0,
+        "offgrid_px_occurrences": 0
+      },
+      "offgrid_inline_spacing_declarations": 1
+    },
+    "site/assets/lesson-l09-hifi-markup.js": {
+      "color": {
+        "without_var": 0
+      },
+      "typography": {
+        "without_var": 0
+      },
+      "spacing": {
+        "without_var": 0,
+        "offgrid_px_occurrences": 0
+      },
+      "offgrid_inline_spacing_declarations": 1
+    },
+    "site/assets/lesson-l15-hifi-markup.js": {
+      "color": {
+        "without_var": 0
+      },
+      "typography": {
+        "without_var": 0
+      },
+      "spacing": {
+        "without_var": 0,
+        "offgrid_px_occurrences": 0
+      },
+      "offgrid_inline_spacing_declarations": 1
+    }
+  }
+}

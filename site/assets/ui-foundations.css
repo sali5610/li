@@ -284,6 +284,29 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   }
 }
 
+/* Tablet: a 1fr grid retains min-content width; scrollable Guide filters
+   can force the column wider than the viewport. Constrain the grid track
+   instead of masking real horizontal overflow on html/body. */
+@media (min-width: 641px) and (max-width: 950px) {
+  .page .editorial-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .page .editorial-grid > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+  #page-guide .editorial-grid .stack-sm {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  #page-guide #method-filters {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
 /* Responsive density: preserve usable width rather than reverting to 10px labels. */
 @media (min-width: 601px) {
   :root { --li-page-gutter: var(--li-space-6); --li-card-pad: var(--li-space-6); }

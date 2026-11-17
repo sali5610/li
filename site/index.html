@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light"><title>理 · li. — Thư viện tri thức</title>
+<link rel="icon" type="image/svg+xml" href="./assets/li-seal.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 <style>
@@ -20,7 +21,7 @@ svg.icon.sm{width:16px;height:16px}svg.icon.lg{width:22px;height:22px}
 .app{max-width:1512px;margin:auto;padding:0 clamp(12px,2.8vw,42px) 58px}
 .header{height:82px;display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid var(--rule)}
 .brand{display:flex;align-items:center;gap:10px;white-space:nowrap}
-.brand-stamp{display:grid;place-items:center;color:var(--moss);width:29px;height:29px;border:1px solid var(--moss);background:var(--paper-2)}
+.brand-stamp{display:block;width:42px;height:42px;object-fit:contain;flex:none}
 .logo{font-size:35px;line-height:1;color:var(--moss)}
 .topnav{display:flex;align-items:center;gap:4px}
 .nav-btn{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--moss);background:none;border:1px solid transparent;min-height:44px;padding:9px 12px;font-weight:650}
@@ -115,7 +116,7 @@ svg.icon.sm{width:16px;height:16px}svg.icon.lg{width:22px;height:22px}
 .mobile-nav{display:none}
 @media (max-width:1130px){.header .status{display:none}.destination-grid{gap:12px}.destination{grid-template-columns:86px minmax(0,1fr)}.dest-title{font-size:23px}.hero{height:680px}.hero-left{left:28px}.hero-actions{width:320px}.mirror-message{left:71%;width:26%}}
 @media(max-width:820px){.hero-left h1{font-size:39px}.hero-left p{max-width:210px}.hero{min-height:650px}.mirror-message{left:70%;top:39%;min-width:200px}.hero-actions{left:70%;width:270px}.research-layout,.guide-intro{grid-template-columns:1fr}.guide-intro .banner-photo{display:none}.destination-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.destination[data-buddy]{grid-column:1/-1}.spell-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){.app{padding:0 12px 116px}.header{height:66px}.brand-stamp{width:25px;height:25px}.logo{font-size:30px}.topnav{display:none}.hero{height:625px;min-height:625px}.hero:before{background-position:78% center}.hero-left{top:22px;left:16px;max-width:280px}.hero-left h1,.hero-left p,.hero-left .tiny-note{display:none}.hero-left .eyebrow{font-size:9px;letter-spacing:.13em}.mirror-message{left:66%;top:41%;width:55%;max-width:230px;min-width:0;gap:9px}.mirror-message h2{font-size:clamp(19px,5.5vw,25px);line-height:1.18}.mirror-message .mirror-label{font-size:9px;letter-spacing:.10em}.source-status{font-size:9px;padding:5px 7px}.hero-actions{left:50%;bottom:23px;width:calc(100% - 28px)}.secondary-row{gap:8px}.destination-grid{grid-template-columns:1fr 1fr;gap:12px}.destination{display:flex;flex-direction:column;min-height:196px}.dest-image{height:85px;border-right:0;border-bottom:1px solid var(--moss)}.dest-text{padding:11px;flex:1}.dest-title{font-size:24px}.destination[data-buddy]{grid-column:1/-1;min-height:102px;flex-direction:row}.destination[data-buddy] .dest-image{width:102px;height:auto;flex-shrink:0;border-bottom:0;border-right:1px solid var(--moss)}.below{padding-top:20px}.page-heading{padding:24px 0 16px;display:block}.page-heading h1{font-size:43px}.page-heading p{margin-top:12px}.research-layout{margin:18px 0;gap:18px}.panel{padding:16px}.panel h2{font-size:31px}.spell-grid{grid-template-columns:1fr;gap:18px}.spell{display:grid;grid-template-columns:120px minmax(0,1fr);min-height:190px}.spell-art{height:auto;border-right:1px solid var(--moss);border-bottom:0}.spell-content{padding:12px}.spell h3{font-size:27px}.spell p{min-height:unset}.footer{margin-top:22px}.mobile-nav{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;z-index:20;left:0;right:0;bottom:0;padding-bottom:env(safe-area-inset-bottom,0px);background:var(--paper);border-top:2px solid var(--moss);box-shadow:0 -4px 0 var(--shadow-wood)}.mobile-nav .nav-btn{display:flex;flex-direction:column;gap:3px;min-height:58px;padding:7px 2px;font-size:10px}.mobile-nav .nav-btn.active{box-shadow:inset 0 4px 0 var(--moss);background:var(--paper-2);border-color:transparent;color:var(--moss)}.mobile-nav .nav-btn svg{width:21px;height:21px}}
+@media(max-width:600px){.app{padding:0 12px 116px}.header{height:66px}.brand-stamp{width:34px;height:34px}.logo{font-size:30px}.topnav{display:none}.hero{height:625px;min-height:625px}.hero:before{background-position:78% center}.hero-left{top:22px;left:16px;max-width:280px}.hero-left h1,.hero-left p,.hero-left .tiny-note{display:none}.hero-left .eyebrow{font-size:9px;letter-spacing:.13em}.mirror-message{left:66%;top:41%;width:55%;max-width:230px;min-width:0;gap:9px}.mirror-message h2{font-size:clamp(19px,5.5vw,25px);line-height:1.18}.mirror-message .mirror-label{font-size:9px;letter-spacing:.10em}.source-status{font-size:9px;padding:5px 7px}.hero-actions{left:50%;bottom:23px;width:calc(100% - 28px)}.secondary-row{gap:8px}.destination-grid{grid-template-columns:1fr 1fr;gap:12px}.destination{display:flex;flex-direction:column;min-height:196px}.dest-image{height:85px;border-right:0;border-bottom:1px solid var(--moss)}.dest-text{padding:11px;flex:1}.dest-title{font-size:24px}.destination[data-buddy]{grid-column:1/-1;min-height:102px;flex-direction:row}.destination[data-buddy] .dest-image{width:102px;height:auto;flex-shrink:0;border-bottom:0;border-right:1px solid var(--moss)}.below{padding-top:20px}.page-heading{padding:24px 0 16px;display:block}.page-heading h1{font-size:43px}.page-heading p{margin-top:12px}.research-layout{margin:18px 0;gap:18px}.panel{padding:16px}.panel h2{font-size:31px}.spell-grid{grid-template-columns:1fr;gap:18px}.spell{display:grid;grid-template-columns:120px minmax(0,1fr);min-height:190px}.spell-art{height:auto;border-right:1px solid var(--moss);border-bottom:0}.spell-content{padding:12px}.spell h3{font-size:27px}.spell p{min-height:unset}.footer{margin-top:22px}.mobile-nav{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;z-index:20;left:0;right:0;bottom:0;padding-bottom:env(safe-area-inset-bottom,0px);background:var(--paper);border-top:2px solid var(--moss);box-shadow:0 -4px 0 var(--shadow-wood)}.mobile-nav .nav-btn{display:flex;flex-direction:column;gap:3px;min-height:58px;padding:7px 2px;font-size:10px}.mobile-nav .nav-btn.active{box-shadow:inset 0 4px 0 var(--moss);background:var(--paper-2);border-color:transparent;color:var(--moss)}.mobile-nav .nav-btn svg{width:21px;height:21px}}
 @media(max-width:350px){.hero{height:600px;min-height:600px}.mirror-message{left:66%;top:41%;width:59%}.mirror-message h2{font-size:19px}.hero-actions{bottom:20px}.destination{min-height:205px}.dest-title{font-size:22px}.source-status{font-size:8px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
@@ -223,7 +224,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #78964D;outline-offset:3p
 .header{height:76px}.topnav{flex:1;justify-content:center}.tools{display:flex;gap:4px}
 .tool-button{min-width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--rule);background:var(--paper-2);color:var(--moss)}
 .tool-button:hover,.tool-button.active{background:var(--moss);color:var(--cream)}
-.brand-stamp{font-family:"Crimson Text",Georgia,serif;font-size:22px;font-weight:700}
+/* S128 · Brand icon is a carved SVG seal, not font inside a bordered text box */
 .logo{font-size:32px}.tagline{font-size:9px;letter-spacing:.13em;color:var(--moss);line-height:1.2}
 .brand-copy{display:flex;flex-direction:column}
 .status{font-size:9px;max-width:110px;white-space:normal;line-height:1.25}
@@ -289,7 +290,7 @@ body .modal{background:rgba(15,31,21,.89)}
 body .dialog{max-height:85svh;overflow-y:auto}
 .footer{margin:30px auto;max-width:1180px}
 @media(max-width:950px){.editorial-grid{grid-template-columns:1fr}.method-grid,.surface-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){.review-ribbon{font-size:8px;letter-spacing:.035em}.app{padding-bottom:110px}.header{height:66px}.brand-stamp{font-size:18px}.logo{font-size:29px}.tagline{font-size:7px}.tools{margin-left:auto}.tool-button{width:39px;min-width:39px;height:44px}.status{display:none}.surface-grid,.surface-grid.cols2,.method-grid{grid-template-columns:1fr}.surface{padding:17px}.section-shell{padding-top:13px}.folio-art{margin:-17px -17px 14px}.method-grid{gap:13px}.method-card{min-height:152px}.display-title{font-size:48px}.action-row .action{flex:1;min-width:135px}.mobile-nav{display:grid}.home-tile .tile-photo{height:103px}.editorial-grid{gap:18px}}
+@media(max-width:600px){.review-ribbon{font-size:8px;letter-spacing:.035em}.app{padding-bottom:110px}.header{height:66px}.brand-stamp{width:34px;height:34px}.logo{font-size:29px}.tagline{font-size:7px}.tools{margin-left:auto}.tool-button{width:39px;min-width:39px;height:44px}.status{display:none}.surface-grid,.surface-grid.cols2,.method-grid{grid-template-columns:1fr}.surface{padding:17px}.section-shell{padding-top:13px}.folio-art{margin:-17px -17px 14px}.method-grid{gap:13px}.method-card{min-height:152px}.display-title{font-size:48px}.action-row .action{flex:1;min-width:135px}.mobile-nav{display:grid}.home-tile .tile-photo{height:103px}.editorial-grid{gap:18px}}
 @media (prefers-reduced-motion:reduce){.page{animation:none}}
 
 /* S82 · Mobile Gương Vạn Vấn composition correction · Step15 v0.2 review only */
@@ -506,7 +507,7 @@ svg.lucide{width:20px;height:20px;stroke-width:1.8;vertical-align:middle;flex-sh
 @media(max-width:600px){
   .header{height:62px;gap:6px}
   .header .brand{gap:7px}
-  .header .brand-stamp{height:26px;width:26px}
+  .header .brand-stamp{height:38px;width:38px}
   .header .logo{font-size:30px}
   .header .tools{gap:2px}
   .header .tool-button{width:44px!important;min-width:44px!important;height:44px!important;border:1px solid transparent!important;background:transparent!important;box-shadow:none!important}
@@ -1224,7 +1225,7 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 <symbol id="i-library" viewBox="0 0 24 24"><path d="M3 21h18M5 19V7h4v12M11 19V4h4v15M17 19V9h3v10"/></symbol>
 </defs></svg>
 <div class="app">
-<header class="header"><div class="brand"><span class="brand-stamp">理</span><span class="brand-copy"><span class="logo">li.</span></span></div>
+<header class="header"><div class="brand"><img class="brand-stamp" src="./assets/li-seal.svg" alt="" aria-hidden="true" width="42" height="42"><span class="brand-copy"><span class="logo">li.</span></span></div>
 <nav class="topnav" aria-label="Điều hướng chính"><button class="nav-btn" data-page="home" aria-label="Đại Sảnh — Trang chủ" title="Trang chủ">Đại Sảnh</button><button class="nav-btn" data-page="catalog" aria-label="Tàng Thư — Khám phá ngành học" title="Khám phá ngành học">Tàng Thư</button><button class="nav-btn" data-page="guide" aria-label="Thần Chú — 13 phương pháp học" title="13 phương pháp học">Thần Chú</button><button class="nav-btn" data-page="library" aria-label="Tủ Riêng — Hành trình và case cá nhân" title="Hành trình và case cá nhân">Tủ Riêng</button></nav>
 <div class="tools"><button class="tool-button" data-page="search" aria-label="Tìm kiếm" title="Tìm kiếm"><i data-lucide="search" class="icon " aria-hidden="true"></i></button><button class="tool-button" data-page="capture" aria-label="Nhặt ý" title="Nhặt ý"><i data-lucide="feather" class="icon " aria-hidden="true"></i></button><button class="tool-button" data-page="settings" aria-label="Cài đặt" title="Cài đặt"><i data-lucide="settings-2" aria-hidden="true"></i></button></div></header>
 <main id="main">

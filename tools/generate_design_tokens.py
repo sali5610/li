@@ -38,6 +38,9 @@ def render(data: dict) -> str:
     lines.append("  /* Semantic colors retain the currently accepted visual values. */")
     for key, value in data["semanticColors"].items():
         lines.append(f"  --li-color-{key}: {value};")
+    lines.append("  /* PO-preserved illustrated Lão Lý paint details. */")
+    for key, value in data.get("sceneColors", {}).items():
+        lines.append(f"  --li-scene-{key}: {value};")
     lines.append("  /* Material-inspired readable typography roles. */")
     for key, name in TYPE_NAMES.items():
         spec = data["typography"]["scale"][key]
@@ -58,7 +61,7 @@ def main() -> int:
     parser.add_argument("--check", action="store_true", help="fail if generated CSS differs")
     args = parser.parse_args()
     tokens = json.loads(DATA.read_text(encoding="utf-8"))
-    for key, value in {**tokens["colors"], **tokens["semanticColors"]}.items():
+    for key, value in {**tokens["colors"], **tokens["semanticColors"], **tokens.get("sceneColors", {})}.items():
         if not re.fullmatch(r"#[a-fA-F0-9]{6}", value):
             raise ValueError(f"Invalid {key}: {value}")
     css = render(tokens)

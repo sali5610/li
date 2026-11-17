@@ -113,7 +113,8 @@ assert "textarea,.notebook{" in html
 assert "line-height:var(--li-notebook-line-height)!important;" in html
 assert "background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 30px,var(--li-notebook-rule) 30px,var(--li-notebook-rule) 31px)!important;" in html
 assert "background-attachment:local;" in html
-assert "background-position:0 8px;" in html
+assert "--li-notebook-baseline-shift:5px" in html, "Notebook optical baseline correction missing"
+assert "background-position:0 calc(8px + var(--li-notebook-baseline-shift));" in html
 assert "textarea::placeholder{color:var(--muted);opacity:.8}" in html
 assert html.count('class="text-editor"') >= 2
 

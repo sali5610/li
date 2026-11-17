@@ -9,6 +9,21 @@ for name in assets:
     p=site/"assets"/name
     assert p.is_file() and p.stat().st_size>1000, f"Missing {name}"
     if name.endswith(".png"):assert p.read_bytes().startswith(b"\x89PNG\r\n\x1a\n"),f"Invalid {name}"
+# S129: the brand mark is a drawn, self-contained 理 seal, never live text in a CSS box.
+from xml.etree import ElementTree as ET
+seal_file=site/"assets"/"li-seal.svg"
+assert seal_file.is_file(), "Missing vector seal mark"
+seal=seal_file.read_text(encoding="utf-8")
+seal_root=ET.fromstring(seal)
+assert seal_root.attrib.get("viewBox")=="0 0 256 256"
+assert seal.count("<path ")==1 and "<text" not in seal, "Logo reverted to text glyph"
+assert "理" in seal_root.attrib.get("aria-label","")
+assert html.count('src="./assets/li-seal.svg"')==1, "Header brand image not connected"
+assert html.count('rel="icon" type="image/svg+xml" href="./assets/li-seal.svg"')==1
+assert '<span class="brand-stamp">理</span>' not in html
+assert '.brand-stamp{display:block;width:42px;height:42px;object-fit:contain;flex:none}' in html
+assert '.header .brand-stamp{height:38px;width:38px}' in html
+
 for needle,amount in [('id="export-personal-data"',1),('id="import-personal-data"',1),('id="method-count"',1),('data-ly-mode=',4),('id="page-settings"',1),('id="page-library"',1),('id="page-guide"',1),('id="page-home"',1),('const processedCases=liInitialState.cases;',1),('const savedQuestions=liInitialState.questions;',1)]:
     assert html.count(needle)==amount,(needle,html.count(needle),amount)
 ids=set(re.findall(r'\["(T\d\d)","',html))

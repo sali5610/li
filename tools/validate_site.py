@@ -9,6 +9,10 @@ for name in assets:
     p=site/"assets"/name
     assert p.is_file() and p.stat().st_size>1000, f"Missing {name}"
     if name.endswith(".png"):assert p.read_bytes().startswith(b"\x89PNG\r\n\x1a\n"),f"Invalid {name}"
+# S136: mirror label is typographic only, not a search control.
+assert html.count('<div class="mirror-label">Gương Vạn Vấn</div>') == 1
+assert '<div class="mirror-label"><i data-lucide="search"' not in html
+
 # S135: mirror text and refresh float as a synchronized pair; mobile text stays within mirror;
 # iOS tap background is suppressed while keyboard focus visibility remains intact.
 assert html.count("/* S135 · Mobile mirror: narrower centered question + synchronized floating text and refresh.") == 1

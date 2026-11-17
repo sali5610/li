@@ -47,16 +47,19 @@ for rule in (
 ):
     assert rule in html, f"Header selected state missing: {rule}"
 assert html.count('class="tool-button" data-page=')==3
-# S141: iOS Add to Home Screen needs actual PNG, not an SVG browser favicon.
-# Exact approved glyph raster on dark moss, 180x180 in HTML and GitHub Pages.
+# S145: Human PO split the icon roles:
+# browser favicon = carved 理 seal; iOS Home Screen = typography-only 理, no seal.
 from hashlib import sha256
 touch=site/"assets"/"apple-touch-icon.png"
-assert touch.is_file(), "iOS Home Screen touch icon missing"
+assert touch.is_file(), "iOS Home Screen text icon missing"
 icon_bytes=touch.read_bytes()
-assert icon_bytes.startswith(b"\x89PNG\r\n\x1a\n"), "Touch icon not PNG"
+assert icon_bytes.startswith(b"\x89PNG\r\n\x1a\n"), "Touch icon must be PNG"
 assert (int.from_bytes(icon_bytes[16:20],"big"),int.from_bytes(icon_bytes[20:24],"big"))==(180,180)
-assert sha256(icon_bytes).hexdigest()=="535463f73bfd83c7998d24464690a37114045ce7885988b5850f9a16eb39cbf5", "Wrong approved seal variant"
-assert html.count('<link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png?v=moss-20261118">')==1
+assert sha256(icon_bytes).hexdigest()=="0b6dde4d63a2444e899b6409f859c9f6c5456e95a38bb15f1cd31e7547f7dfd7", "Unexpected typography-only 理 icon"
+palette_at=icon_bytes.index(b"PLTE")+4
+assert icon_bytes[palette_at:palette_at+3]==bytes.fromhex("243A29"), "iOS icon background must be moss"
+assert icon_bytes[palette_at+21:palette_at+24]==bytes.fromhex("F3EBDC"), "iOS icon text must be cream"
+assert html.count('<link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png?v=hanzi-text-20261118">')==1
 assert '<meta name="apple-mobile-web-app-title" content="li.">' in html
 assert '<meta name="theme-color" content="#243A29">' in html
 
@@ -174,6 +177,9 @@ assert favicon_root.attrib.get("viewBox")=="0 0 256 256"
 assert favicon.count('<rect width="256" height="256" fill="#243A29"/>')==1, "Favicon background must match moss"
 assert favicon.count('<path fill="#F3EBDC"')==1, "Favicon seal must contrast with green"
 assert "<text" not in favicon, "Favicon glyph must be artwork"
+# Browser favicon is the exact same carved seal silhouette as the header.
+_svg_path="{http://www.w3.org/2000/svg}path"
+assert favicon_root.find(_svg_path).attrib["d"]==seal_root.find(_svg_path).attrib["d"], "Favicon glyph diverges from approved seal"
 assert seal.count('<path fill="#243A29"')==1, "Approved transparent header seal must remain green"
 assert '<span class="brand-stamp">理</span>' not in html
 assert '.brand-stamp{display:block;width:42px;height:42px;object-fit:contain;flex:none}' in html

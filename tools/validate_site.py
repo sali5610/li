@@ -9,6 +9,23 @@ for name in assets:
     p=site/"assets"/name
     assert p.is_file() and p.stat().st_size>1000, f"Missing {name}"
     if name.endswith(".png"):assert p.read_bytes().startswith(b"\x89PNG\r\n\x1a\n"),f"Invalid {name}"
+# S135: mirror text and refresh float as a synchronized pair; mobile text stays within mirror;
+# iOS tap background is suppressed while keyboard focus visibility remains intact.
+assert html.count("/* S135 · Mobile mirror: narrower centered question + synchronized floating text and refresh.") == 1
+for needle in (
+    "width:min(59%,224px)!important;",
+    "width:min(62%,210px)!important;",
+    "@keyframes li-mirror-float{",
+    "#page-home .mirror-message h2,\n#page-home .mirror-message .mirror-refresh{",
+    "animation:li-mirror-float 4s ease-in-out infinite;",
+    "-webkit-tap-highlight-color:transparent!important;",
+    "#page-home .mirror-refresh:focus:not(:focus-visible){",
+    "@media(prefers-reduced-motion:reduce){",
+):
+    assert needle in html, f"Mirror accessibility/animation rule missing: {needle}"
+assert 'id="shuffle" class="mirror-refresh" type="button"' in html
+assert '#page-home .mirror-refresh:focus-visible {outline:2px solid #F7E9BD;outline-offset:2px}' in html
+
 # S133: seal, wordmark and three header buttons have one 44px vertical alignment axis.
 assert html.count("/* S133 · Header shared vertical alignment contract (mobile, tablet, desktop).") == 1
 for selector in (

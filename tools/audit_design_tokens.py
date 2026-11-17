@@ -25,15 +25,15 @@ TEMPLATES = [
     "site/assets/lesson-l15-hifi-markup.js",
 ]
 BASELINE = ROOT / "design-system" / "audits" / "token-coverage-baseline.json"
-PROP_PATTERN = re.compile(r"^([-\\w]+)\\s*:\\s*([\\s\\S]+)$")
+PROP_PATTERN = re.compile(r"^([-\w]+)\s*:\s*([\s\S]+)$")
 SPACE_PROP = re.compile(r"^(?:padding|margin)(?:-(?:top|bottom|left|right|inline|block|inline-start|inline-end|block-start|block-end))?$|^(?:gap|row-gap|column-gap)$")
-CSS_PX = re.compile(r"(-?\\d+(?:\\.\\d+)?)px\\b")
-CSS_HEX = re.compile(r"#[0-9a-fA-F]{3,8}\\b")
-INLINE_STYLE = re.compile(r"""\\bstyle\\s*=\\s*(["'])([\\s\\S]*?)\\1""")
+CSS_PX = re.compile(r"(-?\d+(?:\.\d+)?)px\b")
+CSS_HEX = re.compile(r"#[0-9a-fA-F]{3,8}\b")
+INLINE_STYLE = re.compile(r"""\bstyle\s*=\s*(["'])([\s\S]*?)\1""")
 TYPE_PROPS = {"font-size", "font", "font-family", "line-height"}
-LITERAL_COLOR = re.compile(r"#[0-9a-fA-F]{3,8}\\b|(?:rgba?|hsla?)\\(|\\b(?:transparent|currentColor|white|black|red|blue|green|grey|gray)\\b", re.I)
-SMALL_FONT = re.compile(r"(?<![\\d.])(?:[6-9]|10|11)(?:\\.\\d+)?px\\b")
-VAR = re.compile(r"var\\(\\s*--")
+LITERAL_COLOR = re.compile(r"#[0-9a-fA-F]{3,8}\b|(?:rgba?|hsla?)\(|\b(?:transparent|currentColor|white|black|red|blue|green|grey|gray)\b", re.I)
+SMALL_FONT = re.compile(r"(?<![\d.])(?:[6-9]|10|11)(?:\.\d+)?px\b")
+VAR = re.compile(r"var\(\s*--")
 
 def color_prop(p: str) -> bool:
     if p in ("color", "background", "background-color", "fill", "stroke", "box-shadow", "text-shadow"):
@@ -44,8 +44,8 @@ def color_prop(p: str) -> bool:
 
 def scrub(css: str) -> str:
     # Preserve newlines/line numbers when omitting comments and huge data URLs.
-    css = re.sub(r"/\\*[\\s\\S]*?\\*/", lambda m: re.sub(r"[^\\n]", " ", m.group()), css)
-    css = re.sub(r"url\\(\\s*(['\\\"]?)data:[\\s\\S]*?\\1\\s*\\)", "url(data-skipped)", css, flags=re.I)
+    css = re.sub(r"/\*[\s\S]*?\*/", lambda m: re.sub(r"[^\n]", " ", m.group()), css)
+    css = re.sub(r"url\(\s*(['\\"]?)data:[\s\S]*?\1\s*\)", "url(data-skipped)", css, flags=re.I)
     return css
 
 def parse(css: str, line_offset: int = 0) -> list[dict]:
@@ -58,13 +58,13 @@ def parse(css: str, line_offset: int = 0) -> list[dict]:
     depth = 0
     line = 1 + line_offset
     for ch in css:
-        if ch == "\\n":
+        if ch == "\n":
             line += 1
         if quote:
             buffer.append(ch)
             if escaped:
                 escaped = False
-            elif ch == "\\\\":
+            elif ch == "\\":
                 escaped = True
             elif ch == quote:
                 quote = ""
@@ -93,7 +93,7 @@ def parse(css: str, line_offset: int = 0) -> list[dict]:
                     "property": match.group(1).lower(),
                     "value": match.group(2).strip(),
                     "selector": stack[-1] if stack else "INLINE",
-                    "line": line - value.count("\\n"),
+                    "line": line - value.count("\n"),
                 })
             buffer.clear()
             if ch == "}" and stack:
@@ -145,12 +145,12 @@ def collect(path: str) -> dict:
         css = [(raw, 0)]
     else:
         css = [
-            (m.group(1), raw[:m.start()].count("\\n"))
-            for m in re.finditer(r"<style\\b[^>]*>([\\s\\S]*?)</style>", raw, flags=re.I)
+            (m.group(1), raw[:m.start()].count("\n"))
+            for m in re.finditer(r"<style\b[^>]*>([\s\S]*?)</style>", raw, flags=re.I)
         ]
     declarations = [d for section, line in css for d in parse(section, line)]
     inline_attrs = [
-        (raw[:m.start()].count("\\n") + 1, m.group(2))
+        (raw[:m.start()].count("\n") + 1, m.group(2))
         for m in INLINE_STYLE.finditer(raw)
     ]
     inline_rows = []
@@ -192,7 +192,7 @@ def main() -> int:
         print(json.dumps(report, indent=2, ensure_ascii=False))
     else:
         for section in ("core", "secondary_tools", "lesson_templates"):
-            print(f"\\n[{section}]")
+            print(f"\n[{section}]")
             for path, item in report[section].items():
                 a = item["color"]; b = item["typography"]; c = item["spacing"]
                 print(f"{path}: color={a['without_var']}/{a['total']} raw; "

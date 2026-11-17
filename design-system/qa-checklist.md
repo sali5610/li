@@ -7,6 +7,8 @@
 - [ ] Product goal/JTBD and research assumptions still make sense; no invented data or human usability evidence.
 - [ ] Check IA, navigation, labels, routes, copy and wireframe sequence upstream of the visual symptom.
 - [ ] Audit every instance/variant of affected component; search CSS/HTML/lesson modules for same controls.
+- [ ] Confirm body 16/24, essential support ≥14/20, optional metadata ≥12/16; check long VI/EN copy and prevent method-card two-line forced cropping.
+- [ ] Check every new margin/padding/gap value is a multiple of 4 and uses canonical spacing tokens; do not indiscriminately round artwork position/crop.
 - [ ] Check rules in `design-system/tokens.json` and `design-system/components.md`; update them if an approved decision changed.
 - [ ] Decide whether change is **visual** or changes interaction/state. Interaction changes may require a working-wireframe fork and re-validation; do not modify frozen WF-BASE.
 - [ ] Identify relevant approval gates; do not conflate G2, human usability, accessibility, academic G4 or privacy G3.
@@ -28,6 +30,7 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 | Evidence & trust | Draft/published/source labels accurate; genuine save state; no fabricated research results |
 
 ## 3. Evidence of done
+- [ ] Run `python3 tools/validate_ui_foundations.py` (new type/spacing CSS)
 - [ ] Run `python3 tools/validate_design_system.py`
 - [ ] Run `python3 tools/validate_site.py`
 - [ ] Run affected interaction/regression tests (e.g. navigation and mirror gesture tests)

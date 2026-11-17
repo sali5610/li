@@ -62,7 +62,7 @@ h1,h2,h3{font-family:Georgia,serif;line-height:1.25;margin-top:0}h1{font-size:cl
 <section class="card" id="challenge"><div class="kicker" id="kChallenge">05 / Bài tập độc lập</div><h2 id="challengeTitle">Banner ứng dụng tài chính</h2><p id="challengeStory"></p><div class="note" id="challengeClaim"></div>
 <p id="instruction"></p>
 <div id="questions"></div>
-<div class="row"><button type="button" id="hintButton">Cho tao một gợi ý</button><span class="small" id="assistState"></span></div>
+<div class="row"><button type="button" id="hintButton">Xem gợi ý</button><span class="small" id="assistState"></span></div>
 <div class="tip" id="hint" hidden></div>
 <p class="small" id="saveInfo"></p>
 <div class="row" style="margin-top:16px"><button type="button" class="primary" id="submitAttempt">Nộp lượt độc lập</button><button type="button" id="resetDraft">Xoá bản nháp</button></div>
@@ -98,7 +98,7 @@ vi:{
 previewTag:"Bản học thử · lưu riêng với tiến độ app chính",labLink:"Kho nguồn học ↗",crumbHome:"Thư viện",statusTag:"Wave 1A · Bản review, chưa xuất bản",
 lessonTitle:"Sampling Bias — Sai lệch chọn mẫu",intro:"1.000 người trả lời khảo sát. Thế đã đủ kết luận về cả xã hội chưa?",
 stat1:"thành viên hội chạy bộ",stat2:"chạy ít nhất 3 lần/tuần",stat3:"đại diện toàn dân?",fiction:"Tất cả tình huống và số liệu trong bài là giả định do nhóm biên soạn tạo, không phải khảo sát có thật.",
-kGoal:"01 / Mục tiêu",goalsTitle:"Học xong, mày kiểm tra được gì?",
+kGoal:"01 / Mục tiêu",goalsTitle:"Học xong, bạn làm được gì?",
 goals:["Tách tổng thể mục tiêu khỏi mẫu thực sự được quan sát.","Chỉ ra một cách tuyển mẫu khiến người được hỏi khác người vắng mặt.","Phân biệt sai lệch chọn mẫu với biến động ngẫu nhiên giữa các mẫu xác suất.","Viết lại kết luận để không suy rộng quá dữ liệu."],
 kTheory:"02 / Hiểu bản chất",theoryTitle:"1.000 người trả lời. Đủ tin chưa?",
 theoryLead:"Giả sử một cộng đồng người thích chạy bộ hỏi 1.000 thành viên; 82% cho biết họ chạy từ ba buổi mỗi tuần. Bài đăng kết luận: “82% người trưởng thành ở Việt Nam thường xuyên chạy bộ.” Vấn đề không nằm ở phép chia. Nó nằm ở chỗ ai được hỏi.",
@@ -115,7 +115,7 @@ exampleQuestion:"Tự hỏi: nhóm Facebook có đại diện toàn bộ ngườ
 guidedSummary:"Xem gợi ý phân tích tình huống (không tính điểm)",guidedDetail:"Ranh giới suy rộng là từ <b>người trả lời trong một nhóm rất tích cực</b> sang <b>toàn bộ người dùng tương lai</b>. Tuyển mẫu có thiết kế tốt hơn vẫn cần kiểm tra người không trả lời và cách đặt câu hỏi.",
 kChallenge:"05 / Bài tập độc lập",challengeTitle:"Tình huống: banner trong app tài chính",challengeStory:"Giả sử một ứng dụng tài chính hiển thị banner khảo sát <b>chỉ</b> cho người mở app ít nhất 5 lần/tuần. Có 1.200 người trả lời; 78% nhận xét tính năng mới <b>hữu ích</b>.",
 challengeClaim:"Nhóm sản phẩm muốn nói: “78% tất cả khách hàng hài lòng với tính năng này.”",
-instruction:"Viết câu trả lời của chính mày cho cả bốn câu. Bản nháp được lưu cục bộ; chỉ bấm nộp mới tạo lượt thử. Không cần viết dài, nhưng phải giải thích rõ.",
+instruction:"Hãy tự viết câu trả lời cho cả bốn câu. Bản nháp được lưu cục bộ; chỉ bấm nộp mới tạo lượt thử. Không cần viết dài, nhưng phải giải thích rõ.",
 questions:["Xác định tổng thể mà nhóm muốn kết luận và mẫu thực sự đã khảo sát.","Nêu một cơ chế cụ thể có thể làm mẫu bị lệch.","Viết lại kết luận dựa đúng dữ liệu; lưu ý “hữu ích” có phải “hài lòng” không.","Đề xuất một cải thiện thu thập dữ liệu và ít nhất một hạn chế vẫn còn."],
 placeholder:"Viết câu trả lời... / Your own response...",
 hintButton:"Nhìn một gợi ý",assistLabel:"Lượt có hỗ trợ — không tính là hoàn toàn độc lập",hint:"Hãy kiểm tra lần lượt: <b>ai thấy banner</b>, <b>ai trả lời</b>, <b>họ thực sự đánh giá điều gì</b>, và <b>ai bị bỏ khỏi khung khảo sát</b>. Gợi ý chỉ soi quy trình, không chép sẵn đáp án.",
@@ -187,7 +187,7 @@ function buildPrompt(s){
  "I am studying li. (理) lesson L09-1-2 — Sampling Bias versus Random Sampling Variation. I want to understand selection bias, random sampling variation and inference limits.\nReading sources:\n";
  const lines=all.map(x=>"- "+x.title+": "+x.url).join("\n");
  const req=state.locale==="vi"?
- "\n\nHãy chỉ tóm tắt những gì mày thực sự truy cập được. Nếu URL bị chặn hoặc chưa có toàn văn, nói rõ và đề nghị tôi dán phần liên quan; không bịa nội dung hoặc trích dẫn. Trả lời bằng tiếng Việt: 1) 5 ý chính, 2) phân biệt target population, sample, selection bias, nonresponse và random sampling variation, 3) điều nguồn nói so với suy luận riêng, 4) ví dụ survey qua banner và giới hạn kết luận, 5) giả định/chỗ cần kiểm chứng, 6) 3 câu active recall không hiện đáp án. Ghi rõ URL của mỗi nhận định thực sự được nguồn hỗ trợ.":
+ "\n\nHãy chỉ tóm tắt những gì bạn thực sự truy cập được. Nếu URL bị chặn hoặc chưa có toàn văn, hãy nói rõ và đề nghị tôi dán phần liên quan; không bịa nội dung hoặc trích dẫn. Trả lời bằng tiếng Việt: 1) 5 ý chính, 2) phân biệt target population, sample, selection bias, nonresponse và random sampling variation, 3) điều nguồn nói so với suy luận riêng, 4) ví dụ survey qua banner và giới hạn kết luận, 5) giả định/chỗ cần kiểm chứng, 6) 3 câu active recall không hiện đáp án. Ghi rõ URL của mỗi nhận định thực sự được nguồn hỗ trợ.":
  "\n\nSummarize only content you actually access. If a URL is inaccessible or full text is missing, say so and ask me to paste a relevant excerpt; never fabricate quotations or source access. Respond in English: 1) five key insights, 2) clarify target population, sample, selection bias, nonresponse and random sampling variation, 3) distinguish verified source claims from your inference, 4) a finance-app banner survey example with inference limits, 5) assumptions and cautions, 6) three active-recall questions without revealing answers. Attribute claims to sources you actually read.";
  return intro+lines+req;
 }

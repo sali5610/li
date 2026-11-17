@@ -1329,12 +1329,18 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 }
 /* S139 · Sticky top navigation, fixed touch-viewport scale.
    Preserve content flow and existing PWA/mobile bottom navigation. */
-html{touch-action:pan-x pan-y}
+html{
+  touch-action:pan-x pan-y;
+  scroll-padding-top:88px;
+}
 .header{
   position:sticky;
   top:0;
   z-index:42;
   background:var(--paper);
+}
+@media(max-width:600px){
+  html{scroll-padding-top:74px}
 }
 </style><link rel="stylesheet" href="./assets/lesson-l09-hifi.css"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
 <symbol id="i-tree" viewBox="0 0 24 24"><path d="m12 2 4 5h-2l4 5h-3l4 6H5l4-6H6l4-5H8zM12 18v4"/></symbol>

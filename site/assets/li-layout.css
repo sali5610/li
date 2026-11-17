@@ -213,7 +213,7 @@ svg.icon.sm{width:16px;height:16px}svg.icon.lg{width:22px;height:22px}
 }
 
 
-:root{--gold:#A3864D;--accent:#934C39;--line:var(--rule)}
+/* Removed unused --gold/--accent/--line aliases; all paint values live in tokens.json. */
 body{background:var(--paper);padding:var(--li-space-0)}
 button,input,textarea,select{font:inherit}
 input,select{border:1px solid var(--rule);background:var(--cream);padding:var(--li-space-3);color:var(--ink)}

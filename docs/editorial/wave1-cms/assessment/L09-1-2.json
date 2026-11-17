@@ -1,0 +1,114 @@
+{
+  "schema": "li.assessment.v1.staging",
+  "lesson_id": "L09-1-2",
+  "source": {
+    "file_path": "site/assets/lesson-l09-hifi.js",
+    "blob_sha": "a3ec039c365ba65f473b9b9cd158703a8e91a448"
+  },
+  "contract": {
+    "question_count": 4,
+    "rubric_count": 4,
+    "score_per_criterion": [
+      0,
+      1,
+      2
+    ],
+    "min_trimmed_chars": 12,
+    "hint_marks_assisted": true,
+    "answer_visible_after_submit": true,
+    "rubric_visible_after_submit": true,
+    "does_not_autograde": true
+  },
+  "locales": {
+    "vi": {
+      "challenge": {
+        "title": "Khảo sát banner trong ứng dụng tài chính",
+        "intro": "Một app tài chính chỉ hiển thị banner khảo sát cho người mở app ít nhất <b>5 lần mỗi tuần</b>. Có <b>1.200</b> người trả lời; <b>78%</b> nhận xét tính năng mới là <b>hữu ích</b>.",
+        "claim": "Nhóm sản phẩm định kết luận: “78% tất cả khách hàng hài lòng với tính năng này.”",
+        "questions": [
+          "Nhóm sản phẩm muốn suy ra về ai? Mẫu thực sự đã được khảo sát là ai?",
+          "Nêu một cơ chế cụ thể gây sai lệch chọn mẫu trong tình huống này.",
+          "Viết lại kết luận để vừa hữu ích vừa không vượt quá dữ liệu. “Hữu ích” có đồng nghĩa “hài lòng” không?",
+          "Đề xuất một cách thu thập bằng chứng tốt hơn và ít nhất một giới hạn vẫn còn."
+        ]
+      },
+      "support": {
+        "guided_hint": "Người trả lời trong một hội học tập tích cực không tương đương toàn bộ người dùng tương lai. Tuyển đúng khung mẫu tốt hơn vẫn phải kiểm tra nonresponse và cách hỏi.",
+        "hint": "Hãy tách <b>người được thấy banner</b>, <b>người đã trả lời</b>, <b>khái niệm được đo</b> và <b>khách hàng bị bỏ sót</b>. Gợi ý này không tiết lộ đáp án.",
+        "submit_validation": "Cần trả lời cả bốn câu bằng ý có nghĩa trước khi nộp."
+      },
+      "review": {
+        "answer_title": "ĐÁP ÁN THAM KHẢO · MỞ SAU KHI NỘP",
+        "model_answer": "<b>1.</b> Tổng thể mục tiêu là mọi khách hàng; mẫu quan sát là 1.200 người dùng app thường xuyên đã thấy banner và tự trả lời.<br><b>2.</b> Người ít mở app không thấy khảo sát; người mở thường xuyên có thể có trải nghiệm khác.<br><b>3.</b> “Trong số 1.200 người dùng thường xuyên tham gia khảo sát, 78% cho biết tính năng hữu ích.” Chưa có cơ sở suy ra mọi khách hàng hoặc đổi “hữu ích” thành “hài lòng”.<br><b>4.</b> Tuyển người từ khung khách hàng mục tiêu với đủ nhóm mức sử dụng; vẫn cần xét người không trả lời và sai lệch đo lường.",
+        "answer_note": "<b>Đừng nhầm:</b> n=1.200 không sửa sai lệch chọn mẫu; random sampling không loại bỏ được mọi vấn đề đo lường hoặc nonresponse.",
+        "rubric_title": "Tự chấm bằng tiêu chí rõ ràng",
+        "rubric_lead": "Đây là rubric 0–8 để tự đánh giá; chưa phải chấm tự động, thang điểm chưa hiệu chuẩn và không phải chứng nhận năng lực.",
+        "rubric_before": "Nộp bài trước để xem rubric và đáp án; không mở đáp án khi chưa có lượt thử.",
+        "rubric_items": [
+          [
+            "Tổng thể & mẫu",
+            "2 = xác định đúng cả hai; 1 = mới đúng một phần; 0 = sai hoặc thiếu."
+          ],
+          [
+            "Cơ chế sai lệch",
+            "2 = nêu cơ chế cụ thể; 1 = chỉ nói chung là bias; 0 = không chỉ ra."
+          ],
+          [
+            "Kết luận có căn cứ",
+            "2 = không đổi đối tượng và điều đo; 1 = giới hạn mơ hồ; 0 = vẫn suy rộng."
+          ],
+          [
+            "Bằng chứng tốt hơn",
+            "2 = cải tiến hợp lý và nêu rủi ro còn lại; 1 = thiếu một vế; 0 = chỉ đề nghị tăng n."
+          ]
+        ],
+        "review_validation": "Hãy đánh giá đủ bốn tiêu chí trước khi hoàn thành."
+      }
+    },
+    "en": {
+      "challenge": {
+        "title": "Finance-app banner survey",
+        "intro": "A finance app shows a survey banner <b>only to people who open it at least 5 times a week</b>. There are <b>1,200 respondents</b>; <b>78%</b> say a new feature is <b>useful</b>.",
+        "claim": "The team plans to announce: “78% of all customers are satisfied with the feature.”",
+        "questions": [
+          "Identify the intended target population and the observed sample.",
+          "Give one specific selection mechanism that could distort the result.",
+          "Rewrite the claim without exceeding the evidence. Is “useful” the same as “satisfied”?",
+          "Suggest an improvement in evidence collection and at least one remaining limitation."
+        ]
+      },
+      "support": {
+        "guided_hint": "Respondents from a highly engaged group are not all future users. Better recruitment still needs checks for nonresponse and question wording.",
+        "hint": "Separate <b>who could see the banner</b>, <b>who responded</b>, <b>what was measured</b> and <b>who was missing</b>. This is guidance, not a model answer.",
+        "submit_validation": "Please answer all four questions meaningfully before submitting."
+      },
+      "review": {
+        "answer_title": "MODEL RESPONSE · REVEALED AFTER SUBMISSION",
+        "model_answer": "<b>1.</b> The target is all customers; the observed sample is the 1,200 frequent app users who saw and responded to the banner.<br><b>2.</b> Infrequent users could not see the survey; highly active users may have different experiences.<br><b>3.</b> “Among 1,200 frequent app users who responded, 78% said the feature was useful.” This cannot imply all customers or replace “useful” with “satisfied.”<br><b>4.</b> Recruit from a suitable customer frame spanning usage levels; still investigate nonresponse and measurement validity.",
+        "answer_note": "<b>Avoid:</b> assuming n=1,200 fixes selection bias or probability sampling eliminates all measurement/nonresponse problems.",
+        "rubric_title": "Assess your reasoning, not your eloquence",
+        "rubric_lead": "This 0–8 guide is uncalibrated self-assessment, not automatic grading, mastery certification or a professional credential.",
+        "rubric_before": "Submit an attempt to unlock the reference answer and rubric.",
+        "rubric_items": [
+          [
+            "Population & sample",
+            "2 = accurately identifies both; 1 = partial; 0 = missing/confused."
+          ],
+          [
+            "Selection mechanism",
+            "2 = concrete mechanism; 1 = says 'biased' vaguely; 0 = none."
+          ],
+          [
+            "Defensible claim",
+            "2 = correct scope and measured construct; 1 = vague limits; 0 = unsupported generalization."
+          ],
+          [
+            "Better evidence",
+            "2 = suitable improvement and its limits; 1 = one only; 0 = 'increase n' without logic."
+          ]
+        ],
+        "review_validation": "Choose a rating for all four criteria."
+      }
+    }
+  }
+}

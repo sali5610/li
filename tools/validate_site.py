@@ -84,12 +84,22 @@ assert "/* S99 responsive Thần Chú - scoped to Guide route */" not in html
 assert "#page-guide #method-cards{display:grid!important;width:100%!important;min-width:0;max-width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:18px;row-gap:20px;padding:3px 6px 8px 3px;margin:18px 0 0;" in html
 assert "#page-guide #method-cards{column-gap:14px;row-gap:18px;padding:3px 5px 8px 2px}" in html
 # S127: mentor border matches the actual card borders, including the <=360px inset.
-assert "#page-guide .editorial-grid>.guide-mentor{margin-left:3px;margin-right:6px;width:calc(100% - 9px)!important;max-width:calc(100% - 9px)!important;box-sizing:border-box}" in html
-assert "#page-guide .editorial-grid>.guide-mentor{margin-left:2px;margin-right:5px;width:calc(100% - 7px)!important;max-width:calc(100% - 7px)!important}" in html
+assert "#page-guide .editorial-grid>.guide-mentor{margin-left:3px!important;margin-right:6px!important;width:auto!important;max-width:none!important;min-width:0;justify-self:stretch;box-sizing:border-box}" in html
+assert "#page-guide .editorial-grid>.guide-mentor{margin-left:2px!important;margin-right:5px!important}" in html
 assert "#page-guide #method-cards>.method-card{width:100%!important;min-width:0;max-width:100%!important;box-sizing:border-box;padding:11px 10px;min-height:194px" in html
 assert "#page-guide #method-cards>.method-card .purpose{" in html
 assert "function renderMethods(){" in html and "function showMethod(id){" in html
 assert "/* S114 — restrained Lão Lý peek:" in html
+
+# S128: all native multi-line answers, case notes, capture, and Notebook use the same lined writing paper.
+assert html.count("/* S128 · One visual contract for every multi-line writing surface.") == 1
+assert "textarea,.notebook{" in html
+assert "line-height:var(--li-notebook-line-height)!important;" in html
+assert "background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 30px,var(--li-notebook-rule) 30px,var(--li-notebook-rule) 31px)!important;" in html
+assert "background-attachment:local;" in html
+assert "background-position:0 8px;" in html
+assert "textarea::placeholder{color:var(--muted);opacity:.8}" in html
+assert html.count('class="text-editor"') >= 2
 
 # S120: all 13 Thần Chú methods share this same Guide Detail template.
 # Guard semantic spacing around section labels, step list, references and back CTA.

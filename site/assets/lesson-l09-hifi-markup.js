@@ -58,7 +58,12 @@ const page=String.raw`
   <article class="surface tinted" id="l09-guided">
    <div class="kicker" id="l09-exKicker">IV · THỬ TỰ GIẢI THÍCH</div><h2 id="l09-exTitle">400/500 người thích nhắc học?</h2>
    <p id="l09-exBody"></p><div class="state-note" id="l09-exQuestion"></div>
-   <div class="action-row"><button type="button" class="action alt" id="l09-guidedToggle">Xem gợi ý phân tích</button></div>
+   <div class="l09-q-row l09-guided-entry">
+    <label id="l09-guidedLabel" for="l09-guidedDraft">Thử giải thích bằng lời của bạn</label>
+    <textarea id="l09-guidedDraft" class="text-editor" rows="4" placeholder="Viết suy luận của bạn ở đây..."></textarea>
+    <p class="small l09-status-line" id="l09-guidedSaveNote">Câu trả lời ví dụ được lưu riêng, không tính điểm.</p>
+   </div>
+   <div class="action-row"><button type="button" class="action alt" id="l09-guidedToggle" aria-expanded="false" aria-controls="l09-guidedHint">Xem gợi ý phân tích</button></div>
    <div class="state-note l09-hint" id="l09-guidedHint" hidden></div>
   </article>
   <article class="surface" id="l09-challenge">

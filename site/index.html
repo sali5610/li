@@ -930,22 +930,7 @@ body:has(#buddy-modal.open) .laoly-support{visibility:hidden!important;opacity:0
  background:none;border:0;box-shadow:none;
  filter:drop-shadow(1px 2px 1px rgba(35,39,27,.12));
 }
-</style><style>/* S99 guidebook responsive fix */@media(max-width:640px){
-#page-guide,#page-guide .section-shell{min-width:0;max-width:100%}
-#page-guide .editorial-grid{display:grid;grid-template-columns:minmax(0,1fr)!important;gap:12px}
-#page-guide .editorial-grid>*,#page-guide .editorial-grid .stack-sm{min-width:0;width:100%;box-sizing:border-box}
-#page-guide #method-search{width:100%;min-width:0;box-sizing:border-box}
-#page-guide #method-filters{display:flex;flex-wrap:nowrap!important;align-items:center;min-width:0;width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;gap:8px;padding:3px 0 10px;white-space:nowrap}
-#page-guide #method-filters .filter{flex:0 0 auto;white-space:nowrap;min-height:44px}
-#page-guide .editorial-grid aside.surface{min-width:0;padding:12px 14px!important}
-#page-guide .editorial-grid aside .laoly-side-avatar{margin-bottom:5px}
-#page-guide #method-count{margin:10px 0 4px}
-#page-guide #method-cards{display:grid!important;width:100%!important;min-width:0;max-width:100%!important;grid-template-columns:minmax(0,1fr)!important;gap:14px;margin:15px 0 0;box-sizing:border-box}
-#page-guide #method-cards>.method-card{width:100%!important;min-width:0;max-width:none!important;box-sizing:border-box;padding:16px;min-height:154px}
-#page-guide .method-card h3{font-size:clamp(26px,7vw,32px);line-height:1.1;overflow-wrap:break-word}
-#page-guide .method-card .original,#page-guide .method-card .purpose{overflow-wrap:anywhere}
-}@media(min-width:641px) and (max-width:950px){#page-guide #method-cards{width:100%;min-width:0;grid-template-columns:repeat(2,minmax(0,1fr))}#page-guide #method-cards>.method-card{min-width:0;width:100%;box-sizing:border-box}}
-</style><style>/* S99 responsive Thần Chú - scoped to Guide route */
+</style><style>/* S116 · Guide compact two-column method tiles on phones (consolidated S99) */
 @media(max-width:640px){
 #page-guide,#page-guide .section-shell{min-width:0;max-width:100%}
 #page-guide .editorial-grid{display:grid;grid-template-columns:minmax(0,1fr)!important;gap:12px}
@@ -956,10 +941,20 @@ body:has(#buddy-modal.open) .laoly-support{visibility:hidden!important;opacity:0
 #page-guide .editorial-grid aside.surface{min-width:0;padding:12px 14px!important}
 #page-guide .editorial-grid aside .laoly-side-avatar{margin-bottom:5px}
 #page-guide #method-count{margin:10px 0 4px}
-#page-guide #method-cards{display:grid!important;width:100%!important;min-width:0;max-width:100%!important;grid-template-columns:minmax(0,1fr)!important;gap:14px;margin:15px 0 0;box-sizing:border-box}
-#page-guide #method-cards>.method-card{width:100%!important;min-width:0;max-width:none!important;box-sizing:border-box;padding:16px;min-height:154px}
-#page-guide .method-card h3{font-size:clamp(26px,7vw,32px);line-height:1.1;overflow-wrap:break-word}
-#page-guide .method-card .original,#page-guide .method-card .purpose{overflow-wrap:anywhere}
+#page-guide #method-cards{display:grid!important;width:100%!important;min-width:0;max-width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px;margin:13px 0 0;box-sizing:border-box}
+#page-guide #method-cards>.method-card{width:100%!important;min-width:0;max-width:100%!important;box-sizing:border-box;padding:11px 10px;min-height:194px;overflow-wrap:anywhere}
+#page-guide #method-cards>.method-card h3{font-size:clamp(19px,5.2vw,23px);line-height:1.1;margin:8px 0 6px;overflow-wrap:anywhere}
+#page-guide #method-cards>.method-card .method-icon,
+#page-guide #method-cards>.method-card svg.lucide{width:19px;height:19px;margin-bottom:5px}
+#page-guide #method-cards>.method-card .kicker{font-size:9px;line-height:1.25;letter-spacing:.065em;overflow-wrap:anywhere}
+#page-guide #method-cards>.method-card .original{font-size:10.5px;line-height:1.3;overflow-wrap:anywhere}
+#page-guide #method-cards>.method-card .purpose{font-size:10.5px;line-height:1.3;margin-top:7px;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#page-guide #method-cards>.method-card .end{margin-top:auto;padding-top:8px;font-size:10px;line-height:1.2}
+}
+@media(max-width:360px){
+#page-guide #method-cards{gap:8px}
+#page-guide #method-cards>.method-card{padding:10px 9px;min-height:190px}
+#page-guide #method-cards>.method-card h3{font-size:18px}
 }
 @media(min-width:641px) and (max-width:950px){
 #page-guide #method-cards{width:100%;min-width:0;grid-template-columns:repeat(2,minmax(0,1fr))}

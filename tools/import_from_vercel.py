@@ -23,6 +23,8 @@ def build():
     (OUT/"assets").mkdir(parents=True,exist_ok=True)
     html=fetch("").decode("utf-8")
     for name in ASSETS:
+        context=html.find(name)
+        print("Asset lookup",name,"HTML reference:",repr(html[max(0,context-115):context+len(name)+35]),flush=True)
         asset=fetch("assets/"+name)
         if name.endswith(".png") and not asset.startswith(b"\x89PNG\r\n\x1a\n"):
             raise RuntimeError(f"Not PNG: {name}")

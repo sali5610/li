@@ -39,7 +39,7 @@ for module in modules:
     found.add(ident)
     link='./lessons/companion/'+ident+'.json'
     assert f'data-companion-manifest="{link}"' in raw,f"{ident}: missing exact companion asset link"
-    assert 'id="li-lesson-mentor-stage"' in raw,f"{ident}: mentor stage status missing"
+    assert ('id="li-lesson-mentor-stage"' in raw or 'data-lesson-mentor-stage="1"' in raw),f"{ident}: mentor stage status missing"
     assert 'data-buddy="1"' in raw,f"{ident}: mentor entry point missing"
     slug=module.name.removesuffix("-markup.js")
     logic=ASSETS/(slug+".js")
@@ -85,6 +85,17 @@ for module in modules:
             for a in actions:
                 assert len(a.get("label",""))>=5 and len(a.get("reply",""))>=50,f"{ident}/{key}/{lang}: incomplete response"
     assert len(allQuotes)>=6,f"{ident}: quote bank coverage is too repetitive"
+    # All independent mentor prompts must be non-spoiler by numerical or direct answer leak.
+    if ident=="L15-2-2":
+        independent=next(m for m in moments if m["stage"]=="independent")
+        early=json.dumps({"vi":independent["vi"],"en":independent["en"]},ensure_ascii=False)
+        assert not re.search(r"(?<!\d)(?:126|160|158)(?!\d)",early),f"{ident}: quantitative answer leaked before attempt"
+    if ident=="L03-1-2":
+        independent=next(m for m in moments if m["stage"]=="independent")
+        early=json.dumps({"vi":independent["vi"],"en":independent["en"]},ensure_ascii=False)
+        for forbidden in ("Lần gần nhất bạn cần kiểm tra một process","Khi cần xem dữ liệu theo quốc gia"):
+            assert forbidden not in early,f"{ident}: full independent answer given before submission"
+
     if ident=="L09-1-2":
         # Existing independent 1200/78% finance-app answers must never be given early.
         independent=next(m for m in moments if m["stage"]=="independent")

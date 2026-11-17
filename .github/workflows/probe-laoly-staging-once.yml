@@ -13,7 +13,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import urllib.request
-          url='https://li-step15-arborium-hifi-review-26auh0i78-yungho-8219s-projects.vercel.app/laoly-chat-test.png'
+          url='https://li-laoly-source-staging-20261118.vercel.app/laoly-chat-test.png'
           with urllib.request.urlopen(url,timeout=30) as r:
               data=r.read(100000)
               print("HTTP",r.status,"BYTES",len(data))

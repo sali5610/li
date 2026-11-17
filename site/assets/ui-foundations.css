@@ -133,7 +133,16 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   line-height: var(--li-leading-caption) !important;
   overflow-wrap: anywhere;
 }
-#page-guide #method-cards > .method-card .end { padding-top: var(--li-space-3); }
+#page-guide #method-cards > .method-card .end {
+  margin-top: auto;
+  padding-top: var(--li-space-3);
+}
+#page-guide #method-cards > .method-card .method-icon,
+#page-guide #method-cards > .method-card svg.lucide {
+  width: 20px;
+  height: 20px;
+  margin-bottom: var(--li-space-1);
+}
 #page-guide .editorial-grid { gap: var(--li-space-6) !important; }
 #page-guide #method-filters {
   gap: var(--li-space-2);

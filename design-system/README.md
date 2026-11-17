@@ -41,6 +41,10 @@
 - Touch: accessible intended hit area at least **44×44 CSS px**, no iOS square highlight on icon controls; preserve visible keyboard focus. Text, buttons and layouts must accommodate Vietnamese/English lengths.
 - Lessons must not imply published/proven/approved content when source or release state is draft. No fake persistence, metrics, diagnoses or academic signoff.
 
+## Token coverage audit / debt baseline
+
+[UX-DS-03 full-app mapping audit](audits/2026-11-18-full-app-token-mapping.md) inventories real `main` sources: legacy inline CSS, shared Wave1 lessons, first-party HTML/JS, specimen and Source Lab. [Automated audit](../tools/audit_design_tokens.py) runs in the design-contract workflow with [baseline ceilings](audits/token-coverage-baseline.json) so **new unmapped declarations/off-grid px values fail CI**, while pre-existing debt stays visible. CI green still does **not** mean all legacy styles have been migrated or real-device/visual QA passed.
+
 ## Migration backlog — beyond v0.2
 1. Audit duplicated late-cascade rules in `site/index.html` and all lesson styles; catalog collisions before deleting anything.
 2. Extract color/spacing/typography to canonical CSS custom properties, then real reusable control styles/component primitives, with visual-diff checks.

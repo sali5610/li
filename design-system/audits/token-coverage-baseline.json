@@ -38,7 +38,7 @@
         "without_var": 2
       },
       "spacing": {
-        "without_var": 1,
+        "without_var": 2,
         "offgrid_px_occurrences": 0
       },
       "offgrid_inline_spacing_declarations": 0
@@ -125,5 +125,6 @@
       },
       "offgrid_inline_spacing_declarations": 1
     }
-  }
+  },
+  "note": "The foundation has a deliberate margin-top:auto on method card end alignment plus a zero reset; these are layout keywords, not hardcoded off-grid CSS px."
 }

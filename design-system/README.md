@@ -1,6 +1,6 @@
 # li. UI/UX Design Library — foundation v0.2
 
-**v0.2 update:** [Readable typography & 4px spacing](typography-spacing.md) is now wired into the actual app through `site/assets/ui-foundations.css`. Legacy inline CSS still contains unresolved off-grid declarations, so this is a controlled migration, **not** proof that every historic declaration has been normalized.
+**v0.2 update:** [Readable typography & 4px spacing](typography-spacing.md) is now wired into the actual app through `site/assets/ui-foundations.css`. Review the live type/spacing specimen at [design-system-preview.html](../site/design-system-preview.html) (after main deployment: https://sali5610.github.io/li/design-system-preview.html). Legacy inline CSS still contains unresolved off-grid declarations, so this is a controlled migration, **not** proof that every historic declaration has been normalized.
 
 **Scope:** A versioned, testable reference for the current [li. (理) GitHub Pages high-fi](https://sali5610.github.io/li/). This is **not yet an extracted runtime CSS/component package**. The live prototype currently keeps most styles and markup inside `site/index.html`, with additional lesson CSS. Foundation v0.1 captures observed implementation plus existing PO decisions to prevent drift during the next refactor.
 

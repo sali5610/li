@@ -98,7 +98,16 @@ def main() -> int:
         "Home full-bleed hero override remains represented",
     )
     check("./assets/apple-touch-icon.png" in html, "iOS Home Screen icon linked")
-    check("./assets/li-favicon.svg" in html, "SVG favicon linked")
+    # The latest PO icon decision may select the approved header seal directly
+    # for browser favicon; older baseline used a separate moss-variant SVG.
+    # This typography PR must not roll back S146 branding decisions.
+    check(
+        bool(re.search(
+            r'<link\\s+rel="icon"\\s+type="image/svg\\+xml"\\s+href="\\./assets/(?:li-seal|li-favicon)\\.svg(?:\\?[^"]*)?"',
+            html,
+        )),
+        "current approved SVG favicon variant linked",
+    )
 
     print(f"\n{passed} checks passed; {len(errors)} failed.")
     if errors:

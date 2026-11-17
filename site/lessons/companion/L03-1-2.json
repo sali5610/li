@@ -1,0 +1,278 @@
+{
+  "schema": 1,
+  "lesson_id": "L03-1-2",
+  "title": "Open Questions and Interview Bias",
+  "topics": [
+    "social",
+    "evidence",
+    "methods",
+    "critique",
+    "reading",
+    "reflection"
+  ],
+  "objectives": [
+    "Nhận diện leading/presupposing interview questions",
+    "Tách câu hỏi mở khỏi câu hỏi trung lập",
+    "Viết lại câu hỏi và hạn chế suy rộng từ vài interviews"
+  ],
+  "editorial": {
+    "status": "review",
+    "provenance": "Learner-facing copy derived from the canonical bilingual L03-1-2 Notion lesson, approved for Wave1 content; interview cases and rubric preserved; external resources are linked without text ingestion.",
+    "spoiler_policy": "Opening, concept, guided and independent prompts avoid naming which two Process Monitor questions a learner must choose or providing their complete rewrites. Reflection requires state.submitted. Mentor does not alter progress.",
+    "review_gate": "Wave1 content approved; source quality and Human PO Hi-Fi UI, Safari/VoiceOver QA remain open."
+  },
+  "moments": [
+    {
+      "stage": "opening",
+      "anchor": "l03-goals",
+      "quote_id": "analects-others",
+      "quote_ids": [
+        "analects-others",
+        "mill-other-side",
+        "analects-think",
+        "hamlet-thought"
+      ],
+      "relevance": "The source warns against projecting our own impressions onto others; that is the interview bias problem this lesson teaches.",
+      "vi": {
+        "label": "Trước khi hỏi",
+        "prompt": "Tiểu hữu, hỏi “tiện lắm đúng không?” thì khác gì tự diễn rồi mời người ta gật đầu?",
+        "quote_comment": "Người phỏng vấn muốn nghe chuyện thật, chứ đâu phải khảo sát mức độ đồng tình với cái tôi của mình.",
+        "actions": [
+          {
+            "label": "Sai ở đâu?",
+            "reply": "Điểm đáng ngờ là lời đánh giá được cài trước câu trả lời. Hãy hỏi chuyện gì đã thực sự xảy ra trước khi tự khen thiết kế."
+          },
+          {
+            "label": "Bắt đầu sao?",
+            "reply": "Bắt đầu bằng một lần sử dụng cụ thể; hỏi người tham gia đã làm gì, gặp tình huống nào và kết quả ra sao."
+          }
+        ]
+      },
+      "en": {
+        "label": "Before interviewing",
+        "prompt": "Young scholar, if you ask “It's much easier, right?”, are you interviewing someone or just waiting for applause?",
+        "quote_comment": "Neutral research starts from what happened, not the designer's preferred conclusion.",
+        "actions": [
+          {
+            "label": "What's wrong?",
+            "reply": "The question inserts a value judgment before the participant speaks. Start with observed experience instead of praising the interface."
+          },
+          {
+            "label": "How do I begin?",
+            "reply": "Invite an account of a specific recent event: what the person tried, what they did, and what happened next."
+          }
+        ]
+      }
+    },
+    {
+      "stage": "concept",
+      "anchor": "l03-concept",
+      "quote_id": "mencius-sources",
+      "quote_ids": [
+        "mencius-sources",
+        "analects-think",
+        "epictetus-appearance",
+        "hume-evidence"
+      ],
+      "relevance": "Critical reflection on what is known versus assumed is directly relevant to distinguishing an open question from a neutral one.",
+      "vi": {
+        "label": "Soi giả định",
+        "prompt": "Câu hỏi mở không tự động trung lập. “Tại sao app khó dùng?” đã kết án giao diện trước phiên tòa rồi nhóc.",
+        "quote_comment": "Hãy tìm giả định ẩn trong thân câu hỏi, không chỉ nhìn xem nó có phải dạng có-không hay không.",
+        "actions": [
+          {
+            "label": "Mở mà vẫn lệch?",
+            "reply": "Một câu có thể cho người dùng nói dài nhưng vẫn cài sẵn rằng họ đã gặp vấn đề. Độ mở và tính trung lập là hai tiêu chí."
+          },
+          {
+            "label": "Bằng chứng nào?",
+            "reply": "Tách lời người tham gia nói, hành vi thực sự quan sát được và suy luận của nhà nghiên cứu. Ba loại không thay thế cho nhau."
+          }
+        ]
+      },
+      "en": {
+        "label": "Check assumptions",
+        "prompt": "An open question isn't necessarily neutral. “Why is the app difficult?” has already delivered the verdict.",
+        "quote_comment": "Look for presuppositions in the question itself; removing a yes/no ending may not remove the bias.",
+        "actions": [
+          {
+            "label": "Open but leading?",
+            "reply": "A question can invite a long answer while presupposing that the person had a problem. Openness and neutrality are distinct."
+          },
+          {
+            "label": "Which evidence?",
+            "reply": "Keep participant statements, observed behavior and the researcher's interpretation separate; none automatically substitutes for another."
+          }
+        ]
+      }
+    },
+    {
+      "stage": "guided",
+      "anchor": "l03-guided",
+      "quote_id": "mill-other-side",
+      "quote_ids": [
+        "mill-other-side",
+        "analects-others",
+        "analects-think",
+        "hume-evidence"
+      ],
+      "relevance": "The need to hear an unprovided perspective aligns with the example of replacing the designer's praise with a past behavior question.",
+      "vi": {
+        "label": "Thử hỏi lại",
+        "prompt": "Đổi câu tự khen thành một lời mời kể chuyện. Phỏng vấn đâu phải lễ trao giải cho cái nút lưu, tiểu hữu.",
+        "quote_comment": "Mục đích là lắng nghe tình huống lưu ghi chú gần nhất, thay vì buộc người dùng xác nhận điều người thiết kế muốn nghe.",
+        "actions": [
+          {
+            "label": "Hỏi gì tiếp?",
+            "reply": "Có thể hỏi “Điều gì xảy ra tiếp theo?” hoặc “Bạn cân nhắc cách nào khác?” để đào sâu quá trình, không gợi lời khen."
+          },
+          {
+            "label": "Chú ý điều gì?",
+            "reply": "Hãy nhận diện phần đánh giá trong câu hỏi cũ và kiểm tra xem câu mới có vô tình giả định ai cũng dùng chức năng hay không."
+          }
+        ]
+      },
+      "en": {
+        "label": "Try a neutral prompt",
+        "prompt": "Replace the self-congratulating question with an invitation to tell a real story. The save button needs evidence, not a fan club.",
+        "quote_comment": "A concrete past episode tends to produce more useful behavioral detail than a request to confirm the designer's preferences.",
+        "actions": [
+          {
+            "label": "What follow-up?",
+            "reply": "Ask “What happened next?” or “What alternatives did you consider?” to explore the sequence without supplying an answer."
+          },
+          {
+            "label": "What to watch?",
+            "reply": "Find the inserted judgment in the original prompt; then check whether your rewrite still assumes everyone used the feature."
+          }
+        ]
+      }
+    },
+    {
+      "stage": "independent",
+      "anchor": "l03-challenge",
+      "quote_id": "mencius-sources",
+      "quote_ids": [
+        "mencius-sources",
+        "analects-honesty",
+        "darwin-confidence",
+        "mill-other-side"
+      ],
+      "relevance": "Questioning a claim before accepting it fits the independent interview guide critique without giving away which prompts to choose.",
+      "vi": {
+        "label": "Tự sửa câu hỏi",
+        "prompt": "Giờ tới lượt ngươi sửa kịch bản Process Monitor. Lão không chọn hai câu hộ ngươi, cũng không viết đáp án trước đâu.",
+        "quote_comment": "Bài này kiểm tra cách phát hiện định hướng câu trả lời và dùng một tình huống cụ thể để hỏi lại.",
+        "actions": [
+          {
+            "label": "Tự kiểm tra sao?",
+            "reply": "Với mỗi câu ngươi chọn, chỉ ra từ ngữ đã đánh giá trước rồi kiểm tra câu sửa có cho phép người tham gia kể diễn biến thật không."
+          },
+          {
+            "label": "Nếu có nhiều cách sửa?",
+            "reply": "Miễn người tham gia không bị ép vào một nhận định và được kể một sự kiện thực tế, nhiều cách diễn đạt trung lập có thể hợp lý."
+          }
+        ]
+      },
+      "en": {
+        "label": "Independent interview rewrite",
+        "prompt": "Now it's your turn to revise the Process Monitor guide. I won't pick the two questions or write the answer for you.",
+        "quote_comment": "Focus on where the wording pressures a response and how to invite an account of actual use.",
+        "actions": [
+          {
+            "label": "How can I check?",
+            "reply": "For each selected prompt, identify loaded wording and test whether the rewrite lets someone describe what actually happened."
+          },
+          {
+            "label": "More than one answer?",
+            "reply": "Multiple neutral rewrites can work as long as they remove the leading assumption and invite a concrete experience."
+          }
+        ]
+      }
+    },
+    {
+      "stage": "reflection",
+      "anchor": "l03-rubric",
+      "quote_id": "analects-honesty",
+      "quote_ids": [
+        "analects-honesty",
+        "darwin-confidence",
+        "mill-other-side",
+        "analects-review"
+      ],
+      "relevance": "Honesty about the strength of qualitative evidence is central to reviewing an interview question and limiting broad inferences.",
+      "vi": {
+        "label": "Đối chiếu sau nộp",
+        "prompt": "Giờ mới chấm: câu sửa có bớt tiền giả định chưa, hay chỉ đổi lớp áo cho lời khen thôi?",
+        "quote_comment": "Đánh giá theo tiêu chí và dữ liệu, không phải theo câu chữ nghe trơn tru; giới hạn suy luận cũng là một phần của kết quả.",
+        "actions": [
+          {
+            "label": "Chấm cái gì?",
+            "reply": "Kiểm tra nhận diện bias, câu viết lại trung lập, sự kiện/hành vi được khai thác và điều không thể suy ra từ vài cuộc phỏng vấn."
+          },
+          {
+            "label": "Nếu vẫn dẫn dắt?",
+            "reply": "Sửa câu hỏi rồi thử trả lời từ góc nhìn người dùng chưa từng gặp vấn đề. Nếu câu hỏi ép họ công nhận lỗi, nó vẫn còn giả định."
+          }
+        ]
+      },
+      "en": {
+        "label": "Review after submission",
+        "prompt": "Now let's assess: did your rewrite remove the presupposition, or merely give the praise a new costume?",
+        "quote_comment": "Use the criteria and the evidence, not how polished the sentence sounds; limits on inference matter.",
+        "actions": [
+          {
+            "label": "What should I score?",
+            "reply": "Check bias recognition, neutrality of the rewrite, real behavior elicitation and caution against prevalence claims from a few interviews."
+          },
+          {
+            "label": "Still leading?",
+            "reply": "Try answering as a user who never experienced the problem. If the wording forces that user to admit a problem, it still presupposes one."
+          }
+        ]
+      }
+    },
+    {
+      "stage": "extension",
+      "anchor": "l03-sources",
+      "quote_id": "bacon-studies",
+      "quote_ids": [
+        "bacon-studies",
+        "analects-review",
+        "mencius-sources",
+        "analects-think"
+      ],
+      "relevance": "Reading and testing methods against original references suits the follow-up source-first interview research section.",
+      "vi": {
+        "label": "Đọc sâu về phỏng vấn",
+        "prompt": "Một link NNG hay GOV.UK mở ra chưa làm ngươi thành researcher. Đọc rồi thử viết lại câu hỏi cho có lý.",
+        "quote_comment": "So sánh hướng dẫn từ từng nguồn và kiểm tra xem điều nào được nguồn nói thật, điều nào là ngươi tự suy luận.",
+        "actions": [
+          {
+            "label": "Đọc theo thứ tự?",
+            "reply": "Bắt đầu từ quy trình phỏng vấn và câu hỏi trung lập; sau đó quay lại kịch bản Process Monitor để kiểm tra các tiền giả định."
+          },
+          {
+            "label": "Nhớ cách dùng?",
+            "reply": "Đóng tài liệu và tự viết ba câu hỏi: một câu dẫn dắt, một câu mở nhưng tiền giả định, rồi một câu trung lập về sự kiện thật."
+          }
+        ]
+      },
+      "en": {
+        "label": "Go deeper into interviews",
+        "prompt": "Opening a UX research link doesn't make you a researcher. Read it, test your question wording, and justify the change.",
+        "quote_comment": "Compare official methods with your own inference; only attribute claims to sources you actually accessed.",
+        "actions": [
+          {
+            "label": "Where to begin?",
+            "reply": "Start with interview conduct and neutral prompts, then return to the Process Monitor guide to test hidden assumptions."
+          },
+          {
+            "label": "How to remember?",
+            "reply": "Close the reference and create three prompts: a leading question, an open but presupposing one, and a neutral past-event question."
+          }
+        ]
+      }
+    }
+  ]
+}

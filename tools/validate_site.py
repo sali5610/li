@@ -178,5 +178,19 @@ assert html.count('.mobile-nav{background:var(--paper)!important;border:0!import
 assert '<nav class="mobile-nav" aria-label="Điều hướng chính mobile">' in html
 assert html.count('class="nav-btn" data-page=') >= 4
 
+
+# S121: context-aware quotation engine, 24 verified original texts with sources
+# and a separate Vietnamese gloss/commentary, without breaking the existing companion.
+quotes=site/"assets"/"laoly-quotes-s121.js"
+assert quotes.is_file() and quotes.stat().st_size>12_000
+quote_js=quotes.read_text(encoding="utf-8")
+assert quote_js.count('"id":"')>=24, "Quotes library must contain at least 24 entries"
+assert html.count('<script src="./assets/laoly-quotes-s121.js"></script>')==1
+assert 'if(window.liQuoteEngine?.render){window.liQuoteEngine.render();return;}' in html
+assert '#buddy-modal #buddy-quote .li-quote-context{' in html
+assert 'https://zh.wikisource.org/' in quote_js and 'https://en.wikisource.org/' in quote_js
+subprocess.run(["node","--check",str(quotes)],check=True)
+subprocess.run(["node",str(site.parent/"tools"/"test_quotes.js")],check=True,cwd=site.parent)
+
 assert (site/".nojekyll").is_file()
 print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and 28/30px gaps, privacy copy, JS parsing")

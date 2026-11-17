@@ -4,9 +4,11 @@ This repository contains the functional high-fidelity **li.** prototype, recover
 
 ## Published site
 
-Once GitHub Pages has been enabled with **GitHub Actions** as the publishing source, the existing workflow publishes the exact contents of the `site/` directory to:
+GitHub Pages is enabled. The existing workflow publishes the exact `site/` directory when the site or its validation/deployment workflow changes:
 
 https://sali5610.github.io/li/
+
+**GitHub `main` is the source of truth.** Its S107 version already places **Xuất bản sao / Nhập bản sao** under **Cài đặt → Dữ liệu & Đồng bộ** (not in Bút Ký), with **28px mobile and 30px desktop gaps** between Settings cards. These changes are already in `site/index.html`; do not apply the older Vercel S107 patch again.
 
 The original Vercel application is retained as an independent backup.
 
@@ -14,7 +16,7 @@ The original Vercel application is retained as an independent backup.
 
 The original app saves Bút Ký entries, saved Gương questions (Dấu Trang), and the Luận Kết draft in `localStorage` on the **Vercel domain**. Browsers do **not** transfer those data to the GitHub Pages domain.
 
-1. On the old Vercel site, open **Tủ Riêng → Xuất bản sao** and save the generated JSON file. Keep the file in a safe location.
+1. On the **old Vercel S106 site**, open **Tủ Riêng → Xuất bản sao** to save the JSON file. On **GitHub Pages S107**, exporting lives under **Cài đặt → Dữ liệu & Đồng bộ**. Keep the downloaded JSON in a safe location.
 2. Open the new GitHub Pages app, navigate to **Cài đặt → Dữ liệu & Đồng bộ**, and select **Nhập bản sao**.
 3. Confirm the imported Bút Ký and Dấu Trang entries, then reload the page to verify they persist.
 4. Import replaces any existing local entries in that browser, but only after explicit confirmation. Export a copy first if you already have data on the new domain.
@@ -25,7 +27,7 @@ The original app saves Bút Ký entries, saved Gương questions (Dấu Trang), 
 
 The application contains 13 techniques in Sổ Tay Thần Chú; four explicit Nhịp học choices tied to Lão Lý; the existing routes; notebook, bookmarks, draft persistence and other current prototype interactions. S107 fixes relocate export to Settings, improve Settings card spacing and user-facing copy, and make the Guide illustration larger without resizing its card.
 
-`tools/validate_site.py` checks asset presence, 13 techniques, four mode choices, critical DOM/state contracts, and syntax of inline JavaScript. It is **not** a substitute for device, accessibility, or end-to-end browser testing. User acceptance remains open.
+`tools/validate_site.py` checks asset presence, 13 techniques, four mode choices, the S107 Settings export/import controls and event handler, all five Settings cards, the responsive 28px/30px gaps, privacy/backup copy, and inline JavaScript syntax. It is **not** a substitute for device, accessibility, or end-to-end browser testing. User acceptance remains open.
 
 ## Source recovery
 

@@ -1187,7 +1187,7 @@ width:70px!important;height:100px!important;left:3px!important;bottom:-3px!impor
 
 /* S128 · One visual contract for every multi-line writing surface.
    Keep notebook ruling aligned with a 31px text line on touch devices. */
-:root{--li-notebook-line-height:31px;--li-notebook-rule:#D2C5A9}
+:root{--li-notebook-line-height:31px;--li-notebook-rule:#D2C5A9;--li-notebook-baseline-shift:5px}
 textarea,.notebook{
   display:block;
   box-sizing:border-box;
@@ -1198,7 +1198,8 @@ textarea,.notebook{
   color:var(--ink);
   background-color:var(--cream)!important;
   background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 30px,var(--li-notebook-rule) 30px,var(--li-notebook-rule) 31px)!important;
-  background-position:0 8px;
+  /* Optical baseline correction from PO's iPhone screenshots (glyphs were crossed by rules). */
+  background-position:0 calc(8px + var(--li-notebook-baseline-shift));
   background-attachment:local;
   background-repeat:repeat;
   -webkit-appearance:none;

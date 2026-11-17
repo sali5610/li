@@ -23,12 +23,13 @@ def build():
     (OUT/"assets").mkdir(parents=True,exist_ok=True)
     html=fetch("").decode("utf-8")
     for name in ASSETS:
-        asset=fetch(name)
+        asset=fetch("assets/"+name)
         if name.endswith(".png") and not asset.startswith(b"\x89PNG\r\n\x1a\n"):
             raise RuntimeError(f"Not PNG: {name}")
         (OUT/"assets"/name).write_bytes(asset)
         html=re.sub(r'(?:\./[^"<>]*?_files/|(?<=src=")/)'+re.escape(name),
                     './assets/'+name,html)
+        html=html.replace('src="/assets/'+name+'"','src="./assets/'+name+'"')
         html=html.replace('src="'+name+'"','src="./assets/'+name+'"')
     # GitHub project Pages lives under /li/; absolute root /assets would break mode avatars.
     html=html.replace('image:"/assets/', 'image:"./assets/')

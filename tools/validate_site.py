@@ -254,7 +254,8 @@ assert "-webkit-line-clamp: unset !important;" in foundation
 # S127: mentor border matches the actual card borders, including the <=360px inset.
 assert "#page-guide #method-cards > .method-card {" in foundation
 assert "padding: var(--li-space-5) !important;" in foundation
-assert "#page-guide #method-cards>.method-card .purpose{" in html
+assert "#page-guide #method-cards>.method-card .purpose{" not in html, "Retired S118 text-clamping CSS must not return"
+assert "#page-guide #method-cards > .method-card .purpose {" in foundation
 assert "function renderMethods(){" in html and "function showMethod(id){" in html
 assert "/* S114 — restrained Lão Lý peek:" in html
 

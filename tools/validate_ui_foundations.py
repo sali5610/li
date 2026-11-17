@@ -14,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TOKENS = ROOT / "design-system" / "tokens.json"
 CSS_FILE = ROOT / "site" / "assets" / "ui-foundations.css"
+GEN_FILE = ROOT / "site" / "assets" / "design-tokens.css"
 HTML = ROOT / "site" / "index.html"
 failed: list[str] = []
 passed = 0
@@ -32,11 +33,12 @@ def check(test: bool, label: str) -> None:
 def main() -> int:
     data = json.loads(TOKENS.read_text(encoding="utf-8"))
     css = CSS_FILE.read_text(encoding="utf-8")
+    generated = GEN_FILE.read_text(encoding="utf-8")
     html = HTML.read_text(encoding="utf-8")
     spacing = data["spacing"]
     type_scale = data["typography"]["scale"]
 
-    check(data["libraryVersion"] == "0.2.0", "v0.2 foundation version")
+    check(data["libraryVersion"] == "0.3.0", "v0.3 generated runtime foundation version")
     check(spacing["baseUnitPx"] == 4, "4px base unit")
     check(all(n % 4 == 0 for n in spacing["valuesPx"]), "spacing scale obeys 4px")
     check(all(n % 4 == 0 for n in spacing["aliasesPx"].values()), "semantic spacing obeys 4px")
@@ -48,9 +50,10 @@ def main() -> int:
 
     css_spacing = {
         k: int(v)
-        for k, v in re.findall(r"(--li-space-\d+)\s*:\s*(\d+)px\s*;", css)
+        for k, v in re.findall(r"(--li-space-\d+)\s*:\s*(\d+)px\s*;", generated)
     }
-    check(len(css_spacing) == len(spacing["valuesPx"]), "all scale entries defined in CSS")
+    check(len(css_spacing) == len(spacing["valuesPx"]), "all scale entries defined in generated CSS")
+    check("--li-type-body: 16px;" in generated, "body role is generated from JSON")
     check(sorted(css_spacing.values()) == sorted(spacing["valuesPx"]), "CSS spacing scale matches JSON")
     check("var(--li-space-" in css, "UI spacing consumes tokens")
     # Literal paddings/margins/gaps introduced to the canonical file are not
@@ -65,6 +68,8 @@ def main() -> int:
 
     head = html.split("</head>", 1)[0]
     css_name = "./assets/ui-foundations.css"
+    token_name = "./assets/design-tokens.css"
+    check(token_name in head and head.index(token_name) < head.index("<style>"), "generated CSS tokens load before legacy style")
     check(css_name in head, "foundation linked in HTML head")
     check(
         head.rfind(css_name) > head.rfind("</style>") and

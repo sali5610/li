@@ -3,7 +3,12 @@
 from pathlib import Path
 import re, subprocess, tempfile
 site=Path(__file__).resolve().parents[1]/"site"
-html=(site/"index.html").read_text(encoding="utf-8")
+page_html=(site/"index.html").read_text(encoding="utf-8")
+layout_css=(site/"assets"/"li-layout.css").read_text(encoding="utf-8")
+html=page_html+"\n"+layout_css
+assert "<style>" not in page_html and "</style>" not in page_html, "No inline CSS blocks in app HTML"
+head=page_html.split("</head>",1)[0]
+assert head.index("./assets/design-tokens.css") < head.index("./assets/li-layout.css") < head.index("./assets/lesson-l09-hifi.css") < head.index("./assets/ui-foundations.css")
 assets=["lucide.min.js","laoly-neutral.png","laoly-guide-rest.png","laoly-mode-start.png","laoly-mode-focus.png","laoly-mode-overload.png","laoly-mode-recover.png"]
 for name in assets:
     p=site/"assets"/name
@@ -32,14 +37,14 @@ for rule in (
     assert rule in touch_css, f"Safari touch override missing: {rule}"
 assert "outline:none" not in touch_css, "Cannot suppress keyboard focus outlines in touch reset"
 assert '.header .tool-button:focus-visible{outline:2px solid var(--wood);outline-offset:2px}' in html
-assert '.mobile-nav .nav-btn:focus-visible{outline:2px solid #806D49;outline-offset:-3px}' in html
+assert '.mobile-nav .nav-btn:focus-visible{outline:2px solid var(--li-color-focus-warm);outline-offset:-3px}' in html
 assert '.header .tool-button.active::before,' in html and '.header .tool-button[aria-current="page"]::before{opacity:1}' in html
 
 # S142: utility header selection uses the identical sand tint as bottom tabs,
 # with dark moss glyphs. State is synchronized by navigate() for Search/Capture/Settings.
 for rule in (
     '/* S142 · Header utility selected state mirrors the bottom-nav sand pill.',
-    'background:#E5D8BA;opacity:0;z-index:-1;pointer-events:none;',
+    'background:var(--li-color-nav-selected-fill);opacity:0;z-index:-1;pointer-events:none;',
     '.header .tool-button.active::before,',
     '.header .tool-button[aria-current="page"]::before{opacity:1}',
     'color:var(--moss)!important;',
@@ -113,7 +118,7 @@ assert '<div class="mirror-controls" role="group" aria-label="Chuyển câu hỏ
 assert 'id="previous-question" class="mirror-refresh" type="button" aria-label="Câu hỏi trước"' in html
 assert 'id="shuffle" class="mirror-refresh" type="button" aria-label="Câu hỏi tiếp theo"' in html
 assert 'data-lucide="refresh-cw" class="icon sm"' not in html
-assert '#page-home .mirror-refresh:focus-visible {outline:2px solid #F7E9BD;outline-offset:2px}' in html
+assert '#page-home .mirror-refresh:focus-visible {outline:2px solid var(--li-color-mirror-focus-light);outline-offset:2px}' in html
 subprocess.run(["node", str(site.parent/"tools"/"test_mirror_navigation.js")],check=True,cwd=site.parent)
 
 # S133: seal, wordmark and three header buttons have one 44px vertical alignment axis.
@@ -123,7 +128,7 @@ for selector in (
     ".header .brand-copy{display:flex;justify-content:center;height:44px}",
     ".header .logo{display:block;line-height:1;transform:translateY(2px)}",
     ".header .brand-stamp{display:block;align-self:center;object-fit:contain}",
-    ".header .tools .tool-button{display:grid;place-items:center;align-self:center;padding:0}",
+    ".header .tools .tool-button{display:grid;place-items:center;align-self:center;padding:var(--li-space-0)}",
 ):
     assert selector in html, f"Header alignment rule missing: {selector}"
 assert html.count('class="tool-button" data-page=') == 3
@@ -208,18 +213,17 @@ assert 'Trước khi xóa dữ liệu trang web hoặc đổi thiết bị, webs
 assert 'Ghi chép của bạn không tự động được gửi tới dịch vụ AI bên ngoài.' in settings
 assert 'Bạn có thể xuất bản sao trong Tủ Riêng.' not in html
 for selector in (
-    '#page-settings > .section-shell > .editorial-grid{gap:30px!important}',
-    '#page-settings > .section-shell > .editorial-grid > .stack-sm{gap:30px!important}',
-    '#page-settings > .section-shell > .editorial-grid{gap:28px!important}',
-    '#page-settings > .section-shell > .editorial-grid>.stack-sm{gap:28px!important}'
+    '#page-settings > .section-shell > .editorial-grid{gap:var(--li-space-8)!important}',
+    '#page-settings > .section-shell > .editorial-grid > .stack-sm{gap:var(--li-space-8)!important}',
+    '#page-settings > .section-shell > .editorial-grid>.stack-sm{gap:var(--li-space-8)!important}'
 ):
     assert selector in html, f"Missing Settings spacing rule: {selector}"
 
 # S114: both missing internal Settings gaps are explicit and isolated.
 assert '#page-settings .surface > .select-row + .state-note' in html
 assert '#page-settings .surface > .select-row + .action' in html
-assert html.count('margin-top: 20px;')>=2
-assert html.count('margin-top: 16px;')>=2
+assert 'margin-top: var(--li-space-5);' in html or 'margin-top:var(--li-space-5)' in html
+assert 'margin-top: var(--li-space-4);' in html or 'margin-top:var(--li-space-4)' in html
 assert '<label class="select-row">Nhắc lịch ngủ' in settings
 assert '<label class="select-row">Im Lặng' in settings
 # S115: reminder uses the same base paper color as other Settings cards.
@@ -249,33 +253,36 @@ assert 'id="method-cards" class="method-grid"' in guide
 assert html.count("/* S118 · Guide two-up mobile tiles with deliberate outer gutters (consolidated S99/S116) */") == 1
 assert "/* S99 guidebook responsive fix */" not in html
 assert "/* S99 responsive Thần Chú - scoped to Guide route */" not in html
-assert "#page-guide #method-cards{display:grid!important;width:100%!important;min-width:0;max-width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:18px;row-gap:20px;padding:3px 6px 8px 3px;margin:18px 0 0;" in html
-assert "#page-guide #method-cards{column-gap:14px;row-gap:18px;padding:3px 5px 8px 2px}" in html
+foundation=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
+assert "grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)) !important;" in foundation
+assert "-webkit-line-clamp: unset !important;" in foundation
 # S127: mentor border matches the actual card borders, including the <=360px inset.
-assert "#page-guide .editorial-grid>.guide-mentor{margin-left:3px!important;margin-right:6px!important;width:auto!important;max-width:none!important;min-width:0;justify-self:stretch;box-sizing:border-box}" in html
-assert "#page-guide .editorial-grid>.guide-mentor{margin-left:2px!important;margin-right:5px!important}" in html
-assert "#page-guide #method-cards>.method-card{width:100%!important;min-width:0;max-width:100%!important;box-sizing:border-box;padding:11px 10px;min-height:194px" in html
-assert "#page-guide #method-cards>.method-card .purpose{" in html
+assert "#page-guide #method-cards > .method-card {" in foundation
+assert "padding: var(--li-space-5) !important;" in foundation
+assert "#page-guide #method-cards>.method-card .purpose{" not in html, "Retired S118 text-clamping CSS must not return"
+assert "#page-guide #method-cards > .method-card .purpose {" in foundation
 assert "function renderMethods(){" in html and "function showMethod(id){" in html
 assert "/* S114 — restrained Lão Lý peek:" in html
 
-# S134: all native writing areas use a real 31px background TILE, not an
+# S134: all native writing areas use a real 32px background TILE, not an
 # auto-sized gradient (auto-size made background-position ineffective on iOS).
 assert html.count("/* S128/S134 · Shared ruled writing paper.") == 1
 assert "textarea,.notebook{" in html
 assert "line-height:var(--li-notebook-line-height)!important;" in html
 assert "background-image:" in html
-assert "linear-gradient(to bottom,transparent 0 30px,var(--li-notebook-rule) 30px 31px)!important;" in html
+assert "linear-gradient(to bottom,transparent 0 31px,var(--li-color-notebook-rule) 31px 32px)!important;" in html
 assert "background-size:100% 16px,100% var(--li-notebook-line-height)!important;" in html
 assert "background-position:0 0,0 8px!important;" in html
 assert "background-repeat:no-repeat,repeat!important;" in html
 assert "background-attachment:scroll,local;" in html
 assert "--li-notebook-baseline-shift:" not in html, "Removed ineffective phase-offset hack must stay removed"
-# The tiled line is at 8 + 30 = 38px, below 15px text on a 31px line.
-# A preceding repeated line at 7px is hidden under the first 16px cream mask.
-notebook_first_rule = 8 + 30
-assert notebook_first_rule == 38
-assert (notebook_first_rule - 31) < 16
+# The tiled rule is aligned to the 32px text line (first rule at 8 + 31).
+# Its preceding repeat is masked by the first 16px opaque cream layer.
+notebook_first_rule = 8 + 31
+assert notebook_first_rule == 39
+assert (notebook_first_rule - 32) < 16
+assert ':root{--li-notebook-line-height:31px' not in html
+assert '--li-notebook-line-height: 32px' in foundation
 assert "textarea::placeholder{color:var(--muted);opacity:.8}" in html
 assert html.count('class="text-editor"') >= 2
 
@@ -290,13 +297,13 @@ assert '<div class="kicker">IV · DẪN CHỨNG</div><div class="state-note">' i
 assert '<button class="action alt" data-page="guide">Xem pháp khác</button>' in guide_detail
 assert html.count("/* S120 · Guide detail semantic spacing") == 1
 for selector,spacing in (
-    ("#page-guideDetail .editorial-grid > .surface > .kicker + h2","margin-top:12px"),
-    ("#page-guideDetail .editorial-grid > .surface > .kicker + .path-list","margin-top:14px"),
-    ("#page-guideDetail .editorial-grid > .surface > h2 + p","margin:12px 0 0"),
-    ("#page-guideDetail .editorial-grid > .surface > p + .kicker","margin-top:24px"),
-    ("#page-guideDetail .editorial-grid > .surface > .kicker + .state-note","margin-top:12px"),
-    ("#page-guideDetail .editorial-grid > .surface > .state-note + .action","margin-top:18px"),
-    ("#page-guideDetail .path-item p","margin:0"),
+    ("#page-guideDetail .editorial-grid > .surface > .kicker + h2","margin-top:var(--li-space-3)"),
+    ("#page-guideDetail .editorial-grid > .surface > .kicker + .path-list","margin-top:var(--li-space-4)"),
+    ("#page-guideDetail .editorial-grid > .surface > h2 + p","margin:var(--li-space-3) var(--li-space-0) var(--li-space-0)"),
+    ("#page-guideDetail .editorial-grid > .surface > p + .kicker","margin-top:var(--li-space-6)"),
+    ("#page-guideDetail .editorial-grid > .surface > .kicker + .state-note","margin-top:var(--li-space-3)"),
+    ("#page-guideDetail .editorial-grid > .surface > .state-note + .action","margin-top:var(--li-space-5)"),
+    ("#page-guideDetail .path-item p","margin:var(--li-space-0)"),
 ):
     assert re.search(re.escape(selector)+r"\s*\{\s*"+re.escape(spacing)+r";?\s*\}",html),selector
 
@@ -311,8 +318,8 @@ for name,expected in [
     sha=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\0"+data).hexdigest()
     assert sha==expected,(name,"approved artwork mismatch")
 assert html.count("/* S119 · Approved S106 Home art") == 1
-assert html.count('url("./assets/home-mystic-cool-mobile.webp")') == 1
-assert html.count('url("./assets/home-mystic-cool-desktop.webp")') == 1
+assert layout_css.count('url("./home-mystic-cool-mobile.webp")') == 1, "CSS-relative artwork URL must resolve from assets/"
+assert layout_css.count('url("./home-mystic-cool-desktop.webp")') == 1, "CSS-relative artwork URL must resolve from assets/"
 home=section("home")
 for identifier in ['id="mirror-question"','id="home-scene"','id="save-question"','id="previous-question"','id="shuffle"']:
     assert home.count(identifier)==1,identifier
@@ -391,4 +398,4 @@ subprocess.run(["node",str(site.parent/"tools"/"test_quotes.js")],check=True,cwd
 subprocess.run(["python3",str(site.parent/"tools"/"validate_lesson_companions.py")],check=True,cwd=site.parent)
 
 assert (site/".nojekyll").is_file()
-print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and 28/30px gaps, privacy copy, JS parsing")
+print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and canonical 32px gaps, privacy copy, JS parsing")

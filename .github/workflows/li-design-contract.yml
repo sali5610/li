@@ -30,6 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Verify generated CSS exactly matches JSON source
+        run: python3 tools/generate_design_tokens.py --check
       - name: Check current UI token and interaction baseline
         run: python3 tools/validate_design_system.py
       - name: Validate readable type and 4px layout grid

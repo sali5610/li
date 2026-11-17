@@ -1,6 +1,6 @@
-# li. Typography & Spacing v0.2 — readability-first
+# li. Typography & Spacing v0.3 — readable runtime roles
 
-**Status:** Implemented as a reviewable runtime foundation on a GitHub branch; **Human PO whole-app G2 signoff is still open**. This is a typography/layout change, not permission to modify illustration assets, academic content, navigation semantics, or frozen wireframe.
+**Status:** Canonical JSON-authored scale is wired to the app via the generated `design-tokens.css`; **Human PO whole-app G2 signoff is still open**. This is a typography/layout change, not permission to modify illustration assets, academic content, navigation semantics, or frozen wireframe.
 
 ## 1. Why this changes
 
@@ -61,14 +61,14 @@ Type sizes need not be divisible by four; **line heights and spacing do**. Avoid
 - Settings cards, guide detail, study mode controls, Lão Lý bubble and actions.
 - Shared Wave 1 L03/L09/L15 lesson families: explanatory labels, sources, figures, stats and section gaps.
 
-The stylesheet **must load after all original head styles and lesson CSS**. It is the canonical migration layer; modify it instead of adding seventh `<style>` hacks. Long-term cleanup should remove duplicate superseded declarations from inline legacy CSS with visual regression coverage.
+`site/assets/design-tokens.css` is **generated, never manually authored**. The order is tokens → extracted `li-layout.css` → native lesson CSS → `ui-foundations.css`. Edit `design-system/tokens.json`, regenerate, and implement/reuse component-role rules in the last stylesheet. `index.html` contains no inline `<style>` blocks; do not reintroduce them.
 
 ## 5. Explicit exceptions / open QA
 
 - Artistic illustration crop, mirror position, decorative shadows and glyph optical offsets are **geometry**, not spacing tokens. Don't round these by an indiscriminate script: it can break the image alignment and source-approved composition.
-- Full `site/index.html` contains historical non-grid `margin/padding/gap` declarations outside the new central layer. **Not yet a mathematically clean whole-repo 4px migration**; the new values govern touched shared components. Track removal separately and never call the old CSS fully conformant.
+- The source-level audit of the current app's first-party CSS reports **zero literal off-grid `px` margin/padding/gap values** after migrating former inline layouts and Wave1 lesson styles to tokens. A few valid `auto`, `0` and artistic/color/line-height exceptions remain; this is NOT a computed-style, screenshot, or physical-device conformity guarantee. See [v0.3 remediation evidence](audits/2026-11-18-css-refactor-v03.md).
 - The hero mirror has a fixed illustrated opening: text long-tail, mobile heights, and Lão Lý/bottom action collision need screenshot validation.
-- Browser CSS/source checks cannot verify actual computed contrast, text zoom, iPhone PWA or VoiceOver. Existing request to lock pinch zoom is a distinct accessibility risk; not resolved by these type changes.
+- Real headless Chrome CI verifies the loaded CSS type roles, relevant responsive Guide components, approved Home artwork reference and horizontal overflow at seven viewport widths; it still cannot certify contrast, all element states, text zoom, iPhone PWA or VoiceOver. Existing request to lock pinch zoom is a distinct accessibility risk; not resolved by these type changes.
 - G2 visual identity acceptance, actual-device QA, academic G4, privacy G3 and human-study gates remain separate.
 
 **Visual specimen (noninteractive):** [Preview typography & spacing](../site/design-system-preview.html) after publishing. It exists for Human PO review; preview rendering does not count as actual device QA.
@@ -81,5 +81,7 @@ The stylesheet **must load after all original head styles and lesson CSS**. It i
 - [ ] Guide search remains usable; all 13 methods and their originals can be read, including long VI/EN terminology.
 - [ ] Lesson L03/L09/L15 pages show full prompts, source links, answer labels and complete feedback.
 - [ ] Keyboard focus and selected nav semantics remain intact, icon pill not replaced.
-- [ ] Run `python3 tools/validate_design_system.py`, `python3 tools/validate_ui_foundations.py`, `python3 tools/validate_site.py` and relevant JS navigation/mirror/lesson tests.
+- [x] Run generated token drift + design system validation, source debt ratchet and native lesson/route tests.
+- [x] Run rendered computed-style Chrome smoke at 320/375/390/402/600/820/1440 CSS px; checked typography, palette, imagery, Guide and horizontal overflow.
+- [ ] Capture cross-screen screenshot diffs, long-content/bottom-safe-area details, physical iPhone Safari/PWA and VoiceOver evidence.
 - [ ] Record **actual screenshots** and hardware/browser testing as separate evidence, not inferred from CI.

@@ -46,7 +46,7 @@ assert ':is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-q-row .text-ed
 assert ':is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-lock[hidden]' in css
 assert hifi.count('<script src="./assets/lesson-l09-hifi-markup.js"></script>') == 1
 assert hifi.count('<script src="./assets/lesson-l09-hifi.js"></script>') == 1
-assert hifi.count('<link rel="stylesheet" href="./assets/lesson-l09-hifi.css">') == 1
+assert hifi.count('<link rel="stylesheet" href="./assets/lesson-l09-hifi.css?v=0.3">') == 1
 
 for p in (site / "assets" / "lesson-l09-hifi-markup.js",site / "assets" / "lesson-l09-hifi.js"):
     subprocess.run(["node","--check",str(p)],check=True)

@@ -1,0 +1,51 @@
+name: li. Rendered CSS smoke (zero-cost headless Chrome)
+
+on:
+  pull_request:
+    paths:
+      - 'site/**'
+      - 'design-system/**'
+      - 'tools/render_contract_fixture.html'
+      - '.github/workflows/li-render-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  responsive-computed-styles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source and generated design CSS
+        run: |
+          python3 tools/generate_design_tokens.py --check
+          python3 tools/validate_site.py
+      - name: Test loaded styles and responsive component geometry in headless browser
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then
+            echo "FAIL: no preinstalled Chrome/Chromium browser; rendered QA not verified"
+            exit 1
+          fi
+          "$chrome" --version
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory . > /tmp/li-render-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          for width in 320 375 390 402 600 820 1440; do
+            echo "Checking iframe viewport $width px"
+            url="http://127.0.0.1:8765/tools/render_contract_fixture.html?w=$width"
+            result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=11000 --dump-dom "$url" 2>/tmp/li-chrome-stderr.log || true)"
+            if [[ "$result" != *'<pre id="result">LI_RENDER_PASS '* ]]; then
+              echo "FAIL computed-style fixture at $width CSS px"
+              echo "$result" | grep -E '<pre id="result">LI_RENDER_(PASS|FAIL|PENDING)' | tail -2 | cut -c1-2400 || true
+              cat /tmp/li-chrome-stderr.log | tail -30 || true
+              exit 1
+            fi
+            echo "$result" | grep '<pre id="result">LI_RENDER_PASS ' | tail -1 | cut -c1-1000
+          done
+          echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at seven viewports"

@@ -95,7 +95,7 @@ const page=String.raw`
     <button type="button" class="action" id="l09-allPrompt">Copy prompt đối chiếu 4 nguồn</button>
     <a href="https://chatgpt.com/" class="action alt" target="_blank" rel="noopener noreferrer" id="l09-openChat">Mở ChatGPT</a>
    </div>
-   <div class="state-note" id="l09-sourceNote" style="margin-top:18px"></div>
+   <div class="state-note l09-source-note" id="l09-sourceNote"></div>
   </article>
  </div>
  <aside class="surface tinted l09-sidebar" aria-label="Lesson progress and navigation">

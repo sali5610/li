@@ -1,46 +1,12 @@
 /* li. (理) · readable foundations v0.2 · 2026-11-18
-   Canonical runtime typography/spacing layer. Loaded AFTER legacy inline styles
-   and lesson CSS; use this layer rather than adding another emergency <style>.
+   Canonical runtime component-role layer; consumed tokens are GENERATED from
+   design-system/tokens.json into design-tokens.css loaded before legacy CSS.
+   This component layer loads last to retain the accepted readable hierarchy.
    Geometry, approved artwork, colors and interaction behaviors are preserved.
    Material 3 type-role inspiration + Material 4/8 grid; this is NOT Material UI.
 */
 :root {
-  /* Every spatial token is a multiple of 4 CSS px. */
-  --li-space-0: 0px;
-  --li-space-1: 4px;
-  --li-space-2: 8px;
-  --li-space-3: 12px;
-  --li-space-4: 16px;
-  --li-space-5: 20px;
-  --li-space-6: 24px;
-  --li-space-8: 32px;
-  --li-space-10: 40px;
-  --li-space-12: 48px;
-  --li-space-16: 64px;
-  --li-space-20: 80px;
-  --li-space-24: 96px;
-
-  /* Font sizes need not be divisible by 4; line heights follow the 4px rhythm. */
-  --li-type-display: 48px;
-  --li-leading-display: 56px;
-  --li-type-headline: 36px;
-  --li-leading-headline: 44px;
-  --li-type-title-lg: 28px;
-  --li-leading-title-lg: 36px;
-  --li-type-title-md: 24px;
-  --li-leading-title-md: 32px;
-  --li-type-title-sm: 20px;
-  --li-leading-title-sm: 28px;
-  --li-type-body-lg: 18px;
-  --li-leading-body-lg: 28px;
-  --li-type-body: 16px;
-  --li-leading-body: 24px;
-  --li-type-support: 14px;
-  --li-leading-support: 20px;
-  --li-type-caption: 12px;
-  --li-leading-caption: 16px;
-  --li-font-editorial: "Crimson Text", Georgia, "Times New Roman", serif;
-  --li-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  /* Semantic layout aliases: canonical sizes live in design-tokens.css. */
   --li-page-gutter: var(--li-space-4);
   --li-card-pad: var(--li-space-5);
   --li-stack-gap: var(--li-space-6);
@@ -167,7 +133,16 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   line-height: var(--li-leading-caption) !important;
   overflow-wrap: anywhere;
 }
-#page-guide #method-cards > .method-card .end { padding-top: var(--li-space-3); }
+#page-guide #method-cards > .method-card .end {
+  margin-top: auto;
+  padding-top: var(--li-space-3);
+}
+#page-guide #method-cards > .method-card .method-icon,
+#page-guide #method-cards > .method-card svg.lucide {
+  width: 20px;
+  height: 20px;
+  margin-bottom: var(--li-space-1);
+}
 #page-guide .editorial-grid { gap: var(--li-space-6) !important; }
 #page-guide #method-filters {
   gap: var(--li-space-2);
@@ -306,6 +281,29 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
     min-height: 64px !important;
     padding: var(--li-space-2) var(--li-space-1) !important;
     margin-top: 0 !important;
+  }
+}
+
+/* Tablet: a 1fr grid retains min-content width; scrollable Guide filters
+   can force the column wider than the viewport. Constrain the grid track
+   instead of masking real horizontal overflow on html/body. */
+@media (min-width: 641px) and (max-width: 950px) {
+  .page .editorial-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .page .editorial-grid > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+  #page-guide .editorial-grid .stack-sm {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  #page-guide #method-filters {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
   }
 }
 

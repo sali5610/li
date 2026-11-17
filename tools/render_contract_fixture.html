@@ -1,0 +1,61 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>li. v0.3 Browser Computed Style Smoke</title>
+<style>html,body{margin:0;padding:0}iframe{display:block;width:var(--test-width,100%);height:900px;border:0}#result{white-space:pre-wrap;font:12px monospace}</style><script>document.documentElement.style.setProperty("--test-width",(Number(new URLSearchParams(location.search).get("w"))||390)+"px");</script></head>
+<body><pre id="result">LI_RENDER_PENDING</pre><iframe id="app" src="../site/index.html" title="li. app fixture"></iframe>
+<script>
+(function(){
+ const out=document.getElementById("result"),frame=document.getElementById("app");
+ let done=false;
+ const report=(label,condition,more)=>{
+   window.__checks.push({label,passed:!!condition,detail:more===undefined?"":String(more)});
+ };
+ window.__checks=[];
+ function finish(){
+   if(done)return;done=true;
+   const errors=window.__checks.filter(x=>!x.passed);
+   const summary={width:frame.contentWindow ? frame.contentWindow.innerWidth : -1,passed:window.__checks.length-errors.length,total:window.__checks.length,errors,checks:window.__checks};
+   out.textContent=(errors.length?"LI_RENDER_FAIL ":"LI_RENDER_PASS ")+JSON.stringify(summary);
+ }
+ frame.addEventListener("load",function(){
+  setTimeout(function(){
+   try{
+    const doc=frame.contentDocument,w=frame.contentWindow,root=w.getComputedStyle(doc.documentElement);
+    report("Generated color --paper",root.getPropertyValue("--paper").trim().toUpperCase()==="#F3EBDC",root.getPropertyValue("--paper"));
+    report("Generated spacing --li-space-4",root.getPropertyValue("--li-space-4").trim()==="16px",root.getPropertyValue("--li-space-4"));
+    report("Body 16px",w.getComputedStyle(doc.body).fontSize==="16px",w.getComputedStyle(doc.body).fontSize);
+    report("Body 24px leading",w.getComputedStyle(doc.body).lineHeight==="24px",w.getComputedStyle(doc.body).lineHeight);
+    const css=[...doc.styleSheets].filter(x=>x.href).map(x=>x.href);
+    report("Generated + layout + lessons + foundations all loaded",["design-tokens.css","li-layout.css","lesson-l09-hifi.css","ui-foundations.css"].every(x=>css.some(y=>y.includes(x))),css.join(","));
+    const mirror=doc.querySelector("#page-home .mirror-message h2");
+    report("Mirror question exists",!!mirror);
+    const scene=doc.querySelector("#page-home .hero");
+    const image=scene?w.getComputedStyle(scene,"::before").backgroundImage:"";
+    report("Approved Home illustration loaded from new CSS-relative path",image.includes("home-mystic-cool-"),image.slice(0,170));
+    if(w.innerWidth<=600){
+     const nav=doc.querySelector(".mobile-nav .nav-btn");
+     report("Mobile bottom nav support label 14px",!!nav&&w.getComputedStyle(nav).fontSize==="14px",nav?w.getComputedStyle(nav).fontSize:"missing");
+    }
+    if(typeof w.navigate==="function")w.navigate("guide",{focus:false,syncUrl:false});
+    setTimeout(function(){
+      try{
+       const cards=doc.querySelectorAll("#page-guide #method-cards>.method-card");
+       report("Guide cards populated",cards.length>0,cards.length);
+       if(cards.length){
+        const title=cards[0].querySelector("h3");
+        report("Guide heading title token 24px",!!title&&w.getComputedStyle(title).fontSize==="24px",title?w.getComputedStyle(title).fontSize:"missing");
+        const purpose=cards[0].querySelector(".purpose");
+        report("Guide explanation >=14px and unclamped",!!purpose&&parseFloat(w.getComputedStyle(purpose).fontSize)>=14&&w.getComputedStyle(purpose).display==="block",purpose?(w.getComputedStyle(purpose).fontSize+" "+w.getComputedStyle(purpose).display):"missing");
+       }
+       const overflow=doc.documentElement.scrollWidth-w.innerWidth;
+       const overflowNodes=[...doc.querySelectorAll("body *")].map(el=>({el,rect:el.getBoundingClientRect()}))
+         .filter(x=>x.rect.width>0&&x.rect.right>w.innerWidth+4&&x.rect.top<w.innerHeight+120)
+         .slice(0,12).map(x=>({tag:x.el.tagName,id:x.el.id,cls:typeof x.el.className==="string"?x.el.className.slice(0,65):"",right:Math.round(x.rect.right),width:Math.round(x.rect.width)}));
+       report("No significant horizontal page overflow",overflow<=4,overflow+"px "+JSON.stringify(overflowNodes));
+      }catch(e){report("Guide computed style evaluation",false,e.message);}
+      finish();
+    },350);
+   }catch(e){report("Computed-style smoke runtime",false,e.stack||e.message);finish();}
+  },350);
+ });
+ setTimeout(function(){if(!done){report("Fixture loaded within budget",false,"timeout");finish();}},7000);
+})();
+</script></body></html>

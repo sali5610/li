@@ -1,32 +1,32 @@
 {
   "schemaVersion": 1,
-  "capturedFromCommit": "d6ebb9f587f782c3ec187120cd3f8e3a1b6d6876",
+  "capturedFromCommit": "v0.3 refactor branch — computed from passing GitHub CI source audit at 652b5172a73817d12421532af3810c600fa76b4d plus subsequent source-safe CSS extraction",
   "capturedDate": "2026-11-18",
   "purpose": "Static declaration debt ceilings, not an approval or a computed-style report. New file defaults to 0 unmapped.",
   "core": {
     "site/index.html": {
       "color": {
-        "without_var": 145
+        "without_var": 0
       },
       "typography": {
-        "without_var": 291
+        "without_var": 0
       },
       "spacing": {
-        "without_var": 369,
-        "offgrid_px_occurrences": 313
+        "without_var": 0,
+        "offgrid_px_occurrences": 0
       },
-      "offgrid_inline_spacing_declarations": 5
+      "offgrid_inline_spacing_declarations": 0
     },
     "site/assets/lesson-l09-hifi.css": {
       "color": {
         "without_var": 1
       },
       "typography": {
-        "without_var": 29
+        "without_var": 3
       },
       "spacing": {
-        "without_var": 53,
-        "offgrid_px_occurrences": 40
+        "without_var": 0,
+        "offgrid_px_occurrences": 0
       },
       "offgrid_inline_spacing_declarations": 0
     },
@@ -38,7 +38,20 @@
         "without_var": 2
       },
       "spacing": {
-        "without_var": 1,
+        "without_var": 2,
+        "offgrid_px_occurrences": 0
+      },
+      "offgrid_inline_spacing_declarations": 0
+    },
+    "site/assets/li-layout.css": {
+      "color": {
+        "without_var": 85
+      },
+      "typography": {
+        "without_var": 119
+      },
+      "spacing": {
+        "without_var": 11,
         "offgrid_px_occurrences": 0
       },
       "offgrid_inline_spacing_declarations": 0
@@ -50,24 +63,24 @@
         "without_var": 1
       },
       "typography": {
-        "without_var": 36
+        "without_var": 0
       },
       "spacing": {
-        "without_var": 32,
+        "without_var": 1,
         "offgrid_px_occurrences": 0
       },
       "offgrid_inline_spacing_declarations": 0
     },
     "site/lesson-source-lab.html": {
       "color": {
-        "without_var": 21
+        "without_var": 3
       },
       "typography": {
-        "without_var": 12
+        "without_var": 4
       },
       "spacing": {
-        "without_var": 21,
-        "offgrid_px_occurrences": 17
+        "without_var": 0,
+        "offgrid_px_occurrences": 0
       },
       "offgrid_inline_spacing_declarations": 0
     }
@@ -84,7 +97,7 @@
         "without_var": 0,
         "offgrid_px_occurrences": 0
       },
-      "offgrid_inline_spacing_declarations": 1
+      "offgrid_inline_spacing_declarations": 0
     },
     "site/assets/lesson-l09-hifi-markup.js": {
       "color": {
@@ -97,7 +110,7 @@
         "without_var": 0,
         "offgrid_px_occurrences": 0
       },
-      "offgrid_inline_spacing_declarations": 1
+      "offgrid_inline_spacing_declarations": 0
     },
     "site/assets/lesson-l15-hifi-markup.js": {
       "color": {
@@ -110,7 +123,8 @@
         "without_var": 0,
         "offgrid_px_occurrences": 0
       },
-      "offgrid_inline_spacing_declarations": 1
+      "offgrid_inline_spacing_declarations": 0
     }
-  }
+  },
+  "note": "v0.3 reduced ceilings: six prior <style> blocks moved to li-layout.css; every six-digit color literal in that CSS is now a named generated token; remaining raw color declarations are intentional currentColor, transparent, rgba art shading or other context values to review. No off-grid CSS numeric spacing remains in audited site and Wave1 CSS. Never raise a ceiling without PO/semantic review."
 }

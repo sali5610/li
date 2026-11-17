@@ -33,12 +33,12 @@
 5. Record status as **observed**, **PO-accepted specific**, **pending**, or **rejected/deprecated**.
 
 ### Technical debt explicitly tracked
-The current high-fi is still a large inline-styled static document with later CSS overrides; the design library is a **reference + automated baseline**, not a true single-source runtime component package. A follow-up extraction should consolidate selectors and shared styles without altering frozen WF-BASE or claiming G2 approval.
+The v0.3 app **no longer has inline `<style>` tags**; historical geometry/illustration rules were moved in original cascade order into `site/assets/li-layout.css`. Authored color/type/space values have **one source** (`design-system/tokens.json`) and are deterministically generated to `site/assets/design-tokens.css`. Reusable roles live in `ui-foundations.css`, native Wave1 shells use `lesson-l09-hifi.css`. The layered historical **scene selector cascade** still requires further visual-diff-based deduplication. Do not touch frozen WF-BASE or imply G2 approval.
 
-## v0.2 typography and spacing — shared implementation rule
-- **Runtime CSS:** `site/assets/ui-foundations.css` is the canonical migration layer (loaded last in the app), not a new framework.
+## v0.3 typography and spacing — shared implementation rule
+- **Runtime CSS:** generated `site/assets/design-tokens.css` owns all basic/semantic palette, type and spatial values; `site/assets/ui-foundations.css` is the canonical component-role layer (loaded last), not a new framework.
 - **Default:** 16px/24px reading text, 14px/20px essential supporting text, 12px/16px only metadata; Crimson Text editorial headings 24/32 and up. All line heights are multiples of 4px.
 - **Grid:** space tokens 0/4/8/12/16/20/24/32/40/48/64/80/96 CSS px. Every new padding, margin and gap must use a token or a value divisible by 4. Touch target goal 48px.
 - **Guide:** adaptive method cards replace 9–10.5px copy and forced two-line clipping; one column when necessary, not shrinking type.
 - **Scope:** Home, Catalog, Guide, Library, Research, Search, Capture, Settings, Lão Lý and published Wave1 lesson families all share type/spacing roles. Preserve special artwork geometry, selected sand pill and speech bubble.
-- **Limit:** older inline CSS still contains off-grid local rules. Central foundation supersedes touched shared surfaces; complete legacy cleanup needs a separate safe visual regression pass. See [type/spacing spec](typography-spacing.md).
+- **Limit:** `site/assets/li-layout.css` preserves art-sensitive, legacy selector/breakpoint rules, including some remaining unmapped contextual colors and unitless line heights. All tracked numeric margin/padding/gap literals in app and Wave1 CSS are on the 4px grid in the current static audit. Browser smoke checks actual computed styles at seven widths, not physical iPhone or G2 acceptance. See [v0.3 report](audits/2026-11-18-css-refactor-v03.md).

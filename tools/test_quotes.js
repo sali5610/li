@@ -30,7 +30,8 @@ assert.ok(engine,"engine present");
 assert.ok(engine.quotes.length>=24,"quote bank ≥24 distinct verified entries");
 assert.equal(new Set(engine.quotes.map(q=>q.id)).size,engine.quotes.length,"IDs unique");
 for(const q of engine.quotes){
- for(const field of ["id","original","gloss","meta","url","comment","lang"]) assert.ok(typeof q[field]==="string"&&q[field].length>3,q.id+" "+field);
+ for(const field of ["id","original","gloss","meta","url","comment"]) assert.ok(typeof q[field]==="string"&&q[field].length>3,q.id+" "+field);
+ assert.ok(["en","zh-Hant"].includes(q.lang),q.id+" language tag");
  assert.ok(Array.isArray(q.tags)&&q.tags.length>=2,q.id+" topics");
  assert.ok(q.url.startsWith("https://")&&!q.url.includes("example.com"),q.id+" verified public source");
 }

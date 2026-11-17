@@ -45,7 +45,8 @@ for token in (
 ):
     assert token in html, f"Missing mirror touch/layout/accessibility contract: {token}"
 assert html.count("animation:li-mirror-copy-float 4.2s ease-in-out infinite;") == 1
-assert "animation:li-mirror-copy-float" not in html[html.index("#page-home .mirror-refresh,"):html.index("</style>",html.index("/* S135 · Mirror copy"))]
+s135_touch=html[html.index("#page-home .mirror-refresh,",html.index("/* S135 · Mirror copy")):html.index("@media(prefers-reduced-motion",html.index("/* S135 · Mirror copy"))]
+assert "animation:li-mirror-copy-float" not in s135_touch, "Only the text, not the refresh button, may float"
 
 # S129: the brand mark is a drawn, self-contained 理 seal, never live text in a CSS box.
 from xml.etree import ElementTree as ET

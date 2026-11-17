@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'site/**'
-      - 'tools/validate_site.py'
+      - 'tools/**'
       - '.github/workflows/li-pages.yml'
   workflow_dispatch:
 

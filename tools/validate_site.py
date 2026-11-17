@@ -165,22 +165,14 @@ assert seal_root.attrib.get("viewBox")=="0 0 256 256"
 assert seal.count("<path ")==1 and "<text" not in seal, "Logo reverted to text glyph"
 assert "理" in seal_root.attrib.get("aria-label","")
 assert 'fill="#243A29"' in seal, "Logo ink must match approved moss theme"
-assert html.count('src="./assets/li-seal.svg?v=moss-243a29"')==1, "Approved brand image not connected"
-assert html.count('rel="icon" type="image/svg+xml" href="./assets/li-favicon.svg?v=moss-bg-20261118"')==1
-# S140: favicon has a solid PO-theme moss background with light stamped artwork;
-# independent from the transparent green seal used in the app header.
-favicon_file=site/"assets"/"li-favicon.svg"
-assert favicon_file.is_file(), "Missing brand favicon"
-favicon=favicon_file.read_text(encoding="utf-8")
-favicon_root=ET.fromstring(favicon)
-assert favicon_root.attrib.get("viewBox")=="0 0 256 256"
-assert favicon.count('<rect width="256" height="256" fill="#243A29"/>')==1, "Favicon background must match moss"
-assert favicon.count('<path fill="#F3EBDC"')==1, "Favicon seal must contrast with green"
-assert "<text" not in favicon, "Favicon glyph must be artwork"
-# Browser favicon is the exact same carved seal silhouette as the header.
-_svg_path="{http://www.w3.org/2000/svg}path"
-assert favicon_root.find(_svg_path).attrib["d"]==seal_root.find(_svg_path).attrib["d"], "Favicon glyph diverges from approved seal"
-assert seal.count('<path fill="#243A29"')==1, "Approved transparent header seal must remain green"
+# S146: favicon MUST use the exact same SVG URL as the approved header seal.
+# A separately inverted moss-background/cream-ink SVG is not the header logo.
+seal_url="./assets/li-seal.svg?v=exact-header-s146"
+assert html.count('src="'+seal_url+'"')==1, "Header seal must be approved SVG"
+assert html.count('rel="icon" type="image/svg+xml" href="'+seal_url+'"')==1, "Favicon must share exact header logo asset"
+assert 'rel="icon" type="image/svg+xml" href="./assets/li-favicon.svg' not in html, "Legacy inverse-color favicon must not be referenced"
+assert seal.count('<path fill="#243A29"')==1, "Approved transparent green seal altered"
+
 assert '<span class="brand-stamp">理</span>' not in html
 assert '.brand-stamp{display:block;width:42px;height:42px;object-fit:contain;flex:none}' in html
 assert '.header .brand-stamp{height:38px;width:38px}' in html

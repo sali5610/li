@@ -163,6 +163,8 @@ function genericPlan(page){
  }
 }
 function getBuddyPlan(){
+ const lessonPlan=window.liLessonCompanion?.getPlan?.(currentPage);
+ if(lessonPlan)return lessonPlan;
  switch(currentPage){
  case "home":return scenarioPlan();
  case "research":return researchPlan();

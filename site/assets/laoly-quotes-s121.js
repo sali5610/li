@@ -16,6 +16,11 @@ function environment(){
  const page=typeof currentPage==="string"?currentPage:"home";
  const scenario=typeof qIndex==="number"?qIndex:0;
  const mode=typeof studyMode==="string"?studyMode:"start";
+ const lesson=window.liLessonCompanion?.getContext?.();
+ if(lesson&&lesson.page===page){
+  return {scope:page+":"+lesson.lesson_id+":"+lesson.stage,
+   keys:lesson.topics.slice(0,3),page,scenario,mode,quoteIds:lesson.quote_ids};
+ }
  let keys=[],scope=page;
  if(page==="home"||page==="research"){
   keys=scenario===0?["sampling","evidence","critique"]:scenario===1?["norms","social","critique"]:["supply","systems","economy"];
@@ -49,7 +54,7 @@ function matchList(ctx){
  return list;
 }
 function pick(ctx=environment()){
- const pool=matchList(ctx);if(!pool.length)return null;
+ const pool=Array.isArray(ctx.quoteIds)&&ctx.quoteIds.length?QUOTES.filter(q=>ctx.quoteIds.includes(q.id)):matchList(ctx);if(!pool.length)return null;
  let seen=Array.isArray(memory.routes[ctx.scope])?memory.routes[ctx.scope].filter(id=>pool.some(q=>q.id===id)):[];
  let available=pool.filter(q=>!seen.includes(q.id));
  if(!available.length){seen=[];available=pool;}

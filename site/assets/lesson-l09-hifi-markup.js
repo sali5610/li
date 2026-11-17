@@ -6,7 +6,7 @@ const main=document.getElementById("main"),catalog=document.querySelector("#page
 const after=document.getElementById("page-case");
 if(!main||!after||!catalog||!library||document.getElementById("page-lessonL09"))return;
 const page=String.raw`
-<section id="page-lessonL09" class="page" tabindex="-1" aria-labelledby="l09-title">
+<section id="page-lessonL09" class="page" tabindex="-1" aria-labelledby="l09-title" data-lesson-id="L09-1-2" data-companion-manifest="./lessons/companion/L09-1-2.json">
 <div class="section-shell">
  <div class="kicker">TOÁN HỌC / DATA SCIENCE · DATA & STATISTICAL FOUNDATIONS · L09-1-2</div>
  <h1 class="display-title" id="l09-title">Sampling Bias · Sai lệch chọn mẫu</h1>
@@ -103,6 +103,10 @@ const page=String.raw`
   <span class="status-chip" id="l09-progress">Chưa hoàn tất lượt tự đánh giá</span>
   <div class="l09-progress-bar" role="progressbar" aria-label="Review progress" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0" id="l09-progressBar"><span id="l09-progressFill"></span></div>
   <nav class="l09-index" id="l09-index" aria-label="Lesson sections"></nav>
+  <div class="section-rule"></div>
+  <div class="kicker">LÃO LÝ ĐỌC CÙNG NGƯƠI</div>
+  <p class="small l09-status-line" id="li-lesson-mentor-stage">Lão đang theo dõi mục học hiện tại để đặt câu hỏi phù hợp.</p>
+  <div class="action-row"><button type="button" class="action alt" data-buddy="1">Hỏi Lão Lý theo mục đang học</button></div>
   <p class="small l09-status-line" id="l09-sidebarExtra">Giao diện Hi-Fi của li.; nội dung học thuật vẫn đang trong vòng kiểm thử.</p>
   <div class="action-row"><button type="button" class="action alt" data-page="guide" id="l09-sidebarMethods">Xem Thần Chú</button><button type="button" class="action alt" data-page="catalog" id="l09-sidebarCatalog">Về Tàng Thư</button></div>
  </aside>

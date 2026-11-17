@@ -192,5 +192,8 @@ assert 'https://zh.wikisource.org/' in quote_js and 'https://en.wikisource.org/'
 subprocess.run(["node","--check",str(quotes)],check=True)
 subprocess.run(["node",str(site.parent/"tools"/"test_quotes.js")],check=True,cwd=site.parent)
 
+# S125: mandatory source-grounded Lão Lý for all native lesson modules.
+subprocess.run(["python3",str(site.parent/"tools"/"validate_lesson_companions.py")],check=True,cwd=site.parent)
+
 assert (site/".nojekyll").is_file()
 print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and 28/30px gaps, privacy copy, JS parsing")

@@ -1,0 +1,277 @@
+{
+  "schema": 1,
+  "lesson_id": "L09-1-2",
+  "title": "Sampling Bias vs Random Sampling Variation",
+  "topics": [
+    "sampling",
+    "evidence",
+    "critique",
+    "reading",
+    "models"
+  ],
+  "objectives": [
+    "Phân biệt tổng thể mục tiêu và mẫu được quan sát",
+    "Tách selection bias khỏi random sampling variation",
+    "Không suy rộng kết luận khảo sát quá nguồn dữ liệu"
+  ],
+  "editorial": {
+    "status": "review",
+    "provenance": "Based on the actual Wave1A L09-1-2 native Li markup, NIST/CDC/OpenStax references and the authored independent 1200/78% finance-app challenge; no factual claims inferred from an external headline.",
+    "spoiler_policy": "Before submission, only reflective questions and generic answer structures are allowed; the L09-1-2 model answer is locked by the existing host renderer; mentor reflection is gated behind state.submitted.",
+    "review_gate": "Academic/source review and Human PO editorial acceptance remain open."
+  },
+  "moments": [
+    {
+      "stage": "opening",
+      "anchor": "l09-goals",
+      "quote_id": "hume-evidence",
+      "relevance": "Hume reminds learners to match their confidence to the evidence, exactly the pitfall posed by a large survey sample.",
+      "vi": {
+        "label": "Trước khi học",
+        "prompt": "Một nghìn câu trả lời nghe hoành tráng. Nhưng một nghìn người nào, tiểu hữu?",
+        "actions": [
+          {
+            "label": "Hỏi gì trước?",
+            "reply": "Hãy chỉ rõ tổng thể muốn kết luận và nhóm thực sự nhìn thấy lời mời khảo sát. Hai nhóm có trùng nhau không?"
+          },
+          {
+            "label": "Vì sao cần học?",
+            "reply": "Một tỷ lệ phần trăm có thể tính hoàn toàn đúng mà câu kết luận về xã hội vẫn sai phạm vi."
+          }
+        ],
+        "quote_comment": "Mẫu 1.000 người có thể vẫn bỏ sót cả một nhóm. Lão không bị con số to đánh lừa đâu."
+      },
+      "en": {
+        "label": "Before learning",
+        "prompt": "A thousand replies sounds impressive. But a thousand of whom, young scholar?",
+        "actions": [
+          {
+            "label": "First question?",
+            "reply": "Name the target population and who actually saw the invitation. Are those groups the same?"
+          },
+          {
+            "label": "Why learn this?",
+            "reply": "A percentage can be calculated accurately while a claim about the whole population remains unjustified."
+          }
+        ],
+        "quote_comment": "One thousand answers can still omit an important group. Large numbers are not proof of representativeness."
+      },
+      "quote_ids": [
+        "hume-evidence",
+        "mill-other-side",
+        "mencius-sources",
+        "analects-honesty"
+      ]
+    },
+    {
+      "stage": "concept",
+      "anchor": "l09-concept",
+      "quote_id": "box-models",
+      "relevance": "The model-versus-reality warning fits the difference between a sample estimate and claims about a larger population.",
+      "vi": {
+        "label": "Hiểu bản chất",
+        "prompt": "Đừng gom mọi sai số vào một rổ. Thiên lệch chọn mẫu khác dao động ngẫu nhiên giữa các mẫu.",
+        "actions": [
+          {
+            "label": "Phân biệt sao?",
+            "reply": "Hỏi hai câu riêng: ai có cơ hội lọt vào mẫu, và ước lượng sẽ thay đổi ra sao nếu lấy một mẫu xác suất khác?"
+          },
+          {
+            "label": "Lỗi thường gặp?",
+            "reply": "Mẫu đông chưa bảo đảm đại diện; lấy mẫu ngẫu nhiên cũng không tự xóa được vấn đề bỏ sót hay không phản hồi."
+          }
+        ],
+        "quote_comment": "Mẫu chỉ là cửa sổ nhìn ra tổng thể, đâu phải cả khu rừng. Phân biệt sai lệch hệ thống và dao động ngẫu nhiên."
+      },
+      "en": {
+        "label": "Understand the concepts",
+        "prompt": "Do not throw every error into one basket. Selection bias and random sampling variation are different.",
+        "actions": [
+          {
+            "label": "How are they different?",
+            "reply": "Ask separately who could enter the sample, and how the estimate would change with a different probability sample."
+          },
+          {
+            "label": "Common pitfall?",
+            "reply": "A large sample is not automatically representative; random selection does not eliminate coverage or nonresponse problems."
+          }
+        ],
+        "quote_comment": "A sample is a window into a population, not the entire landscape. Systematic selection and random variation are different."
+      },
+      "quote_ids": [
+        "box-models",
+        "hume-evidence",
+        "analects-think",
+        "darwin-confidence"
+      ]
+    },
+    {
+      "stage": "guided",
+      "anchor": "l09-guided",
+      "quote_id": "mill-other-side",
+      "relevance": "Mill's emphasis on the missing viewpoint fits the guided survey case and excluded groups.",
+      "vi": {
+        "label": "Thử áp dụng",
+        "prompt": "Nhìn ví dụ nhắc học: trước khi gật đầu với 80%, thử hỏi ai vắng mặt trong cuộc khảo sát.",
+        "actions": [
+          {
+            "label": "Ai chưa lên tiếng?",
+            "reply": "Những người không thấy lời mời, người ít dùng sản phẩm hoặc người bỏ qua khảo sát có thể có nhu cầu khác nhóm phản hồi."
+          },
+          {
+            "label": "Kết luận tới đâu?",
+            "reply": "Viết rõ tỷ lệ thuộc nhóm nào; nếu muốn nói tới tất cả người dùng tương lai, phải kiểm tra cách tuyển mẫu trước."
+          }
+        ],
+        "quote_comment": "Nếu người phản đối không có cơ hội trả lời, 80% đồng ý nghe cũng hơi... thuận tiện quá ha."
+      },
+      "en": {
+        "label": "Guided application",
+        "prompt": "Consider the reminder example: before accepting the 80% claim, ask whose voice is missing.",
+        "actions": [
+          {
+            "label": "Who is absent?",
+            "reply": "People who did not see the invitation, seldom use the product, or ignored the survey may differ from respondents."
+          },
+          {
+            "label": "How far can it claim?",
+            "reply": "Specify whose answers the percentage describes; broader claims need evidence about recruitment."
+          }
+        ],
+        "quote_comment": "If dissenters never had a chance to respond, an 80% agreement rate may be conveniently misleading."
+      },
+      "quote_ids": [
+        "mill-other-side",
+        "mencius-sources",
+        "hume-evidence",
+        "box-models"
+      ]
+    },
+    {
+      "stage": "independent",
+      "anchor": "l09-challenge",
+      "quote_id": "mencius-sources",
+      "relevance": "Mencius's critical stance toward texts is a non-spoiler reminder to evaluate evidence in the independent finance-app banner exercise.",
+      "vi": {
+        "label": "Bài tập độc lập",
+        "prompt": "Bài banner tài chính là lượt của ngươi. Lão chỉ hỏi để soi giả định, không đưa đáp án trước khi nộp.",
+        "actions": [
+          {
+            "label": "Nhìn chỗ nào?",
+            "reply": "Tự đánh dấu nhóm được khảo sát, nhóm mà kết luận nhắm tới và một thông tin còn thiếu để kiểm tra."
+          },
+          {
+            "label": "Bí quá rồi?",
+            "reply": "Thử viết một câu ngắn: 'Dữ liệu này mô tả ___, chưa đủ nói về ___ vì ___'. Nội dung các ô do ngươi quyết."
+          }
+        ],
+        "quote_comment": "Đọc số liệu đừng chỉ nhìn phần được tô đậm. Hỏi dữ kiện nào còn thiếu rồi tự viết kết luận."
+      },
+      "en": {
+        "label": "Independent attempt",
+        "prompt": "The finance-banner challenge is yours. I'll ask about assumptions, not reveal the model answer before submission.",
+        "actions": [
+          {
+            "label": "Where to look?",
+            "reply": "Identify who was surveyed, who the claim targets, and one missing fact you would need to check."
+          },
+          {
+            "label": "Stuck?",
+            "reply": "Try the structure: 'These data describe ___, not necessarily ___, because ___'. You must fill the blanks yourself."
+          }
+        ],
+        "quote_comment": "Don't only inspect the highlighted number. Identify what's missing, then write your own qualified conclusion."
+      },
+      "quote_ids": [
+        "mencius-sources",
+        "analects-honesty",
+        "hume-evidence",
+        "analects-think"
+      ]
+    },
+    {
+      "stage": "reflection",
+      "anchor": "l09-rubric",
+      "quote_id": "analects-honesty",
+      "relevance": "Acknowledging what remains unknown fits the post-submission self-assessment and inference-limits rubric.",
+      "vi": {
+        "label": "Đối chiếu sau nộp",
+        "prompt": "Giờ mới tới lúc soi lại đáp án. Điều nào ngươi có chứng cứ, điều nào chỉ mới suy đoán?",
+        "actions": [
+          {
+            "label": "Tự chấm thế nào?",
+            "reply": "Đối chiếu phần tổng thể, cơ chế chọn mẫu, biến động ngẫu nhiên và giới hạn kết luận; ghi điểm theo rubric thay vì tự phong thông thái."
+          },
+          {
+            "label": "Nếu kết luận quá tay?",
+            "reply": "Viết lại câu kết luận với phạm vi đúng nhóm đã được hỏi và nói rõ điều cần kiểm chứng thêm."
+          }
+        ],
+        "quote_comment": "Nói rõ mình chưa biết gì không làm câu trả lời yếu đi; nó làm lập luận vững hơn."
+      },
+      "en": {
+        "label": "Review after submission",
+        "prompt": "Now compare the answer. Which claims did you support and which were only assumptions?",
+        "actions": [
+          {
+            "label": "How to self-rate?",
+            "reply": "Check population, selection mechanism, random variation and inference limits against the rubric; do not invent mastery."
+          },
+          {
+            "label": "Overstated conclusion?",
+            "reply": "Rewrite it for the observed respondent group and specify what must be verified before generalizing."
+          }
+        ],
+        "quote_comment": "Explicit uncertainty does not weaken a conclusion; it can make the reasoning more defensible."
+      },
+      "quote_ids": [
+        "analects-honesty",
+        "mill-other-side",
+        "darwin-confidence",
+        "analects-review"
+      ]
+    },
+    {
+      "stage": "extension",
+      "anchor": "l09-sources",
+      "quote_id": "bacon-studies",
+      "relevance": "Bacon's reading-writing emphasis supports source-aware synthesis after the lesson's NIST, CDC and OpenStax reading links.",
+      "vi": {
+        "label": "Đào sâu có nguồn",
+        "prompt": "Đọc thêm thì tốt, nhưng đừng tưởng mở ba tab là đã kiểm chứng ba nguồn.",
+        "actions": [
+          {
+            "label": "Đọc theo thứ tự?",
+            "reply": "Bắt đầu từ định nghĩa và cơ chế lấy mẫu; kế đó xem ví dụ ứng dụng. Ghi nguồn hỗ trợ nhận định nào, nguồn nào chưa truy cập được."
+          },
+          {
+            "label": "Nhớ lâu bằng cách nào?",
+            "reply": "Đóng tài liệu lại, tự giải thích selection bias khác random sampling variation chỗ nào, rồi viết một kết luận khảo sát có giới hạn."
+          }
+        ],
+        "quote_comment": "Đọc xong mà giải thích được không nhìn tài liệu mới đáng gọi là hiểu, tiểu hữu."
+      },
+      "en": {
+        "label": "Go deeper with sources",
+        "prompt": "More reading is useful, but opening three tabs is not the same as verifying three sources.",
+        "actions": [
+          {
+            "label": "Reading order?",
+            "reply": "Start with the definitions and sampling mechanism, then the worked example. Track which source supports which claim."
+          },
+          {
+            "label": "How to remember?",
+            "reply": "Close the reading, explain selection bias versus random sampling variation from memory, and write a qualified survey conclusion."
+          }
+        ],
+        "quote_comment": "You understand something more deeply when you can explain it without peeking at the source."
+      },
+      "quote_ids": [
+        "bacon-studies",
+        "analects-review",
+        "mencius-sources",
+        "zhuangzi-limits"
+      ]
+    }
+  ]
+}

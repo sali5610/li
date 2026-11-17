@@ -29,6 +29,24 @@ assert 'url.hash="";' in html
 assert 'if(syncUrl)syncLiRoute(id);' in html
 assert 'syncUrl:!Object.values(LI_LESSON_ROUTES).includes(liInitialLesson)' in html
 
+# S135: mobile mirror safe-area, independent subtle text float, and no square iOS tap flash.
+assert html.count("/* S135 · Mirror copy safe area + paper-float.") == 1
+for token in (
+    "width:min(54%,194px)!important;",
+    "max-width:194px!important;",
+    "font-size:clamp(19px,5.1vw,22px)!important;",
+    "@keyframes li-mirror-copy-float{",
+    "animation:li-mirror-copy-float 4.2s ease-in-out infinite;",
+    "-webkit-tap-highlight-color:transparent!important;",
+    "border-radius:50%!important;",
+    "#page-home .mirror-refresh svg{pointer-events:none}",
+    "#page-home .mirror-refresh:focus-visible{",
+    "#page-home .mirror-message h2{animation:none!important;will-change:auto}",
+):
+    assert token in html, f"Missing mirror touch/layout/accessibility contract: {token}"
+assert html.count("animation:li-mirror-copy-float 4.2s ease-in-out infinite;") == 1
+assert "animation:li-mirror-copy-float" not in html[html.index("#page-home .mirror-refresh,"):html.index("</style>",html.index("/* S135 · Mirror copy"))]
+
 # S129: the brand mark is a drawn, self-contained 理 seal, never live text in a CSS box.
 from xml.etree import ElementTree as ET
 seal_file=site/"assets"/"li-seal.svg"

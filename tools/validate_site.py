@@ -83,6 +83,9 @@ assert "/* S99 guidebook responsive fix */" not in html
 assert "/* S99 responsive Thần Chú - scoped to Guide route */" not in html
 assert "#page-guide #method-cards{display:grid!important;width:100%!important;min-width:0;max-width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:18px;row-gap:20px;padding:3px 6px 8px 3px;margin:18px 0 0;" in html
 assert "#page-guide #method-cards{column-gap:14px;row-gap:18px;padding:3px 5px 8px 2px}" in html
+# S127: mentor border matches the actual card borders, including the <=360px inset.
+assert "#page-guide .editorial-grid>.guide-mentor{margin-left:3px;margin-right:6px;width:calc(100% - 9px)!important;max-width:calc(100% - 9px)!important;box-sizing:border-box}" in html
+assert "#page-guide .editorial-grid>.guide-mentor{margin-left:2px;margin-right:5px;width:calc(100% - 7px)!important;max-width:calc(100% - 7px)!important}" in html
 assert "#page-guide #method-cards>.method-card{width:100%!important;min-width:0;max-width:100%!important;box-sizing:border-box;padding:11px 10px;min-height:194px" in html
 assert "#page-guide #method-cards>.method-card .purpose{" in html
 assert "function renderMethods(){" in html and "function showMethod(id){" in html

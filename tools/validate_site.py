@@ -9,6 +9,18 @@ for name in assets:
     p=site/"assets"/name
     assert p.is_file() and p.stat().st_size>1000, f"Missing {name}"
     if name.endswith(".png"):assert p.read_bytes().startswith(b"\x89PNG\r\n\x1a\n"),f"Invalid {name}"
+# S133: seal, wordmark and three header buttons have one 44px vertical alignment axis.
+assert html.count("/* S133 · Header shared vertical alignment contract (mobile, tablet, desktop).") == 1
+for selector in (
+    ".header .brand,.header .tools{display:flex;align-items:center;height:44px;box-sizing:border-box}",
+    ".header .brand-copy{display:flex;justify-content:center;height:44px}",
+    ".header .logo{display:block;line-height:1;transform:translateY(-1px)}",
+    ".header .brand-stamp{display:block;align-self:center;object-fit:contain}",
+    ".header .tools .tool-button{display:grid;place-items:center;align-self:center;padding:0}",
+):
+    assert selector in html, f"Header alignment rule missing: {selector}"
+assert html.count('class="tool-button" data-page=') == 3
+
 # S129: the brand mark is a drawn, self-contained 理 seal, never live text in a CSS box.
 from xml.etree import ElementTree as ET
 seal_file=site/"assets"/"li-seal.svg"

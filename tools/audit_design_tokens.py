@@ -45,7 +45,7 @@ def color_prop(p: str) -> bool:
 def scrub(css: str) -> str:
     # Preserve newlines/line numbers when omitting comments and huge data URLs.
     css = re.sub(r"/\*[\s\S]*?\*/", lambda m: re.sub(r"[^\n]", " ", m.group()), css)
-    css = re.sub(r"url\(\s*(['\\"]?)data:[\s\S]*?\1\s*\)", "url(data-skipped)", css, flags=re.I)
+    css = re.sub(r"url\([^)]*?data:[\s\S]*?\)", "url(data-skipped)", css, flags=re.I)
     return css
 
 def parse(css: str, line_offset: int = 0) -> list[dict]:

@@ -74,14 +74,15 @@ assert settings.count('data-buddy="1"') == 1
 assert '#settings-buddy-card .settings-buddy-footer' in html
 assert '#settings-buddy-card .settings-buddy-illustration' in html
 
-# S116: two compact mobile Guide tiles, with Guide-only scope and no duplicate S99 rule.
+# S118: two compact mobile Guide tiles with shadow-safe column/row gutters; no duplicate S99 rule.
 guide=section("guide")
 assert guide.count('id="method-count"') == 1
 assert 'id="method-cards" class="method-grid"' in guide
-assert html.count("/* S116 · Guide compact two-column method tiles on phones (consolidated S99) */") == 1
+assert html.count("/* S118 · Guide two-up mobile tiles with deliberate outer gutters (consolidated S99/S116) */") == 1
 assert "/* S99 guidebook responsive fix */" not in html
 assert "/* S99 responsive Thần Chú - scoped to Guide route */" not in html
-assert "#page-guide #method-cards{display:grid!important;width:100%!important;min-width:0;max-width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;" in html
+assert "#page-guide #method-cards{display:grid!important;width:100%!important;min-width:0;max-width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:18px;row-gap:20px;padding:3px 6px 8px 3px;margin:18px 0 0;" in html
+assert "#page-guide #method-cards{column-gap:14px;row-gap:18px;padding:3px 5px 8px 2px}" in html
 assert "#page-guide #method-cards>.method-card{width:100%!important;min-width:0;max-width:100%!important;box-sizing:border-box;padding:11px 10px;min-height:194px" in html
 assert "#page-guide #method-cards>.method-card .purpose{" in html
 assert "function renderMethods(){" in html and "function showMethod(id){" in html

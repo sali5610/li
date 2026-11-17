@@ -11,6 +11,9 @@ if(!modal||!textEl||buttons.some(x=>!x))return;
 let activePlan=null;
 
 function action(label,reply,perform){return {label,reply,perform:perform||null};}
+function methodSourceName(id){return methods.find(m=>m[0]===id)?.[2]||"phương pháp chưa có trong thư viện";}
+function methodActionName(m){return (m?.[2]||m?.[1]||"phương pháp").split("/")[0].trim();}
+
 function go(page,focusId){
   closeModal("buddy-modal");navigate(page);
   if(focusId){const el=document.getElementById(focusId);el?.scrollIntoView?.({block:"center",behavior:"smooth"});el?.focus?.({preventScroll:true});}
@@ -44,7 +47,7 @@ function researchPlan(){
   actions:[
    action("Điều đã biết",sc.observed),
    action("Điều còn thiếu",sc.unknown+(selected?" Nhánh đang xét: "+selected+".":"")),
-   action(qIndex===0&&selected?"Sang Phản Chứng":qIndex!==0?"Xem T09 · Giám Chứng":"Chọn nhánh khảo sát",qIndex===0&&selected?"Ta thử một kết luận và xem nó đứng được tới đâu.":qIndex!==0?"Tình huống này chưa có Phản Chứng riêng. Hãy dùng T09 để kiểm tra nguồn, đừng lạc qua ví dụ khảo sát 90%.":"Chọn một nhánh cụ thể rồi kiểm chứng. Đừng ôm cả ba một lúc.",()=>qIndex===0&&selected?go("case"):qIndex!==0?(closeModal("buddy-modal"),showMethod("T09")):go("research"))
+   action(qIndex===0&&selected?"Sang Phản Chứng":qIndex!==0?"Xem đánh giá nguồn":"Chọn nhánh khảo sát",qIndex===0&&selected?"Ta thử một kết luận và xem nó đứng được tới đâu.":qIndex!==0?"Tình huống này chưa có Phản Chứng riêng. Hãy dùng "+methodSourceName("T09")+" để kiểm tra nguồn, đừng lạc qua ví dụ khảo sát 90%.":"Chọn một nhánh cụ thể rồi kiểm chứng. Đừng ôm cả ba một lúc.",()=>qIndex===0&&selected?go("case"):qIndex!==0?(closeModal("buddy-modal"),showMethod("T09")):go("research"))
   ]
  };
 }
@@ -72,8 +75,8 @@ function guidePlan(){
  return {
   intro:"Ngươi đang chọn nhịp “"+mode.label+"”. "+(query?"Đang tìm “"+query+"”.":"Lão sẽ gợi ý theo nhịp này, nhưng cả 13 phương pháp vẫn có thể tra cứu."),
   actions:[
-   action("Chọn pháp cho đúng","Muốn nhớ: thử T01/T02. Muốn giải thích: T04/T05. Muốn xét chứng cứ: T09. Cứ chọn theo vấn đề, không theo tên đẹp."),
-   action("Thử "+proposed[0],proposed[1]+" — "+proposed[3]+". Đọc điều kiện áp dụng rồi mới thử.",()=>{closeModal("buddy-modal");showMethod(proposed[0]);}),
+   action("Chọn pháp cho đúng","Muốn ghi nhớ: "+methodSourceName("T01")+" (tự nhớ trước khi xem đáp án) hoặc "+methodSourceName("T02")+" (ôn tập cách quãng). Muốn hiểu sâu: "+methodSourceName("T04")+" (tự giải thích) hoặc "+methodSourceName("T05")+" (hỏi nguyên nhân). Muốn kiểm chứng: "+methodSourceName("T09")+" (đánh giá nguồn và độ tin cậy). Chọn phương pháp theo vấn đề, đừng chọn theo tên cho kêu."),
+   action("Xem "+methodActionName(proposed),proposed[2]+" · "+proposed[1]+" — "+proposed[3]+". Đọc điều kiện áp dụng rồi mới thử.",()=>{closeModal("buddy-modal");showMethod(proposed[0]);}),
    action(query?"Sửa từ khóa":"Tìm đủ 13 phép",query?"Có "+matches.length+" phương pháp khớp tên hoặc bộ lọc hiện tại.":"Tìm bằng tên học thuật, pháp danh hoặc lọc nhóm; không cần đổi nhịp học.",()=>go("guide","method-search"))
   ]
  };
@@ -83,10 +86,10 @@ function guideDetailPlan(){
  const m=methods.find(x=>x[0]===id)||methods[0];
  const cross=methods.find(x=>x[4]===m[4]&&x[0]!==m[0])||methods[0];
  return {
-  intro:"Ngươi đang đọc "+m[0]+" · "+m[1]+". Cốt lõi của nó là: "+m[3].toLowerCase()+".",
+  intro:"Ngươi đang đọc "+m[1]+" ("+m[2]+"). Cốt lõi của nó là: "+m[3].toLowerCase()+".",
   actions:[
    action("Dùng khi nào?",m[3]+". Xác định mục tiêu và điều kiện trước, đừng xài thần chú như bùa vạn năng."),
-   action("So với "+cross[0],cross[1]+" phù hợp khi cần: "+cross[3].toLowerCase()+".",()=>{closeModal("buddy-modal");showMethod(cross[0]);}),
+   action("So với "+methodActionName(cross),cross[2]+" · "+cross[1]+" phù hợp khi cần: "+cross[3].toLowerCase()+".",()=>{closeModal("buddy-modal");showMethod(cross[0]);}),
    action("Về 13 Thần Chú","Lão đưa ngươi về danh sách, giữ nguyên nhịp học và bộ lọc.",()=>go("guide","method-search"))
   ]
  };

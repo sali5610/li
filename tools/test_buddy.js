@@ -19,9 +19,11 @@ const scenarios=[
  {buddy:"Kho tổng còn hàng, nhưng cửa hàng lại hết — vì sao?",question:"Vì sao hết hàng?",observed:"Kho tổng còn",unknown:"Hàng ở đâu",branches:["Hàng nằm đâu?"]}
 ];
 const methods=[
- ["T01","Triệu Ức","Retrieval Practice","Tự nhớ","Ký Ức Thuật"],
- ["T04","Tự Giải","Self-explanation","Giải thích","Minh Giải Thuật"],
- ["T09","Giám Chứng","Source appraisal","Kiểm tra nguồn","Luận Chứng Thuật"]
+ ["T01","Triệu Ức","Retrieval Practice / Active Recall","Tự nhớ","Ký Ức Thuật"],
+ ["T02","Thời Ấn","Spaced Repetition / Distributed Practice","Ôn cách quãng","Ký Ức Thuật"],
+ ["T04","Tự Giải","Guided Self-Explanation","Giải thích","Minh Giải Thuật"],
+ ["T05","Truy Nguyên","Elaborative Interrogation","Hỏi nguyên nhân","Minh Giải Thuật"],
+ ["T09","Giám Chứng","Source Criticism & Evidence Appraisal","Kiểm tra nguồn","Luận Chứng Thuật"]
 ];
 const STUDY_MODES={start:{label:"Vào nhịp",feedback:"Gợi ý 3 phép",suggestions:["T01","T04"]},
 focus:{label:"Đào sâu",feedback:"Đủ 13",suggestions:null},
@@ -51,6 +53,16 @@ for(let k=0;k<3;k++){
   tested++;
  }
 }
+ctx.currentPage="guide";
+const guidePlan=ctx.window.liGetBuddyPlan();
+for(const academicName of ["Retrieval Practice","Spaced Repetition","Guided Self-Explanation","Elaborative Interrogation","Source Criticism & Evidence Appraisal"]){
+ assert.ok(guidePlan.actions[0].reply.includes(academicName),"Missing original academic name "+academicName);
+}
+assert.ok(!/\bT\d\d\b/.test(guidePlan.actions[0].reply),"Raw method codes should never replace names in learner-facing guidance");
+assert.ok(guidePlan.actions[1].label.startsWith("Xem Retrieval Practice"),"Guide CTA should name the method");
+ctx.currentPage="research";ctx.qIndex=1;
+assert.equal(ctx.window.liGetBuddyPlan().actions[2].label,"Xem đánh giá nguồn");
+assert.ok(ctx.window.liGetBuddyPlan().actions[2].reply.includes("Source Criticism & Evidence Appraisal"));
 ctx.currentPage="guide";
 for(const mode of ["start","focus","overload","recover"]){
  ctx.studyMode=mode;

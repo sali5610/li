@@ -1141,6 +1141,38 @@ width:70px!important;height:100px!important;left:3px!important;bottom:-3px!impor
 #page-guideDetail .path-item p{
   margin:0;
 }
+
+/* S119 · Approved S106 Home art — original 850×1850 portrait + 1672×941 landscape; no raster text. */
+#page-home .hero::before{
+ background-image:url("./assets/home-mystic-cool-desktop.webp")!important;
+ background-size:cover!important;
+ background-position:70% 50%!important;
+}
+#page-home .hero::after{opacity:.38}
+@media(min-width:601px) and (max-width:1139px){
+ #page-home .mirror-message{left:73%!important}
+}
+@media(max-width:600px){
+ #page-home .hero::before{
+  background-image:url("./assets/home-mystic-cool-mobile.webp")!important;
+  background-size:cover!important;
+  background-position:50% 50%!important;
+ }
+ #page-home .mirror-message{
+  left:50%!important;right:auto!important;top:40%!important;
+  width:min(68%,260px)!important;max-width:260px!important;
+  transform:translate(-50%,-50%)!important;
+ }
+ #page-home .mirror-message h2{
+  width:100%;max-width:100%;font-size:clamp(20px,5.3vw,23px)!important;
+  line-height:1.16;text-shadow:0 2px 7px rgba(4,19,18,.8);
+ }
+}
+@media(max-width:360px){
+ #page-home .mirror-message{top:39%!important;width:min(70%,240px)!important;max-width:240px!important}
+ #page-home .mirror-message h2{font-size:clamp(19px,5.5vw,22px)!important}
+}
+
 </style></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
 <symbol id="i-tree" viewBox="0 0 24 24"><path d="m12 2 4 5h-2l4 5h-3l4 6H5l4-6H6l4-5H8zM12 18v4"/></symbol>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7c-4-3-8-3-10-2v15c3-1 7 0 10 2 3-2 7-3 10-2V5c-2-1-6-1-10 2ZM12 7v15"/></symbol>

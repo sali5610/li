@@ -109,6 +109,25 @@ for selector,spacing in (
 ):
     assert re.search(re.escape(selector)+r"\s*\{\s*"+re.escape(spacing)+r";?\s*\}",html),selector
 
+# S119: approved Home assets must be exactly PO-provided originals.
+import hashlib
+for name,expected in [
+    ("home-mystic-cool-mobile.webp","b528fd92cc9d8d26cb50916870bb5b144cf69b1d"),
+    ("home-mystic-cool-desktop.webp","6a5083fbba0742a29ff2a32c9c6cbe2ee946b3de")
+]:
+    data=(site/"assets"/name).read_bytes()
+    assert len(data)>100_000 and data[:4]==b"RIFF" and data[8:12]==b"WEBP",name
+    sha=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\0"+data).hexdigest()
+    assert sha==expected,(name,"approved artwork mismatch")
+assert html.count("/* S119 · Approved S106 Home art") == 1
+assert html.count('url("./assets/home-mystic-cool-mobile.webp")') == 1
+assert html.count('url("./assets/home-mystic-cool-desktop.webp")') == 1
+home=section("home")
+for identifier in ['id="mirror-question"','id="home-scene"','id="save-question"','id="shuffle"']:
+    assert home.count(identifier)==1,identifier
+assert 'data-page="research"' in home
+assert "Muốn nhớ: thử T01/T02" not in companion.read_text(encoding="utf-8")
+
 # S112 — context-aware companion must be present, parse and pass UI-plan QA.
 companion=site/"assets"/"laoly-context-s112.js"
 assert companion.is_file() and companion.stat().st_size>4000

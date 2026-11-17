@@ -170,5 +170,13 @@ assert 'class="settings-buddy-illustration" src="./assets/laoly-neutral.png"' no
 assert '<article id="notebook-section" class="surface" tabindex="-1"' in library
 assert '<article id="notebook-section" class="surface tinted"' not in library
 
+# S122: fixed bottom navigation retains one thin top divider on iPhone.
+# S105 had accidentally removed it with border:0!important.
+assert '/* S105 · Compact mobile tabs:' in html
+assert '.mobile-nav{background:var(--paper)!important;border:0!important;border-top:1px solid var(--moss)!important;box-shadow:none!important}' in html
+assert html.count('.mobile-nav{background:var(--paper)!important;border:0!important;border-top:1px solid var(--moss)!important;box-shadow:none!important}')==1
+assert '<nav class="mobile-nav" aria-label="Điều hướng chính mobile">' in html
+assert html.count('class="nav-btn" data-page=') >= 4
+
 assert (site/".nojekyll").is_file()
 print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and 28/30px gaps, privacy copy, JS parsing")

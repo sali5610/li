@@ -142,6 +142,8 @@ subprocess.run(["node",str(site.parent/"tools"/"test_buddy.js")],check=True,cwd=
 subprocess.run(["python3", str(site.parent/"tools"/"test_l09.py")],check=True,cwd=site.parent)
 # S124: Guided explanation input + real localized hint in native L09 Hi-Fi Section IV.
 subprocess.run(["python3", str(site.parent/"tools"/"test_l09_hifi.py")],check=True,cwd=site.parent)
+# Wave1 editorial-locked L03 + L15 share native Hi-Fi state and complete VI/EN behavior.
+subprocess.run(["node", str(site.parent/"tools"/"test_wave1_native.js")],check=True,cwd=site.parent)
 
 # S118: the three top-navigation utility destinations have an accessible
 # in-app Back action, and Settings uses the exact neutral portrait from Gương.

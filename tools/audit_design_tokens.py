@@ -13,17 +13,14 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CORE = [
-    "site/index.html",
-    "site/assets/lesson-l09-hifi.css",
-    "site/assets/ui-foundations.css",
-]
-SECONDARY = ["site/design-system-preview.html", "site/lesson-source-lab.html"]
-TEMPLATES = [
-    "site/assets/lesson-l03-hifi-markup.js",
-    "site/assets/lesson-l09-hifi-markup.js",
-    "site/assets/lesson-l15-hifi-markup.js",
-]
+def relative_files(folder: str, pattern: str) -> list[str]:
+    return sorted(str(p.relative_to(ROOT)) for p in (ROOT / folder).rglob(pattern) if p.is_file())
+
+# Include every first-party CSS / HTML and first-party JS template, including new
+# ones added later. Do not parse vendor lucide.min.js or binary illustration assets.
+CORE = ["site/index.html"] + relative_files("site/assets", "*.css")
+SECONDARY = [p for p in relative_files("site", "*.html") if p != "site/index.html"]
+TEMPLATES = [p for p in relative_files("site/assets", "*.js") if not p.endswith("lucide.min.js")]
 BASELINE = ROOT / "design-system" / "audits" / "token-coverage-baseline.json"
 PROP_PATTERN = re.compile(r"^([-\w]+)\s*:\s*([\s\S]+)$")
 SPACE_PROP = re.compile(r"^(?:padding|margin)(?:-(?:top|bottom|left|right|inline|block|inline-start|inline-end|block-start|block-end))?$|^(?:gap|row-gap|column-gap)$")
@@ -207,16 +204,25 @@ def main() -> int:
             return 2
         baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
         errors = []
-        for path, item in report["core"].items():
-            old = baseline["core"][path]
-            for metric in ("color", "typography", "spacing"):
-                if item[metric]["without_var"] > old[metric]["without_var"]:
-                    errors.append(f"{path}: {metric} unmapped declarations grew")
-            if item["spacing"]["offgrid_px_occurrences"] > old["spacing"]["offgrid_px_occurrences"]:
-                errors.append(f"{path}: off-grid spacing literals grew")
+        # New files default to zero inherited debt. Removing legacy debt lowers
+        # baseline without requiring an immediate snapshot update.
+        for section in ("core", "secondary_tools", "lesson_templates"):
+            for path, item in report[section].items():
+                old = baseline.get(section, {}).get(path, {})
+                for metric in ("color", "typography", "spacing"):
+                    limit = old.get(metric, {}).get("without_var", 0)
+                    if item[metric]["without_var"] > limit:
+                        errors.append(f"{path}: {metric} non-token declarations grew ({item[metric]['without_var']} > {limit})")
+                limit = old.get("spacing", {}).get("offgrid_px_occurrences", 0)
+                if item["spacing"]["offgrid_px_occurrences"] > limit:
+                    errors.append(f"{path}: off-grid spacing literals grew")
+                limit = old.get("offgrid_inline_spacing_declarations", 0)
+                if item["offgrid_inline_spacing_declarations"] > limit:
+                    errors.append(f"{path}: off-grid inline spacing grew")
         for error in errors:
             print("REGRESSION:", error)
         return 1 if errors else 0
+
     return 0
 
 if __name__ == "__main__":

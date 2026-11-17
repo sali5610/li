@@ -45,7 +45,7 @@
     },
     "site/assets/li-layout.css": {
       "color": {
-        "without_var": 130
+        "without_var": 85
       },
       "typography": {
         "without_var": 119
@@ -126,5 +126,5 @@
       "offgrid_inline_spacing_declarations": 0
     }
   },
-  "note": "New reduced debt ceilings. Raw means no var(), and includes valid auto/transparent/art values. Absolutely no off-grid CSS spacing or inline spacing remains in audited app sources. Never increase baseline without a design decision."
+  "note": "v0.3 reduced ceilings: six prior <style> blocks moved to li-layout.css; every six-digit color literal in that CSS is now a named generated token; remaining raw color declarations are intentional currentColor, transparent, rgba art shading or other context values to review. No off-grid CSS numeric spacing remains in audited site and Wave1 CSS. Never raise a ceiling without PO/semantic review."
 }

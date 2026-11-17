@@ -31,6 +31,8 @@ def check(condition: bool, description: str) -> None:
 
 def main() -> int:
     for relative in [
+        "site/assets/design-tokens.css",
+        "tools/generate_design_tokens.py",
         "AGENTS.md",
         "design-system/README.md",
         "design-system/components.md",
@@ -47,16 +49,16 @@ def main() -> int:
 
     html = HTML_FILE.read_text(encoding="utf-8")
     tokens = json.loads(TOKEN_FILE.read_text(encoding="utf-8"))
+    generated_css = (ROOT / "site" / "assets" / "design-tokens.css").read_text(encoding="utf-8")
     colors = tokens["colors"]
-    # Each core token must remain represented in the currently deployed CSS.
-    # Checks anywhere in the inline stylesheet; not proof of computed precedence.
+    # Core color tokens exist ONCE in generated runtime CSS, not inline HTML.
     for name, value in colors.items():
         valid_hex = bool(re.fullmatch(r"#[0-9a-fA-F]{6}", value))
         check(valid_hex, f"token format {name}")
         check(
             bool(re.search(
                 r"--" + re.escape(name) + r"\s*:\s*" + re.escape(value) + r"\b",
-                html,
+                generated_css,
                 flags=re.IGNORECASE,
             )),
             f"site has CSS token --{name}={value}",
@@ -64,11 +66,11 @@ def main() -> int:
 
     semantic = tokens["semantic"]
     check(
-        semantic["activeNavigationPillFill"].lower() in html.lower(),
+        semantic["activeNavigationPillFill"].lower() in generated_css.lower(),
         "selected sand pill color remains represented in site CSS",
     )
     check(
-        semantic["activeNavigationInk"].lower() in html.lower(),
+        semantic["activeNavigationInk"].lower() in generated_css.lower(),
         "selected navigation moss ink remains represented",
     )
     check(
@@ -80,6 +82,8 @@ def main() -> int:
         "bottom nav has route-selected state selector",
     )
     check("aria-current" in html, "route selection updates aria-current")
+    check('./assets/design-tokens.css' in html.split("</head>",1)[0], "generated token file loaded")
+    check('--paper:' not in html.split("</head>",1)[0], "root palette is no longer duplicated in index")
     check(
         "-webkit-tap-highlight-color:transparent" in html.replace(" ", ""),
         "iOS tap-highlight suppression is present",

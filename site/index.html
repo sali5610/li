@@ -1327,6 +1327,29 @@ textarea::placeholder{color:var(--muted);opacity:.8}
     will-change:auto;
   }
 }
+/* S142 · Header utility selected state mirrors the bottom-nav sand pill.
+   The earlier mobile rule forced background transparent, while hover set white ink. */
+.header .tool-button{position:relative;isolation:isolate;color:var(--moss)!important}
+.header .tool-button::before{
+  content:"";position:absolute;left:50%;top:50%;width:43px;height:29px;
+  transform:translate(-50%,-50%);border-radius:999px;
+  background:#E5D8BA;opacity:0;z-index:-1;pointer-events:none;
+  transition:opacity .15s ease;
+}
+.header .tool-button.active,
+.header .tool-button[aria-current="page"],
+.header .tool-button:hover,
+.header .tool-button:active,
+.header .tool-button:focus{
+  color:var(--moss)!important;
+  background:transparent!important;
+}
+.header .tool-button.active::before,
+.header .tool-button[aria-current="page"]::before{opacity:1}
+.header .tool-button svg.lucide{color:inherit!important;stroke:currentColor}
+.header .tool-button:focus-visible{outline:2px solid var(--wood);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.header .tool-button::before{transition:none}}
+
 /* S139 · Sticky top navigation, fixed touch-viewport scale.
    Preserve content flow and existing PWA/mobile bottom navigation. */
 html{
@@ -1587,7 +1610,7 @@ function syncLiRoute(id){
  if(target!==window.location.pathname+window.location.search+window.location.hash)
   window.history.replaceState(window.history.state,"",target);
 }
-function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library"){renderCaseArchive();renderSavedQuestions();}if(id==="research")syncResearch();refreshLucide();placeCompanion();}
+function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});document.querySelectorAll(".header .tool-button").forEach(x=>{const active=x.dataset.page===id;x.classList.toggle("active",active);if(active)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library"){renderCaseArchive();renderSavedQuestions();}if(id==="research")syncResearch();refreshLucide();placeCompanion();}
 function goBack(){while(pageHistory.length){const previous=pageHistory.pop();if(previous!==currentPage&&document.getElementById("page-"+previous)){navigate(previous,{remember:false});return}}navigate("home",{remember:false})}
 function renderMethods(){const el=document.getElementById("method-cards");const q=(document.getElementById("method-search").value||"").trim().toLocaleLowerCase("vi");const preset=STUDY_MODES[studyMode].suggestions;const visible=methods.filter(m=>{const match=(!q||(m.join(" ").toLocaleLowerCase("vi").includes(q)));const cat=currentCategory==="Tất cả"||m[4]===currentCategory;const picked=Boolean(q)||currentCategory!=="Tất cả"||!preset||preset.includes(m[0]);return match&&cat&&picked});el.innerHTML=visible.length?visible.map(m=>'<button class="method-card" data-method="'+m[0]+'"><i data-lucide="'+(m[4]==="Luận Chứng Thuật"?"git-branch":m[4]==="Phá Giải Thuật"?"puzzle":m[4]==="Minh Giải Thuật"?"lightbulb":m[4]==="Tự Chủ Thuật"?"brain-circuit":"book-open-check")+'" class="method-icon" aria-hidden="true"></i><span class="kicker">'+m[0]+' · '+m[4]+'</span><h3>'+m[1]+'</h3><span class="original">'+m[2]+'</span><span class="purpose">'+m[3]+'</span><span class="end">CHÚ GIẢI →</span></button>').join(""):'<div class="surface">Không tìm thấy. Thử đổi bộ lọc hoặc tìm bằng tên học thuật.</div>';
 document.getElementById("method-count").textContent="Hiển thị "+visible.length+"/13 phương pháp"+(q?" · kết quả tìm kiếm trên cả 13":currentCategory!=="Tất cả"?" · theo nhóm":STUDY_MODES[studyMode].suggestions?" · "+STUDY_MODES[studyMode].label:" · đầy đủ");

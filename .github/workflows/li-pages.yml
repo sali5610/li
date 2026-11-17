@@ -30,6 +30,7 @@ jobs:
         run: python3 tools/validate_site.py
       - name: Validate design system and 4px typography/spacing contract
         run: |
+          python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
           python3 tools/validate_ui_foundations.py
       - name: Configure GitHub Pages

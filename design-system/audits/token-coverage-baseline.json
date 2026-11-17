@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "capturedFromCommit": "refactor/consolidate-runtime-design-tokens-20261118 phase structural extraction; carry-forward raw legacy ceiling from pre-extraction audit",
+  "capturedFromCommit": "v0.3 refactor branch — computed from passing GitHub CI source audit at 652b5172a73817d12421532af3810c600fa76b4d plus subsequent source-safe CSS extraction",
   "capturedDate": "2026-11-18",
   "purpose": "Static declaration debt ceilings, not an approval or a computed-style report. New file defaults to 0 unmapped.",
   "core": {
@@ -22,11 +22,11 @@
         "without_var": 1
       },
       "typography": {
-        "without_var": 29
+        "without_var": 3
       },
       "spacing": {
-        "without_var": 53,
-        "offgrid_px_occurrences": 40
+        "without_var": 0,
+        "offgrid_px_occurrences": 0
       },
       "offgrid_inline_spacing_declarations": 0
     },
@@ -48,10 +48,10 @@
         "without_var": 130
       },
       "typography": {
-        "without_var": 125
+        "without_var": 119
       },
       "spacing": {
-        "without_var": 12,
+        "without_var": 11,
         "offgrid_px_occurrences": 0
       },
       "offgrid_inline_spacing_declarations": 0
@@ -63,24 +63,24 @@
         "without_var": 1
       },
       "typography": {
-        "without_var": 36
+        "without_var": 0
       },
       "spacing": {
-        "without_var": 32,
+        "without_var": 1,
         "offgrid_px_occurrences": 0
       },
       "offgrid_inline_spacing_declarations": 0
     },
     "site/lesson-source-lab.html": {
       "color": {
-        "without_var": 21
+        "without_var": 3
       },
       "typography": {
-        "without_var": 12
+        "without_var": 4
       },
       "spacing": {
-        "without_var": 21,
-        "offgrid_px_occurrences": 17
+        "without_var": 0,
+        "offgrid_px_occurrences": 0
       },
       "offgrid_inline_spacing_declarations": 0
     }
@@ -97,7 +97,7 @@
         "without_var": 0,
         "offgrid_px_occurrences": 0
       },
-      "offgrid_inline_spacing_declarations": 1
+      "offgrid_inline_spacing_declarations": 0
     },
     "site/assets/lesson-l09-hifi-markup.js": {
       "color": {
@@ -110,7 +110,7 @@
         "without_var": 0,
         "offgrid_px_occurrences": 0
       },
-      "offgrid_inline_spacing_declarations": 1
+      "offgrid_inline_spacing_declarations": 0
     },
     "site/assets/lesson-l15-hifi-markup.js": {
       "color": {
@@ -123,8 +123,8 @@
         "without_var": 0,
         "offgrid_px_occurrences": 0
       },
-      "offgrid_inline_spacing_declarations": 1
+      "offgrid_inline_spacing_declarations": 0
     }
   },
-  "note": "The foundation has a deliberate margin-top:auto on method card end alignment plus a zero reset; these are layout keywords, not hardcoded off-grid CSS px."
+  "note": "New reduced debt ceilings. Raw means no var(), and includes valid auto/transparent/art values. Absolutely no off-grid CSS spacing or inline spacing remains in audited app sources. Never increase baseline without a design decision."
 }

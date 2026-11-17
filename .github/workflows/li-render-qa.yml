@@ -40,12 +40,12 @@ jobs:
             echo "Checking iframe viewport $width px"
             url="http://127.0.0.1:8765/tools/render_contract_fixture.html?w=$width"
             result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=11000 --dump-dom "$url" 2>/tmp/li-chrome-stderr.log || true)"
-            if [[ "$result" != *'LI_RENDER_PASS'* ]]; then
+            if [[ "$result" != *'<pre id="result">LI_RENDER_PASS '* ]]; then
               echo "FAIL computed-style fixture at $width CSS px"
-              echo "$result" | grep -E 'LI_RENDER_(FAIL|PENDING)|"errors"' | tail -5 | cut -c1-2400 || true
+              echo "$result" | grep -E '<pre id="result">LI_RENDER_(PASS|FAIL|PENDING)' | tail -2 | cut -c1-2400 || true
               cat /tmp/li-chrome-stderr.log | tail -30 || true
               exit 1
             fi
-            echo "$result" | grep 'LI_RENDER_PASS' | tail -1 | cut -c1-1000
+            echo "$result" | grep '<pre id="result">LI_RENDER_PASS ' | tail -1 | cut -c1-1000
           done
           echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at seven viewports"

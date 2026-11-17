@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><title>li. 理 — Wave 1 source-first learning lab</title>
+<style>
+:root{--paper:#f4ead8;--cream:#fffcf4;--forest:#213c2d;--sage:#dfe8db;--text:#27332a;--line:#d7ccb5;--muted:#646d60}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}header{background:var(--forest);color:#f8f0df;padding:18px clamp(14px,4vw,50px);display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;border-bottom:4px solid #a88b58}
+.brand{font:bold 29px Georgia,serif}.small{font-size:13px;color:var(--muted)}header .small{color:#d3ddcb}.wrap{max-width:1060px;margin:26px auto;padding:0 16px 64px}
+h1,h2{font-family:Georgia,serif;line-height:1.2}h1{font-size:clamp(25px,4vw,36px);margin:6px 0 12px}h2{font-size:23px;margin:0 0 12px}
+.card{background:var(--cream);border:1px solid var(--line);border-radius:17px;padding:clamp(15px,3vw,26px);margin:15px 0;box-shadow:0 5px 18px #5d513515}
+button,a.action{font:inherit;cursor:pointer;border:1px solid #abb8a7;color:var(--forest);border-radius:10px;padding:8px 13px;background:#fff;min-height:42px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+button:hover,a.action:hover{background:#e5eee3}button:focus-visible,a:focus-visible{outline:3px solid #af8855;outline-offset:2px}.chosen,.primary{background:#254b34;color:#fff;border-color:#254b34}.chosen:hover,.primary:hover{background:#37614a}
+.tabs,.btns,.terms{display:flex;flex-wrap:wrap;gap:8px}.eyebrow{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#827254}.badge{font-size:12px;padding:3px 8px;background:#eee5ce;color:#594d32;border-radius:50px}
+.figure{display:flex;gap:18px;align-items:center;flex-wrap:wrap;background:#f3efe3;border:1px solid var(--line);border-radius:13px;padding:16px}.figure img{max-width:min(400px,100%);max-height:320px;width:auto;height:auto;object-fit:contain;border-radius:4px}.figcopy{flex:1;min-width:230px}.src{padding:16px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}.src-title{font-weight:700}.src-desc{color:var(--muted);font-size:13px;margin:3px 0}.links{display:flex;flex-wrap:wrap;gap:8px}
+.term{font:inherit;border:1px solid #c4d0c4;border-radius:40px;background:#f1f6ef;padding:6px 10px;cursor:pointer}
+#alert{position:fixed;bottom:18px;right:18px;max-width:min(390px,calc(100vw - 36px));padding:12px 17px;color:white;background:#244c32;border-radius:11px;box-shadow:0 8px 30px #0003;display:none}
+@media(max-width:680px){.src{grid-template-columns:1fr}.figure{padding:10px}.figure img{width:100%}.src .btns{justify-content:flex-start}}
+</style>
+</head>
+<body>
+<header>
+ <div><div class="brand">li. <span style="font-size:19px">理</span></div><div class="small" id="headInfo">Bản xem trước · nguồn và hình ảnh có sẵn trên mạng · chưa ghép vào lesson runtime</div></div>
+ <div class="btns"><button id="vi" class="chosen" type="button" aria-pressed="true">VI</button><button id="en" type="button" aria-pressed="false">EN</button></div>
+</header>
+<main class="wrap">
+<div class="tabs" id="tabs" aria-label="Wave 1 lesson selector"></div>
+<article class="card">
+ <div class="eyebrow" id="lessonId"></div><h1 id="title"></h1><p id="goal"></p>
+ <span class="badge" id="draftStatus"></span>
+</article>
+<section class="card"><h2 id="picHeading"></h2><div class="figure"><img id="picture" loading="lazy" alt=""><div class="figcopy"><p id="picCaption"></p><p class="small" id="picCredit"></p><a class="action" target="_blank" rel="noopener noreferrer" id="picSource"></a></div></div></section>
+<section class="card"><h2 id="deepHeading"></h2><p class="small" id="sourceNotice"></p><div id="sourceList"></div></section>
+<section class="card"><h2 id="searchHeading"></h2><div class="terms" id="searchTerms"></div><p class="small" id="searchHelp"></p></section>
+<section class="card"><h2 id="overallHeading"></h2><p id="overallInfo"></p><div class="btns"><button type="button" class="primary" id="copyOverall"></button><a class="action" target="_blank" rel="noopener noreferrer" href="https://chatgpt.com/" id="openChat"></a></div><p class="small" id="honesty"></p></section>
+</main>
+<div role="status" aria-live="polite" id="alert"></div>
+<script>
+(()=>{
+"use strict";
+const lessons=[
+{ id:"L09-1-2",name:{vi:"Sampling Bias — Sai lệch chọn mẫu",en:"Sampling Bias versus Random Sampling Variation"},goal:{vi:"Phân biệt sai lệch do cách tuyển mẫu với dao động khi rút mẫu ngẫu nhiên; tránh suy rộng sai từ khảo sát.",en:"Distinguish selection bias from random sampling variation and avoid generalizing beyond survey evidence."},
+img:"https://upload.wikimedia.org/wikipedia/commons/b/bf/Simple_random_sampling.PNG",file:"https://commons.wikimedia.org/wiki/File:Simple_random_sampling.PNG",credit:"Dan Kernler (Mathprofdk) · CC BY-SA 4.0 · unmodified",
+caption:{vi:"Hình này mô tả lấy mẫu ngẫu nhiên đơn, một cách tuyển mẫu có xác suất. Đây không phải lời đảm bảo một khảo sát sẽ không còn sai lệch do bỏ sót nhóm hoặc không phản hồi.",en:"This shows simple random sampling, a probability-based selection method. It does not guarantee that coverage, nonresponse or measurement bias is absent."},
+terms:["sampling bias vs random sampling variation","selection bias in surveys","nonresponse bias","sample representativeness"],
+sources:[["NIST — Populations and Sampling","https://www.itl.nist.gov/div898/handbook/ppc/section1/ppc134.htm","core"],["CDC — CASPER Sampling Methodology","https://www.cdc.gov/casper/php/overview/sampling-methodology.html","core"],["CDC — Analyze and Report CASPER Data","https://www.cdc.gov/casper/php/overview/analyze-and-report-casper-data.html","deep"],["OpenStax — Sampling and Variation","https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling","intro"]],focus:{vi:"Phân biệt selection bias, nonresponse, target population và random sampling variation. Nêu giới hạn suy rộng; không kết luận rằng n lớn tự giải quyết bias.",en:"Distinguish selection bias, nonresponse, target population and random sampling variation. Explain limits of inference; do not assume a large n repairs bias."}},
+{ id:"L03-1-2",name:{vi:"Interview Bias — Câu hỏi dẫn dắt",en:"Open Questions and Interview Bias"},goal:{vi:"Nhận ra tiền giả định trong câu hỏi phỏng vấn và viết lại thành câu hỏi về trải nghiệm thực tế.",en:"Spot leading assumptions in interviews and rewrite prompts around concrete past experiences."},
+img:"https://upload.wikimedia.org/wikipedia/commons/c/c4/Interview.svg",file:"https://commons.wikimedia.org/wiki/File:Interview.svg",credit:"Alexander Koenig MA · CC BY-SA 3.0 DE · unmodified",
+caption:{vi:"Hình tình huống phỏng vấn. Chỉ là hình về bối cảnh; so sánh câu hỏi dẫn dắt và trung lập phải dựa vào câu chữ và dữ liệu thực tế.",en:"Illustration of an interview context. It does not identify a leading question; compare question wording and the evidence elicited."},
+terms:["leading questions user interviews","neutral vs open ended questions","UX qualitative research probes"],
+sources:[["Digital.gov — User Interview Checklist","https://digital.gov/resources/how-create-user-interview-checklist","intro"],["Digital.gov — Conduct an Interview","https://digital.gov/resources/how-conduct-interview","core"],["GOV.UK — In-depth Interviews","https://www.gov.uk/service-manual/user-research/using-in-depth-interviews","core"],["GOV.UK — Analyse a Research Session","https://www.gov.uk/service-manual/user-research/analyse-a-research-session","deep"]],
+focus:{vi:"Phân biệt câu hỏi mở và câu hỏi trung lập; nêu ít nhất một leading question và cách sửa, giới hạn suy rộng từ phỏng vấn định tính.",en:"Distinguish open-ended and neutral questions, give a leading question and neutral rewrite, and explain qualitative interview inference limits."}},
+{ id:"L15-2-2",name:{vi:"Reorder Point & Safety Stock — Điểm đặt hàng",en:"Reorder Point and Safety Stock"},goal:{vi:"Hiểu ngưỡng tái đặt hàng, safety stock, inventory position; không nhầm ngưỡng với số lượng mua.",en:"Understand reorder points, safety stock and inventory position without confusing a threshold with purchase quantity."},
+img:"https://upload.wikimedia.org/wikipedia/commons/f/f1/Inventory_control_-_reorder_point_and_service_level.png",file:"https://commons.wikimedia.org/wiki/File:Inventory_control_-_reorder_point_and_service_level.png",credit:"Poul G · public domain · unmodified",
+caption:{vi:"Đồ thị tồn kho có safety stock, reorder point và biến động nhu cầu. Đây là hình mô hình tổng quát, không phải dữ liệu cụ thể của bài tập 18×7+34=160.",en:"General inventory chart showing safety stock, reorder point and variable demand. This is not a plot of the lesson's specific 18×7+34=160 exercise."},
+terms:["reorder point vs order quantity","inventory position on hand on order backorders","safety stock variability"],
+sources:[["IBM Think — Safety Stock","https://www.ibm.com/think/topics/safety-stock","intro"],["MIT OCW — Supply Chain Planning Syllabus","https://ocw.mit.edu/courses/15-762j-supply-chain-planning-spring-2011/pages/syllabus/","core"],["IBM Think — Inventory Optimization","https://www.ibm.com/think/topics/inventory-optimization","deep"]],
+focus:{vi:"Giải thích ROP=d×L+SS với các giả định, phân biệt ROP và lượng đặt, cảnh báo khi lead time biến động; không bịa service level.",en:"Explain ROP=d×L+SS under stated assumptions, distinguish reorder threshold from order quantity, and note uncertain lead-time effects without inventing a service level."}}
+];
+const t={
+vi:{head:"Bản xem trước nguồn học & hình lấy từ mạng · chưa tích hợp vào bài học chính",draft:"Bản thử giao diện nguồn · Không phải bài học đã xuất bản",picture:"Hình minh họa từ nguồn có sẵn",seeFile:"Xem trang ảnh & bản quyền",deep:"Đào sâu thêm",notice:"Mỗi tài liệu có link đọc và prompt riêng. Link không bảo đảm ChatGPT tự đọc được toàn văn.",open:"Mở nguồn",copy:"Copy prompt",search:"Tự tìm thêm",searchHelp:"Chạm từ khóa để mở tìm kiếm web; không dùng API trả phí.",overall:"Tóm tắt toàn bộ nguồn bài này",overallInfo:"Copy prompt chứa mục tiêu bài và danh sách tài liệu để ChatGPT tổng hợp đối chiếu.",openChat:"Mở ChatGPT",honesty:"Lưu ý: prompt chỉ chứa URL và mục tiêu học, không tự trích xuất tài liệu. Nếu ChatGPT không mở được nguồn, hãy dán nội dung bạn có quyền sử dụng.",copied:"Đã copy prompt ✓",failed:"Không copy được. Hãy thử lại hoặc dùng trình duyệt hỗ trợ clipboard.",credit:"Nguồn hình:"},
+en:{head:"Preview of sourced visuals & reading references · Not integrated into the main lessons",draft:"Source UI preview · Not a published lesson",picture:"Illustration sourced from the web",seeFile:"Image source and license",deep:"Further reading",notice:"Each reference includes a reading link and a source-specific prompt. ChatGPT may not be able to access every full text.",open:"Open source",copy:"Copy prompt",search:"Search for more",searchHelp:"Choose a keyword to open a web search; no paid APIs.",overall:"Summarize the lesson's source pack",overallInfo:"Copy one prompt listing this lesson's objectives and its external reading sources.",openChat:"Open ChatGPT",honesty:"The prompt only includes URLs and the learning goal. If ChatGPT cannot access the source, paste material you are authorized to share.",copied:"Prompt copied ✓",failed:"Copy failed. Try another browser or enable clipboard access.",credit:"Image credit:"}};
+let locale="vi",idx=0,toastTimer;
+const by=id=>document.getElementById(id);
+const escapeHtml=s=>String(s).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+function formatPrompt(source){
+ const L=lessons[idx],src=source?[source]:L.sources;
+ const intro=locale==="vi"?
+ "Tôi đang học bài "+L.id+": "+L.name.vi+" trong li. (理). Mục tiêu: "+L.focus.vi+"\n":
+ "I am studying li. (理) lesson "+L.id+": "+L.name.en+". Objective: "+L.focus.en+"\n";
+ const list=src.map(s=>"- "+s[0]+": "+s[1]).join("\n");
+ const req=locale==="vi"?
+ "\n\nChỉ phân tích nếu bạn thực sự đọc được nguồn. Nếu không truy cập được, nói rõ và đề nghị tôi dán nội dung; không bịa trích dẫn. Trình bày: (1) 5 ý chính; (2) khái niệm then chốt và giả định; (3) ví dụ liên quan bài học; (4) nguồn khẳng định gì so với phần bạn suy luận; (5) giới hạn, điểm cần kiểm chứng; (6) 3 câu hỏi active recall chưa hiện đáp án. Dùng tiếng Việt, kèm thuật ngữ Anh.":
+ "\n\nSummarize only material you actually access. If links are unavailable, say so and ask me to paste text; never invent citations. Provide: (1) five main findings; (2) key concepts and assumptions; (3) an example relevant to this lesson; (4) source claims versus your inferences; (5) limitations and points to verify; (6) three active-recall questions with answers hidden. Respond in English.";
+ return intro+"\nReading sources:\n"+list+req;
+}
+async function copy(text){
+ try{
+  if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(text);
+  else {
+   const field=document.createElement("textarea");field.value=text;field.setAttribute("readonly","");field.style.position="fixed";field.style.opacity="0";document.body.appendChild(field);field.select();
+   const ok=document.execCommand("copy");field.remove();if(!ok)throw Error("copy unsupported");
+  }
+  alertText(t[locale].copied);
+ }catch(e){alertText(t[locale].failed);}
+}
+function alertText(message){const el=by("alert");el.textContent=message;el.style.display="block";clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.style.display="none",2800);}
+function render(){
+ const L=lessons[idx],T=t[locale];document.documentElement.lang=locale;
+ by("headInfo").textContent=T.head;
+ for(const lang of ["vi","en"]){by(lang).classList.toggle("chosen",lang===locale);by(lang).setAttribute("aria-pressed",String(lang===locale));}
+ by("tabs").replaceChildren();
+ lessons.forEach((x,i)=>{const b=document.createElement("button");b.type="button";b.textContent=x.id+" · "+(locale==="vi"?["Data Science","UX Research","Supply Chain"][i]:["Data Science","UX Research","Supply Chain"][i]);b.className=i===idx?"chosen":"";b.setAttribute("aria-current",i===idx?"page":"false");b.onclick=()=>{idx=i;render();};by("tabs").appendChild(b);});
+ by("lessonId").textContent=L.id+" · Wave 1";by("title").textContent=L.name[locale];by("goal").textContent=L.goal[locale];by("draftStatus").textContent=T.draft;
+ by("picHeading").textContent=T.picture;by("picture").src=L.img;by("picture").alt=L.caption[locale];by("picCaption").textContent=L.caption[locale];by("picCredit").textContent=T.credit+" "+L.credit;by("picSource").textContent=T.seeFile;by("picSource").href=L.file;
+ by("deepHeading").textContent=T.deep;by("sourceNotice").textContent=T.notice;by("sourceList").replaceChildren();
+ L.sources.forEach(s=>{
+  const e=document.createElement("div");e.className="src";
+  const left=document.createElement("div"),name=document.createElement("div");name.className="src-title";name.textContent=s[0];left.appendChild(name);
+  const label=document.createElement("div");label.className="small";label.textContent=s[2].toUpperCase();left.appendChild(label);
+  const actions=document.createElement("div");actions.className="btns";
+  const a=document.createElement("a");a.className="action";a.href=s[1];a.target="_blank";a.rel="noopener noreferrer";a.textContent=T.open;
+  const b=document.createElement("button");b.type="button";b.textContent=T.copy;b.setAttribute("aria-label",T.copy+": "+s[0]);b.onclick=()=>copy(formatPrompt(s));
+  actions.append(a,b);e.append(left,actions);by("sourceList").appendChild(e);
+ });
+ by("searchHeading").textContent=T.search;by("searchHelp").textContent=T.searchHelp;by("searchTerms").replaceChildren();
+ L.terms.forEach(q=>{const a=document.createElement("a");a.className="term";a.textContent=q;a.href="https://www.google.com/search?q="+encodeURIComponent(q);a.rel="noopener noreferrer";a.target="_blank";by("searchTerms").appendChild(a);});
+ by("overallHeading").textContent=T.overall;by("overallInfo").textContent=T.overallInfo;by("copyOverall").textContent=T.copy;by("openChat").textContent=T.openChat;by("honesty").textContent=T.honesty;
+}
+by("vi").onclick=()=>{locale="vi";render();};by("en").onclick=()=>{locale="en";render();};by("copyOverall").onclick=()=>copy(formatPrompt());by("picture").addEventListener("error",()=>{by("picture").alt="Image temporarily unavailable; open the source page";});
+render();
+})();
+</script>
+</body></html>

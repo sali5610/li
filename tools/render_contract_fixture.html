@@ -46,7 +46,10 @@
         report("Guide explanation >=14px and unclamped",!!purpose&&parseFloat(w.getComputedStyle(purpose).fontSize)>=14&&w.getComputedStyle(purpose).display==="block",purpose?(w.getComputedStyle(purpose).fontSize+" "+w.getComputedStyle(purpose).display):"missing");
        }
        const overflow=doc.documentElement.scrollWidth-w.innerWidth;
-       report("No significant horizontal page overflow",overflow<=4,overflow+"px");
+       const overflowNodes=[...doc.querySelectorAll("body *")].map(el=>({el,rect:el.getBoundingClientRect()}))
+         .filter(x=>x.rect.width>0&&x.rect.right>w.innerWidth+4&&x.rect.top<w.innerHeight+120)
+         .slice(0,12).map(x=>({tag:x.el.tagName,id:x.el.id,cls:typeof x.el.className==="string"?x.el.className.slice(0,65):"",right:Math.round(x.rect.right),width:Math.round(x.rect.width)}));
+       report("No significant horizontal page overflow",overflow<=4,overflow+"px "+JSON.stringify(overflowNodes));
       }catch(e){report("Guide computed style evaluation",false,e.message);}
       finish();
     },350);

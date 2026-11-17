@@ -54,5 +54,12 @@ assert html.count('margin-top: 20px;')>=2
 assert html.count('margin-top: 16px;')>=2
 assert '<label class="select-row">Nhắc lịch ngủ' in settings
 assert '<label class="select-row">Im Lặng' in settings
+# S115: reminder uses the same base paper color as other Settings cards.
+assert '<article class="surface"><div class="kicker">NHẮC NHỞ</div>' in settings
+assert '<article class="surface tinted"><div class="kicker">NHẮC NHỞ</div>' not in settings
+assert all('tinted' not in element for element in re.findall(
+    r'<article class="surface(?: tinted)?"(?: id="[^"]+")?>', settings
+))
+
 assert (site/".nojekyll").is_file()
 print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and 28/30px gaps, privacy copy, JS parsing")

@@ -51,4 +51,5 @@ assert hifi.count('<link rel="stylesheet" href="./assets/lesson-l09-hifi.css">')
 for p in (site / "assets" / "lesson-l09-hifi-markup.js",site / "assets" / "lesson-l09-hifi.js"):
     subprocess.run(["node","--check",str(p)],check=True)
 
+subprocess.run(["node", str(root / "tools" / "test_l09_guided_runtime.js")], check=True, cwd=root)
 print("PASS L09 Hi-Fi Section IV: native response input, VI/EN visible hint, persistence, aria, JS parse")

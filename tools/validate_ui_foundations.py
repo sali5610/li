@@ -69,10 +69,10 @@ def main() -> int:
     head = html.split("</head>", 1)[0]
     css_name = "./assets/ui-foundations.css"
     token_name = "./assets/design-tokens.css"
-    check(token_name in head and head.index(token_name) < head.index("<style>"), "generated CSS tokens load before legacy style")
+    check(token_name in head and head.index(token_name) < head.index("./assets/li-layout.css"), "generated CSS tokens load before legacy style")
     check(css_name in head, "foundation linked in HTML head")
     check(
-        head.rfind(css_name) > head.rfind("</style>") and
+        head.rfind(css_name) > head.rfind("./assets/li-layout.css") and
         head.rfind(css_name) > head.rfind("./assets/lesson-l09-hifi.css"),
         "foundation loaded after inline and lesson CSS",
     )

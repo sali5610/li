@@ -1,1 +1,34 @@
-# li
+# li. (理) — Thư viện tri thức
+
+This repository contains the functional high-fidelity **li.** prototype, recovered from the existing Vercel review app and kept as plain static HTML/CSS/JavaScript. No paid hosting, AI API, login, or cross-device synchronization is introduced.
+
+## Published site
+
+Once GitHub Pages has been enabled with **GitHub Actions** as the publishing source, the existing workflow publishes the exact contents of the `site/` directory to:
+
+https://sali5610.github.io/li/
+
+The original Vercel application is retained as an independent backup.
+
+## Migration safety
+
+The original app saves Bút Ký entries, saved Gương questions (Dấu Trang), and the Luận Kết draft in `localStorage` on the **Vercel domain**. Browsers do **not** transfer those data to the GitHub Pages domain.
+
+1. On the old Vercel site, open **Tủ Riêng → Xuất bản sao** and save the generated JSON file. Keep the file in a safe location.
+2. Open the new GitHub Pages app, navigate to **Cài đặt → Dữ liệu & Đồng bộ**, and select **Nhập bản sao**.
+3. Confirm the imported Bút Ký and Dấu Trang entries, then reload the page to verify they persist.
+4. Import replaces any existing local entries in that browser, but only after explicit confirmation. Export a copy first if you already have data on the new domain.
+
+**No data from the old origin can be read automatically.** The JSON is handled locally in the browser and is never uploaded to a server.
+
+## High-fi parity and checks
+
+The application contains 13 techniques in Sổ Tay Thần Chú; four explicit Nhịp học choices tied to Lão Lý; the existing routes; notebook, bookmarks, draft persistence and other current prototype interactions. S107 fixes relocate export to Settings, improve Settings card spacing and user-facing copy, and make the Guide illustration larger without resizing its card.
+
+`tools/validate_site.py` checks asset presence, 13 techniques, four mode choices, critical DOM/state contracts, and syntax of inline JavaScript. It is **not** a substitute for device, accessibility, or end-to-end browser testing. User acceptance remains open.
+
+## Source recovery
+
+`tools/import_from_vercel.py` recovers the legacy Vercel HTML/assets and applies the approved migration fixes. The recovered frozen production snapshot is committed in `site/`, so future hosting no longer depends on Vercel. The restore workflow is scoped to the migration review branch; the publish workflow is scoped to `main`.
+
+Original Vercel URL: https://li-step15-arborium-hifi-review.vercel.app/

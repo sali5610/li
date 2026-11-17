@@ -1,0 +1,40 @@
+name: Restore li. Hi-Fi into GitHub source
+on:
+  push:
+    branches: [li-hifi-s110-review]
+    paths:
+      - 'tools/**'
+      - '.github/workflows/li-restore.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          persist-credentials: true
+      - name: Recover existing Vercel Hi-Fi and apply S107 + safe import
+        run: python3 tools/import_from_vercel.py
+      - name: Validate recovered application
+        run: python3 tools/validate_site.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: li-hifi-preview-source
+          path: site/
+          include-hidden-files: true
+          if-no-files-found: error
+      - name: Commit source snapshot for code review
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f site/
+          if ! git diff --cached --quiet; then
+            git commit -m "Restore original li. Hi-Fi as reviewable GitHub Pages source"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

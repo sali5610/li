@@ -259,23 +259,25 @@ assert "#page-guide #method-cards > .method-card .purpose {" in foundation
 assert "function renderMethods(){" in html and "function showMethod(id){" in html
 assert "/* S114 — restrained Lão Lý peek:" in html
 
-# S134: all native writing areas use a real 31px background TILE, not an
+# S134: all native writing areas use a real 32px background TILE, not an
 # auto-sized gradient (auto-size made background-position ineffective on iOS).
 assert html.count("/* S128/S134 · Shared ruled writing paper.") == 1
 assert "textarea,.notebook{" in html
 assert "line-height:var(--li-notebook-line-height)!important;" in html
 assert "background-image:" in html
-assert "linear-gradient(to bottom,transparent 0 30px,var(--li-notebook-rule) 30px 31px)!important;" in html
+assert "linear-gradient(to bottom,transparent 0 31px,var(--li-color-notebook-rule) 31px 32px)!important;" in html
 assert "background-size:100% 16px,100% var(--li-notebook-line-height)!important;" in html
 assert "background-position:0 0,0 8px!important;" in html
 assert "background-repeat:no-repeat,repeat!important;" in html
 assert "background-attachment:scroll,local;" in html
 assert "--li-notebook-baseline-shift:" not in html, "Removed ineffective phase-offset hack must stay removed"
-# The tiled line is at 8 + 30 = 38px, below 15px text on a 31px line.
-# A preceding repeated line at 7px is hidden under the first 16px cream mask.
-notebook_first_rule = 8 + 30
-assert notebook_first_rule == 38
-assert (notebook_first_rule - 31) < 16
+# The tiled rule is aligned to the 32px text line (first rule at 8 + 31).
+# Its preceding repeat is masked by the first 16px opaque cream layer.
+notebook_first_rule = 8 + 31
+assert notebook_first_rule == 39
+assert (notebook_first_rule - 32) < 16
+assert ':root{--li-notebook-line-height:31px' not in html
+assert '--li-notebook-line-height: 32px' in foundation
 assert "textarea::placeholder{color:var(--muted);opacity:.8}" in html
 assert html.count('class="text-editor"') >= 2
 

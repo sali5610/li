@@ -20,6 +20,11 @@
 - **iPhone Safari square tap flash regression:** native tap highlight and touch-hover overlays have reappeared in the past. Test visually on device; source presence of `-webkit-tap-highlight-color` is only a smoke check.
 - **Latest state wins:** if Notion or new PO feedback differs from the above, update this contract **and** every affected implementation/screenshot fixture together. Never quietly make the docs say something old.
 
+### Icon role separation (latest code evidence)
+- **Browser tab favicon:** `site/assets/li-favicon.svg` uses the carved 理 stamp on moss.
+- **iOS Add to Home Screen:** `site/assets/apple-touch-icon.png` is a **separate asset**. The latest `main` validator is labeled S145 and describes a **typography-only 理** icon on moss, superseding the earlier S142 seal-based iOS touch icon. Do not infer that all icon contexts must use one identical PNG/SVG. Reconfirm the newest PO approval in Notion before changing either asset.
+- The root brand seal displayed in the app is a third placement; updating the favicon must not silently replace the header logo.
+
 ## Adoption pattern for a new screen
 1. Choose an existing component + variant from this table.
 2. Reuse its spacing/geometry/color/semantic state (not a copy-pasted one-off CSS block).

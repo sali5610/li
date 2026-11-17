@@ -126,7 +126,7 @@ home=section("home")
 for identifier in ['id="mirror-question"','id="home-scene"','id="save-question"','id="shuffle"']:
     assert home.count(identifier)==1,identifier
 assert 'data-page="research"' in home
-assert "Muốn nhớ: thử T01/T02" not in companion.read_text(encoding="utf-8")
+assert "Muốn nhớ: thử T01/T02" not in (site/"assets"/"laoly-context-s112.js").read_text(encoding="utf-8")
 
 # S112 — context-aware companion must be present, parse and pass UI-plan QA.
 companion=site/"assets"/"laoly-context-s112.js"

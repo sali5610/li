@@ -1265,7 +1265,7 @@ textarea::placeholder{color:var(--muted);opacity:.8}
   #page-home .mirror-message h2{animation:none!important;will-change:auto}
 }
 
-/* S135 · Mobile mirror: narrower centered question + synchronized floating text and refresh.
+/* S135/S137 · Mobile mirror: narrower centered question, stationary navigation arrows.
    Do not animate the entire container: its translate(-50%,-50%) controls centering. */
 @media(max-width:600px){
   #page-home .mirror-message{
@@ -1288,14 +1288,19 @@ textarea::placeholder{color:var(--muted);opacity:.8}
     font-size:clamp(18px,5.2vw,20px)!important;
   }
 }
-@keyframes li-mirror-float{
-  0%,100%{translate:0 0}
-  50%{translate:0 -5px}
+/* Both arrow controls stay still; only the question uses li-mirror-copy-float. */
+#page-home .mirror-controls{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  align-self:center;
+  pointer-events:auto;
 }
-#page-home .mirror-message h2,
-#page-home .mirror-message .mirror-refresh{
-  animation:li-mirror-float 4s ease-in-out infinite;
-  will-change:translate;
+#page-home .mirror-controls .mirror-refresh{
+  animation:none!important;
+  translate:none!important;
+  will-change:auto!important;
 }
 #page-home .mirror-refresh,
 #page-home .mirror-refresh:hover,
@@ -1311,8 +1316,7 @@ textarea::placeholder{color:var(--muted);opacity:.8}
   outline:none;
 }
 @media(prefers-reduced-motion:reduce){
-  #page-home .mirror-message h2,
-  #page-home .mirror-message .mirror-refresh{
+  #page-home .mirror-message h2{
     animation:none!important;
     translate:none;
     will-change:auto;
@@ -1346,7 +1350,7 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 <div class="hero" role="region" aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn">
 
 <div class="hero-left"><button class="home-checkin" id="checkin" type="button"><i data-lucide="check-circle-2" class="icon sm" aria-hidden="true"></i> Check-in hôm nay</button><h1>Mọi câu hỏi<br>đều có rễ.</h1><p>Không cần biết tất cả. Chỉ cần không ngừng tò mò.</p><span class="tiny-note">Một câu hỏi, muôn ngả đường</span></div>
-<div class="mirror-message"><div class="mirror-label">Gương Vạn Vấn</div><h2 id="mirror-question">90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?</h2><button id="shuffle" class="mirror-refresh" type="button" aria-label="Đổi câu hỏi" title="Đổi câu hỏi"><i data-lucide="refresh-cw" class="icon sm" aria-hidden="true"></i></button></div>
+<div class="mirror-message"><div class="mirror-label">Gương Vạn Vấn</div><h2 id="mirror-question">90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?</h2><div class="mirror-controls" role="group" aria-label="Chuyển câu hỏi"><button id="previous-question" class="mirror-refresh" type="button" aria-label="Câu hỏi trước" title="Câu hỏi trước"><i data-lucide="arrow-left" class="icon sm" aria-hidden="true"></i></button><button id="shuffle" class="mirror-refresh" type="button" aria-label="Câu hỏi tiếp theo" title="Câu hỏi tiếp theo"><i data-lucide="arrow-right" class="icon sm" aria-hidden="true"></i></button></div></div>
 <aside class="hero-dialogue" aria-label="Lão Lý kể bối cảnh câu hỏi đang hiện trong Gương Vạn Vấn">
   <span class="hero-dialogue-avatar" aria-hidden="true"><img src="./assets/laoly-neutral.png" alt="" width="128" height="128" loading="eager" decoding="async"></span>
   <div class="hero-dialogue-bubble" role="note">
@@ -1575,7 +1579,17 @@ function closeModal(id){const el=document.getElementById(id);el.classList.remove
 document.querySelectorAll(".page").forEach(e=>e.setAttribute("aria-label",e.id.replace("page-","")));
 document.getElementById("method-filters").innerHTML=categories.map((c,i)=>'<button class="filter" data-cat="'+c+'" aria-pressed="'+(i===0)+'">'+c+'</button>').join("");
 document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.hasAttribute("data-nav-back")){goBack();return}if(t.dataset.page){navigate(t.dataset.page);if(t.dataset.focus){const field=document.getElementById(t.dataset.focus);document.getElementById("notebook-section")?.scrollIntoView?.({block:"start"});field?.focus?.({preventScroll:true})}return}if(t.dataset.method){showMethod(t.dataset.method);return}if(t.dataset.cat){currentCategory=t.dataset.cat;document.querySelectorAll("[data-cat]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));renderMethods();return}if(t.dataset.branch){document.getElementById("branch-feedback").textContent="Hãy kiểm chứng: "+t.dataset.branch;return}if(t.dataset.answer){const isCase=t.closest("section.page").id==="page-case";if(isCase)selectedCaseAnswer=t.dataset.answer;const id=isCase?"case-feedback":"lesson-feedback";document.getElementById(id).textContent=t.dataset.answer==="right"?"Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.":"Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.";return}if(t.dataset.demo){toast(t.dataset.demo);return}if(t.dataset.buddy){openLaoLy(t);return}});
-document.getElementById("shuffle").addEventListener("click",()=>{qIndex=(qIndex+1)%scenarios.length;document.getElementById("mirror-question").textContent=scenarios[qIndex].question;document.getElementById("home-scene").textContent=scenarios[qIndex].scene;syncResearch();placeCompanion();});
+/* S137 · Bidirectional mirror carousel. Both directions keep question, context and mentor in sync. */
+function shiftMirrorQuestion(direction){
+ if(!scenarios.length)return;
+ qIndex=(qIndex+direction+scenarios.length)%scenarios.length;
+ document.getElementById("mirror-question").textContent=scenarios[qIndex].question;
+ document.getElementById("home-scene").textContent=scenarios[qIndex].scene;
+ syncResearch();
+ placeCompanion();
+}
+document.getElementById("previous-question").addEventListener("click",()=>shiftMirrorQuestion(-1));
+document.getElementById("shuffle").addEventListener("click",()=>shiftMirrorQuestion(1));
 document.getElementById("finish-case").addEventListener("click",()=>{const v=document.getElementById("case-revision").value.trim();if(!selectedCaseAnswer){toast("Chưa Chọn · Hãy chọn một nhận định hoặc tạm gác.");return}if(v.length<12){toast("Luận Kết còn thiếu · Hãy viết lại nhận định ít nhất 12 ký tự.");return}const item={id:liNewId(),title:"90% người dùng hài lòng — Sampling Bias",correct:selectedCaseAnswer==="right",revision:v,savedAt:new Date().toISOString()};
 processedCases.unshift(item);
 if(!liWriteState()){processedCases.shift();toast("Không thể lưu Bút Ký trên thiết bị. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.");return}

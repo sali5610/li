@@ -1,0 +1,102 @@
+name: Import all 25 verified Lão Lý originals to GitHub
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/archive-laoly-from-staging-once.yml'
+permissions:
+  contents: write
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify and copy 25 original PNGs with SHA256
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import concurrent.futures, hashlib, json, pathlib, struct, urllib.request
+          base_urls=[
+           "https://li-laoly-assets-01-20261118.vercel.app",
+           "https://li-laoly-assets-02-20261118.vercel.app",
+           "https://li-laoly-assets-03-20261118.vercel.app",
+          ]
+          parts=[]
+          for idx,base in enumerate(base_urls,1):
+              with urllib.request.urlopen(base+"/manifest.json",timeout=35) as response:
+                  manifest=json.load(response)
+              expected=10 if idx<=2 else 5
+              assert manifest["batch"]==str(idx).zfill(2)
+              assert manifest["count"]==expected and len(manifest["files"])==expected
+              for file in manifest["files"]:
+                  parts.append((base,file))
+          assert len(parts)==25
+          paths=[file["path"] for _,file in parts]
+          assert len(set(paths))==25
+          assert all(p.startswith("design-assets/lao-ly/") and p.endswith(".png") for p in paths)
+          assert sum("/trong-guong/" in p for p in paths)==10
+          assert sum("/ngoai-guong/" in p for p in paths)==10
+          assert sum("/icon/" in p for p in paths)==5
+          def download(entry):
+              base,file=entry
+              request=urllib.request.Request(base+"/"+file["path"],headers={"User-Agent":"LiSourceAssetArchive/1.0"})
+              with urllib.request.urlopen(request,timeout=90) as r:
+                  binary=r.read(15000001)
+              if len(binary)<8000 or len(binary)>15000000:
+                  raise ValueError("File size out of range "+file["path"])
+              if binary[:8]!=bytes([137,80,78,71,13,10,26,10]):
+                  raise ValueError("Invalid PNG "+file["path"])
+              width,height=struct.unpack(">II",binary[16:24])
+              sha=hashlib.sha256(binary).hexdigest()
+              if (width,height)!=(file["width"],file["height"]) or sha!=file["sha256"] or len(binary)!=file["bytes"]:
+                  raise ValueError("Metadata or hash mismatch "+file["path"])
+              target=pathlib.Path(file["path"])
+              target.parent.mkdir(parents=True,exist_ok=True)
+              if target.exists() and target.read_bytes()!=binary:
+                  raise ValueError("Refuse overwrite of different existing source "+file["path"])
+              target.write_bytes(binary)
+              print("VERIFIED",file["path"],width,height,len(binary),sha[:16])
+              return file
+          with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
+              verified=list(pool.map(download,parts))
+          archive=pathlib.Path("design-assets/lao-ly")
+          all_review={}
+          for item in verified:
+              all_review[item["review"]]=all_review.get(item["review"],0)+1
+          manifest={"schema":"li-laoly-source-v1","source":"Notion Biểu cảm Lão Lý · Asset Library","total":len(verified),"review_counts":all_review,"files":sorted(verified,key=lambda f:f["path"])}
+          (archive/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          readme="""# Lão Lý — original illustration archive
+          
+          Archive of all **25 actual Notion Artwork files**, copied byte-for-byte into GitHub.
+          
+          - `trong-guong/`: 10 expressions in the mirror.
+          - `ngoai-guong/`: 10 expressions outside the mirror.
+          - `icon/`: 1 neutral chat icon + 4 study-rhythm icons.
+          
+          These binaries are intentionally **outside `site/`**, and do not automatically appear in the app.
+          The `manifest.json` records Notion source page, originally assigned and uploaded filenames,
+          PNG dimensions, original bytes, SHA-256 and the unchanged Notion review state.
+          **Stored does not mean the artwork is PO-approved.** UI inclusion is a separate decision.
+          No expiring signed Notion URLs or credentials are stored here.
+          
+          Source: [Biểu cảm Lão Lý · Asset Library](https://app.notion.com/p/41b6cf6db72a814bb57bf8a877519798).
+          """
+          (archive/"README.md").write_text(readme,encoding="utf-8")
+          assert (archive/"manifest.json").is_file() and len(verified)==25
+          print("ARCHIVE_COMPLETE 25/25 original PNGs, sha256 crosschecked; review_counts",all_review)
+          
+          PY
+      - name: Commit all 25 source PNGs to main
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add design-assets/lao-ly
+          git commit -m "assets: archive all 25 original Lão Lý illustrations from Notion"
+          for attempt in 1 2 3 4 5 6; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then exit 0; fi
+            sleep 3
+          done
+          exit 1

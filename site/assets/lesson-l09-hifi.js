@@ -127,6 +127,8 @@ function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));return tr
 function sText(id,s){const el=$(id);if(el)el.textContent=s;}
 function sHtml(id,s){const el=$(id);if(el)el.innerHTML=s;}
 function toast(message){
+ // Use the real Hi-Fi feedback component, not a second lesson-only toast design.
+ if(typeof window.toast==="function"){window.toast(message);return;}
  const b=$("live");if(!b)return;
  b.textContent=message;b.hidden=false;clearTimeout(toast.timer);
  toast.timer=setTimeout(()=>{b.hidden=true;},3200);

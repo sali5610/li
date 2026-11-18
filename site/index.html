@@ -341,31 +341,71 @@ document.getElementById("global-search").addEventListener("input",e=>{const q=e.
 function placeCompanion(){
  const root=document.body;
  const support=document.querySelector(".laoly-support");
- root.classList.remove("laoly-home-top","laoly-home","li-home-fab-safe");
+ root.classList.remove("laoly-home-top","laoly-home","li-home-fab-safe","li-fab-control-safe");
  support?.style.removeProperty("--laoly-home-bottom");
  support?.style.removeProperty("--li-home-fab-bottom");
- if(!support||currentPage!=="home"||window.innerWidth>600)return;
- const hero=document.querySelector("#page-home .hero");
- const actions=hero?.querySelector(".hero-actions");
- const context=hero?.querySelector(".hero-dialogue");
- const mirror=hero?.querySelector(".mirror-message");
- if(!actions||!context||!mirror)return;
- const a=actions.getBoundingClientRect();
+ support?.style.removeProperty("--li-fab-control-bottom");
+ if(!support)return;
+ // When any dialog is open the assistant must not draw over its buttons/labels.
+ if(document.querySelector(".modal.open"))return;
+ if(currentPage==="home"&&window.innerWidth<=600){
+  const hero=document.querySelector("#page-home .hero");
+  const actions=hero?.querySelector(".hero-actions");
+  const context=hero?.querySelector(".hero-dialogue");
+  const mirror=hero?.querySelector(".mirror-message");
+  if(!actions||!context||!mirror)return;
+  const a=actions.getBoundingClientRect(),b=support.getBoundingClientRect();
+  if(a.bottom<=0||a.top>=window.innerHeight)return;
+  const intersection=Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left))*
+                     Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
+  if(intersection<100)return;
+  const dialog=context.getBoundingClientRect();
+  const desiredBottomY=Math.floor((dialog.top-12)/4)*4;
+  const desiredTopY=desiredBottomY-b.height;
+  if(desiredTopY<mirror.getBoundingClientRect().bottom+8||desiredTopY<80)return;
+  const bottom=Math.ceil((window.innerHeight-desiredBottomY)/4)*4;
+  support.style.setProperty("--li-home-fab-bottom",bottom+"px");
+  root.classList.add("li-home-fab-safe");
+  return;
+ }
+ // Other routes: keep default bottom-right location unless it physically
+ // blocks a compact answer/action or form field. Full-card tiles remain broad
+ // tappable surfaces and are reviewed separately rather than making FAB jump.
+ const page=document.getElementById("page-"+currentPage);
+ if(!page?.classList.contains("active"))return;
  const b=support.getBoundingClientRect();
- if(a.bottom<=0||a.top>=window.innerHeight)return;
- const intersection=Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left))*
-                    Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
- if(intersection<100)return;
- const dialog=context.getBoundingClientRect();
- const mirrorBottom=mirror.getBoundingClientRect().bottom;
- // Reserve 12px clearance above the context card. Round the computed inset
- // UP to the 4px grid. This is a collision-derived position, not artwork crop.
- const desiredBottomY=Math.floor((dialog.top-12)/4)*4;
- const desiredTopY=desiredBottomY-b.height;
- if(desiredTopY<mirrorBottom+8||desiredTopY<80)return;
- const bottom=Math.ceil((window.innerHeight-desiredBottomY)/4)*4;
- support.style.setProperty("--li-home-fab-bottom",bottom+"px");
- root.classList.add("li-home-fab-safe");
+ const within=(r)=>r.width>0&&r.height>0&&r.bottom>0&&r.top<innerHeight;
+ const overlappingX=(r)=>Math.min(r.right,b.right)-Math.max(r.left,b.left)>8;
+ const controls=[...page.querySelectorAll("button,input,textarea,select,a.action")].filter(el=>{
+  if(el.matches("input[type=file],input[type=checkbox],input[type=radio]"))return false;
+  const style=getComputedStyle(el);
+  if(style.display==="none"||style.visibility==="hidden"||el.hidden)return false;
+  if(el.classList.contains("method-card")||el.classList.contains("home-tile"))return false;
+  const r=el.getBoundingClientRect();
+  if(el.tagName==="BUTTON"&&r.height>148)return false;
+  return within(r)&&overlappingX(r);
+ }).map(el=>el.getBoundingClientRect());
+ const collides=(top)=>controls.some(r=>Math.min(top+b.height,r.bottom+8)-Math.max(top,r.top-8)>0);
+ if(!collides(b.top))return;
+ const header=document.querySelector(".header")?.getBoundingClientRect();
+ const bottomNav=document.querySelector(".mobile-nav");
+ const navRect=bottomNav&&getComputedStyle(bottomNav).display!=="none"?bottomNav.getBoundingClientRect():null;
+ const minTop=Math.ceil(((header?.bottom||0)+12)/4)*4;
+ const maxTop=Math.floor(((navRect?.top??innerHeight)-b.height-8)/4)*4;
+ let chosen=null;
+ for(let delta=4;delta<innerHeight;delta+=4){
+  // Favor the nearest available corner pocket; keep the same right alignment.
+  for(const direction of [1,-1]){
+   const top=Math.round((b.top+direction*delta)/4)*4;
+   if(top<minTop||top>maxTop||collides(top))continue;
+   chosen=top;break;
+  }
+  if(chosen!==null)break;
+ }
+ if(chosen===null)return;
+ const bottom=Math.ceil((innerHeight-(chosen+b.height))/4)*4;
+ support.style.setProperty("--li-fab-control-bottom",bottom+"px");
+ root.classList.add("li-fab-control-safe");
 }
 window.addEventListener("scroll",placeCompanion,{passive:true});
 window.addEventListener("resize",placeCompanion,{passive:true});

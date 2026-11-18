@@ -253,7 +253,7 @@ function changeLocale(locale){
  if(typeof window.liLanguage?.set==="function"){window.liLanguage.set(locale);return;}
  if(locale===state.locale)return;state.locale=locale;persist();render();
 }
-window.addEventListener("li:localechange",event=>{
+window.addEventListener?.("li:localechange",event=>{
  const next=event.detail?.locale;
  if(!["vi","en"].includes(next)||next===state.locale)return;
  state.locale=next;persist();render();

@@ -66,6 +66,11 @@
   poisoned.records.push({key:"li.__proto__.v1",value:"abc"});
   await throws(()=>B.preview(make(),JSON.stringify(poisoned)),"invalid-record");
   checks.push("Unexpected nested key blocked, no arbitrary storage injection");
+  const invalidLibrary=await B.exportJSON(make({"li.private.library.v1":JSON.stringify({
+    schema:1,cases:[{title:"Fake but missing required revision"}],questions:[],ideas:[],savedContent:[]
+  })}));
+  await throws(()=>B.preview(make(),invalidLibrary),"invalid-record");
+  checks.push("Malformed nested library records rejected even with a matching SHA digest");
   await throws(()=>B.parse(" ".repeat(10*1024*1024+1)),"large");
   checks.push("Oversized input rejected before parse or write");
   const emptyPayload=await B.exportJSON(make());

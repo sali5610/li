@@ -23,6 +23,10 @@ frame.addEventListener("load",function(){
    const native={angle:0,type:"portrait-primary",addEventListener(){}};
    mock(w.screen,"orientation",native);
    mock(w,"orientation",()=>native.angle);
+   // Physical iPad window size changes at 90°, while the simulated iframe
+   // CSS viewport intentionally remains 970px until WebKit reflows.
+   mock(w,"outerWidth",()=>native.angle===90?1408:970);
+   mock(w,"outerHeight",()=>native.angle===90?970:1408);
    function scene(){return d.querySelector("#page-home .hero");}
    function geom(){return scene().getBoundingClientRect();}
    function mode(){return w.getComputedStyle(doc).getPropertyValue("--li-ipad-active-mode").trim();}
@@ -35,8 +39,8 @@ frame.addEventListener("load",function(){
    setTimeout(function(){
     const state=w.liSafariRotationQA||{};
     check("Physical 90-degree rotation recognized",state.physicalLandscape===true,state.physicalLandscape);
-    check("960px-width Safari layout detected as stale",state.iPad&&state.screen[1]===1408,state.iPad+"/"+state.screen);
-    check("Native viewport numeric 1408 requested",d.querySelector('meta[name="viewport"]').content.includes("width=1408"),d.querySelector('meta[name="viewport"]').content);
+    check("970px-width Safari layout detected as stale",state.iPad&&state.screen[1]===1408,state.iPad+"/"+state.screen);
+    check("Native viewport stays device-width; no fixed 1408 zoom",d.querySelector('meta[name="viewport"]').content.includes("width=device-width"),d.querySelector('meta[name="viewport"]').content);
     check("Fallback or corrected native layout extends Hero to 1408",Math.abs(geom().width-1408)<4,geom().width);
     check("Fallback device token is landscape 18px",mode()==="landscape"&&w.getComputedStyle(d.body).fontSize==="18px",mode()+"/"+w.getComputedStyle(d.body).fontSize);
     check("Approved art preserved during recovery",w.getComputedStyle(scene(),"::before").backgroundImage.includes("home-li-ipad-20261119.jpg"),w.getComputedStyle(scene(),"::before").backgroundImage.slice(0,120));

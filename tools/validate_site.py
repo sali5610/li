@@ -493,7 +493,7 @@ assert '--home-actions-bottom:calc(52px + var(--li-space-8) + env(safe-area-inse
 # Scene extends behind the tab bar only while Home is active, with an
 # app-color-derived overlay and readable active/inactive tab controls.
 assert 'body:has(.app.home-focus) .mobile-nav{' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
-assert 'color-mix(in srgb,var(--forest) 88%,transparent)' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+assert 'color-mix(in srgb,var(--forest) 88%,var(--li-uxds10-touch-clear))' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'body:has(.app.home-focus) .mobile-nav .nav-btn[aria-current="page"]' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'border-top:0!important;' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'background-size:cover!important;' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")

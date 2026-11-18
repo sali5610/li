@@ -55,8 +55,8 @@ let tested=0;
 for(const [e,a,expected] of fixtures){
  assert.equal(context.recommendStudyMode(e,a)?.mode??null,expected,`Mapping ${e}/${a}`);tested++;
 }
-assert.equal((html.match(/name="checkin-energy"/g)||[]).length,3);
-assert.equal((html.match(/name="checkin-attention"/g)||[]).length,3);
+assert.equal((html.match(/<input type="radio" name="checkin-energy"/g)||[]).length,3);
+assert.equal((html.match(/<input type="radio" name="checkin-attention"/g)||[]).length,3);
 for(const mode of ["start","focus","overload","recover"])assert.ok(html.includes(`<option value="${mode}">`));
 assert.ok(html.includes('id="apply-checkin" disabled'));
 assert.ok(html.includes('id="close-checkin">Bỏ qua'));

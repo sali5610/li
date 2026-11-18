@@ -9,9 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/design-tokens.css?v=0.3.2-olive-moss-20261118">
-<link rel="stylesheet" href="./assets/component-review-v2.css?v=20261118-ds12-white-note">
+<link rel="stylesheet" href="./assets/component-review-v2.css?v=20261118-porcelain-input">
 <link rel="stylesheet" href="./assets/component-review-v3.css?v=20261118-ds13-selection">
-<link rel="stylesheet" href="./assets/component-review-v4.css?v=20261118-ds16-laoly-zoom">
+<link rel="stylesheet" href="./assets/component-review-v4.css?v=20261118-porcelain-input">
 <link rel="stylesheet" href="./assets/component-review-v5.css?v=20261118-ds15-topnav">
 <style>
 :root {color-scheme:light}
@@ -131,6 +131,7 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
    <div class="ds-swatch"><div class="ds-paint" style="background:var(--moss)"></div><div class="ds-swatch-label">Moss · #243A29</div></div>
    <div class="ds-swatch" data-ds-token="olive"><div class="ds-paint" style="background:var(--olive)"></div><div class="ds-swatch-label">Olive Moss · #65734C</div></div>
    <div class="ds-swatch"><div class="ds-paint" style="background:var(--cream)"></div><div class="ds-swatch-label">Cream · #FAF9F5</div></div>
+   <div class="ds-swatch" data-ds-token="porcelain"><div class="ds-paint" style="background:var(--porcelain)"></div><div class="ds-swatch-label">Porcelain · #FEFDFC · Input / Textarea</div></div>
    <div class="ds-swatch"><div class="ds-paint" style="background:var(--wood)"></div><div class="ds-swatch-label">Wood · #856D4B</div></div>
    <div class="ds-swatch"><div class="ds-paint" style="background:var(--li-color-nav-selected-fill)"></div><div class="ds-swatch-label">Sand pill · Selected</div></div>
    <div class="ds-swatch"><div class="ds-paint" style="background:var(--paper-2)"></div><div class="ds-swatch-label">Paper 2 · Layer</div></div>
@@ -311,7 +312,7 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
   </div>
   <div class="ds-grid" style="margin-top:var(--li-space-5)">
    <div class="ds-panel"><h3>Textarea · Notebook có dòng kẻ</h3>
-    <div class="ds-control"><label for="ds-textarea">Viết lại kết luận</label><textarea id="ds-textarea" class="ds-notebook" rows="6" maxlength="240" placeholder="Điều gì cần kiểm chứng thêm?" aria-describedby="ds-textarea-counter"></textarea><p id="ds-textarea-counter" class="helper" role="status">0 / 240 ký tự · chưa lưu</p><p class="ds-muted">Đúng surface Bút Ký của app: dòng kẻ 32px theo baseline, nền trắng và caret/placeholder có thể đọc được.</p></div>
+    <div class="ds-control"><label for="ds-textarea">Viết lại kết luận</label><textarea id="ds-textarea" class="ds-notebook" rows="6" maxlength="240" placeholder="Điều gì cần kiểm chứng thêm?" aria-describedby="ds-textarea-counter"></textarea><p id="ds-textarea-counter" class="helper" role="status">0 / 240 ký tự · chưa lưu</p><p class="ds-muted">Đúng surface Bút Ký của app: dòng kẻ 32px theo baseline, nền porcelain sáng nhẹ (không trắng tinh) và caret/placeholder có thể đọc được.</p></div>
     <div class="ds-control" style="margin-top:var(--li-space-4)"><label for="ds-textarea-off">Textarea disabled</label><textarea id="ds-textarea-off" class="ds-notebook" rows="3" disabled>Không cho sửa trong trạng thái này.</textarea></div>
    </div>
    <div class="ds-panel"><h3>Filter chips</h3>

@@ -13,6 +13,7 @@ const page=String.raw`
  <p class="intro" id="l09-intro">Một ngàn người trả lời. Có chắc kết luận nói được về tất cả mọi người?</p>
  <div class="l09-hero-tools">
   <button type="button" class="action alt" data-page="catalog" id="l09-back">Về Tàng Thư</button>
+  <button class="library-text-link" type="button" data-li-bookmark-kind="lesson" data-li-bookmark-id="L09-1-2" aria-pressed="false">Lưu bài</button>
   <span class="status-chip" id="l09-status">Wave 1A · Bài đã duyệt nội dung, đang kiểm thử</span>
   <div class="l09-lang-switch" role="group" aria-label="Ngôn ngữ nội dung / Lesson language">
    <button type="button" class="action alt" id="l09-vi" aria-pressed="true">VI</button>

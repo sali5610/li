@@ -737,7 +737,7 @@ html.li-safari-landscape-recovery .app.home-focus #page-home .hero {
 html.li-safari-portrait-recovery .app.home-focus #page-home .hero {
  box-sizing:border-box!important;
  left:0!important;
- margin-left:0!important;
+ margin-left:var(--li-space-0)!important;
  width:100%!important;
  min-width:0!important;
  max-width:none!important;

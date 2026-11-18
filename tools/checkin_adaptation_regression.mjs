@@ -14,7 +14,7 @@ for(const key of ["sleep","move","rest"]){
 }
 for(const v of ["","start","focus","overload","recover"])assert.ok(modalHtml.includes(`name="checkin-override" value="${v}"`));
 assert.ok(modalHtml.includes('class="checkin-scroll"'));
-assert.ok(modalHtml.indexOf('class="checkin-actions"')>modalHtml.indexOf('class="checkin-scroll"'));
+assert.ok(modalHtml.indexOf('class="action-row checkin-actions"')>modalHtml.indexOf('class="checkin-scroll"'));
 assert.ok(html.includes("checkin-adaptation.css?v=20261118-radio2"),"Update cache key whenever changing CSS");
 assert.ok(css.includes("#checkin-modal .checkin-radio-row{display:grid"));
 assert.ok(css.includes("#checkin-modal .checkin-actions{")&&css.includes("position:relative"));
@@ -32,7 +32,7 @@ const listeners={},fields={
 const radioInputs=[];
 for(const n of ["sleep","move","rest","energy","attention","override"]){
  for(const v of (n==="override"?["","start","focus","overload","recover"]:n==="sleep"||n==="move"||n==="rest"?["yes","no","unsure"]:["high","medium","low","steady","warming","hard"])){
-  radioInputs.push({name:"checkin-"+n,value:v,checked:false,focus(){}});
+  radioInputs.push({name:"checkin-"+n,value:v,get checked(){return state[n]===v},set checked(on){if(on)state[n]=v;else if(state[n]===v)state[n]=""},focus(){}});
  }
 }
 const modal={
@@ -47,8 +47,8 @@ const context=vm.createContext({
  document:{
   getElementById(id){if(!fields[id])throw Error("Unexpected ID "+id);return fields[id]},
   querySelector(q){
-   if(q.includes("input[name=\"checkin-override\"]"))return state.override?{value:state.override}:null;
    if(q.includes('input[name="checkin-override"][value=""]'))return {set checked(v){state.override=""}};
+   if(q.includes('input[name="checkin-override"]:checked'))return state.override?{value:state.override}:null;
    if(q==='input[name="checkin-sleep"]')return {focus(){context.focused++}};
    if(q.includes(".checkin-context"))return contextObj;
    if(q.includes(".checkin-scroll"))return scroll;

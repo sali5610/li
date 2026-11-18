@@ -551,7 +551,7 @@ assert 'li-related-lessons' in foundation
 assert 'li-layout.css?v=20261118-ds10-touch' in page_html
 assert 'ui-foundations.css?v=20261118-ds10-tap' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
-assert '-webkit-tap-highlight-color: transparent !important;' in foundation
+assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation
 review10=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert 'ds-notebook' in review10 and 'ds-home-bubble green' in review10

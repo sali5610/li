@@ -90,3 +90,48 @@
  #page-library .library-group-header h2{min-width:0}
  #page-noteDetail .library-note-management .action{flex:1}
 }
+
+/* UX-IA-06 · Explicit save controls and a readable, grounded case review. */
+.library-bookmark-tools{
+ display:flex;align-items:center;gap:var(--li-space-2);
+ margin:var(--li-space-2) var(--li-space-0) var(--li-space-5);
+}
+.library-bookmark-tools[hidden],#li-note-case-context[hidden]{display:none!important}
+#page-resume .library-bookmark-actions{
+ display:flex;align-items:center;flex-wrap:wrap;gap:var(--li-space-2);
+}
+#page-resume .library-bookmark-actions .library-text-link{
+ flex-shrink:0;
+}
+#page-resume .library-list-item .library-lesson-save{
+ align-self:center;
+}
+[data-li-bookmark-kind][aria-pressed="true"]{
+ color:var(--wood);
+ text-decoration-thickness:2px;
+}
+[data-li-bookmark-kind]:focus-visible{
+ outline:2px solid var(--li-color-focus-ring);outline-offset:var(--li-space-1);
+}
+#page-noteDetail .library-note-context{
+ display:grid;gap:var(--li-space-4);min-width:0;
+}
+#page-noteDetail .library-note-context h2,
+#page-noteDetail .library-note-context p{
+ margin:var(--li-space-0);
+}
+#page-noteDetail .library-case-choice{
+ border:1px solid var(--rule);
+ border-radius:var(--li-space-1);
+ padding:var(--li-space-3) var(--li-space-4);
+ color:var(--ink);overflow-wrap:anywhere;
+}
+#page-noteDetail .library-case-choice[data-chosen="true"]{
+ background:var(--li-color-nav-selected-fill);
+ border-color:var(--moss);
+}
+#page-noteDetail .library-note-context .library-text-link{justify-self:start}
+@media(max-width:640px){
+ #page-resume .library-bookmark-actions{width:100%}
+ #page-resume .library-bookmark-actions .library-text-link{width:auto}
+}

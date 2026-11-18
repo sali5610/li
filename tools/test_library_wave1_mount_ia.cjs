@@ -68,7 +68,7 @@ function run(name,lesson){
 }
 for(const [i,name] of FILES.entries())run(name,["L09","L03","L15"][i]);
 const html=fs.readFileSync(path.join(__dirname,"../site/index.html"),"utf8");
-for(const name of FILES)assert(html.includes('./assets/'+name+'?v=20261118-ia05'),name+" cache-busted in app");
+for(const name of FILES)assert(html.includes('./assets/'+name+'?v=20261118-ia06'),name+" cache-busted in app");
 const library=html.slice(html.indexOf('<section id="page-library"'),html.indexOf('<section id="page-resume"'));
 assert.equal((library.match(/id="li-library-latest-lesson"/g)||[]).length,1,"exactly one latest-lesson preview slot");
 assert(!library.includes('id="li-lesson-history"'),"full study list stays on Quay lại page");

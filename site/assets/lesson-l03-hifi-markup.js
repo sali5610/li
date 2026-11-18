@@ -11,6 +11,7 @@ const page=String.raw`
  <p class="intro" id="l03-intro">Câu hỏi mở chưa chắc là câu hỏi trung lập.</p>
  <div class="l09-hero-tools">
   <button class="action alt" type="button" data-page="catalog" id="l03-back">Về Tàng Thư</button>
+  <button class="library-text-link" type="button" data-li-bookmark-kind="lesson" data-li-bookmark-id="L03-1-2" aria-pressed="false">Lưu bài</button>
   <span class="status-chip" id="l03-status">Wave 1 · Content locked / UI in review</span>
   <div class="l09-lang-switch" role="group" aria-label="Ngôn ngữ bài học / Lesson language">
    <button type="button" class="action alt" id="l03-vi" aria-pressed="true">VI</button>

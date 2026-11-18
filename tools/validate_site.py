@@ -322,13 +322,13 @@ assert '<section id="page-noteDetail"' in page_html
 assert '<button id="li-note-save"' in page_html
 assert '<button id="li-note-delete"' in page_html
 assert '<div id="li-note-history-list"' in page_html
-assert '<script src="./assets/library-note-editor.js?v=1"></script>' in page_html
+assert '<script src="./assets/library-note-editor.js?v=2"></script>' in page_html
 hub=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
-assert 'library-hub.css?v=2' in page_html
+assert 'library-hub.css?v=3' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_note_versions.cjs")],check=True,cwd=site.parent)
 
 # S120: all 13 Thần Chú methods share this same Guide Detail template.
@@ -428,7 +428,7 @@ assert 'data-demo="Chưa lưu được ý này' not in html
 assert 'id="save-capture-note"' in html
 assert html.count('id="li-checkin-recording-disclosure"')==1
 assert html.index('li-diary-privacy')>html.index('li-diary-day-status')
-assert '<script src="./assets/library-hub.js?v=2"></script>' in html
+assert '<script src="./assets/library-hub.js?v=3"></script>' in html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_hub_v2.cjs")],check=True,cwd=site.parent)
 
 # UX-IA-05: lesson modules only own lesson/catalog DOM, never Tủ Riêng overview.
@@ -439,8 +439,27 @@ for lesson in ("l09","l03","l15"):
     source=module.read_text(encoding="utf-8")
     assert "library.prepend(" not in source
     assert 'document.querySelector("#page-library .stack-sm")' not in source
-    assert f'<script src="./assets/lesson-{lesson}-hifi-markup.js?v=20261118-ia05"></script>' in page_html
+    assert f'<script src="./assets/lesson-{lesson}-hifi-markup.js?v=20261118-ia06"></script>' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_wave1_mount_ia.cjs")],check=True,cwd=site.parent)
+
+# UX-IA-06: Save and Unsave have distinct semantics from submitting an answer
+# or deleting a Bút Ký. Full case context must survive in the saved snapshot.
+assert 'const savedContent=liInitialState.savedContent;' in page_html
+assert 'savedContent:data.savedContent||[]' in page_html
+assert 'ideas:collectedIdeas,savedContent,draft:' in page_html
+assert 'caseSnapshot' in page_html and 'selectedText:caseOptions.find' in page_html
+assert 'id="li-note-case-context"' in page_html
+assert 'data-li-bookmark-kind="case"' in page_html
+assert '<script src="./assets/library-bookmarks.js?v=1"></script>' in page_html
+assert '<script src="./assets/library-note-editor.js?v=2"></script>' in page_html
+assert '<script src="./assets/library-hub.js?v=3"></script>' in page_html
+for lesson_id,slug in (("L03-1-2","l03"),("L09-1-2","l09"),("L15-2-2","l15")):
+    content=(site/"assets"/f"lesson-{slug}-hifi-markup.js").read_text(encoding="utf-8")
+    assert f'data-li-bookmark-id="{lesson_id}"' in content
+    assert 'data-li-bookmark-kind="lesson"' in content
+assert 'function renderCaseContext(note,type)' in (site/"assets"/"library-note-editor.js").read_text(encoding="utf-8")
+subprocess.run(["node",str(site.parent/"tools"/"test_library_bookmarks.cjs")],check=True,cwd=site.parent)
+subprocess.run(["node",str(site.parent/"tools"/"test_library_case_review.cjs")],check=True,cwd=site.parent)
 
 # S120: mirror-variant illustration stored locally and not silently downgraded
 # to a chat icon; Bút Ký uses same paper surface as cards 03-04.
@@ -513,7 +532,9 @@ for route in ("lessonL03", "lessonL09", "lessonL15"):
     assert f'type:"hook",lessonRoute:"{route}"' in page_html
 assert page_html.count('type:"hook",lessonRoute:') == 3
 assert 'sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang."' in page_html
-assert 'navigate(scenario.type==="hook"?scenario.lessonRoute:"research");' in (site/"assets"/"library-hub.js").read_text(encoding="utf-8")
+library_js=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
+assert 'const target=scenarios[idx].type==="hook"?scenarios[idx].lessonRoute:"research";' in library_js
+assert 'navigate(target);' in library_js
 assert '<script src="./assets/lesson-related-wave1.js"></script>' in page_html
 assert bool(re.search(r'<link rel="stylesheet" href="\./assets/ui-foundations\.css\?v=[A-Za-z0-9._-]+">', head))
 cross=(site/"assets"/"lesson-related-wave1.js").read_text(encoding="utf-8")

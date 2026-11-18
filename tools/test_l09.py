@@ -59,7 +59,7 @@ class Ids(HTMLParser):
         for k,v in attrs:
             if k=="id":self.ids.append(v)
 native=Ids();native.feed(html)
-added=re.findall(r'\bid="([^"]+)"',mount)
+added=re.findall(r'(?<![A-Za-z0-9_-])id="([^"]+)"',mount)
 assert len(set(added))==len(added), "Duplicate ID within injected lesson"
 assert not(set(added)&set(native.ids)), "Lesson ID collision with native Hi-Fi"
 for needle in (

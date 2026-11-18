@@ -50,7 +50,7 @@ Type sizes need not be divisible by four; **line heights and spacing do**. Avoid
 
 **Token naming:** `--li-space-4` = **16px**, not 4px; the suffix indexes the base 4px grid. Use named semantic aliases (`--li-page-gutter`, `--li-card-pad`, `--li-stack-gap`, `--li-section-gap`) instead of magic literals.
 
-**Responsive:** gutters 16px mobile ≤600, 24px tablet, 40px wide desktop ≥1200. Card inset 20px mobile / 24px desktop. Controls at least 48px tall. Guide uses a PO-accepted **two-column compact method-card variant at ≤640px**; tablet/desktop remain adaptive. No 10.5px instructional copy; the phone grid uses naturally growing cards and a two-line purpose teaser linking to the full detail.
+**Responsive:** gutters 16px mobile ≤600, 24px tablet, 40px wide desktop ≥1200. Card inset 20px mobile / 24px desktop. Controls at least 48px tall. Guide uses a PO-accepted **two-column compact method-card variant at ≤640px**; tablet/desktop remain adaptive. No 10.5px instructional copy; the phone grid uses naturally growing cards and a two-line purpose teaser linking to the full detail. Preserve S118's specific 18/20px gap (14/18px on ≤360px) and compact card/grid padding as a PO-accepted micro-geometry exception; never round this to 20/20px just to satisfy the token grid.
 
 ## 4. Applied coverage in `site/assets/ui-foundations.css`
 

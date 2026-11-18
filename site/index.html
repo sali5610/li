@@ -470,6 +470,11 @@ function closeCheckinModal(){
 }
 document.getElementById("checkin-modal").addEventListener("change",refreshCheckinRecommendation);
 document.getElementById("checkin").addEventListener("click",event=>{
+ // Each new check-in should start unanswered; do not reuse a previous session's physical report.
+ ["sleep","move","rest"].forEach(key=>document.getElementById("checkin-"+key).value="");
+ document.querySelectorAll('#checkin-modal input[name^="checkin-"]').forEach(input=>input.checked=false);
+ document.getElementById("checkin-override").value="";
+ document.querySelector("#checkin-modal .checkin-context").open=false;
  openModal("checkin-modal",event.currentTarget);
  refreshCheckinRecommendation();
  document.getElementById("checkin-sleep").focus();

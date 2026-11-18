@@ -4,11 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>li. 理 — Component Library Review · UX-DS-08</title>
+<title>li. 理 — Component Library Review · UX-DS-09</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/design-tokens.css?v=0.3">
+<link rel="stylesheet" href="./assets/component-review-v2.css?v=20261118-09">
 <style>
 :root {color-scheme:light}
 *{box-sizing:border-box}
@@ -104,9 +105,9 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
 <div class="ds-shell">
 <aside class="ds-sidebar">
  <div class="ds-mark">理 · li.</div>
- <div class="ds-eyebrow" style="color:var(--sage)">UX-DS-08 · REVIEW BUILD</div>
+ <div class="ds-eyebrow" style="color:var(--sage)">UX-DS-09 · REVIEW BUILD</div>
  <nav class="ds-nav" aria-label="Mục lục Component Showcase">
-  <a href="#status">01 / Status</a><a href="#tokens">02 / Foundations</a><a href="#navigation">03 / Navigation</a><a href="#actions">04 / Actions</a><a href="#cards">05 / Cards</a><a href="#inputs">06 / Forms</a><a href="#feedback">07 / Feedback</a><a href="#live">08 / Real app</a><a href="#inventory">09 / Component inventory</a>
+  <a href="#status">01 / Status</a><a href="#tokens">02 / Foundations</a><a href="#icons">03 / Icons</a><a href="#navigation">04 / Navigation</a><a href="#actions">05 / Actions</a><a href="#cards">06 / Cards</a><a href="#inputs">07 / Forms</a><a href="#feedback">08 / Feedback</a><a href="#live">09 / Real app</a><a href="#inventory">10 / Component inventory</a>
  </nav>
  <div class="ds-stamp">Chỉ là specimen + app review. Không phải dấu duyệt G2, không đưa nội dung Wave2/3 lên public.</div>
 </aside>
@@ -140,49 +141,104 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
    <div class="ds-type-row"><span class="ds-type-demo" style="font:400 14px/20px var(--li-font-ui)">Nhãn chức năng và phần giải thích ngắn.</span><small>Support 14/20</small></div>
   </div>
  </section>
+
+ <section id="icons" class="ds-section">
+ <div class="ds-section-head"><div><div class="ds-num">03 / ICONOGRAPHY</div><h2>Hệ thống icon</h2></div><div class="ds-muted">Lucide · monoline · stroke 1.8</div></div>
+ <p class="ds-lead">Một thư viện icon cho functional UI. 18px inline, 20px action, 22px navigation, 24px showcase. Không trộn glyph, emoji và kiểu nét khác nhau; con dấu 理 và nhân vật Lão Lý giữ artwork riêng.</p>
+ <div class="ds-icon-grid"><div class="ds-icon-tile"><i data-lucide="trees" aria-hidden="true"></i>Đại Sảnh</div><div class="ds-icon-tile"><i data-lucide="library-big" aria-hidden="true"></i>Tàng Thư</div><div class="ds-icon-tile"><i data-lucide="book-open" aria-hidden="true"></i>Thần Chú</div><div class="ds-icon-tile"><i data-lucide="archive" aria-hidden="true"></i>Tủ Riêng</div><div class="ds-icon-tile"><i data-lucide="search" aria-hidden="true"></i>Tìm kiếm</div><div class="ds-icon-tile"><i data-lucide="feather" aria-hidden="true"></i>Nhặt ý</div><div class="ds-icon-tile"><i data-lucide="settings-2" aria-hidden="true"></i>Cài đặt</div><div class="ds-icon-tile"><i data-lucide="bookmark" aria-hidden="true"></i>Lưu / Dấu Trang</div><div class="ds-icon-tile"><i data-lucide="arrow-left" aria-hidden="true"></i>Quay lại</div><div class="ds-icon-tile"><i data-lucide="arrow-up-right" aria-hidden="true"></i>Đào sâu</div><div class="ds-icon-tile"><i data-lucide="message-circle" aria-hidden="true"></i>Hội thoại</div><div class="ds-icon-tile"><i data-lucide="circle-alert" aria-hidden="true"></i>Lỗi</div></div>
+ <div class="ds-rule-grid">
+ <article class="ds-panel"><h3>Role scale</h3><div class="ds-icon-spec"><span><i class="ds-symbol ds-symbol-small" data-lucide="info" aria-hidden="true"></i>18 inline</span><span><i class="ds-symbol" data-lucide="bookmark" aria-hidden="true"></i>20 action</span><span><i class="ds-symbol ds-symbol-nav" data-lucide="archive" aria-hidden="true"></i>22 nav</span></div><p>Icon-only button cần aria-label. Selected phải có dấu hiệu ngoài màu.</p></article>
+ <article class="ds-panel"><h3>Semantic mapping</h3><p><strong>Bookmark</strong> chỉ dành cho Lưu/Dấu Trang. <strong>Archive</strong> chỉ Tủ Riêng; <strong>Book-open</strong> cho Thần Chú. Không dùng chung một icon cho hai tác vụ không cùng nghĩa.</p></article>
+ </div></section>
+
  <section id="navigation" class="ds-section">
-  <div class="ds-section-head"><div><div class="ds-num">03 / NAVIGATION</div><h2>Điều hướng</h2></div><div class="ds-muted">Selected pill · 48px touch target</div></div>
-  <div class="ds-grid">
-   <div class="ds-panel"><h3>Top / utility</h3><div class="ds-navsample" role="group" aria-label="Mẫu tương tác top navigation">
-    <button type="button" aria-current="page" data-navspec>⌕<span class="ds-muted"> Tìm kiếm</span></button>
-    <button type="button" data-navspec>✎ <span class="ds-muted">Nhặt ý</span></button>
-    <button type="button" data-navspec>⚙ <span class="ds-muted">Cài đặt</span></button>
-   </div><p class="ds-muted">Bấm để thử selected. Specimen không điều hướng app.</p></div>
-   <div class="ds-panel"><h3>Bottom tab</h3><div class="ds-navsample" role="group" aria-label="Mẫu tương tác bottom navigation">
-    <button type="button" aria-current="page" data-navspec>⌂ Gương</button><button type="button" data-navspec>▣ Môn học</button><button type="button" data-navspec>❖ Thần Chú</button><button type="button" data-navspec>▤ Tủ Riêng</button>
-   </div><p class="ds-muted">Thiết kế icon thật cần kiểm tra trong app, không suy từ glyph ở specimen.</p></div>
-  </div>
+ <div class="ds-section-head"><div><div class="ds-num">04 / NAVIGATION</div><h2>Navigation components</h2></div><div class="ds-muted">Top utility · 4 tabs · Back / subpage</div></div>
+ <div class="ds-grid">
+ <div class="ds-panel"><h3>Global utility</h3><div class="ds-utility" role="group" aria-label="Mẫu utility navigation"><button type="button" data-navspec aria-current="page" aria-label="Tìm kiếm"><i data-lucide="search" aria-hidden="true"></i></button><button type="button" data-navspec aria-label="Nhặt ý"><i data-lucide="feather" aria-hidden="true"></i></button><button type="button" data-navspec aria-label="Cài đặt"><i data-lucide="settings-2" aria-hidden="true"></i></button></div><p class="ds-muted">22px, target 48px, selected màu cát. Click thử selected.</p></div>
+ <div class="ds-panel"><h3>Nested / Back</h3><div class="ds-nested-nav"><button type="button" class="ds-back" data-demo-back><i data-lucide="arrow-left" aria-hidden="true"></i>Quay lại</button><a class="ds-link" href="#inventory">Xem tất cả <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div><p class="ds-muted">Back không làm tab mới; link không giả nút primary.</p></div>
+ </div>
+ <div class="ds-panel" style="margin-top:var(--li-space-5)"><h3>Bottom 4-tab navigation</h3><div class="ds-tabs" role="group" aria-label="Mẫu bottom navigation"><button type="button" data-navspec aria-current="page"><span class="ds-tab-icon"><i data-lucide="trees" aria-hidden="true"></i></span>Đại Sảnh</button><button type="button" data-navspec ><span class="ds-tab-icon"><i data-lucide="library-big" aria-hidden="true"></i></span>Tàng Thư</button><button type="button" data-navspec ><span class="ds-tab-icon"><i data-lucide="book-open" aria-hidden="true"></i></span>Thần Chú</button><button type="button" data-navspec ><span class="ds-tab-icon"><i data-lucide="archive" aria-hidden="true"></i></span>Tủ Riêng</button></div><p class="ds-muted">Selected capsule màu cát, nhãn và icon moss; một tab active.</p></div>
  </section>
  <section id="actions" class="ds-section">
-  <div class="ds-section-head"><div><div class="ds-num">04 / ACTIONS</div><h2>Buttons & states</h2></div><div class="ds-muted">Default · Secondary · Disabled · Focus</div></div>
+  <div class="ds-section-head"><div><div class="ds-num">05 / ACTIONS</div><h2>Buttons & states</h2></div><div class="ds-muted">Default · Secondary · Disabled · Focus</div></div>
   <div class="ds-panel"><div class="ds-buttons"><button class="ds-button" type="button" id="action-demo">Đào sâu</button><button class="ds-button secondary" type="button" id="save-demo">Lưu</button><button class="ds-button" type="button" disabled>Đang khóa</button><button class="ds-button secondary" type="button">Nhận focus bằng Tab</button></div><p id="action-result" class="ds-note" role="status">Bấm các button để thử phản hồi, không có dữ liệu được lưu.</p></div>
+
+  <div class="ds-panel" style="margin-top:var(--li-space-5)">
+   <h3>Text-link button · Interactive states</h3>
+   <p class="ds-muted">Hành động phụ trong bài đọc, footer của card hoặc danh sách. Có underline và focus; không dùng outline button cho tất cả link.</p>
+   <div class="ds-links">
+    <button class="ds-link" type="button" data-demo-link>Đọc tiếp <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+    <button class="ds-link muted" type="button" data-demo-link>Nguồn tham khảo <i data-lucide="external-link" aria-hidden="true"></i></button>
+    <button class="ds-link" type="button" disabled>Chưa khả dụng</button>
+    <a class="ds-link" href="#cards">Đến card <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+   </div>
+   <p class="ds-muted">Default · hover · focus-visible · pressed · disabled; target >=44px.</p>
+  </div>
  </section>
  <section id="cards" class="ds-section">
-  <div class="ds-section-head"><div><div class="ds-num">05 / CARDS</div><h2>Minimal Method Tile</h2></div><div class="ds-flag">S116 / S118 · Đã có quyết định 2 cột</div></div>
+  <div class="ds-section-head"><div><div class="ds-num">06 / CARDS</div><h2>Minimal Method Tile</h2></div><div class="ds-flag">S116 / S118 · Đã có quyết định 2 cột</div></div>
   <p class="ds-lead">Đây là variant mày đã chọn: <strong>2 tile / 1 row trên điện thoại</strong>. Tên tiếng Việt đầy đủ, English original còn đọc được, mô tả preview 2 dòng. Chạm card để mở chú giải thật.</p>
   <div class="ds-method-grid" aria-label="Specimen hai tile Thần Chú">
-   <button class="ds-method" type="button" data-annotation="T01 · Triệu Ức Chân Ngôn"><span aria-hidden="true">✦</span><span class="ds-kicker">T01 · KÝ ỨC THUẬT</span><h4>Triệu Ức Chân Ngôn</h4><span class="ds-original">Retrieval Practice / Active Recall</span><span class="ds-purpose">Tự nhớ lại kiến thức trước khi xem đáp án để luyện khả năng truy xuất.</span><span class="ds-end">CHÚ GIẢI →</span></button>
-   <button class="ds-method" type="button" data-annotation="T02 · Thời Ấn Hồi Ức"><span aria-hidden="true">✦</span><span class="ds-kicker">T02 · KÝ ỨC THUẬT</span><h4>Thời Ấn Hồi Ức</h4><span class="ds-original">Spaced Repetition</span><span class="ds-purpose">Ôn tập theo khoảng cách thay vì dồn tất cả vào một lần học.</span><span class="ds-end">CHÚ GIẢI →</span></button>
+   <button class="ds-method" type="button" data-annotation="T01 · Triệu Ức Chân Ngôn"><i data-lucide="brain-circuit" aria-hidden="true"></i><span class="ds-kicker">T01 · KÝ ỨC THUẬT</span><h4>Triệu Ức Chân Ngôn</h4><span class="ds-original">Retrieval Practice / Active Recall</span><span class="ds-purpose">Tự nhớ lại kiến thức trước khi xem đáp án để luyện khả năng truy xuất.</span><span class="ds-end">CHÚ GIẢI →</span></button>
+   <button class="ds-method" type="button" data-annotation="T02 · Thời Ấn Hồi Ức"><i data-lucide="brain-circuit" aria-hidden="true"></i><span class="ds-kicker">T02 · KÝ ỨC THUẬT</span><h4>Thời Ấn Hồi Ức</h4><span class="ds-original">Spaced Repetition</span><span class="ds-purpose">Ôn tập theo khoảng cách thay vì dồn tất cả vào một lần học.</span><span class="ds-end">CHÚ GIẢI →</span></button>
   </div>
   <div id="card-response" class="ds-note" style="margin-top:var(--li-space-5)" role="status">Bấm card specimen để xem anatomy. Card thật trong app mở trang chú giải.</div>
   <div class="ds-grid" style="margin-top:var(--li-space-5)">
    <div class="ds-panel"><h3>Editorial Panel</h3><p>Đây là surface đọc dài: padding 20–24px, body 16/24, không dùng kiểu compact của Thần Chú cho toàn bộ card.</p><span class="ds-code">.surface / .panel</span></div>
    <div class="ds-panel"><h3>Illustration Card</h3><p>Card có artwork cần luật crop riêng và duyệt asset. Không tự lấy hình draft làm chuẩn cho tất cả môn.</p><span class="ds-code">.destination / scene art</span></div>
   </div>
+
+  <h3 style="margin-top:var(--li-space-8)">Large card · Two ivory levels</h3>
+  <p class="ds-muted">Cùng anatomy, phân tầng bằng nền chứ không thay shape. Level 01 trắng ngà sáng = cream; Level 02 vàng ngà = paper-2. Square corner, shadow cứng, nội dung 16/24.</p>
+  <div class="ds-large-grid">
+   <article class="ds-large light"><div class="meta"><span>01 · LIGHT IVORY</span><i data-lucide="book-open" aria-hidden="true"></i></div><h3>Khám phá một câu hỏi</h3><p>Không phải mọi kết quả khảo sát đều suy rộng được. Hãy đọc nguồn, đối tượng được hỏi và phần chưa được đại diện.</p><div class="foot"><small>Editorial reading · --cream</small><a class="ds-link" href="#live">Đào sâu <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div></article>
+   <article class="ds-large warm"><div class="meta"><span>02 · WARM IVORY</span><i data-lucide="notebook-tabs" aria-hidden="true"></i></div><h3>Một ý tưởng đáng giữ</h3><p>Nền vàng ngà giúp tách nội dung lưu trữ và phần hỗ trợ nhẹ nhàng, không biến mỗi card thành một poster.</p><div class="foot"><small>Secondary surface · --paper-2</small><a class="ds-link" href="#inputs">Ghi ý <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div></article>
+  </div>
+  <h3 style="margin-top:var(--li-space-8)">Subtle chat bubble · Homepage</h3>
+  <p class="ds-muted">Ứng dụng thật: hero dialogue của Lão Lý. Đây là specimen xử lý rất nhẹ: giấy sáng, border mảnh, đuôi nhỏ, không hard shadow hay gradient.</p>
+  <div class="ds-bubble-stage"><div class="ds-home-bubble" role="note"><strong>VÍ DỤ GIẢ ĐỊNH</strong><p>90% phản hồi tích cực — nhưng họ có đại diện cho tất cả người dùng không?</p></div></div>
  </section>
+
  <section id="inputs" class="ds-section">
-  <div class="ds-section-head"><div><div class="ds-num">06 / FORM CONTROLS</div><h2>Input & selection</h2></div><div class="ds-muted">Token styles · accessibility state</div></div>
-  <div class="ds-grid">
-   <div class="ds-panel"><h3>Search / text</h3><div class="ds-field"><label for="ds-query">Tìm pháp danh</label><input id="ds-query" type="search" placeholder="Ví dụ: Retrieval Practice"></div><p id="ds-query-result" role="status" class="ds-muted">Chưa có từ khóa.</p></div>
-   <div class="ds-panel"><h3>Radio group · Check-in</h3><fieldset class="ds-radio-set"><legend>Đã ngủ tương đối đủ?</legend><div class="ds-radio-grid"><label><input type="radio" name="ds-physical" value="yes"><span>Có</span></label><label><input type="radio" name="ds-physical" value="no"><span>Chưa</span></label><label><input type="radio" name="ds-physical" value="unsure"><span>Không rõ</span></label></div></fieldset><p class="ds-muted">Cả 3 trạng thái đều phải bấm được; check-in thật yêu cầu 3 câu hỏi.</p></div>
+  <div class="ds-section-head"><div><div class="ds-num">07 / FORM CONTROLS</div><h2>Inputs, textarea & filters</h2></div><div class="ds-muted">Default / filled / focus / error / disabled / readonly</div></div>
+  <div class="ds-panel"><h3>Text input · State matrix</h3>
+   <div class="ds-form-states" style="margin-top:var(--li-space-4)">
+    <div class="ds-control"><label for="ds-query">Default · live typing</label><input id="ds-query" type="text" placeholder="Nhập một từ khóa" aria-describedby="ds-query-result"><p id="ds-query-result" class="helper" role="status">Chưa có từ khóa.</p></div>
+    <div class="ds-control"><label for="ds-filled">Filled</label><input id="ds-filled" type="text" value="Sampling Bias"><p class="helper">Có nội dung; vẫn sửa được.</p></div>
+    <div class="ds-control"><label for="ds-error">Error / validation</label><input id="ds-error" type="text" value="!" required aria-invalid="true" aria-describedby="ds-error-note"><p id="ds-error-note" class="helper error" role="alert">Nhập ít nhất 3 ký tự để tiếp tục.</p></div>
+    <div class="ds-control"><label for="ds-disabled">Disabled</label><input id="ds-disabled" type="text" disabled value="Không chỉnh sửa được"><p class="helper">Disabled không nhận focus.</p></div>
+    <div class="ds-control"><label for="ds-readonly">Readonly</label><input id="ds-readonly" type="text" readonly value="Bản ghi tham khảo"><p class="helper">Có thể đọc/copy; không sửa.</p></div>
+    <div class="ds-control"><label for="ds-focus">Focus-visible</label><input id="ds-focus" type="text" placeholder="Click hoặc Tab"><p class="helper">Viền focus 3px, đủ nhìn thấy trên nền giấy.</p></div>
+   </div>
+  </div>
+  <div class="ds-grid" style="margin-top:var(--li-space-5)">
+   <div class="ds-panel"><h3>Textarea · Bút Ký</h3>
+    <div class="ds-control"><label for="ds-textarea">Viết lại kết luận</label><textarea id="ds-textarea" maxlength="240" placeholder="Điều gì cần kiểm chứng thêm?" aria-describedby="ds-textarea-counter"></textarea><p id="ds-textarea-counter" class="helper" role="status">0 / 240 ký tự · chưa lưu</p></div>
+    <div class="ds-control" style="margin-top:var(--li-space-4)"><label for="ds-textarea-off">Textarea disabled</label><textarea id="ds-textarea-off" disabled>Không cho sửa trong trạng thái này.</textarea></div>
+   </div>
+   <div class="ds-panel"><h3>Filter chips</h3>
+    <div class="ds-chip-row" role="group" aria-label="Mẫu lọc nhóm">
+     <button type="button" class="ds-chip" data-chip="all" aria-pressed="true"><i data-lucide="list-filter" aria-hidden="true"></i>Tất cả</button>
+     <button type="button" class="ds-chip" data-chip="memory" aria-pressed="false">Ký Ức</button>
+     <button type="button" class="ds-chip" data-chip="logic" aria-pressed="false">Luận Chứng</button>
+     <button type="button" class="ds-chip" data-chip="focus" aria-pressed="false">Tập trung</button>
+     <button type="button" class="ds-chip" disabled>Chưa mở</button>
+    </div>
+    <p id="ds-chip-result" class="ds-muted" role="status">Đang xem: Tất cả · thử chọn nhóm.</p>
+    <p class="ds-muted">App thật dùng bộ lọc ngang tại #method-filters. State gồm default/selected/hover/focus/disabled, có aria-pressed.</p>
+   </div>
+  </div>
+  <div class="ds-grid" style="margin-top:var(--li-space-5)">
+   <div class="ds-panel"><h3>Radio · Check-in</h3><fieldset class="ds-radio-set"><legend>Đã ngủ tương đối đủ?</legend><div class="ds-radio-grid"><label><input type="radio" name="ds-physical" value="yes"><span>Có</span></label><label><input type="radio" name="ds-physical" value="no"><span>Chưa</span></label></div></fieldset><p class="ds-muted">Đúng 2 lựa chọn Có / Chưa trên mỗi câu hỏi trong Check-in thực tế; toàn bộ Check-in vẫn có thể bỏ qua.</p></div>
+   <div class="ds-panel"><h3>Validation contract</h3><p>Label luôn hiện; helper không thế chỗ label. Error có aria-invalid và nội dung giải thích. Readonly khác disabled. Tuyệt đối không báo đã lưu chỉ vì người dùng gõ vào.</p></div>
   </div>
  </section>
  <section id="feedback" class="ds-section">
-  <div class="ds-section-head"><div><div class="ds-num">07 / FEEDBACK</div><h2>Feedback & system states</h2></div><div class="ds-muted">Không hiện thành công giả</div></div>
+  <div class="ds-section-head"><div><div class="ds-num">08 / FEEDBACK</div><h2>Feedback & system states</h2></div><div class="ds-muted">Không hiện thành công giả</div></div>
   <div class="ds-grid"><div class="ds-note" role="status"><strong>Thông tin</strong><p>Trạng thái trung tính: hướng dẫn, lưu ý giới hạn của câu trả lời.</p></div><div class="ds-note error" role="alert"><strong>Lỗi / chưa thể lưu</strong><p>Khi lưu thất bại, cần thông báo rõ — không được viết “đã lưu” trước xác nhận.</p></div></div>
  </section>
  <section id="live" class="ds-section">
-  <div class="ds-section-head"><div><div class="ds-num">08 / ACTUAL RUNTIME</div><h2>Màn hình thật</h2></div><div class="ds-muted">App iframe từ cùng repo · không phải mock</div></div>
+  <div class="ds-section-head"><div><div class="ds-num">09 / ACTUAL RUNTIME</div><h2>Màn hình thật</h2></div><div class="ds-muted">App iframe từ cùng repo · không phải mock</div></div>
   <p>Chọn kích thước để so card Thần Chú thật, search, filter, Lão Lý và detail. Iframe mở đúng <code>index.html?page=guide</code> của phiên bản này, không dùng HTML minh họa card để đánh lừa.</p>
   <div class="ds-device-controls" role="group" aria-label="Thử kích thước màn hình">
    <button type="button" data-width="320">320</button><button type="button" data-width="375">375</button><button type="button" data-width="390" aria-pressed="true">390</button><button type="button" data-width="402">402</button><button type="button" data-width="600">600</button><button type="button" data-width="820">820</button>
@@ -191,8 +247,14 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
   <p class="ds-muted">Muốn kiểm tra bằng iPhone thật: <a href="./index.html?page=guide">Mở trực tiếp trang Thần Chú</a>. Trong preview hẹp, khu vực iframe có thể cuộn ngang để giữ đúng chiều rộng giả lập.</p>
  </section>
  <section id="inventory" class="ds-section">
-  <div class="ds-section-head"><div><div class="ds-num">09 / REVIEW INVENTORY</div><h2>Danh mục component</h2></div><div class="ds-flag">Chưa chốt cả library</div></div>
+  <div class="ds-section-head"><div><div class="ds-num">10 / REVIEW INVENTORY</div><h2>Danh mục component</h2></div><div class="ds-flag">Chưa chốt cả library</div></div>
   <div style="overflow-x:auto"><table class="ds-table"><thead><tr><th>Nhóm</th><th>Runtime selector</th><th>Trạng thái</th></tr></thead><tbody>
+   <tr><td>Functional icon system</td><td><code>Lucide / data-lucide</code></td><td>Sizes 18/20/22/24, consistent stroke and semantic map</td></tr>
+   <tr><td>Text-link action</td><td><code>.ds-link</code> specimen</td><td>Chờ review variants/states</td></tr>
+   <tr><td>Large two-level card</td><td><code>.surface / .panel</code> + cream/paper-2</td><td>Chờ duyệt anatomy, hierarchy</td></tr>
+   <tr><td>Textarea</td><td><code>.notebook / .text-editor</code></td><td>Review input state matrix</td></tr>
+   <tr><td>Filter chips</td><td><code>#method-filters .filter</code></td><td>Review selected/scroll/focus</td></tr>
+   <tr><td>Subtle chat bubble</td><td><code>#page-home .hero-dialogue-bubble</code></td><td>Candidate / chưa chốt G2</td></tr>
    <tr><td>Header / utility</td><td><code>.header .tool-button</code></td><td>Đã implement; active sand pill có quyết định</td></tr>
    <tr><td>Bottom navigation</td><td><code>.mobile-nav .nav-btn</code></td><td>Đã implement; cần real iOS QA</td></tr>
    <tr><td>Actions / CTA</td><td><code>.action / .hero-actions</code></td><td>Đã implement; variants tổng thể chưa chốt</td></tr>
@@ -204,11 +266,13 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
    <tr><td>Lesson cards / source</td><td><code>.l09-* / .source-status</code></td><td>Wave1 live; Wave2/3 không phát hành</td></tr>
   </tbody></table></div>
  </section>
- <footer class="ds-footer">UX-DS-08 · Visual review only · Tokens authored in <code>design-system/tokens.json</code>; app uses generated CSS. PO chốt theo từng component, không tự biến specimen thành G2 approved.</footer>
+ <footer class="ds-footer">UX-DS-09 · Visual review only · Tokens authored in <code>design-system/tokens.json</code>; app uses generated CSS. PO chốt theo từng component, không tự biến specimen thành G2 approved.</footer>
 </main>
 </div>
+<script src="./assets/lucide.min.js"></script>
 <script>
 "use strict";
+if(window.lucide&&typeof window.lucide.createIcons==="function")window.lucide.createIcons();
 document.querySelectorAll("[data-navspec]").forEach(button=>button.addEventListener("click",()=>{
  const group=button.parentElement;
  group.querySelectorAll("[data-navspec]").forEach(item=>item.removeAttribute("aria-current"));
@@ -218,6 +282,40 @@ document.getElementById("action-demo").addEventListener("click",()=>document.get
 document.getElementById("save-demo").addEventListener("click",()=>document.getElementById("action-result").textContent="Lưu — chỉ là specimen. Không có dữ liệu nào được lưu.");
 document.querySelectorAll(".ds-method").forEach(button=>button.addEventListener("click",()=>document.getElementById("card-response").textContent=button.dataset.annotation+": tile gồm icon → mã/nhóm → title → academic original → purpose preview 2 dòng → CTA. Ấn card thật trong iframe bên dưới để mở Chú Giải."));
 document.getElementById("ds-query").addEventListener("input",e=>document.getElementById("ds-query-result").textContent=e.target.value?"Specimen input: "+e.target.value:"Chưa có từ khóa.");
+
+document.querySelectorAll("[data-demo-link],[data-demo-back]").forEach(button=>button.addEventListener("click",()=>{
+ document.getElementById("action-result").textContent="Text link / Back: chỉ là specimen, không điều hướng hay lưu dữ liệu.";
+}));
+const errorField=document.getElementById("ds-error");
+const errorNote=document.getElementById("ds-error-note");
+const validateField=()=>{
+ const invalid=errorField.value.trim().length<3;
+ errorField.setAttribute("aria-invalid",String(invalid));
+ errorNote.classList.toggle("error",invalid);
+ errorNote.textContent=invalid?"Nhập ít nhất 3 ký tự để tiếp tục.":"Nội dung hợp lệ · chưa lưu.";
+};
+errorField.addEventListener("input",validateField);
+validateField();
+document.getElementById("ds-textarea").addEventListener("input",e=>{
+ document.getElementById("ds-textarea-counter").textContent=e.target.value.length+" / 240 ký tự · chưa lưu";
+});
+document.querySelectorAll("[data-chip]").forEach(button=>button.addEventListener("click",()=>{
+ document.querySelectorAll("[data-chip]").forEach(chip=>chip.setAttribute("aria-pressed",String(chip===button)));
+ document.getElementById("ds-chip-result").textContent="Đang xem: "+button.textContent.trim()+" · specimen, không lọc dữ liệu thật.";
+}));
+// Static screenshot-only viewport: isolate the requested board section.
+const requestedSection=new URLSearchParams(location.search).get("capture");
+if(["icons","navigation","actions","cards","inputs"].includes(requestedSection)){
+ const main=document.querySelector(".ds-main");
+ [...main.children].forEach(child=>{if(child.id!==requestedSection)child.hidden=true;});
+ document.querySelector(".ds-sidebar").hidden=true;
+ document.querySelector(".ds-shell").style.gridTemplateColumns="minmax(0,1fr)";
+ main.style.maxWidth="1180px";
+ main.style.margin="0 auto";
+ main.style.padding="var(--li-space-6)";
+ const section=document.getElementById(requestedSection);
+ section.style.marginTop="var(--li-space-0)";
+}
 document.querySelectorAll("[data-width]").forEach(button=>button.addEventListener("click",()=>{
  const w=Number(button.dataset.width);
  document.getElementById("ds-device").style.width=w+"px";

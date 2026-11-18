@@ -514,6 +514,17 @@ assert 'window.navigate(lesson.route)' in cross
 assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
 
+# UX-DS-09: mobile Tủ Riêng uses the same Archive icon as Home, never Bookmark.
+mobile_nav=page_html.split('<nav class="mobile-nav"',1)[1].split('</nav>',1)[0]
+library_tab=re.search(r'<button[^>]+data-page="library"[^>]*>\s*<i data-lucide="([^"]+)"',mobile_nav)
+assert library_tab and library_tab.group(1)=="archive", "Tủ Riêng nav icon must be archive (bookmark is Save)"
+review=(site/"component-library-review.html").read_text(encoding="utf-8")
+assert '<section id="icons"' in review and '<section id="inputs"' in review
+assert '<script src="./assets/lucide.min.js"></script>' in review
+assert 'ds-large light' in review and 'ds-large warm' in review
+assert all(x in review for x in ('ds-textarea','ds-chip-result','ds-error','ds-disabled','ds-readonly'))
+assert all(x in review for x in ('ds-home-bubble','ds-tabs','ds-utility','ds-back','ds-link'))
+
 # S159: mirror name remains consistent while purpose-specific CTAs still route.
 assert 'if(kind)kind.textContent="Gương Vạn Vấn";' in page_html
 assert 'Gương Vạn Vấn · Vấn đề' not in page_html

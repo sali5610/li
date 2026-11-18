@@ -131,6 +131,11 @@ iframe.addEventListener("load",()=>{
    check("All enabled text/search/notebook surfaces are pure white",fields.every(el=>w.getComputedStyle(el).backgroundColor==="rgb(255, 255, 255)"),fields.map(el=>w.getComputedStyle(el).backgroundColor).join(" / "));
    check("Disabled input remains visually distinct",w.getComputedStyle(d.getElementById("ds-disabled")).backgroundColor!=="rgb(255, 255, 255)");
    check("Illustration frame has no paper-colored backing",w.getComputedStyle(d.querySelector(".ds-image-character .ds-image-frame.figure")).backgroundColor==="rgba(0, 0, 0, 0)");
+   const mirrorImage=d.querySelector(".ds12-horizontal-media.figure img"),mirrorFrame=d.querySelector(".ds12-horizontal-media.figure");
+   check("Illustration uses existing Lão Lý in the mirror asset, not the icon avatar",
+      mirrorImage?.getAttribute("src")==="./assets/laoly-mirror-suy-nghi.png");
+   check("Illustration integrates into card without dividing stroke or background plate",
+      !!mirrorFrame&&w.getComputedStyle(mirrorFrame).borderRightWidth==="0px"&&w.getComputedStyle(mirrorFrame).backgroundColor==="rgba(0, 0, 0, 0)");
    const horizontals=[...d.querySelectorAll("[data-ds12-horizontal-card]")];
    check("Four distinct horizontal card types exist",horizontals.length===4&&
       !!horizontals[0].classList.contains("ds12-no-media")&&
@@ -150,18 +155,46 @@ iframe.addEventListener("load",()=>{
       [...d.querySelectorAll(".ds12-tag-row .ds12-tag")].every(x=>x.tagName==="SPAN"&&!x.hasAttribute("aria-pressed")));
    d.getElementById("ds11-month-today").click();
    const dayToday=calendar.querySelector('.ds11-date[data-today="true"]');
-   check("Calendar marks real today and selects it on reset",
+   check("Calendar marks real today with a dot and selects it on reset, no nested strokes",
       !!dayToday&&dayToday.dataset.day===String(today.getDate())&&dayToday.getAttribute("aria-pressed")==="true"&&
-      w.getComputedStyle(dayToday,"::after").borderTopWidth==="2px");
-   check("Chart highlights today separately from selected state",
-      !!chart.querySelector('.ds11-bar-cell[data-today="true"]')&&
-      chart.querySelector('.ds11-bar-cell[data-today="true"]').getAttribute("aria-pressed")==="true");
+      w.getComputedStyle(dayToday,"::after").width==="6px"&&
+      w.getComputedStyle(dayToday,"::after").borderTopWidth==="0px"&&
+      w.getComputedStyle(dayToday).outlineStyle==="none");
+   const todayBar=chart.querySelector('.ds11-bar-cell[data-today="true"]');
+   check("Chart today dot + one selected border, no second nested border",
+      !!todayBar&&todayBar.getAttribute("aria-pressed")==="true"&&
+      w.getComputedStyle(todayBar,"::after").width==="6px"&&
+      w.getComputedStyle(todayBar,"::after").borderTopWidth==="0px"&&
+      w.getComputedStyle(todayBar).borderTopWidth==="2px");
+   calendar.querySelector('.ds11-date[data-day="2"]').click();
+   check("Selecting calendar day never highlights surrounding week tiles",
+      calendar.querySelectorAll('.ds11-date[data-selected="true"]').length===1&&
+      !calendar.querySelector('[data-window="true"]')&&
+      w.getComputedStyle(calendar.querySelector('.ds11-date[data-day="3"]')).boxShadow==="none"&&
+      w.getComputedStyle(calendar.querySelector('.ds11-date[data-day="2"]')).boxShadow!=="none");
+   check("Today marker remains on actual today when a different day is selected",
+      calendar.querySelector('.ds11-date[data-today="true"]')?.dataset.day===String(today.getDate()));
    d.getElementById("ds11-month-next").click();
    check("Travel to another month hides today marker",!calendar.querySelector('.ds11-date[data-today="true"]'));
    d.getElementById("ds11-week-today").click();
    check("Chart's Today action restores real today and matching calendar",
       !!calendar.querySelector('.ds11-date[data-today="true"][data-selected="true"]')&&
       !!chart.querySelector('.ds11-bar-cell[data-today="true"]'));
+
+   const focusField=d.getElementById("ds-focus");
+   focusField.focus();
+   check("Text input focuses via 3px OWN border with no external outline",
+      w.getComputedStyle(focusField).borderTopWidth==="3px"&&w.getComputedStyle(focusField).outlineStyle==="none");
+   const noteField=d.getElementById("ds-textarea");
+   noteField.focus();
+   check("Textarea focuses via 3px OWN border with no external outline",
+      w.getComputedStyle(noteField).borderTopWidth==="3px"&&w.getComputedStyle(noteField).outlineStyle==="none");
+   const searchField=d.getElementById("ds11-icon-input");
+   searchField.focus();
+   check("Search field focuses via 3px wrapper border with no outside ring",
+      w.getComputedStyle(d.querySelector(".ds11-input-wrap")).borderTopWidth==="3px"&&
+      w.getComputedStyle(d.querySelector(".ds11-input-wrap")).outlineStyle==="none");
+   searchField.blur();
 
    if(w.innerWidth<=700){
      const tracks=element=>w.getComputedStyle(element).gridTemplateColumns.trim().split(/\s+/).length;

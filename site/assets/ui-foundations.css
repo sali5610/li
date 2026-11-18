@@ -748,3 +748,17 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   outline-offset:2px;
 }
 .page input[type="checkbox"]:disabled{background:var(--paper-2);opacity:.45;cursor:not-allowed}
+
+
+/* UX-DS-13 · Consistent focus for real app editable fields.
+   Increase the stroke of the EXISTING input edge: do not paint an outside
+   ring. This is distinct from keyboard affordances on non-text controls. */
+.page :is(input:not([type]),input[type="text"],input[type="search"],input[type="email"],input[type="url"],input[type="tel"],input[type="password"],input[type="number"],textarea):focus:not(:disabled){
+ box-sizing:border-box;
+ border:3px solid var(--li-color-input-focus-ring)!important;
+ outline:var(--li-space-0) solid var(--li-color-input-focus-ring)!important;
+ outline-offset:var(--li-space-0)!important;
+}
+.page :is(input:not([type]),input[type="text"],input[type="search"],input[type="email"],input[type="url"],input[type="tel"],input[type="password"],input[type="number"],textarea)[aria-invalid="true"]:focus:not(:disabled){
+ border-color:var(--li-color-danger-fill)!important;
+}

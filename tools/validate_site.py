@@ -322,13 +322,13 @@ assert '<section id="page-noteDetail"' in page_html
 assert '<button id="li-note-save"' in page_html
 assert '<button id="li-note-delete"' in page_html
 assert '<div id="li-note-history-list"' in page_html
-assert '<script src="./assets/library-note-editor.js?v=1"></script>' in page_html
+assert '<script src="./assets/library-note-editor.js?v=2"></script>' in page_html
 hub=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
-assert 'library-hub.css?v=2' in page_html
+assert 'library-hub.css?v=3' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_note_versions.cjs")],check=True,cwd=site.parent)
 
 # S120: all 13 Thần Chú methods share this same Guide Detail template.
@@ -428,7 +428,7 @@ assert 'data-demo="Chưa lưu được ý này' not in html
 assert 'id="save-capture-note"' in html
 assert html.count('id="li-checkin-recording-disclosure"')==1
 assert html.index('li-diary-privacy')>html.index('li-diary-day-status')
-assert '<script src="./assets/library-hub.js?v=2"></script>' in html
+assert '<script src="./assets/library-hub.js?v=3"></script>' in html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_hub_v2.cjs")],check=True,cwd=site.parent)
 
 # UX-IA-05: lesson modules only own lesson/catalog DOM, never Tủ Riêng overview.
@@ -439,7 +439,7 @@ for lesson in ("l09","l03","l15"):
     source=module.read_text(encoding="utf-8")
     assert "library.prepend(" not in source
     assert 'document.querySelector("#page-library .stack-sm")' not in source
-    assert f'<script src="./assets/lesson-{lesson}-hifi-markup.js?v=20261118-ia05"></script>' in page_html
+    assert f'<script src="./assets/lesson-{lesson}-hifi-markup.js?v=20261118-ia06"></script>' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_wave1_mount_ia.cjs")],check=True,cwd=site.parent)
 
 # S120: mirror-variant illustration stored locally and not silently downgraded

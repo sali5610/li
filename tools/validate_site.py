@@ -711,7 +711,7 @@ assert 'No data' not in v3js or 'DEMO' in v3js
 # visuals are not G2 signoff, and demo charts never touch private diary.
 ds12=(site/"assets"/"component-review-v4.css").read_text(encoding="utf-8")
 assert 'component-review-v4.css?v=20261118-ds20-coverage' in v3
-assert 'component-review-v2.css?v=20261118-ds20-coverage' in v3
+assert 'component-review-v2.css?v=20261119-ds24-no-stroke' in v3
 assert 'component-review-v3.js?v=20261118-ds13-week-fix' in v3
 assert '--porcelain: #FEFDFC;' in (site/"assets"/"design-tokens.css").read_text(encoding="utf-8")
 assert all(x in foundation for x in ("/* UX-DS-12", ".page input[type=\"checkbox\"]", "background-color:var(--porcelain)!important"))
@@ -778,6 +778,14 @@ assert all('src="./assets/'+p+'"' in review10 for p in
 review10css=(site/"assets"/"component-review-v2.css").read_text(encoding="utf-8")
 assert 'background-size:100% 16px,100% var(--li-review-notebook-line)!important;' in review10css
 assert '.ds-home-bubble.green' in review10css and '.ds-image-split' in review10css
+# UX-DS-24: stroke-free forest bubble body/tail; light-paper stroke and shadows preserved.
+assert '.ds-home-bubble.green{\n  background:var(--li-review-home-forest-bubble);\n  border:0;' in review10css
+assert '.ds-home-bubble.green::before{\n  background:var(--li-color-home-dialogue-tail);\n  border:0;' in review10css
+assert '.ds-home-bubble{position:relative;' in review10css and 'border:1px solid var(--rule)' in review10css
+assert '/* UX-DS-24: forest-green speech bubble is borderless' in foundation
+assert '#page-home .hero-dialogue-bubble { border: 0; padding:' in foundation
+assert '#page-home .hero-dialogue-bubble::before { border: 0; }' in foundation
+assert './assets/ui-foundations.css?v=20261119-ds24-no-stroke' in page_html
 
 # UX-DS-09: mobile Tủ Riêng uses the same Archive icon as Home, never Bookmark.
 mobile_nav=page_html.split('<nav class="mobile-nav"',1)[1].split('</nav>',1)[0]

@@ -371,7 +371,7 @@ for name,expected_size,expected_sha256 in [
     ("home-li-ipad-20261119.jpg",7906192,"c86aef27f02511c6d5b5cf21e38e27c7459a834a56f69c58ecbbddec1597acbd")
 ]:
     art=(site/"assets"/name).read_bytes()
-    assert len(art)==expected_size and art.startswith(b"\\xff\\xd8"),name
+    assert len(art)==expected_size and art.startswith(bytes((0xFF,0xD8))),name
     assert hashlib.sha256(art).hexdigest()==expected_sha256,(name,"source image changed")
 device_css=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'background-image:url("./home-li-iphone-20261119.jpg")!important;' in device_css

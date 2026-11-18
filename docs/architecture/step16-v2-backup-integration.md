@@ -63,6 +63,44 @@ The production site is still `main`; this code is only on the unmerged Draft PR.
 - **5/5 two-origin with actual Settings UI**: A's real Export creates v2; browser forbids direct storage access from B; B's real Import via fake File restores lesson, consent, diary and T02 due records; A unchanged; B records survive target iframe reload. *This is not physical cross-device testing; no real user notes or data leave the runner.*
 - All other 4 workflows on that commit also **completed SUCCESS**: companion source validator, Design System contract, Tàng Thư IA, rendered responsive Chrome smoke. [PR #111](https://github.com/sali5610/li/pull/111) remains Draft and not merged.
 
-**Important remaining risks:** physical iPhone/iPad Safari and Files import, downloaded file durability, actual low-storage write failure and browser eviction, schema1 false expectations for omitted data, accidental plaintext file disclosure, other tabs mutating data while a restore is applied (a preview fingerprint is not an atomic cross-tab transaction), multi-year migration path and account synchronization. The runtime has no cloud auth or remote copy. Opt-in diary's current default-on behavior still requires Human PO privacy review; not changed in this PR.
+**Important remaining risks:** physical iPhone/iPad Safari and Files import, downloaded file durability, actual low-storage write failure and browser eviction, schema1 false expectations for omitted data, accidental plaintext file disclosure, other tabs mutating data while a restore is applied (a preview fingerprint is not an atomic cross-tab transaction), multi-year migration path and account synchronization. The runtime has no cloud auth or remote copy. Diary default-on for fresh installs was explicitly accepted in the existing Human PO-led UX-IA-04 release (Notion Handoff PR #32); previous manually paused journals remain off. This PR does not change that approved behavior. Privacy of downloaded plaintext journal data still requires the G3 backup policy decision.
 
 **Source freshness:** PR branched from `main` `6cccb478...`, with current `main` already advanced during research; re-review/reconcile the latest UI code before merge. G3 architecture and persistence privacy decision **NOT APPROVED**, G2 separate. +0 VND incremental.
+
+
+## S-G3-16G · Cross-document race prevention + diary decision audit (2026-11-19)
+
+**No deployment; PR #111 is still Draft and behind current main UI changes.**
+
+### Risk discovered in the v2 import sequence
+
+The earlier candidate compared the preview fingerprint before additional asynchronous SHA-256 work. A different same-origin browser document could write to localStorage in the async gap after preview validation and before the import begins writing. An old fingerprint check alone did **not** guarantee the state was unchanged at commit time (time-of-check to time-of-use / TOCTOU).
+
+**Mitigation introduced on this candidate branch:**
+1. `navigator.locks.request("li:backup:v2:import", {mode:"exclusive", ifAvailable:true})` means two **cooperating v2 importers** on the same browser origin cannot restore concurrently. When already held, the second importer fails with actionable `busy` messaging rather than waiting and silently overwriting. If Web Locks is unavailable, it refuses to import with an explicit compatibility message; it does not claim fallback safety.
+2. Re-parse/validate the payload, capture all current registered keys, recompute their digest **inside the lock**, compare to the preview fingerprint and then synchronously read the exact current records again before starting the write loop. This rejects another document's update while WebCrypto was running, rather than relying on an earlier snapshot.
+3. Existing per-write readback and best-effort rollback remain. The visible `changed` state instructs the user to reselect/preview, not claim successful restore.
+
+**Important non-guarantee:** Web Locks is an advisory coordination primitive for code requesting the same lock. Ordinary lesson, diary, bookmark, and browser extensions that directly write localStorage **do not participate** in this lock. Individual localStorage writes are not a multi-key ACID transaction and cannot guarantee complete isolation against simultaneous non-cooperating tabs or browser crashes. The final synchronous preflight only **narrows**, never eliminates, that residual race. Long-term cross-device/DB state consistency requires a transactional persistence strategy under G3/Step18; do not mark "multi-tab fully solved".
+
+### Real browser evidence and harness correction
+
+At code commit `bb8e956d5285618e6736704479e0a414af0f5b20`, [GitHub Actions #44416837387](https://github.com/sali5610/li/actions/runs/44416837387) **SUCCESS** with actual Linux Chrome 157 and synthetic localStorage. The test runner was replaced with a **real-clock DevTools Protocol driver** (`tools/step16_cdp_page.cjs`, no npm package dependency), which reads only `#result.textContent`; previous `--dump-dom --virtual-time-budget` caused premature PENDING and a false timeout when Web Locks scheduled asynchronous work. The first CDP run verified all browser assertions but failed while deleting an ephemeral Chrome profile directory; the runner cleanup race was fixed and all 4 suites reran successfully.
+
+| Chrome runtime suite | Verified |
+| --- | ---: |
+| Actual Settings v2 Export / Import + legacy merge + preview + corrupt file | 5/5 |
+| Adversarial records, SHA, stale preview and simulated rollback/quota faults | 11/11 |
+| Actual Settings File transfer between two different localhost web origins | 5/5 |
+| **New:** two same-origin browsing contexts (iframe + parent), Web Locks contention, release, second-context change, late digest write, diary disabled | **5/5** |
+| **Combined** | **26/26** |
+
+New same-origin suite `tools/step16_v2_lock_fixture.html` confirms: independent document can hold the lock; import refuses with zero writes; import succeeds after release; unrelated second-document write invalidates preview; changed state during asynchronous digest is rejected; explicit `li.personal.daily.enabled.v1="false"` stays off. A same-origin iframe is **not literally two iPad Safari tabs**. Source static support references: [MDN Web Locks](https://developer.mozilla.org/en-US/docs/Web/API/Web_Locks_API) and [MDN browser compatibility source](https://github.com/mdn/browser-compat-data/blob/main/api/Navigator.json) (Safari and iOS support from 15.4 per published compatibility metadata; **not** on-device validation).
+
+### Privacy decision reconciliation — Human PO controls still respected
+
+The authoritative [li. Latest Handoff](https://app.notion.com/p/4196cf6db72a81f7b000f75783f210b5) records that **fresh-install local daily diary defaults ON** as an approved product behavior of the merged UX-IA-04/PR #32 iteration; previously paused diaries are explicitly preserved OFF, and user manual OFF is persisted. Older UX-DASH-01 wording "opt-in default OFF" is superseded **for the default-on toggle decision only**. The branch did not change `site/assets/personal-diary.js`, consent state, or sharing model.
+
+**Remaining privacy decision at G3** is about export policy, not silently changing the previously approved toggle: a full plaintext v2 file intentionally includes diary and enablement state, so the UI must warn that downloaded files contain private notes and are not encrypted. No server collection, analytics, cloud account or paid provider was introduced. A real Safari Files picker, private-tab storage behavior and data erasure/export UX remain unverified.
+
+**Release blockers:** PR behind latest main source (several concurrent iPad fixes; currently mergeability unknown/conflicted), real physical Safari and PWA, all app writers not taking lock, account ownership and cloud sync policy, source compatibility regression, final G3 gate. No merge/deploy/data removal; 0 VND incremental.

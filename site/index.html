@@ -368,7 +368,7 @@ function renderMirrorItem(){
  action.dataset.page=isHook?item.lessonRoute:"research";
  action.setAttribute("aria-label",isHook?"Khám phá vì sao · Mở bài học liên quan":"Đào sâu · Mở Khảo Chứng");
  document.getElementById("mirror-primary-label").textContent=isHook?"Khám phá vì sao":"Đào sâu";
- refreshQuestionBookmark();
+ if(typeof refreshQuestionBookmark==="function")refreshQuestionBookmark();
 }
 let selectedCaseAnswer=null;
 function syncResearch(){const s=scenarios[qIndex].type==="hook"?scenarios.find(item=>item.type!=="hook"):scenarios[qIndex];const title=document.querySelector("#page-research .surface.tinted h2");if(title)title.textContent=s.question;document.querySelectorAll('#page-research [data-branch]').forEach((el,i)=>{if(s.branches[i]){el.dataset.branch=s.branches[i];el.textContent=String(i+1).padStart(2,"0")+" · "+s.branches[i]}});document.getElementById("research-observed").textContent=s.observed;document.getElementById("research-unknown").textContent=s.unknown;document.getElementById("branch-feedback").textContent="Chọn một nhánh để đặt câu hỏi kiểm chứng.";}

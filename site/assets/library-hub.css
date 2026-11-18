@@ -505,10 +505,10 @@ body .laoly-support.li-companion-draggable.is-dragging #laoly-fab{
 
 
 /* UX-HOME-04 · User-supplied scene variants. Keep the original desktop asset.
-   Tablet widths get the landscape scene; larger touch iPads up to 1600px do too (including the 1376px iPad Pro 13).
+   Tablet widths get the landscape scene; landscape viewports through 1400px do too (including 1376px iPad Pro 13).
    Never stretch the art; retain existing full-viewport Home/Nav behavior. */
 @media (min-width:601px) and (max-width:1139px),
-       (min-width:1140px) and (max-width:1600px) and (any-pointer:coarse){
+       (min-width:1140px) and (max-width:1400px) and (orientation:landscape){
  .app.home-focus #page-home .hero::before{
   background-image:url("./home-li-ipad-20261119.jpg")!important;
   background-size:cover!important;
@@ -571,10 +571,9 @@ body:has(.app.home-focus){
 
 /* UX-DS-27 · True tablet landscape: three compositional zones around the
    approved iPad mirror artwork. Portrait retains the previous central column.
-   1024/1133 are responsive CSS viewports; 1194/1376 touch iPads also match.
+   1024/1133/1194/1376 CSS px all match regardless of pointer/trackpad.
    Do not infer iPad from user-agent (iPadOS Safari can report Macintosh). */
-@media (min-width: 1000px) and (max-width: 1139px) and (orientation: landscape),
-       (min-width: 1140px) and (max-width: 1600px) and (orientation: landscape) and (any-pointer: coarse) {
+@media (min-width: 1000px) and (max-width: 1400px) and (orientation: landscape) {
  .app.home-focus #page-home .hero {
    --li-home-landscape-side:clamp(24px,3vw,48px);
    --li-home-landscape-panel:clamp(240px,26vw,348px);
@@ -649,6 +648,6 @@ body:has(.app.home-focus){
    grid-template-columns:minmax(0,1.45fr) minmax(0,.85fr)!important;
  }
 }
-@media (min-width: 1140px) and (max-width: 1600px) and (orientation: landscape) and (any-pointer: coarse) {
+@media (min-width: 1140px) and (max-width: 1400px) and (orientation: landscape) {
  #page-guide #method-cards { grid-template-columns:repeat(3,minmax(0,1fr))!important; }
 }

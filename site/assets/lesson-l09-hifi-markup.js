@@ -9,11 +9,11 @@ const page=String.raw`
 <section id="page-lessonL09" class="page" tabindex="-1" aria-labelledby="l09-title" data-lesson-id="L09-1-2" data-companion-manifest="./lessons/companion/L09-1-2.json">
 <div class="section-shell">
  <div class="kicker">TOÁN HỌC / DATA SCIENCE · DATA & STATISTICAL FOUNDATIONS · L09-1-2</div>
- <h1 class="display-title" id="l09-title">Sampling Bias · Sai lệch chọn mẫu</h1>
+ <div class="library-heading-with-utility library-lesson-heading"><h1 class="display-title" id="l09-title">Sampling Bias · Sai lệch chọn mẫu</h1><div class="library-icon-utility"><button class="library-icon-action" type="button" data-li-bookmark-kind="lesson" data-li-bookmark-id="L09-1-2" aria-label="Lưu bài L09-1-2" title="Lưu bài L09-1-2" aria-pressed="false"><i data-lucide="bookmark" aria-hidden="true"></i></button></div></div>
  <p class="intro" id="l09-intro">Một ngàn người trả lời. Có chắc kết luận nói được về tất cả mọi người?</p>
  <div class="l09-hero-tools">
   <button type="button" class="action alt" data-page="catalog" id="l09-back">Về Tàng Thư</button>
-  <button class="library-text-link" type="button" data-li-bookmark-kind="lesson" data-li-bookmark-id="L09-1-2" aria-pressed="false">Lưu bài</button>
+ 
   <span class="status-chip" id="l09-status">Wave 1A · Bài đã duyệt nội dung, đang kiểm thử</span>
   <div class="l09-lang-switch" role="group" aria-label="Ngôn ngữ nội dung / Lesson language">
    <button type="button" class="action alt" id="l09-vi" aria-pressed="true">VI</button>

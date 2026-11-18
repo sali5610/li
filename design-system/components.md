@@ -104,3 +104,14 @@ The v0.3 app **no longer has inline `<style>` tags**; historical geometry/illust
 - Enlarged the actual image in the **horizontal illustration card only** (class `ds12-horizontal-illustration`). The existing Lão Lý trong gương PNG remains unchanged; its painted image element uses the full rail with **0px inset** and `object-fit:contain`; no decorative backplate or divider.
 - Illustration media rail: **164→208px desktop**, **124→168px phone ≤700px**, **104→136px narrow ≤360px**. Image max-height is separately controlled and overall card accommodates image height. Photo, Lucide icon, and text-only horizontal variants retain their established widths; Primary / Secondary / Dark surface selection remains unchanged.
 - Chrome QA tests the computed *image element width*, zero padding, fit without text overlap, and unchanged photo/icon columns at 320/390/820px. Source validator guards the three responsive dimensions and image-only class. This is a review candidate, not G2 approval or physical Safari certification. No generated art or private data changes.
+
+## UX-DS-25 · iPad component scale and landscape variant (2026-11-19)
+
+**Decision:** iPad must not reuse the exact iPhone component scale. Canonical `design-system/tokens.json → generated CSS` now provides semantic density for iPad portrait and landscape; do not hard-code a second unrelated scale in a screen stylesheet.
+
+- **Portrait (744–1139px tablet / touch iPad):** 18/28 body, 16/24 support, 14/20 metadata, 40/48 headline; 32px page gutter, 28px card inset, ≥56px control targets, 24px control icon.
+- **Landscape (1000–1366px, touch-qualified above 1139px):** 18/28 body, 44/52 headline, 32/40 mid title; 40px gutter, 32px card inset, 40px section gap, two-panel editorial reading with 0-minimum tracks and scrollable Guide filters. Keep bottom/selected nav and actual content semantics.
+- **Home landscape:** reuse existing user-supplied iPad scene; mirror question centered in tree opening, dialogue to the left, CTA pair aligned below; preserve transparent top nav and exactly one `100dvh` non-scrolling Home. Do not stretch the portrait artwork.
+- **DO:** resize actual text, panel inset, action targets and icons from shared device tokens; preview 744×1133, 820×1180, 1024×1366, 1133×744, 1194×834, 1366×1024. **DON'T:** globally scale the entire DOM, break 2-up phone Thần Chú, or mistake a CSS-width iframe for physical Safari iPad acceptance.
+
+**Verification boundary:** Source-level fixture and GitHub rendered CI where available; real iPad Safari portrait↔landscape, touch/pointer switching, split-screen widths, 200% text zoom, keyboard and VoiceOver remain open. G2 visual identity remains pending.

@@ -81,3 +81,11 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 
 ## 4. Definition of Done
 **Design docs complete ≠ components extracted ≠ CI green ≠ visual QA pass ≠ Human PO G2 approved.** Mark only the level that has supporting evidence. No additional paid service is permitted without explicit approval.
+
+## UX-DS-25 · iPad portrait / landscape regression matrix (2026-11-19)
+- [ ] Visual: 744×1133, 820×1180, 1024×1366 portrait and 1133×744, 1194×834, 1366×1024 landscape. Verify body 18/28, support 16/24, 56px control target, 24px icons, 28/32px card pad.
+- [ ] Home landscape keeps the iPad background, mirror text fully within opening, dialogue separate from question, Lưu → Đào sâu aligned, header transparent, 100dvh scroll locked.
+- [ ] Research/Catalog/Library/Guide/Settings/L03/L09/L15: no horizontal overflow or clipped VI/EN; note source/status/lesson drilldown, scroll restoration, modal + Lão Lý controls.
+- [ ] Rotate live Safari while a nested lesson, filter, or modal is active; preserve content, state, focus, keyboard and accessible names, no reload or data loss.
+- [x] Source contract: JSON device scales generate CSS; Component Library viewport presets include both orientations and change iframe width AND height.
+- [ ] Real iPad Safari/PWA with portrait/landscape and split view; Headless CI or iframe alone cannot certify it. PO G2 still OPEN.

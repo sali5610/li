@@ -844,3 +844,89 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
     top:calc(var(--li-home-topnav-height) + var(--li-space-3))!important;
   }
 }
+
+/* UX-DS-25 · iPad is a component-density mode, not a stretched iPhone.
+   Width 744–1139 is tablet layout; large touch iPads reach 1366 CSS px.
+   Landscape adds composition changes below. Desktop 1200+ with a mouse
+   retains its existing desktop scale. Only JSON-generated tokens supply sizes. */
+@media (min-width: 744px) and (max-width: 1139px),
+       (min-width: 1140px) and (max-width: 1366px) and (any-pointer: coarse) {
+ :root {
+  --li-type-headline: var(--li-device-ipad-portrait-type-headline);
+  --li-leading-headline: var(--li-device-ipad-portrait-leading-headline);
+  --li-type-title-md: var(--li-device-ipad-portrait-type-title-md);
+  --li-leading-title-md: var(--li-device-ipad-portrait-leading-title-md);
+  --li-type-title-sm: var(--li-device-ipad-portrait-type-title-sm);
+  --li-leading-title-sm: var(--li-device-ipad-portrait-leading-title-sm);
+  --li-type-body: var(--li-device-ipad-portrait-type-body);
+  --li-leading-body: var(--li-device-ipad-portrait-leading-body);
+  --li-type-support: var(--li-device-ipad-portrait-type-support);
+  --li-leading-support: var(--li-device-ipad-portrait-leading-support);
+  --li-type-caption: var(--li-device-ipad-portrait-type-caption);
+  --li-leading-caption: var(--li-device-ipad-portrait-leading-caption);
+  --li-page-gutter: var(--li-device-ipad-portrait-page-gutter);
+  --li-card-pad: var(--li-device-ipad-portrait-card-pad);
+  --li-stack-gap: var(--li-device-ipad-portrait-stack-gap);
+  --li-section-gap: var(--li-device-ipad-portrait-section-gap);
+  --li-current-control-min: var(--li-device-ipad-portrait-control-min);
+  --li-current-icon-size: var(--li-device-ipad-portrait-icon-size);
+ }
+ .page .section-shell { padding-block:var(--li-section-gap) var(--li-space-16); }
+ .page .section-shell > *, .page .editorial-grid > * { min-width:0; }
+ .page :is(.surface,.panel) { padding:var(--li-card-pad); }
+ #page-guide .editorial-grid aside.surface { padding:var(--li-card-pad)!important; }
+ .page :is(.action,.flat-button,.filter,.secondary,.primary,.utility-back),
+ .header .tool-button {
+   min-height:var(--li-current-control-min)!important;
+ }
+ .header .tool-button { min-width:var(--li-current-control-min)!important; }
+ .page :is(input[type="text"],input[type="search"],input[type="email"],textarea,select) {
+   font-size:var(--li-type-body);
+   line-height:var(--li-leading-body);
+   min-height:var(--li-current-control-min);
+ }
+ .header .tool-button svg.lucide,
+ .page :is(.action,.primary,.secondary,.utility-back) svg.lucide {
+   width:var(--li-current-icon-size);
+   height:var(--li-current-icon-size);
+ }
+ #page-home .hero-actions .primary,
+ #page-home .hero-actions .secondary {
+   min-height:var(--li-current-control-min)!important;
+ }
+}
+@media (min-width: 1000px) and (max-width: 1139px) and (orientation: landscape),
+       (min-width: 1140px) and (max-width: 1366px) and (orientation: landscape) and (any-pointer: coarse) {
+ :root {
+  --li-type-headline: var(--li-device-ipad-landscape-type-headline);
+  --li-leading-headline: var(--li-device-ipad-landscape-leading-headline);
+  --li-type-title-md: var(--li-device-ipad-landscape-type-title-md);
+  --li-leading-title-md: var(--li-device-ipad-landscape-leading-title-md);
+  --li-type-title-sm: var(--li-device-ipad-landscape-type-title-sm);
+  --li-leading-title-sm: var(--li-device-ipad-landscape-leading-title-sm);
+  --li-type-body: var(--li-device-ipad-landscape-type-body);
+  --li-leading-body: var(--li-device-ipad-landscape-leading-body);
+  --li-type-support: var(--li-device-ipad-landscape-type-support);
+  --li-leading-support: var(--li-device-ipad-landscape-leading-support);
+  --li-type-caption: var(--li-device-ipad-landscape-type-caption);
+  --li-leading-caption: var(--li-device-ipad-landscape-leading-caption);
+  --li-page-gutter: var(--li-device-ipad-landscape-page-gutter);
+  --li-card-pad: var(--li-device-ipad-landscape-card-pad);
+  --li-stack-gap: var(--li-device-ipad-landscape-stack-gap);
+  --li-section-gap: var(--li-device-ipad-landscape-section-gap);
+  --li-current-control-min: var(--li-device-ipad-landscape-control-min);
+  --li-current-icon-size: var(--li-device-ipad-landscape-icon-size);
+ }
+ /* A real two-panel reading composition, with comfortable min-content bounds.
+    Preserve filters as an independently scrolling row and full text wrapping. */
+ .page .editorial-grid {
+   grid-template-columns:minmax(0,1.25fr) minmax(0,.9fr);
+   gap:var(--li-section-gap);
+ }
+ #page-guide .editorial-grid .stack-sm,
+ #page-guide #method-filters { min-width:0;max-width:100%; }
+ #page-guide #method-filters { overflow-x:auto; }
+ .page .surface-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .page .spell-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .page .page-heading { align-items:center; }
+}

@@ -75,25 +75,26 @@
 </main><footer class="footer"><b>li. (理)</b><span class="footer-tagline">THE WORLD OF KNOWING WHY</span></footer>
 </div><nav class="mobile-nav" aria-label="Điều hướng chính mobile"><button class="nav-btn" data-page="home" aria-label="Đại Sảnh — Trang chủ" title="Trang chủ"><i data-lucide="trees" class="icon " aria-hidden="true"></i>Đại Sảnh</button><button class="nav-btn" data-page="catalog" aria-label="Tàng Thư — Khám phá ngành học" title="Khám phá ngành học"><i data-lucide="library-big" class="icon " aria-hidden="true"></i>Tàng Thư</button><button class="nav-btn" data-page="guide" aria-label="Thần Chú — 13 phương pháp học" title="13 phương pháp học"><i data-lucide="book-open" class="icon " aria-hidden="true"></i>Thần Chú</button><button class="nav-btn" data-page="library" aria-label="Tủ Riêng — Hành trình và case cá nhân" title="Hành trình và case cá nhân"><i data-lucide="bookmark" class="icon " aria-hidden="true"></i>Tủ Riêng</button></nav>
 <div class="laoly-support"><button id="laoly-fab" type="button" aria-label="Trò chuyện với Lão Lý" title="Lão Lý"><span class="laoly-face smallface" aria-hidden="true"><img src="./assets/laoly-neutral.png" alt="" width="128" height="128" class="laoly-approved-img" id="laoly-current-icon" loading="eager" decoding="async"></span></button></div><div id="buddy-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="buddy-title"><div class="buddy-shell"><div class="dialog"><h2 id="buddy-title"><img id="buddy-title-avatar" src="./assets/laoly-neutral.png" alt="" width="48" height="48" loading="eager" decoding="async"> Lão Lý</h2><div id="buddy-scroll" class="buddy-scroll" tabindex="0" role="region" aria-label="Nội dung hội thoại với Lão Lý"><p id="buddy-text" role="status" aria-live="polite">Hừm… câu này đáng để lão bỏ dở giấc ngủ trăm năm.</p><aside id="buddy-quote" class="ly-cultural" hidden aria-label="Trích dẫn văn hóa và xuất xứ"><div id="buddy-quote-original" class="ly-original"></div><div id="buddy-quote-gloss" class="small"></div><div class="small"><span id="buddy-quote-meta"></span> · <a id="buddy-quote-link" href="#" target="_blank" rel="noopener noreferrer">Xem xuất xứ</a></div></aside><div id="buddy-debate" class="ly-debate" hidden><p class="small">Lão hỏi toàn người dùng đang hoạt động, rồi kết luận 90% toàn thị trường hài lòng. Ngươi bắt được chỗ suy rộng không?</p><div class="action-row"><button class="action alt" id="buddy-wrong">Đúng, có thể suy ra thị trường</button><button class="action" id="buddy-right">Chưa, chỉ biết nhóm được hỏi</button></div></div></div><div class="action-row buddy-actions"><button class="action alt" id="buddy-question"><i data-lucide="search-check" aria-hidden="true"></i> Lão hỏi ngược</button><button class="action alt" id="buddy-challenge"><i data-lucide="git-branch" aria-hidden="true"></i> Phản biện lão</button><button class="action alt" id="buddy-forget"><i data-lucide="brain" aria-hidden="true"></i> Lão quên gì rồi?</button><button class="action" id="close-modal">Đóng</button></div></div></div></div>
-<div id="checkin-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="checkin-title" aria-describedby="checkin-description"><div class="dialog"><div class="kicker">CHECK-IN · NHỊP HỌC</div><h2 id="checkin-title">Đầu óc hôm nay thế nào?</h2><p id="checkin-description">Hai câu ngắn để li. gợi ý nhịp học. Có thể bỏ qua hoặc tự chọn nhịp khác.</p>
-<fieldset class="checkin-question"><legend>1. Năng lượng lúc này</legend><div class="checkin-choices">
+<div id="checkin-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="checkin-title" aria-describedby="checkin-description"><div class="dialog"><div class="kicker">L1 · THỂ TRẠNG → NHỊP HỌC</div><h2 id="checkin-title">Hôm nay cơ thể ra sao?</h2><p id="checkin-description">Ba mục thể trạng là phần chính của check-in. Trả lời từng mục rồi li. mới gợi ý nhịp học; hoặc bỏ qua mà không lưu gì.</p>
+<div class="checkin-physical" role="group" aria-label="Ba câu hỏi thể trạng bắt buộc khi áp dụng check-in">
+<label class="checkin-physical-field" for="checkin-sleep"><span>1. Đã ngủ tương đối đủ?</span><select id="checkin-sleep" class="checkin-physical-select" required><option value="">Chọn câu trả lời</option><option value="yes">Có</option><option value="no">Chưa</option><option value="unsure">Không rõ</option></select></label>
+<label class="checkin-physical-field" for="checkin-move"><span>2. Đã vận động nhẹ hôm nay?</span><select id="checkin-move" class="checkin-physical-select" required><option value="">Chọn câu trả lời</option><option value="yes">Có</option><option value="no">Chưa</option><option value="unsure">Không rõ</option></select></label>
+<label class="checkin-physical-field" for="checkin-rest"><span>3. Đã có lúc nghỉ ngơi hôm nay?</span><select id="checkin-rest" class="checkin-physical-select" required><option value="">Chọn câu trả lời</option><option value="yes">Có</option><option value="no">Chưa</option><option value="unsure">Không rõ</option></select></label>
+</div>
+<details class="checkin-context"><summary>Cảm nhận hiện tại (bổ sung, không bắt buộc)</summary><p>Năng lượng và tập trung chỉ giúp điều chỉnh gợi ý. Ba câu thể trạng phía trên luôn được ưu tiên.</p>
+<fieldset class="checkin-question"><legend>Năng lượng lúc này</legend><div class="checkin-choices">
 <label class="checkin-choice"><input type="radio" name="checkin-energy" value="high"><span>Dồi dào</span></label>
 <label class="checkin-choice"><input type="radio" name="checkin-energy" value="medium"><span>Vừa đủ</span></label>
 <label class="checkin-choice"><input type="radio" name="checkin-energy" value="low"><span>Đang cạn</span></label>
 </div></fieldset>
-<fieldset class="checkin-question"><legend>2. Khả năng tập trung hiện tại</legend><div class="checkin-choices">
+<fieldset class="checkin-question"><legend>Khả năng tập trung</legend><div class="checkin-choices">
 <label class="checkin-choice"><input type="radio" name="checkin-attention" value="steady"><span>Rõ ràng</span></label>
 <label class="checkin-choice"><input type="radio" name="checkin-attention" value="warming"><span>Chập chờn</span></label>
 <label class="checkin-choice"><input type="radio" name="checkin-attention" value="hard"><span>Rất khó</span></label>
-</div></fieldset>
-<details class="checkin-context"><summary>Ngủ · vận động · nghỉ ngơi (tùy chọn)</summary><p>Chỉ đánh dấu điều bạn chắc chắn đã làm. Ô chưa chọn không có nghĩa là thiếu ngủ hay thiếu vận động.</p>
-<label class="select-row">Đã ngủ tương đối đủ <input type="checkbox" data-checkin-context="sleep"/></label>
-<label class="select-row">Đã vận động nhẹ <input type="checkbox" data-checkin-context="movement"/></label>
-<label class="select-row">Đã có lúc nghỉ <input type="checkbox" data-checkin-context="rest"/></label>
-</details>
-<p id="checkin-recommendation" class="state-note checkin-result" role="status" aria-live="polite">Chọn năng lượng và khả năng tập trung để xem nhịp gợi ý.</p>
+</div></fieldset></details>
+<p id="checkin-recommendation" class="state-note checkin-result" role="status" aria-live="polite">Trả lời đủ ba mục thể trạng để xem nhịp học gợi ý.</p>
 <label class="checkin-override-label" for="checkin-override">Muốn tự chọn nhịp khác?</label><select id="checkin-override" class="checkin-override"><option value="">Theo gợi ý</option><option value="start">Vào nhịp</option><option value="focus">Đào sâu</option><option value="overload">Quá tải</option><option value="recover">Hồi trí</option></select>
-<p class="checkin-privacy">Không lưu câu trả lời check-in; chỉ lưu nhịp học bạn áp dụng trên thiết bị này.</p>
+<p class="checkin-privacy">Ba câu trả lời sẽ giữ trong phiên đang mở, không tự lưu lên lịch hoặc gửi lên máy chủ. Chỉ nhịp học đã áp dụng được ghi nhớ trên trình duyệt.</p>
 <div class="action-row checkin-actions"><button class="action alt" type="button" id="close-checkin">Bỏ qua</button><button class="action" type="button" id="apply-checkin" disabled>Áp dụng nhịp học</button></div></div></div>
 <div id="toast" role="status" aria-live="polite" style="position:fixed;z-index:100;bottom:89px;left:50%;transform:translateX(-50%);display:none;max-width:92vw;background:var(--forest);color:var(--cream);padding:var(--li-space-3);border:1px solid var(--sage);font-size:var(--li-type-support)"></div>
 <script src="./assets/lucide.min.js"></script>
@@ -402,50 +403,76 @@ processedCases.unshift(item);
 if(!liWriteState()){processedCases.shift();toast("Không thể lưu Bút Ký trên thiết bị. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.");return}
 try{window.localStorage.removeItem(LI_DRAFT_KEY)}catch(e){}
 navigate("library");toast("Đã lưu Bút Ký trên thiết bị này.");});
-/* L1-A: an optional, transparent readiness heuristic; not a diagnosis or ability measure. */
-function recommendStudyMode(energy,attention){
- const energies=["high","medium","low"],attentions=["steady","warming","hard"];
- if(!energies.includes(energy)||!attentions.includes(attention))return null;
- if(energy==="low"&&attention==="hard")return {mode:"overload",reason:"Bạn báo năng lượng đang cạn và rất khó tập trung; giảm tải hoặc nghỉ cũng được."};
- if(energy==="low")return {mode:"recover",reason:"Năng lượng đang thấp; ưu tiên quay lại từng chút thay vì cố học sâu."};
- if(attention==="hard")return {mode:"recover",reason:"Tập trung đang khó; thử một bước nhỏ trước khi tăng độ khó."};
- if(energy==="high"&&attention==="steady")return {mode:"focus",reason:"Bạn tự đánh giá có năng lượng và tập trung tốt; có thể thử học sâu."};
- return {mode:"start",reason:"Bạn vẫn có thể học, nhưng chưa cần ép cường độ; bắt đầu bằng một bước vừa sức."};
-}
+/* L1 physical-first self-report + learning rhythm heuristic. Not clinical triage. */
+let currentL1PhysicalState=null;
+window.LiL1=Object.freeze({getPhysicalState:()=>currentL1PhysicalState?{...currentL1PhysicalState}:null});
 function readCheckinInputs(){
  const modal=document.getElementById("checkin-modal");
+ const physical={
+  sleep:document.getElementById("checkin-sleep").value,
+  move:document.getElementById("checkin-move").value,
+  rest:document.getElementById("checkin-rest").value
+ };
  const energy=modal.querySelector('input[name="checkin-energy"]:checked')?.value||"";
  const attention=modal.querySelector('input[name="checkin-attention"]:checked')?.value||"";
- const confirmed=modal.querySelectorAll('input[data-checkin-context]:checked').length;
- return {energy,attention,confirmed};
+ return {physical,energy,attention};
+}
+function completePhysicalCheckin(physical){
+ const values=physical&&[physical.sleep,physical.move,physical.rest];
+ return Boolean(values&&values.length===3&&values.every(v=>["yes","no","unsure"].includes(v)));
+}
+function recommendStudyMode(physical,energy="",attention=""){
+ if(!completePhysicalCheckin(physical))return null;
+ const responses=[physical.sleep,physical.move,physical.rest];
+ // Never use the three responses as a medical/compliance score.
+ // Subjective overload may reduce intensity; it never overrides a missing L1 physical report.
+ if(energy==="low"&&attention==="hard")
+  return {mode:"overload",reason:"Cả thể trạng đã khai và cảm giác lúc này cho thấy nên giảm tải; có thể nghỉ."};
+ if(responses.includes("no"))
+  return {mode:"recover",reason:"Có ít nhất một điều về ngủ, vận động hoặc nghỉ ngơi bạn trả lời 'Chưa'. Ưu tiên nhịp nhẹ."};
+ if(energy==="low"||attention==="hard")
+  return {mode:"recover",reason:"Cảm nhận hiện tại cho thấy khó duy trì cường độ; hãy bắt đầu bằng phần nhỏ."};
+ if(responses.includes("unsure"))
+  return {mode:"start",reason:"Có thông tin thể trạng chưa rõ; cứ vào nhịp vừa sức, không cần phỏng đoán."};
+ if(energy==="medium"||attention==="warming")
+  return {mode:"start",reason:"Ba mục thể trạng đều được trả lời Có; cảm nhận hiện tại phù hợp bắt đầu từ từ."};
+ return {mode:"focus",reason:"Bạn đã trả lời Có ở cả ba mục thể trạng; có thể cân nhắc học sâu nếu thấy ổn."};
 }
 function refreshCheckinRecommendation(){
- const {energy,attention,confirmed}=readCheckinInputs();
- const suggested=recommendStudyMode(energy,attention);
+ const {physical,energy,attention}=readCheckinInputs();
+ const complete=completePhysicalCheckin(physical);
+ const suggested=recommendStudyMode(physical,energy,attention);
  const manual=document.getElementById("checkin-override").value;
- const target=manual||suggested?.mode||"";
+ const target=complete?(manual||suggested?.mode||""):"";
  const result=document.getElementById("checkin-recommendation");
- const context=confirmed?" "+confirmed+" ghi nhận sinh hoạt chỉ để tham khảo, không chấm điểm sức khỏe.":"";
- if(manual){
-  result.textContent="Bạn chọn "+STUDY_MODES[manual].label+" thủ công. Gợi ý của li. không thay quyết định của bạn."+context;
- }else if(suggested){
-  result.textContent="Gợi ý: "+STUDY_MODES[suggested.mode].label+". "+suggested.reason+context;
+ const missing=[["sleep","Ngủ"],["move","Vận động"],["rest","Nghỉ ngơi"]].filter(pair=>!["yes","no","unsure"].includes(physical[pair[0]])).map(pair=>pair[1]);
+ if(!complete){
+  result.textContent="Chưa thể áp dụng. Hãy trả lời: "+missing.join(", ")+". Có thể chọn Không rõ nếu chưa chắc, hoặc Bỏ qua.";
+ }else if(manual){
+  result.textContent="L1 đã đủ ba câu. Bạn chọn "+STUDY_MODES[manual].label+" thủ công; quyền quyết định vẫn thuộc về bạn.";
  }else{
-  result.textContent="Chọn cả hai câu để nhận gợi ý, hoặc tự chọn một nhịp. Không đủ dữ liệu thì li. không đoán."+context;
+  result.textContent="Gợi ý: "+STUDY_MODES[suggested.mode].label+". "+suggested.reason+" Đây không phải kết luận về sức khỏe hay khả năng học.";
  }
  document.getElementById("apply-checkin").disabled=!target;
  return target;
+}
+function recordL1PhysicalCheckin(physical,selectedMode){
+ // Only in-memory session state. An eventual opt-in diary needs its own consent gate.
+ currentL1PhysicalState=Object.freeze({
+  sleep:physical.sleep,move:physical.move,rest:physical.rest,
+  selectedMode,recordedAt:new Date().toISOString()
+ });
+ window.dispatchEvent(new CustomEvent("li:l1-physical-checkin",{detail:{...currentL1PhysicalState}}));
 }
 function closeCheckinModal(){
  closeModal("checkin-modal");
  document.getElementById("checkin").focus();
 }
-
 document.getElementById("checkin-modal").addEventListener("change",refreshCheckinRecommendation);
 document.getElementById("checkin").addEventListener("click",event=>{
  openModal("checkin-modal",event.currentTarget);
  refreshCheckinRecommendation();
- document.querySelector('input[name="checkin-energy"]')?.focus();
+ document.getElementById("checkin-sleep").focus();
 });
 document.getElementById("save-question").addEventListener("click",()=>{
  const sc=scenarios[qIndex];
@@ -458,10 +485,12 @@ document.getElementById("save-question").addEventListener("click",()=>{
 document.getElementById("close-checkin").addEventListener("click",closeCheckinModal);
 document.getElementById("apply-checkin").addEventListener("click",()=>{
  const target=refreshCheckinRecommendation();
- if(!target)return;
+ const {physical}=readCheckinInputs();
+ if(!target||!completePhysicalCheckin(physical))return;
  if(!setStudyMode(target))return;
+ recordL1PhysicalCheckin(physical,target);
  closeCheckinModal();
- toast("Đã áp dụng "+STUDY_MODES[target].label+" cho Lão Lý và Thần Chú. Bạn có thể đổi lại bất cứ lúc nào.");
+ toast("Đã ghi L1 thể trạng trong phiên này và áp dụng "+STUDY_MODES[target].label+". Có thể đổi nhịp bất cứ lúc nào.");
 });
 
 document.getElementById("buddy-challenge").addEventListener("click",()=>{buddyDebateActive=true;document.getElementById("buddy-debate").hidden=false;document.getElementById("buddy-quote").hidden=true;document.getElementById("buddy-text").textContent="Thử phản biện lão: 90% người được hỏi nói hài lòng. Lão kết luận cả thị trường cũng hài lòng.";});

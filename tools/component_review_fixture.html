@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><title>li. Component Review Browser Fixture</title></head>
+<body><pre id="result">LI_SHOWCASE_PENDING</pre><iframe id="preview" src="../site/component-library-review.html" title="Component preview" style="border:0;width:100%;height:900px"></iframe>
+<script>
+"use strict";
+const iframe=document.getElementById("preview"),result=document.getElementById("result");
+let ended=false;function finish(fail,checks){if(ended)return;ended=true;result.textContent=(fail?"LI_SHOWCASE_FAIL ":"LI_SHOWCASE_PASS ")+JSON.stringify(checks);}
+iframe.addEventListener("load",()=>{
+ setTimeout(()=>{
+  const checks=[];
+  try{
+   const d=iframe.contentDocument,w=iframe.contentWindow;
+   const check=(label,ok,detail)=>{checks.push({label,passed:!!ok,detail:detail||""});};
+   const tokens=w.getComputedStyle(d.documentElement);
+   check("Canonical generated paper token",tokens.getPropertyValue("--paper").trim().toUpperCase()==="#F3EBDC");
+   check("Review pending G2",d.body.textContent.includes("Chờ Human PO duyệt component"));
+   const cards=d.querySelectorAll(".ds-method");
+   check("Specimen shows two method tiles",cards.length===2);
+   const g=d.querySelector(".ds-method-grid");
+   const col=w.getComputedStyle(g).gridTemplateColumns.split(" ").filter(Boolean);
+   check("Specimen grid two columns",col.length===2,col.join(" / "));
+   const actual=d.querySelector("#ds-device iframe");
+   check("Embedded app uses actual live Guide route",actual?.getAttribute("src")==="./index.html?page=guide");
+   const controls=[...d.querySelectorAll("[data-width]")];
+   check("Real device widths available",["320","375","390","402","600","820"].every(width=>controls.some(c=>c.dataset.width===width)));
+   const two=controls.find(x=>x.dataset.width==="320");
+   two.click();
+   check("Responsive viewport button changes iframe width",d.getElementById("ds-device").style.width==="320px");
+   check("Pressed state synchronized",two.getAttribute("aria-pressed")==="true");
+   const radio=d.querySelectorAll('input[name="ds-physical"]');
+   check("Check-in radio states shown",radio.length===3);
+   const nav=[...d.querySelectorAll("[data-navspec]")];
+   nav[1].click();
+   check("Navigation selected state responds",nav[1].getAttribute("aria-current")==="page"&&!nav[0].hasAttribute("aria-current"));
+   d.getElementById("action-demo").click();
+   check("Specimen action feedback is truthful",d.getElementById("action-result").textContent.includes("không điều hướng"));
+   const overflow=d.documentElement.scrollWidth-w.innerWidth;
+   check("Review page itself has no horizontal overflow",overflow<=3,String(overflow));
+  }catch(e){checks.push({label:"Runtime evaluation",passed:false,detail:e.stack||e.message});}
+  finish(checks.some(c=>!c.passed),checks);
+ },800);
+});
+setTimeout(()=>{if(!ended)finish(true,[{label:"Timed out",passed:false}]);},7000);
+</script></body></html>

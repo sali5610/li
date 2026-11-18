@@ -467,13 +467,24 @@ assert 'function renderCaseContext(note,type)' in (site/"assets"/"library-note-e
 subprocess.run(["node",str(site.parent/"tools"/"test_library_bookmarks.cjs")],check=True,cwd=site.parent)
 subprocess.run(["node",str(site.parent/"tools"/"test_library_case_review.cjs")],check=True,cwd=site.parent)
 
-# UX-IA-07: Save/Unsave and Delete are independent icon utilities.
-# A different purpose must not share the same CTA toolbar / button hierarchy.
+# UX-HOME-01: The Home-only Save action shares the primary CTA component;
+# elsewhere Save/Unsave and Delete remain independent icon utilities.
 home=section("home")
 assert 'class="mirror-titlebar"' in home and 'class="library-icon-utility mirror-bookmark-slot"' not in home
 assert 'id="save-question"' in home
 hero_actions=home[home.index('<div class="hero-actions">'):home.index('</div></div>',home.index('<div class="hero-actions">'))]
 assert 'id="save-question"' in hero_actions
+assert 'class="primary mirror-save-action"' in hero_actions
+assert hero_actions.count('class="action-icon"')==2
+assert 'id="mirror-save-label">Lưu câu hỏi</span>' in hero_actions
+assert 'class="home-tile"' not in home and 'LỐI ĐI TRONG THƯ VIỆN' not in home
+assert home.count('class="hero"')==1
+assert '<div class="app home-focus">' in page_html
+assert 'classList.toggle("home-focus",id==="home")' in page_html
+assert 'label.textContent=saved?"Đã lưu":"Lưu câu hỏi";' in page_html
+assert '.app.home-focus .footer{display:none!important}' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+assert 'height:max(600px,calc(100svh - 82px))!important;' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+assert 'height:max(580px,calc(100svh - 66px - 52px - env(safe-area-inset-bottom,0px)))!important;' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'function refreshQuestionBookmark()' in page_html
 assert 'findSavedMirrorQuestion(sc)' in page_html
 assert 'class="library-heading-with-utility"' in section("case")
@@ -499,7 +510,7 @@ bookmark=(site/"assets"/"library-bookmarks.js").read_text(encoding="utf-8")
 assert 'button.innerHTML=' in bookmark and 'button.textContent=saved?' not in bookmark
 iconcss=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'width:var(--li-space-12)' in iconcss and '.library-icon-action:focus-visible' in iconcss
-assert '/* UX-IA-12 · All real-app Save/Unsave actions' in iconcss
+assert '/* UX-IA-12 · Non-Home Save/Unsave icon utilities' in iconcss
 assert '.page .library-icon-action:not(.library-danger-icon)' in iconcss
 assert '#page-home .hero-actions .mirror-save-action' in iconcss
 assert 'window.liShowUndo=(message,undo)=>toast(message,{undo});' in page_html

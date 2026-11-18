@@ -128,6 +128,7 @@ function auditImpl(){
  for(const modal of ["buddy-modal","checkin-modal"]){
   const el=document.getElementById(modal);
   if(el?.classList.contains("open")){
+   if(visible(fab))add(failures,"fab-must-hide-for-modal",modal);
    const d=R(el.querySelector(".dialog"));
    samples.modal={id:modal,dialog:d};
    if(d&&(d.x < -4||d.r>W+4))add(failures,"modal-out-of-horizontal-bounds",d);

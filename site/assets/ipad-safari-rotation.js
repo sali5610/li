@@ -67,8 +67,10 @@
      // On the physical iPad Safari 05:08 capture, portrait reports a
      // 970×832 visual viewport but root/Home stays 1408×832. Neither
      // innerWidth>970 nor zoom<1 holds: those older guards miss the bug.
+     // Use the native visual height alone to keep recovery latched across
+     // our own root reflow; rootHeight changes as soon as CSS is applied.
      const stalePortraitHeight=!h.landscape&&
-       visualHeight<h.oh-240&&rootHeight<h.oh-240;
+       visualHeight<h.oh-240;
      const portraitBroken=!h.landscape&&(
        rootWidth>target+80||appWidth>target+80||
        (heroRect&&heroRect.width>target+80)||

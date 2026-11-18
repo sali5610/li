@@ -1,0 +1,25 @@
+name: Step 16 Architecture Spike
+
+on:
+  pull_request:
+    paths:
+      - 'docs/architecture/**'
+      - 'tools/step16_backup_spike.cjs'
+      - '.github/workflows/step16-architecture-spike.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-backup-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check isolated spike syntax
+        run: node --check tools/step16_backup_spike.cjs
+      - name: Test synthetic full recovery and current source inventory
+        run: node tools/step16_backup_spike.cjs

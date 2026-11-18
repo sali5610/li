@@ -201,9 +201,25 @@ def section(name):
     return html[start:html.index('</section>',start)]
 settings=section("settings")
 library=section("library")
-assert settings.count('class="stack-sm"')==2
+# Settings IA: the five cards are now in 3 semantic groups in meaningful DOM order.
+assert settings.count('class="settings-group"')==3
+assert settings.count('class="settings-group-grid"')==3
+assert [settings.index(f'id="{x}"') for x in ("settings-personalization","settings-reminders","settings-data")] == sorted([settings.index(f'id="{x}"') for x in ("settings-personalization","settings-reminders","settings-data")])
+assert settings.index('id="study-mode-settings"') < settings.index('id="settings-buddy-card"') < settings.index('<div class="kicker">NHẮC NHỞ</div>') < settings.index('id="export-personal-data"')
 assert len(re.findall(r'<article class="surface(?: tinted)?"(?: id="[^"]+")?>',settings))==5
 assert settings.count('data-ly-mode=')==4
+assert settings.count('data-buddy-name=')==3
+for key in ('warm','teasing','serious'):
+    assert f'data-buddy-name="{key}"' in settings
+assert 'id="buddy-names-reset"' in settings
+assert 'id="buddy-name-feedback" role="status" aria-live="polite"' in settings
+assert 'const LI_BUDDY_NAMES_KEY="li.buddy-address.v1";' in page_html
+assert 'window.liAddressLine=liBuddyLine;' in page_html
+assert 'buddyNames:liBuddyNames' in page_html
+assert 'if(data.buddyNames!==undefined)' in page_html
+contextual=(site/"assets"/"laoly-context-s112.js").read_text(encoding="utf-8")
+assert contextual.count('window.liAddressLine?window.liAddressLine(')==2
+assert 'Settings IA: action-first grouping' in (site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert settings.count('id="export-personal-data"')==1
 assert settings.count('id="import-personal-data"')==1
 assert 'id="export-personal-data"' not in library and 'id="export-library"' not in html

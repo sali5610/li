@@ -322,7 +322,7 @@ assert '<section id="page-noteDetail"' in page_html
 assert '<button id="li-note-save"' in page_html
 assert '<button id="li-note-delete"' in page_html
 assert '<div id="li-note-history-list"' in page_html
-assert '<script src="./assets/library-note-editor.js?v=2"></script>' in page_html
+assert '<script src="./assets/library-note-editor.js?v=3"></script>' in page_html
 hub=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
@@ -451,7 +451,7 @@ assert 'caseSnapshot' in page_html and 'selectedText:caseOptions.find' in page_h
 assert 'id="li-note-case-context"' in page_html
 assert 'data-li-bookmark-kind="case"' in page_html
 assert '<script src="./assets/library-bookmarks.js?v=2"></script>' in page_html
-assert '<script src="./assets/library-note-editor.js?v=2"></script>' in page_html
+assert '<script src="./assets/library-note-editor.js?v=3"></script>' in page_html
 assert '<script src="./assets/library-hub.js?v=4"></script>' in page_html
 for lesson_id,slug in (("L03-1-2","l03"),("L09-1-2","l09"),("L15-2-2","l15")):
     content=(site/"assets"/f"lesson-{slug}-hifi-markup.js").read_text(encoding="utf-8")

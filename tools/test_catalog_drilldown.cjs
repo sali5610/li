@@ -91,7 +91,7 @@ function click(kind,value){
  host.listeners.click({target,preventDefault(){},stopPropagation(){}});
 }
 function displayed(s){return descendants(host).some(e=>e.textContent.includes(s));}
-assert.equal(descendants(host).filter(x=>x.className.split(/\\s+/).includes("catalog-card")).length,8,"root eight groups");
+assert.equal(descendants(host).filter(x=>x.className.split(/\s+/).includes("catalog-card")).length,8,"root eight groups");
 click("open-group","technology");
 assert(displayed("Công nghệ"));
 assert(findButton("open-field","ux-design"));

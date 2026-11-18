@@ -559,7 +559,7 @@ function recordL1PhysicalCheckin(physical,selectedMode){
 function closeCheckinModal(){
  const trigger=document.getElementById("checkin-modal")?.dataset?.trigger;
  closeModal("checkin-modal");
- (document.getElementById(trigger)||document.getElementById("checkin"))?.focus();
+ ((trigger&&document.getElementById(trigger))||document.getElementById("checkin"))?.focus();
 }
 document.getElementById("checkin-modal").addEventListener("change",refreshCheckinRecommendation);
 document.getElementById("checkin").addEventListener("click",event=>{

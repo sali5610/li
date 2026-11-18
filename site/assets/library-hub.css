@@ -559,3 +559,51 @@ body:has(.app.home-focus){
  }
  .app.home-focus #page-home .mirror-message{top:34%!important}
 }
+
+/* UX-DS-25 · Dedicated iPad landscape Home composition.
+   Same approved landscape artwork; reposition actual UI, not image pixels.
+   Maintain 100dvh one-screen Home and transparent top navigation. */
+@media (min-width: 1000px) and (max-width: 1139px) and (orientation: landscape),
+       (min-width: 1140px) and (max-width: 1366px) and (orientation: landscape) and (any-pointer: coarse) {
+ /* Legacy page-in slides its entire Home scene 3px under the transparent
+    header during entry. Fade opacity instead; Home remains pixel-aligned. */
+ @keyframes li-ipad-landscape-home-reveal {
+   from { opacity:.96; }
+   to { opacity:1; }
+ }
+ .app.home-focus #page-home.page.active {
+   animation:li-ipad-landscape-home-reveal .22s ease-out both!important;
+   transform:none!important;
+ }
+ @media (prefers-reduced-motion: reduce) {
+   .app.home-focus #page-home.page.active { animation:none!important; }
+ }
+ .app.home-focus #page-home .hero::before {
+   background-image:url("./home-li-ipad-20261119.jpg")!important;
+   background-size:cover!important;
+   background-position:center center!important;
+ }
+ .app.home-focus #page-home .mirror-message {
+   left:49%!important;
+   top:43%!important;
+   width:min(30%,calc(var(--li-space-24) * 4))!important;
+   max-width:calc(var(--li-space-24) * 4)!important;
+   min-width:0!important;
+ }
+ .app.home-focus #page-home .hero-dialogue {
+   left:var(--li-space-8);
+   top:clamp(140px,23dvh,220px);
+   width:min(32%,460px);
+   max-width:calc(100% - var(--li-space-16));
+ }
+ .app.home-focus #page-home .hero-actions {
+   left:50%!important;
+   width:min(58%,600px)!important;
+   bottom:var(--li-space-8)!important;
+   transform:translateX(-50%)!important;
+ }
+ .app.home-focus #page-home .hero-left {
+   top:calc(var(--li-home-topnav-height) + var(--li-space-5));
+   left:var(--li-space-8);
+ }
+}

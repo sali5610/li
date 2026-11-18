@@ -74,6 +74,19 @@ def render(data: dict) -> str:
         if value % 4:
             raise ValueError(f"Off-grid spacing token: {value}px")
         lines.append(f"  --li-space-{value // 4}: {value}px;")
+    # UX-DS-25: iPad portrait/landscape values are generated from one JSON source.
+    # Keep media queries in the component role layer; do not modify legacy art coordinates.
+    for mode, spec in data.get("deviceScales", {}).items():
+        lines.append(f"  /* UX-DS-25 {mode}: source-authored iPad component density, not global art scaling. */")
+        for role, pair in spec["type"].items():
+            if len(pair) != 2 or pair[1] % 4:
+                raise ValueError(f"Invalid iPad type role: {mode}/{role}")
+            lines.append(f"  --li-device-{mode}-type-{role}: {pair[0]}px;")
+            lines.append(f"  --li-device-{mode}-leading-{role}: {pair[1]}px;")
+        for role, value in spec["layout"].items():
+            if value % 4:
+                raise ValueError(f"Off-grid iPad layout token: {mode}/{role}")
+            lines.append(f"  --li-device-{mode}-{role}: {value}px;")
     lines.append("}")
     return "\n".join(lines) + "\n"
 

@@ -38,7 +38,7 @@ def main() -> int:
     spacing = data["spacing"]
     type_scale = data["typography"]["scale"]
 
-    check(data["libraryVersion"] == "0.3.0", "v0.3 generated runtime foundation version")
+    check(data["libraryVersion"] == "0.4.0", "v0.4 iPad-aware generated runtime foundation version")
     check(spacing["baseUnitPx"] == 4, "4px base unit")
     check(all(n % 4 == 0 for n in spacing["valuesPx"]), "spacing scale obeys 4px")
     check(all(n % 4 == 0 for n in spacing["aliasesPx"].values()), "semantic spacing obeys 4px")

@@ -20,7 +20,8 @@
       "width": 128,
       "height": 128,
       "bytes": 19260,
-      "sha256": "45baf5bc04f3918502f53f1c121d5f73d904e71f007c8807478b3abc8c1b9dd3"
+      "sha256": "45baf5bc04f3918502f53f1c121d5f73d904e71f007c8807478b3abc8c1b9dd3",
+      "lifecycle": "active-approved-functional-icon"
     },
     {
       "path": "design-assets/lao-ly/icon/lao_ly_mode_dao_sau_1024.png",
@@ -35,7 +36,8 @@
       "width": 1254,
       "height": 1254,
       "bytes": 988637,
-      "sha256": "7d67929435c191350a7e4ef6edf4a1243ba6349d2edafd67dc562225f7aa2ee3"
+      "sha256": "7d67929435c191350a7e4ef6edf4a1243ba6349d2edafd67dc562225f7aa2ee3",
+      "lifecycle": "active-approved-functional-icon"
     },
     {
       "path": "design-assets/lao-ly/icon/lao_ly_mode_hoi_tri_1024.png",
@@ -50,7 +52,8 @@
       "width": 1254,
       "height": 1254,
       "bytes": 967726,
-      "sha256": "46c901ff29f1dac8dfb37612a7830e4575f64f220f071244b08eb350454f120d"
+      "sha256": "46c901ff29f1dac8dfb37612a7830e4575f64f220f071244b08eb350454f120d",
+      "lifecycle": "active-approved-functional-icon"
     },
     {
       "path": "design-assets/lao-ly/icon/lao_ly_mode_qua_tai_1024.png",
@@ -65,7 +68,8 @@
       "width": 1254,
       "height": 1254,
       "bytes": 955631,
-      "sha256": "7aaeb563e1a6b693a0d480015d1074a11c9df277709a827f87216e0bf0f56775"
+      "sha256": "7aaeb563e1a6b693a0d480015d1074a11c9df277709a827f87216e0bf0f56775",
+      "lifecycle": "active-approved-functional-icon"
     },
     {
       "path": "design-assets/lao-ly/icon/lao_ly_mode_vao_nhip_1024.png",
@@ -80,7 +84,8 @@
       "width": 1254,
       "height": 1254,
       "bytes": 984725,
-      "sha256": "1c4107f65f2c8a7e47b1839228916eddb433e820c72a0f23656f087ae2b03a70"
+      "sha256": "1c4107f65f2c8a7e47b1839228916eddb433e820c72a0f23656f087ae2b03a70",
+      "lifecycle": "active-approved-functional-icon"
     },
     {
       "path": "design-assets/lao-ly/ngoai-guong/lao_ly_01_ngac_nhien_outside.png",
@@ -95,7 +100,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 933793,
-      "sha256": "0a6e66a82778f649fcffdda5654c647606331b634b418578bdc0af873f3c0e19"
+      "sha256": "0a6e66a82778f649fcffdda5654c647606331b634b418578bdc0af873f3c0e19",
+      "lifecycle": "canonical-illustration-variant-awaiting-asset-approval"
     },
     {
       "path": "design-assets/lao-ly/ngoai-guong/lao_ly_02_chan_doi_outside.png",
@@ -110,7 +116,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 934295,
-      "sha256": "87ca4b044f0868ac9851b214421da9c02a54a38d6ded205cd55687b4711cb14e"
+      "sha256": "87ca4b044f0868ac9851b214421da9c02a54a38d6ded205cd55687b4711cb14e",
+      "lifecycle": "canonical-illustration-variant-awaiting-asset-approval"
     },
     {
       "path": "design-assets/lao-ly/ngoai-guong/lao_ly_03_dang_tri_outside.png",
@@ -125,7 +132,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 1019716,
-      "sha256": "2d8b27db5924a0d9057383f029c4c3c80f8b0fd30017722d1aa0b9d7d61e9ba4"
+      "sha256": "2d8b27db5924a0d9057383f029c4c3c80f8b0fd30017722d1aa0b9d7d61e9ba4",
+      "lifecycle": "canonical-illustration-variant-awaiting-asset-approval"
     },
     {
       "path": "design-assets/lao-ly/ngoai-guong/lao_ly_04_buon_ngu_outside.png",
@@ -140,7 +148,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 915694,
-      "sha256": "0b5d417ec29717b8692b4d6341db74d85c92db399b76747ba7976d6b44376948"
+      "sha256": "0b5d417ec29717b8692b4d6341db74d85c92db399b76747ba7976d6b44376948",
+      "lifecycle": "canonical-illustration-variant-awaiting-asset-approval"
     },
     {
       "path": "design-assets/lao-ly/ngoai-guong/lao_ly_05_bo_tay_outside.png",
@@ -155,7 +164,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 993714,
-      "sha256": "579dc77d7b47ece32bc78fa25268d602e8a24a5e9a5cfbbf3dcae8f3f62a4c31"
+      "sha256": "579dc77d7b47ece32bc78fa25268d602e8a24a5e9a5cfbbf3dcae8f3f62a4c31",
+      "lifecycle": "canonical-illustration-variant-awaiting-asset-approval"
     },
     {
       "path": "design-assets/lao-ly/ngoai-guong/lao_ly_06_coc_outside.png",
@@ -170,7 +180,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 945065,
-      "sha256": "d48b5628612b2bd10a5ba24796f687d27d13549eacd03002b5163740600198af"
+      "sha256": "d48b5628612b2bd10a5ba24796f687d27d13549eacd03002b5163740600198af",
+      "lifecycle": "canonical-illustration-variant-awaiting-asset-approval"
     },
     {
       "path": "design-assets/lao-ly/ngoai-guong/lao_ly_07_gian_outside.png",
@@ -185,7 +196,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 968235,
-      "sha256": "e7f916ba855f401de2903aacf3c741f62ae0ef1ed0465a084b1327844a7b9014"
+      "sha256": "e7f916ba855f401de2903aacf3c741f62ae0ef1ed0465a084b1327844a7b9014",
+      "lifecycle": "canonical-illustration-variant-awaiting-asset-approval"
     },
     {
       "path": "design-assets/lao-ly/ngoai-guong/lao_ly_08_wow_outside.png",
@@ -200,7 +212,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 959604,
-      "sha256": "634f11a6abbc261510426e21c7780b2526a8d2d3b0eb249fbe7544c4c47d46de"
+      "sha256": "634f11a6abbc261510426e21c7780b2526a8d2d3b0eb249fbe7544c4c47d46de",
+      "lifecycle": "canonical-illustration-variant-awaiting-asset-approval"
     },
     {
       "path": "design-assets/lao-ly/ngoai-guong/lao_ly_09_tam_dac_outside.png",
@@ -215,7 +228,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 1008883,
-      "sha256": "4d0ca6b738278fd22dd6847eb9c1bf0275b9533f8c48d9390babc5c480166802"
+      "sha256": "4d0ca6b738278fd22dd6847eb9c1bf0275b9533f8c48d9390babc5c480166802",
+      "lifecycle": "canonical-illustration-variant-awaiting-asset-approval"
     },
     {
       "path": "design-assets/lao-ly/ngoai-guong/lao_ly_10_suy_nghi_outside.png",
@@ -232,7 +246,8 @@
       "bytes": 929413,
       "sha256": "4b2ddeaeffd9c7152792a575f1c16ebafdcb977c72676df33088afec663af88b",
       "png_color_type": 6,
-      "source_repair": "Restored exact PNG from user-provided lao_ly_21_transparent_assets_v1(1).zip, and replaced incorrect Notion Artwork attachment on 2026-11-18."
+      "source_repair": "Restored exact PNG from user-provided lao_ly_21_transparent_assets_v1(1).zip, and replaced incorrect Notion Artwork attachment on 2026-11-18.",
+      "lifecycle": "canonical-illustration-variant-awaiting-asset-approval"
     },
     {
       "path": "design-assets/lao-ly/trong-guong/lao_ly_01_ngac_nhien_mirror.png",
@@ -247,7 +262,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 936062,
-      "sha256": "f1e30f82aa8f94d8c15dcdf000d08ecbe41a899ceb7b531adc49944033f9a1d9"
+      "sha256": "f1e30f82aa8f94d8c15dcdf000d08ecbe41a899ceb7b531adc49944033f9a1d9",
+      "lifecycle": "retired-provenance-only"
     },
     {
       "path": "design-assets/lao-ly/trong-guong/lao_ly_02_chan_doi_mirror.png",
@@ -262,7 +278,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 956049,
-      "sha256": "060e06e8a4b48aea2548a4c31f5c4ecd683cd7518cbc8586a413b928392d57f0"
+      "sha256": "060e06e8a4b48aea2548a4c31f5c4ecd683cd7518cbc8586a413b928392d57f0",
+      "lifecycle": "retired-provenance-only"
     },
     {
       "path": "design-assets/lao-ly/trong-guong/lao_ly_03_dang_tri_mirror.png",
@@ -277,7 +294,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 928585,
-      "sha256": "3123a8a09e896b9d023190c3451c97eb50c7551d8749c649de9085e4d83d5211"
+      "sha256": "3123a8a09e896b9d023190c3451c97eb50c7551d8749c649de9085e4d83d5211",
+      "lifecycle": "retired-provenance-only"
     },
     {
       "path": "design-assets/lao-ly/trong-guong/lao_ly_04_buon_ngu_mirror.png",
@@ -292,7 +310,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 928516,
-      "sha256": "f61847e1ce627d1b12f847d3996f7932a9af5261f167535a63f208cb446dd20f"
+      "sha256": "f61847e1ce627d1b12f847d3996f7932a9af5261f167535a63f208cb446dd20f",
+      "lifecycle": "retired-provenance-only"
     },
     {
       "path": "design-assets/lao-ly/trong-guong/lao_ly_05_bo_tay_mirror.png",
@@ -307,7 +326,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 946279,
-      "sha256": "8d3972d07d16b6b450c28522b99efc42dd91cd80cf28d9d9b72c79033d0bb7e9"
+      "sha256": "8d3972d07d16b6b450c28522b99efc42dd91cd80cf28d9d9b72c79033d0bb7e9",
+      "lifecycle": "retired-provenance-only"
     },
     {
       "path": "design-assets/lao-ly/trong-guong/lao_ly_06_coc_mirror.png",
@@ -322,7 +342,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 953160,
-      "sha256": "d3fc95336c47b108771aba608c564c8ae21fbd8fa5dc48368d129411c1622219"
+      "sha256": "d3fc95336c47b108771aba608c564c8ae21fbd8fa5dc48368d129411c1622219",
+      "lifecycle": "retired-provenance-only"
     },
     {
       "path": "design-assets/lao-ly/trong-guong/lao_ly_07_gian_mirror.png",
@@ -337,7 +358,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 927684,
-      "sha256": "9c74a4a471bc85ff0e3a8bde949b06c4a3de3e6fbd0e6460b4d2e5398a4f2df1"
+      "sha256": "9c74a4a471bc85ff0e3a8bde949b06c4a3de3e6fbd0e6460b4d2e5398a4f2df1",
+      "lifecycle": "retired-provenance-only"
     },
     {
       "path": "design-assets/lao-ly/trong-guong/lao_ly_08_wow_mirror.png",
@@ -352,7 +374,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 944445,
-      "sha256": "91a82cebee706ab46c8069f74c3dfd647867fdc13c3679a9a5169bc4559f55ac"
+      "sha256": "91a82cebee706ab46c8069f74c3dfd647867fdc13c3679a9a5169bc4559f55ac",
+      "lifecycle": "retired-provenance-only"
     },
     {
       "path": "design-assets/lao-ly/trong-guong/lao_ly_09_tam_dac_mirror.png",
@@ -367,7 +390,8 @@
       "width": 1024,
       "height": 1024,
       "bytes": 1043916,
-      "sha256": "09ab3077929d7daea8a699c175d66e751de10971cd716829e794068af2394a22"
+      "sha256": "09ab3077929d7daea8a699c175d66e751de10971cd716829e794068af2394a22",
+      "lifecycle": "retired-provenance-only"
     },
     {
       "path": "design-assets/lao-ly/trong-guong/lao_ly_10_suy_nghi_mirror.png",
@@ -382,7 +406,21 @@
       "width": 1024,
       "height": 1024,
       "bytes": 842770,
-      "sha256": "9e17d282aef232415529549c48731ecc2cb538b51871af324151278be131a0e3"
+      "sha256": "9e17d282aef232415529549c48731ecc2cb538b51871af324151278be131a0e3",
+      "lifecycle": "retired-provenance-only"
     }
-  ]
+  ],
+  "illustrationPolicy": {
+    "decisionId": "UX-ART-03",
+    "decisionDate": "2026-11-19",
+    "activeIllustrationVariant": "Ngoài gương",
+    "activeIllustrationCount": 10,
+    "retiredIllustrationVariant": "Trong gương",
+    "retiredIllustrationCount": 10,
+    "approvedMicroIconCount": 5,
+    "currentIllustrationApproval": "Individual standalone PNGs not yet visually approved; newest geometric papercraft ZIP not in this repository.",
+    "retiredAssetsPolicy": "Keep binary hashes and Notion source provenance, do not use for new app/component artwork.",
+    "runtimeMigration": "Pending asset-specific PO acceptance: existing Settings and component gallery still reference historical laoly-mirror-suy-nghi.png; Guide illustration also legacy.",
+    "primaryContract": "design-assets/lao-ly/README.md"
+  }
 }

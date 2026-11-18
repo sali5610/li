@@ -522,6 +522,15 @@ body .laoly-support.li-companion-draggable.is-dragging #laoly-fab{
   width:min(34%,300px)!important;
   min-width:0!important;
  }
+ /* The inherited page-enter translate temporarily offsets the full-height artwork. */
+ @keyframes li-ipad-home-fade { from { opacity:.96; } to { opacity:1; } }
+ .app.home-focus #page-home.page.active {
+  animation:li-ipad-home-fade .22s ease-out both!important;
+  transform:none!important;
+ }
+ @media (prefers-reduced-motion: reduce) {
+  .app.home-focus #page-home.page.active { animation:none!important; }
+ }
 }
 
 /* UX-HOME-06 · Compensate for the now-overlaying transparent header:

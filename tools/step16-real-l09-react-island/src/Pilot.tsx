@@ -1,7 +1,7 @@
 import React,{useState,useRef,useEffect} from 'react';
 import exact from './l09-exact.generated.json';
 import {L09StorageBridge,BridgeError,LOCALE_KEY,initial} from './native-bridge';
-import type {Locale,Attempt} from './native-bridge';
+import type {Locale,Attempt,Rating} from './native-bridge';
 
 const bridge=new L09StorageBridge(window.localStorage,window.location);
 export function Pilot(){

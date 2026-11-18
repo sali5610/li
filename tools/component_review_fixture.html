@@ -18,6 +18,14 @@ iframe.addEventListener("load",()=>{
    check("Olive Moss canonical token is available",tokens.getPropertyValue("--olive").trim().toUpperCase()==="#65734C");
    const oliveSwatch=d.querySelector('[data-ds-token="olive"]');
    check("Olive Moss swatch matches token and visual label",!!oliveSwatch&&w.getComputedStyle(oliveSwatch.querySelector(".ds-paint")).backgroundColor==="rgb(101, 115, 76)"&&oliveSwatch.textContent.includes("Olive Moss · #65734C"));
+   const oliveUsage=d.getElementById("ds20-olive-usage"),oliveKicker=oliveUsage?.querySelector(".ds20-olive-kicker");
+   const oliveStyle=oliveKicker?w.getComputedStyle(oliveKicker):null;
+   check("Olive decorative usage is documented with visible component specimen",
+      !!oliveUsage&&!!oliveKicker&&oliveStyle?.borderInlineStartColor==="rgb(101, 115, 76)"&&oliveStyle?.borderInlineStartWidth==="3px"&&oliveStyle?.paddingInlineStart==="8px");
+   check("Olive documentation references the exact live selector and safe role",
+      oliveUsage?.textContent.includes(".page:not(#page-home) .section-shell > .kicker")&&
+      oliveUsage?.textContent.includes("Không dùng cho:")&&
+      oliveUsage?.querySelector('a[href="./index.html?page=guide"]'));
    check("Porcelain foundation token resolves to neutral off-white",tokens.getPropertyValue("--porcelain").trim().toUpperCase()==="#FEFDFC");
    const porcelainSwatch=d.querySelector('[data-ds-token="porcelain"]');
    check("Porcelain swatch matches input surface",!!porcelainSwatch&&w.getComputedStyle(porcelainSwatch.querySelector(".ds-paint")).backgroundColor==="rgb(254, 253, 252)"&&porcelainSwatch.textContent.includes("Input / Textarea"));

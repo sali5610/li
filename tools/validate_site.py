@@ -69,7 +69,7 @@ assert '<meta name="apple-mobile-web-app-title" content="li.">' in html
 assert '<meta name="theme-color" content="#243A29">' in html
 
 # S136: mirror label is typographic only, not a search control.
-assert html.count('<div class="mirror-label">Gương Vạn Vấn · Vấn đề</div>') == 1
+assert html.count('<div class="mirror-label">Gương Vạn Vấn</div>') == 1
 assert '<div class="mirror-label"><i data-lucide="search"' not in html
 
 # S138/S139: touch swipe only on mirror; fixed-scale viewport and sticky header.
@@ -268,7 +268,7 @@ assert '#settings-buddy-card .settings-buddy-illustration' in html
 settings_styles=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert 'border-top: 1px solid var(--rule)' not in settings_styles.split('#page-settings .buddy-address-settings {', 1)[1].split('}', 1)[0]
 assert '#settings-buddy-card .settings-buddy-footer' not in html
-assert 'li-layout.css?v=0.4' in page_html and 'ui-foundations.css?v=0.5' in page_html
+assert 'li-layout.css?v=0.4' in page_html and 'ui-foundations.css?v=0.6' in page_html
 
 # S118: two compact mobile Guide tiles with shadow-safe column/row gutters; no duplicate S99 rule.
 guide=section("guide")
@@ -451,7 +451,7 @@ assert page_html.count('type:"hook",lessonRoute:') == 3
 assert 'sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang."' in page_html
 assert 'navigate(target.type==="hook"?target.lessonRoute:"research");' in page_html
 assert '<script src="./assets/lesson-related-wave1.js"></script>' in page_html
-assert 'ui-foundations.css?v=0.5' in page_html
+assert 'ui-foundations.css?v=0.6' in page_html
 cross=(site/"assets"/"lesson-related-wave1.js").read_text(encoding="utf-8")
 assert 'Object.keys(RELATED).forEach' in cross
 assert all(k in cross for k in ("L03-1-2", "L09-1-2", "L15-2-2"))
@@ -460,3 +460,24 @@ assert 'list.replaceChildren()' in cross
 assert 'window.navigate(lesson.route)' in cross
 assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
+
+# S159: mirror name remains consistent while purpose-specific CTAs still route.
+assert 'if(kind)kind.textContent="Gương Vạn Vấn";' in page_html
+assert 'Gương Vạn Vấn · Vấn đề' not in page_html
+assert 'Gương Vạn Vấn · Điều bất ngờ' not in page_html
+assert 'if(kind)kind.textContent="Gương Vạn Vấn · "' not in page_html
+for original in (
+    'Một câu hỏi mở vẫn có thể gài sẵn câu trả lời.',
+    'Ngưỡng đặt hàng không phải số lượng đặt hàng.',
+    'Một ngàn câu trả lời vẫn có thể dẫn tới kết luận lệch.',
+):
+    assert f'previousQuestion:"{original}"' in page_html, "Old Dấu Trang hook must remain resolvable"
+assert 'x.question===item.question||x.previousQuestion===item.question||(x.key&&x.key===item.scenarioKey)' in page_html
+assert 'sc.key&&x.scenarioKey===sc.key' in page_html
+assert 'scenarioKey:sc.key||null' in page_html
+assert 'Câu hỏi mở vẫn có thể âm thầm dẫn dắt câu trả lời. Vì sao?' in page_html
+assert 'Ngưỡng đặt hàng khác lượng hàng cần mua. Nhầm hai thứ ấy thì sao?' in page_html
+assert 'Có tới một ngàn người trả lời khảo sát. Sao kết luận vẫn có thể lệch?' in page_html
+assert 'top: 39% !important;' in foundation
+assert 'gap: var(--li-space-1) !important;' in foundation
+assert 'overflow: visible;' in foundation

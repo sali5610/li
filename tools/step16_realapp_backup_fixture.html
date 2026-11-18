@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Step16 real app source backup audit - isolated localhost</title></head>
+<body><pre id="result">LI_STEP16_REALAPP_PENDING</pre>
+<script>
+(async () => {
+ 'use strict';
+ const output=document.getElementById('result');const storage=window.localStorage;const completed=[];
+ const check=(ok,message)=>{if(!ok)throw Error(message);};
+ const liKeys=()=>{const keys=[];for(let i=0;i<storage.length;i++){const key=storage.key(i);if(key?.startsWith('li.'))keys.push(key);}return keys;};
+ const cleanup=()=>{liKeys().forEach(key=>storage.removeItem(key));};
+ const original={
+  'li.private.library.v1':JSON.stringify({schema:1,cases:[],questions:[],ideas:[],savedContent:[],updatedAt:'2026-11-19T00:00:00.000Z'}),
+  'li.private.case-draft.v1':'FAKE DRAFT',
+  'li.buddy-address.v1':JSON.stringify({warm:'',teasing:'',serious:''}),
+  'li.study-mode.v1':'start',
+  'li.app.locale.v1':'vi',
+  'li.companion.position.v1':JSON.stringify({x:0.5,y:0.5}),
+  'li.private.lesson.visits.v1':JSON.stringify({schema:1,items:[]}),
+  'li.private.problem.visits.v1':JSON.stringify({schema:1,items:[]}),
+  'li.personal.daily.v1':JSON.stringify({schema:1,days:{}}),
+  'li.personal.daily.enabled.v1':'false',
+  'li.spell.t02.due.v1':JSON.stringify({exposed:1700000000000,due:1700086400000}),
+  'li.review.L09-1-2.v1':JSON.stringify({draft:['FAKE','','',''],reviewed:true,locale:'vi'})
+ };
+ try {
+  cleanup();Object.entries(original).forEach(([key,value])=>storage.setItem(key,value));
+  const iframe=document.createElement('iframe');iframe.hidden=true;
+  const frameReady=new Promise((resolve,reject)=>{
+    iframe.addEventListener('load',resolve,{once:true});
+    iframe.addEventListener('error',()=>reject(Error('Failed to load actual app')), {once:true});
+  });
+  iframe.src='../site/index.html';document.body.appendChild(iframe);
+  await frameReady;
+  const w=iframe.contentWindow;const d=w.document;
+  const exportButton=d.getElementById('export-personal-data');
+  const importInput=d.getElementById('import-personal-data');
+  check(!!exportButton&&!!importInput,'Real app export/import controls unavailable');
+  let captured=null;
+  const createURL=w.URL.createObjectURL.bind(w.URL);
+  w.URL.createObjectURL=blob=>{captured=blob;return createURL(blob);};
+  exportButton.click();
+  check(captured instanceof w.Blob,'Real app export handler did not construct a Blob');
+  const legacy=JSON.parse(await captured.text());
+  check(legacy.schema===1 && Array.isArray(legacy.cases) && Array.isArray(legacy.questions), 'Unexpected old schema');
+  check(!('records' in legacy) && !('review' in legacy) && !('diary' in legacy)
+      && !('spell' in legacy),'Legacy export coverage has changed: re-audit it');
+  check(original['li.review.L09-1-2.v1']===storage.getItem('li.review.L09-1-2.v1'), 'Export altered learning attempt');
+  completed.push('actual app export Blob is schema1 and omits independent learner state (known P1)');
+  const incoming={schema:1,exportedAt:'2026-11-19T00:00:00.000Z',
+    cases:[{title:'Synthetic case',revision:'Synthetic revision',correct:true}],
+    questions:[{question:'Synthetic question'}],ideas:[],savedContent:[],draft:'SYNTHETIC IMPORT DRAFT',
+    buddyNames:{warm:'test',teasing:'test',serious:'test'}};
+  w.confirm=()=>true;
+  const transfer=new w.DataTransfer();
+  transfer.items.add(new w.File([JSON.stringify(incoming)],'li-test-schema1.json',{type:'application/json'}));
+  importInput.files=transfer.files;
+  importInput.dispatchEvent(new w.Event('change',{bubbles:true}));
+  await new Promise(resolve=>setTimeout(resolve,350));
+  const imported=JSON.parse(storage.getItem('li.private.library.v1')||'null');
+  check(imported?.cases?.[0]?.title==='Synthetic case','Actual import did not write synthetic case');
+  check(storage.getItem('li.private.case-draft.v1')==='SYNTHETIC IMPORT DRAFT','Actual import draft missing');
+  check(storage.getItem('li.review.L09-1-2.v1')===original['li.review.L09-1-2.v1'],'Actual legacy import wiped lesson progress');
+  check(storage.getItem('li.personal.daily.v1')===original['li.personal.daily.v1'],'Actual legacy import wiped diary');
+  check(storage.getItem('li.spell.t02.due.v1')===original['li.spell.t02.due.v1'],'Actual legacy import wiped T02 due');
+  completed.push('actual app schema1 import changes library/draft but leaves independent progress unchanged');
+  iframe.remove();cleanup();
+  output.textContent='LI_STEP16_REALAPP_PASS '+JSON.stringify({count:completed.length,scenarios:completed,
+    conclusion:'Baseline P1 confirmed against branch site/index.html; NOT a complete backup fix; localhost Chromium only'});
+ } catch(error) {cleanup();output.textContent='LI_STEP16_REALAPP_FAIL '+JSON.stringify({completed,error:error.stack||String(error)});}
+})();
+</script></body></html>

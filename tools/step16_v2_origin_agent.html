@@ -1,0 +1,50 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>li. v2 cross-origin receiver fixture</title></head><body>
+<script>
+(function(){
+ "use strict";
+ const ALLOWED_ORIGIN="http://127.0.0.1:8774",S=localStorage;
+ const clean=()=>{for(let i=S.length-1;i>=0;i--){const key=S.key(i);if(key?.startsWith("li."))S.removeItem(key);}};
+ function get(){const out={};for(let i=0;i<S.length;i++){const k=S.key(i);if(k?.startsWith("li."))out[k]=S.getItem(k);}return out;}
+ function pause(ms){return new Promise(r=>setTimeout(r,ms));}
+ async function until(fn,message){
+   const start=performance.now();
+   while(performance.now()-start<9000){if(fn())return;await pause(35);}
+   throw Error("TIMEOUT "+message);
+ }
+ let iframe=null;
+ async function loadApp(){
+   iframe?.remove();iframe=document.createElement("iframe");iframe.hidden=true;iframe.src="../site/index.html";
+   document.body.append(iframe);
+   await until(()=>iframe.contentWindow?.LiBackupV2&&iframe.contentDocument?.getElementById("import-personal-data"),"target Settings ready");
+   iframe.contentWindow.confirm=()=>true;
+ }
+ async function receive(req){
+   if(req.command==="reset"){clean();return {reset:true};}
+   if(req.command==="get")return {data:get()};
+   if(req.command!=="import")throw Error("Unsupported receiver operation");
+   if(typeof req.payload!=="string")throw Error("Backup must be supplied as a local JSON string");
+   await loadApp();
+   const w=iframe.contentWindow,d=iframe.contentDocument,input=d.getElementById("import-personal-data");
+   // This generates a File and uses the actual current Settings file-input handler,
+   // rather than using LiBackupV2.importJSON directly.
+   const transfer=new w.DataTransfer();
+   transfer.items.add(new w.File([req.payload],"step16-local-backup-v2.json",{type:"application/json"}));
+   input.files=transfer.files;
+   input.dispatchEvent(new w.Event("change",{bubbles:true}));
+   await until(()=>input.value===""&&!d.getElementById("import-personal-trigger").disabled,"real Settings import completed");
+   const error=d.getElementById("import-state-error");
+   if(error&&!error.hidden)throw Error("Real Settings displayed import error: "+d.getElementById("import-state-error-message")?.textContent);
+   return {imported:true,data:get()};
+ }
+ window.addEventListener("message",async event=>{
+   if(event.origin!==ALLOWED_ORIGIN||event.source!==parent)return;
+   const req=event.data;
+   if(!req||req.protocol!=="li-step16-v2"||typeof req.seq!=="number")return;
+   let response={protocol:"li-step16-v2-reply",seq:req.seq};
+   try{response.data=await receive(req);}
+   catch(e){response.error=e.stack||String(e);}
+   event.source.postMessage(response,ALLOWED_ORIGIN);
+ });
+ parent.postMessage({protocol:"li-step16-v2-ready"},ALLOWED_ORIGIN);
+})();
+</script></body></html>

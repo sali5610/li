@@ -3,7 +3,7 @@
 :root{--ds12-shadow:4px 4px 0 var(--wood)}
 /* Compact 4-tab nav; keep each target at least 48px and the active sand pill. */
 .ds-tabs{padding:var(--li-space-1);gap:var(--li-space-1)}
-.ds-tabs button{min-height:52px;padding:var(--li-space-1);gap:0}
+.ds-tabs button{min-height:52px;padding:var(--li-space-1);gap:var(--li-space-0)}
 .ds-tabs .ds-tab-icon{height:25px;width:44px}
 .ds-tabs .ds-tab-icon svg.lucide{width:20px;height:20px}
 /* Card surfaces: same anatomy, three visual roles across all card families. */

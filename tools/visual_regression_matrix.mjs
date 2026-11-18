@@ -82,7 +82,13 @@ function auditImpl(){
  samples.nav=visible(nav)?R(nav):null;samples.fab=visible(fab)?R(fab):null;
  if(boxInter(samples.nav,samples.fab)>150)add(failures,"laoly-obscures-bottom-nav",{fab:samples.fab,nav:samples.nav});
  const controls=pg?[...pg.querySelectorAll("button,a.action,input,select,textarea")].filter(visible):[];
- const undersized=controls.filter(x=>R(x).h<44||R(x).w<44).slice(0,8).map(x=>({label:(x.textContent||x.getAttribute("aria-label")||"").trim().slice(0,50),r:R(x)}));
+ // A labeled checkbox is activated through the entire 48px+ label row.
+ // The visually hidden file input is controlled by the visible import button.
+ const hitArea=x=>x.matches("input[type=checkbox],input[type=radio]")?(x.closest("label")||x):x;
+ const undersized=controls.filter(x=>{
+  if(x.matches("input[type=file]")&&R(x).r<0)return false;
+  const box=R(hitArea(x));return box.h<44||box.w<44;
+ }).slice(0,8).map(x=>({label:(x.textContent||x.getAttribute("aria-label")||x.closest("label")?.textContent||"").trim().slice(0,50),r:R(hitArea(x))}));
  if(undersized.length)add(warnings,"touch-target-under-44px",undersized);
  const text=pg?[...pg.querySelectorAll("h1,h2,h3,p,label,.state-note,.intro,.method-card .purpose")].filter(visible):[];
  const clipped=text.filter(x=>{const c=getComputedStyle(x);return(c.overflowY==="hidden"||c.overflowY==="clip"||c.webkitLineClamp!=="none")&&x.scrollHeight>x.clientHeight+3;}).slice(0,8).map(x=>({text:x.textContent.trim().slice(0,50),r:R(x),scroll:x.scrollHeight,client:x.clientHeight}));
@@ -94,11 +100,13 @@ function auditImpl(){
  const selection=["home","catalog","guide","library"].includes(id)?".mobile-nav [data-page='"+id+"']":["settings","search","capture"].includes(id)?".header .tool-button[data-page='"+id+"']":null;
  if(selection&&document.querySelector(selection)?.getAttribute("aria-current")!=="page")add(failures,"selected-nav-not-current",id);
  if(p==="page-home"){
-  const q=R(document.querySelector("#mirror-question")),m=R(document.querySelector(".mirror-message")),action=R(document.querySelector(".hero-actions"));
+  const q=R(document.querySelector("#mirror-question")),m=R(document.querySelector(".mirror-message")),action=R(document.querySelector(".hero-actions")),context=R(document.querySelector("#page-home .hero-dialogue"));
   const btns=[...document.querySelectorAll("#page-home .hero-actions button")].filter(visible);
-  samples.home={q,mirror:m,actions:action,buttons:btns.map(x=>({label:x.textContent.trim().slice(0,50),r:R(x)}))};
+  samples.home={q,mirror:m,context,actions:action,buttons:btns.map(x=>({label:x.textContent.trim().slice(0,50),r:R(x)}))};
   if(q&&m&&(q.x<m.x-12||q.r>m.r+12))add(warnings,"mirror-text-out-of-container",{q,m});
   if(boxInter(action,samples.fab)>350)add(failures,"fab-over-home-actions",{action,fab:samples.fab});
+  if(boxInter(context,samples.fab)>150)add(failures,"fab-over-home-context",{context,fab:samples.fab});
+  if(boxInter(m,samples.fab)>150)add(failures,"fab-over-mirror-interaction",{mirror:m,fab:samples.fab});
   if(btns.length>=2&&Math.abs(R(btns[0]).y-R(btns[1]).y)>7)add(warnings,"home-cta-not-aligned",samples.home.buttons);
  }
  if(p==="page-guide"){
@@ -131,6 +139,7 @@ try{
   for(const state of states){
    try{
     const change="(()=>{const id="+JSON.stringify(state)+";"+
+     "document.querySelectorAll('.modal.open').forEach(x=>x.classList.remove('open'));"+
      "if(id==='guideDetail'){window.showMethod('T01');}"+
      "else if(id==='buddyHome'||id==='buddyGuide'){window.navigate(id==='buddyHome'?'home':'guide',{remember:false,focus:false,syncUrl:false});window.openLaoLy(document.getElementById('laoly-fab'));}"+
      "else if(id==='checkin'){window.navigate('home',{remember:false,focus:false,syncUrl:false});window.openModal('checkin-modal',document.getElementById('checkin'));}"+

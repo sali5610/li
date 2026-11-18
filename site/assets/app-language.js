@@ -126,6 +126,17 @@ function trComposed(value){
  }
  return out;
 }
+/* Scope contextual collisions by stable key: navigation "Back" is not the
+   "Continue" collection title. Textarea values remain learner-owned. */
+const CONTEXT_TEXT={
+ "resume.pageTitle":{vi:"Quay lại",en:"Continue"}
+};
+function translateForNode(node,source){
+ const key=node?.parentElement?.closest?.("[data-li-i18n]")?.dataset?.liI18n;
+ const entry=CONTEXT_TEXT[key];
+ if(entry&&String(source).trim()===entry.vi)return String(source).replace(entry.vi,entry.en);
+ return tr(source);
+}
 const ATTRS=["aria-label","aria-description","title","placeholder","alt"];
 const originalText=new WeakMap();
 const originalAttr=new WeakMap();
@@ -171,9 +182,12 @@ function tr(value){
  }
  return v.replace(trimmed,translated);
 }
-function ignored(node){
+function ignored(node,forAttrs=false){
  const p=node.nodeType===1?node:node.parentElement;
- return !p||Boolean(p.closest?.('script,style,textarea,code,pre,[contenteditable],[data-lesson-id],.catalog-sheet-layer,[data-li-no-translate],.library-entry-body,.library-clamp,#li-note-detail-title,#li-note-detail-body,#li-note-case-question,#li-note-case-scene,#li-note-case-choices'));
+ if(!p)return true;
+ const shared='script,style,code,pre,[data-lesson-id],.catalog-sheet-layer,[data-li-no-translate],.library-entry-body,.library-clamp,#li-note-detail-title,#li-note-detail-body,#li-note-case-question,#li-note-case-scene,#li-note-case-choices';
+ // Do not touch learner-entered textarea text; its placeholder/ARIA still needs locale.
+ return Boolean(p.closest?.(shared))||(!forAttrs&&Boolean(p.closest?.('textarea,[contenteditable]')));
 }
 function patchText(node){
  if(ignored(node))return;
@@ -181,15 +195,15 @@ function patchText(node){
  // App scripts may update a text node in place (counters, feedback, live status).
  // Preserve that new source instead of restoring a stale value from the first render.
  let original=previous===undefined?node.nodeValue:previous;
- if(previous!==undefined&&node.nodeValue!==original&&node.nodeValue!==tr(original)){
+ if(previous!==undefined&&node.nodeValue!==original&&node.nodeValue!==translateForNode(node,original)){
   original=node.nodeValue;
  }
  if(previous!==original)originalText.set(node,original);
- const desired=locale==="en"?tr(original):original;
+ const desired=locale==="en"?translateForNode(node,original):original;
  if(node.nodeValue!==desired)node.nodeValue=desired;
 }
 function patchAttrs(node){
- if(ignored(node)||node.nodeType!==1)return;
+ if(node.nodeType!==1||ignored(node,true))return;
  let saved=originalAttr.get(node);
  if(!saved){saved={};originalAttr.set(node,saved);}
  for(const key of ATTRS){
@@ -203,13 +217,13 @@ function patchAttrs(node){
 function walk(root){
  if(!root)return;
  if(root.nodeType===3){patchText(root);return;}
- if(root.nodeType!==1||ignored(root))return;
+ if(root.nodeType!==1||ignored(root,true))return;
  patchAttrs(root);
  const walker=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT);
  let node;
  while((node=walker.nextNode())){
   if(node.nodeType===3)patchText(node);
-  else if(!ignored(node))patchAttrs(node);
+  else if(!ignored(node,true))patchAttrs(node);
  }
 }
 function syncSettings(){

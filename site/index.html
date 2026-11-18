@@ -6,8 +6,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/design-tokens.css?v=0.3">
-<link rel="stylesheet" href="./assets/li-layout.css?v=0.3"><link rel="stylesheet" href="./assets/lesson-l09-hifi.css?v=0.3">
-<link rel="stylesheet" href="./assets/ui-foundations.css?v=0.3"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
+<link rel="stylesheet" href="./assets/li-layout.css?v=0.4"><link rel="stylesheet" href="./assets/lesson-l09-hifi.css?v=0.3">
+<link rel="stylesheet" href="./assets/ui-foundations.css?v=0.4"><link rel="stylesheet" href="./assets/checkin-adaptation.css?v=1"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
 <symbol id="i-tree" viewBox="0 0 24 24"><path d="m12 2 4 5h-2l4 5h-3l4 6H5l4-6H6l4-5H8zM12 18v4"/></symbol>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7c-4-3-8-3-10-2v15c3-1 7 0 10 2 3-2 7-3 10-2V5c-2-1-6-1-10 2ZM12 7v15"/></symbol>
 <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6zM15 2v5h5M9 13h8M9 17h8"/></symbol>
@@ -65,108 +65,74 @@
 <section id="page-guide" class="page" tabindex="-1"><div class="section-shell"><div class="kicker">CẨM NANG TƯ DUY</div><h1 class="display-title">Sổ Tay Thần Chú</h1><p class="intro">13 phương pháp để học, ghi nhớ và suy nghĩ. Mỗi pháp danh đều có tên học thuật gốc đi kèm.</p><div class="editorial-grid" style="margin-top:var(--li-space-4)"><div class="stack-sm"><input id="method-search" class="searchbox" type="search" placeholder="Tìm pháp danh hoặc tên học thuật (ví dụ: Method of Loci)" aria-label="Tìm trong 13 phương pháp"/><div id="method-filters" class="filters" aria-label="Bộ lọc nhóm kỹ thuật"></div></div><aside class="surface tinted guide-mentor" aria-label="Lời Lão Lý về nhịp học"><img class="guide-mentor-illustration" src="./assets/laoly-guide-rest.png" width="1024" height="1024" alt="Lão Lý ngái ngủ" loading="eager" decoding="async"/><div class="guide-mentor-copy"><span class="kicker">LÃO LÝ NHẮC KHẼ</span><p id="guide-mode-copy" aria-live="polite">“Tiểu hữu, đừng cố học hết một lượt. Chọn một cách vừa sức đã.”</p><p id="method-count" class="guide-method-count" aria-live="polite">Đang hiển thị 13 phương pháp</p></div></aside></div><div id="method-cards" class="method-grid"></div></div></section>
 <section id="page-guideDetail" class="page" tabindex="-1"><div class="section-shell"><button class="action alt" data-page="guide">← Thần Chú</button><div class="section-rule"></div><span class="kicker" id="detail-id">T01 · CHÚ GIẢI</span><h1 class="display-title" id="detail-title">Triệu Ức Chân Ngôn</h1><p id="detail-original" class="intro">Retrieval Practice / Active Recall</p><div class="editorial-grid"><article class="surface tinted"><div class="kicker">I · KHI DÙNG</div><h2 id="detail-purpose">Khi muốn tự nhớ nội dung trước khi xem lời giải.</h2><div class="section-rule"></div><div class="kicker">II · KHỞI THỨC</div><div class="path-list"><div class="path-item"><span class="path-num">01</span><p>Tự xác định điều muốn học hoặc giải quyết.</p></div><div class="path-item"><span class="path-num">02</span><p>Thử làm một ví dụ ngắn với ít trợ giúp.</p></div><div class="path-item"><span class="path-num">03</span><p>Kiểm tra hiểu lầm và điều kiện áp dụng.</p></div></div></article><aside class="surface"><div class="kicker">III · GIẢI CHÚ</div><h2>Dùng thế nào cho đúng?</h2><p>Hãy thử với một ví dụ nhỏ, rồi tự kiểm tra điều bạn hiểu.</p><div class="kicker">IV · DẪN CHỨNG</div><div class="state-note">Nguồn tham khảo đang được bổ sung.</div><button class="action alt" data-page="guide">Xem pháp khác</button></aside></div></div></section>
 <section id="page-library" class="page" tabindex="-1"><div class="section-shell">
-<div class="kicker">GÓC RIÊNG CỦA BẠN</div><h1 class="display-title">Tủ Riêng</h1>
-<p class="intro">Quay lại việc đang dở, xem những điều đã ghi nhận và nhìn lại quá trình học.</p>
+<div class="kicker">GÓC RIÊNG CỦA BẠN</div><h1 class="display-title">Tủ Riêng</h1><p class="intro">Quay lại việc đang dở, xem những điều đã ghi nhận và nhìn lại quá trình học.</p>
 <div class="stack-sm library-groups">
-<section class="library-group" aria-labelledby="library-resume-heading">
-  <div class="library-group-header"><h2 id="library-resume-heading">Quay lại</h2><p>Tìm lại hành trình đang dở.</p></div>
-  <article class="surface tinted">
-    <div class="kicker"><i data-lucide="bookmark" aria-hidden="true"></i> <span id="library-bookmark-kicker">DẤU TRANG · BẢN XEM THỬ</span></div>
-    <h3>Chưa có hành trình đã lưu</h3>
-    <p>Phiên xem thử chưa lưu tiến độ. Bạn có thể mở tình huống mẫu để khám phá cách đặt câu hỏi.</p>
-    <div class="action-row"><button class="action" data-page="research">Đào sâu ví dụ</button></div>
-  </article>
-</section>
-<section class="library-group" aria-labelledby="library-collection-heading">
-  <div class="library-group-header"><h2 id="library-collection-heading">Bộ sưu tập</h2><p>Kết luận đã xử lý và ý tưởng tự góp nhặt — hai loại ghi chép khác nhau.</p></div>
-  <div class="surface-grid cols2">
-    <article id="notebook-section" class="surface" tabindex="-1" aria-label="Bút Ký — sổ ghi chú các case đã xử lý">
-      <div class="kicker"><i data-lucide="notebook-tabs" aria-hidden="true"></i> CASE ĐÃ XỬ LÝ</div>
-      <h3>Bút Ký</h3><p class="small">Sổ ghi chú · Kết luận do bạn tự viết</p>
-      <p>Chỉ các lần Phản Chứng có phản hồi và kết luận viết lại mới xuất hiện ở đây.</p>
-      <div id="case-archive-preview" class="path-list" aria-live="polite"><div class="state-note">Chưa có ghi chép nào. Hãy thử một câu hỏi nhé.</div></div>
-      <div class="action-row"><button class="action alt" data-page="case"><i data-lucide="book-open-check" aria-hidden="true"></i> Thử Sức</button></div>
-    </article>
-    <article class="surface">
-      <div class="kicker"><i data-lucide="feather" aria-hidden="true"></i> Ý TƯỞNG BÊN NGOÀI</div>
-      <h3>Ý đã nhặt</h3><p class="small">Ghi nhanh · Chưa xác minh</p>
-      <p>Những câu hỏi và ý tưởng bạn nhặt từ sách, phim hoặc đời sống; không mặc định là bằng chứng.</p>
-      <div class="action-row"><button class="action alt" data-page="capture">Nhặt ý</button></div>
-    </article>
-  </div>
-</section>
-<section class="library-group" aria-labelledby="library-reflection-heading">
-  <div class="library-group-header"><h2 id="library-reflection-heading">Nhìn lại</h2><p>Hoạt động đã thực sự được ghi nhận, không phải điểm thông minh.</p></div>
-  <article class="surface library-activity">
-    <div><div class="kicker"><i data-lucide="chart-no-axes-column" aria-hidden="true"></i> NHẬT KÝ</div>
-    <h3>Thể trạng &amp; nhịp học</h3><p id="library-daily-preview">Xem check-in và số Bài / Vấn đề / Input theo từng ngày.</p></div>
-    <button class="action alt" data-page="dashboard">Xem Nhật Ký</button>
-  </article>
-</section>
-</div></div></section>
+<section class="library-group" aria-labelledby="library-resume-heading"><div class="library-group-header"><h2 id="library-resume-heading">Quay lại</h2><p>Tìm lại hành trình đang dở.</p></div>
+<article class="surface tinted"><div class="kicker"><i data-lucide="bookmark" aria-hidden="true"></i> DẤU TRANG</div>
+<div id="li-library-resume-empty"><h3>Chưa có hành trình đã lưu</h3><p>Nếu chưa đánh dấu câu hỏi nào, bạn có thể khám phá tình huống mẫu trước.</p><button class="action" data-page="research">Đào sâu ví dụ</button></div>
+</article></section>
+<section class="library-group" aria-labelledby="library-collection-heading"><div class="library-group-header"><h2 id="library-collection-heading">Bộ sưu tập</h2><p>Những kết luận đã xử lý và ý tưởng tự góp nhặt.</p></div>
+<div class="surface-grid cols2">
+<article id="notebook-section" class="surface" tabindex="-1" aria-label="Bút Ký — sổ ghi chú các case đã xử lý"><div class="kicker"><i data-lucide="notebook-tabs" aria-hidden="true"></i> CASE ĐÃ XỬ LÝ</div><h3>Bút Ký</h3><p class="small">Sổ ghi chú · Kết luận do bạn tự viết</p><p>Những lần Phản Chứng có phản hồi và kết luận viết lại.</p><div id="case-archive-preview" class="path-list" aria-live="polite"><div class="state-note">Chưa có ghi chép nào. Hãy thử một câu hỏi nhé.</div></div><div class="action-row"><button class="action alt" data-page="case"><i data-lucide="book-open-check" aria-hidden="true"></i> Thử Sức</button></div></article>
+<article class="surface"><div class="kicker"><i data-lucide="feather" aria-hidden="true"></i> Ý TƯỞNG BÊN NGOÀI</div><h3>Ý đã nhặt</h3><p class="small">Ghi nhanh · Chưa xác minh</p><p>Những câu hỏi từ sách, phim hoặc đời sống; không mặc định là bằng chứng.</p><button class="action alt" data-page="capture">Nhặt ý</button></article>
+</div></section>
+<section class="library-group" aria-labelledby="library-reflection-heading"><div class="library-group-header"><h2 id="library-reflection-heading">Nhìn lại</h2><p>Theo dõi thể trạng tự khai và hoạt động đã được ghi nhận.</p></div>
+<article class="surface library-activity"><div><div class="kicker"><i data-lucide="calendar-days" aria-hidden="true"></i> NHẬT KÝ THEO NGÀY</div><h3>Thể trạng × Nhịp học</h3><p>Ngủ, vận động, nghỉ ngơi, nhịp đã áp dụng và số Bài / Vấn đề / Input mỗi ngày.</p></div><button class="action alt" data-page="dashboard">Xem Nhật Ký</button></article>
+</section></div></div></section>
 <section id="page-dashboard" class="page" tabindex="-1"><div class="section-shell">
 <button class="action alt" data-page="library">← Tủ Riêng</button>
-<div class="kicker">NHÌN LẠI · TỦ RIÊNG</div><h1 class="display-title">Nhật Ký</h1>
-<p class="intro">Đặt trạng thái tự báo cáo cạnh nhịp học và hoạt động mỗi ngày. Chỉ ghi dữ liệu trên thiết bị này nếu bạn cho phép.</p>
-<div class="library-dashboard">
-  <article class="surface tinted" id="daily-consent-panel">
-    <div class="kicker"><i data-lucide="shield-check" aria-hidden="true"></i> QUYỀN GHI NHẬN</div>
-    <label class="select-row" for="daily-tracking-toggle"><span><b>Bật lưu lịch trên thiết bị</b><span class="small library-label-detail">Mặc định tắt. Tắt sẽ dừng ghi mới, không xóa lịch cũ.</span></span><input id="daily-tracking-toggle" type="checkbox"></label>
-    <p class="small" id="daily-tracking-status" role="status" aria-live="polite">Chưa bật ghi nhận.</p>
-    <div class="action-row"><button class="action alt" id="clear-daily-history" type="button">Xóa lịch đã ghi</button><button class="action alt" id="open-dashboard-checkin" type="button">Check-in hôm nay</button></div>
-    <p class="small">Tự báo cáo không phải chẩn đoán; số hoạt động không phản ánh mức độ thông minh hay hiệu quả học. Không có đồng bộ đám mây.</p>
-  </article>
-  <div class="dashboard-calendar surface">
-    <div class="library-group-header">
-      <div><div class="kicker">LỊCH THEO NGÀY</div><h2 id="daily-month-title">Tháng hiện tại</h2></div>
-      <div class="action-row"><button type="button" class="action alt" id="daily-month-prev" aria-label="Tháng trước"><i data-lucide="chevron-left" aria-hidden="true"></i></button><button type="button" class="action alt" id="daily-month-today">Hôm nay</button><button type="button" class="action alt" id="daily-month-next" aria-label="Tháng sau"><i data-lucide="chevron-right" aria-hidden="true"></i></button></div>
-    </div>
-    <div id="daily-calendar-grid" class="daily-calendar-grid" aria-label="Chọn ngày để xem nhật ký"></div>
-    <p class="small">Mỗi ô: số hoạt động đã ghi · chấm nhỏ khi có check-in. Ô trống = chưa có ghi nhận, không đồng nghĩa không học.</p>
-    <div id="daily-month-summary" class="state-note" aria-live="polite">Chưa có dữ liệu.</div>
-  </div>
-  <div class="surface-grid cols2 daily-compare">
-    <article class="surface" aria-labelledby="physical-day-title">
-      <div class="kicker"><i data-lucide="heart-pulse" aria-hidden="true"></i> 01 · PHYSICAL CHECK-IN</div>
-      <h2 id="physical-day-title">Thể trạng tự báo cáo</h2><p class="small" id="daily-selected-date-physical">Chọn ngày trong lịch</p>
-      <div class="path-list" id="daily-physical-detail" aria-live="polite"><div class="state-note">Chưa có check-in.</div></div>
-    </article>
-    <article class="surface" aria-labelledby="learning-day-title">
-      <div class="kicker"><i data-lucide="book-open-check" aria-hidden="true"></i> 02 · NHỊP HỌC</div>
-      <h2 id="learning-day-title">Hoạt động học</h2><p class="small" id="daily-selected-date-learning">Chọn ngày trong lịch</p>
-      <p id="daily-study-mode" class="status-chip">Chưa ghi nhận nhịp học</p>
-      <div class="daily-counts" id="daily-activity-counts" aria-live="polite">
-        <div><b>—</b><span>Bài</span></div><div><b>—</b><span>Vấn đề</span></div><div><b>—</b><span>Input</span></div>
-      </div>
-      <p class="small">Bài: nộp bài thật · Vấn đề: mở nhánh nghiên cứu · Input: lưu kết luận. Tính mục duy nhất trong ngày, không tính lượt xem hoặc nhập chưa lưu.</p>
-    </article>
-  </div>
-  <p class="state-note">Hai dòng dữ liệu chỉ để đối chiếu, chưa đủ chứng minh thể trạng làm tăng hoặc giảm hiệu quả học. Đây là ghi nhận hành vi, không phải đo năng lực nhận thức.</p>
+<div class="kicker" style="margin-top:var(--li-space-6)">THEO DÕI THEO NGÀY</div><h1 class="display-title">Nhật Ký</h1>
+<p class="intro">Xem thể trạng bạn tự check-in, nhịp học đã áp dụng và các hoạt động thực sự ghi nhận. Không phải điểm sức khỏe hay năng lực học tập.</p>
+<div class="stack-sm li-diary-layout">
+<article class="surface tinted li-diary-privacy"><div><div class="kicker">QUYỀN RIÊNG TƯ</div><h2>Lưu trên thiết bị</h2><p id="li-diary-consent-status" class="small" role="status" aria-live="polite">Chưa bật lưu lịch.</p></div>
+<div class="action-row"><button class="action" type="button" id="li-diary-consent">Bật lưu lịch</button><button class="action alt" type="button" id="li-diary-delete">Xóa lịch</button></div>
+<p class="small">Mặc định tắt. Chỉ các Check-in và hoạt động <b>sau khi bật</b> mới được ghi. Dừng ghi giữ dữ liệu cũ; Xóa lịch xóa dữ liệu theo ngày. Không có cloud sync.</p></article>
+<article class="surface li-diary-month">
+<div class="li-diary-month-heading"><div><div class="kicker">LỊCH HOẠT ĐỘNG</div><h2 id="li-diary-month">Tháng hiện tại</h2></div><div class="action-row"><button class="action alt" type="button" id="li-diary-prev" aria-label="Tháng trước">←</button><button class="action alt" type="button" id="li-diary-next" aria-label="Tháng sau">→</button></div></div>
+<div class="li-diary-weekdays" aria-hidden="true"><span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span></div>
+<div class="li-diary-calendar" id="li-diary-calendar" role="group" aria-label="Chọn ngày trong tháng"></div>
+<p class="small" id="li-diary-month-total">Chưa có dữ liệu được ghi nhận.</p>
+<div class="kicker">SỐ HOẠT ĐỘNG TỪNG NGÀY</div><div id="li-diary-bars" class="li-diary-bars" role="group" aria-label="Biểu đồ tổng số hoạt động từng ngày trong tháng"></div>
+<p class="small">Cột biểu thị Bài + Vấn đề + Input. Ngày chưa có nhật ký để trống, không tự tính thành 0.</p>
+</article>
+<section class="li-diary-detail" aria-labelledby="li-diary-selected">
+<h2 id="li-diary-selected">Hôm nay</h2><div class="surface-grid cols2">
+<article class="surface"><div class="kicker">01 · CHECK-IN THỂ TRẠNG</div><div class="li-diary-facts">
+<div><span>Ngủ đủ</span><strong id="li-diary-sleep">—</strong></div><div><span>Vận động nhẹ</span><strong id="li-diary-move">—</strong></div><div><span>Nghỉ ngơi</span><strong id="li-diary-rest">—</strong></div><div><span>Số lần Check-in</span><strong id="li-diary-checkins">—</strong></div></div></article>
+<article class="surface"><div class="kicker">02 · NHỊP HỌC</div><h3 id="li-diary-mode">—</h3><p class="small">Nhịp cuối cùng được áp dụng trong ngày; không suy ra mức năng lượng từ số activity.</p><button class="action alt" type="button" id="li-diary-checkin-now">Check-in hôm nay</button></article>
+</div>
+<div class="surface"><div class="kicker">03 · HOẠT ĐỘNG THỰC TẾ</div><div class="li-diary-counters"><div><strong id="li-diary-count-lesson">—</strong><span>Bài</span><small>Đã nộp</small></div><div><strong id="li-diary-count-branch">—</strong><span>Vấn đề</span><small>Nhánh đã mở</small></div><div><strong id="li-diary-count-input">—</strong><span>Input</span><small>Ghi chú đã lưu</small></div></div><p id="li-diary-day-status" class="small" role="status">Chưa có dữ liệu ngày này.</p></div>
+</section>
 </div></div></section>
-<section id="page-settings" class="page" tabindex="-1"><div class="section-shell"><button class="utility-back" type="button" data-nav-back aria-label="Quay lại màn trước"><i data-lucide="arrow-left" aria-hidden="true"></i><span>Quay lại</span></button><div class="kicker">CÀI ĐẶT</div><h1 class="display-title">Cài đặt</h1><p class="intro">Điều chỉnh nhịp học và cách Lão Lý đồng hành.</p><div class="editorial-grid"><div class="stack-sm"><article class="surface"><div class="kicker">DỮ LIỆU &amp; ĐỒNG BỘ</div><h2>Lưu trữ</h2><div class="path-list"><div class="path-item"><div><b>Lưu trên thiết bị</b><p class="small">Đang lưu trong trình duyệt này.</p></div></div><div class="path-item"><div><b>Đồng bộ giữa các thiết bị</b><p class="small">Chưa hỗ trợ.</p></div></div></div><label class="select-row" for="settings-daily-tracking">Bật lưu lịch thể trạng &amp; hoạt động <input type="checkbox" id="settings-daily-tracking"></label><button class="action alt" type="button" data-page="dashboard">Quản lý Nhật Ký</button><div class="settings-data-actions"><button class="action alt" id="export-personal-data" type="button"><i data-lucide="download" aria-hidden="true"></i> Xuất bản sao</button><button class="action alt" id="import-personal-trigger" type="button">Nhập bản sao</button><input id="import-personal-data" type="file" accept=".json,application/json" aria-label="Chọn bản sao JSON li." class="visually-hidden-file"></div><p class="small">Bản sao JSON chứa Bút Ký, Dấu Trang, bản nháp và Nhật Ký tự báo cáo (nếu có). Giữ tệp riêng tư trước khi đổi thiết bị hoặc xóa dữ liệu.</p></article><article class="surface" id="study-mode-settings"><div class="kicker">NHỊP HỌC</div><h2>Chọn nhịp học</h2><p class="small">Lão Lý đồng hành theo nhịp bạn chọn.</p><div class="ly-mode-grid" role="group" aria-label="Chọn một trong bốn nhịp học"><button type="button" class="ly-mode-choice" data-ly-mode="start" aria-pressed="true" aria-label="Vào nhịp · Bắt đầu nhẹ nhàng"><img src="./assets/laoly-mode-start.png" width="42" height="42" alt=""><span>Vào nhịp</span></button><button type="button" class="ly-mode-choice" data-ly-mode="focus" aria-pressed="false" aria-label="Đào sâu · Khám phá đầy đủ"><img src="./assets/laoly-mode-focus.png" width="42" height="42" alt=""><span>Đào sâu</span></button><button type="button" class="ly-mode-choice" data-ly-mode="overload" aria-pressed="false" aria-label="Quá tải · Giảm gợi ý và cho phép nghỉ"><img src="./assets/laoly-mode-overload.png" width="42" height="42" alt=""><span>Quá tải</span></button><button type="button" class="ly-mode-choice" data-ly-mode="recover" aria-pressed="false" aria-label="Hồi trí · Quay lại với nhịp nhẹ"><img src="./assets/laoly-mode-recover.png" width="42" height="42" alt=""><span>Hồi trí</span></button></div><div id="mode-feedback" class="state-note" aria-live="polite">Gợi ý 6 phương pháp để bắt đầu. Có thể tìm đủ 13 phương pháp.</div></article>
-<article class="surface"><div class="kicker">NHẮC NHỞ</div><h2>Nhắc nhở riêng</h2><p>Chọn lời nhắc bạn muốn nhận.</p><label class="select-row">Nhắc nghỉ ngơi <input type="checkbox" class="preview-toggle" /></label><label class="select-row">Nhắc vận động <input type="checkbox" class="preview-toggle" /></label><label class="select-row">Nhắc lịch ngủ <input type="checkbox" class="preview-toggle" /></label><p class="state-note">Lời nhắc trên thiết bị hiện chưa khả dụng.</p></article></div>
-<div class="stack-sm"><article class="surface" id="settings-buddy-card"><div class="kicker">NGƯỜI TRÔNG COI THƯ VIỆN</div><h2>Lão Lý</h2><p>Lão hơi tự phụ, đãng trí và có thể nhận sai khi bị phản bác bằng lý lẽ hợp lệ.</p><label class="select-row">Giọng Dịu <input type="checkbox" id="calm-toggle" aria-label="Giọng Dịu — giảm cà khịa, giữ nguyên giải thích"/></label><label class="select-row">Im Lặng <input type="checkbox" id="mute-toggle" aria-label="Im Lặng — tắt lời thoại Lão Lý, không tắt nội dung chính"/></label><div class="settings-buddy-footer"><button class="action alt" data-buddy="1">Xem mẫu câu thoại</button><img class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div></article><article class="surface"><div class="kicker">DỮ LIỆU & RIÊNG TƯ</div><h2>Kiểm soát thuộc về bạn</h2><p>Lão Lý hiện dùng hội thoại có sẵn. Ghi chép của bạn không tự động được gửi tới dịch vụ AI bên ngoài.</p></article></div></div></div></section>
+<section id="page-settings" class="page" tabindex="-1"><div class="section-shell"><button class="utility-back" type="button" data-nav-back aria-label="Quay lại màn trước"><i data-lucide="arrow-left" aria-hidden="true"></i><span>Quay lại</span></button><div class="kicker">CÀI ĐẶT</div><h1 class="display-title">Cài đặt</h1><p class="intro">Tùy chỉnh cách học, cách Lão Lý trò chuyện và dữ liệu của bạn.</p><div class="settings-groups"><div class="settings-group" role="group" aria-labelledby="settings-personalization"><div class="settings-group-heading"><div class="kicker">01 · CÁ NHÂN HÓA</div><h2 id="settings-personalization">Trải nghiệm của bạn</h2><p class="small">Chọn nhịp học và cách trò chuyện cùng Lão Lý.</p></div><div class="settings-group-grid"><article class="surface" id="study-mode-settings"><div class="kicker">HỌC TẬP</div><h2>Nhịp học của bạn</h2><p class="small">Lão Lý đồng hành theo nhịp bạn chọn.</p><div class="ly-mode-grid" role="group" aria-label="Chọn một trong bốn nhịp học"><button type="button" class="ly-mode-choice" data-ly-mode="start" aria-pressed="true" aria-label="Vào nhịp · Bắt đầu nhẹ nhàng"><img src="./assets/laoly-mode-start.png" width="42" height="42" alt=""><span>Vào nhịp</span></button><button type="button" class="ly-mode-choice" data-ly-mode="focus" aria-pressed="false" aria-label="Đào sâu · Khám phá đầy đủ"><img src="./assets/laoly-mode-focus.png" width="42" height="42" alt=""><span>Đào sâu</span></button><button type="button" class="ly-mode-choice" data-ly-mode="overload" aria-pressed="false" aria-label="Quá tải · Giảm gợi ý và cho phép nghỉ"><img src="./assets/laoly-mode-overload.png" width="42" height="42" alt=""><span>Quá tải</span></button><button type="button" class="ly-mode-choice" data-ly-mode="recover" aria-pressed="false" aria-label="Hồi trí · Quay lại với nhịp nhẹ"><img src="./assets/laoly-mode-recover.png" width="42" height="42" alt=""><span>Hồi trí</span></button></div><div id="mode-feedback" class="state-note" aria-live="polite">Gợi ý 6 phương pháp để bắt đầu. Có thể tìm đủ 13 phương pháp.</div></article><article class="surface" id="settings-buddy-card"><div class="kicker">NGƯỜI ĐỒNG HÀNH</div><div class="settings-buddy-heading"><h2>Lão Lý</h2><img class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div><p>Lão hơi tự phụ, đãng trí và có thể nhận sai khi bị phản bác bằng lý lẽ hợp lệ.</p><label class="select-row">Giọng Dịu <input type="checkbox" id="calm-toggle" aria-label="Giọng Dịu — giảm cà khịa, giữ nguyên giải thích"/></label><label class="select-row">Im Lặng <input type="checkbox" id="mute-toggle" aria-label="Im Lặng — tắt lời thoại Lão Lý, không tắt nội dung chính"/></label><div class="buddy-address-settings" role="group" aria-labelledby="buddy-address-heading"><h3 id="buddy-address-heading">Lão gọi bạn thế nào?</h3><p class="small">Ba cách xưng hô theo tâm trạng của lão. Để trống để giữ cách gọi mặc định.</p><div class="buddy-address-grid"><label class="buddy-address-field"><span>Thân tình · Tiểu hữu</span><input type="text" id="buddy-name-warm" data-buddy-name="warm" maxlength="24" autocomplete="off" placeholder="Tiểu hữu" aria-label="Cách gọi khi lão thân tình"></label><label class="buddy-address-field"><span>Cà khịa · Nhóc</span><input type="text" id="buddy-name-teasing" data-buddy-name="teasing" maxlength="24" autocomplete="off" placeholder="Nhóc" aria-label="Cách gọi khi lão cà khịa"></label><label class="buddy-address-field"><span>Nghiêm nghị · Ngươi</span><input type="text" id="buddy-name-serious" data-buddy-name="serious" maxlength="24" autocomplete="off" placeholder="Ngươi" aria-label="Cách gọi khi lão nghiêm nghị"></label></div><div class="buddy-address-preview" role="group" aria-label="Xem thử cách gọi theo ba tâm trạng"><p id="buddy-preview-warm"></p><p id="buddy-preview-teasing"></p><p id="buddy-preview-serious"></p></div><div class="buddy-address-actions"><p class="small" id="buddy-name-feedback" role="status" aria-live="polite">Chỉ thay cách gọi trong lời Lão Lý, không đổi nội dung học.</p><button type="button" class="action alt" id="buddy-names-reset">Dùng cách gọi mặc định</button></div></div></article></div></div><div class="settings-group" role="group" aria-labelledby="settings-reminders"><div class="settings-group-heading"><div class="kicker">02 · NHẮC NHỞ</div><h2 id="settings-reminders">Lời nhắc</h2><p class="small">Thông báo vẫn là tính năng dự kiến, chưa kích hoạt.</p></div><div class="settings-group-grid"><article class="surface"><div class="kicker">NHẮC NHỞ</div><h2>Nhắc nhở riêng</h2><p>Những loại lời nhắc dự kiến. Chưa thể bật thông báo trên thiết bị.</p><label class="select-row">Nhắc nghỉ ngơi <input type="checkbox" class="preview-toggle" /></label><label class="select-row">Nhắc vận động <input type="checkbox" class="preview-toggle" /></label><label class="select-row">Nhắc lịch ngủ <input type="checkbox" class="preview-toggle" /></label><p class="state-note">Lời nhắc trên thiết bị hiện chưa khả dụng.</p></article></div></div><div class="settings-group" role="group" aria-labelledby="settings-data"><div class="settings-group-heading"><div class="kicker">03 · DỮ LIỆU & RIÊNG TƯ</div><h2 id="settings-data">Dữ liệu của bạn</h2><p class="small">Xem nơi lưu trữ, quản lý bản sao và quyền riêng tư.</p></div><div class="settings-group-grid"><article class="surface"><div class="kicker">SAO LƯU</div><h2>Dữ liệu trên thiết bị</h2><div class="path-list"><div class="path-item"><div><b>Lưu trên thiết bị</b><p class="small">Đang lưu trong trình duyệt này.</p></div></div><div class="path-item"><div><b>Đồng bộ giữa các thiết bị</b><p class="small">Chưa hỗ trợ.</p></div></div></div><div class="settings-data-actions"><button class="action alt" id="export-personal-data" type="button"><i data-lucide="download" aria-hidden="true"></i> Xuất bản sao</button><button class="action alt" id="import-personal-trigger" type="button">Nhập bản sao</button><input id="import-personal-data" type="file" accept=".json,application/json" aria-label="Chọn bản sao JSON li." class="visually-hidden-file"></div><p class="small">Trước khi xóa dữ liệu trang web hoặc đổi thiết bị, website, hãy xuất bản sao để có thể nhập lại ghi chép.</p></article><article class="surface"><div class="kicker">QUYỀN RIÊNG TƯ</div><h2>Kiểm soát thuộc về bạn</h2><p>Lão Lý hiện dùng hội thoại có sẵn. Ghi chép của bạn không tự động được gửi tới dịch vụ AI bên ngoài.</p></article></div></div></div></div></section>
 <section id="page-search" class="page" tabindex="-1"><div class="section-shell"><button class="utility-back" type="button" data-nav-back aria-label="Quay lại màn trước"><i data-lucide="arrow-left" aria-hidden="true"></i><span>Quay lại</span></button><div class="kicker">TÌM TRONG THƯ VIỆN</div><h1 class="display-title">Tra Cứu</h1><input class="searchbox" id="global-search" placeholder="Ví dụ: Retrieval Practice, Sociology, Sampling Bias"/><div class="surface" style="margin-top:20px"><h2>Kết quả tra cứu</h2><div id="global-results" class="path-list">Nhập điều bạn muốn tìm.</div></div></div></section>
 <section id="page-capture" class="page" tabindex="-1"><div class="section-shell"><button class="utility-back" type="button" data-nav-back aria-label="Quay lại màn trước"><i data-lucide="arrow-left" aria-hidden="true"></i><span>Quay lại</span></button><div class="kicker">NHẶT Ý</div><h1 class="display-title">Nhặt ý</h1><div class="editorial-grid"><article class="surface tinted"><h2>Nhặt một ý cần kiểm chứng</h2><label for="capture-note" class="small">Ý nghĩ, câu sách hoặc nhận định chưa được kiểm chứng</label><textarea id="capture-note" class="text-editor" placeholder="Mình vừa đọc thấy…"></textarea><div class="action-row"><button class="action" data-demo="Chưa lưu được ý này. Hãy sao chép trước khi rời trang.">Nhặt ý</button></div></article><article class="surface"><h2>Đừng nhầm chuyện được kể với bằng chứng.</h2><p>Giữ lại câu hỏi và nguồn bạn gặp để tiện kiểm chứng sau.</p><span class="status-chip">Nguồn cá nhân · Chưa xác minh</span></article></div></div></section>
 </main><footer class="footer"><b>li. (理)</b><span class="footer-tagline">THE WORLD OF KNOWING WHY</span></footer>
 </div><nav class="mobile-nav" aria-label="Điều hướng chính mobile"><button class="nav-btn" data-page="home" aria-label="Đại Sảnh — Trang chủ" title="Trang chủ"><i data-lucide="trees" class="icon " aria-hidden="true"></i>Đại Sảnh</button><button class="nav-btn" data-page="catalog" aria-label="Tàng Thư — Khám phá ngành học" title="Khám phá ngành học"><i data-lucide="library-big" class="icon " aria-hidden="true"></i>Tàng Thư</button><button class="nav-btn" data-page="guide" aria-label="Thần Chú — 13 phương pháp học" title="13 phương pháp học"><i data-lucide="book-open" class="icon " aria-hidden="true"></i>Thần Chú</button><button class="nav-btn" data-page="library" aria-label="Tủ Riêng — Hành trình và case cá nhân" title="Hành trình và case cá nhân"><i data-lucide="bookmark" class="icon " aria-hidden="true"></i>Tủ Riêng</button></nav>
 <div class="laoly-support"><button id="laoly-fab" type="button" aria-label="Trò chuyện với Lão Lý" title="Lão Lý"><span class="laoly-face smallface" aria-hidden="true"><img src="./assets/laoly-neutral.png" alt="" width="128" height="128" class="laoly-approved-img" id="laoly-current-icon" loading="eager" decoding="async"></span></button></div><div id="buddy-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="buddy-title"><div class="buddy-shell"><div class="dialog"><h2 id="buddy-title"><img id="buddy-title-avatar" src="./assets/laoly-neutral.png" alt="" width="48" height="48" loading="eager" decoding="async"> Lão Lý</h2><div id="buddy-scroll" class="buddy-scroll" tabindex="0" role="region" aria-label="Nội dung hội thoại với Lão Lý"><p id="buddy-text" role="status" aria-live="polite">Hừm… câu này đáng để lão bỏ dở giấc ngủ trăm năm.</p><aside id="buddy-quote" class="ly-cultural" hidden aria-label="Trích dẫn văn hóa và xuất xứ"><div id="buddy-quote-original" class="ly-original"></div><div id="buddy-quote-gloss" class="small"></div><div class="small"><span id="buddy-quote-meta"></span> · <a id="buddy-quote-link" href="#" target="_blank" rel="noopener noreferrer">Xem xuất xứ</a></div></aside><div id="buddy-debate" class="ly-debate" hidden><p class="small">Lão hỏi toàn người dùng đang hoạt động, rồi kết luận 90% toàn thị trường hài lòng. Ngươi bắt được chỗ suy rộng không?</p><div class="action-row"><button class="action alt" id="buddy-wrong">Đúng, có thể suy ra thị trường</button><button class="action" id="buddy-right">Chưa, chỉ biết nhóm được hỏi</button></div></div></div><div class="action-row buddy-actions"><button class="action alt" id="buddy-question"><i data-lucide="search-check" aria-hidden="true"></i> Lão hỏi ngược</button><button class="action alt" id="buddy-challenge"><i data-lucide="git-branch" aria-hidden="true"></i> Phản biện lão</button><button class="action alt" id="buddy-forget"><i data-lucide="brain" aria-hidden="true"></i> Lão quên gì rồi?</button><button class="action" id="close-modal">Đóng</button></div></div></div></div>
-<div id="checkin-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="checkin-title">
-<div class="dialog"><div class="kicker">CHECK-IN TỰ NGUYỆN</div><h2 id="checkin-title">Hôm nay thế nào?</h2>
-<p>Ba câu hỏi về cảm nhận của bạn, không phải đo sức khỏe khách quan. Có thể bỏ qua bất kỳ câu nào.</p>
-<label class="select-row">Đã ngủ đủ theo nhu cầu chưa?
-<select id="checkin-sleep"><option value="">Chưa trả lời</option><option value="yes">Có</option><option value="no">Chưa</option><option value="unsure">Không rõ</option></select></label>
-<label class="select-row">Đã vận động nhẹ chưa?
-<select id="checkin-move"><option value="">Chưa trả lời</option><option value="yes">Có</option><option value="no">Chưa</option><option value="unsure">Không rõ</option></select></label>
-<label class="select-row">Đã có lúc nghỉ ngơi chưa?
-<select id="checkin-rest"><option value="">Chưa trả lời</option><option value="yes">Có</option><option value="no">Chưa</option><option value="unsure">Không rõ</option></select></label>
-<p class="state-note" id="checkin-guidance" aria-live="polite">Chọn câu trả lời để xem một gợi ý nhịp học. Bạn vẫn là người quyết định.</p>
-<p class="small">Ghi nhận vào Nhật Ký chỉ khi đã bật “Lưu lịch” và chọn ít nhất một câu.</p>
-<div class="action-row"><button class="action alt" id="close-checkin">Bỏ qua</button><button class="action alt" id="record-checkin">Ghi nhận</button><button class="action" id="suggest-light">Dùng nhịp gợi ý</button></div>
-</div></div>
+<div id="checkin-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="checkin-title" aria-describedby="checkin-description"><div class="dialog"><div class="kicker">L1 · THỂ TRẠNG → NHỊP HỌC</div><h2 id="checkin-title">Hôm nay cơ thể ra sao?</h2><p id="checkin-description">Ba mục thể trạng là phần chính của check-in. Trả lời từng mục rồi li. mới gợi ý nhịp học; hoặc bỏ qua mà không lưu gì.</p>
+<div class="checkin-physical" role="group" aria-label="Ba câu hỏi thể trạng bắt buộc khi áp dụng check-in">
+<label class="checkin-physical-field" for="checkin-sleep"><span>1. Đã ngủ tương đối đủ?</span><select id="checkin-sleep" class="checkin-physical-select" required><option value="">Chọn câu trả lời</option><option value="yes">Có</option><option value="no">Chưa</option><option value="unsure">Không rõ</option></select></label>
+<label class="checkin-physical-field" for="checkin-move"><span>2. Đã vận động nhẹ hôm nay?</span><select id="checkin-move" class="checkin-physical-select" required><option value="">Chọn câu trả lời</option><option value="yes">Có</option><option value="no">Chưa</option><option value="unsure">Không rõ</option></select></label>
+<label class="checkin-physical-field" for="checkin-rest"><span>3. Đã có lúc nghỉ ngơi hôm nay?</span><select id="checkin-rest" class="checkin-physical-select" required><option value="">Chọn câu trả lời</option><option value="yes">Có</option><option value="no">Chưa</option><option value="unsure">Không rõ</option></select></label>
+</div>
+<details class="checkin-context"><summary>Cảm nhận hiện tại (bổ sung, không bắt buộc)</summary><p>Năng lượng và tập trung chỉ giúp điều chỉnh gợi ý. Ba câu thể trạng phía trên luôn được ưu tiên.</p>
+<fieldset class="checkin-question"><legend>Năng lượng lúc này</legend><div class="checkin-choices">
+<label class="checkin-choice"><input type="radio" name="checkin-energy" value="high"><span>Dồi dào</span></label>
+<label class="checkin-choice"><input type="radio" name="checkin-energy" value="medium"><span>Vừa đủ</span></label>
+<label class="checkin-choice"><input type="radio" name="checkin-energy" value="low"><span>Đang cạn</span></label>
+</div></fieldset>
+<fieldset class="checkin-question"><legend>Khả năng tập trung</legend><div class="checkin-choices">
+<label class="checkin-choice"><input type="radio" name="checkin-attention" value="steady"><span>Rõ ràng</span></label>
+<label class="checkin-choice"><input type="radio" name="checkin-attention" value="warming"><span>Chập chờn</span></label>
+<label class="checkin-choice"><input type="radio" name="checkin-attention" value="hard"><span>Rất khó</span></label>
+</div></fieldset></details>
+<p id="checkin-recommendation" class="state-note checkin-result" role="status" aria-live="polite">Trả lời đủ ba mục thể trạng để xem nhịp học gợi ý.</p>
+<label class="checkin-override-label" for="checkin-override">Muốn tự chọn nhịp khác?</label><select id="checkin-override" class="checkin-override"><option value="">Theo gợi ý</option><option value="start">Vào nhịp</option><option value="focus">Đào sâu</option><option value="overload">Quá tải</option><option value="recover">Hồi trí</option></select>
+<p class="checkin-privacy">Mặc định câu trả lời chỉ giữ trong phiên. Nếu bạn bật Lưu lịch tại Nhật Ký, Check-in tiếp theo và nhịp đã áp dụng sẽ được ghi riêng trên thiết bị; không gửi máy chủ.</p>
+<div class="action-row checkin-actions"><button class="action alt" type="button" id="close-checkin">Bỏ qua</button><button class="action" type="button" id="apply-checkin" disabled>Áp dụng nhịp học</button></div></div></div>
 <div id="toast" role="status" aria-live="polite" style="position:fixed;z-index:100;bottom:89px;left:50%;transform:translateX(-50%);display:none;max-width:92vw;background:var(--forest);color:var(--cream);padding:var(--li-space-3);border:1px solid var(--sage);font-size:var(--li-type-support)"></div>
 <script src="./assets/lucide.min.js"></script>
-<script src="./assets/li-daily-dashboard.js"></script>
 <script>
 const methods=[["T01","Triệu Ức Chân Ngôn","Retrieval Practice / Active Recall","Tự nhớ trước khi xem đáp án","Ký Ức Thuật"],["T02","Thời Ấn Hồi Ức","Spaced Repetition / Distributed Practice","Ôn thứ đã học theo thời điểm","Ký Ức Thuật"],["T13","Cung Lộ Tàng Ức","Method of Loci / Memory Palace","Gắn điều cần nhớ vào những địa điểm quen thuộc","Ký Ức Thuật"],["T03","Minh Mẫu Tiệm Ẩn","Worked Examples & Guidance Fading","Nhìn ví dụ, giảm gợi ý, tự làm","Minh Giải Thuật"],["T04","Tự Giải Khai Minh","Guided Self-Explanation","Giải thích cơ chế bằng lời mình","Minh Giải Thuật"],["T05","Truy Nguyên Vấn Đạo","Elaborative Interrogation","Hỏi nguyên nhân và điều kiện","Minh Giải Thuật"],["T06","Song Tượng Phân Minh","Compare–Contrast / Interleaved Discrimination","Phân biệt hai dạng đã biết","Minh Giải Thuật"],["T07","Tiền Đề Giám Định","Logical Inference & Premise Checking","Kiểm tra tiền đề và kết luận","Luận Chứng Thuật"],["T08","Luận Ảnh Phản Chiếu","Argument Mapping & Counterevidence","Bóc lập luận, chứng cứ và phản biện","Luận Chứng Thuật"],["T09","Truy Nguyên Giám Chứng","Source Criticism & Evidence Appraisal","Rà nguồn và độ chắc chắn","Luận Chứng Thuật"],["T10","Phân Giải Giới Vực","Problem Decomposition & Boundary Tests","Chia vấn đề, thử điều kiện biên","Phá Giải Thuật"],["T11","Trạch Pháp Minh Tâm","Method Fit & Metacognitive Awareness","Chọn kỹ thuật đúng việc","Tự Chủ Thuật"],["T12","Quy Tâm Tiếp Mạch","Meaningful Focus & Attention Re-entry","Quay lại phần đang làm","Tự Chủ Thuật"]];
 const categories=["Tất cả","Ký Ức Thuật","Minh Giải Thuật","Luận Chứng Thuật","Phá Giải Thuật","Tự Chủ Thuật"];
@@ -177,6 +143,83 @@ const STUDY_MODES={
  overload:{label:"Quá tải",image:"./assets/laoly-mode-overload.png",suggestions:["T01","T04","T12"],feedback:"Chỉ gợi ý 3 phương pháp. Không cần hoàn thành gì cả; nghỉ cũng được.",guide:"“Đầu đã chật thì bớt đi, tiểu hữu. Muốn nghỉ cứ nghỉ, chữ nghĩa không chạy mất.”"},
  recover:{label:"Hồi trí",image:"./assets/laoly-mode-recover.png",suggestions:["T01","T03","T04","T07","T11","T12"],feedback:"Gợi ý 6 phương pháp để quay lại từ từ. Có thể tìm đủ 13 phương pháp.",guide:"“Cứ lấy lại nhịp từng chút thôi, tiểu hữu. Lão đã chọn vài phép nhẹ nhàng.”"}
 };
+/* Learner-chosen addresses: the canonical three are Tiểu hữu / Nhóc / Ngươi.
+   These are character vocatives, NOT the four study-energy modes or the earned Nhà thông thái title. */
+const LI_BUDDY_NAMES_KEY="li.buddy-address.v1";
+const LI_BUDDY_DEFAULT_NAMES={warm:"Tiểu hữu",teasing:"Nhóc",serious:"Ngươi"};
+function liNormalizeBuddyName(value){
+ if(typeof value!=="string")return "";
+ return value.replace(/[\u0000-\u001f\u007f]/g," ").replace(/\s+/g," ").trim().slice(0,24);
+}
+function liRestoreBuddyNames(){
+ try{
+  const raw=window.localStorage.getItem(LI_BUDDY_NAMES_KEY);
+  const parsed=raw?JSON.parse(raw):{};
+  if(!parsed||typeof parsed!=="object"||Array.isArray(parsed))return {warm:"",teasing:"",serious:""};
+  return Object.fromEntries(Object.keys(LI_BUDDY_DEFAULT_NAMES).map(k=>[k,liNormalizeBuddyName(parsed[k])]));
+ }catch(e){return {warm:"",teasing:"",serious:""}}
+}
+let liBuddyNames=liRestoreBuddyNames();
+function liBuddyLine(line){
+ if(typeof line!=="string")return line;
+ return line.replace(/Tiểu hữu|tiểu hữu|Nhóc|nhóc|Ngươi|ngươi/g,word=>{
+  const key=word.toLocaleLowerCase("vi")==="tiểu hữu"?"warm":word.toLocaleLowerCase("vi")==="nhóc"?"teasing":"serious";
+  return liBuddyNames[key]||word;
+ });
+}
+window.liAddressLine=liBuddyLine;
+function liRenderBuddyNamePreview(){
+ const examples={
+  warm:"cứ thong thả. Lão nghe đây.",
+  teasing:"lão hỏi bằng chứng chứ đâu hỏi độ tự tin.",
+  serious:"hãy phân biệt điều đã thấy với điều suy ra."
+ };
+ for(const key of Object.keys(examples)){
+  const node=document.getElementById("buddy-preview-"+key);
+  if(node)node.textContent=(liBuddyNames[key]||LI_BUDDY_DEFAULT_NAMES[key])+", "+examples[key];
+ }
+}
+function liRefreshBuddyNameInputs(){
+ document.querySelectorAll("[data-buddy-name]").forEach(input=>{input.value=liBuddyNames[input.dataset.buddyName]||"";});
+ liRenderBuddyNamePreview();
+}
+function liSaveBuddyNames(){
+ try{
+  const json=JSON.stringify(liBuddyNames);
+  window.localStorage.setItem(LI_BUDDY_NAMES_KEY,json);
+  if(window.localStorage.getItem(LI_BUDDY_NAMES_KEY)!==json)throw Error("readback");
+  return true;
+ }catch(e){return false}
+}
+function liUpdateAddressFeedback(text){
+ const node=document.getElementById("buddy-name-feedback");if(node)node.textContent=text;
+}
+liRefreshBuddyNameInputs();
+document.querySelectorAll("[data-buddy-name]").forEach(input=>{
+ const key=input.dataset.buddyName;
+ input.addEventListener("input",()=>{
+  liBuddyNames[key]=liNormalizeBuddyName(input.value);
+  liRenderBuddyNamePreview();
+  liUpdateAddressFeedback("Đang chỉnh cách gọi · Rời ô nhập để lưu trên thiết bị.");
+ });
+ input.addEventListener("change",()=>{
+  input.value=liBuddyNames[key]=liNormalizeBuddyName(input.value);
+  const saved=liSaveBuddyNames();
+  liUpdateAddressFeedback(saved?"Đã lưu cách gọi trên thiết bị này.":"Chưa lưu được cách gọi. Hãy kiểm tra quyền lưu dữ liệu của trình duyệt.");
+  if(!saved)toast("Không thể lưu cách gọi của Lão Lý trên thiết bị.");
+  const guide=document.getElementById("guide-mode-copy");
+  if(guide)guide.textContent=liBuddyLine(STUDY_MODES[studyMode].guide);
+ });
+});
+document.getElementById("buddy-names-reset")?.addEventListener("click",()=>{
+ liBuddyNames={warm:"",teasing:"",serious:""};
+ liRefreshBuddyNameInputs();
+ const saved=liSaveBuddyNames();
+ liUpdateAddressFeedback(saved?"Đã trở về Tiểu hữu / Nhóc / Ngươi.":"Đã đặt lại trong phiên này nhưng không lưu được.");
+ if(!saved)toast("Không thể lưu cách gọi mặc định trên thiết bị.");
+ const guide=document.getElementById("guide-mode-copy");
+ if(guide)guide.textContent=liBuddyLine(STUDY_MODES[studyMode].guide);
+});
 function liRestoreStudyMode(){
  try{const value=window.localStorage.getItem(STUDY_MODE_KEY);return Object.prototype.hasOwnProperty.call(STUDY_MODES,value)?value:"start"}
  catch(e){return "start"}
@@ -285,16 +328,16 @@ function setStudyMode(key,{persist=true}={}){
  }catch(e){toast("Nhịp học đã đổi trong phiên này nhưng không thể lưu lựa chọn trên thiết bị.");}}
  syncStudyModeUI();
  renderMethods();
- if(persist)window.LiDaily?.recordMode(key);
+ if(persist)window.dispatchEvent(new CustomEvent("li:study-mode-applied",{detail:{mode:key}}));
  return true;
 }
 document.querySelectorAll(".ly-mode-choice").forEach(b=>b.addEventListener("click",()=>setStudyMode(b.dataset.lyMode)));
 function openLaoLy(trigger){
 if(document.getElementById("mute-toggle").checked){toast("Im Lặng · Lời thoại Lão Lý đang tắt. Các nội dung chính vẫn đọc được.");return}
 buddyDebateActive=false;document.getElementById("buddy-debate").hidden=true;
-document.getElementById("buddy-text").textContent=document.getElementById("calm-toggle").checked
+document.getElementById("buddy-text").textContent=liBuddyLine(document.getElementById("calm-toggle").checked
 ?"Chúng ta chưa biết đủ để kết luận. Hãy xác định điều quan sát được và dữ kiện còn thiếu."
-:currentPage==="home"?scenarios[qIndex].buddy:buddyCopy[currentPage]||buddyCopy.default;
+:(currentPage==="home"?scenarios[qIndex].buddy:buddyCopy[currentPage]||buddyCopy.default));
 showBuddyQuote();document.getElementById("buddy-title-avatar").src=document.getElementById("laoly-current-icon").src;document.getElementById("buddy-scroll").scrollTop=0;openModal("buddy-modal",trigger);refreshLucide();
 }
 
@@ -312,12 +355,7 @@ function renderSavedQuestions(){
  }
  target.replaceChildren();
  target.hidden=savedQuestions.length===0;
- const shelf=target.closest("article"),title=shelf?.querySelector("h3"),description=shelf?.querySelector("p"),sampleAction=shelf?.querySelector(".action-row");
- const caption=shelf?.querySelector("#library-bookmark-kicker");
- if(title)title.textContent=target.hidden?"Chưa có hành trình đã lưu":savedQuestions.length+" câu hỏi đã lưu";
- if(description)description.textContent=target.hidden?"Phiên xem thử chưa lưu tiến độ. Bạn có thể mở tình huống mẫu để khám phá cách đặt câu hỏi.":"Mở lại câu hỏi đã lưu trên thiết bị này. Nhánh nghiên cứu chưa được lưu riêng.";
- if(sampleAction)sampleAction.hidden=!target.hidden;
- if(caption)caption.textContent=target.hidden?"DẤU TRANG · BẢN XEM THỬ":"DẤU TRANG · TRÊN THIẾT BỊ";
+ const empty=document.getElementById("li-library-resume-empty");if(empty)empty.hidden=!target.hidden;
  if(target.hidden)return;
  savedQuestions.forEach(item=>{
   const row=document.createElement("div"),label=document.createElement("p"),btn=document.createElement("button");
@@ -346,18 +384,18 @@ function syncLiRoute(id){
  if(target!==window.location.pathname+window.location.search+window.location.hash)
   window.history.replaceState(window.history.state,"",target);
 }
-function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});document.querySelectorAll(".header .tool-button").forEach(x=>{const active=x.dataset.page===id;x.classList.toggle("active",active);if(active)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library"){renderCaseArchive();renderSavedQuestions();window.LiDaily?.refresh();}if(id==="dashboard")window.LiDaily?.render();if(id==="research")syncResearch();refreshLucide();placeCompanion();}
+function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});document.querySelectorAll(".header .tool-button").forEach(x=>{const active=x.dataset.page===id;x.classList.toggle("active",active);if(active)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library"){renderCaseArchive();renderSavedQuestions();}if(id==="research")syncResearch();refreshLucide();placeCompanion();}
 function goBack(){while(pageHistory.length){const previous=pageHistory.pop();if(previous!==currentPage&&document.getElementById("page-"+previous)){navigate(previous,{remember:false});return}}navigate("home",{remember:false})}
 function renderMethods(){const el=document.getElementById("method-cards");const q=(document.getElementById("method-search").value||"").trim().toLocaleLowerCase("vi");const preset=STUDY_MODES[studyMode].suggestions;const visible=methods.filter(m=>{const match=(!q||(m.join(" ").toLocaleLowerCase("vi").includes(q)));const cat=currentCategory==="Tất cả"||m[4]===currentCategory;const picked=Boolean(q)||currentCategory!=="Tất cả"||!preset||preset.includes(m[0]);return match&&cat&&picked});el.innerHTML=visible.length?visible.map(m=>'<button class="method-card" data-method="'+m[0]+'"><i data-lucide="'+(m[4]==="Luận Chứng Thuật"?"git-branch":m[4]==="Phá Giải Thuật"?"puzzle":m[4]==="Minh Giải Thuật"?"lightbulb":m[4]==="Tự Chủ Thuật"?"brain-circuit":"book-open-check")+'" class="method-icon" aria-hidden="true"></i><span class="kicker">'+m[0]+' · '+m[4]+'</span><h3>'+m[1]+'</h3><span class="original">'+m[2]+'</span><span class="purpose">'+m[3]+'</span><span class="end">CHÚ GIẢI →</span></button>').join(""):'<div class="surface">Không tìm thấy. Thử đổi bộ lọc hoặc tìm bằng tên học thuật.</div>';
 document.getElementById("method-count").textContent="Hiển thị "+visible.length+"/13 phương pháp"+(q?" · kết quả tìm kiếm trên cả 13":currentCategory!=="Tất cả"?" · theo nhóm":STUDY_MODES[studyMode].suggestions?" · "+STUDY_MODES[studyMode].label:" · đầy đủ");
-refreshLucide();document.getElementById("guide-mode-copy").textContent=STUDY_MODES[studyMode].guide;
+refreshLucide();document.getElementById("guide-mode-copy").textContent=liBuddyLine(STUDY_MODES[studyMode].guide);
 }
 function showMethod(id){const m=methods.find(z=>z[0]===id);if(!m)return;document.getElementById("detail-id").textContent=m[0]+" · CHÚ GIẢI / "+m[4];document.getElementById("detail-title").textContent=m[1];document.getElementById("detail-original").textContent=m[2];document.getElementById("detail-purpose").textContent=m[3];navigate("guideDetail")}
 function openModal(id,trigger){const el=document.getElementById(id);el.classList.add("open");el.dataset.trigger=trigger?.id||"";el.querySelector("button")?.focus()}
 function closeModal(id){const el=document.getElementById(id);el.classList.remove("open");document.activeElement?.blur?.()}
 document.querySelectorAll(".page").forEach(e=>e.setAttribute("aria-label",e.id.replace("page-","")));
 document.getElementById("method-filters").innerHTML=categories.map((c,i)=>'<button class="filter" data-cat="'+c+'" aria-pressed="'+(i===0)+'">'+c+'</button>').join("");
-document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.hasAttribute("data-nav-back")){goBack();return}if(t.dataset.page){navigate(t.dataset.page);if(t.dataset.focus){const field=document.getElementById(t.dataset.focus);document.getElementById("notebook-section")?.scrollIntoView?.({block:"start"});field?.focus?.({preventScroll:true})}return}if(t.dataset.method){showMethod(t.dataset.method);return}if(t.dataset.cat){currentCategory=t.dataset.cat;document.querySelectorAll("[data-cat]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));renderMethods();return}if(t.dataset.branch){document.getElementById("branch-feedback").textContent="Hãy kiểm chứng: "+t.dataset.branch;window.LiDaily?.recordActivity("problem",scenarios[qIndex].question+"|"+t.dataset.branch,studyMode);return}if(t.dataset.answer){const isCase=t.closest("section.page").id==="page-case";if(isCase)selectedCaseAnswer=t.dataset.answer;const id=isCase?"case-feedback":"lesson-feedback";document.getElementById(id).textContent=t.dataset.answer==="right"?"Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.":"Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.";return}if(t.dataset.demo){toast(t.dataset.demo);return}if(t.dataset.buddy){openLaoLy(t);return}});
+document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.hasAttribute("data-nav-back")){goBack();return}if(t.dataset.page){navigate(t.dataset.page);if(t.dataset.focus){const field=document.getElementById(t.dataset.focus);document.getElementById("notebook-section")?.scrollIntoView?.({block:"start"});field?.focus?.({preventScroll:true})}return}if(t.dataset.method){showMethod(t.dataset.method);return}if(t.dataset.cat){currentCategory=t.dataset.cat;document.querySelectorAll("[data-cat]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));renderMethods();return}if(t.dataset.branch){document.getElementById("branch-feedback").textContent="Hãy kiểm chứng: "+t.dataset.branch;window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"branch",id:scenarios[qIndex].question+"::"+t.dataset.branch}}));return}if(t.dataset.answer){const isCase=t.closest("section.page").id==="page-case";if(isCase)selectedCaseAnswer=t.dataset.answer;const id=isCase?"case-feedback":"lesson-feedback";document.getElementById(id).textContent=t.dataset.answer==="right"?"Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.":"Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.";return}if(t.dataset.demo){toast(t.dataset.demo);return}if(t.dataset.buddy){openLaoLy(t);return}});
 /* S139 · iOS Safari supports gesturestart/gesturechange for pinch gestures.
    Do not intercept single-finger scrolling or horizontal mirror swipe events. */
 document.addEventListener("gesturestart",event=>event.preventDefault(),{passive:false});
@@ -401,8 +439,83 @@ document.getElementById("finish-case").addEventListener("click",()=>{const v=doc
 processedCases.unshift(item);
 if(!liWriteState()){processedCases.shift();toast("Không thể lưu Bút Ký trên thiết bị. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.");return}
 try{window.localStorage.removeItem(LI_DRAFT_KEY)}catch(e){}
-window.LiDaily?.recordActivity("input",scenarios[qIndex].question+"|"+v,studyMode);navigate("library");toast("Đã lưu Bút Ký trên thiết bị này.");});
-document.getElementById("checkin").addEventListener("click",()=>openModal("checkin-modal"));
+window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"input",id:item.id}}));navigate("library");toast("Đã lưu Bút Ký trên thiết bị này.");});
+/* L1 physical-first self-report + learning rhythm heuristic. Not clinical triage. */
+let currentL1PhysicalState=null;
+window.LiL1=Object.freeze({getPhysicalState:()=>currentL1PhysicalState?{...currentL1PhysicalState}:null});
+function readCheckinInputs(){
+ const modal=document.getElementById("checkin-modal");
+ const physical={
+  sleep:document.getElementById("checkin-sleep").value,
+  move:document.getElementById("checkin-move").value,
+  rest:document.getElementById("checkin-rest").value
+ };
+ const energy=modal.querySelector('input[name="checkin-energy"]:checked')?.value||"";
+ const attention=modal.querySelector('input[name="checkin-attention"]:checked')?.value||"";
+ return {physical,energy,attention};
+}
+function completePhysicalCheckin(physical){
+ const values=physical&&[physical.sleep,physical.move,physical.rest];
+ return Boolean(values&&values.length===3&&values.every(v=>["yes","no","unsure"].includes(v)));
+}
+function recommendStudyMode(physical,energy="",attention=""){
+ if(!completePhysicalCheckin(physical))return null;
+ const responses=[physical.sleep,physical.move,physical.rest];
+ // Never use the three responses as a medical/compliance score.
+ // Subjective overload may reduce intensity; it never overrides a missing L1 physical report.
+ if(energy==="low"&&attention==="hard")
+  return {mode:"overload",reason:"Cả thể trạng đã khai và cảm giác lúc này cho thấy nên giảm tải; có thể nghỉ."};
+ if(responses.includes("no"))
+  return {mode:"recover",reason:"Có ít nhất một điều về ngủ, vận động hoặc nghỉ ngơi bạn trả lời 'Chưa'. Ưu tiên nhịp nhẹ."};
+ if(energy==="low"||attention==="hard")
+  return {mode:"recover",reason:"Cảm nhận hiện tại cho thấy khó duy trì cường độ; hãy bắt đầu bằng phần nhỏ."};
+ if(responses.includes("unsure"))
+  return {mode:"start",reason:"Có thông tin thể trạng chưa rõ; cứ vào nhịp vừa sức, không cần phỏng đoán."};
+ if(energy==="medium"||attention==="warming")
+  return {mode:"start",reason:"Ba mục thể trạng đều được trả lời Có; cảm nhận hiện tại phù hợp bắt đầu từ từ."};
+ return {mode:"focus",reason:"Bạn đã trả lời Có ở cả ba mục thể trạng; có thể cân nhắc học sâu nếu thấy ổn."};
+}
+function refreshCheckinRecommendation(){
+ const {physical,energy,attention}=readCheckinInputs();
+ const complete=completePhysicalCheckin(physical);
+ const suggested=recommendStudyMode(physical,energy,attention);
+ const manual=document.getElementById("checkin-override").value;
+ const target=complete?(manual||suggested?.mode||""):"";
+ const result=document.getElementById("checkin-recommendation");
+ const missing=[["sleep","Ngủ"],["move","Vận động"],["rest","Nghỉ ngơi"]].filter(pair=>!["yes","no","unsure"].includes(physical[pair[0]])).map(pair=>pair[1]);
+ if(!complete){
+  result.textContent="Chưa thể áp dụng. Hãy trả lời: "+missing.join(", ")+". Có thể chọn Không rõ nếu chưa chắc, hoặc Bỏ qua.";
+ }else if(manual){
+  result.textContent="L1 đã đủ ba câu. Bạn chọn "+STUDY_MODES[manual].label+" thủ công; quyền quyết định vẫn thuộc về bạn.";
+ }else{
+  result.textContent="Gợi ý: "+STUDY_MODES[suggested.mode].label+". "+suggested.reason+" Đây không phải kết luận về sức khỏe hay khả năng học.";
+ }
+ document.getElementById("apply-checkin").disabled=!target;
+ return target;
+}
+function recordL1PhysicalCheckin(physical,selectedMode){
+ // Only in-memory session state. An eventual opt-in diary needs its own consent gate.
+ currentL1PhysicalState=Object.freeze({
+  sleep:physical.sleep,move:physical.move,rest:physical.rest,
+  selectedMode,recordedAt:new Date().toISOString()
+ });
+ window.dispatchEvent(new CustomEvent("li:l1-physical-checkin",{detail:{...currentL1PhysicalState}}));
+}
+function closeCheckinModal(){
+ closeModal("checkin-modal");
+ document.getElementById("checkin").focus();
+}
+document.getElementById("checkin-modal").addEventListener("change",refreshCheckinRecommendation);
+document.getElementById("checkin").addEventListener("click",event=>{
+ // Each new check-in should start unanswered; do not reuse a previous session's physical report.
+ ["sleep","move","rest"].forEach(key=>document.getElementById("checkin-"+key).value="");
+ document.querySelectorAll('#checkin-modal input[name^="checkin-"]').forEach(input=>input.checked=false);
+ document.getElementById("checkin-override").value="";
+ document.querySelector("#checkin-modal .checkin-context").open=false;
+ openModal("checkin-modal",event.currentTarget);
+ refreshCheckinRecommendation();
+ document.getElementById("checkin-sleep").focus();
+});
 document.getElementById("save-question").addEventListener("click",()=>{
  const sc=scenarios[qIndex];
  if(savedQuestions.some(x=>x.question===sc.question)){toast("Câu hỏi này đã có trong Dấu Trang.");return}
@@ -411,12 +524,21 @@ document.getElementById("save-question").addEventListener("click",()=>{
  if(!liWriteState()){savedQuestions.shift();toast("Không thể lưu Dấu Trang trên thiết bị. Hãy sao chép câu hỏi.");return}
  toast("Đã lưu câu hỏi vào Dấu Trang trên thiết bị này.");
 });
-document.getElementById("close-checkin").addEventListener("click",()=>closeModal("checkin-modal"));
+document.getElementById("close-checkin").addEventListener("click",closeCheckinModal);
+document.getElementById("apply-checkin").addEventListener("click",()=>{
+ const target=refreshCheckinRecommendation();
+ const {physical}=readCheckinInputs();
+ if(!target||!completePhysicalCheckin(physical))return;
+ if(!setStudyMode(target))return;
+ recordL1PhysicalCheckin(physical,target);
+ closeCheckinModal();
+ toast("Đã ghi L1 thể trạng trong phiên này và áp dụng "+STUDY_MODES[target].label+". Có thể đổi nhịp bất cứ lúc nào.");
+});
 
 document.getElementById("buddy-challenge").addEventListener("click",()=>{buddyDebateActive=true;document.getElementById("buddy-debate").hidden=false;document.getElementById("buddy-quote").hidden=true;document.getElementById("buddy-text").textContent="Thử phản biện lão: 90% người được hỏi nói hài lòng. Lão kết luận cả thị trường cũng hài lòng.";});
-document.getElementById("buddy-right").addEventListener("click",()=>{document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent="Cuối cùng cũng chịu dùng đến bộ não rồi đấy. Nhà thông thái, ngươi đã bắt đúng lỗi suy rộng từ người dùng sang toàn thị trường. Lão xin rút kết luận.";});
-document.getElementById("buddy-wrong").addEventListener("click",()=>{document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent="Ồ, một cách suy luận rất sáng tạo. Tiếc là sai. Nhóc, lão chỉ hỏi người đang dùng; người chưa dùng có thể nghĩ khác. Đừng bắt mẫu khảo sát gánh cả thị trường.";});
-document.getElementById("buddy-question").addEventListener("click",()=>{buddyDebateActive=false;document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent="Hừm… câu này đáng để lão bỏ dở giấc ngủ trăm năm. Nhưng trước khi trả lời, ngươi có bằng chứng gì?";showBuddyQuote()});
+document.getElementById("buddy-right").addEventListener("click",()=>{document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent=liBuddyLine("Cuối cùng cũng chịu dùng đến bộ não rồi đấy. Nhà thông thái, ngươi đã bắt đúng lỗi suy rộng từ người dùng sang toàn thị trường. Lão xin rút kết luận.");});
+document.getElementById("buddy-wrong").addEventListener("click",()=>{document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent=liBuddyLine("Ồ, một cách suy luận rất sáng tạo. Tiếc là sai. Nhóc, lão chỉ hỏi người đang dùng; người chưa dùng có thể nghĩ khác. Đừng bắt mẫu khảo sát gánh cả thị trường.");});
+document.getElementById("buddy-question").addEventListener("click",()=>{buddyDebateActive=false;document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent=liBuddyLine("Hừm… câu này đáng để lão bỏ dở giấc ngủ trăm năm. Nhưng trước khi trả lời, ngươi có bằng chứng gì?");showBuddyQuote()});
 document.getElementById("buddy-forget").addEventListener("click",()=>{buddyDebateActive=false;document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent="Khoan đã… lão đang kể đến đoạn nào nhỉ? Lão nhớ hàng ngàn chuyện, trừ chuyện vừa định kể.";showBuddyQuote()});
 
 document.getElementById("close-modal").addEventListener("click",()=>closeModal("buddy-modal"));
@@ -451,7 +573,7 @@ window.addEventListener("resize",placeCompanion,{passive:true});
  }
  document.getElementById("export-personal-data")?.addEventListener("click",()=>{
   try{
-   const data={schema:1,exportedAt:new Date().toISOString(),cases:processedCases,questions:savedQuestions,draft:field?.value||"",dailyJournal:window.LiDaily?.backup()};
+   const data={schema:1,exportedAt:new Date().toISOString(),cases:processedCases,questions:savedQuestions,draft:field?.value||"",buddyNames:liBuddyNames};
    const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json;charset=utf-8"});
    const url=URL.createObjectURL(blob),a=document.createElement("a");
    a.href=url;a.download="li-du-lieu-"+new Date().toISOString().slice(0,10)+".json";
@@ -473,37 +595,35 @@ window.addEventListener("resize",placeCompanion,{passive:true});
       typeof data.draft!=="string"||
       !data.cases.every(x=>x&&typeof x.title==="string"&&typeof x.revision==="string"&&typeof x.correct==="boolean")||
       !data.questions.every(x=>x&&typeof x.question==="string")||
-      (data.dailyJournal!==undefined&&!window.LiDaily?.validBackup(data.dailyJournal)))throw Error("schema");
+      (data.buddyNames!==undefined&&(!data.buddyNames||typeof data.buddyNames!=="object"||Array.isArray(data.buddyNames)||!Object.keys(LI_BUDDY_DEFAULT_NAMES).every(k=>typeof data.buddyNames[k]==="string"&&data.buddyNames[k].length<=100))))throw Error("schema");
    const oldRaw=window.localStorage.getItem(LI_STORAGE_KEY);
    const oldDraft=window.localStorage.getItem(LI_DRAFT_KEY);
-   const oldDaily=window.localStorage.getItem("li.personal.daily.v1");
-   const nextDaily=data.dailyJournal!==undefined?JSON.stringify(data.dailyJournal):null;
+   const oldNames=window.localStorage.getItem(LI_BUDDY_NAMES_KEY);
    const existing=Boolean(oldRaw&&oldRaw!=='{"schema":1,"cases":[],"questions":[]}')||Boolean(oldDraft||field?.value);
    if(!window.confirm(existing
-     ?"Nhập sẽ THAY THẾ Bút Ký, Dấu Trang, bản nháp và Nhật Ký (nếu tệp có). Hãy xuất bản sao trước. Tiếp tục?"
+     ?"Nhập sẽ THAY THẾ Bút Ký, Dấu Trang và bản nháp đang lưu ở đây. Hãy xuất bản sao trước. Tiếp tục?"
      :"Nhập bản sao vào thiết bị này?"))return;
    const next=JSON.stringify({schema:1,cases:data.cases,questions:data.questions,updatedAt:new Date().toISOString()});
    try{
     window.localStorage.setItem(LI_STORAGE_KEY,next);
     window.localStorage.setItem(LI_DRAFT_KEY,data.draft);
-    if(nextDaily!==null)window.localStorage.setItem("li.personal.daily.v1",nextDaily);
-    if(window.localStorage.getItem(LI_STORAGE_KEY)!==next||window.localStorage.getItem(LI_DRAFT_KEY)!==data.draft||
-      (nextDaily!==null&&window.localStorage.getItem("li.personal.daily.v1")!==nextDaily))throw Error("readback");
+    if(data.buddyNames!==undefined)window.localStorage.setItem(LI_BUDDY_NAMES_KEY,JSON.stringify(Object.fromEntries(Object.keys(LI_BUDDY_DEFAULT_NAMES).map(k=>[k,liNormalizeBuddyName(data.buddyNames[k])]))));
+    if(window.localStorage.getItem(LI_STORAGE_KEY)!==next||window.localStorage.getItem(LI_DRAFT_KEY)!==data.draft||(data.buddyNames!==undefined&&!window.localStorage.getItem(LI_BUDDY_NAMES_KEY)))throw Error("readback");
    }catch(e){
     try{
      if(oldRaw===null)window.localStorage.removeItem(LI_STORAGE_KEY);else window.localStorage.setItem(LI_STORAGE_KEY,oldRaw);
      if(oldDraft===null)window.localStorage.removeItem(LI_DRAFT_KEY);else window.localStorage.setItem(LI_DRAFT_KEY,oldDraft);
-     if(oldDaily===null)window.localStorage.removeItem("li.personal.daily.v1");else window.localStorage.setItem("li.personal.daily.v1",oldDaily);
+     if(oldNames===null)window.localStorage.removeItem(LI_BUDDY_NAMES_KEY);else window.localStorage.setItem(LI_BUDDY_NAMES_KEY,oldNames);
     }catch(recoverError){}
     throw Error("write");
    }
    processedCases.splice(0,processedCases.length,...data.cases);
    savedQuestions.splice(0,savedQuestions.length,...data.questions);
    if(field)field.value=data.draft;
+   if(data.buddyNames!==undefined){liBuddyNames=liRestoreBuddyNames();liRefreshBuddyNameInputs();}
    liStorageError=false;
    renderCaseArchive();renderSavedQuestions();
-   if(nextDaily!==null)window.LiDaily?.reload();
-   toast("Đã nhập "+data.cases.length+" Bút Ký, "+data.questions.length+" Dấu Trang"+(nextDaily!==null?" và Nhật Ký":"")+".");
+   toast("Đã nhập "+data.cases.length+" Bút Ký và "+data.questions.length+" Dấu Trang.");
   }catch(e){toast(e.message==="large"?"Tệp vượt quá 10 MB.":e.message==="write"?
     "Không thể lưu bản sao trên thiết bị này. Hãy giữ bản JSON.":"Tệp JSON không hợp lệ hoặc không đúng bản sao li.");}
   finally{importInput.value="";}
@@ -514,4 +634,4 @@ const liInitialLesson=new URLSearchParams(window.location.search).get("lesson");
 navigate("home",{focus:false,syncUrl:!Object.values(LI_LESSON_ROUTES).includes(liInitialLesson)});
 setStudyMode(studyMode,{persist:false});
 window.addEventListener("load",()=>{refreshLucide();placeCompanion();});
-</script><script src="./assets/laoly-context-s112.js"></script><script src="./assets/laoly-quotes-s121.js"></script><script src="./assets/lesson-l09-hifi-markup.js"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js"></script><script src="./assets/lesson-l15-hifi-markup.js"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script></body></html>
+</script><script src="./assets/laoly-context-s112.js"></script><script src="./assets/laoly-quotes-s121.js"></script><script src="./assets/lesson-l09-hifi-markup.js"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js"></script><script src="./assets/lesson-l15-hifi-markup.js"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script><script src="./assets/personal-diary.js?v=1"></script></body></html>

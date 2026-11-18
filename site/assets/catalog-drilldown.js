@@ -104,7 +104,11 @@ function renderCourse(c){
  const available=c.lessons.filter(l=>l.published);
  if(!available.length){
   el("h2","","0/"+c.lessons.length+" bài đã hoàn thành",panel);
-  el("p","small","Chưa có bài phát hành. Tiến độ môn sẽ hiển thị khi có bài có thể học và tự đánh giá.",panel);
+  el("p","small","0/"+c.lessons.length+" bài đã phát hành · Chưa có bài nào để học và tự đánh giá.",panel);
+  const bar=el("div","catalog-progress-track",null,panel);
+  bar.setAttribute("role","progressbar");bar.setAttribute("aria-label","Tiến độ hoàn thành của toàn bộ môn học");
+  bar.setAttribute("aria-valuemin","0");bar.setAttribute("aria-valuemax",String(c.lessons.length));bar.setAttribute("aria-valuenow","0");
+  const fill=el("span","catalog-progress-fill",null,bar);fill.style.width="0%";
  }else{
   try{
    const done=available.filter(progress).length;

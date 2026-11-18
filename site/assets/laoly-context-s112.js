@@ -179,6 +179,7 @@ function getBuddyPlan(){
  }
 }
 function setButtonText(button,label){
+ label=window.liLanguage?.translateComposed?.(label)||label;
  const svg=button.querySelector("svg");
  if(svg)button.replaceChildren(svg,document.createTextNode(" "+label));
  else button.textContent=label;

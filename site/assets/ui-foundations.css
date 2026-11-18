@@ -211,8 +211,8 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 
 /* Home exceptions: the live mirror text must still remain inside the art. */
 /* UX-DS-24: forest-green speech bubble is borderless on both body and tail; preserve color, shape, padding, shadow and placement. */
-#page-home .hero-dialogue-bubble { border: 0; padding: var(--li-space-3) var(--li-space-4); }
-#page-home .hero-dialogue-bubble::before { border: 0; }
+#page-home .hero-dialogue-bubble { border-width: var(--li-space-0); padding: var(--li-space-3) var(--li-space-4); }
+#page-home .hero-dialogue-bubble::before { border-width: var(--li-space-0); }
 #page-home .hero-dialogue-bubble p {
   font-size: var(--li-type-support) !important;
   line-height: var(--li-leading-support) !important;

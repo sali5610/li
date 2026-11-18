@@ -65,6 +65,7 @@
         transparent(w.getComputedStyle(caseSave).backgroundColor)&&
         w.getComputedStyle(caseSave).borderTopWidth==="0px");
       if(typeof w.navigate==="function")w.navigate("resume",{focus:false,syncUrl:false});
+      doc.getElementById("li-bookmark-tab-questions")?.click();
       const unsave=doc.querySelector("#page-resume .library-unsave-icon");
       bookmarkVisual("Quay lại Unsave has no background, border or shadow",unsave);
     }

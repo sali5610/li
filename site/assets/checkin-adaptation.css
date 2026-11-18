@@ -1,7 +1,7 @@
 /* li. · L1-A check-in only. Other modal geometry and art remain unchanged. */
 #checkin-modal .dialog{max-height:88vh;max-height:88dvh;overflow-y:auto;overscroll-behavior:contain}
 #checkin-modal .dialog h2{font-size:var(--li-type-title-md);line-height:var(--li-leading-title-md)}
-#checkin-modal .checkin-question{border-width:var(--li-space-0);margin:var(--li-space-4) 0 0;padding:0;min-width:0}
+#checkin-modal .checkin-question{border-width:var(--li-space-0);margin:var(--li-space-4) 0 0;padding:var(--li-space-0);min-width:0}
 #checkin-modal .checkin-question legend{font-size:var(--li-type-support);font-weight:700;padding:0 0 var(--li-space-2)}
 #checkin-modal .checkin-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--li-space-2)}
 #checkin-modal .checkin-choice{min-width:0;display:flex;align-items:center;gap:var(--li-space-2);padding:var(--li-space-2);background:var(--cream);border:1px solid var(--rule);font-size:var(--li-type-support);line-height:var(--li-leading-support);cursor:pointer}

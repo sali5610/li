@@ -1,0 +1,271 @@
+{
+  "schema": "li.wave2.offline-pilot.qa.v1",
+  "lesson_id": "L09-1-1",
+  "date": "2026-11-18",
+  "execution": "pure unit V8/Node compatible; not DOM/iPhone/CI",
+  "total": 58,
+  "pass": 58,
+  "fail": 0,
+  "results": [
+    {
+      "name": "bundle schema",
+      "result": "PASS"
+    },
+    {
+      "name": "correct lesson identity",
+      "result": "PASS"
+    },
+    {
+      "name": "separate storage from Wave1",
+      "result": "PASS"
+    },
+    {
+      "name": "no existing Wave1 DOM ID collision",
+      "result": "PASS"
+    },
+    {
+      "name": "two locales",
+      "result": "PASS"
+    },
+    {
+      "name": "VI hook first 90%",
+      "result": "PASS"
+    },
+    {
+      "name": "EN hook first 90%",
+      "result": "PASS"
+    },
+    {
+      "name": "vi no spoiler 80% pre-submit",
+      "result": "PASS"
+    },
+    {
+      "name": "vi challenge source numbers available",
+      "result": "PASS"
+    },
+    {
+      "name": "vi answer stays separately keyed",
+      "result": "PASS"
+    },
+    {
+      "name": "vi T06 feedback isolated from T07",
+      "result": "PASS"
+    },
+    {
+      "name": "vi T07 feedback uses separate fictional sample",
+      "result": "PASS"
+    },
+    {
+      "name": "en no spoiler 80% pre-submit",
+      "result": "PASS"
+    },
+    {
+      "name": "en challenge source numbers available",
+      "result": "PASS"
+    },
+    {
+      "name": "en answer stays separately keyed",
+      "result": "PASS"
+    },
+    {
+      "name": "en T06 feedback isolated from T07",
+      "result": "PASS"
+    },
+    {
+      "name": "en T07 feedback uses separate fictional sample",
+      "result": "PASS"
+    },
+    {
+      "name": "exact six mentor stages",
+      "result": "PASS"
+    },
+    {
+      "name": "all mentor labels have localized actions",
+      "result": "PASS"
+    },
+    {
+      "name": "three quote IDs per mentor stage",
+      "result": "PASS"
+    },
+    {
+      "name": "initial feedback locked",
+      "result": "PASS"
+    },
+    {
+      "name": "bad T06 evidence rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "bad T07 evidence rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "T06 attempt unlocks only T06",
+      "result": "PASS"
+    },
+    {
+      "name": "T07 attempt unlocks only T07",
+      "result": "PASS"
+    },
+    {
+      "name": "guide choice K2 not enacted K3",
+      "result": "PASS"
+    },
+    {
+      "name": "T06 unsent draft saved and migrates across JSON reload",
+      "result": "PASS"
+    },
+    {
+      "name": "T07 unsent draft persisted without K3",
+      "result": "PASS"
+    },
+    {
+      "name": "writing a method draft sets K2 but not K3",
+      "result": "PASS"
+    },
+    {
+      "name": "submitted method drafts cannot be changed",
+      "result": "PASS"
+    },
+    {
+      "name": "old v1 save without method draft fields migrates without losing submission",
+      "result": "PASS"
+    },
+    {
+      "name": "retry resets draft and archives previous attempt's method evidence",
+      "result": "PASS"
+    },
+    {
+      "name": "actual T06 attempt sets K3 not K1 correctness",
+      "result": "PASS"
+    },
+    {
+      "name": "optional T07 may be skipped",
+      "result": "PASS"
+    },
+    {
+      "name": "hint separately logged K7",
+      "result": "PASS"
+    },
+    {
+      "name": "no invented K5 retention measurement",
+      "result": "PASS"
+    },
+    {
+      "name": "empty assessment rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "incomplete assessment must be explicit",
+      "result": "PASS"
+    },
+    {
+      "name": "answer not auto-shown immediately after submit",
+      "result": "PASS"
+    },
+    {
+      "name": "answer requires submission",
+      "result": "PASS"
+    },
+    {
+      "name": "answer visible only after reveal",
+      "result": "PASS"
+    },
+    {
+      "name": "submission freezes draft editing",
+      "result": "PASS"
+    },
+    {
+      "name": "cannot submit same attempt twice",
+      "result": "PASS"
+    },
+    {
+      "name": "self-rating requires submitted attempt",
+      "result": "PASS"
+    },
+    {
+      "name": "self-rating supports 4 x 0-2",
+      "result": "PASS"
+    },
+    {
+      "name": "out-of-range self-rating rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "reflection locked before independent",
+      "result": "PASS"
+    },
+    {
+      "name": "reflection shown after independent",
+      "result": "PASS"
+    },
+    {
+      "name": "locale switch preserves drafts",
+      "result": "PASS"
+    },
+    {
+      "name": "locale switch shares one submitted attempt",
+      "result": "PASS"
+    },
+    {
+      "name": "Spellbook return restores section and locale",
+      "result": "PASS"
+    },
+    {
+      "name": "corrupt progress resets safely",
+      "result": "PASS"
+    },
+    {
+      "name": "valid progress reload preserves submitted state",
+      "result": "PASS"
+    },
+    {
+      "name": "fresh attempt retains previous submission and ratings",
+      "result": "PASS"
+    },
+    {
+      "name": "fresh attempt retains prior L2-method evidence",
+      "result": "PASS"
+    },
+    {
+      "name": "fresh attempt prohibited before submission",
+      "result": "PASS"
+    },
+    {
+      "name": "unsupported locale rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "rights clearance remains open",
+      "result": "PASS"
+    }
+  ],
+  "source": "The three exact GitHub staging blobs named in source_blobs",
+  "run_date": "2026-11-18",
+  "executions": [
+    {
+      "engine": "Node.js v22.16.0",
+      "command": "node docs/editorial/wave2-cms-l0911/run-l0911-offline.mjs",
+      "result": "58/58 PASS",
+      "evidence": "local executed CLI on SHA-verified extracted GitHub files"
+    },
+    {
+      "engine": "Code-mode isolated V8",
+      "result": "58/58 PASS",
+      "evidence": "re-executed contract-tests against the current GitHub connector CMS and state source"
+    }
+  ],
+  "source_blobs": {
+    "L09-1-1.cms.v1.staging.json": "75475cc365aaa15543af43d8c0d52b79bf48086c",
+    "L09-1-1.state.offline.mjs": "210a2d9d2d0873d4462f145f0174c395181d9eb4",
+    "L09-1-1.contract-tests.mjs": "70203f9a95a1b86dbf7f9191f37b7f210649359d"
+  },
+  "regression_fix": "Unsubmitted T06/T07 drafts persisted as methods.T06/T07.draft. Restoring older v1 saves inserts missing draft fields. Retrying archives prior method evidence and resets current drafts.",
+  "nonrelease": true,
+  "limitations": [
+    "No browser localStorage origin in this suite",
+    "No Safari/PWA/VoiceOver",
+    "No app-shell route integration",
+    "Not a claim of K1 automatic grading"
+  ]
+}

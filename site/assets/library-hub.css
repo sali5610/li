@@ -523,3 +523,15 @@ body .laoly-support.li-companion-draggable.is-dragging #laoly-fab{
   min-width:0!important;
  }
 }
+
+/* UX-HOME-06 · Compensate for the now-overlaying transparent header:
+   the image begins at the top of the viewport, so 100dvh must reach its
+   bottom as well. Preserve portrait/landscape images and CTA bottom anchor. */
+.app.home-focus #page-home .hero{
+  height:max(600px,100dvh)!important;
+}
+@media(max-width:600px){
+  .app.home-focus #page-home .hero{
+    height:max(580px,100dvh)!important;
+  }
+}

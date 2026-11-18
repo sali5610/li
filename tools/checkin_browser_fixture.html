@@ -109,8 +109,10 @@ iframe.addEventListener("load",()=>{
   apply();verify("start",6,"yes","yes","yes");
   open();setPhysical("yes","no","yes");
   d.querySelector("#checkin-modal .checkin-context").open=true;choose("energy","high");choose("attention","steady");
-  check(by("checkin-recommendation").textContent.includes("Gợi ý: Hồi trí"),"High energy cannot promote a physical Chưa to focus");
-  apply();verify("recover",6,"yes","no","yes");
+  check(by("checkin-recommendation").textContent.includes("Gợi ý: Vào nhịp"),"High energy bonus should promote physical 2×Có + 1×Chưa from recover to start");
+  check(by("checkin-recommendation").textContent.includes("Năng lượng dồi dào +1"),"UI must show the +1 energy contribution");
+  check(by("checkin-recommendation").textContent.includes("Tập trung rõ +1"),"UI must show the +1 focus contribution");
+  apply();verify("start",6,"yes","no","yes");
   open();setPhysical("yes","yes","yes");
   d.querySelector("#checkin-modal .checkin-context").open=true;
   choose("energy","low");choose("attention","hard");

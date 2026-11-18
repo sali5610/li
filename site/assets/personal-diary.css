@@ -12,7 +12,7 @@
 #page-dashboard .li-diary-date.recorded{background:var(--li-color-nav-selected-fill)}
 #page-dashboard .li-diary-date .li-diary-dot{display:block;position:absolute;bottom:0;right:0;min-width:16px;font-size:var(--li-type-caption);line-height:var(--li-leading-caption);text-align:center;background:var(--moss);color:var(--cream);font-variant-numeric:tabular-nums}
 #page-dashboard .li-diary-bars{display:flex;gap:var(--li-space-2);overflow-x:auto;padding:var(--li-space-3) var(--li-space-2);scrollbar-gutter:stable}
-#page-dashboard .li-diary-bar-day{display:flex;align-items:center;flex-direction:column;gap:var(--li-space-2);min-width:30px;flex:1 0 30px;background:transparent;border:0;color:var(--ink);cursor:pointer;padding:var(--li-space-2) 0;min-height:160px}
+#page-dashboard .li-diary-bar-day{display:flex;align-items:center;flex-direction:column;gap:var(--li-space-2);min-width:30px;flex:1 0 30px;background:var(--paper);border:1px solid var(--rule);color:var(--ink);cursor:pointer;padding:var(--li-space-2) var(--li-space-0);min-height:160px}
 #page-dashboard .li-diary-bar-track{display:flex;align-items:flex-end;width:100%;height:112px;border-bottom:1px solid var(--rule);background:var(--paper-2)}
 #page-dashboard .li-diary-bar-value{display:block;background:var(--moss-2);width:100%;min-height:0}
 #page-dashboard .li-diary-bar-label{font-size:var(--li-type-caption)}
@@ -22,7 +22,7 @@
 #page-dashboard .li-diary-facts{display:grid;gap:var(--li-space-3)}
 #page-dashboard .li-diary-facts>div{display:flex;justify-content:space-between;gap:var(--li-space-4);border-bottom:1px solid var(--rule);padding-bottom:var(--li-space-2)}
 #page-dashboard .li-diary-facts strong{white-space:nowrap}
-#page-dashboard .li-diary-counters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--li-space-4);margin:var(--li-space-4) 0}
+#page-dashboard .li-diary-counters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--li-space-4);margin:var(--li-space-4) var(--li-space-0)}
 #page-dashboard .li-diary-counters>div{display:flex;flex-direction:column;gap:var(--li-space-1);border:1px solid var(--rule);padding:var(--li-space-4);text-align:center}
 #page-dashboard .li-diary-counters strong{font:600 var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial)}
 #page-dashboard .li-diary-counters small{color:var(--muted)}

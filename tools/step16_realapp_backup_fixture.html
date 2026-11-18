@@ -38,6 +38,8 @@
   let captured=null;
   const createURL=w.URL.createObjectURL.bind(w.URL);
   w.URL.createObjectURL=blob=>{captured=blob;return createURL(blob);};
+  // The test intentionally suppresses the real download gesture; only the produced Blob is inspected.
+  w.HTMLAnchorElement.prototype.click=function(){};
   exportButton.click();
   check(captured instanceof w.Blob,'Real app export handler did not construct a Blob');
   const legacy=JSON.parse(await captured.text());

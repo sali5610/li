@@ -172,7 +172,7 @@ def collect(path: str) -> dict:
 # artwork coordinates and actual image URLs are not palette/type/space tokens.
 DESIGN_TYPE = TYPE_PROPS | {"font-weight", "letter-spacing"}
 PAINT_LITERALS = re.compile(
-    r"#[0-9a-fA-F]{3,8}\b|(?:rgba?|hsla?)\(|\b(?:white|black|red|blue|green|grey|gray)\b", re.I
+    r"#[0-9a-fA-F]{3,8}\b|(?:rgba?|hsla?)\(|(?<![-\w])(?:white|black|red|blue|green|grey|gray)\b", re.I
 )
 INTRINSIC = re.compile(
     r"^(?:(?:auto|none|inherit|initial|unset|revert|currentColor|transparent|0|0px)\s*)+!?important?$",

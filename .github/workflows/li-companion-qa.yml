@@ -18,3 +18,5 @@ jobs:
           node-version: '22'
       - name: Validate static site and all companion plans
         run: python3 tools/validate_site.py
+      - name: Check adaptive study mode mapping and check-in actions
+        run: node tools/checkin_adaptation_regression.mjs

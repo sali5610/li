@@ -44,7 +44,7 @@ for module in modules:
     slug=module.name.removesuffix("-markup.js")
     logic=ASSETS/(slug+".js")
     assert logic.is_file(),f"{ident}: missing native lesson logic"
-    assert INDEX.count(f'src="./assets/{module.name}"')==1,f"{ident}: markup not included by app"
+    assert len(re.findall(r'src="\./assets/'+re.escape(module.name)+r'(?:\?v=[A-Za-z0-9._-]+)?"',INDEX))==1,f"{ident}: markup not included exactly once by app"
     assert INDEX.count(f'src="./assets/{logic.name}"')==1,f"{ident}: lesson logic not included"
     file=LESSONS/"companion"/(ident+".json")
     assert file.is_file(),f"{ident}: Lão Lý content manifest mandatory before publish"

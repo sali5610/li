@@ -268,7 +268,7 @@ assert '#settings-buddy-card .settings-buddy-illustration' in html
 settings_styles=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert 'border-top: 1px solid var(--rule)' not in settings_styles.split('#page-settings .buddy-address-settings {', 1)[1].split('}', 1)[0]
 assert '#settings-buddy-card .settings-buddy-footer' not in html
-assert 'li-layout.css?v=0.4' in page_html and bool(re.search(r'<link rel="stylesheet" href="\./assets/ui-foundations\.css\?v=[A-Za-z0-9._-]+">', head))
+assert 'li-layout.css?v=20261118-ds10-touch' in page_html and bool(re.search(r'<link rel="stylesheet" href="\./assets/ui-foundations\.css\?v=[A-Za-z0-9._-]+">', head))
 
 # S118: two compact mobile Guide tiles with shadow-safe column/row gutters; no duplicate S99 rule.
 guide=section("guide")
@@ -545,6 +545,21 @@ assert 'list.replaceChildren()' in cross
 assert 'window.navigate(lesson.route)' in cross
 assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
+
+# UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
+# removing keyboard focus-visible affordance or changing approved Home CTA geometry.
+assert 'li-layout.css?v=20261118-ds10-touch' in page_html
+assert 'ui-foundations.css?v=20261118-ds10-tap' in page_html
+assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
+assert '-webkit-tap-highlight-color: transparent !important;' in foundation
+assert ':focus:not(:focus-visible)' in foundation
+review10=(site/"component-library-review.html").read_text(encoding="utf-8")
+assert 'ds-notebook' in review10 and 'ds-home-bubble green' in review10
+assert all('src="./assets/'+p+'"' in review10 for p in
+ ("home-mystic-cool-desktop.webp","home-mystic-cool-mobile.webp","laoly-neutral.png"))
+review10css=(site/"assets"/"component-review-v2.css").read_text(encoding="utf-8")
+assert 'background-size:100% 16px,100% var(--li-review-notebook-line)!important;' in review10css
+assert '.ds-home-bubble.green' in review10css and '.ds-image-split' in review10css
 
 # UX-DS-09: mobile Tủ Riêng uses the same Archive icon as Home, never Bookmark.
 mobile_nav=page_html.split('<nav class="mobile-nav"',1)[1].split('</nav>',1)[0]

@@ -70,3 +70,91 @@
 /* Preserve the exact real-app seal instead of relying on a CJK font glyph on headless/mobile. */
 .ds-mark{display:flex;align-items:center;gap:var(--li-space-2)}
 .ds-mark img{display:block;width:44px;height:44px;object-fit:contain}
+
+
+/* UX-DS-10 · faithful notebook: same S128/S134 32px tiled rule as live app.
+   The first visible rule is 39px from the top (8+31); no fake CSS stripes. */
+.ds-control textarea.ds-notebook{
+  --li-review-notebook-line:var(--li-space-8);
+  display:block;
+  box-sizing:border-box;
+  max-width:100%;
+  min-height:calc(var(--li-space-24) * 2);
+  line-height:var(--li-review-notebook-line)!important;
+  padding:var(--li-space-2) var(--li-space-3);
+  background-color:var(--cream)!important;
+  background-image:
+    linear-gradient(to bottom,var(--cream) 0 16px,var(--li-review-transparent) 16px),
+    linear-gradient(to bottom,var(--li-review-transparent) 0 31px,var(--li-color-notebook-rule) 31px 32px)!important;
+  background-size:100% 16px,100% var(--li-review-notebook-line)!important;
+  background-position:0 0,0 var(--li-space-2)!important;
+  background-repeat:no-repeat,repeat!important;
+  background-attachment:scroll,local;
+  -webkit-appearance:none;
+  appearance:none;
+}
+.ds-control textarea.ds-notebook:disabled{
+  background-color:var(--cream)!important;
+  opacity:.55;
+}
+/* Comparison, not approval: both light paper and the live Home green speech style. */
+:root{
+  --li-review-home-forest-bubble:rgba(15,42,29,.96);
+  --li-review-home-bubble-gold:rgba(235,229,193,.85);
+  --li-review-home-shadow:0 6px 18px rgba(3,20,12,.32);
+}
+.ds-bubble-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--li-space-5);align-items:stretch}
+.ds-bubble-option{min-width:0;display:flex;flex-direction:column;gap:var(--li-space-3)}
+.ds-bubble-option h4{font-family:var(--li-font-editorial);font-size:var(--li-type-title-sm);line-height:var(--li-leading-title-sm);color:var(--moss);margin:var(--li-space-0)}
+.ds-bubble-option .ds-bubble-stage{flex:1;display:flex;align-items:center}
+.ds-bubble-stage.dark{background:var(--forest)}
+.ds-home-bubble.green{
+  background:var(--li-review-home-forest-bubble);
+  border:1.5px solid var(--li-review-home-bubble-gold);
+  color:var(--li-color-home-dialogue-on-dark);
+  border-radius:12px 12px 12px 4px;
+  box-shadow:var(--li-review-home-shadow);
+}
+.ds-home-bubble.green::before{
+  background:var(--li-color-home-dialogue-tail);
+  border-left-color:var(--li-review-home-bubble-gold);
+  border-bottom-color:var(--li-review-home-bubble-gold);
+}
+.ds-home-bubble.green strong{color:var(--li-color-home-dialogue-example)}
+.ds-home-bubble.green p{color:var(--li-color-home-dialogue-on-dark)}
+/* Image card specimens use only already published li. assets. No new art release. */
+.ds-image-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--li-space-5);margin-top:var(--li-space-5)}
+.ds-image-card{display:flex;flex-direction:column;min-width:0;overflow:hidden;background:var(--cream);border:1px solid var(--moss);box-shadow:4px 4px 0 var(--wood)}
+.ds-image-frame{position:relative;min-width:0;overflow:hidden;background:var(--paper-2)}
+.ds-image-frame img{display:block;width:100%;height:100%;max-width:none;object-fit:cover;object-position:center center}
+.ds-image-frame.wide{aspect-ratio:16 / 9}
+.ds-image-frame.portrait{aspect-ratio:3 / 4}
+.ds-image-copy{display:flex;flex-direction:column;align-items:flex-start;gap:var(--li-space-3);padding:var(--li-space-5);min-width:0;flex:1}
+.ds-image-copy h3{font-family:var(--li-font-editorial);font-size:var(--li-type-title-lg);line-height:var(--li-leading-title-lg);margin:var(--li-space-0);overflow-wrap:anywhere}
+.ds-image-copy p{font-size:var(--li-type-body);line-height:var(--li-leading-body);margin:var(--li-space-0);overflow-wrap:break-word}
+.ds-image-copy .ds-eyebrow{font-size:var(--li-type-caption);line-height:var(--li-leading-caption);color:var(--wood)}
+.ds-image-copy .ds-link{margin-top:auto}
+.ds-image-split{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);min-height:300px}
+.ds-image-split .ds-image-frame{height:100%;min-height:300px;aspect-ratio:auto}
+.ds-image-split .ds-image-frame img{object-position:center 42%}
+.ds-image-character{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr)}
+.ds-image-character .ds-image-frame{display:flex;align-items:center;justify-content:center;padding:var(--li-space-6);background:var(--paper-2)}
+.ds-image-character .ds-image-frame img{width:min(100%,220px);height:auto;aspect-ratio:1 / 1;object-fit:contain}
+@media(max-width:700px){
+ .ds-bubble-options,.ds-image-grid{grid-template-columns:minmax(0,1fr)}
+ .ds-image-split,.ds-image-character{grid-column:auto;grid-template-columns:minmax(0,1fr)}
+ .ds-image-split .ds-image-frame{height:auto;min-height:0;max-height:340px;aspect-ratio:4/3}
+ .ds-image-character .ds-image-frame{min-height:210px}
+ .ds-image-copy{padding:var(--li-space-4)}
+}
+/* iOS Safari click-highlight is not a component pressed state. Keep real
+   focus-visible rings and deliberate square CTA active styles intact. */
+.ds-shell :is(button,a),.ds-shell :is(button,a) *{-webkit-tap-highlight-color:var(--li-review-transparent)!important}
+@media(hover:none) and (pointer:coarse){
+ .ds-tabs button:is(:hover,:active,:focus:not(:focus-visible)),
+ .ds-utility button:not([aria-current="page"]):is(:hover,:active,:focus:not(:focus-visible)),
+ .ds-navsample button:is(:hover,:active,:focus:not(:focus-visible)){
+   background:var(--li-review-transparent)!important;
+   box-shadow:none!important;
+ }
+}

@@ -40,6 +40,14 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 - [ ] Navigation: utility, mobile 4-tab, nested Back. Verify same icon names and selected semantics.
 - [ ] Headless Chrome board fixture asserts interactive states; **physical Safari, VoiceOver, text zoom and G2 approval still open**.
 
+### UX-DS-10 · Component review completeness (Human PO feedback)
+- [ ] Bút Ký textarea specimen mirrors 32px **ruled notebook** in app, including focus/disabled, not plain generic background.
+- [ ] Compare light and forest-green Home speech bubbles side-by-side; do not change current Home scene or infer G2 approval.
+- [ ] Verify **real image card examples**: media top landscape 16:9, responsive split, contained illustration; render actual approved app assets; no unpublished subject art.
+- [ ] Prevent rectangle tap flash for nav/icon controls, preserve designed active oval/keyboard focus. Verify CSS cache bust and test on real iPhone Safari.
+- [ ] QA captures both `?capture=media` and `?capture=bubbles` as honest independent screenshots.
+- [ ] Check downstream effect on Home, nav, Check-in and Tủ Riêng; all 01–14 interaction/IA decisions preserved; G2 and physical device still OPEN.
+
 ## 3. Evidence of done
 - [ ] Run `python3 tools/audit_design_tokens.py --check-baseline` across **all first-party HTML/CSS/JS**; new raw token/off-grid debt must not grow, and a pass does **not** imply the legacy baseline is zero. See [UX-DS-03 audit](audits/2026-11-18-full-app-token-mapping.md).
 - [ ] Run `python3 tools/validate_ui_foundations.py` (new type/spacing CSS)

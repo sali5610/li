@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>li. 理 — Component Library Review · UX-DS-09</title>
+<title>li. 理 — Component Library Review · UX-DS-10</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/design-tokens.css?v=0.3">
-<link rel="stylesheet" href="./assets/component-review-v2.css?v=20261118-09">
+<link rel="stylesheet" href="./assets/component-review-v2.css?v=20261118-10">
 <style>
 :root {color-scheme:light}
 *{box-sizing:border-box}
@@ -105,7 +105,7 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
 <div class="ds-shell">
 <aside class="ds-sidebar">
  <div class="ds-mark"><img src="./assets/li-seal.svg?v=exact-header-s146" width="44" height="44" alt="理"><span>li.</span></div>
- <div class="ds-eyebrow" style="color:var(--sage)">UX-DS-09 · REVIEW BUILD</div>
+ <div class="ds-eyebrow" style="color:var(--sage)">UX-DS-10 · REVIEW BUILD</div>
  <nav class="ds-nav" aria-label="Mục lục Component Showcase">
   <a href="#status">01 / Status</a><a href="#tokens">02 / Foundations</a><a href="#icons">03 / Icons</a><a href="#navigation">04 / Navigation</a><a href="#actions">05 / Actions</a><a href="#cards">06 / Cards</a><a href="#inputs">07 / Forms</a><a href="#feedback">08 / Feedback</a><a href="#live">09 / Real app</a><a href="#inventory">10 / Component inventory</a>
  </nav>
@@ -185,7 +185,7 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
   <div id="card-response" class="ds-note" style="margin-top:var(--li-space-5)" role="status">Bấm card specimen để xem anatomy. Card thật trong app mở trang chú giải.</div>
   <div class="ds-grid" style="margin-top:var(--li-space-5)">
    <div class="ds-panel"><h3>Editorial Panel</h3><p>Đây là surface đọc dài: padding 20–24px, body 16/24, không dùng kiểu compact của Thần Chú cho toàn bộ card.</p><span class="ds-code">.surface / .panel</span></div>
-   <div class="ds-panel"><h3>Illustration Card</h3><p>Card có artwork cần luật crop riêng và duyệt asset. Không tự lấy hình draft làm chuẩn cho tất cả môn.</p><span class="ds-code">.destination / scene art</span></div>
+   <div class="ds-panel"><h3>Illustration / image card</h3><p>Media và nội dung là hai vùng có anatomy riêng. Test crop 16:9, split layout, minh hoạ contained, mobile stack và text dài với asset có sẵn.</p><span class="ds-code">.destination / real art</span></div>
   </div>
 
   <h3 style="margin-top:var(--li-space-8)">Large card · Two ivory levels</h3>
@@ -194,9 +194,29 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
    <article class="ds-large light"><div class="meta"><span>01 · LIGHT IVORY</span><i data-lucide="book-open" aria-hidden="true"></i></div><h3>Khám phá một câu hỏi</h3><p>Không phải mọi kết quả khảo sát đều suy rộng được. Hãy đọc nguồn, đối tượng được hỏi và phần chưa được đại diện.</p><div class="foot"><small>Editorial reading · --cream</small><a class="ds-link" href="#live">Đào sâu <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div></article>
    <article class="ds-large warm"><div class="meta"><span>02 · WARM IVORY</span><i data-lucide="notebook-tabs" aria-hidden="true"></i></div><h3>Một ý tưởng đáng giữ</h3><p>Nền vàng ngà giúp tách nội dung lưu trữ và phần hỗ trợ nhẹ nhàng, không biến mỗi card thành một poster.</p><div class="foot"><small>Secondary surface · --paper-2</small><a class="ds-link" href="#inputs">Ghi ý <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div></article>
   </div>
+
+  <h3 style="margin-top:var(--li-space-8)">Illustrated / image card · 3 compositions</h3>
+  <p class="ds-muted">Ví dụ bằng đúng asset đã có trong app; không công bố illustration ngành học chưa duyệt. Compare: media-top 16:9, media-side responsive, contained character art. Nội dung luôn nằm ngoài vùng crop để không mất chữ.</p>
+  <div class="ds-image-grid" aria-label="Ba biến thể card có hình minh họa thực tế">
+   <article class="ds-image-card ds-image-top">
+    <div class="ds-image-frame wide"><img src="./assets/home-mystic-cool-desktop.webp" alt="Thư viện cổ thụ với các kệ sách và cầu thang xoắn, minh họa thế giới li." width="1200" height="675" loading="eager" decoding="async"></div>
+    <div class="ds-image-copy"><span class="ds-eyebrow">01 / MEDIA TOP · 16:9</span><h3>Đi vào thư viện</h3><p>Hình làm bối cảnh riêng; tiêu đề, mô tả và CTA không đặt trực tiếp lên phần tranh bị crop.</p><a class="ds-link" href="#live">Xem app thật <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+   </article>
+   <article class="ds-image-card ds-image-split">
+    <div class="ds-image-frame portrait"><img src="./assets/home-mystic-cool-mobile.webp" alt="Khung cảnh dọc thư viện cổ thụ, minh họa được crop giữa" width="720" height="1200" loading="eager" decoding="async"></div>
+    <div class="ds-image-copy"><span class="ds-eyebrow">02 / MEDIA SIDE · STACKS ON MOBILE</span><h3>Mỗi góc nhìn một câu hỏi</h3><p>Hình dọc chiếm một bên card; mobile chuyển thành khung ảnh phía trên, không ép text hẹp.</p><button class="ds-link" type="button" data-demo-link>Xem cách dùng <i data-lucide="arrow-up-right" aria-hidden="true"></i></button></div>
+   </article>
+   <article class="ds-image-card ds-image-character">
+    <div class="ds-image-frame figure"><img src="./assets/laoly-neutral.png" alt="Chân dung minh họa Lão Lý, nhân vật hướng dẫn của li." width="256" height="256" loading="eager" decoding="async"></div>
+    <div class="ds-image-copy"><span class="ds-eyebrow">03 / CONTAINED ILLUSTRATION</span><h3>Một lời từ Lão Lý</h3><p>Art nhân vật giữ nguyên tỷ lệ, không cắt mặt; nền giấy được phép thở.</p><a class="ds-link" href="#live">Xem vị trí thật <i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
+   </article>
+  </div>
   <h3 style="margin-top:var(--li-space-8)">Subtle chat bubble · Homepage</h3>
-  <p class="ds-muted">Ứng dụng thật: hero dialogue của Lão Lý. Đây là specimen xử lý rất nhẹ: giấy sáng, border mảnh, đuôi nhỏ, không hard shadow hay gradient.</p>
-  <div class="ds-bubble-stage"><div class="ds-home-bubble" role="note"><strong>VÍ DỤ GIẢ ĐỊNH</strong><p>90% phản hồi tích cực — nhưng họ có đại diện cho tất cả người dùng không?</p></div></div>
+  <p class="ds-muted">Hai option cùng nội dung để mày so trực tiếp. <strong>Option A</strong> giấy sáng là concept nhẹ; <strong>Option B</strong> xanh rừng lấy đúng chất liệu của chat bubble hiện trên Home trong ảnh mày gửi. Chưa tự duyệt variant mới.</p>
+  <div class="ds-bubble-options" aria-label="Hai lựa chọn màu chat bubble">
+   <article class="ds-bubble-option"><h4>Option A · Light paper / candidate</h4><div class="ds-bubble-stage"><div class="ds-home-bubble" role="note"><strong>VÍ DỤ GIẢ ĐỊNH</strong><p>90% phản hồi tích cực — nhưng họ có đại diện cho tất cả người dùng không?</p></div></div></article>
+   <article class="ds-bubble-option"><h4>Option B · Forest green / đang dùng trên Home</h4><div class="ds-bubble-stage dark"><div class="ds-home-bubble green" role="note"><strong>VÍ DỤ GIẢ ĐỊNH</strong><p>90% phản hồi tích cực — nhưng họ có đại diện cho tất cả người dùng không?</p></div></div></article>
+  </div>
  </section>
 
  <section id="inputs" class="ds-section">
@@ -212,9 +232,9 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
    </div>
   </div>
   <div class="ds-grid" style="margin-top:var(--li-space-5)">
-   <div class="ds-panel"><h3>Textarea · Bút Ký</h3>
-    <div class="ds-control"><label for="ds-textarea">Viết lại kết luận</label><textarea id="ds-textarea" maxlength="240" placeholder="Điều gì cần kiểm chứng thêm?" aria-describedby="ds-textarea-counter"></textarea><p id="ds-textarea-counter" class="helper" role="status">0 / 240 ký tự · chưa lưu</p></div>
-    <div class="ds-control" style="margin-top:var(--li-space-4)"><label for="ds-textarea-off">Textarea disabled</label><textarea id="ds-textarea-off" disabled>Không cho sửa trong trạng thái này.</textarea></div>
+   <div class="ds-panel"><h3>Textarea · Notebook có dòng kẻ</h3>
+    <div class="ds-control"><label for="ds-textarea">Viết lại kết luận</label><textarea id="ds-textarea" class="ds-notebook" rows="6" maxlength="240" placeholder="Điều gì cần kiểm chứng thêm?" aria-describedby="ds-textarea-counter"></textarea><p id="ds-textarea-counter" class="helper" role="status">0 / 240 ký tự · chưa lưu</p><p class="ds-muted">Đúng surface Bút Ký của app: dòng kẻ 32px theo baseline, giấy trắng ngà và caret/placeholder có thể đọc được.</p></div>
+    <div class="ds-control" style="margin-top:var(--li-space-4)"><label for="ds-textarea-off">Textarea disabled</label><textarea id="ds-textarea-off" class="ds-notebook" rows="3" disabled>Không cho sửa trong trạng thái này.</textarea></div>
    </div>
    <div class="ds-panel"><h3>Filter chips</h3>
     <div class="ds-chip-row" role="group" aria-label="Mẫu lọc nhóm">
@@ -266,7 +286,7 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
    <tr><td>Lesson cards / source</td><td><code>.l09-* / .source-status</code></td><td>Wave1 live; Wave2/3 không phát hành</td></tr>
   </tbody></table></div>
  </section>
- <footer class="ds-footer">UX-DS-09 · Visual review only · Tokens authored in <code>design-system/tokens.json</code>; app uses generated CSS. PO chốt theo từng component, không tự biến specimen thành G2 approved.</footer>
+ <footer class="ds-footer">UX-DS-10 · Visual review only · Tokens authored in <code>design-system/tokens.json</code>; app uses generated CSS. PO chốt theo từng component, không tự biến specimen thành G2 approved.</footer>
 </main>
 </div>
 <script src="./assets/lucide.min.js"></script>
@@ -305,6 +325,22 @@ document.querySelectorAll("[data-chip]").forEach(button=>button.addEventListener
 }));
 // Static screenshot-only viewport: isolate the requested board section.
 const requestedSection=new URLSearchParams(location.search).get("capture");
+if(["media","bubbles"].includes(requestedSection)){
+ const main=document.querySelector(".ds-main");
+ const cardsSection=document.getElementById("cards");
+ const target=cardsSection.querySelector(requestedSection==="media"?".ds-image-grid":".ds-bubble-options");
+ [...main.children].forEach(child=>{if(child!==cardsSection)child.hidden=true;});
+ [...cardsSection.children].forEach(child=>{
+   if(child!==target){child.hidden=true;child.style.display="none";}
+ });
+ document.querySelector(".ds-sidebar").hidden=true;
+ document.querySelector(".ds-shell").style.gridTemplateColumns="minmax(0,1fr)";
+ main.style.maxWidth="1180px";
+ main.style.margin="0 auto";
+ main.style.padding="var(--li-space-6)";
+ cardsSection.style.marginTop="var(--li-space-0)";
+ target.style.marginTop="var(--li-space-0)";
+}
 if(["icons","navigation","actions","cards","inputs"].includes(requestedSection)){
  const main=document.querySelector(".ds-main");
  [...main.children].forEach(child=>{if(child.id!==requestedSection)child.hidden=true;});

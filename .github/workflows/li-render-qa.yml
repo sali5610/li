@@ -84,7 +84,7 @@ jobs:
 
 
           mkdir -p "$RUNNER_TEMP/li-component-review-v2"
-          for section in icons navigation actions cards inputs; do
+          for section in icons navigation actions cards inputs media bubbles; do
             file="$RUNNER_TEMP/li-component-review-v2/${section}.png"
             "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --force-device-scale-factor=1 --window-size=1420,1000 --virtual-time-budget=12000 --screenshot="$file" "http://127.0.0.1:8765/site/component-library-review.html?capture=${section}" 2>/tmp/li-component-shot.log >/dev/null
             test -s "$file" || { echo "FAIL screenshot for component section $section"; exit 1; }

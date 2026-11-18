@@ -671,3 +671,20 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   #buddy-modal .buddy-heading {column-gap:var(--li-space-2);max-height:min(48svh,380px);}
   #buddy-modal .buddy-heading #buddy-title {font-size:var(--li-type-title-lg);}
 }
+
+
+/* UX-DS-10 · iOS pressed feedback: remove native rectangular tap flash.
+   Preserve deliberate square primary/secondary active surface and keyboard
+   focus-visible outlines. Mobile nav selection remains on its oval ::before. */
+:where(button,a,[role="button"],summary),
+:where(button,a,[role="button"],summary) :is(svg,i,span,img) {
+  -webkit-tap-highlight-color: transparent !important;
+}
+@media (hover: none) and (pointer: coarse) {
+  .header .tool-button:is(:hover,:active,:focus:not(:focus-visible)),
+  .mobile-nav .nav-btn:is(:hover,:active,:focus:not(:focus-visible)),
+  #page-home .mirror-refresh:is(:hover,:active,:focus:not(:focus-visible)) {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+}

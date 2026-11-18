@@ -7,6 +7,8 @@ const host=document.querySelector("#page-catalog .section-shell");
 const groups=window.LI_CATALOG_DATA;
 if(!host||!Array.isArray(groups)||groups.length!==8)return;
 const levels=[["Foundation","Nền tảng"],["Intermediate","Trung cấp"],["Advanced-topic","Chuyên sâu"]];
+const isEnglish=()=>window.liLanguage?.get?.()==="en";
+const copy=(vi,en)=>isEnglish()?en:vi;
 let path=[];
 function el(tag,cls,value,parent){
  const node=document.createElement(tag);if(cls)node.className=cls;
@@ -37,6 +39,11 @@ function setPath(next,save=true){
   history.pushState(history.state,"",u.pathname+u.search);
  }
  render();
+ if(save){
+  window.scrollTo?.(0,0);
+  const heading=host.querySelector("h1");
+  if(heading){heading.tabIndex=-1;heading.focus?.({preventScroll:true});}
+ }
 }
 function header(title,desc,eyebrow){
  el("div","kicker",eyebrow,host);el("h1","display-title",title,host);
@@ -87,7 +94,7 @@ function renderField(f){
   const collection=el("div","catalog-course-list",null,stage);
   f.courses.filter(c=>c.level===lev).forEach(c=>{
    const row=el("article","surface catalog-course-card",null,collection);
-   el("div","kicker",c.id+" · "+local,row);el("h3","",c.title,row);
+   el("div","kicker",c.id+" · "+(isEnglish()?(lev==="Foundation"?"Foundation":lev==="Intermediate"?"Intermediate":"Advanced"):local),row);el("h3","",c.title,row);
    const lessonList=el("ol","catalog-preview-lessons",null,row);
    c.lessons.forEach(l=>{const it=el("li","",l.title,lessonList);if(l.published)it.classList.add("catalog-preview-published");});
    action(row,"Xem môn học","open-course",c.id,"action alt catalog-card-action");
@@ -102,7 +109,7 @@ function progress(lesson){
  return state?.reviewed===true;
 }
 function renderCourse(c){
- header(c.title,"Theo dõi các bài trong môn và tiếp tục từ nội dung đã phát hành.","MÔN HỌC · "+c.id);
+ header(c.title,"Theo dõi các bài trong môn và tiếp tục từ nội dung đã phát hành.",copy("MÔN HỌC","COURSE")+" · "+c.id);
  const panel=el("section","surface catalog-progress",null,host);
  const available=c.lessons.filter(l=>l.published);
  if(!available.length){
@@ -130,19 +137,21 @@ function renderCourse(c){
   const order=el("span","catalog-lesson-order",String(i+1).padStart(2,"0"),row);order.setAttribute("aria-hidden","true");
   const body=el("div","catalog-lesson-desc",null,row);
   el("h2","",l.title,body);
-  el("p","small",l.id+" · "+(l.published?"Đã phát hành":"Đề cương · chưa phát hành"),body);
+  el("p","small",l.id+" · "+(l.published?copy("Đã phát hành","Published"):copy("Đề cương · chưa phát hành","Outline · not published")),body);
   action(row,l.published?"Vào bài học":"Xem đề cương","open-lesson",l.id,"action alt");
  });
 }
 function renderUnpublishedLesson(l){
- header(l.title,"Bài này mới có tên và vị trí trong lộ trình. Nội dung chương chưa được xuất bản.","BÀI HỌC · "+l.id);
+ header(l.title,"Bài này mới có tên và vị trí trong lộ trình. Nội dung chương chưa được xuất bản.",copy("BÀI HỌC","LESSON")+" · "+l.id);
  const main=el("article","surface catalog-draft-content",null,host);
  el("div","kicker","CHƯA PHÁT HÀNH",main);
  el("h2","","Nội dung đang được biên soạn",main);
  el("p","","Đây chỉ là đề cương trong roadmap. Chưa có chương được phát hành. Chưa có bài tập hoặc tiến độ học.",main);
 }
 function render(){
- host.replaceChildren();breadcrumbs();
+ host.replaceChildren();
+ try{
+ breadcrumbs();
  const {group,field,course,lesson}=findParts();
  if(!group)return renderRoot();
  if(!field)return renderGroup(group);
@@ -155,6 +164,7 @@ function render(){
  }
  renderUnpublishedLesson(lesson);
  if(typeof window.lucide?.createIcons==="function")window.lucide.createIcons({attrs:{"stroke-width":1.8}});
+ }finally{localize(host);}
 }
 function chapterParam(id,replace=false){
  if(!history?.pushState)return;

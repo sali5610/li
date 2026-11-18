@@ -91,7 +91,8 @@ const TEXT={
  "Chuỗi cung ứng":"Supply Chain",
  "Khám phá những lĩnh vực khiến bạn tò mò":"Explore the fields you are curious about"
 };
-const ATTRS=["aria-label","title","placeholder"];
+Object.assign(TEXT,window.LI_LEGACY_EN||{});
+const ATTRS=["aria-label","title","placeholder","alt"];
 const originalText=new WeakMap();
 const originalAttr=new WeakMap();
 let observer=null,locked=false;
@@ -203,10 +204,10 @@ if(typeof MutationObserver==="function"){
   for(const mutation of changes){
    if(mutation.type==="characterData")patchText(mutation.target);
    else if(mutation.type==="attributes"){
-    if(mutation.attributeName==="aria-label"||mutation.attributeName==="title"||mutation.attributeName==="placeholder")patchAttrs(mutation.target);
+    if(ATTRS.includes(mutation.attributeName))patchAttrs(mutation.target);
    }else for(const node of mutation.addedNodes||[])walk(node);
   }
  });
- observer.observe(document.body,{subtree:true,childList:true,characterData:true});
+ observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:ATTRS});
 }
 })();

@@ -112,14 +112,14 @@
 .ds-bubble-stage.dark{background:var(--forest)}
 .ds-home-bubble.green{
   background:var(--li-review-home-forest-bubble);
-  border:0;
+  border-width:var(--li-space-0);
   color:var(--li-color-home-dialogue-on-dark);
   border-radius:12px 12px 12px 4px;
   box-shadow:var(--li-review-home-shadow);
 }
 .ds-home-bubble.green::before{
   background:var(--li-color-home-dialogue-tail);
-  border:0;
+  border-width:var(--li-space-0);
 }
 .ds-home-bubble.green strong{color:var(--li-color-home-dialogue-example)}
 .ds-home-bubble.green p{color:var(--li-color-home-dialogue-on-dark)}

@@ -31,6 +31,7 @@ function render(id){
  const en=root.querySelector("#"+id.slice(0,3).toLowerCase()+"-en");
  const locale=en?.getAttribute("aria-pressed")==="true"?"en":"vi";
  const title=section.querySelector(".li-related-title"),intro=section.querySelector(".li-related-intro"),list=section.querySelector(".li-related-list");
+ section.querySelector(".kicker").textContent=locale==="vi"?"KẾT NỐI KIẾN THỨC":"CONNECTED LEARNING";
  title.textContent=locale==="vi"?"Nối tiếp mạch kiến thức":"Follow the learning thread";
  intro.textContent=locale==="vi"?"Những bài đang mở, nối với điều vừa học theo một góc nhìn cụ thể. Không phải bài bắt buộc.":"Available lessons connected by a specific idea, not mandatory prerequisites.";
  list.replaceChildren();

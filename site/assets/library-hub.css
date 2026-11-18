@@ -274,3 +274,30 @@
   width:auto;
  }
 }
+
+/* UX-IA-09 · Two actual Dấu Trang tabs: Bài học / Câu hỏi.
+   Case bookmarks belong to Câu hỏi, not to a mixed list. */
+#page-resume .library-bookmark-tabs{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:var(--li-space-2);margin:var(--li-space-5) var(--li-space-0) var(--li-space-4);
+}
+#page-resume .library-bookmark-tab{
+ display:inline-flex;align-items:center;justify-content:center;
+ min-height:var(--li-space-12);min-width:0;
+ padding:var(--li-space-3) var(--li-space-4);
+ border:1px solid var(--rule);border-radius:var(--li-space-2);
+ background:var(--paper);color:var(--muted);
+ font:inherit;font-weight:600;cursor:pointer;
+}
+#page-resume .library-bookmark-tab[aria-selected="true"]{
+ color:var(--moss);background:var(--cream);
+ border-color:var(--moss);text-decoration:underline;
+ text-underline-offset:var(--li-space-1);
+}
+#page-resume .library-bookmark-tab:focus-visible{
+ outline:2px solid var(--li-color-focus-ring);
+ outline-offset:var(--li-space-1);
+}
+#page-resume .library-bookmark-panel[hidden]{display:none!important}
+#page-resume .library-bookmark-panel{min-width:0}
+#page-resume .library-bookmark-panel .path-list{min-width:0}

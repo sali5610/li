@@ -15,6 +15,10 @@ iframe.addEventListener("load",()=>{
    const check=(label,ok,detail)=>{checks.push({label,passed:!!ok,detail:detail||""});};
    const tokens=w.getComputedStyle(d.documentElement);
    check("Canonical generated paper token",tokens.getPropertyValue("--paper").trim().toUpperCase()==="#F1F0E9");
+   check("Olive Moss canonical token is available",tokens.getPropertyValue("--olive").trim().toUpperCase()==="#65734C");
+   const oliveSwatch=d.querySelector('[data-ds-token="olive"]');
+   check("Olive Moss swatch matches token and visual label",!!oliveSwatch&&w.getComputedStyle(oliveSwatch.querySelector(".ds-paint")).backgroundColor==="rgb(101, 115, 76)"&&oliveSwatch.textContent.includes("Olive Moss · #65734C"));
+   check("Paper/Cream swatch labels match current neutral-ivory runtime colors",d.querySelector(".ds-swatches")?.textContent.includes("Paper · #F1F0E9")&&d.querySelector(".ds-swatches")?.textContent.includes("Cream · #FAF9F5"));
    check("Review pending G2",d.body.textContent.includes("Chờ Human PO duyệt component"));
    const cards=d.querySelectorAll(".ds-method-grid .ds-method");
    check("Original method grid preserves two approved tiles",cards.length===2);

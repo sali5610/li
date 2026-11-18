@@ -212,6 +212,8 @@ function localizePlanText(text){
  const source=String(text??"");
  const language=window.liLanguage;
  if(!language||language.get()!=="en")return source;
+ const count=source.match(/^Có (\d+) phương pháp khớp tên hoặc bộ lọc hiện tại\.$/);
+ if(count)return count[1]+(count[1]==="1"?" spell matches":" spells match")+" the current search or filter.";
  const exact=language.translate(source);
  if(exact!==source)return exact;
  const approved=window.LI_LEGACY_EN||{};

@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/design-tokens.css?v=0.3">
 <link rel="stylesheet" href="./assets/li-layout.css?v=20261118-ds10-touch"><link rel="stylesheet" href="./assets/lesson-l09-hifi.css?v=0.3">
-<link rel="stylesheet" href="./assets/ui-foundations.css?v=20261118-ds10-tap"><link rel="stylesheet" href="./assets/checkin-adaptation.css?v=20261118-binary3"><link rel="stylesheet" href="./assets/personal-diary.css?v=1"><link rel="stylesheet" href="./assets/library-hub.css?v=3"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
+<link rel="stylesheet" href="./assets/ui-foundations.css?v=20261118-ds10-tap"><link rel="stylesheet" href="./assets/checkin-adaptation.css?v=20261118-binary3"><link rel="stylesheet" href="./assets/personal-diary.css?v=1"><link rel="stylesheet" href="./assets/library-hub.css?v=4"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
 <symbol id="i-tree" viewBox="0 0 24 24"><path d="m12 2 4 5h-2l4 5h-3l4 6H5l4-6H6l4-5H8zM12 18v4"/></symbol>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7c-4-3-8-3-10-2v15c3-1 7 0 10 2 3-2 7-3 10-2V5c-2-1-6-1-10 2ZM12 7v15"/></symbol>
 <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6zM15 2v5h5M9 13h8M9 17h8"/></symbol>
@@ -35,7 +35,7 @@
 <div class="hero" role="region" aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn">
 
 <div class="hero-left"><button class="home-checkin" id="checkin" type="button"><i data-lucide="check-circle-2" class="icon sm" aria-hidden="true"></i> Check-in hôm nay</button><h1>Mọi câu hỏi<br>đều có rễ.</h1><p>Không cần biết tất cả. Chỉ cần không ngừng tò mò.</p><span class="tiny-note">Một câu hỏi, muôn ngả đường</span></div>
-<div class="mirror-message"><div class="mirror-label">Gương Vạn Vấn</div><h2 id="mirror-question">90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?</h2><div class="mirror-controls" role="group" aria-label="Chuyển câu hỏi"><button id="previous-question" class="mirror-refresh" type="button" aria-label="Câu hỏi trước" title="Câu hỏi trước"><i data-lucide="arrow-left" class="icon sm" aria-hidden="true"></i></button><button id="shuffle" class="mirror-refresh" type="button" aria-label="Câu hỏi tiếp theo" title="Câu hỏi tiếp theo"><i data-lucide="arrow-right" class="icon sm" aria-hidden="true"></i></button></div></div>
+<div class="mirror-message"><div class="mirror-titlebar"><div class="mirror-label">Gương Vạn Vấn</div><div class="library-icon-utility mirror-bookmark-slot"><button class="library-icon-action" id="save-question" type="button" aria-label="Lưu câu hỏi" title="Lưu câu hỏi" aria-pressed="false"><i data-lucide="bookmark" aria-hidden="true"></i></button></div></div><h2 id="mirror-question">90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?</h2><div class="mirror-controls" role="group" aria-label="Chuyển câu hỏi"><button id="previous-question" class="mirror-refresh" type="button" aria-label="Câu hỏi trước" title="Câu hỏi trước"><i data-lucide="arrow-left" class="icon sm" aria-hidden="true"></i></button><button id="shuffle" class="mirror-refresh" type="button" aria-label="Câu hỏi tiếp theo" title="Câu hỏi tiếp theo"><i data-lucide="arrow-right" class="icon sm" aria-hidden="true"></i></button></div></div>
 <aside class="hero-dialogue" aria-label="Lão Lý kể bối cảnh câu hỏi đang hiện trong Gương Vạn Vấn">
   <span class="hero-dialogue-avatar" aria-hidden="true"><img src="./assets/laoly-neutral.png" alt="" width="128" height="128" loading="eager" decoding="async"></span>
   <div class="hero-dialogue-bubble" role="note">
@@ -43,7 +43,7 @@
     <p id="home-scene">Nhóm UX khảo sát người đang dùng sản phẩm. 90% phản hồi tích cực, nên họ kết luận: “Ai cũng muốn tính năng này”.</p>
   </div>
 </aside>
-<div class="hero-actions"><button class="secondary" id="save-question" type="button"><span class="action-icon"><i data-lucide="bookmark" class="icon sm" aria-hidden="true"></i></span><span>Lưu</span></button><button class="primary" id="mirror-primary-action" data-page="research" type="button"><span class="action-icon"><i data-lucide="arrow-up-right" class="icon lg" aria-hidden="true"></i></span><span id="mirror-primary-label">Đào sâu</span></button></div></div>
+<div class="hero-actions"><button class="primary" id="mirror-primary-action" data-page="research" type="button"><span class="action-icon"><i data-lucide="arrow-up-right" class="icon lg" aria-hidden="true"></i></span><span id="mirror-primary-label">Đào sâu</span></button></div></div>
 <div class="section-shell"><div class="rule-label">LỐI ĐI TRONG THƯ VIỆN</div><div class="surface-grid"><button class="home-tile" data-page="catalog"><span class="tile-photo "></span><span class="tile-text"><span class="kicker"><i data-lucide="library-big" aria-hidden="true"></i> Khám phá</span><strong>Tàng Thư</strong><small>Khám phá những lĩnh vực khiến bạn tò mò</small></span></button><button class="home-tile" data-page="guide"><span class="tile-photo book"></span><span class="tile-text"><span class="kicker"><i data-lucide="book-open" aria-hidden="true"></i> Khám phá</span><strong>Thần Chú</strong><small>13 cách học, ghi nhớ và lập luận</small></span></button><button class="home-tile" data-page="library"><span class="tile-photo roots"></span><span class="tile-text"><span class="kicker"><i data-lucide="archive" aria-hidden="true"></i> Khám phá</span><strong>Tủ Riêng</strong><small>Những câu hỏi và kết luận muốn quay lại</small></span></button></div>
 </div>
 </section>
@@ -61,7 +61,7 @@
 <article class="surface dark"><div class="laoly-side-avatar"><span class="laoly-face smallface" aria-hidden="true"><img src="./assets/laoly-neutral.png" alt="" width="128" height="128" class="laoly-approved-img" loading="eager" decoding="async"></span><span class="kicker">LÃO LÝ NHẮN NHỦ</span></div><h2 style="color:var(--cream)">“Lập luận hay mà thiếu dữ kiện thì vẫn chỉ là một câu chuyện kể.”</h2><p>Muốn lão giúp soi tiền đề nào trước?</p><button class="action alt" data-buddy="1">Đối thoại cùng Lão Lý</button></article></div></div></div></section>
 <section id="page-lesson" class="page" tabindex="-1"><div class="section-shell"><div class="kicker">XÃ HỘI HỌC · PHƯƠNG PHÁP NGHIÊN CỨU</div><h1 class="display-title">Thiên lệch chọn mẫu</h1><p class="intro">Một mẫu khảo sát không đại diện có thể dẫn đến kết luận sai lệch.</p><div class="editorial-grid"><article class="surface"><span class="status-chip">Bản thảo · Thiên lệch chọn mẫu</span><h2>Không phải ai được hỏi cũng đại diện cho tất cả.</h2><p>Giả sử ta phỏng vấn chỉ những người vừa hài lòng với dịch vụ. Kết luận nào có thể sai lệch?</p><div class="path-list"><button class="branch" data-answer="wrong">90% hài lòng có nghĩa toàn bộ người dùng hài lòng.</button><button class="branch" data-answer="right">Đây chỉ là kết quả trong nhóm được hỏi, chưa đủ suy ra tất cả.</button></div><div id="lesson-feedback" class="state-note" style="margin-top:16px">Chọn nhận định bạn thấy hợp lý nhất.</div></article>
 <aside class="surface tinted"><div class="kicker">LỐI HỌC TỰ CHỌN</div><h2>Nhịp học của bạn</h2><p>Chọn nhịp học phù hợp với hôm nay.</p><div class="action-row"><button class="action" data-page="settings">Đổi nhịp</button><button class="action alt" data-page="guide">Xem phương pháp</button></div><div class="section-rule"></div></aside></div></div></section>
-<section id="page-case" class="page" tabindex="-1"><div class="section-shell"><div class="kicker">PHẢN CHỨNG · THIÊN LỆCH CHỌN MẪU</div><h1 class="display-title">Phản Chứng</h1><div class="library-bookmark-tools"><button class="library-text-link" type="button" data-li-bookmark-kind="case" data-li-bookmark-id="sampling-bias-90" aria-pressed="false">Lưu case</button></div><div class="editorial-grid"><article class="surface tinted"><h2>90% trả lời hài lòng. Chúng ta nên kết luận thế nào?</h2><p>Câu hỏi then chốt: người nào được chọn để khảo sát, người nào không được đại diện?</p><div class="path-list"><button class="branch" data-answer="right">Kết quả đúng với những người tham gia mẫu này, chưa suy rộng.</button><button class="branch" data-answer="wrong">90% của mọi người chắc chắn đều hài lòng.</button></div><div id="case-feedback" class="state-note" style="margin-top:16px">Chọn một nhận định để bắt đầu.</div><label for="case-revision" class="small" style="display:block;margin-top:var(--li-space-4)">Luận Kết · Viết lại nhận định không vượt quá dữ kiện</label><textarea id="case-revision" class="text-editor" placeholder="Ví dụ: Trong nhóm người đang sử dụng được hỏi, 90% phản hồi tích cực…"></textarea><div class="action-row"><button class="action" id="finish-case"><i data-lucide="check-check" aria-hidden="true"></i> Lưu vào Bút Ký</button></div><p class="small">Sau khi xem phản hồi, hãy viết lại kết luận bằng lời của bạn.</p></article><article class="surface"><div class="kicker">THỦ THUẬT TƯ DUY</div><h2>Hỏi về đối tượng bị thiếu.</h2><p>Chỉ một câu hỏi “Ai không nằm trong mẫu?” cũng có thể mở ra một nhánh kiểm chứng quan trọng.</p><button class="action" data-page="research">Về Khảo Chứng</button></article></div></div></section>
+<section id="page-case" class="page" tabindex="-1"><div class="section-shell"><div class="kicker">PHẢN CHỨNG · THIÊN LỆCH CHỌN MẪU</div><div class="library-heading-with-utility"><h1 class="display-title">Phản Chứng</h1><div class="library-icon-utility"><button class="library-icon-action" type="button" data-li-bookmark-kind="case" data-li-bookmark-id="sampling-bias-90" aria-label="Lưu case" title="Lưu case" aria-pressed="false"><i data-lucide="bookmark" aria-hidden="true"></i></button></div></div><div class="editorial-grid"><article class="surface tinted"><h2>90% trả lời hài lòng. Chúng ta nên kết luận thế nào?</h2><p>Câu hỏi then chốt: người nào được chọn để khảo sát, người nào không được đại diện?</p><div class="path-list"><button class="branch" data-answer="right">Kết quả đúng với những người tham gia mẫu này, chưa suy rộng.</button><button class="branch" data-answer="wrong">90% của mọi người chắc chắn đều hài lòng.</button></div><div id="case-feedback" class="state-note" style="margin-top:16px">Chọn một nhận định để bắt đầu.</div><label for="case-revision" class="small" style="display:block;margin-top:var(--li-space-4)">Luận Kết · Viết lại nhận định không vượt quá dữ kiện</label><textarea id="case-revision" class="text-editor" placeholder="Ví dụ: Trong nhóm người đang sử dụng được hỏi, 90% phản hồi tích cực…"></textarea><div class="action-row"><button class="action" id="finish-case"><i data-lucide="check-check" aria-hidden="true"></i> Lưu vào Bút Ký</button></div><p class="small">Sau khi xem phản hồi, hãy viết lại kết luận bằng lời của bạn.</p></article><article class="surface"><div class="kicker">THỦ THUẬT TƯ DUY</div><h2>Hỏi về đối tượng bị thiếu.</h2><p>Chỉ một câu hỏi “Ai không nằm trong mẫu?” cũng có thể mở ra một nhánh kiểm chứng quan trọng.</p><button class="action" data-page="research">Về Khảo Chứng</button></article></div></div></section>
 <section id="page-guide" class="page" tabindex="-1"><div class="section-shell"><div class="kicker">CẨM NANG TƯ DUY</div><h1 class="display-title">Sổ Tay Thần Chú</h1><p class="intro">13 phương pháp để học, ghi nhớ và suy nghĩ. Mỗi pháp danh đều có tên học thuật gốc đi kèm.</p><div class="editorial-grid" style="margin-top:var(--li-space-4)"><div class="stack-sm"><input id="method-search" class="searchbox" type="search" placeholder="Tìm pháp danh hoặc tên học thuật (ví dụ: Method of Loci)" aria-label="Tìm trong 13 phương pháp"/><div id="method-filters" class="filters" aria-label="Bộ lọc nhóm kỹ thuật"></div></div><aside class="surface tinted guide-mentor" aria-label="Lời Lão Lý về nhịp học"><img class="guide-mentor-illustration" src="./assets/laoly-guide-rest.png" width="1024" height="1024" alt="Lão Lý ngái ngủ" loading="eager" decoding="async"/><div class="guide-mentor-copy"><span class="kicker">LÃO LÝ NHẮC KHẼ</span><p id="guide-mode-copy" aria-live="polite">“Tiểu hữu, đừng cố học hết một lượt. Chọn một cách vừa sức đã.”</p><p id="method-count" class="guide-method-count" aria-live="polite">Đang hiển thị 13 phương pháp</p></div></aside></div><div id="method-cards" class="method-grid"></div></div></section>
 <section id="page-guideDetail" class="page" tabindex="-1"><div class="section-shell"><button class="action alt" data-page="guide">← Thần Chú</button><div class="section-rule"></div><span class="kicker" id="detail-id">T01 · CHÚ GIẢI</span><h1 class="display-title" id="detail-title">Triệu Ức Chân Ngôn</h1><p id="detail-original" class="intro">Retrieval Practice / Active Recall</p><div class="editorial-grid"><article class="surface tinted"><div class="kicker">I · KHI DÙNG</div><h2 id="detail-purpose">Khi muốn tự nhớ nội dung trước khi xem lời giải.</h2><div class="section-rule"></div><div class="kicker">II · KHỞI THỨC</div><div class="path-list"><div class="path-item"><span class="path-num">01</span><p>Tự xác định điều muốn học hoặc giải quyết.</p></div><div class="path-item"><span class="path-num">02</span><p>Thử làm một ví dụ ngắn với ít trợ giúp.</p></div><div class="path-item"><span class="path-num">03</span><p>Kiểm tra hiểu lầm và điều kiện áp dụng.</p></div></div></article><aside class="surface"><div class="kicker">III · GIẢI CHÚ</div><h2>Dùng thế nào cho đúng?</h2><p>Hãy thử với một ví dụ nhỏ, rồi tự kiểm tra điều bạn hiểu.</p><div class="kicker">IV · DẪN CHỨNG</div><div class="state-note">Nguồn tham khảo đang được bổ sung.</div><button class="action alt" data-page="guide">Xem pháp khác</button></aside></div></div></section>
 <section id="page-library" class="page" tabindex="-1"><div class="section-shell">
@@ -95,20 +95,16 @@
 <section id="page-noteDetail" class="page" tabindex="-1"><div class="section-shell">
 <button class="library-text-link library-back-link" type="button" data-page="collection"><i data-lucide="arrow-left" aria-hidden="true"></i> Bộ sưu tập</button>
 <div class="kicker" style="margin-top:var(--li-space-6)" id="li-note-detail-kind">BÚT KÝ</div>
-<h1 id="li-note-detail-title" class="display-title">Chi tiết ghi chép</h1>
+<div class="library-heading-with-utility"><h1 id="li-note-detail-title" class="display-title">Chi tiết ghi chép</h1><div id="li-note-case-bookmark-tools" class="library-icon-utility" hidden><button class="library-icon-action" type="button" data-li-bookmark-kind="case" data-li-bookmark-id="sampling-bias-90" aria-label="Lưu case" title="Lưu case" aria-pressed="false"><i data-lucide="bookmark" aria-hidden="true"></i></button></div></div>
 <p class="intro" id="li-note-detail-status">Nội dung ghi lại trong Tủ Riêng</p>
-<div id="li-note-case-bookmark-tools" class="library-bookmark-tools" hidden><button class="library-text-link" type="button" data-li-bookmark-kind="case" data-li-bookmark-id="sampling-bias-90" aria-pressed="false">Lưu case</button></div>
 <article id="li-note-case-context" class="surface library-note-context" aria-labelledby="li-note-case-question" hidden>
 <div class="kicker">PHẢN CHỨNG · TÌNH HUỐNG GỐC</div><h2 id="li-note-case-question">Đề bài</h2><p id="li-note-case-scene"></p><div id="li-note-case-choices" class="stack-sm"></div><p id="li-note-case-choice" class="library-entry-body"></p><div id="li-note-case-feedback" class="state-note"></div><p id="li-note-case-provenance" class="small"></p><button class="library-text-link" type="button" data-page="case">Làm lại Phản Chứng</button>
 </article>
 <article class="surface library-note-review" aria-labelledby="li-note-body-heading">
-<div class="kicker">NỘI DUNG HIỆN TẠI</div><h2 id="li-note-body-heading">Luận kết</h2>
+<div class="library-note-head"><div class="kicker">NỘI DUNG HIỆN TẠI</div><div class="library-icon-utility library-delete-utility"><button id="li-note-delete" type="button" class="library-icon-action library-danger-icon" aria-label="Xóa ghi chép và lịch sử phiên bản" title="Xóa ghi chép"><i data-lucide="trash-2" aria-hidden="true"></i></button></div></div><h2 id="li-note-body-heading">Luận kết</h2>
 <p id="li-note-detail-body" class="library-entry-body"></p>
 <p id="li-note-detail-date" class="small"></p>
-<div class="library-note-management">
-<button id="li-note-edit" type="button" class="action alt">Chỉnh sửa</button>
-<button id="li-note-delete" type="button" class="library-text-link library-danger-link">Xóa ghi chép</button>
-</div></article>
+<div class="library-note-management"><button id="li-note-edit" type="button" class="action alt">Chỉnh sửa</button></div></article>
 <section id="li-note-editor" class="surface library-note-edit" aria-labelledby="li-note-editor-heading" hidden>
 <h2 id="li-note-editor-heading">Chỉnh sửa ghi chép</h2>
 <p class="small">Lưu sẽ tạo một phiên bản mới. Phiên bản cũ vẫn nằm trong lịch sử.</p>
@@ -372,6 +368,7 @@ function renderMirrorItem(){
  action.dataset.page=isHook?item.lessonRoute:"research";
  action.setAttribute("aria-label",isHook?"Khám phá vì sao · Mở bài học liên quan":"Đào sâu · Mở Khảo Chứng");
  document.getElementById("mirror-primary-label").textContent=isHook?"Khám phá vì sao":"Đào sâu";
+ refreshQuestionBookmark();
 }
 let selectedCaseAnswer=null;
 function syncResearch(){const s=scenarios[qIndex].type==="hook"?scenarios.find(item=>item.type!=="hook"):scenarios[qIndex];const title=document.querySelector("#page-research .surface.tinted h2");if(title)title.textContent=s.question;document.querySelectorAll('#page-research [data-branch]').forEach((el,i)=>{if(s.branches[i]){el.dataset.branch=s.branches[i];el.textContent=String(i+1).padStart(2,"0")+" · "+s.branches[i]}});document.getElementById("research-observed").textContent=s.observed;document.getElementById("research-unknown").textContent=s.unknown;document.getElementById("branch-feedback").textContent="Chọn một nhánh để đặt câu hỏi kiểm chứng.";}
@@ -635,13 +632,30 @@ document.getElementById("checkin").addEventListener("click",event=>{
  refreshCheckinRecommendation();
  document.querySelector('input[name="checkin-sleep"]').focus();
 });
+function findSavedMirrorQuestion(sc){
+ return savedQuestions.findIndex(x=>x.question===sc.question||x.question===sc.previousQuestion||(sc.key&&x.scenarioKey===sc.key));
+}
+function refreshQuestionBookmark(){
+ const button=document.getElementById("save-question");if(!button)return;
+ const saved=findSavedMirrorQuestion(scenarios[qIndex])>=0;
+ button.setAttribute("aria-pressed",String(saved));
+ button.setAttribute("aria-label",saved?"Bỏ lưu câu hỏi":"Lưu câu hỏi");
+ button.title=saved?"Bỏ lưu câu hỏi":"Lưu câu hỏi";
+}
 document.getElementById("save-question").addEventListener("click",()=>{
- const sc=scenarios[qIndex];
- if(savedQuestions.some(x=>x.question===sc.question||x.question===sc.previousQuestion||(sc.key&&x.scenarioKey===sc.key))){toast("Mục này đã có trong Dấu Trang.");return}
- const item={id:liNewId(),scenarioKey:sc.key||null,question:sc.question,scene:sc.scene,type:sc.type||"problem",lessonRoute:sc.type==="hook"?sc.lessonRoute:null,savedAt:new Date().toISOString()};
- savedQuestions.unshift(item);
- if(!liWriteState()){savedQuestions.shift();toast("Không thể lưu Dấu Trang trên thiết bị. Hãy sao chép câu hỏi.");return}
- toast(sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang.":"Đã lưu câu hỏi vào Dấu Trang trên thiết bị này.");
+ const sc=scenarios[qIndex],index=findSavedMirrorQuestion(sc);
+ if(liStorageError){toast("Không đọc được Dấu Trang đã lưu. Chưa thay đổi dữ liệu.");return;}
+ if(index>=0){
+  const [removed]=savedQuestions.splice(index,1);
+  if(!liWriteState()){savedQuestions.splice(index,0,removed);toast("Không bỏ lưu được. Dấu Trang vẫn giữ nguyên.");return;}
+  toast("Đã bỏ lưu câu hỏi.");
+ }else{
+  const item={id:liNewId(),scenarioKey:sc.key||null,question:sc.question,scene:sc.scene,type:sc.type||"problem",lessonRoute:sc.type==="hook"?sc.lessonRoute:null,savedAt:new Date().toISOString()};
+  savedQuestions.unshift(item);
+  if(!liWriteState()){savedQuestions.shift();toast("Không thể lưu Dấu Trang trên thiết bị.");return;}
+  toast(sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang.":"Đã lưu câu hỏi vào Dấu Trang.");
+ }
+ refreshQuestionBookmark();window.liLibraryShelf?.renderResume();
 });
 document.getElementById("close-checkin").addEventListener("click",closeCheckinModal);
 document.getElementById("apply-checkin").addEventListener("click",()=>{
@@ -754,7 +768,7 @@ window.addEventListener("resize",placeCompanion,{passive:true});
    if(field)field.value=data.draft;
    if(data.buddyNames!==undefined){liBuddyNames=liRestoreBuddyNames();liRefreshBuddyNameInputs();}
    liStorageError=false;
-   renderCaseArchive();renderSavedQuestions();window.liLibraryShelf?.renderHome();window.liLibraryShelf?.renderCollection();window.liBookmarks?.refresh();
+   renderCaseArchive();renderSavedQuestions();window.liLibraryShelf?.renderHome();window.liLibraryShelf?.renderCollection();window.liBookmarks?.refresh();refreshQuestionBookmark();
    toast("Đã nhập "+data.cases.length+" Bút Ký, "+(data.questions.length+savedContent.length)+" Dấu Trang và "+collectedIdeas.length+" Ý đã nhặt.");
   }catch(e){toast(e.message==="large"?"Tệp vượt quá 10 MB.":e.message==="write"?
     "Không thể lưu bản sao trên thiết bị này. Hãy giữ bản JSON.":"Tệp JSON không hợp lệ hoặc không đúng bản sao li.");}
@@ -766,4 +780,4 @@ const liInitialLesson=new URLSearchParams(window.location.search).get("lesson");
 navigate("home",{focus:false,syncUrl:!Object.values(LI_LESSON_ROUTES).includes(liInitialLesson)});
 setStudyMode(studyMode,{persist:false});
 window.addEventListener("load",()=>{refreshLucide();placeCompanion();});
-</script><script src="./assets/laoly-context-s112.js"></script><script src="./assets/laoly-quotes-s121.js?v=3"></script><script src="./assets/lesson-l09-hifi-markup.js?v=20261118-ia06"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js?v=20261118-ia06"></script><script src="./assets/lesson-l15-hifi-markup.js?v=20261118-ia06"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script><script src="./assets/lesson-related-wave1.js"></script><script src="./assets/personal-diary.js?v=2"></script><script src="./assets/library-hub.js?v=3"></script><script src="./assets/library-note-editor.js?v=2"></script><script src="./assets/library-bookmarks.js?v=1"></script></body></html>
+</script><script src="./assets/laoly-context-s112.js"></script><script src="./assets/laoly-quotes-s121.js?v=3"></script><script src="./assets/lesson-l09-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-l15-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script><script src="./assets/lesson-related-wave1.js"></script><script src="./assets/personal-diary.js?v=2"></script><script src="./assets/library-hub.js?v=3"></script><script src="./assets/library-note-editor.js?v=2"></script><script src="./assets/library-bookmarks.js?v=2"></script></body></html>

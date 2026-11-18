@@ -133,16 +133,10 @@ function renderCourse(c){
 }
 function renderUnpublishedLesson(l){
  header(l.title,"Bài này mới có tên và vị trí trong lộ trình. Nội dung chương chưa được xuất bản.","BÀI HỌC · "+l.id);
- const frame=el("div","catalog-draft-frame",null,host);
- const left=el("aside","surface catalog-draft-chapters",null,frame);
- const toggle=action(left,"Ẩn danh sách chương","draft-toggle","","catalog-chapter-toggle");
- toggle.setAttribute("aria-expanded","true");
- const nav=el("nav","catalog-empty-chapters",null,left);nav.setAttribute("aria-label","Chương của bài");
- el("h2","","Chương",nav);el("p","small","Chưa có chương được phát hành.",nav);
- const main=el("article","surface",null,frame);
+ const main=el("article","surface catalog-draft-content",null,host);
  el("div","kicker","CHƯA PHÁT HÀNH",main);
  el("h2","","Nội dung đang được biên soạn",main);
- el("p","","Đây chỉ là đề cương trong roadmap. Không có bài học, bài tập hoặc tiến độ giả.",main);
+ el("p","","Đây chỉ là đề cương trong roadmap. Chưa có chương được phát hành. Chưa có bài tập hoặc tiến độ học.",main);
 }
 function render(){
  host.replaceChildren();breadcrumbs();
@@ -170,68 +164,128 @@ function mountNative(route){
  const page=document.getElementById("page-"+route);
  const layout=page?.querySelector(".editorial-grid");
  const section=layout?.querySelector(".l09-stack");
- if(!layout||!section||layout.parentElement.classList.contains("catalog-native-frame"))return;
+ if(!layout||!section||page.dataset.catalogChapterNav==="ready")return;
  const chapterNav=page.querySelector(".l09-index");
  if(!chapterNav)return;
- const wrap=el("div","catalog-native-frame",null,layout.parentElement);
- layout.before(wrap);wrap.append(layout);
- const aside=el("aside","catalog-native-chapters surface tinted",null,wrap);
- wrap.prepend(aside);aside.id="catalog-chapters-"+route;
- const toolbar=el("div","catalog-native-toolbar",null,wrap.parentElement);
- wrap.before(toolbar);
- const toggle=el("button","action alt catalog-chapter-toggle","Ẩn chương",toolbar);
- toggle.type="button";toggle.setAttribute("aria-controls",aside.id);toggle.setAttribute("aria-expanded","true");
- el("div","kicker","MỤC LỤC BÀI HỌC",aside);
- el("h2","","Chương",aside);
+ // Chapter navigation is an off-canvas LEFT side sheet, never a first-in-flow card.
+ // Leave the native two-column editorial grid and self-review sidebar untouched.
+ const toolbar=el("div","catalog-native-toolbar",null,layout.parentElement);
+ layout.before(toolbar);
+ const trigger=el("button","action alt catalog-chapter-trigger","☰ Mục lục chương",toolbar);
+ trigger.type="button";
+ const current=el("span","catalog-current-chapter","Toàn bộ bài",toolbar);
+ current.setAttribute("aria-live","polite");
+ const pager=el("div","catalog-inline-steps",null,toolbar);
+ const prev=el("button","catalog-chapter-step","← Trước",pager);prev.type="button";
+ const next=el("button","catalog-chapter-step","Tiếp →",pager);next.type="button";
+ const layer=el("div","catalog-sheet-layer",null,page);layer.hidden=true;
+ const backdrop=el("div","catalog-sheet-backdrop",null,layer);
+ backdrop.setAttribute("aria-hidden","true");
+ const aside=el("aside","catalog-chapter-sheet",null,layer);
+ aside.id="catalog-chapters-"+route;
+ aside.setAttribute("role","dialog");
+ aside.setAttribute("aria-modal","true");
+ aside.setAttribute("aria-labelledby","catalog-chapters-title-"+route);
+ aside.setAttribute("tabindex","-1");
+ trigger.setAttribute("aria-controls",aside.id);
+ trigger.setAttribute("aria-haspopup","dialog");
+ trigger.setAttribute("aria-expanded","false");
+ const sheetHead=el("div","catalog-sheet-heading",null,aside);
+ const copy=el("div","catalog-sheet-copy",null,sheetHead);
+ el("div","kicker","MỤC LỤC BÀI HỌC",copy);
+ const title=el("h2","","Chương",copy);title.id="catalog-chapters-title-"+route;
+ const close=el("button","catalog-sheet-close","Đóng ✕",sheetHead);
+ close.type="button";close.setAttribute("aria-label","Đóng mục lục chương");
  const all=el("button","catalog-chapter-all","Toàn bộ bài",aside);all.type="button";
- chapterNav.classList.add("catalog-left-index");aside.append(chapterNav);
+ chapterNav.classList.add("catalog-left-index");
+ aside.append(chapterNav);
  const sections=Array.from(section.children).filter(e=>e.tagName==="ARTICLE"&&e.id);
  const currentLinks=()=>Array.from(chapterNav.querySelectorAll('a[href^="#"]'));
- const footer=el("div","catalog-chapter-footer",null,aside);
- const prev=el("button","catalog-chapter-step","← Trước",footer);prev.type="button";
- const next=el("button","catalog-chapter-step","Tiếp →",footer);next.type="button";
  let active=null;
+ let returnFocus=trigger;
+ function focusables(){
+  return Array.from(aside.querySelectorAll('button:not([disabled]),a[href]'))
+   .filter(node=>!node.disabled&&!node.hidden&&node.getClientRects().length);
+ }
+ function onSheetKey(event){
+  if(layer.hidden)return;
+  if(event.key==="Escape"){event.preventDefault();setSheetOpen(false);return;}
+  if(event.key!=="Tab")return;
+  const nodes=focusables(),first=nodes[0],last=nodes[nodes.length-1];
+  if(!first){event.preventDefault();aside.focus();return;}
+  if(event.shiftKey&&(document.activeElement===first||!aside.contains(document.activeElement))){
+   event.preventDefault();last.focus();
+  }else if(!event.shiftKey&&(document.activeElement===last||!aside.contains(document.activeElement))){
+   event.preventDefault();first.focus();
+  }
+ }
+ function setSheetOpen(open,restore=true){
+  if(layer.hidden===!open)return;
+  layer.hidden=!open;
+  trigger.setAttribute("aria-expanded",String(open));
+  if(open){
+   returnFocus=document.activeElement||trigger;
+   document.addEventListener("keydown",onSheetKey);
+   close.focus();
+  }else{
+   document.removeEventListener("keydown",onSheetKey);
+   if(restore)(returnFocus?.isConnected?returnFocus:trigger).focus();
+  }
+ }
  function choose(id,push=true){
   if(id&&!sections.some(e=>e.id===id))id=null;
   active=id;
   sections.forEach(s=>{s.hidden=Boolean(id)&&s.id!==id;});
-  currentLinks().forEach(a=>{const selected=a.getAttribute("href")==="#"+id;
+  currentLinks().forEach(a=>{
+   const selected=a.getAttribute("href")==="#"+id;
    a.classList.toggle("catalog-active-chapter",selected);
    if(selected)a.setAttribute("aria-current","step");else a.removeAttribute("aria-current");
   });
   all.classList.toggle("catalog-active-chapter",!id);
   const index=sections.findIndex(s=>s.id===id);
   prev.disabled=index<=0;next.disabled=index<0||index===sections.length-1;
-  footer.hidden=!id;
-  layout.classList.toggle("catalog-focused-chapter",Boolean(id));
-  if(push)chapterParam(id);
-  if(id){const selected=sections[index];selected?.scrollIntoView?.({block:"start"});}
-  else page.querySelector(".library-lesson-heading")?.scrollIntoView?.({block:"start"});
+  const selected=index>=0?sections[index]:null;
+  const heading=selected?.querySelector("h2");
+  current.textContent=heading?.textContent|| (id?"Chương "+(index+1):"Toàn bộ bài");
+  if(push){chapterParam(id);setSheetOpen(false,false);}
+  if(id){
+   if(push&&heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}
+   selected?.scrollIntoView?.({block:"start"});
+  }else if(push){
+   page.querySelector(".library-lesson-heading")?.scrollIntoView?.({block:"start"});
+   trigger.focus();
+  }
  }
- chapterNav.addEventListener("click",e=>{
-  const a=e.target.closest('a[href^="#"]');if(!a)return;
-  e.preventDefault();e.stopPropagation();
-  choose(a.getAttribute("href").slice(1));});
+ chapterNav.addEventListener("click",event=>{
+  const a=event.target.closest('a[href^="#"]');if(!a)return;
+  event.preventDefault();event.stopPropagation();
+  choose(a.getAttribute("href").slice(1));
+ });
  all.addEventListener("click",()=>choose(null));
  prev.addEventListener("click",()=>{const i=sections.findIndex(s=>s.id===active);if(i>0)choose(sections[i-1].id);});
  next.addEventListener("click",()=>{const i=sections.findIndex(s=>s.id===active);if(i>=0&&i<sections.length-1)choose(sections[i+1].id);});
- toggle.addEventListener("click",()=>{
-  const hide=!aside.hidden;aside.hidden=hide;
-  toggle.setAttribute("aria-expanded",String(!hide));toggle.textContent=hide?"Hiện chương":"Ẩn chương";
-  wrap.classList.toggle("catalog-native-collapsed",hide);
+ trigger.addEventListener("click",()=>setSheetOpen(true));
+ close.addEventListener("click",()=>setSheetOpen(false));
+ backdrop.addEventListener("click",()=>setSheetOpen(false));
+ // A route change must not leave an invisible modal capturing keyboard focus.
+ const pageObserver=new MutationObserver(()=>{
+  if(!page.classList.contains("active"))setSheetOpen(false,false);
  });
- if(window.matchMedia&&window.matchMedia("(max-width:700px)").matches){aside.hidden=true;toggle.setAttribute("aria-expanded","false");toggle.textContent="Hiện chương";wrap.classList.add("catalog-native-collapsed");}
+ pageObserver.observe(page,{attributes:true,attributeFilter:["class"]});
  page.dataset.catalogChapterNav="ready";
  const initial=new URL(location.href).searchParams.get("chapter");
  choose(initial,false);
  function syncChapterLinks(){
   currentLinks().forEach(a=>{
-   const id=a.getAttribute("href")?.slice(1),heading=document.getElementById(id)?.querySelector("h2");
+   const id=a.getAttribute("href")?.slice(1);
+   const heading=sections.find(s=>s.id===id)?.querySelector("h2");
    if(heading&&a.textContent!==heading.textContent)a.textContent=heading.textContent;
    const selected=id===active;
    a.classList.toggle("catalog-active-chapter",selected);
    if(selected)a.setAttribute("aria-current","step");else a.removeAttribute("aria-current");
   });
+  const selectedHeading=sections.find(s=>s.id===active)?.querySelector("h2");
+  if(selectedHeading)current.textContent=selectedHeading.textContent;
  }
  const observer=new MutationObserver(syncChapterLinks);
  sections.forEach(s=>{const h=s.querySelector("h2");if(h)observer.observe(h,{subtree:true,characterData:true,childList:true});});
@@ -244,10 +298,6 @@ host.addEventListener("click",event=>{
  event.preventDefault();event.stopPropagation();
  const v=t.dataset.catalogValue,kind=t.dataset.catalogKind;
  if(kind==="crumb"){setPath(v?path.slice(0,Number(v)):[]);return;}
- if(kind==="draft-toggle"){
-  const nav=host.querySelector(".catalog-empty-chapters");if(!nav)return;
-  const hide=!nav.hidden;nav.hidden=hide;t.setAttribute("aria-expanded",String(!hide));t.textContent=hide?"Hiện danh sách chương":"Ẩn danh sách chương";return;
- }
  if(kind==="open-group"){setPath([v]);return;}
  if(kind==="open-field"){setPath([path[0],v]);return;}
  if(kind==="open-course"){setPath([path[0],path[1],v]);return;}

@@ -44,7 +44,8 @@
 #page-catalog .catalog-empty-chapters h2{font-family:var(--li-font-editorial)}
 #page-catalog .catalog-chapter-toggle{min-height:44px}
 .catalog-native-frame{display:grid;grid-template-columns:minmax(205px,245px) minmax(0,1fr);align-items:start;gap:var(--li-space-5);margin-top:var(--li-space-4);min-width:0}
-.catalog-native-frame>.editorial-grid{min-width:0;margin:0}
+.catalog-native-frame>.editorial-grid{min-width:0;margin:0;display:grid;grid-template-columns:minmax(0,1fr)}
+.catalog-native-frame>.editorial-grid>.l09-sidebar{position:relative;top:auto;max-width:none}
 .catalog-native-chapters{position:sticky;top:var(--li-space-5);max-height:min(80svh,760px);overflow:auto;min-width:0}
 .catalog-native-chapters[hidden],.catalog-empty-chapters[hidden],
 .catalog-native-frame .l09-stack>article[hidden]{display:none!important}

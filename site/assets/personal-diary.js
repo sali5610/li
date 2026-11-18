@@ -84,8 +84,36 @@ $("li-diary-consent").addEventListener("click",()=>{
  try{if(enabled){localStorage.setItem(CONSENT,"false");if(localStorage.getItem(CONSENT)!=="false")throw Error("readback");enabled=false;}else{localStorage.setItem(CONSENT,"true");if(localStorage.getItem(CONSENT)!=="true")throw Error("readback");enabled=true;}}catch(e){storageError=true;}render();
 });
 $("li-diary-delete").addEventListener("click",()=>{
- if(!window.confirm("Xóa toàn bộ lịch thể trạng và hoạt động đã lưu trên trình duyệt này? Không thể hoàn tác."))return;
- try{localStorage.removeItem(KEY);if(localStorage.getItem(KEY)!==null)throw Error("readback");diary={schema:1,days:{}};}catch(e){storageError=true;}render();
+ if(!window.confirm("Xóa toàn bộ lịch thể trạng và hoạt động trên thiết bị? Có thể Hoàn tác ngay sau khi xóa."))return;
+ if(storageError)return;
+ const snapshot=JSON.parse(JSON.stringify(diary));
+ try{
+  localStorage.removeItem(KEY);
+  if(localStorage.getItem(KEY)!==null)throw Error("readback");
+  diary={schema:1,days:{}};render();
+  toast("Đã xóa Nhật Ký.",{undo:()=>{
+   if(storageError)return false;
+   const restored=JSON.parse(JSON.stringify(snapshot));
+   /* Preserve new activity after deletion, if the user kept using the app. */
+   for(const [day,latest] of Object.entries(diary.days)){
+    const previous=restored.days[day];
+    if(!previous){restored.days[day]=latest;continue;}
+    if(latest.physical)previous.physical=latest.physical;
+    if(latest.mode)previous.mode=latest.mode;
+    previous.checkins=(previous.checkins||0)+(latest.checkins||0);
+    previous.activities=previous.activities||{};
+    for(const type of TYPES){
+     previous.activities[type]=Array.from(new Set([...(previous.activities[type]||[]),...(latest.activities?.[type]||[])]));
+    }
+   }
+   try{
+    const serialized=JSON.stringify(restored);
+    localStorage.setItem(KEY,serialized);
+    if(localStorage.getItem(KEY)!==serialized)throw Error("readback");
+    diary=restored;render();return true;
+   }catch(error){storageError=true;render();return false;}
+  }});
+ }catch(e){storageError=true;render();toast("Không thể xóa Nhật Ký; hãy kiểm tra bộ nhớ thiết bị.");}
 });
 window.addEventListener("li:l1-physical-checkin",e=>{
  const x=e.detail;

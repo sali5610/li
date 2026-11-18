@@ -97,6 +97,7 @@
   --li-leading-caption: 16px;
   --li-font-editorial: "Crimson Text", Georgia, "Times New Roman", serif;
   --li-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --li-leading-notebook: 32px;
   --li-type-fluid-10: clamp(19px,5.5vw,25px);
   --li-type-fluid-11: clamp(19px,5.6vw,22px);
   --li-type-fluid-12: clamp(19px,5vw,23px);

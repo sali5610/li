@@ -443,17 +443,41 @@
  background-repeat:no-repeat!important;
 }
 @media(max-width:600px){
+ /* Full visible viewport behind the fixed bottom nav. The previous subtraction
+    of 52px created the hard stop visible in the iPhone screenshot. */
  .app.home-focus #page-home .hero{
-  --home-actions-bottom:var(--li-space-8);
+  --home-actions-bottom:calc(52px + var(--li-space-8) + env(safe-area-inset-bottom,0px));
   --home-context-gap:var(--li-space-4);
   --home-cta-height:56px;
-  height:max(580px,calc(100dvh - 66px - 52px - env(safe-area-inset-bottom,0px)))!important;
+  height:max(580px,calc(100dvh - 66px))!important;
   min-height:580px!important;
  }
  .app.home-focus #page-home .hero::before{
   background-image:url("./home-mystic-cool-mobile.webp")!important;
   background-size:cover!important;
   background-position:center center!important;
+ }
+ /* Home-only overlay: the same artwork continues *behind* the navigation
+    instead of ending at its border. Keep light controls readable on the art. */
+ body:has(.app.home-focus) .mobile-nav{
+  background:linear-gradient(to top,
+    color-mix(in srgb,var(--forest) 88%,var(--li-uxds10-touch-clear)),
+    color-mix(in srgb,var(--forest) 38%,var(--li-uxds10-touch-clear)))!important;
+  border-top-color:var(--li-uxds10-touch-clear)!important;
+  border-top-width:0!important;
+  box-shadow:var(--li-uxds10-touch-no-shadow)!important;
+ }
+ body:has(.app.home-focus) .mobile-nav .nav-btn,
+ body:has(.app.home-focus) .mobile-nav .nav-btn:is(:hover,:active,:focus),
+ body:has(.app.home-focus) .mobile-nav .nav-btn.active,
+ body:has(.app.home-focus) .mobile-nav .nav-btn[aria-current="page"]{
+  color:var(--cream)!important;
+  text-shadow:0 1px 2px var(--forest);
+ }
+ body:has(.app.home-focus) .mobile-nav .nav-btn.active::before,
+ body:has(.app.home-focus) .mobile-nav .nav-btn[aria-current="page"]::before{
+  background:var(--forest)!important;
+  opacity:1;
  }
 }
 

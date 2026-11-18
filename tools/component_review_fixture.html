@@ -134,6 +134,11 @@ iframe.addEventListener("load",()=>{
    const mirrorImage=d.querySelector(".ds12-horizontal-media.figure img"),mirrorFrame=d.querySelector(".ds12-horizontal-media.figure");
    check("Illustration uses existing Lão Lý in the mirror asset, not the icon avatar",
       mirrorImage?.getAttribute("src")==="./assets/laoly-mirror-suy-nghi.png");
+   const mirrorMediaWidth=mirrorFrame.getBoundingClientRect().width;
+   check("Full Lão Lý horizontal artwork is enlarged on mobile while still responsive",
+      mirrorMediaWidth>=(w.innerWidth<=360?100:w.innerWidth<=700?120:160) &&
+      mirrorImage.complete && mirrorImage.naturalWidth>0,
+      "media width="+mirrorMediaWidth+"px at viewport "+w.innerWidth+"px");
    check("Illustration integrates into card without dividing stroke or background plate",
       !!mirrorFrame&&w.getComputedStyle(mirrorFrame).borderRightWidth==="0px"&&w.getComputedStyle(mirrorFrame).backgroundColor==="rgba(0, 0, 0, 0)");
    const horizontals=[...d.querySelectorAll("[data-ds12-horizontal-card]")];
@@ -184,16 +189,17 @@ iframe.addEventListener("load",()=>{
    const focusField=d.getElementById("ds-focus");
    focusField.focus();
    check("Text input focuses via 3px OWN border with no external outline",
-      w.getComputedStyle(focusField).borderTopWidth==="3px"&&w.getComputedStyle(focusField).outlineStyle==="none");
+      w.getComputedStyle(focusField).borderTopWidth==="3px"&&w.getComputedStyle(focusField).outlineStyle==="none"&&w.getComputedStyle(focusField).borderTopColor==="rgb(36, 58, 41)");
    const noteField=d.getElementById("ds-textarea");
    noteField.focus();
    check("Textarea focuses via 3px OWN border with no external outline",
-      w.getComputedStyle(noteField).borderTopWidth==="3px"&&w.getComputedStyle(noteField).outlineStyle==="none");
+      w.getComputedStyle(noteField).borderTopWidth==="3px"&&w.getComputedStyle(noteField).outlineStyle==="none"&&w.getComputedStyle(noteField).borderTopColor==="rgb(36, 58, 41)");
    const searchField=d.getElementById("ds11-icon-input");
    searchField.focus();
    check("Search field focuses via 3px wrapper border with no outside ring",
       w.getComputedStyle(d.querySelector(".ds11-input-wrap")).borderTopWidth==="3px"&&
-      w.getComputedStyle(d.querySelector(".ds11-input-wrap")).outlineStyle==="none");
+      w.getComputedStyle(d.querySelector(".ds11-input-wrap")).outlineStyle==="none"&&
+      w.getComputedStyle(d.querySelector(".ds11-input-wrap")).borderTopColor==="rgb(36, 58, 41)");
    searchField.blur();
 
    if(w.innerWidth<=700){

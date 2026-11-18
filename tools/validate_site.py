@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Static integrity checks for the full li. Hi-Fi Pages package."""
 from pathlib import Path
-import re, subprocess, tempfile
+import re, subprocess, tempfile, json, hashlib
 site=Path(__file__).resolve().parents[1]/"site"
 page_html=(site/"index.html").read_text(encoding="utf-8")
 layout_css=(site/"assets"/"li-layout.css").read_text(encoding="utf-8")
@@ -614,13 +614,17 @@ assert (int.from_bytes(raw_illustrated[16:20],"big"), int.from_bytes(raw_illustr
 assert raw_illustrated == (site.parent/"design-assets"/"lao-ly"/"trong-guong"/"lao_ly_10_suy_nghi_mirror.png").read_bytes(), "Settings Lão Lý illustration must match canonical papercraft source"
 assert (site/"assets"/"laoly-guide-rest.png").read_bytes() == (site.parent/"design-assets"/"lao-ly"/"trong-guong"/"lao_ly_04_buon_ngu_mirror.png").read_bytes(), "Guide Lão Lý illustration must match current papercraft source"
 for deployed, source in [
- ("laoly-neutral.png", "lao_ly_chat_icon_master_1024.png"),
- ("laoly-mode-start.png", "lao_ly_mode_vao_nhip_1024.png"),
- ("laoly-mode-focus.png", "lao_ly_mode_dao_sau_1024.png"),
- ("laoly-mode-overload.png", "lao_ly_mode_qua_tai_1024.png"),
- ("laoly-mode-recover.png", "lao_ly_mode_hoi_tri_1024.png"),
+ ("laoly-neutral.png", "lao_ly_mini_neutral_96.png"),
+ ("laoly-mode-start.png", "lao_ly_mini_vao_nhip_96.png"),
+ ("laoly-mode-focus.png", "lao_ly_mini_dao_sau_96.png"),
+ ("laoly-mode-overload.png", "lao_ly_mini_qua_tai_96.png"),
+ ("laoly-mode-recover.png", "lao_ly_mini_hoi_tri_96.png"),
 ]:
     assert (site/"assets"/deployed).read_bytes() == (site.parent/"design-assets"/"lao-ly"/"icon"/source).read_bytes(), "Lão Lý app icon must match current papercraft source: " + deployed
+    raw_icon=(site/"assets"/deployed).read_bytes()
+    assert raw_icon[:8] == bytes([137,80,78,71,13,10,26,10]), "Mini icon must be PNG: " + deployed
+    assert (int.from_bytes(raw_icon[16:20],"big"), int.from_bytes(raw_icon[20:24],"big")) == (96,96), "Mini icon size must be 96px: " + deployed
+    assert b"tRNS" in raw_icon, "Mini icons must have transparency: " + deployed
 assert 'class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"' in settings
 assert 'class="settings-buddy-illustration" src="./assets/laoly-neutral.png"' not in settings
 assert '<article id="notebook-section" class="surface" tabindex="-1"' in library
@@ -838,3 +842,36 @@ assert 'Có tới một ngàn người trả lời khảo sát. Sao kết luận
 assert 'top: 39% !important;' in foundation
 assert 'gap: var(--li-space-1) !important;' in foundation
 assert 'overflow: visible;' in foundation
+
+# UX-ART-05: two approved papercraft system-state scenes, actual live import flow and shared specimen.
+art_manifest=json.loads((site.parent/"design-assets"/"lao-ly"/"manifest.json").read_text(encoding="utf-8"))
+state_assets=art_manifest.get("state_assets",[])
+assert [x.get("state") for x in state_assets]==["loading","error"], "Exactly two PO-approved state illustrations"
+assert art_manifest.get("system_state_approval","").startswith("Human PO approved"), "System-state art approval must be explicit"
+for asset in state_assets:
+    source=(site.parent/"design-assets"/"lao-ly"/asset["path"]).read_bytes()
+    live=(site.parent/asset["app_alias"]).read_bytes()
+    assert source==live, "App system-state image differs from GitHub asset master: "+asset["state"]
+    assert hashlib.sha256(source).hexdigest()==asset["sha256"], "State illustration source integrity mismatch"
+    assert source[:8]==b"\x89PNG\r\n\x1a\n", "System-state master must be a PNG"
+    assert (int.from_bytes(source[16:20],"big"),int.from_bytes(source[20:24],"big"))==(1024,1024), "State art size wrong"
+    assert source[25]==6, "State art must use true-color RGBA alpha PNG"
+assert '<link rel="stylesheet" href="./assets/li-state-scenes.css?v=20261119-art05">' in head
+shared=(site/"assets"/"li-state-scenes.css").read_text(encoding="utf-8")
+assert ".li-state-scene[hidden]" in shared and "prefers-reduced-motion:reduce" in shared
+assert 'id="import-state-loading" role="status" aria-live="polite"' in page_html
+assert 'id="import-state-error" role="alert"' in page_html
+assert 'id="import-state-retry"' in page_html
+assert 'importLoading.hidden=false' in page_html and 'importError.hidden=false' in page_html
+assert 'importTrigger.disabled=true' in page_html and 'importTrigger.disabled=false' in page_html
+assert 'importInput.value="";' in page_html, "Selecting same file must work on Retry"
+assert 'document.getElementById("import-state-retry")?.addEventListener("click",()=>importInput?.click());' in page_html
+assert 'const data=JSON.parse(await file.text());' in page_html, "Only real async file read may show Loading"
+assert 'if(!window.confirm(existing' in page_html, "Import must still request explicit overwrite confirmation"
+assert 'if(window.localStorage.getItem(LI_STORAGE_KEY)!==next' in page_html, "No success before localStorage readback"
+review_status=(site/"component-library-review.html").read_text(encoding="utf-8")
+assert 'id="feedback"' in review_status and 'li-state-scene-showcase' in review_status
+for name in ("laoly-state-loading.png","laoly-state-error.png"):
+    assert name in page_html and name in review_status
+assert "li-state-scenes.css?v=20261119-art05" in review_status
+assert "UX-ART-05" in (site.parent/"design-system"/"components.md").read_text(encoding="utf-8")

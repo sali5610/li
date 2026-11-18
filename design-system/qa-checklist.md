@@ -81,3 +81,19 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 
 ## 4. Definition of Done
 **Design docs complete ≠ components extracted ≠ CI green ≠ visual QA pass ≠ Human PO G2 approved.** Mark only the level that has supporting evidence. No additional paid service is permitted without explicit approval.
+
+
+### UX-ART-05 · Five PO-approved Lão Lý mini heads, 2026-11-19
+- [x] Crop from user-approved sheet: only head, five distinct states, transparent; no body or props; 96px canonical PNGs + app aliases
+- [x] Source QA: PNG header, 96×96 geometry, transparency chunk, and byte-for-byte deployed/canonical equality
+- [ ] Physical iPhone Safari at 24 CSS px on parchment and forest backgrounds: recognizability of eyes/expressions, edge halo, AA
+- [ ] iPad portrait/landscape, 200% text zoom, VoiceOver and PWA caching; retain readable four mode labels and accessible names
+- [ ] Overall G2 illustration identity acceptance remains separate
+
+
+### UX-ART-05 · Approved Lão Lý loading/error scenes
+- [ ] Exact two Human PO-selected scenes stored as **1024×1024 RGBA with transparent pixels** under `design-assets/lao-ly/system-states/`; deployed app binary copies identical by SHA-256.
+- [ ] Loading shown only while reading a selected backup, not on an arbitrary fixed timer; success/cancel hides it. Never show error art for search's ordinary no-result state.
+- [ ] Invalid JSON, >10 MB, denied localStorage/readback show the error art with a clear message and working retry; original stored data not overwritten on malformed input. Do not claim rollback is guaranteed if browser storage is unavailable.
+- [ ] UI specimen matches shared `.li-state-scene` app component, decorative images have empty alt, status/alert semantics, keyboard/touch retry and reduced-motion fallback.
+- [ ] Visually inspect paper & moss backgrounds, edge halo and artwork clearance at 320/375/390/402/820px and 200% text zoom; run real iPhone/iPad Safari/PWA/VoiceOver before claiming device-level signoff. G2 remains open.

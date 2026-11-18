@@ -57,10 +57,20 @@ def main() -> int:
         artwork = json.loads(art_manifest.read_text(encoding="utf-8"))
         assets = artwork.get("assets", [])
         counts = artwork.get("active_counts", {})
-        check(artwork.get("schema") == "li-laoly-current-v2", "papercraft source-of-truth schema v2")
+        check(artwork.get("schema") == "li-laoly-current-v3", "papercraft source-of-truth schema v3 — approved head-only mini icons")
         check(counts == {"illustrations_mirror": 10, "icons": 5, "illustrations_outside": 0},
               "one canonical mirror-only illustration family plus functional icons")
         check(len(assets) == 15, "all 15 current Lão Lý papercraft assets registered")
+        state_assets = artwork.get("state_assets", [])
+        check(len(state_assets) == 2 and [a.get("state") for a in state_assets] == ["loading","error"],
+              "two approved Lão Lý contextual system-state illustrations")
+        for state_asset in state_assets:
+            src = ROOT / "design-assets" / "lao-ly" / state_asset.get("path", "")
+            deployed = ROOT / state_asset.get("app_alias", "")
+            check(src.is_file() and deployed.is_file(),
+                  "system-state source and deployed PNG exist: " + state_asset.get("state","unknown"))
+        check(artwork.get("system_state_approval","").startswith("Human PO approved"),
+              "system-state art approval recorded without closing G2")
         check(len([a for a in assets if a.get("variant") == "Trong gương"]) == 10,
               "10 active Lão Lý expressions are Trong gương")
         check(len([a for a in assets if a.get("type") == "icon"]) == 5, "five distinct new papercraft micro icons")

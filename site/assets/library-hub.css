@@ -663,16 +663,16 @@ body:has(.app.home-focus){
  .app.home-focus > .header {position:relative;z-index:8;}
  .app.home-focus #page-home .hero {
   position:fixed!important;
-  inset:0!important;
-  left:0!important;
-  top:0!important;
-  right:0!important;
-  bottom:0!important;
-  margin:0!important;
+  inset:var(--li-space-0)!important;
+  left:var(--li-space-0)!important;
+  top:var(--li-space-0)!important;
+  right:var(--li-space-0)!important;
+  bottom:var(--li-space-0)!important;
+  margin:var(--li-space-0)!important;
   width:100vw!important;
   max-width:none!important;
   height:100dvh!important;
-  min-height:0!important;
+  min-height:var(--li-space-0)!important;
   box-sizing:border-box;
   z-index:0;
  }

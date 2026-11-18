@@ -101,7 +101,7 @@ function btn(parent,label,route,cls="action alt"){
 }
 function formatDate(date){
  const n=Date.parse(date);
- return Number.isFinite(n)?new Intl.DateTimeFormat("vi-VN",{day:"numeric",month:"numeric",year:"numeric"}).format(new Date(n)):"Không rõ ngày";
+ return Number.isFinite(n)?new Intl.DateTimeFormat(window.liLanguage?.get?.()==="en"?"en-US":"vi-VN",{day:"numeric",month:"numeric",year:"numeric"}).format(new Date(n)):"Không rõ ngày";
 }
 function getLessonState(id){
  try{
@@ -376,5 +376,6 @@ document.querySelectorAll("[data-collection-filter]").forEach(button=>button.add
  collectionFilter=button.dataset.collectionFilter;
  renderCollection();
 }));
+window.addEventListener("li:localechange",()=>{renderHome();renderResume();renderCollection();});
 window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,renderProblemRows});
 })();

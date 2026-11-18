@@ -18,7 +18,7 @@ assert(langCss.includes(".l09-lang-switch{display:none!important}"),"Duplicate l
 for(const path of ["site/assets/lesson-l09-hifi.js","site/assets/lesson-wave1-core.js"]){
  const script=source(path);
  assert(script.includes('window.liLanguage.get()'),"Global preference must override legacy lesson-local locale: "+path);
- assert(script.includes('window.addEventListener("li:localechange"'),"Wave1 must rerender from global changes: "+path);
+ assert(script.includes('window.addEventListener?.("li:localechange"'),"Wave1 must rerender from global changes: "+path);
  assert(script.includes("window.liLanguage.set("),"Lesson toggle must delegate to global setter: "+path);
 }
 assert(source("site/assets/catalog-drilldown.js").includes('li:localechange'),"Catalog must respond to app locale");

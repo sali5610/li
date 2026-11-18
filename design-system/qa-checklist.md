@@ -8,6 +8,7 @@
 - [ ] Check IA, navigation, labels, routes, copy and wireframe sequence upstream of the visual symptom.
 - [ ] Audit every instance/variant of affected component; search CSS/HTML/lesson modules for same controls.
 - [ ] Confirm body 16/24, essential support ≥14/20, optional metadata ≥12/16; check long VI/EN copy and prevent method-card two-line forced cropping.
+- [ ] Check **modal heading typography when wrapped**: current adaptive Check-in uses 24/32 via `checkin-adaptation.css`, while any generic display heading must use the relevant leading token; test 320/375/390/402 and long EN fixture, plus short-height scroll. Verify three required physical-state answers gate Apply, with an incomplete-state fixture; energy/attention are optional. Page-only clipping checks do not cover dialogs.
 - [ ] Check every new margin/padding/gap value is a multiple of 4 and uses canonical spacing tokens; do not indiscriminately round artwork position/crop.
 - [ ] Check rules in `design-system/tokens.json` and `design-system/components.md`; update them if an approved decision changed.
 - [ ] Decide whether change is **visual** or changes interaction/state. Interaction changes may require a working-wireframe fork and re-validation; do not modify frozen WF-BASE.
@@ -23,7 +24,7 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 | Viewport widths | 320, 375, 390, 402, 600, 820, 1440 CSS px; narrow portrait and useful landscape heights |
 | Long content | Vietnamese diacritics, English text expansion, long title/question, zoom/text size, no truncation without affordance |
 | Navigation | Top/bottom selection synchronized; icon remains legible; fixed/sticky bars don't hide content |
-| Home | Question inside mirror; context below question; Lưu left / Đào sâu right; Lão Lý does not overlap |
+| Home | Question inside mirror; context below question; Lưu left / Đào sâu right; **Lão Lý is an intentional floating action button (FAB)** and may overlap content, buttons or bottom nav. Do not flag intersections themselves; check FAB visibility and primary hit target instead. |
 | Touch | 44×44 intended target, no rectangular iOS tap flash, no sticky touch-hover rectangle, scrolling still works |
 | Accessibility | Keyboard order, visible focus, label/role, error announcement, reduced motion; **pinch-zoom lock caveat** |
 | Assets | Correct source, crop-safe center, approved status, alt/caption, no pending design published |

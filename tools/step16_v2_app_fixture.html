@@ -51,7 +51,25 @@
   transfer.items.add(new w.File([payload],"li-backup.json",{type:"application/json"}));
   input.files=transfer.files;
   input.dispatchEvent(new w.Event("change",{bubbles:true}));
-  await until(()=>input.value==="" && d.getElementById("import-personal-trigger").disabled===false,"import finished",11000);
+  try{
+    await until(()=>input.value==="" && d.getElementById("import-personal-trigger").disabled===false,"import finished",11000);
+  }catch(error){
+    let held="unknown";
+    try{
+      const state=await w.navigator.locks?.query?.();
+      held=JSON.stringify({held:state?.held?.map(x=>x.name),pending:state?.pending?.map(x=>x.name)});
+    }catch(e){held="lock-query-error:"+e.message;}
+    throw Error(error.message+" diagnostics="+JSON.stringify({
+      fileValue:input.value,
+      importDisabled:d.getElementById("import-personal-trigger").disabled,
+      loadingHidden:d.getElementById("import-state-loading")?.hidden,
+      errorHidden:d.getElementById("import-state-error")?.hidden,
+      errorMessage:d.getElementById("import-state-error-message")?.textContent,
+      lockSupported:!!w.navigator.locks?.request,
+      held,
+      documentVisibility:d.visibilityState
+    }));
+  }
  }
  try{
   seed(fake);

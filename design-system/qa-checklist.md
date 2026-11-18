@@ -152,3 +152,12 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 - [ ] Source/CI: when native iPad orientation reports 90° and `innerWidth=970`, narrow runtime recovery selects 1408px landscape canvas, keeps body 18px, uses approved art, positions context/action right, and restores `device-width` with no reload/data reset after returning portrait.
 - [ ] Physical Safari: in a fresh tab, verify portrait crop, rotate to landscape *without reload*, inspect `?debug=ipad` showing orientation angle and recovery mode, confirm no blank paper, correctly cropped landscape art, text/CTA remains readable.
 - [ ] Independent real-device: assess fullscreen Safari toolbar, split view, PWA, page pinch zoom, navigation/lesson state preservation, keyboard and VoiceOver. G2 stays open.
+
+
+## UX-DS-31 · Safari iPad 04:49 physical portrait/landscape regression — candidate, physical QA OPEN (2026-11-19)
+
+- [x] Evidence: landscape Screenshot 1408×918 visual with root 1408×1843; screen 970×1408 and portrait orientation CSS, app/hero 1408/970 mixed. Portrait Safari screenshot screen/outer 970×1408, viewport 1408×1843, visual scale 0.69, fixed meta width=1408, body 16px, hero 970px with large paper gutters. These are two independent layout and zoom states; UX-DS-30 did not pass actual iPad acceptance.
+- [x] Remove numeric meta writes. Apple recommends width=device-width; preserve native zoom and accessibility. JS prioritizes full-window outerW/outerH when CSS viewport lies, and has conservative opt-in CSS landscape/portrait compensation. Reset fallback after native reflow; never reload or clear persisted data.
+- [x] Keep previously approved single home-li-ipad-20261119.jpg landscape master, cover + centered crop, no visual changes. Shared landscape/portrait JSON-derived tablet token aliases and Home one-screen dimensions; split view remains native.
+- [ ] CI source validators + responsive smoke green at candidate head, including explicit portrait stale-1408 and landscape stale-970 simulations.
+- [ ] Actual iPad Safari 970 portrait → 1408 landscape → 970 portrait, navigation controls/tap targets/home no-scroll; PWA/Split View/VoiceOver still require physical checks. No G2 signoff until Human PO confirms.

@@ -16,7 +16,7 @@
     var sheet=[].slice.call(document.styleSheets).find(function(x){return x.href&&x.href.indexOf("library-hub.css")!==-1;});
     var version=sheet&&sheet.href.includes("?v=")?sheet.href.split("?v=")[1]:"unknown";
     panel.textContent=[
-      "li. | UX-DS-30 iPad QA",
+      "li. | UX-DS-31 iPad QA",
       "URL: "+location.host+location.pathname,
       "CSS: "+version,
       "Viewport: "+window.innerWidth+" × "+window.innerHeight+" CSS px",
@@ -30,7 +30,7 @@
       "Native angle: "+(typeof window.orientation==="number"?window.orientation:"n/a")+" / Screen angle: "+(screen.orientation?.angle??"n/a"),
       "Screen type: "+(screen.orientation?.type||"unknown"),
       "Viewport meta: "+(document.querySelector('meta[name="viewport"]')?.content||"missing"),
-      "Recovery: "+(window.liSafariRotationQA?.mode||"not initialized")+" / class "+document.documentElement.classList.contains("li-safari-landscape-recovery"),
+      "Recovery: "+(window.liSafariRotationQA?.mode||"not initialized")+" / landscape "+document.documentElement.classList.contains("li-safari-landscape-recovery")+" / portrait "+document.documentElement.classList.contains("li-safari-portrait-recovery"),
       "Orientation: "+(matchMedia("(orientation: landscape)").matches?"landscape":"portrait"),
       "Coarse pointer: "+matchMedia("(any-pointer: coarse)").matches,
       "CSS mode: "+(style.getPropertyValue("--li-ipad-active-mode").trim()||"desktop/phone"),

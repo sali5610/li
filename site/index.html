@@ -6,8 +6,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/design-tokens.css?v=0.3">
-<link rel="stylesheet" href="./assets/li-layout.css?v=20261118-ds10-touch"><link rel="stylesheet" href="./assets/spell-practice.css?v=20261118-s160"><link rel="stylesheet" href="./assets/lesson-l09-hifi.css?v=0.3">
-<link rel="stylesheet" href="./assets/ui-foundations.css?v=20261118-ds12-nav-white"><link rel="stylesheet" href="./assets/checkin-adaptation.css?v=20261118-binary3"><link rel="stylesheet" href="./assets/personal-diary.css?v=1"><link rel="stylesheet" href="./assets/library-hub.css?v=6"><link rel="stylesheet" href="./assets/catalog-drilldown.css?v=20261118-s160"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
+<link rel="stylesheet" href="./assets/li-layout.css?v=20261118-navundo"><link rel="stylesheet" href="./assets/spell-practice.css?v=20261118-s160"><link rel="stylesheet" href="./assets/lesson-l09-hifi.css?v=0.3">
+<link rel="stylesheet" href="./assets/ui-foundations.css?v=20261118-ds12-nav-white"><link rel="stylesheet" href="./assets/checkin-adaptation.css?v=20261118-binary3"><link rel="stylesheet" href="./assets/personal-diary.css?v=1"><link rel="stylesheet" href="./assets/library-hub.css?v=7"><link rel="stylesheet" href="./assets/catalog-drilldown.css?v=20261118-s160"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
 <symbol id="i-tree" viewBox="0 0 24 24"><path d="m12 2 4 5h-2l4 5h-3l4 6H5l4-6H6l4-5H8zM12 18v4"/></symbol>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7c-4-3-8-3-10-2v15c3-1 7 0 10 2 3-2 7-3 10-2V5c-2-1-6-1-10 2ZM12 7v15"/></symbol>
 <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6zM15 2v5h5M9 13h8M9 17h8"/></symbol>
@@ -27,7 +27,7 @@
 <symbol id="i-library" viewBox="0 0 24 24"><path d="M3 21h18M5 19V7h4v12M11 19V4h4v15M17 19V9h3v10"/></symbol>
 </defs></svg>
 <div class="app">
-<header class="header"><div class="brand"><img class="brand-stamp" src="./assets/li-seal.svg?v=exact-header-s146" alt="" aria-hidden="true" width="42" height="42"><span class="brand-copy"><span class="logo">li.</span></span></div>
+<header class="header"><button id="global-back" class="global-back" type="button" data-nav-back aria-label="Quay lại màn trước" title="Quay lại" hidden><i data-lucide="arrow-left" aria-hidden="true"></i></button><div class="brand"><img class="brand-stamp" src="./assets/li-seal.svg?v=exact-header-s146" alt="" aria-hidden="true" width="42" height="42"><span class="brand-copy"><span class="logo">li.</span></span></div>
 <nav class="topnav" aria-label="Điều hướng chính"><button class="nav-btn" data-page="home" aria-label="Đại Sảnh — Trang chủ" title="Trang chủ">Đại Sảnh</button><button class="nav-btn" data-page="catalog" aria-label="Tàng Thư — Khám phá ngành học" title="Khám phá ngành học">Tàng Thư</button><button class="nav-btn" data-page="guide" aria-label="Thần Chú — 13 phương pháp học" title="13 phương pháp học">Thần Chú</button><button class="nav-btn" data-page="library" aria-label="Tủ Riêng — Hành trình và case cá nhân" title="Hành trình và case cá nhân">Tủ Riêng</button></nav>
 <div class="tools"><button class="tool-button" data-page="search" aria-label="Tìm kiếm" title="Tìm kiếm"><i data-lucide="search" class="icon " aria-hidden="true"></i></button><button class="tool-button" data-page="capture" aria-label="Nhặt ý" title="Nhặt ý"><i data-lucide="feather" class="icon " aria-hidden="true"></i></button><button class="tool-button" data-page="settings" aria-label="Cài đặt" title="Cài đặt"><i data-lucide="settings-2" aria-hidden="true"></i></button></div></header>
 <main id="main">
@@ -35,7 +35,7 @@
 <div class="hero" role="region" aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn">
 
 <div class="hero-left"><button class="home-checkin" id="checkin" type="button"><i data-lucide="check-circle-2" class="icon sm" aria-hidden="true"></i> Check-in hôm nay</button><h1>Mọi câu hỏi<br>đều có rễ.</h1><p>Không cần biết tất cả. Chỉ cần không ngừng tò mò.</p><span class="tiny-note">Một câu hỏi, muôn ngả đường</span></div>
-<div class="mirror-message"><div class="mirror-titlebar"><div class="mirror-label">Gương Vạn Vấn</div><div class="library-icon-utility mirror-bookmark-slot"><button class="library-icon-action" id="save-question" type="button" aria-label="Lưu câu hỏi" title="Lưu câu hỏi" aria-pressed="false"><i data-lucide="bookmark" aria-hidden="true"></i></button></div></div><h2 id="mirror-question">90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?</h2><div class="mirror-controls" role="group" aria-label="Chuyển câu hỏi"><button id="previous-question" class="mirror-refresh" type="button" aria-label="Câu hỏi trước" title="Câu hỏi trước"><i data-lucide="arrow-left" class="icon sm" aria-hidden="true"></i></button><button id="shuffle" class="mirror-refresh" type="button" aria-label="Câu hỏi tiếp theo" title="Câu hỏi tiếp theo"><i data-lucide="arrow-right" class="icon sm" aria-hidden="true"></i></button></div></div>
+<div class="mirror-message"><div class="mirror-titlebar"><div class="mirror-label">Gương Vạn Vấn</div></div><h2 id="mirror-question">90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?</h2><div class="mirror-controls" role="group" aria-label="Chuyển câu hỏi"><button id="previous-question" class="mirror-refresh" type="button" aria-label="Câu hỏi trước" title="Câu hỏi trước"><i data-lucide="arrow-left" class="icon sm" aria-hidden="true"></i></button><button id="shuffle" class="mirror-refresh" type="button" aria-label="Câu hỏi tiếp theo" title="Câu hỏi tiếp theo"><i data-lucide="arrow-right" class="icon sm" aria-hidden="true"></i></button></div></div>
 <aside class="hero-dialogue" aria-label="Lão Lý kể bối cảnh câu hỏi đang hiện trong Gương Vạn Vấn">
   <span class="hero-dialogue-avatar" aria-hidden="true"><img src="./assets/laoly-neutral.png" alt="" width="128" height="128" loading="eager" decoding="async"></span>
   <div class="hero-dialogue-bubble" role="note">
@@ -43,7 +43,7 @@
     <p id="home-scene">Nhóm UX khảo sát người đang dùng sản phẩm. 90% phản hồi tích cực, nên họ kết luận: “Ai cũng muốn tính năng này”.</p>
   </div>
 </aside>
-<div class="hero-actions"><button class="primary" id="mirror-primary-action" data-page="research" type="button"><span class="action-icon"><i data-lucide="arrow-up-right" class="icon lg" aria-hidden="true"></i></span><span id="mirror-primary-label">Đào sâu</span></button></div></div>
+<div class="hero-actions"><button class="primary" id="mirror-primary-action" data-page="research" type="button"><span class="action-icon"><i data-lucide="arrow-up-right" class="icon lg" aria-hidden="true"></i></span><span id="mirror-primary-label">Đào sâu</span></button><button class="library-icon-action hero-save-action" id="save-question" type="button" aria-label="Lưu câu hỏi" title="Lưu câu hỏi" aria-pressed="false"><i data-lucide="bookmark" aria-hidden="true"></i></button></div></div>
 <div class="section-shell"><div class="rule-label">LỐI ĐI TRONG THƯ VIỆN</div><div class="surface-grid"><button class="home-tile" data-page="catalog"><span class="tile-photo "></span><span class="tile-text"><span class="kicker"><i data-lucide="library-big" aria-hidden="true"></i> Khám phá</span><strong>Tàng Thư</strong><small>Khám phá những lĩnh vực khiến bạn tò mò</small></span></button><button class="home-tile" data-page="guide"><span class="tile-photo book"></span><span class="tile-text"><span class="kicker"><i data-lucide="book-open" aria-hidden="true"></i> Khám phá</span><strong>Thần Chú</strong><small>13 cách học, ghi nhớ và lập luận</small></span></button><button class="home-tile" data-page="library"><span class="tile-photo roots"></span><span class="tile-text"><span class="kicker"><i data-lucide="archive" aria-hidden="true"></i> Khám phá</span><strong>Tủ Riêng</strong><small>Những câu hỏi và kết luận muốn quay lại</small></span></button></div>
 </div>
 </section>
@@ -212,7 +212,7 @@
   </div>
  </div>
 </div>
-<div id="toast" role="status" aria-live="polite" style="position:fixed;z-index:100;bottom:89px;left:50%;transform:translateX(-50%);display:none;max-width:92vw;background:var(--forest);color:var(--cream);padding:var(--li-space-3);border:1px solid var(--sage);font-size:var(--li-type-support)"></div>
+<div id="toast" class="li-snackbar" role="status" aria-live="polite" aria-atomic="true" hidden></div>
 <script src="./assets/lucide.min.js"></script>
 <script>
 const methods=[["T01","Triệu Ức Chân Ngôn","Retrieval Practice / Active Recall","Tự nhớ trước khi xem đáp án","Ký Ức Thuật"],["T02","Thời Ấn Hồi Ức","Spaced Repetition / Distributed Practice","Ôn thứ đã học theo thời điểm","Ký Ức Thuật"],["T13","Cung Lộ Tàng Ức","Method of Loci / Memory Palace","Gắn điều cần nhớ vào những địa điểm quen thuộc","Ký Ức Thuật"],["T03","Minh Mẫu Tiệm Ẩn","Worked Examples & Guidance Fading","Nhìn ví dụ, giảm gợi ý, tự làm","Minh Giải Thuật"],["T04","Tự Giải Khai Minh","Guided Self-Explanation","Giải thích cơ chế bằng lời mình","Minh Giải Thuật"],["T05","Truy Nguyên Vấn Đạo","Elaborative Interrogation","Hỏi nguyên nhân và điều kiện","Minh Giải Thuật"],["T06","Song Tượng Phân Minh","Compare–Contrast / Interleaved Discrimination","Phân biệt hai dạng đã biết","Minh Giải Thuật"],["T07","Tiền Đề Giám Định","Logical Inference & Premise Checking","Kiểm tra tiền đề và kết luận","Luận Chứng Thuật"],["T08","Luận Ảnh Phản Chiếu","Argument Mapping & Counterevidence","Bóc lập luận, chứng cứ và phản biện","Luận Chứng Thuật"],["T09","Truy Nguyên Giám Chứng","Source Criticism & Evidence Appraisal","Rà nguồn và độ chắc chắn","Luận Chứng Thuật"],["T10","Phân Giải Giới Vực","Problem Decomposition & Boundary Tests","Chia vấn đề, thử điều kiện biên","Phá Giải Thuật"],["T11","Trạch Pháp Minh Tâm","Method Fit & Metacognitive Awareness","Chọn kỹ thuật đúng việc","Tự Chủ Thuật"],["T12","Quy Tâm Tiếp Mạch","Meaningful Focus & Attention Re-entry","Quay lại phần đang làm","Tự Chủ Thuật"]];
@@ -311,8 +311,35 @@ const qs=[
 "Có phải ai cũng học tốt nhất bằng một cách giống nhau?",
 "Tại sao nhớ một câu chuyện không giống như xem lại video?"
 ];
-let qIndex=0, toastTimeout;
-function toast(s){const e=document.getElementById("toast");e.textContent=s;e.style.display="block";clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>e.style.display="none",2600)}
+let qIndex=0, toastTimeout, toastActive=false;
+const toastQueue=[];
+/* Shared snackbar: sequential messages preserve every destructive action's Undo window. */
+function showNextToast(){
+ const e=document.getElementById("toast"), item=toastQueue.shift();
+ if(!item){e.hidden=true;toastActive=false;return;}
+ toastActive=true;
+ const label=document.createElement("span");label.className="li-snackbar-message";label.textContent=item.message;
+ e.replaceChildren(label);
+ if(item.undo){
+  const action=document.createElement("button");action.type="button";action.className="li-snackbar-undo";
+  action.textContent="Hoàn tác";action.setAttribute("aria-label","Hoàn tác: "+item.message);
+  action.addEventListener("click",()=>{
+   clearTimeout(toastTimeout);
+   let restored=false;try{restored=item.undo()!==false;}catch(error){restored=false;}
+   e.hidden=true;toastActive=false;
+   toastQueue.unshift({message:restored?"Đã hoàn tác.":"Không thể hoàn tác trên thiết bị. Dữ liệu chưa được khôi phục.",undo:null});
+   showNextToast();
+  });
+  e.append(action);
+ }
+ e.hidden=false;
+ clearTimeout(toastTimeout);
+ toastTimeout=setTimeout(()=>{e.hidden=true;toastActive=false;showNextToast();},item.undo?8000:2600);
+}
+function toast(message,{undo}={}){
+ toastQueue.push({message:String(message),undo:typeof undo==="function"?undo:null});
+ if(!toastActive)showNextToast();
+}
 
 /* LI_PERSISTENCE_START */
 const LI_STORAGE_KEY="li.private.library.v1";
@@ -492,7 +519,7 @@ function syncLiRoute(id){
  if(target!==window.location.pathname+window.location.search+window.location.hash)
   window.history.replaceState(window.history.state,"",target);
 }
-function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});document.querySelectorAll(".header .tool-button").forEach(x=>{const active=x.dataset.page===id;x.classList.toggle("active",active);if(active)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library")window.liLibraryShelf?.renderHome();if(id==="resume")window.liLibraryShelf?.renderResume();if(id==="collection")window.liLibraryShelf?.renderCollection();if(id==="noteDetail")window.liNotes?.renderDetail();window.liBookmarks?.refresh();if(Object.prototype.hasOwnProperty.call(LI_LESSON_ROUTES,id))window.liLibraryShelf?.trackLesson(id);if(id==="research"){syncResearch();window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);}if(id==="case")window.liLibraryShelf?.trackProblem("case","sampling-bias-90");refreshLucide();placeCompanion();}
+function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.getElementById("global-back").hidden=id==="home";document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});document.querySelectorAll(".header .tool-button").forEach(x=>{const active=x.dataset.page===id;x.classList.toggle("active",active);if(active)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library")window.liLibraryShelf?.renderHome();if(id==="resume")window.liLibraryShelf?.renderResume();if(id==="collection")window.liLibraryShelf?.renderCollection();if(id==="noteDetail")window.liNotes?.renderDetail();window.liBookmarks?.refresh();if(Object.prototype.hasOwnProperty.call(LI_LESSON_ROUTES,id))window.liLibraryShelf?.trackLesson(id);if(id==="research"){syncResearch();window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);}if(id==="case")window.liLibraryShelf?.trackProblem("case","sampling-bias-90");refreshLucide();placeCompanion();}
 function goBack(){while(pageHistory.length){const previous=pageHistory.pop();if(previous!==currentPage&&document.getElementById("page-"+previous)){navigate(previous,{remember:false});return}}navigate("home",{remember:false})}
 function renderMethods(){const el=document.getElementById("method-cards");const q=(document.getElementById("method-search").value||"").trim().toLocaleLowerCase("vi");const preset=STUDY_MODES[studyMode].suggestions;const visible=methods.filter(m=>{const match=(!q||(m.join(" ").toLocaleLowerCase("vi").includes(q)));const cat=currentCategory==="Tất cả"||m[4]===currentCategory;const picked=Boolean(q)||currentCategory!=="Tất cả"||!preset||preset.includes(m[0]);return match&&cat&&picked});el.innerHTML=visible.length?visible.map(m=>'<button class="method-card" data-method="'+m[0]+'"><i data-lucide="'+(m[4]==="Luận Chứng Thuật"?"git-branch":m[4]==="Phá Giải Thuật"?"puzzle":m[4]==="Minh Giải Thuật"?"lightbulb":m[4]==="Tự Chủ Thuật"?"brain-circuit":"book-open-check")+'" class="method-icon" aria-hidden="true"></i><span class="kicker">'+m[0]+' · '+m[4]+'</span><h3>'+m[1]+'</h3><span class="original">'+m[2]+'</span><span class="purpose">'+m[3]+'</span><span class="end">CHÚ GIẢI →</span></button>').join(""):'<div class="surface">Không tìm thấy. Thử đổi bộ lọc hoặc tìm bằng tên học thuật.</div>';
 document.getElementById("method-count").textContent="Hiển thị "+visible.length+"/13 phương pháp"+(q?" · kết quả tìm kiếm trên cả 13":currentCategory!=="Tất cả"?" · theo nhóm":STUDY_MODES[studyMode].suggestions?" · "+STUDY_MODES[studyMode].label:" · đầy đủ");
@@ -668,7 +695,13 @@ document.getElementById("save-question").addEventListener("click",()=>{
  if(index>=0){
   const [removed]=savedQuestions.splice(index,1);
   if(!liWriteState()){savedQuestions.splice(index,0,removed);toast("Không bỏ lưu được. Dấu Trang vẫn giữ nguyên.");return;}
-  toast("Đã bỏ lưu câu hỏi.");
+  toast("Đã bỏ lưu câu hỏi.",{undo:()=>{
+    if(liStorageError)return false;
+    if(savedQuestions.some(x=>x.id===removed.id||(removed.scenarioKey&&x.scenarioKey===removed.scenarioKey)||x.question===removed.question))return true;
+    const at=Math.min(index,savedQuestions.length);savedQuestions.splice(at,0,removed);
+    if(!liWriteState()){savedQuestions.splice(savedQuestions.indexOf(removed),1);return false;}
+    refreshQuestionBookmark();window.liLibraryShelf?.renderResume();return true;
+   }});
  }else{
   const item={id:liNewId(),scenarioKey:sc.key||null,question:sc.question,scene:sc.scene,type:sc.type||"problem",lessonRoute:sc.type==="hook"?sc.lessonRoute:null,savedAt:new Date().toISOString()};
   savedQuestions.unshift(item);
@@ -801,4 +834,4 @@ const liInitialCatalog=new URLSearchParams(window.location.search).get("catalog"
 navigate(liInitialCatalog&&!liInitialLesson?"catalog":"home",{focus:false,syncUrl:!(liInitialCatalog||Object.values(LI_LESSON_ROUTES).includes(liInitialLesson))});
 setStudyMode(studyMode,{persist:false});
 window.addEventListener("load",()=>{refreshLucide();placeCompanion();});
-</script><script src="./assets/laoly-context-s112.js"></script><script src="./assets/laoly-quotes-s121.js?v=3"></script><script src="./assets/lesson-l09-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-l15-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script><script src="./assets/lesson-related-wave1.js"></script><script src="./assets/personal-diary.js?v=2"></script><script src="./assets/library-hub.js?v=6"></script><script src="./assets/library-note-editor.js?v=3"></script><script src="./assets/library-bookmarks.js?v=2"></script><script src="./assets/spell-practice.js?v=20261118-s160"></script><script src="./assets/catalog-curriculum-data.js?v=20261118-s160"></script><script src="./assets/catalog-drilldown.js?v=20261118-s160"></script></body></html>
+</script><script src="./assets/laoly-context-s112.js"></script><script src="./assets/laoly-quotes-s121.js?v=3"></script><script src="./assets/lesson-l09-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-l15-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script><script src="./assets/lesson-related-wave1.js"></script><script src="./assets/personal-diary.js?v=3"></script><script src="./assets/library-hub.js?v=7"></script><script src="./assets/library-note-editor.js?v=4"></script><script src="./assets/library-bookmarks.js?v=3"></script><script src="./assets/spell-practice.js?v=20261118-s160"></script><script src="./assets/catalog-curriculum-data.js?v=20261118-s160"></script><script src="./assets/catalog-drilldown.js?v=20261118-s160"></script></body></html>

@@ -1,0 +1,54 @@
+name: li. Full-screen visual QA (staging only)
+
+on:
+  pull_request:
+    paths:
+      - 'site/**'
+      - 'tools/visual_regression_matrix.mjs'
+      - '.github/workflows/li-visual-matrix.yml'
+      - 'design-system/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  visual-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Resolve preinstalled Chrome and verify source
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then
+            echo "No Chrome/Chromium present: visual QA not executed"
+            exit 1
+          fi
+          echo "CHROME_BIN=$chrome" >> "$GITHUB_ENV"
+          "$chrome" --version
+          python3 tools/generate_design_tokens.py --check
+          python3 tools/audit_design_tokens.py --check-baseline
+      - name: Launch disposable local app HTTP server
+        shell: bash
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory . > /tmp/li-visual-http.log 2>&1 &
+          echo $! > /tmp/li-visual-http.pid
+          sleep 2
+      - name: Screenshot and inspect all routes / modals across seven viewports
+        shell: bash
+        run: |
+          node tools/visual_regression_matrix.mjs
+      - name: Upload screenshots, HTML report, and computed geometry
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-visual-regression-review
+          path: qa-output/visual-matrix/
+          if-no-files-found: warn
+          retention-days: 14

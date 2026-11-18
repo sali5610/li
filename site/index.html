@@ -84,8 +84,9 @@
    <div class="checkin-physical" role="group" aria-label="Ba câu hỏi thể trạng trước khi áp dụng check-in">
     <fieldset class="checkin-physical-field" data-checkin-field="sleep"><legend><span class="checkin-index">01</span> Đã ngủ tương đối đủ?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-sleep" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-sleep" value="no"><span>Chưa</span></label><label class="checkin-radio"><input type="radio" name="checkin-sleep" value="unsure"><span>Không rõ</span></label></div></fieldset>
     <fieldset class="checkin-physical-field" data-checkin-field="move"><legend><span class="checkin-index">02</span> Đã vận động nhẹ hôm nay?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-move" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-move" value="no"><span>Chưa</span></label><label class="checkin-radio"><input type="radio" name="checkin-move" value="unsure"><span>Không rõ</span></label></div></fieldset>
-    <fieldset class="checkin-physical-field" data-checkin-field="rest"><legend><span class="checkin-index">03</span> Đã có lúc nghỉ ngơi hôm nay?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-rest" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-rest" value="no"><span>Chưa</span></label><label class="checkin-radio"><input type="radio" name="checkin-rest" value="unsure"><span>Không rõ</span></label></div></fieldset>
+    <fieldset class="checkin-physical-field" data-checkin-field="rest"><legend><span class="checkin-index">03</span> Đã nghỉ ngơi hôm nay?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-rest" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-rest" value="no"><span>Chưa</span></label><label class="checkin-radio"><input type="radio" name="checkin-rest" value="unsure"><span>Không rõ</span></label></div></fieldset>
    </div>
+   <p id="checkin-recommendation" class="state-note checkin-result" role="status" aria-live="polite">Trả lời đủ ba mục thể trạng để nhận nhịp gợi ý.</p>
    <details class="checkin-context"><summary>Cảm nhận hiện tại · Bổ sung</summary><p>Không bắt buộc. Chỉ giúp điều chỉnh nhịp dựa trên thể trạng đã khai.</p>
     <fieldset class="checkin-question"><legend>Năng lượng lúc này</legend><div class="checkin-choices">
      <label class="checkin-choice"><input type="radio" name="checkin-energy" value="high"><span>Dồi dào</span></label>
@@ -98,7 +99,6 @@
      <label class="checkin-choice"><input type="radio" name="checkin-attention" value="hard"><span>Rất khó</span></label>
     </div></fieldset>
    </details>
-   <p id="checkin-recommendation" class="state-note checkin-result" role="status" aria-live="polite">Trả lời đủ ba mục thể trạng để nhận nhịp gợi ý.</p>
    <details class="checkin-manual" id="checkin-override"><summary>Tự chọn nhịp khác</summary>
     <fieldset class="checkin-question"><legend>Nhịp muốn áp dụng</legend><div class="checkin-override-options">
      <label class="checkin-radio"><input type="radio" name="checkin-override" value="" checked><span>Theo gợi ý</span></label>
@@ -112,7 +112,7 @@
   </div>
   <div class="action-row checkin-actions">
    <button class="action alt" type="button" id="close-checkin">Bỏ qua</button>
-   <button class="action" type="button" id="apply-checkin" disabled>Áp dụng nhịp học</button>
+   <button class="action" type="button" id="apply-checkin" disabled>Áp dụng nhịp</button>
   </div>
  </div>
 </div>

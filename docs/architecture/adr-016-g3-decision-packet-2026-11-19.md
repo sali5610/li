@@ -120,3 +120,16 @@ These are materially linked choices, not a request to approve individual code li
 | G3-P private data | Continue approved local diary toggle, explicit download warning; never upload private diary by implication | remote inclusion consent, encryption/retention/delete |
 
 **Decision state today: RECOMMENDATIONS ONLY; G3 NOT APPROVED.** The Human PO owns the provider, privacy and material migration choice. No account/credit card/project was connected, created or billed in this study.
+
+
+## 9. Follow-up G3 evidence: real authored L09-1-2 React/TS pilot (2026-11-19)
+
+**New engineering artifact:** [Draft PR #121](https://github.com/sali5610/li/pull/121), [exact-source pilot evidence ledger](https://github.com/sali5610/li/blob/architecture/step16-real-l09-react-island-20261119/docs/architecture/step16-l09-exact-react-island-evidence.md). This explicitly moves beyond PR #109's invented three-question benchmark to a real authored feature subset from the current published source `site/assets/lesson-l09-hifi.js`: exact VI/EN L09-1-2 Sampling Bias challenge and self-assessment.
+
+**Verified** [Actions #44420651429](https://github.com/sali5610/li/actions/runs/44420651429) **SUCCESS** at tested code SHA `e24efabf2911eb4444264e21365cdd4f3df76ca9`: React 19 + TypeScript 5.9 + Vite 8 build and **7/7** headless Linux Chromium checks against source SHA-256 `0f23da1b617f97f94b790aeb671c5d1d99e808606af4dfd632593c0a745a75ee`. Scenarios cover exact original four questions/rubric, no premature submit, persistent four free-text answers, hint/assisted, VI/EN without lost drafts, locked submission, 4×(0..2) self-rating to 5/8, full reload recovery and 390/820 CSS-pixel widths without horizontal overflow. One bundled JS file measures **214,913 uncompressed / 68,676 gzip bytes** inclusive of React runtime and actual extracted editorial content; not comparable to whole source native app. Direct dependency versions are pinned but no committed transitive lockfile.
+
+**Architecture interpretation:** A *real source-authored feature slice* is viable as an isolated React island. **This has not yet validated attaching it to the actual existing li. native page.** It intentionally stores fake data at `step16.l09.react-island.v1` instead of `li.review.L09-1-2.v1`. Thus it does not prove migration/interop with bookmark, recents, global language, state events, companion, or the full L09 guided/sources UI. No physical iPad/iPhone Safari, VoiceOver, full CSS/visual parity, actual performance or offline PWA. G3 frontend preference therefore remains *incremental pilot candidate*, NOT human-approved React adoption. Existing modular Vanilla shell remains the safe current baseline; Lit is still a viable lightweight option.
+
+**Next gate-specific test if migration authorized:** one fully integrated side-by-side L09 staging route with a single DOM owner, global `li:localechange`, exact lesson attempt mapping/versioned export, and all existing Tủ Riêng/companion/native navigation contracts. Also physical iPad Safari rotate/back/resume, keyboard/VoiceOver and reduced-motion verification. Do not code or ship a parallel live L09 interface without explicit gate decision; maintain original app/source as rollback.
+
+**Truth:** Draft PR #121 is research-only, not merged or deployed; no real user data, no new backend, cost +0 VND. G3 still open.

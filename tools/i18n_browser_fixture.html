@@ -53,6 +53,13 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
     // Some pages use the first editorial title in addition to an in-scene headline.
     const expected=labels[1],old=labels[0];
     record(page+" EN heading",heading.includes(expected),heading+" | expected "+expected);
+    if(page==="guide")record("Guide count fully English",label(by("method-count")).startsWith("Showing ")&&!label(by("method-count")).includes("Hiển thị"),label(by("method-count")));
+    if(page==="dashboard")record("Journal day labels read in English",d.querySelector('#li-diary-calendar button')?.getAttribute("aria-label")?.includes("no journal entry"),d.querySelector('#li-diary-calendar button')?.getAttribute("aria-label"));
+    if(page==="settings")record("Lão Lý preview matches locale",label(by("buddy-preview-warm")).includes("take your time. I'm listening."),label(by("buddy-preview-warm")));
+    if(page==="capture")record("Capture placeholder localized",by("capture-note")?.getAttribute("placeholder")==="I just came across…",by("capture-note")?.getAttribute("placeholder"));
+    if(page==="case")record("Case editor placeholder localized",by("case-revision")?.getAttribute("placeholder")?.startsWith("Example:"),by("case-revision")?.getAttribute("placeholder"));
+    if(page==="research")record("Research branching localized",label(d.querySelector('#page-research [data-branch]')).includes("Who was asked?"),label(d.querySelector('#page-research [data-branch]')));
+
     const residuals=[...el?.querySelectorAll("button,[aria-label],input,textarea,h1,h2,h3,p,.kicker")||[]]
       .filter(x=>x.getClientRects().length>0)
       .map(x=>({tag:x.tagName,text:label(x).slice(0,90),aria:x.getAttribute("aria-label")||"",placeholder:x.getAttribute("placeholder")||""}))
@@ -90,6 +97,15 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
    await change("vi");
    record("Vietnamese round-trip title",d.documentElement.lang==="vi"&&d.title.includes("Thư viện tri thức"),d.title);
    record("Vietnamese drag instruction restored",by("laoly-fab")?.getAttribute("aria-description")?.startsWith("Kéo để di chuyển"),by("laoly-fab")?.getAttribute("aria-description"));
+   await route("resume");
+   record("Continue heading returns to Vietnamese",label(current()?.querySelector("h1"))==="Quay lại",label(current()?.querySelector("h1")));
+   await change("en");
+   record("Continue heading returns to English",label(current()?.querySelector("h1"))==="Continue",label(current()?.querySelector("h1")));
+
+   await route("capture");
+   const note=by("capture-note");
+   if(note){note.value="Đã lưu một ý trong sổ. Nội dung của tui!";await change("vi");await change("en");
+    record("Learner-authored textarea remains unchanged",note.value==="Đã lưu một ý trong sổ. Nội dung của tui!",note.value);}
    const input=d.getElementById("global-search");
    await route("search");
    if(input){input.value="Bút Ký của riêng tui";await change("en");record("Search input remains untouched",input.value==="Bút Ký của riêng tui",input.value);}

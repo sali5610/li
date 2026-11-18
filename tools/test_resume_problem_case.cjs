@@ -10,7 +10,7 @@ class Element {
  setAttribute(key,value){this.attributes[key]=value;}
  focus(){}
 }
-const ids=["page-library","page-resume","page-collection","li-library-latest-lesson","li-library-latest-problem","li-lesson-history","li-problem-history","case-archive-preview","li-library-latest-idea","li-saved-questions","li-bookmarks-empty","li-collection-list","save-capture-note","capture-note"];
+const ids=["page-library","page-resume","page-collection","li-library-latest-lesson","li-library-latest-problem","li-lesson-history","li-problem-history","case-archive-preview","li-library-latest-idea","li-saved-lessons","li-saved-questions","li-bookmarks-empty-lessons","li-bookmarks-empty-questions","li-bookmark-tab-lessons","li-bookmark-tab-questions","li-bookmark-panel-lessons","li-bookmark-panel-questions","li-collection-list","save-capture-note","capture-note"];
 const cases=[],ideas=[],savedQuestions=[],savedContent=[],events=[],routes=[],openedNotes=[];
 const map=new Map();
 const localStorage={
@@ -74,7 +74,10 @@ shelf.renderResume();
 assert.equal(elements["li-lesson-history"].children.length,2);
 assert.equal(elements["li-problem-history"].children.length,3,"full problem history is under Quay lại");
 assert.equal(elements["li-library-latest-problem"].children.length,1,"overview stays limited to one");
-assert.equal(elements["li-saved-questions"].children.length,0,"recent cases are not inserted as bookmarks");
+assert.equal(elements["li-saved-questions"].children.length,0,"recent cases are not inserted as question bookmarks");
+assert.equal(elements["li-saved-lessons"].children.length,0,"recent lessons are not auto-bookmarked");
+assert.equal(elements["li-bookmark-panel-lessons"].hidden,false);
+assert.equal(elements["li-bookmark-panel-questions"].hidden,true);
 // A new case solution changes its available detail, without changing the actual view ordering.
 cases.push({id:"case-result-1",caseKey:"sampling-bias-90",title:"Sampling Bias",correct:true,revision:"Mẫu chưa đại diện toàn thể",savedAt:"2026-11-18T03:00:00.000Z"});
 shelf.renderHome();

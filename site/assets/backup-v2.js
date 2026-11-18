@@ -63,7 +63,15 @@
     if(["li.study-mode.v1","li.app.locale.v1","li.personal.daily.enabled.v1"].includes(key))return;
     const data=jsonObject(value);
     if(!data)fault("invalid-record");
-    if(key==="li.private.library.v1"&&(data.schema!==1||!Array.isArray(data.cases)||!Array.isArray(data.questions)||!Array.isArray(data.ideas)||!Array.isArray(data.savedContent)))fault("invalid-record");
+    if(key==="li.private.library.v1"){
+      if(data.schema!==1||!Array.isArray(data.cases)||!Array.isArray(data.questions)||
+         !Array.isArray(data.ideas)||!Array.isArray(data.savedContent))fault("invalid-record");
+      // Preserve the same minimum shape checks as the old schema1 importer.
+      if(!data.cases.every(x=>x&&typeof x.title==="string"&&typeof x.revision==="string"&&typeof x.correct==="boolean")||
+         !data.questions.every(x=>x&&typeof x.question==="string")||
+         !data.ideas.every(x=>x&&typeof x.id==="string"&&typeof x.text==="string"&&x.text.length<=5000&&typeof x.savedAt==="string")||
+         !data.savedContent.every(x=>x&&["lesson","case"].includes(x.type)&&typeof x.id==="string"&&typeof x.savedAt==="string"))fault("invalid-record");
+    }
     if(key==="li.buddy-address.v1"&&(!["warm","teasing","serious"].every(k=>typeof data[k]==="string"&&data[k].length<=100)))fault("invalid-record");
     if((key==="li.private.lesson.visits.v1"||key==="li.private.problem.visits.v1")&&(data.schema!==1||!Array.isArray(data.items)))fault("invalid-record");
     if(key==="li.personal.daily.v1"&&(data.schema!==1||!data.days||typeof data.days!=="object"||Array.isArray(data.days)))fault("invalid-record");

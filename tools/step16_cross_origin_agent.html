@@ -1,0 +1,28 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>li. Step16 different-origin isolated receiver</title></head><body>
+<script src="./step16_browser_backup_spike.js"></script>
+<script>
+(function(){
+  const allowed='http://127.0.0.1:8767',S=localStorage,B=window.LiStep16BrowserSpike;
+  const clean=()=>{for(let i=S.length-1;i>=0;i--){const key=S.key(i);if(key?.startsWith('li.'))S.removeItem(key);}};
+  window.addEventListener('message',async event=>{
+    if(event.origin!==allowed||event.source!==window.parent)return;
+    const req=event.data;
+    if(!req||req.protocol!=='li-step16'||typeof req.seq!=='number')return;
+    let reply={protocol:'li-step16-reply',seq:req.seq};
+    try{
+      switch(req.command){
+        case 'reset':clean();break;
+        case 'seed':
+          for(const [key,value] of Object.entries(req.data||{}))
+            if(key.startsWith('li.'))S.setItem(key,value);
+          break;
+        case 'restore':reply.result=await B.restore(S,req.payload,req.options||{});break;
+        case 'get':reply.data=Object.fromEntries(B.recordsFrom(S).map(x=>[x.key,x.value]));break;
+        default:throw Error('Unknown command');
+      }
+    }catch(e){reply.error=e.message;}
+    event.source.postMessage(reply,allowed);
+  });
+  window.parent.postMessage({protocol:'li-step16-agent-ready'},allowed);
+})();
+</script></body></html>

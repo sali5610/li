@@ -54,6 +54,10 @@ function recordActivity(type,id,mode){
   if(Object.prototype.hasOwnProperty.call(MODES,mode))d.mode=mode;
  });
 }
+function recordMode(mode){
+ if(!Object.prototype.hasOwnProperty.call(MODES,mode))return false;
+ return write(d=>{d.mode=mode});
+}
 function setConsent(value){
  if(error){notify("Lịch hiện không đọc được. Chưa ghi đè dữ liệu cũ.");refresh();return}
  try{
@@ -204,6 +208,6 @@ function reload(){
  }catch(e){error=true;notify("Lịch nhập vào không đọc được. Đã dừng ghi mới.");}
  refresh();
 }
-window.LiDaily={recordActivity:recordActivity,refresh:refresh,render:renderMonth,backup:backup,validBackup:validBackup,reload:reload};
+window.LiDaily={recordActivity:recordActivity,recordMode:recordMode,refresh:refresh,render:renderMonth,backup:backup,validBackup:validBackup,reload:reload};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();

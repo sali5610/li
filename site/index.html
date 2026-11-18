@@ -608,7 +608,7 @@ document.getElementById("apply-checkin").addEventListener("click",()=>{
  if(!setStudyMode(target))return;
  recordL1PhysicalCheckin(physical,target);
  closeCheckinModal();
- toast("Đã ghi L1 thể trạng trong phiên này và áp dụng "+STUDY_MODES[target].label+". Có thể đổi nhịp bất cứ lúc nào.");
+ toast("Đã chọn nhịp "+STUDY_MODES[target].label+". Đổi lúc nào cũng được!");
 });
 
 document.getElementById("buddy-challenge").addEventListener("click",()=>{buddyDebateActive=true;document.getElementById("buddy-debate").hidden=false;document.getElementById("buddy-quote").hidden=true;document.getElementById("buddy-text").textContent="Thử phản biện lão: 90% người được hỏi nói hài lòng. Lão kết luận cả thị trường cũng hài lòng.";});

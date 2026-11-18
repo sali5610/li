@@ -103,7 +103,6 @@ foundations=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert "html { touch-action: pan-x pan-y pinch-zoom; }" in foundations
 assert "#page-home .mirror-message { touch-action: pan-y pinch-zoom; }" in foundations
 assert "20261119-ds33-physical-shell" in page_html
-assert "ipad-viewport-debug.js?v=20261119-ds33" in page_html
 
 
 # S137: previous/next arrows cycle questions in both directions; buttons remain stationary.
@@ -343,8 +342,6 @@ assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
 # UX-DS-25: honor device-aware Home cache key.
 assert 'library-hub.css?v=20261119-ds33-physical-shell' in page_html
-assert "ipad-viewport-debug.js?v=20261119-ds33" in page_html
-assert (site/"assets"/"ipad-viewport-debug.js").exists()
 # UX-HOME-07: no Home-only min-height can force a page scroll, and routing
 # must restore browser scrolling for all other screens.
 homecss=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
@@ -397,11 +394,10 @@ device_css=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'background-image:url("./home-li-iphone-20261119.jpg")!important;' in device_css
 assert 'background-image:url("./home-li-ipad-20261119.jpg")!important;' in device_css
 assert "(max-width:1420px) and (orientation:landscape)" in device_css
-assert "Width sync: " in (site/"assets"/"ipad-viewport-debug.js").read_text(encoding="utf-8"), "iPad physical diagnostic must expose layout/visual mismatch"
 # UX-DS-30 · Safari rotation recovery is a tightly scoped iPad-only, no-reload fallback.
 rotation_js=(site/"assets"/"ipad-safari-rotation.js").read_text(encoding="utf-8")
 assert 'ipad-safari-rotation.js?v=20261119-ds33' in page_html
-assert page_html.index('ipad-safari-rotation.js?v=20261119-ds33') < page_html.index('ipad-viewport-debug.js?v=20261119-ds33')
+assert 'ipad-viewport-debug.js' not in page_html, "iPad QA overlay must not ship in app"
 for must in ('screen.orientation', 'window.orientation', 'navigator.maxTouchPoints>1', 'setTimeout(reconcile,0)', '--li-ipad-shell-width', '--li-ipad-shell-height', 'li-ipad-home-canvas', 'width=device-width,initial-scale=1,viewport-fit=cover'):
     assert must in rotation_js, f"Safari recovery missing: {must}"
 for forbid in ('window.location.reload(', 'localStorage.setItem(', 'indexedDB.deleteDatabase(', 'sessionStorage.clear('):

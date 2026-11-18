@@ -139,7 +139,7 @@ function renderLessonRows(root,limit){
   const body=add(row,"div","library-list-copy");
   add(body,"strong","",info.title);
   add(body,"p","small",info.id+" · "+lessonStatus(info)+(item.legacy?" · Bài có dữ liệu đã lưu":" · Mở "+formatDate(item.visitedAt)));
-  btn(row,getLessonState(info.id)?.submitted?"Mở lại":"Tiếp tục",item.route,"library-text-link library-open-lesson");
+  btn(row,"Tiếp tục",item.route,"library-text-link library-open-lesson");
   const utility=add(row,"div","library-icon-utility library-row-utility");
   const save=add(utility,"button","library-icon-action library-lesson-save");
   save.type="button";save.dataset.liBookmarkKind="lesson";save.dataset.liBookmarkId=info.id;
@@ -171,7 +171,7 @@ function renderProblemRows(root,limit){
    "Có Bút Ký đã lưu · "+formatDate(entry.savedAt):
    "Mở "+formatDate(entry.visitedAt);
   add(body,"p","small",(entry.kind==="case"?"CASE · PHẢN CHỨNG":"PROBLEM · KHẢO CHỨNG")+" · "+activity+(note&&entry.kind==="case"?" · Có luận kết":""));
-  const details=add(row,"button","library-text-link library-detail-link",entry.kind==="case"&&!note?"Tiếp tục case":"Xem chi tiết");
+  const details=add(row,"button","library-text-link library-detail-link","Tiếp tục");
   details.type="button";
   details.addEventListener("click",()=>{
    if(entry.kind==="problem"){

@@ -14,6 +14,7 @@
  const isTouchIPad=()=>/(iPad|Macintosh)/i.test(navigator.userAgent||ua)&&navigator.maxTouchPoints>1;
  let queued=false, lastApplied="", lastNativeKey="";
  const original=meta.content;
+ window.liSafariRotationQA={initialized:true,mode:"pending initial render"};
  function physicalOrientation(){
    const s=window.screen;
    const dims=[Number(s.width)||0,Number(s.height)||0];
@@ -46,7 +47,7 @@
      root.dataset.liSafariRotation="stale-landscape";
      // Safari may need one rendering pass after the viewport meta changes.
      // The CSS class is a bounded fallback for engines that still report 970px.
-     requestAnimationFrame(function(){
+     setTimeout(function(){
        const stillStale=window.innerWidth<target-120&&physicalOrientation().landscape;
        root.classList.toggle("li-safari-landscape-recovery",stillStale);
        lastApplied=stillStale?"fallback canvas "+target:"native viewport "+window.innerWidth;
@@ -80,7 +81,7 @@
  function schedule(){
    if(queued)return;
    queued=true;
-   requestAnimationFrame(reconcile);
+   setTimeout(reconcile,0);
  }
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",schedule,{once:true});
  else schedule();

@@ -1,0 +1,27 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Step16 same-origin lock contender</title></head><body>
+<script>
+(() => {
+ 'use strict';
+ const allowed=location.origin, lockName='li:backup:v2:import';
+ let release=null;
+ function reply(seq,kind,data={}){parent.postMessage({protocol:'li-v2-lock',seq,kind,...data},allowed);}
+ window.addEventListener('message',event=>{
+   if(event.origin!==allowed||event.source!==parent||event.data?.protocol!=='li-v2-lock-request')return;
+   const {seq,command,key,value}=event.data;
+   if(command==='hold'){
+     if(!navigator.locks?.request){reply(seq,'error',{message:'Web Locks unavailable'});return;}
+     navigator.locks.request(lockName,{mode:'exclusive'},async lock=>{
+       reply(seq,'held',{name:lock.name});
+       await new Promise(resolve=>{release=resolve;});
+       release=null;
+     }).catch(e=>reply(seq,'error',{message:e.message}));
+   }else if(command==='release'){
+     if(release){release();reply(seq,'released');}else reply(seq,'error',{message:'No lock held'});
+   }else if(command==='write'){
+     localStorage.setItem(key,value);
+     reply(seq,'written',{stored:localStorage.getItem(key)});
+   }else reply(seq,'error',{message:'Unknown command'});
+ });
+ parent.postMessage({protocol:'li-v2-lock-ready'},allowed);
+})();
+</script></body></html>

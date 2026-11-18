@@ -532,7 +532,9 @@ for route in ("lessonL03", "lessonL09", "lessonL15"):
     assert f'type:"hook",lessonRoute:"{route}"' in page_html
 assert page_html.count('type:"hook",lessonRoute:') == 3
 assert 'sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang."' in page_html
-assert 'navigate(scenario.type==="hook"?scenario.lessonRoute:"research");' in (site/"assets"/"library-hub.js").read_text(encoding="utf-8")
+library_js=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
+assert 'const target=scenarios[idx].type==="hook"?scenarios[idx].lessonRoute:"research";' in library_js
+assert 'navigate(target);' in library_js
 assert '<script src="./assets/lesson-related-wave1.js"></script>' in page_html
 assert bool(re.search(r'<link rel="stylesheet" href="\./assets/ui-foundations\.css\?v=[A-Za-z0-9._-]+">', head))
 cross=(site/"assets"/"lesson-related-wave1.js").read_text(encoding="utf-8")

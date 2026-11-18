@@ -557,7 +557,7 @@ function recordL1PhysicalCheckin(physical,selectedMode){
  window.dispatchEvent(new CustomEvent("li:l1-physical-checkin",{detail:{...currentL1PhysicalState}}));
 }
 function closeCheckinModal(){
- const trigger=document.getElementById("checkin-modal").dataset.trigger;
+ const trigger=document.getElementById("checkin-modal")?.dataset?.trigger;
  closeModal("checkin-modal");
  (document.getElementById(trigger)||document.getElementById("checkin"))?.focus();
 }

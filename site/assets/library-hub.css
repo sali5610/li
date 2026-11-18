@@ -729,3 +729,39 @@ html.li-safari-landscape-recovery .app.home-focus #page-home .hero {
    font-size:var(--li-type-support)!important;
    line-height:var(--li-leading-support)!important;
  }
+
+
+/* UX-DS-31 · One approved landscape master for portrait and landscape.
+   A stale 1408px portrait layout is compensated only until WebKit reflows.
+   The Home canvas is one actually visible screen; no vertical scroll. */
+html.li-safari-portrait-recovery .app.home-focus #page-home .hero {
+ box-sizing:border-box!important;
+ left:0!important;
+ margin-left:0!important;
+ width:100%!important;
+ min-width:0!important;
+ max-width:none!important;
+ height:calc(var(--li-safari-physical-height) * var(--li-safari-portrait-inverse))!important;
+ min-height:0!important;
+ max-height:none!important;
+}
+html.li-safari-portrait-recovery .app.home-focus #page-home .hero::before {
+ background-image:url("./home-li-ipad-20261119.jpg")!important;
+ background-size:cover!important;
+ background-position:center center!important;
+ background-repeat:no-repeat!important;
+}
+html.li-safari-portrait-recovery .app.home-focus #page-home .mirror-message {
+ left:49%!important;
+ width:min(34%,300px)!important;
+ min-width:0!important;
+}
+html.li-safari-portrait-recovery .app.home-focus #page-home.page.active {
+ animation:none!important;
+ transform:none!important;
+}
+html.li-safari-landscape-recovery .app.home-focus #page-home .hero {
+ box-sizing:border-box!important;
+ max-height:var(--li-safari-physical-height)!important;
+ min-height:0!important;
+}

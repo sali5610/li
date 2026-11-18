@@ -2,6 +2,14 @@
 
 **Rule:** Every request to fix a component triggers a top-down impact review, not a local patch at the reported screenshot. Use this before merging UI/UX work.
 
+## UX-DS-22 · Cross-pattern behavior gate (2026-11-19)
+- [ ] Apply [UX-DS-22 Do/Don't and behavior contract](ux-patterns-and-behavior.md) to every affected component: usage, anti-pattern, anatomy, state, accessible semantics, responsive layout and visual exceptions.
+- [ ] Test primary vs secondary hierarchy; semantic link vs action; selected vs focus; disabled vs readonly; default/hover/focus/pressed/selected/busy/error/empty.
+- [ ] Test persistence truth: saving/saved/failed with actual readback, data retained on error, no silent reset or invented metric.
+- [ ] Test modal open/focus trap/Escape/restored focus/body scroll/short-height footer, and fixed nav/FAB not hiding essential content or focused controls.
+- [ ] Check WCAG 2.2 AA measurable contrast/resize/reflow and target size exceptions accurately; li. 48px intended touch target, not a claim Apple pt equals CSS px.
+- [ ] Check real device and assistive technology separately; do not claim compliance or G2 based solely on doc changes or headless CI.
+
 ## 1. Impact chain
 - [ ] Read Latest Handoff and newest PO direction; identify superseded or still-pending specs.
 - [ ] Product goal/JTBD and research assumptions still make sense; no invented data or human usability evidence.

@@ -15,6 +15,8 @@
 
 **Governance:** Notion = latest decisions/acceptance; GitHub = implementation and executable checks. An implemented detail may still be **G2 pending**. Newer direct PO decisions override older design proposals. No new visual direction or asset is approved by writing this library.
 
+**UX-DS-22 behavior standards (2026-11-19):** [Do/Don't, UI patterns, interaction states, accessibility and QA contract](ux-patterns-and-behavior.md). The document defines expected behavior, not a claim that current UI passed the tests or that G2 is approved. It preserves existing design tokens and PO-specific geometry.
+
 ## Read order / source hierarchy
 1. [Notion Product Hub](https://app.notion.com/p/4196cf6db72a81269c71c90c39310334) and [Latest Handoff](https://app.notion.com/p/4196cf6db72a81f7b000f75783f210b5).
 2. [Step13 ACTIVE UX writing](https://app.notion.com/p/41b6cf6db72a811aba36dcec9cc42c20), [S81 G2 token + crosswalk](https://app.notion.com/p/41b6cf6db72a81529796dc5d1e134dd1), [illustration asset library](https://app.notion.com/p/41b6cf6db72a814fb474dcda6bc15a4f).
@@ -33,6 +35,7 @@
 | [../tools/validate_ui_foundations.py](../tools/validate_ui_foundations.py) | Mechanical spacing/type checks for new CSS; source only |
 | [tokens.json](tokens.json) | Machine-readable implemented color, geometry, typography and touch baseline |
 | [components.md](components.md) | Canonical component purpose, variants, states and code selectors |
+| [ux-patterns-and-behavior.md](ux-patterns-and-behavior.md) | UX-DS-22 Do/Don't, pattern choice, state transitions, accessibility behavior and acceptance tests |
 | [qa-checklist.md](qa-checklist.md) | Mandatory full-system review + screen/state/device matrix |
 | [../tools/validate_design_system.py](../tools/validate_design_system.py) | Free stdlib structural checks comparing core tokens with current source |
 | [../.github/workflows/li-design-contract.yml](../.github/workflows/li-design-contract.yml) | JSON/CSS parity, strict zero unmapped authored component declarations, debt ratchet and native site/interaction checks |

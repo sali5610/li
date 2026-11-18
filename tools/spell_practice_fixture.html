@@ -1,0 +1,31 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Spell practice integration fixture</title><style>body{font:14px/1.5 system-ui;margin:0;padding:16px;background:#f1f1f1}iframe{display:block;width:100%;height:700px;border:2px solid #555;background:#fff}pre{white-space:pre-wrap;word-break:break-word}</style></head><body><h1>Thần chú practice DOM regression</h1><pre id="result">LI_SPELL_PENDING</pre><iframe src="../site/index.html" title="Actual li app"></iframe><script>
+const result=document.getElementById("result"),iframe=document.querySelector("iframe");
+const width=Number(new URLSearchParams(location.search).get("w")||390);
+iframe.style.width=Math.min(1100,Math.max(320,width))+"px";
+function assert(value,message){if(!value)throw Error(message);}
+function click(d,name){const el=d.querySelector('[data-spell-action="'+name+'"]');assert(el,"missing action "+name);el.click();}
+function fill(d,id,value){const el=d.getElementById("sp-"+id);assert(el,"missing field "+id);el.value=value;el.dispatchEvent(new Event("input",{bubbles:true}));}
+function run(){
+ const w=iframe.contentWindow,d=iframe.contentDocument;
+ const defined=w.LiSpellPractice;assert(defined,"window.LiSpellPractice absent");
+ assert(defined.methods.length===13,"expected 13 methods");
+ assert(d.querySelectorAll("#spell-tab-guide,#spell-tab-practice").length===2,"missing two tabs");
+ const set=(id)=>{w.showMethod(id);d.getElementById("spell-tab-practice").click();assert(!d.getElementById("spell-practice-panel").hidden,"practice tab remains hidden "+id);assert(d.querySelector("#spell-practice-panel .spell-activity-head"),"missing practice "+id);};
+ for(const id of defined.methods){set(id);assert(d.querySelector("#spell-practice-panel [data-spell-action]"),"missing interactivity "+id);}
+ set("T01");assert(d.querySelector(".spell-demo"),"T01 teach absent");click(d,"next");assert(!d.querySelector(".spell-demo"),"T01 source leaked after hide");fill(d,"reason","Người đã rời app không trả lời được");d.getElementById("spell-tab-guide").click();d.getElementById("spell-tab-practice").click();assert(d.getElementById("sp-reason").value.includes("Người đã rời"),"draft lost after tab switch");click(d,"check");assert(d.querySelector(".spell-feedback"),"T01 feedback missing");assert(d.getElementById("sp-reason").value.startsWith("Người"),"T01 response erased");
+ set("T03");click(d,"next");fill(d,"number","14");click(d,"check");assert(d.getElementById("sp-number"),"T03 faded step missing");fill(d,"number","26");click(d,"check");assert(d.querySelector(".spell-feedback")?.textContent.includes("26"),"T03 independent feedback missing");
+ set("T13");for(let i=1;i<=3;i++){fill(d,"place"+i,"Nơi "+i);fill(d,"cue"+i,"Liên tưởng "+i)}click(d,"next");assert(!d.querySelector(".spell-demo"),"T13 original revealed after hide");for(let i=1;i<=3;i++)fill(d,"recall"+i,"Ý "+i);click(d,"check");assert(d.querySelector(".spell-feedback"),"T13 retrieval result missing");
+ set("T12");fill(d,"context","Đang so tỷ lệ");fill(d,"next","Viết một câu");click(d,"next");assert(d.querySelector("#sp-answer"),"T12 reentry action missing");
+ const key="li.spell.t02.due.v1",old=w.localStorage.getItem(key);
+ try{w.localStorage.removeItem(key);set("T02");click(d,"schedule");const due=JSON.parse(w.localStorage.getItem(key));assert(due.due>Date.now(),"T02 due not genuinely future");assert(d.querySelector(".spell-honest"),"T02 future check missing");}
+ finally{if(old===null)w.localStorage.removeItem(key);else w.localStorage.setItem(key,old);}
+ const page=d.getElementById("page-guideDetail");assert(page.contains(d.getElementById("spell-practice-panel")),"not placed in actual guide detail page");
+ const tabs=d.querySelectorAll("#spell-tab-guide,#spell-tab-practice");
+ tabs[0].click();assert(d.getElementById("spell-practice-panel").hidden,"guide tab did not hide practice");assert(!d.getElementById("spell-guide-panel").hidden,"guide content not restored");
+ const box=d.getElementById("spell-practice-panel").getBoundingClientRect();
+ assert(!Number.isNaN(box.width),"broken panel geometry");
+ return "13 technique modes; T01 hide/feedback/draft; T03 fade/independent; T13 self-loci recall; T12 re-entry; T02 real due; tabs/route";
+}
+iframe.addEventListener("load",()=>{try{const msg=run();result.textContent="LI_SPELL_PASS width="+width+" "+msg;}catch(e){result.textContent="LI_SPELL_FAIL "+e.message;result.style.color="red";}});
+setTimeout(()=>{if(result.textContent==="LI_SPELL_PENDING")result.textContent="LI_SPELL_FAIL timeout waiting for iframe";},12000);
+</script></body></html>

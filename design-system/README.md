@@ -1,4 +1,49 @@
-# li. UI/UX Design Library — zero-debt component token candidate v0.4
+# li. UI/UX Design Library — canonical start here
+
+> **SINGLE START HERE · Mandatory entrypoint for every li. UI/UX task.** This page is the one canonical **navigation and governance entrypoint** for the Design Library. Detailed rules remain in dedicated source-of-truth files linked below; do not maintain conflicting copies. Repository AI agents are instructed by [AGENTS.md](../AGENTS.md) to open this page before designing, reviewing, modifying or QA-testing any UI.
+
+## Start here — mandatory UI/UX work protocol (UX-DS-23)
+
+**Before touching a screen, asset, copy, token, component, test or UI documentation:**
+
+1. **Read this page first**; identify which exact subject contracts below apply. Open the affected linked contracts *before* proposing or editing. Do not rely on remembered colors, historical examples, or the first CSS selector found.
+2. **Reconcile decisions first:** read [Notion Product Hub](https://app.notion.com/p/4196cf6db72a81269c71c90c39310334), [Latest Handoff](https://app.notion.com/p/4196cf6db72a81f7b000f75783f210b5) and relevant [Step15 G2](https://app.notion.com/p/41b6cf6db72a81529796dc5d1e134dd1) / [active Step13 copy](https://app.notion.com/p/41b6cf6db72a811aba36dcec9cc42c20). Newest explicit Human PO decisions supersede older *within their actual scope*. Notion owns approval/decision status; GitHub main owns implemented code and these executable design contracts.
+3. **Classify the change:** design-only vs IA/navigation/copy/interaction/state/persistence behavior. For behavioral changes, work backwards through JTBD → evidence → IA → wireframe → copy → components → code → QA. Preserve the immutable WF-BASE; fork a working wireframe when a journey changes. Do not hide a flow change inside a CSS patch.
+4. **Use the same library contract:** reuse token, component, variant and UI pattern; inspect *every* affected instance and override. Record a new variant or exception here and in its detailed owner file instead of copy-pasting one-off styles.
+5. **Verify the whole journey:** screen × component × state × device/viewport × VI/EN × input method; follow [QA matrix](qa-checklist.md). Test actual persistence/error states, modal/focus, bottom nav/FAB overlap, empty data, 200% text, long labels. Capture evidence and distinguish automated CI from real Safari/PWA/VoiceOver.
+6. **Maintain the library and handoff:** in the *same change* update affected source contracts, explicit Do/Don't and regression fixtures, and the relevant Notion decision/handoff. Include PR/SHA, actual test results and open G2/human-study/device gates. No new paid services.
+
+### Design Library map — which file owns which truth?
+
+| Layer / question | **Authoritative contract** | When to open it |
+| --- | --- | --- |
+| **Start, precedence, change workflow** | **This README** + root [AGENTS.md](../AGENTS.md) | **Every UI/UX task, without exception** |
+| **Color, semantic paint, typography values, spacing, shape, target-size settings** | [tokens.json](tokens.json) → [generated design-tokens.css](../site/assets/design-tokens.css) | Every visual/component adjustment; **only edit JSON**, regenerate CSS |
+| **Typography roles, 4px grid, responsive spacing** | [typography-spacing.md](typography-spacing.md) | Type, rhythm, text overflow, layouts |
+| **Component inventory, selectors, variants, states, PO exceptions** | [components.md](components.md) | Every touched component and its siblings |
+| **Use / Don't use, interaction patterns, state transitions, accessibility behavior** | [ux-patterns-and-behavior.md](ux-patterns-and-behavior.md) | Any UI/UX interaction, new component or pattern; treat as default rule |
+| **Coverage, acceptance, impact chain and device test evidence** | [qa-checklist.md](qa-checklist.md) | Every UI/UX PR or design review |
+| **Actual component specimens** | [Component Library review](../site/component-library-review.html) | Compare rendered visual/state examples; a review specimen ≠ production signoff |
+| **Artwork / illustration approval** | [Notion Asset Library](https://app.notion.com/p/41b6cf6db72a814fb474dcda6bc15a4f) | Scene, icon, Lão Lý or generated illustration |
+| **Latest accepted copy and product decisions** | [Step13 active canon](https://app.notion.com/p/41b6cf6db72a811aba36dcec9cc42c20), [Latest Handoff](https://app.notion.com/p/4196cf6db72a81f7b000f75783f210b5) | Any labels, status, dialogue, UX journey or gate |
+
+### UI rule snapshot — no guessing
+
+- **Shape & material:** square ordinary controls, opaque offset hard shadows; **exceptions**: selected nav sand oval, rounded Lão Lý speech bubble, full-pill filter chips and organic illustration. Don't run global square-radius resets over exceptions.
+- **Color roles:** paper `#F1F0E9`, cream `#FAF9F5`, porcelain editable fields `#FEFDFC`, brand Moss `#243A29`, Olive Moss `#65734C` **decorative editorial kicker only**; avoid off-token color and semantic misuse. Exact current values and role mapping are owned by JSON, not this quick reference.
+- **Typography & spacing:** Crimson Text editorial titles; system sans body/control, 16/24 body, >=14/20 essential support, 4px spacing grid. Approved Guide 2-up narrow 14/18px micro-geometry is a documented exception; preserve full VI/EN method names.
+- **Navigation & hierarchy:** one selected global route with sand oval + `aria-current=page`, matching header/mobile navigation; Home full-bleed with mirror question inside art, actions `Lưu` then `Đào sâu`; no fixed nav or Lão Lý covering content.
+- **Input & touch:** target **48×48 CSS px intended** on new touch interactions; distinguish WCAG 2.2 AA 24×24 CSS px minimum (with exceptions) from Apple 44×44 *pt* and Android 48×48 *dp*. Focus-visible, accessible names, real disabled/readonly, reduced motion and zoom/reflow must work.
+- **Behavior:** action uses button, navigation uses link; selected ≠ focus; clicked ≠ saved; errors must allow recovery; never fake cloud sync, mastery, health diagnosis, research approval, or a completed save.
+- **Review truth:** token/CI checks are necessary but **not** physical iPhone/VoiceOver or complete WCAG certification. G2 visual identity acceptance remains **OPEN** until Human PO approves it.
+
+### When changing a rule: one change, one traceable home
+
+**Choose an owner file from the map.** If it is a token, edit `tokens.json` and regenerate CSS; if it is a component behavior, edit `components.md` and `ux-patterns-and-behavior.md` as applicable; if it changes QA, edit `qa-checklist.md` and its fixtures. Update this README only when the *entrypoint, policy, summary or ownership map* changes. Do not copy entire detailed contracts into a new parallel guideline or assume a GitHub merge approves a Notion G2 gate.
+
+**Minimum PR report:** affected screens/components; source decision and any exception; files changed; behavior before/after; tests run with Pass/Fail/Unverified; status of Safari/PWA/VoiceOver/G2; Notion handoff update. Run `python3 tools/validate_design_system.py` for design-library index integrity as part of existing Design System CI.
+
+## Implementation history and current evidence boundary
 
 **UX-DS-20 candidate (2026-11-18):** Audited the first-party UI and normalized authored component color, typography (including legacy fluid sizes, line-height, tracking and font shorthand) and spacing to JSON-generated CSS variables. New strict `python3 tools/audit_design_tokens.py --check-zero` is enforced by Design System CI; audited **3,127 authored component declarations** with zero unmapped after migration. Existing color blends, art shadows and the PO-approved narrow 14/18px Guide spacing are preserved as named tokens, not rounded or recolored. `--olive` adds a **3px noninteractive editorial kicker rule** on non-Home section headings; selection, focus, nav, CTA and illustration paints are unchanged. See [UX-DS-20 source coverage report](audits/2026-11-18-zero-component-token-debt.md). This is **source-level component token coverage only**: CSS intrinsic keywords, genuine image URLs, illustration geometry, generated definitions, runtime state dimensions and SVG assets are explicitly out of scope; no claim of whole-app visual, physical-device, accessibility or Human PO G2 approval. Cost +0 VND.
 

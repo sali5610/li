@@ -48,6 +48,44 @@ def main() -> int:
     if not HTML_FILE.is_file() or not TOKEN_FILE.is_file():
         return 1
 
+    # UX-DS-23: contract navigation is a CI-guarded invariant, not a wiki convention.
+    library_entrypoint = ROOT / "design-system" / "README.md"
+    agent_entrypoint = ROOT / "AGENTS.md"
+    contract_paths = [
+        "design-system/tokens.json",
+        "design-system/typography-spacing.md",
+        "design-system/components.md",
+        "design-system/ux-patterns-and-behavior.md",
+        "design-system/qa-checklist.md",
+    ]
+    for path in contract_paths:
+        check((ROOT / path).is_file(), f"design library linked contract exists: {path}")
+    if library_entrypoint.is_file() and agent_entrypoint.is_file():
+        entry = library_entrypoint.read_text(encoding="utf-8")
+        agent_rules = agent_entrypoint.read_text(encoding="utf-8")
+        check(
+            "## Start here — mandatory UI/UX work protocol (UX-DS-23)" in entry,
+            "canonical Design Library README contains mandatory UI/UX workflow",
+        )
+        check(
+            "design-system/README.md" in agent_rules
+            and "MUST first open" in agent_rules,
+            "AGENTS.md instructs all UI/UX agents to open the canonical entrypoint",
+        )
+        for path in contract_paths:
+            contract_label = path.removeprefix("design-system/")
+            check(
+                f"]({contract_label})" in entry,
+                f"Design Library entrypoint links contract: {contract_label}",
+            )
+        check(
+            "ux-patterns-and-behavior.md" in agent_rules
+            and "qa-checklist.md" in entry,
+            "agent instruction and library QA/behavior links remain discoverable",
+        )
+    else:
+        check(False, "Design Library README and AGENTS.md must exist")
+
     html = HTML_FILE.read_text(encoding="utf-8")
     layout_css = (ROOT / "site" / "assets" / "li-layout.css").read_text(encoding="utf-8")
     source = html + "\n" + layout_css

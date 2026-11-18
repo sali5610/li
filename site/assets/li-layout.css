@@ -602,7 +602,7 @@ svg.lucide{width:20px;height:20px;stroke-width:1.8;vertical-align:middle;flex-sh
  --home-content-width:min(385px,36%);
  --home-actions-bottom:52px;
  --home-cta-height:56px;
- --home-context-gap:18px;
+ --home-context-gap:var(--li-micro-home-context-gap-18);
 }
 #page-home .hero-dialogue,
 #page-home .hero-actions {

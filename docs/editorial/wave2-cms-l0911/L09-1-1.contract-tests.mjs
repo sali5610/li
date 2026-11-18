@@ -38,6 +38,13 @@ export function runChecks(api,b){
  test("T06 attempt unlocks only T06",()=>{const x=view(api.submitMethod(api.createState(),"T06",six));a(x.practice.T06.feedback!==null&&x.practice.T07.feedback===null)});
  test("T07 attempt unlocks only T07",()=>{const x=view(api.submitMethod(api.createState(),"T07",seven));a(x.practice.T06.feedback===null&&x.practice.T07.feedback!==null)});
  test("guide choice K2 not enacted K3",()=>{const m=api.evidence(api.chooseMethod(api.createState(),"T06"));a(m.K2.T06&&!m.K3.T06)});
+ test("T06 unsent draft saved and migrates across JSON reload",()=>{let s=api.setMethodDraft(api.createState(),"T06","A","nominal");s=api.setMethodDraft(s,"T06","reasoning","A numeric ID labels a learner");const r=api.restore(JSON.stringify(s)).state;a(r.methods.T06.draft.A==="nominal"&&r.methods.T06.draft.reasoning.includes("labels"));});
+ test("T07 unsent draft persisted without K3",()=>{let s=api.setMethodDraft(api.createState(),"T07","premise","Volunteer app banner sample");let r=api.restore(JSON.stringify(s)).state;a(r.methods.T07.draft.premise.includes("banner")&&!api.evidence(r).K3.T07);});
+ test("writing a method draft sets K2 but not K3",()=>{let s=api.setMethodDraft(api.createState(),"T06","B","discrete");const e=api.evidence(s);a(e.K2.T06&&!e.K3.T06);});
+ test("submitted method drafts cannot be changed",()=>{let s=api.submitMethod(api.createState(),"T06",six);err(()=>api.setMethodDraft(s,"T06","A","ordinal"));});
+ test("old v1 save without method draft fields migrates without losing submission",()=>{let s=api.submitMethod(api.createState(),"T06",six);delete s.methods.T06.draft;delete s.methods.T07.draft;const r=api.restore(JSON.stringify(s));a(r.recovered&&r.state.methods.T06.attempted&&r.state.methods.T06.draft.A===""&&r.state.methods.T07.draft.premise==="");});
+ test("retry resets draft and archives previous attempt's method evidence",()=>{let s=api.setMethodDraft(meaningful(),"T06","A","nominal");s=api.submitIndependent(s);s=api.startNewAttempt(s);a(s.methods.T06.draft.A===""&&s.attemptHistory[0].methods.T06.draft.A==="nominal");});
+
  test("actual T06 attempt sets K3 not K1 correctness",()=>{const m=api.evidence(api.submitMethod(api.createState(),"T06",six));a(m.K3.T06&&m.K1==="NOT_AUTOGRADED")});
  test("optional T07 may be skipped",()=>a(api.submitIndependent(meaningful()).independent.submitted));
  test("hint separately logged K7",()=>{let s=api.markHint(api.useMethodHint(api.createState(),"T06"));a(api.evidence(s).K7.methodT06Assisted&&api.evidence(s).K7.independentAssisted)});

@@ -485,3 +485,19 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   line-height: var(--li-leading-support);
   font-weight: 700;
 }
+
+
+/* S159 · Gương Vạn Vấn copy capacity.
+   Keep the established readable type size and swipe target; make room for
+   one fuller mobile line by reclaiming the two existing inter-item gaps. */
+@media (max-width: 600px) {
+  #page-home .mirror-message {
+    top: 39% !important;
+    gap: var(--li-space-1) !important;
+  }
+  #page-home .mirror-message h2 {
+    max-height: none;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}

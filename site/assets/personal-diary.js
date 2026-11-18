@@ -38,7 +38,7 @@ function render(){
   const b=append(calendar,"button","li-diary-date"+(key===selected?" selected":"")+(record?" recorded":""),String(d));
   b.type="button";b.dataset.date=key;b.setAttribute("aria-pressed",String(key===selected));
   b.setAttribute("aria-label",d+"/"+mo+"/"+yr+": "+(record?counts(key).reduce((a,b)=>a+b,0)+" hoạt động được ghi nhận":"chưa có nhật ký"));
-  if(record)append(b,"span","li-diary-dot","•");
+  if(record)append(b,"span","li-diary-dot",String(counts(key).reduce((a,n)=>a+n,0)));
  }
  $("li-diary-month-total").textContent=recorded?"Trong "+recorded+" ngày có ghi nhận: "+sums[0]+" bài · "+sums[1]+" vấn đề · "+sums[2]+" input.":"Tháng này chưa có dữ liệu được ghi nhận.";
  const bars=$("li-diary-bars");bars.replaceChildren();
@@ -51,6 +51,7 @@ function render(){
   const bar=append(track,"span","li-diary-bar-value"+(record?" recorded":""),"");
   bar.style.height=record?(total===0?"4px":Math.max(12,Math.round(total/max*100))+"%"):"0";
   append(b,"span","li-diary-bar-label",String(d));
+  append(b,"span","li-diary-bar-total",record?String(total):"—");
  }
  const rec=safeDay(selected),phy=rec?.physical;
  $("li-diary-selected").textContent=new Intl.DateTimeFormat("vi-VN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(new Date(selected+"T12:00:00"));

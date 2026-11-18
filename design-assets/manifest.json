@@ -1,0 +1,130 @@
+{
+  "schema": "li-visual-assets-index-v1",
+  "date": "2026-11-19",
+  "audited_main_sha": "c2e91520b2597d2c05356affe272827ead97663a",
+  "purpose": "Asset-file custody/audit, not a statement of PO visual approval or original editable artwork source.",
+  "authorities": {
+    "decisions": "Notion Hub and UI Illustration Asset Library",
+    "files": "GitHub design-assets/",
+    "frontend": "GitHub site/assets/",
+    "design_contract": "design-system/README.md"
+  },
+  "lao_ly": {
+    "index": "design-assets/lao-ly/manifest.json",
+    "canonical_count": 17,
+    "breakdown": {
+      "mirror_illustrations": 10,
+      "mini_icons": 5,
+      "state_illustrations": 2
+    },
+    "runtime_file_aliases": 9,
+    "legacy_contact_sheet": "design-assets/lao-ly/papercraft-current-contact-sheet.png",
+    "overall_visual_identity_G2": "PENDING"
+  },
+  "file_based_runtime_snapshot": {
+    "records": [
+      {
+        "name": "home-li-iphone-20261119.jpg",
+        "family": "home",
+        "canonical": "design-assets/home/home-li-iphone-20261119.jpg",
+        "app": "site/assets/home-li-iphone-20261119.jpg",
+        "git_blob_sha": "07b7aa3b2502a93f77d8e037b7ff35e2ea5c6ace",
+        "bytes": 454411,
+        "status": "deployed file snapshot; editable upstream source not confirmed"
+      },
+      {
+        "name": "home-li-ipad-20261119.jpg",
+        "family": "home",
+        "canonical": "design-assets/home/home-li-ipad-20261119.jpg",
+        "app": "site/assets/home-li-ipad-20261119.jpg",
+        "git_blob_sha": "d157c3881fc3c811e7e8db7d848dd7bdd1ba7ac0",
+        "bytes": 7906192,
+        "status": "deployed file snapshot; editable upstream source not confirmed"
+      },
+      {
+        "name": "home-mystic-cool-desktop.webp",
+        "family": "home",
+        "canonical": "design-assets/home/home-mystic-cool-desktop.webp",
+        "app": "site/assets/home-mystic-cool-desktop.webp",
+        "git_blob_sha": "6a5083fbba0742a29ff2a32c9c6cbe2ee946b3de",
+        "bytes": 199610,
+        "status": "deployed file snapshot; editable upstream source not confirmed"
+      },
+      {
+        "name": "home-mystic-cool-mobile.webp",
+        "family": "home",
+        "canonical": "design-assets/home/home-mystic-cool-mobile.webp",
+        "app": "site/assets/home-mystic-cool-mobile.webp",
+        "git_blob_sha": "b528fd92cc9d8d26cb50916870bb5b144cf69b1d",
+        "bytes": 232424,
+        "status": "deployed file snapshot; editable upstream source not confirmed"
+      },
+      {
+        "name": "apple-touch-icon.png",
+        "family": "brand",
+        "canonical": "design-assets/brand/apple-touch-icon.png",
+        "app": "site/assets/apple-touch-icon.png",
+        "git_blob_sha": "3df2fb3812f079113f5747aa94c7520240beec8c",
+        "bytes": 996,
+        "status": "deployed file snapshot; editable upstream source not confirmed"
+      },
+      {
+        "name": "li-favicon.svg",
+        "family": "brand",
+        "canonical": "design-assets/brand/li-favicon.svg",
+        "app": "site/assets/li-favicon.svg",
+        "git_blob_sha": "3caed1c09f992d4c2c48d5e69c86fe7c26349923",
+        "bytes": 3967,
+        "status": "deployed file snapshot; editable upstream source not confirmed"
+      },
+      {
+        "name": "li-seal.svg",
+        "family": "brand",
+        "canonical": "design-assets/brand/li-seal.svg",
+        "app": "site/assets/li-seal.svg",
+        "git_blob_sha": "1100261a1aad0bdd1c12ddae5a0c206aadd43722",
+        "bytes": 3908,
+        "status": "deployed file snapshot; editable upstream source not confirmed"
+      }
+    ],
+    "canonical_count": 7,
+    "home_backgrounds": 4,
+    "brand_files": 3
+  },
+  "embedded_css_images": {
+    "owner": "site/assets/li-layout.css",
+    "variables": [
+      "--hero-mobile-url",
+      "--hero-url",
+      "--shelf-url",
+      "--book-url",
+      "--roots-url",
+      "--wood-url"
+    ],
+    "count": 6,
+    "status": "Git-tracked as CSS base64 data only; NOT independent versioned image files; source originals unresolved",
+    "action": "extract to design-assets/ after review without changing illustration pixels"
+  },
+  "missing_or_unverified_asset_sets": [
+    {
+      "family": "Concept portals/windows/books/home entrances",
+      "target_individual_files": 25,
+      "breakdown": {
+        "portals": 8,
+        "discipline_windows": 6,
+        "subject_books": 8,
+        "home_entrances": 3
+      },
+      "source": "Notion UI Illustration Asset Library",
+      "status": "Not confirmed uploaded to GitHub or Notion as individually managed PNG files; not deployed; do NOT mark shipped"
+    },
+    {
+      "family": "Individual discipline backgrounds",
+      "expected_disciplines": 15,
+      "source": "Notion UI Illustration Asset Library",
+      "status": "Multiple generated/review images absent from main; Chinese-language graded scene approved as image but upload/integration not verified, English v2 awaits approval; do NOT publish pending candidates"
+    }
+  ],
+  "total_separate_tracked_canonical_image_files": 25,
+  "total_is_not_all_proposed_artwork": true
+}

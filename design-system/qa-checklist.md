@@ -113,3 +113,13 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 - [x] Invalidated cached URLs for all 12 icon references in `site/index.html`.
 - [ ] Review real Safari/PWA at 24px on iPhone/iPad, 200% text zoom, VoiceOver, contrast and halo; do not claim this from static preview/Chromium.
 - [ ] Full G2 signoff distinct from this asset-specific Human PO approval.
+
+
+### UX-ASSET-01 · Visual asset custody & provenance audit (2026-11-19)
+- [x] Every separate image file currently committed under `site/assets/` has a canonical byte-identical entry: 17 Lão Lý canonical art files (9 runtime aliases), four Home backgrounds, three brand/logo/icon files; current coverage described in `design-assets/README.md` and JSON registry.
+- [x] Image governance and entrypoint linked in Design Library; obsolete UX-ART-03 Ngoài gương rule corrected to current Trong gương-only decision.
+- [ ] Extract six base64 WebP illustration variables (`--hero-mobile-url`, `--hero-url`, `--shelf-url`, `--book-url`, `--roots-url`, `--wood-url`) from the historical CSS into independently versioned assets; avoid altering runtime appearance and validate as a separate migration.
+- [ ] Recover/check actual binary + approvals for intended 25 concept assets (8 group portals, 6 windows, 8 books, 3 Home entrances). Notion lists the plan/decision; checked-in master files are not verified on GitHub. Do not mark them complete or deploy unapproved art.
+- [ ] Recover/archive approved individual discipline artwork: Chinese language color-graded art has image-level PO approval in Notion but **no verified canonical binary**; English v2 remains unapproved. Do not equate chat-generated file names with GitHub assets.
+- [ ] For every new image: retain source/crop, transparent alpha if required, dimensions, provenance, approval state, component usages, landscape/portrait responsive checks, SHA/byte-parity and public/review status; check real Safari/PWA where applicable.
+- [ ] Do not claim full G2 or original editable layered source custody solely from Git-tracked runtime images.

@@ -88,6 +88,26 @@ def main() -> int:
         check(artwork.get("full_G2_approval") == "PENDING",
               "replacing requested art does not silently close G2")
 
+    # UX-ASSET-01: all separate image files shipped in site/assets have canonical custody.
+    visual_registry = ROOT / "design-assets" / "manifest.json"
+    check(visual_registry.is_file(), "visual asset custody manifest exists")
+    if visual_registry.is_file():
+        registry = json.loads(visual_registry.read_text(encoding="utf-8"))
+        entries = registry.get("file_based_runtime_snapshot", {}).get("records", [])
+        check(registry.get("schema") == "li-visual-assets-index-v1", "visual asset registry schema current")
+        check(len(entries) == 7, "Home and brand images inventoried")
+        for entry in entries:
+            canonical = ROOT / entry.get("canonical", "")
+            runtime = ROOT / entry.get("app", "")
+            check(canonical.is_file() and runtime.is_file(), "canonical/runtime graphics exist: " + entry.get("name", "?"))
+            if canonical.is_file() and runtime.is_file():
+                check(canonical.read_bytes() == runtime.read_bytes(), "canonical/runtime graphics byte parity: " + entry.get("name", "?"))
+        check((ROOT / "design-assets" / "README.md").is_file(), "visual asset registry README exists")
+        css = (ROOT / "site" / "assets" / "li-layout.css").read_text(encoding="utf-8")
+        inline = registry.get("embedded_css_images", {}).get("variables", [])
+        check(len(inline) == 6 and all(re.search(re.escape(var) + r"\\s*:\\s*url\\(['\"]data:image/", css) for var in inline),
+              "six legacy embedded CSS art variables recorded as outstanding asset debt")
+
     # UX-DS-23: contract navigation is a CI-guarded invariant, not a wiki convention.
     library_entrypoint = ROOT / "design-system" / "README.md"
     agent_entrypoint = ROOT / "AGENTS.md"

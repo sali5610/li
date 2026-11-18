@@ -37,7 +37,7 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           sleep 2
-          for width in 320 375 390 402 600 820 1440; do
+          for width in 320 360 375 390 402 600 640 820 1440; do
             echo "Checking iframe viewport $width px"
             url="http://127.0.0.1:8765/tools/render_contract_fixture.html?w=$width"
             result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=11000 --dump-dom "$url" 2>/tmp/li-chrome-stderr.log || true)"
@@ -49,7 +49,7 @@ jobs:
             fi
             echo "$result" | grep '<pre id="result">LI_RENDER_PASS ' | tail -1 | cut -c1-1000
           done
-          echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at seven viewports"
+          echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at nine viewports"
           for width in 320 390 820; do
             echo "Checking real Check-in UI at $width CSS px"
             url="http://127.0.0.1:8765/tools/checkin_browser_fixture.html?w=$width"

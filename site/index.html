@@ -273,22 +273,24 @@ let liStorageError=false;
 function liReadState(){
  try{
   const raw=window.localStorage.getItem(LI_STORAGE_KEY);
-  if(raw===null)return {cases:[],questions:[]};
+  if(raw===null)return {cases:[],questions:[],ideas:[]};
   const data=JSON.parse(raw);
   if(!data||data.schema!==1||!Array.isArray(data.cases)||!Array.isArray(data.questions))throw Error("Invalid library data");
   return {
    cases:data.cases.filter(x=>x&&typeof x.title==="string"&&typeof x.revision==="string"&&typeof x.correct==="boolean"),
-   questions:data.questions.filter(x=>x&&typeof x.question==="string")
+   questions:data.questions.filter(x=>x&&typeof x.question==="string"),
+   ideas:(Array.isArray(data.ideas)?data.ideas:[]).filter(x=>x&&typeof x.text==="string"&&typeof x.id==="string"&&typeof x.savedAt==="string")
   };
- }catch(e){liStorageError=true;return {cases:[],questions:[]}}
+ }catch(e){liStorageError=true;return {cases:[],questions:[],ideas:[]}}
 }
 const liInitialState=liReadState();
 const processedCases=liInitialState.cases;
 const savedQuestions=liInitialState.questions;
+const collectedIdeas=liInitialState.ideas;
 function liWriteState(){
  if(liStorageError)return false;
  try{
-  const serialized=JSON.stringify({schema:1,cases:processedCases,questions:savedQuestions,updatedAt:new Date().toISOString()});
+  const serialized=JSON.stringify({schema:1,cases:processedCases,questions:savedQuestions,ideas:collectedIdeas,updatedAt:new Date().toISOString()});
   window.localStorage.setItem(LI_STORAGE_KEY,serialized);
   return window.localStorage.getItem(LI_STORAGE_KEY)===serialized;
  }catch(e){return false}
@@ -408,36 +410,9 @@ showBuddyQuote();document.getElementById("buddy-title-avatar").src=document.getE
 }
 
 function refreshLucide(){try{window.lucide?.createIcons({attrs:{"stroke-width":1.8}})}catch(e){}}
-function renderCaseArchive(){const e=document.getElementById("case-archive-preview");if(!e)return;e.replaceChildren();if(!processedCases.length){const z=document.createElement("div");z.className="state-note";z.textContent="Chưa có ghi chép nào. Hãy thử một câu hỏi nhé.";e.append(z);return}
-processedCases.forEach(it=>{const row=document.createElement("div");row.className="path-item";const c=document.createElement("div"),b=document.createElement("b"),p=document.createElement("p"),n=document.createElement("p"),btn=document.createElement("button");b.textContent=it.title;p.className="small";p.textContent=it.correct?"Đã xem phản hồi · Lập luận phù hợp":"Đã xem phản hồi · Cần xem lại";n.className="small";n.textContent="Kết luận: "+it.revision;btn.textContent="Xem Lại";btn.className="action alt";btn.dataset.page="case";c.append(b,p,n,btn);row.append(c);e.append(row)})}
-
-function renderSavedQuestions(){
- const root=document.getElementById("page-library");if(!root)return;
- let target=document.getElementById("li-saved-questions");
- if(!target){
-  const article=[...root.querySelectorAll("article")].find(x=>(x.querySelector(".kicker")?.textContent||"").toLocaleLowerCase("vi").includes("dấu trang"));
-  target=document.createElement("div");target.id="li-saved-questions";target.className="stack-sm";target.setAttribute("aria-live","polite");
-  if(article)article.append(target);else root.append(target);
- }
- target.replaceChildren();
- target.hidden=savedQuestions.length===0;
- const empty=document.getElementById("li-library-resume-empty");if(empty)empty.hidden=!target.hidden;
- if(target.hidden)return;
- savedQuestions.forEach(item=>{
-  const row=document.createElement("div"),label=document.createElement("p"),btn=document.createElement("button");
-  row.className="path-item";label.textContent=item.question;label.className="small";
-  btn.textContent=scenarios.some(x=>x.question===item.question&&x.type==="hook")?"Mở bài học":"Mở Khảo Chứng";btn.type="button";btn.className="action alt";
-  btn.addEventListener("click",()=>{
-   const found=scenarios.findIndex(x=>x.question===item.question);
-   if(found<0){toast("Mục đã lưu không còn điểm đến đang mở. Nội dung vẫn được giữ trong Dấu Trang.");return}
-   qIndex=found;renderMirrorItem();
-   const target=scenarios[qIndex];
-   if(target.type==="hook"&&!document.getElementById("page-"+target.lessonRoute)){toast("Bài này chưa thể mở.");return}
-   navigate(target.type==="hook"?target.lessonRoute:"research");
-  });
-  row.append(label,btn);target.append(row);
- });
-}
+/* Library v2: all preview/list rendering is centralized so each shelf shows one latest item. */
+function renderCaseArchive(){window.liLibraryShelf?.renderCases();}
+function renderSavedQuestions(){window.liLibraryShelf?.renderBookmarks();}
 const pageHistory=[];
 const LI_LESSON_ROUTES={lessonL09:"L09-1-2",lessonL03:"L03-1-2",lessonL15:"L15-2-2"};
 /* S134: A lesson URL is explicit; returning to Home must not replay a stale lesson on reload. */
@@ -452,7 +427,7 @@ function syncLiRoute(id){
  if(target!==window.location.pathname+window.location.search+window.location.hash)
   window.history.replaceState(window.history.state,"",target);
 }
-function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});document.querySelectorAll(".header .tool-button").forEach(x=>{const active=x.dataset.page===id;x.classList.toggle("active",active);if(active)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library"){renderCaseArchive();renderSavedQuestions();}if(id==="research")syncResearch();refreshLucide();placeCompanion();}
+function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});document.querySelectorAll(".header .tool-button").forEach(x=>{const active=x.dataset.page===id;x.classList.toggle("active",active);if(active)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library")window.liLibraryShelf?.renderHome();if(id==="resume")window.liLibraryShelf?.renderResume();if(id==="collection")window.liLibraryShelf?.renderCollection();if(Object.prototype.hasOwnProperty.call(LI_LESSON_ROUTES,id))window.liLibraryShelf?.trackLesson(id);if(id==="research")syncResearch();refreshLucide();placeCompanion();}
 function goBack(){while(pageHistory.length){const previous=pageHistory.pop();if(previous!==currentPage&&document.getElementById("page-"+previous)){navigate(previous,{remember:false});return}}navigate("home",{remember:false})}
 function renderMethods(){const el=document.getElementById("method-cards");const q=(document.getElementById("method-search").value||"").trim().toLocaleLowerCase("vi");const preset=STUDY_MODES[studyMode].suggestions;const visible=methods.filter(m=>{const match=(!q||(m.join(" ").toLocaleLowerCase("vi").includes(q)));const cat=currentCategory==="Tất cả"||m[4]===currentCategory;const picked=Boolean(q)||currentCategory!=="Tất cả"||!preset||preset.includes(m[0]);return match&&cat&&picked});el.innerHTML=visible.length?visible.map(m=>'<button class="method-card" data-method="'+m[0]+'"><i data-lucide="'+(m[4]==="Luận Chứng Thuật"?"git-branch":m[4]==="Phá Giải Thuật"?"puzzle":m[4]==="Minh Giải Thuật"?"lightbulb":m[4]==="Tự Chủ Thuật"?"brain-circuit":"book-open-check")+'" class="method-icon" aria-hidden="true"></i><span class="kicker">'+m[0]+' · '+m[4]+'</span><h3>'+m[1]+'</h3><span class="original">'+m[2]+'</span><span class="purpose">'+m[3]+'</span><span class="end">CHÚ GIẢI →</span></button>').join(""):'<div class="surface">Không tìm thấy. Thử đổi bộ lọc hoặc tìm bằng tên học thuật.</div>';
 document.getElementById("method-count").textContent="Hiển thị "+visible.length+"/13 phương pháp"+(q?" · kết quả tìm kiếm trên cả 13":currentCategory!=="Tất cả"?" · theo nhóm":STUDY_MODES[studyMode].suggestions?" · "+STUDY_MODES[studyMode].label:" · đầy đủ");
@@ -658,7 +633,7 @@ window.addEventListener("resize",placeCompanion,{passive:true});
  }
  document.getElementById("export-personal-data")?.addEventListener("click",()=>{
   try{
-   const data={schema:1,exportedAt:new Date().toISOString(),cases:processedCases,questions:savedQuestions,draft:field?.value||"",buddyNames:liBuddyNames};
+   const data={schema:1,exportedAt:new Date().toISOString(),cases:processedCases,questions:savedQuestions,ideas:collectedIdeas,draft:field?.value||"",buddyNames:liBuddyNames};
    const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json;charset=utf-8"});
    const url=URL.createObjectURL(blob),a=document.createElement("a");
    a.href=url;a.download="li-du-lieu-"+new Date().toISOString().slice(0,10)+".json";
@@ -680,15 +655,16 @@ window.addEventListener("resize",placeCompanion,{passive:true});
       typeof data.draft!=="string"||
       !data.cases.every(x=>x&&typeof x.title==="string"&&typeof x.revision==="string"&&typeof x.correct==="boolean")||
       !data.questions.every(x=>x&&typeof x.question==="string")||
+      (data.ideas!==undefined&&(!Array.isArray(data.ideas)||!data.ideas.every(x=>x&&typeof x.id==="string"&&typeof x.text==="string"&&x.text.length<=5000&&typeof x.savedAt==="string")))||
       (data.buddyNames!==undefined&&(!data.buddyNames||typeof data.buddyNames!=="object"||Array.isArray(data.buddyNames)||!Object.keys(LI_BUDDY_DEFAULT_NAMES).every(k=>typeof data.buddyNames[k]==="string"&&data.buddyNames[k].length<=100))))throw Error("schema");
    const oldRaw=window.localStorage.getItem(LI_STORAGE_KEY);
    const oldDraft=window.localStorage.getItem(LI_DRAFT_KEY);
    const oldNames=window.localStorage.getItem(LI_BUDDY_NAMES_KEY);
-   const existing=Boolean(oldRaw&&oldRaw!=='{"schema":1,"cases":[],"questions":[]}')||Boolean(oldDraft||field?.value);
+   const existing=Boolean(processedCases.length||savedQuestions.length||collectedIdeas.length||oldDraft||field?.value);
    if(!window.confirm(existing
-     ?"Nhập sẽ THAY THẾ Bút Ký, Dấu Trang và bản nháp đang lưu ở đây. Hãy xuất bản sao trước. Tiếp tục?"
+     ?"Nhập sẽ THAY THẾ Bút Ký, Dấu Trang, Ý đã nhặt và bản nháp đang lưu ở đây. Hãy xuất bản sao trước. Tiếp tục?"
      :"Nhập bản sao vào thiết bị này?"))return;
-   const next=JSON.stringify({schema:1,cases:data.cases,questions:data.questions,updatedAt:new Date().toISOString()});
+   const next=JSON.stringify({schema:1,cases:data.cases,questions:data.questions,ideas:data.ideas||[],updatedAt:new Date().toISOString()});
    try{
     window.localStorage.setItem(LI_STORAGE_KEY,next);
     window.localStorage.setItem(LI_DRAFT_KEY,data.draft);
@@ -704,11 +680,12 @@ window.addEventListener("resize",placeCompanion,{passive:true});
    }
    processedCases.splice(0,processedCases.length,...data.cases);
    savedQuestions.splice(0,savedQuestions.length,...data.questions);
+   collectedIdeas.splice(0,collectedIdeas.length,...(data.ideas||[]));
    if(field)field.value=data.draft;
    if(data.buddyNames!==undefined){liBuddyNames=liRestoreBuddyNames();liRefreshBuddyNameInputs();}
    liStorageError=false;
-   renderCaseArchive();renderSavedQuestions();
-   toast("Đã nhập "+data.cases.length+" Bút Ký và "+data.questions.length+" Dấu Trang.");
+   renderCaseArchive();renderSavedQuestions();window.liLibraryShelf?.renderHome();window.liLibraryShelf?.renderCollection();
+   toast("Đã nhập "+data.cases.length+" Bút Ký, "+data.questions.length+" Dấu Trang và "+collectedIdeas.length+" Ý đã nhặt.");
   }catch(e){toast(e.message==="large"?"Tệp vượt quá 10 MB.":e.message==="write"?
     "Không thể lưu bản sao trên thiết bị này. Hãy giữ bản JSON.":"Tệp JSON không hợp lệ hoặc không đúng bản sao li.");}
   finally{importInput.value="";}
@@ -719,4 +696,4 @@ const liInitialLesson=new URLSearchParams(window.location.search).get("lesson");
 navigate("home",{focus:false,syncUrl:!Object.values(LI_LESSON_ROUTES).includes(liInitialLesson)});
 setStudyMode(studyMode,{persist:false});
 window.addEventListener("load",()=>{refreshLucide();placeCompanion();});
-</script><script src="./assets/laoly-context-s112.js"></script><script src="./assets/laoly-quotes-s121.js"></script><script src="./assets/lesson-l09-hifi-markup.js"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js"></script><script src="./assets/lesson-l15-hifi-markup.js"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script><script src="./assets/lesson-related-wave1.js"></script><script src="./assets/personal-diary.js?v=1"></script></body></html>
+</script><script src="./assets/laoly-context-s112.js"></script><script src="./assets/laoly-quotes-s121.js"></script><script src="./assets/lesson-l09-hifi-markup.js"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js"></script><script src="./assets/lesson-l15-hifi-markup.js"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script><script src="./assets/lesson-related-wave1.js"></script><script src="./assets/personal-diary.js?v=2"></script><script src="./assets/library-hub.js?v=1"></script></body></html>

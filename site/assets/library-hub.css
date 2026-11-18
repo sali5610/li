@@ -505,10 +505,10 @@ body .laoly-support.li-companion-draggable.is-dragging #laoly-fab{
 
 
 /* UX-HOME-04 · User-supplied scene variants. Keep the original desktop asset.
-   Tablet widths get the landscape scene; larger touch iPads up to 1600px do too (including the 1376px iPad Pro 13).
+   Tablet widths get the landscape scene; landscape viewports through 1400px do too (including 1376px iPad Pro 13).
    Never stretch the art; retain existing full-viewport Home/Nav behavior. */
 @media (min-width:601px) and (max-width:1139px),
-       (min-width:1140px) and (max-width:1600px) and (any-pointer:coarse){
+       (min-width:1140px) and (max-width:1400px) and (orientation:landscape){
  .app.home-focus #page-home .hero::before{
   background-image:url("./home-li-ipad-20261119.jpg")!important;
   background-size:cover!important;
@@ -569,50 +569,85 @@ body:has(.app.home-focus){
  .app.home-focus #page-home .mirror-message{top:34%!important}
 }
 
-/* UX-DS-25 · Dedicated iPad landscape Home composition.
-   Same approved landscape artwork; reposition actual UI, not image pixels.
-   Maintain 100dvh one-screen Home and transparent top navigation. */
-@media (min-width: 1000px) and (max-width: 1139px) and (orientation: landscape),
-       (min-width: 1140px) and (max-width: 1600px) and (orientation: landscape) and (any-pointer: coarse) {
- /* Legacy page-in slides its entire Home scene 3px under the transparent
-    header during entry. Fade opacity instead; Home remains pixel-aligned. */
- @keyframes li-ipad-landscape-home-reveal {
-   from { opacity:.96; }
-   to { opacity:1; }
+/* UX-DS-27 · True tablet landscape: three compositional zones around the
+   approved iPad mirror artwork. Portrait retains the previous central column.
+   1024/1133/1194/1376 CSS px all match regardless of pointer/trackpad.
+   Do not infer iPad from user-agent (iPadOS Safari can report Macintosh). */
+@media (min-width: 1000px) and (max-width: 1400px) and (orientation: landscape) {
+ .app.home-focus #page-home .hero {
+   --li-home-landscape-side:clamp(24px,3vw,48px);
+   --li-home-landscape-panel:clamp(240px,26vw,348px);
+   --li-home-landscape-bottom:clamp(32px,6dvh,72px);
  }
- .app.home-focus #page-home.page.active {
-   animation:li-ipad-landscape-home-reveal .22s ease-out both!important;
-   transform:none!important;
- }
- @media (prefers-reduced-motion: reduce) {
-   .app.home-focus #page-home.page.active { animation:none!important; }
- }
+ /* Art must remain one viewport tall, behind the transparent header. */
  .app.home-focus #page-home .hero::before {
    background-image:url("./home-li-ipad-20261119.jpg")!important;
    background-size:cover!important;
    background-position:center center!important;
  }
+ .app.home-focus #page-home .hero-left {
+   top:calc(var(--li-home-topnav-height) + var(--li-space-6))!important;
+   left:var(--li-home-landscape-side)!important;
+   width:min(26%,300px)!important;
+   max-width:none!important;
+ }
+ .app.home-focus #page-home .hero-left h1 {
+   font-size:var(--li-type-headline)!important;
+   line-height:var(--li-leading-headline)!important;
+ }
+ .app.home-focus #page-home .hero-left p {
+   font-size:var(--li-type-support)!important;
+   line-height:var(--li-leading-support)!important;
+ }
+ /* Question stays in the illustration's geometric mirror opening. */
  .app.home-focus #page-home .mirror-message {
    left:49%!important;
    top:43%!important;
-   width:min(30%,calc(var(--li-space-24) * 4))!important;
-   max-width:calc(var(--li-space-24) * 4)!important;
+   width:min(29%,355px)!important;
+   max-width:355px!important;
    min-width:0!important;
  }
+ .app.home-focus #page-home .mirror-message h2 {
+   font-size:clamp(var(--li-type-title-sm),2.4vw,var(--li-type-title-md))!important;
+   line-height:var(--li-leading-title-md)!important;
+ }
+ /* Lão Lý and the action pair occupy the RIGHT editorial rail, rather
+    than remaining stacked under the central mirror as in portrait. */
  .app.home-focus #page-home .hero-dialogue {
-   left:var(--li-space-8);
-   top:clamp(140px,23dvh,220px);
-   width:min(32%,460px);
-   max-width:calc(100% - var(--li-space-16));
+   left:auto!important;
+   right:var(--li-home-landscape-side)!important;
+   top:auto!important;
+   bottom:calc(var(--li-home-landscape-bottom) + var(--li-device-ipad-landscape-control-min) + var(--li-space-6))!important;
+   transform:none!important;
+   width:var(--li-home-landscape-panel)!important;
+   max-width:var(--li-home-landscape-panel)!important;
+   min-width:0!important;
+ }
+ .app.home-focus #page-home .hero-dialogue-bubble p {
+   font-size:var(--li-type-support)!important;
+   line-height:var(--li-leading-support)!important;
  }
  .app.home-focus #page-home .hero-actions {
-   left:50%!important;
-   width:min(58%,600px)!important;
-   bottom:var(--li-space-8)!important;
-   transform:translateX(-50%)!important;
+   left:auto!important;
+   right:var(--li-home-landscape-side)!important;
+   bottom:var(--li-home-landscape-bottom)!important;
+   width:var(--li-home-landscape-panel)!important;
+   max-width:var(--li-home-landscape-panel)!important;
+   transform:none!important;
  }
- .app.home-focus #page-home .hero-left {
-   top:calc(var(--li-home-topnav-height) + var(--li-space-5));
-   left:var(--li-space-8);
+ .app.home-focus #page-home .hero-actions .primary {
+   min-height:var(--li-device-ipad-landscape-control-min)!important;
+   font-size:var(--li-type-support)!important;
+   line-height:var(--li-leading-support)!important;
  }
+ /* A wider landscape viewport should actually use the additional canvas. */
+ #page-catalog .surface-grid:not(.cols2) {
+   grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+ #page-guide .editorial-grid {
+   grid-template-columns:minmax(0,1.45fr) minmax(0,.85fr)!important;
+ }
+}
+@media (min-width: 1140px) and (max-width: 1400px) and (orientation: landscape) {
+ #page-guide #method-cards { grid-template-columns:repeat(3,minmax(0,1fr))!important; }
 }

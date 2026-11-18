@@ -1,5 +1,5 @@
 <!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>li. v0.3 Browser Computed Style Smoke</title>
-<style>html,body{margin:0;padding:0}iframe{display:block;width:var(--test-width,100%);height:var(--test-height,900px);border:0}#result{white-space:pre-wrap;font:12px monospace}</style><script>const params=new URLSearchParams(location.search);const width=Number(params.get("w"))||390;const heights={744:1133,820:1180,1024:1366,1133:744,1194:834,1366:1024};document.documentElement.style.setProperty("--test-width",width+"px");document.documentElement.style.setProperty("--test-height",(Number(params.get("h"))||heights[width]||900)+"px");</script></head>
+<style>html,body{margin:0;padding:0}iframe{display:block;width:var(--test-width,100%);height:var(--test-height,900px);border:0}#result{white-space:pre-wrap;font:12px monospace}</style><script>const params=new URLSearchParams(location.search);const width=Number(params.get("w"))||390;const heights={744:1133,820:1180,1024:768,1133:744,1194:834,1366:1024,1376:1032};document.documentElement.style.setProperty("--test-width",width+"px");document.documentElement.style.setProperty("--test-height",(Number(params.get("h"))||heights[width]||900)+"px");</script></head>
 <body><pre id="result">LI_RENDER_PENDING</pre><iframe id="app" src="../site/index.html" title="li. app fixture"></iframe>
 <script>
 (function(){
@@ -21,13 +21,15 @@
     const doc=frame.contentDocument,w=frame.contentWindow,root=w.getComputedStyle(doc.documentElement);
     report("Generated color --paper",root.getPropertyValue("--paper").trim().toUpperCase()==="#F1F0E9",root.getPropertyValue("--paper"));
     report("Generated spacing --li-space-4",root.getPropertyValue("--li-space-4").trim()==="16px",root.getPropertyValue("--li-space-4"));
-    const ipadMode=(w.innerWidth>=744&&w.innerWidth<=1139);
+    const wideLandscape=(w.innerWidth>=1140&&w.innerWidth<=1400&&w.innerWidth>w.innerHeight);
+    const ipadMode=(w.innerWidth>=744&&w.innerWidth<=1139)||wideLandscape;
+    const landscape=ipadMode&&w.innerWidth>=1000&&w.innerWidth>w.innerHeight;
     const expectedBody=ipadMode?"18px":"16px",expectedLeading=ipadMode?"28px":"24px";
     report("Body uses device-specific semantic font-size",w.getComputedStyle(doc.body).fontSize===expectedBody,w.getComputedStyle(doc.body).fontSize+" expected "+expectedBody);
     report("Body uses device-specific line-height",w.getComputedStyle(doc.body).lineHeight===expectedLeading,w.getComputedStyle(doc.body).lineHeight+" expected "+expectedLeading);
     if(ipadMode){
-      const landscape=w.innerWidth>=1000&&w.innerWidth>w.innerHeight;
       const expectedHeadline=landscape?"44px":"40px";
+      report("iPad actual CSS mode matches viewport",root.getPropertyValue("--li-ipad-active-mode").trim()===(landscape?"landscape":"portrait"),root.getPropertyValue("--li-ipad-active-mode"));
       report("iPad headline token changes by orientation",root.getPropertyValue("--li-type-headline").trim()===expectedHeadline,root.getPropertyValue("--li-type-headline"));
       report("iPad minimum target token is 56px",root.getPropertyValue("--li-current-control-min").trim()==="56px",root.getPropertyValue("--li-current-control-min"));
       const image=w.getComputedStyle(doc.querySelector("#page-home .hero"),"::before").backgroundImage;
@@ -41,7 +43,7 @@
     report("Home mirror title removed without hiding the question",!mirrorTitle&&!!mirror&&!!mirror.textContent.trim(),mirrorTitle?.textContent||"question remains");
     const scene=doc.querySelector("#page-home .hero");
     const image=scene?w.getComputedStyle(scene,"::before").backgroundImage:"";
-    const expectedScene=w.innerWidth<=600?"home-li-iphone-20261119.jpg":w.innerWidth<=1139?"home-li-ipad-20261119.jpg":"home-mystic-cool-desktop.webp";
+    const expectedScene=w.innerWidth<=600?"home-li-iphone-20261119.jpg":ipadMode||w.innerWidth<=1139?"home-li-ipad-20261119.jpg":"home-mystic-cool-desktop.webp";
     report("Approved Home illustration matches responsive source image",image.includes(expectedScene),image.slice(0,170));
 
     /* UX-HOME-06: inspect the LIVE header, not the review-only specimen. */
@@ -61,6 +63,14 @@
     report("Home hero exactly one visible dynamic viewport tall",!!heroBox&&Math.abs(heroBox.height-w.innerHeight)<3,"hero="+heroBox?.height+" viewport="+w.innerHeight);
     report("Home overlay renders light seal and icon ink",!!brandSeal&&w.getComputedStyle(brandSeal).filter.includes("invert(1)")&&!!tool&&w.getComputedStyle(tool).color==="rgb(250, 249, 245)",brandSeal?w.getComputedStyle(brandSeal).filter:"missing");
     report("Home overlay utility keeps 48px touch area",!!tool&&tool.getBoundingClientRect().width>=48&&tool.getBoundingClientRect().height>=48,tool?.getBoundingClientRect().width+"x"+tool?.getBoundingClientRect().height);
+    if(landscape){
+      const titleRail=doc.querySelector("#page-home .hero-left").getBoundingClientRect();
+      const mirrorRail=doc.querySelector("#page-home .mirror-message").getBoundingClientRect();
+      const contextRail=doc.querySelector("#page-home .hero-dialogue").getBoundingClientRect();
+      const actionRail=doc.querySelector("#page-home .hero-actions").getBoundingClientRect();
+      report("Landscape Home has three distinct horizontal zones",titleRail.right<w.innerWidth*.37&&Math.abs((mirrorRail.left+mirrorRail.width/2)/w.innerWidth-.49)<.035&&contextRail.left>w.innerWidth*.66&&actionRail.left>w.innerWidth*.66,JSON.stringify({titleRight:Math.round(titleRail.right),mirrorCenter:Math.round(mirrorRail.left+mirrorRail.width/2),contextLeft:Math.round(contextRail.left),actionLeft:Math.round(actionRail.left)}));
+      report("Landscape context aligns above right action rail",Math.abs(contextRail.left-actionRail.left)<3&&contextRail.bottom<actionRail.top&&actionRail.bottom<=w.innerHeight-12,Math.round(contextRail.left)+"/"+Math.round(actionRail.left)+"/"+Math.round(contextRail.bottom)+"/"+Math.round(actionRail.top));
+    }
     if(w.innerWidth>=601&&w.innerWidth<=1139){
      const ringCopy=doc.querySelector("#page-home .mirror-message").getBoundingClientRect();
      const sceneBox=scene.getBoundingClientRect();
@@ -116,6 +126,7 @@
        const guideGrid=doc.getElementById("method-cards");
        const guideGridCSS=guideGrid?w.getComputedStyle(guideGrid):null;
        const guideColumns=guideGridCSS?guideGridCSS.gridTemplateColumns.split(" ").filter(Boolean):[];
+        if(landscape&&w.innerWidth>=1140) report("Wide touch iPad landscape uses three method columns",guideColumns.length===3,guideColumns.join(" / "));
        if(w.innerWidth<=640){
         report("PO S116/S118 Guide is 2-up on phone",guideColumns.length===2,guideGridCSS?guideGridCSS.gridTemplateColumns:"missing");
         const cards2=[...cards].slice(0,2);

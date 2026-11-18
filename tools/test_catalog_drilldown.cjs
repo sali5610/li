@@ -23,7 +23,7 @@ assert.equal(new Set(lessons.map(x=>x.id)).size,135);
 assert(courses.every(x=>x.lessons.length===3));
 assert(fields.every(x=>x.courses.length===3));
 const published=lessons.filter(x=>x.published);
-assert.deepEqual(published.map(x=>x.id).sort(),["L03-1-2","L09-1-2","L15-2-2"]);
+assert.deepEqual(Array.from(published,x=>x.id).sort(),["L03-1-2","L09-1-2","L15-2-2"]);
 assert(published.every(x=>["lessonL03","lessonL09","lessonL15"].includes(x.route)));
 assert(lessons.filter(x=>!x.published).every(x=>!x.route));
 class Element{

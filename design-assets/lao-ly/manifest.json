@@ -1,15 +1,15 @@
 {
-  "schema": "li-laoly-current-v2",
+  "schema": "li-laoly-current-v3",
   "date": "2026-11-19",
   "source_of_truth": "GitHub design-assets/lao-ly",
-  "original_decisions": "Notion Biểu cảm Lão Lý · Asset Library; Human PO 2026-11-19 instruction to remove Outside and replace old collection",
+  "original_decisions": "Notion Biểu cảm Lão Lý · Asset Library; Human PO 2026-11-19 instruction to remove Outside and replace old collection; Human PO 2026-11-19 explicitly approves five mini head-only icons at 24px target size",
   "style": "user-selected vintage geometric papercraft collage",
   "active_counts": {
     "illustrations_mirror": 10,
     "icons": 5,
     "illustrations_outside": 0
   },
-  "app_integration": "same legacy site asset paths replaced with new versioned artwork",
+  "app_integration": "Five deployed mode/avatar site aliases byte-match approved 96px transparent mini-head PNGs",
   "full_G2_approval": "PENDING",
   "assets": [
     {
@@ -136,61 +136,62 @@
       "type": "icon",
       "mode": "Bình thường",
       "use": "Neutral chat avatar",
-      "review": "Human PO requested replacing old assets; G2 still pending",
-      "source": "new papercraft pose 09 close-up",
-      "path": "icon/lao_ly_chat_icon_master_1024.png",
-      "width": 1024,
-      "height": 1024,
-      "bytes": 996637,
-      "sha256": "8871521dd797e95cff3dd7bf0c4fd8207a1d6897f0725419bc6df0947f028e57"
+      "review": "PO APPROVED five head-only mini states 2026-11-19; 24px physical Safari readability and overall G2 remain open",
+      "source": "Human PO-approved transparent five-head mini sticker sheet 2026-11-19, crop/isolate, 96px indexed transparent PNG",
+      "path": "icon/lao_ly_mini_neutral_96.png",
+      "width": 96,
+      "height": 96,
+      "bytes": 2217,
+      "sha256": "bbe85d8e5ccb9fbac3eaabae3630cf1ff1ae191d5dabbce0d05dfdea9ac7b822"
     },
     {
       "type": "icon",
       "mode": "Vào nhịp",
       "use": "Learning mode: getting started",
-      "review": "Human PO requested replacing old assets; G2 still pending",
-      "source": "new papercraft pose 08 close-up",
-      "path": "icon/lao_ly_mode_vao_nhip_1024.png",
-      "width": 1024,
-      "height": 1024,
-      "bytes": 932667,
-      "sha256": "685f386efb9f078aa903f2439c1eb36866f47447ce23ec7205fc18a1628894aa"
+      "review": "PO APPROVED five head-only mini states 2026-11-19; 24px physical Safari readability and overall G2 remain open",
+      "source": "Human PO-approved transparent five-head mini sticker sheet 2026-11-19, crop/isolate, 96px indexed transparent PNG",
+      "path": "icon/lao_ly_mini_vao_nhip_96.png",
+      "width": 96,
+      "height": 96,
+      "bytes": 2308,
+      "sha256": "00adcd50cd53133550426531f19c67d2a9438e346289ea73087d0c8d99e81f9c"
     },
     {
       "type": "icon",
       "mode": "Đào sâu",
       "use": "Learning mode: deep investigation",
-      "review": "Human PO requested replacing old assets; G2 still pending",
-      "source": "new papercraft pose 10 close-up",
-      "path": "icon/lao_ly_mode_dao_sau_1024.png",
-      "width": 1024,
-      "height": 1024,
-      "bytes": 1024556,
-      "sha256": "19c90fa72dbe718f804cd9acf3a96deae1140e0a47d0acf349047dfb6596af4d"
+      "review": "PO APPROVED five head-only mini states 2026-11-19; 24px physical Safari readability and overall G2 remain open",
+      "source": "Human PO-approved transparent five-head mini sticker sheet 2026-11-19, crop/isolate, 96px indexed transparent PNG",
+      "path": "icon/lao_ly_mini_dao_sau_96.png",
+      "width": 96,
+      "height": 96,
+      "bytes": 2246,
+      "sha256": "d5dadc26ad8ac777cbfd7d59e8daa0ed9568f15bfa2be1e7a85ff731af42007b"
     },
     {
       "type": "icon",
       "mode": "Quá tải",
       "use": "Explicitly selected overload state only",
-      "review": "Human PO requested replacing old assets; G2 still pending",
-      "source": "new papercraft pose 05 close-up",
-      "path": "icon/lao_ly_mode_qua_tai_1024.png",
-      "width": 1024,
-      "height": 1024,
-      "bytes": 1057487,
-      "sha256": "fe2ccddab9b5c5981b8b82820f78907f6d8eee5f7b9f60f5c2ab62717d6a4c46"
+      "review": "PO APPROVED five head-only mini states 2026-11-19; 24px physical Safari readability and overall G2 remain open",
+      "source": "Human PO-approved transparent five-head mini sticker sheet 2026-11-19, crop/isolate, 96px indexed transparent PNG",
+      "path": "icon/lao_ly_mini_qua_tai_96.png",
+      "width": 96,
+      "height": 96,
+      "bytes": 2321,
+      "sha256": "42c0294cbf21c50a97aeda6dca8626b50f9157b1405041d4ab2608aa19ae1b78"
     },
     {
       "type": "icon",
       "mode": "Hồi trí",
       "use": "Learning mode: recovery",
-      "review": "Human PO requested replacing old assets; G2 still pending",
-      "source": "new papercraft pose 04 close-up",
-      "path": "icon/lao_ly_mode_hoi_tri_1024.png",
-      "width": 1024,
-      "height": 1024,
-      "bytes": 934991,
-      "sha256": "f2569e80ac2c5f454a93c2866ccab5cc6daf5fc0cedc5b52a898d765924db56d"
+      "review": "PO APPROVED five head-only mini states 2026-11-19; 24px physical Safari readability and overall G2 remain open",
+      "source": "Human PO-approved transparent five-head mini sticker sheet 2026-11-19, crop/isolate, 96px indexed transparent PNG",
+      "path": "icon/lao_ly_mini_hoi_tri_96.png",
+      "width": 96,
+      "height": 96,
+      "bytes": 2210,
+      "sha256": "19c1893b01c6c5a0d9c4e3cd3ab18152aaf41b931f9e943435be6684e2180816"
     }
-  ]
+  ],
+  "icon_small_size_css_px": 24
 }

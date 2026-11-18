@@ -81,3 +81,11 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 
 ## 4. Definition of Done
 **Design docs complete ≠ components extracted ≠ CI green ≠ visual QA pass ≠ Human PO G2 approved.** Mark only the level that has supporting evidence. No additional paid service is permitted without explicit approval.
+
+
+### UX-ART-05 · Five PO-approved Lão Lý mini heads, 2026-11-19
+- [x] Crop from user-approved sheet: only head, five distinct states, transparent; no body or props; 96px canonical PNGs + app aliases
+- [x] Source QA: PNG header, 96×96 geometry, transparency chunk, and byte-for-byte deployed/canonical equality
+- [ ] Physical iPhone Safari at 24 CSS px on parchment and forest backgrounds: recognizability of eyes/expressions, edge halo, AA
+- [ ] iPad portrait/landscape, 200% text zoom, VoiceOver and PWA caching; retain readable four mode labels and accessible names
+- [ ] Overall G2 illustration identity acceptance remains separate

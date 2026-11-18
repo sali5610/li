@@ -614,13 +614,17 @@ assert (int.from_bytes(raw_illustrated[16:20],"big"), int.from_bytes(raw_illustr
 assert raw_illustrated == (site.parent/"design-assets"/"lao-ly"/"trong-guong"/"lao_ly_10_suy_nghi_mirror.png").read_bytes(), "Settings Lão Lý illustration must match canonical papercraft source"
 assert (site/"assets"/"laoly-guide-rest.png").read_bytes() == (site.parent/"design-assets"/"lao-ly"/"trong-guong"/"lao_ly_04_buon_ngu_mirror.png").read_bytes(), "Guide Lão Lý illustration must match current papercraft source"
 for deployed, source in [
- ("laoly-neutral.png", "lao_ly_chat_icon_master_1024.png"),
- ("laoly-mode-start.png", "lao_ly_mode_vao_nhip_1024.png"),
- ("laoly-mode-focus.png", "lao_ly_mode_dao_sau_1024.png"),
- ("laoly-mode-overload.png", "lao_ly_mode_qua_tai_1024.png"),
- ("laoly-mode-recover.png", "lao_ly_mode_hoi_tri_1024.png"),
+ ("laoly-neutral.png", "lao_ly_mini_neutral_96.png"),
+ ("laoly-mode-start.png", "lao_ly_mini_vao_nhip_96.png"),
+ ("laoly-mode-focus.png", "lao_ly_mini_dao_sau_96.png"),
+ ("laoly-mode-overload.png", "lao_ly_mini_qua_tai_96.png"),
+ ("laoly-mode-recover.png", "lao_ly_mini_hoi_tri_96.png"),
 ]:
     assert (site/"assets"/deployed).read_bytes() == (site.parent/"design-assets"/"lao-ly"/"icon"/source).read_bytes(), "Lão Lý app icon must match current papercraft source: " + deployed
+    raw_icon=(site/"assets"/deployed).read_bytes()
+    assert raw_icon[:8] == bytes([137,80,78,71,13,10,26,10]), "Mini icon must be PNG: " + deployed
+    assert (int.from_bytes(raw_icon[16:20],"big"), int.from_bytes(raw_icon[20:24],"big")) == (96,96), "Mini icon size must be 96px: " + deployed
+    assert b"tRNS" in raw_icon, "Mini icons must have transparency: " + deployed
 assert 'class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"' in settings
 assert 'class="settings-buddy-illustration" src="./assets/laoly-neutral.png"' not in settings
 assert '<article id="notebook-section" class="surface" tabindex="-1"' in library

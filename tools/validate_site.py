@@ -139,7 +139,10 @@ assert 'if(lesson)url.searchParams.set("lesson",lesson);' in html
 assert 'else url.searchParams.delete("lesson");' in html
 assert 'url.hash="";' in html
 assert 'if(syncUrl)syncLiRoute(id);' in html
-assert 'syncUrl:!Object.values(LI_LESSON_ROUTES).includes(liInitialLesson)' in html
+assert 'const liInitialCatalog=new URLSearchParams(window.location.search).get("catalog");' in html
+assert 'navigate(liInitialCatalog&&!liInitialLesson?"catalog":"home"' in html
+assert 'syncUrl:!(liInitialCatalog||Object.values(LI_LESSON_ROUTES).includes(liInitialLesson))' in html
+assert 'if(!lesson){url.searchParams.delete("chapter");if(id!=="catalog")url.searchParams.delete("catalog");}' in html
 
 # S135: mobile mirror safe-area, independent subtle text float, and no square iOS tap flash.
 assert html.count("/* S135 · Mirror copy safe area + paper-float.") == 1

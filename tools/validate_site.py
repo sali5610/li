@@ -382,7 +382,17 @@ subprocess.run(["node",str(site.parent/"tools"/"test_navigation.js")],check=True
 library_section=section("library")
 assert '<article id="notebook-section" class="surface" tabindex="-1"' in library_section
 assert '<article id="notebook-section" class="surface tinted"' not in library_section
-assert library_section.count('<div class="surface-grid cols2"><article class="surface">')==1
+# UX-DASH-01: cards are grouped by the user's job, not the legacy card 03/04 DOM adjacency.
+assert library_section.count('class="library-group" role="region"')==3
+assert all(x in library_section for x in ('library-resume-heading','library-collection-heading','library-reflection-heading'))
+assert '<div class="surface-grid cols2">' in library_section
+assert library_section.count('id="case-archive-preview"')==1
+assert html.count('id="li-diary-calendar"')==1
+assert html.count('id="li-diary-bars"')==1
+assert html.count('id="li-diary-consent"')==1
+assert html.count('id="li-diary-delete"')==1
+assert (site/"assets"/"personal-diary.js").is_file()
+assert (site/"assets"/"personal-diary.css").is_file()
 
 # S120: mirror-variant illustration stored locally and not silently downgraded
 # to a chat icon; Bút Ký uses same paper surface as cards 03-04.

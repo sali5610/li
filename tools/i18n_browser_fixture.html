@@ -41,7 +41,7 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
    record("English mentor settings heading",label(d.querySelector("#page-settings .settings-buddy-heading h2"))==="Elder Li",label(d.querySelector("#page-settings .settings-buddy-heading h2")));
    record("English mentor dialogue accessibility",by("buddy-scroll")?.getAttribute("aria-label")==="Conversation with Elder Li",by("buddy-scroll")?.getAttribute("aria-label"));
    record("English mentor intro accessibility",by("page-home")?.querySelector(".hero-dialogue")?.getAttribute("aria-label")?.startsWith("Elder Li explains"),by("page-home")?.querySelector(".hero-dialogue")?.getAttribute("aria-label"));
-   record("English mentor guide illustration alt",d.querySelector("#page-guide .guide-mentor-illustration")?.getAttribute("alt")==="Sleepy Elder Li",d.querySelector("#page-guide .guide-mentor-illustration")?.getAttribute("alt"));
+   record("English mentor guide illustration alt",d.querySelector("#page-guide .guide-mentor-illustration")?.getAttribute("alt")==="Elder Li, half asleep",d.querySelector("#page-guide .guide-mentor-illustration")?.getAttribute("alt"));
    record("English mentor interactions",["buddy-question","buddy-challenge","buddy-forget"].every(id=>label(by(id)).includes("Elder Li")),["buddy-question","buddy-challenge","buddy-forget"].map(id=>label(by(id))).join(" | "));
 
    const expectations={

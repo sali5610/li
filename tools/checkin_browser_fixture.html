@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="vi"><head><meta charset="utf-8"><title>li. L1 radio & modal visual QA</title></head>
-<body style="margin:0;background:var(--paper,#f3ebdc)">
+<body style="margin:0;background:var(--paper,#F1F0E9)">
 <iframe id="app" title="li. check-in app" src="../site/index.html" style="height:760px;border:0;display:block"></iframe>
 <pre id="result">LI_CHECKIN_BROWSER_PENDING</pre>
 <script>
@@ -50,7 +50,7 @@ iframe.addEventListener("load",()=>{
     scroll=modal.querySelector(".checkin-scroll"),footer=modal.querySelector(".checkin-actions");
    check(modal.classList.contains("open"),"Modal not visible");
    const link=d.querySelector('link[href*="checkin-adaptation.css"]');
-   check(link?.getAttribute("href").includes("20261118-binary3"),"New CSS cache key missing");
+   check(link?.getAttribute("href").includes("20261118-ds20-coverage"),"New CSS cache key missing");
    check(Boolean(link.sheet&&link.sheet.cssRules.length>25),"Cached/missing check-in stylesheet");
    check(w.getComputedStyle(dialog).display==="flex","Dialog must be flex");
    check(w.getComputedStyle(scroll).overflowY==="auto","Inner content should scroll");

@@ -5,6 +5,8 @@
 const $=id=>document.getElementById(id);
 if(!$("page-library")||!$("page-resume")||!$("page-collection"))return;
 const VISITS_KEY="li.private.lesson.visits.v1";
+const PROBLEM_VISITS_KEY="li.private.problem.visits.v1";
+const NATIVE_CASE_KEY="sampling-bias-90";
 const LESSONS={
  lessonL03:{id:"L03-1-2",title:"Câu hỏi mở & thiên lệch phỏng vấn"},
  lessonL09:{id:"L09-1-2",title:"Sampling Bias · Sai lệch chọn mẫu"},
@@ -20,6 +22,56 @@ try{
   visitStore.items=v.items.filter(x=>x&&Object.prototype.hasOwnProperty.call(LESSONS,x.route)&&typeof x.visitedAt==="string"&&!Number.isNaN(Date.parse(x.visitedAt))).slice(0,40);
  }
 }catch(err){visitError=true;}
+/* Activity visits are separate from bookmarks and authored case notes.
+   The research question text is the stable identity for this published problem set. */
+let problemVisits={schema:1,items:[]},problemVisitError=false;
+function isKnownProblem(entry){
+ if(!entry||typeof entry.key!=="string")return false;
+ if(entry.kind==="case")return entry.key===NATIVE_CASE_KEY;
+ return entry.kind==="problem"&&scenarios.some(sc=>sc.type!=="hook"&&sc.question===entry.key);
+}
+try{
+ const raw=window.localStorage.getItem(PROBLEM_VISITS_KEY);
+ if(raw){
+  const data=JSON.parse(raw);
+  if(!data||data.schema!==1||!Array.isArray(data.items))throw Error("invalid problem history");
+  problemVisits.items=data.items.filter(x=>isKnownProblem(x)&&typeof x.visitedAt==="string"&&!Number.isNaN(Date.parse(x.visitedAt))).slice(0,40);
+ }
+}catch(err){problemVisitError=true;}
+function findCaseNote(){
+ return sortedBySavedAt(processedCases.filter(note=>note&&(
+  note.caseKey===NATIVE_CASE_KEY||note.caseSnapshot?.id===NATIVE_CASE_KEY||
+  /Sampling Bias/i.test(note.title||"")||
+  (Array.isArray(note.versions)&&note.versions.some(v=>/Sampling Bias/i.test(v?.title||"")))
+ )))[0]||null;
+}
+function problemHistory(){
+ const actual=problemVisits.items.filter(isKnownProblem).slice().sort((a,b)=>Date.parse(b.visitedAt)-Date.parse(a.visitedAt));
+ if(!actual.some(x=>x.kind==="case")){
+  const authored=findCaseNote();
+  if(authored)actual.push({kind:"case",key:NATIVE_CASE_KEY,legacy:true,savedAt:authored.updatedAt||authored.savedAt});
+ }
+ return actual.sort((a,b)=>(Date.parse(b.visitedAt||b.savedAt)||0)-(Date.parse(a.visitedAt||a.savedAt)||0));
+}
+function trackProblem(kind,value){
+ const entry=kind==="research"&&value&&value.type!=="hook"?{kind:"problem",key:value.question}:
+  kind==="case"&&value===NATIVE_CASE_KEY?{kind:"case",key:NATIVE_CASE_KEY}:null;
+ if(!isKnownProblem(entry))return false;
+ const next={...entry,visitedAt:new Date().toISOString()};
+ const items=[next,...problemVisits.items.filter(x=>!(x.kind===entry.kind&&x.key===entry.key))].slice(0,40);
+ if(problemVisitError){problemVisits={schema:1,items};return false;}
+ const serial=JSON.stringify({schema:1,items});
+ try{
+  window.localStorage.setItem(PROBLEM_VISITS_KEY,serial);
+  if(window.localStorage.getItem(PROBLEM_VISITS_KEY)!==serial)throw Error("no readback");
+  problemVisits={schema:1,items};
+  return true;
+ }catch(err){
+  problemVisits={schema:1,items};problemVisitError=true;
+  if(typeof toast==="function")toast("Lịch mở problem/case chưa lưu được trên thiết bị này.");
+  return false;
+ }
+}
 function sortedBySavedAt(items){return items.slice().sort((a,b)=>(Date.parse(b.updatedAt||b.savedAt)||0)-(Date.parse(a.updatedAt||a.savedAt)||0));}
 function visits(){
  const tracked=visitStore.items.slice().sort((a,b)=>(Date.parse(b.visitedAt)||0)-(Date.parse(a.visitedAt)||0));
@@ -94,6 +146,51 @@ function renderLessonRows(root,limit){
   save.setAttribute("title","Lưu bài "+info.id);
   save.setAttribute("aria-pressed",String(Boolean(window.liBookmarks?.isSaved("lesson",info.id))));
   save.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
+ }
+}
+function renderProblemRows(root,limit){
+ if(!root)return;
+ root.replaceChildren();
+ const items=problemHistory().slice(0,limit||40);
+ if(!items.length){
+  empty(root,"Chưa có problem / case nào đã xem. Mở Khảo Chứng hoặc Phản Chứng để bắt đầu.");
+  btn(root,"Khám phá vấn đề","home","library-text-link library-open-lesson");
+  return;
+ }
+ for(const entry of items){
+  const scenario=entry.kind==="problem"?scenarios.find(sc=>sc.type!=="hook"&&sc.question===entry.key):null;
+  if(entry.kind==="problem"&&!scenario)continue;
+  const note=entry.kind==="case"?findCaseNote():null;
+  const row=add(root,"div","path-item library-list-item library-problem-item");
+  const body=add(row,"div","library-list-copy");
+  const title=entry.kind==="problem"?scenario.question:
+   (document.querySelector?.("#page-case .editorial-grid .surface.tinted h2")?.textContent?.trim()||"90% trả lời hài lòng. Chúng ta nên kết luận thế nào?");
+  add(body,"strong","",title);
+  const activity=entry.legacy?
+   "Có Bút Ký đã lưu · "+formatDate(entry.savedAt):
+   "Mở "+formatDate(entry.visitedAt);
+  add(body,"p","small",(entry.kind==="case"?"CASE · PHẢN CHỨNG":"PROBLEM · KHẢO CHỨNG")+" · "+activity+(note&&entry.kind==="case"?" · Có luận kết":""));
+  const details=add(row,"button","library-text-link library-detail-link",entry.kind==="case"&&!note?"Tiếp tục case":"Xem chi tiết");
+  details.type="button";
+  details.addEventListener("click",()=>{
+   if(entry.kind==="problem"){
+    const index=scenarios.findIndex(sc=>sc.type!=="hook"&&sc.question===entry.key);
+    if(index<0){toast("Vấn đề này không còn trong Gương Vạn Vấn.");return;}
+    qIndex=index;renderMirrorItem();navigate("research");
+   }else if(note){
+    trackProblem("case",NATIVE_CASE_KEY);
+    if(!window.liNotes?.openDetail("case",note.id))navigate("case");
+   }else navigate("case");
+  });
+  if(entry.kind==="case"){
+   const utility=add(row,"div","library-icon-utility library-row-utility");
+   const save=add(utility,"button","library-icon-action library-case-save");
+   save.type="button";save.dataset.liBookmarkKind="case";save.dataset.liBookmarkId=NATIVE_CASE_KEY;
+   save.setAttribute("aria-label","Lưu case");
+   save.setAttribute("title","Lưu case");
+   save.setAttribute("aria-pressed",String(Boolean(window.liBookmarks?.isSaved("case",NATIVE_CASE_KEY))));
+   save.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
+  }
  }
 }
 function renderCases(){
@@ -182,12 +279,14 @@ function renderBookmarks(){
 }
 function renderHome(){
  renderLessonRows($("li-library-latest-lesson"),1);
+ renderProblemRows($("li-library-latest-problem"),1);
  renderCases();
  renderIdeas();
  window.liBookmarks?.refresh();
 }
 function renderResume(){
  renderLessonRows($("li-lesson-history"),40);
+ renderProblemRows($("li-problem-history"),40);
  renderBookmarks();
  window.liBookmarks?.refresh();
 }
@@ -231,5 +330,5 @@ document.querySelectorAll("[data-collection-filter]").forEach(button=>button.add
  collectionFilter=button.dataset.collectionFilter;
  renderCollection();
 }));
-window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,trackLesson});
+window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,trackLesson,trackProblem,renderProblemRows});
 })();

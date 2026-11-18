@@ -259,7 +259,8 @@ html.li-ipad-home-canvas .app.home-focus #page-home .hero-actions .primary {
 /* Compact 601–743px header still requires minimum 48px touch controls.
    This zone falls between phone and iPad density breakpoints. */
 @media (min-width:601px) and (max-width:743px) {
- .app.home-focus > .header .tool-button {
+ .app > .header .tool-button,
+ .header .tools .tool-button {
    box-sizing:border-box!important;
    width:var(--li-space-12)!important;
    min-width:var(--li-space-12)!important;

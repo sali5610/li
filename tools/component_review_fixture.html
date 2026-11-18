@@ -48,6 +48,7 @@ iframe.addEventListener("load",()=>{
    check("Subtle Home chat bubble anatomy",!!d.querySelector(".ds-home-bubble p")&&w.getComputedStyle(d.querySelector(".ds-home-bubble")).boxShadow==="none");
    const note=d.getElementById("ds-textarea"),noteStyle=w.getComputedStyle(note);
    check("Notebook textarea is canonical ruled-paper 32px variant",note.classList.contains("ds-notebook")&&noteStyle.backgroundImage.includes("linear-gradient")&&noteStyle.backgroundSize.includes("32px")&&noteStyle.lineHeight==="32px",noteStyle.backgroundSize+"; "+noteStyle.lineHeight);
+   check("Notebook font mirrors actual UI body, not browser monospace default",noteStyle.fontFamily===w.getComputedStyle(d.body).fontFamily,noteStyle.fontFamily);
    const dark=d.querySelector(".ds-home-bubble.green"),lightBubble=d.querySelector(".ds-home-bubble:not(.green)");
    check("Two chat-bubble visual options, including Home forest green",!!dark&&!!lightBubble&&w.getComputedStyle(dark).backgroundColor!==w.getComputedStyle(lightBubble).backgroundColor&&w.getComputedStyle(dark).boxShadow!=="none");
    const art=[...d.querySelectorAll(".ds-image-card img")];

@@ -58,7 +58,7 @@ function verify(index){
  assert.equal(updates.cta,hook?"Khám phá vì sao":"Đào sâu","Distinct primary action");
  assert.equal(primary.dataset.page,hook?item.lessonRoute:"research","Valid destination");
  assert.equal(updates.source,hook?"TỪ BÀI HỌC ĐÃ XUẤT BẢN":"VÍ DỤ GIẢ ĐỊNH","Evidence label");
- assert(updates.kind.includes(hook?"Điều bất ngờ":"Vấn đề"),"Distinct item type");
+ assert.equal(updates.kind,"Gương Vạn Vấn","Mirror title has no editorial type labels");
  assert(updates.aria.includes(hook?"Mở bài học liên quan":"Mở Khảo Chứng"),"Accessible action");
 }
 const touch=(x,y)=>({clientX:x,clientY:y});

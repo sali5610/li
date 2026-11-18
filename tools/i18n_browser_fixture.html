@@ -181,6 +181,80 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
     record("Collection saved date EN",noteDate.startsWith("Saved ")&&!noteDate.includes("Lưu ngày"),noteDate);
     record("Personal collected note untouched",noteBody==="Ý tưởng tự viết: đừng dịch nội dung của tui",noteBody);
    }
+
+   // Regression for the exact iPhone captures: deeply nested course statuses
+   // and T01's assembled practice kicker previously escaped global translation.
+   await route("catalog");
+   const target=(()=>{
+    for(const group of w.LI_CATALOG_DATA||[])
+     for(const field of group.fields||[])
+      for(const course of field.courses||[])
+       if(course.lessons?.some(lesson=>lesson.id==="L03-1-2"))return {group,field,course};
+    return null;
+   })();
+   record("L03 course reachable in actual catalog dataset",!!target);
+   if(target){
+    const clickCatalog=async(kind,value)=>{
+     const button=d.querySelector('#page-catalog [data-catalog-kind="'+kind+'"][data-catalog-value="'+value+'"]');
+     if(!button)return false;
+     button.click();await settle();return true;
+    };
+    record("Catalog nested group path",await clickCatalog("open-group",target.group.id));
+    record("Catalog nested field path",await clickCatalog("open-field",target.field.id));
+    w.scrollTo(0,500);
+    record("Catalog course path",await clickCatalog("open-course",target.course.id));
+    const courseMeta=()=>[...d.querySelectorAll("#page-catalog .catalog-lesson-card .catalog-lesson-desc .small")].map(label);
+    record("iPhone course published and outline statuses fully EN",
+     courseMeta().length===target.course.lessons.length &&
+     courseMeta().some(x=>x.includes("Published")) &&
+     courseMeta().some(x=>x.includes("Outline · not published")) &&
+     !courseMeta().some(x=>/Đã phát hành|Đề cương|chưa phát hành/.test(x)),courseMeta().join(" | "));
+    record("English dynamic course eyebrow",label(d.querySelector("#page-catalog .section-shell > .kicker")).startsWith("COURSE ·"),label(d.querySelector("#page-catalog .section-shell > .kicker")));
+    const title=d.querySelector("#page-catalog .catalog-progress h2"),header=d.querySelector(".header");
+    record("Deep catalog navigation resets inherited scroll",w.scrollY<=2,String(w.scrollY));
+    record("Course progress not clipped by sticky header",!!title&&title.getBoundingClientRect().top>=header.getBoundingClientRect().bottom-2,
+     title?.getBoundingClientRect().top+" / "+header?.getBoundingClientRect().bottom);
+    record("Deep catalog no horizontal overflow",d.documentElement.scrollWidth-w.innerWidth<=4,String(d.documentElement.scrollWidth-w.innerWidth));
+    await change("vi");
+    record("VI course statuses round-trip",courseMeta().some(x=>x.includes("Đã phát hành"))&&courseMeta().some(x=>x.includes("Đề cương · chưa phát hành")),courseMeta().join(" | "));
+    await change("en");
+    record("EN course statuses round-trip",courseMeta().every(x=>!/[À-ỹ]/u.test(x))&&courseMeta().some(x=>x.includes("Published")),courseMeta().join(" | "));
+    const outline=target.course.lessons.find(x=>!x.published);
+    if(outline){
+     record("Unpublished lesson opens",await clickCatalog("open-lesson",outline.id));
+     record("Unpublished lesson eyebrow EN",label(d.querySelector("#page-catalog .section-shell > .kicker")).startsWith("LESSON ·"),label(d.querySelector("#page-catalog .section-shell > .kicker")));
+    }
+   }
+   await route("guide");
+   for(const id of w.LiSpellPractice.methods){
+    w.showMethod(id);
+    by("spell-tab-practice")?.click();await settle();
+    const title=label(d.querySelector("#page-guideDetail .spell-activity-head .kicker"));
+    record(id+" practice kicker fully EN",title===id+" · TRY THE SPELL",title);
+    const practiceBody=label(d.querySelector("#page-guideDetail .spell-practice-root"));
+    const residue=[...new Set((practiceBody.match(/[À-ỹ][^.!?\n]{0,55}/gu)||[]))].slice(0,6);
+    record(id+" practice panel free of Vietnamese copy",residue.length===0,residue.join(" | "));
+   }
+   w.showMethod("T01");
+   by("spell-tab-practice")?.click();await settle();
+   const practiceKicker=()=>label(d.querySelector("#page-guideDetail .spell-activity-head .kicker"));
+   await change("vi");
+   record("T01 practice label restored to VI",practiceKicker()==="T01 · THỬ THI TRIỂN",practiceKicker());
+   await change("en");
+   record("T01 practice label restored to EN",practiceKicker()==="T01 · TRY THE SPELL",practiceKicker());
+   const fab=by("laoly-fab"),practiceTab=by("spell-tab-practice");
+   const overlaps=(r,t)=>r.left<t.right&&r.right>t.left&&r.top<t.bottom&&r.bottom>t.top;
+   const fr=fab.getBoundingClientRect(),tr=practiceTab.getBoundingClientRect();
+   const toY=tr.top+(tr.height-fr.height)/2;
+   const delta=toY-fr.top;
+   const arrowKey=delta<0?"ArrowUp":"ArrowDown";
+   for(let n=0;n<Math.min(50,Math.ceil(Math.abs(delta)/16));n++)
+    fab.dispatchEvent(new w.KeyboardEvent("keydown",{key:arrowKey,bubbles:true}));
+   w.liCompanionDrag?.place?.();await settle();
+   record("Saved companion position dodges Spellbook tab",
+    !overlaps(fab.getBoundingClientRect(),practiceTab.getBoundingClientRect()),
+    "fab:"+fab.getBoundingClientRect().top+" tab:"+practiceTab.getBoundingClientRect().top);
+   w.liCompanionDrag?.reset?.();
    await route("catalog");
    const host=d.querySelector("#page-catalog .section-shell");
    const step=async kind=>{

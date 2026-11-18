@@ -51,3 +51,18 @@ The production site is still `main`; this code is only on the unmerged Draft PR.
 - Step18: versioned typed data schema, schema migrations and long-term persistence model.
 - Step27: user-visible complete backup, recovery, delete/account controls, re-entry and data rights.
 - Steps28–34: browser regression, accessibility, physical-device and final release gates.
+
+
+## S-G3-16F · Actual app cross-origin and adversarial CI evidence (2026-11-19)
+
+**Validated on research branch; no production deploy.** New standalone fake-data fixture pages `tools/step16_v2_origin_fixture.html` and `tools/step16_v2_origin_agent.html` exercise `site/index.html` Settings **actual Export click** at localhost port 8774 and **actual Import File input** at localhost port 8775, with a real browser cross-origin boundary. The harness uses strict postMessage origin/source checks, but this bridge is test-only, NOT a product feature.
+
+[Actions #44400005495](https://github.com/sali5610/li/actions/runs/44400005495) **SUCCESS**, Chromium rendered DOM checks (not fixture source-string matches):
+- **5/5 actual Settings** full v2 Blob, restore lesson/journal/due/settings, schema1 merge-only, corrupted file error state, cancellable preview.
+- **11/11 adversarial** invalid shapes including nested saved-case record with recomputed digest, unknown/malicious key, edited checksum, 10 MiB cap, stale preview, simulated quota denial with verified rollback, simulated rollback failure explicitly reported, and deletion/cancel preview. The quota and rollback failures are **injected test doubles**, not actual Safari disk exhaustion.
+- **5/5 two-origin with actual Settings UI**: A's real Export creates v2; browser forbids direct storage access from B; B's real Import via fake File restores lesson, consent, diary and T02 due records; A unchanged; B records survive target iframe reload. *This is not physical cross-device testing; no real user notes or data leave the runner.*
+- All other 4 workflows on that commit also **completed SUCCESS**: companion source validator, Design System contract, Tàng Thư IA, rendered responsive Chrome smoke. [PR #111](https://github.com/sali5610/li/pull/111) remains Draft and not merged.
+
+**Important remaining risks:** physical iPhone/iPad Safari and Files import, downloaded file durability, actual low-storage write failure and browser eviction, schema1 false expectations for omitted data, accidental plaintext file disclosure, other tabs mutating data while a restore is applied (a preview fingerprint is not an atomic cross-tab transaction), multi-year migration path and account synchronization. The runtime has no cloud auth or remote copy. Opt-in diary's current default-on behavior still requires Human PO privacy review; not changed in this PR.
+
+**Source freshness:** PR branched from `main` `6cccb478...`, with current `main` already advanced during research; re-review/reconcile the latest UI code before merge. G3 architecture and persistence privacy decision **NOT APPROVED**, G2 separate. +0 VND incremental.

@@ -32,6 +32,25 @@ for(const phrase of [
  "Selection bias là thiên lệch xuất phát từ cách chọn người tham gia: nhóm bị bỏ sót có thể khác nhóm được hỏi. Một banner chỉ hiện cho người đang dùng app không hỏi được người đã rời app.",
  "Ý đã nhặt chỉ lưu trên thiết bị khi ngươi bấm Lưu. Nếu lưu lỗi, app sẽ báo rõ; lão không nhận vơ."
 ])assert(paired(phrase),"Missing cross-feature copy: "+phrase);
+/* Every canonical VI spell remains paired with an English fantasy display name.
+   Academic method identity, T13 ordering and filter keys must stay untouched. */
+const entries=JSON.parse(index.match(/const methods=(\[[\s\S]*?\]);\s*const categories=/)[1]);
+const schools=JSON.parse(index.match(/const categories=(\[[\s\S]*?\]);\s*const STUDY_MODE_KEY=/)[1]);
+assert.equal(entries.length,13,"Exactly thirteen canonical spells");
+assert.deepEqual(entries.slice(0,3).map(row=>row[0]),["T01","T02","T13"],"T13 remains directly after T02");
+assert.equal(new Set(entries.map(row=>row[0])).size,13,"All spell IDs stay stable");
+for(const [id,spell,academic,purpose,school] of entries){
+ assert(translations[spell]&&translations[spell]!==spell,"Untranslated fantasy spell name "+id+" "+spell);
+ assert(translations[school]&&translations[school]!==school,"Untranslated magic school "+school);
+ assert(academic.includes(" / ")||academic.length>=12,"Original academic name missing "+id);
+ assert(translations[purpose]&&translations[purpose]!==purpose,"Missing truthful EN purpose "+id);
+}
+assert.equal(schools.length,6,"All + five spell schools");
+assert.equal(new Set(schools.slice(1).map(k=>translations[k])).size,5,"Five distinct English spell schools");
+assert(runtime.includes('"Thần Chú":"Spells"'),"Spell navigation must not read Techniques");
+assert(runtime.includes('"Sổ Tay Thần Chú":"The Spellbook"'),"English Guide should feel like a spellbook");
+assert(index.includes('window.LI_LEGACY_EN?.[m[1]]'),"Search by English spell name is required");
+assert(index.includes('function paintMethodDetail(id)'),"Detail name and school must be localized");
 const quotes=read("site/assets/laoly-quotes-s121.js");
 const vi=JSON.parse(quotes.match(/const QUOTES=(\[[\s\S]*?\]);/)[1]);
 const en=JSON.parse(quotes.match(/const QUOTES_EN=(\{[\s\S]*?\});/)[1]);

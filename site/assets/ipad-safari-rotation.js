@@ -50,6 +50,12 @@
        root.classList.toggle("li-safari-landscape-recovery",stillStale);
        lastApplied=stillStale?"fallback canvas "+target:"native viewport "+window.innerWidth;
      });
+   }else if(isTouchIPad&&h.landscape&&meta.content.indexOf("width="+Math.round(h.largest))===0){
+     // Retain the native numeric width while landscape; immediately reverting
+     // to device-width could recreate the same stale-portrait Safari viewport.
+     root.classList.remove("li-safari-landscape-recovery");
+     lastApplied="native landscape viewport "+current;
+     root.dataset.liSafariRotation="native-landscape";
    }else{
      root.classList.remove("li-safari-landscape-recovery");
      root.style.removeProperty("--li-safari-physical-width");

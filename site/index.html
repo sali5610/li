@@ -621,6 +621,7 @@ document.getElementById("buddy-quote-info").addEventListener("click",()=>{
  const willExpand=details.hidden;
  details.hidden=!willExpand;
  button.setAttribute("aria-expanded",String(willExpand));
+ if(willExpand)details.scrollIntoView({block:"nearest"});
 });
 document.getElementById("close-modal").addEventListener("click",()=>closeModal("buddy-modal"));
 document.getElementById("laoly-fab").addEventListener("click",()=>openLaoLy(document.getElementById("laoly-fab")));

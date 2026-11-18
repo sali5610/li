@@ -106,9 +106,19 @@ const COMPOSE_SHORT=new Set([
 const COMPOSE_KEYS=Object.keys(TEXT)
  .filter(k=>(k.length>=11&&/[\s·,.!?“”]/.test(k))||COMPOSE_SHORT.has(k))
  .sort((a,b)=>b.length-a.length);
+const COMPOSE_ANCHORS=[
+ "Nhịp “","Đang tìm “","Ngươi đang đọc","Ngươi đang tra “",
+ "Tủ Riêng có","Đã có","Đã lưu","Đã nhập","Đã chọn nhịp",
+ "Lão Lý ·","Trò chuyện với Lão Lý ·",
+ "Hoàn tác:","Gợi ý:","Điểm cộng gợi ý:",
+ "Cần hoàn thành:","Chưa thể áp dụng. Hãy trả lời:",
+ "Số lần Check-in","Đang hiển thị","Hiển thị "
+];
 function trComposed(value){
  const input=String(value??"");
  const trimmed=input.trim();
+ /* Never translate arbitrary text from a learner's own notes or question. */
+ if(!COMPOSE_ANCHORS.some(prefix=>trimmed.startsWith(prefix)))return input;
  if(Object.prototype.hasOwnProperty.call(TEXT,trimmed))return input.replace(trimmed,TEXT[trimmed]);
  let out=input;
  for(const part of COMPOSE_KEYS){
@@ -163,7 +173,7 @@ function tr(value){
 }
 function ignored(node){
  const p=node.nodeType===1?node:node.parentElement;
- return !p||Boolean(p.closest?.('script,style,textarea,code,pre,[contenteditable],[data-lesson-id],.catalog-sheet-layer,[data-li-no-translate]'));
+ return !p||Boolean(p.closest?.('script,style,textarea,code,pre,[contenteditable],[data-lesson-id],.catalog-sheet-layer,[data-li-no-translate],.library-entry-body,.library-clamp,#li-note-detail-title,#li-note-detail-body,#li-note-case-question,#li-note-case-scene,#li-note-case-choices'));
 }
 function patchText(node){
  if(ignored(node))return;

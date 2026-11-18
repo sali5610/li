@@ -106,9 +106,19 @@ const COMPOSE_SHORT=new Set([
 const COMPOSE_KEYS=Object.keys(TEXT)
  .filter(k=>(k.length>=11&&/[\s·,.!?“”]/.test(k))||COMPOSE_SHORT.has(k))
  .sort((a,b)=>b.length-a.length);
+const COMPOSE_ANCHORS=[
+ "Nhịp “","Đang tìm “","Ngươi đang đọc","Ngươi đang tra “",
+ "Tủ Riêng có","Đã có","Đã lưu","Đã nhập","Đã chọn nhịp",
+ "Lão Lý ·","Trò chuyện với Lão Lý ·",
+ "Hoàn tác:","Gợi ý:","Điểm cộng gợi ý:",
+ "Cần hoàn thành:","Chưa thể áp dụng. Hãy trả lời:",
+ "Số lần Check-in","Đang hiển thị","Hiển thị "
+];
 function trComposed(value){
  const input=String(value??"");
  const trimmed=input.trim();
+ /* Never translate arbitrary text from a learner's own notes or question. */
+ if(!COMPOSE_ANCHORS.some(prefix=>trimmed.startsWith(prefix)))return input;
  if(Object.prototype.hasOwnProperty.call(TEXT,trimmed))return input.replace(trimmed,TEXT[trimmed]);
  let out=input;
  for(const part of COMPOSE_KEYS){
@@ -120,11 +130,37 @@ const ATTRS=["aria-label","title","placeholder","alt"];
 const originalText=new WeakMap();
 const originalAttr=new WeakMap();
 let observer=null,locked=false;
+/* Exact render strings are preferred. These are the approved variable-bearing
+   UX templates: keep user-provided text untouched and translate only surrounding UI. */
+const DYNAMIC_TEMPLATES=[
+ [/^(\d+) hoạt động được ghi nhận$/,m=>m[1]+" recorded activities"],
+ [/^(\d+) ngày có ghi nhận:$/,m=>m[1]+" days with entries:"],
+ [/^(\d+) phương pháp khớp tên hoặc bộ lọc hiện tại\.$/,m=>m[1]+" techniques match the current name or filters."],
+ [/^Đang hiển thị (\d+) phương pháp$/,m=>"Showing "+m[1]+" techniques"],
+ [/^(\d+) bài đã phát hành · Chưa có bài nào để học và tự đánh giá\.$/,m=>m[1]+" published lessons · Nothing available to study or review yet."],
+ [/^(\d+) bài đã phát hành · Chỉ ghi nhận hoàn thành khi có trạng thái tự đánh giá thật trên thiết bị này\.$/,m=>m[1]+" published lessons · Completion counts only after a real self-review on this device."],
+ [/^Đã nhập (\d+) Bút Ký, (\d+) Dấu Trang và (\d+) Ý đã nhặt\.$/,m=>"Imported "+m[1]+(m[1]==="1"?" case note, ":" case notes, ")+m[2]+(m[2]==="1"?" bookmark, and ":" bookmarks, and ")+m[3]+(m[3]==="1"?" captured idea.":" captured ideas.")],
+ [/^Đã hẹn ôn lúc (.+)\. Chưa đến hẹn nên không tính là thực hành ôn giãn cách\.$/,m=>"Review scheduled for "+m[1]+". It isn't due yet, so this doesn't count as spaced practice."],
+ [/^Ý nhớ lại ở nơi (\d+)$/,m=>"Idea recalled at location "+m[1]],
+ [/^Cần hoàn thành: (.+)\. Chưa có đủ thao tác để đối chiếu\.$/,m=>"Please complete: "+(TEXT[m[1]]||m[1])+". There isn't enough to check yet."],
+ [/^Tủ Riêng có (\d+) Bút Ký và (\d+) Dấu Trang trên thiết bị này\. Đây là những gì đã lưu thật, không phải thành tích tưởng tượng\.$/,m=>"My Shelf has "+m[1]+(m[1]==="1"?" case note and ":" case notes and ")+m[2]+(m[2]==="1"?" bookmark":" bookmarks")+" on this device. That's saved data, not imaginary achievements."],
+ [/^Đã có (\d+) lượt lưu Phản Chứng\. Mỗi lượt gồm kết luận đã viết lại và phản hồi\.$/,m=>"You have "+m[1]+(m[1]==="1"?" saved Test a Claim attempt":" saved Test a Claim attempts")+", with a revised conclusion and feedback."],
+ [/^Đã lưu (\d+) câu hỏi từ Gương Vạn Vấn\.$/,m=>"Saved "+m[1]+(m[1]==="1"?" question":" questions")+" from the Mirror of Questions."],
+ [/^Đã chọn nhịp (Vào nhịp|Đào sâu|Quá tải|Hồi trí)\. Đổi lúc nào cũng được!$/,m=>"Selected "+(TEXT[m[1]]||m[1])+". Change it whenever you like!"],
+ [/^Nhịp “(Vào nhịp|Đào sâu|Quá tải|Hồi trí)” do chính ngươi chọn\. Lão không tự đoán tình trạng sức khỏe hay độ thông minh của ai\.$/,m=>"You chose the “"+(TEXT[m[1]]||m[1])+"” pace. I won't guess anyone's health or intelligence."],
+ [/^Đã chọn nhịp (Vào nhịp|Đào sâu|Quá tải|Hồi trí)$/,m=>"Selected pace: "+(TEXT[m[1]]||m[1])],
+ [/^Chưa thể áp dụng\. Hãy trả lời: (.+)\. Hoặc chọn Bỏ qua để học mà không ghi check-in\.$/,m=>"Can't apply yet. Please answer: "+m[1]+". Or choose Skip to learn without recording a check-in."],
+ [/^L1 đã đủ ba câu\. Bạn chọn (.+) thủ công; quyền quyết định vẫn thuộc về bạn\.$/,m=>"All three check-in questions are answered. You chose "+(TEXT[m[1]]||m[1])+" manually; the decision is yours."]
+];
 function tr(value){
  const v=String(value||"");
  const trimmed=v.trim();
  if(!trimmed)return v;
  let translated=TEXT[trimmed];
+ if(!translated){
+  const match=DYNAMIC_TEMPLATES.map(([pattern,build])=>{const m=trimmed.match(pattern);return m?build(m):null}).find(Boolean);
+  if(match)translated=match;
+ }
  if(!translated){
   translated=trimmed
    .replace(/^(\d+) chuyên ngành$/,"$1 fields")
@@ -137,7 +173,7 @@ function tr(value){
 }
 function ignored(node){
  const p=node.nodeType===1?node:node.parentElement;
- return !p||Boolean(p.closest?.('script,style,textarea,code,pre,[contenteditable],[data-lesson-id],.catalog-sheet-layer,[data-li-no-translate]'));
+ return !p||Boolean(p.closest?.('script,style,textarea,code,pre,[contenteditable],[data-lesson-id],.catalog-sheet-layer,[data-li-no-translate],.library-entry-body,.library-clamp,#li-note-detail-title,#li-note-detail-body,#li-note-case-question,#li-note-case-scene,#li-note-case-choices'));
 }
 function patchText(node){
  if(ignored(node))return;

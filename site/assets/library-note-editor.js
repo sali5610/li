@@ -11,7 +11,7 @@ const titleOf=(item,type)=>type==="case"?item.title:(item.title||"Ý đã nhặt
 const bodyOf=(item,type)=>type==="case"?item.revision:item.text;
 const stamp=raw=>{
  const ms=Date.parse(raw);
- return Number.isFinite(ms)?new Intl.DateTimeFormat("vi-VN",{day:"numeric",month:"numeric",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(ms)):"Không rõ thời gian";
+ return Number.isFinite(ms)?new Intl.DateTimeFormat(window.liLanguage?.get?.()==="en"?"en-US":"vi-VN",{day:"numeric",month:"numeric",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(ms)):"Không rõ thời gian";
 };
 function element(parent,tag,cls,value){
  const x=document.createElement(tag);if(cls)x.className=cls;

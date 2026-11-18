@@ -16,7 +16,7 @@ for(const key of ["sleep","move","rest"]){
 for(const v of ["","start","focus","overload","recover"])assert.ok(modalHtml.includes(`name="checkin-override" value="${v}"`));
 assert.ok(modalHtml.includes('class="checkin-scroll"'));
 assert.ok(modalHtml.indexOf('class="action-row checkin-actions"')>modalHtml.indexOf('class="checkin-scroll"'));
-assert.ok(html.includes("checkin-adaptation.css?v=20261118-binary3"),"Update cache key whenever changing CSS");
+assert.ok(html.includes("checkin-adaptation.css?v=20261118-ds20-coverage"),"Update cache key whenever changing CSS");
 assert.ok(css.includes("#checkin-modal .checkin-radio-row{display:grid"));
 assert.ok(css.includes("grid-template-columns:repeat(2,minmax(0,1fr))"),"Physical choices must be two columns");
 assert.ok(css.includes("#checkin-modal .checkin-actions{")&&css.includes("position:relative"));

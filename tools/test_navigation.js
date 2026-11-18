@@ -24,6 +24,7 @@ const assertUtility=(page)=>{
  }
 };
 const calls={guide:0,library:0,resume:0,collection:0,lesson:0,research:0,problems:[]};
+const globalBack={hidden:true};
 const location=new URL("https://sali5610.github.io/li/?utm_source=chatgpt.com&lesson=L09-1-2#l09-goals");
 const urlReplacements=[];
 const sandbox={
@@ -31,7 +32,7 @@ const sandbox={
  scenarios:[{question:"Giới hạn kết luận khảo sát",type:"problem"}],
  qIndex:0,
  document:{
-   getElementById(id){return pages.get(id.replace(/^page-/,""))||null},
+   getElementById(id){return id==="global-back"?globalBack:(pages.get(id.replace(/^page-/,""))||null)},
    querySelectorAll(selector){
      if(selector==="section.page")return [...pages.values()];
      if(selector==="[data-page]")return tabs;
@@ -70,11 +71,11 @@ vm.runInContext(code,sandbox);
 const active=()=>sandbox.currentPage;
 const length=()=>vm.runInContext("pageHistory.length",sandbox);
 assert.equal(active(),"home");
-sandbox.navigate("settings");assert.equal(active(),"settings");assert.equal(length(),1);assertUtility("settings");
+sandbox.navigate("settings");assert.equal(active(),"settings");assert.equal(length(),1);assertUtility("settings");assert.equal(globalBack.hidden,false,"Back is visible in sticky header on inner pages");
 assert.equal(location.searchParams.has("lesson"),false,"Leaving a lesson clears stale lesson query");
 assert.equal(location.hash,"","Leaving a lesson clears old goal hash");
 assert.equal(location.searchParams.get("utm_source"),"chatgpt.com","Preserve unrelated query params");
-sandbox.goBack();assert.equal(active(),"home");assert.equal(length(),0);assertUtility(null);
+sandbox.goBack();assert.equal(active(),"home");assert.equal(length(),0);assertUtility(null);assert.equal(globalBack.hidden,true,"Back is hidden on Home");
 sandbox.navigate("catalog");
 sandbox.navigate("search");assertUtility("search");
 sandbox.navigate("capture");assertUtility("capture");

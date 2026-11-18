@@ -50,6 +50,21 @@ jobs:
             echo "$result" | grep '<pre id="result">LI_RENDER_PASS ' | tail -1 | cut -c1-1000
           done
           echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at nine viewports"
+
+          for width in 320 390 820 1440; do
+            echo "Checking live VI/EN language switch and cross-screen content at ${width}px"
+            url="http://127.0.0.1:8765/tools/i18n_browser_fixture.html?w=$width"
+            result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1600,1050 --virtual-time-budget=22000 --dump-dom "$url" 2>/tmp/li-i18n-stderr.log || true)"
+            if [[ "$result" != *'<pre id="result">LI_I18N_PASS '* ]]; then
+              echo "FAIL bilingual journey at ${width}px"
+              echo "$result" | grep -F '<pre id="result">' | tail -1 | cut -c1-14000 || true
+              cat /tmp/li-i18n-stderr.log | tail -20 || true
+              exit 1
+            fi
+            echo "$result" | grep 'LI_I18N_PASS ' | tail -1 | cut -c1-1500
+          done
+          echo "PASS bilingual runtime route, catalog, check-in and accessibility smoke"
+
           for width in 320 390 820; do
             echo "Checking real Check-in UI at $width CSS px"
             url="http://127.0.0.1:8765/tools/checkin_browser_fixture.html?w=$width"

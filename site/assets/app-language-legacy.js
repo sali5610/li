@@ -893,5 +893,6 @@ window.LI_LEGACY_EN={
   "Nội dung Lão Lý chưa khả dụng; bài học không bị thay đổi.": "Lão Lý's guidance isn't available right now; the lesson hasn't changed.",
   "Ai đã được hỏi?": "Who was surveyed?",
   "Xem ": "View ",
-  "Nhà thông thái": "Scholar"
+  "Nhà thông thái": "Scholar",
+  "Kéo để di chuyển trên màn hình. Dùng phím mũi tên để di chuyển; Escape đặt lại vị trí.": "Drag to move Lão Lý. Use arrow keys to reposition him; press Escape to reset."
 };

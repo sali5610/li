@@ -29,6 +29,8 @@ assert(api,"note editor is registered");
 assert.equal(api.openDetail("case","c1"),true);
 assert.equal(routes.at(-1),"noteDetail");
 assert.equal(fields["li-note-detail-body"].textContent,"Mẫu này chưa đại diện tổng thể.");
+assert(Object.hasOwn(fields["li-note-detail-title"].dataset,"liNoTranslate"),"Saved user-authored title is protected from automatic translation");
+assert(Object.hasOwn(fields["li-note-detail-body"].dataset,"liNoTranslate"),"Saved user-authored body is protected from automatic translation");
 assert.equal(fields["li-note-history-list"].children.length,1,"legacy case has v1 snapshot");
 fields["li-note-edit"].handlers.click();
 assert.equal(fields["li-note-editor-title"].value,"Luận kết gốc");

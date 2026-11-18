@@ -3,6 +3,7 @@
 (function(){
 "use strict";
 const $=id=>document.getElementById(id);
+const t=value=>window.liLanguage?.translate?.(value)||value;
 if(!$("page-noteDetail"))return;
 let active=null;
 const listFor=type=>type==="case"?processedCases:type==="idea"?collectedIdeas:null;
@@ -102,6 +103,8 @@ function renderDetail(){
  const note=current(),historyRoot=$("li-note-history-list");historyRoot.replaceChildren();
  $("li-note-editor").hidden=true;
  if(!note){
+  delete $("li-note-detail-title").dataset.liNoTranslate;
+  delete $("li-note-detail-body").dataset.liNoTranslate;
   $("li-note-detail-title").textContent="Không tìm thấy ghi chép";
   $("li-note-detail-body").textContent="Ghi chép này không còn trên thiết bị.";
   $("li-note-detail-status").textContent="Không có dữ liệu";
@@ -112,24 +115,33 @@ function renderDetail(){
  const type=active.type,history=historyFor(note,type);
  renderCaseContext(note,type);
  $("li-note-edit").disabled=false;$("li-note-delete").disabled=false;
+ $("li-note-detail-title").dataset.liNoTranslate="";
+ $("li-note-detail-body").dataset.liNoTranslate="";
  $("li-note-detail-kind").textContent=type==="case"?"BÚT KÝ · CASE ĐÃ GIẢI":"Ý ĐÃ NHẶT · CHƯA XÁC MINH";
  $("li-note-detail-title").textContent=titleOf(note,type);
- $("li-note-detail-status").textContent=type==="case"?"Phản Chứng · "+(note.correct?"Đã chọn nhận định phù hợp":"Đã chọn nhận định cần xem lại"):"Ý tưởng cá nhân · Chưa xác minh";
+ $("li-note-detail-status").textContent=type==="case"?t("Phản Chứng ·")+" "+t(note.correct?"Đã chọn nhận định phù hợp":"Đã chọn nhận định cần xem lại"):t("Ý tưởng cá nhân · Chưa xác minh");
  $("li-note-body-heading").textContent=type==="case"?"Luận kết hiện tại":"Ý tưởng hiện tại";
  $("li-note-detail-body").textContent=bodyOf(note,type);
- $("li-note-detail-date").textContent="Tạo: "+stamp(note.savedAt)+(note.updatedAt?" · Sửa: "+stamp(note.updatedAt):"")+" · "+history.length+" phiên bản";
+ const en=window.liLanguage?.get?.()==="en";
+ $("li-note-detail-date").textContent=(en?"Created: ":"Tạo: ")+stamp(note.savedAt)+(note.updatedAt?(en?" · Edited: ":" · Sửa: ")+stamp(note.updatedAt):"")+" · "+history.length+(en?(history.length===1?" version":" versions"):" phiên bản");
  [...history].reverse().forEach((v,index)=>{
   const block=element(historyRoot,"article","library-version-entry");
   const heading=element(block,"div","library-version-heading");
-  element(heading,"strong","", "Phiên bản "+v.version+(index===0?" · Hiện tại":""));
-  element(heading,"span","small",stamp(v.at)+" · "+(v.change||"Chỉnh sửa"));
-  if(v.title!==titleOf(note,type))element(block,"p","small","Tiêu đề lúc đó: "+v.title);
+  element(heading,"strong","", (en?"Version ":"Phiên bản ")+v.version+(index===0?(en?" · Current":" · Hiện tại"):""));
+  const change=v.change||"Chỉnh sửa";
+  const enChange=change==="Bản gốc"?"Original":change==="Chỉnh sửa"?"Edited":change.replace(/^Khôi phục phiên bản (\d+)$/,"Restored version $1");
+  element(heading,"span","small",stamp(v.at)+" · "+(en?enChange:change));
+  if(v.title!==titleOf(note,type)){
+   const label=element(block,"p","small",en?"Title at the time: ":"Tiêu đề lúc đó: ");
+   const userTitle=element(label,"span","",v.title);
+   userTitle.dataset.liNoTranslate="";
+  }
   element(block,"p","library-entry-body",v.body);
   if(index>0){
    const restore=element(block,"button","library-text-link","Khôi phục phiên bản này");
    restore.type="button";
    restore.addEventListener("click",()=>{
-    if(!window.confirm("Khôi phục phiên bản "+v.version+"? Một phiên bản mới sẽ được tạo, lịch sử cũ được giữ nguyên."))return;
+    if(!window.confirm((en?"Restore version ":"Khôi phục phiên bản ")+v.version+(en?"? This creates a new version and preserves the history.":"? Một phiên bản mới sẽ được tạo, lịch sử cũ được giữ nguyên.")))return;
     const previous=current();if(!previous)return;
     if(!saveVersion(active.type,active.id,v.title,v.body,"Khôi phục phiên bản "+v.version)){
      toast("Không lưu được phiên bản khôi phục. Lịch sử vẫn giữ nguyên.");return;
@@ -184,5 +196,6 @@ $("li-note-delete").addEventListener("click",()=>{
   window.liLibraryShelf?.renderHome();window.liLibraryShelf?.renderCollection();return true;
  }});
 });
+window.addEventListener?.("li:localechange",()=>{if(active&&$("li-note-editor").hidden)renderDetail();});
 window.liNotes=Object.freeze({openDetail,renderDetail});
 })();

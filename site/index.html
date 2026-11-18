@@ -84,7 +84,7 @@
 </div></div></div></section>
 <section id="page-resume" class="page" tabindex="-1"><div class="section-shell">
 <button class="action alt" type="button" data-page="library">← Tủ Riêng</button>
-<div class="kicker" style="margin-top:var(--li-space-6)">HÀNH TRÌNH CỦA BẠN</div><h1 class="display-title">Quay lại</h1><p class="intro">Tiếp tục bài học, quay lại problem / case đang tìm hiểu và mở những Dấu Trang đã lưu.</p>
+<div class="kicker" style="margin-top:var(--li-space-6)">HÀNH TRÌNH CỦA BẠN</div><h1 class="display-title" data-li-i18n="resume.pageTitle">Quay lại</h1><p class="intro">Tiếp tục bài học, quay lại problem / case đang tìm hiểu và mở những Dấu Trang đã lưu.</p>
 <div class="stack-sm library-detail-groups">
 <article class="surface"><div class="kicker">01 · TIẾP TỤC HỌC</div><h2>Bài học gần đây</h2><div id="li-lesson-history" class="path-list" aria-live="polite"><div class="state-note">Chưa có lịch sử mở bài.</div></div></article>
 <article class="surface"><div class="kicker">02 · PROBLEM / CASE</div><h2>Tình huống đã xem gần đây</h2><div id="li-problem-history" class="path-list" aria-live="polite"><div class="state-note">Chưa có problem hay case đã mở.</div></div></article>
@@ -213,7 +213,7 @@
 </div>
 <div id="toast" class="li-snackbar" role="status" aria-live="polite" aria-atomic="true" style="display:none"></div>
 <script src="./assets/lucide.min.js"></script>
-<script src="./assets/app-language-legacy.js?v=20261118-legacy-en01"></script><script src="./assets/app-language.js?v=20261118-legacy-en01"></script>
+<script src="./assets/app-language-legacy.js?v=20261119-i18n-browser-qa"></script><script src="./assets/app-language.js?v=20261119-i18n-browser-qa"></script>
 <script>
 const methods=[["T01","Triệu Ức Chân Ngôn","Retrieval Practice / Active Recall","Tự nhớ trước khi xem đáp án","Ký Ức Thuật"],["T02","Thời Ấn Hồi Ức","Spaced Repetition / Distributed Practice","Ôn thứ đã học theo thời điểm","Ký Ức Thuật"],["T13","Cung Lộ Tàng Ức","Method of Loci / Memory Palace","Gắn điều cần nhớ vào những địa điểm quen thuộc","Ký Ức Thuật"],["T03","Minh Mẫu Tiệm Ẩn","Worked Examples & Guidance Fading","Nhìn ví dụ, giảm gợi ý, tự làm","Minh Giải Thuật"],["T04","Tự Giải Khai Minh","Guided Self-Explanation","Giải thích cơ chế bằng lời mình","Minh Giải Thuật"],["T05","Truy Nguyên Vấn Đạo","Elaborative Interrogation","Hỏi nguyên nhân và điều kiện","Minh Giải Thuật"],["T06","Song Tượng Phân Minh","Compare–Contrast / Interleaved Discrimination","Phân biệt hai dạng đã biết","Minh Giải Thuật"],["T07","Tiền Đề Giám Định","Logical Inference & Premise Checking","Kiểm tra tiền đề và kết luận","Luận Chứng Thuật"],["T08","Luận Ảnh Phản Chiếu","Argument Mapping & Counterevidence","Bóc lập luận, chứng cứ và phản biện","Luận Chứng Thuật"],["T09","Truy Nguyên Giám Chứng","Source Criticism & Evidence Appraisal","Rà nguồn và độ chắc chắn","Luận Chứng Thuật"],["T10","Phân Giải Giới Vực","Problem Decomposition & Boundary Tests","Chia vấn đề, thử điều kiện biên","Phá Giải Thuật"],["T11","Trạch Pháp Minh Tâm","Method Fit & Metacognitive Awareness","Chọn kỹ thuật đúng việc","Tự Chủ Thuật"],["T12","Quy Tâm Tiếp Mạch","Meaningful Focus & Attention Re-entry","Quay lại phần đang làm","Tự Chủ Thuật"]];
 const categories=["Tất cả","Ký Ức Thuật","Minh Giải Thuật","Luận Chứng Thuật","Phá Giải Thuật","Tự Chủ Thuật"];
@@ -259,14 +259,20 @@ function liBuddyLine(line){
 }
 window.liAddressLine=liBuddyLine;
 function liRenderBuddyNamePreview(){
- const examples={
+ const en=window.liLanguage?.get?.()==="en";
+ const examples=en?{
+  warm:"take your time. I'm listening.",
+  teasing:"I asked for evidence, not confidence.",
+  serious:"separate what you observed from what you inferred."
+ }:{
   warm:"cứ thong thả. Lão nghe đây.",
   teasing:"lão hỏi bằng chứng chứ đâu hỏi độ tự tin.",
   serious:"hãy phân biệt điều đã thấy với điều suy ra."
  };
+ const defaultEN={warm:"Young scholar",teasing:"Kid",serious:"You there"};
  for(const key of Object.keys(examples)){
   const node=document.getElementById("buddy-preview-"+key);
-  if(node)node.textContent=(liBuddyNames[key]||LI_BUDDY_DEFAULT_NAMES[key])+", "+examples[key];
+  if(node)node.textContent=(liBuddyNames[key]||(en?defaultEN[key]:LI_BUDDY_DEFAULT_NAMES[key]))+", "+examples[key];
  }
 }
 function liRefreshBuddyNameInputs(){
@@ -285,6 +291,7 @@ function liUpdateAddressFeedback(text){
  const node=document.getElementById("buddy-name-feedback");if(node)node.textContent=text;
 }
 liRefreshBuddyNameInputs();
+window.addEventListener("li:localechange",liRenderBuddyNamePreview);
 document.querySelectorAll("[data-buddy-name]").forEach(input=>{
  const key=input.dataset.buddyName;
  input.addEventListener("input",()=>{

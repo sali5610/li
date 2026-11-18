@@ -34,6 +34,45 @@ iframe.addEventListener("load",()=>{
    const nav=[...d.querySelectorAll("[data-navspec]")];
    nav[1].click();
    check("Navigation selected state responds",nav[1].getAttribute("aria-current")==="page"&&!nav[0].hasAttribute("aria-current"));
+   /* UX-DS-15: three semantic Top Navigation variants on the actual review DOM. */
+   const topnavs=[...d.querySelectorAll("#ds15-topnav-panel [data-ds15-topvariant]")];
+   check("Top Navigation has logo, Back and transparent Home variants",
+      topnavs.length===3&&topnavs.map(x=>x.dataset.ds15Topvariant).join(",")==="logo,back,overlay");
+   const logoVariant=topnavs[0],backVariant=topnavs[1],overlayVariant=topnavs[2];
+   const logoSeal=logoVariant.querySelector(".ds15-brand img");
+   check("Logo variant reuses the real li. seal and wordmark",
+      logoSeal?.getAttribute("src")==="./assets/li-seal.svg?v=exact-header-s146"&&
+      logoSeal.complete&&logoSeal.naturalWidth>0&&
+      logoVariant.querySelector(".ds15-brand-wordmark")?.textContent==="li.");
+   check("Back variant replaces left logo with a keyboard-accessible Back button",
+      !!backVariant.querySelector('button[data-ds15-back][aria-label="Quay lại màn trước"]')&&
+      !backVariant.querySelector(".ds15-brand")&&
+      w.getComputedStyle(backVariant.querySelector(".ds15-topnav-back")).minWidth==="48px");
+   const overlayHeader=overlayVariant.querySelector(".ds15-topnav-overlay"),overlayImage=overlayVariant.querySelector(".ds15-topnav-stage>img");
+   const overlayCss=w.getComputedStyle(overlayHeader);
+   check("Home Top Navigation overlay has genuinely transparent surface: no backdrop/border/shadow",
+      overlayCss.backgroundColor==="rgba(0, 0, 0, 0)"&&
+      overlayCss.borderBottomWidth==="0px"&&overlayCss.boxShadow==="none"&&
+      overlayImage?.getAttribute("src")==="./assets/home-mystic-cool-desktop.webp"&&
+      overlayImage.complete&&overlayImage.naturalWidth>0);
+   check("Every top-nav version preserves Search, Capture and Settings utility targets",
+      topnavs.every(variant=>[...variant.querySelectorAll(".ds15-topnav-action")].length===3&&
+         [...variant.querySelectorAll(".ds15-topnav-action")].every(button=>{
+          const style=w.getComputedStyle(button);return style.width==="48px"&&style.height==="48px"&&!!button.getAttribute("aria-label");
+         })));
+   const transparentSearch=overlayVariant.querySelector(".ds15-topnav-action");
+   transparentSearch.click();
+   check("Transparent Home utility selection uses the approved sand capsule only in its nav",
+      transparentSearch.getAttribute("aria-current")==="page"&&
+      w.getComputedStyle(transparentSearch,"::before").opacity==="1"&&
+      !overlayVariant.querySelectorAll(".ds15-topnav-action")[1].hasAttribute("aria-current")&&
+      d.getElementById("ds15-topnav-feedback").textContent.includes("transparent Home"));
+   backVariant.querySelector("[data-ds15-back]").click();
+   check("Back specimen handles interaction without altering app routes",
+      d.getElementById("ds15-page-title").textContent==="Đại Sảnh"&&
+      d.getElementById("ds15-topnav-feedback").textContent.includes("không thay đổi route"));
+   check("Top Navigation stays in container without horizontal overflow at responsive widths",
+      topnavs.every(x=>{const header=x.querySelector(".ds15-topnav");return header.scrollWidth<=header.clientWidth+2;}));
    d.getElementById("action-demo").click();
    check("Specimen action feedback is truthful",d.getElementById("action-result").textContent.includes("không điều hướng"));
    check("Lucide icons resolved to SVG",d.querySelectorAll("#icons svg.lucide").length>=12);

@@ -702,6 +702,20 @@ assert 'grid-template-columns:minmax(0,124px) minmax(0,1fr)' in ds12
 assert 'grid-template-columns:minmax(0,104px) minmax(0,1fr)' in ds12
 assert ds12.count('border:3px solid var(--li-color-input-focus-ring)!important;')==2
 
+# UX-DS-15: Top Navigation is a component gallery family, NOT a silent change
+# to the approved live app Home shell or route history.
+topnavcss=(site/"assets"/"component-review-v5.css").read_text(encoding="utf-8")
+assert 'component-review-v5.css?v=20261118-ds15-topnav' in v3
+assert all('data-ds15-topvariant="'+x+'"' in v3 for x in ("logo","back","overlay"))
+assert v3.count('src="./assets/li-seal.svg?v=exact-header-s146"')>=2
+assert 'data-ds15-back aria-label="Quay lại màn trước"' in v3
+assert 'src="./assets/home-mystic-cool-desktop.webp"' in v3
+assert 'ds15-topnav-overlay' in topnavcss and 'background:var(--ds11-clear)!important' in topnavcss
+assert 'border-bottom-width:var(--li-space-0)!important' in topnavcss
+assert 'min-width:48px;min-height:48px' in topnavcss
+assert 'document.querySelector("[data-ds15-back]")' in v3
+assert 'Top Navigation transparent Home' not in page_html
+
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
 assert 'li-layout.css?v=20261118-back-undo' in page_html

@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="./assets/component-review-v2.css?v=20261118-ds12-white-note">
 <link rel="stylesheet" href="./assets/component-review-v3.css?v=20261118-ds13-selection">
 <link rel="stylesheet" href="./assets/component-review-v4.css?v=20261118-ds14-brand-mirror">
+<link rel="stylesheet" href="./assets/component-review-v5.css?v=20261118-ds15-topnav">
 <style>
 :root {color-scheme:light}
 *{box-sizing:border-box}
@@ -154,8 +155,60 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
  </div></section>
 
  <section id="navigation" class="ds-section">
- <div class="ds-section-head"><div><div class="ds-num">04 / NAVIGATION</div><h2>Navigation components</h2></div><div class="ds-muted">Top utility · 4 tabs · Back / subpage</div></div>
- <div class="ds-grid">
+ <div class="ds-section-head"><div><div class="ds-num">04 / NAVIGATION</div><h2>Navigation components</h2></div><div class="ds-muted">Top: Logo / Back / Transparent · 4 bottom tabs</div></div>
+ <div class="ds-panel" id="ds15-topnav-panel">
+  <h3>Top Navigation · Logo / Back / Transparent Home</h3>
+  <p class="ds-muted">Ba variant dùng chung một anatomy và bộ công cụ bên phải. Logo hoặc Back nằm trái — không ép cả hai lên cùng vị trí. Transparent chỉ đổi surface trên cảnh Home, không chèn thêm thanh nền.</p>
+  <div class="ds15-topnav-gallery" aria-label="Ba biến thể Top Navigation">
+   <article class="ds15-topnav-specimen" data-ds15-topvariant="logo">
+    <div class="ds15-topnav-label"><span>01 · LOGO LEFT</span><span>STANDARD · PAPER</span></div>
+    <div class="ds15-topnav-frame">
+     <header class="ds15-topnav" aria-label="Top Navigation chuẩn, logo bên trái">
+      <span class="ds15-brand"><img src="./assets/li-seal.svg?v=exact-header-s146" alt="" aria-hidden="true" width="38" height="38"><span class="ds15-brand-wordmark">li.</span></span>
+      <nav class="ds15-topnav-actions" aria-label="Công cụ Top Navigation logo">
+      <button type="button" class="ds15-topnav-action" data-navspec aria-label="Tìm kiếm" title="Tìm kiếm"><i data-lucide="search" aria-hidden="true"></i></button>
+      <button type="button" class="ds15-topnav-action" data-navspec aria-label="Nhặt ý" title="Nhặt ý"><i data-lucide="feather" aria-hidden="true"></i></button>
+      <button type="button" class="ds15-topnav-action" data-navspec aria-label="Cài đặt" title="Cài đặt"><i data-lucide="settings-2" aria-hidden="true"></i></button>
+    </nav>
+     </header>
+    </div>
+    <p class="ds15-topnav-caption">Top-level: dùng đúng con dấu 理 và chữ li. của app; giữ 3 utility target 48px.</p>
+   </article>
+   <article class="ds15-topnav-specimen" data-ds15-topvariant="back">
+    <div class="ds15-topnav-label"><span>02 · BACK LEFT</span><span>NESTED SCREEN · PAPER</span></div>
+    <div class="ds15-topnav-frame">
+     <header class="ds15-topnav" aria-label="Top Navigation trang con, nút quay lại bên trái">
+      <button class="ds15-topnav-back" type="button" data-ds15-back aria-label="Quay lại màn trước" title="Quay lại"><i data-lucide="arrow-left" aria-hidden="true"></i></button>
+      <span class="ds15-topnav-page-title" id="ds15-page-title">Bài học</span>
+      <nav class="ds15-topnav-actions" aria-label="Công cụ Top Navigation back">
+      <button type="button" class="ds15-topnav-action" data-navspec aria-label="Tìm kiếm" title="Tìm kiếm"><i data-lucide="search" aria-hidden="true"></i></button>
+      <button type="button" class="ds15-topnav-action" data-navspec aria-label="Nhặt ý" title="Nhặt ý"><i data-lucide="feather" aria-hidden="true"></i></button>
+      <button type="button" class="ds15-topnav-action" data-navspec aria-label="Cài đặt" title="Cài đặt"><i data-lucide="settings-2" aria-hidden="true"></i></button>
+    </nav>
+     </header>
+    </div>
+    <p class="ds15-topnav-caption">Back thay vị trí logo trên trang con, không thêm đường viền/nền cho nút. Sticky trong app; bản mẫu chỉ thử state.</p>
+   </article>
+   <article class="ds15-topnav-specimen" data-ds15-topvariant="overlay">
+    <div class="ds15-topnav-label"><span>03 · TRANSPARENT</span><span>HOME · OVER IMAGE</span></div>
+    <div class="ds15-topnav-stage">
+     <img src="./assets/home-mystic-cool-desktop.webp" alt="" aria-hidden="true" width="1200" height="675" loading="eager">
+     <header class="ds15-topnav ds15-topnav-overlay" aria-label="Top Navigation trong suốt trên illustration Home">
+      <span class="ds15-brand"><img src="./assets/li-seal.svg?v=exact-header-s146" alt="" aria-hidden="true" width="38" height="38"><span class="ds15-brand-wordmark">li.</span></span>
+      <nav class="ds15-topnav-actions" aria-label="Công cụ Top Navigation transparent Home">
+      <button type="button" class="ds15-topnav-action" data-navspec aria-label="Tìm kiếm" title="Tìm kiếm"><i data-lucide="search" aria-hidden="true"></i></button>
+      <button type="button" class="ds15-topnav-action" data-navspec aria-label="Nhặt ý" title="Nhặt ý"><i data-lucide="feather" aria-hidden="true"></i></button>
+      <button type="button" class="ds15-topnav-action" data-navspec aria-label="Cài đặt" title="Cài đặt"><i data-lucide="settings-2" aria-hidden="true"></i></button>
+    </nav>
+     </header>
+    </div>
+    <p class="ds15-topnav-caption">Nằm trực tiếp trên illustration Home, không background, border hay shadow. Logo/utility sáng để rõ trên cảnh tối. Đây là variant review, chưa áp dụng vào Home thật.</p>
+   </article>
+  </div>
+  <p id="ds15-topnav-feedback" class="ds-note ds15-topnav-feedback" role="status" aria-live="polite">Chạm Search / Nhặt ý / Cài đặt để thử selected pill màu cát; Back có phản hồi demo, không đổi route.</p>
+ </div>
+
+ <div class="ds-grid" style="margin-top:var(--li-space-5)">
  <div class="ds-panel"><h3>Global utility</h3><div class="ds-utility" role="group" aria-label="Mẫu utility navigation"><button type="button" data-navspec aria-current="page" aria-label="Tìm kiếm"><i data-lucide="search" aria-hidden="true"></i></button><button type="button" data-navspec aria-label="Nhặt ý"><i data-lucide="feather" aria-hidden="true"></i></button><button type="button" data-navspec aria-label="Cài đặt"><i data-lucide="settings-2" aria-hidden="true"></i></button></div><p class="ds-muted">22px, target 48px, selected màu cát. Click thử selected.</p></div>
  <div class="ds-panel"><h3>Nested / Back</h3><div class="ds-nested-nav"><button type="button" class="ds-back" data-demo-back><i data-lucide="arrow-left" aria-hidden="true"></i>Quay lại</button><a class="ds-link" href="#inventory">Xem tất cả <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div><p class="ds-muted">Back không làm tab mới; link không giả nút primary.</p></div>
  </div>
@@ -503,6 +556,15 @@ document.querySelectorAll("[data-navspec]").forEach(button=>button.addEventListe
  group.querySelectorAll("[data-navspec]").forEach(item=>item.removeAttribute("aria-current"));
  button.setAttribute("aria-current","page");
 }));
+/* UX-DS-15: specimen actions are interactive but never modify app routes/data. */
+document.querySelectorAll("#ds15-topnav-panel [data-navspec]").forEach(button=>button.addEventListener("click",()=>{
+ const mode=button.closest("[data-ds15-topvariant]")?.dataset.ds15Topvariant||"unknown";
+ document.getElementById("ds15-topnav-feedback").textContent="Top Navigation "+({logo:"logo",back:"Back",overlay:"transparent Home"}[mode]||mode)+" · "+button.getAttribute("aria-label")+" được chọn trong bản mẫu, không điều hướng.";
+}));
+document.querySelector("[data-ds15-back]")?.addEventListener("click",()=>{
+ document.getElementById("ds15-page-title").textContent="Đại Sảnh";
+ document.getElementById("ds15-topnav-feedback").textContent="Back preview · trở về Đại Sảnh trong mẫu, không thay đổi route hoặc lưu dữ liệu.";
+});
 document.getElementById("action-demo").addEventListener("click",()=>document.getElementById("action-result").textContent="Đào sâu — đây chỉ là button specimen, không điều hướng.");
 document.getElementById("save-demo").addEventListener("click",()=>document.getElementById("action-result").textContent="Lưu — chỉ là specimen. Không có dữ liệu nào được lưu.");
 document.querySelectorAll(".ds-method").forEach(button=>button.addEventListener("click",()=>document.getElementById("card-response").textContent=button.dataset.annotation+": tile gồm icon → mã/nhóm → title → academic original → purpose preview 2 dòng → CTA. Ấn card thật trong iframe bên dưới để mở Chú Giải."));

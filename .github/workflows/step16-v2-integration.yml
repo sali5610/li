@@ -7,6 +7,8 @@ on:
       - 'site/assets/backup-v2.js'
       - 'tools/step16_v2_app_fixture.html'
       - 'tools/step16_v2_fault_fixture.html'
+      - 'tools/step16_v2_origin_fixture.html'
+      - 'tools/step16_v2_origin_agent.html'
       - '.github/workflows/step16-v2-integration.yml'
   workflow_dispatch:
 
@@ -61,4 +63,22 @@ jobs:
           fi
           grep -F '<pre id="result">LI_BACKUP_V2_FAULT_PASS ' /tmp/li-step16-v2-fault-result.html | tail -1 | cut -c1-4200
           echo "PASS synthetic fault suite. Physical Safari / real quota eviction remain unverified"
+          python3 -m http.server 8775 --bind 127.0.0.1 --directory . >/tmp/li-step16-origin-b.log 2>&1 &
+          other_pid=$!
+          trap 'kill "$server_pid" "$other_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          cross_url="http://127.0.0.1:8774/tools/step16_v2_origin_fixture.html"
+          timeout 70s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=41000 --dump-dom "$cross_url" > /tmp/li-step16-v2-cross-origin.html 2>/tmp/li-step16-v2-cross-stderr.log || {
+            echo "FAIL two-origin real Settings browser did not complete"
+            tail -22 /tmp/li-step16-v2-cross-stderr.log || true
+            exit 1
+          }
+          if ! grep -F '<pre id="result">LI_BACKUP_V2_ORIGIN_PASS ' /tmp/li-step16-v2-cross-origin.html | grep -F '"count":5' >/dev/null; then
+            echo "FAIL real Settings cross-origin recovery"
+            grep -F '<pre id="result">LI_BACKUP_V2_ORIGIN_' /tmp/li-step16-v2-cross-origin.html | tail -1 | cut -c1-5500 || true
+            exit 1
+          fi
+          grep -F '<pre id="result">LI_BACKUP_V2_ORIGIN_PASS ' /tmp/li-step16-v2-cross-origin.html | tail -1 | cut -c1-4200
+          echo "PASS two isolated web origins with real Settings controls and fake files"
+
 

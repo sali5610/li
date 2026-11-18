@@ -45,10 +45,38 @@
   try{window.localStorage.setItem(KEY,JSON.stringify(saved));}
   catch(error){/* Keep the in-session position even when storage is blocked. */}
  }
+ /* Saved character position remains canonical. On other screens, prevent it from
+    sitting directly on a lesson action or the Spellbook tabs. Displacement is
+    visual only; it never overwrites the user's draggable saved position. */
+ function occludesPriorityUI(){
+  const active=document.querySelector("section.page.active");
+  if(!active||active.id==="page-home")return false;
+  const fabBounds=fab.getBoundingClientRect(),gap=8;
+  return [...active.querySelectorAll(
+   ".spell-tabs [role='tab'], .spell-activity-head, .catalog-progress, .catalog-lesson-card>.action, .catalog-course-card>.action"
+  )].some(node=>{
+   if(!node.getClientRects().length)return false;
+   const r=node.getBoundingClientRect();
+   return r.bottom>0&&r.top<window.innerHeight&&
+    fabBounds.left<r.right+gap&&fabBounds.right>r.left-gap&&
+    fabBounds.top<r.bottom+gap&&fabBounds.bottom>r.top-gap;
+  });
+ }
+ function nudgeAwayFromPriorityUI(b){
+  if(!occludesPriorityUI())return;
+  for(const [x,y] of [
+   [b.maxX-8,b.maxY-12],[b.minX+8,b.maxY-12],
+   [b.maxX-8,b.minY+88],[b.minX+8,b.minY+88]
+  ]){
+   setPosition(x,y);
+   if(!occludesPriorityUI())return;
+  }
+ }
  function place(){
   const b=bounds();
   if(saved){
    setPosition(b.minX+saved.x*(b.maxX-b.minX),b.minY+saved.y*(b.maxY-b.minY));
+   nudgeAwayFromPriorityUI(b);
    return;
   }
   const home=document.getElementById("page-home")?.classList.contains("active");

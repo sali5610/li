@@ -504,7 +504,7 @@ assert 'classList.toggle("home-focus",id==="home")' in page_html
 assert 'label.textContent=saved?"Đã lưu":"Lưu câu hỏi";' in page_html
 # UX-HOME-02: bubble and its two shared-primary CTAs move together; the
 # background fills the dynamic mobile viewport with the original approved art.
-assert 'laoly-drag.js?v=20261118-home02' in page_html
+assert 'laoly-drag.js?v=20261119-control-dodge' in page_html
 assert 'window.liCompanionDrag?.place?.();' in page_html
 assert '/* UX-HOME-02 · Mobile Safari scene-fit' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert '--home-actions-bottom:var(--li-space-8);' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
@@ -604,23 +604,23 @@ assert 'const questions=ordered([' in hub and 'x.type==="case"' in hub
 assert 'savedQuestions.map(x=>({kind:"question"' in hub
 assert 'shelf.renderResume()' in (site.parent/"tools"/"test_library_hub_v2.cjs").read_text(encoding="utf-8")
 
-# UX-ART-04: latest user-selected geometric papercraft illustration, sourced from the current GitHub library,
-# not an obsolete legacy binary; Bút Ký surface remains aligned with cards 03-04.
+# UX-ART-04: current geometric papercraft art, GitHub canonical source
+# preserved as illustration, with original Bút Ký surface.
 illustrated=site/"assets"/"laoly-mirror-suy-nghi.png"
 assert illustrated.is_file() and illustrated.stat().st_size > 100000
 raw_illustrated=illustrated.read_bytes()
 assert raw_illustrated[:8] == bytes([137,80,78,71,13,10,26,10])
 assert (int.from_bytes(raw_illustrated[16:20],"big"), int.from_bytes(raw_illustrated[20:24],"big")) == (1024,1024)
-assert raw_illustrated == (site.parent/"design-assets"/"lao-ly"/"trong-guong"/"lao_ly_10_suy_nghi_mirror.png").read_bytes(), "Settings art must match canonical papercraft source"
-assert (site/"assets"/"laoly-guide-rest.png").read_bytes() == (site.parent/"design-assets"/"lao-ly"/"trong-guong"/"lao_ly_04_buon_ngu_mirror.png").read_bytes(), "Guide character art must match canonical source"
-for deployed,source in [
- ("laoly-neutral.png","lao_ly_chat_icon_master_1024.png"),
- ("laoly-mode-start.png","lao_ly_mode_vao_nhip_1024.png"),
- ("laoly-mode-focus.png","lao_ly_mode_dao_sau_1024.png"),
- ("laoly-mode-overload.png","lao_ly_mode_qua_tai_1024.png"),
- ("laoly-mode-recover.png","lao_ly_mode_hoi_tri_1024.png"),
+assert raw_illustrated == (site.parent/"design-assets"/"lao-ly"/"trong-guong"/"lao_ly_10_suy_nghi_mirror.png").read_bytes(), "Settings Lão Lý illustration must match canonical papercraft source"
+assert (site/"assets"/"laoly-guide-rest.png").read_bytes() == (site.parent/"design-assets"/"lao-ly"/"trong-guong"/"lao_ly_04_buon_ngu_mirror.png").read_bytes(), "Guide Lão Lý illustration must match current papercraft source"
+for deployed, source in [
+ ("laoly-neutral.png", "lao_ly_chat_icon_master_1024.png"),
+ ("laoly-mode-start.png", "lao_ly_mode_vao_nhip_1024.png"),
+ ("laoly-mode-focus.png", "lao_ly_mode_dao_sau_1024.png"),
+ ("laoly-mode-overload.png", "lao_ly_mode_qua_tai_1024.png"),
+ ("laoly-mode-recover.png", "lao_ly_mode_hoi_tri_1024.png"),
 ]:
-    assert (site/"assets"/deployed).read_bytes() == (site.parent/"design-assets"/"lao-ly"/"icon"/source).read_bytes(), "Deployed character icon differs from papercraft library: "+deployed
+    assert (site/"assets"/deployed).read_bytes() == (site.parent/"design-assets"/"lao-ly"/"icon"/source).read_bytes(), "Lão Lý app icon must match current papercraft source: " + deployed
 assert 'class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"' in settings
 assert 'class="settings-buddy-illustration" src="./assets/laoly-neutral.png"' not in settings
 assert '<article id="notebook-section" class="surface" tabindex="-1"' in library
@@ -701,7 +701,7 @@ assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
 
 # UX-DS-11 · Review components are connected; app Guide chips use full pills.
-assert 'ui-foundations.css?v=20261119-home-transparent-topnav' in page_html
+assert 'ui-foundations.css?v=20261119-ds24-strokefree-home' in page_html
 assert '#page-guide #method-filters .filter,' in foundation and 'border-radius:999px!important;' in foundation
 v3=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert 'component-review-v3.css?v=20261118-ds20-coverage' in v3
@@ -729,7 +729,7 @@ assert 'No data' not in v3js or 'DEMO' in v3js
 # visuals are not G2 signoff, and demo charts never touch private diary.
 ds12=(site/"assets"/"component-review-v4.css").read_text(encoding="utf-8")
 assert 'component-review-v4.css?v=20261118-ds20-coverage' in v3
-assert 'component-review-v2.css?v=20261118-ds20-coverage' in v3
+assert 'component-review-v2.css?v=20261119-ds24-no-stroke' in v3
 assert 'component-review-v3.js?v=20261118-ds13-week-fix' in v3
 assert '--porcelain: #FEFDFC;' in (site/"assets"/"design-tokens.css").read_text(encoding="utf-8")
 assert all(x in foundation for x in ("/* UX-DS-12", ".page input[type=\"checkbox\"]", "background-color:var(--porcelain)!important"))
@@ -785,7 +785,7 @@ assert 'Top Navigation transparent Home' not in page_html
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
 assert 'li-layout.css?v=20261118-ds20-coverage' in page_html
-assert 'ui-foundations.css?v=20261119-home-transparent-topnav' in page_html
+assert 'ui-foundations.css?v=20261119-ds24-strokefree-home' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation
@@ -796,6 +796,14 @@ assert all('src="./assets/'+p+'"' in review10 for p in
 review10css=(site/"assets"/"component-review-v2.css").read_text(encoding="utf-8")
 assert 'background-size:100% 16px,100% var(--li-review-notebook-line)!important;' in review10css
 assert '.ds-home-bubble.green' in review10css and '.ds-image-split' in review10css
+# UX-DS-24: forest bubble and tail zero-width stroke; light-paper border unchanged.
+assert '.ds-home-bubble.green{\n  background:var(--li-review-home-forest-bubble);\n  border-width:var(--li-space-0);' in review10css
+assert '.ds-home-bubble.green::before{\n  background:var(--li-color-home-dialogue-tail);\n  border-width:var(--li-space-0);' in review10css
+assert '.ds-home-bubble{position:relative;' in review10css and 'border:1px solid var(--rule)' in review10css
+assert '/* UX-DS-24: forest green bubble has zero-width stroke' in foundation
+assert '#page-home .hero-dialogue-bubble { border-width:var(--li-space-0); padding:' in foundation
+assert '#page-home .hero-dialogue-bubble::before { border-width:var(--li-space-0); }' in foundation
+assert './assets/ui-foundations.css?v=20261119-ds24-strokefree-home' in page_html
 
 # UX-DS-09: mobile Tủ Riêng uses the same Archive icon as Home, never Bookmark.
 mobile_nav=page_html.split('<nav class="mobile-nav"',1)[1].split('</nav>',1)[0]

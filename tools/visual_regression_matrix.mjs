@@ -171,7 +171,7 @@ try{
    }catch(e){report.errors.push({width,state,message:String(e?.stack||e)});console.error("ERROR "+width+" "+state+" "+String(e));}
   }
  }
-}catch(e){report.errors.push({fatal:String(e?.stack||e)});console.error("VISUAL_FATAL",String(e?.stack||e),chromeStderr?.slice?.(0,1200)||"");}
+}catch(e){report.errors.push({fatal:String(e?.stack||e)});console.error("VISUAL_FATAL",String(e?.stack||e),stderr.slice(0,1200));}
 finally{stop();}
 report.failures=report.matrix.flatMap(x=>x.failures.map(f=>({width:x.viewport.w,state:x.state,...f})));
 report.warnings=report.matrix.flatMap(x=>x.warnings.map(f=>({width:x.viewport.w,state:x.state,...f})));

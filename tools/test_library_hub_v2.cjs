@@ -13,7 +13,7 @@ class Element{
 const ids=["page-library","page-resume","page-collection","case-archive-preview","li-library-latest-idea","li-library-latest-lesson","li-lesson-history","li-bookmarks-empty-lessons","li-bookmarks-empty-questions","li-saved-lessons","li-saved-questions","li-bookmark-tab-lessons","li-bookmark-tab-questions","li-bookmark-panel-lessons","li-bookmark-panel-questions","li-collection-list","save-capture-note","capture-note"];
 const elements=Object.fromEntries(ids.map(id=>[id,new Element()]));
 const filters=["all","case","idea"].map(name=>{const x=new Element("button");x.dataset.collectionFilter=name;return x;});
-const local=new Map(),events=[],routes=[],messages=[];
+const local=new Map(),events=[],routes=[],messages=[],undoActions=[];
 const localStorage={getItem:key=>local.has(key)?local.get(key):null,setItem:(key,value)=>local.set(key,value),removeItem:key=>local.delete(key)};
 const cases=[
 {id:"c1",title:"Cũ",revision:"Kết luận thứ nhất",correct:true,savedAt:"2026-10-01T08:00:00.000Z"},
@@ -27,7 +27,7 @@ const ctx={
  localStorage,processedCases:cases,collectedIdeas:ideas,savedQuestions,savedContent,
  scenarios:[{question:"Vì sao?",type:"problem"}],
  liWriteState:()=>true,liStorageError:false,liNewId:()=>"i2",
- qIndex:0,renderMirrorItem:()=>{},navigate:route=>routes.push(route),toast:msg=>messages.push(msg),
+ qIndex:0,renderMirrorItem:()=>{},navigate:route=>routes.push(route),toast:(msg,options)=>{messages.push(msg);if(options?.undo)undoActions.push(options.undo);},
  CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},
  console,Intl,Date
 };
@@ -73,6 +73,19 @@ elements["li-bookmark-tab-questions"].handlers.keydown({key:"ArrowLeft",preventD
 assert.equal(prevented,true);
 assert.equal(elements["li-bookmark-panel-lessons"].hidden,false);
 assert.equal(elements["li-bookmark-tab-lessons"].focused,true,"keyboard tab switch moves focus");
+function findNode(node,predicate){
+ if(predicate(node))return node;
+ for(const child of node.children||[]){const found=findNode(child,predicate);if(found)return found;}
+ return null;
+}
+const questionRemove=findNode(elements["li-saved-questions"],node=>node.attributes?.["aria-label"]==="Bỏ lưu câu hỏi");
+assert(questionRemove,"question has an independent unsave icon");
+questionRemove.handlers.click();
+assert.equal(savedQuestions.length,0,"question removed from persisted collection model");
+assert.equal(undoActions.length,1,"unsave supplies an Undo callback");
+assert.equal(undoActions[0](),true,"Undo succeeds");
+assert.equal(savedQuestions.length,1,"Undo restores original question");
+assert.equal(elements["li-saved-questions"].children.length,2,"question and case displayed again after Undo");
 shelf.renderCollection();
 assert.equal(elements["li-collection-list"].children.length,3,"full combined Bút Ký / Ý list");
 filters[1].handlers.click();

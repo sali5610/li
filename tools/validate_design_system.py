@@ -213,6 +213,11 @@ def main() -> int:
           "iPad Pro 13 1376px touch portrait and landscape both covered")
     check("ds26-ipad-real-fix" in html,
           "iPad runtime styles use fresh CSS cache versions")
+    check("--li-ipad-active-mode: landscape" in foundations and
+          "--li-ipad-active-mode: portrait" in foundations and
+          "UX-DS-27" in home_layout and
+          "three compositional zones" in home_layout,
+          "landscape CSS exposes active mode and distinct three-zone Home composition")
     check('data-width="1133" data-height="744"' in showcase and
           'data-width="820" data-height="1180"' in showcase, "review has iPad portrait and landscape presets")
 

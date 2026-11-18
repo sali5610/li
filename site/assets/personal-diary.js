@@ -84,8 +84,34 @@ $("li-diary-consent").addEventListener("click",()=>{
  try{if(enabled){localStorage.setItem(CONSENT,"false");if(localStorage.getItem(CONSENT)!=="false")throw Error("readback");enabled=false;}else{localStorage.setItem(CONSENT,"true");if(localStorage.getItem(CONSENT)!=="true")throw Error("readback");enabled=true;}}catch(e){storageError=true;}render();
 });
 $("li-diary-delete").addEventListener("click",()=>{
- if(!window.confirm("Xóa toàn bộ lịch thể trạng và hoạt động đã lưu trên trình duyệt này? Không thể hoàn tác."))return;
- try{localStorage.removeItem(KEY);if(localStorage.getItem(KEY)!==null)throw Error("readback");diary={schema:1,days:{}};}catch(e){storageError=true;}render();
+ if(!window.confirm("Xóa toàn bộ lịch thể trạng và hoạt động trên thiết bị này? Bạn có 7 giây để hoàn tác."))return;
+ const prior=JSON.parse(JSON.stringify(diary));
+ try{
+  localStorage.removeItem(KEY);if(localStorage.getItem(KEY)!==null)throw Error("readback");
+  diary={schema:1,days:{}};render();
+  if(typeof window.liShowUndo==="function")window.liShowUndo("Đã xóa lịch hoạt động.",()=>{
+   if(storageError)return false;
+   const restored=JSON.parse(JSON.stringify(prior));
+   for(const [date,current] of Object.entries(diary.days)){
+    if(!restored.days[date]){restored.days[date]=current;continue;}
+    const existing=restored.days[date];
+    existing.physical=current.physical||existing.physical;
+    existing.mode=current.mode||existing.mode;
+    existing.checkins=(existing.checkins||0)+(current.checkins||0);
+    for(const type of TYPES){
+     const previous=Array.isArray(existing.activities?.[type])?existing.activities[type]:[];
+     const added=Array.isArray(current.activities?.[type])?current.activities[type]:[];
+     if(!existing.activities)existing.activities={};
+     existing.activities[type]=[...new Set([...previous,...added])];
+    }
+   }
+   try{
+    const data=JSON.stringify(restored);localStorage.setItem(KEY,data);
+    if(localStorage.getItem(KEY)!==data)throw Error("readback");
+    diary=restored;render();return true;
+   }catch(error){storageError=true;render();return false;}
+  });
+ }catch(e){storageError=true;render();if(typeof toast==="function")toast("Không xóa được nhật ký. Hãy kiểm tra bộ nhớ trình duyệt.");}
 });
 window.addEventListener("li:l1-physical-checkin",e=>{
  const x=e.detail;

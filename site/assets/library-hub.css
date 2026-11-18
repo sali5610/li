@@ -152,7 +152,7 @@
 .library-icon-utility[hidden]{display:none!important}
 .library-icon-action{
  display:inline-grid;place-items:center;flex:none;
- width:44px;height:44px;min-width:44px;min-height:44px;
+ width:var(--li-space-12);height:var(--li-space-12);min-width:var(--li-space-12);min-height:var(--li-space-12);
  padding:var(--li-space-2);
  border:1px solid var(--rule);border-radius:var(--li-space-2);
  background:var(--paper);color:var(--moss);cursor:pointer;
@@ -160,7 +160,7 @@
 }
 .library-icon-action svg,
 .library-icon-action .lucide{
- width:20px;height:20px;display:block;flex:none;
+ width:var(--li-space-5);height:var(--li-space-5);display:block;flex:none;
  stroke:currentColor;stroke-width:1.8;
 }
 .library-icon-action:hover{background:var(--cream);border-color:var(--moss)}

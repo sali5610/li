@@ -45,6 +45,9 @@
       try{
        const cards=doc.querySelectorAll("#page-guide #method-cards>.method-card");
        report("Guide cards populated",cards.length>0,cards.length);
+       const pill=doc.querySelector("#page-guide #method-filters .filter");
+       report("Actual Guide category filters are fully rounded pills",!!pill&&w.getComputedStyle(pill).borderTopLeftRadius==="999px",pill?w.getComputedStyle(pill).borderTopLeftRadius:"missing");
+
        if(cards.length){
         const title=cards[0].querySelector("h3");
         report("Guide title role matches compact 20px phone / 24px larger",!!title&&w.getComputedStyle(title).fontSize===(w.innerWidth<=640?"20px":"24px"),title?w.getComputedStyle(title).fontSize:"missing");

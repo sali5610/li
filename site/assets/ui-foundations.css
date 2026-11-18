@@ -689,3 +689,8 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
     box-shadow: var(--li-uxds10-touch-no-shadow) !important;
   }
 }
+
+/* UX-DS-11 · Human PO request: filter chips are full-round pills,
+   not generic square buttons. No card or CTA radius change. */
+#page-guide #method-filters .filter,
+.filters .filter {border-radius:999px!important;}

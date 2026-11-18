@@ -4,12 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>li. 理 — Component Library Review · UX-DS-10</title>
+<title>li. 理 — Component Library Review · UX-DS-11</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/design-tokens.css?v=0.3">
 <link rel="stylesheet" href="./assets/component-review-v2.css?v=20261118-10">
+<link rel="stylesheet" href="./assets/component-review-v3.css?v=20261118-ds11">
 <style>
 :root {color-scheme:light}
 *{box-sizing:border-box}
@@ -105,9 +106,9 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
 <div class="ds-shell">
 <aside class="ds-sidebar">
  <div class="ds-mark"><img src="./assets/li-seal.svg?v=exact-header-s146" width="44" height="44" alt="理"><span>li.</span></div>
- <div class="ds-eyebrow" style="color:var(--sage)">UX-DS-10 · REVIEW BUILD</div>
+ <div class="ds-eyebrow" style="color:var(--sage)">UX-DS-11 · REVIEW BUILD</div>
  <nav class="ds-nav" aria-label="Mục lục Component Showcase">
-  <a href="#status">01 / Status</a><a href="#tokens">02 / Foundations</a><a href="#icons">03 / Icons</a><a href="#navigation">04 / Navigation</a><a href="#actions">05 / Actions</a><a href="#cards">06 / Cards</a><a href="#inputs">07 / Forms</a><a href="#feedback">08 / Feedback</a><a href="#live">09 / Real app</a><a href="#inventory">10 / Component inventory</a>
+  <a href="#status">01 / Status</a><a href="#tokens">02 / Foundations</a><a href="#icons">03 / Icons</a><a href="#navigation">04 / Navigation</a><a href="#actions">05 / Actions</a><a href="#cards">06 / Cards</a><a href="#inputs">07 / Forms</a><a href="#controls">08 / Controls+</a><a href="#dataviz">09 / Calendar & Chart</a><a href="#feedback">10 / Feedback</a><a href="#live">11 / Real app</a><a href="#inventory">12 / Inventory</a>
  </nav>
  <div class="ds-stamp">Chỉ là specimen + app review. Không phải dấu duyệt G2, không đưa nội dung Wave2/3 lên public.</div>
 </aside>
@@ -245,7 +246,7 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
      <button type="button" class="ds-chip" disabled>Chưa mở</button>
     </div>
     <p id="ds-chip-result" class="ds-muted" role="status">Đang xem: Tất cả · thử chọn nhóm.</p>
-    <p class="ds-muted">App thật dùng bộ lọc ngang tại #method-filters. State gồm default/selected/hover/focus/disabled, có aria-pressed.</p>
+    <p class="ds-muted">Full pill corners (999px) · 44px hit target · default/selected/hover/focus/disabled · aria-pressed. Cả bộ lọc Thần Chú thật cũng theo radius này.</p>
    </div>
   </div>
   <div class="ds-grid" style="margin-top:var(--li-space-5)">
@@ -253,12 +254,181 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
    <div class="ds-panel"><h3>Validation contract</h3><p>Label luôn hiện; helper không thế chỗ label. Error có aria-invalid và nội dung giải thích. Readonly khác disabled. Tuyệt đối không báo đã lưu chỉ vì người dùng gõ vào.</p></div>
   </div>
  </section>
+
+ <section id="controls" class="ds-section">
+  <div class="ds-section-head"><div><div class="ds-num">08 / CONTROLS EXTENDED</div><h2>Everyday UI primitives</h2></div><div class="ds-muted">Icon-only · Small CTA · Dropdown · Language · Sidebar · List · Selection</div></div>
+  <p class="ds-lead">Những component cần đúng hierarchy và có đủ trạng thái, không phải làm tượng sáp trong một cái gallery. Các interaction dưới đây chỉ là <strong>specimen</strong>, không chạm dữ liệu lưu của li.</p>
+  <div class="ds11-section-grid">
+   <article class="ds11-panel">
+    <h3>Icon button · No background</h3>
+    <p class="ds-muted">Nền trong suốt, không khung; hit target 48px. Trạng thái bookmark đã chọn chỉ dùng oval cát, xóa khác hoàn toàn bỏ lưu.</p>
+    <div class="ds11-row" role="group" aria-label="Icon-only controls">
+     <button class="ds11-icon-button" data-ds11-icon="bookmark" type="button" aria-label="Lưu demo" aria-pressed="false"><i data-lucide="bookmark" aria-hidden="true"></i></button>
+     <button class="ds11-icon-button" data-ds11-icon="search" type="button" aria-label="Focus tìm kiếm"><i data-lucide="search" aria-hidden="true"></i></button>
+     <button class="ds11-icon-button" data-ds11-icon="close" type="button" aria-label="Xóa từ khóa tìm kiếm"><i data-lucide="x" aria-hidden="true"></i></button>
+     <button class="ds11-icon-button" data-ds11-icon="trash" type="button" aria-label="Xem minh họa hành động xóa"><i data-lucide="trash-2" aria-hidden="true"></i></button>
+     <button class="ds11-icon-button" type="button" disabled aria-label="Hành động không khả dụng"><i data-lucide="circle-help" aria-hidden="true"></i></button>
+    </div>
+    <p id="ds11-status" class="ds-muted" role="status" aria-live="polite">Specimen · Bấm icon để thử trạng thái.</p>
+   </article>
+   <article class="ds11-panel">
+    <h3>Small button</h3>
+    <p class="ds-muted">Bản nhỏ hơn CTA chính: 40px trên desktop, tối thiểu 44px cho touch. Có label rõ, viền và shadow nhẹ.</p>
+    <div class="ds11-row">
+     <button class="ds11-small-button primary" data-ds11-small type="button">Xác nhận <i data-lucide="check" aria-hidden="true"></i></button>
+     <button class="ds11-small-button" data-ds11-small type="button">Sửa <i data-lucide="pencil" aria-hidden="true"></i></button>
+     <button class="ds11-small-button" type="button" disabled>Đang khóa</button>
+    </div>
+    <p class="ds-muted">Dùng cho tác vụ thứ cấp; không thay thế nút primary trên biểu mẫu dài.</p>
+   </article>
+   <article class="ds11-panel">
+    <h3>Dropdown menu</h3>
+    <p class="ds-muted">Menu nổi, selected state, click-outside, ESC và ↑/↓. Không đồng nhất với native select.</p>
+    <div class="ds11-dropdown" id="ds11-dropdown">
+     <button id="ds11-dropdown-trigger" class="ds11-dropdown-trigger" type="button" aria-haspopup="menu" aria-controls="ds11-dropdown-menu" aria-expanded="false"><span id="ds11-dropdown-label">Tất cả lĩnh vực</span><i data-lucide="chevron-down" aria-hidden="true"></i></button>
+     <ul class="ds11-menu" id="ds11-dropdown-menu" role="menu" aria-label="Lọc lĩnh vực" hidden>
+      <li role="none"><button role="menuitemradio" type="button" data-ds11-option aria-checked="true"><i data-lucide="layers" aria-hidden="true"></i>Tất cả lĩnh vực</button></li>
+      <li role="none"><button role="menuitemradio" type="button" data-ds11-option aria-checked="false"><i data-lucide="brain" aria-hidden="true"></i>Tâm lý học</button></li>
+      <li role="none"><button role="menuitemradio" type="button" data-ds11-option aria-checked="false"><i data-lucide="library-big" aria-hidden="true"></i>Nhân văn &amp; Xã hội</button></li>
+      <li role="none"><button role="menuitemradio" type="button" data-ds11-option aria-checked="false"><i data-lucide="chart-no-axes-column" aria-hidden="true"></i>Dữ liệu</button></li>
+     </ul>
+    </div>
+    <p id="ds11-dropdown-caption" class="ds-muted" role="status">Chọn lĩnh vực trong menu mẫu.</p>
+   </article>
+   <article class="ds11-panel">
+    <h3>Language switch · VI / EN</h3>
+    <p class="ds-muted">Công tắc 2 trạng thái cho ngôn ngữ học; đổi nhãn rõ, có aria-checked. Chưa đụng ngôn ngữ bài học thật.</p>
+    <div class="ds11-switch-wrap">
+     <button id="ds11-lang-switch" class="ds11-lang-switch" type="button" role="switch" aria-label="Đổi ngôn ngữ từ Tiếng Việt sang English" aria-checked="false"><span>VI</span><span>EN</span></button>
+     <span id="ds11-lang-caption" class="ds-muted" role="status">Tiếng Việt được chọn · chỉ là demo</span>
+    </div>
+   </article>
+   <article class="ds11-panel">
+    <h3>Left sidebar menu</h3>
+    <div class="ds11-sidebar-sample">
+     <nav class="ds11-sidebar-nav" aria-label="Sidebar navigation specimen">
+      <small>KHÁM PHÁ</small>
+      <button data-ds11-sidebar type="button" aria-current="page"><i data-lucide="library-big" aria-hidden="true"></i>Tàng Thư</button>
+      <button data-ds11-sidebar type="button"><i data-lucide="book-open" aria-hidden="true"></i>Thần Chú</button>
+      <button data-ds11-sidebar type="button"><i data-lucide="archive" aria-hidden="true"></i>Tủ Riêng</button>
+      <small>HỆ THỐNG</small>
+      <button data-ds11-sidebar type="button"><i data-lucide="settings-2" aria-hidden="true"></i>Cài đặt</button>
+     </nav>
+     <div class="ds11-sidebar-preview"><span id="ds11-sidebar-preview" role="status">Tàng Thư</span></div>
+    </div>
+    <p class="ds-muted">Menu nhóm theo mục đích, một mục active; mobile cần chuyển thành navigation phù hợp, không ép sidebar cố định.</p>
+   </article>
+   <article class="ds11-panel">
+    <h3>List item · 3 states</h3>
+    <ul class="ds11-list">
+     <li><button type="button" class="ds11-list-item" data-ds11-list aria-current="true"><i data-lucide="book-open" aria-hidden="true"></i><span class="ds11-list-copy"><strong>Sampling Bias</strong><small>L09 · Tiếp tục bài đang đọc</small></span><i data-lucide="chevron-right" aria-hidden="true"></i></button></li>
+     <li><button type="button" class="ds11-list-item" data-ds11-list><i data-lucide="bookmark" aria-hidden="true"></i><span class="ds11-list-copy"><strong>Dấu Trang</strong><small>Những ý tưởng đã lưu</small></span><i data-lucide="chevron-right" aria-hidden="true"></i></button></li>
+     <li><button type="button" class="ds11-list-item" disabled><i data-lucide="lock" aria-hidden="true"></i><span class="ds11-list-copy"><strong>Chưa mở</strong><small>Trạng thái disabled</small></span></button></li>
+    </ul>
+    <p id="ds11-list-caption" class="ds-muted" role="status">Chọn một hàng để xem selected state.</p>
+   </article>
+   <article class="ds11-panel">
+    <h3>Checkbox · Multi-select</h3>
+    <div class="ds11-control-stack" role="group" aria-label="Chọn loại nội dung">
+     <label class="ds11-check-row"><input type="checkbox" data-ds11-check value="Bài học" checked>Bài học</label>
+     <label class="ds11-check-row"><input type="checkbox" data-ds11-check value="Vấn đề">Vấn đề</label>
+     <label class="ds11-check-row"><input type="checkbox" data-ds11-check value="Input">Input</label>
+     <label class="ds11-check-row"><input type="checkbox" disabled>Chưa khả dụng</label>
+    </div>
+    <p id="ds11-check-caption" class="ds-muted" role="status">Đã chọn: Bài học</p>
+   </article>
+   <article class="ds11-panel">
+    <h3>Radio button · Single-select</h3>
+    <fieldset style="border:0;padding:var(--li-space-0);margin:var(--li-space-0)">
+     <legend class="ds-muted">Chọn một kiểu hiển thị</legend>
+     <div class="ds11-control-stack">
+      <label class="ds11-check-row"><input type="radio" name="ds11-radio" value="Card" checked>Card</label>
+      <label class="ds11-check-row"><input type="radio" name="ds11-radio" value="Danh sách">Danh sách</label>
+      <label class="ds11-check-row"><input type="radio" name="ds11-radio" value="Bảng">Bảng</label>
+     </div>
+    </fieldset>
+    <p id="ds11-radio-caption" class="ds-muted" role="status">Chọn: Card</p>
+   </article>
+   <article class="ds11-panel" style="grid-column:1/-1">
+    <h3>Text input with icon</h3>
+    <label for="ds11-icon-input" class="ds-muted">Tìm kiếm trong thư viện</label>
+    <div class="ds11-input-wrap"><i data-lucide="search" aria-hidden="true"></i><input id="ds11-icon-input" type="search" placeholder="Nhập pháp danh, lĩnh vực hoặc từ khóa…" autocomplete="off"><button type="button" class="ds11-icon-button" data-ds11-icon="close" aria-label="Xóa nội dung tìm kiếm"><i data-lucide="x" aria-hidden="true"></i></button></div>
+    <p class="ds-muted" id="ds11-search-caption" role="status">Nhập gì đó để thử icon input.</p>
+   </article>
+
+   <article class="ds11-panel ds11-progress-panel" style="grid-column:1/-1">
+    <h3>Progress Bar · Linear / Compact / Indeterminate</h3>
+    <p class="ds-muted">Đo <strong>bước thực hiện đã hoàn thành / tổng bước</strong>; không đồng nghĩa độ thành thạo, XP hay điểm sức khỏe. Các số bên dưới đều là demo.</p>
+    <div class="ds11-progress-grid">
+     <div class="ds11-progress-example">
+      <div class="ds11-progress-meta"><strong>Chưa bắt đầu</strong><span>0 / 6 · 0%</span></div>
+      <div class="ds11-progress-track" role="progressbar" aria-label="Ví dụ chưa bắt đầu" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0" aria-valuetext="0 trong 6 bước hoàn thành">
+       <span class="ds11-progress-fill" style="--ds11-progress:0%"></span>
+      </div>
+     </div>
+     <div class="ds11-progress-example">
+      <div class="ds11-progress-meta"><strong>Đang thực hiện · thử tăng tiến độ</strong><span id="ds11-progress-label" role="status">3 / 6 · 50%</span></div>
+      <div id="ds11-progress-demo" class="ds11-progress-track" role="progressbar" aria-label="Số bước demo đã hoàn thành" aria-valuemin="0" aria-valuemax="6" aria-valuenow="3" aria-valuetext="3 trong 6 bước hoàn thành">
+       <span id="ds11-progress-fill" class="ds11-progress-fill" style="--ds11-progress:50%"></span>
+      </div>
+      <div class="ds11-row"><button id="ds11-progress-add" class="ds11-small-button" type="button">+1 bước</button><button id="ds11-progress-reset" class="ds11-small-button" type="button">Đặt lại</button></div>
+     </div>
+     <div class="ds11-progress-example">
+      <div class="ds11-progress-meta"><strong>Hoàn tất</strong><span>6 / 6 · 100%</span></div>
+      <div class="ds11-progress-track completed" role="progressbar" aria-label="Ví dụ hoàn tất" aria-valuemin="0" aria-valuemax="6" aria-valuenow="6" aria-valuetext="Đã hoàn thành cả 6 bước">
+       <span class="ds11-progress-fill" style="--ds11-progress:100%"></span>
+      </div>
+     </div>
+     <div class="ds11-progress-example">
+      <div class="ds11-progress-meta"><strong>Đang xử lý · không xác định %</strong><span>Đang thực hiện</span></div>
+      <div class="ds11-progress-track indeterminate" role="progressbar" aria-label="Tác vụ đang xử lý" aria-valuetext="Đang xử lý, chưa thể tính phần trăm">
+       <span class="ds11-progress-fill" aria-hidden="true"></span>
+      </div>
+     </div>
+    </div>
+    <div class="ds11-compact-progress">
+     <div><strong>Compact · trong list/card</strong><p class="ds-muted">2 / 5 bài đã mở và hoàn thành · ví dụ. Không gọi là “nắm vững 40%”.</p></div>
+     <div class="ds11-compact-progress-right">
+      <div class="ds11-progress-track compact" role="progressbar" aria-label="Ví dụ hai trong năm bài hoàn thành" aria-valuemin="0" aria-valuemax="5" aria-valuenow="2"><span class="ds11-progress-fill" style="--ds11-progress:40%"></span></div>
+      <span>40%</span>
+     </div>
+    </div>
+   </article>
+  </div>
+ </section>
+ <section id="dataviz" class="ds-section">
+  <div class="ds-section-head"><div><div class="ds-num">09 / CALENDAR &amp; DATA VISUALIZATION</div><h2>Nhật Ký · 4 nhịp học</h2></div><div class="ds-muted">Calendar tháng · Stacked vertical bar · 7 ngày / lượt</div></div>
+  <p class="ds-lead">Bản <strong>component demo</strong> để so cả hai cách nhìn cùng một ngày. Calendar mã hóa <strong>nhịp học đã chọn</strong> bằng 4 sắc xanh từ nhạt đến đậm; chart stack <strong>Bài / Vấn đề / Input</strong> theo số hoạt động. Màu không phải điểm sức khỏe, và ngày không có record <strong>không có nghĩa là không học</strong>.</p>
+  <div class="ds11-calendar-card">
+   <div class="ds11-calendar-head"><div><div class="ds11-kicker">MONTH VIEW · CANDIDATE PALETTE</div><h3 id="ds11-month">Tháng 11 năm 2026</h3></div>
+    <div class="ds11-date-toolbar"><button id="ds11-month-prev" class="ds11-icon-button" type="button" aria-label="Tháng trước"><i data-lucide="chevron-left" aria-hidden="true"></i></button><button id="ds11-month-next" class="ds11-icon-button" type="button" aria-label="Tháng sau"><i data-lucide="chevron-right" aria-hidden="true"></i></button></div>
+   </div>
+   <div class="ds11-calendar-grid" id="ds11-calendar" role="group" aria-label="Lịch tháng demo, chọn ngày để xem trạng thái và hoạt động"></div>
+   <div class="ds11-rhythm-legend" aria-label="Bảng màu 4 nhịp học">
+    <span><i class="level-0" aria-hidden="true"></i>Chưa có record</span>
+    <span><i class="level-1" aria-hidden="true"></i>Quá tải</span>
+    <span><i class="level-2" aria-hidden="true"></i>Hồi trí</span>
+    <span><i class="level-3" aria-hidden="true"></i>Vào nhịp</span>
+    <span><i class="level-4" aria-hidden="true"></i>Đào sâu</span>
+   </div>
+   <p class="ds11-sample-note">DỮ LIỆU GIẢ LẬP ĐỂ REVIEW UI · 4 cấp màu là đề xuất chưa được PO chốt, không phải mức sức khỏe hay phép đo năng lực.</p>
+  </div>
+  <div class="ds11-chart-shell" style="margin-top:var(--li-space-5)">
+   <div class="ds11-chart-head"><div><div class="ds11-kicker">VERTICAL STACKED BAR · 7 DAYS / VIEW</div><h3>Hoạt động theo ngày</h3></div>
+    <div class="ds11-date-toolbar"><button id="ds11-week-prev" class="ds11-icon-button" type="button" aria-label="7 ngày trước"><i data-lucide="chevron-left" aria-hidden="true"></i></button><strong id="ds11-week-range" class="ds-muted" role="status">15–21 / 11/2026</strong><button id="ds11-week-next" class="ds11-icon-button" type="button" aria-label="7 ngày tiếp theo"><i data-lucide="chevron-right" aria-hidden="true"></i></button></div>
+   </div>
+   <div class="ds11-chart-key" aria-label="Chú giải phần chồng trong mỗi cột"><span><i class="lesson" aria-hidden="true"></i>Bài</span><span><i class="branch" aria-hidden="true"></i>Vấn đề</span><span><i class="input" aria-hidden="true"></i>Input</span></div>
+   <div class="ds11-chart-window" id="ds11-chart" role="group" aria-label="Biểu đồ cột chồng theo từng ngày trong 7 ngày"></div>
+   <p class="ds11-day-detail" id="ds11-day-detail" role="status" aria-live="polite">Chọn ngày trên lịch hoặc cột.</p>
+   <p class="ds11-sample-note">Cột cao theo tổng hoạt động, phần chồng cho biết số Bài / Vấn đề / Input. Chiều cao dùng cùng thang đo toàn tháng; ngày không có dữ liệu để trống, không vẽ thành số 0.</p>
+  </div>
+ </section>
  <section id="feedback" class="ds-section">
-  <div class="ds-section-head"><div><div class="ds-num">08 / FEEDBACK</div><h2>Feedback & system states</h2></div><div class="ds-muted">Không hiện thành công giả</div></div>
+  <div class="ds-section-head"><div><div class="ds-num">10 / FEEDBACK</div><h2>Feedback & system states</h2></div><div class="ds-muted">Không hiện thành công giả</div></div>
   <div class="ds-grid"><div class="ds-note" role="status"><strong>Thông tin</strong><p>Trạng thái trung tính: hướng dẫn, lưu ý giới hạn của câu trả lời.</p></div><div class="ds-note error" role="alert"><strong>Lỗi / chưa thể lưu</strong><p>Khi lưu thất bại, cần thông báo rõ — không được viết “đã lưu” trước xác nhận.</p></div></div>
  </section>
  <section id="live" class="ds-section">
-  <div class="ds-section-head"><div><div class="ds-num">09 / ACTUAL RUNTIME</div><h2>Màn hình thật</h2></div><div class="ds-muted">App iframe từ cùng repo · không phải mock</div></div>
+  <div class="ds-section-head"><div><div class="ds-num">11 / ACTUAL RUNTIME</div><h2>Màn hình thật</h2></div><div class="ds-muted">App iframe từ cùng repo · không phải mock</div></div>
   <p>Chọn kích thước để so card Thần Chú thật, search, filter, Lão Lý và detail. Iframe mở đúng <code>index.html?page=guide</code> của phiên bản này, không dùng HTML minh họa card để đánh lừa.</p>
   <div class="ds-device-controls" role="group" aria-label="Thử kích thước màn hình">
    <button type="button" data-width="320">320</button><button type="button" data-width="375">375</button><button type="button" data-width="390" aria-pressed="true">390</button><button type="button" data-width="402">402</button><button type="button" data-width="600">600</button><button type="button" data-width="820">820</button>
@@ -267,7 +437,7 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
   <p class="ds-muted">Muốn kiểm tra bằng iPhone thật: <a href="./index.html?page=guide">Mở trực tiếp trang Thần Chú</a>. Trong preview hẹp, khu vực iframe có thể cuộn ngang để giữ đúng chiều rộng giả lập.</p>
  </section>
  <section id="inventory" class="ds-section">
-  <div class="ds-section-head"><div><div class="ds-num">10 / REVIEW INVENTORY</div><h2>Danh mục component</h2></div><div class="ds-flag">Chưa chốt cả library</div></div>
+  <div class="ds-section-head"><div><div class="ds-num">12 / REVIEW INVENTORY</div><h2>Danh mục component</h2></div><div class="ds-flag">Chưa chốt cả library</div></div>
   <div style="overflow-x:auto"><table class="ds-table"><thead><tr><th>Nhóm</th><th>Runtime selector</th><th>Trạng thái</th></tr></thead><tbody>
    <tr><td>Functional icon system</td><td><code>Lucide / data-lucide</code></td><td>Sizes 18/20/22/24, consistent stroke and semantic map</td></tr>
    <tr><td>Text-link action</td><td><code>.ds-link</code> specimen</td><td>Chờ review variants/states</td></tr>
@@ -286,7 +456,7 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
    <tr><td>Lesson cards / source</td><td><code>.l09-* / .source-status</code></td><td>Wave1 live; Wave2/3 không phát hành</td></tr>
   </tbody></table></div>
  </section>
- <footer class="ds-footer">UX-DS-10 · Visual review only · Tokens authored in <code>design-system/tokens.json</code>; app uses generated CSS. PO chốt theo từng component, không tự biến specimen thành G2 approved.</footer>
+ <footer class="ds-footer">UX-DS-11 · Visual review only · Tokens authored in <code>design-system/tokens.json</code>; app uses generated CSS. PO chốt theo từng component, không tự biến specimen thành G2 approved.</footer>
 </main>
 </div>
 <script src="./assets/lucide.min.js"></script>
@@ -341,7 +511,7 @@ if(["media","bubbles"].includes(requestedSection)){
  cardsSection.style.marginTop="var(--li-space-0)";
  target.style.marginTop="var(--li-space-0)";
 }
-if(["icons","navigation","actions","cards","inputs"].includes(requestedSection)){
+if(["icons","navigation","actions","cards","inputs","controls","dataviz"].includes(requestedSection)){
  const main=document.querySelector(".ds-main");
  [...main.children].forEach(child=>{if(child.id!==requestedSection)child.hidden=true;});
  document.querySelector(".ds-sidebar").hidden=true;
@@ -358,5 +528,6 @@ document.querySelectorAll("[data-width]").forEach(button=>button.addEventListene
  document.querySelectorAll("[data-width]").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
 }));
 </script>
+<script src="./assets/component-review-v3.js?v=20261118-ds11"></script>
 </body>
 </html>

@@ -600,10 +600,35 @@ assert 'window.navigate(lesson.route)' in cross
 assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
 
+# UX-DS-11 · Review components are connected; app Guide chips use full pills.
+assert 'ui-foundations.css?v=20261118-ds11-roundchips' in page_html
+assert '#page-guide #method-filters .filter,' in foundation and 'border-radius:999px!important;' in foundation
+v3=(site/"component-library-review.html").read_text(encoding="utf-8")
+assert 'component-review-v3.css?v=20261118-ds11' in v3
+assert 'component-review-v3.js?v=20261118-ds11' in v3
+assert all('<section id="'+id+'"' in v3 for id in ("controls","dataviz"))
+assert all('id="'+id+'"' in v3 for id in
+ ("ds11-calendar","ds11-chart","ds11-lang-switch","ds11-dropdown-trigger",
+  "ds11-icon-input","ds11-week-prev","ds11-week-next"))
+assert '4 cấp màu là đề xuất chưa được PO chốt' in v3
+v3css=(site/"assets"/"component-review-v3.css").read_text(encoding="utf-8")
+assert '.ds-chip{border-radius:999px}' in v3css
+assert all('--ds11-rhythm-'+k in v3css for k in ("overload","recover","start","focus"))
+v3js=(site/"assets"/"component-review-v3.js").read_text(encoding="utf-8")
+assert 'const order=["overload","recover","start","focus"]' in v3js
+assert 'role="menuitemradio"' in v3
+assert 'role="switch"' in v3
+assert 'const starts=windowStarts()' in v3js
+assert 'id="ds11-progress-demo"' in v3 and 'class="ds11-progress-track compact"' in v3
+assert 'class="ds11-progress-track indeterminate"' in v3
+assert '.ds11-progress-track.indeterminate' in v3css
+assert 'doneSteps=Math.min(6,doneSteps+1)' in v3js
+assert 'No data' not in v3js or 'DEMO' in v3js
+
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
 assert 'li-layout.css?v=20261118-ds10-touch' in page_html
-assert 'ui-foundations.css?v=20261118-ds10-tap' in page_html
+assert 'ui-foundations.css?v=20261118-ds11-roundchips' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation

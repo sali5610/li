@@ -48,6 +48,17 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 - [ ] QA captures both `?capture=media` and `?capture=bubbles` as honest independent screenshots.
 - [ ] Check downstream effect on Home, nav, Check-in and Tủ Riêng; all 01–14 interaction/IA decisions preserved; G2 and physical device still OPEN.
 
+### UX-DS-11 · Component families and live boundary
+- [ ] Progress bar: zero/partial/complete/indeterminate and compact; aria semantics + width track count, reduced motion, no fictional mastery score.
+- [ ] Filter chip corners are full pill in **both review and actual Guide**; preserve S116/S118 compact method-card and all other CTAs.
+- [ ] Transparent icon button/48px target + selected bookmark; small button normal, disabled, touch 44px.
+- [ ] Dropdown keyboard Escape/Arrow/Home/End, click-outside, selected item; language VI/EN switch with semantic role and checked state (review only).
+- [ ] Left sidebar and list item respond to active state without changing main app IA; checkbox multi-select, radio one choice, icon field input/clear.
+- [ ] Calendar has 4 named mode shades light→dark and separate missing-data state; no inference as health measure or historical user activity.
+- [ ] Vertical **stacked** bar is 7 calendar days per view, Bài/Vấn đề/Input segments, constant monthly scale, correct month edge.
+- [ ] Browser automation at 320/390/820, screenshot sections controls/dataviz, real iPhone Safari/VoiceOver/G2 PO review OPEN.
+- [ ] Review uses deterministic example records only; no localStorage access or diary state mutation.
+
 ## 3. Evidence of done
 - [ ] Run `python3 tools/audit_design_tokens.py --check-baseline` across **all first-party HTML/CSS/JS**; new raw token/off-grid debt must not grow, and a pass does **not** imply the legacy baseline is zero. See [UX-DS-03 audit](audits/2026-11-18-full-app-token-mapping.md).
 - [ ] Run `python3 tools/validate_ui_foundations.py` (new type/spacing CSS)

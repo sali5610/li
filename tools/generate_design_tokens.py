@@ -48,6 +48,7 @@ def render(data: dict) -> str:
         lines.append(f"  --li-leading-{name}: {spec['lineHeightPx']}px;")
     lines.append('  --li-font-editorial: "Crimson Text", Georgia, "Times New Roman", serif;')
     lines.append('  --li-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;')
+    lines.append(f"  --li-leading-notebook: {data['typography']['notebookLineHeightPx']}px;")
     # UX-DS-20: exact legacy source values preserved as named tokens, so a
     # future scale consolidation can be visual-reviewed without losing current UI.
     for family, entries in data.get("legacyTypographyTokens", {}).items():

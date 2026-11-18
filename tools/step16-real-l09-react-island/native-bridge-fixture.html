@@ -1,0 +1,146 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>li. Step16 actual Vanilla ↔ React L09 state bridge</title></head><body>
+<pre id="result">LI_STEP16_L09_BRIDGE_PENDING</pre>
+<script>
+(async()=>{
+ 'use strict';
+ const result=document.getElementById('result'), KEY='li.review.L09-1-2.v1';
+ const PILOT='step16.l09.react-island.v1', LOCALE='li.app.locale.v1';
+ const checks=[], pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+ const assert=(x,why)=>{if(!x)throw Error(why);};
+ async function until(fn,where,max=15000){
+   const since=performance.now();
+   while(performance.now()-since<max){if(fn())return;await pause(35);}
+   throw Error('TIMEOUT '+where);
+ }
+ const initial={
+   locale:'vi',
+   draft:[
+     'NATIVE synthetic target population and observed sample.',
+     'NATIVE synthetic exclusion and self-selection bias.',
+     'NATIVE synthetic restricted generalization claim.',
+     'NATIVE synthetic alternative evidence and limitation.'
+   ],guidedDraft:'NATIVE synthetic guided note',
+   hint:true,assisted:true,submitted:false,submittedAt:null,submission:null,submissionLocale:null,
+   ratings:[null,null,null,null],reviewed:false, futurePrivate:{retained:'keep'}
+ };
+ let native,react;
+ function clear(){
+   localStorage.removeItem(KEY);localStorage.removeItem(PILOT);localStorage.removeItem(LOCALE);
+ }
+ async function attachNative(){
+   native?.remove();
+   native=document.createElement('iframe');
+   native.style.cssText='position:absolute;left:-10000px;top:0;width:390px;height:760px;border:0';
+   native.src='../../site/index.html';document.body.append(native);
+   await until(()=>native.contentDocument?.querySelector('#l09-question-3')&&native.contentDocument?.getElementById('l09-rubricArea'),
+       'real native li. L09 rendered');
+   return native.contentDocument;
+ }
+ async function attachReact(){
+   react?.remove();
+   react=document.createElement('iframe');
+   react.style.cssText='position:absolute;left:-10000px;top:0;width:390px;height:760px;border:0';
+   react.src='./dist/?bridge=native-localhost-test';document.body.append(react);
+   await until(()=>react.contentDocument?.querySelector('.pilot [data-answer="3"]')&&
+      (react.contentDocument.querySelector('[data-rubric-locked]')||react.contentDocument.querySelector('[data-rubric]')),
+      'React native bridge rendered');
+   return react.contentDocument;
+ }
+ function stored(){return JSON.parse(localStorage.getItem(KEY)||'null');}
+ function edit(frame,selector,value){
+   const el=frame.contentDocument.querySelector(selector);
+   assert(el&&!el.disabled,'Missing enabled input '+selector);
+   const w=frame.contentWindow;
+   const ctor=el.tagName==='TEXTAREA'?w.HTMLTextAreaElement.prototype:w.HTMLSelectElement.prototype;
+   Object.getOwnPropertyDescriptor(ctor,'value').set.call(el,value);
+   const E=w.Event;el.dispatchEvent(new E(el.tagName==='TEXTAREA'?'input':'change',{bubbles:true}));
+ }
+ function tap(frame,selector){
+   const el=frame.contentDocument.querySelector(selector);
+   assert(el&&!el.disabled,'Missing enabled control '+selector);el.click();
+ }
+ try{
+   assert(location.hostname==='127.0.0.1','Only local synthetic test origin allowed');
+   clear();localStorage.setItem(LOCALE,'vi');localStorage.setItem(KEY,JSON.stringify(initial));
+   let n=await attachNative();
+   assert(n.querySelector('#l09-question-0').value===initial.draft[0],'Native L09 did not read seeded data');
+   assert(n.querySelector('#l09-hint').hidden===false,'Native hinted state missing');
+   let r=await attachReact();
+   assert(r.querySelector('.pilot').dataset.storageKey===KEY&&
+      r.querySelector('.pilot').dataset.bridgeMode==='localhost-fixture','React not using guarded native bridge');
+   assert(r.querySelector('[data-answer="0"]').value===initial.draft[0],'React did not hydrate native draft');
+   assert(r.querySelector('[data-assisted]'),'React lost native assisted flag');
+   checks.push('Real published Vanilla L09 and React island hydrate the same synthetic attempt on localhost');
+   edit(react,'[data-answer="0"]','REACT changed first draft from native format with enough content.');
+   await until(()=>stored()?.draft?.[0]?.startsWith('REACT changed'),'React storage write');
+   assert(stored().futurePrivate?.retained==='keep'&&stored().guidedDraft===initial.guidedDraft,
+      'Unknown future field or native guided draft lost');
+   n=await attachNative();
+   assert(n.querySelector('#l09-question-0').value.startsWith('REACT changed'),'Native L09 did not resume React saved draft');
+   checks.push('React write survives exact legacy key; real Vanilla reload reads it and untouched future field persists');
+   edit(native,'#l09-question-1','VANILLA changed second draft, should remain after React conflict.');
+   await until(()=>stored()?.draft?.[1]?.startsWith('VANILLA changed'),'Vanilla source write');
+   await until(()=>!!r.querySelector('[data-conflict]'),'React storage event marks stale state');
+   edit(react,'[data-answer="2"]','React attempted stale overwrite should be rejected.');
+   await pause(70);
+   assert(stored().draft[1].startsWith('VANILLA changed'),'Stale React overwrote Vanilla change');
+   tap(react,'[data-action="reload-state"]');
+   await until(()=>!r.querySelector('[data-conflict]')&&
+      r.querySelector('[data-answer="1"]').value.startsWith('VANILLA changed'),'manual refresh from native');
+   checks.push('Native write invalidates stale React view; saving blocks and explicit refresh preserves newer data');
+   assert(typeof native.contentWindow.liLanguage?.set==='function','Native global locale service unavailable');
+   native.contentWindow.liLanguage.set('en');
+   await until(()=>localStorage.getItem(LOCALE)==='en'&&
+     r.querySelector('#challenge-title').textContent.includes('Sampling'),'cross-context global locale');
+   assert(r.querySelector('[data-answer="1"]').value.startsWith('VANILLA changed'),'Global language switch erased draft');
+   checks.push('Real native global VI/EN preference reaches React via cross-document storage without resetting answers');
+   // Use React to submit all four seeded ≥12-character answers, then real native to review.
+   const reactWindow=react.contentWindow;
+   let submittedEvents=0;
+   reactWindow.addEventListener('li:lesson-submitted',event=>{
+     if(event.detail?.lessonId==='L09-1-2')submittedEvents++;
+   });
+   tap(react,'[data-action="submit"]');
+   await until(()=>stored()?.submitted===true&&!!r.querySelector('[data-rubric]'),'React submission');
+   assert(submittedEvents===1&&stored().submission?.length===4&&stored().submissionLocale==='en',
+     'Native event or submission provenance missing');
+   n=await attachNative();
+   assert(n.getElementById('l09-answerBox').hidden===false,'Native did not unlock submitted reference');
+   assert(n.querySelectorAll('#l09-rubricRows select').length===4,'Native did not show rubric');
+   assert(n.querySelector('#l09-question-0').disabled===true,'Native still editable after React submission');
+   checks.push('React submission emits native-compatible event and native L09 unlocks rubric on true reload');
+   [0,1,2,2].forEach((value,i)=>edit(native,'#l09-rating-'+i,String(value)));
+   await until(()=>stored()?.ratings?.every(x=>x!==null),'four legacy rubric ratings');
+   tap(native,'#l09-saveReview');
+   await until(()=>stored()?.reviewed===true,'native saved review');
+   assert(stored().futurePrivate?.retained==='keep','Native rubric changed unrelated future field');
+   r=await attachReact();
+   assert(r.querySelector('[data-reviewed]')&&r.querySelector('[data-score]').textContent.includes('5 / 8'),
+     'React did not restore native reviewed state');
+   checks.push('Native four rubric ratings and completed review survive React island remount with score 5/8');
+   // Invalid records must not be silently converted to a blank native lesson.
+   localStorage.setItem(KEY,'{"locale":"vi","draft":["bad"],"submitted":true}');
+   await until(()=>!!r.querySelector('[data-conflict]'),'invalid native edit detected as conflict');
+   const corruptBefore=localStorage.getItem(KEY);
+   tap(react,'[data-action="reload-state"]');
+   await until(()=>!!r.querySelector('[data-conflict]'),'invalid payload stays blocked');
+   assert(localStorage.getItem(KEY)===corruptBefore,'Invalid native record silently rewritten');
+   checks.push('Malformed native lesson record is blocked, not reset or overwritten by React');
+   // The standalone pilot without the fixture flag must continue using a distinct key.
+   react.remove();react=document.createElement('iframe');
+   react.style.cssText='position:absolute;left:-10000px;top:0;width:390px;height:760px;border:0';
+   react.src='./dist/';document.body.append(react);
+   await until(()=>react.contentDocument?.querySelector('.pilot'),'isolated default pilot');
+   assert(react.contentDocument.querySelector('.pilot').dataset.storageKey===PILOT,
+      'Default pilot unexpectedly attached to legacy key');
+   assert(localStorage.getItem(KEY)===corruptBefore,'Standalone pilot mutated malformed legacy state');
+   checks.push('Without explicit localhost bridge query, React pilot never uses native production key');
+   clear();native?.remove();react?.remove();
+   result.textContent='LI_STEP16_L09_BRIDGE_PASS '+JSON.stringify({count:checks.length,checks,
+     limitations:'Same-origin localhost iframes, synthetic key content; no real iPad Safari, no production DOM ownership switch, no atomic concurrent writer protection'});
+ }catch(error){
+   clear();native?.remove();react?.remove();
+   result.textContent='LI_STEP16_L09_BRIDGE_FAIL '+JSON.stringify({completed:checks,error:error.stack||String(error)});
+ }
+})();
+</script></body></html>

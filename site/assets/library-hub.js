@@ -20,8 +20,19 @@ try{
   visitStore.items=v.items.filter(x=>x&&Object.prototype.hasOwnProperty.call(LESSONS,x.route)&&typeof x.visitedAt==="string"&&!Number.isNaN(Date.parse(x.visitedAt))).slice(0,40);
  }
 }catch(err){visitError=true;}
-function sortedBySavedAt(items){return items.slice().sort((a,b)=>(Date.parse(b.savedAt)||0)-(Date.parse(a.savedAt)||0));}
-function visits(){return visitStore.items.slice().sort((a,b)=>(Date.parse(b.visitedAt)||0)-(Date.parse(a.visitedAt)||0));}
+function sortedBySavedAt(items){return items.slice().sort((a,b)=>(Date.parse(b.updatedAt||b.savedAt)||0)-(Date.parse(a.updatedAt||a.savedAt)||0));}
+function visits(){
+ const tracked=visitStore.items.slice().sort((a,b)=>(Date.parse(b.visitedAt)||0)-(Date.parse(a.visitedAt)||0));
+ const known=new Set(tracked.map(x=>x.route));
+ // Show real saved Wave1 states predating visit tracking in Quay lại only.
+ for(const [route,meta] of Object.entries(LESSONS)){
+  if(known.has(route))continue;
+  const state=getLessonState(meta.id);
+  if(!state||!(state.submitted||state.reviewed||state.guidedDraft?.trim()||state.draft?.some(x=>typeof x==="string"&&x.trim())))continue;
+  tracked.push({route,visitedAt:null,legacy:true});
+ }
+ return tracked;
+}
 function add(parent,tag,cls,text){
  const el=document.createElement(tag);
  if(cls)el.className=cls;
@@ -74,8 +85,8 @@ function renderLessonRows(root,limit){
   const row=add(root,"div","path-item library-list-item");
   const body=add(row,"div","library-list-copy");
   add(body,"strong","",info.title);
-  add(body,"p","small",info.id+" · "+lessonStatus(info)+" · Mở "+formatDate(item.visitedAt));
-  btn(row,getLessonState(info.id)?.submitted?"Mở lại":"Tiếp tục",item.route);
+  add(body,"p","small",info.id+" · "+lessonStatus(info)+(item.legacy?" · Bài có dữ liệu đã lưu":" · Mở "+formatDate(item.visitedAt)));
+  btn(row,getLessonState(info.id)?.submitted?"Mở lại":"Tiếp tục",item.route,"library-text-link library-open-lesson");
  }
 }
 function renderCases(){
@@ -84,18 +95,20 @@ function renderCases(){
  if(!item){empty(root,"Chưa có Bút Ký. Thử Phản Chứng rồi lưu kết luận đầu tiên.");return;}
  const block=add(root,"div","library-preview");
  add(block,"strong","",item.title);
- add(block,"p","small",formatDate(item.savedAt)+" · "+(item.correct?"Đã chọn nhận định phù hợp":"Đã chọn nhận định cần xem lại"));
+ add(block,"p","small",formatDate(item.updatedAt||item.savedAt)+" · "+(item.correct?"Đã chọn nhận định phù hợp":"Đã chọn nhận định cần xem lại"));
  add(block,"p","library-clamp",item.revision);
- btn(block,"Xem trong Bộ sưu tập","collection");
+ const detail=add(block,"button","library-text-link library-detail-link","Xem chi tiết");
+ detail.type="button";detail.addEventListener("click",()=>window.liNotes?.openDetail("case",item.id));
 }
 function renderIdeas(){
  const root=$("li-library-latest-idea");if(!root)return;root.replaceChildren();
  const item=sortedBySavedAt(collectedIdeas)[0];
  if(!item){empty(root,"Chưa có ý nào được lưu. Những ý gặp ngoài đời sẽ nằm ở đây.");return;}
  const block=add(root,"div","library-preview");
- add(block,"p","small",formatDate(item.savedAt)+" · Chưa xác minh");
+ add(block,"p","small",formatDate(item.updatedAt||item.savedAt)+" · Chưa xác minh");
  add(block,"p","library-clamp",item.text);
- btn(block,"Xem trong Bộ sưu tập","collection");
+ const detail=add(block,"button","library-text-link library-detail-link","Xem chi tiết");
+ detail.type="button";detail.addEventListener("click",()=>window.liNotes?.openDetail("idea",item.id));
 }
 function renderBookmarks(){
  const root=$("li-saved-questions"),placeholder=$("li-bookmarks-empty");
@@ -110,7 +123,7 @@ function renderBookmarks(){
   add(body,"strong","",found>=0?scenarios[found].question:item.question);
   add(body,"p","small","Đã lưu · "+formatDate(item.savedAt));
   
-  const button=add(row,"button","action alt","Mở lại");
+  const button=add(row,"button","library-text-link library-open-lesson","Mở lại");
   button.type="button";
   if(found<0){
    button.disabled=true;
@@ -148,10 +161,11 @@ function renderCollection(){
   const card=add(root,"article","surface library-collection-entry");
   add(card,"div","kicker",item.entryType==="case"?"BÚT KÝ · KẾT LUẬN SAU PHẢN CHỨNG":"Ý ĐÃ NHẶT · CHƯA XÁC MINH");
   if(item.entryType==="case")add(card,"h3","",item.title);
-  add(card,"p","small","Lưu ngày "+formatDate(item.savedAt));
+  add(card,"p","small","Lưu ngày "+formatDate(item.savedAt)+(item.updatedAt?" · Sửa "+formatDate(item.updatedAt):""));
   add(card,"p","library-entry-body",item.entryType==="case"?item.revision:item.text);
-  const actions=add(card,"div","action-row");
-  btn(actions,item.entryType==="case"?"Mở Phản Chứng":"Nhặt ý khác",item.entryType==="case"?"case":"capture");
+  const actions=add(card,"div","library-note-actions");
+  const detail=add(actions,"button","library-text-link library-detail-link","Xem chi tiết");
+  detail.type="button";detail.addEventListener("click",()=>window.liNotes?.openDetail(item.entryType,item.id));
  }
 }
 $("save-capture-note")?.addEventListener("click",()=>{

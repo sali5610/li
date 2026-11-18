@@ -89,11 +89,18 @@
       r.querySelector('[data-answer="1"]').value.startsWith('VANILLA changed'),'manual refresh from native');
    checks.push('Native write invalidates stale React view; saving blocks and explicit refresh preserves newer data');
    assert(typeof native.contentWindow.liLanguage?.set==='function','Native global locale service unavailable');
+   const exact=await (await fetch('./src/l09-exact.generated.json')).json();
    native.contentWindow.liLanguage.set('en');
    await until(()=>localStorage.getItem(LOCALE)==='en'&&
-     r.querySelector('#challenge-title').textContent.includes('Sampling'),'cross-context global locale');
+     r.querySelector('#challenge-title').textContent===exact.langs.en.challengeTitle,'cross-context global locale');
    assert(r.querySelector('[data-answer="1"]').value.startsWith('VANILLA changed'),'Global language switch erased draft');
-   checks.push('Real native global VI/EN preference reaches React via cross-document storage without resetting answers');
+   // Native L09 also persists its own locale on the global event. That is an
+   // unrelated key write to React, so honor the conflict policy and refresh.
+   if(r.querySelector('[data-conflict]')){
+     tap(react,'[data-action="reload-state"]');
+     await until(()=>!r.querySelector('[data-conflict]'),'global locale owner reconciliation');
+   }
+   checks.push('Real native global VI/EN preference reaches React, and native lesson locale persistence reconciles safely');
    // Use React to submit all four seeded ≥12-character answers, then real native to review.
    const reactWindow=react.contentWindow;
    let submittedEvents=0;

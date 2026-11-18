@@ -33,6 +33,19 @@
     const image=scene?w.getComputedStyle(scene,"::before").backgroundImage:"";
     const expectedScene=w.innerWidth<=600?"home-li-iphone-20261119.jpg":w.innerWidth<=1139?"home-li-ipad-20261119.jpg":"home-mystic-cool-desktop.webp";
     report("Approved Home illustration matches responsive source image",image.includes(expectedScene),image.slice(0,170));
+
+    /* UX-HOME-06: inspect the LIVE header, not the review-only specimen. */
+    const topHeader=doc.querySelector(".app > .header");
+    const topCss=topHeader?w.getComputedStyle(topHeader):null;
+    const heroBox=scene?.getBoundingClientRect();
+    const headerBox=topHeader?.getBoundingClientRect();
+    const brandSeal=doc.querySelector(".app > .header .brand-stamp");
+    const tool=doc.querySelector(".app > .header .tool-button");
+    const cssClear=value=>value==="rgba(0, 0, 0, 0)"||value==="transparent";
+    report("Home header uses genuinely transparent Component Library overlay",!!topCss&&cssClear(topCss.backgroundColor)&&topCss.borderBottomWidth==="0px"&&topCss.boxShadow==="none",topCss?.backgroundColor+"/"+topCss?.borderBottomWidth);
+    report("Home artwork extends behind top navigation",!!heroBox&&!!headerBox&&Math.abs(heroBox.top-headerBox.top)<=2&&headerBox.height>=60,heroBox?.top+"/"+headerBox?.top+"/"+headerBox?.height);
+    report("Home overlay renders light seal and icon ink",!!brandSeal&&w.getComputedStyle(brandSeal).filter.includes("invert(1)")&&!!tool&&w.getComputedStyle(tool).color==="rgb(250, 249, 245)",brandSeal?w.getComputedStyle(brandSeal).filter:"missing");
+    report("Home overlay utility keeps 48px touch area",!!tool&&tool.getBoundingClientRect().width>=48&&tool.getBoundingClientRect().height>=48,tool?.getBoundingClientRect().width+"x"+tool?.getBoundingClientRect().height);
     if(w.innerWidth>=601&&w.innerWidth<=1139){
      const ringCopy=doc.querySelector("#page-home .mirror-message").getBoundingClientRect();
      const sceneBox=scene.getBoundingClientRect();
@@ -50,6 +63,8 @@
      report("Mobile bottom nav support label 14px",!!nav&&w.getComputedStyle(nav).fontSize==="14px",nav?w.getComputedStyle(nav).fontSize:"missing");
     }
     if(typeof w.navigate==="function")w.navigate("guide",{focus:false,syncUrl:false});
+    const restoredCss=topHeader?w.getComputedStyle(topHeader):null;
+    report("Leaving Home restores paper header surface",!!restoredCss&&restoredCss.backgroundColor==="rgb(241, 240, 233)"&&restoredCss.marginBottom==="0px",restoredCss?.backgroundColor+"/"+restoredCss?.marginBottom);
     setTimeout(function(){
       try{
        const cards=doc.querySelectorAll("#page-guide #method-cards>.method-card");

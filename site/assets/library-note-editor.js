@@ -4,6 +4,7 @@
 "use strict";
 const $=id=>document.getElementById(id);
 const t=value=>window.liLanguage?.translate?.(value)||value;
+const ui=(vi,en)=>window.liLanguage?.get?.()==="en"?en:vi;
 if(!$("page-noteDetail"))return;
 let active=null;
 const listFor=type=>type==="case"?processedCases:type==="idea"?collectedIdeas:null;
@@ -77,11 +78,11 @@ function renderCaseContext(note,type){
  if(!allowed)return;
  const source=hasSnapshot?note.caseSnapshot:null;
  const root=document.querySelector("#page-case .editorial-grid .surface.tinted");
- const question=source?.question||root?.querySelector("h2")?.textContent?.trim()||"Đề bài gốc không còn trong bản lưu";
+ const question=source?.question||root?.querySelector("h2")?.textContent?.trim()||ui("Đề bài gốc không còn trong bản lưu","Original question missing from this record");
  const scene=source?.scene||root?.querySelector("p")?.textContent?.trim()||"";
  const options=source?.options||Array.from(root?.querySelectorAll("[data-answer]")||[]).map(node=>({key:node.dataset.answer,text:node.textContent.trim()}));
  const selection=source?.selectedKey||(note.correct?"right":"wrong");
- const selectedText=source?.selectedText||options.find(x=>x.key===selection)?.text||"Không có dữ liệu lựa chọn";
+ const selectedText=source?.selectedText||options.find(x=>x.key===selection)?.text||ui("Không có dữ liệu lựa chọn","No selected answer recorded");
  const choices=$("li-note-case-choices");choices?.replaceChildren();
  $("li-note-case-question").textContent=question;
  $("li-note-case-scene").textContent=scene;
@@ -89,13 +90,13 @@ function renderCaseContext(note,type){
   const item=element(choices,"div","library-case-choice",option.text);
   if(option.key===selection)item.setAttribute("data-chosen","true");
  }
- $("li-note-case-choice").textContent=(hasSnapshot?"Lựa chọn của bạn: ":"Lựa chọn suy ra từ trạng thái đúng/sai: ")+selectedText;
+ $("li-note-case-choice").textContent=ui(hasSnapshot?"Lựa chọn của bạn: ":"Lựa chọn suy ra từ trạng thái đúng/sai: ",hasSnapshot?"Your selected answer: ":"Answer inferred from the correct/incorrect status: ")+selectedText;
  $("li-note-case-feedback").textContent=hasSnapshot?
-  (source.feedback||"Bản lưu không có nội dung phản hồi.") :
-  "Bản lưu cũ không chứa phản hồi khi bạn chọn đáp án.";
+  (source.feedback||ui("Bản lưu không có nội dung phản hồi.","No feedback was stored.")) :
+  ui("Bản lưu cũ không chứa phản hồi khi bạn chọn đáp án.","This older record did not save the feedback shown when you answered.");
  $("li-note-case-provenance").textContent=hasSnapshot?
-  "Đề bài, lựa chọn và phản hồi được ghi cùng luận kết. Chỉnh sửa luận kết không thay đổi bản chụp case." :
-  "Dữ liệu cũ chỉ lưu luận kết và trạng thái đúng/sai. Đề bài hiện lấy từ case đang xuất bản; lựa chọn được suy ra, không phải bản ghi lịch sử nguyên gốc.";
+  ui("Đề bài, lựa chọn và phản hồi được ghi cùng luận kết. Chỉnh sửa luận kết không thay đổi bản chụp case.","The original question, answer and feedback were saved with your conclusion. Editing the conclusion does not alter that snapshot.") :
+  ui("Dữ liệu cũ chỉ lưu luận kết và trạng thái đúng/sai. Đề bài hiện lấy từ case đang xuất bản; lựa chọn được suy ra, không phải bản ghi lịch sử nguyên gốc.","This older entry only saved your conclusion and correct/incorrect status. The question is shown from the current published case; the answer is inferred, not a historic snapshot.");
  window.liBookmarks?.refresh();
 }
 function renderDetail(){

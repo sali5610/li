@@ -32,17 +32,17 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
    record("Global locale runtime",!!w.liLanguage&&typeof w.navigate==="function");
    await change("en");
    record("English root language + title",d.documentElement.lang==="en"&&d.title.includes("Library of Knowledge"),d.title);
-   record("English keyboard drag instruction",by("laoly-fab")?.getAttribute("aria-description")?.startsWith("Drag to move Old Li"),by("laoly-fab")?.getAttribute("aria-description"));
+   record("English keyboard drag instruction",by("laoly-fab")?.getAttribute("aria-description")?.startsWith("Drag to move Elder Li"),by("laoly-fab")?.getAttribute("aria-description"));
    record("Note detail empty title translates",label(by("li-note-detail-title"))==="Note details",label(by("li-note-detail-title")));
    // The companion is a product character, not an untranslated proper-name
-   // exception. English labels, dialogue affordances and a11y must say Old Li.
-   record("English mentor modal name",label(by("buddy-title"))==="Old Li",label(by("buddy-title")));
-   record("English mentor floating control",/Old Li/.test(by("laoly-fab")?.getAttribute("title")||"")&&/Old Li/.test(by("laoly-fab")?.getAttribute("aria-label")||""),[by("laoly-fab")?.getAttribute("title"),by("laoly-fab")?.getAttribute("aria-label")].join(" | "));
-   record("English mentor settings heading",label(d.querySelector("#page-settings .settings-buddy-heading h2"))==="Old Li",label(d.querySelector("#page-settings .settings-buddy-heading h2")));
-   record("English mentor dialogue accessibility",by("buddy-scroll")?.getAttribute("aria-label")==="Conversation with Old Li",by("buddy-scroll")?.getAttribute("aria-label"));
-   record("English mentor intro accessibility",by("page-home")?.querySelector(".hero-dialogue")?.getAttribute("aria-label")?.startsWith("Old Li explains"),by("page-home")?.querySelector(".hero-dialogue")?.getAttribute("aria-label"));
-   record("English mentor guide illustration alt",d.querySelector("#page-guide .guide-mentor-illustration")?.getAttribute("alt")==="Sleepy Old Li",d.querySelector("#page-guide .guide-mentor-illustration")?.getAttribute("alt"));
-   record("English mentor interactions",["buddy-question","buddy-challenge","buddy-forget"].every(id=>label(by(id)).includes("Old Li")),["buddy-question","buddy-challenge","buddy-forget"].map(id=>label(by(id))).join(" | "));
+   // exception. English labels, dialogue affordances and a11y must say Elder Li.
+   record("English mentor modal name",label(by("buddy-title"))==="Elder Li",label(by("buddy-title")));
+   record("English mentor floating control",/Elder Li/.test(by("laoly-fab")?.getAttribute("title")||"")&&/Elder Li/.test(by("laoly-fab")?.getAttribute("aria-label")||""),[by("laoly-fab")?.getAttribute("title"),by("laoly-fab")?.getAttribute("aria-label")].join(" | "));
+   record("English mentor settings heading",label(d.querySelector("#page-settings .settings-buddy-heading h2"))==="Elder Li",label(d.querySelector("#page-settings .settings-buddy-heading h2")));
+   record("English mentor dialogue accessibility",by("buddy-scroll")?.getAttribute("aria-label")==="Conversation with Elder Li",by("buddy-scroll")?.getAttribute("aria-label"));
+   record("English mentor intro accessibility",by("page-home")?.querySelector(".hero-dialogue")?.getAttribute("aria-label")?.startsWith("Elder Li explains"),by("page-home")?.querySelector(".hero-dialogue")?.getAttribute("aria-label"));
+   record("English mentor guide illustration alt",d.querySelector("#page-guide .guide-mentor-illustration")?.getAttribute("alt")==="Sleepy Elder Li",d.querySelector("#page-guide .guide-mentor-illustration")?.getAttribute("alt"));
+   record("English mentor interactions",["buddy-question","buddy-challenge","buddy-forget"].every(id=>label(by(id)).includes("Elder Li")),["buddy-question","buddy-challenge","buddy-forget"].map(id=>label(by(id))).join(" | "));
 
    const expectations={
     home:["Mọi câu hỏi","Every question"],
@@ -66,7 +66,7 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
     record(page+" EN heading",heading.includes(expected),heading+" | expected "+expected);
     if(page==="guide")record("Guide count fully English",label(by("method-count")).startsWith("Showing ")&&!label(by("method-count")).includes("Hiển thị"),label(by("method-count")));
     if(page==="dashboard")record("Journal day labels read in English",d.querySelector('#li-diary-calendar button')?.getAttribute("aria-label")?.includes("no journal entry"),d.querySelector('#li-diary-calendar button')?.getAttribute("aria-label"));
-    if(page==="settings")record("Lão Lý preview matches locale",label(by("buddy-preview-warm")).includes("take your time. I'm listening."),label(by("buddy-preview-warm")));
+    if(page==="settings")record("Lão Lý preview matches locale",label(by("buddy-preview-warm")).includes("take your time. The books can wait."),label(by("buddy-preview-warm")));
     if(page==="capture")record("Capture placeholder localized",by("capture-note")?.getAttribute("placeholder")==="I just came across…",by("capture-note")?.getAttribute("placeholder"));
     if(page==="case")record("Case editor placeholder localized",by("case-revision")?.getAttribute("placeholder")?.startsWith("Example:"),by("case-revision")?.getAttribute("placeholder"));
     if(page==="research")record("Research branching localized",label(d.querySelector('#page-research [data-branch]')).includes("Who was asked?"),label(d.querySelector('#page-research [data-branch]')));
@@ -213,7 +213,7 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
    await route("resume");
    record("Continue heading returns to Vietnamese",label(current()?.querySelector("h1"))==="Quay lại",label(current()?.querySelector("h1")));
    await change("en");
-   record("English mentor name returns",label(by("buddy-title"))==="Old Li"&&by("laoly-fab")?.getAttribute("aria-label")?.includes("Old Li"),label(by("buddy-title"))+" | "+by("laoly-fab")?.getAttribute("aria-label"));
+   record("English mentor name returns",label(by("buddy-title"))==="Elder Li"&&by("laoly-fab")?.getAttribute("aria-label")?.includes("Elder Li"),label(by("buddy-title"))+" | "+by("laoly-fab")?.getAttribute("aria-label"));
    record("Continue heading returns to English",label(current()?.querySelector("h1"))==="Continue",label(current()?.querySelector("h1")));
 
    await route("capture");

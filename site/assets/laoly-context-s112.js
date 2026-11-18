@@ -184,11 +184,48 @@ function setButtonText(button,label){
  else button.textContent=label;
  button.setAttribute("aria-label",label);
 }
+/* The companion assembles messages with saved counts and user-entered search terms.
+   Localize only approved copy fragments; never rewrite someone's query or saved note. */
+const PLAN_SEGMENTS=[
+ "Ngươi đang theo nhánh “","”. Được. Giờ thử tìm dữ kiện có thể bác bỏ giả thuyết.",
+ "Một câu hỏi hay chưa phải kết luận. Với “","”, cứ bắt đầu từ điều quan sát được.",
+ "Nhánh đang xét:","Ngươi đang chọn nhịp “","Đang tìm “",
+ "Lão sẽ gợi ý theo nhịp này, nhưng cả 13 phương pháp vẫn có thể tra cứu.",
+ "Muốn ghi nhớ:","(tự nhớ trước khi xem đáp án) hoặc","(ôn tập cách quãng). Muốn hiểu sâu:",
+ "(tự giải thích) hoặc","(hỏi nguyên nhân). Muốn kiểm chứng:",
+ "(đánh giá nguồn và độ tin cậy). Chọn phương pháp theo vấn đề, đừng chọn theo tên cho kêu.",
+ ". Đọc điều kiện áp dụng rồi mới thử.","phương pháp khớp tên hoặc bộ lọc hiện tại.",
+ "Ngươi đang đọc","). Cốt lõi của nó là:","phù hợp khi cần:",
+ "Tủ Riêng có","Bút Ký và","Dấu Trang trên thiết bị này. Đây là những gì đã lưu thật, không phải thành tích tưởng tượng.",
+ "Đã có","lượt lưu Phản Chứng. Mỗi lượt gồm kết luận đã viết lại và phản hồi.",
+ "Đã lưu","câu hỏi từ Gương Vạn Vấn.",
+ "Nhịp “","” do chính ngươi chọn. Lão không tự đoán tình trạng sức khỏe hay độ thông minh của ai.",
+ "Ngươi đang tra “","”. Không thấy kết quả thì thử tên học thuật, ngành hoặc một từ khóa khác.",
+ "Lão Lý ·","Trò chuyện với Lão Lý ·"
+].sort((a,b)=>b.length-a.length);
+function localizePlanText(text){
+ const source=String(text??"");
+ const language=window.liLanguage;
+ if(!language||language.get()!=="en")return source;
+ const exact=language.translate(source);
+ if(exact!==source)return exact;
+ const approved=window.LI_LEGACY_EN||{};
+ let result=source;
+ for(const part of PLAN_SEGMENTS)if(approved[part])result=result.split(part).join(approved[part]);
+ result=result.replace(/“(Vào nhịp|Đào sâu|Quá tải|Hồi trí)”/g,(_,mode)=>"“"+language.translate(mode)+"”");
+ result=result.replace(/^(Xem|So với) (.+)$/,(all,verb,subject)=> (verb==="Xem"?"View ":"Compare with ")+language.translate(subject));
+ return result;
+}
+function localizePlan(plan){
+ if(!plan||window.liLanguage?.get?.()!=="en")return plan;
+ return {...plan,intro:localizePlanText(plan.intro),
+  actions:(plan.actions||[]).map(item=>({...item,label:localizePlanText(item.label),reply:localizePlanText(item.reply)}))};
+}
 function updatePlan(){
- activePlan=getBuddyPlan();
+ activePlan=localizePlan(getBuddyPlan());
  const calm=document.getElementById("calm-toggle")?.checked;
  const intro=calm?"Ta đi từng bước. "+activePlan.intro:activePlan.intro;
- textEl.textContent=window.liAddressLine?window.liAddressLine(intro):intro;
+ textEl.textContent=localizePlanText(window.liAddressLine?window.liAddressLine(intro):intro);
  buttons.forEach((b,i)=>setButtonText(b,activePlan.actions[i].label));
  debateEl.hidden=true;buddyDebateActive=false;
  showBuddyQuote();
@@ -210,7 +247,7 @@ document.addEventListener("click",function(event){
  if(!activePlan)updatePlan();
  const item=activePlan.actions[index];
  debateEl.hidden=true;buddyDebateActive=true;quoteEl.hidden=true;
- textEl.textContent=window.liAddressLine?window.liAddressLine(item.reply):item.reply;
+ textEl.textContent=localizePlanText(window.liAddressLine?window.liAddressLine(item.reply):item.reply);
  scrollEl.scrollTop=0;
  if(typeof item.perform==="function")item.perform();
 },true);

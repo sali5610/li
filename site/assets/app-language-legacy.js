@@ -877,5 +877,21 @@ window.LI_LEGACY_EN={
   "Lão đưa về Gương Vạn Vấn.": "I'll take you back to the Mirror of Questions.",
   "Ta đi từng bước.": "One step at a time.",
   "Im Lặng · Lời thoại Lão Lý đang tắt.": "Lão Lý is muted.",
-  "Ý đã nhặt chỉ lưu trên thiết bị khi ngươi bấm Lưu. Nếu lưu lỗi, app sẽ báo rõ; lão không nhận vơ.": "Captured Ideas are saved on this device when you press Save. If saving fails, the app will tell you. I won't claim a save that didn't happen."
+  "Ý đã nhặt chỉ lưu trên thiết bị khi ngươi bấm Lưu. Nếu lưu lỗi, app sẽ báo rõ; lão không nhận vơ.": "Captured Ideas are saved on this device when you press Save. If saving fails, the app will tell you. I won't claim a save that didn't happen.",
+  "Không thể đọc dữ liệu lưu trước đây. Chưa thay đổi Dấu Trang.": "Couldn't read existing saved data. Your bookmarks are unchanged.",
+  "Không lưu được thay đổi trên thiết bị. Dấu Trang vẫn giữ nguyên.": "Couldn't save changes on this device. Your bookmarks are unchanged.",
+  "Đã bỏ lưu": "Removed from bookmarks",
+  "bài học.": "lesson.",
+  "bài học": "lesson",
+  "vào Quay lại · Dấu Trang.": "in Continue · Bookmarks.",
+  "Toán học & dữ liệu": "Mathematics & Data",
+  "Lịch sử": "History",
+  "Âm nhạc": "Music",
+  "Kinh doanh & vận hành": "Business & Operations",
+  "Đọc lại mục này": "Reread this section",
+  "Lão đưa ngươi về đúng mục đang học để kiểm tra lại dữ liệu.": "I'll return you to the current section so you can check the evidence.",
+  "Nội dung Lão Lý chưa khả dụng; bài học không bị thay đổi.": "Lão Lý's guidance isn't available right now; the lesson hasn't changed.",
+  "Ai đã được hỏi?": "Who was surveyed?",
+  "Xem ": "View ",
+  "Nhà thông thái": "Scholar"
 };

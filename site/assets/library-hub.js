@@ -174,7 +174,7 @@ function renderProblemRows(root,limit){
   const body=add(row,"div","library-list-copy");
   const title=entry.kind==="problem"?scenario.question:
    (document.querySelector?.("#page-case .editorial-grid .surface.tinted h2")?.textContent?.trim()||"90% trả lời hài lòng. Chúng ta nên kết luận thế nào?");
-  add(body,"strong","",title);
+  add(body,"strong","",window.liLanguage?.translate?.(title)||title);
   const activity=entry.legacy?
    ui("Có Bút Ký đã lưu · ","Saved case note · ")+formatDate(entry.savedAt):
    ui("Mở ","Opened ")+formatDate(entry.visitedAt);
@@ -270,7 +270,7 @@ function renderSavedBookmarkEntries(root,entries,knownCases,lessonById){
   }else{
    const found=entry.kind==="case"?knownCases[entry.record.id]:lessonById[entry.record.id];
    if(!found)continue;
-   add(body,"strong","",found.title);
+   add(body,"strong","",entry.kind==="lesson"?lessonTitle(found):(window.liLanguage?.translate?.(found.title)||found.title));
    add(body,"p","small",(entry.kind==="lesson"?ui("BÀI HỌC","LESSON"):ui("CASE · PHẢN CHỨNG","CASE · TEST A CLAIM"))+" · "+formatDate(entry.savedAt));
    route=found.route;
   }

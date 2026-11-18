@@ -170,7 +170,7 @@ try{
   await send("Emulation.setDeviceMetricsOverride",{width,height,deviceScaleFactor:1,mobile:width<=600});
   await send("Page.navigate",{url:base+"index.html?visualQA="+width});
   await waitReady();
-  const states=(width===390||width===820)?routes.concat(["buddyHome","buddyGuide","checkin","checkinShort","checkinShortEnd","checkinIncomplete","checkinSelected","checkinLongEN"]):width<=600?routes.concat(["checkin","checkinLongEN"]):routes;
+  const states=(width===390||width===820)?routes.concat(["buddyHome","buddyGuide","checkin","checkinShort","checkinShortEnd","checkinReopen","checkinIncomplete","checkinSelected","checkinLongEN"]):width<=600?routes.concat(["checkin","checkinLongEN"]):routes;
   for(const state of states){
    try{
     // Short-viewport fixture checks vertical modal scrolling without changing app source.
@@ -180,7 +180,7 @@ try{
      "document.querySelectorAll('.modal.open').forEach(x=>x.classList.remove('open'));"+
      "if(id==='guideDetail'){window.showMethod('T01');}"+
      "else if(id==='buddyHome'||id==='buddyGuide'){window.navigate(id==='buddyHome'?'home':'guide',{remember:false,focus:false,syncUrl:false});window.openLaoLy(document.getElementById('laoly-fab'));}"+
-     "else if(['checkin','checkinShort','checkinShortEnd','checkinIncomplete','checkinSelected','checkinLongEN'].includes(id)){window.navigate('home',{remember:false,focus:false,syncUrl:false});window.openModal('checkin-modal',document.getElementById('checkin'));if(id==='checkinLongEN')document.getElementById('checkin-title').textContent='How is your attention and energy level right now?';if(id==='checkinSelected'||id==='checkinIncomplete'){document.getElementById('checkin-sleep').value=id==='checkinSelected'?'no':'yes';document.getElementById('checkin-move').value=id==='checkinSelected'?'yes':'no';if(id==='checkinSelected')document.getElementById('checkin-rest').value='yes';document.getElementById('checkin-move').dispatchEvent(new Event('change',{bubbles:true}));}if(id==='checkinShortEnd'){const d=document.querySelector('#checkin-modal .dialog');d.scrollTop=d.scrollHeight;}}"+
+     "else if(['checkin','checkinShort','checkinShortEnd','checkinReopen','checkinIncomplete','checkinSelected','checkinLongEN'].includes(id)){window.navigate('home',{remember:false,focus:false,syncUrl:false});document.getElementById('checkin').click();const dialog=document.querySelector('#checkin-modal .dialog');if(id==='checkinReopen'){dialog.scrollTop=dialog.scrollHeight;document.getElementById('close-checkin').click();document.getElementById('checkin').click();}else dialog.scrollTop=0;if(id==='checkinLongEN')document.getElementById('checkin-title').textContent='How is your attention and energy level right now?';if(id==='checkinSelected'||id==='checkinIncomplete'){document.getElementById('checkin-sleep').value=id==='checkinSelected'?'no':'yes';document.getElementById('checkin-move').value=id==='checkinSelected'?'yes':'no';if(id==='checkinSelected')document.getElementById('checkin-rest').value='yes';document.getElementById('checkin-move').dispatchEvent(new Event('change',{bubbles:true}));}if(id==='checkinShortEnd'){const d=document.querySelector('#checkin-modal .dialog');d.scrollTop=d.scrollHeight;}}"+
      "else{document.querySelectorAll('.modal.open').forEach(x=>x.classList.remove('open'));window.navigate(id,{remember:false,focus:false,syncUrl:false});}"+
      "return id;})()";
     await evaluate(change);await sleep(80);
@@ -192,6 +192,11 @@ try{
      const response=await evaluate('document.getElementById("checkin-recommendation").textContent.trim()');
      item.samples.selected={applyEnabled:enabled,recommendation:response};
      if(!enabled||!response.startsWith("Gợi ý: Hồi trí"))item.failures.push({code:"checkin-physical-complete-not-ready",data:item.samples.selected});
+    }
+    if(state==="checkinReopen"){
+     const reopened=await evaluate('(()=>{const x=document.querySelector("#checkin-modal .dialog");return {scrollTop:x.scrollTop,scrollMax:x.scrollHeight-x.clientHeight};})()');
+     item.samples.reopen=reopened;
+     if(reopened.scrollMax>4&&reopened.scrollTop>3)item.failures.push({code:"checkin-reopens-at-stale-scroll-position",data:reopened});
     }
     if(state==="checkinIncomplete"){
      const enabled=await evaluate('!document.getElementById("apply-checkin").disabled');

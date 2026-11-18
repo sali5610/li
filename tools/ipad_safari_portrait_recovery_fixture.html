@@ -48,7 +48,7 @@ frame.addEventListener("load",function(){
    setTimeout(function(){
     const state=w.liSafariRotationQA||{},h=hero.getBoundingClientRect();
     test("Physical portrait wins over contradictory screen angle",state.physicalLandscape===false,state.physicalLandscape);
-    test("Portrait fallback activates at visual scale 1",root.classList.contains("li-safari-portrait-recovery"),state.mode);
+    test("Single physical Home canvas activates at visual scale 1",root.classList.contains("li-ipad-home-canvas")&&root.classList.contains("li-ipad-home-portrait"),state.mode);
     test("970px artwork width restored",Math.abs(h.width-970)<5,h.width);
     test("~1270px physical scene height restored",Math.abs(h.height-1270)<8,h.height);
     test("Bubble and both CTAs centered under mirror",centered(),JSON.stringify({bubble:bubble.getBoundingClientRect().left,action:actions.getBoundingClientRect().left}));
@@ -60,9 +60,40 @@ frame.addEventListener("load",function(){
     frame.style.height="1270px";
     trigger();
     setTimeout(function(){
-     test("Recovery removed after native portrait reflow",!root.classList.contains("li-safari-portrait-recovery"),root.className);
+     test("Physical Home canvas remains stable after native portrait reflow",root.classList.contains("li-ipad-home-portrait"),root.className);
      test("Portrait canvas remains 970px",Math.abs(hero.getBoundingClientRect().width-970)<5,hero.getBoundingClientRect().width);
-     finish();
+     // 05:24 physical PO repro: the device returns to landscape 1408×918
+     // while document/root STILL occupies 970×1270 from portrait.
+     // The fixed Home canvas must not inherit this stale root or scroll.
+     outerW=1408;outerH=970;legacyAngle=90;
+     native.type="landscape-primary";native.angle=0;
+     frame.style.width="1408px";frame.style.height="918px";
+     root.style.width="970px";root.style.height="1270px";
+     app.style.width="970px";hero.style.width="970px";
+     trigger();
+     setTimeout(function(){
+      const rect=hero.getBoundingClientRect();
+      const appRect=app.getBoundingClientRect();
+      const act=actions.getBoundingClientRect();
+      const bbl=bubble.getBoundingClientRect();
+      test("05:24 landscape root 970×1270 cannot shrink Home",
+        root.classList.contains("li-ipad-home-landscape")&&
+        Math.abs(rect.width-1408)<5&&Math.abs(rect.height-918)<5,
+        root.clientWidth+"×"+root.clientHeight+" hero "+rect.width+"×"+rect.height);
+      test("05:24 fixed scene anchors at viewport top and fills its bottom",
+        Math.abs(appRect.top)<5&&Math.abs(rect.top)<5&&Math.abs(rect.bottom-918)<5,
+        appRect.top+"/"+rect.top+"/"+rect.bottom);
+      test("05:24 centered bubble and buttons remain clickable in viewport",
+        Math.abs((act.left+act.right)/2-704)<5&&
+        Math.abs((bbl.left+bbl.right)/2-704)<5&&
+        bbl.bottom<=act.top+6&&act.bottom<=918,
+        JSON.stringify({action:act.left,bubble:bbl.left,bottom:act.bottom}));
+      // DOM is reused without location reload, persistence mutation or art swap.
+      test("Approved Home image persists after second rotation",
+        w.getComputedStyle(hero,"::before").backgroundImage.includes("home-li-ipad-20261119.jpg"),
+        w.getComputedStyle(hero,"::before").backgroundImage);
+      finish();
+     },600);
     },550);
    },650);
   },350);

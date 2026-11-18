@@ -153,3 +153,14 @@ The immediately following *portrait-shaped* screenshot showed `innerWidth`/visua
 - **Artwork:** retain a single approved `site/assets/home-li-ipad-20261119.jpg`; use `background-size:cover` with centered crop in portrait. Do not regenerate/recolor the image.
 - **Physical Safari contract:** 05:08 screenshot after rotating to portrait showed outer 970×1408 but visual 970×832, root/hero 1408×832, a blank lower paper region, native portrait despite CSS orientation landscape and visual scale 1.0. Runtime checks physical outer window geometry, mismatched root width and stale height; enforces portrait canvas 970px width with a bounded recovered visible height (approximately 1270px on this device), and keeps the recovery latched until native WebKit reports correct height. No numeric viewport meta, reload, storage mutation or forced app zoom.
 - **QA gate:** tests of live browser layout and 8 synthetic rotations are candidate evidence, not physical Safari acceptance. Recheck 970→1408→970 with `?debug=ipad`, Home no-scroll, bubble/CTA alignment, navigation and touch targets. PO G2 remains open.
+
+
+### UX-HOME-11 / UX-DS-33 · One-screen iPad Home geometry (2026-11-19)
+
+**Problem evidence (PO physical Safari, 05:24):** landscape visual viewport 1408×918 / physical outer 1408×970 but root 970×1270 from the previous portrait, causing Home to render only part of the viewport and reveal paper below. DS30–32 portrait/landscape CSS recovery branches were conflicting and did not provide correct physical-device results.
+
+**Approved composition preserved:** Home is a single, non-scrollable artwork viewport with transparent navigation, same approved landscape art asset \`site/assets/home-li-ipad-20261119.jpg\` and \`cover\` crop in portrait. Mirror copy remains in its opening; dark-green context bubble and two bottom CTAs share one center axis in both iPad orientations. iPhone composition and all non-Home routes remain unchanged.
+
+**Single implementation:** \`site/assets/ipad-safari-rotation.js\` chooses physical full-window iPad width/orientation from \`outerWidth/outerHeight\` (not stale CSS media orientation/root geometry). \`site/assets/ipad-home-canvas.css\` renders one fixed, clipped Home scene sized by \`--li-ipad-shell-width/height\`, reusing canonical iPad portrait/landscape token aliases. The script re-anchors scroll position on a physical orientation change. Old DS30–32 recovery CSS was deleted, not overlaid. For Stage Manager / Split View or non-Home routes it leaves native CSS layout alone. No numeric viewport meta, no reload/data reset, no third-party framework/expense.
+
+**QA:** source-only checks plus simulated Chrome tests now reproduce 05:08 portrait stale 970×832 and 05:24 landscape 1408×918 while root remains 970×1270; repeated rotations and Home control centering are explicit. This does *not* constitute physical iPad Safari, PWA, VoiceOver or real tap/hit testing. PO G2 remains open until real screen checks.

@@ -1,112 +1,105 @@
-/* UX-DS-31: iPadOS Safari physical-viewport reconciliation.
-   The prior UX-DS-30 numeric viewport width caused a 1408px layout to
-   remain zoomed to 0.69 in portrait on a 970px iPad. Never set a fixed
-   viewport width or disable pinch zoom. Browser-safe CSS recovery only.
-   Physical Safari still requires Human PO acceptance. */
+/* UX-DS-33 / UX-HOME-11: iPad Safari immersive Home canvas.
+   Source of truth for *physical* Home geometry is the full-window outer rectangle,
+   NOT CSS orientation, stale document.clientWidth, or stale 100dvh. During WebKit
+   rotation those values disagree (PO screenshot 05:24). Never write numeric
+   viewport meta widths, reload, clear progress, or enlarge Split View.
+   The corresponding CSS renders Home as one fixed, clipped scene while active. */
 (function(){
  "use strict";
- const meta=document.querySelector('meta[name="viewport"]');
- if(!meta)return;
- const normalMeta="width=device-width,initial-scale=1,viewport-fit=cover";
  const root=document.documentElement;
- const isTouchIPad=()=>/(iPad|Macintosh)/i.test(navigator.userAgent||"")&&navigator.maxTouchPoints>1;
- let queued=false,mode="initializing",lastChromeInset=0;
- window.liSafariRotationQA={initialized:true,mode};
- function measure(){
-   const s=window.screen;
-   const small=Math.min(Number(s.width)||0,Number(s.height)||0);
-   const large=Math.max(Number(s.width)||0,Number(s.height)||0);
-   const ow=Number(window.outerWidth)||0,oh=Number(window.outerHeight)||0;
-   const legacy=typeof window.orientation==="number"?window.orientation:null;
-   const angle=typeof s.orientation?.angle==="number"?s.orientation.angle:null;
-   const type=s.orientation?.type||"";
-   const sideways=x=>typeof x==="number"&&Math.abs((x%360+360)%360-180)===90;
-   const nativeLandscape=sideways(legacy)||sideways(angle)||type.startsWith("landscape");
-   // Full-width iPad outer dimensions reflect the real screen even when
-   // CSS/layout/visual viewports disagree. Never expand a Split View window.
-   const full=small>=700&&large>=1024&&Math.abs(Math.max(ow,oh)-large)<100&&
-     Math.abs(Math.min(ow,oh)-small)<100;
-   const geometryKnown=full&&Math.abs(ow-oh)>80;
-   const landscape=geometryKnown?ow>oh:nativeLandscape;
-   return {small,large,ow,oh,legacy,angle,type,full,landscape};
+ const app=document.querySelector(".app");
+ const meta=document.querySelector('meta[name="viewport"]');
+ const normalMeta="width=device-width,initial-scale=1,viewport-fit=cover";
+ if(!app||!meta)return;
+ const keys=["--li-ipad-shell-width","--li-ipad-shell-height"];
+ const classes=["li-ipad-home-canvas","li-ipad-home-landscape","li-ipad-home-portrait",
+   "li-safari-landscape-recovery","li-safari-portrait-recovery"];
+ const isIPad=()=>/(iPad|Macintosh)/i.test(navigator.userAgent||"")&&navigator.maxTouchPoints>1;
+ let queued=false,lastOrientation=null;
+ let knownPortraitInset=0,knownLandscapeInset=0;
+ let mode="initializing";
+ const read=(n)=>Number.isFinite(n)?Number(n):0;
+ const portraitOrLandscape=(w,h)=>w>h?"landscape":"portrait";
+
+ function physical(){
+   const screen=window.screen;
+   const small=Math.min(read(screen.width),read(screen.height));
+   const large=Math.max(read(screen.width),read(screen.height));
+   const outerW=read(window.outerWidth),outerH=read(window.outerHeight);
+   const complete=small>=700&&large>=1024&&outerW>0&&outerH>0&&
+     Math.abs(Math.max(outerW,outerH)-large)<100&&
+     Math.abs(Math.min(outerW,outerH)-small)<100;
+   return {small,large,outerW,outerH,complete,
+     orientation:portraitOrLandscape(outerW,outerH)};
+ }
+ function effectiveHeight(p){
+   const vv=window.visualViewport;
+   const vw=read(vv?.width)||read(window.innerWidth);
+   const vh=read(vv?.height)||read(window.innerHeight);
+   const widthMatches=Math.abs(vw-p.outerW)<96;
+   const portrait=p.orientation==="portrait";
+   // Only trust visualViewport when both its size and aspect reflect the
+   // physical outer rectangle. Safari 05:24: outer 1408×970, visual
+   // 1408×918, root 970×1270. Landscape visual size was healthy.
+   const credible=widthMatches&&vh>=p.outerH-235&&vh<=p.outerH+12;
+   if(credible){
+     const inset=p.outerH-vh;
+     if(inset>=0&&inset<=230){
+       if(portrait)knownPortraitInset=inset;
+       else knownLandscapeInset=inset;
+     }
+     return Math.round(vh);
+   }
+   // Safari 05:08: physical portrait 970×1408 reports old landscape
+   // 970×832. Infer portrait browser chrome from the old short-axis
+   // viewport (970−832=138) instead of rendering a tiny 832px Home.
+   const shortAxisInset=p.small-vh;
+   const reused=portrait?knownPortraitInset:knownLandscapeInset;
+   const inset=portrait&&shortAxisInset>=64&&shortAxisInset<=200?
+     shortAxisInset:reused>=32&&reused<=200?reused:portrait?138:52;
+   return Math.round(Math.max(600,p.outerH-inset));
+ }
+ function reset(){
+   classes.forEach(name=>root.classList.remove(name));
+   keys.forEach(name=>root.style.removeProperty(name));
+   root.dataset.liSafariRotation="native";
+   lastOrientation=null;
  }
  function reconcile(){
    queued=false;
-   const h=measure();
-   // Undo the prior hard-coded viewport even when Safari missed the return
-   // orientation event. Do not write a numeric width in either orientation.
    if(meta.content!==normalMeta)meta.content=normalMeta;
-   if(!isTouchIPad()||!h.full){
-     root.classList.remove("li-safari-landscape-recovery","li-safari-portrait-recovery");
-     for(const key of ["--li-safari-physical-width","--li-safari-physical-height",
-       "--li-safari-portrait-scale","--li-safari-portrait-inverse"]){
-       root.style.removeProperty(key);
-     }
-     root.dataset.liSafariRotation="normal";
-     mode=isTouchIPad()?"native split-window":"not iPad";
+   const p=physical();
+   if(!isIPad()||!p.complete||!app.classList.contains("home-focus")){
+     reset();
+     mode=!isIPad()?"not iPad":!p.complete?"native split-window":"non-home";
    }else{
-     const current=Number(window.innerWidth)||h.ow;
-     const visual=window.visualViewport;
-     const visualWidth=Number(visual?.width)||current;
-     const visualHeight=Number(visual?.height)||window.innerHeight;
-     const zoom=Number(visual?.scale)||1;
-     const rootHeight=root.clientHeight;
-     const rootWidth=root.clientWidth;
-     const appWidth=document.querySelector(".app")?.getBoundingClientRect().width||0;
-     const hero=document.querySelector("#page-home .hero");
-     const heroRect=hero?.getBoundingClientRect();
-     const target=h.landscape?h.large:h.small;
-     const modeToken=getComputedStyle(root).getPropertyValue("--li-ipad-active-mode").trim();
-     // Detect both independent Safari defects seen on the physical iPad:
-     // wrong layout width and root/hero height stuck in the other orientation.
-     const landscapeBroken=h.landscape&&(
-       current<target-80||visualWidth<target-80||
-       (heroRect&&heroRect.width>0&&heroRect.width<target-80)||
-       rootHeight>visualHeight+100||modeToken!=="landscape"||
-       !window.matchMedia("(orientation: landscape)").matches);
-     // On the physical iPad Safari 05:08 capture, portrait reports a
-     // 970×832 visual viewport but root/Home stays 1408×832. Neither
-     // innerWidth>970 nor zoom<1 holds: those older guards miss the bug.
-     // Use the native visual height alone to keep recovery latched across
-     // our own root reflow; rootHeight changes as soon as CSS is applied.
-     const stalePortraitHeight=!h.landscape&&
-       (visualHeight<h.oh-240||visualHeight>h.oh+140);
-     const portraitBroken=!h.landscape&&(
-       rootWidth>target+80||appWidth>target+80||
-       (heroRect&&heroRect.width>target+80)||
-       stalePortraitHeight||(current>target+80&&zoom<0.94));
-     // Safari uses the old landscape viewport height while rotating back
-     // portrait. Recover its browser chrome inset from the short physical
-     // screen axis (970−832=138), or the last valid landscape measurement.
-     // Only use it while the measured viewport is demonstrably stale.
-     if(h.landscape&&h.oh>visualHeight&&h.oh-visualHeight<240)
-       lastChromeInset=h.oh-visualHeight;
-     const shortAxisInset=h.small-visualHeight;
-     const inferredInset=shortAxisInset>=64&&shortAxisInset<=200?
-       shortAxisInset:lastChromeInset>=64&&lastChromeInset<=200?
-       lastChromeInset:Math.round(h.oh*0.10);
-     const physicalHeight=portraitBroken&&stalePortraitHeight?
-       Math.max(600,h.oh-inferredInset):visualHeight;
-     root.classList.toggle("li-safari-landscape-recovery",!!landscapeBroken);
-     root.classList.toggle("li-safari-portrait-recovery",!!portraitBroken);
-     root.style.setProperty("--li-safari-physical-width",Math.round(target)+"px");
-     root.style.setProperty("--li-safari-physical-height",Math.round(physicalHeight)+"px");
-     // Last-resort compensation while WebKit is still rendering the old
-     // 1408px portrait layout at 0.69 scale. Remove once reflow succeeds.
-     const factor=portraitBroken&&current>target+80&&zoom<0.94?Math.max(1,current/target):1;
-     root.style.setProperty("--li-safari-portrait-scale",factor.toFixed(6));
-     root.style.setProperty("--li-safari-portrait-inverse",(1/factor).toFixed(6));
-     root.dataset.liSafariRotation=landscapeBroken?"landscape-recovery":
-       portraitBroken?"portrait-recovery":"native";
-     mode=landscapeBroken?"CSS landscape canvas "+target:
-       portraitBroken?"CSS portrait canvas "+target+" × "+Math.round(physicalHeight):
-       "native "+(h.landscape?"landscape":"portrait");
+     const height=effectiveHeight(p);
+     root.classList.remove("li-safari-landscape-recovery","li-safari-portrait-recovery");
+     root.classList.add("li-ipad-home-canvas");
+     root.classList.toggle("li-ipad-home-landscape",p.orientation==="landscape");
+     root.classList.toggle("li-ipad-home-portrait",p.orientation==="portrait");
+     root.style.setProperty("--li-ipad-shell-width",Math.round(p.outerW)+"px");
+     root.style.setProperty("--li-ipad-shell-height",height+"px");
+     root.dataset.liSafariRotation=p.orientation+"-fixed-home";
+     // Safari may preserve the old page's scroll position after document
+     // height changes. Re-anchor only on physical orientation transitions.
+     if(lastOrientation!==p.orientation){
+       lastOrientation=p.orientation;
+       if(typeof window.scrollTo==="function")window.scrollTo(0,0);
+       root.scrollTop=0;
+       if(document.body)document.body.scrollTop=0;
+     }
+     mode=p.orientation+" fixed Home "+Math.round(p.outerW)+"×"+height;
    }
    window.liSafariRotationQA={
-     initialized:true,iPad:isTouchIPad(),physicalLandscape:h.landscape,
-     screen:[h.small,h.large],orientation:h.legacy,screenAngle:h.angle,
-     screenType:h.type,outerWidth:h.ow,outerHeight:h.oh,
-     innerWidth:window.innerWidth,meta:meta.content,mode
+     initialized:true,iPad:isIPad(),physicalLandscape:p.orientation==="landscape",
+     screen:[p.small,p.large],outerWidth:p.outerW,outerHeight:p.outerH,
+     innerWidth:window.innerWidth,innerHeight:window.innerHeight,
+     visualWidth:window.visualViewport?.width,visualHeight:window.visualViewport?.height,
+     rootWidth:root.clientWidth,rootHeight:root.clientHeight,
+     screenAngle:window.screen.orientation?.angle,
+     screenType:window.screen.orientation?.type,
+     orientation:window.orientation,meta:meta.content,mode
    };
    window.dispatchEvent(new CustomEvent("li-safari-rotation-qa"));
  }
@@ -115,18 +108,24 @@
    queued=true;
    setTimeout(reconcile,0);
  }
- function afterRotation(){
+ function onRotation(){
    schedule();
-   // WebKit sometimes emits orientationchange before visualViewport settles.
+   // WebKit sends orientationchange before visualViewport and compositor
+   // settle. Reconcile again without depending on the stale CSS orientation.
    setTimeout(schedule,180);
    setTimeout(schedule,650);
+   setTimeout(schedule,1100);
  }
- if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",afterRotation,{once:true});
- else afterRotation();
+ if(document.readyState==="loading")
+   document.addEventListener("DOMContentLoaded",onRotation,{once:true});
+ else onRotation();
  window.addEventListener("resize",schedule,{passive:true});
- window.addEventListener("orientationchange",afterRotation,{passive:true});
+ window.addEventListener("orientationchange",onRotation,{passive:true});
  window.visualViewport?.addEventListener("resize",schedule,{passive:true});
- window.screen.orientation?.addEventListener?.("change",afterRotation,{passive:true});
- window.addEventListener("pageshow",afterRotation,{passive:true});
- document.addEventListener("visibilitychange",function(){if(!document.hidden)afterRotation()},{passive:true});
+ window.visualViewport?.addEventListener("scroll",schedule,{passive:true});
+ window.screen.orientation?.addEventListener?.("change",onRotation,{passive:true});
+ window.addEventListener("pageshow",onRotation,{passive:true});
+ document.addEventListener("visibilitychange",()=>{if(!document.hidden)onRotation();},{passive:true});
+ if(typeof MutationObserver==="function")
+   new MutationObserver(schedule).observe(app,{attributes:true,attributeFilter:["class"]});
 })();

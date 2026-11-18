@@ -30,6 +30,49 @@
     const scene=doc.querySelector("#page-home .hero");
     const image=scene?w.getComputedStyle(scene,"::before").backgroundImage:"";
     report("Approved Home illustration loaded from new CSS-relative path",image.includes("home-mystic-cool-"),image.slice(0,170));
+    /* UX-NAV-12/13 computed UI regression on the actual app, not a mockup. */
+    const homeSave=doc.getElementById("save-question"),homePrimary=doc.getElementById("mirror-primary-action");
+    report("Home save icon aligns with Đào sâu outside Gương",Boolean(homeSave&&homePrimary&&
+      Math.abs(homeSave.getBoundingClientRect().top-homePrimary.getBoundingClientRect().top)<=2&&
+      !doc.querySelector("#page-home .mirror-message #save-question")),
+      homeSave&&homePrimary?Math.round(homeSave.getBoundingClientRect().top)+"/"+Math.round(homePrimary.getBoundingClientRect().top):"missing");
+    const globalBack=doc.getElementById("global-back");
+    report("Global Back is hidden on homepage",Boolean(globalBack&&globalBack.hidden));
+    if(typeof w.navigate==="function")w.navigate("case",{focus:false,syncUrl:false});
+    report("Global Back appears on inner route",Boolean(globalBack&&!globalBack.hidden));
+    const header=doc.querySelector(".header");
+    w.scrollTo(0,420);
+    report("Back stays on sticky header after scrolling",Boolean(globalBack&&header&&
+      Math.abs(header.getBoundingClientRect().top)<=1&&
+      globalBack.getBoundingClientRect().top>=-1&&
+      globalBack.getBoundingClientRect().bottom<=header.getBoundingClientRect().bottom+2),
+      header?Math.round(header.getBoundingClientRect().top)+"/"+Math.round(globalBack.getBoundingClientRect().top):"missing");
+    const transparent=x=>x==="rgba(0, 0, 0, 0)"||x==="transparent";
+    function bookmarkVisual(label,node){
+      if(!node){report(label,false,"missing");return;}
+      const style=w.getComputedStyle(node),size=node.getBoundingClientRect();
+      report(label,transparent(style.backgroundColor)&&
+        style.borderTopWidth==="0px"&&style.boxShadow==="none"&&
+        size.width>=48&&size.height>=48&&node.tagName==="BUTTON"&&
+        !node.textContent.trim(),
+        [style.backgroundColor,style.borderTopWidth,style.boxShadow,Math.round(size.width),Math.round(size.height)].join("/"));
+    }
+    const caseSave=doc.querySelector('#page-case .library-icon-action[data-li-bookmark-kind="case"]');
+    bookmarkVisual("Case Save is transparent icon-only with 48px hit target",caseSave);
+    if(caseSave){
+      caseSave.click();
+      report("Saved case stays transparent and pressed icon changes",caseSave.getAttribute("aria-pressed")==="true"&&
+        transparent(w.getComputedStyle(caseSave).backgroundColor)&&
+        w.getComputedStyle(caseSave).borderTopWidth==="0px");
+      if(typeof w.navigate==="function")w.navigate("resume",{focus:false,syncUrl:false});
+      doc.getElementById("li-bookmark-tab-questions")?.click();
+      const unsave=doc.querySelector("#page-resume .library-unsave-icon");
+      bookmarkVisual("Quay lại Unsave has no background, border or shadow",unsave);
+    }
+    if(typeof w.navigate==="function")w.navigate("lessonL09",{focus:false,syncUrl:false});
+    bookmarkVisual("Lesson Save is transparent icon-only",doc.querySelector('#page-lessonL09 .library-icon-action[data-li-bookmark-kind="lesson"]'));
+    if(typeof w.navigate==="function")w.navigate("home",{focus:false,syncUrl:false});
+    w.scrollTo(0,0);
     if(w.innerWidth<=600){
      const nav=doc.querySelector(".mobile-nav .nav-btn");
      const headerControl=doc.querySelector(".header .tool-button");

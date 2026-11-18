@@ -23,7 +23,7 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 | Viewport widths | 320, 375, 390, 402, 600, 820, 1440 CSS px; narrow portrait and useful landscape heights |
 | Long content | Vietnamese diacritics, English text expansion, long title/question, zoom/text size, no truncation without affordance |
 | Navigation | Top/bottom selection synchronized; icon remains legible; fixed/sticky bars don't hide content |
-| Home | Question inside mirror; context below question; Lưu left / Đào sâu right; Lão Lý does not overlap |
+| Home | Question inside mirror; context below question; Lưu left / Đào sâu right; **Lão Lý is an intentional floating action button (FAB)** and may overlap content, buttons or bottom nav. Do not flag intersections themselves; check FAB visibility and primary hit target instead. |
 | Touch | 44×44 intended target, no rectangular iOS tap flash, no sticky touch-hover rectangle, scrolling still works |
 | Accessibility | Keyboard order, visible focus, label/role, error announcement, reduced motion; **pinch-zoom lock caveat** |
 | Assets | Correct source, crop-safe center, approved status, alt/caption, no pending design published |

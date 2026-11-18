@@ -135,6 +135,19 @@ function auditImpl(){
    const d=R(el.querySelector(".dialog"));
    samples.modal={id:modal,dialog:d};
    if(d&&(d.x < -4||d.r>W+4))add(failures,"modal-out-of-horizontal-bounds",d);
+   // UX-DS-06: screenshot review found actual 390px Check-in heading line collision.
+   // Display role is 48/56, but a legacy .dialog h2 inherits line-height:1.
+   // This check deliberately covers modal headings missed by .page-only text QA.
+   if(modal==="checkin-modal"){
+    const title=el.querySelector("#checkin-title");
+    if(visible(title)){
+     const cs=getComputedStyle(title);
+     const fontSize=parseFloat(cs.fontSize),lineHeight=parseFloat(cs.lineHeight);
+     samples.modal.heading={text:title.textContent.trim(),fontSize,lineHeight,rect:R(title)};
+     if(!Number.isFinite(lineHeight)||lineHeight<fontSize*1.1)
+      add(failures,"modal-heading-leading-too-tight",samples.modal.heading);
+    }
+   }
   }
  }
  return{route:id,viewport:{w:W,h:H},overflow,failures,warnings,samples};

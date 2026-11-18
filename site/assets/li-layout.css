@@ -906,7 +906,7 @@ section.page[tabindex="-1"]:focus-visible {outline:none!important}
 #buddy-modal .ly-debate .action-row{grid-template-columns:1fr}
 #buddy-modal .buddy-actions{flex:0 0 auto;border-top:1px solid var(--rule);padding-top:var(--li-space-3);margin-top:var(--li-space-3);background:var(--paper)}
 #buddy-modal .action-row .action:focus-visible{outline:3px solid var(--wood);outline-offset:3px}
-body:has(#buddy-modal.open) .laoly-support{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+body:has(.modal.open) .laoly-support{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 .ly-mode-panel{padding-top:var(--li-space-4);margin-top:var(--li-space-4);border-top:1px solid var(--rule)}
 .ly-mode-heading{font-size:var(--li-type-caption);font-weight:800;letter-spacing:.11em;color:var(--moss);margin-bottom:var(--li-space-3)}
 .ly-mode-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--li-space-2)}

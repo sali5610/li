@@ -68,9 +68,10 @@ assert html.count('<link rel="apple-touch-icon" sizes="180x180" href="./assets/a
 assert '<meta name="apple-mobile-web-app-title" content="li.">' in html
 assert '<meta name="theme-color" content="#243A29">' in html
 
-# S136: mirror label is typographic only, not a search control.
-assert html.count('<div class="mirror-label">Gương Vạn Vấn</div>') == 1
-assert '<div class="mirror-label"><i data-lucide="search"' not in html
+# UX-HOME-05: PO removes the visible mirror title; question + accessible region survive.
+assert 'class="mirror-titlebar"' not in html
+assert 'class="mirror-label"' not in html
+assert 'aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn"' in html
 
 # S138/S139: touch swipe only on mirror; fixed-scale viewport and sticky header.
 for needle in (
@@ -331,7 +332,7 @@ assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
-assert 'library-hub.css?v=20261119-home-device-scenes' in page_html
+assert 'library-hub.css?v=20261119-home-topnav-fullbleed' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_note_versions.cjs")],check=True,cwd=site.parent)
 
 # S120: all 13 Thần Chú methods share this same Guide Detail template.
@@ -482,7 +483,7 @@ subprocess.run(["node",str(site.parent/"tools"/"test_library_case_review.cjs")],
 # UX-HOME-01: The Home-only Save action shares the primary CTA component;
 # elsewhere Save/Unsave and Delete remain independent icon utilities.
 home=section("home")
-assert 'class="mirror-titlebar"' in home and 'class="library-icon-utility mirror-bookmark-slot"' not in home
+assert 'class="mirror-titlebar"' not in home and 'class="library-icon-utility mirror-bookmark-slot"' not in home
 assert 'id="save-question"' in home
 hero_actions=home[home.index('<div class="hero-actions">'):home.index('</div></div>',home.index('<div class="hero-actions">'))]
 assert 'id="save-question"' in hero_actions
@@ -596,13 +597,23 @@ assert 'const questions=ordered([' in hub and 'x.type==="case"' in hub
 assert 'savedQuestions.map(x=>({kind:"question"' in hub
 assert 'shelf.renderResume()' in (site.parent/"tools"/"test_library_hub_v2.cjs").read_text(encoding="utf-8")
 
-# S120: mirror-variant illustration stored locally and not silently downgraded
-# to a chat icon; Bút Ký uses same paper surface as cards 03-04.
+# UX-ART-04: latest user-selected geometric papercraft illustration, sourced from the current GitHub library,
+# not an obsolete legacy binary; Bút Ký surface remains aligned with cards 03-04.
 illustrated=site/"assets"/"laoly-mirror-suy-nghi.png"
 assert illustrated.is_file() and illustrated.stat().st_size > 100000
 raw_illustrated=illustrated.read_bytes()
 assert raw_illustrated[:8] == bytes([137,80,78,71,13,10,26,10])
 assert (int.from_bytes(raw_illustrated[16:20],"big"), int.from_bytes(raw_illustrated[20:24],"big")) == (1024,1024)
+assert raw_illustrated == (site.parent/"design-assets"/"lao-ly"/"trong-guong"/"lao_ly_10_suy_nghi_mirror.png").read_bytes(), "Settings art must match canonical papercraft source"
+assert (site/"assets"/"laoly-guide-rest.png").read_bytes() == (site.parent/"design-assets"/"lao-ly"/"trong-guong"/"lao_ly_04_buon_ngu_mirror.png").read_bytes(), "Guide character art must match canonical source"
+for deployed,source in [
+ ("laoly-neutral.png","lao_ly_chat_icon_master_1024.png"),
+ ("laoly-mode-start.png","lao_ly_mode_vao_nhip_1024.png"),
+ ("laoly-mode-focus.png","lao_ly_mode_dao_sau_1024.png"),
+ ("laoly-mode-overload.png","lao_ly_mode_qua_tai_1024.png"),
+ ("laoly-mode-recover.png","lao_ly_mode_hoi_tri_1024.png"),
+]:
+    assert (site/"assets"/deployed).read_bytes() == (site.parent/"design-assets"/"lao-ly"/"icon"/source).read_bytes(), "Deployed character icon differs from papercraft library: "+deployed
 assert 'class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"' in settings
 assert 'class="settings-buddy-illustration" src="./assets/laoly-neutral.png"' not in settings
 assert '<article id="notebook-section" class="surface" tabindex="-1"' in library
@@ -683,7 +694,7 @@ assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
 
 # UX-DS-11 · Review components are connected; app Guide chips use full pills.
-assert 'ui-foundations.css?v=20261118-ds20-coverage' in page_html
+assert 'ui-foundations.css?v=20261119-home-transparent-topnav' in page_html
 assert '#page-guide #method-filters .filter,' in foundation and 'border-radius:999px!important;' in foundation
 v3=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert 'component-review-v3.css?v=20261118-ds20-coverage' in v3
@@ -767,7 +778,7 @@ assert 'Top Navigation transparent Home' not in page_html
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
 assert 'li-layout.css?v=20261118-ds20-coverage' in page_html
-assert 'ui-foundations.css?v=20261118-ds20-coverage' in page_html
+assert 'ui-foundations.css?v=20261119-home-transparent-topnav' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation
@@ -790,8 +801,9 @@ assert 'ds-large light' in review and 'ds-large warm' in review
 assert all(x in review for x in ('ds-textarea','ds-chip-result','ds-error','ds-disabled','ds-readonly'))
 assert all(x in review for x in ('ds-home-bubble','ds-tabs','ds-utility','ds-back','ds-link'))
 
-# S159: mirror name remains consistent while purpose-specific CTAs still route.
-assert 'if(kind)kind.textContent="Gương Vạn Vấn";' in page_html
+# UX-HOME-05: no JS rerender can resurrect the removed visible mirror title.
+assert 'if(kind)kind.textContent="Gương Vạn Vấn";' not in page_html
+assert 'querySelector("#page-home .mirror-message .mirror-label")' not in page_html
 assert 'Gương Vạn Vấn · Vấn đề' not in page_html
 assert 'Gương Vạn Vấn · Điều bất ngờ' not in page_html
 assert 'if(kind)kind.textContent="Gương Vạn Vấn · "' not in page_html

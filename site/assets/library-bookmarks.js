@@ -4,6 +4,7 @@
 "use strict";
 const LESSONS={"L03-1-2":"lessonL03","L09-1-2":"lessonL09","L15-2-2":"lessonL15"};
 const CASES={"sampling-bias-90":"case"};
+const isEnglish=()=>window.liLanguage?.get?.()==="en";
 function valid(type,id){return type==="lesson"?Object.prototype.hasOwnProperty.call(LESSONS,id):type==="case"&&Object.prototype.hasOwnProperty.call(CASES,id);}
 function isSaved(type,id){return valid(type,id)&&savedContent.some(item=>item.type===type&&item.id===id);}
 function refresh(){
@@ -11,7 +12,7 @@ function refresh(){
   const type=button.dataset.liBookmarkKind,id=button.dataset.liBookmarkId;
   if(!valid(type,id)){button.disabled=true;return;}
   const saved=isSaved(type,id);
-  const label=(saved?"Bỏ lưu ":"Lưu ")+(type==="lesson"?"bài":"case")+(type==="lesson"?" "+id:"");
+  const label=isEnglish()?(saved?"Remove bookmark for ":"Bookmark ")+(type==="lesson"?"lesson "+id:"case"):(saved?"Bỏ lưu ":"Lưu ")+(type==="lesson"?"bài":"case")+(type==="lesson"?" "+id:"");
   button.setAttribute("aria-pressed",String(saved));
   button.setAttribute("aria-label",label);
   button.setAttribute("title",label);
@@ -33,13 +34,13 @@ function toggle(type,id){
  refresh();
  window.liLibraryShelf?.renderResume();
  if(removing){
-  toast("Đã bỏ lưu "+(type==="lesson"?"bài học.":"case."),{undo:()=>{
+  toast(isEnglish()?(type==="lesson"?"Lesson bookmark removed.":"Case bookmark removed."):"Đã bỏ lưu "+(type==="lesson"?"bài học.":"case."),{undo:()=>{
    if(savedContent.some(item=>item.type===type&&item.id===id))return true;
    const at=Math.min(index,savedContent.length);savedContent.splice(at,0,removed);
    if(!liWriteState()){savedContent.splice(at,1);return false;}
    refresh();window.liLibraryShelf?.renderResume();return true;
   }});
- }else toast("Đã lưu "+(type==="lesson"?"bài học":"case")+" vào Quay lại · Dấu Trang.");
+ }else toast(isEnglish()?(type==="lesson"?"Lesson saved to Continue · Bookmarks.":"Case saved to Continue · Bookmarks."):"Đã lưu "+(type==="lesson"?"bài học":"case")+" vào Quay lại · Dấu Trang.");
  return true;
 }
 document.addEventListener("click",event=>{
@@ -49,5 +50,6 @@ document.addEventListener("click",event=>{
  toggle(trigger.dataset.liBookmarkKind,trigger.dataset.liBookmarkId);
 });
 window.liBookmarks=Object.freeze({valid,isSaved,toggle,refresh});
+window.addEventListener?.("li:localechange",refresh);
 refresh();
 })();

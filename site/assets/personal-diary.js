@@ -38,7 +38,7 @@ function render(){
  const disclosure=$("li-checkin-recording-disclosure");
  if(disclosure)disclosure.textContent=storageError?"Không thể lưu nhật ký trên thiết bị này. Check-in chỉ giữ trong phiên; hãy tự ghi lại nếu cần.":enabled?"Đang lưu Check-in và nhịp đã áp dụng vào Nhật Ký trên thiết bị này; không gửi máy chủ. Có thể dừng ghi ở cuối trang Nhật Ký.":"Bạn đã dừng lưu Nhật Ký. Check-in này chỉ giữ trong phiên, không ghi thêm vào lịch.";
  $("li-diary-delete").disabled=storageError||!Object.keys(diary.days).length;
- $("li-diary-month").textContent=new Intl.DateTimeFormat("vi-VN",{month:"long",year:"numeric"}).format(new Date(month+"-01T12:00:00"));
+ $("li-diary-month").textContent=new Intl.DateTimeFormat(window.liLanguage?.get?.()==="en"?"en-US":"vi-VN",{month:"long",year:"numeric"}).format(new Date(month+"-01T12:00:00"));
  const parts=month.split("-").map(Number),yr=parts[0],mo=parts[1];
  const days=new Date(yr,mo,0).getDate(),offset=(new Date(yr,mo-1,1).getDay()+6)%7;
  const calendar=$("li-diary-calendar");calendar.replaceChildren();
@@ -66,7 +66,7 @@ function render(){
   append(b,"span","li-diary-bar-total",record?String(total):"—");
  }
  const rec=safeDay(selected),phy=rec?.physical;
- $("li-diary-selected").textContent=new Intl.DateTimeFormat("vi-VN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(new Date(selected+"T12:00:00"));
+ $("li-diary-selected").textContent=new Intl.DateTimeFormat(window.liLanguage?.get?.()==="en"?"en-US":"vi-VN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(new Date(selected+"T12:00:00"));
  for(const t of ["sleep","move","rest"])$("li-diary-"+t).textContent=phy&&ANSWER[phy[t]]?ANSWER[phy[t]]:"—";
  $("li-diary-mode").textContent=rec&&MODE[rec.mode]?MODE[rec.mode]:"—";
  $("li-diary-checkins").textContent=rec?String(rec.checkins||0):"—";
@@ -125,5 +125,6 @@ window.addEventListener("li:activity",e=>{
  if(!TYPES.includes(type)||typeof id!=="string"||!id.trim()||id.length>256)return;
  put(d=>{if(d.activities[type].includes(id))return false;d.activities[type].push(id);return true;});
 });
+window.addEventListener("li:localechange",render);
 render();
 })();

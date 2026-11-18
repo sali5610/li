@@ -333,8 +333,8 @@ assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
 # UX-DS-25: honor device-aware Home cache key.
-assert 'library-hub.css?v=20261119-ds27-landscape-grid' in page_html
-assert "ipad-viewport-debug.js?v=20261119-ds27" in page_html
+assert 'library-hub.css?v=20261119-uxhome08-viewport' in page_html
+assert "ipad-viewport-debug.js?v=20261119-uxhome08-viewport" in page_html
 assert (site/"assets"/"ipad-viewport-debug.js").exists()
 # UX-HOME-07: no Home-only min-height can force a page scroll, and routing
 # must restore browser scrolling for all other screens.

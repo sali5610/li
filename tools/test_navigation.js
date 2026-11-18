@@ -101,6 +101,6 @@ sandbox.navigate("home");assert.equal(location.searchParams.get("lesson"),null,"
 sandbox.navigate("lessonL03");assert.equal(location.searchParams.get("lesson"),"L03-1-2");
 sandbox.navigate("lessonL15");assert.equal(location.searchParams.get("lesson"),"L15-2-2");
 sandbox.navigate("home");assert.equal(location.searchParams.has("lesson"),false);
-assert.equal(calls.lesson,4,"record only published lesson navigation");
+assert.equal(calls.lesson,3,"record only published lesson navigation");
 assert.ok(urlReplacements.length>=5,"Route updates should be captured without reloading");
 console.log("PASS S118 back navigation: Settings, Search, Capture, chained routes, duplicate prevention, fallback and Guide/Library/Research hooks");

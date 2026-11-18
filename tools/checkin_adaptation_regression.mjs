@@ -80,13 +80,37 @@ const cases=[
  [physical("yes","yes","yes"),"","hard", "recover"],
  [physical("no","yes","yes"),"low","hard","overload"],
  [physical("yes","yes","yes"),"low","hard","overload"],
- [physical("no","yes","yes"),"high","steady","recover"],
+ [physical("no","yes","yes"),"high","steady","start"],
  [physical("yes","yes","yes"),"high","steady","focus"],
+ [physical("yes","yes","yes"),"medium","steady","focus"],
+ [physical("yes","yes","yes"),"high","warming","focus"],
+ [physical("yes","no","yes"),"high","","start"],
+ [physical("yes","no","yes"),"high","steady","start"],
+ [physical("yes","no","yes"),"","steady","start"],
+ [physical("yes","no","yes"),"high","hard","recover"],
+ [physical("no","no","yes"),"high","steady","recover"],
  [physical("invalid","yes","yes"),"","",null]
 ];
 for(const [p,e,a,want] of cases){
  assert.equal(context.recommendStudyMode(p,e,a)?.mode??null,want,JSON.stringify({p,e,a,want}));
 }
+// Explicit positive-point invariant: additions are real, and may change the recommended mode.
+const basePhysical=physical("yes","no","yes");
+const base=context.recommendStudyMode(basePhysical);
+const high=context.recommendStudyMode(basePhysical,"high");
+const clear=context.recommendStudyMode(basePhysical,"","steady");
+const both=context.recommendStudyMode(basePhysical,"high","steady");
+assert.equal(base.mode,"recover");
+assert.equal(high.mode,"start","High energy must actually promote Recover -> Start when L1 allows");
+assert.equal(high.points,base.points+1,"High energy must contribute exactly +1");
+assert.equal(high.energyPoints,1);
+assert.equal(clear.points,base.points+1,"Clear focus must contribute exactly +1");
+assert.equal(both.points,base.points+2,"Two positive inputs add, not overwrite each other");
+assert.equal(both.mode,"start","A physical Chưa must cap the automatic suggestion at Start");
+assert.ok(high.positives.includes("Năng lượng dồi dào +1"));
+assert.equal(context.recommendStudyMode(physical("yes","yes","yes"),"medium","steady").mode,"focus");
+assert.equal(context.recommendStudyMode(physical("yes","yes","yes"),"medium").mode,"start");
+
 Object.assign(state,{sleep:"yes",move:"yes",rest:"",override:"focus"});
 listeners["modal:change"]();
 assert.equal(fields["apply-checkin"].disabled,true,"Override cannot bypass physical answer");

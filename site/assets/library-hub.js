@@ -13,6 +13,7 @@ const LESSONS={
  lessonL15:{id:"L15-2-2",title:"Điểm đặt hàng lại & tồn kho an toàn"}
 };
 let collectionFilter="all";
+let bookmarkTab="lesson";
 let visitStore={schema:1,items:[]},visitError=false;
 try{
  const raw=window.localStorage.getItem(VISITS_KEY);
@@ -214,20 +215,41 @@ function renderIdeas(){
  const detail=add(block,"button","library-text-link library-detail-link","Xem chi tiết");
  detail.type="button";detail.addEventListener("click",()=>window.liNotes?.openDetail("idea",item.id));
 }
-function renderBookmarks(){
- const root=$("li-saved-questions"),placeholder=$("li-bookmarks-empty");
+/* Dấu Trang has exactly two independent tabs:
+   Bài học = explicit published lesson saves;
+   Câu hỏi = saved Gương questions and published Phản Chứng cases.
+   Never mix these categories in one visual list. */
+function selectBookmarkTab(type,focus=false){
+ if(type!=="lesson"&&type!=="question")return;
+ bookmarkTab=type;
+ for(const kind of ["lesson","question"]){
+  const tab=$(kind==="lesson"?"li-bookmark-tab-lessons":"li-bookmark-tab-questions");
+  const panel=$(kind==="lesson"?"li-bookmark-panel-lessons":"li-bookmark-panel-questions");
+  if(tab){
+   tab.setAttribute("aria-selected",String(kind===type));
+   tab.setAttribute("tabindex",kind===type?"0":"-1");
+   if(focus&&kind===type)tab.focus();
+  }
+  if(panel)panel.hidden=kind!==type;
+ }
+}
+for(const type of ["lesson","question"]){
+ const tab=$(type==="lesson"?"li-bookmark-tab-lessons":"li-bookmark-tab-questions");
+ if(!tab)continue;
+ tab.addEventListener("click",()=>selectBookmarkTab(type));
+ tab.addEventListener("keydown",event=>{
+  const next=(event.key==="ArrowLeft"||event.key==="ArrowRight")?
+   (type==="lesson"?"question":"lesson"):
+   event.key==="Home"?"lesson":event.key==="End"?"question":null;
+  if(!next)return;
+  event.preventDefault();
+  selectBookmarkTab(next,true);
+ });
+}
+function renderSavedBookmarkEntries(root,entries,knownCases,lessonById){
  if(!root)return;
  root.replaceChildren();
- // Legacy question bookmarks and new typed lesson/case bookmarks share one list.
- const currentSaved=typeof savedContent!=="undefined"?savedContent:[];
- const knownCases={"sampling-bias-90":{title:"90% trả lời hài lòng · Phản Chứng",route:"case"}};
- const lessonById=Object.fromEntries(Object.entries(LESSONS).map(([route,meta])=>[meta.id,{...meta,route}]));
- const all=[
-  ...savedQuestions.map(x=>({kind:"question",savedAt:x.savedAt,record:x})),
-  ...currentSaved.filter(x=>x&&((x.type==="case"&&knownCases[x.id])||(x.type==="lesson"&&lessonById[x.id]))).map(x=>({kind:x.type,savedAt:x.savedAt,record:x}))
- ].sort((a,b)=>(Date.parse(b.savedAt)||0)-(Date.parse(a.savedAt)||0));
- if(placeholder)placeholder.hidden=all.length>0;
- for(const entry of all){
+ for(const entry of entries){
   const row=add(root,"div","path-item library-list-item");
   const body=add(row,"div","library-list-copy");
   let route=null,questionIndex=-1;
@@ -258,7 +280,6 @@ function renderBookmarks(){
     navigate(target);
    });
   }else open.dataset.page=route;
-  // Bookmark utility lives in its own right-hand slot, never beside "Mở lại".
   const utility=add(row,"div","library-icon-utility library-row-utility");
   const remove=add(utility,"button","library-icon-action library-unsave-icon");
   remove.type="button";
@@ -276,6 +297,25 @@ function renderBookmarks(){
    renderBookmarks();toast("Đã bỏ lưu câu hỏi.");
   });
  }
+}
+function renderBookmarks(){
+ const lessonRoot=$("li-saved-lessons"),questionRoot=$("li-saved-questions");
+ if(!lessonRoot||!questionRoot)return;
+ const currentSaved=typeof savedContent!=="undefined"?savedContent:[];
+ const knownCases={"sampling-bias-90":{title:"90% trả lời hài lòng · Phản Chứng",route:"case"}};
+ const lessonById=Object.fromEntries(Object.entries(LESSONS).map(([route,meta])=>[meta.id,{...meta,route}]));
+ const ordered=items=>items.sort((a,b)=>(Date.parse(b.savedAt)||0)-(Date.parse(a.savedAt)||0));
+ const lessons=ordered(currentSaved.filter(x=>x&&x.type==="lesson"&&lessonById[x.id]).map(x=>({kind:"lesson",savedAt:x.savedAt,record:x})));
+ const questions=ordered([
+  ...savedQuestions.map(x=>({kind:"question",savedAt:x.savedAt,record:x})),
+  ...currentSaved.filter(x=>x&&x.type==="case"&&knownCases[x.id]).map(x=>({kind:"case",savedAt:x.savedAt,record:x}))
+ ]);
+ const lessonEmpty=$("li-bookmarks-empty-lessons"),questionEmpty=$("li-bookmarks-empty-questions");
+ if(lessonEmpty)lessonEmpty.hidden=lessons.length>0;
+ if(questionEmpty)questionEmpty.hidden=questions.length>0;
+ renderSavedBookmarkEntries(lessonRoot,lessons,knownCases,lessonById);
+ renderSavedBookmarkEntries(questionRoot,questions,knownCases,lessonById);
+ selectBookmarkTab(bookmarkTab);
 }
 function renderHome(){
  renderLessonRows($("li-library-latest-lesson"),1);
@@ -330,5 +370,5 @@ document.querySelectorAll("[data-collection-filter]").forEach(button=>button.add
  collectionFilter=button.dataset.collectionFilter;
  renderCollection();
 }));
-window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,trackLesson,trackProblem,renderProblemRows});
+window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,renderProblemRows});
 })();

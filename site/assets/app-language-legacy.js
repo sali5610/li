@@ -876,5 +876,6 @@ window.LI_LEGACY_EN={
   "Về Đại Sảnh": "Back to Great Hall",
   "Lão đưa về Gương Vạn Vấn.": "I'll take you back to the Mirror of Questions.",
   "Ta đi từng bước.": "One step at a time.",
-  "Im Lặng · Lời thoại Lão Lý đang tắt.": "Lão Lý is muted."
+  "Im Lặng · Lời thoại Lão Lý đang tắt.": "Lão Lý is muted.",
+  "Ý đã nhặt chỉ lưu trên thiết bị khi ngươi bấm Lưu. Nếu lưu lỗi, app sẽ báo rõ; lão không nhận vơ.": "Captured Ideas are saved on this device when you press Save. If saving fails, the app will tell you. I won't claim a save that didn't happen."
 };

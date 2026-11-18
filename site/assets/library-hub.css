@@ -461,8 +461,8 @@
     instead of ending at its border. Keep light controls readable on the art. */
  body:has(.app.home-focus) .mobile-nav{
   background:linear-gradient(to top,
-    color-mix(in srgb,var(--forest) 88%,transparent),
-    color-mix(in srgb,var(--forest) 38%,transparent))!important;
+    color-mix(in srgb,var(--forest) 88%,var(--li-uxds10-touch-clear)),
+    color-mix(in srgb,var(--forest) 38%,var(--li-uxds10-touch-clear)))!important;
   border-top:0!important;
   box-shadow:none!important;
  }

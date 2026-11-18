@@ -31,6 +31,15 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 | Assets | Correct source, crop-safe center, approved status, alt/caption, no pending design published |
 | Evidence & trust | Draft/published/source labels accurate; genuine save state; no fabricated research results |
 
+### Component Review UX-DS-09 completeness / PO requested
+- [ ] Icons: Lucide-only functional artwork, consistent 18/20/22/24 role sizes and stroke, semantics identical on Home & mobile nav. Tủ Riêng uses archive; bookmark reserved for saved items.
+- [ ] Actions: primary, secondary, text-link, disabled, hover, pressed, focus visible; actual click behavior honest.
+- [ ] Large cards: light ivory `--cream` and warm ivory `--paper-2`, same anatomy, no accidental compact two-up.
+- [ ] Forms: text input default, filled, focus, error, disabled, readonly; textarea content, disabled and unsaved counter; filter chip default/selected/disabled and screenreader states.
+- [ ] Home chat bubble: subtle border, no card shadow, long copy and actual hero artwork alignment independent.
+- [ ] Navigation: utility, mobile 4-tab, nested Back. Verify same icon names and selected semantics.
+- [ ] Headless Chrome board fixture asserts interactive states; **physical Safari, VoiceOver, text zoom and G2 approval still open**.
+
 ## 3. Evidence of done
 - [ ] Run `python3 tools/audit_design_tokens.py --check-baseline` across **all first-party HTML/CSS/JS**; new raw token/off-grid debt must not grow, and a pass does **not** imply the legacy baseline is zero. See [UX-DS-03 audit](audits/2026-11-18-full-app-token-mapping.md).
 - [ ] Run `python3 tools/validate_ui_foundations.py` (new type/spacing CSS)

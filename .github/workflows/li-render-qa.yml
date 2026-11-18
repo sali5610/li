@@ -82,11 +82,29 @@ jobs:
             echo "Captured $file"
           done
 
+
+          mkdir -p "$RUNNER_TEMP/li-component-review-v2"
+          for section in icons navigation actions cards inputs; do
+            file="$RUNNER_TEMP/li-component-review-v2/${section}.png"
+            "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --force-device-scale-factor=1 --window-size=1420,1000 --virtual-time-budget=12000 --screenshot="$file" "http://127.0.0.1:8765/site/component-library-review.html?capture=${section}" 2>/tmp/li-component-shot.log >/dev/null
+            test -s "$file" || { echo "FAIL screenshot for component section $section"; exit 1; }
+          done
+          echo "Captured icon, navigation, action, card, and input specimens for visual review"
+
       - name: Preserve L1 check-in radio visual screenshots for review
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: li-checkin-radio-visual
           path: ${{ runner.temp }}/li-checkin-visual/*.png
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Preserve UX-DS-09 component-state review images
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-component-review-v2
+          path: ${{ runner.temp }}/li-component-review-v2/*.png
           if-no-files-found: warn
           retention-days: 7

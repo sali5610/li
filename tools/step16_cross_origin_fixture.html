@@ -1,0 +1,88 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>li. Step16 cross-origin portability</title></head><body>
+<pre id="result">LI_STEP16_ORIGIN_PENDING</pre>
+<script src="./step16_browser_backup_spike.js"></script>
+<script>
+(async()=>{
+  const result=document.getElementById('result');
+  const tests=[],B=window.LiStep16BrowserSpike,S=localStorage;
+  const A=window.location.origin,BORIGIN='http://127.0.0.1:8768';
+  const assert=(value,why)=>{if(!value)throw Error(why);};
+  const clean=()=>{for(let i=S.length-1;i>=0;i--){const key=S.key(i);if(key?.startsWith('li.'))S.removeItem(key);}};
+  let frame,seq=0;
+  try{
+    assert(A==='http://127.0.0.1:8767','Wrong source origin');
+    clean();
+    const seed={
+      'li.private.library.v1':JSON.stringify({schema:1,cases:[],questions:[],savedContent:[],ideas:[]}),
+      'li.personal.daily.enabled.v1':'false',
+      'li.personal.daily.v1':JSON.stringify({schema:1,days:{'2026-11-19':{fake:true}}}),
+      'li.spell.t02.due.v1':JSON.stringify({due:1700000000000}),
+      'li.review.L09-1-2.v1':JSON.stringify({reviewed:true,fake:true}),
+      'li.study-mode.v1':'focus'
+    };
+    Object.entries(seed).forEach(([key,value])=>S.setItem(key,value));
+    const snapshot=await B.backup(S,A);
+    frame=document.createElement('iframe');frame.hidden=true;
+    frame.src=BORIGIN+'/tools/step16_cross_origin_agent.html';
+    const ready=new Promise((resolve,reject)=>{
+      const timeout=setTimeout(()=>reject(Error('Cross-origin receiver not ready')),3500);
+      const listener=event=>{
+        if(event.origin===BORIGIN&&event.source===frame.contentWindow&&event.data?.protocol==='li-step16-agent-ready'){
+          clearTimeout(timeout);window.removeEventListener('message',listener);resolve();
+        }
+      };
+      window.addEventListener('message',listener);
+    });
+    document.body.append(frame);
+    await ready;
+    function send(command,data={},timeoutMs=4200){
+      const id=++seq;
+      return new Promise((resolve,reject)=>{
+        const timer=setTimeout(()=>{window.removeEventListener('message',onMessage);reject(Error('No receiver reply: '+command));},timeoutMs);
+        function onMessage(event){
+          if(event.origin!==BORIGIN||event.source!==frame.contentWindow||
+            event.data?.protocol!=='li-step16-reply'||event.data.seq!==id)return;
+          clearTimeout(timer);window.removeEventListener('message',onMessage);resolve(event.data);
+        }
+        window.addEventListener('message',onMessage);
+        frame.contentWindow.postMessage({protocol:'li-step16',seq:id,command,...data},BORIGIN);
+      });
+    }
+    let blocked=false;
+    try{void frame.contentWindow.localStorage.length;}catch(error){blocked=error.name==='SecurityError';}
+    assert(blocked,'Different origins unexpectedly share direct localStorage access');
+    tests.push('Cross-origin DOM cannot directly read other origin storage');
+    await send('reset');
+    const initial=await send('get');
+    assert(!initial.error&&Object.keys(initial.data).length===0,'New origin should be independent');
+    tests.push('New-origin starts with independent empty li. namespace');
+    const restored=await send('restore',{payload:snapshot,options:{confirmed:true}});
+    assert(!restored.error&&restored.result.applied,'Cross-origin JSON transport failed');
+    const received=await send('get');
+    assert(JSON.stringify(Object.entries(seed).sort())===JSON.stringify(Object.entries(received.data).sort()),
+      'Imported destination not equal to source snapshot');
+    tests.push('Explicit portable JSON restores all learning and consent keys to second origin');
+    assert(S.getItem('li.review.L09-1-2.v1')===seed['li.review.L09-1-2.v1'],
+      'Source origin changed unexpectedly');
+    tests.push('Source origin preserved after destination import');
+    const legacy={
+      schema:1,exportedAt:new Date().toISOString(),cases:[],questions:[],ideas:[],savedContent:[],
+      draft:'fake old-version draft'
+    };
+    const merged=await send('restore',{payload:JSON.stringify(legacy),options:{mode:'merge',confirmed:true}});
+    assert(merged.result?.applied&&merged.result.legacy,'Legacy merge unavailable');
+    const after=await send('get');
+    assert(after.data['li.review.L09-1-2.v1']===seed['li.review.L09-1-2.v1']&&
+      after.data['li.personal.daily.v1']===seed['li.personal.daily.v1']&&
+      after.data['li.personal.daily.enabled.v1']==='false','Legacy merge changed independent learning/consent');
+    assert(after.data['li.private.case-draft.v1']==='fake old-version draft','Legacy merge missed draft');
+    tests.push('Legacy partial backup merges without wiping independent learning or consent');
+    await send('reset');clean();frame.remove();
+    result.textContent='LI_STEP16_ORIGIN_PASS '+JSON.stringify({count:tests.length,source:A,destination:BORIGIN,tests,
+      notes:'Two separate localhost ports emulate different web origins; fake data only, not actual Vercel or Safari domains'});
+  }catch(e){
+    clean();frame?.remove();
+    result.textContent='LI_STEP16_ORIGIN_FAIL '+JSON.stringify({completed:tests,error:e.stack||String(e)});
+  }
+})();
+</script></body></html>

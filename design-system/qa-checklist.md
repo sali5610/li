@@ -170,3 +170,14 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 - [x] UX: both orientations center one contextual bubble above the two primary buttons in a shared aligned width, no longer in right rail. Preserve question in mirror, approved iPad art, single screen, iPhone pattern and existing component tokens.
 - [ ] GitHub Actions rendered CSS, design contract, IA, companion and iPad regression green on final PR head.
 - [ ] Human PO physical iPad Safari 970 portrait → 1408 landscape → 970 portrait with no white gap, no horizontal scroll, bubble/CTAs centered and touch operable. Split View/PWA/VoiceOver still pending.
+
+
+## UX-DS-33 · iPad 05:24 repeat-rotation regression (2026-11-19)
+
+- [x] PO evidence: first screenshot landscape Home fills, then Safari reports visual 1408×918 and outer 1408×970 while root is stale 970×1270. The image stops early, shows paper below, and the Home appears scrolled. UX-DS-32 was **not accepted** on the physical device.
+- [x] Refactor: retire all DS30–32 Safari recovery styles from \`ui-foundations.css\` and \`library-hub.css\`; keep one \`ipad-home-canvas.css\` scene authority and one physical-geometry script; preserve approved iPad artwork and centered bubble/CTAs.
+- [x] Regression added: actual rendered Chrome iframe with physical 05:08 portrait and 05:24 landscape stale DOM roots, plus JS synthetic portrait→landscape→portrait→landscape. Compact header touch targets at 601–743px retain 48px minimum.
+- [ ] GitHub PR #118 final CI checks fully green and merged to main.
+- [ ] GitHub Pages publish of merged SHA verified.
+- [ ] **PO physical iPad Safari** portrait→landscape→portrait→landscape with no paper gap, no scroll, correct bottom CTA placement, both buttons tappable after every rotation, and unchanged current question.
+- [ ] PWA, Split View, 200% zoom and VoiceOver still require separate acceptance. No G2 signoff before these.

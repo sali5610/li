@@ -182,7 +182,7 @@ function mountNative(route){
  const all=el("button","catalog-chapter-all","Toàn bộ bài",aside);all.type="button";
  chapterNav.classList.add("catalog-left-index");aside.append(chapterNav);
  const sections=Array.from(section.children).filter(e=>e.tagName==="ARTICLE"&&e.id);
- const links=Array.from(chapterNav.querySelectorAll('a[href^="#"]'));
+ const currentLinks=()=>Array.from(chapterNav.querySelectorAll('a[href^="#"]'));
  const footer=el("div","catalog-chapter-footer",null,aside);
  const prev=el("button","catalog-chapter-step","← Trước",footer);prev.type="button";
  const next=el("button","catalog-chapter-step","Tiếp →",footer);next.type="button";
@@ -191,7 +191,7 @@ function mountNative(route){
   if(id&&!sections.some(e=>e.id===id))id=null;
   active=id;
   sections.forEach(s=>{s.hidden=Boolean(id)&&s.id!==id;});
-  links.forEach(a=>{const selected=a.getAttribute("href")==="#"+id;
+  currentLinks().forEach(a=>{const selected=a.getAttribute("href")==="#"+id;
    a.classList.toggle("catalog-active-chapter",selected);
    if(selected)a.setAttribute("aria-current","step");else a.removeAttribute("aria-current");
   });
@@ -220,9 +220,19 @@ function mountNative(route){
  page.dataset.catalogChapterNav="ready";
  const initial=new URL(location.href).searchParams.get("chapter");
  choose(initial,false);
- const observer=new MutationObserver(()=>{links.forEach(a=>{const id=a.getAttribute("href")?.slice(1);const head=document.getElementById(id)?.querySelector("h2");if(head&&a.dataset.catalogDynamic==="1")a.textContent=head.textContent;});});
+ function syncChapterLinks(){
+  currentLinks().forEach(a=>{
+   const id=a.getAttribute("href")?.slice(1),heading=document.getElementById(id)?.querySelector("h2");
+   if(heading&&a.textContent!==heading.textContent)a.textContent=heading.textContent;
+   const selected=id===active;
+   a.classList.toggle("catalog-active-chapter",selected);
+   if(selected)a.setAttribute("aria-current","step");else a.removeAttribute("aria-current");
+  });
+ }
+ const observer=new MutationObserver(syncChapterLinks);
  sections.forEach(s=>{const h=s.querySelector("h2");if(h)observer.observe(h,{subtree:true,characterData:true,childList:true});});
- links.forEach(a=>{a.dataset.catalogDynamic="1";const h=document.getElementById(a.getAttribute("href").slice(1))?.querySelector("h2");if(h)a.textContent=h.textContent;});
+ observer.observe(chapterNav,{childList:true});
+ syncChapterLinks();
  page._catalogChooseChapter=choose;
 }
 host.addEventListener("click",event=>{

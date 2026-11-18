@@ -453,7 +453,7 @@
   min-height:580px!important;
  }
  .app.home-focus #page-home .hero::before{
-  background-image:url("./home-mystic-cool-mobile.webp")!important;
+  background-image:url("./home-li-iphone-20261119.jpg")!important;
   background-size:cover!important;
   background-position:center center!important;
  }
@@ -501,4 +501,25 @@ body .laoly-support.li-companion-draggable.is-dragging #laoly-fab{
  cursor:grabbing;
  animation:none!important;
  transform:none!important;
+}
+
+
+/* UX-HOME-04 · User-supplied scene variants. Keep the original desktop asset.
+   Tablet widths get the landscape scene; larger touch iPads up to 1366px do too.
+   Never stretch the art; retain existing full-viewport Home/Nav behavior. */
+@media (min-width:601px) and (max-width:1139px),
+       (min-width:1140px) and (max-width:1366px) and (any-pointer:coarse){
+ .app.home-focus #page-home .hero::before{
+  background-image:url("./home-li-ipad-20261119.jpg")!important;
+  background-size:cover!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+ }
+ /* The new tree's mirror is centered, unlike the earlier right-shifted scene.
+    Keep the question text within the actual opening at every tablet width. */
+ .app.home-focus #page-home .mirror-message{
+  left:49%!important;
+  width:min(34%,300px)!important;
+  min-width:0!important;
+ }
 }

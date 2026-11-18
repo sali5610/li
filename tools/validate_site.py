@@ -331,7 +331,7 @@ assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
-assert 'library-hub.css?v=20261118-ds20-coverage' in page_html
+assert 'library-hub.css?v=20261119-home-device-scenes' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_note_versions.cjs")],check=True,cwd=site.parent)
 
 # S120: all 13 Thần Chú methods share this same Guide Detail template.
@@ -365,6 +365,18 @@ for name,expected in [
     assert len(data)>100_000 and data[:4]==b"RIFF" and data[8:12]==b"WEBP",name
     sha=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\0"+data).hexdigest()
     assert sha==expected,(name,"approved artwork mismatch")
+# UX-HOME-04: exact user-uploaded image bytes, resolved in the device CSS.
+for name,expected_size,expected_sha256 in [
+    ("home-li-iphone-20261119.jpg",454411,"0cd92ec2cb0734e422004ae633440f12235469e191a7bc656f19332e7d5af068"),
+    ("home-li-ipad-20261119.jpg",7906192,"c86aef27f02511c6d5b5cf21e38e27c7459a834a56f69c58ecbbddec1597acbd")
+]:
+    art=(site/"assets"/name).read_bytes()
+    assert len(art)==expected_size and art.startswith(bytes((0xFF,0xD8))),name
+    assert hashlib.sha256(art).hexdigest()==expected_sha256,(name,"source image changed")
+device_css=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+assert 'background-image:url("./home-li-iphone-20261119.jpg")!important;' in device_css
+assert 'background-image:url("./home-li-ipad-20261119.jpg")!important;' in device_css
+assert "(any-pointer:coarse)" in device_css
 assert html.count("/* S119 · Approved S106 Home art") == 1
 assert layout_css.count('url("./home-mystic-cool-mobile.webp")') == 1, "CSS-relative artwork URL must resolve from assets/"
 assert layout_css.count('url("./home-mystic-cool-desktop.webp")') == 1, "CSS-relative artwork URL must resolve from assets/"

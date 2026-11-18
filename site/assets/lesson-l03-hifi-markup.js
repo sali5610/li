@@ -7,11 +7,11 @@ const page=String.raw`
 <section id="page-lessonL03" class="page" tabindex="-1" aria-labelledby="l03-title" data-lesson-id="L03-1-2" data-companion-manifest="./lessons/companion/L03-1-2.json">
  <div class="section-shell">
  <div class="kicker">TECHNOLOGY · UX DESIGN · USER PROBLEMS & RESEARCH BASICS · L03-1-2</div>
- <h1 class="display-title" id="l03-title">Open Questions & Interview Bias</h1>
+ <div class="library-heading-with-utility library-lesson-heading"><h1 class="display-title" id="l03-title">Open Questions & Interview Bias</h1><div class="library-icon-utility"><button class="library-icon-action" type="button" data-li-bookmark-kind="lesson" data-li-bookmark-id="L03-1-2" aria-label="Lưu bài L03-1-2" title="Lưu bài L03-1-2" aria-pressed="false"><i data-lucide="bookmark" aria-hidden="true"></i></button></div></div>
  <p class="intro" id="l03-intro">Câu hỏi mở chưa chắc là câu hỏi trung lập.</p>
  <div class="l09-hero-tools">
   <button class="action alt" type="button" data-page="catalog" id="l03-back">Về Tàng Thư</button>
-  <button class="library-text-link" type="button" data-li-bookmark-kind="lesson" data-li-bookmark-id="L03-1-2" aria-pressed="false">Lưu bài</button>
+ 
   <span class="status-chip" id="l03-status">Wave 1 · Content locked / UI in review</span>
   <div class="l09-lang-switch" role="group" aria-label="Ngôn ngữ bài học / Lesson language">
    <button type="button" class="action alt" id="l03-vi" aria-pressed="true">VI</button>

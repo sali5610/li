@@ -217,7 +217,7 @@ function mountNative(route){
   toggle.setAttribute("aria-expanded",String(!hide));toggle.textContent=hide?"Hiện chương":"Ẩn chương";
   wrap.classList.toggle("catalog-native-collapsed",hide);
  });
- if(window.matchMedia?.("(max-width:700px)").matches){aside.hidden=true;toggle.setAttribute("aria-expanded","false");toggle.textContent="Hiện chương";wrap.classList.add("catalog-native-collapsed");}
+ if(window.matchMedia&&window.matchMedia("(max-width:700px)").matches){aside.hidden=true;toggle.setAttribute("aria-expanded","false");toggle.textContent="Hiện chương";wrap.classList.add("catalog-native-collapsed");}
  page.dataset.catalogChapterNav="ready";
  const initial=new URL(location.href).searchParams.get("chapter");
  choose(initial,false);
@@ -244,6 +244,8 @@ host.addEventListener("click",event=>{
    if(history?.replaceState){
     const u=new URL(location.href);u.searchParams.set("catalog",path.join("/"));history.replaceState(history.state,"",u.pathname+u.search);
    }
+   const destination=new URL(location.href);destination.searchParams.set("lesson",lesson.id);destination.searchParams.delete("chapter");
+   if(history?.pushState)history.pushState(history.state,"",destination.pathname+destination.search);
    window.navigate?.(lesson.route);return;
   }
   setPath([...path,v]);return;
@@ -263,13 +265,13 @@ window.addEventListener("popstate",()=>{
  const u=new URL(location.href),route=u.searchParams.get("lesson");
  const found=[["L03-1-2","lessonL03"],["L09-1-2","lessonL09"],["L15-2-2","lessonL15"]].find(p=>p[0]===route);
  if(found){window.navigate?.(found[1],{remember:false,syncUrl:false});document.getElementById("page-"+found[1])?._catalogChooseChapter?.(u.searchParams.get("chapter"),false);}
- else{
+ else if(u.searchParams.has("catalog")){
   path=(u.searchParams.get("catalog")||"").split("/").filter(Boolean).slice(0,4);
   window.navigate?.("catalog",{remember:false,syncUrl:false});render();
- }
+ }else{path=[];render();window.navigate?.("home",{remember:false,syncUrl:false});}
 });
 path=(new URL(location.href).searchParams.get("catalog")||"").split("/").filter(Boolean).slice(0,4);
-if(path.length){window.navigate?.("catalog",{remember:false,syncUrl:false});}
+if(path.length&&!new URL(location.href).searchParams.has("lesson")){window.navigate?.("catalog",{remember:false,syncUrl:false});}
 render();
 ["lessonL03","lessonL09","lessonL15"].forEach(mountNative);
 window.liCatalog={render,openCourse:(group,field,course)=>{window.navigate?.("catalog");setPath([group,field,course]);}};

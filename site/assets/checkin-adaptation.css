@@ -20,3 +20,11 @@
 #checkin-modal .checkin-actions .action{min-height:48px}
 #checkin-modal #apply-checkin:disabled{opacity:.5;cursor:not-allowed}
 @media(max-width:380px){#checkin-modal{padding:var(--li-space-3)}#checkin-modal .dialog{padding:var(--li-space-4)}#checkin-modal .checkin-choices{gap:var(--li-space-1)}#checkin-modal .checkin-choice{padding:var(--li-space-1);flex-direction:column;align-items:flex-start}}
+
+/* L1 physical state is the primary required stage; three explicit responses. */
+#checkin-modal .checkin-physical{display:grid;gap:var(--li-space-3);margin:var(--li-space-4) 0}
+#checkin-modal .checkin-physical-field{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,42%);align-items:center;gap:var(--li-space-3);font-size:var(--li-type-support);font-weight:700;line-height:var(--li-leading-support)}
+#checkin-modal .checkin-physical-field span{min-width:0;overflow-wrap:break-word}
+#checkin-modal .checkin-physical-select{appearance:auto;max-width:100%;min-height:48px;min-width:0;border:1px solid var(--rule);padding:var(--li-space-2);background:var(--cream);color:var(--ink);font-family:var(--li-font-ui);font-size:var(--li-type-support)}
+#checkin-modal .checkin-physical-select:focus-visible{outline:2px solid var(--moss);outline-offset:2px}
+@media(max-width:380px){#checkin-modal .checkin-physical-field{grid-template-columns:minmax(0,1fr)}}

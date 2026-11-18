@@ -8,7 +8,6 @@ const groups=window.LI_CATALOG_DATA;
 if(!host||!Array.isArray(groups)||groups.length!==8)return;
 const levels=[["Foundation","Nền tảng"],["Intermediate","Trung cấp"],["Advanced-topic","Chuyên sâu"]];
 let path=[];
-let nativeOpen=null;
 function el(tag,cls,value,parent){
  const node=document.createElement(tag);if(cls)node.className=cls;
  if(value!==undefined&&value!==null)node.textContent=String(value);
@@ -104,16 +103,16 @@ function renderCourse(c){
  const panel=el("section","surface catalog-progress",null,host);
  const available=c.lessons.filter(l=>l.published);
  if(!available.length){
-  el("h2","","Lộ trình đang biên soạn",panel);
-  el("p","small","Chưa có bài phát hành để tính tiến độ. Các bài bên dưới hiện chỉ là đề cương.",panel);
+  el("h2","","0/"+c.lessons.length+" bài đã hoàn thành",panel);
+  el("p","small","Chưa có bài phát hành. Tiến độ môn sẽ hiển thị khi có bài có thể học và tự đánh giá.",panel);
  }else{
   try{
    const done=available.filter(progress).length;
-   el("h2","",done+"/"+available.length+" bài đã hoàn thành",panel);
-   el("p","small","Chỉ tính các bài đã phát hành và đã hoàn tất bước tự đánh giá trên thiết bị này.",panel);
-   const bar=el("div","catalog-progress-track",null,panel);bar.setAttribute("role","progressbar");bar.setAttribute("aria-label","Tiến độ bài đã hoàn thành");
-   bar.setAttribute("aria-valuemin","0");bar.setAttribute("aria-valuemax",String(available.length));bar.setAttribute("aria-valuenow",String(done));
-   const fill=el("span","catalog-progress-fill",null,bar);fill.style.width=(done/available.length*100)+"%";
+   el("h2","",done+"/"+c.lessons.length+" bài đã hoàn thành",panel);
+   el("p","small",available.length+"/"+c.lessons.length+" bài đã phát hành · Chỉ ghi nhận hoàn thành khi có trạng thái tự đánh giá thật trên thiết bị này.",panel);
+   const bar=el("div","catalog-progress-track",null,panel);bar.setAttribute("role","progressbar");bar.setAttribute("aria-label","Tiến độ hoàn thành của toàn bộ môn học");
+   bar.setAttribute("aria-valuemin","0");bar.setAttribute("aria-valuemax",String(c.lessons.length));bar.setAttribute("aria-valuenow",String(done));
+   const fill=el("span","catalog-progress-fill",null,bar);fill.style.width=(done/c.lessons.length*100)+"%";
   }catch(e){
    el("p","small","Không đọc được tiến độ trên thiết bị. Không hiển thị phần trăm để tránh sai.",panel);
   }

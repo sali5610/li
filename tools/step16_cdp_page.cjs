@@ -100,8 +100,16 @@ run().catch(error=>{
   console.error("FAIL "+error.message);
   if(stderr)console.error("Last Chromium stderr: "+stderr.slice(-1800));
   process.exitCode=1;
-}).finally(()=>{
+}).finally(async()=>{
   if(socket){try{socket.close();}catch(e){}}
   if(chrome){try{chrome.kill("SIGKILL");}catch(e){}}
-  fs.rmSync(profile,{recursive:true,force:true});
+  // Chrome subprocesses may still be flushing profile files after SIGKILL.
+  // Cleanup is best-effort; a successful browser assertion must not fail due
+  // solely to an ephemeral GitHub runner's /tmp teardown race.
+  await sleep(400);
+  try{
+    await fs.promises.rm(profile,{recursive:true,force:true,maxRetries:12,retryDelay:200});
+  }catch(error){
+    console.warn("Warning: temporary Chromium profile cleanup deferred: "+error.code);
+  }
 });

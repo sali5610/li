@@ -247,9 +247,9 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
    const fr=fab.getBoundingClientRect(),tr=practiceTab.getBoundingClientRect();
    const toY=tr.top+(tr.height-fr.height)/2;
    const delta=toY-fr.top;
-   const step=delta<0?"ArrowUp":"ArrowDown";
+   const arrowKey=delta<0?"ArrowUp":"ArrowDown";
    for(let n=0;n<Math.min(50,Math.ceil(Math.abs(delta)/16));n++)
-    fab.dispatchEvent(new w.KeyboardEvent("keydown",{key:step,bubbles:true}));
+    fab.dispatchEvent(new w.KeyboardEvent("keydown",{key:arrowKey,bubbles:true}));
    w.liCompanionDrag?.place?.();await settle();
    record("Saved companion position dodges Spellbook tab",
     !overlaps(fab.getBoundingClientRect(),practiceTab.getBoundingClientRect()),

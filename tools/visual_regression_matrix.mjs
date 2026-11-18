@@ -90,6 +90,14 @@ function auditImpl(){
   const box=R(hitArea(x));return box.h<44||box.w<44;
  }).slice(0,8).map(x=>({label:(x.textContent||x.getAttribute("aria-label")||x.closest("label")?.textContent||"").trim().slice(0,50),r:R(hitArea(x))}));
  if(undersized.length)add(warnings,"touch-target-under-44px",undersized);
+ // The FAB can technically cover an input/button while still passing every
+ // page overflow test. Inspect its actual intersection with active controls.
+ const floatingTargets=pg?[...pg.querySelectorAll("button,input,select,textarea,a[href]")].filter(visible):[];
+ const fabBlockers=visible(fab)?floatingTargets.filter(x=>{
+   const r=R(x);
+   return r.b>0&&r.y<H&&boxInter(r,samples.fab)>200;
+ }).slice(0,12).map(x=>({label:(x.textContent||x.getAttribute("aria-label")||x.placeholder||"").trim().slice(0,55),r:R(x),intersection:boxInter(R(x),samples.fab)})):[];
+ if(fabBlockers.length)add(warnings,"fab-intersects-visible-interactive-controls",fabBlockers);
  const text=pg?[...pg.querySelectorAll("h1,h2,h3,p,label,.state-note,.intro,.method-card .purpose")].filter(visible):[];
  const clipped=text.filter(x=>{const c=getComputedStyle(x);return(c.overflowY==="hidden"||c.overflowY==="clip"||c.webkitLineClamp!=="none")&&x.scrollHeight>x.clientHeight+3;}).slice(0,8).map(x=>({text:x.textContent.trim().slice(0,50),r:R(x),scroll:x.scrollHeight,client:x.clientHeight}));
  if(clipped.length)add(warnings,"possibly-clipped-text",clipped);

@@ -271,6 +271,8 @@ try{const old=JSON.parse(localStorage.getItem(KEY)||"null");
  if(typeof state.guidedDraft!=="string")state.guidedDraft="";
  if(!["vi","en"].includes(state.locale))state.locale="vi";
 }catch(err){}
+// Global language in Settings takes precedence over stored lesson-local language.
+if(["vi","en"].includes(window.liLanguage?.get?.()))state.locale=window.liLanguage.get();
 let storageError=false;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));return true;}catch(e){storageError=true;return false;}}
 function plain(id,value){const el=$(id);if(el)el.textContent=value||"";}
@@ -376,7 +378,15 @@ const resume=document.getElementById(p+"-resume-status");
 if(resume)resume.textContent=state.reviewed?(state.locale==="vi"?"Đã hoàn thành 1 lượt":"One review completed"):(state.locale==="vi"?"Đang học":"In progress");
 }
 function updateScore(){const sum=state.ratings.every(x=>x!==null)?state.ratings.reduce((a,b)=>a+b,0):null;plain("score",sum===null?"— / 8":sum+" / 8");}
-for(const loc of ["vi","en"])$(loc).addEventListener("click",()=>{if(state.locale===loc)return;state.locale=loc;save();render();});
+for(const loc of ["vi","en"])$(loc).addEventListener("click",()=>{
+ if(typeof window.liLanguage?.set==="function"){window.liLanguage.set(loc);return;}
+ if(state.locale===loc)return;state.locale=loc;save();render();
+});
+window.addEventListener?.("li:localechange",event=>{
+ const next=event.detail?.locale;
+ if(!["vi","en"].includes(next)||next===state.locale)return;
+ state.locale=next;save();render();
+});
 $("guidedDraft").addEventListener("input",()=>{state.guidedDraft=$("guidedDraft").value;save();});
 $("guidedToggle").addEventListener("click",()=>{
  state.guideOpen=!state.guideOpen;save();$("guidedHint").hidden=!state.guideOpen;

@@ -332,26 +332,52 @@
 #page-diary > .section-shell > button[data-page="library"],
 #l03-back,#l09-back,#l15-back{display:none!important}
 
-/* Home mirror: bookmark sits alongside the primary action, never inside the mirror. */
+/* UX-HOME-01 · One immersive mirror gate on Home, with shared primary CTAs.
+   All other destinations remain accessible in global navigation and all non-Home
+   Save/Unsave utilities retain transparent icon-only controls. */
+.app.home-focus{padding-bottom:var(--li-space-0)!important}
+.app.home-focus .footer{display:none!important}
+.app.home-focus #page-home .hero{
+ height:max(600px,calc(100svh - 82px))!important;
+ min-height:600px!important;
+}
 #page-home .mirror-message .mirror-titlebar{justify-content:center}
 #page-home .hero-actions{
- display:grid!important;grid-template-columns:minmax(0,1fr) 56px!important;
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
  align-items:stretch!important;gap:var(--li-space-3)!important;
 }
-#page-home .hero-actions #mirror-primary-action{width:100%;min-width:0}
-#page-home .hero-actions .mirror-save-action{
- box-sizing:border-box;width:56px;height:56px;min-width:56px;min-height:56px;
- align-self:stretch;display:grid;place-items:center;
- margin:var(--li-space-0);padding:var(--li-space-2);border:1px solid var(--forest);
- border-radius:0!important;background:var(--paper-2);color:var(--forest);
- box-shadow:4px 4px 0 var(--forest);cursor:pointer;
+#page-home .hero-actions .primary{
+ box-sizing:border-box;
+ width:100%;min-width:0;min-height:56px;
+ gap:var(--li-space-2);
+ padding:var(--li-space-2) var(--li-space-3);
+ justify-content:space-between;align-items:center;
 }
-#page-home .hero-actions .mirror-save-action:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--forest)}
-#page-home .hero-actions .mirror-save-action:focus-visible{outline:2px solid var(--li-color-focus-ring);outline-offset:2px}
-#page-home .hero-actions .mirror-save-action[aria-pressed="true"]{background:var(--cream);color:var(--moss)}
-#page-home .hero-actions .mirror-save-action svg{width:22px;height:22px;flex:none;display:block}
+#page-home .hero-actions .primary .action-icon{flex:none}
+#page-home .hero-actions .mirror-save-action[aria-pressed="true"]{
+ background:var(--cream);color:var(--moss);
+}
+#page-home .hero-actions .mirror-save-action[aria-pressed="true"] .action-icon svg{
+ fill:var(--moss);
+}
+#page-home .hero-actions .primary:focus-visible{
+ outline:2px solid var(--li-color-focus-ring);outline-offset:2px;
+}
 @media(max-width:600px){
- #page-home .hero-actions{grid-template-columns:minmax(0,1fr) 56px!important}
+ .app.home-focus #page-home .hero{
+  height:max(580px,calc(100svh - 66px - 52px - env(safe-area-inset-bottom,0px)))!important;
+  min-height:580px!important;
+ }
+ #page-home .hero-actions{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:var(--li-space-2)!important;
+ }
+ #page-home .hero-actions .primary{
+  padding:var(--li-space-2);
+  gap:var(--li-space-1);
+  font-size:var(--li-type-support);
+ }
 }
 
 /* Undo snackbar shared by all local private-data removal paths. */
@@ -378,30 +404,25 @@
 }
 
 
-/* UX-IA-12 · All real-app Save/Unsave actions use icon-only, transparent
-   surfaces. Keep 48/56px touch targets and stateful filled bookmark glyph. */
-.page .library-icon-action:not(.library-danger-icon),
-#page-home .hero-actions .mirror-save-action {
+/* UX-IA-12 · Non-Home Save/Unsave icon utilities remain transparent in all states. */
+.page .library-icon-action:not(.library-danger-icon) {
  background:var(--li-uxds10-touch-clear)!important;
  border-color:var(--li-uxds10-touch-clear)!important;
  box-shadow:var(--li-uxds10-touch-no-shadow)!important;
 }
-.page .library-icon-action:not(.library-danger-icon):is(:hover,:active,:focus),
-#page-home .hero-actions .mirror-save-action:is(:hover,:active,:focus){
+.page .library-icon-action:not(.library-danger-icon):is(:hover,:active,:focus){
  background:var(--li-uxds10-touch-clear)!important;
  border-color:var(--li-uxds10-touch-clear)!important;
  box-shadow:var(--li-uxds10-touch-no-shadow)!important;
  transform:none!important;
 }
-.page .library-icon-action:not(.library-danger-icon)[aria-pressed="true"],
-#page-home .hero-actions .mirror-save-action[aria-pressed="true"]{
+.page .library-icon-action:not(.library-danger-icon)[aria-pressed="true"]{
  background:var(--li-uxds10-touch-clear)!important;
  border-color:var(--li-uxds10-touch-clear)!important;
  box-shadow:var(--li-uxds10-touch-no-shadow)!important;
  color:var(--moss);
 }
-.page .library-icon-action:not(.library-danger-icon):focus-visible,
-#page-home .hero-actions .mirror-save-action:focus-visible{
+.page .library-icon-action:not(.library-danger-icon):focus-visible{
  outline:2px solid var(--li-color-focus-ring)!important;
  outline-offset:2px!important;
 }

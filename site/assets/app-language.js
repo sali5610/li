@@ -29,6 +29,7 @@ const TEXT={
  "Không cần biết tất cả. Chỉ cần không ngừng tò mò.":"You don't need to know everything. Just stay curious.",
  "Một câu hỏi, muôn ngả đường":"One question, many paths",
  "Check-in hôm nay":"Today's check-in","Đào sâu":"Go deeper",
+ "Khám phá vì sao":"Explore why","Lưu câu hỏi":"Save question","Bỏ lưu câu hỏi":"Remove saved question","Đã lưu":"Saved",
  "Gương Vạn Vấn":"Mirror of Questions","VÍ DỤ GIẢ ĐỊNH":"HYPOTHETICAL EXAMPLE",
  "CẨM NANG TƯ DUY":"THINKING TOOLKIT","Sổ Tay Thần Chú":"Technique Handbook",
  "13 phương pháp để học, ghi nhớ và suy nghĩ. Mỗi pháp danh đều có tên học thuật gốc đi kèm.":"Thirteen techniques for learning, memory and reasoning, each paired with its academic name.",

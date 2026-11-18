@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="./assets/component-review-v2.css?v=20261118-ds20-coverage">
 <link rel="stylesheet" href="./assets/component-review-v3.css?v=20261118-ds20-coverage">
 <link rel="stylesheet" href="./assets/component-review-v4.css?v=20261118-ds20-coverage">
-<link rel="stylesheet" href="./assets/component-review-v5.css?v=20261118-ds20-coverage">
+<link rel="stylesheet" href="./assets/component-review-v5.css?v=20261119-ds21-olive-spec">
 <style>
 :root {color-scheme:light}
 *{box-sizing:border-box}
@@ -138,6 +138,29 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
    <div class="ds-swatch"><div class="ds-paint" style="background:var(--rule)"></div><div class="ds-swatch-label">Rule · Divider</div></div>
    <div class="ds-swatch"><div class="ds-paint" style="background:var(--ink)"></div><div class="ds-swatch-label">Ink · Reading</div></div>
   </div>
+  <!-- UX-DS-21: show the real UX-DS-20 olive rule in context, not just a palette swatch. -->
+  <section id="ds20-olive-usage" class="ds20-olive-usage" aria-labelledby="ds20-olive-title">
+   <div class="ds20-olive-heading">
+    <h3 id="ds20-olive-title">Olive Moss · Decorative accent</h3>
+    <span class="ds20-olive-scope">Đang áp dụng trong app · G2 chưa duyệt</span>
+   </div>
+   <p class="ds-muted">Màu <strong>--olive (#65734C)</strong> hiện chỉ nhấn <strong>vạch bên trái nhãn section</strong>; nó không phải màu selected, focus, CTA, trạng thái học tập hay nền card.</p>
+   <div class="ds20-olive-layout">
+    <div class="ds20-olive-example" aria-label="Ví dụ thực tế của nhãn section có vạch olive">
+     <div class="ds20-olive-kicker">CẨM NANG TƯ DUY</div>
+     <h4>Sổ Tay Thần Chú</h4>
+     <p>Khám phá phương pháp học và tư duy, mỗi mục đều có bối cảnh riêng.</p>
+    </div>
+    <div class="ds20-olive-contract">
+     <div class="ds20-olive-token">Token: <code>--olive</code> · <code>#65734C</code></div>
+     <div class="ds20-olive-token">Selector: <code>.page:not(#page-home) .section-shell &gt; .kicker</code></div>
+     <div class="ds20-olive-token">Viền: <code>3px solid var(--olive)</code> · khoảng chữ: <code>var(--li-space-2)</code> (8px)</div>
+     <p><strong>Dùng cho:</strong> điểm nhấn trang trí trên nhãn phân loại/section. <strong>Không dùng cho:</strong> trạng thái tương tác, thông báo, nút hành động hoặc tô lại illustration.</p>
+     <a href="./index.html?page=guide" target="_blank" rel="noopener">Xem đúng trang đang dùng trong app</a>
+    </div>
+   </div>
+   <p class="ds20-olive-approval">Specimen tái hiện đúng token của app, không phải đề xuất thêm component mới hay xác nhận duyệt visual identity G2.</p>
+  </section>
   <div class="ds-panel" style="margin-top:var(--li-space-6)">
    <div class="ds-type-row"><span class="ds-type-demo" style="font:600 36px/44px var(--li-font-editorial)">Bản đồ tri thức</span><small>Headline 36/44</small></div>
    <div class="ds-type-row"><span class="ds-type-demo" style="font:600 24px/32px var(--li-font-editorial)">Thần Chú, Thần Chú và Thần Chú</span><small>Title 24/32</small></div>

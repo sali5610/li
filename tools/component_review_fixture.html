@@ -14,7 +14,7 @@ iframe.addEventListener("load",()=>{
    const d=iframe.contentDocument,w=iframe.contentWindow;
    const check=(label,ok,detail)=>{checks.push({label,passed:!!ok,detail:detail||""});};
    const tokens=w.getComputedStyle(d.documentElement);
-   check("Canonical generated paper token",tokens.getPropertyValue("--paper").trim().toUpperCase()==="#F3EBDC");
+   check("Canonical generated paper token",tokens.getPropertyValue("--paper").trim().toUpperCase()==="#F1F0E9");
    check("Review pending G2",d.body.textContent.includes("Chờ Human PO duyệt component"));
    const cards=d.querySelectorAll(".ds-method-grid .ds-method");
    check("Original method grid preserves two approved tiles",cards.length===2);

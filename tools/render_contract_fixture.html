@@ -19,7 +19,7 @@
   setTimeout(function(){
    try{
     const doc=frame.contentDocument,w=frame.contentWindow,root=w.getComputedStyle(doc.documentElement);
-    report("Generated color --paper",root.getPropertyValue("--paper").trim().toUpperCase()==="#F3EBDC",root.getPropertyValue("--paper"));
+    report("Generated color --paper",root.getPropertyValue("--paper").trim().toUpperCase()==="#F1F0E9",root.getPropertyValue("--paper"));
     report("Generated spacing --li-space-4",root.getPropertyValue("--li-space-4").trim()==="16px",root.getPropertyValue("--li-space-4"));
     report("Body 16px",w.getComputedStyle(doc.body).fontSize==="16px",w.getComputedStyle(doc.body).fontSize);
     report("Body 24px leading",w.getComputedStyle(doc.body).lineHeight==="24px",w.getComputedStyle(doc.body).lineHeight);

@@ -116,6 +116,61 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
    record("EN spell name restored on language round-trip",label(d.querySelector("#method-cards .method-card h3"))==="Invocation of Recall",label(d.querySelector("#method-cards .method-card h3")));
    searchSpell.value="";
    searchSpell.dispatchEvent(new w.Event("input",{bubbles:true}));await settle();
+   // Secondary audit: actual mentor replies must use the same translated spells
+   // and the same English search semantics as the Guide, not an old VI-only index.
+   await route("guide");
+   searchSpell.value="Mirror of Rebuttals";
+   searchSpell.dispatchEvent(new w.Event("input",{bubbles:true}));await settle();
+   record("Mentor keyword has an English spell match",d.querySelector("#method-cards .method-card")?.dataset.method==="T08");
+   w.openLaoLy(by("laoly-fab"));await settle();
+   const third=by("buddy-forget");
+   record("Mentor overlay opened",by("buddy-modal")?.classList.contains("open"));
+   third?.click();await settle();
+   const mentorResult=label(by("buddy-text"));
+   record("Mentor search count localized",mentorResult.includes("1 spell matches")&&!mentorResult.includes("Có 1"),mentorResult);
+   w.closeModal("buddy-modal");
+   const guideCard=d.querySelector("#method-cards .method-card");
+   guideCard?.click();await settle();
+   w.openLaoLy(by("laoly-fab"));await settle();
+   const mentorDetail=label(by("buddy-text"));
+   record("Mentor mentions EN spell in details",mentorDetail.includes("Mirror of Rebuttals")&&!mentorDetail.includes("Luận Ảnh Phản Chiếu"),mentorDetail);
+   w.closeModal("buddy-modal");
+   // One representative multi-clause practice reply, including language round-trip.
+   w.showMethod("T06");await settle();
+   by("spell-tab-practice")?.click();await settle();
+   const choosePractice=(name,value)=>{
+    const el=d.querySelector('input[name="sp-'+name+'"][value="'+value+'"]');
+    if(el){el.checked=true;el.dispatchEvent(new w.Event("change",{bubbles:true}));}
+   };
+   choosePractice("case1","0");choosePractice("case2","1");
+   const written=by("sp-reason");
+   if(written)written.value="Selection and sampling variation differ";
+   d.querySelector('#spell-practice-panel [data-spell-action="check"]')?.click();await settle();
+   const practiceFeedback=()=>label(d.querySelector("#spell-practice-panel .spell-feedback"));
+   record("English multi-clause spell feedback",practiceFeedback().includes("Both cases are classified correctly.")&&!practiceFeedback().includes("Hai phân loại đúng."),practiceFeedback().slice(0,300));
+   await change("vi");
+   record("Spell feedback returns to original VI",practiceFeedback().includes("Hai phân loại đúng."),practiceFeedback().slice(0,220));
+   await change("en");
+   record("Spell feedback returns to EN without losing answer",practiceFeedback().includes("Both cases are classified correctly.")&&by("sp-reason")?.value==="Selection and sampling variation differ",practiceFeedback().slice(0,220));
+   // Library metadata and bookmark accessibility labels are outside static i18n.
+   await route("resume");
+   w.liLibraryShelf?.trackLesson("lessonL09");
+   w.liLibraryShelf?.renderResume();await settle();
+   const savedProgress=label(d.querySelector("#li-lesson-history .library-list-copy p"));
+   record("Recent lesson metadata fully EN",savedProgress.includes("Recently opened")&&savedProgress.includes("Opened")&&!savedProgress.includes("Đã mở"),savedProgress);
+   const book=d.querySelector('#li-lesson-history [data-li-bookmark-kind="lesson"]');
+   record("Bookmark ARIA fully EN",/^(Bookmark lesson|Remove bookmark for lesson)/.test(book?.getAttribute("aria-label")||""),book?.getAttribute("aria-label"));
+   await route("capture");
+   const inputNote=by("capture-note");
+   if(inputNote){
+    inputNote.value="Ý tưởng tự viết: đừng dịch nội dung của tui";
+    by("save-capture-note")?.click();await settle();
+    const collected=d.querySelector("#li-collection-list .library-collection-entry");
+    const noteDate=label(collected?.querySelector("p.small"));
+    const noteBody=label(collected?.querySelector(".library-entry-body"));
+    record("Collection saved date EN",noteDate.startsWith("Saved ")&&!noteDate.includes("Lưu ngày"),noteDate);
+    record("Personal collected note untouched",noteBody==="Ý tưởng tự viết: đừng dịch nội dung của tui",noteBody);
+   }
    await route("catalog");
    const host=d.querySelector("#page-catalog .section-shell");
    const step=async kind=>{

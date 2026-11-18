@@ -1,0 +1,85 @@
+{
+  "schema": "li.l0911.preview.chromium-fixture.v1",
+  "date": "2026-11-18",
+  "test_type": "REAL Chromium DOM/event interactions with browser page.set_content and injected scripts, using local synthetic CMS fixture + locally reconstructed state API",
+  "environment": "Headless Chromium in isolated sandbox; direct localhost and file:// page.goto BLOCKED_BY_ADMINISTRATOR, so page content injected into about:blank; no real HTTP origin",
+  "passed": 12,
+  "failed": 0,
+  "total": 12,
+  "checks": [
+    {
+      "id": "hook-first-and-hidden-answer",
+      "result": "PASS"
+    },
+    {
+      "id": "lesson-navigation-and-contextual-mentor",
+      "result": "PASS"
+    },
+    {
+      "id": "T06-invalid-attempt-rejected",
+      "result": "PASS"
+    },
+    {
+      "id": "T06-submission-only-its-feedback",
+      "result": "PASS"
+    },
+    {
+      "id": "spellbook-dialog-escape",
+      "result": "PASS"
+    },
+    {
+      "id": "VI-EN-switch-keeps-method-evidence",
+      "result": "PASS"
+    },
+    {
+      "id": "independent-submit-locks-input-not-answer",
+      "result": "PASS"
+    },
+    {
+      "id": "post-submit-focus-reflection",
+      "result": "PASS"
+    },
+    {
+      "id": "explicit-answer-reveal-focus",
+      "result": "PASS"
+    },
+    {
+      "id": "new-attempt-resets-current-inputs",
+      "result": "PASS"
+    },
+    {
+      "id": "390px-no-page-horizontal-overflow",
+      "result": "PASS"
+    },
+    {
+      "id": "no-uncaught-page-exceptions",
+      "result": "PASS"
+    }
+  ],
+  "rendered_viewports": [
+    {
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "observed_horizontal_page_overflow": false
+    }
+  ],
+  "fixes_found_and_applied": [
+    "Spellbook guide remained accessible after T06 completed",
+    "Post-submit changed active nav/mentor stage to reflection, not just focus",
+    "Top-level authored heading duplication removed for cleaner UI",
+    "Rich author br tags displayed as line breaks"
+  ],
+  "limits": [
+    "Actual 38 KB GitHub CMS was NOT used in this Chromium run; a synthetic structurally compatible fixture was injected",
+    "Exact GitHub pure-state module was NOT injected; a locally reconstructed compatible test API was used",
+    "No real-origin localStorage persistence or reload, due blocked navigation; state JSON restore is covered by separate V8 contract suite",
+    "No physical iPhone/Safari/PWA/VoiceOver, no true user/task QA",
+    "This PASS does not certify production rendering or future site integration",
+    "Screenshots were local fixture-only, not uploaded as product-approved visuals"
+  ],
+  "next": "Run checked-in qa/smoke-local-chromium.py against actual staged files on loopback in an authorized local browser environment. Not executed here."
+}

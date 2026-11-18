@@ -331,7 +331,7 @@ assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
-assert 'library-hub.css?v=9' in page_html
+assert 'library-hub.css?v=10' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_note_versions.cjs")],check=True,cwd=site.parent)
 
 # S120: all 13 Thần Chú methods share this same Guide Detail template.
@@ -488,7 +488,14 @@ assert 'laoly-drag.js?v=20261118-home02' in page_html
 assert 'window.liCompanionDrag?.place?.();' in page_html
 assert '/* UX-HOME-02 · Mobile Safari scene-fit' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert '--home-actions-bottom:var(--li-space-8);' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
-assert 'height:max(580px,calc(100dvh - 66px - 52px - env(safe-area-inset-bottom,0px)))!important;' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+assert 'height:max(580px,calc(100dvh - 66px))!important;' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+assert '--home-actions-bottom:calc(52px + var(--li-space-8) + env(safe-area-inset-bottom,0px));' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+# Scene extends behind the tab bar only while Home is active, with an
+# app-color-derived overlay and readable active/inactive tab controls.
+assert 'body:has(.app.home-focus) .mobile-nav{' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+assert 'color-mix(in srgb,var(--forest) 88%,transparent)' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+assert 'body:has(.app.home-focus) .mobile-nav .nav-btn[aria-current="page"]' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+assert 'border-top:0!important;' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'background-size:cover!important;' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'body .laoly-support.li-companion-draggable{' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 subprocess.run(["node",str(site.parent/"tools"/"test_companion_drag.cjs")],check=True,cwd=site.parent)

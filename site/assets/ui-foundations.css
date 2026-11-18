@@ -99,10 +99,11 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 }
 .page .spell .spell-bottom { padding-top: var(--li-space-4); }
 
-/* Method cards: remove the 9–10.5px text / forced two-line truncation debt. */
+/* Guide method-card family. S116/S118 PO decision: compact 2-up phones.
+   Full teaching text remains in the detail route; only the teaser is clamped. */
 #page-guide #method-cards {
   display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)) !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   gap: var(--li-space-6) !important;
   padding: var(--li-space-2) var(--li-space-1) var(--li-space-3) !important;
   margin: var(--li-space-6) 0 0 !important;
@@ -142,6 +143,93 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   width: 20px;
   height: 20px;
   margin-bottom: var(--li-space-1);
+}
+/* S116/S118 approved compact phone variant; scoped solely to Thần Chú.
+   Explicit pre-token geometry exceptions are 18/20px tile gaps, narrowing to
+   14/18px at <=360px. Never let a generic min-width auto-fit override two-up. */
+@media (min-width: 641px) and (max-width: 950px) {
+  #page-guide #method-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 640px) {
+  #page-guide #method-cards {
+    --li-guide-tile-col-gap: 18px;
+    --li-guide-tile-row-gap: 20px;
+    --li-guide-tile-grid-pad: 3px 6px 8px 3px;
+    --li-guide-tile-margin-top: 18px;
+    --li-guide-tile-inset: 11px 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: var(--li-guide-tile-col-gap) !important;
+    row-gap: var(--li-guide-tile-row-gap) !important;
+    padding: var(--li-guide-tile-grid-pad) !important;
+    margin-top: var(--li-guide-tile-margin-top) !important;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  #page-guide #method-cards > .method-card {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 194px !important;
+    padding: var(--li-guide-tile-inset) !important;
+    gap: var(--li-space-1);
+    overflow-wrap: anywhere;
+    align-items: stretch;
+  }
+  #page-guide #method-cards > .method-card h3 {
+    font-size: clamp(var(--li-type-title-sm), 5.2vw, var(--li-type-title-md)) !important;
+    line-height: var(--li-leading-body) !important;
+    margin: var(--li-space-1) 0 0;
+    overflow-wrap: anywhere;
+    text-wrap: pretty;
+  }
+  #page-guide #method-cards > .method-card .kicker {
+    font-size: var(--li-type-caption) !important;
+    line-height: var(--li-leading-caption) !important;
+  }
+  #page-guide #method-cards > .method-card .original {
+    font-size: var(--li-type-caption) !important;
+    line-height: var(--li-leading-caption) !important;
+    overflow-wrap: anywhere;
+  }
+  #page-guide #method-cards > .method-card .purpose {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical;
+    overflow: hidden !important;
+    min-height: 0;
+    font-size: var(--li-type-support) !important;
+    line-height: var(--li-leading-support) !important;
+    margin-top: var(--li-space-1);
+  }
+  #page-guide #method-cards > .method-card .end {
+    --li-guide-auto-margin: auto;
+    margin-top: var(--li-guide-auto-margin);
+    padding-top: var(--li-space-2);
+    font-size: var(--li-type-support) !important;
+    line-height: var(--li-leading-support) !important;
+  }
+  #page-guide #method-cards > .method-card .method-icon,
+  #page-guide #method-cards > .method-card svg.lucide {
+    width: 19px; height: 19px; flex-shrink: 0;
+    margin-bottom: var(--li-space-0);
+  }
+}
+@media (max-width: 360px) {
+  #page-guide #method-cards {
+    --li-guide-tile-col-gap: 14px;
+    --li-guide-tile-row-gap: 18px;
+    --li-guide-tile-grid-pad: 3px 5px 8px 2px;
+    --li-guide-tile-inset: 10px 9px;
+  }
+  #page-guide #method-cards > .method-card {
+    min-height: 190px !important;
+  }
+  #page-guide #method-cards > .method-card h3 {
+    font-size: var(--li-type-body-lg) !important;
+    line-height: var(--li-leading-body) !important;
+  }
 }
 #page-guide .editorial-grid { gap: var(--li-space-6) !important; }
 #page-guide #method-filters {

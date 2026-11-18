@@ -41,9 +41,21 @@
        report("Guide cards populated",cards.length>0,cards.length);
        if(cards.length){
         const title=cards[0].querySelector("h3");
-        report("Guide heading title token 24px",!!title&&w.getComputedStyle(title).fontSize==="24px",title?w.getComputedStyle(title).fontSize:"missing");
+        report("Guide title uses compact mobile / desktop role",!!title&&(w.innerWidth<=640?parseFloat(w.getComputedStyle(title).fontSize)>=18&&parseFloat(w.getComputedStyle(title).fontSize)<=24:w.getComputedStyle(title).fontSize==="24px"),title?w.getComputedStyle(title).fontSize:"missing");
         const purpose=cards[0].querySelector(".purpose");
-        report("Guide explanation >=14px and unclamped",!!purpose&&parseFloat(w.getComputedStyle(purpose).fontSize)>=14&&w.getComputedStyle(purpose).display==="block",purpose?(w.getComputedStyle(purpose).fontSize+" "+w.getComputedStyle(purpose).display):"missing");
+        report("Guide explanation readable; mobile 2-line teaser",!!purpose&&parseFloat(w.getComputedStyle(purpose).fontSize)>=14&&(w.innerWidth<=640?w.getComputedStyle(purpose).webkitLineClamp==="2":w.getComputedStyle(purpose).display==="block"),purpose?(w.getComputedStyle(purpose).fontSize+" clamp="+w.getComputedStyle(purpose).webkitLineClamp):"missing");
+        const grid=doc.getElementById("method-cards");
+        const columns=w.getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).length;
+        const expected=w.innerWidth<=950?2:3;
+        report("Guide card columns preserve S116/S118 PO decision",columns===expected,columns+" vs "+expected);
+        if(w.innerWidth<=640){
+          const a=cards[0].getBoundingClientRect(),b=cards[1].getBoundingClientRect();
+          report("Guide first two method tiles are same-row",Math.abs(a.top-b.top)<3,Math.round(a.top)+" / "+Math.round(b.top));
+          report("Guide compact 2-up tiles remain in viewport",a.width>90&&b.width>90&&a.left>=-1&&b.right<=w.innerWidth+1,JSON.stringify({a:a.width,b:b.width,right:b.right}));
+          const gridStyle=w.getComputedStyle(grid);
+          const wantCol=w.innerWidth<=360?14:18,wantRow=w.innerWidth<=360?18:20;
+          report("Guide approved compact gutters remain intact",Math.round(parseFloat(gridStyle.columnGap))===wantCol&&Math.round(parseFloat(gridStyle.rowGap))===wantRow,gridStyle.columnGap+"/"+gridStyle.rowGap);
+        }
        }
        const overflow=doc.documentElement.scrollWidth-w.innerWidth;
        const overflowNodes=[...doc.querySelectorAll("body *")].map(el=>({el,rect:el.getBoundingClientRect()}))

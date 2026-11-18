@@ -1,0 +1,43 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>li. component review browser QA</title><style>body{margin:0}iframe{border:0;width:100%;height:900px}pre{font:13px monospace;white-space:pre-wrap}</style></head>
+<body><pre id="result">LI_COMPONENT_REVIEW_PENDING</pre><iframe id="review" title="Component review real UI" src="../site/design-system-components-review.html"></iframe>
+<script>
+(function(){
+const frame=document.getElementById("review"),out=document.getElementById("result");
+let done=false;
+function finish(ok,detail){if(done)return;done=true;out.textContent=(ok?"LI_COMPONENT_REVIEW_PASS ":"LI_COMPONENT_REVIEW_FAIL ")+detail;}
+frame.addEventListener("load",function(){
+setTimeout(function(){
+try{
+const d=frame.contentDocument;
+function check(bool,message){if(!bool)throw Error(message);}
+const app=d.getElementById("app-preview"),device=d.getElementById("preview-device");
+check(Boolean(app&&device),"Live app iframe not present");
+check(app.getAttribute("src").includes("index.html?page=guide"),"Initial Guide source missing");
+check(d.querySelectorAll(".inventory tbody tr").length===13,"Expected 13 inventory families");
+check(d.querySelectorAll(".mini-method").length===2,"Compact specimen must be two-up");
+check(d.body.textContent.includes("DRAFT CHO PO REVIEW"),"Missing draft status");
+const narrow=d.querySelector('button[data-width="320"]');
+narrow.click();
+check(device.style.width==="320px","Width selector did not set live 320px device");
+check(narrow.getAttribute("aria-pressed")==="true","Width selection semantic state missing");
+d.querySelector('button[data-width="390"]').click();
+check(device.style.width==="390px","390px width reset missing");
+const settings=d.querySelector('button[data-route="settings"]');
+settings.click();
+check(app.getAttribute("src").includes("page=settings"),"Route selection did not load Settings");
+check(settings.getAttribute("aria-pressed")==="true","Route aria-pressed missing");
+d.querySelector('button[data-route="guide"]').click();
+check(app.getAttribute("src").includes("page=guide"),"Guide return failed");
+const nav=d.querySelectorAll("[data-demo-nav]");
+nav[1].click();
+check(nav[1].getAttribute("aria-pressed")==="true"&&nav[0].getAttribute("aria-pressed")==="false","Specimen nav selected state incorrect");
+const filters=d.querySelectorAll("[data-demo-filter]");
+filters[2].click();
+check(filters[2].getAttribute("aria-pressed")==="true","Specimen filter selected state incorrect");
+finish(true,"review status, real iframe, 13 families, 2 tiles, 320/390 width toggles, Settings/Guide routing, state specimens");
+}catch(e){finish(false,e.stack||e.message);}
+},800);
+});
+setTimeout(function(){finish(false,"timeout waiting for review board");},12000);
+})();
+</script></body></html>

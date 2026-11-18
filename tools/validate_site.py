@@ -268,7 +268,7 @@ assert '#settings-buddy-card .settings-buddy-illustration' in html
 settings_styles=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert 'border-top: 1px solid var(--rule)' not in settings_styles.split('#page-settings .buddy-address-settings {', 1)[1].split('}', 1)[0]
 assert '#settings-buddy-card .settings-buddy-footer' not in html
-assert 'li-layout.css?v=0.4' in page_html and 'ui-foundations.css?v=0.6' in page_html
+assert 'li-layout.css?v=0.4' in page_html and 'ui-foundations.css?v=20261118-guide-two-up' in page_html
 
 # S118: two compact mobile Guide tiles with shadow-safe column/row gutters; no duplicate S99 rule.
 guide=section("guide")
@@ -278,15 +278,31 @@ assert html.count("/* S118 · Guide two-up mobile tiles with deliberate outer gu
 assert "/* S99 guidebook responsive fix */" not in html
 assert "/* S99 responsive Thần Chú - scoped to Guide route */" not in html
 foundation=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
-assert "grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)) !important;" in foundation
+assert "grid-template-columns: repeat(3, minmax(0, 1fr)) !important;" in foundation
+assert "grid-template-columns: repeat(2, minmax(0, 1fr)) !important;" in foundation
+assert "--li-guide-tile-col-gap: 18px;" in foundation and "--li-guide-tile-row-gap: 20px;" in foundation
+assert "--li-guide-tile-col-gap: 14px;" in foundation and "--li-guide-tile-row-gap: 18px;" in foundation
 assert "-webkit-line-clamp: unset !important;" in foundation
 # S127: mentor border matches the actual card borders, including the <=360px inset.
 assert "#page-guide #method-cards > .method-card {" in foundation
 assert "padding: var(--li-space-5) !important;" in foundation
-assert "#page-guide #method-cards>.method-card .purpose{" not in html, "Retired S118 text-clamping CSS must not return"
+assert "#page-guide #method-cards>.method-card .purpose{" not in html, "No competing inline S118 selector should be restored"
 assert "#page-guide #method-cards > .method-card .purpose {" in foundation
+assert "-webkit-line-clamp: 2 !important;" in foundation, "PO-approved 2-line teaser, full detail untouched"
 assert "function renderMethods(){" in html and "function showMethod(id){" in html
 assert "/* S114 — restrained Lão Lý peek:" in html
+
+# Component Review Board: review-only UI route, real app preview (not a G2 approval).
+review_page=(site/"design-system-components-review.html").read_text(encoding="utf-8")
+review_css=(site/"assets"/"component-review.css").read_text(encoding="utf-8")
+review_js=(site/"assets"/"component-review.js").read_text(encoding="utf-8")
+assert 'DRAFT CHO PO REVIEW' in review_page and 'id="app-preview"' in review_page
+assert 'src="./index.html?page=guide"' in review_page
+assert all('data-width="'+str(w)+'"' in review_page for w in (320,360,375,390,402,600,820,1440))
+assert all('data-route="'+route+'"' in review_page for route in ("guide","home","settings","library","dashboard","catalog"))
+assert "setViewport" in review_js and "setRoute" in review_js
+assert ".mini-method-grid" in review_css and "repeat(2,minmax(0,1fr))" in review_css
+assert 'Wave2' not in review_page or 'No Wave2/3 course material' in review_page
 
 # S134: all native writing areas use a real 32px background TILE, not an
 # auto-sized gradient (auto-size made background-position ineffective on iOS).
@@ -467,7 +483,7 @@ assert page_html.count('type:"hook",lessonRoute:') == 3
 assert 'sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang."' in page_html
 assert 'navigate(scenario.type==="hook"?scenario.lessonRoute:"research");' in (site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert '<script src="./assets/lesson-related-wave1.js"></script>' in page_html
-assert 'ui-foundations.css?v=0.6' in page_html
+assert 'ui-foundations.css?v=20261118-guide-two-up' in page_html
 cross=(site/"assets"/"lesson-related-wave1.js").read_text(encoding="utf-8")
 assert 'Object.keys(RELATED).forEach' in cross
 assert all(k in cross for k in ("L03-1-2", "L09-1-2", "L15-2-2"))

@@ -36,7 +36,7 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           sleep 2
-          for width in 320 375 390 402 600 820 1440; do
+          for width in 320 360 375 390 402 600 640 820 1440; do
             echo "Checking iframe viewport $width px"
             url="http://127.0.0.1:8765/tools/render_contract_fixture.html?w=$width"
             result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=11000 --dump-dom "$url" 2>/tmp/li-chrome-stderr.log || true)"
@@ -48,7 +48,7 @@ jobs:
             fi
             echo "$result" | grep '<pre id="result">LI_RENDER_PASS ' | tail -1 | cut -c1-1000
           done
-          echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at seven viewports"
+          echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at nine viewports"
           for width in 320 390 820; do
             echo "Checking real Check-in UI at $width CSS px"
             url="http://127.0.0.1:8765/tools/checkin_browser_fixture.html?w=$width"
@@ -71,11 +71,41 @@ jobs:
             echo "Captured $file"
           done
 
+          echo "Checking component board interactive routes/viewport controls"
+          board_url="http://127.0.0.1:8765/tools/component_review_fixture.html"
+          board="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1400,1000 --virtual-time-budget=12000 --dump-dom "$board_url" 2>/tmp/li-component-review-stderr.log || true)"
+          if [[ "$board" != *'<pre id="result">LI_COMPONENT_REVIEW_PASS '* ]]; then
+            echo "FAIL Component Review Board DOM fixture"
+            echo "$board" | grep -E 'LI_COMPONENT_REVIEW_(PASS|FAIL|PENDING)' | tail -2 | cut -c1-1400 || true
+            exit 1
+          fi
+          echo "PASS real review board controls and two-up specimen"
+          mkdir -p "$RUNNER_TEMP/li-guide-review"
+          for width in 320 360 390 402 820; do
+            url="http://127.0.0.1:8765/tools/render_contract_fixture.html?w=$width"
+            file="$RUNNER_TEMP/li-guide-review/guide-$width.png"
+            "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,1100 --virtual-time-budget=12000 --screenshot="$file" "$url" 2>/tmp/li-guide-shot-stderr.log >/dev/null
+            test -s "$file" || { echo "FAIL Guide screenshot $width"; exit 1; }
+            echo "Captured $file"
+          done
+          boardshot="$RUNNER_TEMP/li-guide-review/component-review-board.png"
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --force-device-scale-factor=1 --window-size=1440,1100 --virtual-time-budget=12000 --screenshot="$boardshot" "http://127.0.0.1:8765/site/design-system-components-review.html#components" 2>/tmp/li-review-shot-stderr.log >/dev/null
+          test -s "$boardshot"
+
       - name: Preserve L1 check-in radio visual screenshots for review
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: li-checkin-radio-visual
           path: ${{ runner.temp }}/li-checkin-visual/*.png
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Preserve Thần Chú 2-column and Component Board review screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-guide-component-review
+          path: ${{ runner.temp }}/li-guide-review/*.png
           if-no-files-found: warn
           retention-days: 7

@@ -4,7 +4,7 @@
 
 ## 1. Why this changes
 
-Source audit of the current `site/index.html` before v0.2 found many 9–13px labels, 10.5px method descriptions, a 10px mobile nav, and arbitrary 7/9/13/17/22/28/30px local gaps. A packed two-column guide forced instructional copy to shrink and sometimes truncate at two lines. The new scale changes content density by giving text usable width; it **does not** preserve the former two-up phone grid at the cost of legibility.
+Source audit of the current `site/index.html` before v0.2 found many 9–13px labels, 10.5px method descriptions, a 10px mobile nav, and arbitrary 7/9/13/17/22/28/30px local gaps. A packed two-column guide forced instructional copy to shrink and sometimes truncate at two lines. The new scale changes content density by giving text usable width. **Later Human PO decisions S116/S118 explicitly override the one-column phone Guide choice:** keep two compact tiles per row on phones, with 2-line 14px teaser and full description on the detail page. The former blanket one-column sentence is superseded; title/academic name must stay legible.
 
 ### External references vs li. decisions
 
@@ -50,14 +50,14 @@ Type sizes need not be divisible by four; **line heights and spacing do**. Avoid
 
 **Token naming:** `--li-space-4` = **16px**, not 4px; the suffix indexes the base 4px grid. Use named semantic aliases (`--li-page-gutter`, `--li-card-pad`, `--li-stack-gap`, `--li-section-gap`) instead of magic literals.
 
-**Responsive:** gutters 16px mobile ≤600, 24px tablet, 40px wide desktop ≥1200. Card inset 20px mobile / 24px desktop. Controls at least 48px tall. Guide cards use adaptive `minmax(220px)` and become single-column on narrow phones rather than shrinking body to 10.5px.
+**Responsive:** gutters 16px mobile ≤600, 24px tablet, 40px wide desktop ≥1200. Card inset 20px mobile / 24px desktop. Controls at least 48px tall. Guide cards use 3-column desktop / 2-column tablet / **2-column phone ≤640px** per S116/S118, with 14/20px teaser and source details in the full detail route. **Specific PO-reviewed exception:** tile gaps are 18px horizontal / 20px vertical (≤360px: 14px / 18px); don't globally round them or collapse tiles to one column while reworking tokens.
 
 ## 4. Applied coverage in `site/assets/ui-foundations.css`
 
 - Global body, section shells, editorial grids, cards, stacked content, inputs, control labels, page headers, typography roles.
 - Homepage CTA pair, contextual text and mirror type with deliberate artwork/crop constraint.
 - Global header utility target, mobile bottom-nav label/target, sand pill visuals preserved.
-- Thần Chú search/filter, mentor card, method-card purpose text and responsive width; no intentional two-line forced hiding.
+- Thần Chú search/filter, mentor card, full card title/academic name and 2-up mobile compact tiles; purpose teaser intentionally shows two lines, full explanation remains on detail route.
 - Settings cards, guide detail, study mode controls, Lão Lý bubble and actions.
 - Shared Wave 1 L03/L09/L15 lesson families: explanatory labels, sources, figures, stats and section gaps.
 

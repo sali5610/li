@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="color-scheme" content="light">
+<title>li. · Component Library — Human PO Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/design-tokens.css?v=0.3">
+<link rel="stylesheet" href="./assets/component-review.css?v=20261118-v1">
+<script src="./assets/component-review.js?v=20261118-v1" defer></script>
+</head>
+<body>
+<div class="review-shell">
+<aside class="review-rail" aria-label="Component Library menu">
+<a class="wordmark" href="./index.html" title="Về li.">理 <span>li.</span></a>
+<p class="rail-caption">DESIGN SYSTEM / REVIEW 01</p>
+<nav class="rail-nav" aria-label="Mục lục">
+<a href="#overview" aria-current="location"><span>01</span> Tổng quan</a>
+<a href="#foundations"><span>02</span> Foundations</a>
+<a href="#components"><span>03</span> Components</a>
+<a href="#responsive"><span>04</span> Live responsive</a>
+<a href="#decision"><span>05</span> Decision gate</a>
+</nav>
+<p class="rail-foot">Một hệ thống cho sự nhất quán, không phải G2 đã duyệt.</p>
+</aside>
+<main id="content">
+<header class="topbar"><span>li. (理) / UI component library</span><a href="./index.html?page=guide">Mở app thật ↗</a></header>
+<section id="overview" class="review-section intro">
+<p class="eyebrow">HUMAN PRODUCT OWNER · DECISION GATE</p>
+<h1>Component <em>Library</em></h1>
+<p class="lead">Review component theo hệ thống, không sửa từng màn một cách đối phó. Specimen bên dưới mô tả token và states; phần Live Responsive mở trực tiếp app thật.</p>
+<div class="notice"><strong>DRAFT CHO PO REVIEW.</strong> Những gì đang chạy trên web không mặc nhiên được duyệt về G2 hay cấu trúc component. Đợt này là để mày nhìn, so sánh và chốt.</div>
+<div class="metrics"><div><strong>13</strong><span>component families</span></div><div><strong>7</strong><span>breakpoint chính</span></div><div><strong>4px</strong><span>spacing scale</span></div><div><strong>G2</strong><span>PO chưa chốt</span></div></div>
+<div class="source-links"><a href="https://github.com/sali5610/li/blob/main/design-system/tokens.json">Tokens ↗</a><a href="https://github.com/sali5610/li/blob/main/design-system/components.md">Component contract ↗</a><a href="https://app.notion.com/p/41b6cf6db72a814a8dc6d741386c5bc7">S116 · 2 cột ↗</a><a href="https://app.notion.com/p/41b6cf6db72a8106a821edececd098fd">S118 · Spacing ↗</a></div>
+</section>
+<section id="foundations" class="review-section">
+<div class="section-head"><div><p class="eyebrow">02 / FOUNDATIONS</p><h2>Visual primitives</h2></div><p>Giá trị implement · chưa đồng nghĩa G2 approved</p></div>
+<div class="foundations">
+<article class="panel"><div class="panel-head"><h3>Color language</h3><small>Tokens from source</small></div>
+<div class="swatches">
+<div><span style="background:var(--paper)"></span><b>Paper</b><small>#F3EBDC</small></div>
+<div><span style="background:var(--cream)"></span><b>Cream</b><small>#FBF7EB</small></div>
+<div><span style="background:var(--moss)"></span><b>Moss</b><small>#243A29</small></div>
+<div><span style="background:var(--wood)"></span><b>Wood</b><small>#856D4B</small></div>
+<div><span style="background:var(--ink)"></span><b>Ink</b><small>#272A23</small></div>
+<div><span style="background:#E5D8BA"></span><b>Selected</b><small>#E5D8BA</small></div>
+</div></article>
+<article class="panel"><div class="panel-head"><h3>Typography</h3><small>Crimson + sans</small></div>
+<div class="type-item"><small>DISPLAY · 48/56</small><div class="display-demo">Tri thức sống</div></div>
+<div class="type-item"><small>TITLE · 24/32</small><div class="title-demo">Học cách đặt câu hỏi</div></div>
+<div class="type-item"><small>BODY · 16/24</small><p>Đọc, hiểu, rồi phân biệt dữ liệu với diễn giải.</p></div>
+<div class="type-item"><small>SUPPORT · 14/20</small><p class="support-demo">Giải thích ngắn, label và phụ đề.</p></div>
+</article>
+<article class="panel full"><div class="panel-head"><h3>Spacing rhythm</h3><small>4px core · PO exceptions</small></div>
+<div class="spaces"><div>4<span style="width:4px"></span></div><div>8<span style="width:8px"></span></div><div>16<span style="width:16px"></span></div><div>24<span style="width:24px"></span></div><div>32<span style="width:32px"></span></div><div>48<span style="width:48px"></span></div></div>
+<p class="caption">Ngoại lệ PO đã quyết: card Thần Chú mobile gap 18/20px; màn ≤360px là 14/18px. Không tự round lại để chiều token.</p>
+</article></div>
+</section>
+<section id="components" class="review-section">
+<div class="section-head"><div><p class="eyebrow">03 / COMPONENT FAMILIES</p><h2>Component specimens</h2></div><p>States và variants để review, chưa khóa API</p></div>
+<div class="component-grid">
+<article class="panel specimen"><div class="panel-head"><h3>01 · Actions</h3><small>Default / secondary / disabled</small></div>
+<div class="action-row"><button class="demo-button primary" data-demo="primary">Đào sâu</button><button class="demo-button secondary" data-demo="secondary">Lưu</button><button class="demo-button primary" disabled>Đang khóa</button></div>
+<p class="caption">Square controls, shadow cứng, target tối thiểu 48px.</p></article>
+<article class="panel specimen"><div class="panel-head"><h3>02 · Navigation</h3><small>Sand selected exception</small></div>
+<div class="nav-demo"><button type="button" aria-pressed="true" data-demo-nav><span>⌂</span>Trang chủ</button><button type="button" aria-pressed="false" data-demo-nav><span>▤</span>Thần Chú</button><button type="button" aria-pressed="false" data-demo-nav><span>♢</span>Tủ Riêng</button></div>
+<p class="caption">Sand oval chỉ áp dụng cho selected navigation.</p></article>
+<article class="panel specimen"><div class="panel-head"><h3>03 · Search & filters</h3><small>Input / selected / keyboard</small></div>
+<label class="demo-label" for="demo-search">Tìm phương pháp</label><input id="demo-search" class="demo-input" type="search" placeholder="Tên Thần Chú hoặc thuật ngữ...">
+<div class="filter-demo"><button aria-pressed="true" data-demo-filter>Tất cả</button><button aria-pressed="false" data-demo-filter>Ký Ức Thuật</button><button aria-pressed="false" data-demo-filter>Luận Chứng</button></div></article>
+<article class="panel specimen"><div class="panel-head"><h3>04 · Content card</h3><small>Square / cream / hard shadow</small></div>
+<div class="sample-card"><small>T01 · PHƯƠNG PHÁP</small><h4>Triệu Ức Chân Ngôn</h4><p>Gợi nhớ trước khi mở đáp án rồi kiểm tra điều mình bỏ sót.</p><strong>METHOD / SOURCE-BASED</strong></div></article>
+<article class="panel specimen"><div class="panel-head"><h3>05 · Check-in choice</h3><small>Radio / not dropdown</small></div>
+<fieldset class="radio-demo"><legend>Đã nghỉ ngơi hôm nay?</legend><div><label><input type="radio" name="demo-rest" value="yes"><span>Có</span></label><label><input type="radio" name="demo-rest" value="no"><span>Chưa</span></label><label><input type="radio" name="demo-rest" value="unsure"><span>Không rõ</span></label></div></fieldset>
+<p class="caption">Không áp dụng nhịp học khi chưa đủ 3 câu thể trạng.</p></article>
+<article class="panel specimen priority"><div class="panel-head"><h3>06 · Method tile</h3><small>S116/S118 · 2-up phone</small></div>
+<p class="caption">2 tile/hàng trên điện thoại. Full title + academic label + teaser 2 dòng; Chú Giải mở detail.</p>
+<div class="mini-method-grid"><div class="mini-method"><span>✦ T01 · KÝ ỨC</span><h4>Triệu Ức Chân Ngôn</h4><small>Retrieval Practice</small><p>Tự nhớ trước khi xem lời giải và kiểm tra chỗ thiếu...</p><strong>CHÚ GIẢI →</strong></div>
+<div class="mini-method"><span>✦ T02 · KÝ ỨC</span><h4>Thời Ấn Hồi Ức</h4><small>Spaced Repetition</small><p>Ôn đúng thời điểm để lưu giữ kiến thức bền vững...</p><strong>CHÚ GIẢI →</strong></div></div>
+</article>
+</div>
+<article class="panel inventory"><div class="panel-head"><h3>Component inventory</h3><small>13 families · audit scope</small></div>
+<div class="table-wrap"><table><thead><tr><th>Family</th><th>Live app use</th><th>Trạng thái</th></tr></thead><tbody>
+<tr><td>01 · Header</td><td>Brand seal, utility actions</td><td>State audit</td></tr>
+<tr><td>02 · Navigation</td><td>Top/bottom nav, selected pill</td><td>PO exception</td></tr>
+<tr><td>03 · Actions</td><td>CTA, icon-only, disabled</td><td>Variants pending</td></tr>
+<tr><td>04 · Content cards</td><td>Panel, destination, research</td><td>Anatomy pending</td></tr>
+<tr><td>05 · Method tile</td><td>Thần Chú + Chú Giải</td><td>S116/S118 locked per scope</td></tr>
+<tr><td>06 · Inputs</td><td>Search, notebook, filter</td><td>Validation pending</td></tr>
+<tr><td>07 · Choice</td><td>Radio, checkbox, study mode</td><td>Check-in radio</td></tr>
+<tr><td>08 · Companion</td><td>Lão Lý FAB, bubble, modes</td><td>Exceptions tracked</td></tr>
+<tr><td>09 · Overlay</td><td>Modal, scrolling, footer</td><td>Physical QA pending</td></tr>
+<tr><td>10 · Mirror</td><td>Questions, arrows, CTA</td><td>Art-geometry special</td></tr>
+<tr><td>11 · Feedback</td><td>Toast, success/error, empty</td><td>Contrast pending</td></tr>
+<tr><td>12 · Learning</td><td>Wave1 lessons + source</td><td>Locked content</td></tr>
+<tr><td>13 · Dashboard</td><td>Daily diary, charts, calendar</td><td>Visual gate pending</td></tr>
+</tbody></table></div></article>
+</section>
+<section id="responsive" class="review-section">
+<div class="section-head"><div><p class="eyebrow">04 / ACTUAL RUNTIME</p><h2>Live responsive tester</h2></div><p>Same-origin iframe chạy app thật</p></div>
+<div class="preview-tools">
+<fieldset class="toolbar-fieldset"><legend>Viewport CSS px</legend><div id="viewport-controls" class="toolbar-buttons">
+<button type="button" data-width="320" aria-pressed="false">320</button><button type="button" data-width="360" aria-pressed="false">360</button><button type="button" data-width="375" aria-pressed="false">375</button><button type="button" data-width="390" aria-pressed="true">390</button><button type="button" data-width="402" aria-pressed="false">402</button><button type="button" data-width="600" aria-pressed="false">600</button><button type="button" data-width="820" aria-pressed="false">820</button><button type="button" data-width="1440" aria-pressed="false">1440</button></div></fieldset>
+<fieldset class="toolbar-fieldset"><legend>Page context</legend><div id="route-controls" class="toolbar-buttons">
+<button type="button" data-route="guide" aria-pressed="true">Thần Chú</button><button type="button" data-route="home" aria-pressed="false">Home</button><button type="button" data-route="settings" aria-pressed="false">Settings</button><button type="button" data-route="library" aria-pressed="false">Tủ Riêng</button><button type="button" data-route="dashboard" aria-pressed="false">Dashboard</button><button type="button" data-route="catalog" aria-pressed="false">Môn học</button></div></fieldset>
+</div>
+<div class="preview-caption"><div><i aria-hidden="true"></i><strong>LIVE APP RUNTIME</strong><span id="preview-name">Thần Chú · 390px</span></div><a id="open-live" href="./index.html?page=guide" target="_blank" rel="noopener">Mở nguyên trang ↗</a></div>
+<div id="preview-stage" class="preview-stage" tabindex="0" aria-label="Khung xem responsive, cuộn ngang nếu cần"><div id="preview-device" class="preview-device" style="width:390px"><iframe id="app-preview" src="./index.html?page=guide" title="li. app responsive review" loading="lazy"></iframe></div></div>
+<p class="caption">Đây là chính trang app với CSS/JS đang chạy, không phải ảnh giả. Đổi width để xem layout, bấm card để mở Chú Giải. Có thể cuộn ngang khung preview khi chọn desktop.</p>
+</section>
+<section id="decision" class="review-section">
+<div class="section-head"><div><p class="eyebrow">05 / HUMAN PO</p><h2>Decision gate</h2></div><p>Review trước khi khóa contract</p></div>
+<article class="panel gate"><h3>Còn gì cần chốt?</h3><ol>
+<li>Anatomy/hierarchy và variants chuẩn của từng họ component.</li>
+<li>States: default, hover, pressed, selected, focus, disabled, error, long VI/EN.</li>
+<li>Responsive: đặc biệt Thần Chú 2 cột điện thoại đã có S116/S118.</li>
+<li>Các ngoại lệ cần giữ: nghệ thuật minh họa, sand pill, bubble của Lão Lý.</li>
+<li>Thiết bị thật, VoiceOver và phê duyệt G2 tổng thể là gate riêng.</li>
+</ol>
+<div class="action-row"><a class="demo-button primary" href="https://github.com/sali5610/li/blob/main/design-system/components.md">Xem component contract</a><a class="demo-button secondary" href="https://app.notion.com/p/4196cf6db72a81f7b000f75783f210b5">Latest Handoff</a></div>
+<p class="caption">Bản review không tự động chốt một design decision mới nào.</p></article></section>
+<footer>li. (理) · Component Library Review 01 · G2 pending · No Wave2/3 course material · 0 VND paid spend</footer>
+</main></div>
+<div class="demo-toast" id="demo-toast" role="status" aria-live="polite" hidden>Đây là specimen. Hãy dùng Live Responsive để thử chức năng thật.</div>
+</body></html>

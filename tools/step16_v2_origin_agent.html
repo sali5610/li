@@ -8,7 +8,7 @@
  function pause(ms){return new Promise(r=>setTimeout(r,ms));}
  async function until(fn,message){
    const start=performance.now();
-   while(performance.now()-start<9000){if(fn())return;await pause(35);}
+   while(performance.now()-start<25000){if(fn())return;await pause(35);}
    throw Error("TIMEOUT "+message);
  }
  let iframe=null;

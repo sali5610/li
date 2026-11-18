@@ -11,6 +11,7 @@ on:
       - 'tools/step16_v2_origin_agent.html'
       - 'tools/step16_v2_lock_fixture.html'
       - 'tools/step16_v2_lock_agent.html'
+      - 'tools/step16_cdp_page.cjs'
       - '.github/workflows/step16-v2-integration.yml'
   workflow_dispatch:
 
@@ -27,74 +28,34 @@ jobs:
         run: |
           node --check site/assets/backup-v2.js
           python3 tools/validate_site.py
-      - name: Exercise actual li. Settings handlers with fake browser data
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Exercise actual li. Settings with Chrome real-time DevTools and fake data
         shell: bash
         run: |
           set -euo pipefail
           chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
-          if [[ -z "$chrome" ]]; then echo "FAIL: no Chromium"; exit 1; fi
+          if [[ -z "$chrome" ]]; then echo "FAIL: Chromium unavailable"; exit 1; fi
           "$chrome" --version
-          python3 -m http.server 8774 --bind 127.0.0.1 --directory . >/tmp/li-step16-v2-http.log 2>&1 &
-          server_pid=$!
-          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
-          sleep 2
-          url="http://127.0.0.1:8774/tools/step16_v2_app_fixture.html"
-          timeout 100s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=90000 --dump-dom "$url" > /tmp/li-step16-v2-result.html 2>/tmp/li-step16-v2-stderr.log || {
-            echo "FAIL browser did not finish"
-            tail -22 /tmp/li-step16-v2-stderr.log || true
-            exit 1
-          }
-          if ! grep -F '<pre id="result">LI_BACKUP_V2_PASS ' /tmp/li-step16-v2-result.html | grep -F '"count":5' >/dev/null; then
-            echo "FAIL v2 integration fixture"
-            grep -F '<pre id="result">LI_BACKUP_V2_' /tmp/li-step16-v2-result.html | tail -1 | cut -c1-4800 || true
-            exit 1
-          fi
-          grep -F '<pre id="result">LI_BACKUP_V2_PASS ' /tmp/li-step16-v2-result.html | tail -1 | cut -c1-4200
-          echo "PASS actual Settings v2 candidate tested against fake localhost storage only"
-          echo "Testing independent adversarial v2 storage cases"
-          fault_url="http://127.0.0.1:8774/tools/step16_v2_fault_fixture.html"
-          timeout 45s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=12000 --dump-dom "$fault_url" > /tmp/li-step16-v2-fault-result.html 2>/tmp/li-step16-v2-fault-stderr.log || {
-            echo "FAIL fault-fixture Chromium did not finish"
-            tail -22 /tmp/li-step16-v2-fault-stderr.log || true
-            exit 1
-          }
-          if ! grep -F '<pre id="result">LI_BACKUP_V2_FAULT_PASS ' /tmp/li-step16-v2-fault-result.html | grep -F '"count":11' >/dev/null; then
-            echo "FAIL v2 adversarial recovery suite"
-            grep -F '<pre id="result">LI_BACKUP_V2_FAULT_' /tmp/li-step16-v2-fault-result.html | tail -1 | cut -c1-4800 || true
-            exit 1
-          fi
-          grep -F '<pre id="result">LI_BACKUP_V2_FAULT_PASS ' /tmp/li-step16-v2-fault-result.html | tail -1 | cut -c1-4200
-          echo "PASS synthetic fault suite. Physical Safari / real quota eviction remain unverified"
+          node --version
+          node --check tools/step16_cdp_page.cjs
+          python3 -m http.server 8774 --bind 127.0.0.1 --directory . >/tmp/li-step16-origin-a.log 2>&1 &
+          a_pid=$!
           python3 -m http.server 8775 --bind 127.0.0.1 --directory . >/tmp/li-step16-origin-b.log 2>&1 &
-          other_pid=$!
-          trap 'kill "$server_pid" "$other_pid" 2>/dev/null || true' EXIT
+          b_pid=$!
+          trap 'kill "$a_pid" "$b_pid" 2>/dev/null || true' EXIT
           sleep 2
-          cross_url="http://127.0.0.1:8774/tools/step16_v2_origin_fixture.html"
-          timeout 100s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=90000 --dump-dom "$cross_url" > /tmp/li-step16-v2-cross-origin.html 2>/tmp/li-step16-v2-cross-stderr.log || {
-            echo "FAIL two-origin real Settings browser did not complete"
-            tail -22 /tmp/li-step16-v2-cross-stderr.log || true
-            exit 1
-          }
-          if ! grep -F '<pre id="result">LI_BACKUP_V2_ORIGIN_PASS ' /tmp/li-step16-v2-cross-origin.html | grep -F '"count":5' >/dev/null; then
-            echo "FAIL real Settings cross-origin recovery"
-            grep -F '<pre id="result">LI_BACKUP_V2_ORIGIN_' /tmp/li-step16-v2-cross-origin.html | tail -1 | cut -c1-5500 || true
-            exit 1
-          fi
-          grep -F '<pre id="result">LI_BACKUP_V2_ORIGIN_PASS ' /tmp/li-step16-v2-cross-origin.html | tail -1 | cut -c1-4200
-          echo "PASS two isolated web origins with real Settings controls and fake files"
-          lock_url="http://127.0.0.1:8774/tools/step16_v2_lock_fixture.html"
-          timeout 90s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=70000 --dump-dom "$lock_url" > /tmp/li-step16-v2-lock-result.html 2>/tmp/li-step16-v2-lock-stderr.log || {
-            echo "FAIL Web Locks same-origin document test did not complete"
-            tail -22 /tmp/li-step16-v2-lock-stderr.log || true
-            exit 1
-          }
-          if ! grep -F '<pre id="result">LI_BACKUP_V2_LOCK_PASS ' /tmp/li-step16-v2-lock-result.html | grep -F '"count":5' >/dev/null; then
-            echo "FAIL real same-origin lock/TOCTOU/consent test"
-            grep -F '<pre id="result">LI_BACKUP_V2_LOCK_' /tmp/li-step16-v2-lock-result.html | tail -1 | cut -c1-5500 || true
-            exit 1
-          fi
-          grep -F '<pre id="result">LI_BACKUP_V2_LOCK_PASS ' /tmp/li-step16-v2-lock-result.html | tail -1 | cut -c1-4400
-          echo "PASS separate same-origin documents coordinate imports. Other app writers remain uncoordinated."
-
-
-
+          node tools/step16_cdp_page.cjs "$chrome" \
+            "http://127.0.0.1:8774/tools/step16_v2_app_fixture.html" \
+            "LI_BACKUP_V2_PASS " 5 60000
+          node tools/step16_cdp_page.cjs "$chrome" \
+            "http://127.0.0.1:8774/tools/step16_v2_fault_fixture.html" \
+            "LI_BACKUP_V2_FAULT_PASS " 11 60000
+          node tools/step16_cdp_page.cjs "$chrome" \
+            "http://127.0.0.1:8774/tools/step16_v2_origin_fixture.html" \
+            "LI_BACKUP_V2_ORIGIN_PASS " 5 60000
+          node tools/step16_cdp_page.cjs "$chrome" \
+            "http://127.0.0.1:8774/tools/step16_v2_lock_fixture.html" \
+            "LI_BACKUP_V2_LOCK_PASS " 5 60000
+          echo "PASS all 4 suites — actual rendered DOM; real clock, isolated fake data, no production deploy"

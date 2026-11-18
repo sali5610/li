@@ -27,6 +27,8 @@
     report("Generated + layout + lessons + foundations all loaded",["design-tokens.css","li-layout.css","lesson-l09-hifi.css","ui-foundations.css"].every(x=>css.some(y=>y.includes(x))),css.join(","));
     const mirror=doc.querySelector("#page-home .mirror-message h2");
     report("Mirror question exists",!!mirror);
+    const mirrorTitle=doc.querySelector("#page-home .mirror-titlebar, #page-home .mirror-label");
+    report("Home mirror title removed without hiding the question",!mirrorTitle&&!!mirror&&!!mirror.textContent.trim(),mirrorTitle?.textContent||"question remains");
     const scene=doc.querySelector("#page-home .hero");
     const image=scene?w.getComputedStyle(scene,"::before").backgroundImage:"";
     const expectedScene=w.innerWidth<=600?"home-li-iphone-20261119.jpg":w.innerWidth<=1139?"home-li-ipad-20261119.jpg":"home-mystic-cool-desktop.webp";

@@ -68,9 +68,10 @@ assert html.count('<link rel="apple-touch-icon" sizes="180x180" href="./assets/a
 assert '<meta name="apple-mobile-web-app-title" content="li.">' in html
 assert '<meta name="theme-color" content="#243A29">' in html
 
-# S136: mirror label is typographic only, not a search control.
-assert html.count('<div class="mirror-label">Gương Vạn Vấn</div>') == 1
-assert '<div class="mirror-label"><i data-lucide="search"' not in html
+# UX-HOME-05: PO removes the visible mirror title; question + accessible region survive.
+assert 'class="mirror-titlebar"' not in html
+assert 'class="mirror-label"' not in html
+assert 'aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn"' in html
 
 # S138/S139: touch swipe only on mirror; fixed-scale viewport and sticky header.
 for needle in (
@@ -482,7 +483,7 @@ subprocess.run(["node",str(site.parent/"tools"/"test_library_case_review.cjs")],
 # UX-HOME-01: The Home-only Save action shares the primary CTA component;
 # elsewhere Save/Unsave and Delete remain independent icon utilities.
 home=section("home")
-assert 'class="mirror-titlebar"' in home and 'class="library-icon-utility mirror-bookmark-slot"' not in home
+assert 'class="mirror-titlebar"' not in home and 'class="library-icon-utility mirror-bookmark-slot"' not in home
 assert 'id="save-question"' in home
 hero_actions=home[home.index('<div class="hero-actions">'):home.index('</div></div>',home.index('<div class="hero-actions">'))]
 assert 'id="save-question"' in hero_actions
@@ -790,8 +791,9 @@ assert 'ds-large light' in review and 'ds-large warm' in review
 assert all(x in review for x in ('ds-textarea','ds-chip-result','ds-error','ds-disabled','ds-readonly'))
 assert all(x in review for x in ('ds-home-bubble','ds-tabs','ds-utility','ds-back','ds-link'))
 
-# S159: mirror name remains consistent while purpose-specific CTAs still route.
-assert 'if(kind)kind.textContent="Gương Vạn Vấn";' in page_html
+# UX-HOME-05: no JS rerender can resurrect the removed visible mirror title.
+assert 'if(kind)kind.textContent="Gương Vạn Vấn";' not in page_html
+assert 'querySelector("#page-home .mirror-message .mirror-label")' not in page_html
 assert 'Gương Vạn Vấn · Vấn đề' not in page_html
 assert 'Gương Vạn Vấn · Điều bất ngờ' not in page_html
 assert 'if(kind)kind.textContent="Gương Vạn Vấn · "' not in page_html

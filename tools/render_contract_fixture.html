@@ -31,6 +31,12 @@
     const image=scene?w.getComputedStyle(scene,"::before").backgroundImage:"";
     const expectedScene=w.innerWidth<=600?"home-li-iphone-20261119.jpg":w.innerWidth<=1139?"home-li-ipad-20261119.jpg":"home-mystic-cool-desktop.webp";
     report("Approved Home illustration matches responsive source image",image.includes(expectedScene),image.slice(0,170));
+    if(w.innerWidth>=601&&w.innerWidth<=1139){
+     const ringCopy=doc.querySelector("#page-home .mirror-message").getBoundingClientRect();
+     const sceneBox=scene.getBoundingClientRect();
+     const x=(ringCopy.left+ringCopy.width/2-sceneBox.left)/sceneBox.width;
+     report("Tablet question remains centered inside supplied mirror",Math.abs(x-0.49)<0.04,x.toFixed(3));
+    }
     if(w.innerWidth<=600){
      const nav=doc.querySelector(".mobile-nav .nav-btn");
      const headerControl=doc.querySelector(".header .tool-button");

@@ -1,0 +1,133 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><title>Step16 isolated browser E2E</title></head><body>
+<pre id="result">LI_STEP16_BROWSER_PENDING</pre>
+<script src="./step16_browser_backup_spike.js"></script>
+<script>
+(async () => {
+ const report=[], B=window.LiStep16BrowserSpike, S=window.localStorage;
+ const initial=()=>Object.fromEntries(B.FIXED_KEYS.map((key,i)=>[key,JSON.stringify({fake:true,index:i})]));
+ const cleanup=()=>{for(let i=S.length-1;i>=0;i--){const key=S.key(i); if(key && (key.startsWith('li.') || key === 'step16.unrelated')) S.removeItem(key);}};
+ const seed=(map)=>{cleanup();for(const [key,value] of Object.entries(map))S.setItem(key,value);};
+ const current=()=>Object.fromEntries(B.recordsFrom(S).map(x=>[x.key,x.value]));
+ const same=(left,right)=>JSON.stringify(Object.entries(left).sort())===JSON.stringify(Object.entries(right).sort());
+ const check=(condition,message)=>{if(!condition)throw Error(message);};
+ const throws=async (fn,pattern)=>{let error=null;try{await fn();}catch(e){error=e;}check(error&&pattern.test(error.message),'Expected '+pattern+'; received '+(error?.message||'none'));};
+ const test=async (name,fn)=>{await fn();report.push(name);};
+ const base={...initial(),'li.review.L09-1-2.v1':JSON.stringify({draft:['FAKE','','',''],reviewed:true}),
+  'li.review.L03-1-2.v1':JSON.stringify({reviewed:false})};
+ const date='2026-11-19T00:00:00.000Z';
+ const origin=window.location.origin;
+ try {
+   cleanup();
+   check(window.isSecureContext && !!crypto.subtle,'Localhost WebCrypto unavailable');
+   await test('Full localStorage v2 snapshot restore',async()=>{
+     seed({...base,'step16.unrelated':'untouched'});
+     const json=await B.backup(S,origin,date);
+     check(JSON.parse(json).records.length===13,'Missing fixed or dynamic state');
+     seed({'step16.unrelated':'untouched'});
+     const out=await B.restore(S,json,{confirmed:true});
+     check(out.applied&&same(current(),base),'Roundtrip mismatch');
+     check(S.getItem('step16.unrelated')==='untouched','Other key changed');
+   });
+   await test('Dry-run preview is non-destructive and fingerprints state',async()=>{
+     seed({'li.study-mode.v1':'start'});
+     const before=current();
+     const json=await B.backup({length:0,key:()=>null,getItem:()=>null},origin,date);
+     const p=await B.restore(S,json);
+     check(!p.applied&&p.preview.remove===1&&p.fingerprint.length===64,'Preview metadata wrong');
+     check(same(current(),before),'Preview wrote storage');
+   });
+   await test('Confirmed full replacement removes only li. keys',async()=>{
+     seed({'li.study-mode.v1':'start','li.app.locale.v1':'en','step16.unrelated':'keep'});
+     const json=await B.backup(S,origin,date);
+     seed({'li.study-mode.v1':'focus','li.buddy-address.v1':'temp','step16.unrelated':'keep'});
+     const p=await B.restore(S,json);
+     check(p.preview.remove===1,'Missing removal preview');
+     check((await B.restore(S,json,{confirmed:true})).applied,'Full replace failed');
+     check(S.getItem('li.buddy-address.v1')===null&&S.getItem('step16.unrelated')==='keep','Wrong deletion boundary');
+   });
+   await test('Unknown li. storage blocks complete-backup claim',async()=>{
+     seed({...base,'li.future.unknown.v2':'danger'});
+     await throws(()=>B.backup(S,origin,date),/Unregistered/);
+   });
+   await test('Tampering, duplicate records and version are rejected',async()=>{
+     seed(base);const json=await B.backup(S,origin,date);
+     const dirty=JSON.parse(json);dirty.records[0].value='bad';
+     await throws(()=>B.parse(JSON.stringify(dirty)),/Checksum/);
+     const duplicate=JSON.parse(json);duplicate.records.push(duplicate.records[0]);
+     await throws(()=>B.parse(JSON.stringify(duplicate)),/Duplicate/);
+     const later=JSON.parse(json);later.version=99;
+     await throws(()=>B.parse(JSON.stringify(later)),/Unsupported/);
+   });
+   await test('Malformed and oversized files reject before writes',async()=>{
+     seed(base);const before=current();
+     await throws(()=>B.restore(S,'{bad',{confirmed:true}),/Invalid JSON/);
+     await throws(()=>B.restore(S,'x'.repeat(10*1024*1024+1),{confirmed:true}),/oversized/);
+     check(same(current(),before),'Invalid import touched storage');
+   });
+   await test('Legacy schema1 merge-only leaves independent progress',async()=>{
+     const legacy={schema:1,exportedAt:date,cases:[{title:'fake',revision:'fake',correct:true}],
+       questions:[{question:'fake'}],ideas:[],savedContent:[],draft:'FAKE DRAFT',
+       buddyNames:{warm:'bạn',teasing:'nhóc',serious:'ngươi'}};
+     seed({'li.review.L09-1-2.v1':'PRESERVE OLD LESSON', 'li.personal.daily.v1':'OLD DIARY'});
+     const before=current();
+     const preview=await B.restore(S,JSON.stringify(legacy),{mode:'merge'});
+     check(preview.legacy&&preview.warning.includes('cannot be recovered')&&preview.preview.add===3,'Legacy warning missing');
+     await throws(()=>B.restore(S,JSON.stringify(legacy),{confirmed:true}),/Legacy backup can only merge/);
+     const result=await B.restore(S,JSON.stringify(legacy),{mode:'merge',confirmed:true});
+     check(result.applied&&result.legacy,'Legacy merge failed');
+     check(S.getItem('li.review.L09-1-2.v1')===before['li.review.L09-1-2.v1']&&
+       S.getItem('li.personal.daily.v1')===before['li.personal.daily.v1'],'Legacy import wiped unavailable data');
+     check(S.getItem('li.private.case-draft.v1')==='FAKE DRAFT','Legacy draft lost');
+   });
+   await test('Simulated quota denial restores exact actual localStorage state',async()=>{
+     seed({'li.app.locale.v1':'vi','li.study-mode.v1':'start'});
+     const json=await B.backup(S,origin,date);
+     seed({'li.app.locale.v1':'EN CHANGED','li.study-mode.v1':'NEW CHANGED'});
+     const prior=current();let count=0;
+     const simulated={get length(){return S.length;},key:i=>S.key(i),getItem:k=>S.getItem(k),
+       setItem(k,v){if(++count===2)throw new DOMException('Synthetic quota exceeded','QuotaExceededError');S.setItem(k,v);},
+       removeItem:k=>S.removeItem(k)};
+     const result=await B.restore(simulated,json,{confirmed:true});
+     check(!result.applied&&result.rollback==='verified','Failed to verify rollback');
+     check(same(current(),prior),'Data changed after failed import');
+   });
+   await test('Rollback denial reports manual recovery, never success',async()=>{
+     seed({'li.study-mode.v1':'before'});
+     const json=await B.backup(S,origin,date);
+     S.setItem('li.study-mode.v1','changed');
+     const simulated={get length(){return S.length;},key:i=>S.key(i),getItem:k=>S.getItem(k),
+       setItem(k,v){if(k==='li.study-mode.v1')throw Error('Synthetic storage blocked');S.setItem(k,v);},
+       removeItem:k=>S.removeItem(k)};
+     const result=await B.restore(simulated,json,{confirmed:true});
+     check(!result.applied&&result.rollback==='FAILED_MANUAL_RECOVERY_REQUIRED','False recovery success');
+   });
+   await test('Stale preview detects a second-document update',async()=>{
+     seed({'li.study-mode.v1':'start'});
+     const json=await B.backup(S,origin,date);
+     const p=await B.restore(S,json);
+     S.setItem('li.study-mode.v1','focus');
+     await throws(()=>B.restore(S,json,{confirmed:true,expectedFingerprint:p.fingerprint}),/Stale preview/);
+     check(S.getItem('li.study-mode.v1')==='focus','Conflict should not overwrite');
+   });
+   await test('Same-origin iframe receives real storage event',async()=>{
+     seed({'li.app.locale.v1':'vi'});
+     const iframe=document.createElement('iframe');iframe.hidden=true;
+     iframe.srcdoc='<script>window.receivedStorage=[];window.addEventListener("storage",function(event){window.receivedStorage.push({key:event.key,newValue:event.newValue});});<\/script>';
+     await new Promise(resolve=>{iframe.addEventListener('load',resolve,{once:true});document.body.append(iframe);});
+     S.setItem('li.app.locale.v1','en');
+     await new Promise(resolve=>setTimeout(resolve,120));
+     const events=iframe.contentWindow.receivedStorage||[];
+     iframe.remove();
+     check(events.some(e=>e.key==='li.app.locale.v1'&&e.newValue==='en'),'No cross-document storage notification');
+   });
+   await test('Repeated restore is idempotent',async()=>{
+     seed(base);const json=await B.backup(S,origin,date);
+     const p=await B.restore(S,json,{confirmed:true});
+     const p2=await B.restore(S,json,{confirmed:true});
+     check(p.applied&&p2.applied&&p2.preview.update===0&&p2.preview.add===0,'Not idempotent');
+   });
+   cleanup();
+   document.getElementById('result').textContent='LI_STEP16_BROWSER_PASS '+JSON.stringify({count:report.length,engine:navigator.userAgent,scenarios:report,scope:'isolated localhost Chromium; not live app or Safari'});
+ } catch(error){cleanup();document.getElementById('result').textContent='LI_STEP16_BROWSER_FAIL '+JSON.stringify({completed:report,error:error.stack||String(error)});}
+})();
+</script></body></html>

@@ -683,7 +683,7 @@ assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
 
 # UX-DS-11 · Review components are connected; app Guide chips use full pills.
-assert 'ui-foundations.css?v=20261118-ds20-coverage' in page_html
+assert 'ui-foundations.css?v=20261119-ds24-no-stroke' in page_html
 assert '#page-guide #method-filters .filter,' in foundation and 'border-radius:999px!important;' in foundation
 v3=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert 'component-review-v3.css?v=20261118-ds20-coverage' in v3
@@ -767,7 +767,7 @@ assert 'Top Navigation transparent Home' not in page_html
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
 assert 'li-layout.css?v=20261118-ds20-coverage' in page_html
-assert 'ui-foundations.css?v=20261118-ds20-coverage' in page_html
+assert 'ui-foundations.css?v=20261119-ds24-no-stroke' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation
@@ -779,12 +779,12 @@ review10css=(site/"assets"/"component-review-v2.css").read_text(encoding="utf-8"
 assert 'background-size:100% 16px,100% var(--li-review-notebook-line)!important;' in review10css
 assert '.ds-home-bubble.green' in review10css and '.ds-image-split' in review10css
 # UX-DS-24: stroke-free forest bubble body/tail; light-paper stroke and shadows preserved.
-assert '.ds-home-bubble.green{\n  background:var(--li-review-home-forest-bubble);\n  border:0;' in review10css
-assert '.ds-home-bubble.green::before{\n  background:var(--li-color-home-dialogue-tail);\n  border:0;' in review10css
+assert '.ds-home-bubble.green{\n  background:var(--li-review-home-forest-bubble);\n  border-width:var(--li-space-0);' in review10css
+assert '.ds-home-bubble.green::before{\n  background:var(--li-color-home-dialogue-tail);\n  border-width:var(--li-space-0);' in review10css
 assert '.ds-home-bubble{position:relative;' in review10css and 'border:1px solid var(--rule)' in review10css
 assert '/* UX-DS-24: forest-green speech bubble is borderless' in foundation
-assert '#page-home .hero-dialogue-bubble { border: 0; padding:' in foundation
-assert '#page-home .hero-dialogue-bubble::before { border: 0; }' in foundation
+assert '#page-home .hero-dialogue-bubble { border-width: var(--li-space-0); padding:' in foundation
+assert '#page-home .hero-dialogue-bubble::before { border-width: var(--li-space-0); }' in foundation
 assert './assets/ui-foundations.css?v=20261119-ds24-no-stroke' in page_html
 
 # UX-DS-09: mobile Tủ Riêng uses the same Archive icon as Home, never Bookmark.

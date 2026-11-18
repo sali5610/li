@@ -549,22 +549,28 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   }
 }
 
-/* UX-DS-08 / S116+S118: Human PO-accepted minimal 2-up Thần Chú tile variant.
-   Preserve the mobile grid when changing global typography/tokens. Keep essential
-   labels >=14px and allow naturally growing cards rather than truncating titles.
-   This scoped rule supersedes the v0.3 minmax(220px) 1-up regression only on Guide. */
+/* UX-DS-08 / S116+S118: Human PO-accepted minimal 2-up Thần Chú.
+   Source of truth S116/S118 overrides any generic 4px-grid normalization.
+   Intentional, documented MICRO-GEOMETRY exception: 18/20px gutters, narrow
+   14/18px and 3/6/8/3px shadow padding. Do not round/rewrite these again. */
 @media (max-width: 640px) {
   #page-guide #method-cards {
+    --li-guide-s118-col-gap: 18px;
+    --li-guide-s118-row-gap: 20px;
+    --li-guide-s118-grid-padding: 3px 6px 8px 3px;
+    --li-guide-s118-card-padding: 11px 10px;
+    --li-guide-s118-grid-top: 18px;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    column-gap: var(--li-space-5) !important;
-    row-gap: var(--li-space-5) !important;
-    padding: var(--li-space-1) var(--li-space-2) var(--li-space-2) var(--li-space-1) !important;
+    column-gap: var(--li-guide-s118-col-gap) !important;
+    row-gap: var(--li-guide-s118-row-gap) !important;
+    padding: var(--li-guide-s118-grid-padding) !important;
+    margin-top: var(--li-guide-s118-grid-top) !important;
   }
   #page-guide #method-cards > .method-card {
     min-width: 0 !important;
     width: 100%;
     min-height: 0 !important;
-    padding: var(--li-space-3) !important;
+    padding: var(--li-guide-s118-card-padding) !important;
     gap: var(--li-space-2);
   }
   #page-guide #method-cards > .method-card h3 {
@@ -592,6 +598,9 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 }
 @media (max-width: 360px) {
   #page-guide #method-cards {
-    column-gap: var(--li-space-4) !important;
+    --li-guide-s118-col-gap: 14px;
+    --li-guide-s118-row-gap: 18px;
+    --li-guide-s118-grid-padding: 3px 5px 8px 2px;
+    --li-guide-s118-card-padding: 10px 9px;
   }
 }

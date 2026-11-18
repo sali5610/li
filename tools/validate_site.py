@@ -328,7 +328,7 @@ assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
-assert 'library-hub.css?v=3' in page_html
+assert 'library-hub.css?v=4' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_note_versions.cjs")],check=True,cwd=site.parent)
 
 # S120: all 13 Thần Chú methods share this same Guide Detail template.
@@ -439,7 +439,7 @@ for lesson in ("l09","l03","l15"):
     source=module.read_text(encoding="utf-8")
     assert "library.prepend(" not in source
     assert 'document.querySelector("#page-library .stack-sm")' not in source
-    assert f'<script src="./assets/lesson-{lesson}-hifi-markup.js?v=20261118-ia06"></script>' in page_html
+    assert f'<script src="./assets/lesson-{lesson}-hifi-markup.js?v=20261118-ia07"></script>' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_wave1_mount_ia.cjs")],check=True,cwd=site.parent)
 
 # UX-IA-06: Save and Unsave have distinct semantics from submitting an answer
@@ -450,7 +450,7 @@ assert 'ideas:collectedIdeas,savedContent,draft:' in page_html
 assert 'caseSnapshot' in page_html and 'selectedText:caseOptions.find' in page_html
 assert 'id="li-note-case-context"' in page_html
 assert 'data-li-bookmark-kind="case"' in page_html
-assert '<script src="./assets/library-bookmarks.js?v=1"></script>' in page_html
+assert '<script src="./assets/library-bookmarks.js?v=2"></script>' in page_html
 assert '<script src="./assets/library-note-editor.js?v=2"></script>' in page_html
 assert '<script src="./assets/library-hub.js?v=3"></script>' in page_html
 for lesson_id,slug in (("L03-1-2","l03"),("L09-1-2","l09"),("L15-2-2","l15")):
@@ -460,6 +460,39 @@ for lesson_id,slug in (("L03-1-2","l03"),("L09-1-2","l09"),("L15-2-2","l15")):
 assert 'function renderCaseContext(note,type)' in (site/"assets"/"library-note-editor.js").read_text(encoding="utf-8")
 subprocess.run(["node",str(site.parent/"tools"/"test_library_bookmarks.cjs")],check=True,cwd=site.parent)
 subprocess.run(["node",str(site.parent/"tools"/"test_library_case_review.cjs")],check=True,cwd=site.parent)
+
+# UX-IA-07: Save/Unsave and Delete are independent icon utilities.
+# A different purpose must not share the same CTA toolbar / button hierarchy.
+home=section("home")
+assert 'class="mirror-titlebar"' in home and 'class="library-icon-utility mirror-bookmark-slot"' in home
+assert 'id="save-question"' in home
+hero_actions=home[home.index('<div class="hero-actions">'):home.index('</div></div>',home.index('<div class="hero-actions">'))]
+assert 'id="save-question"' not in hero_actions
+assert 'function refreshQuestionBookmark()' in page_html
+assert 'findSavedMirrorQuestion(sc)' in page_html
+assert 'class="library-heading-with-utility"' in section("case")
+assert 'data-li-bookmark-kind="case"' in section("case")
+detail=section("noteDetail")
+assert 'class="library-note-head"' in detail
+assert 'id="li-note-delete"' in detail
+note_management=detail[detail.index('class="library-note-management"'):detail.index('</div>',detail.index('class="library-note-management"'))]
+assert 'li-note-delete' not in note_management, "Destructive action must not share Edit toolbar"
+assert 'class="library-icon-utility library-delete-utility"' in detail
+for slug,lesson in (("l03","L03-1-2"),("l09","L09-1-2"),("l15","L15-2-2")):
+    mount=(site/"assets"/f"lesson-{slug}-hifi-markup.js").read_text(encoding="utf-8")
+    assert 'class="library-heading-with-utility library-lesson-heading"' in mount
+    assert f'data-li-bookmark-id="{lesson}"' in mount
+    hero=mount[mount.index('<div class="l09-hero-tools">'):mount.index('<div class="l09-lang-switch"',mount.index('<div class="l09-hero-tools">'))]
+    assert 'data-li-bookmark-kind=' not in hero, "Save must not share Back / Language controls"
+hub=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
+assert 'library-icon-utility library-row-utility' in hub
+assert 'library-icon-action library-unsave-icon' in hub
+assert 'library-bookmark-actions' in hub
+assert 'library-unsave-link' not in hub
+bookmark=(site/"assets"/"library-bookmarks.js").read_text(encoding="utf-8")
+assert 'button.innerHTML=' in bookmark and 'button.textContent=saved?' not in bookmark
+iconcss=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+assert 'width:var(--li-space-12)' in iconcss and '.library-icon-action:focus-visible' in iconcss
 
 # S120: mirror-variant illustration stored locally and not silently downgraded
 # to a chat icon; Bút Ký uses same paper surface as cards 03-04.

@@ -661,7 +661,7 @@ html.li-safari-landscape-recovery .app.home-focus #page-home .hero {
  width:var(--li-safari-physical-width)!important;
  max-width:none!important;
  min-width:0!important;
- height:100dvh!important;
+ height:var(--li-safari-physical-height,100dvh)!important;
 }
  html.li-safari-landscape-recovery .app.home-focus #page-home .hero {
    --li-home-landscape-side:clamp(24px,3vw,48px);

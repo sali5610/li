@@ -345,3 +345,9 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
     bottom: var(--li-home-fab-bottom) !important;
   }
 }
+/* Compact controls and textareas must remain tappable even when a persistent
+   companion is visible. JS selects a nearest free vertical position, quantized
+   to the 4px grid. Cards with broad tap areas retain the original anchor. */
+body.li-fab-control-safe .laoly-support {
+  bottom: var(--li-fab-control-bottom) !important;
+}

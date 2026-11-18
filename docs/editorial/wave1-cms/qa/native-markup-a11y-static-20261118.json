@@ -1,0 +1,247 @@
+{
+  "schema": "li.wave1.static-markup-a11y.v1",
+  "date": "2026-11-18",
+  "scope": "source markup + native JS only (not browser accessibility tree)",
+  "tests": [
+    {
+      "id": "L09-1-2",
+      "test": "UNIQUE_IDS",
+      "status": "PASS",
+      "detail": "markup id uniqueness"
+    },
+    {
+      "id": "L09-1-2",
+      "test": "ARIA_REFERENCES_EXIST",
+      "status": "PASS",
+      "detail": "resolved 2 aria-controls/labelledby references"
+    },
+    {
+      "id": "L09-1-2",
+      "test": "BUTTON_TYPE_EXPLICIT",
+      "status": "PASS",
+      "detail": "checked 14 buttons"
+    },
+    {
+      "id": "L09-1-2",
+      "test": "IMAGE_ALT_PRESENT",
+      "status": "PASS",
+      "detail": "checked 2 images"
+    },
+    {
+      "id": "L09-1-2",
+      "test": "GUIDED_LABEL_MATCHES_FIELD",
+      "status": "PASS",
+      "detail": "guided input label anchored"
+    },
+    {
+      "id": "L09-1-2",
+      "test": "SINGLE_H1",
+      "status": "PASS",
+      "detail": "h1 count 1"
+    },
+    {
+      "id": "L09-1-2",
+      "test": "INITIAL_GATE_IN_MARKUP",
+      "status": "PASS",
+      "detail": "initial answer and rubric boxes hidden in raw markup"
+    },
+    {
+      "id": "L09-1-2",
+      "test": "LIVE_REGION",
+      "status": "PASS",
+      "detail": "status updates in aria-live"
+    },
+    {
+      "id": "L09-1-2",
+      "test": "SECTION_LANGUAGE_RUNTIME",
+      "status": "PASS",
+      "detail": "runtime changes lang to vi/en"
+    },
+    {
+      "id": "L09-1-2",
+      "test": "COMMONS_CREDIT",
+      "status": "PASS",
+      "detail": "figcaption includes Commons link and license name or PD statement"
+    },
+    {
+      "id": "L03-1-2",
+      "test": "UNIQUE_IDS",
+      "status": "PASS",
+      "detail": "markup id uniqueness"
+    },
+    {
+      "id": "L03-1-2",
+      "test": "ARIA_REFERENCES_EXIST",
+      "status": "PASS",
+      "detail": "resolved 2 aria-controls/labelledby references"
+    },
+    {
+      "id": "L03-1-2",
+      "test": "BUTTON_TYPE_EXPLICIT",
+      "status": "PASS",
+      "detail": "checked 13 buttons"
+    },
+    {
+      "id": "L03-1-2",
+      "test": "IMAGE_ALT_PRESENT",
+      "status": "PASS",
+      "detail": "checked 1 images"
+    },
+    {
+      "id": "L03-1-2",
+      "test": "GUIDED_LABEL_MATCHES_FIELD",
+      "status": "PASS",
+      "detail": "guided input label anchored"
+    },
+    {
+      "id": "L03-1-2",
+      "test": "SINGLE_H1",
+      "status": "PASS",
+      "detail": "h1 count 1"
+    },
+    {
+      "id": "L03-1-2",
+      "test": "INITIAL_GATE_IN_MARKUP",
+      "status": "PASS",
+      "detail": "initial answer and rubric boxes hidden in raw markup"
+    },
+    {
+      "id": "L03-1-2",
+      "test": "LIVE_REGION",
+      "status": "PASS",
+      "detail": "status updates in aria-live"
+    },
+    {
+      "id": "L03-1-2",
+      "test": "SECTION_LANGUAGE_RUNTIME",
+      "status": "PASS",
+      "detail": "runtime changes lang to vi/en"
+    },
+    {
+      "id": "L03-1-2",
+      "test": "COMMONS_CREDIT",
+      "status": "PASS",
+      "detail": "figcaption includes Commons link and license name or PD statement"
+    },
+    {
+      "id": "L15-2-2",
+      "test": "UNIQUE_IDS",
+      "status": "PASS",
+      "detail": "markup id uniqueness"
+    },
+    {
+      "id": "L15-2-2",
+      "test": "ARIA_REFERENCES_EXIST",
+      "status": "PASS",
+      "detail": "resolved 2 aria-controls/labelledby references"
+    },
+    {
+      "id": "L15-2-2",
+      "test": "BUTTON_TYPE_EXPLICIT",
+      "status": "PASS",
+      "detail": "checked 13 buttons"
+    },
+    {
+      "id": "L15-2-2",
+      "test": "IMAGE_ALT_PRESENT",
+      "status": "PASS",
+      "detail": "checked 1 images"
+    },
+    {
+      "id": "L15-2-2",
+      "test": "GUIDED_LABEL_MATCHES_FIELD",
+      "status": "PASS",
+      "detail": "guided input label anchored"
+    },
+    {
+      "id": "L15-2-2",
+      "test": "SINGLE_H1",
+      "status": "PASS",
+      "detail": "h1 count 1"
+    },
+    {
+      "id": "L15-2-2",
+      "test": "INITIAL_GATE_IN_MARKUP",
+      "status": "PASS",
+      "detail": "initial answer and rubric boxes hidden in raw markup"
+    },
+    {
+      "id": "L15-2-2",
+      "test": "LIVE_REGION",
+      "status": "PASS",
+      "detail": "status updates in aria-live"
+    },
+    {
+      "id": "L15-2-2",
+      "test": "SECTION_LANGUAGE_RUNTIME",
+      "status": "PASS",
+      "detail": "runtime changes lang to vi/en"
+    },
+    {
+      "id": "L15-2-2",
+      "test": "COMMONS_CREDIT",
+      "status": "PASS",
+      "detail": "figcaption includes Commons link and license name or PD statement"
+    }
+  ],
+  "summary": {
+    "count": 30,
+    "pass": 30,
+    "fail": 0
+  },
+  "gaps": [
+    {
+      "id": "L09-1-2",
+      "issue": "POST_SUBMIT_SCROLL_WITHOUT_FOCUS",
+      "severity": "MEDIUM",
+      "evidence": "scrollIntoView used but focus not transferred to results/announced heading (screenreader/manual QA open)"
+    },
+    {
+      "id": "L09-1-2",
+      "issue": "MODEL_ANSWER_PRELOADED_IN_HIDDEN_DOM",
+      "severity": "INFO",
+      "evidence": "model answer string is assigned before attempt; visibility hidden by state. It is a UX gate, not access/security enforcement"
+    },
+    {
+      "id": "L03-1-2",
+      "issue": "POST_SUBMIT_SCROLL_WITHOUT_FOCUS",
+      "severity": "MEDIUM",
+      "evidence": "scrollIntoView used but focus not transferred to results/announced heading (screenreader/manual QA open)"
+    },
+    {
+      "id": "L03-1-2",
+      "issue": "MODEL_ANSWER_PRELOADED_IN_HIDDEN_DOM",
+      "severity": "INFO",
+      "evidence": "model answer string is assigned before attempt; visibility hidden by state. It is a UX gate, not access/security enforcement"
+    },
+    {
+      "id": "L15-2-2",
+      "issue": "POST_SUBMIT_SCROLL_WITHOUT_FOCUS",
+      "severity": "MEDIUM",
+      "evidence": "scrollIntoView used but focus not transferred to results/announced heading (screenreader/manual QA open)"
+    },
+    {
+      "id": "L15-2-2",
+      "issue": "MODEL_ANSWER_PRELOADED_IN_HIDDEN_DOM",
+      "severity": "INFO",
+      "evidence": "model answer string is assigned before attempt; visibility hidden by state. It is a UX gate, not access/security enforcement"
+    }
+  ],
+  "source_shas": [
+    {
+      "lesson": "L09-1-2",
+      "markup": "b6bbf5e6804bd42f287a55ebbb88c4d1a1536600",
+      "logic": "a3ec039c365ba65f473b9b9cd158703a8e91a448"
+    },
+    {
+      "lesson": "L03-1-2",
+      "markup": "a51b1a95d81e5d40211bc8d7cb6eb947ed645b0e",
+      "logic": "446b9493e9ecf91bd3cb84e8a3938d67e125699d"
+    },
+    {
+      "lesson": "L15-2-2",
+      "markup": "7b6b6409a4bfd9ef6e61ed014bdaa9d620a3ae5a",
+      "logic": "446b9493e9ecf91bd3cb84e8a3938d67e125699d"
+    }
+  ]
+}

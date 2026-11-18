@@ -376,6 +376,6 @@ document.querySelectorAll("[data-collection-filter]").forEach(button=>button.add
  collectionFilter=button.dataset.collectionFilter;
  renderCollection();
 }));
-window.addEventListener("li:localechange",()=>{renderHome();renderResume();renderCollection();});
+window.addEventListener?.("li:localechange",()=>{renderHome();renderResume();renderCollection();});
 window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,renderProblemRows});
 })();

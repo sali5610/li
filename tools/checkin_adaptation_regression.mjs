@@ -70,7 +70,7 @@ const cases=[
  [physical("yes","",""),"","",null],
  [physical("yes","yes",""),"high","steady",null],
  [physical("yes","yes","yes"),"","", "focus"],
- [physical("yes","no","yes"),"high","steady","recover"],
+ [physical("yes","no","yes"),"high","steady","start"],
  [physical("no","no","no"),"","", "recover"],
  [physical("yes","unsure","yes"),"","",null],
  [physical("unsure","unsure","unsure"),"","",null],

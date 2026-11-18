@@ -20,7 +20,7 @@ function createEnvironment(initial){
  },initial);
  const applied=new Map(),classes=new Set(),events=new Map(),queue=[];
  const root={
-  clientWidth:data.rootWidth,get clientHeight(){return data.rootHeight;},
+  get clientWidth(){return data.rootWidth;},get clientHeight(){return data.rootHeight;},
   dataset:{},style:{
    setProperty(key,value){applied.set(key,value);},
    removeProperty(key){applied.delete(key);}
@@ -140,6 +140,31 @@ staleLandscape.rotate({
 });
 assert.ok(!staleLandscape.classes.has("li-safari-landscape-recovery"),"landscape class removed after return to portrait");
 
+// Physical PO screenshot at 05:08: Safari returns to portrait but retains
+// landscape 832px height and 1408px root, even though visual scale is 1.
+const staleReturnPortrait=createEnvironment({
+ innerWidth:970,innerHeight:832,outerWidth:970,outerHeight:1408,
+ orientation:0,screenAngle:90,screenType:"portrait-primary",
+ visualWidth:970,visualHeight:832,visualScale:1,
+ rootWidth:1408,rootHeight:832,heroWidth:1408,
+ token:"landscape",mediaLandscape:true
+});
+assert.ok(staleReturnPortrait.classes.has("li-safari-portrait-recovery"),
+ "05:08 stale portrait must activate without zoom<1");
+assert.equal(staleReturnPortrait.root.dataset.liSafariRotation,"portrait-recovery");
+assert.equal(staleReturnPortrait.applied.get("--li-safari-physical-width"),"970px");
+assert.equal(staleReturnPortrait.applied.get("--li-safari-physical-height"),"1270px");
+assert.equal(staleReturnPortrait.applied.get("--li-safari-portrait-scale"),"1.000000");
+staleReturnPortrait.rotate({rootWidth:970,rootHeight:1270,heroWidth:970});
+assert.ok(staleReturnPortrait.classes.has("li-safari-portrait-recovery"),
+ "recovery must remain latched when CSS width is corrected but visual height still 832");
+staleReturnPortrait.rotate({
+ innerWidth:970,innerHeight:1270,visualWidth:970,visualHeight:1270,
+ rootWidth:970,rootHeight:1270,heroWidth:970,token:"portrait",mediaLandscape:false
+});
+assert.ok(!staleReturnPortrait.classes.has("li-safari-portrait-recovery"),
+ "native portrait reflow removes compensation without reload");
+
 const split=createEnvironment({
  innerWidth:700,innerHeight:1000,outerWidth:700,outerHeight:1000,
  visualWidth:700,visualHeight:1000,rootWidth:700,rootHeight:1000,
@@ -148,4 +173,4 @@ const split=createEnvironment({
 });
 assert.equal(split.classes.size,0,"do not stretch Stage Manager or Split View");
 assert.ok(!/meta\.content\s*=\s*"width=[0-9]/.test(source),"hardcoded numeric viewport must never recur");
-console.log("PASS iPad physical Safari regression: 7 scenarios, portrait↔landscape, numeric meta rollback, split window");
+console.log("PASS iPad physical Safari regression: 8 scenarios, portrait↔landscape, numeric meta rollback, split window");

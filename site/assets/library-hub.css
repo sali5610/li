@@ -657,7 +657,7 @@ body:has(.app.home-focus){
    preserving the same approved iPad art and three-zone Home composition. */
 html.li-safari-landscape-recovery .app.home-focus #page-home .hero {
  left:0!important;
- margin-left:0!important;
+ margin-left:var(--li-space-0)!important;
  width:var(--li-safari-physical-width)!important;
  max-width:none!important;
  min-width:0!important;

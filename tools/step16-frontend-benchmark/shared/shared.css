@@ -1,0 +1,16 @@
+/* Benchmark-only, shared for all three candidates. Reuse li. source tokens, not visual signoff. */
+:root{color-scheme:light;font-family:Arial,sans-serif}body{margin:0;padding:16px;background:var(--paper);color:var(--ink)}
+.bench-card{max-width:660px;margin:auto;border:1px solid var(--rule);background:var(--cream);padding:20px;box-shadow:4px 4px 0 var(--moss)}
+.bench-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+h1{font:700 26px/1.2 Georgia,serif;margin:12px 0;color:var(--moss)}p{line-height:1.5}
+.bench-options{display:grid;gap:8px;margin:16px 0}
+button{font:inherit;min-height:48px;border:1px solid var(--moss);background:var(--porcelain);color:var(--ink);padding:8px 12px;text-align:left;cursor:pointer}
+button[aria-pressed="true"]{background:var(--sage);border-width:2px}
+button:focus-visible{outline:3px solid var(--olive);outline-offset:3px}
+button[disabled]{opacity:.6;cursor:not-allowed}
+.bench-actions{display:flex;flex-wrap:wrap;gap:8px}
+.bench-actions button[data-action=submit],.bench-actions button[data-action=next]{background:var(--moss);color:var(--cream)}
+.bench-hint{background:var(--paper-2);padding:8px 12px}
+.bench-feedback{min-height:28px}
+@media(max-width:450px){.bench-card{padding:12px}.bench-top{flex-wrap:wrap}h1{font-size:22px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}

@@ -5,6 +5,7 @@ on:
       - 'site/assets/catalog-*'
       - 'site/index.html'
       - 'tools/test_catalog_drilldown.cjs'
+      - 'tools/test_catalog_sheet.cjs'
       - '.github/workflows/tang-thu-ia.yml'
   push:
     branches: [main]
@@ -12,6 +13,7 @@ on:
       - 'site/assets/catalog-*'
       - 'site/index.html'
       - 'tools/test_catalog_drilldown.cjs'
+      - 'tools/test_catalog_sheet.cjs'
 jobs:
   catalog:
     runs-on: ubuntu-latest
@@ -25,5 +27,8 @@ jobs:
           node --check site/assets/catalog-curriculum-data.js
           node --check site/assets/catalog-drilldown.js
           node --check tools/test_catalog_drilldown.cjs
+          node --check tools/test_catalog_sheet.cjs
       - name: Tàng Thư hierarchy and state tests
-        run: node tools/test_catalog_drilldown.cjs
+        run: |
+          node tools/test_catalog_drilldown.cjs
+          node tools/test_catalog_sheet.cjs

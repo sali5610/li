@@ -80,6 +80,7 @@ window.addEventListener("li:l1-physical-checkin",e=>{
  put(d=>{d.physical={sleep:x.sleep,move:x.move,rest:x.rest,recordedAt:x.recordedAt};d.mode=MODE[x.selectedMode]?x.selectedMode:d.mode;d.checkins=(d.checkins||0)+1;return true;},localDay(x.recordedAt));
 });
 window.addEventListener("li:study-mode-applied",e=>{const mode=e.detail?.mode;if(MODE[mode])put(d=>{if(d.mode===mode)return false;d.mode=mode;return true;});});
+window.addEventListener("li:lesson-submitted",e=>{const id=e.detail?.lessonId;if(typeof id==="string"&&["L09-1-2","L03-1-2","L15-2-2"].includes(id))put(d=>{if(d.activities.lesson.includes(id))return false;d.activities.lesson.push(id);return true;});});
 window.addEventListener("li:activity",e=>{
  const detail=e.detail||{},type=detail.type,id=detail.id;
  if(!TYPES.includes(type)||typeof id!=="string"||!id.trim()||id.length>256)return;

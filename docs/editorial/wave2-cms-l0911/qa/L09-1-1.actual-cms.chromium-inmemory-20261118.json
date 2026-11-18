@@ -1,0 +1,167 @@
+{
+  "schema": "li.L09-1-1.actual-GitHub-CMS.chromium-memory-e2e.v1",
+  "run_utc": "2026-11-18T03:20:25.094216+00:00",
+  "source_branch": "content/wave2-l0911-cms-offline-20261118",
+  "source_files": [
+    {
+      "path": "L09-1-1.cms.v1.staging.json",
+      "blob_sha": "75475cc365aaa15543af43d8c0d52b79bf48086c"
+    },
+    {
+      "path": "L09-1-1.state.offline.mjs",
+      "blob_sha": "210a2d9d2d0873d4462f145f0174c395181d9eb4"
+    },
+    {
+      "path": "L09-1-1.preview.mjs",
+      "blob_sha": "6eaa281b759d8ec3a298a93af5582e8da5f7b490"
+    },
+    {
+      "path": "L09-1-1.preview.css",
+      "blob_sha": "43b8e1caeab5f25734fb1dbe75197d232b00b50d"
+    },
+    {
+      "path": "L09-1-1.preview.html",
+      "blob_sha": "4b1603c4b594e6e9b504676c67f25f54263ca952"
+    }
+  ],
+  "browser": "Chromium /usr/bin/chromium via Python Playwright",
+  "execution": "actual committed CMS + actual state module + actual controller and HTML/CSS; in-memory ES modules using blob URLs; exact CMS served by fetch shim; storage shim for simulated reload",
+  "assertions": [
+    {
+      "name": "Exact SHA-verified source and real CMS boot",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Initial model answer absent from DOM",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Reflection hidden before submitted answer",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Six contextual source mentor moments loaded",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Cannot submit empty T06 practice",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Unsubmitted T06 draft survives simulated reload (S148 contract)",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "T06 submit, independent gate, focus, and actual state persistence",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Spellbook opens after T06 and closes with Escape",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "VI to EN switch retains real T06 method evidence",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Partial assessment rejected unless explicitly marked incomplete",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Draft and method retained across simulated reload (storage shim)",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Independent submit freezes answers, changes nav/mentor, focuses reflection",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Explicit reveal unlocks real CMS answer only after submit",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Self-rating 4 criteria persists separately from K1 correctness",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Submitted/revealed/rubric survive simulated browser restart",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Retry archives prior submitted evidence and clears current attempt",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Unsubmitted optional T07 draft survives simulated reload",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Optional T07 independent attempt/feedback after retry",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "390px mobile layout no horizontal page overflow",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "320/375/402/768/1280 widths avoid page overflow",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Screenreader landmarks/ARIA static structure from real DOM",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "No uncaught browser page errors across full lesson flow",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "localStorage-denied fallback remains usable and honestly warns",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Explicit incomplete submission marked incomplete, no silent grading",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Corrupt saved state falls back without false completion",
+      "result": "PASS",
+      "detail": null
+    }
+  ],
+  "pass": 25,
+  "fail": 0,
+  "limits": [
+    "Browser admin blocks localhost/file/data navigations: no real HTTP origin tested",
+    "Storage shim is not native localStorage or PWA persistence",
+    "No Safari/iPhone/VoiceOver/device testing",
+    "Controller import path rewritten only to blob URL for browser memory injection",
+    "CMS/state/HTML/CSS payloads otherwise are exact SHA-verified GitHub staging bytes",
+    "Client-side CMS still contains keys inspectable outside UX gate",
+    "This is not a release/QA28 signoff or production app integration"
+  ]
+}

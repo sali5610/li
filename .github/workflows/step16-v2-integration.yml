@@ -1,0 +1,48 @@
+name: Step16 Backup v2 Integration (candidate)
+
+on:
+  pull_request:
+    paths:
+      - 'site/index.html'
+      - 'site/assets/backup-v2.js'
+      - 'tools/step16_v2_app_fixture.html'
+      - '.github/workflows/step16-v2-integration.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-backup-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify source syntax and no missing resources
+        run: |
+          node --check site/assets/backup-v2.js
+          python3 tools/validate_site.py
+      - name: Exercise actual li. Settings handlers with fake browser data
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then echo "FAIL: no Chromium"; exit 1; fi
+          "$chrome" --version
+          python3 -m http.server 8774 --bind 127.0.0.1 --directory . >/tmp/li-step16-v2-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          url="http://127.0.0.1:8774/tools/step16_v2_app_fixture.html"
+          timeout 65s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=31000 --dump-dom "$url" > /tmp/li-step16-v2-result.html 2>/tmp/li-step16-v2-stderr.log || {
+            echo "FAIL browser did not finish"
+            tail -22 /tmp/li-step16-v2-stderr.log || true
+            exit 1
+          }
+          if ! grep -F '<pre id="result">LI_BACKUP_V2_PASS ' /tmp/li-step16-v2-result.html | grep -F '"count":5' >/dev/null; then
+            echo "FAIL v2 integration fixture"
+            grep -F '<pre id="result">LI_BACKUP_V2_' /tmp/li-step16-v2-result.html | tail -1 | cut -c1-4800 || true
+            exit 1
+          fi
+          grep -F '<pre id="result">LI_BACKUP_V2_PASS ' /tmp/li-step16-v2-result.html | tail -1 | cut -c1-4200
+          echo "PASS actual Settings v2 candidate tested against fake localhost storage only"

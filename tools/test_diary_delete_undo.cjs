@@ -3,7 +3,7 @@
 "use strict";
 const assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm"),path=require("node:path");
 class Element{
- constructor(tag="div"){this.tagName=tag;this.children=[];this.handlers={};this.dataset={};this.textContent="";this.className="";this.disabled=false;this.attributes={};}
+ constructor(tag="div"){this.tagName=tag;this.children=[];this.handlers={};this.dataset={};this.textContent="";this.className="";this.disabled=false;this.attributes={};this.style={};}
  append(...nodes){this.children.push(...nodes);}
  replaceChildren(...nodes){this.children=[...nodes];}
  addEventListener(event,callback){this.handlers[event]=callback;}

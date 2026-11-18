@@ -578,7 +578,7 @@ window.LI_LEGACY_EN={
   "Tiền Đề Giám Định": "The Premise Ward",
   "Kiểm tra tiền đề và kết luận": "Check premises and conclusions",
   "Luận Chứng Thuật": "Reasoncraft",
-  "Luận Ảnh Phản Chiếu": "Mirror of Counterarguments",
+  "Luận Ảnh Phản Chiếu": "Mirror of Rebuttals",
   "Bóc lập luận, chứng cứ và phản biện": "Separate claims, evidence, and counterarguments",
   "Truy Nguyên Giám Chứng": "The Source-Seer's Lens",
   "Rà nguồn và độ chắc chắn": "Check sources and strength of evidence",

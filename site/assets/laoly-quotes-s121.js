@@ -67,28 +67,27 @@ function pick(ctx=environment()){
  return selected;
 }
 function render(){
- const box=document.getElementById("buddy-quote");
- if(!box)return;
- if((typeof buddyDebateActive==="boolean"&&buddyDebateActive)||document.getElementById("calm-toggle")?.checked){
-  box.hidden=true;return;
- }
- const item=pick();if(!item){box.hidden=true;return;}
+ const details=document.getElementById("buddy-quote");
  const original=document.getElementById("buddy-quote-original");
+ const info=document.getElementById("buddy-quote-info");
+ const note=document.getElementById("buddy-quote-context");
+ if(!details||!original||!info||!note)return;
+ const hide=()=>{
+  details.hidden=true;original.hidden=true;info.hidden=true;note.hidden=true;
+  info.setAttribute("aria-expanded","false");
+ };
+ if((typeof buddyDebateActive==="boolean"&&buddyDebateActive)||document.getElementById("calm-toggle")?.checked){hide();return;}
+ const item=pick();if(!item){hide();return;}
  const gloss=document.getElementById("buddy-quote-gloss");
  const meta=document.getElementById("buddy-quote-meta");
  const link=document.getElementById("buddy-quote-link");
- if(!original||!gloss||!meta||!link){box.hidden=true;return;}
- original.textContent=item.original;original.lang=item.lang;
+ if(!gloss||!meta||!link){hide();return;}
+ original.textContent=item.original;original.lang=item.lang;original.hidden=false;
  gloss.textContent="Diễn nghĩa: "+item.gloss;
  meta.textContent=item.meta;
  link.href=item.url;link.target="_blank";link.rel="noopener noreferrer";
- let note=document.getElementById("buddy-quote-context");
- if(!note){
-  note=document.createElement("p");note.id="buddy-quote-context";note.className="small li-quote-context";
-  box.append(note);
- }
- note.textContent="Lão Lý liên hệ: "+item.comment;
- box.hidden=false;
+ note.textContent=item.comment;note.hidden=false;
+ details.hidden=true;info.hidden=false;info.setAttribute("aria-expanded","false");
 }
 window.liQuoteEngine={quotes:QUOTES,environment,matchList,pick,render};
 })();

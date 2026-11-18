@@ -67,15 +67,15 @@
 <section id="page-library" class="page" tabindex="-1"><div class="section-shell">
 <div class="kicker">GÓC RIÊNG CỦA BẠN</div><h1 class="display-title">Tủ Riêng</h1><p class="intro">Một góc nhìn nhanh. Mọi bài học, dấu trang và ghi chú đầy đủ đều nằm trong từng ngăn riêng.</p>
 <div class="stack-sm library-groups">
-<div class="library-group" role="region" aria-labelledby="library-resume-heading"><div class="library-group-header"><div><h2 id="library-resume-heading">Quay lại</h2><p>Tiếp tục hành trình đang học.</p></div><button class="action alt" type="button" data-page="resume">Xem tất cả</button></div>
+<div class="library-group" role="region" aria-labelledby="library-resume-heading"><div class="library-group-header"><h2 id="library-resume-heading">Quay lại</h2><button class="library-text-link library-more-link" type="button" data-page="resume" aria-label="Xem tất cả trong Quay lại">Xem tất cả <i data-lucide="arrow-right" aria-hidden="true"></i></button></div><p class="library-group-description">Tiếp tục hành trình đang học.</p>
 <article class="surface tinted"><div class="kicker"><i data-lucide="book-open" aria-hidden="true"></i> TIẾP TỤC HỌC · BÀI GẦN NHẤT</div>
 <div id="li-library-latest-lesson" class="path-list" aria-live="polite"><div class="state-note">Chưa có bài học gần đây. Mở một bài trong Tàng Thư để bắt đầu.</div></div>
 </article></div>
-<div class="library-group" role="region" aria-labelledby="library-collection-heading"><div class="library-group-header"><div><h2 id="library-collection-heading">Bộ sưu tập</h2><p>Ghi chép mới nhất ở mỗi ngăn.</p></div><button class="action alt" type="button" data-page="collection">Xem tất cả</button></div>
+<div class="library-group" role="region" aria-labelledby="library-collection-heading"><div class="library-group-header"><h2 id="library-collection-heading">Bộ sưu tập</h2><button class="library-text-link library-more-link" type="button" data-page="collection" aria-label="Xem tất cả trong Bộ sưu tập">Xem tất cả <i data-lucide="arrow-right" aria-hidden="true"></i></button></div><p class="library-group-description">Ghi chép mới nhất ở mỗi ngăn.</p>
 <div class="surface-grid cols2">
-<article id="notebook-section" class="surface" tabindex="-1" aria-label="Bút Ký — sổ ghi chú các case đã xử lý"><div class="kicker"><i data-lucide="notebook-tabs" aria-hidden="true"></i> CASE ĐÃ XỬ LÝ</div><h3>Bút Ký</h3><p class="small">Kết luận do bạn tự viết · Gần nhất</p><div id="case-archive-preview" class="path-list" aria-live="polite"><div class="state-note">Chưa có Bút Ký.</div></div><div class="action-row"><button class="action alt" data-page="case"><i data-lucide="book-open-check" aria-hidden="true"></i> Thử Sức</button></div></article>
-<article class="surface"><div class="kicker"><i data-lucide="feather" aria-hidden="true"></i> Ý TƯỞNG CHƯA XÁC MINH</div><h3>Ý đã nhặt</h3><p class="small">Ghi nhanh · Gần nhất</p><div id="li-library-latest-idea" class="path-list" aria-live="polite"><div class="state-note">Chưa nhặt ý nào.</div></div><div class="action-row"><button class="action alt" data-page="capture">Nhặt ý</button></div></article>
-</div></div>
+<article id="notebook-section" class="surface" tabindex="-1" aria-label="Bút Ký — sổ ghi chú các case đã xử lý"><div class="kicker"><i data-lucide="notebook-tabs" aria-hidden="true"></i> CASE ĐÃ XỬ LÝ</div><h3>Bút Ký</h3><p class="small">Kết luận do bạn tự viết · Gần nhất</p><div id="case-archive-preview" class="path-list" aria-live="polite"><div class="state-note">Chưa có Bút Ký.</div></div></article>
+<article class="surface"><div class="kicker"><i data-lucide="feather" aria-hidden="true"></i> Ý TƯỞNG CHƯA XÁC MINH</div><h3>Ý đã nhặt</h3><p class="small">Ghi nhanh · Gần nhất</p><div id="li-library-latest-idea" class="path-list" aria-live="polite"><div class="state-note">Chưa nhặt ý nào.</div></div></article>
+</div><div class="library-create-actions action-row" aria-label="Tạo ghi chú mới"><button class="action alt" type="button" data-page="case">Viết Bút Ký</button><button class="action alt" type="button" data-page="capture">Nhặt ý</button></div></div>
 <div class="library-group" role="region" aria-labelledby="library-reflection-heading"><div class="library-group-header"><h2 id="library-reflection-heading">Nhìn lại</h2><p>Theo dõi thể trạng và các hoạt động theo ngày.</p></div>
 <article class="surface library-activity"><div><div class="kicker"><i data-lucide="calendar-days" aria-hidden="true"></i> NHẬT KÝ</div><h3>Nhịp học của bạn</h3><p>Ngủ, vận động, nghỉ ngơi, nhịp đã áp dụng và số Bài / Vấn đề / Input mỗi ngày.</p></div><button class="action alt" data-page="dashboard">Xem Nhật Ký</button></article>
 </div></div></div></section>
@@ -90,7 +90,36 @@
 <button class="action alt" type="button" data-page="library">← Tủ Riêng</button>
 <div class="kicker" style="margin-top:var(--li-space-6)">GHI CHÉP CỦA BẠN</div><h1 class="display-title">Bộ sưu tập</h1><p class="intro">Bút Ký là kết luận đã qua bước Phản Chứng; Ý đã nhặt là điều bạn ghi lại nhưng chưa xác minh.</p>
 <div class="library-filter-row" role="group" aria-label="Lọc ghi chép"><button class="action alt" type="button" data-collection-filter="all" aria-pressed="true">Tất cả</button><button class="action alt" type="button" data-collection-filter="case" aria-pressed="false">Bút Ký</button><button class="action alt" type="button" data-collection-filter="idea" aria-pressed="false">Ý đã nhặt</button></div>
-<div id="li-collection-list" class="stack-sm library-collection-list" aria-live="polite"><div class="state-note">Chưa có ghi chép nào.</div></div><div class="action-row library-collection-actions"><button class="action alt" type="button" data-page="case">Viết Bút Ký</button><button class="action alt" type="button" data-page="capture">Nhặt ý mới</button></div>
+<div id="li-collection-list" class="stack-sm library-collection-list" aria-live="polite"><div class="state-note">Chưa có ghi chép nào.</div></div><div class="library-collection-create"><h2>Thêm ghi chép</h2><div class="action-row library-collection-actions"><button class="action alt" type="button" data-page="case">Viết Bút Ký</button><button class="action alt" type="button" data-page="capture">Nhặt ý mới</button></div></div>
+</div></section>
+<section id="page-noteDetail" class="page" tabindex="-1"><div class="section-shell">
+<button class="library-text-link library-back-link" type="button" data-page="collection"><i data-lucide="arrow-left" aria-hidden="true"></i> Bộ sưu tập</button>
+<div class="kicker" style="margin-top:var(--li-space-6)" id="li-note-detail-kind">BÚT KÝ</div>
+<h1 id="li-note-detail-title" class="display-title">Chi tiết ghi chép</h1>
+<p class="intro" id="li-note-detail-status">Nội dung ghi lại trong Tủ Riêng</p>
+<article class="surface library-note-review" aria-labelledby="li-note-body-heading">
+<div class="kicker">NỘI DUNG HIỆN TẠI</div><h2 id="li-note-body-heading">Luận kết</h2>
+<p id="li-note-detail-body" class="library-entry-body"></p>
+<p id="li-note-detail-date" class="small"></p>
+<div class="library-note-management">
+<button id="li-note-edit" type="button" class="action alt">Chỉnh sửa</button>
+<button id="li-note-delete" type="button" class="library-text-link library-danger-link">Xóa ghi chép</button>
+</div></article>
+<section id="li-note-editor" class="surface library-note-edit" aria-labelledby="li-note-editor-heading" hidden>
+<h2 id="li-note-editor-heading">Chỉnh sửa ghi chép</h2>
+<p class="small">Lưu sẽ tạo một phiên bản mới. Phiên bản cũ vẫn nằm trong lịch sử.</p>
+<label for="li-note-editor-title">Tiêu đề</label>
+<input id="li-note-editor-title" type="text" class="searchbox" maxlength="180"/>
+<label for="li-note-editor-body">Nội dung / Luận kết</label>
+<textarea id="li-note-editor-body" class="text-editor" maxlength="5000" rows="7"></textarea>
+<div class="action-row"><button id="li-note-save" class="action" type="button">Lưu phiên bản mới</button><button id="li-note-cancel" class="action alt" type="button">Hủy</button></div>
+<p id="li-note-edit-status" class="small" role="status" aria-live="polite"></p>
+</section>
+<section class="surface library-note-history" aria-labelledby="li-note-history-heading">
+<h2 id="li-note-history-heading">Lịch sử phiên bản</h2>
+<p class="small">Mỗi lần sửa được giữ lại. Khôi phục cũng tạo phiên bản mới, không xóa lịch sử.</p>
+<div id="li-note-history-list" class="stack-sm" aria-live="polite"></div>
+</section>
 </div></section>
 <section id="page-dashboard" class="page" tabindex="-1"><div class="section-shell">
 <button class="action alt" data-page="library">← Tủ Riêng</button>

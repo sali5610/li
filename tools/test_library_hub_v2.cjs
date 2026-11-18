@@ -49,6 +49,7 @@ shelf.trackLesson("lessonL09");
 shelf.trackLesson("unsupportedRoute");
 shelf.renderHome();
 assert.equal(elements["li-library-latest-lesson"].children.length,1,"one last visited lesson only");
+assert.equal(elements["li-library-latest-lesson"].children[0].children[1].textContent,"Tiếp tục","the latest lesson CTA remains Tiếp tục");
 assert.match(elements["li-library-latest-lesson"].children[0].children[0].children[0].textContent,/Sampling Bias/);
 shelf.renderResume();
 assert.equal(elements["li-lesson-history"].children.length,2,"two distinct recent lessons in full list");

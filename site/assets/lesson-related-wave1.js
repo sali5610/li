@@ -28,7 +28,7 @@ function render(id){
  const root=document.querySelector('[data-lesson-id="'+id+'"]');
  const section=root?.querySelector(".li-related-lessons");
  if(!root||!section)return;
- const en=root.querySelector("#"+id.slice(1,3).toLowerCase()+"-en");
+ const en=root.querySelector("#"+id.slice(0,3).toLowerCase()+"-en");
  const locale=en?.getAttribute("aria-pressed")==="true"?"en":"vi";
  const title=section.querySelector(".li-related-title"),intro=section.querySelector(".li-related-intro"),list=section.querySelector(".li-related-list");
  title.textContent=locale==="vi"?"Nối tiếp mạch kiến thức":"Follow the learning thread";
@@ -69,7 +69,7 @@ Object.keys(RELATED).forEach(id=>{
  section.append(kicker,heading,intro,list);
  stack.append(section);
  ["vi","en"].forEach(locale=>{
-  root.querySelector("#"+id.slice(1,3).toLowerCase()+"-"+locale)?.addEventListener("click",()=>render(id));
+  root.querySelector("#"+id.slice(0,3).toLowerCase()+"-"+locale)?.addEventListener("click",()=>render(id));
  });
  render(id);
 });

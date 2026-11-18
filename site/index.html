@@ -476,6 +476,8 @@ document.getElementById("checkin").addEventListener("click",event=>{
  document.getElementById("checkin-override").value="";
  document.querySelector("#checkin-modal .checkin-context").open=false;
  openModal("checkin-modal",event.currentTarget);
+ // Reopening must start at the first physical-state field, not a stale scroll position.
+ document.querySelector("#checkin-modal .dialog").scrollTop=0;
  refreshCheckinRecommendation();
  document.getElementById("checkin-sleep").focus();
 });

@@ -41,9 +41,20 @@
        report("Guide cards populated",cards.length>0,cards.length);
        if(cards.length){
         const title=cards[0].querySelector("h3");
-        report("Guide heading title token 24px",!!title&&w.getComputedStyle(title).fontSize==="24px",title?w.getComputedStyle(title).fontSize:"missing");
+        report("Guide title role matches compact 20px phone / 24px larger",!!title&&w.getComputedStyle(title).fontSize===(w.innerWidth<=640?"20px":"24px"),title?w.getComputedStyle(title).fontSize:"missing");
         const purpose=cards[0].querySelector(".purpose");
-        report("Guide explanation >=14px and unclamped",!!purpose&&parseFloat(w.getComputedStyle(purpose).fontSize)>=14&&w.getComputedStyle(purpose).display==="block",purpose?(w.getComputedStyle(purpose).fontSize+" "+w.getComputedStyle(purpose).display):"missing");
+        report("Guide explanation >=14px (full detail reachable)",!!purpose&&parseFloat(w.getComputedStyle(purpose).fontSize)>=14,purpose?(w.getComputedStyle(purpose).fontSize+" "+w.getComputedStyle(purpose).display):"missing");
+       }
+       const guideGrid=doc.getElementById("method-cards");
+       const guideGridCSS=guideGrid?w.getComputedStyle(guideGrid):null;
+       const guideColumns=guideGridCSS?guideGridCSS.gridTemplateColumns.split(" ").filter(Boolean):[];
+       if(w.innerWidth<=640){
+        report("PO S116/S118 Guide is 2-up on phone",guideColumns.length===2,guideGridCSS?guideGridCSS.gridTemplateColumns:"missing");
+        const cards2=[...cards].slice(0,2);
+        const cardsFit=cards2.length===2&&cards2[0].getBoundingClientRect().top===cards2[1].getBoundingClientRect().top&&cards2.every(c=>c.getBoundingClientRect().right<=w.innerWidth+2);
+        report("Guide two tiles share row, no clipping",cardsFit,cards2.map(c=>Math.round(c.getBoundingClientRect().width)).join("/"));
+        const teaser=w.getComputedStyle(cards2[0].querySelector(".purpose"));
+        report("Guide minimal purpose is two-line preview, accessible full detail",teaser.getPropertyValue("-webkit-line-clamp")==="2"&&parseFloat(teaser.fontSize)>=14,teaser.fontSize+" clamp="+teaser.getPropertyValue("-webkit-line-clamp"));
        }
        const overflow=doc.documentElement.scrollWidth-w.innerWidth;
        const overflowNodes=[...doc.querySelectorAll("body *")].map(el=>({el,rect:el.getBoundingClientRect()}))

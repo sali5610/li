@@ -19,6 +19,7 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 | Category | Must inspect |
 | --- | --- |
 | Component state | Default, hover, pressed, selected, focus-visible, disabled, loading (if supported), success/error/empty |
+| Guide 2-up PO acceptance | Thần Chú tile grid: exactly two columns at 320/375/390/402/600/640px; compact full titles + English original + two-line teaser, click opens full detail, shadow gutters preserved; token changes must not switch to one column. |
 | Layout | Alignment baseline, text wrapping, overflow, clipping, z-index, icon/text spacing, button height/width parity |
 | Viewport widths | 320, 375, 390, 402, 600, 820, 1440 CSS px; narrow portrait and useful landscape heights |
 | Long content | Vietnamese diacritics, English text expansion, long title/question, zoom/text size, no truncation without affordance |

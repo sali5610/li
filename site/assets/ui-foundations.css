@@ -548,3 +548,50 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
     text-overflow: clip;
   }
 }
+
+/* UX-DS-08 / S116+S118: Human PO-accepted minimal 2-up Thần Chú tile variant.
+   Preserve the mobile grid when changing global typography/tokens. Keep essential
+   labels >=14px and allow naturally growing cards rather than truncating titles.
+   This scoped rule supersedes the v0.3 minmax(220px) 1-up regression only on Guide. */
+@media (max-width: 640px) {
+  #page-guide #method-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: var(--li-space-5) !important;
+    row-gap: var(--li-space-5) !important;
+    padding: var(--li-space-1) var(--li-space-2) var(--li-space-2) var(--li-space-1) !important;
+  }
+  #page-guide #method-cards > .method-card {
+    min-width: 0 !important;
+    width: 100%;
+    min-height: 0 !important;
+    padding: var(--li-space-3) !important;
+    gap: var(--li-space-2);
+  }
+  #page-guide #method-cards > .method-card h3 {
+    font-size: var(--li-type-title-sm) !important;
+    line-height: var(--li-leading-title-sm) !important;
+    margin: var(--li-space-1) 0 0 !important;
+    overflow-wrap: anywhere;
+  }
+  #page-guide #method-cards > .method-card .original {
+    font-size: var(--li-type-support) !important;
+    line-height: var(--li-leading-support) !important;
+    overflow-wrap: anywhere;
+  }
+  #page-guide #method-cards > .method-card .purpose {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical;
+    overflow: hidden !important;
+    margin-top: var(--li-space-1);
+  }
+  #page-guide #method-cards > .method-card .end {
+    padding-top: var(--li-space-2);
+    white-space: normal;
+  }
+}
+@media (max-width: 360px) {
+  #page-guide #method-cards {
+    column-gap: var(--li-space-4) !important;
+  }
+}

@@ -223,3 +223,54 @@
   width:auto;
  }
 }
+
+/* UX-IA-08 · Quay lại: one recent lesson + one recent problem/case on the shelf.
+   Full histories remain inside the Quay lại detail page. */
+#page-library .library-resume-previews{align-items:stretch}
+#page-library .library-resume-previews > .surface{
+ display:grid;grid-template-rows:auto 1fr;
+ min-width:0;gap:var(--li-space-4);
+}
+#page-library .library-resume-previews > .surface > .kicker{
+ margin:var(--li-space-0);
+}
+#page-library .library-resume-previews .path-list{min-width:0}
+#page-library #li-library-latest-problem .library-problem-item{
+ display:grid;grid-template-columns:minmax(0,1fr) auto;
+ align-items:start;gap:var(--li-space-2) var(--li-space-4);
+}
+#page-library #li-library-latest-problem .library-problem-item > .library-list-copy{
+ grid-column:1;grid-row:1;min-width:0;overflow-wrap:anywhere;
+}
+#page-library #li-library-latest-problem .library-problem-item > .library-detail-link{
+ grid-column:1;grid-row:2;justify-self:start;
+}
+#page-library #li-library-latest-problem .library-problem-item > .library-row-utility{
+ grid-column:2;grid-row:1;justify-self:end;
+ border-left:1px solid var(--rule);
+ padding-left:var(--li-space-3);
+}
+#page-resume #li-problem-history{margin-top:var(--li-space-4)}
+#page-resume #li-problem-history .path-item + .path-item{
+ border-top:1px solid var(--rule);padding-top:var(--li-space-4);
+}
+#page-resume #li-problem-history .library-problem-item{
+ display:grid;grid-template-columns:minmax(0,1fr) auto;
+ align-items:start;gap:var(--li-space-2) var(--li-space-4);
+}
+#page-resume #li-problem-history .library-problem-item > .library-list-copy{
+ grid-column:1;grid-row:1;
+}
+#page-resume #li-problem-history .library-problem-item > .library-detail-link{
+ grid-column:1;grid-row:2;justify-self:start;
+}
+#page-resume #li-problem-history .library-problem-item > .library-row-utility{
+ grid-column:2;grid-row:1;justify-self:end;
+ border-left:1px solid var(--rule);padding-left:var(--li-space-3);
+}
+@media(max-width:640px){
+ #page-library .library-resume-previews{grid-template-columns:minmax(0,1fr)}
+ #page-library #li-library-latest-problem .library-problem-item > .library-detail-link{
+  width:auto;
+ }
+}

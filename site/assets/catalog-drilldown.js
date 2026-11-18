@@ -61,6 +61,9 @@ function shelfCard(root,title,meta,desc,target,value,index){
  action(card,"Khám phá","open-"+target,value,"catalog-card-action action alt");
  return card;
 }
+function localize(root){
+ if(typeof window.liLanguage?.apply==="function")window.liLanguage.apply(root||host);
+}
 function renderRoot(){
  header("Tàng Thư","Tám nhóm ngành, những lối đi khác nhau vào cùng một thư viện tri thức.","KHÁM PHÁ TRI THỨC");
  const grid=el("div","catalog-group-grid",null,host);
@@ -171,8 +174,10 @@ function mountNative(route){
  // Leave the native two-column editorial grid and self-review sidebar untouched.
  const toolbar=el("div","catalog-native-toolbar",null,layout.parentElement);
  layout.before(toolbar);
- const trigger=el("button","action alt catalog-chapter-trigger","☰ Mục lục chương",toolbar);
+ const trigger=el("button","catalog-chapter-fab","☰",page);
  trigger.type="button";
+ trigger.setAttribute("aria-label","Mục lục chương");
+ trigger.setAttribute("title","Mục lục chương");
  const current=el("span","catalog-current-chapter","Toàn bộ bài",toolbar);
  current.setAttribute("aria-live","polite");
  const pager=el("div","catalog-inline-steps",null,toolbar);
@@ -293,6 +298,7 @@ function mountNative(route){
  syncChapterLinks();
  page._catalogChooseChapter=choose;
 }
+window.addEventListener?.("li:localechange",()=>{render();localize(host);});
 host.addEventListener("click",event=>{
  const t=event.target.closest("button[data-catalog-kind]");if(!t)return;
  event.preventDefault();event.stopPropagation();

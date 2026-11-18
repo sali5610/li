@@ -393,7 +393,7 @@ subprocess.run(["node", str(site.parent/"tools"/"test_wave1_native.js")],check=T
 for page_name in ("settings","search","capture"):
     utility=section(page_name)
     assert utility.count('data-nav-back aria-label="Quay lại màn trước"')==1,page_name
-assert html.count('data-nav-back aria-label="Quay lại màn trước"')==3
+assert html.count('data-nav-back aria-label="Quay lại màn trước"')==4
 assert 'class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"' in settings
 assert 'class="settings-buddy-illustration" src="./assets/laoly-guide-rest.png"' not in settings
 assert '<span class="hero-dialogue-avatar" aria-hidden="true"><img src="./assets/laoly-neutral.png"' in html

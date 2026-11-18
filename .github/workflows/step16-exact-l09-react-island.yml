@@ -1,0 +1,45 @@
+name: Step16 Exact L09 React Island (research only)
+
+on:
+  pull_request:
+    paths:
+      - 'tools/step16-real-l09-react-island/**'
+      - 'site/assets/lesson-l09-hifi.js'
+      - 'site/assets/design-tokens.css'
+      - '.github/workflows/step16-exact-l09-react-island.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  actual-lesson-react-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build one exact existing L09 authored challenge + self-review in React/TS/Vite
+        working-directory: tools/step16-real-l09-react-island
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund
+          npm run build
+          npm run check:source
+          node -e 'const fs=require("fs"),z=require("zlib");const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(x=>x.isDirectory()?walk(d+"/"+x.name):[d+"/"+x.name]);const xs=walk("dist").filter(p=>p.endsWith(".js"));let raw=0,gz=0;for(const p of xs){const data=fs.readFileSync(p);raw+=data.length;gz+=z.gzipSync(data,{level:9}).length;}console.log("LI_STEP16_EXACT_L09_REACT_BUNDLE "+JSON.stringify({jsAssets:xs.length,jsRawBytes:raw,jsGzipBytes:gz,note:"single exact-source challenge/rubric island, not full li app"}));'
+      - name: Exercise actual editorial content + learner behavior in real-clock Chrome
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then echo "FAIL: Chromium missing"; exit 1; fi
+          "$chrome" --version
+          node --check tools/step16-real-l09-react-island/scripts/cdp-result.cjs
+          python3 -m http.server 8794 --bind 127.0.0.1 --directory . > /tmp/li-step16-real-l09-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome"             "http://127.0.0.1:8794/tools/step16-real-l09-react-island/browser-fixture.html"             "LI_STEP16_L09_PILOT_PASS " 7 60000
+          echo "PASS exact authored L09 content and 7 behavioral groups; no production UI or real user storage touched"

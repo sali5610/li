@@ -769,3 +769,76 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 .page :is(input:not([type]),input[type="text"],input[type="search"],input[type="email"],input[type="url"],input[type="tel"],input[type="password"],input[type="number"],textarea)[aria-invalid="true"]:focus:not(:disabled){
  border-color:var(--li-color-danger-fill)!important;
 }
+
+/* UX-HOME-06 · Live Transparent Home Top Navigation is the UX-DS-15
+   Component Library overlay variant. Scope to Home; keep routes and controls
+   unchanged on the standard paper header. Header overlaps the same hero
+   picture rather than revealing the paper page beneath a transparent bar. */
+.app.home-focus{
+  --li-home-topnav-height:calc(var(--li-space-16) + var(--li-space-3));
+}
+.app.home-focus > .header{
+  height:var(--li-home-topnav-height);
+  margin-bottom:calc(-1 * var(--li-home-topnav-height));
+  background:var(--li-uxds10-touch-clear);
+  border-bottom:var(--li-s147-no-border);
+  box-shadow:var(--li-uxds10-touch-no-shadow);
+  color:var(--cream);
+}
+.app.home-focus > .header .brand-stamp{
+  filter:brightness(0) invert(1);
+}
+.app.home-focus > .header .logo,
+.app.home-focus > .header .topnav .nav-btn:not(.active),
+.app.home-focus > .header .tool-button:not(.active):not([aria-current="page"]){
+  color:var(--cream)!important;
+}
+.app.home-focus > .header .nav-btn:hover:not(.active){
+  background:var(--li-uxds10-touch-clear);
+  border-color:var(--li-uxds10-touch-clear);
+}
+.app.home-focus > .header .topnav .nav-btn.active,
+.app.home-focus > .header .topnav .nav-btn[aria-current="page"]{
+  background:var(--li-color-nav-selected-fill);
+  border-color:var(--li-uxds10-touch-clear);
+  border-radius:999px;
+  box-shadow:var(--li-uxds10-touch-no-shadow);
+  color:var(--moss)!important;
+}
+.app.home-focus > .header .tool-button{
+  background:var(--li-uxds10-touch-clear)!important;
+  border-color:var(--li-uxds10-touch-clear)!important;
+  box-shadow:var(--li-uxds10-touch-no-shadow)!important;
+  color:var(--cream)!important;
+}
+.app.home-focus > .header .tool-button.active,
+.app.home-focus > .header .tool-button[aria-current="page"]{
+  color:var(--moss)!important;
+}
+.app.home-focus > .header :is(.logo,.nav-btn,.tool-button){
+  text-shadow:0 1px 2px var(--forest);
+}
+.app.home-focus > .header .tool-button svg.lucide{
+  filter:drop-shadow(0 1px 2px var(--forest));
+}
+.app.home-focus > .header .tool-button:focus-visible,
+.app.home-focus > .header .nav-btn:focus-visible{
+  outline:2px solid var(--li-color-focus-warm)!important;
+  outline-offset:2px;
+}
+/* The Home check-in must clear the overlay's actual touch targets. */
+.app.home-focus #page-home .hero-left{
+  top:calc(var(--li-home-topnav-height) + var(--li-space-4));
+}
+@media(max-width:600px){
+  .app.home-focus{--li-home-topnav-height:var(--li-space-16);}
+  .app.home-focus > .header .tool-button{
+    width:48px!important;
+    min-width:48px!important;
+    height:48px!important;
+    min-height:48px!important;
+  }
+  .app.home-focus #page-home .hero-left{
+    top:calc(var(--li-home-topnav-height) + var(--li-space-3))!important;
+  }
+}

@@ -332,7 +332,14 @@ assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
-assert 'library-hub.css?v=20261119-home-topnav-fullbleed' in page_html
+assert 'library-hub.css?v=20261119-home-viewport-lock' in page_html
+# UX-HOME-07: no Home-only min-height can force a page scroll, and routing
+# must restore browser scrolling for all other screens.
+homecss=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+home_lock=homecss[homecss.index("/* UX-HOME-07 · Fixed one-screen Home"):]
+for token in ("html:has(.app.home-focus)", "body:has(.app.home-focus)", "overflow-y:hidden!important;", "height:100dvh!important;", "min-height:0!important;", "--home-actions-bottom:calc(52px + var(--li-space-3)"):
+    assert token in home_lock, f"Home viewport lock contract missing: {token}"
+assert 'classList.toggle("home-focus",id==="home")' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_note_versions.cjs")],check=True,cwd=site.parent)
 
 # S120: all 13 Thần Chú methods share this same Guide Detail template.

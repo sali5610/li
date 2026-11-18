@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/design-tokens.css?v=20261118-ds20-coverage">
 <link rel="stylesheet" href="./assets/li-layout.css?v=20261118-ds20-coverage"><link rel="stylesheet" href="./assets/spell-practice.css?v=20261118-ds20-coverage"><link rel="stylesheet" href="./assets/lesson-l09-hifi.css?v=20261118-ds20-coverage">
-<link rel="stylesheet" href="./assets/ui-foundations.css?v=20261118-ds20-coverage"><link rel="stylesheet" href="./assets/checkin-adaptation.css?v=20261118-ds20-coverage"><link rel="stylesheet" href="./assets/personal-diary.css?v=20261118-ds20-coverage"><link rel="stylesheet" href="./assets/library-hub.css?v=20261119-home-device-scenes"><link rel="stylesheet" href="./assets/app-language.css?v=20261118-s163"><link rel="stylesheet" href="./assets/catalog-drilldown.css?v=20261118-ds20-coverage"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
+<link rel="stylesheet" href="./assets/ui-foundations.css?v=20261119-home-transparent-topnav"><link rel="stylesheet" href="./assets/checkin-adaptation.css?v=20261118-ds20-coverage"><link rel="stylesheet" href="./assets/personal-diary.css?v=20261118-ds20-coverage"><link rel="stylesheet" href="./assets/library-hub.css?v=20261119-home-viewport-lock"><link rel="stylesheet" href="./assets/app-language.css?v=20261118-s163"><link rel="stylesheet" href="./assets/catalog-drilldown.css?v=20261118-ds20-coverage"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
 <symbol id="i-tree" viewBox="0 0 24 24"><path d="m12 2 4 5h-2l4 5h-3l4 6H5l4-6H6l4-5H8zM12 18v4"/></symbol>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7c-4-3-8-3-10-2v15c3-1 7 0 10 2 3-2 7-3 10-2V5c-2-1-6-1-10 2ZM12 7v15"/></symbol>
 <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6zM15 2v5h5M9 13h8M9 17h8"/></symbol>
@@ -35,7 +35,7 @@
 <div class="hero" role="region" aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn">
 
 <div class="hero-left"><button class="home-checkin" id="checkin" type="button"><i data-lucide="check-circle-2" class="icon sm" aria-hidden="true"></i> Check-in hôm nay</button><h1>Mọi câu hỏi<br>đều có rễ.</h1><p>Không cần biết tất cả. Chỉ cần không ngừng tò mò.</p><span class="tiny-note">Một câu hỏi, muôn ngả đường</span></div>
-<div class="mirror-message"><div class="mirror-titlebar"><div class="mirror-label">Gương Vạn Vấn</div></div><h2 id="mirror-question">90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?</h2><div class="mirror-controls" role="group" aria-label="Chuyển câu hỏi"><button id="previous-question" class="mirror-refresh" type="button" aria-label="Câu hỏi trước" title="Câu hỏi trước"><i data-lucide="arrow-left" class="icon sm" aria-hidden="true"></i></button><button id="shuffle" class="mirror-refresh" type="button" aria-label="Câu hỏi tiếp theo" title="Câu hỏi tiếp theo"><i data-lucide="arrow-right" class="icon sm" aria-hidden="true"></i></button></div></div>
+<div class="mirror-message"><h2 id="mirror-question">90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?</h2><div class="mirror-controls" role="group" aria-label="Chuyển câu hỏi"><button id="previous-question" class="mirror-refresh" type="button" aria-label="Câu hỏi trước" title="Câu hỏi trước"><i data-lucide="arrow-left" class="icon sm" aria-hidden="true"></i></button><button id="shuffle" class="mirror-refresh" type="button" aria-label="Câu hỏi tiếp theo" title="Câu hỏi tiếp theo"><i data-lucide="arrow-right" class="icon sm" aria-hidden="true"></i></button></div></div>
 <aside class="hero-dialogue" aria-label="Lão Lý kể bối cảnh câu hỏi đang hiện trong Gương Vạn Vấn">
   <span class="hero-dialogue-avatar" aria-hidden="true"><img src="./assets/laoly-neutral.png" alt="" width="128" height="128" loading="eager" decoding="async"></span>
   <div class="hero-dialogue-bubble" role="note">
@@ -413,8 +413,6 @@ function renderMirrorItem(){
  const item=scenarios[qIndex],isHook=item.type==="hook";
  document.getElementById("mirror-question").textContent=item.question;
  document.getElementById("home-scene").textContent=item.scene;
- const kind=document.querySelector("#page-home .mirror-message .mirror-label");
- if(kind)kind.textContent="Gương Vạn Vấn";
  const example=document.querySelector("#page-home .hero-dialogue .example-label");
  if(example)example.textContent=isHook?"TỪ BÀI HỌC ĐÃ XUẤT BẢN":"VÍ DỤ GIẢ ĐỊNH";
  const action=document.getElementById("mirror-primary-action");

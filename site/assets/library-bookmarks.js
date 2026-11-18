@@ -23,7 +23,7 @@ function toggle(type,id){
  if(!valid(type,id))return false;
  if(liStorageError){toast("Không thể đọc dữ liệu lưu trước đây. Chưa thay đổi Dấu Trang.");return false;}
  const prior=savedContent.slice(),index=savedContent.findIndex(item=>item.type===type&&item.id===id);
- const removing=index>=0;
+ const removing=index>=0, removed=removing?savedContent[index]:null;
  if(removing)savedContent.splice(index,1);
  else savedContent.unshift({type,id,savedAt:new Date().toISOString()});
  if(!liWriteState()){
@@ -32,7 +32,15 @@ function toggle(type,id){
  }
  refresh();
  window.liLibraryShelf?.renderResume();
- toast(removing?"Đã bỏ lưu "+(type==="lesson"?"bài học.":"case."):("Đã lưu "+(type==="lesson"?"bài học":"case")+" vào Quay lại · Dấu Trang."));
+ if(removing){
+  toast("Đã bỏ lưu "+(type==="lesson"?"bài học.":"case."),{undo:()=>{
+   if(liStorageError)return false;
+   if(isSaved(type,id))return true;
+   const at=Math.min(index,savedContent.length);savedContent.splice(at,0,removed);
+   if(!liWriteState()){savedContent.splice(savedContent.indexOf(removed),1);return false;}
+   refresh();window.liLibraryShelf?.renderResume();return true;
+  }});
+ }else toast("Đã lưu "+(type==="lesson"?"bài học":"case")+" vào Quay lại · Dấu Trang.");
  return true;
 }
 document.addEventListener("click",event=>{

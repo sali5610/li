@@ -945,3 +945,7 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
  .page .spell-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
  .page .page-heading { align-items:center; }
 }
+
+/* UX-DS-28 · Safari/iPad: native browser scaling and rotation must remain enabled.
+   Overrides legacy S139 touch-action without changing the mirror-only swipe contract. */
+html { touch-action: pan-x pan-y pinch-zoom; }

@@ -39,7 +39,7 @@
    function send(command,details={}){
      const n=++seq;
      const promise=new Promise((resolve,reject)=>{
-       const timer=setTimeout(()=>{responses.delete(n);reject(Error('Agent failed '+command));},8000);
+       const timer=setTimeout(()=>{responses.delete(n);reject(Error('Agent failed '+command));},20000);
        responses.set(n,msg=>{clearTimeout(timer);if(msg.kind==='error')reject(Error(msg.message));else resolve(msg);});
      });
      frame.contentWindow.postMessage({protocol:'li-v2-lock-request',seq:n,command,...details},location.origin);

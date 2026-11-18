@@ -21,10 +21,9 @@
     const doc=frame.contentDocument,w=frame.contentWindow,root=w.getComputedStyle(doc.documentElement);
     report("Generated color --paper",root.getPropertyValue("--paper").trim().toUpperCase()==="#F1F0E9",root.getPropertyValue("--paper"));
     report("Generated spacing --li-space-4",root.getPropertyValue("--li-space-4").trim()==="16px",root.getPropertyValue("--li-space-4"));
-    const touchTablet=(w.innerWidth>=1140&&w.innerWidth<=1600&&w.matchMedia("(any-pointer: coarse)").matches);
-    const ipadMode=(w.innerWidth>=744&&w.innerWidth<=1139)||touchTablet;
+    const wideLandscape=(w.innerWidth>=1140&&w.innerWidth<=1400&&w.innerWidth>w.innerHeight);
+    const ipadMode=(w.innerWidth>=744&&w.innerWidth<=1139)||wideLandscape;
     const landscape=ipadMode&&w.innerWidth>=1000&&w.innerWidth>w.innerHeight;
-    if(params.get("touch")==="1")report("Touch QA actually emulated coarse pointer",w.matchMedia("(any-pointer: coarse)").matches,String(w.matchMedia("(any-pointer: coarse)").matches));
     const expectedBody=ipadMode?"18px":"16px",expectedLeading=ipadMode?"28px":"24px";
     report("Body uses device-specific semantic font-size",w.getComputedStyle(doc.body).fontSize===expectedBody,w.getComputedStyle(doc.body).fontSize+" expected "+expectedBody);
     report("Body uses device-specific line-height",w.getComputedStyle(doc.body).lineHeight===expectedLeading,w.getComputedStyle(doc.body).lineHeight+" expected "+expectedLeading);

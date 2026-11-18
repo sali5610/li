@@ -34,7 +34,8 @@
    const descriptor=Object.getOwnPropertyDescriptor(
       el.tagName==='TEXTAREA'?win().HTMLTextAreaElement.prototype:win().HTMLSelectElement.prototype,'value');
    descriptor.set.call(el,value);
-   el.dispatchEvent(new win().Event(el.tagName==='TEXTAREA'?'input':'change',{bubbles:true}));
+   const FrameEvent=win().Event;
+   el.dispatchEvent(new FrameEvent(el.tagName==='TEXTAREA'?'input':'change',{bubbles:true}));
  }
  try{
    localStorage.removeItem(key);

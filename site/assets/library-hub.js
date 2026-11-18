@@ -87,9 +87,13 @@ function renderLessonRows(root,limit){
   add(body,"strong","",info.title);
   add(body,"p","small",info.id+" · "+lessonStatus(info)+(item.legacy?" · Bài có dữ liệu đã lưu":" · Mở "+formatDate(item.visitedAt)));
   btn(row,getLessonState(info.id)?.submitted?"Mở lại":"Tiếp tục",item.route,"library-text-link library-open-lesson");
-  const save=add(row,"button","library-text-link library-lesson-save","Lưu bài");
+  const utility=add(row,"div","library-icon-utility library-row-utility");
+  const save=add(utility,"button","library-icon-action library-lesson-save");
   save.type="button";save.dataset.liBookmarkKind="lesson";save.dataset.liBookmarkId=info.id;
+  save.setAttribute("aria-label","Lưu bài "+info.id);
+  save.setAttribute("title","Lưu bài "+info.id);
   save.setAttribute("aria-pressed",String(Boolean(window.liBookmarks?.isSaved("lesson",info.id))));
+  save.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
  }
 }
 function renderCases(){
@@ -157,8 +161,14 @@ function renderBookmarks(){
     navigate(target);
    });
   }else open.dataset.page=route;
-  const remove=add(actions,"button","library-text-link library-unsave-link","Bỏ lưu");
+  // Bookmark utility lives in its own right-hand slot, never beside "Mở lại".
+  const utility=add(row,"div","library-icon-utility library-row-utility");
+  const remove=add(utility,"button","library-icon-action library-unsave-icon");
   remove.type="button";
+  remove.setAttribute("aria-label","Bỏ lưu "+(entry.kind==="lesson"?"bài "+entry.record.id:entry.kind==="case"?"case":"câu hỏi"));
+  remove.setAttribute("title","Bỏ lưu");
+  remove.setAttribute("aria-pressed","true");
+  remove.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
   remove.addEventListener("click",()=>{
    if(entry.kind!=="question"){window.liBookmarks?.toggle(entry.kind,entry.record.id);return;}
    if(liStorageError){toast("Không đọc được dữ liệu lưu, chưa thay đổi Dấu Trang.");return;}

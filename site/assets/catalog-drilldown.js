@@ -61,6 +61,9 @@ function shelfCard(root,title,meta,desc,target,value,index){
  action(card,"Khám phá","open-"+target,value,"catalog-card-action action alt");
  return card;
 }
+function localize(root){
+ if(typeof window.liLanguage?.apply==="function")window.liLanguage.apply(root||host);
+}
 function renderRoot(){
  header("Tàng Thư","Tám nhóm ngành, những lối đi khác nhau vào cùng một thư viện tri thức.","KHÁM PHÁ TRI THỨC");
  const grid=el("div","catalog-group-grid",null,host);
@@ -171,8 +174,10 @@ function mountNative(route){
  // Leave the native two-column editorial grid and self-review sidebar untouched.
  const toolbar=el("div","catalog-native-toolbar",null,layout.parentElement);
  layout.before(toolbar);
- const trigger=el("button","action alt catalog-chapter-trigger","☰ Mục lục chương",toolbar);
+ const trigger=el("button","catalog-chapter-fab","☰",page);
  trigger.type="button";
+ trigger.setAttribute("aria-label","Mục lục chương");
+ trigger.setAttribute("title","Mục lục chương");
  const current=el("span","catalog-current-chapter","Toàn bộ bài",toolbar);
  current.setAttribute("aria-live","polite");
  const pager=el("div","catalog-inline-steps",null,toolbar);
@@ -192,7 +197,7 @@ function mountNative(route){
  trigger.setAttribute("aria-expanded","false");
  const sheetHead=el("div","catalog-sheet-heading",null,aside);
  const copy=el("div","catalog-sheet-copy",null,sheetHead);
- el("div","kicker","MỤC LỤC BÀI HỌC",copy);
+ const kicker=el("div","kicker","MỤC LỤC BÀI HỌC",copy);
  const title=el("h2","","Chương",copy);title.id="catalog-chapters-title-"+route;
  const close=el("button","catalog-sheet-close","Đóng ✕",sheetHead);
  close.type="button";close.setAttribute("aria-label","Đóng mục lục chương");
@@ -246,7 +251,8 @@ function mountNative(route){
   prev.disabled=index<=0;next.disabled=index<0||index===sections.length-1;
   const selected=index>=0?sections[index]:null;
   const heading=selected?.querySelector("h2");
-  current.textContent=heading?.textContent|| (id?"Chương "+(index+1):"Toàn bộ bài");
+  const t=value=>window.liLanguage?.translate?.(value)||value;
+  current.textContent=heading?.textContent|| (id?t("Chương")+" "+(index+1):t("Toàn bộ bài"));
   if(push){chapterParam(id);setSheetOpen(false,false);}
   if(id){
    if(push&&heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}
@@ -273,6 +279,22 @@ function mountNative(route){
  });
  pageObserver.observe(page,{attributes:true,attributeFilter:["class"]});
  page.dataset.catalogChapterNav="ready";
+ function syncLocaleLabels(){
+  const t=value=>window.liLanguage?.translate?.(value)||value;
+  trigger.setAttribute("aria-label",t("Mục lục chương"));
+  trigger.setAttribute("title",t("Mục lục chương"));
+  kicker.textContent=t("MỤC LỤC BÀI HỌC");
+  title.textContent=t("Chương");
+  close.textContent=t("Đóng ✕");
+  close.setAttribute("aria-label",t("Đóng mục lục chương"));
+  all.textContent=t("Toàn bộ bài");
+  prev.textContent=t("← Trước");
+  next.textContent=t("Tiếp →");
+  const heading=sections.find(s=>s.id===active)?.querySelector("h2");
+  current.textContent=heading?.textContent||(active?t("Chương"):t("Toàn bộ bài"));
+ }
+ window.addEventListener?.("li:localechange",syncLocaleLabels);
+ syncLocaleLabels();
  const initial=new URL(location.href).searchParams.get("chapter");
  choose(initial,false);
  function syncChapterLinks(){
@@ -293,6 +315,7 @@ function mountNative(route){
  syncChapterLinks();
  page._catalogChooseChapter=choose;
 }
+window.addEventListener?.("li:localechange",()=>{render();localize(host);});
 host.addEventListener("click",event=>{
  const t=event.target.closest("button[data-catalog-kind]");if(!t)return;
  event.preventDefault();event.stopPropagation();

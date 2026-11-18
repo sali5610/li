@@ -124,6 +124,8 @@ if(!Array.isArray(state.ratings)||state.ratings.length!==4)state.ratings=[null,n
 if(!["vi","en"].includes(state.locale))state.locale="vi";
 if(typeof state.guidedDraft!=="string")state.guidedDraft="";
 }}catch(e){}
+// Global Settings language supersedes any saved per-lesson locale.
+if(["vi","en"].includes(window.liLanguage?.get?.()))state.locale=window.liLanguage.get();
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){storageAvailable=false;return false;}}
 function sText(id,s){const el=$(id);if(el)el.textContent=s;}
 function sHtml(id,s){const el=$(id);if(el)el.innerHTML=s;}
@@ -248,8 +250,14 @@ function updateScore(){
  sText("score",sum===null?"— / 8":sum+" / 8");
 }
 function changeLocale(locale){
+ if(typeof window.liLanguage?.set==="function"){window.liLanguage.set(locale);return;}
  if(locale===state.locale)return;state.locale=locale;persist();render();
 }
+window.addEventListener?.("li:localechange",event=>{
+ const next=event.detail?.locale;
+ if(!["vi","en"].includes(next)||next===state.locale)return;
+ state.locale=next;persist();render();
+});
 $("vi").addEventListener("click",()=>changeLocale("vi"));
 $("en").addEventListener("click",()=>changeLocale("en"));
 $("guidedDraft").addEventListener("input",()=>{

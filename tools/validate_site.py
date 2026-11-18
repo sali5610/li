@@ -442,6 +442,25 @@ for lesson in ("l09","l03","l15"):
     assert f'<script src="./assets/lesson-{lesson}-hifi-markup.js?v=20261118-ia06"></script>' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_wave1_mount_ia.cjs")],check=True,cwd=site.parent)
 
+# UX-IA-06: Save and Unsave have distinct semantics from submitting an answer
+# or deleting a Bút Ký. Full case context must survive in the saved snapshot.
+assert 'const savedContent=liInitialState.savedContent;' in page_html
+assert 'savedContent:data.savedContent||[]' in page_html
+assert 'ideas:collectedIdeas,savedContent,draft:' in page_html
+assert 'caseSnapshot' in page_html and 'selectedText:caseOptions.find' in page_html
+assert 'id="li-note-case-context"' in page_html
+assert 'data-li-bookmark-kind="case"' in page_html
+assert '<script src="./assets/library-bookmarks.js?v=1"></script>' in page_html
+assert '<script src="./assets/library-note-editor.js?v=2"></script>' in page_html
+assert '<script src="./assets/library-hub.js?v=3"></script>' in page_html
+for lesson_id,slug in (("L03-1-2","l03"),("L09-1-2","l09"),("L15-2-2","l15")):
+    content=(site/"assets"/f"lesson-{slug}-hifi-markup.js").read_text(encoding="utf-8")
+    assert f'data-li-bookmark-id="{lesson_id}"' in content
+    assert 'data-li-bookmark-kind="lesson"' in content
+assert 'function renderCaseContext(note,type)' in (site/"assets"/"library-note-editor.js").read_text(encoding="utf-8")
+subprocess.run(["node",str(site.parent/"tools"/"test_library_bookmarks.cjs")],check=True,cwd=site.parent)
+subprocess.run(["node",str(site.parent/"tools"/"test_library_case_review.cjs")],check=True,cwd=site.parent)
+
 # S120: mirror-variant illustration stored locally and not silently downgraded
 # to a chat icon; Bút Ký uses same paper surface as cards 03-04.
 illustrated=site/"assets"/"laoly-mirror-suy-nghi.png"

@@ -103,7 +103,6 @@
 /* Comparison, not approval: both light paper and the live Home green speech style. */
 :root{
   --li-review-home-forest-bubble:var(--li-effect-alpha-10);
-  --li-review-home-bubble-gold:var(--li-effect-alpha-13);
   --li-review-home-shadow:0 6px 18px var(--li-effect-alpha-19);
 }
 .ds-bubble-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--li-space-5);align-items:stretch}
@@ -113,15 +112,14 @@
 .ds-bubble-stage.dark{background:var(--forest)}
 .ds-home-bubble.green{
   background:var(--li-review-home-forest-bubble);
-  border:1.5px solid var(--li-review-home-bubble-gold);
+  border-width:var(--li-space-0);
   color:var(--li-color-home-dialogue-on-dark);
   border-radius:12px 12px 12px 4px;
   box-shadow:var(--li-review-home-shadow);
 }
 .ds-home-bubble.green::before{
   background:var(--li-color-home-dialogue-tail);
-  border-left-color:var(--li-review-home-bubble-gold);
-  border-bottom-color:var(--li-review-home-bubble-gold);
+  border-width:var(--li-space-0);
 }
 .ds-home-bubble.green strong{color:var(--li-color-home-dialogue-example)}
 .ds-home-bubble.green p{color:var(--li-color-home-dialogue-on-dark)}

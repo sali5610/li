@@ -9,6 +9,8 @@ on:
       - 'tools/step16_v2_fault_fixture.html'
       - 'tools/step16_v2_origin_fixture.html'
       - 'tools/step16_v2_origin_agent.html'
+      - 'tools/step16_v2_lock_fixture.html'
+      - 'tools/step16_v2_lock_agent.html'
       - '.github/workflows/step16-v2-integration.yml'
   workflow_dispatch:
 
@@ -80,5 +82,19 @@ jobs:
           fi
           grep -F '<pre id="result">LI_BACKUP_V2_ORIGIN_PASS ' /tmp/li-step16-v2-cross-origin.html | tail -1 | cut -c1-4200
           echo "PASS two isolated web origins with real Settings controls and fake files"
+          lock_url="http://127.0.0.1:8774/tools/step16_v2_lock_fixture.html"
+          timeout 55s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=26000 --dump-dom "$lock_url" > /tmp/li-step16-v2-lock-result.html 2>/tmp/li-step16-v2-lock-stderr.log || {
+            echo "FAIL Web Locks same-origin document test did not complete"
+            tail -22 /tmp/li-step16-v2-lock-stderr.log || true
+            exit 1
+          }
+          if ! grep -F '<pre id="result">LI_BACKUP_V2_LOCK_PASS ' /tmp/li-step16-v2-lock-result.html | grep -F '"count":5' >/dev/null; then
+            echo "FAIL real same-origin lock/TOCTOU/consent test"
+            grep -F '<pre id="result">LI_BACKUP_V2_LOCK_' /tmp/li-step16-v2-lock-result.html | tail -1 | cut -c1-5500 || true
+            exit 1
+          fi
+          grep -F '<pre id="result">LI_BACKUP_V2_LOCK_PASS ' /tmp/li-step16-v2-lock-result.html | tail -1 | cut -c1-4400
+          echo "PASS separate same-origin documents coordinate imports. Other app writers remain uncoordinated."
+
 
 

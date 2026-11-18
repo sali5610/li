@@ -1,0 +1,125 @@
+{
+  "schema": "li.wave2.l0911.preview.source-qa.v1",
+  "date": "2026-11-18",
+  "source": "actual staged GitHub files",
+  "tests": [
+    {
+      "id": "relative-only preview dependencies",
+      "result": "PASS"
+    },
+    {
+      "id": "no external CDN/scripts",
+      "result": "PASS"
+    },
+    {
+      "id": "unique root matches CMS",
+      "result": "PASS"
+    },
+    {
+      "id": "Wave1 JS not imported",
+      "result": "PASS"
+    },
+    {
+      "id": "landmark structure",
+      "result": "PASS"
+    },
+    {
+      "id": "locale and viewport",
+      "result": "PASS"
+    },
+    {
+      "id": "named dialog",
+      "result": "PASS"
+    },
+    {
+      "id": "status/error live regions",
+      "result": "PASS"
+    },
+    {
+      "id": "working language control",
+      "result": "PASS"
+    },
+    {
+      "id": "nav interactive buttons",
+      "result": "PASS"
+    },
+    {
+      "id": "separate T06/T07 form submit actions",
+      "result": "PASS"
+    },
+    {
+      "id": "Spellbook available after T06 feedback",
+      "result": "PASS"
+    },
+    {
+      "id": "answers bound as user types",
+      "result": "PASS"
+    },
+    {
+      "id": "submitted state moves to reflection",
+      "result": "PASS"
+    },
+    {
+      "id": "post-submit focus transfer",
+      "result": "PASS"
+    },
+    {
+      "id": "answer render gated",
+      "result": "PASS"
+    },
+    {
+      "id": "no answer in static HTML",
+      "result": "PASS"
+    },
+    {
+      "id": "rubric score wired",
+      "result": "PASS"
+    },
+    {
+      "id": "retry archives method evidence",
+      "result": "PASS"
+    },
+    {
+      "id": "guide return context",
+      "result": "PASS"
+    },
+    {
+      "id": "visible storage denial fallback",
+      "result": "PASS"
+    },
+    {
+      "id": "external links safe rel",
+      "result": "PASS"
+    },
+    {
+      "id": "mobile media query",
+      "result": "PASS"
+    },
+    {
+      "id": "reduced motion supported",
+      "result": "PASS"
+    },
+    {
+      "id": "controls >=44px CSS",
+      "result": "PASS"
+    },
+    {
+      "id": "unapproved visual and QA gate visible",
+      "result": "PASS"
+    }
+  ],
+  "pass": 26,
+  "fail": 0,
+  "limits": [
+    "static source QA does not execute browser event handlers",
+    "not real mobile Safari/VoiceOver",
+    "CMS key material is present in client JSON; only UX reveal gating"
+  ],
+  "source_blobs": {
+    "html": "4b1603c4b594e6e9b504676c67f25f54263ca952",
+    "css": "43b8e1caeab5f25734fb1dbe75197d232b00b50d",
+    "controller": "ddfe987c66c5f644ac25c2f69d63b9af0c2fe6cb",
+    "state": "4d7813dfe6a9f37b1ccb96b725826987c9ac6fb8",
+    "cms": "75475cc365aaa15543af43d8c0d52b79bf48086c"
+  }
+}

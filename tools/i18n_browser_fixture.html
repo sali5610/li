@@ -14,7 +14,7 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
  let done=false;const checks=[],audit=[];
  const record=(name,pass,detail="")=>checks.push({name,pass:!!pass,detail:String(detail).slice(0,300)});
  const settle=()=>new Promise(resolve=>setTimeout(resolve,75));
- const label=el=>el?.textContent?.replace(/\\s+/g," ").trim()||"";
+ const label=el=>el?.textContent?.replace(/\s+/g," ").trim()||"";
  const pass=()=>checks.every(x=>x.pass);
  const finish=()=>{
   if(done)return;done=true;

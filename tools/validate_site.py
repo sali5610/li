@@ -102,8 +102,8 @@ for forbidden in ("user-scalable=no", "maximum-scale=1", "minimum-scale=1",
 foundations=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert "html { touch-action: pan-x pan-y pinch-zoom; }" in foundations
 assert "#page-home .mirror-message { touch-action: pan-y pinch-zoom; }" in foundations
-assert "20261119-ds32-portrait-center" in page_html
-assert "ipad-viewport-debug.js?v=20261119-ds32" in page_html
+assert "20261119-ds33-physical-shell" in page_html
+assert "ipad-viewport-debug.js?v=20261119-ds33" in page_html
 
 
 # S137: previous/next arrows cycle questions in both directions; buttons remain stationary.
@@ -342,8 +342,8 @@ assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
 # UX-DS-25: honor device-aware Home cache key.
-assert 'library-hub.css?v=20261119-ds32-portrait-center' in page_html
-assert "ipad-viewport-debug.js?v=20261119-ds32" in page_html
+assert 'library-hub.css?v=20261119-ds33-physical-shell' in page_html
+assert "ipad-viewport-debug.js?v=20261119-ds33" in page_html
 assert (site/"assets"/"ipad-viewport-debug.js").exists()
 # UX-HOME-07: no Home-only min-height can force a page scroll, and routing
 # must restore browser scrolling for all other screens.
@@ -400,13 +400,20 @@ assert "(max-width:1420px) and (orientation:landscape)" in device_css
 assert "Width sync: " in (site/"assets"/"ipad-viewport-debug.js").read_text(encoding="utf-8"), "iPad physical diagnostic must expose layout/visual mismatch"
 # UX-DS-30 · Safari rotation recovery is a tightly scoped iPad-only, no-reload fallback.
 rotation_js=(site/"assets"/"ipad-safari-rotation.js").read_text(encoding="utf-8")
-assert 'ipad-safari-rotation.js?v=20261119-ds32' in page_html
-assert page_html.index('ipad-safari-rotation.js?v=20261119-ds32') < page_html.index('ipad-viewport-debug.js?v=20261119-ds32')
-for must in ('screen.orientation', 'window.orientation', 'navigator.maxTouchPoints>1', 'setTimeout(reconcile,0)', '--li-safari-physical-width', '--li-safari-physical-height', 'li-safari-landscape-recovery', 'width=device-width,initial-scale=1,viewport-fit=cover'):
+assert 'ipad-safari-rotation.js?v=20261119-ds33' in page_html
+assert page_html.index('ipad-safari-rotation.js?v=20261119-ds33') < page_html.index('ipad-viewport-debug.js?v=20261119-ds33')
+for must in ('screen.orientation', 'window.orientation', 'navigator.maxTouchPoints>1', 'setTimeout(reconcile,0)', '--li-ipad-shell-width', '--li-ipad-shell-height', 'li-ipad-home-canvas', 'width=device-width,initial-scale=1,viewport-fit=cover'):
     assert must in rotation_js, f"Safari recovery missing: {must}"
 for forbid in ('window.location.reload(', 'localStorage.setItem(', 'indexedDB.deleteDatabase(', 'sessionStorage.clear('):
     assert forbid not in rotation_js, f"Rotation recovery must not touch persistence/reload: {forbid}"
-assert 'home-li-ipad-20261119.jpg' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+ipad_canvas=(site/"assets"/"ipad-home-canvas.css").read_text(encoding="utf-8")
+assert 'ipad-home-canvas.css?v=20261119-ds33-physical-shell' in page_html, "single physical iPad Home shell must be loaded"
+assert 'html.li-ipad-home-canvas .app.home-focus' in ipad_canvas
+assert 'position:fixed!important;' in ipad_canvas
+assert 'home-li-ipad-20261119.jpg' in ipad_canvas
+assert 'li-ipad-home-portrait' in ipad_canvas and 'li-ipad-home-landscape' in ipad_canvas
+assert 'html.li-safari-landscape-recovery' not in (site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
+assert 'html.li-safari-landscape-recovery' not in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'background-size:cover!important;' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 
 assert "(any-pointer:coarse)" not in device_css, "Viewport-responsive iPad must not depend on hardware pointer"
@@ -730,7 +737,7 @@ assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
 
 # UX-DS-11 · Review components are connected; app Guide chips use full pills.
-assert 'ui-foundations.css?v=20261119-ds32-portrait-center' in page_html
+assert 'ui-foundations.css?v=20261119-ds33-physical-shell' in page_html
 assert '#page-guide #method-filters .filter,' in foundation and 'border-radius:999px!important;' in foundation
 v3=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert 'component-review-v3.css?v=20261118-ds20-coverage' in v3
@@ -814,7 +821,7 @@ assert 'Top Navigation transparent Home' not in page_html
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
 assert 'li-layout.css?v=20261118-ds20-coverage' in page_html
-assert 'ui-foundations.css?v=20261119-ds32-portrait-center' in page_html
+assert 'ui-foundations.css?v=20261119-ds33-physical-shell' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation
@@ -832,7 +839,7 @@ assert '.ds-home-bubble{position:relative;' in review10css and 'border:1px solid
 assert '/* UX-DS-24: forest green bubble has zero-width stroke' in foundation
 assert '#page-home .hero-dialogue-bubble { border-width:var(--li-space-0); padding:' in foundation
 assert '#page-home .hero-dialogue-bubble::before { border-width:var(--li-space-0); }' in foundation
-assert './assets/ui-foundations.css?v=20261119-ds32-portrait-center' in page_html
+assert './assets/ui-foundations.css?v=20261119-ds33-physical-shell' in page_html
 
 # UX-DS-09: mobile Tủ Riêng uses the same Archive icon as Home, never Bookmark.
 mobile_nav=page_html.split('<nav class="mobile-nav"',1)[1].split('</nav>',1)[0]

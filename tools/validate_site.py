@@ -618,10 +618,11 @@ heading=page_html.split('<header class="buddy-heading">',1)[1].split('</header>'
 body=page_html.split('<div id="buddy-scroll"',1)[1].split('<div id="buddy-debate"',1)[0]
 assert '<aside id="buddy-quote"' in heading and '<aside id="buddy-quote"' not in body
 assert heading.index('id="buddy-quote-original"') < heading.index('id="buddy-quote-translation"') < heading.index('id="buddy-quote-info"') < heading.index('id="buddy-quote"')
-assert 'translation.textContent="Dịch nghĩa: "+item.translation;' in quote_js
-assert 'gloss.textContent="Diễn nghĩa: "+item.interpretation;' in quote_js
-assert quote_js.count('"translation":')>=24 and quote_js.count('"interpretation":')>=24
-assert 'note.textContent=item.comment;' in quote_js and 'Lão Lý liên hệ: ' not in quote_js
+assert 'translation.textContent=(inEnglish?"Meaning: ":"Dịch nghĩa: ")+shown.translation;' in quote_js
+assert 'gloss.textContent=(inEnglish?"Interpretation: ":"Diễn nghĩa: ")+shown.interpretation;' in quote_js
+assert quote_js.count('"translation":')>=48 and quote_js.count('"interpretation":')>=48
+assert 'note.textContent=shown.comment;' in quote_js and 'Lão Lý liên hệ: ' not in quote_js
+assert 'const QUOTES_EN=' in quote_js and 'window.liLanguage?.get?.()==="en"' in quote_js
 assert 'https://zh.wikisource.org/' in quote_js and 'https://en.wikisource.org/' in quote_js
 subprocess.run(["node","--check",str(quotes)],check=True)
 subprocess.run(["node",str(site.parent/"tools"/"test_quotes.js")],check=True,cwd=site.parent)

@@ -10,8 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/design-tokens.css?v=0.3">
 <link rel="stylesheet" href="./assets/component-review-v2.css?v=20261118-ds12-white-note">
-<link rel="stylesheet" href="./assets/component-review-v3.css?v=20261118-ds11">
-<link rel="stylesheet" href="./assets/component-review-v4.css?v=20261118-ds12">
+<link rel="stylesheet" href="./assets/component-review-v3.css?v=20261118-ds13-selection">
+<link rel="stylesheet" href="./assets/component-review-v4.css?v=20261118-ds13-focus-today">
 <style>
 :root {color-scheme:light}
 *{box-sizing:border-box}
@@ -210,7 +210,7 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
     <div class="ds-image-copy"><span class="ds-eyebrow">01 / MEDIA TOP · 16:9</span><h3>Đi vào thư viện</h3><p>Hình làm bối cảnh riêng; tiêu đề, mô tả và CTA không đặt trực tiếp lên phần tranh bị crop.</p><a class="ds-link" href="#live">Xem app thật <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
    </article>
    <article class="ds-image-card ds-image-character">
-    <div class="ds-image-frame figure"><img src="./assets/laoly-neutral.png" alt="Chân dung minh họa Lão Lý, nhân vật hướng dẫn của li." width="256" height="256" loading="eager" decoding="async"></div>
+    <div class="ds-image-frame figure"><img src="./assets/laoly-mirror-suy-nghi.png" alt="Minh họa Lão Lý trong gương, nhân vật hướng dẫn của li." width="256" height="256" loading="eager" decoding="async"></div>
     <div class="ds-image-copy"><span class="ds-eyebrow">03 / CONTAINED ILLUSTRATION</span><h3>Một lời từ Lão Lý</h3><p>Art nhân vật giữ nguyên tỷ lệ, không cắt mặt; illustration không có tấm nền riêng.</p><a class="ds-link" href="#live">Xem vị trí thật <i data-lucide="arrow-right" aria-hidden="true"></i></a></div>
    </article>
    <article class="ds-image-card ds-image-split">
@@ -220,7 +220,7 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
   </div>
   <div class="ds12-variant-pair" aria-label="Image card variants">
     <article class="ds-image-card ds12-variant-secondary"><div class="ds-image-frame wide"><img src="./assets/home-mystic-cool-desktop.webp" alt="Thư viện cổ thụ trong li." width="1200" height="675" loading="lazy"></div><div class="ds-image-copy"><span class="ds-eyebrow">SECONDARY · BORDER ONLY</span><h3>Đường vào Tàng Thư</h3><p>Ảnh vẫn crop theo khung, card không shadow.</p></div></article>
-    <article class="ds-image-card ds-image-character ds12-variant-dark"><div class="ds-image-frame figure"><img src="./assets/laoly-neutral.png" alt="Minh họa Lão Lý không có tấm nền phía sau" width="256" height="256" loading="lazy"></div><div class="ds-image-copy"><span class="ds-eyebrow">DARK · TRANSPARENT ART</span><h3>Lão Lý lên tiếng</h3><p>Illustration nằm trực tiếp trên mặt card, không thêm rectangle nền sau hình.</p></div></article>
+    <article class="ds-image-card ds-image-character ds12-variant-dark"><div class="ds-image-frame figure"><img src="./assets/laoly-mirror-suy-nghi.png" alt="Minh họa Lão Lý trong gương trên mặt card không có tấm nền riêng" width="256" height="256" loading="lazy"></div><div class="ds-image-copy"><span class="ds-eyebrow">DARK · TRANSPARENT ART</span><h3>Lão Lý lên tiếng</h3><p>Illustration nằm trực tiếp trên mặt card, không thêm rectangle nền sau hình.</p></div></article>
   </div>
   <h3 style="margin-top:var(--li-space-8)">Horizontal cards · Four media anatomies</h3>
   <p class="ds-muted">Đúng horizontal ở cả desktop lẫn mobile: không hình, có ảnh, illustration trong suốt và icon. Dùng nút để xem đồng bộ từng surface Primary / Secondary / Dark.</p>
@@ -232,7 +232,7 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
   <div class="ds12-horizontal-stack" aria-label="Bốn dạng horizontal card">
    <article class="ds12-horizontal-card ds12-no-media" data-ds12-horizontal-card><div class="ds12-horizontal-copy"><span class="ds12-card-category">TEXT ONLY</span><h3>Xã hội học</h3><p>Khám phá cách xã hội hình thành và vận hành qua những câu hỏi gần gũi.</p><span class="ds12-horiz-footer">Không có media <i data-lucide="arrow-up-right" aria-hidden="true"></i></span></div></article>
    <article class="ds12-horizontal-card" data-ds12-horizontal-card><div class="ds12-horizontal-media photo"><img src="./assets/home-mystic-cool-mobile.webp" alt="Thư viện cổ thụ trong khung ảnh dọc" width="720" height="1200" loading="lazy"></div><div class="ds12-horizontal-copy"><span class="ds12-card-category">IMAGE · COVER CROP</span><h3>Mở một hành trình</h3><p>Ảnh đứng bên cạnh nội dung, crop có chủ đích.</p><span class="ds12-horiz-footer">Ảnh có tỷ lệ riêng <i data-lucide="arrow-up-right" aria-hidden="true"></i></span></div></article>
-   <article class="ds12-horizontal-card" data-ds12-horizontal-card><div class="ds12-horizontal-media figure"><img src="./assets/laoly-neutral.png" alt="Minh họa Lão Lý với nền trong suốt" width="256" height="256" loading="lazy"></div><div class="ds12-horizontal-copy"><span class="ds12-card-category">ILLUSTRATION · NO BACKPLATE</span><h3>Hỏi Lão Lý</h3><p>Nhân vật không bị nhốt vào một ô màu riêng.</p><span class="ds12-horiz-footer">Artwork contained <i data-lucide="arrow-up-right" aria-hidden="true"></i></span></div></article>
+   <article class="ds12-horizontal-card" data-ds12-horizontal-card><div class="ds12-horizontal-media figure"><img src="./assets/laoly-mirror-suy-nghi.png" alt="Minh họa Lão Lý trong gương, artwork không có nền phụ hoặc đường chia" width="256" height="256" loading="lazy"></div><div class="ds12-horizontal-copy"><span class="ds12-card-category">ILLUSTRATION · NO BACKPLATE</span><h3>Hỏi Lão Lý</h3><p>Nhân vật không bị nhốt vào một ô màu riêng.</p><span class="ds12-horiz-footer">Artwork contained <i data-lucide="arrow-up-right" aria-hidden="true"></i></span></div></article>
    <article class="ds12-horizontal-card" data-ds12-horizontal-card><div class="ds12-horizontal-media icon"><i data-lucide="brain-circuit" aria-hidden="true"></i></div><div class="ds12-horizontal-copy"><span class="ds12-card-category">ICON · MONOLINE</span><h3>Tư duy phản biện</h3><p>Icon chức năng đơn sắc, nhường ưu tiên cho nội dung.</p><span class="ds12-horiz-footer">Lucide 24px <i data-lucide="arrow-up-right" aria-hidden="true"></i></span></div></article>
   </div>
   <h3 style="margin-top:var(--li-space-8)">Subtle chat bubble · Homepage</h3>
@@ -252,7 +252,7 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
     <div class="ds-control"><label for="ds-error">Error / validation</label><input id="ds-error" type="text" value="!" required aria-invalid="true" aria-describedby="ds-error-note"><p id="ds-error-note" class="helper error" role="alert">Nhập ít nhất 3 ký tự để tiếp tục.</p></div>
     <div class="ds-control"><label for="ds-disabled">Disabled</label><input id="ds-disabled" type="text" disabled value="Không chỉnh sửa được"><p class="helper">Disabled không nhận focus.</p></div>
     <div class="ds-control"><label for="ds-readonly">Readonly</label><input id="ds-readonly" type="text" readonly value="Bản ghi tham khảo"><p class="helper">Có thể đọc/copy; không sửa.</p></div>
-    <div class="ds-control"><label for="ds-focus">Focus-visible</label><input id="ds-focus" type="text" placeholder="Click hoặc Tab"><p class="helper">Viền focus 3px, đủ nhìn thấy trên nền giấy.</p></div>
+    <div class="ds-control"><label for="ds-focus">Focus-visible</label><input id="ds-focus" type="text" placeholder="Click hoặc Tab"><p class="helper">Khi focus, chính đường viền của ô dày lên 3px; không thêm vòng xanh phía ngoài.</p></div>
    </div>
   </div>
   <div class="ds-grid" style="margin-top:var(--li-space-5)">
@@ -444,14 +444,14 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
     <span><i class="level-3" aria-hidden="true"></i>Vào nhịp</span>
     <span><i class="level-4" aria-hidden="true"></i>Đào sâu</span>
    </div>
-   <p class="ds12-today-legend"><span class="ds12-today-swatch" aria-hidden="true"></span>Viền đôi = hôm nay, khung xanh = ngày đang chọn. Hai trạng thái độc lập.</p>
+   <p class="ds12-today-legend"><span class="ds12-today-swatch" aria-hidden="true"></span>Chấm nâu = hôm nay. <span class="ds12-selected-swatch" aria-hidden="true"></span>Viền xanh = ngày được chọn. Không đánh dấu các ngày xung quanh.</p>
    <p class="ds11-sample-note">DỮ LIỆU GIẢ LẬP ĐỂ REVIEW UI · 4 cấp màu là đề xuất chưa được PO chốt, không phải mức sức khỏe hay phép đo năng lực.</p>
   </div>
   <div class="ds11-chart-shell" style="margin-top:var(--li-space-5)">
    <div class="ds11-chart-head"><div><div class="ds11-kicker">VERTICAL STACKED BAR · 7 DAYS / VIEW</div><h3>Hoạt động theo ngày</h3></div>
     <div class="ds11-date-toolbar"><button id="ds11-week-today" class="ds12-today-button" type="button" aria-label="Trở về 7 ngày chứa hôm nay">Hôm nay</button><button id="ds11-week-prev" class="ds11-icon-button" type="button" aria-label="7 ngày trước"><i data-lucide="chevron-left" aria-hidden="true"></i></button><strong id="ds11-week-range" class="ds-muted" role="status">15–21 / 11/2026</strong><button id="ds11-week-next" class="ds11-icon-button" type="button" aria-label="7 ngày tiếp theo"><i data-lucide="chevron-right" aria-hidden="true"></i></button></div>
    </div>
-   <p class="ds12-today-legend"><span class="ds12-today-swatch" aria-hidden="true"></span>Cột viền đôi = hôm nay (khi nằm trong 7 ngày đang xem).</p>
+   <p class="ds12-today-legend"><span class="ds12-today-swatch" aria-hidden="true"></span>Chấm nâu = hôm nay. <span class="ds12-selected-swatch" aria-hidden="true"></span>Viền xanh = cột đang chọn, chỉ một đường viền.</p>
    <div class="ds11-chart-key" aria-label="Chú giải phần chồng trong mỗi cột"><span><i class="lesson" aria-hidden="true"></i>Bài</span><span><i class="branch" aria-hidden="true"></i>Vấn đề</span><span><i class="input" aria-hidden="true"></i>Input</span></div>
    <div class="ds11-chart-window" id="ds11-chart" role="group" aria-label="Biểu đồ cột chồng theo từng ngày trong 7 ngày"></div>
    <p class="ds11-day-detail" id="ds11-day-detail" role="status" aria-live="polite">Chọn ngày trên lịch hoặc cột.</p>
@@ -563,6 +563,6 @@ document.querySelectorAll("[data-width]").forEach(button=>button.addEventListene
  document.querySelectorAll("[data-width]").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
 }));
 </script>
-<script src="./assets/component-review-v3.js?v=20261118-ds12-today"></script>
+<script src="./assets/component-review-v3.js?v=20261118-ds13-week-fix"></script>
 </body>
 </html>

@@ -335,3 +335,48 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
     line-height: var(--li-leading-support) !important;
   }
 }
+
+/* Tủ Riêng: group personal objects by user job, not by feature rollout order. */
+#page-library .library-groups { gap: var(--li-space-8); }
+#page-library .library-group { display: grid; gap: var(--li-space-4); min-width: 0; }
+#page-library .library-group + .library-group {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--li-space-8);
+}
+#page-library .library-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--li-space-2) var(--li-space-5);
+}
+#page-library .library-group-header h2 {
+  margin: 0;
+  font: 600 var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial);
+  color: var(--moss);
+}
+#page-library .library-group-header p {
+  margin: 0;
+  max-width: 48ch;
+  color: var(--muted);
+}
+#page-library .library-group .surface h3 {
+  font-size: var(--li-type-title-md);
+  line-height: var(--li-leading-title-md);
+  margin-top: var(--li-space-2);
+}
+#page-library .library-group .surface-grid { align-items: stretch; }
+#page-library .library-group .surface-grid .surface { min-width: 0; }
+#page-library .library-activity {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--li-space-6);
+}
+@media (max-width: 640px) {
+  #page-library .library-group-header { display: block; }
+  #page-library .library-group-header p { margin-top: var(--li-space-2); }
+  #page-library .library-group .surface-grid.cols2 { grid-template-columns: minmax(0, 1fr); }
+  #page-library .library-activity .action { width: 100%; }
+}

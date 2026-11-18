@@ -70,7 +70,7 @@
      // Use the native visual height alone to keep recovery latched across
      // our own root reflow; rootHeight changes as soon as CSS is applied.
      const stalePortraitHeight=!h.landscape&&
-       visualHeight<h.oh-240;
+       (visualHeight<h.oh-240||visualHeight>h.oh+140);
      const portraitBroken=!h.landscape&&(
        rootWidth>target+80||appWidth>target+80||
        (heroRect&&heroRect.width>target+80)||

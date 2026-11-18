@@ -258,9 +258,16 @@ assert '<article class="surface" id="settings-buddy-card">' in settings
 assert '<div class="folio-art roots" style="height:154px;margin-top:12px"></div>' not in settings
 assert settings.count('class="settings-buddy-illustration"') == 1
 assert 'class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"' in settings
-assert settings.count('data-buddy="1"') == 1
-assert '#settings-buddy-card .settings-buddy-footer' in html
+assert settings.count('data-buddy="1"') == 0
+assert 'Xem mẫu câu thoại' not in settings
+assert 'class="settings-buddy-footer"' not in settings
+assert 'class="settings-buddy-heading"' in settings
+assert '#settings-buddy-card .settings-buddy-heading' in html
 assert '#settings-buddy-card .settings-buddy-illustration' in html
+# S157: the final toggle already has a bottom rule; no separate top rule for names.
+assert 'border-top: 1px solid var(--rule)' not in foundation.split('#page-settings .buddy-address-settings {', 1)[1].split('}', 1)[0]
+assert '#settings-buddy-card .settings-buddy-footer' not in html
+assert 'li-layout.css?v=0.4' in page_html and 'ui-foundations.css?v=0.4' in page_html
 
 # S118: two compact mobile Guide tiles with shadow-safe column/row gutters; no duplicate S99 rule.
 guide=section("guide")

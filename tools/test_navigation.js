@@ -23,11 +23,13 @@ const assertUtility=(page)=>{
   assert.equal(utility.state.current,utility.dataset.page===page,"Utility aria-current "+utility.dataset.page);
  }
 };
-const calls={guide:0,library:0,resume:0,collection:0,lesson:0,research:0};
+const calls={guide:0,library:0,resume:0,collection:0,lesson:0,research:0,problems:[]};
 const location=new URL("https://sali5610.github.io/li/?utm_source=chatgpt.com&lesson=L09-1-2#l09-goals");
 const urlReplacements=[];
 const sandbox={
  currentPage:"home",
+ scenarios:[{question:"Giới hạn kết luận khảo sát",type:"problem"}],
+ qIndex:0,
  document:{
    getElementById(id){return pages.get(id.replace(/^page-/,""))||null},
    querySelectorAll(selector){
@@ -45,7 +47,8 @@ const sandbox={
      renderHome(){calls.library++},
      renderResume(){calls.resume++},
      renderCollection(){calls.collection++},
-     trackLesson(){calls.lesson++}
+     trackLesson(){calls.lesson++},
+     trackProblem(kind,payload){calls.problems.push({kind,key:kind==="research"?payload.question:payload})}
    },
    history:{
      state:null,
@@ -90,6 +93,8 @@ sandbox.navigate("collection");assert.equal(calls.collection,1);
 sandbox.goBack();assert.equal(active(),"library");
 sandbox.goBack();assert.equal(active(),"guide");
 sandbox.navigate("research");assert.equal(calls.research,1);
+assert.equal(calls.problems.length,1,"opening Khảo Chứng records a real problem");
+assert.equal(calls.problems[0].key,"Giới hạn kết luận khảo sát");
 sandbox.navigate("capture");
 sandbox.goBack();assert.equal(active(),"research");
 sandbox.goBack();assert.equal(active(),"guide");
@@ -102,5 +107,6 @@ sandbox.navigate("lessonL03");assert.equal(location.searchParams.get("lesson"),"
 sandbox.navigate("lessonL15");assert.equal(location.searchParams.get("lesson"),"L15-2-2");
 sandbox.navigate("home");assert.equal(location.searchParams.has("lesson"),false);
 assert.equal(calls.lesson,3,"record only published lesson navigation");
+sandbox.navigate("case");assert.equal(calls.problems.at(-1).key,"sampling-bias-90","opening Phản Chứng records case activity");
 assert.ok(urlReplacements.length>=5,"Route updates should be captured without reloading");
 console.log("PASS S118 back navigation: Settings, Search, Capture, chained routes, duplicate prevention, fallback and Guide/Library/Research hooks");

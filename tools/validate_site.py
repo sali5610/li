@@ -322,13 +322,13 @@ assert '<section id="page-noteDetail"' in page_html
 assert '<button id="li-note-save"' in page_html
 assert '<button id="li-note-delete"' in page_html
 assert '<div id="li-note-history-list"' in page_html
-assert '<script src="./assets/library-note-editor.js?v=2"></script>' in page_html
+assert '<script src="./assets/library-note-editor.js?v=3"></script>' in page_html
 hub=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
-assert 'library-hub.css?v=4' in page_html
+assert 'library-hub.css?v=5' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_note_versions.cjs")],check=True,cwd=site.parent)
 
 # S120: all 13 Thần Chú methods share this same Guide Detail template.
@@ -428,7 +428,7 @@ assert 'data-demo="Chưa lưu được ý này' not in html
 assert 'id="save-capture-note"' in html
 assert html.count('id="li-checkin-recording-disclosure"')==1
 assert html.index('li-diary-privacy')>html.index('li-diary-day-status')
-assert '<script src="./assets/library-hub.js?v=3"></script>' in html
+assert '<script src="./assets/library-hub.js?v=4"></script>' in html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_hub_v2.cjs")],check=True,cwd=site.parent)
 
 # UX-IA-05: lesson modules only own lesson/catalog DOM, never Tủ Riêng overview.
@@ -451,8 +451,8 @@ assert 'caseSnapshot' in page_html and 'selectedText:caseOptions.find' in page_h
 assert 'id="li-note-case-context"' in page_html
 assert 'data-li-bookmark-kind="case"' in page_html
 assert '<script src="./assets/library-bookmarks.js?v=2"></script>' in page_html
-assert '<script src="./assets/library-note-editor.js?v=2"></script>' in page_html
-assert '<script src="./assets/library-hub.js?v=3"></script>' in page_html
+assert '<script src="./assets/library-note-editor.js?v=3"></script>' in page_html
+assert '<script src="./assets/library-hub.js?v=4"></script>' in page_html
 for lesson_id,slug in (("L03-1-2","l03"),("L09-1-2","l09"),("L15-2-2","l15")):
     content=(site/"assets"/f"lesson-{slug}-hifi-markup.js").read_text(encoding="utf-8")
     assert f'data-li-bookmark-id="{lesson_id}"' in content
@@ -493,6 +493,27 @@ bookmark=(site/"assets"/"library-bookmarks.js").read_text(encoding="utf-8")
 assert 'button.innerHTML=' in bookmark and 'button.textContent=saved?' not in bookmark
 iconcss=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'width:var(--li-space-12)' in iconcss and '.library-icon-action:focus-visible' in iconcss
+
+# UX-IA-08: Quay lại overview has exactly one actual lesson AND one actual
+# problem/case, while full rows and bookmarks remain on the detail route.
+library=section("library")
+resume=section("resume")
+assert library.count('id="li-library-latest-lesson"')==1
+assert library.count('id="li-library-latest-problem"')==1
+assert library.count('library-resume-previews')==1
+assert 'id="li-lesson-history"' not in library
+assert 'id="li-problem-history"' not in library
+assert resume.count('id="li-lesson-history"')==1
+assert resume.count('id="li-problem-history"')==1
+assert resume.count('id="li-saved-questions"')==1
+hub=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
+assert 'PROBLEM_VISITS_KEY="li.private.problem.visits.v1"' in hub
+assert 'renderProblemRows($("li-library-latest-problem"),1)' in hub
+assert 'renderProblemRows($("li-problem-history"),40)' in hub
+assert 'trackProblem,renderProblemRows' in hub
+assert 'if(id==="case")window.liLibraryShelf?.trackProblem("case","sampling-bias-90");' in page_html
+assert 'window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);' in page_html
+subprocess.run(["node",str(site.parent/"tools"/"test_resume_problem_case.cjs")],check=True,cwd=site.parent)
 
 # S120: mirror-variant illustration stored locally and not silently downgraded
 # to a chat icon; Bút Ký uses same paper surface as cards 03-04.

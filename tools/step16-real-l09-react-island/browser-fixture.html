@@ -21,7 +21,8 @@
    frame?.remove();frame=document.createElement('iframe');
    frame.style.cssText='position:absolute;left:-10000px;top:0;border:0;width:'+width+'px;height:880px';
    frame.src='./dist/index.html';document.body.append(frame);
-   await until(()=>doc()?.querySelector('.pilot [data-answer="3"]')&&doc()?.querySelector('[data-rubric-locked]'),'React mount');
+   await until(()=>doc()?.querySelector('.pilot [data-answer="3"]')&&
+     (doc()?.querySelector('[data-rubric-locked]')||doc()?.querySelector('[data-rubric]')),'React mount');
  }
  function tap(selector){
    const b=doc().querySelector(selector);

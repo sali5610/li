@@ -24,6 +24,7 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 | Viewport widths | 320, 375, 390, 402, 600, 820, 1440 CSS px; narrow portrait and useful landscape heights |
 | Long content | Vietnamese diacritics, English text expansion, long title/question, zoom/text size, no truncation without affordance |
 | Navigation | Top/bottom selection synchronized; icon remains legible; fixed/sticky bars don't hide content |
+| Thần Chú S116/S118 | 2 compact method cards per phone row at ≤640px, **gap 18/20px** and ≤360px **14/18px**. Keep full VI title, academic EN name, 2-line purpose teaser, Chú Giải action, filters/modes. Treat these as approved micro-geometry exceptions, NOT token debt to round. |
 | Home | Question inside mirror; context below question; Lưu left / Đào sâu right; Lão Lý does not overlap |
 | Touch | 44×44 intended target, no rectangular iOS tap flash, no sticky touch-hover rectangle, scrolling still works |
 | Accessibility | Keyboard order, visible focus, label/role, error announcement, reduced motion; **pinch-zoom lock caveat** |

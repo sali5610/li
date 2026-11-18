@@ -97,3 +97,10 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 - [ ] Rotate live Safari while a nested lesson, filter, or modal is active; preserve content, state, focus, keyboard and accessible names, no reload or data loss.
 - [x] Source contract: JSON device scales generate CSS; Component Library viewport presets include both orientations and change iframe width AND height.
 - [ ] Real iPad Safari/PWA with portrait/landscape and split view; Headless CI or iframe alone cannot certify it. PO G2 still OPEN.
+
+### UX-ART-06 · Approved Lão Lý loading/error scenes
+- [ ] Exact two Human PO-selected scenes stored as **1024×1024 RGBA with transparent pixels** under `design-assets/lao-ly/system-states/`; deployed app binary copies identical by SHA-256.
+- [ ] Loading shown only while reading a selected backup, not on an arbitrary fixed timer; success/cancel hides it. Never show error art for search's ordinary no-result state.
+- [ ] Invalid JSON, >10 MB, denied localStorage/readback show the error art with a clear message and working retry; original stored data not overwritten on malformed input. Do not claim rollback is guaranteed if browser storage is unavailable.
+- [ ] UI specimen matches shared `.li-state-scene` app component, decorative images have empty alt, status/alert semantics, keyboard/touch retry and reduced-motion fallback.
+- [ ] Visually inspect paper & moss backgrounds, edge halo and artwork clearance at 320/375/390/402/820px and 200% text zoom; run real iPhone/iPad Safari/PWA/VoiceOver before claiming device-level signoff. G2 remains open.

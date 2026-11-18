@@ -9,6 +9,15 @@ const supported=["vi","en"];
 let locale="vi";
 try{const raw=localStorage.getItem(KEY);if(supported.includes(raw))locale=raw;}catch(error){/* no storage available */}
 const TEXT={
+ "Lão đang giở sổ…":"Elder Li is leafing through the pages…",
+ "Đang đọc và kiểm tra bản sao của ngươi.":"Reading and validating your backup.",
+ "Bản đồ có chỗ sai rồi":"Something went wrong with the map",
+ "Chưa thể nhập bản sao.":"Could not import the backup.",
+ "Chọn tệp khác":"Choose another file",
+ "Mở luồng nhập để thử lại":"Open backup import to retry",
+ "Tệp vượt quá 10 MB.":"The file exceeds 10 MB.",
+ "Không thể lưu bản sao trên thiết bị này. Hãy giữ bản JSON.":"Could not save this backup on this device. Keep the JSON file.",
+ "Tệp JSON không hợp lệ hoặc không đúng bản sao li.":"Invalid JSON or not a li. backup.",
  "Đại Sảnh":"Great Hall","Tàng Thư":"Library","Thần Chú":"Spells","Tủ Riêng":"My Shelf",
  "Cài đặt":"Settings","Quay lại":"Back","Trang chủ":"Home",
  "Tra Cứu":"Search","Nhặt ý":"Capture an idea","Khảo Chứng":"Investigate","Phản Chứng":"Test a claim",

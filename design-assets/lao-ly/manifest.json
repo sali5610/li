@@ -193,5 +193,36 @@
       "sha256": "19c1893b01c6c5a0d9c4e3cd3ab18152aaf41b931f9e943435be6684e2180816"
     }
   ],
-  "icon_small_size_css_px": 24
+  "icon_small_size_css_px": 24,
+  "system_state_approval": "Human PO approved 2026-11-19: one loading and one error illustration",
+  "state_assets": [
+    {
+      "type": "system-state-illustration",
+      "state": "loading",
+      "approved": true,
+      "path": "system-states/lao_ly_state_loading_1024.png",
+      "app_alias": "site/assets/laoly-state-loading.png",
+      "source": "2026-11-19 Human PO-approved two-scene papercraft image; left panel; transparent padding only",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "bytes": 851632,
+      "transparent_percent": 64.6,
+      "sha256": "8b3e4e5c5a7509c9c6ec607a836fa9b228a373204b421cf4d6384aadd4833f6b"
+    },
+    {
+      "type": "system-state-illustration",
+      "state": "error",
+      "approved": true,
+      "path": "system-states/lao_ly_state_error_1024.png",
+      "app_alias": "site/assets/laoly-state-error.png",
+      "source": "2026-11-19 Human PO-approved two-scene papercraft image; right panel; transparent padding only",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "bytes": 880539,
+      "transparent_percent": 62.57,
+      "sha256": "38cb99180a02ea95394804153c80aabc5d89bd2697b8cf51c74647669784a58a"
+    }
+  ]
 }

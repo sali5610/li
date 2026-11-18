@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="./assets/component-review-v3.css?v=20261118-ds20-coverage">
 <link rel="stylesheet" href="./assets/component-review-v4.css?v=20261118-ds20-coverage">
 <link rel="stylesheet" href="./assets/component-review-v5.css?v=20261119-ds21-olive-spec">
+<link rel="stylesheet" href="./assets/li-state-scenes.css?v=20261119-art06">
 <style>
 :root {color-scheme:light}
 *{box-sizing:border-box}
@@ -539,6 +540,22 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
  <section id="feedback" class="ds-section">
   <div class="ds-section-head"><div><div class="ds-num">10 / FEEDBACK</div><h2>Feedback & system states</h2></div><div class="ds-muted">Không hiện thành công giả</div></div>
   <div class="ds-grid"><div class="ds-note" role="status"><strong>Thông tin</strong><p>Trạng thái trung tính: hướng dẫn, lưu ý giới hạn của câu trả lời.</p></div><div class="ds-note error" role="alert"><strong>Lỗi / chưa thể lưu</strong><p>Khi lưu thất bại, cần thông báo rõ — không được viết “đã lưu” trước xác nhận.</p></div></div>
+  <h3 style="margin-top:var(--li-space-6)">Lão Lý · System-state illustration (UX-ART-06)</h3>
+  <p class="ds-muted">Asset đã duyệt, dùng hai trạng thái khác nhau: đang xử lý thật / thất bại thật. Hai card bên dưới là specimen tĩnh, không tự gọi API hay báo lỗi giả.</p>
+  <div class="li-state-scene-showcase">
+    <article class="li-state-scene" data-li-state="loading" role="group" aria-label="Ví dụ giao diện Loading">
+      <img class="li-state-scene__art" src="./assets/laoly-state-loading.png" alt="" aria-hidden="true" width="1024" height="1024" decoding="async" loading="lazy">
+      <h3 class="li-state-scene__title">Lão đang giở sổ…</h3>
+      <p class="li-state-scene__description">Đang đọc và kiểm tra bản sao của ngươi.</p>
+    </article>
+    <article class="li-state-scene" data-li-state="error" role="group" aria-label="Ví dụ giao diện Error">
+      <img class="li-state-scene__art" src="./assets/laoly-state-error.png" alt="" aria-hidden="true" width="1024" height="1024" decoding="async" loading="lazy">
+      <h3 class="li-state-scene__title">Bản đồ có chỗ sai rồi</h3>
+      <p class="li-state-scene__description">Tệp JSON không hợp lệ hoặc không đúng bản sao li.</p>
+      <a class="ds-link li-state-scene__action" href="./index.html?page=settings">Mở luồng nhập để thử lại</a>
+    </article>
+  </div>
+  <p class="ds-muted">Trong app: Cài đặt → Dữ liệu của bạn → Nhập bản sao. Loading là lúc chờ đọc file; Error hiển thị khi JSON sai, quá 10 MB hoặc ghi vào localStorage thất bại. G2 và thử máy thật vẫn mở.</p>
  </section>
  <section id="live" class="ds-section">
   <div class="ds-section-head"><div><div class="ds-num">11 / ACTUAL RUNTIME</div><h2>Màn hình thật</h2></div><div class="ds-muted">App iframe từ cùng repo · không phải mock</div></div>

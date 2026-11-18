@@ -68,9 +68,10 @@ assert html.count('<link rel="apple-touch-icon" sizes="180x180" href="./assets/a
 assert '<meta name="apple-mobile-web-app-title" content="li.">' in html
 assert '<meta name="theme-color" content="#243A29">' in html
 
-# S136: mirror label is typographic only, not a search control.
-assert html.count('<div class="mirror-label">Gương Vạn Vấn</div>') == 1
-assert '<div class="mirror-label"><i data-lucide="search"' not in html
+# UX-HOME-05: PO removes the visible mirror title; question + accessible region survive.
+assert 'class="mirror-titlebar"' not in html
+assert 'class="mirror-label"' not in html
+assert 'aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn"' in html
 
 # S138/S139: touch swipe only on mirror; fixed-scale viewport and sticky header.
 for needle in (
@@ -331,7 +332,7 @@ assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
-assert 'library-hub.css?v=20261119-home-device-scenes' in page_html
+assert 'library-hub.css?v=20261119-home-topnav-fullbleed' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_note_versions.cjs")],check=True,cwd=site.parent)
 
 # S120: all 13 Thần Chú methods share this same Guide Detail template.
@@ -482,7 +483,7 @@ subprocess.run(["node",str(site.parent/"tools"/"test_library_case_review.cjs")],
 # UX-HOME-01: The Home-only Save action shares the primary CTA component;
 # elsewhere Save/Unsave and Delete remain independent icon utilities.
 home=section("home")
-assert 'class="mirror-titlebar"' in home and 'class="library-icon-utility mirror-bookmark-slot"' not in home
+assert 'class="mirror-titlebar"' not in home and 'class="library-icon-utility mirror-bookmark-slot"' not in home
 assert 'id="save-question"' in home
 hero_actions=home[home.index('<div class="hero-actions">'):home.index('</div></div>',home.index('<div class="hero-actions">'))]
 assert 'id="save-question"' in hero_actions
@@ -683,7 +684,7 @@ assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
 
 # UX-DS-11 · Review components are connected; app Guide chips use full pills.
-assert 'ui-foundations.css?v=20261118-ds20-coverage' in page_html
+assert 'ui-foundations.css?v=20261119-home-transparent-topnav' in page_html
 assert '#page-guide #method-filters .filter,' in foundation and 'border-radius:999px!important;' in foundation
 v3=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert 'component-review-v3.css?v=20261118-ds20-coverage' in v3
@@ -767,7 +768,7 @@ assert 'Top Navigation transparent Home' not in page_html
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
 assert 'li-layout.css?v=20261118-ds20-coverage' in page_html
-assert 'ui-foundations.css?v=20261118-ds20-coverage' in page_html
+assert 'ui-foundations.css?v=20261119-home-transparent-topnav' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation
@@ -790,8 +791,9 @@ assert 'ds-large light' in review and 'ds-large warm' in review
 assert all(x in review for x in ('ds-textarea','ds-chip-result','ds-error','ds-disabled','ds-readonly'))
 assert all(x in review for x in ('ds-home-bubble','ds-tabs','ds-utility','ds-back','ds-link'))
 
-# S159: mirror name remains consistent while purpose-specific CTAs still route.
-assert 'if(kind)kind.textContent="Gương Vạn Vấn";' in page_html
+# UX-HOME-05: no JS rerender can resurrect the removed visible mirror title.
+assert 'if(kind)kind.textContent="Gương Vạn Vấn";' not in page_html
+assert 'querySelector("#page-home .mirror-message .mirror-label")' not in page_html
 assert 'Gương Vạn Vấn · Vấn đề' not in page_html
 assert 'Gương Vạn Vấn · Điều bất ngờ' not in page_html
 assert 'if(kind)kind.textContent="Gương Vạn Vấn · "' not in page_html

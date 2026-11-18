@@ -6,12 +6,14 @@ const path=require("node:path");
 const assert=require("node:assert/strict");
 const html=fs.readFileSync(path.resolve(__dirname,"../site/index.html"),"utf8");
 const css=fs.readFileSync(path.resolve(__dirname,"../site/assets/li-layout.css"),"utf8");
+assert(!html.includes('class="mirror-titlebar"')&&!html.includes('class="mirror-label"'),"The visible Home mirror title must be removed");
+assert(html.includes('aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn"'),"Mirror retains meaningful accessible region name");
 const renderStart=html.indexOf("function renderMirrorItem(){");
 const renderEnd=html.indexOf("let selectedCaseAnswer=null;",renderStart);
 const start=html.indexOf("function shiftMirrorQuestion(direction){");
 const end=html.indexOf('document.getElementById("finish-case")',start);
 assert(renderStart>=0&&renderEnd>renderStart&&start>=0&&end>start,"Mirror renderer/arrows event handlers missing");
-const hooks=new Map(),swipeHooks=new Map(),updates={question:"",scene:"",kind:"",source:"",cta:"",aria:""};
+const hooks=new Map(),swipeHooks=new Map(),updates={question:"",scene:"",source:"",cta:"",aria:""};
 const scenarios=[
  {question:"Q0",scene:"S0"},
  {question:"Q1",scene:"S1",type:"hook",lessonRoute:"lessonL03"},
@@ -30,7 +32,6 @@ const sandbox={
     assert.equal(opts.passive,true,"Swipe must never cancel vertical scroll");
     swipeHooks.set(type,cb);
    }};
-   if(selector==="#page-home .mirror-message .mirror-label")return {set textContent(v){updates.kind=v}};
    if(selector==="#page-home .hero-dialogue .example-label")return {set textContent(v){updates.source=v}};
    throw Error("Unexpected querySelector "+selector);
   },
@@ -58,7 +59,6 @@ function verify(index){
  assert.equal(updates.cta,hook?"Khám phá vì sao":"Đào sâu","Distinct primary action");
  assert.equal(primary.dataset.page,hook?item.lessonRoute:"research","Valid destination");
  assert.equal(updates.source,hook?"TỪ BÀI HỌC ĐÃ XUẤT BẢN":"VÍ DỤ GIẢ ĐỊNH","Evidence label");
- assert.equal(updates.kind,"Gương Vạn Vấn","Mirror title has no editorial type labels");
  assert(updates.aria.includes(hook?"Mở bài học liên quan":"Mở Khảo Chứng"),"Accessible action");
 }
 const touch=(x,y)=>({clientX:x,clientY:y});

@@ -605,80 +605,58 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   }
 }
 
-/* S147 · Compact sourced quote: original beside Lão Lý; explanation is opt-in. */
+/* S148 · Quote, faithful translation and optional source share the modal header. */
 #buddy-modal .buddy-heading {
-  display:grid;
-  grid-template-columns:clamp(42px,11vw,52px) minmax(0,1fr) 44px;
-  column-gap:var(--li-space-3);
-  align-items:start;
-  flex:0 0 auto;
-  padding-bottom:var(--li-space-3);
-  margin-bottom:var(--li-space-4);
-  border-bottom:1px solid var(--rule);
+  display:grid;grid-template-columns:clamp(42px,11vw,52px) minmax(0,1fr) 44px;
+  column-gap:var(--li-space-3);row-gap:var(--li-space-2);align-items:start;
+  flex:0 1 auto;min-height:0;max-height:min(44svh,390px);
+  overflow-y:auto;overscroll-behavior:contain;
+  padding-bottom:var(--li-space-3);margin-bottom:var(--li-space-4);border-bottom:1px solid var(--rule);
 }
 #buddy-modal .buddy-heading #buddy-title-avatar {
-  display:block;
-  width:clamp(42px,11vw,52px);
-  height:clamp(42px,11vw,52px);
-  object-fit:contain;
-  filter:drop-shadow(1px 2px 1px rgba(35,39,27,.12));
+  display:block;width:clamp(42px,11vw,52px);height:clamp(42px,11vw,52px);
+  object-fit:contain;filter:drop-shadow(1px 2px 1px rgba(35,39,27,.12));
 }
 #buddy-modal .buddy-heading-copy {min-width:0;}
 #buddy-modal .buddy-heading #buddy-title {
-  margin:0 0 var(--li-space-1);
-  display:block;
-  font-size:clamp(27px,6.4vw,34px);
-  line-height:1.12;
+  display:block;margin:0 0 var(--li-space-1);font-size:clamp(27px,6.4vw,34px);line-height:1.12;
 }
 #buddy-modal .buddy-heading #buddy-quote-original {
-  display:block;
-  margin:0;
-  font-family:Georgia,serif;
-  font-size:clamp(14px,3.7vw,16px);
-  line-height:1.45;
-  font-weight:400;
-  color:var(--muted);
-  overflow-wrap:anywhere;
+  display:block;margin:0;font-family:Georgia,serif;font-size:clamp(14px,3.7vw,16px);
+  line-height:1.45;font-weight:400;color:var(--muted);overflow-wrap:anywhere;
+}
+#buddy-modal .buddy-heading #buddy-quote-translation {
+  display:block;margin:var(--li-space-2) 0 0;font-family:var(--li-font-ui);
+  font-size:var(--li-type-support);line-height:var(--li-leading-support);
+  font-weight:400;color:var(--ink);overflow-wrap:anywhere;
 }
 #buddy-modal .buddy-quote-info {
-  display:grid;
-  place-items:center;
-  box-sizing:border-box;
-  width:44px;
-  height:44px;
-  padding:0;
-  border:1px solid var(--rule);
-  border-radius:50%;
-  background:var(--cream);
-  color:var(--forest);
-  cursor:pointer;
+  display:grid;place-items:center;box-sizing:border-box;width:44px;height:44px;padding:0;
+  border:1px solid var(--rule);border-radius:50%;
+  background:var(--cream);color:var(--forest);cursor:pointer;
 }
 #buddy-modal .buddy-quote-info svg {width:20px;height:20px;}
 #buddy-modal .buddy-quote-info:focus-visible {outline:3px solid var(--wood);outline-offset:2px;}
 #buddy-modal .buddy-quote-info[aria-expanded="true"] {background:var(--paper-2);border-color:var(--wood);}
 #buddy-modal #buddy-quote-original[hidden],
+#buddy-modal #buddy-quote-translation[hidden],
 #buddy-modal #buddy-quote-info[hidden],
 #buddy-modal #buddy-quote-context[hidden],
 #buddy-modal #buddy-quote[hidden] {display:none!important;}
 #buddy-modal #buddy-quote-context {
-  margin:0 0 var(--li-space-3);
-  padding:0;
-  border:0;
-  color:var(--ink);
-  font-size:var(--li-type-body);
-  line-height:var(--li-leading-body);
-  overflow-wrap:anywhere;
+  margin:0 0 var(--li-space-3);padding:0;border:0;color:var(--ink);
+  font-size:var(--li-type-body);line-height:var(--li-leading-body);overflow-wrap:anywhere;
 }
-#buddy-modal #buddy-quote {
-  margin:var(--li-space-3) 0 var(--li-space-2);
-  padding:var(--li-space-3) var(--li-space-4);
-  background:var(--cream);
-  border:1px solid var(--rule);
-  border-left:3px solid var(--wood);
-  box-shadow:none;
+#buddy-modal .buddy-heading #buddy-quote {
+  grid-column:1 / -1;margin:var(--li-space-2) 0 0;padding:var(--li-space-3) 0 0;
+  border:0;border-top:1px dashed var(--rule);border-radius:0;background:transparent;box-shadow:none;
 }
-#buddy-modal #buddy-quote .small:first-child {margin-top:0;}
+#buddy-modal .buddy-heading #buddy-quote .small {
+  margin-top:var(--li-space-2);font-size:var(--li-type-support);
+  line-height:var(--li-leading-support);overflow-wrap:anywhere;
+}
+#buddy-modal .buddy-heading #buddy-quote .small:first-child {margin-top:0;}
 @media(max-width:400px){
-  #buddy-modal .buddy-heading {column-gap:var(--li-space-2);}
+  #buddy-modal .buddy-heading {column-gap:var(--li-space-2);max-height:min(48svh,380px);}
   #buddy-modal .buddy-heading #buddy-title {font-size:28px;}
 }

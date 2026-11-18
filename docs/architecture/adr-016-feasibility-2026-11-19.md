@@ -81,7 +81,7 @@ Test ledger:
 8. Rollback failure never reported as success.
 9. Repository source registry and old export-gap contract.
 
-Local isolated Node suite ran 8/8 synthetic tests PASS before the PR; repository source contract and GitHub CI require their own result. This does not demonstrate production-safe data migration, iOS Safari/PWA, storage quota under real browsers, offline caching or user-account isolation. Do NOT treat this as a finished export/import fix.
+Local isolated Node suite ran 8/8 synthetic tests PASS before the PR. PR #104 GitHub Actions ran all 9/9 synthetic + live-source contract tests PASS on 2026-11-19: https://github.com/sali5610/li/actions/runs/44385468588 . The separate companion validation workflow also succeeded: https://github.com/sali5610/li/actions/runs/44385468520 . Neither CI run tests a real browser or changes production data. This does not demonstrate production-safe data migration, iOS Safari/PWA, storage quota under real browsers, offline caching or user-account isolation. Do NOT treat this as a finished export/import fix.
 
 ## 5. Delivery gates and privacy
 

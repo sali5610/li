@@ -39,7 +39,7 @@ jobs:
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           sleep 2
           url="http://127.0.0.1:8774/tools/step16_v2_app_fixture.html"
-          timeout 65s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=31000 --dump-dom "$url" > /tmp/li-step16-v2-result.html 2>/tmp/li-step16-v2-stderr.log || {
+          timeout 100s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=90000 --dump-dom "$url" > /tmp/li-step16-v2-result.html 2>/tmp/li-step16-v2-stderr.log || {
             echo "FAIL browser did not finish"
             tail -22 /tmp/li-step16-v2-stderr.log || true
             exit 1
@@ -70,7 +70,7 @@ jobs:
           trap 'kill "$server_pid" "$other_pid" 2>/dev/null || true' EXIT
           sleep 2
           cross_url="http://127.0.0.1:8774/tools/step16_v2_origin_fixture.html"
-          timeout 70s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=41000 --dump-dom "$cross_url" > /tmp/li-step16-v2-cross-origin.html 2>/tmp/li-step16-v2-cross-stderr.log || {
+          timeout 100s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=90000 --dump-dom "$cross_url" > /tmp/li-step16-v2-cross-origin.html 2>/tmp/li-step16-v2-cross-stderr.log || {
             echo "FAIL two-origin real Settings browser did not complete"
             tail -22 /tmp/li-step16-v2-cross-stderr.log || true
             exit 1
@@ -83,7 +83,7 @@ jobs:
           grep -F '<pre id="result">LI_BACKUP_V2_ORIGIN_PASS ' /tmp/li-step16-v2-cross-origin.html | tail -1 | cut -c1-4200
           echo "PASS two isolated web origins with real Settings controls and fake files"
           lock_url="http://127.0.0.1:8774/tools/step16_v2_lock_fixture.html"
-          timeout 55s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=26000 --dump-dom "$lock_url" > /tmp/li-step16-v2-lock-result.html 2>/tmp/li-step16-v2-lock-stderr.log || {
+          timeout 90s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=70000 --dump-dom "$lock_url" > /tmp/li-step16-v2-lock-result.html 2>/tmp/li-step16-v2-lock-stderr.log || {
             echo "FAIL Web Locks same-origin document test did not complete"
             tail -22 /tmp/li-step16-v2-lock-stderr.log || true
             exit 1

@@ -1067,41 +1067,29 @@ transform:none!important;object-fit:cover!important;object-position:center botto
 width:76px!important;height:108px!important;left:3px!important;bottom:-3px!important}}
 @media(max-width:360px){#page-guide .guide-mentor .guide-mentor-illustration{
 width:70px!important;height:100px!important;left:3px!important;bottom:-3px!important}}
-/* S117 · Settings: Lão Lý is a character illustration, not a full-width scenery banner. */
-#settings-buddy-card .settings-buddy-footer {
+/* S157 · Settings: keep Lão Lý portrait in the heading, not an empty footer row. */
+#settings-buddy-card .settings-buddy-heading {
   display:grid;
-  grid-template-columns:minmax(0,1fr) 148px;
-  align-items:end;
+  grid-template-columns:minmax(0,1fr) 92px;
+  align-items:center;
   column-gap:var(--li-space-3);
-  margin-top:var(--li-space-5);
 }
-#settings-buddy-card .settings-buddy-footer .action {
+#settings-buddy-card .settings-buddy-heading h2 {
   min-width:0;
-  max-width:100%;
-  justify-self:start;
-  white-space:normal;
-  text-align:center;
+  margin-bottom:var(--li-space-0);
 }
 #settings-buddy-card .settings-buddy-illustration {
   display:block;
-  width:148px;
-  height:166px;
+  width:92px;
+  height:100px;
   object-fit:contain;
-  object-position:center bottom;
+  object-position:center;
   pointer-events:none;
   user-select:none;
 }
-@media(max-width:600px){
-  #settings-buddy-card .settings-buddy-footer {
-    grid-template-columns:minmax(0,1fr) 118px;
-    gap:var(--li-space-3);
-    margin-top:var(--li-space-4);
-  }
-  #settings-buddy-card .settings-buddy-illustration {width:118px;height:132px}
-}
-@media(max-width:360px){
-  #settings-buddy-card .settings-buddy-footer {grid-template-columns:minmax(0,1fr) 100px}
-  #settings-buddy-card .settings-buddy-illustration {width:100px;height:116px}
+@media(max-width:360px) {
+  #settings-buddy-card .settings-buddy-heading {grid-template-columns:minmax(0,1fr) 76px}
+  #settings-buddy-card .settings-buddy-illustration {width:76px;height:84px}
 }
 
 /* S118 · in-app back links for utility screens, with reliable tap target on iPhone. */

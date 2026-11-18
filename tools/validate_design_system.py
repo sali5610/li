@@ -211,7 +211,7 @@ def main() -> int:
           "(max-width:1600px) and (any-pointer:coarse)" in home_layout and
           "(max-width: 1600px) and (orientation: landscape) and (any-pointer: coarse)" in home_layout,
           "iPad Pro 13 1376px touch portrait and landscape both covered")
-    check("ds26-ipad-real-fix" in html,
+    check("ds27-landscape-grid" in html,
           "iPad runtime styles use fresh CSS cache versions")
     check("--li-ipad-active-mode: landscape" in foundations and
           "--li-ipad-active-mode: portrait" in foundations and

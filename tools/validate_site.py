@@ -331,7 +331,7 @@ assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
-assert 'library-hub.css?v=7' in page_html
+assert 'library-hub.css?v=8' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_note_versions.cjs")],check=True,cwd=site.parent)
 
 # S120: all 13 Thần Chú methods share this same Guide Detail template.
@@ -478,6 +478,17 @@ assert 'id="global-back"' in page_html and 'data-nav-back' in page_html
 assert 'document.getElementById("global-back").hidden=id==="home"' in page_html
 assert 'class="li-snackbar"' in page_html and 'action.textContent="Hoàn tác"' in page_html
 assert 'grid-template-columns:minmax(0,1fr) 56px' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+# Bookmark UI must be a transparent frameless icon-only control on every inner route.
+bookmark_css=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
+assert '/* UX-NAV-13 · All bookmark Save/Unsave utilities outside Home are frameless.' in bookmark_css
+assert '.library-icon-action:is([data-li-bookmark-kind], .library-unsave-icon)' in bookmark_css
+assert '.library-icon-action:is([data-li-bookmark-kind], .library-unsave-icon):is(:hover,:active,:focus,[aria-pressed="true"])' in bookmark_css
+assert 'background:var(--li-color-button-clear,transparent)!important;' in bookmark_css
+assert 'box-shadow:none!important;' in bookmark_css
+assert 'border:0!important;' in bookmark_css
+assert 'width:var(--li-space-12);height:var(--li-space-12)' in bookmark_css
+assert 'library-danger-icon' in bookmark_css and 'library-danger-icon' not in bookmark_css.split('/* UX-NAV-13')[1]
+assert 'id="save-question"' in hero_actions and 'class="library-icon-action hero-save-action"' in hero_actions
 assert 'toast("Đã xóa ghi chép và lịch sử phiên bản.",{undo:' in (site/"assets"/"library-note-editor.js").read_text(encoding="utf-8")
 assert 'toast("Đã xóa Nhật Ký.",{undo:' in (site/"assets"/"personal-diary.js").read_text(encoding="utf-8")
 assert 'function refreshQuestionBookmark()' in page_html

@@ -138,7 +138,6 @@ function draw(){
   b.dataset.day=String(d);
   b.dataset.today=String(isToday(d));
   if(record)b.dataset.mode=record.mode;
-  b.dataset.window=String(d>=windowStart&&d<windowStart+7);
   b.dataset.selected=String(d===selected);
   b.setAttribute("aria-pressed",String(d===selected));
   b.setAttribute("aria-label",dayKey(d)+(isToday(d)?" (hôm nay)":"")+": "+(record?labels[record.mode]+", "+record.parts.reduce((a,x)=>a+x,0)+" hoạt động mẫu":"không có dữ liệu mẫu"));

@@ -814,9 +814,20 @@ assert './assets/ui-foundations.css?v=20261119-ds26-ipad-real-fix' in page_html
 mobile_nav=page_html.split('<nav class="mobile-nav"',1)[1].split('</nav>',1)[0]
 library_tab=re.search(r'<button[^>]+data-page="library"[^>]*>\s*<i data-lucide="([^"]+)"',mobile_nav)
 assert library_tab and library_tab.group(1)=="archive", "Tủ Riêng nav icon must be archive (bookmark is Save)"
+# UX-NAV-ICON-01: Thần Chú tab is a SINGLE four-point Lucide sparkle.
+guide_tab=re.search(r'<button[^>]+data-page="guide"[^>]*>\s*<i data-lucide="([^"]+)"',mobile_nav)
+assert guide_tab and guide_tab.group(1)=="sparkle", "Thần Chú mobile tab must use 4-point sparkle"
+assert '<button class="nav-btn" data-page="guide" aria-label="Thần Chú — 13 phương pháp học"' in mobile_nav, "Keep meaningful guide tab label and route"
+assert 'Sparkle:' in (site/"assets"/"lucide.min.js").read_text(encoding="utf-8"), "Bundled Lucide must support single sparkle icon"
+
 review=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert '<section id="icons"' in review and '<section id="inputs"' in review
 assert '<script src="./assets/lucide.min.js"></script>' in review
+assert '<div class="ds-icon-tile"><i data-lucide="sparkle" aria-hidden="true"></i>Thần Chú</div>' in review, "Component Library iconography matches spell tab"
+assert '<span class="ds-tab-icon"><i data-lucide="sparkle" aria-hidden="true"></i></span>Thần Chú' in review, "Component Library bottom tabs match app"
+assert '<button data-ds11-sidebar type="button"><i data-lucide="sparkle" aria-hidden="true"></i>Thần Chú</button>' in review, "Component Library sidebar navigation matches spell tab"
+assert 'data-lucide="book-open" aria-hidden="true"></i> BÀI HỌC' in page_html, "Reading/lesson icons remain book-open"
+
 assert 'ds-large light' in review and 'ds-large warm' in review
 assert all(x in review for x in ('ds-textarea','ds-chip-result','ds-error','ds-disabled','ds-readonly'))
 assert all(x in review for x in ('ds-home-bubble','ds-tabs','ds-utility','ds-back','ds-link'))

@@ -129,3 +129,8 @@ Test each touched **screen × component variant × state × modality × viewport
 - **Motion:** optional ≤4px gentle vertical drift ONLY while loading; obey `prefers-reduced-motion:reduce`. Error remains static. No fixed wait or simulated loading step.
 - **Responsive:** constrain illustration to ~220px max inside 320px+ content areas, keep 4px grid and text legible, no extra backdrop/foreground overlap, check paper/moss contrast. Follow shared token source, no new paid dependency.
 - **QA:** valid backup / user cancel / invalid JSON / 10MB+ input / quota or localStorage failure / retry / EN and VI / 320,390,820 viewport / reduced motion / screen reader alert / image alpha / unchanged personal data when validation fails. Automated checks are not physical Safari certification.
+
+
+### UX-NAV-ICON-01 · Spell tab icon policy (2026-11-19)
+- **Do:** use a single Lucide `sparkle` (four-point star) for the Thần Chú destination across mobile bottom nav and navigational Component Library previews. Reuse existing size/stroke and selected-state semantics; labels and route behavior stay unchanged.
+- **Don't:** swap in `star` (five points), `sparkles` (multiple stars), emoji, or unrelated book icons for this *navigation destination*. Keep `book-open` for lesson/reading content. Icon visuals are decorative within text-labeled controls; no accessible name or touch target reduction.

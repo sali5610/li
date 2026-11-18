@@ -123,3 +123,10 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 - [ ] Recover/archive approved individual discipline artwork: Chinese language color-graded art has image-level PO approval in Notion but **no verified canonical binary**; English v2 remains unapproved. Do not equate chat-generated file names with GitHub assets.
 - [ ] For every new image: retain source/crop, transparent alpha if required, dimensions, provenance, approval state, component usages, landscape/portrait responsive checks, SHA/byte-parity and public/review status; check real Safari/PWA where applicable.
 - [ ] Do not claim full G2 or original editable layered source custody solely from Git-tracked runtime images.
+
+
+### UX-NAV-ICON-01 · Thần Chú bottom-tab four-point star (2026-11-19)
+- [x] Live mobile bottom tab `data-page=guide` uses Lucide `sparkle`, not `book-open`; the other three destination icon semantics remain stable (4 tabs total).
+- [x] Component Library iconography tile, bottom 4-tab navigation specimen and sidebar navigation specimen use the **same** Lucide `sparkle`.
+- [x] Static regression checks cover exact icon mapping, bundled Lucide availability, and preserved book-open lesson illustrations; browser fixture checks a rendered `svg.lucide-sparkle`.
+- [ ] Verify on physical iPhone/iPad Safari at 22px (default + selected sand oval), 200% text zoom, VoiceOver, tap behavior/PWA; G2 overall still pending.

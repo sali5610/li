@@ -36,3 +36,29 @@ No dependencies beyond Node standard library. Do not point a deployed site at th
 - Existing Wave1 W1-CMS branch and main site untouched. Only `docs/editorial/wave2-cms-l0911/` changed in this branch; do not merge, deploy or enable public preview without fresh owner authorization.
 
 **New paid cost: 0 VND.**
+
+## S157 — Standalone DOM preview (still NOT deployed)
+
+An **isolated browser preview** now exists entirely under `docs/editorial/wave2-cms-l0911/`:
+
+- `L09-1-1.preview.html`: localized landmarks, content navigation, contextual Lão Lý panel, accessible Spellbook dialog, explicit no-release label.
+- `L09-1-1.preview.css`: neutral responsive layout, 390px viewport overflow checks, 44px target baseline, reduced-motion rules. **Not G2 visual-identity signoff**.
+- `L09-1-1.preview.mjs`: same-origin static JSON CMS loader + pure-state module adapter; T06/T07 independent feedback gates, independent input/submission/explicit answer reveal and rubric, focus management, VI/EN switching, localStorage fallback, per-lesson mentor questions.
+
+Launch **locally only**, after checking out this branch (do not publish the folder):
+
+```bash
+cd docs/editorial/wave2-cms-l0911
+python3 -m http.server 8765 --bind 127.0.0.1
+# Open http://127.0.0.1:8765/L09-1-1.preview.html in a local browser
+```
+
+**Verification executed in this session:**
+
+- [26/26 PASS static preview source/ARIA wiring checks](qa/L09-1-1.preview-source-20261118.json) against exact GitHub staging source.
+- [12/12 PASS in-memory headless Chromium DOM smoke checks](qa/L09-1-1.chromium-inmemory-fixture-20261118.json) against controller HTML/CSS with **synthetic structurally compatible CMS and locally reconstructed state test API**; direct loopback and file navigation were blocked by this sandbox's browser administrator. Do NOT call this full actual-CMS browser regression.
+- [52/52 PASS existing pure state/CMS V8 checks](qa/L09-1-1.v8-contract-20261118.json) against actual staged JSON and source state.
+
+A **local-server Playwright suite targeting the exact staged files** is prepared at `qa/smoke-local-chromium.py`, but has **not been run** in this restricted environment. It is optional and requires the free Python Playwright/Chromium installation. Browsers with real origin/localStorage, physical iPhone/Safari/VoiceOver, source rights, and app-shell integration remain **OPEN**. Model answers remain client-inspectable in CMS; this is an **educational UX reveal gate**, never secure testing infrastructure.
+
+**Release scope correction:** The latest Product Hub clarification scopes “no deploy” to unpublished Wave2/3 curriculum; unrelated product UI may follow other approved workflows. This pilot remains explicitly **NO WEB DEPLOY, NO site/ edits, NO main merge**. New paid cost **0 VND**.

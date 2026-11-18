@@ -5,7 +5,7 @@
 "use strict";
 const iframe=document.getElementById("preview"),result=document.getElementById("result");
 const requestedWidth=Number(new URLSearchParams(location.search).get("w"));
-if([320,390,744,820,1133,1194,1366].includes(requestedWidth))iframe.style.width=requestedWidth+"px";
+if([320,390,744,820,1133,1194,1366,1376].includes(requestedWidth))iframe.style.width=requestedWidth+"px";
 let ended=false;function finish(fail,checks){if(ended)return;ended=true;result.textContent=(fail?"LI_SHOWCASE_FAIL ":"LI_SHOWCASE_PASS ")+JSON.stringify(checks);}
 iframe.addEventListener("load",()=>{
  setTimeout(()=>{
@@ -39,11 +39,13 @@ iframe.addEventListener("load",()=>{
    const actual=d.querySelector("#ds-device iframe");
    check("Embedded app uses actual live Guide route",actual?.getAttribute("src")==="./index.html?page=guide");
    const controls=[...d.querySelectorAll("[data-width]")];
-   check("Real device widths available",["320","375","390","402","600","744","820","1024","1133","1194","1366"].every(width=>controls.some(c=>c.dataset.width===width)));
+   check("Real device widths available",["320","375","390","402","600","744","820","1024","1133","1194","1366","1376"].every(width=>controls.some(c=>c.dataset.width===width)));
    const two=controls.find(x=>x.dataset.width==="320");
    two.click();
    check("Responsive viewport button changes iframe width",d.getElementById("ds-device").style.width==="320px");
    check("Pressed state synchronized",two.getAttribute("aria-pressed")==="true");
+   const largeTouchPreset=controls.find(x=>x.dataset.width==="1376");
+   check("Actual iPad Pro 13 landscape preset 1376 × 1032",!!largeTouchPreset&&largeTouchPreset.dataset.height==="1032");
    const rotated=controls.find(x=>x.dataset.width==="1133");
    rotated.click();
    check("iPad landscape preview rotates the actual iframe",d.getElementById("ds-device").style.width==="1133px"&&actual.style.height==="744px"&&rotated.getAttribute("aria-pressed")==="true");

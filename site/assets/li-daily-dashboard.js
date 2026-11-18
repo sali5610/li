@@ -175,7 +175,7 @@ function init(){
  ["sleep","move","rest"].forEach(t=>el("checkin-"+t).addEventListener("change",checkinGuidance));
  el("record-checkin").addEventListener("click",()=>submitCheckin(false));
  el("suggest-light").addEventListener("click",()=>submitCheckin(true));
- window.addEventListener("li:lesson-submitted",e=>{const id=e.detail&&e.detail.lessonId;if(typeof id==="string")recordActivity("lesson",id,window.studyMode)});
+ window.addEventListener("li:lesson-submitted",e=>{const id=e.detail&&e.detail.lessonId;if(typeof id==="string"){const active=document.querySelector("[data-ly-mode][aria-pressed='true']");recordActivity("lesson",id,active?active.dataset.lyMode:null)}});
  refresh();
 }
 window.LiDaily={recordActivity:recordActivity,refresh:refresh,render:renderMonth};

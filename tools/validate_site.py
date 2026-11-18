@@ -463,6 +463,7 @@ for lesson_id,slug in (("L03-1-2","l03"),("L09-1-2","l09"),("L15-2-2","l15")):
 assert 'function renderCaseContext(note,type)' in (site/"assets"/"library-note-editor.js").read_text(encoding="utf-8")
 subprocess.run(["node",str(site.parent/"tools"/"test_library_bookmarks.cjs")],check=True,cwd=site.parent)
 subprocess.run(["node",str(site.parent/"tools"/"test_library_case_review.cjs")],check=True,cwd=site.parent)
+subprocess.run(["node",str(site.parent/"tools"/"test_diary_delete_undo.cjs")],check=True,cwd=site.parent)
 
 # UX-IA-07: Save/Unsave and Delete are independent icon utilities.
 # A different purpose must not share the same CTA toolbar / button hierarchy.

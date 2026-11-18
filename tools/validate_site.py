@@ -332,7 +332,8 @@ assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
-assert 'library-hub.css?v=20261119-home-viewport-lock' in page_html
+# UX-DS-25: cache bust Home stylesheet for iPad layout.
+assert 'library-hub.css?v=20261119-ds25-ipad-landscape' in page_html
 # UX-HOME-07: no Home-only min-height can force a page scroll, and routing
 # must restore browser scrolling for all other screens.
 homecss=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
@@ -807,7 +808,7 @@ assert '.ds-home-bubble{position:relative;' in review10css and 'border:1px solid
 assert '/* UX-DS-24: forest green bubble has zero-width stroke' in foundation
 assert '#page-home .hero-dialogue-bubble { border-width:var(--li-space-0); padding:' in foundation
 assert '#page-home .hero-dialogue-bubble::before { border-width:var(--li-space-0); }' in foundation
-assert './assets/ui-foundations.css?v=20261119-ds24-strokefree-home' in page_html
+assert './assets/ui-foundations.css?v=20261119-ds25-ipad-modes' in page_html
 
 # UX-DS-09: mobile Tủ Riêng uses the same Archive icon as Home, never Bookmark.
 mobile_nav=page_html.split('<nav class="mobile-nav"',1)[1].split('</nav>',1)[0]

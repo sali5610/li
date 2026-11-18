@@ -1,0 +1,358 @@
+{
+  "schema": "li.wave1.native-handlers-headless.v1",
+  "runner": "Node vm + minimal FakeDocument (NOT browser DOM)",
+  "scope": "Unmodified Wave1 source JS. No deployment or app source mutation.",
+  "summary": {
+    "total": 54,
+    "pass": 54,
+    "fail": 0
+  },
+  "tests": [
+    {
+      "lesson": "L09-1-2",
+      "stage": "BEFORE_SUBMIT_GATE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "NO_RUBRIC_BEFORE_SUBMIT",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "QUESTION_COUNT",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "HINT_ASSISTED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "INVALID_ATTEMPT_REJECTED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "DRAFT_PERSIST",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "VALID_ATTEMPT_ACCEPTED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "ANSWERS_LOCKED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "POST_SUBMIT_HINT_DISABLED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "AFTER_SUBMIT_RUBRIC_VISIBLE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "LOCALE_WITH_STATE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "ENGLISH_MODEL_ANSWER",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "FOUR_RATINGS_SAVE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "SELF_REVIEW_DONE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "RELOAD_RECOVERS_SUBMITTED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "RELOAD_RECOVERS_LOCALE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "RELOAD_RECOVERS_REVIEW",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L09-1-2",
+      "stage": "FRESH_RELOAD_RELOCKS",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "BEFORE_SUBMIT_GATE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "NO_RUBRIC_BEFORE_SUBMIT",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "QUESTION_COUNT",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "HINT_ASSISTED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "INVALID_ATTEMPT_REJECTED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "DRAFT_PERSIST",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "VALID_ATTEMPT_ACCEPTED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "ANSWERS_LOCKED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "POST_SUBMIT_HINT_DISABLED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "AFTER_SUBMIT_RUBRIC_VISIBLE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "LOCALE_WITH_STATE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "ENGLISH_MODEL_ANSWER",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "FOUR_RATINGS_SAVE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "SELF_REVIEW_DONE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "RELOAD_RECOVERS_SUBMITTED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "RELOAD_RECOVERS_LOCALE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "RELOAD_RECOVERS_REVIEW",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L03-1-2",
+      "stage": "FRESH_RELOAD_RELOCKS",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "BEFORE_SUBMIT_GATE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "NO_RUBRIC_BEFORE_SUBMIT",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "QUESTION_COUNT",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "HINT_ASSISTED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "INVALID_ATTEMPT_REJECTED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "DRAFT_PERSIST",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "VALID_ATTEMPT_ACCEPTED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "ANSWERS_LOCKED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "POST_SUBMIT_HINT_DISABLED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "AFTER_SUBMIT_RUBRIC_VISIBLE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "LOCALE_WITH_STATE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "ENGLISH_MODEL_ANSWER",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "FOUR_RATINGS_SAVE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "SELF_REVIEW_DONE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "RELOAD_RECOVERS_SUBMITTED",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "RELOAD_RECOVERS_LOCALE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "RELOAD_RECOVERS_REVIEW",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "lesson": "L15-2-2",
+      "stage": "FRESH_RELOAD_RELOCKS",
+      "status": "PASS",
+      "detail": ""
+    }
+  ],
+  "limitations": [
+    "No actual Chromium/Safari rendering, CSS, focus or accessibility tree",
+    "No real iOS PWA, VoiceOver or device browser QA",
+    "No Sheets-to-app compiler/cutover tested",
+    "Answer text exists in JS bundle and hidden DOM before submission: UX gate, not access control"
+  ],
+  "execution": {
+    "actual_runner": "V8 isolate emulating Node fs/vm/process to run checked-in harness, with original GitHub source buffers",
+    "node_runtime_executed": false,
+    "chrome_browser_executed": false,
+    "checks": {
+      "total": 54,
+      "pass": 54,
+      "fail": 0
+    },
+    "source_shas": {
+      "harness": "c876c9a8cc277cdc464efc3ad1a193583a5c7afd",
+      "l09": "a3ec039c365ba65f473b9b9cd158703a8e91a448",
+      "wave1core": "446b9493e9ecf91bd3cb84e8a3938d67e125699d"
+    },
+    "date": "2026-11-18"
+  }
+}

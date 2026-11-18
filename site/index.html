@@ -563,6 +563,7 @@ function closeCheckinModal(){
 }
 document.getElementById("checkin-modal").addEventListener("change",refreshCheckinRecommendation);
 document.getElementById("checkin").addEventListener("click",event=>{
+ if(event.isTrusted)delete document.getElementById("checkin-modal").dataset.trigger;
  // A new check-in starts unanswered; no stale physical report or old override.
  document.querySelectorAll('#checkin-modal input[name^="checkin-"]').forEach(input=>input.checked=false);
  document.querySelector('#checkin-modal input[name="checkin-override"][value=""]').checked=true;

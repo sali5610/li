@@ -1,3 +1,13 @@
+## S-G3-16E · Local backup v2 candidate regression checklist (PR #111)
+
+- [ ] On actual Settings UI, export all 11 registered fixed `li.*` keys plus dynamic lesson attempt state; verify checksum, byte cap and downloaded file format with fake data.
+- [ ] On a clean origin, import and reload v2: library/case draft, full attempts, diary/enablement, visits, T02 schedule, language, mode, mentor position must be present and rendered after module reinitialization.
+- [ ] Legacy schema1 partial-file input: explicit warning, merge only, no lost lesson/due/diary/consent keys; impossible-to-recover missing original data must not be fabricated.
+- [ ] Preview displays precise adds/overwrites/removals, cancel yields zero writes, stale preview is rejected. Failure and unknown key handling are actionable and do not claim backup success.
+- [ ] Corrupted JSON, bad schema/digest, >10MB, quota/error injection and rollback failure are independently detected; retry button works, loading is not left stuck.
+- [ ] Physical iPhone/iPad Safari downloads, Files picker, VoiceOver, keyboard/focus and PWA origin behavior require separate device evidence; CI green is not proof. G2/G3 remain open.
+- [ ] Source contract, component variants and bilingual copy are synced. **Do not merge this candidate into live app without release gate review.**
+
 # Design QA and change-control checklist
 
 **Rule:** Every request to fix a component triggers a top-down impact review, not a local patch at the reported screenshot. Use this before merging UI/UX work.

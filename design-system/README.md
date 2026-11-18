@@ -1,5 +1,7 @@
 # li. UI/UX Design Library — runtime tokens v0.3
 
+**UX-DS-18 candidate (2026-11-18):** Added independent base color `olive: #65734C` / runtime `--olive`, presented as an **Olive Moss** swatch in Component Library > Foundations. It is a muted supporting green (cream text contrast ≈4.85:1) alongside existing brand Moss `#243A29`, not a replacement or forced recolor of actual controls. Existing neutral-ivory paper and all current active semantic tokens remain unchanged. Human PO G2 visual gate is still open.
+
 **UX-DS-17 candidate (2026-11-18):** The shared paper material has been cooled slightly toward neutral ivory across reading background, raised sheet, deeper sheet, card, rule, navigation selected fill and matching light semantic surfaces. The natural paper hierarchy, moss/forest/wood identity, approved illustrations and contrast-first text roles remain unchanged. This is an app-wide token refinement **for Human PO G2 review**, not final visual-identity approval. Runtime CSS is regenerated from tokens; every HTML consumer changes its stylesheet cache query.
 
 **v0.3 implementation:** `design-system/tokens.json` is the **single authored source for color, typography and 4px spacing**. `tools/generate_design_tokens.py` deterministically produces `site/assets/design-tokens.css`; never edit that CSS directly. Six former inline style blocks were extracted in source order into `site/assets/li-layout.css`, while `site/assets/ui-foundations.css` owns reusable role-based component rules and `lesson-l09-hifi.css` covers the three frozen Wave1 lesson shells.
@@ -43,7 +45,7 @@
 ## Current invariants
 - Brand: **理 / li.**; scholar **Lão Lý**. A living, illustrated ancient-tree library, parchment/wood/moss/forest aesthetic.
 - Controls generally have square geometry, opaque offset shadows and restrained decoration. **Exceptions**: active top/bottom nav **sand oval pill**, Lão Lý's actual **rounded speech bubble**, natural illustrated shapes. Newer explicit decisions outrank the old blanket “zero radius” rule.
-- Current color baselines: paper `#F3EBDC`, moss `#243A29`, ink `#272A23`, nav active sand `#E5D8BA`; typography: Crimson Text headings, system sans utility/body.
+- Current color baselines: paper `#F1F0E9`, moss `#243A29`, supporting olive `#65734C`, ink `#272A23`, nav active sand `#E8E4D9`; typography: Crimson Text headings, system sans utility/body.
 - Global header icon controls and bottom navigation share the **same semantic selected state** (sand pill + moss ink, `aria-current="page"`), not a white-on-white active icon.
 - Screen layout: Home scene edge-to-edge; reading areas bounded. Mirror question must fit within illustrated mirror; exactly **two Home main CTA buttons** in order **Lưu (left), Đào sâu (right)**. Persistent Lão Lý cannot block text or CTAs.
 - Touch: accessible intended hit area at least **44×44 CSS px**, no iOS square highlight on icon controls; preserve visible keyboard focus. Text, buttons and layouts must accommodate Vietnamese/English lengths.

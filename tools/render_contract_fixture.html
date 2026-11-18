@@ -100,6 +100,19 @@
         const purpose=cards[0].querySelector(".purpose");
         report("Guide explanation >=14px (full detail reachable)",!!purpose&&parseFloat(w.getComputedStyle(purpose).fontSize)>=14,purpose?(w.getComputedStyle(purpose).fontSize+" "+w.getComputedStyle(purpose).display):"missing");
        }
+       if(ipadMode) {
+         const firstAction=doc.querySelector("#page-guide .page-heading + * .action, #page-guide .filter");
+         const controlSize=firstAction?firstAction.getBoundingClientRect().height:0;
+         report("iPad first control target is at least 56px",controlSize>=56,controlSize);
+         const surface=doc.querySelector("#page-guide .surface");
+         const inset=surface?parseFloat(w.getComputedStyle(surface).paddingLeft):0;
+         report("iPad card inset follows orientation token",inset>=(w.innerWidth>=1000?32:28),inset);
+         if(w.innerWidth>=1000){
+           const editor=doc.querySelector("#page-guide .editorial-grid");
+           const columns=editor?w.getComputedStyle(editor).gridTemplateColumns.split(" ").filter(Boolean):[];
+           report("iPad landscape uses a two-column editorial desk",columns.length===2,columns.join(" / "));
+         }
+       }
        const guideGrid=doc.getElementById("method-cards");
        const guideGridCSS=guideGrid?w.getComputedStyle(guideGrid):null;
        const guideColumns=guideGridCSS?guideGridCSS.gridTemplateColumns.split(" ").filter(Boolean):[];

@@ -52,10 +52,10 @@ jobs:
               echo "FAIL Chromium did not complete"
               exit 1
             }
-          if ! grep -q 'LI_STEP16_BROWSER_PASS ' /tmp/li-step16-browser-result.html; then
+          if ! grep -F '<pre id="result">LI_STEP16_BROWSER_PASS ' /tmp/li-step16-browser-result.html | grep -F '"count":12' >/dev/null; then
             echo "FAIL real browser backup and migration scenarios"
             grep -o 'LI_STEP16_BROWSER_\\(FAIL\\|PENDING\\).*' /tmp/li-step16-browser-result.html | tail -1 | cut -c1-4000 || true
             exit 1
           fi
-          grep 'LI_STEP16_BROWSER_PASS ' /tmp/li-step16-browser-result.html | tail -1 | cut -c1-4000
+          grep -F '<pre id="result">LI_STEP16_BROWSER_PASS ' /tmp/li-step16-browser-result.html | tail -1 | cut -c1-4000
           echo "PASS localhost Chromium synthetic storage fixture, not live app or Safari"

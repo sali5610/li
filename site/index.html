@@ -311,6 +311,12 @@ function renderSavedQuestions(){
  }
  target.replaceChildren();
  target.hidden=savedQuestions.length===0;
+ const shelf=target.closest("article"),title=shelf?.querySelector("h3"),description=shelf?.querySelector("p"),sampleAction=shelf?.querySelector(".action-row");
+ const caption=shelf?.querySelector(".kicker");
+ if(title)title.textContent=target.hidden?"Chưa có hành trình đã lưu":savedQuestions.length+" câu hỏi đã lưu";
+ if(description)description.textContent=target.hidden?"Phiên xem thử chưa lưu tiến độ. Bạn có thể mở tình huống mẫu để khám phá cách đặt câu hỏi.":"Mở lại câu hỏi đã lưu trên thiết bị này. Nhánh nghiên cứu chưa được lưu riêng.";
+ if(sampleAction)sampleAction.hidden=!target.hidden;
+ if(caption)caption.textContent=target.hidden?"DẤU TRANG · BẢN XEM THỬ":"DẤU TRANG · TRÊN THIẾT BỊ";
  if(target.hidden)return;
  savedQuestions.forEach(item=>{
   const row=document.createElement("div"),label=document.createElement("p"),btn=document.createElement("button");

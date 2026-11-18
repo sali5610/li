@@ -45,7 +45,7 @@ iframe.addEventListener("load",()=>{
     scroll=modal.querySelector(".checkin-scroll"),footer=modal.querySelector(".checkin-actions");
    check(modal.classList.contains("open"),"Modal not visible");
    const link=d.querySelector('link[href*="checkin-adaptation.css"]');
-   check(link?.getAttribute("href").includes("20261118-radio2"),"New CSS cache key missing");
+   check(link?.getAttribute("href").includes("20261118-binary3"),"New CSS cache key missing");
    check(Boolean(link.sheet&&link.sheet.cssRules.length>25),"Cached/missing check-in stylesheet");
    check(w.getComputedStyle(dialog).display==="flex","Dialog must be flex");
    check(w.getComputedStyle(scroll).overflowY==="auto","Inner content should scroll");
@@ -63,11 +63,11 @@ iframe.addEventListener("load",()=>{
     check(Boolean(el),"Missing physical group "+key);
     const row=el.querySelector(".checkin-radio-row");
     check(w.getComputedStyle(row).display==="grid","Physical radio row is not grid: "+key);
-    check(row.querySelectorAll('input[type="radio"]').length===3,"Must contain 3 radios: "+key);
+    check(row.querySelectorAll('input[type="radio"]').length===2,"Must contain 2 radios: "+key);
     const rect=el.getBoundingClientRect();
     check(rect.width>width*.50&&rect.width<=dr.width+1,"Physical row incorrect width: "+key+" "+rect.width);
     const cells=[...row.querySelectorAll(".checkin-radio span")].map(e=>e.getBoundingClientRect());
-    check(cells.length===3&&cells.every(r=>r.width>=44&&r.height>=44),"Radio hit area is too small: "+key);
+    check(cells.length===2&&cells.every(r=>r.width>=44&&r.height>=44),"Radio hit area is too small: "+key);
     check(Math.max(...cells.map(r=>r.y))-Math.min(...cells.map(r=>r.y))<=2,"Radio options are not aligned on same row: "+key);
     check(cells.every(r=>r.left>=rect.left-1&&r.right<=rect.right+1),"Radio overflowing fieldset "+key);
     return rect;
@@ -81,6 +81,10 @@ iframe.addEventListener("load",()=>{
   open();
   geometry();
   check(!chosen("sleep")&&!chosen("move")&&!chosen("rest"),"Physical responses must initially be unanswered");
+  for(const key of ["sleep","move","rest"]){
+   check(d.querySelectorAll('input[name="checkin-'+key+'"]').length===2,"Expected two physical radios for "+key);
+   check(!d.querySelector('input[name="checkin-'+key+'"][value="unsure"]'),"No unsure radio for "+key);
+  }
   check(by("apply-checkin").disabled,"Empty physical state must block apply");
   choose("override","focus");
   check(by("apply-checkin").disabled,"Manual override must not bypass required physical inputs");
@@ -99,8 +103,14 @@ iframe.addEventListener("load",()=>{
   apply();verify("focus",13,"yes","yes","yes");
   open();
   check(!chosen("sleep")&&!chosen("move")&&!chosen("rest"),"Reopened check-in carries stale answers");
-  setPhysical("yes","unsure","yes");apply();verify("start",6,"yes","unsure","yes");
-  open();setPhysical("yes","no","yes");apply();verify("recover",6,"yes","no","yes");
+  setPhysical("yes","yes","yes");d.querySelector("#checkin-modal .checkin-context").open=true;
+  choose("energy","medium");
+  check(by("checkin-recommendation").textContent.includes("Gợi ý: Vào nhịp"),"Medium energy must downshift focus to start");
+  apply();verify("start",6,"yes","yes","yes");
+  open();setPhysical("yes","no","yes");
+  d.querySelector("#checkin-modal .checkin-context").open=true;choose("energy","high");choose("attention","steady");
+  check(by("checkin-recommendation").textContent.includes("Gợi ý: Hồi trí"),"High energy cannot promote a physical Chưa to focus");
+  apply();verify("recover",6,"yes","no","yes");
   open();setPhysical("yes","yes","yes");
   d.querySelector("#checkin-modal .checkin-context").open=true;
   choose("energy","low");choose("attention","hard");
@@ -115,7 +125,7 @@ iframe.addEventListener("load",()=>{
   by("close-checkin").click();
   check(captured===old&&w.LiL1.getPhysicalState().recordedAt===stamp,"Skip must not record");
   check(captured===5,"Expected exactly five check-in records, got "+captured);
-  result.textContent="LI_CHECKIN_BROWSER_PASS "+width+"px · 3×3 radio groups, 4 modes, geometry, footer, no FAB overlap, override, skip, session";
+  result.textContent="LI_CHECKIN_BROWSER_PASS "+width+"px · 3×2 radio groups, 4 modes, geometry, footer, no FAB overlap, override, skip, session";
  }catch(e){fail(e);}
 });
 </script></body></html>

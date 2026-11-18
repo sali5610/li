@@ -7,16 +7,18 @@ const css=readFileSync(new URL("../site/assets/checkin-adaptation.css",import.me
 const between=(a,b)=>{let i=html.indexOf(a),j=html.indexOf(b,i+a.length);assert.ok(i>=0&&j>i,"Missing "+a);return html.slice(i,j)};
 const modalHtml=between('<div id="checkin-modal"','<div id="toast"');
 assert.equal((modalHtml.match(/<select\b/g)||[]).length,0,"No selects allowed in check-in modal");
+assert.ok(!modalHtml.includes("Không rõ")&&!modalHtml.includes('value="unsure"'),"No unsure choice or helper copy");
 for(const key of ["sleep","move","rest"]){
  assert.ok(modalHtml.includes(`<fieldset class="checkin-physical-field" data-checkin-field="${key}"`));
- for(const value of ["yes","no","unsure"])assert.ok(modalHtml.includes(`name="checkin-${key}" value="${value}"`));
- assert.equal((modalHtml.match(new RegExp(`name="checkin-${key}"`,"g"))||[]).length,3);
+ for(const value of ["yes","no"])assert.ok(modalHtml.includes(`name="checkin-${key}" value="${value}"`));
+ assert.equal((modalHtml.match(new RegExp(`name="checkin-${key}"`,"g"))||[]).length,2);
 }
 for(const v of ["","start","focus","overload","recover"])assert.ok(modalHtml.includes(`name="checkin-override" value="${v}"`));
 assert.ok(modalHtml.includes('class="checkin-scroll"'));
 assert.ok(modalHtml.indexOf('class="action-row checkin-actions"')>modalHtml.indexOf('class="checkin-scroll"'));
-assert.ok(html.includes("checkin-adaptation.css?v=20261118-radio2"),"Update cache key whenever changing CSS");
+assert.ok(html.includes("checkin-adaptation.css?v=20261118-binary3"),"Update cache key whenever changing CSS");
 assert.ok(css.includes("#checkin-modal .checkin-radio-row{display:grid"));
+assert.ok(css.includes("grid-template-columns:repeat(2,minmax(0,1fr))"),"Physical choices must be two columns");
 assert.ok(css.includes("#checkin-modal .checkin-actions{")&&css.includes("position:relative"));
 assert.ok(css.includes("body:has(#checkin-modal.open) .laoly-support"));
 assert.ok(css.includes("#checkin-modal .checkin-scroll"));
@@ -31,7 +33,7 @@ const listeners={},fields={
 };
 const radioInputs=[];
 for(const n of ["sleep","move","rest","energy","attention","override"]){
- for(const v of (n==="override"?["","start","focus","overload","recover"]:n==="sleep"||n==="move"||n==="rest"?["yes","no","unsure"]:["high","medium","low","steady","warming","hard"])){
+ for(const v of (n==="override"?["","start","focus","overload","recover"]:n==="sleep"||n==="move"||n==="rest"?["yes","no"]:["high","medium","low","steady","warming","hard"])){
   radioInputs.push({name:"checkin-"+n,value:v,get checked(){return state[n]===v},set checked(on){if(on)state[n]=v;else if(state[n]===v)state[n]=""},focus(){}});
  }
 }
@@ -70,14 +72,16 @@ const cases=[
  [physical("yes","yes","yes"),"","", "focus"],
  [physical("yes","no","yes"),"high","steady","recover"],
  [physical("no","no","no"),"","", "recover"],
- [physical("yes","unsure","yes"),"","", "start"],
- [physical("unsure","unsure","unsure"),"","", "start"],
+ [physical("yes","unsure","yes"),"","",null],
+ [physical("unsure","unsure","unsure"),"","",null],
  [physical("yes","yes","yes"),"medium","", "start"],
  [physical("yes","yes","yes"),"","warming", "start"],
  [physical("yes","yes","yes"),"low","", "recover"],
  [physical("yes","yes","yes"),"","hard", "recover"],
  [physical("no","yes","yes"),"low","hard","overload"],
  [physical("yes","yes","yes"),"low","hard","overload"],
+ [physical("no","yes","yes"),"high","steady","recover"],
+ [physical("yes","yes","yes"),"high","steady","focus"],
  [physical("invalid","yes","yes"),"","",null]
 ];
 for(const [p,e,a,want] of cases){

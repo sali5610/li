@@ -1,5 +1,7 @@
 # li. Typography & Spacing v0.3 — readable runtime roles
 
+**UX-DS-20 (2026-11-18):** The component-role zero-debt source audit is now enforced by `tools/audit_design_tokens.py --check-zero` in CI. Legacy responsive `clamp()` values, unitless line-height ratios, letter tracking, font shorthands, transparent visual effects and explicitly approved micro-grid exceptions are represented by their own generated CSS tokens. This maps and preserves observed values; it does **not** silently make every old type value identical to the canonical role scale, remove CSS native keywords, or certify mobile appearance. Decorative noninteractive headings may use a 3px olive border. See [audit](audits/2026-11-18-zero-component-token-debt.md).
+
 **Status:** Canonical JSON-authored scale is wired to the app via the generated `design-tokens.css`; **Human PO whole-app G2 signoff is still open**. This is a typography/layout change, not permission to modify illustration assets, academic content, navigation semantics, or frozen wireframe.
 
 ## 1. Why this changes

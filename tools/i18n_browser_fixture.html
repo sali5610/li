@@ -232,7 +232,7 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
     const title=label(d.querySelector("#page-guideDetail .spell-activity-head .kicker"));
     record(id+" practice kicker fully EN",title===id+" · TRY THE SPELL",title);
     const practiceBody=label(d.querySelector("#page-guideDetail .spell-practice-root"));
-    const residue=[...new Set((practiceBody.match(/[À-ỹ][^.!?\n]{0,55}/gu)||[]))].slice(0,6);
+    const residue=[...new Set((practiceBody.match(/[À-ÖØ-öø-ÿĂ-đĨĩŨũƠ-ơƯ-ưẠ-ỹ][^.!?\n]{0,55}/gu)||[]))].slice(0,6);
     record(id+" practice panel free of Vietnamese copy",residue.length===0,residue.join(" | "));
    }
    w.showMethod("T01");
@@ -255,6 +255,11 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
     !overlaps(fab.getBoundingClientRect(),practiceTab.getBoundingClientRect()),
     "fab:"+fab.getBoundingClientRect().top+" tab:"+practiceTab.getBoundingClientRect().top);
    w.liCompanionDrag?.reset?.();
+   // The deep-dive exercise leaves an L03 course in the catalog router.
+   // Restore the same root state as the original independent catalog test.
+   await route("catalog");
+   const catalogRoot=d.querySelector('#page-catalog .catalog-breadcrumbs [data-catalog-kind="crumb"][data-catalog-value=""]');
+   if(catalogRoot){catalogRoot.click();await settle();}
    await route("catalog");
    const host=d.querySelector("#page-catalog .section-shell");
    const step=async kind=>{

@@ -428,7 +428,7 @@ assert 'data-demo="Chưa lưu được ý này' not in html
 assert 'id="save-capture-note"' in html
 assert html.count('id="li-checkin-recording-disclosure"')==1
 assert html.index('li-diary-privacy')>html.index('li-diary-day-status')
-assert '<script src="./assets/library-hub.js?v=5"></script>' in html
+assert '<script src="./assets/library-hub.js?v=6"></script>' in html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_hub_v2.cjs")],check=True,cwd=site.parent)
 
 # UX-IA-05: lesson modules only own lesson/catalog DOM, never Tủ Riêng overview.
@@ -452,7 +452,7 @@ assert 'id="li-note-case-context"' in page_html
 assert 'data-li-bookmark-kind="case"' in page_html
 assert '<script src="./assets/library-bookmarks.js?v=2"></script>' in page_html
 assert '<script src="./assets/library-note-editor.js?v=3"></script>' in page_html
-assert '<script src="./assets/library-hub.js?v=5"></script>' in page_html
+assert '<script src="./assets/library-hub.js?v=6"></script>' in page_html
 for lesson_id,slug in (("L03-1-2","l03"),("L09-1-2","l09"),("L15-2-2","l15")):
     content=(site/"assets"/f"lesson-{slug}-hifi-markup.js").read_text(encoding="utf-8")
     assert f'data-li-bookmark-id="{lesson_id}"' in content
@@ -510,6 +510,8 @@ hub=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert 'PROBLEM_VISITS_KEY="li.private.problem.visits.v1"' in hub
 assert 'renderProblemRows($("li-library-latest-problem"),1)' in hub
 assert 'renderProblemRows($("li-problem-history"),40)' in hub
+assert 'const details=add(row,"button","library-text-link library-detail-link","Tiếp tục");' in hub
+assert 'btn(row,"Tiếp tục",item.route,"library-text-link library-open-lesson");' in hub
 assert 'trackProblem,renderProblemRows' in hub
 assert 'if(id==="case")window.liLibraryShelf?.trackProblem("case","sampling-bias-90");' in page_html
 assert 'window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);' in page_html

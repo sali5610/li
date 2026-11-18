@@ -604,13 +604,23 @@ assert 'const questions=ordered([' in hub and 'x.type==="case"' in hub
 assert 'savedQuestions.map(x=>({kind:"question"' in hub
 assert 'shelf.renderResume()' in (site.parent/"tools"/"test_library_hub_v2.cjs").read_text(encoding="utf-8")
 
-# S120: mirror-variant illustration stored locally and not silently downgraded
-# to a chat icon; Bút Ký uses same paper surface as cards 03-04.
+# UX-ART-04: current geometric papercraft art, GitHub canonical source
+# preserved as illustration, with original Bút Ký surface.
 illustrated=site/"assets"/"laoly-mirror-suy-nghi.png"
 assert illustrated.is_file() and illustrated.stat().st_size > 100000
 raw_illustrated=illustrated.read_bytes()
 assert raw_illustrated[:8] == bytes([137,80,78,71,13,10,26,10])
 assert (int.from_bytes(raw_illustrated[16:20],"big"), int.from_bytes(raw_illustrated[20:24],"big")) == (1024,1024)
+assert raw_illustrated == (site.parent/"design-assets"/"lao-ly"/"trong-guong"/"lao_ly_10_suy_nghi_mirror.png").read_bytes(), "Settings Lão Lý illustration must match canonical papercraft source"
+assert (site/"assets"/"laoly-guide-rest.png").read_bytes() == (site.parent/"design-assets"/"lao-ly"/"trong-guong"/"lao_ly_04_buon_ngu_mirror.png").read_bytes(), "Guide Lão Lý illustration must match current papercraft source"
+for deployed, source in [
+ ("laoly-neutral.png", "lao_ly_chat_icon_master_1024.png"),
+ ("laoly-mode-start.png", "lao_ly_mode_vao_nhip_1024.png"),
+ ("laoly-mode-focus.png", "lao_ly_mode_dao_sau_1024.png"),
+ ("laoly-mode-overload.png", "lao_ly_mode_qua_tai_1024.png"),
+ ("laoly-mode-recover.png", "lao_ly_mode_hoi_tri_1024.png"),
+]:
+    assert (site/"assets"/deployed).read_bytes() == (site.parent/"design-assets"/"lao-ly"/"icon"/source).read_bytes(), "Lão Lý app icon must match current papercraft source: " + deployed
 assert 'class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"' in settings
 assert 'class="settings-buddy-illustration" src="./assets/laoly-neutral.png"' not in settings
 assert '<article id="notebook-section" class="surface" tabindex="-1"' in library

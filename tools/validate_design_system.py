@@ -48,25 +48,33 @@ def main() -> int:
     if not HTML_FILE.is_file() or not TOKEN_FILE.is_file():
         return 1
 
-    # UX-ART-03: one canonical character illustration family; archived binaries remain for provenance.
+    # UX-ART-04: Human PO supersedes UX-ART-03. Active papercraft assets = 10 mirror expressions + 5 icons; no Outside.
     art_manifest = ROOT / "design-assets" / "lao-ly" / "manifest.json"
     art_contract = ROOT / "design-assets" / "lao-ly" / "README.md"
-    check(art_manifest.is_file(), "Lão Lý illustration manifest exists")
-    check(art_contract.is_file(), "Lão Lý illustration contract exists")
+    check(art_manifest.is_file(), "Lão Lý current papercraft manifest exists")
+    check(art_contract.is_file(), "Lão Lý current papercraft contract exists")
     if art_manifest.is_file() and art_contract.is_file():
         artwork = json.loads(art_manifest.read_text(encoding="utf-8"))
-        policy = artwork.get("illustrationPolicy", {})
-        assets = artwork.get("files", [])
-        check(policy.get("activeIllustrationVariant") == "Ngoài gương", "one canonical standalone Lão Lý illustration family")
-        check(policy.get("retiredIllustrationVariant") == "Trong gương", "mirror-specific Lão Lý illustration variant retired")
-        check(len([a for a in assets if a.get("variant") == "Ngoài gương" and a.get("lifecycle") == "canonical-illustration-variant-awaiting-asset-approval"]) == 10,
-              "10 standalone expressions tracked without falsely approving source art")
-        check(len([a for a in assets if a.get("variant") == "Trong gương" and a.get("lifecycle") == "retired-provenance-only"]) == 10,
-              "10 mirror expressions marked provenance-only")
-        check(len([a for a in assets if a.get("variant") == "Icon" and a.get("lifecycle") == "active-approved-functional-icon"]) == 5,
-              "five selected functional icons remain distinct from illustration")
-        check("UX-ART-03" in art_contract.read_text(encoding="utf-8"),
-              "Lão Lý variant policy is documented in artwork archive")
+        assets = artwork.get("assets", [])
+        counts = artwork.get("active_counts", {})
+        check(artwork.get("schema") == "li-laoly-current-v2", "papercraft source-of-truth schema v2")
+        check(counts == {"illustrations_mirror": 10, "icons": 5, "illustrations_outside": 0},
+              "one canonical mirror-only illustration family plus functional icons")
+        check(len(assets) == 15, "all 15 current Lão Lý papercraft assets registered")
+        check(len([a for a in assets if a.get("variant") == "Trong gương"]) == 10,
+              "10 active Lão Lý expressions are Trong gương")
+        check(len([a for a in assets if a.get("type") == "icon"]) == 5, "five distinct new papercraft micro icons")
+        check(len([a for a in assets if a.get("variant") == "Ngoài gương"]) == 0,
+              "no active standalone / Ngoài gương illustration")
+        check(not (ROOT / "design-assets" / "lao-ly" / "ngoai-guong").exists(),
+              "no obsolete Ngoài gương binary in working asset tree")
+        for art in assets:
+            asset_path = ROOT / "design-assets" / "lao-ly" / art.get("path", "")
+            check(asset_path.is_file(), "asset exists: " + art.get("path", "missing"))
+        check("papercraft" in art_contract.read_text(encoding="utf-8").lower(),
+              "current character art policy documented")
+        check(artwork.get("full_G2_approval") == "PENDING",
+              "replacing requested art does not silently close G2")
 
     # UX-DS-23: contract navigation is a CI-guarded invariant, not a wiki convention.
     library_entrypoint = ROOT / "design-system" / "README.md"

@@ -40,7 +40,7 @@ function setPath(next,save=true){
  }
  render();
  if(save){
-  window.scrollTo?.(0,0);
+  window.scrollTo?.({top:0,left:0,behavior:"instant"});
   const heading=host.querySelector("h1");
   if(heading){heading.tabIndex=-1;heading.focus?.({preventScroll:true});}
  }

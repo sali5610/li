@@ -173,11 +173,27 @@ iframe.addEventListener("load",()=>{
    const mirrorImage=d.querySelector(".ds12-horizontal-media.figure img"),mirrorFrame=d.querySelector(".ds12-horizontal-media.figure");
    check("Illustration uses existing Lão Lý in the mirror asset, not the icon avatar",
       mirrorImage?.getAttribute("src")==="./assets/laoly-mirror-suy-nghi.png");
+   const mirrorCard=mirrorFrame.closest(".ds12-horizontal-illustration");
    const mirrorMediaWidth=mirrorFrame.getBoundingClientRect().width;
-   check("Full Lão Lý horizontal artwork is enlarged on mobile while still responsive",
-      mirrorMediaWidth>=(w.innerWidth<=360?100:w.innerWidth<=700?120:160) &&
-      mirrorImage.complete && mirrorImage.naturalWidth>0,
-      "media width="+mirrorMediaWidth+"px at viewport "+w.innerWidth+"px");
+   const mirrorArtRect=mirrorImage.getBoundingClientRect();
+   const mirrorCopy=mirrorCard.querySelector(".ds12-horizontal-copy").getBoundingClientRect();
+   const expectedMirrorWidth=w.innerWidth<=360?136:w.innerWidth<=700?168:208;
+   check("Lão Lý gets a larger illustration-only rail at every breakpoint",
+      !!mirrorCard&&Math.abs(mirrorMediaWidth-expectedMirrorWidth)<=2 &&
+      mirrorImage.complete&&mirrorImage.naturalWidth>0,
+      "media="+mirrorMediaWidth+"px expected="+expectedMirrorWidth+"px at "+w.innerWidth);
+   check("The actual mirror IMAGE is enlarged, fits fully and never overlaps its copy",
+      mirrorArtRect.width>=expectedMirrorWidth-2 &&
+      mirrorArtRect.right<=mirrorCopy.left+2 &&
+      w.getComputedStyle(mirrorImage).objectFit==="contain" &&
+      w.getComputedStyle(mirrorFrame).paddingLeft==="0px" &&
+      mirrorArtRect.height<=mirrorFrame.getBoundingClientRect().height+2,
+      "art width="+mirrorArtRect.width+"px; copy start="+mirrorCopy.left+"px");
+   const photoMedia=d.querySelector(".ds12-horizontal-media.photo").getBoundingClientRect().width;
+   const iconMedia=d.querySelector(".ds12-horizontal-media.icon").getBoundingClientRect().width;
+   check("Mirror enlargement leaves photo and icon card geometry untouched",
+      photoMedia<=mirrorMediaWidth-20 && Math.abs(photoMedia-iconMedia)<=2,
+      "photo="+photoMedia+"px; icon="+iconMedia+"px; mirror="+mirrorMediaWidth+"px");
    check("Illustration integrates into card without dividing stroke or background plate",
       !!mirrorFrame&&w.getComputedStyle(mirrorFrame).borderRightWidth==="0px"&&w.getComputedStyle(mirrorFrame).backgroundColor==="rgba(0, 0, 0, 0)");
    const horizontals=[...d.querySelectorAll("[data-ds12-horizontal-card]")];

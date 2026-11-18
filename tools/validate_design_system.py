@@ -231,6 +231,8 @@ def main() -> int:
           "(max-width:1400px) and (orientation:landscape)" in home_layout and
           "and (any-pointer: coarse)" not in foundations[foundations.index("/* UX-DS-25"):],
           "iPad 1376px landscape uses viewport ratio, not pointer hardware")
+    check("ds28-safari-viewport" in html, "native iPad Safari viewport CSS revision is linked")
+    check("pinch-zoom" in (ROOT / "site/assets/ui-foundations.css").read_text(encoding="utf-8"), "iPad Safari touch-action allows pinch zoom")
     check("ds27-landscape-grid" in html,
           "iPad runtime styles use fresh CSS cache versions")
     check("--li-ipad-active-mode: landscape" in foundations and

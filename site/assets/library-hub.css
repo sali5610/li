@@ -161,7 +161,7 @@
 .library-icon-action svg,
 .library-icon-action .lucide{
  width:var(--li-space-5);height:var(--li-space-5);display:block;flex:none;
- stroke:currentColor;stroke-width:1.8;
+ stroke:var(--li-icon-action-stroke,currentColor);stroke-width:1.8;
 }
 .library-icon-action:hover{background:var(--cream);border-color:var(--moss)}
 .library-icon-action:focus-visible{
@@ -191,7 +191,7 @@
  gap:var(--li-space-3);min-width:0;
 }
 .mirror-titlebar .mirror-label{min-width:0}
-.mirror-bookmark-slot{margin-inline-start:auto}
+.mirror-bookmark-slot{flex-shrink:0}
 #page-library #li-library-latest-lesson .library-list-item,
 #page-resume .library-list-item{
  display:grid;grid-template-columns:minmax(0,1fr) auto;

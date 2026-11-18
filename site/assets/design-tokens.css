@@ -2,9 +2,9 @@
    Do not edit this CSS manually; change the JSON then regenerate.
    G2 global visual identity remains pending PO approval. */
 :root {
-  --paper: #F3EBDC;
-  --paper-2: #E7DCC3;
-  --paper-3: #D9CBAF;
+  --paper: #F1F0E9;
+  --paper-2: #E7E3D9;
+  --paper-3: #D8D3C7;
   --ink: #272A23;
   --moss: #243A29;
   --moss-2: #344B35;
@@ -12,23 +12,23 @@
   --sage: #BAC9A7;
   --wood: #856D4B;
   --muted: #615F51;
-  --rule: #C3B69B;
-  --cream: #FBF7EB;
+  --rule: #C6C1B5;
+  --cream: #FAF9F5;
   --white: #FFFFFF;
   --shadow-ink: #172D20;
   --shadow-wood: #6B563B;
   /* Semantic colors retain the currently accepted visual values. */
-  --li-color-nav-selected-fill: #E5D8BA;
+  --li-color-nav-selected-fill: #E8E4D9;
   --li-color-nav-selected-ink: #243A29;
   --li-color-focus-ring: #7E984F;
   --li-color-focus-warm: #806D49;
   --li-color-danger-fill: #7D4330;
   --li-color-on-image-cream: #F5ECD7;
   --li-color-mirror-ink: #F7F6E6;
-  --li-color-speech-surface: #FFF8E9;
+  --li-color-speech-surface: #FAF8F1;
   --li-color-speech-stroke: #37543C;
   --li-color-muted-on-moss: #D3DDCB;
-  --li-color-notebook-rule: #D2C5A9;
+  --li-color-notebook-rule: #D1CCC0;
   --li-color-home-eyebrow-cream: #F6EDD8;
   --li-color-home-subtitle-cream: #F4EAD5;
   --li-color-home-note-border: #AFB89E;
@@ -37,7 +37,7 @@
   --li-color-source-status-text: #F9F3D9;
   --li-color-source-status-border: #C8CEB4;
   --li-color-branch-selected-fill: #D8DCC7;
-  --li-color-status-banner-fill: #E6D6B8;
+  --li-color-status-banner-fill: #E6E0D4;
   --li-color-modal-overlay-fill: #182A1D;
   --li-color-input-focus-ring: #243A29;
   --li-color-general-focus-ring: #78964D;
@@ -49,7 +49,7 @@
   --li-color-home-dialogue-label: #355039;
   --li-color-home-dialogue-copy: #22382C;
   --li-color-companion-dot: #193C2C;
-  --li-color-home-dialogue-surface-light: #FFF8EB;
+  --li-color-home-dialogue-surface-light: #FBF9F3;
   --li-color-home-dialogue-border-light: #6B7558;
   --li-color-home-dialogue-muted: #496044;
   --li-color-home-dialogue-heading: #1F3528;
@@ -64,7 +64,7 @@
   --li-color-home-cta-focus: #F6E7AB;
   --li-color-bottom-nav-inactive: #6C756B;
   --li-color-study-mode-selected: #DEE5D4;
-  --li-color-light-paper-overlay: #F6F0DD;
+  --li-color-light-paper-overlay: #F3F0E8;
   /* PO-preserved illustrated Lão Lý paint details. */
   --li-scene-laoly-face-warm: #A98560;
   --li-scene-laoly-face-shadow: #6B4C33;

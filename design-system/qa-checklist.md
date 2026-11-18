@@ -35,7 +35,7 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 | Thần Chú S116/S118 | 2 compact method cards per phone row at ≤640px, **gap 18/20px** and ≤360px **14/18px**. Keep full VI title, academic EN name, 2-line purpose teaser, Chú Giải action, filters/modes. Treat these as approved micro-geometry exceptions, NOT token debt to round. |
 | Home | Question inside mirror; **no visible Gương Vạn Vấn kicker**, accessible scene name remains; **UX-DS-15 transparent header overlays the same hero art**, cream seal/icons, 48px targets, Home check-in clears header; return to non-Home restores paper header **and vertical scrolling**. Home is locked to exactly 100dvh and has no vertical body scroll; check 320×568/375×667/390×844, iPad landscape and dialog scrolling. Context below question; Lưu left / Đào sâu right; Lão Lý does not overlap |
 | Touch | 44×44 intended target, no rectangular iOS tap flash, no sticky touch-hover rectangle, scrolling still works |
-| Accessibility | Keyboard order, visible focus, label/role, error announcement, reduced motion; **pinch-zoom lock caveat** |
+| Accessibility | Keyboard order, visible focus, label/role, error announcement, reduced motion; **UX-DS-28 removed the former pinch-zoom lock; Safari device zoom/rotation still needs physical retest** |
 | Assets | Correct source, crop-safe center, approved status, alt/caption, no pending design published |
 | Evidence & trust | Draft/published/source labels accurate; genuine save state; no fabricated research results |
 
@@ -130,3 +130,9 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 - [x] Component Library iconography tile, bottom 4-tab navigation specimen and sidebar navigation specimen use the **same** Lucide `sparkle`.
 - [x] Static regression checks cover exact icon mapping, bundled Lucide availability, and preserved book-open lesson illustrations; browser fixture checks a rendered `svg.lucide-sparkle`.
 - [ ] Verify on physical iPhone/iPad Safari at 22px (default + selected sand oval), 200% text zoom, VoiceOver, tap behavior/PWA; G2 overall still pending.
+
+## UX-DS-28 · iPad Safari portrait-width / landscape reflow report (2026-11-19)
+- [x] Source: viewport meta uses `width=device-width,initial-scale=1,viewport-fit=cover` without min/max-scale or `user-scalable=no`; global Safari pinch gesture listeners removed; document and mirror CSS allow `pinch-zoom`.
+- [ ] Physical-device reproduction: screenshot showed Home artwork ending around 69% of landscape width, close to the 820/1180 portrait/landscape width ratio (inference, not verified browser metrics).
+- [ ] Rotate actual iPad Safari portrait → landscape → portrait with tab already open; compare `innerWidth`, `visualViewport`, `screen`, root and Home Hero widths using the opt-in `?debug=ipad` panel; verify Home art fills full viewport, title/question/context/actions visible, no side blank.
+- [ ] Test OS Safari page zoom 100%/125%/200%, pinch zoom, keyboard, split-window, reload and Home Screen PWA. Automated Chrome rotation-iframe evidence is not Safari certification.

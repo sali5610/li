@@ -386,7 +386,8 @@ $("hintButton").addEventListener("click",()=>{if(state.submitted)return;state.hi
 $("submit").addEventListener("click",()=>{
  if(state.submitted)return;state.draft=Array.from({length:4},(_,i)=>$( "question-"+i ).value);
  if(state.draft.some(x=>x.trim().length<12)){feedback(data[state.locale].needAnswers);return;}
- state.submitted=true;state.submission=state.draft.slice();state.submissionAt=new Date().toISOString();save();
+ state.submitted=true;state.submission=state.draft.slice();state.submissionAt=new Date().toISOString();const stored=save();
+ if(stored)window.dispatchEvent(new CustomEvent("li:lesson-submitted",{detail:{lessonId:id}}));
  render();$("answerBox").scrollIntoView({block:"start",behavior:"smooth"});feedback(data[state.locale].submittedText);
 });
 $("clear").addEventListener("click",()=>{

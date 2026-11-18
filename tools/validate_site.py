@@ -428,7 +428,7 @@ assert 'data-demo="Chưa lưu được ý này' not in html
 assert 'id="save-capture-note"' in html
 assert html.count('id="li-checkin-recording-disclosure"')==1
 assert html.index('li-diary-privacy')>html.index('li-diary-day-status')
-assert '<script src="./assets/library-hub.js?v=1"></script>' in html
+assert '<script src="./assets/library-hub.js?v=2"></script>' in html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_hub_v2.cjs")],check=True,cwd=site.parent)
 
 # S120: mirror-variant illustration stored locally and not silently downgraded

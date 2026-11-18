@@ -17,6 +17,21 @@ T13:{title:"Cung lộ ghi nhớ",mode:"loci",lesson:"Ba ý đã học theo thứ
 };
 let root,guide,tabs,active=null,phase=0,exposure=null,feedback="",resumeNote="",privatePlaces=[],tabDraft=null;
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+/* Separate authored feedback lead and explanation for accurate VI/EN
+   translation and reversible language switching without rewriting input. */
+const FEEDBACK_LEADS=[
+ "Hai phân loại đúng. ","Hãy nhìn lại dấu hiệu chọn mẫu. ",
+ "Đã tách đúng hai câu hỏi. ","Một đáp án cần xem lại. ",
+ "B là nguồn tốt hơn cho câu hỏi hẹp này. ","Hãy kiểm tra lại provenance và cơ chế chọn người. ",
+ "T03 phù hợp cho thủ tục mới. ","Chưa có lần học trước nên T02 không phù hợp ngay. ",
+ "Bạn chọn hai dữ kiện quan trọng, không chọn khẳng định quá mức. ",
+ "Dữ kiện không có nhóm so sánh và khuyến mãi đồng thời đều quan trọng. "
+];
+const feedbackMarkup=raw=>{
+ const value=String(raw??"");
+ const prefix=FEEDBACK_LEADS.find(text=>value.startsWith(text));
+ return prefix?'<span>'+escape(prefix.trim())+'</span> '+escape(value.slice(prefix.length)):escape(value);
+};
 const field=f=>{const id="sp-"+f[0];const label='<span>'+escape(f[1])+'</span>';if(f[2])return '<fieldset class="spell-field"><legend>'+escape(f[1])+'</legend>'+f[2].map((o,i)=>'<label class="spell-option"><input type="'+(f[3]==="multi"?"checkbox":"radio")+'" name="'+id+'" value="'+i+'"><span>'+escape(o)+'</span></label>').join("")+'</fieldset>';return '<label class="spell-field" for="'+id+'">'+label+'<textarea id="'+id+'" rows="2" maxlength="1200"></textarea></label>';};
 const act=(a,t,cl="action")=>'<button type="button" class="'+cl+'" data-spell-action="'+a+'">'+t+'</button>';
 const fmt=t=>new Date(t).toLocaleString(window.liLanguage?.get?.()==="en"?"en-US":"vi-VN");
@@ -47,7 +62,7 @@ function draw(){
  }else{
    inner='<p><strong>Không nhìn lại lời giải:</strong> '+e.prompt+'</p>'+e.fields.map(field).join("")+act("check",e.mode==="due"?"Đối chiếu lượt ôn":"Đối chiếu bài làm");
  }
- root.innerHTML='<div class="spell-activity-head"><div><span class="kicker">'+active+' · THỬ THI TRIỂN</span><h2>'+e.title+'</h2></div><span class="spell-state">'+(feedback?"Đã đối chiếu":phase===0?"Đang chuẩn bị":"Đang thực hành")+'</span></div><div class="spell-activity-body">'+inner+(feedback?'<div class="spell-feedback" role="status" tabindex="-1"><strong>Phản hồi để tự kiểm chứng</strong><p>'+feedback+'</p><p class="small">Bài mẫu minh họa, không chứng nhận thành thạo, IQ hay kết quả học thuật ngoài nhiệm vụ này.</p></div>':"")+'</div><footer class="spell-activity-footer"><p class="small">Tự chọn, có thể bỏ qua. Trừ mốc T02 do bạn chủ động đặt, nội dung điền không tự lưu hay gửi lên máy chủ.</p>'+act("reset","Làm lại","action alt")+'</footer>';
+ root.innerHTML='<div class="spell-activity-head"><div><span class="kicker">'+active+' · THỬ THI TRIỂN</span><h2>'+e.title+'</h2></div><span class="spell-state">'+(feedback?"Đã đối chiếu":phase===0?"Đang chuẩn bị":"Đang thực hành")+'</span></div><div class="spell-activity-body">'+inner+(feedback?'<div class="spell-feedback" role="status" tabindex="-1"><strong>Phản hồi để tự kiểm chứng</strong><p>'+feedbackMarkup(feedback)+'</p><p class="small">Bài mẫu minh họa, không chứng nhận thành thạo, IQ hay kết quả học thuật ngoài nhiệm vụ này.</p></div>':"")+'</div><footer class="spell-activity-footer"><p class="small">Tự chọn, có thể bỏ qua. Trừ mốc T02 do bạn chủ động đặt, nội dung điền không tự lưu hay gửi lên máy chủ.</p>'+act("reset","Làm lại","action alt")+'</footer>';
 }
 function switchTab(which){
  const practice=which==="practice";
@@ -75,7 +90,7 @@ function showMessage(text){
  feedback=text;
  let box=root.querySelector(".spell-feedback");
  if(!box){box=document.createElement("div");box.className="spell-feedback";box.setAttribute("role","status");box.tabIndex=-1;root.querySelector(".spell-activity-body").append(box);}
- box.innerHTML='<strong>Phản hồi để tự kiểm chứng</strong><p>'+text+'</p><p class="small">Đây là bài mẫu minh họa, không chứng nhận thành thạo hay kết quả học thuật ngoài nhiệm vụ.</p>';
+ box.innerHTML='<strong>Phản hồi để tự kiểm chứng</strong><p>'+feedbackMarkup(text)+'</p><p class="small">Đây là bài mẫu minh họa, không chứng nhận thành thạo hay kết quả học thuật ngoài nhiệm vụ.</p>';
  box.focus();
 }
 function check(){

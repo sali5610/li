@@ -144,3 +144,11 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 - [ ] Rendered Chrome: assert portrait 970×1408, landscape 1408×832, desktop 1440×900, and live rotation 970→1408→970 without reload. Green CI does not equal physical Safari.
 - [ ] Physical Safari: recheck landscape and portrait with `?debug=ipad`; expect `CSS mode: landscape` + body 18px at 1408px. Confirm visual and root widths synchronize after rotation; if 970 visual / 1408 root persists, treat it as an independent WebKit viewport issue, not proof that the 1408px media query failed.
 - [ ] Check Home full-width, footer-free, no-scroll, actual background crop/position, 3-zone composition, `Lưu` and `Đào sâu`, companion and nav on both orientations, Split View, 200% text, VoiceOver and PWA. PO G2 remains OPEN.
+
+## UX-DS-30 · Single landscape art / stale physical rotation Safari (2026-11-19)
+
+- [x] PO iPad portrait 04:27: inner/root/Hero 970px and CSS portrait 18px, correct. On physical iPad landscape 04:28: inner/visual 970px but screen long side 1408px, half-page blank. Earlier 1408 media fix cannot run when CSS viewport remains 970px.
+- [x] Reuse exact approved `home-li-ipad-20261119.jpg` across iPad portrait/landscape with `cover` and centered crop; **no portrait asset generation or recolor**.
+- [ ] Source/CI: when native iPad orientation reports 90° and `innerWidth=970`, narrow runtime recovery selects 1408px landscape canvas, keeps body 18px, uses approved art, positions context/action right, and restores `device-width` with no reload/data reset after returning portrait.
+- [ ] Physical Safari: in a fresh tab, verify portrait crop, rotate to landscape *without reload*, inspect `?debug=ipad` showing orientation angle and recovery mode, confirm no blank paper, correctly cropped landscape art, text/CTA remains readable.
+- [ ] Independent real-device: assess fullscreen Safari toolbar, split view, PWA, page pinch zoom, navigation/lesson state preservation, keyboard and VoiceOver. G2 stays open.

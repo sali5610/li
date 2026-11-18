@@ -197,7 +197,7 @@ function mountNative(route){
  trigger.setAttribute("aria-expanded","false");
  const sheetHead=el("div","catalog-sheet-heading",null,aside);
  const copy=el("div","catalog-sheet-copy",null,sheetHead);
- el("div","kicker","MỤC LỤC BÀI HỌC",copy);
+ const kicker=el("div","kicker","MỤC LỤC BÀI HỌC",copy);
  const title=el("h2","","Chương",copy);title.id="catalog-chapters-title-"+route;
  const close=el("button","catalog-sheet-close","Đóng ✕",sheetHead);
  close.type="button";close.setAttribute("aria-label","Đóng mục lục chương");
@@ -278,6 +278,22 @@ function mountNative(route){
  });
  pageObserver.observe(page,{attributes:true,attributeFilter:["class"]});
  page.dataset.catalogChapterNav="ready";
+ function syncLocaleLabels(){
+  const t=value=>window.liLanguage?.translate?.(value)||value;
+  trigger.setAttribute("aria-label",t("Mục lục chương"));
+  trigger.setAttribute("title",t("Mục lục chương"));
+  kicker.textContent=t("MỤC LỤC BÀI HỌC");
+  title.textContent=t("Chương");
+  close.textContent=t("Đóng ✕");
+  close.setAttribute("aria-label",t("Đóng mục lục chương"));
+  all.textContent=t("Toàn bộ bài");
+  prev.textContent=t("← Trước");
+  next.textContent=t("Tiếp →");
+  const heading=sections.find(s=>s.id===active)?.querySelector("h2");
+  current.textContent=heading?.textContent||(active?t("Chương"):t("Toàn bộ bài"));
+ }
+ window.addEventListener?.("li:localechange",syncLocaleLabels);
+ syncLocaleLabels();
  const initial=new URL(location.href).searchParams.get("chapter");
  choose(initial,false);
  function syncChapterLinks(){

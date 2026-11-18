@@ -116,8 +116,13 @@ function ignored(node){
 function patchText(node){
  if(ignored(node))return;
  const previous=originalText.get(node);
- const original=previous===undefined?node.nodeValue:previous;
- if(previous===undefined)originalText.set(node,original);
+ // App scripts may update a text node in place (counters, feedback, live status).
+ // Preserve that new source instead of restoring a stale value from the first render.
+ let original=previous===undefined?node.nodeValue:previous;
+ if(previous!==undefined&&node.nodeValue!==original&&node.nodeValue!==tr(original)){
+  original=node.nodeValue;
+ }
+ if(previous!==original)originalText.set(node,original);
  const desired=locale==="en"?tr(original):original;
  if(node.nodeValue!==desired)node.nodeValue=desired;
 }
@@ -127,7 +132,8 @@ function patchAttrs(node){
  if(!saved){saved={};originalAttr.set(node,saved);}
  for(const key of ATTRS){
   if(!node.hasAttribute(key))continue;
-  if(!(key in saved))saved[key]=node.getAttribute(key);
+  const current=node.getAttribute(key);
+  if(!(key in saved)|| (current!==saved[key]&&current!==tr(saved[key])))saved[key]=current;
   const desired=locale==="en"?tr(saved[key]):saved[key];
   if(node.getAttribute(key)!==desired)node.setAttribute(key,desired);
  }

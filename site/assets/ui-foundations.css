@@ -707,8 +707,8 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 @media(max-width:600px){
   .mobile-nav .nav-btn {
     grid-template-rows:22px 16px!important;
-    gap:0!important;
-    margin-top:0!important;
+    gap:var(--li-space-0)!important;
+    margin-top:var(--li-space-0)!important;
     align-content:center!important;
   }
 }

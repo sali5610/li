@@ -40,6 +40,7 @@ body.append(labelNode);
 const document={
  body,documentElement:{lang:"vi"},title:"",
  querySelector:sel=>sel==="#page-settings .settings-group-grid"?settings:null,
+ getElementById:id=>body.descendants().find(x=>x.id===id)||null,
  querySelectorAll:sel=>sel==="[data-li-app-locale]"?body.descendants().filter(x=>x.dataset?.liAppLocale):[],
  createElement:tag=>new El(tag),
  createTreeWalker(root){const nodes=root.descendants();let index=0;return {nextNode:()=>nodes[index++]||null}}

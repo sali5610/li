@@ -187,7 +187,8 @@ function setButtonText(button,label){
 function updatePlan(){
  activePlan=getBuddyPlan();
  const calm=document.getElementById("calm-toggle")?.checked;
- textEl.textContent=calm?"Ta đi từng bước. "+activePlan.intro:activePlan.intro;
+ const intro=calm?"Ta đi từng bước. "+activePlan.intro:activePlan.intro;
+ textEl.textContent=window.liAddressLine?window.liAddressLine(intro):intro;
  buttons.forEach((b,i)=>setButtonText(b,activePlan.actions[i].label));
  debateEl.hidden=true;buddyDebateActive=false;
  showBuddyQuote();
@@ -209,7 +210,7 @@ document.addEventListener("click",function(event){
  if(!activePlan)updatePlan();
  const item=activePlan.actions[index];
  debateEl.hidden=true;buddyDebateActive=true;quoteEl.hidden=true;
- textEl.textContent=item.reply;
+ textEl.textContent=window.liAddressLine?window.liAddressLine(item.reply):item.reply;
  scrollEl.scrollTop=0;
  if(typeof item.perform==="function")item.perform();
 },true);

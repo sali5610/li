@@ -1,0 +1,110 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Step16 actual L09 React island E2E</title></head><body>
+<pre id="result">LI_STEP16_L09_PILOT_PENDING</pre>
+<script>
+(async()=>{
+ "use strict";
+ const result=document.getElementById('result');
+ const key='step16.l09.react-island.v1',realKey='li.review.L09-1-2.v1';
+ const checks=[];
+ const check=(x,why)=>{if(!x)throw Error(why)};
+ const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+ async function until(fn,where){
+  const begin=performance.now();while(performance.now()-begin<12000){
+   if(fn())return;
+   await pause(30);
+  }throw Error('TIMEOUT: '+where);
+ }
+ let frame=null;
+ function doc(){return frame.contentDocument;}
+ function win(){return frame.contentWindow;}
+ async function mount(width=390){
+   frame?.remove();frame=document.createElement('iframe');
+   frame.style.cssText='position:absolute;left:-10000px;top:0;border:0;width:'+width+'px;height:880px';
+   frame.src='./dist/index.html';document.body.append(frame);
+   await until(()=>doc()?.querySelector('.pilot [data-answer="3"]')&&doc()?.querySelector('[data-rubric-locked]'),'React mount');
+ }
+ function tap(selector){
+   const b=doc().querySelector(selector);
+   check(b&&!b.disabled,'Missing or disabled button '+selector);
+   b.click();
+ }
+ function edit(selector,value){
+   const el=doc().querySelector(selector);
+   check(el&&!el.disabled,'Missing editable '+selector);
+   const descriptor=Object.getOwnPropertyDescriptor(
+      el.tagName==='TEXTAREA'?win().HTMLTextAreaElement.prototype:win().HTMLSelectElement.prototype,'value');
+   descriptor.set.call(el,value);
+   el.dispatchEvent(new win().Event(el.tagName==='TEXTAREA'?'input':'change',{bubbles:true}));
+ }
+ try{
+   localStorage.removeItem(key);
+   const copy=await (await fetch('./src/l09-exact.generated.json')).json();
+   check(copy.lessonId==='L09-1-2'&&copy.source==='site/assets/lesson-l09-hifi.js'&&
+     copy.sourceSha256.length===64,'Not the exact source-owned lesson payload');
+   check(copy.langs.vi.questions.length===4&&copy.langs.en.questions.length===4&&
+     copy.langs.vi.rubricItems.length===4,'Incomplete real lesson content');
+   await mount();
+   check(doc().querySelector('#root').dataset.sourceSha256===copy.sourceSha256,'Source fingerprint mismatch');
+   check(doc().querySelector('#challenge-title').textContent===copy.langs.vi.challengeTitle,'Challenge title differs from real L09');
+   check(doc().querySelector('[data-case-claim]').textContent===copy.langs.vi.caseClaim,'Real L09 case changed');
+   for(let i=0;i<4;i++)check(doc().querySelector('[data-answer="'+i+'"]').labels[0].textContent.includes(copy.langs.vi.questions[i]),
+      'Question '+i+' diverged from source');
+   checks.push('Exact production L09-1-2 VI/EN source, lesson ID, 4 questions and rubric used');
+   tap('[data-action="submit"]');
+   await until(()=>doc().querySelector('[data-status]').textContent.includes(copy.langs.vi.submitNeed),'min-length status');
+   check(!localStorage.getItem(key),'Blank submission should not persist a fake attempt');
+   checks.push('Four meaningful free-text answers required; no silent fabricated completion');
+   for(let i=0;i<4;i++){
+      edit('[data-answer="'+i+'"]','Synthetic answer number '+i+' with enough actual words.');
+      await until(()=>JSON.parse(localStorage.getItem(key)||'null')?.draft?.[i]?.startsWith('Synthetic answer number'),'draft persistence '+i);
+   }
+   check(localStorage.getItem(realKey)===null,'The experimental pilot contaminated real li. lesson storage');
+   tap('[data-action="hint"]');
+   await until(()=>JSON.parse(localStorage.getItem(key)).assisted===true&&
+     doc().querySelector('[data-hint]'),'optional hint');
+   tap('[data-locale="en"]');
+   await until(()=>doc().querySelector('#challenge-title').textContent===copy.langs.en.challengeTitle,'English text');
+   check(doc().querySelector('[data-answer="0"]').value.startsWith('Synthetic answer number'),'Changing language deleted answers');
+   tap('[data-locale="vi"]');
+   await until(()=>doc().querySelector('#challenge-title').textContent===copy.langs.vi.challengeTitle,'Vietnamese text');
+   checks.push('Local draft, hint and assisted evidence persist through actual L09 VI/EN copy changes');
+   tap('[data-action="submit"]');
+   await until(()=>!!doc().querySelector('[data-rubric]')&&
+     doc().querySelector('[data-answer="0"]').disabled,'rubric unlock');
+   const state=JSON.parse(localStorage.getItem(key));
+   check(state.submitted&&state.submissionLocale==='vi'&&state.submission.length===4&&
+     state.submission[0]===state.draft[0],'Frozen submission missing');
+   check(!doc().querySelector('[data-action="submit"]')&&!doc().querySelector('[data-action="clear"]'),
+      'Submission remained editable');
+   checks.push('Real L09 submission locks 4 drafts, keeps provenance and unlocks self-assessment only');
+   tap('[data-action="finish"]');
+   await until(()=>doc().querySelector('[data-status]').textContent.includes(copy.langs.vi.reviewNeed),'rating requirement');
+   for(const [i,val] of [0,1,2,2].entries()){
+     edit('[data-rating="'+i+'"]',String(val));
+     await until(()=>JSON.parse(localStorage.getItem(key)).ratings[i]===val,'rating saved '+i);
+   }
+   await until(()=>doc().querySelector('[data-score]').textContent.includes('5 / 8'),'self-rating sum');
+   tap('[data-action="finish"]');
+   await until(()=>doc().querySelector('[data-reviewed]')&&JSON.parse(localStorage.getItem(key)).reviewed===true,'review completion');
+   checks.push('Exact 4 rubric criteria, 0–2 scores, 5/8 self-rating, no automatic mastery claim');
+   await mount(390);
+   check(doc().querySelector('[data-reviewed]')&&doc().querySelector('[data-score]').textContent.includes('5 / 8'),
+      'Reload discarded a completed review');
+   check(getComputedStyle(doc().querySelector('[data-locale="vi"]')).minHeight!==''&&
+     parseFloat(win().getComputedStyle(doc().querySelector('[data-locale="vi"]')).minHeight)>=48,'Touch target below 48 CSS px');
+   check(doc().documentElement.scrollWidth<=doc().documentElement.clientWidth+1,'390px horizontal overflow');
+   checks.push('Full reload restores real L09 attempt while isolated from original production key');
+   await mount(820);
+   check(doc().documentElement.scrollWidth<=doc().documentElement.clientWidth+1,'820px horizontal overflow');
+   check(doc().querySelector('.pilot').getAttribute('data-lesson-id')==='L09-1-2','Stable lesson ID lost');
+   checks.push('390px and 820px Chromium widths avoid horizontal overflow; source-owned lesson ID stable');
+   frame.remove();localStorage.removeItem(key);
+   result.textContent='LI_STEP16_L09_PILOT_PASS '+JSON.stringify({count:checks.length,checks,
+      sourceSha256:copy.sourceSha256,
+      note:'Actual authored L09 content; isolated React/TypeScript island and synthetic learner answers, localhost Chromium only; not native full screen, Safari or production'});
+ }catch(e){
+    frame?.remove();localStorage.removeItem(key);
+    result.textContent='LI_STEP16_L09_PILOT_FAIL '+JSON.stringify({completed:checks,error:e.stack||String(e)});
+ }
+})();
+</script></body></html>

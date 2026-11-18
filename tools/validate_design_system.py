@@ -105,7 +105,7 @@ def main() -> int:
         check((ROOT / "design-assets" / "README.md").is_file(), "visual asset registry README exists")
         css = (ROOT / "site" / "assets" / "li-layout.css").read_text(encoding="utf-8")
         inline = registry.get("embedded_css_images", {}).get("variables", [])
-        check(len(inline) == 6 and all(re.search(re.escape(var) + r"\\s*:\\s*url\\(['\"]data:image/", css) for var in inline),
+        check(len(inline) == 6 and all(re.search(re.escape(var) + r"\s*:\s*url\(['\"]data:image/", css) for var in inline),
               "six legacy embedded CSS art variables recorded as outstanding asset debt")
 
     # UX-DS-23: contract navigation is a CI-guarded invariant, not a wiki convention.

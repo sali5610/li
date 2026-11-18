@@ -14,12 +14,12 @@ const fields=Object.fromEntries(ids.map(id=>[id,new Node()]));
 const cases=[{id:"c1",title:"Luận kết gốc",revision:"Mẫu này chưa đại diện tổng thể.",correct:false,savedAt:"2026-11-01T00:00:00.000Z"}];
 const ideas=[{id:"i1",text:"Ý chưa có dẫn chứng",savedAt:"2026-11-02T00:00:00.000Z"}];
 let canPersist=true,confirmDelete=true,saves=0,refreshes=0;
-const routes=[],messages=[];
+const routes=[],messages=[],undoActions=[];
 const ctx={document:{getElementById:id=>fields[id]||null,createElement:t=>new Node(t)},
  window:{confirm:()=>confirmDelete,liLibraryShelf:{renderHome:()=>refreshes++,renderCollection:()=>refreshes++}},
  processedCases:cases,collectedIdeas:ideas,liStorageError:false,
  liWriteState:()=>{saves++;return canPersist},
- navigate:r=>routes.push(r),toast:m=>messages.push(m),
+ navigate:r=>routes.push(r),toast:(m,options)=>{messages.push(m);if(typeof options?.undo==="function")undoActions.push(options.undo)},
  Date,Intl};
 vm.createContext(ctx);
 const js=fs.readFileSync(path.join(__dirname,"../site/assets/library-note-editor.js"),"utf8");
@@ -71,6 +71,10 @@ assert.equal(cases.length,1,"failed delete restores case");
 canPersist=true;
 fields["li-note-delete"].handlers.click();
 assert.equal(cases.length,0,"confirmed deletion removes case and history");
-assert.equal(api.openDetail("case","c1"),false,"deleted case cannot reopen");
+assert.equal(api.openDetail("case","c1"),false,"deleted case cannot reopen before Undo");
+assert.equal(undoActions.at(-1)(),true,"Undo restores deleted note");
+assert.equal(cases.length,1,"case restored");
+assert.equal(cases[0].versions.length,3,"version history restored");
+assert.equal(api.openDetail("case","c1"),true,"case can reopen after Undo");
 assert(saves>=7&&refreshes>=4);
-console.log("PASS note versions: original case snapshot, edited v2, failed save rollback, restore v3, idea edit, confirmed delete and delete rollback");
+console.log("PASS note versions + delete Undo: original case snapshot, v2/v3, full history restoration, rollback");

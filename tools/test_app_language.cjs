@@ -68,7 +68,7 @@ assert.equal(window.liLanguage.get(),"en");
 assert.equal(events.at(-1).detail.locale,"en");
 assert.equal(window.liLanguage.translate("Đại Sảnh"),"Great Hall");
 assert.equal(window.liLanguage.translate("Untranslated scholarly source"),"Untranslated scholarly source");
-assert.equal(window.liLanguage.translate("Đã nhập 2 Bút Ký, 3 Dấu Trang và 1 Ý đã nhặt."),"Imported 2 Case Notes, 3 bookmarks, and 1 captured ideas.");
+assert.equal(window.liLanguage.translate("Đã nhập 2 Bút Ký, 3 Dấu Trang và 1 Ý đã nhặt."),"Imported 2 case notes, 3 bookmarks, and 1 captured idea.");
 assert.equal(window.liLanguage.translate("Đã chọn nhịp Vào nhịp. Đổi lúc nào cũng được!"),"Selected Ease in. Change it whenever you like!");
 assert.equal(window.liLanguage.translate("Đang hiển thị 13 phương pháp"),"Showing 13 techniques");
 assert.equal(window.liLanguage.translate("Mình ghi trong Bút Ký rằng: Có khi kết luận này sai."),"Mình ghi trong Bút Ký rằng: Có khi kết luận này sai.","Never silently translate personal notes or arbitrary user text");

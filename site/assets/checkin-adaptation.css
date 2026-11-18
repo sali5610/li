@@ -28,7 +28,7 @@
  white-space:normal
 }
 #checkin-modal .checkin-index{font-size:var(--li-type-caption);line-height:var(--li-leading-caption);color:var(--muted)}
-#checkin-modal .checkin-radio-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--li-space-2);min-width:0}
+#checkin-modal .checkin-radio-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--li-space-2);min-width:0}
 #checkin-modal .checkin-radio{position:relative;display:block;min-width:0;cursor:pointer}
 #checkin-modal .checkin-radio input{
  position:absolute;left:var(--li-space-0);top:var(--li-space-0);width:1px;height:1px;opacity:0;

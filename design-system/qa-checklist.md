@@ -104,3 +104,12 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 - [ ] Invalid JSON, >10 MB, denied localStorage/readback show the error art with a clear message and working retry; original stored data not overwritten on malformed input. Do not claim rollback is guaranteed if browser storage is unavailable.
 - [ ] UI specimen matches shared `.li-state-scene` app component, decorative images have empty alt, status/alert semantics, keyboard/touch retry and reduced-motion fallback.
 - [ ] Visually inspect paper & moss backgrounds, edge halo and artwork clearance at 320/375/390/402/820px and 200% text zoom; run real iPhone/iPad Safari/PWA/VoiceOver before claiming device-level signoff. G2 remains open.
+
+
+### UX-ART-07 · Latest approved five-mini-icon replacement, 2026-11-19
+- [x] Exact final approved reference used, not an independently redrawn version; all five heads share clean boundaries and matching geometry.
+- [x] Original RGB checkerboard removed using color matte; actual PNG `tRNS` transparent corners; 96px 64-color palette, verified local overlays at 24px and 42px on paper + forest.
+- [x] Replaced canonical 5 PNGs and five matching deployed aliases; existing four modes, neutral chat avatar, labels, aria and saved-state logic unchanged.
+- [x] Invalidated cached URLs for all 12 icon references in `site/index.html`.
+- [ ] Review real Safari/PWA at 24px on iPhone/iPad, 200% text zoom, VoiceOver, contrast and halo; do not claim this from static preview/Chromium.
+- [ ] Full G2 signoff distinct from this asset-specific Human PO approval.

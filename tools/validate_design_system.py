@@ -83,6 +83,8 @@ def main() -> int:
             check(asset_path.is_file(), "asset exists: " + art.get("path", "missing"))
         check("papercraft" in art_contract.read_text(encoding="utf-8").lower(),
               "current character art policy documented")
+        check(artwork.get("icon_revision") == "UX-ART-07-final-clean-edges-20261119", "final PO-approved five clean-outline mini icons are current")
+        check(all(a.get("expression") and a.get("bytes") > 1000 and len(a.get("sha256", "")) == 64 for a in assets if a.get("type") == "icon"), "final five mini icon records have provenance and SHA256")
         check(artwork.get("full_G2_approval") == "PENDING",
               "replacing requested art does not silently close G2")
 
@@ -204,6 +206,13 @@ def main() -> int:
           "--li-device-ipad-landscape-type-body" in generated, "device scale generated CSS exists")
     check("(orientation: landscape)" in foundations and "(orientation: landscape)" in home_layout,
           "iPad landscape uses its own component and Home layout")
+    check("(max-width: 1600px) and (any-pointer: coarse)" in foundations and
+          "(max-width: 1600px) and (orientation: landscape) and (any-pointer: coarse)" in foundations and
+          "(max-width:1600px) and (any-pointer:coarse)" in home_layout and
+          "(max-width: 1600px) and (orientation: landscape) and (any-pointer: coarse)" in home_layout,
+          "iPad Pro 13 1376px touch portrait and landscape both covered")
+    check("ds26-ipad-real-fix" in html,
+          "iPad runtime styles use fresh CSS cache versions")
     check('data-width="1133" data-height="744"' in showcase and
           'data-width="820" data-height="1180"' in showcase, "review has iPad portrait and landscape presets")
 

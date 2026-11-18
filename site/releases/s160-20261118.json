@@ -1,0 +1,15 @@
+{
+  "release": "S160 — Tàng Thư five-level navigation",
+  "date": "2026-11-18",
+  "approved_by": "Human Product Owner",
+  "source_commit": "5db21f5f86b97d667f2c79649942e609502265b4",
+  "paths": [
+    "site/index.html",
+    "site/assets/catalog-curriculum-data.js",
+    "site/assets/catalog-drilldown.js",
+    "site/assets/catalog-drilldown.css"
+  ],
+  "publication_target": "https://sali5610.github.io/li/",
+  "scope": "Deploy approved existing main assets; no unpublished Wave2/3 lesson content",
+  "additional_paid_cost_vnd": 0
+}

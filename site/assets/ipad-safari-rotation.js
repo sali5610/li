@@ -11,7 +11,7 @@
  const normalMeta="width=device-width,initial-scale=1,viewport-fit=cover";
  const root=document.documentElement;
  const ua=navigator.userAgent||"";
- const isTouchIPad=/(iPad|Macintosh)/i.test(ua)&&navigator.maxTouchPoints>1;
+ const isTouchIPad=()=>/(iPad|Macintosh)/i.test(navigator.userAgent||ua)&&navigator.maxTouchPoints>1;
  let queued=false, lastApplied="", lastNativeKey="";
  const original=meta.content;
  function physicalOrientation(){
@@ -31,7 +31,7 @@
    queued=false;
    const h=physicalOrientation();
    const current=window.innerWidth;
-   const stale=isTouchIPad&&h.smallest>=700&&h.largest>=1024&&
+   const stale=isTouchIPad()&&h.smallest>=700&&h.largest>=1024&&
      h.landscape&&current<=h.smallest+32&&h.largest-current>=180;
    const nativeKey=[h.legacy,h.angle,h.type,h.outer,current].join("/");
    if(stale){
@@ -50,7 +50,7 @@
        root.classList.toggle("li-safari-landscape-recovery",stillStale);
        lastApplied=stillStale?"fallback canvas "+target:"native viewport "+window.innerWidth;
      });
-   }else if(isTouchIPad&&h.landscape&&meta.content.indexOf("width="+Math.round(h.largest))===0){
+   }else if(isTouchIPad()&&h.landscape&&meta.content.indexOf("width="+Math.round(h.largest))===0){
      // Retain the native numeric width while landscape; immediately reverting
      // to device-width could recreate the same stale-portrait Safari viewport.
      root.classList.remove("li-safari-landscape-recovery");
@@ -67,7 +67,7 @@
    }
    lastNativeKey=nativeKey;
    window.liSafariRotationQA={
-     iPad:isTouchIPad,physicalLandscape:h.landscape,
+     iPad:isTouchIPad(),physicalLandscape:h.landscape,
      screen:[h.smallest,h.largest],orientation:h.legacy,screenAngle:h.angle,
      screenType:h.type,outerWidth:h.outer,innerWidth:current,
      meta:meta.content,mode:lastApplied,nativeKey:lastNativeKey

@@ -57,11 +57,11 @@
 .ds12-tag.dark{background:var(--forest);color:var(--cream);border-color:var(--forest)}
 .ds12-tag.outline{background:var(--ds11-clear)}
 .ds12-tag svg.lucide{width:16px;height:16px}
-/* White is exactly #FFFFFF from the design token, not a warm ivory paint. */
-.ds-control :is(input:not(:disabled),textarea:not(:disabled)){background-color:var(--white)!important}
-.ds-control :is(input,textarea):read-only:not(:disabled){background-color:var(--white)!important}
-.ds11-input-wrap{background:var(--white)}
-.ds11-input-wrap input:not(:disabled){background:var(--white)!important}
+/* Editable fields use distinct near-white porcelain #FEFDFC, not pure #FFFFFF or cream. */
+.ds-control :is(input:not(:disabled),textarea:not(:disabled)){background-color:var(--porcelain)!important}
+.ds-control :is(input,textarea):read-only:not(:disabled){background-color:var(--porcelain)!important}
+.ds11-input-wrap{background:var(--porcelain)}
+.ds11-input-wrap input:not(:disabled){background:var(--porcelain)!important}
 .ds11-input-wrap:has(input:disabled){background:var(--paper-2)}
 /* Force square shape with custom painted tick, independent of Safari default. */
 .ds11-check-row input[type="checkbox"]{

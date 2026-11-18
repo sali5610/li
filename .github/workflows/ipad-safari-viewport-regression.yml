@@ -1,0 +1,21 @@
+name: iPad Safari viewport regression
+on:
+  pull_request:
+    paths:
+      - site/assets/ipad-safari-rotation.js
+      - site/assets/ipad-viewport-debug.js
+      - site/assets/ui-foundations.css
+      - site/assets/library-hub.css
+      - tools/test_ipad_safari_rotation.cjs
+      - .github/workflows/ipad-safari-viewport-regression.yml
+  workflow_dispatch:
+jobs:
+  safari-orientation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify physical portrait / landscape stale viewport recovery
+        run: node tools/test_ipad_safari_rotation.cjs

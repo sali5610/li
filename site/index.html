@@ -122,7 +122,7 @@
     <fieldset class="checkin-physical-field" data-checkin-field="rest"><legend><span class="checkin-index">03</span> Đã nghỉ ngơi hôm nay?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-rest" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-rest" value="no"><span>Chưa</span></label></div></fieldset>
    </div>
    <p id="checkin-recommendation" class="state-note checkin-result" role="status" aria-live="polite">Trả lời đủ ba mục thể trạng để nhận nhịp gợi ý.</p>
-   <details class="checkin-context"><summary>Cảm nhận hiện tại · Bổ sung</summary><p>Không bắt buộc. Trả lời thêm có thể hạ nhịp để giảm tải, không dùng cảm giác sung sức để bỏ qua thể trạng đã khai.</p>
+   <details class="checkin-context"><summary>Cảm nhận hiện tại · Bổ sung</summary><p>Không bắt buộc. Dồi dào hoặc tập trung rõ được cộng điểm; mệt hay khó tập trung sẽ giảm nhịp. Ba mục L1 vẫn được ưu tiên.</p>
     <fieldset class="checkin-question"><legend>Năng lượng lúc này</legend><div class="checkin-choices">
      <label class="checkin-choice"><input type="radio" name="checkin-energy" value="high"><span>Dồi dào</span></label>
      <label class="checkin-choice"><input type="radio" name="checkin-energy" value="medium"><span>Vừa đủ</span></label>
@@ -515,19 +515,33 @@ function completePhysicalCheckin(physical){
 }
 function recommendStudyMode(physical,energy="",attention=""){
  if(!completePhysicalCheckin(physical))return null;
- const responses=[physical.sleep,physical.move,physical.rest];
- // Never use the three responses as a medical/compliance score.
- // Optional subjective energy and attention may only downshift from the physical baseline; never escalate above a physical 'no'.
- // Exception: simultaneous 'low' energy and 'hard' attention suggests overload rather than simply recover.
- if(energy==="low"&&attention==="hard")
-  return {mode:"overload",reason:"Cả thể trạng đã khai và cảm giác lúc này cho thấy nên giảm tải; có thể nghỉ."};
- if(responses.includes("no"))
-  return {mode:"recover",reason:"Có ít nhất một điều về ngủ, vận động hoặc nghỉ ngơi bạn trả lời 'Chưa'. Ưu tiên nhịp nhẹ."};
- if(energy==="low"||attention==="hard")
-  return {mode:"recover",reason:"Cảm nhận hiện tại cho thấy khó duy trì cường độ; hãy bắt đầu bằng phần nhỏ."};
- if(energy==="medium"||attention==="warming")
-  return {mode:"start",reason:"Ba mục thể trạng đều được trả lời Có; cảm nhận hiện tại phù hợp bắt đầu từ từ."};
- return {mode:"focus",reason:"Cả ba mục đều Có; có thể thử học sâu nếu thấy ổn."};
+ // An explainable study-rhythm heuristic, NOT a clinical/health or cognitive score.
+ // Primary: three physical reports, each Có +2, Chưa +0. Secondary feelings:
+ // energetic +1, medium -1, low -2; clear focus +1, warming -1, hard -2.
+ // Positives genuinely add to the study-rhythm suggestion, with a physical-first cap:
+ // any Chưa can increase up to Vào nhịp, not automatically to Đào sâu.
+ const yesCount=[physical.sleep,physical.move,physical.rest].filter(value=>value==="yes").length;
+ const energyPoints={high:1,medium:-1,low:-2}[energy]??0;
+ const attentionPoints={steady:1,warming:-1,hard:-2}[attention]??0;
+ const physicalPoints=yesCount*2;
+ const points=physicalPoints+energyPoints+attentionPoints;
+ const positives=[];
+ if(energy==="high")positives.push("Năng lượng dồi dào +1");
+ if(attention==="steady")positives.push("Tập trung rõ +1");
+ let mode,reason;
+ if(energy==="low"&&attention==="hard"){
+  mode="overload";reason="Năng lượng cạn và rất khó tập trung; giảm tải hoặc nghỉ đều được.";
+ }else if(energy==="low"||attention==="hard"){
+  mode="recover";reason="Cảm nhận hiện tại báo khó duy trì cường độ, nên ưu tiên nhịp nhẹ.";
+ }else if(yesCount===3){
+  mode=points>=6?"focus":points===5?"start":"recover";
+  reason=mode==="focus"?"Ba mục thể trạng đều Có; cảm nhận hiện tại hỗ trợ học sâu.":mode==="start"?"Ba mục thể trạng đều Có; nên bắt đầu vừa sức.":"Ba mục thể trạng đều Có, nhưng cảm nhận hiện tại cho thấy nên học nhẹ.";
+ }else if(yesCount===2&&points>=5){
+  mode="start";reason="Một mục thể trạng là Chưa, nhưng tín hiệu tích cực giúp bạn thử Vào nhịp thay vì chỉ Hồi trí.";
+ }else{
+  mode="recover";reason="Có mục thể trạng Chưa; trước mắt ưu tiên Hồi trí.";
+ }
+ return {mode,reason,points,physicalPoints,energyPoints,attentionPoints,positives};
 }
 function refreshCheckinRecommendation(){
  const {physical,energy,attention}=readCheckinInputs();
@@ -542,7 +556,8 @@ function refreshCheckinRecommendation(){
  }else if(manual){
   result.textContent="L1 đã đủ ba câu. Bạn chọn "+STUDY_MODES[manual].label+" thủ công; quyền quyết định vẫn thuộc về bạn.";
  }else{
-  result.textContent="Gợi ý: "+STUDY_MODES[suggested.mode].label+". "+suggested.reason+" Đây không phải đánh giá sức khỏe.";
+  const bonus=suggested.positives.length?" Điểm cộng gợi ý: "+suggested.positives.join(" · ")+".":"";
+  result.textContent="Gợi ý: "+STUDY_MODES[suggested.mode].label+". "+suggested.reason+bonus+" Đây không phải đánh giá sức khỏe.";
  }
  document.getElementById("apply-checkin").disabled=!target;
  return target;

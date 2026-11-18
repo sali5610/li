@@ -231,21 +231,25 @@ def main() -> int:
           "(max-width:1420px) and (orientation:landscape)" in home_layout and
           "and (any-pointer: coarse)" not in foundations[foundations.index("/* UX-DS-25"):],
           "iPad 1408px landscape uses viewport ratio, not pointer hardware")
-    check("ds32-portrait-center" in html, "new Safari rotation response and CSS are cache-versioned")
-    check("ipad-safari-rotation.js?v=20261119-ds32" in html, "iPad-only runtime orientation reconciliation installed")
+    check("ds33-physical-shell" in html, "new Safari rotation response and CSS are cache-versioned")
+    check("ipad-safari-rotation.js?v=20261119-ds33" in html, "iPad-only runtime orientation reconciliation installed")
     check("pinch-zoom" in (ROOT / "site/assets/ui-foundations.css").read_text(encoding="utf-8"), "iPad Safari touch-action allows pinch zoom")
-    check("ds32-portrait-center" in html,
+    check("ds33-physical-shell" in html,
           "iPad runtime styles use fresh CSS cache versions")
-    check("html.li-safari-landscape-recovery" in foundations and
-          "html.li-safari-landscape-recovery" in home_layout and
-          "--li-safari-physical-width" in foundations and
-          "home-li-ipad-20261119.jpg" in home_layout,
-          "Safari stale-portrait fallback reuses approved single landscape image and landscape tokens")
-    check("--li-ipad-active-mode: landscape" in foundations and
-          "--li-ipad-active-mode: portrait" in foundations and
-          "UX-DS-27" in home_layout and
-          "three compositional zones" in home_layout,
-          "landscape CSS exposes active mode and distinct three-zone Home composition")
+    ipad_canvas = (ROOT / "site/assets/ipad-home-canvas.css").read_text(encoding="utf-8")
+    check("ipad-home-canvas.css?v=20261119-ds33-physical-shell" in html and
+          "html.li-ipad-home-canvas .app.home-focus" in ipad_canvas and
+          "position:fixed!important;" in ipad_canvas and
+          "home-li-ipad-20261119.jpg" in ipad_canvas,
+          "one physical iPad Home shell reuses approved artwork")
+    check("--li-ipad-active-mode: landscape" in ipad_canvas and
+          "--li-ipad-active-mode: portrait" in ipad_canvas and
+          "--li-ipad-shell-width" in ipad_canvas and
+          "--li-ipad-shell-height" in ipad_canvas,
+          "physical iPad shell uses canonical portrait/landscape aliases")
+    check("html.li-safari-landscape-recovery" not in foundations and
+          "html.li-safari-landscape-recovery" not in home_layout,
+          "obsolete conflicting Safari recovery overrides removed")
     check('data-width="1408" data-height="832"' in showcase and
           'data-width="970" data-height="1408"' in showcase,
           "PO screenshot 1408×832 landscape and 970×1408 portrait review presets")

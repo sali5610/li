@@ -1,0 +1,98 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>li. Step 16 cross-framework behavior benchmark</title></head><body>
+<pre id="result">LI_STEP16_FE_BENCH_PENDING</pre>
+<script>
+(async()=>{
+ const output=document.getElementById('result');
+ const variants=['vanilla','react','lit'],results=[];
+ const KEY='step16.framework-benchmark.v1';
+ const check=(ok,message)=>{if(!ok)throw Error(message)};
+ const later=()=>new Promise(resolve=>setTimeout(resolve,12));
+ async function until(test,what){
+  const start=performance.now();
+  while(performance.now()-start<6000){
+   if(test())return performance.now()-start;
+   await later();
+  }
+  throw Error('Timed out: '+what);
+ }
+ function median(list){const sorted=[...list].sort((a,b)=>a-b);return sorted[Math.floor(sorted.length/2)];}
+ async function loadFrame(mode){
+  const frame=document.createElement('iframe');
+  frame.width='390';frame.height='640';frame.hidden=true;
+  frame.src='./dist/'+mode+'/index.html';
+  document.body.append(frame);
+  await until(()=>frame.contentWindow?.Step16Bench?.ready&&
+    frame.contentDocument?.querySelector('[data-role="title"]')?.textContent,'mount '+mode);
+  return frame;
+ }
+ try{
+  for(const mode of variants){
+   localStorage.removeItem(KEY);
+   const started=performance.now();
+   let frame=await loadFrame(mode);
+   const mountMs=Number((performance.now()-started).toFixed(1));
+   let doc=frame.contentDocument,w=frame.contentWindow;
+   const samples=[];
+   check(w.Step16Bench.variant===mode,'Variant mismatch '+mode);
+   check(!!doc.querySelector('[data-role="progress"]')&&!!doc.querySelector('[data-role="feedback"]'),
+     'Missing shared semantics '+mode);
+   check(getComputedStyle(doc.querySelector('[data-action="submit"]')).minHeight==='48px',
+     'Missing shared 48px touch target '+mode);
+   const tap=async(selector,predicate,description)=>{
+    const button=doc.querySelector(selector);
+    check(button&&!button.disabled,'Missing/disabled '+description+' '+mode);
+    const t=performance.now();button.click();
+    await until(predicate,description+' '+mode);
+    samples.push(performance.now()-t);
+   };
+   await tap('[data-action="locale"]',
+     ()=>w.Step16Bench.getState().locale==='en'&&doc.querySelector('[data-role="title"]').textContent==='Sampling and selection bias',
+     'VI-EN locale toggle');
+   await tap('[data-action="locale"]',
+     ()=>w.Step16Bench.getState().locale==='vi'&&doc.querySelector('[data-role="title"]').textContent==='Lấy mẫu và thiên lệch',
+     'EN-VI locale toggle');
+   for(let i=0;i<30;i++){
+    const before=w.Step16Bench.getState(),idx=before.index;
+    if(i%2===0)await tap('[data-action="hint"]',
+      ()=>w.Step16Bench.getState().assisted===true&&doc.querySelector('[data-role="hint"]').hidden===false,'show hint');
+    const correct=[1,1,0][idx],choice=i%3===0?(correct+1)%3:correct;
+    await tap('[data-option="'+choice+'"]',
+      ()=>w.Step16Bench.getState().selected===choice&&
+        doc.querySelector('[data-option="'+choice+'"]').getAttribute('aria-pressed')==='true','choose option');
+    await tap('[data-action="submit"]',
+      ()=>w.Step16Bench.getState().submitted&&
+        doc.querySelector('[data-role="feedback"]').textContent.length>0,'feedback');
+    check(w.Step16Bench.getState().attempts.length===i+1,'No persisted attempt '+i);
+    await tap('[data-action="next"]',
+      ()=>w.Step16Bench.getState().index===(idx+1)%3&&
+        !w.Step16Bench.getState().submitted&&
+        doc.querySelector('[data-action="next"]').disabled,'next lesson');
+    if(i===9||i===19){
+      frame.remove();frame=await loadFrame(mode);doc=frame.contentDocument;w=frame.contentWindow;
+      check(w.Step16Bench.getState().attempts.length===i+1,'Reload did not restore attempts');
+      check(w.Step16Bench.getState().index===(i+1)%3,'Reload lost lesson index');
+    }
+   }
+   const final=w.Step16Bench.getState();
+   check(final.attempts.length===30,'Expected 30 attempts');
+   check(final.attempts.some(x=>x.correct===false)&&final.attempts.some(x=>x.assisted===true),
+     'Missing wrong or hinted performance');
+   const small=doc.querySelector('[data-role="question"]').textContent;
+   check(small.length>10,'Lesson body disappeared');
+   results.push({variant:mode,passed:true,mountMs,
+     domUpdateSampleMedianMs:Number(median(samples).toFixed(1)),
+     interactions:samples.length,attempts:final.attempts.length,
+     keyboardFocusTarget:!!doc.querySelector('button:focus-visible')||!!doc.querySelector('button')});
+   frame.remove();
+  }
+  localStorage.removeItem(KEY);
+  output.textContent='LI_STEP16_FE_BENCH_PASS '+JSON.stringify({count:results.length,
+    scenarios:'same 3 educational tasks, VI/EN, select/hint/submit/feedback/next, 30 attempts and 2 reloads each',
+    browser:navigator.userAgent,results,
+    warning:'One headless Chromium run; timing data is noisy and not proof of architectural superiority; no real Safari, source migration, screen reader or full li. app.'});
+ }catch(e){
+  localStorage.removeItem(KEY);
+  output.textContent='LI_STEP16_FE_BENCH_FAIL '+JSON.stringify({completed:results,error:e.stack||String(e)});
+ }
+})();
+</script></body></html>

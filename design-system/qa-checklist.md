@@ -90,8 +90,7 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 - [ ] iPad portrait/landscape, 200% text zoom, VoiceOver and PWA caching; retain readable four mode labels and accessible names
 - [ ] Overall G2 illustration identity acceptance remains separate
 
-
-### UX-ART-05 · Approved Lão Lý loading/error scenes
+### UX-ART-06 · Approved Lão Lý loading/error scenes
 - [ ] Exact two Human PO-selected scenes stored as **1024×1024 RGBA with transparent pixels** under `design-assets/lao-ly/system-states/`; deployed app binary copies identical by SHA-256.
 - [ ] Loading shown only while reading a selected backup, not on an arbitrary fixed timer; success/cancel hides it. Never show error art for search's ordinary no-result state.
 - [ ] Invalid JSON, >10 MB, denied localStorage/readback show the error art with a clear message and working retry; original stored data not overwritten on malformed input. Do not claim rollback is guaranteed if browser storage is unavailable.

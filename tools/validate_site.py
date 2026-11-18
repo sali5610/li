@@ -419,7 +419,7 @@ assert 'if(back)back.hidden=id==="home"' in page_html
 assert '.header #li-global-back{' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"' in settings
 assert 'class="settings-buddy-illustration" src="./assets/laoly-guide-rest.png"' not in settings
-assert '<span class="hero-dialogue-avatar" aria-hidden="true"><img src="./assets/laoly-neutral.png"' in html
+assert '<span class="hero-dialogue-avatar" aria-hidden="true"><img src="./assets/laoly-neutral.png?v=ux-art05-mini-heads-20261119"' in html
 assert 'const pageHistory=[];' in html
 assert 'function goBack(){' in html
 assert 'if(t.hasAttribute("data-nav-back")){goBack();return}' in html
@@ -843,7 +843,7 @@ assert 'top: 39% !important;' in foundation
 assert 'gap: var(--li-space-1) !important;' in foundation
 assert 'overflow: visible;' in foundation
 
-# UX-ART-05: two approved papercraft system-state scenes, actual live import flow and shared specimen.
+# UX-ART-06: two approved papercraft system-state scenes, actual live import flow and shared specimen.
 art_manifest=json.loads((site.parent/"design-assets"/"lao-ly"/"manifest.json").read_text(encoding="utf-8"))
 state_assets=art_manifest.get("state_assets",[])
 assert [x.get("state") for x in state_assets]==["loading","error"], "Exactly two PO-approved state illustrations"
@@ -856,7 +856,7 @@ for asset in state_assets:
     assert source[:8]==b"\x89PNG\r\n\x1a\n", "System-state master must be a PNG"
     assert (int.from_bytes(source[16:20],"big"),int.from_bytes(source[20:24],"big"))==(1024,1024), "State art size wrong"
     assert source[25]==6, "State art must use true-color RGBA alpha PNG"
-assert '<link rel="stylesheet" href="./assets/li-state-scenes.css?v=20261119-art05">' in head
+assert '<link rel="stylesheet" href="./assets/li-state-scenes.css?v=20261119-art06">' in head
 shared=(site/"assets"/"li-state-scenes.css").read_text(encoding="utf-8")
 assert ".li-state-scene[hidden]" in shared and "prefers-reduced-motion:reduce" in shared
 assert 'id="import-state-loading" role="status" aria-live="polite"' in page_html
@@ -873,5 +873,5 @@ review_status=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert 'id="feedback"' in review_status and 'li-state-scene-showcase' in review_status
 for name in ("laoly-state-loading.png","laoly-state-error.png"):
     assert name in page_html and name in review_status
-assert "li-state-scenes.css?v=20261119-art05" in review_status
-assert "UX-ART-05" in (site.parent/"design-system"/"components.md").read_text(encoding="utf-8")
+assert "li-state-scenes.css?v=20261119-art06" in review_status
+assert "UX-ART-06" in (site.parent/"design-system"/"components.md").read_text(encoding="utf-8")

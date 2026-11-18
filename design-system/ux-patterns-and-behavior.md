@@ -122,7 +122,7 @@ Test each touched **screen × component variant × state × modality × viewport
 - Project-specific historical decisions: [G2 contract](https://app.notion.com/p/41b6cf6db72a81529796dc5d1e134dd1), [active UX writing canon](https://app.notion.com/p/41b6cf6db72a811aba36dcec9cc42c20), [Latest Handoff](https://app.notion.com/p/4196cf6db72a81f7b000f75783f210b5).
 
 
-## UX-ART-05 · Lão Lý contextual loading / error state contract
+## UX-ART-06 · Lão Lý contextual loading / error state contract
 - **Use:** `loading` when a real asynchronous operation is pending (e.g. reading a user-selected backup file); `error` when an operation fails and the user needs a reason/recovery. A no-match search result is **empty**, not a service error. A successful read is **not** a completed save until localStorage readback passes.
 - **Anatomy:** one 1024px transparent paper-collage image (`alt=""` / decorative) + short human-readable title + reason/next step; error has an actual keyboard/touch accessible retry button. The image alone never conveys state. Reuse `.li-state-scene`, no duplicate one-off UI styles or recolored scene assets.
 - **Access:** loading `role=status`, `aria-live=polite`, no false progress percentage; error `role=alert`. Inert/hidden state must not trap focus. Disable competing import trigger only during pending processing, restore after any outcome. A retry must reopen the browser file chooser, including selection of the same file after input reset.

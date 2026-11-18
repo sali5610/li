@@ -12,8 +12,7 @@
 GitHub owns active asset binaries. Notion owns Human PO decisions, mapping and pending gates. App's seven Lão Lý PNG paths are populated from these new masters; copying a file is not a blanket G2 approval. Never reinstate older `ngoai-guong/` from historical revisions without a new Human PO decision. Mode labels reflect **user-selected** modes, never infer a person's health or cognitive state.
 
 The 10 mirror illustrations originate from the newly generated 2026-11-19 papercraft pose sheet and compact crop; **not 10 independent in-mirror drawings**. The five mini icons are cropped from the PO-approved five-head sheet, **not** the large illustration pose set. Former 1024px functional icon files were removed from the active tree (restorable from Git history). Assess pose and asset visibility at narrow screens; physical Safari/PWA/VoiceOver/G2 remain open. No extra paid tools.
-
-## UX-ART-05 · Approved system-state scenes (2026-11-19)
+## UX-ART-06 · Approved system-state scenes (2026-11-19)
 The Human Product Owner approved the **two-state papercraft context sheet** for real **loading** and **error** states. Masters live in `system-states/` with exact copies in `site/assets/laoly-state-loading.png` and `site/assets/laoly-state-error.png`.
 - Loading: Lão Lý reading next to the lantern, sleeping cat, and armillary sphere; show **only during real pending work**.
 - Error: Lão Lý puzzled over an invalid map; show **only for real failed operations**, paired with a clear cause and working recovery action.

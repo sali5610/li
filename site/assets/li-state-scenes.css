@@ -1,4 +1,4 @@
-/* UX-ART-05 · approved Lão Lý papercraft system states. Shared by live app and Component Library. */
+/* UX-ART-06 · approved Lão Lý papercraft system states. Shared by live app and Component Library. */
 .li-state-scene[hidden]{display:none!important}
 .li-state-scene{display:grid;justify-items:center;align-content:start;gap:var(--li-space-2);width:100%;min-width:0;max-width:360px;margin:var(--li-space-4) auto;padding:var(--li-space-4) var(--li-space-3);text-align:center;color:var(--ink)}
 .li-state-scene__art{display:block;width:min(64vw,220px);max-width:100%;aspect-ratio:1/1;object-fit:contain;margin:0 auto}

@@ -288,8 +288,8 @@ assert "#page-guide #method-cards > .method-card {" in foundation
 assert "padding: var(--li-space-5) !important;" in foundation
 assert "#page-guide #method-cards>.method-card .purpose{" not in html, "Retired S118 text-clamping CSS must not return"
 assert "#page-guide #method-cards > .method-card .purpose {" in foundation
-assert "--li-guide-s118-col-gap: 18px;" in foundation and "--li-guide-s118-row-gap: 20px;" in foundation
-assert "--li-guide-s118-col-gap: 14px;" in foundation and "--li-guide-s118-row-gap: 18px;" in foundation
+assert "--li-guide-s118-col-gap: var(--li-micro-guide-column-gap-18);" in foundation and "--li-guide-s118-row-gap: var(--li-space-5);" in foundation
+assert "--li-guide-s118-col-gap: var(--li-micro-guide-column-gap-14);" in foundation and "--li-guide-s118-row-gap: var(--li-micro-guide-row-gap-18);" in foundation
 assert "function renderMethods(){" in html and "function showMethod(id){" in html
 assert "/* S114 — restrained Lão Lý peek:" in html
 
@@ -311,7 +311,7 @@ notebook_first_rule = 8 + 31
 assert notebook_first_rule == 39
 assert (notebook_first_rule - 32) < 16
 assert ':root{--li-notebook-line-height:31px' not in html
-assert '--li-notebook-line-height: 32px' in foundation
+assert '--li-notebook-line-height: var(--li-leading-notebook)' in foundation
 assert "textarea::placeholder{color:var(--muted);opacity:.8}" in html
 assert html.count('class="text-editor"') >= 2
 

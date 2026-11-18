@@ -501,12 +501,12 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   gap: var(--li-space-2) var(--li-space-5);
 }
 #page-library .library-group-header h2 {
-  margin: 0;
+  margin: var(--li-space-0);
   font: 600 var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial);
   color: var(--moss);
 }
 #page-library .library-group-header p {
-  margin: 0;
+  margin: var(--li-space-0);
   max-width: 48ch;
   color: var(--muted);
 }

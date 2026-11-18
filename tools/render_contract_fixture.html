@@ -56,6 +56,8 @@
     const cssClear=value=>value==="rgba(0, 0, 0, 0)"||value==="transparent";
     report("Home header uses genuinely transparent Component Library overlay",!!topCss&&cssClear(topCss.backgroundColor)&&topCss.borderBottomWidth==="0px"&&topCss.boxShadow==="none",topCss?.backgroundColor+"/"+topCss?.borderBottomWidth);
     report("Home artwork extends behind top navigation",!!heroBox&&!!headerBox&&Math.abs(heroBox.top-headerBox.top)<=2&&headerBox.height>=60,heroBox?.top+"/"+headerBox?.top+"/"+headerBox?.height);
+    report("Home scene paints edge-to-edge across actual viewport width",!!heroBox&&Math.abs(heroBox.left)<=2&&Math.abs(heroBox.right-w.innerWidth)<=2&&Math.abs(heroBox.width-w.innerWidth)<=2,JSON.stringify({left:heroBox?.left,right:heroBox?.right,width:heroBox?.width,viewport:w.innerWidth}));
+    if(landscape)report("iPad landscape Home art escapes editorial wrapper",w.getComputedStyle(scene).position==="fixed",w.getComputedStyle(scene).position);
     report("Transparent Home artwork also covers bottom viewport",!!heroBox&&heroBox.bottom>=w.innerHeight-2,"sceneBottom="+heroBox?.bottom+" viewport="+w.innerHeight);
     const rootScroll=w.getComputedStyle(doc.documentElement).overflowY;
     const bodyScroll=w.getComputedStyle(doc.body).overflowY;

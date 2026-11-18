@@ -1,5 +1,5 @@
 <!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>li. v0.3 Browser Computed Style Smoke</title>
-<style>html,body{margin:0;padding:0}iframe{display:block;width:var(--test-width,100%);height:var(--test-height,900px);border:0}#result{white-space:pre-wrap;font:12px monospace}</style><script>const params=new URLSearchParams(location.search);const width=Number(params.get("w"))||390;const heights={744:1133,820:1180,1024:768,1133:744,1194:834,1366:1024,1376:1032};document.documentElement.style.setProperty("--test-width",width+"px");document.documentElement.style.setProperty("--test-height",(Number(params.get("h"))||heights[width]||900)+"px");</script></head>
+<style>html,body{margin:0;padding:0}iframe{display:block;width:var(--test-width,100%);height:var(--test-height,900px);border:0}#result{white-space:pre-wrap;font:12px monospace}</style><script>const params=new URLSearchParams(location.search);const width=Number(params.get("w"))||390;const heights={744:1133,820:1180,1024:768,1133:744,1194:834,1366:1024,1376:1032,970:1408,1408:832};document.documentElement.style.setProperty("--test-width",width+"px");document.documentElement.style.setProperty("--test-height",(Number(params.get("h"))||heights[width]||900)+"px");</script></head>
 <body><pre id="result">LI_RENDER_PENDING</pre><iframe id="app" src="../site/index.html" title="li. app fixture"></iframe>
 <script>
 (function(){
@@ -21,7 +21,7 @@
     const doc=frame.contentDocument,w=frame.contentWindow,root=w.getComputedStyle(doc.documentElement);
     report("Generated color --paper",root.getPropertyValue("--paper").trim().toUpperCase()==="#F1F0E9",root.getPropertyValue("--paper"));
     report("Generated spacing --li-space-4",root.getPropertyValue("--li-space-4").trim()==="16px",root.getPropertyValue("--li-space-4"));
-    const wideLandscape=(w.innerWidth>=1140&&w.innerWidth<=1400&&w.innerWidth>w.innerHeight);
+    const wideLandscape=(w.innerWidth>=1140&&w.innerWidth<=1420&&w.innerWidth>w.innerHeight);
     const ipadMode=(w.innerWidth>=744&&w.innerWidth<=1139)||wideLandscape;
     const landscape=ipadMode&&w.innerWidth>=1000&&w.innerWidth>w.innerHeight;
     const expectedBody=ipadMode?"18px":"16px",expectedLeading=ipadMode?"28px":"24px";

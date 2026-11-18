@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>li. iPad rotation contract — portrait to landscape without reload</title>
+<style>
+html,body{margin:0;padding:0}
+#result{white-space:pre-wrap;font:12px/1.5 monospace}
+#app{display:block;width:820px;height:1180px;border:0}
+</style>
+</head>
+<body>
+<pre id="result">LI_ROTATION_PENDING</pre>
+<iframe id="app" src="../site/index.html" title="Real li. app rotation regression"></iframe>
+<script>
+(function(){
+"use strict";
+const params=new URLSearchParams(location.search);
+const portraitWidth=Number(params.get("pw"))||820;
+const portraitHeight=Number(params.get("ph"))||1180;
+const landscapeWidth=Number(params.get("lw"))||1180;
+const landscapeHeight=Number(params.get("lh"))||820;
+const frame=document.querySelector("#app");
+const result=document.querySelector("#result");
+const checks=[];
+frame.style.width=portraitWidth+"px";
+frame.style.height=portraitHeight+"px";
+function test(label,pass,detail){checks.push({label,passed:!!pass,detail:detail==null?"":String(detail)});}
+function snap(){
+ const w=frame.contentWindow,d=frame.contentDocument;
+ const hero=d.querySelector("#page-home .hero");
+ return {
+   w:w.innerWidth,h:w.innerHeight,
+   mode:w.getComputedStyle(d.documentElement).getPropertyValue("--li-ipad-active-mode").trim(),
+   art:w.getComputedStyle(hero,"::before").backgroundImage,
+   hero:hero.getBoundingClientRect(), 
+   header:d.querySelector(".app>.header").getBoundingClientRect(),
+   context:d.querySelector("#page-home .hero-dialogue").getBoundingClientRect(),
+   actions:d.querySelector("#page-home .hero-actions").getBoundingClientRect(),
+   scroll:w.getComputedStyle(d.documentElement).overflowY
+ };
+}
+function verify(label,width,height,mode){
+ const s=snap();
+ const tolerance=3;
+ test(label+" viewport size",s.w===width&&s.h===height,s.w+"x"+s.h);
+ test(label+" device CSS mode",s.mode===mode,s.mode);
+ test(label+" approved iPad art",s.art.includes("home-li-ipad-20261119.jpg"),s.art.slice(0,110));
+ test(label+" Home hero fills browser width",Math.abs(s.hero.width-width)<=tolerance&&Math.abs(s.hero.left)<=tolerance&&Math.abs(s.hero.right-width)<=tolerance,
+      [s.hero.left,s.hero.width,s.hero.right,width].map(Math.round).join(","));
+ test(label+" Home behind transparent header",Math.abs(s.hero.top-s.header.top)<=tolerance,Math.round(s.hero.top)+"/"+Math.round(s.header.top));
+ test(label+" Home scroll locked",s.scroll==="hidden",s.scroll);
+ if(mode==="landscape")test(label+" action rail occupies right third",s.actions.left>width*.66&&s.context.left>width*.66,
+   Math.round(s.actions.left)+"/"+Math.round(s.context.left));
+}
+let done=false;
+function finish(){if(done)return;done=true;const failed=checks.filter(x=>!x.passed);result.textContent=(failed.length?"LI_ROTATION_FAIL ":"LI_ROTATION_PASS ")+JSON.stringify({portrait:[portraitWidth,portraitHeight],landscape:[landscapeWidth,landscapeHeight],passed:checks.length-failed.length,total:checks.length,failed,checks});}
+frame.addEventListener("load",()=>{
+ setTimeout(()=>{
+  try{
+   const doc=frame.contentDocument;
+   const meta=doc.querySelector('meta[name="viewport"]')?.content||"";
+   test("Native Safari zoom allowed",meta.includes("width=device-width")&&!meta.includes("user-scalable=no")&&!meta.includes("maximum-scale="),meta);
+   verify("portrait initial",portraitWidth,portraitHeight,"portrait");
+   frame.style.width=landscapeWidth+"px";
+   frame.style.height=landscapeHeight+"px";
+   setTimeout(()=>{
+    try{
+     verify("landscape after live rotation",landscapeWidth,landscapeHeight,"landscape");
+     frame.style.width=portraitWidth+"px";
+     frame.style.height=portraitHeight+"px";
+     setTimeout(()=>{
+      try{verify("portrait after reverse rotation",portraitWidth,portraitHeight,"portrait");}catch(e){test("reverse rotation JS",false,e.message);}
+      finish();
+     },500);
+    }catch(e){test("landscape rotation JS",false,e.message);finish();}
+   },650);
+  }catch(e){test("initial JS",false,e.message);finish();}
+ },900);
+},{once:true});
+setTimeout(()=>{test("rotation fixture timeout",false,"No completed iframe layout");finish();},10000);
+})();
+</script>
+</body>
+</html>

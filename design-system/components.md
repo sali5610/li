@@ -50,7 +50,7 @@
 
 ## Visual design rules (decisions vs QA)
 - **PO-specific visual exceptions:** even though S81 baseline generally asks square controls, the latest header/bottom **active icon background is intentionally an oval sand pill**, and the separate **Lão Lý chat is a rounded speech bubble**. Do **not** run blanket `border-radius:0` resets on these.
-- **Touch exception risk:** source currently contains PO-requested pinch-zoom locking; this remains an **accessibility concern**, not WCAG acceptance. Accessibility review must record that risk rather than pretending all gestures/zoom are supported.
+- **Safari viewport correction (UX-DS-28):** Restore native pinch-zoom and orientation changes by removing `user-scalable=no`, `minimum-scale`/`maximum-scale` and global gesture `preventDefault()` listeners. Shared CSS explicitly permits `pinch-zoom` on the document and mirror; horizontal mirror swipe stays scoped to its own touch listeners. This repairs the prior accessibility caveat in source, **not yet physically verified on Safari**.
 - **iPhone Safari square tap flash regression:** native tap highlight and touch-hover overlays have reappeared in the past. Test visually on device; source presence of `-webkit-tap-highlight-color` is only a smoke check.
 - **Latest state wins:** if Notion or new PO feedback differs from the above, update this contract **and** every affected implementation/screenshot fixture together. Never quietly make the docs say something old.
 

@@ -6,6 +6,7 @@ on:
       - 'site/**'
       - 'design-system/**'
       - 'tools/render_contract_fixture.html'
+      - 'tools/ipad_rotation_fixture.html'
       - 'tools/component_review_fixture.html'
       - '.github/workflows/li-render-qa.yml'
   workflow_dispatch:
@@ -65,6 +66,24 @@ jobs:
             echo "$result" | grep '<pre id="result">LI_RENDER_PASS ' | tail -1 | cut -c1-900
           done
           echo "PASS wide viewport landscape at 1194 and 1376 CSS px"
+
+           # Rotate the SAME loaded iframe both directions; reload-only checks miss
+           # stale portrait-width layouts and visual-viewport clipping in landscape.
+           for dims in "820:1180:1180:820" "1032:1376:1376:1032"; do
+             IFS=: read -r pw ph lw lh <<< "$dims"
+             echo "Checking live iPad rotation ${pw}x${ph} -> ${lw}x${lh} -> ${pw}x${ph}"
+             url="http://127.0.0.1:8765/tools/ipad_rotation_fixture.html?pw=${pw}&ph=${ph}&lw=${lw}&lh=${lh}"
+             result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1650,1150 --virtual-time-budget=15000 --dump-dom "$url" 2>/tmp/li-ipad-rotation-stderr.log || true)"
+             if [[ "$result" != *'<pre id="result">LI_ROTATION_PASS '* ]]; then
+               echo "FAIL live orientation reflow at ${dims}"
+               echo "$result" | grep -E '<pre id="result">LI_ROTATION_(PASS|FAIL|PENDING)' | tail -1 | cut -c1-3500 || true
+               tail -20 /tmp/li-ipad-rotation-stderr.log || true
+               exit 1
+             fi
+             echo "$result" | grep '<pre id="result">LI_ROTATION_PASS ' | tail -1 | cut -c1-1200
+           done
+           echo "PASS iPad orientation change without reload (Chrome emulation; Safari physical QA pending)"
+
 
           for width in 320 390 820 1440; do
             echo "Checking live VI/EN language switch and cross-screen content at ${width}px"

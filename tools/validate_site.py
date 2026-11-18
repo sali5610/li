@@ -73,18 +73,15 @@ assert 'class="mirror-titlebar"' not in html
 assert 'class="mirror-label"' not in html
 assert 'aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn"' in html
 
-# S138/S139: touch swipe only on mirror; fixed-scale viewport and sticky header.
+# UX-DS-28: native Safari viewport and zoom remain enabled; mirror swipe stays local.
 for needle in (
-    'content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"',
+    'content="width=device-width,initial-scale=1,viewport-fit=cover"',
     '/* S139 · Sticky top navigation, fixed touch-viewport scale.',
     'touch-action:pan-x pan-y;',
     'scroll-padding-top:88px;',
     'position:sticky;',
     'z-index:42;',
     'html{scroll-padding-top:74px}',
-    'document.addEventListener("gesturestart",event=>event.preventDefault(),{passive:false});',
-    'document.addEventListener("gesturechange",event=>event.preventDefault(),{passive:false});',
-    'if(event.touches?.length>1)event.preventDefault();',
     '/* S138 · Swipe directly on the mirror text area. pan-y preserves page scrolling. */',
     'pointer-events:auto;',
     'touch-action:pan-y;',
@@ -96,6 +93,18 @@ for needle in (
     'shiftMirrorQuestion(dx<0?1:-1);',
 ):
     assert needle in html, f"Mobile sticky viewport/swipe rule missing: {needle}"
+
+# No global gesture interception: Safari must recompute layout on rotation and allow text zoom.
+for forbidden in ("user-scalable=no", "maximum-scale=1", "minimum-scale=1",
+                  'document.addEventListener("gesturestart"', 'document.addEventListener("gesturechange"',
+                  "event.touches?.length>1)event.preventDefault()"):
+    assert forbidden not in page_html, f"Native pinch-zoom blocked by {forbidden}"
+foundations=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
+assert "html { touch-action: pan-x pan-y pinch-zoom; }" in foundations
+assert "#page-home .mirror-message { touch-action: pan-y pinch-zoom; }" in foundations
+assert "20261119-ds28-safari-viewport" in page_html
+assert "ipad-viewport-debug.js?v=20261119-ds28" in page_html
+
 
 # S137: previous/next arrows cycle questions in both directions; buttons remain stationary.
 assert html.count("/* S135/S137 · Mobile mirror: narrower centered question, stationary navigation arrows.") == 1
@@ -334,7 +343,7 @@ assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
 # UX-DS-25: honor device-aware Home cache key.
 assert 'library-hub.css?v=20261119-ds27-landscape-grid' in page_html
-assert "ipad-viewport-debug.js?v=20261119-ds27" in page_html
+assert "ipad-viewport-debug.js?v=20261119-ds28" in page_html
 assert (site/"assets"/"ipad-viewport-debug.js").exists()
 # UX-HOME-07: no Home-only min-height can force a page scroll, and routing
 # must restore browser scrolling for all other screens.
@@ -709,7 +718,7 @@ assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
 
 # UX-DS-11 · Review components are connected; app Guide chips use full pills.
-assert 'ui-foundations.css?v=20261119-ds27-landscape-grid' in page_html
+assert 'ui-foundations.css?v=20261119-ds28-safari-viewport' in page_html
 assert '#page-guide #method-filters .filter,' in foundation and 'border-radius:999px!important;' in foundation
 v3=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert 'component-review-v3.css?v=20261118-ds20-coverage' in v3
@@ -793,7 +802,7 @@ assert 'Top Navigation transparent Home' not in page_html
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
 assert 'li-layout.css?v=20261118-ds20-coverage' in page_html
-assert 'ui-foundations.css?v=20261119-ds27-landscape-grid' in page_html
+assert 'ui-foundations.css?v=20261119-ds28-safari-viewport' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation
@@ -811,7 +820,7 @@ assert '.ds-home-bubble{position:relative;' in review10css and 'border:1px solid
 assert '/* UX-DS-24: forest green bubble has zero-width stroke' in foundation
 assert '#page-home .hero-dialogue-bubble { border-width:var(--li-space-0); padding:' in foundation
 assert '#page-home .hero-dialogue-bubble::before { border-width:var(--li-space-0); }' in foundation
-assert './assets/ui-foundations.css?v=20261119-ds27-landscape-grid' in page_html
+assert './assets/ui-foundations.css?v=20261119-ds28-safari-viewport' in page_html
 
 # UX-DS-09: mobile Tủ Riêng uses the same Archive icon as Home, never Bookmark.
 mobile_nav=page_html.split('<nav class="mobile-nav"',1)[1].split('</nav>',1)[0]

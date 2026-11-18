@@ -426,3 +426,55 @@
  outline:2px solid var(--li-color-focus-ring)!important;
  outline-offset:2px!important;
 }
+
+/* UX-HOME-02 · Mobile Safari scene-fit and a lower, grouped dialogue+CTA cluster.
+   Dynamic viewport prevents a short/old browser chrome calculation from exposing
+   paper under the background. The approved artwork remains proportional (cover). */
+.app.home-focus #page-home .hero{
+ --home-actions-bottom:var(--li-space-8);
+ --home-context-gap:var(--li-space-4);
+ height:max(600px,calc(100dvh - 82px))!important;
+ min-height:600px!important;
+}
+.app.home-focus #page-home .hero::before{
+ inset:0!important;
+ background-size:cover!important;
+ background-position:center center!important;
+ background-repeat:no-repeat!important;
+}
+@media(max-width:600px){
+ .app.home-focus #page-home .hero{
+  --home-actions-bottom:var(--li-space-8);
+  --home-context-gap:var(--li-space-4);
+  --home-cta-height:56px;
+  height:max(580px,calc(100dvh - 66px - 52px - env(safe-area-inset-bottom,0px)))!important;
+  min-height:580px!important;
+ }
+ .app.home-focus #page-home .hero::before{
+  background-image:url("./home-mystic-cool-mobile.webp")!important;
+  background-size:cover!important;
+  background-position:center center!important;
+ }
+}
+
+/* Companion coordinates are owned by the position controller, not old
+   bottom-right !important overrides. Dragging remains within the viewport. */
+body .laoly-support.li-companion-draggable{
+ position:fixed!important;
+ top:var(--li-laoly-y,auto)!important;
+ left:var(--li-laoly-x,auto)!important;
+ right:auto!important;
+ bottom:auto!important;
+ z-index:55;
+}
+body .laoly-support.li-companion-draggable #laoly-fab{
+ touch-action:none!important;
+ cursor:grab;
+ user-select:none;
+ -webkit-user-select:none;
+}
+body .laoly-support.li-companion-draggable.is-dragging #laoly-fab{
+ cursor:grabbing;
+ animation:none!important;
+ transform:none!important;
+}

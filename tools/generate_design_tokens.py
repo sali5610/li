@@ -62,6 +62,9 @@ def render(data: dict) -> str:
         lines.append(f"  --li-effect-{key}: {value};")
     for key, value in data.get("reviewColors", {}).items():
         lines.append(f"  --li-review-color-{key}: {value};")
+    # Preview-only transparent shadows are tokens, not raw component hex literals.
+    for key, value in data.get("previewEffects", {}).items():
+        lines.append(f"  --li-preview-effect-{key}: {value};")
     # PO-accepted S118 compact two-up micro-geometry; not general grid tokens.
     for key, value in data.get("approvedMicroSpacing", {}).items():
         lines.append(f"  --li-micro-{key}: {value};")

@@ -679,7 +679,7 @@ assert 'No data' not in v3js or 'DEMO' in v3js
 # UX-DS-12 · PO-requested component and actual-app deltas. Review-only new
 # visuals are not G2 signoff, and demo charts never touch private diary.
 ds12=(site/"assets"/"component-review-v4.css").read_text(encoding="utf-8")
-assert 'component-review-v4.css?v=20261118-ds14-brand-mirror' in v3
+assert 'component-review-v4.css?v=20261118-ds16-laoly-zoom' in v3
 assert 'component-review-v2.css?v=20261118-ds12-white-note' in v3
 assert 'component-review-v3.js?v=20261118-ds13-week-fix' in v3
 assert '--white: #FFFFFF;' in (site/"assets"/"design-tokens.css").read_text(encoding="utf-8")
@@ -690,7 +690,7 @@ assert all(x in v3js for x in ("function returnToday(){","new Date()","dataset.d
 
 # UX-DS-13 · PO correction: gallery uses existing full Lão Lý mirror image;
 # no week-range tile shadow; today dot is separate from selected stroke.
-assert 'component-review-v4.css?v=20261118-ds14-brand-mirror' in v3
+assert 'component-review-v4.css?v=20261118-ds16-laoly-zoom' in v3
 assert v3.count('src="./assets/laoly-mirror-suy-nghi.png"')==3
 assert 'src="./assets/laoly-neutral.png"' not in v3
 assert 'border-right-width:var(--li-space-0)' in ds12
@@ -712,6 +712,12 @@ assert 'grid-template-columns:minmax(0,164px) minmax(0,1fr)' in ds12
 assert 'grid-template-columns:minmax(0,124px) minmax(0,1fr)' in ds12
 assert 'grid-template-columns:minmax(0,104px) minmax(0,1fr)' in ds12
 assert ds12.count('border:3px solid var(--li-color-input-focus-ring)!important;')==2
+
+# UX-DS-16: true image enlargement is illustration-specific, not an empty media-rail zoom.
+assert 'ds12-horizontal-card ds12-horizontal-illustration' in v3
+assert all('ds12-horizontal-card.ds12-horizontal-illustration{grid-template-columns:minmax(0,'+width+'px)' in ds12 for width in ('208','168','136'))
+assert 'ds12-horizontal-illustration .ds12-horizontal-media.figure{padding:var(--li-space-0)}' in ds12
+assert 'ds12-horizontal-illustration .ds12-horizontal-media.figure img{width:100%;height:auto;max-height:240px;object-fit:contain}' in ds12
 
 # UX-DS-15: Top Navigation is a component gallery family, NOT a silent change
 # to the approved live app Home shell or route history.

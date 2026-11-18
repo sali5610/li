@@ -13,6 +13,13 @@
   --li-section-gap: var(--li-space-8);
 }
 
+/* UX-DS-20: muted-olive ornament on editorial labels only.
+   No change to functional text, focus, selection, navigation, or scene art. */
+.page:not(#page-home) .section-shell > .kicker {
+  border-inline-start: 3px solid var(--olive);
+  padding-inline-start: var(--li-space-2);
+}
+
 /* Reusable roles for every new component. */
 .li-type-display { font: var(--li-weight-600) var(--li-type-display)/var(--li-leading-display) var(--li-font-editorial); }
 .li-type-headline { font: var(--li-weight-600) var(--li-type-headline)/var(--li-leading-headline) var(--li-font-editorial); }
@@ -77,7 +84,7 @@ body { font-size: var(--li-type-body); line-height: var(--li-leading-body); }
 input:not([type="checkbox"]):not([type="radio"]), select, textarea, .notebook {
   font-size: var(--li-type-body);
 }
-:root { --li-notebook-line-height: 32px; }
+:root { --li-notebook-line-height: var(--li-leading-notebook); }
 textarea, .notebook {
   font-size: var(--li-type-body);
   line-height: var(--li-notebook-line-height) !important;
@@ -280,7 +287,7 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
     gap: var(--li-space-1) !important;
     min-height: 64px !important;
     padding: var(--li-space-2) var(--li-space-1) !important;
-    margin-top: 0 !important;
+    margin-top: var(--li-space-0) !important;
   }
 }
 

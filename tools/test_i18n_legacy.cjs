@@ -105,7 +105,7 @@ const practice=read("site/assets/spell-practice.js");
 const draggable=read("site/assets/laoly-drag.js");
 assert(deepCatalog.includes('copy("Đã phát hành","Published")'),"Deep published status must be EN-aware");
 assert(deepCatalog.includes('copy("Đề cương · chưa phát hành","Outline · not published")'),"Deep outline status must be EN-aware");
-assert(deepCatalog.includes('window.scrollTo?.(0,0)'),"Catalog drilldown must not inherit stale scroll under the sticky header");
+assert(deepCatalog.includes('window.scrollTo?.({top:0,left:0,behavior:"instant"})'),"Catalog drilldown must reset scroll instantly despite global smooth-scroll, so the sticky header does not clip content");
 assert(deepCatalog.includes('finally{localize(host);}'),"Every catalog depth must get translation, not only the root view");
 assert(practice.includes(" · <span>THỬ THI TRIỂN</span>"),"Practice mode must be an independently translatable node");
 assert(practice.includes("window.liLanguage?.apply?.(root)"),"Practice rerenders must apply app locale");

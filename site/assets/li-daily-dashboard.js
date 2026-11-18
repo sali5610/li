@@ -178,6 +178,32 @@ function init(){
  window.addEventListener("li:lesson-submitted",e=>{const id=e.detail&&e.detail.lessonId;if(typeof id==="string"){const active=document.querySelector("[data-ly-mode][aria-pressed='true']");recordActivity("lesson",id,active?active.dataset.lyMode:null)}});
  refresh();
 }
-window.LiDaily={recordActivity:recordActivity,refresh:refresh,render:renderMonth};
+function validBackup(backup){
+ if(!backup||backup.schema!==1||!backup.days||typeof backup.days!=="object"||Array.isArray(backup.days))return false;
+ const records=Object.entries(backup.days);if(records.length>10000)return false;
+ for(const [date,row] of records){
+  if(!/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(date)||
+    !row||typeof row!=="object"||!row.physical||!row.activities||
+    !Number.isInteger(row.checkins)||row.checkins<0||row.checkins>10000)return false;
+  if(!["sleep","move","rest"].every(k=>[null,"yes","no","unsure"].includes(row.physical[k])))return false;
+  if(![null,"start","focus","overload","recover"].includes(row.mode))return false;
+  if(!TYPES.every(k=>Array.isArray(row.activities[k])&&row.activities[k].length<=10000&&
+    row.activities[k].every(x=>typeof x==="string"&&x.length>0&&x.length<=1000)))return false;
+ }
+ return true;
+}
+function backup(){
+ if(error)throw Error("Journal storage unreadable");
+ return {schema:1,days:JSON.parse(JSON.stringify(days))};
+}
+function reload(){
+ try{
+  const raw=localStorage.getItem(KEY),value=raw?JSON.parse(raw):{schema:1,days:{}};
+  if(!validBackup(value))throw Error("Invalid journal");
+  days=value.days;error=false;
+ }catch(e){error=true;notify("Lịch nhập vào không đọc được. Đã dừng ghi mới.");}
+ refresh();
+}
+window.LiDaily={recordActivity:recordActivity,refresh:refresh,render:renderMonth,backup:backup,validBackup:validBackup,reload:reload};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();

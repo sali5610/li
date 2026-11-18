@@ -729,11 +729,3 @@ html.li-safari-landscape-recovery .app.home-focus #page-home .hero {
    font-size:var(--li-type-support)!important;
    line-height:var(--li-leading-support)!important;
  }
- /* A wider landscape viewport should actually use the additional canvas. */
- #page-catalog .surface-grid:not(.cols2) {
-   grid-template-columns:repeat(3,minmax(0,1fr))!important;
- }
- #page-guide .editorial-grid {
-   grid-template-columns:minmax(0,1.45fr) minmax(0,.85fr)!important;
- }
-

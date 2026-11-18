@@ -70,7 +70,6 @@ function auditImpl(){
  const R=x=>{if(!x)return null;const b=x.getBoundingClientRect();return{x:Math.round(b.x),y:Math.round(b.y),r:Math.round(b.right),b:Math.round(b.bottom),w:Math.round(b.width),h:Math.round(b.height)};};
  const visible=x=>{if(!x||x.hidden||x.closest("[hidden]"))return false;const s=getComputedStyle(x),r=x.getBoundingClientRect();return s.display!=="none"&&s.visibility!=="hidden"&&r.width>0&&r.height>0;};
  const add=(a,code,data)=>a.push({code,data});
- const boxInter=(a,b)=>a&&b?Math.max(0,Math.min(a.r,b.r)-Math.max(a.x,b.x))*Math.max(0,Math.min(a.b,b.b)-Math.max(a.y,b.y)):0;
  const overflow=Math.max(document.documentElement.scrollWidth,document.body.scrollWidth)-W;
  if(getComputedStyle(document.body).fontSize!=="16px")add(failures,"body-font-not-16px",getComputedStyle(document.body).fontSize);
  if(overflow>4){
@@ -80,7 +79,23 @@ function auditImpl(){
  const p=pg?.id||"MISSING";if(!pg)add(failures,"missing-active-screen",null);
  const nav=document.querySelector(".mobile-nav"),fab=document.querySelector("#laoly-fab");
  samples.nav=visible(nav)?R(nav):null;samples.fab=visible(fab)?R(fab):null;
- if(boxInter(samples.nav,samples.fab)>150)add(failures,"laoly-obscures-bottom-nav",{fab:samples.fab,nav:samples.nav});
+ // Human PO decision: Lão Lý is an intentional floating action button.
+ // It may overlay nav, content, cards, and other tap regions. Intersection
+ // itself is NOT a defect and must never be a visual-QA warning or failure.
+ // Verify only that the FAB is present, visible, and centrally operable
+ // while the page is in its normal (no modal) state.
+ const modalIsOpen=!!document.querySelector(".modal.open");
+ if(!modalIsOpen){
+  if(!visible(fab))add(failures,"laoly-fab-not-visible",null);
+  else{
+   const r=samples.fab,cx=(r.x+r.r)/2,cy=(r.y+r.b)/2;
+   if(cx<0||cx>=W||cy<0||cy>=H)add(failures,"laoly-fab-center-out-of-viewport",{fab:r,viewport:{w:W,h:H}});
+   else{
+    const top=document.elementFromPoint(cx,cy);
+    if(top && !top.closest("#laoly-fab"))add(failures,"laoly-fab-center-not-tappable",{fab:r,top:{tag:top.tagName,id:top.id,cls:typeof top.className==="string"?top.className.slice(0,60):""}});
+   }
+  }
+ }
  const controls=pg?[...pg.querySelectorAll("button,a.action,input,select,textarea")].filter(visible):[];
  // A labeled checkbox is activated through the entire 48px+ label row.
  // The visually hidden file input is controlled by the visible import button.
@@ -90,14 +105,6 @@ function auditImpl(){
   const box=R(hitArea(x));return box.h<44||box.w<44;
  }).slice(0,8).map(x=>({label:(x.textContent||x.getAttribute("aria-label")||x.closest("label")?.textContent||"").trim().slice(0,50),r:R(hitArea(x))}));
  if(undersized.length)add(warnings,"touch-target-under-44px",undersized);
- // The FAB can technically cover an input/button while still passing every
- // page overflow test. Inspect its actual intersection with active controls.
- const floatingTargets=pg?[...pg.querySelectorAll("button,input,select,textarea,a[href]")].filter(visible):[];
- const fabBlockers=visible(fab)?floatingTargets.filter(x=>{
-   const r=R(x);
-   return r.b>0&&r.y<H&&boxInter(r,samples.fab)>200;
- }).slice(0,12).map(x=>({label:(x.textContent||x.getAttribute("aria-label")||x.placeholder||"").trim().slice(0,55),r:R(x),intersection:boxInter(R(x),samples.fab)})):[];
- if(fabBlockers.length)add(warnings,"fab-intersects-visible-interactive-controls",fabBlockers);
  const text=pg?[...pg.querySelectorAll("h1,h2,h3,p,label,.state-note,.intro,.method-card .purpose")].filter(visible):[];
  const clipped=text.filter(x=>{const c=getComputedStyle(x);return(c.overflowY==="hidden"||c.overflowY==="clip"||c.webkitLineClamp!=="none")&&x.scrollHeight>x.clientHeight+3;}).slice(0,8).map(x=>({text:x.textContent.trim().slice(0,50),r:R(x),scroll:x.scrollHeight,client:x.clientHeight}));
  if(clipped.length)add(warnings,"possibly-clipped-text",clipped);
@@ -112,9 +119,6 @@ function auditImpl(){
   const btns=[...document.querySelectorAll("#page-home .hero-actions button")].filter(visible);
   samples.home={q,mirror:m,context,actions:action,buttons:btns.map(x=>({label:x.textContent.trim().slice(0,50),r:R(x)}))};
   if(q&&m&&(q.x<m.x-12||q.r>m.r+12))add(warnings,"mirror-text-out-of-container",{q,m});
-  if(boxInter(action,samples.fab)>350)add(failures,"fab-over-home-actions",{action,fab:samples.fab});
-  if(boxInter(context,samples.fab)>150)add(failures,"fab-over-home-context",{context,fab:samples.fab});
-  if(boxInter(m,samples.fab)>150)add(failures,"fab-over-mirror-interaction",{mirror:m,fab:samples.fab});
   if(btns.length>=2&&Math.abs(R(btns[0]).y-R(btns[1]).y)>7)add(warnings,"home-cta-not-aligned",samples.home.buttons);
  }
  if(p==="page-guide"){
@@ -128,7 +132,6 @@ function auditImpl(){
  for(const modal of ["buddy-modal","checkin-modal"]){
   const el=document.getElementById(modal);
   if(el?.classList.contains("open")){
-   if(visible(fab))add(failures,"fab-must-hide-for-modal",modal);
    const d=R(el.querySelector(".dialog"));
    samples.modal={id:modal,dialog:d};
    if(d&&(d.x < -4||d.r>W+4))add(failures,"modal-out-of-horizontal-bounds",d);

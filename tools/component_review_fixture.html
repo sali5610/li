@@ -132,6 +132,11 @@ iframe.addEventListener("load",()=>{
    chips[2].click();
    check("Filter chips change pressed state",chips[2].getAttribute("aria-pressed")==="true"&&chips[0].getAttribute("aria-pressed")==="false");
    check("4 bottom navigation variants",d.querySelectorAll(".ds-tabs button").length===4);
+   check("Thần Chú uses rendered four-point Lucide sparkle across iconography, bottom navigation and sidebar",
+      !!d.querySelector("#icons .ds-icon-grid svg.lucide-sparkle") &&
+      !!d.querySelector(".ds-tabs svg.lucide-sparkle") &&
+      !!d.querySelector(".ds11-sidebar-nav svg.lucide-sparkle") &&
+      !d.querySelector(".ds-tabs svg.lucide-sparkles, .ds-tabs svg.lucide-star"));
    const reviewChips=d.querySelector(".ds-chip"),radius=w.getComputedStyle(reviewChips).borderTopLeftRadius;
    check("Filter chips have fully rounded corners",radius==="999px",radius);
    const iconOnly=d.querySelector('[data-ds11-icon="bookmark"]');

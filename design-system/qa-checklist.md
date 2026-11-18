@@ -50,7 +50,7 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 
 ### UX-DS-10 · Component review completeness (Human PO feedback)
 - [ ] Bút Ký textarea specimen mirrors 32px **ruled notebook** in app, including focus/disabled, not plain generic background.
-- [ ] Compare light and forest-green Home speech bubbles side-by-side; do not change current Home scene or infer G2 approval.
+- [ ] Compare light and forest-green Home speech bubbles side-by-side. **UX-DS-24:** green body and tail must have 0px stroke in Component Library + live Home, while light-paper retains a hairline border. Preserve copy, fill, shadow, shape and placement; G2 overall remains open.
 - [ ] Verify **real image card examples**: media top landscape 16:9, responsive split, contained illustration; render actual approved app assets; no unpublished subject art.
 - [ ] Prevent rectangle tap flash for nav/icon controls, preserve designed active oval/keyboard focus. Verify CSS cache bust and test on real iPhone Safari.
 - [ ] QA captures both `?capture=media` and `?capture=bubbles` as honest independent screenshots.

@@ -387,7 +387,8 @@ for name,expected_size,expected_sha256 in [
 device_css=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'background-image:url("./home-li-iphone-20261119.jpg")!important;' in device_css
 assert 'background-image:url("./home-li-ipad-20261119.jpg")!important;' in device_css
-assert "(any-pointer:coarse)" in device_css
+assert "(max-width:1400px) and (orientation:landscape)" in device_css
+assert "(any-pointer:coarse)" not in device_css, "Viewport-responsive iPad must not depend on hardware pointer"
 assert html.count("/* S119 · Approved S106 Home art") == 1
 assert layout_css.count('url("./home-mystic-cool-mobile.webp")') == 1, "CSS-relative artwork URL must resolve from assets/"
 assert layout_css.count('url("./home-mystic-cool-desktop.webp")') == 1, "CSS-relative artwork URL must resolve from assets/"

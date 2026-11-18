@@ -62,3 +62,20 @@ jobs:
             echo "$result" | grep '<pre id="result">LI_CHECKIN_BROWSER_PASS ' | tail -1 | cut -c1-700
           done
           echo "PASS real browser check-in behavior, shared mode state, responsive dialog"
+          mkdir -p "$RUNNER_TEMP/li-checkin-visual"
+          for width in 320 390 820; do
+            url="http://127.0.0.1:8765/tools/checkin_browser_fixture.html?w=$width&h=760&capture=1"
+            file="$RUNNER_TEMP/li-checkin-visual/checkin-radio-$width.png"
+            "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --force-device-scale-factor=1 --window-size=1100,950 --virtual-time-budget=14000 --screenshot="$file" "$url" 2>/tmp/li-checkin-visual-stderr.log >/dev/null
+            test -s "$file" || { echo "FAIL screenshot artifact at $width"; exit 1; }
+            echo "Captured $file"
+          done
+
+      - name: Preserve L1 check-in radio visual screenshots for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-checkin-radio-visual
+          path: ${{ runner.temp }}/li-checkin-visual/*.png
+          if-no-files-found: warn
+          retention-days: 7

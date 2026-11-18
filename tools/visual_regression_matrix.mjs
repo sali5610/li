@@ -136,7 +136,7 @@ function auditImpl(){
    samples.modal={id:modal,dialog:d};
    if(d&&(d.x < -4||d.r>W+4))add(failures,"modal-out-of-horizontal-bounds",d);
    // UX-DS-06: screenshot review found actual 390px Check-in heading line collision.
-   // Display role is 48/56, but a legacy .dialog h2 inherits line-height:1.
+   // Display role is 48/56; .dialog h2 has no explicit leading and inherits body 24px.
    // This check deliberately covers modal headings missed by .page-only text QA.
    if(modal==="checkin-modal"){
     const title=el.querySelector("#checkin-title");

@@ -57,7 +57,7 @@ def main() -> int:
         artwork = json.loads(art_manifest.read_text(encoding="utf-8"))
         assets = artwork.get("assets", [])
         counts = artwork.get("active_counts", {})
-        check(artwork.get("schema") == "li-laoly-current-v2", "papercraft source-of-truth schema v2")
+        check(artwork.get("schema") == "li-laoly-current-v3", "papercraft source-of-truth schema v3 — approved head-only mini icons")
         check(counts == {"illustrations_mirror": 10, "icons": 5, "illustrations_outside": 0},
               "one canonical mirror-only illustration family plus functional icons")
         check(len(assets) == 15, "all 15 current Lão Lý papercraft assets registered")

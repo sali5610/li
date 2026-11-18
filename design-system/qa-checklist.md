@@ -136,3 +136,11 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 - [ ] Physical-device reproduction: screenshot showed Home artwork ending around 69% of landscape width, close to the 820/1180 portrait/landscape width ratio (inference, not verified browser metrics).
 - [ ] Rotate actual iPad Safari portrait → landscape → portrait with tab already open; compare `innerWidth`, `visualViewport`, `screen`, root and Home Hero widths using the opt-in `?debug=ipad` panel; verify Home art fills full viewport, title/question/context/actions visible, no side blank.
 - [ ] Test OS Safari page zoom 100%/125%/200%, pinch zoom, keyboard, split-window, reload and Home Screen PWA. Automated Chrome rotation-iframe evidence is not Safari certification.
+
+## UX-DS-29 · Physical Safari 970/1408 diagnostic regression (2026-11-19)
+
+- [x] PO screenshot evidence: full landscape viewport/root/hero 1408×832 but CSS mode desktop/phone, body 16px; old landscape media capped at 1400px. PO portrait-shaped snapshot had viewport+visual 970px, root+hero 1408px, stale height 832px.
+- [x] Source fix: shared density, Home art, Guide and Catalog landscape media include 1408 CSS px with upper boundary 1420; 1440px desktop remains desktop. Reuse canonical iPad tokens and image master; refresh live CSS version.
+- [ ] Rendered Chrome: assert portrait 970×1408, landscape 1408×832, desktop 1440×900, and live rotation 970→1408→970 without reload. Green CI does not equal physical Safari.
+- [ ] Physical Safari: recheck landscape and portrait with `?debug=ipad`; expect `CSS mode: landscape` + body 18px at 1408px. Confirm visual and root widths synchronize after rotation; if 970 visual / 1408 root persists, treat it as an independent WebKit viewport issue, not proof that the 1408px media query failed.
+- [ ] Check Home full-width, footer-free, no-scroll, actual background crop/position, 3-zone composition, `Lưu` and `Đào sâu`, companion and nav on both orientations, Split View, 200% text, VoiceOver and PWA. PO G2 remains OPEN.

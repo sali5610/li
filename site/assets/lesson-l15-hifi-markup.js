@@ -1,8 +1,8 @@
 /* Native Hi-Fi L15-2-2: mounts existing li. components, no standalone draft layout. */
 (()=>{
 "use strict";
-const anchor=document.getElementById("page-case"),catalog=document.querySelector("#page-catalog .surface-grid"),library=document.querySelector("#page-library .stack-sm");
-if(!anchor||!catalog||!library||document.getElementById("page-lessonL15"))return;
+const anchor=document.getElementById("page-case"),catalog=document.querySelector("#page-catalog .surface-grid");
+if(!anchor||!catalog||document.getElementById("page-lessonL15"))return;
 const page=String.raw`
 <section id="page-lessonL15" class="page" tabindex="-1" aria-labelledby="l15-title" data-lesson-id="L15-2-2" data-companion-manifest="./lessons/companion/L15-2-2.json">
  <div class="section-shell">
@@ -110,8 +110,5 @@ if(match){
  const b=match.querySelector("button[data-page]");if(b){b.dataset.page="lessonL15";b.textContent="Vào bài Safety Stock";}
  const chip=match.querySelector(".status-chip");if(chip)chip.textContent="L15-2-2 · VI/EN";
 }
-const shelf=document.createElement("article");shelf.className="surface";shelf.id="l15-library-entry";
-shelf.innerHTML='<div class="kicker">TIẾP TỤC HỌC · Supply Chain</div><h2>Reorder Points & Safety Stock</h2><p>PLANNING, INVENTORY & VISIBILITY · L15-2-2</p><span class="status-chip" id="l15-resume-status">VI/EN · Đang học</span><div class="action-row"><button type="button" class="action" data-page="lessonL15" id="l15-resume">Mở tiếp bài L15-2-2</button></div>';
-library.prepend(shelf);
 if(new URLSearchParams(window.location.search).get("lesson")==="L15-2-2"&&typeof navigate==="function")navigate("lessonL15",{focus:true});
 })();

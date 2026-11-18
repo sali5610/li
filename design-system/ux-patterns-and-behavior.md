@@ -114,7 +114,7 @@ Test each touched **screen × component variant × state × modality × viewport
 - [WCAG 2.2 Recommendation](https://www.w3.org/TR/WCAG22/) — normative accessibility success criteria; baseline target AA.
 - [Apple HIG accessibility](https://developer.apple.com/design/human-interface-guidelines/accessibility) and [Apple UI tips](https://developer.apple.com/design/tips/) — platform ergonomics, 44×44 pt.
 - [Android touch target](https://support.google.com/accessibility/android/answer/7101858?hl=en) — platform ergonomics, 48×48 dp.
-- [IBM Carbon components](https://carbondesignsystem.com/components/overview/) and [Carbon forms](https://www.carbondesignsystem.com/building-blocks/core/patterns/forms) and [Carbon notifications](https://www.carbondesignsystem.com/building-blocks/core/patterns/notifications) — interaction anatomy, communication.
+- [IBM Carbon components](https://www.carbondesignsystem.com/building-blocks/core/components/overview/components) and [Carbon forms](https://www.carbondesignsystem.com/building-blocks/core/patterns/forms) and [Carbon notifications](https://www.carbondesignsystem.com/building-blocks/core/patterns/notifications) — interaction anatomy, communication.
 - [GOV.UK validation](https://design-system.service.gov.uk/patterns/validation/) and [error messages](https://design-system.service.gov.uk/components/error-message/) — actionable field error patterns.
 
 - [WCAG 2.2 focus not obscured](https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum), [dragging alternative](https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements), [reflow](https://www.w3.org/WAI/WCAG22/Understanding/reflow), [resize text](https://www.w3.org/WAI/WCAG22/Understanding/resize-text).

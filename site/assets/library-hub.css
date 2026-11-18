@@ -301,3 +301,74 @@
 #page-resume .library-bookmark-panel[hidden]{display:none!important}
 #page-resume .library-bookmark-panel{min-width:0}
 #page-resume .library-bookmark-panel .path-list{min-width:0}
+
+/* UX-NAV-12 · Home bookmark is its own icon control beside Đào sâu,
+   never overlaid on the mirror text. */
+#page-home .hero-actions{
+ grid-template-columns:minmax(0,1fr) 56px;
+ align-items:center;
+}
+#page-home .hero-actions .primary{min-width:0}
+#page-home .hero-actions .hero-save-action{
+ box-sizing:border-box;display:inline-grid;place-items:center;
+ width:56px;min-width:56px;height:56px;min-height:56px;
+ padding:var(--li-space-3);margin:var(--li-space-0);
+ background:var(--paper-2);color:var(--forest);border:1px solid var(--forest);
+ box-shadow:4px 4px 0 var(--forest);cursor:pointer;
+}
+#page-home .hero-actions .hero-save-action:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--forest)}
+#page-home .hero-actions .hero-save-action:focus-visible{outline:2px solid var(--li-color-focus-ring);outline-offset:2px}
+#page-home .hero-actions .hero-save-action[aria-pressed="true"]{
+ color:var(--moss);background:var(--cream);border-color:var(--moss);
+}
+@media(max-width:600px){
+ #page-home .hero-actions{grid-template-columns:minmax(0,1fr) 54px}
+ #page-home .hero-actions .hero-save-action{
+  width:54px;min-width:54px;height:54px;min-height:54px;
+  box-shadow:3px 3px 0 var(--forest);
+ }
+}
+/* One accessible snackbar for deletes and unsaves, with a real Undo action. */
+#toast.li-snackbar{
+ position:fixed;z-index:100;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));
+ transform:translateX(-50%);display:flex;align-items:center;
+ gap:var(--li-space-3);width:max-content;max-width:calc(100vw - 24px);
+ padding:var(--li-space-3) var(--li-space-4);
+ box-sizing:border-box;border:1px solid var(--sage);
+ background:var(--forest);color:var(--cream);
+ font-size:var(--li-type-support);line-height:var(--li-leading-support);
+}
+#toast.li-snackbar[hidden]{display:none!important}
+#toast .li-snackbar-message{flex:1;min-width:0;overflow-wrap:anywhere}
+#toast .li-snackbar-undo{
+ display:inline-flex;align-items:center;justify-content:center;flex:none;
+ min-height:44px;min-width:72px;
+ padding:var(--li-space-2) var(--li-space-3);
+ border:1px solid var(--cream);background:var(--li-color-button-clear,transparent);color:var(--cream);
+ font-family:var(--li-font-ui);font-size:var(--li-type-support);font-weight:750;cursor:pointer;
+}
+#toast .li-snackbar-undo:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
+@media(max-width:600px){#toast.li-snackbar{bottom:calc(85px + env(safe-area-inset-bottom,0px))}}
+
+/* UX-NAV-13 · All bookmark Save/Unsave utilities outside Home are frameless.
+   Preserve 48px targets, icon-only semantics and pressed fill. Delete is separate. */
+.library-icon-action:is([data-li-bookmark-kind], .library-unsave-icon){
+ appearance:none;
+ -webkit-appearance:none;
+ -webkit-tap-highlight-color:var(--li-color-button-clear,transparent);
+ background:var(--li-color-button-clear,transparent)!important;
+ border:0!important;
+ box-shadow:none!important;
+ border-radius:var(--li-space-0)!important;
+ padding:var(--li-space-2);
+}
+.library-icon-action:is([data-li-bookmark-kind], .library-unsave-icon):is(:hover,:active,:focus,[aria-pressed="true"]){
+ background:var(--li-color-button-clear,transparent)!important;
+ border:0!important;
+ box-shadow:none!important;
+ transform:none!important;
+}
+.library-icon-action:is([data-li-bookmark-kind], .library-unsave-icon):focus-visible{
+ outline:2px solid var(--li-color-focus-ring);
+ outline-offset:var(--li-space-1);
+}

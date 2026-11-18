@@ -126,7 +126,7 @@ function trComposed(value){
  }
  return out;
 }
-const ATTRS=["aria-label","title","placeholder","alt"];
+const ATTRS=["aria-label","aria-description","title","placeholder","alt"];
 const originalText=new WeakMap();
 const originalAttr=new WeakMap();
 let observer=null,locked=false;

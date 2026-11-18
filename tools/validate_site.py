@@ -431,6 +431,17 @@ assert html.index('li-diary-privacy')>html.index('li-diary-day-status')
 assert '<script src="./assets/library-hub.js?v=2"></script>' in html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_hub_v2.cjs")],check=True,cwd=site.parent)
 
+# UX-IA-05: lesson modules only own lesson/catalog DOM, never Tủ Riêng overview.
+# Regression reproduced on iPhone: L09/L03/L15 static lesson cards were prepended
+# above Quay lại and bypassed the one-latest-item shelf.
+for lesson in ("l09","l03","l15"):
+    module=site/"assets"/f"lesson-{lesson}-hifi-markup.js"
+    source=module.read_text(encoding="utf-8")
+    assert "library.prepend(" not in source
+    assert 'document.querySelector("#page-library .stack-sm")' not in source
+    assert f'<script src="./assets/lesson-{lesson}-hifi-markup.js?v=20261118-ia05"></script>' in page_html
+subprocess.run(["node",str(site.parent/"tools"/"test_library_wave1_mount_ia.cjs")],check=True,cwd=site.parent)
+
 # S120: mirror-variant illustration stored locally and not silently downgraded
 # to a chat icon; Bút Ký uses same paper surface as cards 03-04.
 illustrated=site/"assets"/"laoly-mirror-suy-nghi.png"

@@ -32,7 +32,14 @@ assert 'class="action"' in mount
 assert 'id="l09-guidedDraft" class="text-editor"' in mount
 assert 'state.guidedDraft' in logic and 'localStorage.setItem(KEY' in logic
 assert 'data-page="lessonL09"' in mount
-assert 'shelf.id="li-l09-library-entry"' in mount
+# The lesson mount must NOT insert a second Continue card before Quay lại.
+# The only Tủ Riêng preview and full lesson list are owned by library-hub.js.
+assert 'shelf.id="li-l09-library-entry"' not in mount
+assert 'library.prepend(' not in mount
+assert 'document.querySelector("#page-library .stack-sm")' not in mount
+assert 'id="li-library-latest-lesson"' in html
+assert 'id="li-lesson-history"' in html
+assert 'function renderLessonRows(root,limit)' in (site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert 'data-page="catalog"' in mount and 'data-page="guide"' in mount
 assert 'new URLSearchParams(window.location.search).get("lesson")==="L09-1-2"' in mount
 assert 'window.location.hash==="#l09-goals"' not in mount, "A stale anchor must never override Home"

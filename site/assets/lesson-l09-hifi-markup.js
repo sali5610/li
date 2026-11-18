@@ -1,10 +1,10 @@
-/* Inserts L09 content into li.'s native Tàng Thư -> Page, and Tủ Riêng Continue.
-   This is NOT a second app shell: native page/surface/action/route design is preserved. */
+/* Mount published L09 lesson route and catalog entry only.
+   Quay lại / Tủ Riêng recents are owned by library-hub.js, not the lesson markup. */
 (()=>{
 "use strict";
-const main=document.getElementById("main"),catalog=document.querySelector("#page-catalog .surface-grid"),library=document.querySelector("#page-library .stack-sm");
+const main=document.getElementById("main"),catalog=document.querySelector("#page-catalog .surface-grid");
 const after=document.getElementById("page-case");
-if(!main||!after||!catalog||!library||document.getElementById("page-lessonL09"))return;
+if(!main||!after||!catalog||document.getElementById("page-lessonL09"))return;
 const page=String.raw`
 <section id="page-lessonL09" class="page" tabindex="-1" aria-labelledby="l09-title" data-lesson-id="L09-1-2" data-companion-manifest="./lessons/companion/L09-1-2.json">
 <div class="section-shell">
@@ -121,10 +121,6 @@ card.className="surface tinted";
 card.id="li-l09-catalog-entry";
 card.innerHTML=`<div class="folio-art"></div><div class="kicker">TOÁN HỌC · DATA SCIENCE</div><h2>Data Science</h2><p>Data &amp; Statistical Foundations · Sampling Bias vs Random Variation.</p><span class="status-chip">Bài L09-1-2 · VI/EN</span><div class="action-row"><button type="button" class="action" data-page="lessonL09">Vào bài học</button></div>`;
 const third=catalog.children[2];if(third)catalog.insertBefore(card,third);else catalog.appendChild(card);
-const shelf=document.createElement("article");
-shelf.className="surface";shelf.id="li-l09-library-entry";
-shelf.innerHTML=`<div class="kicker">TIẾP TỤC HỌC · DATA SCIENCE</div><h2>Sampling Bias</h2><p>Data &amp; Statistical Foundations · L09-1-2 · VI/EN</p><span class="status-chip" id="li-l09-resume-status">Đang học</span><div class="action-row"><button type="button" class="action" data-page="lessonL09" id="l09-resume">Mở tiếp bài Sampling Bias</button></div>`;
-library.prepend(shelf);
 const openL09=new URLSearchParams(window.location.search).get("lesson")==="L09-1-2";
  if(openL09&&typeof navigate==="function"){navigate("lessonL09",{focus:true});}
 })();

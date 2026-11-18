@@ -1,8 +1,8 @@
 /* Native Hi-Fi L03-1-2: mounts existing li. components, no standalone draft layout. */
 (()=>{
 "use strict";
-const anchor=document.getElementById("page-case"),catalog=document.querySelector("#page-catalog .surface-grid"),library=document.querySelector("#page-library .stack-sm");
-if(!anchor||!catalog||!library||document.getElementById("page-lessonL03"))return;
+const anchor=document.getElementById("page-case"),catalog=document.querySelector("#page-catalog .surface-grid");
+if(!anchor||!catalog||document.getElementById("page-lessonL03"))return;
 const page=String.raw`
 <section id="page-lessonL03" class="page" tabindex="-1" aria-labelledby="l03-title" data-lesson-id="L03-1-2" data-companion-manifest="./lessons/companion/L03-1-2.json">
  <div class="section-shell">
@@ -110,8 +110,5 @@ if(match){
  const b=match.querySelector("button[data-page]");if(b){b.dataset.page="lessonL03";b.textContent="Vào bài Interview Bias";}
  const chip=match.querySelector(".status-chip");if(chip)chip.textContent="L03-1-2 · VI/EN";
 }
-const shelf=document.createElement("article");shelf.className="surface";shelf.id="l03-library-entry";
-shelf.innerHTML='<div class="kicker">TIẾP TỤC HỌC · UX Research</div><h2>Open Questions & Interview Bias</h2><p>USER PROBLEMS & RESEARCH BASICS · L03-1-2</p><span class="status-chip" id="l03-resume-status">VI/EN · Đang học</span><div class="action-row"><button type="button" class="action" data-page="lessonL03" id="l03-resume">Mở tiếp bài L03-1-2</button></div>';
-library.prepend(shelf);
 if(new URLSearchParams(window.location.search).get("lesson")==="L03-1-2"&&typeof navigate==="function")navigate("lessonL03",{focus:true});
 })();

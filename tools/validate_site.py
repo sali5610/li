@@ -268,7 +268,7 @@ assert '#settings-buddy-card .settings-buddy-illustration' in html
 settings_styles=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert 'border-top: 1px solid var(--rule)' not in settings_styles.split('#page-settings .buddy-address-settings {', 1)[1].split('}', 1)[0]
 assert '#settings-buddy-card .settings-buddy-footer' not in html
-assert 'li-layout.css?v=0.4' in page_html and 'ui-foundations.css?v=20261118-s118-exact' in page_html
+assert 'li-layout.css?v=0.4' in page_html and 'ui-foundations.css?v=20261118-s147-token1' in page_html
 
 # S118: two compact mobile Guide tiles with shadow-safe column/row gutters; no duplicate S99 rule.
 guide=section("guide")
@@ -488,7 +488,7 @@ assert page_html.count('type:"hook",lessonRoute:') == 3
 assert 'sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang."' in page_html
 assert 'navigate(scenario.type==="hook"?scenario.lessonRoute:"research");' in (site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert '<script src="./assets/lesson-related-wave1.js"></script>' in page_html
-assert 'ui-foundations.css?v=20261118-s118-exact' in page_html
+assert 'ui-foundations.css?v=20261118-s147-token1' in page_html
 cross=(site/"assets"/"lesson-related-wave1.js").read_text(encoding="utf-8")
 assert 'Object.keys(RELATED).forEach' in cross
 assert all(k in cross for k in ("L03-1-2", "L09-1-2", "L15-2-2"))

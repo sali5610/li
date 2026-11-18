@@ -359,7 +359,7 @@
  background:var(--cream);color:var(--moss);
 }
 #page-home .hero-actions .mirror-save-action[aria-pressed="true"] .action-icon svg{
- fill:currentColor;
+ fill:var(--moss);
 }
 #page-home .hero-actions .primary:focus-visible{
  outline:2px solid var(--li-color-focus-ring);outline-offset:2px;

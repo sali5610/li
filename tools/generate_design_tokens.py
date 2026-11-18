@@ -48,6 +48,23 @@ def render(data: dict) -> str:
         lines.append(f"  --li-leading-{name}: {spec['lineHeightPx']}px;")
     lines.append('  --li-font-editorial: "Crimson Text", Georgia, "Times New Roman", serif;')
     lines.append('  --li-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;')
+    # UX-DS-20: exact legacy source values preserved as named tokens, so a
+    # future scale consolidation can be visual-reviewed without losing current UI.
+    for family, entries in data.get("legacyTypographyTokens", {}).items():
+        prefix = {"fluid": "li-type-fluid", "leading": "li-leading-legacy",
+                  "tracking": "li-tracking-legacy", "font": "li-font-legacy",
+                  "family": "li-family-legacy", "weight": "li-weight"}[family]
+        for key, value in entries.items():
+            lines.append(f"  --{prefix}-{key}: {value};")
+    # Alpha scene/overlay paints and review-only chart/status colors are authored
+    # once; converting their call sites to var() does not recolor the illustrations.
+    for key, value in data.get("alphaColors", {}).items():
+        lines.append(f"  --li-effect-{key}: {value};")
+    for key, value in data.get("reviewColors", {}).items():
+        lines.append(f"  --li-review-color-{key}: {value};")
+    # PO-accepted S118 compact two-up micro-geometry; not general grid tokens.
+    for key, value in data.get("approvedMicroSpacing", {}).items():
+        lines.append(f"  --li-micro-{key}: {value};")
     lines.append("  /* 4px spacing grid; suffix equals grid index, not literal pixels. */")
     for value in data["spacing"]["valuesPx"]:
         if value % 4:

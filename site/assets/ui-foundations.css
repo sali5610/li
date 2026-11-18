@@ -846,11 +846,11 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 }
 
 /* UX-DS-25 · iPad is a component-density mode, not a stretched iPhone.
-   Width 744–1139 is tablet layout; large touch iPads reach 1366 CSS px.
+   Width 744–1139 is tablet layout; large touch iPads reach 1376 CSS px.
    Landscape adds composition changes below. Desktop 1200+ with a mouse
    retains its existing desktop scale. Only JSON-generated tokens supply sizes. */
 @media (min-width: 744px) and (max-width: 1139px),
-       (min-width: 1140px) and (max-width: 1366px) and (any-pointer: coarse) {
+       (min-width: 1140px) and (max-width: 1600px) and (any-pointer: coarse) {
  :root {
   --li-type-headline: var(--li-device-ipad-portrait-type-headline);
   --li-leading-headline: var(--li-device-ipad-portrait-leading-headline);
@@ -886,6 +886,8 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
    min-height:var(--li-current-control-min)!important;
  }
  .header .tool-button { min-width:var(--li-current-control-min)!important; }
+ .header .topnav .nav-btn,
+ #page-home .hero-actions .primary { font-size:var(--li-type-body);line-height:var(--li-leading-body); }
  .page :is(input[type="text"],input[type="search"],input[type="email"],textarea,select) {
    font-size:var(--li-type-body);
    line-height:var(--li-leading-body);
@@ -902,7 +904,7 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
  }
 }
 @media (min-width: 1000px) and (max-width: 1139px) and (orientation: landscape),
-       (min-width: 1140px) and (max-width: 1366px) and (orientation: landscape) and (any-pointer: coarse) {
+       (min-width: 1140px) and (max-width: 1600px) and (orientation: landscape) and (any-pointer: coarse) {
  :root {
   --li-type-headline: var(--li-device-ipad-landscape-type-headline);
   --li-leading-headline: var(--li-device-ipad-landscape-leading-headline);

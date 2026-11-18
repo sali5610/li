@@ -91,6 +91,25 @@ assert(!coreEnglishValues.some(value=>value.includes("Lão Lý")),"Core UI Engli
 for(const key of ["Lão hỏi ngược","Phản biện lão","Lão quên gì rồi?","Trò chuyện với Lão Lý","Lời Lão Lý về nhịp học","Lão Lý ngái ngủ"]){
  assert(translations[key]?.includes("Elder Li"),"Missing authored EN mentor alias in "+key);
 }
+/* Compile the browser fixture itself: a previous test edit accidentally
+   reused a lexical name, leaving browser QA pending instead of executing. */
+const browserFixtureScripts=[...read("tools/i18n_browser_fixture.html").matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)];
+assert(browserFixtureScripts.length>=2,"Real-app bilingual fixture scripts are missing");
+for(const [i,entry] of browserFixtureScripts.entries()){
+ assert.doesNotThrow(()=>new Function(entry[1]),"Bilingual browser fixture syntax error in script "+i);
+}
+/* User-reported iPhone bilingual leaks: composite deep-course statuses and
+   T01's dynamically concatenated mode label must have their own localized DOM. */
+const deepCatalog=read("site/assets/catalog-drilldown.js");
+const practice=read("site/assets/spell-practice.js");
+const draggable=read("site/assets/laoly-drag.js");
+assert(deepCatalog.includes('copy("Đã phát hành","Published")'),"Deep published status must be EN-aware");
+assert(deepCatalog.includes('copy("Đề cương · chưa phát hành","Outline · not published")'),"Deep outline status must be EN-aware");
+assert(deepCatalog.includes('window.scrollTo?.(0,0)'),"Catalog drilldown must not inherit stale scroll under the sticky header");
+assert(deepCatalog.includes('finally{localize(host);}'),"Every catalog depth must get translation, not only the root view");
+assert(practice.includes(" · <span>THỬ THI TRIỂN</span>"),"Practice mode must be an independently translatable node");
+assert(practice.includes("window.liLanguage?.apply?.(root)"),"Practice rerenders must apply app locale");
+assert(draggable.includes("nudgeAwayFromPriorityUI(b)"),"Persisted mascot position must dodge essential study controls");
 const quotes=read("site/assets/laoly-quotes-s121.js");
 const vi=JSON.parse(quotes.match(/const QUOTES=(\[[\s\S]*?\]);/)[1]);
 const en=JSON.parse(quotes.match(/const QUOTES_EN=(\{[\s\S]*?\});/)[1]);

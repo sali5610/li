@@ -565,6 +565,19 @@ body:has(.app.home-focus){
    Maintain 100dvh one-screen Home and transparent top navigation. */
 @media (min-width: 1000px) and (max-width: 1139px) and (orientation: landscape),
        (min-width: 1140px) and (max-width: 1366px) and (orientation: landscape) and (any-pointer: coarse) {
+ /* Legacy page-in slides its entire Home scene 3px under the transparent
+    header during entry. Fade opacity instead; Home remains pixel-aligned. */
+ @keyframes li-ipad-landscape-home-reveal {
+   from { opacity:.96; }
+   to { opacity:1; }
+ }
+ .app.home-focus #page-home.page.active {
+   animation:li-ipad-landscape-home-reveal .22s ease-out both!important;
+   transform:none!important;
+ }
+ @media (prefers-reduced-motion: reduce) {
+   .app.home-focus #page-home.page.active { animation:none!important; }
+ }
  .app.home-focus #page-home .hero::before {
    background-image:url("./home-li-ipad-20261119.jpg")!important;
    background-size:cover!important;

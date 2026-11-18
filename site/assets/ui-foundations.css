@@ -1026,7 +1026,3 @@ html.li-safari-landscape-recovery .header .topnav .nav-btn {
  font-size:var(--li-type-body)!important;
  line-height:var(--li-leading-body)!important;
 }
-html.li-safari-landscape-recovery body .laoly-support.li-companion-draggable {
- left:calc(var(--li-safari-physical-width) - 84px)!important;
- right:auto!important;
-}

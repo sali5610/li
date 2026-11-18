@@ -535,3 +535,27 @@ body .laoly-support.li-companion-draggable.is-dragging #laoly-fab{
     height:max(580px,100dvh)!important;
   }
 }
+
+/* UX-HOME-07 · Fixed one-screen Home, no vertical document scroll.
+   Scope to active Home only. The transparent top nav already offsets the hero
+   with a negative margin; one dynamic viewport now fits from edge to edge. */
+html:has(.app.home-focus),
+body:has(.app.home-focus){
+ overflow-y:hidden!important;
+ overscroll-behavior-y:none;
+ height:100%;
+}
+.app.home-focus #page-home .hero{
+ height:100dvh!important;
+ min-height:0!important;
+ max-height:none!important;
+}
+/* Short phone screens: reduce the space around the bottom action group while
+   retaining both actions and the native swipe-to-change-question area. */
+@media(max-width:600px) and (max-height:680px){
+ .app.home-focus #page-home .hero{
+  --home-actions-bottom:calc(52px + var(--li-space-3) + env(safe-area-inset-bottom,0px));
+  --home-context-gap:var(--li-space-2);
+ }
+ .app.home-focus #page-home .mirror-message{top:34%!important}
+}

@@ -1,0 +1,21 @@
+{
+  "name": "li-step16-real-l09-react-island",
+  "private": true,
+  "version": "0.0.0-research",
+  "type": "module",
+  "scripts": {
+    "extract": "node scripts/extract-l09.cjs",
+    "build": "npm run extract && tsc --noEmit && vite build",
+    "check:source": "node scripts/extract-l09.cjs --verify"
+  },
+  "dependencies": {
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "typescript": "5.9.3",
+    "vite": "8.3.8"
+  }
+}

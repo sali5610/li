@@ -38,7 +38,7 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           sleep 2
-          for width in 320 360 375 390 402 600 640 744 820 1024 1133 1440; do
+          for width in 320 360 375 390 402 600 640 744 820 970 1024 1133 1408 1440; do
             echo "Checking iframe viewport $width px"
             url="http://127.0.0.1:8765/tools/render_contract_fixture.html?w=$width"
             result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=11000 --dump-dom "$url" 2>/tmp/li-chrome-stderr.log || true)"
@@ -50,10 +50,10 @@ jobs:
             fi
             echo "$result" | grep '<pre id="result">LI_RENDER_PASS ' | tail -1 | cut -c1-1000
           done
-          echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at twelve viewports"
+          echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at fourteen viewports"
           # iPad landscape CSS follows viewport geometry, not any-pointer heuristics.
           # Previously 1194/1376 were never exercised as tablet in Chromium.
-          for width in 1194 1376; do
+          for width in 1194 1376 1408; do
             echo "Checking wide landscape iPad-sized viewport at ${width}px"
             url="http://127.0.0.1:8765/tools/render_contract_fixture.html?w=$width"
             result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1600,1200 --virtual-time-budget=13000 --dump-dom "$url" 2>/tmp/li-ipad-touch-stderr.log || true)"
@@ -65,11 +65,11 @@ jobs:
             fi
             echo "$result" | grep '<pre id="result">LI_RENDER_PASS ' | tail -1 | cut -c1-900
           done
-          echo "PASS wide viewport landscape at 1194 and 1376 CSS px"
+          echo "PASS wide viewport landscape at 1194, 1376 and 1408 CSS px"
 
            # Rotate the SAME loaded iframe both directions; reload-only checks miss
            # stale portrait-width layouts and visual-viewport clipping in landscape.
-           for dims in "820:1180:1180:820" "1032:1376:1376:1032"; do
+           for dims in "820:1180:1180:820" "1032:1376:1376:1032" "970:1408:1408:832"; do
              IFS=: read -r pw ph lw lh <<< "$dims"
              echo "Checking live iPad rotation ${pw}x${ph} -> ${lw}x${lh} -> ${pw}x${ph}"
              url="http://127.0.0.1:8765/tools/ipad_rotation_fixture.html?pw=${pw}&ph=${ph}&lw=${lw}&lh=${lh}"

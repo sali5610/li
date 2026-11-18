@@ -8,7 +8,17 @@ const MODE={start:"Vào nhịp",focus:"Đào sâu",overload:"Quá tải",recover
 const ANSWER={yes:"Có",no:"Chưa",unsure:"Không rõ"},TYPES=["lesson","branch","input"];
 function localDay(when){const d=when?new Date(when):new Date();if(Number.isNaN(d.getTime()))return null;return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");}
 let selected=localDay(),month=selected.slice(0,7),enabled=false,diary={schema:1,days:{}},storageError=false;
-try{enabled=localStorage.getItem(CONSENT)==="true";const raw=localStorage.getItem(KEY);if(raw){const x=JSON.parse(raw);if(!x||x.schema!==1||!x.days||typeof x.days!=="object"||Array.isArray(x.days))throw Error("invalid");diary=x;}}catch(e){storageError=true;enabled=false;}
+try{
+ const choice=localStorage.getItem(CONSENT),raw=localStorage.getItem(KEY);
+ // Fresh installs default ON per PO. Existing paused journals have a ledger but
+ // no consent key under v1: keep them OFF rather than overriding the prior pause.
+ enabled=choice==="true"||(choice===null&&raw===null);
+ if(choice===null){
+  localStorage.setItem(CONSENT,enabled?"true":"false");
+  if(localStorage.getItem(CONSENT)!==(enabled?"true":"false"))throw Error("consent readback");
+ }
+ if(raw){const x=JSON.parse(raw);if(!x||x.schema!==1||!x.days||typeof x.days!=="object"||Array.isArray(x.days))throw Error("invalid");diary=x;}
+}catch(e){storageError=true;enabled=false;}
 function safeDay(date){const x=diary.days[date];return x&&typeof x==="object"&&x.activities&&typeof x.activities==="object"?x:null;}
 function counts(date){const x=safeDay(date);return TYPES.map(t=>Array.isArray(x?.activities[t])?x.activities[t].length:0);}
 function put(update,date=localDay()){
@@ -24,7 +34,9 @@ function append(parent,tag,cls,value){const e=document.createElement(tag);if(cls
 function render(){
  $("li-diary-consent").textContent=enabled?"Dừng ghi mới":"Bật lưu lịch";
  $("li-diary-consent").disabled=storageError;
- $("li-diary-consent-status").textContent=storageError?"Không thể đọc/ghi lịch. Đã dừng ghi để tránh mất dữ liệu.":enabled?"Đang ghi sự kiện mới trên trình duyệt này, không đồng bộ máy chủ.":"Chưa bật lưu lịch. Có thể xem dữ liệu cũ, nhưng không ghi thêm sự kiện mới.";
+ $("li-diary-consent-status").textContent=storageError?"Không thể đọc/ghi lịch. Đã dừng ghi để tránh mất dữ liệu.":enabled?"Đang tự động ghi Check-in và hoạt động mới trên thiết bị này. Không đồng bộ máy chủ.":"Đã dừng ghi mới; các ngày cũ vẫn có thể xem và xóa.";
+ const disclosure=$("li-checkin-recording-disclosure");
+ if(disclosure)disclosure.textContent=storageError?"Không thể lưu nhật ký trên thiết bị này. Check-in chỉ giữ trong phiên; hãy tự ghi lại nếu cần.":enabled?"Đang lưu Check-in và nhịp đã áp dụng vào Nhật Ký trên thiết bị này; không gửi máy chủ. Có thể dừng ghi ở cuối trang Nhật Ký.":"Bạn đã dừng lưu Nhật Ký. Check-in này chỉ giữ trong phiên, không ghi thêm vào lịch.";
  $("li-diary-delete").disabled=storageError||!Object.keys(diary.days).length;
  $("li-diary-month").textContent=new Intl.DateTimeFormat("vi-VN",{month:"long",year:"numeric"}).format(new Date(month+"-01T12:00:00"));
  const parts=month.split("-").map(Number),yr=parts[0],mo=parts[1];
@@ -69,7 +81,7 @@ $("li-diary-prev").addEventListener("click",()=>moveMonth(-1));
 $("li-diary-next").addEventListener("click",()=>moveMonth(1));
 $("li-diary-checkin-now").addEventListener("click",()=>{const source=$("li-diary-checkin-now");const homeCheckin=$("checkin");if(homeCheckin){homeCheckin.click();$("checkin-modal").dataset.trigger=source.id;}});
 $("li-diary-consent").addEventListener("click",()=>{
- try{if(enabled){localStorage.removeItem(CONSENT);if(localStorage.getItem(CONSENT)!==null)throw Error("readback");enabled=false;}else{localStorage.setItem(CONSENT,"true");if(localStorage.getItem(CONSENT)!=="true")throw Error("readback");enabled=true;}}catch(e){storageError=true;}render();
+ try{if(enabled){localStorage.setItem(CONSENT,"false");if(localStorage.getItem(CONSENT)!=="false")throw Error("readback");enabled=false;}else{localStorage.setItem(CONSENT,"true");if(localStorage.getItem(CONSENT)!=="true")throw Error("readback");enabled=true;}}catch(e){storageError=true;}render();
 });
 $("li-diary-delete").addEventListener("click",()=>{
  if(!window.confirm("Xóa toàn bộ lịch thể trạng và hoạt động đã lưu trên trình duyệt này? Không thể hoàn tác."))return;

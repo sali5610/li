@@ -394,6 +394,22 @@ assert html.count('id="li-diary-delete"')==1
 assert (site/"assets"/"personal-diary.js").is_file()
 assert (site/"assets"/"personal-diary.css").is_file()
 
+# UX-IA-03: no flattened top-level shelf items; latest truthful records and full details.
+library_section=section("library")
+assert all(x in library_section for x in ('library-resume-heading','library-collection-heading','library-reflection-heading'))
+assert 'id="li-library-latest-lesson"' in library_section
+assert 'id="li-library-latest-idea"' in library_section
+assert 'id="li-saved-questions"' not in library_section, "Dấu Trang must live only in Quay lại details"
+assert 'id="page-resume"' in html and 'id="page-collection"' in html
+assert html.count('id="li-saved-questions"')==1
+assert html.count('id="case-archive-preview"')==1
+assert 'data-demo="Chưa lưu được ý này' not in html
+assert 'id="save-capture-note"' in html
+assert html.count('id="li-checkin-recording-disclosure"')==1
+assert html.index('li-diary-privacy')>html.index('li-diary-day-status')
+assert '<script src="./assets/library-hub.js?v=1"></script>' in html
+subprocess.run(["node",str(site.parent/"tools"/"test_library_hub_v2.cjs")],check=True,cwd=site.parent)
+
 # S120: mirror-variant illustration stored locally and not silently downgraded
 # to a chat icon; Bút Ký uses same paper surface as cards 03-04.
 illustrated=site/"assets"/"laoly-mirror-suy-nghi.png"
@@ -449,7 +465,7 @@ for route in ("lessonL03", "lessonL09", "lessonL15"):
     assert f'type:"hook",lessonRoute:"{route}"' in page_html
 assert page_html.count('type:"hook",lessonRoute:') == 3
 assert 'sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang."' in page_html
-assert 'navigate(target.type==="hook"?target.lessonRoute:"research");' in page_html
+assert 'navigate(scenario.type==="hook"?scenario.lessonRoute:"research");' in (site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert '<script src="./assets/lesson-related-wave1.js"></script>' in page_html
 assert 'ui-foundations.css?v=0.6' in page_html
 cross=(site/"assets"/"lesson-related-wave1.js").read_text(encoding="utf-8")
@@ -472,7 +488,8 @@ for original in (
     'Một ngàn câu trả lời vẫn có thể dẫn tới kết luận lệch.',
 ):
     assert f'previousQuestion:"{original}"' in page_html, "Old Dấu Trang hook must remain resolvable"
-assert 'x.question===item.question||x.previousQuestion===item.question||(x.key&&x.key===item.scenarioKey)' in page_html
+library_hub=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
+assert 'x.question===item.question||x.previousQuestion===item.question||(x.key&&x.key===item.scenarioKey)' in library_hub
 assert 'sc.key&&x.scenarioKey===sc.key' in page_html
 assert 'scenarioKey:sc.key||null' in page_html
 assert 'Câu hỏi mở vẫn có thể âm thầm dẫn dắt câu trả lời. Vì sao?' in page_html

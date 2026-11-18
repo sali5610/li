@@ -265,7 +265,8 @@ assert 'class="settings-buddy-heading"' in settings
 assert '#settings-buddy-card .settings-buddy-heading' in html
 assert '#settings-buddy-card .settings-buddy-illustration' in html
 # S157: the final toggle already has a bottom rule; no separate top rule for names.
-assert 'border-top: 1px solid var(--rule)' not in foundation.split('#page-settings .buddy-address-settings {', 1)[1].split('}', 1)[0]
+settings_styles=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
+assert 'border-top: 1px solid var(--rule)' not in settings_styles.split('#page-settings .buddy-address-settings {', 1)[1].split('}', 1)[0]
 assert '#settings-buddy-card .settings-buddy-footer' not in html
 assert 'li-layout.css?v=0.4' in page_html and 'ui-foundations.css?v=0.4' in page_html
 

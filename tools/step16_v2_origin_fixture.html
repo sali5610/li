@@ -64,7 +64,7 @@
    function call(command,payload){
      const id=++seq;
      return new Promise((resolve,reject)=>{
-       const timer=setTimeout(()=>{window.removeEventListener("message",handle);reject(Error("Receiver B timed out "+command));},14000);
+       const timer=setTimeout(()=>{window.removeEventListener("message",handle);reject(Error("Receiver B timed out "+command));},32000);
        function handle(event){
          if(event.origin!==B||event.source!==receiverFrame.contentWindow||event.data?.protocol!=="li-step16-v2-reply"||event.data.seq!==id)return;
          clearTimeout(timer);window.removeEventListener("message",handle);

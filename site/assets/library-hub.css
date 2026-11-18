@@ -463,8 +463,9 @@
   background:linear-gradient(to top,
     color-mix(in srgb,var(--forest) 88%,var(--li-uxds10-touch-clear)),
     color-mix(in srgb,var(--forest) 38%,var(--li-uxds10-touch-clear)))!important;
-  border-top:0!important;
-  box-shadow:none!important;
+  border-top-color:var(--li-uxds10-touch-clear)!important;
+  border-top-width:0!important;
+  box-shadow:var(--li-uxds10-touch-no-shadow)!important;
  }
  body:has(.app.home-focus) .mobile-nav .nav-btn,
  body:has(.app.home-focus) .mobile-nav .nav-btn:is(:hover,:active,:focus),

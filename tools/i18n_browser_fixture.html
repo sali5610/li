@@ -33,6 +33,7 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
    await change("en");
    record("English root language + title",d.documentElement.lang==="en"&&d.title.includes("Library of Knowledge"),d.title);
    record("English keyboard drag instruction",by("laoly-fab")?.getAttribute("aria-description")?.startsWith("Drag to move Lão Lý"),by("laoly-fab")?.getAttribute("aria-description"));
+   record("Note detail empty title translates",label(by("li-note-detail-title"))==="Note details",label(by("li-note-detail-title")));
    const expectations={
     home:["Mọi câu hỏi","Every question"],
     catalog:["Tàng Thư","Library"],

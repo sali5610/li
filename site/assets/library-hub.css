@@ -515,4 +515,11 @@ body .laoly-support.li-companion-draggable.is-dragging #laoly-fab{
   background-position:center center!important;
   background-repeat:no-repeat!important;
  }
+ /* The new tree's mirror is centered, unlike the earlier right-shifted scene.
+    Keep the question text within the actual opening at every tablet width. */
+ .app.home-focus #page-home .mirror-message{
+  left:49%!important;
+  width:min(34%,300px)!important;
+  min-width:0!important;
+ }
 }

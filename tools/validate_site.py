@@ -325,7 +325,7 @@ assert '<section id="page-noteDetail"' in page_html
 assert '<button id="li-note-save"' in page_html
 assert '<button id="li-note-delete"' in page_html
 assert '<div id="li-note-history-list"' in page_html
-assert '<script src="./assets/library-note-editor.js?v=4"></script>' in page_html
+assert '<script src="./assets/library-note-editor.js?v=5"></script>' in page_html
 hub=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
@@ -377,7 +377,7 @@ assert "Muốn nhớ: thử T01/T02" not in (site/"assets"/"laoly-context-s112.j
 # S112 — context-aware companion must be present, parse and pass UI-plan QA.
 companion=site/"assets"/"laoly-context-s112.js"
 assert companion.is_file() and companion.stat().st_size>4000
-assert html.count('<script src="./assets/laoly-context-s112.js"></script>')==1
+assert html.count('<script src="./assets/laoly-context-s112.js?v=20261119-mentor-en"></script>')==1
 subprocess.run(["node","--check",str(companion)],check=True)
 subprocess.run(["node",str(site.parent/"tools"/"test_buddy.js")],check=True,cwd=site.parent)
 
@@ -434,7 +434,7 @@ assert 'data-demo="Chưa lưu được ý này' not in html
 assert 'id="save-capture-note"' in html
 assert html.count('id="li-checkin-recording-disclosure"')==1
 assert html.index('li-diary-privacy')>html.index('li-diary-day-status')
-assert '<script src="./assets/library-hub.js?v=7"></script>' in html
+assert '<script src="./assets/library-hub.js?v=8"></script>' in html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_hub_v2.cjs")],check=True,cwd=site.parent)
 
 # UX-IA-05: lesson modules only own lesson/catalog DOM, never Tủ Riêng overview.
@@ -456,9 +456,9 @@ assert 'ideas:collectedIdeas,savedContent,draft:' in page_html
 assert 'caseSnapshot' in page_html and 'selectedText:caseOptions.find' in page_html
 assert 'id="li-note-case-context"' in page_html
 assert 'data-li-bookmark-kind="case"' in page_html
-assert '<script src="./assets/library-bookmarks.js?v=3"></script>' in page_html
-assert '<script src="./assets/library-note-editor.js?v=4"></script>' in page_html
-assert '<script src="./assets/library-hub.js?v=7"></script>' in page_html
+assert '<script src="./assets/library-bookmarks.js?v=4"></script>' in page_html
+assert '<script src="./assets/library-note-editor.js?v=5"></script>' in page_html
+assert '<script src="./assets/library-hub.js?v=8"></script>' in page_html
 for lesson_id,slug in (("L03-1-2","l03"),("L09-1-2","l09"),("L15-2-2","l15")):
     content=(site/"assets"/f"lesson-{slug}-hifi-markup.js").read_text(encoding="utf-8")
     assert f'data-li-bookmark-id="{lesson_id}"' in content

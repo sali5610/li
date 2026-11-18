@@ -51,6 +51,24 @@ assert(runtime.includes('"Thần Chú":"Spells"'),"Spell navigation must not rea
 assert(runtime.includes('"Sổ Tay Thần Chú":"The Spellbook"'),"English Guide should feel like a spellbook");
 assert(index.includes('window.LI_LEGACY_EN?.[m[1]]'),"Search by English spell name is required");
 assert(index.includes('function paintMethodDetail(id)'),"Detail name and school must be localized");
+/* Dynamic user-facing copy needs a fully authored EN rendering, not merely
+   a placeholder global locale preference. Do not translate learner-owned notes. */
+for(const phrase of [
+ "Chế độ của thần chú","Chú giải","Thử thi triển",
+ "Hai phân loại đúng.","Hãy nhìn lại dấu hiệu chọn mẫu.",
+ "Đã tách đúng hai câu hỏi.","Một đáp án cần xem lại.",
+ "B là nguồn tốt hơn cho câu hỏi hẹp này.",
+ "Hãy kiểm tra lại provenance và cơ chế chọn người.",
+ "T03 phù hợp cho thủ tục mới.","Chưa có lần học trước nên T02 không phù hợp ngay.",
+ "Bạn chọn hai dữ kiện quan trọng, không chọn khẳng định quá mức.",
+ "Dữ kiện không có nhóm so sánh và khuyến mãi đồng thời đều quan trọng."
+])assert(paired(phrase),"Missing dynamic exercise copy: "+phrase);
+assert(read("site/assets/laoly-context-s112.js").includes("methodSearchBlob(m)"),"Mentor search must match English spell aliases");
+assert(read("site/assets/laoly-context-s112.js").includes("methodDisplayName(m)"),"Mentor must refer to localized spell identities");
+assert(read("site/assets/spell-practice.js").includes("feedbackMarkup(feedback)"),"Composite practice feedback must preserve separately translated clauses");
+assert(read("site/assets/library-hub.js").includes("lessonStatusText(info)"),"Library lesson statuses must be locale-aware");
+assert(read("site/assets/library-hub.js").includes("item.title).dataset.liNoTranslate"),"Stored case titles must not be silently translated");
+assert(read("site/assets/library-note-editor.js").includes("const ui=(vi,en)"),"Saved case provenance requires authored bilingual UI");
 const quotes=read("site/assets/laoly-quotes-s121.js");
 const vi=JSON.parse(quotes.match(/const QUOTES=(\[[\s\S]*?\]);/)[1]);
 const en=JSON.parse(quotes.match(/const QUOTES_EN=(\{[\s\S]*?\});/)[1]);

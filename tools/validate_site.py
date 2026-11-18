@@ -69,7 +69,7 @@ assert '<meta name="apple-mobile-web-app-title" content="li.">' in html
 assert '<meta name="theme-color" content="#243A29">' in html
 
 # S136: mirror label is typographic only, not a search control.
-assert html.count('<div class="mirror-label">Gương Vạn Vấn</div>') == 1
+assert html.count('<div class="mirror-label">Gương Vạn Vấn · Vấn đề</div>') == 1
 assert '<div class="mirror-label"><i data-lucide="search"' not in html
 
 # S138/S139: touch swipe only on mirror; fixed-scale viewport and sticky header.
@@ -268,7 +268,7 @@ assert '#settings-buddy-card .settings-buddy-illustration' in html
 settings_styles=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert 'border-top: 1px solid var(--rule)' not in settings_styles.split('#page-settings .buddy-address-settings {', 1)[1].split('}', 1)[0]
 assert '#settings-buddy-card .settings-buddy-footer' not in html
-assert 'li-layout.css?v=0.4' in page_html and 'ui-foundations.css?v=0.4' in page_html
+assert 'li-layout.css?v=0.4' in page_html and 'ui-foundations.css?v=0.5' in page_html
 
 # S118: two compact mobile Guide tiles with shadow-safe column/row gutters; no duplicate S99 rule.
 guide=section("guide")
@@ -423,3 +423,30 @@ subprocess.run(["python3",str(site.parent/"tools"/"validate_lesson_companions.py
 
 assert (site/".nojekyll").is_file()
 print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and canonical 32px gaps, privacy copy, JS parsing")
+
+
+# S158: Home mirror now has two honest entry routes (problem -> research,
+# published Wave1 hook -> canonical lesson). Cross-links never point to draft Wave2/3.
+home = section("home")
+assert home.count('id="mirror-primary-action"') == 1
+assert home.count('id="mirror-primary-label"') == 1
+assert 'action.dataset.page=isHook?item.lessonRoute:"research";' in page_html
+assert 'document.getElementById("mirror-primary-label").textContent=isHook?"Khám phá vì sao":"Đào sâu";' in page_html
+assert 'function renderMirrorItem()' in page_html
+assert 'renderMirrorItem();' in page_html
+assert 'if(scenarios[qIndex].type!=="hook")syncResearch();' in page_html
+for route in ("lessonL03", "lessonL09", "lessonL15"):
+    assert f'type:"hook",lessonRoute:"{route}"' in page_html
+assert page_html.count('type:"hook",lessonRoute:') == 3
+assert 'sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang."' in page_html
+assert 'navigate(target.type==="hook"?target.lessonRoute:"research");' in page_html
+assert '<script src="./assets/lesson-related-wave1.js"></script>' in page_html
+assert 'ui-foundations.css?v=0.5' in page_html
+cross=(site/"assets"/"lesson-related-wave1.js").read_text(encoding="utf-8")
+assert 'Object.keys(RELATED).forEach' in cross
+assert all(k in cross for k in ("L03-1-2", "L09-1-2", "L15-2-2"))
+assert 'L03-2-' not in cross and 'L09-2-' not in cross and 'L15-3-' not in cross
+assert 'list.replaceChildren()' in cross
+assert 'window.navigate(lesson.route)' in cross
+assert 'locale==="vi"?' in cross
+assert 'li-related-lessons' in foundation

@@ -281,6 +281,12 @@
   --li-device-ipad-portrait-leading-support: 24px;
   --li-device-ipad-portrait-type-caption: 14px;
   --li-device-ipad-portrait-leading-caption: 20px;
+  --li-device-ipad-portrait-type-display: 56px;
+  --li-device-ipad-portrait-leading-display: 64px;
+  --li-device-ipad-portrait-type-title-lg: 32px;
+  --li-device-ipad-portrait-leading-title-lg: 40px;
+  --li-device-ipad-portrait-type-body-lg: 20px;
+  --li-device-ipad-portrait-leading-body-lg: 32px;
   --li-device-ipad-portrait-page-gutter: 32px;
   --li-device-ipad-portrait-card-pad: 28px;
   --li-device-ipad-portrait-stack-gap: 28px;
@@ -300,6 +306,12 @@
   --li-device-ipad-landscape-leading-support: 24px;
   --li-device-ipad-landscape-type-caption: 14px;
   --li-device-ipad-landscape-leading-caption: 20px;
+  --li-device-ipad-landscape-type-display: 60px;
+  --li-device-ipad-landscape-leading-display: 68px;
+  --li-device-ipad-landscape-type-title-lg: 36px;
+  --li-device-ipad-landscape-leading-title-lg: 44px;
+  --li-device-ipad-landscape-type-body-lg: 20px;
+  --li-device-ipad-landscape-leading-body-lg: 32px;
   --li-device-ipad-landscape-page-gutter: 40px;
   --li-device-ipad-landscape-card-pad: 32px;
   --li-device-ipad-landscape-stack-gap: 32px;

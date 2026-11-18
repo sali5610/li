@@ -864,6 +864,12 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   --li-leading-support: var(--li-device-ipad-portrait-leading-support);
   --li-type-caption: var(--li-device-ipad-portrait-type-caption);
   --li-leading-caption: var(--li-device-ipad-portrait-leading-caption);
+  --li-type-display: var(--li-device-ipad-portrait-type-display);
+  --li-leading-display: var(--li-device-ipad-portrait-leading-display);
+  --li-type-title-lg: var(--li-device-ipad-portrait-type-title-lg);
+  --li-leading-title-lg: var(--li-device-ipad-portrait-leading-title-lg);
+  --li-type-body-lg: var(--li-device-ipad-portrait-type-body-lg);
+  --li-leading-body-lg: var(--li-device-ipad-portrait-leading-body-lg);
   --li-page-gutter: var(--li-device-ipad-portrait-page-gutter);
   --li-card-pad: var(--li-device-ipad-portrait-card-pad);
   --li-stack-gap: var(--li-device-ipad-portrait-stack-gap);
@@ -910,6 +916,12 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   --li-leading-support: var(--li-device-ipad-landscape-leading-support);
   --li-type-caption: var(--li-device-ipad-landscape-type-caption);
   --li-leading-caption: var(--li-device-ipad-landscape-leading-caption);
+  --li-type-display: var(--li-device-ipad-landscape-type-display);
+  --li-leading-display: var(--li-device-ipad-landscape-leading-display);
+  --li-type-title-lg: var(--li-device-ipad-landscape-type-title-lg);
+  --li-leading-title-lg: var(--li-device-ipad-landscape-leading-title-lg);
+  --li-type-body-lg: var(--li-device-ipad-landscape-type-body-lg);
+  --li-leading-body-lg: var(--li-device-ipad-landscape-leading-body-lg);
   --li-page-gutter: var(--li-device-ipad-landscape-page-gutter);
   --li-card-pad: var(--li-device-ipad-landscape-card-pad);
   --li-stack-gap: var(--li-device-ipad-landscape-stack-gap);

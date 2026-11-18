@@ -80,7 +80,7 @@
   <div class="checkin-scroll" tabindex="0" aria-label="Nội dung check-in có thể cuộn">
    <div class="kicker">L1 · THỂ TRẠNG → NHỊP HỌC</div>
    <h2 id="checkin-title">Hôm nay cơ thể ra sao?</h2>
-   <p id="checkin-description">Trả lời 3 mục thể trạng để li. gợi ý nhịp học. Không chắc thì chọn “Không rõ”.</p>
+   <p id="checkin-description">Trả lời đủ ba mục. Không chắc? Chọn “Không rõ”.</p>
    <div class="checkin-physical" role="group" aria-label="Ba câu hỏi thể trạng trước khi áp dụng check-in">
     <fieldset class="checkin-physical-field" data-checkin-field="sleep"><legend><span class="checkin-index">01</span> Đã ngủ tương đối đủ?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-sleep" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-sleep" value="no"><span>Chưa</span></label><label class="checkin-radio"><input type="radio" name="checkin-sleep" value="unsure"><span>Không rõ</span></label></div></fieldset>
     <fieldset class="checkin-physical-field" data-checkin-field="move"><legend><span class="checkin-index">02</span> Đã vận động nhẹ hôm nay?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-move" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-move" value="no"><span>Chưa</span></label><label class="checkin-radio"><input type="radio" name="checkin-move" value="unsure"><span>Không rõ</span></label></div></fieldset>
@@ -490,7 +490,7 @@ function recommendStudyMode(physical,energy="",attention=""){
   return {mode:"start",reason:"Có thông tin thể trạng chưa rõ; cứ vào nhịp vừa sức, không cần phỏng đoán."};
  if(energy==="medium"||attention==="warming")
   return {mode:"start",reason:"Ba mục thể trạng đều được trả lời Có; cảm nhận hiện tại phù hợp bắt đầu từ từ."};
- return {mode:"focus",reason:"Bạn đã trả lời Có ở cả ba mục thể trạng; có thể cân nhắc học sâu nếu thấy ổn."};
+ return {mode:"focus",reason:"Cả ba mục đều Có; có thể thử học sâu nếu thấy ổn."};
 }
 function refreshCheckinRecommendation(){
  const {physical,energy,attention}=readCheckinInputs();
@@ -505,7 +505,7 @@ function refreshCheckinRecommendation(){
  }else if(manual){
   result.textContent="L1 đã đủ ba câu. Bạn chọn "+STUDY_MODES[manual].label+" thủ công; quyền quyết định vẫn thuộc về bạn.";
  }else{
-  result.textContent="Gợi ý: "+STUDY_MODES[suggested.mode].label+". "+suggested.reason+" Đây không phải kết luận về sức khỏe hay khả năng học.";
+  result.textContent="Gợi ý: "+STUDY_MODES[suggested.mode].label+". "+suggested.reason+" Đây không phải đánh giá sức khỏe.";
  }
  document.getElementById("apply-checkin").disabled=!target;
  return target;

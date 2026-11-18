@@ -29,7 +29,8 @@
     report("Mirror question exists",!!mirror);
     const scene=doc.querySelector("#page-home .hero");
     const image=scene?w.getComputedStyle(scene,"::before").backgroundImage:"";
-    report("Approved Home illustration loaded from new CSS-relative path",image.includes("home-mystic-cool-"),image.slice(0,170));
+    const expectedScene=w.innerWidth<=600?"home-li-iphone-20261119.jpg":w.innerWidth<=1139?"home-li-ipad-20261119.jpg":"home-mystic-cool-desktop.webp";
+    report("Approved Home illustration matches responsive source image",image.includes(expectedScene),image.slice(0,170));
     if(w.innerWidth<=600){
      const nav=doc.querySelector(".mobile-nav .nav-btn");
      const headerControl=doc.querySelector(".header .tool-button");

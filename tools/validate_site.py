@@ -504,7 +504,7 @@ assert 'classList.toggle("home-focus",id==="home")' in page_html
 assert 'label.textContent=saved?"Đã lưu":"Lưu câu hỏi";' in page_html
 # UX-HOME-02: bubble and its two shared-primary CTAs move together; the
 # background fills the dynamic mobile viewport with the original approved art.
-assert 'laoly-drag.js?v=20261118-home02' in page_html
+assert 'laoly-drag.js?v=20261119-control-dodge' in page_html
 assert 'window.liCompanionDrag?.place?.();' in page_html
 assert '/* UX-HOME-02 · Mobile Safari scene-fit' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert '--home-actions-bottom:var(--li-space-8);' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")

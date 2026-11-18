@@ -24,6 +24,7 @@
 | **Use / Don't use, interaction patterns, state transitions, accessibility behavior** | [ux-patterns-and-behavior.md](ux-patterns-and-behavior.md) | Any UI/UX interaction, new component or pattern; treat as default rule |
 | **Coverage, acceptance, impact chain and device test evidence** | [qa-checklist.md](qa-checklist.md) | Every UI/UX PR or design review |
 | **Actual component specimens** | [Component Library review](../site/component-library-review.html) | Compare rendered visual/state examples; a review specimen ≠ production signoff |
+| **Lão Lý illustration / icon variant policy** | [Single Lão Lý illustration family](../design-assets/lao-ly/README.md) + [Notion character canon](https://app.notion.com/p/41b6cf6db72a81e685bdfd00bb063b82) | Any scene/mentor illustration, expression, Settings art, Component Library artwork or chat icon usage |
 | **Artwork / illustration approval** | [Notion Asset Library](https://app.notion.com/p/41b6cf6db72a814fb474dcda6bc15a4f) | Scene, icon, Lão Lý or generated illustration |
 | **Latest accepted copy and product decisions** | [Step13 active canon](https://app.notion.com/p/41b6cf6db72a811aba36dcec9cc42c20), [Latest Handoff](https://app.notion.com/p/4196cf6db72a81f7b000f75783f210b5) | Any labels, status, dialogue, UX journey or gate |
 
@@ -34,6 +35,7 @@
 - **Typography & spacing:** Crimson Text editorial titles; system sans body/control, 16/24 body, >=14/20 essential support, 4px spacing grid. Approved Guide 2-up narrow 14/18px micro-geometry is a documented exception; preserve full VI/EN method names.
 - **Navigation & hierarchy:** one selected global route with sand oval + `aria-current=page`, matching header/mobile navigation; Home full-bleed with mirror question inside art, actions `Lưu` then `Đào sâu`; no fixed nav or Lão Lý covering content.
 - **Input & touch:** target **48×48 CSS px intended** on new touch interactions; distinguish WCAG 2.2 AA 24×24 CSS px minimum (with exceptions) from Apple 44×44 *pt* and Android 48×48 *dp*. Focus-visible, accessible names, real disabled/readonly, reduced motion and zoom/reflow must work.
+- **Lão Lý art (UX-ART-03):** one standalone `Ngoài gương` illustration family across scenes, no `Trong gương` crop variant. Keep approved functional micro/chat/mode icons distinct. Existing live mirrored art is known legacy until asset-specific visual acceptance and replacement QA; never auto-publish older unapproved source files.
 - **Behavior:** action uses button, navigation uses link; selected ≠ focus; clicked ≠ saved; errors must allow recovery; never fake cloud sync, mastery, health diagnosis, research approval, or a completed save.
 - **Review truth:** token/CI checks are necessary but **not** physical iPhone/VoiceOver or complete WCAG certification. G2 visual identity acceptance remains **OPEN** until Human PO approves it.
 

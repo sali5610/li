@@ -505,10 +505,10 @@ body .laoly-support.li-companion-draggable.is-dragging #laoly-fab{
 
 
 /* UX-HOME-04 · User-supplied scene variants. Keep the original desktop asset.
-   Tablet widths get the landscape scene; larger touch iPads up to 1366px do too.
+   Tablet widths get the landscape scene; larger touch iPads up to 1600px do too (including the 1376px iPad Pro 13).
    Never stretch the art; retain existing full-viewport Home/Nav behavior. */
 @media (min-width:601px) and (max-width:1139px),
-       (min-width:1140px) and (max-width:1366px) and (any-pointer:coarse){
+       (min-width:1140px) and (max-width:1600px) and (any-pointer:coarse){
  .app.home-focus #page-home .hero::before{
   background-image:url("./home-li-ipad-20261119.jpg")!important;
   background-size:cover!important;
@@ -521,6 +521,15 @@ body .laoly-support.li-companion-draggable.is-dragging #laoly-fab{
   left:49%!important;
   width:min(34%,300px)!important;
   min-width:0!important;
+ }
+ /* The inherited page-enter translate temporarily offsets the full-height artwork. */
+ @keyframes li-ipad-home-fade { from { opacity:.96; } to { opacity:1; } }
+ .app.home-focus #page-home.page.active {
+  animation:li-ipad-home-fade .22s ease-out both!important;
+  transform:none!important;
+ }
+ @media (prefers-reduced-motion: reduce) {
+  .app.home-focus #page-home.page.active { animation:none!important; }
  }
 }
 
@@ -564,7 +573,7 @@ body:has(.app.home-focus){
    Same approved landscape artwork; reposition actual UI, not image pixels.
    Maintain 100dvh one-screen Home and transparent top navigation. */
 @media (min-width: 1000px) and (max-width: 1139px) and (orientation: landscape),
-       (min-width: 1140px) and (max-width: 1366px) and (orientation: landscape) and (any-pointer: coarse) {
+       (min-width: 1140px) and (max-width: 1600px) and (orientation: landscape) and (any-pointer: coarse) {
  /* Legacy page-in slides its entire Home scene 3px under the transparent
     header during entry. Fade opacity instead; Home remains pixel-aligned. */
  @keyframes li-ipad-landscape-home-reveal {

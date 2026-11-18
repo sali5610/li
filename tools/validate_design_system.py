@@ -204,6 +204,13 @@ def main() -> int:
           "--li-device-ipad-landscape-type-body" in generated, "device scale generated CSS exists")
     check("(orientation: landscape)" in foundations and "(orientation: landscape)" in home_layout,
           "iPad landscape uses its own component and Home layout")
+    check("(max-width: 1600px) and (any-pointer: coarse)" in foundations and
+          "(max-width: 1600px) and (orientation: landscape) and (any-pointer: coarse)" in foundations and
+          "(max-width:1600px) and (any-pointer:coarse)" in home_layout and
+          "(max-width: 1600px) and (orientation: landscape) and (any-pointer: coarse)" in home_layout,
+          "iPad Pro 13 1376px touch portrait and landscape both covered")
+    check("ds26-ipad-real-fix" in html,
+          "iPad runtime styles use fresh CSS cache versions")
     check('data-width="1133" data-height="744"' in showcase and
           'data-width="820" data-height="1180"' in showcase, "review has iPad portrait and landscape presets")
 

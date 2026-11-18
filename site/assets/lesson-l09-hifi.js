@@ -271,7 +271,7 @@ $("submit").addEventListener("click",()=>{
  state.draft=Array.from({length:4},(_,i)=>$("question-"+i).value);
  if(state.draft.some(v=>v.trim().length<12)){toast(T[state.locale].submitNeed);return;}
  state.submitted=true;state.submittedAt=new Date().toISOString();state.submission=state.draft.slice();state.submissionLocale=state.locale;
- persist();render();$("answerBox").scrollIntoView({block:"start",behavior:"smooth"});
+ const recorded=persist();if(recorded)typeof CustomEvent==="function"&&typeof window.dispatchEvent==="function"&&window.dispatchEvent(new CustomEvent("li:lesson-submitted",{detail:{lessonId:"L09-1-2"}}));render();$("answerBox").scrollIntoView({block:"start",behavior:"smooth"});
  toast(T[state.locale].submitSuccess);
 });
 $("clear").addEventListener("click",()=>{

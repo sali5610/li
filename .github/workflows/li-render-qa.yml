@@ -37,7 +37,7 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           sleep 2
-          for width in 320 360 375 390 402 600 640 744 820 1133 1440; do
+          for width in 320 360 375 390 402 600 640 744 820 1024 1133 1440; do
             echo "Checking iframe viewport $width px"
             url="http://127.0.0.1:8765/tools/render_contract_fixture.html?w=$width"
             result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=11000 --dump-dom "$url" 2>/tmp/li-chrome-stderr.log || true)"
@@ -49,7 +49,22 @@ jobs:
             fi
             echo "$result" | grep '<pre id="result">LI_RENDER_PASS ' | tail -1 | cut -c1-1000
           done
-          echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at eleven viewports"
+          echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at twelve viewports"
+          # Wide iPad Pros only use tablet CSS when a touch pointer is present.
+          # Prior QA tested 1133px mouse Chromium and never exercised 1376px Safari-like mode.
+          for width in 1194 1376; do
+            echo "Checking landscape touch iPad at ${width}px"
+            url="http://127.0.0.1:8765/tools/render_contract_fixture.html?w=$width&touch=1"
+            result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --touch-events=enabled --window-size=1600,1200 --virtual-time-budget=13000 --dump-dom "$url" 2>/tmp/li-ipad-touch-stderr.log || true)"
+            if [[ "$result" != *'<pre id="result">LI_RENDER_PASS '* ]]; then
+              echo "FAIL iPad touch computed-style fixture at $width CSS px"
+              echo "$result" | grep -E '<pre id="result">LI_RENDER_(PASS|FAIL|PENDING)' | tail -1 | cut -c1-3500 || true
+              tail -20 /tmp/li-ipad-touch-stderr.log || true
+              exit 1
+            fi
+            echo "$result" | grep '<pre id="result">LI_RENDER_PASS ' | tail -1 | cut -c1-900
+          done
+          echo "PASS touch iPad landscape at 1194 and 1376 CSS px"
 
           for width in 320 390 820 1440; do
             echo "Checking live VI/EN language switch and cross-screen content at ${width}px"

@@ -125,6 +125,6 @@ window.addEventListener("li:activity",e=>{
  if(!TYPES.includes(type)||typeof id!=="string"||!id.trim()||id.length>256)return;
  put(d=>{if(d.activities[type].includes(id))return false;d.activities[type].push(id);return true;});
 });
-window.addEventListener("li:localechange",render);
+window.addEventListener?.("li:localechange",render);
 render();
 })();

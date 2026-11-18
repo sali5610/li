@@ -190,6 +190,23 @@ def main() -> int:
         "current approved SVG favicon variant linked",
     )
 
+    # UX-DS-25: scale comes from tokens.json and is applied to live runtime.
+    scales = json.loads(TOKEN_FILE.read_text(encoding="utf-8")).get("deviceScales", {})
+    check(set(scales) == {"ipad-portrait", "ipad-landscape"}, "distinct iPad portrait / landscape token families")
+    for mode in ("ipad-portrait", "ipad-landscape"):
+        check(scales.get(mode, {}).get("layout", {}).get("control-min", 0) >= 56,
+              f"{mode} control minimum is at least 56px")
+    foundations = (ROOT / "site/assets/ui-foundations.css").read_text(encoding="utf-8")
+    home_layout = (ROOT / "site/assets/library-hub.css").read_text(encoding="utf-8")
+    showcase = (ROOT / "site/component-library-review.html").read_text(encoding="utf-8")
+    generated = (ROOT / "site/assets/design-tokens.css").read_text(encoding="utf-8")
+    check("--li-device-ipad-portrait-type-body" in generated and
+          "--li-device-ipad-landscape-type-body" in generated, "device scale generated CSS exists")
+    check("(orientation: landscape)" in foundations and "(orientation: landscape)" in home_layout,
+          "iPad landscape uses its own component and Home layout")
+    check('data-width="1133" data-height="744"' in showcase and
+          'data-width="820" data-height="1180"' in showcase, "review has iPad portrait and landscape presets")
+
     print(f"\n{passed} checks passed; {len(errors)} failed.")
     if errors:
         print(

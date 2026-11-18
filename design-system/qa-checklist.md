@@ -90,6 +90,14 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 - [ ] iPad portrait/landscape, 200% text zoom, VoiceOver and PWA caching; retain readable four mode labels and accessible names
 - [ ] Overall G2 illustration identity acceptance remains separate
 
+## UX-DS-25 · iPad portrait / landscape regression matrix (2026-11-19)
+- [ ] Visual: 744×1133, 820×1180, 1024×1366 portrait and 1133×744, 1194×834, 1366×1024 landscape. Verify body 18/28, support 16/24, 56px control target, 24px icons, 28/32px card pad.
+- [ ] Home landscape keeps the iPad background, mirror text fully within opening, dialogue separate from question, Lưu → Đào sâu aligned, header transparent, 100dvh scroll locked.
+- [ ] Research/Catalog/Library/Guide/Settings/L03/L09/L15: no horizontal overflow or clipped VI/EN; note source/status/lesson drilldown, scroll restoration, modal + Lão Lý controls.
+- [ ] Rotate live Safari while a nested lesson, filter, or modal is active; preserve content, state, focus, keyboard and accessible names, no reload or data loss.
+- [x] Source contract: JSON device scales generate CSS; Component Library viewport presets include both orientations and change iframe width AND height.
+- [ ] Real iPad Safari/PWA with portrait/landscape and split view; Headless CI or iframe alone cannot certify it. PO G2 still OPEN.
+
 ### UX-ART-06 · Approved Lão Lý loading/error scenes
 - [ ] Exact two Human PO-selected scenes stored as **1024×1024 RGBA with transparent pixels** under `design-assets/lao-ly/system-states/`; deployed app binary copies identical by SHA-256.
 - [ ] Loading shown only while reading a selected backup, not on an arbitrary fixed timer; success/cancel hides it. Never show error art for search's ordinary no-result state.

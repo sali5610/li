@@ -1,5 +1,5 @@
 <!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>li. v0.3 Browser Computed Style Smoke</title>
-<style>html,body{margin:0;padding:0}iframe{display:block;width:var(--test-width,100%);height:900px;border:0}#result{white-space:pre-wrap;font:12px monospace}</style><script>document.documentElement.style.setProperty("--test-width",(Number(new URLSearchParams(location.search).get("w"))||390)+"px");</script></head>
+<style>html,body{margin:0;padding:0}iframe{display:block;width:var(--test-width,100%);height:var(--test-height,900px);border:0}#result{white-space:pre-wrap;font:12px monospace}</style><script>const params=new URLSearchParams(location.search);const width=Number(params.get("w"))||390;const heights={744:1133,820:1180,1024:1366,1133:744,1194:834,1366:1024};document.documentElement.style.setProperty("--test-width",width+"px");document.documentElement.style.setProperty("--test-height",(Number(params.get("h"))||heights[width]||900)+"px");</script></head>
 <body><pre id="result">LI_RENDER_PENDING</pre><iframe id="app" src="../site/index.html" title="li. app fixture"></iframe>
 <script>
 (function(){
@@ -21,8 +21,18 @@
     const doc=frame.contentDocument,w=frame.contentWindow,root=w.getComputedStyle(doc.documentElement);
     report("Generated color --paper",root.getPropertyValue("--paper").trim().toUpperCase()==="#F1F0E9",root.getPropertyValue("--paper"));
     report("Generated spacing --li-space-4",root.getPropertyValue("--li-space-4").trim()==="16px",root.getPropertyValue("--li-space-4"));
-    report("Body 16px",w.getComputedStyle(doc.body).fontSize==="16px",w.getComputedStyle(doc.body).fontSize);
-    report("Body 24px leading",w.getComputedStyle(doc.body).lineHeight==="24px",w.getComputedStyle(doc.body).lineHeight);
+    const ipadMode=(w.innerWidth>=744&&w.innerWidth<=1139);
+    const expectedBody=ipadMode?"18px":"16px",expectedLeading=ipadMode?"28px":"24px";
+    report("Body uses device-specific semantic font-size",w.getComputedStyle(doc.body).fontSize===expectedBody,w.getComputedStyle(doc.body).fontSize+" expected "+expectedBody);
+    report("Body uses device-specific line-height",w.getComputedStyle(doc.body).lineHeight===expectedLeading,w.getComputedStyle(doc.body).lineHeight+" expected "+expectedLeading);
+    if(ipadMode){
+      const landscape=w.innerWidth>=1000&&w.innerWidth>w.innerHeight;
+      const expectedHeadline=landscape?"44px":"40px";
+      report("iPad headline token changes by orientation",root.getPropertyValue("--li-type-headline").trim()===expectedHeadline,root.getPropertyValue("--li-type-headline"));
+      report("iPad minimum target token is 56px",root.getPropertyValue("--li-current-control-min").trim()==="56px",root.getPropertyValue("--li-current-control-min"));
+      const image=w.getComputedStyle(doc.querySelector("#page-home .hero"),"::before").backgroundImage;
+      report("Tablet artwork remains iPad source",image.includes("home-li-ipad-20261119.jpg"),image.slice(0,120));
+    }
     const css=[...doc.styleSheets].filter(x=>x.href).map(x=>x.href);
     report("Generated + layout + lessons + foundations all loaded",["design-tokens.css","li-layout.css","lesson-l09-hifi.css","ui-foundations.css"].every(x=>css.some(y=>y.includes(x))),css.join(","));
     const mirror=doc.querySelector("#page-home .mirror-message h2");
@@ -86,9 +96,22 @@
 
        if(cards.length){
         const title=cards[0].querySelector("h3");
-        report("Guide title role matches compact 20px phone / 24px larger",!!title&&w.getComputedStyle(title).fontSize===(w.innerWidth<=640?"20px":"24px"),title?w.getComputedStyle(title).fontSize:"missing");
+        report("Guide title role matches phone / iPad / desktop",!!title&&w.getComputedStyle(title).fontSize===(w.innerWidth<=640?"20px":ipadMode?(w.innerWidth>=1000?"32px":"28px"):"24px"),title?w.getComputedStyle(title).fontSize:"missing");
         const purpose=cards[0].querySelector(".purpose");
         report("Guide explanation >=14px (full detail reachable)",!!purpose&&parseFloat(w.getComputedStyle(purpose).fontSize)>=14,purpose?(w.getComputedStyle(purpose).fontSize+" "+w.getComputedStyle(purpose).display):"missing");
+       }
+       if(ipadMode) {
+         const firstAction=doc.querySelector("#page-guide .page-heading + * .action, #page-guide .filter");
+         const controlSize=firstAction?firstAction.getBoundingClientRect().height:0;
+         report("iPad first control target is at least 56px",controlSize>=56,controlSize);
+         const surface=doc.querySelector("#page-guide .surface");
+         const inset=surface?parseFloat(w.getComputedStyle(surface).paddingLeft):0;
+         report("iPad card inset follows orientation token",inset>=(w.innerWidth>=1000?32:28),inset);
+         if(w.innerWidth>=1000){
+           const editor=doc.querySelector("#page-guide .editorial-grid");
+           const columns=editor?w.getComputedStyle(editor).gridTemplateColumns.split(" ").filter(Boolean):[];
+           report("iPad landscape uses a two-column editorial desk",columns.length===2,columns.join(" / "));
+         }
        }
        const guideGrid=doc.getElementById("method-cards");
        const guideGridCSS=guideGrid?w.getComputedStyle(guideGrid):null;

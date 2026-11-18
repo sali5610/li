@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./assets/design-tokens.css?v=20261118-ds20-coverage">
+<link rel="stylesheet" href="./assets/design-tokens.css?v=20261119-ds25-ipad-modes">
 <link rel="stylesheet" href="./assets/component-review-v2.css?v=20261119-ds24-no-stroke">
 <link rel="stylesheet" href="./assets/component-review-v3.css?v=20261118-ds20-coverage">
 <link rel="stylesheet" href="./assets/component-review-v4.css?v=20261118-ds20-coverage">
@@ -126,7 +126,7 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
   <p class="ds-muted">Specimen trong trang này là UI để review; bên dưới có <strong>iframe chạy đúng app</strong> cho phần Thần Chú. Thử bằng mắt rồi phản hồi trong chat; tương tác ở showcase không ghi thành quyết định.</p>
  </section>
  <section id="tokens" class="ds-section">
-  <div class="ds-section-head"><div><div class="ds-num">02 / FOUNDATIONS</div><h2>Ngôn ngữ thị giác</h2></div><div class="ds-muted">Canonical: design-system/tokens.json v0.3</div></div>
+  <div class="ds-section-head"><div><div class="ds-num">02 / FOUNDATIONS</div><h2>Ngôn ngữ thị giác</h2></div><div class="ds-muted">Canonical: design-system/tokens.json v0.4</div></div>
   <div class="ds-swatches">
    <div class="ds-swatch"><div class="ds-paint" style="background:var(--paper)"></div><div class="ds-swatch-label">Paper · #F1F0E9</div></div>
    <div class="ds-swatch"><div class="ds-paint" style="background:var(--moss)"></div><div class="ds-swatch-label">Moss · #243A29</div></div>
@@ -540,7 +540,6 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
  <section id="feedback" class="ds-section">
   <div class="ds-section-head"><div><div class="ds-num">10 / FEEDBACK</div><h2>Feedback & system states</h2></div><div class="ds-muted">Không hiện thành công giả</div></div>
   <div class="ds-grid"><div class="ds-note" role="status"><strong>Thông tin</strong><p>Trạng thái trung tính: hướng dẫn, lưu ý giới hạn của câu trả lời.</p></div><div class="ds-note error" role="alert"><strong>Lỗi / chưa thể lưu</strong><p>Khi lưu thất bại, cần thông báo rõ — không được viết “đã lưu” trước xác nhận.</p></div></div>
-
   <h3 style="margin-top:var(--li-space-6)">Lão Lý · System-state illustration (UX-ART-06)</h3>
   <p class="ds-muted">Asset đã duyệt, dùng hai trạng thái khác nhau: đang xử lý thật / thất bại thật. Hai card bên dưới là specimen tĩnh, không tự gọi API hay báo lỗi giả.</p>
   <div class="li-state-scene-showcase">
@@ -560,9 +559,9 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
  </section>
  <section id="live" class="ds-section">
   <div class="ds-section-head"><div><div class="ds-num">11 / ACTUAL RUNTIME</div><h2>Màn hình thật</h2></div><div class="ds-muted">App iframe từ cùng repo · không phải mock</div></div>
-  <p>Chọn kích thước để so card Thần Chú thật, search, filter, Lão Lý và detail. Iframe mở đúng <code>index.html?page=guide</code> của phiên bản này, không dùng HTML minh họa card để đánh lừa.</p>
+  <p>Chọn iPhone, iPad dọc hoặc iPad ngang để xem token scale và bố cục xoay ngang trên app thật. Iframe mở đúng <code>index.html?page=guide</code> của phiên bản này, không dùng HTML minh họa card để đánh lừa.</p>
   <div class="ds-device-controls" role="group" aria-label="Thử kích thước màn hình">
-   <button type="button" data-width="320">320</button><button type="button" data-width="375">375</button><button type="button" data-width="390" aria-pressed="true">390</button><button type="button" data-width="402">402</button><button type="button" data-width="600">600</button><button type="button" data-width="820">820</button>
+   <button type="button" data-width="320" data-height="720">320</button><button type="button" data-width="375" data-height="812">375</button><button type="button" data-width="390" data-height="844" aria-pressed="true">390</button><button type="button" data-width="402" data-height="874">402</button><button type="button" data-width="600" data-height="900">600</button><button type="button" data-width="744" data-height="1133">iPad mini · dọc</button><button type="button" data-width="820" data-height="1180">iPad · dọc</button><button type="button" data-width="1024" data-height="1366">iPad 13 · dọc</button><button type="button" data-width="1133" data-height="744">iPad mini · ngang</button><button type="button" data-width="1194" data-height="834">iPad · ngang</button><button type="button" data-width="1366" data-height="1024">iPad 13 · ngang</button>
   </div>
   <div class="ds-device-shell"><div class="ds-device" id="ds-device"><iframe title="App li. thật — màn Thần Chú" src="./index.html?page=guide" loading="lazy"></iframe></div></div>
   <p class="ds-muted">Muốn kiểm tra bằng iPhone thật: <a href="./index.html?page=guide">Mở trực tiếp trang Thần Chú</a>. Trong preview hẹp, khu vực iframe có thể cuộn ngang để giữ đúng chiều rộng giả lập.</p>
@@ -570,6 +569,7 @@ p{margin:var(--li-space-2) 0 var(--li-space-4)}
  <section id="inventory" class="ds-section">
   <div class="ds-section-head"><div><div class="ds-num">12 / REVIEW INVENTORY</div><h2>Danh mục component</h2></div><div class="ds-flag">Chưa chốt cả library</div></div>
   <div style="overflow-x:auto"><table class="ds-table"><thead><tr><th>Nhóm</th><th>Runtime selector</th><th>Trạng thái</th></tr></thead><tbody>
+   <tr><td>iPad portrait / landscape</td><td><code>--li-device-ipad-*</code> · responsive CSS</td><td>Type / inset / target / layout riêng, đang chờ QA Safari &amp; G2</td></tr>
    <tr><td>Functional icon system</td><td><code>Lucide / data-lucide</code></td><td>Sizes 18/20/22/24, consistent stroke and semantic map</td></tr>
    <tr><td>Text-link action</td><td><code>.ds-link</code> specimen</td><td>Chờ review variants/states</td></tr>
    <tr><td>Large two-level card</td><td><code>.surface / .panel</code> + cream/paper-2</td><td>Chờ duyệt anatomy, hierarchy</td></tr>
@@ -663,8 +663,10 @@ if(["icons","navigation","actions","cards","inputs","controls","dataviz"].includ
  section.style.marginTop="var(--li-space-0)";
 }
 document.querySelectorAll("[data-width]").forEach(button=>button.addEventListener("click",()=>{
- const w=Number(button.dataset.width);
- document.getElementById("ds-device").style.width=w+"px";
+ const w=Number(button.dataset.width),h=Number(button.dataset.height||720);
+ const device=document.getElementById("ds-device");
+ device.style.width=w+"px";
+ device.querySelector("iframe").style.height=h+"px";
  document.querySelectorAll("[data-width]").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
 }));
 </script>

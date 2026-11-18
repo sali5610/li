@@ -167,10 +167,83 @@ def collect(path: str) -> dict:
         ],
     }
 
+# UX-DS-20: fail new and inherited unmapped component-role values.
+# Intrinsic CSS grammar (auto/none/transparent/currentColor/inherit), scene
+# artwork coordinates and actual image URLs are not palette/type/space tokens.
+DESIGN_TYPE = TYPE_PROPS | {"font-weight", "letter-spacing"}
+PAINT_LITERALS = re.compile(
+    r"#[0-9a-fA-F]{3,8}\b|(?:rgba?|hsla?)\(|(?<![-\w])(?:white|black|red|blue|green|grey|gray)\b", re.I
+)
+INTRINSIC = re.compile(
+    r"^(?:(?:auto|none|inherit|initial|unset|revert|currentColor|transparent|0|0px)\s*)+!?important?$",
+    re.I,
+)
+
+def allowed_native(value: str, group: str, path: str, prop: str) -> bool:
+    v = re.sub(r"\s*!important\s*$", "", value.strip(), flags=re.I).strip()
+    if not v:
+        return False
+    if v.lower() in {"auto", "none", "inherit", "initial", "unset",
+                     "revert", "revert-layer", "currentcolor", "transparent",
+                     "0", "0px", "normal", "bolder", "lighter"}:
+        return True
+    if group == "spacing" and path == "site/assets/li-layout.css" and prop == "margin-left" and v == "-50vw":
+        return True  # Landscape illustration, centered at half the viewport.
+    if group == "color":
+        if re.fullmatch(r"(?:[0-9.]+px|0)?\s*(?:solid\s+)?transparent", v, flags=re.I):
+            return True
+        if prop in {"background", "background-image"} and re.match(r"url\(", v, flags=re.I):
+            return True  # Actual approved image asset, not component paint.
+    return False
+
+def strict_zero_errors() -> tuple[list[str], int]:
+    errors: list[str] = []
+    checked = 0
+    for path in CORE + SECONDARY + TEMPLATES:
+        if path == "site/assets/design-tokens.css":
+            continue  # Generated design values live ONLY in this file.
+        source = (ROOT / path).read_text(encoding="utf-8")
+        blocks = [(source, 0)] if path.endswith(".css") else [
+            (m.group(1), source[:m.start()].count("\n"))
+            for m in re.finditer(r"<style\b[^>]*>([\s\S]*?)</style>", source, flags=re.I)
+        ]
+        # Actual HTML/JS template style attributes (including one-line markup).
+        for match in INLINE_STYLE.finditer(source):
+            blocks.append((match.group(2) + ";", source[:match.start()].count("\n")))
+        for content, offset in blocks:
+            for row in parse(content, offset):
+                prop, val = row["property"], row["value"]
+                if prop.startswith("--"):
+                    # Local override values can be aliases, geometry or opacity,
+                    # but cannot smuggle independent hard-coded color sources.
+                    if PAINT_LITERALS.search(val) and not VAR.search(val):
+                        errors.append(f"{path}:{row['line']} {prop}: raw local paint {val[:80]}")
+                    if re.search(r"(?:font|type|leading|tracking|gap|padding|margin)", prop, re.I):
+                        if re.search(r"(?<![-\w])(?:\d+(?:\.\d+)?px|\d+(?:\.\d+)?em)\b", val) and not VAR.search(val):
+                            if not prop.startswith("--home-"):  # art coordinates, separate layer
+                                errors.append(f"{path}:{row['line']} {prop}: raw local type/space {val[:80]}")
+                    continue
+                kind = ("color" if color_prop(prop) or prop in {
+                    "caret-color", "accent-color", "text-decoration-color", "-webkit-text-fill-color"
+                } else "type" if prop in DESIGN_TYPE
+                else "spacing" if SPACE_PROP.fullmatch(prop) else None)
+                if kind is None:
+                    continue
+                checked += 1
+                if kind == "color" and PAINT_LITERALS.search(val):
+                    # var(--..., #literal) is ALSO hard-coded debt.
+                    errors.append(f"{path}:{row['line']} {prop}: inline color literal {val[:100]}")
+                    continue
+                if VAR.search(val) or allowed_native(val, kind, path, prop):
+                    continue
+                errors.append(f"{path}:{row['line']} {prop}: unmapped {kind} {val[:100]}")
+    return errors, checked
+
 def main() -> int:
     args = argparse.ArgumentParser()
     args.add_argument("--json", action="store_true", help="emit machine-readable JSON")
     args.add_argument("--check-baseline", action="store_true", help="fail if core raw-token debt increases above baseline")
+    args.add_argument("--check-zero", action="store_true", help="fail on ANY unmapped authored component color/type/space declaration")
     options = args.parse_args()
     report = {
         "audit_kind": "static CSS declarations, not computed styles / visual accessibility",
@@ -198,6 +271,15 @@ def main() -> int:
                       f"offgrid_px={c['offgrid_px_occurrences']}; "
                       f"offgrid_inline={item['offgrid_inline_spacing_declarations']}")
         print("Source-only inventory; CI success is not complete design-token compliance.")
+    if options.check_zero:
+        strict, audited = strict_zero_errors()
+        for error in strict[:60]:
+            print("UNMAPPED:", error)
+        if strict:
+            print(f"FAIL: {len(strict)} unmapped component declarations across {audited} design declarations.")
+            return 1
+        print(f"PASS UX-DS-20: zero un-tokenized component paint/type/space declarations among {audited} authored CSS + HTML declarations.")
+        print("Intrinsic CSS keywords, generated token definitions, true image URLs and scene coordinates excluded; not visual/device G2 acceptance.")
     if options.check_baseline:
         if not BASELINE.is_file():
             print("No baseline file found; cannot enforce ratchet.")

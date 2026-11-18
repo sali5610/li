@@ -1,4 +1,6 @@
-# li. UI/UX Design Library — runtime tokens v0.3
+# li. UI/UX Design Library — zero-debt component token candidate v0.4
+
+**UX-DS-20 candidate (2026-11-18):** Audited the first-party UI and normalized authored component color, typography (including legacy fluid sizes, line-height, tracking and font shorthand) and spacing to JSON-generated CSS variables. New strict `python3 tools/audit_design_tokens.py --check-zero` is enforced by Design System CI; audited **3,127 authored component declarations** with zero unmapped after migration. Existing color blends, art shadows and the PO-approved narrow 14/18px Guide spacing are preserved as named tokens, not rounded or recolored. `--olive` adds a **3px noninteractive editorial kicker rule** on non-Home section headings; selection, focus, nav, CTA and illustration paints are unchanged. See [UX-DS-20 source coverage report](audits/2026-11-18-zero-component-token-debt.md). This is **source-level component token coverage only**: CSS intrinsic keywords, genuine image URLs, illustration geometry, generated definitions, runtime state dimensions and SVG assets are explicitly out of scope; no claim of whole-app visual, physical-device, accessibility or Human PO G2 approval. Cost +0 VND.
 
 **UX-DS-19 candidate (2026-11-18):** Added distinct porcelain `#FEFDFC` / `--porcelain` as the input/textarea surface: brighter than cream `#FAF9F5`, but not white `#FFFFFF`. Editable text, search, ruled textarea and icon-search across app and Component Library use the new foundation token. Disabled fields remain paper-2; notebook's 32px rule and 3px existing-border focus behavior are preserved. No button/card/illustration recoloring or G2 approval.
 
@@ -33,7 +35,7 @@
 | [components.md](components.md) | Canonical component purpose, variants, states and code selectors |
 | [qa-checklist.md](qa-checklist.md) | Mandatory full-system review + screen/state/device matrix |
 | [../tools/validate_design_system.py](../tools/validate_design_system.py) | Free stdlib structural checks comparing core tokens with current source |
-| [../.github/workflows/li-design-contract.yml](../.github/workflows/li-design-contract.yml) | JSON/CSS parity, token debt ratchet and native site/interaction checks |
+| [../.github/workflows/li-design-contract.yml](../.github/workflows/li-design-contract.yml) | JSON/CSS parity, strict zero unmapped authored component declarations, debt ratchet and native site/interaction checks |
 | [../.github/workflows/li-render-qa.yml](../.github/workflows/li-render-qa.yml) | Real headless Chrome computed-style smoke at seven viewport widths |
 | [../AGENTS.md](../AGENTS.md) | Instructions for assistants editing the repo |
 

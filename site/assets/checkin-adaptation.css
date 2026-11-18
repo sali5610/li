@@ -14,7 +14,7 @@
  overflow-wrap:break-word
 }
 #checkin-modal .checkin-scroll:focus-visible{outline:2px solid var(--li-color-focus-ring);outline-offset:-2px}
-#checkin-modal .kicker{font-size:var(--li-type-caption);line-height:var(--li-leading-caption);letter-spacing:.12em}
+#checkin-modal .kicker{font-size:var(--li-type-caption);line-height:var(--li-leading-caption);letter-spacing:var(--li-tracking-legacy-16)}
 #checkin-modal #checkin-title{font-size:var(--li-type-title-md);line-height:var(--li-leading-title-md);margin:var(--li-space-3) var(--li-space-0)}
 #checkin-modal #checkin-description{font-size:var(--li-type-body);line-height:var(--li-leading-body);margin:var(--li-space-0) var(--li-space-0) var(--li-space-4)}
 #checkin-modal .checkin-physical{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--li-space-3);margin:var(--li-space-0) var(--li-space-0) var(--li-space-4)}
@@ -24,7 +24,7 @@
 }
 #checkin-modal .checkin-physical-field legend{
  box-sizing:border-box;display:table;max-width:100%;padding:var(--li-space-0) var(--li-space-1);
- font-family:var(--li-font-ui);font-size:var(--li-type-body);font-weight:700;line-height:var(--li-leading-body);color:var(--ink);
+ font-family:var(--li-font-ui);font-size:var(--li-type-body);font-weight:var(--li-weight-700);line-height:var(--li-leading-body);color:var(--ink);
  white-space:normal
 }
 #checkin-modal .checkin-index{font-size:var(--li-type-caption);line-height:var(--li-leading-caption);color:var(--muted)}
@@ -37,22 +37,22 @@
 #checkin-modal .checkin-radio span{
  box-sizing:border-box;display:flex;justify-content:center;align-items:center;min-width:0;min-height:48px;
  padding:var(--li-space-2) var(--li-space-1);border:1px solid var(--rule);
- background:var(--paper);color:var(--ink);font-size:var(--li-type-support);font-weight:600;
+ background:var(--paper);color:var(--ink);font-size:var(--li-type-support);font-weight:var(--li-weight-600);
  line-height:var(--li-leading-support);text-align:center;white-space:normal
 }
-#checkin-modal .checkin-radio input:checked + span{border-color:var(--moss);background:var(--moss);color:var(--cream);font-weight:700}
+#checkin-modal .checkin-radio input:checked + span{border-color:var(--moss);background:var(--moss);color:var(--cream);font-weight:var(--li-weight-700)}
 #checkin-modal .checkin-radio input:focus-visible + span{outline:2px solid var(--li-color-focus-ring);outline-offset:2px}
 #checkin-modal .checkin-context,#checkin-modal .checkin-manual{
  margin:var(--li-space-4) var(--li-space-0);padding:var(--li-space-3) var(--li-space-0);
  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)
 }
 #checkin-modal .checkin-context summary,#checkin-modal .checkin-manual summary{
- font-size:var(--li-type-support);line-height:var(--li-leading-support);font-weight:700;
+ font-size:var(--li-type-support);line-height:var(--li-leading-support);font-weight:var(--li-weight-700);
  cursor:pointer;min-height:44px;align-content:center
 }
 #checkin-modal .checkin-context p{font-size:var(--li-type-support);line-height:var(--li-leading-support);margin:var(--li-space-2) var(--li-space-0)}
 #checkin-modal .checkin-question{border-width:var(--li-space-0);margin:var(--li-space-4) var(--li-space-0) var(--li-space-0);padding:var(--li-space-0);min-width:0}
-#checkin-modal .checkin-question legend{font-size:var(--li-type-support);line-height:var(--li-leading-support);font-weight:700;padding:var(--li-space-0) var(--li-space-0) var(--li-space-2)}
+#checkin-modal .checkin-question legend{font-size:var(--li-type-support);line-height:var(--li-leading-support);font-weight:var(--li-weight-700);padding:var(--li-space-0) var(--li-space-0) var(--li-space-2)}
 #checkin-modal .checkin-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--li-space-2)}
 #checkin-modal .checkin-choice{min-width:0;display:flex;align-items:center;gap:var(--li-space-2);padding:var(--li-space-2);background:var(--cream);border:1px solid var(--rule);font-size:var(--li-type-support);line-height:var(--li-leading-support);cursor:pointer}
 #checkin-modal .checkin-choice input{min-width:16px;min-height:16px;accent-color:var(--moss);flex-shrink:0;margin:var(--li-space-0)}

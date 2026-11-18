@@ -126,7 +126,7 @@ assert html.count("/* S133 · Header shared vertical alignment contract (mobile,
 for selector in (
     ".header .brand,.header .tools{display:flex;align-items:center;height:44px;box-sizing:border-box}",
     ".header .brand-copy{display:flex;justify-content:center;height:44px}",
-    ".header .logo{display:block;line-height:1;transform:translateY(2px)}",
+    ".header .logo{display:block;line-height:var(--li-leading-legacy-01);transform:translateY(2px)}",
     ".header .brand-stamp{display:block;align-self:center;object-fit:contain}",
     ".header .tools .tool-button{display:grid;place-items:center;align-self:center;padding:var(--li-space-0)}",
 ):
@@ -149,7 +149,7 @@ assert html.count("/* S135 · Mirror copy safe area + paper-float.") == 1
 for token in (
     "width:min(54%,194px)!important;",
     "max-width:194px!important;",
-    "font-size:clamp(19px,5.1vw,22px)!important;",
+    "font-size:var(--li-type-fluid-07)!important;",
     "@keyframes li-mirror-copy-float{",
     "animation:li-mirror-copy-float 4.2s ease-in-out infinite;",
     "-webkit-tap-highlight-color:transparent!important;",
@@ -288,8 +288,8 @@ assert "#page-guide #method-cards > .method-card {" in foundation
 assert "padding: var(--li-space-5) !important;" in foundation
 assert "#page-guide #method-cards>.method-card .purpose{" not in html, "Retired S118 text-clamping CSS must not return"
 assert "#page-guide #method-cards > .method-card .purpose {" in foundation
-assert "--li-guide-s118-col-gap: 18px;" in foundation and "--li-guide-s118-row-gap: 20px;" in foundation
-assert "--li-guide-s118-col-gap: 14px;" in foundation and "--li-guide-s118-row-gap: 18px;" in foundation
+assert "--li-guide-s118-col-gap: var(--li-micro-guide-column-gap-18);" in foundation and "--li-guide-s118-row-gap: var(--li-space-5);" in foundation
+assert "--li-guide-s118-col-gap: var(--li-micro-guide-column-gap-14);" in foundation and "--li-guide-s118-row-gap: var(--li-micro-guide-row-gap-18);" in foundation
 assert "function renderMethods(){" in html and "function showMethod(id){" in html
 assert "/* S114 — restrained Lão Lý peek:" in html
 
@@ -311,7 +311,7 @@ notebook_first_rule = 8 + 31
 assert notebook_first_rule == 39
 assert (notebook_first_rule - 32) < 16
 assert ':root{--li-notebook-line-height:31px' not in html
-assert '--li-notebook-line-height: 32px' in foundation
+assert '--li-notebook-line-height: var(--li-leading-notebook)' in foundation
 assert "textarea::placeholder{color:var(--muted);opacity:.8}" in html
 assert html.count('class="text-editor"') >= 2
 
@@ -331,7 +331,7 @@ assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
-assert 'library-hub.css?v=10' in page_html
+assert 'library-hub.css?v=20261118-ds20-coverage' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_note_versions.cjs")],check=True,cwd=site.parent)
 
 # S120: all 13 Thần Chú methods share this same Guide Detail template.
@@ -671,10 +671,10 @@ assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
 
 # UX-DS-11 · Review components are connected; app Guide chips use full pills.
-assert 'ui-foundations.css?v=20261118-porcelain-input' in page_html
+assert 'ui-foundations.css?v=20261118-ds20-coverage' in page_html
 assert '#page-guide #method-filters .filter,' in foundation and 'border-radius:999px!important;' in foundation
 v3=(site/"component-library-review.html").read_text(encoding="utf-8")
-assert 'component-review-v3.css?v=20261118-ds13-selection' in v3
+assert 'component-review-v3.css?v=20261118-ds20-coverage' in v3
 assert 'component-review-v3.js?v=20261118-ds13-week-fix' in v3
 assert all('<section id="'+id+'"' in v3 for id in ("controls","dataviz"))
 assert all('id="'+id+'"' in v3 for id in
@@ -698,8 +698,8 @@ assert 'No data' not in v3js or 'DEMO' in v3js
 # UX-DS-12 · PO-requested component and actual-app deltas. Review-only new
 # visuals are not G2 signoff, and demo charts never touch private diary.
 ds12=(site/"assets"/"component-review-v4.css").read_text(encoding="utf-8")
-assert 'component-review-v4.css?v=20261118-porcelain-input' in v3
-assert 'component-review-v2.css?v=20261118-porcelain-input' in v3
+assert 'component-review-v4.css?v=20261118-ds20-coverage' in v3
+assert 'component-review-v2.css?v=20261118-ds20-coverage' in v3
 assert 'component-review-v3.js?v=20261118-ds13-week-fix' in v3
 assert '--porcelain: #FEFDFC;' in (site/"assets"/"design-tokens.css").read_text(encoding="utf-8")
 assert all(x in foundation for x in ("/* UX-DS-12", ".page input[type=\"checkbox\"]", "background-color:var(--porcelain)!important"))
@@ -709,7 +709,7 @@ assert all(x in v3js for x in ("function returnToday(){","new Date()","dataset.d
 
 # UX-DS-13 · PO correction: gallery uses existing full Lão Lý mirror image;
 # no week-range tile shadow; today dot is separate from selected stroke.
-assert 'component-review-v4.css?v=20261118-porcelain-input' in v3
+assert 'component-review-v4.css?v=20261118-ds20-coverage' in v3
 assert v3.count('src="./assets/laoly-mirror-suy-nghi.png"')==3
 assert 'src="./assets/laoly-neutral.png"' not in v3
 assert 'border-right-width:var(--li-space-0)' in ds12
@@ -741,7 +741,7 @@ assert 'ds12-horizontal-illustration .ds12-horizontal-media.figure img{width:100
 # UX-DS-15: Top Navigation is a component gallery family, NOT a silent change
 # to the approved live app Home shell or route history.
 topnavcss=(site/"assets"/"component-review-v5.css").read_text(encoding="utf-8")
-assert 'component-review-v5.css?v=20261118-ds15-topnav' in v3
+assert 'component-review-v5.css?v=20261118-ds20-coverage' in v3
 assert all('data-ds15-topvariant="'+x+'"' in v3 for x in ("logo","back","overlay"))
 assert v3.count('src="./assets/li-seal.svg?v=exact-header-s146"')>=2
 assert 'data-ds15-back aria-label="Quay lại màn trước"' in v3
@@ -754,8 +754,8 @@ assert 'Top Navigation transparent Home' not in page_html
 
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
-assert 'li-layout.css?v=20261118-porcelain-input' in page_html
-assert 'ui-foundations.css?v=20261118-porcelain-input' in page_html
+assert 'li-layout.css?v=20261118-ds20-coverage' in page_html
+assert 'ui-foundations.css?v=20261118-ds20-coverage' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation

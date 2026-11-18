@@ -45,6 +45,12 @@
       try{
        const cards=doc.querySelectorAll("#page-guide #method-cards>.method-card");
        report("Guide cards populated",cards.length>0,cards.length);
+       const decorativeKicker=doc.querySelector("#page-guide .section-shell > .kicker");
+       const decorativeKickerCss=decorativeKicker?w.getComputedStyle(decorativeKicker):null;
+       report("Olive is a 3px editorial decoration, not a control fill",
+         !!decorativeKickerCss&&decorativeKickerCss.borderInlineStartColor==="rgb(101, 115, 76)"&&decorativeKickerCss.borderInlineStartWidth==="3px",
+         decorativeKickerCss?.borderInlineStartColor+"/"+decorativeKickerCss?.borderInlineStartWidth);
+       report("Notebook writing line uses canonical 32px typed token",root.getPropertyValue("--li-leading-notebook").trim()==="32px",root.getPropertyValue("--li-leading-notebook"));
        const pill=doc.querySelector("#page-guide #method-filters .filter");
        report("Actual Guide category filters are fully rounded pills",!!pill&&w.getComputedStyle(pill).borderTopLeftRadius==="999px",pill?w.getComputedStyle(pill).borderTopLeftRadius:"missing");
 

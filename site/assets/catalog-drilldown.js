@@ -251,7 +251,8 @@ function mountNative(route){
   prev.disabled=index<=0;next.disabled=index<0||index===sections.length-1;
   const selected=index>=0?sections[index]:null;
   const heading=selected?.querySelector("h2");
-  current.textContent=heading?.textContent|| (id?"Chương "+(index+1):"Toàn bộ bài");
+  const t=value=>window.liLanguage?.translate?.(value)||value;
+  current.textContent=heading?.textContent|| (id?t("Chương")+" "+(index+1):t("Toàn bộ bài"));
   if(push){chapterParam(id);setSheetOpen(false,false);}
   if(id){
    if(push&&heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}

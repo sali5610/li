@@ -441,7 +441,7 @@ quote_js=quotes.read_text(encoding="utf-8")
 assert quote_js.count('"id":"')>=24, "Quotes library must contain at least 24 entries"
 # S147: retain the sourced text, but surface a concise original + commentary.
 # Disclosure metadata must remain accessible via a single opt-in info button.
-assert len(re.findall(r'<script src="\\./assets/laoly-quotes-s121\\.js(?:\\?v=[0-9]+)?"></script>', page_html))==1
+assert len(re.findall(r'<script src="\./assets/laoly-quotes-s121\.js(?:\?v=[0-9]+)?"></script>', page_html))==1
 assert 'if(window.liQuoteEngine?.render){window.liQuoteEngine.render();return;}' in html
 for element_id in ("buddy-quote-original","buddy-quote-context","buddy-quote-info","buddy-quote-gloss","buddy-quote-meta","buddy-quote-link"):
     assert page_html.count(f'id="{element_id}"')==1, f"Quote element missing or duplicated: {element_id}"

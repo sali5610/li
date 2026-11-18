@@ -136,7 +136,7 @@ function renderUnpublishedLesson(l){
  const main=el("article","surface catalog-draft-content",null,host);
  el("div","kicker","CHƯA PHÁT HÀNH",main);
  el("h2","","Nội dung đang được biên soạn",main);
- el("p","","Đây chỉ là đề cương trong roadmap. Chưa có chương được phát hành; chưa có bài tập hoặc tiến độ học.",main);
+ el("p","","Đây chỉ là đề cương trong roadmap. Chưa có chương được phát hành. Chưa có bài tập hoặc tiến độ học.",main);
 }
 function render(){
  host.replaceChildren();breadcrumbs();

@@ -69,7 +69,7 @@ assert '<meta name="apple-mobile-web-app-title" content="li.">' in html
 assert '<meta name="theme-color" content="#243A29">' in html
 
 # S136: mirror label is typographic only, not a search control.
-assert html.count('<div class="mirror-label">Gương Vạn Vấn</div>') == 1
+assert html.count('<div class="mirror-label">Gương Vạn Vấn · Vấn đề</div>') == 1
 assert '<div class="mirror-label"><i data-lucide="search"' not in html
 
 # S138/S139: touch swipe only on mirror; fixed-scale viewport and sticky header.

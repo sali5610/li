@@ -382,7 +382,7 @@ for(const loc of ["vi","en"])$(loc).addEventListener("click",()=>{
  if(typeof window.liLanguage?.set==="function"){window.liLanguage.set(loc);return;}
  if(state.locale===loc)return;state.locale=loc;save();render();
 });
-window.addEventListener("li:localechange",event=>{
+window.addEventListener?.("li:localechange",event=>{
  const next=event.detail?.locale;
  if(!["vi","en"].includes(next)||next===state.locale)return;
  state.locale=next;save();render();

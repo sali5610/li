@@ -19,7 +19,7 @@ let root,guide,tabs,active=null,phase=0,exposure=null,feedback="",resumeNote="",
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const field=f=>{const id="sp-"+f[0];const label='<span>'+escape(f[1])+'</span>';if(f[2])return '<fieldset class="spell-field"><legend>'+escape(f[1])+'</legend>'+f[2].map((o,i)=>'<label class="spell-option"><input type="'+(f[3]==="multi"?"checkbox":"radio")+'" name="'+id+'" value="'+i+'"><span>'+escape(o)+'</span></label>').join("")+'</fieldset>';return '<label class="spell-field" for="'+id+'">'+label+'<textarea id="'+id+'" rows="2" maxlength="1200"></textarea></label>';};
 const act=(a,t,cl="action")=>'<button type="button" class="'+cl+'" data-spell-action="'+a+'">'+t+'</button>';
-const fmt=t=>new Date(t).toLocaleString("vi-VN");
+const fmt=t=>new Date(t).toLocaleString(window.liLanguage?.get?.()==="en"?"en-US":"vi-VN");
 const rawValue=id=>(root.querySelector("#sp-"+id)?.value||"").trim();
 const radio=id=>(root.querySelector('input[name="sp-'+id+'"]:checked')?.value??null);
 const checked=id=>[...root.querySelectorAll('input[name="sp-'+id+'"]:checked')].map(x=>x.value);

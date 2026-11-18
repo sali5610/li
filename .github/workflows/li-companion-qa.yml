@@ -22,3 +22,5 @@ jobs:
         run: node tools/checkin_adaptation_regression.mjs
       - name: Parse the interactive Spellbook runtime
         run: node --check site/assets/spell-practice.js
+      - name: Check authored VI/EN legacy UX copy and quote coverage
+        run: node tools/test_i18n_legacy.cjs

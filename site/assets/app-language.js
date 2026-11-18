@@ -91,7 +91,32 @@ const TEXT={
  "Chuỗi cung ứng":"Supply Chain",
  "Khám phá những lĩnh vực khiến bạn tò mò":"Explore the fields you are curious about"
 };
-const ATTRS=["aria-label","title","placeholder"];
+Object.assign(TEXT,window.LI_LEGACY_EN||{});
+/* Only authored source fragments enter the composite fallback. This handles phrases
+   assembled with counts or names; it must never invent a scholarly translation. */
+const COMPOSE_SHORT=new Set([
+ "Nhịp “","Đang tìm “","Ngươi đang đọc","Ngươi đang tra “",
+ "Tủ Riêng có","Bút Ký và","Đã có","Đã lưu","Đã nhập",
+ "Bút Ký,","Dấu Trang và","Ý đã nhặt.","Lão Lý ·",
+ "Đã chọn nhịp","Hoàn tác:","Gợi ý:","Điểm cộng gợi ý:",
+ "Xem ","So với","Vào nhịp","Đào sâu","Quá tải","Hồi trí",
+ "Có","Chưa","Không rõ","Nhật Ký","Bút Ký","Dấu Trang",
+ "Lão Lý","Tàng Thư","Thần Chú","Gương Vạn Vấn","Tiểu hữu","Nhóc"
+]);
+const COMPOSE_KEYS=Object.keys(TEXT)
+ .filter(k=>(k.length>=11&&/[\s·,.!?“”]/.test(k))||COMPOSE_SHORT.has(k))
+ .sort((a,b)=>b.length-a.length);
+function trComposed(value){
+ const input=String(value??"");
+ const trimmed=input.trim();
+ if(Object.prototype.hasOwnProperty.call(TEXT,trimmed))return input.replace(trimmed,TEXT[trimmed]);
+ let out=input;
+ for(const part of COMPOSE_KEYS){
+  if(out.includes(part))out=out.split(part).join(TEXT[part]);
+ }
+ return out;
+}
+const ATTRS=["aria-label","title","placeholder","alt"];
 const originalText=new WeakMap();
 const originalAttr=new WeakMap();
 let observer=null,locked=false;
@@ -106,7 +131,7 @@ function tr(value){
    .replace(/^(\d+) môn học theo lộ trình$/,"$1 ordered courses")
    .replace(/^(\d+)\/(\d+) bài đã hoàn thành$/,"$1/$2 lessons completed")
    .replace(/^(\d+)\/(\d+) bài đã phát hành$/,"$1/$2 lessons published");
-  if(translated===trimmed)return v;
+  if(translated===trimmed)return trComposed(v);
  }
  return v.replace(trimmed,translated);
 }
@@ -178,7 +203,7 @@ function set(next){
  window.dispatchEvent(new CustomEvent("li:localechange",{detail:{locale}}));
  return true;
 }
-window.liLanguage={get,set,translate:value=>locale==="en"?tr(value):String(value??""),apply,key:KEY};
+window.liLanguage={get,set,translate:value=>locale==="en"?tr(value):String(value??""),translateComposed:value=>locale==="en"?trComposed(value):String(value??""),apply,key:KEY};
 const region=document.querySelector("#page-settings .settings-group-grid");
 if(region&&!document.getElementById("li-global-language")){
  const card=document.createElement("article");card.id="li-global-language";card.className="surface li-global-language";
@@ -203,10 +228,10 @@ if(typeof MutationObserver==="function"){
   for(const mutation of changes){
    if(mutation.type==="characterData")patchText(mutation.target);
    else if(mutation.type==="attributes"){
-    if(mutation.attributeName==="aria-label"||mutation.attributeName==="title"||mutation.attributeName==="placeholder")patchAttrs(mutation.target);
+    if(ATTRS.includes(mutation.attributeName))patchAttrs(mutation.target);
    }else for(const node of mutation.addedNodes||[])walk(node);
   }
  });
- observer.observe(document.body,{subtree:true,childList:true,characterData:true});
+ observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:ATTRS});
 }
 })();

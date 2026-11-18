@@ -15,8 +15,8 @@ native=ASSETS/"lesson-companion-native.js"
 assert quote_file.is_file() and native.is_file()
 subprocess.run(["node","--check",str(native)],check=True)
 qt=quote_file.read_text(encoding="utf-8")
-assert "const QUOTES=" in qt and ";\nconst MEMORY_KEY=" in qt
-Q=json.loads(qt.split("const QUOTES=",1)[1].split(";\nconst MEMORY_KEY=",1)[0])
+assert "const QUOTES=" in qt and "const QUOTES_EN=" in qt and ";\nconst MEMORY_KEY=" in qt
+Q=json.loads(qt.split("const QUOTES=",1)[1].split("];",1)[0]+"]")
 quotes={q["id"]:q for q in Q}
 assert len(quotes)>=24 and len(quotes)==len(Q),"Quote bank IDs not unique"
 

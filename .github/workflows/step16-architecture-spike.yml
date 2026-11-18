@@ -5,6 +5,8 @@ on:
     paths:
       - 'docs/architecture/**'
       - 'tools/step16_backup_spike.cjs'
+      - 'tools/step16_browser_backup_spike.js'
+      - 'tools/step16_browser_backup_fixture.html'
       - '.github/workflows/step16-architecture-spike.yml'
   workflow_dispatch:
 
@@ -23,3 +25,37 @@ jobs:
         run: node --check tools/step16_backup_spike.cjs
       - name: Test synthetic full recovery and current source inventory
         run: node tools/step16_backup_spike.cjs
+
+  actual-browser-storage-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Real browser localStorage E2E on a localhost-only synthetic fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then
+            echo "FAIL: Chrome/Chromium unavailable, browser test not verified"
+            exit 1
+          fi
+          "$chrome" --version
+          node --check tools/step16_browser_backup_spike.js
+          python3 -m http.server 8767 --bind 127.0.0.1 --directory . > /tmp/li-step16-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          url="http://127.0.0.1:8767/tools/step16_browser_backup_fixture.html"
+          timeout 55s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage             --hide-scrollbars --virtual-time-budget=18000 --dump-dom "$url"             > /tmp/li-step16-browser-result.html 2>/tmp/li-step16-browser-stderr.log || {
+              tail -30 /tmp/li-step16-browser-stderr.log || true
+              echo "FAIL Chromium did not complete"
+              exit 1
+            }
+          if ! grep -q 'LI_STEP16_BROWSER_PASS ' /tmp/li-step16-browser-result.html; then
+            echo "FAIL real browser backup and migration scenarios"
+            grep -o 'LI_STEP16_BROWSER_\\(FAIL\\|PENDING\\).*' /tmp/li-step16-browser-result.html | tail -1 | cut -c1-4000 || true
+            exit 1
+          fi
+          grep 'LI_STEP16_BROWSER_PASS ' /tmp/li-step16-browser-result.html | tail -1 | cut -c1-4000
+          echo "PASS localhost Chromium synthetic storage fixture, not live app or Safari"

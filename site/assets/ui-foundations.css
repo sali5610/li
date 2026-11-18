@@ -1068,8 +1068,8 @@ html.li-safari-portrait-recovery .app.home-focus {
  left:0!important;
  width:var(--li-safari-physical-width)!important;
  max-width:none!important;
- margin:0!important;
- padding-inline:0!important;
+ margin:var(--li-space-0)!important;
+ padding-inline:var(--li-space-0)!important;
  transform:scale(var(--li-safari-portrait-scale))!important;
  transform-origin:top left!important;
 }

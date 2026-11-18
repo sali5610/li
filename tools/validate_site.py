@@ -102,8 +102,8 @@ for forbidden in ("user-scalable=no", "maximum-scale=1", "minimum-scale=1",
 foundations=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert "html { touch-action: pan-x pan-y pinch-zoom; }" in foundations
 assert "#page-home .mirror-message { touch-action: pan-y pinch-zoom; }" in foundations
-assert "20261119-ds28-safari-viewport" in page_html
-assert "ipad-viewport-debug.js?v=20261119-ds28" in page_html
+assert "20261119-ds29-1408-ipad" in page_html
+assert "ipad-viewport-debug.js?v=20261119-ds29" in page_html
 
 
 # S137: previous/next arrows cycle questions in both directions; buttons remain stationary.
@@ -342,8 +342,8 @@ assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
 # UX-DS-25: honor device-aware Home cache key.
-assert 'library-hub.css?v=20261119-ds27-landscape-grid' in page_html
-assert "ipad-viewport-debug.js?v=20261119-ds28" in page_html
+assert 'library-hub.css?v=20261119-ds29-1408-ipad' in page_html
+assert "ipad-viewport-debug.js?v=20261119-ds29" in page_html
 assert (site/"assets"/"ipad-viewport-debug.js").exists()
 # UX-HOME-07: no Home-only min-height can force a page scroll, and routing
 # must restore browser scrolling for all other screens.
@@ -396,7 +396,8 @@ for name,expected_size,expected_sha256 in [
 device_css=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'background-image:url("./home-li-iphone-20261119.jpg")!important;' in device_css
 assert 'background-image:url("./home-li-ipad-20261119.jpg")!important;' in device_css
-assert "(max-width:1400px) and (orientation:landscape)" in device_css
+assert "(max-width:1420px) and (orientation:landscape)" in device_css
+assert "Width sync: " in (site/"assets"/"ipad-viewport-debug.js").read_text(encoding="utf-8"), "iPad physical diagnostic must expose layout/visual mismatch"
 assert "(any-pointer:coarse)" not in device_css, "Viewport-responsive iPad must not depend on hardware pointer"
 assert html.count("/* S119 · Approved S106 Home art") == 1
 assert layout_css.count('url("./home-mystic-cool-mobile.webp")') == 1, "CSS-relative artwork URL must resolve from assets/"
@@ -718,7 +719,7 @@ assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
 
 # UX-DS-11 · Review components are connected; app Guide chips use full pills.
-assert 'ui-foundations.css?v=20261119-ds28-safari-viewport' in page_html
+assert 'ui-foundations.css?v=20261119-ds29-1408-ipad' in page_html
 assert '#page-guide #method-filters .filter,' in foundation and 'border-radius:999px!important;' in foundation
 v3=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert 'component-review-v3.css?v=20261118-ds20-coverage' in v3
@@ -802,7 +803,7 @@ assert 'Top Navigation transparent Home' not in page_html
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
 assert 'li-layout.css?v=20261118-ds20-coverage' in page_html
-assert 'ui-foundations.css?v=20261119-ds28-safari-viewport' in page_html
+assert 'ui-foundations.css?v=20261119-ds29-1408-ipad' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation
@@ -820,7 +821,7 @@ assert '.ds-home-bubble{position:relative;' in review10css and 'border:1px solid
 assert '/* UX-DS-24: forest green bubble has zero-width stroke' in foundation
 assert '#page-home .hero-dialogue-bubble { border-width:var(--li-space-0); padding:' in foundation
 assert '#page-home .hero-dialogue-bubble::before { border-width:var(--li-space-0); }' in foundation
-assert './assets/ui-foundations.css?v=20261119-ds28-safari-viewport' in page_html
+assert './assets/ui-foundations.css?v=20261119-ds29-1408-ipad' in page_html
 
 # UX-DS-09: mobile Tủ Riêng uses the same Archive icon as Home, never Bookmark.
 mobile_nav=page_html.split('<nav class="mobile-nav"',1)[1].split('</nav>',1)[0]

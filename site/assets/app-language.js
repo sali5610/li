@@ -9,7 +9,7 @@ const supported=["vi","en"];
 let locale="vi";
 try{const raw=localStorage.getItem(KEY);if(supported.includes(raw))locale=raw;}catch(error){/* no storage available */}
 const TEXT={
- "Đại Sảnh":"Great Hall","Tàng Thư":"Library","Thần Chú":"Techniques","Tủ Riêng":"My Shelf",
+ "Đại Sảnh":"Great Hall","Tàng Thư":"Library","Thần Chú":"Spells","Tủ Riêng":"My Shelf",
  "Cài đặt":"Settings","Quay lại":"Back","Trang chủ":"Home",
  "Tra Cứu":"Search","Nhặt ý":"Capture an idea","Khảo Chứng":"Investigate","Phản Chứng":"Test a claim",
  "Bút Ký":"Case Notes","Bộ sưu tập":"Collection","Quay lại gần đây":"Continue",
@@ -31,8 +31,8 @@ const TEXT={
  "Check-in hôm nay":"Today's check-in","Đào sâu":"Go deeper",
  "Khám phá vì sao":"Explore why","Lưu câu hỏi":"Save question","Bỏ lưu câu hỏi":"Remove saved question","Đã lưu":"Saved",
  "Gương Vạn Vấn":"Mirror of Questions","VÍ DỤ GIẢ ĐỊNH":"HYPOTHETICAL EXAMPLE",
- "CẨM NANG TƯ DUY":"THINKING TOOLKIT","Sổ Tay Thần Chú":"Technique Handbook",
- "13 phương pháp để học, ghi nhớ và suy nghĩ. Mỗi pháp danh đều có tên học thuật gốc đi kèm.":"Thirteen techniques for learning, memory and reasoning, each paired with its academic name.",
+ "CẨM NANG TƯ DUY":"THE THINKING GRIMOIRE","Sổ Tay Thần Chú":"The Spellbook",
+ "13 phương pháp để học, ghi nhớ và suy nghĩ. Mỗi pháp danh đều có tên học thuật gốc đi kèm.":"Thirteen spells for learning, memory, and reasoning. Beneath each incantation lies a real academic method.",
  "Tìm kiếm":"Search","LỌC THEO NHÓM":"FILTER BY GROUP",
  "CÀI ĐẶT":"SETTINGS","Tùy chỉnh cách học, cách Lão Lý trò chuyện và dữ liệu của bạn.":"Choose how you learn, interact with Lão Lý, and manage your data.",
  "01 · CÁ NHÂN HÓA":"01 · PERSONALIZATION","Trải nghiệm của bạn":"Your experience",
@@ -149,7 +149,7 @@ function dateForScreenReader(day,month,year){
 const DYNAMIC_TEMPLATES=[
  [/^Hiển thị (\d+)\/13 phương pháp(?: · (.+))?$/,m=>{
   const suffix={"kết quả tìm kiếm trên cả 13":"search results across all 13","theo nhóm":"filtered by group","đầy đủ":"all techniques"}[m[2]]||TEXT[m[2]]||m[2]||"";
-  return "Showing "+m[1]+"/13 techniques"+(suffix?" · "+suffix:"");
+  return "Showing "+m[1]+"/13 spells"+(suffix?" · "+suffix:"");
  }],
  [/^(\d+\/\d+) bài đã phát hành · Chưa có bài nào để học và tự đánh giá\.$/,m=>m[1]+" lessons published · Nothing available to study or review yet."],
  [/^(\d+\/\d+) bài đã phát hành · Chỉ ghi nhận hoàn thành khi có trạng thái tự đánh giá thật trên thiết bị này\.$/,m=>m[1]+" lessons published · Completion counts only after a real self-review on this device."],

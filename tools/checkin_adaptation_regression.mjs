@@ -59,7 +59,7 @@ const context=vm.createContext({
   querySelectorAll(q){assert.ok(q.includes("checkin-modal input"));return radioInputs}
  },
  STUDY_MODES:{start:{label:"Vào nhịp"},focus:{label:"Đào sâu"},recover:{label:"Hồi trí"},overload:{label:"Quá tải"}},
- openModal(){},closeModal(){},setStudyMode(key){context.applied=key;return true},toast(){}
+ openModal(){},closeModal(){},setStudyMode(key){context.applied=key;return true},toast(message){context.toastMessage=message}
 });
 const logic=between("/* L1 physical-first self-report + learning rhythm heuristic.","document.getElementById(\"save-question\").addEventListener");
 vm.runInContext(logic,context,{timeout:1000});
@@ -119,6 +119,8 @@ state.rest="yes";listeners["modal:change"]();
 assert.equal(fields["apply-checkin"].disabled,false);
 assert.match(fields["checkin-recommendation"].textContent,/chọn Đào sâu thủ công/);
 listeners["apply:click"]();assert.equal(context.applied,"focus");
+assert.equal(context.toastMessage,"Đã chọn nhịp Đào sâu. Đổi lúc nào cũng được!");
+assert.ok(!context.toastMessage.includes("L1")&&!context.toastMessage.includes("thể trạng"),"Snackbar must not expose implementation vocabulary");
 assert.equal(context.window.LiL1.getPhysicalState().sleep,"yes");
 state.sleep="no";state.energy="low";state.attention="hard";state.override="overload";
 radioInputs[0].checked=true;contextObj.open=true;fields["checkin-override"].open=true;

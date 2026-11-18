@@ -673,18 +673,19 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 }
 
 
+:root{--li-uxds10-touch-clear:transparent;--li-uxds10-touch-no-shadow:none}
 /* UX-DS-10 · iOS pressed feedback: remove native rectangular tap flash.
    Preserve deliberate square primary/secondary active surface and keyboard
    focus-visible outlines. Mobile nav selection remains on its oval ::before. */
 :where(button,a,[role="button"],summary),
 :where(button,a,[role="button"],summary) :is(svg,i,span,img) {
-  -webkit-tap-highlight-color: transparent !important;
+  -webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;
 }
 @media (hover: none) and (pointer: coarse) {
   .header .tool-button:is(:hover,:active,:focus:not(:focus-visible)),
   .mobile-nav .nav-btn:is(:hover,:active,:focus:not(:focus-visible)),
   #page-home .mirror-refresh:is(:hover,:active,:focus:not(:focus-visible)) {
-    background: transparent !important;
-    box-shadow: none !important;
+    background: var(--li-uxds10-touch-clear) !important;
+    box-shadow: var(--li-uxds10-touch-no-shadow) !important;
   }
 }

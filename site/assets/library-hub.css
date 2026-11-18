@@ -349,3 +349,26 @@
 }
 #toast .li-snackbar-undo:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
 @media(max-width:600px){#toast.li-snackbar{bottom:calc(85px + env(safe-area-inset-bottom,0px))}}
+
+/* UX-NAV-13 · All bookmark Save/Unsave utilities outside Home are frameless.
+   Preserve 48px targets, icon-only semantics and pressed fill. Delete is separate. */
+.library-icon-action:is([data-li-bookmark-kind], .library-unsave-icon){
+ appearance:none;
+ -webkit-appearance:none;
+ -webkit-tap-highlight-color:var(--li-color-button-clear,transparent);
+ background:var(--li-color-button-clear,transparent)!important;
+ border:0!important;
+ box-shadow:none!important;
+ border-radius:var(--li-space-0)!important;
+ padding:var(--li-space-2);
+}
+.library-icon-action:is([data-li-bookmark-kind], .library-unsave-icon):is(:hover,:active,:focus,[aria-pressed="true"]){
+ background:var(--li-color-button-clear,transparent)!important;
+ border:0!important;
+ box-shadow:none!important;
+ transform:none!important;
+}
+.library-icon-action:is([data-li-bookmark-kind], .library-unsave-icon):focus-visible{
+ outline:2px solid var(--li-color-focus-ring);
+ outline-offset:var(--li-space-1);
+}

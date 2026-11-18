@@ -51,6 +51,16 @@ iframe.addEventListener("load",()=>{
   const rect=by("checkin-modal").querySelector(".dialog").getBoundingClientRect();
   check(rect.left>=-1&&rect.right<=width+1,"Dialog exceeds width "+width);
   check(rect.bottom<=w.innerHeight+1,"Dialog exceeds available viewport height");
+  // Real-browser regression: scroll to the end, skip, then reopen via the actual button.
+  // The next check-in must start with the physical-state questions at the top.
+  const dialog=by("checkin-modal").querySelector(".dialog");
+  if(dialog.scrollHeight>dialog.clientHeight+4){
+   dialog.scrollTop=dialog.scrollHeight;
+   check(dialog.scrollTop>0,"Unable to scroll Check-in for reopen test");
+   by("close-checkin").click();
+   open();
+   check(dialog.scrollTop<=1,"Check-in reopened at stale scroll position "+dialog.scrollTop);
+  }
   by("checkin-override").value="focus";by("checkin-override").dispatchEvent(new w.Event("change",{bubbles:true}));
   check(by("apply-checkin").disabled,"Manual override cannot bypass required physical state");
   setPhysical("yes","yes","");

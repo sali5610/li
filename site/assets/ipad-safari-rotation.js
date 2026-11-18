@@ -42,6 +42,7 @@
        lastApplied="requested native landscape viewport "+target;
      }
      root.style.setProperty("--li-safari-physical-width",target+"px");
+     root.style.setProperty("--li-safari-physical-height",Math.round(window.visualViewport?.height||window.innerHeight)+"px");
      root.dataset.liSafariRotation="stale-landscape";
      // Safari may need one rendering pass after the viewport meta changes.
      // The CSS class is a bounded fallback for engines that still report 970px.
@@ -51,6 +52,7 @@
        lastApplied=stillStale?"fallback canvas "+target:"native viewport "+window.innerWidth;
      });
    }else if(isTouchIPad()&&h.landscape&&meta.content.indexOf("width="+Math.round(h.largest))===0){
+     root.style.setProperty("--li-safari-physical-height",Math.round(window.visualViewport?.height||window.innerHeight)+"px");
      // Retain the native numeric width while landscape; immediately reverting
      // to device-width could recreate the same stale-portrait Safari viewport.
      root.classList.remove("li-safari-landscape-recovery");
@@ -59,6 +61,7 @@
    }else{
      root.classList.remove("li-safari-landscape-recovery");
      root.style.removeProperty("--li-safari-physical-width");
+     root.style.removeProperty("--li-safari-physical-height");
      if(meta.content!==normalMeta&&meta.content!==original){
        meta.content=normalMeta;
        lastApplied="restored device-width";

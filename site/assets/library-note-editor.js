@@ -51,6 +51,46 @@ function refreshAfterChange(){
  window.liLibraryShelf?.renderCollection();
  renderDetail();
 }
+/* Case review is NOT just a note: show the original exercise and user's answer.
+   New records contain a snapshot. For older records show the known canonical case
+   explicitly labelled as a reconstruction, never as a stored historic snapshot. */
+function renderCaseContext(note,type){
+ const surface=$("li-note-case-context"),bookmarks=$("li-note-case-bookmark-tools");
+ if(!surface)return;
+ const isCase=type==="case"&&Boolean(note);
+ const sourceKey=isCase?(note.caseKey||note.caseSnapshot?.id||""):"";
+ const known=isCase&&(sourceKey==="sampling-bias-90"||
+  /Sampling Bias/i.test(note.title||"")||
+  (Array.isArray(note.versions)&&note.versions.some(v=>/Sampling Bias/i.test(v.title||""))));
+ const hasSnapshot=isCase&&note.caseSnapshot&&typeof note.caseSnapshot.question==="string"&&
+  note.caseSnapshot.question&&Array.isArray(note.caseSnapshot.options);
+ const allowed=isCase&&(hasSnapshot||known);
+ surface.hidden=!allowed;
+ if(bookmarks)bookmarks.hidden=!allowed;
+ if(!allowed)return;
+ const source=hasSnapshot?note.caseSnapshot:null;
+ const root=document.querySelector("#page-case .editorial-grid .surface.tinted");
+ const question=source?.question||root?.querySelector("h2")?.textContent?.trim()||"Đề bài gốc không còn trong bản lưu";
+ const scene=source?.scene||root?.querySelector("p")?.textContent?.trim()||"";
+ const options=source?.options||Array.from(root?.querySelectorAll("[data-answer]")||[]).map(node=>({key:node.dataset.answer,text:node.textContent.trim()}));
+ const selection=source?.selectedKey||(note.correct?"right":"wrong");
+ const selectedText=source?.selectedText||options.find(x=>x.key===selection)?.text||"Không có dữ liệu lựa chọn";
+ const choices=$("li-note-case-choices");choices?.replaceChildren();
+ $("li-note-case-question").textContent=question;
+ $("li-note-case-scene").textContent=scene;
+ for(const option of options){
+  const item=element(choices,"div","library-case-choice",option.text);
+  if(option.key===selection)item.setAttribute("data-chosen","true");
+ }
+ $("li-note-case-choice").textContent=(hasSnapshot?"Lựa chọn của bạn: ":"Lựa chọn suy ra từ trạng thái đúng/sai: ")+selectedText;
+ $("li-note-case-feedback").textContent=hasSnapshot?
+  (source.feedback||"Bản lưu không có nội dung phản hồi.") :
+  "Bản lưu cũ không chứa phản hồi khi bạn chọn đáp án.";
+ $("li-note-case-provenance").textContent=hasSnapshot?
+  "Đề bài, lựa chọn và phản hồi được ghi cùng luận kết. Chỉnh sửa luận kết không thay đổi bản chụp case." :
+  "Dữ liệu cũ chỉ lưu luận kết và trạng thái đúng/sai. Đề bài hiện lấy từ case đang xuất bản; lựa chọn được suy ra, không phải bản ghi lịch sử nguyên gốc.";
+ window.liBookmarks?.refresh();
+}
 function renderDetail(){
  if(!$("page-noteDetail"))return;
  const note=current(),historyRoot=$("li-note-history-list");historyRoot.replaceChildren();
@@ -60,9 +100,11 @@ function renderDetail(){
   $("li-note-detail-body").textContent="Ghi chép này không còn trên thiết bị.";
   $("li-note-detail-status").textContent="Không có dữ liệu";
   $("li-note-edit").disabled=true;$("li-note-delete").disabled=true;
+  renderCaseContext(null,null);
   return;
  }
  const type=active.type,history=historyFor(note,type);
+ renderCaseContext(note,type);
  $("li-note-edit").disabled=false;$("li-note-delete").disabled=false;
  $("li-note-detail-kind").textContent=type==="case"?"BÚT KÝ · CASE ĐÃ GIẢI":"Ý ĐÃ NHẶT · CHƯA XÁC MINH";
  $("li-note-detail-title").textContent=titleOf(note,type);

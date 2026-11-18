@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/design-tokens.css?v=0.3">
 <link rel="stylesheet" href="./assets/li-layout.css?v=0.4"><link rel="stylesheet" href="./assets/lesson-l09-hifi.css?v=0.3">
-<link rel="stylesheet" href="./assets/ui-foundations.css?v=0.5"><link rel="stylesheet" href="./assets/checkin-adaptation.css?v=20261118-radio2"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
+<link rel="stylesheet" href="./assets/ui-foundations.css?v=0.5"><link rel="stylesheet" href="./assets/checkin-adaptation.css?v=20261118-binary3"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
 <symbol id="i-tree" viewBox="0 0 24 24"><path d="m12 2 4 5h-2l4 5h-3l4 6H5l4-6H6l4-5H8zM12 18v4"/></symbol>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7c-4-3-8-3-10-2v15c3-1 7 0 10 2 3-2 7-3 10-2V5c-2-1-6-1-10 2ZM12 7v15"/></symbol>
 <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6zM15 2v5h5M9 13h8M9 17h8"/></symbol>
@@ -80,14 +80,14 @@
   <div class="checkin-scroll" tabindex="0" aria-label="Nội dung check-in có thể cuộn">
    <div class="kicker">L1 · THỂ TRẠNG → NHỊP HỌC</div>
    <h2 id="checkin-title">Hôm nay cơ thể ra sao?</h2>
-   <p id="checkin-description">Trả lời đủ ba mục. Không chắc? Chọn “Không rõ”.</p>
+   <p id="checkin-description">Chọn Có hoặc Chưa cho cả ba mục để nhận gợi ý nhịp học.</p>
    <div class="checkin-physical" role="group" aria-label="Ba câu hỏi thể trạng trước khi áp dụng check-in">
-    <fieldset class="checkin-physical-field" data-checkin-field="sleep"><legend><span class="checkin-index">01</span> Đã ngủ tương đối đủ?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-sleep" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-sleep" value="no"><span>Chưa</span></label><label class="checkin-radio"><input type="radio" name="checkin-sleep" value="unsure"><span>Không rõ</span></label></div></fieldset>
-    <fieldset class="checkin-physical-field" data-checkin-field="move"><legend><span class="checkin-index">02</span> Đã vận động nhẹ hôm nay?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-move" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-move" value="no"><span>Chưa</span></label><label class="checkin-radio"><input type="radio" name="checkin-move" value="unsure"><span>Không rõ</span></label></div></fieldset>
-    <fieldset class="checkin-physical-field" data-checkin-field="rest"><legend><span class="checkin-index">03</span> Đã nghỉ ngơi hôm nay?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-rest" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-rest" value="no"><span>Chưa</span></label><label class="checkin-radio"><input type="radio" name="checkin-rest" value="unsure"><span>Không rõ</span></label></div></fieldset>
+    <fieldset class="checkin-physical-field" data-checkin-field="sleep"><legend><span class="checkin-index">01</span> Đã ngủ tương đối đủ?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-sleep" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-sleep" value="no"><span>Chưa</span></label></div></fieldset>
+    <fieldset class="checkin-physical-field" data-checkin-field="move"><legend><span class="checkin-index">02</span> Đã vận động nhẹ hôm nay?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-move" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-move" value="no"><span>Chưa</span></label></div></fieldset>
+    <fieldset class="checkin-physical-field" data-checkin-field="rest"><legend><span class="checkin-index">03</span> Đã nghỉ ngơi hôm nay?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-rest" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-rest" value="no"><span>Chưa</span></label></div></fieldset>
    </div>
    <p id="checkin-recommendation" class="state-note checkin-result" role="status" aria-live="polite">Trả lời đủ ba mục thể trạng để nhận nhịp gợi ý.</p>
-   <details class="checkin-context"><summary>Cảm nhận hiện tại · Bổ sung</summary><p>Không bắt buộc. Chỉ giúp điều chỉnh nhịp dựa trên thể trạng đã khai.</p>
+   <details class="checkin-context"><summary>Cảm nhận hiện tại · Bổ sung</summary><p>Không bắt buộc. Trả lời thêm có thể hạ nhịp để giảm tải, không dùng cảm giác sung sức để bỏ qua thể trạng đã khai.</p>
     <fieldset class="checkin-question"><legend>Năng lượng lúc này</legend><div class="checkin-choices">
      <label class="checkin-choice"><input type="radio" name="checkin-energy" value="high"><span>Dồi dào</span></label>
      <label class="checkin-choice"><input type="radio" name="checkin-energy" value="medium"><span>Vừa đủ</span></label>
@@ -473,21 +473,20 @@ function readCheckinInputs(){
 }
 function completePhysicalCheckin(physical){
  const values=physical&&[physical.sleep,physical.move,physical.rest];
- return Boolean(values&&values.length===3&&values.every(v=>["yes","no","unsure"].includes(v)));
+ return Boolean(values&&values.length===3&&values.every(v=>["yes","no"].includes(v)));
 }
 function recommendStudyMode(physical,energy="",attention=""){
  if(!completePhysicalCheckin(physical))return null;
  const responses=[physical.sleep,physical.move,physical.rest];
  // Never use the three responses as a medical/compliance score.
- // Subjective overload may reduce intensity; it never overrides a missing L1 physical report.
+ // Optional subjective energy and attention may only downshift from the physical baseline; never escalate above a physical 'no'.
+ // Exception: simultaneous 'low' energy and 'hard' attention suggests overload rather than simply recover.
  if(energy==="low"&&attention==="hard")
   return {mode:"overload",reason:"Cả thể trạng đã khai và cảm giác lúc này cho thấy nên giảm tải; có thể nghỉ."};
  if(responses.includes("no"))
   return {mode:"recover",reason:"Có ít nhất một điều về ngủ, vận động hoặc nghỉ ngơi bạn trả lời 'Chưa'. Ưu tiên nhịp nhẹ."};
  if(energy==="low"||attention==="hard")
   return {mode:"recover",reason:"Cảm nhận hiện tại cho thấy khó duy trì cường độ; hãy bắt đầu bằng phần nhỏ."};
- if(responses.includes("unsure"))
-  return {mode:"start",reason:"Có thông tin thể trạng chưa rõ; cứ vào nhịp vừa sức, không cần phỏng đoán."};
  if(energy==="medium"||attention==="warming")
   return {mode:"start",reason:"Ba mục thể trạng đều được trả lời Có; cảm nhận hiện tại phù hợp bắt đầu từ từ."};
  return {mode:"focus",reason:"Cả ba mục đều Có; có thể thử học sâu nếu thấy ổn."};
@@ -499,9 +498,9 @@ function refreshCheckinRecommendation(){
  const manual=document.querySelector('#checkin-modal input[name="checkin-override"]:checked')?.value||"";
  const target=complete?(manual||suggested?.mode||""):"";
  const result=document.getElementById("checkin-recommendation");
- const missing=[["sleep","Ngủ"],["move","Vận động"],["rest","Nghỉ ngơi"]].filter(pair=>!["yes","no","unsure"].includes(physical[pair[0]])).map(pair=>pair[1]);
+ const missing=[["sleep","Ngủ"],["move","Vận động"],["rest","Nghỉ ngơi"]].filter(pair=>!["yes","no"].includes(physical[pair[0]])).map(pair=>pair[1]);
  if(!complete){
-  result.textContent="Chưa thể áp dụng. Hãy trả lời: "+missing.join(", ")+". Có thể chọn Không rõ nếu chưa chắc, hoặc Bỏ qua.";
+  result.textContent="Chưa thể áp dụng. Hãy trả lời: "+missing.join(", ")+". Hoặc chọn Bỏ qua để học mà không ghi check-in.";
  }else if(manual){
   result.textContent="L1 đã đủ ba câu. Bạn chọn "+STUDY_MODES[manual].label+" thủ công; quyền quyết định vẫn thuộc về bạn.";
  }else{

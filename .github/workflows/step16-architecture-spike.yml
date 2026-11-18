@@ -7,6 +7,7 @@ on:
       - 'tools/step16_backup_spike.cjs'
       - 'tools/step16_browser_backup_spike.js'
       - 'tools/step16_browser_backup_fixture.html'
+      - 'tools/step16_realapp_backup_fixture.html'
       - '.github/workflows/step16-architecture-spike.yml'
   workflow_dispatch:
 
@@ -59,3 +60,18 @@ jobs:
           fi
           grep -F '<pre id="result">LI_STEP16_BROWSER_PASS ' /tmp/li-step16-browser-result.html | tail -1 | cut -c1-4000
           echo "PASS localhost Chromium synthetic storage fixture, not live app or Safari"
+          echo "Now testing real site/index.html export/import handlers on localhost FAKE storage only"
+          realurl="http://127.0.0.1:8767/tools/step16_realapp_backup_fixture.html"
+          timeout 55s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=20000 --dump-dom "$realurl" > /tmp/li-step16-realapp-result.html 2>/tmp/li-step16-realapp-stderr.log || {
+            echo "FAIL real-app-source browser run did not complete"
+            tail -30 /tmp/li-step16-realapp-stderr.log || true
+            exit 1
+          }
+          if ! grep -F '<pre id="result">LI_STEP16_REALAPP_PASS ' /tmp/li-step16-realapp-result.html | grep -F '"count":2' >/dev/null; then
+            echo "FAIL actual li. code export/import behavior could not be demonstrated"
+            grep -F '<pre id="result">LI_STEP16_REALAPP_' /tmp/li-step16-realapp-result.html | tail -1 | cut -c1-5500 || true
+            exit 1
+          fi
+          grep -F '<pre id="result">LI_STEP16_REALAPP_PASS ' /tmp/li-step16-realapp-result.html | tail -1 | cut -c1-4200
+          echo "PASS current app source schema1 backup gap reproducer; NOT a full-backup fix"
+

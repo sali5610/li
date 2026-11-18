@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>li. 理 — Component Library Review · UX-DS-08</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/design-tokens.css?v=0.3">
+<style>
+:root {color-scheme:light}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--li-font-ui);font-size:var(--li-type-body);line-height:var(--li-leading-body)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--li-color-focus-ring);outline-offset:3px}
+a{color:var(--moss);text-underline-offset:4px}
+.ds-shell{max-width:1340px;margin:0 auto;display:grid;grid-template-columns:232px minmax(0,1fr)}
+.ds-sidebar{position:sticky;top:0;height:100svh;overflow-y:auto;background:var(--forest);color:var(--cream);padding:var(--li-space-6);border-right:1px solid var(--wood)}
+.ds-mark{font:700 40px/44px var(--li-font-editorial);margin:0 0 var(--li-space-5)}
+.ds-nav{display:grid;gap:var(--li-space-2)}
+.ds-nav a{display:block;padding:var(--li-space-3);color:var(--cream);text-decoration:none;font-size:var(--li-type-support);line-height:var(--li-leading-support);border-left:2px solid transparent}
+.ds-nav a:hover,.ds-nav a:focus-visible{background:var(--moss);border-color:var(--sage)}
+.ds-stamp{margin-top:var(--li-space-8);padding:var(--li-space-4);border:1px solid var(--wood);font-size:var(--li-type-support);line-height:var(--li-leading-support)}
+.ds-main{min-width:0;padding:var(--li-space-8) var(--li-space-8) var(--li-space-16)}
+.ds-eyebrow{color:var(--wood);font-size:var(--li-type-caption);line-height:var(--li-leading-caption);font-weight:700;letter-spacing:.11em;text-transform:uppercase}
+h1,h2,h3{font-family:var(--li-font-editorial);font-weight:600;color:var(--moss);margin:0}
+h1{font-size:var(--li-type-display);line-height:var(--li-leading-display);margin:var(--li-space-4) 0}
+h2{font-size:var(--li-type-headline);line-height:var(--li-leading-headline)}
+h3{font-size:var(--li-type-title-md);line-height:var(--li-leading-title-md)}
+p{margin:var(--li-space-2) 0 var(--li-space-4)}
+.ds-lead{max-width:66ch;font-size:var(--li-type-body-lg);line-height:var(--li-leading-body-lg)}
+.ds-flag{display:inline-flex;align-items:center;min-height:32px;gap:var(--li-space-2);padding:var(--li-space-1) var(--li-space-3);border:1px solid var(--wood);background:var(--paper-2);color:var(--moss);font-size:var(--li-type-support);line-height:var(--li-leading-support);font-weight:700}
+.ds-flag::before{content:"◌";font-size:20px}
+.ds-intro{padding:var(--li-space-6);border:1px solid var(--moss);background:var(--cream);box-shadow:4px 4px 0 var(--wood);margin-top:var(--li-space-6)}
+.ds-section{margin-top:var(--li-space-16);scroll-margin-top:var(--li-space-6)}
+.ds-section-head{display:flex;align-items:end;justify-content:space-between;gap:var(--li-space-4);flex-wrap:wrap;margin-bottom:var(--li-space-6);padding-bottom:var(--li-space-4);border-bottom:1px solid var(--rule)}
+.ds-num{font-size:var(--li-type-caption);font-weight:700;color:var(--wood);letter-spacing:.15em}
+.ds-muted{color:var(--muted);font-size:var(--li-type-support);line-height:var(--li-leading-support)}
+.ds-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--li-space-5)}
+.ds-panel{min-width:0;padding:var(--li-space-5);background:var(--cream);border:1px solid var(--rule)}
+.ds-panel h3{margin-bottom:var(--li-space-3)}
+.ds-panel p{font-size:var(--li-type-support);line-height:var(--li-leading-support)}
+.ds-swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--li-space-3)}
+.ds-swatch{min-width:0;border:1px solid var(--rule);background:var(--cream)}
+.ds-paint{height:68px;border-bottom:1px solid var(--rule)}
+.ds-swatch-label{padding:var(--li-space-2);font-size:var(--li-type-caption);line-height:var(--li-leading-caption);overflow-wrap:anywhere}
+.ds-type-row{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--li-space-3);padding:var(--li-space-3) 0;border-bottom:1px solid var(--rule)}
+.ds-type-row .ds-type-demo{max-width:70%;overflow-wrap:anywhere}
+.ds-type-row small{color:var(--muted);font-size:var(--li-type-support)}
+.ds-button{display:inline-flex;min-height:48px;align-items:center;justify-content:center;padding:var(--li-space-3) var(--li-space-4);border:1px solid var(--moss);background:var(--moss);color:var(--cream);font-size:var(--li-type-support);font-weight:700;line-height:var(--li-leading-support);box-shadow:4px 4px 0 var(--wood);text-decoration:none}
+.ds-button.secondary{background:var(--cream);color:var(--moss)}
+.ds-button:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--wood)}
+.ds-button:disabled{opacity:.44;cursor:not-allowed;box-shadow:none}
+.ds-buttons{display:flex;gap:var(--li-space-4);flex-wrap:wrap;align-items:center;padding:var(--li-space-3) 0}
+.ds-pill{background:var(--li-color-nav-selected-fill);color:var(--moss);border-radius:100px;border:1px solid var(--rule);padding:var(--li-space-2) var(--li-space-4);font-size:var(--li-type-support);font-weight:700;line-height:var(--li-leading-support)}
+.ds-navsample{border:1px solid var(--rule);display:flex;gap:var(--li-space-3);padding:var(--li-space-4);background:var(--paper);align-items:center;flex-wrap:wrap}
+.ds-navsample button{border:0;background:transparent;min-height:48px;min-width:64px;padding:var(--li-space-2);color:var(--moss)}
+.ds-navsample button[aria-current="page"]{background:var(--li-color-nav-selected-fill);border-radius:40px}
+.ds-navsample button:focus-visible{outline:3px solid var(--li-color-focus-ring)}
+.ds-method-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--li-space-5)}
+.ds-method{min-width:0;display:flex;flex-direction:column;gap:var(--li-space-2);text-align:left;padding:var(--li-space-3);min-height:228px;border:1px solid var(--moss);background:var(--cream);color:var(--ink);box-shadow:4px 4px 0 var(--wood)}
+.ds-method .ds-kicker{font-size:var(--li-type-caption);line-height:var(--li-leading-caption);font-weight:700;color:var(--moss)}
+.ds-method h4{margin:0;font:600 20px/28px var(--li-font-editorial);overflow-wrap:anywhere}
+.ds-method .ds-original,.ds-method .ds-purpose,.ds-method .ds-end{font-size:var(--li-type-support);line-height:var(--li-leading-support);overflow-wrap:anywhere}
+.ds-method .ds-original{color:var(--moss);font-weight:700}
+.ds-method .ds-purpose{color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ds-method .ds-end{color:var(--moss);font-weight:700;margin-top:auto;border-top:1px solid var(--rule);padding-top:var(--li-space-2)}
+.ds-field{display:grid;gap:var(--li-space-2)}
+.ds-field label{font-size:var(--li-type-support);font-weight:700}
+.ds-field input{min-width:0;width:100%;min-height:48px;padding:var(--li-space-3);border:1px solid var(--moss);border-radius:0;background:var(--paper);font-size:var(--li-type-body)}
+.ds-radio-set{border:1px solid var(--rule);margin:0;padding:var(--li-space-4)}
+.ds-radio-set legend{padding:0 var(--li-space-2);font-weight:700}
+.ds-radio-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--li-space-2)}
+.ds-radio-grid label{display:block;min-width:0;cursor:pointer}
+.ds-radio-grid input{position:absolute;opacity:0;width:1px;height:1px}
+.ds-radio-grid span{min-height:48px;display:flex;justify-content:center;align-items:center;border:1px solid var(--rule);background:var(--paper);color:var(--ink);padding:var(--li-space-2);text-align:center;font-size:var(--li-type-support);font-weight:600}
+.ds-radio-grid input:checked+span{background:var(--moss);color:var(--cream);border-color:var(--moss)}
+.ds-radio-grid input:focus-visible+span{outline:3px solid var(--li-color-focus-ring);outline-offset:2px}
+.ds-note{padding:var(--li-space-4);border-left:4px solid var(--moss);background:var(--paper-2);font-size:var(--li-type-support);line-height:var(--li-leading-support)}
+.ds-note.error{border-color:var(--li-color-danger-fill)}
+.ds-code{font:12px/20px ui-monospace,monospace;background:var(--paper-2);padding:var(--li-space-1) var(--li-space-2);display:inline-block;overflow-wrap:anywhere}
+.ds-device-shell{max-width:100%;overflow:auto;background:var(--paper-2);padding:var(--li-space-5);border:1px solid var(--rule)}
+.ds-device{width:390px;max-width:none;min-height:580px;background:var(--paper);border:2px solid var(--moss);box-shadow:6px 6px 0 var(--wood);margin:0 auto;overflow:hidden}
+.ds-device iframe{display:block;width:100%;height:720px;border:0;background:var(--paper)}
+.ds-device-controls{display:flex;flex-wrap:wrap;gap:var(--li-space-2);margin:var(--li-space-4) 0}
+.ds-device-controls button{padding:var(--li-space-2) var(--li-space-3);background:var(--cream);border:1px solid var(--rule);min-height:44px;color:var(--moss);font-weight:700;font-size:var(--li-type-support)}
+.ds-device-controls button[aria-pressed="true"]{background:var(--moss);border-color:var(--moss);color:var(--cream)}
+.ds-table{width:100%;border-collapse:collapse;font-size:var(--li-type-support);line-height:var(--li-leading-support)}
+.ds-table th,.ds-table td{text-align:left;vertical-align:top;border-bottom:1px solid var(--rule);padding:var(--li-space-3) var(--li-space-2)}
+.ds-table th{color:var(--moss);font-weight:700}
+.ds-table td:last-child{color:var(--muted)}
+.ds-footer{margin-top:var(--li-space-16);padding-top:var(--li-space-6);border-top:1px solid var(--rule);font-size:var(--li-type-support);line-height:var(--li-leading-support);color:var(--muted)}
+@media(max-width:900px){.ds-shell{grid-template-columns:1fr}.ds-sidebar{height:auto;position:static}.ds-nav{display:flex;flex-wrap:wrap;gap:var(--li-space-1)}.ds-nav a{padding:var(--li-space-2) var(--li-space-3)}.ds-stamp{display:none}}
+@media(max-width:600px){.ds-main{padding:var(--li-space-6) var(--li-space-4) var(--li-space-16)}h1{font-size:var(--li-type-headline);line-height:var(--li-leading-headline)}h2{font-size:var(--li-type-title-lg);line-height:var(--li-leading-title-lg)}.ds-grid{grid-template-columns:1fr}.ds-swatches{grid-template-columns:repeat(2,minmax(0,1fr))}.ds-type-row .ds-type-demo{max-width:100%}.ds-device-shell{padding:var(--li-space-3)}}
+@media(max-width:360px){.ds-method-grid{gap:var(--li-space-4)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="ds-shell">
+<aside class="ds-sidebar">
+ <div class="ds-mark">理 · li.</div>
+ <div class="ds-eyebrow" style="color:var(--sage)">UX-DS-08 · REVIEW BUILD</div>
+ <nav class="ds-nav" aria-label="Mục lục Component Showcase">
+  <a href="#status">01 / Status</a><a href="#tokens">02 / Foundations</a><a href="#navigation">03 / Navigation</a><a href="#actions">04 / Actions</a><a href="#cards">05 / Cards</a><a href="#inputs">06 / Forms</a><a href="#feedback">07 / Feedback</a><a href="#live">08 / Real app</a><a href="#inventory">09 / Component inventory</a>
+ </nav>
+ <div class="ds-stamp">Chỉ là specimen + app review. Không phải dấu duyệt G2, không đưa nội dung Wave2/3 lên public.</div>
+</aside>
+<main class="ds-main">
+ <div class="ds-eyebrow">Design System / Component Review</div>
+ <h1>Thư viện thành phần</h1>
+ <p class="ds-lead">Một chỗ để xem thành phần đang có trong <strong>li.</strong>, thử trạng thái và so với màn hình thật. Không ép cả khu rừng vào một cái button generic.</p>
+ <div class="ds-flag">Chờ Human PO duyệt component / G2 vẫn mở</div>
+ <section id="status" class="ds-intro">
+  <h3>Phân biệt ba trạng thái</h3>
+  <p><strong>Đã implement:</strong> token và runtime CSS đang chạy. <strong>Đã có quyết định cụ thể:</strong> ví dụ thẻ Thần Chú 2 cột trên điện thoại và nav active màu cát. <strong>Chưa duyệt:</strong> tổng thể Component Library / visual identity G2.</p>
+  <p class="ds-muted">Specimen trong trang này là UI để review; bên dưới có <strong>iframe chạy đúng app</strong> cho phần Thần Chú. Thử bằng mắt rồi phản hồi trong chat; tương tác ở showcase không ghi thành quyết định.</p>
+ </section>
+ <section id="tokens" class="ds-section">
+  <div class="ds-section-head"><div><div class="ds-num">02 / FOUNDATIONS</div><h2>Ngôn ngữ thị giác</h2></div><div class="ds-muted">Canonical: design-system/tokens.json v0.3</div></div>
+  <div class="ds-swatches">
+   <div class="ds-swatch"><div class="ds-paint" style="background:var(--paper)"></div><div class="ds-swatch-label">Paper · #F3EBDC</div></div>
+   <div class="ds-swatch"><div class="ds-paint" style="background:var(--moss)"></div><div class="ds-swatch-label">Moss · #243A29</div></div>
+   <div class="ds-swatch"><div class="ds-paint" style="background:var(--cream)"></div><div class="ds-swatch-label">Cream · #FBF7EB</div></div>
+   <div class="ds-swatch"><div class="ds-paint" style="background:var(--wood)"></div><div class="ds-swatch-label">Wood · #856D4B</div></div>
+   <div class="ds-swatch"><div class="ds-paint" style="background:var(--li-color-nav-selected-fill)"></div><div class="ds-swatch-label">Sand pill · Selected</div></div>
+   <div class="ds-swatch"><div class="ds-paint" style="background:var(--paper-2)"></div><div class="ds-swatch-label">Paper 2 · Layer</div></div>
+   <div class="ds-swatch"><div class="ds-paint" style="background:var(--rule)"></div><div class="ds-swatch-label">Rule · Divider</div></div>
+   <div class="ds-swatch"><div class="ds-paint" style="background:var(--ink)"></div><div class="ds-swatch-label">Ink · Reading</div></div>
+  </div>
+  <div class="ds-panel" style="margin-top:var(--li-space-6)">
+   <div class="ds-type-row"><span class="ds-type-demo" style="font:600 36px/44px var(--li-font-editorial)">Bản đồ tri thức</span><small>Headline 36/44</small></div>
+   <div class="ds-type-row"><span class="ds-type-demo" style="font:600 24px/32px var(--li-font-editorial)">Thần Chú, Thần Chú và Thần Chú</span><small>Title 24/32</small></div>
+   <div class="ds-type-row"><span class="ds-type-demo" style="font:600 20px/28px var(--li-font-editorial)">Suy luận có căn cứ</span><small>Compact title 20/28</small></div>
+   <div class="ds-type-row"><span class="ds-type-demo" style="font:400 16px/24px var(--li-font-ui)">Mọi kết luận cần hiểu rõ giới hạn của dữ liệu.</span><small>Body 16/24</small></div>
+   <div class="ds-type-row"><span class="ds-type-demo" style="font:400 14px/20px var(--li-font-ui)">Nhãn chức năng và phần giải thích ngắn.</span><small>Support 14/20</small></div>
+  </div>
+ </section>
+ <section id="navigation" class="ds-section">
+  <div class="ds-section-head"><div><div class="ds-num">03 / NAVIGATION</div><h2>Điều hướng</h2></div><div class="ds-muted">Selected pill · 48px touch target</div></div>
+  <div class="ds-grid">
+   <div class="ds-panel"><h3>Top / utility</h3><div class="ds-navsample" role="group" aria-label="Mẫu tương tác top navigation">
+    <button type="button" aria-current="page" data-navspec>⌕<span class="ds-muted"> Tìm kiếm</span></button>
+    <button type="button" data-navspec>✎ <span class="ds-muted">Nhặt ý</span></button>
+    <button type="button" data-navspec>⚙ <span class="ds-muted">Cài đặt</span></button>
+   </div><p class="ds-muted">Bấm để thử selected. Specimen không điều hướng app.</p></div>
+   <div class="ds-panel"><h3>Bottom tab</h3><div class="ds-navsample" role="group" aria-label="Mẫu tương tác bottom navigation">
+    <button type="button" aria-current="page" data-navspec>⌂ Gương</button><button type="button" data-navspec>▣ Môn học</button><button type="button" data-navspec>❖ Thần Chú</button><button type="button" data-navspec>▤ Tủ Riêng</button>
+   </div><p class="ds-muted">Thiết kế icon thật cần kiểm tra trong app, không suy từ glyph ở specimen.</p></div>
+  </div>
+ </section>
+ <section id="actions" class="ds-section">
+  <div class="ds-section-head"><div><div class="ds-num">04 / ACTIONS</div><h2>Buttons & states</h2></div><div class="ds-muted">Default · Secondary · Disabled · Focus</div></div>
+  <div class="ds-panel"><div class="ds-buttons"><button class="ds-button" type="button" id="action-demo">Đào sâu</button><button class="ds-button secondary" type="button" id="save-demo">Lưu</button><button class="ds-button" type="button" disabled>Đang khóa</button><button class="ds-button secondary" type="button">Nhận focus bằng Tab</button></div><p id="action-result" class="ds-note" role="status">Bấm các button để thử phản hồi, không có dữ liệu được lưu.</p></div>
+ </section>
+ <section id="cards" class="ds-section">
+  <div class="ds-section-head"><div><div class="ds-num">05 / CARDS</div><h2>Minimal Method Tile</h2></div><div class="ds-flag">S116 / S118 · Đã có quyết định 2 cột</div></div>
+  <p class="ds-lead">Đây là variant mày đã chọn: <strong>2 tile / 1 row trên điện thoại</strong>. Tên tiếng Việt đầy đủ, English original còn đọc được, mô tả preview 2 dòng. Chạm card để mở chú giải thật.</p>
+  <div class="ds-method-grid" aria-label="Specimen hai tile Thần Chú">
+   <button class="ds-method" type="button" data-annotation="T01 · Triệu Ức Chân Ngôn"><span aria-hidden="true">✦</span><span class="ds-kicker">T01 · KÝ ỨC THUẬT</span><h4>Triệu Ức Chân Ngôn</h4><span class="ds-original">Retrieval Practice / Active Recall</span><span class="ds-purpose">Tự nhớ lại kiến thức trước khi xem đáp án để luyện khả năng truy xuất.</span><span class="ds-end">CHÚ GIẢI →</span></button>
+   <button class="ds-method" type="button" data-annotation="T02 · Thời Ấn Hồi Ức"><span aria-hidden="true">✦</span><span class="ds-kicker">T02 · KÝ ỨC THUẬT</span><h4>Thời Ấn Hồi Ức</h4><span class="ds-original">Spaced Repetition</span><span class="ds-purpose">Ôn tập theo khoảng cách thay vì dồn tất cả vào một lần học.</span><span class="ds-end">CHÚ GIẢI →</span></button>
+  </div>
+  <div id="card-response" class="ds-note" style="margin-top:var(--li-space-5)" role="status">Bấm card specimen để xem anatomy. Card thật trong app mở trang chú giải.</div>
+  <div class="ds-grid" style="margin-top:var(--li-space-5)">
+   <div class="ds-panel"><h3>Editorial Panel</h3><p>Đây là surface đọc dài: padding 20–24px, body 16/24, không dùng kiểu compact của Thần Chú cho toàn bộ card.</p><span class="ds-code">.surface / .panel</span></div>
+   <div class="ds-panel"><h3>Illustration Card</h3><p>Card có artwork cần luật crop riêng và duyệt asset. Không tự lấy hình draft làm chuẩn cho tất cả môn.</p><span class="ds-code">.destination / scene art</span></div>
+  </div>
+ </section>
+ <section id="inputs" class="ds-section">
+  <div class="ds-section-head"><div><div class="ds-num">06 / FORM CONTROLS</div><h2>Input & selection</h2></div><div class="ds-muted">Token styles · accessibility state</div></div>
+  <div class="ds-grid">
+   <div class="ds-panel"><h3>Search / text</h3><div class="ds-field"><label for="ds-query">Tìm pháp danh</label><input id="ds-query" type="search" placeholder="Ví dụ: Retrieval Practice"></div><p id="ds-query-result" role="status" class="ds-muted">Chưa có từ khóa.</p></div>
+   <div class="ds-panel"><h3>Radio group · Check-in</h3><fieldset class="ds-radio-set"><legend>Đã ngủ tương đối đủ?</legend><div class="ds-radio-grid"><label><input type="radio" name="ds-physical" value="yes"><span>Có</span></label><label><input type="radio" name="ds-physical" value="no"><span>Chưa</span></label><label><input type="radio" name="ds-physical" value="unsure"><span>Không rõ</span></label></div></fieldset><p class="ds-muted">Cả 3 trạng thái đều phải bấm được; check-in thật yêu cầu 3 câu hỏi.</p></div>
+  </div>
+ </section>
+ <section id="feedback" class="ds-section">
+  <div class="ds-section-head"><div><div class="ds-num">07 / FEEDBACK</div><h2>Feedback & system states</h2></div><div class="ds-muted">Không hiện thành công giả</div></div>
+  <div class="ds-grid"><div class="ds-note" role="status"><strong>Thông tin</strong><p>Trạng thái trung tính: hướng dẫn, lưu ý giới hạn của câu trả lời.</p></div><div class="ds-note error" role="alert"><strong>Lỗi / chưa thể lưu</strong><p>Khi lưu thất bại, cần thông báo rõ — không được viết “đã lưu” trước xác nhận.</p></div></div>
+ </section>
+ <section id="live" class="ds-section">
+  <div class="ds-section-head"><div><div class="ds-num">08 / ACTUAL RUNTIME</div><h2>Màn hình thật</h2></div><div class="ds-muted">App iframe từ cùng repo · không phải mock</div></div>
+  <p>Chọn kích thước để so card Thần Chú thật, search, filter, Lão Lý và detail. Iframe mở đúng <code>index.html?page=guide</code> của phiên bản này, không dùng HTML minh họa card để đánh lừa.</p>
+  <div class="ds-device-controls" role="group" aria-label="Thử kích thước màn hình">
+   <button type="button" data-width="320">320</button><button type="button" data-width="375">375</button><button type="button" data-width="390" aria-pressed="true">390</button><button type="button" data-width="402">402</button><button type="button" data-width="600">600</button><button type="button" data-width="820">820</button>
+  </div>
+  <div class="ds-device-shell"><div class="ds-device" id="ds-device"><iframe title="App li. thật — màn Thần Chú" src="./index.html?page=guide" loading="lazy"></iframe></div></div>
+  <p class="ds-muted">Muốn kiểm tra bằng iPhone thật: <a href="./index.html?page=guide">Mở trực tiếp trang Thần Chú</a>. Trong preview hẹp, khu vực iframe có thể cuộn ngang để giữ đúng chiều rộng giả lập.</p>
+ </section>
+ <section id="inventory" class="ds-section">
+  <div class="ds-section-head"><div><div class="ds-num">09 / REVIEW INVENTORY</div><h2>Danh mục component</h2></div><div class="ds-flag">Chưa chốt cả library</div></div>
+  <div style="overflow-x:auto"><table class="ds-table"><thead><tr><th>Nhóm</th><th>Runtime selector</th><th>Trạng thái</th></tr></thead><tbody>
+   <tr><td>Header / utility</td><td><code>.header .tool-button</code></td><td>Đã implement; active sand pill có quyết định</td></tr>
+   <tr><td>Bottom navigation</td><td><code>.mobile-nav .nav-btn</code></td><td>Đã implement; cần real iOS QA</td></tr>
+   <tr><td>Actions / CTA</td><td><code>.action / .hero-actions</code></td><td>Đã implement; variants tổng thể chưa chốt</td></tr>
+   <tr><td>Thần Chú compact tile</td><td><code>#page-guide #method-cards &gt; .method-card</code></td><td>PO đã chọn 2-up mobile; regression token vừa sửa</td></tr>
+   <tr><td>Editorial panel / card</td><td><code>.panel / .surface / .destination</code></td><td>Observed; còn review</td></tr>
+   <tr><td>Check-in radio modal</td><td><code>#checkin-modal</code></td><td>Đã implement; real Safari / VoiceOver chưa chứng nhận</td></tr>
+   <tr><td>Lão Lý companion</td><td><code>#laoly-fab / #buddy-modal</code></td><td>Overlaps có ngoại lệ; G2 tổng thể còn mở</td></tr>
+   <tr><td>Mirror / question</td><td><code>#page-home .mirror-message</code></td><td>Art geometry riêng; nhiều biến thể nội dung cần review</td></tr>
+   <tr><td>Lesson cards / source</td><td><code>.l09-* / .source-status</code></td><td>Wave1 live; Wave2/3 không phát hành</td></tr>
+  </tbody></table></div>
+ </section>
+ <footer class="ds-footer">UX-DS-08 · Visual review only · Tokens authored in <code>design-system/tokens.json</code>; app uses generated CSS. PO chốt theo từng component, không tự biến specimen thành G2 approved.</footer>
+</main>
+</div>
+<script>
+"use strict";
+document.querySelectorAll("[data-navspec]").forEach(button=>button.addEventListener("click",()=>{
+ const group=button.parentElement;
+ group.querySelectorAll("[data-navspec]").forEach(item=>item.removeAttribute("aria-current"));
+ button.setAttribute("aria-current","page");
+}));
+document.getElementById("action-demo").addEventListener("click",()=>document.getElementById("action-result").textContent="Đào sâu — đây chỉ là button specimen, không điều hướng.");
+document.getElementById("save-demo").addEventListener("click",()=>document.getElementById("action-result").textContent="Lưu — chỉ là specimen. Không có dữ liệu nào được lưu.");
+document.querySelectorAll(".ds-method").forEach(button=>button.addEventListener("click",()=>document.getElementById("card-response").textContent=button.dataset.annotation+": tile gồm icon → mã/nhóm → title → academic original → purpose preview 2 dòng → CTA. Ấn card thật trong iframe bên dưới để mở Chú Giải."));
+document.getElementById("ds-query").addEventListener("input",e=>document.getElementById("ds-query-result").textContent=e.target.value?"Specimen input: "+e.target.value:"Chưa có từ khóa.");
+document.querySelectorAll("[data-width]").forEach(button=>button.addEventListener("click",()=>{
+ const w=Number(button.dataset.width);
+ document.getElementById("ds-device").style.width=w+"px";
+ document.querySelectorAll("[data-width]").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
+}));
+</script>
+</body>
+</html>

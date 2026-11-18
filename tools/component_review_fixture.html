@@ -35,6 +35,9 @@ iframe.addEventListener("load",()=>{
    d.getElementById("action-demo").click();
    check("Specimen action feedback is truthful",d.getElementById("action-result").textContent.includes("không điều hướng"));
    check("Lucide icons resolved to SVG",d.querySelectorAll("#icons svg.lucide").length>=12);
+   const seal=d.querySelector(".ds-mark img");
+   check("Real approved seal SVG loads instead of font fallback",!!seal&&seal.complete&&seal.naturalWidth>0);
+
    const smallIcon=d.querySelector("#icons .ds-symbol-small");
    const navIcon=d.querySelector("#icons .ds-symbol-nav");
    check("Lucide size roles are 18px / 22px after SVG replacement",!!smallIcon&&!!navIcon&&w.getComputedStyle(smallIcon).width==="18px"&&w.getComputedStyle(navIcon).width==="22px",smallIcon?w.getComputedStyle(smallIcon).width+"/"+w.getComputedStyle(navIcon).width:"missing");

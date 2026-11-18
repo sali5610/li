@@ -66,3 +66,7 @@
 .ds-nested-nav{display:flex;gap:var(--li-space-4);flex-wrap:wrap;align-items:center}
 @media(max-width:900px){.ds-icon-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:600px){.ds-icon-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ds-rule-grid,.ds-large-grid,.ds-form-states{grid-template-columns:1fr}.ds-large{min-height:0;padding:var(--li-space-5)}.ds-bubble-stage{padding:var(--li-space-4)}.ds-tabs button{font-size:var(--li-type-caption)}}
+
+/* Preserve the exact real-app seal instead of relying on a CJK font glyph on headless/mobile. */
+.ds-mark{display:flex;align-items:center;gap:var(--li-space-2)}
+.ds-mark img{display:block;width:44px;height:44px;object-fit:contain}

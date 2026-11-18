@@ -40,3 +40,22 @@
  .ds15-topnav-actions{gap:var(--li-space-0)}
  .ds15-topnav-page-title{font-size:var(--li-type-support)}
 }
+
+/* UX-DS-21 · Documentary specimen: exact live non-Home editorial kicker accent. */
+.ds20-olive-usage{margin-top:var(--li-space-6);padding:var(--li-space-5);background:var(--cream);border:1px solid var(--rule);min-width:0}
+.ds20-olive-heading{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:var(--li-space-2)}
+.ds20-olive-heading h3{margin:var(--li-space-0);font-size:var(--li-type-title-sm);line-height:var(--li-leading-title-sm);font-family:var(--li-font-editorial);color:var(--moss)}
+.ds20-olive-scope{font-size:var(--li-type-caption);line-height:var(--li-leading-caption);color:var(--muted)}
+.ds20-olive-usage>.ds-muted{margin:var(--li-space-3) var(--li-space-0)}
+.ds20-olive-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--li-space-4);margin-top:var(--li-space-4)}
+.ds20-olive-example{padding:var(--li-space-5);border:1px solid var(--rule);background:var(--paper);min-width:0}
+.ds20-olive-kicker{border-inline-start:3px solid var(--olive);padding-inline-start:var(--li-space-2);font-size:var(--li-type-caption);line-height:var(--li-leading-caption);font-weight:var(--li-weight-800);letter-spacing:var(--li-tracking-legacy-03);color:var(--moss);text-transform:uppercase}
+.ds20-olive-example h4{font:var(--li-weight-600) var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial);margin:var(--li-space-3) var(--li-space-0) var(--li-space-2);color:var(--moss);overflow-wrap:anywhere}
+.ds20-olive-example p{font-size:var(--li-type-support);line-height:var(--li-leading-support);color:var(--muted);margin:var(--li-space-0)}
+.ds20-olive-contract{min-width:0;display:grid;align-content:start;gap:var(--li-space-2);font-size:var(--li-type-support);line-height:var(--li-leading-support)}
+.ds20-olive-token{overflow-wrap:anywhere}
+.ds20-olive-token code{font-size:var(--li-type-caption);overflow-wrap:anywhere}
+.ds20-olive-contract p{margin:var(--li-space-2) var(--li-space-0)}
+.ds20-olive-contract a{justify-self:start}
+.ds20-olive-approval{color:var(--muted);font-size:var(--li-type-caption);line-height:var(--li-leading-caption);margin:var(--li-space-3) var(--li-space-0) var(--li-space-0)}
+@media(max-width:720px){.ds20-olive-layout{grid-template-columns:minmax(0,1fr)}.ds20-olive-usage{padding:var(--li-space-4)}}

@@ -62,3 +62,24 @@ python3 -m http.server 8765 --bind 127.0.0.1
 A **local-server Playwright suite targeting the exact staged files** is prepared at `qa/smoke-local-chromium.py`, but has **not been run** in this restricted environment. It is optional and requires the free Python Playwright/Chromium installation. Browsers with real origin/localStorage, physical iPhone/Safari/VoiceOver, source rights, and app-shell integration remain **OPEN**. Model answers remain client-inspectable in CMS; this is an **educational UX reveal gate**, never secure testing infrastructure.
 
 **Release scope correction:** The latest Product Hub clarification scopes “no deploy” to unpublished Wave2/3 curriculum; unrelated product UI may follow other approved workflows. This pilot remains explicitly **NO WEB DEPLOY, NO site/ edits, NO main merge**. New paid cost **0 VND**.
+
+## S159 — Exact-CMS Chromium E2E, root-cause fix and regression evidence (2026-11-18)
+
+**Verified source:** current exact GitHub branch CMS/stage modules are SHA-matched before the browser session (not the earlier synthetic 9 KB fixture). The authoring CMS contains the full bilingual 41.8 KB UTF-8 content. Current staged state, controller, HTML and CSS are loaded as the actual source text.
+
+**The browser test really executed:** [QA script](qa/exact_cms_chromium_inmemory_e2e.py) and [25-pass report](qa/L09-1-1.actual-cms.chromium-inmemory-20261118.json). Chromium ran **25/25 PASS** on actual source/real learner events: Hook First, gated model answer, stage-specific mentor, T06/T07, Spellbook/Escape, VI/EN, 4-answer independent submit and incomplete handling, rubric, focus and nav stage, retry and archived method history, simulated reload, denied/corrupt storage handling, 320/375/390/402/768/1280 responsive widths and ARIA structural checks. Source screenshots are local to the private test environment, not identity-approved assets.
+
+**One verified FAIL found and fixed:** before this patch, typing a T06 draft and reloading caused the T06 classification/reasoning inputs to reset. The identical T07 draft had the same underlying volatile-state problem. Fixed **both** by storing method draft values under `state.methods.T06/T07.draft` via `Pilot.setMethodDraft`. The browser controller autosaves on each method input event; restoring a previous v1 state without `draft` fields now safely migrates, and retry archives old evidence but clears the new attempt. Re-test passed. The real Node runner on the updated exact files now reports **58/58 PASS**, with [recorded contract evidence](qa/L09-1-1.node-contract-58-20261118.json) including 6 new migration/draft/retry cases. The earlier 52/52 and synthetic 12/12 records are historical, not the latest result.
+
+**Scope of browser simulation:** local browser navigation to `http://127.0.0.1`, `file://` and `data:` fails with `ERR_BLOCKED_BY_ADMINISTRATOR`. To actually execute the **real** controller/state ES modules in Chromium, the harness loads their exact contents through in-memory Blob modules, changes only the local module import URL, and supplies the **real** CMS JSON through a fetch shim; an isolated Storage shim permits reload-state checks. The on-disk sources were also served through a local HTTP server and independently retrieved by Python with byte equality (4/4), but Chromium was **not able to navigate to the server**. Therefore **real-origin native localStorage, networking, Safari/iPhone, VoiceOver and PWA remain NOT TESTED**, and QA28/G2/G3/G4 remain OPEN. These are authentic source-based browser integration tests but **not a complete browser-origin production acceptance**.
+
+**Re-run from checked-out staging branch, with free Node and Python Playwright + Chromium installed:**
+
+```bash
+node docs/editorial/wave2-cms-l0911/run-l0911-offline.mjs
+python docs/editorial/wave2-cms-l0911/qa/exact_cms_chromium_inmemory_e2e.py
+```
+
+The browser script intentionally pins the known file blob SHAs: if the CMS/controller/state changes, verify the new source and update pins before calling a later result a pass. The separate `qa/smoke-local-chromium.py` real-origin suite still must be executed on an environment where loopback navigation is permitted.
+
+**Policy:** no `site/` changes, no merge, no deploy, no public preview, no Wave1 edits and no new paid costs. Main has moved independently; recheck branch divergence and app-shell compatibility before any future integration.

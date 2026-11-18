@@ -73,6 +73,16 @@ jobs:
             exit 1
           fi
           echo "$result" | grep '<pre id="result">LI_SHOWCASE_PASS ' | tail -1 | cut -c1-1200
+          for width in 320 390 820; do
+            url="http://127.0.0.1:8765/tools/component_review_fixture.html?w=$width"
+            result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=15000 --dump-dom "$url" 2>/tmp/li-showcase-responsive-stderr.log || true)"
+            if [[ "$result" != *'<pre id="result">LI_SHOWCASE_PASS '* ]]; then
+              echo "FAIL responsive component review at $width CSS px"
+              echo "$result" | grep -E 'LI_SHOWCASE_(PASS|FAIL)' | tail -1 | cut -c1-2600 || true
+              exit 1
+            fi
+            echo "PASS component board at $width CSS px"
+          done
           mkdir -p "$RUNNER_TEMP/li-checkin-visual"
           for width in 320 390 820; do
             url="http://127.0.0.1:8765/tools/checkin_browser_fixture.html?w=$width&h=760&capture=1"

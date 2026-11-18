@@ -210,7 +210,9 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 #ly-mode-feedback { margin-top: var(--li-space-3); font-size: var(--li-type-support); line-height: var(--li-leading-support); }
 
 /* Home exceptions: the live mirror text must still remain inside the art. */
-#page-home .hero-dialogue-bubble { padding: var(--li-space-3) var(--li-space-4); }
+/* UX-DS-24: forest green bubble has zero-width stroke on body and tail; preserve color, shape, padding, shadow and placement. */
+#page-home .hero-dialogue-bubble { border-width:var(--li-space-0); padding: var(--li-space-3) var(--li-space-4); }
+#page-home .hero-dialogue-bubble::before { border-width:var(--li-space-0); }
 #page-home .hero-dialogue-bubble p {
   font-size: var(--li-type-support) !important;
   line-height: var(--li-leading-support) !important;

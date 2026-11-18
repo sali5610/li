@@ -268,7 +268,7 @@ assert '#settings-buddy-card .settings-buddy-illustration' in html
 settings_styles=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert 'border-top: 1px solid var(--rule)' not in settings_styles.split('#page-settings .buddy-address-settings {', 1)[1].split('}', 1)[0]
 assert '#settings-buddy-card .settings-buddy-footer' not in html
-assert 'li-layout.css?v=0.4' in page_html and 'ui-foundations.css?v=20261118-s118-exact' in page_html
+assert 'li-layout.css?v=0.4' in page_html and bool(re.search(r'<link rel="stylesheet" href="\./assets/ui-foundations\.css\?v=[A-Za-z0-9._-]+">', head))
 
 # S118: two compact mobile Guide tiles with shadow-safe column/row gutters; no duplicate S99 rule.
 guide=section("guide")
@@ -439,9 +439,17 @@ quotes=site/"assets"/"laoly-quotes-s121.js"
 assert quotes.is_file() and quotes.stat().st_size>12_000
 quote_js=quotes.read_text(encoding="utf-8")
 assert quote_js.count('"id":"')>=24, "Quotes library must contain at least 24 entries"
-assert html.count('<script src="./assets/laoly-quotes-s121.js"></script>')==1
+# S147: retain the sourced text, but surface a concise original + commentary.
+# Disclosure metadata must remain accessible via a single opt-in info button.
+assert len(re.findall(r'<script src="\./assets/laoly-quotes-s121\.js(?:\?v=[0-9]+)?"></script>', page_html))==1
 assert 'if(window.liQuoteEngine?.render){window.liQuoteEngine.render();return;}' in html
-assert '#buddy-modal #buddy-quote .li-quote-context{' in html
+for element_id in ("buddy-quote-original","buddy-quote-context","buddy-quote-info","buddy-quote-gloss","buddy-quote-meta","buddy-quote-link"):
+    assert page_html.count(f'id="{element_id}"')==1, f"Quote element missing or duplicated: {element_id}"
+assert 'aria-controls="buddy-quote" aria-expanded="false"' in page_html
+assert 'document.getElementById("buddy-quote-info").addEventListener("click"' in page_html
+assert '#buddy-modal #buddy-quote-context {' in foundation
+assert '#buddy-modal .buddy-heading #buddy-quote-original {' in foundation
+assert 'note.textContent=item.comment;' in quote_js and 'Lão Lý liên hệ: ' not in quote_js
 assert 'https://zh.wikisource.org/' in quote_js and 'https://en.wikisource.org/' in quote_js
 subprocess.run(["node","--check",str(quotes)],check=True)
 subprocess.run(["node",str(site.parent/"tools"/"test_quotes.js")],check=True,cwd=site.parent)
@@ -469,7 +477,7 @@ assert page_html.count('type:"hook",lessonRoute:') == 3
 assert 'sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang."' in page_html
 assert 'navigate(scenario.type==="hook"?scenario.lessonRoute:"research");' in (site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert '<script src="./assets/lesson-related-wave1.js"></script>' in page_html
-assert 'ui-foundations.css?v=20261118-s118-exact' in page_html
+assert bool(re.search(r'<link rel="stylesheet" href="\./assets/ui-foundations\.css\?v=[A-Za-z0-9._-]+">', head))
 cross=(site/"assets"/"lesson-related-wave1.js").read_text(encoding="utf-8")
 assert 'Object.keys(RELATED).forEach' in cross
 assert all(k in cross for k in ("L03-1-2", "L09-1-2", "L15-2-2"))

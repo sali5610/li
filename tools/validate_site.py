@@ -402,7 +402,7 @@ assert "Width sync: " in (site/"assets"/"ipad-viewport-debug.js").read_text(enco
 rotation_js=(site/"assets"/"ipad-safari-rotation.js").read_text(encoding="utf-8")
 assert 'ipad-safari-rotation.js?v=20261119-ds30' in page_html
 assert page_html.index('ipad-safari-rotation.js?v=20261119-ds30') < page_html.index('ipad-viewport-debug.js?v=20261119-ds30')
-for must in ('screen.orientation', 'window.orientation', 'navigator.maxTouchPoints>1', 'requestAnimationFrame(reconcile)', '--li-safari-physical-width', '--li-safari-physical-height', 'li-safari-landscape-recovery', 'width=device-width,initial-scale=1,viewport-fit=cover'):
+for must in ('screen.orientation', 'window.orientation', 'navigator.maxTouchPoints>1', 'setTimeout(reconcile,0)', '--li-safari-physical-width', '--li-safari-physical-height', 'li-safari-landscape-recovery', 'width=device-width,initial-scale=1,viewport-fit=cover'):
     assert must in rotation_js, f"Safari recovery missing: {must}"
 for forbid in ('window.location.reload(', 'localStorage.setItem(', 'indexedDB.deleteDatabase(', 'sessionStorage.clear('):
     assert forbid not in rotation_js, f"Rotation recovery must not touch persistence/reload: {forbid}"

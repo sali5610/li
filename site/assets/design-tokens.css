@@ -246,6 +246,7 @@
   --li-micro-guide-card-padding: 11px 10px;
   --li-micro-guide-card-padding-narrow: 10px 9px;
   --li-micro-guide-card-top-gap: 18px;
+  --li-micro-guide-column-gap-14: 14px;
   /* 4px spacing grid; suffix equals grid index, not literal pixels. */
   --li-space-0: 0px;
   --li-space-1: 4px;

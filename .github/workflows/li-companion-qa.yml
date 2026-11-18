@@ -20,3 +20,5 @@ jobs:
         run: python3 tools/validate_site.py
       - name: Check adaptive study mode mapping and check-in actions
         run: node tools/checkin_adaptation_regression.mjs
+      - name: Parse the interactive Spellbook runtime
+        run: node --check site/assets/spell-practice.js

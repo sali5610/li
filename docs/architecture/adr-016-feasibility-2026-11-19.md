@@ -107,3 +107,21 @@ Local isolated Node suite ran 8/8 synthetic tests PASS before the PR. PR #104 Gi
 - The first actual-app fixture attempt timed out because an export click triggered a real browser download; fixed the test harness by suppressing the anchor download gesture while still capturing the Blob. It was an isolated browser-harness issue, **not evidence that the production app hangs**.
 
 **Interpretation / next gate:** A v2 backup *design* has browser E2E feasibility evidence, but no production integration, schema1 migration into the live app, persistent file-download roundtrip on real iPhone/iPad, cross-tab atomicity, real quota/eviction or cloud identity test. A SHA-256 digest detects accidental/tampered payload mismatch but is **not an authenticity guarantee against an attacker who can regenerate the hash**. New v2 restoration must keep the explicit user choice and preview; old schema1 files cannot recover data they never held. No automatic production rollout from this PR. G3 remains OPEN and paid spend +0 VND.
+
+## 7. Two-origin portability test / test-data context (2026-11-19)
+
+**Human PO usage clarification:** current personal use of li. so far is **testing the app, not real course study**. This lowers the user-impact of disposable *synthetic* fixtures but is **not blanket permission to delete browser state on the actual deployed site**. Keep all new migration tests isolated on localhost/temporary browser profiles. Future real learners must have complete portable backup before any storage/origin change.
+
+[GitHub Actions step16 run #44393039411](https://github.com/sali5610/li/actions/runs/44393039411) **SUCCESS**: new fixture starts two separate localhost HTTP servers on ports 8767 and 8768. A real Chrome 157 parent page holds fake localStorage records on 8767 and uses the browser-native WebCrypto backup format. The cross-origin iframe at 8768 cannot be read directly (actual same-origin policy); it receives **explicit JSON transport via strict target origin + postMessage source/origin checks**, imports fake records independently, and reports sanitized test results. Real rendered DOM shows **5/5 PASS**:
+
+1. Different-origin direct localStorage read blocked.
+2. Destination begins with independent empty li. namespace.
+3. Explicit JSON transfer restores fake library, journal enablement, journal, spaced due schedule, lesson progress, study mode exactly.
+4. Source remains unchanged.
+5. Legacy schema1 partial backup merges into destination without deleting independent study records or consent.
+
+This is evidence that **portable JSON can move between distinct web origins**; it is *not* proof of production Vercel → GitHub transfer, Safari Files picker, iCloud sync, GDPR compliance, multi-tab transaction safety, account login or durable cloud backup. The transport is a **test-only harness**; shipping the postMessage bridge is not proposed. In a future actual product UI, the user should explicitly export/download then select a file on the new origin with meaningful preview/consent. Never infer that a backup schema1 missing original records can restore them.
+
+**Comparative frontend G3 spike:** independent [Draft PR #109](https://github.com/sali5610/li/pull/109) built equal-flow Vanilla, React, Lit learning prototypes; initial [Actions #44392646674](https://github.com/sali5610/li/actions/runs/44392646674) SUCCESS all 3 with 30 attempts each and two reloads. One-screen gzip JS was 2,951 bytes Vanilla; 61,745 React; 8,311 Lit. These are tiny-case bundle footprints, not production performance or long-term maintenance proof. Keep source and decisions separate: this PR #104 covers data safety, PR #109 frontend architecture. No stack approved.
+
+**G3 pending:** actual product-specific requirements for login/private access and device sync; schema1→v2 production integration in a *separate* reviewed PR; real Safari/PWA device testing; scoped screen migration and dependency/lockfile hygiene; RLS/Auth if cloud selected; migration rollback G3 signoff.

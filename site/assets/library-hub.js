@@ -87,6 +87,9 @@ function renderLessonRows(root,limit){
   add(body,"strong","",info.title);
   add(body,"p","small",info.id+" · "+lessonStatus(info)+(item.legacy?" · Bài có dữ liệu đã lưu":" · Mở "+formatDate(item.visitedAt)));
   btn(row,getLessonState(info.id)?.submitted?"Mở lại":"Tiếp tục",item.route,"library-text-link library-open-lesson");
+  const save=add(row,"button","library-text-link library-lesson-save","Lưu bài");
+  save.type="button";save.dataset.liBookmarkKind="lesson";save.dataset.liBookmarkId=info.id;
+  save.setAttribute("aria-pressed",String(Boolean(window.liBookmarks?.isSaved("lesson",info.id))));
  }
 }
 function renderCases(){
@@ -114,27 +117,56 @@ function renderBookmarks(){
  const root=$("li-saved-questions"),placeholder=$("li-bookmarks-empty");
  if(!root)return;
  root.replaceChildren();
- const items=savedQuestions.slice().sort((a,b)=>(Date.parse(b.savedAt)||0)-(Date.parse(a.savedAt)||0));
- if(placeholder)placeholder.hidden=items.length>0;
- for(const item of items){
-  const found=scenarios.findIndex(x=>x.question===item.question||x.previousQuestion===item.question||(x.key&&x.key===item.scenarioKey));
+ // Legacy question bookmarks and new typed lesson/case bookmarks share one list.
+ const currentSaved=typeof savedContent!=="undefined"?savedContent:[];
+ const knownCases={"sampling-bias-90":{title:"90% trả lời hài lòng · Phản Chứng",route:"case"}};
+ const lessonById=Object.fromEntries(Object.entries(LESSONS).map(([route,meta])=>[meta.id,{...meta,route}]));
+ const all=[
+  ...savedQuestions.map(x=>({kind:"question",savedAt:x.savedAt,record:x})),
+  ...currentSaved.filter(x=>x&&((x.type==="case"&&knownCases[x.id])||(x.type==="lesson"&&lessonById[x.id]))).map(x=>({kind:x.type,savedAt:x.savedAt,record:x}))
+ ].sort((a,b)=>(Date.parse(b.savedAt)||0)-(Date.parse(a.savedAt)||0));
+ if(placeholder)placeholder.hidden=all.length>0;
+ for(const entry of all){
   const row=add(root,"div","path-item library-list-item");
   const body=add(row,"div","library-list-copy");
-  add(body,"strong","",found>=0?scenarios[found].question:item.question);
-  add(body,"p","small","Đã lưu · "+formatDate(item.savedAt));
-  
-  const button=add(row,"button","library-text-link library-open-lesson","Mở lại");
-  button.type="button";
-  if(found<0){
-   button.disabled=true;
-   button.textContent="Chưa có điểm đến";continue;
+  let route=null,questionIndex=-1;
+  if(entry.kind==="question"){
+   const item=entry.record;
+   questionIndex=scenarios.findIndex(x=>x.question===item.question||x.previousQuestion===item.question||(x.key&&x.key===item.scenarioKey));
+   add(body,"strong","",questionIndex>=0?scenarios[questionIndex].question:item.question);
+   add(body,"p","small","CÂU HỎI · "+formatDate(entry.savedAt));
+   if(questionIndex>=0)route=scenarios[questionIndex].type==="hook"?scenarios[questionIndex].lessonRoute:"research";
+  }else{
+   const found=entry.kind==="case"?knownCases[entry.record.id]:lessonById[entry.record.id];
+   if(!found)continue;
+   add(body,"strong","",found.title);
+   add(body,"p","small",(entry.kind==="lesson"?"BÀI HỌC":"CASE · PHẢN CHỨNG")+" · "+formatDate(entry.savedAt));
+   route=found.route;
   }
-  button.textContent=scenarios[found].type==="hook"?"Mở bài học":"Mở Khảo Chứng";
-  button.addEventListener("click",()=>{
-   qIndex=found;renderMirrorItem();
-   const scenario=scenarios[qIndex];
-   if(scenario.type==="hook"&&!$("page-"+scenario.lessonRoute)){toast("Bài học chưa thể mở.");return;}
-   navigate(scenario.type==="hook"?scenario.lessonRoute:"research");
+  const actions=add(row,"div","library-bookmark-actions");
+  const open=add(actions,"button","library-text-link library-open-lesson",entry.kind==="question"&&questionIndex>=0&&scenarios[questionIndex].type==="hook"?"Mở bài học":"Mở lại");
+  open.type="button";
+  if(!route){open.disabled=true;open.textContent="Chưa có điểm đến";}
+  else if(entry.kind==="question"){
+   open.addEventListener("click",()=>{
+    const idx=scenarios.findIndex(x=>x.question===entry.record.question||x.previousQuestion===entry.record.question||(x.key&&x.key===entry.record.scenarioKey));
+    if(idx<0){toast("Câu hỏi không còn điểm đến.");return;}
+    qIndex=idx;renderMirrorItem();
+    const target=scenarios[idx].type==="hook"?scenarios[idx].lessonRoute:"research";
+    if(!$("page-"+target)){toast("Chưa mở được bài học.");return;}
+    navigate(target);
+   });
+  }else open.dataset.page=route;
+  const remove=add(actions,"button","library-text-link library-unsave-link","Bỏ lưu");
+  remove.type="button";
+  remove.addEventListener("click",()=>{
+   if(entry.kind!=="question"){window.liBookmarks?.toggle(entry.kind,entry.record.id);return;}
+   if(liStorageError){toast("Không đọc được dữ liệu lưu, chưa thay đổi Dấu Trang.");return;}
+   const index=savedQuestions.indexOf(entry.record);
+   if(index<0)return;
+   savedQuestions.splice(index,1);
+   if(!liWriteState()){savedQuestions.splice(index,0,entry.record);toast("Không bỏ lưu được, Dấu Trang vẫn giữ nguyên.");return;}
+   renderBookmarks();toast("Đã bỏ lưu câu hỏi.");
   });
  }
 }
@@ -142,10 +174,12 @@ function renderHome(){
  renderLessonRows($("li-library-latest-lesson"),1);
  renderCases();
  renderIdeas();
+ window.liBookmarks?.refresh();
 }
 function renderResume(){
  renderLessonRows($("li-lesson-history"),40);
  renderBookmarks();
+ window.liBookmarks?.refresh();
 }
 function renderCollection(){
  const root=$("li-collection-list");if(!root)return;root.replaceChildren();

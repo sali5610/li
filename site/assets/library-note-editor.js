@@ -30,6 +30,12 @@ function openDetail(type,id){
  const arr=listFor(type);
  if(!arr||!arr.some(x=>x.id===id))return false;
  active={type,id};
+ const origin=document.querySelector?.("section.page.active")?.id;
+ const dest=origin==="page-library"?"library":origin==="page-resume"?"resume":"collection";
+ const back=$("li-note-back");
+ if(back)back.dataset.page=dest;
+ const label=$("li-note-back-label");
+ if(label)label.textContent=dest==="resume"?"Quay lại":dest==="library"?"Tủ Riêng":"Bộ sưu tập";
  $("li-note-editor").hidden=true;
  navigate("noteDetail");
  renderDetail();

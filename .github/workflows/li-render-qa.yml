@@ -57,7 +57,7 @@ jobs:
             result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1600,1050 --virtual-time-budget=22000 --dump-dom "$url" 2>/tmp/li-i18n-stderr.log || true)"
             if [[ "$result" != *'<pre id="result">LI_I18N_PASS '* ]]; then
               echo "FAIL bilingual journey at ${width}px"
-              echo "$result" | grep -E 'LI_I18N_(PASS|FAIL|PENDING)' | tail -1 | cut -c1-12000 || true
+              echo "$result" | grep -F '<pre id="result">' | tail -1 | cut -c1-14000 || true
               cat /tmp/li-i18n-stderr.log | tail -20 || true
               exit 1
             fi

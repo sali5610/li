@@ -81,7 +81,7 @@ html.li-ipad-home-canvas .app.home-focus #page-home .hero::before {
  background-repeat:no-repeat!important;
 }
 :root.li-ipad-home-portrait {
- --li-ipad-active-mode:portrait;
+ --li-ipad-active-mode: portrait;
  --li-type-headline:var(--li-device-ipad-portrait-type-headline);
  --li-leading-headline:var(--li-device-ipad-portrait-leading-headline);
  --li-type-title-md:var(--li-device-ipad-portrait-type-title-md);
@@ -108,7 +108,7 @@ html.li-ipad-home-canvas .app.home-focus #page-home .hero::before {
  --li-current-icon-size:var(--li-device-ipad-portrait-icon-size);
 }
 :root.li-ipad-home-landscape {
- --li-ipad-active-mode:landscape;
+ --li-ipad-active-mode: landscape;
  --li-type-headline:var(--li-device-ipad-landscape-type-headline);
  --li-leading-headline:var(--li-device-ipad-landscape-leading-headline);
  --li-type-title-md:var(--li-device-ipad-landscape-type-title-md);

@@ -60,7 +60,8 @@
      const landscapeBroken=h.landscape&&(
        current<target-80||visualWidth<target-80||
        (heroRect&&heroRect.width>0&&heroRect.width<target-80)||
-       rootHeight>visualHeight+100||modeToken!=="landscape");
+       rootHeight>visualHeight+100||modeToken!=="landscape"||
+       !window.matchMedia("(orientation: landscape)").matches);
      const portraitBroken=!h.landscape&&current>target+80&&zoom<0.94;
      root.classList.toggle("li-safari-landscape-recovery",!!landscapeBroken);
      root.classList.toggle("li-safari-portrait-recovery",!!portraitBroken);

@@ -168,7 +168,7 @@ $("li-note-save").addEventListener("click",()=>{
 });
 $("li-note-delete").addEventListener("click",()=>{
  const note=current();if(!note)return;
- if(!window.confirm("Xóa vĩnh viễn ghi chép này và toàn bộ lịch sử phiên bản trên thiết bị? Không thể hoàn tác."))return;
+ if(!window.confirm("Xóa ghi chép và toàn bộ lịch sử phiên bản trên thiết bị? Bạn có thể Hoàn tác ngay sau khi xóa."))return;
  const arr=listFor(active.type),index=arr.findIndex(x=>x.id===note.id);
  if(index<0)return;
  arr.splice(index,1);
@@ -177,7 +177,13 @@ $("li-note-delete").addEventListener("click",()=>{
  window.liLibraryShelf?.renderHome();
  window.liLibraryShelf?.renderCollection();
  navigate("collection");
- toast("Đã xóa ghi chép và lịch sử phiên bản.");
+ toast("Đã xóa ghi chép và lịch sử phiên bản.",{undo:()=>{
+  if(liStorageError)return false;
+  if(arr.some(x=>x.id===note.id))return true;
+  const at=Math.min(index,arr.length);arr.splice(at,0,note);
+  if(!liWriteState()){arr.splice(arr.indexOf(note),1);return false;}
+  window.liLibraryShelf?.renderHome();window.liLibraryShelf?.renderCollection();return true;
+ }});
 });
 window.liNotes=Object.freeze({openDetail,renderDetail});
 })();

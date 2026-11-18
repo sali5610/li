@@ -135,3 +135,91 @@
  #page-resume .library-bookmark-actions{width:100%}
  #page-resume .library-bookmark-actions .library-text-link{width:auto}
 }
+
+/* UX-IA-07 · Independent icon utilities for bookmark/unsave and destructive delete.
+   Icon state is visual; accessible name is always on the button itself. */
+.library-heading-with-utility{
+ display:flex;align-items:flex-start;justify-content:space-between;
+ gap:var(--li-space-4);min-width:0;
+}
+.library-heading-with-utility .display-title{
+ flex:1;min-width:0;overflow-wrap:anywhere;margin:var(--li-space-0);
+}
+.library-icon-utility{
+ display:inline-flex;align-items:center;justify-content:center;
+ flex:none;align-self:flex-start;
+}
+.library-icon-utility[hidden]{display:none!important}
+.library-icon-action{
+ display:inline-grid;place-items:center;flex:none;
+ width:var(--li-space-12);height:var(--li-space-12);min-width:var(--li-space-12);min-height:var(--li-space-12);
+ padding:var(--li-space-2);
+ border:1px solid var(--rule);border-radius:var(--li-space-2);
+ background:var(--paper);color:var(--moss);cursor:pointer;
+ box-sizing:border-box;
+}
+.library-icon-action svg,
+.library-icon-action .lucide{
+ width:var(--li-space-5);height:var(--li-space-5);display:block;flex:none;
+ stroke:currentColor;stroke-width:1.8;
+}
+.library-icon-action:hover{background:var(--cream);border-color:var(--moss)}
+.library-icon-action:focus-visible{
+ outline:2px solid var(--li-color-focus-ring);outline-offset:var(--li-space-1);
+}
+.library-icon-action:disabled{color:var(--muted);cursor:default}
+.library-icon-action[aria-pressed="true"]{
+ color:var(--moss);border-color:var(--moss);
+ background:var(--cream);
+}
+.library-icon-action[aria-pressed="true"] svg{
+ fill:var(--moss);stroke:var(--moss);
+}
+.library-icon-action[aria-pressed="true"] svg path{fill:var(--moss)}
+.library-lesson-heading .library-icon-utility{margin-top:var(--li-space-1)}
+#page-case .library-heading-with-utility{margin-bottom:var(--li-space-5)}
+#page-noteDetail .library-note-head{
+ display:flex;align-items:flex-start;justify-content:space-between;gap:var(--li-space-4);
+}
+#page-noteDetail .library-danger-icon{color:var(--li-color-danger-fill)}
+#page-noteDetail .library-danger-icon:hover{
+ color:var(--li-color-danger-fill);border-color:var(--li-color-danger-fill);
+}
+#page-noteDetail .library-note-management{justify-content:flex-start}
+.mirror-titlebar{
+ display:flex;align-items:flex-start;justify-content:space-between;
+ gap:var(--li-space-3);min-width:0;
+}
+.mirror-titlebar .mirror-label{min-width:0}
+.mirror-bookmark-slot{margin-inline-start:auto}
+#page-library #li-library-latest-lesson .library-list-item,
+#page-resume .library-list-item{
+ display:grid;grid-template-columns:minmax(0,1fr) auto;
+ gap:var(--li-space-2) var(--li-space-4);
+ align-items:start;
+}
+#page-library #li-library-latest-lesson .library-list-item .library-list-copy,
+#page-resume .library-list-item .library-list-copy{
+ grid-column:1;grid-row:1;min-width:0;
+}
+#page-library #li-library-latest-lesson .library-list-item > .library-open-lesson,
+#page-resume #li-lesson-history .library-list-item > .library-open-lesson,
+#page-resume .library-list-item > .library-bookmark-actions{
+ grid-column:1;grid-row:2;justify-self:start;
+}
+#page-library #li-library-latest-lesson .library-list-item > .library-row-utility,
+#page-resume .library-list-item > .library-row-utility{
+ grid-column:2;grid-row:1;justify-self:end;
+ border-left:1px solid var(--rule);
+ padding-left:var(--li-space-3);
+}
+#page-resume .library-list-item .library-lesson-save{align-self:auto}
+@media(max-width:640px){
+ #page-resume .library-list-item > .library-bookmark-actions{
+  width:auto;
+ }
+ #page-library #li-library-latest-lesson .library-list-item > .library-open-lesson,
+ #page-resume .library-list-item > .library-open-lesson{
+  width:auto;
+ }
+}

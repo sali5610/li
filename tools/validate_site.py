@@ -741,7 +741,7 @@ assert 'ds12-horizontal-illustration .ds12-horizontal-media.figure img{width:100
 # UX-DS-15: Top Navigation is a component gallery family, NOT a silent change
 # to the approved live app Home shell or route history.
 topnavcss=(site/"assets"/"component-review-v5.css").read_text(encoding="utf-8")
-assert 'component-review-v5.css?v=20261118-ds20-coverage' in v3
+assert 'component-review-v5.css?v=20261119-ds21-olive-spec' in v3
 assert all('data-ds15-topvariant="'+x+'"' in v3 for x in ("logo","back","overlay"))
 assert v3.count('src="./assets/li-seal.svg?v=exact-header-s146"')>=2
 assert 'data-ds15-back aria-label="Quay lại màn trước"' in v3

@@ -216,7 +216,7 @@ svg.icon.sm{width:16px;height:16px}svg.icon.lg{width:22px;height:22px}
 /* Removed unused --gold/--accent/--line aliases; all paint values live in tokens.json. */
 body{background:var(--paper);padding:var(--li-space-0)}
 button,input,textarea,select{font:inherit}
-input,select{border:1px solid var(--rule);background:var(--cream);padding:var(--li-space-3);color:var(--ink)}
+input,select{border:1px solid var(--rule);background:var(--porcelain);padding:var(--li-space-3);color:var(--ink)}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--li-color-input-focus-ring);outline-offset:2px}
 button{transition:transform .13s,background .13s}
 button:focus-visible,a:focus-visible{outline:3px solid var(--li-color-general-focus-ring);outline-offset:3px}
@@ -285,7 +285,7 @@ button[data-page][aria-current=page]{text-decoration:none}
 .home-tile .tile-text{display:flex;flex-direction:column;align-items:flex-start;padding:var(--li-space-3);gap:var(--li-space-1)}
 .home-tile strong{font-family:var(--li-font-editorial);font-size:var(--li-type-title-lg);font-weight:600;line-height:1}
 .home-tile small{font-size:var(--li-type-caption);line-height:1.45;color:var(--muted)}
-.text-editor{width:100%;min-height:174px;resize:vertical;background:var(--cream);border:1px solid var(--rule);padding:var(--li-space-3)}
+.text-editor{width:100%;min-height:174px;resize:vertical;background:var(--porcelain);border:1px solid var(--rule);padding:var(--li-space-3)}
 body .modal{background:rgba(15,31,21,.89)}
 body .dialog{max-height:85svh;overflow-y:auto}
 .footer{margin:var(--li-space-8) auto;max-width:1180px}
@@ -1195,6 +1195,7 @@ width:70px!important;height:100px!important;left:3px!important;bottom:-3px!impor
    background-position has no visible effect. Tile a 32px rule to match
    the tokenized 32px writing line. First visible rule = 8 + 31 = 39px. */
 textarea,.notebook{
+  --li-writing-surface:var(--porcelain);
   display:block;
   box-sizing:border-box;
   max-width:100%;
@@ -1202,9 +1203,9 @@ textarea,.notebook{
   line-height:var(--li-notebook-line-height)!important;
   padding:var(--li-space-2) var(--li-space-3);
   color:var(--ink);
-  background-color:var(--cream)!important;
+  background-color:var(--li-writing-surface)!important;
   background-image:
-    linear-gradient(to bottom,var(--cream) 0 16px,transparent 16px),
+    linear-gradient(to bottom,var(--li-writing-surface) 0 16px,transparent 16px),
     linear-gradient(to bottom,transparent 0 31px,var(--li-color-notebook-rule) 31px 32px)!important;
   background-size:100% 16px,100% var(--li-notebook-line-height)!important;
   background-position:0 0,0 8px!important;
@@ -1213,6 +1214,7 @@ textarea,.notebook{
   -webkit-appearance:none;
   appearance:none;
 }
+textarea:disabled,.notebook:disabled{--li-writing-surface:var(--paper-2)}
 textarea::placeholder{color:var(--muted);opacity:.8}
 
 /* S133 · Header shared vertical alignment contract (mobile, tablet, desktop).

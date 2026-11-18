@@ -1,0 +1,29 @@
+name: Tàng Thư IA regression
+on:
+  pull_request:
+    paths:
+      - 'site/assets/catalog-*'
+      - 'site/index.html'
+      - 'tools/test_catalog_drilldown.cjs'
+      - '.github/workflows/tang-thu-ia.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/assets/catalog-*'
+      - 'site/index.html'
+      - 'tools/test_catalog_drilldown.cjs'
+jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax
+        run: |
+          node --check site/assets/catalog-curriculum-data.js
+          node --check site/assets/catalog-drilldown.js
+          node --check tools/test_catalog_drilldown.cjs
+      - name: Tàng Thư hierarchy and state tests
+        run: node tools/test_catalog_drilldown.cjs

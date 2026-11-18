@@ -1,0 +1,28 @@
+name: Assemble Home iPad source asset (one-time)
+on:
+  push:
+    branches:
+      - feat/home-device-scenes-20261119
+permissions:
+  contents: write
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Reassemble exact uploaded iPad JPEG and verify both images
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/li-home-ipad-parts/part-*.b64 | base64 --decode > site/assets/home-li-ipad-20261119.jpg
+          echo "c86aef27f02511c6d5b5cf21e38e27c7459a834a56f69c58ecbbddec1597acbd  site/assets/home-li-ipad-20261119.jpg" | sha256sum --check
+          echo "0cd92ec2cb0734e422004ae633440f12235469e191a7bc656f19332e7d5af068  site/assets/home-li-iphone-20261119.jpg" | sha256sum --check
+          rm -rf .github/li-home-ipad-parts
+          rm .github/workflows/li-home-assemble-once.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "assets(home): verify and assemble original iPad image"
+          git push origin HEAD:feat/home-device-scenes-20261119

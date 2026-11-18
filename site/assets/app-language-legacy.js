@@ -291,7 +291,7 @@ window.LI_LEGACY_EN={
   "Không rõ": "Not sure",
   "Nhật ký chưa có dữ liệu.": "No journal entries yet.",
   "Đã lưu câu hỏi.": "Question saved.",
-  "Lưu": "Done",
+  "Lưu": "Save",
   "Xóa": "Delete",
   "Hoàn tác": "Undo",
   "Không có dữ liệu": "No data",

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>li. bilingual runtime journey fixture</title><style>
+html,body{margin:0;padding:0;font:12px/1.5 monospace;background:#f1f0e9}
+iframe{display:block;border:0;width:var(--width,390px);height:880px}
+#result{white-space:pre-wrap;margin:12px;max-width:100%;overflow-wrap:anywhere}
+</style><script>document.documentElement.style.setProperty("--width",(Number(new URLSearchParams(location.search).get("w"))||390)+"px");</script>
+</head><body><iframe id="app" src="../site/index.html" title="li. actual runtime"></iframe>
+<pre id="result">LI_I18N_PENDING</pre>
+<script>
+"use strict";
+(()=>{
+ const iframe=document.getElementById("app"),out=document.getElementById("result");
+ let done=false;const checks=[],audit=[];
+ const record=(name,pass,detail="")=>checks.push({name,pass:!!pass,detail:String(detail).slice(0,300)});
+ const settle=()=>new Promise(resolve=>setTimeout(resolve,75));
+ const label=el=>el?.textContent?.replace(/\\s+/g," ").trim()||"";
+ const pass=()=>checks.every(x=>x.pass);
+ const finish=()=>{
+  if(done)return;done=true;
+  const data={width:iframe.contentWindow?.innerWidth,passed:checks.filter(x=>x.pass).length,total:checks.length,
+   failures:checks.filter(x=>!x.pass),audit};
+  out.textContent=(pass()?"LI_I18N_PASS ":"LI_I18N_FAIL ")+JSON.stringify(data);
+ };
+ iframe.addEventListener("load",async()=>{
+  try{
+   const w=iframe.contentWindow,d=iframe.contentDocument;
+   const by=id=>d.getElementById(id);
+   const current=()=>d.querySelector("section.page.active");
+   const change=async lng=>{w.liLanguage.set(lng);await settle();};
+   const route=async page=>{w.navigate(page,{focus:false,syncUrl:false});await settle();return current();};
+   record("Global locale runtime",!!w.liLanguage&&typeof w.navigate==="function");
+   await change("en");
+   record("English root language + title",d.documentElement.lang==="en"&&d.title.includes("Library of Knowledge"),d.title);
+   record("English keyboard drag instruction",by("laoly-fab")?.getAttribute("aria-description")?.startsWith("Drag to move Lão Lý"),by("laoly-fab")?.getAttribute("aria-description"));
+   const expectations={
+    home:["Mọi câu hỏi","Every question"],
+    catalog:["Tàng Thư","Library"],
+    guide:["Sổ Tay Thần Chú","Technique Handbook"],
+    library:["Tủ Riêng","My Shelf"],
+    resume:["Quay lại","Continue"],
+    collection:["Bộ sưu tập","Collection"],
+    dashboard:["Nhật Ký","Daily Journal"],
+    settings:["Cài đặt","Settings"],
+    search:["Tra Cứu","Search"],
+    capture:["Nhặt ý","Capture an idea"],
+    research:["Khảo Chứng","Investigate"],
+    case:["Phản Chứng","Test a claim"]
+   };
+   for(const [page,labels] of Object.entries(expectations)){
+    const el=await route(page);
+    const heading=label(el?.querySelector("h1"));
+    // Some pages use the first editorial title in addition to an in-scene headline.
+    const expected=labels[1],old=labels[0];
+    record(page+" EN heading",heading.includes(expected),heading+" | expected "+expected);
+    const residuals=[...el?.querySelectorAll("button,[aria-label],input,textarea,h1,h2,h3,p,.kicker")||[]]
+      .filter(x=>x.getClientRects().length>0)
+      .map(x=>({tag:x.tagName,text:label(x).slice(0,90),aria:x.getAttribute("aria-label")||"",placeholder:x.getAttribute("placeholder")||""}))
+      .filter(x=>/[À-ỹ]/u.test(x.text+" "+x.aria+" "+x.placeholder))
+      .slice(0,18);
+    const over=d.documentElement.scrollWidth-w.innerWidth;
+    audit.push({route:page,old,expected,overflow:over,residuals});
+    record(page+" horizontal overflow",over<=4,over+"px");
+   }
+   await route("catalog");
+   const host=d.querySelector("#page-catalog .section-shell");
+   const step=async kind=>{
+    const button=host.querySelector('button[data-catalog-kind="'+kind+'"]');
+    if(!button)return false;
+    button.click();await settle();return true;
+   };
+   record("Catalog root group cards",host.querySelectorAll(".catalog-card").length===8);
+   record("Catalog group drill",await step("open-group"),label(host.querySelector("h1")));
+   record("Catalog group title in English",!label(host.querySelector("h1")).includes("Công nghệ"),label(host.querySelector("h1")));
+   record("Catalog field drill",await step("open-field"));
+   record("Catalog field drill",await step("open-course"));
+   const progress=label(host.querySelector(".catalog-progress"));
+   record("Catalog progress labels English",!progress.includes("bài đã hoàn thành")&&!progress.includes("bài đã phát hành"),progress.slice(0,160));
+   record("Catalog lesson drill",await step("open-lesson"));
+   const unpublished=label(host.querySelector(".catalog-draft-content"));
+   record("Unpublished course content bilingual",!unpublished.includes("Chưa có chương")&&!unpublished.includes("Nội dung đang"),unpublished.slice(0,170));
+   await route("home");
+   by("checkin")?.click();await settle();
+   const dialog=by("checkin-modal");
+   record("English Check-in dialog",dialog?.classList.contains("open")&&label(dialog).includes("How are you feeling physically today?"),label(dialog).slice(0,250));
+   record("Check-in dialog horizontal fit",!dialog||dialog.querySelector(".dialog")?.getBoundingClientRect().right<=w.innerWidth+1);
+   w.closeModal?.("checkin-modal");
+   await route("settings");
+   record("Global language setting controls",d.querySelectorAll("[data-li-app-locale]").length===2);
+   await change("vi");
+   record("Vietnamese round-trip title",d.documentElement.lang==="vi"&&d.title.includes("Thư viện tri thức"),d.title);
+   record("Vietnamese drag instruction restored",by("laoly-fab")?.getAttribute("aria-description")?.startsWith("Kéo để di chuyển"),by("laoly-fab")?.getAttribute("aria-description"));
+   const input=d.getElementById("global-search");
+   await route("search");
+   if(input){input.value="Bút Ký của riêng tui";await change("en");record("Search input remains untouched",input.value==="Bút Ký của riêng tui",input.value);}
+   record("Switching VI↔EN retains app setting",w.localStorage.getItem("li.app.locale.v1")==="en");
+  }catch(error){record("Fixture runtime",false,error.stack||error.message);}
+  finish();
+ });
+ setTimeout(()=>{if(!done){record("Fixture timeout",false,"15s");finish();}},15000);
+})();
+</script></body></html>

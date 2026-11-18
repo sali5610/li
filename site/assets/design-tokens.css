@@ -195,6 +195,13 @@
   --li-weight-750: 750;
   --li-weight-800: 800;
   --li-weight-900: 900;
+  --li-weight-100: 100;
+  --li-weight-200: 200;
+  --li-weight-300: 300;
+  --li-weight-500: 500;
+  --li-weight-550: 550;
+  --li-weight-850: 850;
+  --li-weight-950: 950;
   --li-effect-alpha-01: rgba(0,0,0,.2);
   --li-effect-alpha-02: rgba(0,15,6,.27);
   --li-effect-alpha-03: rgba(108,159,105,.052);

@@ -311,13 +311,13 @@ const qs=[
 "Có phải ai cũng học tốt nhất bằng một cách giống nhau?",
 "Tại sao nhớ một câu chuyện không giống như xem lại video?"
 ];
-let qIndex=0, toastTimeout, toastActive=false;
+let qIndex=0, toastTimeout, toastActive=false, toastUndoActive=false;
 const toastQueue=[];
-/* Shared snackbar: sequential messages preserve every destructive action's Undo window. */
+/* Keep destructive Undo available; non-destructive notices replace older notices. */
 function showNextToast(){
  const e=document.getElementById("toast"), item=toastQueue.shift();
- if(!item){e.hidden=true;toastActive=false;return;}
- toastActive=true;
+ if(!item){e.hidden=true;toastActive=false;toastUndoActive=false;return;}
+ toastActive=true;toastUndoActive=Boolean(item.undo);
  const label=document.createElement("span");label.className="li-snackbar-message";label.textContent=item.message;
  e.replaceChildren(label);
  if(item.undo){
@@ -337,7 +337,16 @@ function showNextToast(){
  toastTimeout=setTimeout(()=>{e.hidden=true;toastActive=false;showNextToast();},item.undo?8000:2600);
 }
 function toast(message,{undo}={}){
- toastQueue.push({message:String(message),undo:typeof undo==="function"?undo:null});
+ const item={message:String(message),undo:typeof undo==="function"?undo:null};
+ if(toastActive&&!toastUndoActive&&!item.undo){
+  /* Preserve the expected instant feedback for rapid Check-ins and filters. */
+  clearTimeout(toastTimeout);
+  document.getElementById("toast").hidden=true;
+  toastActive=false;
+  toastQueue.unshift(item);
+  showNextToast();return;
+ }
+ toastQueue.push(item);
  if(!toastActive)showNextToast();
 }
 

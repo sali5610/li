@@ -91,7 +91,10 @@ const labels={overload:"Quá tải",recover:"Hồi trí",start:"Vào nhịp",foc
 const names=["Bài học","Vấn đề","Input"];
 const order=["overload","recover","start","focus"];
 const shortDays=["T2","T3","T4","T5","T6","T7","CN"];
-let year=2026,month=11,selected=18,windowStart=15;
+// Initialize from the viewer's actual local calendar date; never freeze "today" to demo data.
+const initialToday=new Date();
+let year=initialToday.getFullYear(),month=initialToday.getMonth()+1,selected=initialToday.getDate(),windowStart=1;
+const isToday=d=>{const now=new Date();return year===now.getFullYear()&&month===now.getMonth()+1&&d===now.getDate();};
 const pad=n=>String(n).padStart(2,"0");
 const daysInMonth=()=>new Date(year,month,0).getDate();
 const dayKey=d=>year+"-"+pad(month)+"-"+pad(d);
@@ -114,6 +117,7 @@ function alignWindow(day){
  if(enclosing!==undefined){windowStart=enclosing;return;}
  windowStart=starts.reduce((best,s)=>Math.abs(s-day)<Math.abs(best-day)?s:best,starts[0]);
 }
+alignWindow(selected);
 function draw(){
  const n=daysInMonth();
  q("#ds11-month").textContent=new Intl.DateTimeFormat("vi-VN",{month:"long",year:"numeric"}).format(new Date(year,month-1,1));
@@ -132,11 +136,12 @@ function draw(){
   const record=demoData(d);records.push(record);
   const b=document.createElement("button");b.type="button";b.className="ds11-date";b.textContent=String(d);
   b.dataset.day=String(d);
+  b.dataset.today=String(isToday(d));
   if(record)b.dataset.mode=record.mode;
   b.dataset.window=String(d>=windowStart&&d<windowStart+7);
   b.dataset.selected=String(d===selected);
   b.setAttribute("aria-pressed",String(d===selected));
-  b.setAttribute("aria-label",dayKey(d)+": "+(record?labels[record.mode]+", "+record.parts.reduce((a,x)=>a+x,0)+" hoạt động mẫu":"không có dữ liệu mẫu"));
+  b.setAttribute("aria-label",dayKey(d)+(isToday(d)?" (hôm nay)":"")+": "+(record?labels[record.mode]+", "+record.parts.reduce((a,x)=>a+x,0)+" hoạt động mẫu":"không có dữ liệu mẫu"));
   b.addEventListener("click",()=>{selected=d;alignWindow(d);draw();});
   q("#ds11-calendar").append(b);
  }
@@ -147,8 +152,8 @@ function draw(){
  for(let d=windowStart;d<=ends;d++){
   const r=records[d-1],total=r?r.parts.reduce((a,b)=>a+b,0):null;
   const button=document.createElement("button");button.type="button";button.className="ds11-bar-cell";
-  button.dataset.day=String(d);button.setAttribute("aria-pressed",String(d===selected));
-  button.setAttribute("aria-label",d+"/"+month+": "+(r?names.map((name,i)=>name+" "+r.parts[i]).join(", "):"chưa có dữ liệu mẫu"));
+  button.dataset.day=String(d);button.dataset.today=String(isToday(d));button.setAttribute("aria-pressed",String(d===selected));
+  button.setAttribute("aria-label",d+"/"+month+(isToday(d)?" (hôm nay)":"")+": "+(r?names.map((name,i)=>name+" "+r.parts[i]).join(", "):"chưa có dữ liệu mẫu"));
   const count=document.createElement("span");count.className="ds11-bar-sum";count.textContent=total===null?"—":String(total);button.append(count);
   const track=document.createElement("span");track.className="ds11-bar-track";track.setAttribute("aria-hidden","true");
   if(r)r.parts.forEach((value,i)=>{
@@ -172,6 +177,13 @@ function moveMonth(delta){
  const date=new Date(year,month-1+delta,1);year=date.getFullYear();month=date.getMonth()+1;
  selected=1;windowStart=1;draw();
 }
+function returnToday(){
+ const now=new Date();
+ year=now.getFullYear();month=now.getMonth()+1;selected=now.getDate();
+ alignWindow(selected);draw();
+}
+q("#ds11-month-today")?.addEventListener("click",returnToday);
+q("#ds11-week-today")?.addEventListener("click",returnToday);
 q("#ds11-month-prev")?.addEventListener("click",()=>moveMonth(-1));
 q("#ds11-month-next")?.addEventListener("click",()=>moveMonth(1));
 function moveWeek(delta){
@@ -182,4 +194,14 @@ function moveWeek(delta){
 q("#ds11-week-prev")?.addEventListener("click",()=>moveWeek(-1));
 q("#ds11-week-next")?.addEventListener("click",()=>moveWeek(1));
 draw();
+// All four horizontal cards share one surface switch for direct comparison.
+all("[data-ds12-card-mode]").forEach(button=>button.addEventListener("click",()=>{
+ const variant=button.dataset.ds12CardMode;
+ all("[data-ds12-card-mode]").forEach(x=>x.setAttribute("aria-pressed",String(x===button)));
+ all("[data-ds12-horizontal-card]").forEach(card=>{
+  card.classList.toggle("ds12-variant-secondary",variant==="secondary");
+  card.classList.toggle("ds12-variant-dark",variant==="dark");
+ });
+ say("Horizontal cards: "+variant+" · không ghi dữ liệu.");
+}));
 })();

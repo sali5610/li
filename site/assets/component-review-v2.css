@@ -76,6 +76,7 @@
    The first visible rule is 39px from the top (8+31); no fake CSS stripes. */
 .ds-control textarea.ds-notebook{
   --li-review-notebook-line:var(--li-space-8);
+  --ds12-notebook-surface:var(--white);
   font-family:var(--li-font-ui);
   display:block;
   box-sizing:border-box;
@@ -83,9 +84,9 @@
   min-height:calc(var(--li-space-24) * 2);
   line-height:var(--li-review-notebook-line)!important;
   padding:var(--li-space-2) var(--li-space-3);
-  background-color:var(--cream)!important;
+  background-color:var(--ds12-notebook-surface)!important;
   background-image:
-    linear-gradient(to bottom,var(--cream) 0 16px,var(--li-review-transparent) 16px),
+    linear-gradient(to bottom,var(--ds12-notebook-surface) 0 16px,var(--li-review-transparent) 16px),
     linear-gradient(to bottom,var(--li-review-transparent) 0 31px,var(--li-color-notebook-rule) 31px 32px)!important;
   background-size:100% 16px,100% var(--li-review-notebook-line)!important;
   background-position:0 0,0 var(--li-space-2)!important;
@@ -95,7 +96,8 @@
   appearance:none;
 }
 .ds-control textarea.ds-notebook:disabled{
-  background-color:var(--cream)!important;
+  --ds12-notebook-surface:var(--paper-2);
+  background-color:var(--ds12-notebook-surface)!important;
   opacity:.55;
 }
 /* Comparison, not approval: both light paper and the live Home green speech style. */

@@ -1,0 +1,106 @@
+/* UX-DS-12 · PO review variants and interaction affordances.
+   G2 palette remains a candidate. These examples never persist personal data. */
+:root{--ds12-shadow:4px 4px 0 var(--wood)}
+/* Compact 4-tab nav; keep each target at least 48px and the active sand pill. */
+.ds-tabs{padding:var(--li-space-1);gap:var(--li-space-1)}
+.ds-tabs button{min-height:52px;padding:var(--li-space-1);gap:0}
+.ds-tabs .ds-tab-icon{height:25px;width:44px}
+.ds-tabs .ds-tab-icon svg.lucide{width:20px;height:20px}
+/* Card surfaces: same anatomy, three visual roles across all card families. */
+.ds12-variant-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--li-space-5);margin-top:var(--li-space-5)}
+:is(.ds-method,.ds-large,.ds-image-card,.ds12-horizontal-card).ds12-variant-secondary{
+ background:var(--cream);border:1px solid var(--moss);box-shadow:var(--ds11-no-shadow)!important;
+}
+:is(.ds-method,.ds-large,.ds-image-card,.ds12-horizontal-card).ds12-variant-dark{
+ background:var(--forest);color:var(--cream);border:1px solid var(--sage);box-shadow:var(--ds11-no-shadow)!important;
+}
+.ds12-variant-dark :is(h3,h4,p,.ds-original,.ds-kicker,.ds-purpose,.ds-end,.ds-eyebrow,.meta,.meta span,.foot small,.ds12-card-category,.ds12-horiz-footer){
+ color:var(--cream)!important;
+}
+.ds12-variant-dark .ds-link{color:var(--sage)!important}
+.ds12-variant-dark .ds-large .foot,.ds-large.ds12-variant-dark .foot{border-color:var(--sage)}
+.ds12-variant-dark .ds12-horizontal-media.icon{background:var(--moss-2);color:var(--cream)}
+.ds12-variant-secondary .ds12-horizontal-media.icon{background:var(--paper-2)}
+/* No backplate behind transparent illustrative artwork, in either card orientation. */
+.ds-image-character .ds-image-frame.figure,
+.ds-image-character.ds12-variant-dark .ds-image-frame.figure,
+.ds12-horizontal-media.figure{background:var(--ds11-clear)!important}
+.ds-image-character .ds-image-frame.figure{padding:var(--li-space-4)}
+.ds-image-character .ds-image-frame.figure img{object-fit:contain}
+.ds12-horizontal-stack{display:grid;gap:var(--li-space-4);margin-top:var(--li-space-4)}
+.ds12-variant-controls{display:flex;align-items:center;flex-wrap:wrap;gap:var(--li-space-2);margin-top:var(--li-space-4)}
+.ds12-variant-controls button{min-height:44px;border:1px solid var(--moss);padding:var(--li-space-2) var(--li-space-3);background:var(--cream);color:var(--moss);font-size:var(--li-type-support);font-weight:700;cursor:pointer}
+.ds12-variant-controls button[aria-pressed="true"]{background:var(--moss);color:var(--cream)}
+.ds12-variant-controls button:focus-visible{outline:3px solid var(--li-color-focus-ring);outline-offset:2px}
+.ds12-horizontal-card{display:grid;grid-template-columns:minmax(0,120px) minmax(0,1fr);min-width:0;min-height:142px;border:1px solid var(--moss);background:var(--cream);box-shadow:var(--ds12-shadow);overflow:hidden}
+.ds12-horizontal-card.ds12-no-media{grid-template-columns:minmax(0,1fr)}
+.ds12-horizontal-media{position:relative;display:grid;place-items:center;min-width:0;overflow:hidden;border-right:1px solid var(--rule)}
+.ds12-horizontal-media.photo img{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center}
+.ds12-horizontal-media.figure{padding:var(--li-space-3)}
+.ds12-horizontal-media.figure img{display:block;width:100%;max-height:116px;object-fit:contain}
+.ds12-horizontal-media.icon{background:var(--paper-2);color:var(--moss)}
+.ds12-horizontal-media.icon svg.lucide{width:32px;height:32px}
+.ds12-horizontal-copy{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:var(--li-space-2);min-width:0;padding:var(--li-space-4)}
+.ds12-horizontal-copy h3{font:700 var(--li-type-title-sm)/var(--li-leading-title-sm) var(--li-font-editorial);margin:0}
+.ds12-horizontal-copy p{font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);margin:0;overflow-wrap:anywhere}
+.ds12-card-category{font:800 var(--li-type-caption)/var(--li-leading-caption) var(--li-font-ui);letter-spacing:.06em;color:var(--wood)}
+.ds12-horiz-footer{display:inline-flex;align-items:center;gap:var(--li-space-1);margin-top:var(--li-space-1);font-size:var(--li-type-support);color:var(--moss);font-weight:700}
+.ds12-horiz-footer svg.lucide{width:16px;height:16px}
+/* Tag chips communicate category; they are not filter controls. */
+.ds12-tag-row{display:flex;align-items:center;flex-wrap:wrap;gap:var(--li-space-2);margin-top:var(--li-space-4)}
+.ds12-tag{display:inline-flex;align-items:center;justify-content:center;gap:var(--li-space-1);padding:var(--li-space-1) var(--li-space-3);min-height:32px;border:1px solid var(--moss);border-radius:999px;background:var(--paper-2);color:var(--moss);font:700 var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);cursor:default}
+.ds12-tag.secondary{background:var(--cream);box-shadow:var(--ds11-no-shadow)}
+.ds12-tag.dark{background:var(--forest);color:var(--cream);border-color:var(--forest)}
+.ds12-tag.outline{background:var(--ds11-clear)}
+.ds12-tag svg.lucide{width:16px;height:16px}
+/* White is exactly #FFFFFF from the design token, not a warm ivory paint. */
+.ds-control :is(input:not(:disabled),textarea:not(:disabled)){background-color:var(--white)!important}
+.ds-control :is(input,textarea):read-only:not(:disabled){background-color:var(--white)!important}
+.ds11-input-wrap{background:var(--white)}
+.ds11-input-wrap input:not(:disabled){background:var(--white)!important}
+.ds11-input-wrap:has(input:disabled){background:var(--paper-2)}
+/* Force square shape with custom painted tick, independent of Safari default. */
+.ds11-check-row input[type="checkbox"]{
+ -webkit-appearance:none;appearance:none;
+ display:inline-grid;place-content:center;
+ width:20px;height:20px;min-width:20px;
+ border:2px solid var(--moss);border-radius:0!important;
+ background:var(--white);color:var(--white);cursor:pointer;
+}
+.ds11-check-row input[type="checkbox"]:checked{background:var(--moss)}
+.ds11-check-row input[type="checkbox"]:checked::after{
+ content:"";width:5px;height:9px;
+ border:solid var(--white);border-width:0 2px 2px 0;
+ transform:rotate(45deg) translateY(-1px)
+}
+.ds11-check-row input[type="checkbox"]:disabled{background:var(--paper-2);cursor:not-allowed}
+.ds11-check-row input[type="checkbox"]:focus-visible{outline:3px solid var(--li-color-focus-ring);outline-offset:2px}
+/* Today has its own stroke, independent of selection state or rhythm mode. */
+.ds12-today-button{min-height:44px;border:1px solid var(--moss);background:var(--cream);color:var(--moss);padding:var(--li-space-2) var(--li-space-3);font:700 var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);cursor:pointer}
+.ds12-today-button:hover{background:var(--paper-2)}
+.ds12-today-button:focus-visible{outline:3px solid var(--li-color-focus-ring);outline-offset:2px}
+.ds11-date[data-today="true"]{position:relative}
+.ds11-date[data-today="true"]::after{
+ content:"";position:absolute;inset:2px;border:2px solid var(--wood);pointer-events:none
+}
+.ds11-bar-cell[data-today="true"]{position:relative}
+.ds11-bar-cell[data-today="true"]::after{
+ content:"";position:absolute;inset:2px;border:2px solid var(--wood);pointer-events:none
+}
+.ds12-today-legend{display:flex;align-items:center;gap:var(--li-space-2);margin:var(--li-space-3) 0;font-size:var(--li-type-caption);line-height:var(--li-leading-caption);color:var(--muted)}
+.ds12-today-swatch{display:inline-block;width:18px;height:18px;flex:none;border:1px solid var(--rule);outline:2px solid var(--wood);outline-offset:-4px;background:var(--white)}
+@media(max-width:700px){
+ .ds12-variant-pair{grid-template-columns:minmax(0,1fr)}
+ .ds12-horizontal-card{grid-template-columns:minmax(0,90px) minmax(0,1fr)}
+ .ds12-horizontal-copy{padding:var(--li-space-3)}
+ .ds12-horizontal-copy h3{font-size:var(--li-type-title-sm)}
+ .ds12-horizontal-media.figure{padding:var(--li-space-1)}
+ .ds12-horizontal-media.figure img{max-height:94px}
+}
+@media(max-width:360px){
+ .ds12-horizontal-card{grid-template-columns:minmax(0,76px) minmax(0,1fr)}
+ .ds12-horizontal-copy{gap:var(--li-space-1)}
+ .ds12-horizontal-copy h3{font-size:var(--li-type-support);line-height:var(--li-leading-support)}
+ .ds11-date-toolbar{gap:var(--li-space-1)}
+ .ds12-today-button{padding-inline:var(--li-space-2)}
+}

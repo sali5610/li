@@ -16,8 +16,8 @@ iframe.addEventListener("load",()=>{
    const tokens=w.getComputedStyle(d.documentElement);
    check("Canonical generated paper token",tokens.getPropertyValue("--paper").trim().toUpperCase()==="#F3EBDC");
    check("Review pending G2",d.body.textContent.includes("Chờ Human PO duyệt component"));
-   const cards=d.querySelectorAll(".ds-method");
-   check("Specimen shows two method tiles",cards.length===2);
+   const cards=d.querySelectorAll(".ds-method-grid .ds-method");
+   check("Original method grid preserves two approved tiles",cards.length===2);
    const g=d.querySelector(".ds-method-grid");
    const col=w.getComputedStyle(g).gridTemplateColumns.split(" ").filter(Boolean);
    check("Specimen grid two columns",col.length===2,col.join(" / "));
@@ -53,7 +53,7 @@ iframe.addEventListener("load",()=>{
    check("Notebook font mirrors actual UI body, not browser monospace default",noteStyle.fontFamily===w.getComputedStyle(d.body).fontFamily,noteStyle.fontFamily);
    const dark=d.querySelector(".ds-home-bubble.green"),lightBubble=d.querySelector(".ds-home-bubble:not(.green)");
    check("Two chat-bubble visual options, including Home forest green",!!dark&&!!lightBubble&&w.getComputedStyle(dark).backgroundColor!==w.getComputedStyle(lightBubble).backgroundColor&&w.getComputedStyle(dark).boxShadow!=="none");
-   const art=[...d.querySelectorAll(".ds-image-card img")];
+   const art=[...d.querySelectorAll(".ds-image-grid .ds-image-card img")];
    check("Three published illustration cards, all valid images",art.length===3&&art.every(img=>img.complete&&img.naturalWidth>0&&img.alt.length>15),art.map(img=>img.src.split("/").pop()+":"+img.naturalWidth).join(", "));
    check("Crop vs contained illustrations are distinguishable",art.length===3&&w.getComputedStyle(d.querySelector(".ds-image-top img")).objectFit==="cover"&&w.getComputedStyle(d.querySelector(".ds-image-character img")).objectFit==="contain");
    const tap=w.getComputedStyle(d.querySelector(".ds-tabs button")).webkitTapHighlightColor;
@@ -107,17 +107,61 @@ iframe.addEventListener("load",()=>{
    const compact=d.querySelector(".ds11-progress-track.compact");
    check("Compact progress variant present for list/card",!!compact&&compact.getAttribute("aria-valuenow")==="2");
    const calendar=d.getElementById("ds11-calendar"),chart=d.getElementById("ds11-chart");
-   check("Calendar November has 30 month date controls",calendar.querySelectorAll(".ds11-date").length===30);
+   const today=new Date(),todayCount=new Date(today.getFullYear(),today.getMonth()+1,0).getDate();
+   check("Calendar uses actual current month, not hard-coded November",calendar.querySelectorAll(".ds11-date").length===todayCount);
    const colors=["overload","recover","start","focus"].map(mode=>{const x=calendar.querySelector('.ds11-date[data-mode="'+mode+'"]');return x?w.getComputedStyle(x).backgroundColor:null;});
    check("Four rhythm modes have unique light-to-dark colors",colors.every(Boolean)&&new Set(colors).size===4,colors.join(" / "));
    check("Stacked bar shows exactly 7 days in the selected week",chart.querySelectorAll(".ds11-bar-cell").length===7);
    check("Stacked bar segments represent Bài/Vấn đề/Input",!!chart.querySelector(".ds11-bar-segment.lesson")&&!!chart.querySelector(".ds11-bar-segment.branch")&&!!chart.querySelector(".ds11-bar-segment.input"));
+   calendar.querySelector('.ds11-date[data-day="1"]').click();
    d.getElementById("ds11-week-next").click();
-   check("Seven-day paging updates range and keeps 7 bars",chart.querySelectorAll(".ds11-bar-cell").length===7&&d.getElementById("ds11-week-range").textContent.includes("22"));
+   check("Seven-day paging updates range and keeps 7 bars",chart.querySelectorAll(".ds11-bar-cell").length===7&&d.getElementById("ds11-week-range").textContent.startsWith("8"));
    d.getElementById("ds11-month-next").click();
-   check("Month navigation changes day count, avoids fake stored history",calendar.querySelectorAll(".ds11-date").length===31&&d.body.textContent.includes("DỮ LIỆU GIẢ LẬP"));
+   const nextMonthCount=new Date(today.getFullYear(),today.getMonth()+2,0).getDate();
+   check("Month navigation changes day count, avoids fake stored history",calendar.querySelectorAll(".ds11-date").length===nextMonthCount&&d.body.textContent.includes("DỮ LIỆU GIẢ LẬP"));
    const chartOverflow=chart.scrollWidth-chart.clientWidth;
    check("Stacked bar chart does not overflow its container",chartOverflow<=2,String(chartOverflow));
+
+   /* UX-DS-12: verify new PO requirements in the rendered, interactive specimen. */
+   const navHeight=parseFloat(w.getComputedStyle(d.querySelector(".ds-tabs button")).minHeight);
+   check("Compact bottom navigation preserves >=48px touch target",navHeight>=48&&navHeight<=56,String(navHeight));
+   const square=d.querySelector('.ds11-check-row input[type="checkbox"]');
+   check("Checkbox painted as a sharp square",w.getComputedStyle(square).borderTopLeftRadius==="0px",w.getComputedStyle(square).borderTopLeftRadius);
+   const fields=[d.getElementById("ds-query"),d.getElementById("ds-textarea"),d.getElementById("ds11-icon-input")];
+   check("All enabled text/search/notebook surfaces are pure white",fields.every(el=>w.getComputedStyle(el).backgroundColor==="rgb(255, 255, 255)"),fields.map(el=>w.getComputedStyle(el).backgroundColor).join(" / "));
+   check("Disabled input remains visually distinct",w.getComputedStyle(d.getElementById("ds-disabled")).backgroundColor!=="rgb(255, 255, 255)");
+   check("Illustration frame has no paper-colored backing",w.getComputedStyle(d.querySelector(".ds-image-character .ds-image-frame.figure")).backgroundColor==="rgba(0, 0, 0, 0)");
+   const horizontals=[...d.querySelectorAll("[data-ds12-horizontal-card]")];
+   check("Four distinct horizontal card types exist",horizontals.length===4&&
+      !!horizontals[0].classList.contains("ds12-no-media")&&
+      !!horizontals[1].querySelector("img")&&
+      !!horizontals[2].querySelector("img")&&
+      !!horizontals[3].querySelector("svg.lucide"));
+   d.querySelector('[data-ds12-card-mode="secondary"]').click();
+   check("All horizontal secondary variants are bordered without shadow",
+      horizontals.every(el=>el.classList.contains("ds12-variant-secondary")&&w.getComputedStyle(el).boxShadow==="none"&&
+      w.getComputedStyle(el).borderTopStyle==="solid"));
+   d.querySelector('[data-ds12-card-mode="dark"]').click();
+   check("All horizontal dark variants use forest surface",
+      horizontals.every(el=>el.classList.contains("ds12-variant-dark")&&
+      w.getComputedStyle(el).backgroundColor===w.getComputedStyle(d.querySelector(".ds-large.ds12-variant-dark")).backgroundColor));
+   check("Category tag chips are static labels, not filter buttons",
+      d.querySelectorAll(".ds12-tag-row .ds12-tag").length===4&&
+      [...d.querySelectorAll(".ds12-tag-row .ds12-tag")].every(x=>x.tagName==="SPAN"&&!x.hasAttribute("aria-pressed")));
+   d.getElementById("ds11-month-today").click();
+   const dayToday=calendar.querySelector('.ds11-date[data-today="true"]');
+   check("Calendar marks real today and selects it on reset",
+      !!dayToday&&dayToday.dataset.day===String(today.getDate())&&dayToday.getAttribute("aria-pressed")==="true"&&
+      w.getComputedStyle(dayToday,"::after").borderTopWidth==="2px");
+   check("Chart highlights today separately from selected state",
+      !!chart.querySelector('.ds11-bar-cell[data-today="true"]')&&
+      chart.querySelector('.ds11-bar-cell[data-today="true"]').getAttribute("aria-pressed")==="true");
+   d.getElementById("ds11-month-next").click();
+   check("Travel to another month hides today marker",!calendar.querySelector('.ds11-date[data-today="true"]'));
+   d.getElementById("ds11-week-today").click();
+   check("Chart's Today action restores real today and matching calendar",
+      !!calendar.querySelector('.ds11-date[data-today="true"][data-selected="true"]')&&
+      !!chart.querySelector('.ds11-bar-cell[data-today="true"]'));
 
    if(w.innerWidth<=700){
      const tracks=element=>w.getComputedStyle(element).gridTemplateColumns.trim().split(/\s+/).length;

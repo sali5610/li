@@ -1,0 +1,22 @@
+/* li. · L1-A check-in only. Other modal geometry and art remain unchanged. */
+#checkin-modal .dialog{max-height:88vh;max-height:88dvh;overflow-y:auto;overscroll-behavior:contain}
+#checkin-modal .dialog h2{font-size:var(--li-type-title-md);line-height:1.3}
+#checkin-modal .checkin-question{border:0;margin:var(--li-space-4) 0 0;padding:0;min-width:0}
+#checkin-modal .checkin-question legend{font-size:var(--li-type-support);font-weight:700;padding:0 0 var(--li-space-2)}
+#checkin-modal .checkin-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--li-space-2)}
+#checkin-modal .checkin-choice{min-width:0;display:flex;align-items:center;gap:var(--li-space-2);padding:var(--li-space-2);background:var(--cream);border:1px solid var(--rule);font-size:var(--li-type-support);line-height:1.4;cursor:pointer}
+#checkin-modal .checkin-choice input{min-width:16px;min-height:16px;accent-color:var(--moss);flex-shrink:0}
+#checkin-modal .checkin-choice:focus-within{outline:2px solid var(--moss);outline-offset:2px}
+#checkin-modal .checkin-choice span{min-width:0;overflow-wrap:break-word}
+#checkin-modal .checkin-context{margin:var(--li-space-4) 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:var(--li-space-3) 0}
+#checkin-modal .checkin-context summary{cursor:pointer;font-size:var(--li-type-support);font-weight:700}
+#checkin-modal .checkin-context p{font-size:var(--li-type-support);margin:var(--li-space-2) 0}
+#checkin-modal .checkin-result{margin:var(--li-space-4) 0;min-height:var(--li-space-12);font-size:var(--li-type-support)}
+#checkin-modal .checkin-override-label{display:block;font-size:var(--li-type-support);font-weight:700;margin:var(--li-space-3) 0 var(--li-space-2)}
+#checkin-modal .checkin-override{width:100%;min-height:48px;padding:var(--li-space-2);font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--rule)}
+#checkin-modal .checkin-override:focus-visible{outline:2px solid var(--moss);outline-offset:2px}
+#checkin-modal .checkin-privacy{font-size:var(--li-type-support);margin:var(--li-space-3) 0;color:var(--muted)}
+#checkin-modal .checkin-actions{position:sticky;bottom:0;background:var(--paper);padding-top:var(--li-space-3);padding-bottom:var(--li-space-1)}
+#checkin-modal .checkin-actions .action{min-height:48px}
+#checkin-modal #apply-checkin:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:380px){#checkin-modal{padding:var(--li-space-3)}#checkin-modal .dialog{padding:var(--li-space-4)}#checkin-modal .checkin-choices{gap:var(--li-space-1)}#checkin-modal .checkin-choice{padding:var(--li-space-1);flex-direction:column;align-items:flex-start}}

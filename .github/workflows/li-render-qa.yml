@@ -37,7 +37,7 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           sleep 2
-          for width in 320 360 375 390 402 600 640 820 1440; do
+          for width in 320 360 375 390 402 600 640 744 820 1133 1440; do
             echo "Checking iframe viewport $width px"
             url="http://127.0.0.1:8765/tools/render_contract_fixture.html?w=$width"
             result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=11000 --dump-dom "$url" 2>/tmp/li-chrome-stderr.log || true)"
@@ -49,7 +49,7 @@ jobs:
             fi
             echo "$result" | grep '<pre id="result">LI_RENDER_PASS ' | tail -1 | cut -c1-1000
           done
-          echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at nine viewports"
+          echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at eleven viewports"
 
           for width in 320 390 820 1440; do
             echo "Checking live VI/EN language switch and cross-screen content at ${width}px"
@@ -100,7 +100,7 @@ jobs:
             exit 1
           fi
           echo "$result" | grep '<pre id="result">LI_SHOWCASE_PASS ' | tail -1 | cut -c1-1200
-          for width in 320 390 820; do
+          for width in 320 390 820 1133; do
             url="http://127.0.0.1:8765/tools/component_review_fixture.html?w=$width"
             result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=15000 --dump-dom "$url" 2>/tmp/li-showcase-responsive-stderr.log || true)"
             if [[ "$result" != *'<pre id="result">LI_SHOWCASE_PASS '* ]]; then

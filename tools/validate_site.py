@@ -332,7 +332,8 @@ assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
-assert 'library-hub.css?v=20261119-home-viewport-lock' in page_html
+# UX-DS-25: cache bust Home stylesheet when responsive component layout changes.
+assert 'library-hub.css?v=20261119-ds25-ipad-landscape' in page_html
 # UX-HOME-07: no Home-only min-height can force a page scroll, and routing
 # must restore browser scrolling for all other screens.
 homecss=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")

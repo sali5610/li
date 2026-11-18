@@ -301,3 +301,107 @@
 #page-resume .library-bookmark-panel[hidden]{display:none!important}
 #page-resume .library-bookmark-panel{min-width:0}
 #page-resume .library-bookmark-panel .path-list{min-width:0}
+
+
+/* UX-IA-11 · One persistent Back control in the already-sticky app header.
+   Do not pin buttons inside animated page sections (transforms can break fixed positioning). */
+.header #li-global-back{
+ display:grid;place-items:center;flex:none;box-sizing:border-box;
+ width:48px;height:48px;min-width:48px;min-height:48px;
+ padding:var(--li-space-2);border:1px solid var(--li-uxds10-touch-clear);
+ background:var(--li-uxds10-touch-clear);color:var(--moss);cursor:pointer;
+}
+.header #li-global-back[hidden]{display:none!important}
+.header #li-global-back svg{width:22px;height:22px;display:block;stroke:var(--li-icon-action-stroke,currentColor)}
+.header #li-global-back:hover{background:var(--paper-2);border-color:var(--rule)}
+.header #li-global-back:focus-visible{outline:2px solid var(--li-color-focus-ring);outline-offset:2px}
+@media(max-width:600px){
+ .header:has(#li-global-back:not([hidden])) .brand-stamp{display:none}
+ .header:has(#li-global-back:not([hidden])){gap:var(--li-space-2)}
+ .header:has(#li-global-back:not([hidden])) .brand{gap:var(--li-space-0)}
+}
+/* Redundant in-body back buttons remain in markup for legacy navigation contracts,
+   but the single persistent header control is the visible way back. */
+#page-settings .utility-back,
+#page-search .utility-back,
+#page-capture .utility-back,
+#page-guideDetail > .section-shell > button[data-page="guide"],
+#page-resume > .section-shell > button[data-page="library"],
+#page-collection > .section-shell > button[data-page="library"],
+#page-noteDetail #li-note-back,
+#page-diary > .section-shell > button[data-page="library"],
+#l03-back,#l09-back,#l15-back{display:none!important}
+
+/* Home mirror: bookmark sits alongside the primary action, never inside the mirror. */
+#page-home .mirror-message .mirror-titlebar{justify-content:center}
+#page-home .hero-actions{
+ display:grid!important;grid-template-columns:minmax(0,1fr) 56px!important;
+ align-items:stretch!important;gap:var(--li-space-3)!important;
+}
+#page-home .hero-actions #mirror-primary-action{width:100%;min-width:0}
+#page-home .hero-actions .mirror-save-action{
+ box-sizing:border-box;width:56px;height:56px;min-width:56px;min-height:56px;
+ align-self:stretch;display:grid;place-items:center;
+ margin:var(--li-space-0);padding:var(--li-space-2);border:1px solid var(--forest);
+ border-radius:0!important;background:var(--paper-2);color:var(--forest);
+ box-shadow:4px 4px 0 var(--forest);cursor:pointer;
+}
+#page-home .hero-actions .mirror-save-action:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--forest)}
+#page-home .hero-actions .mirror-save-action:focus-visible{outline:2px solid var(--li-color-focus-ring);outline-offset:2px}
+#page-home .hero-actions .mirror-save-action[aria-pressed="true"]{background:var(--cream);color:var(--moss)}
+#page-home .hero-actions .mirror-save-action svg{width:22px;height:22px;flex:none;display:block}
+@media(max-width:600px){
+ #page-home .hero-actions{grid-template-columns:minmax(0,1fr) 56px!important}
+}
+
+/* Undo snackbar shared by all local private-data removal paths. */
+#toast.li-snackbar{
+ position:fixed;z-index:100;
+ bottom:calc(100px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);
+ box-sizing:border-box;width:max-content;min-width:240px;max-width:min(520px,calc(100vw - 32px));
+ align-items:center;justify-content:space-between;gap:var(--li-space-4);
+ background:var(--forest);color:var(--cream);border:1px solid var(--sage);
+ box-shadow:0 4px 14px var(--li-color-shadow-soft,rgba(0,0,0,.2));
+ padding:var(--li-space-3) var(--li-space-4);
+ font-size:var(--li-type-support);line-height:var(--li-leading-support);
+}
+#toast .li-snackbar-message{min-width:0;overflow-wrap:break-word}
+#toast .li-snackbar-undo{
+ flex:none;min-width:76px;min-height:44px;
+ padding:var(--li-space-2) var(--li-space-3);border:1px solid var(--cream);
+ color:var(--cream);background:var(--li-uxds10-touch-clear);font-family:var(--li-font-ui);font-size:var(--li-type-support);line-height:var(--li-leading-support);font-weight:750;cursor:pointer;
+}
+#toast .li-snackbar-undo:hover{background:var(--moss)}
+#toast .li-snackbar-undo:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
+@media(max-width:600px){
+ #toast.li-snackbar{width:calc(100vw - 32px);max-width:440px}
+}
+
+
+/* UX-IA-12 · All real-app Save/Unsave actions use icon-only, transparent
+   surfaces. Keep 48/56px touch targets and stateful filled bookmark glyph. */
+.page .library-icon-action:not(.library-danger-icon),
+#page-home .hero-actions .mirror-save-action {
+ background:var(--li-uxds10-touch-clear)!important;
+ border-color:var(--li-uxds10-touch-clear)!important;
+ box-shadow:var(--li-uxds10-touch-no-shadow)!important;
+}
+.page .library-icon-action:not(.library-danger-icon):is(:hover,:active,:focus),
+#page-home .hero-actions .mirror-save-action:is(:hover,:active,:focus){
+ background:var(--li-uxds10-touch-clear)!important;
+ border-color:var(--li-uxds10-touch-clear)!important;
+ box-shadow:var(--li-uxds10-touch-no-shadow)!important;
+ transform:none!important;
+}
+.page .library-icon-action:not(.library-danger-icon)[aria-pressed="true"],
+#page-home .hero-actions .mirror-save-action[aria-pressed="true"]{
+ background:var(--li-uxds10-touch-clear)!important;
+ border-color:var(--li-uxds10-touch-clear)!important;
+ box-shadow:var(--li-uxds10-touch-no-shadow)!important;
+ color:var(--moss);
+}
+.page .library-icon-action:not(.library-danger-icon):focus-visible,
+#page-home .hero-actions .mirror-save-action:focus-visible{
+ outline:2px solid var(--li-color-focus-ring)!important;
+ outline-offset:2px!important;
+}

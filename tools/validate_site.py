@@ -271,7 +271,7 @@ assert '#settings-buddy-card .settings-buddy-illustration' in html
 settings_styles=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert 'border-top: 1px solid var(--rule)' not in settings_styles.split('#page-settings .buddy-address-settings {', 1)[1].split('}', 1)[0]
 assert '#settings-buddy-card .settings-buddy-footer' not in html
-assert 'li-layout.css?v=20261118-ds10-touch' in page_html and bool(re.search(r'<link rel="stylesheet" href="\./assets/ui-foundations\.css\?v=[A-Za-z0-9._-]+">', head))
+assert 'li-layout.css?v=20261118-back-undo' in page_html and bool(re.search(r'<link rel="stylesheet" href="\./assets/ui-foundations\.css\?v=[A-Za-z0-9._-]+">', head))
 
 # S118: two compact mobile Guide tiles with shadow-safe column/row gutters; no duplicate S99 rule.
 guide=section("guide")
@@ -325,13 +325,13 @@ assert '<section id="page-noteDetail"' in page_html
 assert '<button id="li-note-save"' in page_html
 assert '<button id="li-note-delete"' in page_html
 assert '<div id="li-note-history-list"' in page_html
-assert '<script src="./assets/library-note-editor.js?v=3"></script>' in page_html
+assert '<script src="./assets/library-note-editor.js?v=4"></script>' in page_html
 hub=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert 'Xem trong Bộ sưu tập' not in hub
 assert hub.count('library-detail-link","Xem chi tiết"')==3
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
-assert 'library-hub.css?v=6' in page_html
+assert 'library-hub.css?v=7' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_note_versions.cjs")],check=True,cwd=site.parent)
 
 # S120: all 13 Thần Chú methods share this same Guide Detail template.
@@ -393,7 +393,10 @@ subprocess.run(["node", str(site.parent/"tools"/"test_wave1_native.js")],check=T
 for page_name in ("settings","search","capture"):
     utility=section(page_name)
     assert utility.count('data-nav-back aria-label="Quay lại màn trước"')==1,page_name
-assert html.count('data-nav-back aria-label="Quay lại màn trước"')==3
+assert html.count('data-nav-back aria-label="Quay lại màn trước"')==4
+assert page_html.count('id="li-global-back"')==1
+assert 'if(back)back.hidden=id==="home"' in page_html
+assert '.header #li-global-back{' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"' in settings
 assert 'class="settings-buddy-illustration" src="./assets/laoly-guide-rest.png"' not in settings
 assert '<span class="hero-dialogue-avatar" aria-hidden="true"><img src="./assets/laoly-neutral.png"' in html
@@ -431,7 +434,7 @@ assert 'data-demo="Chưa lưu được ý này' not in html
 assert 'id="save-capture-note"' in html
 assert html.count('id="li-checkin-recording-disclosure"')==1
 assert html.index('li-diary-privacy')>html.index('li-diary-day-status')
-assert '<script src="./assets/library-hub.js?v=6"></script>' in html
+assert '<script src="./assets/library-hub.js?v=7"></script>' in html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_hub_v2.cjs")],check=True,cwd=site.parent)
 
 # UX-IA-05: lesson modules only own lesson/catalog DOM, never Tủ Riêng overview.
@@ -453,9 +456,9 @@ assert 'ideas:collectedIdeas,savedContent,draft:' in page_html
 assert 'caseSnapshot' in page_html and 'selectedText:caseOptions.find' in page_html
 assert 'id="li-note-case-context"' in page_html
 assert 'data-li-bookmark-kind="case"' in page_html
-assert '<script src="./assets/library-bookmarks.js?v=2"></script>' in page_html
-assert '<script src="./assets/library-note-editor.js?v=3"></script>' in page_html
-assert '<script src="./assets/library-hub.js?v=6"></script>' in page_html
+assert '<script src="./assets/library-bookmarks.js?v=3"></script>' in page_html
+assert '<script src="./assets/library-note-editor.js?v=4"></script>' in page_html
+assert '<script src="./assets/library-hub.js?v=7"></script>' in page_html
 for lesson_id,slug in (("L03-1-2","l03"),("L09-1-2","l09"),("L15-2-2","l15")):
     content=(site/"assets"/f"lesson-{slug}-hifi-markup.js").read_text(encoding="utf-8")
     assert f'data-li-bookmark-id="{lesson_id}"' in content
@@ -467,10 +470,10 @@ subprocess.run(["node",str(site.parent/"tools"/"test_library_case_review.cjs")],
 # UX-IA-07: Save/Unsave and Delete are independent icon utilities.
 # A different purpose must not share the same CTA toolbar / button hierarchy.
 home=section("home")
-assert 'class="mirror-titlebar"' in home and 'class="library-icon-utility mirror-bookmark-slot"' in home
+assert 'class="mirror-titlebar"' in home and 'class="library-icon-utility mirror-bookmark-slot"' not in home
 assert 'id="save-question"' in home
 hero_actions=home[home.index('<div class="hero-actions">'):home.index('</div></div>',home.index('<div class="hero-actions">'))]
-assert 'id="save-question"' not in hero_actions
+assert 'id="save-question"' in hero_actions
 assert 'function refreshQuestionBookmark()' in page_html
 assert 'findSavedMirrorQuestion(sc)' in page_html
 assert 'class="library-heading-with-utility"' in section("case")
@@ -496,6 +499,14 @@ bookmark=(site/"assets"/"library-bookmarks.js").read_text(encoding="utf-8")
 assert 'button.innerHTML=' in bookmark and 'button.textContent=saved?' not in bookmark
 iconcss=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'width:var(--li-space-12)' in iconcss and '.library-icon-action:focus-visible' in iconcss
+assert '/* UX-IA-12 · All real-app Save/Unsave actions' in iconcss
+assert '.page .library-icon-action:not(.library-danger-icon)' in iconcss
+assert '#page-home .hero-actions .mirror-save-action' in iconcss
+assert 'window.liShowUndo=(message,undo)=>toast(message,{undo});' in page_html
+assert 'toast("Đã bỏ lưu câu hỏi.",{undo:' in page_html
+assert 'toast("Đã bỏ lưu câu hỏi.",{undo:' in hub
+assert 'toast("Đã xóa ghi chép và lịch sử phiên bản.",{undo:' in (site/"assets"/"library-note-editor.js").read_text(encoding="utf-8")
+assert 'window.liShowUndo("Đã xóa lịch hoạt động.",' in (site/"assets"/"personal-diary.js").read_text(encoding="utf-8")
 
 # UX-IA-08: Quay lại overview has exactly one actual lesson AND one actual
 # problem/case, while full rows and bookmarks remain on the detail route.
@@ -684,7 +695,7 @@ assert 'outline:var(--li-space-0) solid var(--li-color-input-focus-ring)!importa
 
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
-assert 'li-layout.css?v=20261118-ds10-touch' in page_html
+assert 'li-layout.css?v=20261118-back-undo' in page_html
 assert 'ui-foundations.css?v=20261118-ds13-focus-border' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation

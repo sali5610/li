@@ -16,7 +16,7 @@
     var sheet=[].slice.call(document.styleSheets).find(function(x){return x.href&&x.href.indexOf("library-hub.css")!==-1;});
     var version=sheet&&sheet.href.includes("?v=")?sheet.href.split("?v=")[1]:"unknown";
     panel.textContent=[
-      "li. | UX-DS-29 iPad QA",
+      "li. | UX-DS-30 iPad QA",
       "URL: "+location.host+location.pathname,
       "CSS: "+version,
       "Viewport: "+window.innerWidth+" × "+window.innerHeight+" CSS px",
@@ -26,6 +26,11 @@
       "Width sync: "+(Math.abs((window.visualViewport?window.visualViewport.width:window.innerWidth)-document.documentElement.clientWidth)>16 ? "MISMATCH (Safari reflow)" : "OK"),
       "App: "+Math.round(document.querySelector(".app").getBoundingClientRect().width)+"px / Hero: "+Math.round(document.querySelector("#page-home .hero").getBoundingClientRect().width)+"px",
       "Visual scale: "+(window.visualViewport?window.visualViewport.scale.toFixed(2):"n/a"),
+      "Outer: "+window.outerWidth+" × "+window.outerHeight,
+      "Native angle: "+(typeof window.orientation==="number"?window.orientation:"n/a")+" / Screen angle: "+(screen.orientation?.angle??"n/a"),
+      "Screen type: "+(screen.orientation?.type||"unknown"),
+      "Viewport meta: "+(document.querySelector('meta[name="viewport"]')?.content||"missing"),
+      "Recovery: "+(window.liSafariRotationQA?.mode||"not initialized")+" / class "+document.documentElement.classList.contains("li-safari-landscape-recovery"),
       "Orientation: "+(matchMedia("(orientation: landscape)").matches?"landscape":"portrait"),
       "Coarse pointer: "+matchMedia("(any-pointer: coarse)").matches,
       "CSS mode: "+(style.getPropertyValue("--li-ipad-active-mode").trim()||"desktop/phone"),
@@ -36,6 +41,8 @@
   render();
   window.addEventListener("resize",render,{passive:true});
   window.addEventListener("orientationchange",render,{passive:true});
+  window.addEventListener("li-safari-rotation-qa",render,{passive:true});
+  window.visualViewport?.addEventListener("resize",render,{passive:true});
  }
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",install,{once:true});
  else install();

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>li. iPad Safari physical-rotation recovery contract</title>
+<style>html,body{margin:0;padding:0}iframe{display:block;width:970px;height:832px;border:0}#result{white-space:pre-wrap;font:12px/1.5 monospace}</style></head>
+<body><pre id="result">LI_SAFARI_RECOVERY_PENDING</pre><iframe id="app" title="li. live app with simulated stale viewport" src="../site/index.html"></iframe>
+<script>
+(function(){
+"use strict";
+const frame=document.querySelector("#app"),out=document.querySelector("#result"),checks=[];
+let done=false;
+function check(name,pass,detail){checks.push({name,passed:!!pass,detail:String(detail??"")});}
+function finish(){if(done)return;done=true;const fail=checks.filter(x=>!x.passed);out.textContent=(fail.length?"LI_SAFARI_RECOVERY_FAIL ":"LI_SAFARI_RECOVERY_PASS ")+JSON.stringify({passed:checks.length-fail.length,total:checks.length,fail,checks});}
+frame.addEventListener("load",function(){
+ setTimeout(function(){
+  try{
+   const w=frame.contentWindow,d=frame.contentDocument,doc=d.documentElement;
+   const originalDoc=doc;
+   function mock(o,prop,value){Object.defineProperty(o,prop,{configurable:true,get(){return typeof value==="function"?value():value;}});}
+   mock(w.navigator,"userAgent","Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/605.1.15 Safari/605.1");
+   mock(w.navigator,"maxTouchPoints",5);
+   mock(w.screen,"width",970);
+   mock(w.screen,"height",1408);
+   const native={angle:0,type:"portrait-primary",addEventListener(){}};
+   mock(w.screen,"orientation",native);
+   mock(w,"orientation",()=>native.angle);
+   function scene(){return d.querySelector("#page-home .hero");}
+   function geom(){return scene().getBoundingClientRect();}
+   function mode(){return w.getComputedStyle(doc).getPropertyValue("--li-ipad-active-mode").trim();}
+   function trigger(){w.dispatchEvent(new Event("orientationchange"));}
+   check("Portrait control starts at 970 CSS px",w.innerWidth===970,w.innerWidth);
+   check("Portrait control uses token family",mode()==="portrait",mode());
+   check("Portrait art fills 970px",Math.abs(geom().width-970)<4,geom().width);
+   native.angle=90;native.type="landscape-primary";
+   trigger();
+   setTimeout(function(){
+    const state=w.liSafariRotationQA||{};
+    check("Physical 90-degree rotation recognized",state.physicalLandscape===true,state.physicalLandscape);
+    check("960px-width Safari layout detected as stale",state.iPad&&state.screen[1]===1408,state.iPad+"/"+state.screen);
+    check("Native viewport numeric 1408 requested",d.querySelector('meta[name="viewport"]').content.includes("width=1408"),d.querySelector('meta[name="viewport"]').content);
+    check("Fallback or corrected native layout extends Hero to 1408",Math.abs(geom().width-1408)<4,geom().width);
+    check("Fallback device token is landscape 18px",mode()==="landscape"&&w.getComputedStyle(d.body).fontSize==="18px",mode()+"/"+w.getComputedStyle(d.body).fontSize);
+    check("Approved art preserved during recovery",w.getComputedStyle(scene(),"::before").backgroundImage.includes("home-li-ipad-20261119.jpg"),w.getComputedStyle(scene(),"::before").backgroundImage.slice(0,120));
+    const right=d.querySelector("#page-home .hero-actions").getBoundingClientRect();
+    check("Landscape CTA rail moves into right zone",right.left>950&&right.right<=1410,right.left+"/"+right.right);
+    // Simulate WebKit completing reflow natively without reloading the app.
+    frame.style.width="1408px";
+    trigger();
+    setTimeout(function(){
+     check("Native corrected landscape remains 1408px",Math.abs(geom().width-1408)<4,geom().width);
+     check("No content replacement or reload during layout change",d.documentElement===originalDoc,true);
+     // Rotate back portrait: normal device-width meta and portrait geometry must return.
+     native.angle=0;native.type="portrait-primary";
+     frame.style.width="970px";
+     frame.style.height="1270px";
+     trigger();
+     setTimeout(function(){
+      check("Device-width viewport restored in portrait",d.querySelector('meta[name="viewport"]').content.includes("width=device-width"),d.querySelector('meta[name="viewport"]').content);
+      check("Fallback class removed in portrait",!doc.classList.contains("li-safari-landscape-recovery"),doc.className);
+      check("Portrait geometry restored",Math.abs(geom().width-970)<4,geom().width);
+      check("Portrait tokens restored",mode()==="portrait",mode());
+      finish();
+     },500);
+    },500);
+   },500);
+  }catch(err){check("Fixture JS",false,err.message);finish();}
+ },950);
+},{once:true});
+setTimeout(function(){if(!done){check("Fixture timed out",false,"no completed recovery");finish();}},8500);
+})();
+</script></body></html>

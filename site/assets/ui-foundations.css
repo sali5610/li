@@ -950,3 +950,79 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
    Overrides legacy S139 touch-action without changing the mirror-only swipe contract. */
 html { touch-action: pan-x pan-y pinch-zoom; }
 #page-home .mirror-message { touch-action: pan-y pinch-zoom; }
+
+/* UX-DS-30 · Only when native iPadOS orientation is landscape but Safari
+   reports the old portrait layout viewport (e.g. 970/1408 CSS px).
+   Reuses JSON-generated landscape aliases; no second independent token scale.
+   The normal (media-query) layout remains unchanged. */
+html.li-safari-landscape-recovery {
+ width:var(--li-safari-physical-width)!important;
+ max-width:none!important;
+ height:var(--li-safari-physical-height,100dvh)!important;
+ overflow:hidden!important;
+}
+html.li-safari-landscape-recovery body {
+ width:var(--li-safari-physical-width)!important;
+ max-width:none!important;
+ height:var(--li-safari-physical-height,100dvh)!important;
+ overflow:hidden!important;
+}
+:root.li-safari-landscape-recovery {
+ --li-ipad-active-mode:landscape;
+
+  --li-ipad-active-mode: landscape;
+  --li-type-headline: var(--li-device-ipad-landscape-type-headline);
+  --li-leading-headline: var(--li-device-ipad-landscape-leading-headline);
+  --li-type-title-md: var(--li-device-ipad-landscape-type-title-md);
+  --li-leading-title-md: var(--li-device-ipad-landscape-leading-title-md);
+  --li-type-title-sm: var(--li-device-ipad-landscape-type-title-sm);
+  --li-leading-title-sm: var(--li-device-ipad-landscape-leading-title-sm);
+  --li-type-body: var(--li-device-ipad-landscape-type-body);
+  --li-leading-body: var(--li-device-ipad-landscape-leading-body);
+  --li-type-support: var(--li-device-ipad-landscape-type-support);
+  --li-leading-support: var(--li-device-ipad-landscape-leading-support);
+  --li-type-caption: var(--li-device-ipad-landscape-type-caption);
+  --li-leading-caption: var(--li-device-ipad-landscape-leading-caption);
+  --li-type-display: var(--li-device-ipad-landscape-type-display);
+  --li-leading-display: var(--li-device-ipad-landscape-leading-display);
+  --li-type-title-lg: var(--li-device-ipad-landscape-type-title-lg);
+  --li-leading-title-lg: var(--li-device-ipad-landscape-leading-title-lg);
+  --li-type-body-lg: var(--li-device-ipad-landscape-type-body-lg);
+  --li-leading-body-lg: var(--li-device-ipad-landscape-leading-body-lg);
+  --li-page-gutter: var(--li-device-ipad-landscape-page-gutter);
+  --li-card-pad: var(--li-device-ipad-landscape-card-pad);
+  --li-stack-gap: var(--li-device-ipad-landscape-stack-gap);
+  --li-section-gap: var(--li-device-ipad-landscape-section-gap);
+  --li-current-control-min: var(--li-device-ipad-landscape-control-min);
+  --li-current-icon-size: var(--li-device-ipad-landscape-icon-size);
+}
+html.li-safari-landscape-recovery .app.home-focus {
+ position:relative!important;
+ left:0!important;
+ width:var(--li-safari-physical-width)!important;
+ max-width:none!important;
+ margin:var(--li-space-0)!important;
+ padding-inline:var(--li-space-0)!important;
+ overflow:visible!important;
+}
+html.li-safari-landscape-recovery .app.home-focus>.header {
+ padding-inline:var(--li-device-ipad-landscape-page-gutter)!important;
+ box-sizing:border-box;
+ width:100%!important;
+}
+html.li-safari-landscape-recovery .page .editorial-grid {
+ grid-template-columns:minmax(0,1.25fr) minmax(0,.9fr)!important;
+ gap:var(--li-section-gap);
+}
+html.li-safari-landscape-recovery #page-guide #method-cards,
+html.li-safari-landscape-recovery #page-catalog .surface-grid:not(.cols2) {
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+html.li-safari-landscape-recovery .page :is(.action,.flat-button,.filter,.secondary,.primary,.utility-back),
+html.li-safari-landscape-recovery .header .tool-button {
+ min-height:var(--li-device-ipad-landscape-control-min)!important;
+}
+html.li-safari-landscape-recovery .header .topnav .nav-btn {
+ font-size:var(--li-type-body)!important;
+ line-height:var(--li-leading-body)!important;
+}

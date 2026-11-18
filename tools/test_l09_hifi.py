@@ -44,7 +44,7 @@ assert script.count('exHelp:') == 2, "VI and EN must both supply a hint"
 assert 'guidedDraft:""' in script, "Guided answer must use existing canonical state"
 assert ':is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-q-row .text-editor' in css
 assert ':is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .l09-lock[hidden]' in css
-assert hifi.count('<script src="./assets/lesson-l09-hifi-markup.js?v=20261118-ia06"></script>') == 1
+assert hifi.count('<script src="./assets/lesson-l09-hifi-markup.js?v=20261118-ia07"></script>') == 1
 assert hifi.count('<script src="./assets/lesson-l09-hifi.js"></script>') == 1
 assert hifi.count('<link rel="stylesheet" href="./assets/lesson-l09-hifi.css?v=0.3">') == 1
 

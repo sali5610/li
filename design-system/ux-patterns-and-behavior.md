@@ -134,3 +134,14 @@ Test each touched **screen × component variant × state × modality × viewport
 ### UX-NAV-ICON-01 · Spell tab icon policy (2026-11-19)
 - **Do:** use a single Lucide `sparkle` (four-point star) for the Thần Chú destination across mobile bottom nav and navigational Component Library previews. Reuse existing size/stroke and selected-state semantics; labels and route behavior stay unchanged.
 - **Don't:** swap in `star` (five points), `sparkles` (multiple stars), emoji, or unrelated book icons for this *navigation destination*. Keep `book-open` for lesson/reading content. Icon visuals are decorative within text-labeled controls; no accessible name or touch target reduction.
+
+
+## S-G3-16E · Local backup v2 candidate interaction / privacy rules (NOT RELEASED)
+
+- **One truthful promise:** saving to localStorage ≠ downloaded backup ≠ remote sync. After export, say the file was prepared and ask the user to verify it in Downloads; never claim that external disk saved successfully from a Blob event.
+- **Import preview before mutation:** show whether the JSON is a partial legacy schema1 or complete schema2; list number of keys added, overwritten and deleted; explicitly warn that complete v2 replacement may delete absent local keys. Confirmation must be cancelable and copy should not pretend a partial v1 file could recover unsaved prior lessons.
+- **Failed or canceled import:** no storage mutation on rejection, invalid file, digest mismatch or user cancel. Show actionable failure using the existing loading/error scene; retry must reopen the picker. On storage/quota write failure, attempt and verify rollback; if rollback fails, display a high-severity warning and retain user's source JSON.
+- **Persistence/hydration:** on success, reload the page because lesson, diary, language and library modules cache their local data in memory. Do not show an outdated in-memory state and call it restored. A successful v2 import is not proof of automatic cross-device sync.
+- **Privacy/security:** keep downloaded JSON local; warn users it can include private diary and notes. Strictly validate JSON namespace/schema and size; never allow unknown localStorage key injection. SHA-256 detects accidental payload modification but cannot verify the sender's identity. No secrets or new cloud vendor required.
+- **Gates:** Source and fake-data browser tests are not human usability, VoiceOver, iPhone/iPad Safari/PWA, cloud permission enforcement or G3 approval. New design decisions/variants remain subject to the product owner. See [Draft PR #111](https://github.com/sali5610/li/pull/111), [Step16](https://app.notion.com/p/4196cf6db72a81379aaccba71303cb75).
+

@@ -41,7 +41,7 @@
        report("Guide cards populated",cards.length>0,cards.length);
        if(cards.length){
         const title=cards[0].querySelector("h3");
-        report("Guide heading title token 24px",!!title&&w.getComputedStyle(title).fontSize==="24px",title?w.getComputedStyle(title).fontSize:"missing");
+        report("Guide title role matches compact 20px phone / 24px larger",!!title&&w.getComputedStyle(title).fontSize===(w.innerWidth<=640?"20px":"24px"),title?w.getComputedStyle(title).fontSize:"missing");
         const purpose=cards[0].querySelector(".purpose");
         report("Guide explanation >=14px (full detail reachable)",!!purpose&&parseFloat(w.getComputedStyle(purpose).fontSize)>=14,purpose?(w.getComputedStyle(purpose).fontSize+" "+w.getComputedStyle(purpose).display):"missing");
        }

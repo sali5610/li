@@ -1,0 +1,42 @@
+/* UX-DS-15 · Top Navigation specimens (not a replacement for live app routing).
+   Shared structure + exactly three contextual surfaces: logo, Back, Home overlay.
+   The overlay is genuinely transparent and sits over an existing Home asset. */
+.ds15-topnav-gallery{display:grid;gap:var(--li-space-5);margin-top:var(--li-space-4)}
+.ds15-topnav-specimen{min-width:0}
+.ds15-topnav-label{display:flex;justify-content:space-between;align-items:center;gap:var(--li-space-2);flex-wrap:wrap;margin-bottom:var(--li-space-2);font-size:var(--li-type-caption);line-height:var(--li-leading-caption);font-weight:750;color:var(--wood);letter-spacing:.05em}
+.ds15-topnav-caption{font-size:var(--li-type-support);line-height:var(--li-leading-support);color:var(--muted);margin:var(--li-space-2) var(--li-space-0) var(--li-space-0)}
+.ds15-topnav-frame{min-width:0;border:1px solid var(--rule);background:var(--paper)}
+.ds15-topnav{display:flex;align-items:center;justify-content:space-between;gap:var(--li-space-2);box-sizing:border-box;min-width:0;min-height:76px;padding:var(--li-space-2) var(--li-space-4);border-bottom:1px solid var(--rule);background:var(--paper);color:var(--moss)}
+.ds15-topnav-frame .ds15-topnav{border-bottom-width:var(--li-space-0)}
+.ds15-brand{display:inline-flex;align-items:center;gap:var(--li-space-2);flex:0 0 auto;min-width:0}
+.ds15-brand img{display:block;width:38px;height:38px;object-fit:contain}
+.ds15-brand-wordmark{display:inline-block;font:700 var(--li-type-title-lg)/1 var(--li-font-editorial);color:var(--moss)}
+.ds15-topnav-actions{display:flex;align-items:center;justify-content:flex-end;gap:var(--li-space-1);flex:0 0 auto}
+.ds15-topnav-action,.ds15-topnav-back{position:relative;isolation:isolate;display:grid;place-items:center;box-sizing:border-box;width:48px;height:48px;min-width:48px;min-height:48px;padding:var(--li-space-0);border:1px solid var(--ds11-clear);border-radius:999px;background:var(--ds11-clear);box-shadow:var(--ds11-no-shadow);color:var(--moss);cursor:pointer;-webkit-tap-highlight-color:var(--ds11-clear)}
+.ds15-topnav-action::before{content:"";position:absolute;z-index:-1;inset:6px 2px;border-radius:999px;background:var(--li-color-nav-selected-fill);opacity:0;pointer-events:none}
+.ds15-topnav-action[aria-current="page"]{color:var(--moss)}
+.ds15-topnav-action[aria-current="page"]::before{opacity:1}
+.ds15-topnav-action svg.lucide,.ds15-topnav-back svg.lucide{width:22px;height:22px;pointer-events:none}
+.ds15-topnav-action:focus-visible,.ds15-topnav-back:focus-visible{outline:3px solid var(--li-color-focus-ring);outline-offset:2px}
+.ds15-topnav-action:disabled,.ds15-topnav-back:disabled{opacity:.4;cursor:not-allowed}
+.ds15-topnav-page-title{min-width:0;font:700 var(--li-type-title-sm)/var(--li-leading-title-sm) var(--li-font-editorial);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;color:var(--moss)}
+.ds15-topnav-stage{position:relative;min-height:220px;overflow:hidden;border:1px solid var(--rule);background:var(--forest)}
+.ds15-topnav-stage>img{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 27%;pointer-events:none}
+.ds15-topnav-overlay{position:relative;z-index:1;background:var(--ds11-clear)!important;border-bottom-width:var(--li-space-0)!important;box-shadow:var(--ds11-no-shadow)!important;color:var(--cream)}
+.ds15-topnav-overlay .ds15-brand img{filter:brightness(0) invert(1)}
+.ds15-topnav-overlay .ds15-brand-wordmark,.ds15-topnav-overlay .ds15-topnav-action{color:var(--cream)}
+.ds15-topnav-overlay .ds15-topnav-action[aria-current="page"]{color:var(--moss)}
+.ds15-topnav-overlay .ds15-topnav-action:focus-visible{outline-color:var(--li-color-focus-warm)}
+.ds15-topnav-feedback{margin-top:var(--li-space-4);font-size:var(--li-type-support);line-height:var(--li-leading-support)}
+@media(max-width:600px){
+ .ds15-topnav{min-height:62px;padding:var(--li-space-1) var(--li-space-2);gap:var(--li-space-1)}
+ .ds15-brand img{width:34px;height:34px}
+ .ds15-brand-wordmark{font-size:var(--li-type-title-md)}
+ .ds15-topnav-stage{min-height:192px}
+}
+@media(max-width:360px){
+ .ds15-topnav{padding-inline:var(--li-space-1)}
+ .ds15-brand{gap:var(--li-space-1)}
+ .ds15-topnav-actions{gap:var(--li-space-0)}
+ .ds15-topnav-page-title{font-size:var(--li-type-support)}
+}

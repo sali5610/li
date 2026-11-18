@@ -63,6 +63,9 @@ All passed the same functional test. Timing from one runner was noisy and is **n
 
 ## 4. Auth and sync are an explicit PRODUCT decision, not a hidden default
 
+**Current PRD scope finding (verified against live Notion [P1-03](https://app.notion.com/p/4196cf6db72a81f28b2ae19f59a08b65), 2026-11-19):** the authored MVP explicitly lists **account/cloud sync as LATER / excluded unless G3 consent**, and also states **no required cloud account**; multi-device sync is out-of-scope until verified at G3. This is a product-scope fact, **not merely our preference**. Therefore the default **G3-A recommendation for the existing MVP is reject required login, remote persistence and automatic sync**; retain browser-local/private per-origin records and portable manual backups. If the Human PO materially changes MVP scope, re-open backend provider, privacy and free-tier decision separately rather than silently adding cloud. Read `PRD` as the latest authoritative integrated learning scope, not early brainstorm references.
+
+
 - Current public GitHub Pages app serves code/content publicly; study notes and consent remain locally in each browser origin with no verified accounts/backend.
 - **No account**: fastest to ship, no user identity exposure to a third party, zero managed backend, explicit JSON file transfer only, no automatic two-device consistency.
 - **Optional login + cloud sync**: requires per-user record ownership, login and logout behavior, email/OAuth provider and free eligibility, offline queue, conflict resolution, consent, encryption/retention, deletion/export and fake two-user A/B security tests. The choice creates new privacy/security responsibilities.

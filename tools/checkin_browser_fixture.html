@@ -1,7 +1,7 @@
 <!doctype html>
-<html lang="vi"><head><meta charset="utf-8"><title>li. Check-in real-browser QA</title></head>
+<html lang="vi"><head><meta charset="utf-8"><title>li. L1 physical-first check-in QA</title></head>
 <body style="margin:0;background:white">
-<iframe id="app" title="li. test application" src="../site/index.html" style="height:760px;border:0"></iframe>
+<iframe id="app" title="li. check-in app" src="../site/index.html" style="height:760px;border:0"></iframe>
 <pre id="result">LI_CHECKIN_BROWSER_PENDING</pre>
 <script>
 "use strict";
@@ -17,41 +17,68 @@ iframe.addEventListener("load",()=>{
   const d=iframe.contentDocument,w=iframe.contentWindow;
   const by=id=>{const el=d.getElementById(id);if(!el)throw Error("Missing "+id);return el;};
   const check=(condition,message)=>{if(!condition)throw Error(message);};
-  const choose=(name,value)=>{
-   const el=d.querySelector('input[name="'+name+'"][value="'+value+'"]');
-   check(Boolean(el),"missing radio "+name+" "+value);
+  const setPhysical=(sleep,move,rest)=>{
+   for(const [name,value] of [["sleep",sleep],["move",move],["rest",rest]]){
+    const el=by("checkin-"+name);
+    el.value=value;el.dispatchEvent(new w.Event("change",{bubbles:true}));
+   }
+  };
+  const chooseOptional=(name,value)=>{
+   const el=d.querySelector('input[name="checkin-'+name+'"][value="'+value+'"]');
+   check(Boolean(el),"missing optional input "+name);
    el.checked=true;el.dispatchEvent(new w.Event("change",{bubbles:true}));
   };
   const apply=()=>by("apply-checkin").click();
   const open=()=>by("checkin").click();
-  const verify=(mode,expectedCount)=>{
-   check(d.body.dataset.studyMode===mode,"body study mode "+mode);
-   check(w.localStorage.getItem("li.study-mode.v1")===mode,"stored study mode "+mode);
-   check(d.querySelector('.ly-mode-choice[data-ly-mode="'+mode+'"]')?.getAttribute("aria-pressed")==="true","Settings pressed state "+mode);
-   const img="laoly-mode-"+({start:"start",focus:"focus",overload:"overload",recover:"recover"}[mode])+".png";
-   check(by("laoly-current-icon").getAttribute("src").includes(img),"Lão Lý FAB mode "+mode);
-   check(by("buddy-title-avatar").getAttribute("src").includes(img),"Lão Lý dialog avatar "+mode);
-   check(by("method-count").textContent.includes("Hiển thị "+expectedCount+"/13"),"Thần Chú count for "+mode+": "+by("method-count").textContent);
+  const verify=(mode,expectedCount,sleep,move,rest)=>{
+   check(d.body.dataset.studyMode===mode,"Wrong body mode "+mode);
+   check(w.localStorage.getItem("li.study-mode.v1")===mode,"Stored mode mismatch "+mode);
+   check(d.querySelector('.ly-mode-choice[data-ly-mode="'+mode+'"]')?.getAttribute("aria-pressed")==="true","Settings mode mismatch "+mode);
+   const img="laoly-mode-"+mode+".png";
+   check(by("laoly-current-icon").getAttribute("src").includes(img),"Lão Lý FAB mismatch "+mode);
+   check(by("buddy-title-avatar").getAttribute("src").includes(img),"Lão Lý dialog mismatch "+mode);
+   check(by("method-count").textContent.includes("Hiển thị "+expectedCount+"/13"),"Thần Chú count wrong "+mode);
+   const p=w.LiL1?.getPhysicalState();
+   check(Boolean(p),"Physical L1 not set");
+   check(p.sleep===sleep&&p.move===move&&p.rest===rest,"Physical session mismatch "+JSON.stringify(p));
+   check(p.selectedMode===mode,"L1 session mode mismatch");
   };
+  let captured=0;
+  w.addEventListener("li:l1-physical-checkin",()=>captured++);
   open();
-  check(by("checkin-modal").classList.contains("open"),"modal must open");
-  check(by("apply-checkin").disabled,"empty check-in must not guess");
+  check(by("checkin-modal").classList.contains("open"),"Check-in should open");
+  check(by("apply-checkin").disabled,"Empty physical state must block Apply");
   const rect=by("checkin-modal").querySelector(".dialog").getBoundingClientRect();
-  check(rect.left>=-1&&rect.right<=width+1,"dialog horizontal viewport bounds at "+width+": "+rect.left+".."+rect.right);
-  check(rect.bottom<=w.innerHeight+1,"dialog vertical viewport bounds");
-  choose("checkin-energy","high");choose("checkin-attention","steady");
-  check(by("checkin-recommendation").textContent.includes("Gợi ý: Đào sâu"),"focused recommendation visible");
-  apply();verify("focus",13);
-  open();choose("checkin-energy","medium");choose("checkin-attention","steady");apply();verify("start",6);
-  open();choose("checkin-energy","high");choose("checkin-attention","hard");apply();verify("recover",6);
-  open();choose("checkin-energy","low");choose("checkin-attention","hard");apply();verify("overload",3);
+  check(rect.left>=-1&&rect.right<=width+1,"Dialog exceeds width "+width);
+  check(rect.bottom<=w.innerHeight+1,"Dialog exceeds available viewport height");
+  by("checkin-override").value="focus";by("checkin-override").dispatchEvent(new w.Event("change",{bubbles:true}));
+  check(by("apply-checkin").disabled,"Manual override cannot bypass required physical state");
+  setPhysical("yes","yes","");
+  check(by("apply-checkin").disabled,"Partial physical state allowed Apply");
+  setPhysical("yes","yes","yes");
+  check(!by("apply-checkin").disabled,"All physical answers must enable Apply");
+  by("checkin-override").value="";by("checkin-override").dispatchEvent(new w.Event("change",{bubbles:true}));
+  check(by("checkin-recommendation").textContent.includes("Gợi ý: Đào sâu"),"All yes should suggest focus");
+  apply();verify("focus",13,"yes","yes","yes");
   open();
-  by("checkin-override").value="focus";
+  check(by("checkin-sleep").value===""&&by("checkin-move").value===""&&by("checkin-rest").value==="","Reopened check-in used stale answers");
+  setPhysical("yes","unsure","yes");apply();verify("start",6,"yes","unsure","yes");
+  open();setPhysical("yes","no","yes");apply();verify("recover",6,"yes","no","yes");
+  open();setPhysical("yes","yes","yes");
+  const context=d.querySelector("#checkin-modal .checkin-context");context.open=true;
+  chooseOptional("energy","low");chooseOptional("attention","hard");
+  check(by("checkin-recommendation").textContent.includes("Gợi ý: Quá tải"),"Subjective overload refinement missing");
+  apply();verify("overload",3,"yes","yes","yes");
+  open();setPhysical("yes","yes","yes");by("checkin-override").value="recover";
   by("checkin-override").dispatchEvent(new w.Event("change",{bubbles:true}));
-  check(by("checkin-recommendation").textContent.includes("thủ công"),"override reason visible");
-  apply();verify("focus",13);
-  open();by("close-checkin").click();verify("focus",13);
-  result.textContent="LI_CHECKIN_BROWSER_PASS "+width+"px · 4 auto mappings, manual override, skip, avatar + method synchronization";
+  check(by("checkin-recommendation").textContent.includes("thủ công"),"Override label missing");
+  apply();verify("recover",6,"yes","yes","yes");
+  const oldCount=captured,oldSnapshot=w.LiL1.getPhysicalState().recordedAt;
+  open();by("close-checkin").click();
+  check(captured===oldCount,"Skip emitted physical event");
+  check(w.LiL1.getPhysicalState().recordedAt===oldSnapshot,"Skip changed physical record");
+  check(captured===5,"Should emit exactly one physical event for each applied check-in: "+captured);
+  result.textContent="LI_CHECKIN_BROWSER_PASS "+width+"px · 3 required L1 physical answers, 4 adaptive modes, manual override, skip, session state + avatars";
  }catch(e){fail(e);}
 });
 </script></body></html>

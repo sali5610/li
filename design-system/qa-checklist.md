@@ -8,6 +8,7 @@
 - [ ] Check IA, navigation, labels, routes, copy and wireframe sequence upstream of the visual symptom.
 - [ ] Audit every instance/variant of affected component; search CSS/HTML/lesson modules for same controls.
 - [ ] Confirm body 16/24, essential support ≥14/20, optional metadata ≥12/16; check long VI/EN copy and prevent method-card two-line forced cropping.
+- [ ] Check **modal heading typography when wrapped**: display title 48/56 (or approved responsive equivalent); test Check-in at 320/375/390/402 and ensure individual text lines do not collide. Page-only clipping checks do not cover dialogs.
 - [ ] Check every new margin/padding/gap value is a multiple of 4 and uses canonical spacing tokens; do not indiscriminately round artwork position/crop.
 - [ ] Check rules in `design-system/tokens.json` and `design-system/components.md`; update them if an approved decision changed.
 - [ ] Decide whether change is **visual** or changes interaction/state. Interaction changes may require a working-wireframe fork and re-validation; do not modify frozen WF-BASE.

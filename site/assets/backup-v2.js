@@ -137,29 +137,53 @@
     }
     return errors.length===0;
   }
+  function sameRecords(left,right){
+    if(left.length!==right.length)return false;
+    for(let i=0;i<left.length;i++){
+      if(left[i].key!==right[i].key||left[i].value!==right[i].value)return false;
+    }
+    return true;
+  }
+  // Web Locks serializes imports that use this same lock, NOT unrelated app writes.
+  // A lightweight localStorage 'lock key' would not be an atomic cross-tab mutex.
+  async function withImportLock(callback){
+    const locks=root.navigator?.locks;
+    if(!locks||typeof locks.request!=="function")fault("lock-unavailable");
+    return locks.request("li:backup:v2:import",{mode:"exclusive",ifAvailable:true},lock=>{
+      if(!lock)fault("busy");
+      return callback();
+    });
+  }
   async function importJSON(storage,text,{confirmed=false,fingerprint}={}){
     const plan=await preview(storage,text);
     if(!confirmed)return{applied:false,plan};
     if(typeof fingerprint!=="string"||fingerprint!==plan.fingerprint)fault("changed");
-    const incoming=await parse(text),before=records(storage);
-    const touched=[...new Set([...before.map(x=>x.key),...incoming.entries.map(x=>x.key)])];
-    try {
-      for(const {key,value} of incoming.entries){
-        storage.setItem(key,value);
-        if(storage.getItem(key)!==value)fault("write");
-      }
-      if(incoming.mode==="replace"){
-        const keep=new Set(incoming.entries.map(x=>x.key));
-        for(const {key} of before)if(!keep.has(key)){
-          storage.removeItem(key);
-          if(storage.getItem(key)!==null)fault("write");
+    return withImportLock(async()=>{
+      // There are multiple async digest boundaries. Do all validation first.
+      const incoming=await parse(text),before=records(storage);
+      if(await checksum(before)!==plan.fingerprint)fault("changed");
+      // No further awaits between this synchronous preflight and the write loop.
+      // Recheck because another document can modify localStorage while WebCrypto runs.
+      if(!sameRecords(before,records(storage)))fault("changed");
+      const touched=[...new Set([...before.map(x=>x.key),...incoming.entries.map(x=>x.key)])];
+      try {
+        for(const {key,value} of incoming.entries){
+          storage.setItem(key,value);
+          if(storage.getItem(key)!==value)fault("write");
         }
+        if(incoming.mode==="replace"){
+          const keep=new Set(incoming.entries.map(x=>x.key));
+          for(const {key} of before)if(!keep.has(key)){
+            storage.removeItem(key);
+            if(storage.getItem(key)!==null)fault("write");
+          }
+        }
+      }catch(e){
+        if(!rollback(storage,before,touched))fault("rollback-failed");
+        fault("write");
       }
-    }catch(e){
-      if(!rollback(storage,before,touched))fault("rollback-failed");
-      fault("write");
-    }
-    return{applied:true,plan};
+      return{applied:true,plan};
+    });
   }
   root.LiBackupV2=Object.freeze({STORAGE_KEYS,exportJSON,parse,preview,importJSON});
 })(window);

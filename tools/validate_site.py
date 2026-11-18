@@ -268,7 +268,7 @@ assert '#settings-buddy-card .settings-buddy-illustration' in html
 settings_styles=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert 'border-top: 1px solid var(--rule)' not in settings_styles.split('#page-settings .buddy-address-settings {', 1)[1].split('}', 1)[0]
 assert '#settings-buddy-card .settings-buddy-footer' not in html
-assert 'li-layout.css?v=0.4' in page_html and 'ui-foundations.css?v=0.6' in page_html
+assert 'li-layout.css?v=0.4' in page_html and 'ui-foundations.css?v=20261118-s118-exact' in page_html
 
 # S118: two compact mobile Guide tiles with shadow-safe column/row gutters; no duplicate S99 rule.
 guide=section("guide")
@@ -285,6 +285,8 @@ assert "#page-guide #method-cards > .method-card {" in foundation
 assert "padding: var(--li-space-5) !important;" in foundation
 assert "#page-guide #method-cards>.method-card .purpose{" not in html, "Retired S118 text-clamping CSS must not return"
 assert "#page-guide #method-cards > .method-card .purpose {" in foundation
+assert "--li-guide-s118-col-gap: 18px;" in foundation and "--li-guide-s118-row-gap: 20px;" in foundation
+assert "--li-guide-s118-col-gap: 14px;" in foundation and "--li-guide-s118-row-gap: 18px;" in foundation
 assert "function renderMethods(){" in html and "function showMethod(id){" in html
 assert "/* S114 — restrained Lão Lý peek:" in html
 
@@ -467,7 +469,7 @@ assert page_html.count('type:"hook",lessonRoute:') == 3
 assert 'sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang."' in page_html
 assert 'navigate(scenario.type==="hook"?scenario.lessonRoute:"research");' in (site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert '<script src="./assets/lesson-related-wave1.js"></script>' in page_html
-assert 'ui-foundations.css?v=0.6' in page_html
+assert 'ui-foundations.css?v=20261118-s118-exact' in page_html
 cross=(site/"assets"/"lesson-related-wave1.js").read_text(encoding="utf-8")
 assert 'Object.keys(RELATED).forEach' in cross
 assert all(k in cross for k in ("L03-1-2", "L09-1-2", "L15-2-2"))

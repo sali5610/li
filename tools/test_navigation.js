@@ -23,7 +23,7 @@ const assertUtility=(page)=>{
   assert.equal(utility.state.current,utility.dataset.page===page,"Utility aria-current "+utility.dataset.page);
  }
 };
-const calls={guide:0,library:0,research:0};
+const calls={guide:0,library:0,resume:0,collection:0,lesson:0,research:0};
 const location=new URL("https://sali5610.github.io/li/?utm_source=chatgpt.com&lesson=L09-1-2#l09-goals");
 const urlReplacements=[];
 const sandbox={
@@ -41,6 +41,12 @@ const sandbox={
  window:{
    scrollTo(){},
    location,
+   liLibraryShelf:{
+     renderHome(){calls.library++},
+     renderResume(){calls.resume++},
+     renderCollection(){calls.collection++},
+     trackLesson(){calls.lesson++}
+   },
    history:{
      state:null,
      replaceState(state,title,path){
@@ -78,6 +84,10 @@ sandbox.navigate("settings");
 sandbox.goBack();assert.equal(active(),"home","same-page clicks must not push duplicates");
 sandbox.navigate("guide");assert.equal(calls.guide,1);
 sandbox.navigate("library");assert.equal(calls.library,1);
+sandbox.navigate("resume");assert.equal(calls.resume,1);
+sandbox.goBack();assert.equal(active(),"library");
+sandbox.navigate("collection");assert.equal(calls.collection,1);
+sandbox.goBack();assert.equal(active(),"library");
 sandbox.goBack();assert.equal(active(),"guide");
 sandbox.navigate("research");assert.equal(calls.research,1);
 sandbox.navigate("capture");
@@ -91,5 +101,6 @@ sandbox.navigate("home");assert.equal(location.searchParams.get("lesson"),null,"
 sandbox.navigate("lessonL03");assert.equal(location.searchParams.get("lesson"),"L03-1-2");
 sandbox.navigate("lessonL15");assert.equal(location.searchParams.get("lesson"),"L15-2-2");
 sandbox.navigate("home");assert.equal(location.searchParams.has("lesson"),false);
+assert.equal(calls.lesson,4,"record only published lesson navigation");
 assert.ok(urlReplacements.length>=5,"Route updates should be captured without reloading");
 console.log("PASS S118 back navigation: Settings, Search, Capture, chained routes, duplicate prevention, fallback and Guide/Library/Research hooks");

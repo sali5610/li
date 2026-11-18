@@ -203,7 +203,7 @@ function tr(value){
 function ignored(node,forAttrs=false){
  const p=node.nodeType===1?node:node.parentElement;
  if(!p)return true;
- const shared='script,style,code,pre,[data-lesson-id],.catalog-sheet-layer,[data-li-no-translate],.library-entry-body,.library-clamp,#li-note-detail-title,#li-note-detail-body,#li-note-case-question,#li-note-case-scene,#li-note-case-choices';
+ const shared='script,style,code,pre,[data-lesson-id],.catalog-sheet-layer,[data-li-no-translate],.library-entry-body,.library-clamp,#li-note-case-question,#li-note-case-scene,#li-note-case-choices';
  // Do not touch learner-entered textarea text; its placeholder/ARIA still needs locale.
  return Boolean(p.closest?.(shared))||(!forAttrs&&Boolean(p.closest?.('textarea,[contenteditable]')));
 }

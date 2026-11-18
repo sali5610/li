@@ -134,7 +134,7 @@ function capturePlan(){
   actions:[
    action("Thêm gì vào ý?","Ghi nguyên nhận định, ai nói, đọc ở đâu, thời điểm nào và chi tiết nào cần kiểm tra."),
    action("Kiểm chứng thế nào?","Tách điều quan sát khỏi suy luận; tìm nguồn độc lập và thử một trường hợp phản ví dụ.",()=>go("research")),
-   action("Về ô ghi ý","Mục Nhặt ý hiện chưa có tính năng lưu bền vững. Lão không giả vờ đã cất nó.",()=>go("capture","capture-note"))
+   action("Về ô ghi ý","Ý đã nhặt chỉ lưu trên thiết bị khi ngươi bấm Lưu. Nếu lưu lỗi, app sẽ báo rõ; lão không nhận vơ.",()=>go("capture","capture-note"))
   ]
  };
 }

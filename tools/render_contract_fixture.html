@@ -45,6 +45,10 @@
     report("Home header uses genuinely transparent Component Library overlay",!!topCss&&cssClear(topCss.backgroundColor)&&topCss.borderBottomWidth==="0px"&&topCss.boxShadow==="none",topCss?.backgroundColor+"/"+topCss?.borderBottomWidth);
     report("Home artwork extends behind top navigation",!!heroBox&&!!headerBox&&Math.abs(heroBox.top-headerBox.top)<=2&&headerBox.height>=60,heroBox?.top+"/"+headerBox?.top+"/"+headerBox?.height);
     report("Transparent Home artwork also covers bottom viewport",!!heroBox&&heroBox.bottom>=w.innerHeight-2,"sceneBottom="+heroBox?.bottom+" viewport="+w.innerHeight);
+    const rootScroll=w.getComputedStyle(doc.documentElement).overflowY;
+    const bodyScroll=w.getComputedStyle(doc.body).overflowY;
+    report("Home vertical scrolling disabled on document and body",rootScroll==="hidden"&&bodyScroll==="hidden",rootScroll+"/"+bodyScroll);
+    report("Home hero exactly one visible dynamic viewport tall",!!heroBox&&Math.abs(heroBox.height-w.innerHeight)<3,"hero="+heroBox?.height+" viewport="+w.innerHeight);
     report("Home overlay renders light seal and icon ink",!!brandSeal&&w.getComputedStyle(brandSeal).filter.includes("invert(1)")&&!!tool&&w.getComputedStyle(tool).color==="rgb(250, 249, 245)",brandSeal?w.getComputedStyle(brandSeal).filter:"missing");
     report("Home overlay utility keeps 48px touch area",!!tool&&tool.getBoundingClientRect().width>=48&&tool.getBoundingClientRect().height>=48,tool?.getBoundingClientRect().width+"x"+tool?.getBoundingClientRect().height);
     if(w.innerWidth>=601&&w.innerWidth<=1139){
@@ -66,6 +70,7 @@
     if(typeof w.navigate==="function")w.navigate("guide",{focus:false,syncUrl:false});
     const restoredCss=topHeader?w.getComputedStyle(topHeader):null;
     report("Leaving Home restores paper header surface",!!restoredCss&&restoredCss.backgroundColor==="rgb(241, 240, 233)"&&restoredCss.marginBottom==="0px",restoredCss?.backgroundColor+"/"+restoredCss?.marginBottom);
+    report("Leaving Home restores normal browser scrolling",w.getComputedStyle(doc.documentElement).overflowY!=="hidden"&&w.getComputedStyle(doc.body).overflowY!=="hidden",w.getComputedStyle(doc.documentElement).overflowY+"/"+w.getComputedStyle(doc.body).overflowY);
     setTimeout(function(){
       try{
        const cards=doc.querySelectorAll("#page-guide #method-cards>.method-card");

@@ -294,7 +294,13 @@ function renderSavedBookmarkEntries(root,entries,knownCases,lessonById){
    if(index<0)return;
    savedQuestions.splice(index,1);
    if(!liWriteState()){savedQuestions.splice(index,0,entry.record);toast("Không bỏ lưu được, Dấu Trang vẫn giữ nguyên.");return;}
-   renderBookmarks();toast("Đã bỏ lưu câu hỏi.");
+   renderBookmarks();
+   toast("Đã bỏ lưu câu hỏi.",{undo:()=>{
+    if(savedQuestions.some(x=>x.id===entry.record.id))return true;
+    const at=Math.min(index,savedQuestions.length);savedQuestions.splice(at,0,entry.record);
+    if(!liWriteState()){savedQuestions.splice(at,1);return false;}
+    renderBookmarks();if(typeof refreshQuestionBookmark==="function")refreshQuestionBookmark();return true;
+   }});
   });
  }
 }

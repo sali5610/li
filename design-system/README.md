@@ -1,5 +1,7 @@
 # li. UI/UX Design Library — runtime tokens v0.3
 
+**UX-DS-19 candidate (2026-11-18):** Added distinct porcelain `#FEFDFC` / `--porcelain` as the input/textarea surface: brighter than cream `#FAF9F5`, but not white `#FFFFFF`. Editable text, search, ruled textarea and icon-search across app and Component Library use the new foundation token. Disabled fields remain paper-2; notebook's 32px rule and 3px existing-border focus behavior are preserved. No button/card/illustration recoloring or G2 approval.
+
 **UX-DS-18 candidate (2026-11-18):** Added independent base color `olive: #65734C` / runtime `--olive`, presented as an **Olive Moss** swatch in Component Library > Foundations. It is a muted supporting green (cream text contrast ≈4.85:1) alongside existing brand Moss `#243A29`, not a replacement or forced recolor of actual controls. Existing neutral-ivory paper and all current active semantic tokens remain unchanged. Human PO G2 visual gate is still open.
 
 **UX-DS-17 candidate (2026-11-18):** The shared paper material has been cooled slightly toward neutral ivory across reading background, raised sheet, deeper sheet, card, rule, navigation selected fill and matching light semantic surfaces. The natural paper hierarchy, moss/forest/wood identity, approved illustrations and contrast-first text roles remain unchanged. This is an app-wide token refinement **for Human PO G2 review**, not final visual-identity approval. Runtime CSS is regenerated from tokens; every HTML consumer changes its stylesheet cache query.

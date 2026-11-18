@@ -16,7 +16,7 @@
     var sheet=[].slice.call(document.styleSheets).find(function(x){return x.href&&x.href.indexOf("library-hub.css")!==-1;});
     var version=sheet&&sheet.href.includes("?v=")?sheet.href.split("?v=")[1]:"unknown";
     panel.textContent=[
-      "li. | UX-DS-32 iPad QA",
+      "li. | UX-DS-33 iPad QA",
       "URL: "+location.host+location.pathname,
       "CSS: "+version,
       "Viewport: "+window.innerWidth+" × "+window.innerHeight+" CSS px",
@@ -24,13 +24,13 @@
       "Screen: "+window.screen.width+" × "+window.screen.height,
       "Root: "+document.documentElement.clientWidth+" × "+document.documentElement.clientHeight,
       "Width sync: "+(Math.abs((window.visualViewport?window.visualViewport.width:window.innerWidth)-document.documentElement.clientWidth)>16 ? "MISMATCH (Safari reflow)" : "OK"),
-      "App: "+Math.round(document.querySelector(".app").getBoundingClientRect().width)+"px / Hero: "+Math.round(document.querySelector("#page-home .hero").getBoundingClientRect().width)+"px",
+      "App: "+Math.round(document.querySelector(".app").getBoundingClientRect().width)+"×"+Math.round(document.querySelector(".app").getBoundingClientRect().height)+" / Hero: "+Math.round(document.querySelector("#page-home .hero").getBoundingClientRect().width)+"×"+Math.round(document.querySelector("#page-home .hero").getBoundingClientRect().height),
       "Visual scale: "+(window.visualViewport?window.visualViewport.scale.toFixed(2):"n/a"),
       "Outer: "+window.outerWidth+" × "+window.outerHeight,
       "Native angle: "+(typeof window.orientation==="number"?window.orientation:"n/a")+" / Screen angle: "+(screen.orientation?.angle??"n/a"),
       "Screen type: "+(screen.orientation?.type||"unknown"),
       "Viewport meta: "+(document.querySelector('meta[name="viewport"]')?.content||"missing"),
-      "Recovery: "+(window.liSafariRotationQA?.mode||"not initialized")+" / landscape "+document.documentElement.classList.contains("li-safari-landscape-recovery")+" / portrait "+document.documentElement.classList.contains("li-safari-portrait-recovery"),
+      "Shell: "+(window.liSafariRotationQA?.mode||"not initialized")+" / active "+document.documentElement.classList.contains("li-ipad-home-canvas"),
       "Orientation: "+(matchMedia("(orientation: landscape)").matches?"landscape":"portrait"),
       "Coarse pointer: "+matchMedia("(any-pointer: coarse)").matches,
       "CSS mode: "+(style.getPropertyValue("--li-ipad-active-mode").trim()||"desktop/phone"),

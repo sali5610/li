@@ -630,11 +630,11 @@ assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
 
 # UX-DS-11 · Review components are connected; app Guide chips use full pills.
-assert 'ui-foundations.css?v=20261118-ds12-nav-white' in page_html
+assert 'ui-foundations.css?v=20261118-ds13-focus-border' in page_html
 assert '#page-guide #method-filters .filter,' in foundation and 'border-radius:999px!important;' in foundation
 v3=(site/"component-library-review.html").read_text(encoding="utf-8")
-assert 'component-review-v3.css?v=20261118-ds11' in v3
-assert 'component-review-v3.js?v=20261118-ds12-today' in v3
+assert 'component-review-v3.css?v=20261118-ds13-selection' in v3
+assert 'component-review-v3.js?v=20261118-ds13-week-fix' in v3
 assert all('<section id="'+id+'"' in v3 for id in ("controls","dataviz"))
 assert all('id="'+id+'"' in v3 for id in
  ("ds11-calendar","ds11-chart","ds11-lang-switch","ds11-dropdown-trigger",
@@ -657,26 +657,42 @@ assert 'No data' not in v3js or 'DEMO' in v3js
 # UX-DS-12 · PO-requested component and actual-app deltas. Review-only new
 # visuals are not G2 signoff, and demo charts never touch private diary.
 ds12=(site/"assets"/"component-review-v4.css").read_text(encoding="utf-8")
-assert 'component-review-v4.css?v=20261118-ds12' in v3
+assert 'component-review-v4.css?v=20261118-ds13-focus-today' in v3
 assert 'component-review-v2.css?v=20261118-ds12-white-note' in v3
-assert 'component-review-v3.js?v=20261118-ds12-today' in v3
+assert 'component-review-v3.js?v=20261118-ds13-week-fix' in v3
 assert '--white: #FFFFFF;' in (site/"assets"/"design-tokens.css").read_text(encoding="utf-8")
 assert all(x in foundation for x in ("/* UX-DS-12", ".page input[type=\"checkbox\"]", "background-color:var(--white)!important"))
 assert all(x in v3 for x in ("ds12-horizontal-stack","ds12-tag-row","ds11-month-today","ds11-week-today"))
 assert all(x in ds12 for x in ("ds12-variant-secondary","ds12-variant-dark","ds12-horizontal-card","ds12-tag","data-today"))
 assert all(x in v3js for x in ("function returnToday(){","new Date()","dataset.ds12CardMode"))
 
+# UX-DS-13 · PO correction: gallery uses existing full Lão Lý mirror image;
+# no week-range tile shadow; today dot is separate from selected stroke.
+assert 'component-review-v4.css?v=20261118-ds13-focus-today' in v3
+assert v3.count('src="./assets/laoly-mirror-suy-nghi.png"')==3
+assert 'src="./assets/laoly-neutral.png"' not in v3
+assert 'border-right-width:var(--li-space-0)' in ds12
+assert '.ds11-date[data-window="true"]' not in v3css
+assert 'b.dataset.window=' not in v3js
+assert '.ds11-date[data-today="true"]::after,' in ds12
+assert 'width:6px;height:6px;' in ds12
+assert 'border:3px solid var(--li-color-focus-ring)!important;' in ds12
+assert 'outline:var(--ds11-no-shadow)!important;' in ds12
+assert '/* UX-DS-13' in foundation
+assert 'border:3px solid var(--li-color-input-focus-ring)!important;' in foundation
+assert 'outline:var(--li-space-0) solid var(--li-color-input-focus-ring)!important;' in foundation
+
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
 assert 'li-layout.css?v=20261118-ds10-touch' in page_html
-assert 'ui-foundations.css?v=20261118-ds12-nav-white' in page_html
+assert 'ui-foundations.css?v=20261118-ds13-focus-border' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation
 review10=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert 'ds-notebook' in review10 and 'ds-home-bubble green' in review10
 assert all('src="./assets/'+p+'"' in review10 for p in
- ("home-mystic-cool-desktop.webp","home-mystic-cool-mobile.webp","laoly-neutral.png"))
+ ("home-mystic-cool-desktop.webp","home-mystic-cool-mobile.webp","laoly-mirror-suy-nghi.png"))
 review10css=(site/"assets"/"component-review-v2.css").read_text(encoding="utf-8")
 assert 'background-size:100% 16px,100% var(--li-review-notebook-line)!important;' in review10css
 assert '.ds-home-bubble.green' in review10css and '.ds-image-split' in review10css

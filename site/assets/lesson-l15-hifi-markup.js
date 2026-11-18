@@ -7,11 +7,11 @@ const page=String.raw`
 <section id="page-lessonL15" class="page" tabindex="-1" aria-labelledby="l15-title" data-lesson-id="L15-2-2" data-companion-manifest="./lessons/companion/L15-2-2.json">
  <div class="section-shell">
  <div class="kicker">BUSINESS · SUPPLY CHAIN · PLANNING, INVENTORY & VISIBILITY · L15-2-2</div>
- <h1 class="display-title" id="l15-title">Reorder Points & Safety Stock</h1>
+ <div class="library-heading-with-utility library-lesson-heading"><h1 class="display-title" id="l15-title">Reorder Points & Safety Stock</h1><div class="library-icon-utility"><button class="library-icon-action" type="button" data-li-bookmark-kind="lesson" data-li-bookmark-id="L15-2-2" aria-label="Lưu bài L15-2-2" title="Lưu bài L15-2-2" aria-pressed="false"><i data-lucide="bookmark" aria-hidden="true"></i></button></div></div>
  <p class="intro" id="l15-intro">Ngưỡng đặt hàng không phải số lượng đặt hàng.</p>
  <div class="l09-hero-tools">
   <button class="action alt" type="button" data-page="catalog" id="l15-back">Về Tàng Thư</button>
-  <button class="library-text-link" type="button" data-li-bookmark-kind="lesson" data-li-bookmark-id="L15-2-2" aria-pressed="false">Lưu bài</button>
+ 
   <span class="status-chip" id="l15-status">Wave 1 · Content locked / UI in review</span>
   <div class="l09-lang-switch" role="group" aria-label="Ngôn ngữ bài học / Lesson language">
    <button type="button" class="action alt" id="l15-vi" aria-pressed="true">VI</button>

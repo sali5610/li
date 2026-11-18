@@ -79,6 +79,7 @@
 .ds12-today-button{min-height:44px;border:1px solid var(--moss);background:var(--cream);color:var(--moss);padding:var(--li-space-2) var(--li-space-3);font:700 var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);cursor:pointer}
 .ds12-today-button:hover{background:var(--paper-2)}
 .ds12-today-button:focus-visible{outline:3px solid var(--li-color-focus-ring);outline-offset:2px}
+.ds11-bar-cell[data-today="true"]{position:relative}
 /* UX-DS-13: today = quiet dot; selected = ONE inset border.
    Calendar's 7-day chart window is navigation context, not a selection state. */
 .ds11-date[data-today="true"]::after,

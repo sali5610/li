@@ -419,7 +419,7 @@ assert 'if(back)back.hidden=id==="home"' in page_html
 assert '.header #li-global-back{' in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
 assert 'class="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"' in settings
 assert 'class="settings-buddy-illustration" src="./assets/laoly-guide-rest.png"' not in settings
-assert '<span class="hero-dialogue-avatar" aria-hidden="true"><img src="./assets/laoly-neutral.png"' in html
+assert '<span class="hero-dialogue-avatar" aria-hidden="true"><img src="./assets/laoly-neutral.png?v=ux-art05-mini-heads-20261119"' in html
 assert 'const pageHistory=[];' in html
 assert 'function goBack(){' in html
 assert 'if(t.hasAttribute("data-nav-back")){goBack();return}' in html

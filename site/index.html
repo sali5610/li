@@ -71,7 +71,7 @@
 <section class="library-group" aria-labelledby="library-resume-heading">
   <div class="library-group-header"><h2 id="library-resume-heading">Quay lại</h2><p>Tìm lại hành trình đang dở.</p></div>
   <article class="surface tinted">
-    <div class="kicker"><i data-lucide="bookmark" aria-hidden="true"></i> DẤU TRANG · BẢN XEM THỬ</div>
+    <div class="kicker"><i data-lucide="bookmark" aria-hidden="true"></i> <span id="library-bookmark-kicker">DẤU TRANG · BẢN XEM THỬ</span></div>
     <h3>Chưa có hành trình đã lưu</h3>
     <p>Phiên xem thử chưa lưu tiến độ. Bạn có thể mở tình huống mẫu để khám phá cách đặt câu hỏi.</p>
     <div class="action-row"><button class="action" data-page="research">Đào sâu ví dụ</button></div>
@@ -285,6 +285,7 @@ function setStudyMode(key,{persist=true}={}){
  }catch(e){toast("Nhịp học đã đổi trong phiên này nhưng không thể lưu lựa chọn trên thiết bị.");}}
  syncStudyModeUI();
  renderMethods();
+ if(persist)window.LiDaily?.recordMode(key);
  return true;
 }
 document.querySelectorAll(".ly-mode-choice").forEach(b=>b.addEventListener("click",()=>setStudyMode(b.dataset.lyMode)));
@@ -312,7 +313,7 @@ function renderSavedQuestions(){
  target.replaceChildren();
  target.hidden=savedQuestions.length===0;
  const shelf=target.closest("article"),title=shelf?.querySelector("h3"),description=shelf?.querySelector("p"),sampleAction=shelf?.querySelector(".action-row");
- const caption=shelf?.querySelector(".kicker");
+ const caption=shelf?.querySelector("#library-bookmark-kicker");
  if(title)title.textContent=target.hidden?"Chưa có hành trình đã lưu":savedQuestions.length+" câu hỏi đã lưu";
  if(description)description.textContent=target.hidden?"Phiên xem thử chưa lưu tiến độ. Bạn có thể mở tình huống mẫu để khám phá cách đặt câu hỏi.":"Mở lại câu hỏi đã lưu trên thiết bị này. Nhánh nghiên cứu chưa được lưu riêng.";
  if(sampleAction)sampleAction.hidden=!target.hidden;

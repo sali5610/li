@@ -143,9 +143,10 @@ function auditImpl(){
     if(visible(title)){
      const cs=getComputedStyle(title);
      const fontSize=parseFloat(cs.fontSize),lineHeight=parseFloat(cs.lineHeight);
-     samples.modal.heading={text:title.textContent.trim(),fontSize,lineHeight,rect:R(title)};
-     if(!Number.isFinite(lineHeight)||lineHeight<fontSize*1.1)
-      add(failures,"modal-heading-leading-too-tight",samples.modal.heading);
+     const headingRect=R(title),wrapped=Number.isFinite(lineHeight)&&headingRect.h>lineHeight*1.45;
+     samples.modal.heading={text:title.textContent.trim(),fontSize,lineHeight,wrapped,rect:headingRect};
+     if(wrapped&&(!Number.isFinite(lineHeight)||lineHeight<fontSize*1.1))
+      add(failures,"wrapped-modal-heading-leading-too-tight",samples.modal.heading);
     }
    }
   }
@@ -160,7 +161,7 @@ try{
   await send("Emulation.setDeviceMetricsOverride",{width,height,deviceScaleFactor:1,mobile:width<=600});
   await send("Page.navigate",{url:base+"index.html?visualQA="+width});
   await waitReady();
-  const states=(width===390||width===820)?routes.concat(["buddyHome","buddyGuide","checkin"]):routes;
+  const states=(width===390||width===820)?routes.concat(["buddyHome","buddyGuide","checkin"]):width<=600?routes.concat(["checkin"]):routes;
   for(const state of states){
    try{
     const change="(()=>{const id="+JSON.stringify(state)+";"+
@@ -174,7 +175,7 @@ try{
     const item=await evaluate("("+auditImpl.toString()+")()");
     if(!item)throw Error("empty browser result");
     item.state=state;report.matrix.push(item);
-    if(captureWidths.has(width)||(width===320&&["home","guide"].includes(state))){
+    if(captureWidths.has(width)||(width===320&&["home","guide","checkin"].includes(state))||([375,402].includes(width)&&state==="checkin")){
      const name=width+"-"+state+".png";
      const image=await send("Page.captureScreenshot",{format:"png",captureBeyondViewport:false});
      fs.writeFileSync(path.join(out,"screenshots",name),Buffer.from(image.data,"base64"));

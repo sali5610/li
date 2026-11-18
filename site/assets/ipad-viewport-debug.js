@@ -25,7 +25,9 @@
       "Coarse pointer: "+matchMedia("(any-pointer: coarse)").matches,
       "CSS mode: "+(style.getPropertyValue("--li-ipad-active-mode").trim()||"desktop/phone"),
       "Body token: "+style.getPropertyValue("--li-type-body").trim(),
-      "Display: "+(window.navigator.standalone?"Home Screen":"browser")
+      "Display: "+(window.navigator.standalone?"Home Screen":"browser"),
+      "Home art: "+(function(){var hero=document.querySelector("#page-home .hero");if(!hero)return "missing";var b=hero.getBoundingClientRect();return [Math.round(b.left),Math.round(b.top),Math.round(b.width),Math.round(b.height)].join(",")+" (x,y,w,h)";})(),
+      "Window DPR: "+window.devicePixelRatio
     ].join("\n");
   }
   render();

@@ -68,8 +68,17 @@
       const mirrorRail=doc.querySelector("#page-home .mirror-message").getBoundingClientRect();
       const contextRail=doc.querySelector("#page-home .hero-dialogue").getBoundingClientRect();
       const actionRail=doc.querySelector("#page-home .hero-actions").getBoundingClientRect();
-      report("Landscape Home has three distinct horizontal zones",titleRail.right<w.innerWidth*.37&&Math.abs((mirrorRail.left+mirrorRail.width/2)/w.innerWidth-.49)<.035&&contextRail.left>w.innerWidth*.66&&actionRail.left>w.innerWidth*.66,JSON.stringify({titleRight:Math.round(titleRail.right),mirrorCenter:Math.round(mirrorRail.left+mirrorRail.width/2),contextLeft:Math.round(contextRail.left),actionLeft:Math.round(actionRail.left)}));
-      report("Landscape context aligns above right action rail",Math.abs(contextRail.left-actionRail.left)<3&&contextRail.bottom<actionRail.top&&actionRail.bottom<=w.innerHeight-12,Math.round(contextRail.left)+"/"+Math.round(actionRail.left)+"/"+Math.round(contextRail.bottom)+"/"+Math.round(actionRail.top));
+      report("Landscape Home keeps left check-in and centered mirror",titleRail.right<w.innerWidth*.37&&Math.abs((mirrorRail.left+mirrorRail.width/2)/w.innerWidth-.49)<.035,JSON.stringify({titleRight:Math.round(titleRail.right),mirrorCenter:Math.round(mirrorRail.left+mirrorRail.width/2)}));
+      report("Landscape bubble and buttons align at bottom center",Math.abs((contextRail.left+contextRail.right)/2-w.innerWidth/2)<3&&Math.abs((actionRail.left+actionRail.right)/2-w.innerWidth/2)<3&&contextRail.bottom<=actionRail.top+3&&actionRail.bottom<=w.innerHeight-12,JSON.stringify({bubbleMid:Math.round((contextRail.left+contextRail.right)/2),actionsMid:Math.round((actionRail.left+actionRail.right)/2),dialogBottom:Math.round(contextRail.bottom),actionsTop:Math.round(actionRail.top)}));
+    }
+    if(!landscape&&w.innerWidth>=744&&w.innerWidth<=1139){
+      const bubble=doc.querySelector("#page-home .hero-dialogue").getBoundingClientRect();
+      const actions=doc.querySelector("#page-home .hero-actions").getBoundingClientRect();
+      report("Portrait bubble and buttons share center",
+        Math.abs((bubble.left+bubble.right)/2-w.innerWidth/2)<3&&
+        Math.abs((actions.left+actions.right)/2-w.innerWidth/2)<3&&
+        bubble.bottom<=actions.top+3,
+        Math.round((bubble.left+bubble.right)/2)+"/"+Math.round((actions.left+actions.right)/2));
     }
     if(w.innerWidth>=601&&w.innerWidth<=1139){
      const ringCopy=doc.querySelector("#page-home .mirror-message").getBoundingClientRect();

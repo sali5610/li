@@ -51,8 +51,15 @@ function verify(label,width,height,mode){
       [s.hero.left,s.hero.width,s.hero.right,width].map(Math.round).join(","));
  test(label+" Home behind transparent header",Math.abs(s.hero.top-s.header.top)<=tolerance,Math.round(s.hero.top)+"/"+Math.round(s.header.top));
  test(label+" Home scroll locked",s.scroll==="hidden",s.scroll);
- if(mode==="landscape")test(label+" action rail occupies right third",s.actions.left>width*.66&&s.context.left>width*.66,
-   Math.round(s.actions.left)+"/"+Math.round(s.context.left));
+ if(width>=744){
+   const actionsMid=(s.actions.left+s.actions.right)/2;
+   const contextMid=(s.context.left+s.context.right)/2;
+   test(label+" centered chat bubble and both CTAs",
+     Math.abs(actionsMid-width/2)<tolerance&&Math.abs(contextMid-width/2)<tolerance,
+     Math.round(contextMid)+"/"+Math.round(actionsMid)+" expected "+width/2);
+   test(label+" bubble grouped above CTA row",s.context.bottom<=s.actions.top+tolerance,
+     Math.round(s.context.bottom)+"/"+Math.round(s.actions.top));
+ }
 }
 let done=false;
 function finish(){if(done)return;done=true;const failed=checks.filter(x=>!x.passed);result.textContent=(failed.length?"LI_ROTATION_FAIL ":"LI_ROTATION_PASS ")+JSON.stringify({portrait:[portraitWidth,portraitHeight],landscape:[landscapeWidth,landscapeHeight],passed:checks.length-failed.length,total:checks.length,failed,checks});}

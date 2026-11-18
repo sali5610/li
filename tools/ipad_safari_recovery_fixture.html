@@ -45,7 +45,12 @@ frame.addEventListener("load",function(){
     check("Fallback device token is landscape 18px",mode()==="landscape"&&w.getComputedStyle(d.body).fontSize==="18px",mode()+"/"+w.getComputedStyle(d.body).fontSize);
     check("Approved art preserved during recovery",w.getComputedStyle(scene(),"::before").backgroundImage.includes("home-li-ipad-20261119.jpg"),w.getComputedStyle(scene(),"::before").backgroundImage.slice(0,120));
     const right=d.querySelector("#page-home .hero-actions").getBoundingClientRect();
-    check("Landscape CTA rail moves into right zone",right.left>950&&right.right<=1410,right.left+"/"+right.right);
+    const dialogue=d.querySelector("#page-home .hero-dialogue").getBoundingClientRect();
+    check("Landscape bubble and buttons centered as PO requested",
+      Math.abs((right.left+right.right)/2-704)<6&&
+      Math.abs((dialogue.left+dialogue.right)/2-704)<6&&
+      dialogue.bottom<=right.top+6,
+      right.left+"/"+right.right+" bubble "+dialogue.left+"/"+dialogue.right);
     // Simulate WebKit completing reflow natively without reloading the app.
     frame.style.width="1408px";
     trigger();

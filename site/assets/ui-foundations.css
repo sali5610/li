@@ -1085,3 +1085,18 @@ html.li-safari-portrait-recovery .page :is(.action,.primary,.secondary) {
 html.li-safari-landscape-recovery .app.home-focus {
  height:var(--li-safari-physical-height)!important;
 }
+
+
+/* UX-DS-32 · Safari may return 970×832 while leaving a 1408px DOM root.
+   Keep a bounded physical portrait canvas; never change viewport meta width. */
+html.li-safari-portrait-recovery .app.home-focus {
+ height:var(--li-safari-physical-height)!important;
+ min-height:0!important;
+ overflow:hidden!important;
+}
+html.li-safari-portrait-recovery .app.home-focus #main,
+html.li-safari-portrait-recovery .app.home-focus #page-home {
+ width:100%!important;
+ max-width:100%!important;
+ min-width:0!important;
+}

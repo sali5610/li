@@ -7,6 +7,7 @@ on:
       - site/assets/ui-foundations.css
       - site/assets/library-hub.css
       - tools/test_ipad_safari_rotation.cjs
+      - tools/ipad_safari_portrait_recovery_fixture.html
       - .github/workflows/ipad-safari-viewport-regression.yml
   workflow_dispatch:
 jobs:
@@ -19,3 +20,21 @@ jobs:
           node-version: "22"
       - name: Verify physical portrait / landscape stale viewport recovery
         run: node tools/test_ipad_safari_rotation.cjs
+
+      - name: Render 05:08 physical iPad Safari portrait stale-root layout
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then echo "No Chrome available"; exit 1; fi
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory . >/tmp/li-ipad-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1650,1500 --virtual-time-budget=14000 --dump-dom "http://127.0.0.1:8765/tools/ipad_safari_portrait_recovery_fixture.html" 2>/tmp/li-ipad-portrait-stderr.log || true)"
+          if [[ "$result" != *'LI_IPAD_PORTRAIT_PASS '* ]]; then
+            echo "FAIL actual iframe portrait stale-root geometry"
+            echo "$result" | grep -E 'LI_IPAD_PORTRAIT_(FAIL|PENDING)' | tail -1 | cut -c1-6000 || true
+            tail -20 /tmp/li-ipad-portrait-stderr.log || true
+            exit 1
+          fi
+          echo "PASS rendered portrait stale-root: 970×832 physical viewport recovers centered actions and 1270px scene"

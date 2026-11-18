@@ -231,10 +231,10 @@ def main() -> int:
           "(max-width:1420px) and (orientation:landscape)" in home_layout and
           "and (any-pointer: coarse)" not in foundations[foundations.index("/* UX-DS-25"):],
           "iPad 1408px landscape uses viewport ratio, not pointer hardware")
-    check("ds31-physical-recovery" in html, "new Safari rotation response and CSS are cache-versioned")
-    check("ipad-safari-rotation.js?v=20261119-ds31" in html, "iPad-only runtime orientation reconciliation installed")
+    check("ds32-portrait-center" in html, "new Safari rotation response and CSS are cache-versioned")
+    check("ipad-safari-rotation.js?v=20261119-ds32" in html, "iPad-only runtime orientation reconciliation installed")
     check("pinch-zoom" in (ROOT / "site/assets/ui-foundations.css").read_text(encoding="utf-8"), "iPad Safari touch-action allows pinch zoom")
-    check("ds31-physical-recovery" in html,
+    check("ds32-portrait-center" in html,
           "iPad runtime styles use fresh CSS cache versions")
     check("html.li-safari-landscape-recovery" in foundations and
           "html.li-safari-landscape-recovery" in home_layout and

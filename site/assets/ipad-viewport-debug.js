@@ -16,7 +16,7 @@
     var sheet=[].slice.call(document.styleSheets).find(function(x){return x.href&&x.href.indexOf("library-hub.css")!==-1;});
     var version=sheet&&sheet.href.includes("?v=")?sheet.href.split("?v=")[1]:"unknown";
     panel.textContent=[
-      "li. | UX-DS-31 iPad QA",
+      "li. | UX-DS-32 iPad QA",
       "URL: "+location.host+location.pathname,
       "CSS: "+version,
       "Viewport: "+window.innerWidth+" × "+window.innerHeight+" CSS px",

@@ -765,3 +765,58 @@ html.li-safari-landscape-recovery .app.home-focus #page-home .hero {
  max-height:var(--li-safari-physical-height)!important;
  min-height:0!important;
 }
+
+
+/* UX-HOME-10 / UX-DS-32 · PO-approved iPad Home: bubble and BOTH
+   primary CTAs make one aligned, centered bottom group in each orientation.
+   This overrides the former right-side landscape rail (UX-DS-27/30).
+   Phones retain their existing bottom-nav layout. */
+@media (min-width:744px) and (max-width:1420px) {
+ .app.home-focus #page-home .hero {
+   --li-home-center-panel:clamp(320px,34vw,440px);
+   --li-home-center-bottom:clamp(32px,4dvh,56px);
+ }
+ .app.home-focus #page-home .hero-dialogue,
+ .app.home-focus #page-home .hero-actions {
+   left:50%!important;
+   right:auto!important;
+   top:auto!important;
+   transform:translateX(-50%)!important;
+   width:var(--li-home-center-panel)!important;
+   max-width:var(--li-home-center-panel)!important;
+   min-width:0!important;
+ }
+ .app.home-focus #page-home .hero-actions {
+   bottom:var(--li-home-center-bottom)!important;
+   grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ .app.home-focus #page-home .hero-dialogue {
+   bottom:calc(var(--li-home-center-bottom) + var(--li-device-ipad-landscape-control-min) + var(--li-space-6))!important;
+ }
+}
+html.li-safari-landscape-recovery .app.home-focus #page-home .hero,
+html.li-safari-portrait-recovery .app.home-focus #page-home .hero {
+ --li-home-center-panel:clamp(320px,34vw,440px);
+ --li-home-center-bottom:clamp(32px,4dvh,56px);
+}
+html.li-safari-landscape-recovery .app.home-focus #page-home .hero-dialogue,
+html.li-safari-landscape-recovery .app.home-focus #page-home .hero-actions,
+html.li-safari-portrait-recovery .app.home-focus #page-home .hero-dialogue,
+html.li-safari-portrait-recovery .app.home-focus #page-home .hero-actions {
+ left:50%!important;
+ right:auto!important;
+ top:auto!important;
+ transform:translateX(-50%)!important;
+ width:var(--li-home-center-panel)!important;
+ max-width:var(--li-home-center-panel)!important;
+ min-width:0!important;
+}
+html.li-safari-landscape-recovery .app.home-focus #page-home .hero-actions,
+html.li-safari-portrait-recovery .app.home-focus #page-home .hero-actions {
+ bottom:var(--li-home-center-bottom)!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+html.li-safari-landscape-recovery .app.home-focus #page-home .hero-dialogue,
+html.li-safari-portrait-recovery .app.home-focus #page-home .hero-dialogue {
+ bottom:calc(var(--li-home-center-bottom) + var(--li-device-ipad-landscape-control-min) + var(--li-space-6))!important;
+}

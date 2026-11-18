@@ -161,3 +161,12 @@ Review affected components on: Home + Gương Vạn Vấn, Môn học/catalog hi
 - [x] Keep previously approved single home-li-ipad-20261119.jpg landscape master, cover + centered crop, no visual changes. Shared landscape/portrait JSON-derived tablet token aliases and Home one-screen dimensions; split view remains native.
 - [ ] CI source validators + responsive smoke green at candidate head, including explicit portrait stale-1408 and landscape stale-970 simulations.
 - [ ] Actual iPad Safari 970 portrait → 1408 landscape → 970 portrait, navigation controls/tap targets/home no-scroll; PWA/Split View/VoiceOver still require physical checks. No G2 signoff until Human PO confirms.
+
+
+## UX-DS-32 / UX-HOME-10 · iPad 05:08 portrait reflow + center CTA group (2026-11-19)
+
+- [x] Physical PO screenshots: landscape 1408×832 has root/hero 1408px and 18px iPad tokens; after rotating to portrait outer window is 970×1408 but visual viewport is 970×832, root/hero stay 1408×832, leaving a large blank paper area. `window.orientation=0`, `screen.orientation.angle=90`, `screen.type=portrait-primary`, scale=1.00. Treat CSS orientation and screen angle alone as unreliable on Safari.
+- [x] JS fix: detect mismatched physical portrait via root/app/hero width or stale viewport height; infer browser chrome inset from short side 970 minus old landscape visible height 832 (=138); recover 970×1270 Home canvas; keep class until Safari actually reports corrected visible height.
+- [x] UX: both orientations center one contextual bubble above the two primary buttons in a shared aligned width, no longer in right rail. Preserve question in mirror, approved iPad art, single screen, iPhone pattern and existing component tokens.
+- [ ] GitHub Actions rendered CSS, design contract, IA, companion and iPad regression green on final PR head.
+- [ ] Human PO physical iPad Safari 970 portrait → 1408 landscape → 970 portrait with no white gap, no horizontal scroll, bubble/CTAs centered and touch operable. Split View/PWA/VoiceOver still pending.

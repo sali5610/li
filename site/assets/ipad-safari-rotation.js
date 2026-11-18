@@ -10,7 +10,7 @@
  const normalMeta="width=device-width,initial-scale=1,viewport-fit=cover";
  const root=document.documentElement;
  const isTouchIPad=()=>/(iPad|Macintosh)/i.test(navigator.userAgent||"")&&navigator.maxTouchPoints>1;
- let queued=false,mode="initializing";
+ let queued=false,mode="initializing",lastChromeInset=0;
  window.liSafariRotationQA={initialized:true,mode};
  function measure(){
    const s=window.screen;
@@ -51,6 +51,8 @@
      const visualHeight=Number(visual?.height)||window.innerHeight;
      const zoom=Number(visual?.scale)||1;
      const rootHeight=root.clientHeight;
+     const rootWidth=root.clientWidth;
+     const appWidth=document.querySelector(".app")?.getBoundingClientRect().width||0;
      const hero=document.querySelector("#page-home .hero");
      const heroRect=hero?.getBoundingClientRect();
      const target=h.landscape?h.large:h.small;
@@ -62,20 +64,42 @@
        (heroRect&&heroRect.width>0&&heroRect.width<target-80)||
        rootHeight>visualHeight+100||modeToken!=="landscape"||
        !window.matchMedia("(orientation: landscape)").matches);
-     const portraitBroken=!h.landscape&&current>target+80&&zoom<0.94;
+     // On the physical iPad Safari 05:08 capture, portrait reports a
+     // 970×832 visual viewport but root/Home stays 1408×832. Neither
+     // innerWidth>970 nor zoom<1 holds: those older guards miss the bug.
+     // Use the native visual height alone to keep recovery latched across
+     // our own root reflow; rootHeight changes as soon as CSS is applied.
+     const stalePortraitHeight=!h.landscape&&
+       (visualHeight<h.oh-240||visualHeight>h.oh+140);
+     const portraitBroken=!h.landscape&&(
+       rootWidth>target+80||appWidth>target+80||
+       (heroRect&&heroRect.width>target+80)||
+       stalePortraitHeight||(current>target+80&&zoom<0.94));
+     // Safari uses the old landscape viewport height while rotating back
+     // portrait. Recover its browser chrome inset from the short physical
+     // screen axis (970−832=138), or the last valid landscape measurement.
+     // Only use it while the measured viewport is demonstrably stale.
+     if(h.landscape&&h.oh>visualHeight&&h.oh-visualHeight<240)
+       lastChromeInset=h.oh-visualHeight;
+     const shortAxisInset=h.small-visualHeight;
+     const inferredInset=shortAxisInset>=64&&shortAxisInset<=200?
+       shortAxisInset:lastChromeInset>=64&&lastChromeInset<=200?
+       lastChromeInset:Math.round(h.oh*0.10);
+     const physicalHeight=portraitBroken&&stalePortraitHeight?
+       Math.max(600,h.oh-inferredInset):visualHeight;
      root.classList.toggle("li-safari-landscape-recovery",!!landscapeBroken);
      root.classList.toggle("li-safari-portrait-recovery",!!portraitBroken);
      root.style.setProperty("--li-safari-physical-width",Math.round(target)+"px");
-     root.style.setProperty("--li-safari-physical-height",Math.round(visualHeight)+"px");
+     root.style.setProperty("--li-safari-physical-height",Math.round(physicalHeight)+"px");
      // Last-resort compensation while WebKit is still rendering the old
      // 1408px portrait layout at 0.69 scale. Remove once reflow succeeds.
-     const factor=portraitBroken?Math.max(1,current/target):1;
+     const factor=portraitBroken&&current>target+80&&zoom<0.94?Math.max(1,current/target):1;
      root.style.setProperty("--li-safari-portrait-scale",factor.toFixed(6));
      root.style.setProperty("--li-safari-portrait-inverse",(1/factor).toFixed(6));
      root.dataset.liSafariRotation=landscapeBroken?"landscape-recovery":
        portraitBroken?"portrait-recovery":"native";
      mode=landscapeBroken?"CSS landscape canvas "+target:
-       portraitBroken?"CSS portrait zoom correction "+factor.toFixed(2):
+       portraitBroken?"CSS portrait canvas "+target+" × "+Math.round(physicalHeight):
        "native "+(h.landscape?"landscape":"portrait");
    }
    window.liSafariRotationQA={

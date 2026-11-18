@@ -423,3 +423,6 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
  #page-dashboard .daily-calendar-grid { gap:2px; }
  #page-dashboard .dashboard-calendar { padding:var(--li-space-3); }
 }
+
+/* A grouped shelf switches the demo CTA off when real bookmarks exist. */
+#page-library .library-group [hidden] { display:none !important; }

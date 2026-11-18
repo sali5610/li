@@ -49,3 +49,16 @@ jobs:
             echo "$result" | grep '<pre id="result">LI_RENDER_PASS ' | tail -1 | cut -c1-1000
           done
           echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at seven viewports"
+          for width in 320 390 820; do
+            echo "Checking real Check-in UI at $width CSS px"
+            url="http://127.0.0.1:8765/tools/checkin_browser_fixture.html?w=$width"
+            result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=14000 --dump-dom "$url" 2>/tmp/li-checkin-chrome-stderr.log || true)"
+            if [[ "$result" != *'<pre id="result">LI_CHECKIN_BROWSER_PASS '* ]]; then
+              echo "FAIL Check-in browser fixture at $width"
+              echo "$result" | grep -E 'LI_CHECKIN_BROWSER_(PASS|FAIL|PENDING)' | tail -2 | cut -c1-1600 || true
+              cat /tmp/li-checkin-chrome-stderr.log | tail -20 || true
+              exit 1
+            fi
+            echo "$result" | grep '<pre id="result">LI_CHECKIN_BROWSER_PASS ' | tail -1 | cut -c1-700
+          done
+          echo "PASS real browser check-in behavior, shared mode state, responsive dialog"

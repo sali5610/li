@@ -22,6 +22,7 @@ elements["checkin"]={focus(){focused++},addEventListener(type,cb){listeners["ope
 elements["close-checkin"]={addEventListener(type,cb){listeners["close:"+type]=cb}};
 const radioInputs=[{checked:false},{checked:false}];
 const details={open:false};
+const dialog={scrollTop:144};
 const modal={
  querySelector(query){
   if(query.includes("checkin-energy"))return energy?{value:energy}:null;
@@ -37,7 +38,7 @@ const context=vm.createContext({
  document:{
   getElementById(id){assert.ok(elements[id],"Missing ID "+id);return elements[id]},
   querySelectorAll(query){assert.match(query,/checkin-modal input/);return radioInputs},
-  querySelector(query){assert.match(query,/checkin-context/);return details}
+  querySelector(query){if(query==="#checkin-modal .dialog")return dialog;assert.match(query,/checkin-context/);return details}
  },
  STUDY_MODES:{start:{label:"Vào nhịp"},focus:{label:"Đào sâu"},recover:{label:"Hồi trí"},overload:{label:"Quá tải"}},
  openModal(id){assert.equal(id,"checkin-modal");opened=true},
@@ -119,6 +120,7 @@ assert.equal(elements["checkin-rest"].value,"");
 assert.equal(elements["checkin-override"].value,"");
 assert.equal(radioInputs[0].checked,false);
 assert.equal(details.open,false);
+assert.equal(dialog.scrollTop,0,"Reopened Check-in must reset dialog scroll position");
 assert.equal(elements["apply-checkin"].disabled,true);
 const previous=context.window.LiL1.getPhysicalState();
 listeners["close:click"]();

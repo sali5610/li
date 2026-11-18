@@ -30,6 +30,11 @@ iframe.addEventListener("load",()=>{
    }
   };
   const apply=()=>by("apply-checkin").click(),open=()=>by("checkin").click();
+  const verifyToast=label=>{
+   const actual=by("toast").textContent;
+   check(actual==="Đã chọn nhịp "+label+". Đổi lúc nào cũng được!","Wrong Check-in confirmation for "+label+": "+actual);
+   check(!actual.includes("L1")&&!actual.includes("thể trạng")&&!actual.includes("phiên này"),"Technical language leaked into snackbar");
+  };
   const verify=(mode,count,sleep,move,rest)=>{
    check(d.body.dataset.studyMode===mode,"Body mode "+mode);
    check(w.localStorage.getItem("li.study-mode.v1")===mode,"Stored mode "+mode);
@@ -100,28 +105,28 @@ iframe.addEventListener("load",()=>{
    result.textContent="LI_CHECKIN_BROWSER_PASS "+width+"px · radio visual state ready for screenshot";
    return;
   }
-  apply();verify("focus",13,"yes","yes","yes");
+  apply();verify("focus",13,"yes","yes","yes");verifyToast("Đào sâu");
   open();
   check(!chosen("sleep")&&!chosen("move")&&!chosen("rest"),"Reopened check-in carries stale answers");
   setPhysical("yes","yes","yes");d.querySelector("#checkin-modal .checkin-context").open=true;
   choose("energy","medium");
   check(by("checkin-recommendation").textContent.includes("Gợi ý: Vào nhịp"),"Medium energy must downshift focus to start");
-  apply();verify("start",6,"yes","yes","yes");
+  apply();verify("start",6,"yes","yes","yes");verifyToast("Vào nhịp");
   open();setPhysical("yes","no","yes");
   d.querySelector("#checkin-modal .checkin-context").open=true;choose("energy","high");choose("attention","steady");
   check(by("checkin-recommendation").textContent.includes("Gợi ý: Vào nhịp"),"High energy bonus should promote physical 2×Có + 1×Chưa from recover to start");
   check(by("checkin-recommendation").textContent.includes("Năng lượng dồi dào +1"),"UI must show the +1 energy contribution");
   check(by("checkin-recommendation").textContent.includes("Tập trung rõ +1"),"UI must show the +1 focus contribution");
-  apply();verify("start",6,"yes","no","yes");
+  apply();verify("start",6,"yes","no","yes");verifyToast("Vào nhịp");
   open();setPhysical("yes","yes","yes");
   d.querySelector("#checkin-modal .checkin-context").open=true;
   choose("energy","low");choose("attention","hard");
   check(by("checkin-recommendation").textContent.includes("Gợi ý: Quá tải"),"Missing overload refinement");
-  apply();verify("overload",3,"yes","yes","yes");
+  apply();verify("overload",3,"yes","yes","yes");verifyToast("Quá tải");
   open();setPhysical("yes","yes","yes");
   by("checkin-override").open=true;choose("override","recover");
   check(by("checkin-recommendation").textContent.includes("thủ công"),"Missing override reason");
-  apply();verify("recover",6,"yes","yes","yes");
+  apply();verify("recover",6,"yes","yes","yes");verifyToast("Hồi trí");
   open();geometry();
   const old=captured,stamp=w.LiL1.getPhysicalState().recordedAt;
   by("close-checkin").click();

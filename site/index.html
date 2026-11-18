@@ -243,6 +243,15 @@ function liRestoreBuddyNames(){
 let liBuddyNames=liRestoreBuddyNames();
 function liBuddyLine(line){
  if(typeof line!=="string")return line;
+ if(window.liLanguage?.get?.()==="en"){
+  // Translate before inserting a learner-selected nickname. User-supplied names
+  // are never sent through the translation dictionary.
+  const translated=window.liLanguage.translateComposed(line);
+  return translated.replace(/young scholar|kid/gi,word=>{
+   const key=word.toLowerCase()==="kid"?"teasing":"warm";
+   return liBuddyNames[key]||word;
+  });
+ }
  return line.replace(/Tiểu hữu|tiểu hữu|Nhóc|nhóc|Ngươi|ngươi/g,word=>{
   const key=word.toLocaleLowerCase("vi")==="tiểu hữu"?"warm":word.toLocaleLowerCase("vi")==="nhóc"?"teasing":"serious";
   return liBuddyNames[key]||word;

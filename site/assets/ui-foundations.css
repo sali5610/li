@@ -14,12 +14,12 @@
 }
 
 /* Reusable roles for every new component. */
-.li-type-display { font: 600 var(--li-type-display)/var(--li-leading-display) var(--li-font-editorial); }
-.li-type-headline { font: 600 var(--li-type-headline)/var(--li-leading-headline) var(--li-font-editorial); }
-.li-type-title { font: 600 var(--li-type-title-md)/var(--li-leading-title-md) var(--li-font-editorial); }
-.li-type-body { font: 400 var(--li-type-body)/var(--li-leading-body) var(--li-font-ui); }
-.li-type-support { font: 400 var(--li-type-support)/var(--li-leading-support) var(--li-font-ui); }
-.li-type-caption { font: 500 var(--li-type-caption)/var(--li-leading-caption) var(--li-font-ui); }
+.li-type-display { font: var(--li-weight-600) var(--li-type-display)/var(--li-leading-display) var(--li-font-editorial); }
+.li-type-headline { font: var(--li-weight-600) var(--li-type-headline)/var(--li-leading-headline) var(--li-font-editorial); }
+.li-type-title { font: var(--li-weight-600) var(--li-type-title-md)/var(--li-leading-title-md) var(--li-font-editorial); }
+.li-type-body { font: var(--li-weight-400) var(--li-type-body)/var(--li-leading-body) var(--li-font-ui); }
+.li-type-support { font: var(--li-weight-400) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui); }
+.li-type-caption { font: var(--li-weight-500) var(--li-type-caption)/var(--li-leading-caption) var(--li-font-ui); }
 
 /* App reading rhythm; not a global reset of illustration coordinates. */
 body { font-size: var(--li-type-body); line-height: var(--li-leading-body); }
@@ -322,8 +322,8 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   #page-guide .guide-mentor { grid-template-columns: 72px minmax(0,1fr) !important; }
   #page-home .hero-dialogue-bubble { padding: var(--li-space-2) var(--li-space-3); }
   #page-home .mirror-message h2 {
-    font-size: clamp(22px, 6vw, 26px) !important;
-    line-height: 1.18 !important;
+    font-size:var(--li-type-fluid-19)!important;
+    line-height:var(--li-leading-legacy-13)!important;
     overflow-wrap: break-word;
   }
   #page-home .mirror-message { width: min(68%, 224px) !important; max-width: 224px !important; }
@@ -381,7 +381,7 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   gap: var(--li-space-2);
   font-size: var(--li-type-support);
   line-height: var(--li-leading-support);
-  font-weight: 600;
+  font-weight:var(--li-weight-600);
   min-width: 0;
 }
 #page-settings .buddy-address-field input {
@@ -395,7 +395,7 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   border-radius: 0;
   background: var(--cream);
   color: var(--ink);
-  font: 400 var(--li-type-body)/var(--li-leading-body) var(--li-font-ui);
+  font: var(--li-weight-400) var(--li-type-body)/var(--li-leading-body) var(--li-font-ui);
 }
 #page-settings .buddy-address-field input:focus-visible {
   outline: 3px solid var(--li-color-focus-ring);
@@ -468,7 +468,7 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   font-size: var(--li-type-caption);
   line-height: var(--li-leading-caption);
   color: var(--muted);
-  font-weight: 700;
+  font-weight:var(--li-weight-700);
 }
 :is(#page-lessonL03,#page-lessonL09,#page-lessonL15) .li-related-name {
   font-family: var(--li-font-editorial);
@@ -483,7 +483,7 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   color: var(--moss);
   font-size: var(--li-type-support);
   line-height: var(--li-leading-support);
-  font-weight: 700;
+  font-weight:var(--li-weight-700);
 }
 
 /* Tủ Riêng: group personal objects by user job, not by feature rollout order. */
@@ -502,7 +502,7 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 }
 #page-library .library-group-header h2 {
   margin: var(--li-space-0);
-  font: 600 var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial);
+  font: var(--li-weight-600) var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial);
   color: var(--moss);
 }
 #page-library .library-group-header p {
@@ -555,11 +555,11 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
    14/18px and 3/6/8/3px shadow padding. Do not round/rewrite these again. */
 @media (max-width: 640px) {
   #page-guide #method-cards {
-    --li-guide-s118-col-gap: 18px;
-    --li-guide-s118-row-gap: 20px;
-    --li-guide-s118-grid-padding: 3px 6px 8px 3px;
-    --li-guide-s118-card-padding: 11px 10px;
-    --li-guide-s118-grid-top: 18px;
+    --li-guide-s118-col-gap: var(--li-micro-guide-column-gap-18);
+    --li-guide-s118-row-gap: var(--li-space-5);
+    --li-guide-s118-grid-padding: var(--li-micro-guide-grid-padding);
+    --li-guide-s118-card-padding: var(--li-micro-guide-card-padding);
+    --li-guide-s118-grid-top: var(--li-micro-guide-card-top-gap);
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     column-gap: var(--li-guide-s118-col-gap) !important;
     row-gap: var(--li-guide-s118-row-gap) !important;
@@ -598,17 +598,17 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 }
 @media (max-width: 360px) {
   #page-guide #method-cards {
-    --li-guide-s118-col-gap: 14px;
-    --li-guide-s118-row-gap: 18px;
-    --li-guide-s118-grid-padding: 3px 5px 8px 2px;
-    --li-guide-s118-card-padding: 10px 9px;
+    --li-guide-s118-col-gap: var(--li-micro-guide-column-gap-14);
+    --li-guide-s118-row-gap: var(--li-micro-guide-row-gap-18);
+    --li-guide-s118-grid-padding: var(--li-micro-guide-grid-padding-narrow);
+    --li-guide-s118-card-padding: var(--li-micro-guide-card-padding-narrow);
   }
 }
 
 #buddy-modal {
- --li-s147-title-font:clamp(27px,6.4vw,34px);
- --li-s147-original-font-size:clamp(14px,3.7vw,16px);
- --li-s147-original-font-family:Georgia,serif;
+ --li-s147-title-font:var(--li-type-fluid-25);
+ --li-s147-original-font-size:var(--li-type-fluid-04);
+ --li-s147-original-font-family:var(--li-family-legacy-01);
  --li-s147-title-leading:1.12;
  --li-s147-original-leading:1.45;
  --li-s147-no-border:0;
@@ -625,7 +625,7 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 }
 #buddy-modal .buddy-heading #buddy-title-avatar {
   display:block;width:clamp(42px,11vw,52px);height:clamp(42px,11vw,52px);
-  object-fit:contain;filter:drop-shadow(1px 2px 1px rgba(35,39,27,.12));
+  object-fit:contain;filter:drop-shadow(1px 2px 1px var(--li-effect-alpha-21));
 }
 #buddy-modal .buddy-heading-copy {min-width:0;}
 #buddy-modal .buddy-heading #buddy-title {
@@ -633,12 +633,12 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 }
 #buddy-modal .buddy-heading #buddy-quote-original {
   display:block;margin:var(--li-space-0);font-family:var(--li-s147-original-font-family);font-size:var(--li-s147-original-font-size);
-  line-height:var(--li-s147-original-leading);font-weight:400;color:var(--muted);overflow-wrap:anywhere;
+  line-height:var(--li-s147-original-leading);font-weight:var(--li-weight-400);color:var(--muted);overflow-wrap:anywhere;
 }
 #buddy-modal .buddy-heading #buddy-quote-translation {
   display:block;margin:var(--li-space-2) 0 0;font-family:var(--li-font-ui);
   font-size:var(--li-type-support);line-height:var(--li-leading-support);
-  font-weight:400;color:var(--ink);overflow-wrap:anywhere;
+  font-weight:var(--li-weight-400);color:var(--ink);overflow-wrap:anywhere;
 }
 #buddy-modal .buddy-quote-info {
   position:sticky;top:0;

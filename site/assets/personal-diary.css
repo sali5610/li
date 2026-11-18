@@ -4,7 +4,7 @@
 #page-dashboard .li-diary-privacy .action-row{flex-wrap:wrap}
 #page-dashboard .li-diary-month{display:grid;gap:var(--li-space-4)}
 #page-dashboard .li-diary-month-heading{display:flex;align-items:center;justify-content:space-between;gap:var(--li-space-4);flex-wrap:wrap}
-#page-dashboard .li-diary-month-heading h2{margin:0}
+#page-dashboard .li-diary-month-heading h2{margin:var(--li-space-0)}
 #page-dashboard .li-diary-weekdays,#page-dashboard .li-diary-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:var(--li-space-2)}
 #page-dashboard .li-diary-weekdays{text-align:center;font-size:var(--li-type-caption);color:var(--muted)}
 #page-dashboard .li-diary-date{position:relative;min-width:0;min-height:48px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);font:700 var(--li-type-body)/var(--li-leading-body) var(--li-font-ui);cursor:pointer}
@@ -18,7 +18,7 @@
 #page-dashboard .li-diary-bar-label{font-size:var(--li-type-caption)}
 #page-dashboard .li-diary-bar-total{font-size:var(--li-type-caption);font-variant-numeric:tabular-nums;font-weight:700}
 #page-dashboard .li-diary-detail{display:grid;gap:var(--li-space-4)}
-#page-dashboard .li-diary-detail>h2{font:600 var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial);margin:0}
+#page-dashboard .li-diary-detail>h2{font:600 var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial);margin:var(--li-space-0)}
 #page-dashboard .li-diary-facts{display:grid;gap:var(--li-space-3)}
 #page-dashboard .li-diary-facts>div{display:flex;justify-content:space-between;gap:var(--li-space-4);border-bottom:1px solid var(--rule);padding-bottom:var(--li-space-2)}
 #page-dashboard .li-diary-facts strong{white-space:nowrap}

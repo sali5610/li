@@ -84,7 +84,7 @@
 </div></div></div></section>
 <section id="page-resume" class="page" tabindex="-1"><div class="section-shell">
 <button class="action alt" type="button" data-page="library">← Tủ Riêng</button>
-<div class="kicker" style="margin-top:var(--li-space-6)">HÀNH TRÌNH CỦA BẠN</div><h1 class="display-title">Quay lại</h1><p class="intro">Tiếp tục bài học, quay lại problem / case đang tìm hiểu và mở những Dấu Trang đã lưu.</p>
+<div class="kicker" style="margin-top:var(--li-space-6)">HÀNH TRÌNH CỦA BẠN</div><h1 class="display-title" data-li-i18n="resume.pageTitle">Quay lại</h1><p class="intro">Tiếp tục bài học, quay lại problem / case đang tìm hiểu và mở những Dấu Trang đã lưu.</p>
 <div class="stack-sm library-detail-groups">
 <article class="surface"><div class="kicker">01 · TIẾP TỤC HỌC</div><h2>Bài học gần đây</h2><div id="li-lesson-history" class="path-list" aria-live="polite"><div class="state-note">Chưa có lịch sử mở bài.</div></div></article>
 <article class="surface"><div class="kicker">02 · PROBLEM / CASE</div><h2>Tình huống đã xem gần đây</h2><div id="li-problem-history" class="path-list" aria-live="polite"><div class="state-note">Chưa có problem hay case đã mở.</div></div></article>
@@ -259,14 +259,20 @@ function liBuddyLine(line){
 }
 window.liAddressLine=liBuddyLine;
 function liRenderBuddyNamePreview(){
- const examples={
+ const en=window.liLanguage?.get?.()==="en";
+ const examples=en?{
+  warm:"take your time. I'm listening.",
+  teasing:"I asked for evidence, not confidence.",
+  serious:"separate what you observed from what you inferred."
+ }:{
   warm:"cứ thong thả. Lão nghe đây.",
   teasing:"lão hỏi bằng chứng chứ đâu hỏi độ tự tin.",
   serious:"hãy phân biệt điều đã thấy với điều suy ra."
  };
+ const defaultEN={warm:"Young scholar",teasing:"Kid",serious:"You there"};
  for(const key of Object.keys(examples)){
   const node=document.getElementById("buddy-preview-"+key);
-  if(node)node.textContent=(liBuddyNames[key]||LI_BUDDY_DEFAULT_NAMES[key])+", "+examples[key];
+  if(node)node.textContent=(liBuddyNames[key]||(en?defaultEN[key]:LI_BUDDY_DEFAULT_NAMES[key]))+", "+examples[key];
  }
 }
 function liRefreshBuddyNameInputs(){
@@ -285,6 +291,7 @@ function liUpdateAddressFeedback(text){
  const node=document.getElementById("buddy-name-feedback");if(node)node.textContent=text;
 }
 liRefreshBuddyNameInputs();
+window.addEventListener("li:localechange",liRenderBuddyNamePreview);
 document.querySelectorAll("[data-buddy-name]").forEach(input=>{
  const key=input.dataset.buddyName;
  input.addEventListener("input",()=>{

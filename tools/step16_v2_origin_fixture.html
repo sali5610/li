@@ -1,0 +1,100 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>li. real-settings v2 A to B origin test</title></head><body>
+<pre id="result">LI_BACKUP_V2_ORIGIN_PENDING</pre>
+<script>
+(async()=>{
+ "use strict";
+ const A="http://127.0.0.1:8774",B="http://127.0.0.1:8775";
+ const output=document.getElementById("result"),S=localStorage,done=[];
+ const check=(ok,reason)=>{if(!ok)throw Error(reason);};
+ const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+ async function until(predicate,label,timeout=10000){
+   const start=performance.now();
+   while(performance.now()-start<timeout){if(predicate())return;await wait(40);}
+   throw Error("TIMEOUT "+label);
+ }
+ function clean(){for(let i=S.length-1;i>=0;i--){const key=S.key(i);if(key?.startsWith("li."))S.removeItem(key);}}
+ const state={
+   "li.private.library.v1":JSON.stringify({schema:1,cases:[],questions:[],ideas:[],savedContent:[],updatedAt:"2026-11-19T00:00:00.000Z"}),
+   "li.private.case-draft.v1":"FAKE CROSS ORIGIN DRAFT",
+   "li.buddy-address.v1":JSON.stringify({warm:"",teasing:"",serious:""}),
+   "li.study-mode.v1":"focus",
+   "li.app.locale.v1":"vi",
+   "li.companion.position.v1":JSON.stringify({x:0.2,y:0.4}),
+   "li.private.lesson.visits.v1":JSON.stringify({schema:1,items:[]}),
+   "li.private.problem.visits.v1":JSON.stringify({schema:1,items:[]}),
+   "li.personal.daily.v1":JSON.stringify({schema:1,days:{"2026-11-19":{test:true}}}),
+   "li.personal.daily.enabled.v1":"false",
+   "li.spell.t02.due.v1":JSON.stringify({exposed:1700000000000,due:1700086400000}),
+   "li.review.L09-1-2.v1":JSON.stringify({reviewed:true,submitted:true,draft:["FAKE","","",""]})
+ };
+ let sourceFrame,receiverFrame;
+ try{
+   check(location.origin===A,"Wrong fixture origin A");
+   clean();
+   for(const [key,value]of Object.entries(state))S.setItem(key,value);
+   sourceFrame=document.createElement("iframe");sourceFrame.hidden=true;sourceFrame.src="../site/index.html";document.body.append(sourceFrame);
+   await until(()=>sourceFrame.contentWindow?.LiBackupV2&&sourceFrame.contentDocument?.getElementById("export-personal-data"),"origin A app");
+   const w=sourceFrame.contentWindow,d=sourceFrame.contentDocument;
+   let blob=null;
+   const makeURL=w.URL.createObjectURL.bind(w.URL);
+   w.URL.createObjectURL=item=>{blob=item;return makeURL(item);};
+   w.HTMLAnchorElement.prototype.click=function(){}; // suppress real download on runner
+   d.getElementById("export-personal-data").click();
+   await until(()=>blob instanceof w.Blob,"real origin A Export button Blob");
+   const fileText=await blob.text();
+   check(JSON.parse(fileText).version===2,"Real origin A export is not full v2");
+   check(JSON.parse(fileText).records.some(x=>x.key==="li.review.L09-1-2.v1"),"Origin A export lost lesson record");
+   done.push("Actual Settings Export click creates full portable v2 JSON on origin A");
+   receiverFrame=document.createElement("iframe");receiverFrame.hidden=true;
+   const ready=new Promise((resolve,reject)=>{
+     const deadline=setTimeout(()=>reject(Error("Receiver B not ready")),8000);
+     const fn=event=>{
+       if(event.origin===B&&event.source===receiverFrame.contentWindow&&event.data?.protocol==="li-step16-v2-ready"){
+         clearTimeout(deadline);window.removeEventListener("message",fn);resolve();
+       }
+     };
+     window.addEventListener("message",fn);
+   });
+   receiverFrame.src=B+"/tools/step16_v2_origin_agent.html";document.body.append(receiverFrame);
+   await ready;
+   let forbidden=false;try{void receiverFrame.contentWindow.localStorage.length;}catch(e){forbidden=e.name==="SecurityError";}
+   check(forbidden,"Different origin storage leaked across frame boundary");
+   done.push("Two actual web origins isolate localStorage by browser security policy");
+   let seq=0;
+   function call(command,payload){
+     const id=++seq;
+     return new Promise((resolve,reject)=>{
+       const timer=setTimeout(()=>{window.removeEventListener("message",handle);reject(Error("Receiver B timed out "+command));},14000);
+       function handle(event){
+         if(event.origin!==B||event.source!==receiverFrame.contentWindow||event.data?.protocol!=="li-step16-v2-reply"||event.data.seq!==id)return;
+         clearTimeout(timer);window.removeEventListener("message",handle);
+         if(event.data.error)reject(Error(event.data.error));else resolve(event.data.data);
+       }
+       window.addEventListener("message",handle);
+       receiverFrame.contentWindow.postMessage({protocol:"li-step16-v2",seq:id,command,payload},B);
+     });
+   }
+   await call("reset");
+   const destinationBefore=await call("get");
+   check(Object.keys(destinationBefore.data).length===0,"Destination origin not empty");
+   const result=await call("import",fileText);
+   check(result.imported===true,"Actual target import not applied");
+   for(const key of ["li.review.L09-1-2.v1","li.personal.daily.v1","li.personal.daily.enabled.v1","li.spell.t02.due.v1","li.study-mode.v1","li.app.locale.v1"]){
+     check(result.data[key]===state[key],"Destination lost key "+key);
+     check(S.getItem(key)===state[key],"Source origin changed for "+key);
+   }
+   done.push("Actual Settings file input restores learning, consent and due time into fresh origin B");
+   done.push("Origin A learning state stays identical after import on origin B");
+   await wait(750);
+   const persisted=await call("get");
+   check(persisted.data["li.review.L09-1-2.v1"]===state["li.review.L09-1-2.v1"],"Data did not persist through app reload");
+   done.push("Independent origin B remains restored after destination app reload");
+   sourceFrame.remove();receiverFrame.remove();clean();
+   output.textContent="LI_BACKUP_V2_ORIGIN_PASS "+JSON.stringify({count:done.length,checks:done,
+     note:"Two localhost ports, actual Settings handlers, fake storage/File input; no real iOS/Safari or production data"});
+ }catch(e){
+   sourceFrame?.remove();receiverFrame?.remove();clean();
+   output.textContent="LI_BACKUP_V2_ORIGIN_FAIL "+JSON.stringify({completed:done,error:e.stack||String(e)});
+ }
+})();
+</script></body></html>

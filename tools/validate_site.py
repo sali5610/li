@@ -890,9 +890,11 @@ assert 'importLoading.hidden=false' in page_html and 'importError.hidden=false' 
 assert 'importTrigger.disabled=true' in page_html and 'importTrigger.disabled=false' in page_html
 assert 'importInput.value="";' in page_html, "Selecting same file must work on Retry"
 assert 'importRetry?.addEventListener("click",()=>importInput?.click());' in page_html
-assert 'const data=JSON.parse(await file.text());' in page_html, "Only real async file read may show Loading"
-assert 'if(!window.confirm(existing' in page_html, "Import must still request explicit overwrite confirmation"
-assert 'if(window.localStorage.getItem(LI_STORAGE_KEY)!==next' in page_html, "No success before localStorage readback"
+assert 'const json=await file.text();' in page_html, "Loading must correspond to real asynchronous file read"
+assert 'if(!window.confirm(backupPreviewCopy(plan)))' in page_html, "Import must preview add/overwrite/remove and request explicit confirmation"
+assert 'backup.importJSON(window.localStorage,json,{confirmed:true,fingerprint:plan.fingerprint})' in page_html
+assert 'storage.getItem(key)!==value' in backup_engine, "No success before localStorage readback"
+assert 'rollback(storage,before,touched)' in backup_engine, "Partial import must attempt verified rollback"
 review_status=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert 'id="feedback"' in review_status and 'li-state-scene-showcase' in review_status
 for name in ("laoly-state-loading.png","laoly-state-error.png"):

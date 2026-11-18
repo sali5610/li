@@ -32,6 +32,12 @@
     report("Approved Home illustration loaded from new CSS-relative path",image.includes("home-mystic-cool-"),image.slice(0,170));
     if(w.innerWidth<=600){
      const nav=doc.querySelector(".mobile-nav .nav-btn");
+     const headerControl=doc.querySelector(".header .tool-button");
+     const headerTap=headerControl?w.getComputedStyle(headerControl).webkitTapHighlightColor:"missing";
+     const bottomTap=nav?w.getComputedStyle(nav).webkitTapHighlightColor:"missing";
+     const tapInvisible=value=>value==="rgba(0, 0, 0, 0)"||value==="transparent";
+     report("Mobile bottom tab + header tool have no square native tap flash",tapInvisible(headerTap)&&tapInvisible(bottomTap),headerTap+"/"+bottomTap);
+
      report("Mobile bottom nav support label 14px",!!nav&&w.getComputedStyle(nav).fontSize==="14px",nav?w.getComputedStyle(nav).fontSize:"missing");
     }
     if(typeof w.navigate==="function")w.navigate("guide",{focus:false,syncUrl:false});

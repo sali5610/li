@@ -4,6 +4,8 @@
 <script>
 "use strict";
 const iframe=document.getElementById("preview"),result=document.getElementById("result");
+const requestedWidth=Number(new URLSearchParams(location.search).get("w"));
+if([320,390,820].includes(requestedWidth))iframe.style.width=requestedWidth+"px";
 let ended=false;function finish(fail,checks){if(ended)return;ended=true;result.textContent=(fail?"LI_SHOWCASE_FAIL ":"LI_SHOWCASE_PASS ")+JSON.stringify(checks);}
 iframe.addEventListener("load",()=>{
  setTimeout(()=>{
@@ -46,6 +48,16 @@ iframe.addEventListener("load",()=>{
    const light=d.querySelector(".ds-large.light"),warm=d.querySelector(".ds-large.warm");
    check("Both large-card ivory levels",!!light&&!!warm&&w.getComputedStyle(light).backgroundColor!==w.getComputedStyle(warm).backgroundColor);
    check("Subtle Home chat bubble anatomy",!!d.querySelector(".ds-home-bubble p")&&w.getComputedStyle(d.querySelector(".ds-home-bubble")).boxShadow==="none");
+   const note=d.getElementById("ds-textarea"),noteStyle=w.getComputedStyle(note);
+   check("Notebook textarea is canonical ruled-paper 32px variant",note.classList.contains("ds-notebook")&&noteStyle.backgroundImage.includes("linear-gradient")&&noteStyle.backgroundSize.includes("32px")&&noteStyle.lineHeight==="32px",noteStyle.backgroundSize+"; "+noteStyle.lineHeight);
+   check("Notebook font mirrors actual UI body, not browser monospace default",noteStyle.fontFamily===w.getComputedStyle(d.body).fontFamily,noteStyle.fontFamily);
+   const dark=d.querySelector(".ds-home-bubble.green"),lightBubble=d.querySelector(".ds-home-bubble:not(.green)");
+   check("Two chat-bubble visual options, including Home forest green",!!dark&&!!lightBubble&&w.getComputedStyle(dark).backgroundColor!==w.getComputedStyle(lightBubble).backgroundColor&&w.getComputedStyle(dark).boxShadow!=="none");
+   const art=[...d.querySelectorAll(".ds-image-card img")];
+   check("Three published illustration cards, all valid images",art.length===3&&art.every(img=>img.complete&&img.naturalWidth>0&&img.alt.length>15),art.map(img=>img.src.split("/").pop()+":"+img.naturalWidth).join(", "));
+   check("Crop vs contained illustrations are distinguishable",art.length===3&&w.getComputedStyle(d.querySelector(".ds-image-top img")).objectFit==="cover"&&w.getComputedStyle(d.querySelector(".ds-image-character img")).objectFit==="contain");
+   const tap=w.getComputedStyle(d.querySelector(".ds-tabs button")).webkitTapHighlightColor;
+   check("No rectangular iOS native button tap flash in review",tap==="rgba(0, 0, 0, 0)"||tap==="transparent",tap);
    check("Textarea specimen supports real input",!!d.getElementById("ds-textarea")&&!d.getElementById("ds-textarea").disabled);
    d.getElementById("ds-textarea").value="Một ý tưởng";
    d.getElementById("ds-textarea").dispatchEvent(new w.Event("input",{bubbles:true}));
@@ -59,6 +71,11 @@ iframe.addEventListener("load",()=>{
    chips[2].click();
    check("Filter chips change pressed state",chips[2].getAttribute("aria-pressed")==="true"&&chips[0].getAttribute("aria-pressed")==="false");
    check("4 bottom navigation variants",d.querySelectorAll(".ds-tabs button").length===4);
+   if(w.innerWidth<=700){
+     const tracks=element=>w.getComputedStyle(element).gridTemplateColumns.trim().split(/\s+/).length;
+     check("Mobile illustrated cards stack into one column",tracks(d.querySelector(".ds-image-grid"))===1);
+     check("Mobile light/green bubble options stack into one column",tracks(d.querySelector(".ds-bubble-options"))===1);
+   }
    const overflow=d.documentElement.scrollWidth-w.innerWidth;
    check("Review page itself has no horizontal overflow",overflow<=3,String(overflow));
   }catch(e){checks.push({label:"Runtime evaluation",passed:false,detail:e.stack||e.message});}

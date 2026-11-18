@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>li. Safari 05:08 physical portrait stale-root regression</title>
+<style>html,body{margin:0;padding:0}#result{white-space:pre-wrap;font:12px/1.5 monospace}iframe{display:block;width:1408px;height:832px;border:0}</style></head>
+<body><pre id="result">LI_IPAD_PORTRAIT_PENDING</pre><iframe id="app" src="../site/index.html" title="li. iPad physical portrait regression"></iframe>
+<script>
+(function(){
+"use strict";
+const frame=document.getElementById("app"),out=document.getElementById("result"),checks=[];
+let ended=false,outerW=1408,outerH=970;
+function test(name,passed,detail){checks.push({name,passed:!!passed,detail:String(detail??"")});}
+function finish(){
+ if(ended)return;ended=true;const failed=checks.filter(x=>!x.passed);
+ out.textContent=(failed.length?"LI_IPAD_PORTRAIT_FAIL ":"LI_IPAD_PORTRAIT_PASS ")+JSON.stringify({failed,checks});
+}
+frame.addEventListener("load",function(){
+ setTimeout(function(){
+ try{
+  const w=frame.contentWindow,d=frame.contentDocument,root=d.documentElement;
+  const app=d.querySelector(".app"),hero=d.querySelector("#page-home .hero");
+  const bubble=d.querySelector("#page-home .hero-dialogue");
+  const actions=d.querySelector("#page-home .hero-actions");
+  const native={angle:90,type:"landscape-primary",addEventListener(){}};
+  let legacyAngle=90;
+  function mock(o,prop,get){Object.defineProperty(o,prop,{configurable:true,get});}
+  mock(w.navigator,"userAgent",()=> "Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/605.1.15 Safari/605.1");
+  mock(w.navigator,"maxTouchPoints",()=>5);
+  mock(w.screen,"width",()=>970);mock(w.screen,"height",()=>1408);
+  mock(w.screen,"orientation",()=>native);mock(w,"orientation",()=>legacyAngle);
+  mock(w,"outerWidth",()=>outerW);mock(w,"outerHeight",()=>outerH);
+  function trigger(){w.dispatchEvent(new Event("orientationchange"));}
+  const center=r=>(r.left+r.right)/2;
+  function centered(){
+   const a=actions.getBoundingClientRect(),b=bubble.getBoundingClientRect();
+   return Math.abs(center(a)-970/2)<5&&Math.abs(center(b)-970/2)<5&&b.bottom<=a.top+6;
+  }
+  // Simulated full-width physical landscape, then a WebKit portrait 970×832
+  // iframe whose 1408px app root and 832px innerHeight fail to reflow.
+  trigger();
+  setTimeout(function(){
+   test("Landscape baseline 1408px scene",Math.abs(hero.getBoundingClientRect().width-1408)<5,hero.getBoundingClientRect().width);
+   outerW=970;outerH=1408;legacyAngle=0;native.type="portrait-primary";
+   native.angle=90; // contradictory Safari angle from 05:08 screenshot
+   frame.style.width="970px";frame.style.height="832px";
+   root.style.width="1408px";root.style.height="832px";
+   app.style.width="1408px";hero.style.width="1408px";
+   trigger();
+   setTimeout(function(){
+    const state=w.liSafariRotationQA||{},h=hero.getBoundingClientRect();
+    test("Physical portrait wins over contradictory screen angle",state.physicalLandscape===false,state.physicalLandscape);
+    test("Portrait fallback activates at visual scale 1",root.classList.contains("li-safari-portrait-recovery"),state.mode);
+    test("970px artwork width restored",Math.abs(h.width-970)<5,h.width);
+    test("~1270px physical scene height restored",Math.abs(h.height-1270)<8,h.height);
+    test("Bubble and both CTAs centered under mirror",centered(),JSON.stringify({bubble:bubble.getBoundingClientRect().left,action:actions.getBoundingClientRect().left}));
+    test("Viewport remains device-width",d.querySelector('meta[name="viewport"]').content.includes("width=device-width"),d.querySelector('meta[name="viewport"]').content);
+    test("One approved iPad landscape art reused",w.getComputedStyle(hero,"::before").backgroundImage.includes("home-li-ipad-20261119.jpg"),w.getComputedStyle(hero,"::before").backgroundImage);
+    // Browser eventually corrects its own layout: remove our forced stale widths
+    // and verify the fallback disappears without reloading or data mutation.
+    root.style.width="";root.style.height="";app.style.width="";hero.style.width="";
+    frame.style.height="1270px";
+    trigger();
+    setTimeout(function(){
+     test("Recovery removed after native portrait reflow",!root.classList.contains("li-safari-portrait-recovery"),root.className);
+     test("Portrait canvas remains 970px",Math.abs(hero.getBoundingClientRect().width-970)<5,hero.getBoundingClientRect().width);
+     finish();
+    },550);
+   },650);
+  },350);
+ }catch(err){test("Fixture runtime",false,err.stack||err.message);finish();}
+ },950);
+},{once:true});
+setTimeout(()=>{if(!ended){test("Timeout",false,"No completed Safari portrait fixture");finish();}},8500);
+})();
+</script></body></html>

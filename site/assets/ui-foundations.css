@@ -631,6 +631,7 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   font-weight:400;color:var(--ink);overflow-wrap:anywhere;
 }
 #buddy-modal .buddy-quote-info {
+  position:sticky;top:0;
   display:grid;place-items:center;box-sizing:border-box;width:44px;height:44px;padding:0;
   border:1px solid var(--rule);border-radius:50%;
   background:var(--cream);color:var(--forest);cursor:pointer;

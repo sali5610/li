@@ -271,7 +271,7 @@ assert '#settings-buddy-card .settings-buddy-illustration' in html
 settings_styles=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert 'border-top: 1px solid var(--rule)' not in settings_styles.split('#page-settings .buddy-address-settings {', 1)[1].split('}', 1)[0]
 assert '#settings-buddy-card .settings-buddy-footer' not in html
-assert 'li-layout.css?v=20261118-back-undo' in page_html and bool(re.search(r'<link rel="stylesheet" href="\./assets/ui-foundations\.css\?v=[A-Za-z0-9._-]+">', head))
+assert bool(re.search(r'<link rel="stylesheet" href="\./assets/li-layout\.css\?v=[A-Za-z0-9._-]+">', head)) and bool(re.search(r'<link rel="stylesheet" href="\./assets/ui-foundations\.css\?v=[A-Za-z0-9._-]+">', head))
 
 # S118: two compact mobile Guide tiles with shadow-safe column/row gutters; no duplicate S99 rule.
 guide=section("guide")
@@ -670,7 +670,7 @@ assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
 
 # UX-DS-11 · Review components are connected; app Guide chips use full pills.
-assert 'ui-foundations.css?v=20261118-ds14-brand-focus' in page_html
+assert 'ui-foundations.css?v=20261118-porcelain-input' in page_html
 assert '#page-guide #method-filters .filter,' in foundation and 'border-radius:999px!important;' in foundation
 v3=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert 'component-review-v3.css?v=20261118-ds13-selection' in v3
@@ -697,18 +697,18 @@ assert 'No data' not in v3js or 'DEMO' in v3js
 # UX-DS-12 · PO-requested component and actual-app deltas. Review-only new
 # visuals are not G2 signoff, and demo charts never touch private diary.
 ds12=(site/"assets"/"component-review-v4.css").read_text(encoding="utf-8")
-assert 'component-review-v4.css?v=20261118-ds16-laoly-zoom' in v3
-assert 'component-review-v2.css?v=20261118-ds12-white-note' in v3
+assert 'component-review-v4.css?v=20261118-porcelain-input' in v3
+assert 'component-review-v2.css?v=20261118-porcelain-input' in v3
 assert 'component-review-v3.js?v=20261118-ds13-week-fix' in v3
-assert '--white: #FFFFFF;' in (site/"assets"/"design-tokens.css").read_text(encoding="utf-8")
-assert all(x in foundation for x in ("/* UX-DS-12", ".page input[type=\"checkbox\"]", "background-color:var(--white)!important"))
+assert '--porcelain: #FEFDFC;' in (site/"assets"/"design-tokens.css").read_text(encoding="utf-8")
+assert all(x in foundation for x in ("/* UX-DS-12", ".page input[type=\"checkbox\"]", "background-color:var(--porcelain)!important"))
 assert all(x in v3 for x in ("ds12-horizontal-stack","ds12-tag-row","ds11-month-today","ds11-week-today"))
 assert all(x in ds12 for x in ("ds12-variant-secondary","ds12-variant-dark","ds12-horizontal-card","ds12-tag","data-today"))
 assert all(x in v3js for x in ("function returnToday(){","new Date()","dataset.ds12CardMode"))
 
 # UX-DS-13 · PO correction: gallery uses existing full Lão Lý mirror image;
 # no week-range tile shadow; today dot is separate from selected stroke.
-assert 'component-review-v4.css?v=20261118-ds16-laoly-zoom' in v3
+assert 'component-review-v4.css?v=20261118-porcelain-input' in v3
 assert v3.count('src="./assets/laoly-mirror-suy-nghi.png"')==3
 assert 'src="./assets/laoly-neutral.png"' not in v3
 assert 'border-right-width:var(--li-space-0)' in ds12
@@ -753,8 +753,8 @@ assert 'Top Navigation transparent Home' not in page_html
 
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
-assert 'li-layout.css?v=20261118-back-undo' in page_html
-assert 'ui-foundations.css?v=20261118-ds14-brand-focus' in page_html
+assert 'li-layout.css?v=20261118-porcelain-input' in page_html
+assert 'ui-foundations.css?v=20261118-porcelain-input' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation

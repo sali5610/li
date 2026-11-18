@@ -15,6 +15,13 @@ iframe.addEventListener("load",()=>{
    const check=(label,ok,detail)=>{checks.push({label,passed:!!ok,detail:detail||""});};
    const tokens=w.getComputedStyle(d.documentElement);
    check("Canonical generated paper token",tokens.getPropertyValue("--paper").trim().toUpperCase()==="#F1F0E9");
+   check("Olive Moss canonical token is available",tokens.getPropertyValue("--olive").trim().toUpperCase()==="#65734C");
+   const oliveSwatch=d.querySelector('[data-ds-token="olive"]');
+   check("Olive Moss swatch matches token and visual label",!!oliveSwatch&&w.getComputedStyle(oliveSwatch.querySelector(".ds-paint")).backgroundColor==="rgb(101, 115, 76)"&&oliveSwatch.textContent.includes("Olive Moss · #65734C"));
+   check("Porcelain foundation token resolves to neutral off-white",tokens.getPropertyValue("--porcelain").trim().toUpperCase()==="#FEFDFC");
+   const porcelainSwatch=d.querySelector('[data-ds-token="porcelain"]');
+   check("Porcelain swatch matches input surface",!!porcelainSwatch&&w.getComputedStyle(porcelainSwatch.querySelector(".ds-paint")).backgroundColor==="rgb(254, 253, 252)"&&porcelainSwatch.textContent.includes("Input / Textarea"));
+   check("Paper/Cream swatch labels match current neutral-ivory runtime colors",d.querySelector(".ds-swatches")?.textContent.includes("Paper · #F1F0E9")&&d.querySelector(".ds-swatches")?.textContent.includes("Cream · #FAF9F5"));
    check("Review pending G2",d.body.textContent.includes("Chờ Human PO duyệt component"));
    const cards=d.querySelectorAll(".ds-method-grid .ds-method");
    check("Original method grid preserves two approved tiles",cards.length===2);
@@ -167,8 +174,8 @@ iframe.addEventListener("load",()=>{
    const square=d.querySelector('.ds11-check-row input[type="checkbox"]');
    check("Checkbox painted as a sharp square",w.getComputedStyle(square).borderTopLeftRadius==="0px",w.getComputedStyle(square).borderTopLeftRadius);
    const fields=[d.getElementById("ds-query"),d.getElementById("ds-textarea"),d.getElementById("ds11-icon-input")];
-   check("All enabled text/search/notebook surfaces are pure white",fields.every(el=>w.getComputedStyle(el).backgroundColor==="rgb(255, 255, 255)"),fields.map(el=>w.getComputedStyle(el).backgroundColor).join(" / "));
-   check("Disabled input remains visually distinct",w.getComputedStyle(d.getElementById("ds-disabled")).backgroundColor!=="rgb(255, 255, 255)");
+   check("All enabled text/search/notebook surfaces use porcelain (not pure white)",fields.every(el=>w.getComputedStyle(el).backgroundColor==="rgb(254, 253, 252)"),fields.map(el=>w.getComputedStyle(el).backgroundColor).join(" / "));
+   check("Disabled input remains visually distinct",w.getComputedStyle(d.getElementById("ds-disabled")).backgroundColor!=="rgb(254, 253, 252)");
    check("Illustration frame has no paper-colored backing",w.getComputedStyle(d.querySelector(".ds-image-character .ds-image-frame.figure")).backgroundColor==="rgba(0, 0, 0, 0)");
    const mirrorImage=d.querySelector(".ds12-horizontal-media.figure img"),mirrorFrame=d.querySelector(".ds12-horizontal-media.figure");
    check("Illustration uses existing Lão Lý in the mirror asset, not the icon avatar",

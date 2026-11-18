@@ -35,7 +35,7 @@
 .ds-form-states{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--li-space-5)}
 .ds-control{display:grid;gap:var(--li-space-2);min-width:0}
 .ds-control label{font-size:var(--li-type-support);line-height:var(--li-leading-support);font-weight:700;color:var(--moss)}
-.ds-control input,.ds-control textarea{display:block;width:100%;min-width:0;min-height:48px;padding:var(--li-space-3) var(--li-space-4);border:1px solid var(--moss);border-radius:0;background:var(--cream);color:var(--ink);font-size:var(--li-type-body);line-height:var(--li-leading-body)}
+.ds-control input,.ds-control textarea{display:block;width:100%;min-width:0;min-height:48px;padding:var(--li-space-3) var(--li-space-4);border:1px solid var(--moss);border-radius:0;background:var(--porcelain);color:var(--ink);font-size:var(--li-type-body);line-height:var(--li-leading-body)}
 .ds-control textarea{min-height:144px;resize:vertical;line-height:var(--li-leading-body)}
 .ds-control :is(input,textarea)::placeholder{color:var(--muted)}
 .ds-control :is(input,textarea):hover:not(:disabled){border-color:var(--moss-2)}
@@ -76,7 +76,7 @@
    The first visible rule is 39px from the top (8+31); no fake CSS stripes. */
 .ds-control textarea.ds-notebook{
   --li-review-notebook-line:var(--li-space-8);
-  --ds12-notebook-surface:var(--white);
+  --ds12-notebook-surface:var(--porcelain);
   font-family:var(--li-font-ui);
   display:block;
   box-sizing:border-box;

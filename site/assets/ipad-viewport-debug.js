@@ -16,13 +16,14 @@
     var sheet=[].slice.call(document.styleSheets).find(function(x){return x.href&&x.href.indexOf("library-hub.css")!==-1;});
     var version=sheet&&sheet.href.includes("?v=")?sheet.href.split("?v=")[1]:"unknown";
     panel.textContent=[
-      "li. | UX-DS-28 iPad QA",
+      "li. | UX-DS-29 iPad QA",
       "URL: "+location.host+location.pathname,
       "CSS: "+version,
       "Viewport: "+window.innerWidth+" × "+window.innerHeight+" CSS px",
       "Visual: "+Math.round(window.visualViewport?window.visualViewport.width:window.innerWidth)+" × "+Math.round(window.visualViewport?window.visualViewport.height:window.innerHeight),
       "Screen: "+window.screen.width+" × "+window.screen.height,
       "Root: "+document.documentElement.clientWidth+" × "+document.documentElement.clientHeight,
+      "Width sync: "+(Math.abs((window.visualViewport?window.visualViewport.width:window.innerWidth)-document.documentElement.clientWidth)>16 ? "MISMATCH (Safari reflow)" : "OK"),
       "App: "+Math.round(document.querySelector(".app").getBoundingClientRect().width)+"px / Hero: "+Math.round(document.querySelector("#page-home .hero").getBoundingClientRect().width)+"px",
       "Visual scale: "+(window.visualViewport?window.visualViewport.scale.toFixed(2):"n/a"),
       "Orientation: "+(matchMedia("(orientation: landscape)").matches?"landscape":"portrait"),

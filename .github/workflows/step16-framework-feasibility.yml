@@ -1,0 +1,54 @@
+name: Step16 Framework Feasibility (research only)
+
+on:
+  pull_request:
+    paths:
+      - 'tools/step16-frontend-benchmark/**'
+      - '.github/workflows/step16-framework-feasibility.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  equal-flow-chrome:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned isolated research dependencies
+        working-directory: tools/step16-frontend-benchmark
+        run: npm install --no-audit --no-fund
+      - name: Build equal-flow Vanilla, React and Lit candidates
+        working-directory: tools/step16-frontend-benchmark
+        run: npm run build
+      - name: Measure bundled asset byte costs
+        working-directory: tools/step16-frontend-benchmark
+        run: node report-sizes.cjs
+      - name: Test rendered behavior and persistence in same Chromium runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then echo "FAIL Chromium unavailable"; exit 1; fi
+          "$chrome" --version
+          python3 -m http.server 8769 --bind 127.0.0.1 --directory . > /tmp/li-step16-bench-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          url="http://127.0.0.1:8769/tools/step16-frontend-benchmark/benchmark-fixture.html"
+          timeout 130s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=95000 --dump-dom "$url" > /tmp/li-step16-framework-result.html 2>/tmp/li-step16-framework-stderr.log || {
+            echo "FAIL Chrome did not finish"
+            tail -25 /tmp/li-step16-framework-stderr.log || true
+            exit 1
+          }
+          if ! grep -F '<pre id="result">LI_STEP16_FE_BENCH_PASS ' /tmp/li-step16-framework-result.html | grep -F '"count":3' >/dev/null; then
+            echo "FAIL equal flow benchmark did not finish"
+            grep -F '<pre id="result">LI_STEP16_FE_BENCH_' /tmp/li-step16-framework-result.html | tail -1 | cut -c1-5500 || true
+            exit 1
+          fi
+          grep -F '<pre id="result">LI_STEP16_FE_BENCH_PASS ' /tmp/li-step16-framework-result.html | tail -1 | cut -c1-5500
+          echo "PASS all three isolated same-flow variants. No production migration."

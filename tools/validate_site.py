@@ -684,7 +684,7 @@ assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
 
 # UX-DS-11 · Review components are connected; app Guide chips use full pills.
-assert 'ui-foundations.css?v=20261119-home-transparent-topnav' in page_html
+assert 'ui-foundations.css?v=20261119-ds24-stroke-free-topnav' in page_html
 assert '#page-guide #method-filters .filter,' in foundation and 'border-radius:999px!important;' in foundation
 v3=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert 'component-review-v3.css?v=20261118-ds20-coverage' in v3
@@ -712,7 +712,7 @@ assert 'No data' not in v3js or 'DEMO' in v3js
 # visuals are not G2 signoff, and demo charts never touch private diary.
 ds12=(site/"assets"/"component-review-v4.css").read_text(encoding="utf-8")
 assert 'component-review-v4.css?v=20261118-ds20-coverage' in v3
-assert 'component-review-v2.css?v=20261118-ds20-coverage' in v3
+assert 'component-review-v2.css?v=20261119-ds24-no-stroke' in v3
 assert 'component-review-v3.js?v=20261118-ds13-week-fix' in v3
 assert '--porcelain: #FEFDFC;' in (site/"assets"/"design-tokens.css").read_text(encoding="utf-8")
 assert all(x in foundation for x in ("/* UX-DS-12", ".page input[type=\"checkbox\"]", "background-color:var(--porcelain)!important"))
@@ -768,7 +768,7 @@ assert 'Top Navigation transparent Home' not in page_html
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
 assert 'li-layout.css?v=20261118-ds20-coverage' in page_html
-assert 'ui-foundations.css?v=20261119-home-transparent-topnav' in page_html
+assert 'ui-foundations.css?v=20261119-ds24-stroke-free-topnav' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation
@@ -779,6 +779,14 @@ assert all('src="./assets/'+p+'"' in review10 for p in
 review10css=(site/"assets"/"component-review-v2.css").read_text(encoding="utf-8")
 assert 'background-size:100% 16px,100% var(--li-review-notebook-line)!important;' in review10css
 assert '.ds-home-bubble.green' in review10css and '.ds-image-split' in review10css
+# UX-DS-24: zero stroke forest-green bubble on body + tail, preserved light-paper stroke.
+assert '.ds-home-bubble.green{\n  background:var(--li-review-home-forest-bubble);\n  border-width:var(--li-space-0);' in review10css
+assert '.ds-home-bubble.green::before{\n  background:var(--li-color-home-dialogue-tail);\n  border-width:var(--li-space-0);' in review10css
+assert '.ds-home-bubble{position:relative;' in review10css and 'border:1px solid var(--rule)' in review10css
+assert '/* UX-DS-24: forest green speech bubble has zero-width stroke' in foundation
+assert '#page-home .hero-dialogue-bubble { border-width:var(--li-space-0); padding:' in foundation
+assert '#page-home .hero-dialogue-bubble::before { border-width:var(--li-space-0); }' in foundation
+assert './assets/ui-foundations.css?v=20261119-ds24-stroke-free-topnav' in page_html
 
 # UX-DS-09: mobile Tủ Riêng uses the same Archive icon as Home, never Bookmark.
 mobile_nav=page_html.split('<nav class="mobile-nav"',1)[1].split('</nav>',1)[0]

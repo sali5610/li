@@ -83,6 +83,8 @@ def main() -> int:
             check(asset_path.is_file(), "asset exists: " + art.get("path", "missing"))
         check("papercraft" in art_contract.read_text(encoding="utf-8").lower(),
               "current character art policy documented")
+        check(artwork.get("icon_revision") == "UX-ART-07-final-clean-edges-20261119", "final PO-approved five clean-outline mini icons are current")
+        check(all(a.get("expression") and a.get("bytes") > 1000 and len(a.get("sha256", "")) == 64 for a in assets if a.get("type") == "icon"), "final five mini icon records have provenance and SHA256")
         check(artwork.get("full_G2_approval") == "PENDING",
               "replacing requested art does not silently close G2")
 

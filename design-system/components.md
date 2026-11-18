@@ -121,3 +121,7 @@ Canonical source: `design-assets/lao-ly/icon/`, five head-only 96px indexed tran
 - **DO:** resize actual text, panel inset, action targets and icons from shared device tokens; preview 744×1133, 820×1180, 1024×1366, 1133×744, 1194×834, 1366×1024. **DON'T:** globally scale the entire DOM, break 2-up phone Thần Chú, or mistake a CSS-width iframe for physical Safari iPad acceptance.
 
 **Verification boundary:** Source-level fixture and GitHub rendered CI where available; real iPad Safari portrait↔landscape, touch/pointer switching, split-screen widths, 200% text zoom, keyboard and VoiceOver remain open. G2 visual identity remains pending.
+
+
+### UX-ART-07 · Lão Lý mini-heads — final PO-approved 2026-11-19
+This revision supersedes the earlier five-icon visual crop, **not** the 10 *Trong gương* illustration masters or the four-mode logic. Canonical files: `design-assets/lao-ly/icon/lao_ly_mini_{neutral,vao_nhip,dao_sau,qua_tai,hoi_tri}_96.png`; the five production aliases in `site/assets/` must byte-match canonical PNGs. Each is a crisp head-only cut-paper silhouette with transparent pixels (no checkerboard), no shoulder/torso or extraneous props. Quá tải means **exhausted** — sagging brows/lids, tired mouth, sweat drop and clean small scribble — distinctly unlike startled wide eyes or peaceful Hồi trí sleep. Preserve icon + visible text label, avoid communicating user health guesses, design at 24px and keep 44px+ tap targets. Avoid fuzzy colored edge halos on paper/forest; physical 24px iOS check remains open.

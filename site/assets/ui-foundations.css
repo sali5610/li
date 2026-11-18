@@ -430,3 +430,58 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   #page-settings .settings-groups { gap: var(--li-space-8); }
   #page-settings .settings-group-grid > .surface:only-child { grid-column: auto; }
 }
+
+
+/* S158 · Wave1 available lesson connections: meaning-first, touch-friendly links.
+   Keep the learning sequence and bilingual manuscript untouched. */
+:is(#page-lessonL03,#page-lessonL09,#page-lessonL15) .li-related-lessons {
+  min-width: 0;
+}
+:is(#page-lessonL03,#page-lessonL09,#page-lessonL15) .li-related-intro {
+  margin: var(--li-space-0);
+}
+:is(#page-lessonL03,#page-lessonL09,#page-lessonL15) .li-related-list {
+  display: grid;
+  gap: var(--li-space-3);
+  list-style: none;
+  margin: var(--li-space-4) var(--li-space-0) var(--li-space-0);
+  padding: var(--li-space-0);
+}
+:is(#page-lessonL03,#page-lessonL09,#page-lessonL15) .li-related-link {
+  display: grid;
+  gap: var(--li-space-2);
+  min-height: 48px;
+  min-width: 0;
+  padding: var(--li-space-4);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  text-align: left;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+:is(#page-lessonL03,#page-lessonL09,#page-lessonL15) .li-related-link:is(:hover,:focus-visible) {
+  border-color: var(--moss);
+  outline-offset: var(--li-space-1);
+}
+:is(#page-lessonL03,#page-lessonL09,#page-lessonL15) .li-related-type {
+  font-size: var(--li-type-caption);
+  line-height: var(--li-leading-caption);
+  color: var(--muted);
+  font-weight: 700;
+}
+:is(#page-lessonL03,#page-lessonL09,#page-lessonL15) .li-related-name {
+  font-family: var(--li-font-editorial);
+  font-size: var(--li-type-title-sm);
+  line-height: var(--li-leading-title-sm);
+}
+:is(#page-lessonL03,#page-lessonL09,#page-lessonL15) .li-related-reason {
+  font-size: var(--li-type-support);
+  line-height: var(--li-leading-support);
+}
+:is(#page-lessonL03,#page-lessonL09,#page-lessonL15) .li-related-go {
+  color: var(--moss);
+  font-size: var(--li-type-support);
+  line-height: var(--li-leading-support);
+  font-weight: 700;
+}

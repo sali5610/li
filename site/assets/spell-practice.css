@@ -1,7 +1,7 @@
 /* S160 · Spellbook: technique-specific interactive practice · local-only pilot
    Uses existing li. tokens; no G2 visual identity decision. */
 #page-guideDetail .spell-tabs{display:flex;gap:var(--li-space-2);margin:var(--li-space-6) 0 var(--li-space-5);padding:var(--li-space-1);background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--li-space-3)}
-#page-guideDetail .spell-tabs [role="tab"]{flex:1;min-height:48px;padding:var(--li-space-3);border:1px solid var(--paper-2);background:var(--paper-2);color:var(--moss);font-family:var(--li-font-ui);font-size:var(--li-type-body);line-height:var(--li-leading-body);font-weight:650;cursor:pointer;border-radius:var(--li-space-2);transition:background .16s}
+#page-guideDetail .spell-tabs [role="tab"]{flex:1;min-height:48px;padding:var(--li-space-3);border:1px solid var(--paper-2);background:var(--paper-2);color:var(--moss);font-family:var(--li-font-ui);font-size:var(--li-type-body);line-height:var(--li-leading-body);font-weight:var(--li-weight-650);cursor:pointer;border-radius:var(--li-space-2);transition:background .16s}
 #page-guideDetail .spell-tabs [role="tab"][aria-selected="true"]{background:var(--cream);border-color:var(--rule);box-shadow:0 1px 0 var(--rule)}
 #page-guideDetail .spell-tabs [role="tab"]:focus-visible,#page-guideDetail .spell-practice-root button:focus-visible,#page-guideDetail .spell-field textarea:focus-visible,#page-guideDetail .spell-option input:focus-visible{outline:3px solid var(--li-color-general-focus-ring);outline-offset:3px}
 #page-guideDetail .spell-practice-root[hidden],#page-guideDetail .editorial-grid[hidden]{display:none!important}
@@ -14,10 +14,10 @@
 #page-guideDetail .spell-activity-body>p{margin:0 0 var(--li-space-5);font-size:var(--li-type-body);line-height:var(--li-leading-body)}
 #page-guideDetail .spell-activity-body>h3{margin:0 0 var(--li-space-3);font-size:var(--li-type-title-sm)}
 #page-guideDetail .spell-activity-body>.action{margin-top:var(--li-space-3)}
-#page-guideDetail .spell-field{min-width:0;display:flex;flex-direction:column;gap:var(--li-space-3);margin:var(--li-space-5) 0;padding:var(--li-space-0);border-width:0;border-style:none;color:var(--ink);font-family:var(--li-font-ui);font-size:var(--li-type-support);line-height:var(--li-leading-support);font-weight:600}
+#page-guideDetail .spell-field{min-width:0;display:flex;flex-direction:column;gap:var(--li-space-3);margin:var(--li-space-5) 0;padding:var(--li-space-0);border-width:0;border-style:none;color:var(--ink);font-family:var(--li-font-ui);font-size:var(--li-type-support);line-height:var(--li-leading-support);font-weight:var(--li-weight-600)}
 #page-guideDetail fieldset.spell-field legend{padding:0 0 var(--li-space-2)}
-#page-guideDetail .spell-field textarea{display:block;width:100%;min-height:88px;max-width:100%;padding:var(--li-space-3);border:1px solid var(--rule);border-radius:0;background:var(--paper);color:var(--ink);font:400 var(--li-type-body)/var(--li-leading-body) var(--li-font-ui);resize:vertical}
-#page-guideDetail .spell-option{display:flex;align-items:center;gap:var(--li-space-3);min-height:44px;margin:var(--li-space-2) 0;padding:var(--li-space-3);background:var(--paper);border:1px solid var(--rule);font-weight:400;cursor:pointer}
+#page-guideDetail .spell-field textarea{display:block;width:100%;min-height:88px;max-width:100%;padding:var(--li-space-3);border:1px solid var(--rule);border-radius:0;background:var(--paper);color:var(--ink);font:var(--li-weight-400) var(--li-type-body)/var(--li-leading-body) var(--li-font-ui);resize:vertical}
+#page-guideDetail .spell-option{display:flex;align-items:center;gap:var(--li-space-3);min-height:44px;margin:var(--li-space-2) 0;padding:var(--li-space-3);background:var(--paper);border:1px solid var(--rule);font-weight:var(--li-weight-400);cursor:pointer}
 #page-guideDetail .spell-option input{width:18px;height:18px;flex:none;accent-color:var(--moss)}
 #page-guideDetail .spell-feedback{margin-top:var(--li-space-5);padding:var(--li-space-5);background:var(--paper-2);border-left:4px solid var(--moss);color:var(--ink)}
 #page-guideDetail .spell-feedback strong{display:block;font-size:var(--li-type-body)}

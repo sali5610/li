@@ -54,7 +54,7 @@ jobs:
             tail -22 /tmp/li-step16-v2-fault-stderr.log || true
             exit 1
           }
-          if ! grep -F '<pre id="result">LI_BACKUP_V2_FAULT_PASS ' /tmp/li-step16-v2-fault-result.html | grep -F '"count":10' >/dev/null; then
+          if ! grep -F '<pre id="result">LI_BACKUP_V2_FAULT_PASS ' /tmp/li-step16-v2-fault-result.html | grep -F '"count":11' >/dev/null; then
             echo "FAIL v2 adversarial recovery suite"
             grep -F '<pre id="result">LI_BACKUP_V2_FAULT_' /tmp/li-step16-v2-fault-result.html | tail -1 | cut -c1-4800 || true
             exit 1

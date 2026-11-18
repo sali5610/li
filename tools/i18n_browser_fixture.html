@@ -37,7 +37,7 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
    const expectations={
     home:["Mọi câu hỏi","Every question"],
     catalog:["Tàng Thư","Library"],
-    guide:["Sổ Tay Thần Chú","Technique Handbook"],
+    guide:["Sổ Tay Thần Chú","The Spellbook"],
     library:["Tủ Riêng","My Shelf"],
     resume:["Quay lại","Continue"],
     collection:["Bộ sưu tập","Collection"],
@@ -70,6 +70,52 @@ iframe{display:block;border:0;width:var(--width,390px);height:880px}
     audit.push({route:page,old,expected,overflow:over,residuals});
     record(page+" horizontal overflow",over<=4,over+"px");
    }
+   // All 13 spell identities are distinct from their unchanged academic methods.
+   await route("guide");
+   const spells=[
+    ["T01","Invocation of Recall","Retrieval Practice / Active Recall"],
+    ["T02","Seal of Returning Memory","Spaced Repetition / Distributed Practice"],
+    ["T13","Palace of Hidden Paths","Method of Loci / Memory Palace"],
+    ["T03","The Vanishing Guidelight","Worked Examples & Guidance Fading"],
+    ["T04","Lantern of Inner Insight","Guided Self-Explanation"],
+    ["T05","Rite of Root-Seeking","Elaborative Interrogation"],
+    ["T06","Mirror of Twin Forms","Compare–Contrast / Interleaved Discrimination"],
+    ["T07","The Premise Ward","Logical Inference & Premise Checking"],
+    ["T08","Mirror of Counterarguments","Argument Mapping & Counterevidence"],
+    ["T09","The Source-Seer's Lens","Source Criticism & Evidence Appraisal"],
+    ["T10","Unbinding the Boundaries","Problem Decomposition & Boundary Tests"],
+    ["T11","Compass of Discernment","Method Fit & Metacognitive Awareness"],
+    ["T12","Thread of Returning Focus","Meaningful Focus & Attention Re-entry"]
+   ];
+   const schools=["Memorycraft","Insightcraft","Reasoncraft","Unbinding Arts","Mindkeeping"];
+   record("Five English magical schools",schools.every(name=>[...d.querySelectorAll("#method-filters .filter")].some(el=>label(el)===name)),[...d.querySelectorAll("#method-filters .filter")].map(label).join(" / "));
+   const searchSpell=by("method-search");
+   for(const [id,name,academic] of spells){
+    searchSpell.value=name;
+    searchSpell.dispatchEvent(new w.Event("input",{bubbles:true}));
+    await settle();
+    const cards=[...d.querySelectorAll("#method-cards .method-card")];
+    const card=cards.find(x=>x.dataset.method===id);
+    record(id+" English spell searchable",cards.length===1&&!!card, String(cards.length)+" "+cards.map(x=>x.dataset.method).join(","));
+    record(id+" authored fantasy name + academic counterpart",!!card&&label(card.querySelector("h3"))===name&&label(card.querySelector(".original"))===academic,(card?label(card.querySelector("h3"))+" / "+label(card.querySelector(".original")):"missing"));
+    if(card){
+     card.click();await settle();
+     record(id+" detail bilingual title and school",label(by("detail-title"))===name&&label(by("detail-id")).includes("SPELL NOTES /")&&!/[À-ỹ]/u.test(label(by("detail-id"))),label(by("detail-title"))+" / "+label(by("detail-id")));
+     record(id+" detail academic identity unchanged",label(by("detail-original"))===academic,label(by("detail-original")));
+     record(id+" detail fits viewport",d.documentElement.scrollWidth-w.innerWidth<=4,d.documentElement.scrollWidth-w.innerWidth+"px");
+     await route("guide");
+    }
+   }
+   searchSpell.value="Triệu Ức";
+   searchSpell.dispatchEvent(new w.Event("input",{bubbles:true}));await settle();
+   record("Vietnamese spell name still searchable in English mode",d.querySelector("#method-cards .method-card")?.dataset.method==="T01");
+   await change("vi");
+   record("VI spell name restored",label(d.querySelector("#method-cards .method-card h3"))==="Triệu Ức Chân Ngôn",label(d.querySelector("#method-cards .method-card h3")));
+   record("VI spell school restored",[...d.querySelectorAll("#method-filters .filter")].some(el=>label(el)==="Ký Ức Thuật"));
+   await change("en");
+   record("EN spell name restored on language round-trip",label(d.querySelector("#method-cards .method-card h3"))==="Invocation of Recall",label(d.querySelector("#method-cards .method-card h3")));
+   searchSpell.value="";
+   searchSpell.dispatchEvent(new w.Event("input",{bubbles:true}));await settle();
    await route("catalog");
    const host=d.querySelector("#page-catalog .section-shell");
    const step=async kind=>{

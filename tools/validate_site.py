@@ -394,6 +394,17 @@ assert html.count('id="li-diary-delete"')==1
 assert (site/"assets"/"personal-diary.js").is_file()
 assert (site/"assets"/"personal-diary.css").is_file()
 
+# UX-IA-03: real latest-item previews, history, saved bookmarks and full collection.
+assert 'id="page-resume"' in html and 'id="page-collection"' in html
+assert 'id="li-library-latest-lesson"' in html and 'id="li-library-latest-idea"' in html
+assert html.count('id="li-saved-questions"')==1
+assert 'data-demo="Chưa lưu được ý này' not in html
+assert 'id="save-capture-note"' in html
+assert html.count('id="li-checkin-recording-disclosure"')==1
+assert html.index('li-diary-privacy')>html.index('li-diary-day-status')
+assert '<script src="./assets/library-hub.js?v=1"></script>' in html
+subprocess.run(["node",str(site.parent/"tools"/"test_library_hub_v2.cjs")],check=True,cwd=site.parent)
+
 # S120: mirror-variant illustration stored locally and not silently downgraded
 # to a chat icon; Bút Ký uses same paper surface as cards 03-04.
 illustrated=site/"assets"/"laoly-mirror-suy-nghi.png"

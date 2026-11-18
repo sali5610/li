@@ -1,5 +1,7 @@
 # UI component contract — current code ↔ intended behavior
 
+**UX-DS-22 extension:** Before adding or changing an instance, apply the [cross-component Do/Don't and behavior contract](ux-patterns-and-behavior.md) for anatomy, semantics, async outcomes, feedback, modal focus, VI/EN and regression QA. These are documented rules, not proof of runtime compliance or G2 signoff.
+
 **Inventory date: 2026-11-18.** **UX-DS-20 token compliance:** All audited authored component color, type and spacing declarations reference generated design tokens (or intrinsic native CSS keywords). Typography legacy values and alpha paint effects are explicit source-of-truth tokens preserving live geometry, not new visual approval. The new 3px `--olive` border on non-Home page kickers is **decoration only**; no active state or semantic status is signaled. Live iOS/VoiceOver and G2 signoff remain open. 
 
 **Inventory date: 2026-11-18.** CSS selectors below are observed in the current static app or documented in the active handoff; **not** imported shared components. “Implemented” never equals “G2-approved”. After changes, search **all** selectors and matching element instances, including later overrides.

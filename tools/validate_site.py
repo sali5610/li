@@ -481,8 +481,11 @@ subprocess.run(["node",str(site.parent/"tools"/"test_library_wave1_mount_ia.cjs"
 # UX-IA-06: Save and Unsave have distinct semantics from submitting an answer
 # or deleting a Bút Ký. Full case context must survive in the saved snapshot.
 assert 'const savedContent=liInitialState.savedContent;' in page_html
-assert 'savedContent:data.savedContent||[]' in page_html
-assert 'ideas:collectedIdeas,savedContent,draft:' in page_html
+# S-G3-16E: library bookmark schema is still intact; export/restore moved to backup-v2.js.
+assert 'savedContent:data.savedContent||[]' in backup_engine
+assert 'ideas:collectedIdeas,savedContent,updatedAt:' in page_html
+assert '"li.private.library.v1"' in backup_engine
+assert 'backup.exportJSON(window.localStorage' in page_html
 assert 'caseSnapshot' in page_html and 'selectedText:caseOptions.find' in page_html
 assert 'id="li-note-case-context"' in page_html
 assert 'data-li-bookmark-kind="case"' in page_html

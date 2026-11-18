@@ -899,5 +899,19 @@ window.LI_LEGACY_EN={
   "Sổ Tay Thần Chú": "The Spellbook",
   "CẨM NANG TƯ DUY": "THE THINKING GRIMOIRE",
   "13 phương pháp để học, ghi nhớ và suy nghĩ. Mỗi pháp danh đều có tên học thuật gốc đi kèm.": "Thirteen spells for learning, memory, and reasoning. Beneath each incantation lies a real academic method.",
-  "CHÚ GIẢI →": "DECIPHER →"
+  "CHÚ GIẢI →": "DECIPHER →",
+  "Hai phân loại đúng.": "Both cases are classified correctly.",
+  "Hãy nhìn lại dấu hiệu chọn mẫu.": "Recheck how each sample was selected.",
+  "Đã tách đúng hai câu hỏi.": "You separated the two questions correctly.",
+  "Một đáp án cần xem lại.": "One answer needs another look.",
+  "B là nguồn tốt hơn cho câu hỏi hẹp này.": "Source B is stronger for this narrower question.",
+  "Hãy kiểm tra lại provenance và cơ chế chọn người.": "Recheck the source provenance and sampling process.",
+  "T03 phù hợp cho thủ tục mới.": "T03 fits learning a new procedure.",
+  "Chưa có lần học trước nên T02 không phù hợp ngay.": "Without a prior study session, T02 isn't the right first step.",
+  "Bạn chọn hai dữ kiện quan trọng, không chọn khẳng định quá mức.": "You chose both relevant facts without making an overclaim.",
+  "Dữ kiện không có nhóm so sánh và khuyến mãi đồng thời đều quan trọng.": "The missing comparison group and concurrent promotion both matter.",
+  "Chế độ của thần chú": "Spell notes and practice",
+  "Chú giải": "Spell Notes",
+  "Thử thi triển": "Try the Spell",
+  "BÀI HỌC": "LESSON"
 };

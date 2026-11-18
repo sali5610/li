@@ -335,3 +335,13 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
     line-height: var(--li-leading-support) !important;
   }
 }
+
+/* P0 visual QA: only on Home mobile, avoid the accepted context panel/CTA row.
+   JS measures the free slot ABOVE the context; measured inset stays on the
+   4px grid. Other routes retain their original lower-right companion anchor.
+   Source evidence: 320–600px real Chrome CTA overlap, UX-DS-05. */
+@media (max-width: 600px) {
+  body.li-home-fab-safe .laoly-support {
+    bottom: var(--li-home-fab-bottom) !important;
+  }
+}

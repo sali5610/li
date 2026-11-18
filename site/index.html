@@ -334,11 +334,38 @@ document.querySelectorAll(".preview-toggle").forEach(x=>x.addEventListener("chan
 document.getElementById("method-search").addEventListener("input",renderMethods);
 document.getElementById("global-search").addEventListener("input",e=>{const q=e.target.value.toLocaleLowerCase("vi").trim();const results=[["Tàng Thư · Xã hội học","catalog"],["Thiên lệch chọn mẫu","lesson"],["Khảo Chứng · 90% hài lòng","research"],...methods.map(m=>[m[1]+" / "+m[2],"guide"])].filter(a=>q&&a[0].toLocaleLowerCase("vi").includes(q)).slice(0,12);document.getElementById("global-results").innerHTML=q?(results.length?results.map(a=>'<button class="branch" data-page="'+a[1]+'">'+a[0]+'</button>').join(""):'Không tìm thấy. Thử từ khóa khác hoặc về Tàng Thư. <button class="action alt" data-page="catalog">Tàng Thư</button>'):'Nhập điều bạn muốn tìm.'});
 
-// Keep the companion clear of Home actions while the hero is in view.
+// Keep the companion accessible without blocking the Home primary actions.
+// On mobile Home the accepted context panel and two CTAs occupy the entire
+// lower-right scene. Park Lão Lý in the free area ABOVE the context card,
+// while other routes keep their regular fixed bottom-right position.
 function placeCompanion(){
- // A single fixed bottom-right anchor for the character across every route.
- document.body.classList.remove("laoly-home-top","laoly-home");
- document.querySelector(".laoly-support")?.style.removeProperty("--laoly-home-bottom");
+ const root=document.body;
+ const support=document.querySelector(".laoly-support");
+ root.classList.remove("laoly-home-top","laoly-home","li-home-fab-safe");
+ support?.style.removeProperty("--laoly-home-bottom");
+ support?.style.removeProperty("--li-home-fab-bottom");
+ if(!support||currentPage!=="home"||window.innerWidth>600)return;
+ const hero=document.querySelector("#page-home .hero");
+ const actions=hero?.querySelector(".hero-actions");
+ const context=hero?.querySelector(".hero-dialogue");
+ const mirror=hero?.querySelector(".mirror-message");
+ if(!actions||!context||!mirror)return;
+ const a=actions.getBoundingClientRect();
+ const b=support.getBoundingClientRect();
+ if(a.bottom<=0||a.top>=window.innerHeight)return;
+ const intersection=Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left))*
+                    Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
+ if(intersection<100)return;
+ const dialog=context.getBoundingClientRect();
+ const mirrorBottom=mirror.getBoundingClientRect().bottom;
+ // Reserve 12px clearance above the context card. Round the computed inset
+ // UP to the 4px grid. This is a collision-derived position, not artwork crop.
+ const desiredBottomY=Math.floor((dialog.top-12)/4)*4;
+ const desiredTopY=desiredBottomY-b.height;
+ if(desiredTopY<mirrorBottom+8||desiredTopY<80)return;
+ const bottom=Math.ceil((window.innerHeight-desiredBottomY)/4)*4;
+ support.style.setProperty("--li-home-fab-bottom",bottom+"px");
+ root.classList.add("li-home-fab-safe");
 }
 window.addEventListener("scroll",placeCompanion,{passive:true});
 window.addEventListener("resize",placeCompanion,{passive:true});

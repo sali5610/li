@@ -119,7 +119,11 @@ for(const route of ["lessonL03","lessonL09","lessonL15"]){
  assert.equal(sheet.getAttribute("aria-modal"),"true");
  assert.equal(nav.parentElement,sheet,route+" chapter links moved into sheet");
  assert(!layout.contains(sheet),"Chapter sheet must never be first card in lesson grid");
- const trigger=toolbar.querySelector(".catalog-chapter-trigger");
+
+ const trigger=page.querySelector(".catalog-chapter-fab");
+ assert(trigger&&trigger.parentElement===page,route+" FAB is fixed to the lesson page, not an in-flow toolbar child");
+ assert.equal(trigger.getAttribute("aria-label"),"Mục lục chương");
+ assert(!layout.contains(trigger),"FAB must never enter lesson flow");
  const close=sheet.querySelector(".catalog-sheet-close");
  const prev=toolbar.querySelector(".catalog-chapter-step");
  const next=toolbar.querySelector(".catalog-inline-steps").children[1];

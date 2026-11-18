@@ -103,4 +103,17 @@ assert.equal(node("buddy-quote-translation").hidden,false,"normal quote translat
 assert.equal(node("buddy-quote-info").hidden,false,"info action restored on normal render");
 assert.equal(node("buddy-quote-context").hidden,false,"contextual commentary restored");
 assert.equal(node("buddy-quote").children.length,0,"quote details do not receive duplicate commentary nodes");
+const vietnameseOriginal=node("buddy-quote-original").textContent;
+window.liLanguage={get:()=> "en"};
+engine.render();
+assert.ok(node("buddy-quote-translation").textContent.startsWith("Meaning: "),"English quote meaning is localized");
+assert.ok(node("buddy-quote-gloss").textContent.startsWith("Interpretation: "),"English quote interpretation is localized");
+assert.ok(/[A-Za-z]/.test(node("buddy-quote-context").textContent),"English Lão Lý quote commentary is present");
+assert.ok(node("buddy-quote-link").href.startsWith("https://"),"English edition preserves source link");
+assert.ok(node("buddy-quote-original").textContent.length>0,"Original-language source remains shown in English mode");
+window.liLanguage={get:()=> "vi"};
+engine.render();
+assert.ok(node("buddy-quote-translation").textContent.startsWith("Dịch nghĩa: "),"Vietnamese quote meaning restored");
+assert.notEqual(vietnameseOriginal.length,0,"A source quote existed before switching languages");
+
 console.log("PASS "+engine.quotes.length+" sourced quotes, 3 scenario rotations, 12 routes, 5 method contexts, 4 modes, accessibility and source/comment distinction");

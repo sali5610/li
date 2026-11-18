@@ -32,3 +32,60 @@
  #page-library #li-library-latest-lesson .path-item>.action{width:100%}
  #page-collection .library-filter-row .action{flex:1 1 auto}
 }
+/* UX-IA-04 · Tertiary navigation and note-review/editor hierarchy. */
+#page-library .library-group-header{display:flex;align-items:center;gap:var(--li-space-4);justify-content:space-between}
+#page-library .library-group-header h2{margin:var(--li-space-0)}
+#page-library .library-group-description{margin:var(--li-space-0);color:var(--muted)}
+.library-text-link{
+ display:inline-flex;align-items:center;justify-content:flex-start;gap:var(--li-space-2);
+ background:initial;border:0;color:var(--moss);padding:var(--li-space-2) var(--li-space-1);
+ font:600 var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);
+ text-align:left;cursor:pointer;text-decoration:underline;text-underline-offset:var(--li-space-1);
+}
+.library-text-link:hover{color:var(--forest);text-decoration-thickness:2px}
+.library-text-link:focus-visible{outline:2px solid var(--li-color-focus-ring);outline-offset:var(--li-space-1)}
+.library-text-link:disabled{color:var(--muted);cursor:default}
+.library-more-link{white-space:nowrap;flex-shrink:0}
+.library-more-link svg,.library-more-link .lucide{width:16px;height:16px;flex-shrink:0}
+#page-library .library-group-header .library-more-link{width:auto}
+#page-library .library-preview .library-detail-link{justify-self:start}
+#page-library .library-create-actions{
+ border-top:1px solid var(--rule);padding-top:var(--li-space-4);
+ margin-top:var(--li-space-2);
+}
+#page-collection .library-note-actions{display:flex;align-items:center;gap:var(--li-space-4)}
+#page-collection .library-collection-entry .library-note-actions{margin-top:var(--li-space-2)}
+#page-collection .library-collection-create{
+ border-top:1px solid var(--rule);margin-top:var(--li-space-8);padding-top:var(--li-space-6);
+}
+#page-collection .library-collection-create h2{font:600 var(--li-type-title-sm)/var(--li-leading-title-sm) var(--li-font-editorial)}
+#page-noteDetail .section-shell{display:grid;gap:var(--li-space-6)}
+#page-noteDetail .library-back-link{justify-self:start}
+#page-noteDetail .display-title{margin:var(--li-space-0);overflow-wrap:anywhere}
+#page-noteDetail .intro{margin:var(--li-space-0)}
+#page-noteDetail .library-note-review,
+#page-noteDetail .library-note-edit,
+#page-noteDetail .library-note-history{display:grid;gap:var(--li-space-4);min-width:0}
+#page-noteDetail .library-note-review h2,
+#page-noteDetail .library-note-edit h2,
+#page-noteDetail .library-note-history h2{margin:var(--li-space-0)}
+#page-noteDetail .library-entry-body{
+ white-space:pre-wrap;overflow-wrap:anywhere;
+ line-height:var(--li-leading-body);
+ margin:var(--li-space-0);
+}
+#page-noteDetail .library-note-management{display:flex;align-items:center;gap:var(--li-space-4);flex-wrap:wrap}
+#page-noteDetail .library-danger-link{color:var(--li-color-danger-fill)}
+#page-noteDetail .library-note-edit label{font-weight:600}
+#page-noteDetail .library-note-edit .searchbox,
+#page-noteDetail .library-note-edit .text-editor{width:100%;max-width:100%;box-sizing:border-box}
+#page-noteDetail .library-version-entry{display:grid;gap:var(--li-space-3);padding:var(--li-space-4);border:1px solid var(--rule)}
+#page-noteDetail .library-version-heading{display:flex;justify-content:space-between;flex-wrap:wrap;gap:var(--li-space-3)}
+#page-noteDetail .library-version-entry .library-text-link{justify-self:start}
+#page-noteDetail [hidden]{display:none!important}
+@media(max-width:640px){
+ #page-library .library-group-header{display:flex;align-items:center;flex-wrap:nowrap}
+ #page-library .library-group-header .library-more-link{width:auto}
+ #page-library .library-group-header h2{min-width:0}
+ #page-noteDetail .library-note-management .action{flex:1}
+}

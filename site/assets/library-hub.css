@@ -38,7 +38,8 @@
 #page-library .library-group-description{margin:var(--li-space-0);color:var(--muted)}
 .library-text-link{
  display:inline-flex;align-items:center;justify-content:flex-start;gap:var(--li-space-2);
- background:initial;border:0;color:var(--moss);padding:var(--li-space-2) var(--li-space-1);
+ --li-library-link-surface:transparent;--li-library-link-border:0;
+ background:var(--li-library-link-surface);border:var(--li-library-link-border);color:var(--moss);padding:var(--li-space-2) var(--li-space-1);
  font:600 var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);
  text-align:left;cursor:pointer;text-decoration:underline;text-underline-offset:var(--li-space-1);
 }

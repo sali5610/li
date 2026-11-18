@@ -11,9 +11,12 @@ function refresh(){
   const type=button.dataset.liBookmarkKind,id=button.dataset.liBookmarkId;
   if(!valid(type,id)){button.disabled=true;return;}
   const saved=isSaved(type,id);
+  const label=(saved?"Bỏ lưu ":"Lưu ")+(type==="lesson"?"bài":"case")+(type==="lesson"?" "+id:"");
   button.setAttribute("aria-pressed",String(saved));
-  button.textContent=saved?(type==="lesson"?"Bỏ lưu bài":"Bỏ lưu case"):(type==="lesson"?"Lưu bài":"Lưu case");
-  button.setAttribute("aria-label",button.textContent+(type==="lesson"?" "+id:""));
+  button.setAttribute("aria-label",label);
+  button.setAttribute("title",label);
+  // A dedicated icon utility; never replace the button with a text CTA.
+  button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
  });
 }
 function toggle(type,id){

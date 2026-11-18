@@ -143,7 +143,25 @@ const originalAttr=new WeakMap();
 let observer=null,locked=false;
 /* Exact render strings are preferred. These are the approved variable-bearing
    UX templates: keep user-provided text untouched and translate only surrounding UI. */
+function dateForScreenReader(day,month,year){
+ return new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",year:"numeric"}).format(new Date(Number(year),Number(month)-1,Number(day)));
+}
 const DYNAMIC_TEMPLATES=[
+ [/^Hiển thị (\d+)\/13 phương pháp(?: · (.+))?$/,m=>{
+  const suffix={"kết quả tìm kiếm trên cả 13":"search results across all 13","theo nhóm":"filtered by group","đầy đủ":"all techniques"}[m[2]]||TEXT[m[2]]||m[2]||"";
+  return "Showing "+m[1]+"/13 techniques"+(suffix?" · "+suffix:"");
+ }],
+ [/^(\d+\/\d+) bài đã phát hành · Chưa có bài nào để học và tự đánh giá\.$/,m=>m[1]+" lessons published · Nothing available to study or review yet."],
+ [/^(\d+\/\d+) bài đã phát hành · Chỉ ghi nhận hoàn thành khi có trạng thái tự đánh giá thật trên thiết bị này\.$/,m=>m[1]+" lessons published · Completion counts only after a real self-review on this device."],
+ [/^(\d{2}) · (.+)$/,m=>TEXT[m[2]]?m[1]+" · "+TEXT[m[2]]:null],
+ [/^(\d{1,2})\/(\d{1,2})\/(\d{4}): (chưa có nhật ký|chưa ghi nhận|(\d+) hoạt động(?: được ghi nhận)?)$/,m=>{
+   const status=m[4]==="chưa có nhật ký"?"no journal entry":m[4]==="chưa ghi nhận"?"no activity recorded":m[5]+" recorded "+(m[5]==="1"?"activity":"activities");
+   return dateForScreenReader(m[1],m[2],m[3])+": "+status;
+ }],
+ [/^Trong (\d+) ngày có ghi nhận: (\d+) bài · (\d+) vấn đề · (\d+) input\.$/,m=>
+   "Recorded across "+m[1]+(m[1]==="1"?" day: ":" days: ")+m[2]+(m[2]==="1"?" lesson, ":" lessons, ")+m[3]+(m[3]==="1"?" problem, ":" problems, ")+m[4]+(m[4]==="1"?" input.":" inputs.")
+ ],
+
  [/^(\d+) hoạt động được ghi nhận$/,m=>m[1]+" recorded activities"],
  [/^(\d+) ngày có ghi nhận:$/,m=>m[1]+" days with entries:"],
  [/^(\d+) phương pháp khớp tên hoặc bộ lọc hiện tại\.$/,m=>m[1]+" techniques match the current name or filters."],

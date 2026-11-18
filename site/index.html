@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/design-tokens.css?v=0.3">
 <link rel="stylesheet" href="./assets/li-layout.css?v=0.4"><link rel="stylesheet" href="./assets/lesson-l09-hifi.css?v=0.3">
-<link rel="stylesheet" href="./assets/ui-foundations.css?v=0.4"><link rel="stylesheet" href="./assets/checkin-adaptation.css?v=1"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
+<link rel="stylesheet" href="./assets/ui-foundations.css?v=0.5"><link rel="stylesheet" href="./assets/checkin-adaptation.css?v=1"></head><body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
 <symbol id="i-tree" viewBox="0 0 24 24"><path d="m12 2 4 5h-2l4 5h-3l4 6H5l4-6H6l4-5H8zM12 18v4"/></symbol>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7c-4-3-8-3-10-2v15c3-1 7 0 10 2 3-2 7-3 10-2V5c-2-1-6-1-10 2ZM12 7v15"/></symbol>
 <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6zM15 2v5h5M9 13h8M9 17h8"/></symbol>
@@ -35,7 +35,7 @@
 <div class="hero" role="region" aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn">
 
 <div class="hero-left"><button class="home-checkin" id="checkin" type="button"><i data-lucide="check-circle-2" class="icon sm" aria-hidden="true"></i> Check-in hôm nay</button><h1>Mọi câu hỏi<br>đều có rễ.</h1><p>Không cần biết tất cả. Chỉ cần không ngừng tò mò.</p><span class="tiny-note">Một câu hỏi, muôn ngả đường</span></div>
-<div class="mirror-message"><div class="mirror-label">Gương Vạn Vấn</div><h2 id="mirror-question">90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?</h2><div class="mirror-controls" role="group" aria-label="Chuyển câu hỏi"><button id="previous-question" class="mirror-refresh" type="button" aria-label="Câu hỏi trước" title="Câu hỏi trước"><i data-lucide="arrow-left" class="icon sm" aria-hidden="true"></i></button><button id="shuffle" class="mirror-refresh" type="button" aria-label="Câu hỏi tiếp theo" title="Câu hỏi tiếp theo"><i data-lucide="arrow-right" class="icon sm" aria-hidden="true"></i></button></div></div>
+<div class="mirror-message"><div class="mirror-label">Gương Vạn Vấn · Vấn đề</div><h2 id="mirror-question">90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?</h2><div class="mirror-controls" role="group" aria-label="Chuyển câu hỏi"><button id="previous-question" class="mirror-refresh" type="button" aria-label="Câu hỏi trước" title="Câu hỏi trước"><i data-lucide="arrow-left" class="icon sm" aria-hidden="true"></i></button><button id="shuffle" class="mirror-refresh" type="button" aria-label="Câu hỏi tiếp theo" title="Câu hỏi tiếp theo"><i data-lucide="arrow-right" class="icon sm" aria-hidden="true"></i></button></div></div>
 <aside class="hero-dialogue" aria-label="Lão Lý kể bối cảnh câu hỏi đang hiện trong Gương Vạn Vấn">
   <span class="hero-dialogue-avatar" aria-hidden="true"><img src="./assets/laoly-neutral.png" alt="" width="128" height="128" loading="eager" decoding="async"></span>
   <div class="hero-dialogue-bubble" role="note">
@@ -43,7 +43,7 @@
     <p id="home-scene">Nhóm UX khảo sát người đang dùng sản phẩm. 90% phản hồi tích cực, nên họ kết luận: “Ai cũng muốn tính năng này”.</p>
   </div>
 </aside>
-<div class="hero-actions"><button class="secondary" id="save-question" type="button"><span class="action-icon"><i data-lucide="bookmark" class="icon sm" aria-hidden="true"></i></span><span>Lưu</span></button><button class="primary" data-page="research" type="button"><span class="action-icon"><i data-lucide="arrow-up-right" class="icon lg" aria-hidden="true"></i></span><span>Đào sâu</span></button></div></div>
+<div class="hero-actions"><button class="secondary" id="save-question" type="button"><span class="action-icon"><i data-lucide="bookmark" class="icon sm" aria-hidden="true"></i></span><span>Lưu</span></button><button class="primary" id="mirror-primary-action" data-page="research" type="button"><span class="action-icon"><i data-lucide="arrow-up-right" class="icon lg" aria-hidden="true"></i></span><span id="mirror-primary-label">Đào sâu</span></button></div></div>
 <div class="section-shell"><div class="rule-label">LỐI ĐI TRONG THƯ VIỆN</div><div class="surface-grid"><button class="home-tile" data-page="catalog"><span class="tile-photo "></span><span class="tile-text"><span class="kicker"><i data-lucide="library-big" aria-hidden="true"></i> Khám phá</span><strong>Tàng Thư</strong><small>Khám phá những lĩnh vực khiến bạn tò mò</small></span></button><button class="home-tile" data-page="guide"><span class="tile-photo book"></span><span class="tile-text"><span class="kicker"><i data-lucide="book-open" aria-hidden="true"></i> Khám phá</span><strong>Thần Chú</strong><small>13 cách học, ghi nhớ và lập luận</small></span></button><button class="home-tile" data-page="library"><span class="tile-photo roots"></span><span class="tile-text"><span class="kicker"><i data-lucide="archive" aria-hidden="true"></i> Khám phá</span><strong>Tủ Riêng</strong><small>Những câu hỏi và kết luận muốn quay lại</small></span></button></div>
 </div>
 </section>
@@ -232,8 +232,41 @@ const scenarios=[
 {question:"Một nhóm gọi ai đó là “khác thường”. Ai đặt ra chuẩn mực?",scene:"Một cộng đồng gọi người họ chưa hiểu là “khác thường”. Ai đã đặt ra chuẩn mực đó?",branches:["Ai đặt chuẩn mực?","Nhãn gọi thay đổi điều gì?","Bằng chứng ở đâu?"],observed:"Trong câu chuyện hư cấu, cộng đồng dùng một nhãn để mô tả một người.",unknown:"Ai đặt ra chuẩn mực, hành vi nào thực sự quan sát được, và nhãn đó ảnh hưởng ra sao?",buddy:"Nhãn gọi có thể dễ hơn tìm hiểu. Nhưng ai đặt ra cái chuẩn đó, tiểu hữu?"},
 {question:"Hàng còn đầy trong kho. Vì sao khách vẫn không mua được?",scene:"Kho tổng vẫn còn hàng, nhưng quầy bán lại trống. Hàng đang ở đâu?",branches:["Hàng nằm ở đâu?","Bao giờ hàng đến?","Dự báo đúng không?"],observed:"Số tồn kho tổng toàn công ty dương, nhưng cửa hàng chưa có hàng bán.",unknown:"Hàng đang ở kho nào, có bị giữ chỗ hay đang vận chuyển không; thời gian bổ sung và nhu cầu thực tế.",buddy:"Tồn kho tổng đâu có tự chạy đến quầy. Lão muốn xem vị trí hàng và lịch giao trước."}
 ];
+/* S158 · Mix problems with short, source-grounded hooks from three PUBLISHED Wave1 lessons.
+   The lesson text itself remains PO locked. Never add an unpublished lesson here. */
+scenarios.splice(1,0,{
+ type:"hook",lessonRoute:"lessonL03",
+ question:"Một câu hỏi mở vẫn có thể gài sẵn câu trả lời.",
+ scene:"“Vì sao giao diện này khó dùng?” nghe như một câu hỏi mở. Nhưng nó đã giả định điều gì trước khi người dùng kể chuyện?",
+ buddy:"Câu hỏi mở chưa chắc trung lập. Tiểu hữu nhìn thử xem ta đã gài giả định gì vào câu chữ."
+});
+scenarios.splice(3,0,{
+ type:"hook",lessonRoute:"lessonL15",
+ question:"Ngưỡng đặt hàng không phải số lượng đặt hàng.",
+ scene:"Khi tồn kho chạm ngưỡng, ta quyết định đặt hàng. Nhưng ngưỡng đó có thực sự cho biết phải mua bao nhiêu?",
+ buddy:"Ngưỡng để bắt đầu hành động và lượng cần mua là hai chuyện khác nhau. Chớ gộp làm một, nhóc."
+});
+scenarios.splice(5,0,{
+ type:"hook",lessonRoute:"lessonL09",
+ question:"Một ngàn câu trả lời vẫn có thể dẫn tới kết luận lệch.",
+ scene:"Một ngàn người đang dùng ứng dụng trả lời khảo sát. Những người đã bỏ đi hoặc chưa từng dùng có được nghe tiếng nói không?",
+ buddy:"Con số lớn nghe rất thuyết phục. Nhưng ai đã có cơ hội trả lời mới đáng hỏi, tiểu hữu."
+});
+function renderMirrorItem(){
+ const item=scenarios[qIndex],isHook=item.type==="hook";
+ document.getElementById("mirror-question").textContent=item.question;
+ document.getElementById("home-scene").textContent=item.scene;
+ const kind=document.querySelector("#page-home .mirror-message .mirror-label");
+ if(kind)kind.textContent="Gương Vạn Vấn · "+(isHook?"Điều bất ngờ":"Vấn đề");
+ const example=document.querySelector("#page-home .hero-dialogue .example-label");
+ if(example)example.textContent=isHook?"TỪ BÀI HỌC ĐÃ XUẤT BẢN":"VÍ DỤ GIẢ ĐỊNH";
+ const action=document.getElementById("mirror-primary-action");
+ action.dataset.page=isHook?item.lessonRoute:"research";
+ action.setAttribute("aria-label",isHook?"Khám phá vì sao · Mở bài học liên quan":"Đào sâu · Mở Khảo Chứng");
+ document.getElementById("mirror-primary-label").textContent=isHook?"Khám phá vì sao":"Đào sâu";
+}
 let selectedCaseAnswer=null;
-function syncResearch(){const s=scenarios[qIndex];const title=document.querySelector("#page-research .surface.tinted h2");if(title)title.textContent=s.question;document.querySelectorAll('#page-research [data-branch]').forEach((el,i)=>{if(s.branches[i]){el.dataset.branch=s.branches[i];el.textContent=String(i+1).padStart(2,"0")+" · "+s.branches[i]}});document.getElementById("research-observed").textContent=s.observed;document.getElementById("research-unknown").textContent=s.unknown;document.getElementById("branch-feedback").textContent="Chọn một nhánh để đặt câu hỏi kiểm chứng.";}
+function syncResearch(){const s=scenarios[qIndex].type==="hook"?scenarios.find(item=>item.type!=="hook"):scenarios[qIndex];const title=document.querySelector("#page-research .surface.tinted h2");if(title)title.textContent=s.question;document.querySelectorAll('#page-research [data-branch]').forEach((el,i)=>{if(s.branches[i]){el.dataset.branch=s.branches[i];el.textContent=String(i+1).padStart(2,"0")+" · "+s.branches[i]}});document.getElementById("research-observed").textContent=s.observed;document.getElementById("research-unknown").textContent=s.unknown;document.getElementById("branch-feedback").textContent="Chọn một nhánh để đặt câu hỏi kiểm chứng.";}
 const buddyCopy={
 home:"Tiểu hữu nhìn vào gương rồi à? Ai được hỏi? Ai bị bỏ sót? Lão nghi câu sau mới thú vị.",
 catalog:"Đọc bản đồ trước khi đi. Đừng chọn cả khu rừng rồi than không thấy đường, nhóc.",
@@ -323,12 +356,14 @@ function renderSavedQuestions(){
  savedQuestions.forEach(item=>{
   const row=document.createElement("div"),label=document.createElement("p"),btn=document.createElement("button");
   row.className="path-item";label.textContent=item.question;label.className="small";
-  btn.textContent="Mở Khảo Chứng";btn.type="button";btn.className="action alt";
+  btn.textContent=scenarios.some(x=>x.question===item.question&&x.type==="hook")?"Mở bài học":"Mở Khảo Chứng";btn.type="button";btn.className="action alt";
   btn.addEventListener("click",()=>{
    const found=scenarios.findIndex(x=>x.question===item.question);
-   if(found<0){toast("Câu hỏi đã lưu không còn kịch bản để mở. Nội dung vẫn được giữ trong Dấu Trang.");return}
-   qIndex=found;document.getElementById("mirror-question").textContent=scenarios[qIndex].question;document.getElementById("home-scene").textContent=scenarios[qIndex].scene;
-   navigate("research");
+   if(found<0){toast("Mục đã lưu không còn điểm đến đang mở. Nội dung vẫn được giữ trong Dấu Trang.");return}
+   qIndex=found;renderMirrorItem();
+   const target=scenarios[qIndex];
+   if(target.type==="hook"&&!document.getElementById("page-"+target.lessonRoute)){toast("Bài này chưa thể mở.");return}
+   navigate(target.type==="hook"?target.lessonRoute:"research");
   });
   row.append(label,btn);target.append(row);
  });
@@ -371,9 +406,8 @@ document.addEventListener("touchmove",event=>{
 function shiftMirrorQuestion(direction){
  if(!scenarios.length)return;
  qIndex=(qIndex+direction+scenarios.length)%scenarios.length;
- document.getElementById("mirror-question").textContent=scenarios[qIndex].question;
- document.getElementById("home-scene").textContent=scenarios[qIndex].scene;
- syncResearch();
+ renderMirrorItem();
+ if(scenarios[qIndex].type!=="hook")syncResearch();
  placeCompanion();
 }
 document.getElementById("previous-question").addEventListener("click",()=>shiftMirrorQuestion(-1));
@@ -481,11 +515,11 @@ document.getElementById("checkin").addEventListener("click",event=>{
 });
 document.getElementById("save-question").addEventListener("click",()=>{
  const sc=scenarios[qIndex];
- if(savedQuestions.some(x=>x.question===sc.question)){toast("Câu hỏi này đã có trong Dấu Trang.");return}
- const item={id:liNewId(),question:sc.question,scene:sc.scene,savedAt:new Date().toISOString()};
+ if(savedQuestions.some(x=>x.question===sc.question)){toast("Mục này đã có trong Dấu Trang.");return}
+ const item={id:liNewId(),question:sc.question,scene:sc.scene,type:sc.type||"problem",lessonRoute:sc.type==="hook"?sc.lessonRoute:null,savedAt:new Date().toISOString()};
  savedQuestions.unshift(item);
  if(!liWriteState()){savedQuestions.shift();toast("Không thể lưu Dấu Trang trên thiết bị. Hãy sao chép câu hỏi.");return}
- toast("Đã lưu câu hỏi vào Dấu Trang trên thiết bị này.");
+ toast(sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang.":"Đã lưu câu hỏi vào Dấu Trang trên thiết bị này.");
 });
 document.getElementById("close-checkin").addEventListener("click",closeCheckinModal);
 document.getElementById("apply-checkin").addEventListener("click",()=>{
@@ -597,4 +631,4 @@ const liInitialLesson=new URLSearchParams(window.location.search).get("lesson");
 navigate("home",{focus:false,syncUrl:!Object.values(LI_LESSON_ROUTES).includes(liInitialLesson)});
 setStudyMode(studyMode,{persist:false});
 window.addEventListener("load",()=>{refreshLucide();placeCompanion();});
-</script><script src="./assets/laoly-context-s112.js"></script><script src="./assets/laoly-quotes-s121.js"></script><script src="./assets/lesson-l09-hifi-markup.js"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js"></script><script src="./assets/lesson-l15-hifi-markup.js"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script></body></html>
+</script><script src="./assets/laoly-context-s112.js"></script><script src="./assets/laoly-quotes-s121.js"></script><script src="./assets/lesson-l09-hifi-markup.js"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js"></script><script src="./assets/lesson-l15-hifi-markup.js"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script><script src="./assets/lesson-related-wave1.js"></script></body></html>

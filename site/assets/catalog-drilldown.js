@@ -40,9 +40,18 @@ function setPath(next,save=true){
  }
  render();
  if(save){
-  window.scrollTo?.(0,0);
   const heading=host.querySelector("h1");
   if(heading){heading.tabIndex=-1;heading.focus?.({preventScroll:true});}
+  // A focused replacement heading may trigger late scroll anchoring after the
+  // catalog DOM is rebuilt. Reset after layout too so iPhone shows the whole
+  // course title instead of inheriting the previous 500px drill position.
+  window.scrollTo?.(0,0);
+  window.requestAnimationFrame?.(()=>{
+   if(heading?.isConnected&&host.contains(heading)){
+    window.scrollTo?.(0,0);
+    if(document.scrollingElement)document.scrollingElement.scrollTop=0;
+   }
+  });
  }
 }
 function header(title,desc,eyebrow){

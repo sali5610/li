@@ -914,6 +914,6 @@ window.LI_LEGACY_EN={
   "Chú giải": "Spell Notes",
   "Thử thi triển": "Try the Spell",
   "BÀI HỌC": "LESSON",
-  "LÃO LÝ": "OLD LI",
+  "LÃO LÝ": "ELDER LI",
   "Lão gọi bạn thế nào?": "How should Elder Li address you?"
 };

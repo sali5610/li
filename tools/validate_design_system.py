@@ -48,6 +48,26 @@ def main() -> int:
     if not HTML_FILE.is_file() or not TOKEN_FILE.is_file():
         return 1
 
+    # UX-ART-03: one canonical character illustration family; archived binaries remain for provenance.
+    art_manifest = ROOT / "design-assets" / "lao-ly" / "manifest.json"
+    art_contract = ROOT / "design-assets" / "lao-ly" / "README.md"
+    check(art_manifest.is_file(), "Lão Lý illustration manifest exists")
+    check(art_contract.is_file(), "Lão Lý illustration contract exists")
+    if art_manifest.is_file() and art_contract.is_file():
+        artwork = json.loads(art_manifest.read_text(encoding="utf-8"))
+        policy = artwork.get("illustrationPolicy", {})
+        assets = artwork.get("files", [])
+        check(policy.get("activeIllustrationVariant") == "Ngoài gương", "one canonical standalone Lão Lý illustration family")
+        check(policy.get("retiredIllustrationVariant") == "Trong gương", "mirror-specific Lão Lý illustration variant retired")
+        check(len([a for a in assets if a.get("variant") == "Ngoài gương" and a.get("lifecycle") == "canonical-illustration-variant-awaiting-asset-approval"]) == 10,
+              "10 standalone expressions tracked without falsely approving source art")
+        check(len([a for a in assets if a.get("variant") == "Trong gương" and a.get("lifecycle") == "retired-provenance-only"]) == 10,
+              "10 mirror expressions marked provenance-only")
+        check(len([a for a in assets if a.get("variant") == "Icon" and a.get("lifecycle") == "active-approved-functional-icon"]) == 5,
+              "five selected functional icons remain distinct from illustration")
+        check("UX-ART-03" in art_contract.read_text(encoding="utf-8"),
+              "Lão Lý variant policy is documented in artwork archive")
+
     # UX-DS-23: contract navigation is a CI-guarded invariant, not a wiki convention.
     library_entrypoint = ROOT / "design-system" / "README.md"
     agent_entrypoint = ROOT / "AGENTS.md"

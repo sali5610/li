@@ -462,12 +462,20 @@ assert quote_js.count('"id":"')>=24, "Quotes library must contain at least 24 en
 # Disclosure metadata must remain accessible via a single opt-in info button.
 assert len(re.findall(r'<script src="\./assets/laoly-quotes-s121\.js(?:\?v=[0-9]+)?"></script>', page_html))==1
 assert 'if(window.liQuoteEngine?.render){window.liQuoteEngine.render();return;}' in html
-for element_id in ("buddy-quote-original","buddy-quote-context","buddy-quote-info","buddy-quote-gloss","buddy-quote-meta","buddy-quote-link"):
+for element_id in ("buddy-quote-original","buddy-quote-translation","buddy-quote-context","buddy-quote-info","buddy-quote-gloss","buddy-quote-meta","buddy-quote-link"):
     assert page_html.count(f'id="{element_id}"')==1, f"Quote element missing or duplicated: {element_id}"
 assert 'aria-controls="buddy-quote" aria-expanded="false"' in page_html
 assert 'document.getElementById("buddy-quote-info").addEventListener("click"' in page_html
 assert '#buddy-modal #buddy-quote-context {' in foundation
 assert '#buddy-modal .buddy-heading #buddy-quote-original {' in foundation
+assert '#buddy-modal .buddy-heading #buddy-quote-translation {' in foundation
+heading=page_html.split('<header class="buddy-heading">',1)[1].split('</header>',1)[0]
+body=page_html.split('<div id="buddy-scroll"',1)[1].split('<div id="buddy-debate"',1)[0]
+assert '<aside id="buddy-quote"' in heading and '<aside id="buddy-quote"' not in body
+assert heading.index('id="buddy-quote-original"') < heading.index('id="buddy-quote-translation"') < heading.index('id="buddy-quote-info"') < heading.index('id="buddy-quote"')
+assert 'translation.textContent="Dịch nghĩa: "+item.translation;' in quote_js
+assert 'gloss.textContent="Diễn nghĩa: "+item.interpretation;' in quote_js
+assert quote_js.count('"translation":')>=24 and quote_js.count('"interpretation":')>=24
 assert 'note.textContent=item.comment;' in quote_js and 'Lão Lý liên hệ: ' not in quote_js
 assert 'https://zh.wikisource.org/' in quote_js and 'https://en.wikisource.org/' in quote_js
 subprocess.run(["node","--check",str(quotes)],check=True)

@@ -32,9 +32,10 @@ assert.ok(engine,"engine present");
 assert.ok(engine.quotes.length>=24,"quote bank ≥24 distinct verified entries");
 assert.equal(new Set(engine.quotes.map(q=>q.id)).size,engine.quotes.length,"IDs unique");
 for(const q of engine.quotes){
- for(const field of ["id","original","gloss","meta","url","comment"]) assert.ok(typeof q[field]==="string"&&q[field].length>3,q.id+" "+field);
+ for(const field of ["id","original","gloss","translation","interpretation","meta","url","comment"]) assert.ok(typeof q[field]==="string"&&q[field].length>3,q.id+" "+field);
  assert.ok(["en","zh-Hant"].includes(q.lang),q.id+" language tag");
  assert.ok(Array.isArray(q.tags)&&q.tags.length>=2,q.id+" topics");
+ assert.notEqual(q.translation,q.interpretation,q.id+" literal translation must differ from interpretation");
  assert.ok(q.url.startsWith("https://")&&!q.url.includes("example.com"),q.id+" verified public source");
 }
 const scenarios=[
@@ -76,7 +77,10 @@ assert.equal(node("buddy-quote-info").hidden,false,"info button available");
 assert.equal(node("buddy-quote-info").getAttribute("aria-expanded"),"false","source details initially collapsed");
 assert.equal(node("buddy-quote-original").hidden,false,"original quote visible");
 assert.ok(node("buddy-quote-original").textContent,"original script present in header");
-assert.ok(node("buddy-quote-gloss").textContent.startsWith("Diễn nghĩa: "),"gloss exists in collapsed source detail");
+assert.equal(node("buddy-quote-translation").hidden,false,"faithful Vietnamese translation visible below original");
+assert.ok(node("buddy-quote-translation").textContent.startsWith("Dịch nghĩa: "),"translation has a distinct label");
+assert.ok(node("buddy-quote-gloss").textContent.startsWith("Diễn nghĩa: "),"interpretation exists in collapsed source detail");
+assert.notEqual(node("buddy-quote-translation").textContent.replace(/^Dịch nghĩa: /,""),node("buddy-quote-gloss").textContent.replace(/^Diễn nghĩa: /,""),"translation and interpretation are not identical");
 assert.ok(node("buddy-quote-meta").textContent,"provenance preserved in collapsed source detail");
 assert.ok(node("buddy-quote-link").href.startsWith("https://"),"source link preserved");
 assert.equal(node("buddy-quote-context").hidden,false,"Lão Lý's contextual comment shown");
@@ -86,6 +90,7 @@ const countBefore=JSON.parse(storage.get("li.quotes.session.s121")).routes["rese
 node("calm-toggle").checked=true;
 engine.render();
 assert.equal(node("buddy-quote").hidden,true,"calm mode hides cultural panel");
+assert.equal(node("buddy-quote-translation").hidden,true,"calm mode also hides quote translation");
 assert.equal(JSON.parse(storage.get("li.quotes.session.s121")).routes["research:2"].length,countBefore,"hidden quote does not consume a rotation slot");
 node("calm-toggle").checked=false;
 ctx.buddyDebateActive=true;
@@ -94,6 +99,7 @@ assert.equal(node("buddy-quote").hidden,true,"debate hides quotation");
 ctx.buddyDebateActive=false;
 engine.render();
 assert.equal(node("buddy-quote").hidden,true,"normal quote returns with details collapsed");
+assert.equal(node("buddy-quote-translation").hidden,false,"normal quote translation restored");
 assert.equal(node("buddy-quote-info").hidden,false,"info action restored on normal render");
 assert.equal(node("buddy-quote-context").hidden,false,"contextual commentary restored");
 assert.equal(node("buddy-quote").children.length,0,"quote details do not receive duplicate commentary nodes");

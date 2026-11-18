@@ -1,57 +1,75 @@
-import React,{useState} from 'react';
+import React,{useState,useRef,useEffect} from 'react';
 import exact from './l09-exact.generated.json';
+import {L09StorageBridge,BridgeError,LOCALE_KEY,initial} from './native-bridge';
+import type {Locale,Attempt,Rating} from './native-bridge';
 
-export type Locale='vi'|'en';
-type Rating=0|1|2|null;
-type Attempt={
- locale:Locale;
- draft:[string,string,string,string];
- guidedDraft:string;
- hint:boolean;
- assisted:boolean;
- submitted:boolean;
- submittedAt:string|null;
- submission:[string,string,string,string]|null;
- submissionLocale:Locale|null;
- ratings:[Rating,Rating,Rating,Rating];
- reviewed:boolean;
-};
-const KEY='step16.l09.react-island.v1'; // Deliberately NOT li.review.L09-1-2.v1.
-const first=():Attempt=>({
- locale:'vi',draft:['','','',''],guidedDraft:'',hint:false,assisted:false,
- submitted:false,submittedAt:null,submission:null,submissionLocale:null,
- ratings:[null,null,null,null],reviewed:false
-});
-function valid(raw:unknown):raw is Attempt {
- if(!raw||typeof raw!=='object')return false;
- const s=raw as Record<string,unknown>;
- return (s.locale==='vi'||s.locale==='en')&&Array.isArray(s.draft)&&
-   s.draft.length===4&&s.draft.every(x=>typeof x==='string')&&
-   Array.isArray(s.ratings)&&s.ratings.length===4&&
-   s.ratings.every(x=>x===null||x===0||x===1||x===2)&&
-   typeof s.submitted==='boolean'&&typeof s.reviewed==='boolean'&&
-   typeof s.hint==='boolean'&&typeof s.assisted==='boolean';
-}
-function init():Attempt {
- try{const raw=JSON.parse(localStorage.getItem(KEY)||'null');return valid(raw)?raw:first();}
- catch{return first();}
-}
+const bridge=new L09StorageBridge(window.localStorage,window.location);
 export function Pilot(){
- const [state,setState]=useState<Attempt>(init);
+ const [loaded]=useState(()=>{
+   try{return bridge.read();}
+   catch{return {state:initial(),raw:null,invalid:true};}
+ });
+ const [state,setState]=useState<Attempt>(loaded.state);
+ const baseline=useRef<string|null>(loaded.raw);
+ const [conflict,setConflict]=useState(loaded.invalid);
  const [message,setMessage]=useState('');
  const [storageError,setStorageError]=useState(false);
+ const conflictText=state.locale==='vi'
+  ?'Dữ liệu bài học đã thay đổi hoặc không hợp lệ. Nạp lại bản mới trước khi ghi tiếp.'
+  :'Lesson data changed in another tab or is invalid. Reload the latest state before saving.';
+ useEffect(()=>{
+   const onStorage=(event:StorageEvent)=>{
+     if(event.key===bridge.key&&event.newValue!==baseline.current){
+       setConflict(true);
+       setMessage('');
+     }
+     if(bridge.nativeFixture&&event.key===LOCALE_KEY&&(event.newValue==='vi'||event.newValue==='en')){
+       setState(prev=>({...prev,locale:event.newValue as Locale}));
+     }
+   };
+   const onLocale=(event:Event)=>{
+     const value=(event as CustomEvent<{locale?:string}>).detail?.locale;
+     if(value==='vi'||value==='en')setState(prev=>({...prev,locale:value}));
+   };
+   window.addEventListener('storage',onStorage);
+   window.addEventListener('li:localechange',onLocale);
+   return()=>{
+     window.removeEventListener('storage',onStorage);
+     window.removeEventListener('li:localechange',onLocale);
+   };
+ },[]);
+ function refreshFromStorage(){
+   try{
+     const current=bridge.read();
+     if(current.invalid){setConflict(true);setMessage(conflictText);return;}
+     baseline.current=current.raw;
+     setState(current.state);setConflict(false);setMessage('');setStorageError(false);
+   }catch{
+     setConflict(true);setStorageError(true);setMessage('');
+   }
+ }
  const text=exact.langs[state.locale];
  const scored=state.ratings.every(r=>r!==null);
  const total=scored?state.ratings.reduce<number>((n,x)=>n+(x??0),0):null;
  function persist(next:Attempt){
+   if(conflict){setMessage(conflictText);return false;}
    try{
-     const json=JSON.stringify(next);
-     localStorage.setItem(KEY,json);
-     if(localStorage.getItem(KEY)!==json)throw Error('storage readback');
+     const priorSubmitted=state.submitted;
+     const json=bridge.write(next,baseline.current);
+     baseline.current=json;
      setState(next);setMessage('');setStorageError(false);
+     // Native L09 emits this in its own window after a stored submission.
+     // In this isolated pilot the event stays inside the research iframe.
+     if(!priorSubmitted&&next.submitted&&bridge.nativeFixture){
+       window.dispatchEvent(new CustomEvent('li:lesson-submitted',{detail:{lessonId:'L09-1-2'}}));
+     }
      return true;
-   }catch{
-     setStorageError(true);setMessage(text.storageOff);
+   }catch(error){
+     if(error instanceof BridgeError&&(error.reason==='changed'||error.reason==='invalid')){
+       setConflict(true);setMessage(conflictText);
+     }else{
+       setStorageError(true);setMessage(text.storageOff);
+     }
      return false;
    }
  }
@@ -84,10 +102,19 @@ export function Pilot(){
    if(persist({...state,reviewed:true}))setMessage(text.reviewDone);
  }
  function changeLocale(locale:Locale){
-   if(state.locale!==locale)persist({...state,locale});
+   if(state.locale===locale)return;
+   if(!persist({...state,locale}))return;
+   if(bridge.nativeFixture){
+     try{
+       const owner=(window as Window&{liLanguage?:{set?:(next:Locale)=>void}}).liLanguage;
+       if(typeof owner?.set==='function')owner.set(locale);
+       else bridge.setGlobalLocale(locale);
+       window.dispatchEvent(new CustomEvent('li:localechange',{detail:{locale}}));
+     }catch{setStorageError(true);setMessage(text.storageOff);}
+   }
  }
  const cleanText=(html:string)=>html.replace(/<[^>]+>/g,'');
- return <main className="pilot" lang={state.locale} data-lesson-id="L09-1-2">
+ return <main className="pilot" lang={state.locale} data-lesson-id="L09-1-2" data-storage-key={bridge.key} data-bridge-mode={bridge.nativeFixture?"localhost-fixture":"isolated"}>
    <div className="pilot-head">
      <div><span className="pilot-kicker">DATA SCIENCE · L09-1-2 · RESEARCH ISLAND</span>
        <h1>{text.title}</h1></div>
@@ -96,7 +123,13 @@ export function Pilot(){
           data-locale={l} onClick={()=>changeLocale(l)}>{l.toUpperCase()}</button>)}
      </div>
    </div>
-   <p className="pilot-caution">Step16 · local isolated research. Not the public lesson or a new approved design.</p>
+   <p className="pilot-caution">Step16 · {bridge.nativeFixture?'LOCALHOST NATIVE-KEY COMPATIBILITY TEST ONLY':'local isolated research'}. Not the public lesson or a new approved design.</p>
+   {conflict&&<div className="pilot-statement" role="alert" data-conflict>
+     <p>{conflictText}</p>
+     <button type="button" className="secondary" data-action="reload-state" onClick={refreshFromStorage}>
+       {state.locale==='vi'?'Nạp dữ liệu mới':'Reload current data'}
+     </button>
+   </div>}
    <section className="pilot-surface" aria-labelledby="challenge-title">
      <span className="pilot-kicker">L09-1-2 · V</span>
      <h2 id="challenge-title">{text.challengeTitle}</h2>

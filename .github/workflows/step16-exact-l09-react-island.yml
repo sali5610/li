@@ -5,6 +5,7 @@ on:
     paths:
       - 'tools/step16-real-l09-react-island/**'
       - 'site/assets/lesson-l09-hifi.js'
+      - 'site/assets/app-language.js'
       - 'site/assets/design-tokens.css'
       - '.github/workflows/step16-exact-l09-react-island.yml'
   workflow_dispatch:
@@ -42,4 +43,7 @@ jobs:
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           sleep 2
           node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome"             "http://127.0.0.1:8794/tools/step16-real-l09-react-island/browser-fixture.html"             "LI_STEP16_L09_PILOT_PASS " 7 60000
-          echo "PASS exact authored L09 content and 7 behavioral groups; no production UI or real user storage touched"
+          node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
+            "http://127.0.0.1:8794/tools/step16-real-l09-react-island/native-bridge-fixture.html" \
+            "LI_STEP16_L09_BRIDGE_PASS " 8 90000
+          echo "PASS exact-authored L09 React pilot + real native state compatibility, fake localhost data only"

@@ -11,7 +11,7 @@ const path=require("node:path");
 
 const [chromeBin,url,prefix,countText,maxText]=process.argv.slice(2);
 const count=Number(countText),maxMs=Number(maxText||65000);
-if(!chromeBin||!/^http:\/\/127\.0\.0\.1:\d+\//.test(url||"")||!/^LI_STEP16_L09_PILOT_PASS $/.test(prefix||"")||
+if(!chromeBin||!/^http:\/\/127\.0\.0\.1:\d+\//.test(url||"")||!/^LI_STEP16_L09_(?:PILOT|BRIDGE)_PASS $/.test(prefix||"")||
   !Number.isInteger(count)||count<1||!Number.isFinite(maxMs)||maxMs<1000){
   console.error("Usage: node tools/step16_cdp_page.cjs <chrome-path> <127.0.0.1-url> <PASS-prefix> <count> [timeout-ms]");
   process.exit(2);
@@ -89,7 +89,7 @@ async function run(){
       process.stdout.write("PASS rendered Chromium result: "+lastResult.slice(0,3800)+"\n");
       return;
     }
-    if(lastResult.startsWith("LI_STEP16_L09_PILOT_FAIL ")){
+    if(lastResult.startsWith(prefix.replace("PASS ","FAIL "))){
       throw Error("Browser test failed: "+lastResult.slice(0,4800));
     }
     await sleep(130);

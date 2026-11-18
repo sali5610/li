@@ -312,6 +312,25 @@ assert '--li-notebook-line-height: 32px' in foundation
 assert "textarea::placeholder{color:var(--muted);opacity:.8}" in html
 assert html.count('class="text-editor"') >= 2
 
+# UX-IA-04: note review belongs under the collection list; edit history is append-only.
+library=section("library")
+assert library.count('library-more-link')==2
+assert library.count('data-lucide="arrow-right"')>=2
+assert library.count('id="li-library-latest-lesson"')==1
+assert 'id="li-saved-questions"' not in library
+assert '<section id="page-noteDetail"' in page_html
+assert '<button id="li-note-save"' in page_html
+assert '<button id="li-note-delete"' in page_html
+assert '<div id="li-note-history-list"' in page_html
+assert '<script src="./assets/library-note-editor.js?v=1"></script>' in page_html
+hub=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
+assert 'Xem trong Bộ sưu tập' not in hub
+assert hub.count('library-detail-link","Xem chi tiết"')==3
+assert 'library-text-link library-open-lesson' in hub
+assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
+assert 'library-hub.css?v=2' in page_html
+subprocess.run(["node",str(site.parent/"tools"/"test_library_note_versions.cjs")],check=True,cwd=site.parent)
+
 # S120: all 13 Thần Chú methods share this same Guide Detail template.
 # Guard semantic spacing around section labels, step list, references and back CTA.
 guide_detail=section("guideDetail")

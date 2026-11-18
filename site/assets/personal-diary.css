@@ -10,12 +10,13 @@
 #page-dashboard .li-diary-date{position:relative;min-width:0;min-height:48px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);font:700 var(--li-type-body)/var(--li-leading-body) var(--li-font-ui);cursor:pointer}
 #page-dashboard .li-diary-date.selected,#page-dashboard .li-diary-bar-day.selected{outline:2px solid var(--moss);outline-offset:2px}
 #page-dashboard .li-diary-date.recorded{background:var(--li-color-nav-selected-fill)}
-#page-dashboard .li-diary-date .li-diary-dot{display:block;position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:var(--li-type-body);line-height:var(--li-leading-caption);color:var(--moss)}
+#page-dashboard .li-diary-date .li-diary-dot{display:block;position:absolute;bottom:0;right:0;min-width:16px;font-size:var(--li-type-caption);line-height:var(--li-leading-caption);text-align:center;background:var(--moss);color:var(--cream);font-variant-numeric:tabular-nums}
 #page-dashboard .li-diary-bars{display:flex;gap:var(--li-space-2);overflow-x:auto;padding:var(--li-space-3) var(--li-space-2);scrollbar-gutter:stable}
 #page-dashboard .li-diary-bar-day{display:flex;align-items:center;flex-direction:column;gap:var(--li-space-2);min-width:30px;flex:1 0 30px;background:transparent;border:0;color:var(--ink);cursor:pointer;padding:var(--li-space-2) 0;min-height:160px}
 #page-dashboard .li-diary-bar-track{display:flex;align-items:flex-end;width:100%;height:112px;border-bottom:1px solid var(--rule);background:var(--paper-2)}
 #page-dashboard .li-diary-bar-value{display:block;background:var(--moss-2);width:100%;min-height:0}
 #page-dashboard .li-diary-bar-label{font-size:var(--li-type-caption)}
+#page-dashboard .li-diary-bar-total{font-size:var(--li-type-caption);font-variant-numeric:tabular-nums;font-weight:700}
 #page-dashboard .li-diary-detail{display:grid;gap:var(--li-space-4)}
 #page-dashboard .li-diary-detail>h2{font:600 var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial);margin:0}
 #page-dashboard .li-diary-facts{display:grid;gap:var(--li-space-3)}

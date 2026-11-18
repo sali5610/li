@@ -613,6 +613,7 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
  --li-s147-original-leading:1.45;
  --li-s147-no-border:0;
  --li-s147-no-shadow:none;
+ --li-s148-clear-bg:transparent;
 }
 /* S148 · Quote, faithful translation and optional source share the modal header. */
 #buddy-modal .buddy-heading {
@@ -641,7 +642,7 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 }
 #buddy-modal .buddy-quote-info {
   position:sticky;top:0;
-  display:grid;place-items:center;box-sizing:border-box;width:44px;height:44px;padding:0;
+  display:grid;place-items:center;box-sizing:border-box;width:44px;height:44px;padding:var(--li-space-0);
   border:1px solid var(--rule);border-radius:50%;
   background:var(--cream);color:var(--forest);cursor:pointer;
 }
@@ -654,19 +655,19 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 #buddy-modal #buddy-quote-context[hidden],
 #buddy-modal #buddy-quote[hidden] {display:none!important;}
 #buddy-modal #buddy-quote-context {
-  margin:0 0 var(--li-space-3);padding:0;border:0;color:var(--ink);
+  margin:0 0 var(--li-space-3);padding:var(--li-space-0);border:var(--li-s147-no-border);color:var(--ink);
   font-size:var(--li-type-body);line-height:var(--li-leading-body);overflow-wrap:anywhere;
 }
 #buddy-modal .buddy-heading #buddy-quote {
   grid-column:1 / -1;margin:var(--li-space-2) 0 0;padding:var(--li-space-3) 0 0;
-  border:0;border-top:1px dashed var(--rule);border-radius:0;background:transparent;box-shadow:none;
+  border:var(--li-s147-no-border);border-top:1px dashed var(--rule);border-radius:0;background:var(--li-s148-clear-bg);box-shadow:var(--li-s147-no-shadow);
 }
 #buddy-modal .buddy-heading #buddy-quote .small {
   margin-top:var(--li-space-2);font-size:var(--li-type-support);
   line-height:var(--li-leading-support);overflow-wrap:anywhere;
 }
-#buddy-modal .buddy-heading #buddy-quote .small:first-child {margin-top:0;}
+#buddy-modal .buddy-heading #buddy-quote .small:first-child {margin-top:var(--li-space-0);}
 @media(max-width:400px){
   #buddy-modal .buddy-heading {column-gap:var(--li-space-2);max-height:min(48svh,380px);}
-  #buddy-modal .buddy-heading #buddy-title {font-size:28px;}
+  #buddy-modal .buddy-heading #buddy-title {font-size:var(--li-type-title-lg);}
 }

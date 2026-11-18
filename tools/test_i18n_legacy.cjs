@@ -91,6 +91,13 @@ assert(!coreEnglishValues.some(value=>value.includes("Lão Lý")),"Core UI Engli
 for(const key of ["Lão hỏi ngược","Phản biện lão","Lão quên gì rồi?","Trò chuyện với Lão Lý","Lời Lão Lý về nhịp học","Lão Lý ngái ngủ"]){
  assert(translations[key]?.includes("Elder Li"),"Missing authored EN mentor alias in "+key);
 }
+/* Compile the browser fixture itself: a previous test edit accidentally
+   reused a lexical name, leaving browser QA pending instead of executing. */
+const browserFixtureScripts=[...read("tools/i18n_browser_fixture.html").matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)];
+assert(browserFixtureScripts.length>=2,"Real-app bilingual fixture scripts are missing");
+for(const [i,entry] of browserFixtureScripts.entries()){
+ assert.doesNotThrow(()=>new Function(entry[1]),"Bilingual browser fixture syntax error in script "+i);
+}
 /* User-reported iPhone bilingual leaks: composite deep-course statuses and
    T01's dynamically concatenated mode label must have their own localized DOM. */
 const deepCatalog=read("site/assets/catalog-drilldown.js");

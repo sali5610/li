@@ -133,7 +133,7 @@
 .ds-image-copy h3{font-family:var(--li-font-editorial);font-size:var(--li-type-title-lg);line-height:var(--li-leading-title-lg);margin:var(--li-space-0);overflow-wrap:anywhere}
 .ds-image-copy p{font-size:var(--li-type-body);line-height:var(--li-leading-body);margin:var(--li-space-0);overflow-wrap:break-word}
 .ds-image-copy .ds-eyebrow{font-size:var(--li-type-caption);line-height:var(--li-leading-caption);color:var(--wood)}
-.ds-image-copy .ds-link{margin-top:auto}
+.ds-image-copy .ds-link{margin-top:var(--li-review-auto)}
 .ds-image-split{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);min-height:300px}
 .ds-image-split .ds-image-frame{height:100%;min-height:300px;aspect-ratio:auto}
 .ds-image-split .ds-image-frame img{object-position:center 42%}
@@ -147,6 +147,7 @@
  .ds-image-character .ds-image-frame{min-height:210px}
  .ds-image-copy{padding:var(--li-space-4)}
 }
+:root{--li-review-no-shadow:none}
 /* iOS Safari click-highlight is not a component pressed state. Keep real
    focus-visible rings and deliberate square CTA active styles intact. */
 .ds-shell :is(button,a),.ds-shell :is(button,a) *{-webkit-tap-highlight-color:var(--li-review-transparent)!important}
@@ -155,6 +156,6 @@
  .ds-utility button:not([aria-current="page"]):is(:hover,:active,:focus:not(:focus-visible)),
  .ds-navsample button:is(:hover,:active,:focus:not(:focus-visible)){
    background:var(--li-review-transparent)!important;
-   box-shadow:none!important;
+   box-shadow:var(--li-review-no-shadow)!important;
  }
 }

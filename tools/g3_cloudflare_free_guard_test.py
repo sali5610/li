@@ -61,7 +61,7 @@ class FreeGuardTest(unittest.TestCase):
         timestamp = dt.datetime.now(dt.timezone.utc).isoformat()
         return json.dumps({
             "success": success,
-            "result": [{"created_on": timestamp}] * count,
+            "result": [{"created_on": timestamp, "is_skipped": False}] * count,
             "result_info": {"total_pages": 1},
         }).encode()
 
@@ -75,6 +75,75 @@ class FreeGuardTest(unittest.TestCase):
             fetch.return_value.__enter__.return_value.read.return_value = self.fake_result(30)
             with self.assertRaises(guard.GateError):
                 guard.count_current_month_deployments("account","li","token")
+
+    def test_skipped_ontology_and_step16_events_do_not_use_free_budget(self):
+        now = dt.datetime.now(dt.timezone.utc).isoformat()
+        # Exact original incident: 40 tracked Preview Git push events (not
+        # actual deploys), even though Branch control rejected the builds.
+        def record(branch, skipped=True):
+            return {
+                "created_on": now,
+                "environment": "preview",
+                "is_skipped": skipped,
+                "skip_reason": "preview_deployments_disabled" if skipped else None,
+                "deployment_trigger": {
+                    "type": "github:push", "metadata": {"branch": branch}
+                },
+            }
+        page1 = [record("architecture/step16-private-react-neon-sync") for _ in range(20)]
+        page2 = [record("feature/ont04b-react-search-island") for _ in range(20)]
+        page3 = [record("main", False), record("main", False)]
+        pages = [
+            json.dumps({
+                "success": True,
+                "result": page,
+                "result_info": {"total_pages": 3}
+            }).encode()
+            for page in (page1, page2, page3)
+        ]
+        with patch.object(guard.request, "urlopen") as fetch:
+            fetch.return_value.__enter__.return_value.read.side_effect = pages
+            self.assertEqual(
+                guard.count_current_month_deployments("account", "li", "token"),
+                2
+            )
+            self.assertEqual(fetch.call_count, 3)
+
+    def test_skipped_events_never_hide_real_monthly_budget_exhaustion(self):
+        now = dt.datetime.now(dt.timezone.utc).isoformat()
+        real = [{"created_on": now, "is_skipped": False} for _ in range(30)]
+        ignored = [{"created_on": now, "is_skipped": True,
+                    "skip_reason": "preview_deployments_disabled"} for _ in range(10)]
+        pages = [
+            json.dumps({
+                "success": True,
+                "result": chunk,
+                "result_info": {"total_pages": 2}
+            }).encode()
+            for chunk in (ignored + real[:10], real[10:])
+        ]
+        with patch.object(guard.request, "urlopen") as fetch:
+            fetch.return_value.__enter__.return_value.read.side_effect = pages
+            with self.assertRaisesRegex(guard.GateError, "30 non-skipped"):
+                guard.count_current_month_deployments("account", "li", "token")
+
+    def test_missing_or_invalid_is_skipped_fails_closed(self):
+        timestamp = dt.datetime.now(dt.timezone.utc).isoformat()
+        for record in (
+            {"created_on": timestamp},
+            {"created_on": timestamp, "is_skipped": "false"},
+            {"created_on": timestamp, "is_skipped": None},
+            {"created_on": timestamp, "is_skipped": 0},
+        ):
+            with self.subTest(record=record):
+                response = json.dumps({
+                    "success": True, "result": [record],
+                    "result_info": {"total_pages": 1}
+                }).encode()
+                with patch.object(guard.request, "urlopen") as fetch:
+                    fetch.return_value.__enter__.return_value.read.return_value = response
+                    with self.assertRaisesRegex(guard.GateError, "boolean is_skipped"):
+                        guard.count_current_month_deployments("account", "li", "token")
 
     def test_fails_closed_on_cloudflare_api_error(self):
         with patch.object(guard.request, "urlopen") as fetch:
@@ -114,7 +183,7 @@ class FreeGuardTest(unittest.TestCase):
     def test_fails_closed_on_unknown_timestamp(self):
         with patch.object(guard.request, "urlopen") as fetch:
             fetch.return_value.__enter__.return_value.read.return_value = json.dumps({
-                "success":True,"result":[{"created_on":"not-a-date"}],
+                "success":True,"result":[{"created_on":"not-a-date","is_skipped":False}],
                 "result_info":{"total_pages":1},
             }).encode()
             with self.assertRaises(guard.GateError):

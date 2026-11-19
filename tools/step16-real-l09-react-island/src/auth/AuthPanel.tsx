@@ -120,7 +120,7 @@ export function AuthPanel(){
      </div>
      <button type="submit" disabled={busy!==null}>{busy?t.busy:t.login}</button>
     </form>
-   ))}
+   )}
    {feedback&&<p className="auth-error" role="alert">{feedback}</p>}
    <p className="auth-local" role="status">{t.local}</p>
    <p className="auth-privacy">{t.privacy}</p>

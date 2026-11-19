@@ -1,0 +1,216 @@
+{
+  "profile": "UX-DS-35-Stage02B-react-ownership",
+  "version": "0.1.0",
+  "review": "G2_OPEN",
+  "implementation": "DRAFT_UNMERGED",
+  "baseOntology": "ONT-02 native-only source crosswalk is immutable; this records React provenance separately.",
+  "sourcePins": {
+    "reactParent": "734dc257be47f778a929acba5cdca570979e247d",
+    "ds": "d22f469a52d13baa73c0c8952b198fdfeb2b2891",
+    "ontology": "0fe2d9b92a66e64ea3244d910d789ccc0d458a5b",
+    "integratedSibling": "3d45d26272f2ff6cd977f8d2f30e596042204c15"
+  },
+  "ownershipBoundaries": {
+    "code": "React shared APIs only",
+    "data": "NONE",
+    "navigation": "callback/anchor fixture, no product router",
+    "modal": "React native <dialog> is distinct from existing native openModal helper",
+    "identity": "Human PO approved VC-G2 D1/D2/D3 ONLY. Global visual G2 remains OPEN; pilot opt-in is separate from legacy route and production.",
+    "qa": "Research localhost synthetic Chromium. Scope new API adoption only to exact opt-in L09. Safari/production visual parity NOT VERIFIED."
+  },
+  "components": [
+    {
+      "api": "Button",
+      "atomicLevel": "atom",
+      "ontologyNode": "component:Button",
+      "nativeAnalog": "site/assets/li-layout.css#.action{",
+      "reactOwner": "tools/step16-real-l09-react-island/src/ui/Shared.tsx",
+      "cssOwner": "tools/step16-real-l09-react-island/src/ui/shared.css",
+      "selector": ".li-ui-button",
+      "reactUsage": "research_L09_vcg2_opt_in",
+      "equivalence": "NOT_VERIFIED",
+      "statesSpecified": [
+        "default",
+        "secondary",
+        "loading",
+        "disabled",
+        "focus-visible"
+      ],
+      "notes": "Existing L09 ActionButton is separate legacy pilot API; do not count its consumer as shared Button adoption. Scoped opt-in visual-contract research wrapper; legacy L09 remains unchanged by default. Do not count as prod rollout."
+    },
+    {
+      "api": "IconButton",
+      "atomicLevel": "atom",
+      "ontologyNode": "component:Button",
+      "nativeAnalog": "site/index.html#button[aria-label]",
+      "reactOwner": "tools/step16-real-l09-react-island/src/ui/Shared.tsx",
+      "cssOwner": "tools/step16-real-l09-react-island/src/ui/shared.css",
+      "selector": ".li-ui-icon-button",
+      "reactUsage": "fixture_only",
+      "equivalence": "NOT_VERIFIED",
+      "statesSpecified": [
+        "default",
+        "disabled",
+        "label"
+      ],
+      "notes": "Button analog; label required; no proof all native FAB interactions are equivalent."
+    },
+    {
+      "api": "TextInput",
+      "atomicLevel": "atom",
+      "ontologyNode": "component:TextInput",
+      "nativeAnalog": "site/assets/li-layout.css#input,select{",
+      "reactOwner": "tools/step16-real-l09-react-island/src/ui/Shared.tsx",
+      "cssOwner": "tools/step16-real-l09-react-island/src/ui/shared.css",
+      "selector": ".li-ui-input",
+      "reactUsage": "fixture_only",
+      "equivalence": "NOT_VERIFIED",
+      "statesSpecified": [
+        "default",
+        "readonly",
+        "disabled",
+        "error",
+        "hint",
+        "focus-visible"
+      ],
+      "notes": "ARIA label/error helpers; no migration of L09 native guidedDraft."
+    },
+    {
+      "api": "TextAreaField",
+      "atomicLevel": "atom",
+      "ontologyNode": "component:TextInput",
+      "nativeAnalog": "site/assets/lesson-l09-hifi-markup.js#l09-guidedDraft",
+      "reactOwner": "tools/step16-real-l09-react-island/src/ui/Shared.tsx",
+      "cssOwner": "tools/step16-real-l09-react-island/src/ui/shared.css",
+      "selector": ".li-ui-input",
+      "reactUsage": "research_L09_vcg2_opt_in",
+      "equivalence": "NOT_VERIFIED",
+      "statesSpecified": [
+        "default",
+        "label",
+        "hint",
+        "error"
+      ],
+      "notes": "Separate textarea form element; not equivalent to native source field behavior. Scoped opt-in visual-contract research wrapper; legacy L09 remains unchanged by default. Do not count as prod rollout."
+    },
+    {
+      "api": "Card",
+      "atomicLevel": "molecule",
+      "ontologyNode": "component:Surface",
+      "nativeAnalog": "site/assets/li-layout.css#.surface{",
+      "reactOwner": "tools/step16-real-l09-react-island/src/ui/Shared.tsx",
+      "cssOwner": "tools/step16-real-l09-react-island/src/ui/shared.css",
+      "selector": ".li-ui-card",
+      "reactUsage": "research_L09_vcg2_opt_in",
+      "equivalence": "NOT_VERIFIED",
+      "statesSpecified": [
+        "default",
+        "tinted",
+        "inverse"
+      ],
+      "notes": "Card is a proposed surface analog; native Surface and existing L09 Surface remain independently owned. Scoped opt-in visual-contract research wrapper; legacy L09 remains unchanged by default. Do not count as prod rollout."
+    },
+    {
+      "api": "ActionGroup",
+      "atomicLevel": "molecule",
+      "ontologyNode": "component:ActionGroup",
+      "nativeAnalog": "site/assets/li-layout.css#.action-row{",
+      "reactOwner": "tools/step16-real-l09-react-island/src/ui/Shared.tsx",
+      "cssOwner": "tools/step16-real-l09-react-island/src/ui/shared.css",
+      "selector": ".li-ui-action-group",
+      "reactUsage": "research_L09_island",
+      "equivalence": "NOT_VERIFIED",
+      "statesSpecified": [
+        "wrap",
+        "order",
+        "compact"
+      ],
+      "notes": "Two research-island action rows use this wrapper; never generalize to production route."
+    },
+    {
+      "api": "Navigation",
+      "atomicLevel": "organism",
+      "ontologyNode": null,
+      "nativeAnalog": "site/index.html#.mobile-nav",
+      "reactOwner": "tools/step16-real-l09-react-island/src/ui/Shared.tsx",
+      "cssOwner": "tools/step16-real-l09-react-island/src/ui/shared.css",
+      "selector": ".li-ui-navigation",
+      "reactUsage": "fixture_only",
+      "equivalence": "NOT_VERIFIED",
+      "statesSpecified": [
+        "active",
+        "keyboard",
+        "label"
+      ],
+      "notes": "Link fixture differs from production route buttons; no global navigation replacement."
+    },
+    {
+      "api": "Feedback",
+      "atomicLevel": "molecule",
+      "ontologyNode": "component:StatusBanner",
+      "nativeAnalog": "site/assets/li-layout.css#.status-banner{",
+      "reactOwner": "tools/step16-real-l09-react-island/src/ui/Shared.tsx",
+      "cssOwner": "tools/step16-real-l09-react-island/src/ui/shared.css",
+      "selector": ".li-ui-feedback",
+      "reactUsage": "fixture_only",
+      "equivalence": "NOT_VERIFIED",
+      "statesSpecified": [
+        "info",
+        "loading",
+        "error",
+        "success"
+      ],
+      "notes": "Feedback is not the same visual/messaging owner as native StatusBanner or existing L09 StatusMessage."
+    },
+    {
+      "api": "Dialog",
+      "atomicLevel": "organism",
+      "ontologyNode": null,
+      "nativeAnalog": "site/index.html#buddy-modal",
+      "reactOwner": "tools/step16-real-l09-react-island/src/ui/Shared.tsx",
+      "cssOwner": "tools/step16-real-l09-react-island/src/ui/shared.css",
+      "selector": ".li-ui-dialog",
+      "reactUsage": "fixture_only",
+      "equivalence": "NOT_VERIFIED",
+      "statesSpecified": [
+        "closed",
+        "open",
+        "escape",
+        "close",
+        "backdrop",
+        "focus_return",
+        "focus_containment"
+      ],
+      "notes": "React native dialog top-layer differs from native openModal; real Buddy/Check-in ownership separately tested in #153."
+    }
+  ],
+  "qaMatrix": {
+    "sourceMapping": "CI_REQUIRES_PASS",
+    "renderedStates": "PARTIAL",
+    "nativeComputedStyle": "PARTIAL",
+    "realScreenPixelDiff": "NOT_RUN",
+    "realSafari": "NOT_RUN",
+    "voiceOver": "OUT_OF_SCOPE_PO_S208",
+    "g2": "OPEN"
+  },
+  "allowedTransitions": [
+    "Proposed",
+    "Draft Implemented",
+    "CI Tested",
+    "Human G2 Approved",
+    "Deployed"
+  ],
+  "visualContractPilot": {
+    "status": "RESEARCH_BRANCH_IMPLEMENTED_PENDING_EXACT_HEAD_CI",
+    "flag": "?lesson=L09-1-2&li-react=l09&li-vc-g2=1",
+    "legacyDefault": "?lesson=L09-1-2&li-react=l09",
+    "allowedApprovals": [
+      "VC-G2-D1",
+      "VC-G2-D2",
+      "VC-G2-D3"
+    ],
+    "g2": "OPEN",
+    "learnerWrites": "ONLY_ISOLATED_SYNTHETIC_FIXTURE",
+    "noProductionRollout": true
+  }
+}

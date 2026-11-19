@@ -188,6 +188,8 @@
   assert(frame.contentWindow.liStep16Fixture.rollback(checkpoint,reviewedRaw,true)===checkpoint.raw,
     'Confirmed rollback did not return exact backup bytes');
   await wait(()=>doc.querySelector('#page-lessonL09').dataset.liResearchStage==='submitted','rollback projection');
+  // React's CustomEvent observer commits conflict state on the next render; do not assert before it commits.
+  await wait(()=>!!sharedReact().querySelector('[data-conflict]'),'React conflict after exact rollback');
   assert(sharedState().reviewed===false &&
     doc.getElementById('l09-progressBar').getAttribute('aria-valuenow')==='0' &&
     !!sharedReact().querySelector('[data-conflict]'),

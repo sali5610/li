@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {bindNeonAccount} from '../.sync-test/neon-session.js';
+import {bindNeonAccount} from '../.sync-test/sync/neon-session.js';
 
 const endpoint='https://example.apirest.neon.tech/li/rest/v1';
 const tokenFor=sub=>['e30',Buffer.from(JSON.stringify({sub,role:'authenticated'})).toString('base64url'),'signature'].join('.');

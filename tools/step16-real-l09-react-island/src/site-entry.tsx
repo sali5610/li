@@ -5,6 +5,7 @@
 import React,{useEffect} from 'react';
 import {createRoot} from 'react-dom/client';
 import './pilot.css';
+import './ui/shared.css';
 import {Pilot} from './Pilot';
 
 export function mountL09(host:HTMLElement):Promise<()=>void>{
@@ -21,7 +22,10 @@ export function mountL09(host:HTMLElement):Promise<()=>void>{
     if(!completed){completed=true;window.clearTimeout(timeout);resolve(()=>root.unmount());}
     return()=>window.clearTimeout(timeout);
    },[]);
-   return <Pilot/>;
+   // Extra opt-in only inside the research L09 React island. Do not change native default.
+   const params=new URLSearchParams(window.location.search);
+   const vcG2=params.get('li-react')==='l09'&&params.get('li-vc-g2')==='1';
+   return <Pilot visualContractPilot={vcG2}/>;
   }
   root.render(<Ready/>);
  });

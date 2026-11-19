@@ -1,9 +1,9 @@
 import 'fake-indexeddb/auto';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {PrivateDeviceStore} from '../.sync-test/local-dexie.js';
-import {syncOnce} from '../.sync-test/sync-once.js';
-import {RevisionConflict} from '../.sync-test/contract.js';
+import {PrivateDeviceStore} from '../.sync-test/sync/local-dexie.js';
+import {syncOnce} from '../.sync-test/sync/sync-once.js';
+import {RevisionConflict} from '../.sync-test/sync/contract.js';
 
 function createStore(){return new PrivateDeviceStore();}
 function remote(itemId='n1',revision=1){

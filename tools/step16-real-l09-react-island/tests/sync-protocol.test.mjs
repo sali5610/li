@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {NeonUserApi} from '../.sync-test/neon-api.js';
-import {RevisionConflict} from '../.sync-test/contract.js';
+import {NeonUserApi} from '../.sync-test/sync/neon-api.js';
+import {RevisionConflict} from '../.sync-test/sync/contract.js';
 
 const user='test-user-A';
 const jwt=['e30',Buffer.from(JSON.stringify({sub:user,role:'authenticated'})).toString('base64url'),'signature'].join('.');

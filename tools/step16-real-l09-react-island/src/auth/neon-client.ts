@@ -1,4 +1,4 @@
-import {createInternalNeonAuth} from '@neondatabase/auth';
+import {createInternalNeonAuth,type ReactBetterAuthClient} from '@neondatabase/auth';
 import {BetterAuthReactAdapter} from '@neondatabase/auth/react/adapters';
 import type {NeonAuthSessionPort} from '../sync/neon-session.js';
 import {sessionJwtCandidate,safeJwtFetchError} from '../sync/invite-access.js';
@@ -17,7 +17,9 @@ const neonAuth=createInternalNeonAuth(NEON_AUTH_URL,{
  adapter:BetterAuthReactAdapter(),
  allowAnonymous:false
 });
-export const authClient=neonAuth.adapter;
+// The generic internal factory has a vanilla/react conditional type ambiguity;
+// its actual adapter here is BetterAuthReactAdapter() by construction.
+export const authClient=neonAuth.adapter as ReactBetterAuthClient;
 
 /** Identity-only adapter. Never cache/store the JWT or raw session in IndexedDB. */
 export const neonSessionPort:NeonAuthSessionPort={

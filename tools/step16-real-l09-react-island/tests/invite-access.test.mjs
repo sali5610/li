@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {checkInviteAccess,safeInviteErrorCode,sessionJwtCandidate} from '../.sync-test/invite-access.js';
+import {checkInviteAccess,safeInviteErrorCode,sessionJwtCandidate,safeJwtFetchError} from '../.sync-test/invite-access.js';
 
 const endpoint='https://example.apirest.neon.tech/li/rest/v1';
 const tokenFor=sub=>['e30',Buffer.from(JSON.stringify({
@@ -98,4 +98,15 @@ test('regression: Neon bearer JWT comes from /token, never the opaque session id
  assert.match(source,/authClient\.token\(\)/);
  assert.doesNotMatch(source,/session\.data\?\.session\?\.token/);
  assert.doesNotMatch(source,/session\?\.token/);
+});
+
+test('safe JWT error captures only allowlisted HTTP status with no untrusted details',()=>{
+ const secret='Bearer aa.bb.cc user@example.com';
+ assert.equal(safeInviteErrorCode(safeJwtFetchError({status:401,message:secret})),'INV-JWT-401');
+ assert.equal(safeInviteErrorCode(safeJwtFetchError({status:403,message:secret})),'INV-JWT-403');
+ assert.equal(safeInviteErrorCode(safeJwtFetchError({statusCode:429,message:secret})),'INV-JWT-429');
+ assert.equal(safeInviteErrorCode(safeJwtFetchError({status:500,message:secret})),'INV-JWT-5XX');
+ assert.equal(safeInviteErrorCode(safeJwtFetchError({status:200,message:secret})),'INV-JWT-FETCH');
+ assert.equal(safeInviteErrorCode(safeJwtFetchError({status:'401',message:secret})),'INV-JWT-FETCH');
+ assert.equal(safeInviteErrorCode(safeJwtFetchError({message:secret})),'INV-JWT-FETCH');
 });

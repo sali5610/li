@@ -1426,20 +1426,6 @@
       }
     },
     {
-      "id": "edge:ont02:047",
-      "predicate": "VALIDATES",
-      "from": "gate:ONT02:token-reference",
-      "to": "component:Button",
-      "reviewState": "proposed",
-      "visibility": "public_curated",
-      "provenance": {
-        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
-        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
-        "evidenceType": "documented",
-        "checkedOn": "2026-11-19"
-      }
-    },
-    {
       "id": "edge:ont02:048",
       "predicate": "CONSTRAINS",
       "from": "rule:UX-DS-35:token-ownership",

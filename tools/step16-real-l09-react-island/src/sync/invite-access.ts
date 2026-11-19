@@ -57,7 +57,7 @@ export function safeInviteErrorCode(error:unknown):string{
   return 'INV-JWT-BIND';
  if(message==='INVITE_CHECK_INVALID_RESPONSE')return 'INV-RPC-FORMAT';
  if(message==='INVALID_INVITE_API_URL')return 'INV-CONFIG';
- const match=/^INVITE_CHECK_HTTP_(\\d{3})$/.exec(message);
+ const match=/^INVITE_CHECK_HTTP_(\d{3})$/.exec(message);
  if(match){
   const status=Number(match[1]);
   if([400,401,403,404,405,406,409,429].includes(status))return 'INV-RPC-'+status;

@@ -1,29 +1,28 @@
-:root{color-scheme:light;font-family:var(--li-font-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif)}
-*{box-sizing:border-box}
-body{background:var(--paper);color:var(--ink);padding:clamp(12px,3vw,30px);margin:0}
-.pilot{max-width:920px;margin:0 auto;display:grid;gap:var(--li-space-6,24px)}
-.pilot-head{display:flex;align-items:start;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.pilot-kicker{font-weight:700;font-size:12px;letter-spacing:.08em;color:var(--olive)}
-h1,h2{font-family:var(--li-font-editorial,"Crimson Text",Georgia,serif);color:var(--moss);margin:8px 0 16px}
-h1{font-size:clamp(26px,4vw,38px)}h2{font-size:clamp(23px,3.2vw,30px)}
-p{line-height:1.55}
-.pilot-surface{background:var(--cream);border:1px solid var(--rule);padding:clamp(12px,3vw,28px);border-radius:8px}
-.pilot-caution,.pilot-note,.pilot-foot{color:var(--muted);font-size:14px}
-.pilot-statement{background:var(--paper-2);border-left:3px solid var(--olive);padding:12px 16px}
-.pilot-question{display:grid;gap:8px;margin:18px 0}
+/* Step16.2: scoped React primitives, no global overrides on Vanilla screens. */
+.pilot{box-sizing:border-box;max-width:920px;margin:0 auto;display:grid;gap:var(--li-space-6);padding:var(--li-space-4);color:var(--ink);background:var(--paper);font-family:var(--li-font-ui,system-ui,sans-serif)}
+.pilot *,.pilot *::before,.pilot *::after{box-sizing:border-box}
+.pilot-head{display:flex;align-items:start;justify-content:space-between;gap:var(--li-space-4);flex-wrap:wrap}
+.pilot-kicker{font-weight:700;font-size:var(--li-font-size-xs,12px);letter-spacing:var(--li-letter-spacing-wide,.08em);color:var(--olive)}
+.pilot h1,.pilot h2{font-family:var(--li-font-editorial,"Crimson Text",Georgia,serif);color:var(--moss);margin:var(--li-space-2) 0 var(--li-space-4)}
+.pilot h1{font-size:clamp(26px,4vw,38px)}.pilot h2{font-size:clamp(23px,3.2vw,30px)}
+.pilot p{line-height:1.5}
+.pilot-surface{background:var(--cream);border:1px solid var(--rule);padding:var(--li-space-4);border-radius:0}
+.pilot-caution,.pilot-note,.pilot-foot{color:var(--muted);font-size:var(--li-font-size-sm,14px)}
+.pilot-statement{background:var(--paper-2);border-inline-start:3px solid var(--olive);padding:var(--li-space-3) var(--li-space-4)}
+.pilot-question{display:grid;gap:var(--li-space-2);margin:var(--li-space-4) 0}
 .pilot-question label{font-weight:600;line-height:1.5}
-.pilot-input,select{color:var(--ink);background:var(--porcelain);border:1px solid var(--rule);font:inherit;padding:12px;border-radius:6px;min-height:48px}
-textarea{resize:vertical;width:100%;min-height:110px}
-.pilot-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:12px 0}
-button{font:inherit;min-height:48px;min-width:48px;border:1px solid var(--moss);border-radius:6px;background:var(--moss);color:var(--cream);cursor:pointer;padding:10px 16px}
-button.secondary,.pilot-lang button{background:var(--porcelain);color:var(--moss)}
-.pilot-lang{display:flex;gap:4px}
+.pilot .pilot-input,.pilot select{color:var(--ink);background:var(--porcelain);border:1px solid var(--rule);font:inherit;padding:var(--li-space-3);border-radius:0;min-height:48px}
+.pilot textarea{resize:vertical;width:100%;min-height:112px}
+.pilot-actions{display:flex;align-items:center;flex-wrap:wrap;gap:var(--li-space-3);margin:var(--li-space-3) 0}
+.pilot button{font:inherit;min-height:48px;min-width:48px;border:1px solid var(--moss);border-radius:0;background:var(--moss);color:var(--cream);cursor:pointer;padding:var(--li-space-3) var(--li-space-4)}
+.pilot button.secondary,.pilot-lang button{background:var(--porcelain);color:var(--moss)}
+.pilot-lang{display:flex;gap:var(--li-space-1)}
 .pilot-lang button[aria-pressed="true"]{background:var(--moss);color:var(--cream)}
-button:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--li-color-focus-ring,var(--olive));outline-offset:3px}
-button:disabled,textarea:disabled,select:disabled{opacity:.7;cursor:not-allowed}
-.pilot-rubric-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(160px,200px);gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--rule)}
-.pilot-rubric-row label{display:grid;gap:5px;line-height:1.4}.pilot-rubric-row label span{color:var(--muted)}
+.pilot button:focus-visible,.pilot textarea:focus-visible,.pilot select:focus-visible{outline:3px solid var(--li-color-focus-ring,var(--moss));outline-offset:var(--li-space-1)}
+.pilot button:disabled,.pilot textarea:disabled,.pilot select:disabled{opacity:.7;cursor:not-allowed}
+.pilot-rubric-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(160px,200px);gap:var(--li-space-3);align-items:center;padding:var(--li-space-4) 0;border-bottom:1px solid var(--rule)}
+.pilot-rubric-row label{display:grid;gap:var(--li-space-1);line-height:1.5}.pilot-rubric-row label span{color:var(--muted)}
 .pilot-score{font-weight:700;font-size:1.2rem}
-.pilot-status{min-height:25px}
+.pilot-status{min-height:24px}
 @media(max-width:540px){.pilot-rubric-row{grid-template-columns:1fr}.pilot-rubric-row select{width:100%}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+@media(prefers-reduced-motion:reduce){.pilot *,.pilot *::before,.pilot *::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}

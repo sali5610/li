@@ -251,12 +251,12 @@ async function syntheticTypographyStress(language){
       x.baselineFocus.borderColor===semanticFocusColor&&
       x.focusPaint.borderColor===semanticFocusColor&&x.outlineWidth===0,
      'Text scale lost the actual 3px focus BORDER or learner key isolation '+context+' '+JSON.stringify(x));
-   // Real keyboard traversal: Shift+Tab leaves first answer for preceding
-   // locale button; Tab returns focus to the first answer. Programmatic focus
-   // alone is not an adequate keyboard proof.
+   // The scoped Resume button is now the immediately preceding keyboard
+   // stop before the first answer. Verify the real Shift+Tab/Tab order and
+   // restored visible focus rather than incorrectly assuming locale is adjacent.
    await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Tab',code:'Tab',windowsVirtualKeyCode:9,modifiers:8});
    await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Tab',code:'Tab',windowsVirtualKeyCode:9,modifiers:8});
-   const back=await evaluate("document.activeElement?.getAttribute('data-locale')==='en'");
+   const back=await evaluate("document.activeElement?.getAttribute('data-action')==='resume'");
    await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
    await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
    const forward=await evaluate("(()=>{const e=document.querySelector('textarea[data-answer=\"0\"]');const c=e&&getComputedStyle(e);return {target:document.activeElement===e,focusVisible:e?.matches(':focus-visible'),border:c?.borderTopWidth,color:c?.borderTopColor}})()");

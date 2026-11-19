@@ -155,9 +155,31 @@ async function forgeDenied(jwt:string,victim:Slot,requester:QaRequest,run:QaRun)
  const id=run.forgedStateId;ensureId(id);
  const r=await request(jwt,'POST','li_user_state',{},{
   owner_id:victim.uid,item_type:'preference',item_id:id,
-  payload:{qa_run:true,forged:true}
+  payload:{qa_run:true,forged:true,run:run.id}
  },requester);
  if(!denied(r))fail('QA-FORGED-OWNER-ALLOWED');
+}
+/** Recovery path when a malicious forged-owner INSERT ever succeeds.
+ * Only B can clean a B-owned synthetic marker; never delete without payload provenance. */
+async function clearForgedIfOwned(jwt:string,run:QaRun,requester:QaRequest){
+ if(!run.b||!run.forgedStateId)return false;
+ const where=filterState(run.forgedStateId);
+ const before=await request(jwt,'GET','li_user_state',
+  {...where,select:'owner_id,payload'},undefined,requester);
+ if(!success(before.status)||!Array.isArray(before.rows)||before.rows.length>1)
+  fail('QA-FORGED-CLEANUP-PRECHECK');
+ if(before.rows.length===0)return false;
+ const row=before.rows[0] as Record<string,unknown>;
+ const p=row.payload as Record<string,unknown>|null;
+ if(row.owner_id!==run.b.uid||!p||p.qa_run!==true||p.forged!==true||p.run!==run.id)
+  fail('QA-FORGED-CLEANUP-NOT-SYNTHETIC');
+ const d=await request(jwt,'DELETE','li_user_state',where,undefined,requester);
+ if(!success(d.status))fail('QA-FORGED-CLEANUP-FAILED');
+ const verify=await request(jwt,'GET','li_user_state',
+  {...where,select:'owner_id'},undefined,requester);
+ if(!success(verify.status)||!Array.isArray(verify.rows)||verify.rows.length!==0)
+  fail('QA-FORGED-CLEANUP-UNVERIFIED');
+ return true;
 }
 async function cInsertDenied(jwt:string,run:QaRun,actor:QaActor,requester:QaRequest){
  if(!run.c)run.c=slotFor(actor.uid);
@@ -173,6 +195,7 @@ export async function cleanupOwnedQa(run:QaRun,actor:QaActor,
  if(!target)fail('QA-NO-OWN-MARKERS');
  const jwt=await actor.getToken();
  if(!jwt||signedSubject(jwt)!==actor.uid)fail('QA-SESSION-BIND');
+ if(run.b&&target.uid===run.b.uid)await clearForgedIfOwned(jwt,run,requester);
  await clearOwn(jwt,target,run,requester);
  emit({...run});
  return {...run};
@@ -239,14 +262,8 @@ export async function stepQa(run:QaRun,actor:QaActor,
   if(!denied(eventUpdate))fail('QA-EVENT-UPDATE-ALLOWED');
   ok('EVENT-UPDATE-DENIED');
   await updateOwn(jwt,run.b,run,requester);ok('B-OWN-UPDATE');
-  if(run.forgedStateId){
-   const marker=run.forgedStateId;ensureId(marker);
-   // A forged B-owned insert must have failed; cleanup is fail-closed if not.
-   const stray=await request(jwt,'GET','li_user_state',
-    filterState(marker),undefined,requester);
-   if(!success(stray.status)||!Array.isArray(stray.rows)||stray.rows.length!==0)
-    fail('QA-FORGED-ROW-NEEDS-CLEANUP');
-  }
+  const forgedWasCreated=await clearForgedIfOwned(jwt,run,requester);
+  if(forgedWasCreated)fail('QA-FORGED-OWNER-ALLOWED');
   await clearOwn(jwt,run.b,run,requester);ok('B-OWN-CLEANUP');
   run.phase='done';
  }

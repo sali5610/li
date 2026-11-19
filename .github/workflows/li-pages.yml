@@ -47,14 +47,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: sali5610/li
-          ref: dfa87c67223fdea76b94b97b592a991785b42380
+          ref: def1c5868751f44a71e18f67f692b109f1aa9a54
           path: staging-auth-source
           persist-credentials: false
 
       - name: Verify source SHA and staging-only auth boundaries
         run: |
           set -euo pipefail
-          test "$(git -C staging-auth-source rev-parse HEAD)" = "dfa87c67223fdea76b94b97b592a991785b42380"
+          test "$(git -C staging-auth-source rev-parse HEAD)" = "def1c5868751f44a71e18f67f692b109f1aa9a54"
           test -f staging-auth-source/tools/step16-real-l09-react-island/vite.auth.config.mjs
           grep -Fq "VITE_LI_AUTH_TARGET==='github-pages-staging'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/config.ts
           grep -Fq "'https://sali5610.github.io'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/config.ts
@@ -73,7 +73,11 @@ jobs:
           test ! -e staging-auth-source/tools/step16-real-l09-react-island/src/auth/qa-secrets.ts
 
           ! grep -Eq "syncOnce|bindNeonAccount|signIn.email|AuthRecovery|AuthEmailVerification" staging-auth-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
-          echo "PASS pinned GitHub Pages staging identity; Google-only, no remote learner sync"
+          grep -Fq 'L09CloudPanel' staging-auth-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
+          grep -Fq "ITEM_ID='L09-1-2-react-staging-v1'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/L09CloudPanel.tsx
+          grep -Fq 'await checkInviteAccess' staging-auth-source/tools/step16-real-l09-react-island/src/auth/L09CloudPanel.tsx
+          grep -Fq "action==='save'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/L09CloudPanel.tsx
+          echo "PASS GitHub Pages staging identity + opt-in account-owned L09 progress transfer"
 
       - name: Set up GitHub runner for isolated staging Auth build
         uses: actions/setup-node@v4
@@ -89,6 +93,7 @@ jobs:
           npm install --no-audit --no-fund
           npm run extract
           npm run test:sync
+          npx tsc --noEmit
           npm run build:auth
           test -f dist-auth/auth-entry.html
           test "$(find dist-auth -type f -name '*.html' | wc -l)" -eq 1
@@ -200,7 +205,7 @@ jobs:
           test -z "$(find site/ -type f \( -name '*.map' -o -name '.env*' -o -name '*qa-secrets*' \) -print -quit)"
           echo 'Ready: https://sali5610.github.io/li/ — one staging app.'
           echo 'Home/Catalog/Settings stay native; L09 uses React challenge and review.'
-          echo 'Auth pilot is linked from Settings; real learner cloud sync remains OFF.'
+          echo 'Auth/Settings offers manual, user-consented L09 cloud Save + Restore; other sync remains OFF.'
           echo 'No Cloudflare release or production code changes.'
 
       - name: Configure GitHub Pages STAGING

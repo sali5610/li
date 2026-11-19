@@ -53,9 +53,19 @@ def count_current_month_deployments(account: str, project: str, token: str):
         raise GateError("Missing Cloudflare credentials/project; fail closed")
     now = dt.datetime.now(dt.timezone.utc)
     month_start = dt.datetime(now.year, now.month, 1, tzinfo=dt.timezone.utc)
-    # Explicitly count all production AND preview deployments for the project.
-    # API often provides newest first; do not rely on the order for correctness.
+    # Count actual deployment attempts (production + preview) but NOT Git push
+    # notifications deliberately skipped by Cloudflare Branch control. A
+    # skipped event has no build/deployment and must not exhaust the project
+    # release budget. A missing/nonboolean is_skipped means fail closed.
+    # This project-only safeguard does NOT prove account-wide Free plan usage.
     matched = 0
+    skipped = 0
+    def scanned():
+        print(
+            f"LI_FREE_DEPLOYMENT_AUDIT project_attempted={matched} "
+            f"skipped_records={skipped} records={matched + skipped}"
+        )
+        return matched
     for page in range(1, 501):
         # Cloudflare documents a 20-result default for Pages deployment lists.
         # Avoid unsupported 100-item pages and still audit both environments.
@@ -124,19 +134,28 @@ def count_current_month_deployments(account: str, project: str, token: str):
             except ValueError as exc:
                 raise GateError("Unparseable deployment timestamp; fail closed") from exc
             if moment >= month_start:
-                matched += 1
+                skip_flag = item.get("is_skipped")
+                if type(skip_flag) is not bool:
+                    raise GateError(
+                        "Cloudflare deployment lacks boolean is_skipped; fail closed"
+                    )
+                if skip_flag:
+                    skipped += 1
+                else:
+                    matched += 1
         if matched >= MAX_PROJECT_RELEASES_PER_MONTH:
+            scanned()
             raise GateError(
-                f"Project has {matched} deployments this UTC month; "
-                f"release budget is {MAX_PROJECT_RELEASES_PER_MONTH}"
+                f"Project has {matched} non-skipped deployment attempts "
+                f"this UTC month; release budget is {MAX_PROJECT_RELEASES_PER_MONTH}"
             )
         info = data.get("result_info", {})
         if isinstance(info, dict):
             total_pages = info.get("total_pages")
             if isinstance(total_pages, int) and page >= total_pages:
-                return matched
+                return scanned()
         if len(records) < 20:
-            return matched
+            return scanned()
     raise GateError("More than 10,000 project deployments; could not safely audit")
 
 

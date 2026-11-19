@@ -70,6 +70,7 @@ The Guide 2-up cards at phone <=640px preserve full Vietnamese method names, Eng
 
 ## 7. Modal, popover, dialog, menu and Lão Lý
 
+- **UX-DS-35 preventative focus rule (DRAFT):** A modal needs an actual browser-tested focusable sequence covering links, summary/disclosures, region `tabindex`, inputs/selects/textarea and buttons. Use Tab/Shift+Tab at both boundaries, Escape/Close/backdrop restore, inert/background pointer and programmatic focus resistance, separate Lão Lý and Check-in cases. Preserve background inert state and real data on close; do not call source-only screenshot success physical Safari/VoiceOver acceptance.
 - Use modal only for a blocking decision or focused subtask. On opening: focus moves logically into dialog, background is inactive; Tab stays within modal; Escape/cancel behavior and explicit Close available when safe; close returns focus to opener or logical continuation. Native dialog semantics/ARIA title as applicable.
 - Modal long content: header and actions stay reachable, **body owns scrolling**, not overlapping fixed footer. On short landscape and virtual keyboard, avoid clipped final action. No nested modal unless essential; prevent background page scroll inappropriately.
 - Nonblocking popover/disclosure: click/tap and keyboard open, dismiss via outside click/Escape where appropriate, sensible focus restoration; don't use dialog behavior for a simple filter.

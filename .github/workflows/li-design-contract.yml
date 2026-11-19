@@ -5,6 +5,9 @@ on:
     paths:
       - 'site/**'
       - 'design-system/**'
+      - 'tools/generate_design_token_types.mjs'
+      - 'tools/ds_inventory.mjs'
+      - 'tools/test_ds_stage01_diagnostics.cjs'
       - 'tools/validate_design_system.py'
       - 'tools/validate_ui_foundations.py'
       - 'tools/audit_design_tokens.py'
@@ -32,6 +35,12 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify generated CSS exactly matches JSON source
         run: python3 tools/generate_design_tokens.py --check
+      - name: Stage 02 reference-semantic-component alias integrity and negative tests
+        run: python3 tools/test_design_semantic_roles.py
+      - name: Stage 02 typed React token refs match JSON-generated CSS exactly
+        run: |
+          node tools/generate_design_token_types.mjs --self-test
+          node tools/generate_design_token_types.mjs --check
       - name: Check current UI token and interaction baseline
         run: python3 tools/validate_design_system.py
       - name: Validate readable type and 4px layout grid
@@ -42,3 +51,16 @@ jobs:
         run: python3 tools/audit_design_tokens.py --check-baseline
       - name: Validate full app routes and native lessons before merge
         run: python3 tools/validate_site.py
+      - name: Stage 00 source scanner self-test and complete live-tree inventory
+        run: |
+          node tools/ds_inventory.mjs --self-test
+          node tools/test_ds_stage01_diagnostics.cjs
+          node tools/ds_inventory.mjs --check
+          node tools/ds_inventory.mjs --write /tmp/li-ux-ds-35-stage00-inventory.json
+      - name: Retain full selector/token/screen inventory as reviewable CI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-ux-ds-35-source-inventory
+          path: /tmp/li-ux-ds-35-stage00-inventory.json
+          retention-days: 14
+

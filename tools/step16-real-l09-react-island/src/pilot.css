@@ -21,7 +21,7 @@
 .pilot button.secondary,.pilot-lang button{background:var(--li-comp-button-secondary-background,var(--paper));color:var(--li-comp-button-secondary-color,var(--moss))}
 .pilot-lang{display:flex;gap:var(--li-space-1)}
 .pilot-lang button[aria-pressed="true"]{background:var(--moss);color:var(--cream)}
-.pilot button:focus-visible,.pilot textarea:focus-visible,.pilot select:focus-visible{outline:3px solid var(--li-comp-button-focus-ring,var(--li-color-focus-ring,var(--moss)));outline-offset:var(--li-space-1)}
+.pilot button:focus-visible,.pilot textarea:focus-visible,.pilot select:focus-visible{outline:3px solid var(--li-comp-button-focus-ring,var(--li-color-general-focus-ring,var(--moss)));outline-offset:var(--li-space-1)}
 .pilot button:disabled,.pilot textarea:disabled,.pilot select:disabled{opacity:.7;cursor:not-allowed}
 .pilot-rubric-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(160px,200px);gap:var(--li-space-3);align-items:center;padding:var(--li-space-4) 0;border-bottom:1px solid var(--rule)}
 .pilot-rubric-row label{display:grid;gap:var(--li-space-1);line-height:1.5}.pilot-rubric-row label span{color:var(--muted)}

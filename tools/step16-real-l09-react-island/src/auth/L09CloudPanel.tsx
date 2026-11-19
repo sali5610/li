@@ -1,25 +1,23 @@
-import React,{useState} from 'react';
-import {L09StorageBridge,initial,type Attempt} from '../native-bridge.js';
+import React,{useState,useEffect} from 'react';
+import {NATIVE_KEY,initial,type Attempt} from '../native-bridge.js';
 import {bindNeonAccount} from '../sync/neon-session.js';
 import {RevisionConflict} from '../sync/contract.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
 import {neonSessionPort} from './neon-client.js';
 import {AUTH_ORIGIN,IS_GITHUB_STAGING,NEON_DATA_API_URL} from './config.js';
 
-/** Manual account-bound progress transfer: ONLY L09 React on GitHub Pages staging.
- * Never modify native L09 progress; never upload without an explicit click.
- */
-const ITEM_ID='L09-1-2-react-staging-v1';
-const META_PREFIX='li.step16.l09.cloud-revision.v1:';
-type Payload={schema:'li.step16.l09.react.v1';attempt:Attempt};
+/** Account-bound transfer of the native L09 attempt; never upload without an explicit click. */
+const ITEM_ID='L09-1-2';
+const META_PREFIX='li.step16.l09.native-cloud-revision.v1:';
+type Payload={schema:'li.step16.l09.native.v1';attempt:Attempt};
 type Locale='vi'|'en';
 type Message={kind:'info'|'error'|'success';value:string};
 const copy={
  vi:{
   title:'Tiến độ L09 · học tiếp trên thiết bị khác',
-  about:'Đồng bộ riêng bài tập L09 bằng React. Ghi chú và các bài khác vẫn chỉ ở thiết bị này.',
+  about:'Lưu bài tập L09 đang học để tiếp tục trên thiết bị khác. Các bài khác vẫn lưu trên thiết bị.',
   consent:'Chỉ khi bấm Lưu lên cloud, câu trả lời mới được gửi đến Neon theo tài khoản Google đã xác minh.',
-  localEmpty:'Máy này chưa có câu trả lời React L09.',
+  localEmpty:'Máy này chưa có câu trả lời L09.',
   draft:'Câu đủ điều kiện nộp',rated:'Tiêu chí đã tự đánh giá',
   remoteUnknown:'Cloud: chưa kiểm tra',remoteReady:'Cloud: có tiến độ',remoteEmpty:'Cloud: chưa có tiến độ',
   inspect:'Kiểm tra cloud',save:'Lưu tiến độ lên cloud',restore:'Khôi phục về máy này',
@@ -36,9 +34,9 @@ const copy={
  },
  en:{
   title:'L09 progress · continue on another device',
-  about:'Syncs only the React L09 exercise. Other lessons and notes remain on this device.',
+  about:'Syncs the L09 exercise you are studying. Other lessons remain on this device.',
   consent:'Your answers go to Neon under your verified Google account only when you click Save to cloud.',
-  localEmpty:'No L09 React answers on this device.',
+  localEmpty:'No L09 answers on this device.',
   draft:'Submission-ready answers',rated:'Self-review criteria rated',
   remoteUnknown:'Cloud: not checked',remoteReady:'Cloud: has progress',remoteEmpty:'Cloud: no progress',
   inspect:'Check cloud',save:'Save progress to cloud',restore:'Restore to this device',
@@ -77,14 +75,38 @@ function clean(a:Attempt):Attempt{
 function parsePayload(input:unknown):Payload|null{
  if(!input||typeof input!=='object'||Array.isArray(input))return null;
  const v=input as Record<string,unknown>;
- return v.schema==='li.step16.l09.react.v1'&&attemptOk(v.attempt)?
-  {schema:'li.step16.l09.react.v1',attempt:clean(v.attempt)}:null;
+ return v.schema==='li.step16.l09.native.v1'&&attemptOk(v.attempt)?
+  {schema:'li.step16.l09.native.v1',attempt:clean(v.attempt)}:null;
 }
 function hasProgress(a:Attempt){
  return a.submitted||a.reviewed||a.guidedDraft.trim().length>0||a.draft.some(x=>x.trim().length>0);
 }
 function equal(a:Attempt,b:Attempt){return JSON.stringify(clean(a))===JSON.stringify(clean(b));}
-function local(){return new L09StorageBridge(localStorage,window.location).read();}
+function local(){
+ const raw=localStorage.getItem(NATIVE_KEY);
+ if(raw===null)return{state:initial(),raw:null,invalid:false};
+ try{
+  const parsed:unknown=JSON.parse(raw);
+  if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw Error('BAD_LOCAL');
+  const state={...initial(),...parsed} as Attempt;
+  if(!attemptOk(state))throw Error('BAD_LOCAL');
+  return{state,raw,invalid:false};
+ }catch{return{state:initial(),raw,invalid:true};}
+}
+function writeNative(attempt:Attempt,expected:string|null){
+ if(localStorage.getItem(NATIVE_KEY)!==expected)throw Error('STALE_LOCAL');
+ let previous:Record<string,unknown>={};
+ if(expected){
+  const data:unknown=JSON.parse(expected);
+  if(!data||typeof data!=='object'||Array.isArray(data)||
+     !attemptOk({...initial(),...data}))throw Error('INVALID_DATA');
+  previous=data as Record<string,unknown>;
+ }
+ const text=JSON.stringify({...previous,...clean(attempt)});
+ localStorage.setItem(NATIVE_KEY,text);
+ if(localStorage.getItem(NATIVE_KEY)!==text)throw Error('LOCAL_READBACK_FAILED');
+ return text;
+}
 function checkpoint(uid:string):number|null{
  const s=localStorage.getItem(META_PREFIX+uid);
  if(s===null)return null;
@@ -96,7 +118,7 @@ function saveCheckpoint(uid:string,n:number){
 }
 async function getApi(uid:string){
  if(!IS_GITHUB_STAGING||window.location.origin!==AUTH_ORIGIN||
-  window.location.pathname!=='/li/auth-pilot/')throw Error('WRONG_ORIGIN');
+  !['/li/','/li/index.html'].includes(window.location.pathname))throw Error('WRONG_ORIGIN');
  if(!await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort))throw Error('INVITE_REVOKED');
  const api=await bindNeonAccount(NEON_DATA_API_URL,neonSessionPort);
  if(!api||api.accountId!==uid)throw Error('SESSION_CHANGED');
@@ -109,6 +131,11 @@ export function L09CloudPanel({uid,locale}:{uid:string;locale:Locale}){
  const [remote,setRemote]=useState<'unknown'|'empty'|'saved'>('unknown');
  const [replace,setReplace]=useState(false);
  const [version,setVersion]=useState(0);
+ useEffect(()=>{
+  const refresh=()=>setVersion(v=>v+1);
+  window.addEventListener('li:account-open',refresh);
+  return()=>window.removeEventListener('li:account-open',refresh);
+ },[]);
  let current:ReturnType<typeof local>|null=null;
  try{current=local();}catch{/* Restricted storage: no uploads. */}
  const state=current?.state??initial();
@@ -143,7 +170,7 @@ export function L09CloudPanel({uid,locale}:{uid:string;locale:Locale}){
     if(local().raw!==from.raw)throw Error('STALE_LOCAL');
     const result=await api.write({
      itemType:'lesson_attempt',itemId:ITEM_ID,baseRevision:cloud?.revision??0,
-     payload:{schema:'li.step16.l09.react.v1',attempt:next},
+     payload:{schema:'li.step16.l09.native.v1',attempt:next},
      deletedAt:null,opId:crypto.randomUUID()
     });
     const verified=await api.one('lesson_attempt',ITEM_ID);
@@ -159,12 +186,13 @@ export function L09CloudPanel({uid,locale}:{uid:string;locale:Locale}){
     if(from.invalid||!attemptOk(from.state))throw Error('INVALID_DATA');
     if(from.raw!==null&&!equal(from.state,cloud.payload.attempt)&&!replace)
       throw Error('CONFIRM_REPLACE');
-    const bridge=new L09StorageBridge(localStorage,window.location);
-    bridge.write(cloud.payload.attempt,from.raw);
+    writeNative(cloud.payload.attempt,from.raw);
     if(!equal(local().state,cloud.payload.attempt))throw Error('RESTORE_NOT_CONFIRMED');
     saveCheckpoint(uid,cloud.revision);
     setVersion(x=>x+1);setReplace(false);
     setMessage({kind:'success',value:t.restored});
+    // Native lesson has in-memory state: reload to resume from cloud safely.
+    window.location.assign('/li/?lesson=L09-1-2');
    }
   }catch(error){
    const reason=error instanceof Error?error.message:'';
@@ -176,7 +204,7 @@ export function L09CloudPanel({uid,locale}:{uid:string;locale:Locale}){
   }finally{setBusy(false);}
  }
  if(!IS_GITHUB_STAGING||window.location.origin!==AUTH_ORIGIN||
-    window.location.pathname!=='/li/auth-pilot/')return null;
+    !['/li/','/li/index.html'].includes(window.location.pathname))return null;
  return <section className="qa-panel" aria-label={t.title} data-l09-cloud="manual">
   <h2>{t.title}</h2>
   <p>{t.about}</p>
@@ -192,7 +220,6 @@ export function L09CloudPanel({uid,locale}:{uid:string;locale:Locale}){
   </label>
   <button type="button" className="qa-secondary" disabled={busy} onClick={()=>void run('restore')}>{busy?t.working:t.restore}</button>
   {message&&<p role={message.kind==='error'?'alert':'status'} className={message.kind==='error'?'auth-error':undefined}>{message.value}</p>}
-  <p><a href="../?li-react=l09">{t.back}</a></p>
   <p className="auth-privacy">{t.scope}</p>
  </section>;
 }

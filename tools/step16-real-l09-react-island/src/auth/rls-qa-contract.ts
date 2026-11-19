@@ -12,7 +12,7 @@ type Table='li_user_state'|'li_learning_events';
 const ID_PREFIX='__li_rls_qa_';
 const BASE='https://ep-misty-snow-azfrrm3o.apirest.c-3.ap-southeast-1.aws.neon.tech/li/rest/v1';
 const SAFE_PHASES:QaPhase[]=['start','b','c','a-finish','b-finish','done'];
-const fail=(code:string):never=>{throw new Error(code);};
+function fail(code:string):never{throw new Error(code);}
 function mark(){return ID_PREFIX+crypto.randomUUID();}
 export function makeQaRun():QaRun{return{v:1,id:crypto.randomUUID(),phase:'start',checks:[]};}
 export function validateQaRun(value:unknown):QaRun|null{

@@ -13,6 +13,10 @@ const inFlight=new WeakMap<PrivateDeviceStore,Map<string,Promise<SyncReport>>>()
 function classify(error:unknown):'sign-in-required'|'security-error'|'offline'{
  const message=error instanceof Error?error.message:String(error);
  if(/^NEON_AUTH_|^NEON_DATA_API_HTTP_40[13]$/.test(message))return 'sign-in-required';
+ // 408/429 and 5xx remain retryable transport conditions. Other 4xx
+ // indicate a rejected request / invalid contract, not a network outage.
+ if(/^NEON_DATA_API_HTTP_(408|429)$/.test(message))return 'offline';
+ if(/^NEON_DATA_API_HTTP_4[0-9]{2}$/.test(message))return 'security-error';
  if(/^REMOTE_OWNER_MISMATCH$|^NEON_ITEM_MISMATCH$|^INVALID_REMOTE_ROW$|^INVALID_PRIVATE_SCOPE$|^NEON_SYNC_RPC_UNAVAILABLE$|^INVALID_RPC_ACK$|^INVALID_SYNC_OPERATION_ID$/.test(message))
    return 'security-error';
  return 'offline';
@@ -42,7 +46,9 @@ async function performSync(store:PrivateDeviceStore,api:SyncUserApi,accountId:st
   }catch(error){failure=classify(error);}
  }
  const counts=await store.counts(accountId);
+ // A revoked/invalid session must never be hidden behind an older conflict.
  const mode:SyncMode=failure==='security-error'?'security-error'
+  :failure==='sign-in-required'?'sign-in-required'
   :counts.conflicts?'conflict'
   :failure??(counts.pending?'pending':'synced');
  return{mode,uploaded,downloaded,...counts};

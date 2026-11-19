@@ -76,7 +76,8 @@ const roleFallbacks={
 };
 for(const [role,fallback] of Object.entries(roleFallbacks)){
  assert.ok(CSS.includes('var('+role+','),'React style missing typed token role '+role);
- assert.ok(CSS.includes('var('+role+','+fallback),'React role fallback mismatch '+role);
+ const expectedPrefix='var('+role+','+(fallback.startsWith('--')?'var('+fallback:fallback);
+ assert.ok(CSS.includes(expectedPrefix),'React role fallback mismatch '+role+'; expected '+expectedPrefix);
 }
 assert.ok(CSS.includes('.pilot button:disabled'),'disabled affordance not sourced');
 assert.ok(CSS.includes('@media(prefers-reduced-motion:reduce)'),'reduced motion remains');

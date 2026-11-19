@@ -47,7 +47,7 @@ async function performSync(store:PrivateDeviceStore,api:NeonUserApi,accountId:st
 }
 export function syncOnce(store:PrivateDeviceStore,api:NeonUserApi,accountId:string,
  gate:SyncGate={twoUserJwtRlsVerified:false,remoteConsentForPrivateState:false}):Promise<SyncReport>{
- if(!accountId.trim()||accountId!==api.accountId)throw new Error('ACCOUNT_BINDING_REQUIRED');
+ if(!accountId.trim()||accountId!==api.accountId)return Promise.reject(new Error('ACCOUNT_BINDING_REQUIRED'));
  let byUser=inFlight.get(store);
  if(!byUser){byUser=new Map();inFlight.set(store,byUser);}
  const existing=byUser.get(accountId);

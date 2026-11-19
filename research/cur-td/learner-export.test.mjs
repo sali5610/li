@@ -83,3 +83,27 @@ test('rejects duplicate content wrapper', () => {
 });
 test('rejects missing marker configuration', () => rejected(() => run(body(), { viStart: '## obsolete' }), 'HEADER_MISSING_OR_DUPLICATED'));
 test('rejects hostile oversized source before parsing', () => rejected(() => run(body(), {}, 'x'.repeat(501000)), 'SOURCE_SIZE'));
+
+test('accepts editorial footer as exact trusted line prefix without exporting its text', () => {
+  const b = `${VI}\n${filler('tín-hiệu')}\n${EN}\n${filler('stock-flow')}\n---\n<b>Editorial footer / NOT learner UI:</b> private instructions`;
+  const out = run(b, { end: '<b>Editorial footer / NOT learner UI:' });
+  assert.ok(!out.languages.en.includes('Editorial footer'));
+  assert.ok(!out.languages.en.endsWith('---'));
+});
+test('accepts benign do-not-disclose instruction without treating it as the answer', () => {
+  const b = body(filler('tín-hiệu'), `${filler('stock-flow')}\nDo not disclose independent answers in this learner manuscript.`);
+  const out = run(b);
+  assert.ok(out.languages.en.includes('Do not disclose'));
+});
+test('rejects explicit independent-answer value', () => {
+  const b = body(filler('tín-hiệu'), `${filler('stock-flow')}\nIndependent answer: 110`);
+  rejected(() => run(b), 'SPOILER_OR_UNSAFE_PAYLOAD');
+});
+test('rejects nested HTML entity-encoded teacher page link', () => {
+  const b = body(filler('tín-hiệu'), `${filler('stock-flow')}\nhttps://app&amp;#46;notion&amp;#46;com/p/12345678901234567890123456789012`);
+  rejected(() => run(b), 'SPOILER_OR_UNSAFE_PAYLOAD');
+});
+test('rejects nested percent-encoded teacher page link', () => {
+  const b = body(filler('tín-hiệu'), `${filler('stock-flow')}\nhttps%253A%252F%252Fapp%252Enotion%252Ecom%252Fp%252F12345678901234567890123456789012`);
+  rejected(() => run(b), 'SPOILER_OR_UNSAFE_PAYLOAD');
+});

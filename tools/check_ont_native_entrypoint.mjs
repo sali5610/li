@@ -24,7 +24,8 @@ req(html,['laoly-quote-stage-gate.js?v=ont04c2a','laoly-quotes-s121.js',
   'window.addEventListener("li:dual-local-route",ensureL09)',
   'liDualLocalHistoryAllowed()'],'ONT quote/search + local gate');
 assert.equal(occurrence(html,'laoly-quote-stage-gate.js'),1,'quote runtime duplicate');
-assert.equal(occurrence(html,'li-search-react'),1,'native search bridge duplicated');
+assert.equal(occurrence(html,'data-li-ont04b2-local-only'),1,'native search module script duplicated');
+assert.equal(occurrence(html,"const flag=new URLSearchParams(loc.search).get('li-search-react')"),1,'native search module owner duplicated');
 assert.equal(occurrence(html,'step16-react-router.js'),1,'react local loader duplicated');
 assert.ok(html.lastIndexOf('laoly-quote-stage-gate.js')<html.lastIndexOf('step16-react-router.js'),
  'lesson companion must precede optional React loader');

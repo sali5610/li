@@ -1,0 +1,259 @@
+{
+  "id": "UXDS35-VC-G2-01",
+  "version": "0.1.0",
+  "stage": "Stage02B",
+  "decisionStatus": "PROPOSED",
+  "poGate": "G2_OPEN",
+  "implementationStatus": "NOT_IMPLEMENTED",
+  "reviewMode": "HUMAN_PO_REQUIRED",
+  "authority": {
+    "dsHead": "d22f469a52d13baa73c0c8952b198fdfeb2b2891",
+    "ontHead": "0fe2d9b92a66e64ea3244d910d789ccc0d458a5b",
+    "reactEvidenceHead": "40a2650da67217a9b5eb380c256025505a17b858",
+    "reviewCI": "44578259140",
+    "canonical": "design-system/tokens.json",
+    "pattern": "design-system/ux-patterns-and-behavior.md",
+    "liveNative": "site/assets/li-layout.css",
+    "legacy": "tools/step16-real-l09-react-island/src/pilot.css",
+    "shared": "tools/step16-real-l09-react-island/src/ui/shared.css"
+  },
+  "distinctions": [
+    "canonical source token != G2 visual approval",
+    "legacy L09 ActionButton/Surface != new Shared.tsx Button/Card",
+    "single-line TextInput != multi-line guidedDraft or question-answer textarea",
+    "computed identical background != typography/geometry parity"
+  ],
+  "foundation": {
+    "status": "SOURCE_DEFINED_G2_NOT_APPROVED",
+    "tapTargetCssPx": 48,
+    "ordinaryRadiusPx": 0,
+    "spacingUnitPx": 4,
+    "bodyFontSizePx": 16,
+    "bodyLineHeightPx": 24,
+    "supportFontSizePx": 14,
+    "supportLineHeightPx": 20,
+    "approvedExceptions": [
+      "sand oval selected navigation",
+      "rounded filter chips",
+      "Lao Ly speech bubble",
+      "approved micro-geometry in Guide"
+    ],
+    "deviceScale": {
+      "ipadPortrait": {
+        "cardPadPx": 28,
+        "minControlPx": 56
+      },
+      "ipadLandscape": {
+        "cardPadPx": 32,
+        "minControlPx": 56
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "Button",
+      "scope": "primary/secondary/action, not navigation",
+      "status": "PROPOSED",
+      "tokens": {
+        "primaryBg": "--li-comp-button-primary-background",
+        "primaryInk": "--li-comp-button-primary-color",
+        "secondaryBg": "--li-comp-button-secondary-background",
+        "secondaryInk": "--li-comp-button-secondary-color",
+        "minTarget": "--li-comp-button-min-hit-size",
+        "focusRing": "--li-comp-button-focus-ring"
+      },
+      "sourceObserved": {
+        "nativeActionMinHeightPx": 46,
+        "legacyReactTargetMinPx": 48,
+        "newReactTargetMinPx": 48,
+        "nativeShadow": "4px 4px 0 var(--wood)",
+        "nativeFontRole": "var(--li-type-support)",
+        "nativeRadiusPx": 0
+      },
+      "proposed": {
+        "targetCssPx": 48,
+        "radiusPx": 0,
+        "primaryBg": "--li-comp-button-primary-background",
+        "secondaryBg": "--li-comp-button-secondary-background",
+        "labelRole": "body_16_24_PROPOSED",
+        "shadow": "native_hard_offset_4_4_proposed_shared",
+        "focus": "source_semantic_token",
+        "loading": "disabled_aria_busy",
+        "disabled": "native_button_disabled",
+        "responsive": "wrap_and_preserve_hit_target"
+      },
+      "exceptions": [
+        "ghost button no hard shadow",
+        "selected navigation is oval, not CTA",
+        "filter chip is pill, not CTA",
+        "Lao Ly trigger uses its own anatomy"
+      ],
+      "gaps": [
+        "native .action min-height 46 while intended minimum 48; evaluate actual rendered hit box before any source change",
+        "native support 14 vs proposed body 16 requires PO decision",
+        "shared Button inherits pilot shadow/border/typography and is not production adopted"
+      ]
+    },
+    {
+      "id": "Card",
+      "scope": "editorial raised/tinted/inverse Surface/Card",
+      "status": "PROPOSED",
+      "tokens": {
+        "raised": "--li-comp-surface-background",
+        "tinted": "--li-comp-surface-tinted-background",
+        "inverse": "--li-comp-surface-inverse-background",
+        "inverseInk": "--li-comp-surface-inverse-color"
+      },
+      "sourceObserved": {
+        "nativePadding": "var(--li-space-6)",
+        "nativeShadow": "5px 5px 0 var(--wood)",
+        "nativeBorder": "1px solid var(--moss)",
+        "legacyPadding": "var(--li-space-4)",
+        "legacyBorder": "1px solid var(--rule)",
+        "legacyShadow": "none_specified",
+        "newSharedCardUsesPilotSurface": true
+      },
+      "proposed": {
+        "raisedBg": "--li-comp-surface-background",
+        "tintedBg": "--li-comp-surface-tinted-background",
+        "inverseBg": "--li-comp-surface-inverse-background",
+        "ordinaryRadiusPx": 0,
+        "defaultShadow": "native_hard_offset_5_5_proposed_shared",
+        "mobilePaddingPx": 20,
+        "standardPaddingPx": 24,
+        "ipadPortraitPadPx": 28,
+        "ipadLandscapePadPx": 32,
+        "cardTypography": "use_existing_editorial_tokens",
+        "nesting": "one_card_navigation_owner_or_explicit_child_actions"
+      },
+      "exceptions": [
+        "compact embedded study panels may use 16px inset only with explicitly named variant after review",
+        "no shadow on flat/inset surface only with named variant",
+        "Home mirror/chat bubble use specialized anatomy, not generic Card"
+      ],
+      "gaps": [
+        "native 24px padding and shadow vs legacy 16px/no equivalent shadow",
+        "new Shared Card still inherits pilot surface and remains fixture-only",
+        "28px iPad portrait is source deviceScale value, not guaranteed generated spacing alias; define generator mapping before UI migration"
+      ]
+    },
+    {
+      "id": "Field",
+      "scope": "single-line input plus separately named multiline TextAreaField",
+      "status": "PROPOSED",
+      "tokens": {
+        "background": "--li-comp-field-background",
+        "focus": "--li-comp-field-focus-border",
+        "invalid": "--li-comp-field-error-border",
+        "minTarget": "--li-comp-button-min-hit-size"
+      },
+      "sourceObserved": {
+        "nativeGuidedTextareaMinHeightPx": 174,
+        "legacyAnswerTextareaMinHeightPx": 112,
+        "sharedSingleLineTargetPx": 48,
+        "newTextAreaUsesRowsAndInheritsPilotCSS": true,
+        "commonBorder": "1px solid var(--rule)",
+        "ordinaryRadiusPx": 0
+      },
+      "proposed": {
+        "singleLineMinTargetCssPx": 48,
+        "editableBg": "--li-comp-field-background",
+        "ordinaryRadiusPx": 0,
+        "labelRole": "body_16_24_PROPOSED",
+        "hintAndErrorRole": "support_14_20_SOURCE",
+        "verticalLabelGapPx": 8,
+        "focus": "token_plus_visible_outline",
+        "error": "aria_invalid_describedby_instruction_and_not_color_only",
+        "readonly": "focusable",
+        "disabled": "native_disabled",
+        "textAreaHeight": "CONTEXT_VARIANT_NOT_ONE_UNIVERSAL_MIN",
+        "tabletMinControlCssPx": 56
+      },
+      "exceptions": [
+        "guided explanation multiline field is not equivalent to React question-answer textarea",
+        "readonly/disabled may use non-editable visual role with corresponding semantics",
+        "notebook ruled 32px line rhythm remains separately governed"
+      ],
+      "gaps": [
+        "no same-content multiline variant parity proof, do not normalize 174 vs 112 blindly",
+        "native/editable multi-line role and shared fixture TextInput differ in usage",
+        "iPad 56px control minimum sourced from deviceScales, not yet measured on physical Safari"
+      ]
+    },
+    {
+      "id": "ActionGroup",
+      "scope": "layout of actions, not child hit-target geometry",
+      "status": "SOURCE_RULE_ONLY",
+      "sourceObserved": {
+        "nativeGap": "var(--li-space-3)",
+        "legacyGap": "var(--li-space-3)",
+        "sharedGap": "var(--li-space-3)"
+      },
+      "proposed": {
+        "gapPx": 12,
+        "wrap": true,
+        "childrenMustMeetOwnTargets": true,
+        "oneDominantPrimary": true
+      },
+      "gaps": [
+        "group height differs because children/content differ; do not use container height as equality target"
+      ]
+    }
+  ],
+  "decisionGates": [
+    {
+      "id": "VC-G2-D1",
+      "title": "Standard CTA typography and hard shadow",
+      "recommendation": "adopt 48px intended target, square radius 0, 16/24 body CTA, hard offset shadow for standard buttons; preserve explicit exceptions",
+      "poAction": "APPROVE_OR_REVISE",
+      "status": "PROPOSED",
+      "scopeImpact": "native .action, legacy .pilot button, new .li-ui-button and all consumers",
+      "noChangeBeforeApproval": true
+    },
+    {
+      "id": "VC-G2-D2",
+      "title": "Surface depth and responsive padding",
+      "recommendation": "use source semantic surface roles; standard raised card hard shadow; responsive padding 20 mobile, 24 standard, 28/32 iPad density subject to token mapping; allow named flat/compact variants",
+      "poAction": "APPROVE_OR_REVISE",
+      "status": "PROPOSED",
+      "scopeImpact": "native .surface, legacy .pilot-surface, new .li-ui-card, desktop/iPad/phone",
+      "noChangeBeforeApproval": true
+    },
+    {
+      "id": "VC-G2-D3",
+      "title": "Field single-line vs multiline variants",
+      "recommendation": "48px single-line intended target with porcelain/focus/error tokens; 56px iPad target as designScale; multiline heights explicit guided/answer contexts, not universal",
+      "poAction": "APPROVE_OR_REVISE",
+      "status": "PROPOSED",
+      "scopeImpact": "native .text-editor + L09 guidedDraft, legacy answer textarea, new TextInput/TextAreaField",
+      "noChangeBeforeApproval": true
+    }
+  ],
+  "testing": {
+    "sourceAudit": "VALIDATOR_PROPOSED",
+    "sharedComponentQA": "CHROMIUM_BASELINE_31_31",
+    "nativeRealScreenQA": "CHROMIUM_BASELINE_34_34",
+    "threeOwnerQA": "CHROMIUM_48_48_AND_4_NEGATIVE",
+    "afterAnyApproval": [
+      "test change on one research screen only; no global rewrite",
+      "token generator and ontology crosswalk",
+      "actual matched-content screenshots and computed typography/spacing over 320,375,390,402,600,820,1040,1440",
+      "VI/EN long labels, states default/hover/focus/pressed/disabled/loading/error",
+      "iPad portrait/landscape 28/32 density mapping",
+      "200pct text, responsive reflow and short-height keyboard",
+      "physical Safari iPhone/iPad in separate step"
+    ],
+    "physicalSafari": "NOT_RUN",
+    "humanG2": "OPEN",
+    "stage03": "NOT_PROMOTED"
+  },
+  "safety": {
+    "modifyVisualCss": false,
+    "merge": false,
+    "deploy": false,
+    "executeMigration": false,
+    "authNeonRlsChanges": false,
+    "learnerDataWrites": false,
+    "paidActions": false
+  }
+}

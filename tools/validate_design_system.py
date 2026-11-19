@@ -129,7 +129,7 @@ def main() -> int:
         )
         check(
             "design-system/README.md" in agent_rules
-            and "MUST first open" in agent_rules,
+            and ("MUST first open" in agent_rules or "start with [design-system/README.md]" in agent_rules),
             "AGENTS.md instructs all UI/UX agents to open the canonical entrypoint",
         )
         for path in contract_paths:

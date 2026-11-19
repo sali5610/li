@@ -87,7 +87,7 @@ function SearchResultItem({result,locale,t}:{result:SearchResult;locale:SearchLo
  * Isolated React adapter for ONT-04A. Never offers an app route or user-private retrieval.
  * No data writes, no navigation actions beyond explicit trusted external source links.
  */
-export function SearchIsland(){
+export function SearchIsland({embedded=false}:{embedded?:boolean}){
  const [locale,setLocale]=useState<SearchLocale>('vi');
  const [draft,setDraft]=useState('');
  const [submitted,setSubmitted]=useState('');
@@ -102,7 +102,8 @@ export function SearchIsland(){
   e.preventDefault();setSubmitted(draft.trim());
  }
  function clear(){setDraft('');setSubmitted('');setKind(null);setReviewMode(false);}
- return <main className="search-page" aria-labelledby={formId+'-title'} lang={locale}>
+ const Container=embedded?'div':'main';
+ return <Container className="search-page" aria-labelledby={formId+'-title'} lang={locale} data-li-search-island="true">
   <header>
    <p className="eyebrow">{t.eyebrow}</p>
    <h1 id={formId+'-title'}>{t.title}</h1>
@@ -142,5 +143,5 @@ export function SearchIsland(){
      {result?.results.map(item=><SearchResultItem key={item.id} result={item} locale={locale} t={t}/>)}
     </ul>
    </section>}
- </main>;
+ </Container>;
 }

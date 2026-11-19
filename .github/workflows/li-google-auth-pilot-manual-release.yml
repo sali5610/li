@@ -70,6 +70,9 @@ jobs:
         run: |
           set -euo pipefail
           npm install --no-audit --no-fund
+          # The repository tsconfig also type-checks L09; extract its existing
+          # source JSON before tsc. Vite still ships only the Auth HTML entry.
+          npm run extract
           npm run build:auth
           test -f dist-auth/auth-entry.html
           test "$(find dist-auth -type f -name '*.html' | wc -l)" -eq 1

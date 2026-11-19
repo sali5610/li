@@ -5,6 +5,11 @@
 PO explicitly instructed: **skip VoiceOver testing for li.** Thus it is **OUT_OF_SCOPE_PO_S208**, neither a release blocker nor a PASS claim. Physical iPhone/iPad **Safari, touch, popup, stage/no-spoiler and responsive UX** remain PENDING; this remains a private invite-only app with no extra copyright-clearing gate. Generic cross-app Vibecode Handbook checklists are not changed, since this is a li.-specific PO decision. The QA ledger enforces the out-of-scope classification. No merge, no Cloudflare deploy.
 
 
+## S208 · Human PO QA scope override — VoiceOver excluded
+
+PO explicitly instructed: **skip VoiceOver testing for li.** Thus it is **OUT_OF_SCOPE_PO_S208**, neither a release blocker nor a PASS claim. Physical iPhone/iPad **Safari, touch, popup, stage/no-spoiler and responsive UX** remain PENDING; this remains a private invite-only app with no extra copyright-clearing gate. Generic cross-app Vibecode Handbook checklists are not changed, since this is a li.-specific PO decision. The QA ledger enforces the out-of-scope classification. No merge, no Cloudflare deploy.
+
+
 **Scope:** Test the real, existing native `site/index.html` and Lão Lý quote renderer from [ONT-04C2a draft](https://github.com/sali5610/li/pull/146) with headless Chromium in an ephemeral, same-origin frame. **No merge, Cloudflare deploy, Neon write, auth bypass or actual phone/iPad QA.**
 
 ## Reusable Lessons Learned read first
@@ -40,7 +45,7 @@ The parser fails closed on missing/incomplete DOM results and writes a JSON QA l
 
 ## Outstanding product gates
 
-- Real iOS Safari/VoiceOver/manual screenshot and interaction QA, plus G2 design release, still pending.
+- Real iOS **Safari touch/interaction/manual screenshots** and G2 design release still pending. **Skip VoiceOver-specific QA** under PO S208. Keep existing semantic markup and focus basics; skipping the screen-reader test is not a reason to regress accessibility semantics.
 - C2a branch remains DRAFT and unmerged; Auth/Neon tests are separate Step16 blockers for learner-state integration, not for static quote metadata.
 - ONT-04B2b live Search lesson navigation and ONT-03C graph population remain pending. No external copyright reuse-rights checklist under current PO personal/invite-only decision S205.
 - **No Cloudflare build or public deploy is invoked by this CI. Cost 0 VND incremental.**

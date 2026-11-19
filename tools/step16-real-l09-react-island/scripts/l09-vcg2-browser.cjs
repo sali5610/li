@@ -274,6 +274,8 @@ async function syntheticTypographyStress(language){
  await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false});
  await go(approved,'synthetic learner state');
  const base=await snapshot();verify(base.researchKey===null&&base.realKey===null,'Synthetic profile not initially empty');
+ verify((await evaluate("document.querySelector('[data-learning-progress]')?.textContent||''")).includes('0/4'),
+  'Empty L09 progress must show 0/4 answers, not a completed score');
  await evaluate("document.querySelector('[data-action=submit]').click()");
  await wait(()=>evaluate("!!document.querySelector('[data-status]')?.textContent.trim()"),'blank-submit error');
  verify((await snapshot()).researchKey===null,'Invalid submit fabricated save');
@@ -283,6 +285,8 @@ async function syntheticTypographyStress(language){
   await wait(()=>evaluate("JSON.parse(localStorage.getItem('step16.l09.react-island.v1')||'null')?.draft?.["+i+"]?.startsWith('Synthetic research answer')"),'synthetic L09 draft '+i);
  }
  verify((await snapshot()).realKey===null,'Real learner state changed on synthetic editing');
+ verify((await evaluate("document.querySelector('[data-learning-progress]')?.textContent||''")).includes('4/4'),
+  'Persisted research draft should show 4/4 submission-ready answers');
  await evaluate("document.querySelector('[data-action=hint]').click()");
  await wait(()=>evaluate("!!document.querySelector('[data-hint]')"),'hint state');
  verify((await snapshot()).assisted,'Assisted hint state not reported');
@@ -296,6 +300,8 @@ async function syntheticTypographyStress(language){
  const frozen=await snapshot();
  verify(frozen.submitted&&frozen.answerStyles.every(x=>x.disabled)&&!frozen.hasLegacyButton,'D3 submitted field locking/new owner regression');
  verify(frozen.realKey===null,'L09 research submission touched real learner state');
+ verify((await evaluate("document.querySelector('[data-learning-progress]')?.textContent||''")).includes('0/4'),
+  'Submitting switches to 0/4 self-review criteria, never invented mastery');
  const data={sourceHead:process.env.LI_STAGE02B_HEAD||'UNKNOWN',threeDecisions:['VC-G2-D1','VC-G2-D2','VC-G2-D3'],
   expectedRoute:'site/index.html?lesson=L09-1-2&li-react=l09&li-vc-g2=1',
   requiredPrivacy:'REAL_LEARNER_KEY_UNCHANGED',validatedViewports:variants.map(x=>x.width),

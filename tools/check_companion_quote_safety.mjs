@@ -30,14 +30,14 @@ const en=extractJsonVariable(source,'QUOTES_EN','};');
 const manifests=policy.baseline.companionFiles.map(json);
 const unique=a=>new Set(a).size===a.length;
 function sourceValidate(q=quotes,english=en,ms=manifests,p=policy){
- ensure(p.profile==='li-ONT04C1b-quote-source-audit'&&p.demoOnly===true,'Wrong policy profile');
+ ensure(p.profile==='li-ONT04C1b-quote-source-audit'&&p.demoOnly===true&&p.version==='0.1.1','Wrong policy profile/version');
  const g=p.hardGates;
  const consts={
-  defaultQuoteState:'WITHHELD',attributionState:'UNVERIFIED_FOR_NEW_USE',
-  originalEditionState:'UNVERIFIED_FOR_NEW_USE',translationRightsState:'UNVERIFIED_FOR_NEW_USE',
-  territoryRightsState:'UNVERIFIED_FOR_NEW_USE',contextRelevanceState:'EDITORIAL_ONLY',
+  defaultQuoteState:'WITHHELD_FOR_ATTRIBUTION_AND_STAGE_QA',attributionState:'UNVERIFIED_FOR_NEW_USE',
+  originalEditionState:'UNVERIFIED_FOR_NEW_USE',contextRelevanceState:'EDITORIAL_ONLY',
+  usageScope:'PERSONAL_INVITE_ONLY',reuseRightsGate:'NOT_A_PRODUCT_BLOCKER',
   academicEvidenceState:'NEVER_TREAT_AS_SCIENTIFIC_SOURCE',
-  quoteRenderAuthorization:'NOT_GRANTED',reviewedQuoteEntries:0,reviewedPublicQuoteEntries:0,
+  quoteRenderAuthorization:'PENDING_SOURCE_STAGE_INTEGRATION',reviewedQuoteEntries:0,
   clientCanApprove:false,independentStage:'SUPPRESS',reflectionStage:'SUPPRESS',
   extensionStage:'SUPPRESS',wrongRightFeedback:'SUPPRESS',calmMode:'SUPPRESS',
   debateMode:'SUPPRESS',preSubmitLessonState:'NO_SOLUTION_OR_HINT_ESCALATION',
@@ -83,8 +83,8 @@ function sourceValidate(q=quotes,english=en,ms=manifests,p=policy){
  ensure(new Set(entries).size===17&&p.baseline.expectedUniqueCompanionRefs===17,'Source quote reference coverage drift');
  ensure(p.referenceChecks.length===4,'Historical/reuse risk review cards drift');
  for(const x of p.referenceChecks)ensure(/^https:\/\//.test(x.sourceUrl)&&x.reviewStatus.includes('PENDING')||x.reviewStatus==='OUTSIDE_CURRENT_BANK_BLOCKED','Unreviewed reference promoted');
- ensure(p.referenceChecks.some(x=>x.id==='box-models'&&x.reviewStatus==='PENDING_PRIMARY_TEXT_AND_REUSE'),'Box book/source quote rights gap untracked');
- ensure(p.referenceChecks.some(x=>x.id==='woolf-room'&&x.reviewStatus==='PENDING_GLOBAL_RIGHTS_AND_EXCERPT'),'Woolf territory rights gap untracked');
+ ensure(p.referenceChecks.some(x=>x.id==='box-models'&&x.reviewStatus==='PENDING_PRIMARY_TEXT_ATTRIBUTION'),'Box original attribution review missing');
+ ensure(p.referenceChecks.some(x=>x.id==='woolf-room'&&x.reviewStatus==='PENDING_EXACT_EDITION_CONTEXT'),'Woolf source-context review missing');
  ensure(!ids.has('galileo-eppur')&&!ids.has('seneca-motto'),'Historical disputed quote smuggled into current bank');
  ensure(p.legacyRuntimeSafetyFinding?.severity==='GATE_OPEN_DO_NOT_CLAIM_FIXED','Existing legacy quote runtime erroneously declared fixed');
  const index=indexQuoteSafety({policy:p,quoteIds:q.map(x=>x.id),companionManifests:ms});
@@ -99,8 +99,8 @@ for(const doc of manifests)for(const stage of STAGES)for(const locale of ['vi','
  if(['independent','reflection','extension'].includes(stage)){
   ensure(d.status==='SUPPRESSED_ASSESSMENT_STAGE'&&d.candidateId===null,'Quote shown at assessment/post-submit stage');suppressed++;
  } else {
-  ensure(d.status==='WITHHELD_SOURCE_RIGHTS_UNREVIEWED'&&
-   result.index.quotes.has(d.candidateId),'Allowed public quote before rights clearance');held++;
+  ensure(d.status==='WITHHELD_SOURCE_CONTEXT_UNREVIEWED'&&
+   result.index.quotes.has(d.candidateId),'Source/context review gate missing');held++;
  }
 }
 let negatives=0;
@@ -139,7 +139,7 @@ function mutatePolicy(label,change){
  negatives++;
 }
 mutatePolicy('fake quote publication',p=>p.hardGates.quoteRenderAuthorization='GRANTED');
-mutatePolicy('fake rights clearance',p=>p.hardGates.territoryRightsState='CLEARED');
+mutatePolicy('try to reintroduce copyright release gate',p=>p.hardGates.reuseRightsGate='MANDATORY_LICENSE_REVIEW');
 mutatePolicy('fake author verification',p=>p.hardGates.attributionState='VERIFIED');
 mutatePolicy('fake reviewer signoff',p=>p.hardGates.reviewedQuoteEntries=24);
 mutatePolicy('fake permission boolean',p=>p.hardGates.clientCanApprove=true);
@@ -148,9 +148,9 @@ const tampered=structuredClone(manifests);tampered[0].moments[0].quote_id='unreg
 assert.throws(()=>sourceValidate(quotes,en,tampered,policy));negatives++;
 const tamperedEn=structuredClone(en);delete tamperedEn['hume-evidence'];assert.throws(()=>sourceValidate(quotes,tamperedEn,manifests,policy));negatives++;
 const tamperedLink=structuredClone(quotes);tamperedLink[0].url='http://untrusted.example';assert.throws(()=>sourceValidate(tamperedLink,en,manifests,policy));negatives++;
-assert.equal(schema.properties.hardGates.properties.quoteRenderAuthorization.const,'NOT_GRANTED');
+assert.equal(schema.properties.hardGates.properties.quoteRenderAuthorization.const,'PENDING_SOURCE_STAGE_INTEGRATION');
 assert.equal(schema.properties.hardGates.properties.reviewedQuoteEntries.const,0);
 assert.equal(schema.properties.hardGates.properties.clientCanApprove.const,false);
-const stringReport=JSON.stringify({status:'PASS',bankEntries:result.bankEntries,sourceReferencedQuoteIDs:result.sourceReferencedQuoteIDs,companions:result.companions,sourceStages:result.stages,sourceReferences:result.sourceReferences,localeStageCases:inspected,assessmentOrPostSubmitSuppressed:suppressed,activeStageRightsHeld:held,negativeCases:negatives,reviewApprovedQuotes:0,renderedQuotes:0,legacyRuntime:'GATE_OPEN_UNCHANGED',sourceVerification:'METADATA_AUDIT_ONLY',release:'NONE'});
+const stringReport=JSON.stringify({status:'PASS',bankEntries:result.bankEntries,sourceReferencedQuoteIDs:result.sourceReferencedQuoteIDs,companions:result.companions,sourceStages:result.stages,sourceReferences:result.sourceReferences,localeStageCases:inspected,assessmentOrPostSubmitSuppressed:suppressed,activeStageSourceContextHeld:held,negativeCases:negatives,sourceApprovedQuotes:0,renderedQuotes:0,legacyRuntime:'GATE_OPEN_UNCHANGED',sourceVerification:'METADATA_AUDIT_ONLY',release:'NONE'});
 if(process.argv.length>3||(process.argv.length===3&&process.argv[2]!=='--check'))throw Error('Usage: node tools/check_companion_quote_safety.mjs --check');
 console.log(stringReport);

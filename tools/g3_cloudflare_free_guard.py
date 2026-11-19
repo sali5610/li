@@ -12,7 +12,7 @@ import json
 import os
 from pathlib import Path
 import sys
-from urllib import parse, request
+from urllib import error, parse, request
 
 MAX_FILES = 20_000
 MAX_FILE_BYTES = 25 * 1024 * 1024
@@ -56,8 +56,10 @@ def count_current_month_deployments(account: str, project: str, token: str):
     # Explicitly count all production AND preview deployments for the project.
     # API often provides newest first; do not rely on the order for correctness.
     matched = 0
-    for page in range(1, 101):
-        query = parse.urlencode({"page": page, "per_page": 100})
+    for page in range(1, 501):
+        # Cloudflare documents a 20-result default for Pages deployment lists.
+        # Avoid unsupported 100-item pages and still audit both environments.
+        query = parse.urlencode({"page": page, "per_page": 20})
         endpoint = (
             "https://api.cloudflare.com/client/v4/accounts/"
             + parse.quote(account, safe="")
@@ -77,8 +79,35 @@ def count_current_month_deployments(account: str, project: str, token: str):
         try:
             with request.urlopen(req, timeout=15) as response:
                 data = json.load(response)
-        except Exception as exc:
-            raise GateError("Cannot verify Cloudflare deployment quota (API failed)") from exc
+        except error.HTTPError as exc:
+            # GitHub Actions logs must never print tokens, account IDs or response
+            # bodies. HTTP status + Cloudflare numeric errors are safe to debug.
+            error_codes = []
+            try:
+                response_error = json.loads(exc.read(4096))
+                if isinstance(response_error, dict):
+                    error_codes = [
+                        str(item["code"])
+                        for item in response_error.get("errors", [])[:5]
+                        if isinstance(item, dict)
+                        and isinstance(item.get("code"), int)
+                    ]
+            except (ValueError, TypeError, OSError):
+                pass
+            suffix = " cf_codes=" + ",".join(error_codes) if error_codes else ""
+            raise GateError(
+                f"Cloudflare deployment listing HTTP {exc.code}{suffix}; "
+                "verify Cloudflare Pages Read/Write token permission, "
+                "token account scope and Pages project name"
+            ) from None
+        except error.URLError:
+            raise GateError(
+                "Cannot reach Cloudflare deployment API (network/TLS/DNS); fail closed"
+            ) from None
+        except (ValueError, TypeError, OSError):
+            raise GateError(
+                "Cloudflare deployment API returned invalid JSON; fail closed"
+            ) from None
         if not isinstance(data, dict) or data.get("success") is not True:
             raise GateError("Cloudflare API did not confirm successful deployment listing")
         records = data.get("result")
@@ -106,7 +135,7 @@ def count_current_month_deployments(account: str, project: str, token: str):
             total_pages = info.get("total_pages")
             if isinstance(total_pages, int) and page >= total_pages:
                 return matched
-        if len(records) < 100:
+        if len(records) < 20:
             return matched
     raise GateError("More than 10,000 project deployments; could not safely audit")
 

@@ -74,10 +74,14 @@ function verify(ledger){
   }
  }
  assert.deepEqual(unmapped,[],'Unclassified CSS geometry property drift');
- assert.ok(owners.components.length===9&&owners.components.filter(x=>x.reactUsage==='fixture_only').length===8);
+ assert.ok(owners.components.length===9&&owners.components.filter(x=>x.reactUsage==='fixture_only').length===5);
+ assert.equal(owners.components.filter(x=>x.reactUsage==='research_L09_vcg2_opt_in').length,3);
+ assert.equal(contract.tracks.optInResearchL09.query,'li-react=l09&li-vc-g2=1');
+ assert.equal(contract.tracks.optInResearchL09.humanG2,'GLOBAL_OPEN');
+ assert.equal(contract.tracks.productConsumers.sharedVisualContractResearch.defaultPathUnchanged,true);
  assert.equal(owners.components.find(x=>x.api==='ActionGroup').reactUsage,'research_L09_island');
  assert.match(pilot,/import \{ActionButton,Surface,StatusMessage\} from '\.\/ui\/Primitives';/);
- assert.match(pilot,/import \{ActionGroup\} from '\.\/ui\/Shared';/);
+ assert.match(pilot,/import \{ActionGroup,Button,Card,TextAreaField\} from '\.\/ui\/Shared';/);
  assert.equal((pilot.match(/<ActionGroup className="pilot-actions">/g)||[]).length,2);
  assert.match(shared,/export function Button\(/);assert.match(shared,/export function Card\(/);
  assert.match(preview,/<Button data-ui-primary/);assert.match(preview,/<Card aria-label=/);

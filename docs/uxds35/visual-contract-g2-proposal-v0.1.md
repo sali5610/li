@@ -47,3 +47,8 @@ Native product CSS is `site/assets/li-layout.css`; the **legacy** React L09 pilo
 - [UX-DS-35 Master Plan](https://app.notion.com/p/41d6cf6db72a81d48ffdc4a38de4cec0) · [ONT-02](https://app.notion.com/p/41d6cf6db72a81e0aa1ef66c7ddc0507) · [Latest Handoff](https://app.notion.com/p/4196cf6db72a81f7b000f75783f210b5)
 - [LL-05](https://app.notion.com/p/41d6cf6db72a81889212d54e6e112812): semantic paint equality ≠ geometry/parity · [LL-11](https://app.notion.com/p/41d6cf6db72a81e7a9eeceaeba56b8ef): legacy vs shared source ownership · [LL-17](https://app.notion.com/p/41d6cf6db72a81fcaa53dc09dece0646): CI/browser false-positive separation.
 - [APP STARTER STEP29](https://app.notion.com/p/41d6cf6db72a8136a32ccfa74b46e46f) / [STEP30](https://app.notion.com/p/41d6cf6db72a8103a232f94a1621eaa1) prevention already established. **No duplicate learning for merely documenting a proposal.**
+
+
+## VC-G2-01 — Implementation checkpoint (research opt-in, not a production rollout)
+
+Approval-record baseline: [PO-approved D1-D3](https://app.notion.com/p/41d6cf6db72a81f491d6dacfbe5da00e). Added a separately gated, still-unmerged research path `?lesson=L09-1-2&li-react=l09&li-vc-g2=1` with **Shared.tsx Button/Card/TextAreaField + existing ActionGroup**. The default native screen and legacy React L09 remain unchanged. Responsive scoped CSS follows the 48px / 56px target, body 16/24, hard shadow and 20/24/28/32 card-density decision; multiline `purpose="answer"` is not equated with the native guided explanation. Full synthetic-browser CI evidence must precede any claim of Tested; G2 overall remains OPEN, and real Safari/rollout/merge/deploy are separate. No site/ or Auth/Neon/RLS files are edited in this checkpoint.

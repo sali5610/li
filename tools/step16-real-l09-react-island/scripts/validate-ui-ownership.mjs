@@ -42,7 +42,7 @@ for(const e of own.components){
  assert.ok(['atom','molecule','organism'].includes(e.atomicLevel));
  assert.equal(e.reactOwner,'tools/step16-real-l09-react-island/src/ui/Shared.tsx');
  assert.equal(e.cssOwner,'tools/step16-real-l09-react-island/src/ui/shared.css');
- assert.ok(['fixture_only','research_L09_island'].includes(e.reactUsage));
+ assert.ok(['fixture_only','research_L09_island','research_L09_vcg2_opt_in'].includes(e.reactUsage));
  assert.equal(e.equivalence,'NOT_VERIFIED','Cannot claim component native parity without actual rendered proof');
  assert.ok(Array.isArray(e.statesSpecified)&&e.statesSpecified.length>0);
  assert.ok(e.notes.length>30,'No implicit owner/equivalence assumptions');
@@ -57,9 +57,22 @@ for(const e of own.components){
  const [nativeFile]=e.nativeAnalog.split('#');
  assert.ok(fs.existsSync(path.join(root,nativeFile)),'Native source owner missing '+e.api);
  if(e.api==='ActionGroup')assert.equal(e.reactUsage,'research_L09_island');
- else assert.equal(e.reactUsage,'fixture_only','No false production consumer '+e.api);
+ else if(['Button','Card','TextAreaField'].includes(e.api))
+  assert.equal(e.reactUsage,'research_L09_vcg2_opt_in','Scoped opt-in research API required '+e.api);
+ else assert.equal(e.reactUsage,'fixture_only','No false product consumer '+e.api);
 }
 assert.equal(mapped,7);
+assert.equal(own.visualContractPilot.flag,'?lesson=L09-1-2&li-react=l09&li-vc-g2=1');
+assert.equal(own.visualContractPilot.g2,'OPEN');
+assert.equal(own.visualContractPilot.noProductionRollout,true);
+assert.deepEqual(own.visualContractPilot.allowedApprovals,['VC-G2-D1','VC-G2-D2','VC-G2-D3']);
+assert.match(pilot,/function StudyAction\(/);
+assert.match(pilot,/function StudySurface\(/);
+assert.match(pilot,/<TextAreaField id=\{'answer-'/);
+assert.match(pilot,/purpose="answer"/);
+assert.match(pilot,/data-vc-g2=\{visualContractPilot\?/);
+const siteEntry=read('tools/step16-real-l09-react-island/src/site-entry.tsx');
+assert.match(siteEntry,/params\.get\('li-react'\)==='l09'&&params\.get\('li-vc-g2'\)==='1'/);
 assert.equal((pilot.match(/<ActionGroup className="pilot-actions">/g)||[]).length,2);
 assert.equal((pilot.match(/<\/ActionGroup>/g)||[]).length,2);
 assert.equal(native.components.filter(x=>x.reactApiStatus==='not_implemented').length,5,
@@ -86,13 +99,13 @@ const qa={
  componentApis:own.components.map(x=>({name:x.api,usage:x.reactUsage,ontologyNode:x.ontologyNode,equivalence:x.equivalence})),
  mappedNativeAnalogCount:mapped,nativeRoles:roleRefs.size,reactComponentRoles:refs,
  rawPaintDebt:paintLiterals,geometryCandidatesForG2Review:cssReview,
- gates:{reactSource:'PASS',actualProductScreenOwnership:'ONLY_RESEARCH_L09_ACTION_GROUP',
+ gates:{reactSource:'PASS',actualProductScreenOwnership:'ACTION_GROUP_DEFAULT_PLUS_THREE_SHARED_APIS_OPT_IN_RESEARCH',
  nativeToReactPixelParity:'NOT_RUN',physicalSafari:'NOT_RUN',G2:'OPEN'}
 };
 const out='/tmp/li-uxds35-stage02b';
 fs.mkdirSync(out,{recursive:true});
 fs.writeFileSync(path.join(out,'react-ownership-and-geometry-ledger.json'),JSON.stringify(qa,null,2)+'\n');
 console.log('PASS STAGE02B_REACT_OWNERSHIP '+JSON.stringify({
- apis:own.components.length,usedInL09:1,fixtureOnly:8,
+ apis:own.components.length,usedInL09Research:4,fixtureOnly:5,visualContractOptIn:3,
  nativeAnalogs:mapped,ontologyRoles:roleRefs.size,reactAliases:refs.length,
  rawPaintDebt:paintLiterals.length,geometryPending:cssReview.length,G2:'OPEN'}));

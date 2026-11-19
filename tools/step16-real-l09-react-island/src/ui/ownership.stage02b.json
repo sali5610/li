@@ -15,8 +15,8 @@
     "data": "NONE",
     "navigation": "callback/anchor fixture, no product router",
     "modal": "React native <dialog> is distinct from existing native openModal helper",
-    "identity": "No visual approval. DS values unaltered.",
-    "qa": "Browser Chromium synthetic only; no native-app pixel perfect, Safari or G2 signoff"
+    "identity": "Human PO approved VC-G2 D1/D2/D3 ONLY. Global visual G2 remains OPEN; pilot opt-in is separate from legacy route and production.",
+    "qa": "Research localhost synthetic Chromium. Scope new API adoption only to exact opt-in L09. Safari/production visual parity NOT VERIFIED."
   },
   "components": [
     {
@@ -27,7 +27,7 @@
       "reactOwner": "tools/step16-real-l09-react-island/src/ui/Shared.tsx",
       "cssOwner": "tools/step16-real-l09-react-island/src/ui/shared.css",
       "selector": ".li-ui-button",
-      "reactUsage": "fixture_only",
+      "reactUsage": "research_L09_vcg2_opt_in",
       "equivalence": "NOT_VERIFIED",
       "statesSpecified": [
         "default",
@@ -36,7 +36,7 @@
         "disabled",
         "focus-visible"
       ],
-      "notes": "Existing L09 ActionButton is separate legacy pilot API; do not count its consumer as shared Button adoption."
+      "notes": "Existing L09 ActionButton is separate legacy pilot API; do not count its consumer as shared Button adoption. Scoped opt-in visual-contract research wrapper; legacy L09 remains unchanged by default. Do not count as prod rollout."
     },
     {
       "api": "IconButton",
@@ -83,7 +83,7 @@
       "reactOwner": "tools/step16-real-l09-react-island/src/ui/Shared.tsx",
       "cssOwner": "tools/step16-real-l09-react-island/src/ui/shared.css",
       "selector": ".li-ui-input",
-      "reactUsage": "fixture_only",
+      "reactUsage": "research_L09_vcg2_opt_in",
       "equivalence": "NOT_VERIFIED",
       "statesSpecified": [
         "default",
@@ -91,7 +91,7 @@
         "hint",
         "error"
       ],
-      "notes": "Separate textarea form element; not equivalent to native source field behavior."
+      "notes": "Separate textarea form element; not equivalent to native source field behavior. Scoped opt-in visual-contract research wrapper; legacy L09 remains unchanged by default. Do not count as prod rollout."
     },
     {
       "api": "Card",
@@ -101,14 +101,14 @@
       "reactOwner": "tools/step16-real-l09-react-island/src/ui/Shared.tsx",
       "cssOwner": "tools/step16-real-l09-react-island/src/ui/shared.css",
       "selector": ".li-ui-card",
-      "reactUsage": "fixture_only",
+      "reactUsage": "research_L09_vcg2_opt_in",
       "equivalence": "NOT_VERIFIED",
       "statesSpecified": [
         "default",
         "tinted",
         "inverse"
       ],
-      "notes": "Card is a proposed surface analog; native Surface and existing L09 Surface remain independently owned."
+      "notes": "Card is a proposed surface analog; native Surface and existing L09 Surface remain independently owned. Scoped opt-in visual-contract research wrapper; legacy L09 remains unchanged by default. Do not count as prod rollout."
     },
     {
       "api": "ActionGroup",
@@ -199,5 +199,18 @@
     "CI Tested",
     "Human G2 Approved",
     "Deployed"
-  ]
+  ],
+  "visualContractPilot": {
+    "status": "RESEARCH_BRANCH_IMPLEMENTED_PENDING_EXACT_HEAD_CI",
+    "flag": "?lesson=L09-1-2&li-react=l09&li-vc-g2=1",
+    "legacyDefault": "?lesson=L09-1-2&li-react=l09",
+    "allowedApprovals": [
+      "VC-G2-D1",
+      "VC-G2-D2",
+      "VC-G2-D3"
+    ],
+    "g2": "OPEN",
+    "learnerWrites": "ONLY_ISOLATED_SYNTHETIC_FIXTURE",
+    "noProductionRollout": true
+  }
 }

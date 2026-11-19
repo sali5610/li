@@ -25,12 +25,12 @@ export function TextInput({label,hint,error,id,className='', 'aria-describedby':
    {error&&<span id={errorId} className="li-ui-field-error" role="alert">{error}</span>}
  </div>;
 }
-export type TextAreaFieldProps=Omit<TextareaHTMLAttributes<HTMLTextAreaElement>,'children'|'aria-label'>&BaseField;
-export function TextAreaField({label,hint,error,id,className='', 'aria-describedby':describedBy,...rest}:TextAreaFieldProps){
+export type TextAreaFieldProps=Omit<TextareaHTMLAttributes<HTMLTextAreaElement>,'children'|'aria-label'>&BaseField&{purpose?:'guided'|'answer'|'notes'};
+export function TextAreaField({label,hint,error,purpose,id,className='', 'aria-describedby':describedBy,...rest}:TextAreaFieldProps){
  const auto=useId(),fid=id||auto,hintId=hint?fid+'-hint':'',errorId=error?fid+'-error':'';
  return <div className="li-ui-field">
    <label htmlFor={fid}>{label}</label>
-   <textarea {...rest} id={fid} className={cx('li-ui-input',className)}
+   <textarea {...rest} id={fid} data-field-purpose={purpose} className={cx('li-ui-input',className)}
      aria-invalid={!!error||undefined} aria-describedby={[describedBy,hintId,errorId].filter(Boolean).join(' ')||undefined}/>
    {hint&&<span id={hintId} className="li-ui-field-hint">{hint}</span>}
    {error&&<span id={errorId} className="li-ui-field-error" role="alert">{error}</span>}

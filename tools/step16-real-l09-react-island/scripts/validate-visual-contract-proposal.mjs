@@ -25,7 +25,9 @@ function validate(p){
  assert.equal(p.version,'0.1.0');
  assert.equal(p.decisionStatus,'APPROVED_SCOPED');
  assert.equal(p.poGate,'G2_OPEN');
- assert.equal(p.implementationStatus,'NOT_IMPLEMENTED');
+ assert.equal(p.implementationStatus,'RESEARCH_PILOT_IMPLEMENTED');
+ assert.equal(p.nextActivity,'EXACT_HEAD_LOCAL_CHROMIUM_QA_AND_DEPENDENCY_REVIEW_NO_DEPLOY');
+ assert.equal(p.testing.researchVisualPilot,'IMPLEMENTED_BUT_NOT_YET_CI_VERIFIED');
  assert.equal(p.reviewMode,'HUMAN_PO_SCOPED_APPROVAL_RECORDED');
  assert.equal(p.approvalEvidence.authorizedBy,'Human Product Owner');
  assert.equal(p.approvalEvidence.message,'duyệt');
@@ -54,7 +56,7 @@ function validate(p){
  assert.equal(p.foundation.deviceScale.ipadLandscape.minControlPx,tokens.deviceScales['ipad-landscape'].layout['control-min']);
  assert.deepEqual(p.components.map(x=>x.id),['Button','Card','Field','ActionGroup']);
  for(const c of p.components){
-  const expected=c.id==='ActionGroup'?'SOURCE_RULE_ONLY':'APPROVED_SCOPED_NOT_IMPLEMENTED';
+  const expected=c.id==='ActionGroup'?'SOURCE_RULE_ONLY':'APPROVED_SCOPED_RESEARCH_IMPLEMENTED';
   assert.equal(c.status,expected,'Cannot expand approved component scope');
  }
  const [button,card,field,group]=p.components;
@@ -82,7 +84,7 @@ function validate(p){
  for(const gate of p.decisionGates){
   assert.equal(gate.status,'APPROVED','Human PO scoped approval must be recorded');
   assert.equal(gate.poAction,'APPROVED_BY_HUMAN_PO');
-  assert.equal(gate.implementationStatus,'NOT_IMPLEMENTED');
+  assert.equal(gate.implementationStatus,'RESEARCH_PILOT_IMPLEMENTED');
   assert.equal(gate.approvalScope,'VISUAL_CONTRACT_ONLY');
   assert.equal(gate.approvedAt,p.approvalEvidence.dateTime);
   assert.equal(gate.noChangeBeforeApproval,true);

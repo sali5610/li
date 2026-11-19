@@ -28,3 +28,59 @@
 .pilot .li-ui-dialog-body{max-height:calc(100dvh - 160px);overflow-y:auto;overscroll-behavior:contain}
 @media(max-width:599px){.pilot .li-ui-navigation{flex-wrap:wrap}.pilot .li-ui-action-group{flex-wrap:wrap}}
 @media(prefers-reduced-motion:reduce){.pilot .li-ui-dialog,.pilot .li-ui-button{animation:none;transition:none}}
+
+/* VC-G2-01 D1-D3: Human PO approved component contract, applied ONLY to
+   ?li-react=l09&li-vc-g2=1 research host. No global token/site overrides.
+   iPad density composes canonical 4px spacing aliases, not new raw palettes. */
+.pilot[data-vc-g2="approved-research"] .li-ui-button{
+  min-height:var(--li-comp-button-min-hit-size,var(--li-space-12));
+  font-family:var(--li-font-ui,system-ui,sans-serif);
+  font-size:var(--li-type-body);line-height:var(--li-leading-body);
+  font-weight:var(--li-weight-700);border:1px solid var(--forest);border-radius:0;
+  box-shadow:var(--li-space-1) var(--li-space-1) 0 var(--wood);
+}
+.pilot[data-vc-g2="approved-research"] .li-ui-button.secondary{border-color:var(--moss)}
+.pilot[data-vc-g2="approved-research"] .li-ui-button:focus-visible{
+  outline:3px solid var(--li-comp-button-focus-ring);outline-offset:var(--li-space-1)
+}
+.pilot[data-vc-g2="approved-research"] .li-ui-button:active{
+  transform:translate(var(--li-space-1),var(--li-space-1));
+  box-shadow:1px 1px 0 var(--wood)
+}
+.pilot[data-vc-g2="approved-research"] .li-ui-button:disabled{cursor:not-allowed}
+.pilot[data-vc-g2="approved-research"] .li-ui-card{
+  padding:var(--li-space-5);
+  border:1px solid var(--moss);border-radius:0;
+  box-shadow:calc(var(--li-space-1) + 1px) calc(var(--li-space-1) + 1px) 0 var(--wood)
+}
+.pilot[data-vc-g2="approved-research"] .li-ui-field{gap:var(--li-space-2)}
+.pilot[data-vc-g2="approved-research"] .li-ui-field label{
+  font-size:var(--li-type-body);line-height:var(--li-leading-body)
+}
+.pilot[data-vc-g2="approved-research"] .li-ui-field .li-ui-input{
+  min-height:var(--li-comp-button-min-hit-size,var(--li-space-12));
+  font-size:var(--li-type-body);line-height:var(--li-leading-body)
+}
+/* Question-answer is a named multiline context, not a universal textarea height. */
+.pilot[data-vc-g2="approved-research"] [data-field-purpose="answer"]{
+  min-height:calc(var(--li-space-12) * 2 + var(--li-space-4))
+}
+@media(min-width:600px){
+ .pilot[data-vc-g2="approved-research"] .li-ui-card{padding:var(--li-space-6)}
+}
+@media(min-width:744px) and (orientation:portrait){
+ .pilot[data-vc-g2="approved-research"] .li-ui-card{
+  padding:calc(var(--li-space-6) + var(--li-space-1))
+ }
+}
+@media(min-width:1024px) and (orientation:landscape){
+ .pilot[data-vc-g2="approved-research"] .li-ui-card{padding:var(--li-space-8)}
+}
+@media(min-width:744px){
+ .pilot[data-vc-g2="approved-research"] .li-ui-button{
+  min-height:calc(var(--li-space-12) + var(--li-space-2))
+ }
+ .pilot[data-vc-g2="approved-research"] .li-ui-field .li-ui-input{
+  min-height:calc(var(--li-space-12) + var(--li-space-2))
+ }
+}

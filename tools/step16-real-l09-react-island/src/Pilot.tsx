@@ -1,12 +1,22 @@
 import React,{useState,useRef,useEffect} from 'react';
+import type {ButtonHTMLAttributes,HTMLAttributes,ReactNode} from 'react';
 import exact from './l09-exact.generated.json';
 import {L09StorageBridge,BridgeError,LOCALE_KEY,NATIVE_KEY,SITE_FIXTURE_KEY,initial} from './native-bridge';
 import type {Locale,Attempt,Rating} from './native-bridge';
 import {ActionButton,Surface,StatusMessage} from './ui/Primitives';
-import {ActionGroup} from './ui/Shared';
+import {ActionGroup,Button,Card,TextAreaField} from './ui/Shared';
 
+/** VC-G2-01 D1/D2/D3: research-only opt-in. Default L09 and bridge are untouched. */
+type StudyActionProps=ButtonHTMLAttributes<HTMLButtonElement>&{kind?:'primary'|'secondary';vcG2:boolean};
+function StudyAction({vcG2,kind='primary',...rest}:StudyActionProps){
+ return vcG2?<Button variant={kind} {...rest}/>:<StudyAction vcG2={visualContractPilot} kind={kind} {...rest}/>;
+}
+type StudySurfaceProps=HTMLAttributes<HTMLElement>&{vcG2:boolean;children:ReactNode};
+function StudySurface({vcG2,...rest}:StudySurfaceProps){
+ return vcG2?<Card {...rest}/>:<Surface {...rest}/>;
+}
 const bridge=new L09StorageBridge(window.localStorage,window.location);
-export function Pilot(){
+export function Pilot({visualContractPilot=false}:{visualContractPilot?:boolean}={}){
  const [loaded]=useState(()=>{
    try{return bridge.read();}
    catch{return {state:initial(),raw:null,invalid:true};}
@@ -129,7 +139,7 @@ export function Pilot(){
    }
  }
  const cleanText=(html:string)=>html.replace(/<[^>]+>/g,'');
- return <div className="pilot" lang={state.locale} data-lesson-id="L09-1-2" data-storage-key={bridge.key} data-bridge-mode={bridge.nativeFixture?"localhost-fixture":"isolated"}>
+ return <div className="pilot" data-vc-g2={visualContractPilot?'approved-research':undefined} lang={state.locale} data-lesson-id="L09-1-2" data-storage-key={bridge.key} data-bridge-mode={bridge.nativeFixture?"localhost-fixture":"isolated"}>
    <div className="pilot-head">
      <div><span className="pilot-kicker">DATA SCIENCE · L09-1-2 · RESEARCH ISLAND</span>
        <h1>{text.title}</h1></div>
@@ -145,26 +155,30 @@ export function Pilot(){
        {state.locale==='vi'?'Nạp dữ liệu mới':'Reload current data'}
      </button>
    </div>}
-   <Surface aria-labelledby="challenge-title">
+   <StudySurface vcG2={visualContractPilot} aria-labelledby="challenge-title">
      <span className="pilot-kicker">L09-1-2 · V</span>
      <h2 id="challenge-title">{text.challengeTitle}</h2>
      <p data-case-text>{cleanText(text.caseText)}</p>
      <p className="pilot-statement" data-case-claim>{text.caseClaim}</p>
      {text.questions.map((q,i)=><div className="pilot-question" key={i}>
+       {visualContractPilot?<TextAreaField id={'answer-'+i} purpose="answer"
+         label={i+1+'. '+q} rows={4} data-answer={i} className="pilot-input"
+         disabled={state.submitted} placeholder={text.placeholder} value={state.draft[i]}
+         onChange={e=>updateDraft(i,e.target.value)}/>:<>
        <label htmlFor={'answer-'+i}>{i+1}. {q}</label>
        <textarea id={'answer-'+i} rows={4} data-answer={i} className="pilot-input"
          disabled={state.submitted} placeholder={text.placeholder} value={state.draft[i]}
-         onChange={e=>updateDraft(i,e.target.value)}/>
+         onChange={e=>updateDraft(i,e.target.value)}/></>}
      </div>)}
      {!state.submitted&&<ActionGroup className="pilot-actions">
-       <ActionButton type="button" data-action="hint" kind="secondary" onClick={hint}>{text.hintButton}</ActionButton>
+       <StudyAction vcG2={visualContractPilot} type="button" data-action="hint" kind="secondary" onClick={hint}>{text.hintButton}</StudyAction>
        {state.assisted&&<span role="status" data-assisted>{text.assisted}</span>}
      </ActionGroup>}
      {state.hint&&<p className="pilot-statement" data-hint>{cleanText(text.hint)}</p>}
      <p className="pilot-note">{text.saveHint}</p>
      {!state.submitted&&<ActionGroup className="pilot-actions">
-       <ActionButton type="button" data-action="submit" onClick={submit}>{text.submit}</ActionButton>
-       <ActionButton type="button" data-action="clear" kind="secondary" onClick={clear}>{text.clear}</ActionButton>
+       <StudyAction vcG2={visualContractPilot} type="button" data-action="submit" onClick={submit}>{text.submit}</StudyAction>
+       <StudyAction vcG2={visualContractPilot} type="button" data-action="clear" kind="secondary" onClick={clear}>{text.clear}</StudyAction>
      </ActionGroup>}
      {state.submitted&&<div className="pilot-statement" data-submission>
        <strong>{text.answerTitle}</strong><p>{cleanText(text.answer)}</p>
@@ -172,8 +186,8 @@ export function Pilot(){
      <StatusMessage className="pilot-status" data-status>
        {storageError?text.storageOff:message||(state.reviewed?text.reviewDone:state.submitted?text.submitLocked:'')}
      </StatusMessage>
-   </Surface>
-   <Surface aria-labelledby="rubric-title">
+   </StudySurface>
+   <StudySurface vcG2={visualContractPilot} aria-labelledby="rubric-title">
      <span className="pilot-kicker">L09-1-2 · VI</span>
      <h2 id="rubric-title">{text.rubricTitle}</h2>
      {!state.submitted?<p data-rubric-locked>{text.rubricBefore}</p>:<>
@@ -187,10 +201,10 @@ export function Pilot(){
          </div>)}
        </div>
        <p className="pilot-score" data-score aria-live="polite">{text.scoreLabel}: {total===null?'—':total} / 8</p>
-       {!state.reviewed&&<ActionButton type="button" data-action="finish" onClick={finish}>{text.saveReview}</ActionButton>}
+       {!state.reviewed&&<StudyAction vcG2={visualContractPilot} type="button" data-action="finish" onClick={finish}>{text.saveReview}</StudyAction>}
        {state.reviewed&&<p data-reviewed>{text.reviewDone}</p>}
      </>}
-   </Surface>
+   </StudySurface>
    <p className="pilot-foot">Source file: site/assets/lesson-l09-hifi.js · React/TypeScript candidate only · no cloud/account.</p>
  </div>;
 }

@@ -17,5 +17,5 @@ if(new URLSearchParams(window.location.search).get('pilot')==='auth'){
 }else{
  root.dataset.sourceSha256=exact.sourceSha256;
  root.dataset.exactLessonId=exact.lessonId;
- createRoot(root).render(<Pilot/>);
+ createRoot(root).render(<Pilot visualContractPilot={new URLSearchParams(window.location.search).get('li-vc-g2')==='1'}/>);
 }

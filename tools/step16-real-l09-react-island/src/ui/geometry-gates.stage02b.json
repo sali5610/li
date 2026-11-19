@@ -88,7 +88,48 @@
       "sharedRemainingEight": {
         "status": "FIXTURE_ONLY",
         "count": 8
+      },
+      "sharedVisualContractResearch": {
+        "status": "OPT_IN_ONLY_NOT_PRODUCTION",
+        "apis": [
+          "Button",
+          "Card",
+          "TextAreaField"
+        ],
+        "flag": "li-vc-g2=1",
+        "defaultPathUnchanged": true
       }
+    },
+    "optInResearchL09": {
+      "status": "IMPLEMENTED_RESEARCH_CI_PENDING",
+      "query": "li-react=l09&li-vc-g2=1",
+      "approvedScopedDecisions": [
+        "VC-G2-D1",
+        "VC-G2-D2",
+        "VC-G2-D3"
+      ],
+      "newSharedFamilies": [
+        "Button",
+        "Card",
+        "TextAreaField",
+        "ActionGroup"
+      ],
+      "legacyDefaultRemains": true,
+      "realLearnerKey": "MUST_REMAIN_UNCHANGED",
+      "sourceHtmlDefault": "site/index.html?lesson=L09-1-2",
+      "requiredChecks": [
+        "opt-in flag only",
+        "generated source exact",
+        "48 CSS px mobile and 56px iPad hit target",
+        "16/24 standard CTA typography",
+        "4px hard Button and 5px raised Card shadows",
+        "20/24/28/32 responsive card padding",
+        "purpose='answer' multiline",
+        "error/label/disabled/keyboard",
+        "no horizontal overflow or real learner write"
+      ],
+      "humanG2": "GLOBAL_OPEN",
+      "physicalSafari": "NOT_RUN"
     }
   },
   "gates": {

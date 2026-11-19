@@ -4,7 +4,7 @@
   "stage": "Stage02B",
   "decisionStatus": "APPROVED_SCOPED",
   "poGate": "G2_OPEN",
-  "implementationStatus": "NOT_IMPLEMENTED",
+  "implementationStatus": "RESEARCH_PILOT_IMPLEMENTED",
   "reviewMode": "HUMAN_PO_SCOPED_APPROVAL_RECORDED",
   "authority": {
     "dsHead": "d22f469a52d13baa73c0c8952b198fdfeb2b2891",
@@ -53,7 +53,7 @@
     {
       "id": "Button",
       "scope": "primary/secondary/action, not navigation",
-      "status": "APPROVED_SCOPED_NOT_IMPLEMENTED",
+      "status": "APPROVED_SCOPED_RESEARCH_IMPLEMENTED",
       "tokens": {
         "primaryBg": "--li-comp-button-primary-background",
         "primaryInk": "--li-comp-button-primary-color",
@@ -97,7 +97,7 @@
     {
       "id": "Card",
       "scope": "editorial raised/tinted/inverse Surface/Card",
-      "status": "APPROVED_SCOPED_NOT_IMPLEMENTED",
+      "status": "APPROVED_SCOPED_RESEARCH_IMPLEMENTED",
       "tokens": {
         "raised": "--li-comp-surface-background",
         "tinted": "--li-comp-surface-tinted-background",
@@ -140,7 +140,7 @@
     {
       "id": "Field",
       "scope": "single-line input plus separately named multiline TextAreaField",
-      "status": "APPROVED_SCOPED_NOT_IMPLEMENTED",
+      "status": "APPROVED_SCOPED_RESEARCH_IMPLEMENTED",
       "tokens": {
         "background": "--li-comp-field-background",
         "focus": "--li-comp-field-focus-border",
@@ -210,7 +210,7 @@
       "scopeImpact": "native .action, legacy .pilot button, new .li-ui-button and all consumers",
       "noChangeBeforeApproval": true,
       "approvedAt": "2026-11-20T00:55:00+07:00",
-      "implementationStatus": "NOT_IMPLEMENTED",
+      "implementationStatus": "RESEARCH_PILOT_IMPLEMENTED",
       "approvalScope": "VISUAL_CONTRACT_ONLY"
     },
     {
@@ -222,7 +222,7 @@
       "scopeImpact": "native .surface, legacy .pilot-surface, new .li-ui-card, desktop/iPad/phone",
       "noChangeBeforeApproval": true,
       "approvedAt": "2026-11-20T00:55:00+07:00",
-      "implementationStatus": "NOT_IMPLEMENTED",
+      "implementationStatus": "RESEARCH_PILOT_IMPLEMENTED",
       "approvalScope": "VISUAL_CONTRACT_ONLY"
     },
     {
@@ -234,7 +234,7 @@
       "scopeImpact": "native .text-editor + L09 guidedDraft, legacy answer textarea, new TextInput/TextAreaField",
       "noChangeBeforeApproval": true,
       "approvedAt": "2026-11-20T00:55:00+07:00",
-      "implementationStatus": "NOT_IMPLEMENTED",
+      "implementationStatus": "RESEARCH_PILOT_IMPLEMENTED",
       "approvalScope": "VISUAL_CONTRACT_ONLY"
     }
   ],
@@ -254,7 +254,9 @@
     ],
     "physicalSafari": "NOT_RUN",
     "humanG2": "OPEN",
-    "stage03": "NOT_PROMOTED"
+    "stage03": "NOT_PROMOTED",
+    "researchVisualPilot": "IMPLEMENTED_BUT_NOT_YET_CI_VERIFIED",
+    "globalVisualParity": "NOT_RUN"
   },
   "safety": {
     "modifyVisualCss": false,
@@ -290,5 +292,5 @@
     ],
     "provenance": "Human PO approval in current li. chat; no fabricated external Notion approval event"
   },
-  "nextActivity": "RESEARCH_BRANCH_IMPLEMENTATION_AND_CI_ONLY_AFTER_DEPENDENCY_REVIEW"
+  "nextActivity": "EXACT_HEAD_LOCAL_CHROMIUM_QA_AND_DEPENDENCY_REVIEW_NO_DEPLOY"
 }

@@ -30,7 +30,7 @@ function validate(g,m){
  assert.equal(m.tokenValueAuthority,"design-system/tokens.json");
  assert.equal(m.runtimeGeneratedCss,"site/assets/design-tokens.css");
  assert.equal(m.sourcePins.ont01,"6b486a3a70be356a5dc21a2bb44117c457833caf");
- assert.equal(m.sourcePins.uxDs35Draft,"bf8d9717a10da3bb7b5a7d10663113b829e352a1");
+ assert.equal(m.sourcePins.uxDs35Draft,"7a8f3e5d544ee71fcc989cdd1b8bae99f6778381");
  assert.equal(m.crossBranchIntegration,"PENDING_SAME_TREE_REVIEW","must not claim branch merge/runtime integration");
  assert.equal(m.approvalState,"g2_open");
  assert.equal(m.runtimeStatus,"source_mapping_only");
@@ -172,10 +172,10 @@ if(composed){
   }
  }
  assert.equal(aliases,19);
- assert.equal(consumers,18,'native selector adoption moved: investigate before promotion');
- // The remaining Button focus-ring alias is not yet native-consumed; do not fake parity.
- assert.ok(!native.includes('var(--li-comp-button-focus-ring)'));
- console.log('PASS composed immutable DS+ONT02 test worktree: 19/19 exact alias chains, 18/19 native CSS consumers; 1 focus-ring source TODO; no PR branch integration');
+ assert.equal(consumers,19,'native selector adoption moved: investigate before promotion');
+ assert.ok(native.includes('button:focus-visible{outline:3px solid var(--li-comp-button-focus-ring);'),'native button focus selector missing');
+ assert.ok(native.includes('a:focus-visible{outline:3px solid var(--li-color-general-focus-ring);'),'link focus was altered');
+ console.log('PASS composed immutable DS+ONT02 test worktree: 19/19 exact alias chains and 19/19 native CSS consumers, no source visual drift; branches remain DRAFT');
 }
 console.log("PASS UX-DS-35 ONT-02 UI crosswalk "+JSON.stringify({...validate(ui,metadata),negativeCases:negatives(),composedFixture:composed?"PASS_SOURCE_ONLY":"NOT_EXECUTED",crossBranch:"PENDING_SAME_TREE_REVIEW",device:"UNVERIFIED",g2:"OPEN",runtime:"NOT IMPLEMENTED"}));
 }else throw new Error("Usage: node tools/validate_ui_ontology.mjs [--check|--composed-check]");

@@ -10,7 +10,7 @@ const Module=require('node:module');
 const {execFileSync}=require('node:child_process');
 
 const root=path.resolve(__dirname,'..');
-const pinned='df882d46f75f39f48c733752ced15bf6f549a5d3';
+const pinned='734dc257be47f778a929acba5cdca570979e247d';
 const reactRoot=path.join(root,'uxds35-react-pin');
 const repoDir=path.join(reactRoot,'tools/step16-real-l09-react-island');
 const actual=execFileSync('git',['-C',reactRoot,'rev-parse','HEAD'],{encoding:'utf8'}).trim();
@@ -71,7 +71,7 @@ const roleFallbacks={
  '--li-comp-button-primary-color':'--cream',
  '--li-comp-button-secondary-background':'--paper',
  '--li-comp-button-secondary-color':'--moss',
- '--li-comp-button-focus-ring':'--li-color-focus-ring',
+ '--li-comp-button-focus-ring':'--li-color-general-focus-ring',
  '--li-comp-button-min-hit-size':'48px'
 };
 for(const [role,fallback] of Object.entries(roleFallbacks)){

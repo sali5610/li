@@ -42,9 +42,9 @@
       "note": "Source mapping observed; runtime behavior/device acceptance not certified"
     },
     {
-      "id": "token:css:--li-color-focus-ring",
+      "id": "token:css:--li-color-general-focus-ring",
       "kind": "DesignToken",
-      "title": "--li-color-focus-ring",
+      "title": "--li-color-general-focus-ring",
       "version": "0.1.0",
       "reviewState": "verified",
       "publishState": "not_applicable",
@@ -57,7 +57,7 @@
         "evidenceType": "documented",
         "checkedOn": "2026-11-19"
       },
-      "note": "Source mapping observed; runtime behavior/device acceptance not certified"
+      "note": "Native computed button focus reference unchanged, not new paint"
     },
     {
       "id": "token:css:--li-space-12",
@@ -813,7 +813,7 @@
       "id": "edge:ont02:003",
       "predicate": "USES_TOKEN",
       "from": "component:Button",
-      "to": "token:css:--li-color-focus-ring",
+      "to": "token:css:--li-color-general-focus-ring",
       "reviewState": "proposed",
       "visibility": "public_curated",
       "provenance": {

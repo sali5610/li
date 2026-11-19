@@ -11,8 +11,8 @@ import {resolve,dirname,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
-const dsHead='bf8d9717a10da3bb7b5a7d10663113b829e352a1';
-const reactHead='df882d46f75f39f48c733752ced15bf6f549a5d3';
+const dsHead='7a8f3e5d544ee71fcc989cdd1b8bae99f6778381';
+const reactHead='734dc257be47f778a929acba5cdca570979e247d';
 const pins=[['uxds35-design-pin',dsHead],['uxds35-react-pin',reactHead]];
 const files=[
  'design-system/tokens.json',

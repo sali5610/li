@@ -227,7 +227,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Text>{strip(content.answer)}</Text>
     <Heading level={3} role="titleMedium">{content.rubricTitle}</Heading>
     <div className="li-learning-fields">
-     {content.rubricItems.map((item:[string,string],i:number)=><div className="li-learning-rating" key={i}>
+     {content.rubricItems.map((item:string[],i:number)=><div className="li-learning-rating" key={i}>
       <label htmlFor={'li-rating-'+i}><strong>{item[0]}</strong><Text role="support">{item[1]}</Text></label>
       <select id={'li-rating-'+i} value={attempt.ratings[i]??''}
        disabled={attempt.reviewed||locked}

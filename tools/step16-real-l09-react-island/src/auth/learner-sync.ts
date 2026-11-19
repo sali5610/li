@@ -15,12 +15,11 @@ const OWNER='li.sync.local-owner.v1';
 const KEY=(id:string)=>'li.review.'+id+'.v1';
 const CHECKPOINT=(uid:string,id:string)=>'li.sync.checkpoint.v1:'+uid+':'+id;
 const BACKUP=(uid:string,id:string)=>'li.sync.local-backup.v1:'+uid+':'+id;
-type Payload={schema:'li.native.lesson.v1';data:Record<string,unknown>};
 type Checkpoint={revision:number;data:string};
 export type SyncReport='checking'|'saved'|'empty'|'offline'|'conflict'|'error';
 
 function canonical(value:unknown):string{
- if(value===null||typeof value!=='object')return JSON.stringify(value);
+ if(value===null||typeof value!=='object')return JSON.stringify(value)??'null';
  if(Array.isArray(value))return '['+value.map(canonical).join(',')+']';
  const obj=value as Record<string,unknown>;
  return '{'+Object.keys(obj).sort().map(k=>JSON.stringify(k)+':'+canonical(obj[k])).join(',')+'}';

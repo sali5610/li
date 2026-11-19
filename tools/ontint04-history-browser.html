@@ -43,7 +43,7 @@ try{
  const textSetter=Object.getOwnPropertyDescriptor(current().HTMLTextAreaElement.prototype,'value')?.set;
  if(!answer||!textSetter)throw Error('L09 React answer missing');
  textSetter.call(answer,'ONT-INT-04 synthetic persisted answer after reload and Back/Forward.');
- answer.dispatchEvent(new current().Event('input',{bubbles:true}));
+ answer.dispatchEvent(new (current().Event)('input',{bubbles:true}));
  await until(()=>JSON.parse(localStorage.getItem(shared)||'null')?.draft?.[0]?.startsWith('ONT-INT-04'),
    'synthetic L09 draft committed before reload');
  assert(localStorage.getItem(realKey)===realBefore,'initial synthetic draft never writes real learner key');
@@ -61,10 +61,10 @@ try{
 
  let box=searchHost().querySelector('input[type="search"]');
  let setter=Object.getOwnPropertyDescriptor(current().HTMLInputElement.prototype,'value')?.set;
- setter.call(box,'L09-1-2');box.dispatchEvent(new current().Event('input',{bubbles:true}));
+ setter.call(box,'L09-1-2');box.dispatchEvent(new (current().Event)('input',{bubbles:true}));
  await until(()=>!searchHost().querySelector('button[type="submit"]').disabled,'controlled Search query entered');
  searchHost().querySelector('form[role="search"]').dispatchEvent(
-  new current().Event('submit',{bubbles:true,cancelable:true}));
+  new (current().Event)('submit',{bubbles:true,cancelable:true}));
  await until(()=>searchHost()?.querySelector('[data-result-id="lesson:L09-1-2"]'),
    'Search typed L09 result before reload');
  assert(!!searchHost().querySelector('[data-result-id="lesson:L09-1-2"]'),
@@ -113,7 +113,7 @@ try{
  // After the hard reload, ordinary in-document Search state still persists through history.
  box=searchHost().querySelector('input[type="search"]');
  setter=Object.getOwnPropertyDescriptor(current().HTMLInputElement.prototype,'value')?.set;
- setter.call(box,'Sampling Bias');box.dispatchEvent(new current().Event('input',{bubbles:true}));
+ setter.call(box,'Sampling Bias');box.dispatchEvent(new (current().Event)('input',{bubbles:true}));
  await until(()=>box.value==='Sampling Bias','post-reload Search typed');
  current().navigate('lessonL09',{focus:false});
  await until(()=>l09().classList.contains('active'),'local in-app lesson navigation after Forward');

@@ -49,26 +49,28 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: sali5610/li
-          ref: eb87e144808c3a1c56d4e824c9c88581ce7d322b
+          ref: 5a10385814368e74df7a948faeb2c1d2bcb8e17f
           path: staging-auth-source
           persist-credentials: false
 
       - name: Verify strict login gate and native lesson key
         run: |
           set -euo pipefail
-          test "$(git -C staging-auth-source rev-parse HEAD)" = "eb87e144808c3a1c56d4e824c9c88581ce7d322b"
+          test "$(git -C staging-auth-source rev-parse HEAD)" = "5a10385814368e74df7a948faeb2c1d2bcb8e17f"
           root=staging-auth-source/tools/step16-real-l09-react-island
           grep -Fq "VITE_LI_AUTH_TARGET!=='github-pages-staging'" "$root/vite.staging-app.config.mjs"
           grep -Fq "checkInviteAccess" "$root/src/auth/AuthPanel.tsx"
           grep -Fq "classList.toggle('li-auth-verified'" "$root/src/auth/AuthPanel.tsx"
           grep -Fq "IS_GITHUB_STAGING" "$root/src/auth/config.ts"
           grep -Fq "neonAuth.getJWTToken()" "$root/src/auth/neon-client.ts"
-          grep -Fq "ITEM_ID='L09-1-2'" "$root/src/auth/L09CloudPanel.tsx"
-          grep -Fq "NATIVE_KEY" "$root/src/auth/L09CloudPanel.tsx"
-          grep -Fq "await checkInviteAccess" "$root/src/auth/L09CloudPanel.tsx"
+          grep -Fq "startLearnerSync" "$root/src/auth/AuthPanel.tsx"
+          grep -Fq "prepareLearnerAccount" "$root/src/auth/AuthPanel.tsx"
+          grep -Fq "const LESSONS=['L03-1-2','L09-1-2','L15-2-2']" "$root/src/auth/learner-sync.ts"
+          grep -Fq "await checkInviteAccess" "$root/src/auth/learner-sync.ts"
+          grep -Fq "await api.write" "$root/src/auth/learner-sync.ts"
           ! grep -Eq "signIn.email|AuthRecovery|AuthEmailVerification" "$root/src/auth/AuthPanel.tsx"
           test ! -e "$root/src/auth/qa-secrets.ts"
-          echo "PASS invited-only Google sign-in gate and one real L09 progress key"
+          echo "PASS invited-only Google sign-in gate and three published native lessons on Neon"
 
       - name: Set up free GitHub runner
         uses: actions/setup-node@v4
@@ -125,7 +127,7 @@ jobs:
             'Quản lý tài khoản</button></article>')
           html=html.replace(marker,marker.replace('<article class="surface">',account+'<article class="surface">',1),1)
           old='<b>Đồng bộ giữa các thiết bị</b><p class="small">Chưa hỗ trợ.</p>'
-          new='<b>Đồng bộ giữa các thiết bị</b><p class="small">Chưa khả dụng. Tiến độ hiện lưu trên thiết bị này.</p>'
+          new='<b>Đồng bộ tiến độ học</b><p class="small" id="li-cloud-status" role="status" aria-live="polite">Đang kết nối Neon cho các bài đã phát hành…</p>'
           assert html.count(old)==1,'Settings sync description changed'
           html=html.replace(old,new,1)
           shell=('<div id="li-staging-auth-root" tabindex="-1" '
@@ -149,10 +151,11 @@ jobs:
           grep -Fq 'li-auth-gate-critical' site/index.html
           grep -Fq 'id="li-staging-auth-root"' site/index.html
           grep -Fq 'id="li-open-account"' site/index.html
+          grep -Fq 'id="li-cloud-status"' site/index.html
           test -z "$(find site -type f \( -name '*.map' -o -name '.env*' -o -name '*qa-secrets*' \) -print -quit)"
           node tools/test_l09_guided_runtime.js
           node tools/test_navigation.js
-          echo 'App entry: https://sali5610.github.io/li/ — login BEFORE any lesson'
+          echo 'App entry: https://sali5610.github.io/li/ — login BEFORE any lesson, native Wave1 auto-sync'
           echo 'No React pilot router, no guest mode, no Cloudflare release'
 
       - name: Browser-smoke mandatory invited login gate (fresh session, no user login)

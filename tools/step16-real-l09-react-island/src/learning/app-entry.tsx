@@ -10,7 +10,8 @@ import '../../../../design-system/react/components.css';
  * Chat 3 must supply the real invited-user/Neon/Dexie persistence owner.
  * Chat 4 must supply real search. No fallback to fake accounts or progress.
  */
-export function mountLearningJourney(host:HTMLElement,ports:LearningPorts):()=>void{
+export function mountLearningJourney(host:HTMLElement,ports:LearningPorts,
+ handlers:{onReady?:()=>void;onFailure?:()=>void}={}):()=>void{
  if(!host?.isConnected)throw Error('LEARNING_HOST_DISCONNECTED');
  if(!ports?.auth?.requireInvitedLearner||!ports?.attempts?.load||
     !ports?.attempts?.save||!ports?.sync?.getStatus||
@@ -18,6 +19,6 @@ export function mountLearningJourney(host:HTMLElement,ports:LearningPorts):()=>v
   throw Error('LEARNING_REAL_PORTS_REQUIRED');
  }
  const root=createRoot(host);
- root.render(<LearningJourney ports={ports}/>);
+ root.render(<LearningJourney ports={ports} {...handlers}/>);
  return ()=>root.unmount();
 }

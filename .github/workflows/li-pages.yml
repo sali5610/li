@@ -47,19 +47,25 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: sali5610/li
-          ref: a670e080edd3dba7d07899642f4468f6ac9ddbaa
+          ref: a80a16839f6a886ecaeb74a5baad1e429e24c3ee
           path: staging-auth-source
           persist-credentials: false
 
       - name: Verify source SHA and staging-only auth boundaries
         run: |
           set -euo pipefail
-          test "$(git -C staging-auth-source rev-parse HEAD)" = "a670e080edd3dba7d07899642f4468f6ac9ddbaa"
+          test "$(git -C staging-auth-source rev-parse HEAD)" = "a80a16839f6a886ecaeb74a5baad1e429e24c3ee"
           test -f staging-auth-source/tools/step16-real-l09-react-island/vite.auth.config.mjs
           grep -Fq "VITE_LI_AUTH_TARGET==='github-pages-staging'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/config.ts
           grep -Fq "'https://sali5610.github.io'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/config.ts
           grep -Fq "checkInviteAccess" staging-auth-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
           grep -Fq "neonAuth.getJWTToken()" staging-auth-source/tools/step16-real-l09-react-island/src/auth/neon-client.ts
+          grep -Fq "RlsQaPanel" staging-auth-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
+          grep -Fq "IS_GITHUB_STAGING" staging-auth-source/tools/step16-real-l09-react-island/src/auth/RlsQaPanel.tsx
+          grep -Fq "stepQa" staging-auth-source/tools/step16-real-l09-react-island/src/auth/rls-qa-contract.ts
+          grep -Fq "__li_rls_qa_" staging-auth-source/tools/step16-real-l09-react-island/src/auth/rls-qa-contract.ts
+          test ! -e staging-auth-source/tools/step16-real-l09-react-island/src/auth/qa-secrets.ts
+
           ! grep -Eq "syncOnce|bindNeonAccount|signIn.email|AuthRecovery|AuthEmailVerification" staging-auth-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
           echo "PASS pinned GitHub Pages staging identity; Google-only, no remote learner sync"
 

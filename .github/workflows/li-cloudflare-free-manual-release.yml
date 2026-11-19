@@ -1,0 +1,59 @@
+name: Release li. to Cloudflare Pages Free — MANUAL ONLY
+
+# IMPORTANT: No push or PR event. This never deploys from commits by itself.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type PUBLISH_LI_FREE_ONLY to authorize this release."
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: li-cloudflare-pages-free-production
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main' && inputs.confirm == 'PUBLISH_LI_FREE_ONLY'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: cloudflare-free-production
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+    steps:
+      - name: Checkout approved main (no draft branches)
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Validate deployed li. source and canonical tokens
+        run: |
+          set -euo pipefail
+          python3 tools/validate_site.py
+          python3 tools/generate_design_tokens.py --check
+          python3 tools/validate_design_system.py
+          python3 tools/validate_ui_foundations.py
+
+      - name: Hard-stop when Free plan setup or quota cannot be verified
+        run: |
+          set -euo pipefail
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo 'Missing required Free-only Cloudflare token'; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo 'Missing account ID'; exit 1; }
+          test -n "$CLOUDFLARE_PAGES_PROJECT" || { echo 'Missing Pages project name'; exit 1; }
+          python3 tools/g3_cloudflare_free_guard.py --site site --online
+
+      - name: Upload static prebuilt site without a Cloudflare automated Git build
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy site --branch=main --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+
+      - name: Explicit release log
+        run: echo "Cloudflare manual release complete; check Pages dashboard quotas and actual deployed URL."

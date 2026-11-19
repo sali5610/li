@@ -11,7 +11,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {execFileSync,spawnSync} from 'node:child_process';
 
-const repo=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../../..');
+const repo=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const ds='d22f469a52d13baa73c0c8952b198fdfeb2b2891';
 const ont='0fe2d9b92a66e64ea3244d910d789ccc0d458a5b';
 const initialReact='734dc257be47f778a929acba5cdca570979e247d';

@@ -10,7 +10,7 @@ try{report=JSON.parse(decode(body[1]));}
 catch(e){console.error('FAIL_BROWSER_QA: JSON ledger not finalized: '+decode(body[1]).slice(0,1800));process.exit(3)}
 if(report.environment!=='CHROMIUM_HEADLESS_SAME_ORIGIN_NATIVE_APP'||
 report.physicalIPhone!=='NOT_RUN'||report.physicalIPad!=='NOT_RUN'||
-report.VoiceOver!=='NOT_RUN'||report.cloudflareDeploy!=='NONE')
+report.VoiceOver!=='OUT_OF_SCOPE_PO_S208'||report.cloudflareDeploy!=='NONE')
 {console.error('FAIL_BROWSER_QA: test-level provenance or no-release guard missing');process.exit(4)}
 const compact={
  status:marker[1],evidenceLayer:report.environment,

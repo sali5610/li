@@ -4,8 +4,8 @@ import assert from 'node:assert/strict';
 import {PrivateDeviceStore} from '../.sync-qa-test/sync/local-dexie.js';
 import {syncOnce} from '../.sync-qa-test/sync/sync-once.js';
 import {RevisionConflict} from '../.sync-qa-test/sync/contract.js';
-import {NeonUserApi} from '../.sync-qa-test/sync/neon-api.js';
-import {bindNeonAccount} from '../.sync-qa-test/sync/neon-session.js';
+import {NeonUserApi} from '../.sync-test/neon-api.js';
+import {bindNeonAccount} from '../.sync-test/neon-session.js';
 import {newSyncQaId} from '../.sync-qa-test/auth/sync-qa.js';
 
 /**

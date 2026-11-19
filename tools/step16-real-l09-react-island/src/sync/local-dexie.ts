@@ -38,6 +38,7 @@ export class PrivateDeviceStore extends Dexie{
   return{pending:rows.filter(x=>!x.conflict).length,conflicts:rows.filter(x=>x.conflict).length};
  }
  async accept(accountId:string,op:OutboxEntry,remote:PrivateItem){
+  if(remote.owner_id!==accountId)throw new Error('REMOTE_OWNER_MISMATCH');
   if(remote.item_type!==op.itemType||remote.item_id!==op.itemId)throw new Error('REMOTE_ITEM_MISMATCH');
   await this.transaction('rw',this.records,this.outbox,async()=>{
    const current=await this.outbox.get(op.key);
@@ -60,14 +61,16 @@ export class PrivateDeviceStore extends Dexie{
  /** Remote must never overwrite a locally pending edit or a newer local revision. */
  async apply(accountId:string,remote:PrivateItem){
   checkScope(accountId,remote.item_type,remote.item_id);
+  if(remote.owner_id!==accountId)throw new Error('REMOTE_OWNER_MISMATCH');
   const key=storageKey(accountId,remote.item_type,remote.item_id);
-  await this.transaction('rw',this.records,this.outbox,async()=>{
-   if(await this.outbox.get(key))return;
+  return this.transaction('rw',this.records,this.outbox,async()=>{
+   if(await this.outbox.get(key))return false;
    const current=await this.records.get(key);
-   if(current&&current.baseRevision>remote.revision)return;
+   if(current&&current.baseRevision>=remote.revision)return false;
    await this.records.put({key,accountId,itemType:remote.item_type,itemId:remote.item_id,
      payload:remote.payload,deletedAt:remote.deleted_at,baseRevision:remote.revision,
      changedAt:remote.changed_at,conflict:false});
+   return true;
   });
  }
  async accountRecords(accountId:string){

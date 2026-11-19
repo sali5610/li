@@ -207,3 +207,17 @@ test('OPID-10: default privacy gate keeps new adapter local-only with zero reque
   assert.equal(server.calls.read,0);
  }finally{await close(db);}
 });
+
+test('OPID-11: missing RPC surfaces security-error, not a fake offline success',async()=>{
+ const db=store(),key=id();
+ const api=new NeonIdempotentPilotApi(endpoint,async()=>jwt(A),A,
+  async()=>ok({code:'PGRST202'},404));
+ try{
+  await makeEdit(db,A,key);
+  const result=await syncOnce(db,api,A,gate);
+  assert.equal(result.mode,'security-error');
+  assert.equal(result.pending,1);
+  assert.equal(result.uploaded,0);
+  assert.equal(result.conflicts,0);
+ }finally{await close(db);}
+});

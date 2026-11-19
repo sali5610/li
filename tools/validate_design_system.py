@@ -220,7 +220,7 @@ def main() -> int:
               f"{mode} control minimum is at least 56px")
     foundations = (ROOT / "site/assets/ui-foundations.css").read_text(encoding="utf-8")
     home_layout = (ROOT / "site/assets/library-hub.css").read_text(encoding="utf-8")
-    showcase = (ROOT / "site/component-library-review.html").read_text(encoding="utf-8")
+    showcase = (ROOT / "site/design-system/index.html").read_text(encoding="utf-8")
     generated = (ROOT / "site/assets/design-tokens.css").read_text(encoding="utf-8")
     check("--li-device-ipad-portrait-type-body" in generated and
           "--li-device-ipad-landscape-type-body" in generated, "device scale generated CSS exists")

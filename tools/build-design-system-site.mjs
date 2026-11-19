@@ -36,3 +36,12 @@ for(const page of ['index.html','react-layout.html','react-atoms.html',
  const markup=readFileSync(file,'utf8');
  writeFileSync(file,markup.replaceAll('../assets/','./assets/'),'utf8');
 }
+
+/* Reuse the existing Component Library page/URL from earlier li. versions.
+   It is an alias of this ONE Studio, not another component copy or gallery. */
+cpSync(join(output,'index.html'),join(output,'component-library-review.html'));
+if(readFileSync(join(output,'component-library-review.html'),'utf8')!==
+   readFileSync(join(output,'index.html'),'utf8')){
+ throw new Error('Component Library alias must match canonical Studio');
+}
+console.log('PASS reused Component Library page /component-library-review.html');

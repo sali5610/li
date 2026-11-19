@@ -86,7 +86,7 @@ if(query.has('embed')){
  function renderDetails(){
   const content=$('#studio-details-content');
   if(tab==='code')content.innerHTML='<div class="studio-code"></div>',content.querySelector('.studio-code').textContent=active.code;
-  else if(tab==='source')content.innerHTML='<div class="studio-sources"><strong>Canonical reference</strong><a target="_blank" rel="noopener noreferrer" href="'+(active.source.startsWith('design-system/react/')?draftSource:u)+active.source+'">'+active.source+'</a><a target="_blank" rel="noopener noreferrer" href="'+u+'design-system/tokens.json">design-system/tokens.json — token values</a><p>Global G2 is open. A Draft specimen does not claim production component parity.</p><a href="../component-library-review.html">Historical component review archive →</a></div>';
+  else if(tab==='source')content.innerHTML='<div class="studio-sources"><strong>Canonical reference</strong><a target="_blank" rel="noopener noreferrer" href="'+(active.source.startsWith('design-system/react/')?draftSource:u)+active.source+'">'+active.source+'</a><a target="_blank" rel="noopener noreferrer" href="'+u+'design-system/tokens.json">design-system/tokens.json — token values</a><p>Global G2 is open. A Draft specimen does not claim production component parity.</p><a href="https://github.com/sali5610/li/blob/main/site/component-library-review.html" target="_blank" rel="noopener noreferrer">Previous Component Library source ↗</a></div>';
   else content.innerHTML='<div class="studio-do-grid"><div class="studio-guideline"><strong>DO</strong><p>'+esc(active.do)+'</p></div><div class="studio-guideline no"><strong>DON’T</strong><p>'+esc(active.dont)+'</p></div></div>';
  }
  function select(item){

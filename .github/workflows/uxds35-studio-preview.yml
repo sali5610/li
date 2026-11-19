@@ -128,6 +128,13 @@ jobs:
             'http://127.0.0.1:8787/design-system/index.html#button'
           test -s /tmp/li-ds-studio-preview/studio-desktop.png
           echo 'PASS UXDS35_STUDIO_BROWSER_MOUNT'
+      - name: Check old Component Library entrypoint reuses current Studio
+        run: |
+          set -euo pipefail
+          node tools/build-design-system-site.mjs
+          cmp dist-design-system/index.html dist-design-system/component-library-review.html
+          grep -Fq 'react-components.html' dist-design-system/studio.js
+          test -s dist-design-system/react-components.js
       - name: Upload single-web source and visual screenshot
         uses: actions/upload-artifact@v4
         with:

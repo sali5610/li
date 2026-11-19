@@ -60,3 +60,11 @@
 @media (prefers-reduced-motion:reduce) {
  .search-page, .search-page * {scroll-behavior:auto;transition:none!important;animation:none!important}
 }
+
+/* ONT-04 v1 local research: semantic graph drill-in + bounded Lão Lý prompts. */
+.search-page .relation-link {min-height:44px;display:inline-block;margin-top:4px}
+.search-page .back-control {margin-bottom:12px}
+.search-page .mentor-context {margin-top:16px;border-inline-start:3px solid var(--moss);padding:12px 16px;background:var(--paper-2)}
+.search-page .mentor-actor {font-weight:700;color:var(--moss)}
+.search-page .mentor-context ul {margin:8px 0 12px;padding-inline-start:20px}
+.search-page .mentor-context li {margin-bottom:8px;overflow-wrap:anywhere}

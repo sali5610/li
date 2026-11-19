@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>ONT-INT-04 negative: native history unchanged outside dual flags</title></head><body>
+<pre id="result">LI_STEP16_L09_SHELL_PENDING</pre>
+<script>
+(async()=>{
+ 'use strict';
+ const out=document.getElementById('result'), checks=[];
+ const assert=(x,label)=>{if(!x)throw Error(label);checks.push(label)};
+ const delay=n=>new Promise(r=>setTimeout(r,n));
+ const real='li.review.L09-1-2.v1',visits='li.private.lesson.visits.v1';
+ let frame=null,phase='';
+ const until=async(fn,label,ms=22000)=>{
+  for(let start=Date.now();Date.now()-start<ms;){
+   try{const v=fn();if(v)return v}catch(e){}
+   await delay(90);
+  }
+  const w=frame?.contentWindow,d=frame?.contentDocument;
+  throw Error('TIMEOUT '+label+' '+JSON.stringify({
+   url:w?.location.href,state:w?.history?.state,active:[...(d?.querySelectorAll('section.page.active')||[])].map(x=>x.id),
+   search:d?.querySelectorAll('#li-typed-search-root').length,
+   l09:d?.querySelectorAll('#li-step16-l09-react-host').length
+  }));
+ };
+ const cases=[
+  {label:'no-flags',url:'?lesson=L09-1-2',search:0,l09:0},
+  {label:'search-only-spoof',url:'?lesson=L09-1-2&li-search-react=typed-v1&li-local-page=search',search:1,l09:0},
+  {label:'l09-only-spoof',url:'?lesson=L09-1-2&li-react=l09-native-fixture&li-local-page=search',search:0,l09:1},
+  {label:'bad-l09-flag-spoof',url:'?lesson=L09-1-2&li-react=not-approved&li-search-react=typed-v1&li-local-page=search',search:1,l09:0}
+ ];
+ try{
+  for(const c of cases){
+   phase=c.label;
+   frame=document.createElement('iframe');frame.width='390';frame.height='760';frame.style.border='0';
+   frame.title='Native route guard negative '+c.label;
+   frame.src='../site/index.html'+c.url;document.body.append(frame);
+   const w=frame.contentWindow,d=()=>frame?.contentDocument;
+   await until(()=>d()?.readyState==='complete'&&d()?.getElementById('page-lessonL09')?.classList.contains('active')&&
+    d()?.querySelectorAll('#li-typed-search-root').length===c.search&&
+    d()?.querySelectorAll('#li-step16-l09-react-host').length===c.l09,
+    'initial native lesson and exact island counts');
+   assert(w.liDualLocalHistoryAllowed()===false,c.label+': dual history guard OFF');
+   assert(d().getElementById('page-lessonL09').classList.contains('active'),c.label+': spoof cannot hijack lesson entry');
+   assert(w.history.state?.liOntInt04Page===undefined,c.label+': no dual history ownership');
+   assert(d().querySelectorAll('#li-typed-search-root').length===c.search&&
+     d().querySelectorAll('#li-step16-l09-react-host').length===c.l09,
+     c.label+': only individually authorized research island is mounted');
+   const before=w.history.length,learner=localStorage.getItem(real),history=localStorage.getItem(visits);
+   w.navigate('search',{focus:false});
+   await until(()=>d()?.getElementById('page-search')?.classList.contains('active'),'native Search reachable');
+   assert(d().getElementById('page-search').classList.contains('active')&&
+    !d().getElementById('page-lessonL09').classList.contains('active'),
+    c.label+': native Search active without dual pilot');
+   assert(w.history.length===before&&w.history.state?.liOntInt04Page===undefined,
+    c.label+': native navigation replaces, does not push or seed pilot state');
+   assert(localStorage.getItem(real)===learner&&localStorage.getItem(visits)===history,
+    c.label+': navigating Search does not mutate genuine learner keys');
+   frame.remove();frame=null;await delay(80);
+  }
+  // Independently verify original catalog popstate still owns unflagged published/native routes.
+  phase='legacy-catalog-popstate';
+  frame=document.createElement('iframe');frame.style.cssText='border:0;width:390px;height:760px';
+  frame.title='Legacy catalog actual history Back/Forward';
+  frame.src='../site/index.html?lesson=L09-1-2';document.body.append(frame);
+  const w=frame.contentWindow,d=()=>frame.contentDocument;
+  await until(()=>d()?.getElementById('page-lessonL09')?.classList.contains('active'),'initial catalog lesson');
+  const learner=localStorage.getItem(real);
+  // Native lesson revisit may LEGITIMATELY record a visit in li.private.lesson.visits.v1.
+  // This negative guard must preserve actual native behavior, not suppress telemetry.
+  w.history.pushState({ont04Negative:true},'',w.location.pathname+'?ont04-negative=1');
+  w.navigate('search',{focus:false,syncUrl:false});
+  assert(d().getElementById('page-search').classList.contains('active'),
+   'native Search can be entered while external test history is on top');
+  w.history.back();
+  await until(()=>new URLSearchParams(w.location.search).get('lesson')==='L09-1-2'&&
+    d()?.getElementById('page-lessonL09')?.classList.contains('active'),'real Back to native lesson');
+  assert(d().getElementById('page-lessonL09').classList.contains('active'),
+   'legacy catalog retains published/native lesson popstate route');
+  w.history.forward();
+  await until(()=>new URLSearchParams(w.location.search).get('ont04-negative')==='1'&&
+    d()?.getElementById('page-home')?.classList.contains('active'),'real Forward native Home fallback');
+  assert(d().getElementById('page-home').classList.contains('active')&&
+    !d().getElementById('page-lessonL09').classList.contains('active'),
+   'legacy no-lesson no-catalog Forward still goes Home');
+  assert(w.liDualLocalHistoryAllowed()===false&&w.history.state?.liOntInt04Page===undefined,
+   'external native history cannot be claimed by dual research adapter');
+  assert(localStorage.getItem(real)===learner,
+   'native Back/Forward preserves independent challenge attempt; native visit tracking remains allowed');
+  out.textContent='LI_STEP16_L09_SHELL_PASS '+JSON.stringify({
+   count:checks.length,checks,scope:'UNFLAGGED_AND_SINGLE_FLAG_BROWSER_NEGATIVE',
+   physicalSafari:'NOT_RUN',signedRls:'NOT_RUN',deploy:'NONE'
+  });
+ }catch(e){
+  out.textContent='LI_STEP16_L09_SHELL_FAIL '+JSON.stringify({
+   count:checks.length,phase,error:String(e?.message||e),checks
+  });
+ }
+})();
+</script></body></html>

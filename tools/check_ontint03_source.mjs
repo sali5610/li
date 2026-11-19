@@ -16,9 +16,11 @@ const count=(s,term)=>s.split(term).length-1;
 for(const term of ['li-search-react','flag===\'typed-v1\'',
  'loc.protocol===\'http:\'','loc.pathname===\'/site/index.html\'',
  'mountTypedSearch(host)','SEARCH_LOCAL_CSS_MISSING','li-typed-search-root',
- 'li-ont-int02-local-react-gate','params.get("lesson")!=="L09-1-2"',
+ 'li-ont-int02-local-react-gate','new URLSearchParams(window.location.search).get("lesson")!=="L09-1-2"',
  '["l09","l09-native-fixture"].includes(params.get("li-react"))',
  'loader.src="./assets/step16-react-router.js?v=ont-int02-local"',
+ 'window.addEventListener("li:dual-local-route",ensureL09)',
+ 'liDualLocalHistoryAllowed()',
  'laoly-quote-stage-gate.js','liModalSetBackgroundInert(true)'])found(html,term);
 assert.equal(count(html,'data-li-ont04b2-local-only'),1,'single native Search owner');
 assert.equal(count(html,'li-ont-int02-local-react-gate'),1,'single L09 React gate');

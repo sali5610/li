@@ -149,8 +149,12 @@ assert 'else url.searchParams.delete("lesson");' in html
 assert 'url.hash="";' in html
 assert 'if(syncUrl)syncLiRoute(id);' in html
 assert 'const liInitialCatalog=new URLSearchParams(window.location.search).get("catalog");' in html
-assert 'navigate(liInitialCatalog&&!liInitialLesson?"catalog":"home"' in html
-assert 'syncUrl:!(liInitialCatalog||Object.values(LI_LESSON_ROUTES).includes(liInitialLesson))' in html
+# S134 public/catalog default is still authoritative; the ONT-INT-04 local dual-island
+# history pilot may override it only if liDualLocalHistoryAllowed() is true.
+assert 'liInitialPilotRoute||(liInitialCatalog&&!liInitialLesson?"catalog":"home")' in html
+assert 'const liInitialDualPage=liDualLocalHistoryAllowed()?' in html
+assert 'const liInitialPilotRoute=LI_DUAL_PILOT_PAGES.has(liInitialDualPage)?liInitialDualPage:null;' in html
+assert 'syncUrl:!(liInitialPilotRoute||liInitialCatalog||Object.values(LI_LESSON_ROUTES).includes(liInitialLesson))' in html
 assert 'if(!lesson){url.searchParams.delete("chapter");if(id!=="catalog")url.searchParams.delete("catalog");}' in html
 
 # S135: mobile mirror safe-area, independent subtle text float, and no square iOS tap flash.

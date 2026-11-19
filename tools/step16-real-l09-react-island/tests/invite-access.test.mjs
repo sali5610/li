@@ -112,3 +112,15 @@ test('safe JWT error captures only allowlisted HTTP status with no untrusted det
  assert.equal(safeInviteErrorCode(safeJwtFetchError({status:'401',message:secret})),'INV-JWT-FETCH');
  assert.equal(safeInviteErrorCode(safeJwtFetchError({message:secret})),'INV-JWT-FETCH');
 });
+
+test('staging has an exact compile-time origin and repository path, not an open redirect',()=>{
+ const configSource=readFileSync(new URL('../src/auth/config.ts',import.meta.url),'utf8');
+ const viteSource=readFileSync(new URL('../vite.auth.config.mjs',import.meta.url),'utf8');
+ const panelSource=readFileSync(new URL('../src/auth/AuthPanel.tsx',import.meta.url),'utf8');
+ assert.match(configSource,/VITE_LI_AUTH_TARGET==='github-pages-staging'/);
+ assert.match(configSource,/https:\/\/sali5610\.github\.io/);
+ assert.match(configSource,/https:\/\/li5610\.pages\.dev/);
+ assert.match(configSource,/return origin===AUTH_ORIGIN/);
+ assert.match(viteSource,/ghStaging\?'\/li\/auth-pilot\/':'\/auth-pilot\/'/);
+ assert.match(panelSource,/IS_GITHUB_STAGING\?'STAGING · GitHub Pages':t\.tag/);
+});

@@ -43,8 +43,10 @@
    page.dataset.liRuntime='react-candidate';
    page.dataset.liResearchOnly='true';
    settled=true;
- }).catch(()=>{
+ }).catch(error=>{
    if(settled)return;
+   // Only a local research flag reaches this branch; retain a safe error code for QA.
+   page.dataset.liReactError=String(error?.name||'MOUNT_ERROR')+': '+String(error?.message||'unknown').slice(0,160);
    host.remove();css.remove();
    page.dataset.liRuntime='native-fallback';
    const notice=document.createElement('p');

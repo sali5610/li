@@ -46,7 +46,24 @@ export function AuthPanel(){
  const [busy,setBusy]=useState<'login'|'logout'|null>(null);
  const [feedback,setFeedback]=useState('');
  const [access,setAccess]=useState<Access>('checking');
+ const [accessEpoch,setAccessEpoch]=useState(0);
  const accountId=session?.user?.id??null;
+
+ // Recheck remote membership whenever an account returns to the app or the
+ // network resumes. A revoked account must never keep a stale approved UI.
+ useEffect(()=>{
+  const refresh=()=>{
+   if(document.visibilityState==='visible')setAccessEpoch(epoch=>epoch+1);
+  };
+  window.addEventListener('focus',refresh);
+  window.addEventListener('online',refresh);
+  document.addEventListener('visibilitychange',refresh);
+  return()=>{
+   window.removeEventListener('focus',refresh);
+   window.removeEventListener('online',refresh);
+   document.removeEventListener('visibilitychange',refresh);
+  };
+ },[]);
 
  useEffect(()=>{
   let disposed=false;
@@ -65,7 +82,7 @@ export function AuthPanel(){
    }
   })();
   return()=>{disposed=true;};
- },[accountId]);
+ },[accountId,accessEpoch]);
 
  async function signInGoogle(){
   if(busy)return;

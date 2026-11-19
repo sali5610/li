@@ -17,7 +17,9 @@ permissions:
 
 jobs:
   actual-lesson-react-pilot:
-    runs-on: ubuntu-latest
+    # Pin Linux QA OS: Playwright WebKit 1.56.1 does NOT support ubuntu 26.04.
+    # GitHub's ubuntu-latest had moved; keep exact engine/OS in evidence.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4

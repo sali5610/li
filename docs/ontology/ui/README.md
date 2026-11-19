@@ -45,3 +45,13 @@ React Step16.2 draft `734dc257be47f778a929acba5cdca570979e247d` uses the same ge
 The pinned real L09 React Chromium CDP suite adds three short-height viewports (320×480, 390×420, 820×480), horizontal-overflow/scroll-to-action reachability, simulated root 200% CSS font-size and 320px reflow, CDP prefers-reduced-motion emulation, and real React VI→EN→VI copy/aria-pressed + genuine learner key isolation checks. Same seven-day screenshots and JSON metrics artifact, on each successful hosted CI run.
 
 **Evidence boundaries:** Setting root CSS font-size to 200% is NOT actual browser page zoom, iOS Dynamic Type or accessibility text resizing. CDP reduced-motion is an emulation, not physical user preference. Scroll-into-view is NOT evidence for Safari browser chrome, virtual keyboard or VoiceOver. Current G2, Safari four-turn rotation, iPad Split View, PWA and true native↔React acceptance remain OPEN. Do not infer CI PASS before reviewing exact HEAD run.
+
+## Stage02 native component state QA — Field, Navigation, Dialog, Feedback (Chrome source pilot)
+
+A separate PR-only Chromium CDP fixture loads the **pinned actual DS draft app** and its actual Component Library (not isolated invented markup). Scope:
+- **Field**: real review specimen input/error/disabled/readonly/focusable and accessible helper association.
+- **Navigation**: actual native mobile four-tab nav at 390px, 44px target, keyboard Enter activation, route and aria-current sync across Guide and Catalog.
+- **Dialog**: actual Lão Lý FAB keyboard opening, modal semantics, focus moved into dialog, Escape closing. Critically, **return focus** after Escape is recorded as a distinct P1 gate. A missing return is NOT accepted even if the source QA assertions still pass. This source gap must be fixed in shared native Dialog before signoff; a screenshot alone is insufficient.
+- **Feedback**: actual Settings JSON import with an intentionally invalid file in a temporary blank Chromium profile. Require meaningful reason, hidden loading after failure, reenabled import trigger, 48px retry, working retry event, and identical localStorage before/after invalid input. No valid import, backend sync, private learner data or publishing.
+
+Images/JSON metrics retained seven days on successful run. Real physical iPhone/iPad Safari, VoiceOver, screen reader announcement timing, Android, dynamic keyboard, large accessibility fonts, complete React parity, G2 and final acceptance all stay OPEN. A successful source fixture with a nonempty "gaps" array is **NOT** a completed Stage02/UX signoff.

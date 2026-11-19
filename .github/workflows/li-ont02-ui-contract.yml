@@ -9,6 +9,7 @@ on:
       - 'tools/compose_uxds35_stage02.mjs'
       - 'tools/test_ont02_react_primitives.cjs'
       - 'tools/test_ont02_react_chromium.cjs'
+      - 'tools/test_uxds35_native_components_chromium.cjs'
       - '.github/workflows/li-ont02-ui-contract.yml'
 permissions:
   contents: read
@@ -78,3 +79,21 @@ jobs:
           path: /tmp/li-uxds35-react-browser-evidence/
           retention-days: 7
 
+
+      - name: Chromium native Field / Dialog / Navigation / Feedback contract QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then echo "FAIL: Chromium missing"; exit 1; fi
+          python3 -m http.server 8797 --bind 127.0.0.1 --directory . > /tmp/li-uxds35-native-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          node tools/test_uxds35_native_components_chromium.cjs "$chrome" "http://127.0.0.1:8797/uxds35-design-pin/site/component-library-review.html"
+      - name: Preserve native component screenshots and gaps (synthetic only)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-uxds35-native-component-source-qa
+          path: /tmp/li-uxds35-native-browser-evidence/
+          retention-days: 7

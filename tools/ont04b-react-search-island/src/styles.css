@@ -1,51 +1,62 @@
 @import "../../../site/assets/design-tokens.css";
-/* ONT-04B1: research-local composition, NOT an approved Design System variant. */
-:root {font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--paper);font-size:var(--li-type-body);line-height:var(--li-leading-body);}
-* {box-sizing:border-box}
-body {margin:0}
-.search-page {max-width:900px;margin-inline:auto;padding:clamp(16px,4vw,32px);padding-bottom:max(32px,env(safe-area-inset-bottom,0px));}
-h1 {font-family:"Crimson Text",Georgia,serif;font-size:var(--li-type-title-lg);line-height:var(--li-leading-title-lg);font-weight:600;margin:8px 0 12px;}
-h2 {font-family:"Crimson Text",Georgia,serif;font-size:var(--li-type-title-sm);line-height:var(--li-leading-title-sm);margin:8px 0}
-p {margin:0 0 12px;overflow-wrap:anywhere}
-.eyebrow {color:var(--wood);font-size:var(--li-type-support);font-weight:700}
-.intro {max-width:66ch;color:var(--muted)}
-.locale-control {display:flex;gap:12px;align-items:center;margin-block:20px}
-label {display:block;font-weight:600;margin-block:12px 8px}
-input,select,button,a {font:inherit}
-input[type="search"],select {width:100%;min-height:48px;border:1px solid var(--rule);background:var(--porcelain);color:var(--ink);padding:10px 12px;border-radius:0}
-.locale-control select {max-width:220px}
-.search-form {border:1px solid var(--rule);background:var(--cream);padding:20px}
-.search-action {display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center}
-button,.source-link {min-height:48px;min-width:48px;border:1px solid var(--moss);padding:10px 16px;background:var(--porcelain);color:var(--moss);border-radius:0;cursor:pointer}
-button.primary {background:var(--moss);color:var(--white)}
-button:disabled {opacity:.6;cursor:not-allowed}
-a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible {outline:var(--li-color-focus-ring) solid 3px;outline-offset:3px}
-.checkbox-row {display:flex;align-items:center;gap:12px;font-weight:400;cursor:pointer}
-.checkbox-row input {width:22px;height:22px;accent-color:var(--moss)}
-.help {font-size:var(--li-type-support);line-height:var(--li-leading-support);color:var(--muted)}
-.search-outcome {margin-top:24px}
-.search-status {font-weight:600}
-.search-list {padding:0;margin:16px 0;list-style:none;display:grid;gap:16px}
-.search-result {border:1px solid var(--rule);background:var(--cream);padding:20px;min-width:0}
-.result-head,.result-actions {display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.entity-kind,.result-state {font-size:var(--li-type-support);line-height:var(--li-leading-support);padding:4px 8px;background:var(--paper-2);color:var(--ink)}
-.result-state {border:1px solid var(--rule);background:var(--cream)}
-.result-id,.result-meta {font-size:var(--li-type-support);line-height:var(--li-leading-support);color:var(--muted)}
-code {font-family:ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
-.result-actions a {display:inline-flex;align-items:center;text-decoration:underline}
-.text-control {border:0;background:none;text-decoration:underline;padding-inline:8px}
-.related {margin-top:12px;border-top:1px solid var(--rule);padding-top:12px}
-.related ul {margin:0;padding-inline-start:20px}
-.related li {padding:8px 0;overflow-wrap:anywhere}
-.related-explainer {display:block;font-size:var(--li-type-support);color:var(--muted)}
-.research-warning {border-inline-start:4px solid var(--wood);padding:8px 12px;background:var(--paper-2)}
+/* Research-only component-scoped styles. Never change native app buttons/headers. */
+.search-page {
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+ color:var(--ink);background:var(--paper);
+ font-size:var(--li-type-body);line-height:var(--li-leading-body);
+ box-sizing:border-box;
+ max-width:900px;margin-inline:auto;
+ padding:clamp(16px,4vw,32px);
+ padding-bottom:max(32px,env(safe-area-inset-bottom,0px));
+}
+.search-page *, .search-page *::before, .search-page *::after {box-sizing:border-box}
+.search-page h1 {font-family:"Crimson Text",Georgia,serif;font-size:var(--li-type-title-lg);line-height:var(--li-leading-title-lg);font-weight:600;margin:8px 0 12px}
+.search-page h2 {font-family:"Crimson Text",Georgia,serif;font-size:var(--li-type-title-sm);line-height:var(--li-leading-title-sm);margin:8px 0}
+.search-page p {margin:0 0 12px;overflow-wrap:anywhere}
+.search-page .eyebrow {color:var(--wood);font-size:var(--li-type-support);font-weight:700}
+.search-page .intro {max-width:66ch;color:var(--muted)}
+.search-page .locale-control {display:flex;gap:12px;align-items:center;margin-block:20px}
+.search-page label {display:block;font-weight:600;margin-block:12px 8px}
+.search-page input, .search-page select, .search-page button, .search-page a {font:inherit}
+.search-page input[type="search"], .search-page select {width:100%;min-height:48px;border:1px solid var(--rule);background:var(--porcelain);color:var(--ink);padding:10px 12px;border-radius:0}
+.search-page .locale-control select {max-width:220px}
+.search-page .search-form {border:1px solid var(--rule);background:var(--cream);padding:20px}
+.search-page .search-action {display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center}
+.search-page button, .search-page .source-link {min-height:48px;min-width:48px;border:1px solid var(--moss);padding:10px 16px;background:var(--porcelain);color:var(--moss);border-radius:0;cursor:pointer}
+.search-page button.primary {background:var(--moss);color:var(--white)}
+.search-page button:disabled {opacity:.6;cursor:not-allowed}
+.search-page a:focus-visible, .search-page button:focus-visible, .search-page input:focus-visible, .search-page select:focus-visible {outline:var(--li-color-focus-ring) solid 3px;outline-offset:3px}
+.search-page .checkbox-row {display:flex;align-items:center;gap:12px;font-weight:400;cursor:pointer}
+.search-page .checkbox-row input {width:22px;height:22px;accent-color:var(--moss)}
+.search-page .help {font-size:var(--li-type-support);line-height:var(--li-leading-support);color:var(--muted)}
+.search-page .search-outcome {margin-top:24px}
+.search-page .search-status {font-weight:600}
+.search-page .search-list {padding:0;margin:16px 0;list-style:none;display:grid;gap:16px}
+.search-page .search-result {border:1px solid var(--rule);background:var(--cream);padding:20px;min-width:0}
+.search-page .result-head, .search-page .result-actions {display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.search-page .entity-kind, .search-page .result-state {font-size:var(--li-type-support);line-height:var(--li-leading-support);padding:4px 8px;background:var(--paper-2);color:var(--ink)}
+.search-page .result-state {border:1px solid var(--rule);background:var(--cream)}
+.search-page .result-id, .search-page .result-meta {font-size:var(--li-type-support);line-height:var(--li-leading-support);color:var(--muted)}
+.search-page code {font-family:ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
+.search-page .result-actions a {display:inline-flex;align-items:center;text-decoration:underline}
+.search-page .text-control {border:0;background:none;text-decoration:underline;padding-inline:8px}
+.search-page .related {margin-top:12px;border-top:1px solid var(--rule);padding-top:12px}
+.search-page .related ul {margin:0;padding-inline-start:20px}
+.search-page .related li {padding:8px 0;overflow-wrap:anywhere}
+.search-page .related-explainer {display:block;font-size:var(--li-type-support);color:var(--muted)}
+.search-page .research-warning {border-inline-start:4px solid var(--wood);padding:8px 12px;background:var(--paper-2)}
 @media (max-width:600px) {
  .search-page {padding:16px;padding-bottom:max(24px,env(safe-area-inset-bottom,0px))}
- .search-form,.search-result {padding:16px}
- .search-action {grid-template-columns:1fr 1fr}
- .search-action input {grid-column:1 / -1}
- .search-action button {width:100%}
- .locale-control {justify-content:space-between}
+ .search-page .search-form, .search-page .search-result {padding:16px}
+ .search-page .search-action {grid-template-columns:1fr 1fr}
+ .search-page .search-action input {grid-column:1 / -1}
+ .search-page .search-action button {width:100%}
+ .search-page .locale-control {justify-content:space-between}
 }
-@media (max-width:360px) {.search-action {grid-template-columns:1fr}.search-action input {grid-column:auto}}
-@media (prefers-reduced-motion:reduce) {* {scroll-behavior:auto;transition:none!important;animation:none!important}}
+@media (max-width:360px) {
+ .search-page .search-action {grid-template-columns:1fr}
+ .search-page .search-action input {grid-column:auto}
+}
+@media (prefers-reduced-motion:reduce) {
+ .search-page, .search-page * {scroll-behavior:auto;transition:none!important;animation:none!important}
+}

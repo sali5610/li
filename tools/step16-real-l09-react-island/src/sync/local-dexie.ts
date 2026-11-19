@@ -73,6 +73,42 @@ export class PrivateDeviceStore extends Dexie{
    return true;
   });
  }
+ /**
+  * Resolve a real same-item conflict ONLY after the learner chooses which revision
+  * to keep. The caller must fetch the latest RLS-scoped remote snapshot.
+  * No silent last-write-wins and no loss of an unconfirmed newer edit.
+  */
+ async resolveConflict(accountId:string,op:OutboxEntry,latest:PrivateItem,
+  decision:'keep-local'|'use-remote'){
+  checkScope(accountId,op.itemType,op.itemId);
+  if(op.accountId!==accountId||latest.owner_id!==accountId||
+      latest.item_type!==op.itemType||latest.item_id!==op.itemId)
+   throw new Error('CONFLICT_OWNER_OR_ITEM_MISMATCH');
+  if(!Number.isSafeInteger(latest.revision)||latest.revision<1)
+   throw new Error('INVALID_REMOTE_REVISION');
+  return this.transaction('rw',this.records,this.outbox,async()=>{
+   const current=await this.outbox.get(op.key);
+   const row=await this.records.get(op.key);
+   if(!current||!row||!current.conflict||!row.conflict||
+      current.opId!==op.opId||current.accountId!==accountId||
+      row.accountId!==accountId)
+    throw new Error('CONFLICT_CHANGED_REFRESH_REQUIRED');
+   if(decision==='use-remote'){
+    await this.records.put({key:op.key,accountId,itemType:latest.item_type,itemId:latest.item_id,
+      payload:latest.payload,deletedAt:latest.deleted_at,baseRevision:latest.revision,
+      changedAt:latest.changed_at,conflict:false});
+    await this.outbox.delete(op.key);
+    return 'remote-accepted' as const;
+   }
+   if(decision==='keep-local'){
+    const newOpId=crypto.randomUUID();
+    await this.records.update(op.key,{baseRevision:latest.revision,conflict:false});
+    await this.outbox.update(op.key,{baseRevision:latest.revision,opId:newOpId,conflict:false});
+    return 'local-requeued' as const;
+   }
+   throw new Error('INVALID_CONFLICT_DECISION');
+  });
+ }
  async accountRecords(accountId:string){
   if(!accountId.trim())throw new Error('ACCOUNT_REQUIRED');
   return this.records.where('accountId').equals(accountId).toArray();

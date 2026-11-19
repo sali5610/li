@@ -2,6 +2,21 @@
 
 **Rule:** Every request to fix a component triggers a top-down impact review, not a local patch at the reported screenshot. Use this before merging UI/UX work.
 
+## UX-DS-35 · Responsive adaptive iPhone/iPad & React readiness (DRAFT, 2026-11-19)
+
+**Source contracts:** [Adaptive responsive rules](responsive-adaptive.md) and [staged remediation roadmap](plans/2026-11-19-atomic-responsive-react-roadmap.md). These checks are **NOT yet marked PASS by creation of this checklist**. Existing DS33 Safari recovery remains until device verification; keep G2 pending.
+
+- [ ] Confirm responsive ownership chain: reference/semantic/component tokens → atom/molecule layout and state → organism/template composition; no new page-specific `!important`/absolute-offset screenshot patch.
+- [ ] Test actual **window + container + visible height**, not device name alone; iPad Split View may be compact, iPhone landscape may be wide but short. Cover keyboard/safe-area, pointer/touch, full VI/EN text, 200% text/320px reflow, and current Safari browser chrome.
+- [ ] Preserve PO-approved Thần Chú 2-up **320–640px** and meaningful untruncated names; preserve square primary controls, sand oval active nav, 48px intended new touch target, one approved iPad landscape Home artwork with portrait crop, and current iPad density baseline where applicable.
+- [ ] iPhone physical Safari: portrait 320/375/390/402/430 widths and short-height landscape, fixed nav, focus, virtual keyboard, check-in/mentor dialog scroll/Close/CTA, no blocked pinching or sticky touch-hover.
+- [ ] iPad physical Safari: full portrait and landscape, Split View/resize if supported, hardware keyboard/pointer, browser toolbar, **portrait→landscape→portrait→landscape** repeated with no stale root, no blank paper, no scroll trap, centered bubble and two CTA, preserved Home question and progress.
+- [ ] React L09/Auth CSS/TSX included in token scan and typed CSS/TS parity; component variant/state stories include compact/medium/expanded/short-height, and style isolation from Vanilla shell.
+- [ ] Record PASS/FAIL/UNVERIFIED separately for Chromium automation vs real iPhone/iPad Safari/PWA/VoiceOver; include source SHA, viewport metrics, screenshots and severity. No Human PO G2 approval inferred.
+- [ ] Do not enable invite-only Google auth/cloud sync or public release as part of a responsive/layout PR; observe Step16.1 real identity/RLS/consent and manual deployment gates.
+
+---
+
 ## UX-DS-22 · Cross-pattern behavior gate (2026-11-19)
 - [ ] Apply [UX-DS-22 Do/Don't and behavior contract](ux-patterns-and-behavior.md) to every affected component: usage, anti-pattern, anatomy, state, accessible semantics, responsive layout and visual exceptions.
 - [ ] Test primary vs secondary hierarchy; semantic link vs action; selected vs focus; disabled vs readonly; default/hover/focus/pressed/selected/busy/error/empty.

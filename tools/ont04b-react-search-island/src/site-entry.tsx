@@ -2,7 +2,7 @@
  * ONT-04B2a — local-only opt-in native screen bridge.
  * No shipped route. The existing native search remains the full fallback.
  */
-import React,{useEffect} from 'react';
+import {useEffect} from 'react';
 import {createRoot} from 'react-dom/client';
 import {SearchIsland} from './SearchIsland';
 import './styles.css';

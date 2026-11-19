@@ -1,5 +1,6 @@
 import {RevisionConflict} from './contract.js';
-import {NeonUserApi} from './neon-api.js';
+import type {Edit,PrivateItem} from './contract.js';
+
 import {PrivateDeviceStore} from './local-dexie.js';
 
 /** Explicit privacy gate defaults CLOSED; never infer approval from a CI mock. */
@@ -16,7 +17,8 @@ function classify(error:unknown):'sign-in-required'|'security-error'|'offline'{
    return 'security-error';
  return 'offline';
 }
-async function performSync(store:PrivateDeviceStore,api:NeonUserApi,accountId:string,gate:SyncGate):Promise<SyncReport>{
+export type SyncUserApi={accountId:string;write:(edit:Edit)=>Promise<PrivateItem>;all:()=>Promise<PrivateItem[]>};
+async function performSync(store:PrivateDeviceStore,api:SyncUserApi,accountId:string,gate:SyncGate):Promise<SyncReport>{
  const initial=await store.counts(accountId);
  if(!gate.twoUserJwtRlsVerified||!gate.remoteConsentForPrivateState)
   return{mode:'local-only',uploaded:0,downloaded:0,...initial};
@@ -45,7 +47,7 @@ async function performSync(store:PrivateDeviceStore,api:NeonUserApi,accountId:st
   :failure??(counts.pending?'pending':'synced');
  return{mode,uploaded,downloaded,...counts};
 }
-export function syncOnce(store:PrivateDeviceStore,api:NeonUserApi,accountId:string,
+export function syncOnce(store:PrivateDeviceStore,api:SyncUserApi,accountId:string,
  gate:SyncGate={twoUserJwtRlsVerified:false,remoteConsentForPrivateState:false}):Promise<SyncReport>{
  if(!accountId.trim()||accountId!==api.accountId)return Promise.reject(new Error('ACCOUNT_BINDING_REQUIRED'));
  let byUser=inFlight.get(store);

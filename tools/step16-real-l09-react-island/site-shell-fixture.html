@@ -91,7 +91,13 @@
   assert(doc.querySelector('#l09-guidedDraft').value===seed.guidedDraft,
     'Native guided response was not restored');
   assert(localStorage.getItem(nativeKey)===null,'Shared fixture contaminated real learner data');
+  assert(doc.querySelector('#page-lessonL09').dataset.liResearchStage==='draft' &&
+    doc.getElementById('l09-progressBar').getAttribute('aria-valuenow')==='0',
+    'The synthetic lesson progress started from an incorrect review stage');
+  assert(doc.getElementById('l09-progress').textContent.includes('thử nghiệm'),
+    'Synthetic research progress is not visibly labeled');
   checks.push('Local shared fixture hydrates existing native-shaped L09 attempt in both frameworks without touching real key');
+  checks.push('Progress projects draft-only synthetic state, 0/1 review without fake completed lesson');
   const change=(selector,value)=>{
     const node=doc.querySelector(selector);
     assert(node&&!node.disabled,'Missing enabled editor '+selector);
@@ -123,9 +129,16 @@
     'Explicit rehydrate lost latest React text');
   checks.push('React detects same-tab stale baseline and requires explicit refresh; no silent overwrite');
   assert(sharedState().draft.every(answer=>answer.trim().length>=12),'Synthetic submit prerequisites missing');
+  let realSubmitEvents=0;
+  frame.contentWindow.addEventListener('li:lesson-submitted',()=>realSubmitEvents++);
   sharedReact().querySelector('[data-action="submit"]').click();
   await wait(()=>sharedState()?.submitted===true&&!!sharedReact().querySelector('[data-rubric]'),
     'React shared submit');
+  await wait(()=>doc.querySelector('#page-lessonL09').dataset.liResearchStage==='submitted','submitted progress projection');
+  assert(realSubmitEvents===0,'Synthetic submission entered real lesson activity feed');
+  assert(doc.getElementById('l09-progressBar').getAttribute('aria-valuenow')==='0',
+    'Submitting was misrepresented as completed self-review');
+  checks.push('Submitted React attempt projects 0/1 pending review; synthetic event never enters genuine activity');
   assert(sharedState().submission.length===4&&
     localStorage.getItem(nativeKey)===null,'Shared submission touched production learner key');
   doc=await load(true,390,'l09-native-fixture');
@@ -134,6 +147,55 @@
     doc.querySelector('#l09-question-0').disabled,
     'Vanilla could not reload submitted React attempt');
   checks.push('Vanilla source reload reads React-submitted attempt, preserving answer gate and lock');
+  assert(doc.querySelector('#page-lessonL09').dataset.liResearchStage==='submitted',
+    'Reload changed submitted progress');
+  assert(typeof frame.contentWindow.liStep16Fixture?.capture==='function' &&
+    typeof frame.contentWindow.liStep16Fixture?.rollback==='function',
+    'Local research rollback API unavailable');
+  const checkpoint=frame.contentWindow.liStep16Fixture.capture();
+  const ratingChange=(index,value)=>{
+    const select=doc.querySelector('[data-rating="'+index+'"]');
+    Object.getOwnPropertyDescriptor(frame.contentWindow.HTMLSelectElement.prototype,'value').set.call(select,String(value));
+    select.dispatchEvent(new frame.contentWindow.Event('change',{bubbles:true}));
+  };
+  [0,1,2,2].forEach((value,i)=>ratingChange(i,value));
+  await wait(()=>sharedState()?.ratings?.every(v=>v!==null),'rubric review draft saved');
+  sharedReact().querySelector('[data-action="finish"]').click();
+  await wait(()=>sharedState()?.reviewed===true,'React review completed');
+  await wait(()=>doc.querySelector('#page-lessonL09').dataset.liResearchStage==='reviewed','review projection');
+  assert(doc.getElementById('l09-progressBar').getAttribute('aria-valuenow')==='1' &&
+    doc.getElementById('l09-progressFill').style.width==='100%' &&
+    doc.getElementById('l09-progress').textContent.includes('tự đánh giá'),
+    'Self-review progress projection is not honest');
+  assert(localStorage.getItem(nativeKey)===null,'Demo review wrote genuine learner key');
+  checks.push('Self-review projects 1/1 and resume text without claiming mastery or writing genuine progress');
+  const reviewedRaw=localStorage.getItem(shared);
+  let denied=false;
+  try{frame.contentWindow.liStep16Fixture.rollback(checkpoint,reviewedRaw,false)}catch{denied=true}
+  assert(denied&&localStorage.getItem(shared)===reviewedRaw,'Rollback without confirmation modified data');
+  denied=false;
+  try{frame.contentWindow.liStep16Fixture.rollback(checkpoint,'stale expected bytes',true)}catch{denied=true}
+  assert(denied&&localStorage.getItem(shared)===reviewedRaw,'Stale rollback overwrote latest progress');
+  checks.push('Rollback requires explicit confirmation and exact expected current record');
+  assert(frame.contentWindow.liStep16Fixture.rollback(checkpoint,reviewedRaw,true)===checkpoint.raw,
+    'Confirmed rollback did not return exact backup bytes');
+  await wait(()=>doc.querySelector('#page-lessonL09').dataset.liResearchStage==='submitted','rollback projection');
+  assert(sharedState().reviewed===false &&
+    doc.getElementById('l09-progressBar').getAttribute('aria-valuenow')==='0' &&
+    !!sharedReact().querySelector('[data-conflict]'),
+    'Rollback did not revert review stage and mark React view stale');
+  sharedReact().querySelector('[data-action="reload-state"]').click();
+  await wait(()=>!sharedReact().querySelector('[data-conflict]'),'explicit state reload after rollback');
+  assert(!sharedReact().querySelector('[data-reviewed]')&&
+    sharedReact().querySelector('[data-rubric]'),'React did not rehydrate restored submitted state');
+  checks.push('Confirmed synthetic rollback restores exact submission and forces explicit React rehydration');
+  doc=await load(true,390,'l09-native-fixture');
+  await wait(()=>doc.querySelector('#page-lessonL09').dataset.liRuntime==='react-candidate','vanilla reload after rollback');
+  assert(doc.querySelector('#page-lessonL09').dataset.liResearchStage==='submitted' &&
+    !doc.getElementById('l09-answerBox').hidden &&
+    sharedState().reviewed===false,
+    'Native could not resume recovered pre-review state');
+  checks.push('Reload after rollback preserves native submitted answer gate and pending review status');
   const last=JSON.parse(localStorage.getItem(shared));
   assert(last.guidedDraft==='Native guided draft updated independently'&&
     last.futurePrivate.mustRetain==='unknown forward schema'&&

@@ -1,0 +1,685 @@
+{
+  "profile": "public-curated-ontology-contract-demo",
+  "graphVersion": "0.1.0",
+  "contractVersion": "0.1.0",
+  "demoOnly": true,
+  "boundary": "All nodes are demonstrative pointers; existing content IDs are preserved; concept IDs/slots/proposed edges are not published product facts.",
+  "nodes": [
+    {
+      "id": "token:css:--moss",
+      "kind": "DesignToken",
+      "title": "--moss",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/design-tokens.css",
+        "sourceSection": "Generated from tokens.json; moss value and primitive role",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "component:Button",
+      "kind": "Component",
+      "title": "Button",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/main/design-system/components.md",
+        "sourceSection": "Primary/secondary CTA; current static implementation",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "component:ActionGroup",
+      "kind": "Component",
+      "title": "ActionGroup",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/main/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "One dominant action per decision area; ontology name proposed",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "pattern:LearningActionArea",
+      "kind": "Pattern",
+      "title": "LearningActionArea",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/main/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "Decision-area pattern candidate",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "slot:LearningActionArea:primary",
+      "kind": "Slot",
+      "title": "Primary action slot",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/main/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "Pattern/action anatomy proposal",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "screen:lesson:L09-1-2",
+      "kind": "Screen",
+      "title": "L09 lesson review screen",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/lesson-l09-hifi-markup.js",
+        "sourceSection": "Existing native lesson route",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "rule:UX-DS-22:one-dominant-action",
+      "kind": "UIRule",
+      "title": "One dominant action per decision area",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/main/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "UX-DS-22 Global Do / Don't",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "gate:ONT01:action-hierarchy",
+      "kind": "QAGate",
+      "title": "Action hierarchy validator specimen",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41d6cf6db72a81188986ed5f65d17a5e",
+        "sourceSection": "ONT-01 demonstration validator, not shipped component QA",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "lesson:L09-1-1",
+      "kind": "Lesson",
+      "title": "Population, Sample & Variable Types",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Tổng thể, mẫu và loại biến"
+        }
+      ],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "W2A bilingual editorial draft",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "lesson:L09-1-2",
+      "kind": "Lesson",
+      "title": "Sampling Bias vs Random Sampling Variation",
+      "version": "0.1.0",
+      "reviewState": "approved",
+      "publishState": "review_only",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Sai lệch chọn mẫu"
+        }
+      ],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+        "sourceSection": "Wave1 PO content lock; UI/device gates separate",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "concept:ont01:population",
+      "kind": "Concept",
+      "title": "Population",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Tổng thể"
+        }
+      ],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "Proposed concept identity extracted from W2A",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Provisional semantic identifier; not source curriculum route"
+    },
+    {
+      "id": "concept:ont01:sample",
+      "kind": "Concept",
+      "title": "Sample",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Mẫu"
+        }
+      ],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "Proposed concept identity extracted from W2A",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Provisional semantic identifier; not a distinct approved lesson"
+    },
+    {
+      "id": "concept:ont01:selection-bias",
+      "kind": "Concept",
+      "title": "Selection bias",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Sai lệch chọn mẫu"
+        }
+      ],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+        "sourceSection": "Proposed concept identity from locked L09 content",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "concept:ont01:random-variation",
+      "kind": "Concept",
+      "title": "Random sampling variation",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Biến thiên lấy mẫu ngẫu nhiên"
+        }
+      ],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+        "sourceSection": "Proposed concept identity from locked L09 content",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "outcome:ont01:L09-1-1:identify-population-sample",
+      "kind": "LearningOutcome",
+      "title": "Identify population and sample",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "Illustrative outcome mapping; do not award mastery",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "technique:L2-T06",
+      "kind": "TechniqueDefinition",
+      "title": "L2-T06",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8131ab62e71c289a1916",
+        "sourceSection": "S145 verified primary choice for L09-1-1; name is not renamed",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "application:ont01:L09-1-1:l2-t06:p01",
+      "kind": "TechniqueApplication",
+      "title": "T06 micropractice mapping L09-1-1",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8131ab62e71c289a1916",
+        "sourceSection": "S145 authoring manifest, runtime not shipped",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "micropractice:ont01:L09-1-1:l2-t06:p01",
+      "kind": "Micropractice",
+      "title": "S145 enacted method example",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8131ab62e71c289a1916",
+        "sourceSection": "Different fixture from independent case; runtime unimplemented",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "challenge:ont01:L09-1-1:independent",
+      "kind": "IndependentChallenge",
+      "title": "W2A separate independent challenge",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "Referenced independently gated case, no score from opening",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "claim:ont01:L09-1-2:contains-contrast",
+      "kind": "SourceClaim",
+      "title": "L09-1-2 editorially contrasts sampling bias and sampling variation",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+        "sourceSection": "Editorial content observation only; NOT claim of scientific validation",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "source:editorial:L09-1-2:notion",
+      "kind": "SourceEdition",
+      "title": "Wave1 L09-1-2 Notion editorial edition",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+        "sourceSection": "Approved content record, not external peer-reviewed evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:ui:button-uses-moss",
+      "predicate": "USES_TOKEN",
+      "from": "component:Button",
+      "to": "token:css:--moss",
+      "reviewState": "verified",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/main/design-system/components.md",
+        "sourceSection": "Primary CTA and token role",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ui:pattern-slot",
+      "predicate": "HAS_SLOT",
+      "from": "pattern:LearningActionArea",
+      "to": "slot:LearningActionArea:primary",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/main/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "Pattern ontology proposal",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ui:button-fills-primary",
+      "predicate": "FILLS_SLOT",
+      "from": "component:Button",
+      "to": "slot:LearningActionArea:primary",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/main/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "Pattern ontology proposal",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ui:actiongroup-fills-primary",
+      "predicate": "FILLS_SLOT",
+      "from": "component:ActionGroup",
+      "to": "slot:LearningActionArea:primary",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/main/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "Slot composition proposal, not observed runtime",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ui:screen-uses-pattern",
+      "predicate": "USES_PATTERN",
+      "from": "screen:lesson:L09-1-2",
+      "to": "pattern:LearningActionArea",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/lesson-l09-hifi-markup.js",
+        "sourceSection": "Candidate mapping; React parity untested",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ui:rule-constrains-pattern",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-22:one-dominant-action",
+      "to": "pattern:LearningActionArea",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/main/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "Documented rule; proposed binding",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ui:gate-validates-rule",
+      "predicate": "VALIDATES",
+      "from": "gate:ONT01:action-hierarchy",
+      "to": "rule:UX-DS-22:one-dominant-action",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41d6cf6db72a81188986ed5f65d17a5e",
+        "sourceSection": "Validator specimen only",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:academic:lesson11-teaches-population",
+      "predicate": "TEACHES",
+      "from": "lesson:L09-1-1",
+      "to": "concept:ont01:population",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "Proposed concept semantic extraction",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:academic:lesson11-teaches-sample",
+      "predicate": "TEACHES",
+      "from": "lesson:L09-1-1",
+      "to": "concept:ont01:sample",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "Proposed concept semantic extraction",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:academic:lesson11-outcome",
+      "predicate": "AIMS_AT",
+      "from": "lesson:L09-1-1",
+      "to": "outcome:ont01:L09-1-1:identify-population-sample",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "Concept outcome mapping candidate",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:academic:lesson12-teaches-bias",
+      "predicate": "TEACHES",
+      "from": "lesson:L09-1-2",
+      "to": "concept:ont01:selection-bias",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+        "sourceSection": "Existing content, new concept identity not approved",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:academic:lesson12-teaches-variation",
+      "predicate": "TEACHES",
+      "from": "lesson:L09-1-2",
+      "to": "concept:ont01:random-variation",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+        "sourceSection": "Existing content, new concept identity not approved",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:academic:contrast-bias-variation",
+      "predicate": "CONTRASTS_WITH",
+      "from": "concept:ont01:selection-bias",
+      "to": "concept:ont01:random-variation",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+        "sourceSection": "Editorial distinction, not same meaning",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:academic:population-sample-related",
+      "predicate": "RELATED_TO",
+      "from": "concept:ont01:population",
+      "to": "concept:ont01:sample",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "Related concepts, not hard prerequisite",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:academic:claim-source",
+      "predicate": "SUPPORTED_BY",
+      "from": "claim:ont01:L09-1-2:contains-contrast",
+      "to": "source:editorial:L09-1-2:notion",
+      "reviewState": "verified",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+        "sourceSection": "Only proves editorial document contains contrast",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:method:lesson11-uses-T06",
+      "predicate": "USES_METHOD",
+      "from": "lesson:L09-1-1",
+      "to": "application:ont01:L09-1-1:l2-t06:p01",
+      "reviewState": "verified",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8131ab62e71c289a1916",
+        "sourceSection": "S145 primary L2-T06 editorial selection",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:method:application-T06",
+      "predicate": "INSTANTIATES_METHOD",
+      "from": "application:ont01:L09-1-1:l2-t06:p01",
+      "to": "technique:L2-T06",
+      "reviewState": "verified",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8131ab62e71c289a1916",
+        "sourceSection": "S145 editorial mapping, not runtime mastery",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:method:practice-assesses-T06",
+      "predicate": "ASSESSES_METHOD",
+      "from": "micropractice:ont01:L09-1-1:l2-t06:p01",
+      "to": "application:ont01:L09-1-1:l2-t06:p01",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8131ab62e71c289a1916",
+        "sourceSection": "Practice authoring, not actual learner execution",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:method:challenge-assesses-outcome",
+      "predicate": "ASSESSES_OUTCOME",
+      "from": "challenge:ont01:L09-1-1:independent",
+      "to": "outcome:ont01:L09-1-1:identify-population-sample",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "Independent assessment, answer gating not integrated",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    }
+  ]
+}

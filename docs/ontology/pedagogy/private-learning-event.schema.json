@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "li. private learning event contract (DESIGN ONLY — NOT A DB MIGRATION)",
+  "description": "Owner and permissions are bound to server-auth/RLS outside the event payload. Reject client-supplied ownerId. This is a local event validation shape, not security enforcement.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "eventId",
+    "attemptId",
+    "lessonId",
+    "kind",
+    "occurredAt",
+    "payload",
+    "schemaVersion"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.1.0"
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 8
+    },
+    "attemptId": {
+      "type": "string",
+      "minLength": 8
+    },
+    "lessonId": {
+      "type": "string",
+      "pattern": "^L[0-9]{2}-[0-9]+-[0-9]+$"
+    },
+    "kind": {
+      "enum": [
+        "GUIDE_VIEWED",
+        "METHOD_SELECTED",
+        "METHOD_DECLINED",
+        "MICROPRACTICE_SUBMITTED",
+        "INDEPENDENT_SUBMITTED",
+        "REVIEW_ATTEMPTED",
+        "HINT_USED",
+        "ANSWER_REVEALED"
+      ]
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "App-specific evidence, not arbitrary free-text into a public graph; implementation must validate by event kind"
+    },
+    "sourceVersion": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "INDEPENDENT_SUBMITTED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "required": [
+              "caseKey",
+              "submitted",
+              "rubricEvaluated",
+              "independent",
+              "hintUsed"
+            ],
+            "properties": {
+              "submitted": {
+                "const": true
+              },
+              "rubricEvaluated": {
+                "type": "boolean"
+              },
+              "independent": {
+                "type": "boolean"
+              },
+              "hintUsed": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "MICROPRACTICE_SUBMITTED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "required": [
+              "applicationId",
+              "performedSteps",
+              "submitted"
+            ],
+            "properties": {
+              "submitted": {
+                "const": true
+              },
+              "applicationId": {
+                "type": "string"
+              },
+              "performedSteps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "REVIEW_ATTEMPTED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "required": [
+              "caseKey",
+              "dueAt",
+              "correctnessAssessed",
+              "completed"
+            ],
+            "properties": {
+              "dueAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "correctnessAssessed": {
+                "type": "boolean"
+              },
+              "completed": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

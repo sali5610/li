@@ -1,0 +1,997 @@
+{
+  "profile": "academic-curated-ontology-pilot",
+  "schemaVersion": "0.1.0",
+  "baseContractVersion": "0.1.0",
+  "demoOnly": true,
+  "coverage": {
+    "fieldCountInProduct": 15,
+    "sampleFields": [
+      "F03",
+      "F09",
+      "F15"
+    ],
+    "programmeCoverage": "NOT_ASSESSED",
+    "courseRegistryCoverage": "NOT_ASSESSED",
+    "independentAcademicReview": "OPEN",
+    "lessonRelease": "NOT_AUTHORIZED"
+  },
+  "boundary": "F03/F09/F15 manuscript observations and ONE Berkeley source-programme sample, not a complete curriculum or released graph. All new semantic IDs are PROPOSED; reviewed lesson content is unchanged.",
+  "nodes": [
+    {
+      "id": "field:F03",
+      "kind": "Field",
+      "title": "UX Design",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Thiết kế trải nghiệm người dùng"
+        }
+      ],
+      "attributes": {
+        "fieldKey": "F03"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/4196cf6db72a8199842ae84a10e87297",
+        "sourceSection": "15 Field identity register",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "field:F09",
+      "kind": "Field",
+      "title": "Data Science",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Khoa học dữ liệu"
+        }
+      ],
+      "attributes": {
+        "fieldKey": "F09"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/4196cf6db72a8199842ae84a10e87297",
+        "sourceSection": "15 Field identity register",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "field:F15",
+      "kind": "Field",
+      "title": "Supply Chain",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Chuỗi cung ứng"
+        }
+      ],
+      "attributes": {
+        "fieldKey": "F15"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/4196cf6db72a8199842ae84a10e87297",
+        "sourceSection": "15 Field identity register",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "lesson:L09-1-1",
+      "kind": "Lesson",
+      "title": "Population, Sample & Variable Types",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Tổng thể, mẫu và loại biến"
+        }
+      ],
+      "attributes": {
+        "canonicalLessonKey": "L09-1-1",
+        "contentMaturity": "editorial_draft"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "W2A internal editorial baseline; no release",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "lesson:L09-1-2",
+      "kind": "Lesson",
+      "title": "Sampling Bias vs Random Sampling Variation",
+      "version": "0.1.0",
+      "reviewState": "approved",
+      "publishState": "review_only",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Sai lệch chọn mẫu và biến thiên lấy mẫu"
+        }
+      ],
+      "attributes": {
+        "canonicalLessonKey": "L09-1-2",
+        "contentMaturity": "po_content_locked"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+        "sourceSection": "S126 content freeze only; G2/rights/device pending",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "lesson:L03-2-1",
+      "kind": "Lesson",
+      "title": "Taxonomy, Hierarchy and Canonical Concepts",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Phân loại, thứ bậc và khái niệm chuẩn"
+        }
+      ],
+      "attributes": {
+        "canonicalLessonKey": "L03-2-1",
+        "contentMaturity": "editorial_draft"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "W3A editorial baseline; not released",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "lesson:L15-2-1",
+      "kind": "Lesson",
+      "title": "Demand Forecasting & Planning Assumptions",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Dự báo nhu cầu và giả định kế hoạch"
+        }
+      ],
+      "attributes": {
+        "canonicalLessonKey": "L15-2-1",
+        "contentMaturity": "editorial_draft"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "W2A editorial baseline; not released",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "concept:ont01:population",
+      "kind": "Concept",
+      "title": "Population",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Tổng thể"
+        }
+      ],
+      "attributes": {
+        "senseDefinition": "Target set of units over which an inference is intended",
+        "senseBoundary": "Not synonymous with observed sample or target audience marketing segment"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "§1 learning objective; candidate semantic extraction",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "concept:ont01:sample",
+      "kind": "Concept",
+      "title": "Sample",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Mẫu"
+        }
+      ],
+      "attributes": {
+        "senseDefinition": "Observed or selected subset of a specified population",
+        "senseBoundary": "Do not equate sample size with sample representativeness"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "§1 learning objective; candidate semantic extraction",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "concept:ont01:selection-bias",
+      "kind": "Concept",
+      "title": "Selection bias",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Sai lệch chọn mẫu"
+        }
+      ],
+      "attributes": {
+        "senseDefinition": "Systematic distortion due to who/what enters the observed sample",
+        "senseBoundary": "Not identical to random sampling variation or question-wording bias"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+        "sourceSection": "§II bias versus random variation distinction",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "concept:ont03a:taxonomic-classification",
+      "kind": "Concept",
+      "title": "Taxonomy",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Hệ phân loại"
+        }
+      ],
+      "attributes": {
+        "senseDefinition": "Controlled classification vocabulary for assigning content to topics",
+        "senseBoundary": "Not inherently equivalent to the user-visible navigation tree"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "§2 four objects not to conflate",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "concept:ont03a:navigation",
+      "kind": "Concept",
+      "title": "Navigation",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Điều hướng"
+        }
+      ],
+      "attributes": {
+        "senseDefinition": "User-facing routes and interaction pathways to find content",
+        "senseBoundary": "Not equivalent to a back-office topic taxonomy or content schema"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "§2 visible route and content model distinction",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "concept:ont03a:forecast-assumptions",
+      "kind": "Concept",
+      "title": "Forecasting assumptions",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Giả định dự báo"
+        }
+      ],
+      "attributes": {
+        "senseDefinition": "Explicit conditions under which sales history and a forecasting method approximate demand",
+        "senseBoundary": "A simple arithmetic historical mean is not automatically an MA(q) stochastic model"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "§ planning assumptions and historical average limitations",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "outcome:ont03a:L09-1-1:identify-population-sample",
+      "kind": "LearningOutcome",
+      "title": "Identify population vs sample in a bounded case",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "outcomeKey": "L09-1-1:identify-population-sample"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "L09-1-1 learner goals and independent question",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "outcome:ont03a:L03-2-1:taxonomy-navigation",
+      "kind": "LearningOutcome",
+      "title": "Distinguish taxonomy from navigation",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "outcomeKey": "L03-2-1:taxonomy-navigation"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "§1 four learning goals",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "outcome:ont03a:L15-2-1:forecast-limits",
+      "kind": "LearningOutcome",
+      "title": "State scope and assumptions of a simple historical forecast",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "outcomeKey": "L15-2-1:forecast-limits"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "Forecast teaching notes and QA",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "claim:ont03a:L09-1-1:editorial",
+      "kind": "SourceClaim",
+      "title": "The lesson addresses population/sample/variable distinction",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "claimScope": "manuscript_contains",
+        "contentMaturity": "editorial_draft"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "W2A manuscript sections §1–3",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "claim:ont03a:L03-2-1:editorial",
+      "kind": "SourceClaim",
+      "title": "The lesson contrasts taxonomy, hierarchy, navigation and content model",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "claimScope": "manuscript_contains",
+        "contentMaturity": "editorial_draft"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "§2 four objects table",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "claim:ont03a:L15-2-1:editorial",
+      "kind": "SourceClaim",
+      "title": "The lesson qualifies naive average forecasting and sales-as-demand assumption",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "claimScope": "manuscript_contains",
+        "contentMaturity": "editorial_draft"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S147 baseline and source claim register",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "source:editorial:L09-1-1:notion",
+      "kind": "SourceEdition",
+      "title": "L09-1-1 VI/EN Notion editorial edition",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "editionKey": "notion:L09-1-1:2026-11-18",
+        "scope": "editorial_observation"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S147/S156 editorial record",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "source:editorial:L03-2-1:notion",
+      "kind": "SourceEdition",
+      "title": "L03-2-1 VI/EN Notion editorial edition",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "editionKey": "notion:L03-2-1:2026-11-18",
+        "scope": "editorial_observation"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "S150 editorial record",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "source:editorial:L15-2-1:notion",
+      "kind": "SourceEdition",
+      "title": "L15-2-1 VI/EN Notion editorial edition",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "editionKey": "notion:L15-2-1:2026-11-18",
+        "scope": "editorial_observation"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S147 editorial record",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "institution:uc-berkeley",
+      "kind": "Institution",
+      "title": "University of California, Berkeley",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "institutionKey": "UC_BERKELEY"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41d6cf6db72a81b58cd8f48bb4776fa0",
+        "sourceSection": "Institution name as cited in S183 F09 audit",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "source-programme:uc-berkeley:ba-ds:2026-27",
+      "kind": "SourceProgramme",
+      "title": "UC Berkeley Data Science BA 2026–27",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "institutionKey": "UC_BERKELEY",
+        "programmeKey": "BA_DATA_SCIENCE",
+        "edition": "2026-27",
+        "programmeType": "degree",
+        "scopeStatus": "partial_research"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41d6cf6db72a81b58cd8f48bb4776fa0",
+        "sourceSection": "S183 Berkeley BA source-course audit; not full syllabus verified",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "programme-requirement:uc-berkeley:ba-ds:2026-27:lower-intro",
+      "kind": "ProgrammeRequirement",
+      "title": "Berkeley Data Science lower-division introductory data requirement",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "requirementKey": "LOWER_INTRO_DATA",
+        "requirementType": "required",
+        "selectionRule": "Official programme source and current requirement choice to be reviewed at CUR-02",
+        "coverageStatus": "sample_only"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41d6cf6db72a81b58cd8f48bb4776fa0",
+        "sourceSection": "S183 lower-division representative programme requirement",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    },
+    {
+      "id": "source-course:uc-berkeley:ba-ds:2026-27:DATA-8",
+      "kind": "SourceCourse",
+      "title": "UC Berkeley DATA 8 (reference course)",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "institutionKey": "UC_BERKELEY",
+        "courseCode": "DATA 8",
+        "edition": "2026-27",
+        "sourceType": "official_course",
+        "crosslistKey": null
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41d6cf6db72a81b58cd8f48bb4776fa0",
+        "sourceSection": "S167/S183 source-course identity research — course code distinct from li. Course",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": ""
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:ont03a:scope:L09-1-1",
+      "predicate": "SCOPED_TO_FIELD",
+      "from": "lesson:L09-1-1",
+      "to": "field:F09",
+      "reviewState": "verified",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "Roadmap canonical Field mapping",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:scope:L09-1-2",
+      "predicate": "SCOPED_TO_FIELD",
+      "from": "lesson:L09-1-2",
+      "to": "field:F09",
+      "reviewState": "verified",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+        "sourceSection": "Wave1 canonical Field mapping",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:scope:L03-2-1",
+      "predicate": "SCOPED_TO_FIELD",
+      "from": "lesson:L03-2-1",
+      "to": "field:F03",
+      "reviewState": "verified",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Roadmap canonical Field mapping",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:scope:L15-2-1",
+      "predicate": "SCOPED_TO_FIELD",
+      "from": "lesson:L15-2-1",
+      "to": "field:F15",
+      "reviewState": "verified",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "Roadmap canonical Field mapping",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:teaches:population",
+      "predicate": "TEACHES",
+      "from": "lesson:L09-1-1",
+      "to": "concept:ont01:population",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "Concept identity candidate",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:teaches:sample",
+      "predicate": "TEACHES",
+      "from": "lesson:L09-1-1",
+      "to": "concept:ont01:sample",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "Concept identity candidate",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:teaches:selection",
+      "predicate": "TEACHES",
+      "from": "lesson:L09-1-2",
+      "to": "concept:ont01:selection-bias",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+        "sourceSection": "Concept identity candidate",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:teaches:taxonomy",
+      "predicate": "TEACHES",
+      "from": "lesson:L03-2-1",
+      "to": "concept:ont03a:taxonomic-classification",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Concept identity candidate",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:teaches:navigation",
+      "predicate": "TEACHES",
+      "from": "lesson:L03-2-1",
+      "to": "concept:ont03a:navigation",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Concept identity candidate",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:teaches:forecast",
+      "predicate": "TEACHES",
+      "from": "lesson:L15-2-1",
+      "to": "concept:ont03a:forecast-assumptions",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "Concept identity candidate",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:aims:L09",
+      "predicate": "AIMS_AT",
+      "from": "lesson:L09-1-1",
+      "to": "outcome:ont03a:L09-1-1:identify-population-sample",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "Outcome extraction candidate",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:aims:L03",
+      "predicate": "AIMS_AT",
+      "from": "lesson:L03-2-1",
+      "to": "outcome:ont03a:L03-2-1:taxonomy-navigation",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Outcome extraction candidate",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:aims:L15",
+      "predicate": "AIMS_AT",
+      "from": "lesson:L15-2-1",
+      "to": "outcome:ont03a:L15-2-1:forecast-limits",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "Outcome extraction candidate",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:claim:L09",
+      "predicate": "STATES_CLAIM",
+      "from": "lesson:L09-1-1",
+      "to": "claim:ont03a:L09-1-1:editorial",
+      "reviewState": "verified",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "§1–3 exists in manuscript",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:claim:L03",
+      "predicate": "STATES_CLAIM",
+      "from": "lesson:L03-2-1",
+      "to": "claim:ont03a:L03-2-1:editorial",
+      "reviewState": "verified",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "§2 observed",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:claim:L15",
+      "predicate": "STATES_CLAIM",
+      "from": "lesson:L15-2-1",
+      "to": "claim:ont03a:L15-2-1:editorial",
+      "reviewState": "verified",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S147 observed",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:source:L09",
+      "predicate": "SUPPORTED_BY",
+      "from": "claim:ont03a:L09-1-1:editorial",
+      "to": "source:editorial:L09-1-1:notion",
+      "reviewState": "verified",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "Editorial existence, NOT independent science validation",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:source:L03",
+      "predicate": "SUPPORTED_BY",
+      "from": "claim:ont03a:L03-2-1:editorial",
+      "to": "source:editorial:L03-2-1:notion",
+      "reviewState": "verified",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Editorial existence, NOT independent science validation",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:source:L15",
+      "predicate": "SUPPORTED_BY",
+      "from": "claim:ont03a:L15-2-1:editorial",
+      "to": "source:editorial:L15-2-1:notion",
+      "reviewState": "verified",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "Editorial existence, NOT independent science validation",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:contrast:taxonomy-nav",
+      "predicate": "CONTRASTS_WITH",
+      "from": "concept:ont03a:taxonomic-classification",
+      "to": "concept:ont03a:navigation",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Editorial conceptual contrast, IDs remain proposed",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:institute",
+      "predicate": "OFFERED_BY",
+      "from": "source-programme:uc-berkeley:ba-ds:2026-27",
+      "to": "institution:uc-berkeley",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41d6cf6db72a81b58cd8f48bb4776fa0",
+        "sourceSection": "S183 institution/degree reference",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:requirement",
+      "predicate": "HAS_REQUIREMENT",
+      "from": "source-programme:uc-berkeley:ba-ds:2026-27",
+      "to": "programme-requirement:uc-berkeley:ba-ds:2026-27:lower-intro",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41d6cf6db72a81b58cd8f48bb4776fa0",
+        "sourceSection": "Partial one-requirement example only",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:catalogue",
+      "predicate": "CATALOGUED_IN",
+      "from": "source-course:uc-berkeley:ba-ds:2026-27:DATA-8",
+      "to": "source-programme:uc-berkeley:ba-ds:2026-27",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41d6cf6db72a81b58cd8f48bb4776fa0",
+        "sourceSection": "Course from institutional research",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03a:eligible",
+      "predicate": "ELIGIBLE_FOR",
+      "from": "source-course:uc-berkeley:ba-ds:2026-27:DATA-8",
+      "to": "programme-requirement:uc-berkeley:ba-ds:2026-27:lower-intro",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41d6cf6db72a81b58cd8f48bb4776fa0",
+        "sourceSection": "Representative sample, not a validated graduation check",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    }
+  ]
+}

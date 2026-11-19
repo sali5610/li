@@ -1,0 +1,27 @@
+name: li. ontology data contracts + offline query
+on:
+  pull_request:
+    paths:
+      - 'docs/ontology/**'
+      - 'tools/validate_ontology.mjs'
+      - 'tools/validate_academic_ontology.mjs'
+      - 'tools/validate_pedagogy_ontology.mjs'
+      - 'tools/test_offline_typed_search.mjs'
+      - '.github/workflows/li-ontology-backend.yml'
+permissions:
+  contents: read
+jobs:
+  backend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate schema, graph, method fits, and read-only typed query
+        run: |
+          node tools/validate_ontology.mjs --check
+          node tools/validate_academic_ontology.mjs --check
+          node tools/validate_pedagogy_ontology.mjs --check
+          node tools/test_offline_typed_search.mjs

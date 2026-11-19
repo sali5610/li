@@ -1,0 +1,59 @@
+{
+  "profile": "ONT-04A-candidate-only-S37-subset",
+  "status": "PILOT_UNPUBLISHED_CANDIDATE_NOT_FULL_135",
+  "source": {
+    "sourceUrl": "https://app.notion.com/p/41a6cf6db72a8136858dc0f61c8327e6",
+    "sourceSection": "S37 IA v3.7 135 candidate manifest; F01 L01-1-1 and F02 L02-2-2; candidate only",
+    "evidenceType": "documented",
+    "checkedOn": "2026-11-19"
+  },
+  "coverage": "2 candidate-only titles for suppression tests; no authoring or 15-field rollout",
+  "nodes": [
+    {
+      "id": "lesson:L01-1-1",
+      "kind": "Lesson",
+      "title": "Pinyin: initials, finals and syllables",
+      "version": "S37-v3.7-candidate",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "rightsState": "unknown",
+      "visibility": "public_curated",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Thanh mẫu vận mẫu và âm tiết Pinyin"
+        }
+      ],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a8136858dc0f61c8327e6",
+        "sourceSection": "G01 Language F01 Chinese C01-1 L01-1-1; S37 rights UNREVIEWED, release CANDIDATE",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "sourceMaturity": "legacy_outline_only"
+    },
+    {
+      "id": "lesson:L02-2-2",
+      "kind": "Lesson",
+      "title": "Paraphrase and attribution without copying",
+      "version": "S37-v3.7-candidate",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "rightsState": "unknown",
+      "visibility": "public_curated",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Diễn đạt lại và dẫn nguồn không sao chép"
+        }
+      ],
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a8136858dc0f61c8327e6",
+        "sourceSection": "G01 Language F02 English C02-2 L02-2-2; S37 rights UNREVIEWED, release CANDIDATE",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "sourceMaturity": "legacy_outline_only"
+    }
+  ]
+}

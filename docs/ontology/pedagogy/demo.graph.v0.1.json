@@ -1,0 +1,986 @@
+{
+  "profile": "li-ONT03B-pedagogy-graph-pilot",
+  "version": "0.1.0",
+  "baseContractVersion": "0.1.0",
+  "academicContractVersion": "0.1.0",
+  "demoOnly": true,
+  "boundary": "ONLY editorial method-fit pointers. No learner attempts, answer keys, personally identifying data or actual stored progress. All practice/outcome/rubric nodes PROPOSED until content/runtime gates.",
+  "nodes": [
+    {
+      "id": "technique:L2-T03",
+      "kind": "TechniqueDefinition",
+      "title": "Worked Examples & Guidance Fading",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalTechniqueId": "L2-T03",
+        "sourceEdition": "L2-library-v0.2"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 L2-T03 canonical definition",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "technique:L2-T06",
+      "kind": "TechniqueDefinition",
+      "title": "Compare–Contrast / Interleaved Discrimination",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalTechniqueId": "L2-T06",
+        "sourceEdition": "L2-library-v0.2"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 L2-T06 canonical definition",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "technique:L2-T07",
+      "kind": "TechniqueDefinition",
+      "title": "Logical Inference & Premise Checking",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalTechniqueId": "L2-T07",
+        "sourceEdition": "L2-library-v0.2"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 L2-T07 canonical definition",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "technique:L2-T10",
+      "kind": "TechniqueDefinition",
+      "title": "Problem Decomposition & Boundary Tests",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalTechniqueId": "L2-T10",
+        "sourceEdition": "L2-library-v0.2"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 L2-T10 canonical definition",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "application:L09-1-1:l2-t06:p01",
+      "kind": "TechniqueApplication",
+      "title": "Data Science · Population/Sample · L2-T06",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L09-1-1",
+        "canonicalTechniqueId": "L2-T06",
+        "applicationId": "L09-1-1:l2-t06:p01",
+        "fitRole": "primary",
+        "runtime": "unimplemented",
+        "versionScope": "editorial-v1"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "micropractice:L09-1-1:l2-t06:p01",
+      "kind": "Micropractice",
+      "title": "Data Science · Population/Sample · enacted coached method",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L09-1-1",
+        "caseKey": "L09-1-1:method:t06:case-variable-classification",
+        "applicationId": "L09-1-1:l2-t06:p01",
+        "procedureActions": [
+          "contrast_categories",
+          "explain_decisive_attribute"
+        ],
+        "assistance": "optional_coached",
+        "feedbackGate": "after_micropractice_submission",
+        "assessmentRole": "K3_execution_not_mastery"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "challenge:L09-1-1:ind:v1",
+      "kind": "IndependentChallenge",
+      "title": "Data Science · Population/Sample · fresh independent case",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L09-1-1",
+        "caseKey": "L09-1-1:ind:v1",
+        "questionSet": "editorial-source",
+        "answerGate": "after_independent_submission",
+        "assistanceEligibility": "unassisted_only_for_independent_evidence",
+        "assessmentRole": "K1_lesson_knowledge"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "rubric:L09-1-1:v1",
+      "kind": "Rubric",
+      "title": "L09-1-1 · editorial rubric v1",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L09-1-1",
+        "version": "v1",
+        "state": "uncalibrated_editorial",
+        "scoreScale": "0–8 self-rubric from manuscript where applicable",
+        "notMasteryProof": true
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "hint-policy:L09-1-1:v1",
+      "kind": "HintPolicy",
+      "title": "L09-1-1 · optional non-spoiler hints",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L09-1-1",
+        "allowBeforeSubmission": true,
+        "noSolutionBeforeSubmission": true,
+        "marksAssisted": true
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "reveal-gate:L09-1-1:v1",
+      "kind": "RevealGate",
+      "title": "L09-1-1 · split reveal gates",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L09-1-1",
+        "micropracticeFeedback": "after_micropractice_submission",
+        "independentSolution": "after_independent_submission",
+        "noMethodGuideViewTrigger": true
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "application:L03-2-1:l2-t06:p01",
+      "kind": "TechniqueApplication",
+      "title": "UX · Taxonomy vs Navigation · L2-T06",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L03-2-1",
+        "canonicalTechniqueId": "L2-T06",
+        "applicationId": "L03-2-1:l2-t06:p01",
+        "fitRole": "primary",
+        "runtime": "unimplemented",
+        "versionScope": "editorial-v1"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "micropractice:L03-2-1:l2-t06:p01",
+      "kind": "Micropractice",
+      "title": "UX · Taxonomy vs Navigation · enacted coached method",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L03-2-1",
+        "caseKey": "L03-2-1:method:t06:case-library-labels",
+        "applicationId": "L03-2-1:l2-t06:p01",
+        "procedureActions": [
+          "contrast_categories",
+          "justify_navigation_vs_tags"
+        ],
+        "assistance": "optional_coached",
+        "feedbackGate": "after_micropractice_submission",
+        "assessmentRole": "K3_execution_not_mastery"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "challenge:L03-2-1:ind:v1",
+      "kind": "IndependentChallenge",
+      "title": "UX · Taxonomy vs Navigation · fresh independent case",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L03-2-1",
+        "caseKey": "L03-2-1:ind:v1",
+        "questionSet": "editorial-source",
+        "answerGate": "after_independent_submission",
+        "assistanceEligibility": "unassisted_only_for_independent_evidence",
+        "assessmentRole": "K1_lesson_knowledge"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "rubric:L03-2-1:v1",
+      "kind": "Rubric",
+      "title": "L03-2-1 · editorial rubric v1",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L03-2-1",
+        "version": "v1",
+        "state": "uncalibrated_editorial",
+        "scoreScale": "0–8 self-rubric from manuscript where applicable",
+        "notMasteryProof": true
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "hint-policy:L03-2-1:v1",
+      "kind": "HintPolicy",
+      "title": "L03-2-1 · optional non-spoiler hints",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L03-2-1",
+        "allowBeforeSubmission": true,
+        "noSolutionBeforeSubmission": true,
+        "marksAssisted": true
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "reveal-gate:L03-2-1:v1",
+      "kind": "RevealGate",
+      "title": "L03-2-1 · split reveal gates",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L03-2-1",
+        "micropracticeFeedback": "after_micropractice_submission",
+        "independentSolution": "after_independent_submission",
+        "noMethodGuideViewTrigger": true
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "application:L15-2-1:l2-t03:p01",
+      "kind": "TechniqueApplication",
+      "title": "Supply Chain · Forecast assumptions · L2-T03",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L15-2-1",
+        "canonicalTechniqueId": "L2-T03",
+        "applicationId": "L15-2-1:l2-t03:p01",
+        "fitRole": "primary",
+        "runtime": "unimplemented",
+        "versionScope": "editorial-v1"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "micropractice:L15-2-1:l2-t03:p01",
+      "kind": "Micropractice",
+      "title": "Supply Chain · Forecast assumptions · enacted coached method",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L15-2-1",
+        "caseKey": "L15-2-1:method:t03:case-three-week-18-24-30",
+        "applicationId": "L15-2-1:l2-t03:p01",
+        "procedureActions": [
+          "complete_faded_steps",
+          "state_assumptions",
+          "check_stockout_boundary"
+        ],
+        "assistance": "optional_coached",
+        "feedbackGate": "after_micropractice_submission",
+        "assessmentRole": "K3_execution_not_mastery"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "challenge:L15-2-1:ind:v1",
+      "kind": "IndependentChallenge",
+      "title": "Supply Chain · Forecast assumptions · fresh independent case",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L15-2-1",
+        "caseKey": "L15-2-1:ind:v1",
+        "questionSet": "editorial-source",
+        "answerGate": "after_independent_submission",
+        "assistanceEligibility": "unassisted_only_for_independent_evidence",
+        "assessmentRole": "K1_lesson_knowledge"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "rubric:L15-2-1:v1",
+      "kind": "Rubric",
+      "title": "L15-2-1 · editorial rubric v1",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L15-2-1",
+        "version": "v1",
+        "state": "uncalibrated_editorial",
+        "scoreScale": "0–8 self-rubric from manuscript where applicable",
+        "notMasteryProof": true
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "hint-policy:L15-2-1:v1",
+      "kind": "HintPolicy",
+      "title": "L15-2-1 · optional non-spoiler hints",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L15-2-1",
+        "allowBeforeSubmission": true,
+        "noSolutionBeforeSubmission": true,
+        "marksAssisted": true
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    },
+    {
+      "id": "reveal-gate:L15-2-1:v1",
+      "kind": "RevealGate",
+      "title": "L15-2-1 · split reveal gates",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "attributes": {
+        "canonicalLessonId": "L15-2-1",
+        "micropracticeFeedback": "after_micropractice_submission",
+        "independentSolution": "after_independent_submission",
+        "noMethodGuideViewTrigger": true
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "03B authored structural pointer only; NOT a runnable lesson/score, no user response or key stored"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:ont03b:L09-1-1:uses",
+      "predicate": "USES_METHOD",
+      "from": "lesson:L09-1-1",
+      "to": "application:L09-1-1:l2-t06:p01",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L09-1-1:definition",
+      "predicate": "INSTANTIATES_METHOD",
+      "from": "application:L09-1-1:l2-t06:p01",
+      "to": "technique:L2-T06",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L09-1-1:assesses-method",
+      "predicate": "ASSESSES_METHOD",
+      "from": "micropractice:L09-1-1:l2-t06:p01",
+      "to": "application:L09-1-1:l2-t06:p01",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L09-1-1:assesses-outcome",
+      "predicate": "ASSESSES_OUTCOME",
+      "from": "challenge:L09-1-1:ind:v1",
+      "to": "outcome:ont03a:L09-1-1:identify-population-sample",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L09-1-1:optional",
+      "predicate": "OPTIONAL_METHOD",
+      "from": "lesson:L09-1-1",
+      "to": "technique:L2-T07",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L09-1-1:rubric",
+      "predicate": "HAS_RUBRIC",
+      "from": "challenge:L09-1-1:ind:v1",
+      "to": "rubric:L09-1-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L09-1-1:hint",
+      "predicate": "GOVERNED_BY_HINT",
+      "from": "micropractice:L09-1-1:l2-t06:p01",
+      "to": "hint-policy:L09-1-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L09-1-1:hint-independent",
+      "predicate": "GOVERNED_BY_HINT",
+      "from": "challenge:L09-1-1:ind:v1",
+      "to": "hint-policy:L09-1-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L09-1-1:feedback",
+      "predicate": "CONTROLLED_BY_GATE",
+      "from": "micropractice:L09-1-1:l2-t06:p01",
+      "to": "reveal-gate:L09-1-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L09-1-1:solution",
+      "predicate": "CONTROLLED_BY_GATE",
+      "from": "challenge:L09-1-1:ind:v1",
+      "to": "reveal-gate:L09-1-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L03-2-1:uses",
+      "predicate": "USES_METHOD",
+      "from": "lesson:L03-2-1",
+      "to": "application:L03-2-1:l2-t06:p01",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L03-2-1:definition",
+      "predicate": "INSTANTIATES_METHOD",
+      "from": "application:L03-2-1:l2-t06:p01",
+      "to": "technique:L2-T06",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L03-2-1:assesses-method",
+      "predicate": "ASSESSES_METHOD",
+      "from": "micropractice:L03-2-1:l2-t06:p01",
+      "to": "application:L03-2-1:l2-t06:p01",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L03-2-1:assesses-outcome",
+      "predicate": "ASSESSES_OUTCOME",
+      "from": "challenge:L03-2-1:ind:v1",
+      "to": "outcome:ont03a:L03-2-1:taxonomy-navigation",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L03-2-1:optional",
+      "predicate": "OPTIONAL_METHOD",
+      "from": "lesson:L03-2-1",
+      "to": "technique:L2-T10",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L03-2-1:rubric",
+      "predicate": "HAS_RUBRIC",
+      "from": "challenge:L03-2-1:ind:v1",
+      "to": "rubric:L03-2-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L03-2-1:hint",
+      "predicate": "GOVERNED_BY_HINT",
+      "from": "micropractice:L03-2-1:l2-t06:p01",
+      "to": "hint-policy:L03-2-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L03-2-1:hint-independent",
+      "predicate": "GOVERNED_BY_HINT",
+      "from": "challenge:L03-2-1:ind:v1",
+      "to": "hint-policy:L03-2-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L03-2-1:feedback",
+      "predicate": "CONTROLLED_BY_GATE",
+      "from": "micropractice:L03-2-1:l2-t06:p01",
+      "to": "reveal-gate:L03-2-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L03-2-1:solution",
+      "predicate": "CONTROLLED_BY_GATE",
+      "from": "challenge:L03-2-1:ind:v1",
+      "to": "reveal-gate:L03-2-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L15-2-1:uses",
+      "predicate": "USES_METHOD",
+      "from": "lesson:L15-2-1",
+      "to": "application:L15-2-1:l2-t03:p01",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L15-2-1:definition",
+      "predicate": "INSTANTIATES_METHOD",
+      "from": "application:L15-2-1:l2-t03:p01",
+      "to": "technique:L2-T03",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L15-2-1:assesses-method",
+      "predicate": "ASSESSES_METHOD",
+      "from": "micropractice:L15-2-1:l2-t03:p01",
+      "to": "application:L15-2-1:l2-t03:p01",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L15-2-1:assesses-outcome",
+      "predicate": "ASSESSES_OUTCOME",
+      "from": "challenge:L15-2-1:ind:v1",
+      "to": "outcome:ont03a:L15-2-1:forecast-limits",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L15-2-1:optional",
+      "predicate": "OPTIONAL_METHOD",
+      "from": "lesson:L15-2-1",
+      "to": "technique:L2-T10",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L15-2-1:rubric",
+      "predicate": "HAS_RUBRIC",
+      "from": "challenge:L15-2-1:ind:v1",
+      "to": "rubric:L15-2-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L15-2-1:hint",
+      "predicate": "GOVERNED_BY_HINT",
+      "from": "micropractice:L15-2-1:l2-t03:p01",
+      "to": "hint-policy:L15-2-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L15-2-1:hint-independent",
+      "predicate": "GOVERNED_BY_HINT",
+      "from": "challenge:L15-2-1:ind:v1",
+      "to": "hint-policy:L15-2-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L15-2-1:feedback",
+      "predicate": "CONTROLLED_BY_GATE",
+      "from": "micropractice:L15-2-1:l2-t03:p01",
+      "to": "reveal-gate:L15-2-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont03b:L15-2-1:solution",
+      "predicate": "CONTROLLED_BY_GATE",
+      "from": "challenge:L15-2-1:ind:v1",
+      "to": "reveal-gate:L15-2-1:v1",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    }
+  ]
+}

@@ -1,0 +1,603 @@
+{
+  "schemaVersion": "0.1.0",
+  "status": "DRAFT_CONTRACT_IMPLEMENTED_ON_REVIEW_BRANCH",
+  "authority": {
+    "decisions": "Notion/PO",
+    "runtime": "GitHub main when deployed",
+    "learnerData": "Neon owner RLS + Dexie account partition",
+    "token": "design-system/tokens.json"
+  },
+  "scope": {
+    "navigation": "Group > Field > Course > Lesson > Chapter",
+    "techniqueCount": 13,
+    "privateUserGraph": "NOT in public-curated manifests",
+    "noPaidDependencies": true
+  },
+  "enums": {
+    "reviewState": [
+      "proposed",
+      "verified",
+      "approved",
+      "rejected",
+      "superseded"
+    ],
+    "publishState": [
+      "not_applicable",
+      "draft",
+      "review_only",
+      "published",
+      "suspended",
+      "retired"
+    ],
+    "visibility": [
+      "public_curated",
+      "private_user"
+    ],
+    "rightsState": [
+      "first_party",
+      "external_reference",
+      "unknown"
+    ],
+    "evidenceType": [
+      "documented",
+      "implemented",
+      "editorial",
+      "synthetic_fixture"
+    ]
+  },
+  "nodeKinds": [
+    {
+      "name": "DesignToken",
+      "domain": "ui",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Component",
+      "domain": "ui",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Variant",
+      "domain": "ui",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Slot",
+      "domain": "ui",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Pattern",
+      "domain": "ui",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Screen",
+      "domain": "ui",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Flow",
+      "domain": "ui",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "UIRule",
+      "domain": "ui",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "QAGate",
+      "domain": "ui",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "DomainGroup",
+      "domain": "academic",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Field",
+      "domain": "academic",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Course",
+      "domain": "academic",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Lesson",
+      "domain": "academic",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Chapter",
+      "domain": "academic",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Concept",
+      "domain": "academic",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "LearningOutcome",
+      "domain": "academic",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Misconception",
+      "domain": "academic",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "SourceClaim",
+      "domain": "academic",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "SourceEdition",
+      "domain": "academic",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "TechniqueDefinition",
+      "domain": "pedagogy",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "TechniqueApplication",
+      "domain": "pedagogy",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Micropractice",
+      "domain": "pedagogy",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "IndependentChallenge",
+      "domain": "pedagogy",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Rubric",
+      "domain": "pedagogy",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "HintPolicy",
+      "domain": "pedagogy",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "RevealGate",
+      "domain": "pedagogy",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Learner",
+      "domain": "learner",
+      "defaultVisibility": "private_user"
+    },
+    {
+      "name": "Attempt",
+      "domain": "learner",
+      "defaultVisibility": "private_user"
+    },
+    {
+      "name": "TechniqueExecution",
+      "domain": "learner",
+      "defaultVisibility": "private_user"
+    },
+    {
+      "name": "ReviewDue",
+      "domain": "learner",
+      "defaultVisibility": "private_user"
+    },
+    {
+      "name": "AssistanceEvent",
+      "domain": "learner",
+      "defaultVisibility": "private_user"
+    },
+    {
+      "name": "Feedback",
+      "domain": "learner",
+      "defaultVisibility": "private_user"
+    },
+    {
+      "name": "MentorStage",
+      "domain": "companion",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Intent",
+      "domain": "companion",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "ContextSnapshot",
+      "domain": "companion",
+      "defaultVisibility": "private_user"
+    },
+    {
+      "name": "AllowedAction",
+      "domain": "companion",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "ResponseTemplate",
+      "domain": "companion",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Decision",
+      "domain": "governance",
+      "defaultVisibility": "public_curated"
+    },
+    {
+      "name": "Permission",
+      "domain": "governance",
+      "defaultVisibility": "public_curated"
+    }
+  ],
+  "predicates": [
+    {
+      "name": "USES_TOKEN",
+      "from": [
+        "Component",
+        "Variant"
+      ],
+      "to": [
+        "DesignToken"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Concrete token dependency; style must resolve to actual canonical token"
+    },
+    {
+      "name": "HAS_VARIANT",
+      "from": [
+        "Component"
+      ],
+      "to": [
+        "Variant"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Variant belongs to component"
+    },
+    {
+      "name": "HAS_SLOT",
+      "from": [
+        "Pattern"
+      ],
+      "to": [
+        "Slot"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Slot anatomy of a pattern"
+    },
+    {
+      "name": "FILLS_SLOT",
+      "from": [
+        "Component"
+      ],
+      "to": [
+        "Slot"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "UI control can fill allowed slot"
+    },
+    {
+      "name": "USES_PATTERN",
+      "from": [
+        "Screen"
+      ],
+      "to": [
+        "Pattern"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Screen instantiates a UI pattern; documented vs runtime status separate"
+    },
+    {
+      "name": "INCLUDES_SCREEN",
+      "from": [
+        "Flow"
+      ],
+      "to": [
+        "Screen"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Flow includes a screen"
+    },
+    {
+      "name": "CONSTRAINS",
+      "from": [
+        "UIRule"
+      ],
+      "to": [
+        "Component",
+        "Pattern",
+        "Slot",
+        "Screen"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Rule constrains a UI target"
+    },
+    {
+      "name": "VALIDATES",
+      "from": [
+        "QAGate"
+      ],
+      "to": [
+        "UIRule",
+        "Component"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Check validates a rule or component"
+    },
+    {
+      "name": "PART_OF",
+      "from": [
+        "Field",
+        "Course",
+        "Lesson",
+        "Chapter"
+      ],
+      "to": [
+        "DomainGroup",
+        "Field",
+        "Course",
+        "Lesson"
+      ],
+      "symmetric": false,
+      "acyclic": true,
+      "meaning": "Only Field→DomainGroup, Course→Field, Lesson→Course, Chapter→Lesson"
+    },
+    {
+      "name": "IS_A",
+      "from": [
+        "Concept"
+      ],
+      "to": [
+        "Concept"
+      ],
+      "symmetric": false,
+      "acyclic": true,
+      "meaning": "Classification, NOT curriculum parent or prerequisite"
+    },
+    {
+      "name": "TEACHES",
+      "from": [
+        "Lesson"
+      ],
+      "to": [
+        "Concept"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Lesson teaches a confirmed concept"
+    },
+    {
+      "name": "AIMS_AT",
+      "from": [
+        "Lesson"
+      ],
+      "to": [
+        "LearningOutcome"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Lesson learning outcome"
+    },
+    {
+      "name": "REQUIRES",
+      "from": [
+        "Concept"
+      ],
+      "to": [
+        "Concept"
+      ],
+      "symmetric": false,
+      "acyclic": true,
+      "meaning": "Confirmed hard prerequisite, not merely related or suggested bridge"
+    },
+    {
+      "name": "CONTRASTS_WITH",
+      "from": [
+        "Concept"
+      ],
+      "to": [
+        "Concept"
+      ],
+      "symmetric": true,
+      "acyclic": false,
+      "meaning": "Symmetric distinction, never SAME_AS"
+    },
+    {
+      "name": "RELATED_TO",
+      "from": [
+        "Concept"
+      ],
+      "to": [
+        "Concept"
+      ],
+      "symmetric": true,
+      "acyclic": false,
+      "meaning": "Symmetric fallback only when more specific relation not supported"
+    },
+    {
+      "name": "APPLIES_IN_FIELD",
+      "from": [
+        "Concept"
+      ],
+      "to": [
+        "Field"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Reviewed cross-field application"
+    },
+    {
+      "name": "SUPPORTED_BY",
+      "from": [
+        "SourceClaim"
+      ],
+      "to": [
+        "SourceEdition"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Exact claim to inspected source edition; editorial source is not scholarly validation"
+    },
+    {
+      "name": "USES_METHOD",
+      "from": [
+        "Lesson"
+      ],
+      "to": [
+        "TechniqueApplication"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Lesson has optional enactment opportunity, not automatic mastery"
+    },
+    {
+      "name": "INSTANTIATES_METHOD",
+      "from": [
+        "TechniqueApplication"
+      ],
+      "to": [
+        "TechniqueDefinition"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Method application refers to canonical L2 ID"
+    },
+    {
+      "name": "ASSESSES_METHOD",
+      "from": [
+        "Micropractice"
+      ],
+      "to": [
+        "TechniqueApplication"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Practised method evidence, separate from knowledge score"
+    },
+    {
+      "name": "ASSESSES_OUTCOME",
+      "from": [
+        "IndependentChallenge"
+      ],
+      "to": [
+        "LearningOutcome"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Fresh independent case, answer gated"
+    },
+    {
+      "name": "ASSISTS_WITH",
+      "from": [
+        "MentorStage"
+      ],
+      "to": [
+        "Lesson",
+        "IndependentChallenge"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Contextual buddy support, no answer leak"
+    },
+    {
+      "name": "OFFERS_ACTION",
+      "from": [
+        "MentorStage"
+      ],
+      "to": [
+        "AllowedAction"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Allowed actionable buddy route"
+    },
+    {
+      "name": "EVIDENCES",
+      "from": [
+        "Attempt"
+      ],
+      "to": [
+        "LearningOutcome"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "User-private attempt can reference shared outcome but private edge must be owner-scoped"
+    },
+    {
+      "name": "SUPERSEDES",
+      "from": [
+        "Decision"
+      ],
+      "to": [
+        "Decision"
+      ],
+      "symmetric": false,
+      "acyclic": true,
+      "meaning": "Explicit newer decision overrides older within scope"
+    }
+  ],
+  "specificEndpointRules": {
+    "PART_OF": [
+      [
+        "Field",
+        "DomainGroup"
+      ],
+      [
+        "Course",
+        "Field"
+      ],
+      [
+        "Lesson",
+        "Course"
+      ],
+      [
+        "Chapter",
+        "Lesson"
+      ]
+    ]
+  },
+  "idPolicy": {
+    "pattern": "^[a-z][a-z0-9-]*:[A-Za-z0-9._:-]+$",
+    "legacyRule": "Keep existing Lxx-x-x and L2-Txx exact keys after namespace colon; namespaces only wrap, never rename source IDs",
+    "conceptRule": "Candidate `concept:ont01:*` identifiers are demo-only, not automatically approved canon"
+  },
+  "gatePolicy": {
+    "approvedEvidenceMustNotBeSynthetic": true,
+    "publicCuratedCannotContainPrivate": true,
+    "publishedRequiresApprovedReview": true,
+    "rejectDangling": true,
+    "detectCycles": [
+      "PART_OF",
+      "IS_A",
+      "REQUIRES",
+      "SUPERSEDES"
+    ],
+    "preventSameKindLocaleAliasCollision": true
+  },
+  "sources": [
+    "https://app.notion.com/p/41d6cf6db72a81f59573fb0e5ed6836e",
+    "https://app.notion.com/p/41d6cf6db72a81188986ed5f65d17a5e",
+    "https://app.notion.com/p/41b6cf6db72a8131ab62e71c289a1916",
+    "https://github.com/sali5610/li/blob/main/design-system/README.md"
+  ]
+}

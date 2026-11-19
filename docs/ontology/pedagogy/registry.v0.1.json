@@ -1,0 +1,76 @@
+{
+  "baseContractVersion": "0.1.0",
+  "academicContractVersion": "0.1.0",
+  "extensionVersion": "0.1.0",
+  "status": "PILOT_EDITORIAL_NOT_RUNTIME",
+  "additionalPredicates": [
+    {
+      "name": "OPTIONAL_METHOD",
+      "from": [
+        "Lesson"
+      ],
+      "to": [
+        "TechniqueDefinition"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Secondary optional method fit only; skip remains available, do not infer enacted procedure"
+    },
+    {
+      "name": "HAS_RUBRIC",
+      "from": [
+        "IndependentChallenge"
+      ],
+      "to": [
+        "Rubric"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Editorial uncalibrated rubric; not validated learning benefit"
+    },
+    {
+      "name": "GOVERNED_BY_HINT",
+      "from": [
+        "Micropractice",
+        "IndependentChallenge"
+      ],
+      "to": [
+        "HintPolicy"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Hints are optional and not the answer; assistance flag impacts independent eligibility"
+    },
+    {
+      "name": "CONTROLLED_BY_GATE",
+      "from": [
+        "Micropractice",
+        "IndependentChallenge"
+      ],
+      "to": [
+        "RevealGate"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Practice feedback after micro submit; independent solution only after independent submit"
+    }
+  ],
+  "requiredPracticeActions": true,
+  "hardGuards": {
+    "privateEventsInPublicGraph": false,
+    "onePrimaryMaximum": 1,
+    "optionalSecondMaximum": 1,
+    "methodSkipAllowed": true,
+    "guideViewNoK3": true,
+    "practiceAnswerDifferentFromIndependent": true,
+    "answerAfterSubmit": true,
+    "learnerMetricsNotAutoMastery": true,
+    "perUserDataRlsRequiredInRuntime": true,
+    "k5OnlyAfterElapsedRealReview": true
+  },
+  "sourceNotion": [
+    "https://app.notion.com/p/41b6cf6db72a8131ab62e71c289a1916",
+    "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+    "https://app.notion.com/p/41d6cf6db72a81d0b0d3dbde49b8ad43"
+  ]
+}

@@ -32,6 +32,8 @@ jobs:
           test -s site/assets/ont04b-search-site-island.js
           test -s site/assets/ont04b-search-site-island.css
           node --input-type=module -e "import fs from 'node:fs';const h=fs.readFileSync('site/index.html','utf8');if(!h.includes('li-search-react')||!h.includes('localhost')||!h.includes('127.0.0.1')||!h.includes('li-typed-search-root')||!h.includes('SEARCH_LOCAL_CSS_MISSING'))process.exit(3)"
+      - name: Ensure React island CSS cannot restyle native UI
+        run: node tools/ont04b-react-search-island/scripts/check-style-scope.mjs
       - name: React + native fallback tests in jsdom
         working-directory: tools/ont04b-react-search-island
         run: npm run test:ci

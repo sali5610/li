@@ -60,3 +60,12 @@ This build generates `site/assets/step16-l09-island.js` and `.css` locally. The 
 **QA acceptance:** The React workflow runs existing exact-source, bridge and localhost-auth Chromium suites; also builds the in-site bundle and exercises an 8-check real `site/index.html` integration fixture (flag OFF, mount/DOM ownership, preserved native pedagogy, static navigation, isolated local state, actual save, rubric gate and 390/820px smoke). This is synthetic Chromium only; NOT production, Safari/PWA/iPad, a live Google sign-in or a genuine A↔B privacy test.
 
 **Still open before any migration/release:** one-writer native-key handover with backup/rollback and complete L09 parity, shared session/login/logout behind Step16.1 verified Google invite/RLS, design token audit for React, real-device/accessibility review and G2 human approval. No deployment is authorized by this PR.
+
+
+### Step16.2 shared synthetic-key handover (local-only, no genuine learner data)
+
+A second opt-in on the existing native app is `?lesson=L09-1-2&li-react=l09-native-fixture` and is **restricted to HTTP localhost / 127.0.0.1**. It uses a separate `step16.l09.shared-native-fixture.v1` localStorage key in both the native L09 script and the React bridge; **never** the genuine learner's `li.review.L09-1-2.v1` key.
+
+The native L09 script still mounts the complete lesson and renders all academic sections. After React challenge/rubric mounts, the hidden/inert native challenge/rubric may not write any stale state. The still-visible native guided exercise can only patch its `guidedDraft` field; language changes may patch `locale`. Field-level writes read and preserve latest synthetic attempt data and unknown future fields. React uses its existing readback/stale-write guard to refuse overwrites after a native guided edit until explicit refresh. This is **not multi-tab transactional atomicity**, and has no claimed production migration.
+
+The integration Chromium fixture now has **15 checks**, adding synthetic legacy hydration, React draft and unknown-field preservation, hostile stale native event, native guide partial update, React conflict refresh, submitted-attempt reload in Vanilla and true native-key non-mutation. All synthetic data is cleaned up in both success and error. Future production release still requires genuine-key backup/export/migration/rollback acceptance and one-writer proof under real cross-device conditions.

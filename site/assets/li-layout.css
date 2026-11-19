@@ -219,7 +219,8 @@ button,input,textarea,select{font:inherit}
 input,select{border:1px solid var(--rule);background:var(--li-comp-field-background);padding:var(--li-space-3);color:var(--ink)}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--li-color-input-focus-ring);outline-offset:2px}
 button{transition:transform .13s,background .13s}
-button:focus-visible,a:focus-visible{outline:3px solid var(--li-color-general-focus-ring);outline-offset:3px}
+button:focus-visible{outline:3px solid var(--li-comp-button-focus-ring);outline-offset:3px}
+a:focus-visible{outline:3px solid var(--li-color-general-focus-ring);outline-offset:3px}
 .review-ribbon{background:var(--forest);color:var(--cream);text-align:center;font-size:var(--li-type-caption);letter-spacing:var(--li-tracking-legacy-15);padding:var(--li-space-2) var(--li-space-3)}
 .header{height:76px}.topnav{flex:1;justify-content:center}.tools{display:flex;gap:var(--li-space-1)}
 .tool-button{min-width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--rule);background:var(--paper-2);color:var(--moss)}

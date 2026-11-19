@@ -24,6 +24,7 @@ expected={
  "--li-comp-button-secondary-background":values["colors"]["paper"],
  "--li-comp-button-secondary-color":values["colors"]["moss"],
  "--li-comp-button-min-hit-size":"48px",
+ "--li-comp-button-focus-ring":values["semanticColors"]["general-focus-ring"],
  "--li-comp-surface-background":values["colors"]["cream"],
  "--li-comp-surface-tinted-background":values["colors"]["paper-2"],
  "--li-comp-surface-inverse-background":values["colors"]["moss"],
@@ -50,6 +51,9 @@ assert ".surface{background:var(--li-comp-surface-background)" in native
 assert ".action.alt{background:var(--li-comp-button-secondary-background)" in native
 assert ".filter[aria-pressed=true]{background:var(--li-comp-filter-chip-selected-background)" in native
 assert "min-height: var(--li-comp-button-min-hit-size);" in foundation
+assert "button:focus-visible{outline:3px solid var(--li-comp-button-focus-ring);" in native
+assert "a:focus-visible{outline:3px solid var(--li-color-general-focus-ring);" in native
+assert values["semanticColors"]["general-focus-ring"]!=values["semanticColors"]["focus-ring"], "color regression guard must distinguish existing role" 
 assert "border:3px solid var(--li-comp-field-focus-border)!important;" in foundation
 def reject(name,update):
     sample=copy.deepcopy(values)

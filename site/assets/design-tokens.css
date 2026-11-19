@@ -323,7 +323,7 @@
   --li-role-action-primary-content: var(--cream);
   --li-role-action-secondary-surface: var(--paper);
   --li-role-action-secondary-content: var(--moss);
-  --li-role-focus-ring: var(--li-color-focus-ring);
+  --li-role-focus-ring: var(--li-color-general-focus-ring);
   --li-role-control-min-target: var(--li-space-12);
   --li-role-surface-default: var(--paper);
   --li-role-surface-raised: var(--cream);

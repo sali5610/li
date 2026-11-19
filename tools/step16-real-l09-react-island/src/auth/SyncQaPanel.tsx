@@ -11,9 +11,9 @@ type Mode='a-starting'|'a-seeded'|'a-conflicting'|'a-resolved'|'a-verifying'|'a-
  'b-starting'|'b-updated'|'b-verifying'|'b-verified'|'b-cleaning'|'b-done';
 type State={id:string;mode:Mode};
 const qaOrigin='https://sali5610.github.io';
-function read():State|null{
+function read(uid:string):State|null{
  try{
-  const x=JSON.parse(localStorage.getItem(SYNC_QA_STORE)||'null') as State|null;
+  const x=JSON.parse(localStorage.getItem(SYNC_QA_STORE+':'+uid)||'null') as State|null;
   if(!x||!validateSyncQaId(x.id)||![
    'a-starting','a-seeded','a-conflicting','a-resolved','a-verifying','a-done',
    'b-starting','b-updated','b-verifying','b-verified','b-cleaning','b-done'
@@ -70,11 +70,12 @@ const wording={
 export function SyncQaPanel({uid,locale}:{uid:string;locale:'vi'|'en'}){
  const t=wording[locale];
  const storeRef=useRef<PrivateDeviceStore|null>(null);
- const [state,setState]=useState<State|null>(()=>IS_GITHUB_STAGING?read():null);
+ const [state,setState]=useState<State|null>(()=>IS_GITHUB_STAGING?read(uid):null);
  const [codeInput,setCodeInput]=useState('');
  const [busy,setBusy]=useState(false);
  const [feedback,setFeedback]=useState('');
  const [copied,setCopied]=useState(false);
+ useEffect(()=>{setState(IS_GITHUB_STAGING?read(uid):null);setFeedback('');},[uid]);
  useEffect(()=>{
   if(!IS_GITHUB_STAGING)return;
   const db=new PrivateDeviceStore(SYNC_QA_DB);
@@ -84,8 +85,8 @@ export function SyncQaPanel({uid,locale}:{uid:string;locale:'vi'|'en'}){
  if(!IS_GITHUB_STAGING||window.location.origin!==qaOrigin||
   window.location.pathname!=='/li/auth-pilot/')return null;
  const save=(next:State|null)=>{
-  if(next)localStorage.setItem(SYNC_QA_STORE,JSON.stringify(next));
-  else localStorage.removeItem(SYNC_QA_STORE);
+  if(next)localStorage.setItem(SYNC_QA_STORE+':'+uid,JSON.stringify(next));
+  else localStorage.removeItem(SYNC_QA_STORE+':'+uid);
   setState(next);
  };
  const getApi=async()=>{

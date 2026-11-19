@@ -9,11 +9,11 @@
  const sleep=t=>new Promise(r=>setTimeout(r,t));
  async function wait(test,msg){for(let i=0;i<350;i++){if(test())return;await sleep(40)}throw Error('TIMEOUT '+msg)}
  let frame;
- async function load(flag,width=390){
+ async function load(flag,width=390,mode='l09'){
   frame?.remove();
   frame=document.createElement('iframe');
   frame.style.cssText='position:absolute;left:-10000px;top:0;border:0;width:'+width+'px;height:860px';
-  frame.src='../../site/index.html?lesson=L09-1-2'+(flag?'&li-react=l09':'');
+  frame.src='../../site/index.html?lesson=L09-1-2'+(flag?'&li-react='+encodeURIComponent(mode):'');
   document.body.append(frame);
   await wait(()=>frame.contentDocument?.readyState==='complete' &&
     frame.contentDocument?.getElementById('page-lessonL09'),'existing app navigation & lesson route');
@@ -62,7 +62,85 @@
   await wait(()=>doc.querySelector('#page-lessonL09')?.dataset.liRuntime==='react-candidate','820px mount');
   assert(doc.querySelector('.pilot')&&doc.querySelector('.header'),'820px shell missing');
   checks.push('820px screen mounts React without losing Vanilla shell');
-  frame.remove();localStorage.removeItem(key);
+
+  // Synthetic *shared* fixture: same native-shaped record, but NEVER the
+  // genuine li.review.* learner key. Both frameworks may read; React owns
+  // independent challenge and rubric while native guided exercise stays live.
+  const shared='step16.l09.shared-native-fixture.v1';
+  const seed={
+    locale:'vi',draft:[
+      'Shared fixture first response about target population.',
+      'Shared fixture second response about sampling bias.',
+      'Shared fixture third response with bounded claim.',
+      'Shared fixture fourth response about evidence limitations.'
+    ],
+    guidedDraft:'Initial guided synthetic text',hint:false,assisted:false,
+    submitted:false,submittedAt:null,submission:null,submissionLocale:null,
+    ratings:[null,null,null,null],reviewed:false,
+    futurePrivate:{mustRetain:'unknown forward schema'}
+  };
+  frame.remove();localStorage.setItem(shared,JSON.stringify(seed));
+  doc=await load(true,390,'l09-native-fixture');
+  await wait(()=>doc.querySelector('#page-lessonL09')?.dataset.liRuntime==='react-candidate','shared owner mount');
+  const sharedReact=()=>doc.querySelector('#li-step16-l09-react-host');
+  const sharedState=()=>JSON.parse(localStorage.getItem(shared)||'null');
+  assert(sharedReact().querySelector('.pilot').dataset.storageKey===shared,
+    'React did not bind synthetic shared fixture key');
+  assert(sharedReact().querySelector('[data-answer="0"]').value===seed.draft[0],
+    'React did not hydrate legacy-shaped synthetic record');
+  assert(doc.querySelector('#l09-guidedDraft').value===seed.guidedDraft,
+    'Native guided response was not restored');
+  assert(localStorage.getItem(nativeKey)===null,'Shared fixture contaminated real learner data');
+  checks.push('Local shared fixture hydrates existing native-shaped L09 attempt in both frameworks without touching real key');
+  const change=(selector,value)=>{
+    const node=doc.querySelector(selector);
+    assert(node&&!node.disabled,'Missing enabled editor '+selector);
+    Object.getOwnPropertyDescriptor(frame.contentWindow.HTMLTextAreaElement.prototype,'value').set.call(node,value);
+    node.dispatchEvent(new frame.contentWindow.Event('input',{bubbles:true}));
+  };
+  change('#li-step16-l09-react-host [data-answer="0"]','React fixture new answer with enough detail');
+  await wait(()=>sharedState()?.draft?.[0]?.startsWith('React fixture'),'React shared write');
+  assert(sharedState().futurePrivate.mustRetain==='unknown forward schema','Future field erased');
+  checks.push('React safely saves to the shared synthetic record and preserves unknown legacy fields');
+  const beforeLegacy=localStorage.getItem(shared);
+  change('#l09-question-0','Hidden Vanilla stale write must not win');
+  await new Promise(r=>setTimeout(r,60));
+  assert(localStorage.getItem(shared)===beforeLegacy,'Hidden native challenge clobbered React writer');
+  checks.push('Native hidden challenge cannot overwrite React-owned record, even if a stale handler fires');
+  change('#l09-guidedDraft','Native guided draft updated independently');
+  await wait(()=>sharedState()?.guidedDraft==='Native guided draft updated independently','native field-level guided patch');
+  assert(sharedState().draft[0].startsWith('React fixture')&&
+    sharedState().futurePrivate.mustRetain==='unknown forward schema',
+    'Native guided draft clobbered React answer or future schema');
+  checks.push('Native guided editor patches only guidedDraft while React owns challenge/rubric');
+  change('#li-step16-l09-react-host [data-answer="1"]','Conflicting React stale answer should be blocked');
+  await wait(()=>!!sharedReact().querySelector('[data-conflict]'),'stale React detects same-tab guided patch');
+  assert(sharedState().draft[1]===seed.draft[1],
+    'React stale state overwrote native guided record');
+  sharedReact().querySelector('[data-action="reload-state"]').click();
+  await wait(()=>!sharedReact().querySelector('[data-conflict]'),'React explicit rehydrate');
+  assert(sharedReact().querySelector('[data-answer="0"]').value.startsWith('React fixture'),
+    'Explicit rehydrate lost latest React text');
+  checks.push('React detects same-tab stale baseline and requires explicit refresh; no silent overwrite');
+  assert(sharedState().draft.every(answer=>answer.trim().length>=12),'Synthetic submit prerequisites missing');
+  sharedReact().querySelector('[data-action="submit"]').click();
+  await wait(()=>sharedState()?.submitted===true&&!!sharedReact().querySelector('[data-rubric]'),
+    'React shared submit');
+  assert(sharedState().submission.length===4&&
+    localStorage.getItem(nativeKey)===null,'Shared submission touched production learner key');
+  doc=await load(true,390,'l09-native-fixture');
+  await wait(()=>doc.querySelector('#page-lessonL09')?.dataset.liRuntime==='react-candidate','native reload shared');
+  assert(!doc.getElementById('l09-answerBox').hidden&&
+    doc.querySelector('#l09-question-0').disabled,
+    'Vanilla could not reload submitted React attempt');
+  checks.push('Vanilla source reload reads React-submitted attempt, preserving answer gate and lock');
+  const last=JSON.parse(localStorage.getItem(shared));
+  assert(last.guidedDraft==='Native guided draft updated independently'&&
+    last.futurePrivate.mustRetain==='unknown forward schema'&&
+    localStorage.getItem(nativeKey)===null,
+    'Final shared fixture mixed up guided, future or real state');
+  checks.push('Shared synthetic handover retains guided/future fields and never writes production key');
+  frame.remove();localStorage.removeItem(shared);localStorage.removeItem(key);
   result.textContent='LI_STEP16_L09_SHELL_PASS '+JSON.stringify({count:checks.length,checks,note:'localhost-only; local isolated key; no production deploy, cross-device sync, Google Auth or Safari pass'});
  }catch(e){
   const d=frame?.contentDocument,win=frame?.contentWindow;
@@ -74,7 +152,7 @@
     jsAsset:await fetch('../../site/assets/step16-l09-island.js').then(x=>x.status).catch(()=>null),
     cssAsset:await fetch('../../site/assets/step16-l09-island.css').then(x=>x.status).catch(()=>null),
     route:win?.location.href};
-  frame?.remove();localStorage.removeItem(key);
+  frame?.remove();localStorage.removeItem(key);localStorage.removeItem('step16.l09.shared-native-fixture.v1');
   result.textContent='LI_STEP16_L09_SHELL_FAIL '+JSON.stringify({checks,error:e.stack||String(e),diagnostic});
  }
 })();

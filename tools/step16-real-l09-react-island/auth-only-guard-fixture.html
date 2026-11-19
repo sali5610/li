@@ -1,0 +1,41 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Step16 auth-only bundle origin test</title></head>
+<body><pre id="result">LI_STEP16_AUTH_ONLY_PENDING</pre>
+<script>
+(async()=>{
+ "use strict";
+ const out=document.getElementById('result');
+ const checks=[];
+ const assert=(condition,message)=>{if(!condition)throw Error(message);checks.push(message)};
+ const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+ let frame=null;
+ try{
+  async function mount(width){
+   frame?.remove();
+   frame=document.createElement('iframe');
+   frame.style.cssText='position:absolute;left:-10000px;top:0;border:0;width:'+width+'px;height:880px';
+   frame.src='/auth-pilot/';
+   document.body.append(frame);
+   for(let i=0;i<400;i++){
+    if(frame.contentDocument?.querySelector('[data-auth-origin-blocked="true"]'))return;
+    await delay(30);
+   }
+   throw Error('Dedicated Auth bundle did not block untrusted test origin');
+  }
+  await mount(390);
+  const doc=frame.contentDocument;
+  assert(!!doc.querySelector('[data-auth-origin-blocked="true"]'),'Dedicated Auth-only bundle blocks localhost origin');
+  assert(!doc.querySelector('form, input[type="password"], input[type="email"]'),'No credentials form on untrusted origin');
+  await delay(600);
+  const network=frame.contentWindow.performance.getEntriesByType('resource').map(e=>e.name);
+  assert(!network.some(url=>/neonauth|apirest/.test(url)),'No Neon Auth or Data API calls before trusted-origin check');
+  assert(doc.documentElement.scrollWidth<=doc.documentElement.clientWidth+1,'Auth-only 390px no horizontal overflow');
+  await mount(820);
+  const wide=frame.contentDocument;
+  assert(wide.documentElement.scrollWidth<=wide.documentElement.clientWidth+1,'Auth-only 820px no horizontal overflow');
+  out.textContent='LI_STEP16_AUTH_ONLY_PASS '+JSON.stringify({count:checks.length,checks,
+   limitation:'Localhost negative origin only. Never proves live Google OAuth, iOS Safari, invited email or signed JWT isolation.'});
+ }catch(error){
+  out.textContent='LI_STEP16_AUTH_ONLY_FAIL '+JSON.stringify({completed:checks,error:error.stack||String(error)});
+ }finally{frame?.remove();}
+})();
+</script></body></html>

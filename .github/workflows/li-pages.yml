@@ -1,10 +1,10 @@
 name: Publish li. STAGING to GitHub Pages (Cloudflare-independent)
 
 # GitHub Pages is the low-cost test environment, not the Cloudflare production site.
-# Existing main pushes update STAGING only. No Cloudflare API, secrets or deploy.
+# Only integration/staging pushes update STAGING. No Cloudflare API, secrets or deploy.
 on:
   push:
-    branches: [main]
+    branches: [integration/staging]
     paths:
       - 'site/**'
       - 'tools/**'
@@ -22,14 +22,14 @@ concurrency:
 
 jobs:
   publish:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/integration/staging'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout main site for STAGING only
+      - name: Checkout integration/staging source tree
         uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -43,21 +43,12 @@ jobs:
           python3 tools/validate_ui_foundations.py
           test ! -e site/auth-pilot || { echo "Auth route unexpectedly tracked in main"; exit 1; }
 
-      # The production source remains untouched. This build adds the EXISTING
-      # invited Google Auth/RLS gate to the shared GitHub Pages test app.
-      - name: Checkout pinned invited Google Auth + Neon source
-        uses: actions/checkout@v4
-        with:
-          repository: sali5610/li
-          ref: 514c4f6c3176ac83b3894f5cf631b649a847be6a
-          path: staging-auth-source
-          persist-credentials: false
-
+      # All assets are built from the same checked-out integration/staging HEAD.
       - name: Verify strict login gate and native lesson key
         run: |
           set -euo pipefail
-          test "$(git -C staging-auth-source rev-parse HEAD)" = "514c4f6c3176ac83b3894f5cf631b649a847be6a"
-          root=staging-auth-source/tools/step16-real-l09-react-island
+          test -s tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
+          root=tools/step16-real-l09-react-island
           grep -Fq "VITE_LI_AUTH_TARGET!=='github-pages-staging'" "$root/vite.staging-app.config.mjs"
           grep -Fq "checkInviteAccess" "$root/src/auth/AuthPanel.tsx"
           grep -Fq "classList.toggle('li-auth-verified'" "$root/src/auth/AuthPanel.tsx"
@@ -79,7 +70,7 @@ jobs:
           node-version: '22'
 
       - name: Build signed-in app shell and run focused Neon contracts
-        working-directory: staging-auth-source/tools/step16-real-l09-react-island
+        working-directory: tools/step16-real-l09-react-island
         env:
           VITE_LI_AUTH_TARGET: github-pages-staging
         run: |
@@ -97,8 +88,8 @@ jobs:
       - name: Assemble ONE user-facing invited-only staging app
         run: |
           set -euo pipefail
-          cp staging-auth-source/tools/step16-real-l09-react-island/dist-staging-app/staging-auth-gate.js site/assets/
-          cp staging-auth-source/tools/step16-real-l09-react-island/src/auth/staging-gate.css site/assets/
+          cp tools/step16-real-l09-react-island/dist-staging-app/*.js site/assets/
+          cp tools/step16-real-l09-react-island/src/auth/staging-gate.css site/assets/
           touch site/.nojekyll
           git diff --exit-code -- site/
           python3 - <<'PY'
@@ -221,5 +212,5 @@ jobs:
 
       - name: Staging-only release note
         run: |
-          echo "Invited Google Auth app gate and real native L09 flow deployed to staging."
+          echo "Integrated source HEAD $(git rev-parse HEAD) published to one GitHub Pages staging URL."
           echo "Neon already trusts https://sali5610.github.io; no Cloudflare production release."

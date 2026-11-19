@@ -1,0 +1,43 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Step16 trusted-origin auth guard</title></head>
+<body><pre id="result">LI_STEP16_L09_AUTH_PENDING</pre>
+<script>
+(async()=>{
+ "use strict";
+ const out=document.getElementById('result');
+ const checks=[];
+ const test=(condition,message)=>{if(!condition)throw Error(message);checks.push(message);};
+ const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+ let frame=null;
+ try{
+  const mount=async width=>{
+   frame?.remove();
+   frame=document.createElement('iframe');
+   frame.style.cssText='position:absolute;left:-10000px;top:0;border:0;width:'+width+'px;height:880px';
+   frame.src='./dist/index.html?pilot=auth';
+   document.body.appendChild(frame);
+   for(let n=0;n<400;n++){
+    if(frame.contentDocument?.querySelector('[data-auth-origin-blocked="true"]'))return;
+    await sleep(30);
+   }
+   throw Error('Auth research page did not mount or did not block untrusted origin');
+  };
+  await mount(390);
+  const doc=frame.contentDocument;
+  const win=frame.contentWindow;
+  test(!!doc.querySelector('[data-auth-origin-blocked="true"]'),'Localhost origin is refused even with working Neon SDK bundle');
+  test(!doc.querySelector('form, input[type="password"], input[type="email"]'),'Credentials form unavailable at untrusted localhost');
+  test(doc.body.textContent.includes('Đồng bộ cloud đang khóa'),'Cloud sync remains explicitly disabled and not called connected');
+  await sleep(700);
+  const urls=win.performance.getEntriesByType('resource').map(resource=>resource.name);
+  test(!urls.some(url=>url.includes('.neonauth.')||url.includes('.apirest.')),'No managed Auth session or Neon Data API network call from localhost');
+  test(doc.documentElement.scrollWidth<=doc.documentElement.clientWidth+1,'Auth gate page 390px has no horizontal overflow');
+  await mount(820);
+  const wide=frame.contentDocument;
+  test(wide.documentElement.scrollWidth<=wide.documentElement.clientWidth+1,'Auth gate page 820px has no horizontal overflow');
+  out.textContent='LI_STEP16_L09_AUTH_PASS '+JSON.stringify({count:checks.length,checks,
+    limitation:'Localhost-origin block only. Does not establish live sign-in, user separation, iOS Safari, CORS or RLS'});
+ }catch(error){
+  out.textContent='LI_STEP16_L09_AUTH_FAIL '+JSON.stringify({completed:checks,error:error.stack||String(error)});
+ }finally{frame?.remove();}
+})();
+</script></body></html>

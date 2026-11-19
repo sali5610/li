@@ -45,6 +45,7 @@ jobs:
       - name: Stage 00 source scanner self-test and complete live-tree inventory
         run: |
           node tools/ds_inventory.mjs --self-test
+          node tools/test_ds_stage01_diagnostics.cjs
           node tools/ds_inventory.mjs --check
           node tools/ds_inventory.mjs --write /tmp/li-ux-ds-35-stage00-inventory.json
       - name: Retain full selector/token/screen inventory as reviewable CI artifact

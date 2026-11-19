@@ -12,9 +12,9 @@ const routes=html.slice(html.indexOf('function syncLiRoute(id){'),html.indexOf('
 const initial=html.slice(html.indexOf('const liInitialLesson='),html.indexOf('setStudyMode(studyMode,{persist:false})',html.indexOf('const liInitialLesson=')));
 const ensure=html.slice(html.indexOf('<script id="li-ont-int02-local-react-gate">'),html.indexOf('</script>',html.indexOf('<script id="li-ont-int02-local-react-gate">')));
 for(const [snippet,s]of [
- ['loc.protocol==="http:"',localOnly],
+ ['loc.protocol!=="http:"',localOnly],
  ['["localhost","127.0.0.1"].includes(loc.hostname)',localOnly],
- ['loc.pathname==="/site/index.html"',localOnly],
+ ['loc.pathname!=="/site/index.html"',localOnly],
  ['p.get("li-search-react")==="typed-v1"',localOnly],
  ['["l09","l09-native-fixture"].includes(p.get("li-react"))',localOnly],
  ['const LI_DUAL_PILOT_PAGES=new Set(["home","search","lessonL09"]);',html],

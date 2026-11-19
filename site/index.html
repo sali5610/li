@@ -525,9 +525,11 @@ const LI_LESSON_ROUTES={lessonL09:"L09-1-2",lessonL03:"L03-1-2",lessonL15:"L15-2
  * Every public/unflagged native route keeps the S134 replaceState behavior unchanged.
  */
 function liDualLocalHistoryAllowed(){
- const loc=window.location,p=new URLSearchParams(loc.search);
- return loc.protocol==="http:"&&["localhost","127.0.0.1"].includes(loc.hostname)&&
-   loc.pathname==="/site/index.html"&&p.get("li-search-react")==="typed-v1"&&
+ const loc=window.location;
+ if(loc.protocol!=="http:"||!["localhost","127.0.0.1"].includes(loc.hostname)||
+    loc.pathname!=="/site/index.html")return false;
+ const p=new URLSearchParams(loc.search);
+ return p.get("li-search-react")==="typed-v1"&&
    ["l09","l09-native-fixture"].includes(p.get("li-react"));
 }
 const LI_DUAL_PILOT_PAGES=new Set(["home","search","lessonL09"]);
@@ -558,6 +560,7 @@ function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=documen
  if(liDualLocalHistoryAllowed())
   window.dispatchEvent(new CustomEvent("li:dual-local-route",{detail:{page:id}}));
 }
+if(typeof window.addEventListener==="function")
 window.addEventListener("popstate",()=>{
  // Do not interpret foreign/production history as li. pilot navigation.
  if(!liDualLocalHistoryAllowed())return;

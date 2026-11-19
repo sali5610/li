@@ -17,9 +17,10 @@ const neonAuth=createInternalNeonAuth(NEON_AUTH_URL,{
  adapter:BetterAuthReactAdapter(),
  allowAnonymous:false
 });
-// The generic internal factory has a vanilla/react conditional type ambiguity;
-// its actual adapter here is BetterAuthReactAdapter() by construction.
-export const authClient=neonAuth.adapter as ReactBetterAuthClient;
+// SDK v0.7.0-beta's generic conditional resolves the React adapter as its
+// Vanilla type, even though BetterAuthReactAdapter() instantiates React hooks.
+// The explicit bridge is isolated here; runtime Auth-only fixture must verify.
+export const authClient=neonAuth.adapter as unknown as ReactBetterAuthClient;
 
 /** Identity-only adapter. Never cache/store the JWT or raw session in IndexedDB. */
 export const neonSessionPort:NeonAuthSessionPort={

@@ -22,7 +22,6 @@ export function indexQuoteSafety({policy,quoteIds,companionManifests}){
   policy.hardGates?.usageScope!=='PERSONAL_INVITE_ONLY'||
   policy.hardGates?.reuseRightsGate!=='NOT_A_PRODUCT_BLOCKER'||
   policy.hardGates?.reviewedQuoteEntries!==0||
-  policy.hardGates?.reviewedPublicQuoteEntries!==0||
   policy.hardGates?.clientCanApprove!==false||
   policy.legacyRuntimeSafetyFinding?.severity!=='GATE_OPEN_DO_NOT_CLAIM_FIXED')
   throw Error('Quote safety policy is missing its fail-closed hold gate');

@@ -1,0 +1,125 @@
+#!/usr/bin/env node
+// GitHub canonical JSON → deterministic, zero-dependency static content packs.
+// Legacy JS is read ONLY as a locked-content parity guard until frontend consumes packs.
+import { readFileSync, readdirSync, writeFileSync, mkdirSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
+const load=path=>JSON.parse(readFileSync(resolve(root,path),"utf8"));
+const read=path=>readFileSync(resolve(root,path),"utf8");
+function extractLiteral(source, name) {
+ const idx=source.indexOf("const "+name+"="); if(idx<0)throw Error("Missing "+name);
+ const start=source.slice(idx).search(/[{\[]/)+idx; const open=source[start];const close=open==="{"?"}":"]";
+ let depth=0,quote="",escape=false,line=false,block=false,end=-1;
+ for(let i=start;i<source.length;i++){
+  const c=source[i],n=source[i+1];
+  if(line){if(c==="\n")line=false;continue;}
+  if(block){if(c==="*"&&n==="/"){block=false;i++;}continue;}
+  if(quote){if(escape){escape=false;continue;}if(c==="\\"){escape=true;continue;}if(c===quote)quote="";continue;}
+  if(c==="/"&&n==="/"){line=true;i++;continue;}
+  if(c==="/"&&n==="*"){block=true;i++;continue;}
+  if(c==="'"||c==='"'||c==='`'){quote=c;continue;}
+  if(c===open)depth++;
+  if(c===close&&--depth===0){end=i+1;break;}
+ }
+ if(end<0)throw Error("Unclosed literal "+name);
+ return eval("("+source.slice(start,end)+")");
+}
+function compileContent(lessons,concepts,relations,registry,academic){
+ const fail=msg=>{throw Error("LI_CONTENT_INVALID: "+msg)};
+ const allowed=new Map([...registry.predicates,...academic.relations].map(x=>[x.name,x]));
+ const kinds=new Set(registry.nodeKinds.map(x=>x.name));
+ const nodeById=new Map(),edgeById=new Map(),triples=new Set(),aliases=new Map();
+ const addNode=n=>{if(nodeById.has(n.id)){const prev=nodeById.get(n.id);if(JSON.stringify(prev)!==JSON.stringify(n))fail("duplicate node ID "+n.id);return;}
+  if(!kinds.has(n.kind)||!new RegExp(registry.idPolicy.pattern).test(n.id))fail("bad node "+n.id);
+  if(!registry.enums.reviewState.includes(n.reviewState)||!registry.enums.publishState.includes(n.publishState))fail("bad lifecycle "+n.id);
+  if(n.visibility!=="public_curated")fail("private content leak "+n.id);
+  if(!n.provenance?.sourceUrl?.startsWith("https://")||!n.provenance?.sourceSection)fail("missing provenance "+n.id);
+  for(const t of [{locale:"en",text:n.title},...(n.aliases??[])]){const k=n.kind+":"+t.locale+":"+t.text.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();if(aliases.has(k)&&aliases.get(k)!==n.id)fail("alias collision "+k);aliases.set(k,n.id);}
+  nodeById.set(n.id,n);
+ };
+ const addEdge=e=>{if(edgeById.has(e.id))fail("duplicate edge ID "+e.id);
+  const key=e.predicate+"|"+e.from+"|"+e.to;if(triples.has(key))fail("duplicate triple "+key);triples.add(key);edgeById.set(e.id,e);};
+ const editorial=(l,section)=>({sourceUrl:l.provenance.sourceUrl,sourceSection:section,evidenceType:"editorial",checkedOn:l.provenance.checkedOn});
+ const navSrc={sourceUrl:"https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",sourceSection:"S36 mapped Wave1 hierarchy",evidenceType:"documented",checkedOn:"2026-11-20"};
+ const packs=new Map(),search=[];
+ const lessonIds=new Set();
+ for(const l of [...lessons].sort((a,b)=>a.id.localeCompare(b.id))){
+  for(const k of ["schemaVersion","id","kind","version","languages","title","hierarchy","learningOutcomes","conceptIds","content","practice","sources","provenance","reviewState","publishState","rights","editorialStatus","updatedAt"])if(l[k]===undefined)fail(l.id+" missing "+k);
+  if(lessonIds.has(l.id))fail("duplicate lesson ID "+l.id);lessonIds.add(l.id);
+  if(l.kind!=="Lesson"||!/^L\d{2}-\d+-\d+$/.test(l.id))fail("bad legacy lesson ID "+l.id);
+  if(l.languages.join(",")!=="vi,en"||!l.title.vi||!l.title.en||l.content.format!=="locked-structured-v1")fail("bad locales "+l.id);
+  for(const loc of l.languages){const x=l.content.localized[loc];if(!x||x.title!==l.title[loc]||!Array.isArray(x.questions)||x.questions.length!==l.practice.questionCount||!Array.isArray(x.rubricItems)||x.rubricItems.length!==4)fail("missing locked learning/practice/rubric "+l.id+" "+loc);if(JSON.stringify(l.learningOutcomes[loc])!==JSON.stringify(x.goals))fail("outcomes drift "+l.id+" "+loc);}
+  if(l.publishState==="published"&&l.reviewState!=="approved")fail("publishing unapproved lesson "+l.id);
+  if(l.publishState!=="review_only"&&l.publishState!=="draft")fail("unexpected release state "+l.id);
+  if(l.rights.text!=="first_party")fail("unlicensed lesson text "+l.id);
+  if(!Array.isArray(l.conceptIds)||l.conceptIds.length===0)fail("missing concept mapping "+l.id);
+  if(l.prerequisiteLessonIds?.some(x=>x===l.id))fail("self prerequisite "+l.id);
+  for(const src of l.sources){if(!src.title||!src.url?.startsWith("https://"))fail("invalid external source "+l.id);}
+  const hier=l.hierarchy;
+  for(const [kind,v] of [["DomainGroup",hier.group],["Field",hier.field],["Course",hier.course]]){if(!v||!v.id||!v.title)fail("bad hierarchy "+l.id);
+   addNode({id:v.id,kind,title:v.title,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:navSrc,note:"Wave1 navigation metadata, not academic accreditation"});}
+  addNode({id:"lesson:"+l.id,kind:"Lesson",title:l.title.en,version:l.version,reviewState:l.reviewState,publishState:l.publishState,visibility:"public_curated",rightsState:"first_party",aliases:[{locale:"vi",text:l.title.vi}],provenance:editorial(l,"PO-locked lesson VI/EN"),note:"Editorial lock is not release approval"});
+  const part=(from,to)=>addEdge({id:"edge:content:part:"+from,predicate:"PART_OF",from,to,reviewState:"verified",visibility:"public_curated",provenance:navSrc});
+  part(hier.field.id,hier.group.id);part(hier.course.id,hier.field.id);part("lesson:"+l.id,hier.course.id);
+  const claimId="claim:wave1:"+l.id+":editorial-scope",sourceId="source:editorial:"+l.id+":notion";
+  addNode({id:claimId,kind:"SourceClaim",title:"Locked lesson scope "+l.id,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:editorial(l,"Lesson manuscript contents"),note:"Editorial presence only; not a claim of peer-reviewed scientific support"});
+  addNode({id:sourceId,kind:"SourceEdition",title:"PO-locked editorial edition "+l.id,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:editorial(l,"S126 PO content freeze"),note:"Notion research provenance, never fetched at runtime"});
+  addEdge({id:"edge:content:states:"+l.id,predicate:"STATES_CLAIM",from:"lesson:"+l.id,to:claimId,reviewState:"verified",visibility:"public_curated",provenance:editorial(l,"Manuscript contents")});
+  addEdge({id:"edge:content:support:"+l.id,predicate:"SUPPORTED_BY",from:claimId,to:sourceId,reviewState:"verified",visibility:"public_curated",provenance:editorial(l,"Editorial provenance (not academic proof)")});
+  const courseId=hier.course.id.slice("course:".length);
+  if(!packs.has(courseId))packs.set(courseId,{courseId,courseTitle:hier.course.title,version:"1.0.0",lessons:[]});
+  packs.get(courseId).lessons.push(l);
+ }
+ for(const c of concepts)addNode(c);
+ for(const r of relations)addEdge(r);
+ for(const l of lessons)for(const cid of l.conceptIds)if(!relations.some(e=>e.predicate==="TEACHES"&&e.from==="lesson:"+l.id&&e.to===cid))fail("missing TEACHES for "+l.id+" → "+cid);
+ for(const e of edgeById.values()){
+  const def=allowed.get(e.predicate),a=nodeById.get(e.from),b=nodeById.get(e.to);
+  if(!a||!b)fail("broken link "+e.id+" "+e.from+" → "+e.to);
+  if(!def||!def.from.includes(a.kind)||!def.to.includes(b.kind))fail("invalid relationship "+e.id+" "+e.predicate+" "+a.kind+" → "+b.kind);
+  if(e.from===e.to)fail("self edge "+e.id);
+  if(!registry.enums.reviewState.includes(e.reviewState)||!e.provenance?.sourceUrl?.startsWith("https://")||!e.provenance.sourceSection)fail("missing edge evidence "+e.id);
+ }
+ // Explicit full prerequisite cycle checks (no implicit "related" prerequisite promotions).
+ for(const predicate of ["REQUIRES","PART_OF","RECOMMENDED_BEFORE"]){const adjacency=new Map();
+  for(const e of edgeById.values())if(e.predicate===predicate){adjacency.set(e.from,[...(adjacency.get(e.from)||[]),e.to]);}
+  const visiting=new Set(),done=new Set();const visit=n=>{if(visiting.has(n))fail("cycle "+predicate+" at "+n);if(done.has(n))return;visiting.add(n);for(const t of adjacency.get(n)||[])visit(t);visiting.delete(n);done.add(n);};
+  for(const id of adjacency.keys())visit(id);
+ }
+ const nodes=[...nodeById.values()].sort((a,b)=>a.id.localeCompare(b.id)),edges=[...edgeById.values()].sort((a,b)=>a.id.localeCompare(b.id));
+ const used=new Set(edges.flatMap(e=>[e.from,e.to]));for(const n of nodes)if(!used.has(n.id))fail("orphan "+n.id);
+ const backlinks={},forward={},adjacency={};
+ const append=(obj,key,value)=>{(obj[key]??=[]).push(value);};
+ for(const e of edges){
+  const record={id:e.id,predicate:e.predicate,from:e.from,to:e.to,reviewState:e.reviewState,reason:e.reason??null,provenance:e.provenance};
+  append(backlinks,e.to,record);append(forward,e.from,record);append(adjacency,e.from,{...record,direction:"outgoing",neighbor:e.to});append(adjacency,e.to,{...record,direction:"incoming",neighbor:e.from});
+ }
+ for(const n of nodes)if(["Lesson","Concept","Course","Field"].includes(n.kind))search.push({id:n.id,kind:n.kind,title:n.title,aliases:n.aliases,reviewState:n.reviewState,publishState:n.publishState,fieldId: n.kind==="Lesson"?lessons.find(l=>"lesson:"+l.id===n.id)?.hierarchy.field.id??null:null});
+ const outputs={
+  "site/content-packs/graph.json":{schemaVersion:"1.0.0",nodes,edges,adjacency},
+  "site/content-packs/backlinks.json":{schemaVersion:"1.0.0",backlinks,forward},
+  "site/content-packs/search.json":{schemaVersion:"1.0.0",documents:search},
+  "site/content-packs/manifest.json":{schemaVersion:"1.0.0",contentRoot:"content/lessons",status:"review_only",courses:[...packs.values()].sort((a,b)=>a.courseId.localeCompare(b.courseId)).map(p=>({id:p.courseId,title:p.courseTitle,file:p.courseId+".json",lessonIds:p.lessons.map(l=>l.id)}))}
+ };
+ for(const p of packs.values())outputs["site/content-packs/"+p.courseId+".json"]={schemaVersion:"1.0.0",courseId:p.courseId,lessons:p.lessons};
+ return outputs;
+}
+const lessons=readdirSync(resolve(root,"content/lessons")).filter(f=>f.endsWith(".json")).sort().map(f=>load("content/lessons/"+f));
+const ids=lessons.map(l=>l.id);
+const old=extractLiteral(read("site/assets/lesson-wave1-core.js"),"PACK");
+const l09=extractLiteral(read("site/assets/lesson-l09-hifi.js"),"T");
+for(const l of lessons){
+ const source=l.id==="L09-1-2"?l09:old[l.id]&&{vi:old[l.id].vi,en:old[l.id].en};
+ if(!source||JSON.stringify(l.content.localized)!==JSON.stringify({vi:source.vi,en:source.en}))throw Error("LI_CONTENT_DRIFT: original locked academic content differs for "+l.id);
+}
+const schema=load("content/schema/lesson.schema.json");
+for(const l of lessons)for(const key of schema.required)if(!(key in l))throw Error("LI_CONTENT_SCHEMA_REQUIRED: "+l.id+"."+key);
+const compiled=compileContent(lessons,load("content/graph/concepts.json"),load("content/graph/edges.json"),load("docs/ontology/registry.v0.1.json"),load("docs/ontology/academic/registry.v0.1.json"));
+const check=process.argv.includes("--check");
+for(const [path,value] of Object.entries(compiled)){
+ const payload=JSON.stringify(value,null,2)+"\n";
+ if(check){if(read(path)!==payload)throw Error("LI_CONTENT_PACK_STALE: "+path+"; run node tools/build_content_packs.mjs");}
+ else{mkdirSync(dirname(resolve(root,path)),{recursive:true});writeFileSync(resolve(root,path),payload);}
+}
+console.log("LI_CONTENT_PACKS_PASS lessons="+ids.length+" files="+Object.keys(compiled).length+" mode="+(check?"check":"build"));

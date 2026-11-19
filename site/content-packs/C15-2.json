@@ -1,0 +1,376 @@
+{
+  "schemaVersion": "1.0.0",
+  "courseId": "C15-2",
+  "lessons": [
+    {
+      "schemaVersion": "1.0.0",
+      "id": "L15-2-2",
+      "kind": "Lesson",
+      "version": "0.2.0",
+      "languages": [
+        "vi",
+        "en"
+      ],
+      "title": {
+        "vi": "Điểm đặt hàng lại & tồn kho an toàn",
+        "en": "Reorder Points and Safety Stock"
+      },
+      "aliases": [],
+      "hierarchy": {
+        "group": {
+          "id": "group:business",
+          "title": "Kinh doanh & vận hành"
+        },
+        "field": {
+          "id": "field:F15",
+          "title": "Supply Chain"
+        },
+        "course": {
+          "id": "course:C15-2",
+          "title": "Planning, Inventory & Visibility"
+        }
+      },
+      "difficulty": "Intermediate",
+      "learningOutcomes": {
+        "vi": [
+          "Phân biệt safety stock, reorder point và order quantity.",
+          "Tính ROP khi giả định về nhu cầu, lead time và buffer đã rõ.",
+          "Dùng inventory position để xác định thời điểm kích hoạt đặt thêm.",
+          "Nêu giới hạn của mô hình khi lead time hoặc nhu cầu biến động."
+        ],
+        "en": [
+          "Distinguish safety stock, reorder point and order quantity.",
+          "Calculate a simplified reorder threshold from stated assumptions.",
+          "Compare the threshold with inventory position.",
+          "Recognize limits when demand or lead time varies."
+        ]
+      },
+      "conceptIds": [
+        "concept:wave1:reorder-point",
+        "concept:wave1:safety-stock"
+      ],
+      "prerequisiteLessonIds": [],
+      "methodFit": {
+        "status": "not_reviewed",
+        "primaryTechniqueId": null,
+        "optionalTechniqueIds": []
+      },
+      "content": {
+        "format": "locked-structured-v1",
+        "localized": {
+          "vi": {
+            "title": "Điểm đặt hàng lại & tồn kho an toàn",
+            "intro": "Đợi kho trống rồi mới mua? Hàng còn đang trên đường, tiểu hữu ơi.",
+            "goalsKicker": "I · MỤC TIÊU",
+            "goalsTitle": "Nhận ra đúng lúc cần tái đặt",
+            "goals": [
+              "Phân biệt safety stock, reorder point và order quantity.",
+              "Tính ROP khi giả định về nhu cầu, lead time và buffer đã rõ.",
+              "Dùng inventory position để xác định thời điểm kích hoạt đặt thêm.",
+              "Nêu giới hạn của mô hình khi lead time hoặc nhu cầu biến động."
+            ],
+            "conceptKicker": "II · HIỂU BẢN CHẤT",
+            "conceptTitle": "Chờ kho rỗng rồi đặt? Trễ quá rồi.",
+            "conceptText": "Một cửa hàng tiêu thụ trung bình <b>24 hộp linh kiện/ngày</b>. Nhà cung cấp giao trong <b>5 ngày cố định</b>; chính sách dự trữ thêm <b>30 hộp</b> safety stock. Nhu cầu dự kiến trong thời gian chờ là <b>24 × 5 = 120 hộp</b>. Do đó <b>ROP = 24 × 5 + 30 = 150 hộp</b>.",
+            "conceptList": [
+              "<b>Lead time:</b> thời gian từ đặt hàng tới nhận hàng; ở ví dụ này giả định là cố định 5 ngày.",
+              "<b>Safety stock (SS):</b> phần đệm để giảm rủi ro thiếu hàng; 30 hộp là đầu vào chính sách, không được tính từ một service level.",
+              "<b>Reorder point (ROP):</b> ngưỡng của inventory position kích hoạt phát lệnh tái đặt trong chính sách continuous review.",
+              "<b>Inventory position:</b> tồn hiện có + hàng đang đặt chưa nhận − lượng nợ giao (backorders)."
+            ],
+            "compareTitle1": "Khi nào đặt? · Reorder point",
+            "compareText1": "<b>ROP = d × L + SS</b> (mô hình đơn giản). Đơn vị: hộp; 150 hộp là ngưỡng tái đặt, không phải lượng mua.",
+            "compareTitle2": "Đặt bao nhiêu? · Order quantity",
+            "compareText2": "Số lượng cần đặt được xác định bởi chính sách replenishment, lot size và chi phí riêng. Không thể lấy 150 làm lượng đặt chỉ vì đó là ROP.",
+            "conceptNote": "<b>Trade-off:</b> Đệm quá ít dễ thiếu hàng; đệm quá lớn giam vốn và tăng chi phí hoặc rủi ro lỗi thời. Công thức đơn giản không tự đưa ra service level, lượng đặt tối ưu hay xác suất không thiếu hàng.",
+            "visualKicker": "III · ĐỒ THỊ NGUỒN THAM KHẢO",
+            "visualTitle": "Nhìn ngưỡng đặt hàng trên đồ thị",
+            "visualCaption": "Reorder point & service level",
+            "visualNote": "Hình mô tả mô hình tồn kho tổng quát có bất định, không phải biểu đồ dữ liệu 24×5+30 trong bài. Safety stock không đảm bảo tuyệt đối không thiếu hàng.",
+            "guidedKicker": "IV · VÍ DỤ CÓ HƯỚNG DẪN",
+            "guidedTitle": "Phụ tùng 12 chiếc/ngày",
+            "guidedText": "Giả sử nhu cầu là <b>12 chiếc/ngày</b>, lead time <b>3 ngày cố định</b> và safety stock <b>15 chiếc</b>. Nhu cầu khi chờ hàng là <b>12 × 3 = 36 chiếc</b>; <b>ROP = 36 + 15 = 51 chiếc</b>. Inventory position 54 chưa chạm ngưỡng; 49 đã chạm.",
+            "guidedQuestion": "<b>Tự giải thích:</b> Vì sao <b>51</b> cho biết khi nào đặt thêm, không phải mặc định nên đặt 51 chiếc?",
+            "guidedLabel": "Giải thích bằng lời của bạn",
+            "guidedPlaceholder": "Chỉ ra sự khác nhau giữa thời điểm và số lượng...",
+            "guidedSave": "Phần ví dụ có hướng dẫn không tính điểm; câu trả lời lưu trên thiết bị.",
+            "guidedShow": "Xem gợi ý phân tích",
+            "guidedHide": "Ẩn gợi ý phân tích",
+            "guidedHint": "Câu hỏi <b>khi nào</b> cần tái đặt theo ngưỡng <b>inventory position</b> khác câu hỏi <b>đặt bao nhiêu</b>. Số lượng mua còn phụ thuộc chính sách order quantity riêng.",
+            "challengeKicker": "V · BÀI TẬP ĐỘC LẬP",
+            "challengeTitle": "Kiểm tra ngưỡng tái đặt",
+            "challengeText": "Một xưởng sửa chữa cần <b>18 bộ linh kiện/ngày</b>, lead time giả định <b>7 ngày cố định</b>, safety stock theo chính sách là <b>34 bộ</b>. Inventory position hiện tại <b>158 bộ</b>.",
+            "challengeClaim": "Bạn cần xác định ngưỡng đặt hàng, thời điểm phát lệnh và giới hạn của mô hình này; đừng tự giả định đây là bài toán tối ưu tồn kho đầy đủ.",
+            "questions": [
+              "Tính demand during lead time và ROP; ghi rõ phép tính và đơn vị.",
+              "Với inventory position = 158, đã chạm ngưỡng đặt hàng theo continuous review chưa? Vì sao?",
+              "Nếu lead time thực tế dao động từ 3 đến 12 ngày, giả định nào của mô hình không còn chắc chắn?",
+              "Dữ liệu hiện có đã đủ tính order quantity tối ưu hoặc xác suất không stockout chưa? Giải thích."
+            ],
+            "placeholder": "Viết lời giải có đơn vị...",
+            "hintButton": "Gợi ý cách giải",
+            "hint": "Hãy tách đơn vị trước khi tính: <b>bộ/ngày × ngày</b> ra số bộ. Sau đó cộng buffer và so sánh với inventory position. Đừng suy ra lượng đặt hoặc xác suất khi đề không có dữ liệu đó.",
+            "assistStatus": "Lượt có hỗ trợ — không tính là làm độc lập hoàn toàn.",
+            "saveHint": "Bản nháp lưu trên thiết bị; không gửi dữ liệu nội bộ nào cho AI.",
+            "submit": "Nộp lời giải",
+            "clear": "Xóa bản nháp",
+            "needAnswers": "Viết lời giải có nghĩa cho đủ bốn câu trước khi nộp.",
+            "submittedText": "Đã khóa lượt giải. Mở đáp án để tự kiểm tra các phép tính và giả định.",
+            "answerTitle": "ĐÁP ÁN MẪU · SAU LẦN THỬ",
+            "answer": "<b>1.</b> Demand during lead time = 18 bộ/ngày × 7 ngày = <b>126 bộ</b>. ROP = 126 + 34 = <b>160 bộ</b>.<br><b>2.</b> Inventory position 158 ≤ 160 nên đã đến ngưỡng kích hoạt đặt thêm.<br><b>3.</b> Nếu lead time có thể từ 3 đến 12 ngày, giả định lead time cố định 7 ngày không còn chắc; cần đánh giá lại mô hình và safety stock.<br><b>4.</b> Chưa đủ dữ liệu về lot size, chi phí và độ bất định để suy ra lượng đặt tối ưu hay xác suất không stockout.",
+            "answerNote": "<b>Giới hạn:</b> 160 là ngưỡng tái đặt, không có nghĩa phải mua 160 bộ; không tự tuyên bố 95% service level. Chỉ là mô hình học tập, không dùng dữ liệu SAP nội bộ.",
+            "rubricKicker": "VI · TỰ ĐỐI CHIẾU",
+            "rubricTitle": "Rubric tự đánh giá 0–8",
+            "rubricLead": "Bốn tiêu chí, mỗi tiêu chí 0–2. Đây là self-review chưa hiệu chuẩn, không phải phép chấm điểm tối ưu kho hàng.",
+            "rubricBefore": "Hãy nộp lời giải trước khi mở đáp án và rubric.",
+            "rubricItems": [
+              [
+                "Nhu cầu trong lead time",
+                "2: 126 bộ đúng và có đơn vị; 1: số đúng nhưng thiếu giải thích; 0: sai."
+              ],
+              [
+                "ROP & quyết định đặt",
+                "2: 160 bộ và 158 ≤ 160, kết luận trigger đúng; 1: một phần; 0: nhầm ngưỡng và lượng đặt."
+              ],
+              [
+                "Giới hạn giả định",
+                "2: nhận ra lead time biến động ảnh hưởng; 1: nói chung chung cần thêm dữ liệu; 0: khẳng định chắc chắn."
+              ],
+              [
+                "Điều không suy ra được",
+                "2: không bịa EOQ hoặc xác suất stockout; 1: chỉ nói thiếu dữ liệu; 0: tự tạo kết quả."
+              ]
+            ],
+            "scoreOptions": [
+              "Chưa đánh giá",
+              "0 · Chưa đạt",
+              "1 · Một phần",
+              "2 · Đầy đủ"
+            ],
+            "scoreLabel": "Điểm tự đánh giá",
+            "saveReview": "Lưu tự đánh giá & hoàn tất",
+            "needRubric": "Chấm đủ bốn tiêu chí trước khi hoàn tất.",
+            "reviewDone": "Đã lưu một lượt tự đánh giá. Chưa phải chứng nhận hiểu supply chain.",
+            "sourcesKicker": "VII · ĐỌC SÂU",
+            "sourcesTitle": "Nguồn inventory & replenishment",
+            "sourcesLead": "IBM và MIT hỗ trợ bối cảnh học thuật; mỗi nguồn được mở riêng, không sao chép hoặc nạp toàn văn tự động.",
+            "tiers": {
+              "intro": "Hiểu nhanh",
+              "core": "Chương trình học thuật",
+              "deep": "Đọc chuyên sâu"
+            },
+            "queriesTitle": "Từ khóa tìm hiểu thêm",
+            "allPrompt": "Copy prompt đối chiếu các nguồn",
+            "openChat": "Mở ChatGPT ↗",
+            "sourceNote": "Nếu nguồn không thể truy cập, ChatGPT phải nói rõ và yêu cầu bạn dán phần liên quan. Không khẳng định công thức của bài đã được nguồn chứng thực nếu chưa đọc.",
+            "sidebarTitle": "LỘ TRÌNH BÀI HỌC",
+            "sidebarLead": "Supply Chain · Reorder Point",
+            "progressBefore": "Chưa tự đánh giá",
+            "progressDone": "Đã tự đánh giá 1 lượt",
+            "navLabels": [
+              "Mục tiêu",
+              "Mô hình",
+              "Đồ thị",
+              "Ví dụ",
+              "Bài độc lập",
+              "Rubric",
+              "Nguồn học"
+            ],
+            "sidebarExtra": "Wave 1B · Content đã chốt; academic/domain release gate vẫn mở.",
+            "back": "Về Tàng Thư",
+            "status": "Wave 1B · Content khóa · QA/domain mở",
+            "guide": "Thần Chú",
+            "catalog": "Tàng Thư",
+            "openSource": "Mở nguồn",
+            "copyPrompt": "Copy prompt",
+            "copied": "Đã copy prompt.",
+            "copyFailed": "Không thể copy; hãy kiểm tra quyền clipboard.",
+            "reset": "Xóa bản nháp chưa nộp? Lượt đã nộp không bị ảnh hưởng.",
+            "storageOff": "Trình duyệt không cho lưu, nên sao chép lời giải trước khi rời trang."
+          },
+          "en": {
+            "title": "Reorder Points and Safety Stock",
+            "intro": "Do not wait for the shelf to empty. Inventory decisions have lead times.",
+            "goalsKicker": "I · OBJECTIVES",
+            "goalsTitle": "Know when to reorder",
+            "goals": [
+              "Distinguish safety stock, reorder point and order quantity.",
+              "Calculate a simplified reorder threshold from stated assumptions.",
+              "Compare the threshold with inventory position.",
+              "Recognize limits when demand or lead time varies."
+            ],
+            "conceptKicker": "II · CORE EXPLANATION",
+            "conceptTitle": "Don't wait until inventory is empty",
+            "conceptText": "A store uses <b>24 boxes of components/day</b>. Fixed lead time is <b>5 days</b>; an assumed policy sets <b>30 boxes</b> of safety stock. Expected demand during lead time is <b>24 × 5 = 120 boxes</b>. So <b>ROP = 24 × 5 + 30 = 150 boxes</b>.",
+            "conceptList": [
+              "<b>Lead time:</b> time from placing an order to replenishment; fixed at 5 days in this exercise.",
+              "<b>Safety stock (SS):</b> an additional buffer; 30 boxes is assumed policy input, not a calculated service-level result.",
+              "<b>Reorder point (ROP):</b> inventory-position threshold triggering replenishment under a continuous-review policy.",
+              "<b>Inventory position:</b> on-hand inventory plus outstanding orders minus backorders."
+            ],
+            "compareTitle1": "When to reorder? · ROP",
+            "compareText1": "<b>ROP = d × L + SS</b> in this simplified deterministic-parameter exercise. The 150-box threshold is not the default order quantity.",
+            "compareTitle2": "How much to reorder? · Order quantity",
+            "compareText2": "Order size needs a separate replenishment or lot-size policy and relevant cost data. Do not mistake the threshold for the number of boxes to purchase.",
+            "conceptNote": "<b>Trade-off:</b> Less buffer means greater stockout risk; extra buffer ties up capital and may increase storage costs or obsolescence. This formula does not provide an optimal order quantity, precise service level or stockout probability.",
+            "visualKicker": "III · REFERENCE DIAGRAM",
+            "visualTitle": "Reorder threshold on an inventory chart",
+            "visualCaption": "Reorder point and service level",
+            "visualNote": "A general inventory-control figure showing uncertainty, not a plot of the lesson's exact 24×5+30 inputs. Safety stock does not eliminate stockout risk.",
+            "guidedKicker": "IV · GUIDED EXAMPLE",
+            "guidedTitle": "Spare part demand: 12 units/day",
+            "guidedText": "Suppose demand is <b>12 units/day</b>, fixed lead time <b>3 days</b> and policy safety stock <b>15 units</b>. Lead-time demand is <b>12 × 3 = 36 units</b>; <b>ROP = 36 + 15 = 51 units</b>. Inventory position 54 is above the threshold; 49 is below.",
+            "guidedQuestion": "<b>Explain:</b> Why is <b>51</b> a reorder threshold rather than necessarily the quantity that should be purchased?",
+            "guidedLabel": "Explain in your own words",
+            "guidedPlaceholder": "Distinguish order timing from order quantity...",
+            "guidedSave": "Unscored guided work, saved locally.",
+            "guidedShow": "Show analysis hint",
+            "guidedHide": "Hide analysis hint",
+            "guidedHint": "<b>When</b> inventory position reaches the threshold is a separate question from <b>how many</b> to order. Quantity requires a distinct replenishment policy.",
+            "challengeKicker": "V · INDEPENDENT CHALLENGE",
+            "challengeTitle": "Evaluate the reorder trigger",
+            "challengeText": "A repair facility requires <b>18 component sets/day</b>, assumed fixed lead time <b>7 days</b> and policy safety stock <b>34 sets</b>. Current inventory position is <b>158 sets</b>.",
+            "challengeClaim": "Determine the reorder threshold, whether ordering should be triggered, and model limitations. No full stochastic optimization model is supplied.",
+            "questions": [
+              "Compute lead-time demand and ROP; show calculations and units.",
+              "With inventory position 158, does the simulated continuous-review policy trigger an order? Explain.",
+              "If actual lead time ranges from 3 to 12 days, what simplifying assumption becomes unreliable?",
+              "Can you derive the optimal order quantity or probability of no stockout from the data provided? Why?"
+            ],
+            "placeholder": "Explain with units...",
+            "hintButton": "Show a hint",
+            "hint": "First check dimensional units: <b>sets/day × days</b> gives sets. Add the specified buffer, then compare with inventory position. Do not infer order quantity or probabilities from missing data.",
+            "assistStatus": "Assisted attempt, distinct from fully independent performance.",
+            "saveHint": "Drafts stay on your device; no company data is shared with AI.",
+            "submit": "Submit solution",
+            "clear": "Clear draft",
+            "needAnswers": "Provide meaningful answers to all four questions before submission.",
+            "submittedText": "Attempt submitted and locked. The model calculations and assumptions can now be reviewed.",
+            "answerTitle": "MODEL SOLUTION · AFTER ATTEMPT",
+            "answer": "<b>1.</b> Lead-time demand = 18 sets/day × 7 days = <b>126 sets</b>. ROP = 126 + 34 = <b>160 sets</b>.<br><b>2.</b> Inventory position 158 ≤ 160, so the simplified continuous-review policy triggers replenishment.<br><b>3.</b> Lead time changing from 3 to 12 days invalidates confidence in a fixed 7-day lead time; the demand-in-lead-time assumptions and buffer policy require review.<br><b>4.</b> Available data do not determine optimal lot size or stockout probabilities; cost, variability and a model are missing.",
+            "answerNote": "<b>Boundary:</b> The 160-set reorder threshold is not a 160-set purchase quantity. Do not invent a 95% service level or SAP-internal case from the supplied assumptions.",
+            "rubricKicker": "VI · SELF-REVIEW",
+            "rubricTitle": "0–8 editorial self-rating",
+            "rubricLead": "Four dimensions × 0–2. Uncalibrated, not an AI grade or supply-chain professional certification.",
+            "rubricBefore": "Submit a valid solution before seeing the model answer and rubric.",
+            "rubricItems": [
+              [
+                "Lead-time demand",
+                "2: 126 sets with correct units; 1: correct number with weak explanation; 0: incorrect."
+              ],
+              [
+                "ROP and trigger",
+                "2: 160 sets and 158 ≤ 160, correctly triggers; 1: partial; 0: confuses timing and quantity."
+              ],
+              [
+                "Model assumptions",
+                "2: identifies effect of variable lead time; 1: generic missing-data remark; 0: unjustified certainty."
+              ],
+              [
+                "Unavailable outputs",
+                "2: rejects invented EOQ/stockout probabilities; 1: says only 'not enough'; 0: fabricates results."
+              ]
+            ],
+            "scoreOptions": [
+              "Not rated",
+              "0 · Missing",
+              "1 · Partial",
+              "2 · Complete"
+            ],
+            "scoreLabel": "Self-rating",
+            "saveReview": "Save self-review & complete",
+            "needRubric": "Rate all four dimensions first.",
+            "reviewDone": "One self-review saved; no mastery certification implied.",
+            "sourcesKicker": "VII · FURTHER READING",
+            "sourcesTitle": "Inventory and replenishment references",
+            "sourcesLead": "IBM and MIT provide context for inventory decisions. These are reference links, not scraped or automatically ingested copyrighted texts.",
+            "tiers": {
+              "intro": "Start here",
+              "core": "Academic course",
+              "deep": "Further reading"
+            },
+            "queriesTitle": "Research keywords",
+            "allPrompt": "Copy cross-source prompt",
+            "openChat": "Open ChatGPT ↗",
+            "sourceNote": "If ChatGPT cannot read a source, it should say so and ask for accessible excerpts. Do not force a source to confirm this simplified model without verifying the source.",
+            "sidebarTitle": "YOUR LEARNING PATH",
+            "sidebarLead": "Supply Chain · Reorder Point",
+            "progressBefore": "No review completed",
+            "progressDone": "One self-review completed",
+            "navLabels": [
+              "Goals",
+              "Model",
+              "Diagram",
+              "Worked example",
+              "Independent task",
+              "Rubric",
+              "Sources"
+            ],
+            "sidebarExtra": "Wave 1B · Content locked; academic/domain release gate remains open.",
+            "back": "Back to Catalog",
+            "status": "Wave 1B · Content locked · Domain QA open",
+            "guide": "Study methods",
+            "catalog": "Catalog",
+            "openSource": "Open source",
+            "copyPrompt": "Copy prompt",
+            "copied": "Prompt copied.",
+            "copyFailed": "Clipboard unavailable; check permissions.",
+            "reset": "Clear unsubmitted draft? Previous submissions remain.",
+            "storageOff": "Local storage unavailable; copy your solution before leaving."
+          }
+        }
+      },
+      "practice": {
+        "kind": "independent_reflection",
+        "questionCount": 4,
+        "minimumCharactersPerAnswer": 12,
+        "feedbackAfterSubmission": true,
+        "rubricKey": "rubricItems",
+        "questionsKey": "questions",
+        "answerKey": "answer"
+      },
+      "sources": [
+        {
+          "title": "IBM Think — Safety Stock",
+          "url": "https://www.ibm.com/think/topics/safety-stock",
+          "tier": "intro",
+          "usage": "reference_only"
+        },
+        {
+          "title": "MIT OCW — Supply Chain Planning (course syllabus)",
+          "url": "https://ocw.mit.edu/courses/15-762j-supply-chain-planning-spring-2011/pages/syllabus/",
+          "tier": "core",
+          "usage": "reference_only"
+        },
+        {
+          "title": "IBM Think — Inventory Optimization",
+          "url": "https://www.ibm.com/think/topics/inventory-optimization",
+          "tier": "deep",
+          "usage": "reference_only"
+        },
+        {
+          "title": "Springer — Inventory replenishment chapter (bibliographic source)",
+          "url": "https://link.springer.com/chapter/10.1007/978-981-19-5145-9_7",
+          "tier": "deep",
+          "usage": "reference_only"
+        }
+      ],
+      "rights": {
+        "text": "first_party",
+        "illustration": "external_licensed"
+      },
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+        "sourceSection": "S126 · PO content freeze; native Wave1 bilingual lesson",
+        "evidenceType": "editorial",
+        "checkedOn": "2026-11-20",
+        "legacySourcePath": "site/assets/lesson-wave1-core.js"
+      },
+      "reviewState": "approved",
+      "publishState": "review_only",
+      "editorialStatus": "po_locked",
+      "publishedAt": null,
+      "updatedAt": "2026-11-20"
+    }
+  ]
+}

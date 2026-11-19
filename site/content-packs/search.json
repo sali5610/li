@@ -1,0 +1,171 @@
+{
+  "schemaVersion": "1.0.0",
+  "documents": [
+    {
+      "id": "concept:ont01:random-variation",
+      "kind": "Concept",
+      "title": "Random sampling variation",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Biến thiên lấy mẫu ngẫu nhiên"
+        }
+      ],
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "fieldId": null
+    },
+    {
+      "id": "concept:ont01:selection-bias",
+      "kind": "Concept",
+      "title": "Selection bias",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Sai lệch chọn mẫu"
+        }
+      ],
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "fieldId": null
+    },
+    {
+      "id": "concept:wave1:leading-interview-question",
+      "kind": "Concept",
+      "title": "Leading interview question",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Câu hỏi dẫn dắt trong phỏng vấn"
+        }
+      ],
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "fieldId": null
+    },
+    {
+      "id": "concept:wave1:reorder-point",
+      "kind": "Concept",
+      "title": "Reorder point",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Điểm đặt hàng lại"
+        }
+      ],
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "fieldId": null
+    },
+    {
+      "id": "concept:wave1:safety-stock",
+      "kind": "Concept",
+      "title": "Safety stock",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Tồn kho an toàn"
+        }
+      ],
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "fieldId": null
+    },
+    {
+      "id": "course:C03-1",
+      "kind": "Course",
+      "title": "User Problems & Research Basics",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C09-1",
+      "kind": "Course",
+      "title": "Data & Statistical Foundations",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C15-2",
+      "kind": "Course",
+      "title": "Planning, Inventory & Visibility",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F03",
+      "kind": "Field",
+      "title": "UX Design",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F09",
+      "kind": "Field",
+      "title": "Data Science",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F15",
+      "kind": "Field",
+      "title": "Supply Chain",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "lesson:L03-1-2",
+      "kind": "Lesson",
+      "title": "Open Questions and Interview Bias",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Câu hỏi mở & thiên lệch phỏng vấn"
+        }
+      ],
+      "reviewState": "approved",
+      "publishState": "review_only",
+      "fieldId": "field:F03"
+    },
+    {
+      "id": "lesson:L09-1-2",
+      "kind": "Lesson",
+      "title": "Sampling Bias versus Random Sampling Variation",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Sampling Bias · Sai lệch chọn mẫu"
+        }
+      ],
+      "reviewState": "approved",
+      "publishState": "review_only",
+      "fieldId": "field:F09"
+    },
+    {
+      "id": "lesson:L15-2-2",
+      "kind": "Lesson",
+      "title": "Reorder Points and Safety Stock",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Điểm đặt hàng lại & tồn kho an toàn"
+        }
+      ],
+      "reviewState": "approved",
+      "publishState": "review_only",
+      "fieldId": "field:F15"
+    }
+  ]
+}

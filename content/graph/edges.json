@@ -1,0 +1,122 @@
+[
+  {
+    "id": "edge:wave1:l03-leading",
+    "predicate": "TEACHES",
+    "from": "lesson:L03-1-2",
+    "to": "concept:wave1:leading-interview-question",
+    "reviewState": "proposed",
+    "visibility": "public_curated",
+    "reason": "Lesson explains how leading interview questions bias answers",
+    "provenance": {
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
+      "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explains how leading interview questions bias answers",
+      "evidenceType": "editorial",
+      "checkedOn": "2026-11-20"
+    }
+  },
+  {
+    "id": "edge:wave1:l09-selection",
+    "predicate": "TEACHES",
+    "from": "lesson:L09-1-2",
+    "to": "concept:ont01:selection-bias",
+    "reviewState": "proposed",
+    "visibility": "public_curated",
+    "reason": "ONT-01 candidate concept ID reused; identity pending review",
+    "provenance": {
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+      "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · ONT-01 candidate concept ID reused; identity pending review",
+      "evidenceType": "editorial",
+      "checkedOn": "2026-11-20"
+    }
+  },
+  {
+    "id": "edge:wave1:l09-variation",
+    "predicate": "TEACHES",
+    "from": "lesson:L09-1-2",
+    "to": "concept:ont01:random-variation",
+    "reviewState": "proposed",
+    "visibility": "public_curated",
+    "reason": "Lesson explicitly distinguishes random sampling variation",
+    "provenance": {
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+      "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explicitly distinguishes random sampling variation",
+      "evidenceType": "editorial",
+      "checkedOn": "2026-11-20"
+    }
+  },
+  {
+    "id": "edge:wave1:l15-rop",
+    "predicate": "TEACHES",
+    "from": "lesson:L15-2-2",
+    "to": "concept:wave1:reorder-point",
+    "reviewState": "proposed",
+    "visibility": "public_curated",
+    "reason": "Lesson explains reorder points under stated simplifying assumptions",
+    "provenance": {
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+      "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explains reorder points under stated simplifying assumptions",
+      "evidenceType": "editorial",
+      "checkedOn": "2026-11-20"
+    }
+  },
+  {
+    "id": "edge:wave1:l15-stock",
+    "predicate": "TEACHES",
+    "from": "lesson:L15-2-2",
+    "to": "concept:wave1:safety-stock",
+    "reviewState": "proposed",
+    "visibility": "public_curated",
+    "reason": "Lesson explains safety-stock buffer and its tradeoffs",
+    "provenance": {
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+      "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explains safety-stock buffer and its tradeoffs",
+      "evidenceType": "editorial",
+      "checkedOn": "2026-11-20"
+    }
+  },
+  {
+    "id": "edge:wave1:l09-contrast",
+    "predicate": "CONTRASTS_WITH",
+    "from": "concept:ont01:selection-bias",
+    "to": "concept:ont01:random-variation",
+    "reviewState": "proposed",
+    "visibility": "public_curated",
+    "reason": "Bias is distinct from random sampling variation; not synonymous",
+    "provenance": {
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+      "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Bias is distinct from random sampling variation; not synonymous",
+      "evidenceType": "editorial",
+      "checkedOn": "2026-11-20"
+    }
+  },
+  {
+    "id": "edge:wave1:l03-l09-bridge",
+    "predicate": "RELATED_TO",
+    "from": "concept:wave1:leading-interview-question",
+    "to": "concept:ont01:selection-bias",
+    "reviewState": "proposed",
+    "visibility": "public_curated",
+    "reason": "Interview question bias and sample-selection bias are different routes to distorted findings",
+    "provenance": {
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
+      "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Interview question bias and sample-selection bias are different routes to distorted findings",
+      "evidenceType": "editorial",
+      "checkedOn": "2026-11-20"
+    }
+  },
+  {
+    "id": "edge:wave1:l09-l15-bridge",
+    "predicate": "RELATED_TO",
+    "from": "concept:ont01:selection-bias",
+    "to": "concept:wave1:reorder-point",
+    "reviewState": "proposed",
+    "visibility": "public_curated",
+    "reason": "Existing Wave1 navigation suggests checking data scope before inventory decisions; candidate bridge, not prerequisite",
+    "provenance": {
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+      "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Existing Wave1 navigation suggests checking data scope before inventory decisions; candidate bridge, not prerequisite",
+      "evidenceType": "editorial",
+      "checkedOn": "2026-11-20"
+    }
+  }
+]

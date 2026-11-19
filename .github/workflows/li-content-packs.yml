@@ -1,0 +1,24 @@
+name: li. canonical course content packs
+on:
+  pull_request:
+    paths:
+      - 'content/**'
+      - 'tools/build_content_packs.mjs'
+      - 'tools/test_content_adapter.mjs'
+      - 'site/assets/li-content-adapter.mjs'
+      - 'site/content-packs/**'
+      - '.github/workflows/li-content-packs.yml'
+permissions:
+  contents: read
+jobs:
+  content:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          node tools/build_content_packs.mjs --check
+          node tools/test_content_adapter.mjs

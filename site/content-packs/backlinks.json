@@ -1,0 +1,719 @@
+{
+  "schemaVersion": "1.0.0",
+  "backlinks": {
+    "field:F03": [
+      {
+        "id": "edge:content:part:course:C03-1",
+        "predicate": "PART_OF",
+        "from": "course:C03-1",
+        "to": "field:F03",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "field:F09": [
+      {
+        "id": "edge:content:part:course:C09-1",
+        "predicate": "PART_OF",
+        "from": "course:C09-1",
+        "to": "field:F09",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "field:F15": [
+      {
+        "id": "edge:content:part:course:C15-2",
+        "predicate": "PART_OF",
+        "from": "course:C15-2",
+        "to": "field:F15",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "group:technology": [
+      {
+        "id": "edge:content:part:field:F03",
+        "predicate": "PART_OF",
+        "from": "field:F03",
+        "to": "group:technology",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "group:mathematics": [
+      {
+        "id": "edge:content:part:field:F09",
+        "predicate": "PART_OF",
+        "from": "field:F09",
+        "to": "group:mathematics",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "group:business": [
+      {
+        "id": "edge:content:part:field:F15",
+        "predicate": "PART_OF",
+        "from": "field:F15",
+        "to": "group:business",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "course:C03-1": [
+      {
+        "id": "edge:content:part:lesson:L03-1-2",
+        "predicate": "PART_OF",
+        "from": "lesson:L03-1-2",
+        "to": "course:C03-1",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "course:C09-1": [
+      {
+        "id": "edge:content:part:lesson:L09-1-2",
+        "predicate": "PART_OF",
+        "from": "lesson:L09-1-2",
+        "to": "course:C09-1",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "course:C15-2": [
+      {
+        "id": "edge:content:part:lesson:L15-2-2",
+        "predicate": "PART_OF",
+        "from": "lesson:L15-2-2",
+        "to": "course:C15-2",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "claim:wave1:L03-1-2:editorial-scope": [
+      {
+        "id": "edge:content:states:L03-1-2",
+        "predicate": "STATES_CLAIM",
+        "from": "lesson:L03-1-2",
+        "to": "claim:wave1:L03-1-2:editorial-scope",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
+          "sourceSection": "Manuscript contents",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "claim:wave1:L09-1-2:editorial-scope": [
+      {
+        "id": "edge:content:states:L09-1-2",
+        "predicate": "STATES_CLAIM",
+        "from": "lesson:L09-1-2",
+        "to": "claim:wave1:L09-1-2:editorial-scope",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+          "sourceSection": "Manuscript contents",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "claim:wave1:L15-2-2:editorial-scope": [
+      {
+        "id": "edge:content:states:L15-2-2",
+        "predicate": "STATES_CLAIM",
+        "from": "lesson:L15-2-2",
+        "to": "claim:wave1:L15-2-2:editorial-scope",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+          "sourceSection": "Manuscript contents",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "source:editorial:L03-1-2:notion": [
+      {
+        "id": "edge:content:support:L03-1-2",
+        "predicate": "SUPPORTED_BY",
+        "from": "claim:wave1:L03-1-2:editorial-scope",
+        "to": "source:editorial:L03-1-2:notion",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
+          "sourceSection": "Editorial provenance (not academic proof)",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "source:editorial:L09-1-2:notion": [
+      {
+        "id": "edge:content:support:L09-1-2",
+        "predicate": "SUPPORTED_BY",
+        "from": "claim:wave1:L09-1-2:editorial-scope",
+        "to": "source:editorial:L09-1-2:notion",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+          "sourceSection": "Editorial provenance (not academic proof)",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "source:editorial:L15-2-2:notion": [
+      {
+        "id": "edge:content:support:L15-2-2",
+        "predicate": "SUPPORTED_BY",
+        "from": "claim:wave1:L15-2-2:editorial-scope",
+        "to": "source:editorial:L15-2-2:notion",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+          "sourceSection": "Editorial provenance (not academic proof)",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "concept:ont01:selection-bias": [
+      {
+        "id": "edge:wave1:l03-l09-bridge",
+        "predicate": "RELATED_TO",
+        "from": "concept:wave1:leading-interview-question",
+        "to": "concept:ont01:selection-bias",
+        "reviewState": "proposed",
+        "reason": "Interview question bias and sample-selection bias are different routes to distorted findings",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Interview question bias and sample-selection bias are different routes to distorted findings",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      },
+      {
+        "id": "edge:wave1:l09-selection",
+        "predicate": "TEACHES",
+        "from": "lesson:L09-1-2",
+        "to": "concept:ont01:selection-bias",
+        "reviewState": "proposed",
+        "reason": "ONT-01 candidate concept ID reused; identity pending review",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · ONT-01 candidate concept ID reused; identity pending review",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "concept:wave1:leading-interview-question": [
+      {
+        "id": "edge:wave1:l03-leading",
+        "predicate": "TEACHES",
+        "from": "lesson:L03-1-2",
+        "to": "concept:wave1:leading-interview-question",
+        "reviewState": "proposed",
+        "reason": "Lesson explains how leading interview questions bias answers",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explains how leading interview questions bias answers",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "concept:ont01:random-variation": [
+      {
+        "id": "edge:wave1:l09-contrast",
+        "predicate": "CONTRASTS_WITH",
+        "from": "concept:ont01:selection-bias",
+        "to": "concept:ont01:random-variation",
+        "reviewState": "proposed",
+        "reason": "Bias is distinct from random sampling variation; not synonymous",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Bias is distinct from random sampling variation; not synonymous",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      },
+      {
+        "id": "edge:wave1:l09-variation",
+        "predicate": "TEACHES",
+        "from": "lesson:L09-1-2",
+        "to": "concept:ont01:random-variation",
+        "reviewState": "proposed",
+        "reason": "Lesson explicitly distinguishes random sampling variation",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explicitly distinguishes random sampling variation",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "concept:wave1:reorder-point": [
+      {
+        "id": "edge:wave1:l09-l15-bridge",
+        "predicate": "RELATED_TO",
+        "from": "concept:ont01:selection-bias",
+        "to": "concept:wave1:reorder-point",
+        "reviewState": "proposed",
+        "reason": "Existing Wave1 navigation suggests checking data scope before inventory decisions; candidate bridge, not prerequisite",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Existing Wave1 navigation suggests checking data scope before inventory decisions; candidate bridge, not prerequisite",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      },
+      {
+        "id": "edge:wave1:l15-rop",
+        "predicate": "TEACHES",
+        "from": "lesson:L15-2-2",
+        "to": "concept:wave1:reorder-point",
+        "reviewState": "proposed",
+        "reason": "Lesson explains reorder points under stated simplifying assumptions",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explains reorder points under stated simplifying assumptions",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "concept:wave1:safety-stock": [
+      {
+        "id": "edge:wave1:l15-stock",
+        "predicate": "TEACHES",
+        "from": "lesson:L15-2-2",
+        "to": "concept:wave1:safety-stock",
+        "reviewState": "proposed",
+        "reason": "Lesson explains safety-stock buffer and its tradeoffs",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explains safety-stock buffer and its tradeoffs",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ]
+  },
+  "forward": {
+    "course:C03-1": [
+      {
+        "id": "edge:content:part:course:C03-1",
+        "predicate": "PART_OF",
+        "from": "course:C03-1",
+        "to": "field:F03",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "course:C09-1": [
+      {
+        "id": "edge:content:part:course:C09-1",
+        "predicate": "PART_OF",
+        "from": "course:C09-1",
+        "to": "field:F09",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "course:C15-2": [
+      {
+        "id": "edge:content:part:course:C15-2",
+        "predicate": "PART_OF",
+        "from": "course:C15-2",
+        "to": "field:F15",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "field:F03": [
+      {
+        "id": "edge:content:part:field:F03",
+        "predicate": "PART_OF",
+        "from": "field:F03",
+        "to": "group:technology",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "field:F09": [
+      {
+        "id": "edge:content:part:field:F09",
+        "predicate": "PART_OF",
+        "from": "field:F09",
+        "to": "group:mathematics",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "field:F15": [
+      {
+        "id": "edge:content:part:field:F15",
+        "predicate": "PART_OF",
+        "from": "field:F15",
+        "to": "group:business",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "lesson:L03-1-2": [
+      {
+        "id": "edge:content:part:lesson:L03-1-2",
+        "predicate": "PART_OF",
+        "from": "lesson:L03-1-2",
+        "to": "course:C03-1",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      },
+      {
+        "id": "edge:content:states:L03-1-2",
+        "predicate": "STATES_CLAIM",
+        "from": "lesson:L03-1-2",
+        "to": "claim:wave1:L03-1-2:editorial-scope",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
+          "sourceSection": "Manuscript contents",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      },
+      {
+        "id": "edge:wave1:l03-leading",
+        "predicate": "TEACHES",
+        "from": "lesson:L03-1-2",
+        "to": "concept:wave1:leading-interview-question",
+        "reviewState": "proposed",
+        "reason": "Lesson explains how leading interview questions bias answers",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explains how leading interview questions bias answers",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "lesson:L09-1-2": [
+      {
+        "id": "edge:content:part:lesson:L09-1-2",
+        "predicate": "PART_OF",
+        "from": "lesson:L09-1-2",
+        "to": "course:C09-1",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      },
+      {
+        "id": "edge:content:states:L09-1-2",
+        "predicate": "STATES_CLAIM",
+        "from": "lesson:L09-1-2",
+        "to": "claim:wave1:L09-1-2:editorial-scope",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+          "sourceSection": "Manuscript contents",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      },
+      {
+        "id": "edge:wave1:l09-selection",
+        "predicate": "TEACHES",
+        "from": "lesson:L09-1-2",
+        "to": "concept:ont01:selection-bias",
+        "reviewState": "proposed",
+        "reason": "ONT-01 candidate concept ID reused; identity pending review",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · ONT-01 candidate concept ID reused; identity pending review",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      },
+      {
+        "id": "edge:wave1:l09-variation",
+        "predicate": "TEACHES",
+        "from": "lesson:L09-1-2",
+        "to": "concept:ont01:random-variation",
+        "reviewState": "proposed",
+        "reason": "Lesson explicitly distinguishes random sampling variation",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explicitly distinguishes random sampling variation",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "lesson:L15-2-2": [
+      {
+        "id": "edge:content:part:lesson:L15-2-2",
+        "predicate": "PART_OF",
+        "from": "lesson:L15-2-2",
+        "to": "course:C15-2",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+          "sourceSection": "S36 mapped Wave1 hierarchy",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-20"
+        }
+      },
+      {
+        "id": "edge:content:states:L15-2-2",
+        "predicate": "STATES_CLAIM",
+        "from": "lesson:L15-2-2",
+        "to": "claim:wave1:L15-2-2:editorial-scope",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+          "sourceSection": "Manuscript contents",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      },
+      {
+        "id": "edge:wave1:l15-rop",
+        "predicate": "TEACHES",
+        "from": "lesson:L15-2-2",
+        "to": "concept:wave1:reorder-point",
+        "reviewState": "proposed",
+        "reason": "Lesson explains reorder points under stated simplifying assumptions",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explains reorder points under stated simplifying assumptions",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      },
+      {
+        "id": "edge:wave1:l15-stock",
+        "predicate": "TEACHES",
+        "from": "lesson:L15-2-2",
+        "to": "concept:wave1:safety-stock",
+        "reviewState": "proposed",
+        "reason": "Lesson explains safety-stock buffer and its tradeoffs",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explains safety-stock buffer and its tradeoffs",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "claim:wave1:L03-1-2:editorial-scope": [
+      {
+        "id": "edge:content:support:L03-1-2",
+        "predicate": "SUPPORTED_BY",
+        "from": "claim:wave1:L03-1-2:editorial-scope",
+        "to": "source:editorial:L03-1-2:notion",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
+          "sourceSection": "Editorial provenance (not academic proof)",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "claim:wave1:L09-1-2:editorial-scope": [
+      {
+        "id": "edge:content:support:L09-1-2",
+        "predicate": "SUPPORTED_BY",
+        "from": "claim:wave1:L09-1-2:editorial-scope",
+        "to": "source:editorial:L09-1-2:notion",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+          "sourceSection": "Editorial provenance (not academic proof)",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "claim:wave1:L15-2-2:editorial-scope": [
+      {
+        "id": "edge:content:support:L15-2-2",
+        "predicate": "SUPPORTED_BY",
+        "from": "claim:wave1:L15-2-2:editorial-scope",
+        "to": "source:editorial:L15-2-2:notion",
+        "reviewState": "verified",
+        "reason": null,
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+          "sourceSection": "Editorial provenance (not academic proof)",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "concept:wave1:leading-interview-question": [
+      {
+        "id": "edge:wave1:l03-l09-bridge",
+        "predicate": "RELATED_TO",
+        "from": "concept:wave1:leading-interview-question",
+        "to": "concept:ont01:selection-bias",
+        "reviewState": "proposed",
+        "reason": "Interview question bias and sample-selection bias are different routes to distorted findings",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Interview question bias and sample-selection bias are different routes to distorted findings",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ],
+    "concept:ont01:selection-bias": [
+      {
+        "id": "edge:wave1:l09-contrast",
+        "predicate": "CONTRASTS_WITH",
+        "from": "concept:ont01:selection-bias",
+        "to": "concept:ont01:random-variation",
+        "reviewState": "proposed",
+        "reason": "Bias is distinct from random sampling variation; not synonymous",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Bias is distinct from random sampling variation; not synonymous",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      },
+      {
+        "id": "edge:wave1:l09-l15-bridge",
+        "predicate": "RELATED_TO",
+        "from": "concept:ont01:selection-bias",
+        "to": "concept:wave1:reorder-point",
+        "reviewState": "proposed",
+        "reason": "Existing Wave1 navigation suggests checking data scope before inventory decisions; candidate bridge, not prerequisite",
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Existing Wave1 navigation suggests checking data scope before inventory decisions; candidate bridge, not prerequisite",
+          "evidenceType": "editorial",
+          "checkedOn": "2026-11-20"
+        }
+      }
+    ]
+  }
+}

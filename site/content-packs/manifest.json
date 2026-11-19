@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "contentRoot": "content/lessons",
+  "status": "review_only",
+  "courses": [
+    {
+      "id": "C03-1",
+      "title": "User Problems & Research Basics",
+      "file": "C03-1.json",
+      "lessonIds": [
+        "L03-1-2"
+      ]
+    },
+    {
+      "id": "C09-1",
+      "title": "Data & Statistical Foundations",
+      "file": "C09-1.json",
+      "lessonIds": [
+        "L09-1-2"
+      ]
+    },
+    {
+      "id": "C15-2",
+      "title": "Planning, Inventory & Visibility",
+      "file": "C15-2.json",
+      "lessonIds": [
+        "L15-2-2"
+      ]
+    }
+  ]
+}

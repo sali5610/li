@@ -1,0 +1,367 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "L03-1-2",
+  "kind": "Lesson",
+  "version": "0.2.0",
+  "languages": [
+    "vi",
+    "en"
+  ],
+  "title": {
+    "vi": "Câu hỏi mở & thiên lệch phỏng vấn",
+    "en": "Open Questions and Interview Bias"
+  },
+  "aliases": [],
+  "hierarchy": {
+    "group": {
+      "id": "group:technology",
+      "title": "Công nghệ"
+    },
+    "field": {
+      "id": "field:F03",
+      "title": "UX Design"
+    },
+    "course": {
+      "id": "course:C03-1",
+      "title": "User Problems & Research Basics"
+    }
+  },
+  "difficulty": "Foundation",
+  "learningOutcomes": {
+    "vi": [
+      "Phân biệt câu hỏi mở với câu hỏi trung lập.",
+      "Nhận ra lời khen, đánh giá hoặc giả định được cài sẵn trong câu hỏi.",
+      "Viết lại câu hỏi để người tham gia kể một tình huống thực tế.",
+      "Không tự suy rộng từ vài cuộc phỏng vấn định tính sang tỷ lệ người dùng."
+    ],
+    "en": [
+      "Distinguish open-ended from neutral interview questions.",
+      "Identify praise or unverified assumptions built into a prompt.",
+      "Rewrite a question to invite a real past episode.",
+      "Avoid claiming population prevalence based only on a few qualitative interviews."
+    ]
+  },
+  "conceptIds": [
+    "concept:wave1:leading-interview-question"
+  ],
+  "prerequisiteLessonIds": [],
+  "methodFit": {
+    "status": "not_reviewed",
+    "primaryTechniqueId": null,
+    "optionalTechniqueIds": []
+  },
+  "content": {
+    "format": "locked-structured-v1",
+    "localized": {
+      "vi": {
+        "title": "Câu hỏi mở & thiên lệch phỏng vấn",
+        "intro": "Một câu hỏi mở vẫn có thể gài sẵn câu trả lời. Hỏi sao để nghe được chuyện thực?",
+        "goalsKicker": "I · MỤC TIÊU",
+        "goalsTitle": "Hỏi đúng trước khi vội kết luận",
+        "goals": [
+          "Phân biệt câu hỏi mở với câu hỏi trung lập.",
+          "Nhận ra lời khen, đánh giá hoặc giả định được cài sẵn trong câu hỏi.",
+          "Viết lại câu hỏi để người tham gia kể một tình huống thực tế.",
+          "Không tự suy rộng từ vài cuộc phỏng vấn định tính sang tỷ lệ người dùng."
+        ],
+        "conceptKicker": "II · HIỂU BẢN CHẤT",
+        "conceptTitle": "“Tiện hơn nhiều, đúng không?” — chưa hỏi đã tự trả lời",
+        "conceptText": "Bạn thiết kế Bút Ký cho app học tập rồi hỏi người dùng: <b>“Tính năng lưu ghi chú mới tiện hơn nhiều, đúng không?”</b> Câu này cung cấp sẵn lời khen và gợi rằng đồng ý là đáp án mong đợi. Người được hỏi có thể thuận theo vì lịch sự, chứ chưa kể trải nghiệm thật.",
+        "conceptList": [
+          "<b>Câu hỏi đóng:</b> giới hạn câu trả lời; hữu ích khi xác nhận chi tiết, nhưng dễ bỏ lỡ diễn biến thật nếu dùng quá sớm.",
+          "<b>Câu hỏi mở:</b> cho phép kể tình huống và hành động; tuy vậy, “Tại sao giao diện này khó dùng?” vẫn ngầm khẳng định nó khó dùng.",
+          "<b>Câu hỏi trung lập:</b> tránh gài đánh giá hoặc mặc định người tham gia gặp lỗi. Hỏi về lần dùng thật trước, diễn giải sau."
+        ],
+        "compareTitle1": "Dẫn dắt · Leading",
+        "compareText1": "“Nút lưu mới đẹp và dễ thấy hơn, phải không?” — đưa sẵn đánh giá và gây áp lực đồng ý.",
+        "compareTitle2": "Trung lập · Neutral",
+        "compareText2": "“Lần gần nhất bạn muốn lưu điều vừa học, bạn đã làm gì?” — để người dùng kể lại hành vi.",
+        "conceptNote": "<b>Đừng nhầm:</b> Một câu hỏi bỏ “đúng không?” chưa chắc trung lập. Giả định có thể nằm trong chính cách mô tả tình huống. Lời người tham gia, điều quan sát, và suy luận của người nghiên cứu là ba loại bằng chứng khác nhau.",
+        "visualKicker": "III · MINH HOẠ",
+        "visualTitle": "Một cuộc phỏng vấn — nơi câu chữ quyết định chất lượng dữ liệu",
+        "visualCaption": "Bối cảnh phỏng vấn",
+        "visualNote": "Hình chỉ minh hoạ tình huống hai người trao đổi; không chứng minh câu hỏi nào là trung lập. Xem cặp ví dụ phía trên để phân tích bias.",
+        "guidedKicker": "IV · THỬ PHÂN TÍCH",
+        "guidedTitle": "Từ hỏi ý kiến sang hỏi hành vi",
+        "guidedText": "Hãy xem lời đề nghị phỏng vấn ban đầu: <b>“Tính năng mới tiện hơn nhiều, đúng không?”</b> So với câu <b>“Bạn kể lại lần gần nhất muốn lưu điều vừa học. Khi đó bạn làm gì?”</b>",
+        "guidedQuestion": "<b>Tự giải thích:</b> Câu nào đang gài sẵn đánh giá? Vì sao câu còn lại có khả năng thu được câu chuyện thực tế hơn?",
+        "guidedLabel": "Giải thích bằng lời của bạn",
+        "guidedPlaceholder": "Phân tích giả định và loại bằng chứng sẽ thu được...",
+        "guidedSave": "Phần giải thích này được lưu cục bộ, không tính điểm.",
+        "guidedShow": "Xem gợi ý phân tích",
+        "guidedHide": "Ẩn gợi ý phân tích",
+        "guidedHint": "Câu đầu có cụm <b>“tiện hơn nhiều”</b> và lời mời xác nhận. Câu thứ hai hướng người dùng tới một sự kiện cụ thể; vẫn có thể dùng follow-up trung lập như “Điều gì xảy ra tiếp theo?”",
+        "challengeKicker": "V · BÀI TẬP ĐỘC LẬP",
+        "challengeTitle": "Nghiên cứu Process Monitor",
+        "challengeText": "Một nhóm UX muốn hiểu vì sao nhân viên ít sử dụng màn Process Monitor. Người phỏng vấn định hỏi:",
+        "challengeClaim": "1. “Dashboard của chúng tôi đủ trực quan rồi, sao bạn vẫn không dùng?”<br>2. “Bạn thấy bộ lọc quốc gia mới rất hữu ích đúng không?”<br>3. “Tại sao bảng Report hiện tại làm bạn chậm?”",
+        "questions": [
+          "Chọn bất kỳ hai câu trong ba câu trên. Nêu giả định hoặc áp lực dẫn dắt trong từng câu bạn chọn.",
+          "Viết lại câu hỏi thứ nhất bạn chọn thành câu hỏi trung lập về tình huống thật.",
+          "Viết lại câu hỏi thứ hai bạn chọn; thêm một follow-up trung lập giúp hiểu hành vi.",
+          "Nêu điều không được suy diễn chỉ từ ba cuộc phỏng vấn như vậy."
+        ],
+        "placeholder": "Viết câu trả lời của bạn...",
+        "hintButton": "Nhìn một gợi ý",
+        "hint": "Đừng đoán người tham gia thích hay ghét tính năng. Hãy tìm <b>giả định được nói trước</b>, rồi hỏi về <b>lần gần nhất</b> họ thực hiện tác vụ. Chưa có dữ liệu thì đừng suy tỷ lệ toàn tổ chức.",
+        "assistStatus": "Lượt có hỗ trợ — không tính là làm độc lập hoàn toàn.",
+        "saveHint": "Bản nháp lưu trên thiết bị này; đổi VI/EN không tạo thêm lượt mới.",
+        "submit": "Nộp lượt trả lời",
+        "clear": "Xóa bản nháp",
+        "needAnswers": "Cần trả lời đủ bốn phần bằng ý của bạn trước khi nộp.",
+        "submittedText": "Đã nộp và khóa câu trả lời. Có thể đối chiếu đáp án và rubric.",
+        "answerTitle": "ĐÁP ÁN MẪU · SAU LƯỢT THỬ",
+        "answer": "<b>Cả ba câu đều có định hướng/tiền giả định;</b> chọn bất kỳ hai nếu giải thích đúng. Ví dụ: (1) thay bằng “Lần gần nhất cần kiểm tra một process, bạn dùng công cụ nào và đi qua các bước nào?”; (2) thay bằng “Khi cần xem dữ liệu theo quốc gia, bạn tìm hoặc lọc thông tin như thế nào?”; (3) thay bằng “Khi tra Report gần đây, có bước nào mất nhiều thời gian không? Kể lại giúp tôi.” Follow-up trung lập: “Điều gì xảy ra tiếp theo?” Ba cuộc phỏng vấn không tự cho biết tỷ lệ phần trăm tất cả người dùng.",
+        "answerNote": "<b>Chấm theo lập luận:</b> Không nhất thiết trùng câu chữ đáp án. Câu hỏi mở vẫn có thể dẫn dắt, và trích lời một người không tự chứng minh nhận định phổ quát.",
+        "rubricKicker": "VI · TỰ ĐỐI CHIẾU",
+        "rubricTitle": "Rubric tự đánh giá 0–8",
+        "rubricLead": "Bốn tiêu chí × 0–2 điểm. Đây là bài tự chấm, chưa hiệu chuẩn bằng người học và không phải điểm AI.",
+        "rubricBefore": "Nộp bài trước để mở rubric và đáp án.",
+        "rubricItems": [
+          [
+            "Nhận diện bias",
+            "2: tìm đúng tiền giả định/định hướng; 1: phát hiện chung chung; 0: không phát hiện."
+          ],
+          [
+            "Viết lại trung lập",
+            "2: bỏ tiền giả định và không gợi đáp án; 1: cải thiện nhưng còn dẫn dắt; 0: giữ nguyên bias."
+          ],
+          [
+            "Khai thác hành vi",
+            "2: hỏi sự kiện gần nhất, trình tự và follow-up; 1: hỏi chung; 0: chỉ hỏi ý kiến có hướng."
+          ],
+          [
+            "Giới hạn suy luận",
+            "2: không suy tỷ lệ dân số từ vài phỏng vấn; 1: chỉ nói mẫu nhỏ; 0: suy rộng vô căn cứ."
+          ]
+        ],
+        "scoreOptions": [
+          "Chưa đánh giá",
+          "0 · Chưa đạt",
+          "1 · Một phần",
+          "2 · Đầy đủ"
+        ],
+        "scoreLabel": "Tổng điểm tự đánh giá",
+        "saveReview": "Lưu tự đánh giá & hoàn tất",
+        "needRubric": "Chọn điểm cho đủ cả bốn tiêu chí.",
+        "reviewDone": "Đã lưu một lượt tự đánh giá. Không đồng nghĩa đã được xác nhận mastery.",
+        "sourcesKicker": "VII · ĐÀO SÂU",
+        "sourcesTitle": "Nguồn đọc thêm về UX interviews",
+        "sourcesLead": "Đọc đúng nguồn gốc để kiểm chứng khuyến nghị phỏng vấn. Mỗi link có nút copy prompt dành riêng cho tài liệu đó.",
+        "tiers": {
+          "intro": "Hiểu nhanh",
+          "core": "Nguồn phương pháp",
+          "deep": "Đọc sâu"
+        },
+        "queriesTitle": "Từ khóa tìm thêm",
+        "allPrompt": "Copy prompt tổng hợp",
+        "openChat": "Mở ChatGPT ↗",
+        "sourceNote": "Nếu ChatGPT không thực sự đọc được nguồn, hãy dán đoạn liên quan có quyền chia sẻ. Không bịa trích dẫn.",
+        "sidebarTitle": "LỘ TRÌNH BÀI HỌC",
+        "sidebarLead": "UX Design · Interview Bias",
+        "progressBefore": "Chưa tự đánh giá",
+        "progressDone": "Đã tự đánh giá 1 lượt",
+        "navLabels": [
+          "Mục tiêu",
+          "Hiểu bản chất",
+          "Hình minh họa",
+          "Ví dụ",
+          "Bài độc lập",
+          "Rubric",
+          "Nguồn học"
+        ],
+        "sidebarExtra": "Đã chốt nội dung · UI Hi-Fi tiếp tục được điều chỉnh.",
+        "back": "Về Tàng Thư",
+        "status": "Content đã chốt · QA giao diện mở",
+        "guide": "Thần Chú",
+        "catalog": "Tàng Thư",
+        "openSource": "Mở nguồn",
+        "copyPrompt": "Copy prompt",
+        "copied": "Đã copy prompt.",
+        "copyFailed": "Không sao chép được; kiểm tra quyền clipboard.",
+        "reset": "Xóa bản nháp chưa nộp? Không xóa lượt đã nộp.",
+        "storageOff": "Thiết bị không cho phép tự lưu; hãy sao chép câu trả lời trước khi rời trang."
+      },
+      "en": {
+        "title": "Open Questions and Interview Bias",
+        "intro": "An open-ended question can still steer the answer. Learn to ask about real experiences.",
+        "goalsKicker": "I · OBJECTIVES",
+        "goalsTitle": "What makes a neutral interview?",
+        "goals": [
+          "Distinguish open-ended from neutral interview questions.",
+          "Identify praise or unverified assumptions built into a prompt.",
+          "Rewrite a question to invite a real past episode.",
+          "Avoid claiming population prevalence based only on a few qualitative interviews."
+        ],
+        "conceptKicker": "II · CORE EXPLANATION",
+        "conceptTitle": "“Our new feature is much easier, right?”",
+        "conceptText": "You are designing a note-saving feature and ask: <b>“Our new saving feature is much easier, right?”</b> That question offers a positive judgment before the participant responds. Some interviewees may agree to be polite rather than describe what actually happened.",
+        "conceptList": [
+          "<b>Closed question:</b> often limits the response to yes/no or given choices; useful for confirmation but less exploratory.",
+          "<b>Open-ended question:</b> encourages the participant's narrative, but can still be leading: “Why is this interface hard to use?” presupposes difficulty.",
+          "<b>Neutral question:</b> avoids untested judgments or assuming everyone had a problem. Ask about a real event before interpreting it."
+        ],
+        "compareTitle1": "Leading question",
+        "compareText1": "“The new save button looks nicer and is easier to spot, doesn't it?” — suggests the desired evaluation.",
+        "compareTitle2": "Neutral question",
+        "compareText2": "“Think of the last time you wanted to save something you learned. What did you do?” — invites a concrete account.",
+        "conceptNote": "<b>Watch out:</b> Removing “right?” does not remove a presupposition. Participant statements, observations and researcher interpretations are different kinds of evidence.",
+        "visualKicker": "III · VISUAL CONTEXT",
+        "visualTitle": "An interview context, not proof of neutrality",
+        "visualCaption": "An interview situation",
+        "visualNote": "This online illustration shows an interview context, not a diagnostic for leading questions. Compare the example wording above.",
+        "guidedKicker": "IV · GUIDED ANALYSIS",
+        "guidedTitle": "From opinions to past actions",
+        "guidedText": "Compare <b>“Our new feature is much easier, right?”</b> with <b>“Tell me about the last time you wanted to save something you had just learned. What did you do?”</b>",
+        "guidedQuestion": "<b>Explain:</b> Which question supplies a judgment? Why might the alternative elicit stronger behavioral evidence?",
+        "guidedLabel": "Explain in your own words",
+        "guidedPlaceholder": "Identify the assumptions and the evidence each question could produce...",
+        "guidedSave": "Locally saved; this guided explanation is unscored.",
+        "guidedShow": "Show analysis hint",
+        "guidedHide": "Hide analysis hint",
+        "guidedHint": "The first prompt presupposes the feature is <b>easier</b> and invites agreement. The second asks for a concrete event, followed by neutral probes like “What happened next?”",
+        "challengeKicker": "V · INDEPENDENT CHALLENGE",
+        "challengeTitle": "Process Monitor interviews",
+        "challengeText": "A UX team wants to know why staff rarely use Process Monitor. The interview guide proposes:",
+        "challengeClaim": "1. “Our dashboard is already intuitive, so why don't you use it?”<br>2. “You find the new country filter very useful, right?”<br>3. “Why does the current Report table slow you down?”",
+        "questions": [
+          "Select any two of these three questions and identify the assumptions or response pressure in both.",
+          "Rewrite your first selected question into a neutral prompt about a real situation.",
+          "Rewrite your second selected question and add a neutral behavioral follow-up.",
+          "Explain one inference you cannot draw from just three interviews."
+        ],
+        "placeholder": "Write your response...",
+        "hintButton": "Show a hint",
+        "hint": "Don't assume the user likes or dislikes the tool. First isolate the <b>assumption embedded in the wording</b>; then ask about the <b>last actual task</b>. Do not invent an organization-wide percentage.",
+        "assistStatus": "Assisted attempt, not fully unaided.",
+        "saveHint": "Drafts stay on your device. Switching language does not create another attempt.",
+        "submit": "Submit attempt",
+        "clear": "Clear draft",
+        "needAnswers": "Please respond meaningfully to all four parts before submitting.",
+        "submittedText": "Attempt submitted and locked. The key and rubric are now available.",
+        "answerTitle": "MODEL RESPONSE · AFTER FIRST ATTEMPT",
+        "answer": "<b>All three prompts contain leading assumptions;</b> any two may be selected if explained well. For example: (1) “The last time you needed to check a process, which tool did you use and what steps did you take?”; (2) “When you needed to see data by country, how did you find or filter it?”; (3) “When you recently consulted the Report, did any step take a long time? Tell me about it.” A neutral follow-up is “What happened next?” Three interviews cannot establish the percentage of all organizational users who face the issue.",
+        "answerNote": "<b>Evaluation:</b> Wording can differ; judge whether the presupposition has been removed and the question invites a real account. Qualitative interview responses do not automatically estimate prevalence.",
+        "rubricKicker": "VI · SELF-REVIEW",
+        "rubricTitle": "Self-rating rubric, 0–8",
+        "rubricLead": "Four dimensions scored 0–2, not calibrated and not automatically AI-graded.",
+        "rubricBefore": "Submit an attempt before revealing the rubric and model response.",
+        "rubricItems": [
+          [
+            "Detect leading bias",
+            "2: names assumptions and pressures; 1: vague recognition; 0: no relevant detection."
+          ],
+          [
+            "Neutral rewrite",
+            "2: removes presupposition and answer cues; 1: improved but still leading; 0: unchanged bias."
+          ],
+          [
+            "Behavioral focus",
+            "2: past episode, sequence and follow-up; 1: generalized question; 0: guided opinion only."
+          ],
+          [
+            "Inference boundary",
+            "2: no prevalence claim based on three interviews; 1: vague small-sample warning; 0: unjustified generalization."
+          ]
+        ],
+        "scoreOptions": [
+          "Not rated",
+          "0 · Missing",
+          "1 · Partial",
+          "2 · Complete"
+        ],
+        "scoreLabel": "Your self-rating",
+        "saveReview": "Save self-review & complete",
+        "needRubric": "Rate all four dimensions first.",
+        "reviewDone": "One self-review saved; mastery is not certified.",
+        "sourcesKicker": "VII · READ FURTHER",
+        "sourcesTitle": "Sources for user interviewing",
+        "sourcesLead": "Open originals to verify the interview techniques. Each reference has its own source-aware Copy prompt.",
+        "tiers": {
+          "intro": "Start here",
+          "core": "Core guidance",
+          "deep": "Deep dive"
+        },
+        "queriesTitle": "Search keywords",
+        "allPrompt": "Copy cross-source prompt",
+        "openChat": "Open ChatGPT ↗",
+        "sourceNote": "If ChatGPT cannot access a reference, paste material you are permitted to share. Never invent source access.",
+        "sidebarTitle": "YOUR LEARNING PATH",
+        "sidebarLead": "UX Design · Interview Bias",
+        "progressBefore": "No review completed",
+        "progressDone": "One self-review completed",
+        "navLabels": [
+          "Goals",
+          "Core concepts",
+          "Illustrations",
+          "Guided example",
+          "Independent task",
+          "Rubric",
+          "Sources"
+        ],
+        "sidebarExtra": "Content locked · Hi-Fi visuals remain open for refinement.",
+        "back": "Back to Catalog",
+        "status": "Content locked · UI QA open",
+        "guide": "Study methods",
+        "catalog": "Catalog",
+        "openSource": "Open source",
+        "copyPrompt": "Copy prompt",
+        "copied": "Prompt copied.",
+        "copyFailed": "Clipboard unavailable; check permissions.",
+        "reset": "Clear unsubmitted draft? Past attempts are kept.",
+        "storageOff": "Local storage unavailable. Copy your responses before leaving."
+      }
+    }
+  },
+  "practice": {
+    "kind": "independent_reflection",
+    "questionCount": 4,
+    "minimumCharactersPerAnswer": 12,
+    "feedbackAfterSubmission": true,
+    "rubricKey": "rubricItems",
+    "questionsKey": "questions",
+    "answerKey": "answer"
+  },
+  "sources": [
+    {
+      "title": "Digital.gov — How to create a user interview checklist",
+      "url": "https://digital.gov/resources/how-create-user-interview-checklist",
+      "tier": "intro",
+      "usage": "reference_only"
+    },
+    {
+      "title": "Digital.gov — How to conduct an interview",
+      "url": "https://digital.gov/resources/how-conduct-interview",
+      "tier": "core",
+      "usage": "reference_only"
+    },
+    {
+      "title": "GOV.UK Service Manual — Using in-depth interviews",
+      "url": "https://www.gov.uk/service-manual/user-research/using-in-depth-interviews",
+      "tier": "core",
+      "usage": "reference_only"
+    },
+    {
+      "title": "Nielsen Norman Group — User Interviews 101",
+      "url": "https://www.nngroup.com/articles/user-interviews/",
+      "tier": "deep",
+      "usage": "reference_only"
+    }
+  ],
+  "rights": {
+    "text": "first_party",
+    "illustration": "external_licensed"
+  },
+  "provenance": {
+    "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
+    "sourceSection": "S126 · PO content freeze; native Wave1 bilingual lesson",
+    "evidenceType": "editorial",
+    "checkedOn": "2026-11-20",
+    "legacySourcePath": "site/assets/lesson-wave1-core.js"
+  },
+  "reviewState": "approved",
+  "publishState": "review_only",
+  "editorialStatus": "po_locked",
+  "publishedAt": null,
+  "updatedAt": "2026-11-20"
+}

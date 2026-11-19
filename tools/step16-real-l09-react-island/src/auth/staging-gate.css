@@ -1,0 +1,30 @@
+/* Exact staging-only sign-in gate: app remains invisible until invited JWT check.
+   Private Neon data is still protected by server-side RLS. */
+html:not(.li-auth-verified) .app,
+html.li-auth-verified.li-account-open .app{display:none!important}
+html.li-auth-verified:not(.li-account-open) #li-staging-auth-root{display:none!important}
+#li-staging-auth-root{box-sizing:border-box;min-height:100dvh;padding:clamp(20px,5vw,64px) 16px;background:var(--paper,#F1F0E9);color:var(--ink,#1f2b22)}
+#li-staging-auth-root *{box-sizing:border-box}
+#li-staging-auth-root .auth-pilot{max-width:680px;margin:0 auto}
+#li-staging-auth-root .auth-header{display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:16px;margin-bottom:20px}
+#li-staging-auth-root .auth-tag{font-size:14px;font-weight:700;color:var(--moss,#243A29);margin:0}
+#li-staging-auth-root h1{font-family:var(--li-font-editorial,Georgia,serif);font-size:clamp(30px,5vw,40px);line-height:1.15;color:var(--moss,#243A29);margin:8px 0}
+#li-staging-auth-root h2{font-family:var(--li-font-editorial,Georgia,serif);color:var(--moss,#243A29)}
+#li-staging-auth-root .auth-card{background:var(--cream,#FAF9F5);border:1px solid var(--rule,#C0C1B6);padding:clamp(16px,4vw,32px);box-shadow:4px 4px 0 var(--shadow-ink,#384D42)}
+#li-staging-auth-root p{overflow-wrap:anywhere}
+#li-staging-auth-root button{font:inherit;border:1px solid var(--moss,#243A29);background:var(--moss,#243A29);color:var(--cream,#FAF9F5);border-radius:0;min-height:48px;padding:10px 16px;cursor:pointer;margin:4px 8px 4px 0;max-width:100%}
+#li-staging-auth-root button.qa-secondary,#li-staging-auth-root .auth-lang button{background:var(--porcelain,#FEFDFC);color:var(--moss,#243A29)}
+#li-staging-auth-root .auth-lang{display:flex;gap:8px}
+#li-staging-auth-root .auth-lang button{margin:0}
+#li-staging-auth-root .auth-lang button[aria-pressed=true]{background:var(--moss,#243A29);color:var(--cream,#FAF9F5)}
+#li-staging-auth-root button:disabled{opacity:.5;cursor:not-allowed}
+#li-staging-auth-root :is(button,input,a):focus-visible{outline:3px solid var(--li-color-focus-ring,#466B53);outline-offset:3px}
+#li-staging-auth-root .auth-local{border-left:3px solid var(--moss,#243A29);background:var(--paper-2,#E6E6DC);padding:12px;margin-top:24px}
+#li-staging-auth-root .auth-privacy{font-size:14px;line-height:20px;color:var(--muted,#586359)}
+#li-staging-auth-root .auth-error{color:var(--li-color-danger-fill,#A33435);font-weight:600}
+#li-staging-auth-root .qa-panel{margin-top:24px;padding:16px;border:1px solid var(--rule,#C0C1B6)}
+#li-staging-auth-root .l09-cloud-replace{display:flex;align-items:center;gap:12px;min-height:48px;margin:12px 0}
+#li-staging-auth-root .l09-cloud-replace input{accent-color:var(--moss,#243A29);width:24px;height:24px}
+#li-staging-auth-root .l09-cloud-replace span{flex:1}
+#li-staging-auth-root .qa-panel button{white-space:normal}
+@media(max-width:360px){#li-staging-auth-root .auth-lang{width:100%}}

@@ -1,0 +1,271 @@
+{
+  "base": "../registry.v0.1.json",
+  "baseContractVersion": "0.1.0",
+  "schemaVersion": "0.1.0",
+  "extension": "academic-only",
+  "enums": {
+    "scopeStatus": [
+      "partial_research",
+      "confirmed_programme",
+      "framework_proxy",
+      "unknown"
+    ],
+    "requirementType": [
+      "required",
+      "elective_group",
+      "option",
+      "lab",
+      "capstone"
+    ],
+    "coverageStatus": [
+      "sample_only",
+      "verified_complete",
+      "source_unavailable",
+      "conflict"
+    ],
+    "sourceType": [
+      "official_course",
+      "framework_module"
+    ],
+    "contentMaturity": [
+      "legacy_outline",
+      "editorial_draft",
+      "po_content_locked",
+      "reference_only"
+    ],
+    "reviewState": [
+      "proposed",
+      "verified",
+      "approved",
+      "rejected",
+      "superseded"
+    ]
+  },
+  "existingKinds": [
+    "Field",
+    "Course",
+    "Lesson",
+    "Chapter",
+    "Concept",
+    "LearningOutcome",
+    "Misconception",
+    "SourceClaim",
+    "SourceEdition"
+  ],
+  "additionalKinds": [
+    {
+      "name": "Institution",
+      "domain": "academic",
+      "defaultVisibility": "public_curated",
+      "requiredAttributes": [
+        "institutionKey"
+      ]
+    },
+    {
+      "name": "SourceProgramme",
+      "domain": "academic",
+      "defaultVisibility": "public_curated",
+      "requiredAttributes": [
+        "institutionKey",
+        "programmeKey",
+        "edition",
+        "programmeType",
+        "scopeStatus"
+      ]
+    },
+    {
+      "name": "ProgrammeRequirement",
+      "domain": "academic",
+      "defaultVisibility": "public_curated",
+      "requiredAttributes": [
+        "requirementKey",
+        "requirementType",
+        "selectionRule",
+        "coverageStatus"
+      ]
+    },
+    {
+      "name": "SourceCourse",
+      "domain": "academic",
+      "defaultVisibility": "public_curated",
+      "requiredAttributes": [
+        "institutionKey",
+        "courseCode",
+        "edition",
+        "sourceType",
+        "crosslistKey"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "name": "SCOPED_TO_FIELD",
+      "from": [
+        "Lesson"
+      ],
+      "to": [
+        "Field"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Index shortcut only, NOT PART_OF Course navigation"
+    },
+    {
+      "name": "STATES_CLAIM",
+      "from": [
+        "Lesson"
+      ],
+      "to": [
+        "SourceClaim"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Manuscript statement/coverage, not scientific verification"
+    },
+    {
+      "name": "CLAIM_ABOUT",
+      "from": [
+        "SourceClaim"
+      ],
+      "to": [
+        "Concept",
+        "LearningOutcome"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Claim scope; do not automatically promote Concept"
+    },
+    {
+      "name": "OFFERED_BY",
+      "from": [
+        "SourceProgramme"
+      ],
+      "to": [
+        "Institution"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Source institution; programme not li. Course"
+    },
+    {
+      "name": "HAS_REQUIREMENT",
+      "from": [
+        "SourceProgramme"
+      ],
+      "to": [
+        "ProgrammeRequirement"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "University requirement is not li. Course"
+    },
+    {
+      "name": "CATALOGUED_IN",
+      "from": [
+        "SourceCourse"
+      ],
+      "to": [
+        "SourceProgramme"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Original institution source course to source programme"
+    },
+    {
+      "name": "ELIGIBLE_FOR",
+      "from": [
+        "SourceCourse"
+      ],
+      "to": [
+        "ProgrammeRequirement"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Candidate source course satisfies formal requirement only if reviewed evidence"
+    },
+    {
+      "name": "INFORMS_COURSE",
+      "from": [
+        "SourceCourse"
+      ],
+      "to": [
+        "Course"
+      ],
+      "symmetric": false,
+      "acyclic": false,
+      "meaning": "Source reference informs original li. course; does NOT imply equivalence"
+    },
+    {
+      "name": "FORMAL_PREREQUISITE",
+      "from": [
+        "SourceCourse"
+      ],
+      "to": [
+        "SourceCourse"
+      ],
+      "symmetric": false,
+      "acyclic": true,
+      "meaning": "Direction: target course -> required prior source course; evidence required"
+    },
+    {
+      "name": "RECOMMENDED_BEFORE",
+      "from": [
+        "Lesson",
+        "Course"
+      ],
+      "to": [
+        "Lesson",
+        "Course"
+      ],
+      "symmetric": false,
+      "acyclic": true,
+      "meaning": "Separate li. suggestion, not formal university prerequisite"
+    },
+    {
+      "name": "SAME_CROSSLIST",
+      "from": [
+        "SourceCourse"
+      ],
+      "to": [
+        "SourceCourse"
+      ],
+      "symmetric": true,
+      "acyclic": false,
+      "meaning": "Only official crosslist equivalence in same source context; not course semantic identity"
+    }
+  ],
+  "guard": {
+    "noPrivateNodes": true,
+    "excludeUserIds": true,
+    "publishRequiresApproval": true,
+    "uniqueAliasByKindAndLocale": true,
+    "requireConceptSense": true,
+    "blockSpeculativeHardPrerequisites": true,
+    "reviewedCrosslistOnly": true,
+    "detectCycles": [
+      "REQUIRES",
+      "FORMAL_PREREQUISITE",
+      "RECOMMENDED_BEFORE",
+      "IS_A",
+      "PART_OF"
+    ],
+    "noSourceDegreeEqualsLiCourse": true,
+    "doNotAssumeCoverage": true
+  },
+  "topicScope": {
+    "fieldsInScope": 15,
+    "sampleFields": [
+      "F03",
+      "F09",
+      "F15"
+    ],
+    "currentAcademicGate": "CUR-00 plan; CUR-01/04 not completed",
+    "contentReport": "27 tracked manuscripts of mixed maturity; not 27 released courses"
+  },
+  "sources": [
+    "https://app.notion.com/p/41d6cf6db72a8123a550cbe8be314738",
+    "https://app.notion.com/p/41d6cf6db72a81d0b0d3dbde49b8ad43",
+    "https://app.notion.com/p/41d6cf6db72a81b58cd8f48bb4776fa0",
+    "https://app.notion.com/p/41b6cf6db72a8131ab62e71c289a1916"
+  ]
+}

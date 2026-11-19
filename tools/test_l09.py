@@ -85,9 +85,10 @@ assert 'state.submissionLocale=state.locale' in logic
 # Genuine native key stays authoritative; the only alternative key requires
 # localhost + exact site path + explicit non-production research flag.
 assert 'const KEY=LI_LOCAL_FIXTURE?"step16.l09.shared-native-fixture.v1":"li.review.L09-1-2.v1"' in logic
-assert 'location.hostname==="localhost"||location.hostname==="127.0.0.1"' in logic
-assert 'location.pathname==="/site/index.html"' in logic
+assert 'LI_LOCATION.hostname==="localhost"||LI_LOCATION.hostname==="127.0.0.1"' in logic
+assert 'LI_LOCATION.pathname==="/site/index.html"' in logic
 assert 'get("li-react")==="l09-native-fixture"' in logic
+assert 'LI_LOCATION.protocol==="http:"' in logic
 assert 'localStorage.setItem(KEY,JSON.stringify(state))' in logic
 assert 'localStorage.clear()' not in logic, "Do not alter private app storage"
 assert "navigator.clipboard.writeText" in logic

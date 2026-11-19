@@ -1,23 +1,37 @@
-# li. (理) — mandatory UI/UX implementation protocol
+# li. (理) — Product-first implementation agreement v3.0
+Effective: 2026-11-20. Human Product Owner decision. Supersedes the older exhaustive "mandatory every UI change" protocol for process and QA scope; security/privacy/content release safeguards remain required.
 
-This is a plain HTML/CSS/JS high-fi prototype with a **real extracted CSS runtime design system**, not a framework component package. JSON-authored tokens are mechanically generated to CSS; keep their one-way source dependency. ## Mandatory first read — ONE design-library entrypoint
+## Objective and operating priority
+- **Deliver a usable, valuable learning flow before polishing the system.** Measurable user outcome > quantity of PRs, tests, CI assertions, ontology models, pages, or reports.
+- First prioritize ONE complete vertical slice using permitted real content: entry/Home → course/lesson → learning content → exercise → feedback → visible or retained progress. Verify the smallest blocker and fix it; arrange a real user learning session before asserting usefulness.
+- Technical PASS != product usefulness; a draft PR != main integration; local/staging != production; Proposed != Approved != Implemented != Tested != Deployed != User-Validated.
+- Work-in-progress limit: ONE main user-value stream plus no more than ONE essential supporting stream. Do not spawn speculative architecture, research, framework, gate, QA or design-library expansion without a concrete user flow, dependency or risk.
+- PO saying "tiếp" means make the smallest useful next move and STOP when its acceptance is met. Never turn it into more test rounds by default.
 
-**EVERY li. UI/UX task (design, audit, bug fix, asset, copy, screen, prototype, documentation or implementation) MUST first open [design-system/README.md](design-system/README.md).** For any icon/illustration/background/logo work, also read [design-assets/README.md](design-assets/README.md) and check its manifest + Notion approval before editing or deploying; a file in `site/assets/` alone is not proof of an archived canonical source. This is the sole front door and policy map for the full Design Library. Follow the task-relevant links *from that page* to the token, typography, components, UX Do/Don't + behavior and QA source contracts **before** changing anything. Never substitute old memory, old screenshots or a single CSS rule for this step. Do not declare task done without checking relevant contracts and recording evidence.
+## Source of truth, scope and decisions
+- Latest explicit Human PO decision takes precedence over old process instructions. Notion [Hub](https://app.notion.com/p/4196cf6db72a81269c71c90c39310334) and [Latest Handoff](https://app.notion.com/p/4196cf6db72a81f7b000f75783f210b5) govern priorities/approvals. GitHub main is implementation truth; this branch alone is NOT production rollout.
+- Read the relevant sections only; don't scan every plan, all eight specialist roles, every dependency and every past QA checklist for a small change.
+- For affected UI/UX component work, start with [design-system/README.md](design-system/README.md) and follow only relevant contracts. For asset work, consult [design-assets/README.md](design-assets/README.md) and approval status. These are practical references, not invitations for whole-library audits.
+- Human PO approves scope jumps, G1 product intent, G2 final visual identity, G3 security/cost architecture and G4 production release. Existing G2 visual identity is NOT globally approved. Avoid inventing extra decision gates.
+- Prioritize reuse. No unrequested wholesale React rewrite, full ontology mapping, fixed course quota, new layers or systems for imagined future scale.
 
-The entrypoint is mandatory; it does **not** mean all detailed rules are duplicated into one giant file. Detailed authoritative contracts live in the same `design-system/` directory, indexed by that README. If a new rule is approved, update its owning file + entrypoint if its map changes + affected code/tests/Notion handoff in the same PR. No disconnected guideline documents.
+## Practical design and code invariants
+- Treat [design-system/tokens.json](design-system/tokens.json) as the source of design token values; generate `site/assets/design-tokens.css` with `python3 tools/generate_design_tokens.py`. Never hand-edit generated output.
+- Preserve the existing CSS layering (tokens → `li-layout.css` → lesson styles → `ui-foundations.css`) and user-visible behavior. Avoid ad-hoc inline CSS overrides. Check relevant responsive breakpoints, states and VI/EN long text only where changes can affect them.
+- Follow [UX patterns and behavior](design-system/ux-patterns-and-behavior.md) for the specific component changed. Don't redo the full Home/Catalog/Guide/Library/Research/Search/Capture/Settings instance inventory unless a shared-contract change actually reaches them.
+- Make the smallest implementation change that solves the real bug or unblocks the learning journey. Preserve private user data, auth/invite boundaries, access control, academic source quality, and approved cost constraints.
 
-## Precedence and product governance
-- Human Product Owner's newest explicit decision outranks an older snapshot. **Notion is the authority for decisions/approval and current handoff; GitHub `main` is the authority for deployed implementation.**
-- Notion [Product Hub](https://app.notion.com/p/4196cf6db72a81269c71c90c39310334), [Latest Handoff](https://app.notion.com/p/4196cf6db72a81f7b000f75783f210b5), [S81 G2 design-system draft](https://app.notion.com/p/41b6cf6db72a81529796dc5d1e134dd1), [Step13 active UX writing](https://app.notion.com/p/41b6cf6db72a811aba36dcec9cc42c20), and [asset library](https://app.notion.com/p/41b6cf6db72a814fb474dcda6bc15a4f) must be checked for affected work.
-- **G2 complete visual identity remains pending**. Existing design decisions and implemented details do not imply blanket G2 approval. Do not publish unapproved illustration candidates.
-- Keep frozen WF-BASE and historical review deployments unchanged. Do not present visual review as human usability or device acceptance.
+## QA-SLIM: risk-based, NOT six-script mandatory
+1. Docs/copy/ordinary content: direct review of changed text; verify academic claims/sources when affected. No browser/E2E/device suite.
+2. Local UI/React component: suitable lint/typecheck or component smoke, then affected interaction/viewport. No blanket full visual suite or manual device demand for each commit.
+3. Shared routing, primitives, progress persistence or integration: focused tests of affected flows and representative regressions. Reuse unaffected PASS.
+4. Auth/invite/RLS, real-user privacy, migration, destructive writes, confidential teacher answers: mandatory relevant negative/security/integration checks and rollback proof BEFORE enabling/releasing the risky feature. Do not substitute synthetic CI for live release evidence.
+5. Full regression/physical Safari/PWA/release acceptance only when affected scope or actual milestone warrants it; never by habit.
+- In particular, the old command list (`generate_design_tokens.py --check`, `validate_design_system.py`, `validate_ui_foundations.py`, `audit_design_tokens.py --check-zero`, `audit_design_tokens.py --check-baseline`, `validate_site.py`) is **not mandatory as a batch on every UI change**. Run the specific checks relevant to changed files/contracts. Existing targeted GitHub CI is welcome but does not alone justify another manual QA gate.
+- Stop testing when the acceptance/risk bar is met. Don't generate another test matrix, artifact inspection, or QA ticket without naming the previously uncovered real risk.
 
-## Every UI change (mandatory)
-1. Reconstruct the decision/flow from product purpose → research/IA → wireframe → copy → visuals → code. Record which earlier steps are affected, not just the element named in the bug report.
-2. Inventory all instances of the affected component across Home, Catalog, Guide, Library, Research, Search, Capture, Settings and lesson views; use one shared contract for its variants.
-3. For token values edit ONLY `design-system/tokens.json`, then regenerate `site/assets/design-tokens.css` with `python3 tools/generate_design_tokens.py`. The generated CSS is NOT hand-edited. CSS order is tokens → `li-layout.css` (historic geometry) → Wave1 lesson styles → `ui-foundations.css` (canonical reusable roles). Do not append `<style>` to `index.html`, reintroduce legacy Guide 2-column/10px truncation, or create a new late override. All new numeric margin/padding/gap values must be divisible by 4px. Record intentional scene-specific exceptions.
-4. Follow [UX pattern and interaction rules](design-system/ux-patterns-and-behavior.md) via the entrypoint: check relevant default/hover/focus-visible/pressed/selected/disabled/readonly/loading/success/error/empty behavior; validate keyboard/touch, real saving feedback, modal focus/scroll, and narrow/wide responsive with long VI/EN copy.
-5. Execute `python3 tools/generate_design_tokens.py --check`, `python3 tools/validate_design_system.py`, `python3 tools/validate_ui_foundations.py`, `python3 tools/audit_design_tokens.py --check-zero`, `python3 tools/audit_design_tokens.py --check-baseline` and `python3 tools/validate_site.py`; PR CI also runs the real [headless browser rendered check](.github/workflows/li-render-qa.yml) at 320/375/390/402/600/820/1440px. No green check substitutes for screenshots, real-device Safari/PWA, VoiceOver, text zoom, or human G2 approval.
-6. Report Git diff, observed tests, affected screens, any remaining physical-device or G2 gate, and sync real progress to Notion.
-
-Avoid fabricated acceptance, fake saved confirmations, blanket “WCAG pass”, or silent user-flow changes. Maintain zero incremental paid costs.
+## Deployment, cost and honest reporting
+- Local first → existing CI/staging if needed → production only with PO's release approval. Confirm workflow/Cloudflare triggers before pushes; do not use production builds for debugging, do not incur paid charges.
+- Do not silently deploy, migrate Neon, change permissions or erase users' data.
+- Keep documentation updates proportional: meaningful task outcome, important decision or transferable learning; no serial handoff paragraphs for minor steps. Reuse existing learning records; create new only with genuine cause, prevention and evidence.
+- Report briefly: (1) user-visible result, (2) evidence & correct state, (3) essential blocker, (4) ONE highest-value next step. Distinguish NOT TESTED and NOT DEPLOYED.

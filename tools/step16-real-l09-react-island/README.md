@@ -33,3 +33,39 @@ CI runs on GitHub Actions using isolated fake localStorage, Chromium and no paid
 - no touching production storage and no network/account.
 
 **Not measured yet:** actual code migration effort for the remaining 22+ native scripts, Web Vitals, complete Wave1 screen visual equivalence, iPhone/iPad Safari, VoiceOver, offline PWA, authentication or provider cost. Do not call this a completed React migration.
+
+
+## Step16.2 — incremental React mount in the existing Vanilla L09 screen (DRAFT)
+
+**Implementation boundary:** On an explicit local development URL only, React takes the L09-1-2 independent challenge and 0–8 self-rubric slots. Native content for goals, theory, diagrams, guided exercise, academic sources, bookmarks, site navigation, and non-L09 screens remains intact. The two old challenge/rubric DOM nodes are hidden and inert **only after** the React mount succeeds. If assets fail, the native lesson stays usable.
+
+**Opt-in local URL** (no launch, no Cloudflare build, no account or cloud connection):
+
+```sh
+cd tools/step16-real-l09-react-island
+npm install --no-audit --no-fund
+npm run build:site-island
+cd ../..
+python3 -m http.server 8794 --bind 127.0.0.1 --directory .
+# visit: http://127.0.0.1:8794/site/index.html?lesson=L09-1-2&li-react=l09
+# remove &li-react=l09 to use the original Vanilla experience
+```
+
+This build generates `site/assets/step16-l09-island.js` and `.css` locally. The source branch **does not commit the generated build output**; the candidate loader never runs outside HTTP localhost / 127.0.0.1, even if a static site happens to contain the loader. It does not enable a production React route.
+
+**Persistence:** React keeps using the synthetic research-only `step16.l09.react-island.v1` key. The live native key `li.review.L09-1-2.v1` stays owned by the existing app; React does not import, overwrite, sync, or migrate it. This prevents a dual-writer collision but is **not yet** cross-framework learner-state parity. The local native guided response is intentionally separate from the React challenge. No Auth, invite, consent or Neon Data API action is triggered.
+
+**Shared UI primitive first slice:** `src/ui/Primitives.tsx` provides ActionButton, Surface and StatusMessage, reused by the React L09 challenge/rubric and scoped to the existing Design Library's CSS roles. `pilot.css` no longer overrides page-wide button, heading, body or form styles in the Vanilla shell; ordinary React controls are square and 48px minimum touch targets.
+
+**QA acceptance:** The React workflow runs existing exact-source, bridge and localhost-auth Chromium suites; also builds the in-site bundle and exercises an 8-check real `site/index.html` integration fixture (flag OFF, mount/DOM ownership, preserved native pedagogy, static navigation, isolated local state, actual save, rubric gate and 390/820px smoke). This is synthetic Chromium only; NOT production, Safari/PWA/iPad, a live Google sign-in or a genuine A↔B privacy test.
+
+**Still open before any migration/release:** one-writer native-key handover with backup/rollback and complete L09 parity, shared session/login/logout behind Step16.1 verified Google invite/RLS, design token audit for React, real-device/accessibility review and G2 human approval. No deployment is authorized by this PR.
+
+
+### Step16.2 shared synthetic-key handover (local-only, no genuine learner data)
+
+A second opt-in on the existing native app is `?lesson=L09-1-2&li-react=l09-native-fixture` and is **restricted to HTTP localhost / 127.0.0.1**. It uses a separate `step16.l09.shared-native-fixture.v1` localStorage key in both the native L09 script and the React bridge; **never** the genuine learner's `li.review.L09-1-2.v1` key.
+
+The native L09 script still mounts the complete lesson and renders all academic sections. After React challenge/rubric mounts, the hidden/inert native challenge/rubric may not write any stale state. The still-visible native guided exercise can only patch its `guidedDraft` field; language changes may patch `locale`. Field-level writes read and preserve latest synthetic attempt data and unknown future fields. React uses its existing readback/stale-write guard to refuse overwrites after a native guided edit until explicit refresh. This is **not multi-tab transactional atomicity**, and has no claimed production migration.
+
+The integration Chromium fixture now has **15 checks**, adding synthetic legacy hydration, React draft and unknown-field preservation, hostile stale native event, native guide partial update, React conflict refresh, submitted-attempt reload in Vanilla and true native-key non-mutation. All synthetic data is cleaned up in both success and error. Future production release still requires genuine-key backup/export/migration/rollback acceptance and one-writer proof under real cross-device conditions.

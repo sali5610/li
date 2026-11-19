@@ -5,6 +5,8 @@ on:
     paths:
       - 'tools/step16-real-l09-react-island/**'
       - 'site/assets/lesson-l09-hifi.js'
+      - 'site/assets/step16-react-router.js'
+      - 'site/index.html'
       - 'site/assets/app-language.js'
       - 'site/assets/design-tokens.css'
       - '.github/workflows/step16-exact-l09-react-island.yml'
@@ -28,6 +30,7 @@ jobs:
           set -euo pipefail
           npm install --no-audit --no-fund
           npm run build
+          npm run build:site-island
           npm run check:source
           npm run test:sync
           node -e 'const fs=require("fs"),z=require("zlib");const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(x=>x.isDirectory()?walk(d+"/"+x.name):[d+"/"+x.name]);const xs=walk("dist").filter(p=>p.endsWith(".js"));let raw=0,gz=0;for(const p of xs){const data=fs.readFileSync(p);raw+=data.length;gz+=z.gzipSync(data,{level:9}).length;}console.log("LI_STEP16_EXACT_L09_REACT_BUNDLE "+JSON.stringify({jsAssets:xs.length,jsRawBytes:raw,jsGzipBytes:gz,note:"single exact-source challenge/rubric island, not full li app"}));'
@@ -50,4 +53,7 @@ jobs:
           node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
             "http://127.0.0.1:8794/tools/step16-real-l09-react-island/auth-guard-fixture.html" \
             "LI_STEP16_L09_AUTH_PASS " 6 60000
-          echo "PASS exact L09 pilot, native bridge and auth origin guard on localhost only"
+          node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
+            "http://127.0.0.1:8794/tools/step16-real-l09-react-island/site-shell-fixture.html" \
+            "LI_STEP16_L09_SHELL_PASS " 15 90000
+          echo "PASS isolated L09, native bridge, auth origin guard and local-only Vanilla shell mount"

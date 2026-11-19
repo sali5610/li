@@ -2,6 +2,7 @@ import React,{useState,useRef,useEffect} from 'react';
 import exact from './l09-exact.generated.json';
 import {L09StorageBridge,BridgeError,LOCALE_KEY,initial} from './native-bridge';
 import type {Locale,Attempt,Rating} from './native-bridge';
+import {ActionButton,Surface,StatusMessage} from './ui/Primitives';
 
 const bridge=new L09StorageBridge(window.localStorage,window.location);
 export function Pilot(){
@@ -114,7 +115,7 @@ export function Pilot(){
    }
  }
  const cleanText=(html:string)=>html.replace(/<[^>]+>/g,'');
- return <main className="pilot" lang={state.locale} data-lesson-id="L09-1-2" data-storage-key={bridge.key} data-bridge-mode={bridge.nativeFixture?"localhost-fixture":"isolated"}>
+ return <div className="pilot" lang={state.locale} data-lesson-id="L09-1-2" data-storage-key={bridge.key} data-bridge-mode={bridge.nativeFixture?"localhost-fixture":"isolated"}>
    <div className="pilot-head">
      <div><span className="pilot-kicker">DATA SCIENCE · L09-1-2 · RESEARCH ISLAND</span>
        <h1>{text.title}</h1></div>
@@ -130,7 +131,7 @@ export function Pilot(){
        {state.locale==='vi'?'Nạp dữ liệu mới':'Reload current data'}
      </button>
    </div>}
-   <section className="pilot-surface" aria-labelledby="challenge-title">
+   <Surface aria-labelledby="challenge-title">
      <span className="pilot-kicker">L09-1-2 · V</span>
      <h2 id="challenge-title">{text.challengeTitle}</h2>
      <p data-case-text>{cleanText(text.caseText)}</p>
@@ -142,23 +143,23 @@ export function Pilot(){
          onChange={e=>updateDraft(i,e.target.value)}/>
      </div>)}
      {!state.submitted&&<div className="pilot-actions">
-       <button type="button" data-action="hint" className="secondary" onClick={hint}>{text.hintButton}</button>
+       <ActionButton type="button" data-action="hint" kind="secondary" onClick={hint}>{text.hintButton}</ActionButton>
        {state.assisted&&<span role="status" data-assisted>{text.assisted}</span>}
      </div>}
      {state.hint&&<p className="pilot-statement" data-hint>{cleanText(text.hint)}</p>}
      <p className="pilot-note">{text.saveHint}</p>
      {!state.submitted&&<div className="pilot-actions">
-       <button type="button" data-action="submit" onClick={submit}>{text.submit}</button>
-       <button type="button" data-action="clear" className="secondary" onClick={clear}>{text.clear}</button>
+       <ActionButton type="button" data-action="submit" onClick={submit}>{text.submit}</ActionButton>
+       <ActionButton type="button" data-action="clear" kind="secondary" onClick={clear}>{text.clear}</ActionButton>
      </div>}
      {state.submitted&&<div className="pilot-statement" data-submission>
        <strong>{text.answerTitle}</strong><p>{cleanText(text.answer)}</p>
      </div>}
-     <p className="pilot-status" role="status" aria-live="polite" data-status>
+     <StatusMessage className="pilot-status" data-status>
        {storageError?text.storageOff:message||(state.reviewed?text.reviewDone:state.submitted?text.submitLocked:'')}
-     </p>
-   </section>
-   <section className="pilot-surface" aria-labelledby="rubric-title">
+     </StatusMessage>
+   </Surface>
+   <Surface aria-labelledby="rubric-title">
      <span className="pilot-kicker">L09-1-2 · VI</span>
      <h2 id="rubric-title">{text.rubricTitle}</h2>
      {!state.submitted?<p data-rubric-locked>{text.rubricBefore}</p>:<>
@@ -172,10 +173,10 @@ export function Pilot(){
          </div>)}
        </div>
        <p className="pilot-score" data-score aria-live="polite">{text.scoreLabel}: {total===null?'—':total} / 8</p>
-       {!state.reviewed&&<button type="button" data-action="finish" onClick={finish}>{text.saveReview}</button>}
+       {!state.reviewed&&<ActionButton type="button" data-action="finish" onClick={finish}>{text.saveReview}</ActionButton>}
        {state.reviewed&&<p data-reviewed>{text.reviewDone}</p>}
      </>}
-   </section>
+   </Surface>
    <p className="pilot-foot">Source file: site/assets/lesson-l09-hifi.js · React/TypeScript candidate only · no cloud/account.</p>
- </main>;
+ </div>;
 }

@@ -270,8 +270,16 @@ async function syntheticTypographyStress(language){
   }
  }
 
- // Synthetic learner-flow assertions in the opt-in research route (no Neon / real key).
+ // One real native Home CTA → React L09 entry, no private learner writes.
  await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false});
+ await send('Page.navigate',{url:origin+'/site/index.html?li-react=l09&li-vc-g2=1'});
+ await wait(()=>evaluate("document.querySelector('#page-home.active')&&document.querySelector('#mirror-primary-action[data-li-preview=local-only]')"),'local preview Home CTA');
+ verify(await evaluate("document.querySelector('#mirror-primary-label')?.textContent.includes('L09')&&localStorage.getItem('li.review.L09-1-2.v1')===null"),
+   'Preview Home lacks L09 entry or touches the genuine learner key');
+ await evaluate("document.querySelector('#mirror-primary-action').click()");
+ await wait(()=>evaluate("document.querySelector('#page-lessonL09.active')?.dataset.liRuntime==='react-candidate'&&!!document.querySelector('#li-step16-l09-react-host .pilot[data-lesson-id=\"L09-1-2\"]')"),'Home→L09 React journey');
+ verify(await evaluate("localStorage.getItem('li.review.L09-1-2.v1')===null"),'Preview Home navigation modified real learner data');
+ // Synthetic learner-flow assertions in the opt-in research route (no Neon / real key).
  await go(approved,'synthetic learner state');
  const base=await snapshot();verify(base.researchKey===null&&base.realKey===null,'Synthetic profile not initially empty');
  verify((await evaluate("document.querySelector('[data-learning-progress]')?.textContent||''")).includes('0/4'),
@@ -285,6 +293,12 @@ async function syntheticTypographyStress(language){
   await wait(()=>evaluate("JSON.parse(localStorage.getItem('step16.l09.react-island.v1')||'null')?.draft?.["+i+"]?.startsWith('Synthetic research answer')"),'synthetic L09 draft '+i);
  }
  verify((await snapshot()).realKey===null,'Real learner state changed on synthetic editing');
+ await evaluate("window.navigate('home')");
+ verify(await evaluate("document.querySelector('#page-home.active')&&document.querySelector('#mirror-primary-label')?.textContent.includes('4/4')"),
+   'Home does not reflect four saved answers when returning from L09');
+ await evaluate("document.querySelector('#mirror-primary-action').click()");
+ await wait(()=>evaluate("document.querySelector('#page-lessonL09.active')?.dataset.liRuntime==='react-candidate'"),'Home resume to React');
+ verify((await snapshot()).answerShared.every(Boolean),'Home→resume lost locally saved L09 answers');
  verify((await evaluate("document.querySelector('[data-learning-progress]')?.textContent||''")).includes('4/4'),
   'Persisted research draft should show 4/4 submission-ready answers');
  await evaluate("document.querySelector('[data-action=hint]').click()");

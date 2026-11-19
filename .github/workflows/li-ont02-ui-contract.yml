@@ -1,0 +1,99 @@
+name: li. ONT-02 UI typed source crosswalk (PR only)
+on:
+  pull_request:
+    paths:
+      - 'docs/ontology/ui/**'
+      - 'docs/ontology/registry.v0.1.json'
+      - 'tools/validate_ontology.mjs'
+      - 'tools/validate_ui_ontology.mjs'
+      - 'tools/compose_uxds35_stage02.mjs'
+      - 'tools/test_ont02_react_primitives.cjs'
+      - 'tools/test_ont02_react_chromium.cjs'
+      - 'tools/test_uxds35_native_components_chromium.cjs'
+      - '.github/workflows/li-ont02-ui-contract.yml'
+permissions:
+  contents: read
+jobs:
+  check-ui-ontology:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Typed ONT-01 graph and negative fixtures
+        run: node tools/validate_ontology.mjs --check
+      - name: ONT-02 five-family source crosswalk and 14 negative UI fixtures
+        run: node tools/validate_ui_ontology.mjs --check
+      - name: Checkout immutable UX-DS-35 source draft for isolated CI only
+        uses: actions/checkout@v4
+        with:
+          ref: d22f469a52d13baa73c0c8952b198fdfeb2b2891
+          path: uxds35-design-pin
+          persist-credentials: false
+      - name: Checkout immutable Step16.2 React source draft for isolated CI only
+        uses: actions/checkout@v4
+        with:
+          ref: 734dc257be47f778a929acba5cdca570979e247d
+          path: uxds35-react-pin
+          persist-credentials: false
+      - name: Verify pins and compose LOCAL source-only worktree, no Git merge
+        run: |
+          node tools/compose_uxds35_stage02.mjs --check-pins
+          node tools/compose_uxds35_stage02.mjs --compose
+      - name: Compare canonical token generator and five native UI family aliases
+        run: |
+          python3 tools/generate_design_tokens.py --check
+          python3 tools/test_design_semantic_roles.py
+          node tools/generate_design_token_types.mjs --self-test
+          node tools/generate_design_token_types.mjs --check
+          node tools/validate_ui_ontology.mjs --check --composed-check
+      - name: Install actual React 19 TSX SSR test dependencies in isolated CI checkout
+        working-directory: uxds35-react-pin/tools/step16-real-l09-react-island
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Render actual Step16.2 ActionButton/Surface/StatusMessage as isolated React SSR
+        run: node tools/test_ont02_react_primitives.cjs
+      - name: Build actual exact-source L09 React with pinned DS CSS (temporary checkout)
+        run: |
+          set -euo pipefail
+          cp site/assets/design-tokens.css uxds35-react-pin/site/assets/design-tokens.css
+          cd uxds35-react-pin/tools/step16-real-l09-react-island
+          npm run build
+      - name: Chromium real L09 React keyboard, computed color, disabled and storage safety
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then echo "FAIL: Chromium missing"; exit 1; fi
+          mkdir -p /tmp/li-uxds35-react-browser-evidence
+          python3 -m http.server 8796 --bind 127.0.0.1 --directory . > /tmp/li-uxds35-react-browser-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          node tools/test_ont02_react_chromium.cjs "$chrome" "http://127.0.0.1:8796/uxds35-react-pin/tools/step16-real-l09-react-island/dist/index.html"
+      - name: Preserve synthetic Chromium screenshots and metrics (not physical Safari)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-uxds35-react-browser-source-qa
+          path: /tmp/li-uxds35-react-browser-evidence/
+          retention-days: 7
+
+
+      - name: Chromium native Field / Dialog / Navigation / Feedback contract QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then echo "FAIL: Chromium missing"; exit 1; fi
+          python3 -m http.server 8797 --bind 127.0.0.1 --directory . > /tmp/li-uxds35-native-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          node tools/test_uxds35_native_components_chromium.cjs "$chrome" "http://127.0.0.1:8797/uxds35-design-pin/site/component-library-review.html"
+      - name: Preserve native component screenshots and gaps (synthetic only)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-uxds35-native-component-source-qa
+          path: /tmp/li-uxds35-native-browser-evidence/
+          retention-days: 7

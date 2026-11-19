@@ -825,7 +825,7 @@ assert 'ui-foundations.css?v=20261119-ds33-physical-shell' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation
-review10=(site/"component-library-review.html").read_text(encoding="utf-8")
+review10=(site/"component-library-archive.html").read_text(encoding="utf-8")
 assert 'ds-notebook' in review10 and 'ds-home-bubble green' in review10
 assert all('src="./assets/'+p+'"' in review10 for p in
  ("home-mystic-cool-desktop.webp","home-mystic-cool-mobile.webp","laoly-mirror-suy-nghi.png"))
@@ -851,7 +851,7 @@ assert guide_tab and guide_tab.group(1)=="sparkle", "Thần Chú mobile tab must
 assert '<button class="nav-btn" data-page="guide" aria-label="Thần Chú — 13 phương pháp học"' in mobile_nav, "Keep meaningful guide tab label and route"
 assert 'Sparkle:' in (site/"assets"/"lucide.min.js").read_text(encoding="utf-8"), "Bundled Lucide must support single sparkle icon"
 
-review=(site/"component-library-review.html").read_text(encoding="utf-8")
+review=(site/"component-library-archive.html").read_text(encoding="utf-8")
 assert '<section id="icons"' in review and '<section id="inputs"' in review
 assert '<script src="./assets/lucide.min.js"></script>' in review
 assert '<div class="ds-icon-tile"><i data-lucide="sparkle" aria-hidden="true"></i>Thần Chú</div>' in review, "Component Library iconography matches spell tab"
@@ -912,7 +912,7 @@ assert 'document.getElementById("import-state-retry")?.addEventListener("click",
 assert 'const data=JSON.parse(await file.text());' in page_html, "Only real async file read may show Loading"
 assert 'if(!window.confirm(existing' in page_html, "Import must still request explicit overwrite confirmation"
 assert 'if(window.localStorage.getItem(LI_STORAGE_KEY)!==next' in page_html, "No success before localStorage readback"
-review_status=(site/"component-library-review.html").read_text(encoding="utf-8")
+review_status=(site/"component-library-archive.html").read_text(encoding="utf-8")
 assert 'id="feedback"' in review_status and 'li-state-scene-showcase' in review_status
 for name in ("laoly-state-loading.png","laoly-state-error.png"):
     assert name in page_html and name in review_status

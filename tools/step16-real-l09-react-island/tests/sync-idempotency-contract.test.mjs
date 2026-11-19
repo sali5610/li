@@ -179,7 +179,7 @@ test('OPID-08: absent RPC is fail-closed; never falls back to legacy direct writ
   assert.match(url,/\/rpc\/li_apply_user_edit_v1$/);
   return ok({code:'PGRST202'},404);
  });
- await assert.rejects(api.write(edit(id())),/NEON_DATA_API_HTTP_404/);
+ await assert.rejects(api.write(edit(id())),/NEON_SYNC_RPC_UNAVAILABLE/);
  assert.equal(count,1);
 });
 

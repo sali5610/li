@@ -49,14 +49,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: sali5610/li
-          ref: 1397f943d2ccf0091db0a1f17f017ab4ead98238
+          ref: 96edf90ae76102e1ec5919b415f3f5b9e7b024fa
           path: staging-auth-source
           persist-credentials: false
 
       - name: Verify strict login gate and native lesson key
         run: |
           set -euo pipefail
-          test "$(git -C staging-auth-source rev-parse HEAD)" = "1397f943d2ccf0091db0a1f17f017ab4ead98238"
+          test "$(git -C staging-auth-source rev-parse HEAD)" = "96edf90ae76102e1ec5919b415f3f5b9e7b024fa"
           root=staging-auth-source/tools/step16-real-l09-react-island
           grep -Fq "VITE_LI_AUTH_TARGET!=='github-pages-staging'" "$root/vite.staging-app.config.mjs"
           grep -Fq "checkInviteAccess" "$root/src/auth/AuthPanel.tsx"

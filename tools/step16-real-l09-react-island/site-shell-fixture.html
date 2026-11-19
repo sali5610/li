@@ -68,6 +68,7 @@
   const d=frame?.contentDocument,win=frame?.contentWindow;
   const diagnostic={runtime:d?.querySelector('#page-lessonL09')?.dataset.liRuntime,
     hasLoader:!!d?.querySelector('script[src*="step16-react-router"]'),
+    mountError:d?.querySelector('#page-lessonL09')?.dataset.liReactError,
     host:!!d?.getElementById('li-step16-l09-react-host'),
     fallback:d?.querySelector('#l09-challenge [role="status"]')?.textContent,
     jsAsset:await fetch('../../site/assets/step16-l09-island.js').then(x=>x.status).catch(()=>null),

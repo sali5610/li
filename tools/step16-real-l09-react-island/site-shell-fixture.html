@@ -30,9 +30,12 @@
   await wait(()=>doc.querySelector('#page-lessonL09')?.dataset.liRuntime==='react-candidate','React mounted in native shell');
   const page=doc.querySelector('#page-lessonL09'),react=doc.querySelector('#li-step16-l09-react-host');
   assert(react&&react.querySelector('.pilot [data-answer="0"]'),'React challenge not mounted');
-  assert(page.querySelector('.section-shell').hidden&&page.querySelector('.section-shell').inert,
-    'Native L09 still interactive behind React');
-  checks.push('React candidate takes the existing L09 route only after mounting; native kept inert for fallback');
+  assert(doc.querySelector('#l09-challenge').hidden&&doc.querySelector('#l09-challenge').inert &&
+    doc.querySelector('#l09-rubric').hidden&&doc.querySelector('#l09-rubric').inert,
+    'Original challenge/rubric still interactive behind React');
+  assert(!doc.querySelector('#l09-concept').hidden&&!doc.querySelector('#l09-guided').hidden &&
+    !doc.querySelector('#l09-sources').hidden,'Native theory, guided practice or citations were hidden');
+  checks.push('React replaces challenge/rubric only; original theory, guided practice and sources remain available');
   assert(doc.querySelector('.header .brand')&&doc.querySelector('.mobile-nav')&&doc.querySelector('#page-catalog'),
     'Original navigation or other screens removed');
   checks.push('Header, mobile navigation and all non-L09 Vanilla screens remain untouched');

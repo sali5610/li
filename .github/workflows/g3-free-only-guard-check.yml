@@ -1,0 +1,26 @@
+name: G3 Free-only deployment guard tests — no cloud requests
+
+on:
+  pull_request:
+    paths:
+      - 'tools/g3_cloudflare_free_guard.py'
+      - 'tools/g3_cloudflare_free_guard_test.py'
+      - '.github/workflows/g3-free-only-guard-check.yml'
+      - '.github/workflows/li-cloudflare-free-manual-release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-cost-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify free-only guard and deployment source without touching Cloudflare
+        run: |
+          set -euo pipefail
+          python3 tools/g3_cloudflare_free_guard_test.py
+          python3 tools/g3_cloudflare_free_guard.py --site site
+          echo "PASS offline guard: no Cloudflare API, upload or billable service invoked"

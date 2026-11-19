@@ -109,7 +109,7 @@ describe('ONT-04B1 React search island (fixture only)',()=>{
   const result=document.querySelector('[data-result-id="lesson:L15-2-1"]') as HTMLElement;
   expect(result).toBeTruthy();
   expect(within(result).getByText(/Vì sao có kết quả này/)).toBeTruthy();
-  expect(within(result).getByText(/2026-11-19/)).toBeTruthy();
+  expect(within(result).getAllByText(/2026-11-19/).length).toBeGreaterThanOrEqual(1);
   expect(within(result).queryByText(/đáp án|solution key/i)).toBeNull();
  });
 });

@@ -1,0 +1,169 @@
+{
+  "profile": "li-ONT04C1-non-spoiler-localized-templates",
+  "version": "0.1.0",
+  "source": {
+    "url": "https://app.notion.com/p/41b6cf6db72a8131ab62e71c289a1916",
+    "section": "S125 six mentor stages plus S145 VI/EN method-fit and independent reveal gates",
+    "checkedOn": "2026-11-19"
+  },
+  "stages": {
+    "opening": {
+      "vi": {
+        "intro": "Lão thấy một đề tài đáng ngẫm. Tiểu hữu muốn xác định câu hỏi trước khi tìm lời giải chứ?",
+        "actions": [
+          {
+            "intent": "ASK_FOR_EVIDENCE",
+            "label": "Đang biết điều gì?",
+            "response": "Hãy chỉ ra dữ kiện thực sự có trong câu hỏi, và nói phần nào còn chưa biết."
+          },
+          {
+            "intent": "CHECK_ASSUMPTION",
+            "label": "Đang ngầm giả định gì?",
+            "response": "Lão muốn nghe giả định đứng phía sau kết luận ấy, chưa cần chọn đáp án."
+          }
+        ]
+      },
+      "en": {
+        "intro": "A worthwhile question starts with knowing what is and is not established.",
+        "actions": [
+          {
+            "intent": "ASK_FOR_EVIDENCE",
+            "label": "What is observed?",
+            "response": "Identify what the prompt actually provides, and what is still unknown."
+          },
+          {
+            "intent": "CHECK_ASSUMPTION",
+            "label": "What is assumed?",
+            "response": "Name the assumption behind that conclusion before choosing an answer."
+          }
+        ]
+      }
+    },
+    "concept": {
+      "vi": {
+        "intro": "Đọc khái niệm thì dễ; ranh giới của nó mới đáng hỏi.",
+        "actions": [
+          {
+            "intent": "COMPARE_BOUNDARIES",
+            "label": "Khái niệm khác gì?",
+            "response": "Chọn hai thuật ngữ dễ lẫn và thử tự nói ranh giới của chúng; lão chưa xác nhận đáp án nào."
+          },
+          {
+            "intent": "VIEW_SOURCE_METADATA",
+            "label": "Nguồn ở đâu?",
+            "response": "Bản hiện tại chỉ có nguồn biên tập và trạng thái review, chưa phải xác thực học thuật độc lập."
+          }
+        ]
+      },
+      "en": {
+        "intro": "The interesting part is where a concept stops applying.",
+        "actions": [
+          {
+            "intent": "COMPARE_BOUNDARIES",
+            "label": "Where is the boundary?",
+            "response": "Choose two terms that seem similar and describe how you would distinguish them. No answer is supplied."
+          },
+          {
+            "intent": "VIEW_SOURCE_METADATA",
+            "label": "What source is this?",
+            "response": "This demo only reports editorial provenance and review status, not independently verified academic findings."
+          }
+        ]
+      }
+    },
+    "guided": {
+      "vi": {
+        "intro": "Lão có thể hỏi từng bước, nhưng không làm hộ.",
+        "actions": [
+          {
+            "intent": "CHECK_ASSUMPTION",
+            "label": "Bước nào cần kiểm tra?",
+            "response": "Nói một bước trong cách làm và điều kiện để bước ấy hợp lý. Đừng nhìn lời giải trước."
+          },
+          {
+            "intent": "ASK_FOR_EVIDENCE",
+            "label": "Bằng chứng nào còn thiếu?",
+            "response": "Xác định thông tin cần có để kiểm tra bước vừa nêu; lão không chấm hay ghi điểm."
+          }
+        ]
+      },
+      "en": {
+        "intro": "I can ask about a step without doing the task for you.",
+        "actions": [
+          {
+            "intent": "CHECK_ASSUMPTION",
+            "label": "Which step needs checking?",
+            "response": "Name one step and the condition that would make it justified; no worked answer is revealed."
+          },
+          {
+            "intent": "ASK_FOR_EVIDENCE",
+            "label": "What evidence is missing?",
+            "response": "Identify the information needed to assess that step. I cannot score or store an attempt."
+          }
+        ]
+      }
+    },
+    "independent": {
+      "vi": {
+        "intro": "Đây là lượt tự làm. Lão chỉ hỏi về cách tự kiểm tra, không hé đáp án.",
+        "actions": [
+          {
+            "intent": "CHECK_ASSUMPTION",
+            "label": "Tự rà giả định",
+            "response": "Hỏi lại: kết luận của mình đang phụ thuộc vào giả định nào? Lão không xác nhận đúng sai trước khi nộp."
+          },
+          {
+            "intent": "ASK_FOR_EVIDENCE",
+            "label": "Tự rà phạm vi",
+            "response": "Dữ kiện hiện có đủ cho đúng phạm vi kết luận chưa? Tự ghi câu trả lời vào bài; lão không xem hoặc lưu nó."
+          }
+        ]
+      },
+      "en": {
+        "intro": "This is the independent attempt. I can prompt a check but cannot reveal the answer.",
+        "actions": [
+          {
+            "intent": "CHECK_ASSUMPTION",
+            "label": "Check your assumptions",
+            "response": "What assumption does your conclusion depend on? I will not grade it before submission."
+          },
+          {
+            "intent": "ASK_FOR_EVIDENCE",
+            "label": "Check the claim's scope",
+            "response": "Does the evidence support the scope of your claim? Keep your answer in the lesson; I cannot read or store it."
+          }
+        ]
+      }
+    },
+    "reflection": {
+      "vi": {
+        "intro": "Phần nhìn lại cần chứng cứ nộp bài đáng tin cậy. Bản offline chưa có nên lão không mở lời giải.",
+        "actions": []
+      },
+      "en": {
+        "intro": "Reflection requires trusted submission evidence. This offline demo has none, so no solution is unlocked.",
+        "actions": []
+      }
+    },
+    "extension": {
+      "vi": {
+        "intro": "Mở rộng sau bài cần xác thực hoàn thành và nguồn phù hợp. Hiện lão chưa được cấp quyền.",
+        "actions": []
+      },
+      "en": {
+        "intro": "Post-lesson extension needs verified completion and suitable sources. It remains unavailable in this demo.",
+        "actions": []
+      }
+    }
+  },
+  "methodSuggestion": {
+    "vi": {
+      "label": "Xem định nghĩa kỹ thuật",
+      "response": "Có kỹ thuật L2 được gợi ý trong bản biên tập; xem định nghĩa nguồn, không tính là đã thực hành hay được điểm."
+    },
+    "en": {
+      "label": "Inspect method definition",
+      "response": "A draft L2 method-fit exists; inspect only its source definition, not execution or score."
+    }
+  }
+}

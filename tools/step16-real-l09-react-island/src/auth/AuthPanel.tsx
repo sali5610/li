@@ -11,8 +11,8 @@ type Locale='vi'|'en';
 type Access='checking'|'granted'|'denied'|'error';
 const copy={
  vi:{
-  heading:'Tài khoản học tập',tag:'Bản thử nghiệm · chưa phát hành',
-  intro:'Chỉ những email được chủ li. mời mới được vào. Đăng nhập bằng Google, không cần tạo mật khẩu riêng.',
+  heading:'Vào thư viện li.',tag:'Tài khoản học tập',
+  intro:'Chỉ email đã được mời mới có thể vào li. Đăng nhập bằng Google để tiếp tục.',
   google:'Tiếp tục với Google',logout:'Đăng xuất',busy:'Đang xử lý…',
   loading:'Đang kiểm tra phiên đăng nhập…',signed:'Đã đăng nhập với',
   checking:'Đang kiểm tra lời mời trên máy chủ…',
@@ -29,13 +29,13 @@ const copy={
   oauthGeneric:'Google trả về lỗi đăng nhập. Không có quyền truy cập nào được cấp.',
   leave:'Không thể đăng xuất. Kiểm tra kết nối rồi thử lại.',
   local:'Chỉ lưu trên thiết bị · Đồng bộ cloud vẫn khóa',
-  l09Local:'STAGING: chỉ bài tập L09 có nút đồng bộ thủ công; dữ liệu khác vẫn lưu trên thiết bị.',
+  l09Local:'Bài học được lưu trên thiết bị. Bạn có thể chủ động lưu tiến độ L09 lên tài khoản để học tiếp ở máy khác.',
   privacy:'Google đăng nhập không tự cấp quyền xem dữ liệu. Quyền mời và dữ liệu cá nhân được kiểm tra tại Neon bằng RLS.',
   switchEn:'English',switchVi:'Tiếng Việt'
  },
  en:{
-  heading:'Learning account',tag:'Research pilot · not released',
-  intro:'Only emails invited by the li. owner may use the app. Sign in with Google; no separate password.',
+  heading:'Welcome to li.',tag:'Learning account',
+  intro:'Only invited Google accounts can access li. Sign in to continue.',
   google:'Continue with Google',logout:'Sign out',busy:'Working…',
   loading:'Checking your sign-in session…',signed:'Signed in as',
   checking:'Checking your invitation with the server…',
@@ -52,16 +52,16 @@ const copy={
   oauthGeneric:'Google reported an authentication error. No app access was granted.',
   leave:'Sign-out failed. Check your connection and try again.',
   local:'Device-only storage · Cloud sync still disabled',
-  l09Local:'STAGING: manual cloud save/restore for L09 exercise only; other data stays on this device.',
+  l09Local:'Lessons are saved locally. You can manually sync L09 progress between devices.',
   privacy:'Google authentication is not access approval. Neon RLS independently checks invitations and private data.',
   switchEn:'English',switchVi:'Tiếng Việt'
  }
 } as const;
 
-export function AuthPanel(){
+export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  const [locale,setLocale]=useState<Locale>('vi');
  const t=copy[locale];
- const stageLabel=IS_GITHUB_STAGING?'STAGING · GitHub Pages':t.tag;
+ const stageLabel=IS_GITHUB_STAGING?'理 · li.':t.tag;
  const showDeveloperQa=IS_GITHUB_STAGING&&new URLSearchParams(window.location.search).get('qa')==='1';
  const {data:session,isPending,error,refetch}=authClient.useSession();
  const [busy,setBusy]=useState<'login'|'logout'|null>(null);
@@ -70,6 +70,14 @@ export function AuthPanel(){
  const [inviteError,setInviteError]=useState('');
  const [accessEpoch,setAccessEpoch]=useState(0);
  const accountId=session?.user?.id??null;
+ // The app stays hidden until the server has verified this account's invitation.
+ useEffect(()=>{
+  if(!document.getElementById('li-staging-auth-root'))return;
+  const permitted=Boolean(accountId)&&!isPending&&!error&&access==='granted';
+  document.documentElement.classList.toggle('li-auth-verified',Boolean(permitted));
+  if(!permitted)document.documentElement.classList.remove('li-account-open');
+  return()=>{document.documentElement.classList.remove('li-auth-verified');};
+ },[accountId,isPending,error,access]);
  const oauthReturn=classifyOAuthReturn(window.location.search,Boolean(accountId),isPending);
  const oauthMessage=(code:OAuthReturnCode)=>code==='account_not_linked'?t.oauthLink:
   code==='state_mismatch'||code==='state_security_mismatch'||code==='no_callback_url'||code==='invalid_callback_request'?t.oauthState:
@@ -156,6 +164,7 @@ export function AuthPanel(){
    {!isPending&&!error&&(accountId?
     <div className="auth-account" key={accountId}>
      <p>{t.signed}: <strong>{session?.user?.email}</strong></p>
+     {onClose&&access==='granted'&&<button type="button" className="qa-secondary" onClick={onClose}>{locale==='vi'?'Vào thư viện':'Return to library'}</button>}
      <p role={access==='denied'||access==='error'?'alert':'status'}>
       {access==='checking'?t.checking:access==='granted'?t.granted:
        access==='denied'?t.denied:t.blocked}

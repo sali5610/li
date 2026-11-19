@@ -1,0 +1,47 @@
+/**
+ * UX-DS-35: publish one standalone Design System website, never the learning app.
+ * Input: canonical site/design-system/ source + generated tokens and existing CSS.
+ * Output: dist-design-system/ with index.html at web root.
+ */
+import {cpSync,existsSync,mkdirSync,rmSync,readFileSync,writeFileSync} from 'node:fs';
+import {resolve,join} from 'node:path';
+
+const root=resolve(import.meta.dirname,'..');
+const source=join(root,'site','design-system');
+const output=join(root,'dist-design-system');
+const required=['index.html','studio.js','studio.css','react-layout.html',
+ 'react-atoms.html','react-controls.html','react-components.html',
+ 'react-layout.js','react-atoms.js','react-controls.js','react-components.js',
+ 'react-layout.css','react-atoms.css','react-controls.css','react-components.css'];
+for(const file of required){
+ if(!existsSync(join(source,file)))throw new Error('Missing DS build output: '+file);
+}
+for(const asset of ['design-tokens.css','li-layout.css']){
+ if(!existsSync(join(root,'site','assets',asset)))throw new Error('Missing source asset '+asset);
+}
+rmSync(output,{recursive:true,force:true});
+mkdirSync(output,{recursive:true});
+cpSync(source,output,{recursive:true});
+mkdirSync(join(output,'assets'),{recursive:true});
+for(const asset of ['design-tokens.css','li-layout.css']){
+ cpSync(join(root,'site','assets',asset),join(output,'assets',asset));
+}
+console.log('PASS standalone UX-DS-35: /index.html + /react-*.html + /assets, no learner app');
+
+/* The standalone site is served at its own project root, not /li/design-system/.
+   Fix relative links in published HTML only; leave canonical source untouched. */
+for(const page of ['index.html','react-layout.html','react-atoms.html',
+  'react-controls.html','react-components.html']){
+ const file=join(output,page);
+ const markup=readFileSync(file,'utf8');
+ writeFileSync(file,markup.replaceAll('../assets/','./assets/'),'utf8');
+}
+
+/* Reuse the existing Component Library page/URL from earlier li. versions.
+   It is an alias of this ONE Studio, not another component copy or gallery. */
+cpSync(join(output,'index.html'),join(output,'component-library-review.html'));
+if(readFileSync(join(output,'component-library-review.html'),'utf8')!==
+   readFileSync(join(output,'index.html'),'utf8')){
+ throw new Error('Component Library alias must match canonical Studio');
+}
+console.log('PASS reused Component Library page /component-library-review.html');

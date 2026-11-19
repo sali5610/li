@@ -1,5 +1,8 @@
 # UI component contract — current code ↔ intended behavior
 
+**UX-DS-35 Stage04 Slice03 — Draft owner consolidation (2026-11-20):** One Studio now previews real React `Button` + `Card` from `design-system/react/Components.tsx` and existing real React `Field` from `design-system/react/Controls.tsx`. Studio iframe-only HTML duplicates for these three are removed. Button: primary/secondary/ghost, native disabled/loading (`aria-busy`). Card: raised/tinted/inverse/**flat-study** (no shadow). FilterChip: native `aria-pressed`, selected/disabled, pill reserved for filtering. Token roles follow current live CSS; these DRAFT React components do **not** replace live `.action`, `.surface` or input selectors. No product flow, learning/Auth/Neon or G2 changes. Exact-head CI evidence pending.
+
+
 **UX-ART-06 (Human PO, 2026-11-19):** The approved *contextual system-state illustrations* are `laoly-state-loading.png` and `laoly-state-error.png`. The same DOM/CSS anatomy `.li-state-scene` is shared by Settings → Import JSON and Component Library → Feedback. Loading appears only while the FileReader promise is pending; on failure, error shows the actual reason and a **working Choose another file** button. Error uses `role=alert`, loading `role=status` with polite announcements; decorative images have empty alt. Do **not** use error art for genuine empty results, do not invent a loading interval, and respect reduced motion. Two approved state scenes are not a new `Ngoài gương` variant and do not close G2. See [Lão Lý assets](../design-assets/lao-ly/README.md), [shared status CSS](../site/assets/li-state-scenes.css), [UX state rules](ux-patterns-and-behavior.md).
 
 **UX-ART-04 (Human PO, 2026-11-19; supersedes UX-ART-03):** Active Lão Lý artwork consists of **10 geometric-papercraft `Trong gương` expressions and 5 matching functional chat/study-mode icons**. The `Ngoài gương` art variant has been removed from the current asset tree and must not be recreated. The exact GitHub PNG masters and app aliases are governed by [Lão Lý current asset library](../design-assets/lao-ly/README.md). Settings, Guide, Home avatar and Component Library use the matching papercraft bytes; preserve contained transparent artwork sizing, accessible names and text clearance. G2 overall and actual device QA remain open.
@@ -164,3 +167,31 @@ The immediately following *portrait-shaped* screenshot showed `innerWidth`/visua
 **Single implementation:** \`site/assets/ipad-safari-rotation.js\` chooses physical full-window iPad width/orientation from \`outerWidth/outerHeight\` (not stale CSS media orientation/root geometry). \`site/assets/ipad-home-canvas.css\` renders one fixed, clipped Home scene sized by \`--li-ipad-shell-width/height\`, reusing canonical iPad portrait/landscape token aliases. The script re-anchors scroll position on a physical orientation change. Old DS30–32 recovery CSS was deleted, not overlaid. For Stage Manager / Split View or non-Home routes it leaves native CSS layout alone. No numeric viewport meta, no reload/data reset, no third-party framework/expense.
 
 **QA:** source-only checks plus simulated Chrome tests now reproduce 05:08 portrait stale 970×832 and 05:24 landscape 1408×918 while root remains 970×1270; repeated rotations and Home control centering are explicit. This does *not* constitute physical iPad Safari, PWA, VoiceOver or real tap/hit testing. PO G2 remains open until real screen checks.
+
+## UX-DS-35 Stage04 · Six React atoms in canonical Studio (Draft)
+
+**Owner:** `design-system/react/Atoms.tsx` and `atoms.css`. The one Studio entry at `site/design-system/index.html` mounts these in `react-atoms.html` using synthetic fixture content; no product route/learner-data logic. All roles inherit generated CSS from `design-system/tokens.json`. This is **component-source implementation**, not G2 approval or production adoption.
+
+| Atom | Use / Do | Don't | Contract / preview |
+| --- | --- | --- | --- |
+| Text | Body 16/24, bodyLarge 18/28, support 14/20, caption 12/16 (metadata only); choose p/span/small | Shrink essential instruction to caption or clip VI/EN | `as`, `role`; multiline/wrap |
+| Heading | Crimson hierarchy display/headline/titleLarge/Medium/Small; semantic h1–h4 chosen independently from visual role | Pick h-level only for looks | `level`, `role`; wrapping |
+| Link | Native anchor with nonblank `href`, focus-visible | Clickable div, fake disabled link | Native keyboard/URL navigation; real destination |
+| Divider | Native `hr` for section break; `decorative` opt-out for ornament | Repeated lines instead of spacing | Native separator or `aria-hidden` |
+| Badge | Neutral or emphasized metadata, **square** no pill | Filter chip, approval status, progress claim | Text content; no forged meaning |
+| Progress | Native `progress` with required accessible label; determined value or omitted value for unknown | Invent learning score / asynchronous percent | `value`, `max`, `label`; range validation |
+
+**QA-SLIM:** source/TS build and focused mounted actual React heading/progress checks only, reusing prior Stage03 checks. Unaffected L09/auth/backend untouched. Remaining Stage04 primitives (Checkbox/Radio, Icon/IconButton/Field etc.) are separate current DS work, not falsely marked ready.
+
+## UX-DS-35 Stage04 Slice02 · Native React controls in the single Studio (DRAFT)
+**Owner:** `design-system/react/Controls.tsx` and `controls.css`; preview-only styles in `controls-story.css`. The single `site/design-system/index.html` embeds a React fixture, not a product screen or data writer. Values come from canonical `design-system/tokens.json`.
+
+| Atom | Anatomy / variants | Do | Don't |
+| --- | --- | --- | --- |
+| Checkbox | Native input + full clickable label; checked/default/disabled | Independent choices, keyboard Space, 48px row | Replace exactly-one Radio |
+| Radio | Native radio, shared nonempty group name; selected/default/disabled; fieldset+legend in composition | Exactly one selection from named group | Represent independent toggles |
+| Field | Persistent label, native input/textarea, hint/error linked by aria-describedby and aria-invalid; default/error/disabled/readonly | Preserve text, explain recovery, distinguish readonly/disabled | Placeholder as sole label, color-only error |
+| Icon | 24px outlined generic utility symbol; decorative aria-hidden by default or explicit informative name | Consistent utility semantics | Replace approved Lão Lý art/icons |
+| IconButton | Native action button with accessible name, 48px hit box, focus-visible; default/disabled | Named focusable action | Unlabeled glyph or false navigation |
+
+**Gate:** Source DRAFT until exact CI typecheck and focused mounted Field/Radio tests. No repeated L09/Neon/auth QA or new G2 signoff claim. React bundle must be included in future release pipeline before a public page can work.

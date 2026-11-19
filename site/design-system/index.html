@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>li. 理 — Component Library · Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/design-tokens.css">
+<link rel="stylesheet" href="../assets/li-layout.css">
+<link rel="stylesheet" href="./studio.css">
+<script type="module" src="./studio.js"></script>
+</head>
+<body>
+<div id="studio-root">
+<header class="studio-top">
+  <a class="studio-mark" href="./" aria-label="li. Design System Studio"><span class="studio-glyph">理</span><span>li<span class="studio-dot">.</span></span><span class="studio-word">DESIGN SYSTEM</span></a>
+  <div class="studio-top-right"><span class="studio-top-note">COMPONENT LIBRARY · UX-DS-35</span><span class="studio-status"><span aria-hidden="true">◌</span> G2 OPEN</span></div>
+</header>
+<div class="studio-shell">
+<aside class="studio-sidebar" aria-label="Design System catalog">
+  <div class="studio-sidebar-head">
+    <span class="studio-eyebrow">LIBRARY / v0.1</span>
+    <h1>Everything<br>in its place<span class="studio-dot">.</span></h1>
+    <p>Foundations, components & patterns in one place. No more orphan previews.</p>
+  </div>
+  <label for="studio-search" class="studio-search-label">FIND A COMPONENT</label>
+  <input id="studio-search" type="search" placeholder="Search library…" autocomplete="off">
+  <nav id="studio-nav" aria-label="Stories"></nav>
+  <div class="studio-sidebar-foot">
+    <span>Tokens: GitHub main · React stories: Draft PR #168</span>
+    <a href="https://github.com/sali5610/li/blob/main/design-system/tokens.json" target="_blank" rel="noopener noreferrer">Token authority ↗</a>
+    <a href="https://github.com/sali5610/li/blob/main/design-system/components.md" target="_blank" rel="noopener noreferrer">Component contract ↗</a>
+  </div>
+</aside>
+<main class="studio-work">
+  <div class="studio-crumb"><span>LI. DESIGN SYSTEM</span><span aria-hidden="true">/</span><span id="studio-section-name">Foundations</span><span aria-hidden="true">/</span><strong id="studio-crumb-name">Colors</strong></div>
+  <div class="studio-title-row">
+    <div><span class="studio-eyebrow" id="studio-category">01 / FOUNDATIONS</span><h2 id="studio-title">Colors</h2><p id="studio-summary">Color roles from the canonical token file.</p></div>
+    <span class="studio-readiness" id="studio-readiness">RUNTIME</span>
+  </div>
+  <section class="studio-playground" aria-labelledby="studio-playground-title">
+    <div class="studio-playground-bar"><h3 id="studio-playground-title">Interactive preview</h3><div class="studio-device-actions"><label for="studio-width">Viewport</label><select id="studio-width"><option value="auto">Fluid</option><option value="320">iPhone · 320</option><option value="390">iPhone · 390</option><option value="820">iPad · 820</option><option value="1024">iPad · 1024</option><option value="1440">Desktop · 1440</option></select><button id="studio-refresh" type="button" title="Reset preview" aria-label="Reset preview">↻</button></div></div>
+    <div class="studio-controls">
+      <label>Variant<select id="studio-variant"></select></label>
+      <label>State<select id="studio-state"></select></label>
+      <label>Language<select id="studio-language"><option value="vi">Tiếng Việt</option><option value="en">English</option></select></label>
+    </div>
+    <div class="studio-frame-scroll"><iframe id="studio-frame" title="Live component preview" loading="eager"></iframe></div>
+    <div class="studio-frame-foot"><span>Actual browser viewport · preview-only interactions</span><span id="studio-frame-label">FLUID</span></div>
+  </section>
+  <section class="studio-details" aria-labelledby="studio-details-title">
+    <div class="studio-tab-list" role="tablist" aria-label="Component documentation"><button type="button" role="tab" aria-selected="true" id="tab-usage" data-tab="usage">Usage & anatomy</button><button type="button" role="tab" aria-selected="false" id="tab-code" data-tab="code">Example code</button><button type="button" role="tab" aria-selected="false" id="tab-source" data-tab="source">Provenance</button></div>
+    <div id="studio-details-content" role="tabpanel" aria-labelledby="tab-usage"></div>
+  </section>
+</main>
+</div>
+<footer class="studio-bottom"><span>li. 理 · Design System Studio · Draft workbench, not a production approval</span><span>Source values live in <code>design-system/tokens.json</code> · No user data</span></footer>
+</div>
+<div id="studio-canvas" hidden></div>
+</body>
+</html>

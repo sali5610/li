@@ -1,0 +1,157 @@
+name: UX-DS-35 Studio preview (CI only)
+
+on:
+  pull_request:
+    paths:
+      - 'site/design-system/**'
+      - 'design-system/README.md'
+      - 'design-system/react/**'
+      - '.github/workflows/uxds35-studio-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  studio-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build and typecheck real React DS Layout story
+        working-directory: design-system/react
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund
+          npm run check
+          npm run build
+          test -s ../../site/design-system/react-layout.js
+          test -s ../../site/design-system/react-layout.css
+          test -s ../../site/design-system/react-atoms.js
+          test -s ../../site/design-system/react-atoms.css
+          test -s ../../site/design-system/react-controls.js
+          test -s ../../site/design-system/react-controls.css
+          test -s ../../site/design-system/react-components.js
+          test -s ../../site/design-system/react-components.css
+      - name: Verify static single-web sources
+        run: |
+          set -euo pipefail
+          node --check site/design-system/studio.js
+          grep -q 'design-tokens.css' site/design-system/index.html
+          grep -q 'studio-frame' site/design-system/index.html
+          grep -q 'design-system/tokens.json' design-system/README.md
+      - name: Capture browser-mounted actual Studio (no site deploy)
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8787 --bind 127.0.0.1 --directory site >/tmp/li-ds-studio-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)"
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8787/design-system/index.html >/dev/null && break || sleep 1
+          done
+          mkdir -p /tmp/li-ds-studio-preview
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --hide-scrollbars --virtual-time-budget=6000 \
+            --window-size=1440,900 \
+            --dump-dom 'http://127.0.0.1:8787/design-system/index.html#button' \
+            > /tmp/li-ds-studio-preview/studio-dom.html
+          grep -q 'studio-nav-group' /tmp/li-ds-studio-preview/studio-dom.html
+          grep -q 'Button' /tmp/li-ds-studio-preview/studio-dom.html
+          grep -q 'iframe' /tmp/li-ds-studio-preview/studio-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=7000 --window-size=390,844 --dump-dom \
+            'http://127.0.0.1:8787/design-system/react-layout.html?variant=Grid&lang=vi' \
+            > /tmp/li-ds-studio-preview/react-layout-mobile-dom.html
+          grep -q 'data-ui-react-layout="mounted"' /tmp/li-ds-studio-preview/react-layout-mobile-dom.html
+          grep -q 'data-li-layout="grid"' /tmp/li-ds-studio-preview/react-layout-mobile-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=7000 --window-size=820,1040 --dump-dom \
+            'http://127.0.0.1:8787/design-system/react-layout.html?variant=ScrollRegion&lang=en' \
+            > /tmp/li-ds-studio-preview/react-layout-tablet-dom.html
+          grep -q 'data-li-layout="scroll-region"' /tmp/li-ds-studio-preview/react-layout-tablet-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=7000 --window-size=390,844 --dump-dom \
+            'http://127.0.0.1:8787/design-system/react-atoms.html?story=heading&variant=headline&lang=vi' \
+            > /tmp/li-ds-studio-preview/react-atom-heading-dom.html
+          grep -q 'data-ui-react-atom="mounted"' /tmp/li-ds-studio-preview/react-atom-heading-dom.html
+          grep -q 'data-story-heading="true"' /tmp/li-ds-studio-preview/react-atom-heading-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=7000 --window-size=820,1040 --dump-dom \
+            'http://127.0.0.1:8787/design-system/react-atoms.html?story=progress&variant=Indeterminate&lang=en' \
+            > /tmp/li-ds-studio-preview/react-atom-progress-dom.html
+          grep -q 'data-story-progress="true"' /tmp/li-ds-studio-preview/react-atom-progress-dom.html
+          grep -q 'aria-label="Sample progress"' /tmp/li-ds-studio-preview/react-atom-progress-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=7000 --window-size=390,844 --dump-dom \
+            'http://127.0.0.1:8787/design-system/react-controls.html?story=field&variant=Textarea&state=error&lang=vi' \
+            > /tmp/li-ds-studio-preview/react-field-error-dom.html
+          grep -q 'data-ui-react-control="mounted"' /tmp/li-ds-studio-preview/react-field-error-dom.html
+          grep -q 'aria-invalid="true"' /tmp/li-ds-studio-preview/react-field-error-dom.html
+          grep -q '<textarea' /tmp/li-ds-studio-preview/react-field-error-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=7000 --window-size=820,1040 --dump-dom \
+            'http://127.0.0.1:8787/design-system/react-controls.html?story=radio&state=selected&lang=en' \
+            > /tmp/li-ds-studio-preview/react-radio-selected-dom.html
+          grep -q 'data-li-atom="radio"' /tmp/li-ds-studio-preview/react-radio-selected-dom.html
+          grep -q 'name="demo-density"' /tmp/li-ds-studio-preview/react-radio-selected-dom.html
+          grep -q 'checked=""' /tmp/li-ds-studio-preview/react-radio-selected-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=7000 --window-size=390,844 --dump-dom \
+            'http://127.0.0.1:8787/design-system/react-components.html?story=button&variant=Primary&state=loading&lang=vi' \
+            > /tmp/li-ds-studio-preview/react-button-loading-dom.html
+          grep -q 'data-ui-react-component="mounted"' /tmp/li-ds-studio-preview/react-button-loading-dom.html
+          grep -q 'aria-busy="true"' /tmp/li-ds-studio-preview/react-button-loading-dom.html
+          grep -q 'disabled=""' /tmp/li-ds-studio-preview/react-button-loading-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=7000 --window-size=820,1040 --dump-dom \
+            'http://127.0.0.1:8787/design-system/react-components.html?story=card&variant=Flat%20study&lang=en' \
+            > /tmp/li-ds-studio-preview/react-card-flat-dom.html
+          grep -q 'data-story-card="true"' /tmp/li-ds-studio-preview/react-card-flat-dom.html
+          grep -q 'data-variant="flat-study"' /tmp/li-ds-studio-preview/react-card-flat-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=7000 --window-size=390,844 --dump-dom \
+            'http://127.0.0.1:8787/design-system/react-components.html?story=chip&state=selected&lang=en' \
+            > /tmp/li-ds-studio-preview/react-chip-selected-dom.html
+          grep -q 'data-story-chip="true"' /tmp/li-ds-studio-preview/react-chip-selected-dom.html
+          grep -q 'aria-pressed="true"' /tmp/li-ds-studio-preview/react-chip-selected-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --hide-scrollbars --virtual-time-budget=6000 \
+            --window-size=1440,900 \
+            --screenshot=/tmp/li-ds-studio-preview/studio-desktop.png \
+            'http://127.0.0.1:8787/design-system/index.html#button'
+          test -s /tmp/li-ds-studio-preview/studio-desktop.png
+          echo 'PASS UXDS35_STUDIO_BROWSER_MOUNT'
+      - name: Check old Component Library entrypoint reuses current Studio
+        run: |
+          set -euo pipefail
+          node tools/build-design-system-site.mjs
+          cmp dist-design-system/index.html dist-design-system/component-library-review.html
+          grep -Fq 'react-components.html' dist-design-system/studio.js
+          test -s dist-design-system/react-components.js
+      - name: Upload single-web source and visual screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-uxds35-design-system-studio-preview
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            site/design-system/
+            site/assets/design-tokens.css
+            site/assets/li-layout.css
+            /tmp/li-ds-studio-preview/studio-desktop.png
+            /tmp/li-ds-studio-preview/react-layout-mobile-dom.html
+            /tmp/li-ds-studio-preview/react-layout-tablet-dom.html
+            /tmp/li-ds-studio-preview/react-atom-heading-dom.html
+            /tmp/li-ds-studio-preview/react-atom-progress-dom.html
+            /tmp/li-ds-studio-preview/react-field-error-dom.html
+            /tmp/li-ds-studio-preview/react-radio-selected-dom.html
+            /tmp/li-ds-studio-preview/react-button-loading-dom.html
+            /tmp/li-ds-studio-preview/react-card-flat-dom.html
+            /tmp/li-ds-studio-preview/react-chip-selected-dom.html

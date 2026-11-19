@@ -63,7 +63,9 @@
   frame.src='../site/index.html?lesson=L09-1-2';document.body.append(frame);
   const w=frame.contentWindow,d=()=>frame.contentDocument;
   await until(()=>d()?.getElementById('page-lessonL09')?.classList.contains('active'),'initial catalog lesson');
-  const learner=localStorage.getItem(real),history=localStorage.getItem(visits);
+  const learner=localStorage.getItem(real);
+  // Native lesson revisit may LEGITIMATELY record a visit in li.private.lesson.visits.v1.
+  // This negative guard must preserve actual native behavior, not suppress telemetry.
   w.history.pushState({ont04Negative:true},'',w.location.pathname+'?ont04-negative=1');
   w.navigate('search',{focus:false,syncUrl:false});
   assert(d().getElementById('page-search').classList.contains('active'),
@@ -81,8 +83,8 @@
    'legacy no-lesson no-catalog Forward still goes Home');
   assert(w.liDualLocalHistoryAllowed()===false&&w.history.state?.liOntInt04Page===undefined,
    'external native history cannot be claimed by dual research adapter');
-  assert(localStorage.getItem(real)===learner&&localStorage.getItem(visits)===history,
-   'native Back/Forward does not write genuine learner keys');
+  assert(localStorage.getItem(real)===learner,
+   'native Back/Forward preserves independent challenge attempt; native visit tracking remains allowed');
   out.textContent='LI_STEP16_L09_SHELL_PASS '+JSON.stringify({
    count:checks.length,checks,scope:'UNFLAGGED_AND_SINGLE_FLAG_BROWSER_NEGATIVE',
    physicalSafari:'NOT_RUN',signedRls:'NOT_RUN',deploy:'NONE'

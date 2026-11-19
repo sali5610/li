@@ -155,3 +155,39 @@ describe('ONT-04B1 React search island (fixture only)',()=>{
   expect(within(result).queryByText(/đáp án|solution key/i)).toBeNull();
  });
 });
+
+describe('ONT-04 v1 interactive researched graph and bounded companion',()=>{
+ it('drills from a reviewed L09 relation into a canonical result and returns without touching user data',async()=>{
+  render(<SearchIsland embedded/>);
+  const user=await search('L09-1-1');
+  const parent=document.querySelector('[data-result-id="lesson:L09-1-1"]') as HTMLElement;
+  await user.click(within(parent).getByRole('button',{name:/Quan hệ đã xác minh/}));
+  await user.click(within(parent).getByRole('button',{name:'Xem thực thể: lesson:L09-1-2'}));
+  expect(document.querySelectorAll('[data-result-id="lesson:L09-1-2"]')).toHaveLength(1);
+  expect(screen.getByRole('status').textContent).toContain('1 kết quả');
+  expect(screen.queryByRole('link',{name:/Mở bài/})).toBeNull();
+  await user.click(screen.getByRole('button',{name:'Quay lại kết quả trước'}));
+  expect(document.querySelector('[data-result-id="lesson:L09-1-1"]')).toBeTruthy();
+  expect((screen.getByRole('searchbox') as HTMLInputElement).value).toBe('L09-1-1');
+  expect(window.localStorage.length).toBe(0);
+ });
+ it('offers only sourced no-spoiler Lão Lý concept prompts, in both locales, not navigation or grading',async()=>{
+  render(<SearchIsland embedded/>);
+  const user=await search('L09-1-2');
+  const lesson=document.querySelector('[data-result-id="lesson:L09-1-2"]') as HTMLElement;
+  await user.click(within(lesson).getByRole('button',{name:'Hỏi Lão Lý'}));
+  expect(within(lesson).getByRole('region',{name:'Hỏi Lão Lý'}).textContent).toContain('ranh giới');
+  expect(within(lesson).getByText(/không phải lời giải/)).toBeTruthy();
+  expect(within(lesson).queryByRole('link',{name:/Mở bài/})).toBeNull();
+  await user.selectOptions(screen.getByLabelText('Ngôn ngữ'),'en');
+  expect(within(lesson).getByRole('region',{name:'Ask Lão Lý'}).textContent).toContain('boundary');
+  expect(window.localStorage.length).toBe(0);
+ });
+ it('does not offer a fictional Lão Lý lesson context for an academic Field',async()=>{
+  render(<SearchIsland embedded/>);
+  await search('Data Science');
+  const field=document.querySelector('[data-result-id="field:F09"]') as HTMLElement;
+  expect(field).toBeTruthy();
+  expect(within(field).queryByRole('button',{name:/Lão Lý/})).toBeNull();
+ });
+});

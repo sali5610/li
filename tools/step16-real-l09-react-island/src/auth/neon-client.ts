@@ -4,8 +4,10 @@ import type {NeonAuthSessionPort} from '../sync/neon-session.js';
 import {NEON_AUTH_URL} from './config.js';
 
 /**
- * Managed Better Auth with official Neon SDK. This account is invite-only:
- * no sign-up screen, anonymous token or social login is exposed by li.
+ * Managed Better Auth with official Neon SDK and Google's shared OAuth provider.
+ * A Google identity/session is NOT a li. membership. The verified-email allowlist
+ * and restrictive PostgreSQL RLS (migration 0002) enforce access server-side.
+ * No anonymous tokens, self-serve app membership or privileged credentials.
  */
 export const authClient=createAuthClient(NEON_AUTH_URL,{
  adapter:BetterAuthReactAdapter(),

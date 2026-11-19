@@ -28,7 +28,16 @@ jobs:
           set -euo pipefail
           npm install --no-audit --no-fund
           npm run build
+          npm run build:auth
+          # Test the deployed absolute base /auth-pilot/ rather than an invalid
+          # file:// or nested test URL that cannot resolve its Vite assets.
+          mkdir -p ../../auth-pilot
+          cp -a dist-auth/. ../../auth-pilot/
+          mv ../../auth-pilot/auth-entry.html ../../auth-pilot/index.html
+          test -f ../../auth-pilot/index.html
+          node -e 'const fs=require("fs"); const html=fs.readFileSync("dist-auth/auth-entry.html","utf8");if(!html.includes("/auth-pilot/assets/")||!html.includes("no-referrer"))process.exit(1);console.log("PASS isolated Auth-only output and fixed base route");'
           npm run check:source
+          npm run test:sync
           node -e 'const fs=require("fs"),z=require("zlib");const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(x=>x.isDirectory()?walk(d+"/"+x.name):[d+"/"+x.name]);const xs=walk("dist").filter(p=>p.endsWith(".js"));let raw=0,gz=0;for(const p of xs){const data=fs.readFileSync(p);raw+=data.length;gz+=z.gzipSync(data,{level:9}).length;}console.log("LI_STEP16_EXACT_L09_REACT_BUNDLE "+JSON.stringify({jsAssets:xs.length,jsRawBytes:raw,jsGzipBytes:gz,note:"single exact-source challenge/rubric island, not full li app"}));'
       - name: Exercise actual editorial content + learner behavior in real-clock Chrome
         shell: bash
@@ -46,4 +55,10 @@ jobs:
           node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
             "http://127.0.0.1:8794/tools/step16-real-l09-react-island/native-bridge-fixture.html" \
             "LI_STEP16_L09_BRIDGE_PASS " 8 90000
-          echo "PASS exact-authored L09 React pilot + real native state compatibility, fake localhost data only"
+          node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
+            "http://127.0.0.1:8794/tools/step16-real-l09-react-island/auth-guard-fixture.html" \
+            "LI_STEP16_L09_AUTH_PASS " 6 60000
+          node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
+            "http://127.0.0.1:8794/tools/step16-real-l09-react-island/auth-only-guard-fixture.html" \
+            "LI_STEP16_AUTH_ONLY_PASS " 5 60000
+          echo "PASS exact L09, native bridge, localhost auth origin guard and isolated Auth-only bundle. No Neon live login."

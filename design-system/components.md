@@ -164,3 +164,18 @@ The immediately following *portrait-shaped* screenshot showed `innerWidth`/visua
 **Single implementation:** \`site/assets/ipad-safari-rotation.js\` chooses physical full-window iPad width/orientation from \`outerWidth/outerHeight\` (not stale CSS media orientation/root geometry). \`site/assets/ipad-home-canvas.css\` renders one fixed, clipped Home scene sized by \`--li-ipad-shell-width/height\`, reusing canonical iPad portrait/landscape token aliases. The script re-anchors scroll position on a physical orientation change. Old DS30–32 recovery CSS was deleted, not overlaid. For Stage Manager / Split View or non-Home routes it leaves native CSS layout alone. No numeric viewport meta, no reload/data reset, no third-party framework/expense.
 
 **QA:** source-only checks plus simulated Chrome tests now reproduce 05:08 portrait stale 970×832 and 05:24 landscape 1408×918 while root remains 970×1270; repeated rotations and Home control centering are explicit. This does *not* constitute physical iPad Safari, PWA, VoiceOver or real tap/hit testing. PO G2 remains open until real screen checks.
+
+## UX-DS-35 Stage04 · Six React atoms in canonical Studio (Draft)
+
+**Owner:** `design-system/react/Atoms.tsx` and `atoms.css`. The one Studio entry at `site/design-system/index.html` mounts these in `react-atoms.html` using synthetic fixture content; no product route/learner-data logic. All roles inherit generated CSS from `design-system/tokens.json`. This is **component-source implementation**, not G2 approval or production adoption.
+
+| Atom | Use / Do | Don't | Contract / preview |
+| --- | --- | --- | --- |
+| Text | Body 16/24, bodyLarge 18/28, support 14/20, caption 12/16 (metadata only); choose p/span/small | Shrink essential instruction to caption or clip VI/EN | `as`, `role`; multiline/wrap |
+| Heading | Crimson hierarchy display/headline/titleLarge/Medium/Small; semantic h1–h4 chosen independently from visual role | Pick h-level only for looks | `level`, `role`; wrapping |
+| Link | Native anchor with nonblank `href`, focus-visible | Clickable div, fake disabled link | Native keyboard/URL navigation; real destination |
+| Divider | Native `hr` for section break; `decorative` opt-out for ornament | Repeated lines instead of spacing | Native separator or `aria-hidden` |
+| Badge | Neutral or emphasized metadata, **square** no pill | Filter chip, approval status, progress claim | Text content; no forged meaning |
+| Progress | Native `progress` with required accessible label; determined value or omitted value for unknown | Invent learning score / asynchronous percent | `value`, `max`, `label`; range validation |
+
+**QA-SLIM:** source/TS build and focused mounted actual React heading/progress checks only, reusing prior Stage03 checks. Unaffected L09/auth/backend untouched. Remaining Stage04 primitives (Checkbox/Radio, Icon/IconButton/Field etc.) are separate current DS work, not falsely marked ready.

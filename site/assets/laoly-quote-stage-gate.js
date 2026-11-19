@@ -14,6 +14,9 @@ function evaluate(input){
  if(v.feedbackVisible===true)return Object.freeze({allowed:false,reason:"hint_feedback_or_solution_visible"});
  // Public/non-lesson surfaces continue to use the authored S121 quote cards.
  const lessonPage=/^lessonL\d{2}$/.test(page);
+ // Legacy generic lesson/case screens do not expose a trusted stage, so never
+ // infer that an assessment is safe just because no Wave1 context exists.
+ if(page==="lesson"||page==="case")return Object.freeze({allowed:false,reason:"unstaged_assessment_screen"});
  if(!lessonPage)return Object.freeze({allowed:true,reason:"nonlesson_cultural_quote"});
  const lesson=v.lessonContext;
  // No companion, incomplete manifest, mismatched native page: fail CLOSED.

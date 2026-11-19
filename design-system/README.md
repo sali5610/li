@@ -21,6 +21,8 @@
 | **Color, semantic paint, typography values, spacing, shape, target-size settings** | [tokens.json](tokens.json) → [generated design-tokens.css](../site/assets/design-tokens.css) | Every visual/component adjustment; **only edit JSON**, regenerate CSS |
 | **Typography roles, 4px grid, responsive spacing** | [typography-spacing.md](typography-spacing.md) | Type, rhythm, text overflow, layouts |
 | **Component inventory, selectors, variants, states, PO exceptions** | [components.md](components.md) | Every touched component and its siblings |
+| **iPhone/iPad adaptive rules, window + container + height + safe-area + rotation** | [responsive-adaptive.md](responsive-adaptive.md) **(DRAFT, UX-DS-35)** | Every layout, component density, Safari, keyboard or viewport adjustment |
+| **Atomic → Responsive → React staged remediation plan** | [UX-DS-35 implementation roadmap](plans/2026-11-19-atomic-responsive-react-roadmap.md) **(DRAFT)** | Before planning implementation PRs, migration order and gate checks |
 | **Atomic-level gap inventory + React readiness (AUDIT, not approved implementation)** | [2026-11-19 atomic audit](audits/2026-11-19-atomic-react-readiness.md) | When planning React shared components, component-level Do/Don't or migration QA; keep approved designs unchanged |
 | **Use / Don't use, interaction patterns, state transitions, accessibility behavior** | [ux-patterns-and-behavior.md](ux-patterns-and-behavior.md) | Any UI/UX interaction, new component or pattern; treat as default rule |
 | **Coverage, acceptance, impact chain and device test evidence** | [qa-checklist.md](qa-checklist.md) | Every UI/UX PR or design review |
@@ -31,6 +33,8 @@
 | **Latest accepted copy and product decisions** | [Step13 active canon](https://app.notion.com/p/41b6cf6db72a811aba36dcec9cc42c20), [Latest Handoff](https://app.notion.com/p/4196cf6db72a81f7b000f75783f210b5) | Any labels, status, dialogue, UX journey or gate |
 
 ### UI rule snapshot — no guessing
+
+- **Responsive ownership — proposal UX-DS-35:** effective viewport/container width, visible height and keyboard/safe-area govern layout; iPad Split View can use compact mode, and short-height iPhone landscape must keep controls reachable. Preserve approved Thần Chú 2-up 320–640px, current iPad density only in proper contexts, one landscape iPad Home artwork cropped for portrait, and repeat-rotation Safari proof. See [responsive-adaptive.md](responsive-adaptive.md). Do not remove current Safari fallback until physical verification; G2 remains OPEN.
 
 - **Shape & material:** square ordinary controls, opaque offset hard shadows; **exceptions**: selected nav sand oval, rounded Lão Lý speech bubble, full-pill filter chips and organic illustration. Don't run global square-radius resets over exceptions.
 - **Color roles:** paper `#F1F0E9`, cream `#FAF9F5`, porcelain editable fields `#FEFDFC`, brand Moss `#243A29`, Olive Moss `#65734C` **decorative editorial kicker only**; avoid off-token color and semantic misuse. Exact current values and role mapping are owned by JSON, not this quick reference.

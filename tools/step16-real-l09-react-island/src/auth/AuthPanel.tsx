@@ -5,6 +5,7 @@ import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING} from './config.js';
 import {classifyOAuthReturn,type OAuthReturnCode} from './oauth-return.js';
 import {RlsQaPanel} from './RlsQaPanel.js';
 import {SyncQaPanel} from './SyncQaPanel.js';
+import {L09CloudPanel} from './L09CloudPanel.js';
 
 type Locale='vi'|'en';
 type Access='checking'|'granted'|'denied'|'error';
@@ -28,6 +29,7 @@ const copy={
   oauthGeneric:'Google trả về lỗi đăng nhập. Không có quyền truy cập nào được cấp.',
   leave:'Không thể đăng xuất. Kiểm tra kết nối rồi thử lại.',
   local:'Chỉ lưu trên thiết bị · Đồng bộ cloud vẫn khóa',
+  l09Local:'STAGING: chỉ bài tập L09 có nút đồng bộ thủ công; dữ liệu khác vẫn lưu trên thiết bị.',
   privacy:'Google đăng nhập không tự cấp quyền xem dữ liệu. Quyền mời và dữ liệu cá nhân được kiểm tra tại Neon bằng RLS.',
   switchEn:'English',switchVi:'Tiếng Việt'
  },
@@ -50,6 +52,7 @@ const copy={
   oauthGeneric:'Google reported an authentication error. No app access was granted.',
   leave:'Sign-out failed. Check your connection and try again.',
   local:'Device-only storage · Cloud sync still disabled',
+  l09Local:'STAGING: manual cloud save/restore for L09 exercise only; other data stays on this device.',
   privacy:'Google authentication is not access approval. Neon RLS independently checks invitations and private data.',
   switchEn:'English',switchVi:'Tiếng Việt'
  }
@@ -171,11 +174,13 @@ export function AuthPanel(){
     {oauthReturn.kind==='oauth-error'?<>{t.oauthFailed} <strong>{oauthReturn.code}</strong>. {oauthMessage(oauthReturn.code)}</>:t.oauthSession}
    </p>}
    {feedback&&<p className="auth-error" role="alert">{feedback}</p>}
+   {IS_GITHUB_STAGING&&accountId&&access==='granted'&&
+    <L09CloudPanel uid={accountId} locale={locale}/>}
    {IS_GITHUB_STAGING&&accountId&&(access==='granted'||access==='denied')&&
     <RlsQaPanel uid={accountId} granted={access==='granted'}/>}
    {IS_GITHUB_STAGING&&accountId&&access==='granted'&&
     <SyncQaPanel uid={accountId} locale={locale}/>}
-   <p className="auth-local" role="status">{t.local}</p>
+   <p className="auth-local" role="status">{IS_GITHUB_STAGING?t.l09Local:t.local}</p>
    <p className="auth-privacy">{t.privacy}</p>
   </section>
  </main>;

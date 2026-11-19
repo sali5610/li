@@ -139,6 +139,74 @@ async function main(){
   verify(!b.buttons.primary.textOverflows&&!b.buttons.secondary.textOverflows,'Essential CTA label clipped '+v.width);
   report.push({viewport:v.width,height:v.height,expectedPad:v.pad,expectedTarget:v.min,legacy:a,approved:b});
  }
+
+// Synthetic DOM-only 200% body-token stress: not real Safari or native browser zoom.
+function syntheticTypographyStress(language){
+ const root=document.querySelector('#li-step16-l09-react-host .pilot');
+ const primary=root?.querySelector('[data-action=submit]');
+ const secondary=root?.querySelector('[data-action=clear]');
+ const field=root?.querySelector('textarea[data-answer="0"]');
+ const label=field?.labels?.[0];
+ if(!root||!primary||!secondary||!field||!label)return {mounted:false};
+ const content={
+  vi:{primary:'Gửi toàn bộ câu trả lời sau khi kiểm tra dữ liệu đã nhập và xác nhận hoàn tất phần thử nghiệm',
+   secondary:'Xoá những câu trả lời đang soạn và bắt đầu lại nếu thật sự cần thiết',
+   label:'Hãy giải thích rõ ràng bằng lập luận của mày: trong ví dụ nghiên cứu này, vì sao kết quả có thể khác nhau giữa các nhóm người tham gia?'},
+  en:{primary:'Submit every response after reviewing all entered evidence and confirming this research exercise is complete',
+   secondary:'Clear all drafted responses and begin again only when this is truly necessary',
+   label:'Explain in your own words why the results in this research scenario might differ between participant groups, supporting your conclusion with reasoning.'}
+ }[language];
+ const normal=getComputedStyle(primary);
+ const originalFont=parseFloat(normal.fontSize),originalLeading=parseFloat(normal.lineHeight);
+ primary.textContent=content.primary;secondary.textContent=content.secondary;label.textContent=content.label;
+ document.documentElement.style.setProperty('--li-type-body',String(originalFont*2)+'px');
+ document.documentElement.style.setProperty('--li-leading-body',String(originalLeading*2)+'px');
+ root.style.fontSize='200%';
+ field.focus();
+ const geometry=e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);
+  return {left:r.left,right:r.right,height:r.height,width:r.width,
+   fontSize:parseFloat(s.fontSize),lineHeight:parseFloat(s.lineHeight),
+   clipped:e.scrollWidth>e.clientWidth+1};};
+ return {mounted:true,language,viewport:innerWidth,viewportHeight:innerHeight,
+  docWidth:document.documentElement.scrollWidth,focused:document.activeElement===field,
+  focusVisible:field.matches(':focus-visible'),outlineWidth:parseFloat(getComputedStyle(field).outlineWidth),
+  labelAssociated:field.labels?.length===1&&field.labels[0]===label,
+  realKey:localStorage.getItem('li.review.L09-1-2.v1'),originalFont,originalLeading,
+  primary:geometry(primary),secondary:geometry(secondary),label:geometry(label),field:geometry(field)};
+}
+
+ // Browser read-only layout stress with synthetic long text in both locales.
+ // 390x420 = short viewport only; no claim of real virtual keyboard/assistive zoom.
+ const stressCases=[[320,568],[390,420],[390,844],[820,1050],[1040,768]];
+ const stressEvidence=[];
+ for(const [width,height] of stressCases){
+  for(const language of ['vi','en']){
+   await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+   await go(approved,'text-stress-'+language);
+   if(language==='en'){
+    await evaluate("document.querySelector('[data-locale=en]').click()");
+    await wait(()=>evaluate("document.querySelector('.pilot')?.lang==='en'"),'actual EN toggle during stress');
+   }else verify(await evaluate("document.querySelector('.pilot')?.lang==='vi'"),
+      'Stress VI source locale not restored '+width);
+   const x=await evaluate('('+syntheticTypographyStress.toString()+')('+JSON.stringify(language)+')');
+   const context=language+' '+width+'x'+height;
+   verify(x?.mounted&&x.language===language&&x.viewport===width,'Long-label mount/locale drift '+context);
+   verify(x.primary.fontSize===x.originalFont*2&&x.primary.lineHeight===x.originalLeading*2&&
+     x.field.fontSize===x.originalFont*2,'200% body-role token mismatch '+context+' '+JSON.stringify(x));
+   verify(x.docWidth<=width+1&&[x.primary,x.secondary,x.label,x.field].every(c=>
+     !c.clipped&&c.left>=-1&&c.right<=width+1),'Long-label horizontal clipping/overflow '+context+' '+JSON.stringify(x));
+   verify(x.primary.height>=48&&x.secondary.height>=48&&x.labelAssociated,
+     'Text scale broke CTA size or associated label '+context);
+   verify(x.focused&&x.focusVisible&&x.outlineWidth>=3&&x.realKey===null,
+     'Text scale broke field focus or genuine learner-key isolation '+context+' '+JSON.stringify(x));
+   if((width===390&&height===844&&language==='vi')||(width===820&&language==='en'))
+    await screenshot('stress-200pct-'+language+'-'+width);
+   stressEvidence.push({context,...x});
+   // Locale toggle writes only the research test key; reset for next scenario.
+   await evaluate("localStorage.removeItem('step16.l09.react-island.v1')");
+  }
+ }
+
  // Synthetic learner-flow assertions in the opt-in research route (no Neon / real key).
  await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false});
  await go(approved,'synthetic learner state');
@@ -170,10 +238,11 @@ async function main(){
   requiredPrivacy:'REAL_LEARNER_KEY_UNCHANGED',validatedViewports:variants.map(x=>x.width),
   assertions:passed,screenshots:['legacy-default-390.png','vc-g2-opt-in-390.png','vc-g2-opt-in-820.png','vc-g2-opt-in-1040.png'],
   implementation:'DRAFT_RESEARCH_ONLY',globalG2:'OPEN',physicalSafari:'NOT_RUN',syntheticLearnerFlow:'SUBMITTED_AND_LOCKED',
-  observations:report};
+  observations:report,syntheticTypographyStress:stressEvidence};
  fs.writeFileSync(path.join(output,'vc-g2-l09-chromium-evidence.json'),JSON.stringify(data,null,2)+'\n');
  console.log('PASS UXDS35_VCG2_L09_APPROVED_RESEARCH '+JSON.stringify({checks:passed,viewports:variants.map(x=>x.width),
    cardPadding:[20,24,28,32],targets:[48,56],sharedFamilies:['Button','Card','TextAreaField'],
+   syntheticStressCases:stressEvidence.length,bodyTokenScale:'200pct_fixture_only',
    defaultLegacy:'UNCHANGED',syntheticFlow:'SUBMITTED_LOCKED',realKey:'UNCHANGED',safari:'NOT_RUN',g2:'OPEN'}));
 }
 main().catch(e=>{fs.writeFileSync(path.join(output,'failure.txt'),e.stack||String(e));console.error('FAIL UXDS35_VCG2_L09_RESEARCH '+e.stack);process.exitCode=1})

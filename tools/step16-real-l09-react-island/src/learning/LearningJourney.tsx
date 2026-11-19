@@ -43,6 +43,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  const [locked,setLocked]=useState(false);
  const subject=useRef<string|null>(null), revision=useRef<string|null>(null);
  const writes=useRef<Promise<void>>(Promise.resolve());
+ const failedWrite=useRef(false),pendingWrites=useRef(0);
  const mounted=useRef(true);
 
  useEffect(()=>{
@@ -54,6 +55,14 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     if(!learner?.subjectId)throw Error('INVITE_REQUIRED');
     const saved=await ports.attempts.load({lessonId:L09_LESSON_ID,subjectId:learner.subjectId});
     if(!saved||!saved.revision||!saved.attempt)throw Error('ATTEMPT_UNAVAILABLE');
+    const data=saved.attempt;
+    if(!Array.isArray(data.draft)||data.draft.length!==4||
+       !data.draft.every(x=>typeof x==='string')||
+       !Array.isArray(data.ratings)||data.ratings.length!==4||
+       !data.ratings.every(x=>x===null||x===0||x===1||x===2)||
+       typeof data.guidedDraft!=='string'||typeof data.submitted!=='boolean'||
+       typeof data.reviewed!=='boolean'||!['vi','en'].includes(data.locale))
+     throw Error('INVALID_ATTEMPT');
     const status=await ports.sync.getStatus({lessonId:L09_LESSON_ID,subjectId:learner.subjectId})
      .catch(()=>'unavailable' as SyncState);
     if(cancelled)return;
@@ -78,14 +87,14 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   }catch{if(mounted.current)setSync('unavailable');}
  }
  function save(next:Attempt):Promise<boolean>{
-  if(locked||!subject.current||!revision.current)return Promise.resolve(false);
+  if(locked||failedWrite.current||!subject.current||!revision.current)return Promise.resolve(false);
   setAttempt(next);
+  pendingWrites.current+=1;
   setSaving(true);
   const target=subject.current;
-  let finished=false;
   const previous=writes.current;
   const operation=previous.then(async()=>{
-   if(!revision.current||finished)throw Error('SAVE_LOCKED');
+   if(!revision.current||failedWrite.current)throw Error('SAVE_LOCKED');
    const saved=await ports.attempts.save({
     lessonId:L09_LESSON_ID,subjectId:target,
     attempt:next,expectedRevision:revision.current
@@ -94,7 +103,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    revision.current=saved.revision;
    return true;
   }).catch(()=>{
-   finished=true;
+   failedWrite.current=true;
    if(mounted.current){
     setLocked(true);
     setError('Không lưu được dữ liệu. Bản đang sửa vẫn hiển thị; đừng tải lại trước khi xử lý lỗi.');
@@ -104,7 +113,10 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   writes.current=operation.then(async(ok)=>{
    if(ok)await refreshStatus();
   }).catch(()=>{});
-  void writes.current.then(()=>{if(mounted.current)setSaving(false);});
+  void writes.current.finally(()=>{
+   pendingWrites.current-=1;
+   if(mounted.current)setSaving(pendingWrites.current>0);
+  });
   return operation;
  }
  function editDraft(index:number,value:string){

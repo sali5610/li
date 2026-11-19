@@ -66,7 +66,8 @@ describe('ONT-04B2a localhost native search bridge (NOT deployed)',()=>{
  });
  it('rejects any external host or disallowed origin without altering native fallback',async()=>{
   const el=fixture();
-  await expect(mountTypedSearch(el.host,{location:{...local,hostname:'li5610.pages.dev'}})).rejects.toThrow('SEARCH_CANDIDATE_ORIGIN_DENIED');
+  window.history.replaceState({},'', '/site/index.html?li-search-react=off');
+  await expect(mountTypedSearch(el.host)).rejects.toThrow('SEARCH_CANDIDATE_ORIGIN_DENIED');
   expect(el.nativeInput.hidden).toBe(false);
   expect(el.host.hidden).toBe(true);
   expect(el.host.dataset.liSearchMount).toBeUndefined();

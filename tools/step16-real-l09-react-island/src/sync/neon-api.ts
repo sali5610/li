@@ -6,7 +6,8 @@ export type Requester=typeof fetch;
 /** No API keys or database URLs containing passwords belong in the browser. */
 export class NeonUserApi{
  private readonly url:URL;
- constructor(endpoint:string,private readonly getToken:TokenProvider,private readonly request:Requester=fetch){
+ constructor(endpoint:string,private readonly getToken:TokenProvider,readonly accountId:string,private readonly request:Requester=fetch){
+  if(!accountId.trim())throw new Error('ACCOUNT_REQUIRED');
   const url=new URL(endpoint);
   if(url.protocol!=='https:'||!url.pathname.endsWith('/rest/v1'))throw new Error('INVALID_NEON_DATA_API_URL');
   this.url=url;
@@ -14,9 +15,15 @@ export class NeonUserApi{
  private async send(method:'GET'|'POST'|'PATCH',path:string,params:Record<string,string>={},body?:object):Promise<PrivateItem[]>{
   const token=await this.getToken();
   if(!token||token.split('.').length!==3)throw new Error('NEON_AUTH_JWT_REQUIRED');
+  // Defensive session binding; the remote JWT signature/role is validated by Neon.
+  let subject:unknown;
+  try{subject=(JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))) as {sub?:unknown}).sub;}
+  catch{throw new Error('NEON_AUTH_JWT_INVALID');}
+  if(subject!==this.accountId)throw new Error('NEON_AUTH_ACCOUNT_MISMATCH');
   const url=new URL(this.url.toString().replace(/\/$/,'')+'/'+path);
   for(const [key,value] of Object.entries(params))url.searchParams.set(key,value);
-  const response=await this.request(url.toString(),{
+  const request=this.request;
+  const response=await request(url.toString(),{
    method,cache:'no-store',credentials:'omit',
    headers:{Authorization:'Bearer '+token,Accept:'application/json',
      ...(body?{'Content-Type':'application/json',Prefer:'return=representation'}:{})},

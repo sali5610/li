@@ -6,11 +6,13 @@
   "scripts": {
     "extract": "node scripts/extract-l09.cjs",
     "build": "npm run extract && tsc --noEmit && vite build",
-    "check:source": "node scripts/extract-l09.cjs --verify"
+    "check:source": "node scripts/extract-l09.cjs --verify",
+    "test:sync": "tsc --target ES2022 --module NodeNext --moduleResolution NodeNext --lib ES2022,DOM --skipLibCheck --outDir .sync-test src/sync/contract.ts src/sync/neon-api.ts && node --test tests/sync-protocol.test.mjs"
   },
   "dependencies": {
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "dexie": "4.4.7"
   },
   "devDependencies": {
     "@types/react": "19.2.7",

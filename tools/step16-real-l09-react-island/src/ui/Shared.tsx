@@ -54,6 +54,24 @@ export function Feedback({tone='info',className='',children,...rest}:HTMLAttribu
    role={tone==='error'?'alert':'status'} aria-live={tone==='error'?'assertive':'polite'}
    aria-busy={tone==='loading'||undefined}>{children}</p>;
 }
+/** Native <dialog> owns the top layer and background inert; explicitly wrap boundary Tab.
+ * Do not let browser-specific focus order escape or focus unrendered controls. */
+function wrapDialogTab(event:React.KeyboardEvent<HTMLDialogElement>){
+ if(event.key!=='Tab')return;
+ const dialog=event.currentTarget;
+ const selector='a[href],button,input,select,textarea,summary,[tabindex]';
+ const tabbable=Array.from(dialog.querySelectorAll<HTMLElement>(selector))
+  .filter(el=>el.tabIndex>=0&&!el.matches(':disabled')&&el.getClientRects().length>0
+   &&getComputedStyle(el).visibility!=='hidden'
+   &&!el.closest('[inert],[aria-hidden="true"]'));
+ if(!tabbable.length){event.preventDefault();dialog.focus();return;}
+ const first=tabbable[0],last=tabbable[tabbable.length-1],active=document.activeElement;
+ if(event.shiftKey && (active===first||!dialog.contains(active))){
+  event.preventDefault();last.focus();
+ }else if(!event.shiftKey && (active===last||!dialog.contains(active))){
+  event.preventDefault();first.focus();
+ }
+}
 export function Dialog({open,title,closeLabel,onRequestClose,children,className=''}:{
  open:boolean;title:string;closeLabel:string;onRequestClose:(reason:'escape'|'close'|'backdrop')=>void;children:ReactNode;className?:string;
 }){
@@ -71,6 +89,7 @@ export function Dialog({open,title,closeLabel,onRequestClose,children,className=
   };
  },[open]);
  return <dialog ref={ref} aria-labelledby={titleId} className={cx('li-ui-dialog',className)}
+   onKeyDown={wrapDialogTab}
    onCancel={event=>{event.preventDefault();onRequestClose('escape');}}
    onClick={event=>{if(event.target===event.currentTarget)onRequestClose('backdrop');}}>
    <header className="li-ui-dialog-head"><h2 id={titleId}>{title}</h2>

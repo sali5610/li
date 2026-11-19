@@ -61,10 +61,10 @@ async function main(){
  check(await run("document.querySelector('dialog.li-ui-dialog').contains(document.activeElement)"),'Modal background accepted programmatic focus');
  await run("document.querySelector('dialog.li-ui-dialog input').focus()");
  await key('Tab');
- check(await run("document.activeElement?.matches('[data-dialog-close]')"),'React Dialog forward Tab did not wrap to Close');
+ check(await run("document.activeElement?.matches('[data-dialog-close]')"),'React Dialog forward Tab did not wrap to Close: '+await run("document.activeElement?.outerHTML?.slice(0,180)"));
  await run("document.querySelector('[data-dialog-close]').focus()");
  await key('Tab',8);
- check(await run("document.activeElement?.matches('dialog.li-ui-dialog input')"),'React Dialog Shift+Tab did not wrap to last input');
+ check(await run("document.activeElement?.matches('dialog.li-ui-dialog input')"),'React Dialog Shift+Tab did not wrap to last input: '+await run("document.activeElement?.outerHTML?.slice(0,180)"));
  await send('Emulation.setDeviceMetricsOverride',{width:390,height:420,deviceScaleFactor:1,mobile:false});
  const shortModal=await run("(()=>{const d=document.querySelector('dialog.li-ui-dialog'),r=d.getBoundingClientRect();return {viewport:innerHeight,dialogHeight:r.height,dialogWidth:r.width,x:r.left,right:r.right,scroll:document.documentElement.scrollWidth,bodyScroll:document.body.scrollWidth}})()");
  check(shortModal.dialogHeight<=shortModal.viewport+1&&shortModal.x>=-1&&shortModal.right<=390+1,'Dialog outside short-landscape viewport: '+JSON.stringify(shortModal));

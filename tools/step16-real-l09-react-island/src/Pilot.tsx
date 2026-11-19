@@ -1,6 +1,6 @@
 import React,{useState,useRef,useEffect} from 'react';
 import exact from './l09-exact.generated.json';
-import {L09StorageBridge,BridgeError,LOCALE_KEY,initial} from './native-bridge';
+import {L09StorageBridge,BridgeError,LOCALE_KEY,NATIVE_KEY,SITE_FIXTURE_KEY,initial} from './native-bridge';
 import type {Locale,Attempt,Rating} from './native-bridge';
 import {ActionButton,Surface,StatusMessage} from './ui/Primitives';
 
@@ -32,11 +32,19 @@ export function Pilot(){
      const value=(event as CustomEvent<{locale?:string}>).detail?.locale;
      if(value==='vi'||value==='en')setState(prev=>({...prev,locale:value}));
    };
+   const onFixtureRollback=()=>{
+     if(bridge.key===SITE_FIXTURE_KEY){
+       setConflict(true);
+       setMessage('');
+     }
+   };
    window.addEventListener('storage',onStorage);
    window.addEventListener('li:localechange',onLocale);
+   window.addEventListener('li:l09-fixture-rolled-back',onFixtureRollback);
    return()=>{
      window.removeEventListener('storage',onStorage);
      window.removeEventListener('li:localechange',onLocale);
+     window.removeEventListener('li:l09-fixture-rolled-back',onFixtureRollback);
    };
  },[]);
  function refreshFromStorage(){
@@ -61,8 +69,13 @@ export function Pilot(){
      setState(next);setMessage('');setStorageError(false);
      // Native L09 emits this in its own window after a stored submission.
      // In this isolated pilot the event stays inside the research iframe.
-     if(!priorSubmitted&&next.submitted&&bridge.nativeFixture){
+     if(!priorSubmitted&&next.submitted&&bridge.key===NATIVE_KEY){
+       // The legacy bridge harness expects this, but a synthetic in-site
+       // fixture MUST NOT enter real activity, visits or mastery feeds.
        window.dispatchEvent(new CustomEvent('li:lesson-submitted',{detail:{lessonId:'L09-1-2'}}));
+     }
+     if(bridge.key===SITE_FIXTURE_KEY){
+       window.dispatchEvent(new CustomEvent('li:l09-fixture-updated',{detail:{lessonId:'L09-1-2'}}));
      }
      return true;
    }catch(error){

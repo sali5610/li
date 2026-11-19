@@ -224,7 +224,29 @@ function matchList(ctx){
  if(list.length<4)list=scored.slice(0,Math.min(Math.max(4,list.length),scored.length));
  return list;
 }
+function safeQuoteMoment(){
+ const page=typeof currentPage==="string"?currentPage:"";
+ const lessonContext=window.liLessonCompanion?.getContext?.()||null;
+ const lessonRoot=/^lessonL\d{2}$/.test(page)?document.getElementById("page-"+page):null;
+ const prefix=page==="lessonL09"?"l09":page==="lessonL03"?"l03":page==="lessonL15"?"l15":null;
+ const feedbackIds=prefix?["-hint","-guidedHint","-answerBox","-rubricArea","-live"].map(t=>prefix+t):[];
+ const feedbackVisible=Boolean(lessonRoot&&feedbackIds.some(id=>{
+  const item=document.getElementById(id);
+  return item&&lessonRoot.contains(item)&&!item.hidden&&!item.closest?.("[hidden]")&&
+    (id.endsWith("-hint")||id.endsWith("-guidedHint")||id.endsWith("-answerBox")||
+     id.endsWith("-rubricArea")||Boolean(item.textContent?.trim()));
+ }));
+ const result=window.liQuoteStageGate?.evaluate?.({
+  page,lessonContext,feedbackVisible,
+  calmMode:Boolean(document.getElementById("calm-toggle")?.checked),
+  debateMode:Boolean(typeof buddyDebateActive==="boolean"&&buddyDebateActive)
+ });
+ // A missing policy module must not reveal a quote, especially mid-challenge.
+ return Boolean(result?.allowed);
+}
 function pick(ctx=environment()){
+ if(!safeQuoteMoment())return null;
+
  const pool=Array.isArray(ctx.quoteIds)&&ctx.quoteIds.length?QUOTES.filter(q=>ctx.quoteIds.includes(q.id)):matchList(ctx);if(!pool.length)return null;
  let seen=Array.isArray(memory.routes[ctx.scope])?memory.routes[ctx.scope].filter(id=>pool.some(q=>q.id===id)):[];
  let available=pool.filter(q=>!seen.includes(q.id));
@@ -247,9 +269,18 @@ function render(){
  const hide=()=>{
   details.hidden=true;original.hidden=true;translation.hidden=true;info.hidden=true;note.hidden=true;
   info.setAttribute("aria-expanded","false");
+  // Remove stale quote text and source URLs after entering a sensitive lesson stage.
+  original.textContent="";translation.textContent="";note.textContent="";
+  const gloss=document.getElementById("buddy-quote-gloss");
+  const meta=document.getElementById("buddy-quote-meta");
+  const link=document.getElementById("buddy-quote-link");
+  if(gloss)gloss.textContent="";
+  if(meta)meta.textContent="";
+  if(link)link.removeAttribute("href");
  };
- if((typeof buddyDebateActive==="boolean"&&buddyDebateActive)||document.getElementById("calm-toggle")?.checked){hide();return;}
- const item=pick();if(!item){hide();return;}
+ if(!safeQuoteMoment()){hide();return;}
+ const item=pick();
+ if(!item||!window.liQuoteStageGate?.quoteMetadataOK?.(item)){hide();return;}
  const inEnglish=window.liLanguage?.get?.()==="en";
  const shown=inEnglish?{...item,...QUOTES_EN[item.id]}:item;
  const gloss=document.getElementById("buddy-quote-gloss");
@@ -264,5 +295,15 @@ function render(){
  note.textContent=shown.comment;note.hidden=false;
  details.hidden=true;info.hidden=false;info.setAttribute("aria-expanded","false");
 }
-window.liQuoteEngine={quotes:QUOTES,environment,matchList,pick,render};
+// The native companion can change stage on scroll or after answer/hint feedback.
+ // If a previously visible quote becomes unsafe, remove it immediately without
+ // rotating to another quotation or relying solely on a hidden attribute.
+ function suppressStaleQuote(){
+  const original=document.getElementById("buddy-quote-original");
+  if(original&&!original.hidden&&!safeQuoteMoment())render();
+ }
+ window.addEventListener("scroll",suppressStaleQuote,{passive:true});
+ window.addEventListener("resize",suppressStaleQuote,{passive:true});
+ document.addEventListener("click",()=>{Promise.resolve().then(suppressStaleQuote);});
+ window.liQuoteEngine={quotes:QUOTES,environment,matchList,pick,render};
 })();

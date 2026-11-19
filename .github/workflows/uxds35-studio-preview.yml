@@ -37,6 +37,8 @@ jobs:
           test -s ../../site/design-system/react-atoms.css
           test -s ../../site/design-system/react-controls.js
           test -s ../../site/design-system/react-controls.css
+          test -s ../../site/design-system/react-components.js
+          test -s ../../site/design-system/react-components.css
       - name: Verify static single-web sources
         run: |
           set -euo pipefail
@@ -101,6 +103,19 @@ jobs:
           grep -q 'name="demo-density"' /tmp/li-ds-studio-preview/react-radio-selected-dom.html
           grep -q 'checked=""' /tmp/li-ds-studio-preview/react-radio-selected-dom.html
           "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=7000 --window-size=390,844 --dump-dom \
+            'http://127.0.0.1:8787/design-system/react-components.html?story=button&variant=Primary&state=loading&lang=vi' \
+            > /tmp/li-ds-studio-preview/react-button-loading-dom.html
+          grep -q 'data-ui-react-component="mounted"' /tmp/li-ds-studio-preview/react-button-loading-dom.html
+          grep -q 'aria-busy="true"' /tmp/li-ds-studio-preview/react-button-loading-dom.html
+          grep -q 'disabled=""' /tmp/li-ds-studio-preview/react-button-loading-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=7000 --window-size=820,1040 --dump-dom \
+            'http://127.0.0.1:8787/design-system/react-components.html?story=card&variant=Flat%20study&lang=en' \
+            > /tmp/li-ds-studio-preview/react-card-flat-dom.html
+          grep -q 'data-story-card="true"' /tmp/li-ds-studio-preview/react-card-flat-dom.html
+          grep -q 'data-variant="flat-study"' /tmp/li-ds-studio-preview/react-card-flat-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
             --hide-scrollbars --virtual-time-budget=6000 \
             --window-size=1440,900 \
             --screenshot=/tmp/li-ds-studio-preview/studio-desktop.png \
@@ -124,3 +139,5 @@ jobs:
             /tmp/li-ds-studio-preview/react-atom-progress-dom.html
             /tmp/li-ds-studio-preview/react-field-error-dom.html
             /tmp/li-ds-studio-preview/react-radio-selected-dom.html
+            /tmp/li-ds-studio-preview/react-button-loading-dom.html
+            /tmp/li-ds-studio-preview/react-card-flat-dom.html

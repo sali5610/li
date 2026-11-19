@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "check": "tsc --noEmit",
-    "build": "esbuild Story.tsx --bundle --format=esm --target=es2022 --minify --outdir=../../site/design-system --entry-names=react-layout && esbuild AtomsStory.tsx --bundle --format=esm --target=es2022 --minify --outdir=../../site/design-system --entry-names=react-atoms && esbuild ControlsStory.tsx --bundle --format=esm --target=es2022 --minify --outdir=../../site/design-system --entry-names=react-controls"
+    "build": "esbuild Story.tsx --bundle --format=esm --target=es2022 --minify --outdir=../../site/design-system --entry-names=react-layout && esbuild AtomsStory.tsx --bundle --format=esm --target=es2022 --minify --outdir=../../site/design-system --entry-names=react-atoms && esbuild ControlsStory.tsx --bundle --format=esm --target=es2022 --minify --outdir=../../site/design-system --entry-names=react-controls && esbuild ComponentsStory.tsx --bundle --format=esm --target=es2022 --minify --outdir=../../site/design-system --entry-names=react-components"
   },
   "dependencies": {
     "react": "19.2.0",

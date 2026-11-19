@@ -203,6 +203,24 @@ jobs:
           fi
           echo 'PASS browser: Home hidden and login visible until verified invited account'
 
+      # Design System is a public visual reference; the signed-in app remains gated.
+      # Same GitHub Pages deployment, independent route and no Cloudflare production.
+      - name: Build living Component Library from ONE React Design System source
+        working-directory: design-system/react
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund
+          npm run check
+          npm run build
+          test -s ../../site/design-system/react-components.js
+          test -s ../../site/design-system/react-components.css
+          test -s ../../site/design-system/react-atoms.js
+          test -s ../../site/design-system/react-controls.js
+          test -s ../../site/design-system/react-layout.js
+          test -s ../../site/design-system/index.html
+          test -s ../../site/component-library-review.html
+          echo 'Component Library: https://sali5610.github.io/li/component-library-review.html'
+
       - name: Configure GitHub Pages STAGING
         uses: actions/configure-pages@v5
 

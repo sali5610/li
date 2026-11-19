@@ -1,0 +1,14 @@
+/* Studio iframe composition only; not loaded by app consumers. */
+body{margin:0;background:var(--cream);color:var(--ink)}
+.li-component-story{box-sizing:border-box;min-width:0;display:grid;gap:var(--li-space-4);
+ padding:var(--li-space-6);font-family:var(--li-font-ui)}
+.li-component-story h1{margin:0;color:var(--moss);
+ font:600 var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial)}
+.li-component-kicker,.li-component-caution{margin:0;color:var(--muted);
+ font:var(--li-type-caption)/var(--li-leading-caption) var(--li-font-ui)}
+.li-component-sample{box-sizing:border-box;max-width:100%;min-width:0;background:var(--paper);
+ border:1px solid var(--rule);padding:var(--li-space-5)}
+.li-component-demo{display:grid;justify-items:start;gap:var(--li-space-4);min-width:0}
+.li-component-demo p{margin:0;color:var(--muted)}
+@media(max-width:599px){.li-component-story{padding:var(--li-space-4)}
+ .li-component-sample{padding:var(--li-space-4)}}

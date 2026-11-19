@@ -1,0 +1,40 @@
+/* Stage04 DRAFT: scoped React component paint mapped to live token roles. */
+.li-ds-button{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;
+ gap:var(--li-space-2);max-width:100%;min-height:var(--li-space-12);
+ padding:var(--li-space-3) var(--li-space-4);border:1px solid var(--forest);
+ border-radius:0;background:var(--moss);color:var(--cream);cursor:pointer;
+ box-shadow:4px 4px 0 var(--wood);
+ font:var(--li-weight-750) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);
+ overflow-wrap:anywhere;transition:transform .13s ease,box-shadow .13s ease}
+.li-ds-button[data-variant="secondary"]{background:var(--paper);color:var(--moss);border-color:var(--moss)}
+.li-ds-button[data-variant="ghost"]{background:transparent;color:var(--moss);border-color:var(--moss);box-shadow:none}
+.li-ds-button:hover:not(:disabled){filter:brightness(.96)}
+.li-ds-button:active:not(:disabled):not([data-variant="ghost"]){transform:translate(3px,3px);box-shadow:1px 1px 0 var(--wood)}
+.li-ds-button:focus-visible{outline:3px solid var(--li-color-general-focus-ring);outline-offset:var(--li-space-2)}
+.li-ds-button:disabled{opacity:.58;cursor:not-allowed}
+.li-ds-button[aria-busy="true"]{cursor:progress}
+.li-ds-button-spinner{width:var(--li-space-4);height:var(--li-space-4);flex:0 0 auto;
+ border:2px solid currentColor;border-inline-start-color:transparent;border-radius:50%;
+ animation:li-ds-spin .9s linear infinite}
+@keyframes li-ds-spin{to{transform:rotate(360deg)}}
+.li-ds-card{box-sizing:border-box;min-width:0;max-width:100%;padding:var(--li-space-6);
+ border:1px solid var(--moss);border-radius:0;background:var(--cream);color:var(--ink);
+ box-shadow:5px 5px 0 var(--wood);overflow-wrap:anywhere}
+.li-ds-card[data-variant="tinted"]{background:var(--paper-2)}
+.li-ds-card[data-variant="inverse"]{background:var(--moss);color:var(--cream)}
+.li-ds-card[data-variant="flat-study"]{background:var(--paper-2);box-shadow:none}
+.li-ds-card :is(h1,h2,h3){margin:0 0 var(--li-space-3);color:inherit;
+ font:600 var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial)}
+.li-ds-card p{margin:0;font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
+@media(max-width:599px){.li-ds-card{padding:var(--li-space-4)}}
+@media(prefers-reduced-motion:reduce){.li-ds-button,.li-ds-button-spinner{animation:none;transition:none}}
+
+/* Filter pills are reserved for filters, not generic CTAs. */
+.li-ds-filter-chip{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;
+ max-width:100%;min-height:44px;padding:var(--li-space-2) var(--li-space-4);
+ border:1px solid var(--moss);border-radius:999px;background:var(--paper);
+ color:var(--moss);font:var(--li-weight-600) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);
+ overflow-wrap:anywhere;cursor:pointer}
+.li-ds-filter-chip[aria-pressed="true"]{background:var(--moss);color:var(--cream)}
+.li-ds-filter-chip:focus-visible{outline:3px solid var(--li-color-general-focus-ring);outline-offset:var(--li-space-1)}
+.li-ds-filter-chip:disabled{opacity:.58;cursor:not-allowed}

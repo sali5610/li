@@ -1,5 +1,8 @@
 # li. UI/UX Design Library — canonical start here
 
+> **Web review front door (UX-DS-35):** [Design System Studio](../site/design-system/index.html) is the **one active browser preview** for tokens, component stories and guidance. Its values come from this repository's canonical `design-system/tokens.json` → generated `site/assets/design-tokens.css` and actual first-party CSS; **the web page is a viewer, not a second token authority**. Historical `site/component-library-review.html`, `site/design-system-preview.html` and research React fixtures remain evidence/archives rather than competing approved portals. Main release/deployment of this page requires separate PO approval. Draft React/Stage03 stories are labeled DRAFT; global G2 OPEN.
+
+
 > **SINGLE START HERE · Mandatory entrypoint for every li. UI/UX task.** This page is the one canonical **navigation and governance entrypoint** for the Design Library. Detailed rules remain in dedicated source-of-truth files linked below; do not maintain conflicting copies. Repository AI agents are instructed by [AGENTS.md](../AGENTS.md) to open this page before designing, reviewing, modifying or QA-testing any UI.
 
 ## Start here — mandatory UI/UX work protocol (UX-DS-23)

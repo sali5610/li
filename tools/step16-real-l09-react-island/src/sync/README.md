@@ -1,0 +1,60 @@
+# Step16 · Private learner sync foundation (draft, no live cloud writes)
+
+This source extends the existing stacked L09 React/TS research island; it is **not mounted in the public Vanilla app**. Existing legacy keys and real personal data remain untouched. It is not an auth integration or completed multi-device sync.
+
+## Safety and behavior
+
+- Dexie/IndexedDB writes each local record + matching offline outbox entry in the same transaction. All keys are partitioned by signed-in Neon Auth account ID. A guest must remain separately local-only; this does not encrypt IndexedDB on shared devices.
+- The Neon Data API adapter uses a short-lived JWT supplied by future managed Neon Auth integration, HTTPS, and only public `li_user_state`. It never includes `owner_id`, admin tokens, database passwords or API keys. The already deployed PostgreSQL RLS must independently enforce permissions.
+- Optimistic revision compare/conditional PATCH prevents silent last-write-wins; stale revisions stay in a conflict queue for a future explicit resolution UI. Deletions are tombstones, not immediate hard deletes. Edit while upload is in flight keeps a pending outbox entry and rebases it to the server revision.
+- Reads are paged at 100, limited to the user's RLS-filtered scope. It is a full scan (no realtime/WebSocket, no pagination snapshot); subsequent sync cycles recover changed pages. Current Free quotas may interrupt; offline records remain.
+- `syncOnce()` defaults **closed** until TWO conditions are verified: a genuine two-account JWT/RLS A↔B isolation suite, and an explicit private learning-state remote consent decision. Cloud diary is outside the schema and strictly not uploaded. Never flip these flags for production based on a mocked test.
+- A successful `syncOnce` result is only an adapter-level result; UI should show "Đã đồng bộ" only after verified authenticated upload+download, not after a local click.
+- Logout must unmount account-specific data, clear cached session and prohibit reading the prior account's IndexedDB rows. Device-local records remain unencrypted; add opt-in account-local wipe/export and physical shared-device QA before shipping.
+
+## Remaining gates
+
+Neon Auth sign-in and invite/onboarding, trusted origin/CORS, token subject-to-account binding, **real** A/B cross-user SELECT/INSERT/PATCH/DELETE negative tests, actual network sync + conflicts + token expiry, backup/import completeness, offline iPhone/iPad Safari and device switch, document consent, and Human PO G2/release QA. No Cloudflare/GitHub Pages deployment is triggered by this research branch.
+
+## S177 · Auth session boundary and conflict safety (2026-11-19)
+
+- Neon Auth has an actual trusted-origin allowlist entry for `https://li5610.pages.dev`; localhost remains DISABLED, open registration remains DISABLED. The frontend cannot use it until the official SDK is wired into an approved app build and real test accounts exist.
+- `neon-session.ts` accepts the documented Neon Auth `getSession()` + `getJWTToken()` interface (official Neon SDK integration remains pending) and binds API requests to the active user ID. Any switch/sign-out between mount and a request refuses the request; JWT subject also must match the account before network access.
+- Every Neon Data API response now requests and checks `owner_id` against the signed-in account. Server-side PostgreSQL RLS is still mandatory and must pass REAL two-user JWT/API negative tests.
+- `syncOnce()` reports `pending` when an outbox batch remains, `sign-in-required` on HTTP 401/403 or expired/missing session, `security-error` on cross-owner payload, `conflict` when human resolution is needed, `offline` on network/Free quota failure, and `synced` only after a no-error run with no pending rows/conflicts. Concurrent calls for one device/account share an in-flight Promise.
+- `resolveConflict()` requires an explicit learner choice, the freshest authenticated remote row, the same owner and an unchanged conflicted op ID. Choices: `keep-local` rebases the local outbox for a later conditional retry; `use-remote` accepts that remote revision only on deliberate choice. A real conflict comparison UI remains NOT built.
+- Current tests use synthetic JWT and fake-indexeddb; NEVER label them signed-in production privacy or end-to-end device sync. Cloud upload consent and real JWT/RLS proof remain CLOSED. No production route, user records, personal diary, deployment or paid service changed by this branch.
+
+## S178 · Official Neon Auth React pilot, origin gate and executable RLS evidence recipe (2026-11-19)
+
+- Added the **official** Neon `@neondatabase/auth@0.7.0-beta` React SDK with `BetterAuthReactAdapter`; app-level invite-only email/password sign-in and sign-out UI, live session watch, per-account binding via `neonSessionPort`, bilingual copy, accessible form labels and real error/pending copy. `authClient.token()` is the typed Better Auth JWT plugin action; never use the opaque session cookie as a database bearer token or cache any token in Dexie.
+- Opt-in **research-only** route `dist/index.html?pilot=auth`; normal route remains exact L09 React pilot. Vite emits auth JS only as lazy chunk. `isTrustedAuthOrigin` fails closed for ANY origin other than exact `https://li5610.pages.dev`. Localhost/preview show a blocked explanation with no credential form; this route is **not** in production `site/` or released to the approved origin. Approved production origin itself has NOT been end-to-end authenticated yet.
+- The Auth panel performs **no Neon Data API read/write**, saves **no** account learning data, never enables sync or diary upload, and has no self-service registration. React account/session UI cannot substitute a real authenticated user+RLS verification; account-local IndexedDB UX not mounted yet.
+- Added [`auth-guard-fixture.html`](../../auth-guard-fixture.html) Chromium assertions for origin block, no form, no Neon network and 390/820px reflow; old 7 exact-content L09 and 8 Vanilla bridge Chromium tests remain unchanged. Auth is not currently tested under a successfully signed-in origin: this requires real invited accounts and trusted-domain QA.
+- [`scripts/neon-live-rls-check.mjs`](../../scripts/neon-live-rls-check.mjs) **exists but is NOT EXECUTED against Neon**. It requires deliberate CLI flag `--run-synthetic-rls` and two *real*, distinct, expiring, Neon-issued signed JWTs from separate TEST users in environment variables. Tests owner-scoped INSERT/SELECT, A↔B SELECT exclusion, forged owner INSERT rejection, A cannot PATCH/DELETE B state, event log SELECT/INSERT/DELETE isolation; never supplies a user diary or personally meaningful lesson. It cleans synthetic test rows and fails if cleanup cannot be verified. **Never paste JWTs into chat, GitHub issues, logs or Notion.** Run only in a trusted non-logging environment after accounts are authorized. Dry-run unit test asserts missing flags/tokens refuse all network. Real signed A/B test suite still **NOT RUN**, so `twoUserJwtRlsVerified` stays FALSE.
+- Free tier: no user accounts created, no records written remotely, no Cloudflare release/build triggered, no paid resource enabled. G3 tech approved, actual Step16/Auth/React rollout incomplete; G2/device review pending.
+
+## S181 · Google-only sign-in + owner email allowlist (draft, NOT activated)
+
+Human PO superseded the password/email-OTP UI with **Google OAuth only** and strict **invite-only per-email app access**. Neon Managed Better Auth already exposes the shared Google provider, but merely authenticating with Google does not authorize use of li.
+
+- `src/auth/AuthPanel.tsx` uses `authClient.signIn.social({provider:'google', callbackURL})`, with a fixed trusted-origin callback. No password/OTP input or self-signup screen is mounted; obsolete password/OTP components were removed from this draft.
+- `src/sync/invite-access.ts` calls `/rpc/li_is_invited` with the account-bound JWT. A missing account, mismatched token, nonexistent function, denied response or network error **cannot** produce an authorized UI state. No privileged admin key or actual invited email is in browser code.
+- `db/migrations/0002_invite_only_access.sql` (DRAFT, NOT APPLIED) defines an exact-email, verified-Neon-identity, unrevoked admin-only invitation allowlist and **RESTRICTIVE** RLS on BOTH private tables, on top of existing owner-only policies. Email list is never enumerable/editable from authenticated/anonymous Data API. Invitations/revocation require owner-approved trusted database admin operation, NOT a public API.
+- **Provider caveat:** disabling password signup does not prove that shared Google OAuth cannot create a new Neon Auth identity. An uninvited Google identity must still be blocked at the app gate and database. Real account linking for the two provisioned but unverified test users has not been verified.
+- **Hosting caveat:** public Cloudflare Pages static files remain fetchable absent Cloudflare Access at the edge; backend RLS controls private records, not public JS/CSS/rights-cleared academic assets. If whole app pages must be private, an exact-hostname Cloudflare Access rule needs separate zero-cost/access review.
+- **Tests:** `tests/invite-access.test.mjs` covers denied, allowed, malformed JWT/session and server errors with mocks. `tests/invite-policy.test.mjs` statically guards RLS/schema patterns; neither is real signed Google/JWT or data-isolation proof.
+- **Next required gate:** review migration 0002 and apply it only with explicit Human PO approval after safe branch validation, seed exactly the owner-approved emails without putting them in git, test invited A/B, uninvited C and revoked A with real signed JWTs, then perform iOS/privacy consent and manual G2 release QA. **Remote sync stays DISABLED.**
+
+See `docs/architecture/step16-google-invite-only-access.md`.
+
+
+## S184 · APPROVED: invite migration applied + exactly two emails seeded (2026-11-19)
+
+The earlier S181 `NOT APPLIED` note is historical and **superseded**. Human PO explicitly approved applying invitation-only SQL and seeding the two provided emails. Ran `prepare_database_migration` on isolated Neon branch `br-rough-mouse-azn9uwec`, verified:
+- `li_invited_emails` exists; `li_is_invited()` fails closed without a JWT;
+- both private tables retain enabled + FORCE RLS and have `AS RESTRICTIVE FOR ALL` invite policies;
+- anonymous and signed-in Data API roles cannot SELECT/INSERT/UPDATE/DELETE the invitation table;
+- anonymous cannot execute invitation RPC; authenticated may check only its own server-verified invitation.
+
+Applied the exact prepared migration to Neon Free main; temporary branch was deleted. Inserted exactly two pre-authorized email invitations using trusted Neon administrator SQL. Main-branch read-back: **2 active invites, 2 matching pre-provisioned Auth users, zero unexpected invite addresses**. At verification, both Auth users still had `emailVerified=false`; real Google identity linking/verified session is NOT complete. We have **not** run signed A/B/C isolation/revocation, OAuth/CORS, iOS or Cloudflare Access tests. No remote learning data was uploaded, no public site deployed, no subscription upgrade; `syncOnce` remains fail-closed until authentic live RLS and consent gates.

@@ -1,0 +1,29 @@
+name: li. ONT-INT-01 same-tree semantic rehearsal (no deploy)
+on:
+  pull_request:
+    paths:
+      - 'docs/ontology/integration/**'
+      - 'tools/check_ont_integration.mjs'
+      - '.github/workflows/li-ont-integration-source.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-tree:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate unified ONT+DS source tree; no runtime/deployment work
+        run: node tools/check_ont_integration.mjs
+      - name: Guard against generated deploy artifact or committed compiled app
+        run: |
+          test -z "$(git ls-files site/assets/step16-l09-island.js)"
+          test -z "$(git ls-files site/__ont04c2b_qa.html)"
+          test -z "$(git ls-files site/assets/ont04c2b-deploy-bundle.js)"

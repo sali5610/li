@@ -1,0 +1,537 @@
+{
+  "profile": "ont02-ui-source-crosswalk",
+  "contractVersion": "0.1.0",
+  "graphFile": "docs/ontology/ui/ont02.graph.v0.1.json",
+  "tokenValueAuthority": "design-system/tokens.json",
+  "runtimeGeneratedCss": "site/assets/design-tokens.css",
+  "approvalState": "g2_open",
+  "runtimeStatus": "source_mapping_only",
+  "sourcePins": {
+    "ont01": "6b486a3a70be356a5dc21a2bb44117c457833caf",
+    "mainAtInspection": "09fe0ecdea48198bfe018d424d863b55c299cffb",
+    "uxDs35Draft": "d22f469a52d13baa73c0c8952b198fdfeb2b2891",
+    "reactPrimitivesDraft": "734dc257be47f778a929acba5cdca570979e247d"
+  },
+  "components": [
+    {
+      "componentId": "component:Button",
+      "atomicLevel": "atom",
+      "approvalState": "g2_open",
+      "implementationStatus": "native_static_only",
+      "selectorOwner": {
+        "file": "site/assets/li-layout.css",
+        "selector": ".action{"
+      },
+      "markupOwner": {
+        "file": "site/assets/lesson-l09-hifi-markup.js",
+        "anchor": "id=\"l09-submit\""
+      },
+      "variants": [
+        "variant:Button:primary",
+        "variant:Button:secondary"
+      ],
+      "states": [
+        {
+          "name": "default",
+          "evidence": "source_observed"
+        },
+        {
+          "name": "hover",
+          "evidence": "specified_unverified"
+        },
+        {
+          "name": "focus-visible",
+          "evidence": "source_observed"
+        },
+        {
+          "name": "pressed",
+          "evidence": "specified_unverified"
+        },
+        {
+          "name": "disabled",
+          "evidence": "specified_unverified"
+        },
+        {
+          "name": "loading",
+          "evidence": "specified_unverified"
+        }
+      ],
+      "roles": [
+        {
+          "role": "action.primary.surface",
+          "referenceToken": "--moss",
+          "semanticRole": "action-primary-surface",
+          "semanticCssVar": "--li-role-action-primary-surface",
+          "componentRole": "button-primary-background",
+          "componentCssVar": "--li-comp-button-primary-background",
+          "componentUse": "action:primary:surface"
+        },
+        {
+          "role": "action.primary.content",
+          "referenceToken": "--cream",
+          "semanticRole": "action-primary-content",
+          "semanticCssVar": "--li-role-action-primary-content",
+          "componentRole": "button-primary-color",
+          "componentCssVar": "--li-comp-button-primary-color",
+          "componentUse": "action:primary:content"
+        },
+        {
+          "role": "action.secondary.surface",
+          "referenceToken": "--paper",
+          "semanticRole": "action-secondary-surface",
+          "semanticCssVar": "--li-role-action-secondary-surface",
+          "componentRole": "button-secondary-background",
+          "componentCssVar": "--li-comp-button-secondary-background",
+          "componentUse": "action:secondary:surface"
+        },
+        {
+          "role": "action.secondary.content",
+          "referenceToken": "--moss",
+          "semanticRole": "action-secondary-content",
+          "semanticCssVar": "--li-role-action-secondary-content",
+          "componentRole": "button-secondary-color",
+          "componentCssVar": "--li-comp-button-secondary-color",
+          "componentUse": "action:secondary:content"
+        },
+        {
+          "role": "action.focus.ring",
+          "referenceToken": "--li-color-general-focus-ring",
+          "semanticRole": "focus-ring",
+          "semanticCssVar": "--li-role-focus-ring",
+          "componentRole": "button-focus-ring",
+          "componentCssVar": "--li-comp-button-focus-ring",
+          "componentUse": "action:focus:ring"
+        },
+        {
+          "role": "action.target.minimum",
+          "referenceToken": "--li-space-12",
+          "semanticRole": "control-min-target",
+          "semanticCssVar": "--li-role-control-min-target",
+          "componentRole": "button-min-hit-size",
+          "componentCssVar": "--li-comp-button-min-hit-size",
+          "componentUse": "action:target:minimum"
+        }
+      ],
+      "patternId": "pattern:LearningActionArea",
+      "screenId": "screen:lesson:L09-1-2",
+      "slotIds": [
+        "slot:LearningActionArea:primary",
+        "slot:LearningActionArea:secondary"
+      ],
+      "ruleIds": [
+        "rule:UX-DS-22:one-dominant-action",
+        "rule:UX-DS-35:button-focus",
+        "rule:UX-DS-35:minimum-target",
+        "rule:UX-DS-35:no-false-submit",
+        "rule:UX-DS-35:token-ownership"
+      ],
+      "qaGateIds": [
+        "gate:ONT02:token-reference",
+        "gate:ONT02:action-hierarchy",
+        "gate:ONT02:focus-target",
+        "gate:ONT02:state-truth"
+      ],
+      "responsiveScopes": [
+        {
+          "label": "compact",
+          "minWidth": 320,
+          "maxWidth": 640,
+          "qa": "unverified_physical"
+        },
+        {
+          "label": "full_tablet",
+          "minWidth": 744,
+          "maxWidth": 1408,
+          "qa": "unverified_physical"
+        }
+      ],
+      "do": "Use real button semantics for actions, distinguish primary/secondary and expose visible focus.",
+      "dont": "Do not mark submitted/saved on click; do not treat focus as selection, shrink touch target, or copy raw token values.",
+      "reactApiStatus": "not_implemented",
+      "deviceQa": "UNVERIFIED",
+      "sourceQa": "CI_candidate",
+      "sourceStatus": "native_markup_observed"
+    },
+    {
+      "componentId": "component:Surface",
+      "atomicLevel": "molecule",
+      "approvalState": "g2_open",
+      "implementationStatus": "native_static_only",
+      "sourceStatus": "native_markup_observed",
+      "selectorOwner": {
+        "file": "site/assets/li-layout.css",
+        "selector": ".surface{"
+      },
+      "markupOwner": {
+        "file": "site/assets/lesson-l09-hifi-markup.js",
+        "anchor": "class=\"surface\" id=\"l09-goals\""
+      },
+      "variants": [
+        "variant:Surface:tinted"
+      ],
+      "states": [
+        {
+          "name": "default",
+          "evidence": "source_observed"
+        }
+      ],
+      "roles": [
+        {
+          "role": "surface.default",
+          "referenceToken": "--cream",
+          "semanticRole": "surface-raised",
+          "semanticCssVar": "--li-role-surface-raised",
+          "componentRole": "surface-background",
+          "componentCssVar": "--li-comp-surface-background",
+          "componentUse": "surface:default"
+        },
+        {
+          "role": "surface.tinted",
+          "referenceToken": "--paper-2",
+          "semanticRole": "surface-tinted",
+          "semanticCssVar": "--li-role-surface-tinted",
+          "componentRole": "surface-tinted-background",
+          "componentCssVar": "--li-comp-surface-tinted-background",
+          "componentUse": "surface:tinted"
+        },
+        {
+          "role": "surface.inverse",
+          "referenceToken": "--moss",
+          "semanticRole": "surface-inverse",
+          "semanticCssVar": "--li-role-surface-inverse",
+          "componentRole": "surface-inverse-background",
+          "componentCssVar": "--li-comp-surface-inverse-background",
+          "componentUse": "surface:inverse"
+        },
+        {
+          "role": "surface.inverse.content",
+          "referenceToken": "--cream",
+          "semanticRole": "surface-inverse-content",
+          "semanticCssVar": "--li-role-surface-inverse-content",
+          "componentRole": "surface-inverse-color",
+          "componentCssVar": "--li-comp-surface-inverse-color",
+          "componentUse": "surface:inverse:content"
+        }
+      ],
+      "patternId": "pattern:LessonContent",
+      "screenId": "screen:lesson:L09-1-2",
+      "slotIds": [
+        "slot:LessonContent:panel"
+      ],
+      "ruleIds": [
+        "rule:UX-DS-35:token-ownership",
+        "rule:UX-DS-35:state-coverage"
+      ],
+      "qaGateIds": [
+        "gate:ONT02:token-reference",
+        "gate:ONT02:state-matrix"
+      ],
+      "responsiveScopes": [
+        {
+          "label": "compact",
+          "minWidth": 320,
+          "maxWidth": 640,
+          "qa": "unverified_physical"
+        },
+        {
+          "label": "full_tablet",
+          "minWidth": 744,
+          "maxWidth": 1408,
+          "qa": "unverified_physical"
+        }
+      ],
+      "do": "Use documented default/tinted/inverse surfaces and contained section hierarchy.",
+      "dont": "Do not fabricate elevation, corner radius or semantic state from the artwork.",
+      "reactApiStatus": "not_implemented",
+      "deviceQa": "UNVERIFIED",
+      "sourceQa": "CI_candidate"
+    },
+    {
+      "componentId": "component:FilterChip",
+      "atomicLevel": "atom",
+      "approvalState": "g2_open",
+      "implementationStatus": "native_static_only",
+      "sourceStatus": "native_markup_observed",
+      "selectorOwner": {
+        "file": "site/assets/li-layout.css",
+        "selector": ".filter[aria-pressed=true]"
+      },
+      "markupOwner": {
+        "file": "site/index.html",
+        "anchor": "class=\"filter\" data-cat="
+      },
+      "variants": [],
+      "states": [
+        {
+          "name": "default",
+          "evidence": "source_observed"
+        },
+        {
+          "name": "selected",
+          "evidence": "source_observed"
+        },
+        {
+          "name": "focus-visible",
+          "evidence": "specified_unverified"
+        },
+        {
+          "name": "disabled",
+          "evidence": "specified_unverified"
+        }
+      ],
+      "roles": [
+        {
+          "role": "filter.default.surface",
+          "referenceToken": "--paper",
+          "semanticRole": "control-unselected-fill",
+          "semanticCssVar": "--li-role-control-unselected-fill",
+          "componentRole": "filter-chip-background",
+          "componentCssVar": "--li-comp-filter-chip-background",
+          "componentUse": "filter:default:surface"
+        },
+        {
+          "role": "filter.default.content",
+          "referenceToken": "--moss",
+          "semanticRole": "control-unselected-content",
+          "semanticCssVar": "--li-role-control-unselected-content",
+          "componentRole": "filter-chip-color",
+          "componentCssVar": "--li-comp-filter-chip-color",
+          "componentUse": "filter:default:content"
+        },
+        {
+          "role": "filter.selected.surface",
+          "referenceToken": "--moss",
+          "semanticRole": "control-selected-fill",
+          "semanticCssVar": "--li-role-control-selected-fill",
+          "componentRole": "filter-chip-selected-background",
+          "componentCssVar": "--li-comp-filter-chip-selected-background",
+          "componentUse": "filter:selected:surface"
+        },
+        {
+          "role": "filter.selected.content",
+          "referenceToken": "--cream",
+          "semanticRole": "control-selected-content",
+          "semanticCssVar": "--li-role-control-selected-content",
+          "componentRole": "filter-chip-selected-color",
+          "componentCssVar": "--li-comp-filter-chip-selected-color",
+          "componentUse": "filter:selected:content"
+        }
+      ],
+      "patternId": "pattern:GuideMethodFilters",
+      "screenId": "screen:guide",
+      "slotIds": [
+        "slot:GuideMethodFilters:chip"
+      ],
+      "ruleIds": [
+        "rule:UX-DS-35:token-ownership",
+        "rule:UX-DS-35:state-coverage"
+      ],
+      "qaGateIds": [
+        "gate:ONT02:token-reference",
+        "gate:ONT02:state-matrix"
+      ],
+      "responsiveScopes": [
+        {
+          "label": "compact",
+          "minWidth": 320,
+          "maxWidth": 640,
+          "qa": "unverified_physical"
+        },
+        {
+          "label": "full_tablet",
+          "minWidth": 744,
+          "maxWidth": 1408,
+          "qa": "unverified_physical"
+        }
+      ],
+      "do": "Use button aria-pressed for selected filter, focus remains independent, wrap labels accessibly.",
+      "dont": "Do not treat selected as keyboard focus or remove pill exception.",
+      "reactApiStatus": "not_implemented",
+      "deviceQa": "UNVERIFIED",
+      "sourceQa": "CI_candidate"
+    },
+    {
+      "componentId": "component:TextInput",
+      "atomicLevel": "atom",
+      "approvalState": "g2_open",
+      "implementationStatus": "native_static_only",
+      "sourceStatus": "native_markup_observed",
+      "selectorOwner": {
+        "file": "site/assets/li-layout.css",
+        "selector": "input,select{"
+      },
+      "markupOwner": {
+        "file": "site/assets/lesson-l09-hifi-markup.js",
+        "anchor": "id=\"l09-guidedDraft\""
+      },
+      "variants": [
+        "variant:TextInput:search"
+      ],
+      "states": [
+        {
+          "name": "default",
+          "evidence": "source_observed"
+        },
+        {
+          "name": "focus",
+          "evidence": "source_observed"
+        },
+        {
+          "name": "error",
+          "evidence": "source_observed"
+        },
+        {
+          "name": "disabled",
+          "evidence": "source_observed"
+        }
+      ],
+      "roles": [
+        {
+          "role": "field.default.surface",
+          "referenceToken": "--porcelain",
+          "semanticRole": "input-surface",
+          "semanticCssVar": "--li-role-input-surface",
+          "componentRole": "field-background",
+          "componentCssVar": "--li-comp-field-background",
+          "componentUse": "field:default:surface"
+        },
+        {
+          "role": "field.focus.border",
+          "referenceToken": "--li-color-input-focus-ring",
+          "semanticRole": "field-focus-border",
+          "semanticCssVar": "--li-role-field-focus-border",
+          "componentRole": "field-focus-border",
+          "componentCssVar": "--li-comp-field-focus-border",
+          "componentUse": "field:focus:border"
+        },
+        {
+          "role": "field.error.border",
+          "referenceToken": "--li-color-danger-fill",
+          "semanticRole": "field-error-border",
+          "semanticCssVar": "--li-role-field-error-border",
+          "componentRole": "field-error-border",
+          "componentCssVar": "--li-comp-field-error-border",
+          "componentUse": "field:error:border"
+        }
+      ],
+      "patternId": "pattern:LessonContent",
+      "screenId": "screen:lesson:L09-1-2",
+      "slotIds": [
+        "slot:LessonContent:response"
+      ],
+      "ruleIds": [
+        "rule:UX-DS-35:token-ownership",
+        "rule:UX-DS-35:state-coverage"
+      ],
+      "qaGateIds": [
+        "gate:ONT02:token-reference",
+        "gate:ONT02:state-matrix"
+      ],
+      "responsiveScopes": [
+        {
+          "label": "compact",
+          "minWidth": 320,
+          "maxWidth": 640,
+          "qa": "unverified_physical"
+        },
+        {
+          "label": "full_tablet",
+          "minWidth": 744,
+          "maxWidth": 1408,
+          "qa": "unverified_physical"
+        }
+      ],
+      "do": "Keep visible label, porcelain editable surface, focus border, aria-invalid error.",
+      "dont": "Do not use placeholder as label, treat focus as saved state, or change notebook line rules.",
+      "reactApiStatus": "not_implemented",
+      "deviceQa": "UNVERIFIED",
+      "sourceQa": "CI_candidate"
+    },
+    {
+      "componentId": "component:StatusBanner",
+      "atomicLevel": "molecule",
+      "approvalState": "g2_open",
+      "implementationStatus": "native_static_only",
+      "sourceStatus": "css_only_markup_unverified",
+      "selectorOwner": {
+        "file": "site/assets/li-layout.css",
+        "selector": ".status-banner{"
+      },
+      "markupOwner": null,
+      "variants": [],
+      "states": [
+        {
+          "name": "default",
+          "evidence": "source_observed"
+        },
+        {
+          "name": "success",
+          "evidence": "specified_unverified"
+        },
+        {
+          "name": "error",
+          "evidence": "specified_unverified"
+        }
+      ],
+      "roles": [
+        {
+          "role": "status.banner.surface",
+          "referenceToken": "--li-color-status-banner-fill",
+          "semanticRole": "status-banner-surface",
+          "semanticCssVar": "--li-role-status-banner-surface",
+          "componentRole": "status-banner-background",
+          "componentCssVar": "--li-comp-status-banner-background",
+          "componentUse": "status:banner:surface"
+        },
+        {
+          "role": "status.banner.content",
+          "referenceToken": "--ink",
+          "semanticRole": "status-banner-content",
+          "semanticCssVar": "--li-role-status-banner-content",
+          "componentRole": "status-banner-color",
+          "componentCssVar": "--li-comp-status-banner-color",
+          "componentUse": "status:banner:content"
+        }
+      ],
+      "patternId": null,
+      "screenId": null,
+      "slotIds": [],
+      "ruleIds": [
+        "rule:UX-DS-35:token-ownership",
+        "rule:UX-DS-35:state-coverage",
+        "rule:UX-DS-35:status-truth"
+      ],
+      "qaGateIds": [
+        "gate:ONT02:token-reference",
+        "gate:ONT02:state-matrix",
+        "gate:ONT02:state-truth"
+      ],
+      "responsiveScopes": [
+        {
+          "label": "compact",
+          "minWidth": 320,
+          "maxWidth": 640,
+          "qa": "unverified_physical"
+        },
+        {
+          "label": "full_tablet",
+          "minWidth": 744,
+          "maxWidth": 1408,
+          "qa": "unverified_physical"
+        }
+      ],
+      "do": "Represent source/status truth; announce only real completed state with accessible copy.",
+      "dont": "Do not pretend CSS class proves screen usage or that a click persisted data.",
+      "reactApiStatus": "not_implemented",
+      "deviceQa": "UNVERIFIED",
+      "sourceQa": "CI_candidate"
+    }
+  ],
+  "crossBranchIntegration": "PENDING_SAME_TREE_REVIEW",
+  "semanticValueAuthority": "design-system/tokens.json on DS draft #134; ONT-01 branch has no alias map yet",
+  "unmappedProposals": [
+    "component:ActionGroup"
+  ],
+  "composedCiFixture": "GITHUB_ACTIONS_LOCAL_WORKTREE_ONLY_NOT_GIT_MERGED",
+  "focusConsumerStatus": "native_button_focus_visible_alias_bound"
+}

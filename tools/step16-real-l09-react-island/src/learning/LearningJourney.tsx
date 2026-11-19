@@ -32,7 +32,9 @@ function statusText(status:SyncState,vi:boolean){
    'on-device':'Saved on this device',unavailable:'Sync status unavailable'}[status];
 }
 
-export function LearningJourney({ports}:{ports:LearningPorts}){
+export function LearningJourney({ports,onReady,onFailure}:{
+ ports:LearningPorts;onReady?:()=>void;onFailure?:()=>void
+}){
  const reduced=useReducedMotion();
  const [attempt,setAttempt]=useState<Attempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
@@ -72,12 +74,17 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     setPhase(resumedPhase(saved.attempt));
     setSync(status);
     setBusy(false);
+    onReady?.();
    }catch{
-    if(!cancelled){setError('Không thể xác minh quyền truy cập hoặc tải bài học. Không mở chế độ khách.');setBusy(false);}
+    if(!cancelled){
+     setError('Không thể xác minh quyền truy cập hoặc tải bài học. Không mở chế độ khách.');
+     setBusy(false);
+     onFailure?.();
+    }
    }
   })();
   return()=>{cancelled=true;mounted.current=false;};
- },[ports]);
+ },[ports,onReady,onFailure]);
 
  async function refreshStatus(){
   if(!subject.current)return;
@@ -86,11 +93,19 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    if(mounted.current)setSync(value);
   }catch{if(mounted.current)setSync('unavailable');}
  }
+ // Chat 3 sync starts after a real input/change/click inside the same L09 page.
+ // Remote readback is deferred until typing settles; never issue one GET per key.
+ useEffect(()=>{
+  if(busy||saving||!attempt)return;
+  const timer=window.setTimeout(()=>{void refreshStatus();},1800);
+  return()=>window.clearTimeout(timer);
+ },[busy,saving,attempt]);
  function save(next:Attempt):Promise<boolean>{
   if(locked||failedWrite.current||!subject.current||!revision.current)return Promise.resolve(false);
   setAttempt(next);
   pendingWrites.current+=1;
   setSaving(true);
+  setSync('on-device');
   const target=subject.current;
   const previous=writes.current;
   const operation=previous.then(async()=>{
@@ -110,9 +125,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    }
    return false;
   });
-  writes.current=operation.then(async(ok)=>{
-   if(ok)await refreshStatus();
-  }).catch(()=>{});
+  writes.current=operation.then(()=>{}).catch(()=>{});
   void writes.current.finally(()=>{
    pendingWrites.current-=1;
    if(mounted.current)setSaving(pendingWrites.current>0);

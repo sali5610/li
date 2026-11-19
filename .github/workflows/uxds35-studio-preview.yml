@@ -1,0 +1,66 @@
+name: UX-DS-35 Studio preview (CI only)
+
+on:
+  pull_request:
+    paths:
+      - 'site/design-system/**'
+      - 'design-system/README.md'
+      - '.github/workflows/uxds35-studio-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  studio-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Verify static single-web sources
+        run: |
+          set -euo pipefail
+          node --check site/design-system/studio.js
+          grep -q 'design-tokens.css' site/design-system/index.html
+          grep -q 'studio-frame' site/design-system/index.html
+          grep -q 'design-system/tokens.json' design-system/README.md
+      - name: Capture browser-mounted actual Studio (no site deploy)
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8787 --bind 127.0.0.1 --directory site >/tmp/li-ds-studio-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)"
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8787/design-system/index.html >/dev/null && break || sleep 1
+          done
+          mkdir -p /tmp/li-ds-studio-preview
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --hide-scrollbars --virtual-time-budget=6000 \
+            --window-size=1440,900 \
+            --dump-dom 'http://127.0.0.1:8787/design-system/index.html#button' \
+            > /tmp/li-ds-studio-preview/studio-dom.html
+          grep -q 'studio-nav-group' /tmp/li-ds-studio-preview/studio-dom.html
+          grep -q 'Button' /tmp/li-ds-studio-preview/studio-dom.html
+          grep -q 'iframe' /tmp/li-ds-studio-preview/studio-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --hide-scrollbars --virtual-time-budget=6000 \
+            --window-size=1440,900 \
+            --screenshot=/tmp/li-ds-studio-preview/studio-desktop.png \
+            'http://127.0.0.1:8787/design-system/index.html#button'
+          test -s /tmp/li-ds-studio-preview/studio-desktop.png
+          echo 'PASS UXDS35_STUDIO_BROWSER_MOUNT'
+      - name: Upload single-web source and visual screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-uxds35-design-system-studio-preview
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            site/design-system/
+            site/assets/design-tokens.css
+            site/assets/li-layout.css
+            /tmp/li-ds-studio-preview/studio-desktop.png

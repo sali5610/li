@@ -52,6 +52,30 @@ async function main(){
  fs.mkdirSync('/tmp/li-uxds35-stage02b',{recursive:true});
  fs.writeFileSync('/tmp/li-uxds35-stage02b/metrics.json',JSON.stringify({n,source:'stage02b React fixture CDP',metrics,g2:'OPEN',device:'CHROMIUM_ONLY'},null,2));
  const shot=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync('/tmp/li-uxds35-stage02b/preview.png',Buffer.from(shot.data,'base64'));
+ const nativeUrl=process.env.LI_UXDS35_NATIVE_URL;
+ if(nativeUrl){
+  assert.match(nativeUrl,/^http:\/\/127\.0\.0\.1:8795\/uxds35-design-pin\/site\/component-library-review\.html$/);
+  const aliases=['--li-comp-button-primary-background','--li-comp-button-secondary-background',
+    '--li-comp-field-background','--li-comp-surface-background',
+    '--li-comp-button-focus-ring','--li-comp-app-nav-active-background',
+    '--li-comp-status-banner-background'];
+  const reactParity=await run("(()=>{const roleNames="+JSON.stringify(aliases)+",root=getComputedStyle(document.documentElement),primary=getComputedStyle(document.querySelector('[data-ui-primary]')),secondary=getComputedStyle(document.querySelector('[data-ui-secondary]')),field=getComputedStyle(document.querySelector('[data-ui-field]'));return {roles:Object.fromEntries(roleNames.map(n=>[n,root.getPropertyValue(n).trim()])),paint:{primary:primary.backgroundColor,secondary:secondary.backgroundColor,field:field.backgroundColor}}})()");
+  check(Object.values(reactParity.roles).every(x=>!!x),'React mounted page missing pinned DS component role definitions (would hide fallback-only usage)');
+  await send('Page.navigate',{url:nativeUrl});
+  await until(()=>run("document.readyState==='complete'&&!!document.querySelector('#ds-query')"),'real DS review native source page');
+  const nativeParity=await run("(()=>{const roleNames="+JSON.stringify(aliases)+",root=getComputedStyle(document.documentElement),primary=getComputedStyle(document.querySelector('.ds-button')),secondary=getComputedStyle(document.querySelector('.ds-button.secondary')),field=getComputedStyle(document.querySelector('#ds-query'));return {roles:Object.fromEntries(roleNames.map(n=>[n,root.getPropertyValue(n).trim()])),paint:{primary:primary.backgroundColor,secondary:secondary.backgroundColor,field:field.backgroundColor}}})()");
+  check(aliases.every(n=>reactParity.roles[n]===nativeParity.roles[n]),'React↔native DS computed semantic alias drift: '+JSON.stringify({react:reactParity.roles,native:nativeParity.roles}));
+  check(reactParity.paint.primary===nativeParity.paint.primary,'React primary Button differs from native review specimen: '+JSON.stringify({react:reactParity.paint,native:nativeParity.paint}));
+  const comparison={source:'native DS #134 component-review specimen vs React #148 mounted fixture; NOT full application per-screen parity',
+    react:reactParity,native:nativeParity,roleValuesIdentical:true,buttonPrimaryPaintIdentical:true,
+    secondaryReviewSpecimenPaintIdentical:reactParity.paint.secondary===nativeParity.paint.secondary,
+    fieldReviewSpecimenPaintIdentical:reactParity.paint.field===nativeParity.paint.field,
+    note:'A review specimen is not the app native .action/.field owner; paint differences are recorded, not silently treated as bugs or approved variants'};
+  fs.writeFileSync('/tmp/li-uxds35-stage02b/react-vs-native-review-computed.json',JSON.stringify(comparison,null,2));
+  const nativeShot=await send('Page.captureScreenshot',{format:'png'});
+  fs.writeFileSync('/tmp/li-uxds35-stage02b/native-review.png',Buffer.from(nativeShot.data,'base64'));
+  fs.writeFileSync('/tmp/li-uxds35-stage02b/metrics.json',JSON.stringify({n,source:'stage02b pinned React+DS CI Chromium',metrics,comparison,g2:'OPEN',device:'CHROMIUM_ONLY'},null,2));
+ }
  console.log('PASS UXDS35_STAGE02B_REAL_CHROMIUM '+JSON.stringify({checks:n,viewport:metrics.map(x=>x.w),privacy:'NO_WRITES',g2:'OPEN'}));
 }
 main().catch(e=>{console.error('FAIL UXDS35_STAGE02B '+e.stack);process.exitCode=1}).finally(async()=>{try{socket?.close()}catch{}proc?.kill('SIGKILL');await sleep(200);await fs.promises.rm(profile,{recursive:true,force:true}).catch(()=>{})});

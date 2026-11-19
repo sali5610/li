@@ -21,6 +21,28 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Read exact immutable Design System #134 (research-only)
+        uses: actions/checkout@v4
+        with:
+          ref: d22f469a52d13baa73c0c8952b198fdfeb2b2891
+          path: uxds35-design-pin
+          persist-credentials: false
+      - name: Read exact immutable ONT-02 #137 (research-only)
+        uses: actions/checkout@v4
+        with:
+          ref: 0fe2d9b92a66e64ea3244d910d789ccc0d458a5b
+          path: uxds35-ont-pin
+          persist-credentials: false
+      - name: Cross-source token and ontology bridge + conflict ledger (no merge)
+        env:
+          LI_STAGE02B_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          node tools/step16-real-l09-react-island/scripts/stage02b-source-bridge.mjs
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -43,7 +65,8 @@ jobs:
           python3 -m http.server 8795 --bind 127.0.0.1 --directory . > /tmp/li-02b-server.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
-          node tools/step16-real-l09-react-island/scripts/ui-parity-browser.cjs "$chrome" "http://127.0.0.1:8795/tools/step16-real-l09-react-island/dist/index.html?pilot=uxds35"
+          LI_UXDS35_NATIVE_URL="http://127.0.0.1:8795/uxds35-design-pin/site/component-library-review.html" \
+            node tools/step16-real-l09-react-island/scripts/ui-parity-browser.cjs "$chrome" "http://127.0.0.1:8795/tools/step16-real-l09-react-island/dist/index.html?pilot=uxds35"
       - name: Upload synthetic Stage02B browser evidence (NOT Safari)
         if: always()
         uses: actions/upload-artifact@v4

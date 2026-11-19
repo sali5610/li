@@ -109,7 +109,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Human test notice: GitHub Pages OAuth needs separate Neon trusted origin
+      - name: "Human test notice: GitHub Pages OAuth needs separate Neon trusted origin"
         run: |
           echo "GitHub Pages staging artifact published. Cloudflare production not touched."
           echo "Do not assume real Google OAuth works until Neon explicitly trusts https://sali5610.github.io."

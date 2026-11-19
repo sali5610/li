@@ -37,7 +37,7 @@ async function main(){
  await send('Page.reload',{ignoreCache:true});
  const reload=await until(async()=>{const s=await state();return s.claimed==='search'&&s.active.includes('page-search')&&s.search===1&&s.lesson===0?s:null},'hard reload Search');
  assert(reload.active.length===1,'reload has one active Search view',reload);
- await js(`(()=>{window.__ont04Events=[];for(const type of ['popstate','pageshow','pagehide'])window.addEventListener(type,()=>window.__ont04Events.push({type,claimed:new URLSearchParams(location.search).get('li-local-page'),active:[...document.querySelectorAll('section.page.active')].map(x=>x.id)}))})()`);
+ await js(`(()=>{window.__ont04Events=[];window.__ont04Calls=[];const original=window.navigate;window.navigate=function(id,opts){const before=[...document.querySelectorAll('section.page.active')].map(x=>x.id);const result=original.apply(this,arguments);window.__ont04Calls.push({id,opts,before,after:[...document.querySelectorAll('section.page.active')].map(x=>x.id)});return result};for(const type of ['popstate','pageshow','pagehide'])window.addEventListener(type,()=>window.__ont04Events.push({type,claimed:new URLSearchParams(location.search).get('li-local-page'),active:[...document.querySelectorAll('section.page.active')].map(x=>x.id)}))})()`);
  const h=await send('Page.getNavigationHistory');
  const lessonEntry=h.entries.find(x=>new URL(x.url).searchParams.get('li-local-page')==='lessonL09');
  const searchEntry=h.entries.find(x=>new URL(x.url).searchParams.get('li-local-page')==='search');
@@ -47,7 +47,7 @@ async function main(){
  assert(back.active.length===1&&back.draft?.includes('ONT-INT04 top-level'),'Back restores single L09 and synthetic draft',back);
  await send('Page.navigateToHistoryEntry',{entryId:searchEntry.id});
  let forward;try{forward=await until(async()=>{const s=await state();return s.claimed==='search'&&s.active.includes('page-search')?s:null},'CDP Forward',12000)}
- catch(e){throw Error('FORWARD_DIAGNOSTIC '+JSON.stringify({error:String(e),state:await state(),events:cdpEvents.slice(-25),entries:(await send('Page.getNavigationHistory')).entries.map(x=>({id:x.id,url:x.url}))}))}
+ catch(e){const before=await state();const calls=await js('window.__ont04Calls||[]');const allowed=await js('liDualLocalHistoryAllowed()');await js('liRestoreDualPilotHistory()');const after=await state();throw Error('FORWARD_DIAGNOSTIC '+JSON.stringify({error:String(e),before,allowed,calls,afterManualRestore:after,events:cdpEvents.slice(-25),entries:(await send('Page.getNavigationHistory')).entries.map(x=>({id:x.id,url:x.url}))}))}
  assert(forward.active.length===1,'Forward restores single active Search',forward);
  assert(forward.search===1&&forward.lesson<=1,'single React owners retained',forward);
  assert(forward.realKey===real&&forward.visits===visits,'real learner storage unchanged',forward);

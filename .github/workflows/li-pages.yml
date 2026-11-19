@@ -155,6 +155,50 @@ jobs:
           echo 'App entry: https://sali5610.github.io/li/ — login BEFORE any lesson'
           echo 'No React pilot router, no guest mode, no Cloudflare release'
 
+      - name: Browser-smoke mandatory invited login gate (fresh session, no user login)
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$chrome" || { echo 'FAIL no browser for critical login gate'; exit 1; }
+          cat > site/li-login-smoke.html <<'HTML'
+          <!doctype html><html lang="en"><head><meta charset="utf-8"></head><body>
+          <pre id="result">LI_AUTH_GATE_PENDING</pre>
+          <iframe id="app" src="./index.html?auth-smoke-fresh=1" title="Auth gate" style="position:absolute;left:-200vw;width:390px;height:844px"></iframe>
+          <script>
+          const frame=document.getElementById('app'),out=document.getElementById('result');
+          function check(){
+           try{
+            const doc=frame.contentDocument;
+            const app=doc.querySelector('.app');
+            const root=doc.querySelector('#li-staging-auth-root');
+            const critical=doc.getElementById('li-auth-gate-critical');
+            const hidden=app&&doc.defaultView.getComputedStyle(app).display==='none';
+            const rootShown=root&&doc.defaultView.getComputedStyle(root).display!=='none';
+            const unverified=!doc.documentElement.classList.contains('li-auth-verified');
+            out.textContent=(critical&&hidden&&rootShown&&unverified)?
+             'LI_AUTH_GATE_PASS':'LI_AUTH_GATE_FAIL';
+           }catch(e){out.textContent='LI_AUTH_GATE_FAIL';}
+          }
+          frame.addEventListener('load',check);
+          if(frame.contentDocument?.readyState==='complete')check();
+          </script></body></html>
+          HTML
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory site > /tmp/li-auth-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true; rm -f site/li-login-smoke.html' EXIT
+          sleep 1
+          dom="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --hide-scrollbars --window-size=1100,900 --virtual-time-budget=8500 \
+            --dump-dom http://127.0.0.1:8765/li-login-smoke.html 2>/tmp/li-auth-browser.log || true)"
+          if [[ "$dom" != *'<pre id="result">LI_AUTH_GATE_PASS</pre>'* ]]; then
+            echo "FAIL fresh browser login gate"
+            echo "$dom" | grep -F '<pre id="result">' | tail -1 || true
+            tail -15 /tmp/li-auth-browser.log || true
+            exit 1
+          fi
+          echo 'PASS browser: Home hidden and login visible until verified invited account'
+
       - name: Configure GitHub Pages STAGING
         uses: actions/configure-pages@v5
 

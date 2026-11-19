@@ -189,6 +189,7 @@ jobs:
           node "$LI_STAGE02B_COMBINED/tools/step16-real-l09-react-island/scripts/audit-geometry-gates.mjs" --selftest
           node --check "$LI_STAGE02B_COMBINED/tools/step16-real-l09-react-island/scripts/l09-vcg2-browser.cjs"
           node "$LI_STAGE02B_COMBINED/tools/step16-real-l09-react-island/scripts/l09-vcg2-browser.cjs" "$chrome" "http://127.0.0.1:8798"
+          node "$LI_STAGE02B_COMBINED/tools/step16-real-l09-react-island/scripts/l09-matched-visual-browser.cjs" "$chrome" "http://127.0.0.1:8798"
           echo "PASS STAGE02B_VCG2_SCOPED_RESEARCH_L09"
           echo "PASS STAGE02B_NATIVE_LEGACY_SHARED_PROVENANCE_GATES"
       - name: Upload full three-tree CI evidence (no real device or deploy)

@@ -53,6 +53,13 @@
   border:1px solid var(--moss);border-radius:0;
   box-shadow:calc(var(--li-space-1) + 1px) calc(var(--li-space-1) + 1px) 0 var(--wood)
 }
+/* D2 exception is explicit: a study/exercise panel remains secondary/flat.
+   Preserve legacy flat surface depth and quiet border without changing
+   background, content or canonical responsive density values. */
+.pilot[data-vc-g2="approved-research"] .li-ui-card.li-ui-card-flat{
+  border-color:var(--rule);
+  box-shadow:none
+}
 .pilot[data-vc-g2="approved-research"] .li-ui-field{gap:var(--li-space-2)}
 .pilot[data-vc-g2="approved-research"] .li-ui-field label{
   font-size:var(--li-type-body);line-height:var(--li-leading-body)
@@ -68,20 +75,20 @@
 @media(min-width:600px){
  .pilot[data-vc-g2="approved-research"] .li-ui-card{padding:var(--li-space-6)}
 }
-@media(min-width:744px) and (orientation:portrait){
+/* Canonical device mode is generated upstream in ui-foundations.css:
+   --li-card-pad and --li-current-control-min are set only at actual iPad
+   density breakpoints, including landscape Split View/large iPad widths.
+   Use its responsive mode rather than generic min-width:744 rules that
+   accidentally upscaled desktop 1440 to iPad 56px/32px geometry. */
+@media(min-width:744px) and (max-width:1420px){
  .pilot[data-vc-g2="approved-research"] .li-ui-card{
-  padding:calc(var(--li-space-6) + var(--li-space-1))
+  padding:var(--li-card-pad,var(--li-space-6))
  }
-}
-@media(min-width:1024px) and (orientation:landscape){
- .pilot[data-vc-g2="approved-research"] .li-ui-card{padding:var(--li-space-8)}
-}
-@media(min-width:744px){
  .pilot[data-vc-g2="approved-research"] .li-ui-button{
-  min-height:calc(var(--li-space-12) + var(--li-space-2))
+  min-height:var(--li-current-control-min,var(--li-comp-button-min-hit-size,var(--li-space-12)))
  }
  .pilot[data-vc-g2="approved-research"] .li-ui-field .li-ui-input{
-  min-height:calc(var(--li-space-12) + var(--li-space-2))
+  min-height:var(--li-current-control-min,var(--li-comp-button-min-hit-size,var(--li-space-12)))
  }
 }
 

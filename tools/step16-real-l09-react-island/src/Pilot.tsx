@@ -11,9 +11,11 @@ type StudyActionProps=ButtonHTMLAttributes<HTMLButtonElement>&{kind?:'primary'|'
 function StudyAction({vcG2,kind='primary',...rest}:StudyActionProps){
  return vcG2?<Button variant={kind} {...rest}/>:<ActionButton kind={kind} {...rest}/>;
 }
-type StudySurfaceProps=HTMLAttributes<HTMLElement>&{vcG2:boolean;children:ReactNode};
-function StudySurface({vcG2,...rest}:StudySurfaceProps){
- return vcG2?<Card {...rest}/>:<Surface {...rest}/>;
+/** Both L09 exercise and self-review are secondary/flat study panels.
+ * Raised depth belongs to named editorial cards, not to this content category. */
+type StudySurfaceProps=HTMLAttributes<HTMLElement>&{vcG2:boolean;elevation?:'raised'|'flat';children:ReactNode};
+function StudySurface({vcG2,elevation='flat',...rest}:StudySurfaceProps){
+ return vcG2?<Card elevation={elevation} {...rest}/>:<Surface {...rest}/>;
 }
 const bridge=new L09StorageBridge(window.localStorage,window.location);
 export function Pilot({visualContractPilot=false}:{visualContractPilot?:boolean}={}){

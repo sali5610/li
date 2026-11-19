@@ -61,9 +61,13 @@ test('readback failure reports failure and best-effort restores the previous cur
  const snap=captureFixtureSnapshot(storage,loc);
  const newer=JSON.stringify({...JSON.parse(raw),guidedDraft:'changed'});
  map.set(key,newer);
- let malfunction=true;
- const failing={getItem:k=>malfunction&&k===key?'not-the-value':map.get(k)??null,
-  setItem:(k,v)=>{malfunction=false;map.set(k,v)}};
- assert.throws(()=>rollbackFixtureSnapshot(failing,loc,snap,newer,true),/STALE_ROLLBACK/);
+ let reads=0;
+ const failing={getItem:k=>{
+   if(k!==key)return map.get(k)??null;
+   reads++;
+   return reads===2?'incorrect-readback':map.get(k)??null;
+  },
+  setItem:(k,v)=>{map.set(k,v)}};
+ assert.throws(()=>rollbackFixtureSnapshot(failing,loc,snap,newer,true),/READBACK_FAILED/);
  assert.equal(map.get(key),newer);
 });

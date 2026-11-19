@@ -14,14 +14,15 @@ export function isLocalSearchCandidate(loc:Pick<Location,'protocol'|'hostname'|'
   (loc.hostname==='localhost'||loc.hostname==='127.0.0.1')&&
   loc.pathname==='/site/index.html'&&flag===FLAG;
 }
-type MountOptions={location?:Pick<Location,'protocol'|'hostname'|'pathname'|'search'>;timeoutMs?:number};
+type MountOptions={timeoutMs?:number};
 /**
  * Resolves only after the React tree mounted. On failure, native controls remain
  * visible and unchanged. On successful mount, native page back is retained.
  * Disposer restores the exact original hidden states.
  */
 export function mountTypedSearch(host:HTMLElement,options:MountOptions={}):Promise<()=>void>{
- const loc=options.location??window.location;
+ // Security origin is always the REAL browser location, not a caller-supplied override.
+ const loc=window.location;
  if(!isLocalSearchCandidate(loc))return Promise.reject(Error('SEARCH_CANDIDATE_ORIGIN_DENIED'));
  const parent=host.parentElement;
  if(!parent||parent.id!=='li-search-shell'||!parent.closest('#page-search'))return Promise.reject(Error('SEARCH_HOST_INVALID'));

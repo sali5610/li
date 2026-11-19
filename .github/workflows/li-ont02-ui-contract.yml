@@ -46,7 +46,7 @@ jobs:
           python3 tools/test_design_semantic_roles.py
           node tools/generate_design_token_types.mjs --self-test
           node tools/generate_design_token_types.mjs --check
-          node tools/validate_ui_ontology.mjs --composed-check
+          node tools/validate_ui_ontology.mjs --check --composed-check
       - name: Install actual React 19 TSX SSR test dependencies in isolated CI checkout
         working-directory: uxds35-react-pin/tools/step16-real-l09-react-island
         run: npm install --ignore-scripts --no-audit --no-fund

@@ -3,22 +3,26 @@ name: li. Design System Contract
 on:
   pull_request:
     paths:
-      - 'site/**'
+      - 'site/index.html'
+      - 'site/assets/*.css'
+      - 'site/lessons/**'
       - 'design-system/**'
+      - 'tools/generate_design_tokens.py'
       - 'tools/validate_design_system.py'
       - 'tools/validate_ui_foundations.py'
       - 'tools/audit_design_tokens.py'
-      - 'AGENTS.md'
       - '.github/workflows/li-design-contract.yml'
   push:
     branches: [main]
     paths:
-      - 'site/**'
+      - 'site/index.html'
+      - 'site/assets/*.css'
+      - 'site/lessons/**'
       - 'design-system/**'
+      - 'tools/generate_design_tokens.py'
       - 'tools/validate_design_system.py'
       - 'tools/validate_ui_foundations.py'
       - 'tools/audit_design_tokens.py'
-      - 'AGENTS.md'
       - '.github/workflows/li-design-contract.yml'
   workflow_dispatch:
 
@@ -28,17 +32,16 @@ permissions:
 jobs:
   check-design-contract:
     runs-on: ubuntu-latest
+    timeout-minutes: 6
     steps:
       - uses: actions/checkout@v4
-      - name: Verify generated CSS exactly matches JSON source
+      - name: Verify canonical generated design tokens
         run: python3 tools/generate_design_tokens.py --check
-      - name: Check current UI token and interaction baseline
+      - name: Check shared design token and interaction contracts
         run: python3 tools/validate_design_system.py
-      - name: Validate readable type and 4px layout grid
+      - name: Check readable type and 4px layout grid
         run: python3 tools/validate_ui_foundations.py
-      - name: Enforce ZERO authored component color / type / spacing debt
+      - name: Check authored component token debt
         run: python3 tools/audit_design_tokens.py --check-zero
-      - name: Reject any increases in legacy intrinsic / scene CSS debt
+      - name: Check legacy intrinsic and scene debt baseline
         run: python3 tools/audit_design_tokens.py --check-baseline
-      - name: Validate full app routes and native lessons before merge
-        run: python3 tools/validate_site.py

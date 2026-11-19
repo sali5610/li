@@ -1,0 +1,32 @@
+name: li. ONT-04B1 React Search Island (PR only)
+on:
+  pull_request:
+    paths:
+      - 'tools/ont04b-react-search-island/**'
+      - 'docs/ontology/search/offline-search.d.mts'
+      - '.github/workflows/li-ont04b-react-search-island.yml'
+permissions:
+  contents: read
+jobs:
+  search-island:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Contract baseline remains green
+        run: |
+          node tools/validate_ontology.mjs --check
+          node tools/validate_academic_ontology.mjs --check
+          node tools/validate_pedagogy_ontology.mjs --check
+          node tools/test_offline_typed_search.mjs
+      - name: Install isolated React research dependencies
+        working-directory: tools/ont04b-react-search-island
+        run: npm install --no-audit --no-fund
+      - name: Typecheck and build isolated Vite island
+        working-directory: tools/ont04b-react-search-island
+        run: npm run build
+      - name: Test React form interaction with jsdom
+        working-directory: tools/ont04b-react-search-island
+        run: npm run test:ci

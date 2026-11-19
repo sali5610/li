@@ -41,7 +41,7 @@ const jobs=[
  ['node',['tools/validate_ontology.mjs','--check']],
  ['node',['tools/validate_academic_ontology.mjs','--check']],
  ['node',['tools/validate_pedagogy_ontology.mjs','--check']],
- ['node',['tools/validate_ui_ontology.mjs','--composed-check']],
+ ['node',['tools/validate_ui_ontology.mjs','--check','--composed-check']],
  ['python3',['tools/generate_design_tokens.py','--check']],
  ['python3',['tools/test_design_semantic_roles.py']]
 ];

@@ -764,7 +764,7 @@ assert 'component-review-v4.css?v=20261118-ds20-coverage' in v3
 assert 'component-review-v2.css?v=20261119-ds24-no-stroke' in v3
 assert 'component-review-v3.js?v=20261118-ds13-week-fix' in v3
 assert '--porcelain: #FEFDFC;' in (site/"assets"/"design-tokens.css").read_text(encoding="utf-8")
-assert all(x in foundation for x in ("/* UX-DS-12", ".page input[type=\"checkbox\"]", "background-color:var(--porcelain)!important"))
+assert all(x in foundation for x in ("/* UX-DS-12", ".page input[type=\"checkbox\"]", "background-color:var(--li-comp-field-background)!important"))
 assert all(x in v3 for x in ("ds12-horizontal-stack","ds12-tag-row","ds11-month-today","ds11-week-today"))
 assert all(x in ds12 for x in ("ds12-variant-secondary","ds12-variant-dark","ds12-horizontal-card","ds12-tag","data-today"))
 assert all(x in v3js for x in ("function returnToday(){","new Date()","dataset.ds12CardMode"))
@@ -782,8 +782,8 @@ assert 'width:6px;height:6px;' in ds12
 assert 'border:3px solid var(--li-color-input-focus-ring)!important;' in ds12
 assert 'outline:var(--ds11-no-shadow)!important;' in ds12
 assert '/* UX-DS-13' in foundation
-assert 'border:3px solid var(--li-color-input-focus-ring)!important;' in foundation
-assert 'outline:var(--li-space-0) solid var(--li-color-input-focus-ring)!important;' in foundation
+assert 'border:3px solid var(--li-comp-field-focus-border)!important;' in foundation
+assert 'outline:var(--li-space-0) solid var(--li-comp-field-focus-border)!important;' in foundation
 
 # UX-DS-14 · Brand focus color is dark moss, not olive green;
 # horizontal Lão Lý mirror artwork grows at desktop, mobile and narrow.

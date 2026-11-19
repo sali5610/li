@@ -1,0 +1,25 @@
+name: Validate free-only Cloudflare release gates (NO DEPLOY)
+
+on:
+  pull_request:
+    paths:
+      - 'tools/g3_cloudflare_free_guard.py'
+      - '.github/workflows/li-cloudflare-free-manual-release.yml'
+      - '.github/workflows/li-cloudflare-free-guard-review.yml'
+      - 'docs/architecture/adr-016-g3-approved-free-only-2026-11-19.md'
+
+permissions:
+  contents: read
+
+jobs:
+  static-free-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify Python guard and actual site stay inside Pages Free asset limits
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/g3_cloudflare_free_guard.py
+          python3 tools/g3_cloudflare_free_guard.py --site site
+          echo 'No Cloudflare token accessed, no provider call, no deployment or build.'

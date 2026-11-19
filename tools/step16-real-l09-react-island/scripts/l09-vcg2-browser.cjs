@@ -185,7 +185,13 @@ async function syntheticTypographyStress(language){
   fallbackFocusToken:getComputedStyle(field).getPropertyValue('--li-color-input-focus-ring').trim(),
   labelAssociated:field.labels?.length===1&&field.labels[0]===label,
   realKey:localStorage.getItem('li.review.L09-1-2.v1'),originalFont,originalLeading,
-  primary:geometry(primary),secondary:geometry(secondary),label:geometry(label),field:geometry(field)};
+  primary:geometry(primary),secondary:geometry(secondary),label:geometry(label),field:geometry(field),
+  layout:{rootWidth:root.getBoundingClientRect().width,
+   rootColumns:getComputedStyle(root).gridTemplateColumns,
+   cardWidth:field.closest('.li-ui-card')?.getBoundingClientRect().width,
+   questionColumns:getComputedStyle(field.closest('.pilot-question')).gridTemplateColumns,
+   fieldColumns:getComputedStyle(field.parentElement).gridTemplateColumns,
+   textareaCols:field.cols}};
 }
 
  // Browser read-only layout stress with synthetic long text in both locales.

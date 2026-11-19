@@ -84,3 +84,33 @@
   min-height:calc(var(--li-space-12) + var(--li-space-2))
  }
 }
+
+
+/* VC-G2 responsive reflow: the textarea's default intrinsic 20ch min-content
+   must never widen the entire research grid at 200% body text. Preserve
+   real input 3px focus border from native ui-foundations.css. */
+.pilot[data-vc-g2="approved-research"]{
+  grid-template-columns:minmax(0,1fr);
+  min-width:0;
+}
+.pilot[data-vc-g2="approved-research"] .li-ui-card,
+.pilot[data-vc-g2="approved-research"] .pilot-question,
+.pilot[data-vc-g2="approved-research"] .li-ui-field{
+  min-width:0;
+  max-width:100%;
+}
+.pilot[data-vc-g2="approved-research"] .pilot-question,
+.pilot[data-vc-g2="approved-research"] .li-ui-field{
+  grid-template-columns:minmax(0,1fr);
+}
+.pilot[data-vc-g2="approved-research"] .li-ui-field .li-ui-input{
+  box-sizing:border-box;
+  min-width:0;
+  max-width:100%;
+}
+.pilot[data-vc-g2="approved-research"] .li-ui-action-group .li-ui-button{
+  min-width:0;
+  max-width:100%;
+  white-space:normal;
+  overflow-wrap:anywhere;
+}

@@ -42,7 +42,7 @@ function render(css){
   ].join("\n");
 }
 function selfTest(){
-  assert.deepEqual(extract(":root { --paper: #fff; --li-space-1: 4px; }".replace("; --",";\n --")),["--paper","--li-space-1"]);
+  assert.deepEqual(extract(":root {\n --paper: #fff;\n --li-space-1: 4px;\n }"),["--paper","--li-space-1"]);
   assert.throws(()=>extract(":root {\n --paper: #fff;\n --paper: #eee; }"),/duplicate/);
   assert.throws(()=>extract("body { color: red; }"),/no CSS/);
   const a=render(":root {\n --paper: #fff; }");

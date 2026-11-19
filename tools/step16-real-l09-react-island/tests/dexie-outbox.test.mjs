@@ -147,3 +147,47 @@ test('remote owner mismatch is surfaced as a security blocker without data write
   assert.equal((await db.accountRecords('A')).length,0);
  }finally{await closeStore(db);}
 });
+
+test('conflict: learner keeps local note, rebases to latest server revision and retries',async()=>{
+ const db=createStore();
+ try{
+  await db.edit('A','note','n1',{text:'my changes'});
+  const [original]=await db.pending('A');
+  await db.reject('A',original);
+  const [conflicted]=await db.outbox.where('accountId').equals('A').toArray();
+  const result=await db.resolveConflict('A',conflicted,remote('n1',4),'keep-local');
+  assert.equal(result,'local-requeued');
+  const [queue]=await db.pending('A');
+  assert.equal(queue.baseRevision,4);
+  assert.notEqual(queue.opId,original.opId);
+  assert.equal(queue.payload.text,'my changes');
+  assert.equal((await db.accountRecords('A'))[0].baseRevision,4);
+ }finally{await closeStore(db);}
+});
+test('conflict: learner explicitly chooses remote and clears local queue',async()=>{
+ const db=createStore();
+ try{
+  await db.edit('A','note','n1',{text:'my changes'});
+  const [original]=await db.pending('A');
+  await db.reject('A',original);
+  const [op]=await db.outbox.where('accountId').equals('A').toArray();
+  const result=await db.resolveConflict('A',op,remote('n1',7),'use-remote');
+  assert.equal(result,'remote-accepted');
+  assert.equal((await db.accountRecords('A'))[0].payload.text,'remote');
+  assert.equal((await db.pending('A')).length,0);
+  assert.equal((await db.counts('A')).conflicts,0);
+ }finally{await closeStore(db);}
+});
+test('conflict resolution refuses another account and stale op without changing current data',async()=>{
+ const db=createStore();
+ try{
+  await db.edit('A','note','n1',{text:'private'});
+  const [original]=await db.pending('A');
+  await db.reject('A',original);
+  const [op]=await db.outbox.where('accountId').equals('A').toArray();
+  await assert.rejects(db.resolveConflict('A',op,{...remote('n1'),owner_id:'B'},'use-remote'),/CONFLICT_OWNER_OR_ITEM_MISMATCH/);
+  await db.edit('A','note','n1',{text:'newer edit'});
+  await assert.rejects(db.resolveConflict('A',op,remote('n1',2),'use-remote'),/CONFLICT_CHANGED_REFRESH_REQUIRED/);
+  assert.equal((await db.accountRecords('A'))[0].payload.text,'newer edit');
+ }finally{await closeStore(db);}
+});

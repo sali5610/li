@@ -64,7 +64,8 @@ export function RlsQaPanel({uid,granted}:{uid:string;granted:boolean}){
   {owned&&run&&<button className="qa-secondary" type="button" disabled={busy} onClick={()=>void cleanup()}>
    Dọn dữ liệu giả của tài khoản này
   </button>}
-  {phase==='done'&&<button className="qa-secondary" type="button" disabled={busy} onClick={()=>{localStorage.removeItem(STORE);setRun(null);setCode('');}}>Xóa báo cáo QA cục bộ</button>}
+  {run&&[run.a,run.b,run.c].every(x=>!x||x.cleaned)&&
+  <button className="qa-secondary" type="button" disabled={busy} onClick={()=>{localStorage.removeItem(STORE);setRun(null);setCode('');}}>Xóa lượt QA đã dọn sạch</button>}
   {code&&<p role="alert" className="auth-error">QA chưa hoàn tất: <strong>{code}</strong>. Không đổi tài khoản trước khi kiểm tra cleanup.</p>}
   <p className="auth-privacy">Mỗi thao tác có nút xác nhận. Nếu thoát giữa chừng, quay lại bằng tài khoản còn dữ liệu giả để bấm Dọn. Không gửi email, JWT hay cookie cho AI.</p>
  </section>;

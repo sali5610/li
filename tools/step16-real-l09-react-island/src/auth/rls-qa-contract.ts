@@ -5,7 +5,7 @@
  */
 export type QaPhase='start'|'b'|'c'|'a-finish'|'b-finish'|'done';
 type Slot={uid:string;stateId:string;eventId:string;cleaned?:boolean};
-export type QaRun={v:1;id:string;phase:QaPhase;a?:Slot;b?:Slot;c?:Slot;checks:string[];lastError?:string};
+export type QaRun={v:1;id:string;phase:QaPhase;a?:Slot;b?:Slot;c?:Slot;forgedStateId?:string;checks:string[];lastError?:string};
 export type QaActor={uid:string;invited:boolean;getToken:()=>Promise<string|null>};
 export type QaRequest=typeof fetch;
 type Table='li_user_state'|'li_learning_events';
@@ -26,7 +26,7 @@ export function validateQaRun(value:unknown):QaRun|null{
   if(slot&&(
    !slot||typeof slot.uid!=='string'||slot.uid.length<1||slot.uid.length>200||
    typeof slot.stateId!=='string'||!slot.stateId.startsWith(ID_PREFIX)||
-   typeof slot.eventId!=='string'||!slot.eventId.startsWith(ID_PREFIX)||
+   typeof slot.eventId!=='string'||!/^[0-9a-f-]{36}$/i.test(slot.eventId)||
    slot.stateId.length>150||slot.eventId.length>150
   ))return null;
  }
@@ -35,7 +35,7 @@ export function validateQaRun(value:unknown):QaRun|null{
 function ensureId(value:string){if(!value.startsWith(ID_PREFIX)||value.length>150)fail('QA-INVALID-MARKER');}
 function slotFor(uid:string):Slot{
  if(!uid||uid.length>200)fail('QA-INVALID-ACTOR');
- return{uid,stateId:mark(),eventId:mark()};
+ return{uid,stateId:mark(),eventId:crypto.randomUUID()};
 }
 function signedSubject(jwt:string){
  const p=jwt.split('.');
@@ -81,11 +81,12 @@ function exactRows(r:{status:number;rows:unknown},count:number){
  return r.rows as Record<string,unknown>[];
 }
 function filterState(id:string){ensureId(id);return{item_type:'eq.preference',item_id:'eq.'+id};}
-function filterEvent(id:string){ensureId(id);return{event_id:'eq.'+id};}
+function filterEvent(id:string){if(!/^[0-9a-f-]{36}$/i.test(id))fail('QA-INVALID-EVENT');return{event_id:'eq.'+id};}
 async function owned(jwt:string,slot:Slot,table:Table,requester:QaRequest){
  const id=table==='li_user_state'?slot.stateId:slot.eventId;
  const where=table==='li_user_state'?filterState(id):filterEvent(id);
- const r=await request(jwt,'GET',table,{...where,select:'owner_id,payload,revision'},undefined,requester);
+ const select=table==='li_user_state'?'owner_id,payload,revision':'owner_id,payload';
+ const r=await request(jwt,'GET',table,{...where,select},undefined,requester);
  const rows=exactRows(r,1);
  if(rows[0].owner_id!==slot.uid||rows[0].payload===null||
   typeof rows[0].payload!=='object'||
@@ -138,8 +139,8 @@ async function updateOwn(jwt:string,s:Slot,requester:QaRequest){
 }
 async function forgeDenied(jwt:string,victim:Slot,requester:QaRequest,run:QaRun){
  // UUID marker is reserved in the run record BEFORE attempting a forged insert.
- if(!run.c)run.c=slotFor('synthetic-c-marker');
- const id=run.c.stateId;ensureId(id);
+ if(!run.forgedStateId){run.forgedStateId=mark();}
+ const id=run.forgedStateId;ensureId(id);
  const r=await request(jwt,'POST','li_user_state',{},{
   owner_id:victim.uid,item_type:'preference',item_id:id,
   payload:{qa_run:true,forged:true}
@@ -226,6 +227,14 @@ export async function stepQa(run:QaRun,actor:QaActor,
   if(!denied(eventUpdate))fail('QA-EVENT-UPDATE-ALLOWED');
   ok('EVENT-UPDATE-DENIED');
   await updateOwn(jwt,run.b,requester);ok('B-OWN-UPDATE');
+  if(run.forgedStateId){
+   const marker=run.forgedStateId;ensureId(marker);
+   // A forged B-owned insert must have failed; cleanup is fail-closed if not.
+   const stray=await request(jwt,'GET','li_user_state',
+    filterState(marker),undefined,requester);
+   if(!success(stray.status)||!Array.isArray(stray.rows)||stray.rows.length!==0)
+    fail('QA-FORGED-ROW-NEEDS-CLEANUP');
+  }
   await clearOwn(jwt,run.b,requester);ok('B-OWN-CLEANUP');
   run.phase='done';
  }

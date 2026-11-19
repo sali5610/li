@@ -1,0 +1,95 @@
+name: One-time cleanup of merged Git branches (no deploy)
+
+# Runs once when this file is merged; remove this workflow after verification.
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/prune-merged-once.yml'
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: "Delete only exact unchanged heads of PRs already merged into main"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, pathlib, urllib.request, urllib.parse, urllib.error
+
+          root='https://api.github.com/repos/sali5610/li/'
+          headers={
+            'Authorization': 'Bearer '+os.environ['GH_TOKEN'],
+            'Accept': 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28'
+          }
+          def api(route):
+            req=urllib.request.Request(root+route,headers=headers)
+            with urllib.request.urlopen(req,timeout=20) as response:
+              return json.load(response)
+          def pages(state):
+            out=[]
+            for page in range(1,6):
+              batch=api('pulls?state='+state+'&per_page=100&page='+str(page))
+              out.extend(batch)
+              if len(batch)<100: break
+            return out
+
+          open_prs=pages('open')
+          active={x['head']['ref'] for x in open_prs if x['head']['repo'] and x['head']['repo']['full_name']=='sali5610/li'}
+          active.update(x['base']['ref'] for x in open_prs)
+          active.update(('main','li-hifi-s110-review'))
+          merged=pages('closed')
+          candidates={}
+          for pr in merged:
+            if not pr['merged_at'] or pr['base']['ref']!='main': continue
+            if pr['merged_at'] > '2026-11-19T22:25:00Z': continue
+            head=pr['head']
+            if not head['repo'] or head['repo']['full_name']!='sali5610/li': continue
+            name=head['ref']
+            if name in active: continue
+            if not name.startswith(('fix/','feat/','ux/','chore/','policy/','governance/','audit/','refactor/')): continue
+            # Keep Step16, DS Studio, ontology, all research/staging and their dependencies.
+            low=name.lower()
+            if any(part in low for part in ('step16','react','ontology','ont0','uxds','design','studio','token','migration','staging','cloud','auth','neon')): continue
+            if name=='chore/prune-merged-branches-once-20261120': continue
+            try:
+              ref=api('git/ref/heads/'+urllib.parse.quote(name,safe='/'))
+            except urllib.error.HTTPError as err:
+              if err.code==404: continue
+              raise
+            current=ref.get('object',{}).get('sha')
+            if current!=head['sha']: continue
+            candidates[name]=current
+          path=pathlib.Path('/tmp/li-prune-merged-branch-refs.tsv')
+          path.write_text(''.join(name+'\t'+sha+'\n' for name,sha in sorted(candidates.items())))
+          print('SAFE_CANDIDATES',len(candidates))
+          print('OPEN_PR_REFS_PROTECTED',len(active))
+          PY
+          deleted=0
+          failed=0
+          while IFS=$'\t' read -r branch expected_sha; do
+            [[ -n "$branch" ]] || continue
+            # Atomic force-with-lease: a newer branch SHA cannot be deleted.
+            if git push --porcelain --force-with-lease="refs/heads/${branch}:${expected_sha}" origin ":refs/heads/${branch}"; then
+              deleted=$((deleted+1))
+              echo "DELETED_MERGED_BRANCH $branch"
+            else
+              failed=$((failed+1))
+              echo "SKIPPED_CHANGED_OR_PROTECTED $branch"
+            fi
+          done < /tmp/li-prune-merged-branch-refs.tsv
+          echo "DONE: deleted=$deleted skipped=$failed; no files or app code changed"
+          if [[ $failed -gt 0 ]]; then exit 1; fi

@@ -4,6 +4,9 @@ import {defineConfig} from 'vite';
 // EmptyOutDir=false is mandatory: site/assets contains the authoritative app.
 export default defineConfig({
   base:'./',
+  // Vite library builds do not automatically replace React's NODE_ENV checks.
+  // Emit a browser-standalone ESM bundle with no Node process global.
+  define:{'process.env.NODE_ENV':JSON.stringify('production')},
   build:{
     target:'es2022',
     outDir:'../../site/assets',

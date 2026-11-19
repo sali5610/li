@@ -35,12 +35,18 @@ const runId=randomUUID(), itemA='__li_rls_a_'+runId,itemB='__li_rls_b_'+runId;
 const forged='__li_rls_forge_'+runId, eventA=randomUUID(), eventB=randomUUID(),forgedEvent=randomUUID();
 const evidence=[];
 function assert(condition,reason){if(!condition)throw Error('RLS_CHECK_FAILED: '+reason);}
+function alteredSignature(token){
+ const parts=token.split('.');
+ assert(parts.length===3&&parts[2].length>0,'nonempty test JWT signature required');
+ parts[2]=(parts[2][0]==='A'?'B':'A')+parts[2].slice(1);
+ return parts.join('.');
+}
 async function send(token,method,table,where={},body){
  const endpoint=new URL(API+'/'+table);
  for(const [key,value] of Object.entries(where))endpoint.searchParams.set(key,value);
  const response=await fetch(endpoint.toString(),{
   method,redirect:'error',credentials:'omit',cache:'no-store',
-  headers:{Authorization:'Bearer '+token,Accept:'application/json',
+  headers:{...(token?{Authorization:'Bearer '+token}:{}),Accept:'application/json',
     ...(body?{'Content-Type':'application/json'}:{}),
     ...(['POST','PATCH','DELETE'].includes(method)?{Prefer:'return=representation'}:{})},
   ...(body?{body:JSON.stringify(body)}:{})
@@ -71,6 +77,15 @@ async function clear(token,table,where){
 }
 let failed=null;
 try{
+ // Verify the actual API rejects unauthenticated reads and JWT signature tampering.
+ // These are network tests with NO learner content and NO writes.
+ for(const table of ['li_user_state','li_learning_events']){
+  const anon=await send('','GET',table,{select:'owner_id',limit:'1'});
+  assert([401,403].includes(anon.status),'anonymous SELECT permitted on '+table);
+  const tampered=await send(alteredSignature(jwtA),'GET',table,{select:'owner_id',limit:'1'});
+  assert([401,403].includes(tampered.status),'tampered JWT signature permitted on '+table);
+ }
+ evidence.push('Both tables deny anonymous SELECT and altered JWT signatures');
  const a={item_type:'preference',item_id:itemA,revision:1,payload:{synthetic:true,owner:'A'}};
  const b={item_type:'preference',item_id:itemB,revision:1,payload:{synthetic:true,owner:'B'}};
  const wA=await send(jwtA,'POST','li_user_state',{},a);

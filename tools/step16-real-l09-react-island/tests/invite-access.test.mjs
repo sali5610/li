@@ -95,7 +95,7 @@ test('failed invite RPC always keeps access closed, while safe diagnosis classif
 
 test('regression: Neon bearer JWT comes from /token, never the opaque session identifier',()=>{
  const source=readFileSync(new URL('../src/auth/neon-client.ts',import.meta.url),'utf8');
- assert.match(source,/authClient\\.token\\(\\)/);
- assert.doesNotMatch(source,/session\\.data\\?\\.session\\?\\.token/);
- assert.doesNotMatch(source,/session\\?\\.token/);
+ assert.match(source,/authClient\.token\(\)/);
+ assert.doesNotMatch(source,/session\.data\?\.session\?\.token/);
+ assert.doesNotMatch(source,/session\?\.token/);
 });

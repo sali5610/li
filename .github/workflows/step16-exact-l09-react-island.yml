@@ -29,6 +29,12 @@ jobs:
           npm install --no-audit --no-fund
           npm run build
           npm run build:auth
+          # Test the deployed absolute base /auth-pilot/ rather than an invalid
+          # file:// or nested test URL that cannot resolve its Vite assets.
+          mkdir -p ../../auth-pilot
+          cp -a dist-auth/. ../../auth-pilot/
+          mv ../../auth-pilot/auth-entry.html ../../auth-pilot/index.html
+          test -f ../../auth-pilot/index.html
           node -e 'const fs=require("fs"); const html=fs.readFileSync("dist-auth/auth-entry.html","utf8");if(!html.includes("/auth-pilot/assets/")||!html.includes("no-referrer"))process.exit(1);console.log("PASS isolated Auth-only output and fixed base route");'
           npm run check:source
           npm run test:sync

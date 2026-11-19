@@ -137,3 +137,37 @@ export function safeSyncQaError(error:unknown){
  const message=error instanceof Error?error.message:'';
  return /^SQA-[A-Z0-9-]+$/.test(message)?message:'SQA-REQUEST-OR-SESSION';
 }
+
+
+/**
+ * The only hard DELETE in this QA. Exactly one known synthetic preference ID,
+ * verified owner/run provenance + optimistic revision before mutation.
+ * Uses current Google SDK JWT in memory, never arbitrary input or user rows.
+ */
+export async function deleteRemoteQa(
+ api:QaOne,id:string,
+ getBoundAuth:()=>Promise<{accountId:string;jwt:string}>,
+ endpoint:string,
+ requester:typeof fetch=fetch
+){
+ guard(id);
+ const row=await api.one('preference',id);
+ if(!row)return false; // already cleared after interruption
+ verifyQaRecord(row,api.accountId,id);
+ const bound=await getBoundAuth();
+ expectOk(bound.accountId===api.accountId&&bound.jwt.split('.').length===3,'SQA-SESSION-CHANGED');
+ const base=new URL(endpoint);
+ expectOk(base.protocol==='https:'&&base.pathname.endsWith('/rest/v1')&&
+  !base.username&&!base.password,'SQA-INVALID-ENDPOINT');
+ const url=new URL(base.toString().replace(/\/$/,'')+'/li_user_state');
+ url.searchParams.set('item_type','eq.preference');
+ url.searchParams.set('item_id','eq.'+id);
+ url.searchParams.set('revision','eq.'+row.revision);
+ const res=await requester(url.toString(),{
+  method:'DELETE',cache:'no-store',credentials:'omit',redirect:'error',
+  headers:{Authorization:'Bearer '+bound.jwt,Accept:'application/json',Prefer:'return=representation'}
+ });
+ expectOk(res.ok,'SQA-REMOTE-CLEANUP-HTTP');
+ expectOk(await api.one('preference',id)===null,'SQA-REMOTE-CLEANUP-UNVERIFIED');
+ return true;
+}

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0.0",
+  "levels": [
+    {
+      "id": "foundation",
+      "order": 1,
+      "title": {
+        "vi": "Nền tảng",
+        "en": "Foundation"
+      },
+      "sourceLabels": [
+        "Foundation"
+      ]
+    },
+    {
+      "id": "intermediate",
+      "order": 2,
+      "title": {
+        "vi": "Cốt lõi",
+        "en": "Intermediate"
+      },
+      "sourceLabels": [
+        "Intermediate"
+      ]
+    },
+    {
+      "id": "advanced",
+      "order": 3,
+      "title": {
+        "vi": "Chuyên sâu",
+        "en": "Advanced"
+      },
+      "sourceLabels": [
+        "Advanced",
+        "Advanced-topic"
+      ]
+    },
+    {
+      "id": "capstone",
+      "order": 4,
+      "title": {
+        "vi": "Ứng dụng / nghiên cứu",
+        "en": "Capstone / Portfolio"
+      },
+      "sourceLabels": [
+        "Capstone/Portfolio"
+      ]
+    }
+  ]
+}

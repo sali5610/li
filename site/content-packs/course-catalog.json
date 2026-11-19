@@ -1,0 +1,780 @@
+{
+  "schemaVersion": "1.0.0",
+  "source": "legacy_course_navigation_catalog",
+  "publicationState": "outline_only_except_locked_wave1",
+  "fields": [
+    {
+      "id": "F01",
+      "slug": "chinese",
+      "title": "Tiếng Trung",
+      "groupId": "language"
+    },
+    {
+      "id": "F02",
+      "slug": "english",
+      "title": "Tiếng Anh",
+      "groupId": "language"
+    },
+    {
+      "id": "F03",
+      "slug": "ux-design",
+      "title": "UX Design",
+      "groupId": "technology"
+    },
+    {
+      "id": "F04",
+      "slug": "backend",
+      "title": "Backend",
+      "groupId": "technology"
+    },
+    {
+      "id": "F05",
+      "slug": "generative-ai",
+      "title": "Generative AI",
+      "groupId": "technology"
+    },
+    {
+      "id": "F06",
+      "slug": "sociology",
+      "title": "Xã hội học",
+      "groupId": "social-sciences"
+    },
+    {
+      "id": "F07",
+      "slug": "anthropology",
+      "title": "Nhân học",
+      "groupId": "social-sciences"
+    },
+    {
+      "id": "F08",
+      "slug": "economics",
+      "title": "Kinh tế học",
+      "groupId": "social-sciences"
+    },
+    {
+      "id": "F09",
+      "slug": "data-science",
+      "title": "Data Science",
+      "groupId": "mathematics"
+    },
+    {
+      "id": "F10",
+      "slug": "world-history",
+      "title": "Lịch sử thế giới",
+      "groupId": "history"
+    },
+    {
+      "id": "F11",
+      "slug": "neurodiversity-studies",
+      "title": "Neurodiversity Studies",
+      "groupId": "psychology"
+    },
+    {
+      "id": "F12",
+      "slug": "cognitive-psychology",
+      "title": "Tâm lý học nhận thức",
+      "groupId": "psychology"
+    },
+    {
+      "id": "F13",
+      "slug": "behavioral-psychology",
+      "title": "Tâm lý học hành vi",
+      "groupId": "psychology"
+    },
+    {
+      "id": "F14",
+      "slug": "music-theory",
+      "title": "Lý thuyết âm nhạc",
+      "groupId": "music"
+    },
+    {
+      "id": "F15",
+      "slug": "supply-chain",
+      "title": "Supply Chain",
+      "groupId": "business"
+    }
+  ],
+  "courses": [
+    {
+      "id": "C01-1",
+      "title": "Mandarin Sounds & Starter Communication",
+      "groupId": "language",
+      "fieldId": "F01",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L01-1-1",
+        "L01-1-2",
+        "L01-1-3"
+      ]
+    },
+    {
+      "id": "C01-2",
+      "title": "Hanzi, Grammar & Everyday Discourse",
+      "groupId": "language",
+      "fieldId": "F01",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L01-2-1",
+        "L01-2-2",
+        "L01-2-3"
+      ]
+    },
+    {
+      "id": "C01-3",
+      "title": "Reading, Register & Interpretation",
+      "groupId": "language",
+      "fieldId": "F01",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L01-3-1",
+        "L01-3-2",
+        "L01-3-3"
+      ]
+    },
+    {
+      "id": "C02-1",
+      "title": "English Structure & Reading Foundations",
+      "groupId": "language",
+      "fieldId": "F02",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L02-1-1",
+        "L02-1-2",
+        "L02-1-3"
+      ]
+    },
+    {
+      "id": "C02-2",
+      "title": "Academic Explanation & Communication",
+      "groupId": "language",
+      "fieldId": "F02",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L02-2-1",
+        "L02-2-2",
+        "L02-2-3"
+      ]
+    },
+    {
+      "id": "C02-3",
+      "title": "Research Argument & Rhetorical Analysis",
+      "groupId": "language",
+      "fieldId": "F02",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L02-3-1",
+        "L02-3-2",
+        "L02-3-3"
+      ]
+    },
+    {
+      "id": "C03-1",
+      "title": "User Problems & Research Basics",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "review_only",
+      "lessonIds": [
+        "L03-1-2"
+      ],
+      "outlineLessonIds": [
+        "L03-1-1",
+        "L03-1-2",
+        "L03-1-3"
+      ]
+    },
+    {
+      "id": "C03-2",
+      "title": "Information Architecture & Interaction Evidence",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L03-2-1",
+        "L03-2-2",
+        "L03-2-3"
+      ]
+    },
+    {
+      "id": "C03-3",
+      "title": "Evidence-led Product Decisions",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L03-3-1",
+        "L03-3-2",
+        "L03-3-3"
+      ]
+    },
+    {
+      "id": "C04-1",
+      "title": "HTTP & Server Foundations",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L04-1-1",
+        "L04-1-2",
+        "L04-1-3"
+      ]
+    },
+    {
+      "id": "C04-2",
+      "title": "Persistence, Identity & Security",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L04-2-1",
+        "L04-2-2",
+        "L04-2-3"
+      ]
+    },
+    {
+      "id": "C04-3",
+      "title": "Backend Reliability & System Design",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L04-3-1",
+        "L04-3-2",
+        "L04-3-3"
+      ]
+    },
+    {
+      "id": "C05-1",
+      "title": "Generative Model Fundamentals",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L05-1-1",
+        "L05-1-2",
+        "L05-1-3"
+      ]
+    },
+    {
+      "id": "C05-2",
+      "title": "Prompting, Grounding & Evaluation",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L05-2-1",
+        "L05-2-2",
+        "L05-2-3"
+      ]
+    },
+    {
+      "id": "C05-3",
+      "title": "Agentic Systems & Responsible Design",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L05-3-1",
+        "L05-3-2",
+        "L05-3-3"
+      ]
+    },
+    {
+      "id": "C06-1",
+      "title": "Sociological Perspectives & Inquiry",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L06-1-1",
+        "L06-1-2",
+        "L06-1-3"
+      ]
+    },
+    {
+      "id": "C06-2",
+      "title": "Institutions, Inequality & Networks",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L06-2-1",
+        "L06-2-2",
+        "L06-2-3"
+      ]
+    },
+    {
+      "id": "C06-3",
+      "title": "Theory, Evidence & Explanation",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L06-3-1",
+        "L06-3-2",
+        "L06-3-3"
+      ]
+    },
+    {
+      "id": "C07-1",
+      "title": "Anthropology & Cultural Context",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L07-1-1",
+        "L07-1-2",
+        "L07-1-3"
+      ]
+    },
+    {
+      "id": "C07-2",
+      "title": "Ethnography, Kinship & Meaning",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L07-2-1",
+        "L07-2-2",
+        "L07-2-3"
+      ]
+    },
+    {
+      "id": "C07-3",
+      "title": "Comparative Anthropological Analysis",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L07-3-1",
+        "L07-3-2",
+        "L07-3-3"
+      ]
+    },
+    {
+      "id": "C08-1",
+      "title": "Scarcity, Choice & Markets",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L08-1-1",
+        "L08-1-2",
+        "L08-1-3"
+      ]
+    },
+    {
+      "id": "C08-2",
+      "title": "Macroeconomic Indicators & Policy",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L08-2-1",
+        "L08-2-2",
+        "L08-2-3"
+      ]
+    },
+    {
+      "id": "C08-3",
+      "title": "Economic Models & Policy Evaluation",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L08-3-1",
+        "L08-3-2",
+        "L08-3-3"
+      ]
+    },
+    {
+      "id": "C09-1",
+      "title": "Data & Statistical Foundations",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "review_only",
+      "lessonIds": [
+        "L09-1-2"
+      ],
+      "outlineLessonIds": [
+        "L09-1-1",
+        "L09-1-2",
+        "L09-1-3"
+      ]
+    },
+    {
+      "id": "C09-2",
+      "title": "Statistical Reasoning & Modeling",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L09-2-1",
+        "L09-2-2",
+        "L09-2-3"
+      ]
+    },
+    {
+      "id": "C09-3",
+      "title": "Predictive Models & Evaluation",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L09-3-1",
+        "L09-3-2",
+        "L09-3-3"
+      ]
+    },
+    {
+      "id": "C10-1",
+      "title": "How Historians Know the Past",
+      "groupId": "history",
+      "fieldId": "F10",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L10-1-1",
+        "L10-1-2",
+        "L10-1-3"
+      ]
+    },
+    {
+      "id": "C10-2",
+      "title": "States, Networks & Transformations",
+      "groupId": "history",
+      "fieldId": "F10",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L10-2-1",
+        "L10-2-2",
+        "L10-2-3"
+      ]
+    },
+    {
+      "id": "C10-3",
+      "title": "Historiography & Comparative Explanation",
+      "groupId": "history",
+      "fieldId": "F10",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L10-3-1",
+        "L10-3-2",
+        "L10-3-3"
+      ]
+    },
+    {
+      "id": "C11-1",
+      "title": "Neurodiversity: Concepts & Language",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L11-1-1",
+        "L11-1-2",
+        "L11-1-3"
+      ]
+    },
+    {
+      "id": "C11-2",
+      "title": "Cognition, Barriers & Accommodation",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L11-2-1",
+        "L11-2-2",
+        "L11-2-3"
+      ]
+    },
+    {
+      "id": "C11-3",
+      "title": "Evidence, Ethics & Lived Experience",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L11-3-1",
+        "L11-3-2",
+        "L11-3-3"
+      ]
+    },
+    {
+      "id": "C12-1",
+      "title": "Attention, Memory & Representation",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L12-1-1",
+        "L12-1-2",
+        "L12-1-3"
+      ]
+    },
+    {
+      "id": "C12-2",
+      "title": "Learning & Metacognitive Monitoring",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L12-2-1",
+        "L12-2-2",
+        "L12-2-3"
+      ]
+    },
+    {
+      "id": "C12-3",
+      "title": "Decision Processes & Cognitive Evidence",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L12-3-1",
+        "L12-3-2",
+        "L12-3-3"
+      ]
+    },
+    {
+      "id": "C13-1",
+      "title": "Foundations of Behavioral Learning",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L13-1-1",
+        "L13-1-2",
+        "L13-1-3"
+      ]
+    },
+    {
+      "id": "C13-2",
+      "title": "Behavioral Patterns & Context",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L13-2-1",
+        "L13-2-2",
+        "L13-2-3"
+      ]
+    },
+    {
+      "id": "C13-3",
+      "title": "Applied Behavioral Inquiry & Ethics",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L13-3-1",
+        "L13-3-2",
+        "L13-3-3"
+      ]
+    },
+    {
+      "id": "C14-1",
+      "title": "Notation, Rhythm & Intervals",
+      "groupId": "music",
+      "fieldId": "F14",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L14-1-1",
+        "L14-1-2",
+        "L14-1-3"
+      ]
+    },
+    {
+      "id": "C14-2",
+      "title": "Scales, Keys & Tonal Harmony",
+      "groupId": "music",
+      "fieldId": "F14",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L14-2-1",
+        "L14-2-2",
+        "L14-2-3"
+      ]
+    },
+    {
+      "id": "C14-3",
+      "title": "Voice Leading, Form & Analysis",
+      "groupId": "music",
+      "fieldId": "F14",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L14-3-1",
+        "L14-3-2",
+        "L14-3-3"
+      ]
+    },
+    {
+      "id": "C15-1",
+      "title": "End-to-End Supply Chain Foundations",
+      "groupId": "business",
+      "fieldId": "F15",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L15-1-1",
+        "L15-1-2",
+        "L15-1-3"
+      ]
+    },
+    {
+      "id": "C15-2",
+      "title": "Planning, Inventory & Visibility",
+      "groupId": "business",
+      "fieldId": "F15",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "review_only",
+      "lessonIds": [
+        "L15-2-2"
+      ],
+      "outlineLessonIds": [
+        "L15-2-1",
+        "L15-2-2",
+        "L15-2-3"
+      ]
+    },
+    {
+      "id": "C15-3",
+      "title": "Supply Chain Strategy & Trade-offs",
+      "groupId": "business",
+      "fieldId": "F15",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L15-3-1",
+        "L15-3-2",
+        "L15-3-3"
+      ]
+    }
+  ]
+}

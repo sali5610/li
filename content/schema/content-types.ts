@@ -17,3 +17,8 @@ export type CanonicalLesson = {
   publishedAt: string | null; updatedAt: string;
 };
 export type ContentEdge = { id: string; predicate: OntologyPredicate | "STATES_CLAIM" | "RECOMMENDED_BEFORE"; from: string; to: string; reviewState: OntologyReviewState; reason?: string; provenance: CanonicalLesson["provenance"] };
+
+export type CourseLevelId = "foundation" | "intermediate" | "advanced" | "capstone";
+export type CourseLevel = { id: CourseLevelId; order: number; title: Record<Locale,string>; sourceLabels: string[] };
+export type CourseMetadata = { id: string; title: string; groupId: string; fieldId: string; level: CourseLevelId; sourceLevel: string; status: "legacy_outline" | "review_only"; lessonIds: string[]; outlineLessonIds: string[] };
+export type EditorialResearchCourse = { id: string; fieldId: string; title: string; triage: string; level: CourseLevelId; sourceLevel: string; editorialRole: string; legacyEvidence: string[]; sourcePriority: string; status: "research_candidate"; canonicalCourseId: null };

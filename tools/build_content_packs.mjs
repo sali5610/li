@@ -116,6 +116,47 @@ for(const l of lessons){
 const schema=load("content/schema/lesson.schema.json");
 for(const l of lessons)for(const key of schema.required)if(!(key in l))throw Error("LI_CONTENT_SCHEMA_REQUIRED: "+l.id+"."+key);
 const compiled=compileContent(lessons,load("content/graph/concepts.json"),load("content/graph/edges.json"),load("docs/ontology/registry.v0.1.json"),load("docs/ontology/academic/registry.v0.1.json"));
+const courseLevels=load("content/curriculum/course-levels.v1.json");
+const legacyCourses=load("content/curriculum/legacy-catalog.v1.json");
+const researchCandidates=load("content/curriculum/research-candidates.v0.1.json");
+const legacySource=JSON.parse(read("site/assets/catalog-curriculum-data.js").split("window.LI_CATALOG_DATA=")[1].trim().replace(/;$/,""));
+if(JSON.stringify(legacySource)!==JSON.stringify(legacyCourses.groups))throw Error("LI_COURSE_CATALOG_DRIFT: legacy navigation changed");
+const levelMap=new Map();
+const allLevels=new Set();
+for(const level of courseLevels.levels){
+ if(allLevels.has(level.id)||!["foundation","intermediate","advanced","capstone"].includes(level.id))throw Error("LI_COURSE_BAD_LEVEL: "+level.id);
+ allLevels.add(level.id);
+ if(!level.title?.vi||!level.title?.en||!Number.isInteger(level.order))throw Error("LI_COURSE_INCOMPLETE_LEVEL: "+level.id);
+ for(const label of level.sourceLabels){if(levelMap.has(label))throw Error("LI_COURSE_DUP_LEVEL_ALIAS: "+label);levelMap.set(label,level.id);}
+}
+if(allLevels.size!==4||new Set(courseLevels.levels.map(x=>x.order)).size!==4)throw Error("LI_COURSE_REQUIRED_FOUR_LEVELS");
+const courseIds=new Set(),outlineIds=new Set(),courseRows=[],fields=[];
+for(const group of legacyCourses.groups){
+ for(const field of group.fields){
+  const fId="F"+String(parseInt(field.courses[0]?.id.slice(1,3)??"0",10)).padStart(2,"0");
+  fields.push({id:fId,slug:field.id,title:field.name,groupId:group.id});
+  for(const course of field.courses){
+   if(courseIds.has(course.id))throw Error("LI_COURSE_DUP_ID "+course.id);courseIds.add(course.id);
+   const level=levelMap.get(course.level);
+   if(!level)throw Error("LI_COURSE_UNKNOWN_LEVEL "+course.id+" "+course.level);
+   const lessonIds=lessons.filter(l=>l.hierarchy.course.id==="course:"+course.id).map(l=>l.id);
+   for(const outline of course.lessons){if(outlineIds.has(outline.id))throw Error("LI_COURSE_DUP_OUTLINE "+outline.id);outlineIds.add(outline.id);}
+   if(lessonIds.some(id=>!course.lessons.some(item=>item.id===id)))throw Error("LI_COURSE_MISSING_LESSON "+course.id);
+   courseRows.push({id:course.id,title:course.title,groupId:group.id,fieldId:fId,level,sourceLevel:course.level,status:lessonIds.length?"review_only":"legacy_outline",lessonIds,outlineLessonIds:course.lessons.map(x=>x.id)});
+  }
+ }
+}
+const candidateIds=new Set();
+for(const c of researchCandidates.courses){
+ if(candidateIds.has(c.id)||!/^PROP-F\\d{2}-\\d{3}$/.test(c.id))throw Error("LI_COURSE_DUP_RESEARCH_ID "+c.id);
+ candidateIds.add(c.id);
+ if(!allLevels.has(c.level)||c.status!=="research_candidate"||c.canonicalCourseId!==null||!fields.some(f=>f.id===c.fieldId))throw Error("LI_COURSE_UNAPPROVED_PROMOTION "+c.id);
+}
+if(researchCandidates.publicationStatus!=="not_authorized")throw Error("LI_COURSE_RESEARCH_RELEASE_FORBIDDEN");
+if(lessons.some(l=>!courseIds.has(l.hierarchy.course.id.slice(7))))throw Error("LI_COURSE_LESSON_ORPHAN");
+compiled["site/content-packs/course-levels.json"]={schemaVersion:courseLevels.schemaVersion,levels:courseLevels.levels};
+compiled["site/content-packs/course-catalog.json"]={schemaVersion:"1.0.0",source:"legacy_course_navigation_catalog",publicationState:"outline_only_except_locked_wave1",fields,courses:courseRows};
+
 const check=process.argv.includes("--check");
 for(const [path,value] of Object.entries(compiled)){
  const payload=JSON.stringify(value,null,2)+"\n";

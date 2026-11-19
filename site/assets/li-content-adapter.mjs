@@ -8,6 +8,9 @@ export function createContentClient({ baseUrl=new URL("../content-packs/",import
  const graph=()=>load("graph.json");
  const search=()=>load("search.json");
  const backlinks=()=>load("backlinks.json");
+ const getCourseLevels=async ()=>(await load("course-levels.json")).levels;
+ const listCourses=async ({level,fieldId}={})=>(await load("course-catalog.json")).courses.filter(c=>(!level||c.level===level)&&(!fieldId||c.fieldId===fieldId));
+ const getCourse=async id=>(await listCourses()).find(c=>c.id===id)??null;
  const getLesson=async id=>{
   const m=await manifest(),course=m.courses.find(c=>c.lessonIds.includes(id));
   if(!course)return null;
@@ -34,6 +37,6 @@ export function createContentClient({ baseUrl=new URL("../content-packs/",import
   return [...found.values()].sort((a,b)=>a.lessonId.localeCompare(b.lessonId));
  };
  const getBacklinks=async id=>(await backlinks()).backlinks[id]??[];
- return {manifest,graph,search,getLesson,getConceptLessons,getRelatedLessons,getBacklinks};
+ return {manifest,graph,search,getCourseLevels,listCourses,getCourse,getLesson,getConceptLessons,getRelatedLessons,getBacklinks};
 }
 export const contentClient=createContentClient();

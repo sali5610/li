@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "li. ONT-04C1 offline contextual mentor response (not a navigation contract)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "actor",
+    "locale",
+    "stage",
+    "lessonId",
+    "context",
+    "sources",
+    "method",
+    "actions",
+    "permission",
+    "reason"
+  ],
+  "properties": {
+    "status": {
+      "enum": [
+        "rejected_private_or_unknown_context",
+        "invalid_context",
+        "unknown_lesson",
+        "invalid_stage_template",
+        "invalid_stage_actions",
+        "read_only_editorial_context",
+        "unavailable_stage"
+      ]
+    },
+    "actor": {
+      "const": "Lão Lý"
+    },
+    "locale": {
+      "enum": [
+        "vi",
+        "en"
+      ]
+    },
+    "stage": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "lessonId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "context": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Editorial-only title/stage/field, never user-state or answer data"
+    },
+    "sources": {
+      "type": "array",
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "url",
+          "section",
+          "checkedOn",
+          "independentScientificVerification"
+        ],
+        "properties": {
+          "kind": {
+            "const": "editorial_reference_only"
+          },
+          "url": {
+            "type": "string",
+            "pattern": "^https://app.notion.com/p/"
+          },
+          "section": {
+            "type": "string"
+          },
+          "checkedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "independentScientificVerification": {
+            "const": false
+          }
+        }
+      }
+    },
+    "method": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Only an unapproved editorial technique pointer in review mode, never an assessment"
+    },
+    "actions": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "intent",
+          "label",
+          "response",
+          "target",
+          "handler",
+          "executable",
+          "claimsMastery",
+          "revealsSolution",
+          "writesLearnerData",
+          "sourceRef"
+        ],
+        "properties": {
+          "intent": {
+            "enum": [
+              "ASK_FOR_EVIDENCE",
+              "CHECK_ASSUMPTION",
+              "COMPARE_BOUNDARIES",
+              "VIEW_SOURCE_METADATA",
+              "EXPLORE_METHOD_DEFINITION"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "response": {
+            "type": "string"
+          },
+          "target": {
+            "const": null
+          },
+          "handler": {
+            "const": null
+          },
+          "executable": {
+            "const": false
+          },
+          "claimsMastery": {
+            "const": false
+          },
+          "revealsSolution": {
+            "const": false
+          },
+          "writesLearnerData": {
+            "const": false
+          },
+          "sourceRef": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "permission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canNavigate",
+        "canReadPrivate",
+        "canRevealAnswer",
+        "canGrade",
+        "canSave",
+        "contentPublished",
+        "verifiedSubmission"
+      ],
+      "properties": {
+        "canNavigate": {
+          "const": false
+        },
+        "canReadPrivate": {
+          "const": false
+        },
+        "canRevealAnswer": {
+          "const": false
+        },
+        "canGrade": {
+          "const": false
+        },
+        "canSave": {
+          "const": false
+        },
+        "contentPublished": {
+          "const": false
+        },
+        "verifiedSubmission": {
+          "const": false
+        }
+      }
+    },
+    "reason": {
+      "type": "string"
+    }
+  }
+}

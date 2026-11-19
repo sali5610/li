@@ -35,3 +35,10 @@ button:disabled{opacity:.65;cursor:not-allowed}
 .qa-panel .auth-field button{justify-self:start}
 .qa-panel .auth-field input{overflow-wrap:anywhere}
 .qa-panel .auth-error{margin-block:12px}
+
+/* L09 manual cloud consent, staging-only: square 48px accessible control region. */
+.l09-cloud-replace{display:flex;align-items:center;gap:12px;margin:16px 0;min-height:48px;cursor:pointer}
+.l09-cloud-replace input{width:24px;height:24px;flex:0 0 24px;accent-color:var(--moss)}
+.l09-cloud-replace span{flex:1;overflow-wrap:anywhere}
+.qa-panel a{color:var(--moss);font-weight:600;text-underline-offset:4px}
+.qa-panel a:focus-visible{outline:3px solid var(--li-color-focus-ring);outline-offset:4px}

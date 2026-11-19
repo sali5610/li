@@ -47,14 +47,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: sali5610/li
-          ref: def1c5868751f44a71e18f67f692b109f1aa9a54
+          ref: a4ee83af9bad5e44e050d2e61ad1b95f0c2b1365
           path: staging-auth-source
           persist-credentials: false
 
       - name: Verify source SHA and staging-only auth boundaries
         run: |
           set -euo pipefail
-          test "$(git -C staging-auth-source rev-parse HEAD)" = "def1c5868751f44a71e18f67f692b109f1aa9a54"
+          test "$(git -C staging-auth-source rev-parse HEAD)" = "a4ee83af9bad5e44e050d2e61ad1b95f0c2b1365"
           test -f staging-auth-source/tools/step16-real-l09-react-island/vite.auth.config.mjs
           grep -Fq "VITE_LI_AUTH_TARGET==='github-pages-staging'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/config.ts
           grep -Fq "'https://sali5610.github.io'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/config.ts

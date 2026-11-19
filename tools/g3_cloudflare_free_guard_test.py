@@ -78,8 +78,9 @@ class FreeGuardTest(unittest.TestCase):
 
     def test_skipped_ontology_and_step16_events_do_not_use_free_budget(self):
         now = dt.datetime.now(dt.timezone.utc).isoformat()
-        # Exact original incident: 40 tracked Preview Git push events (not
-        # actual deploys), even though Branch control rejected the builds.
+        # Synthetic regression for the class of incident observed in screenshots:
+        # a mix of 40 skipped Git events from two branches + 2 real attempts.
+        # The real project's skipped/active split is still unverified.
         def record(branch, skipped=True):
             return {
                 "created_on": now,

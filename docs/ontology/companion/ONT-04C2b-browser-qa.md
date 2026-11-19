@@ -1,9 +1,5 @@
 # ONT-04C2b · Native Lão Lý mounted-browser acceptance pilot
 
-## S208 · Human PO QA scope override — VoiceOver excluded
-
-PO explicitly instructed: **skip VoiceOver testing for li.** Thus it is **OUT_OF_SCOPE_PO_S208**, neither a release blocker nor a PASS claim. Physical iPhone/iPad **Safari, touch, popup, stage/no-spoiler and responsive UX** remain PENDING; this remains a private invite-only app with no extra copyright-clearing gate. Generic cross-app Vibecode Handbook checklists are not changed, since this is a li.-specific PO decision. The QA ledger enforces the out-of-scope classification. No merge, no Cloudflare deploy.
-
 
 ## S208 · Human PO QA scope override — VoiceOver excluded
 
@@ -11,6 +7,17 @@ PO explicitly instructed: **skip VoiceOver testing for li.** Thus it is **OUT_OF
 
 
 **Scope:** Test the real, existing native `site/index.html` and Lão Lý quote renderer from [ONT-04C2a draft](https://github.com/sali5610/li/pull/146) with headless Chromium in an ephemeral, same-origin frame. **No merge, Cloudflare deploy, Neon write, auth bypass or actual phone/iPad QA.**
+
+## S209 · Playwright WebKit browser-engine coverage (PR-only)
+
+After [Chrome native 189/189 PASS](https://github.com/sali5610/li/actions/runs/44555176838), this workstream adds **real Playwright WebKit engine** coverage on the Ubuntu GitHub runner. It does **not** use a Chromium browser impersonating Safari, and it is **not** physical iOS Safari QA.
+
+- [WebKit Python runner](https://github.com/sali5610/li/blob/test/ont04c2b-browser-stage-qa-20261119/tools/check_laoly_webkit.py) launches `playwright.webkit` with a touch-enabled browser context, loads exactly the same ephemeral native `site/index.html` QA wrapper, and awaits a full source-level stage/quote flow test ledger.
+- Runtime/browser identity is recorded separately: `WEBKIT_HEADLESS_SAME_ORIGIN_NATIVE_APP` for WebKit; `CHROMIUM_HEADLESS_SAME_ORIGIN_NATIVE_APP` for Chrome. `VoiceOver=OUT_OF_SCOPE_PO_S208`, real iPhone/iPad Safari `NOT_RUN`. A false `PASS` label or incomplete result fails CI.
+- It additionally taps the actual `#laoly-fab` with touch emulation, verifies popup opens, and records WebKit-rendered screenshots at 320×720 / 375×812 / 768×1024 / 1024×768 CSS pixels. The screenshots are **review artifacts**, not evidence a human approved the design.
+- [WebKit PR-only GitHub workflow](https://github.com/sali5610/li/blob/test/ont04c2b-browser-stage-qa-20261119/.github/workflows/li-ont04c2b-webkit-qa.yml) installs WebKit inside the CI runner and uploads screenshots + a JSON ledger; no Cloudflare configuration or build is touched.
+- A WebKit PASS means one more browser engine independently exercised actual app JavaScript + responsive rendering. Touch is **simulated**. Physical iPhone/iPad Safari gestures, rotation, keyboard and visual QA remain a separate PO release gate. Avoid implying Playwright verifies WebKit on iOS hardware.
+- No external licensing/copyright review gate under the current S205 personal invite-only scope. No paid API or merge/deploy is authorized.
 
 ## Reusable Lessons Learned read first
 

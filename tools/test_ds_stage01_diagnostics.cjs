@@ -29,7 +29,7 @@ function fixture(search,visualHeight){
     body:{appendChild:(v)=>{mounted=v;}},
     getElementById:()=>mounted,
     createElement:()=>({id:"",style:{cssText:""},setAttribute(){},textContent:""}),
-    querySelector:(selector)=>metrics[selector]||null,
+    querySelector:(selector)=>metrics[selector]?{getBoundingClientRect:()=>metrics[selector]}:null,
     addEventListener:(type,fn)=>handlers.set("document:"+type,fn)
   };
   const vv={width:970,height:visualHeight,scale:1,offsetTop:0,offsetLeft:0,

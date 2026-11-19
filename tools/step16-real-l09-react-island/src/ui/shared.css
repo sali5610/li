@@ -61,6 +61,12 @@
   min-height:var(--li-comp-button-min-hit-size,var(--li-space-12));
   font-size:var(--li-type-body);line-height:var(--li-leading-body)
 }
+/* D3 scoped research correction: protect the visible keyboard focus stroke
+   from native textarea/reset cascade without altering global site inputs. */
+.pilot[data-vc-g2="approved-research"] .li-ui-field .li-ui-input:focus-visible{
+  outline:3px solid var(--li-comp-field-focus-border,var(--li-color-input-focus-ring,var(--moss)));
+  outline-offset:var(--li-space-1)
+}
 /* Question-answer is a named multiline context, not a universal textarea height. */
 .pilot[data-vc-g2="approved-research"] .li-ui-field .li-ui-input[data-field-purpose="answer"]{
   min-height:calc(var(--li-space-12) + var(--li-space-12) + var(--li-space-4))

@@ -10,7 +10,7 @@ const BODY_OPEN = '<content>\n';
 const BODY_CLOSE = '\n</content>';
 const UNSAFE = [
   /(?:app\s*\.\s*notion\s*\.\s*com\s*\/\s*p\s*\/|notion\s*\.\s*so\s*\/)/i,
-  /(?:teacher[\s-]*(?:key|ledger)|answer[\s-]*key|reference\s+solution|independent\s+answer|đáp\s*án\s*mẫu|đáp\s*án\s*độc\s*lập|editor[\s-]*only)/i,
+  /(?:teacher[\s-]*(?:key|ledger)|answer[\s-]*key|reference\s+solution|independent\s+answer\s*[:=]|đáp\s*án\s*mẫu|đáp\s*án\s*độc\s*lập|editor[\s-]*only)/i,
   /<\s*\/?\s*(?:script|iframe|object|embed|form|input|link-preview|page|ancestor-path|properties|callout|mention)\b/i,
   /(?:javascript\s*:|data\s*:\s*text\/html|onerror\s*=|onclick\s*=)/i,
 ];
@@ -28,22 +28,42 @@ const occurrences = (s, needle) => {
   return count;
 };
 const canonical = (s) => {
-  const entities = s.replace(/&#(?:x([0-9a-f]+)|([0-9]+));/gi, (_, hex, dec) => {
-    const n = parseInt(hex ?? dec, hex ? 16 : 10);
-    return n > 0 && n < 0x110000 ? String.fromCodePoint(n) : _;
-  }).replace(/&(?:amp|period|sol|colon|lt|gt);/gi, (x) => ({
-    '&amp;': '&', '&period;': '.', '&sol;': '/', '&colon;': ':', '&lt;': '<', '&gt;': '>',
-  })[x.toLowerCase()] ?? x);
-  let decoded = entities;
-  try { decoded = decodeURIComponent(entities); } catch { /* malformed percent escapes are not interpreted */ }
-  return decoded.normalize('NFKC').replace(/[\u200b-\u200f\u2060\ufeff]/g, '');
+  let result = s;
+  for (let i = 0; i < 5; i += 1) {
+    const entities = result.replace(/&#(?:x([0-9a-f]+)|([0-9]+));/gi, (_, hex, dec) => {
+      const n = parseInt(hex ?? dec, hex ? 16 : 10);
+      return n > 0 && n < 0x110000 ? String.fromCodePoint(n) : _;
+    }).replace(/&(?:amp|period|sol|colon|lt|gt);/gi, (x) => ({
+      '&amp;': '&', '&period;': '.', '&sol;': '/', '&colon;': ':', '&lt;': '<', '&gt;': '>',
+    })[x.toLowerCase()] ?? x);
+    let decoded = entities;
+    try { decoded = decodeURIComponent(entities); } catch { /* not all prose percent signs are escapes */ }
+    decoded = decoded.normalize('NFKC').replace(/[\u200b-\u200f\u2060\ufeff]/g, '');
+    if (decoded === result) return decoded;
+    result = decoded;
+  }
+  return result;
 };
-const indexHeader = (body, header) => {
-  if (typeof header !== 'string' || !/^#{1,3} [^\n]+$/.test(header)) deny('BAD_MANIFEST_HEADER');
-  const marker = `\n${header}\n`;
-  const haystack = `\n${body}\n`;
-  if (occurrences(haystack, marker) !== 1) deny('HEADER_MISSING_OR_DUPLICATED');
-  return haystack.indexOf(marker); // index relative to body because of the prefixed newline
+
+const EDITORIAL_END_PREFIXES = new Set([
+  '<b>Editorial release gates:',
+  '<b>Editorial OPEN gates:',
+  '<b>Editorial footer / NOT learner UI:',
+]);
+const indexBoundary = (body, marker, endBoundary = false) => {
+  if (typeof marker !== 'string' || marker.length > 180 ||
+      !(/^#{1,3} [^\n]+$/.test(marker) ||
+        (endBoundary && EDITORIAL_END_PREFIXES.has(marker)))) deny('BAD_MANIFEST_HEADER');
+  const lines = body.split('\n');
+  const allowPrefix = endBoundary && EDITORIAL_END_PREFIXES.has(marker);
+  let offset = 0;
+  const matches = [];
+  for (const line of lines) {
+    if (allowPrefix ? line.startsWith(marker) : line === marker) matches.push(offset);
+    offset += line.length + 1;
+  }
+  if (matches.length !== 1) deny('HEADER_MISSING_OR_DUPLICATED');
+  return matches[0];
 };
 
 /** Pinned digest is of Notion <content> body (not volatile fetch timestamp). */
@@ -75,16 +95,16 @@ export function exportLearnerFromNotion({ sourceId, rawNotionFetch, manifest }) 
   const pinned = Buffer.from(cfg.sha256, 'hex');
   if (!timingSafeEqual(actual, pinned)) deny('SOURCE_REVISION_CHANGED');
 
-  const vi = indexHeader(body, cfg.viStart);
-  const en = indexHeader(body, cfg.enStart);
-  const end = indexHeader(body, cfg.end);
+  const vi = indexBoundary(body, cfg.viStart);
+  const en = indexBoundary(body, cfg.enStart);
+  const end = indexBoundary(body, cfg.end, true);
   if (!(vi < en && en < end)) deny('LOCALE_BOUNDARY_ORDER');
   const viText = body.slice(vi, en).trim();
-  const enText = body.slice(en, end).trim();
+  const enText = body.slice(en, end).replace(/\n---\s*$/, '').trim();
   const minChars = cfg.minimumLocaleChars ?? 300;
   if (!Number.isInteger(minChars) || minChars < 100 || viText.length < minChars || enText.length < minChars) deny('LOCALE_INCOMPLETE');
   const combined = canonical(`${viText}\n${enText}`);
-  if (UNSAFE.some((re) => re.test(combined)) || cfg.forbiddenFingerprints.some((x) => combined.includes(canonical(x)))) deny('SPOILER_OR_UNSAFE_PAYLOAD');
+  if (UNSAFE.some((re) => re.test(combined)) || cfg.forbiddenFingerprints.some((x) => combined.toLocaleLowerCase().includes(canonical(x).toLocaleLowerCase()))) deny('SPOILER_OR_UNSAFE_PAYLOAD');
 
   // Deliberately no source/editorial URLs or teacher fields in serialized output.
   return Object.freeze({ version: cfg.version, researchOnly: true, published: false,

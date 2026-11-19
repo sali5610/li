@@ -1,4 +1,4 @@
-# SYNC-11: disposable PostgreSQL operation-receipt QA
+# SYNC-11–13B: disposable PostgreSQL + PostgREST operation-receipt QA
 
 **Research/CI only. Not a Neon migration. Not a production-ready security approval.**
 
@@ -6,9 +6,12 @@
 
 GitHub Actions workflow `.github/workflows/step16-idempotency-postgres-ci.yml` runs
 `bash tools/step16-real-l09-react-island/tests/postgres-idempotency/ci-only-run.sh`
-on an ephemeral `postgres:16-alpine` Docker container. It publishes **no network
-port**, uses **no Neon connection**, deletes the database when the container stops,
-and checks that the active database name is exactly `li_idempotency_ci`.
+on an ephemeral `postgres:16-alpine` Docker container. PostgreSQL publishes
+**no host port**; the disposable PostgREST container binds HTTP only to
+`127.0.0.1:28794` on the isolated GitHub runner, with a CI-only synthetic
+HS256 JWT secret. No Neon connection is used; both containers and their
+private Docker network are stopped/removed after tests, and SQL asserts
+that the active database name is exactly `li_idempotency_ci`.
 Use it only inside the isolated PR test runner, never against a cloud database.
 
 The fixture intentionally models the production table's core
@@ -51,9 +54,15 @@ the cutover dependency at
 - The SQL schema is intentionally created in the CI database only.
   It is **not** a drop-in production migration, and no existing Neon
   role, table, policy or function was changed.
-- HTTP status mapping through the real PostgREST/Data API, migration
-  forward/rollback, long-lived receipt retention, account deletion,
-  network-fault retries in Safari, and cross-browser data persistence
+- Actual HTTP status mapping on **disposable PostgREST 16** is now CI-tested
+  with synthetic signed JWTs: see `ci-only-postgrest-http.test.mjs`, 13/13
+  PASS in [Actions #44604778071](https://github.com/sali5610/li/actions/runs/44604778071).
+  The SQLSTATE mapping 23505→409, 22023→400, 42501→401/403 and
+  PGRST202→404 is supported by the [PostgREST official reference](https://docs.postgrest.org/en/stable/references/errors.html).
+  This is **not Neon Data API**, not the managed Neon JWT signature or
+  production role topology; real signed Neon A/B/C tests remain OPEN.
+- Actual Neon migration forward/rollback, long-lived receipt retention,
+  account deletion, real Safari network faults and cross-browser persistence
   remain outside this suite.
 
 ## Gate

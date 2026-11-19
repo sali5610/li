@@ -84,6 +84,7 @@ export class NeonIdempotentPilotApi{
    })
   });
   if(response.status===409||response.status===412)throw new RevisionConflict();
+  if(response.status===404)fail('NEON_SYNC_RPC_UNAVAILABLE'); // never use legacy POST/PATCH
   if(!response.ok)fail('NEON_DATA_API_HTTP_'+response.status);
   let raw:unknown;
   try{raw=await response.json();}catch{fail('INVALID_RPC_ACK');}

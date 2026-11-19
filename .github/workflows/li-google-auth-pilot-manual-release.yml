@@ -46,14 +46,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: sali5610/li
-          ref: c07189545f39f130d1d340ab269bff8f6e12aeb0
+          ref: c9547901479d0402a45861f12448ebef93735247
           path: auth-pilot-source
           persist-credentials: false
 
       - name: Verify immutable source ID and Google-only login controls
         run: |
           set -euo pipefail
-          test "$(git -C auth-pilot-source rev-parse HEAD)" = "c07189545f39f130d1d340ab269bff8f6e12aeb0"
+          test "$(git -C auth-pilot-source rev-parse HEAD)" = "c9547901479d0402a45861f12448ebef93735247"
           test -f auth-pilot-source/tools/step16-real-l09-react-island/vite.auth.config.mjs
           grep -Fq "signIn.social({provider:'google'" auth-pilot-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
           grep -Fq "checkInviteAccess" auth-pilot-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx

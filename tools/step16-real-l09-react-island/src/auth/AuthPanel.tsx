@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {checkInviteAccess,safeInviteErrorCode} from '../sync/invite-access.js';
 import {authClient,neonSessionPort} from './neon-client.js';
-import {AUTH_ORIGIN,NEON_DATA_API_URL} from './config.js';
+import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING} from './config.js';
 import {classifyOAuthReturn,type OAuthReturnCode} from './oauth-return.js';
 
 type Locale='vi'|'en';
@@ -56,6 +56,7 @@ const copy={
 export function AuthPanel(){
  const [locale,setLocale]=useState<Locale>('vi');
  const t=copy[locale];
+ const stageLabel=IS_GITHUB_STAGING?'STAGING · GitHub Pages':t.tag;
  const {data:session,isPending,error,refetch}=authClient.useSession();
  const [busy,setBusy]=useState<'login'|'logout'|null>(null);
  const [feedback,setFeedback]=useState('');
@@ -136,7 +137,7 @@ export function AuthPanel(){
  }
  return <main className="auth-pilot">
   <header className="auth-header">
-   <div><p className="auth-tag">{t.tag}</p><h1>{t.heading}</h1></div>
+   <div><p className="auth-tag">{stageLabel}</p><h1>{t.heading}</h1></div>
    <div className="auth-lang" aria-label="Language">
     <button type="button" aria-pressed={locale==='vi'} onClick={()=>setLocale('vi')}>{t.switchVi}</button>
     <button type="button" aria-pressed={locale==='en'} onClick={()=>setLocale('en')}>{t.switchEn}</button>

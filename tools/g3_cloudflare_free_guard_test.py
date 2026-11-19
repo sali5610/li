@@ -5,6 +5,7 @@ import datetime as dt
 import io
 import json
 import os
+from urllib import error, parse
 from pathlib import Path
 import tempfile
 import unittest
@@ -80,6 +81,35 @@ class FreeGuardTest(unittest.TestCase):
             fetch.return_value.__enter__.return_value.read.return_value = b'{"success":false,"result":[]}'
             with self.assertRaises(guard.GateError):
                 guard.count_current_month_deployments("account","li","token")
+
+    def test_deployment_listing_uses_documented_small_pages(self):
+        with patch.object(guard.request, "urlopen") as fetch:
+            fetch.return_value.__enter__.return_value.read.return_value = self.fake_result(1)
+            self.assertEqual(guard.count_current_month_deployments("account", "li", "token"), 1)
+            sent = fetch.call_args.args[0]
+            query = parse.parse_qs(parse.urlsplit(sent.full_url).query)
+            self.assertEqual(query["per_page"], ["20"])
+
+    def test_http_error_surfaces_only_status_and_numeric_cloudflare_codes(self):
+        unsafe = b'{"errors":[{"code":10000,"message":"SECRET_DO_NOT_LOG"}]}'
+        with patch.object(guard.request, "urlopen", side_effect=error.HTTPError(
+            "https://api.cloudflare.com/forbidden", 403,
+            "SECRET_DO_NOT_LOG", {}, io.BytesIO(unsafe)
+        )):
+            with self.assertRaises(guard.GateError) as raised:
+                guard.count_current_month_deployments("account", "li", "token")
+            self.assertIn("HTTP 403", str(raised.exception))
+            self.assertIn("cf_codes=10000", str(raised.exception))
+            self.assertNotIn("SECRET_DO_NOT_LOG", str(raised.exception))
+
+    def test_network_error_fails_closed_without_leaking_private_details(self):
+        with patch.object(guard.request, "urlopen", side_effect=error.URLError(
+            "SECRET_DO_NOT_LOG"
+        )):
+            with self.assertRaises(guard.GateError) as raised:
+                guard.count_current_month_deployments("account", "li", "token")
+            self.assertIn("network/TLS/DNS", str(raised.exception))
+            self.assertNotIn("SECRET_DO_NOT_LOG", str(raised.exception))
 
     def test_fails_closed_on_unknown_timestamp(self):
         with patch.object(guard.request, "urlopen") as fetch:

@@ -49,14 +49,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: sali5610/li
-          ref: 96edf90ae76102e1ec5919b415f3f5b9e7b024fa
+          ref: eb87e144808c3a1c56d4e824c9c88581ce7d322b
           path: staging-auth-source
           persist-credentials: false
 
       - name: Verify strict login gate and native lesson key
         run: |
           set -euo pipefail
-          test "$(git -C staging-auth-source rev-parse HEAD)" = "96edf90ae76102e1ec5919b415f3f5b9e7b024fa"
+          test "$(git -C staging-auth-source rev-parse HEAD)" = "eb87e144808c3a1c56d4e824c9c88581ce7d322b"
           root=staging-auth-source/tools/step16-real-l09-react-island
           grep -Fq "VITE_LI_AUTH_TARGET!=='github-pages-staging'" "$root/vite.staging-app.config.mjs"
           grep -Fq "checkInviteAccess" "$root/src/auth/AuthPanel.tsx"
@@ -118,14 +118,14 @@ jobs:
           assert html.count(marker)==1, 'Settings account slot changed'
           account=('<article class="surface" data-staging-only="true">'
             '<div class="kicker">TÀI KHOẢN</div>'
-            '<h2>Google</h2>'
-            '<p class="small">Tài khoản email được mời. Quản lý đăng nhập, '
-            'đăng xuất và đồng bộ tiến độ L09 tại đây.</p>'
+            '<h2>Tài khoản Google</h2>'
+            '<p class="small">Email đã được mời. Xem tài khoản và '
+            'đăng xuất tại đây.</p>'
             '<button type="button" class="action alt" id="li-open-account">'
-            'Tài khoản &amp; đồng bộ</button></article>')
+            'Quản lý tài khoản</button></article>')
           html=html.replace(marker,marker.replace('<article class="surface">',account+'<article class="surface">',1),1)
           old='<b>Đồng bộ giữa các thiết bị</b><p class="small">Chưa hỗ trợ.</p>'
-          new='<b>Đồng bộ giữa các thiết bị</b><p class="small">L09: lưu và khôi phục thủ công trong Tài khoản. Các bài khác vẫn ở thiết bị này.</p>'
+          new='<b>Đồng bộ giữa các thiết bị</b><p class="small">Chưa khả dụng. Tiến độ hiện lưu trên thiết bị này.</p>'
           assert html.count(old)==1,'Settings sync description changed'
           html=html.replace(old,new,1)
           shell=('<div id="li-staging-auth-root" tabindex="-1" '

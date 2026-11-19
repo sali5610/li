@@ -558,7 +558,39 @@ window.addEventListener("li:localechange",()=>{
   if(id)paintMethodDetail(id);
  }
 });
-function openModal(id,trigger){const el=document.getElementById(id);el.classList.add("open");el.dataset.trigger=trigger?.id||"";el.querySelector("button")?.focus()}
+// UX-DS-35: one modal focus contract for Lão Lý AND physical-state Check-in.
+// Keep every existing background owner's inert setting and restore it on close.
+const liModalBlockedElements=()=>[...document.querySelectorAll(".app,.mobile-nav,.laoly-support")];
+const liModalPreviousInert=new Map();
+function liModalSetBackgroundInert(blocked){
+ for(const el of liModalBlockedElements()){
+  if(blocked){
+   if(!liModalPreviousInert.has(el))liModalPreviousInert.set(el,el.inert);
+   el.inert=true;
+  }else if(liModalPreviousInert.has(el)){
+   el.inert=liModalPreviousInert.get(el);
+   liModalPreviousInert.delete(el);
+  }
+ }
+}
+function liModalTabStops(modal){
+ const selector='a[href],area[href],button,input,select,textarea,summary,[tabindex]';
+ return [...modal.querySelectorAll(selector)].filter(el=>
+  !el.hidden&&!el.disabled&&el.tabIndex>=0&&
+  !el.closest('[hidden],[inert]')&&el.getClientRects().length>0&&
+  getComputedStyle(el).visibility!=='hidden'
+ );
+}
+function openModal(id,trigger){
+ const el=document.getElementById(id);
+ if(!el)return;
+ el.classList.add("open");
+ el.dataset.trigger=trigger?.id||"";
+ liModalSetBackgroundInert(true);
+ const first=liModalTabStops(el)[0];
+ if(!first)el.tabIndex=-1;
+ (first||el).focus({preventScroll:true});
+}
 function closeModal(id){
  const el=document.getElementById(id);
  if(!el)return;
@@ -566,9 +598,8 @@ function closeModal(id){
  const hadFocusInside=el.contains(document.activeElement);
  const opener=el.dataset.trigger?document.getElementById(el.dataset.trigger):null;
  el.classList.remove("open");
- // UX-DS-35: when an accessible blocking dialog closes, restore its trigger
- // after the modal is hidden. This also applies to Escape/backdrop close.
- if(wasOpen&&opener?.isConnected&&!opener.disabled&&opener.getClientRects().length){
+ if(!document.querySelector('.modal.open'))liModalSetBackgroundInert(false);
+ if(wasOpen&&opener?.isConnected&&!opener.disabled&&!opener.closest('[inert],[hidden]')&&opener.getClientRects().length){
   opener.focus({preventScroll:true});
  }else if(hadFocusInside){
   document.activeElement?.blur?.();
@@ -779,7 +810,23 @@ document.getElementById("buddy-quote-info").addEventListener("click",()=>{
 document.getElementById("close-modal").addEventListener("click",()=>closeModal("buddy-modal"));
 document.getElementById("laoly-fab").addEventListener("click",()=>openLaoLy(document.getElementById("laoly-fab")));
 document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)closeModal(m.id)}));
-document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".modal.open").forEach(m=>closeModal(m.id));if(e.key==="Tab"){const m=document.querySelector(".modal.open");if(!m)return;const b=[...m.querySelectorAll("button,input")].filter(el=>!el.hidden&&!el.disabled&&el.getClientRects().length);if(!b.length)return;if(e.shiftKey&&document.activeElement===b[0]){e.preventDefault();b[b.length-1].focus()}else if(!e.shiftKey&&document.activeElement===b[b.length-1]){e.preventDefault();b[0].focus()}}});
+document.addEventListener("keydown",e=>{
+ const m=document.querySelector(".modal.open");
+ if(!m)return;
+ if(e.key==="Escape"){e.preventDefault();closeModal(m.id);return}
+ if(e.key!=="Tab")return;
+ const stops=liModalTabStops(m);
+ if(!stops.length){e.preventDefault();m.tabIndex=-1;m.focus({preventScroll:true});return}
+ const active=document.activeElement;
+ if(!stops.includes(active)){
+  e.preventDefault();
+  (e.shiftKey?stops[stops.length-1]:stops[0]).focus();
+ }else if(e.shiftKey&&active===stops[0]){
+  e.preventDefault();stops[stops.length-1].focus();
+ }else if(!e.shiftKey&&active===stops[stops.length-1]){
+  e.preventDefault();stops[0].focus();
+ }
+});
 document.querySelectorAll(".preview-toggle").forEach(x=>x.addEventListener("change",()=>{x.checked=false;toast("Chưa thể bật nhắc nhở trên thiết bị.")}));
 document.getElementById("method-search").addEventListener("input",renderMethods);
 document.getElementById("global-search").addEventListener("input",e=>{const q=e.target.value.toLocaleLowerCase("vi").trim();const results=[["Tàng Thư · Xã hội học","catalog"],["Thiên lệch chọn mẫu","lesson"],["Khảo Chứng · 90% hài lòng","research"],...methods.map(m=>[m[1]+" / "+m[2],"guide"])].filter(a=>q&&a[0].toLocaleLowerCase("vi").includes(q)).slice(0,12);document.getElementById("global-results").innerHTML=q?(results.length?results.map(a=>'<button class="branch" data-page="'+a[1]+'">'+a[0]+'</button>').join(""):'Không tìm thấy. Thử từ khóa khác hoặc về Tàng Thư. <button class="action alt" data-page="catalog">Tàng Thư</button>'):'Nhập điều bạn muốn tìm.'});

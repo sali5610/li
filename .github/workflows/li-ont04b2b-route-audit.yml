@@ -1,0 +1,29 @@
+name: li. ONT-04B2b-1 route audit (PR only, never release)
+on:
+  pull_request:
+    paths:
+      - 'docs/ontology/search/routes/**'
+      - 'tools/check_search_publication_routes.mjs'
+      - '.github/workflows/li-ont04b2b-route-audit.yml'
+permissions:
+  contents: read
+jobs:
+  source-route-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Shared ontology + academic/pedagogical graph + typed search
+        run: |
+          node tools/validate_ontology.mjs --check
+          node tools/validate_academic_ontology.mjs --check
+          node tools/validate_pedagogy_ontology.mjs --check
+          node tools/test_offline_typed_search.mjs
+      - name: Compare candidate route IDs with REAL native source, deny release flags
+        run: node tools/check_search_publication_routes.mjs --check
+      - name: No published route adapter or migrations created
+        run: |
+          test -z "$(git ls-files docs/ontology/search/routes/approved-publication-manifest.json)"
+          test -z "$(git ls-files site/assets/ont04b-search-site-island.js site/assets/ont04b-search-site-island.css)"

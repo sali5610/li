@@ -6,7 +6,7 @@ import {RevisionConflict} from '../.sync-test/contract.js';
 const user='test-user-A';
 const jwt=['e30',Buffer.from(JSON.stringify({sub:user,role:'authenticated'})).toString('base64url'),'signature'].join('.');
 const endpoint='https://example.apirest.neon.tech/li/rest/v1';
-const remote=(revision=1)=>({item_type:'lesson_attempt',item_id:'L09-1-2',revision,
+const remote=(revision=1)=>({owner_id:user,item_type:'lesson_attempt',item_id:'L09-1-2',revision,
   payload:{draft:'sample'},changed_at:'2026-11-19T00:00:00.000Z',deleted_at:null});
 const ok=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json'}});
 const edit={itemType:'lesson_attempt',itemId:'L09-1-2',baseRevision:0,payload:{draft:'sample'},
@@ -69,4 +69,13 @@ test('paginated RLS-scoped pull respects 100-row Data API cap',async()=>{
  const rows=await api.all();
  assert.equal(rows.length,101);
  assert.deepEqual(pages,[0,100]);
+});
+
+test('remote row with another owner is rejected before app state hydration',async()=>{
+ const api=new NeonUserApi(endpoint,async()=>jwt,user,async()=>ok([{...remote(),owner_id:'test-user-B'}]));
+ await assert.rejects(api.all(),/REMOTE_OWNER_MISMATCH/);
+});
+test('missing owner provenance in server response is a hard failure',async()=>{
+ const api=new NeonUserApi(endpoint,async()=>jwt,user,async()=>ok([{...remote(),owner_id:undefined}]));
+ await assert.rejects(api.all(),/REMOTE_OWNER_MISMATCH/);
 });

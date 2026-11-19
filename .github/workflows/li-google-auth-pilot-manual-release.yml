@@ -1,0 +1,117 @@
+name: Release li. Google Auth pilot to Cloudflare Free — MANUAL ONLY
+
+# NO push/pull_request trigger. No deployment occurs when this workflow is
+# merged. It requires a Human PO-initiated GitHub Actions dispatch on main.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type PUBLISH_LI_AUTH_PILOT_ONLY to authorize this isolated pilot."
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: li-cloudflare-pages-free-production
+  cancel-in-progress: false
+
+jobs:
+  release-auth-only:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.confirm == 'PUBLISH_LI_AUTH_PILOT_ONLY'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: cloudflare-free-production
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+    steps:
+      - name: Checkout approved production main; never merge unfinished Step16 draft
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check exact existing static site before augmenting it
+        run: |
+          set -euo pipefail
+          python3 tools/validate_site.py
+          python3 tools/generate_design_tokens.py --check
+          python3 tools/validate_design_system.py
+          python3 tools/validate_ui_foundations.py
+          test ! -e site/auth-pilot || { echo "Pilot destination already exists; stop rather than overwrite"; exit 1; }
+
+      - name: Checkout reviewed Auth-only research source by immutable commit
+        uses: actions/checkout@v4
+        with:
+          repository: sali5610/li
+          ref: c9547901479d0402a45861f12448ebef93735247
+          path: auth-pilot-source
+          persist-credentials: false
+
+      - name: Verify immutable source ID and Google-only login controls
+        run: |
+          set -euo pipefail
+          test "$(git -C auth-pilot-source rev-parse HEAD)" = "c9547901479d0402a45861f12448ebef93735247"
+          test -f auth-pilot-source/tools/step16-real-l09-react-island/vite.auth.config.mjs
+          grep -Fq "signIn.social({provider:'google'" auth-pilot-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
+          grep -Fq "checkInviteAccess" auth-pilot-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
+          ! grep -Eq "syncOnce|bindNeonAccount|signIn.email|AuthRecovery|AuthEmailVerification" auth-pilot-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
+          echo "PASS pinned source: Google only; no sync, password or password-recovery UI"
+
+      - name: Set up free GitHub runner for isolated Auth build
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build isolated Auth-only static assets (no lesson bundling)
+        working-directory: auth-pilot-source/tools/step16-real-l09-react-island
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund
+          npm run build:auth
+          test -f dist-auth/auth-entry.html
+          test "$(find dist-auth -type f -name '*.html' | wc -l)" -eq 1
+          test -z "$(find dist-auth -type f -name '*.map' -print -quit)"
+          grep -Fq '/auth-pilot/assets/' dist-auth/auth-entry.html
+          grep -Fq 'content="no-referrer"' dist-auth/auth-entry.html
+          echo "PASS one standalone Auth-only HTML entry, no sourcemaps"
+
+      - name: Add only the pilot route to the approved site copy in this runner
+        run: |
+          set -euo pipefail
+          mkdir -p site/auth-pilot
+          cp -a auth-pilot-source/tools/step16-real-l09-react-island/dist-auth/. site/auth-pilot/
+          mv site/auth-pilot/auth-entry.html site/auth-pilot/index.html
+          cat > site/_headers <<'HEADERS'
+          /auth-pilot/*
+            X-Robots-Tag: noindex, nofollow, noarchive
+            Referrer-Policy: no-referrer
+            Cache-Control: no-store
+          HEADERS
+          test -f site/auth-pilot/index.html
+          test -z "$(find site/auth-pilot -type f \( -name '*.map' -o -name '.env*' \) -print -quit)"
+          git diff --exit-code -- site/
+          echo "PASS original main files unchanged; new /auth-pilot/ static route is isolated"
+
+      - name: Fail closed unless verified Free-only quota and deployment credentials
+        run: |
+          set -euo pipefail
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "Missing Cloudflare token"; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "Missing Cloudflare account"; exit 1; }
+          test -n "$CLOUDFLARE_PAGES_PROJECT" || { echo "Missing Pages project"; exit 1; }
+          python3 tools/g3_cloudflare_free_guard.py --site site --online
+
+      - name: Manual pilot deployment: whole approved site + isolated Auth route only
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy site --branch=main --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+
+      - name: Release notice (does NOT claim real Google login or RLS verification)
+        run: |
+          echo "Pilot uploaded through manual Free-only gate."
+          echo "Human owner must check /auth-pilot/, sign in with owned Google accounts and run live RLS proof."
+          echo "No learning data sync or new frontend routes outside auth-pilot were enabled."

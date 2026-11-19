@@ -116,10 +116,12 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   };
   window.addEventListener('focus',refresh);
   window.addEventListener('online',refresh);
+  window.addEventListener('li:auth-recheck',refresh);
   document.addEventListener('visibilitychange',refresh);
   return()=>{
    window.removeEventListener('focus',refresh);
    window.removeEventListener('online',refresh);
+   window.removeEventListener('li:auth-recheck',refresh);
    document.removeEventListener('visibilitychange',refresh);
   };
  },[]);

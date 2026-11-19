@@ -179,6 +179,12 @@ async function main(){
  }
  await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false});
  await go(shared,'prepare synthetic submit',true);
+ // Step16.2: resume must land on the first answer, without synthetic state mutation.
+ verify(await evaluate("document.querySelector('.pilot-resume')?.dataset.resumeStage==='empty'"),
+  'Empty React lesson must advertise start, not a fabricated saved attempt');
+ await evaluate("document.querySelector('[data-action=resume]').click()");
+ verify(await evaluate("document.activeElement?.matches('textarea[data-answer=\"0\"]')"),
+  'Resume on empty L09 must focus the first answer');
  for(let i=0;i<4;i++){
   const val='Synthetic matched review answer '+i+' with sufficient description';
   await evaluate("(()=>{const e=document.querySelector('[data-answer=\""+i+"\"]');"+
@@ -187,6 +193,11 @@ async function main(){
   await until(()=>evaluate("JSON.parse(localStorage.getItem('step16.l09.react-island.v1')||'null')?.draft?.["+
    i+"]?.startsWith('Synthetic matched review answer')"),'synthetic draft '+i);
  }
+ verify(await evaluate("(()=>{const p=document.querySelector('.pilot');return p?.querySelector('.pilot-resume')?.dataset.resumeStage==='draft'&&p?.querySelector('[data-resume-status]')?.textContent.includes('Đã lưu trên thiết bị')})()"),
+  'Draft progress must be derived from confirmed device write, not mere click');
+ await evaluate("document.querySelector('[data-action=resume]').click()");
+ verify(await evaluate("document.activeElement?.matches('[data-action=submit]')"),
+  'Completed four-answer draft resumes at Submit');
  await evaluate("document.querySelector('[data-action=hint]').click()");
  await until(()=>evaluate("!!document.querySelector('[data-hint]')"),'synthetic hint');
  await evaluate("document.querySelector('[data-locale=en]').click()");
@@ -196,6 +207,11 @@ async function main(){
  await evaluate("document.querySelector('[data-action=submit]').click()");
  await until(()=>evaluate("!!document.querySelector('[data-rubric]')"),'synthetic rubric unlock');
  await go(shared,'submitted Shared fresh',true);const x=await snapshot();
+ verify(await evaluate("document.querySelector('.pilot-resume')?.dataset.resumeStage==='submitted'"),
+  'Reloaded submitted attempt must point to self-review, not restart');
+ await evaluate("document.querySelector('[data-action=resume]').click()");
+ verify(await evaluate("document.activeElement?.matches('[data-rating=\"0\"]')"),
+  'Submitted L09 resumes on first unset rubric rating');
  await screenshot('submitted-shared-390');
  await go(legacy,'submitted legacy fresh',false);const y=await snapshot();
  await screenshot('submitted-legacy-390');
@@ -205,6 +221,19 @@ async function main(){
  verify(x.answerDisabled.length===4&&y.answerDisabled.length===4&&
   x.answerDisabled.every(Boolean)&&y.answerDisabled.every(Boolean),
   'Post-submit four fields must be disabled in both owners');
+ // Reuse the existing L09 Chromium scenario for the final, reviewed state.
+ await go(shared,'review completion resume',true);
+ for(let i=0;i<4;i++){
+  await evaluate("(()=>{const e=document.querySelector('[data-rating=\""+i+"\"]');e.value='2';e.dispatchEvent(new Event('change',{bubbles:true}));return true})()");
+  await until(()=>evaluate("JSON.parse(localStorage.getItem('step16.l09.react-island.v1')||'null')?.ratings?.["+i+"]===2"),'rating persisted '+i);
+ }
+ await evaluate("document.querySelector('[data-action=finish]').click()");
+ await until(()=>evaluate("document.querySelector('.pilot-resume')?.dataset.resumeStage==='reviewed'"),'review completion');
+ await evaluate("document.querySelector('[data-action=resume]').click()");
+ verify(await evaluate("document.activeElement?.id==='rubric-title'"),
+  'Reviewed resume focuses rubric heading, not disabled inputs');
+ verify(await evaluate("!localStorage.getItem('li.review.L09-1-2.v1')"),
+  'Research resume/review must never touch the real learner key');
  matched.push({viewport:390,state:'submitted',contentSha256:digest(x.content),
   identicalContent:true,css:cssLedger(y,x)});
  pairs.push({width:390,state:'submitted',legacy:'submitted-legacy-390.png',

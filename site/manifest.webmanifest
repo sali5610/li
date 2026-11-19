@@ -1,0 +1,25 @@
+{
+  "name": "li. (理) — Thư viện tri thức",
+  "short_name": "li.",
+  "description": "Học, luyện tập và theo dõi tiến độ.",
+  "lang": "vi",
+  "start_url": "/li/",
+  "scope": "/li/",
+  "display": "standalone",
+  "background_color": "#F1F2EA",
+  "theme_color": "#243A29",
+  "icons": [
+    {
+      "src": "/li/assets/li-seal.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/li/assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

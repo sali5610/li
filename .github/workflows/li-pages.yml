@@ -197,6 +197,24 @@ jobs:
           fi
           echo 'PASS browser: Home hidden and login visible until verified invited account'
 
+      - name: Generate offline Workbox service worker for integrated staging
+        run: |
+          set -euo pipefail
+          npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-config.cjs
+          test -s site/sw.js
+          test -s site/manifest.webmanifest
+          test -s site/assets/pwa-register.js
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          m=json.loads(Path('site/manifest.webmanifest').read_text())
+          assert m['scope']=='/li/' and m['start_url']=='/li/'
+          sw=Path('site/sw.js').read_text()
+          assert 'index.html' in sw
+          assert 'neon.tech' not in sw
+          print('PASS PWA scope, offline shell precache and no Neon responses')
+          PY
+
       - name: Configure GitHub Pages STAGING
         uses: actions/configure-pages@v5
 

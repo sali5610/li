@@ -39,7 +39,10 @@ function validate(g,m){
  assert.ok(g.nodes.every(x=>kinds.has(x.kind)),"non-UI ontology node");
  assert.ok(g.edges.every(x=>validPreds.has(x.predicate)),"non-UI ontology relation");
  assert.ok(g.nodes.every(x=>x.reviewState!=="approved"&&x.publishState!=="published"),"unapproved node promoted");
- const components=g.nodes.filter(x=>x.kind==="Component").map(x=>x.id).sort();
+ const proposedOnly=["component:ActionGroup"];
+ assert.deepEqual(m.unmappedProposals,proposedOnly,"only explicitly unimplemented ActionGroup is exempt");
+ for(const id of proposedOnly)assert.equal(n.get(id)?.reviewState,"proposed","unmapped component must remain proposal");
+ const components=g.nodes.filter(x=>x.kind==="Component"&&!proposedOnly.includes(x.id)).map(x=>x.id).sort();
  assert.deepEqual(m.components.map(x=>x.componentId).sort(),components,"untracked component node");
  assert.equal(components.length,5,"five native families must have source mappings");
  const owner=[];

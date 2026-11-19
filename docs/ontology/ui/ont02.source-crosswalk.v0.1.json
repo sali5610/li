@@ -527,5 +527,8 @@
     }
   ],
   "crossBranchIntegration": "PENDING_SAME_TREE_REVIEW",
-  "semanticValueAuthority": "design-system/tokens.json on DS draft #134; ONT-01 branch has no alias map yet"
+  "semanticValueAuthority": "design-system/tokens.json on DS draft #134; ONT-01 branch has no alias map yet",
+  "unmappedProposals": [
+    "component:ActionGroup"
+  ]
 }

@@ -19,5 +19,5 @@ jobs:
           node-version: '22'
       - name: Typed ONT-01 graph and negative fixtures
         run: node tools/validate_ontology.mjs --check
-      - name: ONT-02 source crosswalk and nine negative UI fixtures
+      - name: ONT-02 five-family source crosswalk and 14 negative UI fixtures
         run: node tools/validate_ui_ontology.mjs --check

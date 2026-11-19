@@ -166,6 +166,18 @@ jobs:
             "http://127.0.0.1:8794/tools/step16-real-l09-react-island/site-shell-fixture.html" \
             "LI_STEP16_L09_SHELL_PASS " 23 90000
           echo "PASS STAGE02B_FULL_TREE_L09_NATIVE_SHELL"
+      - name: Real authored native L09 vs opt-in React L09 geometry (no visual auto-approval)
+        shell: bash
+        env:
+          LI_STAGE02B_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$chrome"
+          python3 -m http.server 8798 --bind 127.0.0.1 --directory "$LI_STAGE02B_COMBINED" > /tmp/li-02b-real-geometry-server.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+          node "$LI_STAGE02B_COMBINED/tools/step16-real-l09-react-island/scripts/l09-geometry-browser.cjs" "$chrome" "http://127.0.0.1:8798"
       - name: Upload full three-tree CI evidence (no real device or deploy)
         if: always()
         uses: actions/upload-artifact@v4

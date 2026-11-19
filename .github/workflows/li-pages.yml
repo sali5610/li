@@ -49,14 +49,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: sali5610/li
-          ref: 5be29c9313ebfa10b2df6576173a825f1614496e
+          ref: 514c4f6c3176ac83b3894f5cf631b649a847be6a
           path: staging-auth-source
           persist-credentials: false
 
       - name: Verify strict login gate and native lesson key
         run: |
           set -euo pipefail
-          test "$(git -C staging-auth-source rev-parse HEAD)" = "5be29c9313ebfa10b2df6576173a825f1614496e"
+          test "$(git -C staging-auth-source rev-parse HEAD)" = "514c4f6c3176ac83b3894f5cf631b649a847be6a"
           root=staging-auth-source/tools/step16-real-l09-react-island
           grep -Fq "VITE_LI_AUTH_TARGET!=='github-pages-staging'" "$root/vite.staging-app.config.mjs"
           grep -Fq "checkInviteAccess" "$root/src/auth/AuthPanel.tsx"
@@ -68,6 +68,7 @@ jobs:
           grep -Fq "const LESSONS=['L03-1-2','L09-1-2','L15-2-2']" "$root/src/auth/learner-sync.ts"
           grep -Fq "await checkInviteAccess" "$root/src/auth/learner-sync.ts"
           grep -Fq "await api.write" "$root/src/auth/learner-sync.ts"
+          grep -Fq 'isBlankNativeAttempt' "$root/src/auth/learner-sync.ts"
           ! grep -Eq "signIn.email|AuthRecovery|AuthEmailVerification" "$root/src/auth/AuthPanel.tsx"
           test ! -e "$root/src/auth/qa-secrets.ts"
           echo "PASS invited-only Google sign-in gate and three published native lessons on Neon"

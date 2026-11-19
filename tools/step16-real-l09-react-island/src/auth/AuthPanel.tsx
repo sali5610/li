@@ -1,5 +1,4 @@
 import React,{useEffect,useState} from 'react';
-import {bindNeonAccount} from '../sync/neon-session.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
 import {authClient,neonSessionPort} from './neon-client.js';
 import {AUTH_ORIGIN,NEON_DATA_API_URL} from './config.js';
@@ -73,8 +72,8 @@ export function AuthPanel(){
   // neon_auth.user; its table RLS also independently denies all uninvited users.
   void (async()=>{
    try{
-    const api=await bindNeonAccount(NEON_DATA_API_URL,neonSessionPort);
-    if(!api||api.accountId!==accountId)throw Error('ACCOUNT_BINDING_FAILED');
+    // The server-backed invitation RPC verifies session↔JWT subject itself.
+    // This auth-only pilot NEVER constructs a learner Data API adapter.
     const allowed=await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort);
     if(!disposed)setAccess(allowed?'granted':'denied');
    }catch{

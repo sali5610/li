@@ -128,54 +128,6 @@ jobs:
             'http://127.0.0.1:8787/design-system/index.html#button'
           test -s /tmp/li-ds-studio-preview/studio-desktop.png
           echo 'PASS UXDS35_STUDIO_BROWSER_MOUNT'
-      - name: Export thin Pages publisher (no cloned DS sources)
-        run: |
-          set -euo pipefail
-          node tools/build-design-system-site.mjs
-          node tools/uxds35-make-repo.mjs
-          cd dist-design-system-repository
-          zip -r -q /tmp/li-design-system-repo.zip .
-          unzip -p /tmp/li-design-system-repo.zip .github/workflows/pages.yml | grep -Fq 'deploy-pages@v4'
-          unzip -p /tmp/li-design-system-repo.zip .github/workflows/pages.yml | grep -Fq 'repository: sali5610/li'
-          test -s README.md
-          test -s .github/workflows/pages.yml
-      - name: Upload independent DS repository package
-        uses: actions/upload-artifact@v4
-        with:
-          name: li-design-system-thin-github-pages-publisher
-          retention-days: 14
-          if-no-files-found: error
-          path: /tmp/li-design-system-repo.zip
-
-      - name: Upload single-web source and visual screenshot
-        uses: actions/upload-artifact@v4
-        with:
-          name: li-uxds35-design-system-studio-preview
-          if-no-files-found: error
-          retention-days: 7
-          path: |
-            site/design-system/
-            site/assets/design-tokens.css
-            site/assets/li-layout.css
-            /tmp/li-ds-studio-preview/studio-desktop.png
-            /tmp/li-ds-studio-preview/react-layout-mobile-dom.html
-            /tmp/li-ds-studio-preview/react-layout-tablet-dom.html
-            /tmp/li-ds-studio-preview/react-atom-heading-dom.html
-            /tmp/li-ds-studio-preview/react-atom-progress-dom.html
-            /tmp/li-ds-studio-preview/react-field-error-dom.html
-            /tmp/li-ds-studio-preview/react-radio-selected-dom.html
-            /tmp/li-ds-studio-preview/react-button-loading-dom.html
-            /tmp/li-ds-studio-preview/react-card-flat-dom.html
-            /tmp/li-ds-studio-preview/react-chip-selected-dom.html
- | wc -l)" -eq 2
-      - name: Upload independent DS repository package
-        uses: actions/upload-artifact@v4
-        with:
-          name: li-design-system-thin-github-pages-publisher
-          retention-days: 14
-          if-no-files-found: error
-          path: /tmp/li-design-system-repo.zip
-
       - name: Upload single-web source and visual screenshot
         uses: actions/upload-artifact@v4
         with:

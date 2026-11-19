@@ -7,6 +7,7 @@ on:
     branches: [integration/staging]
     paths:
       - 'site/**'
+      - 'design-system/**'
       - 'tools/**'
       - 'db/migrations/**'
       - '.github/workflows/li-pages.yml'
@@ -215,20 +216,10 @@ jobs:
           print('PASS PWA scope, offline shell precache and no Neon responses')
           PY
 
-      # UX-DS-35: the older public Component Library URL is one standalone
-      # page in this existing GitHub Pages site. Never publish it via Vercel.
-      # Pull ONLY its authored source from li main; do not copy app auth,
-      # private learner files, or overwrite staging's shared CSS assets.
-      - name: Checkout canonical Component Library source (GitHub main)
-        uses: actions/checkout@v4
-        with:
-          repository: sali5610/li
-          ref: main
-          path: canonical-component-library
-          persist-credentials: false
-
+      # Build Design System directly from this integration/staging checkout.
+      # Preview and learner app share one canonical source tree.
       - name: Compile actual React Components for existing Component Library URL
-        working-directory: canonical-component-library/design-system/react
+        working-directory: design-system/react
         run: |
           set -euo pipefail
           npm install --no-audit --no-fund
@@ -239,15 +230,15 @@ jobs:
           test -s ../../site/design-system/react-controls.js
           test -s ../../site/design-system/react-components.js
 
-      - name: Publish ONLY Design System routes from main (no app changes)
+      - name: Stage Design System routes from integration HEAD (no app changes)
         run: |
           set -euo pipefail
           mkdir -p site/design-system/assets
-          cp -a canonical-component-library/site/design-system/. site/design-system/
-          cp canonical-component-library/site/assets/design-tokens.css site/design-system/assets/
-          cp canonical-component-library/site/assets/li-layout.css site/design-system/assets/
-          cp canonical-component-library/site/component-library-review.html site/component-library-review.html
-          cp canonical-component-library/site/component-library-archive.html site/component-library-archive.html
+          test -s site/design-system/index.html
+          cp site/assets/design-tokens.css site/design-system/assets/
+          cp site/assets/li-layout.css site/design-system/assets/
+          test -s site/component-library-review.html
+          test -s site/component-library-archive.html
           python3 - <<'PY'
           from pathlib import Path
           for page in Path('site/design-system').glob('*.html'):

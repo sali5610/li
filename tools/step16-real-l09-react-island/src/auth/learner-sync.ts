@@ -1,6 +1,6 @@
 import {bindNeonAccount} from '../sync/neon-session.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
-import {RevisionConflict} from '../sync/contract.js';
+import {RevisionConflict,type JsonValue} from '../sync/contract.js';
 import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_GITHUB_STAGING} from './config.js';
 import {neonSessionPort} from './neon-client.js';
 
@@ -121,7 +121,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
     if(localStorage.getItem(key)!==raw){pending=true;continue;}
     const next=await api.write({
      itemType:'lesson_attempt',itemId:id,baseRevision:remote?.revision??0,
-     payload:{schema:'li.native.lesson.v1',data:local},
+     payload:{schema:'li.native.lesson.v1',data:local as Record<string,JsonValue>},
      deletedAt:null,opId:crypto.randomUUID()
     });
     const verified=await api.one('lesson_attempt',id);

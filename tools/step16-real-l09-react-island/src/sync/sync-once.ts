@@ -7,7 +7,7 @@ export type SyncGate={twoUserJwtRlsVerified:boolean;remoteConsentForPrivateState
 export type SyncReport={mode:'local-only'|'synced'|'offline'|'conflict';uploaded:number;downloaded:number;pending:number;conflicts:number};
 export async function syncOnce(store:PrivateDeviceStore,api:NeonUserApi,accountId:string,
  gate:SyncGate={twoUserJwtRlsVerified:false,remoteConsentForPrivateState:false}):Promise<SyncReport>{
- if(!accountId.trim())throw new Error('ACCOUNT_REQUIRED');
+ if(!accountId.trim()||accountId!==api.accountId)throw new Error('ACCOUNT_BINDING_REQUIRED');
  const initial=await store.counts(accountId);
  if(!gate.twoUserJwtRlsVerified||!gate.remoteConsentForPrivateState)
   return{mode:'local-only',uploaded:0,downloaded:0,...initial};

@@ -1,0 +1,62 @@
+name: li. ONT-04C2b Native Browser QA (PR only, no deploy)
+on:
+  pull_request:
+    paths:
+      - 'tools/qa_laoly_browser.js'
+      - 'tools/create_qa_laoly_page.mjs'
+      - 'tools/parse_qa_laoly_dump.mjs'
+      - 'docs/ontology/companion/ONT-04C2b-browser-qa.md'
+      - '.github/workflows/li-ont04c2b-browser-qa.yml'
+      - 'site/assets/laoly-quote-stage-gate.js'
+      - 'site/assets/laoly-quotes-s121.js'
+      - 'site/assets/lesson-companion-native.js'
+      - 'site/index.html'
+permissions:
+  contents: read
+jobs:
+  native-mounted-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Source and synthetic DOM gates must still pass
+        run: |
+          node tools/check_laoly_quote_runtime_gate.mjs --check
+          node tools/test_quotes.js
+      - name: Generate untracked QA wrapper and verify Chromium is available
+        run: |
+          node tools/create_qa_laoly_page.mjs
+          test -z "$(git ls-files site/__ont04c2b_qa.html)"
+          command -v google-chrome || command -v google-chrome-stable || command -v chromium
+      - name: Launch local-only static site and exercise actual app in responsive iframes
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)"
+          python3 -m http.server 8766 --bind 127.0.0.1 --directory . > /tmp/li-ont04c2b-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          curl --fail --silent "http://127.0.0.1:8766/site/__ont04c2b_qa.html" > /dev/null
+          timeout 150s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+             --hide-scrollbars --window-size=1510,1030 --virtual-time-budget=95000 \
+             --dump-dom "http://127.0.0.1:8766/site/__ont04c2b_qa.html" \
+             > /tmp/li-ont04c2b-dom.html 2> /tmp/li-ont04c2b-chrome.log
+          node tools/parse_qa_laoly_dump.mjs < /tmp/li-ont04c2b-dom.html
+      - name: Preserve exact browser QA report for reviewer (not a deployment)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ont04c2b-native-browser-report
+          path: |
+            /tmp/li-ont04c2b-results.json
+            /tmp/li-ont04c2b-chrome.log
+            /tmp/li-ont04c2b-http.log
+          if-no-files-found: ignore
+          retention-days: 3
+      - name: No QA page committed; no Cloudflare or learner data mutations
+        run: |
+          test -z "$(git ls-files site/__ont04c2b_qa.html)"
+          test -z "$(git ls-files site/assets/ont04c2b-deploy-bundle.js)"

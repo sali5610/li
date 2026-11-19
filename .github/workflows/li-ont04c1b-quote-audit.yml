@@ -1,0 +1,31 @@
+name: li. ONT-04C1b quote source/rights safety audit (PR only)
+on:
+  pull_request:
+    paths:
+      - 'docs/ontology/companion/quote-safety*'
+      - 'docs/ontology/companion/QUOTE-SAFETY.md'
+      - 'tools/check_companion_quote_safety.mjs'
+      - '.github/workflows/li-ont04c1b-quote-audit.yml'
+permissions:
+  contents: read
+jobs:
+  quote-safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Inherited ontology/Search/route/companion validators
+        run: |
+          node tools/validate_ontology.mjs --check
+          node tools/validate_academic_ontology.mjs --check
+          node tools/validate_pedagogy_ontology.mjs --check
+          node tools/test_offline_typed_search.mjs
+          node tools/check_search_publication_routes.mjs --check
+          node tools/check_companion_context.mjs --check
+      - name: Current source S121 quote bank + VI/EN companion reference integrity and abstention
+        run: node tools/check_companion_quote_safety.mjs --check
+      - name: No quote text or real learner data copied to the new audit artifacts
+        run: |
+          test -z "$(git ls-files docs/ontology/companion/quote-publication-approved.json docs/ontology/companion/user-attempts.json)"

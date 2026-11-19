@@ -18,7 +18,14 @@ async function main(){
  socket=new WebSocket(page.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{socket.addEventListener('open',resolve,{once:true});socket.addEventListener('error',reject,{once:true})});
  socket.addEventListener('message',e=>{const m=JSON.parse(String(e.data));if(m.id&&pending.has(m.id)){const f=pending.get(m.id);pending.delete(m.id);f(m)}});
  await send('Runtime.enable');await send('Page.enable');
- await until(()=>run("document.querySelector('[data-ui-preview]')?.getAttribute('data-ui-preview')"),'mounted React fixture');
+ try{
+   await until(()=>run("document.querySelector('[data-ui-preview]')?.getAttribute('data-ui-preview')"),'mounted React fixture');
+ }catch(e){
+   const diag=await run("(()=>({readyState:document.readyState,url:location.href,title:document.title,body:document.body?.innerText?.slice(0,600),roots:document.querySelectorAll('#root,#app,[data-ui-preview]').length,scripts:[...document.scripts].map(e=>e.src)}))()").catch(err=>({cdp:String(err)}));
+   fs.mkdirSync('/tmp/li-uxds35-stage02b',{recursive:true});
+   fs.writeFileSync('/tmp/li-uxds35-stage02b/mount-diagnostic.json',JSON.stringify({diagnostic:diag,chromeStderr:chromeStderr.slice(-2200)},null,2));
+   throw Error('Mounted React fixture diagnostics: '+JSON.stringify(diag)+'; original='+e.message);
+ }
  let n=0;const check=(condition,msg)=>{assert.ok(condition,msg);n++};
  const base=await run("(()=>({root:!!document.querySelector('.li-ui-preview'),primary:document.querySelector('[data-ui-primary]')?.type,loading:document.querySelector('[data-ui-loading]')?.disabled,readonly:document.querySelector('[data-ui-readonly]')?.readOnly,disabled:document.querySelector('[data-ui-disabled]')?.disabled,one:document.querySelectorAll('[aria-current=page]').length,store:localStorage.length}))()");
  check(base.root&&base.primary==='button'&&base.loading&&base.readonly&&base.disabled&&base.one===1,'semantic states/one nav owner');

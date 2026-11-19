@@ -65,6 +65,13 @@ jobs:
           python3 -m http.server 8795 --bind 127.0.0.1 --directory . > /tmp/li-02b-server.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          # Bounded HTTP readiness before launching Chromium. A network-service crash
+          # or server bind race is infrastructure, not automatically a React defect.
+          for i in {1..30}; do
+            if curl --fail --silent --show-error 'http://127.0.0.1:8795/tools/step16-real-l09-react-island/dist/index.html?pilot=uxds35' > /dev/null 2>&1; then break; fi
+            sleep 0.2
+          done
+          curl --fail --silent --show-error 'http://127.0.0.1:8795/tools/step16-real-l09-react-island/dist/index.html?pilot=uxds35' > /dev/null
           LI_UXDS35_NATIVE_URL="http://127.0.0.1:8795/uxds35-design-pin/site/component-library-review.html" \
             node tools/step16-real-l09-react-island/scripts/ui-parity-browser.cjs "$chrome" "http://127.0.0.1:8795/tools/step16-real-l09-react-island/dist/index.html?pilot=uxds35"
       - name: Upload synthetic Stage02B browser evidence (NOT Safari)

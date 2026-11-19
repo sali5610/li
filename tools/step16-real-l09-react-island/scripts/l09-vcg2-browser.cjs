@@ -83,8 +83,10 @@ const variants=[
  {width:390,height:844,pad:20,min:48},
  {width:402,height:874,pad:20,min:48},
  {width:600,height:900,pad:24,min:48},
- {width:820,height:1050,pad:28,min:56},
- {width:1040,height:768,pad:32,min:56},
+ // Canonical iPad :root tokens intentionally scale semantic body from 16/24 to 18/28.
+ // Preserve that responsive role; D1 is a body-label contract, not a fixed pixel lock.
+ {width:820,height:1050,pad:28,min:56,body:[18,28]},
+ {width:1040,height:768,pad:32,min:56,body:[18,28]},
  {width:1440,height:900,pad:32,min:56}
 ];
 async function main(){
@@ -120,8 +122,11 @@ async function main(){
   verify(b.answerCount===4&&b.answerShared.every(Boolean)&&b.answerLabels.every(x=>x===1)&&
     b.answerPurposes.every(x=>x==='answer'),'D3 TextAreaField label/purpose mismatch '+v.width);
   verify(b.buttons.primary?.height>=v.min&&b.buttons.secondary?.height>=v.min,'D1 hit target smaller than '+v.min+'px at '+v.width);
-  verify(b.buttons.primary.fontSize==='16px'&&b.buttons.secondary.fontSize==='16px'&&
-    b.buttons.primary.lineHeight==='24px'&&b.buttons.secondary.lineHeight==='24px','D1 body typography 16/24 drift '+v.width);
+  const [bodyPx,leadingPx]=v.body||[16,24];
+  verify(b.buttons.primary.fontSize===bodyPx+'px'&&b.buttons.secondary.fontSize===bodyPx+'px'&&
+    b.buttons.primary.lineHeight===leadingPx+'px'&&b.buttons.secondary.lineHeight===leadingPx+'px',
+    'D1 semantic body typography drift '+v.width+' expected '+bodyPx+'/'+leadingPx+
+    ' observed '+JSON.stringify({primary:b.buttons.primary,secondary:b.buttons.secondary}));
   verify(b.buttons.primary.borderRadius==='0px'&&/4px 4px 0px/.test(b.buttons.primary.shadow)&&
     /4px 4px 0px/.test(b.buttons.secondary.shadow),'D1 square/hard-shadow drift '+v.width+' '+b.buttons.primary.shadow);
   verify(b.cards.every(c=>c.padding.split(' ').every(x=>parseFloat(x)===v.pad)),'D2 card padding wrong at '+v.width+' '+JSON.stringify(b.cards.map(x=>x.padding)));

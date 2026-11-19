@@ -62,7 +62,7 @@
   font-size:var(--li-type-body);line-height:var(--li-leading-body)
 }
 /* Question-answer is a named multiline context, not a universal textarea height. */
-.pilot[data-vc-g2="approved-research"] [data-field-purpose="answer"]{
+.pilot[data-vc-g2="approved-research"] .li-ui-field .li-ui-input[data-field-purpose="answer"]{
   min-height:calc(var(--li-space-12) * 2 + var(--li-space-4))
 }
 @media(min-width:600px){

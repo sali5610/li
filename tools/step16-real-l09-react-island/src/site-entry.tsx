@@ -7,6 +7,11 @@ import {createRoot} from 'react-dom/client';
 import './pilot.css';
 import './ui/shared.css';
 import {Pilot} from './Pilot';
+import {LearningJourney} from './learning/LearningJourney';
+import type {LearningPorts} from './learning/ports';
+import '../../../../design-system/react/atoms.css';
+import '../../../../design-system/react/controls.css';
+import '../../../../design-system/react/components.css';
 
 export function mountL09(host:HTMLElement):Promise<()=>void>{
  if(!host.isConnected) return Promise.reject(Error('L09_HOST_DISCONNECTED'));
@@ -58,3 +63,18 @@ export async function mountSettingsAccount(host:HTMLElement):Promise<()=>void>{
 }
 
 export {captureFixtureSnapshot,rollbackFixtureSnapshot} from './learning/fixture-handover';
+
+/** Integration entry for the SAME app lesson route. Chat 1 invokes this only after
+ * Chat 3 installs real invite/attempt/sync ports and Chat 4 installs real search.
+ * Never auto-mount a guest preview or override the native lesson silently.
+ */
+export function mountLearningJourney(host:HTMLElement,ports:LearningPorts):()=>void{
+ if(!host?.isConnected)throw Error('LEARNING_HOST_DISCONNECTED');
+ if(!ports?.auth?.requireInvitedLearner||!ports?.attempts?.load||
+    !ports?.attempts?.save||!ports?.sync?.getStatus||
+    !ports?.navigation?.openCatalog||!ports?.search?.openSearch)
+  throw Error('LEARNING_REAL_PORTS_REQUIRED');
+ const root=createRoot(host);
+ root.render(<LearningJourney ports={ports}/>);
+ return ()=>root.unmount();
+}

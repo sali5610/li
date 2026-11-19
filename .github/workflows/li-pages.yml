@@ -176,10 +176,10 @@ jobs:
           assert html.count(marker)==1, 'Settings data layout changed'
           account = ('<article class="surface" data-staging-only="true">'
             '<div class="kicker">STAGING · TÀI KHOẢN</div>'
-            '<h2>Google Login · bản thử</h2>'
-            '<p class="small">Kiểm tra đăng nhập riêng trên GitHub Pages. '
-            'Tiến độ học chưa đồng bộ với Neon.</p>'
-            '<a class="action alt" href="./auth-pilot/">Mở màn đăng nhập thử</a></article>')
+            '<h2>Đăng nhập &amp; đồng bộ L09</h2>'
+            '<p class="small">Đăng nhập bằng Google, lưu bài tập L09 lên Neon, '
+            'rồi mở thiết bị khác để khôi phục và học tiếp.</p>'
+            '<a class="action alt" href="./auth-pilot/">Mở tài khoản và tiến độ L09</a></article>')
           html=html.replace(marker,marker.replace('<article class="surface">',account+'<article class="surface">',1),1)
           html=html.replace('</body></html>',
              '<script src="./assets/step16-react-router.js?v=unified-staging-20261120"></script></body></html>',1)

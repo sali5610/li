@@ -23,17 +23,11 @@ export const neonSessionPort:NeonAuthSessionPort={
    error:response.error??undefined};
  },
  async getJWTToken(){
-  // Neon Better Auth React adapter may inject a signed JWT into the session.
-  // Prefer it when present to avoid a second cross-origin /token request.
-  // The opaque session cookie is never a Data API bearer credential.
-  const session=await authClient.getSession();
-  if(session.error)throw new Error('NEON_AUTH_JWT_SESSION_FAILED');
-  const candidate=sessionJwtCandidate(session.data?.session?.token);
-  if(candidate)return candidate;
-  // Safe fallback for SDK/server versions without an injected JWT.
+  // Better Auth's session.token is an opaque session identifier, NOT a bearer JWT.
+  // For the public BetterAuthReactAdapter API, use the JWT plugin /token action.
+  // Never infer a signed token from the session cookie even if it contains dots.
   const response=await authClient.token();
   if(response.error)throw new Error('NEON_AUTH_JWT_FETCH_FAILED');
   return sessionJwtCandidate(response.data?.token);
-
  }
 };

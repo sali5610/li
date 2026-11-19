@@ -47,3 +47,14 @@ Human PO superseded the password/email-OTP UI with **Google OAuth only** and str
 - **Next required gate:** review migration 0002 and apply it only with explicit Human PO approval after safe branch validation, seed exactly the owner-approved emails without putting them in git, test invited A/B, uninvited C and revoked A with real signed JWTs, then perform iOS/privacy consent and manual G2 release QA. **Remote sync stays DISABLED.**
 
 See `docs/architecture/step16-google-invite-only-access.md`.
+
+
+## S184 · APPROVED: invite migration applied + exactly two emails seeded (2026-11-19)
+
+The earlier S181 `NOT APPLIED` note is historical and **superseded**. Human PO explicitly approved applying invitation-only SQL and seeding the two provided emails. Ran `prepare_database_migration` on isolated Neon branch `br-rough-mouse-azn9uwec`, verified:
+- `li_invited_emails` exists; `li_is_invited()` fails closed without a JWT;
+- both private tables retain enabled + FORCE RLS and have `AS RESTRICTIVE FOR ALL` invite policies;
+- anonymous and signed-in Data API roles cannot SELECT/INSERT/UPDATE/DELETE the invitation table;
+- anonymous cannot execute invitation RPC; authenticated may check only its own server-verified invitation.
+
+Applied the exact prepared migration to Neon Free main; temporary branch was deleted. Inserted exactly two pre-authorized email invitations using trusted Neon administrator SQL. Main-branch read-back: **2 active invites, 2 matching pre-provisioned Auth users, zero unexpected invite addresses**. At verification, both Auth users still had `emailVerified=false`; real Google identity linking/verified session is NOT complete. We have **not** run signed A/B/C isolation/revocation, OAuth/CORS, iOS or Cloudflare Access tests. No remote learning data was uploaded, no public site deployed, no subscription upgrade; `syncOnce` remains fail-closed until authentic live RLS and consent gates.

@@ -175,8 +175,9 @@
  };
  try{await run();}catch(e){record("harness_exception",false,e.stack||e.message);}
  const result={
-  environment:"CHROMIUM_HEADLESS_SAME_ORIGIN_NATIVE_APP",
-  deviceEmulation:"CSS_IFRAME_VIEWPORT_ONLY_NOT_SAFARI",
+  environment:/AppleWebKit/.test(navigator.userAgent)&&!/Chrome|Chromium|CriOS|Edg\\//.test(navigator.userAgent)
+   ?"WEBKIT_HEADLESS_SAME_ORIGIN_NATIVE_APP":"CHROMIUM_HEADLESS_SAME_ORIGIN_NATIVE_APP",
+  deviceEmulation:"CSS_IFRAME_VIEWPORT_ONLY_NOT_PHYSICAL_IOS",
   physicalIPhone:"NOT_RUN",physicalIPad:"NOT_RUN",VoiceOver:"OUT_OF_SCOPE_PO_S208",
   humanRelease:"NOT_APPROVED",cloudflareDeploy:"NONE",userData:"EPHEMERAL_SYNTHETIC_ONLY",
   count:cases.length,pass:cases.filter(x=>x.status==="PASS").length,fail:failures.length,

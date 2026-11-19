@@ -2,15 +2,28 @@
 
 **🎨 Design Library — one place to start:** [design-system/README.md](design-system/README.md). All li. UI/UX tasks must open this entrypoint first and follow its canonical tokens, component, Do/Don't interaction patterns, accessibility and QA links. AI/code agents are bound by [AGENTS.md](AGENTS.md); Notion continues to own decisions and Human PO approval.
 
-This repository contains the functional high-fidelity **li.** prototype, recovered from the existing Vercel review app and kept as plain static HTML/CSS/JavaScript. No paid hosting, AI API, login, or cross-device synchronization is introduced.
+This repository contains the functional static high-fidelity **li.** app. React/Neon Auth and learning integration are still in progress; do not infer a complete usable product from isolated CI results. Cloudflare production remains a separate manual release from `main`.
+
+## Find the right source fast
+
+| Area | Canonical path | Notes |
+| --- | --- | --- |
+| Learner app | `site/index.html`, `site/assets/`, `site/lessons/` | Current static runtime; do not create more app shells |
+| Design tokens/components | `design-system/` | Canonical token JSON; generated CSS goes to site/assets |
+| Approved illustration assets | `design-assets/` | Asset index and visual references |
+| Data contracts/migrations | `db/`, `docs/ontology/` | No production migration without PO approval |
+| Tests/build helpers | `tools/` | Historical fixtures remain; use only checks for impacted files |
+| Actions | `.github/workflows/` | `li-pages.yml` = GitHub Pages testing; `li-cloudflare-free-manual-release.yml` = production manual release; other checks are path-scoped |
+
+**GitHub policy:** one shared testing URL, one eventual `integration/staging` source branch, focused CI and no pinned multi-commit app assembly. Old research PRs are archived/closed only after checking their unique content. See [AGENTS.md](AGENTS.md) for release and privacy rules. This is the agreed target, **not a claim that staging has been migrated**.
 
 ## Published site
 
-GitHub Pages is enabled. The existing workflow publishes the exact `site/` directory when the site or its validation/deployment workflow changes:
+GitHub Pages is the **shared test URL**. The current `.github/workflows/li-pages.yml` still builds from `main` plus a pinned Auth source on a separate branch. This assembly is transitional and **does not yet satisfy** the approved one-integration-branch rule; do not claim that features on other PRs appear in staging automatically.
 
 https://sali5610.github.io/li/
 
-**GitHub `main` is the source of truth for the deployed app.** S107 placed **Xuất bản sao / Nhập bản sao** under **Cài đặt → Dữ liệu & Đồng bộ** (not in Bút Ký). Its historical inline CSS used 28px mobile and 30px desktop Settings gaps; the newer **v0.2 4px spacing system supersedes both with 32px**, loaded via `site/assets/ui-foundations.css`. Do not reapply older Vercel/S107 styling patches.
+**GitHub `main` is the controlled source for manual Cloudflare production release; staging is separate and must be user-validated.** S107 placed **Xuất bản sao / Nhập bản sao** under **Cài đặt → Dữ liệu & Đồng bộ** (not in Bút Ký). Its historical inline CSS used 28px mobile and 30px desktop Settings gaps; the newer **v0.2 4px spacing system supersedes both with 32px**, loaded via `site/assets/ui-foundations.css`. Do not reapply older Vercel/S107 styling patches.
 
 The original Vercel application is retained as an independent backup.
 

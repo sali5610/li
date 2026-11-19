@@ -66,7 +66,15 @@
   result.textContent='LI_STEP16_L09_SHELL_PASS '+JSON.stringify({count:checks.length,checks,note:'localhost-only; local isolated key; no production deploy, cross-device sync, Google Auth or Safari pass'});
  }catch(e){
   frame?.remove();localStorage.removeItem(key);
-  result.textContent='LI_STEP16_L09_SHELL_FAIL '+JSON.stringify({checks,error:e.stack||String(e)});
+  const d=frame?.contentDocument,win=frame?.contentWindow;
+  const diagnostic={runtime:d?.querySelector('#page-lessonL09')?.dataset.liRuntime,
+    hasLoader:!!d?.querySelector('script[src*="step16-react-router"]'),
+    host:!!d?.getElementById('li-step16-l09-react-host'),
+    fallback:d?.querySelector('#l09-challenge [role="status"]')?.textContent,
+    jsAsset:await fetch('../../site/assets/step16-l09-island.js').then(x=>x.status).catch(()=>null),
+    cssAsset:await fetch('../../site/assets/step16-l09-island.css').then(x=>x.status).catch(()=>null),
+    route:win?.location.href};
+  result.textContent='LI_STEP16_L09_SHELL_FAIL '+JSON.stringify({checks,error:e.stack||String(e),diagnostic});
  }
 })();
 </script></body></html>

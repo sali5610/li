@@ -54,8 +54,8 @@ export function Feedback({tone='info',className='',children,...rest}:HTMLAttribu
    role={tone==='error'?'alert':'status'} aria-live={tone==='error'?'assertive':'polite'}
    aria-busy={tone==='loading'||undefined}>{children}</p>;
 }
-export function Dialog({open,title,onRequestClose,children,className=''}:{
- open:boolean;title:string;onRequestClose:(reason:'escape'|'close'|'backdrop')=>void;children:ReactNode;className?:string;
+export function Dialog({open,title,closeLabel,onRequestClose,children,className=''}:{
+ open:boolean;title:string;closeLabel:string;onRequestClose:(reason:'escape'|'close'|'backdrop')=>void;children:ReactNode;className?:string;
 }){
  const ref=useRef<HTMLDialogElement>(null),returnTo=useRef<HTMLElement|null>(null),titleId=useId();
  useEffect(()=>{
@@ -74,7 +74,7 @@ export function Dialog({open,title,onRequestClose,children,className=''}:{
    onCancel={event=>{event.preventDefault();onRequestClose('escape');}}
    onClick={event=>{if(event.target===event.currentTarget)onRequestClose('backdrop');}}>
    <header className="li-ui-dialog-head"><h2 id={titleId}>{title}</h2>
-     <Button variant="secondary" data-dialog-close onClick={()=>onRequestClose('close')} aria-label="Close">×</Button></header>
+     <Button variant="secondary" data-dialog-close onClick={()=>onRequestClose('close')} aria-label={closeLabel}>×</Button></header>
    <div className="li-ui-dialog-body">{children}</div>
  </dialog>;
 }

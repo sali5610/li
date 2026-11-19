@@ -45,6 +45,7 @@ async function main(){
  await until(()=>run("document.querySelector('dialog.li-ui-dialog')?.open"),'native showModal');
  const modal=await run("(()=>{const d=document.querySelector('dialog.li-ui-dialog');return {modal:d.matches(':modal'),focus:d.contains(document.activeElement)}})()");
  check(modal.modal&&modal.focus,'Dialog modal focus ownership');
+ check(await run("document.querySelector('[data-dialog-close]')?.getAttribute('aria-label')==='Close'"),'Dialog EN close accessible name');
  await key('Escape');await until(()=>run("!document.querySelector('dialog.li-ui-dialog')?.open"),'Escape close');
  check(await run("document.activeElement?.matches('[data-ui-open]')"),'Dialog opener focus restoration');
  check((await run("localStorage.length"))===0,'no learner storage mutations');

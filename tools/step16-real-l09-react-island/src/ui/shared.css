@@ -21,8 +21,8 @@
 .pilot .li-ui-nav-link:focus-visible{outline:3px solid var(--li-comp-button-focus-ring,var(--li-color-general-focus-ring));outline-offset:var(--li-space-1)}
 .pilot .li-ui-feedback{line-height:1.5}
 .pilot .li-ui-feedback-error{color:var(--li-comp-field-error-border,var(--li-color-danger-fill))}
-.pilot .li-ui-dialog{box-sizing:border-box;width:min(100% - var(--li-space-4),640px);max-height:calc(100dvh - var(--li-space-6));padding:var(--li-space-4);background:var(--li-comp-surface-background,var(--cream));color:var(--ink);border:1px solid var(--moss);border-radius:0}
-.pilot .li-ui-dialog::backdrop{background:rgb(0 0 0 / 50%)}
+.pilot .li-ui-dialog{box-sizing:border-box;width:100%;max-width:470px;max-height:85svh;padding:var(--li-space-6);background:var(--paper);color:var(--ink);border:2px solid var(--forest);border-radius:0;box-shadow:9px 9px 0 var(--wood)}
+.pilot .li-ui-dialog::backdrop{background:var(--li-color-modal-overlay-fill)}
 .pilot .li-ui-dialog-head{display:flex;justify-content:space-between;align-items:center;gap:var(--li-space-3)}
 .pilot .li-ui-dialog-head h2{margin:0}
 .pilot .li-ui-dialog-body{max-height:calc(100dvh - 160px);overflow-y:auto;overscroll-behavior:contain}

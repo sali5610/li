@@ -31,7 +31,7 @@ export function Preview(){
    </Card>
    <Card tone="tinted"><p>{en?'Tinted surface':'Surface nền phụ'}</p></Card>
    <Button data-ui-open onClick={()=>setModal(true)}>{en?'Open dialog':'Mở hộp thoại'}</Button>
-   <Dialog open={modal} title={en?'Preview dialog':'Hộp thoại thử nghiệm'} onRequestClose={()=>setModal(false)}>
+   <Dialog open={modal} title={en?'Preview dialog':'Hộp thoại thử nghiệm'} closeLabel={en?'Close':'Đóng'} onRequestClose={()=>setModal(false)}>
      <p>{en?'Temporary content; no persistence':'Nội dung thử; không ghi dữ liệu'}</p>
      <a href="#dialog-detail">{en?'Read detail':'Đọc chi tiết'}</a>
      <details><summary>{en?'More':'Thêm'}</summary><p>Fixture</p></details>

@@ -25,7 +25,7 @@ function fixture(search,visualHeight){
   };
   const document={
     readyState:"complete",styleSheets:[],
-    documentElement:{clientWidth:970,clientHeight:1270,scrollWidth:970},
+    documentElement:{clientWidth:970,clientHeight:1270,scrollWidth:970,classList:{contains:()=>false}},
     body:{appendChild:(v)=>{mounted=v;}},
     getElementById:()=>mounted,
     createElement:()=>({id:"",style:{cssText:""},setAttribute(){},textContent:""}),

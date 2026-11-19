@@ -22,3 +22,11 @@ The actual initial CI [#44596346991](https://github.com/sali5610/li/actions/runs
 **Fix, not a new visual decision:** use upstream native-generated `--li-card-pad` and `--li-current-control-min` inside the canonical device-density region 744..1420 CSS px with standard fallbacks, preserving current UI-only opt-in query flag. Targeted browser negative regression: 820 portrait, 820 narrow landscape, 1040 landscape, 1408 landscape iPad all keep expected source aliases; 1200 portrait standard and 1440 desktop remain Card 24px / button 48px intended min. This distinguishes CSS min target from intrinsic rendered height, which can exceed 48. No edit to original `site/`, tokens, auth, Neon or release code.
 
 **Validation:** Exact-head CI PENDING until source-branch and Chrome readback. Global G2 and physical Safari still OPEN.
+
+## S237 · Human PO correction: L09 exercise uses SECONDARY/FLAT card, not raised
+
+On 2026-11-20, Human PO reported that the answer/exercise card had been flat (no shadow) and was incorrectly changed to raised when adopting `Shared Card`. Cause confirmed in source: the shared Card default `raised` hard 5px shadow was applied indiscriminately to both L09 study panels, despite VC-G2-D2 already preserving *explicit named flat/inset variants*.
+
+**Scoped correction:** add independent `elevation: 'raised'|'flat'` to `Shared.Card`; default remains raised for standard editorial/preview cards, preserving approved D2 raised sample. Declare both L09 exercise and self-review StudySurfaces as flat (secondary), use `li-ui-card-flat` to remove shadow and preserve quiet border, with same semantic fill and responsive density. This is restoration of already approved variant mapping, not a new visual identity decision. New browser regression checks BOTH actual mounted panels are flat at every test viewport and match legacy no-shadow styles; full screenshot pairs and exact rendered content/state remain checked. No native site, DS generator, auth, Neon or production deploy changes. Global G2 still OPEN.
+
+**Status at authored source:** Draft only; require exact-head CI green before claiming Tested.

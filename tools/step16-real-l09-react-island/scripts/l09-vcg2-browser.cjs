@@ -61,6 +61,7 @@ function capture(){
   dataStorageKey:root?.getAttribute('data-storage-key'),lang:root?.lang,
   buttons:{primary:style(primary),secondary:style(secondary)},
   cards:cards.map(style),cardShared:cards.map(x=>x.classList.contains('li-ui-card')),
+  cardFlat:cards.map(x=>x.classList.contains('li-ui-card-flat')&&x.dataset.cardElevation==='flat'),
   answerCount:answers.length,answerShared:answers.map(x=>x.closest('.li-ui-field')!==null),
   answerLabels:answers.map(x=>x.labels?.length),answerPurposes:answers.map(x=>x.getAttribute('data-field-purpose')),
   answerStyles:answers.map(style),
@@ -125,6 +126,8 @@ async function main(){
   if([390,820,1040].includes(v.width))await screenshot('vc-g2-opt-in-'+v.width);
   verify(b.active==='approved-research'&&b.hasSharedButton&&!b.hasLegacyButton,'D1 shared Button owner incorrect '+v.width);
   verify(b.cards.length===2&&b.cardShared.every(Boolean),'D2 shared Card owner incorrect '+v.width);
+  verify(b.cardFlat.length===2&&b.cardFlat.every(Boolean),
+    'D2 L09 secondary/flat variant missing from exercise or self-review '+v.width);
   verify(b.answerCount===4&&b.answerShared.every(Boolean)&&b.answerLabels.every(x=>x===1)&&
     b.answerPurposes.every(x=>x==='answer'),'D3 TextAreaField label/purpose mismatch '+v.width);
   verify(b.buttons.primary?.height>=v.min&&b.buttons.secondary?.height>=v.min,'D1 hit target smaller than '+v.min+'px at '+v.width);
@@ -136,9 +139,12 @@ async function main(){
   verify(b.buttons.primary.borderRadius==='0px'&&/4px 4px 0px/.test(b.buttons.primary.shadow)&&
     /4px 4px 0px/.test(b.buttons.secondary.shadow),'D1 square/hard-shadow drift '+v.width+' '+b.buttons.primary.shadow);
   verify(b.cards.every(c=>c.padding.split(' ').every(x=>parseFloat(x)===v.pad)),'D2 card padding wrong at '+v.width+' '+JSON.stringify(b.cards.map(x=>x.padding)));
-  verify(b.cards.every(c=>c.borderRadius==='0px'&&/5px 5px 0px/.test(c.shadow)),'D2 hard shadow drift '+v.width+' '+JSON.stringify(b.cards));
+  verify(b.cards.every((c,i)=>c.borderRadius==='0px'&&c.shadow==='none'&&
+    c.shadow===a.cards[i]?.shadow),'D2 exercise secondary/flat should retain NO shadow '+v.width+' '+JSON.stringify({legacy:a.cards,shared:b.cards}));
   verify(b.answerStyles.every(x=>x.height>=112&&parseFloat(x.minHeight)>=112&&x.fontSize===bodyPx+'px'&&x.lineHeight===a.answerStyles[0].lineHeight&&x.bg===a.answerStyles[0].bg),'D3 named answer min-height/semantic paint/legacy multiline rhythm drift '+v.width+': '+JSON.stringify({shared:b.answerStyles,legacy:a.answerStyles}));
-  verify(b.buttons.primary.bg===a.buttons.primary.bg&&b.buttons.secondary.bg===a.buttons.secondary.bg&&b.cards[0].bg===a.cards[0].bg,'Canonical semantic background drift '+v.width);
+  verify(b.buttons.primary.bg===a.buttons.primary.bg&&b.buttons.secondary.bg===a.buttons.secondary.bg&&
+    b.cards.every((c,i)=>c.bg===a.cards[i]?.bg),
+    'Canonical semantic background drift '+v.width);
   verify(b.viewport===v.width&&b.scrollWidth<=v.width+1&&a.scrollWidth<=v.width+1,'Horizontal overflow '+v.width);
   verify(b.nativeChallengeHidden&&b.runtime==='react-candidate'&&b.realKey===null&&b.dataStorageKey===researchKey,
    'React island exposed native challenge or touched real key '+v.width);

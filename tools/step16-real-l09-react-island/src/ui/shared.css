@@ -53,6 +53,13 @@
   border:1px solid var(--moss);border-radius:0;
   box-shadow:calc(var(--li-space-1) + 1px) calc(var(--li-space-1) + 1px) 0 var(--wood)
 }
+/* D2 exception is explicit: a study/exercise panel remains secondary/flat.
+   Preserve legacy flat surface depth and quiet border without changing
+   background, content or canonical responsive density values. */
+.pilot[data-vc-g2="approved-research"] .li-ui-card.li-ui-card-flat{
+  border-color:var(--rule);
+  box-shadow:none
+}
 .pilot[data-vc-g2="approved-research"] .li-ui-field{gap:var(--li-space-2)}
 .pilot[data-vc-g2="approved-research"] .li-ui-field label{
   font-size:var(--li-type-body);line-height:var(--li-leading-body)

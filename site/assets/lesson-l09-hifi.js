@@ -5,9 +5,11 @@ const root=document.getElementById("page-lessonL09");
 if(!root)return;
 // The native lesson still owns the genuine learner key. This secondary key is
 // used only by an explicit synthetic localhost handover fixture.
-const LI_LOCAL_FIXTURE=(location.hostname==="localhost"||location.hostname==="127.0.0.1")&&
-  location.pathname==="/site/index.html"&&
-  new URLSearchParams(location.search).get("li-react")==="l09-native-fixture";
+const LI_LOCATION=typeof window!=="undefined"&&window.location?window.location:null;
+const LI_LOCAL_FIXTURE=!!LI_LOCATION&&LI_LOCATION.protocol==="http:"&&
+  (LI_LOCATION.hostname==="localhost"||LI_LOCATION.hostname==="127.0.0.1")&&
+  LI_LOCATION.pathname==="/site/index.html"&&
+  new URLSearchParams(LI_LOCATION.search).get("li-react")==="l09-native-fixture";
 const KEY=LI_LOCAL_FIXTURE?"step16.l09.shared-native-fixture.v1":"li.review.L09-1-2.v1";
 const SOURCES=[
 {title:"NIST — Populations and Sampling",url:"https://www.itl.nist.gov/div898/handbook/ppc/section1/ppc134.htm",tier:"core"},

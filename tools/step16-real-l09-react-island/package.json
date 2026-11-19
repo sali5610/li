@@ -7,7 +7,7 @@
     "extract": "node scripts/extract-l09.cjs",
     "build": "npm run extract && tsc --noEmit && vite build",
     "check:source": "node scripts/extract-l09.cjs --verify",
-    "test:sync": "tsc --target ES2022 --module NodeNext --moduleResolution NodeNext --lib ES2022,DOM --skipLibCheck --outDir .sync-test src/sync/contract.ts src/sync/neon-api.ts && node --test tests/sync-protocol.test.mjs"
+    "test:sync": "tsc --target ES2022 --module NodeNext --moduleResolution NodeNext --lib ES2022,DOM --skipLibCheck --outDir .sync-test src/sync/contract.ts src/sync/neon-api.ts src/sync/local-dexie.ts src/sync/sync-once.ts && node --test tests/*.test.mjs"
   },
   "dependencies": {
     "react": "19.2.0",
@@ -18,6 +18,7 @@
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "typescript": "5.9.3",
-    "vite": "8.3.8"
+    "vite": "8.3.8",
+    "fake-indexeddb": "6.2.8"
   }
 }

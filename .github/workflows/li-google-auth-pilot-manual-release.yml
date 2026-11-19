@@ -103,7 +103,7 @@ jobs:
           test -n "$CLOUDFLARE_PAGES_PROJECT" || { echo "Missing Pages project"; exit 1; }
           python3 tools/g3_cloudflare_free_guard.py --site site --online
 
-      - name: Manual pilot deployment: whole approved site + isolated Auth route only
+      - name: 'Manual pilot deployment: whole approved site + isolated Auth route only'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

@@ -2,6 +2,7 @@ import React,{useEffect,useState,type FormEvent} from 'react';
 import {bindNeonAccount} from '../sync/neon-session.js';
 import {authClient,neonSessionPort} from './neon-client.js';
 import {NEON_DATA_API_URL} from './config.js';
+import {AuthRecovery} from './AuthRecovery.js';
 
 type Locale='vi'|'en';
 const copy={
@@ -105,6 +106,7 @@ export function AuthPanel(){
       {busy?t.busy:t.logout}
      </button>
     </div>:
+    <div className="auth-sign-in">
     <form onSubmit={event=>void signIn(event)}>
      <div className="auth-field">
       <label htmlFor="li-auth-email">{t.email}</label>
@@ -120,6 +122,8 @@ export function AuthPanel(){
      </div>
      <button type="submit" disabled={busy!==null}>{busy?t.busy:t.login}</button>
     </form>
+    <AuthRecovery locale={locale}/>
+    </div>
    )}
    {feedback&&<p className="auth-error" role="alert">{feedback}</p>}
    <p className="auth-local" role="status">{t.local}</p>

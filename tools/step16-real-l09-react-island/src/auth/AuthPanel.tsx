@@ -99,7 +99,7 @@ export function AuthPanel(){
     <button type="button" aria-pressed={locale==='en'} onClick={()=>setLocale('en')}>{t.switchEn}</button>
    </div>
   </header>
-  <section className="auth-card" aria-busy={busy!==null||access==='checking'}>
+  <section className="auth-card" aria-busy={busy!==null||(Boolean(accountId)&&access==='checking')}>
    <p>{t.intro}</p>
    {isPending&&<p role="status">{t.loading}</p>}
    {error&&<p role="alert">{t.error}</p>}

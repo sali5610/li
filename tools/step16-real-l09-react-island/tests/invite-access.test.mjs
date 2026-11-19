@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {checkInviteAccess} from '../.sync-test/invite-access.js';
+import {checkInviteAccess} from '../.sync-test/sync/invite-access.js';
 
 const endpoint='https://example.apirest.neon.tech/li/rest/v1';
 const tokenFor=sub=>['e30',Buffer.from(JSON.stringify({

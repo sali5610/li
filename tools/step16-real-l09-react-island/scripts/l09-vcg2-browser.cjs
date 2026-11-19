@@ -86,8 +86,14 @@ const variants=[
  // Canonical iPad :root tokens intentionally scale semantic body from 16/24 to 18/28.
  // Preserve that responsive role; D1 is a body-label contract, not a fixed pixel lock.
  {width:820,height:1050,pad:28,min:56,body:[18,28]},
+ // Split-width iPad landscape resolves canonical portrait-density tokens.
+ {width:820,height:700,pad:28,min:56,body:[18,28]},
  {width:1040,height:768,pad:32,min:56,body:[18,28]},
- {width:1440,height:900,pad:32,min:56}
+ {width:1408,height:900,pad:32,min:56,body:[18,28]},
+ // A portrait window without the canonical iPad media mode stays standard.
+ {width:1200,height:1500,pad:24,min:48},
+ // True desktop must never inherit iPad landscape's 32px / 56px density.
+ {width:1440,height:900,pad:24,min:48}
 ];
 async function main(){
  proc=spawn(bin,['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage',

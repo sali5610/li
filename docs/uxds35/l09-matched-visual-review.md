@@ -14,3 +14,11 @@
 **Implementation:** dedicated browser script `tools/step16-real-l09-react-island/scripts/l09-matched-visual-browser.cjs` runs after existing 135-check scoped browser fixture, on the same temporary composed React+DS+ONT source tree. If it finds exact rendered content drift, unauthorized storage mutation, source ownership mismatch or a broken submit lock, it fails CI. Screenshots are evidence, not approval.
 
 **Status:** Draft research QA — NOT TESTED until exact-head CI readback.
+
+## Browser review finding — desktop 1440 inherited iPad geometry (SCOPED FIX)
+
+The actual initial CI [#44596346991](https://github.com/sali5610/li/actions/runs/44596346991) at SHA `856716d` exposed an approved-contract mapping gap in the research owner: **1440 desktop had Card padding 32px + button min-height 56px**, because opt-in `shared.css` used broad `@media(min-width:744px)` and `@media(min-width:1024px) and (orientation:landscape)` without excluding actual desktop. The scoped D1/D2 contract states **desktop standard Card 24px and CTA min hit 48px**, iPad Card 28/32 and target 56.
+
+**Fix, not a new visual decision:** use upstream native-generated `--li-card-pad` and `--li-current-control-min` inside the canonical device-density region 744..1420 CSS px with standard fallbacks, preserving current UI-only opt-in query flag. Targeted browser negative regression: 820 portrait, 820 narrow landscape, 1040 landscape, 1408 landscape iPad all keep expected source aliases; 1200 portrait standard and 1440 desktop remain Card 24px / button 48px intended min. This distinguishes CSS min target from intrinsic rendered height, which can exceed 48. No edit to original `site/`, tokens, auth, Neon or release code.
+
+**Validation:** Exact-head CI PENDING until source-branch and Chrome readback. Global G2 and physical Safari still OPEN.

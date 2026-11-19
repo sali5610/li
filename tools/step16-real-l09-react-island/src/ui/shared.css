@@ -68,19 +68,19 @@
 @media(min-width:600px){
  .pilot[data-vc-g2="approved-research"] .li-ui-card{padding:var(--li-space-6)}
 }
-@media(min-width:744px) and (orientation:portrait){
+/* Canonical device mode is generated upstream in ui-foundations.css:
+   --li-card-pad and --li-current-control-min are set only at actual iPad
+   density breakpoints, including landscape Split View/large iPad widths.
+   Use its responsive mode rather than generic min-width:744 rules that
+   accidentally upscaled desktop 1440 to iPad 56px/32px geometry. */
+@media(min-width:744px) and (max-width:1420px){
  .pilot[data-vc-g2="approved-research"] .li-ui-card{
-  padding:calc(var(--li-space-6) + var(--li-space-1))
+  padding:var(--li-card-pad,var(--li-space-6))
  }
-}
-@media(min-width:1024px) and (orientation:landscape){
- .pilot[data-vc-g2="approved-research"] .li-ui-card{padding:var(--li-space-8)}
-}
-@media(min-width:744px){
  .pilot[data-vc-g2="approved-research"] .li-ui-button{
-  min-height:calc(var(--li-space-12) + var(--li-space-2))
+  min-height:var(--li-current-control-min,var(--li-comp-button-min-hit-size,var(--li-space-12)))
  }
  .pilot[data-vc-g2="approved-research"] .li-ui-field .li-ui-input{
-  min-height:calc(var(--li-space-12) + var(--li-space-2))
+  min-height:var(--li-current-control-min,var(--li-comp-button-min-hit-size,var(--li-space-12)))
  }
 }

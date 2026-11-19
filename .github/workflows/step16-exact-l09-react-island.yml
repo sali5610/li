@@ -58,6 +58,28 @@ jobs:
           npm run check:source
           npm run test:sync
           node -e 'const fs=require("fs"),z=require("zlib");const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(x=>x.isDirectory()?walk(d+"/"+x.name):[d+"/"+x.name]);const xs=walk("dist").filter(p=>p.endsWith(".js"));let raw=0,gz=0;for(const p of xs){const data=fs.readFileSync(p);raw+=data.length;gz+=z.gzipSync(data,{level:9}).length;}console.log("LI_STEP16_EXACT_L09_REACT_BUNDLE "+JSON.stringify({jsAssets:xs.length,jsRawBytes:raw,jsGzipBytes:gz,note:"single exact-source challenge/rubric island, not full li app"}));'
+      - name: Package actual li. Home to L09 React local preview for PO
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s site/assets/step16-l09-island.js
+          test -s site/assets/step16-l09-island.css
+          root=/tmp/li-l09-po-preview/li-l09-local-preview
+          mkdir -p "$root"
+          cp -a site "$root/site"
+          cp tools/step16-real-l09-react-island/preview/START-LI.command "$root/"
+          cp tools/step16-real-l09-react-island/preview/READ-ME-FIRST.txt "$root/"
+          chmod +x "$root/START-LI.command"
+          cd /tmp/li-l09-po-preview
+          zip -qr /tmp/li-l09-local-preview.zip li-l09-local-preview
+          unzip -l /tmp/li-l09-local-preview.zip | grep -E 'START-LI.command|site/assets/step16-l09-island.(js|css)' 
+          echo "PASS LI_L09_PO_LOCAL_PREVIEW_PACKAGE"
+      - name: Upload PO localhost preview ZIP (no public site deployment)
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-l09-local-preview
+          path: /tmp/li-l09-local-preview.zip
+          retention-days: 7
       - name: Stage02B browser-mount shared React candidate (local Chromium only)
         shell: bash
         run: |

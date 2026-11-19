@@ -62,7 +62,12 @@ async function verifyOwned(token,table,where,expectedOwner){
  return r.rows[0];
 }
 async function clear(token,table,where){
- try{await send(token,'DELETE',table,where);}catch{/* best effort; report cleanup failure separately via positive follow-up */}
+ // A cleanup request is not success unless the row is visibly absent afterward.
+ const removed=await send(token,'DELETE',table,where);
+ assert(succeeded(removed),'cannot delete synthetic '+table+' record');
+ const check=await send(token,'GET',table,where);
+ assert(succeeded(check)&&Array.isArray(check.rows)&&check.rows.length===0,
+   'synthetic '+table+' row remains after cleanup');
 }
 let failed=null;
 try{
@@ -122,13 +127,25 @@ try{
  evidence.push('A cannot DELETE B event');
 }catch(error){failed=error;}
 finally{
- await clear(jwtA,'li_user_state',{item_type:'eq.preference',item_id:'eq.'+itemA});
- await clear(jwtB,'li_user_state',{item_type:'eq.preference',item_id:'eq.'+itemB});
- await clear(jwtB,'li_user_state',{item_type:'eq.preference',item_id:'eq.'+forged});
- await clear(jwtA,'li_learning_events',{event_id:'eq.'+eventA});
- await clear(jwtB,'li_learning_events',{event_id:'eq.'+eventB});
- await clear(jwtB,'li_learning_events',{event_id:'eq.'+forgedEvent});
+ const cleanup=[
+  [jwtA,'li_user_state',{item_type:'eq.preference',item_id:'eq.'+itemA}],
+  [jwtB,'li_user_state',{item_type:'eq.preference',item_id:'eq.'+itemB}],
+  [jwtB,'li_user_state',{item_type:'eq.preference',item_id:'eq.'+forged}],
+  [jwtA,'li_learning_events',{event_id:'eq.'+eventA}],
+  [jwtB,'li_learning_events',{event_id:'eq.'+eventB}],
+  [jwtB,'li_learning_events',{event_id:'eq.'+forgedEvent}]
+ ];
+ const cleanupFailures=[];
+ for(const [token,table,where] of cleanup){
+  try{await clear(token,table,where);}
+  catch(error){cleanupFailures.push(table+': '+(error instanceof Error?error.message:'cleanup verification failed'));}
+ }
+ if(cleanupFailures.length){
+  // Report a cleanup blocker EVEN if a negative RLS test already failed.
+  console.error('LI_STEP16_LIVE_RLS_CLEANUP_FAILED '+JSON.stringify(cleanupFailures));
+  failed=new Error('SYNTHETIC_TEST_CLEANUP_UNVERIFIED');
+ }
 }
 if(failed)throw failed;
 console.log('LI_STEP16_LIVE_RLS_PASS '+JSON.stringify({count:evidence.length,checks:evidence,
- note:'Genuine JWT signed by Neon required; only synthetic rows. Check live cleanup/count separately.'}));
+ note:'Requires genuine Neon-issued test JWTs. Synthetic rows were verified absent on cleanup.'}));

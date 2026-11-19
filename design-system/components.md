@@ -179,3 +179,16 @@ The immediately following *portrait-shaped* screenshot showed `innerWidth`/visua
 | Progress | Native `progress` with required accessible label; determined value or omitted value for unknown | Invent learning score / asynchronous percent | `value`, `max`, `label`; range validation |
 
 **QA-SLIM:** source/TS build and focused mounted actual React heading/progress checks only, reusing prior Stage03 checks. Unaffected L09/auth/backend untouched. Remaining Stage04 primitives (Checkbox/Radio, Icon/IconButton/Field etc.) are separate current DS work, not falsely marked ready.
+
+## UX-DS-35 Stage04 Slice02 · Native React controls in the single Studio (DRAFT)
+**Owner:** `design-system/react/Controls.tsx` and `controls.css`; preview-only styles in `controls-story.css`. The single `site/design-system/index.html` embeds a React fixture, not a product screen or data writer. Values come from canonical `design-system/tokens.json`.
+
+| Atom | Anatomy / variants | Do | Don't |
+| --- | --- | --- | --- |
+| Checkbox | Native input + full clickable label; checked/default/disabled | Independent choices, keyboard Space, 48px row | Replace exactly-one Radio |
+| Radio | Native radio, shared nonempty group name; selected/default/disabled; fieldset+legend in composition | Exactly one selection from named group | Represent independent toggles |
+| Field | Persistent label, native input/textarea, hint/error linked by aria-describedby and aria-invalid; default/error/disabled/readonly | Preserve text, explain recovery, distinguish readonly/disabled | Placeholder as sole label, color-only error |
+| Icon | 24px outlined generic utility symbol; decorative aria-hidden by default or explicit informative name | Consistent utility semantics | Replace approved Lão Lý art/icons |
+| IconButton | Native action button with accessible name, 48px hit box, focus-visible; default/disabled | Named focusable action | Unlabeled glyph or false navigation |
+
+**Gate:** Source DRAFT until exact CI typecheck and focused mounted Field/Radio tests. No repeated L09/Neon/auth QA or new G2 signoff claim. React bundle must be included in future release pipeline before a public page can work.

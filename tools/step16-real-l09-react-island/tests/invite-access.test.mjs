@@ -122,5 +122,6 @@ test('staging has an exact compile-time origin and repository path, not an open 
  assert.match(configSource,/https:\/\/li5610\.pages\.dev/);
  assert.match(configSource,/return origin===AUTH_ORIGIN/);
  assert.match(viteSource,/ghStaging\?'\/li\/auth-pilot\/':'\/auth-pilot\/'/);
- assert.match(panelSource,/IS_GITHUB_STAGING\?'STAGING · GitHub Pages':t\.tag/);
+ assert.match(panelSource,/IS_GITHUB_STAGING\?'理 · li\.':t\.tag/);
+ assert.match(panelSource,/document\.documentElement\.classList\.toggle\('li-auth-verified'/);
 });

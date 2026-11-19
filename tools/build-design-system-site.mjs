@@ -3,7 +3,7 @@
  * Input: canonical site/design-system/ source + generated tokens and existing CSS.
  * Output: dist-design-system/ with index.html at web root.
  */
-import {cpSync,existsSync,mkdirSync,rmSync} from 'node:fs';
+import {cpSync,existsSync,mkdirSync,rmSync,readFileSync,writeFileSync} from 'node:fs';
 import {resolve,join} from 'node:path';
 
 const root=resolve(import.meta.dirname,'..');
@@ -27,3 +27,12 @@ for(const asset of ['design-tokens.css','li-layout.css']){
  cpSync(join(root,'site','assets',asset),join(output,'assets',asset));
 }
 console.log('PASS standalone UX-DS-35: /index.html + /react-*.html + /assets, no learner app');
+
+/* The standalone site is served at its own project root, not /li/design-system/.
+   Fix relative links in published HTML only; leave canonical source untouched. */
+for(const page of ['index.html','react-layout.html','react-atoms.html',
+  'react-controls.html','react-components.html']){
+ const file=join(output,page);
+ const markup=readFileSync(file,'utf8');
+ writeFileSync(file,markup.replaceAll('../assets/','./assets/'),'utf8');
+}

@@ -1,0 +1,49 @@
+name: Publish li. Design System (own GitHub Pages site)
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: li-design-system-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate authored token source
+        run: python3 tools/generate_design_tokens.py --check
+      - name: Compile real React components
+        working-directory: design-system/react
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund
+          npm run check
+          npm run build
+      - name: Build independent DS website
+        run: |
+          set -euo pipefail
+          node tools/build-design-system-site.mjs
+          node --check dist-design-system/studio.js
+          test -s dist-design-system/index.html
+          test -s dist-design-system/react-components.js
+          test -s dist-design-system/assets/design-tokens.css
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-design-system/
+      - name: Publish DESIGN SYSTEM only (not app staging)
+        uses: actions/deploy-pages@v4

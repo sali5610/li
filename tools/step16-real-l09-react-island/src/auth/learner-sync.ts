@@ -45,9 +45,13 @@ function attempt(raw:string|null):Attempt|null{
 function cloud(value:unknown):Attempt{
  if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('INVALID_CLOUD_ATTEMPT');
  const item=value as Record<string,unknown>;
- if(item.schema!=='li.native.lesson.v1'||!item.data||typeof item.data!=='object'||Array.isArray(item.data))
+ // Historical manual L09 cloud saves used "attempt"; keep them readable.
+ // Only new writes use the canonical native lesson wrapper.
+ const candidate=item.schema==='li.native.lesson.v1'?item.data:
+  item.schema==='li.step16.l09.native.v1'?item.attempt:null;
+ if(!candidate||typeof candidate!=='object'||Array.isArray(candidate))
   throw new Error('INVALID_CLOUD_ATTEMPT');
- const data=item.data as Attempt;
+ const data=candidate as Attempt;
  attempt(JSON.stringify(data));
  return data;
 }

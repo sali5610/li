@@ -1,0 +1,46 @@
+name: CUR-TD research-only learner export Node QA
+
+# This branch-only check never builds a site, deploys Pages/Cloudflare, uses secrets,
+# accesses Neon, or publishes a learner source. Keep it independent of app CI.
+on:
+  push:
+    branches:
+      - research/cur-td-06-learner-export-guard-20261120
+    paths:
+      - 'research/cur-td/**'
+      - '.github/workflows/cur-td-export-guard-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export-guard-node:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact research head, read-only
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Verify source-only scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f research/cur-td/learner-export.mjs
+          test -f research/cur-td/learner-export.test.mjs
+          test -f research/cur-td/real-shape-smoke.test.mjs
+          # Fail if the historical overlap appears in current research fixtures.
+          if grep -RFn '110 = 105 + 5' research/cur-td; then
+            echo 'Private editorial answer overlap in public fixture'
+            exit 1
+          fi
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Execute both isolated Node suites, no dependencies
+        run: node --test research/cur-td/learner-export.test.mjs research/cur-td/real-shape-smoke.test.mjs

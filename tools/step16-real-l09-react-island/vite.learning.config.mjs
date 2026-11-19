@@ -4,6 +4,7 @@ import {defineConfig} from 'vite';
 // Chat 1 owns bundling it into the sole GitHub Pages staging publisher.
 export default defineConfig({
  base:'./',
+ resolve:{dedupe:['react','react-dom']},
  define:{'process.env.NODE_ENV':JSON.stringify('production')},
  build:{
   target:'es2022',outDir:'dist-learning',emptyOutDir:true,sourcemap:false,

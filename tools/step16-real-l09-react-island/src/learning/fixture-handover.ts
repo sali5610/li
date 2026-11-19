@@ -3,7 +3,7 @@
  * Never opens or mutates a real "li.review.*" learner record.
  * This is NOT an atomic browser multi-tab transaction.
  */
-import {SITE_FIXTURE_KEY} from '../native-bridge';
+import {SITE_FIXTURE_KEY} from '../native-bridge.js';
 
 export type FixtureLocation=Pick<Location,'hostname'|'pathname'|'search'|'protocol'>;
 export type FixtureStorage=Pick<Storage,'getItem'|'setItem'>;

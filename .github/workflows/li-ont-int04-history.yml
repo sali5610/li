@@ -4,6 +4,7 @@ on:
     paths:
       - 'site/index.html'
       - 'tools/ontint04-history-browser.html'
+      - 'tools/ontint04-top-level-cdp.cjs'
       - 'tools/check_ontint04_history.mjs'
       - 'docs/ontology/integration/ONT-INT-04.md'
       - '.github/workflows/li-ont-int04-history.yml'
@@ -46,6 +47,7 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           sleep 2
+          node tools/ontint04-top-level-cdp.cjs "$chrome"
           node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
             "http://127.0.0.1:8794/tools/ontint04-history-browser.html" \
             "LI_STEP16_L09_SHELL_PASS " 27 125000

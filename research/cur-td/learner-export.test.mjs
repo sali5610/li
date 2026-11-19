@@ -15,7 +15,7 @@ const envelope = (content, id = SOURCE) =>
 const manifest = (content = body(), changes = {}) => ({
   [SOURCE]: { version: 'F15-LO1LO3-v0.1', sha256: hashNotionBody(content), viStart: VI,
     enStart: EN, end: END, minimumLocaleChars: 300,
-    forbiddenFingerprints: ['solved ledger: 110 = 105 + 5'], ...changes },
+    forbiddenFingerprints: ['synthetic-private-answer-marker-example'], ...changes },
 });
 const run = (content = body(), changes = {}, raw = envelope(content)) =>
   exportLearnerFromNotion({ sourceId: SOURCE, rawNotionFetch: raw, manifest: manifest(content, changes) });
@@ -63,7 +63,7 @@ for (const [title, injected] of [
   ['teacher ledger phrase', 'teacher ledger'],
   ['VI answer reveal', '<b>ĐÁP ÁN MẪU</b>'],
   ['EN reference answer', '<b>REFERENCE SOLUTION</b>'],
-  ['known solution fingerprint', 'solved ledger: 110 = 105 + 5'],
+  ['known solution fingerprint', 'synthetic-private-answer-marker-example'],
   ['JavaScript tag', '<script>alert(1)</script>'],
   ['iframe', '<iframe src="evil"></iframe>'],
   ['Notion page preview', '<link-preview url="https://x.test" />'],
@@ -96,7 +96,7 @@ test('accepts benign do-not-disclose instruction without treating it as the answ
   assert.ok(out.languages.en.includes('Do not disclose'));
 });
 test('rejects explicit independent-answer value', () => {
-  const b = body(filler('tín-hiệu'), `${filler('stock-flow')}\nIndependent answer: 110`);
+  const b = body(filler('tín-hiệu'), `${filler('stock-flow')}\nIndependent answer: 999`);
   rejected(() => run(b), 'SPOILER_OR_UNSAFE_PAYLOAD');
 });
 test('rejects nested HTML entity-encoded teacher page link', () => {

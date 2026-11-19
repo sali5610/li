@@ -9,8 +9,9 @@
    (window.location.hostname==='127.0.0.1'||window.location.hostname==='localhost');
  if(!local||params.get('li-react')!=='l09')return;
  const page=document.getElementById('page-lessonL09');
- const native=page?.querySelector('.section-shell');
- if(!page||!native||page.dataset.liRuntime==='react-candidate')return;
+ const challenge=document.getElementById('l09-challenge');
+ const rubric=document.getElementById('l09-rubric');
+ if(!page||!challenge||!rubric||page.dataset.liRuntime==='react-candidate')return;
  const current=document.currentScript;
  if(!current?.src)return;
 
@@ -18,7 +19,7 @@
  host.id='li-step16-l09-react-host';
  host.hidden=true;
  host.dataset.localOnly='true';
- page.appendChild(host);
+ challenge.before(host);
  const css=document.createElement('link');
  css.rel='stylesheet';
  css.href=new URL('./step16-l09-island.css',current.src).href;
@@ -34,8 +35,10 @@
  Promise.all([cssReady,import(jsUrl.href)]).then(async ([,candidate])=>{
    if(typeof candidate.mountL09!=='function')throw Error('L09_MOUNT_UNAVAILABLE');
    await candidate.mountL09(host);
-   // Only after React mounted: preserve native DOM for immediate fallback.
-   native.hidden=true;native.inert=true;
+   // Keep theory, guided practice and academic sources in the native page.
+   // React takes over only challenge + rubric in this local research slice.
+   challenge.hidden=true;challenge.inert=true;
+   rubric.hidden=true;rubric.inert=true;
    host.hidden=false;
    page.dataset.liRuntime='react-candidate';
    page.dataset.liResearchOnly='true';
@@ -48,6 +51,6 @@
    notice.className='state-note';
    notice.setAttribute('role','status');
    notice.textContent='Bản React thử nghiệm chưa tải được. Đã giữ nguyên bài học hiện tại.';
-   native.prepend(notice);
+   challenge.prepend(notice);
  });
 })();

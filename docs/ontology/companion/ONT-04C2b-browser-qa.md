@@ -1,5 +1,10 @@
 # ONT-04C2b · Native Lão Lý mounted-browser acceptance pilot
 
+## S208 · Human PO QA scope override — VoiceOver excluded
+
+PO explicitly instructed: **skip VoiceOver testing for li.** Thus it is **OUT_OF_SCOPE_PO_S208**, neither a release blocker nor a PASS claim. Physical iPhone/iPad **Safari, touch, popup, stage/no-spoiler and responsive UX** remain PENDING; this remains a private invite-only app with no extra copyright-clearing gate. Generic cross-app Vibecode Handbook checklists are not changed, since this is a li.-specific PO decision. The QA ledger enforces the out-of-scope classification. No merge, no Cloudflare deploy.
+
+
 **Scope:** Test the real, existing native `site/index.html` and Lão Lý quote renderer from [ONT-04C2a draft](https://github.com/sali5610/li/pull/146) with headless Chromium in an ephemeral, same-origin frame. **No merge, Cloudflare deploy, Neon write, auth bypass or actual phone/iPad QA.**
 
 ## Reusable Lessons Learned read first
@@ -31,7 +36,7 @@ google-chrome --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
   | node tools/parse_qa_laoly_dump.mjs
 ```
 
-The parser fails closed on missing/incomplete DOM results and writes a JSON QA ledger with exact PASS/FAIL checks. The **physical iPhone/iPad, Safari, VoiceOver, owner invite and real signed Neon RLS are explicitly NOT RUN** and cannot silently become green. The same CI retains inherited S121 VM, Design System and Tàng Thư IA checks as separately surfaced workflows. Reviewer may open a screenshot/artifact if created, but no screenshot substitutes for physical iOS testing.
+The parser fails closed on missing/incomplete DOM results and writes a JSON QA ledger with exact PASS/FAIL checks. The **physical iPhone/iPad, Safari, owner invite and real signed Neon RLS are explicitly NOT RUN** and cannot silently become green. **VoiceOver = OUT OF SCOPE by Human PO decision S208** (not tested, not PASS, not a release blocker for the personal invite-only li. app). The same CI retains inherited S121 VM, Design System and Tàng Thư IA checks as separately surfaced workflows. Reviewer may open a screenshot/artifact if created, but no screenshot substitutes for physical iOS testing.
 
 ## Outstanding product gates
 

@@ -20,6 +20,8 @@ export type Attempt={
 };
 export const NATIVE_KEY='li.review.L09-1-2.v1';
 export const PILOT_KEY='step16.l09.react-island.v1';
+// Synthetic same-origin handover fixture only. Not the user's native attempt key.
+export const SITE_FIXTURE_KEY='step16.l09.shared-native-fixture.v1';
 export const LOCALE_KEY='li.app.locale.v1';
 const TEST_QUERY='native-localhost-test';
 
@@ -60,10 +62,14 @@ export class L09StorageBridge{
  readonly nativeFixture:boolean;
  readonly key:string;
  constructor(private storage:StorageReader,locationInfo:Pick<Location,'hostname'|'pathname'|'search'>){
-  this.nativeFixture=(locationInfo.hostname==='localhost'||locationInfo.hostname==='127.0.0.1')&&
-   locationInfo.pathname.includes('/tools/step16-real-l09-react-island/dist')&&
-   new URLSearchParams(locationInfo.search).get('bridge')===TEST_QUERY;
-  this.key=this.nativeFixture?NATIVE_KEY:PILOT_KEY;
+  const local=(locationInfo.hostname==='localhost'||locationInfo.hostname==='127.0.0.1');
+  const params=new URLSearchParams(locationInfo.search);
+  const standaloneTest=local&&locationInfo.pathname.includes('/tools/step16-real-l09-react-island/dist')&&
+    params.get('bridge')===TEST_QUERY;
+  const siteTest=local&&locationInfo.pathname==='/site/index.html'&&
+    params.get('li-react')==='l09-native-fixture';
+  this.nativeFixture=standaloneTest||siteTest;
+  this.key=siteTest?SITE_FIXTURE_KEY:standaloneTest?NATIVE_KEY:PILOT_KEY;
  }
  read():ReadResult{
   let raw:string|null;

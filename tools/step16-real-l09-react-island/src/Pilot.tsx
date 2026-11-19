@@ -9,7 +9,7 @@ import {ActionGroup,Button,Card,TextAreaField} from './ui/Shared';
 /** VC-G2-01 D1/D2/D3: research-only opt-in. Default L09 and bridge are untouched. */
 type StudyActionProps=ButtonHTMLAttributes<HTMLButtonElement>&{kind?:'primary'|'secondary';vcG2:boolean};
 function StudyAction({vcG2,kind='primary',...rest}:StudyActionProps){
- return vcG2?<Button variant={kind} {...rest}/>:<StudyAction vcG2={visualContractPilot} kind={kind} {...rest}/>;
+ return vcG2?<Button variant={kind} {...rest}/>:<ActionButton kind={kind} {...rest}/>;
 }
 type StudySurfaceProps=HTMLAttributes<HTMLElement>&{vcG2:boolean;children:ReactNode};
 function StudySurface({vcG2,...rest}:StudySurfaceProps){

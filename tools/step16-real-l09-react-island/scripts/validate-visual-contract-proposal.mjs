@@ -119,7 +119,9 @@ function validate(p){
  source(pilotTsx,"function StudySurface(");
  source(pilotTsx,"data-vc-g2={visualContractPilot?'approved-research':undefined}");
  source(pilotTsx,'purpose="answer"');
- assert.equal(ownership.components.filter(x=>x.reactUsage==='fixture_only').length,8);
+ assert.equal(ownership.components.filter(x=>x.reactUsage==='fixture_only').length,5);
+ assert.equal(ownership.components.filter(x=>x.reactUsage==='research_L09_vcg2_opt_in').length,3);
+ assert.equal(ownership.visualContractPilot.noProductionRollout,true);
  assert.equal(ownership.components.filter(x=>x.reactUsage==='research_L09_island').length,1);
  const tokenMap={
  'button-primary-background':'action-primary-surface','button-secondary-background':'action-secondary-surface',

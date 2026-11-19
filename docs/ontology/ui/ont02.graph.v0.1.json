@@ -364,6 +364,420 @@
         "checkedOn": "2026-11-19"
       },
       "note": "Proposed ONT-02 UI binding; no production/G2 approval"
+    },
+    {
+      "id": "token:css:--paper",
+      "kind": "DesignToken",
+      "title": "--paper",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/assets/design-tokens.css",
+        "sourceSection": "Native secondary action, filter baseline",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Native source observed; not proof of rendered React/device parity"
+    },
+    {
+      "id": "token:css:--paper-2",
+      "kind": "DesignToken",
+      "title": "--paper-2",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/assets/design-tokens.css",
+        "sourceSection": "Native tinted surface",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Native source observed; not proof of rendered React/device parity"
+    },
+    {
+      "id": "token:css:--porcelain",
+      "kind": "DesignToken",
+      "title": "--porcelain",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/assets/design-tokens.css",
+        "sourceSection": "Native editable field",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Native source observed; not proof of rendered React/device parity"
+    },
+    {
+      "id": "token:css:--li-color-status-banner-fill",
+      "kind": "DesignToken",
+      "title": "--li-color-status-banner-fill",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/assets/design-tokens.css",
+        "sourceSection": "Native status banner paint",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Native source observed; not proof of rendered React/device parity"
+    },
+    {
+      "id": "token:css:--li-color-input-focus-ring",
+      "kind": "DesignToken",
+      "title": "--li-color-input-focus-ring",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/assets/design-tokens.css",
+        "sourceSection": "Native editable-field focus stroke",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Native source observed; not proof of rendered React/device parity"
+    },
+    {
+      "id": "token:css:--li-color-danger-fill",
+      "kind": "DesignToken",
+      "title": "--li-color-danger-fill",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/assets/design-tokens.css",
+        "sourceSection": "Native field invalid stroke",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Native source observed; not proof of rendered React/device parity"
+    },
+    {
+      "id": "token:css:--ink",
+      "kind": "DesignToken",
+      "title": "--ink",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/assets/design-tokens.css",
+        "sourceSection": "Native status banner foreground",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Native source observed; not proof of rendered React/device parity"
+    },
+    {
+      "id": "component:Surface",
+      "kind": "Component",
+      "title": "Surface",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Native .surface container, tinted/inverse",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed UI-only role binding; Human G2 and physical device QA pending"
+    },
+    {
+      "id": "component:FilterChip",
+      "kind": "Component",
+      "title": "FilterChip",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Guide method filter aria-pressed button",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed UI-only role binding; Human G2 and physical device QA pending"
+    },
+    {
+      "id": "component:TextInput",
+      "kind": "Component",
+      "title": "TextInput",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "L09 guided textarea and native search input",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed UI-only role binding; Human G2 and physical device QA pending"
+    },
+    {
+      "id": "component:StatusBanner",
+      "kind": "Component",
+      "title": "StatusBanner",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Native .status-banner CSS; markup usage not yet confirmed",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed UI-only role binding; Human G2 and physical device QA pending"
+    },
+    {
+      "id": "variant:Surface:tinted",
+      "kind": "Variant",
+      "title": "Surface tinted variant",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/assets/li-layout.css",
+        "sourceSection": "Existing .surface.tinted class",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed UI-only role binding; Human G2 and physical device QA pending"
+    },
+    {
+      "id": "variant:TextInput:search",
+      "kind": "Variant",
+      "title": "TextInput search variant",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/index.html",
+        "sourceSection": "Existing input .searchbox type=search",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed UI-only role binding; Human G2 and physical device QA pending"
+    },
+    {
+      "id": "pattern:LessonContent",
+      "kind": "Pattern",
+      "title": "LessonContent pattern",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/assets/lesson-l09-hifi-markup.js",
+        "sourceSection": "Real L09 panel + guided textarea grouping",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed UI-only role binding; Human G2 and physical device QA pending"
+    },
+    {
+      "id": "slot:LessonContent:panel",
+      "kind": "Slot",
+      "title": "LessonContent panel slot",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/assets/lesson-l09-hifi-markup.js",
+        "sourceSection": "article.surface L09 goals",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed UI-only role binding; Human G2 and physical device QA pending"
+    },
+    {
+      "id": "slot:LessonContent:response",
+      "kind": "Slot",
+      "title": "LessonContent response slot",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/assets/lesson-l09-hifi-markup.js",
+        "sourceSection": "textarea #l09-guidedDraft",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed UI-only role binding; Human G2 and physical device QA pending"
+    },
+    {
+      "id": "pattern:GuideMethodFilters",
+      "kind": "Pattern",
+      "title": "GuideMethodFilters pattern",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/index.html",
+        "sourceSection": "Guide filter bar #method-filters, dynamic .filter buttons",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed UI-only role binding; Human G2 and physical device QA pending"
+    },
+    {
+      "id": "slot:GuideMethodFilters:chip",
+      "kind": "Slot",
+      "title": "GuideMethodFilters chip slot",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/index.html",
+        "sourceSection": "Guide filter bar dynamic button",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed UI-only role binding; Human G2 and physical device QA pending"
+    },
+    {
+      "id": "screen:guide",
+      "kind": "Screen",
+      "title": "Guide screen",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/site/index.html",
+        "sourceSection": "Existing #page-guide and #method-filters",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Native source observed; not proof of rendered React/device parity"
+    },
+    {
+      "id": "rule:UX-DS-35:token-ownership",
+      "kind": "UIRule",
+      "title": "Generated token dependency has a single owner",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/README.md",
+        "sourceSection": "Single reference→semantic→component value source",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Native source observed; not proof of rendered React/device parity"
+    },
+    {
+      "id": "rule:UX-DS-35:state-coverage",
+      "kind": "UIRule",
+      "title": "Selection, focus, disabled and error states are separate",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "Universal state/mode rules",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Native source observed; not proof of rendered React/device parity"
+    },
+    {
+      "id": "rule:UX-DS-35:status-truth",
+      "kind": "UIRule",
+      "title": "Status must reflect actual operation result",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "Save/submit success cannot be inferred from click",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Native source observed; not proof of rendered React/device parity"
+    },
+    {
+      "id": "gate:ONT02:state-matrix",
+      "kind": "QAGate",
+      "title": "Control state evidence matrix checker",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/qa-checklist.md",
+        "sourceSection": "Required per-component state×input×responsive evidence, pending device verification",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed UI-only role binding; Human G2 and physical device QA pending"
     }
   ],
   "edges": [
@@ -469,7 +883,7 @@
       "id": "edge:ont02:008",
       "predicate": "USES_TOKEN",
       "from": "variant:Button:secondary",
-      "to": "token:css:--cream",
+      "to": "token:css:--paper",
       "reviewState": "proposed",
       "visibility": "public_curated",
       "provenance": {
@@ -685,6 +1099,566 @@
       "provenance": {
         "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
         "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:024",
+      "predicate": "USES_TOKEN",
+      "from": "component:Button",
+      "to": "token:css:--paper",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:025",
+      "predicate": "USES_TOKEN",
+      "from": "component:Surface",
+      "to": "token:css:--cream",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:026",
+      "predicate": "USES_TOKEN",
+      "from": "component:Surface",
+      "to": "token:css:--paper-2",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:027",
+      "predicate": "USES_TOKEN",
+      "from": "component:Surface",
+      "to": "token:css:--moss",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:028",
+      "predicate": "USES_TOKEN",
+      "from": "component:FilterChip",
+      "to": "token:css:--paper",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:029",
+      "predicate": "USES_TOKEN",
+      "from": "component:FilterChip",
+      "to": "token:css:--moss",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:030",
+      "predicate": "USES_TOKEN",
+      "from": "component:FilterChip",
+      "to": "token:css:--cream",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:031",
+      "predicate": "USES_TOKEN",
+      "from": "component:TextInput",
+      "to": "token:css:--porcelain",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:032",
+      "predicate": "USES_TOKEN",
+      "from": "component:TextInput",
+      "to": "token:css:--li-color-input-focus-ring",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:033",
+      "predicate": "USES_TOKEN",
+      "from": "component:TextInput",
+      "to": "token:css:--li-color-danger-fill",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:034",
+      "predicate": "USES_TOKEN",
+      "from": "component:StatusBanner",
+      "to": "token:css:--li-color-status-banner-fill",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:035",
+      "predicate": "USES_TOKEN",
+      "from": "component:StatusBanner",
+      "to": "token:css:--ink",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:036",
+      "predicate": "HAS_VARIANT",
+      "from": "component:Surface",
+      "to": "variant:Surface:tinted",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:037",
+      "predicate": "HAS_VARIANT",
+      "from": "component:TextInput",
+      "to": "variant:TextInput:search",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:038",
+      "predicate": "USES_PATTERN",
+      "from": "screen:lesson:L09-1-2",
+      "to": "pattern:LessonContent",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:039",
+      "predicate": "HAS_SLOT",
+      "from": "pattern:LessonContent",
+      "to": "slot:LessonContent:panel",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:040",
+      "predicate": "HAS_SLOT",
+      "from": "pattern:LessonContent",
+      "to": "slot:LessonContent:response",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:041",
+      "predicate": "FILLS_SLOT",
+      "from": "component:Surface",
+      "to": "slot:LessonContent:panel",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:042",
+      "predicate": "FILLS_SLOT",
+      "from": "component:TextInput",
+      "to": "slot:LessonContent:response",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:043",
+      "predicate": "USES_PATTERN",
+      "from": "screen:guide",
+      "to": "pattern:GuideMethodFilters",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:044",
+      "predicate": "HAS_SLOT",
+      "from": "pattern:GuideMethodFilters",
+      "to": "slot:GuideMethodFilters:chip",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:045",
+      "predicate": "FILLS_SLOT",
+      "from": "component:FilterChip",
+      "to": "slot:GuideMethodFilters:chip",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:046",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-35:token-ownership",
+      "to": "component:Button",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:047",
+      "predicate": "VALIDATES",
+      "from": "gate:ONT02:token-reference",
+      "to": "component:Button",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:048",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-35:token-ownership",
+      "to": "component:Surface",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:049",
+      "predicate": "VALIDATES",
+      "from": "gate:ONT02:token-reference",
+      "to": "component:Surface",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:050",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-35:state-coverage",
+      "to": "component:Surface",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:051",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-35:token-ownership",
+      "to": "component:FilterChip",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:052",
+      "predicate": "VALIDATES",
+      "from": "gate:ONT02:token-reference",
+      "to": "component:FilterChip",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:053",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-35:state-coverage",
+      "to": "component:FilterChip",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:054",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-35:token-ownership",
+      "to": "component:TextInput",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:055",
+      "predicate": "VALIDATES",
+      "from": "gate:ONT02:token-reference",
+      "to": "component:TextInput",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:056",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-35:state-coverage",
+      "to": "component:TextInput",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:057",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-35:token-ownership",
+      "to": "component:StatusBanner",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:058",
+      "predicate": "VALIDATES",
+      "from": "gate:ONT02:token-reference",
+      "to": "component:StatusBanner",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:059",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-35:state-coverage",
+      "to": "component:StatusBanner",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:060",
+      "predicate": "VALIDATES",
+      "from": "gate:ONT02:token-reference",
+      "to": "rule:UX-DS-35:token-ownership",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:061",
+      "predicate": "VALIDATES",
+      "from": "gate:ONT02:state-matrix",
+      "to": "rule:UX-DS-35:state-coverage",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:062",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-35:status-truth",
+      "to": "component:StatusBanner",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:063",
+      "predicate": "VALIDATES",
+      "from": "gate:ONT02:state-truth",
+      "to": "rule:UX-DS-35:status-truth",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/bf8d9717a10da3bb7b5a7d10663113b829e352a1/design-system/components.md",
+        "sourceSection": "Stage02 UI-only source crosswalk, not actual React runtime / approved G2",
         "evidenceType": "documented",
         "checkedOn": "2026-11-19"
       }

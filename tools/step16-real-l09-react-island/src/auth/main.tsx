@@ -1,6 +1,6 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import '../../../site/assets/design-tokens.css';
+import '../../../../site/assets/design-tokens.css';
 import {AuthPanel} from './AuthPanel.js';
 import {isTrustedAuthOrigin} from './config.js';
 import './auth-shell.css';

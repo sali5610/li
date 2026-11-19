@@ -95,7 +95,7 @@ function build(){
   const screens=getScreens(htmlIndex);
   const inlineCss=files("site",[".html"]).flatMap((p)=>{
     const html=read(p);
-    return [...html.matchAll(/<style\\b[^>]*>([\\s\\S]*?)<\\/style>/gi)].map((m,i)=>parseCss(m[1],p+"#style-"+(i+1)));
+    return [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map((m,i)=>parseCss(m[1],p+"#style-"+(i+1)));
   });
   const css=[...cssFiles.map((p)=>parseCss(read(p),p)),...inlineCss];
   const rules=css.flatMap((f)=>f.rules.map((r)=>({...r,file:f.file})));

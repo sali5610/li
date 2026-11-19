@@ -13,7 +13,7 @@
    frame?.remove();
    frame=document.createElement('iframe');
    frame.style.cssText='position:absolute;left:-10000px;top:0;border:0;width:'+width+'px;height:880px';
-   frame.src='./dist-auth/auth-entry.html';
+   frame.src='/auth-pilot/';
    document.body.append(frame);
    for(let i=0;i<400;i++){
     if(frame.contentDocument?.querySelector('[data-auth-origin-blocked="true"]'))return;

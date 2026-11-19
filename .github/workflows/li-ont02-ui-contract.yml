@@ -29,7 +29,7 @@ jobs:
       - name: Checkout immutable UX-DS-35 source draft for isolated CI only
         uses: actions/checkout@v4
         with:
-          ref: cfd5f54057918c9eec382dbbdf4993aa13373c9b
+          ref: d22f469a52d13baa73c0c8952b198fdfeb2b2891
           path: uxds35-design-pin
           persist-credentials: false
       - name: Checkout immutable Step16.2 React source draft for isolated CI only

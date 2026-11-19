@@ -30,7 +30,7 @@ function validate(g,m){
  assert.equal(m.tokenValueAuthority,"design-system/tokens.json");
  assert.equal(m.runtimeGeneratedCss,"site/assets/design-tokens.css");
  assert.equal(m.sourcePins.ont01,"6b486a3a70be356a5dc21a2bb44117c457833caf");
- assert.equal(m.sourcePins.uxDs35Draft,"cfd5f54057918c9eec382dbbdf4993aa13373c9b");
+ assert.equal(m.sourcePins.uxDs35Draft,"d22f469a52d13baa73c0c8952b198fdfeb2b2891");
  assert.equal(m.crossBranchIntegration,"PENDING_SAME_TREE_REVIEW","must not claim branch merge/runtime integration");
  assert.equal(m.approvalState,"g2_open");
  assert.equal(m.runtimeStatus,"source_mapping_only");

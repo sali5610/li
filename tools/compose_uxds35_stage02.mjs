@@ -11,7 +11,7 @@ import {resolve,dirname,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
-const dsHead='cfd5f54057918c9eec382dbbdf4993aa13373c9b';
+const dsHead='d22f469a52d13baa73c0c8952b198fdfeb2b2891';
 const reactHead='734dc257be47f778a929acba5cdca570979e247d';
 const pins=[['uxds35-design-pin',dsHead],['uxds35-react-pin',reactHead]];
 const files=[

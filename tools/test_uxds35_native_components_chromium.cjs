@@ -36,11 +36,11 @@ async function send(method,params={}){
  });
 }
 const evalJS=async expression=>(await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true}))?.result?.value;
-async function key(name){
+async function key(name,modifiers=0){
  const keys={Enter:{key:'Enter',code:'Enter',windowsVirtualKeyCode:13,nativeVirtualKeyCode:13,text:'\r',unmodifiedText:'\r'},Escape:{key:'Escape',code:'Escape',windowsVirtualKeyCode:27,nativeVirtualKeyCode:27},Tab:{key:'Tab',code:'Tab',windowsVirtualKeyCode:9,nativeVirtualKeyCode:9}};
  const p=keys[name];assert.ok(p);
- await send('Input.dispatchKeyEvent',{type:'keyDown',...p});
- await send('Input.dispatchKeyEvent',{type:'keyUp',...p});
+ await send('Input.dispatchKeyEvent',{type:'keyDown',modifiers,...p});
+ await send('Input.dispatchKeyEvent',{type:'keyUp',modifiers,...p});
 }
 async function goto(next,selector){
  await send('Page.navigate',{url:next});
@@ -77,7 +77,7 @@ async function run(){
  await setup();
  let count=0;
  const check=(pass,what)=>{assert.ok(pass,what);count++};
- const evidence={source:'pinned DS HEAD cfd5f54057918c9eec382dbbdf4993aa13373c9b',environment:'isolated synthetic Chromium localhost only',g2:'OPEN',physicalSafari:'UNVERIFIED',families:{},gaps:[]};
+ const evidence={source:'pinned DS HEAD d22f469a52d13baa73c0c8952b198fdfeb2b2891',environment:'isolated synthetic Chromium localhost only',g2:'OPEN',physicalSafari:'UNVERIFIED',families:{},gaps:[]};
  // FIELD: implemented interactive specimen; check input semantics, not fake save.
  const field=await evalJS("(()=>{const a=document.querySelector('#ds-error'),m=document.querySelector('#ds-error-note'),d=document.querySelector('#ds-disabled'),r=document.querySelector('#ds-readonly'),t=document.querySelector('#ds-query'),l=document.querySelector('label[for=\"ds-query\"]');return {invalid:a?.getAttribute('aria-invalid'),linked:a?.getAttribute('aria-describedby'),alert:m?.getAttribute('role'),disabled:d?.disabled,readOnly:r?.readOnly,readOnlyDisabled:r?.disabled,label:!!l,editable:!t?.disabled&& !t?.readOnly,queryRole:document.querySelector('#ds-query-result')?.getAttribute('role')}})()");
  evidence.families.Field=field;
@@ -119,6 +119,20 @@ async function run(){
  const opened=await evalJS("(()=>{const m=document.querySelector('#buddy-modal'),a=document.activeElement;return {open:m.classList.contains('open'),focusInside:m.contains(a),activeId:a?.id||'',closeVisible:!!m.querySelector('#close-modal')&&getComputedStyle(m.querySelector('#close-modal')).display!=='none',background:document.querySelector('#page-catalog')?.getAttribute('inert')??null}})()");
  evidence.families.Dialog={initial:dialogInitial,opened};
  check(opened.open&&opened.focusInside&&opened.closeVisible,'dialog did not move focus inside on keyboard open');
+ const modalLock=await evalJS("(()=>({app:document.querySelector('.app')?.inert,nav:document.querySelector('.mobile-nav')?.inert,fab:document.querySelector('.laoly-support')?.inert}))()");
+ evidence.families.Dialog.inertWhileOpen=modalLock;
+ check(modalLock.app&&modalLock.nav&&modalLock.fab,'Dialog background not truly inert while open');
+ await evalJS("document.querySelector('.header .nav-btn').focus()");
+ check(await evalJS("document.querySelector('#buddy-modal').contains(document.activeElement)"),'programmatic focus escaped to inert app');
+ const buddyStops=await evalJS("(()=>{const xs=liModalTabStops(document.querySelector('#buddy-modal'));return {count:xs.length,includesRegion:xs.some(x=>x.id==='buddy-scroll')}})()");
+ evidence.families.Dialog.tabStops=buddyStops;
+ check(buddyStops.count>=2&&buddyStops.includesRegion,'modal missed tabindex content scroll region');
+ await evalJS("liModalTabStops(document.querySelector('#buddy-modal')).at(-1).focus()");
+ await key('Tab');
+ check(await evalJS("document.activeElement===liModalTabStops(document.querySelector('#buddy-modal'))[0]"),'forward Tab escaped Buddy instead of wrapping');
+ await evalJS("liModalTabStops(document.querySelector('#buddy-modal'))[0].focus()");
+ await key('Tab',8);
+ check(await evalJS("document.activeElement===liModalTabStops(document.querySelector('#buddy-modal')).at(-1)"),'Shift+Tab escaped Buddy instead of wrapping');
  await shot('native-dialog-mobile-390');
  await key('Escape');
  await until(()=>evalJS("!document.querySelector('#buddy-modal')?.classList.contains('open')"),'Escape close');
@@ -127,6 +141,40 @@ async function run(){
  check(closed.closed,'Escape did not close dialog');
  if(!closed.focusReturned)evidence.gaps.push({component:'Dialog',severity:'P1',code:'DIALOG_FOCUS_NOT_RESTORED',evidence:'Keyboard Escape closes buddy modal but focus does not return to #laoly-fab',actualFocus:closed.focusId,gate:'NOT_ACCEPTED'});
  check(closed.focusReturned,'Dialog closed via Escape but keyboard focus was not restored to FAB: '+JSON.stringify(closed));
+ check(await evalJS("!document.querySelector('.app').inert&&!document.querySelector('.mobile-nav').inert&&!document.querySelector('.laoly-support').inert"),'background inert persisted after Escape');
+ // Dialog Close button / backdrop also restore focus via shared closeModal contract.
+ await evalJS("document.querySelector('#laoly-fab').focus()");
+ await key('Enter');
+ await until(()=>evalJS("document.querySelector('#buddy-modal').classList.contains('open')"),'Buddy reopen');
+ await evalJS("document.querySelector('#close-modal').focus()");
+ await key('Enter');
+ const buttonClose=await evalJS("!document.querySelector('#buddy-modal').classList.contains('open')&&document.activeElement?.id==='laoly-fab'");
+ check(buttonClose,'Buddy Close button lost focus restoration');
+ await evalJS("document.querySelector('#laoly-fab').focus()");
+ await key('Enter');
+ await until(()=>evalJS("document.querySelector('#buddy-modal').classList.contains('open')"),'Buddy reopen for backdrop');
+ await evalJS("document.querySelector('#buddy-modal').click()");
+ check(await evalJS("!document.querySelector('#buddy-modal').classList.contains('open')&&document.activeElement?.id==='laoly-fab'"),'Buddy backdrop close lost focus restoration');
+ // Check-in modal has radio, details/summary, scroll region; test same shared trap.
+ await evalJS("document.querySelector('.mobile-nav .nav-btn[data-page=\"home\"]').click()");
+ await until(()=>evalJS("document.querySelector('#page-home').classList.contains('active')"),'Home route for Check-in');
+ await evalJS("document.querySelector('#checkin').focus()");
+ await key('Enter');
+ await until(()=>evalJS("document.querySelector('#checkin-modal')?.classList.contains('open')"),'Check-in modal opened');
+ const checkin=await evalJS("(()=>{const m=document.querySelector('#checkin-modal'),xs=liModalTabStops(m);return {focusInside:m.contains(document.activeElement),focusId:document.activeElement?.name||document.activeElement?.id,scrollRegion:xs.some(x=>x.classList.contains('checkin-scroll')),radio:xs.some(x=>x.type==='radio'),summary:xs.some(x=>x.tagName==='SUMMARY'),count:xs.length,appInert:document.querySelector('.app').inert}})()");
+ evidence.families.Dialog.checkin=checkin;
+ check(checkin.focusInside&&checkin.focusId==='checkin-sleep'&&checkin.appInert,'Check-in initial radio or background inert mismatch '+JSON.stringify(checkin));
+ check(checkin.radio&&checkin.summary&&checkin.scrollRegion&&checkin.count>=5,'Check-in trap missing radios/summary/scroll region '+JSON.stringify(checkin));
+ await evalJS("liModalTabStops(document.querySelector('#checkin-modal')).at(-1).focus()");
+ await key('Tab');
+ check(await evalJS("document.activeElement===liModalTabStops(document.querySelector('#checkin-modal'))[0]"),'Check-in forward Tab escaped');
+ await evalJS("liModalTabStops(document.querySelector('#checkin-modal'))[0].focus()");
+ await key('Tab',8);
+ check(await evalJS("document.activeElement===liModalTabStops(document.querySelector('#checkin-modal')).at(-1)"),'Check-in Shift+Tab escaped');
+ await key('Escape');
+ await until(()=>evalJS("!document.querySelector('#checkin-modal').classList.contains('open')"),'Check-in Escape');
+ check(await evalJS("document.activeElement?.id==='checkin'&&!document.querySelector('.app').inert"),'Check-in Escape failed opener focus/inert restoration');
+ evidence.families.Dialog.focusContract={buddyForward:true,buddyBackward:true,buddyCloseButton:true,buddyBackdrop:true,checkinForward:true,checkinBackward:true,checkinEscape:true,inert:'restored'};
  // FEEDBACK: actual Settings import invalid file in isolated profile. NO valid import and no real data.
  await evalJS("document.querySelector('.header [data-page=\"settings\"]').click()");
  await until(()=>evalJS("document.querySelector('#page-settings')?.classList.contains('active')"),'settings route');

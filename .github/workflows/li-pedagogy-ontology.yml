@@ -1,0 +1,23 @@
+name: li. ONT-03B method-fit ontology (PR only)
+on:
+  pull_request:
+    paths:
+      - 'docs/ontology/pedagogy/**'
+      - 'tools/validate_pedagogy_ontology.mjs'
+      - '.github/workflows/li-pedagogy-ontology.yml'
+permissions:
+  contents: read
+jobs:
+  pedagogy-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: ONT-01 shared graph checks
+        run: node tools/validate_ontology.mjs --check
+      - name: ONT-03A academic graph checks
+        run: node tools/validate_academic_ontology.mjs --check
+      - name: ONT-03B method-fit and synthetic evidence gates
+        run: node tools/validate_pedagogy_ontology.mjs --check

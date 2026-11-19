@@ -137,7 +137,8 @@ jobs:
           zip -r -q /tmp/li-design-system-repo.zip .
           unzip -p /tmp/li-design-system-repo.zip .github/workflows/pages.yml | grep -Fq 'deploy-pages@v4'
           unzip -p /tmp/li-design-system-repo.zip .github/workflows/pages.yml | grep -Fq 'repository: sali5610/li'
-          test "$(unzip -Z1 /tmp/li-design-system-repo.zip | grep -v '/
+          unzip -Z1 /tmp/li-design-system-repo.zip | grep -Fq 'README.md'
+          ! unzip -Z1 /tmp/li-design-system-repo.zip | grep -Eq 'design-system/react|tokens.json|site/design-system'
       - name: Upload independent DS repository package
         uses: actions/upload-artifact@v4
         with:

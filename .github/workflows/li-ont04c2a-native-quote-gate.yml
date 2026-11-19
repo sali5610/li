@@ -1,0 +1,38 @@
+name: li. ONT-04C2a Lão Lý native quote stage safety (PR only)
+on:
+  pull_request:
+    paths:
+      - 'site/assets/laoly-quote-stage-gate.js'
+      - 'site/assets/laoly-quotes-s121.js'
+      - 'site/index.html'
+      - 'tools/check_laoly_quote_runtime_gate.mjs'
+      - 'docs/ontology/companion/ONT-04C2a-native-quote.md'
+      - '.github/workflows/li-ont04c2a-native-quote-gate.yml'
+permissions:
+  contents: read
+jobs:
+  native-quote-stage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Inherited source contracts remain valid
+        run: |
+          node tools/validate_ontology.mjs --check
+          node tools/validate_academic_ontology.mjs --check
+          node tools/validate_pedagogy_ontology.mjs --check
+          node tools/test_offline_typed_search.mjs
+          node tools/check_search_publication_routes.mjs --check
+          node tools/check_companion_context.mjs --check
+          node tools/check_companion_quote_safety.mjs --check
+      - name: Syntax verify actual browser quote policy and renderer
+        run: |
+          node --check site/assets/laoly-quote-stage-gate.js
+          node --check site/assets/laoly-quotes-s121.js
+      - name: Simulated actual S121 DOM quote selection and 3 bilingual lessons
+        run: node tools/check_laoly_quote_runtime_gate.mjs --check
+      - name: No generated bundle, production merge or account mutation
+        run: |
+          test -z "$(git ls-files docs/ontology/companion/user-attempts.json site/assets/ont04c2a-generated-bundle.js)"

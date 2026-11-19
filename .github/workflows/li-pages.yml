@@ -94,6 +94,8 @@ jobs:
           set -euo pipefail
           cp tools/step16-real-l09-react-island/dist-staging-app/*.js site/assets/
           cp tools/step16-real-l09-react-island/src/auth/staging-gate.css site/assets/
+          node tools/build_search_pack.mjs
+          node tools/test_real_content_search.mjs
           touch site/.nojekyll
           git diff --exit-code -- site/
           python3 - <<'PY'

@@ -7,6 +7,9 @@ on:
       - 'tools/validate_academic_ontology.mjs'
       - 'tools/validate_pedagogy_ontology.mjs'
       - 'tools/test_offline_typed_search.mjs'
+      - 'tools/test_real_content_search.mjs'
+      - 'tools/build_search_pack.mjs'
+      - 'site/assets/li-catalog-search.js'
       - '.github/workflows/li-ontology-backend.yml'
 permissions:
   contents: read
@@ -25,3 +28,5 @@ jobs:
           node tools/validate_academic_ontology.mjs --check
           node tools/validate_pedagogy_ontology.mjs --check
           node tools/test_offline_typed_search.mjs
+          node tools/build_search_pack.mjs
+          node tools/test_real_content_search.mjs

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "li. ONT-04C1 minimal static non-personal companion context",
+  "description": "Offline only; NEVER pass attempt, answer, email, owner ID, notes, cookies, JWT or submission state. Server-authenticated runtime would require a separate private contract and RLS.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "lessonId",
+    "locale",
+    "stage"
+  ],
+  "properties": {
+    "lessonId": {
+      "enum": [
+        "L09-1-2",
+        "L03-1-2",
+        "L15-2-2",
+        "L09-1-1"
+      ]
+    },
+    "locale": {
+      "enum": [
+        "vi",
+        "en"
+      ]
+    },
+    "stage": {
+      "enum": [
+        "opening",
+        "concept",
+        "guided",
+        "independent",
+        "reflection",
+        "extension"
+      ]
+    },
+    "reviewProposals": {
+      "type": "boolean",
+      "default": false,
+      "description": "Editorial-only optional L2 definition pointer, never a scored action"
+    }
+  }
+}

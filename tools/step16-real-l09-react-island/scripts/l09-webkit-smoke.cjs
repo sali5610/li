@@ -32,6 +32,9 @@ async function grab(page){
   const cards=[...p.querySelectorAll('section.pilot-surface')];
   const answers=[...p.querySelectorAll('textarea[data-answer]')];
   const style=e=>{
+   // After submission the authored CTA/clear controls intentionally unmount.
+   // The state snapshot must represent absent buttons, not style(null).
+   if(!e)return null;
    const s=getComputedStyle(e),r=e.getBoundingClientRect();
    return {bg:s.backgroundColor,shadow:s.boxShadow,pad:s.padding,radius:s.borderRadius,
     minHeight:s.minHeight,rectHeight:r.height,font:s.fontSize,line:s.lineHeight,
@@ -113,6 +116,8 @@ async function main(){
    const submitted=await grab(page);
    ok(submitted.content.submitted&&submitted.content.rubric&&submitted.disabled.every(Boolean),
     'WebKit synthetic submit/rubric/locking drift');
+   ok(submitted.buttons.primary===null&&submitted.buttons.secondary===null,
+    'WebKit submission should unmount edit actions, not hide rubric');
    ok(submitted.real===null&&submitted.synthetic!==null,
     'WebKit submitted to real learner key');
    await page.screenshot({path:path.join(out,'shared-submitted-390.png'),

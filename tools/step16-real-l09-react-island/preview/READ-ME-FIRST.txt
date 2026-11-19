@@ -1,0 +1,30 @@
+li. (理) — HỌC THỬ L09, KHÔNG DEPLOY
+=======================================
+Bản này dùng chính site li. và React L09 trên nhánh nghiên cứu.
+Không phải production, không có Google login hay đồng bộ đám mây.
+
+TRÊN MAC
+1. Trong GitHub Actions, tải artifact "li-l09-local-preview" về máy.
+2. Giải nén file tải xuống, sau đó giải nén "li-l09-local-preview.zip" bên trong.
+3. Vào thư mục "li-l09-local-preview" và mở "START-LI.command".
+   Nếu macOS hỏi xác nhận, bấm chuột phải → Open để kiểm tra/chạy script.
+4. Trình duyệt tự mở ở địa chỉ 127.0.0.1. Bấm "Học thử bài L09" trên Home,
+   đọc phần lý thuyết và hướng dẫn của chính app, làm đủ 4 câu (mỗi câu
+   tối thiểu 12 ký tự), Nộp, tự đánh giá 4 tiêu chí, rồi quay lại Home.
+5. Bấm "Xem lại L09". Tiến độ nháp/tự đánh giá được giữ trên CHÍNH
+   trình duyệt đó bằng localStorage nghiên cứu, không phải dữ liệu học thật.
+
+Nếu script báo không có Python 3/Ruby, đó là thiếu server local trên máy,
+KHÔNG được tự cài dịch vụ trả phí. Không mở file index.html trực tiếp
+bằng file:// vì bundle React dùng module import.
+
+BẢO MẬT / GIỚI HẠN
+- Server chỉ bind 127.0.0.1, không mở LAN, không Cloudflare/GitHub Pages deploy.
+- Không dùng tài khoản thật; không truy cập Neon hay Notion private content.
+- Dữ liệu lưu bằng "step16.l09.react-island.v1", KHÔNG chạm "li.review.L09-1-2.v1".
+- Đóng cửa sổ Terminal để dừng server, không xóa dữ liệu duyệt web khác.
+- Không sử dụng cửa sổ riêng tư nếu muốn giữ tiến độ qua lần mở sau.
+- Nội dung L09-1-2 dùng source sẵn có, phần feedback là TỰ ĐÁNH GIÁ,
+  không tự động chấm đúng sai và không xác nhận mastery.
+
+SOURCE: github.com/sali5610/li · Draft PR #164 (không merge).

@@ -28,8 +28,11 @@ export function Preview(){
      <TextInput data-ui-disabled label={en?'Disabled':'Vô hiệu'} defaultValue="Unavailable" disabled/>
      <TextAreaField label={en?'Notes':'Ghi chú'} defaultValue="" rows={2}/>
      <Feedback tone={error&&!value?'error':'info'} data-ui-feedback>{error&&!value?(en?'Please correct the answer':'Vui lòng sửa câu trả lời'):(en?'Not saved':'Chưa lưu')}</Feedback>
+     <Feedback tone="loading" data-ui-feedback-loading>{en?'Working — not saved':'Đang xử lý — chưa lưu'}</Feedback>
+     <Feedback tone="success" data-ui-feedback-success>{en?'Fixture state only':'Chỉ là trạng thái thử nghiệm'}</Feedback>
    </Card>
    <Card tone="tinted"><p>{en?'Tinted surface':'Surface nền phụ'}</p></Card>
+   <Card tone="inverse" data-ui-card-inverse><p>{en?'Inverse surface sample':'Mẫu nền đảo'}</p></Card>
    <Button data-ui-open onClick={()=>setModal(true)}>{en?'Open dialog':'Mở hộp thoại'}</Button>
    <Dialog open={modal} title={en?'Preview dialog':'Hộp thoại thử nghiệm'} closeLabel={en?'Close':'Đóng'} onRequestClose={()=>setModal(false)}>
      <p>{en?'Temporary content; no persistence':'Nội dung thử; không ghi dữ liệu'}</p>

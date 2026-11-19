@@ -112,6 +112,7 @@ jobs:
           node tools/validate_ontology.mjs --check
           node tools/validate_ui_ontology.mjs --check --composed-check
           python3 tools/validate_site.py
+          node tools/step16-real-l09-react-island/scripts/validate-ui-ownership.mjs
           echo "PASS STAGE02B_FULL_TREE_DS_ONT_SOURCE"
       - name: Build actual shared React and native L09 from SAME combined tree
         shell: bash

@@ -1,5 +1,7 @@
-name: Publish li. Hi-Fi to GitHub Pages
+name: Publish li. STAGING to GitHub Pages (Cloudflare-independent)
 
+# GitHub Pages is the low-cost test environment, not the Cloudflare production site.
+# Existing main pushes update STAGING only. No Cloudflare API, secrets or deploy.
 on:
   push:
     branches: [main]
@@ -20,27 +22,95 @@ concurrency:
 
 jobs:
   publish:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Validate full Hi-Fi source before publishing
-        run: python3 tools/validate_site.py
-      - name: Validate design system and 4px typography/spacing contract
+      - name: Checkout main site for STAGING only
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Validate static site and design tokens first
         run: |
+          set -euo pipefail
+          python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
           python3 tools/validate_ui_foundations.py
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+          test ! -e site/auth-pilot || { echo "Auth route unexpectedly tracked in main"; exit 1; }
+
+      - name: Checkout exact approved Auth source from research branch (do not merge draft)
+        uses: actions/checkout@v4
         with:
-          enablement: true
-      - name: Upload exact static website
+          repository: sali5610/li
+          ref: a670e080edd3dba7d07899642f4468f6ac9ddbaa
+          path: staging-auth-source
+          persist-credentials: false
+
+      - name: Verify source SHA and staging-only auth boundaries
+        run: |
+          set -euo pipefail
+          test "$(git -C staging-auth-source rev-parse HEAD)" = "a670e080edd3dba7d07899642f4468f6ac9ddbaa"
+          test -f staging-auth-source/tools/step16-real-l09-react-island/vite.auth.config.mjs
+          grep -Fq "VITE_LI_AUTH_TARGET==='github-pages-staging'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/config.ts
+          grep -Fq "'https://sali5610.github.io'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/config.ts
+          grep -Fq "checkInviteAccess" staging-auth-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
+          grep -Fq "neonAuth.getJWTToken()" staging-auth-source/tools/step16-real-l09-react-island/src/auth/neon-client.ts
+          ! grep -Eq "syncOnce|bindNeonAccount|signIn.email|AuthRecovery|AuthEmailVerification" staging-auth-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
+          echo "PASS pinned GitHub Pages staging identity; Google-only, no remote learner sync"
+
+      - name: Set up GitHub runner for isolated staging Auth build
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build Auth-only bundle with GitHub Pages project subpath
+        working-directory: staging-auth-source/tools/step16-real-l09-react-island
+        env:
+          VITE_LI_AUTH_TARGET: github-pages-staging
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund
+          npm run extract
+          npm run test:sync
+          npm run build:auth
+          test -f dist-auth/auth-entry.html
+          test "$(find dist-auth -type f -name '*.html' | wc -l)" -eq 1
+          test -z "$(find dist-auth -type f -name '*.map' -print -quit)"
+          grep -Fq '/li/auth-pilot/assets/' dist-auth/auth-entry.html
+          grep -Fq 'content="no-referrer"' dist-auth/auth-entry.html
+          echo "PASS staging assets under /li/auth-pilot/ (no maps/secrets)"
+
+      - name: Assemble static STAGING site without changing main or Cloudflare
+        run: |
+          set -euo pipefail
+          mkdir -p site/auth-pilot
+          cp -a staging-auth-source/tools/step16-real-l09-react-island/dist-auth/. site/auth-pilot/
+          mv site/auth-pilot/auth-entry.html site/auth-pilot/index.html
+          touch site/.nojekyll
+          test -f site/auth-pilot/index.html
+          test -z "$(find site/auth-pilot -type f \( -name '*.map' -o -name '.env*' \) -print -quit)"
+          git diff --exit-code -- site/
+          echo "PASS immutable main site + isolated GitHub Pages Auth pilot"
+
+      - name: Configure GitHub Pages STAGING
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages STAGING artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: site/
-      - name: Publish
+
+      - name: Publish STAGING ONLY (not a Cloudflare deployment)
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Human test notice: GitHub Pages OAuth needs separate Neon trusted origin
+        run: |
+          echo "GitHub Pages staging artifact published. Cloudflare production not touched."
+          echo "Do not assume real Google OAuth works until Neon explicitly trusts https://sali5610.github.io."
+          echo "Real signed JWT + invited A/B vs uninvited C RLS remains a separate mandatory test."

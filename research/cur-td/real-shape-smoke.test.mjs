@@ -13,7 +13,7 @@ const filler = x => `${x} `.repeat(110);
 const raw = (s, sourceId=id) => `Notion fetched at 2026-11-20\n<page url="https://app.notion.com/p/${sourceId}">\n<ancestor-path>secret</ancestor-path>\n<content>\n${s}\n</content>\n</page>`;
 const mk = ([key,vi,en,end], leak='') => {
   let body=`${vi}\n${filler('Tài-liệu')}\n${en}\n${filler('Learner-body')}\n${leak}\n${end.startsWith('#')?end:`${end}</b> internal editor only`}\nNot public`;
-  const manifest = {[id]:{version:`${key}:v0.1`,sha256:hashNotionBody(body),viStart:vi,enStart:en,end,minimumLocaleChars:300,forbiddenFingerprints:['solved ledger: 110 = 105 + 5']}};
+  const manifest = {[id]:{version:`${key}:v0.1`,sha256:hashNotionBody(body),viStart:vi,enStart:en,end,minimumLocaleChars:300,forbiddenFingerprints:['synthetic-private-answer-marker-example']}};
   return {body,manifest};
 };
 const run=(c,leak='',extra={})=>{const v=mk(c,leak);return exportLearnerFromNotion({sourceId:extra.sourceId??id,rawNotionFetch:extra.raw??raw(v.body),manifest:extra.manifest??v.manifest})};
@@ -23,8 +23,8 @@ const neg=[
  ['entity encoded URL', 'https://app&amp;#46;notion&amp;#46;com/p/12345678901234567890123456789012'],
  ['double percent encoding', 'https%253A%252F%252Fapp%252Enotion%252Ecom%252Fp%252F12345678901234567890123456789012'],
  ['key label','teacher ledger'],
- ['independent answer', 'Independent answer: 110'],
- ['known fingerprint','solved ledger: 110 = 105 + 5'],
+ ['independent answer', 'Independent answer: 999'],
+ ['known fingerprint','synthetic-private-answer-marker-example'],
  ['unsafe tag','<iframe src="https://x.invalid"></iframe>'],
  ['onerror','<img onerror=alert(1)>'],
 ];

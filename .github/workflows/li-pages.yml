@@ -47,14 +47,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: sali5610/li
-          ref: a80a16839f6a886ecaeb74a5baad1e429e24c3ee
+          ref: dfa87c67223fdea76b94b97b592a991785b42380
           path: staging-auth-source
           persist-credentials: false
 
       - name: Verify source SHA and staging-only auth boundaries
         run: |
           set -euo pipefail
-          test "$(git -C staging-auth-source rev-parse HEAD)" = "a80a16839f6a886ecaeb74a5baad1e429e24c3ee"
+          test "$(git -C staging-auth-source rev-parse HEAD)" = "dfa87c67223fdea76b94b97b592a991785b42380"
           test -f staging-auth-source/tools/step16-real-l09-react-island/vite.auth.config.mjs
           grep -Fq "VITE_LI_AUTH_TARGET==='github-pages-staging'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/config.ts
           grep -Fq "'https://sali5610.github.io'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/config.ts
@@ -63,6 +63,12 @@ jobs:
           grep -Fq "RlsQaPanel" staging-auth-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
           grep -Fq "IS_GITHUB_STAGING" staging-auth-source/tools/step16-real-l09-react-island/src/auth/RlsQaPanel.tsx
           grep -Fq "stepQa" staging-auth-source/tools/step16-real-l09-react-island/src/auth/rls-qa-contract.ts
+          grep -Fq "SyncQaPanel" staging-auth-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
+          grep -Fq "SYNC_QA_DB" staging-auth-source/tools/step16-real-l09-react-island/src/auth/sync-qa.ts
+          grep -Fq "scopedSyncApi" staging-auth-source/tools/step16-real-l09-react-island/src/auth/sync-qa.ts
+          grep -Fq "IS_GITHUB_STAGING" staging-auth-source/tools/step16-real-l09-react-island/src/auth/SyncQaPanel.tsx
+          grep -Fq "twoUserJwtRlsVerified:false" staging-auth-source/tools/step16-real-l09-react-island/src/sync/sync-once.ts
+          test ! -e staging-auth-source/tools/step16-real-l09-react-island/src/auth/qa-secrets.ts
           grep -Fq "__li_rls_qa_" staging-auth-source/tools/step16-real-l09-react-island/src/auth/rls-qa-contract.ts
           test ! -e staging-auth-source/tools/step16-real-l09-react-island/src/auth/qa-secrets.ts
 

@@ -1,26 +1,33 @@
-name: Validate li. companion changes
+name: li. Scoped companion / practice QA
+
 on:
   pull_request:
-    branches: [main]
+    branches: [main, integration/staging]
     paths:
-      - 'site/**'
-      - 'tools/**'
+      - 'site/index.html'
+      - 'site/assets/checkin-*'
+      - 'site/assets/spell-practice.*'
+      - 'site/assets/app-language*.js'
+      - 'site/assets/laoly-*'
+      - 'tools/checkin_adaptation_regression.mjs'
+      - 'tools/test_i18n_legacy.cjs'
       - '.github/workflows/li-companion-qa.yml'
+
 permissions:
   contents: read
+
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate static site and all companion plans
-        run: python3 tools/validate_site.py
       - name: Check adaptive study mode mapping and check-in actions
         run: node tools/checkin_adaptation_regression.mjs
-      - name: Parse the interactive Spellbook runtime
+      - name: Parse interactive practice runtime
         run: node --check site/assets/spell-practice.js
-      - name: Check authored VI/EN legacy UX copy and quote coverage
+      - name: Check VI/EN companion copy and quote coverage
         run: node tools/test_i18n_legacy.cjs

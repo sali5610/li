@@ -735,7 +735,11 @@ assert 'li-related-lessons' in foundation
 # UX-DS-11 · Review components are connected; app Guide chips use full pills.
 assert 'ui-foundations.css?v=20261119-ds33-physical-shell' in page_html
 assert '#page-guide #method-filters .filter,' in foundation and 'border-radius:999px!important;' in foundation
-v3=(site/"component-library-review.html").read_text(encoding="utf-8")
+# The public entry now routes to React Studio; old UX-DS-11 specimens are archived.
+studio_entry=(site/"component-library-review.html").read_text(encoding="utf-8")
+assert "design-system/" in studio_entry
+assert (site/"design-system"/"index.html").is_file()
+v3=(site/"component-library-archive.html").read_text(encoding="utf-8")
 assert 'component-review-v3.css?v=20261118-ds20-coverage' in v3
 assert 'component-review-v3.js?v=20261118-ds13-week-fix' in v3
 assert all('<section id="'+id+'"' in v3 for id in ("controls","dataviz"))

@@ -42,3 +42,15 @@ jobs:
         run: python3 tools/audit_design_tokens.py --check-baseline
       - name: Validate full app routes and native lessons before merge
         run: python3 tools/validate_site.py
+      - name: Stage 00 source scanner self-test and complete live-tree inventory
+        run: |
+          node tools/ds_inventory.mjs --self-test
+          node tools/ds_inventory.mjs --check
+          node tools/ds_inventory.mjs --write /tmp/li-ux-ds-35-stage00-inventory.json
+      - name: Retain full selector/token/screen inventory as reviewable CI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-ux-ds-35-source-inventory
+          path: /tmp/li-ux-ds-35-stage00-inventory.json
+          retention-days: 14
+

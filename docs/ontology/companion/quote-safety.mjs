@@ -18,6 +18,7 @@ export function indexQuoteSafety({policy,quoteIds,companionManifests}){
  if(policy?.profile!==REVIEW_PROFILE||policy.demoOnly!==true||
   policy.hardGates?.defaultQuoteState!=='WITHHELD'||
   policy.hardGates?.quoteRenderAuthorization!=='NOT_GRANTED'||
+  policy.hardGates?.reviewedQuoteEntries!==0||
   policy.hardGates?.reviewedPublicQuoteEntries!==0||
   policy.hardGates?.clientCanApprove!==false||
   policy.legacyRuntimeSafetyFinding?.severity!=='GATE_OPEN_DO_NOT_CLAIM_FIXED')

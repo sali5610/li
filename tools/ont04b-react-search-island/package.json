@@ -7,7 +7,8 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "test": "vitest run",
-    "test:ci": "vitest run --reporter=verbose"
+    "test:ci": "vitest run --reporter=verbose",
+    "build:site-candidate": "npm run build && vite build --config vite.site.config.mjs"
   },
   "dependencies": {
     "react": "19.2.0",

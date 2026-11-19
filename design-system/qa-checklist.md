@@ -2,6 +2,22 @@
 
 **Rule:** Every request to fix a component triggers a top-down impact review, not a local patch at the reported screenshot. Use this before merging UI/UX work.
 
+## UX-ONT · Typed ontology cross-component gates (S183 PO-approved direction; ONT-01 spec DONE/DRAFT PR #127, ONT-02..05 pending)
+
+**Reference:** [UX-DS-35 integrated roadmap](plans/2026-11-19-atomic-responsive-react-roadmap.md), [S183 PO-approved ontology](https://app.notion.com/p/41d6cf6db72a81f59573fb0e5ed6836e) and [ONT-01 PR #127](https://github.com/sali5610/li/pull/127). These checks are **unchecked planning criteria**, not present runtime test success.
+
+- [ ] **ONT-01 version pin:** exact approved registry/schema/TS export + validator SHA used. Do not silently fork 39 kinds or 25 predicates inside React components. Run graph validator and negative fixtures on nonprivate authored manifests; preserve proposed/verified/approved and draft/published as separate states.
+- [ ] **ONT-02 UI path:** Token→Component/Variant/State→Slot/Pattern→Screen/Flow→UIRule→QAGate is verifiably mapped for Button, ActionGroup, Status, LessonQuestion, Lão Lý Action; actual React props/slot restrictions and UI assertions enforce relevant rules, rather than accepting source graph links as proof.
+- [ ] **ONT-02 responsive binding:** test each annotated component at compact/medium/expanded widths, short height, iPad Split View, Safari rotation, VI/EN text and keyboard/VoiceOver; ontology labels cannot replace real device results, no unapproved hardcoded radius or visual drift.
+- [ ] **ONT-03 learning path:** reviewed/rights-checked canonical Lesson→Concept/Outcome/Claim/SourceEdition and approved hard prerequisite relations; no cycles, duplicate IDs, inferred synonym or VI/EN duplicate progress; existing 5 IA levels and 13 canonical L2 techniques preserved.
+- [ ] **ONT-03 method truth:** method application has versioned fit/avoid, separate micropractice and independent challenge, no-spoiler answer gate; K1 correctness, K3 enacted-method and K5 delayed-retest evidence tracked independently with one attempt writer.
+- [ ] **ONT-04 search/buddy:** exact ID/alias/typo typed lexical results and only whitelisted graph 1–2 hops. Show source/status/why shown; never surface draft as playable. Typed companion action allowlist and permission/denial/rebuttal test; no pre-submit answer, fake save or claim of generative tutor.
+- [ ] **Private data:** no learner/Diary/Invites in static/public graph bundle, and ontology role/status alone cannot bypass account-bound owner checks. Real signed Google invited/uninvited/revoked RLS tests needed before cloud sync.
+- [ ] **ONT-05 optional:** recorded bilingual golden query set, Recall@5/MRR/NDCG vs lexical+graph baseline, latency/memory/mobile energy, licence/privacy and zero-cost audit; NO-GO/off by default unless improvement is demonstrated. This P2 task does not block Atomic UI release.
+- [ ] Record the actual graph fixture version, browser/device evidence SHA, PASS/FAIL/UNVERIFIED, peer/editorial rights status, G2 & human-release decision separately. ONT-01 CI success is schema proof, not production proof.
+
+---
+
 ## UX-DS-35 · Responsive adaptive iPhone/iPad & React readiness (DRAFT, 2026-11-19)
 
 **Source contracts:** [Adaptive responsive rules](responsive-adaptive.md) and [staged remediation roadmap](plans/2026-11-19-atomic-responsive-react-roadmap.md). These checks are **NOT yet marked PASS by creation of this checklist**. Existing DS33 Safari recovery remains until device verification; keep G2 pending.

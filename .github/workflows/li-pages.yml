@@ -43,48 +43,39 @@ jobs:
           python3 tools/validate_ui_foundations.py
           test ! -e site/auth-pilot || { echo "Auth route unexpectedly tracked in main"; exit 1; }
 
-      - name: Checkout exact approved Auth source from research branch (do not merge draft)
+      # The production source remains untouched. This build adds the EXISTING
+      # invited Google Auth/RLS gate to the shared GitHub Pages test app.
+      - name: Checkout pinned invited Google Auth + Neon source
         uses: actions/checkout@v4
         with:
           repository: sali5610/li
-          ref: a4ee83af9bad5e44e050d2e61ad1b95f0c2b1365
+          ref: 1397f943d2ccf0091db0a1f17f017ab4ead98238
           path: staging-auth-source
           persist-credentials: false
 
-      - name: Verify source SHA and staging-only auth boundaries
+      - name: Verify strict login gate and native lesson key
         run: |
           set -euo pipefail
-          test "$(git -C staging-auth-source rev-parse HEAD)" = "a4ee83af9bad5e44e050d2e61ad1b95f0c2b1365"
-          test -f staging-auth-source/tools/step16-real-l09-react-island/vite.auth.config.mjs
-          grep -Fq "VITE_LI_AUTH_TARGET==='github-pages-staging'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/config.ts
-          grep -Fq "'https://sali5610.github.io'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/config.ts
-          grep -Fq "checkInviteAccess" staging-auth-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
-          grep -Fq "neonAuth.getJWTToken()" staging-auth-source/tools/step16-real-l09-react-island/src/auth/neon-client.ts
-          grep -Fq "RlsQaPanel" staging-auth-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
-          grep -Fq "IS_GITHUB_STAGING" staging-auth-source/tools/step16-real-l09-react-island/src/auth/RlsQaPanel.tsx
-          grep -Fq "stepQa" staging-auth-source/tools/step16-real-l09-react-island/src/auth/rls-qa-contract.ts
-          grep -Fq "SyncQaPanel" staging-auth-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
-          grep -Fq "SYNC_QA_DB" staging-auth-source/tools/step16-real-l09-react-island/src/auth/sync-qa.ts
-          grep -Fq "scopedSyncApi" staging-auth-source/tools/step16-real-l09-react-island/src/auth/sync-qa.ts
-          grep -Fq "IS_GITHUB_STAGING" staging-auth-source/tools/step16-real-l09-react-island/src/auth/SyncQaPanel.tsx
-          grep -Fq "twoUserJwtRlsVerified:false" staging-auth-source/tools/step16-real-l09-react-island/src/sync/sync-once.ts
-          test ! -e staging-auth-source/tools/step16-real-l09-react-island/src/auth/qa-secrets.ts
-          grep -Fq "__li_rls_qa_" staging-auth-source/tools/step16-real-l09-react-island/src/auth/rls-qa-contract.ts
-          test ! -e staging-auth-source/tools/step16-real-l09-react-island/src/auth/qa-secrets.ts
+          test "$(git -C staging-auth-source rev-parse HEAD)" = "1397f943d2ccf0091db0a1f17f017ab4ead98238"
+          root=staging-auth-source/tools/step16-real-l09-react-island
+          grep -Fq "VITE_LI_AUTH_TARGET!=='github-pages-staging'" "$root/vite.staging-app.config.mjs"
+          grep -Fq "checkInviteAccess" "$root/src/auth/AuthPanel.tsx"
+          grep -Fq "classList.toggle('li-auth-verified'" "$root/src/auth/AuthPanel.tsx"
+          grep -Fq "IS_GITHUB_STAGING" "$root/src/auth/config.ts"
+          grep -Fq "neonAuth.getJWTToken()" "$root/src/auth/neon-client.ts"
+          grep -Fq "ITEM_ID='L09-1-2'" "$root/src/auth/L09CloudPanel.tsx"
+          grep -Fq "NATIVE_KEY" "$root/src/auth/L09CloudPanel.tsx"
+          grep -Fq "await checkInviteAccess" "$root/src/auth/L09CloudPanel.tsx"
+          ! grep -Eq "signIn.email|AuthRecovery|AuthEmailVerification" "$root/src/auth/AuthPanel.tsx"
+          test ! -e "$root/src/auth/qa-secrets.ts"
+          echo "PASS invited-only Google sign-in gate and one real L09 progress key"
 
-          ! grep -Eq "syncOnce|bindNeonAccount|signIn.email|AuthRecovery|AuthEmailVerification" staging-auth-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
-          grep -Fq 'L09CloudPanel' staging-auth-source/tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx
-          grep -Fq "ITEM_ID='L09-1-2-react-staging-v1'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/L09CloudPanel.tsx
-          grep -Fq 'await checkInviteAccess' staging-auth-source/tools/step16-real-l09-react-island/src/auth/L09CloudPanel.tsx
-          grep -Fq "action==='save'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/L09CloudPanel.tsx
-          echo "PASS GitHub Pages staging identity + opt-in account-owned L09 progress transfer"
-
-      - name: Set up GitHub runner for isolated staging Auth build
+      - name: Set up free GitHub runner
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: Build Auth-only bundle with GitHub Pages project subpath
+      - name: Build signed-in app shell and run focused Neon contracts
         working-directory: staging-auth-source/tools/step16-real-l09-react-island
         env:
           VITE_LI_AUTH_TARGET: github-pages-staging
@@ -94,119 +85,75 @@ jobs:
           npm run extract
           npm run test:sync
           npx tsc --noEmit
-          npm run build:auth
-          test -f dist-auth/auth-entry.html
-          test "$(find dist-auth -type f -name '*.html' | wc -l)" -eq 1
-          test -z "$(find dist-auth -type f -name '*.map' -print -quit)"
-          grep -Fq '/li/auth-pilot/assets/' dist-auth/auth-entry.html
-          grep -Fq 'content="no-referrer"' dist-auth/auth-entry.html
-          echo "PASS staging assets under /li/auth-pilot/ (no maps/secrets)"
+          npx vite build --config vite.staging-app.config.mjs
+          test -s dist-staging-app/staging-auth-gate.js
+          test -z "$(find dist-staging-app -type f -name '*.map' -print -quit)"
+          grep -Fq 'li-auth-verified' dist-staging-app/staging-auth-gate.js
+          echo "PASS compiled real app login gate, no secrets or maps"
 
-      - name: Assemble static STAGING site without changing main or Cloudflare
+      - name: Assemble ONE user-facing invited-only staging app
         run: |
           set -euo pipefail
-          mkdir -p site/auth-pilot
-          cp -a staging-auth-source/tools/step16-real-l09-react-island/dist-auth/. site/auth-pilot/
-          mv site/auth-pilot/auth-entry.html site/auth-pilot/index.html
+          cp staging-auth-source/tools/step16-real-l09-react-island/dist-staging-app/staging-auth-gate.js site/assets/
+          cp staging-auth-source/tools/step16-real-l09-react-island/src/auth/staging-gate.css site/assets/
           touch site/.nojekyll
-          test -f site/auth-pilot/index.html
-          test -z "$(find site/auth-pilot -type f \( -name '*.map' -o -name '.env*' \) -print -quit)"
           git diff --exit-code -- site/
-          echo "PASS immutable main site + isolated GitHub Pages Auth pilot"
-
-      # Unified staging: ship current main UI plus the proven React L09 island.
-      # Only this ephemeral GitHub Pages artifact changes; no production source,
-      # learner keys, Cloudflare, Neon policy or real data mutation.
-      - name: Checkout pinned L09 React source (no draft merge)
-        uses: actions/checkout@v4
-        with:
-          repository: sali5610/li
-          ref: cbc38fcb88b23ee0e5afedd102e11265e1b811f7
-          path: staging-l09-source
-          persist-credentials: false
-
-      - name: Build L09 React island for shared staging
-        working-directory: staging-l09-source/tools/step16-real-l09-react-island
-        run: |
-          set -euo pipefail
-          test "$(git -C ../.. rev-parse HEAD)" = "cbc38fcb88b23ee0e5afedd102e11265e1b811f7"
-          npm install --no-audit --no-fund
-          npm run build:site-island
-          test -s ../../site/assets/step16-l09-island.js
-          test -s ../../site/assets/step16-l09-island.css
-
-      - name: Integrate React L09 into ONE shared staging app at /li/
-        run: |
-          set -euo pipefail
-          cp staging-l09-source/site/assets/step16-l09-island.js site/assets/
-          cp staging-l09-source/site/assets/step16-l09-island.css site/assets/
-          cp staging-l09-source/site/assets/step16-react-router.js site/assets/
           python3 - <<'PY'
           from pathlib import Path
-          router = Path('site/assets/step16-react-router.js')
-          source = router.read_text(encoding='utf-8')
-          old = " const mode=params.get('li-react');\n if(!local||!['l09','l09-native-fixture','settings'].includes(mode))return;"
-          new = """ const sharedStaging=window.location.protocol==='https:' &&
-             window.location.hostname==='sali5610.github.io' &&
-             (window.location.pathname==='/li/' || window.location.pathname==='/li/index.html');
-           const mode=params.get('li-react')||(sharedStaging?'l09':null);
-           if(!(local||sharedStaging)||!['l09','l09-native-fixture','settings'].includes(mode))return;
-           if(sharedStaging&&!['l09','settings'].includes(mode))return;"""
-          assert source.count(old)==1, 'Changed research router entry guard'
-          source=source.replace(old,new)
-          # Default staging uses real Home navigation; React only takes over L09
-          # exercise/self-review when that native lesson is opened.
-          old_home=" if(mode==='l09'){"
-          assert source.count(old_home)==1, 'Changed Home CTA routing guard'
-          source=source.replace(old_home,
-             " if(mode==='l09' && (!sharedStaging || params.has('li-react'))){")
-          router.write_text(source,encoding='utf-8')
-
-          index = Path('site/index.html')
+          index=Path('site/index.html')
           html=index.read_text(encoding='utf-8')
-          assert html.count('</body></html>')==1
-          assert 'step16-react-router.js' not in html
-          assert 'lesson-l09-hifi-markup.js' in html
-          assert 'mirror-primary-action' in html
+          assert html.count('<head>')==1 and html.count('</body></html>')==1
           assert 'id="page-settings"' in html
-          assert html.count('理 · li. — Thư viện tri thức')==1
-          html=html.replace('理 · li. — Thư viện tri thức',
-                            'li. STAGING — Thư viện tri thức',1)
+          assert 'lesson-l09-hifi-markup.js' in html
+          assert 'step16-react-router.js' not in html
+          # Fail CLOSED by default. No guest path or query bypass.
+          gate=('<style id="li-auth-gate-critical">'
+                'html:not(.li-auth-verified) .app,'
+                'html.li-auth-verified.li-account-open .app{display:none!important}'
+                'html.li-auth-verified:not(.li-account-open) #li-staging-auth-root'
+                '{display:none!important}</style>'
+                '<link rel="stylesheet" href="./assets/staging-gate.css?v=invite-shell-1">')
+          html=html.replace('<head>','<head>'+gate,1)
           marker='<div class="settings-group-grid"><article class="surface"><div class="kicker">SAO LƯU</div>'
-          assert html.count(marker)==1, 'Settings data layout changed'
-          account = ('<article class="surface" data-staging-only="true">'
-            '<div class="kicker">STAGING · TÀI KHOẢN</div>'
-            '<h2>Đăng nhập &amp; đồng bộ L09</h2>'
-            '<p class="small">Đăng nhập bằng Google, lưu bài tập L09 lên Neon, '
-            'rồi mở thiết bị khác để khôi phục và học tiếp.</p>'
-            '<a class="action alt" href="./auth-pilot/">Mở tài khoản và tiến độ L09</a></article>')
+          assert html.count(marker)==1, 'Settings account slot changed'
+          account=('<article class="surface" data-staging-only="true">'
+            '<div class="kicker">TÀI KHOẢN</div>'
+            '<h2>Google</h2>'
+            '<p class="small">Tài khoản email được mời. Quản lý đăng nhập, '
+            'đăng xuất và đồng bộ tiến độ L09 tại đây.</p>'
+            '<button type="button" class="action alt" id="li-open-account">'
+            'Tài khoản &amp; đồng bộ</button></article>')
           html=html.replace(marker,marker.replace('<article class="surface">',account+'<article class="surface">',1),1)
-          html=html.replace('</body></html>',
-             '<script src="./assets/step16-react-router.js?v=unified-staging-20261120"></script></body></html>',1)
+          old='<b>Đồng bộ giữa các thiết bị</b><p class="small">Chưa hỗ trợ.</p>'
+          new='<b>Đồng bộ giữa các thiết bị</b><p class="small">L09: lưu và khôi phục thủ công trong Tài khoản. Các bài khác vẫn ở thiết bị này.</p>'
+          assert html.count(old)==1,'Settings sync description changed'
+          html=html.replace(old,new,1)
+          shell=('<div id="li-staging-auth-root" tabindex="-1" '
+            'role="region" aria-label="Đăng nhập li.">'
+            '<p role="status">Đang xác minh quyền truy cập…</p></div>'
+            '<script type="module" src="./assets/staging-auth-gate.js?v=invite-shell-1"></script>')
+          html=html.replace('</body></html>',shell+'</body></html>',1)
           index.write_text(html,encoding='utf-8')
-
-          # Legacy isolated URL redirects users to the single shared app.
-          legacy=Path('site/l09-preview/index.html')
-          legacy.parent.mkdir(parents=True,exist_ok=True)
-          legacy.write_text('<!doctype html><html lang="vi"><head>'
-            '<meta charset="utf-8"><meta name="robots" content="noindex">'
-            '<meta http-equiv="refresh" content="0;url=../">'
-            '<title>li. staging</title></head><body>'
-            '<p>Đã chuyển sang <a href="../">li. staging chung</a>.</p>'
-            '</body></html>',encoding='utf-8')
-          print('PASS LI_UNIFIED_STAGING_ASSEMBLY')
+          for path in ['auth-pilot','l09-preview']:
+           legacy=Path('site')/path/'index.html'
+           legacy.parent.mkdir(parents=True,exist_ok=True)
+           legacy.write_text('<!doctype html><html lang="vi"><head>'
+             '<meta charset="utf-8"><meta name="robots" content="noindex">'
+             '<meta http-equiv="refresh" content="0;url=../">'
+             '<title>li.</title></head><body>'
+             '<p>Mở <a href="../">li. — Thư viện tri thức</a></p>'
+             '</body></html>',encoding='utf-8')
+          print('PASS one normal app: invited login → native lesson → feedback → progress')
           PY
-          test -s site/assets/step16-l09-island.js
-          test -s site/assets/step16-l09-island.css
-          grep -Fq 'sharedStaging' site/assets/step16-react-router.js
-          grep -Fq 'step16-react-router.js?v=unified-staging' site/index.html
-          grep -Fq 'href="./auth-pilot/"' site/index.html
-          grep -Fq 'url=../' site/l09-preview/index.html
-          test -z "$(find site/ -type f \( -name '*.map' -o -name '.env*' -o -name '*qa-secrets*' \) -print -quit)"
-          echo 'Ready: https://sali5610.github.io/li/ — one staging app.'
-          echo 'Home/Catalog/Settings stay native; L09 uses React challenge and review.'
-          echo 'Auth/Settings offers manual, user-consented L09 cloud Save + Restore; other sync remains OFF.'
-          echo 'No Cloudflare release or production code changes.'
+          test -s site/assets/staging-auth-gate.js
+          grep -Fq 'li-auth-gate-critical' site/index.html
+          grep -Fq 'id="li-staging-auth-root"' site/index.html
+          grep -Fq 'id="li-open-account"' site/index.html
+          test -z "$(find site -type f \( -name '*.map' -o -name '.env*' -o -name '*qa-secrets*' \) -print -quit)"
+          node tools/test_l09_guided_runtime.js
+          node tools/test_navigation.js
+          echo 'App entry: https://sali5610.github.io/li/ — login BEFORE any lesson'
+          echo 'No React pilot router, no guest mode, no Cloudflare release'
 
       - name: Configure GitHub Pages STAGING
         uses: actions/configure-pages@v5
@@ -224,8 +171,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: "Human test notice: GitHub Pages OAuth needs separate Neon trusted origin"
+      - name: Staging-only release note
         run: |
-          echo "GitHub Pages staging artifact published. Cloudflare production not touched."
-          echo "Do not assume real Google OAuth works until Neon explicitly trusts https://sali5610.github.io."
-          echo "Real signed JWT + invited A/B vs uninvited C RLS remains a separate mandatory test."
+          echo "Invited Google Auth app gate and real native L09 flow deployed to staging."
+          echo "Neon already trusts https://sali5610.github.io; no Cloudflare production release."

@@ -1,0 +1,19 @@
+name: li. ontology contract validation (PR only)
+on:
+  pull_request:
+    paths:
+      - 'docs/ontology/**'
+      - 'tools/validate_ontology.mjs'
+      - '.github/workflows/li-ontology-contract.yml'
+permissions:
+  contents: read
+jobs:
+  check-ontology:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Ontology typed graph and negative fixtures
+        run: node tools/validate_ontology.mjs --check

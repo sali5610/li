@@ -29,3 +29,9 @@ button:disabled{opacity:.65;cursor:not-allowed}
 .qa-panel button{margin:8px 8px 0 0;min-height:48px;max-width:100%;white-space:normal}
 .qa-panel button.qa-secondary{background:var(--porcelain);color:var(--moss)}
 .qa-panel code{overflow-wrap:anywhere}
+
+/* STAGING-ONLY cross-device sync QA uses the same documented AuthPanel controls. */
+.qa-panel input[readonly]{background:var(--paper-2);color:var(--moss);font-family:ui-monospace,monospace;font-size:var(--li-type-support,14px)}
+.qa-panel .auth-field button{justify-self:start}
+.qa-panel .auth-field input{overflow-wrap:anywhere}
+.qa-panel .auth-error{margin-block:12px}

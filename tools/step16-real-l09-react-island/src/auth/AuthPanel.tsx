@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react';
-import {checkInviteAccess} from '../sync/invite-access.js';
+import {checkInviteAccess,safeInviteErrorCode} from '../sync/invite-access.js';
 import {authClient,neonSessionPort} from './neon-client.js';
 import {AUTH_ORIGIN,NEON_DATA_API_URL} from './config.js';
 import {classifyOAuthReturn,type OAuthReturnCode} from './oauth-return.js';
@@ -16,6 +16,7 @@ const copy={
   granted:'Email đã được mời. Quyền truy cập được xác minh.',
   denied:'Chưa xác minh được quyền truy cập của tài khoản Google này. Kiểm tra đúng email được mời rồi liên hệ chủ li. nếu vẫn bị chặn.',
   blocked:'Không thể xác minh quyền truy cập. App vẫn khóa để bảo vệ dữ liệu.',
+  inviteErrorCode:'Mã kiểm tra an toàn (không chứa dữ liệu riêng tư):',
   error:'Không thể kết nối Google lúc này. Kiểm tra mạng rồi thử lại.',
   oauthFailed:'Đăng nhập Google chưa hoàn tất. Mã lỗi an toàn:',
   oauthLink:'Email này có thể đã tồn tại trong Neon nhưng chưa được xác minh để liên kết Google. Chưa có phiên đăng nhập; không tự cấp quyền.',
@@ -37,6 +38,7 @@ const copy={
   granted:'Invitation confirmed. This account is authorized.',
   denied:'This Google account is not authorized yet. Check the invited email and contact the owner if it should have access.',
   blocked:'Unable to verify invitation. App access remains locked to protect learner data.',
+  inviteErrorCode:'Safe diagnostic code (contains no private data):',
   error:'Google sign-in is unavailable. Check the connection and try again.',
   oauthFailed:'Google sign-in did not finish. Safe error code:',
   oauthLink:'This email may match a pre-existing Neon account that cannot yet be linked to Google until its identity is verified. No session or invitation has been granted.',
@@ -58,6 +60,7 @@ export function AuthPanel(){
  const [busy,setBusy]=useState<'login'|'logout'|null>(null);
  const [feedback,setFeedback]=useState('');
  const [access,setAccess]=useState<Access>('checking');
+ const [inviteError,setInviteError]=useState('');
  const [accessEpoch,setAccessEpoch]=useState(0);
  const accountId=session?.user?.id??null;
  const oauthReturn=classifyOAuthReturn(window.location.search,Boolean(accountId),isPending);
@@ -85,6 +88,7 @@ export function AuthPanel(){
  useEffect(()=>{
   let disposed=false;
   setAccess('checking');
+  setInviteError('');
   if(!accountId)return()=>{disposed=true;};
   // A session is never an invitation. The RPC reads the verified identity in
   // neon_auth.user; its table RLS also independently denies all uninvited users.
@@ -94,8 +98,11 @@ export function AuthPanel(){
     // This auth-only pilot NEVER constructs a learner Data API adapter.
     const allowed=await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort);
     if(!disposed)setAccess(allowed?'granted':'denied');
-   }catch{
-    if(!disposed)setAccess('error'); // Fail closed; NEVER infer access from email in React.
+   }catch(problem){
+    if(!disposed){
+     setInviteError(safeInviteErrorCode(problem));
+     setAccess('error'); // Fail closed; NEVER infer access from email in React.
+    }
    }
   })();
   return()=>{disposed=true;};
@@ -146,6 +153,7 @@ export function AuthPanel(){
       {access==='checking'?t.checking:access==='granted'?t.granted:
        access==='denied'?t.denied:t.blocked}
      </p>
+     {access==='error'&&<p className="auth-error" role="status" data-invite-error-code={inviteError}>{t.inviteErrorCode} <strong>{inviteError||'INV-UNKNOWN'}</strong></p>}
      <button type="button" onClick={()=>void signOut()} disabled={busy!==null}>
       {busy?t.busy:t.logout}
      </button>

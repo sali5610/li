@@ -177,7 +177,7 @@
  const result={
   environment:"CHROMIUM_HEADLESS_SAME_ORIGIN_NATIVE_APP",
   deviceEmulation:"CSS_IFRAME_VIEWPORT_ONLY_NOT_SAFARI",
-  physicalIPhone:"NOT_RUN",physicalIPad:"NOT_RUN",VoiceOver:"NOT_RUN",
+  physicalIPhone:"NOT_RUN",physicalIPad:"NOT_RUN",VoiceOver:"OUT_OF_SCOPE_PO_S208",
   humanRelease:"NOT_APPROVED",cloudflareDeploy:"NONE",userData:"EPHEMERAL_SYNTHETIC_ONLY",
   count:cases.length,pass:cases.filter(x=>x.status==="PASS").length,fail:failures.length,
   cases,failures

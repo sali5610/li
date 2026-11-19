@@ -3,7 +3,7 @@
 // Single research-only real-CDP browser; never touches production URLs/user storage.
 const assert=require('node:assert/strict'),{spawn}=require('node:child_process'),fs=require('node:fs'),os=require('node:os'),path=require('node:path');
 const [bin,url]=process.argv.slice(2);
-if(!bin||!/^http:\/\/127\.0\.0\.1:8795\/tools\/step16-real-l09-react-island\/dist\/index\.html\?pilot=uxds35$/.test(url||''))throw Error('Expected local research preview URL');
+if(!bin||!/^http:\/\/127\.0\.0\.1:(8795|8798)\/tools\/step16-real-l09-react-island\/dist\/index\.html\?pilot=uxds35$/.test(url||''))throw Error('Expected local research preview URL');
 const sleep=ms=>new Promise(r=>setTimeout(r,ms)),profile=fs.mkdtempSync(path.join(os.tmpdir(),'li-02b-'));let proc,socket,seq=0,chromeStderr='';const pending=new Map();
 const until=async(fn,why,tries=130)=>{for(let i=0;i<tries;i++){const v=await fn();if(v)return v;await sleep(125)}throw Error('Timeout '+why+'; Chrome exit='+proc?.exitCode+'; signal='+proc?.signalCode+'; stderr='+chromeStderr.slice(-1200))};
 function send(method,params={}){return new Promise((resolve,reject)=>{const id=++seq,t=setTimeout(()=>{pending.delete(id);reject(Error('CDP timeout '+method))},12000);pending.set(id,m=>{clearTimeout(t);m.error||m.result?.exceptionDetails?reject(Error(JSON.stringify(m.error||m.result.exceptionDetails))):resolve(m.result)});socket.send(JSON.stringify({id,method,params}))})}
@@ -51,12 +51,13 @@ async function main(){
  await key('Escape');await until(()=>run("!document.querySelector('dialog.li-ui-dialog')?.open"),'Escape close');
  check(await run("document.activeElement?.matches('[data-ui-open]')"),'Dialog opener focus restoration');
  check((await run("localStorage.length"))===0,'no learner storage mutations');
- fs.mkdirSync('/tmp/li-uxds35-stage02b',{recursive:true});
- fs.writeFileSync('/tmp/li-uxds35-stage02b/metrics.json',JSON.stringify({n,source:'stage02b React fixture CDP',metrics,g2:'OPEN',device:'CHROMIUM_ONLY'},null,2));
- const shot=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync('/tmp/li-uxds35-stage02b/preview.png',Buffer.from(shot.data,'base64'));
+ const evidenceDir=process.env.LI_UXDS35_EVIDENCE_DIR||'/tmp/li-uxds35-stage02b';
+ fs.mkdirSync(evidenceDir,{recursive:true});
+ fs.writeFileSync(path.join(evidenceDir,'metrics.json'),JSON.stringify({n,source:'stage02b React fixture CDP',metrics,g2:'OPEN',device:'CHROMIUM_ONLY'},null,2));
+ const shot=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(evidenceDir,'preview.png'),Buffer.from(shot.data,'base64'));
  const nativeUrl=process.env.LI_UXDS35_NATIVE_URL;
  if(nativeUrl){
-  assert.match(nativeUrl,/^http:\/\/127\.0\.0\.1:8795\/uxds35-design-pin\/site\/component-library-review\.html$/);
+  assert.match(nativeUrl,/^http:\/\/127\.0\.0\.1:(8795|8798)\/(uxds35-design-pin\/)?site\/component-library-review\.html$/);
   const aliases=['--li-comp-button-primary-background','--li-comp-button-secondary-background',
     '--li-comp-field-background','--li-comp-surface-background',
     '--li-comp-button-focus-ring','--li-comp-app-nav-active-background',
@@ -73,10 +74,10 @@ async function main(){
     secondaryReviewSpecimenPaintIdentical:reactParity.paint.secondary===nativeParity.paint.secondary,
     fieldReviewSpecimenPaintIdentical:reactParity.paint.field===nativeParity.paint.field,
     note:'A review specimen is not the app native .action/.field owner; paint differences are recorded, not silently treated as bugs or approved variants'};
-  fs.writeFileSync('/tmp/li-uxds35-stage02b/react-vs-native-review-computed.json',JSON.stringify(comparison,null,2));
+  fs.writeFileSync(path.join(evidenceDir,'react-vs-native-review-computed.json'),JSON.stringify(comparison,null,2));
   const nativeShot=await send('Page.captureScreenshot',{format:'png'});
-  fs.writeFileSync('/tmp/li-uxds35-stage02b/native-review.png',Buffer.from(nativeShot.data,'base64'));
-  fs.writeFileSync('/tmp/li-uxds35-stage02b/metrics.json',JSON.stringify({n,source:'stage02b pinned React+DS CI Chromium',metrics,comparison,g2:'OPEN',device:'CHROMIUM_ONLY'},null,2));
+  fs.writeFileSync(path.join(evidenceDir,'native-review.png'),Buffer.from(nativeShot.data,'base64'));
+  fs.writeFileSync(path.join(evidenceDir,'metrics.json'),JSON.stringify({n,source:'stage02b pinned React+DS CI Chromium',metrics,comparison,g2:'OPEN',device:'CHROMIUM_ONLY'},null,2));
  }
  console.log('PASS UXDS35_STAGE02B_REAL_CHROMIUM '+JSON.stringify({checks:n,viewport:metrics.map(x=>x.w),privacy:'NO_WRITES',g2:'OPEN'}));
 }

@@ -18,7 +18,7 @@ permissions:
 jobs:
   actual-lesson-react-pilot:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -97,3 +97,79 @@ jobs:
             "http://127.0.0.1:8794/tools/step16-real-l09-react-island/site-shell-fixture.html" \
             "LI_STEP16_L09_SHELL_PASS " 23 90000
           echo "PASS isolated L09, native bridge, auth origin guard and local-only Vanilla shell mount"
+- name: Compose COMPLETE temporary React + DS + ONT tree (no branch merge)
+        env:
+          LI_STAGE02B_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: node tools/step16-real-l09-react-island/scripts/stage02b-combined-tree.mjs
+      - name: Validate canonical DS and ontology on SAME temporary tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$LI_STAGE02B_COMBINED"
+          python3 tools/generate_design_tokens.py --check
+          python3 tools/test_design_semantic_roles.py
+          node tools/generate_design_token_types.mjs --check
+          node tools/validate_ontology.mjs --check
+          node tools/validate_ui_ontology.mjs --check --composed-check
+          python3 tools/validate_site.py
+          echo "PASS STAGE02B_FULL_TREE_DS_ONT_SOURCE"
+      - name: Build actual shared React and native L09 from SAME combined tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$LI_STAGE02B_COMBINED/tools/step16-real-l09-react-island"
+          npm install --ignore-scripts --no-audit --no-fund
+          npm run build
+          npm run build:site-island
+          npm run check:source
+          echo "PASS STAGE02B_FULL_TREE_REACT_BUILD"
+      - name: Chromium shared React against native DS specimen, same full tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$chrome"
+          python3 -m http.server 8798 --bind 127.0.0.1 --directory "$LI_STAGE02B_COMBINED" > /tmp/li-02b-combined.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+          LI_UXDS35_EVIDENCE_DIR="/tmp/li-uxds35-stage02b/combined" \
+          LI_UXDS35_NATIVE_URL="http://127.0.0.1:8798/site/component-library-review.html" \
+          node "$LI_STAGE02B_COMBINED/tools/step16-real-l09-react-island/scripts/ui-parity-browser.cjs" "$chrome" \
+            "http://127.0.0.1:8798/tools/step16-real-l09-react-island/dist/index.html?pilot=uxds35"
+          echo "PASS STAGE02B_FULL_TREE_REACT_CHROMIUM"
+      - name: Real native Field Navigation Dialog Feedback, same full tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$chrome"
+          ln -s . "$LI_STAGE02B_COMBINED/uxds35-design-pin"
+          python3 -m http.server 8797 --bind 127.0.0.1 --directory "$LI_STAGE02B_COMBINED" > /tmp/li-02b-combined-native.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+          node "$LI_STAGE02B_COMBINED/tools/test_uxds35_native_components_chromium.cjs" "$chrome" \
+            "http://127.0.0.1:8797/uxds35-design-pin/site/component-library-review.html"
+          mkdir -p /tmp/li-uxds35-stage02b/combined/native
+          cp -a /tmp/li-uxds35-native-browser-evidence/. /tmp/li-uxds35-stage02b/combined/native/
+          echo "PASS STAGE02B_FULL_TREE_NATIVE_CHROMIUM"
+      - name: Native shell and React L09 shared-root regression, same full tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$chrome"
+          python3 -m http.server 8794 --bind 127.0.0.1 --directory "$LI_STAGE02B_COMBINED" > /tmp/li-02b-combined-shell.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+          node "$LI_STAGE02B_COMBINED/tools/step16-real-l09-react-island/scripts/cdp-result.cjs" "$chrome" \
+            "http://127.0.0.1:8794/tools/step16-real-l09-react-island/site-shell-fixture.html" \
+            "LI_STEP16_L09_SHELL_PASS " 23 90000
+          echo "PASS STAGE02B_FULL_TREE_L09_NATIVE_SHELL"
+      - name: Upload full three-tree CI evidence (no real device or deploy)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uxds35-stage02b-full-three-tree
+          path: /tmp/li-uxds35-stage02b/
+          retention-days: 7
+

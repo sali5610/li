@@ -17,3 +17,13 @@ Source: [UX-DS-35](https://app.notion.com/p/41d6cf6db72a81d48ffdc4a38de4cec0), [
 - The real Chromium research fixture then inspects computed DS alias values on both pinned native Component Library and mounted React, compares actual primary Button paint, and **records**, rather than disguises, secondary/field review specimen style differences. It is NOT a pixel-level native app↔React screen parity proof. The existing L09/bridge/localhost auth-origin checks still run.
 - ONT-02 native status and React-status metadata are deliberately kept distinct. Its original \`source_mapping_only\`, ActionGroup proposal and historical React pin are immutable baseline, not silently rewritten into an implemented product claim. Before Stage02 exit: reconcile actual Git tree conflicts and one app-native L09 source owner; check full state/focus/VI–EN comparisons; physical Safari and Human G2 remain open.
 
+
+## Complete three-source detached worktree — research CI only
+
+stage02b-combined-tree.mjs uses two true Git merge-tree operations, then creates ephemeral local commit-tree objects and a DETACHED worktree combining React PR #148's exact HEAD with Design System #134 and ONT-02 #137. No branch update, merge into main, Cloudflare deployment, database call or production feature flag.
+
+Proof constraints: eight immutable source blob owners match their pinned SHAs, protected Auth/Neon/RLS/router files remain untouched, complete change manifest is archived, and PR #126 base-vs-head Git tree is independently checked. A GitHub PR UI mergeability flag is distinct from a Git merge-tree result.
+
+The SAME checked-out full tree must pass generated DS tokens, 19 native role aliases, ontology validator, site validation and React TypeScript/Vite build. Browser tests against this SAME full tree: 18 mounted shared React Chromium checks and seven native↔React semantic computed aliases; actual native Field/Navigation/Dialog/Feedback test (34 assertions expected); native L09 shared shell/React test (23 assertions expected). All such results must be cited at exact HEAD, not assumed from older split-tree CI.
+
+These are Chromium synthetic CI findings only, not full real-app pixel-perfect native↔React certification, device Safari, merged production ownership or PO G2. Missing state-grid, iPhone/iPad rotation/Split View/virtual keyboard/zoom/PWA and Human G2 remain OPEN. VoiceOver remains OUT_OF_SCOPE_PO_S208, not PASS.

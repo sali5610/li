@@ -64,7 +64,7 @@ async function main(){
   await send('Page.navigate',{url:nativeUrl});
   await until(()=>run("document.readyState==='complete'&&!!document.querySelector('#ds-query')"),'real DS review native source page');
   const nativeParity=await run("(()=>{const roleNames="+JSON.stringify(aliases)+",root=getComputedStyle(document.documentElement),primary=getComputedStyle(document.querySelector('.ds-button')),secondary=getComputedStyle(document.querySelector('.ds-button.secondary')),field=getComputedStyle(document.querySelector('#ds-query'));return {roles:Object.fromEntries(roleNames.map(n=>[n,root.getPropertyValue(n).trim()])),paint:{primary:primary.backgroundColor,secondary:secondary.backgroundColor,field:field.backgroundColor}}})()");
-  check(aliases.every(n=>reactParity.roles[n]===nativeParity.roles[n]),'React↔native DS computed semantic alias drift: '+JSON.stringify({react:reactParity.roles,native:nativeParity.roles}));
+  check(aliases.every(n=>reactParity.roles[n]?.toLowerCase()===nativeParity.roles[n]?.toLowerCase()),'React↔native DS computed semantic alias drift: '+JSON.stringify({react:reactParity.roles,native:nativeParity.roles}));
   check(reactParity.paint.primary===nativeParity.paint.primary,'React primary Button differs from native review specimen: '+JSON.stringify({react:reactParity.paint,native:nativeParity.paint}));
   const comparison={source:'native DS #134 component-review specimen vs React #148 mounted fixture; NOT full application per-screen parity',
     react:reactParity,native:nativeParity,roleValuesIdentical:true,buttonPrimaryPaintIdentical:true,

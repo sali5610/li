@@ -560,16 +560,21 @@ function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=documen
  if(liDualLocalHistoryAllowed())
   window.dispatchEvent(new CustomEvent("li:dual-local-route",{detail:{page:id}}));
 }
-if(typeof window.addEventListener==="function")
-window.addEventListener("popstate",()=>{
- // Do not interpret foreign/production history as li. pilot navigation.
+function liRestoreDualPilotHistory(){
+ // BFCache/page restoration can update location without replaying native startup.
+ // Reconcile both popstate AND pageshow, but never touch a public/unflagged route.
  if(!liDualLocalHistoryAllowed())return;
  const p=new URLSearchParams(window.location.search);
  const claimed=p.get("li-local-page");
  const route=LI_DUAL_PILOT_PAGES.has(claimed)?claimed:
    p.get("lesson")==="L09-1-2"?"lessonL09":"home";
+ if(document.getElementById("page-"+route)?.classList.contains("active"))return;
  navigate(route,{remember:false,syncUrl:false});
-});
+}
+if(typeof window.addEventListener==="function"){
+ window.addEventListener("popstate",liRestoreDualPilotHistory);
+ window.addEventListener("pageshow",liRestoreDualPilotHistory);
+}
 function goBack(){while(pageHistory.length){const previous=pageHistory.pop();if(previous!==currentPage&&document.getElementById("page-"+previous)){navigate(previous,{remember:false});return}}navigate("home",{remember:false})}
 function renderMethods(){const el=document.getElementById("method-cards");const q=(document.getElementById("method-search").value||"").trim().toLocaleLowerCase("vi");const preset=STUDY_MODES[studyMode].suggestions;const visible=methods.filter(m=>{const match=(!q||((m.join(" ")+" "+(window.LI_LEGACY_EN?.[m[1]]||"")+" "+(window.LI_LEGACY_EN?.[m[4]]||"")).toLocaleLowerCase("vi").includes(q)));const cat=currentCategory==="Tất cả"||m[4]===currentCategory;const picked=Boolean(q)||currentCategory!=="Tất cả"||!preset||preset.includes(m[0]);return match&&cat&&picked});el.innerHTML=visible.length?visible.map(m=>'<button class="method-card" data-method="'+m[0]+'"><i data-lucide="'+(m[4]==="Luận Chứng Thuật"?"git-branch":m[4]==="Phá Giải Thuật"?"puzzle":m[4]==="Minh Giải Thuật"?"lightbulb":m[4]==="Tự Chủ Thuật"?"brain-circuit":"book-open-check")+'" class="method-icon" aria-hidden="true"></i><span class="kicker">'+m[0]+' · <span>'+m[4]+'</span></span><h3>'+m[1]+'</h3><span class="original">'+m[2]+'</span><span class="purpose">'+m[3]+'</span><span class="end">CHÚ GIẢI →</span></button>').join(""):'<div class="surface">Không tìm thấy. Thử đổi bộ lọc hoặc tìm bằng tên học thuật.</div>';
 document.getElementById("method-count").textContent="Hiển thị "+visible.length+"/13 phương pháp"+(q?" · kết quả tìm kiếm trên cả 13":currentCategory!=="Tất cả"?" · theo nhóm":STUDY_MODES[studyMode].suggestions?" · "+STUDY_MODES[studyMode].label:" · đầy đủ");

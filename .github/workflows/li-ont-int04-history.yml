@@ -6,6 +6,10 @@ on:
       - 'site/assets/catalog-drilldown.js'
       - 'tools/ontint04-history-browser.html'
       - 'tools/ontint04-native-negative-browser.html'
+      - 'tools/ontint05-route-audit-browser.html'
+      - 'tools/ont04b-react-search-island/src/SearchIsland.tsx'
+      - 'tools/ont04b-react-search-island/tests/search-island.test.tsx'
+      - 'docs/ontology/search/routes/route-readiness.d.mts'
       - 'tools/ontint04-top-level-cdp.cjs'
       - 'tools/check_ontint04_history.mjs'
       - 'docs/ontology/integration/ONT-INT-04.md'
@@ -52,6 +56,9 @@ jobs:
           node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
             "http://127.0.0.1:8794/tools/ontint04-native-negative-browser.html" \
             "LI_STEP16_L09_SHELL_PASS " 33 125000
+          node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
+            "http://127.0.0.1:8794/tools/ontint05-route-audit-browser.html" \
+            "LI_STEP16_L09_SHELL_PASS " 12 125000
           node tools/ontint04-top-level-cdp.cjs "$chrome"
           node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
             "http://127.0.0.1:8794/tools/ontint04-history-browser.html" \

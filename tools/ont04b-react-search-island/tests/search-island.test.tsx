@@ -12,6 +12,48 @@ async function search(query:string){
  return user;
 }
 beforeEach(()=>{cleanup();window.localStorage.clear();});
+describe('ONT-INT-05 read-only route-source disclosure (no grant)',()=>{
+ it('labels L09 native source candidate but never creates lesson action/deep-link',async()=>{
+  render(<SearchIsland embedded/>);
+  await search('L09-1-2');
+  const result=document.querySelector('[data-result-id="lesson:L09-1-2"]') as HTMLElement;
+  expect(result).toBeTruthy();
+  const audit=result.querySelector('[data-route-audit="native-code-only"]') as HTMLElement;
+  expect(audit).toBeTruthy();
+  expect(audit.textContent).toContain('CHƯA duyệt mở');
+  expect(audit.getAttribute('role')).toBe('note');
+  const links=within(result).queryAllByRole('link');
+  expect(links).toHaveLength(1);
+  expect(links[0].getAttribute('href')).toMatch(/^https:\/\/app\.notion\.com/);
+  expect(result.querySelector('a[href*="?lesson="]')).toBeNull();
+  expect(within(result).queryByRole('button',{name:/Mở bài|Open lesson/})).toBeNull();
+  expect(window.localStorage.length).toBe(0);
+ });
+ it('does not invent route code for another reviewed lesson or S37 review-only candidate',async()=>{
+  render(<SearchIsland embedded/>);
+  const user=await search('L09-1-1');
+  const reviewed=document.querySelector('[data-result-id="lesson:L09-1-1"]') as HTMLElement;
+  expect(reviewed).toBeTruthy();
+  expect(reviewed.querySelector('[data-route-audit]')).toBeNull();
+  await search('Pinyin');
+  await user.click(screen.getByRole('checkbox',{name:/Hiện bản đề xuất/}));
+  const candidate=document.querySelector('[data-result-id="lesson:L01-1-1"]') as HTMLElement;
+  expect(candidate).toBeTruthy();
+  expect(candidate.querySelector('[data-route-audit]')).toBeNull();
+  expect(within(candidate).queryByRole('link',{name:/Mở bài|Open lesson/})).toBeNull();
+ });
+ it('keeps a single canonical L09 result and accurately localizes the audit in English',async()=>{
+  render(<SearchIsland embedded/>);
+  const user=userEvent.setup();
+  await user.selectOptions(screen.getByLabelText('Ngôn ngữ'),'en');
+  await search('L09-1-2');
+  const result=document.querySelector('[data-result-id="lesson:L09-1-2"]') as HTMLElement;
+  expect(document.querySelectorAll('[data-result-id="lesson:L09-1-2"]')).toHaveLength(1);
+  expect(within(result).getByText(/Search access is NOT approved/)).toBeTruthy();
+  expect(within(result).queryByRole('link',{name:/Open lesson/})).toBeNull();
+ });
+});
+
 describe('ONT-04B1 React search island (fixture only)',()=>{
  it('renders a real keyboard-operable search form, not production navigation',()=>{
   render(<SearchIsland/>);

@@ -1,0 +1,73 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>ONT-INT-05 · Search result is code-present, not published</title></head><body>
+<pre id="result">LI_STEP16_L09_SHELL_PENDING</pre>
+<script>
+(async()=>{
+'use strict';
+const out=document.getElementById('result'),checks=[],sleep=n=>new Promise(r=>setTimeout(r,n));
+const assert=(x,label)=>{if(!x)throw Error(label);checks.push(label)};
+const until=async(fn,label,ms=27000)=>{
+ const start=Date.now();
+ while(Date.now()-start<ms){try{const v=fn();if(v)return v}catch{}await sleep(90)}
+ throw Error('TIMEOUT '+label);
+};
+const key='li.review.L09-1-2.v1',visits='li.private.lesson.visits.v1';
+let frame;
+try {
+ const before=localStorage.getItem(key),visitBefore=localStorage.getItem(visits);
+ frame=document.createElement('iframe');
+ frame.style.cssText='width:390px;height:820px;border:0;display:block';
+ frame.title='Actual native Search route disclosure';
+ frame.src='../site/index.html?lesson=L09-1-2&li-react=l09-native-fixture&li-search-react=typed-v1';
+ document.body.append(frame);
+ const d=await until(()=>frame.contentDocument?.readyState==='complete'?
+    frame.contentDocument:null,'native document');
+ const w=frame.contentWindow;
+ const host=await until(()=>d.querySelector('#li-typed-search-root[data-li-search-mount="active"]')&&
+   d.getElementById('li-step16-l09-react-host')?d.getElementById('li-typed-search-root'):null,'dual islands');
+ assert(!!host&&!!d.getElementById('li-step16-l09-react-host'),'two mounted research React roots');
+ w.navigate('search',{focus:false});
+ assert(d.getElementById('page-search').classList.contains('active'),'Search is native active screen');
+ const box=host.querySelector('input[type="search"]'),form=host.querySelector('form[role="search"]');
+ const setter=Object.getOwnPropertyDescriptor(w.HTMLInputElement.prototype,'value')?.set;
+ if(!setter||!box||!form)throw Error('React Search input unavailable');
+ const search=async value=>{
+  setter.call(box,value);box.dispatchEvent(new w.Event('input',{bubbles:true}));
+  await until(()=>!form.querySelector('button[type="submit"]').disabled,'controlled query '+value);
+  form.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+ };
+ await search('L09-1-2');
+ const result=await until(()=>host.querySelector('[data-result-id="lesson:L09-1-2"]'),'native code result');
+ const audit=result.querySelector('[data-route-audit="native-code-only"]');
+ assert(!!audit,'L09 result discloses source-audited native route');
+ assert(audit.getAttribute('role')==='note','audit explanation is a read-only note');
+ assert(audit.textContent.includes('CHƯA duyệt mở'),'route is explicitly not published via Search');
+ assert(result.querySelectorAll('a').length===1&&result.querySelector('a[href^="https://app.notion.com/"]'),
+   'only external trusted source link remains in route-audited result');
+ assert(!result.querySelector('a[href*="?lesson="]')&&!result.querySelector('button[data-page]'),
+   'code-only audit never constructs a lesson navigation action');
+ assert(d.getElementById('page-search').classList.contains('active'),'route disclosure does not navigate');
+ assert(localStorage.getItem(key)===before&&localStorage.getItem(visits)===visitBefore,
+   'research Search still leaves genuine learner/visit state unchanged');
+ await search('L09-1-1');
+ const other=await until(()=>host.querySelector('[data-result-id="lesson:L09-1-1"]'),'other reviewed lesson');
+ assert(!other.querySelector('[data-route-audit]'),'non-audited lesson does not invent native source mapping');
+ await search('L03-1-2');
+ await until(()=>!host.querySelector('[data-result-id="lesson:L09-1-1"]'),'old result cleared');
+ assert(!host.querySelector('[data-result-id="lesson:L03-1-2"]'),
+   'native L03 code candidate is not injected into unreviewed search index');
+ await search('L15-2-2');
+ await until(()=>host.textContent.includes('Chưa tìm thấy'),'no-match state');
+ assert(!host.querySelector('[data-result-id="lesson:L15-2-2"]'),
+   'native L15 code candidate is not injected into unreviewed search index');
+ assert(localStorage.getItem(key)===before&&localStorage.getItem(visits)===visitBefore,
+   'all read-only auditing leaves genuine storage byte-identical');
+ out.textContent='LI_STEP16_L09_SHELL_PASS '+JSON.stringify({count:checks.length,checks,
+  evidence:'NATIVE_CHROMIUM_READ_ONLY_ROUTE_CANDIDATE_NO_NAV',physicalSafari:'NOT_RUN',signedRls:'NOT_RUN',release:'NONE'});
+} catch(e) {
+ out.textContent='LI_STEP16_L09_SHELL_FAIL '+JSON.stringify({
+  count:checks.length,checks,error:String(e?.message||e)
+ });
+}
+})();
+</script></body></html>

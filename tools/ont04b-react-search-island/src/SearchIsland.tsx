@@ -3,12 +3,14 @@ import type {FormEvent} from 'react';
 import {searchPilot} from '../../../docs/ontology/search/offline-search.mjs';
 import type {SearchKind,SearchLocale,SearchResult} from '../../../docs/ontology/search/offline-search.mjs';
 import {pilotIndex} from './pilot-index';
+import {inspectSearchRoute} from '../../../docs/ontology/search/routes/route-readiness.mjs';
+import auditedNativeRoutes from '../../../docs/ontology/search/routes/native-route-candidates.v0.1.json';
 
 type Copy={
  title:string;eyebrow:string;subtitle:string;searchLabel:string;placeholder:string;search:string;clear:string;
  filterLabel:string;allKinds:string;draftLabel:string;previewOnly:string;empty:string;found:(n:number)=>string;
  source:string;why:string;relations:string;noRelations:string;notPlayable:string;locked:string;unreviewed:string;
- unknown:string;localeLabel:string;help:string;
+ unknown:string;localeLabel:string;help:string;routeCodeOnly:string;
 };
 const copy:Record<SearchLocale,Copy>={
  vi:{
@@ -22,7 +24,8 @@ const copy:Record<SearchLocale,Copy>={
  relations:'Quan hệ đã xác minh',noRelations:'Không có quan hệ đã xác minh cho thực thể này',
  notPlayable:'Chưa có đường dẫn bài học đã phát hành',locked:'Nội dung được khóa biên tập, không phải bài đã phát hành',
  unreviewed:'Bản nháp / đề xuất',unknown:'Tham chiếu nguồn, chưa xác minh route',
- localeLabel:'Ngôn ngữ',help:'Không dùng dữ liệu cá nhân. Kết quả không chấm điểm hay mở đáp án.'
+ localeLabel:'Ngôn ngữ',help:'Không dùng dữ liệu cá nhân. Kết quả không chấm điểm hay mở đáp án.',
+ routeCodeOnly:'Có màn bài trong mã nguồn, nhưng CHƯA duyệt mở từ Tra Cứu. Không có nút mở bài.'
  },
  en:{
  title:'Search li. knowledge',eyebrow:'Internal research · ONT-04B1',
@@ -35,7 +38,8 @@ const copy:Record<SearchLocale,Copy>={
  relations:'Reviewed relationships',noRelations:'No reviewed relationships for this record',
  notPlayable:'No verified released lesson route',locked:'Editorial content locked, not a published lesson',
  unreviewed:'Draft / proposed',unknown:'Source reference, route unverified',
- localeLabel:'Language',help:'No personal data. Results cannot grade work or reveal answer keys.'
+ localeLabel:'Language',help:'No personal data. Results cannot grade work or reveal answer keys.',
+ routeCodeOnly:'A native lesson screen exists in source, but Search access is NOT approved. No Open lesson action.'
  }
 };
 const kinds:Array<{value:SearchKind;vi:string;en:string}>=[
@@ -58,6 +62,13 @@ function SearchResultItem({result,locale,t}:{result:SearchResult;locale:SearchLo
  const status=result.readiness.state==='po_content_locked_not_released_by_this_index'?t.locked:
   result.reviewState==='proposed'?t.unreviewed:result.kind==='Lesson'?t.notPlayable:t.unknown;
  const relId='rel-'+result.id.replace(/[^a-z0-9-]/gi,'-');
+ // Source-code presence can explain the audit, never authorize a released route.
+ // These fields are versioned read-only research fixtures, NOT user permissions.
+ const routeAudit=result.kind==='Lesson'
+  ?inspectSearchRoute(auditedNativeRoutes,result.id.replace(/^lesson:/,''))
+  :null;
+ const nativeCodeOnly=routeAudit?.state==='native_code_present_release_unverified'&&
+  routeAudit.nativeCodeKnown&&routeAudit.navigationPermitted===false;
  return <li className="search-result" data-result-id={result.id}>
   <article aria-label={result.localizedTitle}>
    <div className="result-head">
@@ -68,6 +79,7 @@ function SearchResultItem({result,locale,t}:{result:SearchResult;locale:SearchLo
    <p className="result-id"><code>{result.id}</code></p>
    <p className="result-meta">{t.why}: {result.whyShown}</p>
    <p className="result-meta">{result.provenance.sourceSection} · {result.provenance.checkedOn}</p>
+   {nativeCodeOnly&&<p className="result-meta" data-route-audit="native-code-only" role="note">{t.routeCodeOnly}</p>}
    <div className="result-actions">
     {source?<a className="source-link" href={source} target="_blank" rel="noopener noreferrer">{t.source}<span aria-hidden="true"> ↗</span></a>:<span>{t.unknown}</span>}
     <button className="text-control" type="button" aria-expanded={expanded} aria-controls={relId} onClick={()=>setExpanded(x=>!x)}>

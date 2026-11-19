@@ -64,7 +64,16 @@ const proof=[
  return {owner:ref,file,blob:original};
 });
 const touched=git(['diff','--name-only',actual,second.commit]).split('\n').filter(Boolean);
-const prohibited=touched.filter(f=>/^(db\/|tools\/step16-real-l09-react-island\/src\/(auth|sync)\/|site\/assets\/step16-react-router\.js$)/.test(f));
+// A single pre-existing, byte-identical G3 migration is inherited from BOTH pinned DS and
+// ONT ancestry. It is NEVER executed or edited. Any other db/Auth/sync change fails closed.
+const inheritedMigration='db/migrations/0001_private_user_sync.sql';
+assert.ok(touched.includes(inheritedMigration),'Expected inherited migration provenance changed');
+assert.equal(blob(ds,inheritedMigration),blob(ont,inheritedMigration),'Inherited DS and ONT migrations differ');
+assert.equal(blob(second.commit,inheritedMigration),blob(ds,inheritedMigration),'Synthetic tree changed inherited migration');
+const inheritedReadOnly={path:inheritedMigration,sourceBlob:blob(ds,inheritedMigration),
+  sourceOwners:[ds,ont],executed:false,edited:false};
+const prohibited=touched.filter(f=>f!==inheritedMigration &&
+ /^(db\/|tools\/step16-real-l09-react-island\/src\/(auth|sync)\/|site\/assets\/step16-react-router\.js$)/.test(f));
 assert.deepEqual(prohibited,[],'Combined tree unintentionally alters Auth, Neon, RLS or React router');
 const mergeability=syntheticMerge(originalBase,oldReact,'PR #126 old base vs head');
 const m={
@@ -73,7 +82,7 @@ const m={
  syntheticFirst:first,syntheticSecond:second,
  combinedPath:combined,combinedHead:second.commit,
  approvedForMerge:false,mainUnchanged:true,g2:'OPEN',
- pinnedFileProof:proof,changedVsReact:touched,prohibitedSourceDiff:prohibited,
+ pinnedFileProof:proof,changedVsReact:touched,protectedInheritedReadOnly:inheritedReadOnly,prohibitedSourceDiff:prohibited,
  pr126:{originalBase,head:oldReact,gitTreeMerge:'CLEAN',synthetic:mergeability.commit,
    githubMergeability:'reported dirty (independent GitHub API) — inconsistency, no forced merge'},
  physicalSafari:'UNVERIFIED'
@@ -84,5 +93,5 @@ assert.ok(process.env.GITHUB_ENV,'GitHub step environment not provided');
 fs.appendFileSync(process.env.GITHUB_ENV,'LI_STAGE02B_COMBINED='+combined+'\n');
 console.log('PASS STAGE02B_FULL_THREE_REF_GIT_WORKTREE '+JSON.stringify({
  reactHead:actual,combinedHead:second.commit,pinnedFiles:proof.length,
- changedVsReact:touched.length,protectedDiff:prohibited.length,
+ changedVsReact:touched.length,protectedDiff:prohibited.length,inheritedMigration:'EXACT_PINNED_UNEXECUTED',
  pr126GitBaseTree:'CLEAN',g2:'OPEN',branchMerge:'NONE',deploy:'NONE'}));

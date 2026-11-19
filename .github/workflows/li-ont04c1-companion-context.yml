@@ -1,0 +1,29 @@
+name: li. ONT-04C1 Lão Lý offline context (PR only)
+on:
+  pull_request:
+    paths:
+      - 'docs/ontology/companion/**'
+      - 'tools/check_companion_context.mjs'
+      - '.github/workflows/li-ont04c1-companion-context.yml'
+permissions:
+  contents: read
+jobs:
+  companion-context:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Base academic pedagogy typed retrieval and native route authority
+        run: |
+          node tools/validate_ontology.mjs --check
+          node tools/validate_academic_ontology.mjs --check
+          node tools/validate_pedagogy_ontology.mjs --check
+          node tools/test_offline_typed_search.mjs
+          node tools/check_search_publication_routes.mjs --check
+      - name: Static bilingual Lão Lý context and spoiler/private-field gates
+        run: node tools/check_companion_context.mjs --check
+      - name: No public answer/learner database artifacts
+        run: |
+          test -z "$(git ls-files docs/ontology/companion/learner-attempts.json docs/ontology/companion/public-answer-key.json)"

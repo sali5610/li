@@ -32,6 +32,7 @@ async function js(s){
 }
 const nativeUrl=origin+'/site/index.html?lesson=L09-1-2';
 const reactUrl=nativeUrl+'&li-react=l09';
+const sharedUrl=origin+'/tools/step16-real-l09-react-island/dist/index.html?pilot=uxds35';
 async function navigate(url,mode){
  await send('Page.navigate',{url});
  await wait(()=>js("document.readyState==='complete'&&!!document.querySelector('#page-lessonL09')"),'L09 authored route');
@@ -40,11 +41,19 @@ async function navigate(url,mode){
   "(()=>{const d=document.querySelector('#page-lessonL09'),e=document.querySelector('#li-step16-l09-react-host .pilot [data-action=submit]');return d?.dataset.liRuntime==='react-candidate'&&!!e&&e.getClientRects().length>0})()";
  await wait(()=>js(expression),mode+' button owner',320);
 }
+async function navigateShared(){
+ await send('Page.navigate',{url:sharedUrl});
+ await wait(()=>js("document.readyState==='complete'&&!!document.querySelector('.li-ui-preview [data-ui-primary]')"),'shared React component fixture');
+}
 // Only browser-safe code is serialized to Runtime.evaluate.
 function snapshot(mode){
  const mapping=mode==='native'?{
   primary:'#l09-submit',secondary:'#l09-clear',field:'#l09-guidedDraft',
   surface:'#l09-goals',group:'#l09-submit',status:'#l09-submissionStatus'
+ }:mode==='shared'?{
+  primary:'.li-ui-preview [data-ui-primary]',secondary:'.li-ui-preview [data-ui-secondary]',
+  field:'.li-ui-preview [data-ui-field]',surface:'.li-ui-preview .li-ui-card:not(.li-ui-card-tinted):not(.li-ui-card-inverse)',
+  group:'.li-ui-preview [data-ui-primary]',status:'.li-ui-preview [data-ui-feedback]'
  }:{
   primary:'#li-step16-l09-react-host .pilot [data-action=submit]',
   secondary:'#li-step16-l09-react-host .pilot [data-action=clear]',
@@ -56,7 +65,7 @@ function snapshot(mode){
  const measured={};
  for(const [key,selector] of Object.entries(mapping)){
   let e=document.querySelector(selector);
-  if(key==='group')e=e?.closest(mode==='native'?'.action-row':'.pilot-actions');
+  if(key==='group')e=e?.closest(mode==='native'?'.action-row':mode==='shared'?'.li-ui-action-group':'.pilot-actions');
   if(!e){measured[key]=null;continue}
   const s=getComputedStyle(e),r=e.getBoundingClientRect();
   measured[key]={selector,visible:r.width>0&&r.height>0&&!e.hidden,
@@ -114,9 +123,21 @@ async function main(){
   check(b.shellRuntime==='react-candidate','Real native site failed to mount React pilot '+width);
   check(a.learnerKey===b.learnerKey,'Genuine learner key changed '+width);
   const dimensions=compare(a,b);
-  check(dimensions.filter(x=>x.family!=='group').every(x=>x.paintEqual),'Equivalent DS role paint changed '+width+' '+JSON.stringify(dimensions.map(x=>[x.family,x.paintEqual])));
-  check(dimensions.every(x=>x.nativeSelector&&x.reactSelector),'Missing source owner '+width);
-  samples.push({width,height,native:a,react:b,dimensions,geometryApproval:'OPEN'});
+  check(dimensions.filter(x=>x.family!=='group').every(x=>x.paintEqual),'Equivalent native↔legacy DS role paint changed '+width+' '+JSON.stringify(dimensions.map(x=>[x.family,x.paintEqual])));
+  check(dimensions.every(x=>x.nativeSelector&&x.reactSelector),'Missing legacy source owner '+width);
+  // The existing L09 React route uses legacy ActionButton/Surface/textarea.
+  // Measure the 9-API Shared.tsx fixture INDEPENDENTLY to prevent false attribution.
+  await navigateShared();
+  const shared=await js('('+snapshot.toString()+')("shared")');
+  if(width===390){const shot=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(dir,'shared-390.png'),Buffer.from(shot.data,'base64'))}
+  const sharedComparison=compare(a,shared);
+  check(shared.viewport===width&&shared.scrollWidth<=width+1,'Shared React preview overflow '+width+' '+shared.scrollWidth);
+  check(shared.learnerKey===a.learnerKey,'Shared fixture touched genuine learner record '+width);
+  check(sharedComparison.filter(x=>x.family!=='group').every(x=>x.paintEqual),'Shared UI background semantic role drift '+width);
+  check(shared.components.primary.height>=48&&shared.components.secondary.height>=48&&shared.components.field.height>=48,'Shared UI intended 48px touch target failed '+width);
+  check(sharedComparison.every(x=>x.reactSelector.startsWith('.li-ui-preview')),'Shared UI fixture provenance missing '+width);
+  samples.push({width,height,native:a,react:b,dimensions,
+    sharedPreview:shared,sharedComparison,geometryApproval:'OPEN'});
  }
  const findings=Object.fromEntries(['primary','secondary','field','surface','group'].map(key=>{
   const cases=samples.map(s=>s.dimensions.find(x=>x.family===key));
@@ -124,15 +145,28 @@ async function main(){
    geometryPropertiesNeedingReview:[...new Set(cases.flatMap(x=>Object.keys(x.geometryDifferent)))].sort(),
    measured390:cases[1].geometryDifferent}];
  }));
- const ledger={scope:'ACTUAL authored L09 native vs opt-in React L09 in ONE detached full source worktree',
-  sourceUrl:'site/index.html?lesson=L09-1-2',reactFlag:'li-react=l09',sourceHead:process.env.LI_STAGE02B_HEAD,
-  chromiumChecks:checks,samples,findings,assertion:'SAME_ROLE_PAINT_AND_OWNER_ONLY',
-  pixelParity:'NOT_APPROVED',g2:'OPEN',realSafari:'NOT_RUN',release:'NONE',learnerWrite:'NONE'};
+ const sharedFindings=Object.fromEntries(['primary','secondary','field','surface','group'].map(key=>{
+  const entries=samples.map(s=>s.sharedComparison.find(x=>x.family===key));
+  return [key,{allWidthsSameRolePaint:entries.every(x=>x.paintEqual),
+   propertiesNeedingReview:[...new Set(entries.flatMap(x=>Object.keys(x.geometryDifferent)))].sort(),
+   measured390:entries[1].geometryDifferent}];
+ }));
+ const ledger={scope:'THREE OWNERS: actual native L09, opt-in LEGACY React L09, and NEW Shared.tsx React preview',
+  sourceUrl:'site/index.html?lesson=L09-1-2',reactFlag:'li-react=l09',
+  sharedUrl:'tools/step16-real-l09-react-island/dist/index.html?pilot=uxds35',
+  provenance:{native:'site/assets/li-layout.css .action/.surface',
+   legacyReact:"tools/step16-real-l09-react-island/src/ui/Primitives.tsx (ActionButton/Surface/StatusMessage)",
+   sharedReact:'tools/step16-real-l09-react-island/src/ui/Shared.tsx (Button/Card/TextInput)'},
+  sourceHead:process.env.LI_STAGE02B_HEAD,
+  chromiumChecks:checks,samples,findings,sharedFindings,
+  assertion:'SAME_ROLE_PAINT_AND_OWNER_ONLY',pixelParity:'NOT_APPROVED',
+  g2:'OPEN',realSafari:'NOT_RUN',release:'NONE',learnerWrite:'NONE'};
  fs.writeFileSync(path.join(dir,'computed-real-l09-ledger.json'),JSON.stringify(ledger,null,2)+'\n');
  console.log('PASS STAGE02B_REAL_SCREEN_GEOMETRY_MEASURED '+JSON.stringify({checks,
   viewports:samples.map(s=>s.width),families:Object.keys(findings),
-  different:Object.fromEntries(Object.entries(findings).map(([k,v])=>[k,v.geometryPropertiesNeedingReview])),
-  sourceOwner:'NATIVE_AND_REACT_ACTUAL_L09',pixelApproved:false,device:'CHROMIUM_ONLY',g2:'OPEN'}));
+  legacyDifferent:Object.fromEntries(Object.entries(findings).map(([k,v])=>[k,v.geometryPropertiesNeedingReview])),
+  sharedDifferent:Object.fromEntries(Object.entries(sharedFindings).map(([k,v])=>[k,v.propertiesNeedingReview])),
+  sourceOwner:'NATIVE_PLUS_LEGACY_REACT_L09_PLUS_SHARED_FIXTURE',pixelApproved:false,device:'CHROMIUM_ONLY',g2:'OPEN'}));
 }
 main().catch(e=>{fs.writeFileSync(path.join(dir,'failure.txt'),e.stack||String(e));console.error('FAIL STAGE02B_REAL_SCREEN_GEOMETRY '+e.stack);process.exitCode=1})
 .finally(async()=>{try{ws?.close()}catch{}proc?.kill('SIGKILL');await sleep(150);await fs.promises.rm(profile,{force:true,recursive:true}).catch(()=>{})});

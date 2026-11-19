@@ -1,0 +1,113 @@
+{
+  "profile": "uxds35-stage02b-real-l09-geometry-gates",
+  "version": "0.1.0",
+  "stage": "Stage02B_PARTIAL",
+  "approval": "G2_OPEN",
+  "reviewDate": "2026-11-19",
+  "evidenceBoundary": "Native authored L09 ↔ legacy React L09 is NOT a test of new Shared.tsx Button/Card; new Shared API is compared separately in the third synthetic fixture.",
+  "sourceAuthority": {
+    "native": "site/assets/li-layout.css .action/.surface and site/assets/lesson-l09-hifi-markup.js",
+    "legacyReact": "tools/step16-real-l09-react-island/src/ui/Primitives.tsx, src/pilot.css and src/Pilot.tsx",
+    "sharedReact": "tools/step16-real-l09-react-island/src/ui/Shared.tsx, src/ui/shared.css, src/ui/Preview.tsx",
+    "canonicalTokens": "design-system/tokens.json",
+    "behaviorSpec": "design-system/ux-patterns-and-behavior.md"
+  },
+  "tracks": {
+    "realScreenNativeVsLegacyReact": {
+      "status": "MEASURED_WITH_UNAPPROVED_GEOMETRY_DIFFS",
+      "variants": {
+        "primary": {
+          "samePurpose": "L09 submit action",
+          "reviewKeys": {
+            "border": "POTENTIAL_VISUAL_CONTRACT_DEBT",
+            "borderColor": "POTENTIAL_VISUAL_CONTRACT_DEBT",
+            "boxShadow": "POTENTIAL_VISUAL_CONTRACT_DEBT",
+            "fontWeight": "POTENTIAL_VISUAL_CONTRACT_DEBT",
+            "minHeight": "POTENTIAL_TOUCH_TARGET_CONTRACT_DEBT",
+            "display": "INTRINSIC_LAYOUT_DIFFERENCE_REVIEW",
+            "gap": "INTRINSIC_LAYOUT_DIFFERENCE_REVIEW",
+            "height": "CONTENT_CONTEXT_AND_INTRINSIC_SIZE_REVIEW"
+          }
+        },
+        "secondary": {
+          "samePurpose": "L09 clear draft action",
+          "reviewKeys": {
+            "boxShadow": "POTENTIAL_VISUAL_CONTRACT_DEBT",
+            "fontWeight": "POTENTIAL_VISUAL_CONTRACT_DEBT",
+            "height": "CONTENT_CONTEXT_AND_INTRINSIC_SIZE_REVIEW"
+          }
+        },
+        "field": {
+          "samePurpose": "not identical; guided explanation vs answer question",
+          "reviewKeys": {
+            "minHeight": "DIFFERENT_CONTENT_CONTEXT_NOT_PARITY"
+          }
+        },
+        "surface": {
+          "samePurpose": "both editorial containers, different content and section layouts",
+          "reviewKeys": {
+            "border": "POTENTIAL_VISUAL_CONTRACT_DEBT",
+            "borderColor": "POTENTIAL_VISUAL_CONTRACT_DEBT",
+            "boxShadow": "POTENTIAL_VISUAL_CONTRACT_DEBT",
+            "padding": "POTENTIAL_VISUAL_CONTRACT_DEBT",
+            "height": "CONTENT_CONTEXT_AND_INTRINSIC_SIZE_REVIEW"
+          }
+        },
+        "group": {
+          "samePurpose": "action row container; children differ",
+          "reviewKeys": {
+            "height": "CHILD_CONTENT_CONTEXT_NOT_PARITY"
+          }
+        }
+      }
+    },
+    "nativeVsSharedReactFixture": {
+      "status": "TOKEN_PAINT_AND_HIT_TARGET_CONTRACT_ONLY",
+      "purpose": "Button/Card/TextInput from Shared.tsx really mounted; same native L09 CSS semantic backgrounds but DIFFERENT DOM content and route; do not infer product-screen pixel parity.",
+      "tokenFamilies": [
+        "primary",
+        "secondary",
+        "field",
+        "surface"
+      ],
+      "touchTargetsCssPx": [
+        "primary",
+        "secondary",
+        "field"
+      ],
+      "backgroundRoleExpectation": "must_match",
+      "geometryExpectation": "RECORD_ONLY_NOT_G2_APPROVED",
+      "productAdoption": "NOT_IMPLEMENTED"
+    },
+    "productConsumers": {
+      "sharedActionGroup": {
+        "status": "RESEARCH_L09_ONLY",
+        "count": 2,
+        "realAppProductRollout": false
+      },
+      "sharedRemainingEight": {
+        "status": "FIXTURE_ONLY",
+        "count": 8
+      }
+    }
+  },
+  "gates": {
+    "sourceRolePaint": "ASSERT_EQUIVALENT",
+    "nativeVsLegacyNewUnknownDiff": "FAIL_CLOSED_REVIEW",
+    "nativeVsSharedPaint": "ASSERT_EQUIVALENT",
+    "sharedFixtureHit48": "ASSERT_CSS_PX_GE_48",
+    "sharedVsNativeGeometry": "NOT_G2_APPROVED",
+    "SafariPhysical": "NOT_RUN",
+    "VoiceOverSpecific": "OUT_OF_SCOPE_PO_S208",
+    "HumanG2": "OPEN",
+    "Stage03": "NOT_PROMOTED",
+    "productionMerge": "NONE",
+    "cloudflareManualDeploy": "NONE"
+  },
+  "notes": [
+    "The native .action selector declares min-height 46px; measured actual button can exceed it. The intended NEW shared React touch target is 48px. Do not convert CSS declared min-height into a failed actual hit-area claim without measurement.",
+    "Native .surface uses --li-space-6 and hard shadow; legacy .pilot-surface uses --li-space-4 without equivalent shadow. Treat as visual-contract review debt, not an automatically approved identity change.",
+    "Native guided textarea and React question textarea are different curricular interactions; raw min-height mismatch is not sufficient to call a same-variant regression.",
+    "A passing semantic paint check is necessary but insufficient for full visual parity."
+  ]
+}

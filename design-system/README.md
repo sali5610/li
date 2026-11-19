@@ -22,7 +22,8 @@
 | **Typography roles, 4px grid, responsive spacing** | [typography-spacing.md](typography-spacing.md) | Type, rhythm, text overflow, layouts |
 | **Component inventory, selectors, variants, states, PO exceptions** | [components.md](components.md) | Every touched component and its siblings |
 | **iPhone/iPad adaptive rules, window + container + height + safe-area + rotation** | [responsive-adaptive.md](responsive-adaptive.md) **(DRAFT, UX-DS-35)** | Every layout, component density, Safari, keyboard or viewport adjustment |
-| **Atomic → Responsive → React staged remediation plan** | [UX-DS-35 implementation roadmap](plans/2026-11-19-atomic-responsive-react-roadmap.md) **(DRAFT)** | Before planning implementation PRs, migration order and gate checks |
+| **Atomic → Responsive → Ontology → React staged remediation plan** | [UX-DS-35 integrated implementation roadmap](plans/2026-11-19-atomic-responsive-react-roadmap.md) **(DRAFT)** | Before planning implementation PRs, migration order and gates; includes ONT-01–05 dependencies and acceptance |
+| **Shared typed ontology contract / decision provenance (proposed schema; NOT merged)** | [ONT-01 GitHub draft PR #127](https://github.com/sali5610/li/pull/127) + [S183 approved architecture](https://app.notion.com/p/41d6cf6db72a81f59573fb0e5ed6836e) | Mapping tokens, components, slots, rules, screens, learning concepts, search and Lão Lý; keep stable IDs, source, review/rights/permission state |
 | **Atomic-level gap inventory + React readiness (AUDIT, not approved implementation)** | [2026-11-19 atomic audit](audits/2026-11-19-atomic-react-readiness.md) | When planning React shared components, component-level Do/Don't or migration QA; keep approved designs unchanged |
 | **Use / Don't use, interaction patterns, state transitions, accessibility behavior** | [ux-patterns-and-behavior.md](ux-patterns-and-behavior.md) | Any UI/UX interaction, new component or pattern; treat as default rule |
 | **Coverage, acceptance, impact chain and device test evidence** | [qa-checklist.md](qa-checklist.md) | Every UI/UX PR or design review |
@@ -33,6 +34,8 @@
 | **Latest accepted copy and product decisions** | [Step13 active canon](https://app.notion.com/p/41b6cf6db72a811aba36dcec9cc42c20), [Latest Handoff](https://app.notion.com/p/4196cf6db72a81f7b000f75783f210b5) | Any labels, status, dialogue, UX journey or gate |
 
 ### UI rule snapshot — no guessing
+
+- **Ontology ownership — S183 APPROVED DIRECTION, ONT-01 spec validator DONE but PR #127 DRAFT:** one shared typed registry links Token→Component→Slot/Pattern→Rule/Gate and approved Lesson→Concept/Outcome/SourceEdition→L2 practice, plus typed search/companion actions. The graph documents provenance and enforces schema; it does **not** replace current React UI code, G2 visual signoff, reviewed academic sources, or server-side Neon RLS. ONT-02/03/04/05 remain distinct backlog tasks; preserve approved 5-level navigation and no-spoiler K1/K3/K5 evidence. See [integrated roadmap](plans/2026-11-19-atomic-responsive-react-roadmap.md) and [ONT-01](https://github.com/sali5610/li/pull/127).
 
 - **Responsive ownership — proposal UX-DS-35:** effective viewport/container width, visible height and keyboard/safe-area govern layout; iPad Split View can use compact mode, and short-height iPhone landscape must keep controls reachable. Preserve approved Thần Chú 2-up 320–640px, current iPad density only in proper contexts, one landscape iPad Home artwork cropped for portrait, and repeat-rotation Safari proof. See [responsive-adaptive.md](responsive-adaptive.md). Do not remove current Safari fallback until physical verification; G2 remains OPEN.
 

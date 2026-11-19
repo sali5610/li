@@ -1,5 +1,6 @@
 -- li. Step16: OWNER-APPROVED email allowlist, even when Google OAuth authenticates.
--- DRAFT ONLY: reviewed migration, NOT applied to live Neon.
+-- Applied to Neon Free main on 2026-11-19 after temporary-branch verification.
+-- Source remains versioned on DRAFT PR #124; no website release or live JWT test.
 -- Depends on 0001_private_user_sync.sql and Neon Managed Better Auth.
 -- DO NOT place actual learner emails or admin credentials into public GitHub.
 -- NOTE: Google OAuth may still create an Auth identity. RLS authorizes ONLY

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "li. quote source/rights hold policy — never publication authority",
+  "title": "li. personal invite-only quote source/attribution and spoiler audit (not a reuse-rights gate)",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -18,7 +18,7 @@
       "const": "li-ONT04C1b-quote-source-audit"
     },
     "version": {
-      "const": "0.1.0"
+      "const": "0.1.1"
     },
     "demoOnly": {
       "const": true
@@ -73,13 +73,10 @@
         "defaultQuoteState",
         "attributionState",
         "originalEditionState",
-        "translationRightsState",
-        "territoryRightsState",
         "contextRelevanceState",
         "academicEvidenceState",
         "quoteRenderAuthorization",
         "reviewedQuoteEntries",
-        "reviewedPublicQuoteEntries",
         "clientCanApprove",
         "independentStage",
         "reflectionStage",
@@ -88,22 +85,18 @@
         "calmMode",
         "debateMode",
         "preSubmitLessonState",
-        "neverCopyOriginalOrTranslatedTextIntoAudit"
+        "neverCopyOriginalOrTranslatedTextIntoAudit",
+        "usageScope",
+        "reuseRightsGate"
       ],
       "properties": {
         "defaultQuoteState": {
-          "const": "WITHHELD"
+          "const": "WITHHELD_FOR_ATTRIBUTION_AND_STAGE_QA"
         },
         "attributionState": {
           "const": "UNVERIFIED_FOR_NEW_USE"
         },
         "originalEditionState": {
-          "const": "UNVERIFIED_FOR_NEW_USE"
-        },
-        "translationRightsState": {
-          "const": "UNVERIFIED_FOR_NEW_USE"
-        },
-        "territoryRightsState": {
           "const": "UNVERIFIED_FOR_NEW_USE"
         },
         "contextRelevanceState": {
@@ -113,12 +106,9 @@
           "const": "NEVER_TREAT_AS_SCIENTIFIC_SOURCE"
         },
         "quoteRenderAuthorization": {
-          "const": "NOT_GRANTED"
+          "const": "PENDING_SOURCE_STAGE_INTEGRATION"
         },
         "reviewedQuoteEntries": {
-          "const": 0
-        },
-        "reviewedPublicQuoteEntries": {
           "const": 0
         },
         "clientCanApprove": {
@@ -147,6 +137,12 @@
         },
         "neverCopyOriginalOrTranslatedTextIntoAudit": {
           "const": true
+        },
+        "usageScope": {
+          "const": "PERSONAL_INVITE_ONLY"
+        },
+        "reuseRightsGate": {
+          "const": "NOT_A_PRODUCT_BLOCKER"
         }
       }
     },

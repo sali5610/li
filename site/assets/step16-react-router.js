@@ -7,7 +7,7 @@
  const params=new URLSearchParams(window.location.search);
  const local=window.location.protocol==='http:' &&
    (window.location.hostname==='127.0.0.1'||window.location.hostname==='localhost');
- if(!local||params.get('li-react')!=='l09')return;
+ if(!local||!['l09','l09-native-fixture'].includes(params.get('li-react')))return;
  const page=document.getElementById('page-lessonL09');
  const challenge=document.getElementById('l09-challenge');
  const rubric=document.getElementById('l09-rubric');

@@ -80,8 +80,10 @@ if(query.has('embed')){
  function refresh(){
   const options=new URLSearchParams({embed:'1',story:active.id,variant:v.value,state:s.value,lang:language.value});
   frame.src=active.id==='layout'?'./react-layout.html?'+options.toString():['text','heading','link','divider','badge','progress'].includes(active.id)?'./react-atoms.html?'+options.toString():['checkbox','radio','field','icon','iconButton'].includes(active.id)?'./react-controls.html?'+options.toString():['button','card','chip'].includes(active.id)?'./react-components.html?'+options.toString():'./index.html?'+options.toString();
-  frame.style.width=width.value==='auto'?'100%':width.value+'px';
-  $('#studio-frame-label').textContent=width.value==='auto'?'FLUID':width.value+' CSS PX';
+  const [viewportWidth,viewportHeight]=width.value.split('x');
+  frame.style.width=width.value==='auto'?'100%':viewportWidth+'px';
+  frame.style.height=viewportHeight?viewportHeight+'px':'326px';
+  $('#studio-frame-label').textContent=width.value==='auto'?'FLUID':(viewportWidth+' × '+(viewportHeight||326)+' CSS PX');
  }
  function renderDetails(){
   const content=$('#studio-details-content');

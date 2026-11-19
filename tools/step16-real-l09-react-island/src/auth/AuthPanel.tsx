@@ -1,40 +1,40 @@
-import React,{useEffect,useState,type FormEvent} from 'react';
+import React,{useEffect,useState} from 'react';
 import {bindNeonAccount} from '../sync/neon-session.js';
+import {checkInviteAccess} from '../sync/invite-access.js';
 import {authClient,neonSessionPort} from './neon-client.js';
-import {NEON_DATA_API_URL} from './config.js';
-import {AuthRecovery} from './AuthRecovery.js';
-import {AuthEmailVerification} from './AuthEmailVerification.js';
+import {AUTH_ORIGIN,NEON_DATA_API_URL} from './config.js';
 
 type Locale='vi'|'en';
+type Access='checking'|'granted'|'denied'|'error';
 const copy={
  vi:{
   heading:'Tài khoản học tập',tag:'Bản thử nghiệm · chưa phát hành',
-  intro:'Đăng nhập chỉ dành cho tài khoản được mời. Dữ liệu học vẫn lưu trên thiết bị; đồng bộ cloud đang khóa.',
-  email:'Email',password:'Mật khẩu',login:'Đăng nhập',logout:'Đăng xuất',
-  loading:'Đang kiểm tra phiên đăng nhập…',
-  busy:'Đang xử lý…',
-  signed:'Đã đăng nhập với',ready:'Phiên đã liên kết đúng tài khoản.',
-  verifying:'Đang xác minh liên kết tài khoản…',blocked:'Không thể xác minh tài khoản. Dữ liệu không được đồng bộ.',
-  error:'Không thể xác thực lúc này. Kiểm tra phiên đăng nhập hoặc kết nối mạng rồi thử lại.',
-  invalid:'Đăng nhập chưa thành công. Kiểm tra email và mật khẩu.',
-  leave:'Không thể đăng xuất. Kiểm tra kết nối mạng rồi thử lại.',
-  local:'Chỉ lưu trên thiết bị · Chưa đồng bộ cloud',
-  privacy:'Chưa đọc/ghi Neon Data API, chưa cấp quyền upload bài học, ghi chú hoặc nhật ký.',
+  intro:'Chỉ những email được chủ li. mời mới được vào. Đăng nhập bằng Google, không cần tạo mật khẩu riêng.',
+  google:'Tiếp tục với Google',logout:'Đăng xuất',busy:'Đang xử lý…',
+  loading:'Đang kiểm tra phiên đăng nhập…',signed:'Đã đăng nhập với',
+  checking:'Đang kiểm tra lời mời trên máy chủ…',
+  granted:'Email đã được mời. Quyền truy cập được xác minh.',
+  denied:'Lối vào này chưa dành cho bạn. Hãy nhờ chủ li. cấp quyền cho đúng email Google.',
+  blocked:'Không thể xác minh quyền truy cập. App vẫn khóa để bảo vệ dữ liệu.',
+  error:'Không thể kết nối Google lúc này. Kiểm tra mạng rồi thử lại.',
+  leave:'Không thể đăng xuất. Kiểm tra kết nối rồi thử lại.',
+  local:'Chỉ lưu trên thiết bị · Đồng bộ cloud vẫn khóa',
+  privacy:'Google đăng nhập không tự cấp quyền xem dữ liệu. Quyền mời và dữ liệu cá nhân được kiểm tra tại Neon bằng RLS.',
   switchEn:'English',switchVi:'Tiếng Việt'
  },
  en:{
   heading:'Learning account',tag:'Research pilot · not released',
-  intro:'Sign-in is invite-only. Learning data remains on this device; cloud sync is disabled.',
-  email:'Email',password:'Password',login:'Sign in',logout:'Sign out',
-  loading:'Checking your sign-in session…',
-  busy:'Working…',
-  signed:'Signed in as',ready:'Session bound to this account.',
-  verifying:'Verifying account binding…',blocked:'Could not verify account binding. No data can sync.',
-  error:'Authentication is unavailable. Check your session or connection and try again.',
-  invalid:'Sign-in failed. Check the email address and password.',
+  intro:'Only emails invited by the li. owner may use the app. Sign in with Google; no separate password.',
+  google:'Continue with Google',logout:'Sign out',busy:'Working…',
+  loading:'Checking your sign-in session…',signed:'Signed in as',
+  checking:'Checking your invitation with the server…',
+  granted:'Invitation confirmed. This account is authorized.',
+  denied:'This entrance is not for you yet. Ask the owner to invite your Google email.',
+  blocked:'Unable to verify invitation. App access remains locked to protect learner data.',
+  error:'Google sign-in is unavailable. Check the connection and try again.',
   leave:'Sign-out failed. Check your connection and try again.',
-  local:'Device-only storage · Cloud sync disabled',
-  privacy:'No Neon Data API reads or writes, no permission to upload lessons, notes, or private journal.',
+  local:'Device-only storage · Cloud sync still disabled',
+  privacy:'Google authentication is not access approval. Neon RLS independently checks invitations and private data.',
   switchEn:'English',switchVi:'Tiếng Việt'
  }
 } as const;
@@ -43,35 +43,40 @@ export function AuthPanel(){
  const [locale,setLocale]=useState<Locale>('vi');
  const t=copy[locale];
  const {data:session,isPending,error,refetch}=authClient.useSession();
- const [email,setEmail]=useState('');
- const [password,setPassword]=useState('');
  const [busy,setBusy]=useState<'login'|'logout'|null>(null);
  const [feedback,setFeedback]=useState('');
- const [boundAccount,setBoundAccount]=useState<string|null>(null);
- const [bindingError,setBindingError]=useState(false);
+ const [access,setAccess]=useState<Access>('checking');
  const accountId=session?.user?.id??null;
+
  useEffect(()=>{
   let disposed=false;
-  setBoundAccount(null);
-  setBindingError(false);
+  setAccess('checking');
   if(!accountId)return()=>{disposed=true;};
-  // Binding ONLY checks account ID via Auth. It never queries Neon Data API.
-  void bindNeonAccount(NEON_DATA_API_URL,neonSessionPort)
-   .then(api=>{if(!disposed){
-    if(api?.accountId===accountId)setBoundAccount(accountId);
-    else setBindingError(true);
-   }})
-   .catch(()=>{if(!disposed)setBindingError(true);});
+  // A session is never an invitation. The RPC reads the verified identity in
+  // neon_auth.user; its table RLS also independently denies all uninvited users.
+  void (async()=>{
+   try{
+    const api=await bindNeonAccount(NEON_DATA_API_URL,neonSessionPort);
+    if(!api||api.accountId!==accountId)throw Error('ACCOUNT_BINDING_FAILED');
+    const allowed=await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort);
+    if(!disposed)setAccess(allowed?'granted':'denied');
+   }catch{
+    if(!disposed)setAccess('error'); // Fail closed; NEVER infer access from email in React.
+   }
+  })();
   return()=>{disposed=true;};
  },[accountId]);
- async function signIn(event:FormEvent<HTMLFormElement>){
-  event.preventDefault();if(busy)return;
+
+ async function signInGoogle(){
+  if(busy)return;
   setBusy('login');setFeedback('');
   try{
-   const result=await authClient.signIn.email({email:email.trim(),password});
-   if(result.error){setFeedback(t.invalid);return;}
-   setPassword('');
-   await refetch();
+   if(window.location.origin!==AUTH_ORIGIN)throw Error('UNTRUSTED_ORIGIN');
+   // Only the exact trusted origin and current research path; never accept an
+   // external redirect from query params or a user-entered email.
+   const callbackURL=AUTH_ORIGIN+window.location.pathname+'?pilot=auth';
+   const result=await authClient.signIn.social({provider:'google',callbackURL});
+   if(result.error)throw Error('GOOGLE_SIGN_IN_FAILED');
   }catch{setFeedback(t.error);}
   finally{setBusy(null);}
  }
@@ -80,9 +85,8 @@ export function AuthPanel(){
   setBusy('logout');setFeedback('');
   try{
    const result=await authClient.signOut();
-   if(result.error){setFeedback(t.leave);return;}
-   setPassword('');setEmail('');
-   setBoundAccount(null);
+   if(result.error)throw Error('SIGN_OUT_FAILED');
+   setAccess('checking');
    await refetch();
   }catch{setFeedback(t.leave);}
   finally{setBusy(null);}
@@ -95,36 +99,25 @@ export function AuthPanel(){
     <button type="button" aria-pressed={locale==='en'} onClick={()=>setLocale('en')}>{t.switchEn}</button>
    </div>
   </header>
-  <section className="auth-card" aria-busy={busy!==null}>
+  <section className="auth-card" aria-busy={busy!==null||access==='checking'}>
    <p>{t.intro}</p>
    {isPending&&<p role="status">{t.loading}</p>}
    {error&&<p role="alert">{t.error}</p>}
    {!isPending&&!error&&(accountId?
     <div className="auth-account" key={accountId}>
      <p>{t.signed}: <strong>{session?.user?.email}</strong></p>
-     <p role="status">{bindingError?t.blocked:boundAccount===accountId?t.ready:t.verifying}</p>
+     <p role={access==='denied'||access==='error'?'alert':'status'}>
+      {access==='checking'?t.checking:access==='granted'?t.granted:
+       access==='denied'?t.denied:t.blocked}
+     </p>
      <button type="button" onClick={()=>void signOut()} disabled={busy!==null}>
       {busy?t.busy:t.logout}
      </button>
     </div>:
     <div className="auth-sign-in">
-    <form onSubmit={event=>void signIn(event)}>
-     <div className="auth-field">
-      <label htmlFor="li-auth-email">{t.email}</label>
-      <input id="li-auth-email" type="email" autoComplete="username" required
-       value={email} onChange={event=>setEmail(event.target.value)}
-       disabled={busy!==null} />
-     </div>
-     <div className="auth-field">
-      <label htmlFor="li-auth-password">{t.password}</label>
-      <input id="li-auth-password" type="password" autoComplete="current-password" required
-       value={password} onChange={event=>setPassword(event.target.value)}
-       disabled={busy!==null} />
-     </div>
-     <button type="submit" disabled={busy!==null}>{busy?t.busy:t.login}</button>
-    </form>
-    <AuthRecovery locale={locale}/>
-    <AuthEmailVerification locale={locale}/>
+     <button type="button" onClick={()=>void signInGoogle()} disabled={busy!==null}>
+      {busy?t.busy:t.google}
+     </button>
     </div>
    )}
    {feedback&&<p className="auth-error" role="alert">{feedback}</p>}

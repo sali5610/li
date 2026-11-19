@@ -559,7 +559,21 @@ window.addEventListener("li:localechange",()=>{
  }
 });
 function openModal(id,trigger){const el=document.getElementById(id);el.classList.add("open");el.dataset.trigger=trigger?.id||"";el.querySelector("button")?.focus()}
-function closeModal(id){const el=document.getElementById(id);el.classList.remove("open");document.activeElement?.blur?.()}
+function closeModal(id){
+ const el=document.getElementById(id);
+ if(!el)return;
+ const wasOpen=el.classList.contains("open");
+ const hadFocusInside=el.contains(document.activeElement);
+ const opener=el.dataset.trigger?document.getElementById(el.dataset.trigger):null;
+ el.classList.remove("open");
+ // UX-DS-35: when an accessible blocking dialog closes, restore its trigger
+ // after the modal is hidden. This also applies to Escape/backdrop close.
+ if(wasOpen&&opener?.isConnected&&!opener.disabled&&opener.getClientRects().length){
+  opener.focus({preventScroll:true});
+ }else if(hadFocusInside){
+  document.activeElement?.blur?.();
+ }
+}
 document.querySelectorAll(".page").forEach(e=>e.setAttribute("aria-label",e.id.replace("page-","")));
 document.getElementById("method-filters").innerHTML=categories.map((c,i)=>'<button class="filter" data-cat="'+c+'" aria-pressed="'+(i===0)+'">'+c+'</button>').join("");
 document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.hasAttribute("data-nav-back")){goBack();return}if(t.dataset.page){navigate(t.dataset.page);if(t.dataset.focus){const field=document.getElementById(t.dataset.focus);document.getElementById("notebook-section")?.scrollIntoView?.({block:"start"});field?.focus?.({preventScroll:true})}return}if(t.dataset.method){showMethod(t.dataset.method);return}if(t.dataset.cat){currentCategory=t.dataset.cat;document.querySelectorAll("[data-cat]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));renderMethods();return}if(t.dataset.branch){document.getElementById("branch-feedback").textContent="Hãy kiểm chứng: "+t.dataset.branch;window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"branch",id:scenarios[qIndex].question+"::"+t.dataset.branch}}));return}if(t.dataset.answer){const isCase=t.closest("section.page").id==="page-case";if(isCase)selectedCaseAnswer=t.dataset.answer;const id=isCase?"case-feedback":"lesson-feedback";document.getElementById(id).textContent=t.dataset.answer==="right"?"Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.":"Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.";return}if(t.dataset.demo){toast(t.dataset.demo);return}if(t.dataset.buddy){openLaoLy(t);return}});

@@ -3,7 +3,12 @@
 "use strict";
 const root=document.getElementById("page-lessonL09");
 if(!root)return;
-const KEY="li.review.L09-1-2.v1";
+// The native lesson still owns the genuine learner key. This secondary key is
+// used only by an explicit synthetic localhost handover fixture.
+const LI_LOCAL_FIXTURE=(location.hostname==="localhost"||location.hostname==="127.0.0.1")&&
+  location.pathname==="/site/index.html"&&
+  new URLSearchParams(location.search).get("li-react")==="l09-native-fixture";
+const KEY=LI_LOCAL_FIXTURE?"step16.l09.shared-native-fixture.v1":"li.review.L09-1-2.v1";
 const SOURCES=[
 {title:"NIST — Populations and Sampling",url:"https://www.itl.nist.gov/div898/handbook/ppc/section1/ppc134.htm",tier:"core"},
 {title:"CDC — CASPER Sampling Methodology",url:"https://www.cdc.gov/casper/php/overview/sampling-methodology.html",tier:"core"},
@@ -126,7 +131,33 @@ if(typeof state.guidedDraft!=="string")state.guidedDraft="";
 }}catch(e){}
 // Global Settings language supersedes any saved per-lesson locale.
 if(["vi","en"].includes(window.liLanguage?.get?.()))state.locale=window.liLanguage.get();
-function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){storageAvailable=false;return false;}}
+function persist(safePatch){
+ // When the React candidate owns this synthetic attempt, native challenge
+ // handlers must not overwrite it from stale in-memory state. The remaining
+ // native guided exercise and language switch may patch ONLY their own field.
+ if(LI_LOCAL_FIXTURE&&root.dataset.liRuntime==="react-candidate"){
+  const keys=safePatch&&typeof safePatch==="object"?Object.keys(safePatch):[];
+  if(!keys.length||keys.some(k=>k!=="guidedDraft"&&k!=="locale"))return false;
+  if(keys.includes("guidedDraft")&&typeof safePatch.guidedDraft!=="string")return false;
+  if(keys.includes("locale")&&!["vi","en"].includes(safePatch.locale))return false;
+  try{
+   const raw=localStorage.getItem(KEY);
+   if(raw===null)return false;
+   const latest=JSON.parse(raw);
+   if(!latest||typeof latest!=="object"||Array.isArray(latest)||
+      !Array.isArray(latest.draft)||latest.draft.length!==4||
+      !latest.draft.every(x=>typeof x==="string")||
+      !Array.isArray(latest.ratings)||latest.ratings.length!==4)return false;
+   const next=JSON.stringify({...latest,...safePatch});
+   if(next===raw)return true;
+   localStorage.setItem(KEY,next);
+   if(localStorage.getItem(KEY)!==next)throw Error("readback");
+   return true;
+  }catch(e){storageAvailable=false;return false;}
+ }
+ try{localStorage.setItem(KEY,JSON.stringify(state));return true}
+ catch(e){storageAvailable=false;return false;}
+}
 function sText(id,s){const el=$(id);if(el)el.textContent=s;}
 function sHtml(id,s){const el=$(id);if(el)el.innerHTML=s;}
 function toast(message){
@@ -251,18 +282,18 @@ function updateScore(){
 }
 function changeLocale(locale){
  if(typeof window.liLanguage?.set==="function"){window.liLanguage.set(locale);return;}
- if(locale===state.locale)return;state.locale=locale;persist();render();
+ if(locale===state.locale)return;state.locale=locale;persist({locale});render();
 }
 window.addEventListener?.("li:localechange",event=>{
  const next=event.detail?.locale;
  if(!["vi","en"].includes(next)||next===state.locale)return;
- state.locale=next;persist();render();
+ state.locale=next;persist({locale:next});render();
 });
 $("vi").addEventListener("click",()=>changeLocale("vi"));
 $("en").addEventListener("click",()=>changeLocale("en"));
 $("guidedDraft").addEventListener("input",()=>{
  state.guidedDraft=$("guidedDraft").value;
- persist();
+ persist({guidedDraft:state.guidedDraft});
 });
 $("guidedToggle").addEventListener("click",()=>{
  const h=$("guidedHint");const now=h.hidden;h.hidden=!now;

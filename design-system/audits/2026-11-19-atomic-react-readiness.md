@@ -124,6 +124,10 @@ A component is not marked READY until all fields are present and tested:
 | DS-R07 | P1 | Physical iPad rotation and accessibility acceptance | iPhone/iPad portrait+landscape+rotation, 200% zoom, VoiceOver/focus, recorded Pass/Fail/Unverified |
 | DS-R08 | P2 | Optional notification/sound interaction pattern | opt-in/mute/reduced-motion, no permission prompt without user action |
 
+## UX-DS-35 · responsive follow-up and execution plan (DRAFT)
+
+The initial audit is now supplemented with [iPhone/iPad adaptive behavior contract](../responsive-adaptive.md) and the [10-stage remediation roadmap](../plans/2026-11-19-atomic-responsive-react-roadmap.md). Responsive layout must be derived from effective available window/container width, height, input and accessibility needs, while preserving current **Thần Chú 2-up 320–640**, the approved single iPad landscape Home art/portrait crop, and iPad device-scale baseline. Existing physical Safari repeat-rotation issue is open; no claimed fix. The roadmap is a staged proposal, not completed code, G2 acceptance or deployment.
+
 ## Source scope and external references
 
 - [li. canonical Design Library](../README.md) and [components inventory](../components.md), [interaction contract](../ux-patterns-and-behavior.md), [token audit](2026-11-18-zero-component-token-debt.md) (relative links from this audit require `../`).

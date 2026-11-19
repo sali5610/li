@@ -1,0 +1,59 @@
+name: li. ONT-INT-02 Native Dialog and localhost React integration (draft only)
+on:
+  pull_request:
+    paths:
+      - 'site/index.html'
+      - 'site/assets/lesson-l09-hifi.js'
+      - 'site/assets/library-hub.js'
+      - 'site/assets/step16-react-router.js'
+      - 'tools/ontint02-browser-fixture.html'
+      - 'tools/check_ont_native_entrypoint.mjs'
+      - 'docs/ontology/integration/ONT-INT-02.md'
+      - '.github/workflows/li-ont-int02-native.yml'
+permissions:
+  contents: read
+jobs:
+  real-native-local-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate exact source, ontology and native app safety before React build
+        run: |
+          set -euo pipefail
+          node tools/check_ont_native_entrypoint.mjs
+          node tools/check_ont_integration.mjs
+          node tools/check_laoly_quote_runtime_gate.mjs --check
+          node tools/test_quotes.js
+          python3 tools/validate_site.py
+          python3 tools/generate_design_tokens.py --check
+      - name: Compile exact native L09 research candidate + synthetic one-writer tests
+        working-directory: tools/step16-real-l09-react-island
+        run: |
+          set -euo pipefail
+          npm install --ignore-scripts --no-audit --no-fund --no-package-lock
+          npm run build
+          npm run build:site-island
+          npm run test:sync
+      - name: Mounted actual native Buddy and Check-in + localhost React 23-case browser QA
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)"
+          python3 -m http.server 8794 --bind 127.0.0.1 --directory . >/tmp/li-ont-int02-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
+            "http://127.0.0.1:8794/tools/ontint02-browser-fixture.html" \
+            "LI_STEP16_L09_SHELL_PASS " 22 90000
+          node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
+            "http://127.0.0.1:8794/tools/step16-real-l09-react-island/site-shell-fixture.html" \
+            "LI_STEP16_L09_SHELL_PASS " 23 120000
+      - name: Generated research bundle and fixture must never be tracked for release
+        run: |
+          test -z "$(git ls-files site/assets/step16-l09-island.js)"
+          test -z "$(git ls-files site/assets/step16-l09-island.css)"
+          test -z "$(git ls-files site/__ont04c2b_qa.html)"

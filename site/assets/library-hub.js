@@ -123,6 +123,14 @@ function lessonStatus(info){
 }
 function trackLesson(route){
  if(!Object.prototype.hasOwnProperty.call(LESSONS,route))return;
+ // An opt-in synthetic React L09 browser fixture must not create a genuine
+ // activity/visit entry. Normal users and unflagged Vanilla routes are intact.
+ const place=window.location;
+ if(route==="lessonL09"&&place?.protocol==="http:"&&
+   ["localhost","127.0.0.1"].includes(place.hostname)&&
+   place.pathname==="/site/index.html"&&
+   ["l09","l09-native-fixture"].includes(
+     new URLSearchParams(place.search).get("li-react")))return;
  const entry={route,visitedAt:new Date().toISOString()};
  const items=[entry,...visitStore.items.filter(x=>x.route!==route)].slice(0,40);
  const value=JSON.stringify({schema:1,items});

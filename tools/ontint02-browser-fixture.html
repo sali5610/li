@@ -1,0 +1,75 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>ONT-INT-02 real native modal QA, synthetic Chromium</title></head><body>
+<pre id="result">LI_STEP16_L09_SHELL_PENDING</pre>
+<script>
+(async()=>{
+'use strict';
+const out=document.getElementById('result'),checks=[];
+const assert=(test,message)=>{if(!test)throw Error(message);checks.push(message)};
+const sleep=t=>new Promise(r=>setTimeout(r,t));
+const wait=async(fn,label)=>{for(let i=0;i<250;i++){try{const x=fn();if(x)return x}catch{}await sleep(80)}throw Error('TIMEOUT '+label)};
+let frame;
+try{
+ frame=document.createElement('iframe');
+ frame.style.cssText='width:390px;height:820px;border:0;display:block';
+ frame.src='../site/index.html?lesson=L09-1-2';
+ document.body.appendChild(frame);
+ const win=await wait(()=>frame.contentWindow?.openModal&&frame.contentDocument?.getElementById('l09-challenge')?frame.contentWindow:null,'real native ONT app');
+ const doc=win.document;
+ const lessonBaseline=localStorage.getItem('li.review.L09-1-2.v1');
+ const visitsBaseline=localStorage.getItem('li.private.lesson.visits.v1');
+ assert(!!doc.querySelector('#page-lessonL09')&&typeof win.navigate==='function','actual native app loaded');
+ assert(!doc.querySelector('#li-step16-l09-react-host'),'flag OFF leaves native challenge intact');
+ assert(!!win.liQuoteStageGate?.evaluate,'original quote-stage gate retained');
+ assert(!doc.querySelector('#li-typed-search-root'),'native Search fallback unchanged by default');
+
+ const fab=doc.getElementById('laoly-fab');
+ const mute=doc.getElementById('mute-toggle');if(mute)mute.checked=false;
+ fab.click();
+ const buddy=doc.getElementById('buddy-modal');
+ assert(buddy.classList.contains('open'),'Buddy opens from actual FAB');
+ assert(doc.querySelector('.app')?.inert===true,'background app inert during Buddy modal');
+ assert(doc.querySelector('.laoly-support')?.inert===true,'floating FAB inert while Buddy open');
+
+ const extra=doc.createElement('div');
+ extra.innerHTML='<a href="#qa-real-link" id="qa-real-link">Synthetic QA link</a><select id="qa-real-select"><option>test</option></select>';
+ buddy.querySelector('.dialog').append(extra);
+ const stops=win.liModalTabStops(buddy);
+ assert(stops.some(e=>e.id==='qa-real-link')&&stops.some(e=>e.id==='qa-real-select'),'all link and select tabbables participate');
+ const tab=(shift=false)=>{
+  const event=new win.KeyboardEvent('keydown',{key:'Tab',shiftKey:shift,bubbles:true,cancelable:true});
+  doc.dispatchEvent(event);return event.defaultPrevented;
+ };
+ stops[0].focus();
+ assert(tab(true)&&doc.activeElement===stops[stops.length-1],'Shift-Tab wraps first to last in actual Buddy');
+ stops[stops.length-1].focus();
+ assert(tab(false)&&doc.activeElement===stops[0],'Tab wraps last to first in actual Buddy');
+
+ const escape=()=>doc.dispatchEvent(new win.KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
+ escape();
+ assert(!buddy.classList.contains('open'),'Buddy closes through Escape');
+ assert(!doc.querySelector('.app').inert&&!doc.querySelector('.laoly-support').inert,'background inert state restored');
+ assert(doc.activeElement===fab,'Buddy opener focus restored after Escape');
+
+ win.navigate('home',{focus:false});
+ const checkin=doc.getElementById('checkin');
+ checkin.click();
+ const checkModal=doc.getElementById('checkin-modal');
+ assert(checkModal.classList.contains('open'),'Check-in opens from visible Home button');
+ assert(doc.querySelector('.app')?.inert===true,'background inert while Check-in open');
+ assert(checkModal.contains(doc.activeElement),'focus moves into actual Check-in');
+ escape();
+ assert(!checkModal.classList.contains('open'),'Check-in Escape closes modal');
+ assert(doc.activeElement===checkin,'Check-in focus returns to trigger');
+ assert(localStorage.getItem('li.review.L09-1-2.v1')===lessonBaseline,'no real learner attempt changed');
+ assert(localStorage.getItem('li.private.lesson.visits.v1')===visitsBaseline,'no real history changed by modal QA');
+ assert(!doc.querySelector('#li-step16-l09-react-host'),'research-only React does not auto-enable');
+ assert(doc.getElementById('page-search')&&!!doc.getElementById('global-search'),'native Search fallback preserved after dialog interactions');
+
+ out.textContent='LI_STEP16_L09_SHELL_PASS '+JSON.stringify({count:checks.length,checks,
+  provenance:'REAL_SAME_TREE_NATIVE_APP_SYNTHETIC_CHROMIUM_KEY_EVENTS',
+  physicalSafari:'NOT_RUN',realLearnerWrites:0});
+}catch(error){
+ out.textContent='LI_STEP16_L09_SHELL_FAIL '+JSON.stringify({count:checks.length,error:String(error?.message||error),checks});
+}
+})();
+</script></body></html>

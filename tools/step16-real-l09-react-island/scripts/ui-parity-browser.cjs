@@ -4,14 +4,16 @@
 const assert=require('node:assert/strict'),{spawn}=require('node:child_process'),fs=require('node:fs'),os=require('node:os'),path=require('node:path');
 const [bin,url]=process.argv.slice(2);
 if(!bin||!/^http:\/\/127\.0\.0\.1:8795\/tools\/step16-real-l09-react-island\/dist\/index\.html\?pilot=uxds35$/.test(url||''))throw Error('Expected local research preview URL');
-const sleep=ms=>new Promise(r=>setTimeout(r,ms)),profile=fs.mkdtempSync(path.join(os.tmpdir(),'li-02b-'));let proc,socket,seq=0;const pending=new Map();
-const until=async(fn,why)=>{for(let i=0;i<130;i++){const v=await fn();if(v)return v;await sleep(125)}throw Error('Timeout '+why)};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms)),profile=fs.mkdtempSync(path.join(os.tmpdir(),'li-02b-'));let proc,socket,seq=0,chromeStderr='';const pending=new Map();
+const until=async(fn,why,tries=130)=>{for(let i=0;i<tries;i++){const v=await fn();if(v)return v;await sleep(125)}throw Error('Timeout '+why+'; Chrome exit='+proc?.exitCode+'; signal='+proc?.signalCode+'; stderr='+chromeStderr.slice(-1200))};
 function send(method,params={}){return new Promise((resolve,reject)=>{const id=++seq,t=setTimeout(()=>{pending.delete(id);reject(Error('CDP timeout '+method))},12000);pending.set(id,m=>{clearTimeout(t);m.error||m.result?.exceptionDetails?reject(Error(JSON.stringify(m.error||m.result.exceptionDetails))):resolve(m.result)});socket.send(JSON.stringify({id,method,params}))})}
 const run=async js=>(await send('Runtime.evaluate',{expression:js,returnByValue:true,awaitPromise:true}))?.result?.value;
 async function key(k){const map={Tab:9,Enter:13,Escape:27};const code=map[k];await send('Input.dispatchKeyEvent',{type:'keyDown',key:k,code:k,windowsVirtualKeyCode:code,nativeVirtualKeyCode:code,...(k==='Enter'?{text:'\r',unmodifiedText:'\r'}:{})});await send('Input.dispatchKeyEvent',{type:'keyUp',key:k,code:k,windowsVirtualKeyCode:code,nativeVirtualKeyCode:code})}
 async function main(){
- proc=spawn(bin,['--headless=new','--no-sandbox','--disable-dev-shm-usage','--disable-background-networking','--remote-debugging-port=0','--remote-allow-origins=*','--user-data-dir='+profile,url],{stdio:'ignore'});
- const port=await until(()=>{const f=path.join(profile,'DevToolsActivePort');return fs.existsSync(f)?fs.readFileSync(f,'utf8').split('\n')[0]:null},'port');
+ proc=spawn(bin,['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--disable-background-networking','--no-first-run','--no-default-browser-check','--remote-debugging-port=0','--remote-allow-origins=*','--user-data-dir='+profile,url],{stdio:['ignore','ignore','pipe']});
+ proc.stderr.on('data',x=>{chromeStderr=(chromeStderr+String(x)).slice(-3000)});
+ proc.on('error',e=>{chromeStderr=(chromeStderr+' SPAWN '+e.message).slice(-3000)});
+ const port=await until(()=>{const f=path.join(profile,'DevToolsActivePort');return fs.existsSync(f)?fs.readFileSync(f,'utf8').split('\n')[0]:null},'port',320);
  const page=await until(async()=>{try{const j=await(await fetch('http://127.0.0.1:'+port+'/json/list')).json();return j.find(x=>x.type==='page'&&x.url.startsWith(url)&&x.webSocketDebuggerUrl)}catch{return null}},'tab');
  socket=new WebSocket(page.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{socket.addEventListener('open',resolve,{once:true});socket.addEventListener('error',reject,{once:true})});
  socket.addEventListener('message',e=>{const m=JSON.parse(String(e.data));if(m.id&&pending.has(m.id)){const f=pending.get(m.id);pending.delete(m.id);f(m)}});
@@ -52,6 +54,30 @@ async function main(){
  fs.mkdirSync('/tmp/li-uxds35-stage02b',{recursive:true});
  fs.writeFileSync('/tmp/li-uxds35-stage02b/metrics.json',JSON.stringify({n,source:'stage02b React fixture CDP',metrics,g2:'OPEN',device:'CHROMIUM_ONLY'},null,2));
  const shot=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync('/tmp/li-uxds35-stage02b/preview.png',Buffer.from(shot.data,'base64'));
+ const nativeUrl=process.env.LI_UXDS35_NATIVE_URL;
+ if(nativeUrl){
+  assert.match(nativeUrl,/^http:\/\/127\.0\.0\.1:8795\/uxds35-design-pin\/site\/component-library-review\.html$/);
+  const aliases=['--li-comp-button-primary-background','--li-comp-button-secondary-background',
+    '--li-comp-field-background','--li-comp-surface-background',
+    '--li-comp-button-focus-ring','--li-comp-app-nav-active-background',
+    '--li-comp-status-banner-background'];
+  const reactParity=await run("(()=>{const roleNames="+JSON.stringify(aliases)+",root=getComputedStyle(document.documentElement),primary=getComputedStyle(document.querySelector('[data-ui-primary]')),secondary=getComputedStyle(document.querySelector('[data-ui-secondary]')),field=getComputedStyle(document.querySelector('[data-ui-field]'));return {roles:Object.fromEntries(roleNames.map(n=>[n,root.getPropertyValue(n).trim()])),paint:{primary:primary.backgroundColor,secondary:secondary.backgroundColor,field:field.backgroundColor}}})()");
+  check(Object.values(reactParity.roles).every(x=>!!x),'React mounted page missing pinned DS component role definitions (would hide fallback-only usage)');
+  await send('Page.navigate',{url:nativeUrl});
+  await until(()=>run("document.readyState==='complete'&&!!document.querySelector('#ds-query')"),'real DS review native source page');
+  const nativeParity=await run("(()=>{const roleNames="+JSON.stringify(aliases)+",root=getComputedStyle(document.documentElement),primary=getComputedStyle(document.querySelector('.ds-button')),secondary=getComputedStyle(document.querySelector('.ds-button.secondary')),field=getComputedStyle(document.querySelector('#ds-query'));return {roles:Object.fromEntries(roleNames.map(n=>[n,root.getPropertyValue(n).trim()])),paint:{primary:primary.backgroundColor,secondary:secondary.backgroundColor,field:field.backgroundColor}}})()");
+  check(aliases.every(n=>reactParity.roles[n]?.toLowerCase()===nativeParity.roles[n]?.toLowerCase()),'React↔native DS computed semantic alias drift: '+JSON.stringify({react:reactParity.roles,native:nativeParity.roles}));
+  check(reactParity.paint.primary===nativeParity.paint.primary,'React primary Button differs from native review specimen: '+JSON.stringify({react:reactParity.paint,native:nativeParity.paint}));
+  const comparison={source:'native DS #134 component-review specimen vs React #148 mounted fixture; NOT full application per-screen parity',
+    react:reactParity,native:nativeParity,roleValuesIdentical:true,buttonPrimaryPaintIdentical:true,
+    secondaryReviewSpecimenPaintIdentical:reactParity.paint.secondary===nativeParity.paint.secondary,
+    fieldReviewSpecimenPaintIdentical:reactParity.paint.field===nativeParity.paint.field,
+    note:'A review specimen is not the app native .action/.field owner; paint differences are recorded, not silently treated as bugs or approved variants'};
+  fs.writeFileSync('/tmp/li-uxds35-stage02b/react-vs-native-review-computed.json',JSON.stringify(comparison,null,2));
+  const nativeShot=await send('Page.captureScreenshot',{format:'png'});
+  fs.writeFileSync('/tmp/li-uxds35-stage02b/native-review.png',Buffer.from(nativeShot.data,'base64'));
+  fs.writeFileSync('/tmp/li-uxds35-stage02b/metrics.json',JSON.stringify({n,source:'stage02b pinned React+DS CI Chromium',metrics,comparison,g2:'OPEN',device:'CHROMIUM_ONLY'},null,2));
+ }
  console.log('PASS UXDS35_STAGE02B_REAL_CHROMIUM '+JSON.stringify({checks:n,viewport:metrics.map(x=>x.w),privacy:'NO_WRITES',g2:'OPEN'}));
 }
 main().catch(e=>{console.error('FAIL UXDS35_STAGE02B '+e.stack);process.exitCode=1}).finally(async()=>{try{socket?.close()}catch{}proc?.kill('SIGKILL');await sleep(200);await fs.promises.rm(profile,{recursive:true,force:true}).catch(()=>{})});

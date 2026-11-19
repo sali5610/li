@@ -48,8 +48,14 @@ async function jsonBody(req){
  if(!plainObject(x))fail('INVALID_JSON');return x;
 }
 /** Local-only HTTP endpoint fixture. jwtCheck uses a TEST HMAC key, NOT Neon JWKS. */
-export function makePilot({secret,issuer='li-test-auth',audience='li-test-content',invited,learner,teacherKey,now=()=>Math.floor(Date.now()/1000)}){
- if(typeof secret!=='string'||secret.length<32||!(invited instanceof Set)||!plainObject(teacherKey))fail('BAD_LOCAL_SETUP');
+export function makePilot({secret,issuer='li-test-auth',audience='li-test-content',invited,learner,teacherKey,now=()=>Math.floor(Date.now()/1000),verifyPrincipal=null}){
+ // This opt-in accepts ONLY a server-owned verifier returning a signed principal.
+ // It never downgrades to HS256 after an external verification failure.
+ const external=typeof verifyPrincipal==='function';
+ if((!external && (typeof secret!=='string'||secret.length<32))||
+   (external && secret!==undefined)||
+   (verifyPrincipal!==null && !external)||
+   !(invited instanceof Set)||!plainObject(teacherKey))fail('BAD_LOCAL_SETUP');
  const publicLesson=compileLearner(learner);
  if(!exactKeys(teacherKey,['lessonId','version','keyVersion','expected'])||teacherKey.lessonId!==publicLesson.lessonId||teacherKey.version!==publicLesson.version||!safeString(teacherKey.expected,200))fail('BAD_TEACHER_KEY');
  const attempts=new Map();
@@ -57,7 +63,17 @@ export function makePilot({secret,issuer='li-test-auth',audience='li-test-conten
   try{
    const path=new URL(req.url||'/', 'http://localhost').pathname;
    const authorization=req.headers.authorization||'';
-   const principal=authorization.startsWith('Bearer ')?jwtCheck(authorization.slice(7),{secret,issuer,audience,now}):null;
+   let principal=null;
+   if(authorization.startsWith('Bearer ')){
+    const bearer=authorization.slice(7);
+    if(external){
+     try{
+      const checked=await verifyPrincipal(bearer);
+      if(checked && typeof checked.sub==='string'&&checked.sub.length>0&&checked.sub.length<=200)
+       principal={sub:checked.sub};
+     }catch{principal=null;} // fail closed, never fall back to a test secret.
+    }else principal=jwtCheck(bearer,{secret,issuer,audience,now});
+   }
    if(!principal)return responder(res,401,{code:'AUTH_REQUIRED'});
    if(!invited.has(principal.sub))return responder(res,403,{code:'INVITE_REQUIRED'});
    if(req.method==='GET'&&/^\/api\/lessons\/[^/]+\/(vi|en)$/.test(path)){

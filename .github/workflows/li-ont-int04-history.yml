@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'site/index.html'
+      - 'site/assets/catalog-drilldown.js'
       - 'tools/ontint04-history-browser.html'
       - 'tools/ontint04-top-level-cdp.cjs'
       - 'tools/check_ontint04_history.mjs'

@@ -359,6 +359,11 @@ document.addEventListener("click",e=>{
 },true);
 window.addEventListener("popstate",()=>{
  const u=new URL(location.href),route=u.searchParams.get("lesson");
+ // ONT-INT-04: dual localhost Search/L09 pilot has its own history owner.
+ // Without this guard, the legacy catalog fallback navigates to Home on Search Forward.
+ // Public/unflagged navigation and ordinary catalog/lesson routes remain untouched.
+ if(window.liDualLocalHistoryAllowed?.()&&
+    ["home","search","lessonL09"].includes(u.searchParams.get("li-local-page")))return;
  const found=[["L03-1-2","lessonL03"],["L09-1-2","lessonL09"],["L15-2-2","lessonL15"]].find(p=>p[0]===route);
  if(found){window.navigate?.(found[1],{remember:false,syncUrl:false});document.getElementById("page-"+found[1])?._catalogChooseChapter?.(u.searchParams.get("chapter"),false);}
  else if(u.searchParams.has("catalog")){

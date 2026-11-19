@@ -46,6 +46,16 @@ assert.ok(routes.indexOf('if(pilot&&LI_DUAL_PILOT_PAGES.has(id))')<
  routes.indexOf('window.history.pushState(state,"",target)'),'pushState must be behind local-only flag');
 assert.ok(html.includes('const LI_LESSON_ROUTES={lessonL09:"L09-1-2"'),'original native lesson route table changed');
 assert.ok(!html.includes('localStorage.setItem("li-local-page"'),'browser route not persisted to learner storage');
+const catalog=get('site/assets/catalog-drilldown.js');
+const cStart=catalog.indexOf('window.addEventListener("popstate",()=>{');
+const cEnd=catalog.indexOf('path=(new URL(location.href)',cStart);
+assert.ok(cStart>=0&&cEnd>cStart,'catalog history handler missing');
+const catalogHistory=catalog.slice(cStart,cEnd);
+assert.ok(catalogHistory.includes('window.liDualLocalHistoryAllowed?.()')&&
+ catalogHistory.includes('["home","search","lessonL09"].includes(u.searchParams.get("li-local-page"))'),
+ 'legacy catalog must skip only route-owned localhost pilot entries');
+assert.ok(catalogHistory.indexOf('window.liDualLocalHistoryAllowed?.()')<catalogHistory.indexOf('if(found)'),
+ 'legacy catalog popstate guard must precede published lesson/home fallback');
 const fixture=get('tools/ontint04-history-browser.html');
 for(const needle of ['current().history.back()','current().history.forward()','current().location.reload()',
  'localStorage.getItem(realKey)===realBefore','LI_STEP16_L09_SHELL_PASS'])

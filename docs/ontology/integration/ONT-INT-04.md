@@ -10,6 +10,10 @@ The native `syncLiRoute` originally always used `history.replaceState`, with no 
 
 **Everything else keeps original native `replaceState` semantics**; publication routes are still NOT authorized and source display still labels content editorial-locked.
 
+## Root cause confirmed by two real Chromium contexts
+
+Top-level CDP and nested iframe both reproduced Forward URL/history-state = Search while the active page became Home (not Search). Independent legacy `site/assets/catalog-drilldown.js` had a second `popstate` owner; without a `lesson` or `catalog` query it unconditionally called `navigate('home',{syncUrl:false})` after the ONT-INT-04 Search restore. The bug was competing route owners, not missing URL data or a React root. A strict extra guard skips only the owned `li-local-page=home|search|lessonL09` entries under the exact localhost dual-island permission predicate; all public/unflagged catalog behavior is unchanged. Regression sources and top-level CDP browser exercise both owners. This is a source-confirmed cause and candidate fix pending exact-head CI, not yet a PASS assertion.
+
 ## Acceptance matrix
 
 - [ ] Mounted actual Chromium dual candidates start from an explicit L09 URL, seed one local history entry, preserve real learner/visit keys.

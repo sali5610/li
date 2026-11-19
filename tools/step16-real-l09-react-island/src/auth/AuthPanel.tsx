@@ -3,6 +3,7 @@ import {checkInviteAccess,safeInviteErrorCode} from '../sync/invite-access.js';
 import {authClient,neonSessionPort} from './neon-client.js';
 import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING} from './config.js';
 import {classifyOAuthReturn,type OAuthReturnCode} from './oauth-return.js';
+import {RlsQaPanel} from './RlsQaPanel.js';
 
 type Locale='vi'|'en';
 type Access='checking'|'granted'|'denied'|'error';
@@ -169,6 +170,8 @@ export function AuthPanel(){
     {oauthReturn.kind==='oauth-error'?<>{t.oauthFailed} <strong>{oauthReturn.code}</strong>. {oauthMessage(oauthReturn.code)}</>:t.oauthSession}
    </p>}
    {feedback&&<p className="auth-error" role="alert">{feedback}</p>}
+   {IS_GITHUB_STAGING&&accountId&&(access==='granted'||access==='denied')&&
+    <RlsQaPanel uid={accountId} granted={access==='granted'}/>}
    <p className="auth-local" role="status">{t.local}</p>
    <p className="auth-privacy">{t.privacy}</p>
   </section>

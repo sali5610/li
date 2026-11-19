@@ -1,0 +1,68 @@
+name: li. ONT-INT-03 dual Search + L09 React localhost E2E (PR only)
+on:
+  pull_request:
+    paths:
+      - 'tools/ontint03-browser-fixture.html'
+      - 'tools/check_ontint03_source.mjs'
+      - 'docs/ontology/integration/ONT-INT-03.md'
+      - '.github/workflows/li-ont-int03-dual-islands.yml'
+permissions:
+  contents: read
+jobs:
+  dual-localhost-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify native source, both local-only flags and exact ontology knowledge contract
+        run: |
+          set -euo pipefail
+          node tools/check_ontint03_source.mjs
+          node tools/check_ont_native_entrypoint.mjs
+          node tools/validate_ontology.mjs --check
+          node tools/test_offline_typed_search.mjs
+          node tools/ont04b-react-search-island/scripts/check-style-scope.mjs
+      - name: Build Search React research bundle separately (never publish)
+        working-directory: tools/ont04b-react-search-island
+        run: |
+          set -euo pipefail
+          npm install --ignore-scripts --no-audit --no-fund --no-package-lock
+          npm run build:site-candidate
+          npm run test:ci
+      - name: Build L09 React research bundle in SAME unmerged checkout
+        working-directory: tools/step16-real-l09-react-island
+        run: |
+          set -euo pipefail
+          npm install --ignore-scripts --no-audit --no-fund --no-package-lock
+          npm run build:site-island
+          npm run check:source
+      - name: Both actual React islands in ONE native app; round-trip state/route Chrome QA
+        run: |
+          set -euo pipefail
+          test -s site/assets/ont04b-search-site-island.js
+          test -s site/assets/ont04b-search-site-island.css
+          test -s site/assets/step16-l09-island.js
+          test -s site/assets/step16-l09-island.css
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)"
+          python3 -m http.server 8794 --bind 127.0.0.1 --directory . >/tmp/li-ont-int03-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
+            "http://127.0.0.1:8794/tools/ontint03-browser-fixture.html" \
+            "LI_STEP16_L09_SHELL_PASS " 23 110000
+          mv site/assets/ont04b-search-site-island.css /tmp/li-ont-int03-search-candidate.css
+          node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
+            "http://127.0.0.1:8794/tools/ontint03-browser-fixture.html?scenario=search-fallback" \
+            "LI_STEP16_L09_SHELL_PASS " 10 110000
+          mv /tmp/li-ont-int03-search-candidate.css site/assets/ont04b-search-site-island.css
+      - name: Ensure both candidate build outputs were NOT committed or deployed
+        run: |
+          set -euo pipefail
+          test -z "$(git ls-files site/assets/ont04b-search-site-island.js site/assets/ont04b-search-site-island.css)"
+          test -z "$(git ls-files site/assets/step16-l09-island.js site/assets/step16-l09-island.css)"
+          test -z "$(git ls-files db/migrations/0002_invite_only_access.sql)"
+          test -z "$(git status --short --untracked-files=no)"

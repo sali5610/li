@@ -1,0 +1,123 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>ONT-INT-03 · both React islands in one real native app</title></head><body>
+<pre id="result">LI_STEP16_L09_SHELL_PENDING</pre>
+<script>
+(async()=>{
+'use strict';
+const out=document.getElementById('result'),checks=[];
+const fallback=new URLSearchParams(location.search).get('scenario')==='search-fallback';
+const assert=(condition,label)=>{if(!condition)throw Error(label);checks.push(label);};
+const sleep=n=>new Promise(resolve=>setTimeout(resolve,n));
+const until=async(fn,label,timeout=22000)=>{
+ const started=Date.now();
+ while(Date.now()-started<timeout){try{const x=fn();if(x)return x;}catch{}await sleep(85);}
+ throw Error('TIMEOUT '+label);
+};
+const query='?lesson=L09-1-2&li-react=l09-native-fixture&li-search-react=typed-v1';
+let frame;
+try{
+ const nativeKey='li.review.L09-1-2.v1',sharedKey='step16.l09.shared-native-fixture.v1',
+       visits='li.private.lesson.visits.v1';
+ const originalNative=localStorage.getItem(nativeKey);
+ const originalVisits=localStorage.getItem(visits);
+ frame=document.createElement('iframe');
+ frame.style.cssText='display:block;border:0;width:390px;height:820px';
+ frame.title='Actual native li. research app';
+ frame.src='../site/index.html'+query;
+ document.body.append(frame);
+ const doc=await until(()=>frame.contentDocument?.readyState==='complete'&&
+   frame.contentDocument.getElementById('page-search')&&
+   frame.contentDocument.getElementById('page-lessonL09')?frame.contentDocument:null,'native page shell');
+ const win=frame.contentWindow,lesson=doc.getElementById('page-lessonL09'),
+   searchPage=doc.getElementById('page-search');
+ await until(()=>lesson.dataset.liRuntime==='react-candidate','L09 native+React mounted');
+ const react=doc.getElementById('li-step16-l09-react-host');
+ if(fallback){
+  await until(()=>!doc.getElementById('li-typed-search-root')&&
+   !!doc.getElementById('global-search'),'missing Search CSS restores native fallback');
+  assert(lesson.dataset.liRuntime==='react-candidate','L09 still mounts when Search CSS bundle missing');
+  assert(react&&react.querySelector('.pilot [data-answer="0"]'),'actual L09 React input remains present');
+  assert(!doc.getElementById('li-typed-search-root'),'failed Search host removed after CSS error');
+  assert(!doc.getElementById('li-search-shell'),'failed Search shell ID reverted');
+  assert(!doc.getElementById('global-search').hidden,'native Search fallback unhidden');
+  win.navigate('search',{focus:false});
+  assert(searchPage.classList.contains('active'),'native Search route still reachable');
+  assert(!doc.getElementById('global-results').hidden,'native Search results remain reachable');
+  win.navigate('lessonL09',{focus:false});
+  assert(lesson.classList.contains('active')&&react.isConnected,'L09 React survives failed Search island and route round-trip');
+  assert(localStorage.getItem(nativeKey)===originalNative,'missing Search bundle never overwrites genuine learner attempt');
+  assert(localStorage.getItem(visits)===originalVisits,'missing Search bundle does not create real L09 history');
+ }else{
+  const host=await until(()=>doc.querySelector('#li-typed-search-root[data-li-search-mount="active"]')&&
+   doc.querySelector('#li-typed-search-root [data-li-search-island]')?
+   doc.getElementById('li-typed-search-root'):null,'React Search candidate mount');
+  assert(!!win.liQuoteStageGate?.evaluate,'ONT quote stage gate exists in dual-island app');
+  assert(host.isConnected&&react.isConnected,'both React roots coexist in one native document');
+  assert(doc.querySelectorAll('#li-typed-search-root').length===1&&
+   doc.querySelectorAll('#li-step16-l09-react-host').length===1,'each React island mounts exactly once');
+  assert(doc.getElementById('global-search').hidden,'native Search writer hidden only after successful mount');
+  assert(!searchPage.querySelector('.utility-back').hidden,'native Search Back control still visible');
+  assert(doc.getElementById('l09-challenge').hidden&&doc.getElementById('l09-challenge').inert&&
+    doc.getElementById('l09-rubric').hidden&&doc.getElementById('l09-rubric').inert,
+    'native L09 challenge and rubric inert after React ownership');
+  assert(!doc.getElementById('l09-concept').hidden&&!doc.getElementById('l09-guided').hidden&&
+   !doc.getElementById('l09-sources').hidden,'native L09 pedagogy and sources retained');
+  assert(localStorage.getItem(nativeKey)===originalNative,'dual mount never rewrites real learner attempt');
+  assert(localStorage.getItem(visits)===originalVisits,'dual mount never records a real experiment visit');
+  win.navigate('search',{focus:false});
+  assert(searchPage.classList.contains('active')&&!lesson.classList.contains('active'),
+   'native router switches lesson to Search without hijack');
+  const box=host.querySelector('input[type="search"]'),form=host.querySelector('form[role="search"]');
+  assert(!!box&&!!form,'React Search form interactive in actual native route');
+  const set=Object.getOwnPropertyDescriptor(win.HTMLInputElement.prototype,'value')?.set;
+  if(!set)throw Error('native search input setter missing');
+  set.call(box,'L09-1-2');box.dispatchEvent(new win.Event('input',{bubbles:true}));
+  await until(()=>!form.querySelector('button[type="submit"]').disabled,'React controlled Search input');
+  form.dispatchEvent(new win.Event('submit',{bubbles:true,cancelable:true}));
+  await until(()=>host.querySelector('[data-result-id="lesson:L09-1-2"]'),'exact ontology lesson result');
+  assert(!!host.querySelector('[data-result-id="lesson:L09-1-2"]'),'typed Search finds canonical L09 ID');
+  assert(!host.querySelector('a[href*="?lesson="]')&&!host.querySelector('button[data-page="lessonL09"]'),
+   'Search does not publish unauthorized lesson deep links');
+  assert(host.textContent.includes('khóa biên tập'),'source lesson editorial lock remains visible');
+  assert(localStorage.getItem(nativeKey)===originalNative,'Search query cannot write real L09 attempt');
+  assert(localStorage.getItem(visits)===originalVisits,'Search query cannot write real visit history');
+  const resultId=host.querySelector('[data-result-id="lesson:L09-1-2"]').getAttribute('data-result-id');
+  win.navigate('lessonL09',{focus:false});
+  assert(lesson.classList.contains('active')&&!searchPage.classList.contains('active'),
+    'native router returns to L09 after Search');
+  assert(react.isConnected&&lesson.dataset.liRuntime==='react-candidate',
+    'React L09 ownership survives Search round-trip');
+  assert(!!react.querySelector('.pilot [data-answer="0"]'),'L09 input remains mounted and accessible');
+  const answer=react.querySelector('.pilot [data-answer="0"]');
+  const setText=Object.getOwnPropertyDescriptor(win.HTMLTextAreaElement.prototype,'value')?.set;
+  if(!setText)throw Error('native textarea setter missing');
+  setText.call(answer,'ONT-INT-03 synthetic answer checking biased sample inclusion.');
+  answer.dispatchEvent(new win.Event('input',{bubbles:true}));
+  await until(()=>JSON.parse(localStorage.getItem(sharedKey)||'null')?.draft?.[0]?.includes('ONT-INT-03'),
+    'synthetic React L09 draft persisted after Search route');
+  assert(localStorage.getItem(nativeKey)===originalNative,
+    'synthetic L09 React draft cannot overwrite real learner record');
+  win.navigate('search',{focus:false});
+  assert(host.isConnected&&host.querySelector('[data-result-id="'+resultId+'"]'),
+    'Search React query state persists after visiting L09');
+  win.navigate('lessonL09',{focus:false});
+  assert(react.querySelector('.pilot [data-answer="0"]').value.includes('ONT-INT-03'),
+    'L09 React draft persists after second round-trip');
+  assert(localStorage.getItem(visits)===originalVisits,
+    'both islands preserve production visit history throughout');
+ }
+ out.textContent='LI_STEP16_L09_SHELL_PASS '+JSON.stringify({
+  count:checks.length,checks,mode:fallback?'MISSING_SEARCH_CSS_NATIVE_FALLBACK':'BOTH_MOUNTED',
+  evidence:'ACTUAL_SAME_TREE_CHROMIUM_SYNTHETIC_RESEARCH_ONLY',
+  physicalSafari:'NOT_RUN',privateNeonWrites:0,cloudflareDeploy:'NONE'
+ });
+}catch(error){
+ out.textContent='LI_STEP16_L09_SHELL_FAIL '+JSON.stringify({
+  count:checks.length,error:String(error?.message||error),checks,mode:fallback?'FALLBACK':'DUAL'
+ });
+}finally{
+ // No localStorage.clear() because it would destroy unrelated user-owned state
+ // in a non-test environment. The CI runner uses an isolated Chromium profile.
+}
+})();
+</script></body></html>

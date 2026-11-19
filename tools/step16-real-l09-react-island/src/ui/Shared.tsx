@@ -36,8 +36,13 @@ export function TextAreaField({label,hint,error,purpose,id,className='', 'aria-d
    {error&&<span id={errorId} className="li-ui-field-error" role="alert">{error}</span>}
  </div>;
 }
-export function Card({tone='default',className='',children,...rest}:HTMLAttributes<HTMLElement>&{tone?:'default'|'tinted'|'inverse';children:ReactNode}){
- return <section {...rest} className={cx('pilot-surface','li-ui-card',tone!=='default'&&'li-ui-card-'+tone,className)}>{children}</section>;
+/** Surface tone and elevation are separate design roles. */
+export function Card({tone='default',elevation='raised',className='',children,...rest}:HTMLAttributes<HTMLElement>&{
+ tone?:'default'|'tinted'|'inverse';elevation?:'raised'|'flat';children:ReactNode;
+}){
+ return <section {...rest} data-card-elevation={elevation}
+  className={cx('pilot-surface','li-ui-card',tone!=='default'&&'li-ui-card-'+tone,
+   elevation==='flat'&&'li-ui-card-flat',className)}>{children}</section>;
 }
 export function ActionGroup({className='',children,...rest}:HTMLAttributes<HTMLDivElement>&{children:ReactNode}){
  return <div {...rest} className={cx('li-ui-action-group',className)}>{children}</div>;

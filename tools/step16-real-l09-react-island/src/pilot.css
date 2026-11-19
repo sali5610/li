@@ -11,6 +11,10 @@
 .pilot p{line-height:1.5}
 .pilot-surface{background:var(--li-comp-surface-background,var(--cream));border:1px solid var(--rule);padding:var(--li-space-4);border-radius:0}
 .pilot-caution,.pilot-note,.pilot-foot{color:var(--muted);font-size:var(--li-font-size-sm,14px)}
+/* Resume stays a lightweight utility row, not a raised card or a new visual identity. */
+.pilot-resume{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--li-space-3)}
+.pilot-resume .pilot-note{flex:1 1 240px;margin:0}
+.pilot #rubric-title:focus{outline:3px solid var(--li-color-general-focus-ring,var(--moss));outline-offset:var(--li-space-1)}
 .pilot-statement{background:var(--paper-2);border-inline-start:3px solid var(--olive);padding:var(--li-space-3) var(--li-space-4)}
 .pilot-question{display:grid;gap:var(--li-space-2);margin:var(--li-space-4) 0}
 .pilot-question label{font-weight:600;line-height:1.5}

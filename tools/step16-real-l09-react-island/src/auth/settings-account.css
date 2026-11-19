@@ -1,0 +1,29 @@
+/* Step16.2 / Settings account island. Scope is strictly the Settings host.
+   Native global UI, exported data controls and study-rhythm cards remain owner. */
+#li-step16-settings-react-host{min-width:0}
+.li-settings-auth{display:grid;gap:var(--li-space-3);min-width:0;max-width:100%;
+ color:var(--ink);font:inherit;overflow-wrap:anywhere}
+.li-settings-auth .auth-header{display:flex;justify-content:space-between;align-items:start;
+ flex-wrap:wrap;gap:var(--li-space-4)}
+.li-settings-auth .auth-tag{font-size:var(--li-type-support,14px);color:var(--muted);margin:0}
+.li-settings-auth h3{font-family:var(--li-font-editorial,Georgia,serif);
+ font-size:var(--li-type-title-lg,28px);line-height:var(--li-leading-title-lg,36px);
+ color:var(--moss);margin:var(--li-space-2) 0}
+.li-settings-auth .auth-card{display:grid;gap:var(--li-space-3);background:transparent;
+ border:0;box-shadow:none;padding:0}
+.li-settings-auth .auth-card p{margin:0;overflow-wrap:anywhere}
+.li-settings-auth .auth-account,.li-settings-auth .auth-sign-in{display:grid;gap:var(--li-space-3)}
+.li-settings-auth button{min-width:48px;min-height:48px;border:1px solid var(--moss);
+ border-radius:0;background:var(--moss);color:var(--cream);padding:var(--li-space-3) var(--li-space-4);
+ font:inherit;cursor:pointer}
+.li-settings-auth .auth-lang{display:flex;gap:var(--li-space-1)}
+.li-settings-auth .auth-lang button{background:var(--paper);color:var(--moss)}
+.li-settings-auth .auth-lang button[aria-pressed="true"]{background:var(--moss);color:var(--cream)}
+.li-settings-auth button:focus-visible{outline:3px solid var(--li-color-input-focus-ring,var(--moss));outline-offset:4px}
+.li-settings-auth button:disabled{opacity:.65;cursor:not-allowed}
+.li-settings-auth .auth-local{font-weight:600;background:var(--paper-2);
+ border-inline-start:3px solid var(--moss);padding:var(--li-space-3)}
+.li-settings-auth .auth-privacy{font-size:var(--li-type-support,14px);
+ line-height:var(--li-leading-support,20px);color:var(--muted)}
+.li-settings-auth .auth-error{color:var(--li-color-danger-fill,var(--moss));font-weight:600}
+@media(prefers-reduced-motion:reduce){.li-settings-auth *{transition:none!important;animation:none!important}}

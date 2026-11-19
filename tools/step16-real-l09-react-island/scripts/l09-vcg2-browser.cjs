@@ -61,6 +61,7 @@ function capture(){
   dataStorageKey:root?.getAttribute('data-storage-key'),lang:root?.lang,
   buttons:{primary:style(primary),secondary:style(secondary)},
   cards:cards.map(style),cardShared:cards.map(x=>x.classList.contains('li-ui-card')),
+  cardFlat:cards.map(x=>x.classList.contains('li-ui-card-flat')&&x.dataset.cardElevation==='flat'),
   answerCount:answers.length,answerShared:answers.map(x=>x.closest('.li-ui-field')!==null),
   answerLabels:answers.map(x=>x.labels?.length),answerPurposes:answers.map(x=>x.getAttribute('data-field-purpose')),
   answerStyles:answers.map(style),
@@ -86,8 +87,12 @@ const variants=[
  // Canonical iPad :root tokens intentionally scale semantic body from 16/24 to 18/28.
  // Preserve that responsive role; D1 is a body-label contract, not a fixed pixel lock.
  {width:820,height:1050,pad:28,min:56,body:[18,28]},
+ {width:820,height:700,pad:28,min:56,body:[18,28]},
  {width:1040,height:768,pad:32,min:56,body:[18,28]},
- {width:1440,height:900,pad:32,min:56}
+ {width:1408,height:900,pad:32,min:56,body:[18,28]},
+ {width:1200,height:1500,pad:24,min:48},
+ // Desktop must NOT accidentally inherit wide iPad density.
+ {width:1440,height:900,pad:24,min:48}
 ];
 async function main(){
  proc=spawn(bin,['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage',
@@ -119,6 +124,8 @@ async function main(){
   if([390,820,1040].includes(v.width))await screenshot('vc-g2-opt-in-'+v.width);
   verify(b.active==='approved-research'&&b.hasSharedButton&&!b.hasLegacyButton,'D1 shared Button owner incorrect '+v.width);
   verify(b.cards.length===2&&b.cardShared.every(Boolean),'D2 shared Card owner incorrect '+v.width);
+  verify(b.cardFlat.length===2&&b.cardFlat.every(Boolean),
+    'D2 requires two explicit secondary flat study cards '+v.width);
   verify(b.answerCount===4&&b.answerShared.every(Boolean)&&b.answerLabels.every(x=>x===1)&&
     b.answerPurposes.every(x=>x==='answer'),'D3 TextAreaField label/purpose mismatch '+v.width);
   verify(b.buttons.primary?.height>=v.min&&b.buttons.secondary?.height>=v.min,'D1 hit target smaller than '+v.min+'px at '+v.width);
@@ -130,9 +137,21 @@ async function main(){
   verify(b.buttons.primary.borderRadius==='0px'&&/4px 4px 0px/.test(b.buttons.primary.shadow)&&
     /4px 4px 0px/.test(b.buttons.secondary.shadow),'D1 square/hard-shadow drift '+v.width+' '+b.buttons.primary.shadow);
   verify(b.cards.every(c=>c.padding.split(' ').every(x=>parseFloat(x)===v.pad)),'D2 card padding wrong at '+v.width+' '+JSON.stringify(b.cards.map(x=>x.padding)));
-  verify(b.cards.every(c=>c.borderRadius==='0px'&&/5px 5px 0px/.test(c.shadow)),'D2 hard shadow drift '+v.width+' '+JSON.stringify(b.cards));
+  verify(b.cards.every((c,i)=>c.borderRadius==='0px'&&c.shadow==='none'&&
+    c.shadow===a.cards[i]?.shadow),'D2 study panels must retain legacy FLAT/no-shadow '+v.width+
+    ' '+JSON.stringify({legacy:a.cards,shared:b.cards}));
+  // Independent raised variant must still use D2 hard depth. A clone is only a
+  // temporary DOM style probe, never part of lesson content or persisted state.
+  const raised=await evaluate("(()=>{const p=document.querySelector('.pilot[data-vc-g2=approved-research]'),"+
+    "e=p?.querySelector('section.li-ui-card');if(!e)return null;const clone=e.cloneNode(false);"+
+    "clone.classList.remove('li-ui-card-flat');clone.dataset.cardElevation='raised';"+
+    "clone.style.display='none';p.appendChild(clone);clone.style.display='block';"+
+    "const s=getComputedStyle(clone),v={shadow:s.boxShadow,radius:s.borderRadius};clone.remove();return v})()");
+  verify(raised?.radius==='0px'&&/5px 5px 0px/.test(raised.shadow),
+    'D2 raised card exception lost after flat study mapping '+v.width+' '+JSON.stringify(raised));
   verify(b.answerStyles.every(x=>x.height>=112&&parseFloat(x.minHeight)>=112&&x.fontSize===bodyPx+'px'&&x.lineHeight===a.answerStyles[0].lineHeight&&x.bg===a.answerStyles[0].bg),'D3 named answer min-height/semantic paint/legacy multiline rhythm drift '+v.width+': '+JSON.stringify({shared:b.answerStyles,legacy:a.answerStyles}));
-  verify(b.buttons.primary.bg===a.buttons.primary.bg&&b.buttons.secondary.bg===a.buttons.secondary.bg&&b.cards[0].bg===a.cards[0].bg,'Canonical semantic background drift '+v.width);
+  verify(b.buttons.primary.bg===a.buttons.primary.bg&&b.buttons.secondary.bg===a.buttons.secondary.bg&&
+    b.cards.every((c,i)=>c.bg===a.cards[i]?.bg),'Canonical semantic background drift '+v.width);
   verify(b.viewport===v.width&&b.scrollWidth<=v.width+1&&a.scrollWidth<=v.width+1,'Horizontal overflow '+v.width);
   verify(b.nativeChallengeHidden&&b.runtime==='react-candidate'&&b.realKey===null&&b.dataStorageKey===researchKey,
    'React island exposed native challenge or touched real key '+v.width);
@@ -232,12 +251,12 @@ async function syntheticTypographyStress(language){
       x.baselineFocus.borderColor===semanticFocusColor&&
       x.focusPaint.borderColor===semanticFocusColor&&x.outlineWidth===0,
      'Text scale lost the actual 3px focus BORDER or learner key isolation '+context+' '+JSON.stringify(x));
-   // Real keyboard traversal: Shift+Tab leaves first answer for preceding
-   // locale button; Tab returns focus to the first answer. Programmatic focus
-   // alone is not an adequate keyboard proof.
+   // The scoped Resume button is now the immediately preceding keyboard
+   // stop before the first answer. Verify the real Shift+Tab/Tab order and
+   // restored visible focus rather than incorrectly assuming locale is adjacent.
    await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Tab',code:'Tab',windowsVirtualKeyCode:9,modifiers:8});
    await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Tab',code:'Tab',windowsVirtualKeyCode:9,modifiers:8});
-   const back=await evaluate("document.activeElement?.getAttribute('data-locale')==='en'");
+   const back=await evaluate("document.activeElement?.getAttribute('data-action')==='resume'");
    await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
    await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
    const forward=await evaluate("(()=>{const e=document.querySelector('textarea[data-answer=\"0\"]');const c=e&&getComputedStyle(e);return {target:document.activeElement===e,focusVisible:e?.matches(':focus-visible'),border:c?.borderTopWidth,color:c?.borderTopColor}})()");
@@ -251,10 +270,20 @@ async function syntheticTypographyStress(language){
   }
  }
 
- // Synthetic learner-flow assertions in the opt-in research route (no Neon / real key).
+ // One real native Home CTA → React L09 entry, no private learner writes.
  await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false});
+ await send('Page.navigate',{url:origin+'/site/index.html?li-react=l09&li-vc-g2=1'});
+ await wait(()=>evaluate("document.querySelector('#page-home.active')&&document.querySelector('#mirror-primary-action[data-li-preview=local-only]')"),'local preview Home CTA');
+ verify(await evaluate("document.querySelector('#mirror-primary-label')?.textContent.includes('L09')&&localStorage.getItem('li.review.L09-1-2.v1')===null"),
+   'Preview Home lacks L09 entry or touches the genuine learner key');
+ await evaluate("document.querySelector('#mirror-primary-action').click()");
+ await wait(()=>evaluate("document.querySelector('#page-lessonL09.active')?.dataset.liRuntime==='react-candidate'&&!!document.querySelector('#li-step16-l09-react-host .pilot[data-lesson-id=\"L09-1-2\"]')"),'Home→L09 React journey');
+ verify(await evaluate("localStorage.getItem('li.review.L09-1-2.v1')===null"),'Preview Home navigation modified real learner data');
+ // Synthetic learner-flow assertions in the opt-in research route (no Neon / real key).
  await go(approved,'synthetic learner state');
  const base=await snapshot();verify(base.researchKey===null&&base.realKey===null,'Synthetic profile not initially empty');
+ verify((await evaluate("document.querySelector('[data-learning-progress]')?.textContent||''")).includes('0/4'),
+  'Empty L09 progress must show 0/4 answers, not a completed score');
  await evaluate("document.querySelector('[data-action=submit]').click()");
  await wait(()=>evaluate("!!document.querySelector('[data-status]')?.textContent.trim()"),'blank-submit error');
  verify((await snapshot()).researchKey===null,'Invalid submit fabricated save');
@@ -264,6 +293,14 @@ async function syntheticTypographyStress(language){
   await wait(()=>evaluate("JSON.parse(localStorage.getItem('step16.l09.react-island.v1')||'null')?.draft?.["+i+"]?.startsWith('Synthetic research answer')"),'synthetic L09 draft '+i);
  }
  verify((await snapshot()).realKey===null,'Real learner state changed on synthetic editing');
+ await evaluate("window.navigate('home')");
+ verify(await evaluate("document.querySelector('#page-home.active')&&document.querySelector('#mirror-primary-label')?.textContent.includes('4/4')"),
+   'Home does not reflect four saved answers when returning from L09');
+ await evaluate("document.querySelector('#mirror-primary-action').click()");
+ await wait(()=>evaluate("document.querySelector('#page-lessonL09.active')?.dataset.liRuntime==='react-candidate'"),'Home resume to React');
+ verify((await snapshot()).answerShared.every(Boolean),'Home→resume lost locally saved L09 answers');
+ verify((await evaluate("document.querySelector('[data-learning-progress]')?.textContent||''")).includes('4/4'),
+  'Persisted research draft should show 4/4 submission-ready answers');
  await evaluate("document.querySelector('[data-action=hint]').click()");
  await wait(()=>evaluate("!!document.querySelector('[data-hint]')"),'hint state');
  verify((await snapshot()).assisted,'Assisted hint state not reported');
@@ -277,6 +314,8 @@ async function syntheticTypographyStress(language){
  const frozen=await snapshot();
  verify(frozen.submitted&&frozen.answerStyles.every(x=>x.disabled)&&!frozen.hasLegacyButton,'D3 submitted field locking/new owner regression');
  verify(frozen.realKey===null,'L09 research submission touched real learner state');
+ verify((await evaluate("document.querySelector('[data-learning-progress]')?.textContent||''")).includes('0/4'),
+  'Submitting switches to 0/4 self-review criteria, never invented mastery');
  const data={sourceHead:process.env.LI_STAGE02B_HEAD||'UNKNOWN',threeDecisions:['VC-G2-D1','VC-G2-D2','VC-G2-D3'],
   expectedRoute:'site/index.html?lesson=L09-1-2&li-react=l09&li-vc-g2=1',
   requiredPrivacy:'REAL_LEARNER_KEY_UNCHANGED',validatedViewports:variants.map(x=>x.width),

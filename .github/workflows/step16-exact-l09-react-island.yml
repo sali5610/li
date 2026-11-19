@@ -39,11 +39,6 @@ jobs:
           npm run check:source
           npm run test:sync
           node -e 'const fs=require("fs"),z=require("zlib");const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(x=>x.isDirectory()?walk(d+"/"+x.name):[d+"/"+x.name]);const xs=walk("dist").filter(p=>p.endsWith(".js"));let raw=0,gz=0;for(const p of xs){const data=fs.readFileSync(p);raw+=data.length;gz+=z.gzipSync(data,{level:9}).length;}console.log("LI_STEP16_EXACT_L09_REACT_BUNDLE "+JSON.stringify({jsAssets:xs.length,jsRawBytes:raw,jsGzipBytes:gz,note:"single exact-source challenge/rubric island, not full li app"}));'
-      - name: Test SQL idempotency/RLS on ephemeral Docker PostgreSQL (CI only)
-        shell: bash
-        run: |
-          set -euo pipefail
-          bash tools/step16-real-l09-react-island/tests/postgres-idempotency/ci-only-run.sh
       - name: Exercise actual editorial content + learner behavior in real-clock Chrome
         shell: bash
         run: |

@@ -1,0 +1,693 @@
+{
+  "profile": "ont02-ui-pilot-design-system-only",
+  "graphVersion": "0.1.0",
+  "contractVersion": "0.1.0",
+  "demoOnly": true,
+  "boundary": "Design System UI graph ONLY. All ONT-02 edges are proposed binding hypotheses until rendered/keyboard/device QA; no approval, no runtime graph, no academic L2/L3 or learner data.",
+  "nodes": [
+    {
+      "id": "token:css:--moss",
+      "kind": "DesignToken",
+      "title": "--moss",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/site/assets/design-tokens.css",
+        "sourceSection": "JSON-generated CSS var --moss",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Source mapping observed; runtime behavior/device acceptance not certified"
+    },
+    {
+      "id": "token:css:--cream",
+      "kind": "DesignToken",
+      "title": "--cream",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/site/assets/design-tokens.css",
+        "sourceSection": "JSON-generated CSS var --cream",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Source mapping observed; runtime behavior/device acceptance not certified"
+    },
+    {
+      "id": "token:css:--li-color-focus-ring",
+      "kind": "DesignToken",
+      "title": "--li-color-focus-ring",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/site/assets/design-tokens.css",
+        "sourceSection": "JSON-generated focus var",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Source mapping observed; runtime behavior/device acceptance not certified"
+    },
+    {
+      "id": "token:css:--li-space-12",
+      "kind": "DesignToken",
+      "title": "--li-space-12",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/site/assets/design-tokens.css",
+        "sourceSection": "JSON-generated spacing 48 CSS px",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Source mapping observed; runtime behavior/device acceptance not certified"
+    },
+    {
+      "id": "component:Button",
+      "kind": "Component",
+      "title": "Button",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/components.md",
+        "sourceSection": "Primary/secondary CTA native control contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Source mapping observed; runtime behavior/device acceptance not certified"
+    },
+    {
+      "id": "component:ActionGroup",
+      "kind": "Component",
+      "title": "ActionGroup",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "Action hierarchy molecule; reusable React anatomy proposed",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed ONT-02 UI binding; no production/G2 approval"
+    },
+    {
+      "id": "variant:Button:primary",
+      "kind": "Variant",
+      "title": "Button primary variant",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/components.md",
+        "sourceSection": "Primary button variant; native .action/.primary",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed ONT-02 UI binding; no production/G2 approval"
+    },
+    {
+      "id": "variant:Button:secondary",
+      "kind": "Variant",
+      "title": "Button secondary variant",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/components.md",
+        "sourceSection": "Secondary button variant; native .action.alt/.secondary",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed ONT-02 UI binding; no production/G2 approval"
+    },
+    {
+      "id": "pattern:LearningActionArea",
+      "kind": "Pattern",
+      "title": "LearningActionArea",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "Primary action per decision area; proposed reusable name",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed ONT-02 UI binding; no production/G2 approval"
+    },
+    {
+      "id": "slot:LearningActionArea:primary",
+      "kind": "Slot",
+      "title": "LearningActionArea primary slot",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/site/assets/lesson-l09-hifi-markup.js",
+        "sourceSection": "L09 submit button #l09-submit",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed ONT-02 UI binding; no production/G2 approval"
+    },
+    {
+      "id": "slot:LearningActionArea:secondary",
+      "kind": "Slot",
+      "title": "LearningActionArea secondary slot",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/site/assets/lesson-l09-hifi-markup.js",
+        "sourceSection": "L09 clear draft #l09-clear",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed ONT-02 UI binding; no production/G2 approval"
+    },
+    {
+      "id": "screen:lesson:L09-1-2",
+      "kind": "Screen",
+      "title": "L09 lesson UI screen",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/site/assets/lesson-l09-hifi-markup.js",
+        "sourceSection": "Native L09 markup and action row",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Source mapping observed; runtime behavior/device acceptance not certified"
+    },
+    {
+      "id": "rule:UX-DS-22:one-dominant-action",
+      "kind": "UIRule",
+      "title": "One dominant action per decision area",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "Buttons, links, chips and selectable controls",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Source mapping observed; runtime behavior/device acceptance not certified"
+    },
+    {
+      "id": "rule:UX-DS-35:button-focus",
+      "kind": "UIRule",
+      "title": "Keyboard focus-visible distinguishes focus from selection",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "Universal interaction contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Source mapping observed; runtime behavior/device acceptance not certified"
+    },
+    {
+      "id": "rule:UX-DS-35:minimum-target",
+      "kind": "UIRule",
+      "title": "New touch target intent 48 CSS px",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/README.md",
+        "sourceSection": "Design Library input & touch contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Source mapping observed; runtime behavior/device acceptance not certified"
+    },
+    {
+      "id": "rule:UX-DS-35:no-false-submit",
+      "kind": "UIRule",
+      "title": "A clicked action cannot claim stored completion",
+      "version": "0.1.0",
+      "reviewState": "verified",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/ux-patterns-and-behavior.md",
+        "sourceSection": "Saving/loading success versus click",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Source mapping observed; runtime behavior/device acceptance not certified"
+    },
+    {
+      "id": "gate:ONT02:token-reference",
+      "kind": "QAGate",
+      "title": "Button token ownership source gate",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Static token ownership needs runnable test",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed ONT-02 UI binding; no production/G2 approval"
+    },
+    {
+      "id": "gate:ONT02:action-hierarchy",
+      "kind": "QAGate",
+      "title": "L09 action hierarchy gate",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Action primary/secondary and state matrix",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed ONT-02 UI binding; no production/G2 approval"
+    },
+    {
+      "id": "gate:ONT02:focus-target",
+      "kind": "QAGate",
+      "title": "Focus and hit target gate",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Focus and 48px intent; real device still open",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed ONT-02 UI binding; no production/G2 approval"
+    },
+    {
+      "id": "gate:ONT02:state-truth",
+      "kind": "QAGate",
+      "title": "No fake saved/submitted state gate",
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "not_applicable",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "aliases": [],
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Actual persistence behavior requires runtime QA",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      },
+      "note": "Proposed ONT-02 UI binding; no production/G2 approval"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:ont02:001",
+      "predicate": "USES_TOKEN",
+      "from": "component:Button",
+      "to": "token:css:--moss",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:002",
+      "predicate": "USES_TOKEN",
+      "from": "component:Button",
+      "to": "token:css:--cream",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:003",
+      "predicate": "USES_TOKEN",
+      "from": "component:Button",
+      "to": "token:css:--li-color-focus-ring",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:004",
+      "predicate": "USES_TOKEN",
+      "from": "component:Button",
+      "to": "token:css:--li-space-12",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:005",
+      "predicate": "HAS_VARIANT",
+      "from": "component:Button",
+      "to": "variant:Button:primary",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:006",
+      "predicate": "HAS_VARIANT",
+      "from": "component:Button",
+      "to": "variant:Button:secondary",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:007",
+      "predicate": "USES_TOKEN",
+      "from": "variant:Button:primary",
+      "to": "token:css:--moss",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:008",
+      "predicate": "USES_TOKEN",
+      "from": "variant:Button:secondary",
+      "to": "token:css:--cream",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:009",
+      "predicate": "HAS_SLOT",
+      "from": "pattern:LearningActionArea",
+      "to": "slot:LearningActionArea:primary",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:010",
+      "predicate": "HAS_SLOT",
+      "from": "pattern:LearningActionArea",
+      "to": "slot:LearningActionArea:secondary",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:011",
+      "predicate": "FILLS_SLOT",
+      "from": "component:Button",
+      "to": "slot:LearningActionArea:primary",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:012",
+      "predicate": "FILLS_SLOT",
+      "from": "component:Button",
+      "to": "slot:LearningActionArea:secondary",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:013",
+      "predicate": "USES_PATTERN",
+      "from": "screen:lesson:L09-1-2",
+      "to": "pattern:LearningActionArea",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:014",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-22:one-dominant-action",
+      "to": "pattern:LearningActionArea",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:015",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-22:one-dominant-action",
+      "to": "component:ActionGroup",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:016",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-35:button-focus",
+      "to": "component:Button",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:017",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-35:minimum-target",
+      "to": "component:Button",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:018",
+      "predicate": "CONSTRAINS",
+      "from": "rule:UX-DS-35:no-false-submit",
+      "to": "screen:lesson:L09-1-2",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:019",
+      "predicate": "VALIDATES",
+      "from": "gate:ONT02:token-reference",
+      "to": "component:Button",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:020",
+      "predicate": "VALIDATES",
+      "from": "gate:ONT02:action-hierarchy",
+      "to": "rule:UX-DS-22:one-dominant-action",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:021",
+      "predicate": "VALIDATES",
+      "from": "gate:ONT02:focus-target",
+      "to": "rule:UX-DS-35:button-focus",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:022",
+      "predicate": "VALIDATES",
+      "from": "gate:ONT02:focus-target",
+      "to": "rule:UX-DS-35:minimum-target",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "edge:ont02:023",
+      "predicate": "VALIDATES",
+      "from": "gate:ONT02:state-truth",
+      "to": "rule:UX-DS-35:no-false-submit",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "provenance": {
+        "sourceUrl": "https://github.com/sali5610/li/blob/6b486a3a70be356a5dc21a2bb44117c457833caf/design-system/qa-checklist.md",
+        "sourceSection": "Stage02 crosswalk modeled from canonical UI/QA contracts; not rendered evidence",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    }
+  ]
+}

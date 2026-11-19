@@ -1,0 +1,23 @@
+name: li. ONT-02 UI typed source crosswalk (PR only)
+on:
+  pull_request:
+    paths:
+      - 'docs/ontology/ui/**'
+      - 'docs/ontology/registry.v0.1.json'
+      - 'tools/validate_ontology.mjs'
+      - 'tools/validate_ui_ontology.mjs'
+      - '.github/workflows/li-ont02-ui-contract.yml'
+permissions:
+  contents: read
+jobs:
+  check-ui-ontology:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Typed ONT-01 graph and negative fixtures
+        run: node tools/validate_ontology.mjs --check
+      - name: ONT-02 source crosswalk and nine negative UI fixtures
+        run: node tools/validate_ui_ontology.mjs --check

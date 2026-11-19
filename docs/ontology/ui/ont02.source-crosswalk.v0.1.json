@@ -1,0 +1,123 @@
+{
+  "profile": "ont02-ui-source-crosswalk",
+  "contractVersion": "0.1.0",
+  "graphFile": "docs/ontology/ui/ont02.graph.v0.1.json",
+  "tokenValueAuthority": "design-system/tokens.json",
+  "runtimeGeneratedCss": "site/assets/design-tokens.css",
+  "approvalState": "g2_open",
+  "runtimeStatus": "source_mapping_only",
+  "sourcePins": {
+    "ont01": "6b486a3a70be356a5dc21a2bb44117c457833caf",
+    "mainAtInspection": "09fe0ecdea48198bfe018d424d863b55c299cffb",
+    "uxDs35Draft": "afca0719b6a063e99b5afa21b77ae916b7c61757"
+  },
+  "components": [
+    {
+      "componentId": "component:Button",
+      "atomicLevel": "atom",
+      "approvalState": "g2_open",
+      "implementationStatus": "native_static_only",
+      "selectorOwner": {
+        "file": "site/assets/ui-foundations.css",
+        "selector": "#page-home .hero-actions .primary"
+      },
+      "markupOwner": {
+        "file": "site/assets/lesson-l09-hifi-markup.js",
+        "anchor": "id=\"l09-submit\""
+      },
+      "variants": [
+        "variant:Button:primary",
+        "variant:Button:secondary"
+      ],
+      "states": [
+        {
+          "name": "default",
+          "evidence": "source_observed"
+        },
+        {
+          "name": "hover",
+          "evidence": "specified_unverified"
+        },
+        {
+          "name": "focus-visible",
+          "evidence": "source_observed"
+        },
+        {
+          "name": "pressed",
+          "evidence": "specified_unverified"
+        },
+        {
+          "name": "disabled",
+          "evidence": "specified_unverified"
+        },
+        {
+          "name": "loading",
+          "evidence": "specified_unverified"
+        }
+      ],
+      "roles": [
+        {
+          "role": "action.primary.surface",
+          "referenceToken": "--moss",
+          "semanticRole": "primaryActionSurface",
+          "componentUse": "button.background"
+        },
+        {
+          "role": "action.primary.content",
+          "referenceToken": "--cream",
+          "semanticRole": "onPrimaryAction",
+          "componentUse": "button.color"
+        },
+        {
+          "role": "action.focus.ring",
+          "referenceToken": "--li-color-focus-ring",
+          "semanticRole": "focusRing",
+          "componentUse": "button.focus-visible"
+        },
+        {
+          "role": "action.target.minimum",
+          "referenceToken": "--li-space-12",
+          "semanticRole": "minimumTouchTarget",
+          "componentUse": "button.hit-area"
+        }
+      ],
+      "patternId": "pattern:LearningActionArea",
+      "screenId": "screen:lesson:L09-1-2",
+      "slotIds": [
+        "slot:LearningActionArea:primary",
+        "slot:LearningActionArea:secondary"
+      ],
+      "ruleIds": [
+        "rule:UX-DS-22:one-dominant-action",
+        "rule:UX-DS-35:button-focus",
+        "rule:UX-DS-35:minimum-target",
+        "rule:UX-DS-35:no-false-submit"
+      ],
+      "qaGateIds": [
+        "gate:ONT02:token-reference",
+        "gate:ONT02:action-hierarchy",
+        "gate:ONT02:focus-target",
+        "gate:ONT02:state-truth"
+      ],
+      "responsiveScopes": [
+        {
+          "label": "compact",
+          "minWidth": 320,
+          "maxWidth": 640,
+          "qa": "unverified_physical"
+        },
+        {
+          "label": "full_tablet",
+          "minWidth": 744,
+          "maxWidth": 1408,
+          "qa": "unverified_physical"
+        }
+      ],
+      "do": "Use real button semantics for actions, distinguish primary/secondary and expose visible focus.",
+      "dont": "Do not mark submitted/saved on click; do not treat focus as selection, shrink touch target, or copy raw token values.",
+      "reactApiStatus": "not_implemented",
+      "deviceQa": "UNVERIFIED",
+      "sourceQa": "CI_candidate"
+    }
+  ]
+}

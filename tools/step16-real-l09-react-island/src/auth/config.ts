@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 /**
  * Both endpoints are PUBLIC branch URLs, never credentials.
  * This is a separate, unreleased research page, not the public li. app.

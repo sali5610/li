@@ -1,6 +1,6 @@
 # Step16 Issue 161 — operation ID and atomic receipt contract (PROPOSED)
 
-Status: RESEARCH-ONLY, NOT DEPLOYED, 2026-11-20. G3 In Progress.
+Status: RESEARCH-ONLY, NOT DEPLOYED, 2026-11-20. G3 In Progress. Disposable PostgreSQL 16 CI contract PASSED; signed Neon RLS migration is still NOT RUN.
 
 ## Verified existing constraints
 
@@ -30,9 +30,15 @@ Rejected shortcuts: one last_op_id field loses older replay proof after newer wr
 ## Evidence versus open gates
 
 - IMPLEMENTED on Draft PR #159: a separate fail-closed opt-in NeonIdempotentPilotApi class and Node mock RPC contract tests. No caller in product/AuthPanel uses this class.
-- TESTED: simulated lost ACK INSERT/PATCH replay, same opId/different payload reject, different opId stale revision reject, original ACK after subsequent edit, JWT mismatch/expiry/403, absent RPC, malformed ACK, default local-only privacy gate.
-- NOT RUN: real PostgreSQL transaction and receipt schema; real signed Neon A/B/C RLS; actual lost network ACK, physical Safari eviction, migration/rollback and account deletion.
+- TESTED: 11 simulated Node RPC contract cases for opId replay, stale/different op, invalid JWT/ACK/missing RPC and default closed gate; **15/15 isolated PostgreSQL 16 transaction/RLS assertions** for receipt insertion/rollback, user isolation, invited/revoked mock identities and two-connection concurrency (CI run #44598258674).
+- NOT RUN: real Neon schema/RPC install, Neon signed JWT and invite/RLS integration A/B/C, genuine HTTP lost ACK, Safari eviction, migration/rollback, account deletion and production release. CI auth.user_id uses a spoofable **test-only GUC**, NOT a signed JWT.
 - Do not enable real learner cloud sync before a separate RLS-safe schema/RPC implementation and independent security/CI acceptance. Do not mutate Neon or deploy Cloudflare for this research.
+
+## Disposable PostgreSQL evidence and limits
+
+- GitHub Actions #44598258674, PR-only at exact code SHA 6de48bc1de76dcdb4119a47db81b28eb663619a8: PostgreSQL 16-alpine container with no published port, synthetic tables and mock authenticated roles, 15/15 PG CI PASS. Test fixtures are under tests/postgres-idempotency/ and refuse any database not named li_idempotency_ci.
+- FORCE RLS and restrictive owner/invite-style policies were modeled, with a NOLOGIN/NOBYPASSRLS SECURITY DEFINER executor and no direct authenticated receipt grants. This shows the candidate transaction and role pattern on disposable PostgreSQL, **not** the same privileges/verified managed JWT/RLS behavior as live Neon.
+- Real Neon existing table/role/policy read only; no production migration, receipt table, API RPC, Cloudflare build, or learner data mutation.
 
 ## Traceability
 

@@ -24,6 +24,18 @@ receipt denial, owner isolation, uninvited/anonymous/revoked attempts,
 forced rollback if receipt insert fails, and receipt/state cardinality.
 Separate live PostgreSQL sessions PG-14..15 exercise concurrent same-op
 replay and different-op stale revision rejection via transaction locks.
+PG-16..20 explicitly revoke signed browser direct INSERT/UPDATE/DELETE,
+deny PUBLIC RPC execution and prove direct-write attempts fail while owner
+SELECT survives. PG-21..24 rehearse **CI-only rollback**: disable RPC,
+restore previous grants, preserve all state/receipt rows, confirm the old
+authorized write path works inside a rolled-back test transaction and the
+uninvited user still cannot write. Total: **24/24 SQL groups**.
+
+Current live Neon still grants authenticated direct INSERT/UPDATE/DELETE;
+that grant set is NOT changed by this PR. Revoking it prematurely would
+break the existing staging synthetic write/guarded DELETE paths. Review
+the cutover dependency at
+`docs/neon-idempotency-cutover-review.md` before any real migration.
 
 ## Trust boundaries / NOT VERIFIED
 

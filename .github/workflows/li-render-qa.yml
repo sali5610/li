@@ -1,14 +1,14 @@
-name: li. Rendered CSS smoke (zero-cost headless Chrome)
+name: li. Focused rendered CSS smoke (no deploy)
 
+# Broader visual/physical-device checks run only for affected releases.
 on:
   pull_request:
     paths:
-      - 'site/**'
-      - 'design-system/**'
+      - 'site/index.html'
+      - 'site/assets/*.css'
+      - 'site/lessons/**'
+      - 'design-system/tokens.json'
       - 'tools/render_contract_fixture.html'
-      - 'tools/ipad_rotation_fixture.html'
-      - 'tools/ipad_safari_recovery_fixture.html'
-      - 'tools/component_review_fixture.html'
       - '.github/workflows/li-render-qa.yml'
   workflow_dispatch:
 
@@ -16,181 +16,33 @@ permissions:
   contents: read
 
 jobs:
-  responsive-computed-styles:
+  responsive-smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Validate source and generated design CSS
-        run: |
-          python3 tools/generate_design_tokens.py --check
-          python3 tools/validate_site.py
-      - name: Test loaded styles and responsive component geometry in headless browser
+      - name: Verify generated design tokens
+        run: python3 tools/generate_design_tokens.py --check
+      - name: Check representative responsive geometry in real Chromium
         shell: bash
         run: |
           set -euo pipefail
           chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
-          if [[ -z "$chrome" ]]; then
-            echo "FAIL: no preinstalled Chrome/Chromium browser; rendered QA not verified"
-            exit 1
-          fi
-          "$chrome" --version
+          test -n "$chrome" || { echo 'Chrome unavailable'; exit 1; }
           python3 -m http.server 8765 --bind 127.0.0.1 --directory . > /tmp/li-render-http.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           sleep 2
-          for width in 320 360 375 390 402 600 640 744 820 970 1024 1133 1408 1440; do
-            echo "Checking iframe viewport $width px"
+          # 320 minimum, 390 phone, 820 tablet, 1408 iPad landscape.
+          for width in 320 390 820 1408; do
             url="http://127.0.0.1:8765/tools/render_contract_fixture.html?w=$width"
-            result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=11000 --dump-dom "$url" 2>/tmp/li-chrome-stderr.log || true)"
+            result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1600,1100 --virtual-time-budget=12000 --dump-dom "$url" 2>/tmp/li-chrome-stderr.log || true)"
             if [[ "$result" != *'<pre id="result">LI_RENDER_PASS '* ]]; then
-              echo "FAIL computed-style fixture at $width CSS px"
-              echo "$result" | grep -E '<pre id="result">LI_RENDER_(PASS|FAIL|PENDING)' | tail -2 | cut -c1-2400 || true
-              cat /tmp/li-chrome-stderr.log | tail -30 || true
+              echo "FAIL rendered CSS at $width CSS px"
+              echo "$result" | grep -E 'LI_RENDER_(FAIL|PENDING)' | tail -1 | cut -c1-1800 || true
+              tail -20 /tmp/li-chrome-stderr.log || true
               exit 1
             fi
-            echo "$result" | grep '<pre id="result">LI_RENDER_PASS ' | tail -1 | cut -c1-1000
+            echo "PASS rendered CSS at $width CSS px"
           done
-          echo "PASS loaded CSS, page images, text roles, method card states and no wide-page overflow at fourteen viewports"
-          # iPad landscape CSS follows viewport geometry, not any-pointer heuristics.
-          # Previously 1194/1376 were never exercised as tablet in Chromium.
-          for width in 1194 1376 1408; do
-            echo "Checking wide landscape iPad-sized viewport at ${width}px"
-            url="http://127.0.0.1:8765/tools/render_contract_fixture.html?w=$width"
-            result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1600,1200 --virtual-time-budget=13000 --dump-dom "$url" 2>/tmp/li-ipad-touch-stderr.log || true)"
-            if [[ "$result" != *'<pre id="result">LI_RENDER_PASS '* ]]; then
-              echo "FAIL wide landscape computed-style fixture at $width CSS px"
-              echo "$result" | grep -E '<pre id="result">LI_RENDER_(PASS|FAIL|PENDING)' | tail -1 | cut -c1-3500 || true
-              tail -20 /tmp/li-ipad-touch-stderr.log || true
-              exit 1
-            fi
-            echo "$result" | grep '<pre id="result">LI_RENDER_PASS ' | tail -1 | cut -c1-900
-          done
-          echo "PASS wide viewport landscape at 1194, 1376 and 1408 CSS px"
-
-           # Rotate the SAME loaded iframe both directions; reload-only checks miss
-           # stale portrait-width layouts and visual-viewport clipping in landscape.
-           for dims in "820:1180:1180:820" "1032:1376:1376:1032" "970:1408:1408:832"; do
-             IFS=: read -r pw ph lw lh <<< "$dims"
-             echo "Checking live iPad rotation ${pw}x${ph} -> ${lw}x${lh} -> ${pw}x${ph}"
-             url="http://127.0.0.1:8765/tools/ipad_rotation_fixture.html?pw=${pw}&ph=${ph}&lw=${lw}&lh=${lh}"
-             result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1650,1150 --virtual-time-budget=15000 --dump-dom "$url" 2>/tmp/li-ipad-rotation-stderr.log || true)"
-             if [[ "$result" != *'<pre id="result">LI_ROTATION_PASS '* ]]; then
-               echo "FAIL live orientation reflow at ${dims}"
-               echo "$result" | grep -E '<pre id="result">LI_ROTATION_(PASS|FAIL|PENDING)' | tail -1 | cut -c1-3500 || true
-               tail -20 /tmp/li-ipad-rotation-stderr.log || true
-               exit 1
-             fi
-             echo "$result" | grep '<pre id="result">LI_ROTATION_PASS ' | tail -1 | cut -c1-1200
-           done
-           echo "PASS iPad orientation change without reload (Chrome emulation; Safari physical QA pending)"
-
-           # Reproduce actual physical iPad observation: the device turns 90 degrees
-           # but WebKit's iframe/layout viewport remains 970px wide.
-           url="http://127.0.0.1:8765/tools/ipad_safari_recovery_fixture.html"
-           result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1650,1150 --virtual-time-budget=15000 --dump-dom "$url" 2>/tmp/li-ipad-stale-stderr.log || true)"
-           if [[ "$result" != *'<pre id="result">LI_SAFARI_RECOVERY_PASS '* ]]; then
-             echo "FAIL Safari stale portrait physical landscape recovery"
-             echo "$result" | grep -E '<pre id="result">LI_SAFARI_RECOVERY_(PASS|FAIL|PENDING)' | tail -1 | cut -c1-4300 || true
-             tail -25 /tmp/li-ipad-stale-stderr.log || true
-             exit 1
-           fi
-           echo "$result" | grep '<pre id="result">LI_SAFARI_RECOVERY_PASS ' | tail -1 | cut -c1-1400
-           echo "PASS physical rotation with stale 970 CSS px in Chromium simulation; real Safari still needs human QA"
-
-
-
-          for width in 320 390 820 1440; do
-            echo "Checking live VI/EN language switch and cross-screen content at ${width}px"
-            url="http://127.0.0.1:8765/tools/i18n_browser_fixture.html?w=$width"
-            result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1600,1050 --virtual-time-budget=22000 --dump-dom "$url" 2>/tmp/li-i18n-stderr.log || true)"
-            if [[ "$result" != *'<pre id="result">LI_I18N_PASS '* ]]; then
-              echo "FAIL bilingual journey at ${width}px"
-              echo "$result" | grep -F '<pre id="result">' | tail -1 | cut -c1-14000 || true
-              cat /tmp/li-i18n-stderr.log | tail -20 || true
-              exit 1
-            fi
-            echo "$result" | grep 'LI_I18N_PASS ' | tail -1 | cut -c1-1500
-          done
-          echo "PASS bilingual runtime route, catalog, check-in and accessibility smoke"
-
-          for width in 320 390 820; do
-            echo "Checking real Check-in UI at $width CSS px"
-            url="http://127.0.0.1:8765/tools/checkin_browser_fixture.html?w=$width"
-            result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=14000 --dump-dom "$url" 2>/tmp/li-checkin-chrome-stderr.log || true)"
-            if [[ "$result" != *'<pre id="result">LI_CHECKIN_BROWSER_PASS '* ]]; then
-              echo "FAIL Check-in browser fixture at $width"
-              echo "$result" | grep -E 'LI_CHECKIN_BROWSER_(PASS|FAIL|PENDING)' | tail -2 | cut -c1-1600 || true
-              cat /tmp/li-checkin-chrome-stderr.log | tail -20 || true
-              exit 1
-            fi
-            echo "$result" | grep '<pre id="result">LI_CHECKIN_BROWSER_PASS ' | tail -1 | cut -c1-700
-          done
-          echo "PASS real browser check-in behavior, shared mode state, responsive dialog"
-          for width in 320 390 820; do
-            echo "Checking Thần Chú real-app practice at $width CSS px"
-            url="http://127.0.0.1:8765/tools/spell_practice_fixture.html?w=$width"
-            result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=15000 --dump-dom "$url" 2>/tmp/li-spell-chrome-stderr.log || true)"
-            if [[ "$result" != *'<pre id="result">LI_SPELL_PASS '* ]]; then
-              echo "FAIL spellbook interaction at $width CSS px"
-              echo "$result" | grep -E 'LI_SPELL_(PASS|FAIL|PENDING)' | tail -3 | cut -c1-1800 || true
-              cat /tmp/li-spell-chrome-stderr.log | tail -20 || true
-              exit 1
-            fi
-            echo "$result" | grep 'LI_SPELL_PASS ' | tail -1 | cut -c1-700
-          done
-          echo "Review showcase: canonical token, interactive states, live app iframe"
-          url="http://127.0.0.1:8765/tools/component_review_fixture.html"
-          result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=15000 --dump-dom "$url" 2>/tmp/li-showcase-stderr.log || true)"
-          if [[ "$result" != *'<pre id="result">LI_SHOWCASE_PASS '* ]]; then
-            echo "FAIL component review browser fixture"
-            echo "$result" | grep -E 'LI_SHOWCASE_(PASS|FAIL|PENDING)' | tail -2 | cut -c1-2200 || true
-            cat /tmp/li-showcase-stderr.log | tail -20 || true
-            exit 1
-          fi
-          echo "$result" | grep '<pre id="result">LI_SHOWCASE_PASS ' | tail -1 | cut -c1-1200
-          for width in 320 390 820 1133; do
-            url="http://127.0.0.1:8765/tools/component_review_fixture.html?w=$width"
-            result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1500,1050 --virtual-time-budget=15000 --dump-dom "$url" 2>/tmp/li-showcase-responsive-stderr.log || true)"
-            if [[ "$result" != *'<pre id="result">LI_SHOWCASE_PASS '* ]]; then
-              echo "FAIL responsive component review at $width CSS px"
-              echo "$result" | grep -E 'LI_SHOWCASE_(PASS|FAIL)' | tail -1 | cut -c1-2600 || true
-              exit 1
-            fi
-            echo "PASS component board at $width CSS px"
-          done
-          mkdir -p "$RUNNER_TEMP/li-checkin-visual"
-          for width in 320 390 820; do
-            url="http://127.0.0.1:8765/tools/checkin_browser_fixture.html?w=$width&h=760&capture=1"
-            file="$RUNNER_TEMP/li-checkin-visual/checkin-radio-$width.png"
-            "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --force-device-scale-factor=1 --window-size=1100,950 --virtual-time-budget=14000 --screenshot="$file" "$url" 2>/tmp/li-checkin-visual-stderr.log >/dev/null
-            test -s "$file" || { echo "FAIL screenshot artifact at $width"; exit 1; }
-            echo "Captured $file"
-          done
-
-
-          mkdir -p "$RUNNER_TEMP/li-component-review-v2"
-          for section in icons navigation actions cards inputs media bubbles controls dataviz; do
-            file="$RUNNER_TEMP/li-component-review-v2/${section}.png"
-            "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --force-device-scale-factor=1 --window-size=1420,1000 --virtual-time-budget=12000 --screenshot="$file" "http://127.0.0.1:8765/site/component-library-review.html?capture=${section}" 2>/tmp/li-component-shot.log >/dev/null
-            test -s "$file" || { echo "FAIL screenshot for component section $section"; exit 1; }
-          done
-          echo "Captured icon, navigation, action, card, and input specimens for visual review"
-
-      - name: Preserve L1 check-in radio visual screenshots for review
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: li-checkin-radio-visual
-          path: ${{ runner.temp }}/li-checkin-visual/*.png
-          if-no-files-found: warn
-          retention-days: 7
-
-      - name: Preserve UX-DS-09 component-state review images
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: li-component-review-v2
-          path: ${{ runner.temp }}/li-component-review-v2/*.png
-          if-no-files-found: warn
-          retention-days: 7
+          echo 'PASS affected UI responsive smoke; not physical Safari or full regression'

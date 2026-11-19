@@ -131,7 +131,7 @@ async function main(){
     /4px 4px 0px/.test(b.buttons.secondary.shadow),'D1 square/hard-shadow drift '+v.width+' '+b.buttons.primary.shadow);
   verify(b.cards.every(c=>c.padding.split(' ').every(x=>parseFloat(x)===v.pad)),'D2 card padding wrong at '+v.width+' '+JSON.stringify(b.cards.map(x=>x.padding)));
   verify(b.cards.every(c=>c.borderRadius==='0px'&&/5px 5px 0px/.test(c.shadow)),'D2 hard shadow drift '+v.width+' '+JSON.stringify(b.cards));
-  verify(b.answerStyles.every(x=>x.height>=112&&parseFloat(x.minHeight)>=112&&x.fontSize==='16px'&&x.lineHeight===a.answerStyles[0].lineHeight&&x.bg===a.answerStyles[0].bg),'D3 named answer min-height/semantic paint/legacy multiline rhythm drift '+v.width+': '+JSON.stringify({shared:b.answerStyles,legacy:a.answerStyles}));
+  verify(b.answerStyles.every(x=>x.height>=112&&parseFloat(x.minHeight)>=112&&x.fontSize===bodyPx+'px'&&x.lineHeight===a.answerStyles[0].lineHeight&&x.bg===a.answerStyles[0].bg),'D3 named answer min-height/semantic paint/legacy multiline rhythm drift '+v.width+': '+JSON.stringify({shared:b.answerStyles,legacy:a.answerStyles}));
   verify(b.buttons.primary.bg===a.buttons.primary.bg&&b.buttons.secondary.bg===a.buttons.secondary.bg&&b.cards[0].bg===a.cards[0].bg,'Canonical semantic background drift '+v.width);
   verify(b.viewport===v.width&&b.scrollWidth<=v.width+1&&a.scrollWidth<=v.width+1,'Horizontal overflow '+v.width);
   verify(b.nativeChallengeHidden&&b.runtime==='react-candidate'&&b.realKey===null&&b.dataStorageKey===researchKey,

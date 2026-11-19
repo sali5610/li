@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "li. quote source/rights hold policy — never publication authority",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile",
+    "version",
+    "demoOnly",
+    "baseline",
+    "hardGates",
+    "referenceChecks",
+    "legacyRuntimeSafetyFinding",
+    "provenance"
+  ],
+  "properties": {
+    "profile": {
+      "const": "li-ONT04C1b-quote-source-audit"
+    },
+    "version": {
+      "const": "0.1.0"
+    },
+    "demoOnly": {
+      "const": true
+    },
+    "baseline": {
+      "type": "object",
+      "required": [
+        "quoteBankFile",
+        "companionFiles",
+        "expectedBankEntries",
+        "expectedEnglishMetadata",
+        "expectedUniqueCompanionRefs",
+        "expectedTotalCompanionReferences",
+        "expectedCompanionStageCount",
+        "sourceReferenceCountOnly"
+      ],
+      "properties": {
+        "quoteBankFile": {
+          "const": "site/assets/laoly-quotes-s121.js"
+        },
+        "companionFiles": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "string"
+          }
+        },
+        "expectedBankEntries": {
+          "const": 24
+        },
+        "expectedEnglishMetadata": {
+          "const": 24
+        },
+        "expectedUniqueCompanionRefs": {
+          "const": 17
+        },
+        "expectedTotalCompanionReferences": {
+          "const": 90
+        },
+        "expectedCompanionStageCount": {
+          "const": 18
+        },
+        "sourceReferenceCountOnly": {
+          "const": true
+        }
+      }
+    },
+    "hardGates": {
+      "type": "object",
+      "required": [
+        "defaultQuoteState",
+        "attributionState",
+        "originalEditionState",
+        "translationRightsState",
+        "territoryRightsState",
+        "contextRelevanceState",
+        "academicEvidenceState",
+        "quoteRenderAuthorization",
+        "reviewedQuoteEntries",
+        "reviewedPublicQuoteEntries",
+        "clientCanApprove",
+        "independentStage",
+        "reflectionStage",
+        "extensionStage",
+        "wrongRightFeedback",
+        "calmMode",
+        "debateMode",
+        "preSubmitLessonState",
+        "neverCopyOriginalOrTranslatedTextIntoAudit"
+      ],
+      "properties": {
+        "defaultQuoteState": {
+          "const": "WITHHELD"
+        },
+        "attributionState": {
+          "const": "UNVERIFIED_FOR_NEW_USE"
+        },
+        "originalEditionState": {
+          "const": "UNVERIFIED_FOR_NEW_USE"
+        },
+        "translationRightsState": {
+          "const": "UNVERIFIED_FOR_NEW_USE"
+        },
+        "territoryRightsState": {
+          "const": "UNVERIFIED_FOR_NEW_USE"
+        },
+        "contextRelevanceState": {
+          "const": "EDITORIAL_ONLY"
+        },
+        "academicEvidenceState": {
+          "const": "NEVER_TREAT_AS_SCIENTIFIC_SOURCE"
+        },
+        "quoteRenderAuthorization": {
+          "const": "NOT_GRANTED"
+        },
+        "reviewedQuoteEntries": {
+          "const": 0
+        },
+        "reviewedPublicQuoteEntries": {
+          "const": 0
+        },
+        "clientCanApprove": {
+          "const": false
+        },
+        "independentStage": {
+          "const": "SUPPRESS"
+        },
+        "reflectionStage": {
+          "const": "SUPPRESS"
+        },
+        "extensionStage": {
+          "const": "SUPPRESS"
+        },
+        "wrongRightFeedback": {
+          "const": "SUPPRESS"
+        },
+        "calmMode": {
+          "const": "SUPPRESS"
+        },
+        "debateMode": {
+          "const": "SUPPRESS"
+        },
+        "preSubmitLessonState": {
+          "const": "NO_SOLUTION_OR_HINT_ESCALATION"
+        },
+        "neverCopyOriginalOrTranslatedTextIntoAudit": {
+          "const": true
+        }
+      }
+    },
+    "referenceChecks": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "sourceUrl",
+          "note",
+          "reviewStatus"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "sourceUrl": {
+            "type": "string",
+            "pattern": "^https://"
+          },
+          "note": {
+            "type": "string"
+          },
+          "reviewStatus": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "legacyRuntimeSafetyFinding": {
+      "type": "object",
+      "required": [
+        "sourceFile",
+        "observedSelection",
+        "severity",
+        "remediation"
+      ],
+      "properties": {
+        "sourceFile": {
+          "const": "site/assets/laoly-quotes-s121.js"
+        },
+        "observedSelection": {
+          "type": "string"
+        },
+        "severity": {
+          "const": "GATE_OPEN_DO_NOT_CLAIM_FIXED"
+        },
+        "remediation": {
+          "type": "string"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "ruleUrl",
+        "sourceSection",
+        "checkedOn"
+      ],
+      "properties": {
+        "ruleUrl": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "sourceSection": {
+          "type": "string"
+        },
+        "checkedOn": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    }
+  }
+}

@@ -77,7 +77,7 @@ async function run(){
  await setup();
  let count=0;
  const check=(pass,what)=>{assert.ok(pass,what);count++};
- const evidence={source:'pinned DS HEAD 7a8f3e5d544ee71fcc989cdd1b8bae99f6778381',environment:'isolated synthetic Chromium localhost only',g2:'OPEN',physicalSafari:'UNVERIFIED',families:{},gaps:[]};
+ const evidence={source:'pinned DS HEAD cfd5f54057918c9eec382dbbdf4993aa13373c9b',environment:'isolated synthetic Chromium localhost only',g2:'OPEN',physicalSafari:'UNVERIFIED',families:{},gaps:[]};
  // FIELD: implemented interactive specimen; check input semantics, not fake save.
  const field=await evalJS("(()=>{const a=document.querySelector('#ds-error'),m=document.querySelector('#ds-error-note'),d=document.querySelector('#ds-disabled'),r=document.querySelector('#ds-readonly'),t=document.querySelector('#ds-query'),l=document.querySelector('label[for=\"ds-query\"]');return {invalid:a?.getAttribute('aria-invalid'),linked:a?.getAttribute('aria-describedby'),alert:m?.getAttribute('role'),disabled:d?.disabled,readOnly:r?.readOnly,readOnlyDisabled:r?.disabled,label:!!l,editable:!t?.disabled&& !t?.readOnly,queryRole:document.querySelector('#ds-query-result')?.getAttribute('role')}})()");
  evidence.families.Field=field;
@@ -126,6 +126,7 @@ async function run(){
  evidence.families.Dialog.closed=closed;
  check(closed.closed,'Escape did not close dialog');
  if(!closed.focusReturned)evidence.gaps.push({component:'Dialog',severity:'P1',code:'DIALOG_FOCUS_NOT_RESTORED',evidence:'Keyboard Escape closes buddy modal but focus does not return to #laoly-fab',actualFocus:closed.focusId,gate:'NOT_ACCEPTED'});
+ check(closed.focusReturned,'Dialog closed via Escape but keyboard focus was not restored to FAB: '+JSON.stringify(closed));
  // FEEDBACK: actual Settings import invalid file in isolated profile. NO valid import and no real data.
  await evalJS("document.querySelector('.header [data-page=\"settings\"]').click()");
  await until(()=>evalJS("document.querySelector('#page-settings')?.classList.contains('active')"),'settings route');

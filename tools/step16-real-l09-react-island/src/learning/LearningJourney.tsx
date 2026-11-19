@@ -1,0 +1,260 @@
+import React,{useEffect,useRef,useState} from 'react';
+import {motion,useReducedMotion} from 'motion/react';
+import exact from '../l09-exact.generated.json';
+import type {Attempt,Rating} from '../native-bridge';
+import {Button,Card} from '../../../../design-system/react/Components';
+import {Field} from '../../../../design-system/react/Controls';
+import {Heading,Text,Progress} from '../../../../design-system/react/Atoms';
+import {L09_LESSON_ID} from './ports';
+import type {LearningPorts,SyncState} from './ports';
+import './journey.css';
+
+/** A real React learner screen. No parallel shell, synthetic attempt, or fake auth.
+ * Existing native L09 editorial is extracted from its authoritative source by
+ * scripts/extract-l09.cjs. Staging must supply all real production ports.
+ */
+type Phase='read'|'guided'|'practice'|'feedback'|'progress';
+const sequence:Phase[]=['read','guided','practice','feedback','progress'];
+const strip=(html:string)=>html.replace(/<[^>]*>/g,'').replace(/&amp;/g,'&')
+ .replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&nbsp;/g,' ');
+
+function resumedPhase(a:Attempt):Phase{
+ if(a.reviewed)return 'progress';
+ if(a.submitted)return 'feedback';
+ if(a.draft.some(x=>x.trim()))return 'practice';
+ if(a.guidedDraft.trim())return 'guided';
+ return 'read';
+}
+function statusText(status:SyncState,vi:boolean){
+ if(vi)return {synced:'Đã đồng bộ',queued:'Đang chờ đồng bộ',
+   'on-device':'Đã lưu trên thiết bị','unavailable':'Chưa thể xác nhận đồng bộ'}[status];
+ return {synced:'Synced',queued:'Waiting to sync',
+   'on-device':'Saved on this device',unavailable:'Sync status unavailable'}[status];
+}
+
+export function LearningJourney({ports}:{ports:LearningPorts}){
+ const reduced=useReducedMotion();
+ const [attempt,setAttempt]=useState<Attempt|null>(null);
+ const [phase,setPhase]=useState<Phase>('read');
+ const [busy,setBusy]=useState(true);
+ const [saving,setSaving]=useState(false);
+ const [sync,setSync]=useState<SyncState>('unavailable');
+ const [error,setError]=useState('');
+ const [locked,setLocked]=useState(false);
+ const subject=useRef<string|null>(null), revision=useRef<string|null>(null);
+ const writes=useRef<Promise<void>>(Promise.resolve());
+ const mounted=useRef(true);
+
+ useEffect(()=>{
+  mounted.current=true;
+  let cancelled=false;
+  (async()=>{
+   try{
+    const learner=await ports.auth.requireInvitedLearner();
+    if(!learner?.subjectId)throw Error('INVITE_REQUIRED');
+    const saved=await ports.attempts.load({lessonId:L09_LESSON_ID,subjectId:learner.subjectId});
+    if(!saved||!saved.revision||!saved.attempt)throw Error('ATTEMPT_UNAVAILABLE');
+    const status=await ports.sync.getStatus({lessonId:L09_LESSON_ID,subjectId:learner.subjectId})
+     .catch(()=>'unavailable' as SyncState);
+    if(cancelled)return;
+    subject.current=learner.subjectId;
+    revision.current=saved.revision;
+    setAttempt(saved.attempt);
+    setPhase(resumedPhase(saved.attempt));
+    setSync(status);
+    setBusy(false);
+   }catch{
+    if(!cancelled){setError('Không thể xác minh quyền truy cập hoặc tải bài học. Không mở chế độ khách.');setBusy(false);}
+   }
+  })();
+  return()=>{cancelled=true;mounted.current=false;};
+ },[ports]);
+
+ async function refreshStatus(){
+  if(!subject.current)return;
+  try{
+   const value=await ports.sync.getStatus({lessonId:L09_LESSON_ID,subjectId:subject.current});
+   if(mounted.current)setSync(value);
+  }catch{if(mounted.current)setSync('unavailable');}
+ }
+ function save(next:Attempt):Promise<boolean>{
+  if(locked||!subject.current||!revision.current)return Promise.resolve(false);
+  setAttempt(next);
+  setSaving(true);
+  const target=subject.current;
+  let finished=false;
+  const previous=writes.current;
+  const operation=previous.then(async()=>{
+   if(!revision.current||finished)throw Error('SAVE_LOCKED');
+   const saved=await ports.attempts.save({
+    lessonId:L09_LESSON_ID,subjectId:target,
+    attempt:next,expectedRevision:revision.current
+   });
+   if(!saved?.revision)throw Error('SAVE_WITHOUT_REVISION');
+   revision.current=saved.revision;
+   return true;
+  }).catch(()=>{
+   finished=true;
+   if(mounted.current){
+    setLocked(true);
+    setError('Không lưu được dữ liệu. Bản đang sửa vẫn hiển thị; đừng tải lại trước khi xử lý lỗi.');
+   }
+   return false;
+  });
+  writes.current=operation.then(async(ok)=>{
+   if(ok)await refreshStatus();
+  }).catch(()=>{});
+  void writes.current.then(()=>{if(mounted.current)setSaving(false);});
+  return operation;
+ }
+ function editDraft(index:number,value:string){
+  if(!attempt||attempt.submitted||locked)return;
+  const draft=[...attempt.draft] as Attempt['draft'];
+  draft[index]=value;
+  void save({...attempt,draft});
+ }
+ function editGuided(value:string){
+  if(!attempt||locked)return;
+  void save({...attempt,guidedDraft:value});
+ }
+ function changeRating(index:number,value:string){
+  if(!attempt||!attempt.submitted||attempt.reviewed||locked)return;
+  const ratings=[...attempt.ratings] as Attempt['ratings'];
+  ratings[index]=value===''?null:Number(value) as Rating;
+  void save({...attempt,ratings});
+ }
+ async function submit(){
+  if(!attempt||attempt.submitted||locked)return;
+  if(attempt.draft.some(x=>x.trim().length<12)){
+   setError('Trả lời cả 4 câu (mỗi câu ít nhất 12 ký tự) trước khi nộp.');return;
+  }
+  setError('');
+  const next:Attempt={...attempt,submitted:true,submittedAt:new Date().toISOString(),
+   submission:[...attempt.draft] as Attempt['submission'],submissionLocale:attempt.locale};
+  if(await save(next))setPhase('feedback');
+ }
+ async function finish(){
+  if(!attempt||!attempt.submitted||attempt.reviewed||locked)return;
+  if(attempt.ratings.some(x=>x===null)){
+   setError('Chọn đủ 4 tiêu chí tự đánh giá trước khi hoàn tất.');return;
+  }
+  setError('');
+  if(await save({...attempt,reviewed:true}))setPhase('progress');
+ }
+ function go(next:Phase){
+  if(!attempt)return;
+  if((next==='feedback'||next==='progress')&&!attempt.submitted)return;
+  if(next==='progress'&&!attempt.reviewed)return;
+  setError('');setPhase(next);
+ }
+ if(busy)return <section className="li-learning-journey" aria-busy="true" role="status">Đang xác minh quyền học và tải tiến độ…</section>;
+ if(!attempt)return <section className="li-learning-journey" role="alert">{error||'Không có dữ liệu học.'}</section>;
+
+ const vi=attempt.locale==='vi',content=exact.langs[attempt.locale];
+ const labels:Record<Phase,string>=vi?
+  {read:'Đọc bài',guided:'Thử áp dụng',practice:'Làm bài',feedback:'Đối chiếu',progress:'Tiến độ'}:
+  {read:'Learn',guided:'Try it',practice:'Practice',feedback:'Feedback',progress:'Progress'};
+ const answered=attempt.draft.filter(x=>x.trim().length>=12).length;
+ const rated=attempt.ratings.filter(x=>x!==null).length;
+ const percent=attempt.reviewed?100:attempt.submitted?75:Math.round(answered/4*50);
+ const accessibleProgress=vi?'Tiến trình hoàn thành lượt bài học':'Lesson attempt progress';
+ const transition=reduced?{duration:0}:{duration:0.18,ease:'easeOut' as const};
+ return <section className="li-learning-journey" data-li-react-journey="L09-1-2" lang={attempt.locale}>
+  <header className="li-learning-header">
+   <div>
+    <Text role="caption">DATA SCIENCE · L09-1-2</Text>
+    <Heading level={1} role="headline">{content.title}</Heading>
+   </div>
+   <Button variant="secondary" onClick={ports.navigation.openCatalog}>
+    {vi?'Về Tàng Thư':'Back to library'}
+   </Button>
+  </header>
+  <nav className="li-learning-steps" aria-label={vi?'Các bước học':'Learning steps'}>
+   {sequence.map(item=><Button key={item} variant={phase===item?'primary':'ghost'}
+    aria-current={phase===item?'step':undefined}
+    disabled={((item==='feedback'||item==='progress')&&!attempt.submitted)||
+     (item==='progress'&&!attempt.reviewed)}
+    onClick={()=>go(item)}>{labels[item]}</Button>)}
+  </nav>
+  <div className="li-learning-save" role="status" aria-live="polite">
+   <Progress label={accessibleProgress} value={percent}/>
+   <Text role="support">{saving?(vi?'Đang lưu…':'Saving…'):statusText(sync,vi)}
+     {' · '}{attempt.reviewed?(vi?'Đã tự đánh giá 1 lượt, chưa phải điểm thông thạo':'Self-review completed, not a mastery grade'):
+     attempt.submitted?(vi?'Đã nộp · tự đánh giá '+rated+'/4':'Submitted · self-review '+rated+'/4'):
+     (vi?'Đủ điều kiện nộp '+answered+'/4 câu':'Submission-ready '+answered+'/4 answers')}</Text>
+  </div>
+  {error&&<p className="li-learning-error" role="alert">{error}</p>}
+  <motion.div key={phase} initial={reduced?false:{opacity:0,y:8}}
+   animate={{opacity:1,y:0}} transition={transition} className="li-learning-current">
+   {phase==='read'&&<Card variant="flat-study" aria-labelledby="li-learn-read">
+    <Heading level={2} id="li-learn-read" role="titleLarge">{content.theoryTitle}</Heading>
+    <Text>{strip(content.theoryLead)}</Text>
+    <ul>{content.defs.map((definition:string,i:number)=><li key={i}>{strip(definition)}</li>)}</ul>
+    <div className="li-learning-comparison">
+     <div><Heading level={3} role="titleSmall">{content.biasTitle}</Heading><Text>{strip(content.biasText)}</Text></div>
+     <div><Heading level={3} role="titleSmall">{content.variationTitle}</Heading><Text>{strip(content.variationText)}</Text></div>
+    </div>
+    <Text role="support">{strip(content.limit)}</Text>
+    <Heading level={3} role="titleMedium">{content.goalsTitle}</Heading>
+    <ul>{content.goals.map((goal:string,i:number)=><li key={i}>{goal}</li>)}</ul>
+    <Button onClick={()=>go('guided')}>{vi?'Thử áp dụng':'Try an example'}</Button>
+   </Card>}
+   {phase==='guided'&&<Card variant="flat-study" aria-labelledby="li-learn-guided">
+    <Heading level={2} id="li-learn-guided" role="titleLarge">{content.exTitle}</Heading>
+    <Text>{strip(content.exBody)}</Text>
+    <Text>{strip(content.exQuestion)}</Text>
+    <Field kind="textarea" label={content.guidedLabel} rows={5}
+     value={attempt.guidedDraft} disabled={locked}
+     onChange={event=>editGuided(event.currentTarget.value)}/>
+    <details className="li-learning-hint"><summary>{vi?'Xem gợi ý phân tích':'See analysis hint'}</summary>
+     <Text>{strip(content.exHelp)}</Text></details>
+    <Button onClick={()=>go('practice')}>{vi?'Làm bài độc lập':'Independent practice'}</Button>
+   </Card>}
+   {phase==='practice'&&<Card variant="flat-study" aria-labelledby="li-learn-practice">
+    <Heading level={2} id="li-learn-practice" role="titleLarge">{content.challengeTitle}</Heading>
+    <Text>{strip(content.caseText)}</Text>
+    <Text>{content.caseClaim}</Text>
+    <div className="li-learning-fields">{content.questions.map((question:string,i:number)=>
+     <Field key={i} kind="textarea" rows={4} label={(i+1)+'. '+question}
+      value={attempt.draft[i]} disabled={attempt.submitted||locked}
+      placeholder={content.placeholder}
+      onChange={event=>editDraft(i,event.currentTarget.value)}/>)}</div>
+    {!attempt.submitted?<Button disabled={locked||saving} onClick={()=>void submit()}>{content.submit}</Button>:
+     <Button onClick={()=>go('feedback')}>{vi?'Xem đối chiếu':'See feedback'}</Button>}
+   </Card>}
+   {phase==='feedback'&&<Card variant="flat-study" aria-labelledby="li-learn-feedback">
+    <Heading level={2} id="li-learn-feedback" role="titleLarge">{content.answerTitle}</Heading>
+    <Text>{strip(content.answer)}</Text>
+    <Heading level={3} role="titleMedium">{content.rubricTitle}</Heading>
+    <div className="li-learning-fields">
+     {content.rubricItems.map((item:string[],i:number)=><div className="li-learning-rating" key={i}>
+      <label htmlFor={'li-rating-'+i}><strong>{item[0]}</strong><Text role="support">{item[1]}</Text></label>
+      <select id={'li-rating-'+i} value={attempt.ratings[i]??''}
+       disabled={attempt.reviewed||locked}
+       onChange={event=>changeRating(i,event.currentTarget.value)}>
+       {content.scoreOptions.map((option:string,j:number)=>
+        <option key={j} value={j===0?'':String(j-1)}>{option}</option>)}
+      </select>
+     </div>)}
+    </div>
+    <Text role="support">{vi?'Tự chấm theo rubric, không phải điểm tự động.':'Self-review, not automatic grading.'}</Text>
+    {attempt.reviewed?<Button onClick={()=>go('progress')}>{labels.progress}</Button>:
+     <Button disabled={locked||saving} onClick={()=>void finish()}>{content.saveReview}</Button>}
+   </Card>}
+   {phase==='progress'&&<Card variant="flat-study" aria-labelledby="li-learn-progress">
+    <Heading level={2} id="li-learn-progress" role="titleLarge">
+     {vi?'Hoàn thành lượt tự đánh giá':'Self-review completed'}
+    </Heading>
+    <Text>{vi?'Đây là một lượt học đã lưu, không phải chứng nhận thông thạo.':
+     'This is one saved learning attempt, not a mastery certificate.'}</Text>
+    <Text role="support">{content.scoreLabel}: {attempt.ratings.reduce<number>((n,x)=>n+(x??0),0)} / 8</Text>
+    <Button variant="secondary" onClick={()=>ports.search.openSearch('sampling bias random sampling variation')}>
+     {vi?'Tìm bài liên quan':'Find related lessons'}
+    </Button>
+    <Button variant="ghost" onClick={ports.navigation.openCatalog}>
+     {vi?'Trở lại Tàng Thư':'Return to library'}
+    </Button>
+   </Card>}
+  </motion.div>
+ </section>;
+}

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {checkInviteAccess} from '../.sync-test/invite-access.js';
+import {readFileSync} from 'node:fs';
+import {checkInviteAccess,safeInviteErrorCode,sessionJwtCandidate,safeJwtFetchError} from '../.sync-test/invite-access.js';
 
 const endpoint='https://example.apirest.neon.tech/li/rest/v1';
 const tokenFor=sub=>['e30',Buffer.from(JSON.stringify({
@@ -56,4 +57,58 @@ test('unexpected truthy API payload cannot bypass the boolean check',async()=>{
 });
 test('non-HTTPS API endpoint is refused',async()=>{
  await assert.rejects(checkInviteAccess('http://example.test/li/rest/v1',authFor('A')),/INVALID_INVITE_API_URL/);
+});
+
+test('session JWT candidate requires exactly three nonempty segments, never an opaque cookie',()=>{
+ assert.equal(sessionJwtCandidate('opaque-session-token'),null);
+ assert.equal(sessionJwtCandidate('opaque.token'),null);
+ assert.equal(sessionJwtCandidate('a.b.'),null);
+ assert.equal(sessionJwtCandidate('a.b.c'),'a.b.c');
+ assert.equal(sessionJwtCandidate(null),null);
+});
+
+test('safe codes show invite HTTP stage without leaking response body or identity',()=>{
+ assert.equal(safeInviteErrorCode(new Error('INVITE_CHECK_HTTP_404')),'INV-RPC-404');
+ assert.equal(safeInviteErrorCode(new Error('INVITE_CHECK_HTTP_401')),'INV-RPC-401');
+ assert.equal(safeInviteErrorCode(new Error('INVITE_CHECK_HTTP_500')),'INV-RPC-5XX');
+ assert.equal(safeInviteErrorCode(new Error('INVITE_CHECK_INVALID_RESPONSE')),'INV-RPC-FORMAT');
+ assert.equal(safeInviteErrorCode(new Error('NEON_AUTH_JWT_FETCH_FAILED')),'INV-JWT-FETCH');
+ assert.equal(safeInviteErrorCode(new Error('INVITE_ACCOUNT_MISMATCH')),'INV-JWT-BIND');
+ assert.equal(safeInviteErrorCode(new TypeError('Failed to fetch')),'INV-NET-OR-CLIENT');
+});
+
+test('unknown errors and attacker-controlled exception text are always redacted',()=>{
+ const hostile='Bearer secret.jwt.payload user@example.com https://malicious.example/?code=secret';
+ assert.equal(safeInviteErrorCode(new Error(hostile)),'INV-UNKNOWN');
+ assert.equal(safeInviteErrorCode({message:hostile}),'INV-UNKNOWN');
+ assert.equal(safeInviteErrorCode(new Error('INVITE_CHECK_HTTP_404'+hostile)),'INV-UNKNOWN');
+});
+
+test('failed invite RPC always keeps access closed, while safe diagnosis classifies the failure',async()=>{
+ let code='';
+ let allowed=false;
+ try{allowed=await checkInviteAccess(endpoint,authFor('invited-user'),async()=>ok({error:'internal'},403));}
+ catch(error){code=safeInviteErrorCode(error);}
+ assert.equal(allowed,false);
+ assert.equal(code,'INV-RPC-403');
+});
+
+test('regression: signed JWT uses SDK-managed session helper, not ad hoc /token',()=>{
+ const source=readFileSync(new URL('../src/auth/neon-client.ts',import.meta.url),'utf8');
+ assert.match(source,/createInternalNeonAuth\(/);
+ assert.match(source,/neonAuth\.getJWTToken\(\)/);
+ assert.match(source,/export const authClient=neonAuth\.adapter/);
+ assert.doesNotMatch(source,/authClient\.token\(\)/);
+ assert.match(source,/sessionJwtCandidate\(jwt\)/);
+});
+
+test('safe JWT error captures only allowlisted HTTP status with no untrusted details',()=>{
+ const secret='Bearer aa.bb.cc user@example.com';
+ assert.equal(safeInviteErrorCode(safeJwtFetchError({status:401,message:secret})),'INV-JWT-401');
+ assert.equal(safeInviteErrorCode(safeJwtFetchError({status:403,message:secret})),'INV-JWT-403');
+ assert.equal(safeInviteErrorCode(safeJwtFetchError({statusCode:429,message:secret})),'INV-JWT-429');
+ assert.equal(safeInviteErrorCode(safeJwtFetchError({status:500,message:secret})),'INV-JWT-5XX');
+ assert.equal(safeInviteErrorCode(safeJwtFetchError({status:200,message:secret})),'INV-JWT-FETCH');
+ assert.equal(safeInviteErrorCode(safeJwtFetchError({status:'401',message:secret})),'INV-JWT-FETCH');
+ assert.equal(safeInviteErrorCode(safeJwtFetchError({message:secret})),'INV-JWT-FETCH');
 });

@@ -1,8 +1,8 @@
 /** Actual React Button/Card in the one Studio. Fixture-only, never saves. */
 import React,{useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button,Card,FilterChip} from './Components';
-import type {ButtonVariant,CardVariant} from './Components';
+import {Button,Card,FilterChip} from './index';
+import type {ButtonVariant,CardVariant} from './index';
 import './components.css';
 import './components-story.css';
 const params=new URLSearchParams(location.search);

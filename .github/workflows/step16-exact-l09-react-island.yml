@@ -97,7 +97,7 @@ jobs:
             "http://127.0.0.1:8794/tools/step16-real-l09-react-island/site-shell-fixture.html" \
             "LI_STEP16_L09_SHELL_PASS " 23 90000
           echo "PASS isolated L09, native bridge, auth origin guard and local-only Vanilla shell mount"
-- name: Compose COMPLETE temporary React + DS + ONT tree (no branch merge)
+      - name: Compose COMPLETE temporary React + DS + ONT tree (no branch merge)
         env:
           LI_STAGE02B_HEAD: ${{ github.event.pull_request.head.sha }}
         run: node tools/step16-real-l09-react-island/scripts/stage02b-combined-tree.mjs

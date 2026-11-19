@@ -14,7 +14,7 @@ module.exports={
  skipWaiting:false,
  navigateFallback:"/li/index.html",
  runtimeCaching:[
-  {urlPattern:/\\/li\\/assets\\/[^?]+\\.(?:png|jpe?g|webp|gif|avif)$/i,
+  {urlPattern:new RegExp("^/li/assets/.*[.](?:png|jpe?g|webp|gif|avif)$","i"),
    handler:"CacheFirst",
    options:{cacheName:"li-staging-images",cacheableResponse:{statuses:[200]},
     expiration:{maxEntries:80,maxAgeSeconds:30*24*60*60}}}

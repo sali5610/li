@@ -53,6 +53,11 @@
   border:1px solid var(--moss);border-radius:0;
   box-shadow:calc(var(--li-space-1) + 1px) calc(var(--li-space-1) + 1px) 0 var(--wood)
 }
+/* Specific D2 flat secondary study context. Raised remains the default Card. */
+.pilot[data-vc-g2="approved-research"] .li-ui-card.li-ui-card-flat{
+  border-color:var(--rule);
+  box-shadow:none
+}
 .pilot[data-vc-g2="approved-research"] .li-ui-field{gap:var(--li-space-2)}
 .pilot[data-vc-g2="approved-research"] .li-ui-field label{
   font-size:var(--li-type-body);line-height:var(--li-leading-body)
@@ -68,20 +73,18 @@
 @media(min-width:600px){
  .pilot[data-vc-g2="approved-research"] .li-ui-card{padding:var(--li-space-6)}
 }
-@media(min-width:744px) and (orientation:portrait){
+/* Match the canonical native iPad device-mode media (744..1420), not every
+   desktop with width >=744. Those canonical aliases resolve portrait/landscape,
+   including wide landscape iPad and narrow split-window context. */
+@media(min-width:744px) and (max-width:1420px){
  .pilot[data-vc-g2="approved-research"] .li-ui-card{
-  padding:calc(var(--li-space-6) + var(--li-space-1))
+  padding:var(--li-card-pad,var(--li-space-6))
  }
-}
-@media(min-width:1024px) and (orientation:landscape){
- .pilot[data-vc-g2="approved-research"] .li-ui-card{padding:var(--li-space-8)}
-}
-@media(min-width:744px){
  .pilot[data-vc-g2="approved-research"] .li-ui-button{
-  min-height:calc(var(--li-space-12) + var(--li-space-2))
+  min-height:var(--li-current-control-min,var(--li-comp-button-min-hit-size,var(--li-space-12)))
  }
  .pilot[data-vc-g2="approved-research"] .li-ui-field .li-ui-input{
-  min-height:calc(var(--li-space-12) + var(--li-space-2))
+  min-height:var(--li-current-control-min,var(--li-comp-button-min-hit-size,var(--li-space-12)))
  }
 }
 

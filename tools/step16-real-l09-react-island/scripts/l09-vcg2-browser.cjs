@@ -61,6 +61,7 @@ function capture(){
   dataStorageKey:root?.getAttribute('data-storage-key'),lang:root?.lang,
   buttons:{primary:style(primary),secondary:style(secondary)},
   cards:cards.map(style),cardShared:cards.map(x=>x.classList.contains('li-ui-card')),
+  cardFlat:cards.map(x=>x.classList.contains('li-ui-card-flat')&&x.dataset.cardElevation==='flat'),
   answerCount:answers.length,answerShared:answers.map(x=>x.closest('.li-ui-field')!==null),
   answerLabels:answers.map(x=>x.labels?.length),answerPurposes:answers.map(x=>x.getAttribute('data-field-purpose')),
   answerStyles:answers.map(style),
@@ -86,8 +87,12 @@ const variants=[
  // Canonical iPad :root tokens intentionally scale semantic body from 16/24 to 18/28.
  // Preserve that responsive role; D1 is a body-label contract, not a fixed pixel lock.
  {width:820,height:1050,pad:28,min:56,body:[18,28]},
+ {width:820,height:700,pad:28,min:56,body:[18,28]},
  {width:1040,height:768,pad:32,min:56,body:[18,28]},
- {width:1440,height:900,pad:32,min:56}
+ {width:1408,height:900,pad:32,min:56,body:[18,28]},
+ {width:1200,height:1500,pad:24,min:48},
+ // Desktop must NOT accidentally inherit wide iPad density.
+ {width:1440,height:900,pad:24,min:48}
 ];
 async function main(){
  proc=spawn(bin,['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage',
@@ -119,6 +124,8 @@ async function main(){
   if([390,820,1040].includes(v.width))await screenshot('vc-g2-opt-in-'+v.width);
   verify(b.active==='approved-research'&&b.hasSharedButton&&!b.hasLegacyButton,'D1 shared Button owner incorrect '+v.width);
   verify(b.cards.length===2&&b.cardShared.every(Boolean),'D2 shared Card owner incorrect '+v.width);
+  verify(b.cardFlat.length===2&&b.cardFlat.every(Boolean),
+    'D2 requires two explicit secondary flat study cards '+v.width);
   verify(b.answerCount===4&&b.answerShared.every(Boolean)&&b.answerLabels.every(x=>x===1)&&
     b.answerPurposes.every(x=>x==='answer'),'D3 TextAreaField label/purpose mismatch '+v.width);
   verify(b.buttons.primary?.height>=v.min&&b.buttons.secondary?.height>=v.min,'D1 hit target smaller than '+v.min+'px at '+v.width);
@@ -130,9 +137,21 @@ async function main(){
   verify(b.buttons.primary.borderRadius==='0px'&&/4px 4px 0px/.test(b.buttons.primary.shadow)&&
     /4px 4px 0px/.test(b.buttons.secondary.shadow),'D1 square/hard-shadow drift '+v.width+' '+b.buttons.primary.shadow);
   verify(b.cards.every(c=>c.padding.split(' ').every(x=>parseFloat(x)===v.pad)),'D2 card padding wrong at '+v.width+' '+JSON.stringify(b.cards.map(x=>x.padding)));
-  verify(b.cards.every(c=>c.borderRadius==='0px'&&/5px 5px 0px/.test(c.shadow)),'D2 hard shadow drift '+v.width+' '+JSON.stringify(b.cards));
+  verify(b.cards.every((c,i)=>c.borderRadius==='0px'&&c.shadow==='none'&&
+    c.shadow===a.cards[i]?.shadow),'D2 study panels must retain legacy FLAT/no-shadow '+v.width+
+    ' '+JSON.stringify({legacy:a.cards,shared:b.cards}));
+  // Independent raised variant must still use D2 hard depth. A clone is only a
+  // temporary DOM style probe, never part of lesson content or persisted state.
+  const raised=await evaluate("(()=>{const p=document.querySelector('.pilot[data-vc-g2=approved-research]'),"+
+    "e=p?.querySelector('section.li-ui-card');if(!e)return null;const clone=e.cloneNode(false);"+
+    "clone.classList.remove('li-ui-card-flat');clone.dataset.cardElevation='raised';"+
+    "clone.style.display='none';p.appendChild(clone);clone.style.display='block';"+
+    "const s=getComputedStyle(clone),v={shadow:s.boxShadow,radius:s.borderRadius};clone.remove();return v})()");
+  verify(raised?.radius==='0px'&&/5px 5px 0px/.test(raised.shadow),
+    'D2 raised card exception lost after flat study mapping '+v.width+' '+JSON.stringify(raised));
   verify(b.answerStyles.every(x=>x.height>=112&&parseFloat(x.minHeight)>=112&&x.fontSize===bodyPx+'px'&&x.lineHeight===a.answerStyles[0].lineHeight&&x.bg===a.answerStyles[0].bg),'D3 named answer min-height/semantic paint/legacy multiline rhythm drift '+v.width+': '+JSON.stringify({shared:b.answerStyles,legacy:a.answerStyles}));
-  verify(b.buttons.primary.bg===a.buttons.primary.bg&&b.buttons.secondary.bg===a.buttons.secondary.bg&&b.cards[0].bg===a.cards[0].bg,'Canonical semantic background drift '+v.width);
+  verify(b.buttons.primary.bg===a.buttons.primary.bg&&b.buttons.secondary.bg===a.buttons.secondary.bg&&
+    b.cards.every((c,i)=>c.bg===a.cards[i]?.bg),'Canonical semantic background drift '+v.width);
   verify(b.viewport===v.width&&b.scrollWidth<=v.width+1&&a.scrollWidth<=v.width+1,'Horizontal overflow '+v.width);
   verify(b.nativeChallengeHidden&&b.runtime==='react-candidate'&&b.realKey===null&&b.dataStorageKey===researchKey,
    'React island exposed native challenge or touched real key '+v.width);

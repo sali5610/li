@@ -13,6 +13,7 @@ function closeAccount(){
 opener?.addEventListener('click',()=>{
  if(!document.documentElement.classList.contains('li-auth-verified'))return;
  document.documentElement.classList.add('li-account-open');
+ window.dispatchEvent(new Event('li:account-open'));
  root.focus();
 });
 createRoot(root).render(<AuthPanel onClose={closeAccount}/>);

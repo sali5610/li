@@ -1,0 +1,31 @@
+name: Step16 Synthetic PostgreSQL Idempotency / RLS Contract (CI ONLY)
+
+# Research PR only. Starts an ephemeral Docker postgres with NO published port,
+# no Neon credentials, no staging or production deployment.
+on:
+  pull_request:
+    paths:
+      - 'tools/step16-real-l09-react-island/tests/postgres-idempotency/**'
+      - '.github/workflows/step16-idempotency-postgres-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  postgres-receipt-rls:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - name: Checkout exact PR source (no persisted credentials)
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run disposable Postgres 16 FORCE RLS, CAS, receipt replay and concurrency assertions
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e .env
+          test ! -e tools/step16-real-l09-react-island/.env
+          bash tools/step16-real-l09-react-island/tests/postgres-idempotency/ci-only-run.sh
+          echo "PASS: Isolated PG candidate only, no real Neon/Auth or Cloudflare mutation"

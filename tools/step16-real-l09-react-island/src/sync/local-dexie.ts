@@ -9,8 +9,10 @@ export type OutboxEntry=Edit&{key:string;accountId:string;conflict:boolean};
 export class PrivateDeviceStore extends Dexie{
  records!:Table<LocalRecord,string>;
  outbox!:Table<OutboxEntry,string>;
- constructor(){
-  super('li-step16-private-device-v1');
+ constructor(dbName='li-step16-private-device-v1'){
+  // QA's explicitly named IndexedDB is isolated from personal app records.
+  // Product callers preserve the existing default name and behavior.
+  super(dbName);
   this.version(1).stores({
    records:'key,accountId,[accountId+itemType+itemId]',
    outbox:'key,accountId,[accountId+conflict]'

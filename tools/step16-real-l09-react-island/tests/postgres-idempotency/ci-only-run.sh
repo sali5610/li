@@ -88,4 +88,8 @@ grep -Fq 'LI_SYNC_REVISION_CONFLICT' /tmp/li_pg_diff_second.log
 one "SELECT public.ci_assert((SELECT count(*) FROM public.li_sync_operation_receipts WHERE item_id='qa-concurrent-different')=1,'concurrent different-op receipt count');" >/dev/null
 echo "PASS PG-15: concurrent different-opId stale revision blocked"
 one "SELECT public.ci_assert((SELECT COUNT(*) FROM public.li_user_state)=4,'final expected synthetic rows');" >/dev/null
-echo "LI_POSTGRES_IDEMPOTENCY_CI_PASS 15/15 (mock identities, NO real JWT)"
+grep -Fq "CI_ONLY_DATABASE_REQUIRED" "$BASE/ci-only-hardening.sql"
+query < "$BASE/ci-only-hardening.sql" > /tmp/li_pg_hardening_run.log
+grep -Fq "LI_PG_DIRECT_DML_BYPASS_DENIED_16_TO_20_PASS" /tmp/li_pg_hardening_run.log
+echo "PASS PG-16..20: server RPC only, direct INSERT/UPDATE/DELETE denied, PUBLIC EXECUTE revoked"
+echo "LI_POSTGRES_IDEMPOTENCY_CI_PASS 20/20 (mock identities, NO real JWT)"

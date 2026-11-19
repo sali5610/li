@@ -8,7 +8,7 @@
     "build": "npm run extract && tsc --noEmit && vite build",
     "build:auth": "tsc --noEmit && vite build --config vite.auth.config.mjs",
     "check:source": "node scripts/extract-l09.cjs --verify",
-    "test:sync": "tsc --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM --skipLibCheck --outDir .sync-test src/sync/contract.ts src/sync/neon-api.ts src/sync/local-dexie.ts src/sync/sync-once.ts src/sync/neon-session.ts src/sync/invite-access.ts src/auth/rls-qa-contract.ts && node --test tests/*.test.mjs"
+    "test:sync": "tsc --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM --skipLibCheck --outDir .sync-test src/sync/contract.ts src/sync/neon-api.ts src/sync/local-dexie.ts src/sync/sync-once.ts src/sync/neon-session.ts src/sync/invite-access.ts && tsc --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM --skipLibCheck --outDir .sync-test/auth src/auth/rls-qa-contract.ts && node --test tests/*.test.mjs"
   },
   "dependencies": {
     "react": "19.2.0",

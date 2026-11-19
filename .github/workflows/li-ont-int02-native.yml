@@ -30,6 +30,21 @@ jobs:
           node tools/test_quotes.js
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
+      - name: Checkout exact immutable Auth policy fixture for read-only CI tests
+        uses: actions/checkout@v4
+        with:
+          ref: fb292e6210666b5371085cb5dfee1fb8b763e9fc
+          path: ont-int02-rls-fixture-pin
+          persist-credentials: false
+      - name: Verify policy fixture blob SHA; copy solely into disposable test workspace
+        run: |
+          set -euo pipefail
+          test "$(git -C ont-int02-rls-fixture-pin rev-parse HEAD)" = "fb292e6210666b5371085cb5dfee1fb8b763e9fc"
+          test "$(git -C ont-int02-rls-fixture-pin rev-parse HEAD:db/migrations/0002_invite_only_access.sql)" = "6eb6c73c81596d4ecf199137ff3741b75576a42c"
+          test ! -e db/migrations/0002_invite_only_access.sql
+          install -m 600 ont-int02-rls-fixture-pin/db/migrations/0002_invite_only_access.sql db/migrations/0002_invite_only_access.sql
+          test -z "$(git ls-files db/migrations/0002_invite_only_access.sql)"
+          echo "QA_FIXTURE_PIN_ONLY: no migration applied, no Neon connection, no DB file committed"
       - name: Compile exact native L09 research candidate + synthetic one-writer tests
         working-directory: tools/step16-real-l09-react-island
         run: |
@@ -57,3 +72,5 @@ jobs:
           test -z "$(git ls-files site/assets/step16-l09-island.js)"
           test -z "$(git ls-files site/assets/step16-l09-island.css)"
           test -z "$(git ls-files site/__ont04c2b_qa.html)"
+          test -z "$(git ls-files db/migrations/0002_invite_only_access.sql)"
+          test "$(git status --short --untracked-files=no)" = ""

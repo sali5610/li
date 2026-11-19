@@ -21,3 +21,6 @@
 ## Gate truth
 
 ONT-03C pending curriculum, optional vector OFF, G2/physical iPhone/iPad Safari/G4 and signed Google invite/RLS still OPEN. VoiceOver `OUT_OF_SCOPE_PO_S208`, not PASS. No main merge, Cloudflare build/deploy or Neon DDL. CI uses GitHub Actions runner minutes; do not claim zero preview consumption unless measured.
+## Pinned CI-only external source fixture (not integrated DB code)
+
+The imported React #148 private invite synthetic suite reads `db/migrations/0002_invite_only_access.sql`, which is deliberately not included in ONT-INT-01/02's `db/` source scope. The initial integration Actions suite stopped on `ENOENT` before browser QA, although the preceding source/ONT/Design System and 189/189 native quote checks passed. This was **not** an observed Neon RLS failure. To keep all negative invite tests executable without adopting or deploying Auth database code, the draft-only ONT-INT-02 workflow checks out immutable React #148 commit `fb292e6210666b5371085cb5dfee1fb8b763e9fc`, verifies Git blob `6eb6c73c81596d4ecf199137ff3741b75576a42c`, then copies that file to the **disposable CI workspace only** before running synthetic test suites. The file remains untracked in the actual Git tree and no SQL migration is applied. Its CI use cannot establish signed production RLS or release clearance.

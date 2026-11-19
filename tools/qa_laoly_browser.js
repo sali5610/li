@@ -158,9 +158,10 @@
    win.closeModal?.("buddy-modal");
   }
   const modal=doc.getElementById("buddy-modal");
-  const openButton=doc.querySelector("#page-home [data-buddy], .laoly-buddy");
   win.navigate("home",{focus:false});
-  openButton?.click();
+  // Call the same native opening handler used by the floating Lão Lý trigger.
+  // Old selector targeted a decorative node, not the live buddy action.
+  win.openLaoLy();
   await delay(100);
   record("ordinary_home_buddy_quote_retained",quoteState(doc).shown,"non-assessment surface");
   record("home_modal_still_opens",modal.classList.contains("open"));

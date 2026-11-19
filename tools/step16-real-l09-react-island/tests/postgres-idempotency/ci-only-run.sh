@@ -11,7 +11,8 @@ docker run --rm -d --name "$CT" \
   -e POSTGRES_DB=li_idempotency_ci postgres:16-alpine >/dev/null
 
 for i in $(seq 1 70); do
-  if docker exec "$CT" pg_isready -U postgres -d li_idempotency_ci >/dev/null 2>&1; then break; fi
+  if docker logs "$CT" 2>&1 | grep -Fq "PostgreSQL init process complete" && \
+     docker exec "$CT" pg_isready -U postgres -d li_idempotency_ci >/dev/null 2>&1; then break; fi
   if ((i==70)); then echo "FAIL: isolated database never ready" >&2; exit 1; fi
   sleep 0.3
 done

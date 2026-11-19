@@ -26,3 +26,6 @@ export function mountL09(host:HTMLElement):Promise<()=>void>{
   root.render(<Ready/>);
  });
 }
+
+// Only the explicit localhost fixture may exercise snapshot/rollback.
+export {captureFixtureSnapshot,rollbackFixtureSnapshot} from './learning/fixture-handover';

@@ -1,0 +1,21 @@
+name: li. ONT-03A academic ontology (PR only)
+on:
+  pull_request:
+    paths:
+      - 'docs/ontology/academic/**'
+      - 'tools/validate_academic_ontology.mjs'
+      - '.github/workflows/li-academic-ontology.yml'
+permissions:
+  contents: read
+jobs:
+  academic-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Shared ontology base check
+        run: node tools/validate_ontology.mjs --check
+      - name: Academic graph and 16 negative checks
+        run: node tools/validate_academic_ontology.mjs --check

@@ -1,8 +1,9 @@
 /**
  * ONT-04C1b: Quote metadata audit gate, NO quote renderer.
  *
- * Never interprets a source URL or historical author's name as permission
- * to display text. For this draft ALL 24 bank IDs remain held for review.
+ * Personal, invite-only scope: reuse-rights clearance is NOT a product gate.
+ * Only source attribution, exact-wording/context integrity and safe stage use
+ * remain implementation QA. Static C1b does not itself render any quote.
  * Accepts no auth, attempt, answer, role, progress or private learner data.
  */
 export const REVIEW_PROFILE='li-ONT04C1b-quote-source-audit';
@@ -16,8 +17,10 @@ function validObject(x,allowed){
 }
 export function indexQuoteSafety({policy,quoteIds,companionManifests}){
  if(policy?.profile!==REVIEW_PROFILE||policy.demoOnly!==true||
-  policy.hardGates?.defaultQuoteState!=='WITHHELD'||
-  policy.hardGates?.quoteRenderAuthorization!=='NOT_GRANTED'||
+  policy.hardGates?.defaultQuoteState!=='WITHHELD_FOR_ATTRIBUTION_AND_STAGE_QA'||
+  policy.hardGates?.quoteRenderAuthorization!=='PENDING_SOURCE_STAGE_INTEGRATION'||
+  policy.hardGates?.usageScope!=='PERSONAL_INVITE_ONLY'||
+  policy.hardGates?.reuseRightsGate!=='NOT_A_PRODUCT_BLOCKER'||
   policy.hardGates?.reviewedQuoteEntries!==0||
   policy.hardGates?.reviewedPublicQuoteEntries!==0||
   policy.hardGates?.clientCanApprove!==false||
@@ -48,7 +51,7 @@ export function indexQuoteSafety({policy,quoteIds,companionManifests}){
 const permission=Object.freeze({
  renderAllowed:false,canCiteAsScientificEvidence:false,canRevealAnswer:false,
  canUseAsAssessmentHint:false,canRecordLearnerData:false,canNavigate:false,
- attributionVerified:false,translationRightsCleared:false,territoryRightsCleared:false
+ attributionVerified:false,sourceContextReviewed:false
 });
 function withheld(status,explanation,{lessonId=null,stage=null,candidateId=null,sourceRef=null}={}){
  return {
@@ -78,8 +81,9 @@ export function inspectQuote(index,input){
   return withheld('UNSUPPORTED_QUOTE_ID','The requested quote is not a documented candidate for this exact lesson and stage.',{lessonId,stage});
  const id=candidateId??source.preferredId;
  if(!index.quotes.has(id))return withheld('SOURCE_BANK_DRIFT','Unregistered quote ID; refuse to use it.',{lessonId,stage});
- // Even a valid bank ID and URL has NOT passed source/edition/rights review.
- return withheld('WITHHELD_SOURCE_RIGHTS_UNREVIEWED',
-  'Quote ID matches editorial source metadata only. Exact edition, attribution, translation and territory rights, stage relevance and no-spoiler release gate remain unverified.',
+ // Even a valid bank ID and URL still needs source/context and stage review.
+ // Copyright licensing review is explicitly NOT a private-app feature blocker.
+ return withheld('WITHHELD_SOURCE_CONTEXT_UNREVIEWED',
+  'Editorial metadata only. Verify literal attribution, source context and stage/no-spoiler integration; no reuse-rights gate for this invite-only personal app.',
   {lessonId,stage,candidateId:id,sourceRef:'site/assets/laoly-quotes-s121.js'});
 }

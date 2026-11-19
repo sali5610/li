@@ -15,7 +15,7 @@ This is **UI research transparency**, not a publication switch. Existing manifes
 - [ ] TypeScript compile/Vite bundle and React Vitest pass.
 - [ ] Exact L09 result shows VI/EN code-only note; still only external source link and no app navigation.
 - [ ] No fabricated native route note on L09-1-1 or S37-only candidates; L03/L15 do not appear from absent search graph.
-- [ ] Real native Chromium dual-island mounted browser test (12 checks), normal history test (10/27), dual regression (23), native-negative (33), other affected workflows on same SHA.
+- [ ] Real native Chromium dual-island mounted browser test (13 checks), normal history test (10/27), dual regression (23), native-negative (33), other affected workflows on same SHA.
 - [ ] Real learner attempt / visits unchanged by this read-only Search experiment.
 - [ ] Generated JS/CSS remain untracked ephemeral CI files.
 

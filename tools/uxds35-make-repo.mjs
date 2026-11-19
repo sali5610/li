@@ -14,7 +14,12 @@ for(const path of paths){
  const src=join(root,path),dst=join(target,path);
  if(!existsSync(src))throw new Error('Missing DS source '+path);
  mkdirSync(dirname(dst),{recursive:true});
- cpSync(src,dst,{recursive:true});
+ cpSync(src,dst,{recursive:true,filter:(item)=>{
+   const segments=item.split(/[\\/]/);
+   return !segments.includes('node_modules') && !segments.includes('.git')
+     && !segments.includes('dist') && !segments.includes('.DS_Store');
+ }});
+
 }
 const workflow=join(target,'.github/workflows/pages.yml');
 mkdirSync(dirname(workflow),{recursive:true});

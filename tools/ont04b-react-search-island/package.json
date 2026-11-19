@@ -1,0 +1,26 @@
+{
+  "name": "li-ont04b-react-typed-search-island",
+  "version": "0.0.0-research",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run",
+    "test:ci": "vitest run --reporter=verbose"
+  },
+  "dependencies": {
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "16.3.0",
+    "@testing-library/user-event": "14.6.1",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "jsdom": "27.0.1",
+    "typescript": "5.9.3",
+    "vite": "8.3.8",
+    "vitest": "4.0.0"
+  }
+}

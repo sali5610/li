@@ -21,6 +21,7 @@
 | **Color, semantic paint, typography values, spacing, shape, target-size settings** | [tokens.json](tokens.json) → [generated design-tokens.css](../site/assets/design-tokens.css) | Every visual/component adjustment; **only edit JSON**, regenerate CSS |
 | **Typography roles, 4px grid, responsive spacing** | [typography-spacing.md](typography-spacing.md) | Type, rhythm, text overflow, layouts |
 | **Component inventory, selectors, variants, states, PO exceptions** | [components.md](components.md) | Every touched component and its siblings |
+| **Atomic-level gap inventory + React readiness (AUDIT, not approved implementation)** | [2026-11-19 atomic audit](audits/2026-11-19-atomic-react-readiness.md) | When planning React shared components, component-level Do/Don't or migration QA; keep approved designs unchanged |
 | **Use / Don't use, interaction patterns, state transitions, accessibility behavior** | [ux-patterns-and-behavior.md](ux-patterns-and-behavior.md) | Any UI/UX interaction, new component or pattern; treat as default rule |
 | **Coverage, acceptance, impact chain and device test evidence** | [qa-checklist.md](qa-checklist.md) | Every UI/UX PR or design review |
 | **Actual component specimens** | [Component Library review](../site/component-library-review.html) | Compare rendered visual/state examples; a review specimen ≠ production signoff |

@@ -32,4 +32,29 @@ export function mountL09(host:HTMLElement):Promise<()=>void>{
 }
 
 // Only the explicit localhost fixture may exercise snapshot/rollback.
+/**
+ * Opt-in native Settings account card. Dynamic import prevents the Auth SDK
+ * from loading with the lesson island unless Settings is explicitly requested.
+ */
+export async function mountSettingsAccount(host:HTMLElement):Promise<()=>void>{
+ if(!host.isConnected)throw Error('LI_SETTINGS_HOST_DISCONNECTED');
+ const {SettingsAccount}=await import('./auth/SettingsAccount.js');
+ const root=createRoot(host);
+ return new Promise((resolve,reject)=>{
+  let done=false;
+  const timeout=window.setTimeout(()=>{
+   if(done)return;
+   done=true;root.unmount();reject(Error('LI_SETTINGS_MOUNT_TIMEOUT'));
+  },6000);
+  function Ready(){
+   useEffect(()=>{
+    if(!done){done=true;window.clearTimeout(timeout);resolve(()=>root.unmount());}
+    return()=>window.clearTimeout(timeout);
+   },[]);
+   return <SettingsAccount/>;
+  }
+  root.render(<Ready/>);
+ });
+}
+
 export {captureFixtureSnapshot,rollbackFixtureSnapshot} from './learning/fixture-handover';

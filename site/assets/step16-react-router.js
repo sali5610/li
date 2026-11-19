@@ -7,8 +7,40 @@
  const params=new URLSearchParams(window.location.search);
  const local=window.location.protocol==='http:' &&
    (window.location.hostname==='127.0.0.1'||window.location.hostname==='localhost');
- if(!local||!['l09','l09-native-fixture'].includes(params.get('li-react')))return;
- const fixtureMode=params.get('li-react')==='l09-native-fixture';
+ const mode=params.get('li-react');
+ if(!local||!['l09','l09-native-fixture','settings'].includes(mode))return;
+ if(mode==='settings'){
+   const page=document.getElementById('page-settings');
+   const grid=page?.querySelector('[aria-labelledby="settings-data"] .settings-group-grid');
+   const script=document.currentScript;
+   if(!page||!grid||!script?.src||document.getElementById('li-step16-settings-react-host'))return;
+   const host=document.createElement('div');
+   host.id='li-step16-settings-react-host';
+   host.hidden=true;
+   host.dataset.localOnly='true';
+   grid.prepend(host);
+   const css=document.createElement('link');
+   css.rel='stylesheet';
+   css.href=new URL('./step16-l09-island.css',script.src).href;
+   const cssReady=new Promise((resolve,reject)=>{
+     css.onload=resolve;
+     css.onerror=()=>reject(Error('LI_SETTINGS_STYLES_UNAVAILABLE'));
+   });
+   document.head.appendChild(css);
+   const jsUrl=new URL('./step16-l09-island.js',script.src);
+   Promise.all([cssReady,import(jsUrl.href)]).then(async([,candidate])=>{
+     if(typeof candidate.mountSettingsAccount!=='function')throw Error('LI_SETTINGS_MOUNT_UNAVAILABLE');
+     await candidate.mountSettingsAccount(host);
+     host.hidden=false;
+     page.dataset.liSettingsReact='mounted';
+   }).catch(()=>{
+     host.remove();css.remove();
+     page.dataset.liSettingsReact='native-fallback';
+     // Preserve the existing native data-export/import and privacy controls.
+   });
+   return;
+ }
+ const fixtureMode=mode==='l09-native-fixture';
  const fixtureKey='step16.l09.shared-native-fixture.v1';
  const page=document.getElementById('page-lessonL09');
  const challenge=document.getElementById('l09-challenge');

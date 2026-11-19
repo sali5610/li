@@ -215,6 +215,21 @@
     'Synthetic handover created a real lesson visit');
   checks.push('Shared synthetic handover retains guided/future fields and never writes production key');
   checks.push('Rollback and synthetic reload leave real visit history and original learner state byte-identical');
+
+  // Reuse the native-shell fixture for one Settings mount + origin protection
+  // check. The localhost study session must NEVER contact Neon Auth.
+  doc=await load(true,390,'settings');
+  await wait(()=>doc.querySelector('#page-settings')?.dataset.liSettingsReact==='mounted',
+    'React Settings account card mounted');
+  const accountHost=doc.getElementById('li-step16-settings-react-host');
+  assert(accountHost?.querySelector('[data-auth-origin-blocked="true"]')&&
+    !accountHost.querySelector('button')&&
+    doc.getElementById('export-personal-data')&&
+    doc.getElementById('import-personal-trigger')&&
+    doc.getElementById('study-mode-settings')&&
+    localStorage.getItem(nativeKey)===realBaseline,
+    'Untrusted origin reached OAuth or Settings native controls were replaced');
+  checks.push('React Settings account card mounts in native privacy group; localhost OAuth blocked and local data preserved');
   frame.remove();localStorage.removeItem(shared);localStorage.removeItem(key);
   result.textContent='LI_STEP16_L09_SHELL_PASS '+JSON.stringify({count:checks.length,checks,note:'localhost-only; local isolated key; no production deploy, cross-device sync, Google Auth or Safari pass'});
  }catch(e){

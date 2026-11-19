@@ -39,7 +39,7 @@ const copy={
  }
 } as const;
 
-export function AuthPanel(){
+export function AuthPanel({embedded=false}:{embedded?:boolean}={}){
  const [locale,setLocale]=useState<Locale>('vi');
  const t=copy[locale];
  const {data:session,isPending,error,refetch}=authClient.useSession();
@@ -74,7 +74,8 @@ export function AuthPanel(){
    if(window.location.origin!==AUTH_ORIGIN)throw Error('UNTRUSTED_ORIGIN');
    // Only the exact trusted origin and current research path; never accept an
    // external redirect from query params or a user-entered email.
-   const callbackURL=AUTH_ORIGIN+window.location.pathname+'?pilot=auth';
+   // Callback is always first-party; never accept an untrusted return URL from a query parameter.
+   const callbackURL=AUTH_ORIGIN+window.location.pathname+(embedded?'?li-react=settings':'?pilot=auth');
    const result=await authClient.signIn.social({provider:'google',callbackURL});
    if(result.error)throw Error('GOOGLE_SIGN_IN_FAILED');
   }catch{setFeedback(t.error);}
@@ -91,9 +92,9 @@ export function AuthPanel(){
   }catch{setFeedback(t.leave);}
   finally{setBusy(null);}
  }
- return <main className="auth-pilot">
+ const view=<>
   <header className="auth-header">
-   <div><p className="auth-tag">{t.tag}</p><h1>{t.heading}</h1></div>
+   <div><p className="auth-tag">{t.tag}</p>{embedded?<h3>{t.heading}</h3>:<h1>{t.heading}</h1>}</div>
    <div className="auth-lang" aria-label="Language">
     <button type="button" aria-pressed={locale==='vi'} onClick={()=>setLocale('vi')}>{t.switchVi}</button>
     <button type="button" aria-pressed={locale==='en'} onClick={()=>setLocale('en')}>{t.switchEn}</button>
@@ -124,5 +125,7 @@ export function AuthPanel(){
    <p className="auth-local" role="status">{t.local}</p>
    <p className="auth-privacy">{t.privacy}</p>
   </section>
- </main>;
+ </>;
+ return embedded?<section className="li-settings-auth surface" aria-label={t.heading} data-settings-account>{view}</section>:
+  <main className="auth-pilot">{view}</main>;
 }

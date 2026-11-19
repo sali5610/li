@@ -141,7 +141,7 @@ async function main(){
  }
 
 // Synthetic DOM-only 200% body-token stress: not real Safari or native browser zoom.
-function syntheticTypographyStress(language){
+async function syntheticTypographyStress(language){
  const root=document.querySelector('#li-step16-l09-react-host .pilot');
  const primary=root?.querySelector('[data-action=submit]');
  const secondary=root?.querySelector('[data-action=clear]');
@@ -163,6 +163,8 @@ function syntheticTypographyStress(language){
  document.documentElement.style.setProperty('--li-leading-body',String(originalLeading*2)+'px');
  root.style.fontSize='200%';
  field.focus();
+ // Separate the focus/style mutation from measurement to observe a painted frame.
+ await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
  const geometry=e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);
   return {left:r.left,right:r.right,height:r.height,width:r.width,
    fontSize:parseFloat(s.fontSize),lineHeight:parseFloat(s.lineHeight),
@@ -170,6 +172,9 @@ function syntheticTypographyStress(language){
  return {mounted:true,language,viewport:innerWidth,viewportHeight:innerHeight,
   docWidth:document.documentElement.scrollWidth,focused:document.activeElement===field,
   focusVisible:field.matches(':focus-visible'),outlineWidth:parseFloat(getComputedStyle(field).outlineWidth),
+  outlineStyle:getComputedStyle(field).outlineStyle,outlineColor:getComputedStyle(field).outlineColor,
+  focusToken:getComputedStyle(field).getPropertyValue('--li-comp-field-focus-border').trim(),
+  fallbackFocusToken:getComputedStyle(field).getPropertyValue('--li-color-input-focus-ring').trim(),
   labelAssociated:field.labels?.length===1&&field.labels[0]===label,
   realKey:localStorage.getItem('li.review.L09-1-2.v1'),originalFont,originalLeading,
   primary:geometry(primary),secondary:geometry(secondary),label:geometry(label),field:geometry(field)};
@@ -203,7 +208,7 @@ function syntheticTypographyStress(language){
     await screenshot('stress-200pct-'+language+'-'+width);
    stressEvidence.push({context,...x});
    // Locale toggle writes only the research test key; reset for next scenario.
-   await evaluate("localStorage.removeItem('step16.l09.react-island.v1')");
+   await evaluate("localStorage.removeItem('step16.l09.react-island.v1');localStorage.removeItem('li.app.locale.v1')");
   }
  }
 

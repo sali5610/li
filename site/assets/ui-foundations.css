@@ -723,7 +723,7 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 }
 /* Match the porcelain entry surface across editable text, search and note fields. */
 .page :is(input:not([type]),input[type="text"],input[type="search"],input[type="email"],input[type="url"],input[type="tel"],input[type="password"],input[type="number"],textarea):not(:disabled){
-  background-color:var(--porcelain)!important;
+  background-color:var(--li-comp-field-background)!important;
 }
 .page :is(input:not([type]),input[type="text"],input[type="search"],input[type="email"],input[type="url"],input[type="tel"],input[type="password"],input[type="number"],textarea):disabled{
   background-color:var(--paper-2);
@@ -764,12 +764,12 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
    ring. This is distinct from keyboard affordances on non-text controls. */
 .page :is(input:not([type]),input[type="text"],input[type="search"],input[type="email"],input[type="url"],input[type="tel"],input[type="password"],input[type="number"],textarea):focus:not(:disabled){
  box-sizing:border-box;
- border:3px solid var(--li-color-input-focus-ring)!important;
- outline:var(--li-space-0) solid var(--li-color-input-focus-ring)!important;
+ border:3px solid var(--li-comp-field-focus-border)!important;
+ outline:var(--li-space-0) solid var(--li-comp-field-focus-border)!important;
  outline-offset:var(--li-space-0)!important;
 }
 .page :is(input:not([type]),input[type="text"],input[type="search"],input[type="email"],input[type="url"],input[type="tel"],input[type="password"],input[type="number"],textarea)[aria-invalid="true"]:focus:not(:disabled){
- border-color:var(--li-color-danger-fill)!important;
+ border-color:var(--li-comp-field-error-border)!important;
 }
 
 /* UX-HOME-06 · Live Transparent Home Top Navigation is the UX-DS-15

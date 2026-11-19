@@ -321,7 +321,7 @@
   /* UX-DS-35 semanticRoles: generated aliases, not new values. */
   --li-role-action-primary-surface: var(--moss);
   --li-role-action-primary-content: var(--cream);
-  --li-role-action-secondary-surface: var(--porcelain);
+  --li-role-action-secondary-surface: var(--paper);
   --li-role-action-secondary-content: var(--moss);
   --li-role-focus-ring: var(--li-color-focus-ring);
   --li-role-control-min-target: var(--li-space-12);
@@ -334,6 +334,18 @@
   --li-role-nav-active-fill: var(--li-color-nav-selected-fill);
   --li-role-nav-active-ink: var(--li-color-nav-selected-ink);
   --li-role-status-error: var(--li-color-danger-fill);
+  --li-role-control-selected-fill: var(--moss);
+  --li-role-control-selected-content: var(--cream);
+  --li-role-control-unselected-fill: var(--paper);
+  --li-role-control-unselected-content: var(--moss);
+  --li-role-surface-tinted: var(--paper-2);
+  --li-role-surface-inverse: var(--moss);
+  --li-role-surface-inverse-content: var(--cream);
+  --li-role-status-banner-surface: var(--li-color-status-banner-fill);
+  --li-role-status-banner-content: var(--ink);
+  --li-role-field-focus-border: var(--li-color-input-focus-ring);
+  --li-role-field-error-border: var(--li-color-danger-fill);
+  --li-role-border-strong: var(--moss);
   /* UX-DS-35 componentRoles: generated aliases, not new values. */
   --li-comp-button-primary-background: var(--li-role-action-primary-surface);
   --li-comp-button-primary-color: var(--li-role-action-primary-content);
@@ -344,4 +356,16 @@
   --li-comp-field-background: var(--li-role-input-surface);
   --li-comp-app-nav-active-background: var(--li-role-nav-active-fill);
   --li-comp-app-nav-active-color: var(--li-role-nav-active-ink);
+  --li-comp-surface-background: var(--li-role-surface-raised);
+  --li-comp-surface-tinted-background: var(--li-role-surface-tinted);
+  --li-comp-surface-inverse-background: var(--li-role-surface-inverse);
+  --li-comp-surface-inverse-color: var(--li-role-surface-inverse-content);
+  --li-comp-filter-chip-background: var(--li-role-control-unselected-fill);
+  --li-comp-filter-chip-color: var(--li-role-control-unselected-content);
+  --li-comp-filter-chip-selected-background: var(--li-role-control-selected-fill);
+  --li-comp-filter-chip-selected-color: var(--li-role-control-selected-content);
+  --li-comp-field-focus-border: var(--li-role-field-focus-border);
+  --li-comp-field-error-border: var(--li-role-field-error-border);
+  --li-comp-status-banner-background: var(--li-role-status-banner-surface);
+  --li-comp-status-banner-color: var(--li-role-status-banner-content);
 }

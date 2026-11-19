@@ -1,0 +1,61 @@
+name: li. ONT-INT-04 localhost dual React reload + real browser history (no deploy)
+on:
+  pull_request:
+    paths:
+      - 'site/index.html'
+      - 'tools/ontint04-history-browser.html'
+      - 'tools/check_ontint04_history.mjs'
+      - 'docs/ontology/integration/ONT-INT-04.md'
+      - '.github/workflows/li-ont-int04-history.yml'
+permissions:
+  contents: read
+jobs:
+  browser-history:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate exact ONT+DS, local-only feature owner and native lesson source
+        run: |
+          set -euo pipefail
+          node tools/check_ontint04_history.mjs
+          node tools/check_ontint03_source.mjs
+          node tools/check_ont_native_entrypoint.mjs
+          node tools/validate_ontology.mjs --check
+          python3 tools/validate_site.py
+      - name: Build Search candidate only into ephemeral CI site/assets
+        working-directory: tools/ont04b-react-search-island
+        run: |
+          set -euo pipefail
+          npm install --ignore-scripts --no-audit --no-fund --no-package-lock
+          npm run build:site-candidate
+      - name: Build React L09 candidate only into same ephemeral CI site/assets
+        working-directory: tools/step16-real-l09-react-island
+        run: |
+          set -euo pipefail
+          npm install --ignore-scripts --no-audit --no-fund --no-package-lock
+          npm run build:site-island
+      - name: Real Chromium native app history, reload, backward, forward and dual-island regression
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)"
+          python3 -m http.server 8794 --bind 127.0.0.1 --directory . >/tmp/li-ontint04-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
+            "http://127.0.0.1:8794/tools/ontint04-history-browser.html" \
+            "LI_STEP16_L09_SHELL_PASS " 27 125000
+          node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
+            "http://127.0.0.1:8794/tools/ontint03-browser-fixture.html" \
+            "LI_STEP16_L09_SHELL_PASS " 23 110000
+      - name: Ensure no committed JS/CSS build artifacts, Auth/DB file or modified repo source
+        run: |
+          set -euo pipefail
+          test -z "$(git ls-files site/assets/ont04b-search-site-island.js site/assets/ont04b-search-site-island.css)"
+          test -z "$(git ls-files site/assets/step16-l09-island.js site/assets/step16-l09-island.css)"
+          test -z "$(git ls-files db/migrations/0002_invite_only_access.sql)"
+          test -z "$(git status --short --untracked-files=no)"

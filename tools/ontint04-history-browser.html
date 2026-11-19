@@ -1,0 +1,151 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>ONT-INT-04 · Local dual-island reload/history</title></head><body>
+<pre id="result">LI_STEP16_L09_SHELL_PENDING</pre>
+<script>
+(async()=>{
+'use strict';
+const out=document.getElementById('result'),checks=[];
+const assert=(condition,label)=>{if(!condition)throw Error(label);checks.push(label);};
+const delay=t=>new Promise(resolve=>setTimeout(resolve,t));
+const until=async(check,label,timeout=25000)=>{
+ const start=Date.now();
+ while(Date.now()-start<timeout){
+  try{const value=check();if(value)return value;}catch{}
+  await delay(95);
+ }
+ throw Error('TIMEOUT '+label);
+};
+const src='../site/index.html?lesson=L09-1-2&li-react=l09-native-fixture&li-search-react=typed-v1';
+const realKey='li.review.L09-1-2.v1',visits='li.private.lesson.visits.v1',
+ shared='step16.l09.shared-native-fixture.v1';
+let frame;
+try{
+ const realBefore=localStorage.getItem(realKey),visitsBefore=localStorage.getItem(visits);
+ localStorage.removeItem(shared); // exact synthetic fixture key only, no genuine learner key
+ frame=document.createElement('iframe');
+ frame.style.cssText='border:0;display:block;width:390px;height:820px';
+ frame.title='Actual li. localhost app';
+ frame.src=src;
+ document.body.append(frame);
+ const current=()=>frame.contentWindow;
+ const loaded=()=>frame.contentDocument?.readyState==='complete'?frame.contentDocument:null;
+ const l09=()=>loaded()?.getElementById('page-lessonL09');
+ const searchPage=()=>loaded()?.getElementById('page-search');
+ const searchHost=()=>loaded()?.querySelector('#li-typed-search-root[data-li-search-mount="active"]');
+ const react=()=>loaded()?.getElementById('li-step16-l09-react-host');
+ await until(()=>l09()?.dataset.liRuntime==='react-candidate'&&searchHost()&&
+  current().history.state?.liOntInt04Page==='lessonL09','initial dual React + seeded local history');
+ assert(!!react()&&!!searchHost(),'both React roots mounted on first real page load');
+ assert(l09().classList.contains('active'),'initial lesson URL opens L09');
+ assert(new URLSearchParams(current().location.search).get('li-local-page')==='lessonL09',
+   'initial lesson entry is normalized without duplicate history');
+ assert(!!current().liQuoteStageGate?.evaluate,'quote stage remains on history-enabled native page');
+ const answer=react().querySelector('.pilot [data-answer="0"]');
+ const textSetter=Object.getOwnPropertyDescriptor(current().HTMLTextAreaElement.prototype,'value')?.set;
+ if(!answer||!textSetter)throw Error('L09 React answer missing');
+ textSetter.call(answer,'ONT-INT-04 synthetic persisted answer after reload and Back/Forward.');
+ answer.dispatchEvent(new current().Event('input',{bubbles:true}));
+ await until(()=>JSON.parse(localStorage.getItem(shared)||'null')?.draft?.[0]?.startsWith('ONT-INT-04'),
+   'synthetic L09 draft committed before reload');
+ assert(localStorage.getItem(realKey)===realBefore,'initial synthetic draft never writes real learner key');
+
+ current().navigate('search',{focus:false});
+ await until(()=>searchPage().classList.contains('active')&&
+   current().history.state?.liOntInt04Page==='search','Search history pushed');
+ const searchUrl=new URL(current().location.href);
+ assert(!searchUrl.searchParams.has('lesson')&&searchUrl.searchParams.get('li-local-page')==='search',
+   'Search URL is reload-safe without stale lesson');
+ assert(searchUrl.searchParams.get('li-search-react')==='typed-v1'&&
+   searchUrl.searchParams.get('li-react')==='l09-native-fixture',
+   'both local research flags retained in history URL');
+ assert(searchHost()&&react(),'both islands stay mounted during native navigation');
+
+ let box=searchHost().querySelector('input[type="search"]');
+ let setter=Object.getOwnPropertyDescriptor(current().HTMLInputElement.prototype,'value')?.set;
+ setter.call(box,'L09-1-2');box.dispatchEvent(new current().Event('input',{bubbles:true}));
+ await until(()=>!searchHost().querySelector('button[type="submit"]').disabled,'controlled Search query entered');
+ searchHost().querySelector('form[role="search"]').dispatchEvent(
+  new current().Event('submit',{bubbles:true,cancelable:true}));
+ await until(()=>searchHost()?.querySelector('[data-result-id="lesson:L09-1-2"]'),
+   'Search typed L09 result before reload');
+ assert(!!searchHost().querySelector('[data-result-id="lesson:L09-1-2"]'),
+   'Search data lives only in React RAM before reload');
+ assert(localStorage.getItem(realKey)===realBefore&&localStorage.getItem(visits)===visitsBefore,
+   'Search and L09 do not mutate real private storage');
+
+ const oldDoc=loaded();
+ current().location.reload();
+ await until(()=>loaded()&&loaded()!==oldDoc&&searchPage()?.classList.contains('active')&&searchHost(),
+   'Search URL hard reload opens Search and mounts its island');
+ assert(new URLSearchParams(current().location.search).get('li-local-page')==='search',
+   'Search remains active after full document reload');
+ assert(!l09().classList.contains('active'),'stale L09 lesson does not hijack reloaded Search');
+ assert(!react(),'L09 React lazy loader does not mount on reloaded Search route');
+ assert(searchHost().querySelector('input[type="search"]').value==='',
+   'Search phrase cleared on reload: no unapproved query persistence');
+ assert(JSON.parse(localStorage.getItem(shared)||'null').draft[0].startsWith('ONT-INT-04'),
+   'synthetic L09 draft persists independently of Search reload');
+
+ // Browser history state is genuine, not a synthetic popstate dispatch.
+ current().history.back();
+ await until(()=>l09()?.classList.contains('active')&&
+   l09().dataset.liRuntime==='react-candidate'&&
+   new URLSearchParams(current().location.search).get('li-local-page')==='lessonL09',
+   'genuine Back from reloaded Search recovers L09 and lazily mounts its React island');
+ assert(!!react()?.querySelector('.pilot [data-answer="0"]'),
+   'Back from Search lazily restores L09 React in reloaded document');
+ assert(react().querySelector('.pilot [data-answer="0"]').value.startsWith('ONT-INT-04'),
+   'Back restores previously saved synthetic L09 draft');
+ assert(current().history.state?.liOntInt04Page==='lessonL09',
+   'Back selects prior browser history entry not a fake navigation');
+ assert(loaded().querySelectorAll('#li-step16-l09-react-host').length===1,
+   'Back never duplicates L09 React host');
+
+ current().history.forward();
+ await until(()=>searchPage()?.classList.contains('active')&&
+   new URLSearchParams(current().location.search).get('li-local-page')==='search',
+   'genuine Forward restores Search without reloading');
+ assert(searchHost()&&searchHost().querySelector('input[type="search"]').value==='',
+   'Forward retains mounted Search, but not pre-reload unpersisted query');
+ assert(!l09().classList.contains('active'),'Forward correctly deactivates L09 screen');
+ assert(react()&&l09().dataset.liRuntime==='react-candidate',
+   'inactive L09 React remains mounted after Forward, no second writer');
+
+ // After the hard reload, ordinary in-document Search state still persists through history.
+ box=searchHost().querySelector('input[type="search"]');
+ setter=Object.getOwnPropertyDescriptor(current().HTMLInputElement.prototype,'value')?.set;
+ setter.call(box,'Sampling Bias');box.dispatchEvent(new current().Event('input',{bubbles:true}));
+ await until(()=>box.value==='Sampling Bias','post-reload Search typed');
+ current().navigate('lessonL09',{focus:false});
+ await until(()=>l09().classList.contains('active'),'local in-app lesson navigation after Forward');
+ current().history.back();
+ await until(()=>searchPage().classList.contains('active'),'browser Back returns to Search after in-app lesson');
+ assert(searchHost().querySelector('input[type="search"]').value==='Sampling Bias',
+   'Back preserves existing Search draft in same document');
+ current().history.forward();
+ await until(()=>l09().classList.contains('active'),'browser Forward returns to L09 after Search');
+ assert(react().querySelector('.pilot [data-answer="0"]').value.startsWith('ONT-INT-04'),
+   'Forward preserves L09 React draft without a stale native write');
+
+ const beforeLessonReload=loaded();
+ current().location.reload();
+ await until(()=>loaded()&&loaded()!==beforeLessonReload&&
+   l09()?.classList.contains('active')&&l09().dataset.liRuntime==='react-candidate'&&
+   !!searchHost(),'lesson hard reload with both React candidates mounted');
+ assert(react().querySelector('.pilot [data-answer="0"]').value.startsWith('ONT-INT-04'),
+   'L09 draft restored after hard reload on lesson URL');
+ assert(loaded().querySelectorAll('#li-typed-search-root').length===1&&
+   loaded().querySelectorAll('#li-step16-l09-react-host').length===1,
+   'hard reload keeps exactly one instance of each candidate');
+ assert(localStorage.getItem(realKey)===realBefore&&localStorage.getItem(visits)===visitsBefore,
+   'all history/reload operations leave actual learner keys and visits byte-identical');
+
+ out.textContent='LI_STEP16_L09_SHELL_PASS '+JSON.stringify({
+  count:checks.length,checks,
+  evidence:'ACTUAL_CHROMIUM_BACK_FORWARD_HARD_RELOAD_NOT_SYNTHETIC_POPSTATE',
+  physicalSafari:'NOT_RUN',signedRls:'NOT_RUN',cloudflareDeploy:'NONE'
+ });
+}catch(e){
+ out.textContent='LI_STEP16_L09_SHELL_FAIL '+JSON.stringify({count:checks.length,checks,error:String(e?.message||e)});
+}
+})();
+</script></body></html>

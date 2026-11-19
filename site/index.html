@@ -521,6 +521,16 @@ function renderCaseArchive(){window.liLibraryShelf?.renderCases();}
 function renderSavedQuestions(){window.liLibraryShelf?.renderBookmarks();}
 const pageHistory=[];
 const LI_LESSON_ROUTES={lessonL09:"L09-1-2",lessonL03:"L03-1-2",lessonL15:"L15-2-2"};
+/* ONT-INT-04: history ownership belongs ONLY to the opt-in, dual-island localhost pilot.
+ * Every public/unflagged native route keeps the S134 replaceState behavior unchanged.
+ */
+function liDualLocalHistoryAllowed(){
+ const loc=window.location,p=new URLSearchParams(loc.search);
+ return loc.protocol==="http:"&&["localhost","127.0.0.1"].includes(loc.hostname)&&
+   loc.pathname==="/site/index.html"&&p.get("li-search-react")==="typed-v1"&&
+   ["l09","l09-native-fixture"].includes(p.get("li-react"));
+}
+const LI_DUAL_PILOT_PAGES=new Set(["home","search","lessonL09"]);
 /* S134: A lesson URL is explicit; returning to Home must not replay a stale lesson on reload. */
 function syncLiRoute(id){
  if(!window.history?.replaceState||!window.location?.href)return;
@@ -530,11 +540,33 @@ function syncLiRoute(id){
  else url.searchParams.delete("lesson");
  if(!lesson){url.searchParams.delete("chapter");if(id!=="catalog")url.searchParams.delete("catalog");}
  url.hash="";
+ const pilot=liDualLocalHistoryAllowed();
+ if(pilot&&LI_DUAL_PILOT_PAGES.has(id))url.searchParams.set("li-local-page",id);
+ else if(pilot)url.searchParams.delete("li-local-page");
  const target=url.pathname+url.search+url.hash;
- if(target!==window.location.pathname+window.location.search+window.location.hash)
-  window.history.replaceState(window.history.state,"",target);
+ if(target===window.location.pathname+window.location.search+window.location.hash)return;
+ if(pilot&&LI_DUAL_PILOT_PAGES.has(id)){
+  // First authorized pilot route seeds (replaces) the current entry. Subsequent
+  // in-app navigation makes real Back/Forward entries. Never store query/drafts.
+  const first=!window.history.state?.liOntInt04Page;
+  const state={liOntInt04Page:id};
+  if(first)window.history.replaceState(state,"",target);
+  else window.history.pushState(state,"",target);
+ }else window.history.replaceState(window.history.state,"",target);
 }
-function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelector?.(".app")?.classList.toggle("home-focus",id==="home");const back=document.getElementById("li-global-back");if(back)back.hidden=id==="home";document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});document.querySelectorAll(".header .tool-button").forEach(x=>{const active=x.dataset.page===id;x.classList.toggle("active",active);if(active)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library")window.liLibraryShelf?.renderHome();if(id==="resume")window.liLibraryShelf?.renderResume();if(id==="collection")window.liLibraryShelf?.renderCollection();if(id==="noteDetail")window.liNotes?.renderDetail();window.liBookmarks?.refresh();if(Object.prototype.hasOwnProperty.call(LI_LESSON_ROUTES,id))window.liLibraryShelf?.trackLesson(id);if(id==="research"){syncResearch();window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);}if(id==="case")window.liLibraryShelf?.trackProblem("case","sampling-bias-90");refreshLucide();placeCompanion();}
+function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelector?.(".app")?.classList.toggle("home-focus",id==="home");const back=document.getElementById("li-global-back");if(back)back.hidden=id==="home";document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});document.querySelectorAll(".header .tool-button").forEach(x=>{const active=x.dataset.page===id;x.classList.toggle("active",active);if(active)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library")window.liLibraryShelf?.renderHome();if(id==="resume")window.liLibraryShelf?.renderResume();if(id==="collection")window.liLibraryShelf?.renderCollection();if(id==="noteDetail")window.liNotes?.renderDetail();window.liBookmarks?.refresh();if(Object.prototype.hasOwnProperty.call(LI_LESSON_ROUTES,id))window.liLibraryShelf?.trackLesson(id);if(id==="research"){syncResearch();window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);}if(id==="case")window.liLibraryShelf?.trackProblem("case","sampling-bias-90");refreshLucide();placeCompanion();
+ if(liDualLocalHistoryAllowed())
+  window.dispatchEvent(new CustomEvent("li:dual-local-route",{detail:{page:id}}));
+}
+window.addEventListener("popstate",()=>{
+ // Do not interpret foreign/production history as li. pilot navigation.
+ if(!liDualLocalHistoryAllowed())return;
+ const p=new URLSearchParams(window.location.search);
+ const claimed=p.get("li-local-page");
+ const route=LI_DUAL_PILOT_PAGES.has(claimed)?claimed:
+   p.get("lesson")==="L09-1-2"?"lessonL09":"home";
+ navigate(route,{remember:false,syncUrl:false});
+});
 function goBack(){while(pageHistory.length){const previous=pageHistory.pop();if(previous!==currentPage&&document.getElementById("page-"+previous)){navigate(previous,{remember:false});return}}navigate("home",{remember:false})}
 function renderMethods(){const el=document.getElementById("method-cards");const q=(document.getElementById("method-search").value||"").trim().toLocaleLowerCase("vi");const preset=STUDY_MODES[studyMode].suggestions;const visible=methods.filter(m=>{const match=(!q||((m.join(" ")+" "+(window.LI_LEGACY_EN?.[m[1]]||"")+" "+(window.LI_LEGACY_EN?.[m[4]]||"")).toLocaleLowerCase("vi").includes(q)));const cat=currentCategory==="Tất cả"||m[4]===currentCategory;const picked=Boolean(q)||currentCategory!=="Tất cả"||!preset||preset.includes(m[0]);return match&&cat&&picked});el.innerHTML=visible.length?visible.map(m=>'<button class="method-card" data-method="'+m[0]+'"><i data-lucide="'+(m[4]==="Luận Chứng Thuật"?"git-branch":m[4]==="Phá Giải Thuật"?"puzzle":m[4]==="Minh Giải Thuật"?"lightbulb":m[4]==="Tự Chủ Thuật"?"brain-circuit":"book-open-check")+'" class="method-icon" aria-hidden="true"></i><span class="kicker">'+m[0]+' · <span>'+m[4]+'</span></span><h3>'+m[1]+'</h3><span class="original">'+m[2]+'</span><span class="purpose">'+m[3]+'</span><span class="end">CHÚ GIẢI →</span></button>').join(""):'<div class="surface">Không tìm thấy. Thử đổi bộ lọc hoặc tìm bằng tên học thuật.</div>';
 document.getElementById("method-count").textContent="Hiển thị "+visible.length+"/13 phương pháp"+(q?" · kết quả tìm kiếm trên cả 13":currentCategory!=="Tất cả"?" · theo nhóm":STUDY_MODES[studyMode].suggestions?" · "+STUDY_MODES[studyMode].label:" · đầy đủ");
@@ -933,7 +965,11 @@ window.addEventListener("resize",placeCompanion,{passive:true});
 })();
 const liInitialLesson=new URLSearchParams(window.location.search).get("lesson");
 const liInitialCatalog=new URLSearchParams(window.location.search).get("catalog");
-navigate(liInitialCatalog&&!liInitialLesson?"catalog":"home",{focus:false,syncUrl:!(liInitialCatalog||Object.values(LI_LESSON_ROUTES).includes(liInitialLesson))});
+const liInitialDualPage=liDualLocalHistoryAllowed()?
+ new URLSearchParams(window.location.search).get("li-local-page"):null;
+const liInitialPilotRoute=LI_DUAL_PILOT_PAGES.has(liInitialDualPage)?liInitialDualPage:null;
+navigate(liInitialPilotRoute||(liInitialCatalog&&!liInitialLesson?"catalog":"home"),
+ {focus:false,syncUrl:!(liInitialPilotRoute||liInitialCatalog||Object.values(LI_LESSON_ROUTES).includes(liInitialLesson))});
 setStudyMode(studyMode,{persist:false});
 window.addEventListener("load",()=>{refreshLucide();placeCompanion();});
 </script><script src="./assets/laoly-context-s112.js?v=20261119-mentor-en"></script><script src="./assets/laoly-quote-stage-gate.js?v=ont04c2a"></script><script src="./assets/laoly-quotes-s121.js?v=3"></script><script src="./assets/lesson-l09-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-l15-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script><script src="./assets/lesson-related-wave1.js"></script><script src="./assets/personal-diary.js?v=3"></script><script src="./assets/library-hub.js?v=8"></script><script src="./assets/library-note-editor.js?v=5"></script><script src="./assets/library-bookmarks.js?v=4"></script><script src="./assets/spell-practice.js?v=20261119-deep-i18n-qa"></script><script src="./assets/catalog-curriculum-data.js?v=20261118-s160"></script><script src="./assets/catalog-drilldown.js?v=20261119-deep-i18n-qa"></script><script src="./assets/laoly-drag.js?v=20261119-control-dodge"></script><script src="./assets/ipad-safari-rotation.js?v=20261119-ds33"></script><script type="module" data-li-ont04b2-local-only>
@@ -968,15 +1004,27 @@ if(loc.protocol==='http:'&&['localhost','127.0.0.1'].includes(loc.hostname)&&
 }
 </script>
 <script id="li-ont-int02-local-react-gate">
-/* ONT-INT-02 · local research-only; never fetch the candidate bundle on public host. */
+/* ONT-INT-04 local pilot: allow L09 recovery after Back from reloaded Search.
+ * Keeps the ONT-INT-02 exact localhost/lesson guard; only one loader per document.
+ */
 (()=>{
  const loc=window.location,params=new URLSearchParams(loc.search);
  if(loc.protocol!=="http:"||!["localhost","127.0.0.1"].includes(loc.hostname)||
-    loc.pathname!=="/site/index.html"||params.get("lesson")!=="L09-1-2"||
+    loc.pathname!=="/site/index.html"||
     !["l09","l09-native-fixture"].includes(params.get("li-react")))return;
- const loader=document.createElement("script");
- loader.src="./assets/step16-react-router.js?v=ont-int02-local";
- loader.dataset.liResearchOnly="true";
- document.body.appendChild(loader);
+ let requested=false;
+ function ensureL09(){
+  if(new URLSearchParams(window.location.search).get("lesson")!=="L09-1-2")return;
+  const page=document.getElementById("page-lessonL09");
+  if(!page||requested||page.dataset.liRuntime==="react-candidate")return;
+  requested=true;
+  const loader=document.createElement("script");
+  loader.src="./assets/step16-react-router.js?v=ont-int02-local";
+  loader.dataset.liResearchOnly="true";
+  loader.dataset.liStep16Loader="true";
+  document.body.appendChild(loader);
+ }
+ window.addEventListener("li:dual-local-route",ensureL09);
+ ensureL09();
 })();
 </script></body></html>

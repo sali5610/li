@@ -318,4 +318,30 @@
   --li-device-ipad-landscape-section-gap: 40px;
   --li-device-ipad-landscape-control-min: 56px;
   --li-device-ipad-landscape-icon-size: 24px;
+  /* UX-DS-35 semanticRoles: generated aliases, not new values. */
+  --li-role-action-primary-surface: var(--moss);
+  --li-role-action-primary-content: var(--cream);
+  --li-role-action-secondary-surface: var(--porcelain);
+  --li-role-action-secondary-content: var(--moss);
+  --li-role-focus-ring: var(--li-color-focus-ring);
+  --li-role-control-min-target: var(--li-space-12);
+  --li-role-surface-default: var(--paper);
+  --li-role-surface-raised: var(--cream);
+  --li-role-content-primary: var(--ink);
+  --li-role-content-muted: var(--muted);
+  --li-role-border-default: var(--rule);
+  --li-role-input-surface: var(--porcelain);
+  --li-role-nav-active-fill: var(--li-color-nav-selected-fill);
+  --li-role-nav-active-ink: var(--li-color-nav-selected-ink);
+  --li-role-status-error: var(--li-color-danger-fill);
+  /* UX-DS-35 componentRoles: generated aliases, not new values. */
+  --li-comp-button-primary-background: var(--li-role-action-primary-surface);
+  --li-comp-button-primary-color: var(--li-role-action-primary-content);
+  --li-comp-button-secondary-background: var(--li-role-action-secondary-surface);
+  --li-comp-button-secondary-color: var(--li-role-action-secondary-content);
+  --li-comp-button-focus-ring: var(--li-role-focus-ring);
+  --li-comp-button-min-hit-size: var(--li-role-control-min-target);
+  --li-comp-field-background: var(--li-role-input-surface);
+  --li-comp-app-nav-active-background: var(--li-role-nav-active-fill);
+  --li-comp-app-nav-active-color: var(--li-role-nav-active-ink);
 }

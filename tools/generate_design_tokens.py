@@ -87,6 +87,21 @@ def render(data: dict) -> str:
             if value % 4:
                 raise ValueError(f"Off-grid iPad layout token: {mode}/{role}")
             lines.append(f"  --li-device-{mode}-{role}: {value}px;")
+    # UX-DS-35 Stage02: one authored JSON authority for reference→semantic→component.
+    # Aliases only; never copy color/spacing values or invent a second palette.
+    for group, prefix in (("semanticRoles", "li-role"), ("componentRoles", "li-comp")):
+        entries = data.get(group, {})
+        if entries:
+            lines.append("  /* UX-DS-35 " + group + ": generated aliases, not new values. */")
+        for name, referenced_var in entries.items():
+            if not re.fullmatch(r"[a-z0-9-]+", name):
+                raise ValueError("Invalid role name: " + name)
+            available = {line.strip().split(":", 1)[0] for line in lines
+                         if line.strip().startswith("--")}
+            if referenced_var not in available:
+                raise ValueError("Role " + group + "/" + name
+                                 + " references missing prior CSS variable " + referenced_var)
+            lines.append(f"  --{prefix}-{name}: var({referenced_var});")
     lines.append("}")
     return "\n".join(lines) + "\n"
 

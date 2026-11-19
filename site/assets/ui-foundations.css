@@ -64,7 +64,7 @@ body { font-size: var(--li-type-body); line-height: var(--li-leading-body); }
 /* Controls: readable labels, larger targets, a shared 4px inset rhythm. */
 .page :is(.action, .flat-button, .filter, .secondary, .primary, .utility-back),
 .header .tool-button {
-  min-height: 48px;
+  min-height: var(--li-comp-button-min-hit-size);
 }
 .page :is(.action, .flat-button, .filter, .secondary, .primary, .utility-back) {
   font-size: var(--li-type-body);

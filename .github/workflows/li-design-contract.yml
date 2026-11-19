@@ -35,6 +35,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify generated CSS exactly matches JSON source
         run: python3 tools/generate_design_tokens.py --check
+      - name: Stage 02 reference-semantic-component alias integrity and negative tests
+        run: python3 tools/test_design_semantic_roles.py
       - name: Stage 02 typed React token refs match JSON-generated CSS exactly
         run: |
           node tools/generate_design_token_types.mjs --self-test

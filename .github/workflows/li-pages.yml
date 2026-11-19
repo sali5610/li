@@ -109,9 +109,10 @@ jobs:
           git diff --exit-code -- site/
           echo "PASS immutable main site + isolated GitHub Pages Auth pilot"
 
-      # PO browser review: keep the main staging app intact. The React L09
-      # prototype is published under a separate public, device-only URL.
-      - name: Checkout pinned L09 preview source (no draft merge)
+      # Unified staging: ship current main UI plus the proven React L09 island.
+      # Only this ephemeral GitHub Pages artifact changes; no production source,
+      # learner keys, Cloudflare, Neon policy or real data mutation.
+      - name: Checkout pinned L09 React source (no draft merge)
         uses: actions/checkout@v4
         with:
           repository: sali5610/li
@@ -119,7 +120,7 @@ jobs:
           path: staging-l09-source
           persist-credentials: false
 
-      - name: Build isolated L09 browser preview
+      - name: Build L09 React island for shared staging
         working-directory: staging-l09-source/tools/step16-real-l09-react-island
         run: |
           set -euo pipefail
@@ -129,32 +130,78 @@ jobs:
           test -s ../../site/assets/step16-l09-island.js
           test -s ../../site/assets/step16-l09-island.css
 
-      - name: Assemble isolated L09 preview for PO (GitHub Pages only)
+      - name: Integrate React L09 into ONE shared staging app at /li/
         run: |
           set -euo pipefail
-          mkdir -p site/l09-preview
-          cp -a staging-l09-source/site/. site/l09-preview/
+          cp staging-l09-source/site/assets/step16-l09-island.js site/assets/
+          cp staging-l09-source/site/assets/step16-l09-island.css site/assets/
+          cp staging-l09-source/site/assets/step16-react-router.js site/assets/
           python3 - <<'PY'
           from pathlib import Path
-          router = Path('site/l09-preview/assets/step16-react-router.js')
+          router = Path('site/assets/step16-react-router.js')
           source = router.read_text(encoding='utf-8')
-          old = "if(!local||!['l09','l09-native-fixture','settings'].includes(mode))return;"
-          new = """const githubPagesPilot=window.location.protocol==='https:' &&
+          old = " const mode=params.get('li-react');\n if(!local||!['l09','l09-native-fixture','settings'].includes(mode))return;"
+          new = """ const sharedStaging=window.location.protocol==='https:' &&
              window.location.hostname==='sali5610.github.io' &&
-             window.location.pathname.startsWith('/li/l09-preview/') && mode==='l09';
-           if(!(local||githubPagesPilot)||!['l09','l09-native-fixture','settings'].includes(mode))return;"""
-          assert source.count(old) == 1, 'Unexpected L09 research router; stop publishing'
-          router.write_text(source.replace(old, new), encoding='utf-8')
+             (window.location.pathname==='/li/' || window.location.pathname==='/li/index.html');
+           const mode=params.get('li-react')||(sharedStaging?'l09':null);
+           if(!(local||sharedStaging)||!['l09','l09-native-fixture','settings'].includes(mode))return;
+           if(sharedStaging&&!['l09','settings'].includes(mode))return;"""
+          assert source.count(old)==1, 'Changed research router entry guard'
+          source=source.replace(old,new)
+          # Default staging uses real Home navigation; React only takes over L09
+          # exercise/self-review when that native lesson is opened.
+          old_home=" if(mode==='l09'){"
+          assert source.count(old_home)==1, 'Changed Home CTA routing guard'
+          source=source.replace(old_home,
+             " if(mode==='l09' && (!sharedStaging || params.has('li-react'))){")
+          router.write_text(source,encoding='utf-8')
+
+          index = Path('site/index.html')
+          html=index.read_text(encoding='utf-8')
+          assert html.count('</body></html>')==1
+          assert 'step16-react-router.js' not in html
+          assert 'lesson-l09-hifi-markup.js' in html
+          assert 'mirror-primary-action' in html
+          assert 'id="page-settings"' in html
+          assert html.count('理 · li. — Thư viện tri thức')==1
+          html=html.replace('理 · li. — Thư viện tri thức',
+                            'li. STAGING — Thư viện tri thức',1)
+          marker='<div class="settings-group-grid"><article class="surface"><div class="kicker">SAO LƯU</div>'
+          assert html.count(marker)==1, 'Settings data layout changed'
+          account = ('<article class="surface" data-staging-only="true">'
+            '<div class="kicker">STAGING · TÀI KHOẢN</div>'
+            '<h2>Google Login · bản thử</h2>'
+            '<p class="small">Kiểm tra đăng nhập riêng trên GitHub Pages. '
+            'Tiến độ học chưa đồng bộ với Neon.</p>'
+            '<a class="action alt" href="./auth-pilot/">Mở màn đăng nhập thử</a></article>')
+          html=html.replace(marker,marker.replace('<article class="surface">',account+'<article class="surface">',1),1)
+          html=html.replace('</body></html>',
+             '<script src="./assets/step16-react-router.js?v=unified-staging-20261120"></script></body></html>',1)
+          index.write_text(html,encoding='utf-8')
+
+          # Legacy isolated URL redirects users to the single shared app.
+          legacy=Path('site/l09-preview/index.html')
+          legacy.parent.mkdir(parents=True,exist_ok=True)
+          legacy.write_text('<!doctype html><html lang="vi"><head>'
+            '<meta charset="utf-8"><meta name="robots" content="noindex">'
+            '<meta http-equiv="refresh" content="0;url=../">'
+            '<title>li. staging</title></head><body>'
+            '<p>Đã chuyển sang <a href="../">li. staging chung</a>.</p>'
+            '</body></html>',encoding='utf-8')
+          print('PASS LI_UNIFIED_STAGING_ASSEMBLY')
           PY
-          test -s site/l09-preview/index.html
-          test -s site/l09-preview/assets/step16-l09-island.js
-          test -s site/l09-preview/assets/step16-l09-island.css
-          grep -Fq 'step16-react-router.js' site/l09-preview/index.html
-          grep -Fq '/li/l09-preview/' site/l09-preview/assets/step16-react-router.js
-          test ! -e site/l09-preview/auth-pilot
-          test -z "$(find site/l09-preview -type f \( -name '*.map' -o -name '.env*' -o -name '*qa-secrets*' \) -print -quit)"
-          echo 'Ready: /li/l09-preview/?li-react=l09 (local-device progress, no Google/Neon sync)'
-          echo 'Production Cloudflare and main staging root remain untouched.'
+          test -s site/assets/step16-l09-island.js
+          test -s site/assets/step16-l09-island.css
+          grep -Fq 'sharedStaging' site/assets/step16-react-router.js
+          grep -Fq 'step16-react-router.js?v=unified-staging' site/index.html
+          grep -Fq 'href="./auth-pilot/"' site/index.html
+          grep -Fq 'url=../' site/l09-preview/index.html
+          test -z "$(find site/ -type f \( -name '*.map' -o -name '.env*' -o -name '*qa-secrets*' \) -print -quit)"
+          echo 'Ready: https://sali5610.github.io/li/ — one staging app.'
+          echo 'Home/Catalog/Settings stay native; L09 uses React challenge and review.'
+          echo 'Auth pilot is linked from Settings; real learner cloud sync remains OFF.'
+          echo 'No Cloudflare release or production code changes.'
 
       - name: Configure GitHub Pages STAGING
         uses: actions/configure-pages@v5

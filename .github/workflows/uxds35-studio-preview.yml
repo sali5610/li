@@ -5,6 +5,7 @@ on:
     paths:
       - 'site/design-system/**'
       - 'design-system/README.md'
+      - 'design-system/react/**'
       - '.github/workflows/uxds35-studio-preview.yml'
   workflow_dispatch:
 
@@ -20,6 +21,18 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build and typecheck real React DS Layout story
+        working-directory: design-system/react
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund
+          npm run check
+          npm run build
+          test -s ../../site/design-system/react-layout.js
+          test -s ../../site/design-system/react-layout.css
       - name: Verify static single-web sources
         run: |
           set -euo pipefail
@@ -47,6 +60,17 @@ jobs:
           grep -q 'Button' /tmp/li-ds-studio-preview/studio-dom.html
           grep -q 'iframe' /tmp/li-ds-studio-preview/studio-dom.html
           "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=7000 --window-size=390,844 --dump-dom \
+            'http://127.0.0.1:8787/design-system/react-layout.html?variant=Grid&lang=vi' \
+            > /tmp/li-ds-studio-preview/react-layout-mobile-dom.html
+          grep -q 'data-ui-react-layout="mounted"' /tmp/li-ds-studio-preview/react-layout-mobile-dom.html
+          grep -q 'data-li-layout="grid"' /tmp/li-ds-studio-preview/react-layout-mobile-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=7000 --window-size=820,1040 --dump-dom \
+            'http://127.0.0.1:8787/design-system/react-layout.html?variant=ScrollRegion&lang=en' \
+            > /tmp/li-ds-studio-preview/react-layout-tablet-dom.html
+          grep -q 'data-li-layout="scroll-region"' /tmp/li-ds-studio-preview/react-layout-tablet-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
             --hide-scrollbars --virtual-time-budget=6000 \
             --window-size=1440,900 \
             --screenshot=/tmp/li-ds-studio-preview/studio-desktop.png \
@@ -64,3 +88,5 @@ jobs:
             site/assets/design-tokens.css
             site/assets/li-layout.css
             /tmp/li-ds-studio-preview/studio-desktop.png
+            /tmp/li-ds-studio-preview/react-layout-mobile-dom.html
+            /tmp/li-ds-studio-preview/react-layout-tablet-dom.html

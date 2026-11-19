@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {checkInviteAccess,safeInviteErrorCode,sessionJwtCandidate} from '../.sync-test/invite-access.js';
 
 const endpoint='https://example.apirest.neon.tech/li/rest/v1';
@@ -90,4 +91,11 @@ test('failed invite RPC always keeps access closed, while safe diagnosis classif
  catch(error){code=safeInviteErrorCode(error);}
  assert.equal(allowed,false);
  assert.equal(code,'INV-RPC-403');
+});
+
+test('regression: Neon bearer JWT comes from /token, never the opaque session identifier',()=>{
+ const source=readFileSync(new URL('../src/auth/neon-client.ts',import.meta.url),'utf8');
+ assert.match(source,/authClient\\.token\\(\\)/);
+ assert.doesNotMatch(source,/session\\.data\\?\\.session\\?\\.token/);
+ assert.doesNotMatch(source,/session\\?\\.token/);
 });

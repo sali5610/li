@@ -163,8 +163,11 @@
     Object.getOwnPropertyDescriptor(frame.contentWindow.HTMLSelectElement.prototype,'value').set.call(select,String(value));
     select.dispatchEvent(new frame.contentWindow.Event('change',{bubbles:true}));
   };
-  [0,1,2,2].forEach((value,i)=>ratingChange(i,value));
-  await wait(()=>sharedState()?.ratings?.every(v=>v!==null),'rubric review draft saved');
+  for(const [i,value] of [0,1,2,2].entries()){
+    ratingChange(i,value);
+    await wait(()=>sharedState()?.ratings?.[i]===value,'rubric rating persisted '+i);
+  }
+  assert(sharedState()?.ratings?.every(v=>v!==null),'Rubric is incomplete');
   sharedReact().querySelector('[data-action="finish"]').click();
   await wait(()=>sharedState()?.reviewed===true,'React review completed');
   await wait(()=>doc.querySelector('#page-lessonL09').dataset.liResearchStage==='reviewed','review projection');

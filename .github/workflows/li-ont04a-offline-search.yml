@@ -1,0 +1,25 @@
+name: li. ONT-04A offline typed search (PR only)
+on:
+  pull_request:
+    paths:
+      - 'docs/ontology/search/**'
+      - 'tools/test_offline_typed_search.mjs'
+      - '.github/workflows/li-ont04a-offline-search.yml'
+permissions:
+  contents: read
+jobs:
+  typed-search:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Shared ontology v0.1
+        run: node tools/validate_ontology.mjs --check
+      - name: Academic ontology 03A
+        run: node tools/validate_academic_ontology.mjs --check
+      - name: Pedagogy ontology 03B
+        run: node tools/validate_pedagogy_ontology.mjs --check
+      - name: Offline typed search and 21-query golden evaluation
+        run: node tools/test_offline_typed_search.mjs

@@ -1,0 +1,64 @@
+name: li. ONT-04C2b Playwright WebKit QA (PR only, no deploy)
+on:
+  pull_request:
+    paths:
+      - 'tools/check_laoly_webkit.py'
+      - 'tools/qa_laoly_browser.js'
+      - 'tools/create_qa_laoly_page.mjs'
+      - 'docs/ontology/companion/ONT-04C2b-browser-qa.md'
+      - '.github/workflows/li-ont04c2b-webkit-qa.yml'
+      - 'site/index.html'
+      - 'site/assets/laoly-quotes-s121.js'
+      - 'site/assets/laoly-quote-stage-gate.js'
+permissions:
+  contents: read
+jobs:
+  native-webkit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Preflight native quote QA and syntax
+        run: |
+          node --check tools/qa_laoly_browser.js
+          node tools/check_laoly_quote_runtime_gate.mjs --check
+          node tools/create_qa_laoly_page.mjs
+          test -z "$(git ls-files site/__ont04c2b_qa.html)"
+      - name: Install open-source WebKit runtime for browser CI
+        run: |
+          python -m pip install --no-cache-dir playwright==1.56.0
+          python -m playwright install --with-deps webkit
+      - name: Mount actual native app on localhost and run real WebKit engine QA
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8766 --bind 127.0.0.1 --directory . > /tmp/li-ont04c2b-webkit-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          curl --fail --silent http://127.0.0.1:8766/site/__ont04c2b_qa.html > /dev/null
+          python tools/check_laoly_webkit.py
+      - name: Preserve WebKit source-ledger and rendered screenshot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ont04c2b-playwright-webkit-evidence
+          path: |
+            /tmp/li-ont04c2b-webkit/phone_320.png
+            /tmp/li-ont04c2b-webkit/phone_375.png
+            /tmp/li-ont04c2b-webkit/tablet_768.png
+            /tmp/li-ont04c2b-webkit/tablet_1024.png
+            /tmp/li-ont04c2b-webkit/webkit-qa.json
+            /tmp/li-ont04c2b-webkit/page-errors.json
+            /tmp/li-ont04c2b-webkit-http.log
+          if-no-files-found: ignore
+          retention-days: 4
+      - name: Ensure CI did not add a release route or committed QA scaffold
+        run: |
+          test -z "$(git ls-files site/__ont04c2b_qa.html)"
+          test -z "$(git ls-files site/assets/ont04c2b-deploy-bundle.js)"

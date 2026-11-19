@@ -12,7 +12,15 @@ const until=async(check,label,timeout=25000)=>{
   try{const value=check();if(value)return value;}catch{}
   await delay(95);
  }
- throw Error('TIMEOUT '+label);
+ const w=frame?.contentWindow,d=frame?.contentDocument;
+ let debug={};
+ try{debug={url:w?.location?.href,historyLength:w?.history?.length,
+  historyState:w?.history?.state,documentReady:d?.readyState,
+  searchActive:d?.getElementById('page-search')?.classList.contains('active'),
+  lessonActive:d?.getElementById('page-lessonL09')?.classList.contains('active'),
+  lessonReact:d?.getElementById('page-lessonL09')?.dataset.liRuntime,
+  searchMounted:d?.querySelector('#li-typed-search-root')?.dataset.liSearchMount};}catch(e){debug={diagnostic:String(e)}}
+ throw Error('TIMEOUT '+label+' '+JSON.stringify(debug));
 };
 const src='../site/index.html?lesson=L09-1-2&li-react=l09-native-fixture&li-search-react=typed-v1';
 const realKey='li.review.L09-1-2.v1',visits='li.private.lesson.visits.v1',

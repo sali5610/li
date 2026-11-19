@@ -114,7 +114,11 @@ function validate(p){
  source(sharedTsx,'export function Card(');
  source(sharedTsx,'export function TextInput(');
  source(pilotTsx,"import {ActionButton,Surface,StatusMessage} from './ui/Primitives';");
- source(pilotTsx,"import {ActionGroup} from './ui/Shared';");
+ source(pilotTsx,"import {ActionGroup,Button,Card,TextAreaField} from './ui/Shared';");
+ source(pilotTsx,"function StudyAction(");
+ source(pilotTsx,"function StudySurface(");
+ source(pilotTsx,"data-vc-g2={visualContractPilot?'approved-research':undefined}");
+ source(pilotTsx,'purpose="answer"');
  assert.equal(ownership.components.filter(x=>x.reactUsage==='fixture_only').length,8);
  assert.equal(ownership.components.filter(x=>x.reactUsage==='research_L09_island').length,1);
  const tokenMap={

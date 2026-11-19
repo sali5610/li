@@ -1,7 +1,7 @@
 import {createAuthClient} from '@neondatabase/auth';
 import {BetterAuthReactAdapter} from '@neondatabase/auth/react/adapters';
 import type {NeonAuthSessionPort} from '../sync/neon-session.js';
-import {sessionJwtCandidate} from '../sync/invite-access.js';
+import {sessionJwtCandidate,safeJwtFetchError} from '../sync/invite-access.js';
 import {NEON_AUTH_URL} from './config.js';
 
 /**
@@ -27,7 +27,7 @@ export const neonSessionPort:NeonAuthSessionPort={
   // For the public BetterAuthReactAdapter API, use the JWT plugin /token action.
   // Never infer a signed token from the session cookie even if it contains dots.
   const response=await authClient.token();
-  if(response.error)throw new Error('NEON_AUTH_JWT_FETCH_FAILED');
+  if(response.error)throw safeJwtFetchError(response.error);
   return sessionJwtCandidate(response.data?.token);
  }
 };

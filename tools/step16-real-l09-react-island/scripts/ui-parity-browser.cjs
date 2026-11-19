@@ -1,0 +1,56 @@
+#!/usr/bin/env node
+'use strict';
+// Single research-only real-CDP browser; never touches production URLs/user storage.
+const assert=require('node:assert/strict'),{spawn}=require('node:child_process'),fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+const [bin,url]=process.argv.slice(2);
+if(!bin||!/^http:\/\/127\.0\.0\.1:8795\/tools\/step16-real-l09-react-island\/dist\/index\.html\?pilot=uxds35$/.test(url||''))throw Error('Expected local research preview URL');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms)),profile=fs.mkdtempSync(path.join(os.tmpdir(),'li-02b-'));let proc,socket,seq=0;const pending=new Map();
+const until=async(fn,why)=>{for(let i=0;i<130;i++){const v=await fn();if(v)return v;await sleep(125)}throw Error('Timeout '+why)};
+function send(method,params={}){return new Promise((resolve,reject)=>{const id=++seq,t=setTimeout(()=>{pending.delete(id);reject(Error('CDP timeout '+method))},12000);pending.set(id,m=>{clearTimeout(t);m.error||m.result?.exceptionDetails?reject(Error(JSON.stringify(m.error||m.result.exceptionDetails))):resolve(m.result)});socket.send(JSON.stringify({id,method,params}))})}
+const run=async js=>(await send('Runtime.evaluate',{expression:js,returnByValue:true,awaitPromise:true}))?.result?.value;
+async function key(k){const map={Tab:9,Enter:13,Escape:27};const code=map[k];await send('Input.dispatchKeyEvent',{type:'keyDown',key:k,code:k,windowsVirtualKeyCode:code,nativeVirtualKeyCode:code,...(k==='Enter'?{text:'\r',unmodifiedText:'\r'}:{})});await send('Input.dispatchKeyEvent',{type:'keyUp',key:k,code:k,windowsVirtualKeyCode:code,nativeVirtualKeyCode:code})}
+async function main(){
+ proc=spawn(bin,['--headless=new','--no-sandbox','--disable-dev-shm-usage','--disable-background-networking','--remote-debugging-port=0','--remote-allow-origins=*','--user-data-dir='+profile,url],{stdio:'ignore'});
+ const port=await until(()=>{const f=path.join(profile,'DevToolsActivePort');return fs.existsSync(f)?fs.readFileSync(f,'utf8').split('\n')[0]:null},'port');
+ const page=await until(async()=>{try{const j=await(await fetch('http://127.0.0.1:'+port+'/json/list')).json();return j.find(x=>x.type==='page'&&x.url.startsWith(url)&&x.webSocketDebuggerUrl)}catch{return null}},'tab');
+ socket=new WebSocket(page.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{socket.addEventListener('open',resolve,{once:true});socket.addEventListener('error',reject,{once:true})});
+ socket.addEventListener('message',e=>{const m=JSON.parse(String(e.data));if(m.id&&pending.has(m.id)){const f=pending.get(m.id);pending.delete(m.id);f(m)}});
+ await send('Runtime.enable');await send('Page.enable');
+ await until(()=>run("document.querySelector('[data-ui-preview]')?.getAttribute('data-ui-preview')"),'mounted React fixture');
+ let n=0;const check=(condition,msg)=>{assert.ok(condition,msg);n++};
+ const base=await run("(()=>({root:!!document.querySelector('.li-ui-preview'),primary:document.querySelector('[data-ui-primary]')?.type,loading:document.querySelector('[data-ui-loading]')?.disabled,readonly:document.querySelector('[data-ui-readonly]')?.readOnly,disabled:document.querySelector('[data-ui-disabled]')?.disabled,one:document.querySelectorAll('[aria-current=page]').length,store:localStorage.length}))()");
+ check(base.root&&base.primary==='button'&&base.loading&&base.readonly&&base.disabled&&base.one===1,'semantic states/one nav owner');
+ check(base.store===0,'fixture mutated local learner storage');
+ await run("document.querySelector('[data-ui-primary]').click()");
+ await until(()=>run("document.querySelector('[data-ui-field]')?.getAttribute('aria-invalid')==='true'"),'field error');
+ const err=await run("(()=>{let e=document.querySelector('[data-ui-field]');return {described:e.getAttribute('aria-describedby'),linked:!!document.getElementById(e.getAttribute('aria-describedby')?.split(' ').at(-1)),role:document.querySelector('[data-ui-feedback]')?.getAttribute('role')}})()");
+ check(err.linked&&err.role==='alert','error association/alert');
+ await run("document.querySelector('[data-ui-locale=en]').click()");
+ await until(()=>run("document.querySelector('.li-ui-preview')?.lang==='en'"),'locale EN');
+ check(await run("document.querySelector('[data-ui-locale=en]')?.getAttribute('aria-pressed')==='true'"),'locale aria-pressed');
+ await run("document.querySelector('.li-ui-nav-link[href=\"#library\"]').click()");
+ await until(()=>run("document.querySelector('.li-ui-nav-link[href=\"#library\"]')?.getAttribute('aria-current')==='page'"),'navigation selected');
+ check((await run("document.querySelectorAll('[aria-current=page]').length"))===1,'single nav aria-current');
+ const metrics=[];
+ for(const [w,h] of [[320,568],[390,420],[820,1060],[1040,768]]){
+  await send('Emulation.setDeviceMetricsOverride',{width:w,height:h,deviceScaleFactor:1,mobile:false});await sleep(120);
+  const x=await run("(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,body:document.body.scrollWidth,target:document.querySelector('[data-ui-icon]').getBoundingClientRect().height,background:getComputedStyle(document.querySelector('[data-ui-primary]')).backgroundColor,field:getComputedStyle(document.querySelector('[data-ui-field]')).backgroundColor}))()");
+  metrics.push({w,h,...x});check(x.width===w&&x.scroll<=w+1&&x.body<=w+1&&x.target>=48,'overflow/hit at '+w+' '+JSON.stringify(x));
+ }
+ check(metrics[0].background==='rgb(36, 58, 41)'&&metrics[0].field==='rgb(254, 253, 252)','DS reference paint parity');
+ await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
+ check(await run("matchMedia('(prefers-reduced-motion: reduce)').matches"),'reduced motion media');
+ await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false});
+ await run("document.querySelector('[data-ui-open]').focus()");await key('Enter');
+ await until(()=>run("document.querySelector('dialog.li-ui-dialog')?.open"),'native showModal');
+ const modal=await run("(()=>{const d=document.querySelector('dialog.li-ui-dialog');return {modal:d.matches(':modal'),focus:d.contains(document.activeElement)}})()");
+ check(modal.modal&&modal.focus,'Dialog modal focus ownership');
+ await key('Escape');await until(()=>run("!document.querySelector('dialog.li-ui-dialog')?.open"),'Escape close');
+ check(await run("document.activeElement?.matches('[data-ui-open]')"),'Dialog opener focus restoration');
+ check((await run("localStorage.length"))===0,'no learner storage mutations');
+ fs.mkdirSync('/tmp/li-uxds35-stage02b',{recursive:true});
+ fs.writeFileSync('/tmp/li-uxds35-stage02b/metrics.json',JSON.stringify({n,source:'stage02b React fixture CDP',metrics,g2:'OPEN',device:'CHROMIUM_ONLY'},null,2));
+ const shot=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync('/tmp/li-uxds35-stage02b/preview.png',Buffer.from(shot.data,'base64'));
+ console.log('PASS UXDS35_STAGE02B_REAL_CHROMIUM '+JSON.stringify({checks:n,viewport:metrics.map(x=>x.w),privacy:'NO_WRITES',g2:'OPEN'}));
+}
+main().catch(e=>{console.error('FAIL UXDS35_STAGE02B '+e.stack);process.exitCode=1}).finally(async()=>{try{socket?.close()}catch{}proc?.kill('SIGKILL');await sleep(200);await fs.promises.rm(profile,{recursive:true,force:true}).catch(()=>{})});

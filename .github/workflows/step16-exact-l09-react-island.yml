@@ -34,6 +34,23 @@ jobs:
           npm run check:source
           npm run test:sync
           node -e 'const fs=require("fs"),z=require("zlib");const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(x=>x.isDirectory()?walk(d+"/"+x.name):[d+"/"+x.name]);const xs=walk("dist").filter(p=>p.endsWith(".js"));let raw=0,gz=0;for(const p of xs){const data=fs.readFileSync(p);raw+=data.length;gz+=z.gzipSync(data,{level:9}).length;}console.log("LI_STEP16_EXACT_L09_REACT_BUNDLE "+JSON.stringify({jsAssets:xs.length,jsRawBytes:raw,jsGzipBytes:gz,note:"single exact-source challenge/rubric island, not full li app"}));'
+      - name: Stage02B browser-mount shared React candidate (local Chromium only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$chrome"
+          python3 -m http.server 8795 --bind 127.0.0.1 --directory . > /tmp/li-02b-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          node tools/step16-real-l09-react-island/scripts/ui-parity-browser.cjs "$chrome" "http://127.0.0.1:8795/tools/step16-real-l09-react-island/dist/index.html?pilot=uxds35"
+      - name: Upload synthetic Stage02B browser evidence (NOT Safari)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uxds35-stage02b-react-chromium
+          path: /tmp/li-uxds35-stage02b/
+          retention-days: 7
       - name: Exercise actual editorial content + learner behavior in real-clock Chrome
         shell: bash
         run: |

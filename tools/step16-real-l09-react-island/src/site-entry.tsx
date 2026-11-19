@@ -5,6 +5,7 @@
 import React,{useEffect} from 'react';
 import {createRoot} from 'react-dom/client';
 import './pilot.css';
+import './ui/shared.css';
 import {Pilot} from './Pilot';
 
 export function mountL09(host:HTMLElement):Promise<()=>void>{

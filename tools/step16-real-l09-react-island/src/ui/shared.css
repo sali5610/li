@@ -1,0 +1,30 @@
+/* Draft Stage02B: React-only scoped consumers of #134 proposed canonical aliases.
+   No new palette/shape/brand. Native exceptions (nav oval, filter pill) stay exceptions. */
+.pilot .li-ui-button{min-height:var(--li-comp-button-min-hit-size,48px)}
+.pilot .li-ui-icon-button{display:inline-grid;place-items:center;min-width:var(--li-comp-button-min-hit-size,48px);padding:var(--li-space-2)}
+.pilot .li-ui-field{display:grid;gap:var(--li-space-2);min-width:0}
+.pilot .li-ui-field label{font-weight:600;line-height:1.5}
+.pilot .li-ui-field .li-ui-input{width:100%;min-height:var(--li-comp-button-min-hit-size,48px);color:var(--ink);background:var(--li-comp-field-background,var(--porcelain));border:1px solid var(--rule);border-radius:0;font:inherit;padding:var(--li-space-3)}
+.pilot .li-ui-field .li-ui-input:focus-visible{outline:3px solid var(--li-comp-field-focus-border,var(--li-color-input-focus-ring));outline-offset:var(--li-space-1)}
+.pilot .li-ui-field .li-ui-input[aria-invalid="true"]{border-color:var(--li-comp-field-error-border,var(--li-color-danger-fill))}
+.pilot .li-ui-field .li-ui-input:disabled{background:var(--paper-2);cursor:not-allowed}
+.pilot .li-ui-field .li-ui-input:read-only:not(:disabled){background:var(--paper)}
+.pilot .li-ui-field-hint{color:var(--muted);font-size:var(--li-font-size-sm,14px)}
+.pilot .li-ui-field-error{color:var(--li-comp-field-error-border,var(--li-color-danger-fill));font-size:var(--li-font-size-sm,14px)}
+.pilot .li-ui-card-tinted{background:var(--li-comp-surface-tinted-background,var(--paper-2))}
+.pilot .li-ui-card-inverse{background:var(--li-comp-surface-inverse-background,var(--moss));color:var(--li-comp-surface-inverse-color,var(--cream))}
+.pilot .li-ui-action-group{display:flex;flex-wrap:wrap;align-items:center;gap:var(--li-space-3);min-width:0}
+.pilot .li-ui-action-group>*{min-width:0}
+.pilot .li-ui-navigation{display:flex;flex-wrap:wrap;gap:var(--li-space-2);min-width:0}
+.pilot .li-ui-nav-link{display:inline-flex;align-items:center;gap:var(--li-space-2);min-height:var(--li-comp-button-min-hit-size,48px);padding:var(--li-space-2) var(--li-space-3);color:var(--moss);text-decoration:none;border-radius:0}
+.pilot .li-ui-nav-link[aria-current="page"]{background:var(--li-comp-app-nav-active-background,var(--li-color-nav-selected-fill));color:var(--li-comp-app-nav-active-color,var(--li-color-nav-selected-ink));border-radius:999px}
+.pilot .li-ui-nav-link:focus-visible{outline:3px solid var(--li-comp-button-focus-ring,var(--li-color-general-focus-ring));outline-offset:var(--li-space-1)}
+.pilot .li-ui-feedback{line-height:1.5}
+.pilot .li-ui-feedback-error{color:var(--li-comp-field-error-border,var(--li-color-danger-fill))}
+.pilot .li-ui-dialog{box-sizing:border-box;width:min(100% - var(--li-space-4),640px);max-height:calc(100dvh - var(--li-space-6));padding:var(--li-space-4);background:var(--li-comp-surface-background,var(--cream));color:var(--ink);border:1px solid var(--moss);border-radius:0}
+.pilot .li-ui-dialog::backdrop{background:rgb(0 0 0 / 50%)}
+.pilot .li-ui-dialog-head{display:flex;justify-content:space-between;align-items:center;gap:var(--li-space-3)}
+.pilot .li-ui-dialog-head h2{margin:0}
+.pilot .li-ui-dialog-body{max-height:calc(100dvh - 160px);overflow-y:auto;overscroll-behavior:contain}
+@media(max-width:599px){.pilot .li-ui-navigation{flex-wrap:wrap}.pilot .li-ui-action-group{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){.pilot .li-ui-dialog,.pilot .li-ui-button{animation:none;transition:none}}

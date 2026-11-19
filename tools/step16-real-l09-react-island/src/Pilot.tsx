@@ -3,6 +3,7 @@ import exact from './l09-exact.generated.json';
 import {L09StorageBridge,BridgeError,LOCALE_KEY,NATIVE_KEY,SITE_FIXTURE_KEY,initial} from './native-bridge';
 import type {Locale,Attempt,Rating} from './native-bridge';
 import {ActionButton,Surface,StatusMessage} from './ui/Primitives';
+import {ActionGroup} from './ui/Shared';
 
 const bridge=new L09StorageBridge(window.localStorage,window.location);
 export function Pilot(){
@@ -155,16 +156,16 @@ export function Pilot(){
          disabled={state.submitted} placeholder={text.placeholder} value={state.draft[i]}
          onChange={e=>updateDraft(i,e.target.value)}/>
      </div>)}
-     {!state.submitted&&<div className="pilot-actions">
+     {!state.submitted&&<ActionGroup className="pilot-actions">
        <ActionButton type="button" data-action="hint" kind="secondary" onClick={hint}>{text.hintButton}</ActionButton>
        {state.assisted&&<span role="status" data-assisted>{text.assisted}</span>}
-     </div>}
+     </ActionGroup>}
      {state.hint&&<p className="pilot-statement" data-hint>{cleanText(text.hint)}</p>}
      <p className="pilot-note">{text.saveHint}</p>
-     {!state.submitted&&<div className="pilot-actions">
+     {!state.submitted&&<ActionGroup className="pilot-actions">
        <ActionButton type="button" data-action="submit" onClick={submit}>{text.submit}</ActionButton>
        <ActionButton type="button" data-action="clear" kind="secondary" onClick={clear}>{text.clear}</ActionButton>
-     </div>}
+     </ActionGroup>}
      {state.submitted&&<div className="pilot-statement" data-submission>
        <strong>{text.answerTitle}</strong><p>{cleanText(text.answer)}</p>
      </div>}

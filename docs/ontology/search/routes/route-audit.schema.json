@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "li. ONT-04B2b1 source-level route audit manifest — NEVER a publication grant",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile",
+    "version",
+    "scope",
+    "source",
+    "coverage",
+    "candidates"
+  ],
+  "properties": {
+    "profile": {
+      "const": "li-ONT04B2b1-native-route-audit-only"
+    },
+    "version": {
+      "const": "0.1.0"
+    },
+    "scope": {
+      "const": "DRAFT_NON_NAVIGABLE_CANDIDATES"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nativeMapSource",
+        "sourceHead",
+        "provenance",
+        "globalRuntime"
+      ],
+      "properties": {
+        "nativeMapSource": {
+          "const": "site/index.html"
+        },
+        "sourceHead": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "provenance": {
+          "type": "object",
+          "required": [
+            "sourceUrl",
+            "sourceSection",
+            "checkedOn"
+          ],
+          "properties": {
+            "sourceUrl": {
+              "type": "string",
+              "pattern": "^https://"
+            },
+            "sourceSection": {
+              "type": "string"
+            },
+            "checkedOn": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        },
+        "globalRuntime": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "appAccessPolicy",
+            "googleAuthPilot",
+            "serverAuthorization",
+            "privateLearnerData",
+            "approvedReleaseManifest",
+            "clientRoutingAuthority"
+          ],
+          "properties": {
+            "appAccessPolicy": {
+              "const": "invite_only_intended"
+            },
+            "googleAuthPilot": {
+              "type": "string"
+            },
+            "serverAuthorization": {
+              "const": "NOT_VERIFIED"
+            },
+            "privateLearnerData": {
+              "const": "UNAVAILABLE_TO_SEARCH"
+            },
+            "approvedReleaseManifest": {
+              "const": "ABSENT"
+            },
+            "clientRoutingAuthority": {
+              "const": "NONE"
+            }
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nativeRouteCandidates",
+        "reviewedSearchPublicationRoutes",
+        "verifiedAuthUserCount",
+        "fullCatalogCoverage",
+        "liveAppIntegration",
+        "ont03c"
+      ],
+      "properties": {
+        "nativeRouteCandidates": {
+          "const": 3
+        },
+        "reviewedSearchPublicationRoutes": {
+          "const": 0
+        },
+        "verifiedAuthUserCount": {
+          "const": 0
+        },
+        "fullCatalogCoverage": {
+          "const": "NOT_ASSESSED"
+        },
+        "liveAppIntegration": {
+          "const": "BLOCKED"
+        },
+        "ont03c": {
+          "const": "PENDING"
+        }
+      }
+    },
+    "candidates": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/$defs/candidate"
+      }
+    }
+  },
+  "$defs": {
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonicalLessonId",
+        "nativeRouteKey",
+        "pageElementId",
+        "markupPath",
+        "editorialStatus",
+        "ontologyRecordRef",
+        "researchNote",
+        "visibility",
+        "nativeCode",
+        "publicationDecision",
+        "rightsDecision",
+        "permissionDecision",
+        "routeAvailability",
+        "appUrl",
+        "openAction",
+        "humanReleaseApproved",
+        "publishProof"
+      ],
+      "properties": {
+        "canonicalLessonId": {
+          "type": "string",
+          "pattern": "^L[0-9]{2}-[0-9]+-[0-9]+$"
+        },
+        "nativeRouteKey": {
+          "type": "string",
+          "pattern": "^lessonL[0-9]{2}$"
+        },
+        "pageElementId": {
+          "type": "string",
+          "pattern": "^page-lessonL[0-9]{2}$"
+        },
+        "markupPath": {
+          "type": "string",
+          "pattern": "^site/assets/lesson-l[0-9]{2}-hifi-markup\\.js$"
+        },
+        "editorialStatus": {
+          "const": "po_content_locked_ui_in_review"
+        },
+        "ontologyRecordRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "researchNote": {
+          "type": "string",
+          "minLength": 10
+        },
+        "visibility": {
+          "const": "public_curated"
+        },
+        "nativeCode": {
+          "const": "ROUTE_AND_MARKUP_PRESENT"
+        },
+        "publicationDecision": {
+          "const": "NOT_APPROVED_FOR_SEARCH_NAVIGATION"
+        },
+        "rightsDecision": {
+          "const": "UNVERIFIED_FOR_SEARCH_RELEASE"
+        },
+        "permissionDecision": {
+          "const": "REAL_AUTH_AND_RLS_TEST_PENDING"
+        },
+        "routeAvailability": {
+          "const": "CODE_PRESENT_NOT_USER_AVAILABLE"
+        },
+        "appUrl": {
+          "const": null
+        },
+        "openAction": {
+          "const": null
+        },
+        "humanReleaseApproved": {
+          "const": false
+        },
+        "publishProof": {
+          "const": null
+        }
+      }
+    }
+  }
+}

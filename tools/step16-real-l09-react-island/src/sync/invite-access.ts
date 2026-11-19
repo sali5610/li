@@ -45,11 +45,27 @@ export function sessionJwtCandidate(value:unknown):string|null{
  return parts.length===3&&parts.every(part=>part.length>0)?value:null;
 }
 
+/** Preserve only a numeric Better Auth JWT endpoint status; never echo messages. */
+export function safeJwtFetchError(problem:unknown):Error{
+ const detail=problem&&typeof problem==='object'?problem as {status?:unknown;statusCode?:unknown}:null;
+ const value=detail?.status??detail?.statusCode;
+ if(typeof value==='number'&&Number.isInteger(value)&&value>=400&&value<=599)
+  return new Error('NEON_AUTH_JWT_HTTP_'+value);
+ return new Error('NEON_AUTH_JWT_FETCH_FAILED');
+}
+
 /** A stable, non-sensitive code for the owner to screenshot.
  * Never surface backend bodies, JWTs, identifiers or raw exception messages. */
 export function safeInviteErrorCode(error:unknown):string{
  const message=error instanceof Error?error.message:'';
  if(message==='NEON_AUTH_JWT_FETCH_FAILED')return 'INV-JWT-FETCH';
+ const jwtStatus=/^NEON_AUTH_JWT_HTTP_(\d{3})$/.exec(message);
+ if(jwtStatus){
+  const status=Number(jwtStatus[1]);
+  if([400,401,403,404,409,429].includes(status))return 'INV-JWT-'+status;
+  if(status>=500&&status<=599)return 'INV-JWT-5XX';
+  return 'INV-JWT-OTHER';
+ }
  if(message==='NEON_AUTH_JWT_SESSION_FAILED'||message==='INVITE_AUTH_SESSION_FAILED')
   return 'INV-SESSION';
  if(message==='INVITE_JWT_REQUIRED')return 'INV-JWT-MISSING';

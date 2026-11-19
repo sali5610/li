@@ -4,6 +4,7 @@ const assert=require("node:assert/strict");
 const fs=require("node:fs");
 const vm=require("node:vm");
 const src=fs.readFileSync("site/assets/laoly-quotes-s121.js","utf8");
+const gateSrc=fs.readFileSync("site/assets/laoly-quote-stage-gate.js","utf8");
 const nodes=new Map();
 function node(id){
  if(!nodes.has(id)) nodes.set(id,{
@@ -11,21 +12,24 @@ function node(id){
   append(child){this.children.push(child);if(child.id)nodes.set(child.id,child);},
   attrs:{},
   setAttribute(key,value){this.attrs[key]=String(value)},
-  getAttribute(key){return this.attrs[key]??null}
+  getAttribute(key){return this.attrs[key]??null},
+  removeAttribute(key){delete this.attrs[key];if(key==="href")this.href=""}
  });
  return nodes.get(id);
 }
 const storage=new Map();
 const document={
  getElementById:id=>node(id),
- createElement:tag=>({tagName:tag,textContent:"",id:"",className:""})
+ createElement:tag=>({tagName:tag,textContent:"",id:"",className:""}),
+ addEventListener:()=>{}
 };
-const window={sessionStorage:{
+const window={addEventListener:()=>{},sessionStorage:{
  getItem:key=>storage.has(key)?storage.get(key):null,
  setItem:(key,value)=>storage.set(key,value)
 }};
-const ctx={document,window,currentPage:"home",qIndex:0,studyMode:"start",buddyDebateActive:false};
+const ctx={document,window,URL,currentPage:"home",qIndex:0,studyMode:"start",buddyDebateActive:false};
 vm.createContext(ctx);
+vm.runInContext(gateSrc,ctx,{filename:"laoly-quote-stage-gate.js"});
 vm.runInContext(src,ctx,{filename:"laoly-quotes-s121.js"});
 const engine=window.liQuoteEngine;
 assert.ok(engine,"engine present");

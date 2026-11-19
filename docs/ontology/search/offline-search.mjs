@@ -37,6 +37,10 @@ export function buildPilotIndex({academicGraph,pedagogyGraph,methodCatalog,candi
   if(a){if(index.has(a.id)){
     const previous=index.get(a.id);
     if(previous.kind!==a.kind||normalize(previous.title)!==normalize(a.title))throw Error('Conflicting canonical ID: '+a.id);
+    // Merge aliases from canonical catalog pointers (e.g. T06) without duplicating the entity.
+    const aliases=[...previous.aliases];
+    for(const name of a.aliases)if(!aliases.some(old=>old.locale===name.locale&&normalize(old.text)===normalize(name.text)))aliases.push(name);
+    index.set(a.id,Object.freeze({...previous,aliases}));
    }else index.set(a.id,a);}
   if(b&&!evidence.has(b.id))evidence.set(b.id,b);
  }

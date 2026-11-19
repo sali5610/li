@@ -1,0 +1,40 @@
+name: li. ONT-04B2a native search bridge — no deploy
+on:
+  pull_request:
+    paths:
+      - 'site/index.html'
+      - 'tools/ont04b-react-search-island/**'
+      - '.github/workflows/li-ont04b2-local-search-bridge.yml'
+permissions:
+  contents: read
+jobs:
+  local-search-bridge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Shared ontology and typed retrieval remain valid
+        run: |
+          node tools/validate_ontology.mjs --check
+          node tools/validate_academic_ontology.mjs --check
+          node tools/validate_pedagogy_ontology.mjs --check
+          node tools/test_offline_typed_search.mjs
+      - name: Install isolated React dependencies (not app migration)
+        working-directory: tools/ont04b-react-search-island
+        run: npm install --no-audit --no-fund
+      - name: Compile standalone Vite and localhost-only site candidate assets
+        working-directory: tools/ont04b-react-search-island
+        run: npm run build:site-candidate
+      - name: Assert candidate compiled but will never be uploaded
+        run: |
+          test -s site/assets/ont04b-search-site-island.js
+          test -s site/assets/ont04b-search-site-island.css
+          node --input-type=module -e "import fs from 'node:fs';const h=fs.readFileSync('site/index.html','utf8');if(!h.includes('li-search-react')||!h.includes('localhost')||!h.includes('127.0.0.1')||!h.includes('li-typed-search-root')||!h.includes('SEARCH_LOCAL_CSS_MISSING'))process.exit(3)"
+      - name: React + native fallback tests in jsdom
+        working-directory: tools/ont04b-react-search-island
+        run: npm run test:ci
+      - name: Check no build artifacts committed by this workflow
+        run: |
+          test -z "$(git ls-files site/assets/ont04b-search-site-island.js site/assets/ont04b-search-site-island.css)"

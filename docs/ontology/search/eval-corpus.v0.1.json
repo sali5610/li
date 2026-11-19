@@ -1,0 +1,106 @@
+{
+  "profile": "ONT-04A-golden-query-set",
+  "status": "HAND_CURATED_DEMO_ONLY",
+  "description": "Queries are labelled against *this tiny pilot*; missing source results must remain unknown, not proof of no curriculum item globally.",
+  "cases": [
+    {
+      "q": "L09-1-1",
+      "id": "lesson:L09-1-1"
+    },
+    {
+      "q": "Population, Sample & Variable Types",
+      "id": "lesson:L09-1-1"
+    },
+    {
+      "q": "L09-1-2",
+      "id": "lesson:L09-1-2"
+    },
+    {
+      "q": "T06",
+      "id": "technique:L2-T06"
+    },
+    {
+      "q": "L2-T06",
+      "id": "technique:L2-T06"
+    },
+    {
+      "q": "T13",
+      "id": "technique:L2-T13"
+    },
+    {
+      "q": "L2-T13",
+      "id": "technique:L2-T13"
+    },
+    {
+      "q": "dự báo",
+      "id": "lesson:L15-2-1",
+      "locale": "vi"
+    },
+    {
+      "q": "Demand Forecasting",
+      "id": "lesson:L15-2-1",
+      "locale": "en"
+    },
+    {
+      "q": "khoa hoc du lieu",
+      "id": "field:F09",
+      "locale": "vi"
+    },
+    {
+      "q": "Data Science",
+      "id": "field:F09",
+      "locale": "en"
+    },
+    {
+      "q": "taxonomy",
+      "id": "lesson:L03-2-1",
+      "locale": "en"
+    },
+    {
+      "q": "taxonomy",
+      "id": "concept:ont03a:taxonomic-classification",
+      "includeCandidates": true,
+      "kind": "Concept"
+    },
+    {
+      "q": "taxonmy",
+      "id": "concept:ont03a:taxonomic-classification",
+      "includeCandidates": true,
+      "kind": "Concept"
+    },
+    {
+      "q": "sai lech chon mau",
+      "id": "concept:ont01:selection-bias",
+      "locale": "vi",
+      "includeCandidates": true,
+      "kind": "Concept"
+    },
+    {
+      "q": "Pinyin",
+      "id": null
+    },
+    {
+      "q": "Pinyin",
+      "id": "lesson:L01-1-1",
+      "includeCandidates": true
+    },
+    {
+      "q": "Paraphrase",
+      "id": "lesson:L02-2-2",
+      "includeCandidates": true
+    },
+    {
+      "q": "Data Science",
+      "id": "field:F09",
+      "kind": "Field"
+    },
+    {
+      "q": "completely nonexisting fictitious programme",
+      "id": null
+    },
+    {
+      "q": "admin private diary password",
+      "id": null
+    }
+  ]
+}

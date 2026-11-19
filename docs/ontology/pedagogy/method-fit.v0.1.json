@@ -1,0 +1,121 @@
+{
+  "profile": "li-ONT03B-method-fit-editorial-pilot",
+  "version": "0.1.0",
+  "sourceContract": "S145-L3xL2",
+  "catalogVersion": "0.2.0",
+  "demoOnly": true,
+  "coverage": {
+    "methodDefinitions": 13,
+    "caseLessons": [
+      "L09-1-1",
+      "L03-2-1",
+      "L15-2-1"
+    ],
+    "sourceStatus": "editorial-only",
+    "userRuntime": "NOT_IMPLEMENTED",
+    "cloudProgress": "NOT_TOUCHED",
+    "contentPublish": "NOT_AUTHORIZED"
+  },
+  "defaultPolicy": {
+    "methodChoice": "skippable",
+    "primaryMax": 1,
+    "optionalSecondaryMax": 1,
+    "feedbackAfterAttempt": true,
+    "answerAfterIndependentSubmission": true,
+    "independentScoredFromGuided": false,
+    "reportedEffect": "not measured"
+  },
+  "lessons": [
+    {
+      "canonicalLessonId": "L09-1-1",
+      "primaryTechniqueId": "L2-T06",
+      "optionalTechniqueIds": [
+        "L2-T07"
+      ],
+      "editorialApplicationId": "L09-1-1:l2-t06:p01",
+      "applicationRef": "application:L09-1-1:l2-t06:p01",
+      "outcomeRef": "outcome:ont03a:L09-1-1:identify-population-sample",
+      "practiceRef": "micropractice:L09-1-1:l2-t06:p01",
+      "independentChallengeRef": "challenge:L09-1-1:ind:v1",
+      "practiceCaseKey": "L09-1-1:method:t06:case-variable-classification",
+      "independentCaseKey": "L09-1-1:ind:v1",
+      "fitRationale": "Compare the target population against an actually selected sample; check assumptions before inferring beyond respondents",
+      "avoidCondition": "Do not treat larger sample size or a guide view as proof of unbiased selection",
+      "methodProcedureActions": [
+        "contrast_categories",
+        "explain_decisive_attribute"
+      ],
+      "methodFeedbackDescription": "Learner compares population/sample/variable types in a distinct guided case before an independently presented fresh case",
+      "revealPolicy": "practice_feedback_after_practice_submit__answer_after_independent_submit",
+      "status": "editorial_draft",
+      "evidenceStatus": "method-fit sourced; procedure execution by real learner NOT MEASURED",
+      "source": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+        "sourceSection": "S145/S147/S156 W2A, primary T06 and secondary T07, §4b micropractice and independent case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "canonicalLessonId": "L03-2-1",
+      "primaryTechniqueId": "L2-T06",
+      "optionalTechniqueIds": [
+        "L2-T10"
+      ],
+      "editorialApplicationId": "L03-2-1:l2-t06:p01",
+      "applicationRef": "application:L03-2-1:l2-t06:p01",
+      "outcomeRef": "outcome:ont03a:L03-2-1:taxonomy-navigation",
+      "practiceRef": "micropractice:L03-2-1:l2-t06:p01",
+      "independentChallengeRef": "challenge:L03-2-1:ind:v1",
+      "practiceCaseKey": "L03-2-1:method:t06:case-library-labels",
+      "independentCaseKey": "L03-2-1:ind:v1",
+      "fitRationale": "Contrast controlled topic metadata with user-visible route choices for a given information task",
+      "avoidCondition": "Do not grade invented navigation as validated by real user research; ensure unique content ID regardless of multiple labels",
+      "methodProcedureActions": [
+        "contrast_categories",
+        "justify_navigation_vs_tags"
+      ],
+      "methodFeedbackDescription": "Practice discriminates background classification from navigation with a guided example; independent case has different scenario and answer gate",
+      "revealPolicy": "practice_feedback_after_practice_submit__answer_after_independent_submit",
+      "status": "editorial_draft",
+      "evidenceStatus": "method-fit sourced; procedure execution by real learner NOT MEASURED",
+      "source": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
+        "sourceSection": "Wave3A L03-2-1 sections 1–4; primary T06 and optional T10; independent new document case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "canonicalLessonId": "L15-2-1",
+      "primaryTechniqueId": "L2-T03",
+      "optionalTechniqueIds": [
+        "L2-T10"
+      ],
+      "editorialApplicationId": "L15-2-1:l2-t03:p01",
+      "applicationRef": "application:L15-2-1:l2-t03:p01",
+      "outcomeRef": "outcome:ont03a:L15-2-1:forecast-limits",
+      "practiceRef": "micropractice:L15-2-1:l2-t03:p01",
+      "independentChallengeRef": "challenge:L15-2-1:ind:v1",
+      "practiceCaseKey": "L15-2-1:method:t03:case-three-week-18-24-30",
+      "independentCaseKey": "L15-2-1:ind:v1",
+      "fitRationale": "Fade scaffold for arithmetic baseline forecasting, then require explicit demand-vs-sales assumption and stockout boundary",
+      "avoidCondition": "Do not equate historical arithmetic mean to MA(q) or automatically infer forecast reliability from one example",
+      "methodProcedureActions": [
+        "complete_faded_steps",
+        "state_assumptions",
+        "check_stockout_boundary"
+      ],
+      "methodFeedbackDescription": "S145 18/24/30 -> illustrative forecast is guided micropractice, not the independently assessed dataset",
+      "revealPolicy": "practice_feedback_after_practice_submit__answer_after_independent_submit",
+      "status": "editorial_draft",
+      "evidenceStatus": "method-fit sourced; procedure execution by real learner NOT MEASURED",
+      "source": {
+        "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+        "sourceSection": "S145/S147 W2A; T03 worked example fading and T10 boundaries; independent separate historical case",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    }
+  ]
+}

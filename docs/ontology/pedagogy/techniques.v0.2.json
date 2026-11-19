@@ -1,0 +1,234 @@
+{
+  "profile": "li-L2-canonical-technique-pointer-catalog",
+  "version": "0.2.0",
+  "status": "EDITORIAL_REFERENCE_ONLY",
+  "source": {
+    "url": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+    "section": "L2 researcher-defined library v0.1 + approved T13 v0.2 + S161 interactive practice; source document controls names and evidence",
+    "checkedOn": "2026-11-19"
+  },
+  "limits": "This catalog confirms 13 existing identities, not 13 methods automatically executed or mastered. Precise current display names remain owned by the L2 library. No paid service.",
+  "entries": [
+    {
+      "id": "L2-T01",
+      "uiShortId": "T01",
+      "scientificName": "Retrieval Practice / Active Recall",
+      "family": "Retention",
+      "sourceEdition": "L2-library-v0.2",
+      "reviewState": "verified",
+      "defaultOptional": true,
+      "useWhen": "Previously taught facts and concepts",
+      "avoidWhen": "Do not turn first exposure into a surprise mastery test",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 technique definition T01 research/contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "L2-T02",
+      "uiShortId": "T02",
+      "scientificName": "Distributed / Spaced Review",
+      "family": "Retention",
+      "sourceEdition": "L2-library-v0.2",
+      "reviewState": "verified",
+      "defaultOptional": true,
+      "useWhen": "Previously learned material with a real later review opportunity",
+      "avoidWhen": "Do not fabricate a due review or equate opening a notification to recalled knowledge",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 technique definition T02 research/contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "L2-T03",
+      "uiShortId": "T03",
+      "scientificName": "Worked Examples & Guidance Fading",
+      "family": "Novice scaffold",
+      "sourceEdition": "L2-library-v0.2",
+      "reviewState": "verified",
+      "defaultOptional": true,
+      "useWhen": "New structured procedure with progressively removed hints",
+      "avoidWhen": "Avoid over-scaffolding expert learners or grading a viewed example as independent work",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 technique definition T03 research/contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "L2-T04",
+      "uiShortId": "T04",
+      "scientificName": "Guided Self-Explanation",
+      "family": "Comprehension",
+      "sourceEdition": "L2-library-v0.2",
+      "reviewState": "verified",
+      "defaultOptional": true,
+      "useWhen": "Explain the causal or procedural steps behind a bounded lesson task",
+      "avoidWhen": "Do not score copying an explanation as independent reasoning",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 technique definition T04 research/contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "L2-T05",
+      "uiShortId": "T05",
+      "scientificName": "Elaborative Interrogation",
+      "family": "Comprehension",
+      "sourceEdition": "L2-library-v0.2",
+      "reviewState": "verified",
+      "defaultOptional": true,
+      "useWhen": "Ask why a sourced concept or relationship holds",
+      "avoidWhen": "Avoid unsupported causal inventions and source overclaims",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 technique definition T05 research/contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "L2-T06",
+      "uiShortId": "T06",
+      "scientificName": "Compare–Contrast / Interleaved Discrimination",
+      "family": "Discrimination",
+      "sourceEdition": "L2-library-v0.2",
+      "reviewState": "verified",
+      "defaultOptional": true,
+      "useWhen": "Discriminate two confusable concepts with worked and fresh cases",
+      "avoidWhen": "Avoid inferring hard prerequisite or correctness from merely tagging a contrast",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 technique definition T06 research/contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "L2-T07",
+      "uiShortId": "T07",
+      "scientificName": "Logical Inference & Premise Checking",
+      "family": "Reasoning",
+      "sourceEdition": "L2-library-v0.2",
+      "reviewState": "verified",
+      "defaultOptional": true,
+      "useWhen": "Identify assumptions, warranted conclusions and evidence gaps",
+      "avoidWhen": "Validity of form does not establish truth of premises",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 technique definition T07 research/contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "L2-T08",
+      "uiShortId": "T08",
+      "scientificName": "Argument Mapping & Counterevidence",
+      "family": "Reasoning",
+      "sourceEdition": "L2-library-v0.2",
+      "reviewState": "verified",
+      "defaultOptional": true,
+      "useWhen": "Separate claim, reasons, objections and evidence",
+      "avoidWhen": "A well-drawn map is not automatically a sound argument",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 technique definition T08 research/contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "L2-T09",
+      "uiShortId": "T09",
+      "scientificName": "Source Criticism & Evidence Appraisal",
+      "family": "Reasoning",
+      "sourceEdition": "L2-library-v0.2",
+      "reviewState": "verified",
+      "defaultOptional": true,
+      "useWhen": "Inspect author, edition, methods and conflicting evidence",
+      "avoidWhen": "Do not claim the original source was inspected when it was unavailable",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 technique definition T09 research/contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "L2-T10",
+      "uiShortId": "T10",
+      "scientificName": "Problem Decomposition & Boundary Tests",
+      "family": "Problem solving",
+      "sourceEdition": "L2-library-v0.2",
+      "reviewState": "verified",
+      "defaultOptional": true,
+      "useWhen": "Decompose a problem into steps and test edge conditions",
+      "avoidWhen": "Checklist completion does not demonstrate method competence",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 technique definition T10 research/contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "L2-T11",
+      "uiShortId": "T11",
+      "scientificName": "Method Fit & Metacognitive Awareness",
+      "family": "Self-regulation",
+      "sourceEdition": "L2-library-v0.2",
+      "reviewState": "verified",
+      "defaultOptional": true,
+      "useWhen": "Voluntary method choice/decline with reason",
+      "avoidWhen": "Never require picking a technique for every lesson",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 technique definition T11 research/contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "L2-T12",
+      "uiShortId": "T12",
+      "scientificName": "Meaningful Focus & Attention Re-entry",
+      "family": "Self-regulation",
+      "sourceEdition": "L2-library-v0.2",
+      "reviewState": "verified",
+      "defaultOptional": true,
+      "useWhen": "Return to a worthwhile interrupted task with low-pressure supports",
+      "avoidWhen": "Do not claim neurological/medical changes or general intelligence improvement",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "L2 technique definition T12 research/contract",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    },
+    {
+      "id": "L2-T13",
+      "uiShortId": "T13",
+      "scientificName": "Method of Loci / Memory Palace",
+      "family": "Retention",
+      "sourceEdition": "L2-T13-v0.2",
+      "reviewState": "verified",
+      "defaultOptional": true,
+      "useWhen": "Recall a verified ordered list after meaning has been taught",
+      "avoidWhen": "Avoid contested facts, inaccessible spatial-only activity and fabricated long-term retention",
+      "provenance": {
+        "sourceUrl": "https://app.notion.com/p/41a6cf6db72a81cdbb29f741a2ac84ec",
+        "sourceSection": "Canonical TechniqueDefinition T13 v0.2",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-19"
+      }
+    }
+  ]
+}

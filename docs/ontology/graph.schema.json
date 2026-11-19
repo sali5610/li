@@ -1,0 +1,295 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sali5610/li/blob/main/docs/ontology/graph.schema.json",
+  "title": "li. ontology graph fixture v0.1",
+  "type": "object",
+  "required": [
+    "profile",
+    "graphVersion",
+    "contractVersion",
+    "demoOnly",
+    "boundary",
+    "nodes",
+    "edges"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "profile": {
+      "type": "string",
+      "minLength": 1
+    },
+    "graphVersion": {
+      "$ref": "#/$defs/semver"
+    },
+    "contractVersion": {
+      "$ref": "#/$defs/semver"
+    },
+    "demoOnly": {
+      "const": true
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    }
+  },
+  "$defs": {
+    "semver": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "sourceUrl",
+        "sourceSection",
+        "evidenceType",
+        "checkedOn"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "sourceUrl": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "sourceSection": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidenceType": {
+          "enum": [
+            "documented",
+            "implemented",
+            "editorial",
+            "synthetic_fixture"
+          ]
+        },
+        "checkedOn": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "title",
+        "version",
+        "reviewState",
+        "publishState",
+        "visibility",
+        "rightsState",
+        "aliases",
+        "provenance",
+        "note"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[A-Za-z0-9._:-]+$"
+        },
+        "kind": {
+          "enum": [
+            "DesignToken",
+            "Component",
+            "Variant",
+            "Slot",
+            "Pattern",
+            "Screen",
+            "Flow",
+            "UIRule",
+            "QAGate",
+            "DomainGroup",
+            "Field",
+            "Course",
+            "Lesson",
+            "Chapter",
+            "Concept",
+            "LearningOutcome",
+            "Misconception",
+            "SourceClaim",
+            "SourceEdition",
+            "TechniqueDefinition",
+            "TechniqueApplication",
+            "Micropractice",
+            "IndependentChallenge",
+            "Rubric",
+            "HintPolicy",
+            "RevealGate",
+            "Learner",
+            "Attempt",
+            "TechniqueExecution",
+            "ReviewDue",
+            "AssistanceEvent",
+            "Feedback",
+            "MentorStage",
+            "Intent",
+            "ContextSnapshot",
+            "AllowedAction",
+            "ResponseTemplate",
+            "Decision",
+            "Permission"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "$ref": "#/$defs/semver"
+        },
+        "reviewState": {
+          "enum": [
+            "proposed",
+            "verified",
+            "approved",
+            "rejected",
+            "superseded"
+          ]
+        },
+        "publishState": {
+          "enum": [
+            "not_applicable",
+            "draft",
+            "review_only",
+            "published",
+            "suspended",
+            "retired"
+          ]
+        },
+        "visibility": {
+          "enum": [
+            "public_curated",
+            "private_user"
+          ]
+        },
+        "rightsState": {
+          "enum": [
+            "first_party",
+            "external_reference",
+            "unknown"
+          ]
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "locale",
+              "text"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "locale": {
+                "enum": [
+                  "vi",
+                  "en"
+                ]
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "provenance": {
+          "$ref": "#/$defs/source"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "predicate",
+        "from",
+        "to",
+        "reviewState",
+        "visibility",
+        "provenance"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[A-Za-z0-9._:-]+$"
+        },
+        "predicate": {
+          "enum": [
+            "USES_TOKEN",
+            "HAS_VARIANT",
+            "HAS_SLOT",
+            "FILLS_SLOT",
+            "USES_PATTERN",
+            "INCLUDES_SCREEN",
+            "CONSTRAINS",
+            "VALIDATES",
+            "PART_OF",
+            "IS_A",
+            "TEACHES",
+            "AIMS_AT",
+            "REQUIRES",
+            "CONTRASTS_WITH",
+            "RELATED_TO",
+            "APPLIES_IN_FIELD",
+            "SUPPORTED_BY",
+            "USES_METHOD",
+            "INSTANTIATES_METHOD",
+            "ASSESSES_METHOD",
+            "ASSESSES_OUTCOME",
+            "ASSISTS_WITH",
+            "OFFERS_ACTION",
+            "EVIDENCES",
+            "SUPERSEDES"
+          ]
+        },
+        "from": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[A-Za-z0-9._:-]+$"
+        },
+        "to": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[A-Za-z0-9._:-]+$"
+        },
+        "reviewState": {
+          "enum": [
+            "proposed",
+            "verified",
+            "approved",
+            "rejected",
+            "superseded"
+          ]
+        },
+        "visibility": {
+          "enum": [
+            "public_curated",
+            "private_user"
+          ]
+        },
+        "provenance": {
+          "$ref": "#/$defs/source"
+        }
+      }
+    }
+  }
+}

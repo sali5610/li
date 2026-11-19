@@ -40,7 +40,7 @@ function fixture(search,visualHeight){
     navigator:{standalone:false},visualViewport:vv,
     getComputedStyle:()=>style,liSafariRotationQA:{mode:"portrait-fixed-home"},
     addEventListener:(type,fn)=>handlers.set("window:"+type,fn)};
-  const sandbox={window,document,screen:window.screen,URLSearchParams,
+  const sandbox={window,document,location:window.location,screen:window.screen,URLSearchParams,
     navigator:window.navigator,matchMedia:()=>({matches:false})};
   vm.runInNewContext(src,sandbox,{timeout:1500});
   return {get mounted(){return mounted;},vv,handlers};

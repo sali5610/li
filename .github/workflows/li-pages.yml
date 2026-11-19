@@ -109,6 +109,53 @@ jobs:
           git diff --exit-code -- site/
           echo "PASS immutable main site + isolated GitHub Pages Auth pilot"
 
+      # PO browser review: keep the main staging app intact. The React L09
+      # prototype is published under a separate public, device-only URL.
+      - name: Checkout pinned L09 preview source (no draft merge)
+        uses: actions/checkout@v4
+        with:
+          repository: sali5610/li
+          ref: cbc38fcb88b23ee0e5afedd102e11265e1b811f7
+          path: staging-l09-source
+          persist-credentials: false
+
+      - name: Build isolated L09 browser preview
+        working-directory: staging-l09-source/tools/step16-real-l09-react-island
+        run: |
+          set -euo pipefail
+          test "$(git -C ../.. rev-parse HEAD)" = "cbc38fcb88b23ee0e5afedd102e11265e1b811f7"
+          npm install --no-audit --no-fund
+          npm run build:site-island
+          test -s ../../site/assets/step16-l09-island.js
+          test -s ../../site/assets/step16-l09-island.css
+
+      - name: Assemble isolated L09 preview for PO (GitHub Pages only)
+        run: |
+          set -euo pipefail
+          mkdir -p site/l09-preview
+          cp -a staging-l09-source/site/. site/l09-preview/
+          python3 - <<'PY'
+          from pathlib import Path
+          router = Path('site/l09-preview/assets/step16-react-router.js')
+          source = router.read_text(encoding='utf-8')
+          old = "if(!local||!['l09','l09-native-fixture','settings'].includes(mode))return;"
+          new = """const githubPagesPilot=window.location.protocol==='https:' &&
+             window.location.hostname==='sali5610.github.io' &&
+             window.location.pathname.startsWith('/li/l09-preview/') && mode==='l09';
+           if(!(local||githubPagesPilot)||!['l09','l09-native-fixture','settings'].includes(mode))return;"""
+          assert source.count(old) == 1, 'Unexpected L09 research router; stop publishing'
+          router.write_text(source.replace(old, new), encoding='utf-8')
+          PY
+          test -s site/l09-preview/index.html
+          test -s site/l09-preview/assets/step16-l09-island.js
+          test -s site/l09-preview/assets/step16-l09-island.css
+          grep -Fq 'step16-react-router.js' site/l09-preview/index.html
+          grep -Fq '/li/l09-preview/' site/l09-preview/assets/step16-react-router.js
+          test ! -e site/l09-preview/auth-pilot
+          test -z "$(find site/l09-preview -type f \( -name '*.map' -o -name '.env*' -o -name '*qa-secrets*' \) -print -quit)"
+          echo 'Ready: /li/l09-preview/?li-react=l09 (local-device progress, no Google/Neon sync)'
+          echo 'Production Cloudflare and main staging root remain untouched.'
+
       - name: Configure GitHub Pages STAGING
         uses: actions/configure-pages@v5
 

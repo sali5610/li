@@ -1,21 +1,14 @@
 name: li. ONT-04C2b Playwright WebKit QA (PR only, no deploy)
+# Explicit only: WebKit provisioning on hosted runners is expensive/unsupported by default.
+# Keep the QA script and recipe, avoid repeated long installers on every draft edit.
 on:
-  pull_request:
-    paths:
-      - 'tools/check_laoly_webkit.py'
-      - 'tools/qa_laoly_browser.js'
-      - 'tools/create_qa_laoly_page.mjs'
-      - 'docs/ontology/companion/ONT-04C2b-browser-qa.md'
-      - '.github/workflows/li-ont04c2b-webkit-qa.yml'
-      - 'site/index.html'
-      - 'site/assets/laoly-quotes-s121.js'
-      - 'site/assets/laoly-quote-stage-gate.js'
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
   native-webkit:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 7
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

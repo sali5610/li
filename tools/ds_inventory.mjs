@@ -25,10 +25,13 @@ function files(dir,exts){
   return walk(absolute).sort();
 }
 const read=(p)=>fs.readFileSync(path.join(root,p),"utf8");
+const cachedNewlines=new Map();
 function lineOf(source,at){
-  let n=1;
-  for(let i=0;i<at;i++)if(source.charCodeAt(i)===10)n++;
-  return n;
+  let lines=cachedNewlines.get(source);
+  if(!lines){lines=[];for(let i=0;i<source.length;i++)if(source.charCodeAt(i)===10)lines.push(i);cachedNewlines.set(source,lines);}
+  let l=0,h=lines.length;
+  while(l<h){const m=(l+h)>>>1;if(lines[m]<at)l=m+1;else h=m;}
+  return l+1;
 }
 function splitSelectors(raw){
   return raw.split(/,(?![^()]*\))/).map((s)=>s.trim().replace(/\s+/g," ")).filter(Boolean);
@@ -90,7 +93,11 @@ function build(){
     .filter((p)=>!p.endsWith("lucide.min.js"));
   const htmlIndex=fs.existsSync(path.join(root,"site/index.html"))?read("site/index.html"):"";
   const screens=getScreens(htmlIndex);
-  const css=cssFiles.map((p)=>parseCss(read(p),p));
+  const inlineCss=files("site",[".html"]).flatMap((p)=>{
+    const html=read(p);
+    return [...html.matchAll(/<style\\b[^>]*>([\\s\\S]*?)<\\/style>/gi)].map((m,i)=>parseCss(m[1],p+"#style-"+(i+1)));
+  });
+  const css=[...cssFiles.map((p)=>parseCss(read(p),p)),...inlineCss];
   const rules=css.flatMap((f)=>f.rules.map((r)=>({...r,file:f.file})));
   const owners=new Map(),varUses=new Map(),definedVars=new Map();
   for(const r of rules){
@@ -131,7 +138,7 @@ function build(){
   const styles=css.map((f)=>({file:f.file,ruleBlocks:f.rules.length,selectors:f.rules.reduce((n,r)=>n+r.selectors.length,0),
     declarations:f.rules.reduce((n,r)=>n+r.declarations.length,0),
     important:f.rules.reduce((n,r)=>n+r.important,0),atRules:f.atRules.length,
-    sha256:hash(read(f.file))}));
+    sha256:f.file.includes("#style-")?"embedded in HTML; consult source file":hash(read(f.file))}));
   const tokenLeaves=flatten(tokens);
   const statusStates=new Set(["hover","focus","focus-visible","active","disabled","checked","invalid","empty","selected","loading","error","success","open","expanded","pressed","readonly","read-only"]);
   const occurrences=[];
@@ -143,7 +150,7 @@ function build(){
     tool:"UX-DS-35-stage00",schemaVersion:1,generatedAt:"deterministic source scan; no wall-clock timestamp",
     evidence:"static source only; no computed CSS or physical-device verification",
     source:{tokenFile:"design-system/tokens.json",tokenSha256:hash(read("design-system/tokens.json")),
-      cssFiles:cssFiles,htmlFiles:docs,jsFiles:runtimeJs,screens:pageNames},
+      cssFiles:css.map((f)=>f.file),htmlFiles:docs,jsFiles:runtimeJs,screens:pageNames},
     summary:{tokenLeaves:tokenLeaves.length,cssFiles:styles.length,cssRuleBlocks:rules.length,
       selectorOccurrences:[...owners.values()].reduce((n,v)=>n+v.length,0),
       distinctSelectors:owners.size,duplicateSelectorKeys:duplicateSelectors.length,

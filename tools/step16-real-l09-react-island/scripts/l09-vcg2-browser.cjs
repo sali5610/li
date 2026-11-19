@@ -158,6 +158,11 @@ async function syntheticTypographyStress(language){
  }[language];
  const normal=getComputedStyle(primary);
  const originalFont=parseFloat(normal.fontSize),originalLeading=parseFloat(normal.lineHeight);
+ field.focus();
+ await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+ const focusAt100=getComputedStyle(field);
+ const baselineFocus={borderWidths:[focusAt100.borderTopWidth,focusAt100.borderRightWidth,focusAt100.borderBottomWidth,focusAt100.borderLeftWidth].map(parseFloat),
+  borderColor:focusAt100.borderTopColor,outlineWidth:parseFloat(focusAt100.outlineWidth)};
  primary.textContent=content.primary;secondary.textContent=content.secondary;label.textContent=content.label;
  document.documentElement.style.setProperty('--li-type-body',String(originalFont*2)+'px');
  document.documentElement.style.setProperty('--li-leading-body',String(originalLeading*2)+'px');
@@ -173,6 +178,9 @@ async function syntheticTypographyStress(language){
   docWidth:document.documentElement.scrollWidth,focused:document.activeElement===field,
   focusVisible:field.matches(':focus-visible'),outlineWidth:parseFloat(getComputedStyle(field).outlineWidth),
   outlineStyle:getComputedStyle(field).outlineStyle,outlineColor:getComputedStyle(field).outlineColor,
+  focusPaint:{borderWidths:[getComputedStyle(field).borderTopWidth,getComputedStyle(field).borderRightWidth,
+   getComputedStyle(field).borderBottomWidth,getComputedStyle(field).borderLeftWidth].map(parseFloat),
+   borderColor:getComputedStyle(field).borderTopColor},baselineFocus,
   focusToken:getComputedStyle(field).getPropertyValue('--li-comp-field-focus-border').trim(),
   fallbackFocusToken:getComputedStyle(field).getPropertyValue('--li-color-input-focus-ring').trim(),
   labelAssociated:field.labels?.length===1&&field.labels[0]===label,
@@ -202,8 +210,26 @@ async function syntheticTypographyStress(language){
      !c.clipped&&c.left>=-1&&c.right<=width+1),'Long-label horizontal clipping/overflow '+context+' '+JSON.stringify(x));
    verify(x.primary.height>=48&&x.secondary.height>=48&&x.labelAssociated,
      'Text scale broke CTA size or associated label '+context);
-   verify(x.focused&&x.focusVisible&&x.outlineWidth>=3&&x.realKey===null,
-     'Text scale broke field focus or genuine learner-key isolation '+context+' '+JSON.stringify(x));
+   // UX-DS-13 source: ui-foundations.css uses a 3px INPUT BORDER and
+   // intentionally sets outline-width:0!important. This is NOT a failed ring.
+   const semanticFocusColor='rgb(36, 58, 41)';
+   verify(x.focused&&x.focusVisible&&x.realKey===null&&
+      x.baselineFocus.borderWidths.every(n=>n>=3)&&
+      x.focusPaint.borderWidths.every(n=>n>=3)&&
+      x.baselineFocus.borderColor===semanticFocusColor&&
+      x.focusPaint.borderColor===semanticFocusColor&&x.outlineWidth===0,
+     'Text scale lost the actual 3px focus BORDER or learner key isolation '+context+' '+JSON.stringify(x));
+   // Real keyboard traversal: Shift+Tab leaves first answer for preceding
+   // locale button; Tab returns focus to the first answer. Programmatic focus
+   // alone is not an adequate keyboard proof.
+   await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Tab',code:'Tab',windowsVirtualKeyCode:9,modifiers:8});
+   await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Tab',code:'Tab',windowsVirtualKeyCode:9,modifiers:8});
+   const back=await evaluate("document.activeElement?.getAttribute('data-locale')==='en'");
+   await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
+   await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
+   const forward=await evaluate("(()=>{const e=document.querySelector('textarea[data-answer=\"0\"]');const c=e&&getComputedStyle(e);return {target:document.activeElement===e,focusVisible:e?.matches(':focus-visible'),border:c?.borderTopWidth,color:c?.borderTopColor}})()");
+   verify(back&&forward?.target&&forward.focusVisible&&parseFloat(forward.border)>=3&&forward.color===semanticFocusColor,
+     'Keyboard Shift+Tab/Tab did not restore visible 3px input border '+context+' '+JSON.stringify({back,forward}));
    if((width===390&&height===844&&language==='vi')||(width===820&&language==='en'))
     await screenshot('stress-200pct-'+language+'-'+width);
    stressEvidence.push({context,...x});

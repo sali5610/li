@@ -55,5 +55,5 @@ jobs:
             "LI_STEP16_L09_AUTH_PASS " 6 60000
           node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
             "http://127.0.0.1:8794/tools/step16-real-l09-react-island/site-shell-fixture.html" \
-            "LI_STEP16_L09_SHELL_PASS " 15 90000
+            "LI_STEP16_L09_SHELL_PASS " 21 90000
           echo "PASS isolated L09, native bridge, auth origin guard and local-only Vanilla shell mount"

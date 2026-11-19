@@ -9,7 +9,8 @@
   "sourcePins": {
     "ont01": "6b486a3a70be356a5dc21a2bb44117c457833caf",
     "mainAtInspection": "09fe0ecdea48198bfe018d424d863b55c299cffb",
-    "uxDs35Draft": "bf8d9717a10da3bb7b5a7d10663113b829e352a1"
+    "uxDs35Draft": "bf8d9717a10da3bb7b5a7d10663113b829e352a1",
+    "reactPrimitivesDraft": "df882d46f75f39f48c733752ced15bf6f549a5d3"
   },
   "components": [
     {
@@ -530,5 +531,6 @@
   "semanticValueAuthority": "design-system/tokens.json on DS draft #134; ONT-01 branch has no alias map yet",
   "unmappedProposals": [
     "component:ActionGroup"
-  ]
+  ],
+  "composedCiFixture": "GITHUB_ACTIONS_LOCAL_WORKTREE_ONLY_NOT_GIT_MERGED"
 }

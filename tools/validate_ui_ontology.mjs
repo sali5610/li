@@ -150,6 +150,32 @@ function negatives(){
  rejects("missing native component",(g,m)=>{m.components.pop();});
  return count;
 }
-if(process.argv.length===2||process.argv.includes("--check")){
- console.log("PASS UX-DS-35 ONT-02 UI crosswalk "+JSON.stringify({...validate(ui,metadata),negativeCases:negatives(),crossBranch:"PENDING_SAME_TREE_REVIEW",device:"UNVERIFIED",g2:"OPEN",runtime:"NOT IMPLEMENTED"}));
-}else throw new Error("Usage: node tools/validate_ui_ontology.mjs --check");
+if(process.argv.length===2||process.argv.includes("--check")||process.argv.includes("--composed-check")){
+const composed=process.argv.includes('--composed-check');
+if(composed){
+ assert.ok(vals.semanticRoles&&vals.componentRoles,'composed DS token maps absent');
+ assert.equal(Object.keys(vals.semanticRoles).length,27,'DS semantic roles drift');
+ assert.equal(Object.keys(vals.componentRoles).length,21,'DS component roles drift');
+ const typed=fs.readFileSync(path.join(root,'design-system/generated/css-token-refs.ts'),'utf8');
+ const native=fs.readFileSync(path.join(root,'site/assets/li-layout.css'),'utf8')+
+              fs.readFileSync(path.join(root,'site/assets/ui-foundations.css'),'utf8');
+ let aliases=0,consumers=0;
+ for(const c of metadata.components){
+  for(const role of c.roles){
+   assert.equal(vals.semanticRoles[role.semanticRole],role.referenceToken,'semantic token drift: '+role.role);
+   assert.equal(vals.componentRoles[role.componentRole],role.semanticCssVar,'component token drift: '+role.role);
+   assert.ok(css.includes(role.semanticCssVar+': var('+role.referenceToken+');'),'generated semantic CSS drift: '+role.role);
+   assert.ok(css.includes(role.componentCssVar+': var('+role.semanticCssVar+');'),'generated component CSS drift: '+role.role);
+   assert.ok(typed.includes(JSON.stringify(role.componentCssVar)+': '+JSON.stringify('var('+role.componentCssVar+')')),'typed TS drift: '+role.role);
+   if(native.includes('var('+role.componentCssVar+')'))consumers++;
+   aliases++;
+  }
+ }
+ assert.equal(aliases,19);
+ assert.equal(consumers,18,'native selector adoption moved: investigate before promotion');
+ // The remaining Button focus-ring alias is not yet native-consumed; do not fake parity.
+ assert.ok(!native.includes('var(--li-comp-button-focus-ring)'));
+ console.log('PASS composed immutable DS+ONT02 test worktree: 19/19 exact alias chains, 18/19 native CSS consumers; 1 focus-ring source TODO; no PR branch integration');
+}
+console.log("PASS UX-DS-35 ONT-02 UI crosswalk "+JSON.stringify({...validate(ui,metadata),negativeCases:negatives(),composedFixture:composed?"PASS_SOURCE_ONLY":"NOT_EXECUTED",crossBranch:"PENDING_SAME_TREE_REVIEW",device:"UNVERIFIED",g2:"OPEN",runtime:"NOT IMPLEMENTED"}));
+}else throw new Error("Usage: node tools/validate_ui_ontology.mjs [--check|--composed-check]");

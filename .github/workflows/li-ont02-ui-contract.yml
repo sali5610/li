@@ -6,12 +6,15 @@ on:
       - 'docs/ontology/registry.v0.1.json'
       - 'tools/validate_ontology.mjs'
       - 'tools/validate_ui_ontology.mjs'
+      - 'tools/compose_uxds35_stage02.mjs'
+      - 'tools/test_ont02_react_primitives.cjs'
       - '.github/workflows/li-ont02-ui-contract.yml'
 permissions:
   contents: read
 jobs:
   check-ui-ontology:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,3 +24,31 @@ jobs:
         run: node tools/validate_ontology.mjs --check
       - name: ONT-02 five-family source crosswalk and 14 negative UI fixtures
         run: node tools/validate_ui_ontology.mjs --check
+      - name: Checkout immutable UX-DS-35 source draft for isolated CI only
+        uses: actions/checkout@v4
+        with:
+          ref: bf8d9717a10da3bb7b5a7d10663113b829e352a1
+          path: uxds35-design-pin
+          persist-credentials: false
+      - name: Checkout immutable Step16.2 React source draft for isolated CI only
+        uses: actions/checkout@v4
+        with:
+          ref: df882d46f75f39f48c733752ced15bf6f549a5d3
+          path: uxds35-react-pin
+          persist-credentials: false
+      - name: Verify pins and compose LOCAL source-only worktree, no Git merge
+        run: |
+          node tools/compose_uxds35_stage02.mjs --check-pins
+          node tools/compose_uxds35_stage02.mjs --compose
+      - name: Compare canonical token generator and five native UI family aliases
+        run: |
+          python3 tools/generate_design_tokens.py --check
+          python3 tools/test_design_semantic_roles.py
+          node tools/generate_design_token_types.mjs --self-test
+          node tools/generate_design_token_types.mjs --check
+          node tools/validate_ui_ontology.mjs --composed-check
+      - name: Install actual React 19 TSX SSR test dependencies in isolated CI checkout
+        working-directory: uxds35-react-pin/tools/step16-real-l09-react-island
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Render actual Step16.2 ActionButton/Surface/StatusMessage as isolated React SSR
+        run: node tools/test_ont02_react_primitives.cjs

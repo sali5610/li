@@ -7,7 +7,7 @@ import {RevisionConflict} from '../.sync-test/contract.js';
 
 function createStore(){return new PrivateDeviceStore();}
 function remote(itemId='n1',revision=1){
- return {item_type:'note',item_id:itemId,revision,payload:{text:'remote'},
+ return {owner_id:'A',item_type:'note',item_id:itemId,revision,payload:{text:'remote'},
  changed_at:'2026-11-19T02:20:00Z',deleted_at:null};
 }
 async function closeStore(db){
@@ -89,5 +89,61 @@ test('network failure does not drop outbox or report synced',async()=>{
   const report=await syncOnce(db,api,'A',{twoUserJwtRlsVerified:true,remoteConsentForPrivateState:true});
   assert.equal(report.mode,'offline');
   assert.equal(report.pending,1);
+ }finally{await closeStore(db);}
+});
+
+test('wrong-owner remote row cannot be hydrated into this account',async()=>{
+ const db=createStore();
+ try{
+  await assert.rejects(db.apply('A',{...remote('foreign',1),owner_id:'B'}),/REMOTE_OWNER_MISMATCH/);
+  assert.equal((await db.accountRecords('A')).length,0);
+ }finally{await closeStore(db);}
+});
+test('21 queued edits cannot report synced when only 20 are uploaded',async()=>{
+ const db=createStore();
+ try{
+  for(let i=0;i<21;i++)await db.edit('A','note','n'+i,{text:String(i)});
+  let writes=0;
+  const api={accountId:'A',async write(entry){writes++;return remote(entry.itemId,entry.baseRevision+1);},async all(){return [];}};
+  const report=await syncOnce(db,api,'A',{twoUserJwtRlsVerified:true,remoteConsentForPrivateState:true});
+  assert.equal(writes,20);
+  assert.equal(report.pending,1);
+  assert.equal(report.mode,'pending');
+ }finally{await closeStore(db);}
+});
+test('concurrent calls are single-flight and do not duplicate a queued upload',async()=>{
+ const db=createStore();
+ try{
+  await db.edit('A','note','n1',{text:'offline'});
+  let unblock=()=>{};const hold=new Promise(resolve=>{unblock=resolve;});
+  let writes=0;
+  const api={accountId:'A',async write(entry){writes++;await hold;return remote(entry.itemId,1);},async all(){return [];}};
+  const gate={twoUserJwtRlsVerified:true,remoteConsentForPrivateState:true};
+  const first=syncOnce(db,api,'A',gate);
+  const second=syncOnce(db,api,'A',gate);
+  assert.equal(first,second);
+  unblock();
+  const report=await first;
+  assert.equal(writes,1);
+  assert.equal(report.mode,'synced');
+ }finally{await closeStore(db);}
+});
+test('expired credentials demand sign-in, not a false successful or retryable sync',async()=>{
+ const db=createStore();
+ try{
+  await db.edit('A','note','n1',{text:'offline'});
+  const api={accountId:'A',async write(){throw Error('NEON_DATA_API_HTTP_401');},async all(){return [];}};
+  const report=await syncOnce(db,api,'A',{twoUserJwtRlsVerified:true,remoteConsentForPrivateState:true});
+  assert.equal(report.mode,'sign-in-required');
+  assert.equal(report.pending,1);
+ }finally{await closeStore(db);}
+});
+test('remote owner mismatch is surfaced as a security blocker without data write',async()=>{
+ const db=createStore();
+ try{
+  const api={accountId:'A',async write(){throw Error('unexpected');},async all(){return [{...remote('evil'),owner_id:'B'}];}};
+  const report=await syncOnce(db,api,'A',{twoUserJwtRlsVerified:true,remoteConsentForPrivateState:true});
+  assert.equal(report.mode,'security-error');
+  assert.equal((await db.accountRecords('A')).length,0);
  }finally{await closeStore(db);}
 });

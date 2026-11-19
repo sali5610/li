@@ -20,6 +20,11 @@ export const neonSessionPort:NeonAuthSessionPort={
    error:response.error??undefined};
  },
  async getJWTToken(){
-  return(await authClient.getJWTToken())??null;
+  // Public Better Auth JWT plugin action. createAuthClient() returns the
+  // underlying React client; its public API does NOT expose getJWTToken().
+  // The session cookie token is NOT used as a Data API bearer credential.
+  const response=await authClient.token();
+  if(response.error)throw new Error('NEON_AUTH_JWT_FETCH_FAILED');
+  return typeof response.data?.token==='string'?response.data.token:null;
  }
 };

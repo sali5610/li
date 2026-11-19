@@ -259,13 +259,13 @@
     "globalVisualParity": "NOT_RUN"
   },
   "safety": {
-    "modifyVisualCss": false,
     "merge": false,
     "deploy": false,
     "executeMigration": false,
     "authNeonRlsChanges": false,
     "learnerDataWrites": false,
-    "paidActions": false
+    "paidActions": false,
+    "modifyProductionVisualCss": false
   },
   "approvalEvidence": {
     "authorizedBy": "Human Product Owner",
@@ -292,5 +292,6 @@
     ],
     "provenance": "Human PO approval in current li. chat; no fabricated external Notion approval event"
   },
-  "nextActivity": "EXACT_HEAD_LOCAL_CHROMIUM_QA_AND_DEPENDENCY_REVIEW_NO_DEPLOY"
+  "nextActivity": "EXACT_HEAD_LOCAL_CHROMIUM_QA_AND_DEPENDENCY_REVIEW_NO_DEPLOY",
+  "researchOptInVisualCss": "IMPLEMENTED_SCOPED_TO_DATA_VC_G2_APPROVED_RESEARCH"
 }

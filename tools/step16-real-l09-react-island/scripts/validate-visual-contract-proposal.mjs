@@ -28,13 +28,15 @@ function validate(p){
  assert.equal(p.implementationStatus,'RESEARCH_PILOT_IMPLEMENTED');
  assert.equal(p.nextActivity,'EXACT_HEAD_LOCAL_CHROMIUM_QA_AND_DEPENDENCY_REVIEW_NO_DEPLOY');
  assert.equal(p.testing.researchVisualPilot,'IMPLEMENTED_BUT_NOT_YET_CI_VERIFIED');
+ assert.equal(p.researchOptInVisualCss,'IMPLEMENTED_SCOPED_TO_DATA_VC_G2_APPROVED_RESEARCH');
+ assert.equal(p.safety.modifyProductionVisualCss,false);
  assert.equal(p.reviewMode,'HUMAN_PO_SCOPED_APPROVAL_RECORDED');
  assert.equal(p.approvalEvidence.authorizedBy,'Human Product Owner');
  assert.equal(p.approvalEvidence.message,'duyệt');
  assert.equal(p.approvalEvidence.dateTime,'2026-11-20T00:55:00+07:00');
  assert.deepEqual(p.approvalEvidence.approvedDecisionIds,['VC-G2-D1','VC-G2-D2','VC-G2-D3']);
  for(const v of ['global_visual_identity','global_G2_stage_exit','main_merge','deploy','Auth_Neon_RLS'])assert.ok(p.approvalEvidence.notApproved.includes(v),'Scope exclusion missing '+v);
- assert.equal(p.nextActivity,'RESEARCH_BRANCH_IMPLEMENTATION_AND_CI_ONLY_AFTER_DEPENDENCY_REVIEW');
+ assert.ok(p.nextActivity.startsWith('EXACT_HEAD_LOCAL_CHROMIUM_QA'),'Approved research next action not scoped to QA');
  assert.equal(tokens.quality.g2Approved,false,'Source must not claim human visual acceptance');
  assert.equal(tokens.quality.physicalDeviceQAVerified,false,'Source must not claim real device acceptance');
  assert.equal(tokens.quality.humanTypographySpacingSignoff,false);
@@ -129,7 +131,7 @@ function validate(p){
  return {id:p.id,decisionStatus:p.decisionStatus,g2:p.poGate,sourcePins:p.authority,
   reviewedFamilies:p.components.map(x=>x.id),approvedScopedDecisionIds:p.decisionGates.map(x=>x.id),approvalDate:p.approvalEvidence.dateTime,globalG2:'OPEN',
   rawSourceNativeMinHeight:46,newSharedTarget:48,sourceRolesVerified:Object.keys(tokenMap).length,
-  originalLegacyVsShared:"DISTINCT",actualCssModified:false,deviceQA:'NOT_RUN'};
+  originalLegacyVsShared:"DISTINCT",actualCssModified:'OPT_IN_RESEARCH_ONLY',deviceQA:'NOT_RUN'};
 }
 const result=validate(proposal);
 let negatives=0;
@@ -141,7 +143,7 @@ if(process.argv.includes('--selftest')){
   x=>x.approvalEvidence.approvedDecisionIds.pop(),
   x=>x.poGate='G2_APPROVED',
   x=>x.components[0].proposed.secondaryBg='--li-comp-field-background',
-  x=>x.safety.modifyVisualCss=true,
+  x=>x.safety.modifyProductionVisualCss=true,
   x=>x.foundation.deviceScale.ipadPortrait.cardPadPx=24,
   x=>x.testing.physicalSafari='PASS'
  ]){
@@ -155,4 +157,4 @@ fs.mkdirSync(path.dirname(dest),{recursive:true});
 fs.writeFileSync(dest,JSON.stringify({...result,negativeFixtures:negatives},null,2)+'\n');
 console.log('PASS UXDS35_VISUAL_CONTRACT_SCOPED_APPROVAL_SOURCE '+JSON.stringify({
  families:result.reviewedFamilies,poGates:result.approvedScopedDecisionIds,semanticRoles:result.sourceRolesVerified,
- negativeFixtures:negatives,approval:'D1_D2_D3_APPROVED_SCOPED',globalG2:'OPEN',implementation:'NOT_STARTED',visualCssChanges:'NONE'}));
+ negativeFixtures:negatives,approval:'D1_D2_D3_APPROVED_SCOPED',globalG2:'OPEN',implementation:'RESEARCH_PILOT_ONLY',visualCssChanges:'SCOPED_OPT_IN_ONLY'}));

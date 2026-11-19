@@ -216,6 +216,10 @@ jobs:
         with:
           path: site/
 
+      # Artifact upload can complete before GitHub's artifact listing endpoint indexes it.
+      - name: Let GitHub Pages artifact metadata become visible
+        run: sleep 12
+
       - name: Publish STAGING ONLY (not a Cloudflare deployment)
         id: deployment
         uses: actions/deploy-pages@v4

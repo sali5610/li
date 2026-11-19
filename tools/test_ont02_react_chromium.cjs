@@ -45,6 +45,36 @@ async function test(){
   const x=await evaluate("(()=>{const a=document.querySelector('[data-action=\"submit\"]');return {w:innerWidth,scroll:document.documentElement.scrollWidth,body:document.body.scrollWidth,hit:a.getBoundingClientRect().height}})()");
   evidence.viewport.push({width,height,actual:x});checks(x.w===width&&x.scroll<=width+1&&x.body<=width+1,'horizontal overflow at '+width+': '+JSON.stringify(x));checks(x.hit>=48,'hit target below 48px at '+width);if(width===390||width===820)await screenshot('react-l09-'+width+'-synthetic');
  }
+ // More CDP source evidence; NOT physical zoom or real Safari QA.
+ for(const [width,height] of [[320,480],[390,420],[820,480]]){
+  await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+  const short=await evaluate("(()=>{const a=document.querySelector('[data-action=\"submit\"]');a.scrollIntoView({block:'nearest'});const r=a.getBoundingClientRect();return {w:innerWidth,h:innerHeight,doc:document.documentElement.scrollWidth,body:document.body.scrollWidth,focusable:a.tabIndex>=0&&!a.disabled,reachable:r.top>=-1&&r.bottom<=innerHeight+1,scroll:document.scrollingElement?.scrollTop??null}})()");
+  evidence.viewport.push({width,height,shortHeight:true,actual:short});
+  checks(short.w===width&&short.h===height&&short.doc<=width+1&&short.body<=width+1,'short-height horizontal overflow '+width+'x'+height+': '+JSON.stringify(short));
+  checks(short.focusable&&short.reachable,'short-height submit unreachable after scroll '+width+'x'+height+': '+JSON.stringify(short));
+ }
+ await send('Emulation.setDeviceMetricsOverride',{width:320,height:568,deviceScaleFactor:1,mobile:false});
+ // Simulated root font-size 200% is not native Dynamic Type or actual page zoom.
+ const largeText=await evaluate("(()=>{document.documentElement.style.fontSize='200%';return {root:getComputedStyle(document.documentElement).fontSize,w:innerWidth,doc:document.documentElement.scrollWidth,body:document.body.scrollWidth,hit:[...document.querySelectorAll('.pilot-actions button')].every(b=>b.getBoundingClientRect().height>=48)}})()");
+ evidence.textScale={mode:'simulated_root_font_200_percent_not_native_zoom',...largeText};
+ checks(largeText.root==='32px','root 200% simulated font-size not applied');
+ checks(largeText.doc<=321&&largeText.body<=321&&largeText.hit,'simulated root font reflow failure: '+JSON.stringify(largeText));
+ await evaluate("document.documentElement.style.removeProperty('font-size')");
+ await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
+ const motion=await evaluate("(()=>{const x=document.querySelector('[data-action=\"submit\"]');return {reduced:matchMedia('(prefers-reduced-motion: reduce)').matches,animation:getComputedStyle(x).animationName,transition:getComputedStyle(x).transitionDuration}})()");
+ evidence.reducedMotion=motion;
+ checks(motion.reduced&&motion.animation==='none'&&motion.transition==='0s','reduced motion CSS incorrect '+JSON.stringify(motion));
+ await send('Emulation.setEmulatedMedia',{features:[]});
+ await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false});
+ const beforeLocale=await evaluate("(()=>({lang:document.querySelector('.pilot')?.getAttribute('lang'),title:document.querySelector('.pilot h1')?.textContent,real:localStorage.getItem('li.review.L09-1-2.v1')}))()");
+ await evaluate("document.querySelector('[data-locale=\"en\"]').click()");
+ await until(()=>evaluate("document.querySelector('.pilot')?.getAttribute('lang')==='en'"),'React EN switch');
+ const afterLocale=await evaluate("(()=>({lang:document.querySelector('.pilot')?.getAttribute('lang'),title:document.querySelector('.pilot h1')?.textContent,selected:document.querySelector('[data-locale=\"en\"]')?.getAttribute('aria-pressed'),real:localStorage.getItem('li.review.L09-1-2.v1')}))()");
+ evidence.locale={from:beforeLocale.lang,to:afterLocale.lang,selected:afterLocale.selected,privateUntouched:afterLocale.real===beforeLocale.real};
+ checks(beforeLocale.lang==='vi'&&afterLocale.lang==='en'&&afterLocale.selected==='true'&&afterLocale.title!==beforeLocale.title,'VI/EN state or copy mismatch');
+ checks(afterLocale.real===beforeLocale.real,'VI/EN switch touched real learner key');
+ await evaluate("document.querySelector('[data-locale=\"vi\"]').click()");
+ await until(()=>evaluate("document.querySelector('.pilot')?.getAttribute('lang')==='vi'"),'React VI restored');
  await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false});
  let focus='';for(let i=0;i<16;i++){await key('Tab');focus=await evaluate("(()=>{const a=document.activeElement;return a?.getAttribute('data-action')||a?.getAttribute('data-locale')||a?.getAttribute('data-answer')||a?.tagName||''})()");evidence.keyboard.push(focus);if(focus==='submit')break}
  checks(focus==='submit','real CDP Tab never reached React submit: '+JSON.stringify(evidence.keyboard));

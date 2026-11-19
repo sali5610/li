@@ -33,14 +33,27 @@ export class NeonUserApi{
   if(!response.ok)throw new Error('NEON_DATA_API_HTTP_'+response.status);
   const value=await response.json() as unknown;
   if(!Array.isArray(value))throw new Error('UNEXPECTED_NEON_RESPONSE');
+  // Defense in depth: a misconfigured Data API must never hydrate another user's data.
+  // PostgreSQL RLS remains the authoritative security boundary.
+  for(const row of value){
+   if(!row||typeof row!=='object'||Array.isArray(row))throw new Error('INVALID_REMOTE_ROW');
+   const item=row as Record<string,unknown>;
+   if(item.owner_id!==this.accountId)throw new Error('REMOTE_OWNER_MISMATCH');
+   if(typeof item.item_type!=='string'||typeof item.item_id!=='string'||
+      !Number.isSafeInteger(item.revision)||Number(item.revision)<1)
+    throw new Error('INVALID_REMOTE_ROW');
+   checkScope(this.accountId,item.item_type,item.item_id);
+  }
   return value as PrivateItem[];
  }
  async one(type:Edit['itemType'],id:string):Promise<PrivateItem|null>{
   checkScope('signed-in',type,id);
   const rows=await this.send('GET','li_user_state',{
-   select:'item_type,item_id,revision,payload,changed_at,deleted_at',
+   select:'owner_id,item_type,item_id,revision,payload,changed_at,deleted_at',
    item_type:'eq.'+type,item_id:'eq.'+id,limit:'1'
   });
+  if(rows.length>1)throw new Error('NEON_UNIQUE_KEY_BROKEN');
+  if(rows[0]&&(rows[0].item_type!==type||rows[0].item_id!==id))throw new Error('NEON_ITEM_MISMATCH');
   return rows[0]??null;
  }
  /** Check current revision then CAS PATCH; concurrent devices can only win once. */
@@ -54,13 +67,14 @@ export class NeonUserApi{
   const rows=current
    ?await this.send('PATCH','li_user_state',{
       item_type:'eq.'+edit.itemType,item_id:'eq.'+edit.itemId,
-      revision:'eq.'+edit.baseRevision,select:'item_type,item_id,revision,payload,changed_at,deleted_at'
+      revision:'eq.'+edit.baseRevision,select:'owner_id,item_type,item_id,revision,payload,changed_at,deleted_at'
     },body)
    :await this.send('POST','li_user_state',{
-      select:'item_type,item_id,revision,payload,changed_at,deleted_at'
+      select:'owner_id,item_type,item_id,revision,payload,changed_at,deleted_at'
     },body);
   // owner_id omitted, PostgreSQL default + RLS enforce the authenticated owner.
   if(rows.length!==1||rows[0].revision!==edit.baseRevision+1)throw new RevisionConflict();
+  if(rows[0].item_type!==edit.itemType||rows[0].item_id!==edit.itemId)throw new Error('NEON_ITEM_MISMATCH');
   return rows[0];
  }
  /** Full user-scoped scan: <100-row pages, repeat on focus/online to close pagination races. */
@@ -68,7 +82,7 @@ export class NeonUserApi{
   const items:PrivateItem[]=[];
   for(let offset=0;offset<100000;offset+=100){
    const chunk=await this.send('GET','li_user_state',{
-     select:'item_type,item_id,revision,payload,changed_at,deleted_at',
+     select:'owner_id,item_type,item_id,revision,payload,changed_at,deleted_at',
      order:'item_type.asc,item_id.asc',limit:'100',offset:String(offset)
    });
    items.push(...chunk);

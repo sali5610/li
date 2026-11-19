@@ -3,6 +3,7 @@ import {bindNeonAccount} from '../sync/neon-session.js';
 import {authClient,neonSessionPort} from './neon-client.js';
 import {NEON_DATA_API_URL} from './config.js';
 import {AuthRecovery} from './AuthRecovery.js';
+import {AuthEmailVerification} from './AuthEmailVerification.js';
 
 type Locale='vi'|'en';
 const copy={
@@ -123,6 +124,7 @@ export function AuthPanel(){
      <button type="submit" disabled={busy!==null}>{busy?t.busy:t.login}</button>
     </form>
     <AuthRecovery locale={locale}/>
+    <AuthEmailVerification locale={locale}/>
     </div>
    )}
    {feedback&&<p className="auth-error" role="alert">{feedback}</p>}

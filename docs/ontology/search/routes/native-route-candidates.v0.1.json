@@ -1,0 +1,89 @@
+{
+  "profile": "li-ONT04B2b1-native-route-audit-only",
+  "version": "0.1.0",
+  "scope": "DRAFT_NON_NAVIGABLE_CANDIDATES",
+  "source": {
+    "nativeMapSource": "site/index.html",
+    "sourceHead": "4b61c2eaef77f8838128d9b95f9dadf28507fec0",
+    "provenance": {
+      "sourceUrl": "https://github.com/sali5610/li/blob/feature/ont04b2-localhost-native-search-bridge-20261119/site/index.html",
+      "sourceSection": "LI_LESSON_ROUTES; native navigation/syncLiRoute maps",
+      "checkedOn": "2026-11-19"
+    },
+    "globalRuntime": {
+      "appAccessPolicy": "invite_only_intended",
+      "googleAuthPilot": "uploaded_success_but_real_identity_link_not_verified",
+      "serverAuthorization": "NOT_VERIFIED",
+      "privateLearnerData": "UNAVAILABLE_TO_SEARCH",
+      "approvedReleaseManifest": "ABSENT",
+      "clientRoutingAuthority": "NONE"
+    }
+  },
+  "coverage": {
+    "nativeRouteCandidates": 3,
+    "reviewedSearchPublicationRoutes": 0,
+    "verifiedAuthUserCount": 0,
+    "fullCatalogCoverage": "NOT_ASSESSED",
+    "liveAppIntegration": "BLOCKED",
+    "ont03c": "PENDING"
+  },
+  "candidates": [
+    {
+      "canonicalLessonId": "L09-1-2",
+      "nativeRouteKey": "lessonL09",
+      "pageElementId": "page-lessonL09",
+      "markupPath": "site/assets/lesson-l09-hifi-markup.js",
+      "editorialStatus": "po_content_locked_ui_in_review",
+      "ontologyRecordRef": "lesson:L09-1-2",
+      "researchNote": "Source heading describes mounted route; editorial body status explicitly content approved, UI testing. ONT-03A publishState review_only.",
+      "visibility": "public_curated",
+      "nativeCode": "ROUTE_AND_MARKUP_PRESENT",
+      "publicationDecision": "NOT_APPROVED_FOR_SEARCH_NAVIGATION",
+      "rightsDecision": "UNVERIFIED_FOR_SEARCH_RELEASE",
+      "permissionDecision": "REAL_AUTH_AND_RLS_TEST_PENDING",
+      "routeAvailability": "CODE_PRESENT_NOT_USER_AVAILABLE",
+      "appUrl": null,
+      "openAction": null,
+      "humanReleaseApproved": false,
+      "publishProof": null
+    },
+    {
+      "canonicalLessonId": "L03-1-2",
+      "nativeRouteKey": "lessonL03",
+      "pageElementId": "page-lessonL03",
+      "markupPath": "site/assets/lesson-l03-hifi-markup.js",
+      "editorialStatus": "po_content_locked_ui_in_review",
+      "ontologyRecordRef": null,
+      "researchNote": "Legacy Wave1 locked content; not in ONT-03A pilot graph. Do not fabricate a search entity.",
+      "visibility": "public_curated",
+      "nativeCode": "ROUTE_AND_MARKUP_PRESENT",
+      "publicationDecision": "NOT_APPROVED_FOR_SEARCH_NAVIGATION",
+      "rightsDecision": "UNVERIFIED_FOR_SEARCH_RELEASE",
+      "permissionDecision": "REAL_AUTH_AND_RLS_TEST_PENDING",
+      "routeAvailability": "CODE_PRESENT_NOT_USER_AVAILABLE",
+      "appUrl": null,
+      "openAction": null,
+      "humanReleaseApproved": false,
+      "publishProof": null
+    },
+    {
+      "canonicalLessonId": "L15-2-2",
+      "nativeRouteKey": "lessonL15",
+      "pageElementId": "page-lessonL15",
+      "markupPath": "site/assets/lesson-l15-hifi-markup.js",
+      "editorialStatus": "po_content_locked_ui_in_review",
+      "ontologyRecordRef": null,
+      "researchNote": "Legacy Wave1 locked content; not in ONT-03A pilot graph. Do not fabricate a search entity.",
+      "visibility": "public_curated",
+      "nativeCode": "ROUTE_AND_MARKUP_PRESENT",
+      "publicationDecision": "NOT_APPROVED_FOR_SEARCH_NAVIGATION",
+      "rightsDecision": "UNVERIFIED_FOR_SEARCH_RELEASE",
+      "permissionDecision": "REAL_AUTH_AND_RLS_TEST_PENDING",
+      "routeAvailability": "CODE_PRESENT_NOT_USER_AVAILABLE",
+      "appUrl": null,
+      "openAction": null,
+      "humanReleaseApproved": false,
+      "publishProof": null
+    }
+  ]
+}

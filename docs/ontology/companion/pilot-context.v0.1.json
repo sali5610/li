@@ -1,0 +1,146 @@
+{
+  "profile": "li-ONT04C1-static-companion-bounded-context",
+  "version": "0.1.0",
+  "demoOnly": true,
+  "rights": "FIRST_PARTY_METADATA_ONLY",
+  "generator": "DETERMINISTIC_TEMPLATES_NO_LLM",
+  "sourceContracts": [
+    "https://app.notion.com/p/41b6cf6db72a8131ab62e71c289a1916",
+    "https://app.notion.com/p/41d6cf6db72a81f59573fb0e5ed6836e",
+    "https://app.notion.com/p/41b6cf6db72a8190b542daed8017d949",
+    "https://app.notion.com/p/41b6cf6db72a81599d56fa86988d86f4",
+    "https://app.notion.com/p/41d6cf6db72a81d0b0d3dbde49b8ad43",
+    "https://app.notion.com/p/41d6cf6db72a81129242d2044fa76927"
+  ],
+  "scope": {
+    "lessonProfiles": 4,
+    "externalWave1CompanionManifests": 3,
+    "editorialMethodFitProfiles": 1,
+    "localeOptions": [
+      "vi",
+      "en"
+    ],
+    "stages": [
+      "opening",
+      "concept",
+      "guided",
+      "independent",
+      "reflection",
+      "extension"
+    ],
+    "studentAttempts": "NOT_READ",
+    "preSubmitSolutions": "NEVER_ACCESS",
+    "reviewedGraphClaims": "ZERO_ASSERTED",
+    "realPermissions": "NOT_IMPLEMENTED",
+    "productionBuddy": "NOT_INTEGRATED"
+  },
+  "catalog": [
+    {
+      "lessonId": "L09-1-2",
+      "fieldId": "F09",
+      "title": {
+        "vi": "Sai lệch chọn mẫu và biến thiên lấy mẫu",
+        "en": "Sampling Bias vs Random Sampling Variation"
+      },
+      "editorialState": "po_content_locked_ui_in_review",
+      "readiness": "NOT_VERIFIED_RELEASED",
+      "sourceKind": "wave1_companion_editorial",
+      "companionFile": "site/lessons/companion/L09-1-2.json",
+      "pageFile": "site/assets/lesson-l09-hifi-markup.js",
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+      "sourceSection": "Wave1 S126 lesson content lock; six-stage companion source",
+      "methodFit": "NONE_PROVEN",
+      "verifiedAcademicClaims": false
+    },
+    {
+      "lessonId": "L03-1-2",
+      "fieldId": "F03",
+      "title": {
+        "vi": "Câu hỏi mở và thiên lệch phỏng vấn",
+        "en": "Open Questions & Interview Bias"
+      },
+      "editorialState": "po_content_locked_ui_in_review",
+      "readiness": "NOT_VERIFIED_RELEASED",
+      "sourceKind": "wave1_companion_editorial",
+      "companionFile": "site/lessons/companion/L03-1-2.json",
+      "pageFile": "site/assets/lesson-l03-hifi-markup.js",
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8131ab62e71c289a1916",
+      "sourceSection": "Wave1 locked lesson S145 + six-stage companion source",
+      "methodFit": "NONE_PROVEN",
+      "verifiedAcademicClaims": false
+    },
+    {
+      "lessonId": "L15-2-2",
+      "fieldId": "F15",
+      "title": {
+        "vi": "Điểm đặt hàng lại và tồn kho an toàn",
+        "en": "Reorder Points & Safety Stock"
+      },
+      "editorialState": "po_content_locked_ui_in_review",
+      "readiness": "NOT_VERIFIED_RELEASED",
+      "sourceKind": "wave1_companion_editorial",
+      "companionFile": "site/lessons/companion/L15-2-2.json",
+      "pageFile": "site/assets/lesson-l15-hifi-markup.js",
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8131ab62e71c289a1916",
+      "sourceSection": "Wave1 locked lesson S145 + six-stage companion source",
+      "methodFit": "NONE_PROVEN",
+      "verifiedAcademicClaims": false
+    },
+    {
+      "lessonId": "L09-1-1",
+      "fieldId": "F09",
+      "title": {
+        "vi": "Tổng thể, mẫu và các loại biến",
+        "en": "Population, Sample & Variable Types"
+      },
+      "editorialState": "editorial_draft",
+      "readiness": "NOT_VERIFIED_RELEASED",
+      "sourceKind": "ont03b_editorial_method_fit",
+      "companionFile": null,
+      "pageFile": null,
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+      "sourceSection": "L09-1-1 Wave2 editorial baseline; ONT-03B method-fit T06 optional T07",
+      "methodFit": "L09-1-1:l2-t06:p01",
+      "verifiedAcademicClaims": false
+    }
+  ],
+  "policy": {
+    "enabledIntents": [
+      "ASK_FOR_EVIDENCE",
+      "CHECK_ASSUMPTION",
+      "COMPARE_BOUNDARIES",
+      "VIEW_SOURCE_METADATA",
+      "EXPLORE_METHOD_DEFINITION"
+    ],
+    "rejectedIntents": [
+      "OPEN_LESSON",
+      "NAVIGATE_UNREVIEWED",
+      "SAVE_ATTEMPT",
+      "SUBMIT_ATTEMPT",
+      "GRADE_ANSWER",
+      "REVEAL_SOLUTION",
+      "GET_PERSONAL_PROGRESS",
+      "INVOKE_LLM"
+    ],
+    "neverExecutable": true,
+    "noSourcesAsScientificProof": true,
+    "allPreSubmitStages": [
+      "opening",
+      "concept",
+      "guided",
+      "independent"
+    ],
+    "gatedStages": [
+      "reflection",
+      "extension"
+    ],
+    "reflectionRequirement": "TRUSTED_SERVER_VERIFIED_SUBMISSION_UNAVAILABLE",
+    "rawLearnerDataNeverPassed": true,
+    "maxSafeActions": 3
+  },
+  "editorialProvenance": {
+    "url": "https://app.notion.com/p/41d6cf6db72a81f59573fb0e5ed6836e",
+    "section": "§7 Lão Lý action engine: typed context, source/permission, no-spoiler and 1–3 safe actions",
+    "checkedOn": "2026-11-19"
+  }
+}

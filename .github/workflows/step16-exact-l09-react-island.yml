@@ -174,7 +174,7 @@ jobs:
           trap 'kill "$pid" 2>/dev/null || true' EXIT
           node "$LI_STAGE02B_COMBINED/tools/step16-real-l09-react-island/scripts/cdp-result.cjs" "$chrome" \
             "http://127.0.0.1:8794/tools/step16-real-l09-react-island/site-shell-fixture.html" \
-            "LI_STEP16_L09_SHELL_PASS " 23 90000
+            "LI_STEP16_L09_SHELL_PASS " 24 90000
           echo "PASS STAGE02B_FULL_TREE_L09_NATIVE_SHELL"
       - name: Real authored native L09 vs opt-in React L09 geometry (no visual auto-approval)
         shell: bash

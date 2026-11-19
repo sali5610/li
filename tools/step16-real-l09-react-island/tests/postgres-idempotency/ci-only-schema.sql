@@ -51,7 +51,10 @@ CREATE POLICY li_user_state_update_owner ON public.li_user_state
 CREATE POLICY li_user_state_invited_only ON public.li_user_state
  AS RESTRICTIVE FOR ALL TO authenticated USING(public.li_is_invited()) WITH CHECK(public.li_is_invited());
 GRANT USAGE ON SCHEMA auth,public TO authenticated,li_sync_executor;
-GRANT SELECT,INSERT,UPDATE ON public.li_user_state TO authenticated;
+-- Idempotent cutover REQUIRES all writes through the receipt RPC.
+-- This is only a CI trial; live Neon still grants direct DML and is untouched.
+GRANT SELECT ON public.li_user_state TO authenticated;
+REVOKE INSERT,UPDATE,DELETE ON public.li_user_state FROM authenticated;
 
 -- SECURITY DEFINER executes as a NONLOGIN, NOBYPASSRLS role and is
 -- explicitly subject to its own owner+invite RLS rules. Authenticated

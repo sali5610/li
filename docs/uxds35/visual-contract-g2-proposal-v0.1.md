@@ -1,19 +1,23 @@
 # UX-DS-35 · VC-G2-01 — Button / Card / Field visual contract
 
-**Status:** PROPOSED · Human PO G2 **OPEN** · Stage 02B **PARTIAL** · **not implemented, approved, merged or deployed**  
+**Status:** **APPROVED (D1–D3 visual contract only)** · Global visual identity/G2 **OPEN** · Stage 02B **PARTIAL** · **NOT IMPLEMENTED, MERGED OR DEPLOYED**  
 **Created:** 2026-11-20 (VN) · **Source evidence:** Design System draft [#134](https://github.com/sali5610/li/pull/134), ONT-02 draft [#137](https://github.com/sali5610/li/pull/137), React draft [#148](https://github.com/sali5610/li/pull/148) at `40a2650da67217a9b5eb380c256025505a17b858`.  
 **Baseline:** [triple-owner Chromium #44578259140](https://github.com/sali5610/li/actions/runs/44578259140), 48/48 synthetic geometry QA + 4/4 negative contract fixtures, **not physical Safari**.  
 **Machine-readable proposal:** `tools/step16-real-l09-react-island/src/ui/visual-contract-g2-proposal.v0.1.json`. Proposed source assertions: `scripts/validate-visual-contract-proposal.mjs`. G2 approval is not implied by a green test.
 
-## 1. What is authoritative vs proposed?
+## Approval decision record · 2026-11-20 00:55 ICT
+
+Human Product Owner answered **“duyệt”** to the exact presented VC-G2-D1, VC-G2-D2, VC-G2-D3 proposals, authorizing the scoped Button/Card/Field visual contract **without approving full visual identity or a production deployment**. Each gate is **APPROVED** as a **design decision**, while source-level implementation, same-content visual QA, physical iPhone/iPad Safari, Stage 02 exit, global G2, Stage 03 and main/release stay separate. This approval does not authorize Auth/Neon/RLS changes, writing learner data or costs. Research-only staged implementation may be prepared against dependencies after this record; no CSS is changed by this decision commit.
+
+## 1. What is authoritative vs approved-scoped?
 
 `design-system/tokens.json` has source-defined 48 CSS px minimum intended touch target, 4px spacing rhythm, square ordinary-control radius 0, semantic action/surface/field roles, body typography 16/24, support 14/20 and iPad portrait/landscape card density 28/32px with control 56px. It also explicitly has **`quality.g2Approved = false`**, **`physicalDeviceQAVerified = false`** and **`humanTypographySpacingSignoff = false`**. This record does not silently change those states.
 
 Native product CSS is `site/assets/li-layout.css`; the **legacy** React L09 pilot is `src/ui/Primitives.tsx` + `src/pilot.css`; the **new** shared React components are `src/ui/Shared.tsx` + `src/ui/shared.css`. L09 imports legacy `ActionButton/Surface/StatusMessage` and only the new `ActionGroup`; **new Button/Card/TextInput are fixture-only**. Compare each owner separately; role-color equality is not type/geometry parity.
 
-## 2. Proposed common component contract (not a code-change authorization)
+## 2. Approved scoped component contract (implementation still pending)
 
-| Family | Current authoritative roles / measured source | Default proposed contract | Exceptions and non-equivalent contexts | Approval / downstream |
+| Family | Current authoritative roles / measured source | Approved scoped design direction | Exceptions and non-equivalent contexts | Approval / downstream |
 | --- | --- | --- | --- | --- |
 | **Button — primary** | `--li-comp-button-primary-background/color`; native `.action` min-height **46px**, native hard shadow **4px 4px**, source role `--li-type-support` (support copy). New shared uses minimum target token **48px**. | Square radius 0, 48px **actual hit target**, semantic primary fill/ink, visible focus token. **Candidate:** 16/24 body CTA copy and consistent hard-offset shadow. | No generic shadow rule for ghost CTA; Home-specific hierarchy and icon controls retain their own contracts. Width/height and display can vary with content. | **VC-G2-D1**: PO to decide typography/standard shadow. Do not change native `min-height:46px` blindly; first inspect rendered hitbox. After approval audit ALL app routes / legacy React / new shared, not just L09. |
 | **Button — secondary** | `--li-comp-button-secondary-background/color`; source background is **paper**, *not porcelain*. Native `.action.alt` has moss border. | Same control height/baseline/focus as primary; secondary visual hierarchy, no conflicting dual-primary buttons. | Navigation selected **sand oval**, filter chip pill, Lão Lý bubble remain separate primitives. | **VC-G2-D1**. Test long VI/EN, press, hover, focus, disabled, loading, 320px and iPad. |
@@ -22,15 +26,15 @@ Native product CSS is `site/assets/li-layout.css`; the **legacy** React L09 pilo
 | **TextAreaField (multiline)** | Native L09 guided explanation `min-height:174px`; legacy React question textarea `min-height:112px`; content purpose differs. | Explicit **guided explanation**, **answer**, **notes** variants (named by content purpose), height from rows/content and suitable minimum once measured with matched content. **No universal 174px/112px enforcement.** | Changing guidedDraft vs question answer heights just to make screenshots identical is a false-parity bug. | **VC-G2-D3**. First run matched-content measurement before numeric height decision. |
 | **ActionGroup** | All three source layers use `--li-space-3` = **12px** gap and wrap. Child dimensions/contents vary. | Keep wrap, consistent baseline, one dominant primary; children each own 48px target. | **Group height is not a pixel-parity target** when children differ. | Source/behavior rule; no new independent visual decision until variants are reviewed. |
 
-### 3. Decision gates — Human PO only
+### 3. Human PO decision record — D1/D2/D3 APPROVED
 
-- **VC-G2-D1 / Button:** Proposed 48px target, square shape, body 16/24 text and 4px offset shadow for normal CTA. Option: retain existing native support role 14/20 if PO prefers; document as named compact variant rather than silent regression.
-- **VC-G2-D2 / Surface:** Proposed native-aligned hard shadow, semantic fill and 20/24/28/32 contextual padding. Option: shadowless flat Card as explicitly named variant, not incidental screen override.
-- **VC-G2-D3 / Field:** Proposed one-line 48px (tablet 56px), labelled states and semantic focus/error, multiline height by purpose rather than one global number. This *does not authorize* touching learner data or form behavior.
+- **VC-G2-D1 / Button:** Approved 48px target, square shape, body 16/24 text and 4px offset shadow for normal CTA. Option: retain existing native support role 14/20 if PO prefers; document as named compact variant rather than silent regression.
+- **VC-G2-D2 / Surface:** Approved native-aligned hard shadow, semantic fill and 20/24/28/32 contextual padding. Option: shadowless flat Card as explicitly named variant, not incidental screen override.
+- **VC-G2-D3 / Field:** Approved one-line 48px (tablet 56px), labelled states and semantic focus/error, multiline height by purpose rather than one global number. This *does not authorize* touching learner data or form behavior.
 
-**None of these gates is approved by this draft or CI.** Existing source-defined values are reference material; the final cross-screen geometry/visual identity is still Human PO-owned.
+**Human PO approved D1, D2 and D3 on 2026-11-20 at 00:55 (Asia/Ho_Chi_Minh), replying “duyệt” to the presented three-gate recommendation.** This scoped approval does NOT approve all visual identity, final cross-screen parity, full Stage 02 G2 exit, main merge or deployment.
 
-### 4. Acceptance plan after approval
+### 4. Approved-contract implementation and acceptance plan (NOT STARTED)
 
 1. Freeze G2 decisions in Notion and machine-readable contract; record changes to token generator, ontology roles, shared APIs and screen owners. Update any upstream source and audit **every** downstream consumer (including legacy L09/real native screens).
 2. Migrate one **research-only** screen, not every route. Compare matched content/variant/state, screenshots, computed typography/padding/border/shadow/target geometry and VI/EN labels; monitor default/secondary/loading/disabled/focus/pressed/error/readonly, reflow at 320/375/390/402/600/820/1040/1440 and 200% text. Preserve semantic markup and no real learner writes.

@@ -2,10 +2,10 @@
   "id": "UXDS35-VC-G2-01",
   "version": "0.1.0",
   "stage": "Stage02B",
-  "decisionStatus": "PROPOSED",
+  "decisionStatus": "APPROVED_SCOPED",
   "poGate": "G2_OPEN",
   "implementationStatus": "NOT_IMPLEMENTED",
-  "reviewMode": "HUMAN_PO_REQUIRED",
+  "reviewMode": "HUMAN_PO_SCOPED_APPROVAL_RECORDED",
   "authority": {
     "dsHead": "d22f469a52d13baa73c0c8952b198fdfeb2b2891",
     "ontHead": "0fe2d9b92a66e64ea3244d910d789ccc0d458a5b",
@@ -53,7 +53,7 @@
     {
       "id": "Button",
       "scope": "primary/secondary/action, not navigation",
-      "status": "PROPOSED",
+      "status": "APPROVED_SCOPED_NOT_IMPLEMENTED",
       "tokens": {
         "primaryBg": "--li-comp-button-primary-background",
         "primaryInk": "--li-comp-button-primary-color",
@@ -97,7 +97,7 @@
     {
       "id": "Card",
       "scope": "editorial raised/tinted/inverse Surface/Card",
-      "status": "PROPOSED",
+      "status": "APPROVED_SCOPED_NOT_IMPLEMENTED",
       "tokens": {
         "raised": "--li-comp-surface-background",
         "tinted": "--li-comp-surface-tinted-background",
@@ -140,7 +140,7 @@
     {
       "id": "Field",
       "scope": "single-line input plus separately named multiline TextAreaField",
-      "status": "PROPOSED",
+      "status": "APPROVED_SCOPED_NOT_IMPLEMENTED",
       "tokens": {
         "background": "--li-comp-field-background",
         "focus": "--li-comp-field-focus-border",
@@ -205,32 +205,41 @@
       "id": "VC-G2-D1",
       "title": "Standard CTA typography and hard shadow",
       "recommendation": "adopt 48px intended target, square radius 0, 16/24 body CTA, hard offset shadow for standard buttons; preserve explicit exceptions",
-      "poAction": "APPROVE_OR_REVISE",
-      "status": "PROPOSED",
+      "poAction": "APPROVED_BY_HUMAN_PO",
+      "status": "APPROVED",
       "scopeImpact": "native .action, legacy .pilot button, new .li-ui-button and all consumers",
-      "noChangeBeforeApproval": true
+      "noChangeBeforeApproval": true,
+      "approvedAt": "2026-11-20T00:55:00+07:00",
+      "implementationStatus": "NOT_IMPLEMENTED",
+      "approvalScope": "VISUAL_CONTRACT_ONLY"
     },
     {
       "id": "VC-G2-D2",
       "title": "Surface depth and responsive padding",
       "recommendation": "use source semantic surface roles; standard raised card hard shadow; responsive padding 20 mobile, 24 standard, 28/32 iPad density subject to token mapping; allow named flat/compact variants",
-      "poAction": "APPROVE_OR_REVISE",
-      "status": "PROPOSED",
+      "poAction": "APPROVED_BY_HUMAN_PO",
+      "status": "APPROVED",
       "scopeImpact": "native .surface, legacy .pilot-surface, new .li-ui-card, desktop/iPad/phone",
-      "noChangeBeforeApproval": true
+      "noChangeBeforeApproval": true,
+      "approvedAt": "2026-11-20T00:55:00+07:00",
+      "implementationStatus": "NOT_IMPLEMENTED",
+      "approvalScope": "VISUAL_CONTRACT_ONLY"
     },
     {
       "id": "VC-G2-D3",
       "title": "Field single-line vs multiline variants",
       "recommendation": "48px single-line intended target with porcelain/focus/error tokens; 56px iPad target as designScale; multiline heights explicit guided/answer contexts, not universal",
-      "poAction": "APPROVE_OR_REVISE",
-      "status": "PROPOSED",
+      "poAction": "APPROVED_BY_HUMAN_PO",
+      "status": "APPROVED",
       "scopeImpact": "native .text-editor + L09 guidedDraft, legacy answer textarea, new TextInput/TextAreaField",
-      "noChangeBeforeApproval": true
+      "noChangeBeforeApproval": true,
+      "approvedAt": "2026-11-20T00:55:00+07:00",
+      "implementationStatus": "NOT_IMPLEMENTED",
+      "approvalScope": "VISUAL_CONTRACT_ONLY"
     }
   ],
   "testing": {
-    "sourceAudit": "VALIDATOR_PROPOSED",
+    "sourceAudit": "SCOPED_APPROVAL_PENDING_EXACT_HEAD_CI",
     "sharedComponentQA": "CHROMIUM_BASELINE_31_31",
     "nativeRealScreenQA": "CHROMIUM_BASELINE_34_34",
     "threeOwnerQA": "CHROMIUM_48_48_AND_4_NEGATIVE",
@@ -255,5 +264,31 @@
     "authNeonRlsChanges": false,
     "learnerDataWrites": false,
     "paidActions": false
-  }
+  },
+  "approvalEvidence": {
+    "authorizedBy": "Human Product Owner",
+    "message": "duyệt",
+    "dateTime": "2026-11-20T00:55:00+07:00",
+    "timeZone": "Asia/Ho_Chi_Minh",
+    "approvedDecisionIds": [
+      "VC-G2-D1",
+      "VC-G2-D2",
+      "VC-G2-D3"
+    ],
+    "approvedScope": "Button, Card/Surface, Field/TextAreaField visual contract presented in VC-G2-01 exactly as proposed",
+    "notApproved": [
+      "global_visual_identity",
+      "global_G2_stage_exit",
+      "stage02_done",
+      "stage03_promotion",
+      "main_merge",
+      "deploy",
+      "production_flags",
+      "unreviewed_ui_changes",
+      "Auth_Neon_RLS",
+      "paid_actions"
+    ],
+    "provenance": "Human PO approval in current li. chat; no fabricated external Notion approval event"
+  },
+  "nextActivity": "RESEARCH_BRANCH_IMPLEMENTATION_AND_CI_ONLY_AFTER_DEPENDENCY_REVIEW"
 }

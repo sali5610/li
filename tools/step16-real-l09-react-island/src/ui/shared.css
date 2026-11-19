@@ -63,7 +63,7 @@
 }
 /* Question-answer is a named multiline context, not a universal textarea height. */
 .pilot[data-vc-g2="approved-research"] .li-ui-field .li-ui-input[data-field-purpose="answer"]{
-  min-height:calc(var(--li-space-12) * 2 + var(--li-space-4))
+  min-height:calc(var(--li-space-12) + var(--li-space-12) + var(--li-space-4))
 }
 @media(min-width:600px){
  .pilot[data-vc-g2="approved-research"] .li-ui-card{padding:var(--li-space-6)}

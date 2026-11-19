@@ -3,7 +3,13 @@
 set -euo pipefail
 BASE="$(cd "$(dirname "$0")" && pwd)"
 CT="li_idempotency_ci_$(date +%s)_$$"
-cleanup() { docker stop "$CT" >/dev/null 2>&1 || true; }
+HTTP_CT=""
+HTTP_NET=""
+cleanup() {
+  if [[ -n "$HTTP_CT" ]]; then docker stop "$HTTP_CT" >/dev/null 2>&1 || true; fi
+  docker stop "$CT" >/dev/null 2>&1 || true
+  if [[ -n "$HTTP_NET" ]]; then docker network rm "$HTTP_NET" >/dev/null 2>&1 || true; fi
+}
 trap cleanup EXIT
 echo "Starting disposable postgres:16-alpine, local Docker only"
 docker run --rm -d --name "$CT" \
@@ -97,3 +103,35 @@ query < "$BASE/ci-only-rollback.sql" > /tmp/li_pg_rollback_run.log
 grep -Fq "LI_PG_ROLLBACK_REHEARSAL_21_TO_24_PASS" /tmp/li_pg_rollback_run.log
 echo "PASS PG-21..24: RPC disabled, old DML grants restored, state/receipt retained, RLS enforced"
 echo "LI_POSTGRES_IDEMPOTENCY_CI_PASS 24/24 (mock identities, NO real JWT)"
+
+# SYNC-13B: real PostgREST service over loopback only; ephemeral signed JWT.
+# Runs AFTER SQL rollback rehearsal, then returns to RPC-only privileges.
+grep -Fq "CI_ONLY_DATABASE_REQUIRED" "$BASE/ci-only-http-preflight.sql"
+query < "$BASE/ci-only-http-preflight.sql" > /tmp/li_pg_http_preflight.log
+grep -Fq "LI_CI_POSTGREST_PREFLIGHT_READY" /tmp/li_pg_http_preflight.log
+HTTP_NET="li_pg_http_$(date +%s)_$$"
+docker network create "$HTTP_NET" >/dev/null
+docker network connect --alias pgci "$HTTP_NET" "$CT"
+HTTP_CT="li_pgrest_ci_$(date +%s)_$$"
+echo "Starting disposable PostgREST v16.6, published to 127.0.0.1 ONLY"
+docker run --rm -d --name "$HTTP_CT" --network "$HTTP_NET" \
+  -p 127.0.0.1:28794:3000 \
+  -e PGRST_DB_URI="postgres://li_ci_authenticator:li-ci-postgrest-local-only-password@pgci:5432/li_idempotency_ci" \
+  -e PGRST_DB_SCHEMAS=public \
+  -e PGRST_DB_ANON_ROLE=li_ci_anon \
+  -e PGRST_JWT_SECRET=li-ci-postgrest-hs256-secret-very-long-2026 \
+  -e PGRST_SERVER_HOST=0.0.0.0 \
+  postgrest/postgrest:v16.6 >/dev/null
+for i in $(seq 1 60); do
+  code="$(curl --silent --max-time 1 --output /dev/null --write-out "%{http_code}" http://127.0.0.1:28794/ || true)"
+  if [[ "$code" != "000" && -n "$code" ]]; then break; fi
+  if ((i==60)); then
+    docker logs "$HTTP_CT" 2>&1 | tail -40
+    echo "FAIL: disposable PostgREST never became ready" >&2; exit 1
+  fi
+  sleep 0.3
+done
+LI_POSTGREST_CI_URL=http://127.0.0.1:28794 \
+LI_POSTGREST_CI_SECRET=li-ci-postgrest-hs256-secret-very-long-2026 \
+node --test "$BASE/ci-only-postgrest-http.test.mjs"
+echo "LI_POSTGREST_HTTP_CI_PASS 13/13 (disposable signed CI JWT; NOT Neon signed JWT)"

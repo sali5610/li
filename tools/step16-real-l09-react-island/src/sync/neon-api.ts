@@ -24,7 +24,7 @@ export class NeonUserApi{
   for(const [key,value] of Object.entries(params))url.searchParams.set(key,value);
   const request=this.request;
   const response=await request(url.toString(),{
-   method,cache:'no-store',credentials:'omit',
+   method,cache:'no-store',credentials:'omit',redirect:'error',
    headers:{Authorization:'Bearer '+token,Accept:'application/json',
      ...(body?{'Content-Type':'application/json',Prefer:'return=representation'}:{})},
    ...(body?{body:JSON.stringify(body)}:{})

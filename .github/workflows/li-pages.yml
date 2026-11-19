@@ -8,6 +8,7 @@ on:
     paths:
       - 'site/**'
       - 'tools/**'
+      - 'db/migrations/**'
       - '.github/workflows/li-pages.yml'
   workflow_dispatch:
 

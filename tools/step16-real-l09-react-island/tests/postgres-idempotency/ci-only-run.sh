@@ -92,4 +92,8 @@ grep -Fq "CI_ONLY_DATABASE_REQUIRED" "$BASE/ci-only-hardening.sql"
 query < "$BASE/ci-only-hardening.sql" > /tmp/li_pg_hardening_run.log
 grep -Fq "LI_PG_DIRECT_DML_BYPASS_DENIED_16_TO_20_PASS" /tmp/li_pg_hardening_run.log
 echo "PASS PG-16..20: server RPC only, direct INSERT/UPDATE/DELETE denied, PUBLIC EXECUTE revoked"
-echo "LI_POSTGRES_IDEMPOTENCY_CI_PASS 20/20 (mock identities, NO real JWT)"
+grep -Fq "CI_ONLY_DATABASE_REQUIRED" "$BASE/ci-only-rollback.sql"
+query < "$BASE/ci-only-rollback.sql" > /tmp/li_pg_rollback_run.log
+grep -Fq "LI_PG_ROLLBACK_REHEARSAL_21_TO_24_PASS" /tmp/li_pg_rollback_run.log
+echo "PASS PG-21..24: RPC disabled, old DML grants restored, state/receipt retained, RLS enforced"
+echo "LI_POSTGRES_IDEMPOTENCY_CI_PASS 24/24 (mock identities, NO real JWT)"

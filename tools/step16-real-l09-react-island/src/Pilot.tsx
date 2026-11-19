@@ -35,6 +35,14 @@ export function Pilot({visualContractPilot=false}:{visualContractPilot?:boolean}
  // The demo must not claim mastery or remote persistence.
  const savedOnDevice=baseline.current!==null&&!conflict&&!storageError;
  const hasDraft=state.draft.some(answer=>answer.trim().length>0);
+ // Action progress is not a grade or cloud-sync signal. Reuse persisted attempt.
+ const answeredCount=state.draft.filter(answer=>answer.trim().length>=12).length;
+ const ratedCount=state.ratings.filter(rating=>rating!==null).length;
+ const actionProgress=state.reviewed?
+   (state.locale==='vi'?'Đã hoàn tất 4/4 tiêu chí tự đánh giá.':'All 4/4 self-review criteria completed.'):
+   state.submitted?
+     (state.locale==='vi'?`Tự đánh giá ${ratedCount}/4 tiêu chí.`:`Self-review ${ratedCount}/4 criteria.`):
+     (state.locale==='vi'?`Đủ điều kiện nộp ${answeredCount}/4 câu.`:`Submission-ready answers ${answeredCount}/4.`);
  const resumeStage=state.reviewed?'reviewed':state.submitted?'submitted':
    hasDraft?'draft':'empty';
  const resumeCopy=state.locale==='vi'?{
@@ -198,6 +206,7 @@ export function Pilot({visualContractPilot=false}:{visualContractPilot?:boolean}
    <div className="pilot-resume" data-resume-stage={resumeStage} aria-labelledby="l09-resume-status">
      <p id="l09-resume-status" className="pilot-note" data-resume-status>
        {resumeCopy[resumeStage]} {savedOnDevice&&resumeCopy.saved}
+       <span data-learning-progress> {actionProgress}</span>
      </p>
      <StudyAction vcG2={visualContractPilot} type="button" kind="secondary" data-action="resume"
        aria-describedby="l09-resume-status" onClick={resume} disabled={conflict||storageError}>

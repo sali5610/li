@@ -31,6 +31,29 @@ export function Pilot({visualContractPilot=false}:{visualContractPilot?:boolean}
  const conflictText=state.locale==='vi'
   ?'Dữ liệu bài học đã thay đổi hoặc không hợp lệ. Nạp lại bản mới trước khi ghi tiếp.'
   :'Lesson data changed in another tab or is invalid. Reload the latest state before saving.';
+ // State is derived from a locally read-back attempt, never from cloud sync.
+ // The demo must not claim mastery or remote persistence.
+ const savedOnDevice=baseline.current!==null&&!conflict&&!storageError;
+ const hasDraft=state.draft.some(answer=>answer.trim().length>0);
+ const resumeStage=state.reviewed?'reviewed':state.submitted?'submitted':
+   hasDraft?'draft':'empty';
+ const resumeCopy=state.locale==='vi'?{
+   empty:'Chưa có câu trả lời trên thiết bị.',
+   draft:'Đang viết dở · chưa nộp.',
+   submitted:'Đã nộp · còn bước tự đánh giá.',
+   reviewed:'Đã hoàn tất một lượt tự đánh giá · không phải điểm thông thạo.',
+   saved:'Đã lưu trên thiết bị · chưa đồng bộ cloud.',
+   start:'Bắt đầu trả lời',continue:'Viết tiếp',rate:'Tiếp tục tự đánh giá',
+   revisit:'Xem lại lượt tự đánh giá'
+  }:{
+   empty:'No answers on this device yet.',
+   draft:'Draft in progress · not submitted.',
+   submitted:'Submitted · self-review still pending.',
+   reviewed:'One self-review completed · not a mastery score.',
+   saved:'Saved on this device · not synced to cloud.',
+   start:'Start answering',continue:'Continue writing',rate:'Continue self-review',
+   revisit:'Review this attempt'
+  };
  useEffect(()=>{
    const onStorage=(event:StorageEvent)=>{
      if(event.key===bridge.key&&event.newValue!==baseline.current){
@@ -128,6 +151,27 @@ export function Pilot({visualContractPilot=false}:{visualContractPilot?:boolean}
    if(state.ratings.some(x=>x===null)){setMessage(text.reviewNeed);return;}
    if(persist({...state,reviewed:true}))setMessage(text.reviewDone);
  }
+ function resume(){
+   if(conflict||storageError)return;
+   // Resume the *next unfinished action*, not a new attempt or a guessed score.
+   const root=document.querySelector<HTMLElement>('.pilot[data-lesson-id="L09-1-2"]');
+   if(!root)return;
+   let target:HTMLElement|null=null;
+   if(state.reviewed){
+     target=root.querySelector<HTMLElement>('#rubric-title');
+   }else if(state.submitted){
+     const next=state.ratings.findIndex(rating=>rating===null);
+     target=root.querySelector<HTMLElement>(next<0?'[data-action="finish"]':
+       '[data-rating="'+next+'"]');
+   }else{
+     const next=state.draft.findIndex(answer=>answer.trim().length<12);
+     target=root.querySelector<HTMLElement>(next<0?'[data-action="submit"]':
+       '[data-answer="'+next+'"]');
+   }
+   if(!target)return;
+   target.focus({preventScroll:true});
+   target.scrollIntoView({block:'center',behavior:'auto'});
+ }
  function changeLocale(locale:Locale){
    if(state.locale===locale)return;
    if(!persist({...state,locale}))return;
@@ -151,6 +195,16 @@ export function Pilot({visualContractPilot=false}:{visualContractPilot?:boolean}
      </div>
    </div>
    <p className="pilot-caution">Step16 · {bridge.nativeFixture?'LOCALHOST NATIVE-KEY COMPATIBILITY TEST ONLY':'local isolated research'}. Not the public lesson or a new approved design.</p>
+   <div className="pilot-resume" data-resume-stage={resumeStage} aria-labelledby="l09-resume-status">
+     <p id="l09-resume-status" className="pilot-note" data-resume-status>
+       {resumeCopy[resumeStage]} {savedOnDevice&&resumeCopy.saved}
+     </p>
+     <StudyAction vcG2={visualContractPilot} type="button" kind="secondary" data-action="resume"
+       aria-describedby="l09-resume-status" onClick={resume} disabled={conflict||storageError}>
+       {resumeStage==='reviewed'?resumeCopy.revisit:resumeStage==='submitted'?resumeCopy.rate:
+         resumeStage==='draft'?resumeCopy.continue:resumeCopy.start}
+     </StudyAction>
+   </div>
    {conflict&&<div className="pilot-statement" role="alert" data-conflict>
      <p>{conflictText}</p>
      <button type="button" className="secondary" data-action="reload-state" onClick={refreshFromStorage}>
@@ -191,7 +245,7 @@ export function Pilot({visualContractPilot=false}:{visualContractPilot?:boolean}
    </StudySurface>
    <StudySurface vcG2={visualContractPilot} aria-labelledby="rubric-title">
      <span className="pilot-kicker">L09-1-2 · VI</span>
-     <h2 id="rubric-title">{text.rubricTitle}</h2>
+     <h2 id="rubric-title" tabIndex={-1}>{text.rubricTitle}</h2>
      {!state.submitted?<p data-rubric-locked>{text.rubricBefore}</p>:<>
        <div className="pilot-rubric" data-rubric>
          {text.rubricItems.map(([title,description],i)=><div key={i} className="pilot-rubric-row">

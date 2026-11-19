@@ -62,6 +62,7 @@ export function AuthPanel(){
  const [locale,setLocale]=useState<Locale>('vi');
  const t=copy[locale];
  const stageLabel=IS_GITHUB_STAGING?'STAGING · GitHub Pages':t.tag;
+ const showDeveloperQa=IS_GITHUB_STAGING&&new URLSearchParams(window.location.search).get('qa')==='1';
  const {data:session,isPending,error,refetch}=authClient.useSession();
  const [busy,setBusy]=useState<'login'|'logout'|null>(null);
  const [feedback,setFeedback]=useState('');
@@ -176,9 +177,9 @@ export function AuthPanel(){
    {feedback&&<p className="auth-error" role="alert">{feedback}</p>}
    {IS_GITHUB_STAGING&&accountId&&access==='granted'&&
     <L09CloudPanel uid={accountId} locale={locale}/>}
-   {IS_GITHUB_STAGING&&accountId&&(access==='granted'||access==='denied')&&
+   {showDeveloperQa&&accountId&&(access==='granted'||access==='denied')&&
     <RlsQaPanel uid={accountId} granted={access==='granted'}/>}
-   {IS_GITHUB_STAGING&&accountId&&access==='granted'&&
+   {showDeveloperQa&&accountId&&access==='granted'&&
     <SyncQaPanel uid={accountId} locale={locale}/>}
    <p className="auth-local" role="status">{IS_GITHUB_STAGING?t.l09Local:t.local}</p>
    <p className="auth-privacy">{t.privacy}</p>

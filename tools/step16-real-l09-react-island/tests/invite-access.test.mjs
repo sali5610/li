@@ -31,7 +31,7 @@ test('only a server-verified invitation grants access; no emails are sent by bro
   assert.equal(options.credentials,'omit');
   assert.equal(options.headers.Authorization,'Bearer '+tokenFor('invited-user'));
   assert.equal(options.body,'{}');
-  assert.doesNotMatch(JSON.stringify(options),/hothithuydung97|dungho.product/);
+  assert.doesNotMatch(JSON.stringify(options),/gmail\\.com|@example\\.com/);
   return ok(true);
  });
  assert.equal(allowed,true);

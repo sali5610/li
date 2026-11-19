@@ -2,7 +2,7 @@
 
 **Decision input (Human Product Owner, 2026-11-19):** No password setup or OTP onboarding. Google sign-in only. Only specific email addresses explicitly invited by the owner may **use li.** A friend cannot self-approve. Cost must remain 0 VND.
 
-**Status:** CANDIDATE CODE in draft PR #124 only. Never describe this as deployed, end-to-end verified or security-approved until the live Google+JWT+RLS tests pass.
+**Status (2026-11-19):** Invitation migration 0002 WAS applied to the existing Neon Free main DB after successful isolated-branch test; exactly two PO-approved email invitations WERE seeded and read back (2/2 active, 0 unexpected). GitHub PR #124 and the Google React UI remain DRAFT/UNDEPLOYED. No genuine Google login, signed A/B/C JWT RLS or Safari verification yet. Do not claim production readiness.
 
 ## Three separate security layers
 
@@ -16,7 +16,7 @@
 - **Sign in:** the invited person opens the authorized app origin, clicks **Continue with Google**, chooses that exact Google account, then the server checks membership. Different email = denied.
 - **Revoke:** admin sets `revoked_at=now()`. No user-level table or function may grant/revoke membership. Cloud permissions should be rescoped if hosting is protected too.
 - **Owner admin UI:** Not yet built. If added later, use a verified owner-only server endpoint; NEVER issue administrator SQL or service-role API keys from React.
-- **Initial setup:** exactly two Human-PO-supplied test addresses were already provisioned as Neon Auth users. They are NOT added to the proposed allowlist until the reviewed migration is applied, and pre-created user linking with Google is untested. No emails appear in this repository.
+- **Initial setup:** exactly two Human-PO-approved test email addresses are already provisioned as Neon Auth users AND have active invite rows in the live Neon main DB after approval. Both pre-created Auth records were still email-unverified at last SQL read-back; Google account-linking remains untested. No real email addresses appear in this repository.
 
 ## App shell versus data privacy
 
@@ -27,8 +27,8 @@ If the PO means *literally nobody uninvited can even load the app URL / static l
 ## Before permission to release
 
 - [ ] Independent SQL/schema/security review of migration 0002 and actual provider identity linking
-- [ ] Human-approved dry run on isolated Neon branch, THEN explicit approval to apply migration to default branch
-- [ ] Admin-only seed of exactly the approved test email addresses, without placing them into GitHub or Notion
+- [x] Human-approved schema dry run on isolated Neon branch, applied migration 0002 to default branch, verified restrictive RLS, grants and safe temp-branch deletion (2026-11-19)
+- [x] Admin-only seed of exactly two approved test email addresses (2 active, 0 unexpected), read back directly from Neon. No email address embedded into GitHub or Notion.
 - [ ] Real Google sign-in at approved origin, with 2 invited accounts, 1 uninvited and 1 revoked case
 - [ ] Signed JWT A/B/C negative RLS tests: SELECT, INSERT forged owner, UPDATE/PATCH, DELETE on both private tables; verify synthetic cleanup
 - [ ] Check that client RPC shows denied on error/uninvited, while table RLS independently rejects all writes
@@ -37,4 +37,4 @@ If the PO means *literally nobody uninvited can even load the app URL / static l
 - [ ] Explicit remote learner-state consent and separate diary-consent gate before first sync
 - [ ] G2 visual gate + owner manual release approval; no paid service, no automatic deploy
 
-**No deploy, live migration, approved email seed or real login has occurred as part of this draft.**
+**No deploy, real Google login, genuine signed user-isolation test, or remote sync occurred. Live invite-only migration and two approved invitations DID take effect on Neon main with explicit Human PO approval.**

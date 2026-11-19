@@ -6,13 +6,13 @@
 
 - **Live iPhone Safari:** Both approved Google emails have signed in and shown their identity. At 21:49 ICT owner screenshot still shows generic invite RPC failure, access locked and cloud sync OFF.
 - **Live Neon read-only status:** exactly 2 Google-linked/verified users; 2 active owner invites; 1 session at inspection time; 0 learner-state rows. The previously pre-created empty credential-only user stubs were already removed with PO approval; do not repeat that deletion. Neon Data API is ACTIVE; `authenticated` may EXECUTE `public.li_is_invited()`; SECURITY DEFINER owner `li_owner` may SELECT required tables. This does NOT prove any genuine user JWT or browser POST/RPC/CORS success.
-- **GitHub [Draft PR #145](https://github.com/sali5610/li/pull/145):** safe VI/EN invite error codes. Use only signed JWT from Better Auth JWT plugin `authClient.token()` (GET /token). The `getSession().data.session.token` field is **opaque session/cookie identifier** and must never be passed to Data API. Branch deliberately contains no production `site/` change or Cloudflare workflow change.
+- **GitHub [Draft PR #145](https://github.com/sali5610/li/pull/145):** safe VI/EN invite error codes. Revised to use pinned Neon SDK v0.7.0-beta's exported `createInternalNeonAuth(...).getJWTToken()` helper on the exact shared React adapter instance, not ad hoc `authClient.token()`/GET /token. SDK may inject the authenticated JWT into `session.token` from the `set-auth-jwt` response header; when that header is missing, the field may instead be an opaque session identifier. Never read/pass `session.token` manually: helper result must pass JWT shape, matching signed-in subject and actual backend signature/RLS/allowlist verification. No `/token` Network row is therefore expected from this **new draft path** (older deployed code still uses different path). Root cause of live failure remains unverified. No production `site/` or Cloudflare workflow change.
 - **No preemptive deployment:** the existing manually dispatched Cloudflare workflow is still source-pinned to an older SHA. Any new Auth-only build requires separate PO approval after draft CI. No RLS relaxation, cloud sync, new email-password workflow, paid service or automatic deploy.
 - **Raw secrets prohibited:** Never request/put JWT, tokens, callback URL/query, session IDs, raw browser network response bodies or private emails in screenshots, GitHub, Notion or chat. `INV-*` codes below contain no user/token data.
 
 | Safe owner-visible code | Diagnostic meaning (not authorization) |
 |---|---|
-| `INV-JWT-401`, `INV-JWT-403`, `INV-JWT-429`, `INV-JWT-5XX` | JWT-plugin HTTP status; investigate session/cookies/Neon service |
+| `INV-JWT-401`, `INV-JWT-403`, `INV-JWT-429`, `INV-JWT-5XX` | SDK session/JWT acquisition HTTP status; investigate session/cookies/Neon service |
 | `INV-JWT-FETCH`, `INV-JWT-MISSING` | Cannot obtain three-segment signed JWT candidate |
 | `INV-JWT-BIND` | JWT cannot be parsed as expected or its `sub` does not match current signed-in account |
 | `INV-RPC-401`, `INV-RPC-403`, `INV-RPC-404`, `INV-RPC-5XX` | JWT-backed invitation RPC returned an HTTP error |
@@ -22,7 +22,7 @@
 
 After a future **explicitly approved manual Auth-only release**, reload the real iPhone pilot once, capture ONLY the safe `INV-*` code, then choose one server or frontend fix based on the exact stage. If the RPC returns literal `true`, verify A/B and uninvited C strict RLS on genuine signed JWTs before permitting any remote learner data.
 
-Official Neon SDK source: https://github.com/neondatabase/neon-js/blob/main/packages/auth/src/neon-auth.ts ; Better Auth JWT plugin: https://better-auth.com/docs/plugins/jwt ; session-token distinction: https://github.com/neondatabase/neon-js/blob/main/CLAUDE.md .
+Official pinned Neon SDK source: https://github.com/neondatabase/neon-js/blob/main/packages/auth/src/neon-auth.ts ; injected-header and managed JWT helper: https://github.com/neondatabase/neon-js/blob/main/packages/auth/src/core/adapter-core.ts .
 
 ---
 

@@ -1,4 +1,4 @@
-import {createAuthClient} from '@neondatabase/auth';
+import {createInternalNeonAuth} from '@neondatabase/auth';
 import {BetterAuthReactAdapter} from '@neondatabase/auth/react/adapters';
 import type {NeonAuthSessionPort} from '../sync/neon-session.js';
 import {sessionJwtCandidate,safeJwtFetchError} from '../sync/invite-access.js';
@@ -10,10 +10,14 @@ import {NEON_AUTH_URL} from './config.js';
  * and restrictive PostgreSQL RLS (migration 0002) enforce access server-side.
  * No anonymous tokens, self-serve app membership or privileged credentials.
  */
-export const authClient=createAuthClient(NEON_AUTH_URL,{
+// @neondatabase/auth v0.7.0-beta exports the managed internal JWT helper.
+ // Use ONE adapter instance for both the React session and JWT acquisition.
+ // The helper obtains the SDK-managed session token; do not fetch /token ad hoc.
+const neonAuth=createInternalNeonAuth(NEON_AUTH_URL,{
  adapter:BetterAuthReactAdapter(),
  allowAnonymous:false
 });
+export const authClient=neonAuth.adapter;
 
 /** Identity-only adapter. Never cache/store the JWT or raw session in IndexedDB. */
 export const neonSessionPort:NeonAuthSessionPort={
@@ -23,11 +27,15 @@ export const neonSessionPort:NeonAuthSessionPort={
    error:response.error??undefined};
  },
  async getJWTToken(){
-  // Better Auth's session.token is an opaque session identifier, NOT a bearer JWT.
-  // For the public BetterAuthReactAdapter API, use the JWT plugin /token action.
-  // Never infer a signed token from the session cookie even if it contains dots.
-  const response=await authClient.token();
-  if(response.error)throw safeJwtFetchError(response.error);
-  return sessionJwtCandidate(response.data?.token);
+  // Neon SDK injects the authenticated JWT from set-auth-jwt into a session
+  // response. Without that header session.token may be an opaque session ID.
+  // Only use the SDK helper, then validate candidate shape + sub binding and
+  // require the backend to verify JWT signature, invite membership and RLS.
+  try{
+   const jwt=await neonAuth.getJWTToken();
+   return sessionJwtCandidate(jwt);
+  }catch(problem){
+   throw safeJwtFetchError(problem); // Never expose provider text or token.
+  }
  }
 };

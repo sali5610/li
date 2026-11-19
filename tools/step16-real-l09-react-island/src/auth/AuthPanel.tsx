@@ -5,13 +5,18 @@ import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING} from './config.js';
 import {classifyOAuthReturn,type OAuthReturnCode} from './oauth-return.js';
 import {RlsQaPanel} from './RlsQaPanel.js';
 import {SyncQaPanel} from './SyncQaPanel.js';
+import {prepareLearnerAccount,startLearnerSync,type SyncReport} from './learner-sync.js';
 
 type Locale='vi'|'en';
 type Access='checking'|'granted'|'denied'|'error';
+const syncCopy={
+ vi:{checking:'Đang kết nối tiến độ học với Neon…',saved:'Đã đồng bộ tiến độ học với Neon.',empty:'Đã kết nối Neon. Tiến độ sẽ tự đồng bộ khi học.',offline:'Đang offline; tiến độ vẫn lưu trên máy và sẽ thử lại.',conflict:'Hai thiết bị có tiến độ khác nhau. Dữ liệu được giữ, chưa ghi đè.',error:'Chưa đồng bộ được với Neon; tiến độ vẫn lưu trên máy.'},
+ en:{checking:'Connecting learning progress to Neon…',saved:'Learning progress synced to Neon.',empty:'Connected to Neon. Progress will sync while studying.',offline:'Offline. Progress remains on device and will retry.',conflict:'Progress differs across devices. Both copies are preserved; nothing was overwritten.',error:'Cannot sync with Neon yet; device progress is preserved.'}
+} as const;
 const copy={
  vi:{
   heading:'Vào thư viện li.',tag:'Tài khoản học tập',
-  intro:'Chỉ email đã được mời mới có thể vào li. Đăng nhập bằng Google để tiếp tục.',
+  intro:'Chỉ email được mời mới có thể vào li. Đăng nhập Google để học và đồng bộ tiến độ trên tài khoản.',
   google:'Tiếp tục với Google',logout:'Đăng xuất',busy:'Đang xử lý…',
   loading:'Đang kiểm tra phiên đăng nhập…',signed:'Đã đăng nhập với',
   checking:'Đang kiểm tra lời mời trên máy chủ…',
@@ -28,13 +33,13 @@ const copy={
   oauthGeneric:'Google trả về lỗi đăng nhập. Không có quyền truy cập nào được cấp.',
   leave:'Không thể đăng xuất. Kiểm tra kết nối rồi thử lại.',
   local:'Chỉ lưu trên thiết bị · Đồng bộ cloud vẫn khóa',
-  l09Local:'Tiến độ đang lưu trên thiết bị này. Đồng bộ đa thiết bị chưa được bật.',
+  l09Local:'Tiến độ học được lưu trên máy và đồng bộ theo tài khoản khi Neon kết nối thành công.',
   privacy:'Google đăng nhập không tự cấp quyền xem dữ liệu. Quyền mời và dữ liệu cá nhân được kiểm tra tại Neon bằng RLS.',
   switchEn:'English',switchVi:'Tiếng Việt'
  },
  en:{
   heading:'Welcome to li.',tag:'Learning account',
-  intro:'Only invited Google accounts can access li. Sign in to continue.',
+  intro:'Only invited Google accounts may enter li. Sign in to study and sync progress to your account.',
   google:'Continue with Google',logout:'Sign out',busy:'Working…',
   loading:'Checking your sign-in session…',signed:'Signed in as',
   checking:'Checking your invitation with the server…',
@@ -51,7 +56,7 @@ const copy={
   oauthGeneric:'Google reported an authentication error. No app access was granted.',
   leave:'Sign-out failed. Check your connection and try again.',
   local:'Device-only storage · Cloud sync still disabled',
-  l09Local:'Progress is saved on this device. Cross-device sync is not enabled yet.',
+  l09Local:'Learning progress is saved locally and syncs to your account once Neon connects.',
   privacy:'Google authentication is not access approval. Neon RLS independently checks invitations and private data.',
   switchEn:'English',switchVi:'Tiếng Việt'
  }
@@ -69,14 +74,34 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  const [inviteError,setInviteError]=useState('');
  const [accessEpoch,setAccessEpoch]=useState(0);
  const accountId=session?.user?.id??null;
- // The app stays hidden until the server has verified this account's invitation.
+ const [ownerReady,setOwnerReady]=useState(false);
+ const [syncStatus,setSyncStatus]=useState<SyncReport>('checking');
+ // Do not reveal native lesson state from another invited account.
+ // Local account ownership is prepared synchronously before the app is shown.
+ useEffect(()=>{
+  if(!accountId||isPending||error||access!=='granted'){setOwnerReady(false);return;}
+  try{
+   if(prepareLearnerAccount(accountId)){window.location.reload();return;}
+   setOwnerReady(true);
+  }catch{setOwnerReady(false);setSyncStatus('error');}
+ },[accountId,isPending,error,access]);
  useEffect(()=>{
   if(!document.getElementById('li-staging-auth-root'))return;
-  const permitted=Boolean(accountId)&&!isPending&&!error&&access==='granted';
+  const permitted=Boolean(accountId)&&!isPending&&!error&&access==='granted'&&ownerReady;
   document.documentElement.classList.toggle('li-auth-verified',Boolean(permitted));
   if(!permitted)document.documentElement.classList.remove('li-account-open');
   return()=>{document.documentElement.classList.remove('li-auth-verified');};
- },[accountId,isPending,error,access]);
+ },[accountId,isPending,error,access,ownerReady]);
+ // One automatic learner-data session, never manual per-lesson Settings buttons.
+ useEffect(()=>{
+  if(!IS_GITHUB_STAGING||!ownerReady||!accountId||access!=='granted')return;
+  setSyncStatus('checking');
+  return startLearnerSync(accountId,value=>{
+   setSyncStatus(value);
+   const status=document.getElementById('li-cloud-status');
+   if(status)status.textContent=syncCopy[document.documentElement.lang==='en'?'en':'vi'][value];
+  });
+ },[accountId,ownerReady,access]);
  const oauthReturn=classifyOAuthReturn(window.location.search,Boolean(accountId),isPending);
  const oauthMessage=(code:OAuthReturnCode)=>code==='account_not_linked'?t.oauthLink:
   code==='state_mismatch'||code==='state_security_mismatch'||code==='no_callback_url'||code==='invalid_callback_request'?t.oauthState:
@@ -187,7 +212,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     <RlsQaPanel uid={accountId} granted={access==='granted'}/>}
    {showDeveloperQa&&accountId&&access==='granted'&&
     <SyncQaPanel uid={accountId} locale={locale}/>}
-   <p className="auth-local" role="status">{IS_GITHUB_STAGING?t.l09Local:t.local}</p>
+   <p className="auth-local" role="status">{IS_GITHUB_STAGING&&accountId&&access==='granted'?syncCopy[locale][syncStatus]:(IS_GITHUB_STAGING?t.l09Local:t.local)}</p>
    <p className="auth-privacy">{t.privacy}</p>
   </section>
  </main>;

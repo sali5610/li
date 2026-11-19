@@ -1,10 +1,10 @@
 name: Publish li. STAGING to GitHub Pages (Cloudflare-independent)
 
 # GitHub Pages is the low-cost test environment, not the Cloudflare production site.
-# Existing main pushes update STAGING only. No Cloudflare API, secrets or deploy.
+# Staging publisher is owned by integration/staging. Main must never publish preview.
 on:
   push:
-    branches: [main]
+    branches: [integration/staging]
     paths:
       - 'site/**'
       - 'tools/**'
@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   publish:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/integration/staging'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:

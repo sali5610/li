@@ -63,7 +63,7 @@ def count_current_month_deployments(account: str, project: str, token: str):
     def scanned():
         print(
             f"LI_FREE_DEPLOYMENT_AUDIT project_attempted={matched} "
-            f"skipped_git_events={skipped} records={matched + skipped}"
+            f"skipped_records={skipped} records={matched + skipped}"
         )
         return matched
     for page in range(1, 501):

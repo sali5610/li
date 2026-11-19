@@ -164,8 +164,11 @@ async function syntheticTypographyStress(language){
  const baselineFocus={borderWidths:[focusAt100.borderTopWidth,focusAt100.borderRightWidth,focusAt100.borderBottomWidth,focusAt100.borderLeftWidth].map(parseFloat),
   borderColor:focusAt100.borderTopColor,outlineWidth:parseFloat(focusAt100.outlineWidth)};
  primary.textContent=content.primary;secondary.textContent=content.secondary;label.textContent=content.label;
- document.documentElement.style.setProperty('--li-type-body',String(originalFont*2)+'px');
- document.documentElement.style.setProperty('--li-leading-body',String(originalLeading*2)+'px');
+ // Stress only the explicitly opt-in React island: a document :root override
+ // would also scale unrelated native shell UI and misattribute overflow.
+ const baselineDocumentWidth=document.documentElement.scrollWidth;
+ root.style.setProperty('--li-type-body',String(originalFont*2)+'px');
+ root.style.setProperty('--li-leading-body',String(originalLeading*2)+'px');
  root.style.fontSize='200%';
  field.focus();
  // Separate the focus/style mutation from measurement to observe a painted frame.
@@ -175,7 +178,11 @@ async function syntheticTypographyStress(language){
    fontSize:parseFloat(s.fontSize),lineHeight:parseFloat(s.lineHeight),
    clipped:e.scrollWidth>e.clientWidth+1};};
  return {mounted:true,language,viewport:innerWidth,viewportHeight:innerHeight,
-  docWidth:document.documentElement.scrollWidth,focused:document.activeElement===field,
+  docWidth:document.documentElement.scrollWidth,baselineDocumentWidth,
+  overflowOwners:[...document.querySelectorAll('#page-lessonL09 *')].filter(e=>e.getBoundingClientRect().right>innerWidth+1)
+   .slice(0,8).map(e=>({tag:e.tagName,cls:String(e.className).slice(0,90),id:e.id||null,
+    right:Math.round(e.getBoundingClientRect().right)})),
+  focused:document.activeElement===field,
   focusVisible:field.matches(':focus-visible'),outlineWidth:parseFloat(getComputedStyle(field).outlineWidth),
   outlineStyle:getComputedStyle(field).outlineStyle,outlineColor:getComputedStyle(field).outlineColor,
   focusPaint:{borderWidths:[getComputedStyle(field).borderTopWidth,getComputedStyle(field).borderRightWidth,
@@ -212,7 +219,7 @@ async function syntheticTypographyStress(language){
    verify(x?.mounted&&x.language===language&&x.viewport===width,'Long-label mount/locale drift '+context);
    verify(x.primary.fontSize===x.originalFont*2&&x.primary.lineHeight===x.originalLeading*2&&
      x.field.fontSize===x.originalFont*2,'200% body-role token mismatch '+context+' '+JSON.stringify(x));
-   verify(x.docWidth<=width+1&&[x.primary,x.secondary,x.label,x.field].every(c=>
+   verify(x.baselineDocumentWidth<=width+1&&x.docWidth<=width+1&&[x.primary,x.secondary,x.label,x.field].every(c=>
      !c.clipped&&c.left>=-1&&c.right<=width+1),'Long-label horizontal clipping/overflow '+context+' '+JSON.stringify(x));
    verify(x.primary.height>=48&&x.secondary.height>=48&&x.labelAssociated,
      'Text scale broke CTA size or associated label '+context);

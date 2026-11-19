@@ -1,7 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
 import exact from '../l09-exact.generated.json';
-import {initial} from '../native-bridge';
 import type {Attempt,Rating} from '../native-bridge';
 import {Button,Card} from '../../../../design-system/react/Components';
 import {Field} from '../../../../design-system/react/Controls';
@@ -55,7 +54,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     if(!learner?.subjectId)throw Error('INVITE_REQUIRED');
     const saved=await ports.attempts.load({lessonId:L09_LESSON_ID,subjectId:learner.subjectId});
     if(!saved||!saved.revision||!saved.attempt)throw Error('ATTEMPT_UNAVAILABLE');
-    const status=await ports.sync.getStatus({lessonId:L09_LESSON_ID,subjectId:learner.subjectId});
+    const status=await ports.sync.getStatus({lessonId:L09_LESSON_ID,subjectId:learner.subjectId})
+     .catch(()=>'unavailable' as SyncState);
     if(cancelled)return;
     subject.current=learner.subjectId;
     revision.current=saved.revision;

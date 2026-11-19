@@ -82,7 +82,15 @@ assert 'state.submitted=true' in logic and 'state.reviewed=true' in logic
 assert 'state.hint=true' in logic and 'state.assisted=true' in logic
 assert 'state.ratings.some(v=>v===null)' in logic
 assert 'state.submissionLocale=state.locale' in logic
-assert 'KEY="li.review.L09-1-2.v1"' in logic
+# ONT-INT-02: the native production key is the default; only exact local
+# synthetic research flag may select the distinct temporary handover key.
+assert 'const KEY=LI_LOCAL_FIXTURE?"step16.l09.shared-native-fixture.v1":"li.review.L09-1-2.v1";' in logic
+assert 'LI_LOCATION.protocol==="http:"' in logic
+assert 'LI_LOCATION.hostname==="localhost"||LI_LOCATION.hostname==="127.0.0.1"' in logic
+assert 'LI_LOCATION.pathname==="/site/index.html"' in logic
+assert 'get("li-react")==="l09-native-fixture"' in logic
+assert 'root.dataset.liRuntime==="react-candidate"' in logic
+assert 'k!=="guidedDraft"&&k!=="locale"' in logic
 assert 'localStorage.setItem(KEY,JSON.stringify(state))' in logic
 assert 'localStorage.clear()' not in logic, "Do not alter private app storage"
 assert "navigator.clipboard.writeText" in logic

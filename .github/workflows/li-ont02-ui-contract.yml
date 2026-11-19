@@ -8,6 +8,7 @@ on:
       - 'tools/validate_ui_ontology.mjs'
       - 'tools/compose_uxds35_stage02.mjs'
       - 'tools/test_ont02_react_primitives.cjs'
+      - 'tools/test_ont02_react_chromium.cjs'
       - '.github/workflows/li-ont02-ui-contract.yml'
 permissions:
   contents: read
@@ -27,13 +28,13 @@ jobs:
       - name: Checkout immutable UX-DS-35 source draft for isolated CI only
         uses: actions/checkout@v4
         with:
-          ref: bf8d9717a10da3bb7b5a7d10663113b829e352a1
+          ref: 7a8f3e5d544ee71fcc989cdd1b8bae99f6778381
           path: uxds35-design-pin
           persist-credentials: false
       - name: Checkout immutable Step16.2 React source draft for isolated CI only
         uses: actions/checkout@v4
         with:
-          ref: df882d46f75f39f48c733752ced15bf6f549a5d3
+          ref: 734dc257be47f778a929acba5cdca570979e247d
           path: uxds35-react-pin
           persist-credentials: false
       - name: Verify pins and compose LOCAL source-only worktree, no Git merge
@@ -52,3 +53,28 @@ jobs:
         run: npm install --ignore-scripts --no-audit --no-fund
       - name: Render actual Step16.2 ActionButton/Surface/StatusMessage as isolated React SSR
         run: node tools/test_ont02_react_primitives.cjs
+      - name: Build actual exact-source L09 React with pinned DS CSS (temporary checkout)
+        run: |
+          set -euo pipefail
+          cp site/assets/design-tokens.css uxds35-react-pin/site/assets/design-tokens.css
+          cd uxds35-react-pin/tools/step16-real-l09-react-island
+          npm run build
+      - name: Chromium real L09 React keyboard, computed color, disabled and storage safety
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then echo "FAIL: Chromium missing"; exit 1; fi
+          mkdir -p /tmp/li-uxds35-react-browser-evidence
+          python3 -m http.server 8796 --bind 127.0.0.1 --directory . > /tmp/li-uxds35-react-browser-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          node tools/test_ont02_react_chromium.cjs "$chrome" "http://127.0.0.1:8796/uxds35-react-pin/tools/step16-real-l09-react-island/dist/index.html"
+      - name: Preserve synthetic Chromium screenshots and metrics (not physical Safari)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-uxds35-react-browser-source-qa
+          path: /tmp/li-uxds35-react-browser-evidence/
+          retention-days: 7
+

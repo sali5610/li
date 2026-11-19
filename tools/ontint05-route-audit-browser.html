@@ -20,8 +20,13 @@ try {
  frame.title='Actual native Search route disclosure';
  frame.src='../site/index.html?lesson=L09-1-2&li-react=l09-native-fixture&li-search-react=typed-v1';
  document.body.append(frame);
- const d=await until(()=>frame.contentDocument?.readyState==='complete'?
-    frame.contentDocument:null,'native document');
+ // A newly inserted iframe initially exposes about:blank with readyState=complete.
+ // Wait for the REAL native document and its route markup, not the bootstrap blank.
+ const d=await until(()=>{
+  const doc=frame.contentDocument;
+  return doc?.readyState==='complete'&&doc.location?.pathname==='/site/index.html'&&
+   doc.getElementById('page-search')&&doc.getElementById('page-lessonL09')?doc:null;
+ },'actual native document (not about:blank)');
  const w=frame.contentWindow;
  const host=await until(()=>d.querySelector('#li-typed-search-root[data-li-search-mount="active"]')&&
    d.getElementById('li-step16-l09-react-host')?d.getElementById('li-typed-search-root'):null,'dual islands');
@@ -33,7 +38,8 @@ try {
  if(!setter||!box||!form)throw Error('React Search input unavailable');
  const search=async value=>{
   setter.call(box,value);box.dispatchEvent(new w.Event('input',{bubbles:true}));
-  await until(()=>!form.querySelector('button[type="submit"]').disabled,'controlled query '+value);
+  await until(()=>box.value===value&&!form.querySelector('button[type="submit"]').disabled,'controlled query '+value);
+  await sleep(100); // Wait for React controlled state commit even when submit already enabled.
   form.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
  };
  await search('L09-1-2');

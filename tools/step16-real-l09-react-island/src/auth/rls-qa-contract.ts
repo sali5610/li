@@ -82,7 +82,7 @@ function exactRows(r:{status:number;rows:unknown},count:number){
 }
 function filterState(id:string){ensureId(id);return{item_type:'eq.preference',item_id:'eq.'+id};}
 function filterEvent(id:string){if(!/^[0-9a-f-]{36}$/i.test(id))fail('QA-INVALID-EVENT');return{event_id:'eq.'+id};}
-async function owned(jwt:string,slot:Slot,table:Table,requester:QaRequest){
+async function owned(jwt:string,slot:Slot,table:Table,run:QaRun,requester:QaRequest){
  const id=table==='li_user_state'?slot.stateId:slot.eventId;
  const where=table==='li_user_state'?filterState(id):filterEvent(id);
  const select=table==='li_user_state'?'owner_id,payload,revision':'owner_id,payload';
@@ -90,7 +90,9 @@ async function owned(jwt:string,slot:Slot,table:Table,requester:QaRequest){
  const rows=exactRows(r,1);
  if(rows[0].owner_id!==slot.uid||rows[0].payload===null||
   typeof rows[0].payload!=='object'||
-  (rows[0].payload as Record<string,unknown>).qa_run!==true)
+  (rows[0].payload as Record<string,unknown>).qa_run!==true||
+  (rows[0].payload as Record<string,unknown>).run!==run.id||
+  (rows[0].payload as Record<string,unknown>).forbidden===true)
   fail('QA-OWNER-OR-MARKER-MISMATCH');
  return rows[0];
 }
@@ -110,29 +112,39 @@ async function seed(jwt:string,run:QaRun,s:Slot,label:'A'|'B',requester:QaReques
   payload:{qa_run:true,run:run.id,label}
  },requester);
  exactRows(state,1);
- await owned(jwt,s,'li_user_state',requester);
+ await owned(jwt,s,'li_user_state',run,requester);
  const event=await request(jwt,'POST','li_learning_events',{},{
   event_id:s.eventId,lesson_id:'__li_rls_qa__',kind:'synthetic_rls_test',
   payload:{qa_run:true,run:run.id,label}
  },requester);
  exactRows(event,1);
- await owned(jwt,s,'li_learning_events',requester);
+ await owned(jwt,s,'li_learning_events',run,requester);
 }
-async function clearOwn(jwt:string,s:Slot,requester:QaRequest){
+async function clearOwn(jwt:string,s:Slot,run:QaRun,requester:QaRequest){
  for(const [table,where] of [
   ['li_user_state',filterState(s.stateId)],
   ['li_learning_events',filterEvent(s.eventId)]
  ] as const){
-  const d=await request(jwt,'DELETE',table,where,undefined,requester);
-  if(!success(d.status))fail('QA-CLEANUP-FAILED');
+  // Verify actual synthetic owner + run marker BEFORE deleting any row.
+  const before=await request(jwt,'GET',table,{...where,select:'owner_id,payload'},undefined,requester);
+  if(!success(before.status)||!Array.isArray(before.rows)||before.rows.length>1)
+   fail('QA-CLEANUP-PRECHECK-FAILED');
+  if(before.rows.length){
+   const row=before.rows[0] as Record<string,unknown>;
+   const p=row.payload as Record<string,unknown>|null;
+   if(row.owner_id!==s.uid||!p||p.qa_run!==true||p.run!==run.id)
+    fail('QA-CLEANUP-NOT-SYNTHETIC');
+   const d=await request(jwt,'DELETE',table,where,undefined,requester);
+   if(!success(d.status))fail('QA-CLEANUP-FAILED');
+  }
   const rd=await request(jwt,'GET',table,{...where,select:'owner_id'},undefined,requester);
   if(!success(rd.status)||!Array.isArray(rd.rows)||rd.rows.length!==0)fail('QA-CLEANUP-UNVERIFIED');
  }
  s.cleaned=true;
 }
-async function updateOwn(jwt:string,s:Slot,requester:QaRequest){
+async function updateOwn(jwt:string,s:Slot,run:QaRun,requester:QaRequest){
  const r=await request(jwt,'PATCH','li_user_state',filterState(s.stateId),{
-  revision:2,payload:{qa_run:true,updated:true}
+  revision:2,payload:{qa_run:true,run:run.id,updated:true}
  },requester);
  const updated=exactRows(r,1);
  if(updated[0].owner_id!==s.uid||updated[0].revision!==2)fail('QA-OWN-UPDATE-FAILED');
@@ -161,7 +173,7 @@ export async function cleanupOwnedQa(run:QaRun,actor:QaActor,
  if(!target)fail('QA-NO-OWN-MARKERS');
  const jwt=await actor.getToken();
  if(!jwt||signedSubject(jwt)!==actor.uid)fail('QA-SESSION-BIND');
- await clearOwn(jwt,target,requester);
+ await clearOwn(jwt,target,run,requester);
  emit({...run});
  return {...run};
 }
@@ -211,22 +223,22 @@ export async function stepQa(run:QaRun,actor:QaActor,
   await foreignDenied(jwt,run.b,'li_user_state',requester);
   await foreignDenied(jwt,run.b,'li_learning_events',requester);
   ok('A-CANNOT-READ-UPDATE-DELETE-B');
-  await owned(jwt,run.a,'li_user_state',requester);
-  await owned(jwt,run.a,'li_learning_events',requester);
+  await owned(jwt,run.a,'li_user_state',run,requester);
+  await owned(jwt,run.a,'li_learning_events',run,requester);
   await forgeDenied(jwt,run.b,requester,run);ok('A-CANNOT-FORGE-B-OWNER');
-  await updateOwn(jwt,run.a,requester);ok('A-OWN-UPDATE');
-  await clearOwn(jwt,run.a,requester);ok('A-OWN-CLEANUP');
+  await updateOwn(jwt,run.a,run,requester);ok('A-OWN-UPDATE');
+  await clearOwn(jwt,run.a,run,requester);ok('A-OWN-CLEANUP');
   run.phase='b-finish';
  }else if(phase==='b-finish'){
   if(!actor.invited||!run.b||actor.uid!==run.b.uid||!run.a?.cleaned)
    fail('QA-B-RETURN-REQUIRED');
-  await owned(jwt,run.b,'li_user_state',requester);
-  await owned(jwt,run.b,'li_learning_events',requester);
+  await owned(jwt,run.b,'li_user_state',run,requester);
+  await owned(jwt,run.b,'li_learning_events',run,requester);
   const eventUpdate=await request(jwt,'PATCH','li_learning_events',filterEvent(run.b.eventId),
    {payload:{qa_run:true,forbidden_update:true}},requester);
   if(!denied(eventUpdate))fail('QA-EVENT-UPDATE-ALLOWED');
   ok('EVENT-UPDATE-DENIED');
-  await updateOwn(jwt,run.b,requester);ok('B-OWN-UPDATE');
+  await updateOwn(jwt,run.b,run,requester);ok('B-OWN-UPDATE');
   if(run.forgedStateId){
    const marker=run.forgedStateId;ensureId(marker);
    // A forged B-owned insert must have failed; cleanup is fail-closed if not.
@@ -235,7 +247,7 @@ export async function stepQa(run:QaRun,actor:QaActor,
    if(!success(stray.status)||!Array.isArray(stray.rows)||stray.rows.length!==0)
     fail('QA-FORGED-ROW-NEEDS-CLEANUP');
   }
-  await clearOwn(jwt,run.b,requester);ok('B-OWN-CLEANUP');
+  await clearOwn(jwt,run.b,run,requester);ok('B-OWN-CLEANUP');
   run.phase='done';
  }
  emit({...run});

@@ -3,6 +3,7 @@ import {checkInviteAccess} from '../sync/invite-access.js';
 import {RevisionConflict,type JsonValue} from '../sync/contract.js';
 import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_GITHUB_STAGING} from './config.js';
 import {neonSessionPort} from './neon-client.js';
+import {isBlankNativeAttempt} from './native-progress.js';
 
 /**
  * Step16 staging integration. Signed-in invited user -> existing owner-RLS Neon
@@ -109,7 +110,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
      hadRows=true;continue;
     }
     if(remote&&rdata){
-     if(!local||(saved&&saved.revision<remote.revision&&saved.data===canonical(local))){
+     if(!local||isBlankNativeAttempt(local)||(saved&&saved.revision<remote.revision&&saved.data===canonical(local))){
       if(localStorage.getItem(key)!==raw){pending=true;continue;}
       localStorage.setItem(key,JSON.stringify(rdata));
       checkpoint(uid,id,remote.revision,rdata);
@@ -117,7 +118,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
      }
      if(!saved||saved.revision!==remote.revision){conflicted=true;continue;}
     }else if(saved){conflicted=true;continue;}
-    if(!local)continue;
+    if(!local||isBlankNativeAttempt(local))continue;
     if(localStorage.getItem(key)!==raw){pending=true;continue;}
     const next=await api.write({
      itemType:'lesson_attempt',itemId:id,baseRevision:remote?.revision??0,

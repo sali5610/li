@@ -74,7 +74,8 @@ assert.equal(roleRefs.size,19,'19 distinct ontology native role bindings');
 const refs=[...new Set([...css.matchAll(/var\((--li-comp-[a-z0-9-]+)/g)].map(x=>x[1]))].sort();
 for(const ref of refs)assert.ok(generated.includes(ref+': var('),'New React token alias absent '+ref);
 assert.ok(refs.length>=10,'React shared CSS role references unexpectedly sparse');
-const paintLiterals=[...css.matchAll(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/gi)].map(x=>x[0]);
+const authoredCss=css.replace(/\/\*[\s\S]*?\*\//g,''); // PR number #134 is a comment, not a 3-digit hex color
+const paintLiterals=[...authoredCss.matchAll(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/gi)].map(x=>x[0]);
 assert.deepEqual(paintLiterals,[],'Unapproved React palette literal');
 const cssReview=[
  ...css.matchAll(/(?:max-width|max-height|border|box-shadow|border-radius|font-size):[^;}]+/g)

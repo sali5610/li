@@ -50,7 +50,6 @@
    const label=document.getElementById('mirror-primary-label');
    const home=document.getElementById('page-home');
    if(action&&label&&home){
-     action.id='li-preview-l09-entry';
      action.dataset.liPreview='local-only';
      const updateEntry=()=>{
        let attempt=null;

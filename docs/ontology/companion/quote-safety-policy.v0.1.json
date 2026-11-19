@@ -1,6 +1,6 @@
 {
   "profile": "li-ONT04C1b-quote-source-audit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "demoOnly": true,
   "baseline": {
     "quoteBankFile": "site/assets/laoly-quotes-s121.js",
@@ -17,16 +17,13 @@
     "sourceReferenceCountOnly": true
   },
   "hardGates": {
-    "defaultQuoteState": "WITHHELD",
+    "defaultQuoteState": "WITHHELD_FOR_ATTRIBUTION_AND_STAGE_QA",
     "attributionState": "UNVERIFIED_FOR_NEW_USE",
     "originalEditionState": "UNVERIFIED_FOR_NEW_USE",
-    "translationRightsState": "UNVERIFIED_FOR_NEW_USE",
-    "territoryRightsState": "UNVERIFIED_FOR_NEW_USE",
     "contextRelevanceState": "EDITORIAL_ONLY",
     "academicEvidenceState": "NEVER_TREAT_AS_SCIENTIFIC_SOURCE",
-    "quoteRenderAuthorization": "NOT_GRANTED",
+    "quoteRenderAuthorization": "PENDING_SOURCE_STAGE_INTEGRATION",
     "reviewedQuoteEntries": 0,
-    "reviewedPublicQuoteEntries": 0,
     "clientCanApprove": false,
     "independentStage": "SUPPRESS",
     "reflectionStage": "SUPPRESS",
@@ -35,22 +32,24 @@
     "calmMode": "SUPPRESS",
     "debateMode": "SUPPRESS",
     "preSubmitLessonState": "NO_SOLUTION_OR_HINT_ESCALATION",
-    "neverCopyOriginalOrTranslatedTextIntoAudit": true
+    "neverCopyOriginalOrTranslatedTextIntoAudit": true,
+    "usageScope": "PERSONAL_INVITE_ONLY",
+    "reuseRightsGate": "NOT_A_PRODUCT_BLOCKER"
   },
   "referenceChecks": [
     {
       "id": "box-models",
       "kind": "SECONDARY_ATTRIBUTION_REFERENCE_ONLY",
       "sourceUrl": "https://mathshistory.st-andrews.ac.uk/Biographies/Box/quotations/",
-      "note": "MacTutor lists a Box quotation and names his 1987 book; checking exact sentence/edition/rights is a separate manual gate. No grant.",
-      "reviewStatus": "PENDING_PRIMARY_TEXT_AND_REUSE"
+      "note": "MacTutor records an attributed Box quotation and 1987 book; verify wording and attribution before quoting as a literal source. Licensing is NOT a li. private-use product gate.",
+      "reviewStatus": "PENDING_PRIMARY_TEXT_ATTRIBUTION"
     },
     {
       "id": "woolf-room",
-      "kind": "TERRITORY_SPECIFIC_RIGHTS_WARNING",
+      "kind": "EDITION_CONTEXT_REVIEW_ONLY",
       "sourceUrl": "https://en.wikisource.org/wiki/A_Room_of_One%27s_Own_(Hogarth_1929)",
-      "note": "Wikisource marks 1929 book US public domain; international territory/edition, excerpt, translation rights and site reuse not globally signed off. No grant.",
-      "reviewStatus": "PENDING_GLOBAL_RIGHTS_AND_EXCERPT"
+      "note": "Wikisource edition metadata is useful for checking exact original wording and speaker/context; do not make international copyright clearance a li. personal invite-only implementation blocker.",
+      "reviewStatus": "PENDING_EXACT_EDITION_CONTEXT"
     },
     {
       "id": "galileo-eppur",
@@ -71,11 +70,11 @@
     "sourceFile": "site/assets/laoly-quotes-s121.js",
     "observedSelection": "Original S121 render() hides for debate and calm; stage-aware source-only policy not yet enforced by that runtime. Existing S125 lesson companion may supply quote_ids for six stages.",
     "severity": "GATE_OPEN_DO_NOT_CLAIM_FIXED",
-    "remediation": "Separate owner-approved UI integration must enforce source/rights stage gate before any original/translated text is rendered; do not mutate production in C1b."
+    "remediation": "Private-use scope: do not block on reuse licensing. ONT-04C2 still needs an integrated attribution/context + independent/feedback stage gate before DOM text, and local device QA; this draft does not modify production."
   },
   "provenance": {
     "ruleUrl": "https://app.notion.com/p/41b6cf6db72a8190b542daed8017d949",
-    "sourceSection": "S77 cultural quote voice, historical attribution and permission/calm/feedback restrictions",
+    "sourceSection": "S77 cultural quote voice and source fidelity; S205 PO override: invite-only personal app, quote reuse-rights clearance NOT a product gate",
     "checkedOn": "2026-11-19"
   }
 }

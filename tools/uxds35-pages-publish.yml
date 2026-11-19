@@ -1,8 +1,13 @@
-name: Publish li. Design System (own GitHub Pages site)
+name: Publish li. Design System (source in sali5610/li)
+
+# This separate GitHub Pages repository contains NO copied Design System source.
+# Every run fetches the source from the li. app repository.
 on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
 
 permissions:
   contents: read
@@ -14,26 +19,35 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     environment:
       name: github-pages
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout the ONE canonical DS source
+        uses: actions/checkout@v4
+        with:
+          repository: sali5610/li
+          # After PR #168 merges, update this single ref to main.
+          ref: design-system/uxds35-single-studio-20261120
+          path: source
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate authored token source
+      - name: Validate shared authored tokens
+        working-directory: source
         run: python3 tools/generate_design_tokens.py --check
-      - name: Compile real React components
-        working-directory: design-system/react
+      - name: Compile canonical React components
+        working-directory: source/design-system/react
         run: |
           set -euo pipefail
           npm install --no-audit --no-fund
           npm run check
           npm run build
-      - name: Build independent DS website
+      - name: Build Design System website, not learner app
+        working-directory: source
         run: |
           set -euo pipefail
           node tools/build-design-system-site.mjs
@@ -41,9 +55,11 @@ jobs:
           test -s dist-design-system/index.html
           test -s dist-design-system/react-components.js
           test -s dist-design-system/assets/design-tokens.css
+          test ! -e dist-design-system/staging-auth-gate.js
+          test ! -e dist-design-system/lesson-l09-hifi.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist-design-system/
-      - name: Publish DESIGN SYSTEM only (not app staging)
+          path: source/dist-design-system/
+      - name: Publish only the independent Design System
         uses: actions/deploy-pages@v4

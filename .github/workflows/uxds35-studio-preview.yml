@@ -128,7 +128,7 @@ jobs:
             'http://127.0.0.1:8787/design-system/index.html#button'
           test -s /tmp/li-ds-studio-preview/studio-desktop.png
           echo 'PASS UXDS35_STUDIO_BROWSER_MOUNT'
-      - name: Export complete separate GitHub Pages repository
+      - name: Export thin Pages publisher (no cloned DS sources)
         run: |
           set -euo pipefail
           node tools/build-design-system-site.mjs
@@ -136,10 +136,12 @@ jobs:
           cd dist-design-system-repository
           zip -r -q /tmp/li-design-system-repo.zip .
           unzip -p /tmp/li-design-system-repo.zip .github/workflows/pages.yml | grep -Fq 'deploy-pages@v4'
+          unzip -p /tmp/li-design-system-repo.zip .github/workflows/pages.yml | grep -Fq 'repository: sali5610/li'
+          test "$(unzip -Z1 /tmp/li-design-system-repo.zip | wc -l)" -eq 2
       - name: Upload independent DS repository package
         uses: actions/upload-artifact@v4
         with:
-          name: li-design-system-standalone-github-pages-repo
+          name: li-design-system-thin-github-pages-publisher
           retention-days: 14
           if-no-files-found: error
           path: /tmp/li-design-system-repo.zip

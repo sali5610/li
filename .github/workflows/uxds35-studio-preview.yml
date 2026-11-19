@@ -116,6 +116,12 @@ jobs:
           grep -q 'data-story-card="true"' /tmp/li-ds-studio-preview/react-card-flat-dom.html
           grep -q 'data-variant="flat-study"' /tmp/li-ds-studio-preview/react-card-flat-dom.html
           "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=7000 --window-size=390,844 --dump-dom \
+            'http://127.0.0.1:8787/design-system/react-components.html?story=chip&state=selected&lang=en' \
+            > /tmp/li-ds-studio-preview/react-chip-selected-dom.html
+          grep -q 'data-story-chip="true"' /tmp/li-ds-studio-preview/react-chip-selected-dom.html
+          grep -q 'aria-pressed="true"' /tmp/li-ds-studio-preview/react-chip-selected-dom.html
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
             --hide-scrollbars --virtual-time-budget=6000 \
             --window-size=1440,900 \
             --screenshot=/tmp/li-ds-studio-preview/studio-desktop.png \
@@ -141,3 +147,4 @@ jobs:
             /tmp/li-ds-studio-preview/react-radio-selected-dom.html
             /tmp/li-ds-studio-preview/react-button-loading-dom.html
             /tmp/li-ds-studio-preview/react-card-flat-dom.html
+            /tmp/li-ds-studio-preview/react-chip-selected-dom.html

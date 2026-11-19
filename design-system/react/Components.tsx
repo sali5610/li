@@ -19,3 +19,13 @@ export function Card({variant='raised',className='',children,...props}:CardProps
  return <section {...props} data-li-component="card" data-variant={variant}
   className={'li-ds-card '+className}>{children}</section>;
 }
+
+/** Filter Chip is the only round/pill exception to the square action grammar. */
+export type FilterChipProps=ButtonHTMLAttributes<HTMLButtonElement>&{
+ pressed:boolean;children:ReactNode;
+};
+export function FilterChip({pressed,type='button',className='',children,...props}:FilterChipProps){
+ return <button {...props} type={type} aria-pressed={pressed}
+  className={'li-ds-filter-chip '+className} data-li-component="filter-chip">
+  {children}</button>;
+}

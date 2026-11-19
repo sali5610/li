@@ -28,3 +28,13 @@
 .li-ds-card p{margin:0;font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
 @media(max-width:599px){.li-ds-card{padding:var(--li-space-4)}}
 @media(prefers-reduced-motion:reduce){.li-ds-button,.li-ds-button-spinner{animation:none;transition:none}}
+
+/* Filter pills are reserved for filters, not generic CTAs. */
+.li-ds-filter-chip{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;
+ max-width:100%;min-height:44px;padding:var(--li-space-2) var(--li-space-4);
+ border:1px solid var(--moss);border-radius:999px;background:var(--paper);
+ color:var(--moss);font:var(--li-weight-600) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);
+ overflow-wrap:anywhere;cursor:pointer}
+.li-ds-filter-chip[aria-pressed="true"]{background:var(--moss);color:var(--cream)}
+.li-ds-filter-chip:focus-visible{outline:3px solid var(--li-color-general-focus-ring);outline-offset:var(--li-space-1)}
+.li-ds-filter-chip:disabled{opacity:.58;cursor:not-allowed}

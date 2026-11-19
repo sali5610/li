@@ -194,6 +194,28 @@ jobs:
           node "$LI_STAGE02B_COMBINED/tools/step16-real-l09-react-island/scripts/l09-matched-visual-browser.cjs" "$chrome" "http://127.0.0.1:8798"
           echo "PASS STAGE02B_VCG2_SCOPED_RESEARCH_L09"
           echo "PASS STAGE02B_NATIVE_LEGACY_SHARED_PROVENANCE_GATES"
+      - name: Research WebKit engine L09 smoke — not physical iOS Safari
+        shell: bash
+        env:
+          LI_STAGE02B_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          cd "$LI_STAGE02B_COMBINED/tools/step16-real-l09-react-island"
+          # The dependency is installed only into the disposable CI worktree,
+          # never published to the app, production bundle or repository lockfile.
+          npm install --no-save --ignore-scripts --no-audit --no-fund playwright@1.56.1
+          npx playwright install --with-deps webkit
+          node --check scripts/l09-webkit-smoke.cjs
+          python3 -m http.server 8798 --bind 127.0.0.1 --directory "$LI_STAGE02B_COMBINED" > /tmp/li-02b-webkit-server.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+          for i in {1..45}; do
+            if curl --fail --silent 'http://127.0.0.1:8798/site/index.html?lesson=L09-1-2&li-react=l09&li-vc-g2=1' >/dev/null 2>&1; then break; fi
+            sleep 0.2
+          done
+          curl --fail --silent --show-error 'http://127.0.0.1:8798/site/index.html?lesson=L09-1-2&li-react=l09&li-vc-g2=1' >/dev/null
+          node scripts/l09-webkit-smoke.cjs 'http://127.0.0.1:8798'
+          echo "PASS STAGE02B_WEBKIT_ENGINE_RESEARCH_ONLY_NOT_IOS_SAFARI"
       - name: Upload full three-tree CI evidence (no real device or deploy)
         if: always()
         uses: actions/upload-artifact@v4

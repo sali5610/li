@@ -47,14 +47,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: sali5610/li
-          ref: aff86eda4414425e063cda898f9ae2927cd09c43
+          ref: a670e080edd3dba7d07899642f4468f6ac9ddbaa
           path: staging-auth-source
           persist-credentials: false
 
       - name: Verify source SHA and staging-only auth boundaries
         run: |
           set -euo pipefail
-          test "$(git -C staging-auth-source rev-parse HEAD)" = "aff86eda4414425e063cda898f9ae2927cd09c43"
+          test "$(git -C staging-auth-source rev-parse HEAD)" = "a670e080edd3dba7d07899642f4468f6ac9ddbaa"
           test -f staging-auth-source/tools/step16-real-l09-react-island/vite.auth.config.mjs
           grep -Fq "VITE_LI_AUTH_TARGET==='github-pages-staging'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/config.ts
           grep -Fq "'https://sali5610.github.io'" staging-auth-source/tools/step16-real-l09-react-island/src/auth/config.ts
@@ -76,6 +76,7 @@ jobs:
           set -euo pipefail
           npm install --no-audit --no-fund
           npm run extract
+          npm run test:sync
           npm run build:auth
           test -f dist-auth/auth-entry.html
           test "$(find dist-auth -type f -name '*.html' | wc -l)" -eq 1

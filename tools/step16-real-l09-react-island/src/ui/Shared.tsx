@@ -43,9 +43,9 @@ export function ActionGroup({className='',children,...rest}:HTMLAttributes<HTMLD
  return <div {...rest} className={cx('li-ui-action-group',className)}>{children}</div>;
 }
 export type NavItem={id:string;href:string;label:string;icon?:ReactNode};
-export function Navigation({items,currentId,label,className=''}:{items:readonly NavItem[];currentId:string;label:string;className?:string}){
+export function Navigation({items,currentId,label,onNavigate,className=''}:{items:readonly NavItem[];currentId:string;label:string;onNavigate?:(itemId:string)=>void;className?:string}){
  return <nav aria-label={label} className={cx('li-ui-navigation',className)}>
-   {items.map(item=><a key={item.id} href={item.href} aria-current={item.id===currentId?'page':undefined}
+   {items.map(item=><a key={item.id} href={item.href} onClick={()=>onNavigate?.(item.id)} aria-current={item.id===currentId?'page':undefined}
      className="li-ui-nav-link">{item.icon&&<span aria-hidden="true">{item.icon}</span>}<span>{item.label}</span></a>)}
  </nav>;
 }

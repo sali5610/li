@@ -14,7 +14,7 @@ export function Preview(){
      <Button variant="secondary" data-ui-locale="vi" aria-pressed={locale==='vi'} onClick={()=>setLocale('vi')}>VI</Button>
      <Button variant="secondary" data-ui-locale="en" aria-pressed={locale==='en'} onClick={()=>setLocale('en')}>EN</Button>
    </ActionGroup>
-   <Navigation label={en?'Global navigation':'Điều hướng chính'} items={items} currentId={active}/>
+   <Navigation label={en?'Global navigation':'Điều hướng chính'} items={items} currentId={active} onNavigate={setActive}/>
    <ActionGroup aria-label={en?'Actions':'Thao tác'}>
      <Button data-ui-primary onClick={()=>setError(true)}>{en?'Validate':'Kiểm tra'}</Button>
      <Button variant="secondary" data-ui-secondary onClick={()=>setError(false)}>{en?'Clear':'Xoá lỗi'}</Button>

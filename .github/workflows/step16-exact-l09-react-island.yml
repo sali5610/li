@@ -47,4 +47,7 @@ jobs:
           node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
             "http://127.0.0.1:8794/tools/step16-real-l09-react-island/native-bridge-fixture.html" \
             "LI_STEP16_L09_BRIDGE_PASS " 8 90000
-          echo "PASS exact-authored L09 React pilot + real native state compatibility, fake localhost data only"
+          node tools/step16-real-l09-react-island/scripts/cdp-result.cjs "$chrome" \
+            "http://127.0.0.1:8794/tools/step16-real-l09-react-island/auth-guard-fixture.html" \
+            "LI_STEP16_L09_AUTH_PASS " 6 60000
+          echo "PASS exact L09 pilot, native bridge and auth origin guard on localhost only"

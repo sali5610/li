@@ -815,7 +815,7 @@ window.addEventListener("resize",placeCompanion,{passive:true});
    }catch(e){if(!warned){toast("Không thể tự lưu bản nháp. Hãy sao chép nội dung trước khi thoát.");warned=true;}}
   });
  }
- document.getElementById("export-personal-data")?.addEventListener("click",()=>{
+ function liExportPersonalData(){
   try{
    const data={schema:1,exportedAt:new Date().toISOString(),cases:processedCases,questions:savedQuestions,ideas:collectedIdeas,savedContent,draft:field?.value||"",buddyNames:liBuddyNames};
    const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json;charset=utf-8"});
@@ -824,21 +824,26 @@ window.addEventListener("resize",placeCompanion,{passive:true});
    document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
    toast("Đã tạo bản sao dữ liệu. Hãy kiểm tra tệp trong mục Tải về.");
   }catch(e){toast("Không thể xuất bản sao. Hãy thử lại.");}
- });
+ }
+ document.getElementById("export-personal-data")?.addEventListener("click",liExportPersonalData);
 
- // S110: explicit, validated manual import between Vercel and GitHub origins.
+ // S110 canonical validator and rollback shared by native fallback and React.
  const importTrigger=document.getElementById("import-personal-trigger");
  const importInput=document.getElementById("import-personal-data");
  const importLoading=document.getElementById("import-state-loading");
  const importError=document.getElementById("import-state-error");
  const importErrorMessage=document.getElementById("import-state-error-message");
- importTrigger?.addEventListener("click",()=>importInput?.click());
- document.getElementById("import-state-retry")?.addEventListener("click",()=>importInput?.click());
- importInput?.addEventListener("change",async()=>{
-  const file=importInput.files?.[0];if(!file)return;
-  if(importLoading)importLoading.hidden=false;
-  if(importError)importError.hidden=true;
-  if(importTrigger)importTrigger.disabled=true;
+ const liBackupImport={loading:false,error:""};
+ function liPublishBackup(){
+  if(importLoading)importLoading.hidden=!liBackupImport.loading;
+  if(importError)importError.hidden=!liBackupImport.error;
+  if(importErrorMessage)importErrorMessage.textContent=liBackupImport.error;
+  if(importTrigger)importTrigger.disabled=liBackupImport.loading;
+  window.dispatchEvent(new Event("li:settings-view-changed"));
+ }
+ async function liImportPersonalData(file){
+  if(!file||liBackupImport.loading)return false;
+  liBackupImport.loading=true;liBackupImport.error="";liPublishBackup();
   try{
    if(file.size>10*1024*1024)throw Error("large");
    const data=JSON.parse(await file.text());
@@ -855,7 +860,7 @@ window.addEventListener("resize",placeCompanion,{passive:true});
    const existing=Boolean(processedCases.length||savedQuestions.length||collectedIdeas.length||savedContent.length||oldDraft||field?.value);
    if(!window.confirm(existing
      ?"Nhập sẽ THAY THẾ Bút Ký, Dấu Trang, bài/case đã lưu, Ý đã nhặt và bản nháp ở đây. Hãy xuất bản sao trước. Tiếp tục?"
-     :"Nhập bản sao vào thiết bị này?"))return;
+     :"Nhập bản sao vào thiết bị này?"))return false;
    const next=JSON.stringify({schema:1,cases:data.cases,questions:data.questions,ideas:data.ideas||[],savedContent:data.savedContent||[],updatedAt:new Date().toISOString()});
    try{
     window.localStorage.setItem(LI_STORAGE_KEY,next);
@@ -879,17 +884,27 @@ window.addEventListener("resize",placeCompanion,{passive:true});
    liStorageError=false;
    renderCaseArchive();renderSavedQuestions();window.liLibraryShelf?.renderHome();window.liLibraryShelf?.renderCollection();window.liBookmarks?.refresh();refreshQuestionBookmark();
    toast("Đã nhập "+data.cases.length+" Bút Ký, "+(data.questions.length+savedContent.length)+" Dấu Trang và "+collectedIdeas.length+" Ý đã nhặt.");
+   return true;
   }catch(e){
    const message=e.message==="large"?"Tệp vượt quá 10 MB.":e.message==="write"?
     "Không thể lưu bản sao trên thiết bị này. Hãy giữ bản JSON.":"Tệp JSON không hợp lệ hoặc không đúng bản sao li.";
-   if(importErrorMessage)importErrorMessage.textContent=window.liLanguage?.translate?.(message)||message;
-   if(importError)importError.hidden=false;
+   liBackupImport.error=window.liLanguage?.translate?.(message)||message;
+   return false;
+  }finally{
+   liBackupImport.loading=false;liPublishBackup();
   }
-  finally{
-   if(importLoading)importLoading.hidden=true;
-   if(importTrigger)importTrigger.disabled=false;
-   importInput.value="";
-  }
+ }
+ window.liPersonalBackup=Object.freeze({
+  export:liExportPersonalData,importFile:liImportPersonalData,
+  getView:()=>({...liBackupImport})
+ });
+ // Native fallback still opens the platform file chooser. React owns its input.
+ importTrigger?.addEventListener("click",()=>importInput?.click());
+ document.getElementById("import-state-retry")?.addEventListener("click",()=>importInput?.click());
+ importInput?.addEventListener("change",()=>{
+  const selected=importInput.files?.[0];
+  if(selected)void liImportPersonalData(selected);
+  importInput.value="";
  });
  if(liStorageError)toast("Không đọc được dữ liệu đã lưu. Tạm dừng ghi mới để tránh ghi đè.");
 })();
@@ -943,14 +958,18 @@ window.addEventListener("li:personal-sync-applied",event=>{
 
 /* UI adapter only; the original inline study mode, buddy customization, backup
  * importer/exporter and verified Auth consent remain the action/data owners. */
+/* React Settings reads canonical models; only Auth owns cloud consent and
+ * only the original validated importer owns replacement/rollback. */
 window.liSettingsPort=Object.freeze({
  setMode:(mode)=>setStudyMode(mode),
  setVoice:(kind,enabled)=>liSetBuddyVoice(kind,enabled),
  getView:()=>{
-  const el=id=>document.getElementById(id),check=id=>Boolean(el(id)?.checked);
-  const card=el("li-journal-cloud-settings"),cloud=el("li-journal-cloud-toggle");
+  const cloud=window.liJournalCloudConsent?.getView?.()||{
+   visible:false,checked:false,disabled:true,description:""
+  };
+  const backup=window.liPersonalBackup?.getView?.()||{loading:false,error:""};
   return {
-   mode:studyMode,modeFeedback:el("mode-feedback")?.textContent||"",
+   mode:studyMode,modeFeedback:STUDY_MODES[studyMode].feedback,
    modes:Object.entries(STUDY_MODES).map(([key,info])=>({
     key,label:info.label,image:info.image,feedback:info.feedback
    })),
@@ -958,32 +977,20 @@ window.liSettingsPort=Object.freeze({
    nicknames:{...liBuddyNames},
    previews:liBuddyNamePreviews(),
    nicknameFeedback:liAddressFeedback,
-   cloudVisible:Boolean(card&&!card.hidden),
-   cloudChecked:Boolean(cloud?.checked),cloudDisabled:Boolean(cloud?.disabled),
-   cloudDescription:el("li-journal-cloud-description")?.textContent||"",
-   exportReady:Boolean(el("export-personal-data")),
-   importLoading:Boolean(el("import-state-loading")&&!el("import-state-loading").hidden),
-   importError:el("import-state-error")&&!el("import-state-error").hidden?
-    (el("import-state-error-message")?.textContent||"Chưa thể nhập bản sao."):""
+   cloudVisible:cloud.visible,cloudChecked:cloud.checked,
+   cloudDisabled:cloud.disabled,cloudDescription:cloud.description,
+   exportReady:Boolean(window.liPersonalBackup),
+   importLoading:backup.loading,importError:backup.error
   };
  },
  act:(kind,key,value)=>{
-  const el=id=>document.getElementById(id);
   if(kind==="mode"&&STUDY_MODES[key])setStudyMode(key);
   else if(kind==="nicknameInput"||kind==="nicknameCommit"){
    if(typeof value!=="string"||!Object.prototype.hasOwnProperty.call(LI_BUDDY_DEFAULT_NAMES,key))return;
    liSetBuddyName(key,value,kind==="nicknameCommit");
   }else if(kind==="resetNames")liResetBuddyNames();
-  else if(kind==="cloud"){
-   const field=el("li-journal-cloud-toggle");
-   if(field&&!field.disabled&&!el("li-journal-cloud-settings")?.hidden&&
-      field.checked!==Boolean(value))field.click();
-  }else if(kind==="export")el("export-personal-data")?.click();
-  else if(kind==="import")el("import-personal-trigger")?.click();
-  else if(kind==="retryImport")el("import-state-retry")?.click();
-  else if(kind==="back")el("page-settings")?.querySelector("[data-nav-back]")?.click();
   else return;
-  if(typeof Event==="function")window.dispatchEvent(new Event("li:settings-view-changed"));
+  window.dispatchEvent(new Event("li:settings-view-changed"));
  }
 });
 const liInitialLesson=new URLSearchParams(window.location.search).get("lesson");

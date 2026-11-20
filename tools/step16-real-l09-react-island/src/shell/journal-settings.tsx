@@ -1,5 +1,5 @@
 import {goBack,openRoute} from './app-router.js';
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Button,Card,Checkbox,Field,Heading,InlineFeedback,LiIcon,Text} from '../../../../design-system/react/index';
 import './journal-settings.css';
@@ -27,8 +27,17 @@ type SettingsView={
 type DiaryPort={getView:()=>DiaryView;act:(kind:string,value?:string)=>void};
 type SettingsPort={getView:()=>SettingsView;act:(kind:string,key?:string,value?:string|boolean)=>void;
  setVoice:(kind:'calm'|'mute',enabled:boolean)=>boolean};
+type CloudConsentPort={
+ getView:()=>{visible:boolean;checked:boolean;disabled:boolean;description:string};
+ set:(enabled:boolean)=>void
+};
+type PersonalBackupPort={
+ export:()=>void;importFile:(file:File)=>Promise<boolean>;
+ getView:()=>{loading:boolean;error:string}
+};
 type AppWindow=Window&{
  liPersonalDiary?:DiaryPort;liSettingsPort?:SettingsPort;
+ liJournalCloudConsent?:CloudConsentPort;liPersonalBackup?:PersonalBackupPort;
  liLanguage?:{get:()=>string}
 };
 const app=window as AppWindow;
@@ -177,19 +186,10 @@ function useSettings(){
  const [view,setView]=useState<SettingsView>(()=>app.liSettingsPort!.getView());
  useEffect(()=>{
   const refresh=()=>setView(app.liSettingsPort!.getView());
-  const legacy=document.querySelector('#page-settings > .section-shell');
-  const observer=legacy?new MutationObserver(refresh):null;
-  if(legacy)observer?.observe(legacy,{
-   subtree:true,characterData:true,childList:true,attributes:true,
-   attributeFilter:['hidden','disabled','checked','aria-pressed']
-  });
-  for(const name of ['li:settings-view-changed','li:study-mode-applied','li:localechange',
-   'li:personal-sync-applied','li:private-sync-consent'])window.addEventListener(name,refresh);
-  return()=>{
-   observer?.disconnect();
-   for(const name of ['li:settings-view-changed','li:study-mode-applied','li:localechange',
-    'li:personal-sync-applied','li:private-sync-consent'])window.removeEventListener(name,refresh);
-  };
+  const events=['li:settings-view-changed','li:study-mode-applied','li:localechange',
+   'li:personal-sync-applied','li:private-sync-consent','li:journal-cloud-view-changed'];
+  for(const name of events)window.addEventListener(name,refresh);
+  return()=>{for(const name of events)window.removeEventListener(name,refresh);};
  },[]);
  return view;
 }
@@ -218,7 +218,12 @@ function BuddyName({kind,header,placeholder,value,preview,commit}:{
 }
 export function Settings(){
  const view=useSettings();
+ const backupInput=useRef<HTMLInputElement>(null);
  const act=(kind:string,key?:string,value?:string|boolean)=>app.liSettingsPort?.act(kind,key,value);
+ const chooseBackup=()=>backupInput.current?.click();
+ const importBackup=(file:File|undefined)=>{
+  if(file)void app.liPersonalBackup?.importFile(file);
+ };
  return <div className="section-shell li-react-settings" data-li-react-screen="settings">
   <Button variant="ghost" className="library-back-link" onClick={goBack}>
    <LiIcon name="chevron-left" size={18}/> {copy('Quay lại','Back')}</Button>
@@ -316,21 +321,28 @@ export function Settings(){
         <Checkbox label={copy('Đồng bộ Nhật Ký & Check-in lên Neon',
          'Sync Journal & Check-ins to Neon')}
          checked={view.cloudChecked} disabled={view.cloudDisabled}
-         onChange={event=>act('cloud',undefined,event.target.checked)}/>
+         onChange={event=>app.liJournalCloudConsent?.set(event.target.checked)}/>
         <Text role="support" aria-live="polite">{view.cloudDescription}</Text>
        </div>}
       </div>
       <div className="settings-data-actions">
-       <Button variant="secondary" onClick={()=>act('export')} disabled={!view.exportReady}>
+       <Button variant="secondary" onClick={()=>app.liPersonalBackup?.export()}
+        disabled={!view.exportReady||view.importLoading}>
         <LiIcon name="archive" size={18}/> {copy('Xuất bản sao','Export backup')}</Button>
-       <Button variant="secondary" onClick={()=>act('import')}>
+       <Button variant="secondary" onClick={chooseBackup} disabled={view.importLoading}>
         {copy('Nhập bản sao','Import backup')}</Button>
+       <input ref={backupInput} type="file" className="visually-hidden-file"
+        accept=".json,application/json" aria-label={copy('Chọn bản sao JSON li.','Choose a li. JSON backup')}
+        onChange={event=>{
+         importBackup(event.currentTarget.files?.[0]);
+         event.currentTarget.value='';
+        }}/>
       </div>
       {view.importLoading&&<InlineFeedback tone="loading" message={copy(
        'Đang đọc và kiểm tra bản sao…','Reading and checking the backup…')}/>}
       {view.importError&&<InlineFeedback tone="error" message={view.importError}
        actionLabel={copy('Chọn tệp khác','Choose another file')}
-       onAction={()=>act('retryImport')}/>}
+       onAction={chooseBackup}/>}
       <Text role="support">{copy(
        'Xuất bản sao trước khi đổi thiết bị hoặc xóa dữ liệu trình duyệt. Nhập bản sao dùng bộ kiểm tra dữ liệu hiện tại.',
        'Export a backup before switching devices or clearing browser data. Import uses the existing validated parser.')}</Text>

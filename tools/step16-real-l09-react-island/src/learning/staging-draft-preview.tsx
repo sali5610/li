@@ -31,6 +31,41 @@ const byId=new Map(Object.values(manuscripts).map(raw=>{
 }));
 const catalogLessons=new Map(catalog.groups.flatMap(g=>g.fields.flatMap(f=>
  f.courses.flatMap(c=>c.lessons.map(l=>[l.id,{title:l.title,field:f.name}] as const)))));
+
+/** Search the same 17 real personal manuscripts that power Catalog → Lesson.
+ * A result is a content match, NOT a certified academic answer.
+ */
+export function searchPersonalStudy(query:string):Array<{
+ id:string;title:string;context:string
+}>{
+ if(import.meta.env.VITE_LI_AUTH_TARGET!=='github-pages-staging')return [];
+ const normalize=(value:string)=>value.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+  .replace(/đ/gi,'d').toLocaleLowerCase('vi').replace(/\s+/g,' ').trim();
+ const q=normalize(query),tokens=q.split(' ').filter(t=>t.length>=2);
+ if(!q||tokens.length===0)return [];
+ return personalStudyLessonIds.map(id=>{
+  const draft=byId.get(id),entry=catalogLessons.get(id);
+  if(!draft||!entry)return null;
+  const title=normalize(entry.title),code=normalize(id);
+  const source=draft.content.localized;
+  const body=normalize([source.vi?.intro_md||'',source.en?.intro_md||'',
+   ...(['vi','en'] as const).flatMap(loc=>
+    (source[loc]?.sections||[]).map(s=>s.heading+' '+s.body_md))].join(' '));
+  const context=normalize(entry.field);
+  const course=catalog.groups.flatMap(g=>g.fields.flatMap(f=>f.courses))
+   .find(c=>c.lessons.some(l=>l.id===id))?.title||'';
+  const searchable=title+' '+code+' '+context+' '+normalize(course)+' '+body;
+  const matched=tokens.filter(t=>searchable.includes(t));
+  if(matched.length!==tokens.length)return null;
+  const score=code===q?150:title.includes(q)?110:
+   code.includes(q)?100:normalize(course).includes(q)?75:
+   tokens.every(t=>(title+' '+context+' '+normalize(course)).includes(t))?65:25;
+  return {id,title:entry.title,context:entry.field+' · '+course,score};
+ }).filter((x):x is {id:string;title:string;context:string;score:number}=>x!==null)
+  .sort((a,b)=>b.score-a.score)
+  .slice(0,17).map(({id,title,context})=>({id,title,context}));
+}
+
 function lessonForStudy(id:string):SectionedLesson{
  if(!personalStudyRoute(id))throw Error('PERSONAL_LESSON_NOT_IN_STAGING_CATALOG');
  const d=byId.get(id);

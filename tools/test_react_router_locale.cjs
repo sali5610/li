@@ -27,6 +27,8 @@ const utilityControls=["search","settings"].map(id=>({
 }));
 let visible=true,overlay=false,route="home",historyBefore=[],snapshot=null;
 const visited=[],dispatched=[],uiRoutes=[],replaced=[];
+const listeners=new Map();
+const TestEvent=class{constructor(type,config){this.type=type;this.detail=config?.detail;}};
 const appUiStore={getState:()=>({setRoute:id=>{uiRoutes.push(id);}})};
 const appShell={classList:{toggle:()=>{}}};
 const document={
@@ -44,7 +46,15 @@ const window={
  history:{state:null,replaceState:(state,title,url)=>{
   location.href=new URL(url,location.origin).href;replaced.push(url);
  }},
- dispatchEvent:event=>{dispatched.push(event.type);}
+ addEventListener:(type,fn)=>{
+  const handlers=listeners.get(type)||new Set();
+  handlers.add(fn);listeners.set(type,handlers);
+ },
+ removeEventListener:(type,fn)=>listeners.get(type)?.delete(fn),
+ dispatchEvent:event=>{
+  dispatched.push(event.type);
+  for(const fn of listeners.get(event.type)||[])fn(event);
+ }
 };
 window.liReleasedLessonRoutes={"L09-1-2":"lessonL09"};
 window.liNativeRouteEffects={
@@ -65,9 +75,7 @@ const scope={
   personalStudyLessonIds:["L09-1-3"],
   personalStudyRoute:id=>id==="L09-1-3"?"draftLessonL0913":null
  }:undefined,
- exports:moduleExports,window,document,URL,CustomEvent:class{constructor(type,config){
-  this.type=type;this.detail=config?.detail;
- }}
+ exports:moduleExports,window,document,URL,CustomEvent:TestEvent
 };
 vm.runInNewContext(generated,scope);
 const stop=moduleExports.mountReactRouter();
@@ -111,9 +119,14 @@ assert.equal(visited.at(-1),"catalog");
 assert.equal(dispatched.length,visited.length,"one explicit route signal per navigation");
 assert.ok(uiRoutes.includes("draftLessonL0913"));
 assert.ok(replaced.length>=4);
+window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:false}}));
+assert.equal(act.getCurrent(),'home','Logout clears the previously active private route');
+assert.equal(location.searchParams.has('lesson'),false,'Logout clears private lesson deep link');
+assert.equal(snapshot.id,'home');
+assert.deepEqual(snapshot.h,[]);
 stop();
 assert.equal(window.liReactRouter,undefined);
-assert.equal(snapshot.id,"catalog");
+assert.equal(snapshot.id,"home");
 assert.ok(Array.isArray(snapshot.h));
 const nav=read("tools/step16-real-l09-react-island/src/shell/mount-navigation.tsx");
 const settings=read("tools/step16-real-l09-react-island/src/shell/journal-settings.tsx");
@@ -130,4 +143,7 @@ assert.match(locale,/data-li-react-navigation/);
 assert.match(locale,/li-react-language-card/);
 assert.match(native,/if\(window\.liReactRouter\?\.navigate\)/);
 assert.match(native,/window\.liNativeRouteEffects=Object\.freeze/);
+assert.match(read("tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx"),
+ /li:auth-verified-changed/);
+assert.match(router,/history\.length=0;active='home'/);
 console.log("PASS actual React router: auth/back/history/URL/17-staging preview/no observer + React bilingual settings");

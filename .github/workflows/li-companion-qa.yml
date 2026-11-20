@@ -11,6 +11,7 @@ on:
       - 'site/assets/laoly-*'
       - 'tools/checkin_adaptation_regression.mjs'
       - 'tools/test_i18n_legacy.cjs'
+      - 'tools/test_navigation.js'
       - '.github/workflows/li-companion-qa.yml'
 
 permissions:
@@ -31,3 +32,5 @@ jobs:
         run: node --check site/assets/spell-practice.js
       - name: Check VI/EN companion copy and quote coverage
         run: node tools/test_i18n_legacy.cjs
+      - name: Check React backup and native navigation fallback
+        run: node tools/test_navigation.js

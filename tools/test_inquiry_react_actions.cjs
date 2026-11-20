@@ -96,5 +96,19 @@ assert.match(search,/function RelationMap\(/,
  "Graph nodes must come from search response relationships");
 assert.match(search,/record\.links\|\|\[\]/,
  "The connection map must use returned ontology edges");
+assert.match(search,/window\.addEventListener\('li:auth-verified-changed',onAuth\)/,
+ "Search must clear account-scoped queries when invited auth ends");
+assert.match(search,/generation\.current\+\+;\s*returnPosition\.current=null;/,
+ "Old in-flight search results must be invalidated across account sessions");
+assert.match(search,/latestQuery='';mentorFocus=null;/,
+ "Search query and Lao Ly context must not bleed across accounts");
+assert.match(search,/setResponse\(\{status:'invalid_query',results:\[\]\}\)/,
+ "Search must immediately hide prior invited-user results");
+assert.match(search,/window\.addEventListener\('li:route-changed',onRoute\)/,
+ "Search restores result reading position on canonical route return");
+assert.match(search,/returnPosition\.current=\{query:latestQuery,top:window\.scrollY\}/,
+ "Search must remember real result scroll before opening a lesson");
+assert.match(search,/if\(app\.liSearch===port\)delete app\.liSearch;/,
+ "Unmounted Search must not leave an active global port");
 assert.match(locale,/li:localechange/);
 console.log("PASS React discovery parity: direct screen exports, auth events, live ontology and VI/EN");

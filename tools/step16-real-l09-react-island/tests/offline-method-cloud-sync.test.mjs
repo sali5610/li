@@ -22,7 +22,7 @@ test('all six UI-supported method drafts survive the same sync contract, includi
  assert.equal(validMethodAttempts({methodAttempts:{T06:{...unsent,classifications:{A:'nominal'}}}}),true);
  assert.equal(validMethodAttempts({methodAttempts:{T06:{...sent,classifications:{
   A:'nominal',B:'ordinal',C:'discrete',D:'continuous'
- }}}),true);
+ }}}}),true);
 });
 
 test('reject corrupted methods instead of accepting unsafe private payloads',()=>{

@@ -297,11 +297,22 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   };
   if(!app.liMethods?.open){setError('Sổ Tay Thần Chú chưa khả dụng.');return;}
   try{
-   sessionStorage.setItem('li.sectioned.guide-return.v1',
-    JSON.stringify({id,method,at:Date.now(),scrollY:window.scrollY}));
-   if(!app.liMethods.open(method,false)||
-      !app.LiSpellPractice?.setLessonContext?.(id))
-      setError('Chưa gắn được Thần Chú với bài học; bản nháp vẫn được giữ.');
+   // Published routes have a canonical context-aware opener. Personal staging
+   // manuscripts use the existing invited-only setLessonContext bridge.
+   const opened=isReleasedLessonId(id)
+    ?app.liMethods.open(method,false,id)
+    :app.liMethods.open(method,false)===true&&
+     app.LiSpellPractice?.setLessonContext?.(id)===true;
+   if(!opened){
+    setError('Chưa gắn được Thần Chú với bài học; bản nháp vẫn được giữ.');
+    return;
+   }
+   // Only successful navigation gets a return token; unavailable sessionStorage
+   // must not stop a legitimate exercise.
+   try{
+    sessionStorage.setItem('li.sectioned.guide-return.v1',
+     JSON.stringify({id,method,at:Date.now(),scrollY:window.scrollY}));
+   }catch{/* Lesson return still works without scroll restoration. */}
   }catch{setError('Chưa mở được Thần Chú; bản nháp vẫn được giữ.');}
  }
  if(busy)return <section role="status" className="li-learning-journey" aria-busy="true">Đang xác minh quyền học…</section>;

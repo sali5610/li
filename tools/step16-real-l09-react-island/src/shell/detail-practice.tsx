@@ -1,3 +1,4 @@
+import {openRoute} from './app-router.js';
 import React,{useEffect,useState} from 'react';
 import {Button,Card,Checkbox,Field,Heading,InlineFeedback,Radio,Text,LiIcon} from '../../../../design-system/react/index';
 import './detail-practice.css';
@@ -114,7 +115,7 @@ export function GuideDetail(){
   return tr(view.prompt);
  };
  if(!view||!method)return <div className="section-shell" data-li-react-screen="guide-detail">
-  <Button variant="ghost" data-page="guide"><LiIcon name="chevron-left" size={18}/> {copy('Sổ Tay Thần Chú','Learning Spells')}</Button>
+  <Button variant="ghost" onClick={()=>openRoute('guide')}><LiIcon name="chevron-left" size={18}/> {copy('Sổ Tay Thần Chú','Learning Spells')}</Button>
   <InlineFeedback tone="info" message={copy('Chọn một Thần Chú để đọc và thực hành.','Select a learning spell to begin.')}/>
  </div>;
  const preparing=view.phase===0;
@@ -129,7 +130,7 @@ export function GuideDetail(){
  const dueFuture=isDuePreparing&&view.dueAt!==null&&view.dueAt>Date.now();
  const ctaKind=preparing&&['faded','hide','resume','loci'].includes(view.mode)?'next':'check';
  return <div className="section-shell li-react-spell-detail" data-li-react-screen="guide-detail">
-  <Button variant="ghost" data-page="guide" className="library-back-link">
+  <Button variant="ghost" onClick={()=>openRoute('guide')} className="library-back-link">
    <LiIcon name="chevron-left" size={18}/> {copy('Sổ Tay Thần Chú','Learning Spells')}</Button>
   <div className="kicker">{view.active} · {tr(method.category)}</div>
   <Heading level={1} role="headline" className="display-title">{method.title}</Heading>
@@ -267,7 +268,7 @@ export function NoteDetail(){
  };
  const back=note.backRoute||'collection';
  return <div className="section-shell li-react-note-detail" data-li-react-screen="note-detail">
-  <Button variant="ghost" data-page={back} className="library-back-link">
+  <Button variant="ghost" onClick={()=>openRoute(back)} className="library-back-link">
    <LiIcon name="chevron-left" size={18}/> {back==='resume'?copy('Quay lại','Continue'):
     back==='library'?copy('Tủ Riêng','Private Library'):copy('Bộ sưu tập','Collection')}</Button>
   <div className="kicker">{note.kind||copy('CHI TIẾT GHI CHÉP','NOTE DETAIL')}</div>
@@ -293,7 +294,7 @@ export function NoteDetail(){
     <Text role="body">{note.context.choice}</Text>
     <InlineFeedback tone="info" message={note.context.feedback}/>
     <Text role="support">{note.context.provenance}</Text>
-    <Button variant="secondary" data-page="case">{copy('Làm lại Phản Chứng','Retry the Case')}</Button>
+    <Button variant="secondary" onClick={()=>openRoute('case')}>{copy('Làm lại Phản Chứng','Retry the Case')}</Button>
    </Card>}
    <Card variant="raised" className="library-note-review">
     <div className="library-note-head">

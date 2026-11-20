@@ -60,6 +60,29 @@ assert(html.includes("open:(id,practice=false,lessonId=null)=>"),
  "The approved method port must accept explicit lesson context");
 assert(reactDetail.includes("onClick={()=>openRoute(lessonRoute)}"),
  "A suggested spell must offer a direct route back to its approved lesson");
+// T02's contextual 20-lesson schedule must be reachable after an actual
+// saved lesson review; browsing the general Spellbook would lose lesson context.
+const sectioned=read("tools/step16-real-l09-react-island/src/learning/SectionedJourney.tsx");
+assert(react.includes("openLessonSpell('L09-1-2','T02',true)"),
+ "L09 progress must open its own T02 practice, never standalone");
+assert(wave.includes("openLessonSpell(id,'T02',true)"),
+ "L03/L15 progress must carry each released lesson ID into T02");
+assert(sectioned.includes("openGuide('T02',true)"),
+ "All 17 invited personal lesson progress screens must offer T02");
+assert(sectioned.includes("app.LiSpellPractice?.setLessonContext?.(id)===true"),
+ "Personal T02 must bind context through the existing invited-only port");
+assert(sectioned.includes("method:requestMethod"),
+ "Personal T02 return token must remember T02, not the primary method");
+assert(sectioned.includes("token.method==='T02'&&saved.attempt.reviewed?'progress':'methods'"),
+ "Back from T02 must restore the reviewed lesson progress screen");
+assert(react.includes("phase==='progress'")&&wave.includes("phase==='progress'")&&
+ sectioned.includes("phase==='progress'&&persisted.reviewed"),
+ "T02 entry belongs after a saved learning attempt, not before lesson exposure");
+assert(reactDetail.includes("onClick={()=>openRoute(lessonRoute)}")&&
+ reactDetail.includes("onClick={()=>openRoute(personalRoute)}"),
+ "T02 must offer direct Back to either released or personal source lesson");
+assert(spell.includes('const currentExercise=()=>active==="T02"?t02Exercise()'),
+ "T02 must use contextual recall content, not a generic unrelated card");
 assert(native.includes("button.dataset.spellLesson=page.dataset.lessonId"),
  "Native suggestions also forward lesson context");
 assert(companion.includes("lessonId:c.lesson_id"),"Lão Lý forwards current lesson context");

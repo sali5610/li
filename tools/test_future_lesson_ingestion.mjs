@@ -40,7 +40,7 @@ try{
  assert.equal(rights.quotations.professionalLegalSignoff,'not_claimed');
  const artwork=readFileSync(join(sourceRoot,'content/editorial/assets/L09-1-1-population-sample.svg'),'utf8');
  assert.match(artwork,/<svg[\s>]/);
- assert.doesNotMatch(artwork,/<image\b|<foreignObject\b|https?:\/\//i,
+ assert.doesNotMatch(artwork,/<image\b|<foreignObject\b|(?:href|src)=[\"']https?:\/\//i,
   'First-party diagram must contain no external visual content');
  const bankSource=readFileSync(join(sourceRoot,'site/assets/laoly-quotes-s121.js'),'utf8');
  const bankLine=bankSource.split('\n').find(line=>line.startsWith('const QUOTES='));

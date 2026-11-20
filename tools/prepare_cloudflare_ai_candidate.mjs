@@ -108,6 +108,32 @@ await copyFile(join(repo,'tools/step16-real-l09-react-island/src/auth/staging-ga
  join(assets,'staging-gate.css'));
 await copyFile(worker,join(output,'_worker.js'));
 await writeFile(join(output,'index.html'),html);
+if(authOnly){
+ // iOS Add to Home Screen must open Cloudflare /, never GitHub Pages /li/.
+ // Do not change the existing published staging manifest or SW registration.
+ const manifestPath=join(output,'manifest.webmanifest');
+ const manifest=JSON.parse(await readFile(manifestPath,'utf8'));
+ if(manifest.start_url!=='/li/'||manifest.scope!=='/li/'||
+  !Array.isArray(manifest.icons))throw Error('PWA_ORIGIN_SCOPE_CHANGED');
+ manifest.start_url='/';manifest.scope='/';
+ for(const icon of manifest.icons){
+  if(typeof icon.src!=='string'||!icon.src.startsWith('/li/assets/'))
+   throw Error('PWA_ICON_SCOPE_CHANGED');
+  icon.src=icon.src.slice(3);
+ }
+ await writeFile(manifestPath,JSON.stringify(manifest,null,2)+'\\n');
+ // This candidate's worker is generated separately after assembly. Never
+ // cache /api/auth, Neon responses, private note data or OAuth cookies.
+ const registration=[
+  "(()=>{'use strict';",
+  "if(!('serviceWorker' in navigator)||location.protocol!=='https:'||",
+  "location.origin!=='https://li5610.pages.dev')return;",
+  "window.addEventListener('load',()=>{",
+  "navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(()=>{});",
+  "});})();"
+ ].join('\\n');
+ await writeFile(join(assets,'pwa-register.js'),registration);
+}
 const stale=[];
 for(const name of ['.env','.env.local']){try{await stat(join(output,name));stale.push(name);}catch{}}
 if(stale.length)throw Error('CANDIDATE_HAS_PRIVATE_FILES');

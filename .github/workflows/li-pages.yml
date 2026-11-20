@@ -154,6 +154,17 @@ jobs:
           old_drag='<script src="./assets/laoly-drag.js?v=20261119-control-dodge"></script>'
           assert html.count(old_drag)==1,'Native Lão Lý drag source changed'
           html=html.replace(old_drag,'',1)
+          # React LessonJourney/Wave1Journey own visible spell suggestions,
+          # and React RelatedLessons owns the knowledge graph. Neither old
+          # DOM writer belongs in the invited React app.
+          retired_lesson_ui=(
+           './assets/lesson-spell-suggestions.js?v=wave1-method-fit-preview',
+           './assets/lesson-related-wave1.js'
+          )
+          for src in retired_lesson_ui:
+           legacy='<script src="'+src+'"></script>'
+           assert html.count(legacy)==1,'Native lesson decoration source changed: '+src
+           html=html.replace(legacy,'',1)
           # Fail CLOSED by default. No guest path or query bypass.
           gate=('<style id="li-auth-gate-critical">'
                 'html:not(.li-auth-verified) .app,'
@@ -202,6 +213,7 @@ jobs:
           ! grep -Fq '<script src="./assets/lesson-l09-hifi.js"></script>' site/index.html
           ! grep -Eq '<script src="./assets/(catalog-curriculum-data|catalog-drilldown|li-catalog-search)\.js' site/index.html
           ! grep -Fq '<script src="./assets/laoly-drag.js' site/index.html
+          ! grep -Eq '<script src="./assets/(lesson-spell-suggestions|lesson-related-wave1)\.js' site/index.html
           grep -Fq 'li-auth-gate-critical' site/index.html
           grep -Fq 'id="li-staging-auth-root"' site/index.html
           grep -Fq 'id="li-open-account"' site/index.html

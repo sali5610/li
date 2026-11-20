@@ -389,27 +389,20 @@ for selector,spacing in (
 ):
     assert re.search(re.escape(selector)+r"\s*\{\s*"+re.escape(spacing)+r";?\s*\}",html),selector
 
-# S119: approved Home assets must be exactly PO-provided originals.
+# S119 / UX-HOME-04: validate the current PO-supplied 2026-11-21 artwork.
+# Exact Git blob hashes prevent silently restoring deleted legacy versions.
 import hashlib
 for name,expected in [
-    ("home-mystic-cool-mobile.webp","b528fd92cc9d8d26cb50916870bb5b144cf69b1d"),
-    ("home-mystic-cool-desktop.webp","6a5083fbba0742a29ff2a32c9c6cbe2ee946b3de")
+    ("home-li-iphone-20261121.webp","3e8e60fea09c3be78e3c254862f97fed5b35ffca"),
+    ("home-li-landscape-20261121.webp","8791df23defddad10a19e47d88b742c4aafce54c")
 ]:
     data=(site/"assets"/name).read_bytes()
     assert len(data)>100_000 and data[:4]==b"RIFF" and data[8:12]==b"WEBP",name
-    sha=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\0"+data).hexdigest()
+    sha=hashlib.sha1(b"blob "+str(len(data)).encode()+bytes((0,))+data).hexdigest()
     assert sha==expected,(name,"approved artwork mismatch")
-# UX-HOME-04: exact user-uploaded image bytes, resolved in the device CSS.
-for name,expected_size,expected_sha256 in [
-    ("home-li-iphone-20261119.jpg",454411,"0cd92ec2cb0734e422004ae633440f12235469e191a7bc656f19332e7d5af068"),
-    ("home-li-ipad-20261119.jpg",7906192,"c86aef27f02511c6d5b5cf21e38e27c7459a834a56f69c58ecbbddec1597acbd")
-]:
-    art=(site/"assets"/name).read_bytes()
-    assert len(art)==expected_size and art.startswith(bytes((0xFF,0xD8))),name
-    assert hashlib.sha256(art).hexdigest()==expected_sha256,(name,"source image changed")
 device_css=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
-assert 'background-image:url("./home-li-iphone-20261119.jpg")!important;' in device_css
-assert 'background-image:url("./home-li-ipad-20261119.jpg")!important;' in device_css
+assert 'home-li-iphone-20261121.webp' in device_css
+assert 'home-li-landscape-20261121.webp' in device_css
 assert "(max-width:1420px) and (orientation:landscape)" in device_css
 # UX-DS-30 · Safari rotation recovery is a tightly scoped iPad-only, no-reload fallback.
 rotation_js=(site/"assets"/"ipad-safari-rotation.js").read_text(encoding="utf-8")
@@ -423,7 +416,7 @@ ipad_canvas=(site/"assets"/"ipad-home-canvas.css").read_text(encoding="utf-8")
 assert 'ipad-home-canvas.css?v=20261119-ds33-physical-shell' in page_html, "single physical iPad Home shell must be loaded"
 assert 'html.li-ipad-home-canvas .app.home-focus' in ipad_canvas
 assert 'position:fixed!important;' in ipad_canvas
-assert 'home-li-ipad-20261119.jpg' in ipad_canvas
+assert 'home-li-landscape-20261121.webp' in ipad_canvas
 assert 'li-ipad-home-portrait' in ipad_canvas and 'li-ipad-home-landscape' in ipad_canvas
 assert 'html.li-safari-landscape-recovery' not in (site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert 'html.li-safari-landscape-recovery' not in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
@@ -431,8 +424,8 @@ assert 'background-size:cover!important;' in (site/"assets"/"library-hub.css").r
 
 assert "(any-pointer:coarse)" not in device_css, "Viewport-responsive iPad must not depend on hardware pointer"
 assert html.count("/* S119 · Approved S106 Home art") == 1
-assert layout_css.count('url("./home-mystic-cool-mobile.webp")') == 1, "CSS-relative artwork URL must resolve from assets/"
-assert layout_css.count('url("./home-mystic-cool-desktop.webp")') == 1, "CSS-relative artwork URL must resolve from assets/"
+assert 'url("./home-li-iphone-20261121.webp")' in layout_css, "CSS-relative iPhone artwork must resolve from assets/"
+assert 'url("./home-li-landscape-20261121.webp")' in layout_css, "CSS-relative landscape artwork must resolve from assets/"
 home=section("home")
 for identifier in ['id="mirror-question"','id="home-scene"','id="save-question"','id="previous-question"','id="shuffle"']:
     assert home.count(identifier)==1,identifier

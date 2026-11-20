@@ -23,14 +23,15 @@ with sync_playwright() as p:
     browser=p.chromium.launch(executable_path=chrome,headless=True,args=["--no-sandbox","--disable-dev-shm-usage"])
     ctx=browser.new_context(viewport={"width":390,"height":844},accept_downloads=True,service_workers="block")
     # This is scoped to the temporary browser context, never an actual person's device.
-    ctx.add_init_script(f"""() => {{
+    ctx.add_init_script(f"""(() => {{
       localStorage.setItem({json.dumps(KEY)},JSON.stringify({json.dumps(FIXTURE)}));
       localStorage.setItem({json.dumps(DRAFT)},{json.dumps(FIXTURE['draft'])});
-    }}""")
+    }})();""")
     page=ctx.new_page()
     js_errors=[]
     page.on("pageerror",lambda err:js_errors.append(str(err)[:200]))
     page.goto(ORIGIN,wait_until="domcontentloaded",timeout=45000)
+    assert page.evaluate("localStorage.getItem('li.private.library.v1')") is not None, "Fake backup fixture was not seeded"
     page.wait_for_timeout(2200)
     # UI rendering-only synthetic class as in verified previous live-browser test.
     # It does not create JWTs, send privileged REST requests or grant actual server access.

@@ -283,6 +283,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     </Button>
    </div>
   </header>
+  <Text role="support" className="li-lesson-status">{content.status}</Text>
   <div className="li-learning-language" role="group" aria-label={vi?'Ngôn ngữ bài học':'Lesson language'}>
    {(['vi','en'] as const).map(lang=><Button key={lang}
     variant={attempt.locale===lang?'primary':'secondary'}
@@ -386,6 +387,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
       value={attempt.draft[i]} disabled={attempt.submitted||locked}
       placeholder={content.placeholder}
       onChange={event=>editDraft(i,event.currentTarget.value)}/>)}</div>
+    <Text role="support">{content.saveHint}</Text>
     {!attempt.submitted?<div className="li-learning-recovery">
      <Button disabled={locked||saving} onClick={()=>void submit()}>{content.submit}</Button>
      <Button variant="secondary" disabled={locked||saving} onClick={clearDraft}>{content.clear}</Button>
@@ -443,7 +445,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   </motion.div>
   <L09Figures locale={attempt.locale} copy={content}/>
   <LessonSources id="L09-1-2" locale={attempt.locale} copy={content}
-   sources={lesson09.sources} onSearch={ports.search.openSearch}/>
+   sources={lesson09.sources} subject={lesson09.hierarchy.field.title}
+   conceptTitle={content.theoryTitle} onSearch={ports.search.openSearch}/>
   <LessonMentor id="L09-1-2" locale={attempt.locale}/>
  </section>;
 }

@@ -25,6 +25,9 @@ assert.match(sectionedReact,/isReleasedLessonId/);
 assert.match(sectionedReact,/isReleasedLessonId\(id\)\s*\?app\.liMethods\.open\(method,false,id\)/);
 assert.match(sectionedReact,/app\.LiSpellPractice\?\.setLessonContext\?\.\(id\)===true/);
 assert.match(sectionedReact,/if\(!opened\)\{/);
+assert.match(sectionedReact,/const returnScrollY=window\.scrollY/);
+assert.match(sectionedReact,/scrollY:returnScrollY/,
+ "Return scroll offset must be captured BEFORE the router resets it");
 const authoredMethodPort=read("site/index.html");
 assert.match(authoredMethodPort,/if\(lessonId!==null\)\{[\s\S]*?window\.liReleasedLessonRoutes\?\.\[lessonId\]!==route\)return false/);
 for(const source of [react,wave]){

@@ -164,11 +164,87 @@ const radio=id=>actionValues!==null?
 const checked=id=>actionValues!==null?
  (Array.isArray(actionValues[id])?actionValues[id]:[]):
  [...(root?.querySelectorAll('input[name="sp-'+id+'"]:checked')||[])].map(x=>x.value);
-function scheduleRead(){try{const d=JSON.parse(localStorage.getItem("li.spell.t02.due.v1")||"null");return d&&Number.isFinite(d.due)?d:null}catch(e){return null}}
+// T02 is a successive retrieval cycle, not a single 24h reminder.
+// Intervals are app defaults, not a scientifically universal best schedule.
+const T02_PREFIX="li.spell.t02.schedule.v2:";
+const T02_LEGACY="li.spell.t02.due.v1";
+const T02_DAYS=[1,3,7,14,30],T02_DAY_MS=86400000;
+const t02Empty=()=>({schema:"li.spell.t02.v2",due:null,reviewCount:0,streak:0,
+ awaitingRating:false,lastReviewedAt:null,lastRating:null,updatedAt:new Date().toISOString()});
+function t02Key(){
+ try{
+  if(!document.documentElement.classList.contains("li-auth-verified")||
+     document.documentElement.classList.contains("li-account-open"))return null;
+  const owner=localStorage.getItem(T12_OWNER);
+  if(!owner||owner.length>128)return null;
+  return T02_PREFIX+encodeURIComponent(owner)+":"+(activeLessonId||"standalone");
+ }catch{return null;}
+}
+function t02Valid(d){
+ return !!d&&d.schema==="li.spell.t02.v2"&&
+  (d.due===null||(Number.isSafeInteger(d.due)&&d.due>0))&&
+  Number.isSafeInteger(d.reviewCount)&&d.reviewCount>=0&&d.reviewCount<=10000&&
+  Number.isSafeInteger(d.streak)&&d.streak>=0&&d.streak<=d.reviewCount&&
+  typeof d.awaitingRating==="boolean"&&(!d.awaitingRating||d.due!==null)&&
+  (d.lastReviewedAt===null||(Number.isSafeInteger(d.lastReviewedAt)&&d.lastReviewedAt>0))&&
+  [null,"remembered","retry"].includes(d.lastRating)&&
+  typeof d.updatedAt==="string"&&d.updatedAt.length<=48;
+}
+function t02NotifySync(){
+ if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
+  window.dispatchEvent(new Event("li:private-personal-change"));
+}
+function t02Write(data){
+ const key=t02Key();if(!key)return false;
+ try{
+  const next={...data,schema:"li.spell.t02.v2",updatedAt:new Date().toISOString()};
+  if(!t02Valid(next))return false;
+  const raw=JSON.stringify(next);
+  localStorage.setItem(key,raw);
+  if(localStorage.getItem(key)!==raw)throw Error("T02_SAVE_VERIFY_FAILED");
+  t02NotifySync();return true;
+ }catch{return false;}
+}
+function scheduleRead(){
+ const key=t02Key();if(!key)return null;
+ try{
+  const raw=localStorage.getItem(key);
+  if(raw){
+   if(raw.length>2400)return null;
+   const saved=JSON.parse(raw);
+   return t02Valid(saved)?saved:null;
+  }
+  // Migrate previous 24h review once after verifying the signed owner.
+  const legacy=JSON.parse(localStorage.getItem(T02_LEGACY)||"null");
+  if(!legacy||!Number.isSafeInteger(legacy.due)||legacy.due<=0)return null;
+  const migrated={...t02Empty(),due:legacy.due};
+  if(!t02Write(migrated))return null;
+  localStorage.setItem(T02_LEGACY,JSON.stringify({due:null,migrated:true}));
+  t02NotifySync();return migrated;
+ }catch{return null;}
+}
 function activateDueReview(){
  if(active==="T02"&&phase===0){
-  const due=scheduleRead();if(due&&due.due<=Date.now())phase=1;
+  const due=scheduleRead();
+  if(due&&(due.awaitingRating||(due.due!==null&&due.due<=Date.now()))){
+   phase=1;
+   if(due.awaitingRating){
+    reviewedInSession=true;feedback=currentExercise().model;
+   }
+  }
  }
+}
+function t02Rate(recalled){
+ const previous=scheduleRead();
+ if(active!=="T02"||phase!==1||!previous?.awaitingRating)return false;
+ const streak=recalled?Math.min(previous.streak+1,10000):0;
+ const nextDays=recalled?T02_DAYS[Math.min(streak,T02_DAYS.length-1)]:1;
+ if(!t02Write({...previous,reviewCount:previous.reviewCount+1,streak,
+  awaitingRating:false,lastReviewedAt:Date.now(),
+  lastRating:recalled?"remembered":"retry",due:Date.now()+nextDays*T02_DAY_MS})){
+  showMessage("Không lưu được lượt ôn mới. Hãy kiểm tra bộ nhớ trước khi thoát.");return false;
+ }
+ phase=0;reviewedInSession=false;feedback="";draw();return true;
 }
 function draw(){
  if(!active)return;

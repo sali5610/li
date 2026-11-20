@@ -91,7 +91,8 @@ function receiptStore(){
       throw Error("BAD_RECEIPT");
    }
   }
-  practiceError="";return d;
+  // A successful read must not erase a failed write warning.
+  return d;
  }catch{practiceError="Không đọc được lịch sử luyện, chưa ghi đè bản cũ.";return null;}
 }
 function receipt(){

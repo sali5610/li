@@ -32,7 +32,9 @@ function statusText(status:SyncState,vi:boolean){
    'on-device':'Saved on this device',unavailable:'Sync status unavailable'}[status];
 }
 
-export function LearningJourney({ports}:{ports:LearningPorts}){
+export function LearningJourney({ports,onReady,onFailure}:{
+ ports:LearningPorts;onReady?:()=>void;onFailure?:()=>void
+}){
  const reduced=useReducedMotion();
  const [attempt,setAttempt]=useState<Attempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
@@ -80,12 +82,17 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     setPhase(resumedPhase(saved.attempt));
     setSync(status);
     setBusy(false);
+    onReady?.();
    }catch{
-    if(!cancelled){setError('Không thể xác minh quyền truy cập hoặc tải bài học. Không mở chế độ khách.');setBusy(false);}
+    if(!cancelled){
+     setError('Không thể xác minh quyền truy cập hoặc tải bài học. Không mở chế độ khách.');
+     setBusy(false);
+     onFailure?.();
+    }
    }
   })();
   return()=>{cancelled=true;mounted.current=false;};
- },[ports]);
+ },[ports,onReady,onFailure]);
 
  async function refreshStatus(){
   if(!subject.current)return;

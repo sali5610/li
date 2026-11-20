@@ -2,6 +2,7 @@ import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Badge,Button,Card,Heading,Progress,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
+import './home-catalog.css';
 
 /** Shared staging screens, not another app shell.
  * Visible Home and 5-tier Catalog are React-owned. Until the existing account

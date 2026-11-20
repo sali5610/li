@@ -748,9 +748,24 @@ mirrorSwipeSurface.addEventListener("touchend",event=>{
   shiftMirrorQuestion(dx<0?1:-1);
 },{passive:true});
 mirrorSwipeSurface.addEventListener("touchcancel",()=>{mirrorSwipeStart=null},{passive:true});
-function liSubmitCaseAnswer(choice,revision){const v=String(revision||"").trim();if(choice!=="right"&&choice!=="wrong"){toast("Chưa Chọn · Hãy chọn một nhận định hoặc tạm gác.");return false}if(v.length<12){toast("Luận Kết còn thiếu · Hãy viết lại nhận định ít nhất 12 ký tự.");return false}const caseArticle=document.querySelector("#page-case .editorial-grid .surface.tinted");
+function liSubmitCaseAnswer(choice,revision){const v=String(revision||"").trim();if(choice!=="right"&&choice!=="wrong"){toast("Chưa Chọn · Hãy chọn một nhận định hoặc tạm gác.");return false}if(v.length<12){toast("Luận Kết còn thiếu · Hãy viết lại nhận định ít nhất 12 ký tự.");return false}// React Case is the visible source of truth. Never archive the hidden
+// vanilla question/options when the invited React router owns this screen.
+const reactSnapshot=window.liReactRouter?window.liCaseUi?.getSnapshot?.():null;
+if(window.liReactRouter&&(
+ !reactSnapshot||reactSnapshot.id!=="sampling-bias-90"||
+ reactSnapshot.selectedKey!==choice||
+ !reactSnapshot.question?.trim()||!reactSnapshot.scene?.trim()||
+ !Array.isArray(reactSnapshot.options)||reactSnapshot.options.length!==2||
+ !reactSnapshot.options.some(x=>x.key===choice&&x.text===reactSnapshot.selectedText)||
+ !reactSnapshot.feedback?.trim()
+)){
+ toast("Chưa lấy được đề bài Phản Chứng đang hiển thị. Nội dung vẫn được giữ; hãy thử lưu lại.");
+ return false;
+}
+// Standalone native remains supported until its last consumers migrate.
+const caseArticle=window.liReactRouter?null:document.querySelector("#page-case .editorial-grid .surface.tinted");
 const caseOptions=Array.from(caseArticle?.querySelectorAll("[data-answer]")||[]).map(el=>({key:el.dataset.answer,text:el.textContent.trim()}));
-const caseSnapshot={
+const caseSnapshot=reactSnapshot||{
  id:"sampling-bias-90",
  question:caseArticle?.querySelector("h2")?.textContent.trim()||"",
  scene:caseArticle?.querySelector("p")?.textContent.trim()||"",

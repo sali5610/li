@@ -254,6 +254,7 @@ function selectBookmarkTab(type,focus=false){
   }
   if(panel)panel.hidden=kind!==type;
  }
+ notifyReactLibrary();
 }
 for(const type of ["lesson","question"]){
  const tab=$(type==="lesson"?"li-bookmark-tab-lessons":"li-bookmark-tab-questions");
@@ -344,6 +345,7 @@ function renderBookmarks(){
  renderSavedBookmarkEntries(lessonRoot,lessons,knownCases,lessonById);
  renderSavedBookmarkEntries(questionRoot,questions,knownCases,lessonById);
  selectBookmarkTab(bookmarkTab);
+ notifyReactLibrary();
 }
 function renderHome(){
  renderLessonRows($("li-library-latest-lesson"),1);
@@ -351,12 +353,14 @@ function renderHome(){
  renderCases();
  renderIdeas();
  window.liBookmarks?.refresh();
+ notifyReactLibrary();
 }
 function renderResume(){
  renderLessonRows($("li-lesson-history"),40);
  renderProblemRows($("li-problem-history"),40);
  renderBookmarks();
  window.liBookmarks?.refresh();
+ notifyReactLibrary();
 }
 function renderCollection(){
  const root=$("li-collection-list");if(!root)return;root.replaceChildren();
@@ -365,9 +369,11 @@ function renderCollection(){
  const ideas=collectedIdeas.map(x=>({...x,entryType:"idea"}));
  const all=sortedBySavedAt([...cases,...ideas]).filter(x=>collectionFilter==="all"||x.entryType===collectionFilter);
  if(!all.length){
+  notifyReactLibrary();
   empty(root,collectionFilter==="case"?"Chưa có Bút Ký nào.":collectionFilter==="idea"?"Chưa lưu Ý đã nhặt nào.":"Chưa có ghi chép được lưu. Viết Bút Ký hoặc nhặt một ý để bắt đầu.");
   return;
  }
+ notifyReactLibrary();
  for(const item of all){
   const card=add(root,"article","surface library-collection-entry");
   add(card,"div","kicker",item.entryType==="case"?"BÚT KÝ · KẾT LUẬN SAU PHẢN CHỨNG":"Ý ĐÃ NHẶT · CHƯA XÁC MINH");
@@ -444,5 +450,102 @@ window.addEventListener?.("li:lesson-cloud-state",event=>{
  }
  renderHome();renderResume();
 });
-window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,renderProblemRows});
+
+/* Read-only, same-account view for the React Library. Existing legacy closure
+ * remains the ONLY owner of synced records, visits, bookmarks and mutations. */
+function getView(){
+ const lessons=visits().slice(0,40).flatMap(item=>{
+  const info=LESSONS[item.route];if(!info)return [];
+  const cloud=cloudLessons.get(info.id);
+  return [{id:info.id,route:item.route,title:lessonTitle(info),status:lessonStatusText(info),
+   detail:cloud&&getLessonState(info.id)?ui("Đã đồng bộ Neon","Synced to Neon"):
+    item.legacy?ui("Có dữ liệu đã lưu","Saved progress available"):
+    ui("Mở ","Opened ")+formatDate(item.visitedAt),
+   saved:Boolean(window.liBookmarks?.isSaved("lesson",info.id))}];
+ });
+ const problems=problemHistory().slice(0,40).flatMap(entry=>{
+  const scenario=entry.kind==="problem"?
+   scenarios.find(sc=>sc.type!=="hook"&&sc.question===entry.key):null;
+  if(entry.kind==="problem"&&!scenario)return [];
+  const note=entry.kind==="case"?findCaseNote():null;
+  const title=entry.kind==="problem"?scenario.question:
+   (document.querySelector?.("#page-case .editorial-grid .surface.tinted h2")?.textContent?.trim()||
+    "90% trả lời hài lòng. Chúng ta nên kết luận thế nào?");
+  return [{kind:entry.kind,key:entry.key,title:window.liLanguage?.translate?.(title)||title,
+   detail:(entry.legacy?ui("Có Bút Ký · ","Saved case · ")+formatDate(entry.savedAt):
+    ui("Mở ","Opened ")+formatDate(entry.visitedAt))+
+    (note&&entry.kind==="case"?ui(" · Có luận kết"," · Revised conclusion available"):""),
+   saved:entry.kind==="case"&&Boolean(window.liBookmarks?.isSaved("case",NATIVE_CASE_KEY))}];
+ });
+ const cases=sortedBySavedAt(processedCases).map(item=>({
+  id:item.id,type:"case",title:item.title,body:item.revision,
+  date:formatDate(item.updatedAt||item.savedAt),sortDate:item.updatedAt||item.savedAt,correct:item.correct
+ }));
+ const ideas=sortedBySavedAt(collectedIdeas).map(item=>({
+  id:item.id,type:"idea",title:ui("Ý đã nhặt","Captured idea"),body:item.text,
+  date:formatDate(item.updatedAt||item.savedAt),sortDate:item.updatedAt||item.savedAt
+ }));
+ const lessonBookmarks=sortedBySavedAt(savedContent.filter(item=>item.type==="lesson"&&
+  Object.values(LESSONS).some(meta=>meta.id===item.id))).map(item=>{
+  const [route,info]=Object.entries(LESSONS).find(([,meta])=>meta.id===item.id);
+  return {kind:"lesson",id:item.id,title:lessonTitle(info),route,date:formatDate(item.savedAt)};
+ });
+ const questionBookmarks=[
+  ...savedQuestions.map(item=>{
+   const index=scenarios.findIndex(sc=>sc.question===item.question||
+    sc.previousQuestion===item.question||(sc.key&&sc.key===item.scenarioKey));
+   const sc=index>=0?scenarios[index]:null;
+   return {kind:"question",id:item.id,title:sc?.question||item.question,
+    route:sc?(sc.type==="hook"?sc.lessonRoute:"research"):null,
+    date:formatDate(item.savedAt),sortDate:item.savedAt};
+  }),
+  ...savedContent.filter(item=>item.type==="case"&&item.id===NATIVE_CASE_KEY).map(item=>({
+   kind:"case",id:item.id,title:ui("90% trả lời hài lòng · Phản Chứng","90% satisfied · Test a claim"),
+   route:"case",date:formatDate(item.savedAt),sortDate:item.savedAt
+  }))
+ ].sort((a,b)=>(Date.parse(b.sortDate)||0)-(Date.parse(a.sortDate)||0));
+ return {lessons,problems,cases,ideas,lessonBookmarks,questionBookmarks,
+  collectionFilter,bookmarkTab,storageAvailable:!liStorageError};
+}
+function openProblemEntry(kind,key){
+ if(kind==="problem"){
+  const index=scenarios.findIndex(sc=>sc.type!=="hook"&&sc.question===key);
+  if(index<0){toast("Vấn đề không còn trong Gương Vạn Vấn.");return;}
+  qIndex=index;renderMirrorItem();navigate("research");return;
+ }
+ if(kind!=="case"||key!==NATIVE_CASE_KEY)return;
+ const note=findCaseNote();trackProblem("case",NATIVE_CASE_KEY);
+ if(!note||!window.liNotes?.openDetail("case",note.id))navigate("case");
+}
+function openSavedQuestion(id){
+ const entry=savedQuestions.find(item=>item.id===id);if(!entry)return;
+ const index=scenarios.findIndex(sc=>sc.question===entry.question||
+  sc.previousQuestion===entry.question||(sc.key&&sc.key===entry.scenarioKey));
+ if(index<0){toast("Câu hỏi không còn điểm đến.");return;}
+ const sc=scenarios[index],route=sc.type==="hook"?sc.lessonRoute:"research";
+ if(!$("page-"+route)){toast("Chưa mở được bài học.");return;}
+ qIndex=index;renderMirrorItem();navigate(route);
+}
+function removeSavedQuestion(id){
+ if(liStorageError){toast("Không đọc được dữ liệu lưu; chưa thay đổi Dấu Trang.");return;}
+ const index=savedQuestions.findIndex(item=>item.id===id);if(index<0)return;
+ const [entry]=savedQuestions.splice(index,1);
+ if(!liWriteState()){savedQuestions.splice(index,0,entry);toast("Không bỏ lưu được.");return;}
+ renderBookmarks();
+ toast("Đã bỏ lưu câu hỏi.",{undo:()=>{
+  if(savedQuestions.some(x=>x.id===entry.id))return true;
+  savedQuestions.splice(Math.min(index,savedQuestions.length),0,entry);
+  if(!liWriteState()){savedQuestions.splice(savedQuestions.indexOf(entry),1);return false;}
+  renderBookmarks();if(typeof refreshQuestionBookmark==="function")refreshQuestionBookmark();return true;
+ }});
+}
+function setCollectionFilter(next){
+ if(!["all","case","idea"].includes(next))return;
+ collectionFilter=next;renderCollection();
+}
+function notifyReactLibrary(){
+ if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
+  window.dispatchEvent(new Event("li:library-view-changed"));
+}
+window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,renderProblemRows,getView,openProblemEntry,openSavedQuestion,removeSavedQuestion,setCollectionFilter});
 })();

@@ -122,12 +122,21 @@ function valid(a:Attempt){
 function owner(uid:string){
  if(!IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN||
  !document.documentElement.classList.contains('li-auth-verified')||
- !uid||localStorage.getItem(OWNER)!==uid)throw Error('LEARNING_INVITE_REQUIRED');
+ !uid)throw Error('LEARNING_INVITE_REQUIRED');
+ let currentOwner:string|null;
+ try{currentOwner=localStorage.getItem(OWNER);}
+ catch{throw Error('STORAGE_UNAVAILABLE');}
+ if(currentOwner!==uid)throw Error('LEARNING_INVITE_REQUIRED');
 }
 function snapshot(key:string):{raw:string|null;attempt:Attempt}{
- const raw=localStorage.getItem(key);
+ let raw:string|null;
+ try{raw=localStorage.getItem(key);}
+ catch{throw Error('STORAGE_UNAVAILABLE');}
  if(raw===null){
-  const state=initial(),locale=localStorage.getItem('li.app.locale.v1');
+  const state=initial();
+  let locale:string|null;
+  try{locale=localStorage.getItem('li.app.locale.v1');}
+  catch{throw Error('STORAGE_UNAVAILABLE');}
   if(locale==='vi'||locale==='en')state.locale=locale;
   return {raw,attempt:state};
  }
@@ -173,7 +182,9 @@ export function createStagingLearningPorts(lesson:string):LearningPorts{
    if(lessonId!==LESSON)throw Error('WRONG_LESSON');
    owner(subjectId);
    if(!valid(attempt))throw Error('INVALID_ATTEMPT');
-   const current=localStorage.getItem(KEY);
+   let current:string|null;
+   try{current=localStorage.getItem(KEY);}
+   catch{throw Error('STORAGE_UNAVAILABLE');}
    if(revision(current)!==expectedRevision)throw Error('LEARNING_REVISION_CONFLICT');
    const raw=await saveNativeLearnerAttempt(subjectId,lessonId,attempt,current);
    return {revision:raw};

@@ -1,5 +1,6 @@
 import {openRoute} from './app-router.js';
-import React,{useEffect,useState,useSyncExternalStore} from 'react';
+import React,{useEffect,useId,useRef,useState,useSyncExternalStore} from 'react';
+import {createPortal} from 'react-dom';
 import {Button,Card,Checkbox,Field,Heading,InlineFeedback,Radio,Text,LiIcon} from '../../../../design-system/react/index';
 import {createFadedT03Flow,fadedT03Phase} from './spell-t03-flow.js';
 import {createLociT13Flow,lociT13Phase} from './spell-t13-flow.js';
@@ -43,8 +44,9 @@ type AppWindow=Window&{
  liNotes?:{
   getView:()=>NoteView;
   saveFromReact:(title:string,body:string,baseVersion:number)=>NoteOutcome;
-  restoreFromReact:(version:number)=>boolean;
-  deleteNote:(type:'case'|'idea',id:string)=>boolean
+  restoreFromReact:(version:number,confirmed?:boolean)=>boolean;
+  deleteNote:(type:'case'|'idea',id:string)=>boolean;
+  deleteFromReact:(type:'case'|'idea',id:string)=>boolean
  };
  liBookmarks?:{toggle:(kind:string,id:string)=>boolean}
 };
@@ -343,6 +345,56 @@ function time(iso:string){
  return new Intl.DateTimeFormat(en()?'en-US':'vi-VN',{day:'numeric',month:'numeric',
   year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(n));
 }
+/** React owns the confirmation; the existing note service owns atomic writes,
+ * version history, sync and the 7-second Undo transaction. */
+export function ConfirmNoteAction({label,description,onConfirm,iconOnly=false,danger=false}:{
+ label:string;description:string;onConfirm:()=>boolean;iconOnly?:boolean;danger?:boolean
+}){
+ const [asking,setAsking]=useState(false);
+ const titleId=useId();
+ const trigger=useRef<HTMLButtonElement>(null);
+ const cancel=useRef<HTMLButtonElement>(null);
+ const dialog=useRef<HTMLDivElement>(null);
+ useEffect(()=>{if(asking)cancel.current?.focus();},[asking]);
+ const dismiss=()=>{
+  setAsking(false);
+  requestAnimationFrame(()=>trigger.current?.focus());
+ };
+ const onKey=(event:React.KeyboardEvent)=>{
+  if(event.key==='Escape'){event.preventDefault();dismiss();return;}
+  if(event.key!=='Tab')return;
+  const controls=Array.from(dialog.current?.querySelectorAll<HTMLElement>(
+   'button:not([disabled]),a[href],[tabindex="0"]'
+  )||[]).filter(node=>node.getClientRects().length>0);
+  if(!controls.length)return;
+  if(event.shiftKey&&document.activeElement===controls[0]){
+   event.preventDefault();controls[controls.length-1].focus();
+  }else if(!event.shiftKey&&document.activeElement===controls[controls.length-1]){
+   event.preventDefault();controls[0].focus();
+  }
+ };
+ return <>
+  <button ref={trigger} type="button"
+   className={danger?'library-danger-link library-icon-action':'library-text-link'}
+   aria-label={label} onClick={()=>setAsking(true)}>
+   {iconOnly?<LiIcon name="trash" size={20}/>:label}
+  </button>
+  {asking&&createPortal(<div className="modal open li-react-note-confirm" role="dialog"
+   aria-modal="true" aria-labelledby={titleId} onKeyDown={onKey}
+   onMouseDown={event=>{if(event.target===event.currentTarget)dismiss();}}>
+   <div className="dialog" ref={dialog}>
+    <h2 id={titleId}>{label}</h2>
+    <p>{description}</p>
+    <div className="action-row">
+     <button ref={cancel} className="action alt" type="button" onClick={dismiss}>
+      {copy('Hủy','Cancel')}</button>
+     <Button variant="primary" onClick={()=>{if(onConfirm())setAsking(false);}}>
+      {danger?copy('Xóa ghi chép','Delete note'):copy('Khôi phục','Restore')}</Button>
+    </div>
+   </div>
+  </div>,document.body)}
+ </>;
+}
 export function NoteDetail(){
  const [note,refresh]=useNote();
  const [editing,setEditing]=useState(false);
@@ -362,7 +414,10 @@ export function NoteDetail(){
   if(result.ok){setEditing(false);refresh();}
  };
  const restore=(version:number)=>{
-  if(app.liNotes?.restoreFromReact(version)){setEditing(false);setMessage('');refresh();}
+  if(app.liNotes?.restoreFromReact(version,true)){
+   setEditing(false);setMessage('');refresh();return true;
+  }
+  return false;
  };
  const back=note.backRoute||'collection';
  return <div className="section-shell li-react-note-detail" data-li-react-screen="note-detail">
@@ -397,10 +452,11 @@ export function NoteDetail(){
    <Card variant="raised" className="library-note-review">
     <div className="library-note-head">
      <div className="kicker">{copy('NỘI DUNG HIỆN TẠI','CURRENT CONTENT')}</div>
-     <Button variant="ghost" className="library-danger-link"
-      aria-label={copy('Xóa ghi chép và lịch sử phiên bản','Delete note and version history')}
-      onClick={()=>app.liNotes?.deleteNote(note.type!,note.id!)}>
-      <LiIcon name="trash" size={20}/></Button>
+     <ConfirmNoteAction
+      label={copy('Xóa ghi chép và lịch sử phiên bản','Delete note and all versions')}
+      description={copy('Xóa ghi chép này? Bạn có 7 giây để hoàn tác sau khi xóa.',
+       'Delete this note? You have 7 seconds to undo after deletion.')}
+      danger iconOnly onConfirm={()=>Boolean(app.liNotes?.deleteFromReact(note.type!,note.id!))}/>
     </div>
     <Heading level={2} role="titleMedium">{note.bodyTitle||copy('Luận kết hiện tại','Current text')}</Heading>
     <Text role="body" className="library-entry-body">{note.body}</Text>
@@ -435,8 +491,11 @@ export function NoteDetail(){
       {version.title!==note.title&&<Text role="support">{copy('Tiêu đề lúc đó: ','Title then: ')}
        {version.title}</Text>}
       <Text role="body" className="library-entry-body">{version.body}</Text>
-      {index>0&&<Button variant="ghost" className="library-text-link"
-       onClick={()=>restore(version.version)}>{copy('Khôi phục phiên bản này','Restore this version')}</Button>}
+      {index>0&&<ConfirmNoteAction
+       label={copy('Khôi phục phiên bản '+version.version,'Restore version '+version.version)}
+       description={copy('Tạo một phiên bản mới, mọi bản cũ đều giữ nguyên.',
+        'Creates a new version, preserving all previous versions.')}
+       onConfirm={()=>restore(version.version)}/>} 
      </article>)}
     </div>
    </Card>

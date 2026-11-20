@@ -44,6 +44,18 @@ assert.ok([...index.records.values()].every(x => !['Learner', 'Attempt', 'Feedba
 assert.ok(index.graphIsPilot, 'do not lose pilot provenance signal');
 assert.ok(index.links.every(e => e.evidenceState === 'verified_relation_in_editorial_pilot'));
 
+// Source links must be directly visible in both graph mode and offline/native fallback.
+const searchUi = readFileSync(new URL('../site/assets/li-catalog-search.js', import.meta.url), 'utf8');
+assert.match(searchUi, /sourceLink\(relation\.provenance\?\.sourceUrl,"Nguồn quan hệ \(Notion\)"\)/);
+assert.match(searchUi, /sourceLink\(record\.sourceUrl,"Nguồn danh mục \(Notion\)"\)/);
+assert.match(searchUi, /sourceLink\(item\.sourceUrl,"Nguồn danh mục \(Notion\)"\)/);
+assert.ok(!searchUi.includes('document.createElement("details")'),
+  'source evidence must not be hidden in collapsed details');
+assert.match(searchUi, /a\.target="_blank";a\.rel="noopener noreferrer"/,
+  'source opens safely as an external link');
+assert.ok([...index.records.values()].some(x => x.kind === 'Lesson' &&
+  x.publishState === 'catalog_published' && /^https:\/\//.test(x.sourceUrl)));
+
 console.log(JSON.stringify({
   status: 'PASS', corpus: 'ACTUAL_CATALOG_PLUS_REVIEWED_GRAPH_PILOT',
   totalCatalogLessons: [...index.records.values()].filter(r => r.kind === 'Lesson').length,

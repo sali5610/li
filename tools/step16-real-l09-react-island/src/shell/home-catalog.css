@@ -114,13 +114,16 @@
  opacity:1;
  z-index:3;
  pointer-events:none;
- /* Hard-empty upper 50%, long transition down, soft exit at the rim. */
+ /* The upper half is always transparent. Feather in over ~35% of the glass
+    height, so the illustration's own fitted-content top cannot form a line. */
  -webkit-mask-image:linear-gradient(to bottom,
-  transparent 0%,transparent 50%,rgba(0,0,0,.22) 58%,
-  #000 72%,#000 82%,rgba(0,0,0,.70) 90%,transparent 100%);
+  transparent 0%,transparent 52%,rgba(0,0,0,.03) 60%,
+  rgba(0,0,0,.12) 67%,rgba(0,0,0,.36) 74%,
+  rgba(0,0,0,.78) 81%,#000 87%,rgba(0,0,0,.76) 92%,transparent 100%);
  mask-image:linear-gradient(to bottom,
-  transparent 0%,transparent 50%,rgba(0,0,0,.22) 58%,
-  #000 72%,#000 82%,rgba(0,0,0,.70) 90%,transparent 100%);
+  transparent 0%,transparent 52%,rgba(0,0,0,.03) 60%,
+  rgba(0,0,0,.12) 67%,rgba(0,0,0,.36) 74%,
+  rgba(0,0,0,.78) 81%,#000 87%,rgba(0,0,0,.76) 92%,transparent 100%);
 }
 #page-home > .hero > .mirror-message > .li-home-mirror-artwork{
  left:50%;top:50%;
@@ -130,10 +133,11 @@
 #page-home > .hero > .mirror-message .li-home-mirror-art-image{
  position:absolute;
  display:block;
- /* Source image is physically located BELOW the mirror midpoint,
-    not merely hidden with a CSS mask. */
- left:10%;top:53%;
- width:80%;height:43%;
+ /* Image box starts inside the zero-alpha parent band so object-fit:contain
+    letterboxing cannot reveal its sharp top boundary. The visible subject
+    remains in the lower glass after the parent alpha gradient. */
+ left:10%;top:45%;
+ width:80%;height:51%;
  object-fit:contain;
  object-position:center bottom;
  filter:saturate(1.03) contrast(1.05);

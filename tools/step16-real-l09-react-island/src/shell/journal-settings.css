@@ -116,3 +116,5 @@
  .li-in-app-reminder{left:var(--li-space-3);right:var(--li-space-3);width:auto;bottom:calc(66px + env(safe-area-inset-bottom,0px))}
  #page-settings .li-reminder-settings .li-reminder-inputs{grid-template-columns:1fr}
 }
+
+#page-settings .li-reminder-channel-stack{display:grid;gap:var(--li-space-4)}

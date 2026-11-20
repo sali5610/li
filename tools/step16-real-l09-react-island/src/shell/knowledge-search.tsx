@@ -12,7 +12,7 @@ type CatalogLesson={id:string;title:string;route?:string;published?:boolean};
 type CatalogGroup={title:string;fields?:{name:string;source?:string;courses?:{title:string;lessons?:CatalogLesson[]}[]}[]};
 type MentorContext={id:string;kind:string;title:string;lessonId?:string;links:Relation[]};
 type SearchWindow=Window&{LI_CATALOG_DATA?:CatalogGroup[];navigate?:(page:string)=>void;
- liSearch?:{render:(query:string)=>void;getStatus:()=>string;openLesson:(id:string)=>boolean;
+ liSearch?:{render:(query:string)=>void;getStatus:()=>string;getQuery:()=>string;openLesson:(id:string)=>boolean;
  getMentorContext:()=>MentorContext|null}};
 
 const app=window as SearchWindow;
@@ -73,7 +73,7 @@ function KnowledgeSearch(){
  useEffect(()=>{
   setExternalQuery=changeQuery;
   app.liSearch={render:value=>setExternalQuery(value),getStatus:()=>latestStatus,
-   openLesson,getMentorContext:()=>latestQuery.trim()?mentorFocus:null};
+   getQuery:()=>latestQuery,openLesson,getMentorContext:()=>latestQuery.trim()?mentorFocus:null};
   return()=>{setExternalQuery=()=>{};};
  },[]);
  useEffect(()=>{

@@ -168,7 +168,7 @@ async function render(value){
  }
 }
 input.addEventListener("input",e=>render(e.target.value));
-window.liSearch={render,getStatus:()=>status,openLesson,
+window.liSearch={render,getStatus:()=>status,getQuery:()=>input.value,openLesson,
  getMentorContext:()=>mentorFocus&&input.value.trim()?mentorFocus:null};
 render(input.value);
 import(new URL("./assets/li-content-adapter.mjs",document.baseURI).href)

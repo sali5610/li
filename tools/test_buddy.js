@@ -73,6 +73,13 @@ ctx.currentPage="library";ctx.processedCases.push({title:"Test"});ctx.savedQuest
 assert.ok(ctx.window.liGetBuddyPlan().intro.includes("1 Bút Ký"),"Saved items not reflected");
 ctx.currentPage="case";ctx.selectedCaseAnswer="right";node("case-revision").value="Kết luận chỉ đúng với người tham gia";
 assert.equal(ctx.window.liGetBuddyPlan().actions[2].label,"Lưu Bút Ký");
+ctx.currentPage="search";
+node("global-search").value="";
+ctx.window.liSearch={getQuery:()=>"Selection bias",getMentorContext:()=>null};
+assert.ok(ctx.window.liGetBuddyPlan().intro.includes("Selection bias"),"React query must reach Lão Lý");
+ctx.window.liSearch={getQuery:()=>"",getMentorContext:()=>null};
+node("global-search").value="L09-1-2";
+assert.ok(ctx.window.liGetBuddyPlan().intro.includes("L09-1-2"),"Legacy query remains available");
 ctx.currentPage="home";ctx.qIndex=1;
 ctx.openLaoLy();
 assert.ok(node("buddy-text").textContent.includes("Chuẩn mực"));

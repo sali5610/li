@@ -121,7 +121,7 @@ function settingsPlan(){
  };
 }
 function searchPlan(){
- const q=document.getElementById("global-search")?.value.trim()||"";
+ const q=(window.liSearch?.getQuery?.()??document.getElementById("global-search")?.value??"").trim();
  const focus=window.liSearch?.getMentorContext?.();
  // Only explicitly selected, source-reviewed PUBLIC graph links; no personal data,
  // hallucinated answer, paid LLM, spoiler or implicit learning prerequisite.

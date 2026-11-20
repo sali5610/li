@@ -28,8 +28,8 @@ jobs:
           npm install --no-audit --no-fund
           # React L09 must compile the same canonical, source-versioned content
           # already published as Tàng Thư's static content pack.
-          node tools/build_content_packs.mjs --check
-          node tools/test_content_adapter.mjs
+          node ../../tools/build_content_packs.mjs --check
+          node ../../tools/test_content_adapter.mjs
           npm run extract
           npm run test:sync
           npx tsc --noEmit

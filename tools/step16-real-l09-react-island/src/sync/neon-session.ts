@@ -1,5 +1,4 @@
-import type {NeonUserApi,Requester} from './neon-api.js';
-import {NeonReceiptApi} from './neon-receipt-api.js';
+import {NeonUserApi,type Requester} from './neon-api.js';
 
 /**
  * Minimal interface offered by the official Neon Auth client:
@@ -29,5 +28,5 @@ export async function bindNeonAccount(endpoint:string,auth:NeonAuthSessionPort,
   if(!jwt)throw new Error('NEON_AUTH_JWT_REQUIRED');
   return jwt;
  };
- return new NeonReceiptApi(endpoint,getBoundToken,accountId,request);
+ return new NeonUserApi(endpoint,getBoundToken,accountId,request);
 }

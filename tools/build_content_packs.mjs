@@ -199,7 +199,7 @@ const compiled=compileContent(lessons,load("content/graph/concepts.json"),load("
 const courseLevels=load("content/curriculum/course-levels.v1.json");
 const legacyCourses=load("content/curriculum/legacy-catalog.v1.json");
 const researchCandidates=load("content/curriculum/research-candidates.v0.1.json");
-const canonicalLegacyHeader="/* Canonical S36 Notion roadmap: metadata only, NOT unpublished instructional content.\n   8 groups / 15 fields / 45 candidate courses / 135 candidate lesson titles.\n   Only the explicitly published Wave1 routes are marked published. */\n";
+const canonicalLegacyHeader="/* GENERATED from GitHub content/curriculum/legacy-catalog.v1.json — DO NOT EDIT.\n   8 groups / 15 fields / 45 course outlines / 135 lesson outlines.\n   Navigation metadata only. A published route is NOT an academic release approval. */\n";
 // Keep the existing native Tàng Thư/search app reading an exact generated copy of the
 // GitHub canonical four-layer tree; no new renderer, site URL or content fork.
 compiled["site/assets/catalog-curriculum-data.js"]=canonicalLegacyHeader+"window.LI_CATALOG_DATA="+JSON.stringify(legacyCourses.groups,null,2)+";\n";

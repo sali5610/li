@@ -2,7 +2,7 @@
   "schemaVersion": "1.0.0",
   "kind": "legacy_course_navigation_catalog",
   "idPolicy": "preserve all existing Cxx-x and Lxx-x-x; navigationPublished is NOT academic release approval",
-  "source": "https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",
+  "source": "https://github.com/sali5610/li/blob/integration/staging/content/curriculum/legacy-catalog.v1.json",
   "maturity": "legacy_outline",
   "groups": [
     {
@@ -1151,5 +1151,7 @@
         }
       ]
     }
-  ]
+  ],
+  "canonicalPath": "content/curriculum/legacy-catalog.v1.json",
+  "migratedFrom": "site/assets/catalog-curriculum-data.js"
 }

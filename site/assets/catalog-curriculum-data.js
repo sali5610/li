@@ -1,6 +1,6 @@
-/* Canonical S36 Notion roadmap: metadata only, NOT unpublished instructional content.
-   8 groups / 15 fields / 45 candidate courses / 135 candidate lesson titles.
-   Only the explicitly published Wave1 routes are marked published. */
+/* GENERATED from GitHub content/curriculum/legacy-catalog.v1.json — DO NOT EDIT.
+   8 groups / 15 fields / 45 course outlines / 135 lesson outlines.
+   Navigation metadata only. A published route is NOT an academic release approval. */
 window.LI_CATALOG_DATA=[
   {
     "id": "language",

@@ -205,12 +205,13 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
 
  useEffect(()=>{
   let disposed=false;
-  setAccess('checking');
-  setInviteError('');
+  // A repeated offline focus/expiry check must NOT unmount an unfinished lesson.
   if(isOffline){
    setAccess(localOffline?'offline':'error');
    return()=>{disposed=true;};
   }
+  setAccess('checking');
+  setInviteError('');
   if(isPending)return()=>{disposed=true;};
   if(!liveAccountId){
    if(!error)forgetOfflineInvite(); // Completed online sign-out or no session.

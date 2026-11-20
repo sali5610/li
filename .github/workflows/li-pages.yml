@@ -212,7 +212,13 @@ jobs:
             const hidden=app&&doc.defaultView.getComputedStyle(app).display==='none';
             const rootShown=root&&doc.defaultView.getComputedStyle(root).display!=='none';
             const unverified=!doc.documentElement.classList.contains('li-auth-verified');
-            out.textContent=(critical&&hidden&&rootShown&&unverified)?
+            // Route hosts exist without exposing content to anonymous users.
+            const ids=['L0311','L0313','L0321','L0322','L0323',
+             'L0913','L0921','L0922','L0923','L0931','L0932','L0933',
+             'L1521','L1523','L1531','L1532','L1533'];
+            const routesReady=ids.every(id=>doc.getElementById('page-draftLesson'+id));
+
+            out.textContent=(critical&&hidden&&rootShown&&unverified&&routesReady)?
              'LI_AUTH_GATE_PASS':'LI_AUTH_GATE_FAIL';
            }catch(e){out.textContent='LI_AUTH_GATE_FAIL';}
           }
@@ -233,7 +239,7 @@ jobs:
             tail -15 /tmp/li-auth-browser.log || true
             exit 1
           fi
-          echo 'PASS browser: Home hidden and login visible until verified invited account'
+          echo 'PASS browser: login gate intact and all 17 personal lesson routes registered'
 
       - name: Generate offline Workbox service worker for integrated staging
         run: |

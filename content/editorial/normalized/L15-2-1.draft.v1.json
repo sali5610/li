@@ -184,27 +184,27 @@
         {
           "stage": "opening",
           "heading": "opening · l15-goals",
-          "source_md": "<b>Primary quote candidate:</b> zhuangzi-craft; alternative quote IDs: box-models, bacon-cause. A forecasting process only works when assumptions and what is being predicted are known.\n\n<b>VI · Mở bản dự báo:</b> Hôm nay bán được 0 món. Khách không muốn mua, hay kho hết hàng từ sáng? Hai câu chuyện khác nhau một trời một vực đấy. Trước khi dự báo, xác định mình đang đo sales hay demand.\n\n- <b>Chọn đơn vị nào?</b> Phải nói rõ đơn vị nhu cầu, thời gian, nhóm sản phẩm và kỳ dự báo trước khi cộng trừ dữ liệu để lập kế hoạch.\n- <b>Forecast có chắc không?</b> Dự báo có bất định; càng xa kỳ đã quan sát, độ tin cậy càng phụ thuộc dữ liệu, sự ổn định của bối cảnh và mô hình.\n\n<b>EN · Start the forecast:</b> Zero sales today: no demand, or the shelves were empty all day? Those are very different stories. Before forecasting, establish what your data measure.\n\n- <b>Which units matter?</b> Specify product or segment, unit of demand, observation interval and forecast horizon before computing a baseline.\n- <b>Is it certain?</b> Forecasts are uncertain; reliability depends on data, horizon, changing circumstances and the model's assumptions."
+          "source_md": "<b>Primary quote candidate:</b> zhuangzi-craft; alternative quote IDs: hume-evidence, bacon-cause. A forecasting process only works when assumptions and what is being predicted are known.\n\n<b>VI · Mở bản dự báo:</b> Hôm nay bán được 0 món. Khách không muốn mua, hay kho hết hàng từ sáng? Hai câu chuyện khác nhau một trời một vực đấy. Trước khi dự báo, xác định mình đang đo sales hay demand.\n\n- <b>Chọn đơn vị nào?</b> Phải nói rõ đơn vị nhu cầu, thời gian, nhóm sản phẩm và kỳ dự báo trước khi cộng trừ dữ liệu để lập kế hoạch.\n- <b>Forecast có chắc không?</b> Dự báo có bất định; càng xa kỳ đã quan sát, độ tin cậy càng phụ thuộc dữ liệu, sự ổn định của bối cảnh và mô hình.\n\n<b>EN · Start the forecast:</b> Zero sales today: no demand, or the shelves were empty all day? Those are very different stories. Before forecasting, establish what your data measure.\n\n- <b>Which units matter?</b> Specify product or segment, unit of demand, observation interval and forecast horizon before computing a baseline.\n- <b>Is it certain?</b> Forecasts are uncertain; reliability depends on data, horizon, changing circumstances and the model's assumptions."
         },
         {
           "stage": "concept",
           "heading": "concept · l15-concept",
-          "source_md": "<b>Primary quote candidate:</b> box-models; alternative quote IDs: bacon-cause, zhuangzi-craft. Box's models warning fits the difference between a simple rolling baseline and real demand under promotions or stockouts.\n\n<b>VI · Đọc mô hình cho đúng:</b> Trung bình bốn tuần có thể làm baseline. Nhưng tuần tới có khuyến mãi mà ngươi cứ lấy số cũ thì kho cũng muốn khóc. <b>Bình:</b> Con số dự báo phải đi kèm nguồn số liệu, giả định và điều kiện khiến dự báo có thể lệch.\n\n- <b>Cần kiểm tra gì?</b> Xem các tuần trước có hết hàng, chương trình giảm giá, mùa vụ hoặc thay đổi sản phẩm không; lịch sử bán chưa chắc đúng nhu cầu thật.\n- <b>Error tính thế nào?</b> Chốt quy ước signed error = actual − forecast, rồi mới gọi sai lệch dương là dự báo thấp hơn thực tế.\n\n<b>EN · Understand the model:</b> A four-week average makes a baseline, but if next week is a promotion, blindly repeating history can mislead your inventory plan. <b>Comment:</b> Every forecast needs a time horizon, measurement definition, assumptions and a plan to review errors.\n\n- <b>What should I inspect?</b> Check for stockouts, promotions, recurring seasonal effects and changes in the products or customers behind historical sales.\n- <b>How do I define error?</b> State signed error as actual minus forecast. A positive result then means actual demand exceeded the forecast."
+          "source_md": "<b>Primary quote candidate:</b> analects-think; alternative quote IDs: bacon-cause, zhuangzi-craft. The selected classical quote emphasizes questioning assumptions behind a rolling baseline when promotions and stockouts may distort demand.\n\n<b>VI · Đọc mô hình cho đúng:</b> Trung bình bốn tuần có thể làm baseline. Nhưng tuần tới có khuyến mãi mà ngươi cứ lấy số cũ thì kho cũng muốn khóc. <b>Bình:</b> Con số dự báo phải đi kèm nguồn số liệu, giả định và điều kiện khiến dự báo có thể lệch.\n\n- <b>Cần kiểm tra gì?</b> Xem các tuần trước có hết hàng, chương trình giảm giá, mùa vụ hoặc thay đổi sản phẩm không; lịch sử bán chưa chắc đúng nhu cầu thật.\n- <b>Error tính thế nào?</b> Chốt quy ước signed error = actual − forecast, rồi mới gọi sai lệch dương là dự báo thấp hơn thực tế.\n\n<b>EN · Understand the model:</b> A four-week average makes a baseline, but if next week is a promotion, blindly repeating history can mislead your inventory plan. <b>Comment:</b> Every forecast needs a time horizon, measurement definition, assumptions and a plan to review errors.\n\n- <b>What should I inspect?</b> Check for stockouts, promotions, recurring seasonal effects and changes in the products or customers behind historical sales.\n- <b>How do I define error?</b> State signed error as actual minus forecast. A positive result then means actual demand exceeded the forecast."
         },
         {
           "stage": "guided",
           "heading": "guided · l15-guided",
-          "source_md": "<b>Primary quote candidate:</b> analects-practice; alternative quote IDs: zhuangzi-craft, box-models. Worked arithmetic should focus on what a calculated mean implies and what it cannot guarantee.\n\n<b>VI · Thử tính baseline:</b> Dữ liệu ba tuần hướng dẫn đã có trên bàn. Ngươi tính trung bình được rồi, nhưng có biết nó đang giả định điều gì không? <b>Bình:</b> Một trung bình đơn giản không tự nhận biết sale, nghỉ lễ hay cú sốc bất ngờ. <b>L2 tự chọn:</b> T03 · Minh Mẫu Tiệm Ẩn: từ phép tính mẫu đầy đủ, tự điền bước còn thiếu ở micropractice mới rồi đối chiếu sau lượt luyện.\n\n- <b>Tại sao chia ba?</b> Vì ví dụ dùng trung bình số học của ba tuần đã quan sát để tạo dự báo baseline tuần kế tiếp; nó chỉ là lựa chọn minh họa.\n- <b>Chỗ nào cần cảnh giác?</b> Nếu các tuần không so sánh được hoặc một tuần thiếu hàng, trung bình lịch sử có thể bỏ qua nhu cầu chưa được ghi nhận.\n\n<b>EN · Practice the baseline:</b> The three guided weeks are in front of you. You can average them, but can you explain which assumptions that average makes? <b>Comment:</b> A simple average cannot automatically detect promotions, holidays or sudden demand changes. <b>Optional L2:</b> T03 Worked Examples & Guidance Fading: move from the solved baseline to a new partly completed calculation and review it only after attempting.\n\n- <b>Why divide by three?</b> The worked example uses the arithmetic average of three observed weeks as a deliberately simple next-week baseline.\n- <b>What should I question?</b> If weeks are not comparable or sales were censored by stockouts, historical averages may miss unobserved demand."
+          "source_md": "<b>Primary quote candidate:</b> analects-practice; alternative quote IDs: zhuangzi-craft, analects-think. Worked arithmetic should focus on what a calculated mean implies and what it cannot guarantee.\n\n<b>VI · Thử tính baseline:</b> Dữ liệu ba tuần hướng dẫn đã có trên bàn. Ngươi tính trung bình được rồi, nhưng có biết nó đang giả định điều gì không? <b>Bình:</b> Một trung bình đơn giản không tự nhận biết sale, nghỉ lễ hay cú sốc bất ngờ. <b>L2 tự chọn:</b> T03 · Minh Mẫu Tiệm Ẩn: từ phép tính mẫu đầy đủ, tự điền bước còn thiếu ở micropractice mới rồi đối chiếu sau lượt luyện.\n\n- <b>Tại sao chia ba?</b> Vì ví dụ dùng trung bình số học của ba tuần đã quan sát để tạo dự báo baseline tuần kế tiếp; nó chỉ là lựa chọn minh họa.\n- <b>Chỗ nào cần cảnh giác?</b> Nếu các tuần không so sánh được hoặc một tuần thiếu hàng, trung bình lịch sử có thể bỏ qua nhu cầu chưa được ghi nhận.\n\n<b>EN · Practice the baseline:</b> The three guided weeks are in front of you. You can average them, but can you explain which assumptions that average makes? <b>Comment:</b> A simple average cannot automatically detect promotions, holidays or sudden demand changes. <b>Optional L2:</b> T03 Worked Examples & Guidance Fading: move from the solved baseline to a new partly completed calculation and review it only after attempting.\n\n- <b>Why divide by three?</b> The worked example uses the arithmetic average of three observed weeks as a deliberately simple next-week baseline.\n- <b>What should I question?</b> If weeks are not comparable or sales were censored by stockouts, historical averages may miss unobserved demand."
         },
         {
           "stage": "independent",
           "heading": "independent · l15-challenge",
-          "source_md": "<b>Primary quote candidate:</b> mencius-sources; alternative quote IDs: bacon-cause, box-models. A critical method check supports independent forecasting without leaking the week's numerical forecast or error.\n\n<b>VI · Lượt tự dự báo:</b> Bốn tuần số liệu để ngươi tự tính. Lão sẽ không đọc sẵn baseline hay sai số; chỉ nhắc ngươi ghi rõ công thức và đơn vị. <b>Bình:</b> Bài kiểm tra xem ngươi hiểu giả định, không phải chỉ bấm máy tính giỏi. <b>Khung tự làm:</b> T10 · Phân Giải Giới Vực có thể nhắc ngươi kiểm tra dữ liệu đầu vào, giả định, kỳ dự báo và cạnh biên; không hé baseline của bài đánh giá.\n\n- <b>Bắt đầu bằng gì?</b> Hãy viết rõ khoảng thời gian quan sát, kỳ cần dự báo và cách tạo baseline trước khi kiểm tra điều gì có thể thay đổi.\n- <b>Lúc nào chưa thể kết luận?</b> Nếu chỉ có một lần đối chiếu dự báo với thực tế, đừng tự kết luận mô hình chắc chắn tốt hoặc xấu ở mọi tuần sau.\n\n<b>EN · Independent forecast:</b> Four weeks of numbers are yours to analyze. I won't give the baseline or forecast error before you submit. <b>Comment:</b> This exercise tests assumptions as well as arithmetic, not just calculator speed. <b>Independent method cue:</b> T10 Decomposition can help check input type, assumptions, forecast horizon and edge cases; the independent baseline remains yours to calculate.\n\n- <b>How to begin?</b> Specify the observation window, forecast horizon and the chosen baseline rule before discussing potential changes.\n- <b>What can't I conclude?</b> One forecast-versus-actual comparison cannot establish a model's reliable long-term performance."
+          "source_md": "<b>Primary quote candidate:</b> mencius-sources; alternative quote IDs: bacon-cause, analects-honesty. A critical method check supports independent forecasting without leaking the week's numerical forecast or error.\n\n<b>VI · Lượt tự dự báo:</b> Bốn tuần số liệu để ngươi tự tính. Lão sẽ không đọc sẵn baseline hay sai số; chỉ nhắc ngươi ghi rõ công thức và đơn vị. <b>Bình:</b> Bài kiểm tra xem ngươi hiểu giả định, không phải chỉ bấm máy tính giỏi. <b>Khung tự làm:</b> T10 · Phân Giải Giới Vực có thể nhắc ngươi kiểm tra dữ liệu đầu vào, giả định, kỳ dự báo và cạnh biên; không hé baseline của bài đánh giá.\n\n- <b>Bắt đầu bằng gì?</b> Hãy viết rõ khoảng thời gian quan sát, kỳ cần dự báo và cách tạo baseline trước khi kiểm tra điều gì có thể thay đổi.\n- <b>Lúc nào chưa thể kết luận?</b> Nếu chỉ có một lần đối chiếu dự báo với thực tế, đừng tự kết luận mô hình chắc chắn tốt hoặc xấu ở mọi tuần sau.\n\n<b>EN · Independent forecast:</b> Four weeks of numbers are yours to analyze. I won't give the baseline or forecast error before you submit. <b>Comment:</b> This exercise tests assumptions as well as arithmetic, not just calculator speed. <b>Independent method cue:</b> T10 Decomposition can help check input type, assumptions, forecast horizon and edge cases; the independent baseline remains yours to calculate.\n\n- <b>How to begin?</b> Specify the observation window, forecast horizon and the chosen baseline rule before discussing potential changes.\n- <b>What can't I conclude?</b> One forecast-versus-actual comparison cannot establish a model's reliable long-term performance."
         },
         {
           "stage": "reflection",
           "heading": "reflection · l15-rubric",
-          "source_md": "<b>Primary quote candidate:</b> analects-honesty; alternative quote IDs: darwin-confidence, box-models. Accurately recognizing a forecast's limits after a submitted answer aligns with model humility and evidence quality.\n\n<b>VI · Đối chiếu sau nộp:</b> Giờ mới xem sai số. Đúng phép tính mà quên hỏi doanh số có bị hết hàng bóp méo không thì dự báo cũng chưa đáng tin. <b>Bình:</b> Tự đánh giá theo độ rõ của dữ liệu, cách tính, sai số và giới hạn, không lấy một con số làm huy chương.\n\n- <b>Tự chấm những gì?</b> Kiểm tra baseline tuần tiếp, signed error theo quy ước, nguồn thiên lệch dữ liệu và kế hoạch kiểm chứng trên nhiều kỳ.\n- <b>Nếu dự báo sai?</b> Dự báo khác thực tế là tín hiệu cần điều tra khuyến mãi, mùa vụ, stockout và độ ổn định của chuỗi; không tự chứng minh mô hình vô dụng.\n\n<b>EN · Review after submission:</b> Now inspect the error. Correct arithmetic is not enough if stockouts or promotions distorted what historical sales mean. <b>Comment:</b> Rate the data definition, baseline, error interpretation and limitations rather than awarding a medal for one number.\n\n- <b>What should I rate?</b> Check the forecast baseline, signed error convention, biased observations and plans for testing across several periods.\n- <b>What if it missed?</b> Investigate seasonality, promotions, stockouts and shifting conditions. A miss alone does not prove every version of the model is useless."
+          "source_md": "<b>Primary quote candidate:</b> analects-honesty; alternative quote IDs: darwin-confidence, hume-evidence. Accurately recognizing a forecast's limits after a submitted answer aligns with model humility and evidence quality.\n\n<b>VI · Đối chiếu sau nộp:</b> Giờ mới xem sai số. Đúng phép tính mà quên hỏi doanh số có bị hết hàng bóp méo không thì dự báo cũng chưa đáng tin. <b>Bình:</b> Tự đánh giá theo độ rõ của dữ liệu, cách tính, sai số và giới hạn, không lấy một con số làm huy chương.\n\n- <b>Tự chấm những gì?</b> Kiểm tra baseline tuần tiếp, signed error theo quy ước, nguồn thiên lệch dữ liệu và kế hoạch kiểm chứng trên nhiều kỳ.\n- <b>Nếu dự báo sai?</b> Dự báo khác thực tế là tín hiệu cần điều tra khuyến mãi, mùa vụ, stockout và độ ổn định của chuỗi; không tự chứng minh mô hình vô dụng.\n\n<b>EN · Review after submission:</b> Now inspect the error. Correct arithmetic is not enough if stockouts or promotions distorted what historical sales mean. <b>Comment:</b> Rate the data definition, baseline, error interpretation and limitations rather than awarding a medal for one number.\n\n- <b>What should I rate?</b> Check the forecast baseline, signed error convention, biased observations and plans for testing across several periods.\n- <b>What if it missed?</b> Investigate seasonality, promotions, stockouts and shifting conditions. A miss alone does not prove every version of the model is useless."
         },
         {
           "stage": "extension",
@@ -218,11 +218,11 @@
           "stage": "opening",
           "quote_ids": [
             "zhuangzi-craft",
-            "box-models",
+            "hume-evidence",
             "bacon-cause"
           ],
           "missing_quote_ids": [],
-          "sourceQuoteHeading": "<b>Primary quote candidate:</b> zhuangzi-craft; alternative quote IDs: box-models, bacon-cause. A forecasting process only works when assumptions and what is being predicted are known.",
+          "sourceQuoteHeading": "<b>Primary quote candidate:</b> zhuangzi-craft; alternative quote IDs: hume-evidence, bacon-cause. A forecasting process only works when assumptions and what is being predicted are known.",
           "vi": {
             "prompt": "Hôm nay bán được 0 món. Khách không muốn mua, hay kho hết hàng từ sáng? Hai câu chuyện khác nhau một trời một vực đấy. Trước khi dự báo, xác định mình đang đo sales hay demand.",
             "actions": [
@@ -253,12 +253,12 @@
         {
           "stage": "concept",
           "quote_ids": [
-            "box-models",
+            "analects-think",
             "bacon-cause",
             "zhuangzi-craft"
           ],
           "missing_quote_ids": [],
-          "sourceQuoteHeading": "<b>Primary quote candidate:</b> box-models; alternative quote IDs: bacon-cause, zhuangzi-craft. Box's models warning fits the difference between a simple rolling baseline and real demand under promotions or stockouts.",
+          "sourceQuoteHeading": "<b>Primary quote candidate:</b> analects-think; alternative quote IDs: bacon-cause, zhuangzi-craft. The selected classical quote emphasizes questioning assumptions behind a rolling baseline when promotions and stockouts may distort demand.",
           "vi": {
             "prompt": "Trung bình bốn tuần có thể làm baseline. Nhưng tuần tới có khuyến mãi mà ngươi cứ lấy số cũ thì kho cũng muốn khóc. Bình: Con số dự báo phải đi kèm nguồn số liệu, giả định và điều kiện khiến dự báo có thể lệch.",
             "actions": [
@@ -291,10 +291,10 @@
           "quote_ids": [
             "analects-practice",
             "zhuangzi-craft",
-            "box-models"
+            "analects-think"
           ],
           "missing_quote_ids": [],
-          "sourceQuoteHeading": "<b>Primary quote candidate:</b> analects-practice; alternative quote IDs: zhuangzi-craft, box-models. Worked arithmetic should focus on what a calculated mean implies and what it cannot guarantee.",
+          "sourceQuoteHeading": "<b>Primary quote candidate:</b> analects-practice; alternative quote IDs: zhuangzi-craft, analects-think. Worked arithmetic should focus on what a calculated mean implies and what it cannot guarantee.",
           "vi": {
             "prompt": "Dữ liệu ba tuần hướng dẫn đã có trên bàn. Ngươi tính trung bình được rồi, nhưng có biết nó đang giả định điều gì không? Bình: Một trung bình đơn giản không tự nhận biết sale, nghỉ lễ hay cú sốc bất ngờ. L2 tự chọn: T03 · Minh Mẫu Tiệm Ẩn: từ phép tính mẫu đầy đủ, tự điền bước còn thiếu ở micropractice mới rồi đối chiếu sau lượt luyện.",
             "actions": [
@@ -327,10 +327,10 @@
           "quote_ids": [
             "mencius-sources",
             "bacon-cause",
-            "box-models"
+            "analects-honesty"
           ],
           "missing_quote_ids": [],
-          "sourceQuoteHeading": "<b>Primary quote candidate:</b> mencius-sources; alternative quote IDs: bacon-cause, box-models. A critical method check supports independent forecasting without leaking the week's numerical forecast or error.",
+          "sourceQuoteHeading": "<b>Primary quote candidate:</b> mencius-sources; alternative quote IDs: bacon-cause, analects-honesty. A critical method check supports independent forecasting without leaking the week's numerical forecast or error.",
           "vi": {
             "prompt": "Bốn tuần số liệu để ngươi tự tính. Lão sẽ không đọc sẵn baseline hay sai số; chỉ nhắc ngươi ghi rõ công thức và đơn vị. Bình: Bài kiểm tra xem ngươi hiểu giả định, không phải chỉ bấm máy tính giỏi. Khung tự làm: T10 · Phân Giải Giới Vực có thể nhắc ngươi kiểm tra dữ liệu đầu vào, giả định, kỳ dự báo và cạnh biên; không hé baseline của bài đánh giá.",
             "actions": [
@@ -363,10 +363,10 @@
           "quote_ids": [
             "analects-honesty",
             "darwin-confidence",
-            "box-models"
+            "hume-evidence"
           ],
           "missing_quote_ids": [],
-          "sourceQuoteHeading": "<b>Primary quote candidate:</b> analects-honesty; alternative quote IDs: darwin-confidence, box-models. Accurately recognizing a forecast's limits after a submitted answer aligns with model humility and evidence quality.",
+          "sourceQuoteHeading": "<b>Primary quote candidate:</b> analects-honesty; alternative quote IDs: darwin-confidence, hume-evidence. Accurately recognizing a forecast's limits after a submitted answer aligns with model humility and evidence quality.",
           "vi": {
             "prompt": "Giờ mới xem sai số. Đúng phép tính mà quên hỏi doanh số có bị hết hàng bóp méo không thì dự báo cũng chưa đáng tin. Bình: Tự đánh giá theo độ rõ của dữ liệu, cách tính, sai số và giới hạn, không lấy một con số làm huy chương.",
             "actions": [
@@ -471,9 +471,14 @@
       }
     },
     "issues": [],
-    "sourceVerbatim": true,
+    "sourceVerbatim": false,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
     "readOnlyDerived": true,
-    "runnableInReact": false
+    "runnableInReact": false,
+    "githubAuthoredMentorRightsOverride": {
+      "sourcePath": "content/editorial/imported/L15-2-1.source.v1.json",
+      "sourceKey": "content.github_editorial_extensions.mentorQuoteReplacements",
+      "status": "draft_options_remediated_publication_not_cleared"
+    }
   }
 }

@@ -106,7 +106,7 @@ export function validateSectionedLesson(input:unknown,id:string):SectionedLesson
  const moments=l.content.companion?.structuredMoments;
  if(!Array.isArray(moments)||moments.length!==6||
   moments.some((m,i)=>m.stage!==STAGES[i]||
-   !Array.isArray(m.quote_ids)||m.quote_ids.length<3||
+   !Array.isArray(m.quote_ids)||m.quote_ids.length<3||m.quote_ids.includes('box-models')||
    (m.missing_quote_ids?.length??0)>0||
    (['vi','en'] as const).some(loc=>!m[loc]?.prompt?.trim()||
     m[loc].actions?.length!==2||

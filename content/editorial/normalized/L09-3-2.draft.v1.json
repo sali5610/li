@@ -199,7 +199,7 @@
         {
           "stage": "concept",
           "heading": "concept · L09-3-2",
-          "source_md": "Quote candidates: analects-think, box-models, bacon-cause. Primary: analects-think.\n\nVI 1: Precision và recall khác sao? — Lão Lý: Precision hỏi trong cảnh báo, bao nhiêu đúng; recall hỏi trong đơn trễ, bao nhiêu được thấy.\n\nVI 2: FN có nghĩa gì? — Lão Lý: Đơn thực sự trễ nhưng ngươi lại báo đúng hạn. Hậu quả tùy quy trình.\n\nEN 1: How is precision different from recall? — Old Li: Precision asks how many alerts are correct; recall asks how many real late orders are found.\n\nEN 2: What is an FN here? — Old Li: A truly late shipment predicted on-time; its cost depends on the workflow."
+          "source_md": "Quote candidates: analects-think, hume-evidence, bacon-cause. Primary: analects-think.\n\nVI 1: Precision và recall khác sao? — Lão Lý: Precision hỏi trong cảnh báo, bao nhiêu đúng; recall hỏi trong đơn trễ, bao nhiêu được thấy.\n\nVI 2: FN có nghĩa gì? — Lão Lý: Đơn thực sự trễ nhưng ngươi lại báo đúng hạn. Hậu quả tùy quy trình.\n\nEN 1: How is precision different from recall? — Old Li: Precision asks how many alerts are correct; recall asks how many real late orders are found.\n\nEN 2: What is an FN here? — Old Li: A truly late shipment predicted on-time; its cost depends on the workflow."
         },
         {
           "stage": "guided",
@@ -266,11 +266,11 @@
           "stage": "concept",
           "quote_ids": [
             "analects-think",
-            "box-models",
+            "hume-evidence",
             "bacon-cause"
           ],
           "missing_quote_ids": [],
-          "sourceQuoteHeading": "Quote candidates: analects-think, box-models, bacon-cause. Primary: analects-think.",
+          "sourceQuoteHeading": "Quote candidates: analects-think, hume-evidence, bacon-cause. Primary: analects-think.",
           "vi": {
             "prompt": "Trong bài này positive nghĩa là đơn hàng thực sự sẽ trễ. Negative nghĩa là đơn đúng hạn. Bốn loại dự đoán: TP (báo trễ và thực sự trễ), FP (báo trễ nhưng đúng hạn), FN (báo đúng hạn nhưng thực tế trễ), TN (báo đúng hạn và thực tế đúng hạn). Nếu không khóa định nghĩa positive, precision và recall rất dễ bị đảo ng",
             "actions": [
@@ -502,6 +502,11 @@
       "sourcePath": "content/editorial/imported/L09-3-2.source.v1.json",
       "sourceKey": "content.github_editorial_extensions.methodMicropractice",
       "status": "proposed_needs_academic_review"
+    },
+    "githubAuthoredMentorRightsOverride": {
+      "sourcePath": "content/editorial/imported/L09-3-2.source.v1.json",
+      "sourceKey": "content.github_editorial_extensions.mentorQuoteReplacements",
+      "status": "draft_options_remediated_publication_not_cleared"
     }
   }
 }

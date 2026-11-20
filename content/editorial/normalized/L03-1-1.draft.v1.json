@@ -189,7 +189,7 @@
         {
           "stage": "concept",
           "heading": "concept — l03-concept",
-          "source_md": "Primary quote candidate: <b>box-models</b>. Alternate IDs: analects-think, mencius-sources. Relevance: Distinguishing mental models from evidence helps prevent a request from becoming an unquestioned requirement.\n\n<b>VI · Yêu cầu khác nhu cầu:</b> “Tôi cần nút Export PDF” có thể là lời đề xuất cách làm. Nhu cầu nằm ở công việc họ phải hoàn thành, không nằm sẵn trong nút.\n\n- <b>VI action 1: Chỉ ra sự khác biệt?</b> — Ghi câu nói nguyên văn, giả thuyết về mục tiêu và phương án giải quyết vào ba chỗ riêng; đừng biến câu trích thành chân lý sản phẩm.\n- <b>VI action 2: Thế user có sai?</b> — Không. Lời đề nghị là tín hiệu đáng nghiên cứu, nhưng người thiết kế cần xác nhận mục tiêu, trở ngại và các lựa chọn trước khi đóng giải pháp.\n\n<b>EN · Request versus need:</b> “I need an Export PDF button” might be a solution request. The need is rooted in a goal and context, not necessarily in the button.\n\n- <b>EN action 1: How do I separate them?</b> — Record the verbatim request, the hypothesized goal and a potential solution separately; one quotation is not a validated requirement.\n- <b>EN action 2: Is the user wrong?</b> — No. Their proposal is valuable evidence about a situation, but its ability to solve the need still requires validation."
+          "source_md": "Primary quote candidate: <b>hume-evidence</b>. Alternate IDs: analects-think, mencius-sources. Relevance: Distinguishing mental models from evidence helps prevent a request from becoming an unquestioned requirement.\n\n<b>VI · Yêu cầu khác nhu cầu:</b> “Tôi cần nút Export PDF” có thể là lời đề xuất cách làm. Nhu cầu nằm ở công việc họ phải hoàn thành, không nằm sẵn trong nút.\n\n- <b>VI action 1: Chỉ ra sự khác biệt?</b> — Ghi câu nói nguyên văn, giả thuyết về mục tiêu và phương án giải quyết vào ba chỗ riêng; đừng biến câu trích thành chân lý sản phẩm.\n- <b>VI action 2: Thế user có sai?</b> — Không. Lời đề nghị là tín hiệu đáng nghiên cứu, nhưng người thiết kế cần xác nhận mục tiêu, trở ngại và các lựa chọn trước khi đóng giải pháp.\n\n<b>EN · Request versus need:</b> “I need an Export PDF button” might be a solution request. The need is rooted in a goal and context, not necessarily in the button.\n\n- <b>EN action 1: How do I separate them?</b> — Record the verbatim request, the hypothesized goal and a potential solution separately; one quotation is not a validated requirement.\n- <b>EN action 2: Is the user wrong?</b> — No. Their proposal is valuable evidence about a situation, but its ability to solve the need still requires validation."
         },
         {
           "stage": "guided",
@@ -253,12 +253,12 @@
         {
           "stage": "concept",
           "quote_ids": [
-            "box-models",
+            "hume-evidence",
             "analects-think",
             "mencius-sources"
           ],
           "missing_quote_ids": [],
-          "sourceQuoteHeading": "Primary quote candidate: <b>box-models</b>. Alternate IDs: analects-think, mencius-sources. Relevance: Distinguishing mental models from evidence helps prevent a request from becoming an unquestioned requirement.",
+          "sourceQuoteHeading": "Primary quote candidate: <b>hume-evidence</b>. Alternate IDs: analects-think, mencius-sources. Relevance: Distinguishing mental models from evidence helps prevent a request from becoming an unquestioned requirement.",
           "vi": {
             "prompt": "Tôi cần nút Export PDF” có thể là lời đề xuất cách làm. Nhu cầu nằm ở công việc họ phải hoàn thành, không nằm sẵn trong nút.",
             "actions": [
@@ -471,9 +471,14 @@
       }
     },
     "issues": [],
-    "sourceVerbatim": true,
+    "sourceVerbatim": false,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
     "readOnlyDerived": true,
-    "runnableInReact": false
+    "runnableInReact": false,
+    "githubAuthoredMentorRightsOverride": {
+      "sourcePath": "content/editorial/imported/L03-1-1.source.v1.json",
+      "sourceKey": "content.github_editorial_extensions.mentorQuoteReplacements",
+      "status": "draft_options_remediated_publication_not_cleared"
+    }
   }
 }

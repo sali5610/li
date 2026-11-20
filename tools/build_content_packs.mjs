@@ -252,7 +252,7 @@ function requireCompleteEditorial(l){
   if(!Array.isArray(moments)||moments.length!==6||
    moments.some((m,i)=>m.stage!==stageNames[i]||
     !Array.isArray(m.quote_ids)||m.quote_ids.length<3||
-    m.quote_ids.some(q=>!quotes.has(q))||
+    m.quote_ids.some(q=>!quotes.has(q)||q==='box-models')||
     (m.missing_quote_ids?.length??0)>0||
     ["vi","en"].some(loc=>!m[loc]?.prompt?.trim()||
      m[loc].actions?.length!==2||

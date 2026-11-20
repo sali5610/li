@@ -79,6 +79,55 @@ function render(){
  $("li-diary-checkins").textContent=rec?String(rec.checkins||0):"—";
  const arr=counts(selected);TYPES.forEach((t,i)=>$("li-diary-count-"+t).textContent=rec?String(arr[i]):"—");
  $("li-diary-day-status").textContent=rec?(phy?"Thể trạng tự khai, không phải đo lường sức khỏe.":"Ngày có hoạt động/nhịp học nhưng chưa lưu Check-in thể trạng."):"Ngày này chưa có dữ liệu. Dấu — không đồng nghĩa với không học.";
+ notifyReactDiary();
+}
+
+/* Read-only model and native actions for one React Journal view.
+ * The existing ledger owns dates, deletion/Undo, consent and Neon replication. */
+function getView(){
+ const [yr,mo]=month.split("-").map(Number),numDays=new Date(yr,mo,0).getDate();
+ const offset=(new Date(yr,mo-1,1).getDay()+6)%7;
+ const days=Array.from({length:numDays},(_,i)=>{
+  const key=month+"-"+String(i+1).padStart(2,"0");
+  const record=safeDay(key),arr=counts(key);
+  return {day:i+1,key,recorded:!!record,total:arr.reduce((a,b)=>a+b,0),counts:arr};
+ });
+ const totals=days.filter(day=>day.recorded).reduce((acc,day)=>({
+  recorded:acc.recorded+1,
+  counts:acc.counts.map((value,i)=>value+day.counts[i])
+ }),{recorded:0,counts:[0,0,0]});
+ const record=safeDay(selected),physical=record?.physical||null;
+ return {
+  month,selected,offset,days,totals,
+  monthLabel:$("li-diary-month")?.textContent||month,
+  selectedLabel:$("li-diary-selected")?.textContent||selected,
+  physical:{
+   sleep:physical&&ANSWER[physical.sleep]||"—",
+   move:physical&&ANSWER[physical.move]||"—",
+   rest:physical&&ANSWER[physical.rest]||"—"
+  },
+  mode:record&&MODE[record.mode]||"—",
+  checkins:record?String(record.checkins||0):"—",
+  counts:record?counts(selected).map(String):["—","—","—"],
+  dayStatus:$("li-diary-day-status")?.textContent||"",
+  consentStatus:$("li-diary-consent-status")?.textContent||"",
+  enabled,storageError,hasRecords:Object.keys(diary.days).length>0
+ };
+}
+function actReact(kind,value){
+ if(kind==="select"&&typeof value==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(value)&&
+  value.slice(0,7)===month&&Number(value.slice(8))>=1&&
+  Number(value.slice(8))<=new Date(Number(month.slice(0,4)),Number(month.slice(5)),0).getDate()){
+  selected=value;render();return;
+ }
+ if(kind==="prev"){moveMonth(-1);return;}
+ if(kind==="next"){moveMonth(1);return;}
+ const byAction={checkin:"li-diary-checkin-now",consent:"li-diary-consent",delete:"li-diary-delete"};
+ if(byAction[kind])$(byAction[kind])?.click();
+}
+function notifyReactDiary(){
+ if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
+  window.dispatchEvent(new Event("li:diary-view-changed"));
 }
 function selectDate(e){const key=e.target.closest("button[data-date]")?.dataset.date;if(key){selected=key;render();}}
 $("li-diary-calendar").addEventListener("click",selectDate);
@@ -150,4 +199,5 @@ window.addEventListener?.("li:personal-sync-applied",event=>{
  render(); // Live calendar + check-ins, not a whole-page refresh
 });
 render();
+window.liPersonalDiary=Object.freeze({getView,act:actReact});
 })();

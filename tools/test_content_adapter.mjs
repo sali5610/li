@@ -66,4 +66,23 @@ const relatedUi=readFileSync(new URL("../site/assets/lesson-related-wave1.js",im
 assert.ok(relatedUi.includes('import("./li-content-adapter.mjs")')&&relatedUi.includes("api.getRelatedLessons(id)"));
 assert.ok(relatedUi.includes("li-related-source")&&relatedUi.includes("noopener noreferrer"));
 assert.ok(!relatedUi.includes("const RELATED="),"no parallel hardcoded graph");
+const editorial=JSON.parse(readFileSync(new URL("../content/editorial/L09-1-1.lesson.v1.json",import.meta.url),"utf8"));
+const schema=JSON.parse(readFileSync(new URL("../content/schema/lesson.schema.json",import.meta.url),"utf8"));
+assert.ok(schema.required.every(key=>Object.hasOwn(editorial,key)),"draft carries canonical lesson required attributes");
+assert.equal(editorial.id,"L09-1-1");
+assert.equal(editorial.hierarchy.course.id,"course:C09-1");
+assert.equal(editorial.publishState,"draft");
+assert.equal(editorial.reviewState,"proposed");
+assert.equal(editorial.editorialStatus,"draft");
+assert.deepEqual(editorial.languages,["vi","en"]);
+assert.equal(editorial.practice.questionCount,4);
+for(const locale of ["vi","en"]){
+ assert.ok(editorial.content.localized[locale].independent.prompt_md.includes("256"));
+ assert.equal(editorial.content.localized[locale].independent.model_answer_gate,"AFTER_VALID_INDEPENDENT_SUBMISSION");
+ assert.equal(editorial.content.localized[locale].technique_applications.T06.feedback_gate,"AFTER_T06_MEANINGFUL_ATTEMPT");
+ assert.equal(editorial.content.localized[locale].technique_applications.T07.feedback_gate,"AFTER_T07_MEANINGFUL_ATTEMPT");
+}
+assert.ok(!/Population_versus_sample|source_quote_bank|Loneshieling/.test(JSON.stringify(editorial)),
+ "external image and unreviewed companion quotes excluded from learner-ready draft");
+assert.ok(!indexed.documents.some(x=>x.id==="lesson:L09-1-1"),"draft must not appear in released learner search");
 console.log("LI_CONTENT_ADAPTER_PASS 8 groups / 15 fields / 45 courses / 135 lesson outlines, 3 full lessons, ontology graph and lazy packs");

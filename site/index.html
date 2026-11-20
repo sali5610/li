@@ -924,7 +924,19 @@ window.addEventListener("resize",placeCompanion,{passive:true});
    }catch(e){if(!warned){toast("Không thể tự lưu bản nháp. Hãy sao chép nội dung trước khi thoát.");warned=true;}}
   });
  }
+ // Nhặt Ý owns an in-memory React draft. The notes-only JSON schema has
+ // NO Capture draft field: block unsafe export/import rather than silently
+ // omit or overwrite an uncommitted idea. The user must save or clear it.
+ function liHasPendingCaptureDraft(){
+  const draft=window.liReactRouter?window.liCaptureUi?.getDraft?.():null;
+  return typeof draft==="string"&&draft.trim().length>0;
+ }
  function liExportPersonalData(){
+  if(liHasPendingCaptureDraft()){
+   const message="Nhặt Ý còn bản nháp chưa lưu. Hãy lưu hoặc xóa nháp trước khi xuất bản sao.";
+   toast(window.liLanguage?.translate?.(message)||message);
+   return false;
+  }
   try{
    // React Phản Chứng persists its real draft in the canonical private key.
    // The hidden legacy textarea can be stale (or belong to an earlier account).
@@ -955,6 +967,12 @@ window.addEventListener("resize",placeCompanion,{passive:true});
  }
  async function liImportPersonalData(file){
   if(!file||liBackupImport.loading)return false;
+  if(liHasPendingCaptureDraft()){
+   const message="Nhặt Ý còn bản nháp chưa lưu. Hãy lưu hoặc xóa nháp trước khi nhập bản sao.";
+   liBackupImport.error=window.liLanguage?.translate?.(message)||message;
+   liPublishBackup();
+   return false;
+  }
   liBackupImport.loading=true;liBackupImport.error="";liPublishBackup();
   try{
    if(file.size>10*1024*1024)throw Error("large");

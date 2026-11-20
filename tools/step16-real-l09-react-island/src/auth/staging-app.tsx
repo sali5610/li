@@ -1,7 +1,7 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {AuthPanel} from './AuthPanel.js';
-import {mountLearningJourney} from '../learning/app-entry.js';
+import {mountLearningJourney,mountWave1Journey} from '../learning/app-entry.js';
 import {createStagingLearningPorts} from '../learning/staging-ports.js';
 import {mountSharedNavigation} from '../shell/mount-navigation.js';
 
@@ -64,3 +64,47 @@ else enableIntegratedL09();
 // data-page event delegation remains the temporary route bridge.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountSharedNavigation,{once:true});
 else mountSharedNavigation();
+
+
+/** Invited-only active React Wave1 lessons. Keep the established routes and
+ * native element shell for rollback, but only React owns visible learning UI. */
+function enableIntegratedWave1(){
+ const routes=[
+  {id:'L03-1-2' as const,route:'lessonL03',slug:'l03'},
+  {id:'L15-2-2' as const,route:'lessonL15',slug:'l15'}
+ ];
+ for(const {id,route,slug} of routes){
+  const page=document.getElementById('page-'+route);
+  const legacy=page?.querySelector<HTMLElement>(':scope > .section-shell');
+  if(!page||!legacy)continue;
+  let dispose:(()=>void)|null=null,host:HTMLElement|null=null;
+  const ports=createStagingLearningPorts(id);
+  const update=()=>{
+   const allowed=document.documentElement.classList.contains('li-auth-verified');
+   const active=page.classList.contains('active');
+   if(allowed&&active&&!dispose){
+    const node=document.createElement('div');
+    node.id='li-react-'+slug+'-host';node.className='section-shell';page.append(node);
+    try{
+     dispose=mountWave1Journey(node,id,ports);
+     host=node;legacy.hidden=true;legacy.style.display='none';
+     page.setAttribute('aria-labelledby','li-react-'+id+'-title');
+    }catch{
+     node.remove();
+     legacy.hidden=false;legacy.style.removeProperty('display');
+     throw Error('REACT_WAVE1_MOUNT_FAILED');
+    }
+   }else if((!allowed||!active)&&dispose){
+    dispose();dispose=null;host?.remove();host=null;
+    legacy.hidden=false;legacy.style.removeProperty('display');
+    page.setAttribute('aria-labelledby',slug+'-title');
+   }
+  };
+  const observer=new MutationObserver(update);
+  observer.observe(page,{attributes:true,attributeFilter:['class']});
+  observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+  update();
+ }
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enableIntegratedWave1,{once:true});
+else enableIntegratedWave1();

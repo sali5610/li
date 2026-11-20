@@ -159,8 +159,8 @@ window.LI_CATALOG_DATA=[
     "title": "Công nghệ",
     "fields": [
       {
-        "id": "ux-design",
-        "name": "UX Design",
+        "id": "hci",
+        "name": "Human–Computer Interaction (HCI)",
         "source": "https://app.notion.com/p/41a6cf6db72a816da4ebf6c66338f505",
         "courses": [
           {

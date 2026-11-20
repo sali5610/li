@@ -6,7 +6,7 @@ if(!anchor||!catalog||document.getElementById("page-lessonL03"))return;
 const page=String.raw`
 <section id="page-lessonL03" class="page" tabindex="-1" aria-labelledby="l03-title" data-lesson-id="L03-1-2" data-companion-manifest="./lessons/companion/L03-1-2.json">
  <div class="section-shell">
- <div class="kicker">TECHNOLOGY · UX DESIGN · USER PROBLEMS & RESEARCH BASICS · L03-1-2</div>
+ <div class="kicker">TECHNOLOGY · HCI · USER PROBLEMS & RESEARCH BASICS · L03-1-2</div>
  <div class="library-heading-with-utility library-lesson-heading"><h1 class="display-title" id="l03-title">Open Questions & Interview Bias</h1><div class="library-icon-utility"><button class="library-icon-action" type="button" data-li-bookmark-kind="lesson" data-li-bookmark-id="L03-1-2" aria-label="Lưu bài L03-1-2" title="Lưu bài L03-1-2" aria-pressed="false"><i data-lucide="bookmark" aria-hidden="true"></i></button></div></div>
  <p class="intro" id="l03-intro">Câu hỏi mở chưa chắc là câu hỏi trung lập.</p>
  <div class="l09-hero-tools">

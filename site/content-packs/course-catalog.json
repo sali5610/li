@@ -100,8 +100,8 @@
     },
     {
       "id": "F03",
-      "slug": "ux-design",
-      "title": "UX Design",
+      "slug": "hci",
+      "title": "Human–Computer Interaction (HCI)",
       "groupId": "technology",
       "source": "https://app.notion.com/p/41a6cf6db72a816da4ebf6c66338f505",
       "courseIds": [

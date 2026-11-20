@@ -434,7 +434,9 @@ assert "Muốn nhớ: thử T01/T02" not in (site/"assets"/"laoly-context-s112.j
 # S112 — context-aware companion must be present, parse and pass UI-plan QA.
 companion=site/"assets"/"laoly-context-s112.js"
 assert companion.is_file() and companion.stat().st_size>4000
-assert html.count('<script src="./assets/laoly-context-s112.js?v=20261119-mentor-en"></script>')==1
+# Verify the single canonical companion script tag, independent of its cache-busting version.
+assert html.count('<script src="./assets/laoly-context-s112.js?v=')==1
+assert re.search(r'<script src="\./assets/laoly-context-s112\.js\?v=[a-zA-Z0-9-]+"></script>',html)
 subprocess.run(["node","--check",str(companion)],check=True)
 subprocess.run(["node",str(site.parent/"tools"/"test_buddy.js")],check=True,cwd=site.parent)
 

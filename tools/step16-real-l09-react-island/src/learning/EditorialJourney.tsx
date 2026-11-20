@@ -380,10 +380,13 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    }catch(cause){
     if(cancelled)return;
     const reason=cause instanceof Error?cause.message:'';
+    const storageDenied=reason==='STORAGE_UNAVAILABLE';
     const recordError=reason==='INVALID_ATTEMPT'||reason==='LEARNING_RECORD_TOO_LARGE'||
      reason==='EDITORIAL_ATTEMPT_LOAD_FAILED';
     setBusy(false);
-    setError(recordError?
+    setError(storageDenied?
+     'Trình duyệt đang chặn bộ nhớ lưu bài. Hãy bật quyền lưu dữ liệu cho trang rồi thử lại; app chưa tạo hoặc ghi đè bài làm.':
+     recordError?
      'Không đọc được bản lưu của bài học. App chưa đặt lại hoặc ghi đè dữ liệu cũ. Hãy kiểm tra Tủ Riêng / đồng bộ trước khi thử lại.':
      'Bài chưa phát hành, thiếu nội dung hợp lệ hoặc chưa xác minh được quyền học.');
    }
@@ -450,10 +453,13 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    revision.current=result.revision;
     if(mounted.current)setPersistedAttempt(next);
     return true;
-  }).catch(()=>{
+  }).catch(cause=>{
    failed.current=true;
    if(mounted.current){
-    setLocked(true);setError('Lưu thất bại. Giữ trang mở để thử lại, không ghi đè thiết bị khác.');
+    const denied=cause instanceof Error&&cause.message==='STORAGE_UNAVAILABLE';
+    setLocked(true);setError(denied?
+     'Trình duyệt chặn lưu dữ liệu. Giữ trang mở, cấp quyền lưu rồi thử lại; chưa xác nhận bản nháp đã lưu.':
+     'Lưu thất bại. Giữ trang mở để thử lại, không ghi đè thiết bị khác.');
    }
    return false;
   });

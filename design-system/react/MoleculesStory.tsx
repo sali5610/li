@@ -1,7 +1,7 @@
 import React,{useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {ActionGroup,Button,InlineFeedback,SearchField,SaveStatus,LanguageSwitch,FilterGroup,ListRow,Breadcrumb} from './index';
-import type {FeedbackTone,SaveState} from './index';
+import {ActionGroup,Button,InlineFeedback,SearchField,SaveStatus,LanguageSwitch,FilterGroup,ListRow,Breadcrumb,SourceStatus,Disclosure,ActionMenu} from './index';
+import type {FeedbackTone,SaveState,SourceReviewState} from './index';
 import './components.css';
 import './controls.css';
 import './molecules.css';
@@ -80,6 +80,45 @@ function Example(){
   <p>{t('Trang cuối là vị trí hiện tại.','The final item marks the current page.')}</p>
  </div>;
 
+
+ const [disclosureOpened,setDisclosureOpened]=useState(state==='open');
+ const [menuAction,setMenuAction]=useState(0);
+ if(story==='sourceStatus'){
+  const sourceState:SourceReviewState=(
+   ['unreviewed','linked','reviewed','unavailable'].includes(state)?state:'unreviewed'
+  ) as SourceReviewState;
+  const labels:Record<SourceReviewState,[string,string]>={
+   unreviewed:['Chưa kiểm chứng (mẫu)','Not reviewed (demo)'],
+   linked:['Đã gắn nguồn (mẫu)','Source linked (demo)'],
+   reviewed:['Đã kiểm tra (mẫu)','Reviewed (demo)'],
+   unavailable:['Chưa có nguồn (mẫu)','Source unavailable (demo)']
+  };
+  return <div data-story-source-status>
+   <SourceStatus title={t('Thông tin nguồn','Source information')}
+    sourceLabel={t('NIST — tài liệu tham khảo minh họa','NIST — example reference')}
+    href={sourceState==='unavailable'?undefined:'https://www.nist.gov/'}
+    state={sourceState} statusLabel={t(...labels[sourceState])}
+    detail={t('Trạng thái mẫu, không xác minh nội dung bài học.',
+     'Demo status; no course content was verified.')}/>
+  </div>;
+ }
+ if(story==='disclosure')return <div data-story-disclosure>
+  <Disclosure summary={t('Đọc giải thích','Read explanation')}
+   defaultOpen={state==='open'} onOpenChange={setDisclosureOpened}>
+   <p>{t('Giải thích mẫu: dữ liệu học thuật phải có nguồn và liên kết rõ ràng.',
+    'Example: academic content should be supported by traceable sources.')}</p>
+  </Disclosure>
+  <p role="status">{disclosureOpened?t('Đang mở','Expanded'):t('Đang đóng','Collapsed')}</p>
+ </div>;
+ if(story==='actionMenu')return <div data-story-action-menu>
+  <ActionMenu label={t('Thao tác','Actions')} items={[
+   {id:'details',label:t('Xem chi tiết','View details'),onSelect:()=>setMenuAction(n=>n+1)},
+   {id:'guide',label:t('Mở tài liệu React','Open React docs'),href:'https://react.dev/'},
+   {id:'disabled',label:t('Chưa khả dụng','Unavailable'),disabled:true}
+  ]}/>
+  <p role="status">{t('Lượt bấm hành động: ','Action clicks: ')}{menuAction}</p>
+ </div>;
+
  if(story==='searchField')return <div data-story-search>
   <SearchField label={t('Tra cứu thử','Demo search')} value={query} onQueryChange={setQuery}
    onSearch={setSubmitted} disabled={disabled}
@@ -113,7 +152,7 @@ function Story(){
  return <main className="li-molecules-story" data-ui-react-molecules="mounted"
   data-molecule={story} lang={en?'en':'vi'}>
   <p className="li-molecules-kicker">UX-DS-35 / STAGE05 / REACT</p>
-  <h1>{({searchField:'Search Field',actionGroup:'Action Group',feedback:'Inline Feedback',saveStatus:'Save Status',languageSwitch:'Language Switch',filterGroup:'Filter Group',listRow:'List Row',breadcrumb:'Breadcrumb'} as Record<string,string>)[story]||'Molecule'}</h1>
+  <h1>{({searchField:'Search Field',actionGroup:'Action Group',feedback:'Inline Feedback',saveStatus:'Save Status',languageSwitch:'Language Switch',filterGroup:'Filter Group',listRow:'List Row',breadcrumb:'Breadcrumb',sourceStatus:'Source Status',disclosure:'Disclosure',actionMenu:'Action Menu'} as Record<string,string>)[story]||'Molecule'}</h1>
   <div className="li-molecules-sample"><Example/></div>
   <p className="li-molecules-footnote">{t('Chỉ là fixture UI · Không thực hiện tìm kiếm hoặc lưu.',
   'UI fixture only · No server search or storage.')}</p>

@@ -88,11 +88,28 @@ export async function capturePersonalState(uid:string,api:NeonUserApi|null,
   if(!active(uid,field))continue;
   const raw=localStorage.getItem(field.key);
   snapshots.push({field,raw});
+  const firstObservation=!seen.has(field.key);
   seen.set(field.key,raw);
   const key=storageKey(uid,field.type,field.id);
   let current=await store.records.get(key);
   // A missing local field on a fresh device means remote hydration, NOT deletion.
   if(raw===null)continue;
+  // The app defaults diary recording ON on a fresh device before Auth runs.
+  // The signed account's already-downloaded preference takes precedence; if
+  // real local diary work differs, retain BOTH versions as an explicit conflict.
+  if(field.diary&&firstObservation&&current&&!current.deletedAt&&
+     current.baseRevision>0&&!(await store.outbox.get(key))){
+   const cloudRaw=unpack(current.payload,field.key);
+   if(cloudRaw!==raw){
+    const untouchedDefault=field.key==='li.personal.daily.enabled.v1'&&
+     raw==='true'&&localStorage.getItem('li.personal.daily.v1')===null;
+    if(untouchedDefault)continue; // hydrate signed preference, no spurious PUT
+    await store.edit(uid,field.type,field.id,wrap(field,raw));
+    const op=await store.outbox.get(key);
+    if(op)await store.reject(uid,op); // no silent overwrite of real journal
+    continue;
+   }
+  }
   if(!current&&api){
    try{
     const remote=await api.one(field.type,field.id);

@@ -6,8 +6,8 @@
   "derivedDraftDirectory": "content/editorial/normalized/",
   "totalCanonicalDrafts": 17,
   "mechanicallySectionedAndSeparated": 17,
-  "withSourceMentorIssues": 2,
-  "structurallyParsedWithoutKnownBlockingDefects": 15,
+  "withSourceMentorIssues": 0,
+  "structurallyParsedWithoutKnownBlockingDefects": 17,
   "approved": 0,
   "packaged": 0,
   "deployed": 0,
@@ -85,10 +85,8 @@
       "normalizedPath": "content/editorial/normalized/L09-2-1.draft.v1.json",
       "publishState": "draft",
       "reviewState": "proposed",
-      "extractionStatus": "needs_source_mentor_fix",
-      "issues": [
-        "Source includes literal undefined in Lão Lý stage dialogue"
-      ],
+      "extractionStatus": "sectioned_needs_academic_review",
+      "issues": [],
       "rightsState": "not_verified",
       "reactRendererReleased": false
     },
@@ -120,10 +118,8 @@
       "normalizedPath": "content/editorial/normalized/L09-3-1.draft.v1.json",
       "publishState": "draft",
       "reviewState": "proposed",
-      "extractionStatus": "needs_source_mentor_fix",
-      "issues": [
-        "Source includes literal undefined in Lão Lý stage dialogue"
-      ],
+      "extractionStatus": "sectioned_needs_academic_review",
+      "issues": [],
       "rightsState": "not_verified",
       "reactRendererReleased": false
     },

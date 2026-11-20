@@ -118,7 +118,7 @@
         {
           "stage": "opening",
           "heading": "opening · L09-3-1",
-          "source_md": "Candidate quote IDs: analects-honesty, mencius-sources, hume-evidence; primary analects-honesty.\n\nVI action 1: Ngươi nghĩ mô hình được chấm điểm lần đầu lúc nào? — Lão Lý: Sau khi tất cả lựa chọn đã chốt, không phải lúc đang lựa threshold.\n\nVI action 2: Kiểm tra thử xem preprocessing có nhìn sang test chưa. — Lão Lý: undefined\n\nEN action 1: Before we look at a score, when should a model first see its final exam? — Old Li: Only after every modeling choice is settled—not while picking a threshold.\n\nEN action 2: Check if preprocessing peeked at the test rows. — Old Li: undefined"
+          "source_md": "Candidate quote IDs: analects-honesty, mencius-sources, hume-evidence; primary analects-honesty.\n\nVI action 1: Ngươi nghĩ mô hình được chấm điểm lần đầu lúc nào? — Lão Lý: Sau khi tất cả lựa chọn đã chốt, không phải lúc đang lựa threshold.\n\nVI action 2: Kiểm tra thử xem preprocessing có nhìn sang test chưa. — Lão Lý: Nếu chuẩn hóa hoặc chọn feature bằng toàn bộ dữ liệu trước khi tách, test đã rò vào bước chuẩn bị. Tách train/test trước, rồi chỉ fit các bước học tham số trên train.\n\nEN action 1: Before we look at a score, when should a model first see its final exam? — Old Li: Only after every modeling choice is settled—not while picking a threshold.\n\nEN action 2: Check if preprocessing peeked at the test rows. — Old Li: If scaling or feature selection was fitted on all rows before splitting, test information leaked into preparation. Split first, then fit learned preprocessing only on train."
         },
         {
           "stage": "concept",
@@ -160,10 +160,10 @@
   "provenance": {
     "sourceUrl": "https://app.notion.com/p/41d6cf6db72a81d6a0e1d27b886b3362",
     "rawSourcePath": "content/editorial/imported/L09-3-1.source.v1.json",
-    "sourceBodyCharacters": 17739
+    "sourceBodyCharacters": 18060
   },
   "normalization": {
-    "status": "needs_editorial_correction",
+    "status": "sectioned_needs_academic_rights_and_release_review",
     "counts": {
       "vi": {
         "sections": 7,

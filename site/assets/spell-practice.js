@@ -76,10 +76,11 @@ function switchTab(which){
   if(tabDraft){[...root.querySelectorAll("textarea,input")].forEach((el,i)=>{const d=tabDraft[i];if(d){el.value=d.value;el.checked=d.checked;}});tabDraft=null;}
  }
 }
-function open(id){
+function open(id,tab="guide"){
  if(!Object.prototype.hasOwnProperty.call(exercises,id))return;
  active=id;phase=0;feedback="";privatePlaces=[];resumeNote="";
- if(root)switchTab("guide");tabDraft=null;
+ tabDraft=null;
+ if(root)switchTab(tab==="practice"?"practice":"guide");
 }
 function missing(){
  for(const f of exercises[active].fields){

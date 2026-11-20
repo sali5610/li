@@ -296,19 +296,32 @@ export function mountHomeAndCatalog(){
  if(!home||!catalog||!oldHome||!oldCatalog||!app.liCatalog){
   throw Error('REACT_HOME_CATALOG_PORTS_REQUIRED');
  }
- const homeHost=document.createElement('div');
- homeHost.id='li-react-home-host';
- const catalogHost=document.createElement('div');
- catalogHost.id='li-react-catalog-host';
- catalogHost.className='section-shell';
- home.append(homeHost);catalog.append(catalogHost);
- const homeRoot=createRoot(homeHost),catalogRoot=createRoot(catalogHost);
- homeRoot.render(<Home/>);catalogRoot.render(<Catalog/>);
- oldHome.hidden=true;oldHome.style.display='none';
- oldCatalog.hidden=true;oldCatalog.style.display='none';
- return ()=>{
-  homeRoot.unmount();catalogRoot.unmount();homeHost.remove();catalogHost.remove();
-  oldHome.hidden=false;oldHome.style.removeProperty('display');
-  oldCatalog.hidden=false;oldCatalog.style.removeProperty('display');
+ // Avoid constructing learner-specific Home bookmarks and course progress in
+ // the DOM before the Neon invitation + per-account owner checks succeed.
+ let dispose:(()=>void)|null=null;
+ const update=()=>{
+  const allowed=document.documentElement.classList.contains('li-auth-verified');
+  if(allowed&&!dispose){
+   const homeHost=document.createElement('div');
+   homeHost.id='li-react-home-host';
+   const catalogHost=document.createElement('div');
+   catalogHost.id='li-react-catalog-host';catalogHost.className='section-shell';
+   home.append(homeHost);catalog.append(catalogHost);
+   const homeRoot=createRoot(homeHost),catalogRoot=createRoot(catalogHost);
+   homeRoot.render(<Home/>);catalogRoot.render(<Catalog/>);
+   oldHome.hidden=true;oldHome.style.display='none';
+   oldCatalog.hidden=true;oldCatalog.style.display='none';
+   dispose=()=>{
+    homeRoot.unmount();catalogRoot.unmount();homeHost.remove();catalogHost.remove();
+    oldHome.hidden=false;oldHome.style.removeProperty('display');
+    oldCatalog.hidden=false;oldCatalog.style.removeProperty('display');
+   };
+  }else if(!allowed&&dispose){
+   dispose();dispose=null;
+  }
  };
+ const observer=new MutationObserver(update);
+ observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+ update();
+ return ()=>{observer.disconnect();dispose?.();};
 }

@@ -11,6 +11,65 @@
 }
 #li-react-home-host .hero-left .home-checkin>span{display:inline-flex;align-items:center;gap:var(--li-space-2)}
 #li-react-home-host .hero-dialogue-bubble .li-atom-text{margin:0}
+/* Cinematic Home v1 · keeps the canonical 2026-11-21 artwork and existing crop.
+   Flat art remains one image: only its camera, light and UI respond to motion. */
+#li-react-home-host .hero::before{
+ transform:translate3d(var(--li-home-depth-x,0px),var(--li-home-depth-y,0px),0) scale(1.025);
+ transform-origin:center;
+ transition:transform 700ms cubic-bezier(.2,.65,.2,1);
+ will-change:transform;
+}
+#li-react-home-host .li-home-ambient{
+ position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+}
+#li-react-home-host .li-home-ambient-glow{
+ position:absolute;left:49%;top:43%;width:min(46vw,430px);aspect-ratio:1;
+ transform:translate(-50%,-50%) scale(.94);
+ border-radius:50%;
+ background:radial-gradient(circle,
+  color-mix(in srgb,var(--cream) 14%,transparent) 0%,
+  color-mix(in srgb,var(--cream) 6%,transparent) 36%,
+  transparent 70%);
+ animation:li-home-breathe 8s ease-in-out infinite alternate;
+}
+#li-react-home-host .li-home-glint{
+ position:absolute;width:14px;height:14px;background:var(--cream);opacity:.18;
+ clip-path:polygon(50% 0,57% 42%,100% 50%,57% 58%,50% 100%,43% 58%,0 50%,43% 42%);
+ animation:li-home-twinkle 5.8s ease-in-out infinite;
+}
+#li-react-home-host .li-home-glint-one{top:21%;left:25%}
+#li-react-home-host .li-home-glint-two{top:31%;right:19%;width:9px;height:9px;animation-delay:-2.7s}
+#li-react-home-host .li-home-mirror-inner{
+ width:100%;display:flex;flex-direction:column;align-items:center;gap:inherit;
+ transform-origin:center;
+}
+#li-react-home-host .li-home-mirror-inner>div[aria-live]{width:100%}
+#li-react-home-host .mirror-refresh{transition:background-color .18s ease,box-shadow .18s ease}
+#li-react-home-host .mirror-refresh:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
+#li-react-home-host .hero-actions .primary{transition:transform .2s ease,box-shadow .2s ease}
+@keyframes li-home-breathe{
+ from{opacity:.48;transform:translate(-50%,-50%) scale(.94)}
+ to{opacity:.82;transform:translate(-50%,-50%) scale(1.10)}
+}
+@keyframes li-home-twinkle{
+ 0%,100%{opacity:.10;transform:scale(.8)}
+ 45%{opacity:.28;transform:scale(1.08)}
+}
+@media(max-width:600px){
+ #li-react-home-host .li-home-ambient-glow{left:47%;top:42%;width:min(72vw,330px)}
+ #li-react-home-host .li-home-glint-one{top:19%;left:21%}
+ #li-react-home-host .li-home-glint-two{top:26%;right:10%}
+}
+@media(prefers-reduced-motion:reduce){
+ #li-react-home-host .hero::before{transform:none!important;transition:none!important;will-change:auto}
+ #li-react-home-host .li-home-ambient-glow,
+ #li-react-home-host .li-home-glint{animation:none!important;transition:none!important}
+ #li-react-home-host .li-home-ambient-glow{opacity:.4;transform:translate(-50%,-50%)}
+ #li-react-home-host .li-home-glint{opacity:.12}
+ #li-react-home-host .mirror-refresh,
+ #li-react-home-host .hero-actions .primary{transition:none!important}
+}
+
 #li-react-catalog-host .catalog-crumb{min-height:44px}
 #li-react-catalog-host .catalog-lesson-desc{flex:1;min-width:0}
 #li-react-catalog-host .catalog-course-card .catalog-card-action{align-self:flex-start;margin-top:auto}

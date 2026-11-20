@@ -189,11 +189,11 @@ $("li-note-save").addEventListener("click",()=>{
 });
 /* One delete path for the collection row and detail icon: same confirmation,
    persisted removal, 7-second Undo and rollback on storage failure. */
-function deleteNote(type,id){
+function deleteNote(type,id,confirmed=false){
  const arr=listFor(type),index=arr?.findIndex(item=>item.id===id);
  if(!arr||index<0||liStorageError)return false;
  const note=arr[index];
- if(!window.confirm("Xóa ghi chép này và toàn bộ lịch sử phiên bản? Bạn có 7 giây để hoàn tác."))return false;
+ if(!confirmed&&!window.confirm("Xóa ghi chép này và toàn bộ lịch sử phiên bản? Bạn có 7 giây để hoàn tác."))return false;
  arr.splice(index,1);
  if(!liWriteState()){
   arr.splice(index,0,note);
@@ -301,16 +301,16 @@ function saveFromReact(title,body,baseVersion){
  refreshAfterChange();toast("Đã lưu phiên bản mới; bản cũ vẫn nằm trong lịch sử.");
  return {ok:true,changed:true,message:ui("Đã lưu phiên bản mới.","Saved a new version.")};
 }
-function restoreFromReact(version){
+function restoreFromReact(version,confirmed=false){
  const note=current();if(!note||liStorageError)return false;
  const record=historyFor(note,active.type).find(item=>item.version===version);
  if(!record||record.version===historyFor(note,active.type).length)return false;
- if(!window.confirm(ui("Khôi phục phiên bản ","Restore version ")+version+
+ if(!confirmed&&!window.confirm(ui("Khôi phục phiên bản ","Restore version ")+version+
   ui("? Một phiên bản mới sẽ được tạo; lịch sử cũ được giữ nguyên.","? A new version will be created; history stays intact.")))return false;
  if(!saveVersion(active.type,active.id,record.title,record.body,"Khôi phục phiên bản "+version)){
   toast("Không lưu được phiên bản khôi phục. Lịch sử vẫn giữ nguyên.");return false;
  }
  refreshAfterChange();toast("Đã khôi phục thành phiên bản mới.");return true;
 }
-window.liNotes=Object.freeze({openDetail,renderDetail,deleteNote,getView,saveFromReact,restoreFromReact});
+window.liNotes=Object.freeze({openDetail,renderDetail,deleteNote,deleteFromReact:(type,id)=>deleteNote(type,id,true),getView,saveFromReact,restoreFromReact});
 })();

@@ -11,6 +11,28 @@ import {fileURLToPath} from 'node:url';
 import {createContentClient} from '../site/assets/li-content-adapter.mjs';
 
 const sourceRoot=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+// Verify all 17 migrated manuscripts in the existing focused content check.
+const draftIndex=JSON.parse(readFileSync(join(sourceRoot,'content/editorial/normalized/index.v1.json'),'utf8'));
+assert.equal(draftIndex.entries.length,17);
+let methodGated=0;
+for(const entry of draftIndex.entries){
+ const draft=JSON.parse(readFileSync(join(sourceRoot,entry.normalizedPath),'utf8'));
+ assert.equal(draft.publishState,'draft');
+ assert.equal(draft.rights.releaseAuthorized,false);
+ for(const loc of ['vi','en']){
+  const c=draft.content.localized[loc],m=c.sections.find(s=>s.role==='methods');
+  assert.ok(m&&c.sections.some(s=>s.role==='guided'),'Missing method/guided sections '+entry.id+' '+loc);
+  assert.doesNotMatch(m.body_md,/<b>(?:Phản hồi|Đối chiếu sau|Feedback|After-attempt feedback|EDITORIAL GUIDED FEEDBACK|Chỉ hiện phản hồi)/i,'Early method feedback '+entry.id+' '+loc);
+  for(const g of c.sections.filter(s=>s.role==='guided'))
+   assert.doesNotMatch(g.body_md,/<b>(?:ĐÁP ÁN SAU LƯỢT LUYỆN|FEEDBACK AFTER GUIDED ATTEMPT)/i,'Early guided answer '+entry.id+' '+loc);
+  if(entry.id!=='L09-3-2'){
+   assert.ok(m.feedback_md?.trim()&&m.feedback_gate==='AFTER_MEANINGFUL_METHOD_ATTEMPT','Missing gated method feedback '+entry.id+' '+loc);
+   methodGated++;
+  }
+ }
+}
+assert.equal(methodGated,32);
+console.log('LI_BATCH_17_METHOD_GATE_PASS: 16 bilingual pairs gated; L09-3-2 still draft');
 const temp=mkdtempSync(join(tmpdir(),'li-content-onboarding-'));
 const load=path=>JSON.parse(readFileSync(join(temp,path),'utf8'));
 const save=(path,data)=>writeFileSync(join(temp,path),JSON.stringify(data,null,2)+'\n');

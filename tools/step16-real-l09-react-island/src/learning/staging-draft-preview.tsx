@@ -171,7 +171,7 @@ export function mountStagingDraftPreview():void{
  button.type='button';button.className='tool-button';
  button.textContent='17 bài';
  button.setAttribute('aria-label','Học thử 17 bài riêng trên staging');
- button.hidden=true;tools.append(button);
+ button.hidden=true;button.style.display='none';tools.after(button);
  button.addEventListener('click',()=>{
   if(!document.documentElement.classList.contains('li-auth-verified'))return;
   const nav=window as Window&{liAppRouter?:{navigate:(id:string)=>boolean}};
@@ -180,7 +180,7 @@ export function mountStagingDraftPreview():void{
  let dispose:(()=>void)|null=null;
  const update=()=>{
   const verified=document.documentElement.classList.contains('li-auth-verified');
-  button.hidden=!verified;
+  button.hidden=!verified;button.style.display=verified?'':'none';
   if(verified&&page.classList.contains('active')&&!dispose){
    const root=createRoot(host);
    root.render(<BatchPreview/>);

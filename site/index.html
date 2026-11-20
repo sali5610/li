@@ -923,7 +923,6 @@ window.addEventListener("resize",placeCompanion,{passive:true});
    toast("Đã tạo bản sao dữ liệu. Hãy kiểm tra tệp trong mục Tải về.");
   }catch(e){toast("Không thể xuất bản sao. Hãy thử lại.");}
  }
- document.getElementById("export-personal-data")?.addEventListener("click",liExportPersonalData);
 
  // S110 canonical validator and rollback shared by native fallback and React.
  const importTrigger=document.getElementById("import-personal-trigger");
@@ -1005,14 +1004,23 @@ window.addEventListener("resize",placeCompanion,{passive:true});
   export:liExportPersonalData,importFile:liImportPersonalData,
   getView:()=>({...liBackupImport})
  });
- // Native fallback still opens the platform file chooser. React owns its input.
- importTrigger?.addEventListener("click",()=>importInput?.click());
- document.getElementById("import-state-retry")?.addEventListener("click",()=>importInput?.click());
- importInput?.addEventListener("change",()=>{
-  const selected=importInput.files?.[0];
-  if(selected)void liImportPersonalData(selected);
-  importInput.value="";
- });
+ // Invited staging React owns the visible file picker and backup buttons.
+ // Install old DOM listeners only in standalone native fallback, AFTER the
+ // publisher has had a chance to add the invited auth root.
+ function mountNativeBackupFallback(){
+  if(document.getElementById("li-staging-auth-root"))return;
+  document.getElementById("export-personal-data")?.addEventListener("click",liExportPersonalData);
+  importTrigger?.addEventListener("click",()=>importInput?.click());
+  document.getElementById("import-state-retry")?.addEventListener("click",()=>importInput?.click());
+  importInput?.addEventListener("change",()=>{
+   const selected=importInput.files?.[0];
+   if(selected)void liImportPersonalData(selected);
+   importInput.value="";
+  });
+ }
+ if(document.readyState==="loading")
+  document.addEventListener("DOMContentLoaded",mountNativeBackupFallback,{once:true});
+ else mountNativeBackupFallback();
  if(liStorageError)toast("Không đọc được dữ liệu đã lưu. Tạm dừng ghi mới để tránh ghi đè.");
 })();
 window.addEventListener("li:personal-sync-applied",event=>{

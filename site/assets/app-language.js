@@ -221,7 +221,9 @@ function ignored(node,forAttrs=false){
  // React can cause content/text reconciliation races, especially in navigation.
  // The legacy translator remains available for native fallback and other
  // authored strings until they are localized declaratively.
- const reactOwned=p.closest?.('[data-li-react-navigation],#li-react-global-back-root,.li-react-language-card,[data-li-react-screen="catalog"]');
+ // React roots (including lesson hosts and dialogs) own their own localized render.
+  // Never rewrite their text nodes behind React's reconciliation.
+  const reactOwned=p.closest?.('[id^="li-react-"],[data-li-react-navigation],[data-li-react-screen],[data-react-owner],.li-react-language-card,#li-staging-auth-root,#buddy-modal,.laoly-support,.header .brand,.app > .footer,#toast');
  if(reactOwned)return true;
  // Do not touch learner-entered textarea text; its placeholder/ARIA still needs locale.
  return Boolean(p.closest?.(shared))||(!forAttrs&&Boolean(p.closest?.('textarea,[contenteditable]')));
@@ -292,7 +294,8 @@ function set(next){
 }
 window.liLanguage={get,set,translate:value=>locale==="en"?tr(value):String(value??""),translateComposed:value=>locale==="en"?trComposed(value):String(value??""),apply,key:KEY};
 const region=document.querySelector("#page-settings .settings-group-grid");
-if(region&&!document.getElementById("li-global-language")){
+// React Settings renders its own locale picker. The native picker is only a fallback.
+if(region&&!document.getElementById("li-staging-auth-root")&&!document.getElementById("li-global-language")){
  const card=document.createElement("article");card.id="li-global-language";card.className="surface li-global-language";
  const kicker=document.createElement("div");kicker.className="kicker";kicker.textContent="NGÔN NGỮ TOÀN APP";
  const title=document.createElement("h2");title.textContent="Ngôn ngữ";

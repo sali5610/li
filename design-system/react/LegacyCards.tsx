@@ -1,6 +1,7 @@
 import React from 'react';
 import type {ReactNode} from 'react';
 import {Card} from './Components';
+import {LiIcon} from './LucideIcons';
 
 export type EditorialSurface='cream'|'ivory'|'secondary'|'dark';
 export interface EditorialCardProps {
@@ -29,7 +30,7 @@ export function MethodTile({code,title,original,purpose,icon,variant='primary',
   <span className="li-legacy-method-kicker">{icon?<span aria-hidden="true">{icon}</span>:null}{code}</span>
   <strong>{title}</strong>{original?<span className="li-legacy-method-original">{original}</span>:null}
   <span className="li-legacy-method-purpose">{purpose}</span>
-  <span className="li-legacy-method-cta">{actionLabel} <span aria-hidden="true">→</span></span>
+  <span className="li-legacy-method-cta">{actionLabel} <LiIcon name="arrow-right" size={16}/></span>
  </>;
  const attrs={className:'li-legacy-method', 'data-li-legacy':'method-tile',
   'data-variant':variant} as const;

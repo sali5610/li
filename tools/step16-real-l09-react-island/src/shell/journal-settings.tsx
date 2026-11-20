@@ -1,7 +1,6 @@
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Button,Card,Checkbox,Field,Heading,InlineFeedback,LiIcon,Text} from '../../../../design-system/react/index';
-import {ReceiptCanaryPanel} from '../auth/ReceiptCanaryPanel.js';
 import './journal-settings.css';
 
 /** One authenticated app. Canonical personal-diary.js and the legacy settings
@@ -335,7 +334,6 @@ export function Settings(){
        'Nhật Ký chỉ đồng bộ cloud khi được cho phép riêng. Ghi chép không tự gửi đến AI bên ngoài. Quản lý phiên đăng nhập trong Tài khoản.',
        'Journal cloud sync requires separate permission. Notes are not automatically sent to an external AI. Manage sign-in in Account.')}</Text>
      </Card>
-     <ReceiptCanaryPanel/>
     </div>
    </section>
   </div>

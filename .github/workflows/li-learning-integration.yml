@@ -38,6 +38,7 @@ jobs:
           node --check ../../site/assets/lesson-spell-suggestions.js
           node --check ../../site/assets/spell-practice.js
           node ../../tools/test_lesson_spell_suggestions.cjs
+          node ../../tools/test_lesson_companion_react_stage.cjs
           npm run extract
           npm run test:sync
           npx tsc --noEmit

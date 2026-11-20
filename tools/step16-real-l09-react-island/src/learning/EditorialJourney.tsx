@@ -44,7 +44,11 @@ type EditorialLesson={
  id:string;version:string;title:Record<Locale,string>;hierarchy:{field:{title:string}};
  content:{format:'editorial-structured-v1';localized:Record<Locale,Localized>};
  publishState:'review_only';reviewState:'verified'|'approved';
- rights:{text:'first_party'};
+ rights:{
+  text:'first_party';illustration:'first_party_original_svg';
+  quotations:{policy:'public_domain_original_short_excerpt_with_first_party_gloss';
+   quoteIds:string[];externalAcademicSources:'reference_only_no_reproduced_licensed_figures'};
+ };
  sources:{title:string;url:string;usage?:string}[];
 };
 type EditorialAttempt=Attempt;
@@ -107,7 +111,11 @@ function parseLesson(source:unknown,id:string):EditorialLesson{
  const l=source as Partial<EditorialLesson>;
  if(l.id!==id||l.publishState!=='review_only'||
   !['verified','approved'].includes(l.reviewState??'')||
-  l.rights?.text!=='first_party'||l.content?.format!=='editorial-structured-v1'||
+  l.rights?.text!=='first_party'||l.rights.illustration!=='first_party_original_svg'||
+  l.rights.quotations?.policy!=='public_domain_original_short_excerpt_with_first_party_gloss'||
+  l.rights.quotations.externalAcademicSources!=='reference_only_no_reproduced_licensed_figures'||
+  !Array.isArray(l.rights.quotations.quoteIds)||l.rights.quotations.quoteIds.length<6||
+  l.content?.format!=='editorial-structured-v1'||
   !l.version||!l.title?.vi||!l.title?.en||!l.content.localized?.vi||!l.content.localized?.en)
    throw Error('EDITORIAL_NOT_REVIEWED_OR_NOT_PUBLISHED');
  for(const locale of ['vi','en'] as const){
@@ -135,7 +143,8 @@ function parseLesson(source:unknown,id:string):EditorialLesson{
      m.stage!==['opening','concept','guided','independent','reflection','extension'][index]||
      !m.prompt_md||m.actions?.length!==2||m.actions.some(a=>!a.label||!a.reply_md)||
      !m.quote_id||!Array.isArray(m.quote_ids)||m.quote_ids.length<3||
-     m.quote_ids[0]!==m.quote_id))
+     m.quote_ids[0]!==m.quote_id||
+     m.quote_ids.some(id=>!l.rights?.quotations?.quoteIds.includes(id))))
     throw Error('EDITORIAL_REQUIRED_EXPERIENCE_ELEMENTS_MISSING');
  }
  return l as EditorialLesson;

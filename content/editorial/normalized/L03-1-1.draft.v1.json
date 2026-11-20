@@ -93,8 +93,8 @@
             "id": "en-05",
             "role": "independent",
             "heading": "4. Fresh independent challenge",
-            "body_md": "An operations employee writes: <b>“Add WhatsApp notifications whenever an order has a problem. That's the only way we won't miss important cases.”</b> No additional research has yet been done.\n\n1. Identify the feature request and draft one <b>testable need hypothesis</b> that does not require WhatsApp.\n2. Write two neutral questions about the person's last real incident.\n3. Give two different solution directions and one risk or assumption to check for each.\n4. Write the most defensible PM conclusion <b>now</b>, identifying what the evidence does not establish.\n\n<b>Non-spoiler hint:</b> separate the verbatim quote, plausible goal, missing evidence and technical options. Use hypothesis language.\n\n<b>Model response \\[after attempt only\\]:</b> WhatsApp is the requested channel, not a validated universal need. A plausible need is to notice and respond to important exceptions early enough to prevent order impact. Ask for the last missed event and current monitoring habits. Alternative concepts include conditional in-app alerts and a prioritized exception queue; evaluate alert fatigue, privacy and usability. The only established fact is that this <i>one person</i> proposed WhatsApp, not that all workers require it.",
-            "model_answer_md": null,
+            "body_md": "An operations employee writes: <b>“Add WhatsApp notifications whenever an order has a problem. That's the only way we won't miss important cases.”</b> No additional research has yet been done.\n\n1. Identify the feature request and draft one <b>testable need hypothesis</b> that does not require WhatsApp.\n2. Write two neutral questions about the person's last real incident.\n3. Give two different solution directions and one risk or assumption to check for each.\n4. Write the most defensible PM conclusion <b>now</b>, identifying what the evidence does not establish.\n\n<b>Non-spoiler hint:</b> separate the verbatim quote, plausible goal, missing evidence and technical options. Use hypothesis language.",
+            "model_answer_md": "<b>Model response \\[after attempt only\\]:</b> WhatsApp is the requested channel, not a validated universal need. A plausible need is to notice and respond to important exceptions early enough to prevent order impact. Ask for the last missed event and current monitoring habits. Alternative concepts include conditional in-app alerts and a prioritized exception queue; evaluate alert fatigue, privacy and usability. The only established fact is that this <i>one person</i> proposed WhatsApp, not that all workers require it.",
             "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
@@ -157,30 +157,29 @@
     "sourceBodyCharacters": 33389
   },
   "normalization": {
-    "status": "needs_editorial_correction",
+    "status": "sectioned_needs_academic_rights_and_release_review",
     "counts": {
       "vi": {
-        "sections": 7,
+        "chapters": 7,
         "independent": 1,
-        "solution": 1,
-        "method": 1,
-        "rubric": 1,
-        "spoilersInPrompts": 0
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       },
       "en": {
-        "sections": 6,
+        "chapters": 6,
         "independent": 1,
-        "solution": 0,
-        "method": 1,
-        "rubric": 1,
-        "spoilersInPrompts": 0
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       }
     },
-    "issues": [
-      "en:model_answer_not_isolated"
-    ],
+    "issues": [],
     "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "readOnlyDerived": true,
     "runnableInReact": false
   }
 }

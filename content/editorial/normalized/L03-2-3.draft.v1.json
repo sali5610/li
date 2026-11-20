@@ -93,8 +93,8 @@
             "id": "en-05",
             "role": "independent",
             "heading": "4 · Fresh INDEPENDENT task — new numbers",
-            "body_md": "In a fictional text-only tree test about an academic certificate guide, 15 valid attempts include <b>8 direct</b>, <b>3 indirect</b> and <b>4 failed</b>. Six attempts have wrong first clicks (belonging to indirect/failure outcomes); the log records nine wrong-branch events across those attempts. Three attempts were moderator-assisted, but which outcome categories they fall into is unknown. Participants came from an existing fan community, not a probability sample; task time was not captured.\n\n1. Calculate overall completion, direct, indirect and failed proportions, including the denominator and the unit.\n2. Distinguish six wrong-first-click attempts from nine error events. Why can't you subtract nine from 15 to obtain the number of successful people?\n3. Appraise “80% of all users can find the menu easily; navigation is validated.” State which portions are observed and which overreach, identifying assistance and sampling limitations.\n4. Design one follow-up test after a proposed label change: participant/task/leaf definition, observed metrics, protocol and validation in the actual UI. State the inference limits.\n\n<b>Non-spoiler hint:</b> Separate mutually exclusive attempt outcomes first; errors may be repeated within the same attempt, including an attempt that later succeeds.\n\n<b>REFERENCE RESPONSE — ONLY AFTER VALID SUBMISSION IN A FUTURE APP:</b> Completion (8+3)/15=<b>11/15≈73.3%</b>, direct 8/15≈<b>53.3%</b>, indirect 3/15=<b>20%</b>, failure 4/15≈<b>26.7%</b>. The claimed “80%” is wrong even for this fictional sample, before population generalization. Six attempts with wrong first click is not nine error events; a single attempt may create several. Without per-attempt assistance mapping, an unassisted success rate is <b>not calculable</b>. Convenience recruitment does not justify “all users”, and eventual completion does not demonstrate ease or real-UI visual quality. Use controlled task/expected leaf, route records and help flags in a meaningful target-user follow-up.",
-            "model_answer_md": null,
+            "body_md": "In a fictional text-only tree test about an academic certificate guide, 15 valid attempts include <b>8 direct</b>, <b>3 indirect</b> and <b>4 failed</b>. Six attempts have wrong first clicks (belonging to indirect/failure outcomes); the log records nine wrong-branch events across those attempts. Three attempts were moderator-assisted, but which outcome categories they fall into is unknown. Participants came from an existing fan community, not a probability sample; task time was not captured.\n\n1. Calculate overall completion, direct, indirect and failed proportions, including the denominator and the unit.\n2. Distinguish six wrong-first-click attempts from nine error events. Why can't you subtract nine from 15 to obtain the number of successful people?\n3. Appraise “80% of all users can find the menu easily; navigation is validated.” State which portions are observed and which overreach, identifying assistance and sampling limitations.\n4. Design one follow-up test after a proposed label change: participant/task/leaf definition, observed metrics, protocol and validation in the actual UI. State the inference limits.\n\n<b>Non-spoiler hint:</b> Separate mutually exclusive attempt outcomes first; errors may be repeated within the same attempt, including an attempt that later succeeds.",
+            "model_answer_md": "<b>REFERENCE RESPONSE — ONLY AFTER VALID SUBMISSION IN A FUTURE APP:</b> Completion (8+3)/15=<b>11/15≈73.3%</b>, direct 8/15≈<b>53.3%</b>, indirect 3/15=<b>20%</b>, failure 4/15≈<b>26.7%</b>. The claimed “80%” is wrong even for this fictional sample, before population generalization. Six attempts with wrong first click is not nine error events; a single attempt may create several. Without per-attempt assistance mapping, an unassisted success rate is <b>not calculable</b>. Convenience recruitment does not justify “all users”, and eventual completion does not demonstrate ease or real-UI visual quality. Use controlled task/expected leaf, route records and help flags in a meaningful target-user follow-up.",
             "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
@@ -163,30 +163,29 @@
     "sourceBodyCharacters": 25520
   },
   "normalization": {
-    "status": "needs_editorial_correction",
+    "status": "sectioned_needs_academic_rights_and_release_review",
     "counts": {
       "vi": {
-        "sections": 7,
+        "chapters": 7,
         "independent": 1,
-        "solution": 1,
-        "method": 1,
-        "rubric": 1,
-        "spoilersInPrompts": 0
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       },
       "en": {
-        "sections": 7,
+        "chapters": 7,
         "independent": 1,
-        "solution": 0,
-        "method": 1,
-        "rubric": 1,
-        "spoilersInPrompts": 0
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       }
     },
-    "issues": [
-      "en:model_answer_not_isolated"
-    ],
+    "issues": [],
     "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "readOnlyDerived": true,
     "runnableInReact": false
   }
 }

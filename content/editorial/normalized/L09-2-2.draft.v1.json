@@ -93,8 +93,8 @@
             "id": "en-05",
             "role": "independent",
             "heading": "4 · INDEPENDENT assessment — new and previously unsolved numbers",
-            "body_md": "A <b>fictional valid simple random sample</b> is drawn from a defined population. Of n=<b>400</b> sampled people, x=<b>260</b> answer Yes on a binary question; assume adequate independence, full response and no finite-population correction. Use the educational 95% Wald proportion CI with z=1.96; do not claim Wald is optimal in every setting.\n\n1. Calculate p-hat, q-hat, Yes/No counts and check the normal-approximation count condition.\n2. Compute SE, margin and CI endpoints, rounded to <b>three decimal places</b>.\n3. Explain the frequentist meaning of 95% coverage and correct the statement “There is a 95% probability that the true parameter lies in this particular interval.”\n4. If the exact same numbers came from a voluntary banner survey, explain what conclusion would <b>no longer be warranted</b> and why.\n\n<b>Non-spoiler hint:</b> Divide Yes by n, then compute sqrt(p-hat\\*q-hat/n) and add/subtract the margin. An interval formula cannot repair a biased recruitment mechanism.\n\n<b>MODEL RESPONSE — ONLY AFTER A VALID INDEPENDENT SUBMISSION:</b> p-hat=260/400=<b>0.650</b>, q-hat=<b>0.350</b>, 260 successes and 140 failures, comfortably more than five of each. SE=sqrt(0.65×0.35/400)≈<b>0.02385</b>, margin≈<b>0.04674</b>, CI≈<b>\\[0.603,0.697\\]</b> (60.3%–69.7%). Across repeated samples under the model, approximately 95% of constructed intervals contain the fixed true population proportion. That is not a Bayesian posterior statement about the one observed interval. Volunteer recruitment removes any automatic population representativeness/coverage guarantee, although the formula can still produce numbers.",
-            "model_answer_md": null,
+            "body_md": "A <b>fictional valid simple random sample</b> is drawn from a defined population. Of n=<b>400</b> sampled people, x=<b>260</b> answer Yes on a binary question; assume adequate independence, full response and no finite-population correction. Use the educational 95% Wald proportion CI with z=1.96; do not claim Wald is optimal in every setting.\n\n1. Calculate p-hat, q-hat, Yes/No counts and check the normal-approximation count condition.\n2. Compute SE, margin and CI endpoints, rounded to <b>three decimal places</b>.\n3. Explain the frequentist meaning of 95% coverage and correct the statement “There is a 95% probability that the true parameter lies in this particular interval.”\n4. If the exact same numbers came from a voluntary banner survey, explain what conclusion would <b>no longer be warranted</b> and why.\n\n<b>Non-spoiler hint:</b> Divide Yes by n, then compute sqrt(p-hat\\*q-hat/n) and add/subtract the margin. An interval formula cannot repair a biased recruitment mechanism.",
+            "model_answer_md": "<b>MODEL RESPONSE — ONLY AFTER A VALID INDEPENDENT SUBMISSION:</b> p-hat=260/400=<b>0.650</b>, q-hat=<b>0.350</b>, 260 successes and 140 failures, comfortably more than five of each. SE=sqrt(0.65×0.35/400)≈<b>0.02385</b>, margin≈<b>0.04674</b>, CI≈<b>\\[0.603,0.697\\]</b> (60.3%–69.7%). Across repeated samples under the model, approximately 95% of constructed intervals contain the fixed true population proportion. That is not a Bayesian posterior statement about the one observed interval. Volunteer recruitment removes any automatic population representativeness/coverage guarantee, although the formula can still produce numbers.",
             "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
@@ -163,30 +163,29 @@
     "sourceBodyCharacters": 24534
   },
   "normalization": {
-    "status": "needs_editorial_correction",
+    "status": "sectioned_needs_academic_rights_and_release_review",
     "counts": {
       "vi": {
-        "sections": 7,
+        "chapters": 7,
         "independent": 1,
-        "solution": 1,
-        "method": 1,
-        "rubric": 1,
-        "spoilersInPrompts": 0
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       },
       "en": {
-        "sections": 7,
+        "chapters": 7,
         "independent": 1,
-        "solution": 0,
-        "method": 1,
-        "rubric": 1,
-        "spoilersInPrompts": 0
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       }
     },
-    "issues": [
-      "en:model_answer_not_isolated"
-    ],
+    "issues": [],
     "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "readOnlyDerived": true,
     "runnableInReact": false
   }
 }

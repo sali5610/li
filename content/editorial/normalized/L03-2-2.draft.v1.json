@@ -19,11 +19,9 @@
           },
           {
             "id": "vi-02",
-            "role": "methods",
+            "role": "concept",
             "heading": "2 · Hai phương pháp, hai loại câu hỏi",
-            "body_md": "| Khía cạnh | Card sorting | Tree testing |\n| --- | --- | --- |\n| Đầu vào | Các thẻ nội dung; open: người dùng tự nhóm/đặt tên; closed: nhóm đã cho sẵn | Một cây danh mục + label dự kiến, <b>không kèm giao diện đồ họa</b> |\n| Nhiệm vụ | Sắp nhóm thẻ theo cách có ý nghĩa | Tìm vị trí thích hợp cho một mục qua các nhánh |\n| Kết quả | Gợi ý mental model, nhóm/nhãn có thể thử | Đường chọn, tỷ lệ tới đích đúng, first path, nhánh dễ gây lạc |\n| Không chứng minh | Menu cuối cùng đã findable | Giao diện trực quan thực tế đã usability tốt |\n\n<b>Original worked example:</b> Một thư viện học trực tuyến có 6 thẻ: A “Khái niệm lấy mẫu”, B “Video phân phối xác suất”, C “Bài luyện thống kê”, D “Tự kiểm tra”, E “Ghi chú cá nhân”, F “Theo dõi tiến độ”. Card sort có thể gợi ý ba nhóm “Kiến thức”, “Luyện tập”, “Cá nhân” nhưng đó chỉ là <b>phương án để thiết kế</b>; muốn biết người dùng tìm được “Tự kiểm tra” ở nhánh nào, cần một tree đã định nghĩa và tác vụ tìm nội dung ấy. Hai bước có thể bổ sung cho nhau chứ không thay thế nhau.",
-            "feedback_md": null,
-            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
+            "body_md": "| Khía cạnh | Card sorting | Tree testing |\n| --- | --- | --- |\n| Đầu vào | Các thẻ nội dung; open: người dùng tự nhóm/đặt tên; closed: nhóm đã cho sẵn | Một cây danh mục + label dự kiến, <b>không kèm giao diện đồ họa</b> |\n| Nhiệm vụ | Sắp nhóm thẻ theo cách có ý nghĩa | Tìm vị trí thích hợp cho một mục qua các nhánh |\n| Kết quả | Gợi ý mental model, nhóm/nhãn có thể thử | Đường chọn, tỷ lệ tới đích đúng, first path, nhánh dễ gây lạc |\n| Không chứng minh | Menu cuối cùng đã findable | Giao diện trực quan thực tế đã usability tốt |\n\n<b>Original worked example:</b> Một thư viện học trực tuyến có 6 thẻ: A “Khái niệm lấy mẫu”, B “Video phân phối xác suất”, C “Bài luyện thống kê”, D “Tự kiểm tra”, E “Ghi chú cá nhân”, F “Theo dõi tiến độ”. Card sort có thể gợi ý ba nhóm “Kiến thức”, “Luyện tập”, “Cá nhân” nhưng đó chỉ là <b>phương án để thiết kế</b>; muốn biết người dùng tìm được “Tự kiểm tra” ở nhánh nào, cần một tree đã định nghĩa và tác vụ tìm nội dung ấy. Hai bước có thể bổ sung cho nhau chứ không thay thế nhau."
           },
           {
             "id": "vi-03",
@@ -73,11 +71,9 @@
           },
           {
             "id": "en-02",
-            "role": "methods",
+            "role": "concept",
             "heading": "2 · Different questions need different methods",
-            "body_md": "| Dimension | Card sorting | Tree testing |\n| --- | --- | --- |\n| Input | Content cards; open sorting lets participants group/name, closed sorting supplies predefined categories | Proposed text-only hierarchy with known destinations |\n| Participant action | Organize content into meaningful clusters | Find the destination of a given item or task by choosing branches |\n| Output | Grouping patterns, candidate terms or mental-model hypotheses | Destination success, paths/first branch, dead ends, confusing labels |\n| Does not establish | That a particular final menu is findable | That the fully styled UI, icons, layout and interaction are usable |\n\n<b>Original fictional worked case:</b> An online learning library has six items: A “Sampling concepts,” B “Probability video,” C “Statistics practice,” D “Self-check,” E “Personal notes” and F “Progress tracking.” A card sort may suggest Knowledge, Practice and Personal — <b>ideas, not a verified sitemap</b>. To evaluate whether someone can find Self-check, the team needs an actual navigation hierarchy, a realistic retrieval task and a known correct destination. Both methods are useful at different points, not interchangeable.",
-            "feedback_md": null,
-            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
+            "body_md": "| Dimension | Card sorting | Tree testing |\n| --- | --- | --- |\n| Input | Content cards; open sorting lets participants group/name, closed sorting supplies predefined categories | Proposed text-only hierarchy with known destinations |\n| Participant action | Organize content into meaningful clusters | Find the destination of a given item or task by choosing branches |\n| Output | Grouping patterns, candidate terms or mental-model hypotheses | Destination success, paths/first branch, dead ends, confusing labels |\n| Does not establish | That a particular final menu is findable | That the fully styled UI, icons, layout and interaction are usable |\n\n<b>Original fictional worked case:</b> An online learning library has six items: A “Sampling concepts,” B “Probability video,” C “Statistics practice,” D “Self-check,” E “Personal notes” and F “Progress tracking.” A card sort may suggest Knowledge, Practice and Personal — <b>ideas, not a verified sitemap</b>. To evaluate whether someone can find Self-check, the team needs an actual navigation hierarchy, a realistic retrieval task and a known correct destination. Both methods are useful at different points, not interchangeable."
           },
           {
             "id": "en-03",
@@ -97,8 +93,8 @@
             "id": "en-05",
             "role": "independent",
             "heading": "4 · New INDEPENDENT research-design challenge",
-            "body_md": "A fictional learning platform owns five content records: R1 Spaced-review Guide, R2 Statistics Question Bank, R3 Saved Source List, R4 Reading Notes, R5 Academic Citation Guide. Its proposed tree contains:\n\n- <b>Library:</b> Fields / Lessons / Resources → Academic Citation Guide (R5)\n- <b>Methods:</b> Strategies → Spaced-review Guide (R1); Practice → Question Bank (R2)\n- <b>Personal:</b> Notes → Reading Notes (R4); Saved → Saved Source List (R3)\n\nA stakeholder <b>speculates</b> that people struggle to locate a spaced-review guide, but <b>no study results have been collected</b>.\n\n1. Pick the method to use <b>first</b> given that a proposed tree already exists, and state when you would reverse the order of methods.\n2. Write <b>two tree-test tasks</b> that do not give away the target menu labels. Specify exact predefined correct destinations and route data to capture.\n3. If some participants go to Personal rather than Methods, provide <b>two competing explanations</b> and how you would distinguish them; do not invent an actual completion rate.\n4. Design a <b>discovery → candidate IA → evaluation → revision</b> loop, limits of generalizing beyond participants, and an additional real-UI validation step.\n\n<b>Non-spoiler hint:</b> Do you need to discover a grouping or test an already proposed one? Define the target based on where its content truly lives, not from the participant's memory of exact labels.\n\n<b>REFERENCE RESPONSE — ONLY AFTER VALID SUBMISSION:</b> With a tree already proposed, test finding R1. A realistic task could be “You want instructions for reviewing lessons several days after learning them; where would you look?” with correct destination <b>Methods → Strategies → Spaced-review Guide</b>. A second task could ask how to reopen an article you previously saved; destination <b>Personal → Saved → Saved Source List</b>. A branch toward Personal could mean the user's mental model associates review with saved content, or “Methods” does not clearly signal a study strategy. A card sort helps if group concepts remain unclear; after the tree test, evaluate real UI behavior separately. This is a <b>research plan</b>, not fabricated participant evidence. Alternative test designs are acceptable with consistent targets.",
-            "model_answer_md": null,
+            "body_md": "A fictional learning platform owns five content records: R1 Spaced-review Guide, R2 Statistics Question Bank, R3 Saved Source List, R4 Reading Notes, R5 Academic Citation Guide. Its proposed tree contains:\n\n- <b>Library:</b> Fields / Lessons / Resources → Academic Citation Guide (R5)\n- <b>Methods:</b> Strategies → Spaced-review Guide (R1); Practice → Question Bank (R2)\n- <b>Personal:</b> Notes → Reading Notes (R4); Saved → Saved Source List (R3)\n\nA stakeholder <b>speculates</b> that people struggle to locate a spaced-review guide, but <b>no study results have been collected</b>.\n\n1. Pick the method to use <b>first</b> given that a proposed tree already exists, and state when you would reverse the order of methods.\n2. Write <b>two tree-test tasks</b> that do not give away the target menu labels. Specify exact predefined correct destinations and route data to capture.\n3. If some participants go to Personal rather than Methods, provide <b>two competing explanations</b> and how you would distinguish them; do not invent an actual completion rate.\n4. Design a <b>discovery → candidate IA → evaluation → revision</b> loop, limits of generalizing beyond participants, and an additional real-UI validation step.\n\n<b>Non-spoiler hint:</b> Do you need to discover a grouping or test an already proposed one? Define the target based on where its content truly lives, not from the participant's memory of exact labels.",
+            "model_answer_md": "<b>REFERENCE RESPONSE — ONLY AFTER VALID SUBMISSION:</b> With a tree already proposed, test finding R1. A realistic task could be “You want instructions for reviewing lessons several days after learning them; where would you look?” with correct destination <b>Methods → Strategies → Spaced-review Guide</b>. A second task could ask how to reopen an article you previously saved; destination <b>Personal → Saved → Saved Source List</b>. A branch toward Personal could mean the user's mental model associates review with saved content, or “Methods” does not clearly signal a study strategy. A card sort helps if group concepts remain unclear; after the tree test, evaluate real UI behavior separately. This is a <b>research plan</b>, not fabricated participant evidence. Alternative test designs are acceptable with consistent targets.",
             "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
@@ -167,30 +163,29 @@
     "sourceBodyCharacters": 23997
   },
   "normalization": {
-    "status": "needs_editorial_correction",
+    "status": "sectioned_needs_academic_rights_and_release_review",
     "counts": {
       "vi": {
-        "sections": 7,
+        "chapters": 7,
         "independent": 1,
-        "solution": 1,
-        "method": 2,
-        "rubric": 1,
-        "spoilersInPrompts": 0
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       },
       "en": {
-        "sections": 7,
+        "chapters": 7,
         "independent": 1,
-        "solution": 0,
-        "method": 2,
-        "rubric": 1,
-        "spoilersInPrompts": 0
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       }
     },
-    "issues": [
-      "en:model_answer_not_isolated"
-    ],
+    "issues": [],
     "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "readOnlyDerived": true,
     "runnableInReact": false
   }
 }

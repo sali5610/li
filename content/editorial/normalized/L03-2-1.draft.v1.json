@@ -93,8 +93,8 @@
             "id": "en-05",
             "role": "independent",
             "heading": "4 · INDEPENDENT challenge — a NEW case (no early solution)",
-            "body_md": "A fictional university research knowledge base has six documents: R1 “Apply for a research grant”; R2 “Grant eligibility criteria”; R3 “Claim conference travel expenses”; R4 “Update your researcher profile”; R5 “Copyright policy”; R6 “Research internship scholarship.” Internal labels are inconsistent: “Grant”, “Funding”, “Funds”, “Profile”, “Researchers”, “Expenses”, “Copyright.” No user-testing results exist.\n\n1. Propose up to <b>four canonical topic IDs</b> with preferred labels and at least two aliases; distinguish these from <b>content types</b>.\n2. Assign R1–R6 to topic IDs, and justify any <b>multiple tags</b> on one document.\n3. Propose <b>two visible task-oriented menu paths</b> rather than showing the internal taxonomy verbatim; label your assumptions.\n4. Specify <b>one test</b> with a user task, a criterion for success and a suitable participant group, then say what cannot yet be concluded.\n\n<b>Non-spoiler hint:</b> Ask what users want to accomplish before copying an internal department tree into the interface. A single content record can hold several topic terms.\n\n<b>REFERENCE SOLUTION — ONLY AFTER A VALID SUBMISSION:</b> One defensible design has exactly <b>four topics</b>: <code>funding</code> (Grant/Funds are aliases), <code>expenses</code> (Expense Claims alias), <code>profiles</code> (Researcher Profile/Profile labels), and <code>rights</code> (Copyright alias). R1/R2/R6 map to funding, R3 expenses, R4 profiles and R5 rights. The legacy label “Researchers” is <b>not safely synonymous</b> with “Researcher Profile” (person ≠ profile record); hold it for clarification rather than merging automatically. R6 does not need a second topic within the four-ID constraint; adding an “internship” category would require revising the permitted taxonomy. Never force multiple tags without evidence. Two possible user-facing paths are “Apply for research support” and “Manage researcher details and expenses.” Guide, FAQ and Policy are <b>content types</b>. This is <b>an untested proposal</b>, not the uniquely correct answer; accept coherent alternatives with a clear testing plan.",
-            "model_answer_md": null,
+            "body_md": "A fictional university research knowledge base has six documents: R1 “Apply for a research grant”; R2 “Grant eligibility criteria”; R3 “Claim conference travel expenses”; R4 “Update your researcher profile”; R5 “Copyright policy”; R6 “Research internship scholarship.” Internal labels are inconsistent: “Grant”, “Funding”, “Funds”, “Profile”, “Researchers”, “Expenses”, “Copyright.” No user-testing results exist.\n\n1. Propose up to <b>four canonical topic IDs</b> with preferred labels and at least two aliases; distinguish these from <b>content types</b>.\n2. Assign R1–R6 to topic IDs, and justify any <b>multiple tags</b> on one document.\n3. Propose <b>two visible task-oriented menu paths</b> rather than showing the internal taxonomy verbatim; label your assumptions.\n4. Specify <b>one test</b> with a user task, a criterion for success and a suitable participant group, then say what cannot yet be concluded.\n\n<b>Non-spoiler hint:</b> Ask what users want to accomplish before copying an internal department tree into the interface. A single content record can hold several topic terms.",
+            "model_answer_md": "<b>REFERENCE SOLUTION — ONLY AFTER A VALID SUBMISSION:</b> One defensible design has exactly <b>four topics</b>: <code>funding</code> (Grant/Funds are aliases), <code>expenses</code> (Expense Claims alias), <code>profiles</code> (Researcher Profile/Profile labels), and <code>rights</code> (Copyright alias). R1/R2/R6 map to funding, R3 expenses, R4 profiles and R5 rights. The legacy label “Researchers” is <b>not safely synonymous</b> with “Researcher Profile” (person ≠ profile record); hold it for clarification rather than merging automatically. R6 does not need a second topic within the four-ID constraint; adding an “internship” category would require revising the permitted taxonomy. Never force multiple tags without evidence. Two possible user-facing paths are “Apply for research support” and “Manage researcher details and expenses.” Guide, FAQ and Policy are <b>content types</b>. This is <b>an untested proposal</b>, not the uniquely correct answer; accept coherent alternatives with a clear testing plan.",
             "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
@@ -163,30 +163,29 @@
     "sourceBodyCharacters": 26258
   },
   "normalization": {
-    "status": "needs_editorial_correction",
+    "status": "sectioned_needs_academic_rights_and_release_review",
     "counts": {
       "vi": {
-        "sections": 7,
+        "chapters": 7,
         "independent": 1,
-        "solution": 1,
-        "method": 1,
-        "rubric": 1,
-        "spoilersInPrompts": 0
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       },
       "en": {
-        "sections": 7,
+        "chapters": 7,
         "independent": 1,
-        "solution": 0,
-        "method": 1,
-        "rubric": 1,
-        "spoilersInPrompts": 0
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       }
     },
-    "issues": [
-      "en:model_answer_not_isolated"
-    ],
+    "issues": [],
     "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "readOnlyDerived": true,
     "runnableInReact": false
   }
 }

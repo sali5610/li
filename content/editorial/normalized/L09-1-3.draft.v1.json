@@ -87,8 +87,8 @@
             "id": "en-05",
             "role": "independent",
             "heading": "4 · Independent challenge",
-            "body_md": "Two fictional groups, minutes: <b>A = 2, 4, 4, 5, 5, 6, 23</b>; <b>B = 4, 5, 5, 5, 5, 5, 6</b>. Seven cases each; no representative sampling claims.\n\n1. Calculate <b>mean, median, mode and range</b> for A, with units and interpretation. Report all modes if more than one exists.\n2. Calculate the same four measures for B; explain how reporting only the mean can mislead.\n3. Describe an observed <b>high extreme/right-tail feature</b> in A without declaring the population skew.\n4. Recommend at least two complementary statistics/plots and state the generalization boundary.\n\n<b>Non-spoiler hint:</b> the fourth of seven sorted values is the median, and range uses maximum and minimum.\n\n<b>Reference answer (after submission only):</b> A sum 49, mean <b>7 min</b>, median <b>5 min</b>, <b>two modes: 4 and 5 min</b> (twice each), range <b>21 min</b>; B sum 35, mean <b>5 min</b>, median <b>5 min</b>, mode <b>5 min</b> (five occurrences), range <b>2 min</b>. The high A observation 23 pulls its mean above its median. Report center with spread and a distribution plot; do not infer a population from these invented seven-case samples.",
-            "model_answer_md": null,
+            "body_md": "Two fictional groups, minutes: <b>A = 2, 4, 4, 5, 5, 6, 23</b>; <b>B = 4, 5, 5, 5, 5, 5, 6</b>. Seven cases each; no representative sampling claims.\n\n1. Calculate <b>mean, median, mode and range</b> for A, with units and interpretation. Report all modes if more than one exists.\n2. Calculate the same four measures for B; explain how reporting only the mean can mislead.\n3. Describe an observed <b>high extreme/right-tail feature</b> in A without declaring the population skew.\n4. Recommend at least two complementary statistics/plots and state the generalization boundary.\n\n<b>Non-spoiler hint:</b> the fourth of seven sorted values is the median, and range uses maximum and minimum.",
+            "model_answer_md": "<b>Reference answer (after submission only):</b> A sum 49, mean <b>7 min</b>, median <b>5 min</b>, <b>two modes: 4 and 5 min</b> (twice each), range <b>21 min</b>; B sum 35, mean <b>5 min</b>, median <b>5 min</b>, mode <b>5 min</b> (five occurrences), range <b>2 min</b>. The high A observation 23 pulls its mean above its median. Report center with spread and a distribution plot; do not infer a population from these invented seven-case samples.",
             "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
@@ -151,30 +151,29 @@
     "sourceBodyCharacters": 26775
   },
   "normalization": {
-    "status": "needs_editorial_correction",
+    "status": "sectioned_needs_academic_rights_and_release_review",
     "counts": {
       "vi": {
-        "sections": 6,
+        "chapters": 6,
         "independent": 1,
-        "solution": 1,
-        "method": 1,
-        "rubric": 1,
-        "spoilersInPrompts": 0
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       },
       "en": {
-        "sections": 6,
+        "chapters": 6,
         "independent": 1,
-        "solution": 0,
-        "method": 1,
-        "rubric": 1,
-        "spoilersInPrompts": 0
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       }
     },
-    "issues": [
-      "en:model_answer_not_isolated"
-    ],
+    "issues": [],
     "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "readOnlyDerived": true,
     "runnableInReact": false
   }
 }

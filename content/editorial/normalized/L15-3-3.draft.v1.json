@@ -33,8 +33,8 @@
             "id": "vi-04",
             "role": "methods",
             "heading": "3b · T10 chính — phân rã tiêu chí, thử ngưỡng biên",
-            "body_md": "<b>Bộ luyện mới:</b> Một mặt hàng hư cấu có 10 cycles, 8 cycles không stockout, 500 hộp nhu cầu, 490 hộp đáp ứng ngay. Hai policies P (cost 1.150, fill 97%, recover 7d), Q (cost 1.450, fill 98%, recover 4d), tất cả là <b>kịch bản dự kiến</b>, không phải thử nghiệm thật.\n\n<b>Task T10:</b> (1) tách <b>cycles / units / recovery / money</b>; tính hai historical service metrics; (2) với quy tắc <b>fill≥97%, recovery≤5 ngày, budget≤1.500</b> xác định P/Q nào feasible; (3) đổi budget xuống ≤1.300 và đánh giá lại feasible set; (4) nêu ít nhất hai loại dữ liệu cần xác minh để một forecast policy trở thành quyết định thực. Hãy gửi phân rã và boundary test rồi mới xem feedback.\n\n<b>Feedback SAU khi nộp micropractice:</b> CSL=8/10=<b>80%</b>; unit fill 490/500=<b>98%</b>. P qua fill + budget nhưng <b>trượt recovery</b>, Q qua cả ba. Khi ngân sách chỉ còn ≤1.300, <b>không phương án nào</b> thoả cả ngưỡng phục hồi lẫn chi phí: đừng “chọn đại policy rẻ” rồi tuyên bố thành công. Cần kiểm scenario disruption, actual recovery exercise, total-cost accounting, lost-demand measurement và data quality.\n\n<b>T06 tùy chọn:</b> đối chiếu hai báo cáo cùng ghi 98% — một report là unit fill, một report là cycles không stockout; chỉ ra khác mẫu số, tác động quyết định. Mở hướng dẫn mà không trả lời không tính L2 enacted.",
-            "feedback_md": null,
+            "body_md": "<b>Bộ luyện mới:</b> Một mặt hàng hư cấu có 10 cycles, 8 cycles không stockout, 500 hộp nhu cầu, 490 hộp đáp ứng ngay. Hai policies P (cost 1.150, fill 97%, recover 7d), Q (cost 1.450, fill 98%, recover 4d), tất cả là <b>kịch bản dự kiến</b>, không phải thử nghiệm thật.\n\n<b>Task T10:</b> (1) tách <b>cycles / units / recovery / money</b>; tính hai historical service metrics; (2) với quy tắc <b>fill≥97%, recovery≤5 ngày, budget≤1.500</b> xác định P/Q nào feasible; (3) đổi budget xuống ≤1.300 và đánh giá lại feasible set; (4) nêu ít nhất hai loại dữ liệu cần xác minh để một forecast policy trở thành quyết định thực. Hãy gửi phân rã và boundary test rồi mới xem feedback.\n\n<b>T06 tùy chọn:</b> đối chiếu hai báo cáo cùng ghi 98% — một report là unit fill, một report là cycles không stockout; chỉ ra khác mẫu số, tác động quyết định. Mở hướng dẫn mà không trả lời không tính L2 enacted.",
+            "feedback_md": "<b>Feedback SAU khi nộp micropractice:</b> CSL=8/10=<b>80%</b>; unit fill 490/500=<b>98%</b>. P qua fill + budget nhưng <b>trượt recovery</b>, Q qua cả ba. Khi ngân sách chỉ còn ≤1.300, <b>không phương án nào</b> thoả cả ngưỡng phục hồi lẫn chi phí: đừng “chọn đại policy rẻ” rồi tuyên bố thành công. Cần kiểm scenario disruption, actual recovery exercise, total-cost accounting, lost-demand measurement và data quality.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -121,8 +121,8 @@
             "id": "en-04",
             "role": "methods",
             "heading": "3b · Primary L2-T10 method: decompose and boundary-test",
-            "body_md": "<b>Distinct micropractice:</b> 10 cycles, 8 stockout-free, 500 demanded units, 490 fulfilled immediately. Candidate policies P (cost 1,150, fill 97%, recovery 7d) and Q (cost 1,450, fill 98%, recovery 4d), all hypothetical.\n\n<b>Respond before feedback:</b> (1) separate cycles, units, recovery days and money; calculate two observed metrics; (2) with fill≥97%, recovery≤5d and budget≤1,500, assess feasibility of both; (3) tighten budget to ≤1,300 and reassess; (4) name evidence that would convert a speculative forecast into a decision. Simply clicking an L2 guide is not performing T10.\n\n<b>After-attempt feedback:</b> CSL=<b>8/10=80%</b>; unit fill=<b>490/500=98%</b>. P fails recovery, while Q satisfies all initial constraints. With budget≤1,300, <b>neither option is feasible</b>, not “choose the cheapest and call it optimization.” Recovery scenario tests, full cost and demand-measurement accuracy are missing.\n\n<b>Optional T06:</b> Compare two reports both showing 98%—one unit-fill, one cycle-service—with different denominators and different decision implications.",
-            "feedback_md": null,
+            "body_md": "<b>Distinct micropractice:</b> 10 cycles, 8 stockout-free, 500 demanded units, 490 fulfilled immediately. Candidate policies P (cost 1,150, fill 97%, recovery 7d) and Q (cost 1,450, fill 98%, recovery 4d), all hypothetical.\n\n<b>Respond before feedback:</b> (1) separate cycles, units, recovery days and money; calculate two observed metrics; (2) with fill≥97%, recovery≤5d and budget≤1,500, assess feasibility of both; (3) tighten budget to ≤1,300 and reassess; (4) name evidence that would convert a speculative forecast into a decision. Simply clicking an L2 guide is not performing T10.\n\n<b>Optional T06:</b> Compare two reports both showing 98%—one unit-fill, one cycle-service—with different denominators and different decision implications.",
+            "feedback_md": "<b>After-attempt feedback:</b> CSL=<b>8/10=80%</b>; unit fill=<b>490/500=98%</b>. P fails recovery, while Q satisfies all initial constraints. With budget≤1,300, <b>neither option is feasible</b>, not “choose the cheapest and call it optimization.” Recovery scenario tests, full cost and demand-measurement accuracy are missing.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -464,14 +464,16 @@
         "independent": 1,
         "solutions": 1,
         "methods": 1,
-        "rubric": 1
+        "rubric": 1,
+        "methodFeedback": 1
       },
       "en": {
         "sections": 7,
         "independent": 1,
         "solutions": 1,
         "methods": 1,
-        "rubric": 1
+        "rubric": 1,
+        "methodFeedback": 1
       }
     },
     "issues": [],

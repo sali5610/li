@@ -16,7 +16,7 @@ import './home-catalog.css';
  */
 type Lesson={id:string;title:string;published?:boolean;route?:string};
 type Course={id:string;title:string;level:string;lessons:Lesson[]};
-type Field={id:string;name:string;source?:string;courses:Course[]};
+type Field={id:string;name:string;source?:string;image?:string;courses:Course[]};
 type Group={id:string;title:string;fields:Field[]};
 type Locale='vi'|'en';
 type CatalogPort={
@@ -79,11 +79,11 @@ const levelNames:readonly [string,string,string][]=[
  ['Intermediate','Trung cấp','Intermediate'],
  ['Advanced-topic','Chuyên sâu','Advanced']
 ];
-function CatalogCard({number,eyebrow,title,detail,onOpen,locale}:{
- number:number;eyebrow:string;title:string;detail:string;onOpen:()=>void;locale:Locale
+function CatalogCard({number,eyebrow,title,detail,onOpen,locale,image}:{
+ number:number;eyebrow:string;title:string;detail:string;onOpen:()=>void;locale:Locale;image?:string
 }){
  return <Card variant="tinted" className="catalog-card" data-li-react-catalog-card>
-  <div className="catalog-card-mark" aria-hidden="true">{String(number).padStart(2,'0')}</div>
+  {image?<img className="catalog-card-art" src={image} alt="" loading="lazy" decoding="async"/>:<div className="catalog-card-mark" aria-hidden="true">{String(number).padStart(2,'0')}</div>}
   <div className="kicker">{eyebrow}</div>
   <Heading level={2} role="titleMedium">{title}</Heading>
   <Text role="support" className="small">{detail}</Text>
@@ -144,6 +144,7 @@ function Catalog(){
   <div className="kicker">{eyebrow}</div>
   <Heading level={1} role="headline" className="display-title">{heading}</Heading>
   <Text role="body" className="intro">{description}</Text>
+   {field&&!course&&field.image&&<img className="catalog-field-hero" src={field.image} alt="" loading="lazy" decoding="async"/>}
   {!group&&<><div className="catalog-group-grid">
    {groups.map((item,index)=><CatalogCard key={item.id} number={index+1}
     title={item.title} eyebrow={locale==='vi'?'NHÓM NGÀNH':'DOMAIN GROUP'}
@@ -155,7 +156,7 @@ function Catalog(){
   </Text></>}
   {group&&!field&&<div className="catalog-field-grid">
    {group.fields.map((item,index)=><CatalogCard key={item.id} number={index+1}
-    title={item.name} eyebrow={locale==='vi'?'CHUYÊN NGÀNH':'FIELD'}
+    title={item.name} image={item.image} eyebrow={locale==='vi'?'CHUYÊN NGÀNH':'FIELD'}
     detail={item.courses.length+(locale==='vi'?' môn học theo lộ trình':' courses')}
     locale={locale} onOpen={()=>openPath([group.id,item.id])}/>)}
   </div>}

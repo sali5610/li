@@ -72,7 +72,20 @@ const copy={
 } as const;
 
 export function AuthPanel({onClose}:{onClose?:()=>void}={}){
- const [locale,setLocale]=useState<Locale>('vi');
+ const language=window as Window&{
+  liLanguage?:{get:()=>string;set:(locale:Locale)=>boolean}
+ };
+ const [locale,setLocale]=useState<Locale>(
+  ()=>language.liLanguage?.get?.()==='en'?'en':'vi'
+ );
+ useEffect(()=>{
+  const sync=()=>setLocale(language.liLanguage?.get?.()==='en'?'en':'vi');
+  window.addEventListener('li:localechange',sync);
+  return()=>window.removeEventListener('li:localechange',sync);
+ },[]);
+ const setLanguage=(next:Locale)=>{
+  if(language.liLanguage?.set?.(next)!==true)setLocale(next);
+ };
  const t=copy[locale];
  const stageLabel=IS_GITHUB_STAGING?'理 · li.':t.tag;
  const showDeveloperQa=IS_GITHUB_STAGING&&new URLSearchParams(window.location.search).get('qa')==='1';
@@ -336,8 +349,8 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   <header className="auth-header">
    <div><p className="auth-tag">{stageLabel}</p><h1>{t.heading}</h1></div>
    <div className="auth-lang" aria-label="Language">
-    <button type="button" aria-pressed={locale==='vi'} onClick={()=>setLocale('vi')}>{t.switchVi}</button>
-    <button type="button" aria-pressed={locale==='en'} onClick={()=>setLocale('en')}>{t.switchEn}</button>
+    <button type="button" aria-pressed={locale==='vi'} onClick={()=>setLanguage('vi')}>{t.switchVi}</button>
+    <button type="button" aria-pressed={locale==='en'} onClick={()=>setLanguage('en')}>{t.switchEn}</button>
    </div>
   </header>
   <section className="auth-card" aria-busy={busy!==null||(Boolean(accountId)&&access==='checking')}>

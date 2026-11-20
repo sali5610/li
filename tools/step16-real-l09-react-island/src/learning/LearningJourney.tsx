@@ -47,6 +47,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  const reduced=useReducedMotion();
  const [attempt,setAttempt]=useState<Attempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
+ useEffect(()=>{window.dispatchEvent(new Event('li:lesson-phase-changed'));},[phase]);
  const [busy,setBusy]=useState(true);
  const [loadAttempt,setLoadAttempt]=useState(0);
  const [saving,setSaving]=useState(false);

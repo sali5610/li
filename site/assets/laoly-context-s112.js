@@ -122,6 +122,38 @@ function settingsPlan(){
 }
 function searchPlan(){
  const q=document.getElementById("global-search")?.value.trim()||"";
+ const focus=window.liSearch?.getMentorContext?.();
+ // Only explicitly selected, source-reviewed PUBLIC graph links; no personal data,
+ // hallucinated answer, paid LLM, spoiler or implicit learning prerequisite.
+ if(focus?.links?.length){
+  const english=inEnglish();
+  const compared=focus.links.find(link=>link.reason&&link.relation==="RELATED_TO");
+  const taught=focus.links.find(link=>link.relation==="TEACHES");
+  const primary=focus.lessonId||(taught?.lessonId||null);
+  const explanation=compared?
+   (compared.reasonLocalized?.[english?"en":"vi"]||compared.reason):
+   english?"The indexed lesson is linked to this concept by a reviewed TEACHES edge. This is not a prerequisite.":
+    "Bài trong kết quả giảng khái niệm này theo liên kết TEACHES đã đối chiếu nguồn; không phải bài tiên quyết.";
+  const source=focus.links.find(link=>/^https:\/\//.test(link.sourceUrl||""));
+  const sourceText=english?
+   "The methodology link is available directly below the selected result. It supports the named relationship, not the grading of any exercise.":
+   "Nguồn phương pháp nằm ngay dưới kết quả Tra Cứu. Nguồn xác nhận mối liên hệ được nêu, không phải đáp án bài tập.";
+  return {
+   intro:english?"You selected “"+focus.title+"”. I can explain the reviewed links, without revealing exercise answers.":
+    "Ngươi đang xem “"+focus.title+"”. Lão chỉ giải thích liên kết đã đối chiếu, không tiết lộ đáp án.",
+   actions:[
+    action(english?"Why are they connected?":"Vì sao có liên kết?",explanation),
+    action(english?"Where is the source?":"Nguồn kiểm chứng ở đâu?",source?
+      sourceText:(english?"No verified method source is available for this result.":"Kết quả này chưa có nguồn phương pháp được xác minh.")),
+    action(primary?(english?"Open "+primary:"Mở bài "+primary):(english?"Back to results":"Trở về kết quả"),
+      english?"A lesson opens only through a valid invited session and an existing native route.":
+       "Chỉ mở bài khi phiên đăng nhập hợp lệ và bài đã có màn học thật.",
+      ()=>{if(primary){
+        if(window.liSearch?.openLesson?.(primary))closeModal("buddy-modal");
+       }else go("search","global-search");})
+   ]
+  };
+ }
  return {
   intro:q?"Ngươi đang tra “"+q+"”. Không thấy kết quả thì thử tên học thuật, ngành hoặc một từ khóa khác.":"Thư viện rộng thật, nhưng trước hết phải biết đang tìm cái gì, tiểu hữu.",
   actions:[

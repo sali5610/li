@@ -282,7 +282,8 @@ function liSetBuddyName(key,value,persist=false){
  if(!Object.prototype.hasOwnProperty.call(LI_BUDDY_DEFAULT_NAMES,key))return false;
  liBuddyNames[key]=liNormalizeBuddyName(value);
  const input=document.getElementById("buddy-name-"+key);
- if(input)input.value=liBuddyNames[key];
+ // Do not trim the visible native input while the learner types a space.
+ if(input&&persist)input.value=liBuddyNames[key];
  liRenderBuddyNamePreview();
  if(!persist){
   liUpdateAddressFeedback("Đang chỉnh cách gọi · Rời ô nhập để lưu trên thiết bị.");
@@ -953,7 +954,8 @@ window.liSettingsPort=Object.freeze({
    const field=el(kind==="calm"?"calm-toggle":"mute-toggle");
    if(field&&field.checked!==Boolean(value))field.click();
   }else if(kind==="nicknameInput"||kind==="nicknameCommit"){
-   if(typeof value!=="string"||!liSetBuddyName(key,value,kind==="nicknameCommit"))return;
+   if(typeof value!=="string"||!Object.prototype.hasOwnProperty.call(LI_BUDDY_DEFAULT_NAMES,key))return;
+   liSetBuddyName(key,value,kind==="nicknameCommit");
   }else if(kind==="resetNames")liResetBuddyNames();
   else if(kind==="cloud"){
    const field=el("li-journal-cloud-toggle");

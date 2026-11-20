@@ -217,6 +217,12 @@ function ignored(node,forAttrs=false){
  const p=node.nodeType===1?node:node.parentElement;
  if(!p)return true;
  const shared='script,style,code,pre,[data-lesson-id],.catalog-sheet-layer,[data-li-no-translate],.library-entry-body,.library-clamp,#li-note-case-question,#li-note-case-scene,#li-note-case-choices';
+ // Explicit React-localized regions own their text; translating DOM behind
+ // React can cause content/text reconciliation races, especially in navigation.
+ // The legacy translator remains available for native fallback and other
+ // authored strings until they are localized declaratively.
+ const reactOwned=p.closest?.('[data-li-react-navigation],#li-react-global-back-root,.li-react-language-card');
+ if(reactOwned)return true;
  // Do not touch learner-entered textarea text; its placeholder/ARIA still needs locale.
  return Boolean(p.closest?.(shared))||(!forAttrs&&Boolean(p.closest?.('textarea,[contenteditable]')));
 }

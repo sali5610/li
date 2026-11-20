@@ -564,29 +564,45 @@ function syncLiRoute(id){
  if(target!==window.location.pathname+window.location.search+window.location.hash)
   window.history.replaceState(window.history.state,"",target);
 }
+function liAfterNavigate(id){if(id==="guide")renderMethods();if(id==="library")window.liLibraryShelf?.renderHome();if(id==="resume")window.liLibraryShelf?.renderResume();if(id==="collection")window.liLibraryShelf?.renderCollection();if(id==="noteDetail")window.liNotes?.renderDetail();window.liBookmarks?.refresh();if(Object.prototype.hasOwnProperty.call(LI_LESSON_ROUTES,id))window.liLibraryShelf?.trackLesson(id);if(id==="research"){syncResearch();window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);}if(id==="case")window.liLibraryShelf?.trackProblem("case","sampling-bias-90");refreshLucide();placeCompanion();}
 function navigate(id,{focus=true,remember=true,syncUrl=true}={}){
  // Retired vanilla lesson sample is never an invited learner destination.
  // Only a release-approved React lesson route may replace it.
  if(id==="lesson")id=window.liReleasedLessonRoutes?.["L09-1-2"]==="lessonL09"?
   "lessonL09":"catalog";
- const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelector?.(".app")?.classList.toggle("home-focus",id==="home");const back=document.getElementById("li-global-back");if(back)back.hidden=id==="home";document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});document.querySelectorAll(".header .tool-button").forEach(x=>{const active=x.dataset.page===id;x.classList.toggle("active",active);if(active)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library")window.liLibraryShelf?.renderHome();if(id==="resume")window.liLibraryShelf?.renderResume();if(id==="collection")window.liLibraryShelf?.renderCollection();if(id==="noteDetail")window.liNotes?.renderDetail();window.liBookmarks?.refresh();if(Object.prototype.hasOwnProperty.call(LI_LESSON_ROUTES,id))window.liLibraryShelf?.trackLesson(id);if(id==="research"){syncResearch();window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);}if(id==="case")window.liLibraryShelf?.trackProblem("case","sampling-bias-90");refreshLucide();placeCompanion();}
-function goBack(){while(pageHistory.length){const previous=pageHistory.pop();if(previous!==currentPage&&document.getElementById("page-"+previous)){navigate(previous,{remember:false});return}}navigate("home",{remember:false})}
+ if(window.liReactRouter?.navigate)
+  return window.liReactRouter.navigate(id,{focus,remember,syncUrl});
+ const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelector?.(".app")?.classList.toggle("home-focus",id==="home");const back=document.getElementById("li-global-back");if(back)back.hidden=id==="home";document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});document.querySelectorAll(".header .tool-button").forEach(x=>{const active=x.dataset.page===id;x.classList.toggle("active",active);if(active)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});liAfterNavigate(id);if(typeof window.dispatchEvent==="function"&&typeof CustomEvent==="function")window.dispatchEvent(new CustomEvent("li:route-changed",{detail:{route:id}}));}
+function goBack(){
+ if(window.liReactRouter?.back)return window.liReactRouter.back();
+ while(pageHistory.length){const previous=pageHistory.pop();if(previous!==currentPage&&document.getElementById("page-"+previous)){navigate(previous,{remember:false});return}}navigate("home",{remember:false})}
 /* Step16: expose the existing canonical route/history/URL/focus controller as
  * an action port. React controls call this directly; static controls retain the
  * existing delegated data-page/data-nav-back contract until migrated. */
+// Domain side effects remain the existing owner (visits, bookmarks, mentor).
+// React now owns route/history/URL; native routing is a guarded fallback only.
+window.liNativeRouteEffects=Object.freeze({
+ history:()=>[...pageHistory],
+ afterNavigate:(id)=>{currentPage=id;liAfterNavigate(id)},
+ restoreHistory:(items,id)=>{
+  pageHistory.splice(0,pageHistory.length,...items.slice(-32));currentPage=id;
+ }
+});
 window.liAppRouter=Object.freeze({
  navigate:(id,options)=>{
   if(!document.documentElement.classList.contains("li-auth-verified")||
      document.documentElement.classList.contains("li-account-open")||
      typeof id!=="string"||!document.getElementById("page-"+id))return false;
+  if(window.liReactRouter?.navigate)return window.liReactRouter.navigate(id,options);
   navigate(id,options);return true;
  },
  back:()=>{
   if(!document.documentElement.classList.contains("li-auth-verified")||
      document.documentElement.classList.contains("li-account-open"))return false;
+  if(window.liReactRouter?.back)return window.liReactRouter.back();
   goBack();return true;
  },
- getCurrent:()=>currentPage,
+ getCurrent:()=>window.liReactRouter?.getCurrent?.()||currentPage,
  hasRoute:id=>typeof id==="string"&&!!document.getElementById("page-"+id)
 });
 

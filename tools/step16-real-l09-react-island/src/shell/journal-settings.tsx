@@ -39,7 +39,7 @@ type PersonalBackupPort={
 type AppWindow=Window&{
  liPersonalDiary?:DiaryPort;liSettingsPort?:SettingsPort;
  liJournalCloudConsent?:CloudConsentPort;liPersonalBackup?:PersonalBackupPort;
- liLanguage?:{get:()=>string}
+ liLanguage?:{get:()=>string;set:(locale:'vi'|'en')=>boolean}
 };
 const app=window as AppWindow;
 const copy=(vi:string,en:string)=>app.liLanguage?.get?.()==='en'?en:vi;
@@ -221,6 +221,7 @@ function BuddyName({kind,header,placeholder,value,preview,commit}:{
 export function Settings(){
  const view=useSettings();
  const backupInput=useRef<HTMLInputElement>(null);
+ const locale=app.liLanguage?.get?.()==='en'?'en':'vi';
  const act=(kind:string,key?:string,value?:string|boolean)=>app.liSettingsPort?.act(kind,key,value);
  const chooseBackup=()=>backupInput.current?.click();
  const importBackup=(file:File|undefined)=>{
@@ -242,6 +243,20 @@ export function Settings(){
       'Choose a study rhythm and how Lao Ly speaks.')}</Text>
     </div>
     <div className="settings-group-grid">
+     <Card variant="raised" className="li-react-setting-card li-react-language-card">
+      <div className="kicker">{copy('NGÔN NGỮ TOÀN APP','APP LANGUAGE')}</div>
+      <Heading level={2} role="titleMedium">{copy('Ngôn ngữ','Language')}</Heading>
+      <Text role="support">{copy(
+       'Một lựa chọn cho toàn bộ giao diện và các bài đã có bản song ngữ. Nội dung chưa dịch giữ nguyên.',
+       'One choice for the whole app and bilingual lessons. Untranslated material stays in its authored language.')}</Text>
+      <div className="li-locale-control" role="group"
+       aria-label={copy('Ngôn ngữ toàn ứng dụng','App language')}>
+       {([['vi','Tiếng Việt'],['en','English']] as const).map(([id,label])=>
+        <Button key={id} variant={locale===id?'primary':'secondary'}
+         className="action li-locale-choice" aria-pressed={locale===id}
+         onClick={()=>app.liLanguage?.set(id)}>{label}</Button>)}
+      </div>
+     </Card>
      <Card variant="raised" className="li-react-setting-card">
       <div className="kicker">{copy('HỌC TẬP','LEARNING')}</div>
       <Heading level={2} role="titleMedium">{copy('Nhịp học của bạn','Your study rhythm')}</Heading>

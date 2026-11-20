@@ -109,6 +109,6 @@
 .li-related-item{display:grid;gap:var(--li-space-2);min-width:0;padding-block:var(--li-space-3)}
 .li-related-link{display:grid;gap:var(--li-space-1);width:fit-content;max-width:100%;text-decoration:underline;text-underline-offset:var(--li-space-1)}
 .li-related-link:focus-visible{outline:var(--li-space-0);text-decoration-thickness:var(--li-space-1)}
-.li-related-reason{margin:0}
+.li-related-reason{margin:var(--li-space-0)}
 .li-related-source{width:fit-content;max-width:100%;text-decoration:underline;text-underline-offset:var(--li-space-1)}
 .li-related-source:focus-visible{outline:var(--li-space-0);text-decoration-thickness:var(--li-space-1)}

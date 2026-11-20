@@ -396,9 +396,24 @@ function renderMirrorItem(){
  action.setAttribute("aria-label",isHook?"Khám phá vì sao · Mở bài học liên quan":"Đào sâu · Mở Khảo Chứng");
  document.getElementById("mirror-primary-label").textContent=isHook?"Khám phá vì sao":"Đào sâu";
  if(typeof refreshQuestionBookmark==="function")refreshQuestionBookmark();
+ if(typeof window!=="undefined"&&typeof Event!=="undefined")window.dispatchEvent(new Event("li:inquiry-changed"));
 }
 let selectedCaseAnswer=null;
-function syncResearch(){const s=scenarios[qIndex].type==="hook"?scenarios.find(item=>item.type!=="hook"):scenarios[qIndex];const title=document.querySelector("#page-research .surface.tinted h2");if(title)title.textContent=s.question;document.querySelectorAll('#page-research [data-branch]').forEach((el,i)=>{if(s.branches[i]){el.dataset.branch=s.branches[i];el.textContent=String(i+1).padStart(2,"0")+" · "+s.branches[i]}});document.getElementById("research-observed").textContent=s.observed;document.getElementById("research-unknown").textContent=s.unknown;document.getElementById("branch-feedback").textContent="Chọn một nhánh để đặt câu hỏi kiểm chứng.";}
+let liResearchFeedback="Chọn một nhánh để đặt câu hỏi kiểm chứng.";
+function liCurrentProblem(){
+ return scenarios[qIndex].type==="hook"?scenarios.find(item=>item.type!=="hook"):scenarios[qIndex];
+}
+function liChooseResearchBranch(value){
+ const problem=liCurrentProblem();
+ if(!problem?.branches?.includes(value))return false;
+ liResearchFeedback="Hãy kiểm chứng: "+value;
+ const target=document.getElementById("branch-feedback");
+ if(target)target.textContent=liResearchFeedback;
+ window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"branch",id:scenarios[qIndex].question+"::"+value}}));
+ window.dispatchEvent(new Event("li:inquiry-changed"));
+ return true;
+}
+function syncResearch(){const s=scenarios[qIndex].type==="hook"?scenarios.find(item=>item.type!=="hook"):scenarios[qIndex];const title=document.querySelector("#page-research .surface.tinted h2");if(title)title.textContent=s.question;document.querySelectorAll('#page-research [data-branch]').forEach((el,i)=>{if(s.branches[i]){el.dataset.branch=s.branches[i];el.textContent=String(i+1).padStart(2,"0")+" · "+s.branches[i]}});document.getElementById("research-observed").textContent=s.observed;document.getElementById("research-unknown").textContent=s.unknown;liResearchFeedback="Chọn một nhánh để đặt câu hỏi kiểm chứng.";document.getElementById("branch-feedback").textContent=liResearchFeedback;window.dispatchEvent(new Event("li:inquiry-changed"));}
 const buddyCopy={
 home:"Tiểu hữu nhìn vào gương rồi à? Ai được hỏi? Ai bị bỏ sót? Lão nghi câu sau mới thú vị.",
 catalog:"Đọc bản đồ trước khi đi. Đừng chọn cả khu rừng rồi than không thấy đường, nhóc.",
@@ -565,7 +580,7 @@ function openModal(id,trigger){if(id==="buddy-modal"&&window.liBuddyReactMounted
 function closeModal(id){if(id==="buddy-modal"&&window.liBuddyReactMounted){window.dispatchEvent(new Event("li:buddy-close"));return;}const el=document.getElementById(id);el.classList.remove("open");document.activeElement?.blur?.()}
 document.querySelectorAll(".page").forEach(e=>e.setAttribute("aria-label",e.id.replace("page-","")));
 document.getElementById("method-filters").innerHTML=categories.map((c,i)=>'<button class="filter" data-cat="'+c+'" aria-pressed="'+(i===0)+'">'+c+'</button>').join("");
-document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.hasAttribute("data-nav-back")){goBack();return}if(t.dataset.page){navigate(t.dataset.page);if(t.dataset.focus){const field=document.getElementById(t.dataset.focus);document.getElementById("notebook-section")?.scrollIntoView?.({block:"start"});field?.focus?.({preventScroll:true})}return}if(t.dataset.method){showMethod(t.dataset.method,{practice:t.dataset.spellPractice==="true",lessonId:t.dataset.spellLesson||null});return}if(t.dataset.cat){currentCategory=t.dataset.cat;document.querySelectorAll("[data-cat]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));renderMethods();return}if(t.dataset.branch){document.getElementById("branch-feedback").textContent="Hãy kiểm chứng: "+t.dataset.branch;window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"branch",id:scenarios[qIndex].question+"::"+t.dataset.branch}}));return}if(t.dataset.answer){const isCase=t.closest("section.page").id==="page-case";if(isCase)selectedCaseAnswer=t.dataset.answer;const id=isCase?"case-feedback":"lesson-feedback";document.getElementById(id).textContent=t.dataset.answer==="right"?"Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.":"Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.";return}if(t.dataset.demo){toast(t.dataset.demo);return}if(t.dataset.buddy){openLaoLy(t);return}});
+document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.hasAttribute("data-nav-back")){goBack();return}if(t.dataset.page){navigate(t.dataset.page);if(t.dataset.focus){const field=document.getElementById(t.dataset.focus);document.getElementById("notebook-section")?.scrollIntoView?.({block:"start"});field?.focus?.({preventScroll:true})}return}if(t.dataset.method){showMethod(t.dataset.method,{practice:t.dataset.spellPractice==="true",lessonId:t.dataset.spellLesson||null});return}if(t.dataset.cat){currentCategory=t.dataset.cat;document.querySelectorAll("[data-cat]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));renderMethods();return}if(t.dataset.branch){liChooseResearchBranch(t.dataset.branch);return}if(t.dataset.answer){const isCase=t.closest("section.page").id==="page-case";if(isCase)selectedCaseAnswer=t.dataset.answer;const id=isCase?"case-feedback":"lesson-feedback";document.getElementById(id).textContent=t.dataset.answer==="right"?"Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.":"Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.";return}if(t.dataset.demo){toast(t.dataset.demo);return}if(t.dataset.buddy){openLaoLy(t);return}});
 /* UX-DS-28 · Keep native Safari pinch-zoom and rotation reflow enabled.
    The mirror swipe listener below handles a single-purpose horizontal gesture. */
 /* S137 · Bidirectional mirror carousel. Both directions keep question, context and mentor in sync. */

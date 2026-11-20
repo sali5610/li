@@ -22,18 +22,20 @@ function Example(){
  const [selected,setSelected]=useState<string[]>(state==='selected'||(story==='filterGroup'&&variant==='Required')?['psychology']:[]);
  const [rowHits,setRowHits]=useState(0);
  const [savedState,setSavedState]=useState<SaveState>(
-  ['unsaved','saving','saved-device','synced','offline','error'].includes(state)?state as SaveState:'unsaved'
+  ['unsaved','saving','saved-device','queued','synced','offline','unavailable','error'].includes(state)?state as SaveState:'unsaved'
  );
  if(story==='saveStatus'){
   const labels:Record<SaveState,[string,string]>={
    unsaved:['Chưa lưu (mô phỏng)','Unsaved (demo)'],
    saving:['Đang lưu (mô phỏng)','Saving (demo)'],
    'saved-device':['Đã lưu trên thiết bị (mô phỏng)','Saved on device (demo)'],
+   queued:['Đã lưu, đang chờ đồng bộ (mô phỏng)','Saved, waiting to sync (demo)'],
    synced:['Đã đồng bộ (mô phỏng)','Synced (demo)'],
    offline:['Chưa đồng bộ — offline (mô phỏng)','Offline — not synced (demo)'],
+   unavailable:['Chưa xác nhận được đồng bộ (mô phỏng)','Sync status unavailable (demo)'],
    error:['Lưu thất bại (mô phỏng)','Save failed (demo)']
   };
-  const sequence:SaveState[]=['unsaved','saving','saved-device','synced','offline','error'];
+  const sequence:SaveState[]=['unsaved','saving','saved-device','queued','synced','offline','unavailable','error'];
   return <div data-story-save-status>
    <SaveStatus state={savedState} message={t(...labels[savedState])}
     detail={t('Đây chỉ là fixture, không ghi dữ liệu.','This is only a fixture; nothing is written.')}

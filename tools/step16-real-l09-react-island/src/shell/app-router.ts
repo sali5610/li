@@ -71,6 +71,10 @@ function writeUrl(route:string,remember=false){
  if(path!==window.location.pathname+window.location.search+window.location.hash){
   // A user navigation creates a real browser entry; redirects/auth reset replace it.
   if(remember&&typeof window.history.pushState==='function'){
+   // Catalog breadcrumbs also create browser entries. Never reuse their
+   // depth when navigating into a lesson or a different React screen.
+   const current=Number(window.history.state?.liRouteDepth);
+   if(Number.isInteger(current)&&current>=0)browserDepth=current;
    browserDepth++;
    window.history.pushState({...window.history.state,liRoute:route,liRouteDepth:browserDepth},'',path);
   }else window.history.replaceState({...window.history.state,liRoute:route,liRouteDepth:browserDepth},'',path);
@@ -120,7 +124,9 @@ export function mountReactRouter():()=>void{
   if(!canVisit())return false;
   // Real browser navigation is the canonical Back operation. The synchronous
   // fallback supports older embedded webviews without the History API.
-  if(browserDepth>0&&typeof window.history.back==='function'){
+  const currentDepth=Number(window.history.state?.liRouteDepth);
+  if((Number.isInteger(currentDepth)?currentDepth:browserDepth)>0&&
+     typeof window.history.back==='function'){
    window.history.back();
    return true;
   }
@@ -162,17 +168,18 @@ export function mountReactRouter():()=>void{
   window.dispatchEvent(new CustomEvent('li:route-changed',{detail:{route:active}}));
  };
  const onPopState=()=>{
-  // Native Catalog still listens for popstate to restore its drill-down path.
-  // React is the final owner of the visible screen and route state.
+  // The direct React Catalog adapter syncs its breadcrumb data separately.
+  // Breadcrumb Back/Forward changes ?catalog, not the active React screen.
   if(!canVisit())return;
+  const restored=routeFromUrl();
   const next=Number(window.history.state?.liRouteDepth);
   if(Number.isInteger(next)&&next>=0){
-   // Going Forward restores the trail; going Back shortens it.
-   if(next<browserDepth&&history.length)history.pop();
-   else if(next>browserDepth&&active)history.push(active);
+   if(restored!==active){
+    if(next<browserDepth&&history.length)history.pop();
+    else if(next>browserDepth&&active)history.push(active);
+   }
    browserDepth=next;
-  }else if(history.length)history.pop();
-  const restored=routeFromUrl();
+  }else if(restored!==active&&history.length)history.pop();
   if(restored!==active)change(restored,{remember:false,syncUrl:false});
  };
  window.addEventListener('popstate',onPopState);

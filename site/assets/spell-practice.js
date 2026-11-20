@@ -672,10 +672,10 @@ function setup(){
    practiceSynced=true;notifyReactSpell();
   });
   window.addEventListener("li:personal-sync-applied",ev=>{
-   const detail=ev.detail,key=receiptKey();
-   if(active&&active!=="T02"&&active!=="T12"&&key&&
-      detail?.accountId===practiceSessionOwner&&
-      Array.isArray(detail.keys)&&detail.keys.includes(key)){
+   const receiptDetail=ev.detail,receiptStorageKey=receiptKey();
+   if(active&&active!=="T02"&&active!=="T12"&&receiptStorageKey&&
+      receiptDetail?.accountId===practiceSessionOwner&&
+      Array.isArray(receiptDetail.keys)&&receiptDetail.keys.includes(receiptStorageKey)){
     practiceSynced=false;
     // Preserve an in-progress answer while still showing downloaded history.
     if(phase===0&&!reviewedInSession){

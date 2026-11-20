@@ -186,47 +186,7 @@
 </main><footer class="footer"><b>li. (理)</b><span class="footer-tagline">THE WORLD OF KNOWING WHY</span></footer>
 </div><nav class="mobile-nav" aria-label="Điều hướng chính mobile"><button class="nav-btn" data-page="home" aria-label="Đại Sảnh — Trang chủ" title="Trang chủ"><i data-lucide="trees" class="icon " aria-hidden="true"></i>Đại Sảnh</button><button class="nav-btn" data-page="catalog" aria-label="Tàng Thư — Khám phá ngành học" title="Khám phá ngành học"><i data-lucide="library-big" class="icon " aria-hidden="true"></i>Tàng Thư</button><button class="nav-btn" data-page="guide" aria-label="Thần Chú — 13 phương pháp học" title="13 phương pháp học"><i data-lucide="sparkle" class="icon " aria-hidden="true"></i>Thần Chú</button><button class="nav-btn" data-page="library" aria-label="Tủ Riêng — Hành trình và case cá nhân" title="Hành trình và case cá nhân"><i data-lucide="archive" class="icon " aria-hidden="true"></i>Tủ Riêng</button></nav>
 <div class="laoly-support"><button id="laoly-fab" type="button" aria-label="Trò chuyện với Lão Lý" title="Lão Lý"><span class="laoly-face smallface" aria-hidden="true"><img src="./assets/laoly-neutral.png?v=ux-art07-clean-five-20261119" alt="" width="128" height="128" class="laoly-approved-img" id="laoly-current-icon" loading="eager" decoding="async"></span></button></div><div id="buddy-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="buddy-title"><div class="buddy-shell"><div class="dialog"><header class="buddy-heading"><img id="buddy-title-avatar" src="./assets/laoly-neutral.png?v=ux-art07-clean-five-20261119" alt="" width="48" height="48" loading="eager" decoding="async"><div class="buddy-heading-copy"><h2 id="buddy-title">Lão Lý</h2><p id="buddy-quote-original" class="ly-original" hidden></p><p id="buddy-quote-translation" class="ly-translation" lang="vi" hidden></p></div><button id="buddy-quote-info" class="buddy-quote-info" type="button" hidden aria-label="Xem diễn nghĩa và xuất xứ câu trích dẫn" aria-controls="buddy-quote" aria-expanded="false" title="Diễn nghĩa và xuất xứ"><i data-lucide="info" aria-hidden="true"></i></button><aside id="buddy-quote" class="ly-cultural" hidden aria-label="Diễn nghĩa và xuất xứ câu trích dẫn"><div id="buddy-quote-gloss" class="small"></div><div class="small"><span id="buddy-quote-meta"></span> · <a id="buddy-quote-link" href="#" target="_blank" rel="noopener noreferrer">Xem xuất xứ</a></div></aside></header><div id="buddy-scroll" class="buddy-scroll" tabindex="0" role="region" aria-label="Nội dung hội thoại với Lão Lý"><p id="buddy-text" role="status" aria-live="polite">Hừm… câu này đáng để lão bỏ dở giấc ngủ trăm năm.</p><p id="buddy-quote-context" class="li-quote-context" hidden></p><div id="buddy-debate" class="ly-debate" hidden><p class="small">Lão hỏi toàn người dùng đang hoạt động, rồi kết luận 90% toàn thị trường hài lòng. Ngươi bắt được chỗ suy rộng không?</p><div class="action-row"><button class="action alt" id="buddy-wrong">Đúng, có thể suy ra thị trường</button><button class="action" id="buddy-right">Chưa, chỉ biết nhóm được hỏi</button></div></div></div><div class="action-row buddy-actions"><button class="action alt" id="buddy-question"><i data-lucide="search-check" aria-hidden="true"></i> Lão hỏi ngược</button><button class="action alt" id="buddy-challenge"><i data-lucide="git-branch" aria-hidden="true"></i> Phản biện lão</button><button class="action alt" id="buddy-forget"><i data-lucide="brain" aria-hidden="true"></i> Lão quên gì rồi?</button><button class="action" id="close-modal">Đóng</button></div></div></div></div>
-<div id="checkin-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="checkin-title" aria-describedby="checkin-description">
- <div class="dialog">
-  <div class="checkin-scroll" tabindex="0" aria-label="Nội dung check-in có thể cuộn">
-   <div class="kicker">L1 · THỂ TRẠNG → NHỊP HỌC</div>
-   <h2 id="checkin-title">Hôm nay cơ thể ra sao?</h2>
-   <p id="checkin-description">Chọn Có hoặc Chưa cho cả ba mục để nhận gợi ý nhịp học.</p>
-   <div class="checkin-physical" role="group" aria-label="Ba câu hỏi thể trạng trước khi áp dụng check-in">
-    <fieldset class="checkin-physical-field" data-checkin-field="sleep"><legend><span class="checkin-index">01</span> Đã ngủ tương đối đủ?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-sleep" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-sleep" value="no"><span>Chưa</span></label></div></fieldset>
-    <fieldset class="checkin-physical-field" data-checkin-field="move"><legend><span class="checkin-index">02</span> Đã vận động nhẹ hôm nay?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-move" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-move" value="no"><span>Chưa</span></label></div></fieldset>
-    <fieldset class="checkin-physical-field" data-checkin-field="rest"><legend><span class="checkin-index">03</span> Đã nghỉ ngơi hôm nay?</legend><div class="checkin-radio-row"><label class="checkin-radio"><input type="radio" name="checkin-rest" value="yes"><span>Có</span></label><label class="checkin-radio"><input type="radio" name="checkin-rest" value="no"><span>Chưa</span></label></div></fieldset>
-   </div>
-   <p id="checkin-recommendation" class="state-note checkin-result" role="status" aria-live="polite">Trả lời đủ ba mục thể trạng để nhận nhịp gợi ý.</p>
-   <details class="checkin-context"><summary>Cảm nhận hiện tại · Bổ sung</summary><p>Không bắt buộc. Dồi dào hoặc tập trung rõ được cộng điểm; mệt hay khó tập trung sẽ giảm nhịp. Ba mục L1 vẫn được ưu tiên.</p>
-    <fieldset class="checkin-question"><legend>Năng lượng lúc này</legend><div class="checkin-choices">
-     <label class="checkin-choice"><input type="radio" name="checkin-energy" value="high"><span>Dồi dào</span></label>
-     <label class="checkin-choice"><input type="radio" name="checkin-energy" value="medium"><span>Vừa đủ</span></label>
-     <label class="checkin-choice"><input type="radio" name="checkin-energy" value="low"><span>Đang cạn</span></label>
-    </div></fieldset>
-    <fieldset class="checkin-question"><legend>Khả năng tập trung</legend><div class="checkin-choices">
-     <label class="checkin-choice"><input type="radio" name="checkin-attention" value="steady"><span>Rõ ràng</span></label>
-     <label class="checkin-choice"><input type="radio" name="checkin-attention" value="warming"><span>Chập chờn</span></label>
-     <label class="checkin-choice"><input type="radio" name="checkin-attention" value="hard"><span>Rất khó</span></label>
-    </div></fieldset>
-   </details>
-   <details class="checkin-manual" id="checkin-override"><summary>Tự chọn nhịp khác</summary>
-    <fieldset class="checkin-question"><legend>Nhịp muốn áp dụng</legend><div class="checkin-override-options">
-     <label class="checkin-radio"><input type="radio" name="checkin-override" value="" checked><span>Theo gợi ý</span></label>
-     <label class="checkin-radio"><input type="radio" name="checkin-override" value="start"><span>Vào nhịp</span></label>
-     <label class="checkin-radio"><input type="radio" name="checkin-override" value="focus"><span>Đào sâu</span></label>
-     <label class="checkin-radio"><input type="radio" name="checkin-override" value="overload"><span>Quá tải</span></label>
-     <label class="checkin-radio"><input type="radio" name="checkin-override" value="recover"><span>Hồi trí</span></label>
-    </div></fieldset>
-   </details>
-   <p id="li-checkin-recording-disclosure" class="checkin-privacy">Đang lưu Check-in và nhịp đã áp dụng vào Nhật Ký trên thiết bị này; không gửi lên máy chủ. Có thể dừng ghi ở cuối trang Nhật Ký.</p>
-  </div>
-  <div class="action-row checkin-actions">
-   <button class="action alt" type="button" id="close-checkin">Bỏ qua</button>
-   <button class="action" type="button" id="apply-checkin" disabled>Áp dụng nhịp</button>
-  </div>
- </div>
-</div>
+<div id="li-react-checkin-root"></div>
 <div id="toast" class="li-snackbar" role="status" aria-live="polite" aria-atomic="true" style="display:none"></div>
 <script src="./assets/lucide.min.js"></script>
 <script src="./assets/app-language-legacy.js?v=20261119-elder-li-storybook"></script><script src="./assets/app-language.js?v=20261119-elder-li-storybook"></script>
@@ -556,7 +516,7 @@ function paintMethodDetail(id){
  document.getElementById("detail-original").textContent=m[2];
  document.getElementById("detail-purpose").textContent=translated(m[3]);
 }
-function showMethod(id,{practice=false}={}){if(!methods.some(m=>m[0]===id))return;paintMethodDetail(id);navigate("guideDetail");window.LiSpellPractice?.open(id,practice?"practice":"guide");}
+function showMethod(id,{practice=false,lessonId=null}={}){if(!methods.some(m=>m[0]===id))return;paintMethodDetail(id);navigate("guideDetail");window.LiSpellPractice?.open(id,practice?"practice":"guide",lessonId);}
 /* One catalog of 13 approved spells. The React guide reads this existing
  * authored source and opens the existing real Chú giải/Thử thi triển route. */
 window.liMethods=Object.freeze({
@@ -582,11 +542,11 @@ window.addEventListener("li:localechange",()=>{
   if(id)paintMethodDetail(id);
  }
 });
-function openModal(id,trigger){const el=document.getElementById(id);el.classList.add("open");el.dataset.trigger=trigger?.id||"";el.querySelector("button")?.focus()}
-function closeModal(id){const el=document.getElementById(id);el.classList.remove("open");document.activeElement?.blur?.()}
+function openModal(id,trigger){if(id==="buddy-modal"&&window.liBuddyReactMounted){openLaoLy(trigger);return;}const el=document.getElementById(id);el.classList.add("open");el.dataset.trigger=trigger?.id||"";el.querySelector("button")?.focus()}
+function closeModal(id){if(id==="buddy-modal"&&window.liBuddyReactMounted){window.dispatchEvent(new Event("li:buddy-close"));return;}const el=document.getElementById(id);el.classList.remove("open");document.activeElement?.blur?.()}
 document.querySelectorAll(".page").forEach(e=>e.setAttribute("aria-label",e.id.replace("page-","")));
 document.getElementById("method-filters").innerHTML=categories.map((c,i)=>'<button class="filter" data-cat="'+c+'" aria-pressed="'+(i===0)+'">'+c+'</button>').join("");
-document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.hasAttribute("data-nav-back")){goBack();return}if(t.dataset.page){navigate(t.dataset.page);if(t.dataset.focus){const field=document.getElementById(t.dataset.focus);document.getElementById("notebook-section")?.scrollIntoView?.({block:"start"});field?.focus?.({preventScroll:true})}return}if(t.dataset.method){showMethod(t.dataset.method,{practice:t.dataset.spellPractice==="true"});return}if(t.dataset.cat){currentCategory=t.dataset.cat;document.querySelectorAll("[data-cat]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));renderMethods();return}if(t.dataset.branch){document.getElementById("branch-feedback").textContent="Hãy kiểm chứng: "+t.dataset.branch;window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"branch",id:scenarios[qIndex].question+"::"+t.dataset.branch}}));return}if(t.dataset.answer){const isCase=t.closest("section.page").id==="page-case";if(isCase)selectedCaseAnswer=t.dataset.answer;const id=isCase?"case-feedback":"lesson-feedback";document.getElementById(id).textContent=t.dataset.answer==="right"?"Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.":"Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.";return}if(t.dataset.demo){toast(t.dataset.demo);return}if(t.dataset.buddy){openLaoLy(t);return}});
+document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.hasAttribute("data-nav-back")){goBack();return}if(t.dataset.page){navigate(t.dataset.page);if(t.dataset.focus){const field=document.getElementById(t.dataset.focus);document.getElementById("notebook-section")?.scrollIntoView?.({block:"start"});field?.focus?.({preventScroll:true})}return}if(t.dataset.method){showMethod(t.dataset.method,{practice:t.dataset.spellPractice==="true",lessonId:t.dataset.spellLesson||null});return}if(t.dataset.cat){currentCategory=t.dataset.cat;document.querySelectorAll("[data-cat]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));renderMethods();return}if(t.dataset.branch){document.getElementById("branch-feedback").textContent="Hãy kiểm chứng: "+t.dataset.branch;window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"branch",id:scenarios[qIndex].question+"::"+t.dataset.branch}}));return}if(t.dataset.answer){const isCase=t.closest("section.page").id==="page-case";if(isCase)selectedCaseAnswer=t.dataset.answer;const id=isCase?"case-feedback":"lesson-feedback";document.getElementById(id).textContent=t.dataset.answer==="right"?"Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.":"Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.";return}if(t.dataset.demo){toast(t.dataset.demo);return}if(t.dataset.buddy){openLaoLy(t);return}});
 /* UX-DS-28 · Keep native Safari pinch-zoom and rotation reflow enabled.
    The mirror swipe listener below handles a single-purpose horizontal gesture. */
 /* S137 · Bidirectional mirror carousel. Both directions keep question, context and mentor in sync. */
@@ -636,98 +596,10 @@ if(!liWriteState()){processedCases.shift();toast("Không thể lưu Bút Ký tr�
 try{window.localStorage.setItem(LI_DRAFT_KEY,"")}catch(e){}
 const noteKey=Array.from((item.title+"|"+v).normalize("NFKC").toLocaleLowerCase("vi")).reduce((h,ch)=>Math.imul(h^ch.codePointAt(0),16777619)>>>0,2166136261).toString(36);
 window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"input",id:"case:"+noteKey}}));navigate("library");toast("Đã lưu Bút Ký trên thiết bị này.");});
-/* L1 physical-first self-report + learning rhythm heuristic. Not clinical triage. */
-let currentL1PhysicalState=null;
-window.LiL1=Object.freeze({getPhysicalState:()=>currentL1PhysicalState?{...currentL1PhysicalState}:null});
-function readCheckinInputs(){
- const modal=document.getElementById("checkin-modal");
- const physical={
-  sleep:modal.querySelector('input[name="checkin-sleep"]:checked')?.value||"",
-  move:modal.querySelector('input[name="checkin-move"]:checked')?.value||"",
-  rest:modal.querySelector('input[name="checkin-rest"]:checked')?.value||""
- };
- const energy=modal.querySelector('input[name="checkin-energy"]:checked')?.value||"";
- const attention=modal.querySelector('input[name="checkin-attention"]:checked')?.value||"";
- return {physical,energy,attention};
-}
-function completePhysicalCheckin(physical){
- const values=physical&&[physical.sleep,physical.move,physical.rest];
- return Boolean(values&&values.length===3&&values.every(v=>["yes","no"].includes(v)));
-}
-function recommendStudyMode(physical,energy="",attention=""){
- if(!completePhysicalCheckin(physical))return null;
- // An explainable study-rhythm heuristic, NOT a clinical/health or cognitive score.
- // Primary: three physical reports, each Có +2, Chưa +0. Secondary feelings:
- // energetic +1, medium -1, low -2; clear focus +1, warming -1, hard -2.
- // Positives genuinely add to the study-rhythm suggestion, with a physical-first cap:
- // any Chưa can increase up to Vào nhịp, not automatically to Đào sâu.
- const yesCount=[physical.sleep,physical.move,physical.rest].filter(value=>value==="yes").length;
- const energyPoints={high:1,medium:-1,low:-2}[energy]??0;
- const attentionPoints={steady:1,warming:-1,hard:-2}[attention]??0;
- const physicalPoints=yesCount*2;
- const points=physicalPoints+energyPoints+attentionPoints;
- const positives=[];
- if(energy==="high")positives.push("Năng lượng dồi dào +1");
- if(attention==="steady")positives.push("Tập trung rõ +1");
- let mode,reason;
- if(energy==="low"&&attention==="hard"){
-  mode="overload";reason="Năng lượng cạn và rất khó tập trung; giảm tải hoặc nghỉ đều được.";
- }else if(energy==="low"||attention==="hard"){
-  mode="recover";reason="Cảm nhận hiện tại báo khó duy trì cường độ, nên ưu tiên nhịp nhẹ.";
- }else if(yesCount===3){
-  mode=points>=6?"focus":points===5?"start":"recover";
-  reason=mode==="focus"?"Ba mục thể trạng đều Có; cảm nhận hiện tại hỗ trợ học sâu.":mode==="start"?"Ba mục thể trạng đều Có; nên bắt đầu vừa sức.":"Ba mục thể trạng đều Có, nhưng cảm nhận hiện tại cho thấy nên học nhẹ.";
- }else if(yesCount===2&&points>=5){
-  mode="start";reason="Một mục thể trạng là Chưa, nhưng tín hiệu tích cực giúp bạn thử Vào nhịp thay vì chỉ Hồi trí.";
- }else{
-  mode="recover";reason="Có mục thể trạng Chưa; trước mắt ưu tiên Hồi trí.";
- }
- return {mode,reason,points,physicalPoints,energyPoints,attentionPoints,positives};
-}
-function refreshCheckinRecommendation(){
- const {physical,energy,attention}=readCheckinInputs();
- const complete=completePhysicalCheckin(physical);
- const suggested=recommendStudyMode(physical,energy,attention);
- const manual=document.querySelector('#checkin-modal input[name="checkin-override"]:checked')?.value||"";
- const target=complete?(manual||suggested?.mode||""):"";
- const result=document.getElementById("checkin-recommendation");
- const missing=[["sleep","Ngủ"],["move","Vận động"],["rest","Nghỉ ngơi"]].filter(pair=>!["yes","no"].includes(physical[pair[0]])).map(pair=>pair[1]);
- if(!complete){
-  result.textContent="Chưa thể áp dụng. Hãy trả lời: "+missing.join(", ")+". Hoặc chọn Bỏ qua để học mà không ghi check-in.";
- }else if(manual){
-  result.textContent="L1 đã đủ ba câu. Bạn chọn "+STUDY_MODES[manual].label+" thủ công; quyền quyết định vẫn thuộc về bạn.";
- }else{
-  const bonus=suggested.positives.length?" Điểm cộng gợi ý: "+suggested.positives.join(" · ")+".":"";
-  result.textContent="Gợi ý: "+STUDY_MODES[suggested.mode].label+". "+suggested.reason+bonus+" Đây không phải đánh giá sức khỏe.";
- }
- document.getElementById("apply-checkin").disabled=!target;
- return target;
-}
-function recordL1PhysicalCheckin(physical,selectedMode){
- // Only in-memory session state. An eventual opt-in diary needs its own consent gate.
- currentL1PhysicalState=Object.freeze({
-  sleep:physical.sleep,move:physical.move,rest:physical.rest,
-  selectedMode,recordedAt:new Date().toISOString()
- });
- window.dispatchEvent(new CustomEvent("li:l1-physical-checkin",{detail:{...currentL1PhysicalState}}));
-}
-function closeCheckinModal(){
- const trigger=document.getElementById("checkin-modal")?.dataset?.trigger;
- closeModal("checkin-modal");
- ((trigger&&document.getElementById(trigger))||document.getElementById("checkin"))?.focus();
-}
-document.getElementById("checkin-modal").addEventListener("change",refreshCheckinRecommendation);
-document.getElementById("checkin").addEventListener("click",event=>{
- if(event.isTrusted)delete document.getElementById("checkin-modal").dataset.trigger;
- // A new check-in starts unanswered; no stale physical report or old override.
- document.querySelectorAll('#checkin-modal input[name^="checkin-"]').forEach(input=>input.checked=false);
- document.querySelector('#checkin-modal input[name="checkin-override"][value=""]').checked=true;
- document.querySelector("#checkin-modal .checkin-context").open=false;
- document.getElementById("checkin-override").open=false;
- document.querySelector("#checkin-modal .checkin-scroll").scrollTop=0;
- openModal("checkin-modal",event.currentTarget);
- refreshCheckinRecommendation();
- document.querySelector('input[name="checkin-sleep"]').focus();
+/* React owns the L1 form, rules and session self-report. The old hidden
+ * Home entry remains only as a compatibility navigation entrypoint. */
+document.getElementById("checkin")?.addEventListener("click",event=>{
+ window.dispatchEvent(new CustomEvent("li:open-checkin",{detail:{triggerId:event.currentTarget.id}}));
 });
 function findSavedMirrorQuestion(sc){
  return savedQuestions.findIndex(x=>x.question===sc.question||x.question===sc.previousQuestion||(sc.key&&x.scenarioKey===sc.key));
@@ -760,17 +632,6 @@ document.getElementById("save-question").addEventListener("click",()=>{
  }
  refreshQuestionBookmark();window.liLibraryShelf?.renderResume();
 });
-document.getElementById("close-checkin").addEventListener("click",closeCheckinModal);
-document.getElementById("apply-checkin").addEventListener("click",()=>{
- const target=refreshCheckinRecommendation();
- const {physical}=readCheckinInputs();
- if(!target||!completePhysicalCheckin(physical))return;
- if(!setStudyMode(target))return;
- recordL1PhysicalCheckin(physical,target);
- closeCheckinModal();
- toast("Đã chọn nhịp "+STUDY_MODES[target].label+". Đổi lúc nào cũng được!");
-});
-
 document.getElementById("buddy-challenge").addEventListener("click",()=>{buddyDebateActive=true;document.getElementById("buddy-debate").hidden=false;document.getElementById("buddy-quote").hidden=true;document.getElementById("buddy-text").textContent="Thử phản biện lão: 90% người được hỏi nói hài lòng. Lão kết luận cả thị trường cũng hài lòng.";});
 document.getElementById("buddy-right").addEventListener("click",()=>{document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent=liBuddyLine("Cuối cùng cũng chịu dùng đến bộ não rồi đấy. Nhà thông thái, ngươi đã bắt đúng lỗi suy rộng từ người dùng sang toàn thị trường. Lão xin rút kết luận.");});
 document.getElementById("buddy-wrong").addEventListener("click",()=>{document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent=liBuddyLine("Ồ, một cách suy luận rất sáng tạo. Tiếc là sai. Nhóc, lão chỉ hỏi người đang dùng; người chưa dùng có thể nghĩ khác. Đừng bắt mẫu khảo sát gánh cả thị trường.");});
@@ -945,6 +806,7 @@ window.addEventListener("li:personal-sync-applied",event=>{
 /* UI adapter only; the original inline study mode, buddy customization, backup
  * importer/exporter and verified Auth consent remain the action/data owners. */
 window.liSettingsPort=Object.freeze({
+ setMode:(mode)=>setStudyMode(mode),
  getView:()=>{
   const el=id=>document.getElementById(id),check=id=>Boolean(el(id)?.checked);
   const card=el("li-journal-cloud-settings"),cloud=el("li-journal-cloud-toggle");
@@ -993,9 +855,7 @@ window.liSettingsPort=Object.freeze({
 });
 const liInitialLesson=new URLSearchParams(window.location.search).get("lesson");
 const liInitialCatalog=new URLSearchParams(window.location.search).get("catalog");
-/* A future editorial deep link is checked against the compiled release registry
- * by the signed React router after login. Keep its URL until that check. */
 navigate(liInitialCatalog&&!liInitialLesson?"catalog":"home",{focus:false,syncUrl:!(liInitialCatalog||liInitialLesson)});
 setStudyMode(studyMode,{persist:false});
 window.addEventListener("load",()=>{refreshLucide();placeCompanion();});
-</script><script src="./assets/laoly-context-s112.js?v=react-mentor-query-20261120"></script><script src="./assets/laoly-quotes-s121.js?v=3"></script><script src="./assets/lesson-l09-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-l15-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script><script src="./assets/lesson-related-wave1.js"></script><script src="./assets/personal-diary.js?v=3"></script><script src="./assets/library-hub.js?v=8"></script><script src="./assets/library-note-editor.js?v=5"></script><script src="./assets/library-bookmarks.js?v=4"></script><script src="./assets/spell-practice.js?v=20261119-deep-i18n-qa"></script><script src="./assets/lesson-spell-suggestions.js?v=wave1-method-fit-preview"></script><script src="./assets/catalog-curriculum-data.js?v=20261118-s160"></script><script src="./assets/catalog-drilldown.js?v=20261119-deep-i18n-qa"></script><script src="./assets/li-catalog-search.js?v=react-mentor-query-20261120"></script><script src="./assets/laoly-drag.js?v=20261119-control-dodge"></script><script src="./assets/ipad-safari-rotation.js?v=20261119-ds33"></script></body></html>
+</script><script src="./assets/laoly-context-s112.js?v=react-mentor-query-20261120"></script><script src="./assets/laoly-quotes-s121.js?v=3"></script><script src="./assets/lesson-l09-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-l15-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script><script src="./assets/lesson-related-wave1.js"></script><script src="./assets/personal-diary.js?v=3"></script><script src="./assets/library-hub.js?v=8"></script><script src="./assets/library-note-editor.js?v=5"></script><script src="./assets/library-bookmarks.js?v=4"></script><script src="./assets/spell-practice.js?v=l03-t06-context-20261120"></script><script src="./assets/lesson-spell-suggestions.js?v=wave1-method-fit-preview"></script><script src="./assets/catalog-curriculum-data.js?v=20261118-s160"></script><script src="./assets/catalog-drilldown.js?v=20261119-deep-i18n-qa"></script><script src="./assets/li-catalog-search.js?v=react-mentor-query-20261120"></script><script src="./assets/laoly-drag.js?v=20261119-control-dodge"></script><script src="./assets/ipad-safari-rotation.js?v=20261119-ds33"></script></body></html>

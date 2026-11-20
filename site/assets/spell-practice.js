@@ -249,8 +249,10 @@ function open(id,tab="guide",lessonId=null){
 }
 function missing(){
  for(const f of currentExercise().fields){
-  if(f[2]){if(!root.querySelector('input[name="sp-'+f[0]+'"]:checked'))return f[1];}
-  else if(!rawValue(f[0]))return f[1];
+  if(f[2]){
+   const hasChoice=f[3]==="multi"?checked(f[0]).length>0:radio(f[0])!==null;
+   if(!hasChoice)return f[1];
+  }else if(!rawValue(f[0]))return f[1];
  }return "";
 }
 function showMessage(text){

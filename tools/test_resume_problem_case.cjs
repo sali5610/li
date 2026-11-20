@@ -11,7 +11,7 @@ class Element {
  focus(){}
 }
 const ids=["page-library","page-resume","page-collection","li-library-latest-lesson","li-library-latest-problem","li-lesson-history","li-problem-history","case-archive-preview","li-library-latest-idea","li-saved-lessons","li-saved-questions","li-bookmarks-empty-lessons","li-bookmarks-empty-questions","li-bookmark-tab-lessons","li-bookmark-tab-questions","li-bookmark-panel-lessons","li-bookmark-panel-questions","li-collection-list","save-capture-note","capture-note"];
-const cases=[],ideas=[],savedQuestions=[],savedContent=[],events=[],routes=[],openedNotes=[];
+const cases=[],ideas=[],savedQuestions=[],savedContent=[],events=[],routes=[],openedNotes=[],listeners={};
 const map=new Map();
 const localStorage={
  getItem:k=>map.has(k)?map.get(k):null,
@@ -27,9 +27,11 @@ const filters=["all","case","idea"].map(v=>{const e=new Element("button");e.data
 const mockDate=Date;
 const ctx={
  window:{localStorage,dispatchEvent:e=>events.push(e),
+  addEventListener:(kind,handler)=>{listeners[kind]=handler;},
   liBookmarks:{refresh(){},isSaved(){return false;}},
   liNotes:{openDetail(kind,id){openedNotes.push({kind,id});return true;}}},
  document:{getElementById:id=>elements[id]||null,createElement:tag=>new Element(tag),querySelectorAll:()=>filters,
+ documentElement:{classList:{contains:()=>true}},
  querySelector:selector=>selector==="#page-case .editorial-grid .surface.tinted h2"?{textContent:"90% trả lời hài lòng. Chúng ta nên kết luận thế nào?"}:null},
  processedCases:cases,collectedIdeas:ideas,savedQuestions,savedContent,scenarios,
  localStorage,liStorageError:false,liWriteState:()=>true,liNewId:()=>"newidea",
@@ -96,4 +98,16 @@ assert.equal(stored.schema,1);
 assert.equal(stored.items.length,3,"same problem opening deduplicates record");
 assert.equal(stored.items[0].key,scenarios[0].question,"latest actual problem first");
 assert.equal(map.has("li.private.lesson.visits.v1"),true,"separate lesson history remains intact");
+// The user-visible shelf must reflect an actual confirmed cross-device
+// lesson readback without requiring the learner to open each lesson.
+localStorage.setItem('li.sync.local-owner.v1','signed-A');
+localStorage.setItem('li.review.L15-2-2.v1',JSON.stringify({
+ locale:'vi',draft:['Đã lưu câu trả lời','','',''],submitted:false,reviewed:false
+}));
+listeners['li:lesson-cloud-state']?.({detail:{
+ accountId:'signed-A',lessons:[{id:'L15-2-2',changedAt:'2030-11-20T06:25:10Z'}]
+}});
+const latestCloud=elements['li-library-latest-lesson'].children[0];
+assert.match(latestCloud.children[0].children[0].textContent,/Điểm đặt hàng/);
+assert.match(latestCloud.children[0].children[1].textContent,/Đã đồng bộ Neon/);
 console.log("PASS UX-IA-08: one latest lesson and problem/case, real recency, separate detail routes, solved case detail and honest empty states");

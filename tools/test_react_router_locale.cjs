@@ -58,19 +58,19 @@ window.liAppRouter={
  back:()=>window.liReactRouter?.back()||false,
  hasRoute:id=>Boolean(document.getElementById("page-"+id))
 };
-const exports={};
+const moduleExports={};
 const scope={
  require:id=>id==="./app-store.js"?{appUiStore}:
  id==="../learning/released-lessons.js"?{
   personalStudyLessonIds:["L09-1-3"],
   personalStudyRoute:id=>id==="L09-1-3"?"draftLessonL0913":null
  }:undefined,
- exports,window,document,URL,CustomEvent:class{constructor(type,config){
+ exports:moduleExports,window,document,URL,CustomEvent:class{constructor(type,config){
   this.type=type;this.detail=config?.detail;
  }}
 };
 vm.runInNewContext(generated,scope);
-const stop=exports.mountReactRouter();
+const stop=moduleExports.mountReactRouter();
 const act=window.liReactRouter;
 assert.equal(typeof act.navigate,"function");
 visible=false;

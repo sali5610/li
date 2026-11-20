@@ -5,6 +5,7 @@
 import manifest from '../../../../site/content-packs/manifest.json';
 import catalog from '../../../../site/content-packs/course-catalog.json';
 import legacy from '../../../../content/curriculum/legacy-catalog.v1.json';
+import {personalStudyManuscriptIds} from './personal-study-ids.js';
 const packed=new Set(manifest.courses.flatMap(c=>c.lessonIds));
 const authorized=new Set(catalog.lessons.filter(l=>
  l.navigationPublished===true&&l.contentState==='review_only'&&
@@ -17,11 +18,7 @@ export function isReleasedLessonId(id:string):boolean{return authorized.has(id);
  * This list also enables the existing account-scoped learner sync for them.
  */
 const stagingPersonalIds=import.meta.env.VITE_LI_AUTH_TARGET==='github-pages-staging'
- ?[
-  'L03-1-1','L03-1-3','L03-2-1','L03-2-2','L03-2-3',
-  'L09-1-3','L09-2-1','L09-2-2','L09-2-3','L09-3-1','L09-3-2','L09-3-3',
-  'L15-2-1','L15-2-3','L15-3-1','L15-3-2','L15-3-3'
- ]:[];
+ ?personalStudyManuscriptIds:[];
 export const personalStudyLessonIds:readonly string[]=Object.freeze(stagingPersonalIds);
 const personalStudySet=new Set(personalStudyLessonIds);
 export function isPersonalStudyLessonId(id:string):boolean{return personalStudySet.has(id);}

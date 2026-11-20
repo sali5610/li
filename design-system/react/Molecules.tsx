@@ -87,7 +87,7 @@ export function FilterGroup({label,options,selected,onChange,multiple=true,
  if(!label.trim())throw Error('FilterGroup requires an accessible group label');
  function toggle(value:string){
   const chosen=selected.includes(value);
-  if(chosen&&!allowEmpty&&!multiple&&selected.length===1)return;
+  if(chosen&&!allowEmpty&&selected.length===1)return;
   onChange(multiple?(chosen?selected.filter(s=>s!==value):[...selected,value]):(chosen?[]:[value]));
  }
  return <div role="group" aria-label={label} className="li-ds-filter-group"

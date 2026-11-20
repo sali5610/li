@@ -28,7 +28,7 @@ const selected=(input:string)=>input===variant;
 const nav=[
  {id:'home',label:t('Đại Sảnh','Home'),href:'#home',icon:<FunctionalIcon name="home" size={20}/>},
  {id:'library',label:t('Tàng Thư','Library'),href:'#library',icon:<FunctionalIcon name="book-open" size={20}/>},
- {id:'methods',label:t('Thần Chú','Methods'),href:'#methods',icon:<FunctionalIcon name="star" size={20}/>},
+ {id:'methods',label:t('Thần Chú','Methods'),href:'#methods',icon:<FunctionalIcon name="sparkle" size={20}/>},
  {id:'private',label:t('Tủ Riêng','Private'),href:'#private',icon:<FunctionalIcon name="bookmark" size={20}/>}
 ];
 

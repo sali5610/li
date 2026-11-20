@@ -66,6 +66,8 @@ export function SmallAction({label,href,onClick,disabled=false,
  appearance='secondary'}:SmallActionProps){
  if(href&&onClick)throw Error('SmallAction may navigate OR perform an action');
  const className='li-legacy-small-action';
+ if(href&&disabled)return <span className={className} data-li-legacy="small-action"
+  data-appearance={appearance} aria-disabled="true">{label}</span>;
  if(href)return <a className={className} data-li-legacy="small-action"
   data-appearance={appearance} href={href}>{label}</a>;
  return <button className={className} data-li-legacy="small-action"
@@ -78,6 +80,7 @@ export interface ProgressVariantsProps {
  variant?:'linear'|'compact'|'indeterminate';
 }
 export function ProgressVariants({label,value,max=100,variant='linear'}:ProgressVariantsProps){
+ if(!Number.isFinite(max)||max<=0)throw Error('ProgressVariants max must be finite and positive');
  const indeterminate=variant==='indeterminate'||value===undefined;
  if(value!==undefined&&(!Number.isFinite(value)||value<0||value>max))
   throw Error('ProgressVariants value outside range');
@@ -113,7 +116,7 @@ export function CheckinRadioModal({open,onOpenChange,title,question,yesLabel,
 /** UX-DS-11 names preserved as adapters; SVG paths now owned by Lucide. */
 export type FunctionalIconName='search'|'check'|'info'|'close'|'chevron-left'|
  'book-open'|'bookmark'|'trash'|'menu'|'chevron-right'|'calendar'|'clock'|
- 'star'|'home'|'settings'|'layers'|'chat'|'alert-triangle';
+ 'star'|'sparkle'|'home'|'settings'|'layers'|'chat'|'alert-triangle';
 export interface FunctionalIconProps {name:FunctionalIconName;size?:18|20|22|24;label?:string}
 export function FunctionalIcon({name,size=22,label}:FunctionalIconProps){
  return <LiIcon name={name as LiIconRole} size={size} label={label}

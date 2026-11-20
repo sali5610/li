@@ -67,6 +67,18 @@ function plan(page){
   reply:stageLocale()==="en"?"Return to the section connected to this question.":"Lão đưa ngươi về đúng mục đang học để kiểm tra lại dữ liệu.",
   perform:()=>{
    closeModal("buddy-modal");
+   // React owns the visible lesson step. The old anchor remains in hidden
+   // native markup for parity only; scrolling to it would look like a dead link.
+   if(reactLesson(c.lesson_id)){
+    const phase={opening:"read",concept:"read",guided:"guided",
+      independent:"practice",reflection:"feedback",extension:"progress"}[c.stage];
+    if(phase){
+     window.dispatchEvent(new CustomEvent("li:mentor-phase-jump",{
+      detail:{lessonId:c.lesson_id,phase}
+     }));
+     return;
+    }
+   }
    document.getElementById(c.anchor)?.scrollIntoView?.({behavior:"smooth",block:"start"});
   }
  });

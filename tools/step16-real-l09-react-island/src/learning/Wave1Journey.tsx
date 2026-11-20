@@ -44,6 +44,28 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
  const [attempt,setAttempt]=useState<Attempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
  useEffect(()=>{window.dispatchEvent(new Event('li:lesson-phase-changed'));},[phase]);
+ // Lão Lý's Read this section must navigate the visible React workflow, not
+ // hidden legacy lesson anchors. The existing submission/review gates apply.
+ useEffect(()=>{
+  const onMentorJump=(event:Event)=>{
+   const detail=(event as CustomEvent<{lessonId?:string;phase?:string}>).detail;
+   if(!detail||detail.lessonId!==id||
+    !['read','guided','practice','feedback','progress'].includes(detail.phase||''))return;
+   const next=detail.phase as Phase;
+   if((next==='feedback'||next==='progress')&&!attempt?.submitted)return;
+   if(next==='progress'&&!attempt?.reviewed)return;
+   const root=document.querySelector('[data-li-react-journey="'+id+'"]');
+   if(!root||root.closest('.page')?.classList.contains('active')===false)return;
+   setPhase(next);
+   window.requestAnimationFrame(()=>{
+    root.querySelector('.li-learning-current')
+     ?.scrollIntoView({block:'start',behavior:reduced?'auto':'smooth'});
+   });
+  };
+  window.addEventListener('li:mentor-phase-jump',onMentorJump);
+  return()=>window.removeEventListener('li:mentor-phase-jump',onMentorJump);
+ },[id,attempt?.submitted,attempt?.reviewed,reduced]);
+
  const [loading,setLoading]=useState(true);
  const [reload,setReload]=useState(0);
  const [saving,setSaving]=useState(false);

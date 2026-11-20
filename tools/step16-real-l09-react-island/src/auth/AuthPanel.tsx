@@ -79,6 +79,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  const [syncStatus,setSyncStatus]=useState<SyncReport>('checking');
  const [journalChoice,setJournalChoice]=useState(false);
  const [journalBusy,setJournalBusy]=useState(false);
+ const [journalError,setJournalError]=useState('');
  const [conflicts,setConflicts]=useState<PrivateConflictChoice[]>([]);
  const [resolving,setResolving]=useState(false);
  useEffect(()=>{
@@ -89,6 +90,40 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   return()=>{cancelled=true;};
  },[syncStatus,accountId,ownerReady]);
  useEffect(()=>{setJournalChoice(Boolean(accountId)&&journalCloudConsent(accountId||''));},[accountId]);
+ useEffect(()=>{
+  const onCloudData=(event:Event)=>{
+   const detail=(event as CustomEvent<{accountId?:string;keys?:string[]}>).detail;
+   if(detail?.accountId===accountId&&accountId&&
+      detail.keys?.includes('li.sync.journal-cloud-consent.v1:'+accountId))
+    setJournalChoice(journalCloudConsent(accountId));
+  };
+  window.addEventListener('li:personal-sync-applied',onCloudData);
+  return()=>window.removeEventListener('li:personal-sync-applied',onCloudData);
+ },[accountId]);
+ // Privacy consent is a DATA setting, never an authentication control.
+ // Same verified invited owner, same remote revocation/tombstone path.
+ useEffect(()=>{
+  const card=document.getElementById('li-journal-cloud-settings');
+  const checkbox=document.getElementById('li-journal-cloud-toggle') as HTMLInputElement|null;
+  const detail=document.getElementById('li-journal-cloud-description');
+  if(!card||!checkbox)return;
+  const permitted=Boolean(IS_GITHUB_STAGING&&accountId&&access==='granted'&&ownerReady);
+  card.hidden=!permitted;
+  checkbox.disabled=!permitted||journalBusy;
+  checkbox.checked=permitted&&journalChoice;
+  if(detail&&permitted){
+   const en=document.documentElement.lang==='en';
+   detail.textContent=journalError||(journalBusy?(en?'Updating journal permission…':'Đang cập nhật quyền Nhật Ký…'):
+    journalChoice?(en?'Private Journal & Check-ins are enabled for cloud sync.':
+     'Nhật Ký & Check-in đang được phép đồng bộ lên Neon.'):
+     (en?'Private by default: Journal and Check-ins stay on this device.':
+      'Mặc định riêng tư: Nhật Ký & Check-in chỉ lưu trên thiết bị.')); 
+  }
+  const onChange=()=>void toggleJournalCloud(checkbox.checked);
+  checkbox.addEventListener('change',onChange);
+  return()=>checkbox.removeEventListener('change',onChange);
+ },[accountId,access,ownerReady,journalChoice,journalBusy,journalError,locale]);
+
  // Do not reveal native lesson state from another invited account.
  // Local account ownership is prepared synchronously before the app is shown.
  useEffect(()=>{
@@ -165,12 +200,12 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
 
  async function toggleJournalCloud(enabled:boolean){
   if(!accountId||access!=='granted'||!ownerReady||journalBusy)return;
-  setJournalBusy(true);setFeedback('');
+  setJournalBusy(true);setJournalError('');
   try{
    await changeJournalCloudConsent(accountId,enabled);
    setJournalChoice(enabled);
   }catch{
-   setFeedback(locale==='vi'?'Chưa cập nhật được quyền đồng bộ Nhật Ký. Hãy thử lại.':
+   setJournalError(locale==='vi'?'Chưa cập nhật được quyền đồng bộ Nhật Ký. Hãy thử lại.':
     'Could not update your journal sync permission. Try again.');
   }finally{setJournalBusy(false);}
  }
@@ -233,17 +268,6 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
        access==='denied'?t.denied:t.blocked}
      </p>
      {access==='error'&&<p className="auth-error" role="status" data-invite-error-code={inviteError}>{t.inviteErrorCode} <strong>{inviteError||'INV-UNKNOWN'}</strong></p>}
-     {access==='granted'&&ownerReady&&<div className="auth-privacy" data-private-journal-consent="account">
-      <label>
-       <input type="checkbox" checked={journalChoice} disabled={journalBusy}
-        onChange={e=>void toggleJournalCloud(e.currentTarget.checked)}/>
-       {' '}{locale==='vi'?'Đồng bộ Nhật Ký & Check-in riêng tư lên Neon':
-        'Sync private Journal & Check-ins to Neon'}
-      </label>
-      <p>{locale==='vi'?
-       'Chỉ bật khi bạn đồng ý lưu dữ liệu Check-in và Nhật Ký trên cloud của tài khoản. Tắt sẽ ngừng đồng bộ và xếp lệnh xóa bản cloud; dữ liệu trên máy vẫn giữ.':
-       'Opt in to store private check-ins and journal entries in your account cloud. Turning this off queues cloud deletion while preserving local entries.'}</p>
-     </div>}
      {access==='granted'&&syncStatus==='conflict'&&<section className="auth-privacy"
       aria-label={locale==='vi'?'Khác biệt giữa các thiết bị':'Device conflicts'}>
       <p><strong>{locale==='vi'?'Có dữ liệu khác nhau trên hai thiết bị':'Two versions differ'}</strong></p>

@@ -399,6 +399,33 @@ document.querySelectorAll("[data-collection-filter]").forEach(button=>button.add
  renderCollection();
 }));
 window.addEventListener?.("li:localechange",()=>{renderHome();renderResume();renderCollection();});
+window.addEventListener?.("li:personal-sync-applied",event=>{
+ const detail=event.detail||{};
+ if(detail.accountId!==localStorage.getItem("li.sync.local-owner.v1")||
+ !document.documentElement?.classList?.contains("li-auth-verified")||
+ !Array.isArray(detail.keys))return;
+ if(detail.keys.includes(VISITS_KEY)){
+  try{
+   const raw=JSON.parse(localStorage.getItem(VISITS_KEY)||'{"schema":1,"items":[]}');
+   if(raw.schema!==1||!Array.isArray(raw.items))throw Error("INVALID_VISITS");
+   visitStore={schema:1,items:raw.items.filter(x=>x&&LESSONS[x.route]&&
+    typeof x.visitedAt==="string"&&!Number.isNaN(Date.parse(x.visitedAt))).slice(0,40)};
+   visitError=false;
+  }catch{visitError=true;}
+ }
+ if(detail.keys.includes(PROBLEM_VISITS_KEY)){
+  try{
+   const raw=JSON.parse(localStorage.getItem(PROBLEM_VISITS_KEY)||'{"schema":1,"items":[]}');
+   if(raw.schema!==1||!Array.isArray(raw.items))throw Error("INVALID_VISITS");
+   problemVisits={schema:1,items:raw.items.filter(x=>isKnownProblem(x)&&
+    typeof x.visitedAt==="string"&&!Number.isNaN(Date.parse(x.visitedAt))).slice(0,40)};
+   problemVisitError=false;
+  }catch{problemVisitError=true;}
+ }
+ if(detail.keys.some(key=>[VISITS_KEY,PROBLEM_VISITS_KEY,"li.private.library.v1"].includes(key))){
+  renderHome();renderResume();renderCollection();renderBookmarks();
+ }
+});
 window.addEventListener?.("li:lesson-cloud-state",event=>{
  const detail=event.detail;
  if(!detail||detail.accountId!==localStorage.getItem("li.sync.local-owner.v1")||

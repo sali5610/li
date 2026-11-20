@@ -110,4 +110,20 @@ listeners['li:lesson-cloud-state']?.({detail:{
 const latestCloud=elements['li-library-latest-lesson'].children[0];
 assert.match(latestCloud.children[0].children[0].textContent,/Điểm đặt hàng/);
 assert.match(latestCloud.children[0].children[1].textContent,/Đã đồng bộ Neon/);
+localStorage.setItem('li.private.lesson.visits.v1',JSON.stringify({
+ schema:1,items:[{route:'lessonL03',visitedAt:'2031-11-20T06:25:10Z'}]
+}));
+listeners['li:personal-sync-applied']?.({detail:{
+ accountId:'signed-A',keys:['li.private.lesson.visits.v1']
+}});
+assert.match(elements['li-library-latest-lesson'].children[0].children[0].children[0].textContent,
+/Câu hỏi mở/,'remote visit updates immediately, no browser refresh');
+localStorage.setItem('li.private.lesson.visits.v1',JSON.stringify({
+ schema:1,items:[{route:'lessonL15',visitedAt:'2035-11-20T06:25:10Z'}]
+}));
+listeners['li:personal-sync-applied']?.({detail:{
+ accountId:'other-account',keys:['li.private.lesson.visits.v1']
+}});
+assert.match(elements['li-library-latest-lesson'].children[0].children[0].children[0].textContent,
+/Câu hỏi mở/,'other account cannot modify shelf');
 console.log("PASS UX-IA-08: one latest lesson and problem/case, real recency, separate detail routes, solved case detail and honest empty states");

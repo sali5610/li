@@ -409,6 +409,20 @@ $("saveReview").addEventListener("click",()=>{
  if(state.ratings.some(x=>x===null)){feedback(data[state.locale].needRubric);return;}
  state.reviewed=true;save();render();feedback(data[state.locale].reviewDone);
 });
+window.addEventListener?.("li:lesson-sync-applied",event=>{
+ const detail=event.detail||{};
+ if(!document.documentElement?.classList?.contains("li-auth-verified")||
+  detail.accountId!==localStorage.getItem("li.sync.local-owner.v1")||
+  !Array.isArray(detail.lessonIds)||!detail.lessonIds.includes(id))return;
+ try{
+  const next=JSON.parse(localStorage.getItem(KEY)||"null");
+  if(!next||!Array.isArray(next.draft)||next.draft.length!==4||
+    !Array.isArray(next.ratings)||next.ratings.length!==4)return;
+  state={...state,...next};
+  if(["vi","en"].includes(window.liLanguage?.get?.()))state.locale=window.liLanguage.get();
+  render(); // Refresh native L03/L15 inputs without reloading the app
+ }catch{/* Keep visible attempt, never erase it on a malformed remote value. */}
+});
 $("allPrompt").addEventListener("click",()=>copyPrompt(null));
 $("visualImg").addEventListener("error",()=>{$("visualImg").hidden=true;$("visualFallback").style.display="block";});
 render();

@@ -1,0 +1,43 @@
+/* Lão Lý modal: React owns all children of the existing #buddy-modal shell.
+ * Preserve established geometry, artwork, DS tokens and responsive rules. */
+#buddy-modal .li-react-buddy-shell .buddy-heading{flex:0 0 auto}
+#buddy-modal .li-react-buddy-shell #buddy-title:focus{outline:none}
+#buddy-modal .li-react-buddy-shell #buddy-title:focus-visible{
+ text-decoration:underline;text-decoration-color:var(--wood);
+ text-underline-offset:var(--li-space-2)
+}
+#buddy-modal .li-react-buddy-shell .buddy-scroll{overflow-x:hidden}
+#buddy-modal .li-react-buddy-shell #buddy-quote{
+ margin:var(--li-space-3) 0 var(--li-space-4);padding:var(--li-space-4);
+ background:var(--cream);border:1px solid var(--rule);
+ border-inline-start:3px solid var(--wood);border-radius:0
+}
+#buddy-modal .li-react-buddy-shell #buddy-quote .small{
+ font-size:var(--li-type-support);line-height:var(--li-leading-body);
+ overflow-wrap:anywhere;margin:var(--li-space-2) 0
+}
+#buddy-modal .li-react-buddy-shell #buddy-quote a{
+ color:var(--moss);text-decoration:underline;text-underline-offset:var(--li-space-1);
+ overflow-wrap:anywhere
+}
+#buddy-modal .li-react-buddy-shell .buddy-actions .li-ds-button{
+ display:flex;justify-content:center;align-items:center;gap:var(--li-space-2);
+ min-width:0;min-height:52px;white-space:normal;text-align:center;
+}
+#buddy-modal .li-react-buddy-shell .buddy-actions .li-atom-icon{flex-shrink:0}
+#buddy-modal .li-react-buddy-shell .ly-debate{
+ display:grid;gap:var(--li-space-3);
+ background:var(--paper-2);border-inline-start:3px solid var(--moss)
+}
+#buddy-modal .li-react-buddy-shell .ly-debate .action-row{grid-template-columns:1fr}
+#buddy-modal .li-react-buddy-shell #buddy-text{white-space:pre-wrap;overflow-wrap:anywhere}
+#buddy-modal .li-react-buddy-shell .buddy-quote-info{
+ display:grid;place-items:center;flex:0 0 44px;min-height:44px;
+}
+@media(max-width:400px){
+ #buddy-modal .li-react-buddy-shell .buddy-actions .li-ds-button{min-height:48px}
+ #buddy-modal .li-react-buddy-shell #buddy-quote{padding:var(--li-space-3)}
+}
+@media(prefers-reduced-motion:reduce){
+ #buddy-modal .li-react-buddy-shell *{animation:none!important;transition:none!important}
+}

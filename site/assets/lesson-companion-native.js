@@ -6,9 +6,9 @@ const registry=new Map();
 const stages=["opening","concept","guided","independent","reflection","extension"];
 const reactStages={read:"opening",guided:"guided",practice:"independent",feedback:"reflection",progress:"extension"};
 let candidateMethods=null;
-const reactLesson=()=>document.querySelector('[data-li-react-journey="L09-1-2"][data-li-lesson-phase]');
+const reactLesson=id=>document.querySelector('[data-li-react-journey="'+id+'"][data-li-lesson-phase]');
 const stageLocale=()=>{
- const item=displayedLesson(),live=item?.data.lesson_id==="L09-1-2"?reactLesson():null;
+ const item=displayedLesson(),live=item?reactLesson(item.data.lesson_id):null;
  return (live?.getAttribute("lang")||item?.root.getAttribute("lang")||
    document.documentElement.lang)==="en"?"en":"vi";
 };
@@ -33,7 +33,7 @@ function activeMoment(item){
 function context(){
  const item=displayedLesson();
  if(!item)return null;
- const live=item.data.lesson_id==="L09-1-2"?reactLesson():null;
+ const live=reactLesson(item.data.lesson_id);
  const submitted=live?live.getAttribute("data-li-lesson-submitted")==="true":hasSubmitted(item.data.lesson_id);
  const mappedStage=live?reactStages[live.getAttribute("data-li-lesson-phase")]:null;
  const safeStage=mappedStage==="reflection"&&!submitted?"independent":mappedStage;
@@ -51,7 +51,7 @@ function plan(page){
  const supported=suggested&&/^L2-T\d{2}$/.test(suggested.techniqueId)&&
   suggested.shortId===suggested.techniqueId.slice(3);
  if(supported){
-  const english=stageLocale()==="en",exercise=c.lesson_id!=="L03-1-2";
+  const english=stageLocale()==="en",exercise=true;
   actions.push({
    label:(english?"Try optional ":"Thử thần chú gợi ý ")+suggested.shortId,
    reply:(english?"Editorial suggestion, not reviewed method fit or mastery: ":
@@ -59,7 +59,7 @@ function plan(page){
      suggested.why[english?"en":"vi"],
    perform:()=>{
     closeModal("buddy-modal");
-    if(typeof showMethod==="function")showMethod(suggested.shortId,{practice:exercise});
+    if(typeof showMethod==="function")showMethod(suggested.shortId,{practice:exercise,lessonId:c.lesson_id});
    }
   });
  }else actions.push({
@@ -67,6 +67,18 @@ function plan(page){
   reply:stageLocale()==="en"?"Return to the section connected to this question.":"Lão đưa ngươi về đúng mục đang học để kiểm tra lại dữ liệu.",
   perform:()=>{
    closeModal("buddy-modal");
+   // React owns the visible lesson step. The old anchor remains in hidden
+   // native markup for parity only; scrolling to it would look like a dead link.
+   if(reactLesson(c.lesson_id)){
+    const phase={opening:"read",concept:"read",guided:"guided",
+      independent:"practice",reflection:"feedback",extension:"progress"}[c.stage];
+    if(phase){
+     window.dispatchEvent(new CustomEvent("li:mentor-phase-jump",{
+      detail:{lessonId:c.lesson_id,phase}
+     }));
+     return;
+    }
+   }
    document.getElementById(c.anchor)?.scrollIntoView?.({behavior:"smooth",block:"start"});
   }
  });
@@ -117,6 +129,7 @@ function refresh(){
 }
 window.addEventListener("scroll",refresh,{passive:true});
 window.addEventListener("resize",refresh,{passive:true});
+window.addEventListener("li:lesson-phase-changed",refresh);
 document.addEventListener("click",event=>{
  const element=event.target.closest?.("[data-page], [data-buddy], #l09-submit, #l09-vi, #l09-en, #l03-submit, #l03-vi, #l03-en, #l15-submit, #l15-vi, #l15-en, .l09-index a");
  if(element)Promise.resolve().then(refresh);

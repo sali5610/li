@@ -1,6 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
 import exact from '../l09-exact.generated.json';
+import lesson09 from '../../../../content/lessons/L09-1-2.json';
 import spellSuggestions from '../../../../site/assets/lesson-spell-suggestions.v0.1.json';
 import type {Attempt,Rating} from '../native-bridge';
 import {Button,Card} from '../../../../design-system/react/Components';
@@ -11,6 +12,7 @@ import type {SaveState} from '../../../../design-system/react/Molecules';
 import {L09_LESSON_ID} from './ports';
 import type {LearningPorts,SyncState} from './ports';
 import './journey.css';
+import {LessonBookmark,LessonMentor,LessonSectionIndex,L09Figures,LessonSources} from './LessonDetailParity.js';
 
 /** A real invited-only React learner screen, not a second app.
  * Editorial VI/EN copy is compiled from canonical GitHub
@@ -45,6 +47,29 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  const reduced=useReducedMotion();
  const [attempt,setAttempt]=useState<Attempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
+ useEffect(()=>{window.dispatchEvent(new Event('li:lesson-phase-changed'));},[phase]);
+ // Lão Lý's Read this section must navigate the visible React workflow, not
+ // hidden legacy lesson anchors. The existing submission/review gates apply.
+ useEffect(()=>{
+  const onMentorJump=(event:Event)=>{
+   const detail=(event as CustomEvent<{lessonId?:string;phase?:string}>).detail;
+   if(!detail||detail.lessonId!=='L09-1-2'||
+    !['read','guided','practice','feedback','progress'].includes(detail.phase||''))return;
+   const next=detail.phase as Phase;
+   if((next==='feedback'||next==='progress')&&!attempt?.submitted)return;
+   if(next==='progress'&&!attempt?.reviewed)return;
+   const root=document.querySelector('[data-li-react-journey="L09-1-2"]');
+   if(!root||root.closest('.page')?.classList.contains('active')===false)return;
+   setPhase(next);
+   window.requestAnimationFrame(()=>{
+    root.querySelector('.li-learning-current')
+     ?.scrollIntoView({block:'start',behavior:reduced?'auto':'smooth'});
+   });
+  };
+  window.addEventListener('li:mentor-phase-jump',onMentorJump);
+  return()=>window.removeEventListener('li:mentor-phase-jump',onMentorJump);
+ },[attempt?.submitted,attempt?.reviewed,reduced]);
+
  const [busy,setBusy]=useState(true);
  const [loadAttempt,setLoadAttempt]=useState(0);
  const [saving,setSaving]=useState(false);
@@ -221,6 +246,17 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   setError('');
   if(await save({...attempt,reviewed:true}))setPhase('progress');
  }
+ function switchLocale(locale:'vi'|'en'){
+  if(!attempt||locked||saving||attempt.locale===locale)return;
+  const global=window as Window&{liLanguage?:{set?:(value:string)=>void}};
+  global.liLanguage?.set?.(locale);
+  void save({...attempt,locale});
+ }
+ function clearDraft(){
+  if(!attempt||locked||saving||attempt.submitted)return;
+  if(!window.confirm(exact.langs[attempt.locale].resetConfirm))return;
+  void save({...attempt,draft:['','','',''] as Attempt['draft']});
+ }
  function go(next:Phase){
   if(!attempt)return;
   if((next==='feedback'||next==='progress')&&!attempt.submitted)return;
@@ -260,11 +296,22 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    <div>
     <Text role="caption">DATA SCIENCE · L09-1-2</Text>
     <Heading level={1} id="li-react-l09-title" role="headline">{content.title}</Heading>
+    <Text role="body">{content.intro}</Text>
    </div>
-   <Button variant="secondary" onClick={ports.navigation.openCatalog}>
-    {vi?'Về Tàng Thư':'Back to library'}
-   </Button>
+   <div className="li-learning-header-actions">
+    <LessonBookmark id="L09-1-2" locale={attempt.locale}/>
+    <Button variant="secondary" onClick={ports.navigation.openCatalog}>
+     {vi?'Về Tàng Thư':'Back to library'}
+    </Button>
+   </div>
   </header>
+  <Text role="support" className="li-lesson-status">{content.status}</Text>
+  <div className="li-learning-language" role="group" aria-label={vi?'Ngôn ngữ bài học':'Lesson language'}>
+   {(['vi','en'] as const).map(lang=><Button key={lang}
+    variant={attempt.locale===lang?'primary':'secondary'}
+    aria-pressed={attempt.locale===lang} disabled={saving||locked}
+    onClick={()=>switchLocale(lang)}>{lang.toUpperCase()}</Button>)}
+  </div>
   <nav className="li-learning-steps" aria-label={vi?'Các bước học':'Learning steps'}>
    {sequence.map(item=><Button key={item} variant={phase===item?'primary':'ghost'}
     aria-current={phase===item?'step':undefined}
@@ -272,6 +319,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      (item==='progress'&&!attempt.reviewed)}
     onClick={()=>go(item)}>{labels[item]}</Button>)}
   </nav>
+  <LessonSectionIndex id="L09-1-2" locale={attempt.locale}
+   links={content.sidebarLinks} onPhase={go} submitted={attempt.submitted}/>
   <aside className="li-lesson-spells" aria-label={vi?'Thần Chú gợi ý cho bài học':'Suggested study spells'}>
    <div className="li-lesson-spell-header">
     <Heading level={2} role="titleSmall">{vi?'Thần Chú có thể thử':'Spells to try'}</Heading>
@@ -285,7 +334,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
       <strong>{spell.shortId} · {vi?spell.name.vi:spell.name.en}</strong>
       <Text role="support">{vi?spell.why.vi:spell.why.en}</Text>
       <Button variant="secondary" className="li-lesson-spell-action"
-       data-method={spell.shortId} data-spell-practice={index===0?'true':'false'}
+       data-method={spell.shortId} data-spell-practice={index===0?'true':'false'} data-spell-lesson="L09-1-2"
        disabled={saving||locked}
        aria-label={(vi?'Thử Thần Chú ':'Try spell ')+spell.shortId}>
        {vi?(index?'Xem chú bổ trợ':'Thử thi triển'):
@@ -316,6 +365,11 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    {phase==='read'&&<Card variant="flat-study" aria-labelledby="li-learn-read">
     <Heading level={2} id="li-learn-read" role="titleLarge">{content.theoryTitle}</Heading>
     <Text>{strip(content.theoryLead)}</Text>
+    <div className="li-lesson-stats" aria-label={vi?'Số liệu ví dụ':'Example figures'}>
+     {['1.000','82%','?'].map((value,i)=><div className="li-lesson-stat" key={value}>
+      <strong>{value}</strong><Text role="support">{content.stats[i]}</Text>
+     </div>)}
+    </div>
     <ul>{content.defs.map((definition:string,i:number)=><li key={i}>{strip(definition)}</li>)}</ul>
     <div className="li-learning-comparison">
      <div><Heading level={3} role="titleSmall">{content.biasTitle}</Heading><Text>{strip(content.biasText)}</Text></div>
@@ -333,6 +387,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Field kind="textarea" label={content.guidedLabel} rows={5}
      value={attempt.guidedDraft} disabled={locked}
      onChange={event=>editGuided(event.currentTarget.value)}/>
+    <Text role="support">{content.guidedSaveNote}</Text>
     <details className="li-learning-hint"><summary>{vi?'Xem gợi ý phân tích':'See analysis hint'}</summary>
      <Text>{strip(content.exHelp)}</Text></details>
     <Button onClick={()=>go('practice')}>{vi?'Làm bài độc lập':'Independent practice'}</Button>
@@ -354,12 +409,17 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
       value={attempt.draft[i]} disabled={attempt.submitted||locked}
       placeholder={content.placeholder}
       onChange={event=>editDraft(i,event.currentTarget.value)}/>)}</div>
-    {!attempt.submitted?<Button disabled={locked||saving} onClick={()=>void submit()}>{content.submit}</Button>:
+    <Text role="support">{content.saveHint}</Text>
+    {!attempt.submitted?<div className="li-learning-recovery">
+     <Button disabled={locked||saving} onClick={()=>void submit()}>{content.submit}</Button>
+     <Button variant="secondary" disabled={locked||saving} onClick={clearDraft}>{content.clear}</Button>
+    </div>:
      <Button onClick={()=>go('feedback')}>{vi?'Xem đối chiếu':'See feedback'}</Button>}
    </Card>}
    {phase==='feedback'&&<Card variant="flat-study" aria-labelledby="li-learn-feedback">
     <Heading level={2} id="li-learn-feedback" role="titleLarge">{content.answerTitle}</Heading>
     <Text>{strip(content.answer)}</Text>
+    <Text role="support">{strip(content.answerCaution)}</Text>
     <section className="li-learning-submission" aria-label={vi?'Bài làm của bạn':'Your submitted answers'}>
      <Heading level={3} role="titleMedium">
       {vi?'Bài làm của bạn — đối chiếu trước khi tự chấm':'Your answers — compare before rating'}
@@ -374,6 +434,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      </ol>
     </section>
     <Heading level={3} role="titleMedium">{content.rubricTitle}</Heading>
+    <Text role="support">{content.rubricLead}</Text>
     <div className="li-learning-fields">
      {content.rubricItems.map((item:string[],i:number)=><div className="li-learning-rating" key={i}>
       <label htmlFor={'li-rating-'+i}><strong>{item[0]}</strong><Text role="support">{item[1]}</Text></label>
@@ -404,5 +465,10 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     </Button>
    </Card>}
   </motion.div>
+  <L09Figures locale={attempt.locale} copy={content}/>
+  <LessonSources id="L09-1-2" locale={attempt.locale} copy={content}
+   sources={lesson09.sources} subject={lesson09.hierarchy.field.title}
+   conceptTitle={content.theoryTitle} onSearch={ports.search.openSearch}/>
+  <LessonMentor id="L09-1-2" locale={attempt.locale}/>
  </section>;
 }

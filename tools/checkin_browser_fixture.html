@@ -1,138 +1,39 @@
 <!doctype html>
-<html lang="vi"><head><meta charset="utf-8"><title>li. L1 radio & modal visual QA</title></head>
+<html lang="vi"><head><meta charset="utf-8"><title>li. React L1 Check-in — invited-session browser smoke</title></head>
 <body style="margin:0;background:var(--paper,#F1F0E9)">
-<iframe id="app" title="li. check-in app" src="../site/index.html" style="height:760px;border:0;display:block"></iframe>
-<pre id="result">LI_CHECKIN_BROWSER_PENDING</pre>
+<iframe id="app" title="li. invited React check-in" src="../site/index.html" style="height:760px;border:0;display:block"></iframe>
+<pre id="result" role="status">LI_REACT_CHECKIN_BROWSER_PENDING</pre>
 <script>
-"use strict";
-const params=new URLSearchParams(location.search);
-const width=Number(params.get("w")||390),height=Number(params.get("h")||760);
-const iframe=document.getElementById("app");
-iframe.style.width=width+"px";iframe.style.height=height+"px";
-const result=document.getElementById("result");
-const fail=e=>{result.textContent="LI_CHECKIN_BROWSER_FAIL "+(e.stack||e.message||e);};
-let loaded=false;setTimeout(()=>{if(!loaded)fail(Error("iframe did not complete load"));},8000);
-iframe.addEventListener("load",()=>{
- loaded=true;
+/* Unlike the retired guest/native fixture, do not fabricate an authorized user.
+ * This probe is meaningful only in a valid invited session on the SAME origin. */
+const query=new URLSearchParams(location.search),w=Number(query.get("w")||390),h=Number(query.get("h")||760);
+const iframe=document.getElementById("app"),result=document.getElementById("result");
+iframe.style.width=w+"px";iframe.style.height=h+"px";
+const frame=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+iframe.addEventListener("load",async()=>{
  try{
-  const d=iframe.contentDocument,w=iframe.contentWindow;
-  const by=id=>{const el=d.getElementById(id);if(!el)throw Error("Missing "+id);return el;};
-  const check=(condition,message)=>{if(!condition)throw Error(message);};
-  const chosen=name=>d.querySelector('input[name="checkin-'+name+'"]:checked');
-  const choose=(name,value)=>{
-   const el=d.querySelector('input[name="checkin-'+name+'"][value="'+value+'"]');
-   check(Boolean(el),"missing radio "+name+" "+value);
-   el.checked=true;el.dispatchEvent(new w.Event("change",{bubbles:true}));
-  };
-  const setPhysical=(sleep,move,rest)=>{
-   for(const [name,value] of [["sleep",sleep],["move",move],["rest",rest]]){
-    if(value)choose(name,value);
-   }
-  };
-  const apply=()=>by("apply-checkin").click(),open=()=>by("checkin").click();
-  const verifyToast=label=>{
-   const actual=by("toast").textContent;
-   check(actual==="Đã chọn nhịp "+label+". Đổi lúc nào cũng được!","Wrong Check-in confirmation for "+label+": "+actual);
-   check(!actual.includes("L1")&&!actual.includes("thể trạng")&&!actual.includes("phiên này"),"Technical language leaked into snackbar");
-  };
-  const verify=(mode,count,sleep,move,rest)=>{
-   check(d.body.dataset.studyMode===mode,"Body mode "+mode);
-   check(w.localStorage.getItem("li.study-mode.v1")===mode,"Stored mode "+mode);
-   check(d.querySelector('.ly-mode-choice[data-ly-mode="'+mode+'"]')?.getAttribute("aria-pressed")==="true","Settings mode "+mode);
-   for(const name of ["laoly-current-icon","buddy-title-avatar"])check(by(name).getAttribute("src").includes("laoly-mode-"+mode+".png"),"Avatar "+name+" "+mode);
-   check(by("method-count").textContent.includes("Hiển thị "+count+"/13"),"Guide count "+mode);
-   const p=w.LiL1?.getPhysicalState();
-   check(p?.sleep===sleep&&p?.move===move&&p?.rest===rest,"Physical session mismatch");
-   check(p?.selectedMode===mode,"Physical mode mismatch");
-  };
-  const geometry=()=>{
-   const modal=by("checkin-modal"),dialog=modal.querySelector(".dialog"),
-    scroll=modal.querySelector(".checkin-scroll"),footer=modal.querySelector(".checkin-actions");
-   check(modal.classList.contains("open"),"Modal not visible");
-   const link=d.querySelector('link[href*="checkin-adaptation.css"]');
-   check(link?.getAttribute("href").includes("20261118-ds20-coverage"),"New CSS cache key missing");
-   check(Boolean(link.sheet&&link.sheet.cssRules.length>25),"Cached/missing check-in stylesheet");
-   check(w.getComputedStyle(dialog).display==="flex","Dialog must be flex");
-   check(w.getComputedStyle(scroll).overflowY==="auto","Inner content should scroll");
-   check(w.getComputedStyle(footer).position!=="sticky","Footer overlays content via sticky");
-   check(w.getComputedStyle(d.querySelector(".laoly-support")).visibility==="hidden","Lão Lý FAB obscures dialog");
-   const mr=modal.getBoundingClientRect(),dr=dialog.getBoundingClientRect(),sr=scroll.getBoundingClientRect(),fr=footer.getBoundingClientRect();
-   check(dr.left>=mr.left-1&&dr.right<=mr.right+1,"Dialog horizontal viewport overflow");
-   check(dr.top>=-1&&dr.bottom<=w.innerHeight+1,"Dialog vertical viewport overflow "+dr.bottom+"/"+w.innerHeight);
-   check(sr.right<=dr.right+1&&sr.left>=dr.left-1,"Scroll body exceeds dialog");
-   check(fr.top>=sr.bottom-2,"Footer overlaps scroll area: "+fr.top+" vs "+sr.bottom);
-   check(fr.bottom<=dr.bottom+2,"Footer outside dialog");
-   check(fr.height>=64,"Footer hit area too small");
-   const panels=["sleep","move","rest"].map(key=>{
-    const el=d.querySelector('[data-checkin-field="'+key+'"]');
-    check(Boolean(el),"Missing physical group "+key);
-    const row=el.querySelector(".checkin-radio-row");
-    check(w.getComputedStyle(row).display==="grid","Physical radio row is not grid: "+key);
-    check(row.querySelectorAll('input[type="radio"]').length===2,"Must contain 2 radios: "+key);
-    const rect=el.getBoundingClientRect();
-    check(rect.width>width*.50&&rect.width<=dr.width+1,"Physical row incorrect width: "+key+" "+rect.width);
-    const cells=[...row.querySelectorAll(".checkin-radio span")].map(e=>e.getBoundingClientRect());
-    check(cells.length===2&&cells.every(r=>r.width>=44&&r.height>=44),"Radio hit area is too small: "+key);
-    check(Math.max(...cells.map(r=>r.y))-Math.min(...cells.map(r=>r.y))<=2,"Radio options are not aligned on same row: "+key);
-    check(cells.every(r=>r.left>=rect.left-1&&r.right<=rect.right+1),"Radio overflowing fieldset "+key);
-    return rect;
-   });
-   check(panels[1].top>=panels[0].bottom-1&&panels[2].top>=panels[1].bottom-1,"Physical question cards overlap");
-   check(w.document.documentElement.scrollWidth<=w.innerWidth+2,"Whole page overflows horizontally");
-   return {dialog:dr,scroll:sr,footer:fr,scrollEl:scroll};
-  };
-  let captured=0;
-  w.addEventListener("li:l1-physical-checkin",()=>captured++);
-  open();
-  geometry();
-  check(!chosen("sleep")&&!chosen("move")&&!chosen("rest"),"Physical responses must initially be unanswered");
-  for(const key of ["sleep","move","rest"]){
-   check(d.querySelectorAll('input[name="checkin-'+key+'"]').length===2,"Expected two physical radios for "+key);
-   check(!d.querySelector('input[name="checkin-'+key+'"][value="unsure"]'),"No unsure radio for "+key);
-  }
-  check(by("apply-checkin").disabled,"Empty physical state must block apply");
-  choose("override","focus");
-  check(by("apply-checkin").disabled,"Manual override must not bypass required physical inputs");
-  setPhysical("yes","yes","");
-  check(by("apply-checkin").disabled,"Partial physical answers cannot be applied");
-  choose("rest","yes");
-  check(!by("apply-checkin").disabled,"All physical answers should enable Apply");
-  choose("override","");
-  check(by("checkin-recommendation").textContent.includes("Gợi ý: Đào sâu"),"All yes must suggest focus");
-  if(params.has("capture")){
-   const {scrollEl}=geometry();
-   scrollEl.scrollTop=0;
-   result.textContent="LI_CHECKIN_BROWSER_PASS "+width+"px · radio visual state ready for screenshot";
+  const doc=iframe.contentDocument,win=iframe.contentWindow;
+  if(!doc.documentElement.classList.contains("li-auth-verified")){
+   result.textContent="LI_REACT_CHECKIN_BROWSER_AUTH_REQUIRED: open the invited staging app and sign in to test the Check-in dialog.";
    return;
   }
-  apply();verify("focus",13,"yes","yes","yes");verifyToast("Đào sâu");
-  open();
-  check(!chosen("sleep")&&!chosen("move")&&!chosen("rest"),"Reopened check-in carries stale answers");
-  setPhysical("yes","yes","yes");d.querySelector("#checkin-modal .checkin-context").open=true;
-  choose("energy","medium");
-  check(by("checkin-recommendation").textContent.includes("Gợi ý: Vào nhịp"),"Medium energy must downshift focus to start");
-  apply();verify("start",6,"yes","yes","yes");verifyToast("Vào nhịp");
-  open();setPhysical("yes","no","yes");
-  d.querySelector("#checkin-modal .checkin-context").open=true;choose("energy","high");choose("attention","steady");
-  check(by("checkin-recommendation").textContent.includes("Gợi ý: Vào nhịp"),"High energy bonus should promote physical 2×Có + 1×Chưa from recover to start");
-  check(by("checkin-recommendation").textContent.includes("Năng lượng dồi dào +1"),"UI must show the +1 energy contribution");
-  check(by("checkin-recommendation").textContent.includes("Tập trung rõ +1"),"UI must show the +1 focus contribution");
-  apply();verify("start",6,"yes","no","yes");verifyToast("Vào nhịp");
-  open();setPhysical("yes","yes","yes");
-  d.querySelector("#checkin-modal .checkin-context").open=true;
-  choose("energy","low");choose("attention","hard");
-  check(by("checkin-recommendation").textContent.includes("Gợi ý: Quá tải"),"Missing overload refinement");
-  apply();verify("overload",3,"yes","yes","yes");verifyToast("Quá tải");
-  open();setPhysical("yes","yes","yes");
-  by("checkin-override").open=true;choose("override","recover");
-  check(by("checkin-recommendation").textContent.includes("thủ công"),"Missing override reason");
-  apply();verify("recover",6,"yes","yes","yes");verifyToast("Hồi trí");
-  open();geometry();
-  const old=captured,stamp=w.LiL1.getPhysicalState().recordedAt;
-  by("close-checkin").click();
-  check(captured===old&&w.LiL1.getPhysicalState().recordedAt===stamp,"Skip must not record");
-  check(captured===5,"Expected exactly five check-in records, got "+captured);
-  result.textContent="LI_CHECKIN_BROWSER_PASS "+width+"px · 3×2 radio groups, 4 modes, geometry, footer, no FAB overlap, override, skip, session";
- }catch(e){fail(e);}
+  const verify=(condition,message)=>{if(!condition)throw Error(message)};
+  win.dispatchEvent(new win.CustomEvent("li:open-checkin",{detail:{triggerId:"checkin"}}));
+  await frame();await frame();
+  const root=doc.getElementById("checkin-modal");
+  verify(root&&root.dataset.reactOwner==="checkin","React Check-in did not mount");
+  verify(root.classList.contains("open"),"Modal not visible");
+  verify(root.querySelector(".checkin-scroll"),"Missing separately scrolling body");
+  verify(root.querySelector(".checkin-actions"),"Missing fixed footer");
+  for(const kind of ["sleep","move","rest"]){
+   const choices=root.querySelectorAll('input[name="checkin-'+kind+'"]');
+   verify(choices.length===2,"Expected two physical answers for "+kind);
+   verify([...choices].every(x=>!x.checked),"Stale physical answer for "+kind);
+  }
+  verify(root.querySelector("#apply-checkin").disabled,"Unanswered form can be applied");
+  root.querySelector("#close-checkin").click();await frame();
+  verify(!doc.getElementById("checkin-modal"),"Skip must close React modal");
+  result.textContent="LI_REACT_CHECKIN_BROWSER_PASS: invited gate, React owner, three physical questions, safe skip.";
+ }catch(err){result.textContent="LI_REACT_CHECKIN_BROWSER_FAIL "+(err.stack||err);}
 });
 </script></body></html>

@@ -73,6 +73,11 @@ export function createContentClient({ baseUrl=new URL("../content-packs/",import
    .map(l=>[l.id,l]));
   const fieldById=new Map(tree.fields.map(x=>[x.id,x]));
   const courseById=new Map(tree.courses.map(x=>[x.id,x]));
+  // A precise unavailable lesson ID must NEVER fuzzy-match another lesson.
+  // Editorial outline-only IDs are not searchable as published learning.
+  if(/^L\d{2}-\d+-\d+$/i.test(raw.trim())&&
+     !lessonById.has(raw.trim().toUpperCase()))
+   return {status:"no_match",results:[],total:0,coverage:"canonical_search_graph_v1"};
   const rank=d=>{
    const id=normalize(d.id),title=normalize(d.title);
    const aliases=(d.aliases||[]).map(x=>normalize(x.text));
@@ -88,6 +93,106 @@ export function createContentClient({ baseUrl=new URL("../content-packs/",import
   const hits=index.documents.filter(permitted).map(d=>({doc:d,score:rank(d)}))
    .filter(x=>x.score>=0).sort((a,b)=>b.score-a.score||a.doc.id.localeCompare(b.doc.id))
    .slice(0,limit);
+  // One SOURCE-GROUNDED natural-language route within this canonical client.
+  // Intent phrases are editorial retrieval hints bound at build-time to REAL
+  // learning outcomes & lesson reference URLs; they are NOT E5 embeddings or AI answers.
+  const queryWords=needle.split(" ").filter(Boolean);
+  const seemsNatural=queryWords.length>=5||/^(?:tai sao|vi sao|lam sao|cach |khi nao|tinh |why |how |when |what |can |should )/.test(needle)||
+   /[?？]/.test(raw);
+  if(seemsNatural&&(!hits.length||hits[0].score<85)){
+   const reviewedPack=await load("answerability.json");
+   if(reviewedPack.schemaVersion!=="1.0.0"||
+      reviewedPack.scope!=="authored_wave1_answerability_not_general_semantic_ai")
+    throw Error("Invalid authored answerability content pack");
+   const hasPhrase=term=>{
+    const phrase=normalize(term);
+    return !!phrase&&(" "+needle+" ").includes(" "+phrase+" ");
+   };
+   const matches=new Map();
+   for(const claim of reviewedPack.intents){
+    const lesson=lessonById.get(claim.lessonId);
+    if(!lesson||reviewedPack.blockedByLesson[claim.lessonId]?.some(hasPhrase)||
+       !claim.groups.every(group=>group.some(hasPhrase)))continue;
+    const strength=claim.groups.reduce((score,group)=>
+      score+Math.max(0,...group.filter(hasPhrase).map(term=>normalize(term).length)),0);
+    const prev=matches.get(claim.lessonId);
+    if(!prev||strength>prev.strength)matches.set(claim.lessonId,{claim,strength});
+   }
+   const asRecord=(lessonId,level,reason,sourceUrl,reasonLocalized=null)=>{
+    const lesson=lessonById.get(lessonId);
+    const doc=index.documents.find(d=>d.id==="lesson:"+lessonId&&permitted(d));
+    if(!lesson||!doc)return null;
+    return {id:doc.id,kind:"Lesson",title:doc.title,aliases:doc.aliases||[],
+      lessonId,fieldId:lesson.fieldId,courseId:lesson.courseId,
+      contentState:lesson.contentState,sourceUrl:null,links:[],
+      score:level==="direct"?105:5,coverage:"authored_wave1_answerability",
+      answerability:{level,reason,reasonLocalized,sourceUrl,
+       evidenceStatus:"editorial_mapped_to_reviewed_learning_outcome"}};
+   };
+   if(matches.size){
+    const found=[...matches].sort((a,b)=>b[1].strength-a[1].strength)
+      .map(([lessonId,hit])=>asRecord(lessonId,"direct",
+       hit.claim.explanation.vi,hit.claim.sourceUrl,hit.claim.explanation))
+      .filter(Boolean).slice(0,limit);
+    return {status:"answerable",results:found,total:found.length,
+      coverage:"authored_wave1_answerability"};
+   }
+   // Only explicit, author-reviewed SCOPE DISCLAIMERS may show "related".
+   // Never turn a cosine-nearest neighbor or an unfinished outline into an answer.
+   const related=(reviewedPack.relatedTopics||[]).filter(item=>
+     lessonById.has(item.lessonId)&&item.triggers.some(hasPhrase))
+     .map(item=>asRecord(item.lessonId,"related",item.reason.vi,
+      null,item.reason)).filter(Boolean).slice(0,limit);
+   if(related.length)return {status:"related_only",results:related,
+     total:related.length,coverage:"authored_wave1_answerability"};
+   // Future approved lessons become searchable automatically through their
+   // authored VI/EN learning outcomes. Require a strong LITERAL intersection:
+   // this is retrieval of a learning goal, not proof the lesson answers a
+   // paraphrase or semantic similarity based on guesses.
+   const common=new Set(("tai sao vi sao lam sao cach nao khi nao gi la cua va voi " +
+    "trong duoc khong cho nhung mot toi ban minh nay kia phai nen hay " +
+    "why what when how where which who can could would should does do is are " +
+    "the a an on in to of for from by with without about please explain tell me " +
+    "dieu nay nhu the ve sau truoc").split(" "));
+   const tokens=s=>[...new Set(normalize(s).split(" ").filter(t=>t.length>=3&&!common.has(t)))];
+   const queryTokens=new Set(tokens(raw));
+   const inferred=[];
+   for(const outcome of reviewedPack.autoOutcomes||[]){
+    if(!lessonById.has(outcome.lessonId)||
+      reviewedPack.blockedByLesson[outcome.lessonId]?.some(hasPhrase)||
+      outcome.evidenceStatus!=="reviewed_lesson_outcome_text_not_independent_claim")
+      continue;
+    for(const locale of ["vi","en"]){
+     const terms=tokens(outcome.localized?.[locale]||"");
+     const shared=terms.filter(t=>queryTokens.has(t));
+     if(shared.length<3||shared.length/Math.max(terms.length,4)<0.5)
+      continue;
+     inferred.push({outcome,shared:shared.length,ratio:shared.length/terms.length});
+    }
+   }
+   inferred.sort((a,b)=>b.ratio-a.ratio||b.shared-a.shared||
+     a.outcome.id.localeCompare(b.outcome.id));
+   const autoRecords=[],seenLessons=new Set();
+   for(const {outcome} of inferred){
+    if(seenLessons.has(outcome.lessonId))continue;
+    seenLessons.add(outcome.lessonId);
+    const reason={
+     vi:"Mục tiêu bài học: "+outcome.localized.vi,
+     en:"Lesson learning outcome: "+outcome.localized.en
+    };
+    const row=asRecord(outcome.lessonId,"direct",reason.vi,
+      outcome.sourceUrl,reason);
+    if(!row)continue;
+    row.answerability.level="outcome_match";
+    row.answerability.evidenceStatus=outcome.evidenceStatus;
+    autoRecords.push(row);
+    if(autoRecords.length>=limit)break;
+   }
+   if(autoRecords.length)return {status:"outcome_match",results:autoRecords,
+     total:autoRecords.length,coverage:"approved_lesson_outcome_match"};
+   return {status:"no_answer",results:[],total:0,
+     coverage:"authored_wave1_answerability"};
+  }
   const results=await Promise.all(hits.map(async ({doc,score})=>{
    const id=doc.id,links=[];
    const lessonId=doc.kind==="Lesson"?id.slice(7):null;

@@ -3,6 +3,23 @@ import type {PrivateItem,Edit} from './contract.js';
 
 export type TokenProvider=()=>Promise<string>;
 export type Requester=typeof fetch;
+/** Stable JSONB equality for an ACK that was lost after server commit.
+ * Only the SAME opId + expected revision + exact payload/deletion may recover.
+ * If a different edit overtook us we keep the existing explicit conflict. */
+function canonical(value:unknown):string{
+ if(Array.isArray(value))return '['+value.map(canonical).join(',')+']';
+ if(value!==null&&typeof value==='object'){
+  const object=value as Record<string,unknown>;
+  return '{'+Object.keys(object).sort().map(k=>JSON.stringify(k)+':'+canonical(object[k])).join(',')+'}';
+ }
+ return JSON.stringify(value);
+}
+function sameDeletion(a:string|null,b:string|null):boolean{
+ if(a===b)return true;
+ if(!a||!b)return false;
+ const left=Date.parse(a),right=Date.parse(b);
+ return Number.isFinite(left)&&Number.isFinite(right)&&left===right;
+}
 /** No API keys or database URLs containing passwords belong in the browser. */
 export class NeonUserApi{
  private readonly url:URL;
@@ -49,7 +66,7 @@ export class NeonUserApi{
  async one(type:Edit['itemType'],id:string):Promise<PrivateItem|null>{
   checkScope('signed-in',type,id);
   const rows=await this.send('GET','li_user_state',{
-   select:'owner_id,item_type,item_id,revision,payload,changed_at,deleted_at',
+   select:'owner_id,item_type,item_id,revision,payload,changed_at,deleted_at,last_op_id',
    item_type:'eq.'+type,item_id:'eq.'+id,limit:'1'
   });
   if(rows.length>1)throw new Error('NEON_UNIQUE_KEY_BROKEN');
@@ -61,16 +78,27 @@ export class NeonUserApi{
   checkScope('signed-in',edit.itemType,edit.itemId);
   if(!Number.isSafeInteger(edit.baseRevision)||edit.baseRevision<0)throw new Error('BAD_BASE_REVISION');
   const current=await this.one(edit.itemType,edit.itemId);
+  // If the server committed but its HTTP response was lost, retrying the
+  // SAME durable Dexie opId can acknowledge it without a false 409. Never
+  // mistake a different payload, deleted state or later revision for this op.
+  if(current?.last_op_id===edit.opId){
+   if(current.revision===edit.baseRevision+1&&
+      canonical(current.payload)===canonical(edit.payload)&&
+      sameDeletion(current.deleted_at,edit.deletedAt))return current;
+   throw new RevisionConflict();
+  }
   if((current?.revision??0)!==edit.baseRevision)throw new RevisionConflict();
+  if(!edit.opId||edit.opId.length>80)throw new Error('INVALID_SYNC_OPERATION_ID');
   const body={item_type:edit.itemType,item_id:edit.itemId,payload:edit.payload,
-   deleted_at:edit.deletedAt,revision:edit.baseRevision+1,changed_at:new Date().toISOString()};
+   deleted_at:edit.deletedAt,revision:edit.baseRevision+1,
+   last_op_id:edit.opId,changed_at:new Date().toISOString()};
   const rows=current
    ?await this.send('PATCH','li_user_state',{
       item_type:'eq.'+edit.itemType,item_id:'eq.'+edit.itemId,
-      revision:'eq.'+edit.baseRevision,select:'owner_id,item_type,item_id,revision,payload,changed_at,deleted_at'
+      revision:'eq.'+edit.baseRevision,select:'owner_id,item_type,item_id,revision,payload,changed_at,deleted_at,last_op_id'
     },body)
    :await this.send('POST','li_user_state',{
-      select:'owner_id,item_type,item_id,revision,payload,changed_at,deleted_at'
+      select:'owner_id,item_type,item_id,revision,payload,changed_at,deleted_at,last_op_id'
     },body);
   // owner_id omitted, PostgreSQL default + RLS enforce the authenticated owner.
   if(rows.length!==1||rows[0].revision!==edit.baseRevision+1)throw new RevisionConflict();
@@ -82,7 +110,7 @@ export class NeonUserApi{
   const items:PrivateItem[]=[];
   for(let offset=0;offset<100000;offset+=100){
    const chunk=await this.send('GET','li_user_state',{
-     select:'owner_id,item_type,item_id,revision,payload,changed_at,deleted_at',
+     select:'owner_id,item_type,item_id,revision,payload,changed_at,deleted_at,last_op_id',
      order:'item_type.asc,item_id.asc',limit:'100',offset:String(offset)
    });
    items.push(...chunk);

@@ -13,6 +13,26 @@ function run(){
  const set=(id)=>{w.showMethod(id);d.getElementById("spell-tab-practice").click();assert(!d.getElementById("spell-practice-panel").hidden,"practice tab remains hidden "+id);assert(d.querySelector("#spell-practice-panel .spell-activity-head"),"missing practice "+id);};
  for(const id of defined.methods){set(id);assert(d.querySelector("#spell-practice-panel [data-spell-action]"),"missing interactivity "+id);}
  set("T01");assert(d.querySelector(".spell-demo"),"T01 teach absent");click(d,"next");assert(!d.querySelector(".spell-demo"),"T01 source leaked after hide");fill(d,"reason","Người đã rời app không trả lời được");d.getElementById("spell-tab-guide").click();d.getElementById("spell-tab-practice").click();assert(d.getElementById("sp-reason").value.includes("Người đã rời"),"draft lost after tab switch");click(d,"check");assert(d.querySelector(".spell-feedback"),"T01 feedback missing");assert(d.getElementById("sp-reason").value.startsWith("Người"),"T01 response erased");
+ // L03 T06 is its own real interview-writing practice, NOT L09's sampling exercise.
+ w.showMethod("T06",{practice:true,lessonId:"L03-1-2"});
+ assert(defined.getView().lessonId==="L03-1-2","L03 context not connected");
+ assert(defined.getView().prompt.includes("Câu hỏi mở")||
+        defined.getView().prompt.includes("Open-ended"),"L03 case did not load");
+ assert(!defined.getView().reviewedInSession,"new method must not be auto-completed");
+ click(d,"check");
+ assert(!defined.getView().reviewedInSession,"missing rewrite cannot earn activity receipt");
+ const one=d.querySelector('input[name="sp-case1"][value="0"]');
+ const two=d.querySelector('input[name="sp-case2"][value="1"]');
+ assert(one&&two,"two user-interview classifications missing");
+ one.checked=true;two.checked=true;
+ fill(d,"reason","Câu A mặc định người dùng yêu thích giao diện");
+ fill(d,"rewrite","Hãy kể một lần bạn dùng giao diện mới, bạn đã làm gì?");
+ click(d,"check");
+ assert(defined.getView().reviewedInSession,"real L03 contrast practice lacks reviewed session receipt");
+ assert(d.querySelector(".spell-feedback")?.textContent.includes("giao diện"),"L03 feedback incorrect");
+ w.showMethod("T06",{practice:true,lessonId:"L09-1-2"});
+ assert(!defined.getView().reviewedInSession,"old L03 evidence leaked to L09");
+ assert(defined.getView().lesson.includes("Selection bias"),"L09 T06 original sampling case not restored");
  set("T03");click(d,"next");fill(d,"number","14");click(d,"check");assert(d.getElementById("sp-number"),"T03 faded step missing");fill(d,"number","26");click(d,"check");assert(d.querySelector(".spell-feedback")?.textContent.includes("26"),"T03 independent feedback missing");
  set("T13");for(let i=1;i<=3;i++){fill(d,"place"+i,"Nơi "+i);fill(d,"cue"+i,"Liên tưởng "+i)}click(d,"next");assert(!d.querySelector(".spell-demo"),"T13 original revealed after hide");for(let i=1;i<=3;i++)fill(d,"recall"+i,"Ý "+i);click(d,"check");assert(d.querySelector(".spell-feedback"),"T13 retrieval result missing");
  set("T12");fill(d,"context","Đang so tỷ lệ");fill(d,"next","Viết một câu");click(d,"next");assert(d.querySelector("#sp-answer"),"T12 reentry action missing");
@@ -24,7 +44,7 @@ function run(){
  tabs[0].click();assert(d.getElementById("spell-practice-panel").hidden,"guide tab did not hide practice");assert(!d.getElementById("spell-guide-panel").hidden,"guide content not restored");
  const box=d.getElementById("spell-practice-panel").getBoundingClientRect();
  assert(!Number.isNaN(box.width),"broken panel geometry");
- return "13 technique modes; T01 hide/feedback/draft; T03 fade/independent; T13 self-loci recall; T12 re-entry; T02 real due; tabs/route";
+ return "13 technique modes; L03 context-specific T06 exercise/receipt and L09 reset; T01 hide/feedback/draft; T03 fade/independent; T13 self-loci recall; T12 re-entry; T02 real due; tabs/route";
 }
 iframe.addEventListener("load",()=>{try{const msg=run();result.textContent="LI_SPELL_PASS width="+width+" "+msg;}catch(e){result.textContent="LI_SPELL_FAIL "+e.message;result.style.color="red";}});
 setTimeout(()=>{if(result.textContent==="LI_SPELL_PENDING")result.textContent="LI_SPELL_FAIL timeout waiting for iframe";},12000);

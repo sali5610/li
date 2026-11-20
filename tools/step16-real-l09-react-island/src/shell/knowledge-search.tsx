@@ -5,8 +5,12 @@ import {Button,Heading,InlineFeedback,ListRow,SearchField,Text} from '../../../.
 
 type Relation={id:string;title:string;label:string;kind:string;lessonId?:string;
  reason?:string;reasonLocalized?:string;relation?:string;sourceUrl?:string;sourceType?:string};
+type Answerability={level:'direct'|'related'|'outcome_match';reason:string;
+ reasonLocalized?:{vi:string;en:string};sourceUrl?:string;
+ evidenceStatus:'editorial_mapped_to_reviewed_learning_outcome'|
+ 'reviewed_lesson_outcome_text_not_independent_claim'};
 type KnowledgeItem={id:string;title:string;kind:string;lessonId?:string;contentState?:string;
- sourceUrl?:string;links:Relation[];context?:string};
+ sourceUrl?:string;links:Relation[];context?:string;answerability?:Answerability};
 type KnowledgeResponse={status:string;results:KnowledgeItem[]};
 type KnowledgeClient={searchKnowledge:(query:string)=>Promise<KnowledgeResponse>};
 type CatalogLesson={id:string;title:string;route?:string;published?:boolean};
@@ -120,21 +124,26 @@ function KnowledgeSearch(){
   </Button>
   <div className="kicker">TÌM TRONG THƯ VIỆN</div>
   <Heading level={1} role="headline">Tra Cứu</Heading>
-  <Text role="body">Tra bài học, khái niệm và kết nối có nguồn đã kiểm chứng.</Text>
+  <Text role="body">Tìm bằng tên, mã bài hoặc hỏi bằng câu tự nhiên. Li. chỉ dẫn đến nội dung bài thực sự có, không tự bịa đáp án.</Text>
   <SearchField label="Bạn muốn tìm gì?" value={query} onQueryChange={changeQuery}
-   placeholder="Ví dụ: Sampling Bias, Sociology, Retrieval Practice"
+   placeholder="Ví dụ: Tại sao khảo sát 1.000 người vẫn có thể sai?"
    clearLabel="Xóa tìm kiếm" submitLabel="Tìm kiếm"/>
   <section className="surface" aria-label="Kết quả tra cứu">
    <Heading level={2} role="titleMedium">Kết quả tra cứu</Heading>
    {loadState==='error'&&query.trim()&&
     <InlineFeedback tone="info" message="Dữ liệu quan hệ chưa khả dụng. Đang dùng danh mục bài đã phát hành."/>}
    {navError&&<InlineFeedback tone="error" message={navError}/>}
+   {response.status==='related_only'&&!searching&&
+    <InlineFeedback tone="info" message="Chưa có bài trả lời trực tiếp câu hỏi này. Bài bên dưới chỉ có nội dung liên quan."/>}
    {searching&&<Text role="support" aria-live="polite">Đang tìm trong Knowledge Base…</Text>}
    {!query.trim()?<Text role="support">Nhập tên bài, môn học hoặc khái niệm để tra cứu.</Text>:
     response.results.length===0&&!searching?
-     <InlineFeedback tone="info" message="Chưa tìm thấy bài hay khái niệm đã xác minh phù hợp."/>:
+     <InlineFeedback tone="info" message={response.status==='no_answer'?
+      "Chưa có bài có mục tiêu học trả lời được câu hỏi này. Thử hỏi cách khác hoặc tìm theo tên/mã bài.":
+      "Chưa tìm thấy bài hay khái niệm đã xác minh phù hợp."}/>:
      <div className="path-list" aria-live="polite">
-      <Text role="caption">{response.results.length} kết quả · {loadState==='ready'?'Knowledge Base canonical':'Danh mục offline'}</Text>
+      <Text role="caption">{response.results.length} kết quả · {response.status==='answerable'||response.status==='related_only'||response.status==='outcome_match'?
+       'Câu hỏi tự nhiên · phạm vi 3 bài Wave1':loadState==='ready'?'Knowledge Base canonical':'Danh mục offline'}</Text>
       {response.results.map(record=><motion.article key={record.kind+':'+record.id}
         className="li-search-result" initial={reduced?false:{opacity:0,y:6}}
         animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.17}}> 
@@ -144,6 +153,18 @@ function KnowledgeSearch(){
          (record.context?' · '+record.context:'')}
         onActivate={record.kind==='Lesson'&&routes.has(record.lessonId||record.id)?
          ()=>navigateTo(record.lessonId||record.id):undefined}/>
+       {record.answerability&&<div className="li-search-related">
+        <Text role="support"><strong>{record.answerability.level==='direct'?'Mục tiêu bài học phù hợp':
+         record.answerability.level==='outcome_match'?
+          'Khớp mục tiêu học đã duyệt':'Chỉ liên quan — chưa trả lời câu hỏi'}</strong></Text>
+        <Text role="support">{record.answerability.reason}</Text>
+        <Text role="support">{record.answerability.level==='outcome_match'?
+         'Khớp từ ngữ trong mục tiêu học đã duyệt; chưa khẳng định bài trả lời đầy đủ câu hỏi. Không phải câu trả lời AI.':
+         'Đối chiếu theo mục tiêu bài đã biên soạn · chưa phải câu trả lời do AI tạo hoặc kiểm chứng học thuật độc lập.'}</Text>
+        {sourceIsSafe(record.answerability.sourceUrl)&&
+         <a href={record.answerability.sourceUrl} target="_blank" rel="noopener noreferrer">
+          Nguồn tham khảo của bài</a>}
+       </div>}
        {(record.links||[]).length>0&&<div className="li-search-related">
         <Text role="support">Kết nối kiến thức có nguồn · không mặc định là bài tiên quyết</Text>
         {record.links.map((link,i)=><div key={link.id+':'+i} className="li-search-relation">
@@ -158,7 +179,8 @@ function KnowledgeSearch(){
        {sourceIsSafe(record.sourceUrl)&&!(record.links||[]).some(link=>link.sourceUrl===record.sourceUrl)&&
         <a href={record.sourceUrl} target="_blank" rel="noopener noreferrer">Nguồn danh mục</a>}
        {(record.kind==='Concept'||record.kind==='Lesson')&&
-        (record.links||[]).some(link=>link.sourceType==='academic'&&sourceIsSafe(link.sourceUrl))&&
+        (record.links||[]).some(link=>link.sourceType==='academic'&&
+         link.kind==='Lesson'&&sourceIsSafe(link.sourceUrl))&&
         <Button variant="secondary" onClick={()=>askMentor(record)}
          aria-haspopup="dialog" aria-controls="buddy-modal">Hỏi Lão Lý về kết nối này</Button>}
       </motion.article>)}

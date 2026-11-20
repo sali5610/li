@@ -5,6 +5,7 @@ import {Button,Card,Checkbox,Field,Heading,InlineFeedback,LiIcon,Text} from '../
 import './journal-settings.css';
 import {InAppReminderPanel} from './in-app-reminder-ui.js';
 import {WebPushSettings} from './web-push-settings.js';
+import {ConfirmNoteAction} from './detail-practice.js';
 
 /** One authenticated app. Canonical personal-diary.js and the legacy settings
  * owners continue to own privacy, sync, import, deletion and study-mode writes.
@@ -26,7 +27,7 @@ type SettingsView={
  cloudDisabled:boolean;cloudDescription:string;exportReady:boolean;
  importLoading:boolean;importError:string
 };
-type DiaryPort={getView:()=>DiaryView;act:(kind:string,value?:string)=>void};
+type DiaryPort={getView:()=>DiaryView;act:(kind:string,value?:string)=>boolean|void};
 type SettingsPort={getView:()=>SettingsView;act:(kind:string,key?:string,value?:string|boolean)=>void;
  setVoice:(kind:'calm'|'mute',enabled:boolean)=>boolean};
 type CloudConsentPort={
@@ -175,8 +176,14 @@ export function Journal(){
      <Button variant="primary" disabled={view.storageError}
       onClick={()=>act('consent')}>{view.enabled?copy('Dừng ghi mới','Pause recording'):
        copy('Bật lưu lịch','Resume recording')}</Button>
-     <Button variant="secondary" disabled={view.storageError||!view.hasRecords}
-      onClick={()=>act('delete')}>{copy('Xóa lịch','Delete history')}</Button>
+     {!view.storageError&&view.hasRecords&&<ConfirmNoteAction danger
+      label={copy('Xóa lịch','Delete history')}
+      confirmLabel={copy('Xóa lịch','Delete history')}
+      description={copy('Xóa toàn bộ lịch hoạt động trên thiết bị này? Bạn có 7 giây để hoàn tác.',
+       'Delete all activity history on this device? Undo is available for 7 seconds.')}
+      onConfirm={()=>app.liPersonalDiary?.act('deleteConfirmed')===true}/>}
+     {(view.storageError||!view.hasRecords)&&<Button variant="secondary" disabled>
+      {copy('Xóa lịch','Delete history')}</Button>}
     </div>
     <Text role="support">{copy(
      'Dữ liệu lưu trên thiết bị trước. Chỉ đồng bộ Nhật Ký & Check-in lên Neon khi bật quyền trong Cài đặt → Dữ liệu của bạn. Dừng ghi không xóa lịch cũ; Xóa lịch có xác nhận và hoàn tác.',

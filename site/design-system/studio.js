@@ -92,6 +92,18 @@ if(query.has('embed')){
 }else{
  const $=selector=>document.querySelector(selector),nav=$('#studio-nav'),search=$('#studio-search'),v=$('#studio-variant'),s=$('#studio-state'),language=$('#studio-language'),width=$('#studio-width'),frame=$('#studio-frame');
  let active=byId(location.hash.slice(1)),tab='usage';
+ let appEvidence=null,appEvidenceFailed=false;
+ const evidenceUrl='./app-usage.v0.1.json';
+ fetch(evidenceUrl).then(response=>{
+  if(!response.ok)throw Error('App evidence missing');
+  return response.json();
+ }).then(data=>{
+  if(data.schemaVersion!==1||data.status!=='source_observed_only'||!Array.isArray(data.components))
+   throw Error('App evidence is not in the approved source format');
+  appEvidence=data;
+  if(tab==='source')renderDetails();
+ }).catch(()=>{appEvidenceFailed=true;if(tab==='source')renderDetails();});
+
  function updateNav(){
   const needle=search.value.trim().toLowerCase();
   const groups=[...new Set(catalog.map(x=>x.group))];
@@ -165,7 +177,27 @@ if(query.has('embed')){
  function renderDetails(){
   const content=$('#studio-details-content');
   if(tab==='code')content.innerHTML='<div class="studio-code"></div>',content.querySelector('.studio-code').textContent=active.code;
-  else if(tab==='source')content.innerHTML='<div class="studio-sources"><strong>Canonical reference</strong><a target="_blank" rel="noopener noreferrer" href="'+u+active.source+'">'+active.source+'</a><a target="_blank" rel="noopener noreferrer" href="'+u+'design-system/tokens.json">design-system/tokens.json — token values</a><a target="_blank" rel="noopener noreferrer" href="'+u+'design-system/ux-patterns-and-behavior.md">UI usage, states and restrictions</a><a target="_blank" rel="noopener noreferrer" href="'+u+'docs/ontology/registry.v0.1.json">Shared ontology type registry (UI component relations not fully wired)</a><p>Global G2 is open. A Draft specimen does not claim production component parity.</p><a href="../component-library-archive.html">Component Library phiên bản cũ (archive) ↗</a></div>';
+  else if(tab==='source'){
+   const row=appEvidence?.components.find(item=>item.studioId===active.id);
+   const usage=row?
+     '<section class="studio-app-evidence"><h3>Real app usage · L09</h3>'+
+     '<p><strong>Source observed, not G2 approved.</strong> '+esc(row.use)+'</p>'+
+     '<p><strong>React component:</strong> <a target="_blank" rel="noopener noreferrer" href="'+u+row.source+'">'+esc(row.component)+'</a></p>'+
+     '<p><strong>Style owner:</strong> <a target="_blank" rel="noopener noreferrer" href="'+u+row.styleSource+'">'+esc(row.selector)+'</a></p>'+
+     '<p><strong>Variant:</strong> '+esc(row.variant)+'</p>'+
+     '<p><strong>Observed state:</strong> '+esc(row.observedState)+'</p>'+
+     '<p><strong>Ontology relation:</strong> Component — USES_TOKEN → DesignToken</p>'+
+     '<div class="studio-app-token-list">'+row.tokens.map(token=>'<code>'+esc(token.name)+'</code>').join('')+'</div>'+
+     '<p><strong>Usage rule:</strong> '+esc(row.rule)+'</p>'+
+     '<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/sali5610/li/blob/'+esc(appEvidence.consumer.repoRef)+'/'+esc(appEvidence.consumer.path)+'">L09 React consumer evidence</a></p>'+
+     '<p><a href="'+evidenceUrl+'" target="_blank" rel="noopener noreferrer">Source crosswalk JSON</a> · Screen/Pattern typed edges NOT approved; source observation only.</p></section>':
+      '<p class="studio-app-evidence-empty">'+(appEvidenceFailed?
+       'App usage evidence unavailable. No source assertion can be made.':
+        appEvidence?'No verified real app usage recorded for this specimen.':
+         'Reading current source usage evidence…')+'</p>';
+  content.innerHTML='<div class="studio-sources"><strong>Canonical reference</strong><a target="_blank" rel="noopener noreferrer" href="'+u+active.source+'">'+active.source+'</a><a target="_blank" rel="noopener noreferrer" href="'+u+'design-system/tokens.json">design-system/tokens.json — token values</a><a target="_blank" rel="noopener noreferrer" href="'+u+'design-system/ux-patterns-and-behavior.md">UI usage, states and restrictions</a><a target="_blank" rel="noopener noreferrer" href="'+u+'docs/ontology/registry.v0.1.json">Shared ontology type registry (UI component relations not fully wired)</a><p>Global G2 is open. A Draft specimen does not claim production component parity.</p><a href="../component-library-archive.html">Component Library phiên bản cũ (archive) ↗</a></div>';
+   content.insertAdjacentHTML('beforeend',usage);
+  }
   else content.innerHTML='<div class="studio-do-grid"><div class="studio-guideline"><strong>DO</strong><p>'+esc(active.do)+'</p></div><div class="studio-guideline no"><strong>DON’T</strong><p>'+esc(active.dont)+'</p></div></div>';
  }
  function select(item,restore=false){

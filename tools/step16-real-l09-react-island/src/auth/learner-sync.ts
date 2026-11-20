@@ -7,6 +7,8 @@ import type {NeonUserApi} from '../sync/neon-api.js';
 import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_GITHUB_STAGING} from './config.js';
 import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
+import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
+ hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,PERSONAL_FIELDS} from './private-state.js';
 
 /**
  * The native lesson UI still writes li.review.* localStorage synchronously.
@@ -26,6 +28,26 @@ type Snapshot={id:string;raw:string|null};
 export type SyncReport='checking'|'saved'|'empty'|'offline'|'queued'|'conflict'|'error';
 type ActiveSync={uid:string;ready:Promise<void>;finish:()=>void;last:SyncReport;settled:boolean};
 let activeSync:ActiveSync|null=null;
+
+/** Per-user, explicit remote consent for private wellness diary / check-ins. */
+export {journalCloudConsent};
+export async function changeJournalCloudConsent(uid:string,enabled:boolean):Promise<void>{
+ if(!uid.trim()||localStorage.getItem(OWNER)!==uid||
+   !document.documentElement.classList.contains('li-auth-verified'))
+  throw Error('LEARNER_ACCOUNT_OR_INVITE_REQUIRED');
+ if(!enabled&&journalCloudConsent(uid)){
+  // Withdraw cloud permission: retain local journal, queue remote tombstones.
+  // Pending offline writes are replaced atomically with deletion intent.
+  for(const field of PERSONAL_FIELDS.filter(x=>x.diary)){
+   const key=storageKey(uid,field.type,field.id);
+   const existing=await store.records.get(key);
+   if(!existing||existing.deletedAt)continue;
+   await store.edit(uid,field.type,field.id,
+    {schema:'li.personal.storage.v1',storageKey:field.key,raw:''},new Date().toISOString());
+  }
+ }
+ setJournalCloudConsent(uid,enabled);
+}
 
 export async function waitForLearnerHydration(uid:string):Promise<void>{
  const state=activeSync;
@@ -121,6 +143,7 @@ export function prepareLearnerAccount(uid:string):boolean{
  const before=localStorage.getItem(OWNER);
  if(before===uid)return false;
  if(before){
+  preparePersonalAccount(before,uid);
   for(const id of LESSONS){
    const raw=localStorage.getItem(KEY(id));
    if(raw!==null)localStorage.setItem(BACKUP(before,id),raw);
@@ -201,6 +224,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
  let finish!:()=>void;
  const ready=new Promise<void>(resolve=>{finish=resolve;});
  const current:ActiveSync={uid,ready,finish,last:'checking',settled:false};
+ const observed=new Map<string,string|null>();
  activeSync=current;
  const report=(state:SyncReport)=>{
   if(disposed)return;
@@ -238,7 +262,8 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
      if(!api||api.accountId!==uid)throw new Error('SESSION_CHANGED');
     }catch(e){apiError=e;}
    }
-   const snapshots=await capture(uid,api); // IndexedDB commit even when offline
+   const snapshots=await capture(uid,api); // Native attempts
+   const personal=await capturePersonalState(uid,api,store,observed);
    if(apiError)throw apiError;
    if(!navigator.onLine||!api){report('offline');return;}
    report('checking');
@@ -271,12 +296,25 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
     }
    }
    const changed=await hydrate(uid,snapshots,()=>{pending=true;});
+   const personalChanged=await hydratePersonalState(uid,personal,store,()=>{pending=true;});
    const state=await store.counts(uid);
    if(state.conflicts)report('conflict');
    else if(state.pending)report('queued');
-   else report((await store.accountRecords(uid)).some(x=>x.itemType==='lesson_attempt')?'saved':'empty');
+   else report((await store.accountRecords(uid)).some(x=>!x.deletedAt)?'saved':'empty');
+   if(current.last==='saved'){
+    const lessons:{id:string;changedAt:string}[]=[];
+    for(const id of LESSONS){
+     if(await learnerAttemptSyncState(uid,id)==='synced'){
+      const record=await store.records.get(storageKey(uid,'lesson_attempt',id));
+      if(record)lessons.push({id,changedAt:record.changedAt});
+     }
+    }
+    window.dispatchEvent(new CustomEvent('li:lesson-cloud-state',{
+     detail:{accountId:uid,lessons}
+    }));
+   }
    transientRetries=0;
-   if(changed&&!disposed)window.location.reload();
+   if((changed||personalChanged)&&!disposed)window.location.reload();
   }catch(error){
    const code=error instanceof Error?error.message:'';
    const authorizationFailure=code==='INVITE_REVOKED'||code==='SESSION_CHANGED'||
@@ -292,9 +330,13 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
  }
  const changed=(event:Event)=>{
   const target=event.target;
-  if(target instanceof Element&&target.closest('#page-lessonL03,#page-lessonL09,#page-lessonL15'))schedule();
+  if(target instanceof Element&&target.closest('#page-lessonL03,#page-lessonL09,#page-lessonL15')){
+   schedule();return;
+  }
+  if(hasPersonalLocalChanges(uid,observed))schedule();
  };
  const resumed=()=>schedule();
+ const onPersonalEvent=()=>{if(hasPersonalLocalChanges(uid,observed))schedule();};
  document.addEventListener('input',changed);
  document.addEventListener('change',changed);
  document.addEventListener('click',changed);
@@ -302,6 +344,10 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
  window.addEventListener('online',resumed);
  window.addEventListener('li:lesson-submitted',resumed);
  window.addEventListener('li:lesson-attempt-changed',resumed);
+ window.addEventListener('li:activity',onPersonalEvent);
+ window.addEventListener('li:localechange',onPersonalEvent);
+ window.addEventListener('li:private-sync-consent',resumed);
+ window.addEventListener('storage',onPersonalEvent);
  void run();
  return()=>{
   disposed=true;
@@ -313,6 +359,10 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
   window.removeEventListener('online',resumed);
   window.removeEventListener('li:lesson-submitted',resumed);
   window.removeEventListener('li:lesson-attempt-changed',resumed);
+  window.removeEventListener('li:activity',onPersonalEvent);
+  window.removeEventListener('li:localechange',onPersonalEvent);
+  window.removeEventListener('li:private-sync-consent',resumed);
+  window.removeEventListener('storage',onPersonalEvent);
   if(!current.settled){current.settled=true;current.finish();}
   if(activeSync===current)activeSync=null;
  };

@@ -117,12 +117,12 @@ export function InAppReminderPanel(){
    <div className="li-reminder-inputs">
     <label htmlFor="li-reminder-kind">{translated('Muốn được nhắc gì?','Reminder type')}</label>
     <select id="li-reminder-kind" value={draft.kind}
-     onChange={e=>setDraft(value=>({...value,kind:e.currentTarget.value as ReminderKind}))}>
+     onChange={e=>{const kind=e.currentTarget.value as ReminderKind;setDraft(value=>({...value,kind}));}}>
      {kinds.map(item=><option key={item.id} value={item.id}>{lang?item.vi:item.en}</option>)}
     </select>
     <label htmlFor="li-reminder-time">{translated('Giờ địa phương','Local time')}</label>
     <input id="li-reminder-time" type="time" value={draft.time}
-     onChange={e=>setDraft(value=>({...value,time:e.currentTarget.value}))}/>
+     onChange={e=>{const time=e.currentTarget.value;setDraft(value=>({...value,time}));}}/>
    </div>
    <div className="action-row">
     <Button variant="primary" disabled={!validTime(draft.time)}

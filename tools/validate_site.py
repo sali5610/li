@@ -148,9 +148,14 @@ assert 'if(lesson)url.searchParams.set("lesson",lesson);' in html
 assert 'else url.searchParams.delete("lesson");' in html
 assert 'url.hash="";' in html
 assert 'if(syncUrl)syncLiRoute(id);' in html
-assert 'const liInitialCatalog=new URLSearchParams(window.location.search).get("catalog");' in html
+# The native pre-mount paint may not erase permitted React ?view= bookmarks.
+# Unknown/lesson-shaped views are not trusted; the React router gates lessons.
+assert 'const liInitialQuery=new URLSearchParams(window.location.search);' in html
+assert 'const liInitialCatalog=liInitialQuery.get("catalog");' in html
+assert 'const liRequestedView=liInitialView&&/^[A-Za-z][A-Za-z0-9]*$/.test(liInitialView)' in html
+assert 'document.getElementById("page-"+liInitialView)?liInitialView:null;' in html
 assert 'navigate(liInitialCatalog&&!liInitialLesson?"catalog":"home"' in html
-assert 'syncUrl:!(liInitialCatalog||liInitialLesson)' in html
+assert 'syncUrl:!(liInitialCatalog||liInitialLesson||liRequestedView)' in html
 assert 'const lesson=LI_LESSON_ROUTES[id]||window.liReleasedEditorialRoutes?.[id];' in html
 assert 'if(!lesson){url.searchParams.delete("chapter");if(id!=="catalog")url.searchParams.delete("catalog");}' in html
 

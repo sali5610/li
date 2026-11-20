@@ -3,6 +3,7 @@ import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Button,Card,Checkbox,Field,Heading,InlineFeedback,LiIcon,Text} from '../../../../design-system/react/index';
 import './journal-settings.css';
+import {InAppReminderPanel} from './in-app-reminder-ui.js';
 
 /** One authenticated app. Canonical personal-diary.js and the legacy settings
  * owners continue to own privacy, sync, import, deletion and study-mode writes.
@@ -292,14 +293,7 @@ export function Settings(){
     <div className="settings-group-heading"><div className="kicker">02 · {copy('NHẮC NHỞ','REMINDERS')}</div>
      <Heading level={2} role="titleLarge">{copy('Lời nhắc','Reminders')}</Heading>
     </div>
-    <Card variant="raised" className="li-react-setting-card">
-     <Heading level={3} role="titleMedium">{copy('Nhắc nhở riêng','Personal reminders')}</Heading>
-     <Text role="support">{copy('Nhắc nghỉ, vận động và lịch ngủ vẫn là tính năng dự kiến.',
-      'Rest, movement and sleep reminders are not available yet.')}</Text>
-     <InlineFeedback tone="info" message={copy(
-      'Chưa thể bật thông báo trên thiết bị. Không có công tắc giả.',
-      'Device notifications are not available yet; no pretend toggle.')}/>
-    </Card>
+    <InAppReminderPanel/>
    </section>
    <section className="settings-group" aria-label={copy('Dữ liệu & riêng tư','Data & privacy')}>
     <div className="settings-group-heading"><div className="kicker">03 · {copy('DỮ LIỆU & RIÊNG TƯ','DATA & PRIVACY')}</div>

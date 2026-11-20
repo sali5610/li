@@ -103,3 +103,16 @@
  #page-dashboard .li-react-journal .li-diary-counters>div{padding:var(--li-space-2)}
  #page-settings .li-react-settings .ly-mode-grid{grid-template-columns:1fr 1fr}
 }
+
+/* L1 reminder is opt-in and in-app only; one compact banner for an open app. */
+#page-settings .li-reminder-settings .li-reminder-inputs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:var(--li-space-3)}
+#page-settings .li-reminder-settings .li-reminder-inputs label{font:var(--li-weight-600) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
+#page-settings .li-reminder-settings .li-reminder-inputs select,
+#page-settings .li-reminder-settings .li-reminder-inputs input{width:100%;min-height:44px;min-width:0;border:1px solid var(--rule);background:var(--paper);color:var(--ink);padding:var(--li-space-2);font:inherit}
+.li-in-app-reminder{position:fixed;right:var(--li-space-4);bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:1250;width:min(440px,calc(100vw - 32px));border:1px solid var(--moss);background:var(--paper-2);color:var(--ink);box-shadow:4px 5px 0 var(--shadow-wood);padding:var(--li-space-4)}
+.li-in-app-reminder p{margin:var(--li-space-2) 0 var(--li-space-3);line-height:var(--li-leading-support)}
+.li-in-app-reminder .action-row{display:flex;flex-wrap:wrap;gap:var(--li-space-2)}
+@media(max-width:640px){
+ .li-in-app-reminder{left:var(--li-space-3);right:var(--li-space-3);width:auto;bottom:calc(66px + env(safe-area-inset-bottom,0px))}
+ #page-settings .li-reminder-settings .li-reminder-inputs{grid-template-columns:1fr}
+}

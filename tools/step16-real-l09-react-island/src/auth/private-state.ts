@@ -14,6 +14,7 @@ export const PERSONAL_FIELDS:readonly Field[]=[
  {key:'li.private.lesson.visits.v1',type:'l2_progress',id:'lesson-visits'},
  {key:'li.private.problem.visits.v1',type:'l2_progress',id:'problem-visits'},
  {key:'li.study-mode.v1',type:'preference',id:'study-mode'},
+ {key:'li.reminders.in-app.v1',type:'preference',id:'in-app-reminders'},
  {key:'li.buddy-address.v1',type:'preference',id:'buddy-address'},
  {key:'li.app.locale.v1',type:'preference',id:'locale'},
  {key:'li.spell.t02.due.v1',type:'review_schedule',id:'spell-t02-due'},

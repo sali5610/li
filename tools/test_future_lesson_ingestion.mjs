@@ -25,14 +25,20 @@ for(const entry of draftIndex.entries){
   assert.doesNotMatch(m.body_md,/<b>(?:Phản hồi|Đối chiếu sau|Feedback|After-attempt feedback|EDITORIAL GUIDED FEEDBACK|Chỉ hiện phản hồi)/i,'Early method feedback '+entry.id+' '+loc);
   for(const g of c.sections.filter(s=>s.role==='guided'))
    assert.doesNotMatch(g.body_md,/<b>(?:ĐÁP ÁN SAU LƯỢT LUYỆN|FEEDBACK AFTER GUIDED ATTEMPT)/i,'Early guided answer '+entry.id+' '+loc);
-  if(entry.id!=='L09-3-2'){
-   assert.ok(m.feedback_md?.trim()&&m.feedback_gate==='AFTER_MEANINGFUL_METHOD_ATTEMPT','Missing gated method feedback '+entry.id+' '+loc);
-   methodGated++;
-  }
- }
+  assert.ok(m.feedback_md?.trim()&&m.feedback_gate==='AFTER_MEANINGFUL_METHOD_ATTEMPT','Missing gated method feedback '+entry.id+' '+loc);
+  methodGated++;
+  if(entry.id==='L09-3-2'){
+   const source=JSON.parse(readFileSync(join(sourceRoot,entry.sourcePath),'utf8'));
+   const addition=source.content.github_editorial_extensions?.methodMicropractice?.localized?.[loc];
+   assert.ok(addition?.prompt_md?.trim()&&addition?.feedback_md?.trim(),'Missing canonical GitHub authored T06 micropractice');
+   assert.ok(m.body_md.endsWith(addition.prompt_md),'Source-to-draft prompt mismatch '+loc);
+   assert.equal(m.feedback_md,addition.feedback_md,'Source-to-draft feedback mismatch '+loc);
+   assert.match(addition.prompt_md,/300/);
+   assert.doesNotMatch(m.body_md,/precision=24\/(24\+6)|recall=24\/(24\+36)/i,'T06 method answer leaked before saved attempt');
+  } }
 }
-assert.equal(methodGated,32);
-console.log('LI_BATCH_17_METHOD_GATE_PASS: 16 bilingual pairs gated; L09-3-2 still draft');
+assert.equal(methodGated,34);
+console.log('LI_BATCH_17_METHOD_GATE_PASS: 17 bilingual pairs gated; all remain draft');
 const temp=mkdtempSync(join(tmpdir(),'li-content-onboarding-'));
 const load=path=>JSON.parse(readFileSync(join(temp,path),'utf8'));
 const save=(path,data)=>writeFileSync(join(temp,path),JSON.stringify(data,null,2)+'\n');

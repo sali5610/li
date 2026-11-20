@@ -1,0 +1,135 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>li. Step16 Settings v2 integration E2E</title></head>
+<body><pre id="result">LI_BACKUP_V2_PENDING</pre><script>
+(async()=>{
+ "use strict";
+ const output=document.getElementById("result"),S=localStorage,scenarios=[];
+ const check=(condition,message)=>{if(!condition)throw Error(message);};
+ const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+ async function until(predicate,label,ms=7000){
+  const start=performance.now();
+  while(performance.now()-start<ms){if(predicate())return;await sleep(40);}
+  throw Error("TIMEOUT: "+label);
+ }
+ const liKeys=()=>{const out=[];for(let i=0;i<S.length;i++){const k=S.key(i);if(k?.startsWith("li."))out.push(k);}return out;};
+ const clear=()=>liKeys().forEach(key=>S.removeItem(key));
+ const fake={
+  "li.private.library.v1":JSON.stringify({schema:1,cases:[],questions:[],ideas:[],savedContent:[],updatedAt:"2026-11-19T00:00:00.000Z"}),
+  "li.private.case-draft.v1":"synthetic draft",
+  "li.buddy-address.v1":JSON.stringify({warm:"",teasing:"",serious:""}),
+  "li.study-mode.v1":"start","li.app.locale.v1":"vi",
+  "li.companion.position.v1":JSON.stringify({x:0.4,y:0.6}),
+  "li.private.lesson.visits.v1":JSON.stringify({schema:1,items:[]}),
+  "li.private.problem.visits.v1":JSON.stringify({schema:1,items:[]}),
+  "li.personal.daily.v1":JSON.stringify({schema:1,days:{"2026-11-18":{test:true}}}),
+  "li.personal.daily.enabled.v1":"false",
+  "li.spell.t02.due.v1":JSON.stringify({exposed:1700000000000,due:1700086400000}),
+  "li.review.L09-1-2.v1":JSON.stringify({reviewed:true,draft:["FAKE","","",""],locale:"vi"})
+ };
+ function seed(data){clear();for(const [k,v]of Object.entries(data))S.setItem(k,v);}
+ let frame;
+ async function load(){
+  frame=document.createElement("iframe");frame.hidden=true;frame.src="../site/index.html";
+  document.body.append(frame);
+  await until(()=>frame.contentWindow?.LiBackupV2&&frame.contentDocument?.getElementById("export-personal-data"),"real li. Settings loaded");
+  const w=frame.contentWindow,d=frame.contentDocument;
+  w.HTMLAnchorElement.prototype.click=function(){}; // Block only the actual file download gesture.
+  w.confirm=()=>true;
+  return{w,d};
+ }
+ function destroy(){frame?.remove();frame=null;}
+ async function exportBlob(w,d){
+  let captured;
+  const original=w.URL.createObjectURL.bind(w.URL);
+  w.URL.createObjectURL=blob=>{captured=blob;return original(blob);};
+  d.getElementById("export-personal-data").click();
+  await until(()=>captured instanceof w.Blob,"Export Blob");
+  return await captured.text();
+ }
+ async function upload(w,d,payload){
+  const input=d.getElementById("import-personal-data");
+  const transfer=new w.DataTransfer();
+  transfer.items.add(new w.File([payload],"li-backup.json",{type:"application/json"}));
+  input.files=transfer.files;
+  input.dispatchEvent(new w.Event("change",{bubbles:true}));
+  try{
+    await until(()=>input.value==="" && d.getElementById("import-personal-trigger").disabled===false,"import finished",27000);
+  }catch(error){
+    // Async Web Locks callbacks can settle on a later task than the last poll.
+    if(input.value==="" && d.getElementById("import-personal-trigger").disabled===false)return;
+    let held="unknown";
+    try{
+      const state=await w.navigator.locks?.query?.();
+      held=JSON.stringify({held:state?.held?.map(x=>x.name),pending:state?.pending?.map(x=>x.name)});
+    }catch(e){held="lock-query-error:"+e.message;}
+    throw Error(error.message+" diagnostics="+JSON.stringify({
+      fileValue:input.value,
+      importDisabled:d.getElementById("import-personal-trigger").disabled,
+      loadingHidden:d.getElementById("import-state-loading")?.hidden,
+      errorHidden:d.getElementById("import-state-error")?.hidden,
+      errorMessage:d.getElementById("import-state-error-message")?.textContent,
+      lockSupported:!!w.navigator.locks?.request,
+      held,
+      documentVisibility:d.visibilityState
+    }));
+  }
+ }
+ try{
+  seed(fake);
+  let {w,d}=await load();
+  const exported=await exportBlob(w,d);
+  const parsed=await w.LiBackupV2.parse(exported);
+  check(parsed.kind==="full"&&parsed.entries.length>=12,"Export did not include all fixed keys and lesson progress");
+  check(parsed.entries.some(row=>row.key==="li.review.L09-1-2.v1"),"Lesson missing");
+  check(parsed.entries.some(row=>row.key==="li.personal.daily.enabled.v1"&&row.value==="false"),"Consent missing");
+  check(parsed.entries.some(row=>row.key==="li.spell.t02.due.v1"),"Due missing");
+  scenarios.push("Real Settings Export generates v2 full-state verified JSON Blob");
+  destroy();
+  seed({"li.private.library.v1":fake["li.private.library.v1"],"li.app.locale.v1":"en"});
+  ({w,d}=await load());
+  await upload(w,d,exported);
+  check(S.getItem("li.review.L09-1-2.v1")===fake["li.review.L09-1-2.v1"],"Lesson restore missing");
+  check(S.getItem("li.personal.daily.enabled.v1")==="false","Journal consent lost");
+  check(S.getItem("li.spell.t02.due.v1")===fake["li.spell.t02.due.v1"],"Review schedule lost");
+  check(S.getItem("li.app.locale.v1")==="vi","Locale not restored");
+  scenarios.push("Real Settings Import restores independent lesson, diary, due, preference keys");
+  destroy();
+  seed({"li.review.L09-1-2.v1":fake["li.review.L09-1-2.v1"],
+    "li.personal.daily.v1":fake["li.personal.daily.v1"],
+    "li.personal.daily.enabled.v1":"false"});
+  ({w,d}=await load());
+  const legacy={schema:1,cases:[{title:"Fake case",revision:"Fake revision",correct:true}],
+    questions:[{question:"Fake question"}],ideas:[],savedContent:[],draft:"legacy draft",
+    buddyNames:{warm:"Friend",teasing:"Buddy",serious:"Scholar"}};
+  await upload(w,d,JSON.stringify(legacy));
+  check(JSON.parse(S.getItem("li.private.library.v1")||"null")?.cases?.[0]?.title==="Fake case","Legacy library not imported");
+  check(S.getItem("li.review.L09-1-2.v1")===fake["li.review.L09-1-2.v1"],"Legacy import wiped progress");
+  check(S.getItem("li.personal.daily.enabled.v1")==="false","Legacy import changed diary consent");
+  scenarios.push("Legacy schema 1 merges notes without deleting independent learning/consent");
+  destroy();
+  seed(fake);
+  ({w,d}=await load());
+  const corrupted=JSON.parse(exported);corrupted.records[0].value="tampered";
+  const before=S.getItem("li.review.L09-1-2.v1");
+  await upload(w,d,JSON.stringify(corrupted));
+  check(!d.getElementById("import-state-error").hidden,"Corrupted file did not show error state");
+  check(S.getItem("li.review.L09-1-2.v1")===before,"Corrupted file mutated lesson");
+  scenarios.push("Corrupted v2 file displays approved error scene and leaves user state intact");
+  destroy();
+  seed(fake);
+  ({w,d}=await load());
+  let confirmText="";
+  w.confirm=message=>{confirmText=message;return false;};
+  const previous=S.getItem("li.app.locale.v1");
+  await upload(w,d,exported);
+  check(confirmText.includes("Thêm:")&&confirmText.includes("Ghi đè:")&&confirmText.includes("Xóa:"),"Import missing add/replace/delete preview");
+  check(S.getItem("li.app.locale.v1")===previous,"Cancel changed state");
+  scenarios.push("User can cancel count-based destructive preview without writing");
+  destroy();clear();
+  output.textContent="LI_BACKUP_V2_PASS "+JSON.stringify({count:scenarios.length,scenarios,
+   scope:"localhost fake data, exact branch site/index.html and asset, Chromium; no real iPhone or production deployment"});
+ }catch(error){
+  destroy();clear();
+  output.textContent="LI_BACKUP_V2_FAIL "+JSON.stringify({completed:scenarios,error:error.stack||String(error)});
+ }
+})();
+</script></body></html>

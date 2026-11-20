@@ -9,6 +9,7 @@ const supported=["vi","en"];
 let locale="vi";
 try{const raw=localStorage.getItem(KEY);if(supported.includes(raw))locale=raw;}catch(error){/* no storage available */}
 const TEXT={
+ "Bản sao v2 gồm ghi chép, tiến độ bài học, nhật ký, lịch ôn và tùy chọn đang lưu trên thiết bị. Tệp có thể chứa thông tin riêng tư; hãy giữ ở nơi an toàn. Bản sao cũ v1 chỉ nhập bổ sung, không khôi phục phần tiến độ chưa từng được xuất. Chưa có đồng bộ tự động giữa các thiết bị.":"Version 2 backups include your notes, lesson progress, journal, review schedule, and locally saved preferences. The file may contain private information; keep it safe. Older v1 backups can only add partial data and cannot recover learning progress that was never exported. Automatic device sync is not available.",
  "Lão đang giở sổ…":"Elder Li is leafing through the pages…",
  "Đang đọc và kiểm tra bản sao của ngươi.":"Reading and validating your backup.",
  "Bản đồ có chỗ sai rồi":"Something went wrong with the map",

@@ -1,0 +1,96 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Step16 backup v2 cross-document arbitration</title></head><body>
+<pre id="result">LI_BACKUP_V2_LOCK_PENDING</pre>
+<script src="../site/assets/backup-v2.js"></script>
+<script>
+(async()=>{
+ 'use strict';
+ const B=window.LiBackupV2,S=localStorage,checks=[];
+ const assert=(ok,message)=>{if(!ok)throw Error(message);};
+ const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+ const clean=()=>{for(let i=S.length-1;i>=0;i--){let key=S.key(i);if(key?.startsWith('li.'))S.removeItem(key);}};
+ async function fails(fn,expected){
+   try{await fn();throw Error('Expected '+expected);}
+   catch(e){if(e.code!==expected)throw Error('Expected '+expected+', got '+(e.code||e.message));}
+ }
+ async function until(fn,message,max=7000){
+   const start=performance.now();
+   while(performance.now()-start<max){if(fn())return;await pause(25);}
+   throw Error('TIMEOUT: '+message);
+ }
+ let frame,seq=0;
+ try{
+   assert(navigator.locks?.request,'Web Locks unavailable on actual localhost Chromium');
+   clean();
+   S.setItem('li.study-mode.v1','start');
+   S.setItem('li.personal.daily.enabled.v1','false');
+   frame=document.createElement('iframe');frame.hidden=true;frame.src='./step16_v2_lock_agent.html';
+   const ready=new Promise((resolve,reject)=>{
+     const timeout=setTimeout(()=>reject(Error('Second same-origin document not ready')),5000);
+     function onReady(ev){
+       if(ev.source===frame.contentWindow&&ev.origin===location.origin&&ev.data?.protocol==='li-v2-lock-ready'){
+         clearTimeout(timeout);window.removeEventListener('message',onReady);resolve();
+       }
+     }
+     window.addEventListener('message',onReady);
+   });
+   document.body.append(frame);await ready;
+   assert(frame.contentWindow.location.origin===location.origin,'Lock contender is not on same origin');
+   const responses=new Map();
+   function send(command,details={}){
+     const n=++seq;
+     const promise=new Promise((resolve,reject)=>{
+       const timer=setTimeout(()=>{responses.delete(n);reject(Error('Agent failed '+command));},20000);
+       responses.set(n,msg=>{clearTimeout(timer);if(msg.kind==='error')reject(Error(msg.message));else resolve(msg);});
+     });
+     frame.contentWindow.postMessage({protocol:'li-v2-lock-request',seq:n,command,...details},location.origin);
+     return promise;
+   }
+   window.addEventListener('message',ev=>{
+     if(ev.source!==frame.contentWindow||ev.origin!==location.origin||ev.data?.protocol!=='li-v2-lock')return;
+     const cb=responses.get(ev.data.seq);if(cb){responses.delete(ev.data.seq);cb(ev.data);}
+   });
+   const fullPayload=await B.exportJSON({get length(){return 2;},key:i=>['li.study-mode.v1','li.personal.daily.enabled.v1'][i],
+     getItem:k=>k==='li.study-mode.v1'?'focus':'false'});
+   const pre=await B.preview(S,fullPayload);
+   assert(pre.update===1,'Expected one mode update in preview');
+   await send('hold');
+   await fails(()=>B.importJSON(S,fullPayload,{confirmed:true,fingerprint:pre.fingerprint}),'busy');
+   assert(S.getItem('li.study-mode.v1')==='start','Contended import mutated local data');
+   checks.push('A second browsing context holds Web Lock; contender refuses to import without writes');
+   await send('release');
+   const saved=await B.importJSON(S,fullPayload,{confirmed:true,fingerprint:pre.fingerprint});
+   assert(saved.applied&&S.getItem('li.study-mode.v1')==='focus','Could not import after lock release');
+   checks.push('Import succeeds after lock is released by the other document');
+   const before=await B.preview(S,fullPayload);
+   await send('write',{key:'li.study-mode.v1',value:'overload'});
+   assert(S.getItem('li.study-mode.v1')==='overload','Other document did not update actual localStorage');
+   await fails(()=>B.importJSON(S,fullPayload,{confirmed:true,fingerprint:before.fingerprint}),'changed');
+   assert(S.getItem('li.study-mode.v1')==='overload','Stale confirmation overwrote other context');
+   checks.push('Actual second-document write invalidates a stale confirmed import');
+   const r=await B.preview(S,fullPayload);
+   let armed=false,queued=false;
+   const adapted={get length(){return S.length;},
+     key(i){
+       if(armed&&!queued){
+         queued=true;
+         queueMicrotask(()=>frame.contentWindow.localStorage.setItem('li.study-mode.v1','recover'));
+       }
+       return S.key(i);
+     },getItem:k=>S.getItem(k),setItem:(k,v)=>S.setItem(k,v),removeItem:k=>S.removeItem(k)};
+   armed=true;
+   await fails(()=>B.importJSON(adapted,fullPayload,{confirmed:true,fingerprint:r.fingerprint}),'changed');
+   assert(queued,'Race hook never ran');
+   assert(S.getItem('li.study-mode.v1')==='recover','Race during WebCrypto was overwritten');
+   checks.push('Synchronous late recheck detects second-document edit during async SHA digest');
+   // Explicit diary stop preference remains unchanged by a valid full restore.
+   assert(S.getItem('li.personal.daily.enabled.v1')==='false','Diary consent stop flag changed');
+   checks.push('Diary explicitly-off flag survives conflict checks');
+   frame.remove();clean();
+   document.getElementById('result').textContent='LI_BACKUP_V2_LOCK_PASS '+JSON.stringify({count:checks.length,checks,
+     notes:'Two same-origin browsing contexts (iframe, not physical Safari tabs); Web Locks only serializes cooperating restore operations.'});
+ }catch(e){
+   frame?.remove();clean();
+   document.getElementById('result').textContent='LI_BACKUP_V2_LOCK_FAIL '+JSON.stringify({completed:checks,error:e.stack||String(e)});
+ }
+})();
+</script></body></html>

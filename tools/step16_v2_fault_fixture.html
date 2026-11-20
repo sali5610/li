@@ -1,0 +1,88 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>li. Step16 backup v2 adversarial tests</title></head>
+<body><pre id="result">LI_BACKUP_V2_FAULT_PENDING</pre>
+<script src="../site/assets/backup-v2.js"></script>
+<script>
+(async()=>{
+ "use strict";
+ const B=window.LiBackupV2,checks=[];
+ const assert=(x,why)=>{if(!x)throw Error(why);};
+ async function throws(fn,expected){
+  try{await fn();throw Error("Expected failure "+expected);}catch(e){
+   if(e.code!==expected)throw Error("Wanted "+expected+", got "+(e.code||e.message));
+  }
+ }
+ function make(initial={},config={}){
+  const data=new Map(Object.entries(initial));let writes=0;
+  return{
+   get length(){return data.size;},
+   key:i=>[...data.keys()][i]??null,
+   getItem:k=>data.has(k)?data.get(k):null,
+   setItem(k,v){
+    writes++;
+    if(config.failWriteAt===writes||(config.alwaysFailKey===k))throw Error("synthetic quota");
+    data.set(k,String(v));
+   },
+   removeItem:k=>data.delete(k),
+   dump:()=>Object.fromEntries(data)
+  };
+ }
+ const src=make({"li.study-mode.v1":"focus","li.app.locale.v1":"vi",
+   "li.review.L09-1-2.v1":JSON.stringify({reviewed:true,submitted:true})});
+ const payload=await B.exportJSON(src);
+ try{
+  const obj=await B.parse(payload);
+  assert(obj.kind==="full"&&obj.entries.length===3,"v2 missing dynamic lesson records");
+  checks.push("Full v2 parses and inventories synthetic learning records");
+  await throws(()=>B.exportJSON(make({"li.unknown.future.v7":"1"})),"unknown-keys");
+  checks.push("Unregistered li. key blocks incomplete backup claims");
+  const altered=JSON.parse(payload);altered.records[0].value="en";
+  const dest=make({"li.study-mode.v1":"start"}),old=JSON.stringify(dest.dump());
+  await throws(()=>B.preview(dest,JSON.stringify(altered)),"checksum");
+  assert(JSON.stringify(dest.dump())===old,"Checksum mismatch modified destination");
+  checks.push("Corrupted digest rejects with zero mutations");
+  const oldState=make({"li.review.L09-1-2.v1":"unchanged","li.study-mode.v1":"start"});
+  const legacy=JSON.stringify({schema:1,cases:[],questions:[],draft:"legacy fake"});
+  const p=await B.preview(oldState,legacy);
+  assert(p.kind==="legacy"&&p.mode==="merge"&&p.remove===0,"Legacy must be merge-only");
+  const applied=await B.importJSON(oldState,legacy,{confirmed:true,fingerprint:p.fingerprint});
+  assert(applied.applied&&oldState.getItem("li.review.L09-1-2.v1")==="unchanged","Legacy erased independent progress");
+  checks.push("Legacy partial merge never removes missing lesson keys");
+  const stale=make({"li.study-mode.v1":"start"});
+  const preview=await B.preview(stale,payload);
+  stale.setItem("li.study-mode.v1","overload");
+  await throws(()=>B.importJSON(stale,payload,{confirmed:true,fingerprint:preview.fingerprint}),"changed");
+  assert(stale.getItem("li.study-mode.v1")==="overload","Stale preview overwrote new state");
+  checks.push("Stale preview after concurrent write rejects before mutation");
+  const quota=make({"li.app.locale.v1":"en","li.study-mode.v1":"start"}, {failWriteAt:2});
+  const before=JSON.stringify(quota.dump()),plan=await B.preview(quota,payload);
+  await throws(()=>B.importJSON(quota,payload,{confirmed:true,fingerprint:plan.fingerprint}),"write");
+  assert(JSON.stringify(quota.dump())===before,"Quota failure did not restore original state");
+  checks.push("Injected quota-write error rolls back every modified key");
+  const stuck=make({"li.study-mode.v1":"start"},{alwaysFailKey:"li.study-mode.v1"});
+  const p2=await B.preview(stuck,payload);
+  await throws(()=>B.importJSON(stuck,payload,{confirmed:true,fingerprint:p2.fingerprint}),"rollback-failed");
+  checks.push("Rollback denial reports high-severity error, never false success");
+  const poisoned=JSON.parse(payload);
+  poisoned.records.push({key:"li.__proto__.v1",value:"abc"});
+  await throws(()=>B.preview(make(),JSON.stringify(poisoned)),"invalid-record");
+  checks.push("Unexpected nested key blocked, no arbitrary storage injection");
+  const invalidLibrary=await B.exportJSON(make({"li.private.library.v1":JSON.stringify({
+    schema:1,cases:[{title:"Fake but missing required revision"}],questions:[],ideas:[],savedContent:[]
+  })}));
+  await throws(()=>B.preview(make(),invalidLibrary),"invalid-record");
+  checks.push("Malformed nested library records rejected even with a matching SHA digest");
+  await throws(()=>B.parse(" ".repeat(10*1024*1024+1)),"large");
+  checks.push("Oversized input rejected before parse or write");
+  const emptyPayload=await B.exportJSON(make());
+  const current=make({"li.study-mode.v1":"focus"});
+  const pp=await B.preview(current,emptyPayload);
+  assert(pp.remove===1,"Missing removal preview");
+  const decision=await B.importJSON(current,emptyPayload,{confirmed:false});
+  assert(!decision.applied&&current.getItem("li.study-mode.v1")==="focus","Dry-run destroyed state");
+  checks.push("Destructive empty snapshot exposes removal and cancel is write-free");
+  document.getElementById("result").textContent="LI_BACKUP_V2_FAULT_PASS "+JSON.stringify({count:checks.length,checks,scope:"synthetic storage fault injection in actual Chromium; not real quota stress or Safari"});
+ }catch(e){
+  document.getElementById("result").textContent="LI_BACKUP_V2_FAULT_FAIL "+JSON.stringify({completed:checks,error:e.stack||String(e)});
+ }
+})();
+</script></body></html>

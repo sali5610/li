@@ -1,0 +1,61 @@
+name: Step16 Backup v2 Integration (candidate)
+
+on:
+  pull_request:
+    paths:
+      - 'site/index.html'
+      - 'site/assets/backup-v2.js'
+      - 'tools/step16_v2_app_fixture.html'
+      - 'tools/step16_v2_fault_fixture.html'
+      - 'tools/step16_v2_origin_fixture.html'
+      - 'tools/step16_v2_origin_agent.html'
+      - 'tools/step16_v2_lock_fixture.html'
+      - 'tools/step16_v2_lock_agent.html'
+      - 'tools/step16_cdp_page.cjs'
+      - '.github/workflows/step16-v2-integration.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-backup-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify source syntax and no missing resources
+        run: |
+          node --check site/assets/backup-v2.js
+          python3 tools/validate_site.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Exercise actual li. Settings with Chrome real-time DevTools and fake data
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then echo "FAIL: Chromium unavailable"; exit 1; fi
+          "$chrome" --version
+          node --version
+          node --check tools/step16_cdp_page.cjs
+          python3 -m http.server 8774 --bind 127.0.0.1 --directory . >/tmp/li-step16-origin-a.log 2>&1 &
+          a_pid=$!
+          python3 -m http.server 8775 --bind 127.0.0.1 --directory . >/tmp/li-step16-origin-b.log 2>&1 &
+          b_pid=$!
+          trap 'kill "$a_pid" "$b_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          node tools/step16_cdp_page.cjs "$chrome" \
+            "http://127.0.0.1:8774/tools/step16_v2_app_fixture.html" \
+            "LI_BACKUP_V2_PASS " 5 60000
+          node tools/step16_cdp_page.cjs "$chrome" \
+            "http://127.0.0.1:8774/tools/step16_v2_fault_fixture.html" \
+            "LI_BACKUP_V2_FAULT_PASS " 11 60000
+          node tools/step16_cdp_page.cjs "$chrome" \
+            "http://127.0.0.1:8774/tools/step16_v2_origin_fixture.html" \
+            "LI_BACKUP_V2_ORIGIN_PASS " 5 60000
+          node tools/step16_cdp_page.cjs "$chrome" \
+            "http://127.0.0.1:8774/tools/step16_v2_lock_fixture.html" \
+            "LI_BACKUP_V2_LOCK_PASS " 5 60000
+          echo "PASS all 4 suites — actual rendered DOM; real clock, isolated fake data, no production deploy"

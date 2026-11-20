@@ -227,8 +227,14 @@ assert 'id="buddy-names-reset"' in settings
 assert 'id="buddy-name-feedback" role="status" aria-live="polite"' in settings
 assert 'const LI_BUDDY_NAMES_KEY="li.buddy-address.v1";' in page_html
 assert 'window.liAddressLine=liBuddyLine;' in page_html
-assert 'buddyNames:liBuddyNames' in page_html
-assert 'if(data.buddyNames!==undefined)' in page_html
+# Step16 v2: old inline schema1 fields were replaced by the full-state engine.
+backup_engine=(site/"assets"/"backup-v2.js").read_text(encoding="utf-8")
+assert 'root.LiBackupV2=Object.freeze(' in backup_engine
+assert '"li.buddy-address.v1"' in backup_engine
+assert 'data.buddyNames!==undefined' in backup_engine  # schema1 backward compatibility
+assert 'backup.exportJSON(window.localStorage' in page_html
+assert 'backup.importJSON(window.localStorage' in page_html
+assert './assets/backup-v2.js?v=step16-candidate-20261119' in page_html
 contextual=(site/"assets"/"laoly-context-s112.js").read_text(encoding="utf-8")
 assert contextual.count('window.liAddressLine?window.liAddressLine(')==2
 assert 'Settings IA: action-first grouping' in (site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
@@ -236,8 +242,8 @@ assert settings.count('id="export-personal-data"')==1
 assert settings.count('id="import-personal-data"')==1
 assert 'id="export-personal-data"' not in library and 'id="export-library"' not in html
 assert 'document.getElementById("export-personal-data")' in html
-assert 'const importTrigger=' in html and 'li-du-lieu-' in html
-assert 'Trước khi xóa dữ liệu trang web hoặc đổi thiết bị, website, hãy xuất bản sao để có thể nhập lại ghi chép.' in settings
+assert 'const importTrigger=' in html and 'li-du-lieu-day-du-v2-' in html
+assert 'Bản sao v2 gồm ghi chép, tiến độ bài học, nhật ký, lịch ôn và tùy chọn đang lưu trên thiết bị.' in settings
 assert 'Ghi chép của bạn không tự động được gửi tới dịch vụ AI bên ngoài.' in settings
 assert 'Bạn có thể xuất bản sao trong Tủ Riêng.' not in html
 for selector in (
@@ -263,7 +269,7 @@ assert all('tinted' not in element for element in re.findall(
 
 # S117: Settings uses exactly one concise migration/data-loss hint,
 # and Lão Lý remains a compact illustrated character with accessible controls.
-assert settings.count('Trước khi xóa dữ liệu trang web hoặc đổi thiết bị, website, hãy xuất bản sao để có thể nhập lại ghi chép.') == 1
+assert settings.count('Bản sao v2 gồm ghi chép, tiến độ bài học, nhật ký, lịch ôn và tùy chọn đang lưu trên thiết bị.') == 1
 assert 'Đổi thiết bị hoặc website?' not in settings
 assert 'Xóa dữ liệu trang web có thể làm mất Bút Ký' not in settings
 assert '<article class="surface" id="settings-buddy-card">' in settings
@@ -499,8 +505,11 @@ subprocess.run(["node",str(site.parent/"tools"/"test_library_wave1_mount_ia.cjs"
 # UX-IA-06: Save and Unsave have distinct semantics from submitting an answer
 # or deleting a Bút Ký. Full case context must survive in the saved snapshot.
 assert 'const savedContent=liInitialState.savedContent;' in page_html
-assert 'savedContent:data.savedContent||[]' in page_html
-assert 'ideas:collectedIdeas,savedContent,draft:' in page_html
+# S-G3-16E: library bookmark schema is still intact; export/restore moved to backup-v2.js.
+assert 'savedContent:data.savedContent||[]' in backup_engine
+assert 'ideas:collectedIdeas,savedContent,updatedAt:' in page_html
+assert '"li.private.library.v1"' in backup_engine
+assert 'backup.exportJSON(window.localStorage' in page_html
 assert 'caseSnapshot' in page_html and 'selectedText:caseOptions.find' in page_html
 assert 'id="li-note-case-context"' in page_html
 assert 'data-li-bookmark-kind="case"' in page_html
@@ -904,10 +913,12 @@ assert 'id="import-state-retry"' in page_html
 assert 'importLoading.hidden=false' in page_html and 'importError.hidden=false' in page_html
 assert 'importTrigger.disabled=true' in page_html and 'importTrigger.disabled=false' in page_html
 assert 'importInput.value="";' in page_html, "Selecting same file must work on Retry"
-assert 'document.getElementById("import-state-retry")?.addEventListener("click",()=>importInput?.click());' in page_html
-assert 'const data=JSON.parse(await file.text());' in page_html, "Only real async file read may show Loading"
-assert 'if(!window.confirm(existing' in page_html, "Import must still request explicit overwrite confirmation"
-assert 'if(window.localStorage.getItem(LI_STORAGE_KEY)!==next' in page_html, "No success before localStorage readback"
+assert 'importRetry?.addEventListener("click",()=>importInput?.click());' in page_html
+assert 'const json=await file.text();' in page_html, "Loading must correspond to real asynchronous file read"
+assert 'if(!window.confirm(backupPreviewCopy(plan)))' in page_html, "Import must preview add/overwrite/remove and request explicit confirmation"
+assert 'backup.importJSON(window.localStorage,json,{confirmed:true,fingerprint:plan.fingerprint})' in page_html
+assert 'storage.getItem(key)!==value' in backup_engine, "No success before localStorage readback"
+assert 'rollback(storage,before,touched)' in backup_engine, "Partial import must attempt verified rollback"
 review_status=(site/"component-library-review.html").read_text(encoding="utf-8")
 assert 'id="feedback"' in review_status and 'li-state-scene-showcase' in review_status
 for name in ("laoly-state-loading.png","laoly-state-error.png"):

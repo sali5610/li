@@ -21,6 +21,11 @@ try{
 }catch(e){storageError=true;enabled=false;}
 function safeDay(date){const x=diary.days[date];return x&&typeof x==="object"&&x.activities&&typeof x.activities==="object"?x:null;}
 function counts(date){const x=safeDay(date);return TYPES.map(t=>Array.isArray(x?.activities[t])?x.activities[t].length:0);}
+function journalCloudEnabled(){
+ const uid=localStorage.getItem("li.sync.local-owner.v1");
+ return Boolean(uid)&&localStorage.getItem("li.sync.journal-cloud-consent.v1:"+uid)==="true";
+}
+function personalChanged(){window.dispatchEvent(new Event("li:private-personal-change"));}
 function put(update,date=localDay()){
  if(!enabled||storageError||!date)return false;
  const next=JSON.parse(JSON.stringify(diary));
@@ -28,15 +33,17 @@ function put(update,date=localDay()){
  const d=next.days[date];if(!d.activities||typeof d.activities!=="object")d.activities={lesson:[],branch:[],input:[]};
  for(const t of TYPES)if(!Array.isArray(d.activities[t]))d.activities[t]=[];
  if(!update(d))return false;
- try{const value=JSON.stringify(next);localStorage.setItem(KEY,value);if(localStorage.getItem(KEY)!==value)throw Error("readback");diary=next;render();return true;}catch(e){storageError=true;render();return false;}
+ try{const value=JSON.stringify(next);localStorage.setItem(KEY,value);if(localStorage.getItem(KEY)!==value)throw Error("readback");diary=next;render();personalChanged();return true;}catch(e){storageError=true;render();return false;}
 }
 function append(parent,tag,cls,value){const e=document.createElement(tag);if(cls)e.className=cls;if(value!==undefined)e.textContent=String(value);parent.append(e);return e;}
 function render(){
  $("li-diary-consent").textContent=enabled?"Dừng ghi mới":"Bật lưu lịch";
  $("li-diary-consent").disabled=storageError;
- $("li-diary-consent-status").textContent=storageError?"Không thể đọc/ghi lịch. Đã dừng ghi để tránh mất dữ liệu.":enabled?"Đang tự động ghi Check-in và hoạt động mới trên thiết bị này. Không đồng bộ máy chủ.":"Đã dừng ghi mới; các ngày cũ vẫn có thể xem và xóa.";
+ $("li-diary-consent-status").textContent=storageError?"Không thể đọc/ghi lịch. Đã dừng ghi để tránh mất dữ liệu.":enabled?
+  (journalCloudEnabled()?"Đang ghi Check-in và hoạt động, đồng bộ riêng tư với Neon theo tài khoản.":"Đang ghi trên thiết bị. Bật đồng bộ Nhật Ký trong Tài khoản để dùng trên các máy khác."):
+  "Đã dừng ghi mới; các ngày cũ vẫn có thể xem và xóa.";
  const disclosure=$("li-checkin-recording-disclosure");
- if(disclosure)disclosure.textContent=storageError?"Không thể lưu nhật ký trên thiết bị này. Check-in chỉ giữ trong phiên; hãy tự ghi lại nếu cần.":enabled?"Đang lưu Check-in và nhịp đã áp dụng vào Nhật Ký trên thiết bị này; không gửi máy chủ. Có thể dừng ghi ở cuối trang Nhật Ký.":"Bạn đã dừng lưu Nhật Ký. Check-in này chỉ giữ trong phiên, không ghi thêm vào lịch.";
+ if(disclosure)disclosure.textContent=storageError?"Không thể lưu nhật ký trên thiết bị này. Check-in chỉ giữ trong phiên; hãy tự ghi lại nếu cần.":enabled?(journalCloudEnabled()?"Đang lưu Check-in và đồng bộ với Neon. Có thể dừng ghi trong Nhật Ký.":"Đang lưu Check-in trên máy; chưa gửi lên cloud. Bật đồng bộ Nhật Ký trong Tài khoản."):"Bạn đã dừng lưu Nhật Ký. Check-in này chỉ giữ trong phiên, không ghi thêm vào lịch.";
  $("li-diary-delete").disabled=storageError||!Object.keys(diary.days).length;
  $("li-diary-month").textContent=new Intl.DateTimeFormat(window.liLanguage?.get?.()==="en"?"en-US":"vi-VN",{month:"long",year:"numeric"}).format(new Date(month+"-01T12:00:00"));
  const parts=month.split("-").map(Number),yr=parts[0],mo=parts[1];
@@ -81,14 +88,15 @@ $("li-diary-prev").addEventListener("click",()=>moveMonth(-1));
 $("li-diary-next").addEventListener("click",()=>moveMonth(1));
 $("li-diary-checkin-now").addEventListener("click",()=>{const source=$("li-diary-checkin-now");const homeCheckin=$("checkin");if(homeCheckin){homeCheckin.click();$("checkin-modal").dataset.trigger=source.id;}});
 $("li-diary-consent").addEventListener("click",()=>{
- try{if(enabled){localStorage.setItem(CONSENT,"false");if(localStorage.getItem(CONSENT)!=="false")throw Error("readback");enabled=false;}else{localStorage.setItem(CONSENT,"true");if(localStorage.getItem(CONSENT)!=="true")throw Error("readback");enabled=true;}}catch(e){storageError=true;}render();
+ try{if(enabled){localStorage.setItem(CONSENT,"false");if(localStorage.getItem(CONSENT)!=="false")throw Error("readback");enabled=false;}else{localStorage.setItem(CONSENT,"true");if(localStorage.getItem(CONSENT)!=="true")throw Error("readback");enabled=true;}}catch(e){storageError=true;}render();personalChanged();
 });
 $("li-diary-delete").addEventListener("click",()=>{
  if(!window.confirm("Xóa toàn bộ lịch thể trạng và hoạt động trên thiết bị này? Bạn có 7 giây để hoàn tác."))return;
  const prior=JSON.parse(JSON.stringify(diary));
  try{
-  localStorage.removeItem(KEY);if(localStorage.getItem(KEY)!==null)throw Error("readback");
-  diary={schema:1,days:{}};render();
+  const empty=JSON.stringify({schema:1,days:{}});
+  localStorage.setItem(KEY,empty);if(localStorage.getItem(KEY)!==empty)throw Error("readback");
+  diary={schema:1,days:{}};render();personalChanged();
   if(typeof window.liShowUndo==="function")window.liShowUndo("Đã xóa lịch hoạt động.",()=>{
    if(storageError)return false;
    const restored=JSON.parse(JSON.stringify(prior));
@@ -108,7 +116,7 @@ $("li-diary-delete").addEventListener("click",()=>{
    try{
     const data=JSON.stringify(restored);localStorage.setItem(KEY,data);
     if(localStorage.getItem(KEY)!==data)throw Error("readback");
-    diary=restored;render();return true;
+    diary=restored;render();personalChanged();return true;
    }catch(error){storageError=true;render();return false;}
   });
  }catch(e){storageError=true;render();if(typeof toast==="function")toast("Không xóa được nhật ký. Hãy kiểm tra bộ nhớ trình duyệt.");}
@@ -126,5 +134,6 @@ window.addEventListener("li:activity",e=>{
  put(d=>{if(d.activities[type].includes(id))return false;d.activities[type].push(id);return true;});
 });
 window.addEventListener?.("li:localechange",render);
+window.addEventListener?.("li:private-sync-consent",render);
 render();
 })();

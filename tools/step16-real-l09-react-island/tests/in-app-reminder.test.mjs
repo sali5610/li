@@ -37,6 +37,7 @@ test('snooze does not create a push task and does not show before the chosen del
  const state={lastDay:'',snoozedUntil:later};
  assert.equal(dueInApp(active,state,new Date(2026,10,21,21,35)),false);
  assert.equal(dueInApp(active,state,new Date(2026,10,21,22,20)),true);
+ assert.equal(dueInApp(active,state,new Date(2026,10,22,21,15)),true,'stale snooze must not block tomorrow');
 });
 test('real settings and existing account-scoped Neon preferences own the reminder',()=>{
  const source=readFileSync(new URL('../src/shell/journal-settings.tsx',import.meta.url),'utf8');

@@ -1,0 +1,126 @@
+/* Canonical React presentation for app-wide UI flow experiments.
+   Scoped: no changes to the actual app screens, .hero, .page, or design tokens. */
+.li-flow-page{box-sizing:border-box;display:grid;gap:24px;padding:clamp(16px,3vw,44px);
+ background:var(--paper);min-height:570px;color:var(--ink);font-family:var(--li-font-ui)}
+.li-flow-page *{box-sizing:border-box;min-width:0}
+.li-flow-page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:22px;
+ border-block-end:1px solid var(--rule);padding-bottom:20px}
+.li-flow-page-heading{display:grid;gap:12px;max-width:65ch}
+.li-flow-page-heading .li-atom-heading{font-size:clamp(34px,4vw,56px);line-height:1.08}
+.li-flow-page-heading .li-atom-text{max-width:50ch}
+.li-flow-page-kicker,.li-flow-index{display:inline-block;
+ font:700 12px/1.4 var(--li-font-ui);letter-spacing:.10em;color:var(--olive)}
+.li-flow-page-index{font:600 clamp(44px,6vw,86px)/1 var(--li-font-editorial);color:var(--paper-3)}
+.li-flow-page-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,.24fr);align-items:start;gap:26px}
+.li-flow-page-main{min-width:0}
+.li-flow-page-aside{border-inline-start:1px solid var(--rule);display:grid;gap:12px;padding:18px;
+ background:color-mix(in srgb,var(--cream) 80%,transparent)}
+.li-flow-page-aside .li-ds-button{width:100%;justify-content:space-between}
+.li-flow-stack{display:grid;gap:16px;min-width:0}
+.li-flow-stack>.li-ds-button{justify-self:start}
+.li-flow-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.li-flow-card-grid>.li-ds-card{display:grid;align-content:start;justify-items:start;gap:14px}
+.li-flow-card-grid>.li-ds-card .li-ds-button{align-self:end}
+.li-flow-card-grid .li-legacy-method{min-width:0}
+.li-flow-mini{padding:10px 12px;border:1px solid var(--rule);color:var(--moss);background:var(--paper)}
+.li-flow-card-grid .li-ds-card .li-atom-heading{margin-bottom:0}
+.li-flow-actions,.li-flow-choice-grid{display:flex;gap:12px;flex-wrap:wrap}
+.li-flow-stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.li-flow-stat-grid .li-ds-card{display:grid;gap:8px;box-shadow:none}
+.li-flow-stat-grid .li-atom-heading{margin:0}
+.li-flow-lesson-top{display:grid;gap:14px;max-width:68ch}
+.li-flow-lesson-diagram{display:flex;align-items:center;justify-content:space-around;
+ gap:clamp(12px,3vw,30px);background:var(--paper-2);border:1px solid var(--rule);padding:28px 16px}
+.li-flow-lesson-diagram>div{display:grid;gap:14px;text-align:center;color:var(--moss);font-weight:700}
+.li-flow-dots{display:grid;grid-template-columns:repeat(6,16px);gap:9px}
+.li-flow-dots.sample{grid-template-columns:repeat(4,16px)}
+.li-flow-dots i{width:16px;height:16px;background:var(--olive);border-radius:50%}
+.li-flow-dots i[data-highlight="true"]{background:var(--wood)}
+.li-flow-steps{display:grid;gap:16px}
+.li-flow-steps>div{display:flex;align-items:center;gap:12px;padding:12px;
+ background:var(--cream);border:1px solid var(--rule)}
+.li-flow-week{height:150px;display:flex;gap:clamp(8px,2vw,20px);align-items:stretch;
+ padding:15px 2px}
+.li-flow-week>span{display:flex;flex:1;flex-direction:column;justify-content:flex-end;
+ align-items:center;gap:8px;min-width:0}
+.li-flow-week>span>i{width:65%;min-height:4px;display:block;background:var(--olive)}
+.li-flow-week>span>small{font-size:12px;color:var(--muted)}
+.li-flow-setting{display:flex;align-items:center;justify-content:space-between;
+ gap:16px;padding:16px 0;border-bottom:1px solid var(--rule)}
+.li-flow-setting>div{display:grid;gap:5px}
+.li-flow-setting .li-atom-heading{font-size:18px}
+.li-flow-companion{display:flex;align-items:flex-start;gap:16px}
+.li-flow-companion>img{width:92px;aspect-ratio:1;object-fit:contain}
+.li-flow-companion>div{display:grid;gap:10px}
+.li-flow-page .li-ds-catalog{padding-block:0}
+.li-flow-page .li-ds-learning{padding-block:0}
+.li-flow-page .li-ds-account{padding-block:0}
+.li-flow-page :is(.li-ds-card,.li-ds-account-panel){min-width:0}
+.li-flow-page[data-layout="editorial"] .li-flow-page-columns{
+ grid-template-columns:minmax(0,1fr) 230px}
+.li-flow-page[data-layout="editorial"] .li-flow-page-main{max-width:1000px}
+.li-flow-page[data-layout="editorial"] .li-flow-page-aside{background:transparent}
+.li-flow-page[data-layout="split"]{background:var(--cream)}
+.li-flow-page[data-layout="split"] .li-flow-page-columns{
+ grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);gap:18px}
+.li-flow-page[data-layout="split"] .li-flow-page-aside{
+ border-inline-start:0;border:1px solid var(--rule);background:var(--paper-2);
+ padding:28px;position:sticky;top:12px}
+.li-flow-page[data-layout="split"] .li-flow-card-grid{grid-template-columns:minmax(0,1fr)}
+.li-flow-page[data-layout="split"] .li-flow-page-head{
+ border:0;align-items:center;background:var(--paper-2);padding:25px}
+.li-flow-page[data-layout="split"] .li-flow-page-heading .li-atom-heading{font-size:clamp(34px,3.4vw,48px)}
+.li-flow-page[data-layout="cinematic"]{
+ background:var(--forest);color:var(--cream);padding:0;gap:0}
+.li-flow-page[data-layout="cinematic"] .li-flow-page-head{
+ position:relative;isolation:isolate;min-height:250px;padding:clamp(24px,5vw,70px);
+ border:0;align-items:end;overflow:hidden;background:
+ linear-gradient(120deg,var(--forest),var(--moss) 55%,var(--olive))}
+.li-flow-page[data-layout="cinematic"] .li-flow-page-head::before{
+ content:"";position:absolute;inset:0;z-index:-1;opacity:.23;
+ background:url('../assets/home-li-landscape-20261121.webp') center/cover no-repeat}
+.li-flow-page[data-layout="cinematic"] .li-flow-page-heading .li-atom-heading,
+.li-flow-page[data-layout="cinematic"] .li-flow-page-heading .li-atom-text,
+.li-flow-page[data-layout="cinematic"] .li-flow-page-kicker{color:var(--cream)}
+.li-flow-page[data-layout="cinematic"] .li-flow-page-index{color:var(--sage)}
+.li-flow-page[data-layout="cinematic"] .li-flow-page-columns{
+ padding:clamp(18px,3vw,44px);background:var(--paper);color:var(--ink);
+ grid-template-columns:minmax(0,1fr)}
+.li-flow-page[data-layout="cinematic"] .li-flow-page-aside{
+ border:1px solid var(--rule);grid-template-columns:repeat(3,minmax(0,1fr));
+ background:var(--paper-2)}
+.li-flow-page[data-layout="cinematic"] .li-flow-page-aside .li-flow-page-kicker,
+.li-flow-page[data-layout="cinematic"] .li-flow-page-aside .li-atom-text{
+ grid-column:1/-1;color:var(--moss)}
+.li-flow-page[data-layout="cinematic"] .li-flow-card-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.li-flow-page[data-layout="cinematic"] .li-flow-page-aside .li-ds-button{min-width:0}
+.li-flow-page .li-ds-catalog-body{align-items:start}
+@media(max-width:1050px){
+ .li-flow-page .li-flow-page-columns,
+ .li-flow-page[data-layout="editorial"] .li-flow-page-columns,
+ .li-flow-page[data-layout="split"] .li-flow-page-columns{grid-template-columns:minmax(0,1fr)}
+ .li-flow-page[data-layout="split"] .li-flow-page-aside{position:static}
+ .li-flow-page .li-flow-page-aside{border-inline-start:0;border-top:1px solid var(--rule);
+  grid-template-columns:repeat(3,minmax(0,1fr))}
+ .li-flow-page .li-flow-page-aside .li-flow-page-kicker,
+ .li-flow-page .li-flow-page-aside .li-atom-text{grid-column:1/-1}
+ .li-flow-page[data-layout="cinematic"] .li-flow-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+ .li-flow-page{padding:16px;gap:18px}
+ .li-flow-page-head{align-items:start}
+ .li-flow-page-index{font-size:40px}
+ .li-flow-page .li-flow-page-aside,
+ .li-flow-page[data-layout="cinematic"] .li-flow-page-aside{grid-template-columns:1fr;padding:12px}
+ .li-flow-page .li-flow-card-grid,.li-flow-page[data-layout="cinematic"] .li-flow-card-grid{
+  grid-template-columns:minmax(0,1fr)}
+ .li-flow-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .li-flow-lesson-diagram{padding:16px 10px}
+ .li-flow-dots{grid-template-columns:repeat(6,10px);gap:6px}
+ .li-flow-dots.sample{grid-template-columns:repeat(4,10px)}
+ .li-flow-dots i{width:10px;height:10px}
+ .li-flow-page[data-layout="cinematic"] .li-flow-page-head{min-height:205px;padding:20px}
+ .li-flow-page[data-layout="cinematic"] .li-flow-page-columns{padding:16px}
+ .li-flow-setting{align-items:flex-start;flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){.li-flow-page *{animation:none!important;transition:none!important}}

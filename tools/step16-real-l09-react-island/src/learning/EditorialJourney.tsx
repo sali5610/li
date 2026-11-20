@@ -482,10 +482,10 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    className="li-learning-current">
    {phase==='read'&&<Card variant="flat-study" aria-labelledby="li-editorial-read">
     <Heading level={2} id="li-editorial-read" role="titleLarge">{vi?'Hiểu bản chất':'Understand the concepts'}</Heading>
-    <Markdown md={content.hook.md}/>
-    <Markdown md={content.goals.md}/>
-    <Markdown md={content.concept.md}/>
-    <Markdown md={content.variable_types.md}/>
+    <div id={companion.moments[0].anchor}><Markdown md={content.hook.md}/>
+     <Markdown md={content.goals.md}/></div>
+    <div id={companion.moments[1].anchor}><Markdown md={content.concept.md}/>
+     <Markdown md={content.variable_types.md}/></div>
     <Heading level={3} role="titleMedium">{vi?'Nguồn để đọc thêm':'Read the sources'}</Heading>
     <ul>{lesson.sources.filter(s=>s.url.startsWith('https://')).map(s=><li key={s.url}>
      <a href={s.url} target="_blank" rel="noopener noreferrer">{s.title}</a>
@@ -494,7 +494,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    </Card>}
    {phase==='guided'&&<Card variant="flat-study" aria-labelledby="li-editorial-guided">
     <Heading level={2} id="li-editorial-guided" role="titleLarge">{labels.guided}</Heading>
-    <Markdown md={content.guided.md}/>
+    <div id={companion.moments[2].anchor}><Markdown md={content.guided.md}/></div>
     <Field kind="textarea" rows={5} label={vi?'Tự giải thích bằng lời của mày':'Explain in your own words'}
      value={attempt.guidedDraft} disabled={locked||attempt.submitted} onChange={e=>editGuided(e.currentTarget.value)}/>
     <Button onClick={()=>setPhase('methods')}>{labels.methods}</Button>
@@ -528,7 +528,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    </Card>}
    {phase==='practice'&&<Card variant="flat-study" aria-labelledby="li-editorial-practice">
     <Heading level={2} id="li-editorial-practice" role="titleLarge">{labels.practice}</Heading>
-    <Markdown md={independent.intro}/>
+    <div id={companion.moments[3].anchor}><Markdown md={independent.intro}/></div>
     <div className="li-learning-fields">
      {independent.questions.map((q,i)=><Field key={i} kind="textarea" rows={4}
       label={String(i+1)+'. '+q} value={attempt.draft[i]} disabled={locked||attempt.submitted}
@@ -540,6 +540,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    </Card>}
    {phase==='feedback'&&persistedAttempt?.submitted&&<Card variant="flat-study" aria-labelledby="li-editorial-feedback">
     <Heading level={2} id="li-editorial-feedback" role="titleLarge">{labels.feedback}</Heading>
+    <div id={companion.moments[4].anchor}/>
     <Heading level={3} role="titleMedium">{vi?'Bài làm của mày':'Your submission'}</Heading>
     <ol className="li-learning-submission-list">
      {independent.questions.map((q,i)=><li key={i}>
@@ -566,6 +567,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    </Card>}
    {phase==='progress'&&persistedAttempt?.reviewed&&<Card variant="flat-study" aria-labelledby="li-editorial-progress">
     <Heading level={2} id="li-editorial-progress" role="titleLarge">{vi?'Hoàn thành lượt học':'Attempt complete'}</Heading>
+    <div id={companion.moments[5].anchor}/>
     <Text>{vi?'Đây là một lượt tự đánh giá đã lưu, không phải chứng nhận thông thạo.':
      'A saved self-assessment, not a mastery certificate.'}</Text>
     <Text>{vi?'Điểm tự chấm':'Self-rating'}: {attempt.ratings.reduce<number>((n,v)=>n+(v??0),0)} / 8</Text>

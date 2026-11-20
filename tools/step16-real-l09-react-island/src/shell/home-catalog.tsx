@@ -181,7 +181,11 @@ function Catalog(){
    return;
   }
   if(canOpenLesson(item)){
-   if(app.liCatalog?.openLesson(item.id)!==true){
+   // React is the only URL/history owner. The native Catalog opener pushes
+   // its own history entry before calling the React router, which adds an
+   // unwanted Back step. The existing course ?catalog= path stays in the URL.
+   const releasedRoute=releasedRoutes.get(item.id);
+   if(!releasedRoute||!openRoute(releasedRoute)){
     pendingCatalogReturn=previousReturn;
     setLessonNavError(locale==='vi'?'Bài học hiện chưa mở được.':'This lesson is temporarily unavailable.');
    }else setLessonNavError('');

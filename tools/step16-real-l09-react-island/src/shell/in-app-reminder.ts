@@ -10,7 +10,7 @@ const kinds:readonly ReminderKind[]=['study','sleep','movement','rest'];
 export const isReminderKind=(value:unknown):value is ReminderKind=>
  typeof value==='string'&&kinds.includes(value as ReminderKind);
 export const validTime=(value:unknown):value is string=>
- typeof value==='string'&&/^([01]\\d|2[0-3]):[0-5]\\d$/.test(value);
+ typeof value==='string'&&/^([01][0-9]|2[0-3]):[0-5][0-9]$/.test(value);
 
 export function parseReminderPreference(raw:string|null):ReminderPreference{
  if(!raw)return {...DEFAULT_REMINDER};
@@ -56,7 +56,7 @@ export function readReminderDelivery(uid:string):ReminderDelivery{
   const p:unknown=JSON.parse(raw);
   if(!p||typeof p!=='object'||Array.isArray(p))return {lastDay:'',snoozedUntil:0};
   const v=p as Record<string,unknown>;
-  return {lastDay:typeof v.lastDay==='string'&&/^\\d{4}-\\d{2}-\\d{2}$/.test(v.lastDay)?v.lastDay:'',
+  return {lastDay:typeof v.lastDay==='string'&&/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(v.lastDay)?v.lastDay:'',
    snoozedUntil:typeof v.snoozedUntil==='number'&&Number.isFinite(v.snoozedUntil)&&v.snoozedUntil>=0?v.snoozedUntil:0};
  }catch{return {lastDay:'',snoozedUntil:0};}
 }

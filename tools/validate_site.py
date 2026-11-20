@@ -396,7 +396,7 @@ for name,git_sha in [
 ]:
     art=(site/"assets"/name).read_bytes()
     assert len(art)>100_000 and art[:4]==b"RIFF" and art[8:12]==b"WEBP",name
-    git_blob=hashlib.sha1(b"blob "+str(len(art)).encode()+b"\\0"+art).hexdigest()
+    git_blob=hashlib.sha1(b"blob "+str(len(art)).encode()+b"\0"+art).hexdigest()
     assert git_blob==git_sha,(name,"PO supplied artwork changed")
     assert (site.parent/"design-assets"/"home"/name).read_bytes()==art,name
 for obsolete in ("home-li-iphone-20261119.jpg","home-li-ipad-20261119.jpg","home-mystic-cool-desktop.webp","home-mystic-cool-mobile.webp"):

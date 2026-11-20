@@ -111,6 +111,7 @@ function renderDetail(){
   $("li-note-detail-status").textContent="Không có dữ liệu";
   $("li-note-edit").disabled=true;$("li-note-delete").disabled=true;
   renderCaseContext(null,null);
+  notifyReactNote();
   return;
  }
  const type=active.type,history=historyFor(note,type);
@@ -151,6 +152,7 @@ function renderDetail(){
    });
   }
  });
+ notifyReactNote();
 }
 $("li-note-edit").addEventListener("click",()=>{
  const note=current();if(!note)return;
@@ -209,5 +211,69 @@ $("li-note-delete").addEventListener("click",()=>{
  if(active)deleteNote(active.type,active.id);
 });
 window.addEventListener?.("li:localechange",()=>{if(active&&$("li-note-editor").hidden)renderDetail();});
-window.liNotes=Object.freeze({openDetail,renderDetail,deleteNote});
+
+/* A single authored-note owner. React renders the current item, source proof
+ * and revisions from this exact closure; no second version ledger or write key. */
+function notifyReactNote(){
+ if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
+  window.dispatchEvent(new Event("li:note-view-changed"));
+}
+function getView(){
+ const note=current();
+ if(!active||!note)return {
+  id:null,type:null,backRoute:$("li-note-back")?.dataset.page||"collection",
+  title:ui("Không tìm thấy ghi chép","Note not found"),body:"",
+  history:[],context:null,storageAvailable:!liStorageError
+ };
+ const type=active.type,contextRoot=$("li-note-case-context");
+ const context=type==="case"&&contextRoot&&!contextRoot.hidden?{
+  question:$("li-note-case-question").textContent,
+  scene:$("li-note-case-scene").textContent,
+  options:[...$("li-note-case-choices").children].map(el=>({
+   text:el.textContent,selected:el.dataset.chosen==="true"
+  })),
+  choice:$("li-note-case-choice").textContent,
+  feedback:$("li-note-case-feedback").textContent,
+  provenance:$("li-note-case-provenance").textContent
+ }:null;
+ return {
+  id:active.id,type,title:titleOf(note,type),body:bodyOf(note,type),
+  status:$("li-note-detail-status").textContent,
+  kind:$("li-note-detail-kind").textContent,
+  bodyTitle:$("li-note-body-heading").textContent,
+  date:$("li-note-detail-date").textContent,
+  history:historyFor(note,type).map(v=>({...v})),
+  context,backRoute:$("li-note-back")?.dataset.page||"collection",
+  storageAvailable:!liStorageError,
+  bookmarked:context?Boolean(window.liBookmarks?.isSaved("case","sampling-bias-90")):false
+ };
+}
+function saveFromReact(title,body,baseVersion){
+ const note=current();if(!note)return {ok:false,message:ui("Ghi chép không còn tồn tại.","Note no longer exists.")};
+ if(liStorageError)return {ok:false,message:ui("Không đọc được dữ liệu cá nhân.","Personal data cannot be read.")};
+ title=String(title||"").trim();body=String(body||"").trim();
+ const minimum=active.type==="case"?12:3;
+ if(!title||title.length>180||body.length<minimum||body.length>5000)
+  return {ok:false,message:"Tiêu đề cần 1–180 ký tự; nội dung cần "+minimum+"–5.000 ký tự."};
+ if(Number.isInteger(baseVersion)&&historyFor(note,active.type).length!==baseVersion)
+  return {ok:false,message:ui("Bản ghi đã thay đổi. Hãy sao chép nháp rồi mở lại để tránh ghi đè.","Record changed. Copy your draft before refreshing.")};
+ if(title===titleOf(note,active.type)&&body===bodyOf(note,active.type))
+  return {ok:true,changed:false,message:ui("Không có thay đổi; không tạo phiên bản.","No changes; no version added.")};
+ if(!saveVersion(active.type,active.id,title,body,"Chỉnh sửa"))
+  return {ok:false,message:ui("Lưu thất bại. Nháp vẫn còn trong ô sửa.","Save failed; draft kept.")};
+ refreshAfterChange();toast("Đã lưu phiên bản mới; bản cũ vẫn nằm trong lịch sử.");
+ return {ok:true,changed:true,message:ui("Đã lưu phiên bản mới.","Saved a new version.")};
+}
+function restoreFromReact(version){
+ const note=current();if(!note||liStorageError)return false;
+ const record=historyFor(note,active.type).find(item=>item.version===version);
+ if(!record||record.version===historyFor(note,active.type).length)return false;
+ if(!window.confirm(ui("Khôi phục phiên bản ","Restore version ")+version+
+  ui("? Một phiên bản mới sẽ được tạo; lịch sử cũ được giữ nguyên.","? A new version will be created; history stays intact.")))return false;
+ if(!saveVersion(active.type,active.id,record.title,record.body,"Khôi phục phiên bản "+version)){
+  toast("Không lưu được phiên bản khôi phục. Lịch sử vẫn giữ nguyên.");return false;
+ }
+ refreshAfterChange();toast("Đã khôi phục thành phiên bản mới.");return true;
+}
+window.liNotes=Object.freeze({openDetail,renderDetail,deleteNote,getView,saveFromReact,restoreFromReact});
 })();

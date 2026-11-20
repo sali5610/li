@@ -4,11 +4,11 @@ import {neonSessionPort} from './neon-client.js';
 import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING} from './config.js';
 import {runSignedReceiptCanary,type ReceiptCanaryResult} from '../sync/receipt-canary.js';
 
-// Visibility is opted in with a URL query on the EXISTING invited staging app.
-// This is not a second route, onboarding flow, or production setting.
+// Temporary consent-only diagnostic on the EXISTING invited staging Settings.
+// No brittle URL-query dependency: OAuth redirect can replace the query string.
+// Not rendered on production or a different origin, and NEVER runs on mount.
 const canaryEnabled=IS_GITHUB_STAGING&&
- typeof window!=='undefined'&&window.location.origin===AUTH_ORIGIN&&
- new URLSearchParams(window.location.search).get('sync161')==='1';
+ typeof window!=='undefined'&&window.location.origin===AUTH_ORIGIN;
 export function ReceiptCanaryPanel(){
  const [busy,setBusy]=useState(false);
  const [result,setResult]=useState<ReceiptCanaryResult|null>(null);

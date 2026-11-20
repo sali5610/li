@@ -396,9 +396,29 @@ function renderMirrorItem(){
  action.setAttribute("aria-label",isHook?"Khám phá vì sao · Mở bài học liên quan":"Đào sâu · Mở Khảo Chứng");
  document.getElementById("mirror-primary-label").textContent=isHook?"Khám phá vì sao":"Đào sâu";
  if(typeof refreshQuestionBookmark==="function")refreshQuestionBookmark();
+ if(typeof window!=="undefined"&&typeof Event!=="undefined")window.dispatchEvent(new Event("li:inquiry-changed"));
+}
+function liCaseFeedback(answer){
+ return answer==="right"?
+ "Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.":
+ "Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.";
 }
 let selectedCaseAnswer=null;
-function syncResearch(){const s=scenarios[qIndex].type==="hook"?scenarios.find(item=>item.type!=="hook"):scenarios[qIndex];const title=document.querySelector("#page-research .surface.tinted h2");if(title)title.textContent=s.question;document.querySelectorAll('#page-research [data-branch]').forEach((el,i)=>{if(s.branches[i]){el.dataset.branch=s.branches[i];el.textContent=String(i+1).padStart(2,"0")+" · "+s.branches[i]}});document.getElementById("research-observed").textContent=s.observed;document.getElementById("research-unknown").textContent=s.unknown;document.getElementById("branch-feedback").textContent="Chọn một nhánh để đặt câu hỏi kiểm chứng.";}
+let liResearchFeedback="Chọn một nhánh để đặt câu hỏi kiểm chứng.";
+function liCurrentProblem(){
+ return scenarios[qIndex].type==="hook"?scenarios.find(item=>item.type!=="hook"):scenarios[qIndex];
+}
+function liChooseResearchBranch(value){
+ const problem=liCurrentProblem();
+ if(!problem?.branches?.includes(value))return false;
+ liResearchFeedback="Hãy kiểm chứng: "+value;
+ const target=document.getElementById("branch-feedback");
+ if(target)target.textContent=liResearchFeedback;
+ window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"branch",id:scenarios[qIndex].question+"::"+value}}));
+ window.dispatchEvent(new Event("li:inquiry-changed"));
+ return true;
+}
+function syncResearch(){const s=scenarios[qIndex].type==="hook"?scenarios.find(item=>item.type!=="hook"):scenarios[qIndex];const title=document.querySelector("#page-research .surface.tinted h2");if(title)title.textContent=s.question;document.querySelectorAll('#page-research [data-branch]').forEach((el,i)=>{if(s.branches[i]){el.dataset.branch=s.branches[i];el.textContent=String(i+1).padStart(2,"0")+" · "+s.branches[i]}});document.getElementById("research-observed").textContent=s.observed;document.getElementById("research-unknown").textContent=s.unknown;liResearchFeedback="Chọn một nhánh để đặt câu hỏi kiểm chứng.";document.getElementById("branch-feedback").textContent=liResearchFeedback;window.dispatchEvent(new Event("li:inquiry-changed"));}
 const buddyCopy={
 home:"Tiểu hữu nhìn vào gương rồi à? Ai được hỏi? Ai bị bỏ sót? Lão nghi câu sau mới thú vị.",
 catalog:"Đọc bản đồ trước khi đi. Đừng chọn cả khu rừng rồi than không thấy đường, nhóc.",
@@ -565,7 +585,7 @@ function openModal(id,trigger){if(id==="buddy-modal"&&window.liBuddyReactMounted
 function closeModal(id){if(id==="buddy-modal"&&window.liBuddyReactMounted){window.dispatchEvent(new Event("li:buddy-close"));return;}const el=document.getElementById(id);el.classList.remove("open");document.activeElement?.blur?.()}
 document.querySelectorAll(".page").forEach(e=>e.setAttribute("aria-label",e.id.replace("page-","")));
 document.getElementById("method-filters").innerHTML=categories.map((c,i)=>'<button class="filter" data-cat="'+c+'" aria-pressed="'+(i===0)+'">'+c+'</button>').join("");
-document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.hasAttribute("data-nav-back")){goBack();return}if(t.dataset.page){navigate(t.dataset.page);if(t.dataset.focus){const field=document.getElementById(t.dataset.focus);document.getElementById("notebook-section")?.scrollIntoView?.({block:"start"});field?.focus?.({preventScroll:true})}return}if(t.dataset.method){showMethod(t.dataset.method,{practice:t.dataset.spellPractice==="true",lessonId:t.dataset.spellLesson||null});return}if(t.dataset.cat){currentCategory=t.dataset.cat;document.querySelectorAll("[data-cat]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));renderMethods();return}if(t.dataset.branch){document.getElementById("branch-feedback").textContent="Hãy kiểm chứng: "+t.dataset.branch;window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"branch",id:scenarios[qIndex].question+"::"+t.dataset.branch}}));return}if(t.dataset.answer){const isCase=t.closest("section.page").id==="page-case";if(isCase)selectedCaseAnswer=t.dataset.answer;const id=isCase?"case-feedback":"lesson-feedback";document.getElementById(id).textContent=t.dataset.answer==="right"?"Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.":"Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.";return}if(t.dataset.demo){toast(t.dataset.demo);return}if(t.dataset.buddy){openLaoLy(t);return}});
+document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.hasAttribute("data-nav-back")){goBack();return}if(t.dataset.page){navigate(t.dataset.page);if(t.dataset.focus){const field=document.getElementById(t.dataset.focus);document.getElementById("notebook-section")?.scrollIntoView?.({block:"start"});field?.focus?.({preventScroll:true})}return}if(t.dataset.method){showMethod(t.dataset.method,{practice:t.dataset.spellPractice==="true",lessonId:t.dataset.spellLesson||null});return}if(t.dataset.cat){currentCategory=t.dataset.cat;document.querySelectorAll("[data-cat]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));renderMethods();return}if(t.dataset.branch){liChooseResearchBranch(t.dataset.branch);return}if(t.dataset.answer){const isCase=t.closest("section.page").id==="page-case";if(isCase)selectedCaseAnswer=t.dataset.answer;const id=isCase?"case-feedback":"lesson-feedback";document.getElementById(id).textContent=liCaseFeedback(t.dataset.answer);return}if(t.dataset.demo){toast(t.dataset.demo);return}if(t.dataset.buddy){openLaoLy(t);return}});
 /* UX-DS-28 · Keep native Safari pinch-zoom and rotation reflow enabled.
    The mirror swipe listener below handles a single-purpose horizontal gesture. */
 /* S137 · Bidirectional mirror carousel. Both directions keep question, context and mentor in sync. */
@@ -598,23 +618,24 @@ mirrorSwipeSurface.addEventListener("touchend",event=>{
   shiftMirrorQuestion(dx<0?1:-1);
 },{passive:true});
 mirrorSwipeSurface.addEventListener("touchcancel",()=>{mirrorSwipeStart=null},{passive:true});
-document.getElementById("finish-case").addEventListener("click",()=>{const v=document.getElementById("case-revision").value.trim();if(!selectedCaseAnswer){toast("Chưa Chọn · Hãy chọn một nhận định hoặc tạm gác.");return}if(v.length<12){toast("Luận Kết còn thiếu · Hãy viết lại nhận định ít nhất 12 ký tự.");return}const caseArticle=document.querySelector("#page-case .editorial-grid .surface.tinted");
+function liSubmitCaseAnswer(choice,revision){const v=String(revision||"").trim();if(choice!=="right"&&choice!=="wrong"){toast("Chưa Chọn · Hãy chọn một nhận định hoặc tạm gác.");return false}if(v.length<12){toast("Luận Kết còn thiếu · Hãy viết lại nhận định ít nhất 12 ký tự.");return false}const caseArticle=document.querySelector("#page-case .editorial-grid .surface.tinted");
 const caseOptions=Array.from(caseArticle?.querySelectorAll("[data-answer]")||[]).map(el=>({key:el.dataset.answer,text:el.textContent.trim()}));
 const caseSnapshot={
  id:"sampling-bias-90",
  question:caseArticle?.querySelector("h2")?.textContent.trim()||"",
  scene:caseArticle?.querySelector("p")?.textContent.trim()||"",
  options:caseOptions,
- selectedKey:selectedCaseAnswer,
- selectedText:caseOptions.find(x=>x.key===selectedCaseAnswer)?.text||"",
- feedback:document.getElementById("case-feedback")?.textContent.trim()||""
+ selectedKey:choice,
+ selectedText:caseOptions.find(x=>x.key===choice)?.text||"",
+ feedback:liCaseFeedback(choice)
 };
-const item={id:liNewId(),caseKey:"sampling-bias-90",caseSnapshot,title:"90% người dùng hài lòng — Sampling Bias",correct:selectedCaseAnswer==="right",revision:v,savedAt:new Date().toISOString()};
+const item={id:liNewId(),caseKey:"sampling-bias-90",caseSnapshot,title:"90% người dùng hài lòng — Sampling Bias",correct:choice==="right",revision:v,savedAt:new Date().toISOString()};
 processedCases.unshift(item);
-if(!liWriteState()){processedCases.shift();toast("Không thể lưu Bút Ký trên thiết bị. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.");return}
+if(!liWriteState()){processedCases.shift();toast("Không thể lưu Bút Ký trên thiết bị. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.");return false}
 try{window.localStorage.setItem(LI_DRAFT_KEY,"")}catch(e){}
 const noteKey=Array.from((item.title+"|"+v).normalize("NFKC").toLocaleLowerCase("vi")).reduce((h,ch)=>Math.imul(h^ch.codePointAt(0),16777619)>>>0,2166136261).toString(36);
-window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"input",id:"case:"+noteKey}}));navigate("library");toast("Đã lưu Bút Ký trên thiết bị này.");});
+window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"input",id:"case:"+noteKey}}));navigate("library");toast("Đã lưu Bút Ký trên thiết bị này.");window.dispatchEvent(new Event("li:inquiry-changed"));return true;}
+document.getElementById("finish-case").addEventListener("click",()=>liSubmitCaseAnswer(selectedCaseAnswer,document.getElementById("case-revision").value));
 /* React owns the L1 form, rules and session self-report. The old hidden
  * Home entry remains only as a compatibility navigation entrypoint. */
 document.getElementById("checkin")?.addEventListener("click",event=>{
@@ -631,26 +652,86 @@ function refreshQuestionBookmark(){
  button.title=saved?"Bỏ lưu câu hỏi":"Lưu câu hỏi";
  const label=document.getElementById("mirror-save-label");if(label)label.textContent=saved?"Đã lưu":"Lưu câu hỏi";
 }
-document.getElementById("save-question").addEventListener("click",()=>{
+function liToggleMirrorQuestion(){
  const sc=scenarios[qIndex],index=findSavedMirrorQuestion(sc);
- if(liStorageError){toast("Không đọc được Dấu Trang đã lưu. Chưa thay đổi dữ liệu.");return;}
+ if(liStorageError){toast("Không đọc được Dấu Trang đã lưu. Chưa thay đổi dữ liệu.");return false;}
  if(index>=0){
   const [removed]=savedQuestions.splice(index,1);
-  if(!liWriteState()){savedQuestions.splice(index,0,removed);toast("Không bỏ lưu được. Dấu Trang vẫn giữ nguyên.");return;}
+  if(!liWriteState()){savedQuestions.splice(index,0,removed);toast("Không bỏ lưu được. Dấu Trang vẫn giữ nguyên.");return false;}
   toast("Đã bỏ lưu câu hỏi.",{undo:()=>{
    if(savedQuestions.some(item=>item.id===removed.id))return true;
    const at=Math.min(index,savedQuestions.length);savedQuestions.splice(at,0,removed);
    if(!liWriteState()){savedQuestions.splice(at,1);return false;}
-   refreshQuestionBookmark();window.liLibraryShelf?.renderResume();return true;
+   refreshQuestionBookmark();window.liLibraryShelf?.renderResume();window.dispatchEvent(new Event("li:inquiry-changed"));return true;
   }});
  }else{
   const item={id:liNewId(),scenarioKey:sc.key||null,question:sc.question,scene:sc.scene,type:sc.type||"problem",lessonRoute:sc.type==="hook"?sc.lessonRoute:null,savedAt:new Date().toISOString()};
   savedQuestions.unshift(item);
-  if(!liWriteState()){savedQuestions.shift();toast("Không thể lưu Dấu Trang trên thiết bị.");return;}
+  if(!liWriteState()){savedQuestions.shift();toast("Không thể lưu Dấu Trang trên thiết bị.");return false;}
   toast(sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang.":"Đã lưu câu hỏi vào Dấu Trang.");
  }
  refreshQuestionBookmark();window.liLibraryShelf?.renderResume();
+ window.dispatchEvent(new Event("li:inquiry-changed"));
+ return true;
+}
+document.getElementById("save-question").addEventListener("click",liToggleMirrorQuestion);
+/* Step16 · One canonical Inquiry domain owner, two UI entrypoints.
+ * React consumes trusted model/actions rather than clicking hidden buttons,
+ * editing hidden textarea values, or writing a second private library store.
+ * Legacy handlers above remain functional until full UI parity is proven. */
+function liInquiryAllowed(){
+ return document.documentElement.classList.contains("li-auth-verified")&&
+  !document.documentElement.classList.contains("li-account-open");
+}
+window.liInquiryFlow=Object.freeze({
+ getMirror:()=>{
+  const sc=scenarios[qIndex];if(!sc)return null;
+  return {
+   index:qIndex,question:sc.question,scene:sc.scene,
+   source:sc.type==="hook"?"TỪ BÀI HỌC ĐÃ XUẤT BẢN":"VÍ DỤ GIẢ ĐỊNH",
+   route:sc.type==="hook"?sc.lessonRoute:"research",
+   cta:sc.type==="hook"?"Khám phá vì sao":"Đào sâu",
+   saved:findSavedMirrorQuestion(sc)>=0
+  };
+ },
+ shift:direction=>{
+  if(!liInquiryAllowed()||(direction!==1&&direction!==-1))return false;
+  shiftMirrorQuestion(direction);return true;
+ },
+ toggleQuestion:()=>liInquiryAllowed()?liToggleMirrorQuestion():false,
+ getResearch:()=>{
+  const sc=liCurrentProblem();
+  return sc?{question:sc.question,branches:[...(sc.branches||[])],
+   observed:sc.observed,unknown:sc.unknown,feedback:liResearchFeedback}:null;
+ },
+ chooseBranch:index=>{
+  if(!liInquiryAllowed()||!Number.isInteger(index))return false;
+  return liChooseResearchBranch(liCurrentProblem()?.branches?.[index]);
+ },
+ getCaseDraft:()=>{
+  if(!liInquiryAllowed())return "";
+  try{return window.localStorage.getItem(LI_DRAFT_KEY)||""}catch{return ""}
+ },
+ setCaseDraft:text=>{
+  if(!liInquiryAllowed()||typeof text!=="string")return false;
+  try{
+   window.localStorage.setItem(LI_DRAFT_KEY,text);
+   return window.localStorage.getItem(LI_DRAFT_KEY)===text;
+  }catch{return false}
+ },
+ submitCase:(choice,revision)=>{
+  if(!liInquiryAllowed())return false;
+  return liSubmitCaseAnswer(choice,revision);
+ },
+ isCaseBookmarked:()=>liInquiryAllowed()&&Boolean(window.liBookmarks?.isSaved("case","sampling-bias-90")),
+ toggleCaseBookmark:()=>{
+  if(!liInquiryAllowed()||!window.liBookmarks?.toggle)return false;
+  const changed=window.liBookmarks.toggle("case","sampling-bias-90");
+  if(changed)window.dispatchEvent(new Event("li:inquiry-changed"));
+  return changed;
+ }
 });
+
 document.getElementById("buddy-challenge").addEventListener("click",()=>{buddyDebateActive=true;document.getElementById("buddy-debate").hidden=false;document.getElementById("buddy-quote").hidden=true;document.getElementById("buddy-text").textContent="Thử phản biện lão: 90% người được hỏi nói hài lòng. Lão kết luận cả thị trường cũng hài lòng.";});
 document.getElementById("buddy-right").addEventListener("click",()=>{document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent=liBuddyLine("Cuối cùng cũng chịu dùng đến bộ não rồi đấy. Nhà thông thái, ngươi đã bắt đúng lỗi suy rộng từ người dùng sang toàn thị trường. Lão xin rút kết luận.");});
 document.getElementById("buddy-wrong").addEventListener("click",()=>{document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent=liBuddyLine("Ồ, một cách suy luận rất sáng tạo. Tiếc là sai. Nhóc, lão chỉ hỏi người đang dùng; người chưa dùng có thể nghĩ khác. Đừng bắt mẫu khảo sát gánh cả thị trường.");});

@@ -1,4 +1,6 @@
 import {openRoute} from './app-router.js';
+import {inquiryFlow} from './inquiry-port.js';
+import type {MirrorView} from './inquiry-port.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {motion,useReducedMotion} from 'motion/react';
@@ -203,40 +205,29 @@ function Catalog(){
  </motion.div>;
 }
 
-type MirrorState={question:string;scene:string;source:string;route:string;cta:string;saved:boolean};
 const homeLegacy=()=>document.querySelector<HTMLElement>('#page-home > .hero');
-function readMirror():MirrorState{
- const old=homeLegacy();
- return {
-  question:old?.querySelector('#mirror-question')?.textContent||'',
-  scene:old?.querySelector('#home-scene')?.textContent||'',
-  source:old?.querySelector('.example-label')?.textContent||'',
-  route:old?.querySelector<HTMLButtonElement>('#mirror-primary-action')?.dataset.page||'research',
-  cta:old?.querySelector('#mirror-primary-label')?.textContent||'Đào sâu',
-  saved:old?.querySelector('#save-question')?.getAttribute('aria-pressed')==='true'
- };
-}
-function legacyAction(id:string){
- const button=homeLegacy()?.querySelector<HTMLButtonElement>('#'+id);
- button?.click();
+const mirrorFallback:MirrorView={index:0,question:'',scene:'',source:'',
+ route:'research',cta:'Đào sâu',saved:false};
+function readMirror():MirrorView{
+ return inquiryFlow().getMirror()||mirrorFallback;
 }
 function Home(){
  const reduced=useReducedMotion();
- const [mirror,setMirror]=useState<MirrorState>(readMirror);
+ const [mirror,setMirror]=useState<MirrorView>(readMirror);
  const gesture=useRef<{x:number;y:number}|null>(null);
  useEffect(()=>{
-  const old=homeLegacy();if(!old)return;
-  const sync=()=>setMirror(before=>{
+  const sync=()=>setMirror(previous=>{
    const next=readMirror();
-   return JSON.stringify(next)===JSON.stringify(before)?before:next;
+   return JSON.stringify(next)===JSON.stringify(previous)?previous:next;
   });
-  const observer=new MutationObserver(sync);
-  observer.observe(old,{subtree:true,attributes:true,childList:true,characterData:true,
-   attributeFilter:['aria-pressed','data-page','aria-label','title']});
+  window.addEventListener('li:inquiry-changed',sync);
   window.addEventListener('li:personal-sync-applied',sync);
-  return ()=>{observer.disconnect();window.removeEventListener('li:personal-sync-applied',sync);};
+  return ()=>{
+   window.removeEventListener('li:inquiry-changed',sync);
+   window.removeEventListener('li:personal-sync-applied',sync);
+  };
  },[]);
- const shift=(direction:-1|1)=>legacyAction(direction===-1?'previous-question':'shuffle');
+ const shift=(direction:-1|1)=>inquiryFlow().shift(direction);
  return <div data-li-react-screen="home" className="hero"
   role="region" aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn">
   <div className="hero-left">
@@ -289,7 +280,7 @@ function Home(){
    </Button>
    <Button variant="primary" className="primary mirror-save-action"
     aria-label={mirror.saved?'Bỏ lưu câu hỏi':'Lưu câu hỏi'} aria-pressed={mirror.saved}
-    onClick={()=>legacyAction('save-question')}>
+    onClick={()=>inquiryFlow().toggleQuestion()}>
     <span className="action-icon"><LiIcon name="bookmark" size={22}/></span>
     <span>{mirror.saved?'Đã lưu':'Lưu câu hỏi'}</span>
    </Button>
@@ -301,7 +292,7 @@ export function mountHomeAndCatalog(){
  const catalog=document.getElementById('page-catalog');
  const oldHome=homeLegacy();
  const oldCatalog=catalog?.querySelector<HTMLElement>(':scope > .section-shell');
- if(!home||!catalog||!oldHome||!oldCatalog||!app.liCatalog){
+ if(!home||!catalog||!oldHome||!oldCatalog||!app.liCatalog||!window.liInquiryFlow){
   throw Error('REACT_HOME_CATALOG_PORTS_REQUIRED');
  }
  // Avoid constructing learner-specific Home bookmarks and course progress in

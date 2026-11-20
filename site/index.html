@@ -609,7 +609,7 @@ const caseSnapshot={
 const item={id:liNewId(),caseKey:"sampling-bias-90",caseSnapshot,title:"90% người dùng hài lòng — Sampling Bias",correct:selectedCaseAnswer==="right",revision:v,savedAt:new Date().toISOString()};
 processedCases.unshift(item);
 if(!liWriteState()){processedCases.shift();toast("Không thể lưu Bút Ký trên thiết bị. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.");return}
-try{window.localStorage.removeItem(LI_DRAFT_KEY)}catch(e){}
+try{window.localStorage.setItem(LI_DRAFT_KEY,"")}catch(e){}
 const noteKey=Array.from((item.title+"|"+v).normalize("NFKC").toLocaleLowerCase("vi")).reduce((h,ch)=>Math.imul(h^ch.codePointAt(0),16777619)>>>0,2166136261).toString(36);
 window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"input",id:"case:"+noteKey}}));navigate("library");toast("Đã lưu Bút Ký trên thiết bị này.");});
 /* L1 physical-first self-report + learning rhythm heuristic. Not clinical triage. */

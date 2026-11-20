@@ -48,6 +48,10 @@ type EditorialAttempt=Attempt;
 const MIN=12,MAX=4000;
 const RETURN_KEY='li.editorial.guide-return.v1';
 const categories:MethodCategory[]=['nominal','ordinal','discrete','continuous'];
+const categoryLabels:Record<Locale,Record<MethodCategory,string>>={
+ vi:{nominal:'Danh nghĩa',ordinal:'Thứ bậc',discrete:'Định lượng rời rạc',continuous:'Định lượng liên tục'},
+ en:{nominal:'Nominal',ordinal:'Ordinal',discrete:'Discrete',continuous:'Continuous'}
+};
 const T06_CASES=['A','B','C','D'] as const;
 type GuideReturn={id:string;phase:'methods';sectionId:'l0911-method';
  scrollY:number;locale:Locale;method:Method;at:number};
@@ -415,8 +419,15 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     attemptRef.current=a;
     setLesson(source);setAttempt(a);setPersistedAttempt(a);
     setPhase(returnToken(id)?.phase??resume(a));setSync(state);setBusy(false);
-   }catch{
-    if(!cancelled){setBusy(false);setError('Bài chưa được phát hành hoặc chưa thể xác minh quyền học.');}
+   }catch(cause){
+    if(cancelled)return;
+    const reason=cause instanceof Error?cause.message:'';
+    const recordError=reason==='INVALID_ATTEMPT'||reason==='LEARNING_RECORD_TOO_LARGE'||
+     reason==='EDITORIAL_ATTEMPT_LOAD_FAILED';
+    setBusy(false);
+    setError(recordError?
+     'Không đọc được bản lưu của bài học. App chưa đặt lại hoặc ghi đè dữ liệu cũ. Hãy kiểm tra Tủ Riêng / đồng bộ trước khi thử lại.':
+     'Bài chưa phát hành, thiếu nội dung hợp lệ hoặc chưa xác minh được quyền học.');
    }
   })();
   return()=>{cancelled=true;mounted.current=false;};
@@ -807,14 +818,20 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       </Button>
       {method==='T06'&&<div className="li-editorial-t06-cases" role="group"
        aria-label={vi?'Phân loại bốn trường A–D':'Classify four fields A–D'}>
-       {T06_CASES.map(letter=><label key={letter} className="li-editorial-t06-case">
-        <strong>{letter}</strong>
-        <select value={item.classifications?.[letter]??''} disabled={locked||attempt.submitted||!!item.submittedAt}
-         onChange={e=>methodClassify(letter,e.currentTarget.value)}>
-         <option value="">{vi?'Chọn loại biến':'Select type'}</option>
-         {categories.map(cat=><option key={cat} value={cat}>{cat}</option>)}
-        </select>
-       </label>)}
+       {T06_CASES.map(letter=>{
+      const sourceLine=copy.prompt_md.split('\n').find(line=>
+       line.trim().startsWith('- '+letter+'. '));
+      const caseLabel=sourceLine?.trim().slice(5).replace(/<[^>]+>/g,'')??letter;
+      return <label key={letter} className="li-editorial-t06-case">
+       <strong>{letter} · {caseLabel}</strong>
+       <select value={item.classifications?.[letter]??''}
+        disabled={locked||attempt.submitted||!!item.submittedAt}
+        onChange={e=>methodClassify(letter,e.currentTarget.value)}>
+        <option value="">{vi?'Chọn loại biến':'Select type'}</option>
+        {categories.map(cat=><option key={cat} value={cat}>{categoryLabels[locale][cat]}</option>)}
+       </select>
+      </label>;
+     })}
       </div>}
       <Field kind="textarea" rows={4} label={vi?'Lập luận của mày':'Your reasoning'}
        value={item.draft} disabled={locked||attempt.submitted||!!item.submittedAt}

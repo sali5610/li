@@ -247,7 +247,7 @@ function Home(){
    <span className="tiny-note">Một câu hỏi, muôn ngả đường</span>
   </div>
   <motion.div key={mirror.question+'|'+mirror.scene} className="mirror-message"
-   initial={reduced?false:{opacity:0,y:5}} animate={{opacity:1,y:0}}
+   initial={reduced?false:{opacity:0}} animate={{opacity:1}}
    transition={reduced?{duration:0}:{duration:0.16}}
    onTouchStart={event=>{
     if(event.touches.length!==1||(event.target as HTMLElement).closest('button'))return;

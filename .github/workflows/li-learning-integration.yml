@@ -46,6 +46,11 @@ jobs:
           npm run extract
           npm run test:sync
           npx tsc --noEmit
+          # P0 #295: targeted first-party Auth cookie/proxy build contract.
+          npm run test:auth-pwa
+          npm run build:worker
+          test -s dist-worker/_worker.js
+          test -z "$(find dist-worker -type f -name '*.map' -print -quit)"
           npx vite build --config vite.staging-app.config.mjs
           test -s dist-staging-app/staging-auth-gate.js
           test "$(find dist-staging-app -maxdepth 1 -type f -name '*.css' | wc -l)" -eq 1

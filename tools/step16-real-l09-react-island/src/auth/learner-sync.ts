@@ -402,16 +402,30 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
  };
  const resumed=()=>schedule();
  const onVisibility=()=>{if(document.visibilityState==='visible')schedule();};
- // Poll only while signed tab is visible. Avoid a realtime dependency.
+ // Mobile Safari may restore an already-open page from back-forward cache without
+ // reloading React. Pull fresh private rows while preserving the current editor.
+ const onPageShow=(event:PageTransitionEvent)=>{if(event.persisted)schedule();};
+ // A learner looking at personal data should not need a full refresh to see edits
+ // from another device. Keep other screens on the existing free-tier-safe cadence.
+ const personalPageActive=()=>Boolean(document.querySelector(
+  '#page-library.active,#page-collection.active,#page-resume.active,'+
+  '#page-dashboard.active,#page-settings.active,#page-noteDetail.active'
+ ));
+ let lastPoll=Date.now();
  const livePoll=setInterval(()=>{
-  if(!disposed&&activeSync===current&&document.visibilityState==='visible'&&navigator.onLine)
-   schedule();
- },20000);
+  if(disposed||activeSync!==current||document.visibilityState!=='visible'||
+     !navigator.onLine||busy)return;
+  const now=Date.now(),interval=personalPageActive()?6000:20000;
+  if(now-lastPoll<interval)return;
+  lastPoll=now;
+  schedule();
+ },2000);
  const onPersonalEvent=()=>{if(hasPersonalLocalChanges(uid,observed))schedule();};
  document.addEventListener('input',changed);
  document.addEventListener('change',changed);
  document.addEventListener('click',changed);
  window.addEventListener('focus',resumed);
+ window.addEventListener('pageshow',onPageShow);
  document.addEventListener('visibilitychange',onVisibility);
  window.addEventListener('online',resumed);
  window.addEventListener('li:lesson-submitted',resumed);
@@ -431,6 +445,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
   document.removeEventListener('change',changed);
   document.removeEventListener('click',changed);
   window.removeEventListener('focus',resumed);
+  window.removeEventListener('pageshow',onPageShow);
   document.removeEventListener('visibilitychange',onVisibility);
   window.removeEventListener('online',resumed);
   window.removeEventListener('li:lesson-submitted',resumed);

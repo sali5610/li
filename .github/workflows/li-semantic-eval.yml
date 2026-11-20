@@ -1,0 +1,36 @@
+name: li. One-shot semantic retrieval evaluation (NO DEPLOY)
+on:
+  pull_request:
+    branches: [integration/staging]
+    paths:
+      - "tools/benchmarks/semantic-wave1-benchmark.mjs"
+      - "tools/benchmarks/semantic-wave1-gold.json"
+      - ".github/workflows/li-semantic-eval.yml"
+permissions:
+  contents: read
+jobs:
+  offline-eval:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install temporary CPU-only embedding runtime (never app dependency)
+        run: |
+          set -euo pipefail
+          npm install --prefix tools/benchmarks --no-save --package-lock=false --no-audit --no-fund @xenova/transformers@2.17.2
+      - name: Benchmark pinned MIT multilingual E5 against real canonical content client
+        run: |
+          set -euo pipefail
+          node tools/benchmarks/semantic-wave1-benchmark.mjs
+      - name: Publish evaluation evidence only (no model weights, no secrets)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-semantic-wave1-eval
+          path: tools/benchmarks/semantic-wave1-results.json
+          retention-days: 7

@@ -941,6 +941,56 @@ window.addEventListener("li:personal-sync-applied",event=>{
   if(draft&&draft!==document.activeElement)draft.value=localStorage.getItem(LI_DRAFT_KEY)||"";
  }
 });
+
+/* UI adapter only; the original inline study mode, buddy customization, backup
+ * importer/exporter and verified Auth consent remain the action/data owners. */
+window.liSettingsPort=Object.freeze({
+ getView:()=>{
+  const el=id=>document.getElementById(id),check=id=>Boolean(el(id)?.checked);
+  const card=el("li-journal-cloud-settings"),cloud=el("li-journal-cloud-toggle");
+  return {
+   mode:studyMode,modeFeedback:el("mode-feedback")?.textContent||"",
+   modes:Object.entries(STUDY_MODES).map(([key,info])=>({
+    key,label:info.label,image:info.image,feedback:info.feedback
+   })),
+   calm:check("calm-toggle"),mute:check("mute-toggle"),
+   nicknames:{...liBuddyNames},
+   previews:Object.fromEntries(["warm","teasing","serious"].map(key=>
+    [key,el("buddy-preview-"+key)?.textContent||""])),
+   nicknameFeedback:el("buddy-name-feedback")?.textContent||"",
+   cloudVisible:Boolean(card&&!card.hidden),
+   cloudChecked:Boolean(cloud?.checked),cloudDisabled:Boolean(cloud?.disabled),
+   cloudDescription:el("li-journal-cloud-description")?.textContent||"",
+   exportReady:Boolean(el("export-personal-data")),
+   importLoading:Boolean(el("import-state-loading")&&!el("import-state-loading").hidden),
+   importError:el("import-state-error")&&!el("import-state-error").hidden?
+    (el("import-state-error-message")?.textContent||"Chưa thể nhập bản sao."):""
+  };
+ },
+ act:(kind,key,value)=>{
+  const el=id=>document.getElementById(id);
+  if(kind==="mode"&&STUDY_MODES[key])el("study-mode-settings")?.querySelector('[data-ly-mode="'+key+'"]')?.click();
+  else if(kind==="calm"||kind==="mute"){
+   const field=el(kind==="calm"?"calm-toggle":"mute-toggle");
+   if(field&&field.checked!==Boolean(value))field.click();
+  }else if(kind==="nicknameInput"||kind==="nicknameCommit"){
+   if(!["warm","teasing","serious"].includes(key))return;
+   const field=el("buddy-name-"+key);if(!field)return;
+   if(typeof value==="string")field.value=value.slice(0,24);
+   field.dispatchEvent(new Event(kind==="nicknameInput"?"input":"change",{bubbles:true}));
+  }else if(kind==="resetNames")el("buddy-names-reset")?.click();
+  else if(kind==="cloud"){
+   const field=el("li-journal-cloud-toggle");
+   if(field&&!field.disabled&&!el("li-journal-cloud-settings")?.hidden&&
+      field.checked!==Boolean(value))field.click();
+  }else if(kind==="export")el("export-personal-data")?.click();
+  else if(kind==="import")el("import-personal-trigger")?.click();
+  else if(kind==="retryImport")el("import-state-retry")?.click();
+  else if(kind==="back")el("page-settings")?.querySelector("[data-nav-back]")?.click();
+  else return;
+  if(typeof Event==="function")window.dispatchEvent(new Event("li:settings-view-changed"));
+ }
+});
 const liInitialLesson=new URLSearchParams(window.location.search).get("lesson");
 const liInitialCatalog=new URLSearchParams(window.location.search).get("catalog");
 navigate(liInitialCatalog&&!liInitialLesson?"catalog":"home",{focus:false,syncUrl:!(liInitialCatalog||Object.values(LI_LESSON_ROUTES).includes(liInitialLesson))});

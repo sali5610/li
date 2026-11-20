@@ -195,7 +195,7 @@
       ],
       "properties": {
         "format": {
-          "const": "locked-structured-v1"
+          "enum": ["locked-structured-v1","editorial-structured-v1"]
         },
         "localized": {
           "type": "object",

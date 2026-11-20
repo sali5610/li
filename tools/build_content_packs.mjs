@@ -48,8 +48,33 @@ function compileContent(lessons,concepts,relations,registry,academic){
   for(const k of ["schemaVersion","id","kind","version","languages","title","hierarchy","learningOutcomes","conceptIds","content","practice","sources","provenance","reviewState","publishState","rights","editorialStatus","updatedAt"])if(l[k]===undefined)fail(l.id+" missing "+k);
   if(lessonIds.has(l.id))fail("duplicate lesson ID "+l.id);lessonIds.add(l.id);
   if(l.kind!=="Lesson"||!/^L\d{2}-\d+-\d+$/.test(l.id))fail("bad legacy lesson ID "+l.id);
-  if(l.languages.join(",")!=="vi,en"||!l.title.vi||!l.title.en||l.content.format!=="locked-structured-v1")fail("bad locales "+l.id);
-  for(const loc of l.languages){const x=l.content.localized[loc];if(!x||x.title!==l.title[loc]||!Array.isArray(x.questions)||x.questions.length!==l.practice.questionCount||!Array.isArray(x.rubricItems)||x.rubricItems.length!==4)fail("missing locked learning/practice/rubric "+l.id+" "+loc);if(JSON.stringify(l.learningOutcomes[loc])!==JSON.stringify(x.goals))fail("outcomes drift "+l.id+" "+loc);}
+  if(l.languages.join(",")!=="vi,en"||!l.title.vi||!l.title.en||
+     !["locked-structured-v1","editorial-structured-v1"].includes(l.content.format))
+    fail("bad locales or learning format "+l.id);
+  for(const loc of l.languages){
+   const x=l.content.localized[loc];
+   if(!x)fail("missing localized learning content "+l.id+" "+loc);
+   if(l.content.format==="locked-structured-v1"){
+    if(x.title!==l.title[loc]||!Array.isArray(x.questions)||x.questions.length!==l.practice.questionCount||
+      !Array.isArray(x.rubricItems)||x.rubricItems.length!==4||
+      JSON.stringify(l.learningOutcomes[loc])!==JSON.stringify(x.goals))
+      fail("missing locked learning/practice/rubric "+l.id+" "+loc);
+   }else{
+    // Wave2 source-preserving sections. The four independent answers and T06/T07
+    // never become visible before their documented learner attempt gate.
+    const independent=x.independent,methods=x.technique_applications;
+    const n=(independent?.prompt_md?.match(/^\d+\./gm)||[]).length;
+    if(!x.hook?.md||!x.goals?.md||!x.concept?.md||!x.variable_types?.md||
+       !x.guided?.md||!x.reflection?.md||!methods?.T06?.prompt_md||
+       !methods?.T07?.prompt_md||!independent?.prompt_md||!independent?.model_answer_md||
+       independent.model_answer_gate!=="AFTER_VALID_INDEPENDENT_SUBMISSION"||
+       x.reflection.gate!=="AFTER_VALID_INDEPENDENT_SUBMISSION"||
+       methods.T06.feedback_gate!=="AFTER_T06_MEANINGFUL_ATTEMPT"||
+       methods.T07.feedback_gate!=="AFTER_T07_MEANINGFUL_ATTEMPT"||
+       l.practice.questionCount!==4||n!==4)
+      fail("incomplete author-reviewed study/practice/feedback contract "+l.id+" "+loc);
+   }
+  }
   if(l.publishState==="published"&&l.reviewState!=="approved")fail("publishing unapproved lesson "+l.id);
   if(l.publishState!=="review_only"&&l.publishState!=="draft")fail("unexpected release state "+l.id);
   if(l.rights.text!=="first_party")fail("unlicensed lesson text "+l.id);
@@ -59,12 +84,13 @@ function compileContent(lessons,concepts,relations,registry,academic){
   const hier=l.hierarchy;
   for(const [kind,v] of [["DomainGroup",hier.group],["Field",hier.field],["Course",hier.course]]){if(!v||!v.id||!v.title)fail("bad hierarchy "+l.id);
    addNode({id:v.id,kind,title:v.title,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:navSrc,note:"Wave1 navigation metadata, not academic accreditation"});}
-  addNode({id:"lesson:"+l.id,kind:"Lesson",title:l.title.en,version:l.version,reviewState:l.reviewState,publishState:l.publishState,visibility:"public_curated",rightsState:"first_party",aliases:[{locale:"vi",text:l.title.vi}],provenance:editorial(l,"PO-locked lesson VI/EN"),note:"Editorial lock is not release approval"});
+  addNode({id:"lesson:"+l.id,kind:"Lesson",title:l.title.en,version:l.version,reviewState:l.reviewState,publishState:l.publishState,visibility:"public_curated",rightsState:"first_party",aliases:[{locale:"vi",text:l.title.vi}],provenance:editorial(l,frozen?"PO-locked lesson VI/EN":"Reviewed lesson manuscript VI/EN"),note:frozen?"Editorial lock is not release approval":"Editorial manuscript is not publication approval"});
   const part=(from,to)=>addEdge({id:"edge:content:part:"+from,predicate:"PART_OF",from,to,reviewState:"verified",visibility:"public_curated",provenance:navSrc});
   part(hier.field.id,hier.group.id);part(hier.course.id,hier.field.id);part("lesson:"+l.id,hier.course.id);
-  const claimId="claim:wave1:"+l.id+":editorial-scope",sourceId="source:editorial:"+l.id+":notion";
-  addNode({id:claimId,kind:"SourceClaim",title:"Locked lesson scope "+l.id,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:editorial(l,"Lesson manuscript contents"),note:"Editorial presence only; not a claim of peer-reviewed scientific support"});
-  addNode({id:sourceId,kind:"SourceEdition",title:"PO-locked editorial edition "+l.id,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:editorial(l,"S126 PO content freeze"),note:"Notion research provenance, never fetched at runtime"});
+  const frozen=l.editorialStatus==="po_locked";
+  const claimId=(frozen?"claim:wave1:":"claim:editorial:")+l.id+":editorial-scope",sourceId="source:editorial:"+l.id+":notion";
+  addNode({id:claimId,kind:"SourceClaim",title:(frozen?"Locked lesson scope ":"Editorial lesson scope ")+l.id,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:editorial(l,"Lesson manuscript contents"),note:"Editorial presence only; not a claim of peer-reviewed scientific support"});
+  addNode({id:sourceId,kind:"SourceEdition",title:(frozen?"PO-locked editorial edition ":"Reviewed editorial edition ")+l.id,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:editorial(l,frozen?"S126 PO content freeze":"Documented lesson manuscript"),note:"Notion research provenance, never fetched at runtime"});
   addEdge({id:"edge:content:states:"+l.id,predicate:"STATES_CLAIM",from:"lesson:"+l.id,to:claimId,reviewState:"verified",visibility:"public_curated",provenance:editorial(l,"Manuscript contents")});
   addEdge({id:"edge:content:support:"+l.id,predicate:"SUPPORTED_BY",from:claimId,to:sourceId,reviewState:"verified",visibility:"public_curated",provenance:editorial(l,"Editorial provenance (not academic proof)")});
   const courseId=hier.course.id.slice("course:".length);
@@ -190,8 +216,15 @@ const ids=lessons.map(l=>l.id);
 const old=extractLiteral(read("site/assets/lesson-wave1-core.js"),"PACK");
 const l09=extractLiteral(read("site/assets/lesson-l09-hifi.js"),"T");
 for(const l of lessons){
- const source=l.id==="L09-1-2"?l09:old[l.id]&&{vi:old[l.id].vi,en:old[l.id].en};
- if(!source||JSON.stringify(l.content.localized)!==JSON.stringify({vi:source.vi,en:source.en}))throw Error("LI_CONTENT_DRIFT: original locked academic content differs for "+l.id);
+ // Only frozen Wave1 manuscripts need byte-exact native-copy parity.
+ // Future lessons must be validated by the canonical Lesson contract instead.
+ if(l.editorialStatus==="po_locked"){
+  const source=l.id==="L09-1-2"?l09:old[l.id]&&{vi:old[l.id].vi,en:old[l.id].en};
+  if(!source||JSON.stringify(l.content.localized)!==JSON.stringify({vi:source.vi,en:source.en}))
+   throw Error("LI_CONTENT_DRIFT: original locked academic content differs for "+l.id);
+ }else if(l.publishState!=="review_only"||!["verified","approved"].includes(l.reviewState)){
+  throw Error("LI_CONTENT_UNREVIEWED_LEARNER_BODY: "+l.id+"; keep drafts in content/editorial/");
+ }
 }
 const schema=load("content/schema/lesson.schema.json");
 for(const l of lessons)for(const key of schema.required)if(!(key in l))throw Error("LI_CONTENT_SCHEMA_REQUIRED: "+l.id+"."+key);

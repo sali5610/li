@@ -30,6 +30,11 @@ Original bilingual learning copy, the four independent questions, hints, answer 
 - Third-party Commons image and unreviewed Lão Lý quote metadata are **not** included. OpenStax, NIST and USNA are **reference-only external links**, not imported book content. [Editorial rights and academic caveats](editorial/README.md).
 - `publishState:draft` and `reviewState:proposed`: file stays out of `content/lessons/`, runtime packs, Search and available lesson routes. Academic statistics specialist and owner release gates still open; no Wave2 publish, migrations or Cloudflare.
 
+## Verified future-lesson ingestion contract (no app release)
+- `node tools/test_future_lesson_ingestion.mjs` creates an **isolated temporary copy** of the real content compiler and current editorial L09-1-1, applies *test-only* `review_only/verified` status and two *test-only* proposed concept edges, builds fresh content packs, and reads them with the **same `createContentClient().getLesson` API** used by the app. It verifies manifest, course catalog, search and bilingual after-submit answer gates.
+- The committed L09-1-1 remains `draft/proposed` in `content/editorial/`, absent from the live packs and search. The test **does not create a route, authorize publication, mount a React lesson, persist user attempts, or deploy an additional app**. Those are Frontend/Auth owners' explicitly separate release responsibilities.
+- Only `po_locked` Wave1 content has byte-exact legacy JS parity. Future `editorial-structured-v1` lessons may be ingested when genuinely reviewed and after ontology concept mapping. Attempts to sneak an unreviewed draft into `content/lessons/` are rejected.
+
 ## Important boundary
 The old native JS still owns the deployed lesson **rendering and progress** until Chat 1/2 integrate the content adapter into the shared app. Temporary duplicate frozen payloads are guarded against drift. This PR does **not** claim the new source is consumed by the deployed learner UI, nor does it change Neon, auth, RLS, production release, or a second staging URL. The new static packs are intended for the **existing** `integration/staging` site build, not an independent deployment.
 

@@ -185,6 +185,12 @@ assert.equal(exported.draft,"","Never export a stale hidden draft for React user
 
 // Use the real import action (including validator and rollback), stub only
 // the browser's file/storage/confirmation APIs and unrelated native renderers.
+const nativeBackup=html.slice(html.indexOf(" function mountNativeBackupFallback(){"),
+ html.indexOf(" if(document.readyState===\"loading\")",html.indexOf(" function mountNativeBackupFallback(){")));
+assert.match(nativeBackup,/document\.getElementById\("li-staging-auth-root"\)\)return;/,
+ "No hidden native backup event delegation in invited React app");
+assert.match(nativeBackup,/importInput\?\.addEventListener\("change"/,
+ "Standalone native backup input still works");
 const importFrom=html.indexOf(" async function liImportPersonalData(file){");
 const importTo=html.indexOf(" window.liPersonalBackup=Object.freeze",importFrom);
 assert.ok(importFrom>=0&&importTo>importFrom,"Locate validated backup importer");

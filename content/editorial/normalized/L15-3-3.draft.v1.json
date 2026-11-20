@@ -58,7 +58,43 @@
             "heading": "6 · Đọc sâu và active recall không hiện đáp án",
             "body_md": "- [PLOS One fill rate (2022)](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0263655) — đúng định nghĩa unit demand fulfilled at shelf; nghiên cứu cụ thể về (s,S) lost-sales assumptions chứ không chứng minh case hư cấu.\n- [MIT News resilience tradeoffs (2022)](https://news.mit.edu/2022/building-resilience-next-supply-chain-disruption-james-rice-1121).\n- [UK Foresight supply chain resilience framework](https://www.gov.uk/government/publications/global-supply-chains-a-foresight-report-on-risk-and-resilience/annex-a-evidence-and-trends-for-supply-chain-vulnerability-and-resilience).\n- <b>Copy prompt:</b> “Tôi học li. L15-3-3; hãy mở đúng nguồn, chỉ nêu những định nghĩa về fill, resilience và tradeoff thực đọc được kèm URL; phân biệt với CSL do bài này operationalize; tạo case mới, xét constraint feasibility và 3 active recall không có đáp án. Không bịa service thật từ forecast.”\n- <b>Active recall:</b> (1) Vì sao CSL và unit fill có thể cách nhau nhiều điểm phần trăm? (2) Nếu cost tối thiểu nhưng recovery vi phạm SLA thì có còn feasible? (3) Khác nhau giữa resilience hấp thụ, thích ứng và phục hồi?\n\n<b>Media & rights:</b> original text table with units and constraints; future editable comparison figure must label cycle/unit/forecast, no copied industry chart, no assessed option result shown before independent submit in UI/alt/mentor. App/VoiceOver QA OPEN."
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Tính <b>CSL</b> và <b>unit fill rate</b> từ history, ghi mẫu số, và giải thích tại sao cả hai có thể khác.",
+            "Đánh dấu C/D/E theo <b>cả ba ràng buộc</b>, chọn phương án feasible có cost nhỏ nhất trong <b>ba options đã xét</b>.",
+            "Giải thích hai trade-offs giữa service, recovery, cost; nêu ít nhất hai loại <b>thông tin còn thiếu</b> khiến không thể gọi đây là mức tối ưu được xác nhận.",
+            "Nếu threshold phục hồi siết lại <b>≤3 ngày</b> nhưng ngân sách giữ ≤1.350, xác định kết quả và đề xuất <b>một bước thực tế</b> (re-scope, tăng ngân sách, xem phương án khác, xác minh scenario), không phá giả định để lấy số đẹp."
+          ],
+          "rubricCriteria": [
+            [
+              "CSL vs unit fill rate + mẫu số",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "feasibility của C/D/E và tính chi phí trong các option",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "tradeoffs, thông tin/các giả định forecast cần xác minh",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "boundary threshold mới và quyết định khi không feasible. Ghi assistance/hint K7 riêng; đây không phải chứng nhận supply-chain optimization hay SLA",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       },
       "en": {
         "intro_md": "<b>“A system can achieve a 98% unit fill rate while stocking out in several replenishment cycles.”</b>\n\nNo contradiction: <b>unit fill rate</b> concerns the share of demand units immediately supplied from stock; <b>cycle service level</b> counts replenishment cycles with <i>no stockout at all</i>. A cycle that misses only a few boxes still fails the cycle-level no-stockout definition even if almost all demand units are served. <b>The reversal:</b> a “98% service” slide is ambiguous unless it specifies <b>98% of what</b>. [PLOS fill-rate definition](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0263655).",
@@ -110,7 +146,43 @@
             "heading": "6 · Sources and unrevealed active recall",
             "body_md": "- [PLOS One 2022 — Fill Rate](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0263655).\n- [MIT News 2022 — Resilience and Costs](https://news.mit.edu/2022/building-resilience-next-supply-chain-disruption-james-rice-1121).\n- [UK Government — Supply Chain Resilience Framework](https://www.gov.uk/government/publications/global-supply-chains-a-foresight-report-on-risk-and-resilience/annex-a-evidence-and-trends-for-supply-chain-vulnerability-and-resilience).\n- <b>Source-aware copy prompt:</b> “I study li. L15-3-3. Open the exact selected URLs; summarize only definitions actually read about fill rate, recovery, redundancy and flexibility, linking each. Separate the tutorial's operational CSL definition and fictional decisions from sourced empirical evidence. Provide a new constrained-choice exercise and three unanswered recall questions.”\n- <b>Unanswered recall:</b> (1) Why can unit fill and cycle service disagree? (2) Can a low-cost policy be feasible if recovery violates the requirement? (3) What differs between absorbing, adapting and recovering from disruption?\n\n<b>Original figures:</b> all data tables and source-aware narrative here are original; optional localized infographic must use new assets and accessible descriptions, never a scraped or copyrighted third-party diagram and never reveal this independent decision pre-submit. Mobile/rights/real UI gates OPEN."
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Calculate historical <b>CSL and unit fill rate</b> with denominators and explain why the values can differ.",
+            "Evaluate every C/D/E policy against <b>all three</b> constraints, selecting the least-cost feasible choice <b>within the displayed candidates</b>.",
+            "Explain two trade-offs and identify two unknowns that would stop you from claiming this is a proven optimum.",
+            "Tighten recovery to <b>≤3 days</b> without changing the budget; determine the feasible set and one meaningful next step rather than violating constraints."
+          ],
+          "rubricCriteria": [
+            [
+              "correct CSL/unit-fill distinctions and units",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "candidate feasibility/least-cost selection within options",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "evidence/data gaps and service/resilience/cost trade-offs",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "valid tighter-boundary response. Assistance and hints tracked separately from actual knowledge/method attempts",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       }
     },
     "companion": {
@@ -146,7 +218,229 @@
           "source_md": "<b>Primary:</b> <code>smith-incentive</code>; alternatives <code>bacon-studies</code>, <code>mill-other-side</code>. <b>Relevance:</b> incentives/cost trade-offs are a modern conceptual analogy to supplier/network choices; Smith does not derive inventory service rates.\n\n<b>VI · Lão Lý:</b> “Một phòng ban khoái cắt cost, phòng kia muốn giao đủ và nhanh. Cả hai cùng có việc đúng — phải nói rõ tradeoff.”\n\n- <b>“Đọc nguồn theo thứ tự?”</b> → “PLOS để thấy fill đếm đơn vị nào; MIT để hiểu resilience và chi phí; [GOV.UK](http://GOV.UK) để nhìn absorb/adapt/recover.”\n- <b>“Thử bài mới?”</b> → “Giữ service threshold, đổi loại rủi ro hoặc ngân sách và yêu cầu một kế hoạch có chứng cứ, không chỉ bảng chi phí.”\n\n<b>EN · Lão Lý:</b> “One team celebrates lower cost; another needs faster reliable fulfillment. Both have stakes, so show the trade-off.”\n\n- <b>“What reading order?”</b> → “PLOS for fill-rate units, MIT for resilience/cost choices, [GOV.UK](http://GOV.UK) for absorb/adapt/recover.”\n- <b>“Next independent question?”</b> → “Hold the service constraint, change disruption or budget and demand evidence for the resulting plan.”\n\n<b>Authoring QA contract:</b> stage primaries and alt quote IDs are curated, not statements of working engine priority. Six distinct dialogues, two VI/EN action-reply pairs/stage, six contextual relevance explanations; no live data, no code/merge, no Safari/VoiceOver or scholar rights signoff. Cost 0."
         }
       ],
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "structuredMoments": [
+        {
+          "stage": "opening",
+          "quote_ids": [
+            "hume-evidence",
+            "smith-incentive",
+            "analects-honesty"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>hume-evidence</code>; alternatives <code>smith-incentive</code>, <code>analects-honesty</code>. <b>Relevance:</b> evidence-calibrated statements parallel asking what “98% service” actually measured; Hume never defined supply-chain service metrics.",
+          "vi": {
+            "prompt": "Cái slide ghi ‘service 98%’ mà giấu mẫu số thì đúng là dùng số trang điểm cho vấn đề.",
+            "actions": [
+              {
+                "label": "Mẫu số gì?",
+                "reply": "Đang đo đơn vị nhu cầu đáp ứng từ tồn kho hay chu kỳ không hề thiếu hàng? Chọn một định nghĩa."
+              },
+              {
+                "label": "Hết hàng một lần?",
+                "reply": "Chu kỳ có stockout theo CSL, dù chỉ thiếu chút ít đơn vị; fill rate lại đếm số lượng đáp ứng."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "A dashboard saying ‘98% service’ without the denominator is just cosmetics for a KPI.",
+            "actions": [
+              {
+                "label": "Which denominator?",
+                "reply": "Demand units immediately filled or replenishment cycles without any stockout? Name the metric."
+              },
+              {
+                "label": "One tiny stockout?",
+                "reply": "That cycle fails the no-stockout CSL definition, while unit fill records how much demand was served."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "concept",
+          "quote_ids": [
+            "zhuangzi-craft",
+            "bacon-cause",
+            "smith-incentive"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>zhuangzi-craft</code>; alternatives <code>bacon-cause</code>, <code>smith-incentive</code>. <b>Relevance:</b> examining the joints of a system is an analogy for separating absorb/adapt/recover mechanisms and their limits.",
+          "vi": {
+            "prompt": "Resilience không chỉ chất thêm thùng hàng. Ngươi còn cần đổi được đường đi và biết khôi phục khi vỡ trận.",
+            "actions": [
+              {
+                "label": "Ba tầng resilience?",
+                "reply": "Absorb bằng buffer/capacity, adapt bằng thay tuyến/nguồn, recover bằng khôi phục mức hoạt động định nghĩa trước."
+              },
+              {
+                "label": "Recovery time đo sao?",
+                "reply": "Phải ghi disruption nào và tiêu chuẩn phục hồi nào; thời gian phỏng đoán chưa là kết quả thử."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Resilience isn't stacking spare boxes forever. It also needs flexibility and a recovery path.",
+            "actions": [
+              {
+                "label": "Three capability types?",
+                "reply": "Absorb with buffers, adapt with alternate routes/sources, recover to a specified operating threshold."
+              },
+              {
+                "label": "What defines recovery time?",
+                "reply": "A named disruption and recovery target; a scenario forecast is not a measured outcome."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "guided",
+          "quote_ids": [
+            "analects-practice",
+            "zhuangzi-craft",
+            "laozi-begin"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>analects-practice</code>; alternatives <code>zhuangzi-craft</code>, <code>laozi-begin</code>. <b>Relevance:</b> learning through doing serves as a contextual parallel to T10 actually decomposing a constrained decision, not a supply-chain source.",
+          "vi": {
+            "prompt": "T10: tách cycle, unit, cost và recovery thành bốn ô rồi hãy ‘tối ưu’.",
+            "actions": [
+              {
+                "label": "Tính gì trước?",
+                "reply": "Lấy đúng mẫu số hai service metrics; sau đó check từng option xem đạt tất cả ràng buộc không."
+              },
+              {
+                "label": "Thử biên ra sao?",
+                "reply": "Siết một ngưỡng và tìm lại feasible set. Nếu rỗng thì nói rỗng, không ép con số."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "T10: separate cycles, units, money and recovery before shouting ‘optimized.’",
+            "actions": [
+              {
+                "label": "What comes first?",
+                "reply": "Use the correct denominator for each service metric, then check each option against every constraint."
+              },
+              {
+                "label": "Boundary test?",
+                "reply": "Tighten one target and recompute feasibility. An empty set is a legitimate result."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "independent",
+          "quote_ids": [
+            "mencius-sources",
+            "hume-evidence",
+            "analects-honesty"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>mencius-sources</code>; alternatives <code>hume-evidence</code>, <code>analects-honesty</code>. <b>Relevance:</b> source skepticism parallels refusing to call three predicted policy options an observed global optimum. <b>No independent values or winning plan in this mentor before submit.</b>",
+          "vi": {
+            "prompt": "Ta không chọn hộ. Đề cho cả metric lẫn ràng buộc, ngươi tự quyết dựa trên điều có thật trong bảng.",
+            "actions": [
+              {
+                "label": "Bắt đầu bài độc lập?",
+                "reply": "Tách lịch sử service ra khỏi forecast của các phương án; chúng không cùng loại chứng cứ."
+              },
+              {
+                "label": "Chọn cost rẻ nhất luôn?",
+                "reply": "Chỉ so cost trong tập đạt mọi điều kiện, rồi ghi rõ đây là tập option hữu hạn."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "I won't pick the assessed policy. Separate observed metrics from hypothetical forecasts.",
+            "actions": [
+              {
+                "label": "How should I start?",
+                "reply": "Tabulate history and policy predictions separately; do not treat forecast as observed evidence."
+              },
+              {
+                "label": "Always pick the cheapest?",
+                "reply": "Only among candidates meeting all constraints, and only within the offered finite set."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "reflection",
+          "quote_ids": [
+            "analects-honesty",
+            "zhuangzi-limits",
+            "analects-review"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>analects-honesty</code>; alternatives <code>zhuangzi-limits</code>, <code>analects-review</code>. <b>Relevance:</b> admitting incomplete knowledge parallels declaring scenario and data limitations; unlock only after independent submission.",
+          "vi": {
+            "prompt": "Bài đã nộp thì nhìn lại: ngươi có gọi ‘kết quả dự báo’ là ‘SLA thật’ không?",
+            "actions": [
+              {
+                "label": "Chấm theo bốn gì?",
+                "reply": "Định nghĩa metrics, feasible constraints, tradeoff và boundary case — bốn loại lỗi khác nhau."
+              },
+              {
+                "label": "Chỗ nào cần kiểm?",
+                "reply": "Thời gian khôi phục ngoài đời, nhu cầu bị ẩn do hết hàng, chi phí thật và scenario disruption."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Submitted? Did you mistake a policy forecast for a measured SLA?",
+            "actions": [
+              {
+                "label": "Four separate checks?",
+                "reply": "Metric denominators, constraint feasibility, trade-offs and changed-boundary reasoning."
+              },
+              {
+                "label": "Which assumptions need evidence?",
+                "reply": "True recovery time, hidden lost demand, full cost and the disruption scenario."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "extension",
+          "quote_ids": [
+            "smith-incentive",
+            "bacon-studies",
+            "mill-other-side"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>smith-incentive</code>; alternatives <code>bacon-studies</code>, <code>mill-other-side</code>. <b>Relevance:</b> incentives/cost trade-offs are a modern conceptual analogy to supplier/network choices; Smith does not derive inventory service rates.",
+          "vi": {
+            "prompt": "Một phòng ban khoái cắt cost, phòng kia muốn giao đủ và nhanh. Cả hai cùng có việc đúng — phải nói rõ tradeoff.",
+            "actions": [
+              {
+                "label": "Đọc nguồn theo thứ tự?",
+                "reply": "PLOS để thấy fill đếm đơn vị nào; MIT để hiểu resilience và chi phí; [GOV.UK](http://GOV.UK) để nhìn absorb/adapt/recover."
+              },
+              {
+                "label": "Thử bài mới?",
+                "reply": "Giữ service threshold, đổi loại rủi ro hoặc ngân sách và yêu cầu một kế hoạch có chứng cứ, không chỉ bảng chi phí."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "One team celebrates lower cost; another needs faster reliable fulfillment. Both have stakes, so show the trade-off.",
+            "actions": [
+              {
+                "label": "What reading order?",
+                "reply": "PLOS for fill-rate units, MIT for resilience/cost choices, [GOV.UK](http://GOV.UK) for absorb/adapt/recover."
+              },
+              {
+                "label": "Next independent question?",
+                "reply": "Hold the service constraint, change disruption or budget and demand evidence for the resulting plan."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "technique": {
+      "primary": "L2-T10",
+      "status": "source_mapped_not_release_approved"
     }
   },
   "rights": {
@@ -163,7 +457,7 @@
     "sourceBodyCharacters": 28269
   },
   "normalization": {
-    "status": "needs_academic_rights_and_release_review",
+    "status": "structurally_mapped_needs_rights_review",
     "counts": {
       "vi": {
         "sections": 7,

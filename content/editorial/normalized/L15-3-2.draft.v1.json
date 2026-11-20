@@ -58,7 +58,43 @@
             "heading": "6 · Đọc sâu + tự hỏi lại",
             "body_md": "- [MIT OCW — Supply Chain Planning (2011)](https://ocw.mit.edu/courses/15-762j-supply-chain-planning-spring-2011/) — course context for inventory/network decisions, NOT verbatim source of synthetic formula.\n- [NC State SCM — Safety Stock Analysis](https://scm.ncsu.edu/scm-articles/article/safety-stock-analysis-inventory-management-models-a-tutorial) — concepts of protection against variable demand and service/holding tradeoffs.\n- [Stanford pooling paper listing](https://www.gsb.stanford.edu/faculty-research/publications/inventory-pooling-under-heavy-tailed-demand) — external research pointer; full text <b>not accessed</b>.\n- <b>Copy prompt:</b> “Tôi đang học li. L15-3-2. Truy cập nguồn thật, nói rõ chỉ đọc được giới thiệu hay toàn văn; phân biệt formula do mô hình giả định với khẳng định học thuật có bằng chứng, giải thích điều kiện độc lập/tương quan, tạo bài khác, nêu tradeoff và 3 active recall không hiện đáp án. Không bịa full text.”\n- <b>Active recall chưa đáp án:</b> (1) Vì sao độ lệch chuẩn tổng có thể thấp hơn tổng các độ lệch chuẩn khi nhu cầu độc lập? (2) Điều gì xảy ra với lợi ích pooling nếu tất cả nhu cầu đồng biến hoàn toàn? (3) Vì sao tiết kiệm safety stock chưa đủ chứng minh kho chung là lựa chọn tốt nhất?\n\n<b>Media/rights:</b> original three-location table and conceptual linked buffer visualization with VI/EN alt explanation about variance pooling; text/table first and no copyrighted MIT/NC State/Stanford figure copied. Full-width/mobile image not required for learning source; any eventual diagram under visual/a11y QA. No assessed independent numbers exposed by pre-submit image or caption."
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Tính tổng <b>safety stock riêng</b> và <b>mức gộp</b> khi ba nhu cầu <b>độc lập</b>; ghi giả định và đơn vị.",
+            "Tính mức giảm <b>safety stock tuyệt đối</b> trong trường hợp độc lập, giải thích vì sao trung bình nhu cầu không cần giảm.",
+            "Nếu ba nhu cầu <b>tương quan dương hoàn hảo</b>, tính lại pooled safety stock và nói điều gì thay đổi trong lập luận.",
+            "Đề xuất một quyết định inventory placement có <b>hai tradeoff</b> cần kiểm; giải thích vì sao không thể kết luận kho chung tối ưu chỉ từ các độ lệch chuẩn."
+          ],
+          "rubricCriteria": [
+            [
+              "mô hình/horizon/z/đơn vị và buffer riêng",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "pooled variance/σ/buffer/saving độc lập đúng",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "boundary correlation=1 và ý nghĩa hợp lý",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "placement tradeoff và giới hạn không tuyên bố tối ưu",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       },
       "en": {
         "intro_md": "<b>“Pooling two warehouses can reduce safety stock even when total expected demand stays unchanged — but only under the right conditions.”</b>\n\nImagine <b>two fictional service regions</b>, each with demand standard deviation <b>10 boxes over the same replenishment protection horizon</b>. If both regions can truly draw on shared stock, independent fluctuations may partially offset each other, making aggregate demand less variable than the sum of individual uncertainties. If both demands rise and fall perfectly together, that diversification benefit disappears. <b>The reversal:</b> “bigger centralized warehouse always wins” is not a valid general principle; <b>demand correlation</b> and service constraints matter.",
@@ -110,7 +146,43 @@
             "heading": "6 · Sources and unanswered recall",
             "body_md": "- [MIT OCW Supply Chain Planning](https://ocw.mit.edu/courses/15-762j-supply-chain-planning-spring-2011/) — inventory/network course context, NOT a direct source for the made-up numerical formula example.\n- [NC State SCM Safety Stock Analysis](https://scm.ncsu.edu/scm-articles/article/safety-stock-analysis-inventory-management-models-a-tutorial) — inventory protection and service/holding-cost trade-offs.\n- [Stanford research pointer on inventory pooling](https://www.gsb.stanford.edu/faculty-research/publications/inventory-pooling-under-heavy-tailed-demand) — page not fully readable, NOT a claimed primary full-text derivation.\n- <b>Source-aware copy prompt:</b> “I study li. L15-3-2. Open the chosen URL and state exactly whether the full text, abstract or just page description was readable; distinguish the modeled independent-sum variance assumption from source-verified facts, write a distinct original practice problem with two trade-offs and ask three unanswered recall questions. Never imply a 403 page was read.”\n- <b>Unanswered active recall:</b> (1) Why may independent pooled-demand SD be smaller than the sum of individual SDs? (2) What happens under perfect positive demand correlation? (3) Why is lowering the safety-stock buffer insufficient to conclude which location strategy is economically better?\n\n<b>Media and accessibility:</b> author-original three-location variance/buffer comparison using explicit labels and a text table fallback, with distinct localized VI/EN alt if a graphic is later drawn. Never copy MIT/NC State/Stanford figures or expose independent model-answer values in pre-submit diagrams."
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Compute total <b>separate safety stock</b> and <b>pooled safety stock</b> under mutually <b>independent</b> demands; state units and assumptions.",
+            "Compute the <b>absolute safety-stock reduction</b> and explain why average demand need not be reduced.",
+            "If all three regional demands have <b>perfect positive pairwise correlation</b>, recompute the shared buffer and interpret what changes.",
+            "Propose a defensible inventory-placement choice, naming <b>two operational trade-offs</b> to investigate and why these standard deviations alone cannot prove centralization is optimal."
+          ],
+          "rubricCriteria": [
+            [
+              "assumptions/horizon/units and separate buffers",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "correct independent aggregate variance, pooled buffer and saving",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "correct ρ=1 boundary and reasoning",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "actual inventory-placement trade-offs and honest limits. Log hints, method selection and independent answer evidence separately; this self-rating does not certify logistics competence or ROI",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       }
     },
     "companion": {
@@ -146,7 +218,229 @@
           "source_md": "<b>Primary:</b> <code>smith-incentive</code>; alternates <code>mill-other-side</code>, <code>bacon-studies</code>. <b>Relevance:</b> Smith's incentive/exchange framing is an analogy for regional service constraints and network trade-offs; the source of safety-stock modeling is modern inventory/probability literature, not Wealth of Nations.\n\n<b>VI · Lão Lý:</b> “Một kho chung có thể vui vì tồn kho giảm; khách ở xa thì có khi không vui vì hàng tới chậm.”\n\n- <b>“Đọc thêm gì?”</b> → “Đọc MIT OCW về planning và nguồn NC State về safety stock, rồi ghi rõ phần nào chỉ là mô hình giả định của bài.”\n- <b>“Bước điều tra tiếp?”</b> → “So lead time theo từng vùng, tải vận chuyển, chi phí kho và độ tương quan cầu trong nhiều kỳ hơn trước khi đề xuất mạng lưới mới.”\n\n<b>EN · Lão Lý:</b> “The central warehouse celebrates lower buffer stock. Remote customers might celebrate a delayed delivery instead.”\n\n- <b>“Which sources?”</b> → “Use MIT OCW for planning context and NC State for safety-stock ideas, separating source support from the lesson's hypothetical model.”\n- <b>“Next investigation?”</b> → “Estimate regional service lead times, transport load, storage cost and demand correlations over a credible time window.”\n\n<b>Editorial contract check:</b> six distinct stages; 12 VI + 12 EN stage-level actions/replies; three relevant bank IDs each; reflection post-submit only; no independent answer or source rights signoff in companion. Potential quote-order bug tracked separately from authored content. All real integration, expert review, visual system, device/VoiceOver and QA28 release gates remain open; no site changes or paid costs."
         }
       ],
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "structuredMoments": [
+        {
+          "stage": "opening",
+          "quote_ids": [
+            "bacon-cause",
+            "hume-evidence",
+            "smith-incentive"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>bacon-cause</code>; alternates <code>hume-evidence</code>, <code>smith-incentive</code>. <b>Relevance:</b> Bacon's statement about causes can prompt questioning the mechanism behind lower aggregate uncertainty, without treating him as an authority on inventory pooling mathematics.",
+          "vi": {
+            "prompt": "Gộp kho nghe như thuật phép tiết kiệm hàng? Ta hỏi trước: cầu ở hai nơi có cùng giật mình một lúc không?",
+            "actions": [
+              {
+                "label": "Cần hỏi gì?",
+                "reply": "Nhu cầu biến động ra sao, có liên hệ với nhau không, và các vùng có thật sự dùng chung được một tồn kho?"
+              },
+              {
+                "label": "Kho chung luôn thắng?",
+                "reply": "Không. Kho chung có thể giảm một loại buffer nhưng tăng thời gian giao, chi phí và rủi ro tập trung."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Pooling stock sounds magical? First ask whether the regions' demand spikes together.",
+            "actions": [
+              {
+                "label": "What must we know?",
+                "reply": "How demands vary, whether their movements are correlated, and whether the inventory is truly shared."
+              },
+              {
+                "label": "Does pooling always win?",
+                "reply": "No. A smaller buffer may be offset by slower service, transport cost or concentrated disruption risk."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "concept",
+          "quote_ids": [
+            "zhuangzi-craft",
+            "bacon-cause",
+            "analects-think"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>zhuangzi-craft</code>; alternates <code>bacon-cause</code>, <code>analects-think</code>. <b>Relevance:</b> Cook Ding's attention to underlying structure is a metaphor for modeling demand covariance and physical network constraints before manipulating warehouse counts.",
+          "vi": {
+            "prompt": "Độ lệch chuẩn không phải số thùng trung bình. Ngươi gom sai loại số là kho sập trên giấy đấy.",
+            "actions": [
+              {
+                "label": "Tại sao căn bậc hai?",
+                "reply": "Với các nhu cầu độc lập, cộng phương sai rồi mới lấy căn để trở về đơn vị độ lệch chuẩn."
+              },
+              {
+                "label": "Khi nào chẳng tiết kiệm?",
+                "reply": "Trong ví dụ biên nhu cầu đồng biến dương hoàn hảo, độ lệch chuẩn tổng bằng tổng độ lệch chuẩn riêng."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Standard deviation is not average demand. Mixing the two will build a warehouse out of arithmetic fog.",
+            "actions": [
+              {
+                "label": "Why the square root?",
+                "reply": "Independent variances add; take the square root to recover aggregate standard deviation in demand units."
+              },
+              {
+                "label": "When is there no modeled saving?",
+                "reply": "When all demands are perfectly positively correlated, aggregate SD equals the sum of regional SDs."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "guided",
+          "quote_ids": [
+            "analects-practice",
+            "laozi-begin",
+            "analects-think"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>analects-practice</code>; alternates <code>laozi-begin</code>, <code>analects-think</code>. <b>Relevance:</b> deliberate practice is a learning analogy for T10 decomposing a supply-chain decision; neither original quote teaches the statistical covariance formula.",
+          "vi": {
+            "prompt": "T10 là tháo hệ thành từng con ốc: demand, horizon, correlation, mức phục vụ và luồng hàng.",
+            "actions": [
+              {
+                "label": "Bắt đầu tính gì?",
+                "reply": "Ghi z và σ cùng kỳ, tính buffer từng điểm, rồi mới ước lượng biến động tổng của kho chung."
+              },
+              {
+                "label": "Thử biên ra sao?",
+                "reply": "Đổi giả định độc lập thành nhu cầu đồng biến; nếu lợi ích tan biến, giải thích bằng cơ chế thống kê chứ không đổ lỗi máy tính."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "T10 takes the system apart: demand, protection horizon, correlation, service and physical fulfillment.",
+            "actions": [
+              {
+                "label": "What is calculated first?",
+                "reply": "Match z, SDs and time horizon; compute separate buffers before the pooled variability."
+              },
+              {
+                "label": "Which boundary test?",
+                "reply": "Replace independence with perfect positive correlation and explain why the modeled benefit changes."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "independent",
+          "quote_ids": [
+            "hume-evidence",
+            "mencius-sources",
+            "analects-honesty"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>hume-evidence</code>; alternates <code>mencius-sources</code>, <code>analects-honesty</code>. <b>Relevance:</b> evidence-limited confidence parallels refusing to call a modeled stock reduction an established transport-cost saving. <b>No assessed 3-location counts or model result here.</b>",
+          "vi": {
+            "prompt": "Ta không tính sẵn số của bài độc lập. Nhìn đúng giả định trước, rồi mới cầm bút.",
+            "actions": [
+              {
+                "label": "Bắt đầu từ đâu?",
+                "reply": "Đọc số khu vực, cùng horizon và z; xác định mô hình độc lập cần cộng đại lượng nào."
+              },
+              {
+                "label": "Chọn kho thế nào?",
+                "reply": "Sau phép tính hãy nêu dữ liệu vận hành cần biết: giao hàng, lead time, tồn khả dụng và chi phí; chưa được tự phong phương án tối ưu."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "I won't solve the assessed multi-region numbers. Read the assumptions before you reach for the calculator.",
+            "actions": [
+              {
+                "label": "First step?",
+                "reply": "Identify the number of regions, matched horizon and service factor; decide which quantities add under independence."
+              },
+              {
+                "label": "How to select a site?",
+                "reply": "After modeling the buffer, list missing operational evidence such as response times, delivery costs and inventory fungibility."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "reflection",
+          "quote_ids": [
+            "analects-honesty",
+            "analects-review",
+            "zhuangzi-limits"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>analects-honesty</code>; alternates <code>analects-review</code>, <code>zhuangzi-limits</code>. <b>Relevance:</b> acknowledging what is not known supports the distinction between modeled variance reduction and measured service/cost performance. Unlock only after submitting independent work.",
+          "vi": {
+            "prompt": "Đã nộp rồi: ngươi vừa giảm safety stock trên mô hình, chứ chưa chứng minh tổng chi phí giảm nha.",
+            "actions": [
+              {
+                "label": "Tự kiểm theo gì?",
+                "reply": "Tách điều kiện mô hình, phép cộng phương sai, trường hợp tương quan và chi phí dịch vụ vận hành."
+              },
+              {
+                "label": "Sai sót nguy hiểm?",
+                "reply": "Cộng độ lệch chuẩn khi giả định độc lập, hoặc quên rằng kho chung có thể thay đổi lead time."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Submitted? You may have reduced modeled safety stock — that is not proof total costs fell.",
+            "actions": [
+              {
+                "label": "Self-review checks?",
+                "reply": "Assess assumptions, variance aggregation, correlated boundary and logistics/service trade-offs separately."
+              },
+              {
+                "label": "Dangerous mistake?",
+                "reply": "Adding independent SDs as if they were perfectly correlated, or ignoring changed response lead times."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "extension",
+          "quote_ids": [
+            "smith-incentive",
+            "mill-other-side",
+            "bacon-studies"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>smith-incentive</code>; alternates <code>mill-other-side</code>, <code>bacon-studies</code>. <b>Relevance:</b> Smith's incentive/exchange framing is an analogy for regional service constraints and network trade-offs; the source of safety-stock modeling is modern inventory/probability literature, not Wealth of Nations.",
+          "vi": {
+            "prompt": "Một kho chung có thể vui vì tồn kho giảm; khách ở xa thì có khi không vui vì hàng tới chậm.",
+            "actions": [
+              {
+                "label": "Đọc thêm gì?",
+                "reply": "Đọc MIT OCW về planning và nguồn NC State về safety stock, rồi ghi rõ phần nào chỉ là mô hình giả định của bài."
+              },
+              {
+                "label": "Bước điều tra tiếp?",
+                "reply": "So lead time theo từng vùng, tải vận chuyển, chi phí kho và độ tương quan cầu trong nhiều kỳ hơn trước khi đề xuất mạng lưới mới."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "The central warehouse celebrates lower buffer stock. Remote customers might celebrate a delayed delivery instead.",
+            "actions": [
+              {
+                "label": "Which sources?",
+                "reply": "Use MIT OCW for planning context and NC State for safety-stock ideas, separating source support from the lesson's hypothetical model."
+              },
+              {
+                "label": "Next investigation?",
+                "reply": "Estimate regional service lead times, transport load, storage cost and demand correlations over a credible time window."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "technique": {
+      "primary": "L2-T10",
+      "status": "source_mapped_not_release_approved"
     }
   },
   "rights": {
@@ -163,7 +457,7 @@
     "sourceBodyCharacters": 27413
   },
   "normalization": {
-    "status": "needs_academic_rights_and_release_review",
+    "status": "structurally_mapped_needs_rights_review",
     "counts": {
       "vi": {
         "sections": 7,

@@ -5,6 +5,7 @@
 import lesson03 from '../../../../content/lessons/L03-1-2.json';
 import lesson09 from '../../../../content/lessons/L09-1-2.json';
 import lesson15 from '../../../../content/lessons/L15-2-2.json';
+import feedbackPolicy from '../../../../content/feedback/ai-question-modes.v1.json';
 import type {AiLesson} from './ai-access-server.js';
 
 const approved=[lesson03,lesson09,lesson15];
@@ -35,10 +36,13 @@ export function reviewedAiLesson(id:string,locale:'vi'|'en'):AiLesson|null{
  if(!lesson||lesson.reviewState!=='approved'||lesson.publishState!=='review_only')
   return null;
  const text=lesson.content.localized[locale];
- const modes=lesson.practice.questionFeedbackModes;
+ const policy=Object.prototype.hasOwnProperty.call(feedbackPolicy.lessons,id)?
+  feedbackPolicy.lessons[id as keyof typeof feedbackPolicy.lessons]:null;
+ const modes=policy?.modes;
  if(!text||!Array.isArray(text.questions)||text.questions.length!==4||
   !Array.isArray(text.rubricItems)||text.rubricItems.length!==4||
   typeof text.answer!=='string'||!Array.isArray(modes)||
+  policy?.questionCount!==lesson.practice.questionCount||
   modes.length!==text.questions.length||
   !modes.every(mode=>mode==='exact'||mode==='open'))return null;
  const openIndices=modes.flatMap((mode,index)=>mode==='open'?[index]:[]);

@@ -1,3 +1,4 @@
+import {openRoute} from './app-router.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {motion,useReducedMotion} from 'motion/react';
@@ -52,7 +53,7 @@ function ResearchScene(){
     <motion.p key={state.feedback} className="state-note" role="status"
      initial={reduced?false:{opacity:0,y:4}} animate={{opacity:1,y:0}}
      transition={reduced?{duration:0}:{duration:0.16}}>{state.feedback}</motion.p>
-    <div className="action-row"><Button data-page="case">Phản Chứng</Button></div>
+    <div className="action-row"><Button onClick={()=>openRoute('case')}>Phản Chứng</Button></div>
    </Card>
    <Card variant="raised">
     <div className="kicker">II · NGUỒN / CHỨNG CỨ</div>
@@ -71,7 +72,7 @@ function ResearchScene(){
     <div className="kicker">III · BÚT KÝ</div>
     <Heading level={2} role="titleMedium">Bút Ký ở Tủ Riêng</Heading>
     <Text role="body">Tìm lại những kết luận bạn tự viết sau mỗi lượt Phản Chứng.</Text>
-    <div className="action-row"><Button variant="secondary" data-page="library"
+    <div className="action-row"><Button variant="secondary" onClick={()=>openRoute('library')}
      data-focus="notebook-section">Mở Bút Ký</Button></div>
    </Card>
    <article className="surface dark">
@@ -165,7 +166,7 @@ function CaseScene(){
     <div className="kicker">THỦ THUẬT TƯ DUY</div>
     <Heading level={2} role="titleMedium">Hỏi về đối tượng bị thiếu.</Heading>
     <Text role="body">Chỉ một câu hỏi “Ai không nằm trong mẫu?” cũng có thể mở ra một nhánh kiểm chứng quan trọng.</Text>
-    <Button data-page="research" variant="secondary">Về Khảo Chứng</Button>
+    <Button onClick={()=>openRoute('research')} variant="secondary">Về Khảo Chứng</Button>
    </Card>
   </div>
  </div>;

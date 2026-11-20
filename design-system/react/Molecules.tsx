@@ -131,3 +131,69 @@ export function Breadcrumb({label,items}:BreadcrumbProps){
   })}</ol>
  </nav>;
 }
+
+
+/** Source provenance metadata. The consumer owns evidence and review status. */
+export type SourceReviewState='unreviewed'|'linked'|'reviewed'|'unavailable';
+export interface SourceStatusProps {
+ title:string;sourceLabel:string;statusLabel:string;state:SourceReviewState;
+ href?:string;detail?:string;
+}
+export function SourceStatus({title,sourceLabel,statusLabel,state,href,detail}:SourceStatusProps){
+ if(!title.trim()||!sourceLabel.trim()||!statusLabel.trim())
+  throw Error('SourceStatus requires a title, source label and caller-supplied status');
+ return <section className="li-ds-source-status" data-li-molecule="source-status"
+  data-state={state} aria-label={title}>
+  <div className="li-ds-source-heading"><strong>{title}</strong>
+   <span className="li-ds-source-review">{statusLabel}</span></div>
+  <div className="li-ds-source-reference">
+   {href?<a href={href}>{sourceLabel}</a>:<span>{sourceLabel}</span>}
+  </div>
+  {detail?<p>{detail}</p>:null}
+ </section>;
+}
+
+/** A native details disclosure, with keyboard behavior supplied by HTML. */
+export interface DisclosureProps {
+ summary:string;children:ReactNode;defaultOpen?:boolean;
+ onOpenChange?:(open:boolean)=>void;
+}
+export function Disclosure({summary,children,defaultOpen=false,onOpenChange}:DisclosureProps){
+ if(!summary.trim())throw Error('Disclosure needs a visible summary');
+ return <details className="li-ds-disclosure" data-li-molecule="disclosure"
+  open={defaultOpen?true:undefined}
+  onToggle={event=>onOpenChange?.(event.currentTarget.open)}>
+  <summary>{summary}</summary>
+  <div className="li-ds-disclosure-body">{children}</div>
+ </details>;
+}
+
+export interface ActionMenuItem {
+ id:string;label:string;href?:string;onSelect?:()=>void;disabled?:boolean;
+}
+export interface ActionMenuProps {
+ label:string;items:readonly ActionMenuItem[];
+}
+export function ActionMenu({label,items}:ActionMenuProps){
+ const root=React.useRef<HTMLDetailsElement>(null);
+ const trigger=React.useRef<HTMLElement>(null);
+ if(!label.trim())throw Error('ActionMenu needs a visible trigger label');
+ const close=()=>{if(root.current)root.current.open=false;trigger.current?.focus();};
+ return <details ref={root} className="li-ds-action-menu" data-li-molecule="action-menu"
+  onKeyDown={event=>{if(event.key==='Escape'&&event.currentTarget.open){
+   event.preventDefault();event.stopPropagation();close();
+  }}}
+  onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))event.currentTarget.open=false;}}>
+  <summary ref={trigger}>{label}</summary>
+  <ul>{items.map(item=>{
+   if(item.href&&item.onSelect)throw Error('ActionMenu item must be link OR action');
+   const unavailable=item.disabled||(!item.href&&!item.onSelect);
+   return <li key={item.id}>
+    {item.href&&!unavailable?<a href={item.href}>{item.label}</a>:
+     <button type="button" disabled={unavailable} onClick={()=>{
+      close();item.onSelect?.();
+     }}>{item.label}</button>}
+   </li>;
+  })}</ul>
+ </details>;
+}

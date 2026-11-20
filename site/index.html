@@ -1108,9 +1108,20 @@ window.liSettingsPort=Object.freeze({
   window.dispatchEvent(new Event("li:settings-view-changed"));
  }
 });
-const liInitialLesson=new URLSearchParams(window.location.search).get("lesson");
-const liInitialCatalog=new URLSearchParams(window.location.search).get("catalog");
-navigate(liInitialCatalog&&!liInitialLesson?"catalog":"home",{focus:false,syncUrl:!(liInitialCatalog||liInitialLesson)});
+const liInitialQuery=new URLSearchParams(window.location.search);
+const liInitialLesson=liInitialQuery.get("lesson");
+const liInitialCatalog=liInitialQuery.get("catalog");
+const liInitialView=liInitialQuery.get("view");
+// Never overwrite a bookmarked React screen before the invited Auth/router
+// mount can restore it. Only valid, known non-lesson views survive startup;
+// arbitrary lesson-looking IDs must still pass the released-lesson gate.
+const liRequestedView=liInitialView&&/^[A-Za-z][A-Za-z0-9]*$/.test(liInitialView)&&
+ !liInitialView.toLowerCase().includes("lesson")&&
+ document.getElementById("page-"+liInitialView)?liInitialView:null;
+navigate(liInitialCatalog&&!liInitialLesson?"catalog":"home",{
+ focus:false,remember:false,
+ syncUrl:!(liInitialCatalog||liInitialLesson||liRequestedView)
+});
 setStudyMode(studyMode,{persist:false});
 window.addEventListener("load",()=>{
  // Initial native paint is fallback-only; the integrated React Home already

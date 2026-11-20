@@ -140,7 +140,11 @@ export function mountReactRouter():()=>void{
   navigate:change,back,getCurrent:()=>active,
   hasRoute:id=>typeof id==='string'&&!!pageOf(normalize(id))
  };
+ // The invited React router is the direct action owner. Keep the pre-mount
+ // native port only as an unmount/failure fallback, never as a routing hop.
+ const nativeAppRouter=window.liAppRouter;
  window.liReactRouter=port;
+ window.liAppRouter=port;
  let wasVerified=canVisit();
  const onSession=(event:Event)=>{
   const verified=(event as CustomEvent<{verified:boolean}>).detail?.verified;
@@ -192,6 +196,10 @@ export function mountReactRouter():()=>void{
   window.removeEventListener('popstate',onPopState);
   window.removeEventListener('li:auth-verified-changed',onSession);
   if(window.liReactRouter===port)delete window.liReactRouter;
+  if(window.liAppRouter===port){
+   if(nativeAppRouter)window.liAppRouter=nativeAppRouter;
+   else delete window.liAppRouter;
+  }
   window.liNativeRouteEffects?.restoreHistory([...history],active);
  };
 }

@@ -231,3 +231,8 @@ The immediately following *portrait-shaped* screenshot showed `innerWidth`/visua
 
 **Risk boundary:** No removal of app runtime CSS or historical archive pages: unknown consumers may exist. No learner Auth/Neon/Cloudflare changes. Focused source/CI gate plus ONE human G2 composition review remain; no full app regression or redundant browser matrices. Actual physical Safari/PO G2 still OPEN.
 
+
+
+### Focus parity rule · 2026-11-20
+
+Human PO correction: old archive's focused input uses the **existing border thickened to 3px**, not a second green outer line. All interactive React controls and the Studio shell now have this focus grammar, backed by canonical \`design-system/react/focus.css\`. No \`outline:3px solid var(--li-color-general-focus-ring)\` on interactive React specimens. Focus styling is observable with Tab and \`State → focus\` (demo only); still requires Human G2 and device review.

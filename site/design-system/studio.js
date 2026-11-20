@@ -40,6 +40,11 @@ const catalog=[
  {id:'feedback',group:'Molecules',title:'Inline feedback',short:'Accurate status / alert + retry',status:'DRAFT',variants:['Info','Error','Success','Loading'],states:['default'],source:'design-system/react/Molecules.tsx',do:'Render only a caller-provided true status and use a real retry callback.',dont:'Imply a server write or successful sync from UI fixture state.',code:'<InlineFeedback tone="error" message="Không thể hoàn tất" onAction={retry} actionLabel="Thử lại" />'},
  {id:'dialog',group:'Components',title:'Dialog',short:'Controlled native modal & focus return',status:'DRAFT',variants:['Modal'],states:['default','long'],source:'design-system/react/Dialog.tsx',do:'Open with showModal, close with Escape/Close, and restore triggering focus.',dont:'Use a clickable div or call save on close.',code:'<Dialog open={open} title="Xác nhận" closeLabel="Đóng" onRequestClose={close}>Nội dung</Dialog>'},
 ];
+/* Deterministic focus visual state for UI review; real keyboard uses :focus-visible. */
+const focusIds=new Set(["link","checkbox","radio","iconButton","button","field","chip","searchField","actionGroup","languageSwitch","filterGroup","listRow","breadcrumb","disclosure","actionMenu","dialog","appHeader","homeMirror","catalogShell","learningShell","accountShell","feedbackScene"]);
+for(const entry of catalog){
+ if(focusIds.has(entry.id)&&!entry.states.includes('focus'))entry.states.push('focus');
+}
 const byId=id=>catalog.find(x=>x.id===(id==='nav'||id==='navigation'?'appHeader':id))||catalog[0];
 const query=new URLSearchParams(location.search);
 const safe=(value,values)=>values.includes(value)?value:values[0];

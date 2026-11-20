@@ -39,3 +39,8 @@ Status: **Stage07 typed API handoff prepared**; *actual consumer adoption has no
 **Stage09 review in the SAME Studio:** Select a pattern, its variant, state, language and viewport. The Studio URL now carries all four choices and story hash. Use **Copy review link** to share exactly those settings, or **Open full preview** to examine the same React story at the device's native browser viewport. The embedded preview auto-grows for non-fixed-height dimensions (no 326px clipping); explicit portrait/landscape size presets remain fixed and scrollable.
 
 High-value direct Studio pattern links: \`#appHeader\`, \`#homeMirror\`, \`#catalogShell\`, \`#learningShell\`, \`#accountShell\`, \`#feedbackScene\`. Compare typography, hierarchy and density at phone 390, iPad portrait 970×1408, landscape 1408×832 and actual desktop. **Do not require repeated PO testing:** one focused G2 review of composition/visual identity is enough to guide the next adjustment. Browser/device visual tests, PO approval and app integration are still **OPEN** until evidenced separately; TypeScript + Pages green are not those proofs.
+
+
+## Focus behavior (PO correction 2026-11-20)
+
+All keyboard-accessible controls keep **visible focus**, but do **not** draw an extra green outline. In the canonical \`focus.css\`, the **same** border changes thickness from 1px to 3px in moss/forest, or borderless actions thicken an underline / emphasize the existing surface. Invalid fields retain the error color. \`focus.css\` imports last in every React Studio story. Select \`State → focus\` to see the deterministic specimen and Tab for actual keyboard focus. G2 and Safari physical device remain open.

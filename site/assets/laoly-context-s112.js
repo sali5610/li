@@ -400,7 +400,9 @@ function reactView(trigger){
   text:line,
   labels:activePlan.actions.map(item=>
    window.liLanguage?.translateComposed?.(item.label)||item.label),
-  avatar:document.getElementById("laoly-current-icon")?.src||"./assets/laoly-neutral.png",
+  // Prefer the live React avatar; old markup remains fallback-only in native mode.
+  avatar:window.liCompanionDrag?.getAvatar?.()||(!window.liBuddyReactMounted?
+   document.getElementById("laoly-current-icon")?.src:null)||"./assets/laoly-neutral.png",
   quote,triggerId:trigger?.id||"laoly-fab"
  };
 }

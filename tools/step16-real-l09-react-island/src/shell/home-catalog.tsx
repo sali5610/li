@@ -241,7 +241,8 @@ function Home(){
  },[]);
  const shift=(direction:-1|1)=>inquiryFlow().shift(direction);
  // Resolve artwork directly from Tàng Thư's canonical field-to-image entries.
- const mirrorImage=groups.flatMap(group=>group.fields)
+ const mirrorImage=(Array.isArray(app.LI_CATALOG_DATA)?app.LI_CATALOG_DATA:[])
+  .flatMap(group=>group.fields)
   .find(field=>field.id===mirror.fieldId)?.image||'';
  // Depth is purely decorative. Never move the real mirror text, tap targets,
  // backdrop crop, or saved learner state with the pointer.
@@ -278,7 +279,8 @@ function Home(){
    <Text role="body">Không cần biết tất cả. Chỉ cần không ngừng tò mò.</Text>
    <span className="tiny-note">Một câu hỏi, muôn ngả đường</span>
   </motion.div>
-  <div className="mirror-message"
+  <div className="mirror-message" data-li-mirror-topic={mirror.fieldId||"none"}
+   data-li-mirror-image={mirrorImage?"mapped":"unmapped"}
    onTouchStart={event=>{
     if(event.touches.length!==1||(event.target as HTMLElement).closest('button'))return;
     gesture.current={x:event.touches[0].clientX,y:event.touches[0].clientY};

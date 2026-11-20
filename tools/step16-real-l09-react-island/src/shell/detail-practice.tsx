@@ -56,6 +56,193 @@ const app=window as AppWindow;
 const en=()=>app.liLanguage?.get?.()==='en';
 const copy=(vi:string,english:string)=>en()?english:vi;
 const tr=(text:string)=>en()?(app.liLanguage?.translate?.(text)||text):text;
+// Technique-specific instructions follow the canonical 13 L2 method definitions.
+// The direct React practice engine below remains the sole owner of gates and progress.
+const SPELL_GUIDANCE:Record<string,{vi:[string,string,string];en:[string,string,string];noteVi:string;noteEn:string}>={
+  "T01": {
+    "vi": [
+      "Chọn một khái niệm đã học, đọc nguồn một lần rồi che đi.",
+      "Tự viết hoặc nói lại bằng trí nhớ, không mở lời giải khi đang nhớ.",
+      "Mở nguồn để đối chiếu, ghi điều nhớ thiếu hoặc hiểu sai."
+    ],
+    "en": [
+      "Choose a concept you have already studied, then hide the source.",
+      "Recall it aloud or in writing without peeking at the answer.",
+      "Reveal the source, compare, and identify what you missed."
+    ],
+    "noteVi": "Chỉ xem đáp án hoặc nhận ra câu đúng khi nhìn lại chưa phải là tự gọi nhớ.",
+    "noteEn": "Recognising an answer after seeing it is not the same as retrieving it from memory."
+  },
+  "T02": {
+    "vi": [
+      "Chọn kiến thức đã học và đặt lịch ôn đầu tiên sau 24 giờ.",
+      "Khi thật sự đến hạn, giấu nguồn, tự gọi nhớ rồi đối chiếu phản hồi.",
+      "Tự đánh giá nhớ được hay chưa vững để hẹn lượt kế tiếp; lặp lại qua nhiều ngày."
+    ],
+    "en": [
+      "Choose previously learned material and schedule the first review after 24 hours.",
+      "When it is truly due, recall without the source, then check the feedback.",
+      "Rate recall as secure or needing retry to schedule the next review across days."
+    ],
+    "noteVi": "Mốc 1–3–7–14–30 ngày là mặc định của app, không phải lịch tối ưu cho mọi người. Mở Thần Chú trước hạn không tính là đã ôn.",
+    "noteEn": "The 1–3–7–14–30-day intervals are app defaults, not a universal optimum. Opening the spell before its due time does not count as a review."
+  },
+  "T03": {
+    "vi": [
+      "Quan sát ví dụ đã giải và hiểu vì sao mỗi bước đúng.",
+      "Giải bài tương tự với một phần gợi ý được giữ lại.",
+      "Giải bài mới không gợi ý, nộp rồi mới xem phản hồi."
+    ],
+    "en": [
+      "Study a worked example and understand why each step works.",
+      "Solve a similar case with some guidance removed.",
+      "Solve a new case independently before checking feedback."
+    ],
+    "noteVi": "Xem ví dụ mẫu không được tính là tự giải bài độc lập.",
+    "noteEn": "Viewing the worked example does not count as independent practice."
+  },
+  "T04": {
+    "vi": [
+      "Chọn một bước hoặc kết luận trong tình huống đã đọc.",
+      "Tự giải thích cơ chế: vì sao nó xảy ra, theo điều kiện nào.",
+      "Đối chiếu giải thích với dữ kiện, chỉnh chỗ thiếu hoặc suy diễn quá mức."
+    ],
+    "en": [
+      "Choose one step or conclusion from the example.",
+      "Explain why it works and under which conditions.",
+      "Check your explanation against the evidence and correct unsupported leaps."
+    ],
+    "noteVi": "Đừng chỉ chép lại nội dung; giải thích phải thể hiện mối quan hệ hoặc cơ chế.",
+    "noteEn": "Copying the source is not self-explanation; articulate the relationship or mechanism."
+  },
+  "T05": {
+    "vi": [
+      "Đặt câu hỏi 'Vì sao?' cho nhận định hoặc mối quan hệ trong bài.",
+      "Tìm bằng chứng, điều kiện và yếu tố khác có thể giải thích kết quả.",
+      "Viết lý do có giới hạn, phân biệt giả thuyết với điều đã kiểm chứng."
+    ],
+    "en": [
+      "Ask why a claim or relationship might hold.",
+      "Check the evidence, conditions, and alternative explanations.",
+      "State a bounded explanation and distinguish hypotheses from verified facts."
+    ],
+    "noteVi": "Có hai việc xảy ra cùng lúc không đủ chứng minh quan hệ nhân quả.",
+    "noteEn": "Two changes happening together do not establish causation."
+  },
+  "T06": {
+    "vi": [
+      "Đặt hai khái niệm dễ nhầm cạnh nhau, nêu điểm giống và khác.",
+      "Phân loại từng trường hợp bằng dấu hiệu quyết định, không nhìn từ khóa.",
+      "Đối chiếu đáp án rồi thử giải thích vì sao trường hợp kia không phù hợp."
+    ],
+    "en": [
+      "Compare two confusable concepts, including similarities and differences.",
+      "Classify each case by the decisive feature, not a superficial keyword.",
+      "Check feedback and explain why the alternative classification fails."
+    ],
+    "noteVi": "Gắn nhãn đúng mà không nêu được tiêu chí phân biệt vẫn chưa chứng minh hiểu.",
+    "noteEn": "A correct label without a discriminating reason does not demonstrate understanding."
+  },
+  "T07": {
+    "vi": [
+      "Viết rõ tiền đề và kết luận trong lập luận.",
+      "Kiểm tra kết luận có theo logic từ tiền đề hay không.",
+      "Kiểm tra riêng tiền đề có chứng cứ thật không rồi mới đánh giá kết luận ngoài đời."
+    ],
+    "en": [
+      "Separate the argument into premises and conclusion.",
+      "Test whether the conclusion logically follows from the premises.",
+      "Separately check whether the premises are true before claiming real-world truth."
+    ],
+    "noteVi": "Lập luận hợp lệ về hình thức không có nghĩa các tiền đề đúng.",
+    "noteEn": "A valid argument form does not prove its premises are true."
+  },
+  "T08": {
+    "vi": [
+      "Tách luận điểm và bằng chứng đang được đưa ra.",
+      "Viết giả định nối bằng chứng với luận điểm (cầu nối).",
+      "Thêm phản biện hoặc bằng chứng ngược mạnh nhất rồi đánh giá lại luận điểm."
+    ],
+    "en": [
+      "Separate the claim from the evidence offered for it.",
+      "Identify the warrant that links the evidence to the claim.",
+      "Add a relevant objection or counterevidence and reassess the claim."
+    ],
+    "noteVi": "Sơ đồ đủ ô chưa có nghĩa lập luận có chứng cứ tốt.",
+    "noteEn": "A complete-looking argument map does not make the argument sound."
+  },
+  "T09": {
+    "vi": [
+      "Xác định tác giả, ngày, nguồn gốc và cách tạo ra dữ liệu.",
+      "Đọc phạm vi mẫu, phương pháp và bằng chứng trái chiều nếu có.",
+      "Chỉ kết luận trong phạm vi nguồn thực sự hỗ trợ; ghi điều chưa xác minh."
+    ],
+    "en": [
+      "Identify the author, date, provenance, and data-collection method.",
+      "Check the sampled population, methods, and conflicting evidence.",
+      "Limit conclusions to what the source supports and mark unverified gaps."
+    ],
+    "noteVi": "Không khẳng định đã kiểm tra nguồn gốc nếu chỉ đọc bản tóm tắt hoặc slide.",
+    "noteEn": "Do not claim an original source was inspected if you only read a summary or slide."
+  },
+  "T10": {
+    "vi": [
+      "Nêu mục tiêu và các ràng buộc thực tế của vấn đề.",
+      "Chia thành các bước nhỏ có thể kiểm tra hoặc tính toán.",
+      "Thử một trường hợp biên có khả năng làm kế hoạch thất bại."
+    ],
+    "en": [
+      "Define the goal and practical constraints.",
+      "Break the problem into testable or computable steps.",
+      "Test an edge condition that could cause the plan to fail."
+    ],
+    "noteVi": "Đánh dấu đủ bước kiểm tra không tự chứng minh lời giải chạy đúng.",
+    "noteEn": "Checking off a list is not proof that the solution works."
+  },
+  "T11": {
+    "vi": [
+      "Xác định mình đã hiểu gì và đang cần học điều gì.",
+      "So điều kiện của từng phương pháp với nhiệm vụ hiện tại.",
+      "Chọn một cách phù hợp hoặc chủ động bỏ qua; giải thích lý do."
+    ],
+    "en": [
+      "Identify what you already know and what you need to learn.",
+      "Match the task and prerequisites to the available techniques.",
+      "Choose a suitable technique or deliberately skip one, with a reason."
+    ],
+    "noteVi": "Không bắt buộc dùng Thần Chú cho mọi bài. Ôn giãn cách không thay thế lần học đầu.",
+    "noteEn": "A technique is optional for each lesson. Spaced review does not replace initial learning."
+  },
+  "T12": {
+    "vi": [
+      "Trước khi tạm ngắt, ghi lại mình đang làm dở việc gì.",
+      "Ghi một hành động nhỏ, cụ thể để bắt đầu khi quay lại.",
+      "Khi trở lại, đọc dấu vết rồi thực hiện bước đó và tự đối chiếu."
+    ],
+    "en": [
+      "Before pausing, capture where you stopped.",
+      "Write one specific, small action to take when returning.",
+      "On return, read the cue, perform that step, and review what changed."
+    ],
+    "noteVi": "Đây là công cụ quay lại nhiệm vụ, không phải bài đo sự tập trung hay trí thông minh.",
+    "noteEn": "This supports re-entry to a task; it does not measure attention or intelligence."
+  },
+  "T13": {
+    "vi": [
+      "Chọn ba địa điểm quen thuộc, khác nhau, theo một lộ trình cố định.",
+      "Gắn từng ý đã học với một hình ảnh liên tưởng riêng tại mỗi nơi.",
+      "Giấu nguồn, đi lại lộ trình trong trí óc, gọi nhớ theo thứ tự rồi đối chiếu nghĩa."
+    ],
+    "en": [
+      "Choose three distinct familiar places in a fixed route.",
+      "Attach each learned idea to a memorable image at a different place.",
+      "Hide the source, mentally walk the route, retrieve in order, and check meaning."
+    ],
+    "noteVi": "Chỉ tạo cung điện trí nhớ chưa phải đã nhớ được; phải thử gọi nhớ không nhìn nguồn.",
+    "noteEn": "Building a memory palace is not retrieval; test recall without the source."
+  }
+};
+
 function personalLessonReturn(method:string):string|null{
  try{
   const token=JSON.parse(sessionStorage.getItem('li.sectioned.guide-return.v1')||'null') as
@@ -231,11 +418,7 @@ export function GuideDetail(){
      <Heading level={2} role="titleLarge">{method.purpose}</Heading>
      <div className="section-rule"/>
      <div className="kicker">II · {copy('KHỞI THỨC','STEPS')}</div>
-     <div className="path-list">{[
-      copy('Tự xác định điều muốn học hoặc giải quyết.','Define what you want to learn or solve.'),
-      copy('Thử làm một ví dụ ngắn với ít trợ giúp.','Try a small example with limited help.'),
-      copy('Kiểm tra hiểu lầm và điều kiện áp dụng.','Check misconceptions and when the method applies.')
-     ].map((text,index)=><div className="path-item" key={text}>
+     <div className="path-list">{(SPELL_GUIDANCE[view.active]?.[en()?'en':'vi']||[]).map((text,index)=><div className="path-item" key={text}>
       <span className="path-num">{String(index+1).padStart(2,'0')}</span>
       <Text role="body">{text}</Text>
      </div>)}</div>
@@ -243,10 +426,10 @@ export function GuideDetail(){
     <Card variant="raised" className="li-react-spell-explainer">
      <div className="kicker">III · {copy('GIẢI CHÚ','APPLICATION')}</div>
      <Heading level={2} role="titleMedium">{copy('Dùng thế nào cho đúng?','How to apply it?')}</Heading>
-     <Text role="body">{copy('Hãy thử với một ví dụ nhỏ rồi kiểm tra điều bạn hiểu.',
-      'Start with a small example, then verify your understanding.')}</Text>
-     <div className="kicker">IV · {copy('DẪN CHỨNG','SOURCES')}</div>
-     <InlineFeedback tone="info" message={copy('Nguồn tham khảo đang được bổ sung.','References are being added.')}/>
+     <Text role="body">{SPELL_GUIDANCE[view.active]?.[en()?'noteEn':'noteVi']}</Text>
+     <div className="kicker">IV · {copy('LƯU Ý','WATCH OUT')}</div>
+     <Text role="support">{copy('Hoàn thành tương tác không có nghĩa đã thông thạo. Hãy đối chiếu kết quả trước khi tự đánh giá.',
+      'Completing an interaction is not proof of mastery. Check the feedback before self-rating.')}</Text>
      <Button variant="secondary" onClick={()=>setTab('practice')}>
       {copy('Thử thi triển','Try the practice')}</Button>
     </Card>

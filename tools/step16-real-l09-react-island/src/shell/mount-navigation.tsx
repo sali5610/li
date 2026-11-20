@@ -32,9 +32,10 @@ const english:Record<string,[string,string,string]>={
  settings:['Settings','Settings','Settings']
 };
 function useAppLocale(){
- const [locale,setLocale]=useState(()=>window.liLanguage?.get?.()||'vi');
+ const owner=window as Window&{liLanguage?:{get:()=>string}};
+ const [locale,setLocale]=useState(()=>owner.liLanguage?.get?.()||'vi');
  useEffect(()=>{
-  const sync=()=>setLocale(window.liLanguage?.get?.()||'vi');
+  const sync=()=>setLocale(owner.liLanguage?.get?.()||'vi');
   window.addEventListener('li:localechange',sync);
   return()=>window.removeEventListener('li:localechange',sync);
  },[]);

@@ -301,11 +301,17 @@ assert "--li-guide-s118-col-gap: var(--li-micro-guide-column-gap-18);" in founda
 assert "--li-guide-s118-col-gap: var(--li-micro-guide-column-gap-14);" in foundation and "--li-guide-s118-row-gap: var(--li-micro-guide-row-gap-18);" in foundation
 assert "function renderMethods(){" in html and (
     "function showMethod(id){" in html or
-    "function showMethod(id,{practice=false}={}){" in html
+    "function showMethod(id,{practice=false}={}){" in html or
+    "function showMethod(id,{practice=false,lessonId=null}={}){" in html
 ), "Spells must retain the existing working detail/practice route"
 if "function showMethod(id,{practice=false}={}){" in html:
     assert 'practice:t.dataset.spellPractice==="true"' in html
     assert 'window.LiSpellPractice?.open(id,practice?"practice":"guide")' in html
+if "function showMethod(id,{practice=false,lessonId=null}={}){" in html:
+    assert 'practice:t.dataset.spellPractice==="true",lessonId:t.dataset.spellLesson||null' in html
+    assert 'window.LiSpellPractice?.open(id,practice?"practice":"guide",lessonId)' in html
+    assert 'data-spell-lesson={id}' in (site.parent/"tools/step16-real-l09-react-island/src/learning/Wave1Journey.tsx").read_text(encoding="utf-8")
+    assert 'activeLessonId==="L03-1-2"' in (site/"assets/spell-practice.js").read_text(encoding="utf-8")
 assert "/* S114 — restrained Lão Lý peek:" in html
 
 # S134: all native writing areas use a real 32px background TILE, not an

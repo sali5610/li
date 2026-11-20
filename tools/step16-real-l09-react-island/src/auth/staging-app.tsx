@@ -20,17 +20,25 @@ import {mountReactChrome} from '../shell/react-shell.js';
 // Unified GitHub Pages staging: no guest app. React verifies signed invitation.
 const root=document.getElementById('li-staging-auth-root');
 if(!root)throw Error('STAGING_AUTH_ROOT_MISSING');
-const opener=document.getElementById('li-open-account');
+type AccountOverlayPort={open:(trigger?:HTMLElement|null)=>boolean};
+let accountTrigger:HTMLElement|null=null;
 function closeAccount(){
  document.documentElement.classList.remove('li-account-open');
- opener?.focus();
+ window.requestAnimationFrame(()=>{
+  if(accountTrigger?.isConnected)accountTrigger.focus();
+  else document.getElementById('li-react-account-trigger')?.focus();
+ });
+ accountTrigger=null;
 }
-opener?.addEventListener('click',()=>{
- if(!document.documentElement.classList.contains('li-auth-verified'))return;
+const accountOverlay:AccountOverlayPort={open:(trigger=null)=>{
+ if(!document.documentElement.classList.contains('li-auth-verified'))return false;
+ accountTrigger=trigger;
  document.documentElement.classList.add('li-account-open');
  window.dispatchEvent(new Event('li:account-open'));
  root.focus();
-});
+ return true;
+}};
+(window as Window&{liAccountOverlay?:AccountOverlayPort}).liAccountOverlay=accountOverlay;
 createRoot(root).render(<AuthPanel onClose={closeAccount}/>);
 
 
@@ -88,9 +96,10 @@ function enableIntegratedLessons(){
     page.setAttribute('aria-labelledby',slug+'-title');
    }
   };
-  const observer=new MutationObserver(update);
-  observer.observe(page,{attributes:true,attributeFilter:['class']});
-  observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+  // Route and auth controllers publish explicit state changes. Do not watch
+  // DOM classes to decide whether the React lesson is mounted.
+  window.addEventListener('li:route-changed',update);
+  window.addEventListener('li:auth-verified-changed',update);
   update();
  }
  // Native app URL sync consumes only this generated and release-verified map.
@@ -102,23 +111,9 @@ function enableIntegratedLessons(){
  (window as Window&{liReleasedLessonRoutes?:Readonly<Record<string,string>>})
   .liReleasedLessonRoutes=Object.freeze(Object.fromEntries(
    releasedLessonRoutes.map(({id,route})=>[id,route])));
- const requested=new URLSearchParams(window.location.search).get('lesson');
- const direct= releasedLessonRoutes.find(x=>x.id===requested&&!!editorialRouteMap[x.route]);
- if(direct){
-  // Keep a signed-in deep link from silently sending its learner to Home.
-  // Do not override navigation the learner already performed while signing in.
-  const openRequested=()=>{
-   if(!document.documentElement.classList.contains('li-auth-verified')||
-    !document.getElementById('page-home')?.classList.contains('active'))return;
-   const app=window as Window&{navigate?:(route:string)=>void};
-   if(typeof app.navigate!=='function')return;
-   app.navigate(direct.route);
-   watcher.disconnect();
-  };
-  const watcher=new MutationObserver(openRequested);
-  watcher.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
-  openRequested();
- }
+ // Deep-link restore is exclusively performed by the global React router
+ // after all released and personal-study hosts are registered. No second
+ // per-lesson URL watcher should override the learner's active navigation.
 }
 if(document.readyState==='loading')
  document.addEventListener('DOMContentLoaded',enableIntegratedLessons,{once:true});
@@ -148,8 +143,8 @@ if(import.meta.env.VITE_LI_AUTH_TARGET==='github-pages-staging'){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountReactChrome,{once:true});
 else mountReactChrome();
 
-// React owns top navigation, bottom navigation and utility controls. Native
-// data-page event delegation remains the temporary route bridge.
+// React owns top/bottom navigation, direct history and utilities; native
+// data-page delegation is fallback-only and disabled in the invited app.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountSharedNavigation,{once:true});
 else mountSharedNavigation();
 

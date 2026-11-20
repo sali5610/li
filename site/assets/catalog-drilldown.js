@@ -375,6 +375,19 @@ document.addEventListener("click",e=>{
 },true);
 window.addEventListener("popstate",()=>{
  const u=new URL(location.href),lessonId=u.searchParams.get("lesson");
+ if(window.liReactRouter){
+  // Global React router alone restores Back/Forward screens. This module
+  // retains only canonical Catalog path + lesson chapter data side effects;
+  // never force React ?view=search/settings/etc. through native Home.
+  path=readPathFromUrl();
+  render();
+  if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));
+  const route=window.liReleasedLessonRoutes?.[lessonId]||
+   window.liPersonalStudyRoutes?.[lessonId];
+  if(route)document.getElementById("page-"+route)?._catalogChooseChapter?.(
+   u.searchParams.get("chapter"),false);
+  return;
+ }
  const released=window.liReleasedLessonRoutes||{};
  const fallback={"L03-1-2":"lessonL03","L09-1-2":"lessonL09","L15-2-2":"lessonL15"};
  const personalAllowed=document.documentElement?.classList?.contains?.("li-auth-verified")===true&&

@@ -30,16 +30,15 @@ function Notification({host}:{host:HTMLElement}){
    setNotice({serial:++serial.current,message:String(message),undo:typeof undo==='function'?undo:null});
   }};
   app.liReactToastPort=port;
-  // Drop any previous account's private notification on sign-out.
-  let wasVerified=document.documentElement.classList.contains('li-auth-verified');
-  const observer=new MutationObserver(()=>{
-   const verified=document.documentElement.classList.contains('li-auth-verified');
-   if(wasVerified&&!verified)setNotice(null);
-   wasVerified=verified;
-  });
-  observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+  // Auth explicitly publishes its lifecycle; no DOM polling or observer.
+  // Never retain the former learner's private toast/Undo on sign-out.
+  const onAuth=(event:Event)=>{
+   if((event as CustomEvent<{verified?:boolean}>).detail?.verified===false)
+    setNotice(null);
+  };
+  window.addEventListener('li:auth-verified-changed',onAuth);
   return ()=>{
-   observer.disconnect();
+   window.removeEventListener('li:auth-verified-changed',onAuth);
    if(app.liReactToastPort===port)delete app.liReactToastPort;
   };
  },[]);

@@ -152,7 +152,7 @@ const authPanel=read("tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx"
 assert.match(authPanel,/li:auth-verified-changed/);
 assert.match(authPanel,/language\.liLanguage\?\.set\?\.\(next\)/);
 assert.match(authPanel,/addEventListener\('li:localechange',sync\)/);
-assert.match(router,/history\.length=0;active='home'/);
+assert.match(router,/history\.length=0;browserDepth=0;active='home'/);
 // A personal draft is an invited staging lesson, NOT a public release.
 // Exercise the real native popstate listener used by the React route bridge.
 const nativeCatalog=read("site/assets/catalog-drilldown.js");
@@ -191,6 +191,14 @@ assert.equal(visitedRoute,'home',"Unverified session cannot reactivate a persona
 verified=true;opened=true;visitedRoute='';
 pop();
 assert.equal(visitedRoute,'home',"Account overlay blocks personal lesson popstate");
+// The legacy Catalog listener may synchronize its path, but it must never
+// hijack React's ?view=search/settings browser history and force Home.
+popWindow.liReactRouter={};
+deepLink.href=new URL('/li/?view=search',deepLink.origin).href;
+visitedRoute='';opened=false;
+pop();
+assert.equal(visitedRoute,'','React owns popstate navigation when mounted');
+delete popWindow.liReactRouter;
 assert.match(nativeCatalog,/const personal=personalAllowed\?\(window\.liPersonalStudyRoutes\|\|\{\}\):\{\}/);
 assert.match(nativeCatalog,/function openForLesson\(id\)/);
 assert.match(nativeCatalog,/window\.liPersonalStudyRoutes\?\.\[id\]/);
@@ -203,8 +211,65 @@ assert.match(reactCatalog,/Personal study · Complete lesson/);
 assert.match(reactCatalog,/Open lesson/);
 assert.match(reactCatalog,/Progress could not be verified/);
 assert.match(locale,/\[data-li-react-screen\]/);
+assert.match(locale,/stopNativeObserver\(\)/);
+assert.match(locale,/observer\?\.disconnect\(\)/);
+const chrome=read("tools/step16-real-l09-react-island/src/shell/react-shell.tsx");
+assert.match(chrome,/addEventListener\('li:auth-verified-changed',onAuth\)/);
+assert.doesNotMatch(chrome,/new MutationObserver/);
+const integrated=read("tools/step16-real-l09-react-island/src/auth/staging-app.tsx");
+assert.match(integrated,/addEventListener\('li:route-changed',update\)/);
+assert.doesNotMatch(integrated,/new MutationObserver\(openRequested\)/);
 assert.match(locale,/#li-staging-auth-root/);
 assert.match(locale,/!document\.getElementById\("li-staging-auth-root"\)/);
 assert.match(router,/history\.pushState/);
 
-console.log("PASS actual React router: auth/back/history/URL/17-staging preview/deep-link/Back/no observer + React bilingual settings");
+// Exercise actual browser entry direction, not just the synchronous fallback.
+location.href=new URL('/li/',location.origin).href;
+const entries=[{url:location.href,state:{liRouteDepth:0}}];
+let pos=0;
+window.history.state=entries[0].state;
+window.history.replaceState=(state,title,url)=>{
+ entries[pos]={url:new URL(url,location.origin).href,state};
+ location.href=entries[pos].url;window.history.state=state;
+};
+window.history.pushState=(state,title,url)=>{
+ entries.splice(pos+1);
+ entries.push({url:new URL(url,location.origin).href,state});
+ pos=entries.length-1;location.href=entries[pos].url;window.history.state=state;
+};
+window.history.back=()=>{
+ if(pos<1)return;
+ pos--;location.href=entries[pos].url;window.history.state=entries[pos].state;
+ window.dispatchEvent(new TestEvent('popstate'));
+};
+window.history.forward=()=>{
+ if(pos>=entries.length-1)return;
+ pos++;location.href=entries[pos].url;window.history.state=entries[pos].state;
+ window.dispatchEvent(new TestEvent('popstate'));
+};
+const stopBrowser=moduleExports.mountReactRouter();
+const browser=window.liReactRouter;
+assert.equal(browser.navigate('catalog'),true);
+assert.equal(browser.navigate('search'),true);
+assert.equal(pos,2);
+assert.equal(browser.back(),true);
+assert.equal(browser.getCurrent(),'catalog');
+window.history.forward();
+assert.equal(browser.getCurrent(),'search','browser Forward returns to Search, not Home');
+assert.equal(browser.back(),true);
+assert.equal(browser.getCurrent(),'catalog','Back still works after Forward');
+stopBrowser();
+// An initial "not yet verified" event must NOT erase a bookmarked lesson URL.
+visible=false;
+location.href=new URL('/li/?lesson=L09-1-2',location.origin).href;
+window.history.state={liRouteDepth:0};
+const stopPending=moduleExports.mountReactRouter();
+window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:false}}));
+assert.equal(location.searchParams.get('lesson'),'L09-1-2',
+ 'Pending invite must preserve the requested deep link');
+visible=true;
+window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:true}}));
+assert.equal(window.liReactRouter.getCurrent(),'lessonL09',
+ 'Verified invite restores the originally requested lesson');
+stopPending();
+console.log("PASS actual React router: pending auth, Back/Forward, URL, staging lessons, locale and DOM observer cleanup");

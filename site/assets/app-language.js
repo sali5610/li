@@ -154,6 +154,15 @@ const ATTRS=["aria-label","aria-description","title","placeholder","alt"];
 const originalText=new WeakMap();
 const originalAttr=new WeakMap();
 let observer=null,locked=false;
+// The unified staging app mounts React-owned screens and native translation
+// must not compete for any text node after the integrated shell appears.
+const integratedReact=()=>Boolean(document.getElementById('li-staging-auth-root'));
+function stopNativeObserver(){
+ if(!integratedReact())return false;
+ observer?.disconnect();observer=null;
+ document.getElementById('li-global-language')?.remove();
+ return true;
+}
 /* Exact render strings are preferred. These are the approved variable-bearing
    UX templates: keep user-provided text untouched and translate only surrounding UI. */
 function dateForScreenReader(day,month,year){
@@ -278,8 +287,10 @@ function apply(root=document.body){
  try{
   document.documentElement.lang=locale;
   if(root===document.body)document.title=locale==="en"?"理 · li. — Library of Knowledge":"理 · li. — Thư viện tri thức";
-  walk(root);
-  syncSettings();
+  if(!integratedReact()){
+   walk(root);
+   syncSettings();
+  }
  }finally{locked=false;}
 }
 function get(){return locale;}
@@ -312,9 +323,11 @@ if(region&&!document.getElementById("li-staging-auth-root")&&!document.getElemen
  region.prepend(card);
 }
 apply();
-if(typeof MutationObserver==="function"){
+if(typeof MutationObserver==="function"&&!integratedReact()){
  observer=new MutationObserver(changes=>{
-  if(locked)return;
+  // The publisher appends the auth root after this classic script.
+  // Disconnect before the React module can mount and reconcile its screens.
+  if(stopNativeObserver()||locked)return;
   for(const mutation of changes){
    if(mutation.type==="characterData")patchText(mutation.target);
    else if(mutation.type==="attributes"){
@@ -324,4 +337,7 @@ if(typeof MutationObserver==="function"){
  });
  observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:ATTRS});
 }
+if(document.readyState==='loading')
+ document.addEventListener('DOMContentLoaded',stopNativeObserver,{once:true});
+else stopNativeObserver();
 })();

@@ -5,6 +5,7 @@ import {isReleasedLessonId} from './released-lessons.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
 import {neonSessionPort} from '../auth/neon-client.js';
 import {AUTH_ORIGIN,IS_GITHUB_STAGING,NEON_DATA_API_URL} from '../auth/config.js';
+import {recentOfflineOwner} from '../auth/offline-local.js';
 import {waitForLearnerHydration,saveNativeLearnerAttempt,learnerAttemptSyncState} from '../auth/learner-sync.js';
 
 /** React uses existing owner-scoped native attempt + Chat 3 Neon sync.
@@ -149,11 +150,8 @@ function snapshot(key:string):{raw:string|null;attempt:Attempt}{
  return {raw,attempt};
 }
 const revision=(raw:string|null)=>raw===null?MISSING:raw;
-function navigate(route:'catalog'|'search'){
- if(!document.documentElement.classList.contains('li-auth-verified'))return;
- const app=window as Window&{navigate?:(route:string)=>void};
- if(typeof app.navigate==='function')app.navigate(route);
- else document.querySelector<HTMLButtonElement>('button[data-page="'+route+'"]')?.click();
+function navigate(route:'catalog'|'search'):boolean{
+ return window.liAppRouter?.navigate(route)===true;
 }
 export function createStagingLearningPorts(lesson:string):LearningPorts{
  if(!isReleasedLessonId(lesson))throw Error('LESSON_NOT_RELEASED');
@@ -161,6 +159,13 @@ export function createStagingLearningPorts(lesson:string):LearningPorts{
  return {
  auth:{async requireInvitedLearner(){
   if(!document.documentElement.classList.contains('li-auth-verified'))throw Error('INVITE_REQUIRED');
+  // Offline continuation: local-only recent invite, SAME owner, never a remote grant.
+  if(!navigator.onLine){
+   const localUid=recentOfflineOwner(true);
+   if(!localUid)throw Error('RECENT_INVITE_REQUIRED');
+   owner(localUid);
+   return {subjectId:localUid};
+  }
   const session=await neonSessionPort.getSession();
   const uid=session.data?.user?.id;
   if(session.error||!uid)throw Error('SESSION_REQUIRED');
@@ -197,12 +202,12 @@ export function createStagingLearningPorts(lesson:string):LearningPorts{
  }},
  navigation:{openCatalog(){navigate('catalog');}},
  search:{openSearch(query){
-  navigate('search');
-  const input=document.getElementById('global-search') as HTMLInputElement|null;
-  if(!input)return;
-  const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value')?.set;
-  if(setter)setter.call(input,query);else input.value=query;
-  input.dispatchEvent(new Event('input',{bubbles:true}));input.focus();
+  if(!navigate('search'))return;
+  const search=window as Window&{liSearch?:{render:(value:string)=>void}};
+  // The REAL React Tra Cứu controller owns its text/query state. Never type
+  // into the old hidden #global-search input or dispatch a synthetic event.
+  search.liSearch?.render(query);
+  document.querySelector<HTMLInputElement>('#li-react-search-host input')?.focus();
  }}
  };
 }

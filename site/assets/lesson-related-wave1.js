@@ -8,10 +8,12 @@ const LESSONS={
 };
 const client=import("./li-content-adapter.mjs").then(m=>m.contentClient);
 const lang=id=>{
- const global=window.liLanguage?.get?.();
- if(global==="vi"||global==="en")return global;
+ const react=id==="L09-1-2"?document.querySelector('[data-li-react-journey="L09-1-2"]'):null;
+ if(react?.getAttribute("lang")==="en"||react?.getAttribute("lang")==="vi")return react.getAttribute("lang");
  const active=document.querySelector('[data-lesson-id="'+id+'"] #'+id.slice(0,3).toLowerCase()+'-en');
- return active?.getAttribute("aria-pressed")==="true"?"en":"vi";
+ if(active)return active.getAttribute("aria-pressed")==="true"?"en":"vi";
+ const global=window.liLanguage?.get?.();
+ return global==="en"?"en":"vi";
 };
 function add(tag,cl,content,to){
  const el=document.createElement(tag);if(cl)el.className=cl;

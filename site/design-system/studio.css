@@ -110,3 +110,16 @@ body.is-canvas{overflow:auto}
  .studio-device-actions .studio-preview-link{flex:1 1 auto;justify-content:center}
  .studio-frame-foot{flex-direction:column;align-items:flex-start}
 }
+
+
+/* Source-observed UI ontology subset: reuse existing Provenance tab. */
+.studio-app-evidence{display:grid;gap:var(--li-space-3);padding:var(--li-space-4);
+ border:1px solid var(--rule);background:var(--paper-2)}
+.studio-app-evidence h3{margin:0;color:var(--moss);font:var(--li-weight-700) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
+.studio-app-evidence p{margin:0;overflow-wrap:anywhere}
+.studio-app-token-list{display:flex;flex-wrap:wrap;gap:var(--li-space-2)}
+.studio-app-token-list code{padding:var(--li-space-1);background:var(--cream);color:var(--moss);
+ font:var(--li-type-caption)/var(--li-leading-caption) ui-monospace,monospace}
+.studio-app-evidence a{color:var(--moss);text-underline-offset:var(--li-space-1)}
+.studio-app-evidence a:focus-visible{outline:0;text-decoration-thickness:3px;background:var(--li-color-nav-selected-fill)}
+.studio-app-evidence-empty{color:var(--muted)}

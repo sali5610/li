@@ -19,6 +19,25 @@ function canonical(v:unknown):string{
  return '{'+Object.keys(o).sort().map(k=>JSON.stringify(k)+':'+canonical(o[k])).join(',')+'}';
 }
 function tuple(v:unknown){return Array.isArray(v)&&v.length===4&&v.every(x=>typeof x==='string'&&x.length<=4000);}
+
+function validMethodAttempts(a:Attempt):boolean{
+ const methods=a.methodAttempts;
+ if(methods===undefined)return true; // preserve native Wave1 attempt records
+ if(methods===null||Array.isArray(methods)||typeof methods!=='object')return false;
+ for(const [id,raw] of Object.entries(methods)){
+  if(id!=='T06'&&id!=='T07')return false;
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))return false;
+  const m=raw as {draft?:unknown;submission?:unknown;submittedAt?:unknown};
+  if(typeof m.draft!=='string'||m.draft.length>4000||
+   !(m.submission===null||(typeof m.submission==='string'&&m.submission.length<=4000))||
+   !(m.submittedAt===null||(typeof m.submittedAt==='string'&&
+     m.submittedAt.length<=50&&Number.isFinite(Date.parse(m.submittedAt)))))
+   return false;
+  if((m.submission===null)!==(m.submittedAt===null))return false;
+  if(typeof m.submission==='string'&&m.submission.trim().length<12)return false;
+ }
+ return true;
+}
 function valid(a:Attempt){
  return(a.locale==='vi'||a.locale==='en')&&tuple(a.draft)&&
  typeof a.guidedDraft==='string'&&a.guidedDraft.length<=4000&&
@@ -28,7 +47,7 @@ function valid(a:Attempt){
  (a.submission===null||tuple(a.submission))&&
  (a.submissionLocale===null||a.submissionLocale==='vi'||a.submissionLocale==='en')&&
  Array.isArray(a.ratings)&&a.ratings.length===4&&
- a.ratings.every(x=>x===null||x===0||x===1||x===2);
+ a.ratings.every(x=>x===null||x===0||x===1||x===2)&&validMethodAttempts(a);
 }
 function owner(uid:string){
  if(!IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN||

@@ -4,6 +4,7 @@ import {createRoot} from 'react-dom/client';
 import {Button,Card,Checkbox,Field,Heading,InlineFeedback,LiIcon,Text} from '../../../../design-system/react/index';
 import './journal-settings.css';
 import {InAppReminderPanel} from './in-app-reminder-ui.js';
+import {WebPushSettings} from './web-push-settings.js';
 
 /** One authenticated app. Canonical personal-diary.js and the legacy settings
  * owners continue to own privacy, sync, import, deletion and study-mode writes.
@@ -308,7 +309,7 @@ export function Settings(){
     <div className="settings-group-heading"><div className="kicker">02 · {copy('NHẮC NHỞ','REMINDERS')}</div>
      <Heading level={2} role="titleLarge">{copy('Lời nhắc','Reminders')}</Heading>
     </div>
-    <InAppReminderPanel/>
+    <div className="li-reminder-channel-stack"><InAppReminderPanel/><WebPushSettings/></div>
    </section>
    <section className="settings-group" aria-label={copy('Dữ liệu & riêng tư','Data & privacy')}>
     <div className="settings-group-heading"><div className="kicker">03 · {copy('DỮ LIỆU & RIÊNG TƯ','DATA & PRIVACY')}</div>

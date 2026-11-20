@@ -55,6 +55,9 @@ function selectedLabel(){
 }
 function append(parent,tag,cls,value){const e=document.createElement(tag);if(cls)e.className=cls;if(value!==undefined)e.textContent=String(value);parent.append(e);return e;}
 function render(){
+ // Invited React Journal reads the ledger model directly. Never redraw the
+ // hidden native calendar/chart or mutate the React Check-in disclosure.
+ if(window.liReactDiaryMounted){notifyReactDiary();return;}
  $("li-diary-consent").textContent=enabled?"Dừng ghi mới":"Bật lưu lịch";
  $("li-diary-consent").disabled=storageError;
  $("li-diary-consent-status").textContent=recordingStatus();
@@ -231,5 +234,5 @@ window.addEventListener?.("li:personal-sync-applied",event=>{
  render(); // Live calendar + check-ins, not a whole-page refresh
 });
 render();
-window.liPersonalDiary=Object.freeze({getView,act:actReact});
+window.liPersonalDiary=Object.freeze({getView,act:actReact,refreshNative:render});
 })();

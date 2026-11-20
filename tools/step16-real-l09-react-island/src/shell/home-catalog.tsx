@@ -223,6 +223,7 @@ function Home(){
  const reduced=useReducedMotion();
  const [mirror,setMirror]=useState<MirrorView>(readMirror);
  const gesture=useRef<{x:number;y:number}|null>(null);
+ const scene=useRef<HTMLDivElement>(null);
  useEffect(()=>{
   const sync=()=>setMirror(previous=>{
    const next=readMirror();
@@ -236,19 +237,40 @@ function Home(){
   };
  },[]);
  const shift=(direction:-1|1)=>inquiryFlow().shift(direction);
- return <div data-li-react-screen="home" className="hero"
-  role="region" aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn">
-  <div className="hero-left">
+ // Depth is purely decorative. Never move the real mirror text, tap targets,
+ // backdrop crop, or saved learner state with the pointer.
+ const moveBackdrop=(event:React.PointerEvent<HTMLDivElement>)=>{
+  if(reduced||event.pointerType==='touch')return;
+  const rect=event.currentTarget.getBoundingClientRect();
+  if(!rect.width||!rect.height)return;
+  const x=(event.clientX-rect.left)/rect.width-.5;
+  const y=(event.clientY-rect.top)/rect.height-.5;
+  scene.current?.style.setProperty('--li-home-depth-x',`${(x*-10).toFixed(2)}px`);
+  scene.current?.style.setProperty('--li-home-depth-y',`${(y*-8).toFixed(2)}px`);
+ };
+ const resetBackdrop=()=>{
+  scene.current?.style.setProperty('--li-home-depth-x','0px');
+  scene.current?.style.setProperty('--li-home-depth-y','0px');
+ };
+ return <div ref={scene} data-li-react-screen="home" data-li-motion={reduced?'reduced':'full'}
+  className="hero" role="region" aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn"
+  onPointerMove={moveBackdrop} onPointerLeave={resetBackdrop}>
+  <div className="li-home-ambient" aria-hidden="true">
+   <span className="li-home-ambient-glow"/>
+   <span className="li-home-glint li-home-glint-one"/>
+   <span className="li-home-glint li-home-glint-two"/>
+  </div>
+  <motion.div className="hero-left"
+   initial={reduced?false:{opacity:0,y:9}} animate={{opacity:1,y:0}}
+   transition={{duration:reduced?0:.5,ease:'easeOut'}}>
    <Button variant="primary" className="home-checkin" onClick={()=>window.dispatchEvent(new CustomEvent('li:open-checkin',{detail:{triggerId:'li-react-home-host'}}))}>
     <LiIcon name="check" size={18}/> Check-in hôm nay
    </Button>
    <Heading level={1} role="headline">Mọi câu hỏi<br/>đều có rễ.</Heading>
    <Text role="body">Không cần biết tất cả. Chỉ cần không ngừng tò mò.</Text>
    <span className="tiny-note">Một câu hỏi, muôn ngả đường</span>
-  </div>
-  <motion.div key={mirror.question+'|'+mirror.scene} className="mirror-message"
-   initial={reduced?false:{opacity:0}} animate={{opacity:1}}
-   transition={reduced?{duration:0}:{duration:0.16}}
+  </motion.div>
+  <div className="mirror-message"
    onTouchStart={event=>{
     if(event.touches.length!==1||(event.target as HTMLElement).closest('button'))return;
     gesture.current={x:event.touches[0].clientX,y:event.touches[0].clientY};
@@ -259,27 +281,38 @@ function Home(){
     const touch=event.changedTouches[0],dx=touch.clientX-start.x,dy=touch.clientY-start.y;
     if(Math.abs(dx)>=42&&Math.abs(dx)>=Math.abs(dy)*1.3)shift(dx<0?1:-1);
    }}>
-   <Heading level={2} role="titleMedium">{mirror.question}</Heading>
-   <div className="mirror-controls" role="group" aria-label="Chuyển câu hỏi">
-    <Button variant="ghost" className="mirror-refresh"
-     aria-label="Câu hỏi trước" onClick={()=>shift(-1)}>
-     <LiIcon name="chevron-left" size={20}/>
-    </Button>
-    <Button variant="ghost" className="mirror-refresh"
-     aria-label="Câu hỏi tiếp theo" onClick={()=>shift(1)}>
-     <LiIcon name="chevron-right" size={20}/>
-    </Button>
-   </div>
-  </motion.div>
-  <aside className="hero-dialogue" aria-label="Lão Lý kể bối cảnh câu hỏi">
+   <motion.div key={mirror.question+'|'+mirror.scene} className="li-home-mirror-inner"
+    initial={reduced?false:{opacity:0,y:7,scale:.975}}
+    animate={{opacity:1,y:0,scale:1}}
+    transition={reduced?{duration:0}:{duration:.36,ease:'easeOut'}}>
+    <div aria-live="polite" aria-atomic="true">
+     <Heading level={2} role="titleMedium">{mirror.question}</Heading>
+    </div>
+    <div className="mirror-controls" role="group" aria-label="Chuyển câu hỏi">
+     <Button variant="ghost" className="mirror-refresh"
+      aria-label="Câu hỏi trước" onClick={()=>shift(-1)}>
+      <LiIcon name="chevron-left" size={20}/>
+     </Button>
+     <Button variant="ghost" className="mirror-refresh"
+      aria-label="Câu hỏi tiếp theo" onClick={()=>shift(1)}>
+      <LiIcon name="chevron-right" size={20}/>
+     </Button>
+    </div>
+   </motion.div>
+  </div>
+  <motion.aside className="hero-dialogue" aria-label="Lão Lý kể bối cảnh câu hỏi"
+   initial={reduced?false:{opacity:0}} animate={{opacity:1}}
+   transition={{duration:reduced?0:.52,delay:reduced?0:.14}}>
    <span className="hero-dialogue-avatar" aria-hidden="true">
-    <img src="./assets/laoly-neutral.png" alt="" width="128" height="128"/>
+    <motion.img src="./assets/laoly-neutral.png" alt="" width="128" height="128"
+     animate={reduced?{y:0}:{y:[0,-4,0]}}
+     transition={reduced?{duration:0}:{duration:5.2,repeat:Infinity,ease:'easeInOut'}}/>
    </span>
    <div className="hero-dialogue-bubble" role="note">
     <div className="hero-dialogue-label"><span className="example-label">{mirror.source}</span></div>
     <Text role="body">{mirror.scene}</Text>
    </div>
-  </aside>
+  </motion.aside>
   <div className="hero-actions">
    <Button variant="primary" className="primary" onClick={()=>openRoute(mirror.route)}
     aria-label={mirror.route.startsWith('lessonL')?'Khám phá vì sao · Mở bài học liên quan':'Đào sâu · Mở Khảo Chứng'}>

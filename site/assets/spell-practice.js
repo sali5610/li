@@ -43,6 +43,80 @@ const l03T06en={
 };
 let root,guide,tabs,active=null,phase=0,exposure=null,feedback="",resumeNote="",privatePlaces=[],tabDraft=null;
 let activeLessonId=null,reviewedInSession=false,viewSession=0;
+const T12_OWNER="li.sync.local-owner.v1";
+const T12_PREFIX="li.spell.t12.resume.v1:";
+let t12Draft={context:"",next:"",answer:""};
+let t12SavedOnDevice=false,t12StorageError="";
+// Restore only the verified active owner's cue for the same lesson context.
+// Device-local only: no unapproved Neon writer or cross-device sync.
+function t12Key(){
+ try{
+  if(!document.documentElement.classList.contains("li-auth-verified")||
+     document.documentElement.classList.contains("li-account-open"))return null;
+  const owner=localStorage.getItem(T12_OWNER);
+  if(!owner||owner.length>128)return null;
+  return T12_PREFIX+encodeURIComponent(owner)+":"+(activeLessonId||"standalone");
+ }catch{return null;}
+}
+function t12Read(){
+ const key=t12Key();if(!key)return null;
+ try{
+  const raw=localStorage.getItem(key);
+  if(!raw||raw.length>4800)return null;
+  const data=JSON.parse(raw);
+  if(!data||data.schema!=="li.spell.t12.v1"||
+     (data.phase!==0&&data.phase!==1)||
+     !["context","next","answer"].every(k=>
+      typeof data[k]==="string"&&data[k].length<=1200)||
+     (data.phase===1&&(!data.context.trim()||!data.next.trim())))
+   return null;
+  return data;
+ }catch{return null;}
+}
+function t12Write(){
+ const key=t12Key();
+ if(!key){
+  t12SavedOnDevice=false;
+  t12StorageError="Chưa xác minh tài khoản; dấu vết T12 chưa được lưu.";
+  return false;
+ }
+ try{
+  const raw=JSON.stringify({schema:"li.spell.t12.v1",phase,
+   context:t12Draft.context,next:t12Draft.next,answer:t12Draft.answer,
+   updatedAt:new Date().toISOString()});
+  localStorage.setItem(key,raw);
+  if(localStorage.getItem(key)!==raw)throw Error("SAVE_VERIFY_FAILED");
+  t12SavedOnDevice=true;t12StorageError="";
+  return true;
+ }catch{
+  t12SavedOnDevice=false;
+  t12StorageError="Không lưu được dấu vết T12 trên thiết bị. Nội dung đang nhập vẫn còn trong phiên này.";
+  return false;
+ }
+}
+function t12Clear(){
+ const key=t12Key();
+ if(!key){t12SavedOnDevice=false;t12StorageError="";return true;}
+ try{
+  localStorage.removeItem(key);
+  if(localStorage.getItem(key)!==null)throw Error("DELETE_VERIFY_FAILED");
+  t12SavedOnDevice=false;t12StorageError="";
+  return true;
+ }catch{
+  t12StorageError="Không xóa được dấu vết T12 đã lưu trên thiết bị.";
+  return false;
+ }
+}
+function setT12Draft(field,value){
+ if(active!=="T12"||reviewedInSession||
+    !["context","next","answer"].includes(field)||typeof value!=="string")return false;
+ t12Draft[field]=value.slice(0,1200);
+ const input=root?.querySelector("#sp-"+field);
+ if(input)input.value=t12Draft[field];
+ const saved=t12Write();
+ notifyReactSpell();
+ return saved;
+}
 const currentExercise=()=>active==="T06"&&activeLessonId==="L03-1-2"?
  (window.liLanguage?.get?.()==="en"?l03T06en:l03T06):exercises[active];
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -91,7 +165,20 @@ function draw(){
  }else{
    inner='<p><strong>Không nhìn lại lời giải:</strong> '+e.prompt+'</p>'+e.fields.map(field).join("")+act("check",e.mode==="due"?"Đối chiếu lượt ôn":"Đối chiếu bài làm");
  }
- root.innerHTML='<div class="spell-activity-head"><div><span class="kicker">'+active+' · <span>THỬ THI TRIỂN</span></span><h2>'+e.title+'</h2></div><span class="spell-state">'+(feedback?"Đã đối chiếu":phase===0?"Đang chuẩn bị":"Đang thực hành")+'</span></div><div class="spell-activity-body">'+inner+(feedback?'<div class="spell-feedback" role="status" tabindex="-1"><strong>Phản hồi để tự kiểm chứng</strong><p>'+feedbackMarkup(feedback)+'</p><p class="small">Bài mẫu minh họa, không chứng nhận thành thạo, IQ hay kết quả học thuật ngoài nhiệm vụ này.</p></div>':"")+'</div><footer class="spell-activity-footer"><p class="small">Tự chọn, có thể bỏ qua. Trừ mốc T02 do bạn chủ động đặt, nội dung điền không tự lưu hay gửi lên máy chủ.</p>'+act("reset","Làm lại","action alt")+'</footer>';
+ root.innerHTML='<div class="spell-activity-head"><div><span class="kicker">'+active+' · <span>THỬ THI TRIỂN</span></span><h2>'+e.title+'</h2></div><span class="spell-state">'+(feedback?"Đã đối chiếu":phase===0?"Đang chuẩn bị":"Đang thực hành")+'</span></div><div class="spell-activity-body">'+inner+(feedback?'<div class="spell-feedback" role="status" tabindex="-1"><strong>Phản hồi để tự kiểm chứng</strong><p>'+feedbackMarkup(feedback)+'</p><p class="small">Bài mẫu minh họa, không chứng nhận thành thạo, IQ hay kết quả học thuật ngoài nhiệm vụ này.</p></div>':"")+'</div><footer class="spell-activity-footer"><p class="small">'+
+  (active==="T12"?
+   (t12StorageError?escape(t12StorageError):
+    t12SavedOnDevice?"Dấu vết T12 đã lưu trên thiết bị này · không đồng bộ.":
+     "T12 tự lưu dấu vết trên thiết bị khi nhập · không đồng bộ."):
+   "Tự chọn, có thể bỏ qua. Trừ mốc T02 do bạn chủ động đặt, nội dung điền không tự lưu hay gửi lên máy chủ.")+
+  '</p>'+act("reset","Làm lại","action alt")+'</footer>';
+
+ if(active==="T12"){
+  for(const [name,value] of Object.entries(t12Draft)){
+   const input=root.querySelector("#sp-"+name);
+   if(input)input.value=value;
+  }
+ }
  window.liLanguage?.apply?.(root);
  notifyReactSpell();
 }
@@ -111,6 +198,16 @@ function open(id,tab="guide",lessonId=null){
  if(!Object.prototype.hasOwnProperty.call(exercises,id))return;
  active=id;activeLessonId=["L03-1-2","L09-1-2","L15-2-2"].includes(lessonId)?lessonId:null;
  phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
+ t12Draft={context:"",next:"",answer:""};t12SavedOnDevice=false;t12StorageError="";
+ if(id==="T12"){
+  const saved=t12Read();
+  if(saved){
+   phase=saved.phase;
+   t12Draft={context:saved.context,next:saved.next,answer:saved.answer};
+   resumeNote=saved.next;
+   t12SavedOnDevice=true;
+  }
+ }
  tabDraft=null;
  if(root)switchTab(tab==="practice"?"practice":"guide");
  notifyReactSpell();
@@ -156,6 +253,7 @@ function check(){
  if(active==="T11")info=(radio("method")==="1"?"T03 phù hợp cho thủ tục mới. ":"Chưa có lần học trước nên T02 không phù hợp ngay. ")+info;
  if(active==="T05")info=(checked("evidence").sort().join(",")==="0,1"?"Bạn chọn hai dữ kiện quan trọng, không chọn khẳng định quá mức. ":"Dữ kiện không có nhóm so sánh và khuyến mãi đồng thời đều quan trọng. ")+info;
  reviewedInSession=true; // all task-specific fields completed and model feedback unlocked
+ if(active==="T12")t12Clear(); // completed activity is no longer an unfinished cue
  showMessage(info);
  if(active==="T02")try{localStorage.removeItem("li.spell.t02.due.v1")}catch(err){}
  root.querySelector(".spell-feedback")?.focus();
@@ -164,7 +262,9 @@ function next(){
  const e=currentExercise();
  if(e.mode==="resume"){
   if(!rawValue("context")||!rawValue("next")){showMessage("Ghi rõ công việc đang dở và bước kế tiếp rồi mới tạm ngắt.");return;}
-  resumeNote=rawValue("next");phase=1;feedback="";draw();return;
+  t12Draft.context=rawValue("context");t12Draft.next=rawValue("next");
+  resumeNote=t12Draft.next;phase=1;feedback="";
+  t12Write();draw();return;
  }
  if(e.mode==="loci"){
   if(!e.fields.every(f=>rawValue(f[0]))){showMessage("Tự chọn đủ ba nơi và ba liên tưởng.");return;}
@@ -200,7 +300,10 @@ function getView(){
    choiceKind:field[3]==="multi"?"multi":"radio"
   })),
   feedback,resumeNote,places:privatePlaces.slice(),dueAt:due?.due||null,
-  lessonId:activeLessonId,reviewedInSession,viewSession
+  lessonId:activeLessonId,reviewedInSession,viewSession,
+  t12Draft:active==="T12"?{...t12Draft}:undefined,
+  t12SavedOnDevice:active==="T12"&&t12SavedOnDevice,
+  t12StorageError:active==="T12"?t12StorageError:""
  };
 }
 function performReact(action,values={}){
@@ -232,17 +335,28 @@ function setup(){
  tabs.querySelector("#spell-tab-guide").addEventListener("click",()=>switchTab("guide"));
  tabs.querySelector("#spell-tab-practice").addEventListener("click",()=>switchTab("practice"));
  tabs.addEventListener("keydown",ev=>{if(!["ArrowLeft","ArrowRight","Home","End"].includes(ev.key))return;ev.preventDefault();const side=ev.key==="ArrowLeft"||ev.key==="Home"?"guide":"practice";switchTab(side);tabs.querySelector("#spell-tab-"+side).focus();});
+ root.addEventListener("input",ev=>{
+  if(active!=="T12")return;
+  const target=ev.target,field=typeof target?.id==="string"?target.id.slice(3):"";
+  if(!["context","next","answer"].includes(field)||typeof target.value!=="string")return;
+  t12Draft[field]=target.value.slice(0,1200);
+  t12Write();
+ });
  root.addEventListener("click",ev=>{
   const b=ev.target.closest("[data-spell-action]");if(!b||!root.contains(b))return;
   switch(b.dataset.spellAction){
-  case "reset":phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";draw();break;
+  case "reset":
+   if(active==="T12"&&!t12Clear()){showMessage(t12StorageError);break;}
+   phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
+   t12Draft={context:"",next:"",answer:""};draw();break;
   case "next":next();break;
   case "check":check();break;
   case "schedule":try{const d={exposed:Date.now(),due:Date.now()+86400000};localStorage.setItem("li.spell.t02.due.v1",JSON.stringify(d));if(localStorage.getItem("li.spell.t02.due.v1")!==JSON.stringify(d))throw Error("verify");feedback="";draw()}catch(err){feedback="Trình duyệt không lưu được mốc. Chưa có lịch ôn thực nào được tạo.";draw()}break;
   case "clear":try{localStorage.setItem("li.spell.t02.due.v1",JSON.stringify({clearedAt:Date.now(),due:null}))}catch(err){}feedback="";draw();break;
   }
  });
- window.LiSpellPractice={open,methods:Object.keys(exercises),getView,perform:performReact,setTab:switchTab};
+ window.LiSpellPractice={open,methods:Object.keys(exercises),getView,
+  perform:performReact,setTab:switchTab,setT12Draft};
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",setup,{once:true});else setup();
 })();

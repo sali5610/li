@@ -49,13 +49,18 @@ const MIN=12,MAX=4000;
 const RETURN_KEY='li.editorial.guide-return.v1';
 const categories:MethodCategory[]=['nominal','ordinal','discrete','continuous'];
 const T06_CASES=['A','B','C','D'] as const;
-function returnToken(id:string):{id:string;phase:Phase;scrollY:number;locale:Locale;at:number}|null{
+type GuideReturn={id:string;phase:'methods';sectionId:'l0911-method';
+ scrollY:number;locale:Locale;method:Method;at:number};
+function returnToken(id:string):GuideReturn|null{
  try{
   const raw=sessionStorage.getItem(RETURN_KEY);if(!raw)return null;
-  const t=JSON.parse(raw);
-  if(t.id!==id||t.phase!=='methods'||!Number.isFinite(t.scrollY)||
-    Date.now()-t.at>3600000||!['vi','en'].includes(t.locale))return null;
-  return t;
+  const t=JSON.parse(raw) as Partial<GuideReturn>;
+  if(t.id!==id||t.phase!=='methods'||t.sectionId!=='l0911-method'||
+   (t.method!=='T06'&&t.method!=='T07')||!Number.isFinite(t.scrollY)||
+   (t.scrollY??-1)<0||!Number.isFinite(t.at)||
+   Date.now()-(t.at??0)>3600000||Date.now()<(t.at??0)||
+   !['vi','en'].includes(t.locale??''))return null;
+  return t as GuideReturn;
  }catch{return null;}
 }
 const phases:Phase[]=['read','guided','methods','practice','feedback','progress'];
@@ -413,35 +418,50 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   })();
   return()=>{cancelled=true;mounted.current=false;};
  },[id,ports,reload]);
- useEffect(()=>{
-  if(busy||!lesson||phase!=='methods'||!returnToken(id))return;
-  const frame=requestAnimationFrame(()=>{
-   const t=returnToken(id);if(!t)return;
-   window.scrollTo({top:Math.max(0,t.scrollY),behavior:'auto'});
-   try{sessionStorage.removeItem(RETURN_KEY);}catch{/* no source draft is erased */}
-  });
-  return()=>cancelAnimationFrame(frame);
- },[id,busy,phase,lesson]);
- // Native navigation hides pages without necessarily unmounting React.
- // Listen for return to the existing app page, then restore the guide anchor.
+ // Restore only when the lesson page is ACTIVE. A hidden page may be
+ // mounted while the learner is still reading the Spellbook.
  useEffect(()=>{
   if(busy||!lesson)return;
   const page=document.querySelector('[data-li-editorial-journey="'+id+'"]')?.closest('section.page');
   if(!page)return;
-  let frame=0;
+  let outer=0,inner=0;
   const restore=()=>{
-   if(!page.classList.contains('active')||!returnToken(id))return;
-   const token=returnToken(id);if(!token)return;
+   if(!page.classList.contains('active'))return;
+   const token=returnToken(id);
+   if(!token){
+    // Report a stale/malformed lesson-specific token once, never discard drafts.
+    try{
+     const stale=JSON.parse(sessionStorage.getItem(RETURN_KEY)||'null');
+     if(stale?.id===id){
+      sessionStorage.removeItem(RETURN_KEY);
+      setError('Vị trí quay lại đã hết hạn. Bài làm đã lưu không bị xoá.');
+     }
+    }catch{/* Private session storage might be unavailable. */}
+    return;
+   }
    setPhase('methods');
-   frame=requestAnimationFrame(()=>{
-    window.scrollTo({top:Math.max(0,token.scrollY),behavior:'auto'});
-    try{sessionStorage.removeItem(RETURN_KEY);}catch{/* keep learner work */}
+   cancelAnimationFrame(outer);cancelAnimationFrame(inner);
+   outer=requestAnimationFrame(()=>{
+    inner=requestAnimationFrame(()=>{
+     if(!page.classList.contains('active'))return;
+     const anchor=document.getElementById(token.sectionId);
+     if(!anchor||!page.contains(anchor))return;
+     const language=window as Window&{liLanguage?:{
+      get?:()=>string;set?:(locale:Locale)=>void}};
+     if(language.liLanguage?.get?.()!==token.locale)
+      language.liLanguage?.set?.(token.locale);
+     const heading=document.getElementById('li-editorial-methods');
+     heading?.setAttribute('tabindex','-1');
+     heading?.focus({preventScroll:true});
+     window.scrollTo({top:Math.max(0,token.scrollY),behavior:'auto'});
+     try{sessionStorage.removeItem(RETURN_KEY);}catch{/* no draft changed */}
+    });
    });
   };
   const observer=new MutationObserver(restore);
   observer.observe(page,{attributes:true,attributeFilter:['class']});
   restore();
-  return()=>{observer.disconnect();cancelAnimationFrame(frame);};
+  return()=>{observer.disconnect();cancelAnimationFrame(outer);cancelAnimationFrame(inner);};
  },[id,busy,lesson]);
 
  function save(next:EditorialAttempt):Promise<boolean>{
@@ -507,11 +527,19 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   if(!host.liMethods?.open){setError('Sổ Tay Thần Chú chưa khả dụng.');return;}
   try{
    sessionStorage.setItem(RETURN_KEY,JSON.stringify({
-    id,phase:'methods',locale:attempt.locale,scrollY:window.scrollY,
+    id,phase:'methods',sectionId:'l0911-method',
+    locale:attempt.locale,scrollY:window.scrollY,
     method,at:Date.now()
-   }));
+   } satisfies GuideReturn));
   }catch{setError('Không giữ được vị trí quay lại; bài học vẫn được lưu.');return;}
-  host.liMethods.open(method,false);
+  try{
+   host.liMethods.open(method,false);
+   if(!document.getElementById('page-guideDetail')?.classList.contains('active'))
+    throw Error('GUIDE_ROUTE_UNAVAILABLE');
+  }catch{
+   try{sessionStorage.removeItem(RETURN_KEY);}catch{/* keep draft */}
+   setError('Chưa mở được Sổ Tay Thần Chú. Bản nháp vẫn được giữ.');
+  }
  }
  function methodClassify(letter:typeof T06_CASES[number],value:string){
   if(!attempt||locked||attempt.submitted)return;

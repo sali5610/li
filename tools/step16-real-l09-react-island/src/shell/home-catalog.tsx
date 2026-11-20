@@ -1,5 +1,5 @@
 import {openRoute} from './app-router.js';
-import {releasedLessonRoutes,personalStudyRoute} from '../learning/released-lessons.js';
+import {releasedLessonRoutes,personalStudyRoute,personalStudyLessonIds} from '../learning/released-lessons.js';
 import {inquiryFlow} from './inquiry-port.js';
 import type {MirrorView} from './inquiry-port.js';
 import React,{useEffect,useRef,useState} from 'react';
@@ -118,13 +118,24 @@ function Catalog(){
  if(course)breadcrumb.push({label:course.title,path:[group!.id,field!.id,course.id]});
  if(lesson)breadcrumb.push({label:lesson.title,path:[group!.id,field!.id,course!.id,lesson.id]});
  const heading=lesson?.title||course?.title||field?.name||group?.title||(locale==='vi'?'Tàng Thư':'Library');
- const eyebrow=lesson?'BÀI HỌC · '+lesson.id:course?'MÔN HỌC · '+course.id:
-  field?'CHUYÊN NGÀNH':group?'NHÓM NGÀNH':'KHÁM PHÁ TRI THỨC';
- const description=lesson?(personalStudyRoute(lesson.id)?'Bài học cá nhân · Có thể học ngay trong Tàng Thư.':'Bài này mới có vị trí trong lộ trình. Nội dung chưa được xuất bản.'):
-  course?'Theo dõi các bài trong môn và tiếp tục từ nội dung đã phát hành.':
-  field?'Các môn theo nền tảng → trung cấp → chuyên sâu; không tự khóa bài.':
-  group?'Chọn chuyên ngành để xem lộ trình các môn học.':
-  'Những lối đi khác nhau vào cùng một thư viện tri thức.';
+ const eyebrow=lesson?(locale==='vi'?'BÀI HỌC · ':'LESSON · ')+lesson.id:
+  course?(locale==='vi'?'MÔN HỌC · ':'COURSE · ')+course.id:
+  field?(locale==='vi'?'CHUYÊN NGÀNH':'FIELD'):
+  group?(locale==='vi'?'NHÓM NGÀNH':'DOMAIN GROUP'):
+  (locale==='vi'?'KHÁM PHÁ TRI THỨC':'EXPLORE KNOWLEDGE');
+ const description=lesson?(personalStudyRoute(lesson.id)?
+  (locale==='vi'?'Bài học cá nhân · Có thể học ngay trong Tàng Thư.':
+   'Personal study lesson · Ready to learn in your library.'):
+  (locale==='vi'?'Bài này mới có vị trí trong lộ trình. Nội dung chưa được xuất bản.':
+   'This is only an outline; the lesson content is not released.')):
+  course?(locale==='vi'?'Theo dõi các bài trong môn và tiếp tục từ nội dung đã phát hành.':
+   'Follow the course and continue with available lessons.'):
+  field?(locale==='vi'?'Các môn theo nền tảng → trung cấp → chuyên sâu; không tự khóa bài.':
+   'Courses progress from foundations through advanced topics without locking lessons.'):
+  group?(locale==='vi'?'Chọn chuyên ngành để xem lộ trình các môn học.':
+   'Choose a field to see its course roadmap.'):
+  (locale==='vi'?'Những lối đi khác nhau vào cùng một thư viện tri thức.':
+   'Different paths into one library of knowledge.');
  const chooseLesson=(item:Lesson)=>{
   const personalRoute=personalStudyRoute(item.id);
   if(personalRoute){openRoute(personalRoute);return;}
@@ -155,7 +166,11 @@ function Catalog(){
     locale={locale} onOpen={()=>openPath([item.id])}/>)}
   </div>
   <Text role="support" className="catalog-quiet-note">
-   Danh mục còn đề cương đang biên soạn. Chỉ bài đã phát hành mới có nội dung học.
+   {personalStudyLessonIds.length?
+    (locale==='vi'?'Đề cương vẫn đang biên soạn. Bài học cá nhân có thể học trên staging nhưng chưa phát hành công khai.':
+     'Some outlines are still in progress. Personal lessons can be studied on staging but are not publicly released.'):
+    (locale==='vi'?'Danh mục còn đề cương đang biên soạn. Chỉ bài đã phát hành mới có nội dung học.':
+     'Some outlines are in progress. Only released lessons are available to study.')}
   </Text></>}
   {group&&!field&&<div className="catalog-field-grid">
    {group.fields.map((item,index)=><CatalogCard key={item.id} number={index+1}
@@ -189,11 +204,15 @@ function Catalog(){
   </div>}
   {course&&!lesson&&<><Card variant="raised" className="catalog-progress">
    <Heading level={2} role="titleMedium">
-    {available?.unavailable?'Tiến độ chưa xác minh':String(available?.done||0)+'/'+course.lessons.length+' bài đã hoàn thành'}
+    {available?.unavailable?(locale==='vi'?'Tiến độ chưa xác minh':'Progress could not be verified'):
+     String(available?.done||0)+'/'+course.lessons.length+
+     (locale==='vi'?' bài đã hoàn thành':' lessons completed')}
    </Heading>
-   <Text role="support">{available?.available||0}/{course.lessons.length} bài có thể học
-    · Chỉ tính hoàn thành khi có tự đánh giá đã lưu.</Text>
-   {available&&!available.unavailable&&<Progress label="Tiến độ bài học đã hoàn thành"
+   <Text role="support">{available?.available||0}/{course.lessons.length}
+    {locale==='vi'?' bài có thể học · Chỉ tính hoàn thành khi có tự đánh giá đã lưu.':
+     ' lessons available · Completion requires a saved self-review.'}</Text>
+   {available&&!available.unavailable&&<Progress
+    label={locale==='vi'?'Tiến độ bài học đã hoàn thành':'Completed lesson progress'}
     value={available.done} max={Math.max(1,course.lessons.length)}/>}
   </Card>
   <ol className="catalog-lesson-list">
@@ -201,17 +220,22 @@ function Catalog(){
     <span className="catalog-lesson-order" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>
     <div className="catalog-lesson-desc">
      <Heading level={2} role="titleSmall">{item.title}</Heading>
-     <Text role="support">{item.id} · {personalStudyRoute(item.id)?'Học cá nhân · Có bài đầy đủ':canOpenLesson(item)?'Đã phát hành':'Đề cương · chưa phát hành'}</Text>
+     <Text role="support">{item.id} · {personalStudyRoute(item.id)?
+      (locale==='vi'?'Học cá nhân · Có bài đầy đủ':'Personal study · Complete lesson'):
+      canOpenLesson(item)?(locale==='vi'?'Đã phát hành':'Released'):
+      (locale==='vi'?'Đề cương · chưa phát hành':'Outline · not released')}</Text>
     </div>
     <Button variant="secondary" onClick={()=>chooseLesson(item)}>
-     {canOpenLesson(item)?'Vào bài học':'Xem đề cương'}
+     {canOpenLesson(item)?(locale==='vi'?'Vào bài học':'Open lesson'):
+      (locale==='vi'?'Xem đề cương':'View outline')}
     </Button>
    </li>)}
   </ol></>}
   {lesson&&<Card variant="tinted" className="catalog-draft-content">
-   <div className="kicker">CHƯA PHÁT HÀNH</div>
-   <Heading level={2} role="titleMedium">Nội dung đang được biên soạn</Heading>
-   <Text role="body">Bài chưa có chương, bài tập hoặc tiến độ học được phép phát hành.</Text>
+   <div className="kicker">{locale==='vi'?'CHƯA PHÁT HÀNH':'NOT RELEASED'}</div>
+   <Heading level={2} role="titleMedium">{locale==='vi'?'Nội dung đang được biên soạn':'Content in progress'}</Heading>
+   <Text role="body">{locale==='vi'?'Bài chưa có chương, bài tập hoặc tiến độ học được phép phát hành.':
+    'This outline has no lesson content, practice or progress approved for release.'}</Text>
   </Card>}
  </motion.div>;
 }

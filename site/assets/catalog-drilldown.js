@@ -377,7 +377,12 @@ window.addEventListener("popstate",()=>{
  const u=new URL(location.href),lessonId=u.searchParams.get("lesson");
  const released=window.liReleasedLessonRoutes||{};
  const fallback={"L03-1-2":"lessonL03","L09-1-2":"lessonL09","L15-2-2":"lessonL15"};
- const route=released[lessonId]||fallback[lessonId];
+ const personalAllowed=document.documentElement?.classList?.contains?.("li-auth-verified")===true&&
+  document.documentElement?.classList?.contains?.("li-account-open")!==true;
+ const personal=personalAllowed?(window.liPersonalStudyRoutes||{}):{};
+ // Personal manuscripts are navigable only if the staging-only, invited
+ // React mount registered that exact lesson. Never infer access from URL.
+ const route=released[lessonId]||personal[lessonId]||fallback[lessonId];
  if(route&&document.getElementById("page-"+route)){
   window.navigate?.(route,{remember:false,syncUrl:false});
   document.getElementById("page-"+route)?._catalogChooseChapter?.(u.searchParams.get("chapter"),false);
@@ -432,8 +437,19 @@ function openCatalogLesson(id){
 }
 function openForLesson(id){
  const found=findCatalogLesson(id);
- if(!found||!found.lesson.published||!found.lesson.route||
-  (window.liReleasedLessonRoutes&&window.liReleasedLessonRoutes[id]!==found.lesson.route))return false;
+ if(!found)return false;
+ const published=found.lesson.published===true&&
+  typeof found.lesson.route==="string"&&
+  (!window.liReleasedLessonRoutes||
+   window.liReleasedLessonRoutes[id]===found.lesson.route);
+ const personal=window.liPersonalStudyRoutes?.[id];
+ // A staged personal lesson is learnable, not published. Its route is
+ // available only on invited staging, and must already exist in the app.
+ const personalAllowed=typeof personal==="string"&&
+  Boolean(document.getElementById("page-"+personal))&&
+  document.documentElement.classList.contains("li-auth-verified")&&
+  !document.documentElement.classList.contains("li-account-open");
+ if(!published&&!personalAllowed)return false;
  const routeOK=reactOwnsCatalog()?window.liAppRouter?.navigate("catalog"):
   (window.navigate?.("catalog"),true);
  if(routeOK!==true)return false;

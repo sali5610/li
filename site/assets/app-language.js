@@ -221,7 +221,7 @@ function ignored(node,forAttrs=false){
  // React can cause content/text reconciliation races, especially in navigation.
  // The legacy translator remains available for native fallback and other
  // authored strings until they are localized declaratively.
- const reactOwned=p.closest?.('[data-li-react-navigation],#li-react-global-back-root,.li-react-language-card');
+ const reactOwned=p.closest?.('[data-li-react-navigation],#li-react-global-back-root,.li-react-language-card,[data-li-react-screen="catalog"]');
  if(reactOwned)return true;
  // Do not touch learner-entered textarea text; its placeholder/ARIA still needs locale.
  return Boolean(p.closest?.(shared))||(!forAttrs&&Boolean(p.closest?.('textarea,[contenteditable]')));

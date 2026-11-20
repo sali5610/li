@@ -35,17 +35,33 @@ function put(update,date=localDay()){
  if(!update(d))return false;
  try{const value=JSON.stringify(next);localStorage.setItem(KEY,value);if(localStorage.getItem(KEY)!==value)throw Error("readback");diary=next;render();personalChanged();return true;}catch(e){storageError=true;render();return false;}
 }
+// Render and React snapshots derive from ledger state, never hidden DOM text.
+function recordingStatus(){
+ return storageError?"Không thể đọc/ghi lịch. Đã dừng ghi để tránh mất dữ liệu.":enabled?
+  (journalCloudEnabled()?"Đang ghi Check-in và hoạt động, đồng bộ riêng tư với Neon theo tài khoản.":"Đang ghi trên thiết bị. Bật đồng bộ Nhật Ký trong Cài đặt → Dữ liệu của bạn để dùng trên các máy khác."):
+  "Đã dừng ghi mới; các ngày cũ vẫn có thể xem và xóa.";
+}
+function recordedDayStatus(record){
+ return record?(record.physical?"Thể trạng tự khai, không phải đo lường sức khỏe.":"Ngày có hoạt động/nhịp học nhưng chưa lưu Check-in thể trạng."):
+  "Ngày này chưa có dữ liệu. Dấu — không đồng nghĩa với không học.";
+}
+function calendarLocale(){return window.liLanguage?.get?.()==="en"?"en-US":"vi-VN";}
+function monthLabel(){
+ return new Intl.DateTimeFormat(calendarLocale(),{month:"long",year:"numeric"}).format(new Date(month+"-01T12:00:00"));
+}
+function selectedLabel(){
+ return new Intl.DateTimeFormat(calendarLocale(),{weekday:"long",day:"numeric",month:"long",year:"numeric"})
+  .format(new Date(selected+"T12:00:00"));
+}
 function append(parent,tag,cls,value){const e=document.createElement(tag);if(cls)e.className=cls;if(value!==undefined)e.textContent=String(value);parent.append(e);return e;}
 function render(){
  $("li-diary-consent").textContent=enabled?"Dừng ghi mới":"Bật lưu lịch";
  $("li-diary-consent").disabled=storageError;
- $("li-diary-consent-status").textContent=storageError?"Không thể đọc/ghi lịch. Đã dừng ghi để tránh mất dữ liệu.":enabled?
-  (journalCloudEnabled()?"Đang ghi Check-in và hoạt động, đồng bộ riêng tư với Neon theo tài khoản.":"Đang ghi trên thiết bị. Bật đồng bộ Nhật Ký trong Cài đặt → Dữ liệu của bạn để dùng trên các máy khác."):
-  "Đã dừng ghi mới; các ngày cũ vẫn có thể xem và xóa.";
+ $("li-diary-consent-status").textContent=recordingStatus();
  const disclosure=$("li-checkin-recording-disclosure");
  if(disclosure)disclosure.textContent=storageError?"Không thể lưu nhật ký trên thiết bị này. Check-in chỉ giữ trong phiên; hãy tự ghi lại nếu cần.":enabled?(journalCloudEnabled()?"Đang lưu Check-in và đồng bộ với Neon. Có thể dừng ghi trong Nhật Ký.":"Đang lưu Check-in trên máy; chưa gửi lên cloud. Bật đồng bộ Nhật Ký trong Cài đặt → Dữ liệu của bạn."):"Bạn đã dừng lưu Nhật Ký. Check-in này chỉ giữ trong phiên, không ghi thêm vào lịch.";
  $("li-diary-delete").disabled=storageError||!Object.keys(diary.days).length;
- $("li-diary-month").textContent=new Intl.DateTimeFormat(window.liLanguage?.get?.()==="en"?"en-US":"vi-VN",{month:"long",year:"numeric"}).format(new Date(month+"-01T12:00:00"));
+ $("li-diary-month").textContent=monthLabel();
  const parts=month.split("-").map(Number),yr=parts[0],mo=parts[1];
  const days=new Date(yr,mo,0).getDate(),offset=(new Date(yr,mo-1,1).getDay()+6)%7;
  const calendar=$("li-diary-calendar");calendar.replaceChildren();
@@ -73,12 +89,12 @@ function render(){
   append(b,"span","li-diary-bar-total",record?String(total):"—");
  }
  const rec=safeDay(selected),phy=rec?.physical;
- $("li-diary-selected").textContent=new Intl.DateTimeFormat(window.liLanguage?.get?.()==="en"?"en-US":"vi-VN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(new Date(selected+"T12:00:00"));
+ $("li-diary-selected").textContent=selectedLabel();
  for(const t of ["sleep","move","rest"])$("li-diary-"+t).textContent=phy&&ANSWER[phy[t]]?ANSWER[phy[t]]:"—";
  $("li-diary-mode").textContent=rec&&MODE[rec.mode]?MODE[rec.mode]:"—";
  $("li-diary-checkins").textContent=rec?String(rec.checkins||0):"—";
  const arr=counts(selected);TYPES.forEach((t,i)=>$("li-diary-count-"+t).textContent=rec?String(arr[i]):"—");
- $("li-diary-day-status").textContent=rec?(phy?"Thể trạng tự khai, không phải đo lường sức khỏe.":"Ngày có hoạt động/nhịp học nhưng chưa lưu Check-in thể trạng."):"Ngày này chưa có dữ liệu. Dấu — không đồng nghĩa với không học.";
+ $("li-diary-day-status").textContent=recordedDayStatus(rec);
  notifyReactDiary();
 }
 
@@ -99,8 +115,8 @@ function getView(){
  const record=safeDay(selected),physical=record?.physical||null;
  return {
   month,selected,offset,days,totals,
-  monthLabel:$("li-diary-month")?.textContent||month,
-  selectedLabel:$("li-diary-selected")?.textContent||selected,
+  monthLabel:monthLabel(),
+  selectedLabel:selectedLabel(),
   physical:{
    sleep:physical&&ANSWER[physical.sleep]||"—",
    move:physical&&ANSWER[physical.move]||"—",
@@ -109,8 +125,8 @@ function getView(){
   mode:record&&MODE[record.mode]||"—",
   checkins:record?String(record.checkins||0):"—",
   counts:record?counts(selected).map(String):["—","—","—"],
-  dayStatus:$("li-diary-day-status")?.textContent||"",
-  consentStatus:$("li-diary-consent-status")?.textContent||"",
+  dayStatus:recordedDayStatus(record),
+  consentStatus:recordingStatus(),
   enabled,storageError,hasRecords:Object.keys(diary.days).length>0
  };
 }

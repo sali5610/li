@@ -54,7 +54,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--li-font
  font-size:12px;letter-spacing:.04em;color:var(--moss);min-height:52px}
 .li-ui-lab-preview-label .li-ds-button{min-height:35px;padding:5px 8px;box-shadow:none}
 .li-ui-lab-preview-label .li-ds-button>span{display:flex;align-items:center;gap:5px}
-.li-ui-lab-viewport{margin:auto;width:100%;min-width:0;max-width:100%;overflow-x:auto}
+.li-ui-lab-viewport{container:lab-preview / inline-size;margin:auto;width:100%;min-width:0;max-width:100%;overflow-x:auto}
 .li-ui-lab-viewport[data-viewport="390"]{max-width:390px}
 .li-ui-lab-viewport[data-viewport="820"]{max-width:820px}
 .li-ui-lab-viewport[data-viewport="1440"]{max-width:1440px}
@@ -91,4 +91,47 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--li-font
  .li-ui-lab-options .li-ds-button{font-size:12px;min-height:44px}
  .li-ui-lab-flow-head{padding-top:20px}
  .li-ui-lab-preview-label{padding:8px 10px}
+}
+
+/* A preview frame must respond to its own selected width, not the surrounding
+   desktop browser width. Scoped to UI Lab only; app runtime CSS is unchanged. */
+@container lab-preview (max-width:720px){
+ .li-flow-page .li-flow-page-columns,
+ .li-flow-page[data-layout="editorial"] .li-flow-page-columns,
+ .li-flow-page[data-layout="split"] .li-flow-page-columns,
+ .li-flow-page[data-layout="cinematic"] .li-flow-page-columns{
+  grid-template-columns:minmax(0,1fr)}
+ .li-flow-page .li-flow-card-grid,
+ .li-flow-page[data-layout="split"] .li-flow-card-grid,
+ .li-flow-page[data-layout="cinematic"] .li-flow-card-grid{
+  grid-template-columns:minmax(0,1fr)}
+ .li-flow-page .li-flow-page-aside,
+ .li-flow-page[data-layout="split"] .li-flow-page-aside,
+ .li-flow-page[data-layout="cinematic"] .li-flow-page-aside{
+  position:static;border-inline-start:0;border-top:1px solid var(--rule);
+  grid-template-columns:minmax(0,1fr);padding:14px}
+ .li-flow-page .li-flow-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .li-flow-page .li-ds-catalog-body[data-with-aside="true"],
+ .li-flow-page .li-ds-catalog-tools{grid-template-columns:minmax(0,1fr)}
+ .li-ui-home,.li-ui-home[data-home-layout="editorial"],
+ .li-ui-home[data-home-layout="immersive"]{
+  min-height:0;grid-template-columns:minmax(0,1fr);
+  grid-template-areas:"intro" "mirror" "guide" "actions";gap:16px;padding:18px}
+ .li-ui-home .li-ui-home-intro .li-atom-heading{font-size:clamp(32px,7vw,44px)}
+ .li-ui-home .li-ui-home-mirror .li-ds-home-mirror,
+ .li-ui-home[data-home-layout="editorial"] .li-ui-home-mirror .li-ds-home-mirror,
+ .li-ui-home[data-home-layout="immersive"] .li-ui-home-mirror .li-ds-home-mirror{
+  min-height:310px}
+}
+@container lab-preview (max-width:440px){
+ .li-flow-page{padding:14px;gap:16px}
+ .li-flow-page .li-flow-page-index{font-size:32px}
+ .li-flow-page .li-flow-page-heading .li-atom-heading{font-size:34px}
+ .li-flow-page[data-layout="cinematic"] .li-flow-page-head{min-height:190px;padding:18px}
+ .li-flow-page[data-layout="cinematic"] .li-flow-page-columns{padding:14px}
+ .li-flow-page .li-flow-lesson-diagram{gap:10px;padding:14px 8px}
+ .li-flow-page .li-flow-dots{grid-template-columns:repeat(6,10px);gap:6px}
+ .li-flow-page .li-flow-dots.sample{grid-template-columns:repeat(4,10px)}
+ .li-flow-page .li-flow-dots i{width:10px;height:10px}
+ .li-ui-home .li-ds-home-mirror-content{padding:12px;margin:12px}
 }

@@ -40,10 +40,10 @@ function render(){
  $("li-diary-consent").textContent=enabled?"Dừng ghi mới":"Bật lưu lịch";
  $("li-diary-consent").disabled=storageError;
  $("li-diary-consent-status").textContent=storageError?"Không thể đọc/ghi lịch. Đã dừng ghi để tránh mất dữ liệu.":enabled?
-  (journalCloudEnabled()?"Đang ghi Check-in và hoạt động, đồng bộ riêng tư với Neon theo tài khoản.":"Đang ghi trên thiết bị. Bật đồng bộ Nhật Ký trong Tài khoản để dùng trên các máy khác."):
+  (journalCloudEnabled()?"Đang ghi Check-in và hoạt động, đồng bộ riêng tư với Neon theo tài khoản.":"Đang ghi trên thiết bị. Bật đồng bộ Nhật Ký trong Cài đặt → Dữ liệu của bạn để dùng trên các máy khác."):
   "Đã dừng ghi mới; các ngày cũ vẫn có thể xem và xóa.";
  const disclosure=$("li-checkin-recording-disclosure");
- if(disclosure)disclosure.textContent=storageError?"Không thể lưu nhật ký trên thiết bị này. Check-in chỉ giữ trong phiên; hãy tự ghi lại nếu cần.":enabled?(journalCloudEnabled()?"Đang lưu Check-in và đồng bộ với Neon. Có thể dừng ghi trong Nhật Ký.":"Đang lưu Check-in trên máy; chưa gửi lên cloud. Bật đồng bộ Nhật Ký trong Tài khoản."):"Bạn đã dừng lưu Nhật Ký. Check-in này chỉ giữ trong phiên, không ghi thêm vào lịch.";
+ if(disclosure)disclosure.textContent=storageError?"Không thể lưu nhật ký trên thiết bị này. Check-in chỉ giữ trong phiên; hãy tự ghi lại nếu cần.":enabled?(journalCloudEnabled()?"Đang lưu Check-in và đồng bộ với Neon. Có thể dừng ghi trong Nhật Ký.":"Đang lưu Check-in trên máy; chưa gửi lên cloud. Bật đồng bộ Nhật Ký trong Cài đặt → Dữ liệu của bạn."):"Bạn đã dừng lưu Nhật Ký. Check-in này chỉ giữ trong phiên, không ghi thêm vào lịch.";
  $("li-diary-delete").disabled=storageError||!Object.keys(diary.days).length;
  $("li-diary-month").textContent=new Intl.DateTimeFormat(window.liLanguage?.get?.()==="en"?"en-US":"vi-VN",{month:"long",year:"numeric"}).format(new Date(month+"-01T12:00:00"));
  const parts=month.split("-").map(Number),yr=parts[0],mo=parts[1];
@@ -135,5 +135,19 @@ window.addEventListener("li:activity",e=>{
 });
 window.addEventListener?.("li:localechange",render);
 window.addEventListener?.("li:private-sync-consent",render);
+window.addEventListener?.("li:personal-sync-applied",event=>{
+ const detail=event.detail||{},owner=localStorage.getItem("li.sync.local-owner.v1");
+ if(!owner||owner!==detail.accountId||!Array.isArray(detail.keys))return;
+ if(!detail.keys.some(key=>[KEY,CONSENT,"li.sync.journal-cloud-consent.v1:"+owner].includes(key)))return;
+ try{
+  const raw=localStorage.getItem(KEY),choice=localStorage.getItem(CONSENT);
+  const next=raw?JSON.parse(raw):{schema:1,days:{}};
+  if(!next||next.schema!==1||!next.days||Array.isArray(next.days))throw Error("INVALID_JOURNAL");
+  diary=next;enabled=choice==="true";storageError=false;
+ }catch{
+  storageError=true;enabled=false; // fail closed; never display stale/private data
+ }
+ render(); // Live calendar + check-ins, not a whole-page refresh
+});
 render();
 })();

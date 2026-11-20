@@ -431,6 +431,12 @@ scenarios.splice(5,0,{
 });
 function renderMirrorItem(){
  const item=scenarios[qIndex],isHook=item.type==="hook";
+ if(window.liReactRouter){
+  // React Home imports canonical curriculum art and renders directly.
+  // Keep the real mirror/inquiry data event without repainting hidden DOM.
+  window.dispatchEvent(new Event("li:inquiry-changed"));
+  return;
+ }
  // Native fallback uses the SAME catalog artwork as the React mirror.
  // A first pass may precede catalog loading; window.load replays once below.
  const topicImage=document.getElementById("mirror-topic-image");

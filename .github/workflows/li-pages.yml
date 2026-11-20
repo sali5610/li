@@ -141,6 +141,14 @@ jobs:
           old_l09='<script src="./assets/lesson-l09-hifi.js"></script>'
           assert html.count(old_l09)==1, 'Native L09 source changed'
           html=html.replace(old_l09,'',1)
+          # One React Catalog/Search owner in the invited app. Three old
+          # classic scripts still ship in standalone source for native fallback,
+          # but may NOT execute in the unified signed-in Pages build.
+          import re
+          html,count=re.subn(
+           r'<script src="\./assets/(?:catalog-curriculum-data|catalog-drilldown|li-catalog-search)\.js(?:\?v=[^"]+)?"></script>',
+           '',html)
+          assert count==3,'Expected exactly three retired native Catalog/Search scripts'
           # Fail CLOSED by default. No guest path or query bypass.
           gate=('<style id="li-auth-gate-critical">'
                 'html:not(.li-auth-verified) .app,'
@@ -187,6 +195,7 @@ jobs:
           # Verify that the submitted mirror styling exists in the emitted bundle.
           grep -Fq 'li-home-mirror-art-image' "site/assets/li-react-learning-${GITHUB_SHA:0:12}.css"
           ! grep -Fq '<script src="./assets/lesson-l09-hifi.js"></script>' site/index.html
+          ! grep -Eq '<script src="./assets/(catalog-curriculum-data|catalog-drilldown|li-catalog-search)\.js' site/index.html
           grep -Fq 'li-auth-gate-critical' site/index.html
           grep -Fq 'id="li-staging-auth-root"' site/index.html
           grep -Fq 'id="li-open-account"' site/index.html

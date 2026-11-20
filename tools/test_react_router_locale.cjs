@@ -250,8 +250,18 @@ window.history.forward=()=>{
 const stopBrowser=moduleExports.mountReactRouter();
 const browser=window.liReactRouter;
 assert.equal(browser.navigate('catalog'),true);
-assert.equal(browser.navigate('search'),true);
+// One Catalog breadcrumb adds a browser entry but NO second React route.
+// The router must honor its depth and keep Back/Forward on Catalog.
+window.history.pushState({...window.history.state,liRouteDepth:2,liRoute:'catalog'},
+ '', '/li/?view=catalog&catalog=technology');
+assert.equal(browser.back(),true);
+assert.equal(browser.getCurrent(),'catalog');
+assert.equal(pos,1,'Back traverses a Catalog breadcrumb without leaving Catalog');
+window.history.forward();
+assert.equal(browser.getCurrent(),'catalog');
 assert.equal(pos,2);
+assert.equal(browser.navigate('search'),true);
+assert.equal(pos,3,'Route navigation follows the updated breadcrumb depth');
 assert.equal(browser.back(),true);
 assert.equal(browser.getCurrent(),'catalog');
 window.history.forward();
@@ -273,3 +283,97 @@ assert.equal(window.liReactRouter.getCurrent(),'lessonL09',
  'Verified invite restores the originally requested lesson');
 stopPending();
 console.log("PASS actual React router: pending auth, Back/Forward, URL, staging lessons, locale and DOM observer cleanup");
+
+/* The actual canonical Catalog adapter replaces the native controller on
+ * invited staging. Test its compiled TypeScript and URL/history actions here,
+ * using the same static GitHub curriculum JSON (no Neon or browser login).
+ */
+const adapterSource=read("tools/step16-real-l09-react-island/src/shell/catalog-route-adapter.ts");
+const adapterJS=ts.transpileModule(adapterSource,{compilerOptions:{
+ module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022
+}}).outputText;
+const curriculum=JSON.parse(read("content/curriculum/legacy-catalog.v1.json"));
+let releasedPath=null,personalPath=null;
+for(const group of curriculum.groups)for(const field of group.fields)
+ for(const course of field.courses)for(const lesson of course.lessons){
+  if(lesson.id==="L03-1-2")releasedPath=[group.id,field.id,course.id];
+  if(lesson.id==="L09-1-3")personalPath=[group.id,field.id,course.id];
+ }
+assert.ok(releasedPath&&personalPath,'Published + personal lesson routes must be in canonical JSON');
+const cLocation=new URL('https://sali5610.github.io/li/?view=catalog&catalog='+releasedPath.join('/'));
+const cListeners=new Map(),cEvents=[],cRoutes=[];
+let cVerified=false,cOverlay=false;
+const cEntries=[{href:cLocation.href,state:{liRouteDepth:0,liRoute:'catalog'}}];
+let cPosition=0;
+const cHistory={state:cEntries[0].state,
+ replaceState(state,title,url){
+  cEntries[cPosition]={href:new URL(url,cLocation.origin).href,state};
+  cLocation.href=cEntries[cPosition].href;this.state=state;
+ },
+ pushState(state,title,url){
+  cEntries.splice(cPosition+1);
+  cEntries.push({href:new URL(url,cLocation.origin).href,state});
+  cPosition=cEntries.length-1;cLocation.href=cEntries[cPosition].href;this.state=state;
+ }};
+const cWindow={location:cLocation,history:cHistory,scrollTo:()=>{},
+ requestAnimationFrame:callback=>callback(),
+ addEventListener(type,handler){
+  if(!cListeners.has(type))cListeners.set(type,new Set());
+  cListeners.get(type).add(handler);
+ },
+ removeEventListener(type,handler){cListeners.get(type)?.delete(handler);},
+ dispatchEvent(event){
+  cEvents.push(event.type);
+  for(const handler of cListeners.get(event.type)||[])handler(event);
+ }};
+const cHosts=new Set(['page-lessonL03','page-draftLessonL0913']);
+const cDocument={
+ documentElement:{classList:{contains:name=>
+  name==='li-auth-verified'?cVerified:name==='li-account-open'?cOverlay:false}},
+ getElementById:id=>cHosts.has(id)?{}:null,
+ querySelector:()=>({focus(){}})
+};
+const cExports={};
+vm.runInNewContext(adapterJS,{
+ exports:cExports,window:cWindow,document:cDocument,URL,
+ Event:class{constructor(type){this.type=type;}},
+ CustomEvent:class{constructor(type,detail){this.type=type;this.detail=detail?.detail;}},
+ require:id=>id.includes('legacy-catalog.v1.json')?{default:curriculum}:
+  id.includes('released-lessons.js')?{
+   releasedLessonRoutes:[{id:'L03-1-2',route:'lessonL03'}],
+   personalStudyRoute:id=>id==='L09-1-3'?'draftLessonL0913':null
+  }:id.includes('app-router.js')?{
+   openRoute:id=>{cRoutes.push(id);return true;}
+  }:undefined
+});
+const stopCatalog=cExports.installReactCatalogPort();
+const cPort=cWindow.liCatalog;
+assert.equal(cPort.getPath().join('/'),releasedPath.join('/'));
+cWindow.dispatchEvent({type:'li:auth-verified-changed',detail:{verified:false}});
+assert.equal(cPort.getPath().join('/'),releasedPath.join('/'),
+ 'Pending invite must keep a deep-linked course path');
+cVerified=true;cWindow.dispatchEvent({type:'li:auth-verified-changed',detail:{verified:true}});
+cPort.openPath([releasedPath[0]]);
+assert.equal(cHistory.state.liRouteDepth,1,'Catalog breadcrumb adds a browser entry');
+cPort.openPath(releasedPath.slice(0,2));
+assert.equal(cHistory.state.liRouteDepth,2);
+cPosition--;cLocation.href=cEntries[cPosition].href;cHistory.state=cEntries[cPosition].state;
+cWindow.dispatchEvent({type:'popstate'});
+assert.equal(cPort.getPath().join('/'),releasedPath[0],
+ 'Browser Back must restore the canonical Catalog breadcrumb without native render');
+assert.equal(cPort.openLesson('L03-1-2'),true,'Released lesson opens only by canonical manifest route');
+assert.equal(cRoutes.at(-1),'lessonL03');
+assert.equal(cPort.openLesson('L09-1-3'),false,'A personal lesson must not bypass released gating');
+assert.equal(cPort.openForLesson('L09-1-3'),true,'Invited personal lesson returns to its real course');
+assert.equal(cRoutes.at(-1),'catalog');
+assert.equal(cPort.getPath().join('/'),personalPath.join('/'));
+assert.equal(cPort.openForLesson('L03-1-2'),true);
+assert.equal(cPort.getPath().join('/'),releasedPath.join('/'));
+cVerified=false;cWindow.dispatchEvent({type:'li:auth-verified-changed',detail:{verified:false}});
+assert.equal(cPort.getPath().length,0,'Signed-out account loses previous Catalog path');
+assert.equal(cPort.openLesson('L03-1-2'),false,'Unverified account cannot navigate into a lesson');
+stopCatalog();
+assert.equal(cWindow.liCatalog,undefined);
+assert.match(read('.github/workflows/li-pages.yml'),/Expected exactly three retired native Catalog\/Search scripts/);
+assert.match(read('tools/step16-real-l09-react-island/src/auth/staging-app.tsx'),/installReactCatalogPort\(\)/);
+console.log('PASS canonical JSON Catalog port: published/private gates, course return, breadcrumb Back and auth isolation');

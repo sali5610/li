@@ -353,7 +353,10 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
     retryTransient();
     return;
    }
-   if(result.mode==='conflict'){report('conflict');return;}
+   // A conflict in ONE item must not block independent, conflict-free lessons
+   // downloaded by syncOnce. hydrate() skips every locally queued/conflicted item,
+   // so preserve those drafts while bringing the other browser up to date.
+   if(result.mode==='conflict')report('conflict');
    // The signed Data API has returned the uploaded row and read all owner rows.
    // Verify actual lesson readback, not merely a successful POST status.
    if(result.uploaded>0){

@@ -316,8 +316,7 @@ function Home(){
  },[]);
  const shift=(direction:-1|1)=>inquiryFlow().shift(direction);
  // Resolve artwork directly from Tàng Thư's canonical field-to-image entries.
- const mirrorImage=(Array.isArray(app.LI_CATALOG_DATA)?app.LI_CATALOG_DATA:[])
-  .flatMap(group=>group.fields)
+ const mirrorImage=groups.flatMap(group=>group.fields)
   .find(field=>field.id===mirror.fieldId)?.image||'';
  // Depth is purely decorative. Never move the real mirror text, tap targets,
  // backdrop crop, or saved learner state with the pointer.

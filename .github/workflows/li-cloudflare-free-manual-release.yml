@@ -8,6 +8,11 @@ on:
         description: "Type PUBLISH_LI_FREE_ONLY to authorize this release."
         required: true
         type: string
+      ai_mode:
+        description: "Only after G4 approval: publish React app + first-party Cloudflare AI Worker"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -18,7 +23,10 @@ concurrency:
 
 jobs:
   release:
-    if: github.ref == 'refs/heads/main' && inputs.confirm == 'PUBLISH_LI_FREE_ONLY'
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      ((inputs.ai_mode == false && inputs.confirm == 'PUBLISH_LI_FREE_ONLY') ||
+       (inputs.ai_mode == true && inputs.confirm == 'PUBLISH_LI_AI_FREE_ONLY'))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: cloudflare-free-production
@@ -40,20 +48,58 @@ jobs:
           python3 tools/validate_design_system.py
           python3 tools/validate_ui_foundations.py
 
+      # This path exists ONLY behind a distinct human-entered confirmation,
+      # on approved main, after separately configuring the Cloudflare bindings.
+      # It produces a local artifact, not a second staging site.
+      - name: Prepare first-party React AI backend (explicit AI mode only)
+        if: inputs.ai_mode == true
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund --prefix design-system/react
+          npm install --no-audit --no-fund --prefix tools/step16-real-l09-react-island
+          cd tools/step16-real-l09-react-island
+          npm run extract
+          npm run test:auth-pwa
+          node --test tests/ai-one-seat.test.mjs
+          npx tsc --noEmit
+          npm run build:worker
+          VITE_LI_AUTH_TARGET=cloudflare-first-party npx vite build --config vite.cloudflare-app.config.mjs
+          cd ../..
+          node tools/prepare_cloudflare_ai_candidate.mjs --build
+          test -s dist-cloudflare-ai-candidate/_worker.js
+          test -s dist-cloudflare-ai-candidate/assets/li-first-party-app.js
+          test -z "$(find dist-cloudflare-ai-candidate -type f -name '*.map' -print -quit)"
+          git diff --exit-code -- site
+
+      - name: Verify Cloudflare production AI/D1 bindings (read-only)
+        if: inputs.ai_mode == true
+        run: |
+          set -euo pipefail
+          python3 tools/check_cloudflare_ai_bindings.py
+
       - name: Hard-stop when Free plan setup or quota cannot be verified
         run: |
           set -euo pipefail
           test -n "$CLOUDFLARE_API_TOKEN" || { echo 'Missing required Free-only Cloudflare token'; exit 1; }
           test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo 'Missing account ID'; exit 1; }
           test -n "$CLOUDFLARE_PAGES_PROJECT" || { echo 'Missing Pages project name'; exit 1; }
-          python3 tools/g3_cloudflare_free_guard.py --site site --online
+          if [[ "${{ inputs.ai_mode }}" == "true" ]]; then
+            # This flag is a human Free-plan dashboard confirmation; it does
+            # not replace provider-side Free-only quota enforcement.
+            test "${{ vars.LI_AI_FREE_PLAN_CONFIRMED }}" = "true" || {
+              echo "Workers Free plan not explicitly confirmed; stop AI release"; exit 1;
+            }
+            python3 tools/g3_cloudflare_free_guard.py --site dist-cloudflare-ai-candidate --online
+          else
+            python3 tools/g3_cloudflare_free_guard.py --site site --online
+          fi
 
-      - name: Upload static prebuilt site without a Cloudflare automated Git build
+      - name: Upload selected approved site only (manual main release)
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy site --branch=main --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+          command: pages deploy ${{ inputs.ai_mode && 'dist-cloudflare-ai-candidate' || 'site' }} --branch=main --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }}
 
       - name: Explicit release log
-        run: echo "Cloudflare manual release complete; check Pages dashboard quotas and actual deployed URL."
+        run: echo "Manual Cloudflare release completed; AI mode needs signed-account + invite-RLS + Free quota smoke before user-validated status."

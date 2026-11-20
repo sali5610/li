@@ -19,7 +19,10 @@
  border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
 .li-ds-save-status-dot{display:block;flex:0 0 var(--li-space-3);height:var(--li-space-3);
  margin-top:var(--li-space-1);background:var(--muted);border-radius:50%}
-.li-ds-save-status[data-state="saving"] .li-ds-save-status-dot{background:var(--olive)}
+.li-ds-save-status[data-state="saving"] .li-ds-save-status-dot,
+.li-ds-save-status[data-state="queued"] .li-ds-save-status-dot{background:var(--olive)}
+/* Unknown sync status is neutral; neither a confirmed write error nor cloud success. */
+.li-ds-save-status[data-state="unavailable"] .li-ds-save-status-dot{background:var(--muted)}
 .li-ds-save-status[data-state="saved-device"] .li-ds-save-status-dot,
 .li-ds-save-status[data-state="synced"] .li-ds-save-status-dot{background:var(--moss)}
 .li-ds-save-status[data-state="error"]{border-color:var(--li-color-danger-fill)}

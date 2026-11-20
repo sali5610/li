@@ -1152,7 +1152,7 @@ width:70px!important;height:100px!important;left:3px!important;bottom:-3px!impor
 
 /* S119 · Approved S106 Home art — original 850×1850 portrait + 1672×941 landscape; no raster text. */
 #page-home .hero::before{
- background-image:url("./home-mystic-cool-desktop.webp")!important;
+ background-image:url("./home-li-landscape-20261121.webp")!important;
  background-size:cover!important;
  background-position:70% 50%!important;
 }
@@ -1162,7 +1162,7 @@ width:70px!important;height:100px!important;left:3px!important;bottom:-3px!impor
 }
 @media(max-width:600px){
  #page-home .hero::before{
-  background-image:url("./home-mystic-cool-mobile.webp")!important;
+  background-image:url("./home-li-iphone-20261121.webp")!important;
   background-size:cover!important;
   background-position:50% 50%!important;
  }

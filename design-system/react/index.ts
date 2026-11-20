@@ -32,3 +32,7 @@ export * from './LegacyDataViz';
 
 export {LiIcon,iconRoles,lucideRoleNames} from './LucideIcons';
 export type {LiIconRole,LiIconProps} from './LucideIcons';
+
+/** Share the same presentational Home layout between the UI Lab and real React Home. */
+export {HomeLayout,homeLayoutVariants} from './HomeLayoutVariants';
+export type {HomeLayoutProps,HomeLayoutVariant} from './HomeLayoutVariants';

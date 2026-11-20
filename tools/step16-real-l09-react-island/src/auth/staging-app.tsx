@@ -95,6 +95,11 @@ function enableIntegratedLessons(){
  // An unapproved lesson ID is never made navigable by a query parameter.
  (window as Window&{liReleasedEditorialRoutes?:Readonly<Record<string,string>>})
   .liReleasedEditorialRoutes=Object.freeze({...editorialRouteMap});
+ // All React catalogue entrypoints and browser history share the exact same
+ // manifest+catalog+published-route release gate.
+ (window as Window&{liReleasedLessonRoutes?:Readonly<Record<string,string>>})
+  .liReleasedLessonRoutes=Object.freeze(Object.fromEntries(
+   releasedLessonRoutes.map(({id,route})=>[id,route])));
  const requested=new URLSearchParams(window.location.search).get('lesson');
  const direct= releasedLessonRoutes.find(x=>x.id===requested&&!!editorialRouteMap[x.route]);
  if(direct){

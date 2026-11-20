@@ -14,6 +14,7 @@ import './journey.css';
 import {LessonBookmark,LessonMentor,LessonSectionIndex,LessonSources,LessonFigure} from './LessonDetailParity.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
 import {AiFeedbackPanel} from './AiFeedbackPanel.js';
+import feedbackPolicy from '../../../../content/feedback/ai-question-modes.v1.json';
 import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 
 type LessonId='L03-1-2'|'L15-2-2';
@@ -432,7 +433,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
      attempt.ratings.reduce<number>((sum,v)=>sum+(v??0),0)+' / 8':'— / 8'}</Text>
     <AiFeedbackPanel id={id} locale={attempt.locale}
      answers={attempt.submission??attempt.draft}
-     openQuestionIndices={source.practice.questionFeedbackModes.flatMap((mode,index)=>mode==='open'?[index]:[])}/>
+     openQuestionIndices={feedbackPolicy.lessons[id].modes.flatMap((mode,index)=>mode==='open'?[index]:[])}/>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
      locale={attempt.locale} onReviewTheory={()=>setPhase('read')}/>
     {attempt.reviewed?<Button onClick={()=>setPhase('progress')}>{labels.progress}</Button>:

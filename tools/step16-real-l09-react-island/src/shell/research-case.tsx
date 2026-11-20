@@ -20,9 +20,11 @@ function ResearchScene(){
    const next=readResearch();
    return JSON.stringify(previous)===JSON.stringify(next)?previous:next;
   });
+  window.addEventListener('li:auth-verified-changed',sync);
   window.addEventListener('li:inquiry-changed',sync);
   window.addEventListener('li:personal-sync-applied',sync);
   return ()=>{
+   window.removeEventListener('li:auth-verified-changed',sync);
    window.removeEventListener('li:inquiry-changed',sync);
    window.removeEventListener('li:personal-sync-applied',sync);
   };

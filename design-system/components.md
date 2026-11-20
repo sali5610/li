@@ -205,3 +205,19 @@ The immediately following *portrait-shaped* screenshot showed `innerWidth`/visua
 | \`ActionMenu\` | Compact native \`details/summary\` disclosure of link and button actions; selection calls real callbacks, Escape closes and returns focus to the trigger, blur closes, disabled actions stay inert. This is **not** a full ARIA \`role=menu\` keyboard widget. | **Do** use native links and buttons with Tab navigation; **don't** give \`role=menu\` without arrow-key/roving-focus implementation. |
 
 **Stories:** \`#sourceStatus\`, \`#disclosure\`, \`#actionMenu\` on the same Design System Studio, VI/EN and existing widths. Source link and review states are explicitly **demo fixture**, not claims about lesson content. QA: exact-head TS build + focused existing CI. Real Chrome keyboard, physical Safari, PO G2 and course consumer integration are NOT verified by source or CI. No learner flow, content migration, Auth/Neon, Pages workflow, Cloudflare release, or second repo.
+
+
+### UX-DS-35 / Stage06 composition patterns + Stage07 typed handoff · 2026-11-20
+
+**Six React pattern owners** live in \`design-system/react/Templates.tsx\` with \`templates.css\` and one existing Studio entry route. Their fixture stories are rendered from \`TemplateStory.tsx\`. All exported from \`index.ts\`; responsive styles consume generated tokens. No product routing, authentication, persisted attempt, search backend, or academic validation occurs here.
+
+| Pattern | Anatomy & fixture states | Do / Don't |
+| --- | --- | --- |
+| \`AppHeader\` | Brand link, labeled navigation, one current route, optional action slot. Active from caller. | Do use real href and aria-current; don't guess router state. |
+| \`HomeMirrorShell\` | Artwork slot + question + action row in generic editorial canvas, using the existing approved art only in story. | Do pass canonical art; don't replace or override actual Home geometry/G2. |
+| \`CatalogShell\` | Page introduction, search/filter slots, optional aside hierarchy, result grid/empty states. | Do use real controlled catalog data in app; don't invent search results. |
+| \`LearningFlowShell\` | Title, aria progress, prompt, response, feedback, action row, optional truthful SaveStatus. | Do keep learner state in app; don't infer mastery/sync in DS. |
+| \`AccountShell\` | Access vs settings mode as a purely presentational card, optional help/footer. | Do use real invite-only gate in integration; don't show a fake successful Google login. |
+| \`FeedbackScene\` | Empty/loading/error/complete, status semantics, optional details and callback action. | Do use verified state; don't claim completion from fixture text. |
+
+**Stage07 handoff:** \`design-system/react/README.md\` records real import contracts, owning workstreams, token CSS imports, responsive/a11y rules and explicit evidence boundaries. \`AppConsumerContract.tsx\` includes compile-time imports of representative Stage06 patterns. **Stage06 and Stage07 source deliverables IMPLEMENTED**, not actual app adoption. Stage08 dedupe and global G2/physical Safari Stage09 remain OPEN. Existing Studio should show all six UI patterns in VI/EN at the existing width presets, no second URL/repo. Focused CI verifies TS, build, token roles only; independent device visual approval not claimed.

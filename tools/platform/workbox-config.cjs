@@ -12,6 +12,8 @@ module.exports={
   "content-packs/graph.json","content-packs/course-catalog.json",
   "content-packs/answerability.json"],
  globIgnores:["**/*.map","**/*qa-secrets*"],
+ // Keep the native iOS push listener in the SAME Workbox worker and scope.
+ importScripts:["assets/li-push-handler.js"],
  swDest:"site/sw.js",
  mode:"production",
  maximumFileSizeToCacheInBytes:5*1024*1024,

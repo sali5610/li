@@ -7,7 +7,7 @@
   "totalCanonicalDrafts": 17,
   "mechanicallySectionedAndSeparated": 17,
   "withSourceMentorIssues": 0,
-  "structurallyParsedWithoutKnownBlockingDefects": 17,
+  "structurallyParsedWithoutKnownBlockingDefects": 16,
   "approved": 0,
   "packaged": 0,
   "deployed": 0,
@@ -129,8 +129,10 @@
       "normalizedPath": "content/editorial/normalized/L09-3-2.draft.v1.json",
       "publishState": "draft",
       "reviewState": "proposed",
-      "extractionStatus": "sectioned_needs_academic_review",
-      "issues": [],
+      "extractionStatus": "sectioned_needs_method_practice_and_academic_review",
+      "issues": [
+        "Method chapter needs an authored T06 response task and gated feedback"
+      ],
       "rightsState": "not_verified",
       "reactRendererReleased": false
     },
@@ -206,7 +208,13 @@
     "Fix literal undefined and independently verify every contextual quote/action",
     "Review academic claims, illustrations/rights, VI/EN parity and assessment",
     "Integrate with existing gated React renderer and learner persistence, preserve Wave1",
-    "Run one real signed-in end-to-end acceptance and obtain PO publication approval"
+    "Run one real signed-in end-to-end acceptance and obtain PO publication approval",
+    "Review all gated method and guided answers; author a distinct T06 practice for L09-3-2 before release"
   ],
-  "warning": "Mechanical sectioning is not a claim that authored content is safe or complete for live React. Never promote draft files to content/lessons based on this inventory alone."
+  "warning": "Mechanical sectioning is not a claim that authored content is safe or complete for live React. Never promote draft files to content/lessons based on this inventory alone.",
+  "withMethodFeedbackGated": 16,
+  "methodFeedbackMissing": [
+    "L09-3-2"
+  ],
+  "guidedFeedbackGated": 1
 }

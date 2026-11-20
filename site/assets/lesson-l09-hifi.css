@@ -103,13 +103,12 @@
  .li-lesson-spell-action{width:100%}
 }
 
-/* Verified lesson-graph links: existing underline is the focus affordance. */
+/* Verified lesson-graph links; reuse the existing DS surface/text and underline focus. */
 .li-related-lessons{min-width:0;margin-block:var(--li-space-5)}
 .li-related-list{display:grid;gap:var(--li-space-4);padding:0;margin:var(--li-space-4) 0 0;list-style:none}
-.li-related-item{display:grid;gap:var(--li-space-2);min-width:0;padding-block:var(--li-space-3);border-bottom:1px solid var(--rule)}
-.li-related-link{display:grid;gap:var(--li-space-1);width:fit-content;max-width:100%;color:var(--ink);text-decoration:none;border-bottom:1px solid transparent}
-.li-related-link:focus-visible{outline:0;border-bottom:3px solid var(--moss)}
-.li-related-type,.li-related-concepts{font-size:var(--li-type-support);color:var(--muted)}
-.li-related-reason{margin:0;color:var(--ink)}
-.li-related-source{width:fit-content;max-width:100%;color:var(--forest);text-underline-offset:3px}
-.li-related-source:focus-visible{outline:0;text-decoration-thickness:3px}
+.li-related-item{display:grid;gap:var(--li-space-2);min-width:0;padding-block:var(--li-space-3)}
+.li-related-link{display:grid;gap:var(--li-space-1);width:fit-content;max-width:100%;text-decoration:underline;text-underline-offset:var(--li-space-1)}
+.li-related-link:focus-visible{outline:0;text-decoration-thickness:var(--li-space-1)}
+.li-related-reason{margin:0}
+.li-related-source{width:fit-content;max-width:100%;text-decoration:underline;text-underline-offset:var(--li-space-1)}
+.li-related-source:focus-visible{outline:0;text-decoration-thickness:var(--li-space-1)}

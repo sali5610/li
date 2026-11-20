@@ -2,6 +2,35 @@
 
 **Rule:** Every request to fix a component triggers a top-down impact review, not a local patch at the reported screenshot. Use this before merging UI/UX work.
 
+## UX-ONT · Design System UI ontology ONLY (ONT-01 dependency, ONT-02 implementation)
+
+**Scope:** [UX-DS-35 DS-only ontology plan](plans/2026-11-19-atomic-responsive-react-roadmap.md) and [ONT-01 PR #127](https://github.com/sali5610/li/pull/127). ONT-03 academic, ONT-04 search/mentor reasoning and ONT-05 vector are OUT OF SCOPE and not DS gate requirements. ONT-01 spec/validator Done but its draft PR is not merged; ONT-02 is Backlog. All checkboxes unchecked until executed.
+
+- [ ] Pin ONT-01 typed UI schema/registry/types/validator commit and provenance; no new competing node/predicate schema, no false claim of implementation/published G2 approval.
+- [ ] Reference→semantic→component token roles map to `DesignToken` / `Component USES_TOKEN`, with explicit variant/state/shape/spacing/responsive ownership. JSON, CSS and TS types stay consistent; expanded React CSS/TSX audit reports no new unapproved raw component values.
+- [ ] Component `Variant/State/Slot` and Pattern `HAS_SLOT` / Component `FILLS_SLOT` are reflected in **real** Button, IconButton, Field, Card, Status, Dialog, ActionGroup APIs and component specs with per-component Do/Don't, accessible semantics and VI/EN.
+- [ ] Screen `USES_PATTERN`, UIRule `CONSTRAINS`, QAGate `VALIDATES` link to real Home/L09 UI/Header/Nav/Modal compositions, not lesson concepts or buddy reasoning.
+- [ ] Responsive UI rules cover effective viewport/container width, visible height, iPhone/iPad portrait/landscape, Split View, safe-area, keyboard and 200% text; preserve approved Guide 2-up 320–640 and landscape iPad Home crop.
+- [ ] Run ONT-01 graph validator and **separate actual UI unit/browser tests** for documented Button→ActionGroup→L09 slot/rule behavior. Log source SHA, screenshot, PASS/FAIL/UNVERIFIED; physical Safari/PWA/VoiceOver and G2 remain separate.
+- [ ] No ontology academic content, private learner nodes, semantic Search graph, Lão Lý intelligence, embeddings/vector index, Neon migrations or auth-policy changes added by this DS PR. Step16 auth/RLS remains independent.
+
+---
+
+## UX-DS-35 · Responsive adaptive iPhone/iPad & React readiness (DRAFT, 2026-11-19)
+
+**Source contracts:** [Adaptive responsive rules](responsive-adaptive.md) and [staged remediation roadmap](plans/2026-11-19-atomic-responsive-react-roadmap.md). These checks are **NOT yet marked PASS by creation of this checklist**. Existing DS33 Safari recovery remains until device verification; keep G2 pending.
+
+- [ ] Confirm responsive ownership chain: reference/semantic/component tokens → atom/molecule layout and state → organism/template composition; no new page-specific `!important`/absolute-offset screenshot patch.
+- [ ] Test actual **window + container + visible height**, not device name alone; iPad Split View may be compact, iPhone landscape may be wide but short. Cover keyboard/safe-area, pointer/touch, full VI/EN text, 200% text/320px reflow, and current Safari browser chrome.
+- [ ] Preserve PO-approved Thần Chú 2-up **320–640px** and meaningful untruncated names; preserve square primary controls, sand oval active nav, 48px intended new touch target, one approved iPad landscape Home artwork with portrait crop, and current iPad density baseline where applicable.
+- [ ] iPhone physical Safari: portrait 320/375/390/402/430 widths and short-height landscape, fixed nav, focus, virtual keyboard, check-in/mentor dialog scroll/Close/CTA, no blocked pinching or sticky touch-hover.
+- [ ] iPad physical Safari: full portrait and landscape, Split View/resize if supported, hardware keyboard/pointer, browser toolbar, **portrait→landscape→portrait→landscape** repeated with no stale root, no blank paper, no scroll trap, centered bubble and two CTA, preserved Home question and progress.
+- [ ] React L09/Auth CSS/TSX included in token scan and typed CSS/TS parity; component variant/state stories include compact/medium/expanded/short-height, and style isolation from Vanilla shell.
+- [ ] Record PASS/FAIL/UNVERIFIED separately for Chromium automation vs real iPhone/iPad Safari/PWA/VoiceOver; include source SHA, viewport metrics, screenshots and severity. No Human PO G2 approval inferred.
+- [ ] Do not enable invite-only Google auth/cloud sync or public release as part of a responsive/layout PR; observe Step16.1 real identity/RLS/consent and manual deployment gates.
+
+---
+
 ## UX-DS-22 · Cross-pattern behavior gate (2026-11-19)
 - [ ] Apply [UX-DS-22 Do/Don't and behavior contract](ux-patterns-and-behavior.md) to every affected component: usage, anti-pattern, anatomy, state, accessible semantics, responsive layout and visual exceptions.
 - [ ] Test primary vs secondary hierarchy; semantic link vs action; selected vs focus; disabled vs readonly; default/hover/focus/pressed/selected/busy/error/empty.

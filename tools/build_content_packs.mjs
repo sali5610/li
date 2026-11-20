@@ -30,7 +30,16 @@ function compileContent(lessons,concepts,relations,registry,academic){
  const allowed=new Map([...registry.predicates,...academic.relations].map(x=>[x.name,x]));
  const kinds=new Set(registry.nodeKinds.map(x=>x.name));
  const nodeById=new Map(),edgeById=new Map(),triples=new Set(),aliases=new Map();
- const addNode=n=>{if(nodeById.has(n.id)){const prev=nodeById.get(n.id);if(JSON.stringify(prev)!==JSON.stringify(n))fail("duplicate node ID "+n.id);return;}
+ const addNode=n=>{if(nodeById.has(n.id)){
+  const prev=nodeById.get(n.id);
+  // Two lessons under one Course/Field/Group share that identity. Their own
+  // content versions differ; don't duplicate or falsely reject the hierarchy.
+  const sameHierarchy=["DomainGroup","Field","Course"].includes(n.kind)&&
+   prev.kind===n.kind&&Object.keys(n).every(k=>k==="version"||
+    JSON.stringify(prev[k])===JSON.stringify(n[k]));
+  if(!sameHierarchy&&JSON.stringify(prev)!==JSON.stringify(n))fail("duplicate node ID "+n.id);
+  return;
+ }
   if(!kinds.has(n.kind)||!new RegExp(registry.idPolicy.pattern).test(n.id))fail("bad node "+n.id);
   if(!registry.enums.reviewState.includes(n.reviewState)||!registry.enums.publishState.includes(n.publishState))fail("bad lifecycle "+n.id);
   if(n.visibility!=="public_curated")fail("private content leak "+n.id);
@@ -38,8 +47,15 @@ function compileContent(lessons,concepts,relations,registry,academic){
   for(const t of [{locale:"en",text:n.title},...(n.aliases??[])]){const k=n.kind+":"+t.locale+":"+t.text.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();if(aliases.has(k)&&aliases.get(k)!==n.id)fail("alias collision "+k);aliases.set(k,n.id);}
   nodeById.set(n.id,n);
  };
- const addEdge=e=>{if(edgeById.has(e.id))fail("duplicate edge ID "+e.id);
-  const key=e.predicate+"|"+e.from+"|"+e.to;if(triples.has(key))fail("duplicate triple "+key);triples.add(key);edgeById.set(e.id,e);};
+ const addEdge=e=>{if(edgeById.has(e.id)){
+  const prev=edgeById.get(e.id);
+  // PART_OF is one structural edge, shared by every lesson within a course.
+  if(e.predicate==="PART_OF"&&JSON.stringify(prev)===JSON.stringify(e))return;
+  fail("duplicate edge ID "+e.id);
+ }
+ const key=e.predicate+"|"+e.from+"|"+e.to;
+ if(triples.has(key))fail("duplicate triple "+key);
+ triples.add(key);edgeById.set(e.id,e);};
  const editorial=(l,section)=>({sourceUrl:l.provenance.sourceUrl,sourceSection:section,evidenceType:"editorial",checkedOn:l.provenance.checkedOn});
  const navSrc={sourceUrl:"https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",sourceSection:"S36 mapped Wave1 hierarchy",evidenceType:"documented",checkedOn:"2026-11-20"};
  const packs=new Map(),search=[];

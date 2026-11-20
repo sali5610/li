@@ -5,7 +5,18 @@
  */
 export type Locale='vi'|'en';
 export type Rating=0|1|2|null;
-export type MethodAttempt={draft:string;submission:string|null;submittedAt:string|null};
+export type MethodCategory='nominal'|'ordinal'|'discrete'|'continuous';
+export type MethodAttempt={
+ draft:string;submission:string|null;submittedAt:string|null;
+ /** T06 has four explicit classifications in addition to the learner's reasoning. */
+ classifications?:Partial<Record<'A'|'B'|'C'|'D',MethodCategory>>;
+};
+export type MethodChoice='T06'|'T07'|'skip'|null;
+export type PastEditorialAttempt={
+ submission:[string,string,string,string];submissionLocale:Locale;submittedAt:string;
+ ratings:[Rating,Rating,Rating,Rating];reviewedAt:string|null;
+ contentVersion:string;rubricVersion:string;attemptNumber:number;
+};
 export type Attempt={
  locale:Locale;
  draft:[string,string,string,string];
@@ -20,6 +31,14 @@ export type Attempt={
  reviewed:boolean;
  /** Optional per-spell attempt; distinct from independent assessment. */
  methodAttempts?:Partial<Record<'T06'|'T07',MethodAttempt>>;
+ /** K2 selection is separate from K3 actually submitting a method exercise. */
+ methodChoice?:MethodChoice;
+ /** One completed revision stays frozen when a fresh practice round begins. */
+ contentVersion?:string;
+ rubricVersion?:string;
+ reviewedAt?:string|null;
+ attemptNumber?:number;
+ attemptHistory?:PastEditorialAttempt[];
 };
 export const NATIVE_KEY='li.review.L09-1-2.v1';
 export const PILOT_KEY='step16.l09.react-island.v1';

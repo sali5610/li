@@ -207,7 +207,7 @@
         {
           "stage": "concept",
           "heading": "concept · L09-3-3",
-          "source_md": "Quote candidates: analects-think, box-models, darwin-confidence; proposed primary analects-think.\n\nVI action 1: Recall và selection rate cùng là phần trăm, sao khác? — Lão Lý: Một bên lấy mẫu số là ca trễ thật, bên kia là tất cả đơn trong nhóm.\n\nVI action 2: Chênh số có chứng minh phân biệt đối xử không? — Lão Lý: Chưa. Cần ngữ cảnh, tác động, dữ liệu và cách vận hành.\n\nEN action 1: Why are recall and selection rate different? — Old Li: Recall divides by genuinely late orders; selection divides by all group orders.\n\nEN action 2: Does disparity prove discrimination? — Old Li: Not by itself. We still need context, impacts, data quality and operations."
+          "source_md": "Quote candidates: analects-think, hume-evidence, darwin-confidence; proposed primary analects-think.\n\nVI action 1: Recall và selection rate cùng là phần trăm, sao khác? — Lão Lý: Một bên lấy mẫu số là ca trễ thật, bên kia là tất cả đơn trong nhóm.\n\nVI action 2: Chênh số có chứng minh phân biệt đối xử không? — Lão Lý: Chưa. Cần ngữ cảnh, tác động, dữ liệu và cách vận hành.\n\nEN action 1: Why are recall and selection rate different? — Old Li: Recall divides by genuinely late orders; selection divides by all group orders.\n\nEN action 2: Does disparity prove discrimination? — Old Li: Not by itself. We still need context, impacts, data quality and operations."
         },
         {
           "stage": "guided",
@@ -274,11 +274,11 @@
           "stage": "concept",
           "quote_ids": [
             "analects-think",
-            "box-models",
+            "hume-evidence",
             "darwin-confidence"
           ],
           "missing_quote_ids": [],
-          "sourceQuoteHeading": "Quote candidates: analects-think, box-models, darwin-confidence; proposed primary analects-think.",
+          "sourceQuoteHeading": "Quote candidates: analects-think, hume-evidence, darwin-confidence; proposed primary analects-think.",
           "vi": {
             "prompt": "Trong hệ thống cảnh báo đơn giao trễ, ta đặt positive = đơn thực tế trễ. Accuracy là tỷ lệ dự đoán đúng trong toàn bộ test; recall là tỷ lệ đơn trễ thực tế được phát hiện; FPR là tỷ lệ đơn đúng hạn bị cảnh báo nhầm. Các đại lượng có mẫu số khác nhau.",
             "actions": [
@@ -501,9 +501,14 @@
       }
     },
     "issues": [],
-    "sourceVerbatim": true,
+    "sourceVerbatim": false,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
     "readOnlyDerived": true,
-    "runnableInReact": false
+    "runnableInReact": false,
+    "githubAuthoredMentorRightsOverride": {
+      "sourcePath": "content/editorial/imported/L09-3-3.source.v1.json",
+      "sourceKey": "content.github_editorial_extensions.mentorQuoteReplacements",
+      "status": "draft_options_remediated_publication_not_cleared"
+    }
   }
 }

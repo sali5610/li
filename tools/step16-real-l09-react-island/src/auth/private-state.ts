@@ -36,7 +36,7 @@ function assertT02(raw:string):void{
     !(d.due===null||(Number.isSafeInteger(d.due)&&Number(d.due)>0))||
     !Number.isSafeInteger(d.reviewCount)||Number(d.reviewCount)<0||
     !Number.isSafeInteger(d.streak)||Number(d.streak)<0||
-    d.streak>d.reviewCount||
+    Number(d.streak)>Number(d.reviewCount)||
     typeof d.awaitingRating!=='boolean'||
     !(d.lastReviewedAt===null||(Number.isSafeInteger(d.lastReviewedAt)&&Number(d.lastReviewedAt)>0))||
     ![null,'remembered','retry'].includes(d.lastRating as string|null)||

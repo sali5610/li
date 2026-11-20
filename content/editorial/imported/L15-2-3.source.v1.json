@@ -47,6 +47,18 @@
             "withId": "hume-evidence"
           }
         }
+      },
+      "academicReferenceCorrections": {
+        "checkedOn": "2026-11-21",
+        "status": "specific_reference_confirmed_not_full_academic_signoff",
+        "replacements": [
+          {
+            "from": "https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/agent_manager/agent_variables.htm",
+            "to": "https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/planning/shipment_manager/multi_create_shipments/shipment_stop_dtail.htm",
+            "reason": "Oracle Agent Variables does not describe planned, estimated or actual shipment-stop timestamps; Oracle Shipment Stop Details explicitly documents them."
+          }
+        ],
+        "supportingSapUrl": "https://help.sap.com/docs/business-network-global-track-and-trace/transportation-planner/shipment-details-page"
       }
     }
   },

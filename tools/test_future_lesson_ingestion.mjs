@@ -23,6 +23,7 @@ try{
  for(const path of ['content','docs/ontology/registry.v0.1.json',
   'docs/ontology/academic/registry.v0.1.json',
   'site/assets/lesson-wave1-core.js','site/assets/lesson-l09-hifi.js',
+  'site/assets/laoly-quotes-s121.js','site/lessons/companion/L09-1-1.json',
   'tools/build_content_packs.mjs'])copy(path);
  const original=load('content/editorial/L09-1-1.lesson.v1.json');
  assert.equal(original.id,'L09-1-1');

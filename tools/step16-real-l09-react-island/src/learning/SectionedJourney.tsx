@@ -182,7 +182,9 @@ export function SectionedJourney({lesson,ports}:{lesson:SectionedLesson;ports:Le
   }).finally(()=>{count.current--;if(mounted.current)setPending(count.current);});
  }
  function edit(change:(a:Attempt)=>Attempt){
-  if(locked||!current.current||current.current.submitted)return;
+  // Independent fields/buttons disable themselves after submit, but the
+  // four rubric ratings MUST remain editable during feedback after submit.
+  if(locked||!current.current)return;
   void persist(change(current.current));
  }
  async function submit(){

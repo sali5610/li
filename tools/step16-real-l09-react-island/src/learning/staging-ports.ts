@@ -1,4 +1,5 @@
 import type {Attempt} from '../native-bridge.js';
+import {validMethodAttempts} from './validate-method-attempts.js';
 import {initial} from '../native-bridge.js';
 import type {LearningPorts,SyncState} from './ports.js';
 import {isReleasedLessonId} from './released-lessons.js';
@@ -21,32 +22,6 @@ function canonical(v:unknown):string{
 }
 function tuple(v:unknown){return Array.isArray(v)&&v.length===4&&v.every(x=>typeof x==='string'&&x.length<=4000);}
 
-function validMethodAttempts(a:Pick<Attempt,'methodAttempts'>):boolean{
- const methods=a.methodAttempts;
- if(methods===undefined)return true; // preserve native Wave1 attempt records
- if(methods===null||Array.isArray(methods)||typeof methods!=='object')return false;
- for(const [id,raw] of Object.entries(methods)){
-  if(!['T03','T04','T06','T07','T09','T10'].includes(id))return false;
-  if(!raw||typeof raw!=='object'||Array.isArray(raw))return false;
-  const m=raw as {draft?:unknown;submission?:unknown;submittedAt?:unknown;classifications?:unknown};
-  if(typeof m.draft!=='string'||m.draft.length>4000||
-   !(m.submission===null||(typeof m.submission==='string'&&m.submission.length<=4000))||
-   !(m.submittedAt===null||(typeof m.submittedAt==='string'&&
-     m.submittedAt.length<=50&&Number.isFinite(Date.parse(m.submittedAt)))))
-   return false;
-  if((m.submission===null)!==(m.submittedAt===null))return false;
-  if(typeof m.submission==='string'&&m.submission.trim().length<12)return false;
-  if(m.classifications!==undefined){
-   if(id!=='T06'||!m.classifications||typeof m.classifications!=='object'||
-      Array.isArray(m.classifications))return false;
-   const c=m.classifications as Record<string,unknown>;
-   if(Object.keys(c).some(k=>!['A','B','C','D'].includes(k)||
-     !['nominal','ordinal','discrete','continuous'].includes(String(c[k]))))return false;
-   if(m.submittedAt&&['A','B','C','D'].some(k=>!c[k]))return false;
-  }
- }
- return true;
-}
 /** Review snapshots are optional for old Wave1 records, but strictly validated
  * when an editorial submission freezes its own localized rubric and solution. */
 function validReviewSnapshot(a:Attempt):boolean{

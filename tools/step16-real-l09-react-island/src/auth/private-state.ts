@@ -70,6 +70,13 @@ function wrap(field:Field,raw:string):JsonValue{
  }
  return {schema:SCHEMA,storageKey:field.key,raw};
 }
+/** Decode only supported account-scoped personal records; no arbitrary browser key. */
+export function personalRemoteSnapshot(uid:string,type:ItemType,id:string,payload:unknown):
+ {key:string;raw:string}|null{
+ const field=fieldsFor(uid).find(x=>x.type===type&&x.id===id);
+ if(!field)return null;
+ return {key:field.key,raw:unpack(payload,field.key)};
+}
 export function hasPersonalLocalChanges(uid:string,seen:Map<string,string|null>):boolean{
  return fieldsFor(uid).some(field=>active(uid,field)&&
   localStorage.getItem(field.key)!==(seen.get(field.key)??null));

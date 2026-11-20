@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "ReviewedQuestionFeedbackModes",
+  "approvedBy": "human-po",
+  "rule": "AI may analyze only explicitly open-ended answers; exact-answer questions always use the reviewed answer key/rubric. Unknown lessons default to no AI.",
+  "lessons": {
+    "L03-1-2": {
+      "questionCount": 4,
+      "modes": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    "L09-1-2": {
+      "questionCount": 4,
+      "modes": [
+        "exact",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    "L15-2-2": {
+      "questionCount": 4,
+      "modes": [
+        "exact",
+        "exact",
+        "open",
+        "open"
+      ]
+    }
+  }
+}

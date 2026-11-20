@@ -94,77 +94,68 @@
  #li-react-home-host .hero-actions .primary{transition:none!important}
 }
 
-/* Gương Vạn Vấn — full-bleed discipline art INSIDE the source-painted oval.
-   The old cloud-zone sticker was anchored to the bottom of the question.
-   Instead, center ONE opaque illustration over the complete inner glass,
-   with the existing question / arrows as unboxed foreground.
-   Width: mobile 60vw ~= 212 CSS px at the supplied 353px Safari screenshot,
-   ratio .74 ~= 286px tall. This fits the inner gold-rimmed aperture without
-   spilling onto Check-in, stairs or the outer frame. */
-#li-react-home-host .mirror-message,
-#page-home > .hero > .mirror-message{
- isolation:isolate;
- --li-mirror-glass-width:min(110%,360px);
- --li-mirror-glass-top:calc(50% + 12px);
-}
-#li-react-home-host .mirror-message::before,
-#page-home > .hero > .mirror-message::before,
-#li-react-home-host .li-home-mirror-artwork,
-#page-home > .hero > .mirror-message .li-home-mirror-artwork{
+/* The topic illustration is a cutout of the ACTUAL glass, not the question
+   text container. 353px Safari screenshot: visible glass ~222 × 308 CSS px,
+   centered ~50% across × 40.5% down the Home scene. Gold frame stays ABOVE
+   this cutout visually; the original painted clouds cannot show through it. */
+#li-react-home-host .hero{position:relative}
+#li-react-home-host .hero > .li-home-mirror-artwork,
+#page-home > .hero > .mirror-message > .li-home-mirror-artwork{
  position:absolute;
- left:50%;
- top:var(--li-mirror-glass-top);
- width:var(--li-mirror-glass-width);
+ left:49%;
+ top:43%;
+ width:min(28vw,340px);
+ aspect-ratio:.72;
  height:auto;
- aspect-ratio:.74;
- transform:translate(-50%,-50%);
- border-radius:50%;
- pointer-events:none;
- /* A tight oval edge hides the old clouds without laying a visible panel. */
- -webkit-mask-image:radial-gradient(ellipse closest-side at center,#000 0%,#000 93%,transparent 100%);
- mask-image:radial-gradient(ellipse closest-side at center,#000 0%,#000 93%,transparent 100%);
-}
-#li-react-home-host .mirror-message::before,
-#page-home > .hero > .mirror-message::before{
- content:"";
- z-index:0;
- background:var(--forest);
- opacity:1;
-}
-#li-react-home-host .li-home-mirror-artwork,
-#page-home > .hero > .mirror-message .li-home-mirror-artwork{
- z-index:1;
  overflow:hidden;
- opacity:1;
+ border-radius:50%;
+ clip-path:ellipse(49% 49% at 50% 50%);
  background:var(--forest);
+ opacity:1;
+ z-index:3;
+ pointer-events:none;
+ transform:translate(-50%,-50%);
+}
+#page-home > .hero > .mirror-message > .li-home-mirror-artwork{
+ left:50%;top:50%;
 }
 #page-home .li-home-mirror-artwork[hidden]{display:none!important}
 #li-react-home-host .li-home-mirror-art-image,
 #page-home > .hero > .mirror-message .li-home-mirror-art-image{
  position:absolute;
  inset:0;
+ display:block;
  width:100%;
  height:100%;
  object-fit:cover;
- object-position:center center;
- filter:saturate(1.04) contrast(1.07);
+ object-position:center;
+ filter:saturate(1.04) contrast(1.06);
 }
 #li-react-home-host .li-home-mirror-art-vignette,
 #page-home > .hero > .mirror-message .li-home-mirror-art-vignette{
  display:none!important;
 }
-/* Copy is in FRONT of the art, but never inside an opaque text panel. */
+/* The heading is on the foreground layer, with shadow only: no blocking panel. */
+#li-react-home-host .mirror-message{position:absolute;z-index:6}
 #li-react-home-host .li-home-mirror-float{position:relative;z-index:2}
+#li-react-home-host .mirror-message h2,
+#page-home > .hero > .mirror-message > h2{
+ text-shadow:0 2px 5px var(--forest),0 1px 2px var(--forest);
+}
 #page-home > .hero > .mirror-message > h2,
 #page-home > .hero > .mirror-message > .mirror-controls{
- position:relative;
- z-index:2;
+ position:relative;z-index:2;
 }
 @media(max-width:600px){
- #li-react-home-host .mirror-message,
- #page-home > .hero > .mirror-message{
-  --li-mirror-glass-width:min(60vw,252px);
-  --li-mirror-glass-top:calc(50% + 15px);
+ #li-react-home-host .hero > .li-home-mirror-artwork{
+  left:50%;
+  top:40.5%;
+  width:min(63vw,258px);
+ }
+ #page-home > .hero > .mirror-message > .li-home-mirror-artwork{
+  left:50%;
+  top:50%;
+  width:min(63vw,258px);
  }
 }
 @media(prefers-reduced-motion:reduce){

@@ -675,6 +675,63 @@ function liToggleMirrorQuestion(){
  return true;
 }
 document.getElementById("save-question").addEventListener("click",liToggleMirrorQuestion);
+/* Step16 · One canonical Inquiry domain owner, two UI entrypoints.
+ * React consumes trusted model/actions rather than clicking hidden buttons,
+ * editing hidden textarea values, or writing a second private library store.
+ * Legacy handlers above remain functional until full UI parity is proven. */
+function liInquiryAllowed(){
+ return document.documentElement.classList.contains("li-auth-verified")&&
+  !document.documentElement.classList.contains("li-account-open");
+}
+window.liInquiryFlow=Object.freeze({
+ getMirror:()=>{
+  const sc=scenarios[qIndex];if(!sc)return null;
+  return {
+   index:qIndex,question:sc.question,scene:sc.scene,
+   source:sc.type==="hook"?"TỪ BÀI HỌC ĐÃ XUẤT BẢN":"VÍ DỤ GIẢ ĐỊNH",
+   route:sc.type==="hook"?sc.lessonRoute:"research",
+   cta:sc.type==="hook"?"Khám phá vì sao":"Đào sâu",
+   saved:findSavedMirrorQuestion(sc)>=0
+  };
+ },
+ shift:direction=>{
+  if(!liInquiryAllowed()||(direction!==1&&direction!==-1))return false;
+  shiftMirrorQuestion(direction);return true;
+ },
+ toggleQuestion:()=>liInquiryAllowed()?liToggleMirrorQuestion():false,
+ getResearch:()=>{
+  const sc=liCurrentProblem();
+  return sc?{question:sc.question,branches:[...(sc.branches||[])],
+   observed:sc.observed,unknown:sc.unknown,feedback:liResearchFeedback}:null;
+ },
+ chooseBranch:index=>{
+  if(!liInquiryAllowed()||!Number.isInteger(index))return false;
+  return liChooseResearchBranch(liCurrentProblem()?.branches?.[index]);
+ },
+ getCaseDraft:()=>{
+  if(!liInquiryAllowed())return "";
+  try{return window.localStorage.getItem(LI_DRAFT_KEY)||""}catch{return ""}
+ },
+ setCaseDraft:text=>{
+  if(!liInquiryAllowed()||typeof text!=="string")return false;
+  try{
+   window.localStorage.setItem(LI_DRAFT_KEY,text);
+   return window.localStorage.getItem(LI_DRAFT_KEY)===text;
+  }catch{return false}
+ },
+ submitCase:(choice,revision)=>{
+  if(!liInquiryAllowed())return false;
+  return liSubmitCaseAnswer(choice,revision);
+ },
+ isCaseBookmarked:()=>liInquiryAllowed()&&Boolean(window.liBookmarks?.isSaved("case","sampling-bias-90")),
+ toggleCaseBookmark:()=>{
+  if(!liInquiryAllowed()||!window.liBookmarks?.toggle)return false;
+  const changed=window.liBookmarks.toggle("case","sampling-bias-90");
+  if(changed)window.dispatchEvent(new Event("li:inquiry-changed"));
+  return changed;
+ }
+});
+
 document.getElementById("buddy-challenge").addEventListener("click",()=>{buddyDebateActive=true;document.getElementById("buddy-debate").hidden=false;document.getElementById("buddy-quote").hidden=true;document.getElementById("buddy-text").textContent="Thử phản biện lão: 90% người được hỏi nói hài lòng. Lão kết luận cả thị trường cũng hài lòng.";});
 document.getElementById("buddy-right").addEventListener("click",()=>{document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent=liBuddyLine("Cuối cùng cũng chịu dùng đến bộ não rồi đấy. Nhà thông thái, ngươi đã bắt đúng lỗi suy rộng từ người dùng sang toàn thị trường. Lão xin rút kết luận.");});
 document.getElementById("buddy-wrong").addEventListener("click",()=>{document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent=liBuddyLine("Ồ, một cách suy luận rất sáng tạo. Tiếc là sai. Nhóc, lão chỉ hỏi người đang dùng; người chưa dùng có thể nghĩ khác. Đừng bắt mẫu khảo sát gánh cả thị trường.");});

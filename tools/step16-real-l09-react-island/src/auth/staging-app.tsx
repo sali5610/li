@@ -68,7 +68,7 @@ function attachExistingL09(){
     onFailure(){
      failed=true;
      // No guest, no fake state; native screen is preserved for safe fallback.
-     queueMicrotask(()=>{stop();delete lesson.dataset.liLearningRuntime;});
+     queueMicrotask(()=>{stop();delete page.dataset.liLearningRuntime;});
     }
    });
   }catch{failed=true;stop();}

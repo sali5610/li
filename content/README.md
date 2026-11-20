@@ -25,6 +25,11 @@ Original bilingual learning copy, the four independent questions, hints, answer 
 - Existing `site/assets/lesson-related-wave1.js` now loads canonical `contentClient.getRelatedLessons(id)` and `graph()` instead of a hardcoded navigation list, displaying concept names, bilingual reason and direct external source. React L09's legacy shell is hidden; the related section stays visible after the React host. Source unavailable → no unsourced fallback.
 - L09 ↔ L15 and L09 selection bias vs random variation remain `proposed`. No unverified source is promoted or displayed as confirmed.
 
+## Wave 2 editorial source (NOT shipped)
+- `content/editorial/L09-1-1.cms.v1.review.json` is the **exact preserved 2026-11-18 authored CMS pilot blob** for Population, Sample & Variable Types, VI/EN. This is the next real lesson candidate in C09-1. Its source content, method T06/T07, four independent responses, rubric, companion and references were NOT rewritten by this transfer.
+- **NOT a published canonical lesson**: editorial CMS format differs from `schema/lesson.schema.json`; it lives outside `content/lessons/` deliberately so the app generator does NOT include it in manifests, search, learning progress or navigation as available material. Academic/domain, imagery/quotation rights and release gates remain open; never change `published` flags to expose it by accident.
+- [Editorial status and reuse gates](editorial/README.md). Conversion to the canonical Lesson schema and existing invited-only learner flow is a separate narrowly scoped integration task **after release approval**. The old Wave2 offline pilot QA is reused as historical evidence, not repeated or described as real-origin Safari acceptance.
+
 ## Important boundary
 The old native JS still owns the deployed lesson **rendering and progress** until Chat 1/2 integrate the content adapter into the shared app. Temporary duplicate frozen payloads are guarded against drift. This PR does **not** claim the new source is consumed by the deployed learner UI, nor does it change Neon, auth, RLS, production release, or a second staging URL. The new static packs are intended for the **existing** `integration/staging` site build, not an independent deployment.
 

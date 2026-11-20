@@ -23,7 +23,54 @@ const store=new PrivateDeviceStore();
 type Attempt=Record<string,unknown>;
 type CloudPayload={schema:'li.native.lesson.v1';data:Record<string,JsonValue>};
 type Snapshot={id:string;raw:string|null};
-export type SyncReport='checking'|'saved'|'empty'|'offline'|'conflict'|'error';
+export type SyncReport='checking'|'saved'|'empty'|'offline'|'queued'|'conflict'|'error';
+type ActiveSync={uid:string;ready:Promise<void>;finish:()=>void;last:SyncReport;settled:boolean};
+let activeSync:ActiveSync|null=null;
+
+export async function waitForLearnerHydration(uid:string):Promise<void>{
+ const state=activeSync;
+ if(!state||state.uid!==uid)throw new Error('LEARNER_SYNC_NOT_STARTED');
+ await state.ready;
+ if(activeSync!==state)throw new Error('LEARNER_ACCOUNT_CHANGED');
+}
+
+/** React uses the same user-scoped native attempt and durable Dexie outbox.
+ * Never report a save successful unless IndexedDB committed its upload intent.
+ */
+export async function saveNativeLearnerAttempt(uid:string,id:string,data:unknown,
+ expectedRaw:string|null):Promise<string>{
+ if(!LESSONS.some(x=>x===id)||localStorage.getItem(OWNER)!==uid||
+    !IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN||
+    !document.documentElement.classList.contains('li-auth-verified'))
+  throw new Error('LEARNER_ACCOUNT_OR_INVITE_REQUIRED');
+ const key=KEY(id);
+ if(localStorage.getItem(key)!==expectedRaw)throw new Error('LEARNER_REVISION_CONFLICT');
+ const parsed=attempt(JSON.stringify(data));
+ if(!parsed)throw new Error('INVALID_LEARNER_ATTEMPT');
+ const raw=JSON.stringify(data);
+ // The previous native key remains the stable learner key across app versions.
+ localStorage.setItem(key,raw);
+ if(localStorage.getItem(key)!==raw)throw new Error('LOCAL_ATTEMPT_READBACK_FAILED');
+ await store.edit(uid,'lesson_attempt',id,pack(parsed));
+ if(activeSync?.uid===uid)activeSync.last='queued';
+ window.dispatchEvent(new CustomEvent('li:lesson-attempt-changed',{detail:{lessonId:id}}));
+ return raw;
+}
+
+/** No local write can claim cloud success without a signed sync in this session,
+ * a Neon-accepted Dexie revision, and no pending conflicting edit.
+ */
+export async function learnerAttemptSyncState(uid:string,id:string):
+ Promise<'on-device'|'queued'|'synced'|'unavailable'>{
+ if(!LESSONS.some(x=>x===id)||localStorage.getItem(OWNER)!==uid)throw Error('LEARNER_ACCOUNT_CHANGED');
+ const raw=localStorage.getItem(KEY(id));
+ if(raw===null)return 'on-device';
+ const key=storageKey(uid,'lesson_attempt',id);
+ const [pending,row]=await Promise.all([store.outbox.get(key),store.records.get(key)]);
+ if(pending||!row||row.deletedAt||row.baseRevision<1||
+    canonical(cloud(row.payload))!==canonical(attempt(raw)))return 'queued';
+ return activeSync?.uid===uid&&activeSync.last==='saved'?'synced':'queued';
+}
 
 function canonical(value:unknown):string{
  if(value===null||typeof value!=='object')return JSON.stringify(value)??'null';
@@ -149,7 +196,15 @@ async function hydrate(uid:string,snapshots:Snapshot[],retry:()=>void):Promise<b
 export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):()=>void{
  if(!IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN||!uid.trim())throw new Error('UNTRUSTED_ORIGIN');
  let disposed=false,busy=false,pending=false,timer:ReturnType<typeof setTimeout>|null=null;
- const report=(state:SyncReport)=>{if(!disposed)onStatus(state);};
+ let finish!:()=>void;
+ const ready=new Promise<void>(resolve=>{finish=resolve;});
+ const current:ActiveSync={uid,ready,finish,last:'checking',settled:false};
+ activeSync=current;
+ const report=(state:SyncReport)=>{
+  if(disposed)return;
+  current.last=state;
+  onStatus(state);
+ };
  function schedule(){
   if(disposed)return;
   if(timer!==null)clearTimeout(timer);
@@ -183,7 +238,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
     report('error');
     return;
    }
-   if(result.mode==='offline'||result.mode==='pending'){report('offline');return;}
+   if(result.mode==='offline'||result.mode==='pending'){report(result.mode==='pending'?'queued':'offline');return;}
    if(result.mode==='conflict'){report('conflict');return;}
    // The signed Data API has returned the uploaded row and read all owner rows.
    // Verify actual lesson readback, not merely a successful POST status.
@@ -200,7 +255,10 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
     }
    }
    const changed=await hydrate(uid,snapshots,()=>{pending=true;});
-   report((await store.accountRecords(uid)).some(x=>x.itemType==='lesson_attempt')?'saved':'empty');
+   const state=await store.counts(uid);
+   if(state.conflicts)report('conflict');
+   else if(state.pending)report('queued');
+   else report((await store.accountRecords(uid)).some(x=>x.itemType==='lesson_attempt')?'saved':'empty');
    if(changed&&!disposed)window.location.reload();
   }catch(error){
    const code=error instanceof Error?error.message:'';
@@ -210,6 +268,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
    report(navigator.onLine?'error':'offline');
   }finally{
    busy=false;
+   if(!current.settled){current.settled=true;current.finish();}
    if(pending&&!disposed){pending=false;schedule();}
   }
  }
@@ -224,6 +283,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
  window.addEventListener('focus',resumed);
  window.addEventListener('online',resumed);
  window.addEventListener('li:lesson-submitted',resumed);
+ window.addEventListener('li:lesson-attempt-changed',resumed);
  void run();
  return()=>{
   disposed=true;
@@ -234,5 +294,8 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
   window.removeEventListener('focus',resumed);
   window.removeEventListener('online',resumed);
   window.removeEventListener('li:lesson-submitted',resumed);
+  window.removeEventListener('li:lesson-attempt-changed',resumed);
+  if(!current.settled){current.settled=true;current.finish();}
+  if(activeSync===current)activeSync=null;
  };
 }

@@ -4,6 +4,7 @@ import type {LearningPorts,SyncState} from './ports.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
 import {neonSessionPort} from '../auth/neon-client.js';
 import {AUTH_ORIGIN,IS_GITHUB_STAGING,NEON_DATA_API_URL} from '../auth/config.js';
+import {waitForLearnerHydration,saveNativeLearnerAttempt,learnerAttemptSyncState} from '../auth/learner-sync.js';
 
 /** React uses existing owner-scoped native attempt + Chat 3 Neon sync.
  * No guest, fake account, second local key or independent cloud writer.
@@ -72,6 +73,8 @@ export function createStagingLearningPorts():LearningPorts{
   async load({lessonId,subjectId}){
    if(lessonId!==LESSON)throw Error('WRONG_LESSON');
    owner(subjectId);
+   await waitForLearnerHydration(subjectId);
+   owner(subjectId);
    const state=snapshot();
    return {attempt:state.attempt,revision:revision(state.raw)};
   },
@@ -81,24 +84,14 @@ export function createStagingLearningPorts():LearningPorts{
    if(!valid(attempt))throw Error('INVALID_ATTEMPT');
    const current=localStorage.getItem(KEY);
    if(revision(current)!==expectedRevision)throw Error('LEARNING_REVISION_CONFLICT');
-   const raw=JSON.stringify(attempt);
-   localStorage.setItem(KEY,raw);
-   if(localStorage.getItem(KEY)!==raw)throw Error('LEARNING_LOCAL_READBACK_FAILED');
+   const raw=await saveNativeLearnerAttempt(subjectId,lessonId,attempt,current);
    return {revision:raw};
   }
  },
  sync:{async getStatus({lessonId,subjectId}):Promise<SyncState>{
   if(lessonId!==LESSON)throw Error('WRONG_LESSON');
   owner(subjectId);
-  const state=snapshot();
-  if(state.raw===null)return 'on-device';
-  try{
-   const data=JSON.parse(localStorage.getItem(CHECKPOINT(subjectId))||'null') as
-    {revision?:number;data?:string}|null;
-   if(data&&Number.isSafeInteger(data.revision)&&Number(data.revision)>0&&
-      data.data===canonical(state.attempt))return 'synced';
-  }catch{/* Invalid metadata cannot claim successful Neon sync. */}
-  return 'queued';
+  return learnerAttemptSyncState(subjectId,lessonId);
  }},
  navigation:{openCatalog(){navigate('catalog');}},
  search:{openSearch(query){

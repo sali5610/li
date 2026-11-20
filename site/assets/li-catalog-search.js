@@ -150,7 +150,9 @@ function renderReal(value){
   const related=graphRelations(record);
   if(related)row.append(related);
   const catalogSource=sourceLink(record.sourceUrl,"Nguồn danh mục (Notion)");
-  if(catalogSource)row.append(catalogSource);
+  // One visible provenance link per result: prefer reviewed relation source.
+  // Catalog provenance remains available for records without a reviewed relation.
+  if(!related&&catalogSource)row.append(catalogSource);
   output.append(row);
  }
 }

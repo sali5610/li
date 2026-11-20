@@ -35,8 +35,12 @@ if(!initiallyHasCatalogSource){
    const hasField=container.textContent.includes('Data Science') &&
     container.textContent.includes('field:F09');
    const hasSection=container.textContent.includes('Quan hệ phân loại đã đối chiếu');
+   const sourceLinks=Array.from(container.querySelectorAll('a')).filter(
+    a=>a.textContent.includes('Nguồn ') && a.href.startsWith('https://app.notion.com/'));
    out.textContent=evidence?.href.startsWith('https://app.notion.com/') &&
-    hasField && hasSection?'LI_SEARCH_SOURCE_PASS':'LI_SEARCH_VISIBLE_SOURCE_FAIL';
+    hasField && hasSection && sourceLinks.length===1 &&
+    sourceLinks[0].textContent==='Nguồn quan hệ (Notion)'?
+    'LI_SEARCH_SOURCE_PASS':'LI_SEARCH_VISIBLE_SOURCE_FAIL';
   }else if(status==='error'||++checks>60){
    clearInterval(timer);out.textContent='LI_SEARCH_GRAPH_FAILED_'+String(status);
   }

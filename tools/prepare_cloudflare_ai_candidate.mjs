@@ -69,7 +69,7 @@ const shell=(
 );
 html=replaceOnce(html,'</body></html>',shell+'</body></html>');
 for(const name of ['li-auth-gate-critical','li-open-account',
- 'li-staging-auth-root','li-first-party-app.js','li-cloud-status'])
+ 'id="li-staging-auth-root"','li-first-party-app.js','li-cloud-status'])
  requireOne(html,name);
 if(html.includes('data-staging-only="true"')||
  html.includes('<script src="./assets/lesson-l09-hifi.js"></script>'))

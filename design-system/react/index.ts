@@ -21,3 +21,9 @@ export type {SourceReviewState,SourceStatusProps,DisclosureProps,ActionMenuItem,
 
 export {AppHeader,HomeMirrorShell,CatalogShell,LearningFlowShell,AccountShell,FeedbackScene} from './Templates';
 export type {AppNavItem,AppHeaderProps,HomeMirrorShellProps,CatalogShellProps,LearningFlowShellProps,AccountShellProps,SceneKind,FeedbackSceneProps} from './Templates';
+
+/** UX-DS-11 canonical React parity, historical candidate states remain DRAFT. */
+export * from './LegacyNavigation';
+export * from './LegacyCards';
+export * from './LegacyControls';
+export * from './LegacyDataViz';

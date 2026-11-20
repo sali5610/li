@@ -3,8 +3,10 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {Container,Stack,Inline,Cluster,Grid,SafeArea,ScrollRegion} from './Layout';
 import './layout.css';
+import './focus.css';
 
 const params=new URLSearchParams(location.search);
+if(params.get('state')==='focus')document.documentElement.dataset.dsFocusDemo='true';
 const variants=['Container','Stack','Inline','Cluster','Grid','SafeArea','ScrollRegion'] as const;
 type Variant=typeof variants[number];
 const requested=params.get('variant');

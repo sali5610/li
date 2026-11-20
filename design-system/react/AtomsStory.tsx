@@ -3,8 +3,10 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {Text,Heading,Link,Divider,Badge,Progress} from './Atoms';
 import './atoms.css';
+import './focus.css';
 
 const params=new URLSearchParams(location.search);
+if(params.get('state')==='focus')document.documentElement.dataset.dsFocusDemo='true';
 const atom=params.get('story')||'text';
 const variant=params.get('variant')||'body';
 const en=params.get('lang')==='en';

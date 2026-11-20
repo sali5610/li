@@ -5,7 +5,9 @@ import './components.css';
 import './controls.css';
 import './dialog.css';
 import './dialog-story.css';
+import './focus.css';
 const params=new URLSearchParams(location.search);
+if(params.get('state')==='focus')document.documentElement.dataset.dsFocusDemo='true';
 const en=params.get('lang')==='en', long=params.get('state')==='long';
 const t=(vi:string,english:string)=>en?english:vi;
 function Example(){

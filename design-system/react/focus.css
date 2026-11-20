@@ -1,0 +1,55 @@
+/* Canonical React focus grammar — UX-DS-35.
+   Keyboard focus changes the existing edge, surface or underline. No outer green
+   outline, no double rectangles. Keep visible focus for accessibility. */
+:is(.li-ds-button,.li-ds-filter-chip,.li-atom-icon-button):focus-visible,
+html[data-ds-focus-demo="true"] :is(.li-ds-button,.li-ds-filter-chip,.li-atom-icon-button):not(:disabled){
+ outline:none;border-width:3px;border-color:var(--moss);
+}
+.li-ds-button[data-variant="primary"]:focus-visible,
+html[data-ds-focus-demo="true"] .li-ds-button[data-variant="primary"]:not(:disabled){
+ border-color:var(--forest);background:var(--forest);
+}
+.li-atom-field :is(input,textarea):focus-visible,
+html[data-ds-focus-demo="true"] .li-atom-field :is(input,textarea):not(:disabled):not(:read-only){
+ outline:none;border-width:3px;border-color:var(--moss);
+}
+.li-atom-field :is(input,textarea)[aria-invalid="true"]:focus-visible{border-color:var(--li-color-danger-fill)}
+.li-atom-choice input:focus-visible{outline:0}
+.li-atom-choice:has(input:focus-visible),
+html[data-ds-focus-demo="true"] .li-atom-choice:not(:has(input:disabled)){
+ background:var(--li-color-nav-selected-fill);text-decoration:underline;text-decoration-thickness:2px;
+ text-underline-offset:var(--li-space-1);
+}
+.li-atom-link:focus-visible,.li-ds-breadcrumb a:focus-visible,
+.li-ds-source-reference a:focus-visible,.li-ds-app-header a:focus-visible,
+html[data-ds-focus-demo="true"] .li-atom-link{
+ outline:0;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:var(--li-space-1);
+ background:var(--li-color-nav-selected-fill);
+}
+.li-ds-language-switch button:focus-visible{
+ outline:0;background:var(--li-color-nav-selected-fill);color:var(--moss);
+ text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:var(--li-space-1);
+}
+.li-ds-language-switch button[aria-pressed="true"]:focus-visible{
+ background:var(--forest);color:var(--cream);
+}
+:is(a,button).li-ds-list-row:focus-visible,
+html[data-ds-focus-demo="true"] :is(a,button).li-ds-list-row{
+ outline:0;border-bottom-width:3px;border-bottom-color:var(--moss);background:var(--paper-2);
+}
+:is(.li-ds-disclosure,.li-ds-action-menu):has(>summary:focus-visible){
+ border-width:3px;border-color:var(--moss);
+}
+:is(.li-ds-disclosure,.li-ds-action-menu)>summary:focus-visible{
+ outline:0;background:var(--li-color-nav-selected-fill);
+}
+.li-ds-action-menu :is(a,button):focus-visible{
+ outline:0;border-inline-start:3px solid var(--moss);background:var(--paper-2);
+ text-decoration:underline;
+}
+.li-layout-scroll-region:focus-visible{
+ outline:none;border:3px solid var(--moss);background:var(--paper-2);
+}
+@media(prefers-reduced-motion:reduce){
+ :is(.li-ds-button,.li-atom-icon-button):focus-visible{transition:none}
+}

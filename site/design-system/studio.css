@@ -5,7 +5,13 @@ body{margin:0;background:var(--paper);color:var(--ink);font:var(--li-type-body)/
 button,input,select{font:inherit}
 a{color:var(--moss)}
 button,select{cursor:pointer}
-button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--li-color-general-focus-ring);outline-offset:var(--li-space-1)}
+/* The PO-approved focus state changes one existing edge/underline only. */
+button:focus-visible,input:focus-visible,select:focus-visible{outline:0;border-width:3px;border-color:var(--moss);background:var(--li-color-nav-selected-fill)}
+a:focus-visible{outline:0;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:var(--li-space-1);background:var(--li-color-nav-selected-fill)}
+.studio-mark:focus-visible,.studio-preview-link:focus-visible{background:var(--moss);color:var(--cream);text-decoration:underline;text-decoration-thickness:3px}
+.studio-story-link:focus-visible{outline:0;background:var(--li-color-nav-selected-fill);color:var(--moss);border-inline-start:3px solid var(--moss)}
+.studio-tab-list button:focus-visible{border-bottom:3px solid var(--moss);background:var(--li-color-nav-selected-fill)}
+
 .studio-top{height:72px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--rule);background:var(--cream);padding-inline:var(--li-space-8);gap:var(--li-space-4)}
 .studio-mark{display:flex;align-items:center;gap:var(--li-space-2);font:700 28px/1 var(--li-font-editorial);text-decoration:none;letter-spacing:-.02em;white-space:nowrap}
 .studio-glyph{display:grid;place-items:center;background:var(--moss);color:var(--cream);height:40px;width:40px;font:400 22px var(--li-font-editorial);margin-right:var(--li-space-2)}
@@ -89,7 +95,7 @@ body.is-canvas{overflow:auto}
 .studio-layout-inline{display:flex;flex-wrap:wrap;gap:var(--li-space-3)}
 .studio-layout-inline>*{flex:1 1 150px}
 .studio-layout-scroll{max-height:170px;overflow:auto;overscroll-behavior:contain;border:1px solid var(--rule);padding:var(--li-space-3)}
-.studio-layout-scroll:focus-visible{outline:3px solid var(--li-color-general-focus-ring)}
+.studio-layout-scroll:focus-visible{outline:0;border:3px solid var(--moss)}
 .studio-space-row{display:flex;align-items:center;gap:var(--li-space-3);margin-block:var(--li-space-2)}
 .studio-space-row span{background:var(--moss);height:12px;width:var(--space);max-width:85%}
 .studio-space-row code{min-width:65px;font-size:12px}

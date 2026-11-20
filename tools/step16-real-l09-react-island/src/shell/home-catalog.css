@@ -94,59 +94,56 @@
  #li-react-home-host .hero-actions .primary{transition:none!important}
 }
 
-/* Topic reflections must look like actual illustrated disciplines, not ghosts.
-   Fill the WHOLE painted mirror opening with opaque illustration, tint the art
-   gently and feather its perimeter. A semi-transparent whole image blends into
-   the Home's pre-printed clouds and makes different topics indistinguishable. */
+/* The illustration replaces the painted CLOUDS in the LOWER mirror.
+   Keep the question and arrows above the artwork vertically, not just via z-index.
+   The text has no translucent plate, vignette or gradient over the image. */
 #li-react-home-host .mirror-message,
-#page-home > .hero > .mirror-message{isolation:isolate}
-/* Lower the ORIGINAL painted mirror background; never dim the discipline image. */
+#page-home > .hero > .mirror-message{
+ isolation:isolate;
+ --li-mirror-cloud-art-height:clamp(150px,34vw,220px);
+ --li-mirror-cloud-art-width:min(105%,350px);
+}
 #li-react-home-host .mirror-message::before,
 #page-home > .hero > .mirror-message::before{
- content:"";position:absolute;left:50%;top:50%;z-index:0;
- width:121%;max-width:410px;aspect-ratio:.72;
- transform:translate(-50%,-50%);border-radius:50%;
- background:var(--forest);opacity:.89;pointer-events:none;
- -webkit-mask-image:radial-gradient(ellipse at center,#000 0%,#000 82%,transparent 98%);
- mask-image:radial-gradient(ellipse at center,#000 0%,#000 82%,transparent 98%);
+ content:"";position:absolute;left:50%;top:calc(100% - 44px);z-index:0;
+ width:var(--li-mirror-cloud-art-width);height:var(--li-mirror-cloud-art-height);
+ transform:translateX(-50%);
+ background:var(--forest);opacity:.98;pointer-events:none;
+ border-radius:46% 46% 48% 48% / 36% 36% 60% 60%;
+ -webkit-mask-image:radial-gradient(ellipse at center,#000 0%,#000 76%,transparent 99%);
+ mask-image:radial-gradient(ellipse at center,#000 0%,#000 76%,transparent 99%);
 }
 #li-react-home-host .li-home-mirror-artwork,
 #page-home > .hero > .mirror-message .li-home-mirror-artwork{
- position:absolute;left:50%;top:50%;z-index:1;pointer-events:none;
- width:118%;max-width:400px;aspect-ratio:.72;height:auto;
- transform:translate(-50%,-50%);overflow:hidden;
- border-radius:50%;opacity:1;
- background:var(--forest);
- -webkit-mask-image:radial-gradient(ellipse at center,#000 0%,#000 68%,transparent 97%);
- mask-image:radial-gradient(ellipse at center,#000 0%,#000 68%,transparent 97%);
+ position:absolute;left:50%;top:calc(100% - 42px);z-index:1;pointer-events:none;
+ width:var(--li-mirror-cloud-art-width);height:var(--li-mirror-cloud-art-height);
+ transform:translateX(-50%);overflow:hidden;opacity:1;
+ border-radius:46% 46% 48% 48% / 36% 36% 60% 60%;
+ -webkit-mask-image:radial-gradient(ellipse at center,#000 0%,#000 77%,transparent 99%);
+ mask-image:radial-gradient(ellipse at center,#000 0%,#000 77%,transparent 99%);
 }
 #page-home .li-home-mirror-artwork[hidden]{display:none!important}
 #li-react-home-host .li-home-mirror-art-image,
 #page-home > .hero > .mirror-message .li-home-mirror-art-image{
  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
- object-position:center center;
- filter:saturate(1.08) brightness(1.04) contrast(1.12);
+ object-position:center 45%;
+ filter:saturate(1.03) contrast(1.08);
 }
 #li-react-home-host .li-home-mirror-art-vignette,
 #page-home > .hero > .mirror-message .li-home-mirror-art-vignette{
- position:absolute;inset:0;opacity:1;
- background:linear-gradient(180deg,
-  transparent 17%,
-  color-mix(in srgb,var(--forest) 24%,transparent) 42%,
-  color-mix(in srgb,var(--forest) 30%,transparent) 61%,
-  transparent 88%);
+ display:none!important;
 }
+/* Copy stays in its original position with zero panel/gradient over the art. */
 #li-react-home-host .li-home-mirror-float{position:relative;z-index:2}
 #page-home > .hero > .mirror-message > h2,
-#page-home > .hero > .mirror-message > .mirror-controls{position:relative;z-index:2}
+#page-home > .hero > .mirror-message > .mirror-controls{
+ position:relative;z-index:2;
+}
 @media(max-width:600px){
- #li-react-home-host .li-home-mirror-artwork,
- #page-home > .hero > .mirror-message .li-home-mirror-artwork{
-  width:116%;max-width:none;aspect-ratio:.72;
- }
- #li-react-home-host .mirror-message::before,
- #page-home > .hero > .mirror-message::before{
-  width:119%;max-width:none;aspect-ratio:.72;
+ #li-react-home-host .mirror-message,
+ #page-home > .hero > .mirror-message{
+  --li-mirror-cloud-art-height:clamp(140px,40vw,160px);
+  --li-mirror-cloud-art-width:105%;
  }
 }
 @media(prefers-reduced-motion:reduce){

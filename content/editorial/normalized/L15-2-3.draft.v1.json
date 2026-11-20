@@ -9,7 +9,7 @@
     "format": "editorial-sectioned-draft-v1",
     "localized": {
       "vi": {
-        "intro_md": "<b>“Xe đã tới kho rồi — nhưng dashboard vẫn đang chờ tin xe tới.”</b>\n\nMột sự kiện có thể xảy ra trong thế giới thực <b>trước khi</b> hệ thống nhận được bản tin xác nhận. Trong tình huống giả định, <i>actual business time</i> và <i>message receipt time</i> là hai đồng hồ khác nhau; ETA lại là dự đoán, không phải dấu xác nhận. Nếu chưa có báo cáo actual, dashboard nên diễn đạt là <b>chưa xác nhận</b> thay vì tự tuyên bố đã đến.\n\n<i>Cú lật:</i> timeline tracking không chỉ hỏi “mấy giờ?” mà còn phải hỏi “<b>đồng hồ của sự kiện nào, từ nguồn nào?</b>” [Oracle Transportation Management — Agent Variables](https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/agent_manager/agent_variables.htm).",
+        "intro_md": "<b>“Xe đã tới kho rồi — nhưng dashboard vẫn đang chờ tin xe tới.”</b>\n\nMột sự kiện có thể xảy ra trong thế giới thực <b>trước khi</b> hệ thống nhận được bản tin xác nhận. Trong tình huống giả định, <i>actual business time</i> và <i>message receipt time</i> là hai đồng hồ khác nhau; ETA lại là dự đoán, không phải dấu xác nhận. Nếu chưa có báo cáo actual, dashboard nên diễn đạt là <b>chưa xác nhận</b> thay vì tự tuyên bố đã đến.\n\n<i>Cú lật:</i> timeline tracking không chỉ hỏi “mấy giờ?” mà còn phải hỏi “<b>đồng hồ của sự kiện nào, từ nguồn nào?</b>” [Oracle Transportation Management — Shipment Stop Details](https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/planning/shipment_manager/multi_create_shipments/shipment_stop_dtail.htm).",
         "sections": [
           {
             "id": "vi-01",
@@ -91,7 +91,7 @@
         }
       },
       "en": {
-        "intro_md": "<b>“The truck may already be at the warehouse — while the dashboard is still waiting to hear it arrived.”</b>\n\nA real-world event can occur <b>before</b> the tracking system receives a report. In this fictional scenario, <i>actual business time</i> and <i>message receipt time</i> are distinct timestamps; ETA is a prediction, not confirmation. Without a reported actual, the dashboard should say <b>unconfirmed</b>, rather than assert an arrival.\n\n<i>The reversal:</i> tracking is not just about “what time?” but “<b>which event clock, from which source?</b>” [Oracle Transportation Management — Agent Variables](https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/agent_manager/agent_variables.htm).",
+        "intro_md": "<b>“The truck may already be at the warehouse — while the dashboard is still waiting to hear it arrived.”</b>\n\nA real-world event can occur <b>before</b> the tracking system receives a report. In this fictional scenario, <i>actual business time</i> and <i>message receipt time</i> are distinct timestamps; ETA is a prediction, not confirmation. Without a reported actual, the dashboard should say <b>unconfirmed</b>, rather than assert an arrival.\n\n<i>The reversal:</i> tracking is not just about “what time?” but “<b>which event clock, from which source?</b>” [Oracle Transportation Management — Shipment Stop Details](https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/planning/shipment_manager/multi_create_shipments/shipment_stop_dtail.htm).",
         "sections": [
           {
             "id": "en-01",
@@ -472,6 +472,11 @@
       "sourcePath": "content/editorial/imported/L15-2-3.source.v1.json",
       "sourceKey": "content.github_editorial_extensions.mentorQuoteReplacements",
       "status": "draft_options_remediated_publication_not_cleared"
+    },
+    "githubAuthoredAcademicReferenceCorrections": {
+      "sourcePath": "content/editorial/imported/L15-2-3.source.v1.json",
+      "sourceKey": "content.github_editorial_extensions.academicReferenceCorrections",
+      "status": "specific_source_link_corrected"
     }
   }
 }

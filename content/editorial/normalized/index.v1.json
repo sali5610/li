@@ -213,5 +213,40 @@
   "warning": "Mechanical sectioning is not a claim that authored content is safe or complete for live React. Never promote draft files to content/lessons based on this inventory alone.",
   "withMethodFeedbackGated": 17,
   "methodFeedbackMissing": [],
-  "guidedFeedbackGated": 1
+  "guidedFeedbackGated": 1,
+  "reviewerEvidence": {
+    "checkedOn": "2026-11-21",
+    "scope": "targeted source-link relevance and known non-public-domain quote-option remediation; not complete academic review or release clearance",
+    "sourceCorrections": [
+      {
+        "id": "L15-2-3",
+        "replaced": "Oracle Transportation Management Agent Variables",
+        "correctedTo": "Oracle Transportation Management Shipment Stop Details",
+        "officialReference": "https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/planning/shipment_manager/multi_create_shipments/shipment_stop_dtail.htm",
+        "status": "specific_claim_reference_checked"
+      }
+    ],
+    "quotationRemediation": {
+      "excludedQuoteId": "box-models",
+      "sourceYear": 1987,
+      "affectedLessons": [
+        "L03-1-1",
+        "L03-1-3",
+        "L09-1-3",
+        "L09-3-1",
+        "L09-3-2",
+        "L09-3-3",
+        "L15-2-1",
+        "L15-2-3"
+      ],
+      "affectedMentorStages": 14,
+      "candidateStatus": "replaced_with_existing_classical_source_options",
+      "note": "The legacy shared S121 bank is unchanged; only unpublished sectioned-draft selections are remapped. Public-domain translations and quote-by-quote attribution still require review."
+    },
+    "independentReviewOutstanding": [
+      "Claim-by-claim academic validation across 17 lessons and rubric/answer accuracy",
+      "Quote-source, edition/translation rights and illustration provenance verification",
+      "Signed-in full learning-flow and accessible iPhone acceptance before PO authorizes publication"
+    ]
+  }
 }

@@ -4,13 +4,13 @@
     "predicate": "TEACHES",
     "from": "lesson:L03-1-2",
     "to": "concept:wave1:leading-interview-question",
-    "reviewState": "proposed",
+    "reviewState": "verified",
     "visibility": "public_curated",
     "reason": "Lesson explains how leading interview questions bias answers",
     "provenance": {
-      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
-      "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explains how leading interview questions bias answers",
-      "evidenceType": "editorial",
+      "sourceUrl": "https://aapor.org/standards-and-ethics/best-practices/",
+      "sourceSection": "Designing your questionnaire — avoid leading language; L03 authored outcomes",
+      "evidenceType": "documented",
       "checkedOn": "2026-11-20"
     }
   },
@@ -19,13 +19,13 @@
     "predicate": "TEACHES",
     "from": "lesson:L09-1-2",
     "to": "concept:ont01:selection-bias",
-    "reviewState": "proposed",
+    "reviewState": "verified",
     "visibility": "public_curated",
     "reason": "ONT-01 candidate concept ID reused; identity pending review",
     "provenance": {
-      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
-      "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · ONT-01 candidate concept ID reused; identity pending review",
-      "evidenceType": "editorial",
+      "sourceUrl": "https://www.pewresearch.org/u-s-survey-methodology/",
+      "sourceSection": "U.S. Survey Methodology — coverage/sampling/nonresponse errors; L09 authored outcomes",
+      "evidenceType": "documented",
       "checkedOn": "2026-11-20"
     }
   },
@@ -94,14 +94,18 @@
     "predicate": "RELATED_TO",
     "from": "concept:wave1:leading-interview-question",
     "to": "concept:ont01:selection-bias",
-    "reviewState": "proposed",
+    "reviewState": "verified",
     "visibility": "public_curated",
-    "reason": "Interview question bias and sample-selection bias are different routes to distorted findings",
+    "reason": "Distinct survey error mechanisms: leading wording affects measurement; sample selection affects representativeness. This is not equivalence or a prerequisite.",
     "provenance": {
-      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
-      "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Interview question bias and sample-selection bias are different routes to distorted findings",
-      "evidenceType": "editorial",
+      "sourceUrl": "https://www.pewresearch.org/u-s-survey-methodology/",
+      "sourceSection": "U.S. Survey Methodology — total survey error separates sampling/coverage/nonresponse from measurement; supports COMPARE not equivalence or prerequisite",
+      "evidenceType": "documented",
       "checkedOn": "2026-11-20"
+    },
+    "reasonLocalized": {
+      "vi": "Câu hỏi dẫn dắt ảnh hưởng điều được đo, còn chọn mẫu lệch ảnh hưởng nhóm người được đại diện. Hai kiểu sai lệch nghiên cứu khác nhau; không phải bài tiên quyết.",
+      "en": "Leading wording affects measurement, while biased sampling affects who is represented. These are distinct research errors, not prerequisites."
     }
   },
   {

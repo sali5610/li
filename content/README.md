@@ -20,6 +20,11 @@ Original bilingual learning copy, the four independent questions, hints, answer 
 - `site/assets/li-content-adapter.mjs` exports `createContentClient`: `getLesson(id)`, `getConceptLessons(conceptId)`, `getRelatedLessons(id,{includeProposed})`, `getBacklinks(id)`, and public search document retrieval. Loads a **single course pack on demand**; a read-only adapter only.
 - `node tools/test_content_adapter.mjs` is the changed-surface smoke, not another global QA suite.
 
+## Verified learner-facing knowledge connection (2026-11-20)
+- Verified **L03 ↔ L09 as a comparison of distinct survey error mechanisms**, not an equivalent concept or learning prerequisite. Sources are AAPOR survey questionnaire best practices and Pew Research Center's total survey error method. L03 and L09 `TEACHES` edges and two concept identities are source-checked, but full course/lesson academic publication remains gated.
+- Existing `site/assets/lesson-related-wave1.js` now loads canonical `contentClient.getRelatedLessons(id)` and `graph()` instead of a hardcoded navigation list, displaying concept names, bilingual reason and direct external source. React L09's legacy shell is hidden; the related section stays visible after the React host. Source unavailable → no unsourced fallback.
+- L09 ↔ L15 and L09 selection bias vs random variation remain `proposed`. No unverified source is promoted or displayed as confirmed.
+
 ## Important boundary
 The old native JS still owns the deployed lesson **rendering and progress** until Chat 1/2 integrate the content adapter into the shared app. Temporary duplicate frozen payloads are guarded against drift. This PR does **not** claim the new source is consumed by the deployed learner UI, nor does it change Neon, auth, RLS, production release, or a second staging URL. The new static packs are intended for the **existing** `integration/staging` site build, not an independent deployment.
 

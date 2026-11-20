@@ -25,7 +25,7 @@
           "text": "Sai lệch chọn mẫu"
         }
       ],
-      "reviewState": "proposed",
+      "reviewState": "verified",
       "publishState": "draft",
       "fieldId": null
     },
@@ -39,7 +39,7 @@
           "text": "Câu hỏi dẫn dắt trong phỏng vấn"
         }
       ],
-      "reviewState": "proposed",
+      "reviewState": "verified",
       "publishState": "draft",
       "fieldId": null
     },

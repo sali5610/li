@@ -1,77 +1,93 @@
-/* S158 · Available Wave1 cross-lesson journeys. Navigation metadata only:
-   never edits PO-locked lesson body, never exposes unpublished Wave2/3. */
+/* Wave1 related learning: existing UI powered by generated source-checked graph. */
 (()=>{
 "use strict";
 const LESSONS={
- "L03-1-2":{route:"lessonL03",title:"Open Questions & Interview Bias",field:{vi:"UX Design",en:"UX Design"}},
- "L09-1-2":{route:"lessonL09",title:"Sampling Bias",field:{vi:"Data Science",en:"Data Science"}},
- "L15-2-2":{route:"lessonL15",title:"Reorder Points & Safety Stock",field:{vi:"Supply Chain",en:"Supply Chain"}}
+ "L03-1-2":{route:"lessonL03",title:"Open Questions & Interview Bias",field:"UX Design"},
+ "L09-1-2":{route:"lessonL09",title:"Sampling Bias",field:"Data Science"},
+ "L15-2-2":{route:"lessonL15",title:"Reorder Points & Safety Stock",field:"Supply Chain"}
 };
-/* Relationships are conceptual, not false prerequisite or completion requirements. */
-const RELATED={
- "L03-1-2":[
-  {target:"L09-1-2",type:{vi:"MỞ RỘNG · THIÊN LỆCH",en:"EXTEND · BIAS"},
-   reason:{vi:"Câu hỏi có thể dẫn dắt câu trả lời. Vậy nếu ngay từ đầu ta đã hỏi sai nhóm người thì sao?",en:"Questions can lead answers. What if the people selected to answer are not representative?"}}
- ],
- "L09-1-2":[
-  {target:"L03-1-2",type:{vi:"SO SÁNH · NGHIÊN CỨU",en:"COMPARE · RESEARCH"},
-   reason:{vi:"Chọn đúng người vẫn chưa đủ: cách đặt câu hỏi cũng có thể làm lệch kết quả.",en:"Even with suitable participants, leading questions can distort what you learn."}},
-  {target:"L15-2-2",type:{vi:"ĐỔI GÓC NHÌN · VẬN HÀNH",en:"NEW CONTEXT · OPERATIONS"},
-   reason:{vi:"Từ chất lượng dữ liệu sang quyết định tồn kho: cần hiểu số liệu trước khi chọn ngưỡng đặt hàng.",en:"From data quality to inventory decisions: understand the numbers before setting a reorder point."}}
- ],
- "L15-2-2":[
-  {target:"L09-1-2",type:{vi:"NỀN TẢNG · ĐỌC DỮ LIỆU",en:"FOUNDATION · DATA READING"},
-   reason:{vi:"Một quyết định dùng số liệu cần biết số liệu ấy đại diện cho điều gì — và chưa đại diện cho ai.",en:"Before using numbers to decide, ask what those numbers do and do not represent."}}
- ]
+const client=import("./li-content-adapter.mjs").then(m=>m.contentClient);
+const lang=id=>{
+ const global=window.liLanguage?.get?.();
+ if(global==="vi"||global==="en")return global;
+ const active=document.querySelector('[data-lesson-id="'+id+'"] #'+id.slice(0,3).toLowerCase()+'-en');
+ return active?.getAttribute("aria-pressed")==="true"?"en":"vi";
 };
-function render(id){
- const root=document.querySelector('[data-lesson-id="'+id+'"]');
- const section=root?.querySelector(".li-related-lessons");
- if(!root||!section)return;
- const en=root.querySelector("#"+id.slice(0,3).toLowerCase()+"-en");
- const locale=en?.getAttribute("aria-pressed")==="true"?"en":"vi";
- const title=section.querySelector(".li-related-title"),intro=section.querySelector(".li-related-intro"),list=section.querySelector(".li-related-list");
- section.querySelector(".kicker").textContent=locale==="vi"?"KẾT NỐI KIẾN THỨC":"CONNECTED LEARNING";
- title.textContent=locale==="vi"?"Nối tiếp mạch kiến thức":"Follow the learning thread";
- intro.textContent=locale==="vi"?"Những bài đang mở, nối với điều vừa học theo một góc nhìn cụ thể. Không phải bài bắt buộc.":"Available lessons connected by a specific idea, not mandatory prerequisites.";
- list.replaceChildren();
- RELATED[id].forEach(entry=>{
-  const lesson=LESSONS[entry.target];
-  if(!lesson||!document.getElementById("page-"+lesson.route))return;
-  const link=document.createElement("a");
-  link.className="li-related-link";
-  link.href="./?lesson="+encodeURIComponent(entry.target);
-  link.dataset.relatedLessonId=entry.target;
-  link.setAttribute("aria-label",(locale==="vi"?"Mở bài ":"Open lesson ")+entry.target+": "+lesson.title);
-  const top=document.createElement("span"),heading=document.createElement("strong"),why=document.createElement("span"),end=document.createElement("span");
-  top.className="li-related-type";top.textContent=entry.type[locale]+" · "+lesson.field[locale];
-  heading.className="li-related-name";heading.textContent=lesson.title;
-  why.className="li-related-reason";why.textContent=entry.reason[locale];
-  end.className="li-related-go";end.textContent=(locale==="vi"?"Mở bài học":"Open lesson")+" →";
-  link.append(top,heading,why,end);
-  link.addEventListener("click",event=>{
-   if(event.defaultPrevented||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||event.button!==0)return;
-   if(typeof window.navigate==="function"){event.preventDefault();window.navigate(lesson.route);}
-  });
-  const li=document.createElement("li");li.append(link);list.append(li);
- });
- section.hidden=list.children.length===0;
+function add(tag,cl,content,to){
+ const el=document.createElement(tag);if(cl)el.className=cl;
+ if(content!==undefined)el.textContent=content;
+ if(to)to.append(el);
+ return el;
 }
-Object.keys(RELATED).forEach(id=>{
- const root=document.querySelector('[data-lesson-id="'+id+'"]');
- const stack=root?.querySelector(".l09-stack");
- if(!stack||stack.querySelector(".li-related-lessons"))return;
- const section=document.createElement("section");
- section.className="surface li-related-lessons";section.setAttribute("aria-labelledby","li-related-"+id);
- const kicker=document.createElement("div");kicker.className="kicker";kicker.textContent="KẾT NỐI KIẾN THỨC";
- const heading=document.createElement("h2");heading.className="li-related-title";heading.id="li-related-"+id;
- const intro=document.createElement("p");intro.className="li-related-intro small";
- const list=document.createElement("ul");list.className="li-related-list";
- section.append(kicker,heading,intro,list);
- stack.append(section);
- ["vi","en"].forEach(locale=>{
-  root.querySelector("#"+id.slice(0,3).toLowerCase()+"-"+locale)?.addEventListener("click",()=>render(id));
+function build(item,locale,nodes,list){
+ const lesson=LESSONS[item.lessonId];
+ if(!lesson||!document.getElementById("page-"+lesson.route))return;
+ const e=item.explanations.find(x=>x.predicate==="RELATED_TO"&&x.reviewState==="verified"&&/^https:\/\//.test(x.provenance?.sourceUrl||""));
+ if(!e)return;
+ const li=add("li","li-related-item",undefined,list);
+ const a=add("a","li-related-link",undefined,li);
+ a.href="./?lesson="+encodeURIComponent(item.lessonId);a.dataset.relatedLessonId=item.lessonId;
+ a.setAttribute("aria-label",(locale==="vi"?"Mở bài ":"Open lesson ")+item.lessonId+": "+lesson.title);
+ add("span","li-related-type",lesson.field+" · "+item.lessonId,a);
+ add("strong","li-related-name",lesson.title,a);
+ add("span","li-related-go",locale==="vi"?"Mở bài học →":"Open lesson →",a);
+ a.addEventListener("click",event=>{
+  if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+  if(typeof window.navigate==="function"){event.preventDefault();window.navigate(lesson.route);}
  });
- render(id);
-});
+ add("p","li-related-reason",e.reasonLocalized?.[locale]||e.reason,li);
+ const source=nodes.get(e.fromConcept),target=nodes.get(e.concept);
+ const conceptTitle=node=>node?.aliases?.find(x=>x.locale===locale)?.text||node?.title||"";
+ add("p","li-related-concepts",
+   (locale==="vi"?"Khái niệm: ":"Concepts: ")+
+   (source?conceptTitle(source):e.fromConcept)+" ↔ "+(target?conceptTitle(target):e.concept),li);
+ const origin=add("a","li-related-source",locale==="vi"?"Nguồn phương pháp · Pew Research Center":"Method source · Pew Research Center",li);
+ origin.href=e.provenance.sourceUrl;origin.target="_blank";origin.rel="noopener noreferrer";
+}
+async function render(id,section){
+ const list=section.querySelector(".li-related-list");
+ list.replaceChildren();
+ try{
+  const api=await client;
+  const [links,graph]=await Promise.all([api.getRelatedLessons(id),api.graph()]);
+  if(!section.isConnected)return;
+  const concepts=new Map(graph.nodes.filter(n=>n.kind==="Concept").map(n=>[n.id,n]));
+  links.forEach(link=>build(link,lang(id),concepts,list));
+  section.hidden=list.children.length===0;
+ }catch{
+  // If a pack is unavailable, never fall back to unreviewed hardcoded links.
+  section.hidden=true;
+ }
+}
+function mount(id){
+ const page=document.querySelector('[data-lesson-id="'+id+'"]'),stack=page?.querySelector(".l09-stack");
+ if(!page||!stack)return;
+ const wrapper=id==="L09-1-2"?add("div","section-shell",undefined,page):stack;
+ const section=add("section","surface li-related-lessons",undefined,wrapper);
+ section.hidden=true;section.setAttribute("aria-labelledby","li-related-"+id);
+ const kicker=add("div","kicker","",section);
+ const title=add("h2","li-related-title","",section);title.id="li-related-"+id;
+ const intro=add("p","li-related-intro small","",section);
+ add("ul","li-related-list",undefined,section);
+ const refresh=()=>{
+  const vi=lang(id)==="vi";
+  kicker.textContent=vi?"KẾT NỐI KIẾN THỨC":"CONNECTED LEARNING";
+  title.textContent=vi?"Nối tiếp mạch kiến thức":"Follow the learning thread";
+  intro.textContent=vi?"Chỉ các liên kết đã đối chiếu nguồn; không phải bài bắt buộc.":"Source-checked connections only; not mandatory prerequisites.";
+  void render(id,section);
+ };
+ for(const locale of ["vi","en"])
+  page.querySelector("#"+id.slice(0,3).toLowerCase()+"-"+locale)?.addEventListener("click",refresh);
+ window.addEventListener?.("li:localechange",refresh);
+ if(id==="L09-1-2"){
+  const place=()=>{
+   const host=page.querySelector("#li-react-l09-host");
+   if(host&&host.nextElementSibling!==wrapper)host.after(wrapper);
+  };
+  new MutationObserver(place).observe(page,{childList:true});
+  place();
+ }
+ refresh();
+}
+Object.keys(LESSONS).forEach(mount);
 })();

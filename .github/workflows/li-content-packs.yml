@@ -6,6 +6,8 @@ on:
       - 'tools/build_content_packs.mjs'
       - 'tools/test_content_adapter.mjs'
       - 'site/assets/li-content-adapter.mjs'
+      - 'site/assets/lesson-related-wave1.js'
+      - 'site/assets/lesson-l09-hifi.css'
       - 'site/assets/catalog-curriculum-data.js'
       - 'site/content-packs/**'
       - '.github/workflows/li-content-packs.yml'

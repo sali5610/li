@@ -646,26 +646,29 @@ function refreshQuestionBookmark(){
  button.title=saved?"Bỏ lưu câu hỏi":"Lưu câu hỏi";
  const label=document.getElementById("mirror-save-label");if(label)label.textContent=saved?"Đã lưu":"Lưu câu hỏi";
 }
-document.getElementById("save-question").addEventListener("click",()=>{
+function liToggleMirrorQuestion(){
  const sc=scenarios[qIndex],index=findSavedMirrorQuestion(sc);
- if(liStorageError){toast("Không đọc được Dấu Trang đã lưu. Chưa thay đổi dữ liệu.");return;}
+ if(liStorageError){toast("Không đọc được Dấu Trang đã lưu. Chưa thay đổi dữ liệu.");return false;}
  if(index>=0){
   const [removed]=savedQuestions.splice(index,1);
-  if(!liWriteState()){savedQuestions.splice(index,0,removed);toast("Không bỏ lưu được. Dấu Trang vẫn giữ nguyên.");return;}
+  if(!liWriteState()){savedQuestions.splice(index,0,removed);toast("Không bỏ lưu được. Dấu Trang vẫn giữ nguyên.");return false;}
   toast("Đã bỏ lưu câu hỏi.",{undo:()=>{
    if(savedQuestions.some(item=>item.id===removed.id))return true;
    const at=Math.min(index,savedQuestions.length);savedQuestions.splice(at,0,removed);
    if(!liWriteState()){savedQuestions.splice(at,1);return false;}
-   refreshQuestionBookmark();window.liLibraryShelf?.renderResume();return true;
+   refreshQuestionBookmark();window.liLibraryShelf?.renderResume();window.dispatchEvent(new Event("li:inquiry-changed"));return true;
   }});
  }else{
   const item={id:liNewId(),scenarioKey:sc.key||null,question:sc.question,scene:sc.scene,type:sc.type||"problem",lessonRoute:sc.type==="hook"?sc.lessonRoute:null,savedAt:new Date().toISOString()};
   savedQuestions.unshift(item);
-  if(!liWriteState()){savedQuestions.shift();toast("Không thể lưu Dấu Trang trên thiết bị.");return;}
+  if(!liWriteState()){savedQuestions.shift();toast("Không thể lưu Dấu Trang trên thiết bị.");return false;}
   toast(sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang.":"Đã lưu câu hỏi vào Dấu Trang.");
  }
  refreshQuestionBookmark();window.liLibraryShelf?.renderResume();
-});
+ window.dispatchEvent(new Event("li:inquiry-changed"));
+ return true;
+}
+document.getElementById("save-question").addEventListener("click",liToggleMirrorQuestion);
 document.getElementById("buddy-challenge").addEventListener("click",()=>{buddyDebateActive=true;document.getElementById("buddy-debate").hidden=false;document.getElementById("buddy-quote").hidden=true;document.getElementById("buddy-text").textContent="Thử phản biện lão: 90% người được hỏi nói hài lòng. Lão kết luận cả thị trường cũng hài lòng.";});
 document.getElementById("buddy-right").addEventListener("click",()=>{document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent=liBuddyLine("Cuối cùng cũng chịu dùng đến bộ não rồi đấy. Nhà thông thái, ngươi đã bắt đúng lỗi suy rộng từ người dùng sang toàn thị trường. Lão xin rút kết luận.");});
 document.getElementById("buddy-wrong").addEventListener("click",()=>{document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent=liBuddyLine("Ồ, một cách suy luận rất sáng tạo. Tiếc là sai. Nhóc, lão chỉ hỏi người đang dùng; người chưa dùng có thể nghĩ khác. Đừng bắt mẫu khảo sát gánh cả thị trường.");});

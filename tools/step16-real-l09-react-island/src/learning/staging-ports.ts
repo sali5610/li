@@ -5,6 +5,7 @@ import {isReleasedLessonId} from './released-lessons.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
 import {neonSessionPort} from '../auth/neon-client.js';
 import {AUTH_ORIGIN,IS_GITHUB_STAGING,NEON_DATA_API_URL} from '../auth/config.js';
+import {recentOfflineOwner} from '../auth/offline-local.js';
 import {waitForLearnerHydration,saveNativeLearnerAttempt,learnerAttemptSyncState} from '../auth/learner-sync.js';
 
 /** React uses existing owner-scoped native attempt + Chat 3 Neon sync.
@@ -78,6 +79,13 @@ export function createStagingLearningPorts(lesson:string):LearningPorts{
  return {
  auth:{async requireInvitedLearner(){
   if(!document.documentElement.classList.contains('li-auth-verified'))throw Error('INVITE_REQUIRED');
+  // Offline continuation: local-only recent invite, SAME owner, never a remote grant.
+  if(!navigator.onLine){
+   const localUid=recentOfflineOwner(true);
+   if(!localUid)throw Error('RECENT_INVITE_REQUIRED');
+   owner(localUid);
+   return {subjectId:localUid};
+  }
   const session=await neonSessionPort.getSession();
   const uid=session.data?.user?.id;
   if(session.error||!uid)throw Error('SESSION_REQUIRED');

@@ -80,6 +80,31 @@ function fallback(query:string):KnowledgeResponse{
   .map(entry=>entry.item);
  return {status:'fallback',results};
 }
+/** A small accessible graph drawn strictly from canonical ontology edges.
+ * Each learnable node opens through the shared router, never an inferred route. */
+function RelationMap({record,locale,onOpen}:{record:KnowledgeItem;locale:'vi'|'en';onOpen:(id:string)=>void}){
+ const links=(record.links||[]).filter(link=>link.kind==='Lesson'||link.kind==='Concept').slice(0,6);
+ if(!links.length)return null;
+ const L=(vi:string,en:string)=>localized(locale,vi,en);
+ return <div className="li-knowledge-graph" role="group" aria-label={L('Bản đồ kết nối tri thức','Knowledge connection map')}>
+  <Text role="caption">{L('BẢN ĐỒ KẾT NỐI','CONNECTION MAP')}</Text>
+  <div className="li-knowledge-graph-root">{record.title}</div>
+  <div className="li-knowledge-graph-edges">
+   {links.map((link,i)=>{
+    const id=link.lessonId||link.id;
+    const canOpen=link.kind==='Lesson'&&!!availableRoute(id);
+    return <div key={link.id+':'+i} className="li-knowledge-graph-edge">
+     <span className="li-knowledge-graph-connector" aria-hidden="true"/>
+     {canOpen?<Button variant="secondary" onClick={()=>onOpen(id)}>
+      <span>{link.title}</span><span className="li-knowledge-graph-kind">{L('Mở bài','Open lesson')} · {id}</span>
+     </Button>:<span className="li-knowledge-graph-node">{link.title}
+      <span className="li-knowledge-graph-kind">{link.kind==='Concept'?L('Khái niệm','Concept'):id}</span>
+     </span>}
+    </div>;
+   })}
+  </div>
+ </div>;
+}
 function KnowledgeSearch(){
  const locale=useDiscoveryLocale();
  const L=(vi:string,en:string)=>localized(locale,vi,en);
@@ -166,9 +191,10 @@ function KnowledgeSearch(){
       <Text role="caption">{response.results.length} {L("kết quả","results")} · {response.status==='answerable'||response.status==='related_only'||response.status==='outcome_match'?
        L('Câu hỏi tự nhiên · phạm vi 3 bài Wave1','Natural-language search · 3 Wave1 lessons'):response.status==='personal_match'?
         L('Bài học cá nhân trên staging + Knowledge Base','Personal staging lessons + knowledge base'):L('Knowledge Base canonical','Canonical knowledge base')}</Text>
-      {response.results.map(record=><motion.article key={record.kind+':'+record.id}
+      {response.results.map((record,index)=><motion.article key={record.kind+':'+record.id}
         className="li-search-result" initial={reduced?false:{opacity:0,y:6}}
         animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.17}}> 
+       {index===0&&<RelationMap record={record} locale={locale} onOpen={navigateTo}/>}
        <ListRow title={record.title}
         description={(locale==='en'?(englishKind[record.kind]||'Knowledge item'):(kindCopy[record.kind]||'Mục kiến thức'))+' · '+(record.lessonId||record.id)+
          (record.contentState==='review_only'?L(' · đang duyệt',' · under review'):'')+

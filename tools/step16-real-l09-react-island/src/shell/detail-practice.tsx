@@ -14,7 +14,9 @@ type SpellView={
  active:string;title:string;mode:string;phase:number;tab:'guide'|'practice';
  lesson:string;prompt:string;fields:SpellField[];feedback:string;
  resumeNote:string;places:string[];dueAt:number|null;
- lessonId:string|null;reviewedInSession:boolean;viewSession:number
+ lessonId:string|null;reviewedInSession:boolean;viewSession:number;
+ t12Draft?:{context:string;next:string;answer:string};
+ t12SavedOnDevice?:boolean;t12StorageError?:string
 };
 type Version={version:number;title:string;body:string;at:string;change?:string};
 type CaseContext={
@@ -30,7 +32,8 @@ type NoteOutcome={ok:boolean;changed?:boolean;message:string};
 type AppWindow=Window&{
  LiSpellPractice?:{
   getView:()=>SpellView|null;setTab:(value:'guide'|'practice')=>void;
-  perform:(action:string,answers?:Record<string,string|string[]>)=>boolean
+  perform:(action:string,answers?:Record<string,string|string[]>)=>boolean;
+  setT12Draft?:(field:string,value:string)=>boolean
  };
  liMethods?:{getView:()=>{methods:Method[]}};
  liLanguage?:{get:()=>string;translate?:(value:string)=>string};
@@ -118,7 +121,9 @@ export function GuideDetail(){
    window.removeEventListener('li:study-mode-applied',update);
   };
  },[]);
- useEffect(()=>setAnswers({}),[view?.active,view?.phase,view?.lessonId,view?.viewSession]);
+ useEffect(()=>{
+  setAnswers(view?.active==='T12'&&view.t12Draft?{...view.t12Draft}:{});
+ },[view?.active,view?.phase,view?.lessonId,view?.viewSession]);
  const method=(app.liMethods?.getView().methods||[]).find(x=>x.id===view?.active);
  const setTab=(tab:'guide'|'practice')=>app.LiSpellPractice?.setTab(tab);
  const action=(kind:string)=>{
@@ -150,7 +155,7 @@ export function GuideDetail(){
  const preparing=phase===0;
  const hasSource=preparing;
  let actionLabel=copy('Đối chiếu bài làm','Check your response');
- if(preparing&&view.mode==='resume')actionLabel=copy('Tạm ngắt · Lưu dấu vết trong phiên','Pause · Keep a session cue');
+ if(preparing&&view.mode==='resume')actionLabel=copy('Tạm ngắt · Lưu dấu vết','Pause · Save re-entry cue');
  else if(preparing&&view.mode==='loci')actionLabel=copy('Giấu nguồn · Đi qua lộ trình','Hide source · Walk the route');
  else if(preparing&&['faded','hide'].includes(view.mode))actionLabel=copy('Giấu nguồn · Tiếp tục','Hide source · Continue');
  else if(view.mode==='faded'&&phase===1)actionLabel=copy('Kiểm tra để sang bài mới','Check to continue');
@@ -225,7 +230,11 @@ export function GuideDetail(){
      <Text role="body">{prompt()}</Text>
      {view.fields.map(field=><PracticeField key={view.active+view.phase+field.id}
       field={field} value={answers[field.id]}
-      onChange={value=>setAnswers(before=>({...before,[field.id]:value}))}/>)}
+      onChange={value=>{
+       setAnswers(before=>({...before,[field.id]:value}));
+       if(view.active==='T12'&&typeof value==='string')
+        app.LiSpellPractice?.setT12Draft?.(field.id,value);
+      }}/>)}
      {isDuePreparing?<>
       {dueFuture&&<Text role="support" className="spell-honest">{copy(
        'Đã đặt mốc ôn: ','Scheduled review: ')}
@@ -248,10 +257,17 @@ export function GuideDetail(){
        'Illustrative exercise only; not a certification of mastery.')}</Text>
      </div>}
     </div>
-    <div className="spell-activity-footer"><Text role="support">{copy(
-     'Tự chọn, có thể bỏ qua. Trừ mốc ôn T02, câu trả lời không tự lưu hoặc gửi lên máy chủ.',
-     'Optional. Except the T02 schedule, exercise answers are neither saved nor sent to a server.'
-    )}</Text>
+    <div className="spell-activity-footer">
+     <Text role="support">{view.active==='T12'?
+      copy('T12 lưu dấu vết và bản nháp trên thiết bị này, không đồng bộ sang thiết bị khác.',
+       'T12 saves the cue and draft on this device only; no cross-device sync.'):
+      copy('Tự chọn, có thể bỏ qua. Trừ mốc ôn T02, câu trả lời không tự lưu hoặc gửi lên máy chủ.',
+       'Optional. Except the T02 schedule, exercise answers are neither saved nor sent to a server.')}</Text>
+     {view.active==='T12'&&<p className="small" role={view.t12StorageError?'alert':'status'}
+       aria-live="polite">{view.t12StorageError||
+        (view.t12SavedOnDevice?
+         copy('Đã lưu dấu vết trên thiết bị.','Cue saved on this device.'):
+         copy('Chưa có dấu vết đã lưu.','No saved cue yet.'))}</p>}
      <Button variant="secondary" onClick={()=>action('reset')}>
       {copy('Làm lại','Start over')}</Button>
     </div>

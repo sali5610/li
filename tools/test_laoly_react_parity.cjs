@@ -81,7 +81,7 @@ assert.match(fab,/onPointerUp=\{finish\}/,'React owns drag-end persistence');
 assert.match(plans,/window\.liCaseUi\?\.getState\?\.\(\)/);
 assert.match(plans,/window\.liCaseUi\?\.submit\?\.\(\)/);
 assert.match(plans,/window\.liGuideUi\?\.getState\?\.\(\)/);
-assert.match(plans,/window\.liCaptureUi\.getDraft\(\)/);
+assert.match(plans,/window\.liCaptureUi\?\.getDraft\?\.\(\)/);
 assert.match(plans,/window\.liInquiryFlow\.getResearch\(\)\?\.feedback/);
 assert.match(plans,/window\.liInquiryFlow\?\.toggleQuestion\?\.\(\)/);
 assert.match(plans,/window\.LiSpellPractice\?\.getView\?\.\(\)\?\.active/);

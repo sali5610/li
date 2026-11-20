@@ -3,6 +3,7 @@ import {initial} from '../native-bridge';
 import type {Attempt,EditorialMethodId,EditorialReviewSnapshot,PastEditorialAttempt} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
 import {isReleasedLessonId} from './released-lessons';
+import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 import {Button,Card} from '../../../../design-system/react/Components';
 import {Field} from '../../../../design-system/react/Controls';
 import {Heading,Text} from '../../../../design-system/react/Atoms';
@@ -221,6 +222,11 @@ export function SectionedJourney({lesson,ports}:{lesson:SectionedLesson;ports:Le
   setError('');
   if(await persist({...a,reviewed:true,reviewedAt:new Date().toISOString()}))setPhase('progress');
  }
+ async function restartLesson(){
+  const a=current.current;
+  if(!a||locked||pending>0||!confirmLessonRestart(id,a.locale))return;
+  if(await persist(freshLessonAttempt(a)))setPhase('read');
+ }
  async function newRound(){
   const a=persisted;if(!a?.reviewed||!a.submission||!a.submittedAt||!a.submissionLocale||
    a.ratings.some(x=>x===null)||locked||pending)return;
@@ -308,7 +314,12 @@ export function SectionedJourney({lesson,ports}:{lesson:SectionedLesson;ports:Le
   <header className="li-learning-header">
    <div><Text role="caption">{lesson.hierarchy.field.title} · {id}</Text>
     <Heading level={1} role="headline">{lesson.title[locale]}</Heading></div>
-   <Button variant="secondary" onClick={ports.navigation.openCatalog}>Tàng Thư</Button>
+   <div className="li-learning-header-actions">
+    <Button variant="secondary" disabled={pending>0||locked} onClick={()=>void restartLesson()}>
+     {attempt.locale==='vi'?'Học lại từ đầu':'Restart lesson'}
+    </Button>
+    <Button variant="secondary" onClick={ports.navigation.openCatalog}>Tàng Thư</Button>
+   </div>
   </header>
   <div className="li-learning-toolbar" role="group" aria-label="Language">
    {(['vi','en'] as const).map(l=><Button key={l} disabled={pending>0||locked}

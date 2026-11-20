@@ -113,3 +113,10 @@
  border:1px solid var(--rule);border-radius:0;font:inherit;background:var(--porcelain);color:var(--ink)}
 .li-editorial-t06-case select:focus-visible{outline:0;border-width:3px;border-color:var(--moss)}
 @media(max-width:599px){.li-editorial-t06-cases{grid-template-columns:minmax(0,1fr)}}
+
+
+/* Preserve shared post-review action styles and accessible header controls. */
+.li-learning-header-actions{display:flex;flex-wrap:wrap;gap:var(--li-space-2)}
+.li-learning-next-action{display:grid;gap:var(--li-space-2);padding:var(--li-space-3);
+ border-inline-start:3px solid var(--moss);background:var(--porcelain);min-width:0}
+.li-learning-next-action .li-ds-button{justify-self:start}

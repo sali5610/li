@@ -4,6 +4,7 @@ import {initial} from '../native-bridge';
 import type {Attempt,MethodAttempt,MethodCategory,MethodChoice,PastEditorialAttempt,EditorialReviewSnapshot} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
 import {isReleasedLessonId} from './released-lessons';
+import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 import {Button,Card} from '../../../../design-system/react/Components';
 import {Field} from '../../../../design-system/react/Controls';
 import {Heading,Text,Progress} from '../../../../design-system/react/Atoms';
@@ -637,6 +638,12 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   if(await save({...attempt,reviewed:true,reviewedAt:new Date().toISOString()}))
    moveTo('progress');
  }
+ async function restartLesson(){
+  if(!attempt||locked||saving||pending.current>0)return;
+  if(!confirmLessonRestart(id,attempt.locale))return;
+  setError('');
+  if(await save(freshLessonAttempt(attempt)))moveTo('read');
+ }
  async function newAttempt(){
   if(!attempt||!lesson||!persistedAttempt?.reviewed||locked||saving)return;
   const frozen=persistedAttempt;
@@ -709,7 +716,11 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     <Text role="caption">{lesson.hierarchy.field.title} · {id}</Text>
     <Heading level={1} id={'li-react-'+id+'-title'} role="headline">{lesson.title[locale]}</Heading>
    </div>
-   <Button variant="secondary" onClick={ports.navigation.openCatalog}>{vi?'Về Tàng Thư':'Back to library'}</Button>
+   <div className="li-learning-header-actions">
+    <Button variant="secondary" disabled={locked||saving||pending.current>0}
+     onClick={()=>void restartLesson()}>{vi?'Học lại từ đầu':'Restart lesson'}</Button>
+    <Button variant="secondary" onClick={ports.navigation.openCatalog}>{vi?'Về Tàng Thư':'Back to library'}</Button>
+   </div>
   </header>
   <div className="li-learning-language" role="group" aria-label={vi?'Ngôn ngữ':'Language'}>
    {(['vi','en'] as const).map(lang=><Button key={lang}

@@ -58,7 +58,9 @@ function validReviewSnapshot(a:Attempt):boolean{
  for(const locale of ['vi','en'] as const){
   const model=snapshot.modelAnswer[locale];
   const rows=snapshot.criteria[locale];
+  const questions=snapshot.questions?.[locale];
   if(typeof model!=='string'||!model.trim()||model.length>10000||
+   !tuple(questions)||questions.some(q=>!q.trim())||
    !Array.isArray(rows)||rows.length!==4||
    rows.some(row=>!Array.isArray(row)||row.length!==4||
     row.some(cell=>typeof cell!=='string'||cell.length===0||cell.length>1200)))
@@ -94,6 +96,11 @@ function validHistory(a:Attempt):boolean{
    !Number.isSafeInteger(p.attemptNumber)||p.attemptNumber<=last||
    typeof p.guidedDraft!=='string'||p.guidedDraft.length>4000||
    typeof p.hint!=='boolean'||!['T06','T07','skip',null].includes(p.methodChoice)||
+   (p.questionPrompts!==undefined&&
+    (typeof p.questionPrompts!=='object'||p.questionPrompts===null||
+     !(['vi','en'] as const).every(locale=>
+      tuple(p.questionPrompts?.[locale])&&
+      p.questionPrompts[locale].every(q=>q.trim().length>0))))||
    !validMethodAttempts(p))return false;
   last=p.attemptNumber;
  }

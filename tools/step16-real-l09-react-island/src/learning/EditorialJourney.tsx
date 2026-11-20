@@ -628,6 +628,10 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     vi:lesson.content.localized.vi.independent.model_answer_md,
     en:lesson.content.localized.en.independent.model_answer_md
    },
+   questions:{
+    vi:quiz(lesson.content.localized.vi.independent.prompt_md).questions as [string,string,string,string],
+    en:quiz(lesson.content.localized.en.independent.prompt_md).questions as [string,string,string,string]
+   },
    criteria:{
     vi:rubricRows(lesson.content.localized.vi.reflection.md),
     en:rubricRows(lesson.content.localized.en.reflection.md)
@@ -692,7 +696,8 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    rubricVersion:frozen.rubricVersion??lesson.version+':rubric:0-8',
    attemptNumber:frozen.attemptNumber??1,
    guidedDraft:frozen.guidedDraft,hint:frozen.hint,
-   methodChoice:frozen.methodChoice??null,methodAttempts:frozen.methodAttempts
+   methodChoice:frozen.methodChoice??null,methodAttempts:frozen.methodAttempts,
+   questionPrompts:frozen.reviewSnapshot?.questions
   };
   const history=[...(frozen.attemptHistory??[]),prior];
   const next:Attempt={...initial(),locale:frozen.locale,attemptHistory:history,
@@ -720,6 +725,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  </section>;
  const locale=attempt.locale,vi=locale==='vi',content=lesson.content.localized[locale];
  const independent=quiz(content.independent.prompt_md);
+ const submittedQuestions=attempt.reviewSnapshot?.questions[locale]??independent.questions;
  const rubrics=attempt.reviewSnapshot?.criteria[locale]??rubricRows(content.reflection.md);
  const modelAnswer=attempt.reviewSnapshot?.modelAnswer[locale]??
   content.independent.model_answer_md;
@@ -783,7 +789,11 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      {' · '}{previous.ratings.reduce<number>((n,x)=>n+(x??0),0)}/8
      {' · '}{previous.contentVersion}
      <details><summary>{vi?'Xem bản đã nộp':'Read frozen submission'}</summary>
-      <ol>{previous.submission.map((answer,k)=><li key={k} className="li-learning-submitted-answer">{answer}</li>)}</ol>
+      <ol>{previous.submission.map((answer,k)=><li key={k} className="li-learning-submitted-answer">
+       {previous.questionPrompts?.[locale]?.[k]&&
+        <Text role="support">{previous.questionPrompts[locale][k]}</Text>}
+       <p>{answer}</p>
+      </li>)}</ol>
      </details>
     </li>)}</ol>
    </details>}
@@ -923,7 +933,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     <Heading level={2} id="li-editorial-feedback" role="titleLarge">{labels.feedback}</Heading>
     <Heading level={3} role="titleMedium">{vi?'Bài làm của mày':'Your submission'}</Heading>
     <ol className="li-learning-submission-list">
-     {independent.questions.map((q,i)=><li key={i}>
+     {submittedQuestions.map((q,i)=><li key={i}>
       <Text role="support">{q}</Text>
       <p className="li-learning-submitted-answer">{(persistedAttempt.submission??persistedAttempt.draft)[i]}</p>
      </li>)}

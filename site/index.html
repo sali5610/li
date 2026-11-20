@@ -931,7 +931,7 @@ window.liSettingsPort=Object.freeze({
  },
  act:(kind,key,value)=>{
   const el=id=>document.getElementById(id);
-  if(kind==="mode"&&STUDY_MODES[key])Array.from(el("study-mode-settings")?.querySelectorAll(".ly-mode-choice")||[]).find(node=>node.dataset.lyMode===key)?.click();
+  if(kind==="mode"&&STUDY_MODES[key])setStudyMode(key);
   else if(kind==="calm"||kind==="mute"){
    const field=el(kind==="calm"?"calm-toggle":"mute-toggle");
    if(field&&field.checked!==Boolean(value))field.click();

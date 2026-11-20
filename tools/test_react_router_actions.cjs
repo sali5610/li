@@ -30,9 +30,18 @@ assert.doesNotMatch(lesson,/getElementById\(['"]global-search['"]\)/,
 assert.match(lesson,/search\.liSearch\?\.render\(query\)/);
 assert.match(search,/app\.openLaoLy\?\.\(\)/);
 assert.doesNotMatch(search,/getElementById\('laoly-fab'\)\?\.click\(\)/);
-for(const name of ['home-catalog','guide-library','research-case','journal-settings','knowledge-search']){
+for(const name of ['home-catalog','guide-library','research-case','journal-settings','knowledge-search','detail-practice']){
  const file=read('tools/step16-real-l09-react-island/src/shell/'+name+'.tsx');
  assert.doesNotMatch(file,/<Button[^>]*\bdata-page=/,
   name+' has delegated navigation on a React control');
 }
+const details=read('tools/step16-real-l09-react-island/src/shell/detail-practice.tsx');
+const settings=read('tools/step16-real-l09-react-island/src/shell/journal-settings.tsx');
+assert.match(details,/onClick=\{\(\)=>openRoute\(back\)\}/);
+assert.match(details,/onClick=\{\(\)=>openRoute\('case'\)\}/);
+assert.match(details,/onClick=\{\(\)=>openRoute\('guide'\)\}/);
+assert.match(settings,/onClick=\{goBack\}/);
+assert.doesNotMatch(settings,/act\('back'\)/);
+assert.match(old,/if\(kind===\"mode\"&&STUDY_MODES\[key\]\)setStudyMode\(key\)/);
+assert.doesNotMatch(old,/STUDY_MODES\[key\]\).*?\.click\(\)/);
 console.log('PASS explicit React routes and Back: direct actions, canonical history and search, no hidden click');

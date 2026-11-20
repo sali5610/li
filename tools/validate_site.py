@@ -492,7 +492,13 @@ assert html.count('id="li-saved-questions"')==1
 assert html.count('id="case-archive-preview"')==1
 assert 'data-demo="Chưa lưu được ý này' not in html
 assert 'id="save-capture-note"' in html
-assert html.count('id="li-checkin-recording-disclosure"')==1
+# L1 Check-in is React-owned; the privacy statement is now rendered in its
+# authenticated dialog rather than a static guest-visible modal.
+checkin_react=(site.parent/"tools"/"step16-real-l09-react-island"/"src"/"shell"/"checkin-dialog.tsx").read_text(encoding="utf-8")
+assert 'id="li-react-checkin-root"' in page_html
+assert 'id="checkin-modal"' not in page_html, "Legacy L1 modal must not reappear in static HTML"
+assert 'id="li-checkin-recording-disclosure"' in checkin_react
+assert 'data-react-owner="checkin"' in checkin_react
 assert html.index('li-diary-privacy')>html.index('li-diary-day-status')
 assert '<script src="./assets/library-hub.js?v=8"></script>' in html
 subprocess.run(["node",str(site.parent/"tools"/"test_library_hub_v2.cjs")],check=True,cwd=site.parent)

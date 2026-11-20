@@ -8,7 +8,7 @@ const LESSONS={
 };
 const client=import("./li-content-adapter.mjs").then(m=>m.contentClient);
 const lang=id=>{
- const react=id==="L09-1-2"?document.querySelector('[data-li-react-journey="L09-1-2"]'):null;
+ const react=document.querySelector('[data-li-react-journey="'+id+'"]');
  if(react?.getAttribute("lang")==="en"||react?.getAttribute("lang")==="vi")return react.getAttribute("lang");
  const active=document.querySelector('[data-lesson-id="'+id+'"] #'+id.slice(0,3).toLowerCase()+'-en');
  if(active)return active.getAttribute("aria-pressed")==="true"?"en":"vi";
@@ -64,7 +64,9 @@ async function render(id,section){
 function mount(id){
  const page=document.querySelector('[data-lesson-id="'+id+'"]'),stack=page?.querySelector(".l09-stack");
  if(!page||!stack)return;
- const wrapper=id==="L09-1-2"?add("div","section-shell",undefined,page):stack;
+ const reactRoute=id==="L09-1-2"||(typeof location!=="undefined"&&
+  location.hostname==="sali5610.github.io"&&location.pathname.startsWith("/li/"));
+ const wrapper=reactRoute?add("div","section-shell",undefined,page):stack;
  const section=add("section","surface li-related-lessons",undefined,wrapper);
  section.hidden=true;section.setAttribute("aria-labelledby","li-related-"+id);
  const kicker=add("div","kicker","",section);
@@ -81,9 +83,10 @@ function mount(id){
  for(const locale of ["vi","en"])
   page.querySelector("#"+id.slice(0,3).toLowerCase()+"-"+locale)?.addEventListener("click",refresh);
  window.addEventListener?.("li:localechange",refresh);
- if(id==="L09-1-2"){
+ if(reactRoute){
   const place=()=>{
-   const host=page.querySelector("#li-react-l09-host");
+   const slug=id==="L09-1-2"?"l09":id==="L03-1-2"?"l03":"l15";
+   const host=page.querySelector("#li-react-"+slug+"-host");
    if(host&&host.nextElementSibling!==wrapper)host.after(wrapper);
   };
   new MutationObserver(place).observe(page,{childList:true});

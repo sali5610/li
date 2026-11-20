@@ -43,6 +43,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
  const source=id==='L03-1-2'?lesson03:lesson15;
  const [attempt,setAttempt]=useState<Attempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
+ useEffect(()=>{window.dispatchEvent(new Event('li:lesson-phase-changed'));},[phase]);
  const [loading,setLoading]=useState(true);
  const [reload,setReload]=useState(0);
  const [saving,setSaving]=useState(false);

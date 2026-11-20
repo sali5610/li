@@ -1,0 +1,32 @@
+name: li. Web Push candidate (focused, no deploy)
+on:
+  pull_request:
+    paths:
+      - 'tools/push-worker/**'
+      - 'tools/platform/workbox-config.cjs'
+      - 'site/assets/li-push-handler.js'
+      - 'tools/step16-real-l09-react-island/src/shell/web-push*'
+      - 'tools/step16-real-l09-react-island/src/shell/journal-settings.tsx'
+      - '.github/workflows/li-webpush-focused.yml'
+permissions:
+  contents: read
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned WebCrypto push sender
+        run: npm install --no-audit --no-fund --prefix tools/push-worker
+      - name: Focused auth/time/device/worker tests
+        run: npm run check --prefix tools/push-worker
+      - name: Compile Worker without deploying to Cloudflare
+        run: |
+          cd tools/push-worker
+          npx wrangler deploy --dry-run --outdir /tmp/li-webpush-candidate
+          test -s /tmp/li-webpush-candidate/index.js
+      - name: Confirm no production deployment took place
+        run: echo 'Web Push is code-only. D1/VAPID/Worker secrets and staged Free deployment require separate approval.'

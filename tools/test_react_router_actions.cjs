@@ -69,4 +69,33 @@ assert.match(buddy,/const calm=buddyVoice\("calm"\)/);
 assert.match(buddy,/if\(buddyVoice\("mute"\)\)/);
 assert.match(buddy,/document\.getElementById\(kind==="calm"/); // native fallback only
 
+// S303: Settings is one React-owned flow, not a collection of hidden-button bridges.
+const auth=read('tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx');
+assert.match(auth,/const permitted=Boolean\(IS_GITHUB_STAGING&&accountId&&access==='granted'&&ownerReady\)/);
+assert.match(auth,/owner\.liJournalCloudConsent=port/);
+assert.match(auth,/set:\(enabled:boolean\)=>\{if\(permitted&&!journalBusy\)void toggleJournalCloud\(enabled\)/);
+assert.match(auth,/changeJournalCloudConsent\(accountId,enabled\)/,
+ 'The existing verified account + Neon consent writer remains canonical');
+assert.match(settings,/app\.liJournalCloudConsent\?\.set\(event\.target\.checked\)/);
+assert.match(settings,/ref=\{backupInput\} type="file"/);
+assert.match(settings,/app\.liPersonalBackup\?\.importFile\(file\)/);
+assert.match(settings,/app\.liPersonalBackup\?\.export\(\)/);
+assert.match(settings,/onAction=\{chooseBackup\}/);
+assert.doesNotMatch(settings,/act\('(cloud|export|import|retryImport|back)'/);
+assert.doesNotMatch(settings,/new MutationObserver/);
+assert.match(old,/window\.liPersonalBackup=Object\.freeze\(\{/);
+assert.match(old,/importFile:liImportPersonalData/);
+assert.match(old,/if\(file\.size>10\*1024\*1024\)throw Error\("large"\)/);
+assert.match(old,/const oldRaw=window\.localStorage\.getItem\(LI_STORAGE_KEY\)/);
+assert.match(old,/if\(oldRaw===null\)window\.localStorage\.removeItem\(LI_STORAGE_KEY\)/);
+assert.match(old,/if\(oldDraft===null\)window\.localStorage\.removeItem\(LI_DRAFT_KEY\)/);
+assert.match(old,/if\(oldNames===null\)window\.localStorage\.removeItem\(LI_BUDDY_NAMES_KEY\)/);
+assert.match(old,/return false;[\s\S]*liBackupImport\.loading=false;liPublishBackup\(\)/,
+ 'Cancel/errors must finish without leaving the file picker blocked');
+assert.match(old,/const cloud=window\.liJournalCloudConsent\?\.getView\?\.\(\)/);
+assert.match(old,/const backup=window\.liPersonalBackup\?\.getView\?\.\(\)/);
+assert.doesNotMatch(old,/el\("import-personal-trigger"\)\?\.click\(\)/);
+assert.doesNotMatch(old,/el\("export-personal-data"\)\?\.click\(\)/);
+assert.doesNotMatch(old,/el\("li-journal-cloud-toggle"\)/);
+
 console.log('PASS explicit React routes and Back: direct actions, canonical history and search, no hidden click');

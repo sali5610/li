@@ -105,7 +105,7 @@ export function LessonMentor({id,locale}:{id:LessonId;locale:Locale}){
   };
   refresh();
   for(const evt of ['scroll','li:localechange','li:lesson-phase-changed'])window.addEventListener(evt,refresh,{passive:true});
-  return()=>{for(const evt of ['scroll','li:localechange'])window.removeEventListener(evt,refresh);};
+  return()=>{for(const evt of ['scroll','li:localechange','li:lesson-phase-changed'])window.removeEventListener(evt,refresh);};
  },[id]);
  return <section className="li-lesson-companion" aria-label={locale==='vi'?'Lão Lý đồng hành':'Lao Ly companion'}>
   <div className="kicker">{locale==='vi'?'LÃO LÝ ĐỌC CÙNG NGƯƠI':'LEARN WITH LAO LY'}</div>

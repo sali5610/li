@@ -174,7 +174,8 @@ test('T12 uses existing signed account outbox and restores the same lesson on an
    assert.equal(localStorage.getItem(key),raw);
    assert.equal((await fresh.counts(uid)).pending,0);
    assert.equal(personalRemoteSnapshot(uid,'l2_progress',id,serverRow.payload)?.raw,raw);
-   assert.equal(personalRemoteSnapshot(other,'l2_progress',id,serverRow.payload),null,
+   assert.throws(()=>personalRemoteSnapshot(other,'l2_progress',id,serverRow.payload),
+    /PRIVATE_PAYLOAD_INVALID/,
     'other signed account cannot decode the first owner key');
   });
  });

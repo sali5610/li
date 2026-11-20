@@ -286,7 +286,7 @@ function draw(){
     t12Synced?"Dấu vết T12 đã đồng bộ với tài khoản.":
     t12SavedOnDevice?"Đã lưu trên máy · đang chờ đồng bộ.":
      "T12 tự lưu bản nháp và đồng bộ khi có mạng."):
-   "Tự chọn, có thể bỏ qua. Trừ mốc T02 do bạn chủ động đặt, nội dung điền không tự lưu hay gửi lên máy chủ.")+
+   active==="T02"?"Lịch và số lượt ôn T02 lưu theo tài khoản, đồng bộ khi online. Câu trả lời không lưu.":"Tự chọn, có thể bỏ qua. Câu trả lời không tự lưu hay gửi lên máy chủ.")+
   '</p>'+act("reset","Làm lại","action alt")+'</footer>';
 
  if(active==="T12"){
@@ -375,9 +375,19 @@ function check(){
  if(active==="T11")info=(radio("method")==="1"?"T03 phù hợp cho thủ tục mới. ":"Chưa có lần học trước nên T02 không phù hợp ngay. ")+info;
  if(active==="T05")info=(checked("evidence").sort().join(",")==="0,1"?"Bạn chọn hai dữ kiện quan trọng, không chọn khẳng định quá mức. ":"Dữ kiện không có nhóm so sánh và khuyến mãi đồng thời đều quan trọng. ")+info;
  if(active==="T12"&&!t12Clear()){showMessage(t12StorageError);return;}
+ if(active==="T02"){
+  const saved=scheduleRead();
+  if(!saved||saved.awaitingRating||saved.due===null||saved.due>Date.now())return;
+  if(!t02Write({...saved,awaitingRating:true})){
+   showMessage("Không lưu được dấu mốc ôn. Chưa ghi nhận lượt này.");return;
+  }
+  reviewedInSession=true;showMessage(info);
+  if(!reactOwnsSpell())draw();
+  return;
+ }
  reviewedInSession=true; // feedback follows successfully stored clearing state
  showMessage(info);
- if(active==="T02")try{localStorage.removeItem("li.spell.t02.due.v1")}catch(err){}
+ /* T02 history is retained until the learner explicitly resets it. */
  if(!reactOwnsSpell())root?.querySelector(".spell-feedback")?.focus();
 }
 function next(){
@@ -416,13 +426,16 @@ function getView(){
  else if(mode==="loci")fields=[1,2,3].map(i=>["recall"+i,"Ý nhớ lại ở nơi "+i]);
  else fields=e.fields;
  const due=mode==="due"?scheduleRead():null;
+ if(mode==="due"&&due?.awaitingRating)fields=[];
  return {
   active,title:e.title,mode,phase,tab:activeTab,
   lesson:e.lesson,prompt:e.prompt,fields:fields.map(field=>({
    id:field[0],label:field[1],options:Array.isArray(field[2])?field[2].slice():null,
    choiceKind:field[3]==="multi"?"multi":"radio"
   })),
-  feedback,resumeNote,places:privatePlaces.slice(),dueAt:due?.due||null,
+  feedback,resumeNote,places:privatePlaces.slice(),dueAt:due?.due??null,
+  t02ReviewCount:due?.reviewCount??0,t02Streak:due?.streak??0,
+  t02AwaitingRating:!!due?.awaitingRating,
   lessonId:activeLessonId,reviewedInSession,viewSession,
   t12Draft:active==="T12"?{...t12Draft}:undefined,
   t12SavedOnDevice:active==="T12"&&t12SavedOnDevice,
@@ -434,32 +447,42 @@ function getView(){
  * are supplied to the checker directly; native fallback reads its visible form.
  * No hidden input writes, synthetic events or button clicks. */
 function runAction(action){
- if(!active||!["next","check","reset","schedule","clear"].includes(action))return false;
+ if(!active||!["next","check","reset","schedule","clear","rate-remembered","rate-retry"].includes(action))return false;
  const mode=currentExercise().mode||"direct";
  if(action==="next"&&(phase!==0||!["hide","faded","resume","loci"].includes(mode)))return false;
- if(action==="check"&&(mode==="due"&&phase===0||
+ if(action==="check"&&(mode==="due"&&(phase===0||scheduleRead()?.awaitingRating)||
    phase===0&&["hide","faded","resume","loci"].includes(mode)))return false;
+ if(["rate-remembered","rate-retry"].includes(action)&&
+   (mode!=="due"||phase!==1||!scheduleRead()?.awaitingRating))return false;
  if(["schedule","clear"].includes(action)&&(mode!=="due"||phase!==0))return false;
  switch(action){
  case "reset":
   if(active==="T12"&&!t12Clear()){showMessage(t12StorageError);return false;}
+  if(active==="T02"&&!t02Write(t02Empty())){
+   showMessage("Không lưu được lần làm lại T02. Lịch cũ vẫn còn.");return false;
+  }
   phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
   t12Draft={context:"",next:"",answer:""};draw();return true;
  case "next":next();return true;
  case "check":check();return true;
- case "schedule":
-  try{
-   const scheduled={exposed:Date.now(),due:Date.now()+86400000};
-   const raw=JSON.stringify(scheduled);
-   localStorage.setItem("li.spell.t02.due.v1",raw);
-   if(localStorage.getItem("li.spell.t02.due.v1")!==raw)throw Error("verify");
-   feedback="";
-  }catch{feedback="Trình duyệt không lưu được mốc. Chưa có lịch ôn thực nào được tạo.";}
-  draw();return true;
- case "clear":
-  try{localStorage.setItem("li.spell.t02.due.v1",JSON.stringify({clearedAt:Date.now(),due:null}));}
-  catch{}
+ case "schedule":{
+  const saved=scheduleRead()||t02Empty();
+  if(saved.due!==null)return false;
+  if(!t02Write({...saved,due:Date.now()+T02_DAY_MS,awaitingRating:false})){
+   showMessage("Không lưu được lịch ôn theo tài khoản. Chưa đặt hẹn.");return false;
+  }
   feedback="";draw();return true;
+ }
+ case "clear":{
+  const saved=scheduleRead();
+  if(!saved||saved.due===null||saved.due<=Date.now()||saved.awaitingRating)return false;
+  if(!t02Write({...saved,due:null})){
+   showMessage("Không hủy được lịch ôn đã lưu.");return false;
+  }
+  feedback="";draw();return true;
+ }
+ case "rate-remembered":return t02Rate(true);
+ case "rate-retry":return t02Rate(false);
  }
  return false;
 }

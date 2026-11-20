@@ -150,7 +150,7 @@ function setup(){
   case "next":next();break;
   case "check":check();break;
   case "schedule":try{const d={exposed:Date.now(),due:Date.now()+86400000};localStorage.setItem("li.spell.t02.due.v1",JSON.stringify(d));if(localStorage.getItem("li.spell.t02.due.v1")!==JSON.stringify(d))throw Error("verify");feedback="";draw()}catch(err){feedback="Trình duyệt không lưu được mốc. Chưa có lịch ôn thực nào được tạo.";draw()}break;
-  case "clear":try{localStorage.removeItem("li.spell.t02.due.v1")}catch(err){}feedback="";draw();break;
+  case "clear":try{localStorage.setItem("li.spell.t02.due.v1",JSON.stringify({clearedAt:Date.now(),due:null}))}catch(err){}feedback="";draw();break;
   }
  });
  window.LiSpellPractice={open,methods:Object.keys(exercises)};

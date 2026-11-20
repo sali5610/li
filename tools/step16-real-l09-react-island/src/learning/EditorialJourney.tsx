@@ -972,3 +972,6 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   </motion.div>
  </section>;
 }
+
+/** Reuse the existing safe Markdown renderer in the sectioned lesson surface. */
+export {Markdown};

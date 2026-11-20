@@ -1,8 +1,10 @@
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {LearningJourney} from './LearningJourney';
 import {Wave1Journey} from './Wave1Journey';
 import {EditorialJourney} from './EditorialJourney';
+import {SectionedJourney,validateSectionedLesson} from './SectionedJourney';
+import type {SectionedLesson} from './SectionedJourney';
 import {isReleasedLessonId} from './released-lessons';
 import type {LearningPorts} from './ports';
 import '../../../../design-system/react/atoms.css';
@@ -40,6 +42,47 @@ export function mountWave1Journey(host:HTMLElement,
 }
 
 
+type EditorialRouteState=
+ |{kind:'loading'}|{kind:'structured'}|{kind:'sectioned';lesson:SectionedLesson}
+ |{kind:'error'};
+function ReleasedEditorialRoute({id,ports}:{id:string;ports:LearningPorts}){
+ const [status,setStatus]=useState<EditorialRouteState>({kind:'loading'});
+ useEffect(()=>{
+  let alive=true;
+  (async()=>{
+   if(!isReleasedLessonId(id))throw Error('LESSON_NOT_RELEASED');
+   await ports.auth.requireInvitedLearner();
+   // The canonical packed lesson is the ONLY format router. Never load
+   // content/editorial draft files, Notion or a query-param-provided JSON.
+   const url=new URL('./assets/li-content-adapter.mjs',document.baseURI).href;
+   const m=await import(/* @vite-ignore */ url) as {
+    contentClient?:{getLesson:(lessonId:string)=>Promise<unknown>}
+   };
+   if(!m.contentClient?.getLesson)throw Error('CONTENT_PACK_CLIENT_UNAVAILABLE');
+   const raw=await m.contentClient.getLesson(id);
+   if(!raw||typeof raw!=='object')throw Error('EDITORIAL_PACK_MISSING');
+   const data=raw as {content?:{format?:string}};
+   if(!alive)return;
+   if(data.content?.format==='editorial-structured-v1'){
+    setStatus({kind:'structured'});return;
+   }
+   if(data.content?.format==='editorial-sectioned-v1'){
+    setStatus({kind:'sectioned',lesson:validateSectionedLesson(raw,id)});return;
+   }
+   throw Error('EDITORIAL_FORMAT_NOT_RELEASED');
+  })().catch(()=>{if(alive)setStatus({kind:'error'});});
+  return()=>{alive=false;};
+ },[id,ports]);
+ if(status.kind==='loading')return <section role="status" className="li-learning-journey"
+  aria-busy="true">Đang xác minh bài học và quyền truy cập…</section>;
+ if(status.kind==='error')return <section role="alert" className="li-learning-journey">
+  <p>Bài học chưa đủ điều kiện phát hành hoặc không đọc được content pack.</p>
+  <button onClick={ports.navigation.openCatalog}>Về Tàng Thư</button>
+ </section>;
+ if(status.kind==='sectioned')return <SectionedJourney lesson={status.lesson} ports={ports}/>;
+ return <EditorialJourney id={id} ports={ports}/>;
+}
+
 /** Single future structured-lesson renderer, mounted only for explicit
  * catalog + manifest authorized IDs by the same verified invited router.
  * No standalone preview URL or alternate database path.
@@ -51,6 +94,6 @@ export function mountEditorialJourney(host:HTMLElement,id:string,ports:LearningP
   !ports?.navigation?.openCatalog||!ports?.search?.openSearch)
    throw Error('EDITORIAL_LEARNER_RELEASE_OR_PORTS_REQUIRED');
  const root=createRoot(host);
- root.render(<EditorialJourney id={id} ports={ports}/>);
+ root.render(<ReleasedEditorialRoute id={id} ports={ports}/>);
  return()=>root.unmount();
 }

@@ -145,7 +145,7 @@ export function SectionedJourney({lesson,ports}:{lesson:SectionedLesson;ports:Le
     current.current=saved.attempt;
     setAttempt(saved.attempt);setPersisted(saved.attempt);
     setPhase(phaseFor(saved.attempt,method));
-    setSync(await ports.sync.getStatus({lessonId:id,subjectId:auth.subjectId}).catch(()=>'unavailable'));
+    setSync(await ports.sync.getStatus({lessonId:id,subjectId:auth.subjectId}).catch(()=>'unavailable' as SyncState));
     setBusy(false);
     try{
      const key='li.sectioned.guide-return.v1';
@@ -172,7 +172,7 @@ export function SectionedJourney({lesson,ports}:{lesson:SectionedLesson;ports:Le
     attempt:next,expectedRevision:revision.current});
    revision.current=result.revision;
    if(mounted.current){setPersisted(next);
-    setSync(await ports.sync.getStatus({lessonId:id,subjectId:owner.current}).catch(()=>'unavailable'));}
+    setSync(await ports.sync.getStatus({lessonId:id,subjectId:owner.current}).catch(()=>'unavailable' as SyncState));}
   });
   chain.current=job.catch(()=>undefined);
   return job.then(()=>true,()=>{
@@ -192,7 +192,8 @@ export function SectionedJourney({lesson,ports}:{lesson:SectionedLesson;ports:Le
   const frozen:EditorialReviewSnapshot={
    contentVersion:version,rubricVersion:version+':rubric:0-8',
    modelAnswer:{vi:independent(local.vi).model_answer_md||'',en:independent(local.en).model_answer_md||''},
-   questions:{vi:[...local.vi.assessment.questions],en:[...local.en.assessment.questions]},
+   questions:{vi:[...local.vi.assessment.questions] as [string,string,string,string],
+    en:[...local.en.assessment.questions] as [string,string,string,string]},
    criteria:{vi:local.vi.assessment.rubricCriteria,en:local.en.assessment.rubricCriteria}
   };
   setError('');
@@ -222,8 +223,8 @@ export function SectionedJourney({lesson,ports}:{lesson:SectionedLesson;ports:Le
   const a=persisted;if(!a?.reviewed||!a.submission||!a.submittedAt||!a.submissionLocale||
    a.ratings.some(x=>x===null)||locked||pending)return;
   const previous:PastEditorialAttempt={
-   submission:[...a.submission],submissionLocale:a.submissionLocale,
-   submittedAt:a.submittedAt,ratings:[...a.ratings],
+   submission:[...a.submission] as [string,string,string,string],submissionLocale:a.submissionLocale,
+   submittedAt:a.submittedAt,ratings:[...a.ratings] as PastEditorialAttempt['ratings'],
    reviewedAt:a.reviewedAt??null,answerRevealed:true,
    contentVersion:a.contentVersion||lesson.version,
    rubricVersion:a.rubricVersion||lesson.version+':rubric:0-8',

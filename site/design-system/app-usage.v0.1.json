@@ -6,11 +6,12 @@
   "consumer": {
     "screenId": "screen:lesson:L09-1-2",
     "title": "Invited L09 React learning journey",
-    "repoRef": "c97f099d141b9e7dd4ec020f92bbc3051f8fc3bd",
+    "repoRef": "a0ca5f350628dbedf74ec3fb365a44410c28ea96",
     "path": "tools/step16-real-l09-react-island/src/learning/LearningJourney.tsx",
     "signature": "data-li-react-journey=\"L09-1-2\"",
     "auth": "invite-only",
-    "deployment": "GitHub Pages staging source only; no Cloudflare production claim"
+    "deployment": "GitHub Pages staging source only; no Cloudflare production claim",
+    "sourceBlob": "ea88b9b963f64bd89fa1e4b3d04c36dc9b4b5951"
   },
   "ontology": {
     "registry": "docs/ontology/registry.v0.1.json",

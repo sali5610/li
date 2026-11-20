@@ -19,12 +19,20 @@ assert.match(editorialReact,/EDITORIAL_COMPANION_OR_LINKS_INCOMPLETE/);
 assert.match(editorialReact,/li:mentor-phase-jump/);
 for(const source of [react,wave]){
  assert.match(source,/li:mentor-phase-jump/,"React lesson must listen to Lão Lý navigation");
- assert.match(source,/next==='feedback'.*!attempt\?\.submitted/,
-  "Never reveal feedback before real submission");
- assert.match(source,/next==='progress'.*!attempt\?\.reviewed/,
-  "Progress remains gated by real review");
  assert.match(source,/li-learning-current/,"Jump must target visible React content");
 }
+// L09 now routes mentor jumps through the real XState actor; Wave1 retains its
+// guarded React path. Validate both rather than demanding an obsolete inline if.
+const phaseMachine=read("tools/step16-real-l09-react-island/src/learning/phase-machine.ts");
+assert.match(react,/phaseActor\.send\(\{type:'OPEN',phase:next\}\)/);
+assert.match(phaseMachine,/event\.phase==='feedback'&&context\.submitted/,
+ "XState feedback must require confirmed submission");
+assert.match(phaseMachine,/event\.phase==='progress'&&context\.submitted&&context\.reviewed/,
+ "XState progress must require confirmed review");
+assert.match(wave,/next==='feedback'.*!attempt\?\.submitted/,
+ "Wave1 feedback must remain locked before submission");
+assert.match(wave,/next==='progress'.*!attempt\?\.reviewed/,
+ "Wave1 progress must remain locked before review");
 assert.match(react,/data-li-lesson-phase=\{phase\}/);
 assert.match(react,/data-li-lesson-submitted=\{attempt\.submitted\?/);
 const stages=["opening","concept","guided","independent","reflection","extension"];

@@ -2,7 +2,8 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {AppNavigationControls} from '../../../../design-system/react/AppNavigation';
 import type {AppNavigationItem,AppNavigationControlsProps} from '../../../../design-system/react/AppNavigation';
-import {openRoute,goBack,currentRoute} from './app-router.js';
+import {openRoute,goBack,syncCanonicalRoute} from './app-router.js';
+import {useAppUiStore} from './app-store.js';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
 
 /** One staging app, not an injected second router.
@@ -21,7 +22,18 @@ const utilities:readonly AppNavigationItem[]=[
  {id:'settings',label:'Cài đặt',accessibleLabel:'Cài đặt',title:'Cài đặt',icon:'settings-2'}
 ];
 
-
+function NavigationSurface({area,items}:{area:AppNavigationControlsProps['area'];items:readonly AppNavigationItem[]}){
+ const active=useAppUiStore(state=>state.route);
+ return <AppNavigationControls area={area} activeId={active} items={items} onNavigate={openRoute}/>;
+}
+function BackControl(){
+ const active=useAppUiStore(state=>state.route);
+ return <button id="li-global-back" className="li-global-back"
+  type="button" hidden={active==='home'} onClick={goBack}
+  aria-label="Quay lại màn trước" title="Quay lại">
+  <LiIcon name="arrow-left" size={20}/>
+ </button>;
+}
 
 export function mountSharedNavigation(){
  const surfaces:{selector:string;area:AppNavigationControlsProps['area'];items:readonly AppNavigationItem[]}[]=[
@@ -44,26 +56,15 @@ export function mountSharedNavigation(){
  backHost.style.display='contents';
  originalBack.replaceWith(backHost);
  const backRoot=createRoot(backHost);
- let active=currentRoute();
- const render=()=>{
-  mounts.forEach(({root,area,items})=>root.render(
-   <AppNavigationControls area={area} activeId={active} items={items}
-    onNavigate={openRoute}/>
-  ));
-  backRoot.render(<button id="li-global-back" className="li-global-back"
-   type="button" hidden={active==='home'} onClick={goBack}
-   aria-label="Quay lại màn trước" title="Quay lại">
-   <LiIcon name="arrow-left" size={20}/>
-  </button>);
- };
- const update=()=>{
-  const next=currentRoute();
-  if(next!==active){active=next;render();}
- };
- const observer=new MutationObserver(update);
+ // The old route controller remains authoritative; Zustand notifies all
+ // React navigation roots together (including native-origin route changes).
+ const observer=new MutationObserver(syncCanonicalRoute);
  document.querySelectorAll('section.page').forEach(section=>
   observer.observe(section,{attributes:true,attributeFilter:['class']}));
- render();
+ syncCanonicalRoute();
+ mounts.forEach(({root,area,items})=>
+  root.render(<NavigationSurface area={area} items={items}/>));
+ backRoot.render(<BackControl/>);
  return ()=>{
   observer.disconnect();mounts.forEach(({root})=>root.unmount());
   backRoot.unmount();backHost.replaceWith(originalBack);

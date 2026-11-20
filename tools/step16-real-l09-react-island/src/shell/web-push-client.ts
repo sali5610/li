@@ -1,7 +1,6 @@
 import {neonSessionPort} from '../auth/neon-client.js';
 import {readReminderPreference} from './in-app-reminder.js';
 
-declare const __UNUSED__:never; // No runtime secrets; Vite public vars only.
 const urlValue=(import.meta.env.VITE_LI_PUSH_STAGING_URL||'') as string;
 export function webPushApi():string|null{
  try{

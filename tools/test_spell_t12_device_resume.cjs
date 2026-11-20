@@ -84,7 +84,8 @@ function boot({verified=true,owner="user-a",storagePort=storage}={}){
  ready();
  assert(window.LiSpellPractice,"Native controller must mount");
  return {api:window.LiSpellPractice,root:()=>root,storage:storagePort,
-  cloud:detail=>handlers['li:personal-sync-applied']?.({detail})};
+  cloud:detail=>handlers['li:personal-sync-applied']?.({detail}),
+  confirm:detail=>handlers['li:t12-sync-confirmed']?.({detail})};
 }
 function open(h,lesson="L09-1-2"){
  h.api.open("T12","practice",lesson);
@@ -192,4 +193,21 @@ values.set(cloudKey,JSON.stringify({schema:"li.spell.t12.v1",phase:1,
  updatedAt:"2026-11-21T03:00:00Z"}));
 h.cloud({accountId:cloudUid,keys:[cloudKey]});
 assert.equal(h.api.getView().t12Draft.answer,"Local typing");
-console.log("PASS T12: in-place signed hydration and local-draft conflict guard");
+assert.equal(h.api.getView().t12Synced,false);
+h.confirm({accountId:"another-user",keys:[cloudKey]});
+assert.equal(h.api.getView().t12Synced,false,
+ "An unrelated account cannot clear the unsynced-local-edit guard");
+// A signed exact-payload acknowledgement releases the guard for future
+// changes from this account; later remote edits may then refresh in place.
+values.set(cloudKey,JSON.stringify({schema:"li.spell.t12.v1",phase:1,
+ context:"Remote context",next:"Remote next",answer:"Local typing",
+ updatedAt:"2026-11-21T03:05:00Z"}));
+h.confirm({accountId:cloudUid,keys:[cloudKey]});
+assert.equal(h.api.getView().t12Synced,true);
+values.set(cloudKey,JSON.stringify({schema:"li.spell.t12.v1",phase:1,
+ context:"New confirmed source",next:"Another device",answer:"Another answer",
+ updatedAt:"2026-11-21T03:06:00Z"}));
+h.cloud({accountId:cloudUid,keys:[cloudKey]});
+assert.equal(h.api.getView().resumeNote,"Another device");
+assert.equal(h.api.getView().t12Draft.answer,"Another answer");
+console.log("PASS T12: in-place signed hydration, local-edit safety and later confirmed sync");

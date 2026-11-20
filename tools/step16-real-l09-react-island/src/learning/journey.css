@@ -44,3 +44,12 @@
 
 /* Recover from a transient signed-session or hydration failure without a guest path. */
 .li-learning-recovery{display:flex;flex-wrap:wrap;gap:var(--li-space-3)}
+
+/* Preserve authored answers next to review feedback. No scoring or extra state. */
+.li-learning-submission{display:grid;gap:var(--li-space-3);min-width:0}
+.li-learning-submission-list{display:grid;gap:var(--li-space-3);
+ padding-inline-start:var(--li-space-5);margin:0}
+.li-learning-submission-list>li{padding:var(--li-space-3);
+ border-inline-start:1px solid var(--rule);min-width:0}
+.li-learning-submitted-answer{margin:var(--li-space-2) 0 0;
+ white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;color:var(--ink)}

@@ -54,6 +54,16 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   window.addEventListener('li:learning-sync-report',refresh);
   return()=>window.removeEventListener('li:learning-sync-report',refresh);
  },[]);
+ useEffect(()=>{
+  const onCloudLesson=(event:Event)=>{
+   const detail=(event as CustomEvent<{accountId?:string;lessonIds?:string[]}>).detail;
+   if(detail?.accountId===subject.current&&detail.lessonIds?.includes(L09_LESSON_ID)&&
+      !failedWrite.current&&pendingWrites.current===0)
+    setLoadAttempt(value=>value+1);
+  };
+  window.addEventListener('li:lesson-sync-applied',onCloudLesson);
+  return()=>window.removeEventListener('li:lesson-sync-applied',onCloudLesson);
+ },[]);
 
  useEffect(()=>{
   mounted.current=true;

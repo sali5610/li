@@ -147,7 +147,7 @@ function KnowledgeSearch(){
          {link.reason&&<Text role="support">{link.reason}</Text>}
          {link.kind==='Lesson'&&routes.has(link.lessonId||'')&&
           <Button variant="secondary" onClick={()=>navigateTo(link.lessonId!)}>Mở bài {link.lessonId}</Button>}
-         {sourceIsSafe(link.sourceUrl)&&<a href={link.sourceUrl} target="_blank" rel="noopener noreferrer">
+         {sourceIsSafe(link.sourceUrl)&&record.links.findIndex(item=>item.sourceUrl===link.sourceUrl)===i&&<a href={link.sourceUrl} target="_blank" rel="noopener noreferrer">
           {link.sourceType==='academic'?'Nguồn phương pháp':'Nguồn phân loại'}</a>}
         </div>)}
        </div>}

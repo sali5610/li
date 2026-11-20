@@ -55,8 +55,7 @@ if(authOnly){
   './assets/catalog-drilldown.js',
   './assets/li-catalog-search.js'
  ]){
-  const escaped=src.replace(/[.*+?^${}()|[\]\\]/g,'\\let html=replaceOnce(origin,'<script src="./assets/lesson-l09-hifi.js"></script>','');
-const gate=(');
+  const escaped=src.replaceAll('.','\\.');
   const tag=new RegExp('<script src="'+escaped+'(?:\\?v=[^"]+)?"></script>','g');
   const matches=html.match(tag);
   if(!matches||matches.length!==1)throw Error('RETIRED_REACT_SCRIPT_CHANGED: '+src);

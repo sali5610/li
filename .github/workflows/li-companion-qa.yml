@@ -29,8 +29,10 @@ jobs:
           node-version: '22'
       - name: Check adaptive study mode mapping and check-in actions
         run: node tools/checkin_adaptation_regression.mjs
-      - name: Parse interactive practice runtime
-        run: node --check site/assets/spell-practice.js
+      - name: Check the real 13-spell engine and lesson-context gates
+        run: |
+          node --check site/assets/spell-practice.js
+          node tools/test_spell_direct_engine.cjs
       - name: Check VI/EN companion copy and quote coverage
         run: node tools/test_i18n_legacy.cjs
       - name: Check React backup and native navigation fallback

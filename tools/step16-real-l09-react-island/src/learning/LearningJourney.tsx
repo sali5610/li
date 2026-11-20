@@ -7,7 +7,6 @@ import {Field} from '../../../../design-system/react/Controls';
 import {Heading,Text,Progress} from '../../../../design-system/react/Atoms';
 import {L09_LESSON_ID} from './ports';
 import type {LearningPorts,SyncState} from './ports';
-import './journey.css';
 
 /** A real React learner screen. No parallel shell, synthetic attempt, or fake auth.
  * Existing native L09 editorial is extracted from its authoritative source by

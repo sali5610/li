@@ -17,13 +17,24 @@ import './journey.css';
 type Locale='vi'|'en';
 type Method='T06'|'T07';
 type Phase='read'|'guided'|'methods'|'practice'|'feedback'|'progress';
-type Section={md:string;gate?:string};
+type Section={md:string;gate?:string;hint_md?:string};
+type Illustration={id:string;src:string;alt:string;caption:string;provenance:string};
+type CompanionMoment={
+ stage:'opening'|'concept'|'guided'|'independent'|'reflection'|'extension';
+ anchor:string;gate:string;quote_id:string;quote_ids:string[];
+ quote_relevance_md:string;prompt_md:string;actions:{label:string;reply_md:string}[];
+};
+type Extension={
+ id:string;intro_md:string;searchQueries:string[];sourcePrompt:string;
+ sources:{title:string;url:string;tier:string}[];recallQuestions:string[];
+};
 type MethodCopy={prompt_md:string;feedback_md:string;feedback_gate:string};
 type Localized={
  hook:Section;goals:Section;concept:Section;variable_types:Section;guided:Section;
  technique_applications:Record<Method,MethodCopy>;
  independent:{prompt_md:string;model_answer_md:string;model_answer_gate:string};
- reflection:Section;
+ reflection:Section;illustration:Illustration;
+ companion:{moments:CompanionMoment[]};extension:Extension;
 };
 type EditorialLesson={
  id:string;title:Record<Locale,string>;hierarchy:{field:{title:string}};
@@ -84,6 +95,16 @@ function parseLesson(source:unknown,id:string):EditorialLesson{
   quiz(c.independent.prompt_md);
   if(rubricNames(c.reflection.md).length!==4)
    throw Error('EDITORIAL_FOUR_RUBRIC_ROWS_REQUIRED');
+  if(!c.illustration?.alt||!c.illustration?.caption||!c.guided.hint_md||
+    c.extension?.recallQuestions?.length!==3||c.extension?.sources?.length<2||
+    !c.extension.sourcePrompt||!Array.isArray(c.extension.searchQueries)||
+    c.companion?.moments?.length!==6||
+    c.companion.moments.some((m,index)=>
+     m.stage!==['opening','concept','guided','independent','reflection','extension'][index]||
+     !m.prompt_md||m.actions?.length!==2||m.actions.some(a=>!a.label||!a.reply_md)||
+     !m.quote_id||!Array.isArray(m.quote_ids)||m.quote_ids.length<3||
+     m.quote_ids[0]!==m.quote_id))
+    throw Error('EDITORIAL_REQUIRED_EXPERIENCE_ELEMENTS_MISSING');
  }
  return l as EditorialLesson;
 }
@@ -159,6 +180,31 @@ function Markdown({md}:{md:string}){
  return <div className="li-editorial-markdown">{nodes}</div>;
 }
 
+/** An original SVG diagram stays vector-sharp at narrow mobile widths.
+ * It depicts a subset, never a randomized/representative sampling claim.
+ * Illustration metadata is part of the reviewed content pack, not a draft import.
+ */
+function PopulationDiagram({illustration}:{illustration:Illustration}){
+ const sampled=new Set([1,5,10,14,18,26,29,35,41,46]);
+ return <figure className="li-editorial-visual" id={illustration.id}>
+  <svg viewBox="0 0 720 320" role="img" aria-label={illustration.alt} xmlns="http://www.w3.org/2000/svg">
+   <rect width="720" height="320" fill="#f1f0e9"/>
+   <rect x="24" y="24" width="426" height="272" fill="#e1e6df" stroke="#536b63" strokeWidth="2"/>
+   <rect x="490" y="24" width="206" height="272" fill="#e8e5d6" stroke="#536b63" strokeWidth="2"/>
+   <path d="M450 156h40m-10-9 10 9-10 9" stroke="#536b63" fill="none"
+    strokeWidth="2" strokeDasharray="5 7"/>
+   {Array.from({length:48},(_,i)=><circle key={i} cx={52+(i%8)*53}
+    cy={53+Math.floor(i/8)*41} r="12"
+    fill={sampled.has(i)?'#b38052':'#9dae9f'} stroke="#526a61" strokeWidth="1.5"/>)}
+   {Array.from({length:10},(_,i)=><circle key={'s'+i} cx={527+(i%4)*45}
+    cy={93+Math.floor(i/4)*63} r="14" fill="#b38052" stroke="#72553c" strokeWidth="1.5"/>)}
+  </svg>
+  <figcaption><Text role="support">{illustration.caption}</Text></figcaption>
+ </figure>;
+}
+function plain(md:string):string{return md.replace(/<[^>]*>/g,'').replace(/\*\*/g,'').trim();}
+type QuoteRecord={id:string;original:string;gloss?:string;meta:string;url:string;lang?:string;interpretation?:string};
+
 export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  const reduced=useReducedMotion();
  const [lesson,setLesson]=useState<EditorialLesson|null>(null);
@@ -176,6 +222,91 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  const revision=useRef<string|null>(null);
  const chain=useRef<Promise<void>>(Promise.resolve());
  const pending=useRef(0),failed=useRef(false),mounted=useRef(true);
+ const mentorCleanup=useRef<(()=>void)|null>(null);
+ const [copiedPrompt,setCopiedPrompt]=useState(false);
+ useEffect(()=>()=>mentorCleanup.current?.(),[]);
+
+ /** Reuse the app's existing Lão Lý modal, avatar and audited quote bank.
+  * Scoped buttons are cleaned up when the native modal closes. */
+ function openMentor(moment:CompanionMoment){
+  mentorCleanup.current?.();
+  const app=window as Window&{
+   openLaoLy?:(trigger?:HTMLElement)=>void;
+   liQuoteEngine?:{quotes:QuoteRecord[]};
+  };
+  const trigger=document.activeElement instanceof HTMLElement?document.activeElement:undefined;
+  if(app.openLaoLy)app.openLaoLy(trigger);
+  else document.querySelector<HTMLButtonElement>('#laoly-fab')?.click();
+  const modal=document.getElementById('buddy-modal');
+  const spoken=modal?.querySelector<HTMLElement>('#buddy-text');
+  const actions=modal?.querySelector<HTMLElement>('.buddy-actions');
+  if(!modal?.classList.contains('open')||!spoken||!actions){
+   setError('Không mở được Lão Lý ở màn hình này.');return;
+  }
+  spoken.textContent=plain(moment.prompt_md);
+  const native=Array.from(actions.querySelectorAll<HTMLButtonElement>(
+   '#buddy-question,#buddy-challenge,#buddy-forget'));
+  native.forEach(b=>{b.hidden=true;});
+  const panel=document.createElement('div');panel.className='li-editorial-buddy-actions';
+  const pickedIds=moment.quote_ids.filter(q=>q!=='box-models');
+  function showQuote(quoteId:string){
+   const quote=app.liQuoteEngine?.quotes.find(q=>q.id===quoteId);
+   if(!quote||!quote.url.startsWith('https://'))return;
+   const original=modal?.querySelector<HTMLElement>('#buddy-quote-original');
+   const gloss=modal?.querySelector<HTMLElement>('#buddy-quote-translation');
+   const meta=modal?.querySelector<HTMLElement>('#buddy-quote-meta');
+   const link=modal?.querySelector<HTMLAnchorElement>('#buddy-quote-link');
+   const commentary=modal?.querySelector<HTMLElement>('#buddy-quote-gloss');
+   const info=modal?.querySelector<HTMLElement>('#buddy-quote-info');
+   if(!original||!gloss||!meta||!link||!commentary||!info)return;
+   original.textContent=quote.original;original.lang=quote.lang||'';
+   original.hidden=false;gloss.textContent=quote.gloss||'';gloss.hidden=false;
+   meta.textContent=quote.meta;link.href=quote.url;
+   commentary.textContent=quote.interpretation||plain(moment.quote_relevance_md);
+   info.hidden=false;info.setAttribute('aria-expanded','false');
+   const detail=modal?.querySelector<HTMLElement>('#buddy-quote');if(detail)detail.hidden=true;
+  }
+  for(const action of moment.actions){
+   const button=document.createElement('button');button.type='button';
+   button.className='action alt';button.textContent=action.label;
+   button.addEventListener('click',()=>{spoken.textContent=plain(action.reply_md);});
+   panel.append(button);
+  }
+  if(pickedIds.length){
+   const choices=document.createElement('div');choices.className='li-editorial-buddy-quotes';
+   for(const [index,quoteId] of pickedIds.entries()){
+    const q=app.liQuoteEngine?.quotes.find(q=>q.id===quoteId);
+    if(!q)continue;
+    const button=document.createElement('button');button.type='button';
+    button.className='action alt';button.textContent=index===0?'I · '+q.meta:'· '+q.meta;
+    button.addEventListener('click',()=>showQuote(quoteId));choices.append(button);
+   }
+   panel.append(choices);
+   showQuote(moment.quote_id);
+  }
+  actions.prepend(panel);
+  const observer=new MutationObserver(()=>{
+   if(!modal.classList.contains('open'))cleanup();
+  });
+  function cleanup(){
+   observer.disconnect();panel.remove();native.forEach(b=>{b.hidden=false;});
+   mentorCleanup.current=null;
+  }
+  observer.observe(modal,{attributes:true,attributeFilter:['class']});
+  mentorCleanup.current=cleanup;
+ }
+ function mentor(stage:CompanionMoment['stage']){
+  const moment=lesson?.content.localized[attempt?.locale??'vi'].companion?.moments.find(m=>m.stage===stage);
+  if(!moment||(moment.gate==='AFTER_VALID_INDEPENDENT_SUBMISSION'&&!persistedAttempt?.submitted))return null;
+  return <aside className="li-editorial-mentor" aria-label="Lão Lý">
+   <img src="./assets/laoly-neutral.png" width="56" height="56" alt="" loading="lazy"/>
+   <div><Text role="support">Lão Lý · {stage}</Text>
+    <Button variant="secondary" onClick={()=>openMentor(moment)}>
+     {attempt?.locale==='en'?'Ask Lão Lý about this section':'Hỏi Lão Lý theo mục này'}
+    </Button>
+   </div>
+  </aside>;
+ }
 
  async function refreshStatus(){
   if(!subject.current)return;
@@ -394,10 +525,11 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    className="li-learning-current">
    {phase==='read'&&<Card variant="flat-study" aria-labelledby="li-editorial-read">
     <Heading level={2} id="li-editorial-read" role="titleLarge">{vi?'Hiểu bản chất':'Understand the concepts'}</Heading>
-    <Markdown md={content.hook.md}/>
+    <section id="l0911-hook"><Markdown md={content.hook.md}/>{mentor('opening')}</section>
     <Markdown md={content.goals.md}/>
-    <Markdown md={content.concept.md}/>
-    <Markdown md={content.variable_types.md}/>
+    <section id="l0911-concept"><Markdown md={content.concept.md}/>
+     <PopulationDiagram illustration={content.illustration}/>
+     <Markdown md={content.variable_types.md}/>{mentor('concept')}</section>
     <Heading level={3} role="titleMedium">{vi?'Nguồn để đọc thêm':'Read the sources'}</Heading>
     <ul>{lesson.sources.filter(s=>s.url.startsWith('https://')).map(s=><li key={s.url}>
      <a href={s.url} target="_blank" rel="noopener noreferrer">{s.title}</a>
@@ -406,7 +538,11 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    </Card>}
    {phase==='guided'&&<Card variant="flat-study" aria-labelledby="li-editorial-guided">
     <Heading level={2} id="li-editorial-guided" role="titleLarge">{labels.guided}</Heading>
-    <Markdown md={content.guided.md}/>
+    <section id="l0911-guided"><Markdown md={content.guided.md}/>{mentor('guided')}</section>
+    {persistedAttempt?.hint?<div className="li-learning-hint"><Markdown md={content.guided.hint_md??''}/></div>:
+     <Button variant="secondary" disabled={saving||locked} onClick={()=>{if(attempt&&!attempt.hint)void save({...attempt,hint:true});}}>
+      {vi?'Mở gợi ý':'Show hint'}
+     </Button>}
     <Field kind="textarea" rows={5} label={vi?'Tự giải thích bằng lời của mày':'Explain in your own words'}
      value={attempt.guidedDraft} disabled={locked||attempt.submitted} onChange={e=>editGuided(e.currentTarget.value)}/>
     <Button onClick={()=>setPhase('methods')}>{labels.methods}</Button>
@@ -440,7 +576,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    </Card>}
    {phase==='practice'&&<Card variant="flat-study" aria-labelledby="li-editorial-practice">
     <Heading level={2} id="li-editorial-practice" role="titleLarge">{labels.practice}</Heading>
-    <Markdown md={independent.intro}/>
+    <section id="l0911-challenge"><Markdown md={independent.intro}/>{mentor('independent')}</section>
     <div className="li-learning-fields">
      {independent.questions.map((q,i)=><Field key={i} kind="textarea" rows={4}
       label={String(i+1)+'. '+q} value={attempt.draft[i]} disabled={locked||attempt.submitted}
@@ -461,7 +597,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     </ol>
     <Heading level={3} role="titleMedium">{vi?'Đáp án mẫu · chỉ sau khi nộp':'Model answer · after submission'}</Heading>
     <Markdown md={content.independent.model_answer_md}/>
-    <Markdown md={content.reflection.md}/>
+    <section id="l0911-reflection"><Markdown md={content.reflection.md}/>{mentor('reflection')}</section>
     <Heading level={3} role="titleMedium">{vi?'Tự đánh giá 4 tiêu chí':'Self-rate four criteria'}</Heading>
     {[0,1,2,3].map(i=><div className="li-learning-rating" key={i}>
      <label htmlFor={'li-editorial-rating-'+id+'-'+i}>
@@ -481,6 +617,27 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     <Text>{vi?'Đây là một lượt tự đánh giá đã lưu, không phải chứng nhận thông thạo.':
      'A saved self-assessment, not a mastery certificate.'}</Text>
     <Text>{vi?'Điểm tự chấm':'Self-rating'}: {attempt.ratings.reduce<number>((n,v)=>n+(v??0),0)} / 8</Text>
+    <section id="l0911-extension" className="li-editorial-extension">
+     <Markdown md={content.extension.intro_md}/>
+     <Heading level={3} role="titleMedium">{vi?'Nguồn theo cấp':'Source tiers'}</Heading>
+     <ul>{content.extension.sources.map(src=><li key={src.url}>
+      <Text role="support">{src.tier==='intro'?(vi?'Nhập môn':'Intro'):(vi?'Đọc sâu':'Core')}</Text>
+      {' · '}<a href={src.url} target="_blank" rel="noopener noreferrer">{src.title}</a>
+     </li>)}</ul>
+     <Heading level={3} role="titleMedium">{vi?'Truy vấn gợi ý':'Suggested queries'}</Heading>
+     <ul>{content.extension.searchQueries.map(q=><li key={q}><Button variant="ghost"
+      onClick={()=>ports.search.openSearch(q)}>{q}</Button></li>)}</ul>
+     <Heading level={3} role="titleMedium">{vi?'Đối chiếu với nguồn':'Source-aware research prompt'}</Heading>
+     <p className="li-learning-copy">{content.extension.sourcePrompt}</p>
+     <Button variant="secondary" onClick={()=>void navigator.clipboard.writeText(content.extension.sourcePrompt)
+      .then(()=>setCopiedPrompt(true)).catch(()=>setCopiedPrompt(false))}>
+      {copiedPrompt?(vi?'Đã sao chép':'Copied'):(vi?'Sao chép prompt':'Copy prompt')}
+     </Button>
+     <Heading level={3} role="titleMedium">{vi?'Tự nhớ lại · chưa có đáp án':'Active recall · no answers shown'}</Heading>
+     <ol>{content.extension.recallQuestions.map(q=><li key={q}>{q}</li>)}</ol>
+     <Text role="support">{vi?'K5 · Chưa đo khả năng nhớ lại sau nhiều ngày.':'K5 · Delayed recall has not been measured.'}</Text>
+     {mentor('extension')}
+    </section>
     <Button variant="secondary" onClick={()=>ports.search.openSearch(lesson.title[locale])}>
      {vi?'Tra cứu kiến thức liên quan':'Explore related knowledge'}</Button>
     <Button variant="ghost" onClick={ports.navigation.openCatalog}>{vi?'Về Tàng Thư':'Back to library'}</Button>

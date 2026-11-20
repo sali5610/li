@@ -17,12 +17,16 @@ export type PastEditorialAttempt={
  ratings:[Rating,Rating,Rating,Rating];reviewedAt:string|null;answerRevealed:boolean;
  contentVersion:string;rubricVersion:string;attemptNumber:number;
  guidedDraft:string;hint:boolean;methodChoice:MethodChoice;
+ /** Frozen prompts only; old rounds do not repeat model-answer copies. */
+ questionPrompts?:Record<Locale,[string,string,string,string]>;
  methodAttempts?:Partial<Record<'T06'|'T07',MethodAttempt>>;
 };
 export type EditorialReviewSnapshot={
  /** A bilingual first-party model answer/rubric frozen at independent submission. */
  contentVersion:string;rubricVersion:string;
  modelAnswer:Record<Locale,string>;
+ /** Prompts keep original responses intelligible after editorial revisions. */
+ questions:Record<Locale,[string,string,string,string]>;
  criteria:Record<Locale,[string,string,string,string][]>;
 };
 export type Attempt={

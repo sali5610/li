@@ -304,7 +304,30 @@ for(const item of answerability.relatedTopics){
     !item.reason?.vi||!item.reason?.en)
   throw Error("LI_ANSWERABILITY_BAD_RELATED");
 }
-compiled["site/content-packs/answerability.json"]=answerability;
+// Every newly approved, navigable lesson contributes its real VI/EN learning
+// outcomes automatically. No per-lesson search regex, AI paraphrase, or new index.
+// Source URLs are the lesson's own references, NOT independent outcome verification.
+const navLessons=new Set(compiled["site/content-packs/course-catalog.json"].lessons
+ .filter(l=>l.navigationPublished===true&&l.contentState==="review_only")
+ .map(l=>l.id));
+const autoOutcomes=lessons.filter(l=>navLessons.has(l.id)&&
+ l.reviewState==="approved"&&l.publishState==="review_only"&&
+ l.rights.text==="first_party").flatMap(l=>{
+ const src=l.sources.find(s=>s.tier==="core"&&s.url?.startsWith("https://"))||
+  l.sources.find(s=>s.url?.startsWith("https://"));
+ if(!src)throw Error("LI_OUTCOME_INDEX_MISSING_REFERENCE "+l.id);
+ if(l.learningOutcomes.vi.length!==l.learningOutcomes.en.length)
+  throw Error("LI_OUTCOME_INDEX_LOCALE_MISMATCH "+l.id);
+ return l.learningOutcomes.vi.map((vi,i)=>{
+  const en=l.learningOutcomes.en[i];
+  if(!vi?.trim()||!en?.trim())
+   throw Error("LI_OUTCOME_INDEX_EMPTY "+l.id+" #"+i);
+  return {id:"outcome:"+l.id+":"+(i+1),lessonId:l.id,outcomeIndex:i,
+   localized:{vi,en},sourceUrl:src.url,
+   evidenceStatus:"reviewed_lesson_outcome_text_not_independent_claim"};
+ });
+});
+compiled["site/content-packs/answerability.json"]={...answerability,autoOutcomes};
 
 
 const check=process.argv.includes("--check");

@@ -47,7 +47,7 @@
   ],
   "prerequisiteLessonIds": [],
   "methodFit": {
-    "status": "not_reviewed",
+    "status": "reviewed",
     "primaryTechniqueId": "L2-T06",
     "optionalTechniqueIds": [
       "L2-T07"
@@ -183,7 +183,7 @@
           "id": "l0911-reflection",
           "role": "rubric",
           "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
-          "md": "### 6. Editorial self-rating rubric (0–8)\n\nFour dimensions scored 0/1/2: (1) population/sample/unit with coverage; (2) four correct variable types including ID and ordinal; (3) correct sample statistic versus unknown parameter; (4) cautious inference and improved recruitment. Do not turn scores into professional qualifications or automatically grade free text."
+          "md": "### 6. Self-rating rubric 0–8 (not externally calibrated)\n\n| Criterion | 0 | 1 | 2 |\n| --- | --- | --- | --- |\n| Population/sample/unit | Confuses the concepts | Partially correct | Correct population, sample, unit and who could participate |\n| Variable types | Most types incorrect | Some correct, but confuses an ID or ordinal rating | All four types correct with the reason for each |\n| Statistic/parameter | Treats sample result as population fact | Calculates the proportion but blurs its scope | 256/320 = 80% of respondents; population parameter unknown |\n| Evidence-bounded conclusion | Generalizes iOS responses to all learners | Adds only a generic caveat | States the observed group, rating levels and selection limits |\n\n**Common pitfalls:** averaging user IDs; calling one 1–5 response automatically continuous; presenting the 80% voluntary sample proportion as population prevalence; confusing a unit with a variable. The score is self-reflection, **not** an AI-generated grade or proof of mastery. Independent answers remain hidden until all four responses are submitted."
         }
       }
     }
@@ -191,7 +191,7 @@
   "practice": {
     "kind": "written-independent-4",
     "questionCount": 4,
-    "minimumCharactersPerAnswer": 0,
+    "minimumCharactersPerAnswer": 12,
     "feedbackAfterSubmission": true,
     "rubricKey": "reflection.md",
     "questionsKey": "independent.prompt_md",
@@ -221,6 +221,12 @@
       "url": "https://www.usna.edu/Users/cs/roche/courses/s24sd212/units/stattype/",
       "tier": "core",
       "usage": "reference_only"
+    },
+    {
+      "title": "R Handbook — Introduction to Likert Data (individual items versus scales)",
+      "url": "https://rcompanion.org/handbook/E_01.html",
+      "tier": "core",
+      "usage": "claim_verified"
     }
   ],
   "rights": {
@@ -234,9 +240,9 @@
     "checkedOn": "2026-11-20",
     "legacySourcePath": "content/wave2-l0911-cms-offline-20261118/docs/editorial/wave2-cms-l0911/L09-1-1.cms.v1.staging.json"
   },
-  "reviewState": "proposed",
+  "reviewState": "verified",
   "publishState": "draft",
-  "editorialStatus": "draft",
+  "editorialStatus": "reviewed",
   "publishedAt": null,
   "updatedAt": "2026-11-20"
 }

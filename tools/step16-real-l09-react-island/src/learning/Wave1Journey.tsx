@@ -11,6 +11,7 @@ import type {SaveState} from '../../../../design-system/react/Molecules';
 import type {Attempt} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
 import './journey.css';
+import {LessonBookmark,LessonMentor,LessonSectionIndex,LessonSources,LessonFigure} from './LessonDetailParity.js';
 
 type LessonId='L03-1-2'|'L15-2-2';
 type Phase='read'|'guided'|'practice'|'feedback'|'progress';
@@ -42,6 +43,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
  const source=id==='L03-1-2'?lesson03:lesson15;
  const [attempt,setAttempt]=useState<Attempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
+ useEffect(()=>{window.dispatchEvent(new Event('li:lesson-phase-changed'));},[phase]);
  const [loading,setLoading]=useState(true);
  const [reload,setReload]=useState(0);
  const [saving,setSaving]=useState(false);
@@ -165,6 +167,12 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
   const draft=[...attempt.draft] as Attempt['draft'];draft[i]=value;
   void save({...attempt,draft});
  }
+ function clearDraft(){
+  if(!attempt||locked||saving||attempt.submitted)return;
+  const current=id==='L03-1-2'?lesson03:lesson15;
+  if(!window.confirm(current.content.localized[attempt.locale].reset))return;
+  void save({...attempt,draft:['','','',''] as Attempt['draft']});
+ }
  function revealHint(){
   if(!attempt||locked||attempt.submitted||attempt.hint)return;
   void save({...attempt,hint:true,assisted:true});
@@ -232,16 +240,21 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
  const pct=attempt.reviewed?100:attempt.submitted?75:Math.round(answered/4*50);
  const displayed=attempt.submission??attempt.draft;
  return <section className="li-learning-journey" lang={attempt.locale}
-   data-li-react-journey={id}>
+   data-li-react-journey={id}
+   data-li-lesson-phase={phase} data-li-lesson-submitted={attempt.submitted?'true':'false'}>
   <header className="li-learning-header">
    <div><Text role="caption">{source.hierarchy.field.title} · {id}</Text>
     <Heading level={1} id={'li-react-'+id+'-title'} role="headline">{content.title}</Heading>
     <Text>{content.intro}</Text>
    </div>
-   <Button variant="secondary" onClick={ports.navigation.openCatalog}>
-    {vi?'Về Tàng Thư':'Back to library'}
-   </Button>
+   <div className="li-learning-header-actions">
+    <LessonBookmark id={id} locale={attempt.locale}/>
+    <Button variant="secondary" onClick={ports.navigation.openCatalog}>
+     {vi?'Về Tàng Thư':'Back to library'}
+    </Button>
+   </div>
   </header>
+  <Text role="support" className="li-lesson-status">{content.status}</Text>
   <div className="li-learning-language" role="group" aria-label={vi?'Ngôn ngữ bài học':'Lesson language'}>
    {(['vi','en'] as const).map(lang=><Button key={lang}
     variant={attempt.locale===lang?'primary':'secondary'}
@@ -256,6 +269,8 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
       (step==='progress'&&!attempt.reviewed)}
     onClick={()=>setPhase(step)}>{labels[step]}</Button>)}
   </nav>
+  <LessonSectionIndex id={id} locale={attempt.locale}
+   links={content.navLabels} onPhase={setPhase} submitted={attempt.submitted}/>
   <aside className="li-lesson-spells" aria-label={vi?'Thần Chú gợi ý':'Suggested spells'}>
    <Heading level={2} role="titleSmall">{vi?'Thần Chú có thể thử':'Spells to try'}</Heading>
    <Text role="support">{vi?
@@ -304,13 +319,13 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
       <p className="li-learning-copy">{safeText(content.compareText2)}</p></div>
     </div>
     <Text>{safeText(content.conceptNote)}</Text>
-    <figure className="li-learning-visual">
+    <div id={'li-react-'+id+'-visuals'} className="li-lesson-single-figure">
      <Heading level={3} role="titleMedium">{content.visualTitle}</Heading>
-     <img src={sourceImg.src} alt={content.visualCaption} loading="lazy"/>
-     <figcaption><Text role="support">{content.visualNote}</Text>
-      <a href={sourceImg.link} target="_blank" rel="noopener noreferrer">
-       {sourceImg.credit}</a></figcaption>
-    </figure>
+     <LessonFigure src={sourceImg.src} link={sourceImg.link} credit={sourceImg.credit}
+      title={content.visualCaption} note={content.visualNote}
+      fallback={vi?'Ảnh chưa tải. Mở ảnh gốc để xem giấy phép.':'Image unavailable. Open the original to check the license.'}
+      openLabel={vi?'Mở ảnh gốc':'Open original image'}/>
+    </div>
     <Button onClick={()=>setPhase('guided')}>{labels.guided}</Button>
    </Card>}
    {phase==='guided'&&<Card variant="flat-study" aria-labelledby="li-wave1-guided">
@@ -342,8 +357,11 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
       value={attempt.draft[i]} disabled={locked||attempt.submitted}
       onChange={e=>editAnswer(i,e.currentTarget.value)}/>)}
     </div>
-    {!attempt.submitted?<Button disabled={saving||locked} onClick={()=>void submit()}>
-     {content.submit}</Button>:<Button onClick={()=>setPhase('feedback')}>
+    <Text role="support">{content.saveHint}</Text>
+    {!attempt.submitted?<div className="li-learning-recovery">
+     <Button disabled={saving||locked} onClick={()=>void submit()}>{content.submit}</Button>
+     <Button variant="secondary" disabled={saving||locked} onClick={clearDraft}>{content.clear}</Button>
+    </div>:<Button onClick={()=>setPhase('feedback')}>
      {labels.feedback}</Button>}
    </Card>}
    {phase==='feedback'&&<Card variant="flat-study" aria-labelledby="li-wave1-feedback">
@@ -388,12 +406,9 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
      {vi?'Về Tàng Thư':'Back to library'}</Button>
    </Card>}
   </motion.div>
-  <section className="li-learning-sources" aria-label={content.sourcesTitle}>
-   <Heading level={2} role="titleMedium">{content.sourcesTitle}</Heading>
-   <Text role="support">{content.sourcesLead}</Text>
-   <ul>{source.sources.filter(item=>item.url.startsWith('https://')).map(item=>
-    <li key={item.url}><a href={item.url} target="_blank" rel="noopener noreferrer">
-     {item.title}</a></li>)}</ul>
-  </section>
+  <LessonSources id={id} locale={attempt.locale} copy={content}
+   sources={source.sources} subject={source.hierarchy.field.title}
+   conceptTitle={content.conceptTitle} onSearch={ports.search.openSearch}/>
+  <LessonMentor id={id} locale={attempt.locale}/>
  </section>;
 }

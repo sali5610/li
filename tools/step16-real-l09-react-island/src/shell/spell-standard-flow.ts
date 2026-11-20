@@ -21,7 +21,7 @@ export type StandardSpellPort={
 type Evidence={phase:number;reviewed:boolean;dueAt:number|null};
 type StandardSpellEvent=
  | {type:'HYDRATE';stage:StandardSpellStage}
- | ({type:'REVEAL'|'SCHEDULE'|'CLEAR'|'CHECK'}&Evidence)
+ | ({type:'REVEAL'|'SCHEDULE'|'CLEAR'|'CHECK'|'RATE'}&Evidence)
  | {type:'RESET'};
 const supported=(id:string):id is StandardSpellId=>
  (STANDARD_SPELL_IDS as readonly string[]).includes(id);
@@ -79,7 +79,11 @@ export const standardSpellMachine=setup({
    CHECK:{guard:({event})=>event.type==='CHECK'&&
     event.phase===1&&event.reviewed,target:'reviewed'}
   }},
-  reviewed:{}
+  reviewed:{on:{
+   RATE:{guard:({event})=>event.type==='RATE'&&
+    event.phase===0&&!event.reviewed&&
+    event.dueAt!==null&&event.dueAt>Date.now(),target:'scheduled'}
+  }}
  }
 });
 
@@ -129,8 +133,10 @@ export function createStandardSpellFlow(){
    (action==='clear'&&mode==='due'&&stage==='scheduled')||
    (action==='check'&&(
     (mode==='direct'&&(stage==='prepare'||stage==='reviewed'))||
-    (mode!=='direct'&&(stage==='recall'||stage==='reviewed'))
-   ));
+    (mode!=='direct'&&(stage==='recall'||(stage==='reviewed'&&mode==='hide')))
+   ))||
+   ((action==='rate-remembered'||action==='rate-retry')&&
+    mode==='due'&&stage==='reviewed');
   if(!permitted)return false;
   const accepted=port.perform(action,answers);
   if(!accepted)return false; // never advance on a denied account/action
@@ -141,10 +147,14 @@ export function createStandardSpellFlow(){
   else if(action==='schedule')actor.send({type:'SCHEDULE',...evidence(after)});
   else if(action==='clear')actor.send({type:'CLEAR',...evidence(after)});
   else if(action==='check'&&stage!=='reviewed')actor.send({type:'CHECK',...evidence(after)});
+  else if(action==='rate-remembered'||action==='rate-retry')
+   actor.send({type:'RATE',...evidence(after)});
   // A failed answer check must still show its original native feedback, but
   // it cannot unlock reviewed or a subsequent stage without review evidence.
   return action==='next'?getSnapshot()==='recall':
-   action==='clear'?getSnapshot()==='prepare':accepted;
+   action==='clear'?getSnapshot()==='prepare':
+   (action==='rate-remembered'||action==='rate-retry')
+    ?getSnapshot()==='scheduled':accepted;
  }
  return {subscribe,getSnapshot,isCurrent,sync,execute,stop:()=>actor.stop()};
 }

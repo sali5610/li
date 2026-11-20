@@ -266,7 +266,7 @@ function requireCompleteEditorial(l){
    const rubric=rows.filter(s=>s.role==="reflection");
    const q=x?.assessment?.questions,score=x?.assessment?.rubricCriteria;
    if(!x?.intro_md?.trim()||independent.length!==1||
-    methodSections.length<1||rubric.length!==1||
+    methodSections.length<1||methodSections.some(s=>!s.feedback_md?.trim()||s.feedback_gate!=="AFTER_MEANINGFUL_METHOD_ATTEMPT")||rubric.length!==1||
     !rows.some(s=>s.role==="guided")||
     !Array.isArray(q)||q.length!==4||q.some(t=>!t?.trim())||
     !Array.isArray(score)||score.length!==4||

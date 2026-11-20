@@ -20,17 +20,25 @@ import {mountReactChrome} from '../shell/react-shell.js';
 // Unified GitHub Pages staging: no guest app. React verifies signed invitation.
 const root=document.getElementById('li-staging-auth-root');
 if(!root)throw Error('STAGING_AUTH_ROOT_MISSING');
-const opener=document.getElementById('li-open-account');
+type AccountOverlayPort={open:(trigger?:HTMLElement|null)=>boolean};
+let accountTrigger:HTMLElement|null=null;
 function closeAccount(){
  document.documentElement.classList.remove('li-account-open');
- opener?.focus();
+ window.requestAnimationFrame(()=>{
+  if(accountTrigger?.isConnected)accountTrigger.focus();
+  else document.getElementById('li-react-account-trigger')?.focus();
+ });
+ accountTrigger=null;
 }
-opener?.addEventListener('click',()=>{
- if(!document.documentElement.classList.contains('li-auth-verified'))return;
+const accountOverlay:AccountOverlayPort={open:(trigger=null)=>{
+ if(!document.documentElement.classList.contains('li-auth-verified'))return false;
+ accountTrigger=trigger;
  document.documentElement.classList.add('li-account-open');
  window.dispatchEvent(new Event('li:account-open'));
  root.focus();
-});
+ return true;
+}};
+(window as Window&{liAccountOverlay?:AccountOverlayPort}).liAccountOverlay=accountOverlay;
 createRoot(root).render(<AuthPanel onClose={closeAccount}/>);
 
 

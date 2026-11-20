@@ -13,6 +13,8 @@ const react09=get('tools/step16-real-l09-react-island/src/learning/LearningJourn
 const reactWave=get('tools/step16-real-l09-react-island/src/learning/Wave1Journey.tsx');
 const component=get('tools/step16-real-l09-react-island/src/learning/LessonDetailParity.tsx');
 const companion=get('site/assets/lesson-companion-native.js');
+const related=get('tools/step16-real-l09-react-island/src/learning/RelatedLessons.tsx');
+const nativeRelated=get('site/assets/lesson-related-wave1.js');
 for(const [id,legacy] of Object.entries(legacyById)){
  const c=JSON.parse(get('content/lessons/'+id+'.json'));
  assert.equal(c.publishState,'review_only');
@@ -31,7 +33,7 @@ for(const [id,legacy] of Object.entries(legacyById)){
   }
  }
  const react=id==='L09-1-2'?react09:reactWave;
- for(const name of ['LessonBookmark','LessonMentor','LessonSectionIndex','LessonSources']){
+ for(const name of ['LessonBookmark','LessonMentor','LessonSectionIndex','LessonSources','RelatedLessons']){
   assert.ok(react.includes('<'+name),'React '+id+' dropped '+name);
  }
  assert.ok(react.includes('content.clear'),'Draft clear button lost: '+id);
@@ -61,4 +63,13 @@ assert.ok(companion.includes('reactLesson(item.data.lesson_id)'),'Native Lao Ly 
 assert.ok(companion.includes('window.liLessonCompanion='),'Existing Lão Lý context owner must remain.');
 assert.ok(component.includes('onSearch(query)'),'Deep search entry points must remain.');
 assert.ok(component.includes('copyText(buildPrompt('),'Per-source prompt must be copyable.');
+assert.match(related,/getRelatedLessons\(id\)/);
+assert.match(related,/client\.graph\(\)/);
+assert.match(related,/x\.predicate==='RELATED_TO'/);
+assert.match(related,/x\.reviewState==='verified'/);
+assert.match(related,/allowedUrl\(x\.provenance\?\.sourceUrl\)/);
+assert.match(related,/const routes=new Map\(releasedLessonRoutes\.map/);
+assert.match(related,/li-related-source/);
+assert.match(nativeRelated,/location\.hostname==="sali5610\.github\.io"/);
+assert.match(nativeRelated,/location\.pathname\.startsWith\("\/li\/"\)\)return;/);
 console.log('LI_LESSON_PARITY_PASS L03/L09/L15: all 7 authored sections, source/figure credits, mentor, bookmark, reset, locale and feedback gates');

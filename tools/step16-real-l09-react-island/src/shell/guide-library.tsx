@@ -293,7 +293,7 @@ function Resume(){
  };
  return <div className="section-shell li-react-library" data-li-react-screen="resume">
   <Button variant="ghost" data-page="library" className="library-back-link">
-   <LiIcon name="arrow-left" size={18}/> {copy('Tủ Riêng','Private Library')}</Button>
+   <LiIcon name="chevron-left" size={18}/> {copy('Tủ Riêng','Private Library')}</Button>
   <div className="kicker">{copy('HÀNH TRÌNH CỦA BẠN','YOUR LEARNING HISTORY')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Quay lại','Continue')}</Heading>
   <Text role="body" className="intro">{copy(
@@ -338,7 +338,7 @@ function Collection(){
   .filter(item=>filter==='all'||item.type===filter);
  return <div className="section-shell li-react-library" data-li-react-screen="collection">
   <Button variant="ghost" data-page="library" className="library-back-link">
-   <LiIcon name="arrow-left" size={18}/> {copy('Tủ Riêng','Private Library')}</Button>
+   <LiIcon name="chevron-left" size={18}/> {copy('Tủ Riêng','Private Library')}</Button>
   <div className="kicker">{copy('GHI CHÉP CỦA BẠN','YOUR NOTES')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Bộ sưu tập','Collection')}</Heading>
   <Text role="body" className="intro">{copy(

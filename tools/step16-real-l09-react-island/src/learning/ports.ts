@@ -9,7 +9,7 @@ export type ReleasedLessonId = string; // authorized against release registry at
 export type Wave1LessonId = 'L03-1-2'|'L09-1-2'|'L15-2-2';
 export type InvitedLearner = Readonly<{subjectId:string}>;
 export type StoredAttempt = Readonly<{attempt:Attempt;revision:string}>;
-export type SyncState = 'on-device'|'queued'|'synced'|'unavailable';
+export type SyncState = 'on-device'|'queued'|'synced'|'conflict'|'unavailable';
 
 export interface LearningPorts {
   auth: {

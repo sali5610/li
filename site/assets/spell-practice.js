@@ -387,7 +387,7 @@ function switchTab(which){
 }
 function open(id,tab="guide",lessonId=null){
  if(!Object.prototype.hasOwnProperty.call(exercises,id))return;
- active=id;
+ active=id;practiceSessionOwner=verifiedOwner();practiceError="";
  const released=["L03-1-2","L09-1-2","L15-2-2"].includes(lessonId);
  const personal=typeof lessonId==="string"&&
   Object.prototype.hasOwnProperty.call(window.liPersonalStudyRoutes||{},lessonId);
@@ -395,6 +395,12 @@ function open(id,tab="guide",lessonId=null){
  phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
  t12Draft={context:"",next:"",answer:""};t12SavedOnDevice=false;t12StorageError="";
  t12LocalModified=false;t12Synced=false;
+ if(id!=="T02"&&id!=="T12"){
+  const saved=receipt();
+  if(!practiceError&&saved.phase>0){
+   phase=saved.phase;privatePlaces=id==="T13"?saved.places.slice():[];
+  }
+ }
  if(id==="T12"){
   const saved=t12Read();
   if(saved){
@@ -407,6 +413,27 @@ function open(id,tab="guide",lessonId=null){
  tabDraft=null;
  switchTab(tab==="practice"?"practice":"guide");
  notifyReactSpell();
+}
+/* Bind the exact invited personal lesson after Chat 1's gated spell opener. */
+function setLessonContext(id){
+ if(!active||!verifiedOwner()||typeof id!=="string"||
+   !Object.prototype.hasOwnProperty.call(window.liPersonalStudyRoutes||{},id))return false;
+ if(activeLessonId===id)return true;
+ activeLessonId=id;phase=0;feedback="";reviewedInSession=false;
+ privatePlaces=[];viewSession++;
+ if(active==="T12"){
+  const saved=t12Read();
+  t12Draft=saved?{context:saved.context,next:saved.next,answer:saved.answer}:
+   {context:"",next:"",answer:""};
+  phase=saved?saved.phase:0;resumeNote=saved?saved.next:"";
+  t12SavedOnDevice=!!saved;
+ }else if(active!=="T02"){
+  const saved=receipt();
+  if(!practiceError&&saved.phase>0){
+   phase=saved.phase;privatePlaces=active==="T13"?saved.places.slice():[];
+  }
+ }
+ draw();return true;
 }
 function missing(){
  for(const f of currentExercise().fields){
@@ -492,6 +519,10 @@ function notifyReactSpell(){
   window.dispatchEvent(new Event("li:spell-view-changed"));
 }
 function getView(){
+ if(practiceSessionOwner&&practiceSessionOwner!==verifiedOwner()){
+  active=null;feedback="";reviewedInSession=false;privatePlaces=[];resumeNote="";
+  return null;
+ }
  // React owns every visible spell form; discard stale fallback controls
  // rather than leaving a hidden second form behind the React tab.
  // Native fallback can rebuild from canonical engine state on unmount.
@@ -521,7 +552,10 @@ function getView(){
   t12Draft:active==="T12"?{...t12Draft}:undefined,
   t12SavedOnDevice:active==="T12"&&t12SavedOnDevice,
   t12Synced:active==="T12"&&t12Synced,
-  t12StorageError:active==="T12"?t12StorageError:""
+  t12StorageError:active==="T12"?t12StorageError:"",
+  practiceCount:active==="T02"?(due?.reviewCount??0):receipt().count,
+  practiceLastAt:active==="T02"?(due?.lastReviewedAt??null):receipt().lastAt,
+  practiceError:active==="T02"?"":practiceError
  };
 }
 /** Both frontends invoke the same 13-technique action engine. React values
@@ -648,7 +682,7 @@ function setup(){
   });
  }
  window.LiSpellPractice={open,methods:Object.keys(exercises),getView,
-  perform:performReact,setTab:switchTab,setT12Draft,
+  perform:performReact,setTab:switchTab,setT12Draft,setLessonContext,
   refreshNative:()=>{if(!reactOwnsSpell())switchTab(activeTab);}};
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",setup,{once:true});else setup();

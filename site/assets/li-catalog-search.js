@@ -1,182 +1,162 @@
-/* li. native Tra Cứu: real source-versioned catalog + reviewed graph (no learner data).
-   Search UI remains owned by the app. No separate search app or backend provider.
-   If a static search pack fails, fall back to the existing native catalog search. */
+/* li. Tra Cứu — one canonical GitHub content client, no parallel pilot graph.
+ * Public Search documents, reviewed graph links and native lesson routes only.
+ * Offline pack failure falls back to published catalog metadata with an honest label.
+ * Never indexes learner/private data or queries Neon/Notion at runtime. */
 (function(){
 "use strict";
 const input=document.getElementById("global-search");
 const output=document.getElementById("global-results");
 const groups=window.LI_CATALOG_DATA;
 if(!input||!output||!Array.isArray(groups))return;
-const clean=s=>String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("vi").replace(/\s+/g," ").trim();
-const items=[];
+
+const clean=s=>String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+ .replace(/đ/gi,"d").toLocaleLowerCase("vi").replace(/\s+/g," ").trim();
+const items=[],routes=new Map();
 for(const group of groups)for(const field of group.fields||[])for(const course of field.courses||[]){
  const context=[group.title,field.name,course.title].filter(Boolean).join(" · ");
- items.push({type:"course",title:course.title,id:course.id,context,group:group.id,field:field.id,course:course.id,published:false});
  for(const lesson of course.lessons||[]){
-  items.push({type:"lesson",title:lesson.title,id:lesson.id,context,group:group.id,field:field.id,course:course.id,route:lesson.route||null,published:lesson.published===true,sourceUrl:field.source||null});
+  const item={title:lesson.title,id:lesson.id,context,route:lesson.route||null,
+   published:lesson.published===true,sourceUrl:field.source||null};
+  items.push(item);
+  if(item.published&&/^lessonL\d{2}$/.test(item.route||""))routes.set(item.id,item.route);
  }
 }
-let sourceIndex=null,sourceAPI=null,sourceStatus='loading';
-const canOpenLesson=()=>document.documentElement.classList.contains("li-auth-verified")
- && !document.documentElement.classList.contains("li-account-open");
-function score(item,query,terms){
- const title=clean(item.title),id=clean(item.id),extra=clean(item.context);
- if(title===query||id===query)return 100;
- if(title.startsWith(query)||id.startsWith(query))return 80;
- if(title.includes(query)||id.includes(query))return 65;
- if(extra.includes(query))return 22;
- const blob=[title,id,extra].join(" ");
- if(!terms.every(part=>blob.includes(part)))return -1;
- return terms.filter(t=>title.includes(t)||id.includes(t)).length*7+5;
+let client=null,status="loading",generation=0;
+const canOpenLesson=()=>document.documentElement.classList.contains("li-auth-verified") &&
+ !document.documentElement.classList.contains("li-account-open");
+function openLesson(id){
+ const route=routes.get(id);
+ if(canOpenLesson()&&route&&document.getElementById("page-"+route)&&
+    typeof window.navigate==="function")window.navigate(route);
 }
-function legacyOpen(item){
- if(item.type==="lesson"&&item.published&&item.route&&canOpenLesson()
-   &&document.getElementById("page-"+item.route)){
-  if(typeof window.navigate==="function")window.navigate(item.route);
-  return;
- }
- if(canOpenLesson()&&typeof window.liCatalog?.openCourse==="function")
-  window.liCatalog.openCourse(item.group,item.field,item.course);
-}
-function sourceLink(url,text){
+function sourceLink(url,label){
  if(typeof url!=="string"||!url.startsWith("https://"))return null;
  const a=document.createElement("a");
- a.href=url;a.target="_blank";a.rel="noopener noreferrer";
- a.textContent=text;
+ a.href=url;a.target="_blank";a.rel="noopener noreferrer";a.textContent=label;
  return a;
 }
-function legacyRow(item){
- const row=document.createElement("div");
- const b=document.createElement("button");b.type="button";b.className="branch";b.dataset.searchResult=item.id;
- const title=document.createElement("strong");title.textContent=item.title;
- const meta=document.createElement("span");meta.className="small";
- meta.textContent=(item.type==="course"?"Môn học":item.published?"Bài có thể học":"Bài đang biên soạn")+" · "+item.id+" · "+item.context;
- b.append(title,meta);b.addEventListener("click",()=>legacyOpen(item));row.append(b);
- // The graph pack may be unavailable offline. Always show the catalog provenance.
- const source=sourceLink(item.sourceUrl,"Nguồn danh mục (Notion)");
- if(source)row.append(source);
- return row;
+function small(text){
+ const el=document.createElement("span");el.className="small";el.textContent=text;
+ return el;
 }
 function legacyRender(value){
+ output.replaceChildren();
  const q=clean(value);
- output.replaceChildren();
- if(!q){output.textContent="Nhập tên bài, môn học hoặc chủ đề để tra cứu.";return;}
- const terms=q.split(" ").filter(Boolean);
- const ranked=items.map(item=>({item,rank:score(item,q,terms)}))
-  .filter(x=>x.rank>=0&&x.item.published)
-  .sort((a,b)=>b.rank-a.rank||a.item.title.localeCompare(b.item.title,"vi"))
-  .slice(0,14);
- if(!ranked.length){
-  const empty=document.createElement("p");empty.textContent="Chưa tìm thấy bài đã phát hành. Thử tên hoặc mã bài khác.";
-  output.append(empty);return;
- }
- const count=document.createElement("p");count.className="small";count.setAttribute("role","status");
- count.textContent=ranked.length+" bài đã phát hành";
- output.append(count);
- const status=document.createElement("p");status.className="small";
- status.setAttribute("role","status");
- status.textContent=sourceStatus==="error"
-  ?"Liên kết quan hệ chưa tải được; đây là kết quả và nguồn danh mục."
-  :"Đang tải các liên kết quan hệ có nguồn…";
- output.append(status);
- ranked.forEach(x=>output.append(legacyRow(x.item)));
-}
-function openRealLesson(record){
- const route=sourceAPI.resolveLessonRoute(record,{
-  hasInvitedSession:canOpenLesson(),
-  routeExists:key=>Boolean(document.getElementById("page-"+key))
- });
- if(route&&typeof window.navigate==="function")window.navigate(route);
-}
-function graphRelations(record){
- const rows=sourceAPI.relatedReviewed(sourceIndex,record.id)
-  .filter(r=>r.kind==="Field"||r.publishState==="catalog_published");
- if(!rows.length)return null;
- // Source belongs alongside the relationship itself, not in collapsed <details>.
- const related=document.createElement("div");
- related.className="li-search-related";
- const intro=document.createElement("p");
- intro.className="small";
- intro.textContent="Quan hệ phân loại đã đối chiếu · "+rows.length+" · không phải điều kiện tiên quyết";
- related.append(intro);
- for(const relation of rows){
-  const block=document.createElement("div");
-  block.className="li-search-relation";
-  const label=document.createElement("span");label.className="small";
-  label.textContent=(relation.relationship==="SCOPED_TO_FIELD"?
-   (relation.direction==="outgoing"?"Thuộc lĩnh vực: ":"Bài trong lĩnh vực: "):
-   "Liên hệ đã kiểm chứng: ")+relation.title+" · "+relation.id;
-  block.append(label,document.createTextNode(" "));
-  // This is the editorial SOURCE FOR THE RELATION, not an academic citation of lesson content.
-  const evidence=sourceLink(relation.provenance?.sourceUrl,"Nguồn quan hệ (Notion)");
-  if(evidence)block.append(evidence);
-  if(relation.route){
-   const go=document.createElement("button");go.type="button";go.className="action alt";
-   go.textContent="Mở bài";go.addEventListener("click",()=>{
-    const target=sourceIndex.records.get(relation.id);if(target)openRealLesson(target);
-   });
-   block.append(document.createTextNode(" "),go);
-  }
-  related.append(block);
- }
- return related;
-}
-function renderReal(value){
- output.replaceChildren();
- if(!value.trim()){output.textContent="Nhập tên bài, mã bài hoặc lĩnh vực để tra cứu.";return;}
- const matches=sourceAPI.searchRealContent(sourceIndex,value,{limit:14});
- if(matches.status==="invalid_query"){
-  output.textContent="Từ khóa không hợp lệ hoặc quá dài.";return;
- }
- if(!matches.results.length){
-  output.textContent="Chưa tìm thấy kiến thức đã được phép tra cứu trong dữ liệu hiện có.";return;
- }
- const count=document.createElement("p");count.className="small";
- count.setAttribute("role","status");
- count.textContent=matches.results.length+" kết quả · dữ liệu có nguồn";
- output.append(count);
- for(const record of matches.results){
+ if(!q){output.textContent="Nhập tên bài, mã bài hoặc khái niệm để tra cứu.";return;}
+ const ranked=items.filter(x=>x.published).map(item=>{
+  const title=clean(item.title),id=clean(item.id),context=clean(item.context);
+  const score=id===q?120:title.includes(q)?75:id.includes(q)?65:
+   q.split(" ").every(t=>(title+" "+id+" "+context).includes(t))?15:-1;
+  return {item,score};
+ }).filter(x=>x.score>=0).sort((a,b)=>b.score-a.score).slice(0,14);
+ if(!ranked.length){output.textContent="Chưa tìm thấy bài có nội dung trong dữ liệu thiết bị.";return;}
+ const msg=document.createElement("p");msg.className="small";msg.setAttribute("role","status");
+ msg.textContent=status==="error"
+  ?"Dữ liệu quan hệ đang không khả dụng. Chỉ hiển thị danh mục đã lưu."
+  :"Đang tải nội dung và quan hệ kiến thức…";
+ output.append(msg);
+ for(const {item} of ranked){
   const row=document.createElement("div");
-  const button=document.createElement(record.kind==="Lesson"?"button":"div");
-  if(record.kind==="Lesson")button.type="button";
-  button.className="branch";button.dataset.searchResult=record.lessonId||record.id;
-  const title=document.createElement("strong");title.textContent=record.title;
-  const meta=document.createElement("span");meta.className="small";
-  meta.textContent=(record.kind==="Lesson"?"Bài đã phát hành":record.kind==="Field"?"Lĩnh vực đã đối chiếu":"Kiến thức tham khảo")+
-   " · "+(record.lessonId||record.id)+" · "+record.context;
-  button.append(title,meta);
-  if(record.kind==="Lesson")button.addEventListener("click",()=>openRealLesson(record));
-  row.append(button);
-  const related=graphRelations(record);
-  if(related)row.append(related);
-  const catalogSource=sourceLink(record.sourceUrl,"Nguồn danh mục (Notion)");
-  // One visible provenance link per result: prefer reviewed relation source.
-  // Catalog provenance remains available for records without a reviewed relation.
-  if(!related&&catalogSource)row.append(catalogSource);
+  const btn=document.createElement("button");btn.type="button";btn.className="branch";
+  btn.dataset.searchResult=item.id;
+  const label=document.createElement("strong");label.textContent=item.title;
+  btn.append(label,small("Bài có nội dung · "+item.id+" · "+item.context));
+  btn.addEventListener("click",()=>openLesson(item.id));row.append(btn);
+  const src=sourceLink(item.sourceUrl,"Nguồn danh mục (Notion)");
+  if(src)row.append(src);
   output.append(row);
  }
 }
-function render(value){
- if(sourceAPI&&sourceIndex)renderReal(value);else legacyRender(value);
+function renderCanonical(data){
+ output.replaceChildren();
+ if(data.status==="invalid_query"){
+  output.textContent="Nhập tên bài, môn hoặc khái niệm để tra cứu.";return;
+ }
+ if(!data.results.length){
+  output.textContent="Chưa có nội dung/khái niệm đã xác minh phù hợp. Đề cương chưa có bài học không được hiển thị như bài đã phát hành.";
+  return;
+ }
+ const header=document.createElement("p");header.className="small";
+ header.setAttribute("role","status");
+ header.textContent=data.results.length+" kết quả · Knowledge Base canonical";
+ output.append(header);
+ for(const record of data.results){
+  const row=document.createElement("div");row.className="li-search-result";
+  const isLesson=record.kind==="Lesson";
+  const surface=document.createElement(isLesson?"button":"div");
+  if(isLesson)surface.type="button";
+  surface.className="branch";surface.dataset.searchResult=record.lessonId||record.id;
+  const label=document.createElement("strong");label.textContent=record.title;
+  const prefix={Lesson:"Bài có nội dung",Concept:"Khái niệm đã đối chiếu",
+   Course:"Đề cương môn",Field:"Lĩnh vực",DomainGroup:"Nhóm ngành"}[record.kind]||"Mục kiến thức";
+  const summary=small(prefix+" · "+(record.lessonId||record.id)+
+   (record.contentState==="review_only"?" · bản nội dung đang duyệt":""));
+  surface.append(label,summary);
+  if(isLesson)surface.addEventListener("click",()=>openLesson(record.lessonId));
+  row.append(surface);
+
+  const sources=new Set();
+  if(record.links.length){
+   const section=document.createElement("div");section.className="li-search-related";
+   const desc=document.createElement("p");desc.className="small";
+   desc.textContent="Kết nối kiến thức có nguồn · không mặc định là bài tiên quyết";
+   section.append(desc);
+   for(const rel of record.links){
+    const link=document.createElement("div");link.className="li-search-relation";
+    const relation=document.createElement("p");relation.className="small";
+    relation.textContent=rel.label+": "+rel.title+" · "+(rel.lessonId||rel.id);
+    link.append(relation);
+    if(rel.reason){
+     const reason=document.createElement("p");reason.className="small";
+     reason.textContent=rel.reason;link.append(reason);
+    }
+    if(rel.kind==="Lesson"&&routes.has(rel.lessonId)){
+     const btn=document.createElement("button");btn.type="button";btn.className="action alt";
+     btn.textContent="Mở bài "+rel.lessonId;
+     btn.addEventListener("click",()=>openLesson(rel.lessonId));link.append(btn);
+    }
+    // Deduplicate identical source URLs across several reviewed relationships.
+    if(rel.sourceUrl&&!sources.has(rel.sourceUrl)){
+     const src=sourceLink(rel.sourceUrl,rel.sourceType==="academic"?
+      "Nguồn phương pháp":"Nguồn phân loại");
+     if(src){link.append(document.createTextNode(" "),src);sources.add(rel.sourceUrl);}
+    }
+    section.append(link);
+   }
+   row.append(section);
+  }
+  if(record.sourceUrl&&!sources.size){
+   const src=sourceLink(record.sourceUrl,"Nguồn danh mục (Notion)");
+   if(src)row.append(src);
+  }
+  output.append(row);
+ }
+}
+async function render(value){
+ const ticket=++generation;
+ if(!value.trim()){
+  output.textContent="Nhập tên bài, môn học hoặc khái niệm để tra cứu.";return;
+ }
+ if(!client){legacyRender(value);return;}
+ try{
+  const result=await client.searchKnowledge(value);
+  if(ticket!==generation)return;
+  renderCanonical(result);
+ }catch{
+  if(ticket!==generation)return;
+  status="error";client=null;legacyRender(value);
+ }
 }
 input.addEventListener("input",e=>render(e.target.value));
+window.liSearch={render,getStatus:()=>status};
 render(input.value);
-window.liSearch={render,getStatus:()=>sourceStatus};
-Promise.all([
- import(new URL("./assets/li-search-adapter.mjs",document.baseURI).href),
- fetch(new URL("./assets/li-search-graph.json",document.baseURI),{credentials:"same-origin"}).then(response=>{
-  if(!response.ok)throw Error("Search graph pack unavailable");
-  return response.json();
- })
-]).then(([api,graph])=>{
- if(graph.status!=="reviewed_public_subset_of_editorial_pilot"||graph.demoOnly!==true)throw Error("Unexpected search graph version");
- sourceIndex=api.buildRealContentIndex({catalog:groups,academicGraph:graph});
- sourceAPI=api;
- sourceStatus="ready";
- render(input.value);
-}).catch(()=>{
- // Don't silently claim graph evidence is available when only catalog lookup works.
- sourceStatus="error";
- render(input.value);
-});
+import(new URL("./assets/li-content-adapter.mjs",document.baseURI).href)
+ .then(async mod=>{
+  // Same static generated indexes used by the native/React lesson content client.
+  await Promise.all([mod.contentClient.search(),mod.contentClient.graph(),
+   mod.contentClient.hierarchy()]);
+  client=mod.contentClient;status="ready";render(input.value);
+ }).catch(()=>{
+  status="error";client=null;render(input.value);
+ });
 })();

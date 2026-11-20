@@ -12,6 +12,9 @@ on:
       - 'tools/platform/workbox-config.cjs'
       - 'tools/build_search_pack.mjs'
       - 'site/assets/li-catalog-search.js'
+      - 'site/assets/li-content-adapter.mjs'
+      - 'site/content-packs/**'
+      - 'tools/test_content_adapter.mjs'
       - '.github/workflows/li-ontology-backend.yml'
 permissions:
   contents: read
@@ -32,4 +35,6 @@ jobs:
           node tools/test_offline_typed_search.mjs
           node tools/build_search_pack.mjs
           node tools/test_real_content_search.mjs
+          node tools/build_content_packs.mjs --check
+          node tools/test_content_adapter.mjs
           bash tools/test_search_rendered.sh

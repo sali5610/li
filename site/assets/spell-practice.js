@@ -45,6 +45,79 @@ let root,guide,tabs,active=null,phase=0,exposure=null,feedback="",resumeNote="",
 let activeLessonId=null,reviewedInSession=false,viewSession=0;
 let activeTab="guide",actionValues=null;
 const reactOwnsSpell=()=>window.liReactGuideDetailMounted===true;
+
+/* One answer-free practice receipt per verified account. Existing T02/T12
+ * checkpoints stay canonical; cloud replication requires auth owner's registry. */
+const PRACTICE_PREFIX="li.spell.practice.v1:";
+const PRACTICE_SCHEMA="li.spell.practice.v1";
+let practiceError="",practiceSessionOwner=null;
+const blankReceipt=()=>({count:0,lastAt:null,phase:0,places:[]});
+function verifiedOwner(){
+ try{
+  if(!document.documentElement.classList.contains("li-auth-verified")||
+     document.documentElement.classList.contains("li-account-open"))return null;
+  const uid=localStorage.getItem("li.sync.local-owner.v1");
+  return uid&&uid.length<=128?uid:null;
+ }catch{return null;}
+}
+function receiptKey(){
+ const uid=verifiedOwner();
+ return uid?PRACTICE_PREFIX+encodeURIComponent(uid):null;
+}
+function receiptStore(){
+ const key=receiptKey();if(!key)return null;
+ try{
+  const raw=localStorage.getItem(key),d=raw===null?{schema:PRACTICE_SCHEMA,scopes:{}}:JSON.parse(raw);
+  if(raw!==null&&raw.length>60000||!d||d.schema!==PRACTICE_SCHEMA||
+     !d.scopes||typeof d.scopes!=="object"||Array.isArray(d.scopes)||
+     Object.keys(d.scopes).length>30)throw Error("BAD_PRACTICE_STORE");
+  for(const [ctx,methods] of Object.entries(d.scopes)){
+   if(ctx!=="standalone"&&!/^L\d{2}-\d+-\d+$/.test(ctx)||
+      !methods||typeof methods!=="object"||Array.isArray(methods))throw Error("BAD_CONTEXT");
+   for(const [id,entry] of Object.entries(methods)){
+    if(!Object.prototype.hasOwnProperty.call(exercises,id)||id==="T02"||
+       !entry||typeof entry!=="object"||Array.isArray(entry)||
+       !Number.isSafeInteger(entry.count)||entry.count<0||entry.count>100000||
+       !(entry.lastAt===null||Number.isSafeInteger(entry.lastAt)&&entry.lastAt>0)||
+       !Number.isSafeInteger(entry.phase)||entry.phase<0||
+       entry.phase>(id==="T03"?2:1)||
+       entry.phase>0&&!["T01","T03","T13"].includes(id)||
+       !Array.isArray(entry.places)||entry.places.length>(id==="T13"?3:0)||
+       entry.places.some(x=>typeof x!=="string"||x.length>1200)||
+       entry.phase===0&&entry.places.length!==0||
+       id==="T13"&&entry.phase===1&&
+        (entry.places.length!==3||
+         new Set(entry.places.map(x=>x.trim().toLocaleLowerCase("vi"))).size!==3))
+      throw Error("BAD_RECEIPT");
+   }
+  }
+  practiceError="";return d;
+ }catch{practiceError="Không đọc được lịch sử luyện, chưa ghi đè bản cũ.";return null;}
+}
+function receipt(){
+ if(!active||active==="T02")return blankReceipt();
+ return receiptStore()?.scopes?.[activeLessonId||"standalone"]?.[active]||blankReceipt();
+}
+function saveReceipt({phase:step=0,places=[],complete=false}={}){
+ if(!active||active==="T02")return true;
+ const key=receiptKey(),store=receiptStore();
+ if(!key||!store){if(!practiceError)practiceError="Chưa xác minh tài khoản để lưu.";return false;}
+ const ctx=activeLessonId||"standalone",prior=store.scopes[ctx]?.[active]||blankReceipt();
+ const next={count:prior.count+(complete?1:0),
+  lastAt:complete?Date.now():prior.lastAt,phase:step,
+  places:step===1&&active==="T13"?places.slice():[]};
+ try{
+  const raw=JSON.stringify({schema:PRACTICE_SCHEMA,
+   scopes:{...store.scopes,[ctx]:{...store.scopes[ctx],[active]:next}}});
+  if(raw.length>60000)throw Error("RECEIPT_TOO_LARGE");
+  localStorage.setItem(key,raw);
+  if(localStorage.getItem(key)!==raw)throw Error("RECEIPT_NOT_SAVED");
+  practiceError="";
+  window.dispatchEvent(new Event("li:private-personal-change"));
+  return true;
+ }catch{practiceError="Chưa lưu được lượt luyện trên máy.";return false;}
+}
+
 const T12_OWNER="li.sync.local-owner.v1";
 const T12_PREFIX="li.spell.t12.resume.v1:";
 let t12Draft={context:"",next:"",answer:""};
@@ -314,7 +387,7 @@ function switchTab(which){
 }
 function open(id,tab="guide",lessonId=null){
  if(!Object.prototype.hasOwnProperty.call(exercises,id))return;
- active=id;
+ active=id;practiceSessionOwner=verifiedOwner();practiceError="";
  const released=["L03-1-2","L09-1-2","L15-2-2"].includes(lessonId);
  const personal=typeof lessonId==="string"&&
   Object.prototype.hasOwnProperty.call(window.liPersonalStudyRoutes||{},lessonId);
@@ -322,6 +395,12 @@ function open(id,tab="guide",lessonId=null){
  phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
  t12Draft={context:"",next:"",answer:""};t12SavedOnDevice=false;t12StorageError="";
  t12LocalModified=false;t12Synced=false;
+ if(id!=="T02"&&id!=="T12"){
+  const saved=receipt();
+  if(!practiceError&&saved.phase>0){
+   phase=saved.phase;privatePlaces=id==="T13"?saved.places.slice():[];
+  }
+ }
  if(id==="T12"){
   const saved=t12Read();
   if(saved){
@@ -334,6 +413,27 @@ function open(id,tab="guide",lessonId=null){
  tabDraft=null;
  switchTab(tab==="practice"?"practice":"guide");
  notifyReactSpell();
+}
+/* Bind the exact invited personal lesson after Chat 1's gated spell opener. */
+function setLessonContext(id){
+ if(!active||!verifiedOwner()||typeof id!=="string"||
+   !Object.prototype.hasOwnProperty.call(window.liPersonalStudyRoutes||{},id))return false;
+ if(activeLessonId===id)return true;
+ activeLessonId=id;phase=0;feedback="";reviewedInSession=false;
+ privatePlaces=[];viewSession++;
+ if(active==="T12"){
+  const saved=t12Read();
+  t12Draft=saved?{context:saved.context,next:saved.next,answer:saved.answer}:
+   {context:"",next:"",answer:""};
+  phase=saved?saved.phase:0;resumeNote=saved?saved.next:"";
+  t12SavedOnDevice=!!saved;
+ }else if(active!=="T02"){
+  const saved=receipt();
+  if(!practiceError&&saved.phase>0){
+   phase=saved.phase;privatePlaces=active==="T13"?saved.places.slice():[];
+  }
+ }
+ draw();return true;
 }
 function missing(){
  for(const f of currentExercise().fields){
@@ -359,7 +459,8 @@ function check(){
  if(e.mode==="faded"){
   const n=rawValue("number");if(!n){showMessage("Nhập số trước khi kiểm tra.");return;}
   if(Number(n)!==(phase===1?14:26)){showMessage("Chưa đúng: nhu cầu mỗi ngày × số ngày chờ + tồn an toàn. Thử lại.");return;}
-  if(phase===1){phase=2;feedback="";draw();return;}
+  if(phase===1){phase=2;feedback="";saveReceipt({phase:2});draw();return;}
+  if(!reviewedInSession)saveReceipt({complete:true});
   reviewedInSession=true;
   showMessage("Ví dụ độc lập đúng: 7×3+5 = 26 đơn vị.");return;
  }
@@ -389,7 +490,8 @@ function check(){
   if(!reactOwnsSpell())draw();
   return;
  }
- reviewedInSession=true; // feedback follows successfully stored clearing state
+ if(!reviewedInSession)saveReceipt({complete:true});
+ reviewedInSession=true;
  showMessage(info);
  /* T02 history is retained until the learner explicitly resets it. */
  if(!reactOwnsSpell())root?.querySelector(".spell-feedback")?.focus();
@@ -407,9 +509,9 @@ function next(){
   privatePlaces=[1,2,3].map(i=>rawValue("place"+i));
   const unique=privatePlaces.map(x=>x.toLocaleLowerCase("vi").trim());
   if(new Set(unique).size!==3){showMessage("Ba nơi phải khác nhau để tạo ba mốc nhớ phân biệt.");return;}
-  phase=1;feedback="";draw();return;
+  phase=1;feedback="";saveReceipt({phase:1,places:privatePlaces});draw();return;
  }
- phase=1;feedback="";draw();
+ phase=1;feedback="";saveReceipt({phase:1});draw();
 }
 
 /* Existing exercise engine remains single owner of 13 techniques and feedback.
@@ -419,6 +521,10 @@ function notifyReactSpell(){
   window.dispatchEvent(new Event("li:spell-view-changed"));
 }
 function getView(){
+ if(practiceSessionOwner&&practiceSessionOwner!==verifiedOwner()){
+  active=null;feedback="";reviewedInSession=false;privatePlaces=[];resumeNote="";
+  return null;
+ }
  // React owns every visible spell form; discard stale fallback controls
  // rather than leaving a hidden second form behind the React tab.
  // Native fallback can rebuild from canonical engine state on unmount.
@@ -448,7 +554,10 @@ function getView(){
   t12Draft:active==="T12"?{...t12Draft}:undefined,
   t12SavedOnDevice:active==="T12"&&t12SavedOnDevice,
   t12Synced:active==="T12"&&t12Synced,
-  t12StorageError:active==="T12"?t12StorageError:""
+  t12StorageError:active==="T12"?t12StorageError:"",
+  practiceCount:active==="T02"?(due?.reviewCount??0):receipt().count,
+  practiceLastAt:active==="T02"?(due?.lastReviewedAt??null):receipt().lastAt,
+  practiceError:active==="T02"?"":practiceError
  };
 }
 /** Both frontends invoke the same 13-technique action engine. React values
@@ -468,6 +577,9 @@ function runAction(action){
   if(active==="T12"&&!t12Clear()){showMessage(t12StorageError);return false;}
   if(active==="T02"&&!t02Write(t02Empty())){
    showMessage("Không lưu được lần làm lại T02. Lịch cũ vẫn còn.");return false;
+  }
+  if(active!=="T02"&&active!=="T12"&&!saveReceipt({phase:0})){
+   showMessage(practiceError);return false;
   }
   phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
   t12Draft={context:"",next:"",answer:""};draw();return true;
@@ -497,7 +609,7 @@ function runAction(action){
 function performReact(action,values={}){
  // The explicit port also serves existing native fallback automation and
  // authorized callers. It never depends on a hidden button or React mount.
- if(!active||
+ if(!active||(practiceSessionOwner&&practiceSessionOwner!==verifiedOwner())||
    !document.documentElement.classList.contains("li-auth-verified")||
    document.documentElement.classList.contains("li-account-open")||
    !values||typeof values!=="object"||Array.isArray(values))return false;
@@ -575,7 +687,7 @@ function setup(){
   });
  }
  window.LiSpellPractice={open,methods:Object.keys(exercises),getView,
-  perform:performReact,setTab:switchTab,setT12Draft,
+  perform:performReact,setTab:switchTab,setT12Draft,setLessonContext,
   refreshNative:()=>{if(!reactOwnsSpell())switchTab(activeTab);}};
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",setup,{once:true});else setup();

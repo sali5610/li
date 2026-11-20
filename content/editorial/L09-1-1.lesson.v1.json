@@ -85,7 +85,8 @@
           "id": "l0911-guided",
           "role": "guided",
           "gate": "PRE_SUBMIT",
-          "md": "### 4. Ví dụ hướng dẫn\n\nMột trường có 2.500 học sinh. Nhóm quan sát chọn 120 học sinh trong một buổi khảo sát. Bảng có cột <b>khối lớp 10/11/12</b>, <b>số bài đã hoàn thành</b> và <b>thời lượng học được đo bằng phút</b>.\n\n<b>Tự giải thích:</b> tổng thể là ai, mẫu là ai, ba cột thuộc kiểu biến nào? Vì sao “lớp 11” không đồng nghĩa “11 bài đã học”?\n\n<b>Gợi ý:</b> hỏi một giá trị biểu thị <b>nhãn nhóm</b>, <b>số lượng đếm</b> hay <b>đại lượng đo</b>. Chỉ 120 người có dữ liệu thì chưa kết luận được chính xác toàn bộ 2.500 người nếu không xem cách chọn mẫu."
+          "md": "### 4. Ví dụ hướng dẫn\n\nMột trường có 2.500 học sinh. Nhóm quan sát chọn 120 học sinh trong một buổi khảo sát. Bảng có cột <b>khối lớp 10/11/12</b>, <b>số bài đã hoàn thành</b> và <b>thời lượng học được đo bằng phút</b>.\n\n<b>Tự giải thích:</b> tổng thể là ai, mẫu là ai, ba cột thuộc kiểu biến nào? Vì sao “lớp 11” không đồng nghĩa “11 bài đã học”?",
+          "hint_md": "<b>Gợi ý:</b> hỏi một giá trị biểu thị <b>nhãn nhóm</b>, <b>số lượng đếm</b> hay <b>đại lượng đo</b>. Chỉ 120 người có dữ liệu thì chưa kết luận được chính xác toàn bộ 2.500 người nếu không xem cách chọn mẫu."
         },
         "technique_applications": {
           "T06": {
@@ -334,7 +335,8 @@
           "id": "l0911-guided",
           "role": "guided",
           "gate": "PRE_SUBMIT",
-          "md": "### 4. Guided example\n\nA school has <b>2,500 students</b> and observes <b>120</b> at a particular survey session. Fields include <b>school year 10/11/12</b>, <b>completed assignments</b> and <b>minutes spent studying</b>. Identify the population and sample, classify the fields and explain why \"year 11\" is a class label while \"11 assignments\" is a count.\n\n<b>Optional hint:</b> identify labels, counts and measurements by meaning. A sample of 120 does not automatically provide an exact population number without examining selection."
+          "md": "### 4. Guided example\n\nA school has <b>2,500 students</b> and observes <b>120</b> at a particular survey session. Fields include <b>school year 10/11/12</b>, <b>completed assignments</b> and <b>minutes spent studying</b>. Identify the population and sample, classify the fields and explain why \"year 11\" is a class label while \"11 assignments\" is a count.",
+          "hint_md": "<b>Optional hint:</b> identify labels, counts and measurements by meaning. A sample of 120 does not automatically provide an exact population number without examining selection."
         },
         "technique_applications": {
           "T06": {

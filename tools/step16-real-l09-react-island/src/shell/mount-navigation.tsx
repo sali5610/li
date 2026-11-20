@@ -2,10 +2,11 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {AppNavigationControls} from '../../../../design-system/react/AppNavigation';
 import type {AppNavigationItem,AppNavigationControlsProps} from '../../../../design-system/react/AppNavigation';
+import {openRoute,currentRoute} from './app-router.js';
 
 /** One staging app, not an injected second router.
- * The existing document-level data-page handler keeps history/focus/URL behavior
- * while the visible shared navigation is now React-owned.
+ * Visible React controls dispatch typed direct routes to the existing one
+ * history/focus/URL controller; no delegated data-page click for this nav.
  */
 const destinations:readonly AppNavigationItem[]=[
  {id:'home',label:'Đại Sảnh',accessibleLabel:'Đại Sảnh — Trang chủ',title:'Trang chủ',icon:'trees'},
@@ -19,10 +20,7 @@ const utilities:readonly AppNavigationItem[]=[
  {id:'settings',label:'Cài đặt',accessibleLabel:'Cài đặt',title:'Cài đặt',icon:'settings-2'}
 ];
 
-function currentPage(){
- const id=document.querySelector<HTMLElement>('section.page.active')?.id||'page-home';
- return id.startsWith('page-')?id.slice(5):'home';
-}
+
 
 export function mountSharedNavigation(){
  const surfaces:{selector:string;area:AppNavigationControlsProps['area'];items:readonly AppNavigationItem[]}[]=[
@@ -37,12 +35,13 @@ export function mountSharedNavigation(){
   host.dataset.liReactNavigation=area;
   return {root,area,items};
  });
- let active=currentPage();
+ let active=currentRoute();
  const render=()=>mounts.forEach(({root,area,items})=>root.render(
-  <AppNavigationControls area={area} activeId={active} items={items}/>
+  <AppNavigationControls area={area} activeId={active} items={items}
+   onNavigate={openRoute}/>
  ));
  const update=()=>{
-  const next=currentPage();
+  const next=currentRoute();
   if(next!==active){active=next;render();}
  };
  const observer=new MutationObserver(update);

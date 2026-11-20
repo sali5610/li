@@ -32,7 +32,7 @@ assert.match(dialog,/li-auth-verified/,'Never open without verified invitation')
 assert.match(dialog,/setView\(null\)/,'Clear sensitive dialog state after sign-out');
 assert.match(dialog,/li:study-mode-applied/,'Avatar follows chosen mode');
 assert.match(dialog,/li:localechange/,'Language changes remain observed');
-assert.match(dialog,/aria-modal/);
+assert.match(page,/id="buddy-modal"[^>]*aria-modal="true"/);
 assert.match(plans,/window\.liBuddyEngine=Object\.freeze/,
  'One real contextual plan owner, not a React copy');
 assert.match(plans,/localizePlan\(getBuddyPlan\(\)\)/);

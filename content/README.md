@@ -1,5 +1,9 @@
 # li. canonical course content — Wave 1
 
+## Complete known manuscript source migration · 20 Nov 2026
+**29/29 known manuscript bodies are now retained in GitHub staging:** 3 locked Wave1 structured bodies in `content/lessons/`, one structured L09-1-1 draft in `content/editorial/`, plus 25 full-source VI/EN legacy imports in `content/editorial/imported/` ([manifest](editorial/imported/index.v1.json)). Of these known bodies, 21 have legacy lesson IDs and eight are research-only, noncanonical drafts. **114/135 legacy lesson outlines have no identified complete manuscript body yet.** GitHub is the exclusive editing source; legacy Notion links are archival provenance only. Imports are NOT runtime-normalized, rights-approved, packaged, deployed or user-validated. Do not place private instructor answer sheets in a public source repo.
+
+
 ## Binding content ownership (20 Nov 2026)
 **GitHub is the single writable source for EVERY learning-content task, not only Wave1.** Edit `content/curriculum/`, `content/editorial/`, `content/lessons/`, `content/graph/` and `content/schema/` directly. Generate learner-facing `site/content-packs/` from these files. **Never compose new lessons, revise copy/rubrics/sources, or adjudicate academic content in Notion.** The only permitted Notion use for learning content is a bounded, one-time read to import historical manuscripts still missing from GitHub; preserve provenance, rights, VI/EN and draft lifecycle, then archive Notion as read-only. For any non-imported lesson, say `NOT MIGRATED`, rather than silently treating Notion as the current CMS.
 

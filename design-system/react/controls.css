@@ -4,8 +4,6 @@
  color:var(--ink);cursor:pointer;overflow-wrap:anywhere}
 .li-atom-choice input{width:var(--li-space-5);height:var(--li-space-5);margin:0;flex:0 0 auto;
  accent-color:var(--moss);cursor:inherit}
-.li-atom-choice input:focus-visible{outline:3px solid var(--li-color-general-focus-ring);
- outline-offset:var(--li-space-1)}
 .li-atom-choice:has(input:disabled){color:var(--muted);cursor:not-allowed;opacity:.7}
 .li-atom-field{display:grid;gap:var(--li-space-2);min-width:0;
  font:var(--li-type-body)/var(--li-leading-body) var(--li-font-ui)}
@@ -13,8 +11,6 @@
 .li-atom-field input,.li-atom-field textarea{box-sizing:border-box;display:block;width:100%;min-width:0;
  min-height:var(--li-space-12);padding:var(--li-space-3);border:1px solid var(--rule);border-radius:0;
  background:var(--porcelain);color:var(--ink);font:inherit;resize:vertical}
-.li-atom-field input:focus-visible,.li-atom-field textarea:focus-visible{
- outline:3px solid var(--li-color-general-focus-ring);outline-offset:var(--li-space-1)}
 .li-atom-field [aria-invalid="true"]{border-color:var(--li-color-danger-fill)}
 .li-atom-field :is(input,textarea):disabled{background:var(--paper-2);color:var(--muted);cursor:not-allowed}
 .li-atom-field :is(input,textarea):read-only:not(:disabled){background:var(--paper)}
@@ -27,7 +23,5 @@
  min-width:var(--li-space-12);min-height:var(--li-space-12);padding:var(--li-space-3);
  border:1px solid var(--rule);border-radius:0;background:var(--cream);color:var(--moss);cursor:pointer}
 .li-atom-icon-button:hover:not(:disabled){background:var(--paper-2)}
-.li-atom-icon-button:focus-visible{outline:3px solid var(--li-color-general-focus-ring);
- outline-offset:var(--li-space-1)}
 .li-atom-icon-button:disabled{cursor:not-allowed;opacity:.55}
 

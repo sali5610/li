@@ -50,9 +50,6 @@
  overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;
  max-block-size:min(70vh,24rem);max-block-size:min(70dvh,24rem)
 }
-.li-layout-scroll-region:focus-visible{
- outline:3px solid var(--li-color-general-focus-ring);outline-offset:var(--li-space-1)
-}
 /* Only the DS specimen is full-width. Default app and L09 CSS stay untouched. */
 .pilot.li-ui-preview{max-width:none}
 .li-ui-preview .li-layout-demo-tile{

@@ -14,7 +14,6 @@
 .li-atom-link{color:var(--moss);text-decoration:underline;text-underline-offset:var(--li-space-1);
  font:inherit;overflow-wrap:anywhere}
 .li-atom-link:hover{text-decoration-thickness:2px}
-.li-atom-link:focus-visible{outline:3px solid var(--li-color-general-focus-ring);outline-offset:var(--li-space-1)}
 .li-atom-divider{border:0;border-block-start:1px solid var(--rule);margin:0}
 .li-atom-badge{display:inline-flex;align-items:center;max-width:100%;
  padding:var(--li-space-1) var(--li-space-2);border:1px solid var(--rule);

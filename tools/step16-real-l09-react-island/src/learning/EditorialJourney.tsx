@@ -237,8 +237,20 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  const chain=useRef<Promise<void>>(Promise.resolve());
  const pending=useRef(0),failed=useRef(false),mounted=useRef(true);
  const mentorCleanup=useRef<(()=>void)|null>(null);
+ const focusFrame=useRef(0);
  const [copiedPrompt,setCopiedPrompt]=useState(false);
- useEffect(()=>()=>mentorCleanup.current?.(),[]);
+ useEffect(()=>()=>{mentorCleanup.current?.();cancelAnimationFrame(focusFrame.current);},[]);
+ function moveTo(next:Phase){
+  setPhase(next);
+  cancelAnimationFrame(focusFrame.current);
+  focusFrame.current=requestAnimationFrame(()=>{
+   const heading=document.getElementById('li-editorial-'+next);
+   if(!heading||!heading.closest('[data-li-editorial-journey="'+id+'"]'))return;
+   heading.setAttribute('tabindex','-1');
+   heading.focus({preventScroll:true});
+   heading.scrollIntoView({behavior:'auto',block:'start'});
+  });
+ }
 
  /** Reuse the app's existing Lão Lý modal, avatar and audited quote bank.
   * Scoped buttons are cleaned up when the native modal closes. */
@@ -517,7 +529,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    submission:[...attempt.draft] as Attempt['submission'],submissionLocale:attempt.locale,
    contentVersion:lesson?.version,rubricVersion:(lesson?.version??'unknown')+':rubric:0-8',
    attemptNumber:attempt.attemptNumber??1,answerRevealed:false};
-  if(await save(next))setPhase('feedback');
+  if(await save(next))moveTo('feedback');
  }
  async function revealAnswer(){
   if(!attempt||!persistedAttempt?.submitted||locked||saving||
@@ -539,7 +551,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   }
   setError('');
   if(await save({...attempt,reviewed:true,reviewedAt:new Date().toISOString()}))
-   setPhase('progress');
+   moveTo('progress');
  }
  async function newAttempt(){
   if(!attempt||!lesson||!persistedAttempt?.reviewed||locked||saving)return;
@@ -567,7 +579,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    setError('Lịch sử sắp vượt giới hạn lưu trữ. Chưa tạo lượt mới để tránh mất bài cũ.');return;
   }
   setError('');
-  if(await save(next))setPhase('read');
+  if(await save(next))moveTo('read');
  }
  function switchLocale(value:Locale){
   if(!attempt||locked||saving||value===attempt.locale)return;
@@ -619,7 +631,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     aria-current={p===phase?'step':undefined}
     disabled={(p==='feedback'&&!persistedAttempt?.submitted)||
      (p==='progress'&&!persistedAttempt?.reviewed)}
-    onClick={()=>setPhase(p)}>{labels[p]}</Button>)}
+    onClick={()=>moveTo(p)}>{labels[p]}</Button>)}
   </nav>
   <div className="li-learning-save">
    <Progress label={vi?'Tiến độ lượt học':'Lesson attempt progress'} value={progress}/>
@@ -668,7 +680,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     <ul>{lesson.sources.filter(s=>s.url.startsWith('https://')).map(s=><li key={s.url}>
      <a href={s.url} target="_blank" rel="noopener noreferrer">{s.title}</a>
     </li>)}</ul>
-    <Button onClick={()=>setPhase('guided')}>{labels.guided}</Button>
+    <Button onClick={()=>moveTo('guided')}>{labels.guided}</Button>
    </Card>}
    {phase==='guided'&&<Card variant="flat-study" aria-labelledby="li-editorial-guided">
     <Heading level={2} id="li-editorial-guided" role="titleLarge">{labels.guided}</Heading>
@@ -679,7 +691,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      </Button>}
     <Field kind="textarea" rows={5} label={vi?'Tự giải thích bằng lời của mày':'Explain in your own words'}
      value={attempt.guidedDraft} disabled={locked||attempt.submitted} onChange={e=>editGuided(e.currentTarget.value)}/>
-    <Button onClick={()=>setPhase('methods')}>{labels.methods}</Button>
+    <Button onClick={()=>moveTo('methods')}>{labels.methods}</Button>
    </Card>}
    {phase==='methods'&&<Card variant="flat-study" aria-labelledby="li-editorial-methods">
     <Heading level={2} id="li-editorial-methods" role="titleLarge">{labels.methods}</Heading>
@@ -733,7 +745,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
        </div>}
      </section>;
     })}
-    <Button onClick={()=>setPhase('practice')}>{vi?'Làm bài độc lập':'Continue to independent practice'}</Button>
+    <Button onClick={()=>moveTo('practice')}>{vi?'Làm bài độc lập':'Continue to independent practice'}</Button>
    </Card>}
    {phase==='practice'&&<Card variant="flat-study" aria-labelledby="li-editorial-practice">
     <Heading level={2} id="li-editorial-practice" role="titleLarge">{labels.practice}</Heading>
@@ -745,7 +757,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     </div>
     {!persistedAttempt?.submitted?<Button disabled={saving||locked||attempt.submitted} onClick={()=>void submit()}>
      {vi?'Nộp bài độc lập':'Submit independent answers'}</Button>:
-     <Button onClick={()=>setPhase('feedback')}>{labels.feedback}</Button>}
+     <Button onClick={()=>moveTo('feedback')}>{labels.feedback}</Button>}
    </Card>}
    {phase==='feedback'&&persistedAttempt?.submitted&&<Card variant="flat-study" aria-labelledby="li-editorial-feedback">
     <Heading level={2} id="li-editorial-feedback" role="titleLarge">{labels.feedback}</Heading>
@@ -782,7 +794,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      </select>
     </div>)}
     {persistedAttempt.answerRevealed&&(persistedAttempt.reviewed?
-     <Button onClick={()=>setPhase('progress')}>{labels.progress}</Button>:
+     <Button onClick={()=>moveTo('progress')}>{labels.progress}</Button>:
      <Button disabled={saving||locked||attempt.reviewed} onClick={()=>void finish()}>
       {vi?'Lưu tự đánh giá':'Save self-review'}
      </Button>)}

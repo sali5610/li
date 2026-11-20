@@ -1,0 +1,398 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "li. canonical bilingual locked lesson v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "kind",
+    "version",
+    "languages",
+    "title",
+    "aliases",
+    "hierarchy",
+    "learningOutcomes",
+    "conceptIds",
+    "prerequisiteLessonIds",
+    "methodFit",
+    "content",
+    "practice",
+    "sources",
+    "rights",
+    "provenance",
+    "reviewState",
+    "publishState",
+    "editorialStatus",
+    "publishedAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^L[0-9]{2}-[0-9]+-[0-9]+$"
+    },
+    "kind": {
+      "const": "Lesson"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "languages": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "vi",
+          "en"
+        ]
+      },
+      "minItems": 2,
+      "uniqueItems": true
+    },
+    "title": {
+      "type": "object",
+      "required": [
+        "vi",
+        "en"
+      ],
+      "properties": {
+        "vi": {
+          "type": "string",
+          "minLength": 1
+        },
+        "en": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "locale",
+          "text"
+        ],
+        "properties": {
+          "locale": {
+            "enum": [
+              "vi",
+              "en"
+            ]
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "hierarchy": {
+      "type": "object",
+      "required": [
+        "group",
+        "field",
+        "course"
+      ],
+      "properties": {
+        "group": {
+          "$ref": "#/$defs/hierarchyNode"
+        },
+        "field": {
+          "$ref": "#/$defs/hierarchyNode"
+        },
+        "course": {
+          "$ref": "#/$defs/hierarchyNode"
+        },
+        "chapter": {
+          "$ref": "#/$defs/hierarchyNode"
+        }
+      },
+      "additionalProperties": false
+    },
+    "difficulty": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "learningOutcomes": {
+      "type": "object",
+      "required": [
+        "vi",
+        "en"
+      ],
+      "properties": {
+        "vi": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "en": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "conceptIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "prerequisiteLessonIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "methodFit": {
+      "type": "object",
+      "required": [
+        "status",
+        "primaryTechniqueId",
+        "optionalTechniqueIds"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "not_reviewed",
+            "reviewed",
+            "approved"
+          ]
+        },
+        "primaryTechniqueId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "optionalTechniqueIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "content": {
+      "type": "object",
+      "required": [
+        "format",
+        "localized"
+      ],
+      "properties": {
+        "format": {
+          "const": "locked-structured-v1"
+        },
+        "localized": {
+          "type": "object",
+          "required": [
+            "vi",
+            "en"
+          ],
+          "properties": {
+            "vi": {
+              "type": "object"
+            },
+            "en": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "practice": {
+      "type": "object",
+      "required": [
+        "kind",
+        "questionCount",
+        "minimumCharactersPerAnswer",
+        "feedbackAfterSubmission",
+        "rubricKey",
+        "questionsKey",
+        "answerKey"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "questionCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "minimumCharactersPerAnswer": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "feedbackAfterSubmission": {
+          "type": "boolean"
+        },
+        "rubricKey": {
+          "type": "string"
+        },
+        "questionsKey": {
+          "type": "string"
+        },
+        "answerKey": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "title",
+          "url",
+          "tier",
+          "usage"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "tier": {
+            "type": "string"
+          },
+          "usage": {
+            "enum": [
+              "reference_only",
+              "claim_verified"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "rights": {
+      "type": "object",
+      "required": [
+        "text",
+        "illustration"
+      ],
+      "properties": {
+        "text": {
+          "enum": [
+            "first_party",
+            "external_reference",
+            "unknown"
+          ]
+        },
+        "illustration": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "sourceUrl",
+        "sourceSection",
+        "evidenceType",
+        "checkedOn",
+        "legacySourcePath"
+      ],
+      "properties": {
+        "sourceUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "sourceSection": {
+          "type": "string"
+        },
+        "evidenceType": {
+          "enum": [
+            "editorial",
+            "documented"
+          ]
+        },
+        "checkedOn": {
+          "type": "string",
+          "format": "date"
+        },
+        "legacySourcePath": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "reviewState": {
+      "enum": [
+        "proposed",
+        "verified",
+        "approved",
+        "rejected",
+        "superseded"
+      ]
+    },
+    "publishState": {
+      "enum": [
+        "draft",
+        "review_only",
+        "published",
+        "suspended",
+        "retired"
+      ]
+    },
+    "editorialStatus": {
+      "enum": [
+        "po_locked",
+        "draft",
+        "reviewed"
+      ]
+    },
+    "publishedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "$defs": {
+    "hierarchyNode": {
+      "type": "object",
+      "required": [
+        "id",
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

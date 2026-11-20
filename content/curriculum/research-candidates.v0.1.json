@@ -1,0 +1,3413 @@
+{
+  "schemaVersion": "0.1.0",
+  "kind": "editorial_research_candidates",
+  "authority": "CUR-04A approved editorial working baseline, NOT canonical production courses",
+  "source": "https://app.notion.com/p/41d6cf6db72a81f3a2c9f3698683d312",
+  "editorialStatus": "approved_working_baseline",
+  "publicationStatus": "not_authorized",
+  "courses": [
+    {
+      "id": "PROP-F01-001",
+      "fieldId": "F01",
+      "title": "Ngữ âm Quan thoại và Pinyin",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L01-1-1",
+        "L01-1-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-002",
+      "fieldId": "F01",
+      "title": "Chữ Hán: nét, bộ thủ và cấu tạo",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L01-2-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-003",
+      "fieldId": "F01",
+      "title": "Ngữ pháp sơ cấp",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L01-1-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-004",
+      "fieldId": "F01",
+      "title": "Giao tiếp thường nhật",
+      "triage": "MERGE_REVIEW",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L01-1-3",
+        "L01-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-005",
+      "fieldId": "F01",
+      "title": "Đọc và viết sơ cấp",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-006",
+      "fieldId": "F01",
+      "title": "Nghe hiểu và suy nghĩa theo ngữ cảnh",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-007",
+      "fieldId": "F01",
+      "title": "Từ vựng, từ ghép và collocation",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-008",
+      "fieldId": "F01",
+      "title": "Ngữ pháp trung cấp và liên kết ý",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L01-2-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-009",
+      "fieldId": "F01",
+      "title": "Hội thoại trung cấp",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L01-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-010",
+      "fieldId": "F01",
+      "title": "Đọc văn bản thông tin",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L01-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-011",
+      "fieldId": "F01",
+      "title": "Viết đoạn văn và phản hồi",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L01-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-012",
+      "fieldId": "F01",
+      "title": "Đọc văn bản xã hội–học thuật",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L01-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-013",
+      "fieldId": "F01",
+      "title": "Thảo luận, phản biện và thuyết trình",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L01-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-014",
+      "fieldId": "F01",
+      "title": "Dịch thuật và diễn giải liên văn hóa",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [
+        "L01-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-015",
+      "fieldId": "F01",
+      "title": "Viết nghị luận tiếng Trung",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L01-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-016",
+      "fieldId": "F01",
+      "title": "Tiếng Trung công sở",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-017",
+      "fieldId": "F01",
+      "title": "Chữ phồn thể và trích đoạn cổ điển",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F01-018",
+      "fieldId": "F01",
+      "title": "Portfolio năng lực tiếng Trung",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-001",
+      "fieldId": "F02",
+      "title": "Pronunciation and basic listening",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-002",
+      "fieldId": "F02",
+      "title": "Grammar and vocabulary in context",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L02-1-1",
+        "L02-1-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-003",
+      "fieldId": "F02",
+      "title": "Everyday reading and writing",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-004",
+      "fieldId": "F02",
+      "title": "Interactive speaking foundations",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-005",
+      "fieldId": "F02",
+      "title": "Listening for inference and detail",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-006",
+      "fieldId": "F02",
+      "title": "Critical reading",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L02-1-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-007",
+      "fieldId": "F02",
+      "title": "Discussion and negotiation",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L02-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-008",
+      "fieldId": "F02",
+      "title": "Paragraph and report writing",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L02-2-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-009",
+      "fieldId": "F02",
+      "title": "Accuracy, register and pragmatics",
+      "triage": "MERGE_REVIEW",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L02-1-2",
+        "L02-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-010",
+      "fieldId": "F02",
+      "title": "Academic reading and synthesis",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L02-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-011",
+      "fieldId": "F02",
+      "title": "Research writing and citation",
+      "triage": "MERGE_REVIEW",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L02-2-2",
+        "L02-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-012",
+      "fieldId": "F02",
+      "title": "Professional presentation",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L02-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-013",
+      "fieldId": "F02",
+      "title": "Mediation and intercultural communication",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-014",
+      "fieldId": "F02",
+      "title": "English for Product and Technology",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-015",
+      "fieldId": "F02",
+      "title": "Advanced rhetoric and stylistics",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [
+        "L02-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F02-016",
+      "fieldId": "F02",
+      "title": "English proficiency portfolio",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-001",
+      "fieldId": "F03",
+      "title": "Introduction to Human–Computer Interaction",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-002",
+      "fieldId": "F03",
+      "title": "Problem Framing and User Needs",
+      "triage": "MERGE_REVIEW",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L03-1-1",
+        "L03-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-003",
+      "fieldId": "F03",
+      "title": "Introduction to UX Research",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L03-1-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-004",
+      "fieldId": "F03",
+      "title": "Visual Interface Fundamentals",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-005",
+      "fieldId": "F03",
+      "title": "Qualitative Research",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L03-1-2",
+        "L03-1-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-006",
+      "fieldId": "F03",
+      "title": "Quantitative Research and Experimentation",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L03-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-007",
+      "fieldId": "F03",
+      "title": "Information Architecture and Content Design",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L03-2-1",
+        "L03-2-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-008",
+      "fieldId": "F03",
+      "title": "Interaction Design and Prototyping",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-009",
+      "fieldId": "F03",
+      "title": "Usability Evaluation and Accessibility",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L03-2-2",
+        "L03-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-010",
+      "fieldId": "F03",
+      "title": "Design Systems and Responsive UI",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-011",
+      "fieldId": "F03",
+      "title": "Service Design and Experience Ecosystems",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-012",
+      "fieldId": "F03",
+      "title": "UX Strategy and Product Analytics",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L03-3-1",
+        "L03-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-013",
+      "fieldId": "F03",
+      "title": "Research Synthesis and Decision-Making",
+      "triage": "MERGE_REVIEW",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L03-1-3",
+        "L03-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-014",
+      "fieldId": "F03",
+      "title": "Inclusive Design, Privacy and Ethics",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L03-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-015",
+      "fieldId": "F03",
+      "title": "AI Interaction and Explainability",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-016",
+      "fieldId": "F03",
+      "title": "UX Research Operations",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F03-017",
+      "fieldId": "F03",
+      "title": "HCI Product Capstone",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-001",
+      "fieldId": "F04",
+      "title": "Programming and Program Correctness",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-002",
+      "fieldId": "F04",
+      "title": "Data Structures and Algorithms",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-003",
+      "fieldId": "F04",
+      "title": "Discrete Mathematics for Software",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-004",
+      "fieldId": "F04",
+      "title": "Computer Systems and HTTP Fundamentals",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L04-1-1",
+        "L04-1-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-005",
+      "fieldId": "F04",
+      "title": "Software Architecture and Construction",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-006",
+      "fieldId": "F04",
+      "title": "Relational Database Systems",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L04-2-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-007",
+      "fieldId": "F04",
+      "title": "API Design and Contract Testing",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L04-1-2",
+        "L04-1-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-008",
+      "fieldId": "F04",
+      "title": "Authentication and Authorization",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L04-2-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-009",
+      "fieldId": "F04",
+      "title": "Concurrency and Async Programming",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-010",
+      "fieldId": "F04",
+      "title": "Testing, CI and Release Engineering",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-011",
+      "fieldId": "F04",
+      "title": "Distributed Systems and Consistency",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L04-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-012",
+      "fieldId": "F04",
+      "title": "Caching, Queues and Data Pipelines",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L04-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-013",
+      "fieldId": "F04",
+      "title": "Application Security and Threat Modeling",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L04-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-014",
+      "fieldId": "F04",
+      "title": "Reliability and Observability",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L04-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-015",
+      "fieldId": "F04",
+      "title": "Performance Engineering",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L04-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-016",
+      "fieldId": "F04",
+      "title": "Cloud Architecture and Zero-cost Governance",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "PRODUCT/ACADEMIC_SPLIT_REVIEW",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F04-017",
+      "fieldId": "F04",
+      "title": "Backend System Capstone",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-001",
+      "fieldId": "F05",
+      "title": "Programming and Data for AI",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-002",
+      "fieldId": "F05",
+      "title": "Linear Algebra and Probability for ML",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-003",
+      "fieldId": "F05",
+      "title": "Machine Learning Foundations",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-004",
+      "fieldId": "F05",
+      "title": "Optimization and Representation Learning",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L05-1-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-005",
+      "fieldId": "F05",
+      "title": "Neural Networks and Deep Learning",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-006",
+      "fieldId": "F05",
+      "title": "Natural Language Processing",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-007",
+      "fieldId": "F05",
+      "title": "Generative Modeling Foundations",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L05-1-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-008",
+      "fieldId": "F05",
+      "title": "Transformers and Large Language Models",
+      "triage": "MERGE_REVIEW",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L05-1-1",
+        "L05-1-3",
+        "L05-2-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-009",
+      "fieldId": "F05",
+      "title": "Fine-tuning and Adaptation",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-010",
+      "fieldId": "F05",
+      "title": "Retrieval-Augmented Generation",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L05-2-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-011",
+      "fieldId": "F05",
+      "title": "LLM Evaluation and Benchmark Design",
+      "triage": "MERGE_REVIEW",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L05-2-3",
+        "L05-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-012",
+      "fieldId": "F05",
+      "title": "Agentic Systems and Tool Use",
+      "triage": "MERGE_REVIEW",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L05-2-1",
+        "L05-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-013",
+      "fieldId": "F05",
+      "title": "Multimodal Generative Systems",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-014",
+      "fieldId": "F05",
+      "title": "Efficient Model Serving",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L05-3-2",
+        "L05-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-015",
+      "fieldId": "F05",
+      "title": "Responsible GenAI, Privacy and Safety",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L05-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-016",
+      "fieldId": "F05",
+      "title": "Open-model Research and Reproducibility",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F05-017",
+      "fieldId": "F05",
+      "title": "GenAI Product Capstone",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-001",
+      "fieldId": "F06",
+      "title": "Nhập môn xã hội học",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L06-1-1",
+        "L06-1-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-002",
+      "fieldId": "F06",
+      "title": "Lý thuyết xã hội cổ điển",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L06-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-003",
+      "fieldId": "F06",
+      "title": "Phương pháp nghiên cứu xã hội",
+      "triage": "MERGE_REVIEW",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L06-1-3",
+        "L06-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-004",
+      "fieldId": "F06",
+      "title": "Thống kê và suy luận xã hội",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-005",
+      "fieldId": "F06",
+      "title": "Lý thuyết xã hội đương đại",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L06-3-1",
+        "L06-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-006",
+      "fieldId": "F06",
+      "title": "Bất bình đẳng và phân tầng",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L06-2-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-007",
+      "fieldId": "F06",
+      "title": "Gia đình, giáo dục và thiết chế",
+      "triage": "MERGE_REVIEW",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L06-1-2",
+        "L06-2-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-008",
+      "fieldId": "F06",
+      "title": "Văn hóa, truyền thông và xã hội số",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L06-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-009",
+      "fieldId": "F06",
+      "title": "Phương pháp định tính và điền dã",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-010",
+      "fieldId": "F06",
+      "title": "Phương pháp khảo sát và định lượng",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-011",
+      "fieldId": "F06",
+      "title": "Causal Inference trong xã hội học",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L06-3-2",
+        "L06-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-012",
+      "fieldId": "F06",
+      "title": "Tổ chức, lao động và xã hội kinh tế",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L06-2-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-013",
+      "fieldId": "F06",
+      "title": "Xã hội học đô thị và di cư",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-014",
+      "fieldId": "F06",
+      "title": "Chính trị, quyền lực và phong trào xã hội",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F06-015",
+      "fieldId": "F06",
+      "title": "Social Research Capstone",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F07-001",
+      "fieldId": "F07",
+      "title": "Nhập môn nhân học và so sánh văn hóa",
+      "triage": "MERGE_REVIEW",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L07-1-1",
+        "L07-1-2",
+        "L07-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F07-002",
+      "fieldId": "F07",
+      "title": "Nhân học xã hội và văn hóa",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L07-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F07-003",
+      "fieldId": "F07",
+      "title": "Khảo cổ học và diễn giải hiện vật",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F07-004",
+      "fieldId": "F07",
+      "title": "Nhân học sinh học và tiến hóa",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F07-005",
+      "fieldId": "F07",
+      "title": "Lý thuyết nhân học",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L07-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F07-006",
+      "fieldId": "F07",
+      "title": "Điền dã và thực hành dân tộc chí",
+      "triage": "MERGE_REVIEW",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L07-1-3",
+        "L07-2-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F07-007",
+      "fieldId": "F07",
+      "title": "Nhân học ngôn ngữ",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F07-008",
+      "fieldId": "F07",
+      "title": "Thân tộc, nghi lễ và tổ chức xã hội",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L07-2-2",
+        "L07-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F07-009",
+      "fieldId": "F07",
+      "title": "Đạo đức và quan hệ cộng đồng",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L07-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F07-010",
+      "fieldId": "F07",
+      "title": "Phân tích dân tộc chí nâng cao",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L07-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F07-011",
+      "fieldId": "F07",
+      "title": "Toàn cầu hóa và di cư",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F07-012",
+      "fieldId": "F07",
+      "title": "Nhân học y tế",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F07-013",
+      "fieldId": "F07",
+      "title": "Nhân học môi trường",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F07-014",
+      "fieldId": "F07",
+      "title": "Anthropology Fieldwork Capstone",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-001",
+      "fieldId": "F08",
+      "title": "Nguyên lý kinh tế vi mô",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L08-1-1",
+        "L08-1-2",
+        "L08-1-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-002",
+      "fieldId": "F08",
+      "title": "Nguyên lý kinh tế vĩ mô",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L08-2-1",
+        "L08-2-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-003",
+      "fieldId": "F08",
+      "title": "Toán học cho kinh tế học",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-004",
+      "fieldId": "F08",
+      "title": "Thống kê và dữ liệu kinh tế",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-005",
+      "fieldId": "F08",
+      "title": "Kinh tế vi mô trung cấp",
+      "triage": "MERGE_REVIEW",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L08-1-2",
+        "L08-1-3",
+        "L08-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-006",
+      "fieldId": "F08",
+      "title": "Kinh tế vĩ mô trung cấp",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L08-2-2",
+        "L08-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-007",
+      "fieldId": "F08",
+      "title": "Kinh tế lượng I",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-008",
+      "fieldId": "F08",
+      "title": "Lý thuyết trò chơi",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-009",
+      "fieldId": "F08",
+      "title": "Kinh tế học công cộng",
+      "triage": "MERGE_REVIEW",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [
+        "L08-2-3",
+        "L08-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-010",
+      "fieldId": "F08",
+      "title": "Kinh tế lượng ứng dụng và nhân quả",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-011",
+      "fieldId": "F08",
+      "title": "Nghiên cứu kinh tế và chính sách",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L08-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-012",
+      "fieldId": "F08",
+      "title": "Kinh tế học phát triển",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-013",
+      "fieldId": "F08",
+      "title": "Kinh tế học lao động và công nghiệp",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-014",
+      "fieldId": "F08",
+      "title": "Kinh tế quốc tế và thương mại",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F08-015",
+      "fieldId": "F08",
+      "title": "Economics Research Capstone",
+      "triage": "KEEP_SCOPE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [
+        "L08-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-001",
+      "fieldId": "F09",
+      "title": "Foundations of Data Science",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L09-1-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-002",
+      "fieldId": "F09",
+      "title": "Programming for Data Analysis",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-003",
+      "fieldId": "F09",
+      "title": "Calculus and Linear Algebra for Data",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-004",
+      "fieldId": "F09",
+      "title": "Probability and Statistical Thinking",
+      "triage": "MERGE_REVIEW",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L09-1-2",
+        "L09-2-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-005",
+      "fieldId": "F09",
+      "title": "Data Wrangling and SQL",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-006",
+      "fieldId": "F09",
+      "title": "Exploratory Analysis and Visualization",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L09-1-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-007",
+      "fieldId": "F09",
+      "title": "Statistical Inference and Regression",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L09-2-2",
+        "L09-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-008",
+      "fieldId": "F09",
+      "title": "Algorithms and Computational Thinking",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-009",
+      "fieldId": "F09",
+      "title": "Machine Learning and Model Validation",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L09-3-1",
+        "L09-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-010",
+      "fieldId": "F09",
+      "title": "Experimentation and Causal Questions",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L09-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-011",
+      "fieldId": "F09",
+      "title": "Computational and Inferential Depth",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-012",
+      "fieldId": "F09",
+      "title": "Data Engineering and Reproducibility",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-013",
+      "fieldId": "F09",
+      "title": "Human Contexts and Data Ethics",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L09-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-014",
+      "fieldId": "F09",
+      "title": "Domain Emphasis: Economics",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-015",
+      "fieldId": "F09",
+      "title": "Domain Emphasis: Cognition and Society",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-016",
+      "fieldId": "F09",
+      "title": "Time Series and Forecasting",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F09-017",
+      "fieldId": "F09",
+      "title": "Data Science Capstone",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-001",
+      "fieldId": "F10",
+      "title": "Tư duy lịch sử và phê bình nguồn",
+      "triage": "MERGE_REVIEW",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L10-1-1",
+        "L10-1-2",
+        "L10-1-3",
+        "L10-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-002",
+      "fieldId": "F10",
+      "title": "Tiền sử và nguồn gốc xã hội phức hợp",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-003",
+      "fieldId": "F10",
+      "title": "Nền văn minh cổ đại Phi–Á–Âu",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L10-2-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-004",
+      "fieldId": "F10",
+      "title": "Châu Mỹ tiền Columbus",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-005",
+      "fieldId": "F10",
+      "title": "Nam Á, Đông Á và Đông Nam Á cổ–trung đại",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-006",
+      "fieldId": "F10",
+      "title": "Châu Phi cổ–trung đại",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-007",
+      "fieldId": "F10",
+      "title": "Thế giới Hồi giáo và trao đổi Á–Âu–Phi",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-008",
+      "fieldId": "F10",
+      "title": "Châu Âu trung đại trong thế giới kết nối",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-009",
+      "fieldId": "F10",
+      "title": "Mạng lưới biển và giao thương trước 1800",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L10-2-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-010",
+      "fieldId": "F10",
+      "title": "Đế chế, thực dân và kháng cự",
+      "triage": "MERGE_REVIEW",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L10-2-1",
+        "L10-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-011",
+      "fieldId": "F10",
+      "title": "Cách mạng và nhà nước hiện đại",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-012",
+      "fieldId": "F10",
+      "title": "Công nghiệp hóa, lao động và tư bản toàn cầu",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L10-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-013",
+      "fieldId": "F10",
+      "title": "Chiến tranh thế giới và thế kỷ XX",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-014",
+      "fieldId": "F10",
+      "title": "Phi thực dân hóa và Chiến tranh Lạnh",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-015",
+      "fieldId": "F10",
+      "title": "Thế giới sau 1990: toàn cầu hóa và khủng hoảng",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-017",
+      "fieldId": "F10",
+      "title": "Tranh luận sử học và lịch sử so sánh",
+      "triage": "MERGE_REVIEW",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L10-1-3",
+        "L10-3-1",
+        "L10-3-2",
+        "L10-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-016",
+      "fieldId": "F10",
+      "title": "Lịch sử môi trường và dịch bệnh",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F10-018",
+      "fieldId": "F10",
+      "title": "World History Research Capstone",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F11-001",
+      "fieldId": "F11",
+      "title": "Introduction to Neurodiversity and Disability Models",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L11-1-1",
+        "L11-1-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F11-002",
+      "fieldId": "F11",
+      "title": "Cognitive Variation and Individual Differences",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F11-003",
+      "fieldId": "F11",
+      "title": "Research Literacy and Respectful Terminology",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L11-1-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F11-004",
+      "fieldId": "F11",
+      "title": "Autism: Research and Everyday Contexts",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F11-005",
+      "fieldId": "F11",
+      "title": "ADHD and Executive Function",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L11-2-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F11-006",
+      "fieldId": "F11",
+      "title": "Dyslexia, Dyscalculia and Learning Differences",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F11-007",
+      "fieldId": "F11",
+      "title": "Sensory Processing and Communication",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F11-008",
+      "fieldId": "F11",
+      "title": "Inclusive Education and Universal Design",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L11-2-2",
+        "L11-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F11-009",
+      "fieldId": "F11",
+      "title": "Participatory and Lived-experience Research",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L11-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F11-010",
+      "fieldId": "F11",
+      "title": "Neuroinclusive Workplace Design",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [
+        "L11-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F11-011",
+      "fieldId": "F11",
+      "title": "Ethics, Evidence and Assessment",
+      "triage": "MERGE_REVIEW",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L11-1-3",
+        "L11-3-2",
+        "L11-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F11-012",
+      "fieldId": "F11",
+      "title": "Policy, Rights and Systems of Support",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L11-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F11-013",
+      "fieldId": "F11",
+      "title": "Intersectionality and Cultural Perspectives",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F11-014",
+      "fieldId": "F11",
+      "title": "Neurodiversity Inclusion Research Capstone",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F12-001",
+      "fieldId": "F12",
+      "title": "Introduction to Cognitive Psychology",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F12-002",
+      "fieldId": "F12",
+      "title": "Experimental Psychology and Statistics",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L12-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F12-003",
+      "fieldId": "F12",
+      "title": "Biological Foundations of Cognition",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F12-004",
+      "fieldId": "F12",
+      "title": "Perception and Sensory Inference",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F12-005",
+      "fieldId": "F12",
+      "title": "Attention and Cognitive Control",
+      "triage": "MERGE_REVIEW",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L12-1-1",
+        "L12-2-3",
+        "L12-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F12-006",
+      "fieldId": "F12",
+      "title": "Learning and Memory",
+      "triage": "MERGE_REVIEW",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L12-1-2",
+        "L12-1-3",
+        "L12-2-1",
+        "L12-2-3",
+        "L12-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F12-007",
+      "fieldId": "F12",
+      "title": "Language and Psycholinguistics",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F12-008",
+      "fieldId": "F12",
+      "title": "Judgment, Decision-Making and Bias",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L12-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F12-009",
+      "fieldId": "F12",
+      "title": "Development of Cognition",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F12-010",
+      "fieldId": "F12",
+      "title": "Cognitive Neuroscience",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F12-011",
+      "fieldId": "F12",
+      "title": "Experimental Replication and Open Science",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L12-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F12-012",
+      "fieldId": "F12",
+      "title": "Computational Models of Cognition",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F12-013",
+      "fieldId": "F12",
+      "title": "Metacognition and Consciousness",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [
+        "L12-2-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F12-014",
+      "fieldId": "F12",
+      "title": "Cognitive Experimental Capstone",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F13-001",
+      "fieldId": "F13",
+      "title": "Foundations of Behavioral Psychology",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F13-002",
+      "fieldId": "F13",
+      "title": "Classical and Operant Conditioning",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L13-1-1",
+        "L13-1-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F13-003",
+      "fieldId": "F13",
+      "title": "Behavioral Measurement and Observation",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L13-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F13-004",
+      "fieldId": "F13",
+      "title": "Learning Theory and Schedules of Reinforcement",
+      "triage": "MERGE_REVIEW",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L13-1-2",
+        "L13-2-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F13-005",
+      "fieldId": "F13",
+      "title": "Single-Case Experimental Design",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L13-3-1",
+        "L13-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F13-006",
+      "fieldId": "F13",
+      "title": "Functional Assessment and Context",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L13-2-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F13-007",
+      "fieldId": "F13",
+      "title": "Behavior Change and Habit Formation",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F13-008",
+      "fieldId": "F13",
+      "title": "Social Learning and Observation",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L13-1-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F13-009",
+      "fieldId": "F13",
+      "title": "Ethics and Participant Safeguarding",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L13-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F13-010",
+      "fieldId": "F13",
+      "title": "Experimental Analysis of Behavior",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F13-011",
+      "fieldId": "F13",
+      "title": "Generalization and Maintenance of Behavior",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L13-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F13-012",
+      "fieldId": "F13",
+      "title": "Behavioral Economics and Choice",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F13-013",
+      "fieldId": "F13",
+      "title": "Cognitive–Behavioral Research Perspectives",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F13-014",
+      "fieldId": "F13",
+      "title": "Behavioral Research Capstone",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F14-001",
+      "fieldId": "F14",
+      "title": "Music Notation, Pitch and Rhythm",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L14-1-1",
+        "L14-1-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F14-002",
+      "fieldId": "F14",
+      "title": "Ear Training and Sight Singing",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L14-1-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F14-003",
+      "fieldId": "F14",
+      "title": "Scales, Intervals and Modes",
+      "triage": "MERGE_REVIEW",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L14-1-3",
+        "L14-2-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F14-004",
+      "fieldId": "F14",
+      "title": "Tonal Harmony I",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L14-2-2",
+        "L14-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F14-005",
+      "fieldId": "F14",
+      "title": "Tonal Harmony II and Modulation",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F14-006",
+      "fieldId": "F14",
+      "title": "Voice Leading and Part Writing",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L14-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F14-007",
+      "fieldId": "F14",
+      "title": "Counterpoint Fundamentals",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F14-008",
+      "fieldId": "F14",
+      "title": "Musical Form and Phrase Structure",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L14-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F14-009",
+      "fieldId": "F14",
+      "title": "Analytical Listening and Score Reading",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L14-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F14-010",
+      "fieldId": "F14",
+      "title": "Contemporary Harmony and Post-tonality",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F14-011",
+      "fieldId": "F14",
+      "title": "Comparative World Music Theory",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F14-012",
+      "fieldId": "F14",
+      "title": "Original Composition and Arrangement Lab",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F14-013",
+      "fieldId": "F14",
+      "title": "Music Theory Analysis Capstone",
+      "triage": "KEEP_SCOPE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [
+        "L14-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-001",
+      "fieldId": "F15",
+      "title": "Introduction to Supply Chain Systems",
+      "triage": "KEEP_SCOPE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L15-1-1",
+        "L15-1-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-002",
+      "fieldId": "F15",
+      "title": "Operations and Process Analysis",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-003",
+      "fieldId": "F15",
+      "title": "Supply Chain KPIs and Data",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-004",
+      "fieldId": "F15",
+      "title": "Demand Patterns and Forecasting",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L15-2-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-005",
+      "fieldId": "F15",
+      "title": "Demand Planning and S&OP",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L15-2-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-006",
+      "fieldId": "F15",
+      "title": "Inventory Management and Service Levels",
+      "triage": "MERGE_REVIEW",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L15-2-2",
+        "L15-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-007",
+      "fieldId": "F15",
+      "title": "Procurement and Supplier Management",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-008",
+      "fieldId": "F15",
+      "title": "Transport, Warehousing and Logistics",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-009",
+      "fieldId": "F15",
+      "title": "Production and Capacity Planning",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-010",
+      "fieldId": "F15",
+      "title": "Order Fulfillment and Global Trade Documents",
+      "triage": "KEEP_SCOPE",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L15-1-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-011",
+      "fieldId": "F15",
+      "title": "Supply Chain Modeling and Optimization",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L15-3-2"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-012",
+      "fieldId": "F15",
+      "title": "End-to-End Visibility and Events",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L15-2-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-013",
+      "fieldId": "F15",
+      "title": "Supply Chain Risk and Resilience",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L15-3-1",
+        "L15-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-014",
+      "fieldId": "F15",
+      "title": "Sustainability and Circular Supply Chains",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-015",
+      "fieldId": "F15",
+      "title": "Finance and Cost-to-Serve",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L15-3-3"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-016",
+      "fieldId": "F15",
+      "title": "Digital Supply Chain Integration",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-017",
+      "fieldId": "F15",
+      "title": "Trade and Customs Compliance",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "SPECIALISM_OPTION_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P0_SCOPE_EVIDENCE",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-018",
+      "fieldId": "F15",
+      "title": "Supply Chain Systems Capstone",
+      "triage": "GAP_LEGACY_TITLE",
+      "level": "capstone",
+      "sourceLevel": "Capstone/Portfolio",
+      "editorialRole": "CAPSTONE_CANDIDATE",
+      "legacyEvidence": [],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    },
+    {
+      "id": "PROP-F15-019",
+      "fieldId": "F15",
+      "title": "Supply Chain Dynamics & Coordination",
+      "triage": "KEEP_SCOPE",
+      "level": "advanced",
+      "sourceLevel": "Advanced",
+      "editorialRole": "CORE_TOPIC_CANDIDATE",
+      "legacyEvidence": [
+        "L15-3-1"
+      ],
+      "sourcePriority": "P1_SEQUENCING",
+      "status": "research_candidate",
+      "canonicalCourseId": null
+    }
+  ]
+}

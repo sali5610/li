@@ -1,0 +1,2572 @@
+{
+  "schemaVersion": "1.0.0",
+  "source": "legacy_course_navigation_catalog",
+  "publicationState": "outline_only_except_locked_wave1",
+  "hierarchy": [
+    "group",
+    "field",
+    "course",
+    "lesson"
+  ],
+  "groups": [
+    {
+      "id": "language",
+      "title": "Ngôn ngữ",
+      "fieldIds": [
+        "F01",
+        "F02"
+      ]
+    },
+    {
+      "id": "technology",
+      "title": "Công nghệ",
+      "fieldIds": [
+        "F03",
+        "F04",
+        "F05"
+      ]
+    },
+    {
+      "id": "social-sciences",
+      "title": "Khoa học xã hội",
+      "fieldIds": [
+        "F06",
+        "F07",
+        "F08"
+      ]
+    },
+    {
+      "id": "mathematics",
+      "title": "Toán học & dữ liệu",
+      "fieldIds": [
+        "F09"
+      ]
+    },
+    {
+      "id": "history",
+      "title": "Lịch sử",
+      "fieldIds": [
+        "F10"
+      ]
+    },
+    {
+      "id": "psychology",
+      "title": "Tâm lý học",
+      "fieldIds": [
+        "F11",
+        "F12",
+        "F13"
+      ]
+    },
+    {
+      "id": "music",
+      "title": "Âm nhạc",
+      "fieldIds": [
+        "F14"
+      ]
+    },
+    {
+      "id": "business",
+      "title": "Kinh doanh & vận hành",
+      "fieldIds": [
+        "F15"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "id": "F01",
+      "slug": "chinese",
+      "title": "Tiếng Trung",
+      "groupId": "language",
+      "source": "https://app.notion.com/p/41a6cf6db72a8108bb0bd51df8ec47fa",
+      "courseIds": [
+        "C01-1",
+        "C01-2",
+        "C01-3"
+      ]
+    },
+    {
+      "id": "F02",
+      "slug": "english",
+      "title": "Tiếng Anh",
+      "groupId": "language",
+      "source": "https://app.notion.com/p/41a6cf6db72a814eb06ff4b759a43fbc",
+      "courseIds": [
+        "C02-1",
+        "C02-2",
+        "C02-3"
+      ]
+    },
+    {
+      "id": "F03",
+      "slug": "ux-design",
+      "title": "UX Design",
+      "groupId": "technology",
+      "source": "https://app.notion.com/p/41a6cf6db72a816da4ebf6c66338f505",
+      "courseIds": [
+        "C03-1",
+        "C03-2",
+        "C03-3"
+      ]
+    },
+    {
+      "id": "F04",
+      "slug": "backend",
+      "title": "Backend",
+      "groupId": "technology",
+      "source": "https://app.notion.com/p/41a6cf6db72a8185946ae55e49169fe7",
+      "courseIds": [
+        "C04-1",
+        "C04-2",
+        "C04-3"
+      ]
+    },
+    {
+      "id": "F05",
+      "slug": "generative-ai",
+      "title": "Generative AI",
+      "groupId": "technology",
+      "source": "https://app.notion.com/p/41a6cf6db72a8196b87bfd951a856bd9",
+      "courseIds": [
+        "C05-1",
+        "C05-2",
+        "C05-3"
+      ]
+    },
+    {
+      "id": "F06",
+      "slug": "sociology",
+      "title": "Xã hội học",
+      "groupId": "social-sciences",
+      "source": "https://app.notion.com/p/41a6cf6db72a815da947e82061596336",
+      "courseIds": [
+        "C06-1",
+        "C06-2",
+        "C06-3"
+      ]
+    },
+    {
+      "id": "F07",
+      "slug": "anthropology",
+      "title": "Nhân học",
+      "groupId": "social-sciences",
+      "source": "https://app.notion.com/p/41a6cf6db72a8105ba63e4c0f0a47961",
+      "courseIds": [
+        "C07-1",
+        "C07-2",
+        "C07-3"
+      ]
+    },
+    {
+      "id": "F08",
+      "slug": "economics",
+      "title": "Kinh tế học",
+      "groupId": "social-sciences",
+      "source": "https://app.notion.com/p/41a6cf6db72a814aa832f892f223fe31",
+      "courseIds": [
+        "C08-1",
+        "C08-2",
+        "C08-3"
+      ]
+    },
+    {
+      "id": "F09",
+      "slug": "data-science",
+      "title": "Data Science",
+      "groupId": "mathematics",
+      "source": "https://app.notion.com/p/41a6cf6db72a81e1b554fb8dba570b64",
+      "courseIds": [
+        "C09-1",
+        "C09-2",
+        "C09-3"
+      ]
+    },
+    {
+      "id": "F10",
+      "slug": "world-history",
+      "title": "Lịch sử thế giới",
+      "groupId": "history",
+      "source": "https://app.notion.com/p/41a6cf6db72a81a2a103f5eca455b9fb",
+      "courseIds": [
+        "C10-1",
+        "C10-2",
+        "C10-3"
+      ]
+    },
+    {
+      "id": "F11",
+      "slug": "neurodiversity-studies",
+      "title": "Neurodiversity Studies",
+      "groupId": "psychology",
+      "source": "https://app.notion.com/p/41a6cf6db72a814eba11ef40beeceec7",
+      "courseIds": [
+        "C11-1",
+        "C11-2",
+        "C11-3"
+      ]
+    },
+    {
+      "id": "F12",
+      "slug": "cognitive-psychology",
+      "title": "Tâm lý học nhận thức",
+      "groupId": "psychology",
+      "source": "https://app.notion.com/p/41a6cf6db72a81dbaf20c4c6beac33c5",
+      "courseIds": [
+        "C12-1",
+        "C12-2",
+        "C12-3"
+      ]
+    },
+    {
+      "id": "F13",
+      "slug": "behavioral-psychology",
+      "title": "Tâm lý học hành vi",
+      "groupId": "psychology",
+      "source": "https://app.notion.com/p/41a6cf6db72a81c68290ff90a4c3f43d",
+      "courseIds": [
+        "C13-1",
+        "C13-2",
+        "C13-3"
+      ]
+    },
+    {
+      "id": "F14",
+      "slug": "music-theory",
+      "title": "Lý thuyết âm nhạc",
+      "groupId": "music",
+      "source": "https://app.notion.com/p/41a6cf6db72a819fab87cd27a70f12b6",
+      "courseIds": [
+        "C14-1",
+        "C14-2",
+        "C14-3"
+      ]
+    },
+    {
+      "id": "F15",
+      "slug": "supply-chain",
+      "title": "Supply Chain",
+      "groupId": "business",
+      "source": "https://app.notion.com/p/41a6cf6db72a81b08f1ced178fd8b17c",
+      "courseIds": [
+        "C15-1",
+        "C15-2",
+        "C15-3"
+      ]
+    }
+  ],
+  "courses": [
+    {
+      "id": "C01-1",
+      "title": "Mandarin Sounds & Starter Communication",
+      "groupId": "language",
+      "fieldId": "F01",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L01-1-1",
+        "L01-1-2",
+        "L01-1-3"
+      ]
+    },
+    {
+      "id": "C01-2",
+      "title": "Hanzi, Grammar & Everyday Discourse",
+      "groupId": "language",
+      "fieldId": "F01",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L01-2-1",
+        "L01-2-2",
+        "L01-2-3"
+      ]
+    },
+    {
+      "id": "C01-3",
+      "title": "Reading, Register & Interpretation",
+      "groupId": "language",
+      "fieldId": "F01",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L01-3-1",
+        "L01-3-2",
+        "L01-3-3"
+      ]
+    },
+    {
+      "id": "C02-1",
+      "title": "English Structure & Reading Foundations",
+      "groupId": "language",
+      "fieldId": "F02",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L02-1-1",
+        "L02-1-2",
+        "L02-1-3"
+      ]
+    },
+    {
+      "id": "C02-2",
+      "title": "Academic Explanation & Communication",
+      "groupId": "language",
+      "fieldId": "F02",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L02-2-1",
+        "L02-2-2",
+        "L02-2-3"
+      ]
+    },
+    {
+      "id": "C02-3",
+      "title": "Research Argument & Rhetorical Analysis",
+      "groupId": "language",
+      "fieldId": "F02",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L02-3-1",
+        "L02-3-2",
+        "L02-3-3"
+      ]
+    },
+    {
+      "id": "C03-1",
+      "title": "User Problems & Research Basics",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "review_only",
+      "lessonIds": [
+        "L03-1-2"
+      ],
+      "outlineLessonIds": [
+        "L03-1-1",
+        "L03-1-2",
+        "L03-1-3"
+      ]
+    },
+    {
+      "id": "C03-2",
+      "title": "Information Architecture & Interaction Evidence",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L03-2-1",
+        "L03-2-2",
+        "L03-2-3"
+      ]
+    },
+    {
+      "id": "C03-3",
+      "title": "Evidence-led Product Decisions",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L03-3-1",
+        "L03-3-2",
+        "L03-3-3"
+      ]
+    },
+    {
+      "id": "C04-1",
+      "title": "HTTP & Server Foundations",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L04-1-1",
+        "L04-1-2",
+        "L04-1-3"
+      ]
+    },
+    {
+      "id": "C04-2",
+      "title": "Persistence, Identity & Security",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L04-2-1",
+        "L04-2-2",
+        "L04-2-3"
+      ]
+    },
+    {
+      "id": "C04-3",
+      "title": "Backend Reliability & System Design",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L04-3-1",
+        "L04-3-2",
+        "L04-3-3"
+      ]
+    },
+    {
+      "id": "C05-1",
+      "title": "Generative Model Fundamentals",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L05-1-1",
+        "L05-1-2",
+        "L05-1-3"
+      ]
+    },
+    {
+      "id": "C05-2",
+      "title": "Prompting, Grounding & Evaluation",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L05-2-1",
+        "L05-2-2",
+        "L05-2-3"
+      ]
+    },
+    {
+      "id": "C05-3",
+      "title": "Agentic Systems & Responsible Design",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L05-3-1",
+        "L05-3-2",
+        "L05-3-3"
+      ]
+    },
+    {
+      "id": "C06-1",
+      "title": "Sociological Perspectives & Inquiry",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L06-1-1",
+        "L06-1-2",
+        "L06-1-3"
+      ]
+    },
+    {
+      "id": "C06-2",
+      "title": "Institutions, Inequality & Networks",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L06-2-1",
+        "L06-2-2",
+        "L06-2-3"
+      ]
+    },
+    {
+      "id": "C06-3",
+      "title": "Theory, Evidence & Explanation",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L06-3-1",
+        "L06-3-2",
+        "L06-3-3"
+      ]
+    },
+    {
+      "id": "C07-1",
+      "title": "Anthropology & Cultural Context",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L07-1-1",
+        "L07-1-2",
+        "L07-1-3"
+      ]
+    },
+    {
+      "id": "C07-2",
+      "title": "Ethnography, Kinship & Meaning",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L07-2-1",
+        "L07-2-2",
+        "L07-2-3"
+      ]
+    },
+    {
+      "id": "C07-3",
+      "title": "Comparative Anthropological Analysis",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L07-3-1",
+        "L07-3-2",
+        "L07-3-3"
+      ]
+    },
+    {
+      "id": "C08-1",
+      "title": "Scarcity, Choice & Markets",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L08-1-1",
+        "L08-1-2",
+        "L08-1-3"
+      ]
+    },
+    {
+      "id": "C08-2",
+      "title": "Macroeconomic Indicators & Policy",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L08-2-1",
+        "L08-2-2",
+        "L08-2-3"
+      ]
+    },
+    {
+      "id": "C08-3",
+      "title": "Economic Models & Policy Evaluation",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L08-3-1",
+        "L08-3-2",
+        "L08-3-3"
+      ]
+    },
+    {
+      "id": "C09-1",
+      "title": "Data & Statistical Foundations",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "review_only",
+      "lessonIds": [
+        "L09-1-2"
+      ],
+      "outlineLessonIds": [
+        "L09-1-1",
+        "L09-1-2",
+        "L09-1-3"
+      ]
+    },
+    {
+      "id": "C09-2",
+      "title": "Statistical Reasoning & Modeling",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L09-2-1",
+        "L09-2-2",
+        "L09-2-3"
+      ]
+    },
+    {
+      "id": "C09-3",
+      "title": "Predictive Models & Evaluation",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L09-3-1",
+        "L09-3-2",
+        "L09-3-3"
+      ]
+    },
+    {
+      "id": "C10-1",
+      "title": "How Historians Know the Past",
+      "groupId": "history",
+      "fieldId": "F10",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L10-1-1",
+        "L10-1-2",
+        "L10-1-3"
+      ]
+    },
+    {
+      "id": "C10-2",
+      "title": "States, Networks & Transformations",
+      "groupId": "history",
+      "fieldId": "F10",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L10-2-1",
+        "L10-2-2",
+        "L10-2-3"
+      ]
+    },
+    {
+      "id": "C10-3",
+      "title": "Historiography & Comparative Explanation",
+      "groupId": "history",
+      "fieldId": "F10",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L10-3-1",
+        "L10-3-2",
+        "L10-3-3"
+      ]
+    },
+    {
+      "id": "C11-1",
+      "title": "Neurodiversity: Concepts & Language",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L11-1-1",
+        "L11-1-2",
+        "L11-1-3"
+      ]
+    },
+    {
+      "id": "C11-2",
+      "title": "Cognition, Barriers & Accommodation",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L11-2-1",
+        "L11-2-2",
+        "L11-2-3"
+      ]
+    },
+    {
+      "id": "C11-3",
+      "title": "Evidence, Ethics & Lived Experience",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L11-3-1",
+        "L11-3-2",
+        "L11-3-3"
+      ]
+    },
+    {
+      "id": "C12-1",
+      "title": "Attention, Memory & Representation",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L12-1-1",
+        "L12-1-2",
+        "L12-1-3"
+      ]
+    },
+    {
+      "id": "C12-2",
+      "title": "Learning & Metacognitive Monitoring",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L12-2-1",
+        "L12-2-2",
+        "L12-2-3"
+      ]
+    },
+    {
+      "id": "C12-3",
+      "title": "Decision Processes & Cognitive Evidence",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L12-3-1",
+        "L12-3-2",
+        "L12-3-3"
+      ]
+    },
+    {
+      "id": "C13-1",
+      "title": "Foundations of Behavioral Learning",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L13-1-1",
+        "L13-1-2",
+        "L13-1-3"
+      ]
+    },
+    {
+      "id": "C13-2",
+      "title": "Behavioral Patterns & Context",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L13-2-1",
+        "L13-2-2",
+        "L13-2-3"
+      ]
+    },
+    {
+      "id": "C13-3",
+      "title": "Applied Behavioral Inquiry & Ethics",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L13-3-1",
+        "L13-3-2",
+        "L13-3-3"
+      ]
+    },
+    {
+      "id": "C14-1",
+      "title": "Notation, Rhythm & Intervals",
+      "groupId": "music",
+      "fieldId": "F14",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L14-1-1",
+        "L14-1-2",
+        "L14-1-3"
+      ]
+    },
+    {
+      "id": "C14-2",
+      "title": "Scales, Keys & Tonal Harmony",
+      "groupId": "music",
+      "fieldId": "F14",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L14-2-1",
+        "L14-2-2",
+        "L14-2-3"
+      ]
+    },
+    {
+      "id": "C14-3",
+      "title": "Voice Leading, Form & Analysis",
+      "groupId": "music",
+      "fieldId": "F14",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L14-3-1",
+        "L14-3-2",
+        "L14-3-3"
+      ]
+    },
+    {
+      "id": "C15-1",
+      "title": "End-to-End Supply Chain Foundations",
+      "groupId": "business",
+      "fieldId": "F15",
+      "level": "foundation",
+      "sourceLevel": "Foundation",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L15-1-1",
+        "L15-1-2",
+        "L15-1-3"
+      ]
+    },
+    {
+      "id": "C15-2",
+      "title": "Planning, Inventory & Visibility",
+      "groupId": "business",
+      "fieldId": "F15",
+      "level": "intermediate",
+      "sourceLevel": "Intermediate",
+      "status": "review_only",
+      "lessonIds": [
+        "L15-2-2"
+      ],
+      "outlineLessonIds": [
+        "L15-2-1",
+        "L15-2-2",
+        "L15-2-3"
+      ]
+    },
+    {
+      "id": "C15-3",
+      "title": "Supply Chain Strategy & Trade-offs",
+      "groupId": "business",
+      "fieldId": "F15",
+      "level": "advanced",
+      "sourceLevel": "Advanced-topic",
+      "status": "legacy_outline",
+      "lessonIds": [],
+      "outlineLessonIds": [
+        "L15-3-1",
+        "L15-3-2",
+        "L15-3-3"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "L01-1-1",
+      "title": "Pinyin: initials, finals and syllables",
+      "groupId": "language",
+      "fieldId": "F01",
+      "courseId": "C01-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L01-1-2",
+      "title": "Four tones and meaningful minimal pairs",
+      "groupId": "language",
+      "fieldId": "F01",
+      "courseId": "C01-1",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L01-1-3",
+      "title": "Pronouns, word order and basic questions",
+      "groupId": "language",
+      "fieldId": "F01",
+      "courseId": "C01-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L01-2-1",
+      "title": "Character components and radicals versus phonetics",
+      "groupId": "language",
+      "fieldId": "F01",
+      "courseId": "C01-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L01-2-2",
+      "title": "Aspect markers and time expressions in context",
+      "groupId": "language",
+      "fieldId": "F01",
+      "courseId": "C01-2",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L01-2-3",
+      "title": "Connected conversations: requests, replies and politeness",
+      "groupId": "language",
+      "fieldId": "F01",
+      "courseId": "C01-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L01-3-1",
+      "title": "Connectors and paragraph organization",
+      "groupId": "language",
+      "fieldId": "F01",
+      "courseId": "C01-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L01-3-2",
+      "title": "Register, implication and cultural context",
+      "groupId": "language",
+      "fieldId": "F01",
+      "courseId": "C01-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L01-3-3",
+      "title": "Compare interpretations of short authentic texts",
+      "groupId": "language",
+      "fieldId": "F01",
+      "courseId": "C01-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L02-1-1",
+      "title": "Clause structure and sentence purpose",
+      "groupId": "language",
+      "fieldId": "F02",
+      "courseId": "C02-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L02-1-2",
+      "title": "Tense, aspect and time reference",
+      "groupId": "language",
+      "fieldId": "F02",
+      "courseId": "C02-1",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L02-1-3",
+      "title": "Reading: main claim versus supporting detail",
+      "groupId": "language",
+      "fieldId": "F02",
+      "courseId": "C02-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L02-2-1",
+      "title": "Topic sentence and paragraph coherence",
+      "groupId": "language",
+      "fieldId": "F02",
+      "courseId": "C02-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L02-2-2",
+      "title": "Paraphrase and attribution without copying",
+      "groupId": "language",
+      "fieldId": "F02",
+      "courseId": "C02-2",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L02-2-3",
+      "title": "Explain and defend a subject concept aloud",
+      "groupId": "language",
+      "fieldId": "F02",
+      "courseId": "C02-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L02-3-1",
+      "title": "Thesis, warrants and counterclaims",
+      "groupId": "language",
+      "fieldId": "F02",
+      "courseId": "C02-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L02-3-2",
+      "title": "Integrate multiple sources with uncertainty",
+      "groupId": "language",
+      "fieldId": "F02",
+      "courseId": "C02-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L02-3-3",
+      "title": "Audience, tone and evidence quality",
+      "groupId": "language",
+      "fieldId": "F02",
+      "courseId": "C02-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L03-1-1",
+      "title": "User need versus proposed interface",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "courseId": "C03-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L03-1-2",
+      "title": "Câu hỏi mở & thiên lệch phỏng vấn",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "courseId": "C03-1",
+      "order": 2,
+      "navigationPublished": true,
+      "contentState": "review_only",
+      "publishState": "review_only",
+      "localizedTitle": {
+        "vi": "Câu hỏi mở & thiên lệch phỏng vấn",
+        "en": "Open Questions and Interview Bias"
+      }
+    },
+    {
+      "id": "L03-1-3",
+      "title": "Observation, quote, inference and confidence",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "courseId": "C03-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L03-2-1",
+      "title": "Taxonomy, Hierarchy and Canonical Concepts",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "courseId": "C03-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L03-2-2",
+      "title": "Card Sorting versus Tree Testing",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "courseId": "C03-2",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L03-2-3",
+      "title": "Usability Tasks, Errors and Findability Measures",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "courseId": "C03-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L03-3-1",
+      "title": "JTBD and opportunities versus solutions",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "courseId": "C03-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L03-3-2",
+      "title": "Experiment design and disconfirmation",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "courseId": "C03-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L03-3-3",
+      "title": "Stakeholder trade-offs, metrics and ethics",
+      "groupId": "technology",
+      "fieldId": "F03",
+      "courseId": "C03-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L04-1-1",
+      "title": "Client/server request lifecycle and URL",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "courseId": "C04-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L04-1-2",
+      "title": "HTTP methods, status codes and routing",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "courseId": "C04-1",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L04-1-3",
+      "title": "JSON, API resources and validation",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "courseId": "C04-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L04-2-1",
+      "title": "Tables, relations and transactions",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "courseId": "C04-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L04-2-2",
+      "title": "Authentication versus authorization",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "courseId": "C04-2",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L04-2-3",
+      "title": "Input validation and safe error handling",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "courseId": "C04-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L04-3-1",
+      "title": "Idempotency and retry semantics",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "courseId": "C04-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L04-3-2",
+      "title": "Caching, consistency and invalidation",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "courseId": "C04-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L04-3-3",
+      "title": "Observability, capacity and failure budgets",
+      "groupId": "technology",
+      "fieldId": "F04",
+      "courseId": "C04-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L05-1-1",
+      "title": "Tokens, context and generation",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "courseId": "C05-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L05-1-2",
+      "title": "Embedding and representation basics",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "courseId": "C05-1",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L05-1-3",
+      "title": "Training versus inference and factual limits",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "courseId": "C05-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L05-2-1",
+      "title": "Task framing, instructions and constraints",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "courseId": "C05-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L05-2-2",
+      "title": "Grounding and claim verification",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "courseId": "C05-2",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L05-2-3",
+      "title": "Build evaluation cases and failure taxonomy",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "courseId": "C05-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L05-3-1",
+      "title": "Tool calling, permissions and provenance",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "courseId": "C05-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L05-3-2",
+      "title": "Fallback, observability and evaluation harness",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "courseId": "C05-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L05-3-3",
+      "title": "Safety, cost, latency and human oversight",
+      "groupId": "technology",
+      "fieldId": "F05",
+      "courseId": "C05-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L06-1-1",
+      "title": "Social structure versus individual agency",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "courseId": "C06-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L06-1-2",
+      "title": "Norms, values and socialization",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "courseId": "C06-1",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L06-1-3",
+      "title": "Turn curiosity into a researchable question",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "courseId": "C06-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L06-2-1",
+      "title": "Class, stratification and mobility",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "courseId": "C06-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L06-2-2",
+      "title": "Institutions, roles and organizational power",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "courseId": "C06-2",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L06-2-3",
+      "title": "Social networks and group norms",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "courseId": "C06-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L06-3-1",
+      "title": "Functionalist, conflict and interactionist lenses",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "courseId": "C06-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L06-3-2",
+      "title": "Compare explanations of one social phenomenon",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "courseId": "C06-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L06-3-3",
+      "title": "Causation, confounds and ethical interpretation",
+      "groupId": "social-sciences",
+      "fieldId": "F06",
+      "courseId": "C06-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L07-1-1",
+      "title": "Four-field anthropology and core questions",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "courseId": "C07-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L07-1-2",
+      "title": "Ethnocentrism versus cultural relativism",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "courseId": "C07-1",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L07-1-3",
+      "title": "Field notes: description versus interpretation",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "courseId": "C07-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L07-2-1",
+      "title": "Participant observation and reflexivity",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "courseId": "C07-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L07-2-2",
+      "title": "Kinship, exchange and social relations",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "courseId": "C07-2",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L07-2-3",
+      "title": "Ritual, symbols and shared meanings",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "courseId": "C07-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L07-3-1",
+      "title": "Emic versus etic explanation",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "courseId": "C07-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L07-3-2",
+      "title": "Power, colonial histories and positionality",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "courseId": "C07-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L07-3-3",
+      "title": "Compare culturally situated cases with evidence",
+      "groupId": "social-sciences",
+      "fieldId": "F07",
+      "courseId": "C07-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L08-1-1",
+      "title": "Scarcity and opportunity cost",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "courseId": "C08-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L08-1-2",
+      "title": "Marginal thinking and incentives",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "courseId": "C08-1",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L08-1-3",
+      "title": "Supply, demand and equilibrium",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "courseId": "C08-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L08-2-1",
+      "title": "GDP: nominal versus real",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "courseId": "C08-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L08-2-2",
+      "title": "Inflation, unemployment and trade-offs",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "courseId": "C08-2",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L08-2-3",
+      "title": "Monetary versus fiscal mechanisms",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "courseId": "C08-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L08-3-1",
+      "title": "Elasticity and behavioral assumptions",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "courseId": "C08-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L08-3-2",
+      "title": "Externalities and market failures",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "courseId": "C08-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L08-3-3",
+      "title": "Compare policy evidence and unintended effects",
+      "groupId": "social-sciences",
+      "fieldId": "F08",
+      "courseId": "C08-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L09-1-1",
+      "title": "Population, sample and variable types",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "courseId": "C09-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L09-1-2",
+      "title": "Sampling Bias · Sai lệch chọn mẫu",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "courseId": "C09-1",
+      "order": 2,
+      "navigationPublished": true,
+      "contentState": "review_only",
+      "publishState": "review_only",
+      "localizedTitle": {
+        "vi": "Sampling Bias · Sai lệch chọn mẫu",
+        "en": "Sampling Bias versus Random Sampling Variation"
+      }
+    },
+    {
+      "id": "L09-1-3",
+      "title": "Center, spread and distribution shape",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "courseId": "C09-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L09-2-1",
+      "title": "Conditional Probability and Base Rates",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "courseId": "C09-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L09-2-2",
+      "title": "Confidence Intervals and Uncertainty",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "courseId": "C09-2",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L09-2-3",
+      "title": "Regression and Possible Confounding",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "courseId": "C09-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L09-3-1",
+      "title": "Train/validation/test and data leakage",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "courseId": "C09-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L09-3-2",
+      "title": "Precision, recall and error trade-offs",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "courseId": "C09-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L09-3-3",
+      "title": "Fairness, interpretability and model limits",
+      "groupId": "mathematics",
+      "fieldId": "F09",
+      "courseId": "C09-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L10-1-1",
+      "title": "Primary versus secondary source",
+      "groupId": "history",
+      "fieldId": "F10",
+      "courseId": "C10-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L10-1-2",
+      "title": "Context, chronology and periodization",
+      "groupId": "history",
+      "fieldId": "F10",
+      "courseId": "C10-1",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L10-1-3",
+      "title": "Corroborating a contested claim",
+      "groupId": "history",
+      "fieldId": "F10",
+      "courseId": "C10-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L10-2-1",
+      "title": "Early states, empires and institutions",
+      "groupId": "history",
+      "fieldId": "F10",
+      "courseId": "C10-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L10-2-2",
+      "title": "Trade networks and cultural exchange",
+      "groupId": "history",
+      "fieldId": "F10",
+      "courseId": "C10-2",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L10-2-3",
+      "title": "Industrialization and social change",
+      "groupId": "history",
+      "fieldId": "F10",
+      "courseId": "C10-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L10-3-1",
+      "title": "Competing causes of a historical turning point",
+      "groupId": "history",
+      "fieldId": "F10",
+      "courseId": "C10-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L10-3-2",
+      "title": "Compare imperial institutions across contexts",
+      "groupId": "history",
+      "fieldId": "F10",
+      "courseId": "C10-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L10-3-3",
+      "title": "Author perspective, silence and historical uncertainty",
+      "groupId": "history",
+      "fieldId": "F10",
+      "courseId": "C10-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L11-1-1",
+      "title": "Neurodiversity and neurodivergence as terms",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "courseId": "C11-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L11-1-2",
+      "title": "Medical and social models of disability",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "courseId": "C11-1",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L11-1-3",
+      "title": "Claims, stereotypes and evidence caution",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "courseId": "C11-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L11-2-1",
+      "title": "Executive demands depend on context",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "courseId": "C11-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L11-2-2",
+      "title": "Accessible representation and alternatives",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "courseId": "C11-2",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L11-2-3",
+      "title": "Adjustable environment without diagnostic disclosure",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "courseId": "C11-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L11-3-1",
+      "title": "Lived experience versus population evidence",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "courseId": "C11-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L11-3-2",
+      "title": "Screening, diagnosis and nonclinical support",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "courseId": "C11-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L11-3-3",
+      "title": "Evaluate accommodation claims and research limits",
+      "groupId": "psychology",
+      "fieldId": "F11",
+      "courseId": "C11-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L12-1-1",
+      "title": "Selective attention and distraction context",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "courseId": "C12-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L12-1-2",
+      "title": "Working memory versus long-term memory",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "courseId": "C12-1",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L12-1-3",
+      "title": "Encoding, retrieval and forgetting",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "courseId": "C12-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L12-2-1",
+      "title": "Retrieval versus recognition",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "courseId": "C12-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L12-2-2",
+      "title": "Judgments of learning and calibration",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "courseId": "C12-2",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L12-2-3",
+      "title": "Cognitive load and worked examples",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "courseId": "C12-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L12-3-1",
+      "title": "Heuristics, biases and domain knowledge",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "courseId": "C12-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L12-3-2",
+      "title": "Design an attention measurement task",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "courseId": "C12-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L12-3-3",
+      "title": "Near transfer versus far-transfer claims",
+      "groupId": "psychology",
+      "fieldId": "F12",
+      "courseId": "C12-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L13-1-1",
+      "title": "Classical conditioning: cues and responses",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "courseId": "C13-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L13-1-2",
+      "title": "Operant contingencies and consequences",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "courseId": "C13-1",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L13-1-3",
+      "title": "Observational learning versus imitation",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "courseId": "C13-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L13-2-1",
+      "title": "Antecedent–behavior–consequence analysis",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "courseId": "C13-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L13-2-2",
+      "title": "Reinforcement schedules and extinction",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "courseId": "C13-2",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L13-2-3",
+      "title": "Generalization and stimulus control",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "courseId": "C13-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L13-3-1",
+      "title": "Set a baseline without pathologizing",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "courseId": "C13-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L13-3-2",
+      "title": "Single-case observation and confounds",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "courseId": "C13-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L13-3-3",
+      "title": "Consent, autonomy and ethical interventions",
+      "groupId": "psychology",
+      "fieldId": "F13",
+      "courseId": "C13-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L14-1-1",
+      "title": "Staff, clefs and pitch naming",
+      "groupId": "music",
+      "fieldId": "F14",
+      "courseId": "C14-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L14-1-2",
+      "title": "Pulse, meter and rhythmic values",
+      "groupId": "music",
+      "fieldId": "F14",
+      "courseId": "C14-1",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L14-1-3",
+      "title": "Intervals and ear-based discrimination",
+      "groupId": "music",
+      "fieldId": "F14",
+      "courseId": "C14-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L14-2-1",
+      "title": "Major/minor scales and key signatures",
+      "groupId": "music",
+      "fieldId": "F14",
+      "courseId": "C14-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L14-2-2",
+      "title": "Triads and seventh chord structure",
+      "groupId": "music",
+      "fieldId": "F14",
+      "courseId": "C14-2",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L14-2-3",
+      "title": "Functional harmony and cadences",
+      "groupId": "music",
+      "fieldId": "F14",
+      "courseId": "C14-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L14-3-1",
+      "title": "Voice-leading principles and tendency tones",
+      "groupId": "music",
+      "fieldId": "F14",
+      "courseId": "C14-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L14-3-2",
+      "title": "Phrase, period and thematic form",
+      "groupId": "music",
+      "fieldId": "F14",
+      "courseId": "C14-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L14-3-3",
+      "title": "Analyze harmonic movement in a short rights-cleared example",
+      "groupId": "music",
+      "fieldId": "F14",
+      "courseId": "C14-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L15-1-1",
+      "title": "Actors and procure–plan–produce–deliver flows",
+      "groupId": "business",
+      "fieldId": "F15",
+      "courseId": "C15-1",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L15-1-2",
+      "title": "Materials, information and money flows",
+      "groupId": "business",
+      "fieldId": "F15",
+      "courseId": "C15-1",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L15-1-3",
+      "title": "Orders, events and shipping documents",
+      "groupId": "business",
+      "fieldId": "F15",
+      "courseId": "C15-1",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L15-2-1",
+      "title": "Demand forecasting and planning assumptions",
+      "groupId": "business",
+      "fieldId": "F15",
+      "courseId": "C15-2",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L15-2-2",
+      "title": "Điểm đặt hàng lại & tồn kho an toàn",
+      "groupId": "business",
+      "fieldId": "F15",
+      "courseId": "C15-2",
+      "order": 2,
+      "navigationPublished": true,
+      "contentState": "review_only",
+      "publishState": "review_only",
+      "localizedTitle": {
+        "vi": "Điểm đặt hàng lại & tồn kho an toàn",
+        "en": "Reorder Points and Safety Stock"
+      }
+    },
+    {
+      "id": "L15-2-3",
+      "title": "Planned versus actual events and ETA",
+      "groupId": "business",
+      "fieldId": "F15",
+      "courseId": "C15-2",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L15-3-1",
+      "title": "Bullwhip Effect and Information Delays",
+      "groupId": "business",
+      "fieldId": "F15",
+      "courseId": "C15-3",
+      "order": 1,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L15-3-2",
+      "title": "Risk Pooling and Inventory Placement",
+      "groupId": "business",
+      "fieldId": "F15",
+      "courseId": "C15-3",
+      "order": 2,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    },
+    {
+      "id": "L15-3-3",
+      "title": "Service Level, Resilience and Cost Optimization",
+      "groupId": "business",
+      "fieldId": "F15",
+      "courseId": "C15-3",
+      "order": 3,
+      "navigationPublished": false,
+      "contentState": "outline_only",
+      "publishState": "draft",
+      "localizedTitle": null
+    }
+  ]
+}

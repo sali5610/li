@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "course-level-registry",
+  "interpretation": "pedagogical_tags_not_navigation_tiers_or_quotas",
+  "levels": [
+    {
+      "id": "foundation",
+      "order": 1,
+      "title": {
+        "vi": "Nền tảng",
+        "en": "Foundation"
+      },
+      "sourceLabels": [
+        "Foundation"
+      ]
+    },
+    {
+      "id": "intermediate",
+      "order": 2,
+      "title": {
+        "vi": "Cốt lõi",
+        "en": "Intermediate"
+      },
+      "sourceLabels": [
+        "Intermediate"
+      ]
+    },
+    {
+      "id": "advanced",
+      "order": 3,
+      "title": {
+        "vi": "Chuyên sâu",
+        "en": "Advanced"
+      },
+      "sourceLabels": [
+        "Advanced",
+        "Advanced-topic"
+      ]
+    },
+    {
+      "id": "capstone",
+      "order": 4,
+      "title": {
+        "vi": "Ứng dụng / nghiên cứu",
+        "en": "Capstone / Portfolio"
+      },
+      "sourceLabels": [
+        "Capstone/Portfolio"
+      ]
+    }
+  ],
+  "editorialProvenance": "https://app.notion.com/p/41d6cf6db72a81f3a2c9f3698683d312",
+  "editorialState": "approved_working_baseline",
+  "publicationState": "not_authorized"
+}

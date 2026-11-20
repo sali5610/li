@@ -1,0 +1,117 @@
+[
+  {
+    "id": "concept:ont01:selection-bias",
+    "kind": "Concept",
+    "title": "Selection bias",
+    "version": "0.1.0",
+    "reviewState": "proposed",
+    "publishState": "draft",
+    "visibility": "public_curated",
+    "rightsState": "first_party",
+    "aliases": [
+      {
+        "locale": "vi",
+        "text": "Sai lệch chọn mẫu"
+      }
+    ],
+    "provenance": {
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+      "sourceSection": "Proposed concept identity from locked L09 content",
+      "evidenceType": "documented",
+      "checkedOn": "2026-11-19"
+    },
+    "note": ""
+  },
+  {
+    "id": "concept:ont01:random-variation",
+    "kind": "Concept",
+    "title": "Random sampling variation",
+    "version": "0.1.0",
+    "reviewState": "proposed",
+    "publishState": "draft",
+    "visibility": "public_curated",
+    "rightsState": "first_party",
+    "aliases": [
+      {
+        "locale": "vi",
+        "text": "Biến thiên lấy mẫu ngẫu nhiên"
+      }
+    ],
+    "provenance": {
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+      "sourceSection": "Proposed concept identity from locked L09 content",
+      "evidenceType": "documented",
+      "checkedOn": "2026-11-19"
+    },
+    "note": ""
+  },
+  {
+    "id": "concept:wave1:leading-interview-question",
+    "kind": "Concept",
+    "title": "Leading interview question",
+    "version": "0.1.0",
+    "reviewState": "proposed",
+    "publishState": "draft",
+    "visibility": "public_curated",
+    "rightsState": "first_party",
+    "aliases": [
+      {
+        "locale": "vi",
+        "text": "Câu hỏi dẫn dắt trong phỏng vấn"
+      }
+    ],
+    "provenance": {
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
+      "sourceSection": "Locked lesson §concepts; proposed stable concept identity",
+      "evidenceType": "editorial",
+      "checkedOn": "2026-11-20"
+    },
+    "note": "Semantic identity proposed, not an approved cross-disciplinary equivalence"
+  },
+  {
+    "id": "concept:wave1:reorder-point",
+    "kind": "Concept",
+    "title": "Reorder point",
+    "version": "0.1.0",
+    "reviewState": "proposed",
+    "publishState": "draft",
+    "visibility": "public_curated",
+    "rightsState": "first_party",
+    "aliases": [
+      {
+        "locale": "vi",
+        "text": "Điểm đặt hàng lại"
+      }
+    ],
+    "provenance": {
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+      "sourceSection": "Locked lesson §concepts; proposed stable concept identity",
+      "evidenceType": "editorial",
+      "checkedOn": "2026-11-20"
+    },
+    "note": "Worked example assumptions retained in locked text"
+  },
+  {
+    "id": "concept:wave1:safety-stock",
+    "kind": "Concept",
+    "title": "Safety stock",
+    "version": "0.1.0",
+    "reviewState": "proposed",
+    "publishState": "draft",
+    "visibility": "public_curated",
+    "rightsState": "first_party",
+    "aliases": [
+      {
+        "locale": "vi",
+        "text": "Tồn kho an toàn"
+      }
+    ],
+    "provenance": {
+      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
+      "sourceSection": "Locked lesson §concepts; proposed stable concept identity",
+      "evidenceType": "editorial",
+      "checkedOn": "2026-11-20"
+    },
+    "note": "Not equivalent to order quantity"
+  }
+]

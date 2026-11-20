@@ -1,0 +1,729 @@
+{
+  "schemaVersion": "1.0.0",
+  "documents": [
+    {
+      "id": "concept:ont01:random-variation",
+      "kind": "Concept",
+      "title": "Random sampling variation",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Biến thiên lấy mẫu ngẫu nhiên"
+        }
+      ],
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "fieldId": null
+    },
+    {
+      "id": "concept:ont01:selection-bias",
+      "kind": "Concept",
+      "title": "Selection bias",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Sai lệch chọn mẫu"
+        }
+      ],
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "fieldId": null
+    },
+    {
+      "id": "concept:wave1:leading-interview-question",
+      "kind": "Concept",
+      "title": "Leading interview question",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Câu hỏi dẫn dắt trong phỏng vấn"
+        }
+      ],
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "fieldId": null
+    },
+    {
+      "id": "concept:wave1:reorder-point",
+      "kind": "Concept",
+      "title": "Reorder point",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Điểm đặt hàng lại"
+        }
+      ],
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "fieldId": null
+    },
+    {
+      "id": "concept:wave1:safety-stock",
+      "kind": "Concept",
+      "title": "Safety stock",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Tồn kho an toàn"
+        }
+      ],
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "fieldId": null
+    },
+    {
+      "id": "course:C01-1",
+      "kind": "Course",
+      "title": "Mandarin Sounds & Starter Communication",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C01-2",
+      "kind": "Course",
+      "title": "Hanzi, Grammar & Everyday Discourse",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C01-3",
+      "kind": "Course",
+      "title": "Reading, Register & Interpretation",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C02-1",
+      "kind": "Course",
+      "title": "English Structure & Reading Foundations",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C02-2",
+      "kind": "Course",
+      "title": "Academic Explanation & Communication",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C02-3",
+      "kind": "Course",
+      "title": "Research Argument & Rhetorical Analysis",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C03-1",
+      "kind": "Course",
+      "title": "User Problems & Research Basics",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C03-2",
+      "kind": "Course",
+      "title": "Information Architecture & Interaction Evidence",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C03-3",
+      "kind": "Course",
+      "title": "Evidence-led Product Decisions",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C04-1",
+      "kind": "Course",
+      "title": "HTTP & Server Foundations",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C04-2",
+      "kind": "Course",
+      "title": "Persistence, Identity & Security",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C04-3",
+      "kind": "Course",
+      "title": "Backend Reliability & System Design",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C05-1",
+      "kind": "Course",
+      "title": "Generative Model Fundamentals",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C05-2",
+      "kind": "Course",
+      "title": "Prompting, Grounding & Evaluation",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C05-3",
+      "kind": "Course",
+      "title": "Agentic Systems & Responsible Design",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C06-1",
+      "kind": "Course",
+      "title": "Sociological Perspectives & Inquiry",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C06-2",
+      "kind": "Course",
+      "title": "Institutions, Inequality & Networks",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C06-3",
+      "kind": "Course",
+      "title": "Theory, Evidence & Explanation",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C07-1",
+      "kind": "Course",
+      "title": "Anthropology & Cultural Context",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C07-2",
+      "kind": "Course",
+      "title": "Ethnography, Kinship & Meaning",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C07-3",
+      "kind": "Course",
+      "title": "Comparative Anthropological Analysis",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C08-1",
+      "kind": "Course",
+      "title": "Scarcity, Choice & Markets",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C08-2",
+      "kind": "Course",
+      "title": "Macroeconomic Indicators & Policy",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C08-3",
+      "kind": "Course",
+      "title": "Economic Models & Policy Evaluation",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C09-1",
+      "kind": "Course",
+      "title": "Data & Statistical Foundations",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C09-2",
+      "kind": "Course",
+      "title": "Statistical Reasoning & Modeling",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C09-3",
+      "kind": "Course",
+      "title": "Predictive Models & Evaluation",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C10-1",
+      "kind": "Course",
+      "title": "How Historians Know the Past",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C10-2",
+      "kind": "Course",
+      "title": "States, Networks & Transformations",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C10-3",
+      "kind": "Course",
+      "title": "Historiography & Comparative Explanation",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C11-1",
+      "kind": "Course",
+      "title": "Neurodiversity: Concepts & Language",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C11-2",
+      "kind": "Course",
+      "title": "Cognition, Barriers & Accommodation",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C11-3",
+      "kind": "Course",
+      "title": "Evidence, Ethics & Lived Experience",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C12-1",
+      "kind": "Course",
+      "title": "Attention, Memory & Representation",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C12-2",
+      "kind": "Course",
+      "title": "Learning & Metacognitive Monitoring",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C12-3",
+      "kind": "Course",
+      "title": "Decision Processes & Cognitive Evidence",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C13-1",
+      "kind": "Course",
+      "title": "Foundations of Behavioral Learning",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C13-2",
+      "kind": "Course",
+      "title": "Behavioral Patterns & Context",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C13-3",
+      "kind": "Course",
+      "title": "Applied Behavioral Inquiry & Ethics",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C14-1",
+      "kind": "Course",
+      "title": "Notation, Rhythm & Intervals",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C14-2",
+      "kind": "Course",
+      "title": "Scales, Keys & Tonal Harmony",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C14-3",
+      "kind": "Course",
+      "title": "Voice Leading, Form & Analysis",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C15-1",
+      "kind": "Course",
+      "title": "End-to-End Supply Chain Foundations",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C15-2",
+      "kind": "Course",
+      "title": "Planning, Inventory & Visibility",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "course:C15-3",
+      "kind": "Course",
+      "title": "Supply Chain Strategy & Trade-offs",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F01",
+      "kind": "Field",
+      "title": "Tiếng Trung",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F02",
+      "kind": "Field",
+      "title": "Tiếng Anh",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F03",
+      "kind": "Field",
+      "title": "UX Design",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F04",
+      "kind": "Field",
+      "title": "Backend",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F05",
+      "kind": "Field",
+      "title": "Generative AI",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F06",
+      "kind": "Field",
+      "title": "Xã hội học",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F07",
+      "kind": "Field",
+      "title": "Nhân học",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F08",
+      "kind": "Field",
+      "title": "Kinh tế học",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F09",
+      "kind": "Field",
+      "title": "Data Science",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F10",
+      "kind": "Field",
+      "title": "Lịch sử thế giới",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F11",
+      "kind": "Field",
+      "title": "Neurodiversity Studies",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F12",
+      "kind": "Field",
+      "title": "Tâm lý học nhận thức",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F13",
+      "kind": "Field",
+      "title": "Tâm lý học hành vi",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F14",
+      "kind": "Field",
+      "title": "Lý thuyết âm nhạc",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "field:F15",
+      "kind": "Field",
+      "title": "Supply Chain",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "group:business",
+      "kind": "DomainGroup",
+      "title": "Kinh doanh & vận hành",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "group:history",
+      "kind": "DomainGroup",
+      "title": "Lịch sử",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "group:language",
+      "kind": "DomainGroup",
+      "title": "Ngôn ngữ",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "group:mathematics",
+      "kind": "DomainGroup",
+      "title": "Toán học & dữ liệu",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "group:music",
+      "kind": "DomainGroup",
+      "title": "Âm nhạc",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "group:psychology",
+      "kind": "DomainGroup",
+      "title": "Tâm lý học",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "group:social-sciences",
+      "kind": "DomainGroup",
+      "title": "Khoa học xã hội",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "group:technology",
+      "kind": "DomainGroup",
+      "title": "Công nghệ",
+      "aliases": [],
+      "reviewState": "verified",
+      "publishState": "review_only",
+      "fieldId": null
+    },
+    {
+      "id": "lesson:L03-1-2",
+      "kind": "Lesson",
+      "title": "Open Questions and Interview Bias",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Câu hỏi mở & thiên lệch phỏng vấn"
+        }
+      ],
+      "reviewState": "approved",
+      "publishState": "review_only",
+      "fieldId": "field:F03"
+    },
+    {
+      "id": "lesson:L09-1-2",
+      "kind": "Lesson",
+      "title": "Sampling Bias versus Random Sampling Variation",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Sampling Bias · Sai lệch chọn mẫu"
+        }
+      ],
+      "reviewState": "approved",
+      "publishState": "review_only",
+      "fieldId": "field:F09"
+    },
+    {
+      "id": "lesson:L15-2-2",
+      "kind": "Lesson",
+      "title": "Reorder Points and Safety Stock",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Điểm đặt hàng lại & tồn kho an toàn"
+        }
+      ],
+      "reviewState": "approved",
+      "publishState": "review_only",
+      "fieldId": "field:F15"
+    }
+  ]
+}

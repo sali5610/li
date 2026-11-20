@@ -170,8 +170,12 @@ assert.match(release,/export const learnableLessonIds/);
 assert.match(staging,/mountPersonalStudyRoutes\(\)/);
 assert.match(reactCatalog,/course\.lessons\.filter\(canOpenLesson\)/);
 assert.match(reactCatalog,/if\(canOpenLesson\(item\)\)\{/);
-assert.match(reactCatalog,/app\.liCatalog\?\.openLesson\(item\.id\)!==true/,
- 'An unavailable canonical route must display an error instead of a silent dead-end');
+assert.match(reactCatalog,/const releasedRoute=releasedRoutes\.get\(item\.id\)/,
+ 'Published lesson navigation must resolve through the canonical release gate');
+assert.match(reactCatalog,/!releasedRoute\|\|!openRoute\(releasedRoute\)/,
+ 'Released Catalog lessons use the single React router, including an actionable failure');
+assert.doesNotMatch(reactCatalog,/app\.liCatalog\?\.openLesson\(/,
+ 'React must never delegate released lesson navigation to native double-push history');
 assert.match(reactCatalog,/window\.addEventListener\('li:lesson-attempt-changed',update\)/,
  'A saved offline lesson self-review must refresh course progress immediately');
 assert.match(reactCatalog,/window\.removeEventListener\('li:lesson-attempt-changed',update\)/,

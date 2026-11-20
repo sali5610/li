@@ -1,5 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {openRoute,goBack,hasRoute} from './app-router.js';
+import {personalStudyRoute} from '../learning/released-lessons.js';
+import {searchPersonalStudy} from '../learning/staging-draft-preview.js';
 import {createRoot} from 'react-dom/client';
 import {motion,useReducedMotion} from 'motion/react';
 import {Button,Heading,InlineFeedback,ListRow,SearchField,Text} from '../../../../design-system/react/index';
@@ -37,8 +39,11 @@ const clean=(text:string)=>text.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
  .replace(/đ/gi,'d').toLocaleLowerCase('vi').replace(/\s+/g,' ').trim();
 const sourceIsSafe=(url?:string)=>typeof url==='string'&&url.startsWith('https://');
 
+function availableRoute(id:string):string|undefined{
+ return routes.get(id)||personalStudyRoute(id)||undefined;
+}
 function openLesson(id:string){
- const route=routes.get(id);
+ const route=availableRoute(id);
  return !!route&&hasRoute(route)&&openRoute(route);
 }
 const kindCopy:Record<string,string>={
@@ -47,6 +52,17 @@ const kindCopy:Record<string,string>={
 };
 let mentorFocus:MentorContext|null=null;
 let latestQuery='';
+function withPersonalLessons(query:string,source:KnowledgeResponse):KnowledgeResponse{
+ const personal=searchPersonalStudy(query).map(item=>({
+  id:item.id,lessonId:item.id,title:item.title,kind:'Lesson',
+  contentState:'personal_study',context:item.context,links:[] as Relation[]
+ }));
+ if(!personal.length)return source;
+ const exists=new Set(personal.map(item=>item.id));
+ return {status:'personal_match',results:[...personal,
+  ...(Array.isArray(source.results)?source.results:[]).filter(item=>
+   !exists.has(item.lessonId||item.id))]};
+}
 let latestStatus='loading';
 let setExternalQuery:(value:string)=>void=()=>{};
 function fallback(query:string):KnowledgeResponse{
@@ -63,6 +79,7 @@ function fallback(query:string):KnowledgeResponse{
 function KnowledgeSearch(){
  const reduced=useReducedMotion();
  const [query,setQuery]=useState('');
+ const [submitCount,setSubmitCount]=useState(0);
  const [client,setClient]=useState<KnowledgeClient|null>(null);
  const [loadState,setLoadState]=useState<'loading'|'ready'|'error'>('loading');
  const [response,setResponse]=useState<KnowledgeResponse>({status:'invalid_query',results:[]});
@@ -95,18 +112,19 @@ function KnowledgeSearch(){
   const ticket=++generation.current;
   mentorFocus=null;
   if(!query.trim()){setSearching(false);setResponse({status:'invalid_query',results:[]});return;}
-  if(!client){setSearching(false);setResponse(fallback(query));return;}
+  if(!client){setSearching(false);setResponse(withPersonalLessons(query,fallback(query)));return;}
   setSearching(true);
   void client.searchKnowledge(query).then(result=>{
-   if(ticket===generation.current)setResponse({
+   if(ticket===generation.current)setResponse(withPersonalLessons(query,{
     status:result.status,results:Array.isArray(result.results)?result.results:[]
-   });
+   }));
   }).catch(()=>{
    if(ticket===generation.current){
-    latestStatus='error';setLoadState('error');setClient(null);setResponse(fallback(query));
+    latestStatus='error';setLoadState('error');setClient(null);
+    setResponse(withPersonalLessons(query,fallback(query)));
    }
   }).finally(()=>{if(ticket===generation.current)setSearching(false);});
- },[client,query]);
+ },[client,query,submitCount]);
  const askMentor=(record:KnowledgeItem)=>{
   mentorFocus={id:record.id,kind:record.kind,title:record.title,lessonId:record.lessonId,
    links:(record.links||[]).filter(link=>link.sourceType==='academic'&&
@@ -122,6 +140,7 @@ function KnowledgeSearch(){
   <Heading level={1} role="headline">Tra Cứu</Heading>
   <Text role="body">Tìm bằng tên, mã bài hoặc hỏi bằng câu tự nhiên. Li. chỉ dẫn đến nội dung bài thực sự có, không tự bịa đáp án.</Text>
   <SearchField label="Bạn muốn tìm gì?" value={query} onQueryChange={changeQuery}
+    onSearch={()=>setSubmitCount(n=>n+1)}
    placeholder="Ví dụ: Tại sao khảo sát 1.000 người vẫn có thể sai?"
    clearLabel="Xóa tìm kiếm" submitLabel="Tìm kiếm"/>
   <section className="surface" aria-label="Kết quả tra cứu">
@@ -139,7 +158,8 @@ function KnowledgeSearch(){
       "Chưa tìm thấy bài hay khái niệm đã xác minh phù hợp."}/>:
      <div className="path-list" aria-live="polite">
       <Text role="caption">{response.results.length} kết quả · {response.status==='answerable'||response.status==='related_only'||response.status==='outcome_match'?
-       'Câu hỏi tự nhiên · phạm vi 3 bài Wave1':loadState==='ready'?'Knowledge Base canonical':'Danh mục offline'}</Text>
+       'Câu hỏi tự nhiên · phạm vi 3 bài Wave1':response.status==='personal_match'?
+        'Bài học cá nhân trên staging + Knowledge Base':'Knowledge Base canonical'}</Text>
       {response.results.map(record=><motion.article key={record.kind+':'+record.id}
         className="li-search-result" initial={reduced?false:{opacity:0,y:6}}
         animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.17}}> 
@@ -147,7 +167,7 @@ function KnowledgeSearch(){
         description={(kindCopy[record.kind]||'Mục kiến thức')+' · '+(record.lessonId||record.id)+
          (record.contentState==='review_only'?' · đang duyệt':'')+
          (record.context?' · '+record.context:'')}
-        onActivate={record.kind==='Lesson'&&routes.has(record.lessonId||record.id)?
+        onActivate={record.kind==='Lesson'&&!!availableRoute(record.lessonId||record.id)?
          ()=>navigateTo(record.lessonId||record.id):undefined}/>
        {record.answerability&&<div className="li-search-related">
         <Text role="support"><strong>{record.answerability.level==='direct'?'Mục tiêu bài học phù hợp':
@@ -166,7 +186,7 @@ function KnowledgeSearch(){
         {record.links.map((link,i)=><div key={link.id+':'+i} className="li-search-relation">
          <Text role="support">{link.label}: {link.title} · {link.lessonId||link.id}</Text>
          {link.reason&&<Text role="support">{link.reason}</Text>}
-         {link.kind==='Lesson'&&routes.has(link.lessonId||'')&&
+         {link.kind==='Lesson'&&!!availableRoute(link.lessonId||'')&&
           <Button variant="secondary" onClick={()=>navigateTo(link.lessonId!)}>Mở bài {link.lessonId}</Button>}
          {sourceIsSafe(link.sourceUrl)&&record.links.findIndex(item=>item.sourceUrl===link.sourceUrl)===i&&<a href={link.sourceUrl} target="_blank" rel="noopener noreferrer">
           {link.sourceType==='academic'?'Nguồn phương pháp':'Nguồn phân loại'}</a>}

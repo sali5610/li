@@ -109,3 +109,44 @@ test('a true journal divergence is retained as a conflict, never overwritten sil
   assert.equal((await store.records.get(storageKey(uid,'note','daily-journal')))?.payload.raw,local);
  });
 });
+
+
+test('deleting an observed saved note queues a tombstone; another device removes it',async()=>{
+ device();
+ const uid='account-delete',field='li.private.library.v1';
+ const original='{"schema":1,"cases":[{"id":"to-delete"}],"questions":[],"ideas":[],"savedContent":[]}';
+ const key=storageKey(uid,'note','library');
+ localStorage.setItem(field,original);
+ await withStore(async store=>{
+  const seen=new Map();
+  await capturePersonalState(uid,null,store,seen);
+  const first=await store.outbox.get(key);
+  assert(first);
+  const saved={owner_id:uid,item_type:'note',item_id:'library',revision:1,
+   payload:first.payload,deleted_at:null,changed_at:'2026-11-20T06:00:00Z'};
+  await store.accept(uid,first,saved);
+  assert.equal((await store.counts(uid)).pending,0);
+
+  // The same signed tab observed this value before the user deleted it.
+  localStorage.removeItem(field);
+  await capturePersonalState(uid,null,store,seen);
+  const deletion=await store.outbox.get(key);
+  assert.equal(deletion?.baseRevision,1);
+  assert.equal(deletion?.payload.raw,'');
+  assert.equal(typeof deletion?.deletedAt,'string');
+  assert.equal((await store.counts(uid)).pending,1);
+  const tombstone={...saved,revision:2,payload:deletion.payload,
+   deleted_at:deletion.deletedAt,changed_at:'2026-11-20T06:01:00Z'};
+
+  await withStore(async secondDevice=>{
+   device();
+   localStorage.setItem(field,original);
+   await secondDevice.apply(uid,saved);
+   const remoteSnaps=await capturePersonalState(uid,null,secondDevice,new Map());
+   assert.equal((await secondDevice.counts(uid)).pending,0);
+   await secondDevice.apply(uid,tombstone);
+   assert.equal(await hydratePersonalState(uid,remoteSnaps,secondDevice,()=>{}),true);
+   assert.equal(localStorage.getItem(field),null,'remote delete is not resurrected');
+  });
+ });
+});

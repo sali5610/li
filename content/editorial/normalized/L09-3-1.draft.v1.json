@@ -25,7 +25,7 @@
           },
           {
             "id": "vi-03",
-            "role": "concept",
+            "role": "guided",
             "heading": "Chương 3 — Leakage có thể nấp trong pipeline",
             "body_md": "Ví dụ GIẢ ĐỊNH có 800 đơn hàng, chia trước thành train 600, validation 100, test 100. Fit scaler trên 600 đơn train, rồi áp đúng scaler ấy cho validation/test là hợp lý. Nếu tính mean và standard deviation từ cả 800 đơn <b>trước khi chia</b>, thông tin test đã đi vào quá trình chuẩn bị feature. Trong cross-validation, cần fit scaler riêng theo training fold; Pipeline giúp tránh nhầm. [Nguồn: scikit-learn common pitfalls](https://scikit-learn.org/stable/common_pitfalls.html).\n\nMột loại khác là <b>target leakage</b>: dùng cột ‘thời điểm giao hàng thực tế’ để dự đoán trễ <b>trước khi giao</b>. Feature này không tồn tại ở lúc ra quyết định. Kết quả offline đẹp đến mấy cũng không cứu được sai điều kiện triển khai."
           },
@@ -33,8 +33,8 @@
             "id": "vi-04",
             "role": "methods",
             "heading": "Chương 4 — Primary T10: bóc pipeline theo ranh giới (guided, KHÁC đề độc lập)",
-            "body_md": "Tình huống luyện có <b>600 vận đơn</b>, giả lập 400 train / 100 validation / 100 test; nhóm đã fit imputer trên toàn bộ 600 dòng và chọn ngưỡng theo test. Lão Lý hỏi: (a) thao tác nào đã làm lộ thông tin? (b) tại điểm nào nên đóng băng pipeline? (c) nếu có 40 dòng của cùng người mua xuất hiện ở cả train và test, mục tiêu ‘dự báo khách hàng mới’ còn đáng tin không?\n\n<b>Bước mẫu cho sẵn:</b> chia tập trước khi fit imputer. <b>Người học tự điền:</b> nơi dùng validation, nơi dùng test và xử lý người mua trùng. <b>Chỉ hiện phản hồi sau khi tự thử:</b> fit imputer/scaler từ train; tuning ở validation/CV; test giữ kín đến cuối; tách theo nhóm khách nếu mục tiêu là khách chưa thấy. Nhóm/timestamp là lựa chọn phụ thuộc tình huống; không một split dùng đúng cho mọi đề bài.",
-            "feedback_md": null,
+            "body_md": "Tình huống luyện có <b>600 vận đơn</b>, giả lập 400 train / 100 validation / 100 test; nhóm đã fit imputer trên toàn bộ 600 dòng và chọn ngưỡng theo test. Lão Lý hỏi: (a) thao tác nào đã làm lộ thông tin? (b) tại điểm nào nên đóng băng pipeline? (c) nếu có 40 dòng của cùng người mua xuất hiện ở cả train và test, mục tiêu ‘dự báo khách hàng mới’ còn đáng tin không?\n\n<b>Bước mẫu cho sẵn:</b> chia tập trước khi fit imputer. <b>Người học tự điền:</b> nơi dùng validation, nơi dùng test và xử lý người mua trùng.",
+            "feedback_md": "<b>Chỉ hiện phản hồi sau khi tự thử:</b> fit imputer/scaler từ train; tuning ở validation/CV; test giữ kín đến cuối; tách theo nhóm khách nếu mục tiêu là khách chưa thấy. Nhóm/timestamp là lựa chọn phụ thuộc tình huống; không một split dùng đúng cho mọi đề bài.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -113,7 +113,7 @@
           },
           {
             "id": "en-03",
-            "role": "concept",
+            "role": "guided",
             "heading": "Chapter 3 — Leakage hides in transformations",
             "body_md": "Imagine 800 fictional shipments: 600 train, 100 validation, 100 test. Fitting a scaler on the 600 training orders and applying it unchanged to validation/test respects the split. Fitting mean and standard deviation on all 800 before splitting lets evaluation data influence preprocessing. Each CV fold needs fitting on its own training partition; a Pipeline can help. [Common Pitfalls](https://scikit-learn.org/stable/common_pitfalls.html).\n\n<b>Target leakage</b> is just as harmful: using the actual delivery timestamp to predict lateness at order placement, when that information would not yet exist."
           },
@@ -121,8 +121,8 @@
             "id": "en-04",
             "role": "methods",
             "heading": "Chapter 4 — Primary T10: decompose the pipeline (guided, separate case)",
-            "body_md": "On 600 fictional shipments (400 train, 100 validation, 100 test), a team fits an imputer across all records and tunes its threshold on test. Ask: (a) what leaked? (b) when to freeze the model? (c) what if 40 records from the same buyer occur on both sides of a new-customer split?\n\n<b>Worked first step:</b> split before fitting the imputer. <b>Learner fills:</b> where to tune and how to handle repeated buyers. <b>Feedback after attempt:</b> fit all preprocessing on training partitions; tune on validation/CV; keep test unseen to the end; for a new-customer objective, hold out entire buyers. Splitting rules depend on the operational claim.",
-            "feedback_md": null,
+            "body_md": "On 600 fictional shipments (400 train, 100 validation, 100 test), a team fits an imputer across all records and tunes its threshold on test. Ask: (a) what leaked? (b) when to freeze the model? (c) what if 40 records from the same buyer occur on both sides of a new-customer split?\n\n<b>Worked first step:</b> split before fitting the imputer. <b>Learner fills:</b> where to tune and how to handle repeated buyers.",
+            "feedback_md": "<b>Feedback after attempt:</b> fit all preprocessing on training partitions; tune on validation/CV; keep test unseen to the end; for a new-customer objective, hold out entire buyers. Splitting rules depend on the operational claim.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -476,14 +476,16 @@
         "independent": 1,
         "solutions": 1,
         "methods": 1,
-        "rubric": 1
+        "rubric": 1,
+        "methodFeedback": 1
       },
       "en": {
         "sections": 7,
         "independent": 1,
         "solutions": 1,
         "methods": 1,
-        "rubric": 1
+        "rubric": 1,
+        "methodFeedback": 1
       }
     },
     "issues": [],

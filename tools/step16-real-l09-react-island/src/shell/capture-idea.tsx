@@ -1,12 +1,14 @@
 import React,{useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Badge,Button,Field,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
+import {motion,useReducedMotion} from 'motion/react';
+import {Badge,Button,Card,Field,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
 
 /** React-owned Capture screen; data writes deliberately reuse the existing
  * private-library save transaction until that store moves behind a typed port.
  * No second localStorage key, cloud writer or lossy conversion.
  */
 function CaptureIdea(){
+ const reduced=useReducedMotion();
  const [text,setText]=useState('');
  const [message,setMessage]=useState('');
  function save(){
@@ -28,26 +30,29 @@ function CaptureIdea(){
   // Failure feedback and rollback are emitted by the existing storage owner.
  }
  return <div data-li-react-screen="capture-idea">
-  <button type="button" className="utility-back" data-nav-back>
+  <Button variant="ghost" className="utility-back" data-nav-back>
    <span aria-hidden="true">←</span> Quay lại
-  </button>
+  </Button>
   <div className="kicker">NHẶT Ý</div>
   <Heading level={1} role="headline">Nhặt ý</Heading>
   <div className="editorial-grid">
-   <article className="surface tinted">
+   <Card variant="tinted">
     <Heading level={2} role="titleMedium">Nhặt một ý cần kiểm chứng</Heading>
     <Field label="Ý nghĩ, câu sách hoặc nhận định chưa được kiểm chứng"
      kind="textarea" rows={6} value={text} className="li-react-capture-field"
      placeholder="Mình vừa đọc thấy…"
      onChange={event=>{setText(event.target.value);if(message)setMessage('');}}/>
-    {message&&<InlineFeedback tone="error" message={message}/>}
+    {message&&<motion.div key={message} initial={reduced?false:{opacity:0,y:4}}
+     animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.16}}>
+     <InlineFeedback tone="error" message={message}/>
+    </motion.div>}
     <div className="action-row"><Button onClick={save}>Lưu ý đã nhặt</Button></div>
-   </article>
-   <article className="surface">
+   </Card>
+   <Card variant="raised">
     <Heading level={2} role="titleMedium">Đừng nhầm chuyện được kể với bằng chứng.</Heading>
     <Text role="body">Giữ lại câu hỏi và nguồn bạn gặp để tiện kiểm chứng sau.</Text>
     <Badge tone="neutral">Nguồn cá nhân · Chưa xác minh</Badge>
-   </article>
+   </Card>
   </div>
  </div>;
 }

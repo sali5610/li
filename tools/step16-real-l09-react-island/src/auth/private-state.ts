@@ -133,7 +133,7 @@ export async function capturePersonalState(uid:string,api:NeonUserApi|null,
  return snapshots;
 }
 export async function hydratePersonalState(uid:string,snapshots:PersonalSnapshot[],
- store:PrivateDeviceStore,retry:()=>void):Promise<boolean>{
+ store:PrivateDeviceStore,retry:()=>void,onHydrated?:(key:string)=>void):Promise<boolean>{
  let changed=false;
  for(const {field,raw} of snapshots){
   if(!active(uid,field))continue;
@@ -144,11 +144,11 @@ export async function hydratePersonalState(uid:string,snapshots:PersonalSnapshot
   const current=localStorage.getItem(field.key);
   if(current!==raw){retry();continue;}
   if(saved.deletedAt){
-   if(current!==null){localStorage.removeItem(field.key);changed=true;}
+   if(current!==null){localStorage.removeItem(field.key);changed=true;onHydrated?.(field.key);}
    continue;
   }
   const data=unpack(saved.payload,field.key);
-  if(current!==data){localStorage.setItem(field.key,data);changed=true;}
+  if(current!==data){localStorage.setItem(field.key,data);changed=true;onHydrated?.(field.key);}
  }
  return changed;
 }

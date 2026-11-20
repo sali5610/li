@@ -22,9 +22,18 @@ type LessonWindow=Window&{
  liBookmarks?:BookmarkOwner;liLessonCompanion?:{getContext:()=>{
   lesson_id:string;wording?:{label:string;prompt:string}
  }|null};
+ liMethods?:{open:(method:string,practice?:boolean,lessonId?:LessonId|null)=>boolean};
+ openLaoLy?:(trigger?:HTMLElement|null)=>void;
  toast?:(text:string)=>void
 };
 const app=window as LessonWindow;
+/** The published lesson's optional spell keeps its lesson ID and returns via
+ * the real React app route. The native exercise engine remains one checker. */
+export function openLessonSpell(lessonId:LessonId,methodId:string,practice:boolean):boolean{
+ if(!document.documentElement.classList.contains('li-auth-verified')||
+  document.documentElement.classList.contains('li-account-open'))return false;
+ return app.liMethods?.open(methodId,practice,lessonId)===true;
+}
 const queryByLesson:Record<LessonId,readonly string[]>={
  'L09-1-2':[
   'sampling bias vs random sampling variation','selection bias survey example',
@@ -148,7 +157,7 @@ export function LessonMentor({id,locale}:{id:LessonId;locale:Locale}){
     'Lão đang theo dõi phần học hiện tại để hỏi đúng vấn đề.':
     'Lao Ly follows the active section to ask a relevant question.')}
   </Text>
-  <Button variant="secondary" data-buddy="1">
+  <Button variant="secondary" onClick={event=>app.openLaoLy?.(event.currentTarget)}>
    {locale==='vi'?'Hỏi Lão Lý theo bài học':'Ask Lao Ly about this lesson'}
   </Button>
  </section>;

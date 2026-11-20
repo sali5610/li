@@ -535,7 +535,16 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   if(!attempt||!persistedAttempt?.submitted||locked||saving||
      persistedAttempt.answerRevealed)return;
   setError('');
-  await save({...attempt,answerRevealed:true});
+  if(await save({...attempt,answerRevealed:true})){
+   cancelAnimationFrame(focusFrame.current);
+   focusFrame.current=requestAnimationFrame(()=>{
+    const heading=document.getElementById('li-editorial-answer');
+    if(!heading)return;
+    heading.setAttribute('tabindex','-1');
+    heading.focus({preventScroll:true});
+    heading.scrollIntoView({behavior:'auto',block:'start'});
+   });
+  }
  }
  function rate(index:number,value:string){
   if(!attempt||!persistedAttempt?.answerRevealed||locked||attempt.reviewed)return;
@@ -778,7 +787,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       </Button>
      </div>:
      <>
-      <Heading level={3} role="titleMedium">{vi?'Đáp án mẫu · đã mở sau khi lưu':'Model answer · revealed after saving'}</Heading>
+      <Heading id="li-editorial-answer" level={3} role="titleMedium">{vi?'Đáp án mẫu · đã mở sau khi lưu':'Model answer · revealed after saving'}</Heading>
       <Markdown md={content.independent.model_answer_md}/>
       <section id="l0911-reflection"><Markdown md={content.reflection.md}/>{mentor('reflection')}</section>
       <Heading level={3} role="titleMedium">{vi?'Tự đánh giá 4 tiêu chí':'Self-rate four criteria'}</Heading>

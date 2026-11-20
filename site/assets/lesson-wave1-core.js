@@ -422,7 +422,8 @@ $("submit").addEventListener("click",()=>{
   state.submitted=false;state.submission=null;state.submissionAt=null;
   render();feedback(data[state.locale].storageOff);return;
  }
- window.dispatchEvent(new CustomEvent("li:lesson-submitted",{detail:{lessonId:id}}));
+ if(typeof CustomEvent==="function"&&typeof window.dispatchEvent==="function")
+  window.dispatchEvent(new CustomEvent("li:lesson-submitted",{detail:{lessonId:id}}));
  render();$("answerBox").scrollIntoView({block:"start",behavior:"smooth"});feedback(data[state.locale].submittedText);
 });
 $("clear").addEventListener("click",()=>{

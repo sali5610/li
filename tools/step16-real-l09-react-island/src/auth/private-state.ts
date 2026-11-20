@@ -23,6 +23,9 @@ export const PERSONAL_FIELDS:readonly Field[]=[
 const CONSENT=(uid:string)=>'li.sync.journal-cloud-consent.v1:'+uid;
 const BACKUP=(uid:string,key:string)=>'li.sync.local-backup.v1:'+uid+':'+key;
 const SCHEMA='li.personal.storage.v1';
+const fieldsFor=(uid:string):readonly Field[]=>[
+ {key:CONSENT(uid),type:'preference',id:'journal-cloud-consent'},...PERSONAL_FIELDS
+];
 export type PersonalSnapshot={field:Field;raw:string|null};
 const active=(uid:string,field:Field)=>!field.diary||journalCloudConsent(uid);
 export function journalCloudConsent(uid:string):boolean{
@@ -61,19 +64,20 @@ function wrap(field:Field,raw:string):JsonValue{
  if(raw.length>300000)throw Error('PRIVATE_STATE_TOO_LARGE');
  // Validate structured stores before replicating; preserve exact JSON strings.
  if(field.key!=='li.private.case-draft.v1'&&field.key!=='li.study-mode.v1'&&
-   field.key!=='li.app.locale.v1'&&field.key!=='li.personal.daily.enabled.v1'){
+   field.key!=='li.app.locale.v1'&&field.key!=='li.personal.daily.enabled.v1'&&
+   field.id!=='journal-cloud-consent'){
   JSON.parse(raw);
  }
  return {schema:SCHEMA,storageKey:field.key,raw};
 }
 export function hasPersonalLocalChanges(uid:string,seen:Map<string,string|null>):boolean{
- return PERSONAL_FIELDS.some(field=>active(uid,field)&&
+ return fieldsFor(uid).some(field=>active(uid,field)&&
   localStorage.getItem(field.key)!==(seen.get(field.key)??null));
 }
 export async function capturePersonalState(uid:string,api:NeonUserApi|null,
  store:PrivateDeviceStore,seen:Map<string,string|null>):Promise<PersonalSnapshot[]>{
  const snapshots:PersonalSnapshot[]=[];
- for(const field of PERSONAL_FIELDS){
+ for(const field of fieldsFor(uid)){
   if(!active(uid,field))continue;
   const raw=localStorage.getItem(field.key);
   snapshots.push({field,raw});

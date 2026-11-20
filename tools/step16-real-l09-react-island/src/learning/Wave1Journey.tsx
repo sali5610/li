@@ -431,7 +431,8 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     <Text role="support">{content.scoreLabel}: {attempt.ratings.every(x=>x!==null)?
      attempt.ratings.reduce<number>((sum,v)=>sum+(v??0),0)+' / 8':'— / 8'}</Text>
     <AiFeedbackPanel id={id} locale={attempt.locale}
-     answers={attempt.submission??attempt.draft}/>
+     answers={attempt.submission??attempt.draft}
+     openQuestionIndices={source.practice.questionFeedbackModes.flatMap((mode,index)=>mode==='open'?[index]:[])}/>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
      locale={attempt.locale} onReviewTheory={()=>setPhase('read')}/>
     {attempt.reviewed?<Button onClick={()=>setPhase('progress')}>{labels.progress}</Button>:

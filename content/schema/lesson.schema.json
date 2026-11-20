@@ -250,11 +250,6 @@
         },
         "answerKey": {
           "type": "string"
-        },
-        "questionFeedbackModes": {
-          "type": "array",
-          "items": {"enum": ["exact", "open"]},
-          "minItems": 1
         }
       },
       "additionalProperties": false

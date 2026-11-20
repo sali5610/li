@@ -184,7 +184,11 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  // network resumes. A revoked account must never keep a stale approved UI.
  useEffect(()=>{
   const refresh=()=>{
-   if(document.visibilityState==='visible')setAccessEpoch(epoch=>epoch+1);
+   // iOS Safari/PWA may resume without dispatching an offline/online event.
+   if(document.visibilityState==='visible'){
+    setIsOffline(!navigator.onLine);
+    setAccessEpoch(epoch=>epoch+1);
+   }
   };
   const network=()=>{setIsOffline(!navigator.onLine);setAccessEpoch(epoch=>epoch+1);};
   window.addEventListener('focus',refresh);

@@ -18,6 +18,12 @@ class El{
  replaceChildren(...args){this.children=args;}
  append(...args){this.children.push(...args);}
  appendChild(x){this.children.push(x);return x;}
+ querySelector(selector){
+  if(!selector.startsWith("."))return null;
+  const name=selector.slice(1);
+  return this.children.find(child=>typeof child.className==="string"&&
+   child.className.split(/\s+/).includes(name))||null;
+ }
  fire(e){if(this.listeners[e])return this.listeners[e]();if(e==="change"&&this.onchange)return this.onchange();}
  scrollIntoView(){}
 }
@@ -72,6 +78,14 @@ for(const id of ["L03-1-2","L15-2-2"]){
  assert.equal(el("questions").children.length,4);
  const submitted=JSON.parse(cache.get("li.review."+id+".v1"));
  assert.equal(submitted.submitted,true);assert.equal(submitted.submission.length,4);
+ const review=el("answerBox").querySelector(".li-submitted-review");
+ assert.ok(review,"Submitted answer comparison must be visible after submit");
+ const list=review.children[1];
+ assert.equal(list.children.length,4,"Each submitted response must appear");
+ for(let i=0;i<4;i++){
+  assert.equal(list.children[i].children[1].textContent,submitted.submission[i]);
+ }
+
  el("en").fire("click");
  assert.equal(el("answerBox").hidden,false);
  assert.equal(el("questions").children.length,4);

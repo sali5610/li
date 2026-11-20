@@ -33,6 +33,7 @@ type NoteView={
 type NoteOutcome={ok:boolean;changed?:boolean;message:string};
 type AppWindow=Window&{
  liReleasedLessonRoutes?:Readonly<Record<string,string>>;
+ liPersonalStudyRoutes?:Readonly<Record<string,string>>;
  LiSpellPractice?:{
   getView:()=>SpellView|null;setTab:(value:'guide'|'practice')=>void;
   perform:(action:string,answers?:Record<string,string|string[]>)=>boolean;
@@ -169,7 +170,8 @@ export function GuideDetail(){
   <Button variant="ghost" onClick={()=>openRoute('guide')}><LiIcon name="chevron-left" size={18}/> {copy('Sổ Tay Thần Chú','Learning Spells')}</Button>
   <InlineFeedback tone="info" message={copy('Chọn một Thần Chú để đọc và thực hành.','Select a learning spell to begin.')}/>
  </div>;
- const lessonRoute=view.lessonId?app.liReleasedLessonRoutes?.[view.lessonId]:undefined;
+ const lessonRoute=view.lessonId?
+  (app.liReleasedLessonRoutes?.[view.lessonId]||app.liPersonalStudyRoutes?.[view.lessonId]):undefined;
  const preparing=phase===0;
  const hasSource=preparing;
  let actionLabel=copy('Đối chiếu bài làm','Check your response');

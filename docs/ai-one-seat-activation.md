@@ -30,22 +30,24 @@ credential shortcuts or any AI API token to React.
 6. Before enabling, smoke the real invitation/RLS gate: owner assignment;
    another invited account can receive the seat and the former holder is
    denied immediately; revoked/uninvited accounts cannot call the model;
-   cross-site POST fails; exhausting cap yields deterministic fallback.
+   cross-site POST fails; Cloudflare Free neuron exhaustion yields deterministic fallback.
 
 ## Intended learner interaction
 
 - Owner: **Account → AI access → Assign to me / Transfer to invited email /
   Disable for everyone.** One active email globally, not one switch per device.
 - Invited assignee: after submitting one of the 3 reviewed Wave1 lessons,
-  press **Get AI feedback**. The request includes only 4 submitted answers
-  and the source-reviewed canonical GitHub lesson/rubric. Results are
+  press **Get AI feedback** only for questions editorially marked `open`.
+  Exact-answer questions use the existing answer key/rubric, never the model.
+  The request includes only approved open-ended answers and their corresponding
+  reviewed GitHub reference segments/rubric. Results are
   plain text, provisional, not grades/citations or certified mastery.
 - Other users: all normal lesson, source, manual rubric, progress and Lão Lý
   remain. No model calls, no quota usage.
 - Backend: validate first-party Neon session, short-lived signed JWT and
   `li_is_invited` RPC for **every** AI request; verify entitlement on D1
-  primary; hard-cap all users to 12 AI calls/day globally; Free plan then
-  also enforces the provider's 10k neuron/day cap.
+  primary; **no artificial 12-request cap**. The mandatory Workers Free plan
+  enforces the provider's 10,000 Neurons/day limit, after which AI fails closed.
 - On offline, missing bindings or quota exhaustion: existing deterministic
   self-review remains available. No payment or fallback to paid providers.
 

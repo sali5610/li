@@ -78,9 +78,11 @@ const scope={
  exports:moduleExports,window,document,URL,URLSearchParams,CustomEvent:TestEvent
 };
 vm.runInNewContext(generated,scope);
+const fallbackRouter=window.liAppRouter;
 const stop=moduleExports.mountReactRouter();
 const act=window.liReactRouter;
 assert.equal(typeof act.navigate,"function");
+assert.equal(window.liAppRouter,act,"React must be the direct global action port while mounted");
 assert.equal(act.getCurrent(),'lessonL09','verified direct lesson URL restores its React host');
 visible=false;
 assert.equal(act.navigate("settings"),false,"guest blocked");
@@ -131,6 +133,7 @@ assert.equal(snapshot.id,'home');
 assert.equal(snapshot.h.length,0);
 stop();
 assert.equal(window.liReactRouter,undefined);
+assert.equal(window.liAppRouter,fallbackRouter,"Unmount restores original native fallback port");
 assert.equal(snapshot.id,"home");
 assert.ok(Array.isArray(snapshot.h));
 const nav=read("tools/step16-real-l09-react-island/src/shell/mount-navigation.tsx");
@@ -148,6 +151,38 @@ assert.match(locale,/data-li-react-navigation/);
 assert.match(locale,/li-react-language-card/);
 assert.match(native,/if\(window\.liReactRouter\?\.navigate\)/);
 assert.match(native,/window\.liNativeRouteEffects=Object\.freeze/);
+// The native pre-mount paint must not erase permitted React ?view= links
+// before Auth and the React router can see the original requested URL.
+const startInitial=native.indexOf('const liInitialQuery=new URLSearchParams(');
+const endInitial=native.indexOf('setStudyMode(studyMode,{persist:false});',startInitial);
+assert.ok(startInitial>=0&&endInitial>startInitial,'Find actual native startup URL preservation');
+const nativeStartup=native.slice(startInitial,endInitial);
+function startupRoute(pathname){
+ const calls=[];
+ const origin='https://sali5610.github.io';
+ vm.runInNewContext(nativeStartup,{
+  URLSearchParams,window:{location:new URL(pathname,origin)},
+  document:{getElementById:id=>pages.has(id.replace(/^page-/,''))?{}:null},
+  navigate:(id,opts)=>calls.push({id,opts})
+ });
+ assert.equal(calls.length,1);
+ return calls[0];
+}
+for(const route of ['settings','search','guide','library']){
+ const boot=startupRoute('/li/?view='+route);
+ assert.equal(boot.id,'home','No private feature renders before invitation');
+ assert.equal(boot.opts.syncUrl,false,
+  '?view='+route+' survives pre-auth native initialization');
+ assert.equal(boot.opts.remember,false,'Boot must not create a ghost Back entry');
+}
+assert.equal(startupRoute('/li/?lesson=L09-1-2').opts.syncUrl,false);
+assert.equal(startupRoute('/li/?catalog=technology').opts.syncUrl,false);
+assert.equal(startupRoute('/li/?view=notARoute').opts.syncUrl,true,
+ 'Unrecognized URLs are still normalized to Home');
+assert.equal(startupRoute('/li/?view=lessonL09').opts.syncUrl,true,
+ 'Raw lesson-looking view cannot bypass published-lesson URL allowlist');
+assert.equal(startupRoute('/li/').opts.syncUrl,true);
+
 const authPanel=read("tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx");
 assert.match(authPanel,/li:auth-verified-changed/);
 assert.match(authPanel,/language\.liLanguage\?\.set\?\.\(next\)/);

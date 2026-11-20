@@ -15,6 +15,7 @@ type SpellView={
  active:string;title:string;mode:string;phase:number;tab:'guide'|'practice';
  lesson:string;prompt:string;fields:SpellField[];feedback:string;
  resumeNote:string;places:string[];dueAt:number|null;
+ t02ReviewCount:number;t02Streak:number;t02AwaitingRating:boolean;
  lessonId:string|null;reviewedInSession:boolean;viewSession:number;
  t12Draft?:{context:string;next:string;answer:string};
  t12SavedOnDevice?:boolean;t12Synced?:boolean;t12StorageError?:string
@@ -150,7 +151,7 @@ export function GuideDetail(){
     :view?.active==='T12'
      ?t12Flow.execute(kind,answers,app.LiSpellPractice)
      :standardFlow.execute(kind,answers,app.LiSpellPractice);
-  if(ok&&['reset','clear','schedule','next'].includes(kind))setAnswers({});
+  if(ok&&['reset','clear','schedule','next','rate-remembered','rate-retry'].includes(kind))setAnswers({});
  };
  const prompt=()=>{
   if(!view)return '';
@@ -262,20 +263,28 @@ export function GuideDetail(){
        if(view.active==='T12'&&typeof value==='string')
         app.LiSpellPractice?.setT12Draft?.(field.id,value);
       }}/>)}
+     {view.active==='T02'&&<Text role="support" className="spell-honest">
+      {copy('Đã hoàn thành ','Completed ')}{view.t02ReviewCount}
+      {copy(' lượt ôn. Nhớ lại khi đến hạn → đối chiếu → tự đánh giá → hẹn lượt tiếp.',
+       ' reviews. Recall when due → check feedback → self-rate → schedule another review.')}
+     </Text>}
      {isDuePreparing?<>
       {dueFuture&&<Text role="support" className="spell-honest">{copy(
-       'Đã đặt mốc ôn: ','Scheduled review: ')}
+       'Lần ôn tiếp: ','Next review: ')}
        {new Date(view.dueAt!).toLocaleString(en()?'en-US':'vi-VN')}
-       {copy(' · Chưa đến hẹn nên không tính là lượt ôn.',' · Not yet due; this is not a completed review.')}
+       {copy(' · Chưa đến hạn nên chưa tính lượt ôn.',' · Not due yet; this does not count as a review.')}
       </Text>}
       <Button variant="secondary" onClick={()=>action(dueFuture?'clear':'schedule')}>
-       {dueFuture?copy('Xóa mốc ôn','Clear review date'):copy('Đặt mốc ôn sau 24 giờ','Schedule review after 24 hours')}</Button>
+       {dueFuture?copy('Hủy lịch lượt tới','Cancel next review'):
+        copy('Bắt đầu · ôn lần đầu sau 24 giờ','Start · first review after 24 hours')}</Button>
      </>:
-      <Button variant="primary" onClick={()=>action(ctaKind)}>
-       {actionLabel}</Button>}
-     {view.reviewedInSession&&<Text role="support" aria-live="polite">{copy(
-      'Đã thực hành và đối chiếu trong phiên này · Chưa lưu/đồng bộ · Không phải điểm thông thạo.',
-      'Practiced and self-checked in this session · Not saved/synced · Not a mastery grade.')}</Text>}
+      !(view.active==='T02'&&view.t02AwaitingRating)&&
+       <Button variant="primary" onClick={()=>action(ctaKind)}>{actionLabel}</Button>}
+     {view.reviewedInSession&&<Text role="support" aria-live="polite">{view.active==='T02'?
+      copy('Lượt gọi nhớ đã ghi nhận. Tự đánh giá để đặt lịch tiếp; đây không phải điểm thông thạo.',
+       'Recall recorded. Self-rate for next review; this is not a mastery score.'):
+      copy('Đã thực hành và đối chiếu trong phiên này · Chưa lưu/đồng bộ · Không phải điểm thông thạo.',
+       'Practiced and self-checked in this session · Not saved/synced · Not a mastery grade.')}</Text>}
      {view.feedback&&<div className="spell-feedback" role="status" aria-live="polite">
       <strong>{copy('Phản hồi để tự kiểm chứng','Feedback for self-check')}</strong>
       <Text role="body">{tr(view.feedback)}</Text>
@@ -283,13 +292,25 @@ export function GuideDetail(){
        'Bài mẫu minh họa, không chứng nhận thành thạo hay kết quả học thuật ngoài nhiệm vụ.',
        'Illustrative exercise only; not a certification of mastery.')}</Text>
      </div>}
+     {view.active==='T02'&&view.t02AwaitingRating&&<div className="action-row">
+      <Text role="body">{copy(
+       'So câu vừa nhớ với feedback ở trên, rồi tự đánh giá:',
+       'Compare your recall with the feedback above, then self-rate:')}</Text>
+      <Button variant="primary" onClick={()=>action('rate-remembered')}>
+       {copy('Nhớ được · giãn lịch','Recalled · space it out')}</Button>
+      <Button variant="secondary" onClick={()=>action('rate-retry')}>
+       {copy('Chưa nhớ vững · ôn lại sớm','Not secure · review sooner')}</Button>
+     </div>}
     </div>
     <div className="spell-activity-footer">
      <Text role="support">{view.active==='T12'?
       copy('T12 lưu bản nháp trên máy và đồng bộ qua tài khoản khi online.',
        'T12 stores the draft locally and syncs it through your account when online.'):
-      copy('Tự chọn, có thể bỏ qua. Trừ mốc ôn T02, câu trả lời không tự lưu hoặc gửi lên máy chủ.',
-       'Optional. Except the T02 schedule, exercise answers are neither saved nor sent to a server.')}</Text>
+      view.active==='T02'?
+       copy('Lịch và số lượt ôn lưu theo tài khoản, đồng bộ khi online. Không lưu câu trả lời. Mốc 1–3–7–14–30 ngày là mặc định của app.',
+        'Review schedule and count sync when online; answers are not saved. 1–3–7–14–30 days are app defaults.'):
+       copy('Tự chọn, có thể bỏ qua. Câu trả lời không tự lưu hay gửi lên máy chủ.',
+        'Optional. Answers are not saved or sent to a server.')}</Text>
      {view.active==='T12'&&<p className="small" role={view.t12StorageError?'alert':'status'}
        aria-live="polite">{view.t12StorageError||
         (view.t12Synced?

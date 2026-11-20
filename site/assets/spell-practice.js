@@ -459,7 +459,8 @@ function check(){
  if(e.mode==="faded"){
   const n=rawValue("number");if(!n){showMessage("Nhập số trước khi kiểm tra.");return;}
   if(Number(n)!==(phase===1?14:26)){showMessage("Chưa đúng: nhu cầu mỗi ngày × số ngày chờ + tồn an toàn. Thử lại.");return;}
-  if(phase===1){phase=2;feedback="";draw();return;}
+  if(phase===1){phase=2;feedback="";saveReceipt({phase:2});draw();return;}
+  if(!reviewedInSession)saveReceipt({complete:true});
   reviewedInSession=true;
   showMessage("Ví dụ độc lập đúng: 7×3+5 = 26 đơn vị.");return;
  }
@@ -489,7 +490,8 @@ function check(){
   if(!reactOwnsSpell())draw();
   return;
  }
- reviewedInSession=true; // feedback follows successfully stored clearing state
+ if(!reviewedInSession)saveReceipt({complete:true});
+ reviewedInSession=true;
  showMessage(info);
  /* T02 history is retained until the learner explicitly resets it. */
  if(!reactOwnsSpell())root?.querySelector(".spell-feedback")?.focus();
@@ -507,9 +509,9 @@ function next(){
   privatePlaces=[1,2,3].map(i=>rawValue("place"+i));
   const unique=privatePlaces.map(x=>x.toLocaleLowerCase("vi").trim());
   if(new Set(unique).size!==3){showMessage("Ba nơi phải khác nhau để tạo ba mốc nhớ phân biệt.");return;}
-  phase=1;feedback="";draw();return;
+  phase=1;feedback="";saveReceipt({phase:1,places:privatePlaces});draw();return;
  }
- phase=1;feedback="";draw();
+ phase=1;feedback="";saveReceipt({phase:1});draw();
 }
 
 /* Existing exercise engine remains single owner of 13 techniques and feedback.
@@ -576,6 +578,9 @@ function runAction(action){
   if(active==="T02"&&!t02Write(t02Empty())){
    showMessage("Không lưu được lần làm lại T02. Lịch cũ vẫn còn.");return false;
   }
+  if(active!=="T02"&&active!=="T12"&&!saveReceipt({phase:0})){
+   showMessage(practiceError);return false;
+  }
   phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
   t12Draft={context:"",next:"",answer:""};draw();return true;
  case "next":next();return true;
@@ -604,7 +609,7 @@ function runAction(action){
 function performReact(action,values={}){
  // The explicit port also serves existing native fallback automation and
  // authorized callers. It never depends on a hidden button or React mount.
- if(!active||
+ if(!active||(practiceSessionOwner&&practiceSessionOwner!==verifiedOwner())||
    !document.documentElement.classList.contains("li-auth-verified")||
    document.documentElement.classList.contains("li-account-open")||
    !values||typeof values!=="object"||Array.isArray(values))return false;

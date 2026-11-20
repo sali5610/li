@@ -56,6 +56,8 @@
 }
 #page-collection .library-note-actions{display:flex;align-items:center;gap:var(--li-space-4)}
 #page-collection .library-collection-entry .library-note-actions{margin-top:var(--li-space-2)}
+#page-collection .library-note-actions .library-danger-link{color:var(--li-color-danger-fill)}
+#page-collection .library-note-actions .library-danger-link:hover{text-decoration-thickness:2px}
 #page-collection .library-collection-create{
  border-top:1px solid var(--rule);margin-top:var(--li-space-8);padding-top:var(--li-space-6);
 }

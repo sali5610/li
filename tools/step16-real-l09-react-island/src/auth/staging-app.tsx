@@ -16,6 +16,7 @@ import {mountCheckinDialog} from '../shell/checkin-dialog.js';
 import {mountLaoLyDialog} from '../shell/laoly-dialog.js';
 import {mountLaoLyFab} from '../shell/laoly-fab.js';
 import {mountReactChrome} from '../shell/react-shell.js';
+import {installReactCatalogPort} from '../shell/catalog-route-adapter.js';
 
 // Unified GitHub Pages staging: no guest app. React verifies signed invitation.
 const root=document.getElementById('li-staging-auth-root');
@@ -40,6 +41,10 @@ const accountOverlay:AccountOverlayPort={open:(trigger=null)=>{
 }};
 (window as Window&{liAccountOverlay?:AccountOverlayPort}).liAccountOverlay=accountOverlay;
 createRoot(root).render(<AuthPanel onClose={closeAccount}/>);
+
+// Replace the native Catalog path controller before any Home, Search or
+// lesson React mounts. Native fallback is still shipped in standalone site.
+installReactCatalogPort();
 
 
 /** One invited-only route handler for all released lessons.

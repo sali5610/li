@@ -161,7 +161,7 @@ test('canonical content marks exact/open by question; only reviewed source owns 
   'L09-1-2':['exact','open','open','open'],
   'L15-2-2':['exact','exact','open','open']};
  for(const [id,modes] of Object.entries(expected)){
-  const lesson=JSON.parse(readFileSync(new URL('../../../../content/lessons/'+id+'.json',root),'utf8'));
+  const lesson=JSON.parse(readFileSync(new URL('../../content/lessons/'+id+'.json',root),'utf8'));
   assert.deepEqual(lesson.practice.questionFeedbackModes,modes);
   assert.equal(lesson.practice.questionCount,modes.length);
   for(const locale of ['vi','en']){

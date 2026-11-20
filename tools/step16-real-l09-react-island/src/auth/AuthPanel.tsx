@@ -10,8 +10,8 @@ import {prepareLearnerAccount,startLearnerSync,type SyncReport} from './learner-
 type Locale='vi'|'en';
 type Access='checking'|'granted'|'denied'|'error';
 const syncCopy={
- vi:{checking:'Đang kết nối tiến độ học với Neon…',saved:'Đã đồng bộ tiến độ học với Neon.',empty:'Đã kết nối Neon. Tiến độ sẽ tự đồng bộ khi học.',offline:'Đang offline; tiến độ vẫn lưu trên máy và sẽ thử lại.',conflict:'Hai thiết bị có tiến độ khác nhau. Dữ liệu được giữ, chưa ghi đè.',error:'Chưa đồng bộ được với Neon; tiến độ vẫn lưu trên máy.'},
- en:{checking:'Connecting learning progress to Neon…',saved:'Learning progress synced to Neon.',empty:'Connected to Neon. Progress will sync while studying.',offline:'Offline. Progress remains on device and will retry.',conflict:'Progress differs across devices. Both copies are preserved; nothing was overwritten.',error:'Cannot sync with Neon yet; device progress is preserved.'}
+ vi:{checking:'Đang kết nối tiến độ học với Neon…',saved:'Đã đồng bộ tiến độ học với Neon.',empty:'Đã kết nối Neon. Tiến độ sẽ tự đồng bộ khi học.',queued:'Đã lưu, chờ đồng bộ với Neon.',offline:'Đang offline; tiến độ vẫn lưu trên máy và sẽ thử lại.',conflict:'Hai thiết bị có tiến độ khác nhau. Dữ liệu được giữ, chưa ghi đè.',error:'Chưa đồng bộ được với Neon; tiến độ vẫn lưu trên máy.'},
+ en:{checking:'Connecting learning progress to Neon…',saved:'Learning progress synced to Neon.',empty:'Connected to Neon. Progress will sync while studying.',queued:'Saved, awaiting Neon sync.',offline:'Offline. Progress remains on device and will retry.',conflict:'Progress differs across devices. Both copies are preserved; nothing was overwritten.',error:'Cannot sync with Neon yet; device progress is preserved.'}
 } as const;
 const copy={
  vi:{
@@ -117,10 +117,12 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   };
   window.addEventListener('focus',refresh);
   window.addEventListener('online',refresh);
+  window.addEventListener('li:auth-recheck',refresh);
   document.addEventListener('visibilitychange',refresh);
   return()=>{
    window.removeEventListener('focus',refresh);
    window.removeEventListener('online',refresh);
+   window.removeEventListener('li:auth-recheck',refresh);
    document.removeEventListener('visibilitychange',refresh);
   };
  },[]);

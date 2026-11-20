@@ -110,6 +110,12 @@ jobs:
           assert 'id="page-settings"' in html
           assert 'lesson-l09-hifi-markup.js' in html
           assert 'step16-react-router.js' not in html
+          # Exactly ONE L09 controller: the integrated React module. The old
+          # native controller keeps stale in-memory state and could overwrite
+          # React answers during a global language change.
+          old_l09='<script src="./assets/lesson-l09-hifi.js"></script>'
+          assert html.count(old_l09)==1, 'Native L09 source changed'
+          html=html.replace(old_l09,'',1)
           # Fail CLOSED by default. No guest path or query bypass.
           gate=('<style id="li-auth-gate-critical">'
                 'html:not(.li-auth-verified) .app,'
@@ -153,6 +159,7 @@ jobs:
           test -s site/assets/staging-auth-gate.js
           test -s site/assets/li-react-learning.css
           grep -Fq 'li-react-learning.css' site/index.html
+          ! grep -Fq '<script src="./assets/lesson-l09-hifi.js"></script>' site/index.html
           grep -Fq 'li-auth-gate-critical' site/index.html
           grep -Fq 'id="li-staging-auth-root"' site/index.html
           grep -Fq 'id="li-open-account"' site/index.html

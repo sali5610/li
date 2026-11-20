@@ -88,7 +88,7 @@ assert.match(research,/window\.addEventListener\('li:auth-verified-changed',sync
  "Research/Case follow the canonical auth event");
 assert.match(capture,/window\.addEventListener\('li:auth-verified-changed',clearOnSignOut\)/,
  "Drafts cannot cross account boundaries");
-assert.match(search,/contentClient\.searchKnowledge\(query\)/,
+assert.match(search,/client\.searchKnowledge\(query\)/,
  "React search queries real canonical data, not mock results");
 assert.match(search,/searchPersonalStudy\(query\)/,
  "All personal study content stays searchable through the canonical adapter");

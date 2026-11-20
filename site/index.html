@@ -557,6 +557,24 @@ function paintMethodDetail(id){
  document.getElementById("detail-purpose").textContent=translated(m[3]);
 }
 function showMethod(id,{practice=false}={}){if(!methods.some(m=>m[0]===id))return;paintMethodDetail(id);navigate("guideDetail");window.LiSpellPractice?.open(id,practice?"practice":"guide");}
+/* One catalog of 13 approved spells. The React guide reads this existing
+ * authored source and opens the existing real Chú giải/Thử thi triển route. */
+window.liMethods=Object.freeze({
+ getView:()=>{
+  const mode=STUDY_MODES[studyMode];
+  const translated=value=>window.liLanguage?.get?.()==="en"?
+   (window.liLanguage?.translate?.(value)||value):value;
+  return {
+   methods:methods.map(m=>({id:m[0],title:translated(m[1]),original:m[2],purpose:translated(m[3]),category:translated(m[4]),categoryKey:m[4]})),
+   categories:categories.map(key=>({key,label:translated(key)})),
+   suggestions:mode.suggestions?[...mode.suggestions]:null,
+   modeLabel:translated(mode.label),
+   guide:liBuddyLine(mode.guide)
+  };
+ },
+ open:(id,practice=false)=>showMethod(id,{practice})
+});
+
 window.addEventListener("li:localechange",()=>{
  if(document.getElementById("page-guide")?.classList.contains("active"))renderMethods();
  if(document.getElementById("page-guideDetail")?.classList.contains("active")){

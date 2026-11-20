@@ -13,6 +13,7 @@ import {mountGuideAndLibrary} from '../shell/guide-library.js';
 import {mountJournalAndSettings} from '../shell/journal-settings.js';
 import {mountCheckinDialog} from '../shell/checkin-dialog.js';
 import {mountLaoLyDialog} from '../shell/laoly-dialog.js';
+import {mountLaoLyFab} from '../shell/laoly-fab.js';
 
 // Unified GitHub Pages staging: no guest app. React verifies signed invitation.
 const root=document.getElementById('li-staging-auth-root');
@@ -121,3 +122,9 @@ else mountCheckinDialog();
 // Existing contextual dialog plans, sourced quote rotation and draggable avatar are reused.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountLaoLyDialog,{once:true});
 else mountLaoLyDialog();
+
+// The floating Lão Lý companion is also React-owned. Existing native avatar
+// remains as fallback if the React app fails before mounting; the React root
+// takes over its exact host and original position port once it is ready.
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountLaoLyFab,{once:true});
+else mountLaoLyFab();

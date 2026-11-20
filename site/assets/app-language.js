@@ -9,6 +9,7 @@ const supported=["vi","en"];
 let locale="vi";
 try{const raw=localStorage.getItem(KEY);if(supported.includes(raw))locale=raw;}catch(error){/* no storage available */}
 const TEXT={
+ "Nhật Ký được lưu trước tiên trên thiết bị. Chỉ khi bật Đồng bộ Nhật Ký trong Tài khoản, dữ liệu Check-in và Nhật Ký riêng tư mới được gửi lên Neon. Dừng ghi giữ dữ liệu cũ; Xóa lịch xóa các ngày đã lưu. Chỉ ghi hoạt động thực sự phát sinh, không điền ngược ngày cũ.":"The Journal is stored on this device first. Private Check-ins and Journal entries are sent to Neon only after you enable Journal Sync in Account. Pausing recording keeps past entries; Delete Journal clears saved days. Only actual activities are recorded, never fabricated past days.",
  "Lão đang giở sổ…":"Elder Li is leafing through the pages…",
  "Đang đọc và kiểm tra bản sao của ngươi.":"Reading and validating your backup.",
  "Bản đồ có chỗ sai rồi":"Something went wrong with the map",

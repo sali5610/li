@@ -35,3 +35,7 @@ jobs:
           grep -Fq 'li-react-l09-host' dist-staging-app/staging-auth-gate.js
           grep -Fq 'data-li-react-journey' dist-staging-app/staging-auth-gate.js
           echo 'PASS integrated auth + canonical React L09 bundle, no deployment'
+      - name: Check affected Tủ Riêng recency and real sync status
+        run: |
+          node tools/test_library_hub_v2.cjs
+          node tools/test_resume_problem_case.cjs

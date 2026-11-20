@@ -1,5 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {openRoute,goBack,hasRoute} from './app-router.js';
+import {useDiscoveryLocale,localized} from './discovery-locale.js';
 import {personalStudyRoute} from '../learning/released-lessons.js';
 import {searchPersonalStudy} from '../learning/staging-draft-preview.js';
 import {createRoot} from 'react-dom/client';
@@ -77,6 +78,8 @@ function fallback(query:string):KnowledgeResponse{
  return {status:'fallback',results};
 }
 function KnowledgeSearch(){
+ const locale=useDiscoveryLocale();
+ const L=(vi:string,en:string)=>localized(locale,vi,en);
  const reduced=useReducedMotion();
  const [query,setQuery]=useState('');
  const [submitCount,setSubmitCount]=useState(0);
@@ -131,74 +134,74 @@ function KnowledgeSearch(){
     sourceIsSafe(link.sourceUrl)&&link.kind==='Lesson').map(link=>({...link}))};
   app.openLaoLy?.();
  };
- const navigateTo=(id:string)=>{if(!openLesson(id))setNavError('Chưa thể mở bài học này.');};
+ const navigateTo=(id:string)=>{if(!openLesson(id))setNavError(L('Chưa thể mở bài học này.','This lesson could not be opened.'));};
  return <div data-li-react-screen="knowledge-search">
   <Button variant="ghost" className="utility-back" onClick={goBack}>
-   <span aria-hidden="true">←</span> Quay lại
+   <span aria-hidden="true">←</span> {L("Quay lại","Back")}
   </Button>
-  <div className="kicker">TÌM TRONG THƯ VIỆN</div>
-  <Heading level={1} role="headline">Tra Cứu</Heading>
-  <Text role="body">Tìm bằng tên, mã bài hoặc hỏi bằng câu tự nhiên. Li. chỉ dẫn đến nội dung bài thực sự có, không tự bịa đáp án.</Text>
-  <SearchField label="Bạn muốn tìm gì?" value={query} onQueryChange={changeQuery}
+  <div className="kicker">{L("TÌM TRONG THƯ VIỆN","SEARCH THE LIBRARY")}</div>
+  <Heading level={1} role="headline">{L("Tra Cứu","Search")}</Heading>
+  <Text role="body">{L("Tìm bằng tên, mã bài hoặc hỏi bằng câu tự nhiên. Li. chỉ dẫn đến nội dung bài thực sự có, không tự bịa đáp án.","Search by title, lesson ID or a natural-language question. Li. links to real lesson content instead of inventing answers.")}</Text>
+  <SearchField label={L("Bạn muốn tìm gì?","What would you like to explore?")} value={query} onQueryChange={changeQuery}
     onSearch={()=>setSubmitCount(n=>n+1)}
-   placeholder="Ví dụ: Tại sao khảo sát 1.000 người vẫn có thể sai?"
-   clearLabel="Xóa tìm kiếm" submitLabel="Tìm kiếm"/>
-  <section className="surface" aria-label="Kết quả tra cứu">
-   <Heading level={2} role="titleMedium">Kết quả tra cứu</Heading>
+   placeholder={L("Ví dụ: Tại sao khảo sát 1.000 người vẫn có thể sai?","For example: Why can a survey of 1,000 people be misleading?")}
+   clearLabel={L("Xóa tìm kiếm","Clear search")} submitLabel={L("Tìm kiếm","Search")}/>
+  <section className="surface" aria-label={L("Kết quả tra cứu","Search results")}>
+   <Heading level={2} role="titleMedium">{L("Kết quả tra cứu","Search results")}</Heading>
    {loadState==='error'&&query.trim()&&
-    <InlineFeedback tone="info" message="Dữ liệu quan hệ chưa khả dụng. Đang dùng danh mục bài đã phát hành."/>}
+    <InlineFeedback tone="info" message={L("Dữ liệu quan hệ chưa khả dụng. Đang dùng danh mục bài đã phát hành.","Relationships are temporarily unavailable. Showing released lessons.")}/>}
    {navError&&<InlineFeedback tone="error" message={navError}/>}
    {response.status==='related_only'&&!searching&&
-    <InlineFeedback tone="info" message="Chưa có bài trả lời trực tiếp câu hỏi này. Bài bên dưới chỉ có nội dung liên quan."/>}
-   {searching&&<Text role="support" aria-live="polite">Đang tìm trong Knowledge Base…</Text>}
-   {!query.trim()?<Text role="support">Nhập tên bài, môn học hoặc khái niệm để tra cứu.</Text>:
+    <InlineFeedback tone="info" message={L("Chưa có bài trả lời trực tiếp câu hỏi này. Bài bên dưới chỉ có nội dung liên quan.","No lesson directly answers this question. The results below are only related.")}/>}
+   {searching&&<Text role="support" aria-live="polite">{L("Đang tìm trong Knowledge Base…","Searching the knowledge base…")}</Text>}
+   {!query.trim()?<Text role="support">{L("Nhập tên bài, môn học hoặc khái niệm để tra cứu.","Enter a lesson, course or concept to search.")}</Text>:
     response.results.length===0&&!searching?
      <InlineFeedback tone="info" message={response.status==='no_answer'?
-      "Chưa có bài có mục tiêu học trả lời được câu hỏi này. Thử hỏi cách khác hoặc tìm theo tên/mã bài.":
-      "Chưa tìm thấy bài hay khái niệm đã xác minh phù hợp."}/>:
+      L("Chưa có bài có mục tiêu học trả lời được câu hỏi này. Thử hỏi cách khác hoặc tìm theo tên/mã bài.","No lesson outcome directly answers this question. Try different wording or a lesson ID."):
+      L("Chưa tìm thấy bài hay khái niệm đã xác minh phù hợp.","No matching reviewed lesson or concept found.")}/>:
      <div className="path-list" aria-live="polite">
-      <Text role="caption">{response.results.length} kết quả · {response.status==='answerable'||response.status==='related_only'||response.status==='outcome_match'?
-       'Câu hỏi tự nhiên · phạm vi 3 bài Wave1':response.status==='personal_match'?
-        'Bài học cá nhân trên staging + Knowledge Base':'Knowledge Base canonical'}</Text>
+      <Text role="caption">{response.results.length} {L("kết quả","results")} · {response.status==='answerable'||response.status==='related_only'||response.status==='outcome_match'?
+       L('Câu hỏi tự nhiên · phạm vi 3 bài Wave1','Natural-language search · 3 Wave1 lessons'):response.status==='personal_match'?
+        L('Bài học cá nhân trên staging + Knowledge Base','Personal staging lessons + knowledge base'):L('Knowledge Base canonical','Canonical knowledge base')}</Text>
       {response.results.map(record=><motion.article key={record.kind+':'+record.id}
         className="li-search-result" initial={reduced?false:{opacity:0,y:6}}
         animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.17}}> 
        <ListRow title={record.title}
-        description={(kindCopy[record.kind]||'Mục kiến thức')+' · '+(record.lessonId||record.id)+
-         (record.contentState==='review_only'?' · đang duyệt':'')+
+        description={(locale==='en'?({Lesson:'Lesson',Concept:'Concept',Course:'Course',Field:'Field',DomainGroup:'Domain group'}[record.kind]||'Knowledge item'):(kindCopy[record.kind]||'Mục kiến thức'))+' · '+(record.lessonId||record.id)+
+         (record.contentState==='review_only'?L(' · đang duyệt',' · under review'):'')+
          (record.context?' · '+record.context:'')}
         onActivate={record.kind==='Lesson'&&!!availableRoute(record.lessonId||record.id)?
          ()=>navigateTo(record.lessonId||record.id):undefined}/>
        {record.answerability&&<div className="li-search-related">
-        <Text role="support"><strong>{record.answerability.level==='direct'?'Mục tiêu bài học phù hợp':
+        <Text role="support"><strong>{record.answerability.level==='direct'?L('Mục tiêu bài học phù hợp','Relevant learning outcome'):
          record.answerability.level==='outcome_match'?
-          'Khớp mục tiêu học đã duyệt':'Chỉ liên quan — chưa trả lời câu hỏi'}</strong></Text>
-        <Text role="support">{record.answerability.reason}</Text>
+          L('Khớp mục tiêu học đã duyệt','Matches a reviewed outcome'):L('Chỉ liên quan — chưa trả lời câu hỏi','Related only — does not answer the question')}</strong></Text>
+        <Text role="support">{locale==='en'?record.answerability.reasonLocalized?.en||record.answerability.reason:record.answerability.reasonLocalized?.vi||record.answerability.reason}</Text>
         <Text role="support">{record.answerability.level==='outcome_match'?
-         'Khớp từ ngữ trong mục tiêu học đã duyệt; chưa khẳng định bài trả lời đầy đủ câu hỏi. Không phải câu trả lời AI.':
-         'Đối chiếu theo mục tiêu bài đã biên soạn · chưa phải câu trả lời do AI tạo hoặc kiểm chứng học thuật độc lập.'}</Text>
+         L('Khớp từ ngữ trong mục tiêu học đã duyệt; chưa khẳng định bài trả lời đầy đủ câu hỏi. Không phải câu trả lời AI.','Matched wording in a reviewed learning outcome; not a verified full answer or AI response.'):
+         L('Đối chiếu theo mục tiêu bài đã biên soạn · chưa phải câu trả lời do AI tạo hoặc kiểm chứng học thuật độc lập.','Mapped to an authored learning outcome; not an AI-generated or independently validated answer.')}</Text>
         {sourceIsSafe(record.answerability.sourceUrl)&&
          <a href={record.answerability.sourceUrl} target="_blank" rel="noopener noreferrer">
-          Nguồn tham khảo của bài</a>}
+          {L("Nguồn tham khảo của bài","Lesson reference")}</a>}
        </div>}
        {(record.links||[]).length>0&&<div className="li-search-related">
-        <Text role="support">Kết nối kiến thức có nguồn · không mặc định là bài tiên quyết</Text>
+        <Text role="support">{L("Kết nối kiến thức có nguồn · không mặc định là bài tiên quyết","Source-backed connections · not automatically prerequisites")}</Text>
         {record.links.map((link,i)=><div key={link.id+':'+i} className="li-search-relation">
-         <Text role="support">{link.label}: {link.title} · {link.lessonId||link.id}</Text>
-         {link.reason&&<Text role="support">{link.reason}</Text>}
+         <Text role="support">{locale==='en'?link.relation||link.label:link.label}: {link.title} · {link.lessonId||link.id}</Text>
+         {link.reason&&<Text role="support">{locale==='en'&&link.reasonLocalized?link.reasonLocalized:link.reason}</Text>}
          {link.kind==='Lesson'&&!!availableRoute(link.lessonId||'')&&
-          <Button variant="secondary" onClick={()=>navigateTo(link.lessonId!)}>Mở bài {link.lessonId}</Button>}
+          <Button variant="secondary" onClick={()=>navigateTo(link.lessonId!)}>{L("Mở bài","Open lesson")} {link.lessonId}</Button>}
          {sourceIsSafe(link.sourceUrl)&&record.links.findIndex(item=>item.sourceUrl===link.sourceUrl)===i&&<a href={link.sourceUrl} target="_blank" rel="noopener noreferrer">
-          {link.sourceType==='academic'?'Nguồn phương pháp':'Nguồn phân loại'}</a>}
+          {link.sourceType==='academic'?L('Nguồn phương pháp','Method source'):L('Nguồn phân loại','Taxonomy source')}</a>}
         </div>)}
        </div>}
        {sourceIsSafe(record.sourceUrl)&&!(record.links||[]).some(link=>link.sourceUrl===record.sourceUrl)&&
-        <a href={record.sourceUrl} target="_blank" rel="noopener noreferrer">Nguồn danh mục</a>}
+        <a href={record.sourceUrl} target="_blank" rel="noopener noreferrer">{L("Nguồn danh mục","Catalog source")}</a>}
        {(record.kind==='Concept'||record.kind==='Lesson')&&
         (record.links||[]).some(link=>link.sourceType==='academic'&&
          link.kind==='Lesson'&&sourceIsSafe(link.sourceUrl))&&
         <Button variant="secondary" onClick={()=>askMentor(record)}
-         aria-haspopup="dialog" aria-controls="buddy-modal">Hỏi Lão Lý về kết nối này</Button>}
+         aria-haspopup="dialog" aria-controls="buddy-modal">{L("Hỏi Lão Lý về kết nối này","Ask Lao Ly about this connection")}</Button>}
       </motion.article>)}
      </div>}
   </section>
@@ -208,14 +211,16 @@ function KnowledgeSearch(){
 export function mountKnowledgeSearch(){
  const page=document.getElementById('page-search');
  const legacy=page?.querySelector<HTMLElement>(':scope > .section-shell');
- if(!page||!legacy)throw Error('REACT_SEARCH_HOST_MISSING');
+ if(!page)throw Error('REACT_SEARCH_HOST_MISSING');
  const host=document.createElement('div');
  host.id='li-react-search-host';host.className='section-shell';
  page.append(host);
  const root=createRoot(host);
  root.render(<KnowledgeSearch/>);
- legacy.hidden=true;legacy.style.display='none';
+ if(legacy){legacy.hidden=true;legacy.style.display='none';}
  return ()=>{
-  root.unmount();host.remove();legacy.hidden=false;legacy.style.removeProperty('display');
+  root.unmount();host.remove();if(legacy){legacy.hidden=false;legacy.style.removeProperty('display');}
  };
 }
+
+export {KnowledgeSearch as KnowledgeSearchScreen};

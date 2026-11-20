@@ -733,7 +733,12 @@ assert 'navigate(target);' in library_js
 assert '<script src="./assets/lesson-related-wave1.js"></script>' in page_html
 assert bool(re.search(r'<link rel="stylesheet" href="\./assets/ui-foundations\.css\?v=[A-Za-z0-9._-]+">', head))
 cross=(site/"assets"/"lesson-related-wave1.js").read_text(encoding="utf-8")
-assert 'Object.keys(RELATED).forEach' in cross
+assert 'Object.keys(LESSONS).forEach(mount)' in cross
+assert 'import("./li-content-adapter.mjs")' in cross
+assert 'api.getRelatedLessons(id)' in cross
+assert 'x.reviewState==="verified"' in cross
+assert 'li-related-source' in cross and 'noopener noreferrer' in cross
+assert 'const RELATED=' not in cross
 assert all(k in cross for k in ("L03-1-2", "L09-1-2", "L15-2-2"))
 assert 'L03-2-' not in cross and 'L09-2-' not in cross and 'L15-3-' not in cross
 assert 'list.replaceChildren()' in cross

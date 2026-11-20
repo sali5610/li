@@ -22,6 +22,8 @@ const TEXT={
  "Tệp vượt quá 10 MB.":"The file exceeds 10 MB.",
  "Không thể lưu bản sao trên thiết bị này. Hãy giữ bản JSON.":"Could not save this backup on this device. Keep the JSON file.",
  "Tệp JSON không hợp lệ hoặc không đúng bản sao li.":"Invalid JSON or not a li. backup.",
+ "Nhặt Ý còn bản nháp chưa lưu. Hãy lưu hoặc xóa nháp trước khi xuất bản sao.":"Capture has an unsaved draft. Save or clear it before exporting a backup.",
+ "Nhặt Ý còn bản nháp chưa lưu. Hãy lưu hoặc xóa nháp trước khi nhập bản sao.":"Capture has an unsaved draft. Save or clear it before importing a backup.",
  "Đại Sảnh":"Great Hall","Tàng Thư":"Library","Thần Chú":"Spells","Tủ Riêng":"My Shelf",
  "Cài đặt":"Settings","Quay lại":"Back","Trang chủ":"Home",
  "Tra Cứu":"Search","Nhặt ý":"Capture an idea","Khảo Chứng":"Investigate","Phản Chứng":"Test a claim",

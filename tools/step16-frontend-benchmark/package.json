@@ -1,0 +1,20 @@
+{
+  "name": "li-step16-framework-feasibility",
+  "version": "0.0.0-research",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:vanilla": "vite build --mode vanilla",
+    "build:react": "vite build --mode react",
+    "build:lit": "vite build --mode lit",
+    "build": "npm run build:vanilla && npm run build:react && npm run build:lit"
+  },
+  "dependencies": {
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "lit": "3.3.3"
+  },
+  "devDependencies": {
+    "vite": "8.3.8"
+  }
+}

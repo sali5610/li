@@ -340,6 +340,26 @@ L.questions.forEach((question,i)=>{
 $("hint").hidden=!state.hint;plain("assistStatus",state.hint?L.assistStatus:"");
 $("hintButton").hidden=Boolean(state.submitted);$("submit").hidden=Boolean(state.submitted);$("clear").hidden=Boolean(state.submitted);
 $("answerBox").hidden=!state.submitted;$("rubricGate").hidden=Boolean(state.submitted);$("rubricArea").hidden=!state.submitted;
+// The submitted snapshot is read-only; never treat current draft or auto-grading
+// as a replacement for the learner's original recorded response.
+if(state.submitted){
+ const answerBox=$("answerBox");
+ let section=answerBox.querySelector(".li-submitted-review");
+ if(!section){section=document.createElement("section");section.className="li-submitted-review";answerBox.append(section);}
+ const title=document.createElement("h3");title.textContent=state.locale==="vi"?
+  "Bài làm của bạn — so sánh với đáp án mẫu":"Your submitted answers — compare with the example";
+ const list=document.createElement("ol");list.className="li-submitted-review-list";
+ const submitted=Array.isArray(state.submission)&&state.submission.length===4&&
+  state.submission.every(x=>typeof x==="string")?state.submission:state.draft;
+ L.questions.forEach((question,i)=>{
+  const row=document.createElement("li");
+  const prompt=document.createElement("strong");prompt.textContent=question;
+  const response=document.createElement("p");response.className="li-submitted-review-answer";
+  response.textContent=typeof submitted[i]==="string"?submitted[i]:"";
+  row.append(prompt,response);list.append(row);
+ });
+ section.replaceChildren(title,list);
+}
 plain("submissionStatus",state.reviewed?L.reviewDone:state.submitted?L.submittedText:(storageError?L.storageOff:""));
 const rows=$("rubricRows");rows.replaceChildren();
 if(state.submitted)L.rubricItems.forEach((item,i)=>{
@@ -396,8 +416,13 @@ $("hintButton").addEventListener("click",()=>{if(state.submitted)return;state.hi
 $("submit").addEventListener("click",()=>{
  if(state.submitted)return;state.draft=Array.from({length:4},(_,i)=>$( "question-"+i ).value);
  if(state.draft.some(x=>x.trim().length<12)){feedback(data[state.locale].needAnswers);return;}
- state.submitted=true;state.submission=state.draft.slice();state.submissionAt=new Date().toISOString();const recorded=save();
- if(recorded)typeof CustomEvent==="function"&&typeof window.dispatchEvent==="function"&&window.dispatchEvent(new CustomEvent("li:lesson-submitted",{detail:{lessonId:id}}));
+ state.submitted=true;state.submission=state.draft.slice();state.submissionAt=new Date().toISOString();
+ if(!save()){
+  // Never reveal the answer or mark an attempt submitted when storage rejected it.
+  state.submitted=false;state.submission=null;state.submissionAt=null;
+  render();feedback(data[state.locale].storageOff);return;
+ }
+ window.dispatchEvent(new CustomEvent("li:lesson-submitted",{detail:{lessonId:id}}));
  render();$("answerBox").scrollIntoView({block:"start",behavior:"smooth"});feedback(data[state.locale].submittedText);
 });
 $("clear").addEventListener("click",()=>{
@@ -407,7 +432,11 @@ $("clear").addEventListener("click",()=>{
 $("saveReview").addEventListener("click",()=>{
  if(!state.submitted||state.reviewed)return;
  if(state.ratings.some(x=>x===null)){feedback(data[state.locale].needRubric);return;}
- state.reviewed=true;save();render();feedback(data[state.locale].reviewDone);
+ state.reviewed=true;
+ if(!save()){
+  state.reviewed=false;render();feedback(data[state.locale].storageOff);return;
+ }
+ render();feedback(data[state.locale].reviewDone);
 });
 window.addEventListener?.("li:lesson-sync-applied",event=>{
  const detail=event.detail||{};

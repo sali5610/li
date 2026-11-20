@@ -63,7 +63,7 @@ jobs:
           test -s dist-auth-worker/_worker.js
           VITE_LI_AUTH_TARGET=cloudflare-first-party npx vite build --config vite.cloudflare-app.config.mjs
           node ../../tools/prepare_cloudflare_ai_candidate.mjs --build-auth-only
-          npx --yes --package workbox-cli@7.4.1 workbox generateSW ../../tools/platform/workbox-auth-only-config.cjs
+          (cd ../.. && npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-auth-only-config.cjs)
           test -s ../../dist-cloudflare-auth-candidate/sw.js
           test -s ../../dist-cloudflare-auth-candidate/_worker.js
           test -s ../../dist-cloudflare-auth-candidate/assets/li-first-party-app.js
@@ -73,7 +73,7 @@ jobs:
           ! grep -Fq 'lesson-l09-hifi.js"></script>' ../../dist-cloudflare-auth-candidate/index.html
           ! grep -Fq 'catalog-drilldown.js' ../../dist-cloudflare-auth-candidate/index.html
           ! grep -Fq 'lesson-spell-suggestions.js' ../../dist-cloudflare-auth-candidate/index.html
-          node -e "const m=require('../../dist-cloudflare-auth-candidate/manifest.webmanifest'); if(m.scope!=='/'||m.start_url!=='/'||m.icons.some(x=>!x.src.startsWith('/assets/'))) process.exit(1);"
+          node -e "const m=JSON.parse(require('fs').readFileSync('../../dist-cloudflare-auth-candidate/manifest.webmanifest','utf8')); if(m.scope!=='/'||m.start_url!=='/'||m.icons.some(x=>!x.src.startsWith('/assets/'))) process.exit(1);"
           find ../../dist-cloudflare-auth-candidate -type f -name '*.map' -delete
           test -z "$(find ../../dist-cloudflare-auth-candidate -type f -name '*.map' -print -quit)"
           git diff --exit-code -- ../../site

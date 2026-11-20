@@ -15,17 +15,28 @@ const end=html.indexOf('document.getElementById("finish-case")',start);
 assert(renderStart>=0&&renderEnd>renderStart&&start>=0&&end>start,"Mirror renderer/arrows event handlers missing");
 const hooks=new Map(),swipeHooks=new Map(),updates={question:"",scene:"",source:"",cta:"",aria:""};
 const scenarios=[
- {question:"Q0",scene:"S0"},
- {question:"Q1",scene:"S1",type:"hook",lessonRoute:"lessonL03"},
- {question:"Q2",scene:"S2"},
- {question:"Q3",scene:"S3",type:"hook",lessonRoute:"lessonL15"},
- {question:"Q4",scene:"S4"},
- {question:"Q5",scene:"S5",type:"hook",lessonRoute:"lessonL09"}
+ {question:"Q0",scene:"S0",fieldId:"hci"},
+ {question:"Q1",scene:"S1",fieldId:"hci",type:"hook",lessonRoute:"lessonL03"},
+ {question:"Q2",scene:"S2",fieldId:"sociology"},
+ {question:"Q3",scene:"S3",fieldId:"supply-chain",type:"hook",lessonRoute:"lessonL15"},
+ {question:"Q4",scene:"S4",fieldId:"supply-chain"},
+ {question:"Q5",scene:"S5",fieldId:"data-science",type:"hook",lessonRoute:"lessonL09"}
 ];
 const primary={dataset:{},setAttribute(k,v){assert.equal(k,"aria-label");updates.aria=v}};
+const topicImage={
+ attributes:{},parentElement:{hidden:true},
+ getAttribute(name){return this.attributes[name]||null},
+ setAttribute(name,value){this.attributes[name]=value}
+};
 let syncCalls=0,companionCalls=0;
 const sandbox={
  qIndex:0,scenarios,
+ window:{LI_CATALOG_DATA:[{fields:[
+  {id:"hci",image:"./assets/discipline/human-computer-interaction.webp"},
+  {id:"sociology",image:"./assets/discipline/sociology.webp"},
+  {id:"supply-chain",image:"./assets/discipline/supply-chain-management.webp"},
+  {id:"data-science",image:"./assets/discipline/data-science.webp"}
+ ]}]},
  document:{
   querySelector(selector){
    if(selector==="#page-home .mirror-message")return {addEventListener(type,cb,opts){
@@ -36,6 +47,7 @@ const sandbox={
    throw Error("Unexpected querySelector "+selector);
   },
   getElementById(id){
+   if(id==="mirror-topic-image")return topicImage;
    if(id==="mirror-question")return {set textContent(v){updates.question=v}};
    if(id==="home-scene")return {set textContent(v){updates.scene=v}};
    if(id==="mirror-primary-action")return primary;
@@ -54,6 +66,9 @@ assert.equal(swipeHooks.size,3,"Swipe start/end/cancel handlers");
 function verify(index){
  assert.equal(sandbox.qIndex,index,"Current index");
  assert.equal(updates.question,"Q"+index,"Mirror headline");
+ const field=sandbox.window.LI_CATALOG_DATA[0].fields.find(f=>f.id===scenarios[index].fieldId);
+ assert.equal(topicImage.getAttribute("src"),field.image,"Visible fallback art tracks the canonical discipline");
+ assert.equal(topicImage.parentElement.hidden,false,"Artwork must not remain hidden");
  assert.equal(updates.scene,"S"+index,"Lão Lý contextual scene");
  const item=scenarios[index],hook=item.type==="hook";
  assert.equal(updates.cta,hook?"Khám phá vì sao":"Đào sâu","Distinct primary action");

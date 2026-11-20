@@ -272,8 +272,6 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
    </div>
    <div className="li-learning-header-actions">
     <LessonBookmark id={id} locale={attempt.locale}/>
-    <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
-     locale={attempt.locale} onReviewTheory={()=>setPhase('read')}/>
     <Button variant="secondary" onClick={ports.navigation.openCatalog}>
      {vi?'Về Tàng Thư':'Back to library'}
     </Button>
@@ -429,6 +427,8 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     <Heading level={2} id="li-wave1-progress" role="titleLarge">{content.reviewDone}</Heading>
     <Text>{content.progressDone}</Text>
     <Text>{content.scoreLabel}: {attempt.ratings.reduce<number>((n,v)=>n+(v??0),0)} / 8</Text>
+    <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
+     locale={attempt.locale} onReviewTheory={()=>setPhase('read')}/>
     <Button variant="secondary" onClick={ports.navigation.openCatalog}>
      {vi?'Về Tàng Thư':'Back to library'}</Button>
    </Card>}

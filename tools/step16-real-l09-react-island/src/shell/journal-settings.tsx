@@ -149,7 +149,8 @@ export function Journal(){
       <Heading level={3} role="titleMedium">{view.mode}</Heading>
       <Text role="support">{copy('Nhịp cuối cùng được áp dụng trong ngày; không đo năng lượng từ activity.',
        'Last selected rhythm of the day; not inferred from activity count.')}</Text>
-      <Button variant="secondary" onClick={()=>act('checkin')}>
+      <Button variant="secondary" id="li-react-diary-checkin"
+       onClick={()=>act('checkin','li-react-diary-checkin')}>
        {copy('Check-in hôm nay','Check in today')}</Button>
      </Card>
     </div>

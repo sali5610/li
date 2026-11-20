@@ -24,9 +24,31 @@ function methodPurpose(m){return inEnglish()?(window.liLanguage?.translate?.(m?.
 function methodSearchBlob(m){return m.join(" ")+" "+(window.LI_LEGACY_EN?.[m[1]]||"")+" "+(window.LI_LEGACY_EN?.[m[4]]||"");}
 function methodActionName(m){return inEnglish()?methodDisplayName(m):(m?.[2]||m?.[1]||"phương pháp").split("/")[0].trim();}
 
+/* All 12-screen Lão Lý routes use the existing canonical app history.
+ * Focus the VISIBLE React screen, never hidden legacy form controls. */
 function go(page,focusId){
-  closeModal("buddy-modal");navigate(page);
-  if(focusId){const el=document.getElementById(focusId);el?.scrollIntoView?.({block:"center",behavior:"smooth"});el?.focus?.({preventScroll:true});}
+ closeModal("buddy-modal");
+ if(window.liBuddyReactMounted&&window.liAppRouter?.navigate)window.liAppRouter.navigate(page);
+ else navigate(page);
+ if(!focusId)return;
+ const reactTargets={
+  "li-saved-questions":"#li-react-resume-host",
+  "case-archive-preview":"#li-react-library-host",
+  "mirror-question":"#li-react-home-host .mirror-message h2",
+  "method-search":"#li-react-method-search",
+  "case-revision":"#li-react-case-revision",
+  "capture-note":"#li-react-capture-note",
+  "global-search":"#li-react-search-host input",
+  "study-mode-settings":"#li-react-settings-host .ly-mode-choice"
+ };
+ const focus=()=>{
+  const selector=window.liBuddyReactMounted?reactTargets[focusId]:null;
+  const node=(selector?document.querySelector(selector):null)||document.getElementById(focusId);
+  node?.scrollIntoView?.({block:"center",behavior:"smooth"});
+  node?.focus?.({preventScroll:true});
+ };
+ if(typeof requestAnimationFrame==="function")requestAnimationFrame(focus);
+ else focus();
 }
 function scenarioPlan(){
  const sc=scenarios[qIndex];
@@ -36,13 +58,17 @@ function scenarioPlan(){
   ["Hàng tắc ở đâu?","Tồn kho toàn mạng lưới không đồng nghĩa có hàng tại cửa hàng. Cần vị trí hàng, lịch giao và dữ liệu nhu cầu.","Kho tổng còn 100 món nhưng quầy vẫn trống nếu hàng chưa được chuyển tới đúng chỗ, đúng lúc."]
  ];
  const s=samples[qIndex]||samples[0];
+ const saved=window.liBuddyReactMounted&&window.liInquiryFlow?.getMirror
+  ?Boolean(window.liInquiryFlow.getMirror()?.saved)
+  :savedQuestions.some(x=>x.question===sc.question);
  return {
   intro:sc.buddy,
   actions:[
    action(s[0],s[1]),
    action("Lão cho ví dụ",s[2]),
-   action(savedQuestions.some(x=>x.question===sc.question)?"Mở Dấu Trang":"Lưu câu hỏi",savedQuestions.some(x=>x.question===sc.question)?"Câu này đã có trong Dấu Trang. Lão đưa ngươi đến đó.":"Lưu lại câu đáng nghĩ này. Lão sẽ dùng nút lưu thật, không diễn sâu.",()=>{
-    if(savedQuestions.some(x=>x.question===sc.question))go("library","li-saved-questions");
+   action(saved?"Mở Dấu Trang":"Lưu câu hỏi",saved?"Câu này đã có trong Dấu Trang. Lão đưa ngươi đến đó.":"Lưu lại câu đáng nghĩ này. Lão sẽ dùng nút lưu thật, không diễn sâu.",()=>{
+    if(saved)go(window.liBuddyReactMounted?"resume":"library","li-saved-questions");
+    else if(window.liBuddyReactMounted)window.liInquiryFlow?.toggleQuestion?.();
     else document.getElementById("save-question")?.click();
    })
   ]
@@ -50,7 +76,9 @@ function scenarioPlan(){
 }
 function researchPlan(){
  const sc=scenarios[qIndex];
- const feedback=document.getElementById("branch-feedback")?.textContent||"";
+ const feedback=window.liBuddyReactMounted&&window.liInquiryFlow?.getResearch
+  ?(window.liInquiryFlow.getResearch()?.feedback||"")
+  :(document.getElementById("branch-feedback")?.textContent||"");
  const selected=feedback.startsWith("Hãy kiểm chứng: ")?feedback.replace("Hãy kiểm chứng: ",""):"";
  return {
   intro:selected?"Ngươi đang theo nhánh “"+selected+"”. Được. Giờ thử tìm dữ kiện có thể bác bỏ giả thuyết.":"Một câu hỏi hay chưa phải kết luận. Với “"+sc.question+"”, cứ bắt đầu từ điều quan sát được.",
@@ -62,24 +90,31 @@ function researchPlan(){
  };
 }
 function casePlan(){
- const draft=document.getElementById("case-revision")?.value.trim()||"";
- const valid=Boolean(selectedCaseAnswer)&&draft.length>=12;
+ const live=window.liBuddyReactMounted?window.liCaseUi?.getState?.():null;
+ const choice=live?live.choice:selectedCaseAnswer;
+ const draft=live?live.revision.trim():(document.getElementById("case-revision")?.value.trim()||"");
+ const valid=Boolean(choice)&&draft.length>=12;
  return {
-  intro:selectedCaseAnswer?"Ngươi đã chọn một nhận định. Giờ viết lại kết luận sao cho không vượt quá mẫu khảo sát.":"Đây là tình huống thiên lệch chọn mẫu. Trước hết, chọn nhận định nào thực sự được dữ kiện cho phép.",
+  intro:choice?"Ngươi đã chọn một nhận định. Giờ viết lại kết luận sao cho không vượt quá mẫu khảo sát.":"Đây là tình huống thiên lệch chọn mẫu. Trước hết, chọn nhận định nào thực sự được dữ kiện cho phép.",
   actions:[
    action("Giới hạn kết luận","90% chỉ mô tả những người được khảo sát. Chưa đủ căn cứ để suy ra toàn bộ thị trường."),
    action("Thử phản chứng","Nếu người chưa sử dụng sản phẩm có ý kiến khác thì kết luận “ai cũng hài lòng” còn đứng vững không?"),
    action(valid?"Lưu Bút Ký":"Viết Luận Kết",valid?"Ta dùng đúng chức năng lưu Bút Ký đang có.":"Chọn một nhận định, rồi viết lại kết luận ít nhất 12 ký tự trước khi lưu.",()=>{
-    if(valid){closeModal("buddy-modal");document.getElementById("finish-case")?.click();}
-    else go("case","case-revision");
+    if(valid){
+     if(window.liBuddyReactMounted){
+      if(window.liCaseUi?.submit?.())closeModal("buddy-modal");
+     }else{closeModal("buddy-modal");document.getElementById("finish-case")?.click();}
+    }else go("case","case-revision");
    })
   ]
  };
 }
 function guidePlan(){
  const mode=STUDY_MODES[studyMode];
- const query=document.getElementById("method-search")?.value.trim()||"";
- const matches=methods.filter(m=>(!query||methodSearchBlob(m).toLocaleLowerCase("vi").includes(query.toLocaleLowerCase("vi")))&&(currentCategory==="Tất cả"||m[4]===currentCategory));
+ const live=window.liBuddyReactMounted?window.liGuideUi?.getState?.():null;
+ const query=live?live.query.trim():(document.getElementById("method-search")?.value.trim()||"");
+ const category=live?live.category:currentCategory;
+ const matches=methods.filter(m=>(!query||methodSearchBlob(m).toLocaleLowerCase("vi").includes(query.toLocaleLowerCase("vi")))&&(category==="Tất cả"||m[4]===category));
  const picks=(mode.suggestions||methods.map(m=>m[0])).map(id=>methods.find(m=>m[0]===id)).filter(Boolean);
  const proposed=picks[0]||methods[0];
  return {
@@ -92,7 +127,8 @@ function guidePlan(){
  };
 }
 function guideDetailPlan(){
- const id=(document.getElementById("detail-id")?.textContent||"").match(/T\d\d/)?.[0]||"T01";
+ const liveId=window.liBuddyReactMounted?window.LiSpellPractice?.getView?.()?.active:null;
+ const id=liveId||(document.getElementById("detail-id")?.textContent||"").match(/T\d\d/)?.[0]||"T01";
  const m=methods.find(x=>x[0]===id)||methods[0];
  const cross=methods.find(x=>x[4]===m[4]&&x[0]!==m[0])||methods[0];
  return {
@@ -170,7 +206,9 @@ function searchPlan(){
  };
 }
 function capturePlan(){
- const q=document.getElementById("capture-note")?.value.trim()||"";
+ const q=window.liBuddyReactMounted&&window.liCaptureUi
+  ?window.liCaptureUi.getDraft().trim()
+  :(document.getElementById("capture-note")?.value.trim()||"");
  return {
   intro:q?"Ngươi đã nhặt được một ý. Giờ nên ghi thêm nguồn và điều chưa chắc, kẻo mai lại tưởng mình đã kiểm chứng.":"Nhặt ý trước khi quên là tốt. Nhưng ý vừa nghe chưa tự biến thành sự thật đâu.",
   actions:[
@@ -184,19 +222,26 @@ function genericPlan(page){
  switch(page){
  case "catalog":return {intro:"Đây là bản đồ các lĩnh vực. Chọn một ngả đủ hẹp để bắt đầu, chớ nuốt cả khu rừng.",actions:[
   action("Nên chọn gì?","Bắt đầu từ một câu hỏi mình thực sự tò mò, rồi mở ngành phù hợp."),
-  action("Bài mẫu có gì?","Bài Thiên lệch chọn mẫu minh họa cách đặt câu hỏi và kiểm tra bằng chứng.",()=>go("lesson")),
-  action("Mở bài học","Lão dẫn tới bài mẫu hiện có, không hứa những bài chưa phát hành.",()=>go("lesson"))
+  action("Bài mẫu có gì?","Bài Thiên lệch chọn mẫu minh họa cách đặt câu hỏi và kiểm tra bằng chứng.",()=>go("lessonL09")),
+  action("Mở bài học","Lão dẫn tới bài mẫu hiện có, không hứa những bài chưa phát hành.",()=>go("lessonL09"))
  ]};
  case "lesson":return {intro:"Bài này luyện phân biệt quan sát với kết luận. Tự trả lời một lần rồi hãy xem phản hồi.",actions:[
   action("Câu hỏi cốt lõi","Nhóm được khảo sát có đại diện cho tổng thể mà ta muốn kết luận không?"),
   action("Dễ sai ở đâu?","Từ dữ liệu của người đang dùng sản phẩm, ta chưa thể nhảy thẳng tới “tất cả mọi người”."),
   action("Thử Phản Chứng","Đi từ bài học sang kiểm tra một kết luận cụ thể.",()=>go("case"))
  ]};
- case "dashboard":return {intro:"Nhật Ký hiện chưa có số liệu hoạt động. Lão thà để trống còn hơn tô vẽ tiến bộ.",actions:[
-  action("Đang đo gì?","Màn này chưa thu thập hay tính điểm hoạt động cá nhân."),
-  action("Có gì được lưu?","Bút Ký và Dấu Trang được lưu riêng trong Tủ Riêng, không tự biến thành điểm thành tích."),
-  action("Xem Tủ Riêng","Đó mới là nơi có dữ liệu lưu thật.",()=>go("library"))
- ]};
+ case "dashboard":{
+  const journal=window.liBuddyReactMounted?window.liPersonalDiary?.getView?.():null;
+  const recorded=journal?.totals?.recorded??0;
+  return {intro:journal?(recorded?
+   "Nhật Ký có "+recorded+" ngày ghi nhận trong tháng đang xem. Đây là hoạt động thật, không phải điểm năng lực.":
+   "Tháng đang xem chưa có ngày nào được ghi nhận. Không có dữ liệu thì lão không tự bịa tiến bộ."):
+   "Nhật Ký chỉ hiển thị dữ liệu đã ghi, không chấm điểm năng lực học tập.",actions:[
+   action("Đang đo gì?","Lịch đếm số bài, nhánh vấn đề và input đã ghi thực tế; check-in do ngươi tự khai, không phải chẩn đoán sức khỏe."),
+   action("Dữ liệu lưu ở đâu?",journal?.consentStatus||"Nhật Ký lưu trên thiết bị và chỉ đồng bộ cloud khi bật quyền riêng."),
+   action("Xem Tủ Riêng","Lão dẫn ngươi tới Bút Ký và Dấu Trang đang lưu.",()=>go("library"))
+  ]};
+ }
  default:return {intro:"Nói ngắn thôi: màn này giúp ngươi đi sâu vào một câu hỏi. Bắt đầu bằng dữ kiện.",actions:[
   action("Bắt đầu từ đâu?","Viết rõ câu hỏi và điều đã quan sát."),
   action("Thử kiểm tra","Điều gì có thể khiến kết luận ban đầu sai?"),

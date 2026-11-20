@@ -171,7 +171,7 @@ function registerPersonalLessons(entries){
 }
 // Router is owned by Chat 1. This listens only for an actual authorized
 // personal-lesson visit; the released-lesson history remains unchanged.
-window.addEventListener("li:route-changed",event=>{
+window.addEventListener?.("li:route-changed",event=>{
  const route=event.detail?.route;
  if(!document.documentElement.classList.contains("li-auth-verified")||
   typeof route!=="string"||!route.startsWith("draftLesson")||

@@ -43,6 +43,8 @@ const l03T06en={
 };
 let root,guide,tabs,active=null,phase=0,exposure=null,feedback="",resumeNote="",privatePlaces=[],tabDraft=null;
 let activeLessonId=null,reviewedInSession=false,viewSession=0;
+let activeTab="guide",actionValues=null;
+const reactOwnsSpell=()=>window.liReactGuideDetailMounted===true;
 const T12_OWNER="li.sync.local-owner.v1";
 const T12_PREFIX="li.spell.t12.resume.v1:";
 let t12Draft={context:"",next:"",answer:""};
@@ -122,8 +124,10 @@ function setT12Draft(field,value){
  if(active!=="T12"||reviewedInSession||
     !["context","next","answer"].includes(field)||typeof value!=="string")return false;
  t12Draft[field]=value.slice(0,1200);
- const input=root?.querySelector("#sp-"+field);
- if(input)input.value=t12Draft[field];
+ if(!reactOwnsSpell()){
+  const input=root?.querySelector("#sp-"+field);
+  if(input)input.value=t12Draft[field];
+ }
  const saved=t12Write();
  notifyReactSpell();
  return saved;
@@ -149,12 +153,29 @@ const feedbackMarkup=raw=>{
 const field=f=>{const id="sp-"+f[0];const label='<span>'+escape(f[1])+'</span>';if(f[2])return '<fieldset class="spell-field"><legend>'+escape(f[1])+'</legend>'+f[2].map((o,i)=>'<label class="spell-option"><input type="'+(f[3]==="multi"?"checkbox":"radio")+'" name="'+id+'" value="'+i+'"><span>'+escape(o)+'</span></label>').join("")+'</fieldset>';return '<label class="spell-field" for="'+id+'">'+label+'<textarea id="'+id+'" rows="2" maxlength="1200"></textarea></label>';};
 const act=(a,t,cl="action")=>'<button type="button" class="'+cl+'" data-spell-action="'+a+'">'+t+'</button>';
 const fmt=t=>new Date(t).toLocaleString(window.liLanguage?.get?.()==="en"?"en-US":"vi-VN");
-const rawValue=id=>(root.querySelector("#sp-"+id)?.value||"").trim();
-const radio=id=>(root.querySelector('input[name="sp-'+id+'"]:checked')?.value??null);
-const checked=id=>[...root.querySelectorAll('input[name="sp-'+id+'"]:checked')].map(x=>x.value);
+// One canonical checker accepts React values directly; only native fallback
+// reads its own visible form when no React action is active.
+const rawValue=id=>actionValues!==null?
+ (typeof actionValues[id]==="string"?actionValues[id].trim():""):
+ (root?.querySelector("#sp-"+id)?.value||"").trim();
+const radio=id=>actionValues!==null?
+ (typeof actionValues[id]==="string"?actionValues[id]:null):
+ (root?.querySelector('input[name="sp-'+id+'"]:checked')?.value??null);
+const checked=id=>actionValues!==null?
+ (Array.isArray(actionValues[id])?actionValues[id]:[]):
+ [...(root?.querySelectorAll('input[name="sp-'+id+'"]:checked')||[])].map(x=>x.value);
 function scheduleRead(){try{const d=JSON.parse(localStorage.getItem("li.spell.t02.due.v1")||"null");return d&&Number.isFinite(d.due)?d:null}catch(e){return null}}
+function activateDueReview(){
+ if(active==="T02"&&phase===0){
+  const due=scheduleRead();if(due&&due.due<=Date.now())phase=1;
+ }
+}
 function draw(){
- if(!root||!active)return;
+ if(!active)return;
+ activateDueReview();
+ // Visible React exercises never require a second, hidden DOM rendering.
+ if(reactOwnsSpell()){notifyReactSpell();return;}
+ if(!root)return;
  const e=currentExercise();let inner="";
  if(phase===0){inner='<div class="spell-demo"><span class="kicker">BỐI CẢNH MẪU · ĐÃ ĐƯỢC GIỚI THIỆU</span><p>'+e.lesson+'</p></div><p>'+e.prompt+'</p>';
   if(e.mode==="due"){
@@ -195,6 +216,8 @@ function draw(){
 }
 function switchTab(which){
  const practice=which==="practice";
+ activeTab=practice?"practice":"guide";
+ if(reactOwnsSpell()||!root||!tabs){notifyReactSpell();return;}
  if(!practice&&!root.hidden){tabDraft=[...root.querySelectorAll("textarea,input")].map(x=>({value:x.value,checked:x.checked}));}
  guide.hidden=practice;root.hidden=!practice;
  const g=tabs.querySelector("#spell-tab-guide"),p=tabs.querySelector("#spell-tab-practice");
@@ -232,6 +255,7 @@ function missing(){
 }
 function showMessage(text){
  feedback=text;
+ if(reactOwnsSpell()||!root){notifyReactSpell();return;}
  let box=root.querySelector(".spell-feedback");
  if(!box){box=document.createElement("div");box.className="spell-feedback";box.setAttribute("role","status");box.tabIndex=-1;root.querySelector(".spell-activity-body").append(box);}
  box.innerHTML='<strong>Phản hồi để tự kiểm chứng</strong><p>'+feedbackMarkup(text)+'</p><p class="small">Đây là bài mẫu minh họa, không chứng nhận thành thạo hay kết quả học thuật ngoài nhiệm vụ.</p>'+
@@ -268,7 +292,7 @@ function check(){
  reviewedInSession=true; // feedback follows successfully stored clearing state
  showMessage(info);
  if(active==="T02")try{localStorage.removeItem("li.spell.t02.due.v1")}catch(err){}
- root.querySelector(".spell-feedback")?.focus();
+ if(!reactOwnsSpell())root?.querySelector(".spell-feedback")?.focus();
 }
 function next(){
  const e=currentExercise();
@@ -296,6 +320,7 @@ function notifyReactSpell(){
 }
 function getView(){
  if(!active||!exercises[active])return null;
+ activateDueReview();
  const e=currentExercise(),mode=e.mode||"direct";
  let fields=[];
  if(phase===0){
@@ -306,7 +331,7 @@ function getView(){
  else fields=e.fields;
  const due=mode==="due"?scheduleRead():null;
  return {
-  active,title:e.title,mode,phase,tab:root&&!root.hidden?"practice":"guide",
+  active,title:e.title,mode,phase,tab:activeTab,
   lesson:e.lesson,prompt:e.prompt,fields:fields.map(field=>({
    id:field[0],label:field[1],options:Array.isArray(field[2])?field[2].slice():null,
    choiceKind:field[3]==="multi"?"multi":"radio"

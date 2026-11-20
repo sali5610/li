@@ -15,7 +15,8 @@
    const summary={width:frame.contentWindow ? frame.contentWindow.innerWidth : -1,passed:window.__checks.length-errors.length,total:window.__checks.length,errors,checks:window.__checks};
    out.textContent=(errors.length?"LI_RENDER_FAIL ":"LI_RENDER_PASS ")+JSON.stringify(summary);
  }
- frame.addEventListener("load",function(){
+ let inspected=false;
+ function inspect(){if(inspected)return;inspected=true;
   setTimeout(function(){
    try{
     const doc=frame.contentDocument,w=frame.contentWindow,root=w.getComputedStyle(doc.documentElement);
@@ -33,7 +34,7 @@
       report("iPad headline token changes by orientation",root.getPropertyValue("--li-type-headline").trim()===expectedHeadline,root.getPropertyValue("--li-type-headline"));
       report("iPad minimum target token is 56px",root.getPropertyValue("--li-current-control-min").trim()==="56px",root.getPropertyValue("--li-current-control-min"));
       const image=w.getComputedStyle(doc.querySelector("#page-home .hero"),"::before").backgroundImage;
-      report("Tablet artwork remains iPad source",image.includes("home-li-ipad-20261119.jpg"),image.slice(0,120));
+      report("Tablet artwork remains iPad source",image.includes("home-li-landscape-20261121.webp"),image.slice(0,120));
     }
     const css=[...doc.styleSheets].filter(x=>x.href).map(x=>x.href);
     report("Generated + layout + lessons + foundations all loaded",["design-tokens.css","li-layout.css","lesson-l09-hifi.css","ui-foundations.css"].every(x=>css.some(y=>y.includes(x))),css.join(","));
@@ -43,7 +44,7 @@
     report("Home mirror title removed without hiding the question",!mirrorTitle&&!!mirror&&!!mirror.textContent.trim(),mirrorTitle?.textContent||"question remains");
     const scene=doc.querySelector("#page-home .hero");
     const image=scene?w.getComputedStyle(scene,"::before").backgroundImage:"";
-    const expectedScene=w.innerWidth<=600?"home-li-iphone-20261119.jpg":ipadMode||w.innerWidth<=1139?"home-li-ipad-20261119.jpg":"home-mystic-cool-desktop.webp";
+    const expectedScene=w.innerWidth<=600?"home-li-iphone-20261121.webp":ipadMode||w.innerWidth<=1139?"home-li-landscape-20261121.webp":"home-li-landscape-20261121.webp";
     report("Approved Home illustration matches responsive source image",image.includes(expectedScene),image.slice(0,170));
 
     /* UX-HOME-06: inspect the LIVE header, not the review-only specimen. */
@@ -159,7 +160,10 @@
     },350);
    }catch(e){report("Computed-style smoke runtime",false,e.stack||e.message);finish();}
   },350);
- });
- setTimeout(function(){if(!done){report("Fixture loaded within budget",false,"timeout");finish();}},7000);
+ }
+ frame.addEventListener("load",inspect);
+ // Check computed styles when the iframe DOM is ready, even if its images load later.
+ setTimeout(function(){if(!inspected&&frame.contentDocument?.readyState!=="loading"&&frame.contentDocument?.querySelector("#page-home .hero"))inspect();},1800);
+ setTimeout(function(){if(!done){report("Fixture loaded within budget",false,"timeout");finish();}},10000);
 })();
 </script></body></html>

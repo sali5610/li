@@ -1,0 +1,78 @@
+name: TEMP self-test #161 on REAL deployed staging (no login)
+on:
+  pull_request:
+    branches: [integration/staging]
+    paths:
+      - '.github/workflows/sync161-live-settings-smoke.yml'
+permissions:
+  contents: read
+jobs:
+  visible-ui:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install headless browser driver
+        run: python3 -m pip install --quiet playwright==1.56.0
+      - name: Inspect deployed bundle AND render Settings in real Chromium
+        run: |
+          python3 - <<'PY'
+          import json, shutil, urllib.request
+          from playwright.sync_api import sync_playwright
+          origin='https://sali5610.github.io/li/'
+          def get(path):
+            req=urllib.request.Request(origin+path,headers={'Cache-Control':'no-cache','Pragma':'no-cache','User-Agent':'li-sync161-ui-smoke'})
+            with urllib.request.urlopen(req,timeout=30) as res:
+              return res.read().decode('utf-8'),dict(res.headers)
+          html,meta=get('')
+          js,jsmeta=get('assets/staging-auth-gate.js')
+          print('REAL_PAGES_HTTP',json.dumps({'html_bytes':len(html),'bundle_bytes':len(js),
+            'html_etag':meta.get('etag'),'bundle_etag':jsmeta.get('etag'),
+            'html_has_module':'staging-auth-gate.js' in html,
+            'bundle_has_canary':'Kiểm tra an toàn đồng bộ #161' in js},ensure_ascii=False))
+          assert 'staging-auth-gate.js' in html,'Deployed HTML lacks React auth entry'
+          assert 'Kiểm tra an toàn đồng bộ #161' in js,'LIVE DEPLOYED BUNDLE missing canary despite source build'
+          chrome=shutil.which('google-chrome') or shutil.which('google-chrome-stable') or shutil.which('chromium')
+          assert chrome,'Chromium missing'
+          with sync_playwright() as p:
+            browser=p.chromium.launch(executable_path=chrome,headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
+            page=browser.new_page(viewport={'width':390,'height':844},service_workers='block')
+            errors=[]
+            page.on('pageerror',lambda err:errors.append(str(err)[:250]))
+            page.goto(origin,wait_until='domcontentloaded',timeout=45000)
+            page.wait_for_timeout(3500)
+            before=page.evaluate("""() => ({
+              legacyRoot:!!document.getElementById('li-sync161-legacy-root'),
+              reactRoot:!!document.getElementById('li-react-settings-host'),
+              reactApp:!!document.getElementById('li-staging-auth-root'),
+              personalPort:!!window.liPersonalDiary,
+              settingsPort:!!window.liSettingsPort
+            })""")
+            # UI-ONLY synthetic invite class, NOT a real authorized Google account.
+            # Never click the canary. This tests actual page JS mount/visibility only.
+            page.evaluate("""() => {document.documentElement.classList.add('li-auth-verified');
+              const page=document.getElementById('page-settings'); if(page)page.classList.add('active');}""")
+            page.wait_for_timeout(3000)
+            after=page.evaluate("""() => {
+              const host=document.getElementById('li-react-settings-host'),
+                legacy=document.getElementById('li-sync161-legacy-root'),
+                panel=document.querySelector('#li-react-settings-host .li-sync161-canary') ||
+                  document.querySelector('#li-sync161-legacy-root .li-sync161-canary');
+              const shown=node=>!!node && !!(node.offsetWidth||node.offsetHeight||node.getClientRects().length);
+              return {reactRoot:!!host,legacyRoot:!!legacy,
+                panelExists:!!panel,panelVisible:shown(panel),
+                reactRootVisible:shown(host),legacyRootVisible:shown(legacy),
+                verifiedClass:document.documentElement.classList.contains('li-auth-verified'),
+                buttonExists:!!document.querySelector('.li-sync161-canary button'),
+                reactText:host?.textContent?.slice(0,100)||null,
+                legacyText:legacy?.textContent?.slice(0,100)||null}
+            }""")
+            print('CHROME_NO_LOGIN_INITIAL',json.dumps(before,ensure_ascii=False))
+            print('CHROME_UI_SYNTHETIC_GATE',json.dumps(after,ensure_ascii=False))
+            print('CHROME_JS_ERRORS',json.dumps(errors[:8],ensure_ascii=False))
+            browser.close()
+            assert after['panelVisible'],'LIVE CHROME: canary absent after synthetic visible gate'
+            print('PASS deployed current Chromium UI can render canary; signed Google/RPC NOT tested')
+          PY

@@ -79,6 +79,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  const [syncStatus,setSyncStatus]=useState<SyncReport>('checking');
  const [journalChoice,setJournalChoice]=useState(false);
  const [journalBusy,setJournalBusy]=useState(false);
+ const [journalError,setJournalError]=useState('');
  const [conflicts,setConflicts]=useState<PrivateConflictChoice[]>([]);
  const [resolving,setResolving]=useState(false);
  useEffect(()=>{
@@ -112,16 +113,16 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   checkbox.checked=permitted&&journalChoice;
   if(detail&&permitted){
    const en=document.documentElement.lang==='en';
-   detail.textContent=journalBusy?(en?'Updating journal permission…':'Đang cập nhật quyền Nhật Ký…'):
+   detail.textContent=journalError||(journalBusy?(en?'Updating journal permission…':'Đang cập nhật quyền Nhật Ký…'):
     journalChoice?(en?'Private Journal & Check-ins are enabled for cloud sync.':
      'Nhật Ký & Check-in đang được phép đồng bộ lên Neon.'):
      (en?'Private by default: Journal and Check-ins stay on this device.':
-      'Mặc định riêng tư: Nhật Ký & Check-in chỉ lưu trên thiết bị.');
+      'Mặc định riêng tư: Nhật Ký & Check-in chỉ lưu trên thiết bị.')); 
   }
   const onChange=()=>void toggleJournalCloud(checkbox.checked);
   checkbox.addEventListener('change',onChange);
   return()=>checkbox.removeEventListener('change',onChange);
- },[accountId,access,ownerReady,journalChoice,journalBusy,locale]);
+ },[accountId,access,ownerReady,journalChoice,journalBusy,journalError,locale]);
 
  // Do not reveal native lesson state from another invited account.
  // Local account ownership is prepared synchronously before the app is shown.
@@ -199,12 +200,12 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
 
  async function toggleJournalCloud(enabled:boolean){
   if(!accountId||access!=='granted'||!ownerReady||journalBusy)return;
-  setJournalBusy(true);setFeedback('');
+  setJournalBusy(true);setJournalError('');
   try{
    await changeJournalCloudConsent(accountId,enabled);
    setJournalChoice(enabled);
   }catch{
-   setFeedback(locale==='vi'?'Chưa cập nhật được quyền đồng bộ Nhật Ký. Hãy thử lại.':
+   setJournalError(locale==='vi'?'Chưa cập nhật được quyền đồng bộ Nhật Ký. Hãy thử lại.':
     'Could not update your journal sync permission. Try again.');
   }finally{setJournalBusy(false);}
  }

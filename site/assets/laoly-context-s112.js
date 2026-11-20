@@ -155,6 +155,53 @@ function libraryPlan(){
   ]
  };
 }
+/* Personal screen context comes from canonical private read ports, never hidden UI. */
+function personalPlan(page){
+ const english=inEnglish(),say=(vi,en)=>english?en:vi;
+ const shelf=window.liLibraryShelf?.getView?.();
+ const cases=shelf?.cases||[],ideas=shelf?.ideas||[];
+ if(page==="resume"){
+  const lesson=shelf?.lessons?.[0];
+  const count=(shelf?.lessonBookmarks?.length||0)+(shelf?.questionBookmarks?.length||0);
+  return {intro:say("Quay Lại có "+(shelf?.lessons?.length||0)+" bài gần đây và "+count+" Dấu Trang, không có điểm tự bịa.",
+   "Continue has "+(shelf?.lessons?.length||0)+" recent lessons and "+count+" bookmarks, no invented scores."),
+   actions:[
+    action(say("Học tiếp","Resume lesson"),lesson?.title||say("Chưa có bài học gần đây.","No recent lessons yet."),()=>go(lesson?.route||"catalog")),
+    action(say("Dấu Trang","Bookmarks"),say("Xem bài và câu hỏi đã lưu.","Review saved lessons and questions."),()=>go("resume","li-saved-questions")),
+    action(say("Bộ Sưu Tập","Collection"),say("Xem Bút Ký và Ý đã nhặt.","Review saved notes and ideas."),()=>go("collection"))
+   ]};
+ }
+ if(page==="collection"){
+  const recent=[...cases,...ideas].sort((a,b)=>(Date.parse(b.sortDate)||0)-(Date.parse(a.sortDate)||0))[0];
+  return {intro:say("Có "+cases.length+" Bút Ký và "+ideas.length+" Ý đã nhặt. Ý mới chưa phải kết luận kiểm chứng.",
+   "There are "+cases.length+" case notes and "+ideas.length+" captured ideas. Ideas remain unverified."),
+   actions:[
+    action(say("Mở bản mới nhất","Open latest note"),recent?.title||say("Chưa lưu ghi chép nào.","No saved notes."),()=>{
+     closeModal("buddy-modal");
+     if(recent)window.liNotes?.openDetail?.(recent.type,recent.id);
+     else go("capture");
+    }),
+    action(say("Viết Bút Ký","Write a case note"),say("Phản Chứng trước, kết luận sau.","Test the claim before writing a conclusion."),()=>go("case")),
+    action(say("Nhặt ý","Capture an idea"),say("Lưu một ý để kiểm chứng sau.","Save a thought to verify later."),()=>go("capture"))
+   ]};
+ }
+ const note=window.liNotes?.getView?.();
+ return {intro:note?.id?
+  say("Đang xem "+note.title+". Có "+(note.history?.length||0)+" phiên bản.","Viewing "+note.title+". "+(note.history?.length||0)+" versions preserved."):
+  say("Ghi chép không còn ở đây.","The note is unavailable."),
+  actions:[
+   action(say("Lịch sử phiên bản","Version history"),
+    say("Khôi phục tạo bản mới, không xóa bản cũ.","Restoring creates a new version, preserving history."),()=>{
+     closeModal("buddy-modal");
+     requestAnimationFrame(()=>document.querySelector("#li-react-noteDetail-host .library-note-history")?.scrollIntoView?.({block:"start",behavior:"smooth"}));
+    }),
+   action(say("Kiểm tra bối cảnh","Review source context"),note?.context?
+    say("Đề bài và câu trả lời được giữ trong bản lưu.","The saved case question and answer are in this note."):
+    say("Bản ghi cũ có thể không có bản chụp đề bài.","An older note might lack a source snapshot."),()=>go(note?.type==="case"?"case":"research")),
+   action(say("Về Bộ Sưu Tập","Back to Collection"),
+    say("Trở lại các ghi chép đã lưu.","Return to saved notes."),()=>go("collection"))
+  ]};
+}
 function settingsPlan(){
  const mode=STUDY_MODES[studyMode];
  return {
@@ -265,6 +312,7 @@ function getBuddyPlan(){
  case "guide":return guidePlan();
  case "guideDetail":return guideDetailPlan();
  case "library":return libraryPlan();
+ case "resume":case "collection":case "noteDetail":return personalPlan(currentPage);
  case "settings":return settingsPlan();
  case "search":return searchPlan();
  case "capture":return capturePlan();

@@ -1,4 +1,6 @@
 import {openRoute} from './app-router.js';
+import curriculum from '../../../../content/curriculum/legacy-catalog.v1.json';
+import {personalStudyRoute} from '../learning/released-lessons.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Button,Card,Field,FilterChip,Heading,InlineFeedback,MethodTile,Text,LiIcon} from '../../../../design-system/react/index';
@@ -29,7 +31,8 @@ type LibraryPort={
  getView:()=>LibraryView;renderHome:()=>void;renderResume:()=>void;renderCollection:()=>void;
  openProblemEntry:(kind:string,key:string)=>void;openSavedQuestion:(id:string)=>void;
  removeSavedQuestion:(id:string)=>void;selectBookmarkTab:(type:string)=>void;
- setCollectionFilter:(next:string)=>void
+ setCollectionFilter:(next:string)=>void;
+ registerPersonalLessons?:(items:{id:string;route:string;title:string}[])=>number
 };
 type AppWindow=Window&{
  liMethods?:MethodsPort;liLibraryShelf?:LibraryPort;
@@ -39,6 +42,13 @@ type AppWindow=Window&{
  liLanguage?:{get:()=>string};
 };
 const app=window as AppWindow;
+// The canonical Catalog and staging allowlist are the only source of
+// personal-lesson titles/routes. The private history stays in library-hub.
+const personalLessonEntries=curriculum.groups.flatMap(group=>group.fields.flatMap(field=>
+ field.courses.flatMap(course=>course.lessons.flatMap(lesson=>{
+  const route=personalStudyRoute(lesson.id);
+  return route?[{id:lesson.id,route,title:lesson.title}]:[];
+ }))));
 const placeholderView:LibraryView={
  lessons:[],problems:[],cases:[],ideas:[],lessonBookmarks:[],questionBookmarks:[],
  collectionFilter:'all',bookmarkTab:'lesson',storageAvailable:true
@@ -134,9 +144,9 @@ function useLibrary(){
  useEffect(()=>{
   const update=()=>setView(app.liLibraryShelf?.getView()||placeholderView);
   for(const name of ['li:library-view-changed','li:localechange','li:personal-sync-applied',
-   'li:lesson-cloud-state','li:activity'])window.addEventListener(name,update);
+   'li:lesson-cloud-state','li:lesson-attempt-changed','li:activity'])window.addEventListener(name,update);
   return ()=>{for(const name of ['li:library-view-changed','li:localechange',
-   'li:personal-sync-applied','li:lesson-cloud-state','li:activity'])
+   'li:personal-sync-applied','li:lesson-cloud-state','li:lesson-attempt-changed','li:activity'])
    window.removeEventListener(name,update);};
  },[]);
  return view;
@@ -414,6 +424,9 @@ export function mountGuideAndLibrary(){
  if(!app.liMethods||!app.liLibraryShelf||!app.liBookmarks||!app.liNotes||
   !(window as Window&{LiSpellPractice?:unknown}).LiSpellPractice)
   throw Error('REACT_GUIDE_LIBRARY_OWNER_PORTS_MISSING');
+ // Register invited-only routes with the existing private visit/bookmark owner
+ // before any React Library screen reads its first snapshot.
+ app.liLibraryShelf.registerPersonalLessons?.(personalLessonEntries);
  let mounted=false;
  let dispose:(()=>void)|null=null;
  const update=()=>{

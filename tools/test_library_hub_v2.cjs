@@ -13,7 +13,7 @@ class Element{
 const ids=["page-library","page-resume","page-collection","case-archive-preview","li-library-latest-idea","li-library-latest-lesson","li-lesson-history","li-bookmarks-empty-lessons","li-bookmarks-empty-questions","li-saved-lessons","li-saved-questions","li-bookmark-tab-lessons","li-bookmark-tab-questions","li-bookmark-panel-lessons","li-bookmark-panel-questions","li-collection-list","save-capture-note","capture-note"];
 const elements=Object.fromEntries(ids.map(id=>[id,new Element()]));
 const filters=["all","case","idea"].map(name=>{const x=new Element("button");x.dataset.collectionFilter=name;return x;});
-const local=new Map(),events=[],routes=[],messages=[],deleteCalls=[];
+const local=new Map(),events=[],routes=[],messages=[],deleteCalls=[],listeners={};
 let invited=true,accountOpen=false,storageAvailable=true,nextIdeaId=2;
 const localStorage={getItem:key=>local.has(key)?local.get(key):null,setItem:(key,value)=>local.set(key,value),removeItem:key=>local.delete(key)};
 const cases=[
@@ -23,7 +23,8 @@ const cases=[
 const savedQuestions=[{question:"Vì sao?",savedAt:"2026-11-17T08:00:00.000Z"}];
 const savedContent=[{type:"lesson",id:"L09-1-2",savedAt:"2026-11-18T08:00:00.000Z"},{type:"case",id:"sampling-bias-90",savedAt:"2026-11-18T07:00:00.000Z"}];
 const ctx={
- window:{localStorage,dispatchEvent:e=>events.push(e)},
+ window:{localStorage,dispatchEvent:e=>events.push(e),
+ addEventListener:(name,fn)=>(listeners[name]||=[]).push(fn)},
  document:{getElementById:id=>elements[id]||null,createElement:tag=>new Element(tag),querySelectorAll:()=>filters,
  documentElement:{classList:{contains:key=>key==='li-auth-verified'?invited:key==='li-account-open'?accountOpen:false}}},
  localStorage,processedCases:cases,collectedIdeas:ideas,savedQuestions,savedContent,
@@ -132,4 +133,49 @@ assert.doesNotMatch(captureUi,/getElementById\(['"]capture-note['"]\)|getElement
  "No hidden HTML textarea or submit button bridge");
 assert.match(captureUi,/li-auth-verified/,"Logout must clear unsaved React text");
 assert.match(captureUi,/onClick=\{goBack\}/,"React Back must use real history action");
-console.log("PASS Tủ Riêng v2 + two separated bookmark tabs: lessons only / questions + cases, filters, keyboard focus, saved state");
+// The canonical React Catalog now offers 17 invited personal lessons. The
+// original private Library must keep real recent visits and saved bookmarks for
+// those routes without making any unregistered/guest route visible.
+const personalId="L03-1-1",personalRoute="draftLessonL0311",personalName="User need versus proposed interface";
+elements["li-staging-auth-root"]=new Element();
+elements["page-"+personalRoute]=new Element("section");
+elements["page-"+personalRoute].classList={contains:key=>key==="active"};
+ctx.window.liPersonalStudyRoutes={[personalId]:personalRoute};
+assert.equal(shelf.registerPersonalLessons([{id:personalId,route:personalRoute,title:personalName}]),1,
+ "Canonical gated metadata can be registered with the same Library owner");
+assert.equal(shelf.registerPersonalLessons([{id:"FAKE",route:"draftLessonFake",title:"Forged"}]),0,
+ "Unlisted personal routes are never registered");
+const eventsForRoute=listeners["li:route-changed"]||[];
+assert.equal(eventsForRoute.length,1,"One route listener, no second router");
+const personalVisit={detail:{route:personalRoute}};
+const previousVisits=JSON.parse(local.get("li.private.lesson.visits.v1")).items.length;
+invited=false;
+eventsForRoute[0](personalVisit);
+assert.equal(JSON.parse(local.get("li.private.lesson.visits.v1")).items.length,previousVisits,
+ "Unverified visit cannot write a personal-lesson history row");
+invited=true;
+eventsForRoute[0](personalVisit);
+eventsForRoute[0](personalVisit);
+const personalHistory=JSON.parse(local.get("li.private.lesson.visits.v1")).items;
+assert.equal(personalHistory.length,previousVisits+1,"Repeat route visits deduplicate into one saved row");
+assert.equal(personalHistory[0].route,personalRoute,"Personal visit persisted under existing key");
+const personalRows=shelf.getView().lessons;
+assert.equal(personalRows[0].id,personalId,"Quay lại resumes the actual invited lesson");
+assert.equal(personalRows[0].title,personalName,"Canonical Catalog title used, not an ID placeholder");
+shelf.renderResume();
+assert.equal(elements["li-lesson-history"].children.length,previousVisits+1,
+ "React/native Library share the complete recent-lesson model");
+const bookmarks=fs.readFileSync(path.join(__dirname,"../site/assets/library-bookmarks.js"),"utf8");
+ctx.document.addEventListener=()=>{};
+vm.runInContext(bookmarks,ctx);
+const mark=ctx.window.liBookmarks;
+assert.equal(mark.valid("lesson",personalId),true,"The real bookmark action allows a registered invited lesson");
+assert.equal(mark.valid("lesson","FAKE"),false,"Unknown personal lessons cannot be bookmarked");
+assert.equal(mark.toggle("lesson",personalId),true,"Personal bookmark persisted through the original private writer");
+assert.equal(shelf.getView().lessonBookmarks.some(item=>item.id===personalId),true,
+ "Saved personal lesson appears in Quay lại · Dấu Trang");
+invited=false;
+assert.equal(mark.valid("lesson",personalId),false,"Unverified users cannot add personal bookmarks");
+assert.equal(mark.valid("lesson","L09-1-2"),true,"Three released lesson bookmarks remain available");
+invited=true;
+console.log("PASS Tủ Riêng: published + invited personal visits, route dedupe, gated bookmarks, two bookmark tabs and original private note flows");

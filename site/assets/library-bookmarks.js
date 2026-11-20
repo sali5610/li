@@ -5,7 +5,17 @@
 const LESSONS={"L03-1-2":"lessonL03","L09-1-2":"lessonL09","L15-2-2":"lessonL15"};
 const CASES={"sampling-bias-90":"case"};
 const isEnglish=()=>window.liLanguage?.get?.()==="en";
-function valid(type,id){return type==="lesson"?Object.prototype.hasOwnProperty.call(LESSONS,id):type==="case"&&Object.prototype.hasOwnProperty.call(CASES,id);}
+// Personal drafts are bookmarkable only through their existing invited
+// staging route registry. Production and guest accounts retain the 3 releases.
+function valid(type,id){
+ if(type==="case")return Object.prototype.hasOwnProperty.call(CASES,id);
+ if(type!=="lesson")return false;
+ if(Object.prototype.hasOwnProperty.call(LESSONS,id))return true;
+ const route=window.liPersonalStudyRoutes?.[id];
+ return document.documentElement.classList.contains("li-auth-verified")&&
+  typeof route==="string"&&/^draftLesson[A-Za-z0-9]{1,64}$/.test(route)&&
+  Boolean(document.getElementById("page-"+route));
+}
 function isSaved(type,id){return valid(type,id)&&savedContent.some(item=>item.type===type&&item.id===id);}
 function refresh(){
  document.querySelectorAll("[data-li-bookmark-kind][data-li-bookmark-id]").forEach(button=>{

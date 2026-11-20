@@ -83,6 +83,7 @@ export function validateSectionedLesson(input:unknown,id:string):SectionedLesson
    c.sections.some(s=>!s.id||!s.heading||!s.body_md||
     !['goals','concept','guided','methods','independent','reflection','extension'].includes(s.role))||
    section(c,'independent').length!==1||section(c,'methods').length<1||
+   section(c,'methods').some(s=>!s.feedback_md?.trim()||s.feedback_gate!=='AFTER_MEANINGFUL_METHOD_ATTEMPT')||
    section(c,'reflection').length!==1||section(c,'guided').length<1||
    !independent(c).model_answer_md?.trim()||
    independent(c).model_answer_gate!=='AFTER_VALID_INDEPENDENT_SUBMISSION'||

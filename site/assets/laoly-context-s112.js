@@ -301,8 +301,12 @@ function reactReply(index){
   window.liAddressLine(item.reply):item.reply);
  // Actions preserve original navigation, saved-question, approved-source,
  // study-method and note-taking side effects.
+ const supportsSamplingDebate=
+  (currentPage==="home"&&qIndex===0)||
+  (currentPage==="research"&&qIndex===0)||
+  currentPage==="case"||currentPage==="lesson"||currentPage==="lessonL09";
  if(typeof item.perform==="function")item.perform();
- return {text:line,showChallenge:index===1};
+ return {text:line,showChallenge:index===1&&supportsSamplingDebate&&!item.perform};
 }
 window.liBuddyEngine=Object.freeze({open:reactView,choose:reactReply});
 openLaoLy=function(trigger){

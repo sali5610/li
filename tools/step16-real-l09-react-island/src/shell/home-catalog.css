@@ -94,19 +94,19 @@
  #li-react-home-host .hero-actions .primary{transition:none!important}
 }
 
-/* Gương Vạn Vấn: show the complete, smaller discipline illustration in
-   ONLY the lower glass. Keep the original upper glass/clouds for the question.
-   Feather the top, sides and lower edge rather than blurring the image itself.
-   Position is owned by the Home HERO, never the changing question height. */
+/* Gương Vạn Vấn: physically confine the discipline image to the LOWER
+   HALF of the real glass. It must never reappear behind the question,
+   even if Safari ignores an alpha mask. Keep both image edges and the
+   transition into the original painted clouds softly feathered.
+   Hero coordinates stay independent of multiline question height. */
 #li-react-home-host .hero{position:relative}
 #li-react-home-host .hero > .li-home-mirror-artwork,
 #page-home > .hero > .mirror-message > .li-home-mirror-artwork{
  position:absolute;
- left:49%;
- top:43%;
+ left:49%;top:43%;
  width:min(28vw,340px);
- aspect-ratio:.72;
- height:auto;
+ aspect-ratio:.72;height:auto;
+ transform:translate(-50%,-50%);
  overflow:hidden;
  border-radius:50%;
  clip-path:ellipse(49% 49% at 50% 50%);
@@ -114,15 +114,13 @@
  opacity:1;
  z-index:3;
  pointer-events:none;
- transform:translate(-50%,-50%);
- /* Fade in from glass midpoint; upper half stays untouched. Long bottom
-    falloff blends back to the painted scene instead of a hard oval cutoff. */
+ /* Hard-empty upper 50%, long transition down, soft exit at the rim. */
  -webkit-mask-image:linear-gradient(to bottom,
-  transparent 36%,rgba(0,0,0,.08) 46%,rgba(0,0,0,.66) 62%,
-  #000 76%,rgba(0,0,0,.68) 88%,transparent 100%);
+  transparent 0%,transparent 50%,rgba(0,0,0,.22) 58%,
+  #000 72%,#000 82%,rgba(0,0,0,.70) 90%,transparent 100%);
  mask-image:linear-gradient(to bottom,
-  transparent 36%,rgba(0,0,0,.08) 46%,rgba(0,0,0,.66) 62%,
-  #000 76%,rgba(0,0,0,.68) 88%,transparent 100%);
+  transparent 0%,transparent 50%,rgba(0,0,0,.22) 58%,
+  #000 72%,#000 82%,rgba(0,0,0,.70) 90%,transparent 100%);
 }
 #page-home > .hero > .mirror-message > .li-home-mirror-artwork{
  left:50%;top:50%;
@@ -132,24 +130,25 @@
 #page-home > .hero > .mirror-message .li-home-mirror-art-image{
  position:absolute;
  display:block;
- left:5%;
- top:39%;
- width:90%;
- height:59%;
+ /* Source image is physically located BELOW the mirror midpoint,
+    not merely hidden with a CSS mask. */
+ left:10%;top:53%;
+ width:80%;height:43%;
  object-fit:contain;
- object-position:center center;
- filter:saturate(1.04) contrast(1.05);
- /* Second feather on the IMAGE itself softens left and right edges too. */
- -webkit-mask-image:radial-gradient(ellipse 74% 75% at 50% 53%,
-  #000 20%,rgba(0,0,0,.88) 37%,rgba(0,0,0,.35) 64%,transparent 94%);
- mask-image:radial-gradient(ellipse 74% 75% at 50% 53%,
-  #000 20%,rgba(0,0,0,.88) 37%,rgba(0,0,0,.35) 64%,transparent 94%);
+ object-position:center bottom;
+ filter:saturate(1.03) contrast(1.05);
+ /* Strong edge feather, while keeping the actual illustration crisp. */
+ -webkit-mask-image:radial-gradient(ellipse 76% 76% at 50% 52%,
+  #000 0%,#000 30%,rgba(0,0,0,.76) 47%,
+  rgba(0,0,0,.22) 69%,transparent 91%);
+ mask-image:radial-gradient(ellipse 76% 76% at 50% 52%,
+  #000 0%,#000 30%,rgba(0,0,0,.76) 47%,
+  rgba(0,0,0,.22) 69%,transparent 91%);
 }
 #li-react-home-host .li-home-mirror-art-vignette,
 #page-home > .hero > .mirror-message .li-home-mirror-art-vignette{
  display:none!important;
 }
-/* Text and navigation remain foreground, with no opaque panel on the art. */
 #li-react-home-host .mirror-message{position:absolute;z-index:6}
 #li-react-home-host .li-home-mirror-float{position:relative;z-index:2}
 #li-react-home-host .mirror-message h2,

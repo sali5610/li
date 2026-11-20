@@ -116,7 +116,10 @@ jobs:
         run: |
           set -euo pipefail
           cp tools/step16-real-l09-react-island/dist-staging-app/*.js site/assets/
-          cp tools/step16-real-l09-react-island/dist-staging-app/*.css site/assets/li-react-learning.css
+          # Versioned filename means a newly opened iOS Safari page cannot use
+          # the previous Workbox CSS precache before its new worker activates.
+          # The new file is still precached by the generated worker for offline PWA.
+          cp tools/step16-real-l09-react-island/dist-staging-app/*.css "site/assets/li-react-learning-${GITHUB_SHA:0:12}.css"
           cp tools/step16-real-l09-react-island/src/auth/staging-gate.css site/assets/
           node tools/build_content_packs.mjs --check
           node tools/test_content_adapter.mjs
@@ -125,6 +128,7 @@ jobs:
           git diff --exit-code -- site/
           python3 - <<'PY'
           from pathlib import Path
+          import os
           index=Path('site/index.html')
           html=index.read_text(encoding='utf-8')
           assert html.count('<head>')==1 and html.count('</body></html>')==1
@@ -144,7 +148,7 @@ jobs:
                 'html.li-auth-verified:not(.li-account-open) #li-staging-auth-root'
                 '{display:none!important}</style>'
                 '<link rel="stylesheet" href="./assets/staging-gate.css?v=invite-shell-1">'
-                '<link rel="stylesheet" href="./assets/li-react-learning.css?v=react-l09-1">')
+                '<link rel="stylesheet" href="./assets/li-react-learning-'+os.environ['GITHUB_SHA'][:12]+'.css">')
           html=html.replace('<head>','<head>'+gate,1)
           marker='<div class="settings-group-grid"><article class="surface"><div class="kicker">SAO LƯU</div>'
           assert html.count(marker)==1, 'Settings account slot changed'
@@ -178,8 +182,10 @@ jobs:
           print('PASS one normal app: invited login → native lesson → feedback → progress')
           PY
           test -s site/assets/staging-auth-gate.js
-          test -s site/assets/li-react-learning.css
-          grep -Fq 'li-react-learning.css' site/index.html
+          test -s "site/assets/li-react-learning-${GITHUB_SHA:0:12}.css"
+          grep -Fq "li-react-learning-${GITHUB_SHA:0:12}.css" site/index.html
+          # Verify that the submitted mirror styling exists in the emitted bundle.
+          grep -Fq 'li-home-mirror-art-image' "site/assets/li-react-learning-${GITHUB_SHA:0:12}.css"
           ! grep -Fq '<script src="./assets/lesson-l09-hifi.js"></script>' site/index.html
           grep -Fq 'li-auth-gate-critical' site/index.html
           grep -Fq 'id="li-staging-auth-root"' site/index.html

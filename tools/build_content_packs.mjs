@@ -278,7 +278,7 @@ function requireCompleteEditorial(l){
     x.assessment.rubricGate!=="AFTER_VALID_INDEPENDENT_SUBMISSION"||
     rows.some(s=>!s.heading||!s.id||!s.body_md?.trim())||
     rows.filter(s=>s.role!=="reflection").some(s=>
-     /<b>\\s*(?:ĐÁP ÁN MẪU|MODEL ANSWER|MODEL RESPONSE|REFERENCE SOLUTION|EDITORIAL ANSWER KEY)/i.test(s.body_md)))
+     /<b>\s*(?:ĐÁP ÁN MẪU|MODEL ANSWER|MODEL RESPONSE|REFERENCE SOLUTION|EDITORIAL ANSWER KEY)/i.test(s.body_md)))
     fail("locale_sections_or_post_submit_gate "+loc);
   }
   return;

@@ -213,7 +213,7 @@ jobs:
           ! grep -Fq '<script src="./assets/lesson-l09-hifi.js"></script>' site/index.html
           ! grep -Eq '<script src="./assets/(catalog-curriculum-data|catalog-drilldown|li-catalog-search)\.js' site/index.html
           ! grep -Fq '<script src="./assets/laoly-drag.js' site/index.html
-          ! grep -Eq '<script src="./assets/(lesson-spell-suggestions|lesson-related-wave1)\\.js' site/index.html
+          ! grep -Eq '<script src="./assets/(lesson-spell-suggestions|lesson-related-wave1)\.js' site/index.html
           grep -Fq 'li-auth-gate-critical' site/index.html
           grep -Fq 'id="li-staging-auth-root"' site/index.html
           grep -Fq 'id="li-open-account"' site/index.html

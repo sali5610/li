@@ -29,7 +29,7 @@
   <input id="studio-search" type="search" placeholder="Search library…" autocomplete="off">
   <nav id="studio-nav" aria-label="Stories"></nav>
   <div class="studio-sidebar-foot">
-    <span>Source: GitHub main · React stories: DRAFT · G2 OPEN</span>
+    <span>Source: canonical GitHub main · archived previews are historical, not alternate components · G2 OPEN</span>
     <a href="https://github.com/sali5610/li/blob/main/design-system/tokens.json" target="_blank" rel="noopener noreferrer">Token authority ↗</a>
     <a href="https://github.com/sali5610/li/blob/main/design-system/components.md" target="_blank" rel="noopener noreferrer">Component contract ↗</a>
   </div>
@@ -41,14 +41,14 @@
     <span class="studio-readiness" id="studio-readiness">RUNTIME</span>
   </div>
   <section class="studio-playground" aria-labelledby="studio-playground-title">
-    <div class="studio-playground-bar"><h3 id="studio-playground-title">Interactive preview</h3><div class="studio-device-actions"><label for="studio-width">Viewport</label><select id="studio-width"><option value="auto">Fluid</option><option value="320">iPhone · 320</option><option value="390">iPhone · 390</option><option value="820">iPad · 820</option><option value="820x1180" data-width="820" data-height="1180">iPad · 820×1180</option><option value="970x1408" data-width="970" data-height="1408">iPad · 970×1408</option><option value="1024">iPad · 1024</option><option value="1133x744" data-width="1133" data-height="744">iPad · 1133×744</option><option value="1408x832" data-width="1408" data-height="832">iPad · 1408×832</option><option value="1440">Desktop · 1440</option></select><button id="studio-refresh" type="button" title="Reset preview" aria-label="Reset preview">↻</button></div></div>
+    <div class="studio-playground-bar"><h3 id="studio-playground-title">Interactive preview</h3><div class="studio-device-actions"><label for="studio-width">Viewport</label><select id="studio-width"><option value="auto">Fluid</option><option value="320">iPhone · 320</option><option value="390">iPhone · 390</option><option value="820">iPad · 820</option><option value="820x1180" data-width="820" data-height="1180">iPad · 820×1180</option><option value="970x1408" data-width="970" data-height="1408">iPad · 970×1408</option><option value="1024">iPad · 1024</option><option value="1133x744" data-width="1133" data-height="744">iPad · 1133×744</option><option value="1408x832" data-width="1408" data-height="832">iPad · 1408×832</option><option value="1440">Desktop · 1440</option></select><a id="studio-full-preview" class="studio-preview-link" href="./" target="_blank" rel="noopener noreferrer">Open full preview ↗</a><button id="studio-copy-link" type="button">Copy review link</button><button id="studio-refresh" type="button" title="Reload preview" aria-label="Reload preview">↻</button></div></div>
     <div class="studio-controls">
       <label>Variant<select id="studio-variant"></select></label>
       <label>State<select id="studio-state"></select></label>
       <label>Language<select id="studio-language"><option value="vi">Tiếng Việt</option><option value="en">English</option></select></label>
     </div>
     <div class="studio-frame-scroll"><iframe id="studio-frame" title="Live component preview" loading="eager"></iframe></div>
-    <div class="studio-frame-foot"><span>Actual browser viewport · preview-only interactions</span><span id="studio-frame-label">FLUID</span></div>
+    <div class="studio-frame-foot"><span>Real React stories · fixture data · G2 not yet approved</span><span id="studio-frame-label">FLUID</span><output id="studio-link-status" role="status" aria-live="polite"></output></div>
   </section>
   <section class="studio-details" aria-labelledby="studio-details-title">
     <div class="studio-tab-list" role="tablist" aria-label="Component documentation"><button type="button" role="tab" aria-selected="true" id="tab-usage" data-tab="usage">Usage & anatomy</button><button type="button" role="tab" aria-selected="false" id="tab-code" data-tab="code">Example code</button><button type="button" role="tab" aria-selected="false" id="tab-source" data-tab="source">Provenance</button></div>

@@ -23,6 +23,8 @@ type LibraryView={
  collectionFilter:'all'|'case'|'idea';bookmarkTab:'lesson'|'question';storageAvailable:boolean
 };
 type MethodsPort={getView:()=>MethodsView;open:(id:string,practice?:boolean)=>void};
+type GuideUiPort={getState:()=>{query:string;category:string}|null};
+declare global{interface Window{liGuideUi?:GuideUiPort;}}
 type LibraryPort={
  getView:()=>LibraryView;renderHome:()=>void;renderResume:()=>void;renderCollection:()=>void;
  openProblemEntry:(kind:string,key:string)=>void;openSavedQuestion:(id:string)=>void;
@@ -61,6 +63,12 @@ function Guide(){
  const view=useMethods();
  const [query,setQuery]=useState('');
  const [category,setCategory]=useState('Tất cả');
+ useEffect(()=>{
+  const port:GuideUiPort={getState:()=>document.documentElement.classList.contains('li-auth-verified')
+   ?{query,category}:null};
+  window.liGuideUi=port;
+  return()=>{if(window.liGuideUi===port)delete window.liGuideUi;};
+ },[query,category]);
  const q=query.trim().toLocaleLowerCase('vi');
  const visible=view.methods.filter(method=>{
   if(category!=='Tất cả'&&method.categoryKey!==category)return false;
@@ -85,7 +93,7 @@ function Guide(){
   )}</Text>
   <div className="editorial-grid li-guide-tools" style={{marginTop:'var(--li-space-4)'}}>
    <div className="stack-sm">
-    <Field label={copy('Tìm trong 13 phương pháp','Search all 13 methods')}
+    <Field id="li-react-method-search" label={copy('Tìm trong 13 phương pháp','Search all 13 methods')}
      type="search" value={query} onChange={event=>setQuery(event.target.value)}
      placeholder="Method of Loci, T01, Triệu Ức..."/>
     <div className="filters li-react-method-filters"

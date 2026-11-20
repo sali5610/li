@@ -80,6 +80,10 @@ function ResearchScene(){
   </div></div>
  </div>;
 }
+/** The React Case UI owns the selected answer; Lão Lý may inspect and submit
+ * that SAME visible draft, never a stale hidden native radio/textarea. */
+type CaseUiPort={getState:()=>{choice:CaseChoice|null;revision:string}|null;submit:()=>boolean};
+declare global{interface Window{liCaseUi?:CaseUiPort;}}
 const readBookmark=()=>inquiryFlow().isCaseBookmarked();
 function CaseScene(){
  const reduced=useReducedMotion();
@@ -89,6 +93,8 @@ function CaseScene(){
  const [bookmarked,setBookmarked]=useState(readBookmark);
  useEffect(()=>{
   const sync=()=>{
+   const permitted=document.documentElement.classList.contains('li-auth-verified');
+   if(!permitted){setChoice(null);setMessage('');}
    setBookmarked(readBookmark());
    const saved=inquiryFlow().getCaseDraft();
    setRevision(previous=>previous===saved?previous:saved);
@@ -109,13 +115,23 @@ function CaseScene(){
    setMessage('Không thể tự lưu bản nháp trên thiết bị này. Hãy sao chép nội dung trước khi thoát.');
   else setMessage('');
  };
- const save=()=>{
-  if(!choice){setMessage('Hãy chọn một nhận định trước khi lưu.');return;}
-  if(revision.trim().length<12){setMessage('Viết lại kết luận ít nhất 12 ký tự.');return;}
+ const save=():boolean=>{
+  if(!choice){setMessage('Hãy chọn một nhận định trước khi lưu.');return false;}
+  if(revision.trim().length<12){setMessage('Viết lại kết luận ít nhất 12 ký tự.');return false;}
   const saved=inquiryFlow().submitCase(choice,revision);
   if(saved){setMessage('');setRevision('');setChoice(null);}
   else setMessage('Không thể lưu Bút Ký trên thiết bị này. Nội dung vẫn giữ trong ô viết.');
+  return saved;
  };
+ useEffect(()=>{
+  const port:CaseUiPort={
+   getState:()=>document.documentElement.classList.contains('li-auth-verified')
+    ?{choice,revision}:null,
+   submit:()=>document.documentElement.classList.contains('li-auth-verified')&&save()
+  };
+  window.liCaseUi=port;
+  return()=>{if(window.liCaseUi===port)delete window.liCaseUi;};
+ },[choice,revision]);
  const toggleBookmark=()=>{
   inquiryFlow().toggleCaseBookmark();
   setBookmarked(readBookmark());
@@ -147,7 +163,7 @@ function CaseScene(){
      transition={reduced?{duration:0}:{duration:0.16}}>{choice===null?'Chọn một nhận định để bắt đầu.':
      choice==='right'?'Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.':
      'Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.'}</motion.p>
-    <Field kind="textarea" label="Luận Kết · Viết lại nhận định không vượt quá dữ kiện"
+    <Field id="li-react-case-revision" kind="textarea" label="Luận Kết · Viết lại nhận định không vượt quá dữ kiện"
      rows={5} value={revision} onChange={e=>updateRevision(e.target.value)}
      placeholder="Trong nhóm người đang sử dụng được hỏi, 90% phản hồi tích cực…"/>
     {message&&<InlineFeedback tone="error" message={message}/>}

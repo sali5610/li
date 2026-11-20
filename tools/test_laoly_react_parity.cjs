@@ -12,6 +12,9 @@ const quotes=read('site/assets/laoly-quotes-s121.js');
 const drag=read('site/assets/laoly-drag.js');
 const fab=read('tools/step16-real-l09-react-island/src/shell/laoly-fab.tsx');
 const page=read('site/index.html');
+const researchCase=read('tools/step16-real-l09-react-island/src/shell/research-case.tsx');
+const guide=read('tools/step16-real-l09-react-island/src/shell/guide-library.tsx');
+const capture=read('tools/step16-real-l09-react-island/src/shell/capture-idea.tsx');
 assert.match(shell,/mountLaoLyDialog/);
 assert.match(dialog,/createRoot\(root\)/);
 assert.match(dialog,/document\.getElementById\('buddy-modal'\)/,
@@ -73,4 +76,20 @@ assert.match(fab,/occludesPriorityUI/,'Preserve lesson/catalog action occlusion 
 assert.match(fab,/li-auth-verified/,'Unauthorized sessions cannot open the avatar');
 assert.match(fab,/onPointerDown=\{onPointerDown\}/,'React owns actual drag events');
 assert.match(fab,/onPointerUp=\{finish\}/,'React owns drag-end persistence');
+// Context actions for visible React screens must never assume hidden native
+// Case answers, draft, method search/filter, captured idea or bookmark button.
+assert.match(plans,/window\.liCaseUi\?\.getState\?\.\(\)/);
+assert.match(plans,/window\.liCaseUi\?\.submit\?\.\(\)/);
+assert.match(plans,/window\.liGuideUi\?\.getState\?\.\(\)/);
+assert.match(plans,/window\.liCaptureUi\?\.getDraft\?\.\(\)/);
+assert.match(plans,/window\.liInquiryFlow\.getResearch\(\)\?\.feedback/);
+assert.match(plans,/window\.liInquiryFlow\?\.toggleQuestion\?\.\(\)/);
+assert.match(plans,/window\.LiSpellPractice\?\.getView\?\.\(\)\?\.active/);
+assert.match(plans,/window\.liPersonalDiary\?\.getView\?\.\(\)/);
+assert.match(plans,/go\("lessonL09"\)/);
+assert.match(researchCase,/window\.liCaseUi=port/);
+assert.match(researchCase,/if\(!permitted\)\{setChoice\(null\);setMessage\(''\);\}/);
+assert.match(guide,/window\.liGuideUi=port/);
+assert.match(capture,/window\.liCaptureUi=port/);
+
 console.log('PASS Lao Ly React full popup parity: 3 actions, 2 debate results, quotes, provenance, preferences, invite, drag, navigation');

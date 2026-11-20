@@ -2,6 +2,7 @@ import {openRoute} from './app-router.js';
 import React,{useEffect,useState,useSyncExternalStore} from 'react';
 import {Button,Card,Checkbox,Field,Heading,InlineFeedback,Radio,Text,LiIcon} from '../../../../design-system/react/index';
 import {createFadedT03Flow,fadedT03Phase} from './spell-t03-flow.js';
+import {createLociT13Flow,lociT13Phase} from './spell-t13-flow.js';
 import './detail-practice.css';
 
 /** The existing authored exercise checker and private-note transaction owners
@@ -89,12 +90,17 @@ export function GuideDetail(){
  // still owns answers, grading, feedback, and the local session receipt.
  const [t03Flow]=useState(createFadedT03Flow);
  const t03Stage=useSyncExternalStore(t03Flow.subscribe,t03Flow.getSnapshot);
+ const [t13Flow]=useState(createLociT13Flow);
+ const t13Stage=useSyncExternalStore(t13Flow.subscribe,t13Flow.getSnapshot);
  useEffect(()=>{
   t03Flow.sync(view);
- },[t03Flow,view?.active,view?.phase,view?.viewSession,view?.reviewedInSession]);
- useEffect(()=>()=>{t03Flow.stop();},[t03Flow]);
+  t13Flow.sync(view);
+ },[t03Flow,t13Flow,view?.active,view?.phase,view?.viewSession,view?.reviewedInSession]);
+ useEffect(()=>()=>{t03Flow.stop();t13Flow.stop();},[t03Flow,t13Flow]);
  const phase=view?.active==='T03'&&t03Flow.isCurrent(view)
-  ?fadedT03Phase(t03Stage):(view?.phase??0);
+  ?fadedT03Phase(t03Stage):
+  view?.active==='T13'&&t13Flow.isCurrent(view)
+   ?lociT13Phase(t13Stage):(view?.phase??0);
  const [methodTick,setMethodTick]=useState(0);
  const [answers,setAnswers]=useState<Record<string,string|string[]>>({});
  useEffect(()=>{
@@ -112,7 +118,9 @@ export function GuideDetail(){
  const action=(kind:string)=>{
   const ok=view?.active==='T03'
    ?t03Flow.execute(kind,answers,app.LiSpellPractice)
-   :app.LiSpellPractice?.perform(kind,answers);
+   :view?.active==='T13'
+    ?t13Flow.execute(kind,answers,app.LiSpellPractice)
+    :app.LiSpellPractice?.perform(kind,answers);
   if(ok&&['reset','clear','schedule','next'].includes(kind))setAnswers({});
  };
  const prompt=()=>{
@@ -123,7 +131,7 @@ export function GuideDetail(){
    return copy('Bài độc lập: 7 đơn vị/ngày, 3 ngày chờ, 5 đơn vị an toàn. Điểm đặt hàng lại?', 'Independent step: 7 units/day, 3-day lead time, 5 safety stock. Reorder point?');
   if(view.mode==='resume'&&view.phase===1)
    return copy('Hãy viết một câu kết luận chỉ về 20 người được khảo sát.', 'Write one claim limited to the 20 surveyed people.');
-  if(view.mode==='loci'&&view.phase===1)
+  if(view.mode==='loci'&&phase===1)
    return copy('Hình dung đi qua ba nơi đã chọn. Không xem lại nguồn hoặc liên tưởng.', 'Walk through your three places mentally. Do not reread the source or cues.');
   return tr(view.prompt);
  };
@@ -189,6 +197,7 @@ export function GuideDetail(){
    </div>:
    <section role="tabpanel" aria-labelledby="li-react-spell-tab-practice"
     data-li-react-t03-stage={view.active==='T03'?t03Stage:undefined}
+    data-li-react-t13-stage={view.active==='T13'?t13Stage:undefined}
     className="spell-practice-root li-react-spell-practice">
     <div className="spell-activity-head"><div>
      <div className="kicker">{view.active} · {copy('THỬ THI TRIỂN','PRACTICE')}</div>
@@ -202,7 +211,7 @@ export function GuideDetail(){
      {view.mode==='resume'&&view.phase===1&&<Text role="body">
       {copy('Hành động nhỏ đã tự đặt: ','Your next small action: ')}<strong>{view.resumeNote}</strong>
      </Text>}
-     {view.mode==='loci'&&view.phase===1&&<Text role="body">
+     {view.mode==='loci'&&phase===1&&<Text role="body">
       {view.places.join(' → ')}</Text>}
      <Text role="body">{prompt()}</Text>
      {view.fields.map(field=><PracticeField key={view.active+view.phase+field.id}

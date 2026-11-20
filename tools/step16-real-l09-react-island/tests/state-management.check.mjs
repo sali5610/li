@@ -109,3 +109,80 @@ test('T03 machine resets per attempt and isolates other techniques and remount',
  assert.equal(flow.getSnapshot(),'example');
  remount.stop();flow.stop();
 });
+
+import {createLociT13Flow} from '../.state-test/shell/spell-t13-flow.js';
+
+function makeT13Port(){
+ let view={active:'T13',phase:0,reviewedInSession:false,viewSession:1,places:[]};
+ const calls=[];
+ return {
+  getView:()=>view,
+  perform:(action,answers={})=>{
+   calls.push(action);
+   if(action==='reset'){
+    view={...view,phase:0,reviewedInSession:false,viewSession:view.viewSession+1,places:[]};
+   }else if(action==='next'&&view.phase===0){
+    const places=[1,2,3].map(i=>answers['place'+i]);
+    const cues=[1,2,3].map(i=>answers['cue'+i]);
+    const normalized=places.map(x=>typeof x==='string'?x.trim().toLocaleLowerCase('vi'):'');
+    if(normalized.every(Boolean)&&new Set(normalized).size===3&&
+       cues.every(x=>typeof x==='string'&&x.trim())){
+     view={...view,phase:1,places};
+    }
+   }else if(action==='check'&&view.phase===1){
+    if([1,2,3].every(i=>typeof answers['recall'+i]==='string'&&answers['recall'+i].trim())){
+     view={...view,reviewedInSession:true};
+    }
+   }
+   return true; // the canonical port also returns true for a validation message
+  },
+  change:updates=>{view={...view,...updates};},
+  calls
+ };
+}
+const lociSetup={
+ place1:'Cửa nhà',cue1:'Tổng thể đích',
+ place2:'Bếp',cue2:'Cách chọn mẫu',
+ place3:'Cầu thang',cue3:'Người bị bỏ sót'
+};
+test('T13 prevents early recall, missing cues and duplicate loci; failed NEXT keeps draft',()=>{
+ const port=makeT13Port(),flow=createLociT13Flow();
+ flow.sync(port.getView());
+ assert.equal(flow.getSnapshot(),'setup');
+ assert.equal(flow.execute('check',{recall1:'a',recall2:'b',recall3:'c'},port),false);
+ assert.deepEqual(port.calls,[]);
+ assert.equal(flow.execute('next',{...lociSetup,cue2:''},port),false);
+ assert.equal(flow.getSnapshot(),'setup');
+ assert.equal(flow.execute('next',{...lociSetup,place3:'cửa nhà'},port),false);
+ assert.equal(flow.getSnapshot(),'setup');
+ assert.equal(flow.execute('next',lociSetup,port),true);
+ assert.equal(flow.getSnapshot(),'recall');
+ assert.deepEqual(port.getView().places,['Cửa nhà','Bếp','Cầu thang']);
+ assert.equal(flow.execute('next',lociSetup,port),false,'cannot skip retrieval');
+ assert.equal(flow.execute('check',{recall1:'Tổng thể'},port),true);
+ assert.equal(flow.getSnapshot(),'recall','partial recall never unlocks feedback');
+ assert.equal(flow.execute('check',{recall1:'Tổng thể',recall2:'Mẫu',recall3:'Bỏ sót'},port),true);
+ assert.equal(flow.getSnapshot(),'reviewed');
+ assert.equal(port.getView().reviewedInSession,true);
+ flow.stop();
+});
+test('T13 restarts per session, restores verified recall, and never leaks to T03',()=>{
+ const port=makeT13Port(),flow=createLociT13Flow();
+ flow.sync(port.getView());
+ flow.execute('next',lociSetup,port);
+ assert.equal(flow.getSnapshot(),'recall');
+ const remount=createLociT13Flow();
+ remount.sync(port.getView());
+ assert.equal(remount.getSnapshot(),'recall');
+ flow.execute('reset',{},port);
+ assert.equal(flow.getSnapshot(),'setup');
+ assert.equal(port.getView().viewSession,2);
+ assert.deepEqual(port.getView().places,[]);
+ port.change({active:'T03',viewSession:3,phase:2});
+ flow.sync(port.getView());
+ assert.equal(flow.execute('next',lociSetup,port),false);
+ port.change({active:'T13',viewSession:4,phase:0,reviewedInSession:false});
+ flow.sync(port.getView());
+ assert.equal(flow.getSnapshot(),'setup');
+ flow.stop();remount.stop();
+});

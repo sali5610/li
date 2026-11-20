@@ -94,61 +94,84 @@
  #li-react-home-host .hero-actions .primary{transition:none!important}
 }
 
-/* The illustration replaces the painted CLOUDS in the LOWER mirror.
-   Keep the question and arrows above the artwork vertically, not just via z-index.
-   The text has no translucent plate, vignette or gradient over the image. */
+/* Gương Vạn Vấn — full-bleed discipline art INSIDE the source-painted oval.
+   The old cloud-zone sticker was anchored to the bottom of the question.
+   Instead, center ONE opaque illustration over the complete inner glass,
+   with the existing question / arrows as unboxed foreground.
+   Width: mobile 60vw ~= 212 CSS px at the supplied 353px Safari screenshot,
+   ratio .74 ~= 286px tall. This fits the inner gold-rimmed aperture without
+   spilling onto Check-in, stairs or the outer frame. */
 #li-react-home-host .mirror-message,
 #page-home > .hero > .mirror-message{
  isolation:isolate;
- --li-mirror-cloud-art-height:clamp(150px,34vw,220px);
- --li-mirror-cloud-art-width:min(105%,350px);
+ --li-mirror-glass-width:min(110%,360px);
+ --li-mirror-glass-top:calc(50% + 12px);
+}
+#li-react-home-host .mirror-message::before,
+#page-home > .hero > .mirror-message::before,
+#li-react-home-host .li-home-mirror-artwork,
+#page-home > .hero > .mirror-message .li-home-mirror-artwork{
+ position:absolute;
+ left:50%;
+ top:var(--li-mirror-glass-top);
+ width:var(--li-mirror-glass-width);
+ height:auto;
+ aspect-ratio:.74;
+ transform:translate(-50%,-50%);
+ border-radius:50%;
+ pointer-events:none;
+ /* A tight oval edge hides the old clouds without laying a visible panel. */
+ -webkit-mask-image:radial-gradient(ellipse closest-side at center,#000 0%,#000 93%,transparent 100%);
+ mask-image:radial-gradient(ellipse closest-side at center,#000 0%,#000 93%,transparent 100%);
 }
 #li-react-home-host .mirror-message::before,
 #page-home > .hero > .mirror-message::before{
- content:"";position:absolute;left:50%;top:calc(100% - 44px);z-index:0;
- width:var(--li-mirror-cloud-art-width);height:var(--li-mirror-cloud-art-height);
- transform:translateX(-50%);
- background:var(--forest);opacity:.98;pointer-events:none;
- border-radius:46% 46% 48% 48% / 36% 36% 60% 60%;
- -webkit-mask-image:radial-gradient(ellipse at center,#000 0%,#000 76%,transparent 99%);
- mask-image:radial-gradient(ellipse at center,#000 0%,#000 76%,transparent 99%);
+ content:"";
+ z-index:0;
+ background:var(--forest);
+ opacity:1;
 }
 #li-react-home-host .li-home-mirror-artwork,
 #page-home > .hero > .mirror-message .li-home-mirror-artwork{
- position:absolute;left:50%;top:calc(100% - 42px);z-index:1;pointer-events:none;
- width:var(--li-mirror-cloud-art-width);height:var(--li-mirror-cloud-art-height);
- transform:translateX(-50%);overflow:hidden;opacity:1;
- border-radius:46% 46% 48% 48% / 36% 36% 60% 60%;
- -webkit-mask-image:radial-gradient(ellipse at center,#000 0%,#000 77%,transparent 99%);
- mask-image:radial-gradient(ellipse at center,#000 0%,#000 77%,transparent 99%);
+ z-index:1;
+ overflow:hidden;
+ opacity:1;
+ background:var(--forest);
 }
 #page-home .li-home-mirror-artwork[hidden]{display:none!important}
 #li-react-home-host .li-home-mirror-art-image,
 #page-home > .hero > .mirror-message .li-home-mirror-art-image{
- position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
- object-position:center 45%;
- filter:saturate(1.03) contrast(1.08);
+ position:absolute;
+ inset:0;
+ width:100%;
+ height:100%;
+ object-fit:cover;
+ object-position:center center;
+ filter:saturate(1.04) contrast(1.07);
 }
 #li-react-home-host .li-home-mirror-art-vignette,
 #page-home > .hero > .mirror-message .li-home-mirror-art-vignette{
  display:none!important;
 }
-/* Copy stays in its original position with zero panel/gradient over the art. */
+/* Copy is in FRONT of the art, but never inside an opaque text panel. */
 #li-react-home-host .li-home-mirror-float{position:relative;z-index:2}
 #page-home > .hero > .mirror-message > h2,
 #page-home > .hero > .mirror-message > .mirror-controls{
- position:relative;z-index:2;
+ position:relative;
+ z-index:2;
 }
 @media(max-width:600px){
  #li-react-home-host .mirror-message,
  #page-home > .hero > .mirror-message{
-  --li-mirror-cloud-art-height:clamp(140px,40vw,160px);
-  --li-mirror-cloud-art-width:105%;
+  --li-mirror-glass-width:min(60vw,252px);
+  --li-mirror-glass-top:calc(50% + 15px);
  }
 }
 @media(prefers-reduced-motion:reduce){
  #li-react-home-host .li-home-mirror-art-image,
- #page-home > .hero > .mirror-message .li-home-mirror-art-image{transition:none!important}
+ #page-home > .hero > .mirror-message .li-home-mirror-art-image{
+  transition:none!important;
+ }
 }
 
 #li-react-catalog-host .catalog-crumb{min-height:44px}

@@ -502,6 +502,25 @@ function syncLiRoute(id){
 }
 function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelector?.(".app")?.classList.toggle("home-focus",id==="home");const back=document.getElementById("li-global-back");if(back)back.hidden=id==="home";document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});document.querySelectorAll(".header .tool-button").forEach(x=>{const active=x.dataset.page===id;x.classList.toggle("active",active);if(active)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library")window.liLibraryShelf?.renderHome();if(id==="resume")window.liLibraryShelf?.renderResume();if(id==="collection")window.liLibraryShelf?.renderCollection();if(id==="noteDetail")window.liNotes?.renderDetail();window.liBookmarks?.refresh();if(Object.prototype.hasOwnProperty.call(LI_LESSON_ROUTES,id))window.liLibraryShelf?.trackLesson(id);if(id==="research"){syncResearch();window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);}if(id==="case")window.liLibraryShelf?.trackProblem("case","sampling-bias-90");refreshLucide();placeCompanion();}
 function goBack(){while(pageHistory.length){const previous=pageHistory.pop();if(previous!==currentPage&&document.getElementById("page-"+previous)){navigate(previous,{remember:false});return}}navigate("home",{remember:false})}
+/* Step16: expose the existing canonical route/history/URL/focus controller as
+ * an action port. React controls call this directly; static controls retain the
+ * existing delegated data-page/data-nav-back contract until migrated. */
+window.liAppRouter=Object.freeze({
+ navigate:(id,options)=>{
+  if(!document.documentElement.classList.contains("li-auth-verified")||
+     document.documentElement.classList.contains("li-account-open")||
+     typeof id!=="string"||!document.getElementById("page-"+id))return false;
+  navigate(id,options);return true;
+ },
+ back:()=>{
+  if(!document.documentElement.classList.contains("li-auth-verified")||
+     document.documentElement.classList.contains("li-account-open"))return false;
+  goBack();return true;
+ },
+ getCurrent:()=>currentPage,
+ hasRoute:id=>typeof id==="string"&&!!document.getElementById("page-"+id)
+});
+
 function renderMethods(){const el=document.getElementById("method-cards");const q=(document.getElementById("method-search").value||"").trim().toLocaleLowerCase("vi");const preset=STUDY_MODES[studyMode].suggestions;const visible=methods.filter(m=>{const match=(!q||((m.join(" ")+" "+(window.LI_LEGACY_EN?.[m[1]]||"")+" "+(window.LI_LEGACY_EN?.[m[4]]||"")).toLocaleLowerCase("vi").includes(q)));const cat=currentCategory==="Tất cả"||m[4]===currentCategory;const picked=Boolean(q)||currentCategory!=="Tất cả"||!preset||preset.includes(m[0]);return match&&cat&&picked});el.innerHTML=visible.length?visible.map(m=>'<button class="method-card" data-method="'+m[0]+'"><i data-lucide="'+(m[4]==="Luận Chứng Thuật"?"git-branch":m[4]==="Phá Giải Thuật"?"puzzle":m[4]==="Minh Giải Thuật"?"lightbulb":m[4]==="Tự Chủ Thuật"?"brain-circuit":"book-open-check")+'" class="method-icon" aria-hidden="true"></i><span class="kicker">'+m[0]+' · <span>'+m[4]+'</span></span><h3>'+m[1]+'</h3><span class="original">'+m[2]+'</span><span class="purpose">'+m[3]+'</span><span class="end">CHÚ GIẢI →</span></button>').join(""):'<div class="surface">Không tìm thấy. Thử đổi bộ lọc hoặc tìm bằng tên học thuật.</div>';
 document.getElementById("method-count").textContent="Hiển thị "+visible.length+"/13 phương pháp"+(q?" · kết quả tìm kiếm trên cả 13":currentCategory!=="Tất cả"?" · theo nhóm":STUDY_MODES[studyMode].suggestions?" · "+STUDY_MODES[studyMode].label:" · đầy đủ");
 refreshLucide();document.getElementById("guide-mode-copy").textContent=liBuddyLine(STUDY_MODES[studyMode].guide);

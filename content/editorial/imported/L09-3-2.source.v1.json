@@ -50,6 +50,18 @@
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           }
         }
+      },
+      "mentorQuoteReplacements": {
+        "authoredOn": "2026-11-21",
+        "status": "first_party_editorial_rights_remediation_pending_final_review",
+        "reason": "box-models quotes a 1987 publication and is not documented public-domain. Replace its candidate selections with classical source options already present in the existing sourced S121 quote bank; keep historical imported transcription in content.localized and full_original_markdown.",
+        "quoteBankPath": "site/assets/laoly-quotes-s121.js",
+        "stageReplacements": {
+          "concept": {
+            "replaceId": "box-models",
+            "withId": "hume-evidence"
+          }
+        }
       }
     }
   },

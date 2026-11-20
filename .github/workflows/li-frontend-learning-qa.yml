@@ -4,6 +4,7 @@ on:
     paths:
       - 'design-system/react/**'
       - 'tools/step16-real-l09-react-island/src/learning/**'
+      - 'tools/step16-real-l09-react-island/src/auth/staging-app.tsx'
       - 'tools/step16-real-l09-react-island/package.json'
       - 'tools/step16-real-l09-react-island/vite.learning.config.mjs'
       - 'site/assets/lesson-l09-hifi.js'
@@ -29,6 +30,8 @@ jobs:
           npm run extract
           npx tsc --noEmit
           npx vite build --config vite.learning.config.mjs
+          VITE_LI_AUTH_TARGET=github-pages-staging npx vite build --config vite.staging-app.config.mjs
           test -s dist-learning/li-learning.js
           test -s dist-learning/li-learning.css
+          test -s dist-staging-app/staging-auth-gate.js
           echo 'PASS L09_REACT_FRONTEND_COMPILED_NONDEPLOY'

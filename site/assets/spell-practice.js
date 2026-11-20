@@ -543,6 +543,14 @@ function setup(){
    notifyReactSpell();
   });
   window.addEventListener("li:personal-sync-applied",ev=>{
+   if(active==="T02"){
+    const key=t02Key(),detail=ev.detail;
+    if(key&&detail&&detail.accountId===localStorage.getItem(T12_OWNER)&&
+       Array.isArray(detail.keys)&&detail.keys.includes(key)){
+     phase=0;reviewedInSession=false;feedback="";viewSession++;tabDraft=null;
+     draw();notifyReactSpell();
+    }
+   }
    if(active!=="T12"||!root||t12LocalModified||reviewedInSession)return;
    const key=t12Key(),detail=ev.detail;
    if(!key||!detail||detail.accountId!==localStorage.getItem(T12_OWNER)||

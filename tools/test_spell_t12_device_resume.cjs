@@ -85,7 +85,8 @@ function boot({verified=true,owner="user-a",storagePort=storage}={}){
  assert(window.LiSpellPractice,"Native controller must mount");
  return {api:window.LiSpellPractice,root:()=>root,storage:storagePort,
   cloud:detail=>handlers['li:personal-sync-applied']?.({detail}),
-  confirm:detail=>handlers['li:t12-sync-confirmed']?.({detail})};
+  confirm:detail=>handlers['li:t12-sync-confirmed']?.({detail}),
+  spellConfirm:detail=>handlers['li:spell-practice-sync-confirmed']?.({detail})};
 }
 function open(h,lesson="L09-1-2"){
  h.api.open("T12","practice",lesson);
@@ -211,3 +212,50 @@ h.cloud({accountId:cloudUid,keys:[cloudKey]});
 assert.equal(h.api.getView().resumeNote,"Another device");
 assert.equal(h.api.getView().t12Draft.answer,"Another answer");
 console.log("PASS T12: in-place signed hydration, local-edit safety and later confirmed sync");
+
+/* Focused signed-sync event order + true native practice receipt contract.
+ * Two independent browser profiles have separate localStorage, like Safari/PWA.
+ * A remote hydrate must precede the exact signed confirmation or the UI lies. */
+const syncSource=fs.readFileSync(path.join(__dirname,
+ "../tools/step16-real-l09-react-island/src/auth/learner-sync.ts"),"utf8");
+const hydrationDispatch=syncSource.indexOf("window.dispatchEvent(new CustomEvent('li:personal-sync-applied'");
+const receiptConfirmationDispatch=syncSource.indexOf(
+ "window.dispatchEvent(new CustomEvent('li:spell-practice-sync-confirmed'");
+assert(hydrationDispatch>=0&&receiptConfirmationDispatch>hydrationDispatch,
+ "Auth must notify React of restored receipts BEFORE signed exact-readback confirmation");
+const makeDevice=()=>{const data=new Map();return {
+ data,getItem:k=>data.has(k)?data.get(k):null,
+ setItem:(k,v)=>data.set(k,String(v)),removeItem:k=>data.delete(k)
+};};
+const phoneStore=makeDevice(),tabletStore=makeDevice(),flowOwner="flow-owner";
+const phone=boot({owner:flowOwner,storagePort:phoneStore});
+phone.api.open("T04","practice","L09-1-2");
+assert.equal(phone.api.perform("check",{
+ reason:"Chỉ người đang dùng app có cơ hội trả lời; người rời đi chưa được khảo sát."
+}),true);
+assert.equal(phone.api.getView().practiceCount,1);
+const receiptKey="li.spell.practice.v1:"+encodeURIComponent(flowOwner);
+const phoneReceipt=phoneStore.getItem(receiptKey);
+assert(phoneReceipt);
+assert(!phoneReceipt.includes("Chỉ người đang dùng app"),
+ "practice receipts must never copy original learner answers");
+const tablet=boot({owner:flowOwner,storagePort:tabletStore});
+tablet.api.open("T04","practice","L09-1-2");
+assert.equal(tablet.api.getView().practiceCount,0);
+assert.equal(tablet.api.getView().practiceSynced,false);
+tabletStore.setItem(receiptKey,phoneReceipt);
+tablet.cloud({accountId:flowOwner,keys:[receiptKey]});
+assert.equal(tablet.api.getView().practiceCount,1,
+ "newly hydrated receipt appears without requiring a reload");
+assert.equal(tablet.api.getView().practiceSynced,false,
+ "remote hydration alone cannot claim signed sync");
+tablet.spellConfirm({accountId:"not-the-owner",keys:[receiptKey]});
+assert.equal(tablet.api.getView().practiceSynced,false,
+ "another owner cannot issue the sync confirmation");
+tablet.spellConfirm({accountId:flowOwner,keys:[receiptKey]});
+assert.equal(tablet.api.getView().practiceSynced,true,
+ "exact owner-scoped signed readback restores true synced state");
+const third=boot({owner:"other-owner",storagePort:tabletStore});
+third.api.open("T04","practice","L09-1-2");
+assert.equal(third.api.getView().practiceCount,0,"signed user accounts are isolated");
+console.log("PASS T04: real spell controller → answer-free receipt → independent device hydrate → signed confirmation → owner isolation");

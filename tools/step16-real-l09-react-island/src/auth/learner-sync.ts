@@ -399,6 +399,13 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
      detail:{accountId:uid,keys:confirmed}
     }));
    }
+   // In-place page state refresh; never clear an open editor or scroll position.
+   if(!disposed&&personalChanged)window.dispatchEvent(new CustomEvent('li:personal-sync-applied',{
+    detail:{accountId:uid,keys:personalKeys}
+   }));
+   // Emit the exact signed receipt confirmation AFTER hydration notification.
+   // On a fresh second device the hydration handler invalidates an old badge,
+   // so the verified confirmation must be the final state transition.
    // A practice receipt earns its synced badge ONLY after exact signed RLS
    // readback of the owner-scoped revision, never from local Dexie alone.
    if(!disposed&&current.last==='saved'){
@@ -415,10 +422,6 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
       }));
     }
    }
-   // In-place page state refresh; never clear an open editor or scroll position.
-   if(!disposed&&personalChanged)window.dispatchEvent(new CustomEvent('li:personal-sync-applied',{
-    detail:{accountId:uid,keys:personalKeys}
-   }));
    if(!disposed&&changed)window.dispatchEvent(new CustomEvent('li:lesson-sync-applied',{
     detail:{accountId:uid,lessonIds}
    }));

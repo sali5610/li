@@ -151,6 +151,20 @@ assert.equal(api.getView().practiceCount,1,"A personal lesson has a distinct rec
 begin("T04");
 assert.equal(api.getView().practiceCount,1,"Standalone history is independent");
 assert.equal(api.setLessonContext("unknown"),false,"Non-invited route context is rejected");
+// The same invited draft context must persist the dedicated T02/T12 records.
+begin("T02");
+assert.equal(api.setLessonContext("L03-1-1"),true);
+assert.equal(api.getView().lessonId,"L03-1-1");
+assert.equal(act("schedule"),true);
+assert([...storage.keys()].some(k=>k.endsWith(":L03-1-1")&&k.startsWith("li.spell.t02.schedule.v2:")),
+ "T02 schedule must use the personal draft lesson, not the standalone key");
+begin("T12");
+assert.equal(api.setLessonContext("L03-1-1"),true);
+assert.equal(api.setT12Draft("context","Đang đọc bài HCI"),true);
+assert.equal(api.setT12Draft("next","Viết một câu phản chứng"),true);
+assert([...storage.keys()].some(k=>k.endsWith(":L03-1-1")&&k.startsWith("li.spell.t12.resume.v1:")),
+ "T12 unfinished draft must use the personal lesson storage key");
+assert.equal(api.getView().t12SavedOnDevice,true);
 begin("T05");act("check",{evidence:["0","1"],reason:sentence});reviewed("T05");
 begin("T06","L03-1-2");
 locale="en";
@@ -173,7 +187,7 @@ assert.equal(api.getView().phase,1);
 assert.ok(api.getView().t12SavedOnDevice);
 assert.equal(act("check",{answer:"15 trong 20 người được hỏi hài lòng."}),true);
 reviewed("T12");
-const t12key=[...storage.keys()].find(key=>key.startsWith("li.spell.t12.resume.v1:"));
+const t12key=[...storage.keys()].find(key=>key.startsWith("li.spell.t12.resume.v1:")&&key.endsWith(":L09-1-2"));
 assert.ok(t12key);
 const terminal=JSON.parse(storage.get(t12key));
 assert.equal(terminal.phase,2,"T12 completion must redact the previous cue");

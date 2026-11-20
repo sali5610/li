@@ -1,0 +1,19 @@
+/* Native controlled modal, square editorial geometry; all paint/spacing from DS tokens. */
+.li-ds-dialog{box-sizing:border-box;width:min(100% - 2 * var(--li-space-4),36rem);
+ max-height:min(90dvh,calc(100dvh - 2 * var(--li-space-4)));
+ margin:auto;padding:0;overflow:auto;overscroll-behavior:contain;
+ border:1px solid var(--moss);border-radius:0;background:var(--cream);color:var(--ink);
+ box-shadow:5px 5px 0 var(--wood);font:var(--li-type-body)/var(--li-leading-body) var(--li-font-ui)}
+.li-ds-dialog::backdrop{background:color-mix(in srgb,var(--li-color-modal-overlay-fill) 65%,transparent)}
+.li-ds-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;
+ gap:var(--li-space-4);padding:var(--li-space-5) var(--li-space-5) var(--li-space-3)}
+.li-ds-dialog-head h2{margin:0;color:var(--moss);
+ font:600 var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial)}
+.li-ds-dialog-description,.li-ds-dialog-body{margin:0;padding:0 var(--li-space-5) var(--li-space-4);
+ overflow-wrap:anywhere}
+.li-ds-dialog-description{color:var(--muted);font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
+.li-ds-dialog-footer{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:var(--li-space-3);
+ padding:var(--li-space-4) var(--li-space-5);border-top:1px solid var(--rule)}
+@media(max-width:599px){.li-ds-dialog-head{padding:var(--li-space-4) var(--li-space-4) var(--li-space-3)}
+ .li-ds-dialog-description,.li-ds-dialog-body{padding-inline:var(--li-space-4)}
+ .li-ds-dialog-footer{padding:var(--li-space-4)}}

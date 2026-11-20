@@ -1,71 +1,79 @@
 import {bindNeonAccount} from '../sync/neon-session.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
-import {RevisionConflict,type JsonValue} from '../sync/contract.js';
+import {storageKey,type JsonValue} from '../sync/contract.js';
+import {PrivateDeviceStore} from '../sync/local-dexie.js';
+import {syncOnce} from '../sync/sync-once.js';
+import type {NeonUserApi} from '../sync/neon-api.js';
 import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_GITHUB_STAGING} from './config.js';
 import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
 
 /**
- * Step16 staging integration. Signed-in invited user -> existing owner-RLS Neon
- * Data API -> the THREE published native lesson attempts. No diary/notes.
- * All writes are account-bound, revision-checked, and verified on readback.
- * Offline/local conflicts are retained, never overwritten or silently deleted.
+ * The native lesson UI still writes li.review.* localStorage synchronously.
+ * This adapter mirrors actual learner attempts into account-scoped Dexie records
+ * AND their transactionally durable offline outbox, then syncs using the signed
+ * Neon Data API. No synthetic attempts, second app shell, or manual sync button.
  */
 const LESSONS=['L03-1-2','L09-1-2','L15-2-2'] as const;
 const OWNER='li.sync.local-owner.v1';
 const KEY=(id:string)=>'li.review.'+id+'.v1';
 const CHECKPOINT=(uid:string,id:string)=>'li.sync.checkpoint.v1:'+uid+':'+id;
 const BACKUP=(uid:string,id:string)=>'li.sync.local-backup.v1:'+uid+':'+id;
-type Checkpoint={revision:number;data:string};
+const store=new PrivateDeviceStore();
+type Attempt=Record<string,unknown>;
+type CloudPayload={schema:'li.native.lesson.v1';data:Record<string,JsonValue>};
+type Snapshot={id:string;raw:string|null};
 export type SyncReport='checking'|'saved'|'empty'|'offline'|'conflict'|'error';
 
 function canonical(value:unknown):string{
  if(value===null||typeof value!=='object')return JSON.stringify(value)??'null';
  if(Array.isArray(value))return '['+value.map(canonical).join(',')+']';
- const obj=value as Record<string,unknown>;
- return '{'+Object.keys(obj).sort().map(k=>JSON.stringify(k)+':'+canonical(obj[k])).join(',')+'}';
+ const object=value as Record<string,unknown>;
+ return '{'+Object.keys(object).sort().map(k=>JSON.stringify(k)+':'+canonical(object[k])).join(',')+'}';
 }
-function attempt(raw:string|null):Record<string,unknown>|null{
+function attempt(raw:string|null):Attempt|null{
  if(raw===null)return null;
- if(raw.length>60000)throw Error('LOCAL_ATTEMPT_TOO_LARGE');
+ if(raw.length>60000)throw new Error('LOCAL_ATTEMPT_TOO_LARGE');
  const value:unknown=JSON.parse(raw);
- if(!value||typeof value!=='object'||Array.isArray(value))throw Error('INVALID_LOCAL_ATTEMPT');
- const v=value as Record<string,unknown>;
- if(!Array.isArray(v.draft)||v.draft.length!==4||!v.draft.every(a=>typeof a==='string'&&a.length<=4000)||
-   !Array.isArray(v.ratings)||v.ratings.length!==4)throw Error('INVALID_LOCAL_ATTEMPT');
- return v;
+ if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('INVALID_LOCAL_ATTEMPT');
+ const a=value as Attempt;
+ if(!Array.isArray(a.draft)||a.draft.length!==4||!a.draft.every(x=>typeof x==='string'&&x.length<=4000)||
+   !Array.isArray(a.ratings)||a.ratings.length!==4)
+  throw new Error('INVALID_LOCAL_ATTEMPT');
+ return a;
 }
-function cloud(value:unknown):Record<string,unknown>{
- if(!value||typeof value!=='object'||Array.isArray(value))throw Error('INVALID_CLOUD_ATTEMPT');
- const p=value as Record<string,unknown>;
- if(p.schema!=='li.native.lesson.v1'||!p.data||typeof p.data!=='object'||Array.isArray(p.data))
-  throw Error('INVALID_CLOUD_ATTEMPT');
- const data=p.data as Record<string,unknown>;
- attempt(JSON.stringify(data)); // Validate before hydrating private local state.
+function cloud(value:unknown):Attempt{
+ if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('INVALID_CLOUD_ATTEMPT');
+ const item=value as Record<string,unknown>;
+ // Historical manual L09 cloud saves used "attempt"; keep them readable.
+ // Only new writes use the canonical native lesson wrapper.
+ const candidate=item.schema==='li.native.lesson.v1'?item.data:
+  item.schema==='li.step16.l09.native.v1'?item.attempt:null;
+ if(!candidate||typeof candidate!=='object'||Array.isArray(candidate))
+  throw new Error('INVALID_CLOUD_ATTEMPT');
+ const data=candidate as Attempt;
+ attempt(JSON.stringify(data));
  return data;
 }
-function readCheckpoint(uid:string,id:string):Checkpoint|null{
- try{
-  const raw=localStorage.getItem(CHECKPOINT(uid,id));
-  if(!raw)return null;
-  const p=JSON.parse(raw) as Checkpoint;
-  return Number.isSafeInteger(p?.revision)&&p.revision>=1&&typeof p.data==='string'?p:null;
- }catch{return null;}
+function pack(data:Attempt):CloudPayload{
+ return {schema:'li.native.lesson.v1',data:data as Record<string,JsonValue>};
 }
-function checkpoint(uid:string,id:string,revision:number,data:Record<string,unknown>){
- if(!Number.isSafeInteger(revision)||revision<1)throw Error('BAD_REMOTE_REVISION');
- const expected=JSON.stringify({revision,data:canonical(data)});
- localStorage.setItem(CHECKPOINT(uid,id),expected);
- if(localStorage.getItem(CHECKPOINT(uid,id))!==expected)throw Error('LOCAL_STORAGE_UNAVAILABLE');
+function oldCheckpoint(uid:string,id:string):{revision:number;data:string}|null{
+ try{
+  const value=JSON.parse(localStorage.getItem(CHECKPOINT(uid,id))??'null') as
+   {revision?:unknown;data?:unknown}|null;
+  if(value&&Number.isSafeInteger(value.revision)&&Number(value.revision)>0&&typeof value.data==='string')
+   return {revision:Number(value.revision),data:value.data};
+ }catch{/* Never trust malformed legacy metadata. */}
+ return null;
 }
 
-/** Preserve another invited account's local attempts before showing this account. */
+/** Preserve existing native-device work when switching between invited accounts. */
 export function prepareLearnerAccount(uid:string):boolean{
- if(!IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN||!uid.trim())throw Error('UNTRUSTED_ACCOUNT');
+ if(!IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN||!uid.trim())throw new Error('UNTRUSTED_ACCOUNT');
  const before=localStorage.getItem(OWNER);
  if(before===uid)return false;
  if(before){
-  // Snapshot every previous lesson first; failure aborts without deleting data.
   for(const id of LESSONS){
    const raw=localStorage.getItem(KEY(id));
    if(raw!==null)localStorage.setItem(BACKUP(before,id),raw);
@@ -76,84 +84,139 @@ export function prepareLearnerAccount(uid:string):boolean{
    if(owned!==null)localStorage.setItem(KEY(id),owned);
   }
  }
- // First invited account adopts existing local learning created by older builds.
  localStorage.setItem(OWNER,uid);
- if(localStorage.getItem(OWNER)!==uid)throw Error('LOCAL_STORAGE_UNAVAILABLE');
- return before!==null; // reload native in-memory lesson state after account switch.
+ if(localStorage.getItem(OWNER)!==uid)throw new Error('LOCAL_STORAGE_UNAVAILABLE');
+ return before!==null;
 }
+
+/**
+ * Capture real lesson state before any network write. For a legacy localStorage
+ * attempt already saved to Neon, reuse its confirmed revision when identical
+ * or when its legacy checkpoint exactly matches the current remote revision.
+ * Otherwise leave the draft queued at revision zero: conflict, never overwrite.
+ */
+async function capture(uid:string,api:NeonUserApi|null):Promise<Snapshot[]>{
+ const snapshots:Snapshot[]=[];
+ for(const id of LESSONS){
+  const raw=localStorage.getItem(KEY(id));
+  snapshots.push({id,raw});
+  const local=attempt(raw);
+  if(!local||isBlankNativeAttempt(local))continue;
+  const key=storageKey(uid,'lesson_attempt',id);
+  let existing=await store.records.get(key);
+  if(!existing&&api){
+   try{
+    const remote=await api.one('lesson_attempt',id);
+    if(remote&&!remote.deleted_at){
+     const remoteData=cloud(remote.payload);
+     const prior=oldCheckpoint(uid,id);
+     if(canonical(remoteData)===canonical(local)||
+       (prior?.revision===remote.revision&&prior.data===canonical(remoteData))){
+      await store.apply(uid,remote);
+      existing=await store.records.get(key);
+     }
+    }
+   }catch{
+    // A network/read failure cannot erase the local draft; queue it instead.
+   }
+  }
+  if(!existing||canonical(cloud(existing.payload))!==canonical(local))
+   await store.edit(uid,'lesson_attempt',id,pack(local));
+ }
+ return snapshots;
+}
+/** Hydration is skipped if the learner edited the native UI during the request. */
+async function hydrate(uid:string,snapshots:Snapshot[],retry:()=>void):Promise<boolean>{
+ let restored=false;
+ for(const {id,raw} of snapshots){
+  const key=storageKey(uid,'lesson_attempt',id);
+  if(await store.outbox.get(key))continue; // queued edits and conflicts win locally
+  const row=await store.records.get(key);
+  if(!row||row.deletedAt)continue;
+  const data=cloud(row.payload);
+  const current=localStorage.getItem(KEY(id));
+  if(current!==raw){retry();continue;}
+  const native=attempt(current);
+  if(!native||canonical(native)!==canonical(data)){
+   localStorage.setItem(KEY(id),JSON.stringify(data));
+   restored=true;
+  }
+ }
+ return restored;
+}
+
+/** Account is verified by AuthPanel and must be rechecked by Neon/RLS on sync. */
 export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):()=>void{
- if(!IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN)throw Error('UNTRUSTED_ORIGIN');
- let disposed=false,busy=false,pending=false,refreshTimer:ReturnType<typeof setTimeout>|null=null;
- const report=(value:SyncReport)=>{if(!disposed)onStatus(value);};
+ if(!IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN||!uid.trim())throw new Error('UNTRUSTED_ORIGIN');
+ let disposed=false,busy=false,pending=false,timer:ReturnType<typeof setTimeout>|null=null;
+ const report=(state:SyncReport)=>{if(!disposed)onStatus(state);};
+ function schedule(){
+  if(disposed)return;
+  if(timer!==null)clearTimeout(timer);
+  timer=setTimeout(()=>{timer=null;void run();},850);
+ }
  async function run(){
   if(disposed)return;
   if(busy){pending=true;return;}
-  if(!navigator.onLine){report('offline');return;}
-  busy=true;report('checking');
-  let restored=false,hadRows=false,conflicted=false;
+  busy=true;
   try{
-   if(localStorage.getItem(OWNER)!==uid)throw Error('ACCOUNT_CHANGED');
-   if(!await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort))throw Error('INVITE_REVOKED');
-   const api=await bindNeonAccount(NEON_DATA_API_URL,neonSessionPort);
-   if(!api||api.accountId!==uid)throw Error('SESSION_CHANGED');
-   for(const id of LESSONS){
-    if(disposed)break;
-    const key=KEY(id);
-    const raw=localStorage.getItem(key),local=attempt(raw);
-    const remote=await api.one('lesson_attempt',id);
-    if(disposed)break;
-    if(remote?.deleted_at){conflicted=true;continue;} // never resurrect deletions
-    const rdata=remote?cloud(remote.payload):null;
-    const saved=readCheckpoint(uid,id);
-    if(local&&rdata&&canonical(local)===canonical(rdata)){
-     checkpoint(uid,id,remote!.revision,rdata);
-     hadRows=true;continue;
+   if(localStorage.getItem(OWNER)!==uid)throw new Error('ACCOUNT_CHANGED');
+   let api:NeonUserApi|null=null;
+   let apiError:unknown=null;
+   if(navigator.onLine){
+    try{
+     if(!await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort))
+      throw new Error('INVITE_REVOKED');
+     api=await bindNeonAccount(NEON_DATA_API_URL,neonSessionPort);
+     if(!api||api.accountId!==uid)throw new Error('SESSION_CHANGED');
+    }catch(e){apiError=e;}
+   }
+   const snapshots=await capture(uid,api); // IndexedDB commit even when offline
+   if(apiError)throw apiError;
+   if(!navigator.onLine||!api){report('offline');return;}
+   report('checking');
+   const result=await syncOnce(store,api,uid,{
+    twoUserJwtRlsVerified:true,remoteConsentForPrivateState:true
+   });
+   if(result.mode==='security-error'||result.mode==='sign-in-required'){
+    window.dispatchEvent(new Event('li:auth-recheck'));
+    report('error');
+    return;
+   }
+   if(result.mode==='offline'||result.mode==='pending'){report('offline');return;}
+   if(result.mode==='conflict'){report('conflict');return;}
+   // The signed Data API has returned the uploaded row and read all owner rows.
+   // Verify actual lesson readback, not merely a successful POST status.
+   if(result.uploaded>0){
+    for(const id of LESSONS){
+     const key=storageKey(uid,'lesson_attempt',id);
+     if(await store.outbox.get(key))continue;
+     const row=await store.records.get(key);
+     if(!row||row.baseRevision<1)continue;
+     const verified=await api.one('lesson_attempt',id);
+     if(!verified||verified.revision!==row.baseRevision||
+       canonical(verified.payload)!==canonical(row.payload))
+      throw new Error('SIGNED_LEARNER_READBACK_FAILED');
     }
-    if(remote&&rdata){
-     if(!local||isBlankNativeAttempt(local)||(saved&&saved.revision<remote.revision&&saved.data===canonical(local))){
-      if(localStorage.getItem(key)!==raw){pending=true;continue;}
-      localStorage.setItem(key,JSON.stringify(rdata));
-      checkpoint(uid,id,remote.revision,rdata);
-      hadRows=true;restored=true;continue;
-     }
-     if(!saved||saved.revision!==remote.revision){conflicted=true;continue;}
-    }else if(saved){conflicted=true;continue;}
-    if(!local||isBlankNativeAttempt(local))continue;
-    if(localStorage.getItem(key)!==raw){pending=true;continue;}
-    const next=await api.write({
-     itemType:'lesson_attempt',itemId:id,baseRevision:remote?.revision??0,
-     payload:{schema:'li.native.lesson.v1',data:local as Record<string,JsonValue>},
-     deletedAt:null,opId:crypto.randomUUID()
-    });
-    const verified=await api.one('lesson_attempt',id);
-    if(!verified||verified.revision!==next.revision||
-       canonical(cloud(verified.payload))!==canonical(local))throw Error('REMOTE_READBACK_FAILED');
-    checkpoint(uid,id,verified.revision,local);
-    hadRows=true;
    }
-   report(conflicted?'conflict':hadRows?'saved':'empty');
-   if(restored&&!disposed){
-    // Existing native lesson scripts initialized before account hydration.
-    window.location.reload();
-   }
-  }catch(e){
-   if(e instanceof RevisionConflict)report('conflict');
-   else report(navigator.onLine?'error':'offline');
+   const changed=await hydrate(uid,snapshots,()=>{pending=true;});
+   report((await store.accountRecords(uid)).some(x=>x.itemType==='lesson_attempt')?'saved':'empty');
+   if(changed&&!disposed)window.location.reload();
+  }catch(error){
+   const code=error instanceof Error?error.message:'';
+   if(code==='INVITE_REVOKED'||code==='SESSION_CHANGED'||code==='ACCOUNT_CHANGED'||
+      /^NEON_AUTH_|^INVITE_CHECK_HTTP_40[13]$|^NEON_DATA_API_HTTP_40[13]$/.test(code))
+    window.dispatchEvent(new Event('li:auth-recheck'));
+   report(navigator.onLine?'error':'offline');
   }finally{
    busy=false;
    if(pending&&!disposed){pending=false;schedule();}
   }
  }
- function schedule(){
-  if(disposed)return;
-  if(refreshTimer!==null)clearTimeout(refreshTimer);
-  refreshTimer=setTimeout(()=>{refreshTimer=null;void run();},850);
- }
- function changed(e:Event){
-  const target=e.target;
-  if(!(target instanceof Element))return;
-  if(target.closest('#page-lessonL03,#page-lessonL09,#page-lessonL15'))schedule();
- }
+ const changed=(event:Event)=>{
+  const target=event.target;
+  if(target instanceof Element&&target.closest('#page-lessonL03,#page-lessonL09,#page-lessonL15'))schedule();
+ };
  const resumed=()=>schedule();
  document.addEventListener('input',changed);
  document.addEventListener('change',changed);
@@ -164,7 +227,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
  void run();
  return()=>{
   disposed=true;
-  if(refreshTimer!==null)clearTimeout(refreshTimer);
+  if(timer!==null)clearTimeout(timer);
   document.removeEventListener('input',changed);
   document.removeEventListener('change',changed);
   document.removeEventListener('click',changed);

@@ -16,7 +16,7 @@ type SpellView={
  resumeNote:string;places:string[];dueAt:number|null;
  lessonId:string|null;reviewedInSession:boolean;viewSession:number;
  t12Draft?:{context:string;next:string;answer:string};
- t12SavedOnDevice?:boolean;t12StorageError?:string
+ t12SavedOnDevice?:boolean;t12Synced?:boolean;t12StorageError?:string
 };
 type Version={version:number;title:string;body:string;at:string;change?:string};
 type CaseContext={
@@ -274,9 +274,11 @@ export function GuideDetail(){
        'Optional. Except the T02 schedule, exercise answers are neither saved nor sent to a server.')}</Text>
      {view.active==='T12'&&<p className="small" role={view.t12StorageError?'alert':'status'}
        aria-live="polite">{view.t12StorageError||
-        (view.t12SavedOnDevice?
-         copy('Đã lưu dấu vết trên thiết bị.','Cue saved on this device.'):
-         copy('Chưa có dấu vết đã lưu.','No saved cue yet.'))}</p>}
+        (view.t12Synced?
+         copy('T12 đã đồng bộ với tài khoản.','T12 synced to your account.'):
+         view.t12SavedOnDevice?
+          copy('Đã lưu trên máy · đang chờ đồng bộ.','Saved on device · awaiting sync.'):
+          copy('Chưa có dấu vết đang lưu.','No unfinished cue saved.'))}</p>}
      <Button variant="secondary" onClick={()=>action('reset')}>
       {copy('Làm lại','Start over')}</Button>
     </div>

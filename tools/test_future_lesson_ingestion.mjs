@@ -29,6 +29,57 @@ try{
  assert.equal(original.publishState,'draft');
  assert.equal(original.reviewState,'verified');
  assert.equal(original.editorialStatus,'reviewed');
+ // S148 publication-rights gate: authored figures and bilingual glosses are
+ // first-party, only short original excerpts are quoted from verified works.
+ const rights=original.rights;
+ assert.equal(rights.text,'first_party');
+ assert.equal(rights.illustration,'first_party_original_svg');
+ assert.equal(rights.quotations.policy,'public_domain_original_short_excerpt_with_first_party_gloss');
+ assert.equal(rights.quotations.externalAcademicSources,
+  'reference_only_no_reproduced_licensed_figures');
+ assert.equal(rights.quotations.professionalLegalSignoff,'not_claimed');
+ const artwork=readFileSync(join(sourceRoot,'content/editorial/assets/L09-1-1-population-sample.svg'),'utf8');
+ assert.match(artwork,/<svg[\s>]/);
+ assert.doesNotMatch(artwork,/<image\b|<foreignObject\b|https?:\/\//i,
+  'First-party diagram must contain no external visual content');
+ const bankSource=readFileSync(join(sourceRoot,'site/assets/laoly-quotes-s121.js'),'utf8');
+ const bankLine=bankSource.split('\n').find(line=>line.startsWith('const QUOTES='));
+ assert.ok(bankLine,'Canonical S121 quote list missing');
+ const quotes=JSON.parse(bankLine.slice('const QUOTES='.length).replace(/;\s*$/,''));
+ const byId=new Map(quotes.map(quote=>[quote.id,quote]));
+ const used=new Set();
+ for(const loc of ['vi','en']){
+  const c=original.content.localized[loc];
+  assert.match(c.hook.md,/90%/);
+  assert.equal(c.companion.moments.length,6);
+  assert.equal(c.extension.recallQuestions.length,3);
+  const independent=c.independent;
+  assert.equal(independent.model_answer_gate,'AFTER_VALID_INDEPENDENT_SUBMISSION');
+  assert.equal(c.reflection.gate,'AFTER_VALID_INDEPENDENT_SUBMISSION');
+  const before=[
+   c.hook.md,c.goals.md,c.concept.md,c.variable_types.md,
+   c.guided.md,c.guided.hint_md,c.technique_applications.T06.prompt_md,
+   c.technique_applications.T07.prompt_md,independent.prompt_md,
+   ...c.companion.moments.filter(m=>!['reflection','extension'].includes(m.stage))
+     .flatMap(m=>[m.prompt_md,m.quote_relevance_md,...m.actions.map(a=>a.reply_md)])
+  ].join('\n');
+  assert.doesNotMatch(before,/256\s*\/\s*320|80\s*%/i,'Independent model solution leaked before submission');
+  for(const moment of c.companion.moments){
+   assert.equal(moment.quote_ids[0],moment.quote_id);
+   assert.equal(moment.quote_ids.length,3);
+   assert.equal(moment.actions.length,2);
+   for(const id of moment.quote_ids){
+    used.add(id);
+    const q=byId.get(id);
+    assert.ok(q&&q.original&&q.meta&&q.url?.startsWith('https://'),
+     'Missing original/source provenance for '+id);
+   }
+  }
+  assert.deepEqual(c.technique_applications.T06.answer_key,
+   {A:'nominal',B:'discrete',C:'ordinal',D:'continuous'});
+ }
+ assert.deepEqual([...used].sort(),[...rights.quotations.quoteIds].sort(),
+  'Rights review scope must exactly cover every primary/alternate stage quote');
  assert.equal(original.practice.minimumCharactersPerAnswer,12);
  assert.equal(original.sources.some(s=>s.url==='https://rcompanion.org/handbook/E_01.html'),true);
  for(const loc of ['vi','en']){

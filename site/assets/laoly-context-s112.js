@@ -9,6 +9,12 @@ const debateEl=document.getElementById("buddy-debate");
 const buttons=["buddy-question","buddy-challenge","buddy-forget"].map(id=>document.getElementById(id));
 if(!modal||!textEl||buttons.some(x=>!x))return;
 let activePlan=null;
+/* Invited React and native fallback read the same in-session voice choice. */
+function buddyVoice(kind){
+ const current=window.liBuddyVoice?.get?.();
+ if(current&&typeof current[kind]==="boolean")return current[kind];
+ return Boolean(document.getElementById(kind==="calm"?"calm-toggle":"mute-toggle")?.checked);
+}
 
 function action(label,reply,perform){return {label,reply,perform:perform||null};}
 function methodSourceName(id){return methods.find(m=>m[0]===id)?.[2]||"phương pháp chưa có trong thư viện";}
@@ -262,7 +268,7 @@ function localizePlan(plan){
 }
 function updatePlan(){
  activePlan=localizePlan(getBuddyPlan());
- const calm=document.getElementById("calm-toggle")?.checked;
+ const calm=buddyVoice("calm");
  const intro=calm?"Ta đi từng bước. "+activePlan.intro:activePlan.intro;
  textEl.textContent=localizePlanText(window.liAddressLine?window.liAddressLine(intro):intro);
  buttons.forEach((b,i)=>setButtonText(b,activePlan.actions[i].label));
@@ -275,12 +281,12 @@ function updatePlan(){
  * behavior remain authoritative; no duplicate mentor content/AI service. */
 const applyNickname=line=>window.liAddressLine?.(line)??line;
 function reactView(trigger){
- if(document.getElementById("mute-toggle")?.checked){
+ if(buddyVoice("mute")){
   toast("Im Lặng · Lời thoại Lão Lý đang tắt.");return null;
  }
  activePlan=localizePlan(getBuddyPlan());
  buddyDebateActive=false;
- const calm=!!document.getElementById("calm-toggle")?.checked;
+ const calm=buddyVoice("calm");
  const intro=calm?"Ta đi từng bước. "+activePlan.intro:activePlan.intro;
  const line=localizePlanText(applyNickname(intro));
  const quote=window.liQuoteEngine?.getView?.()||null;
@@ -316,7 +322,7 @@ openLaoLy=function(trigger){
   if(view)window.dispatchEvent(new CustomEvent("li:buddy-open",{detail:view}));
   return;
  }
- if(document.getElementById("mute-toggle")?.checked){toast("Im Lặng · Lời thoại Lão Lý đang tắt.");return;}
+ if(buddyVoice("mute")){toast("Im Lặng · Lời thoại Lão Lý đang tắt.");return;}
  updatePlan();
  document.getElementById("buddy-title-avatar").src=document.getElementById("laoly-current-icon").src;
  openModal("buddy-modal",trigger);

@@ -1,3 +1,4 @@
+import {openRoute} from './app-router.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {motion,useReducedMotion} from 'motion/react';
@@ -281,7 +282,7 @@ function Home(){
    </div>
   </aside>
   <div className="hero-actions">
-   <Button variant="primary" className="primary" data-page={mirror.route}
+   <Button variant="primary" className="primary" onClick={()=>openRoute(mirror.route)}
     aria-label={mirror.route.startsWith('lessonL')?'Khám phá vì sao · Mở bài học liên quan':'Đào sâu · Mở Khảo Chứng'}>
     <span className="action-icon"><LiIcon name="arrow-right" size={22}/></span>
     <span>{mirror.cta}</span>

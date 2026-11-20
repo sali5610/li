@@ -100,4 +100,32 @@ assert.doesNotMatch(old,/el\("import-personal-trigger"\)\?\.click\(\)/);
 assert.doesNotMatch(old,/el\("export-personal-data"\)\?\.click\(\)/);
 assert.doesNotMatch(old,/el\("li-journal-cloud-toggle"\)/);
 
+// Journal screen: complete Check-in → recording → deletion/Undo controls now
+// use the SAME canonical ledger functions as the native fallback.
+const diary=read('site/assets/personal-diary.js');
+const diaryActions=diary.slice(diary.indexOf('function actReact('),
+ diary.indexOf('function notifyReactDiary('));
+const diaryModel=diary.slice(diary.indexOf('function getView(){'),
+ diary.indexOf('function actReact('));
+assert.match(diaryActions,/openCheckin\(value\|\|"li-diary-checkin-now"\)/);
+assert.match(diaryActions,/toggleRecording\(\)/);
+assert.match(diaryActions,/deleteDiary\(\)/);
+assert.doesNotMatch(diaryActions,/\.click\(\)/);
+assert.match(settings,/id="li-react-diary-checkin"/);
+assert.match(settings,/act\('checkin','li-react-diary-checkin'\)/);
+assert.match(diary,/window\.dispatchEvent\(new CustomEvent\("li:open-checkin",\{detail:\{triggerId\}\}\)\)/);
+assert.match(diary,/function toggleRecording\(\)/);
+assert.match(diary,/function deleteDiary\(\)/);
+assert.match(diary,/window\.confirm\("Xóa toàn bộ lịch thể trạng/);
+assert.match(diary,/window\.liShowUndo\("Đã xóa lịch hoạt động\."/);
+assert.match(diary,/existing\.activities\[type\]=\[\.\.\.new Set\(\[\.\.\.previous,\.\.\.added\]\)\]/);
+assert.match(diary,/\$\("li-diary-consent"\)\.addEventListener\("click",toggleRecording\)/);
+assert.match(diary,/\$\("li-diary-delete"\)\.addEventListener\("click",deleteDiary\)/);
+assert.match(diaryModel,/monthLabel:monthLabel\(\)/);
+assert.match(diaryModel,/selectedLabel:selectedLabel\(\)/);
+assert.match(diaryModel,/dayStatus:recordedDayStatus\(record\)/);
+assert.match(diaryModel,/consentStatus:recordingStatus\(\)/);
+assert.doesNotMatch(diaryModel,/\$\("li-diary-/,
+ 'React Journal must not read labels or status from hidden native DOM');
+
 console.log('PASS explicit React routes and Back: direct actions, canonical history and search, no hidden click');

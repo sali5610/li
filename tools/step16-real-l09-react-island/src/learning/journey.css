@@ -41,3 +41,6 @@
 @media(prefers-reduced-motion:reduce){
  .li-learning-journey *{scroll-behavior:auto!important;animation:none!important;transition:none!important}
 }
+
+/* Recover from a transient signed-session or hydration failure without a guest path. */
+.li-learning-recovery{display:flex;flex-wrap:wrap;gap:var(--li-space-3)}

@@ -37,6 +37,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  const [attempt,setAttempt]=useState<Attempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
  const [busy,setBusy]=useState(true);
+ const [loadAttempt,setLoadAttempt]=useState(0);
  const [saving,setSaving]=useState(false);
  const [sync,setSync]=useState<SyncState>('unavailable');
  const [error,setError]=useState('');
@@ -56,6 +57,10 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
 
  useEffect(()=>{
   mounted.current=true;
+  subject.current=null;
+  revision.current=null;
+  setBusy(true);
+  setError('');
   let cancelled=false;
   (async()=>{
    try{
@@ -85,7 +90,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    }
   })();
   return()=>{cancelled=true;mounted.current=false;};
- },[ports]);
+ },[ports,loadAttempt]);
 
  async function refreshStatus(){
   if(!subject.current)return;
@@ -167,8 +172,17 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   if(next==='progress'&&!attempt.reviewed)return;
   setError('');setPhase(next);
  }
- if(busy)return <section className="li-learning-journey" aria-busy="true" role="status">Đang xác minh quyền học và tải tiến độ…</section>;
- if(!attempt)return <section className="li-learning-journey" role="alert">{error||'Không có dữ liệu học.'}</section>;
+ if(busy)return <section className="li-learning-journey" aria-busy="true" role="status">
+  Đang xác minh quyền học và tải tiến độ…
+ </section>;
+ if(!attempt)return <section className="li-learning-journey" role="alert">
+  <Heading level={2} role="titleMedium">Chưa mở được bài L09</Heading>
+  <Text>{error||'Không tải được dữ liệu học. Quyền truy cập vẫn được bảo vệ.'}</Text>
+  <div className="li-learning-recovery">
+   <Button onClick={()=>setLoadAttempt(value=>value+1)}>Thử lại</Button>
+   <Button variant="secondary" onClick={ports.navigation.openCatalog}>Về Tàng Thư</Button>
+  </div>
+ </section>;
 
  const vi=attempt.locale==='vi',content=exact.langs[attempt.locale];
  const labels:Record<Phase,string>=vi?

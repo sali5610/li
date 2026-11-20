@@ -603,7 +603,26 @@
   ],
   "rights": {
     "text": "first_party",
-    "illustration": "first_party_original_svg"
+    "illustration": "first_party_original_svg",
+    "quotations": {
+      "policy": "public_domain_original_short_excerpt_with_first_party_gloss",
+      "reviewedOn": "2026-11-20",
+      "sourceBasis": "Original classical Chinese texts; Hume 1748, Mill 1859, Darwin 1871, Bacon 1625 and Aristotle in W.D. Ross 1908 English translation. Do not reuse modern translations.",
+      "quoteIds": [
+        "analects-honesty",
+        "analects-practice",
+        "analects-review",
+        "analects-think",
+        "aristotle-know",
+        "bacon-studies",
+        "darwin-confidence",
+        "hume-evidence",
+        "mencius-sources",
+        "mill-other-side"
+      ],
+      "externalAcademicSources": "reference_only_no_reproduced_licensed_figures",
+      "professionalLegalSignoff": "not_claimed"
+    }
   },
   "provenance": {
     "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",

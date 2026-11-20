@@ -1,6 +1,6 @@
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button,Card,Field,FilterChip,Heading,InlineFeedback,ListRow,MethodTile,Text,LiIcon} from '../../../../design-system/react/index';
+import {Button,Card,Field,FilterChip,Heading,InlineFeedback,MethodTile,Text,LiIcon} from '../../../../design-system/react/index';
 import './guide-library.css';
 
 /* Single invited app. The canonical legacy authoring and account-backed
@@ -40,14 +40,6 @@ const placeholderView:LibraryView={
 };
 const isEnglish=()=>app.liLanguage?.get?.()==='en';
 const copy=(vi:string,en:string)=>isEnglish()?en:vi;
-const openPage=(route:string)=>{
- const page=document.getElementById('page-'+route);
- if(!page)return;
- const old=document.querySelector<HTMLButtonElement>('[data-page="'+route+'"]');
- if(old){old.click();return;}
- // Routes that lack a legacy button still use the single canonical navigator.
- (window as Window&{navigate?:(route:string)=>void}).navigate?.(route);
-};
 function useMethods(){
  const [view,setView]=useState<MethodsView>(()=>app.liMethods!.getView());
  useEffect(()=>{
@@ -76,11 +68,11 @@ function Guide(){
   return !!q||category!=='Tất cả'||!view.suggestions||view.suggestions.includes(method.id);
  });
  const icon=(categoryKey:string)=>{
-  const name=categoryKey==='Luận Chứng Thuật'?'git-branch':
-   categoryKey==='Phá Giải Thuật'?'puzzle':
-   categoryKey==='Minh Giải Thuật'?'lightbulb':
-   categoryKey==='Tự Chủ Thuật'?'brain-circuit':'book-open';
-  return <LiIcon name={name} size={22}/>;
+  if(categoryKey==='Luận Chứng Thuật')return <LiIcon name="layers" size={22}/>;
+  if(categoryKey==='Phá Giải Thuật')return <LiIcon name="sparkles" size={22}/>;
+  if(categoryKey==='Minh Giải Thuật')return <LiIcon name="info" size={22}/>;
+  if(categoryKey==='Tự Chủ Thuật')return <LiIcon name="star" size={22}/>;
+  return <LiIcon name="book-open" size={22}/>;
  };
  return <div className="section-shell li-react-guide" data-li-react-screen="guide">
   <div className="kicker">{copy('CẨM NANG TƯ DUY','THINKING FIELD GUIDE')}</div>
@@ -232,7 +224,7 @@ function Library(){
     <div className="surface-grid cols2 library-resume-previews">
      <Card variant="tinted"><div className="kicker"><LiIcon name="book-open" size={16}/> {copy('BÀI HỌC · GẦN NHẤT','LATEST LESSON')}</div>
       <LessonRows lessons={view.lessons} limit={1}/></Card>
-     <Card variant="tinted"><div className="kicker"><LiIcon name="git-branch" size={16}/> {copy('VẤN ĐỀ / CASE · GẦN NHẤT','LATEST PROBLEM / CASE')}</div>
+     <Card variant="tinted"><div className="kicker"><LiIcon name="layers" size={16}/> {copy('VẤN ĐỀ / CASE · GẦN NHẤT','LATEST PROBLEM / CASE')}</div>
       <ProblemRows problems={view.problems} limit={1}/></Card>
     </div>
    </section>
@@ -258,7 +250,7 @@ function Library(){
     <ShelfHeader title={copy('Nhìn lại','Reflect')}
      description={copy('Theo dõi thể trạng và các hoạt động theo ngày.','Track each day and your learning rhythm.')}/>
     <Card variant="raised" className="library-activity">
-     <div><div className="kicker"><LiIcon name="calendar-days" size={16}/> {copy('NHẬT KÝ','JOURNAL')}</div>
+     <div><div className="kicker"><LiIcon name="calendar" size={16}/> {copy('NHẬT KÝ','JOURNAL')}</div>
       <Heading level={3} role="titleSmall">{copy('Nhịp học của bạn','Your Learning Rhythm')}</Heading>
       <Text role="support">{copy('Ngủ, vận động, nghỉ ngơi, nhịp học và hoạt động mỗi ngày.',
        'Rest, activity, pace and learning each day.')}</Text>
@@ -373,7 +365,7 @@ function Collection(){
      <Button variant="ghost" className="library-danger-link"
       aria-label={copy('Xóa ghi chép: ','Delete note: ')+(item.type==='case'?item.title:item.body.slice(0,60))}
       onClick={()=>app.liNotes?.deleteNote(item.type,item.id)}>
-      <LiIcon name="trash-2" size={18}/> {copy('Xóa','Delete')}</Button>
+      <LiIcon name="trash" size={18}/> {copy('Xóa','Delete')}</Button>
     </div>
    </Card>)}
   </div>

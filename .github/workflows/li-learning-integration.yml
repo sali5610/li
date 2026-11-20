@@ -39,6 +39,9 @@ jobs:
           node --check ../../site/assets/spell-practice.js
           node ../../tools/test_lesson_spell_suggestions.cjs
           node ../../tools/test_lesson_companion_react_stage.cjs
+          node ../../tools/test_buddy.js
+          node ../../tools/test_quotes.js
+          node ../../tools/test_laoly_react_parity.cjs
           node ../../tools/test_published_lesson_parity.mjs
           npm run extract
           npm run test:sync

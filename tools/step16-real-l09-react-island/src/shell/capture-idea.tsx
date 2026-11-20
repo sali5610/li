@@ -10,6 +10,8 @@ import {Badge,Button,Card,Field,Heading,InlineFeedback,Text} from '../../../../d
 type CaptureResult=
  |{ok:true;id:string}
  |{ok:false;reason:string;message:string};
+type CaptureUiPort={getDraft:()=>string};
+declare global{interface Window{liCaptureUi?:CaptureUiPort;}}
 type CaptureWindow=Window&{
  liCaptureIdea?:{save:(text:string)=>CaptureResult};
 };
@@ -18,6 +20,11 @@ function CaptureIdea(){
  const reduced=useReducedMotion();
  const [text,setText]=useState('');
  const [message,setMessage]=useState('');
+ useEffect(()=>{
+  const port:CaptureUiPort={getDraft:()=>document.documentElement.classList.contains('li-auth-verified')?text:''};
+  window.liCaptureUi=port;
+  return()=>{if(window.liCaptureUi===port)delete window.liCaptureUi;};
+ },[text]);
  useEffect(()=>{
   // An unsaved idea must never leak into the next invited learner session.
   const watch=new MutationObserver(()=>{
@@ -47,7 +54,7 @@ function CaptureIdea(){
   <div className="editorial-grid">
    <Card variant="tinted">
     <Heading level={2} role="titleMedium">Nhặt một ý cần kiểm chứng</Heading>
-    <Field label="Ý nghĩ, câu sách hoặc nhận định chưa được kiểm chứng"
+    <Field id="li-react-capture-note" label="Ý nghĩ, câu sách hoặc nhận định chưa được kiểm chứng"
      kind="textarea" rows={6} value={text} className="li-react-capture-field"
      placeholder="Mình vừa đọc thấy…"
      onChange={event=>{setText(event.target.value);if(message)setMessage('');}}/>

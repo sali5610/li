@@ -123,13 +123,13 @@ if(document.readyState==='loading')
  document.addEventListener('DOMContentLoaded',enableIntegratedLessons,{once:true});
 else enableIntegratedLessons();
 
-// Preview is a separate, invited-account STAGING surface. It does not mark
-// manuscripts released, add published navigation entries or write Neon rows.
+// Personal-study manuscripts mount as ordinary Catalog → Course → Lesson routes.
+// Existing invited login and owner-scoped learner sync remain authoritative.
 if(import.meta.env.VITE_LI_AUTH_TARGET==='github-pages-staging'){
  const startBatch17Preview=()=>{
   void import('../learning/staging-draft-preview.js')
-   .then(m=>m.mountStagingDraftPreview())
-   .catch(e=>{console.error('LI_BATCH17_STAGING_PREVIEW_UNAVAILABLE',e);});
+   .then(m=>m.mountPersonalStudyRoutes())
+   .catch(e=>{console.error('LI_PERSONAL_STUDY_ROUTES_UNAVAILABLE',e);});
  };
  if(document.readyState==='loading')
   document.addEventListener('DOMContentLoaded',startBatch17Preview,{once:true});

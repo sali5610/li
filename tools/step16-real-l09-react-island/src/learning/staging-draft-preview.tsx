@@ -1,196 +1,98 @@
-import React,{useMemo,useState} from 'react';
+import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {initial} from '../native-bridge';
-import type {Attempt} from '../native-bridge';
-import type {LearningPorts} from './ports';
 import {SectionedJourney} from './SectionedJourney';
 import type {SectionedLesson} from './SectionedJourney';
-import {neonSessionPort} from '../auth/neon-client';
-import {NEON_DATA_API_URL} from '../auth/config';
-import {checkInviteAccess} from '../sync/invite-access';
+import {createStagingLearningPorts} from './staging-ports';
+import {personalStudyLessonIds,personalStudyRoute} from './released-lessons';
+import catalog from '../../../../content/curriculum/legacy-catalog.v1.json';
 import '../../../../design-system/react/atoms.css';
 import '../../../../design-system/react/components.css';
 import '../../../../design-system/react/controls.css';
 import './journey.css';
 
-/** Invited-account STAGING preview of all 17 source-preserving drafts.
- * Not an editorial release: no catalog entries, content packs or Neon writes.
- * Practice is isolated under a per-account, per-lesson localStorage key.
+/** Same catalog → lesson route and same invited-account progress sync.
+ * These manuscripts remain proposed drafts: the adapter changes presentation
+ * only, never the source JSON, public course packs or production release.
  */
-const IDS=[
- 'L03-1-1','L03-1-3','L03-2-1','L03-2-2','L03-2-3',
- 'L09-1-3','L09-2-1','L09-2-2','L09-2-3','L09-3-1','L09-3-2','L09-3-3',
- 'L15-2-1','L15-2-3','L15-3-1','L15-3-2','L15-3-3'
-] as const;
-const modules=import.meta.glob('../../../../content/editorial/normalized/*.draft.v1.json',
- {eager:true,import:'default'}) as Record<string,unknown>;
-type SourceDraft={
- id:string;title:{sourceTitle:string};reviewState:string;publishState:string;
- rights:{releaseAuthorized:boolean};content:{
-  format:string;localized:Record<'vi'|'en',{
-   intro_md:string;sections:Array<{role:string;heading:string;body_md:string;
+type Manuscript={
+ id:string;title:{sourceTitle:string};publishState:string;reviewState:string;
+ rights:{releaseAuthorized:boolean};
+ content:{format:string;localized:Record<'vi'|'en',{
+   intro_md:string;
+   sections:Array<{role:string;heading:string;body_md:string;
     feedback_md?:string|null;feedback_gate?:string}>;
    assessment:{questions:string[];rubricCriteria:string[][]}
-  }>;technique:{primary:string};companion:{structuredMoments:unknown[]}
- };
+  }>;technique:{primary:string};companion:{structuredMoments:unknown[]}};
 };
-const drafts=new Map(Object.values(modules).map(raw=>{
- const d=raw as SourceDraft;
- return [d.id,d] as const;
+const manuscripts=import.meta.glob('../../../../content/editorial/normalized/*.draft.v1.json',
+ {eager:true,import:'default'}) as Record<string,unknown>;
+const byId=new Map(Object.values(manuscripts).map(raw=>{
+ const d=raw as Manuscript;return [d.id,d] as const;
 }));
-function draftLesson(id:string):SectionedLesson{
- if(!IDS.some(x=>x===id))throw Error('PREVIEW_ID_NOT_IN_BATCH_17');
- const d=drafts.get(id);
+const catalogLessons=new Map(catalog.groups.flatMap(g=>g.fields.flatMap(f=>
+ f.courses.flatMap(c=>c.lessons.map(l=>[l.id,{title:l.title,field:f.name}] as const)))));
+function lessonForStudy(id:string):SectionedLesson{
+ if(!personalStudyRoute(id))throw Error('PERSONAL_LESSON_NOT_IN_STAGING_CATALOG');
+ const d=byId.get(id);
  if(!d||d.id!==id||d.publishState!=='draft'||d.reviewState!=='proposed'||
   d.rights?.releaseAuthorized!==false||d.content?.format!=='editorial-sectioned-draft-v1'||
-  !['vi','en'].every(loc=>{
-   const c=d.content.localized[loc as 'vi'|'en'];
-   return !!c?.intro_md&&Array.isArray(c.sections)&&
-    c.sections.some(s=>s.role==='guided')&&
-    c.sections.some(s=>s.role==='methods'&&
-     !!s.feedback_md&&s.feedback_gate==='AFTER_MEANINGFUL_METHOD_ATTEMPT')&&
-    c.sections.some(s=>s.role==='independent')&&
+  !(['vi','en'] as const).every(loc=>{
+   const c=d.content.localized[loc];
+   return c?.intro_md?.trim()&&Array.isArray(c.sections)&&
+    c.sections.some(x=>x.role==='guided')&&
+    c.sections.some(x=>x.role==='methods'&&!!x.feedback_md&&
+     x.feedback_gate==='AFTER_MEANINGFUL_METHOD_ATTEMPT')&&
+    c.sections.some(x=>x.role==='independent')&&
     c.assessment?.questions?.length===4&&c.assessment?.rubricCriteria?.length===4;
   })||d.content.companion?.structuredMoments?.length!==6)
-  throw Error('PREVIEW_DRAFT_INCOMPLETE '+id);
- const field=id.startsWith('L03')?'Human–Computer Interaction':
-  id.startsWith('L09')?'Data Science':'Supply Chain Management';
- // Presentation adapter only. Preserve actual proposed/draft status; do not
- // write any approved metadata to the source, catalog or content compiler.
- return {...d,version:'personal-preview-2026-11-21-'+id,
-  title:{vi:d.title.sourceTitle,en:d.title.sourceTitle},
+  throw Error('PERSONAL_STUDY_MANUSCRIPT_INCOMPLETE '+id);
+ const catalogEntry=catalogLessons.get(id);
+ if(!catalogEntry)throw Error('PERSONAL_STUDY_NOT_IN_REAL_CATALOG '+id);
+ const field=catalogEntry.field;
+ return {...d,
+  version:'personal-study-2026-11-21-'+id,
+  title:{vi:catalogEntry.title,en:catalogEntry.title},
   hierarchy:{field:{title:field}},
   content:{...d.content,format:'editorial-sectioned-v1'}
  } as unknown as SectionedLesson;
 }
-const MISSING='li:missing';
-function previewKey(uid:string,id:string):string{
- return 'li.personal.preview.batch17.v1:'+uid+':'+id;
-}
-function safeRead(key:string):{attempt:Attempt;revision:string}{
- const raw=localStorage.getItem(key);
- if(raw===null)return {attempt:initial(),revision:MISSING};
- const obj:unknown=JSON.parse(raw);
- if(!obj||typeof obj!=='object'||Array.isArray(obj))throw Error('PREVIEW_SAVED_STATE_INVALID');
- const a={...initial(),...obj} as Attempt;
- if(!Array.isArray(a.draft)||a.draft.length!==4||
-   !Array.isArray(a.ratings)||a.ratings.length!==4)
-  throw Error('PREVIEW_SAVED_STATE_INVALID');
- return {attempt:a,revision:raw};
-}
-function previewPorts(id:string,onBack:()=>void):LearningPorts{
- let verifiedUid:string|null=null;
- function check(lessonId:string,uid:string){
-  if(lessonId!==id||!verifiedUid||uid!==verifiedUid||
-   !document.documentElement.classList.contains('li-auth-verified'))
-   throw Error('PREVIEW_INVITED_ACCOUNT_REQUIRED');
- }
- return {
-  auth:{async requireInvitedLearner(){
-   if(!document.documentElement.classList.contains('li-auth-verified'))
-    throw Error('PREVIEW_LOGIN_REQUIRED');
-   const session=await neonSessionPort.getSession();
-   const uid=session.data?.user?.id;
-   if(session.error||!uid||!await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort))
-    throw Error('PREVIEW_INVITE_REQUIRED');
-   verifiedUid=uid;
-   return {subjectId:uid};
-  }},
-  attempts:{
-   async load({lessonId,subjectId}){
-    check(lessonId,subjectId);
-    return safeRead(previewKey(subjectId,id));
-   },
-   async save({lessonId,subjectId,attempt,expectedRevision}){
-    check(lessonId,subjectId);
-    if(!Array.isArray(attempt.draft)||attempt.draft.length!==4||
-      !Array.isArray(attempt.ratings)||attempt.ratings.length!==4)
-     throw Error('PREVIEW_ATTEMPT_INVALID');
-    const key=previewKey(subjectId,id);
-    const current=localStorage.getItem(key);
-    if((current??MISSING)!==expectedRevision)throw Error('PREVIEW_REVISION_CONFLICT');
-    const value=JSON.stringify(attempt);
-    if(value.length>60000)throw Error('PREVIEW_RECORD_TOO_LARGE');
-    localStorage.setItem(key,value);
-    if(localStorage.getItem(key)!==value)throw Error('PREVIEW_SAVE_FAILED');
-    return {revision:value};
-   }
-  },
-  sync:{async getStatus({lessonId,subjectId}){
-   check(lessonId,subjectId);
-   return 'on-device';
-  }},
-  navigation:{openCatalog:onBack},
-  search:{openSearch(query){
-   const router=window as Window&{liAppRouter?:{navigate:(id:string)=>boolean};
-    liSearch?:{render?:(text:string)=>void}};
-   if(router.liAppRouter?.navigate('search'))router.liSearch?.render?.(query);
-  }}
- };
-}
-function BatchPreview(){
- const [selected,setSelected]=useState<string|null>(null);
- const lesson=useMemo(()=>selected?draftLesson(selected):null,[selected]);
- const ports=useMemo(()=>selected?previewPorts(selected,()=>setSelected(null)):null,[selected]);
- if(lesson&&ports)return <div className="section-shell" data-li-batch17-preview="lesson">
-  <button className="btn secondary" type="button" onClick={()=>setSelected(null)}>
-   ← Danh sách 17 bài
-  </button>
-  <SectionedJourney key={lesson.id} lesson={lesson} ports={ports} preview/>
- </div>;
- return <div className="section-shell" data-li-batch17-preview="list">
-  <div className="kicker">STAGING · HỌC THỬ CÁ NHÂN</div>
-  <h1 className="display-title">17 bài đã có thể học thử</h1>
-  <p className="intro">Chọn bài → đọc → luyện phương pháp → làm 4 câu → đối chiếu → xem tiến độ.
-   Đây là bản thảo cho việc học cá nhân, không phải nội dung đã được xác nhận học thuật.</p>
-  <p role="note">Tiến độ thử được lưu riêng trên <strong>thiết bị này</strong> theo tài khoản đã mời.
-   Chưa đồng bộ giữa iPhone, Safari và iPad. Tàng Thư chính và bài học đã phát hành không đổi.</p>
-  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:'12px'}}>
-   {IDS.map(id=><button key={id} type="button" className="surface"
-     style={{textAlign:'left',cursor:'pointer',padding:'16px'}}
-     onClick={()=>setSelected(id)}>
-     <strong>{id}</strong>
-     <span style={{display:'block',marginTop:'8px'}}>{drafts.get(id)?.title?.sourceTitle||'Bài học'}</span>
-   </button>)}
-  </div>
- </div>;
-}
-/** Added ONLY to the integrated GitHub Pages staging entrypoint. */
-export function mountStagingDraftPreview():void{
+/** Staging-only normal route hosts. Reuse React lesson, Neon invite guard and
+ * existing account-scoped learning persistence — NOT a second preview store.
+ */
+export function mountPersonalStudyRoutes():void{
  if(import.meta.env.VITE_LI_AUTH_TARGET!=='github-pages-staging')return;
  const main=document.getElementById('main');
- const tools=document.querySelector('.header .tools');
- if(!main||!tools||document.getElementById('page-draftPreview'))
-  throw Error('BATCH17_PREVIEW_STAGE_HOST_MISSING');
- const page=document.createElement('section');
- page.id='page-draftPreview';page.className='page';page.tabIndex=-1;
- const host=document.createElement('div');
- host.id='li-batch17-preview-host';page.append(host);main.append(page);
- const button=document.createElement('button');
- button.id='li-batch17-preview-link';
- button.type='button';button.className='tool-button';
- button.textContent='17 bài';
- button.setAttribute('aria-label','Học thử 17 bài riêng trên staging');
- button.hidden=true;button.style.display='none';tools.after(button);
- button.addEventListener('click',()=>{
-  if(!document.documentElement.classList.contains('li-auth-verified'))return;
-  const nav=window as Window&{liAppRouter?:{navigate:(id:string)=>boolean}};
-  nav.liAppRouter?.navigate('draftPreview');
- });
- let dispose:(()=>void)|null=null;
- const update=()=>{
-  const verified=document.documentElement.classList.contains('li-auth-verified');
-  button.hidden=!verified;button.style.display=verified?'':'none';
-  if(verified&&page.classList.contains('active')&&!dispose){
-   const root=createRoot(host);
-   root.render(<BatchPreview/>);
-   dispose=()=>root.unmount();
-  }else if((!verified||!page.classList.contains('active'))&&dispose){
-   dispose();dispose=null;
-  }
- };
- const observer=new MutationObserver(update);
- observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
- observer.observe(page,{attributes:true,attributeFilter:['class']});
- update();
+ if(!main)throw Error('PERSONAL_STUDY_MAIN_MISSING');
+ for(const id of personalStudyLessonIds){
+  const route=personalStudyRoute(id);
+  if(!route)throw Error('PERSONAL_STUDY_ROUTE_MISSING '+id);
+  if(document.getElementById('page-'+route))throw Error('PERSONAL_STUDY_DUPLICATE_ROUTE '+id);
+  const lesson=lessonForStudy(id);
+  const page=document.createElement('section');
+  page.id='page-'+route;
+  page.className='page';
+  page.tabIndex=-1;
+  page.setAttribute('aria-label','Bài học '+id);
+  const host=document.createElement('div');
+  host.className='section-shell';
+  host.id='li-react-'+route+'-host';
+  page.append(host);main.append(page);
+  const ports=createStagingLearningPorts(id);
+  let dispose:(()=>void)|null=null;
+  const update=()=>{
+   const allowed=document.documentElement.classList.contains('li-auth-verified');
+   const active=page.classList.contains('active');
+   if(allowed&&active&&!dispose){
+    const root=createRoot(host);
+    root.render(<SectionedJourney lesson={lesson} ports={ports} preview/>);
+    dispose=()=>root.unmount();
+   }else if((!allowed||!active)&&dispose){
+    dispose();dispose=null;
+   }
+  };
+  const observer=new MutationObserver(update);
+  observer.observe(page,{attributes:true,attributeFilter:['class']});
+  observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+  update();
+ }
 }

@@ -2,7 +2,7 @@ import type {Attempt} from '../native-bridge.js';
 import {validMethodAttempts} from './validate-method-attempts.js';
 import {initial} from '../native-bridge.js';
 import type {LearningPorts,SyncState} from './ports.js';
-import {isReleasedLessonId} from './released-lessons.js';
+import {isLearnableLessonId} from './released-lessons.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
 import {neonSessionPort} from '../auth/neon-client.js';
 import {AUTH_ORIGIN,IS_INTEGRATED_LI_APP,NEON_DATA_API_URL} from '../auth/config.js';
@@ -129,7 +129,7 @@ function navigate(route:'catalog'|'search'):boolean{
  return window.liAppRouter?.navigate(route)===true;
 }
 export function createStagingLearningPorts(lesson:string):LearningPorts{
- if(!isReleasedLessonId(lesson))throw Error('LESSON_NOT_RELEASED');
+ if(!isLearnableLessonId(lesson))throw Error('LESSON_NOT_LEARNABLE');
  const LESSON=lesson, KEY='li.review.'+lesson+'.v1';
  return {
  auth:{async requireInvitedLearner(){

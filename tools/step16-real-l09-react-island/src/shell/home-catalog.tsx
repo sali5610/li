@@ -1,5 +1,5 @@
 import {openRoute} from './app-router.js';
-import {releasedLessonRoutes} from '../learning/released-lessons.js';
+import {releasedLessonRoutes,personalStudyRoute} from '../learning/released-lessons.js';
 import {inquiryFlow} from './inquiry-port.js';
 import type {MirrorView} from './inquiry-port.js';
 import React,{useEffect,useRef,useState} from 'react';
@@ -35,8 +35,9 @@ type AppWindow=Window&{
 const app=window as AppWindow;
 const groups=Array.isArray(app.LI_CATALOG_DATA)?app.LI_CATALOG_DATA:[];
 const releasedRoutes=new Map(releasedLessonRoutes.map(item=>[item.id,item.route]));
-const canOpenLesson=(lesson:Lesson)=>lesson.published===true&&
- typeof lesson.route==='string'&&releasedRoutes.get(lesson.id)===lesson.route;
+const canOpenLesson=(lesson:Lesson)=>!!personalStudyRoute(lesson.id)||
+ (lesson.published===true&&typeof lesson.route==='string'&&
+ releasedRoutes.get(lesson.id)===lesson.route);
 
 function useLocale():Locale{
  const [locale,setLocale]=useState<Locale>(app.liLanguage?.get()==='en'?'en':'vi');
@@ -119,14 +120,16 @@ function Catalog(){
  const heading=lesson?.title||course?.title||field?.name||group?.title||(locale==='vi'?'Tàng Thư':'Library');
  const eyebrow=lesson?'BÀI HỌC · '+lesson.id:course?'MÔN HỌC · '+course.id:
   field?'CHUYÊN NGÀNH':group?'NHÓM NGÀNH':'KHÁM PHÁ TRI THỨC';
- const description=lesson?'Bài này mới có vị trí trong lộ trình. Nội dung chưa được xuất bản.':
+ const description=lesson?(personalStudyRoute(lesson.id)?'Bài học cá nhân · Có thể học ngay trong Tàng Thư.':'Bài này mới có vị trí trong lộ trình. Nội dung chưa được xuất bản.'):
   course?'Theo dõi các bài trong môn và tiếp tục từ nội dung đã phát hành.':
   field?'Các môn theo nền tảng → trung cấp → chuyên sâu; không tự khóa bài.':
   group?'Chọn chuyên ngành để xem lộ trình các môn học.':
   'Những lối đi khác nhau vào cùng một thư viện tri thức.';
  const chooseLesson=(item:Lesson)=>{
+  const personalRoute=personalStudyRoute(item.id);
+  if(personalRoute){openRoute(personalRoute);return;}
   if(canOpenLesson(item)){app.liCatalog?.openLesson(item.id);return;}
-  // Drafts are readable as outlines only, never routes to a hidden native lesson.
+  // Outlines without content remain non-learnable.
   openPath([...path.slice(0,3),item.id]);
  };
  const available=course?courseProgress(course):null;
@@ -188,7 +191,7 @@ function Catalog(){
    <Heading level={2} role="titleMedium">
     {available?.unavailable?'Tiến độ chưa xác minh':String(available?.done||0)+'/'+course.lessons.length+' bài đã hoàn thành'}
    </Heading>
-   <Text role="support">{available?.available||0}/{course.lessons.length} bài đã phát hành
+   <Text role="support">{available?.available||0}/{course.lessons.length} bài có thể học
     · Chỉ tính hoàn thành khi có tự đánh giá đã lưu.</Text>
    {available&&!available.unavailable&&<Progress label="Tiến độ bài học đã hoàn thành"
     value={available.done} max={Math.max(1,course.lessons.length)}/>}
@@ -198,7 +201,7 @@ function Catalog(){
     <span className="catalog-lesson-order" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>
     <div className="catalog-lesson-desc">
      <Heading level={2} role="titleSmall">{item.title}</Heading>
-     <Text role="support">{item.id} · {canOpenLesson(item)?'Đã phát hành':'Đề cương · chưa phát hành'}</Text>
+     <Text role="support">{item.id} · {personalStudyRoute(item.id)?'Học cá nhân · Có bài đầy đủ':canOpenLesson(item)?'Đã phát hành':'Đề cương · chưa phát hành'}</Text>
     </div>
     <Button variant="secondary" onClick={()=>chooseLesson(item)}>
      {canOpenLesson(item)?'Vào bài học':'Xem đề cương'}

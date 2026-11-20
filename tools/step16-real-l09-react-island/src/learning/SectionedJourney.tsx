@@ -318,7 +318,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   <header className="li-learning-header">
    <div><Text role="caption">{lesson.hierarchy.field.title} · {id}</Text>
     <Heading level={1} role="headline">{lesson.title[locale]}</Heading>
-     {preview&&<Text role="support">Bản học thử cá nhân · lưu riêng trên thiết bị · chưa qua rà nội dung toàn bộ</Text>}</div>
+     {preview&&<Text role="support">Học cá nhân · tiến độ theo tài khoản · nội dung đang hoàn thiện</Text>}</div>
    <div className="li-learning-header-actions">
     <Button variant="secondary" disabled={pending>0||locked} onClick={()=>void restartLesson()}>
      {attempt.locale==='vi'?'Học lại từ đầu':'Restart lesson'}
@@ -332,7 +332,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     onClick={()=>{if(locale!==l)void persist({...attempt,locale:l});}}>{l.toUpperCase()}</Button>)}
    <Text role="support">{locked?'Lưu lỗi':pending?'Đang lưu…':
     sync==='synced'?'Đã đồng bộ':sync==='queued'?'Chờ đồng bộ':
-     preview&&sync==='on-device'?'Đã lưu trên máy này':'Đã lưu / đang kiểm tra'}</Text>
+     sync==='on-device'?'Đã lưu trên thiết bị':'Đã lưu / đang kiểm tra'}</Text>
   </div>
   {error&&<p role="alert">{error}</p>}
   <nav className="li-learning-stepper" aria-label={vi?'Các bước học':'Learning steps'}>

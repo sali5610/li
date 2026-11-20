@@ -19,6 +19,12 @@ export type PastEditorialAttempt={
  guidedDraft:string;hint:boolean;methodChoice:MethodChoice;
  methodAttempts?:Partial<Record<'T06'|'T07',MethodAttempt>>;
 };
+export type EditorialReviewSnapshot={
+ /** A bilingual first-party model answer/rubric frozen at independent submission. */
+ contentVersion:string;rubricVersion:string;
+ modelAnswer:Record<Locale,string>;
+ criteria:Record<Locale,[string,string,string,string][]>;
+};
 export type Attempt={
  locale:Locale;
  draft:[string,string,string,string];
@@ -41,6 +47,8 @@ export type Attempt={
  reviewedAt?:string|null;
  /** Explicit post-save learner action; no automatic model-answer reveal. */
  answerRevealed?:boolean;
+ /** Never compare an older submitted answer against a later editorial revision. */
+ reviewSnapshot?:EditorialReviewSnapshot;
  startedAt?:string|null;
  attemptNumber?:number;
  attemptHistory?:PastEditorialAttempt[];

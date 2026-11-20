@@ -29,9 +29,22 @@ const l03T06={
  ],
  model:"A là câu hỏi mở nhưng dẫn dắt: nó mặc định người dùng yêu thích giao diện mới. B là câu hỏi mở trung lập vì hỏi về một lần sử dụng thật, không ép đánh giá. Ví dụ sửa A: ‘Hãy kể lần gần nhất bạn dùng giao diện mới. Bạn đã làm gì? Điều gì thuận lợi hoặc khó khăn?’ Tự đối chiếu xem câu của bạn có bỏ giả định khen ngợi và hỏi được tình huống cụ thể hay không."
 };
+const l03T06en={
+ ...exercises.T06,
+ lesson:"Two user interview questions: A — ‘What makes you love the new interface?’; B — ‘Tell me about the last time you used the new interface. What steps did you take?’",
+ prompt:"Open-ended does not always mean neutral. Classify A and B, explain the assumption in A, then rewrite A as a neutral question about a real experience.",
+ fields:[
+  ["case1","Question A",["Open but leading","Open and neutral"],"radio"],
+  ["case2","Question B",["Open but leading","Open and neutral"],"radio"],
+  ["reason","Why might A lead the participant?"],
+  ["rewrite","Rewrite A as a neutral question"]
+ ],
+ model:"A is open-ended but leading: it assumes that the participant loves the new interface. B is open and neutral: it asks about an actual occasion without requiring praise. Example rewrite: ‘Tell me about the last time you used the new interface. What did you do? What was easy or difficult?’ Compare your wording with that example: did you remove the praise assumption and ask about a concrete experience?"
+};
 let root,guide,tabs,active=null,phase=0,exposure=null,feedback="",resumeNote="",privatePlaces=[],tabDraft=null;
 let activeLessonId=null,reviewedInSession=false;
-const currentExercise=()=>active==="T06"&&activeLessonId==="L03-1-2"?l03T06:exercises[active];
+const currentExercise=()=>active==="T06"&&activeLessonId==="L03-1-2"?
+ (window.liLanguage?.get?.()==="en"?l03T06en:l03T06):exercises[active];
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 /* Separate authored feedback lead and explanation for accurate VI/EN
    translation and reversible language switching without rewriting input. */
@@ -132,8 +145,12 @@ function check(){
  }else if(e.mode==="resume"&&phase===1){if(!rawValue("answer")){showMessage("Hãy viết câu kết luận nhỏ của bạn.");return;}}
  else{const m=missing();if(m){showMessage("Cần hoàn thành: "+escape(m)+". Chưa có đủ thao tác để đối chiếu.");return;}}
  let info=e.model;
- if(active==="T06")info=(radio("case1")==="0"&&radio("case2")==="1"?
-   "Hai phân loại đúng. ":"Hai phân loại cần đối chiếu lại. ")+info;
+ if(active==="T06"){
+  const correct=radio("case1")==="0"&&radio("case2")==="1";
+  const english=activeLessonId==="L03-1-2"&&window.liLanguage?.get?.()==="en";
+  info=(english?(correct?"Both classifications are correct. ":"Review both classifications. "):
+   (correct?"Hai phân loại đúng. ":"Hai phân loại cần đối chiếu lại. "))+info;
+ }
  if(active==="T07")info=(radio("valid")==="0"&&radio("truth")==="1"?"Đã tách đúng hai câu hỏi. ":"Một đáp án cần xem lại. ")+info;
  if(active==="T09")info=(radio("source")==="1"?"B là nguồn tốt hơn cho câu hỏi hẹp này. ":"Hãy kiểm tra lại provenance và cơ chế chọn người. ")+info;
  if(active==="T11")info=(radio("method")==="1"?"T03 phù hợp cho thủ tục mới. ":"Chưa có lần học trước nên T02 không phù hợp ngay. ")+info;

@@ -19,6 +19,31 @@ for(const entry of draftIndex.entries){
  const draft=JSON.parse(readFileSync(join(sourceRoot,entry.normalizedPath),'utf8'));
  assert.equal(draft.publishState,'draft');
  assert.equal(draft.rights.releaseAuthorized,false);
+ const source=JSON.parse(readFileSync(join(sourceRoot,entry.sourcePath),'utf8'));
+ const mentorMoments=draft.content.companion.structuredMoments;
+ assert.equal(mentorMoments.length,6,'Every lesson needs 6 mentor contexts '+entry.id);
+ for(const moment of mentorMoments){
+  assert.equal(moment.quote_ids.length,3,'Three candidate quotes per moment '+entry.id+' '+moment.stage);
+  assert.equal(new Set(moment.quote_ids).size,3,'No duplicate stage quote '+entry.id+' '+moment.stage);
+  assert.ok(!moment.quote_ids.includes('box-models'),
+   '1987 George Box source cannot be marked public-domain without a separate rights policy: '+entry.id);
+ }
+ const editorial=source.content.github_editorial_extensions||{};
+ for(const [stage,rep] of Object.entries(editorial.mentorQuoteReplacements?.stageReplacements||{})){
+  const moment=mentorMoments.find(m=>m.stage===stage);
+  assert.ok(moment&&moment.quote_ids.includes(rep.withId)&&!moment.quote_ids.includes(rep.replaceId),
+   'GitHub mentor rights override not reflected in derived draft '+entry.id+' '+stage);
+ }
+ if(entry.id==='L15-2-3'){
+  const fix=editorial.academicReferenceCorrections?.replacements?.[0];
+  assert.ok(fix?.to.includes('/shipment_stop_dtail.htm')&&fix?.from.includes('/agent_variables.htm'),
+   'Academic source correction not recorded in GitHub source');
+  for(const loc of ['vi','en']){
+   assert.ok(draft.content.localized[loc].intro_md.includes(fix.to));
+   assert.ok(!draft.content.localized[loc].intro_md.includes(fix.from));
+  }
+ }
+
  for(const loc of ['vi','en']){
   const c=draft.content.localized[loc],m=c.sections.find(s=>s.role==='methods');
   assert.ok(m&&c.sections.some(s=>s.role==='guided'),'Missing method/guided sections '+entry.id+' '+loc);

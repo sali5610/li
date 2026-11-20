@@ -217,6 +217,25 @@ function liRestoreBuddyNames(){
  }catch(e){return {warm:"",teasing:"",serious:""}}
 }
 let liBuddyNames=liRestoreBuddyNames();
+/* One session-only voice owner for native fallback and React Settings.
+ * The legacy checkboxes mirror state; they are not action targets for React. */
+const liBuddyVoice={
+ calm:Boolean(document.getElementById("calm-toggle")?.checked),
+ mute:Boolean(document.getElementById("mute-toggle")?.checked)
+};
+function liSetBuddyVoice(kind,enabled){
+ if(kind!=="calm"&&kind!=="mute")return false;
+ liBuddyVoice[kind]=Boolean(enabled);
+ const legacy=document.getElementById(kind==="calm"?"calm-toggle":"mute-toggle");
+ if(legacy)legacy.checked=liBuddyVoice[kind];
+ window.dispatchEvent(new Event("li:settings-view-changed"));
+ return true;
+}
+for(const kind of ["calm","mute"]){
+ const field=document.getElementById(kind==="calm"?"calm-toggle":"mute-toggle");
+ field?.addEventListener("change",()=>liSetBuddyVoice(kind,field.checked));
+}
+window.liBuddyVoice=Object.freeze({get:()=>({...liBuddyVoice})});
 function liBuddyLine(line){
  if(typeof line!=="string")return line;
  if(window.liLanguage?.get?.()==="en"){
@@ -472,7 +491,7 @@ const translation=document.getElementById("buddy-quote-translation");
 const info=document.getElementById("buddy-quote-info");
 const note=document.getElementById("buddy-quote-context");
 const data=quotedByScreen[currentPage];
-if(!data||buddyDebateActive||document.getElementById("calm-toggle")?.checked){
+if(!data||buddyDebateActive||liBuddyVoice.calm){
  box.hidden=true;original.hidden=true;translation.hidden=true;info.hidden=true;note.hidden=true;
  info.setAttribute("aria-expanded","false");return;
 }
@@ -512,9 +531,9 @@ function setStudyMode(key,{persist=true}={}){
 }
 document.querySelectorAll(".ly-mode-choice").forEach(b=>b.addEventListener("click",()=>setStudyMode(b.dataset.lyMode)));
 function openLaoLy(trigger){
-if(document.getElementById("mute-toggle").checked){toast("Im Lặng · Lời thoại Lão Lý đang tắt. Các nội dung chính vẫn đọc được.");return}
+if(liBuddyVoice.mute){toast("Im Lặng · Lời thoại Lão Lý đang tắt. Các nội dung chính vẫn đọc được.");return}
 buddyDebateActive=false;document.getElementById("buddy-debate").hidden=true;
-document.getElementById("buddy-text").textContent=liBuddyLine(document.getElementById("calm-toggle").checked
+document.getElementById("buddy-text").textContent=liBuddyLine(liBuddyVoice.calm
 ?"Chúng ta chưa biết đủ để kết luận. Hãy xác định điều quan sát được và dữ kiện còn thiếu."
 :(currentPage==="home"?scenarios[qIndex].buddy:buddyCopy[currentPage]||buddyCopy.default));
 showBuddyQuote();document.getElementById("buddy-title-avatar").src=document.getElementById("laoly-current-icon").src;document.getElementById("buddy-scroll").scrollTop=0;openModal("buddy-modal",trigger);refreshLucide();
@@ -934,7 +953,7 @@ window.liSettingsPort=Object.freeze({
    modes:Object.entries(STUDY_MODES).map(([key,info])=>({
     key,label:info.label,image:info.image,feedback:info.feedback
    })),
-   calm:check("calm-toggle"),mute:check("mute-toggle"),
+   calm:liBuddyVoice.calm,mute:liBuddyVoice.mute,
    nicknames:{...liBuddyNames},
    previews:liBuddyNamePreviews(),
    nicknameFeedback:liAddressFeedback,
@@ -950,10 +969,8 @@ window.liSettingsPort=Object.freeze({
  act:(kind,key,value)=>{
   const el=id=>document.getElementById(id);
   if(kind==="mode"&&STUDY_MODES[key])setStudyMode(key);
-  else if(kind==="calm"||kind==="mute"){
-   const field=el(kind==="calm"?"calm-toggle":"mute-toggle");
-   if(field&&field.checked!==Boolean(value))field.click();
-  }else if(kind==="nicknameInput"||kind==="nicknameCommit"){
+  else if(kind==="calm"||kind==="mute"){liSetBuddyVoice(kind,value);return;}
+  else if(kind==="nicknameInput"||kind==="nicknameCommit"){
    if(typeof value!=="string"||!Object.prototype.hasOwnProperty.call(LI_BUDDY_DEFAULT_NAMES,key))return;
    liSetBuddyName(key,value,kind==="nicknameCommit");
   }else if(kind==="resetNames")liResetBuddyNames();

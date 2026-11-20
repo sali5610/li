@@ -50,7 +50,7 @@ const reactOwnsSpell=()=>window.liReactGuideDetailMounted===true;
  * checkpoints stay canonical; cloud replication requires auth owner's registry. */
 const PRACTICE_PREFIX="li.spell.practice.v1:";
 const PRACTICE_SCHEMA="li.spell.practice.v1";
-let practiceError="",practiceSessionOwner=null;
+let practiceError="",practiceSessionOwner=null,practiceSynced=false;
 const blankReceipt=()=>({count:0,lastAt:null,phase:0,places:[]});
 function verifiedOwner(){
  try{
@@ -113,7 +113,7 @@ function saveReceipt({phase:step=0,places=[],complete=false}={}){
   if(raw.length>60000)throw Error("RECEIPT_TOO_LARGE");
   localStorage.setItem(key,raw);
   if(localStorage.getItem(key)!==raw)throw Error("RECEIPT_NOT_SAVED");
-  practiceError="";
+  practiceError="";practiceSynced=false;
   window.dispatchEvent(new Event("li:private-personal-change"));
   return true;
  }catch{practiceError="Chưa lưu được lượt luyện trên máy.";return false;}
@@ -388,7 +388,7 @@ function switchTab(which){
 }
 function open(id,tab="guide",lessonId=null){
  if(!Object.prototype.hasOwnProperty.call(exercises,id))return;
- active=id;practiceSessionOwner=verifiedOwner();practiceError="";
+ active=id;practiceSessionOwner=verifiedOwner();practiceError="";practiceSynced=false;
  const released=["L03-1-2","L09-1-2","L15-2-2"].includes(lessonId);
  const personal=typeof lessonId==="string"&&
   Object.prototype.hasOwnProperty.call(window.liPersonalStudyRoutes||{},lessonId);
@@ -558,7 +558,8 @@ function getView(){
   t12StorageError:active==="T12"?t12StorageError:"",
   practiceCount:active==="T02"?(due?.reviewCount??0):receipt().count,
   practiceLastAt:active==="T02"?(due?.lastReviewedAt??null):receipt().lastAt,
-  practiceError:active==="T02"?"":practiceError
+  practiceError:active==="T02"?"":practiceError,
+  practiceSynced:active!=="T02"&&active!=="T12"&&practiceSynced
  };
 }
 /** Both frontends invoke the same 13-technique action engine. React values
@@ -663,7 +664,30 @@ function setup(){
    t12LocalModified=false;t12Synced=true;
    notifyReactSpell();
   });
+  window.addEventListener("li:spell-practice-sync-confirmed",ev=>{
+   const detail=ev.detail,key=receiptKey();
+   if(!key||!detail||!Array.isArray(detail.keys)||
+      detail.accountId!==practiceSessionOwner||
+      !detail.keys.includes(key)||!active||active==="T02"||active==="T12")return;
+   practiceSynced=true;notifyReactSpell();
+  });
   window.addEventListener("li:personal-sync-applied",ev=>{
+   const detail=ev.detail,key=receiptKey();
+   if(active&&active!=="T02"&&active!=="T12"&&key&&
+      detail?.accountId===practiceSessionOwner&&
+      Array.isArray(detail.keys)&&detail.keys.includes(key)){
+    practiceSynced=false;
+    // Preserve an in-progress answer while still showing downloaded history.
+    if(phase===0&&!reviewedInSession){
+     const saved=receipt();
+     if(!practiceError&&saved.phase>0){
+      phase=saved.phase;
+      privatePlaces=active==="T13"?saved.places.slice():[];
+      viewSession++;tabDraft=null;
+     }
+    }
+    notifyReactSpell();
+   }
    if(active==="T02"){
     const key=t02Key(),detail=ev.detail;
     if(key&&detail&&detail.accountId===localStorage.getItem(T12_OWNER)&&

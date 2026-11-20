@@ -314,7 +314,11 @@ function switchTab(which){
 }
 function open(id,tab="guide",lessonId=null){
  if(!Object.prototype.hasOwnProperty.call(exercises,id))return;
- active=id;activeLessonId=["L03-1-2","L09-1-2","L15-2-2"].includes(lessonId)?lessonId:null;
+ active=id;
+ const released=["L03-1-2","L09-1-2","L15-2-2"].includes(lessonId);
+ const personal=typeof lessonId==="string"&&
+  Object.prototype.hasOwnProperty.call(window.liPersonalStudyRoutes||{},lessonId);
+ activeLessonId=released||personal?lessonId:null;
  phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
  t12Draft={context:"",next:"",answer:""};t12SavedOnDevice=false;t12StorageError="";
  t12LocalModified=false;t12Synced=false;
@@ -415,6 +419,10 @@ function notifyReactSpell(){
   window.dispatchEvent(new Event("li:spell-view-changed"));
 }
 function getView(){
+ // React owns every visible spell form; discard stale fallback controls
+ // rather than leaving a hidden second form behind the React tab.
+ // Native fallback can rebuild from canonical engine state on unmount.
+ if(reactOwnsSpell()&&root?.childElementCount)root.replaceChildren();
  if(!active||!exercises[active])return null;
  activateDueReview();
  const e=currentExercise(),mode=e.mode||"direct";

@@ -33,6 +33,7 @@ type NoteView={
 type NoteOutcome={ok:boolean;changed?:boolean;message:string};
 type AppWindow=Window&{
  liReleasedLessonRoutes?:Readonly<Record<string,string>>;
+ liPersonalStudyRoutes?:Readonly<Record<string,string>>;
  LiSpellPractice?:{
   getView:()=>SpellView|null;setTab:(value:'guide'|'practice')=>void;
   perform:(action:string,answers?:Record<string,string|string[]>)=>boolean;
@@ -52,6 +53,15 @@ const app=window as AppWindow;
 const en=()=>app.liLanguage?.get?.()==='en';
 const copy=(vi:string,english:string)=>en()?english:vi;
 const tr=(text:string)=>en()?(app.liLanguage?.translate?.(text)||text):text;
+function personalLessonReturn(method:string):string|null{
+ try{
+  const token=JSON.parse(sessionStorage.getItem('li.sectioned.guide-return.v1')||'null') as
+   {id?:string;method?:string;at?:number}|null;
+  if(!token?.id||token.method!==method||!token.at||
+   Date.now()-token.at>3600000)return null;
+  return app.liPersonalStudyRoutes?.[token.id]||null;
+ }catch{return null;}
+}
 function useSpell(){
  const [view,setView]=useState<SpellView|null>(()=>app.LiSpellPractice?.getView()||null);
  useEffect(()=>{
@@ -170,6 +180,8 @@ export function GuideDetail(){
   <InlineFeedback tone="info" message={copy('Chọn một Thần Chú để đọc và thực hành.','Select a learning spell to begin.')}/>
  </div>;
  const lessonRoute=view.lessonId?app.liReleasedLessonRoutes?.[view.lessonId]:undefined;
+ const personalRoute=(view.lessonId?app.liPersonalStudyRoutes?.[view.lessonId]:undefined)
+  ||personalLessonReturn(view.active);
  const preparing=phase===0;
  const hasSource=preparing;
  let actionLabel=copy('Đối chiếu bài làm','Check your response');
@@ -183,10 +195,13 @@ export function GuideDetail(){
  const ctaKind=preparing&&['faded','hide','resume','loci'].includes(view.mode)?'next':'check';
  return <div className="section-shell li-react-spell-detail" data-li-react-screen="guide-detail">
   <div className="action-row">
-   {lessonRoute&&<Button variant="secondary" onClick={()=>openRoute(lessonRoute)}
+   {lessonRoute?<Button variant="secondary" onClick={()=>openRoute(lessonRoute)}
     className="library-back-link">
     <LiIcon name="chevron-left" size={18}/> {copy('Về bài học','Back to lesson')}
-   </Button>}
+   </Button>:personalRoute?<Button variant="secondary" onClick={()=>openRoute(personalRoute)}
+    className="library-back-link">
+    <LiIcon name="chevron-left" size={18}/> {copy('Về bài học','Back to lesson')}
+   </Button>:null}
    <Button variant="ghost" onClick={()=>openRoute('guide')} className="library-back-link">
     <LiIcon name="chevron-left" size={18}/> {copy('Sổ Tay Thần Chú','Learning Spells')}
    </Button>

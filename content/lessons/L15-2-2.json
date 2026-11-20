@@ -323,7 +323,13 @@
     "feedbackAfterSubmission": true,
     "rubricKey": "rubricItems",
     "questionsKey": "questions",
-    "answerKey": "answer"
+    "answerKey": "answer",
+    "questionFeedbackModes": [
+      "exact",
+      "exact",
+      "open",
+      "open"
+    ]
   },
   "sources": [
     {

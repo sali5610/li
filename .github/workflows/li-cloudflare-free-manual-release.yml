@@ -51,6 +51,12 @@ jobs:
       # This path exists ONLY behind a distinct human-entered confirmation,
       # on approved main, after separately configuring the Cloudflare bindings.
       # It produces a local artifact, not a second staging site.
+      - name: Set up Node 22 (explicit AI mode only)
+        if: inputs.ai_mode == true
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
       - name: Prepare first-party React AI backend (explicit AI mode only)
         if: inputs.ai_mode == true
         run: |

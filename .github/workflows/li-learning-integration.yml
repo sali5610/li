@@ -40,6 +40,7 @@ jobs:
           node ../../tools/test_lesson_spell_suggestions.cjs
           node ../../tools/test_lesson_companion_react_stage.cjs
           (cd ../.. && node tools/test_buddy.js && node tools/test_quotes.js && node tools/test_laoly_react_parity.cjs)
+          (cd ../.. && node tools/test_navigation.js && node tools/test_react_router_actions.cjs)
           node ../../tools/test_published_lesson_parity.mjs
           npm run extract
           npm run test:sync

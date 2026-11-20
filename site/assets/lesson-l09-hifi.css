@@ -112,3 +112,24 @@
 .li-related-reason{margin:var(--li-space-0)}
 .li-related-source{width:fit-content;max-width:100%;text-decoration:underline;text-underline-offset:var(--li-space-1)}
 .li-related-source:focus-visible{outline:var(--li-space-0);text-decoration-thickness:var(--li-space-1)}
+
+/* Real Wave1 L03/L15 submitted-answer comparison, source-neutral and responsive. */
+:is(#page-lessonL03,#page-lessonL15) .li-submitted-review{
+ display:grid;gap:var(--li-space-3);min-width:0;
+ border-top:1px solid var(--rule);margin-top:var(--li-space-4);
+ padding-top:var(--li-space-4)
+}
+:is(#page-lessonL03,#page-lessonL15) .li-submitted-review h3{
+ margin:var(--li-space-0);color:var(--ink);font-size:var(--li-type-body)
+}
+:is(#page-lessonL03,#page-lessonL15) .li-submitted-review-list{
+ display:grid;gap:var(--li-space-4);margin:var(--li-space-0);
+ padding-inline-start:var(--li-space-5)
+}
+:is(#page-lessonL03,#page-lessonL15) .li-submitted-review-list li{
+ min-width:0;overflow-wrap:anywhere
+}
+:is(#page-lessonL03,#page-lessonL15) .li-submitted-review-answer{
+ margin:var(--li-space-2) var(--li-space-0) var(--li-space-0);
+ color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere
+}

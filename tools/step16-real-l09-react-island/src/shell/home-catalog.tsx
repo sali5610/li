@@ -370,12 +370,13 @@ function Home(){
   let active=true;
   const image=new Image();
   const reveal=()=>{if(active)setDecodedMirrorImage(mirrorImage);};
-  image.onload=()=>{
+  const decodeArtwork=()=>{
    if(typeof image.decode==='function')image.decode().then(reveal,reveal);
    else reveal();
   };
+  image.onload=decodeArtwork;
   image.src=mirrorImage;
-  if(image.complete&&image.naturalWidth)image.onload();
+  if(image.complete&&image.naturalWidth)decodeArtwork();
   return ()=>{active=false;image.onload=null;};
  },[backdropReady,mirrorImage]);
  // Depth is purely decorative. Never move the real mirror text, tap targets,

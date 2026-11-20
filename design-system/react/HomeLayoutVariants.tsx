@@ -67,10 +67,10 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
   </aside>
   <div className="li-ui-home-actions">
    <Button variant="secondary" onClick={onCheckin}>
-    <LiIcon name="check-circle" size={18}/> {t('Check-in','Check in')}
+    <LiIcon name="check" size={18}/> {t('Check-in','Check in')}
    </Button>
    <Button onClick={onExplore}>
-    <LiIcon name="arrow-up-right" size={18}/> {t('Đào sâu','Explore')}
+    <LiIcon name="arrow-right" size={18}/> {t('Đào sâu','Explore')}
    </Button>
    <Button variant="secondary" onClick={onSave} aria-pressed={saved}>
     <LiIcon name="bookmark" size={18}/> {saved?t('Đã lưu','Saved'):t('Lưu câu hỏi','Save')}

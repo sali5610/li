@@ -116,6 +116,10 @@ liveCase.actions[2].perform();
 assert.equal(caseSaves,1,"Mentor must save using real React Case submit");
 ctx.window.liCaseUi.getState=()=>({choice:null,revision:""});
 assert.equal(ctx.window.liGetBuddyPlan().actions[2].label,"Viết Luận Kết");
+// Authenticated React must NOT fall back to a prior account's hidden native form.
+ctx.window.liCaseUi=undefined;
+ctx.selectedCaseAnswer="right";node("case-revision").value="Legacy stale private draft longer than twelve chars";
+assert.equal(ctx.window.liGetBuddyPlan().actions[2].label,"Viết Luận Kết");
 ctx.currentPage="guide";ctx.window.liGuideUi={getState:()=>({query:"T09",category:"Tất cả"})};
 assert.equal(ctx.window.liGetBuddyPlan().actions[2].label,"Sửa từ khóa");
 ctx.currentPage="guideDetail";ctx.window.LiSpellPractice={getView:()=>({active:"T09"})};

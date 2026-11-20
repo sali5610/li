@@ -22,3 +22,8 @@ export type CourseLevelId = "foundation" | "intermediate" | "advanced" | "capsto
 export type CourseLevel = { id: CourseLevelId; order: number; title: Record<Locale,string>; sourceLabels: string[] };
 export type CourseMetadata = { id: string; title: string; groupId: string; fieldId: string; level: CourseLevelId; sourceLevel: string; status: "legacy_outline" | "review_only"; lessonIds: string[]; outlineLessonIds: string[] };
 export type EditorialResearchCourse = { id: string; fieldId: string; title: string; triage: string; level: CourseLevelId; sourceLevel: string; editorialRole: string; legacyEvidence: string[]; sourcePriority: string; status: "research_candidate"; canonicalCourseId: null };
+
+export type CurriculumGroup = { id: string; title: string; fieldIds: string[] };
+export type CurriculumField = { id: string; slug: string; title: string; groupId: string; source: string | null; courseIds: string[] };
+export type CurriculumLessonOutline = { id: string; title: string; groupId: string; fieldId: string; courseId: string; order: number; navigationPublished: boolean; contentState: "outline_only" | "review_only"; publishState: "draft" | "review_only"; localizedTitle: Record<Locale,string> | null };
+export type CurriculumHierarchy = { schemaVersion: "1.0.0"; hierarchy: ["group","field","course","lesson"]; groups: CurriculumGroup[]; fields: CurriculumField[]; courses: CourseMetadata[]; lessons: CurriculumLessonOutline[] };

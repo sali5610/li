@@ -9,8 +9,27 @@ export function createContentClient({ baseUrl=new URL("../content-packs/",import
  const search=()=>load("search.json");
  const backlinks=()=>load("backlinks.json");
  const getCourseLevels=async ()=>(await load("course-levels.json")).levels;
- const listCourses=async ({level,fieldId}={})=>(await load("course-catalog.json")).courses.filter(c=>(!level||c.level===level)&&(!fieldId||c.fieldId===fieldId));
+ const hierarchy=()=>load("course-catalog.json");
+ const listGroups=async ()=>(await hierarchy()).groups;
+ const getGroup=async id=>(await listGroups()).find(g=>g.id===id)??null;
+ const listFields=async ({groupId}={})=>(await hierarchy()).fields.filter(f=>!groupId||f.groupId===groupId);
+ const getField=async id=>(await listFields()).find(f=>f.id===id)??null;
+ const listCourses=async ({level,fieldId,groupId}={})=>(await hierarchy()).courses.filter(c=>(!level||c.level===level)&&(!fieldId||c.fieldId===fieldId)&&(!groupId||c.groupId===groupId));
  const getCourse=async id=>(await listCourses()).find(c=>c.id===id)??null;
+ const listLessonOutlines=async ({courseId,fieldId}={})=>(await hierarchy()).lessons.filter(l=>(!courseId||l.courseId===courseId)&&(!fieldId||l.fieldId===fieldId));
+ const getLessonOutline=async id=>(await listLessonOutlines()).find(l=>l.id===id)??null;
+ const getBreadcrumbs=async id=>{
+  const d=await hierarchy(),lesson=d.lessons.find(l=>l.id===id),course=d.courses.find(c=>c.id===(lesson?.courseId??id));
+  const field=d.fields.find(f=>f.id===(lesson?.fieldId??course?.fieldId??id));
+  const group=d.groups.find(g=>g.id===(lesson?.groupId??course?.groupId??field?.groupId??id));
+  if(!group)return [];
+  return [
+   {kind:"group",id:group.id,title:group.title},
+   ...(field?[{kind:"field",id:field.id,title:field.title}]:[]),
+   ...(course?[{kind:"course",id:course.id,title:course.title}]:[]),
+   ...(lesson?[{kind:"lesson",id:lesson.id,title:lesson.title,contentState:lesson.contentState}]:[])
+  ];
+ };
  const getLesson=async id=>{
   const m=await manifest(),course=m.courses.find(c=>c.lessonIds.includes(id));
   if(!course)return null;
@@ -37,6 +56,6 @@ export function createContentClient({ baseUrl=new URL("../content-packs/",import
   return [...found.values()].sort((a,b)=>a.lessonId.localeCompare(b.lessonId));
  };
  const getBacklinks=async id=>(await backlinks()).backlinks[id]??[];
- return {manifest,graph,search,getCourseLevels,listCourses,getCourse,getLesson,getConceptLessons,getRelatedLessons,getBacklinks};
+ return {manifest,graph,search,getCourseLevels,hierarchy,listGroups,getGroup,listFields,getField,listCourses,getCourse,listLessonOutlines,getLessonOutline,getBreadcrumbs,getLesson,getConceptLessons,getRelatedLessons,getBacklinks};
 }
 export const contentClient=createContentClient();

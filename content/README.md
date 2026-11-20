@@ -2,11 +2,16 @@
 **Source of truth:** `content/lessons/*.json` (GitHub), **not Notion at runtime**.
 Original bilingual learning copy, the four independent questions, hints, answer commentary and four rubric items were copied **verbatim from the PO-frozen native Hi-Fi payloads**. No academic words were rewritten. The three lesson keys remain `L03-1-2`, `L09-1-2`, `L15-2-2`. Sources are references, not a claim that academic release gates passed.
 
-## Four course levels and editorial course inventory
+## Four navigation layers: Nhóm ngành → Chuyên ngành → Môn → Bài
+- `content/curriculum/legacy-catalog.v1.json` is GitHub canonical for the *complete* nested 8 group / 15 field / 45 course / 135 lesson-outline tree. Generated `site/content-packs/course-catalog.json` exposes all four layers as normalized records with stable parent/child IDs, content availability and breadcrumb traversal. The shared typed graph includes all 195 structural `PART_OF` links, not just Wave1.
+- Frontend consumes `listGroups()`, `listFields({groupId})`, `listCourses({fieldId,groupId,level})`, `listLessonOutlines({courseId,fieldId})`, `getLessonOutline(id)`, `getBreadcrumbs(id)`. `getLesson(id)` loads body on demand only when it really exists; 132 outline-only lessons remain drafts and are excluded from search. The three PO-frozen bodies stay `review_only`.
+- **Different dimension**: pedagogical progression tags (Foundation / Intermediate / Advanced / Capstone) are NOT four hierarchy layers.
+
+## Pedagogical course progression tags and editorial course inventory
 - `content/curriculum/course-levels.v1.json`: four ordered pedagogical **tags** — Foundation / Nền tảng → Intermediate / Cốt lõi → Advanced / Chuyên sâu → Capstone/Portfolio / Ứng dụng-nghiên cứu. These are **not** added to the Group > Field > Course > Lesson > Chapter navigation hierarchy and do not impose a per-field quota. Elective/specialism is a role, not another level.
 - `content/curriculum/legacy-catalog.v1.json`: all 45 existing Cxx-x course IDs and 135 legacy lesson outline IDs (8 groups / 15 fields), no renumbering. Only the 3 Wave1 lesson bodies are canonical learning packs at present; old `published` fields are navigation flags, not academic release.
 - `content/curriculum/research-candidates.v0.1.json`: **238 source-preserved PROP candidate courses**, including 15 Capstone/Portfolio tagged proposals, copied from the PO-approved CUR-04A *editorial working baseline*. They remain `research_candidate` with `canonicalCourseId: null`; cannot appear as shipped learner courses until independent curricular approval. Current editorial baseline: 64 foundation / 84 intermediate / 75 advanced / 15 capstone. Role tags remain separate; no capstone quota.
-- Build automatically emits `site/content-packs/course-levels.json` + `course-catalog.json` from the canonical files. `contentClient.getCourseLevels()`, `listCourses({level,fieldId})`, `getCourse(id)` are ready for the integrated UI. Notion is provenance/editorial planning only; no runtime fetch. Research candidates are deliberately **excluded** from learner-facing generated course-catalog.
+- Build emits `site/content-packs/course-levels.json` + complete `course-catalog.json` from the GitHub canonical files. Navigation/ontology consumer uses the same generated IDs. Notion is provenance/editorial planning only; no runtime fetch. Research candidates are deliberately **excluded** from learner-facing generated course-catalog.
 
 ## One canonical input → generated static outputs
 - `schema/lesson.schema.json` and `schema/content-types.ts`: required common metadata, flexible typed instructional body; no extra CMS.

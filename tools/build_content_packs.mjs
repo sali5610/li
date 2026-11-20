@@ -105,6 +105,86 @@ function compileContent(lessons,concepts,relations,registry,academic){
  for(const p of packs.values())outputs["site/content-packs/"+p.courseId+".json"]={schemaVersion:"1.0.0",courseId:p.courseId,lessons:p.lessons};
  return outputs;
 }
+
+function augmentCurriculum(compiled,legacyCourses,lessons,levelMap,navSrc){
+ const authoredById=new Map(lessons.map(l=>[l.id,l]));
+ const groupRows=[],fieldRows=[],courseRows=[],outlineRows=[];
+ const groupIds=new Set(),fieldIds=new Set(),courseIds=new Set(),outlineIds=new Set();
+ const g=compiled["site/content-packs/graph.json"];
+ const nodesById=new Map(g.nodes.map(n=>[n.id,n]));
+ const edgesById=new Map(g.edges.map(e=>[e.id,e]));
+ for(const n of nodesById.values())if(["DomainGroup","Field","Course"].includes(n.kind))n.provenance=navSrc;
+ for(const e of edgesById.values())if(e.predicate==="PART_OF")e.provenance=navSrc;
+ const addNode=(id,kind,title,note)=>{
+  if(nodesById.has(id))return;
+  nodesById.set(id,{id,kind,title,version:"1.0.0",reviewState:kind==="Lesson"?"proposed":"verified",publishState:kind==="Lesson"?"draft":"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:navSrc,note});
+ };
+ const addPart=(from,to)=>{
+  const id="edge:content:part:"+from;
+  if(edgesById.has(id)){if(edgesById.get(id).to!==to)throw Error("LI_COURSE_CONFLICTING_PARENT "+from);return;}
+  edgesById.set(id,{id,predicate:"PART_OF",from,to,reviewState:"verified",visibility:"public_curated",provenance:navSrc});
+ };
+ for(const group of legacyCourses.groups){
+  if(!group.id||!group.title||groupIds.has(group.id))throw Error("LI_COURSE_DUP_GROUP "+group.id);
+  groupIds.add(group.id);
+  const groupId="group:"+group.id,fieldList=[];
+  addNode(groupId,"DomainGroup",group.title,"Navigation group only; not academic accreditation");
+  for(const field of group.fields){
+   const fId="F"+String(parseInt(field.courses[0]?.id.slice(1,3)??"0",10)).padStart(2,"0");
+   if(!/^F\d{2}$/.test(fId)||fieldIds.has(fId)||!field.id||!field.name)throw Error("LI_COURSE_DUP_FIELD "+fId);
+   fieldIds.add(fId);fieldList.push(fId);
+   const courseList=[],fieldId="field:"+fId;
+   addNode(fieldId,"Field",field.name,"Navigation field only; not academic accreditation");
+   addPart(fieldId,groupId);
+   for(const course of field.courses){
+    if(courseIds.has(course.id)||!/^C\d{2}-\d+$/.test(course.id)||!course.id.startsWith("C"+fId.slice(1)+"-"))throw Error("LI_COURSE_DUP_ID "+course.id);
+    courseIds.add(course.id);courseList.push(course.id);
+    const level=levelMap.get(course.level);
+    if(!level)throw Error("LI_COURSE_UNKNOWN_LEVEL "+course.id+" "+course.level);
+    const courseId="course:"+course.id;
+    addNode(courseId,"Course",course.title,"Course outline only; no released academic syllabus");
+    addPart(courseId,fieldId);
+    const authored=lessons.filter(l=>l.hierarchy.course.id===courseId);
+    for(let i=0;i<course.lessons.length;i++){
+     const outline=course.lessons[i],lessonId="lesson:"+outline.id;
+     if(outlineIds.has(outline.id)||!outline.id.startsWith("L"+course.id.slice(1)+"-")||!outline.title)throw Error("LI_COURSE_DUP_LESSON "+outline.id);
+     outlineIds.add(outline.id);
+     const body=authoredById.get(outline.id);
+     if(body&&(body.hierarchy.group.id!==groupId||body.hierarchy.field.id!==fieldId||body.hierarchy.course.id!==courseId||body.hierarchy.group.title!==group.title||body.hierarchy.field.title!==field.name||body.hierarchy.course.title!==course.title))throw Error("LI_COURSE_WRONG_PARENT "+outline.id);
+     outlineRows.push({id:outline.id,title:outline.title,groupId:group.id,fieldId:fId,courseId:course.id,order:i+1,navigationPublished:outline.published===true,contentState:body?"review_only":"outline_only",publishState:body?body.publishState:"draft",localizedTitle:body?body.title:null});
+     addNode(lessonId,"Lesson",outline.title,"Navigation outline only; no reviewed body, exercise or release");
+     addPart(lessonId,courseId);
+    }
+    if(authored.some(l=>!course.lessons.some(o=>o.id===l.id)))throw Error("LI_COURSE_UNLISTED_BODY "+course.id);
+    courseRows.push({id:course.id,title:course.title,groupId:group.id,fieldId:fId,level,sourceLevel:course.level,status:authored.length?"review_only":"legacy_outline",lessonIds:authored.map(l=>l.id),outlineLessonIds:course.lessons.map(l=>l.id)});
+   }
+   fieldRows.push({id:fId,slug:field.id,title:field.name,groupId:group.id,source:field.source??null,courseIds:courseList});
+  }
+  groupRows.push({id:group.id,title:group.title,fieldIds:fieldList});
+ }
+ if(lessons.some(l=>!outlineIds.has(l.id)))throw Error("LI_COURSE_ORPHAN_BODY");
+ const nodes=[...nodesById.values()].sort((a,b)=>a.id.localeCompare(b.id));
+ const edges=[...edgesById.values()].sort((a,b)=>a.id.localeCompare(b.id));
+ const nodeKinds=new Map(nodes.map(n=>[n.id,n.kind]));
+ for(const e of edges)if(!nodeKinds.has(e.from)||!nodeKinds.has(e.to))throw Error("LI_COURSE_GRAPH_DANGLING "+e.id);
+ const backlinks={},forward={},adjacency={};
+ const append=(obj,key,value)=>{(obj[key]??=[]).push(value);};
+ for(const e of edges){
+  const record={id:e.id,predicate:e.predicate,from:e.from,to:e.to,reviewState:e.reviewState,reason:e.reason??null,provenance:e.provenance};
+  append(backlinks,e.to,record);append(forward,e.from,record);
+  append(adjacency,e.from,{...record,direction:"outgoing",neighbor:e.to});
+  append(adjacency,e.to,{...record,direction:"incoming",neighbor:e.from});
+ }
+ const search=[];
+ for(const n of nodes)if(["Lesson","Concept","Course","Field","DomainGroup"].includes(n.kind)&&!(n.kind==="Lesson"&&n.publishState==="draft"))search.push({
+  id:n.id,kind:n.kind,title:n.title,aliases:n.aliases,reviewState:n.reviewState,publishState:n.publishState,
+  fieldId:n.kind==="Lesson"?(authoredById.get(n.id.slice("lesson:".length))?.hierarchy.field.id??null):null
+ });
+ compiled["site/content-packs/graph.json"]={schemaVersion:"1.0.0",nodes,edges,adjacency};
+ compiled["site/content-packs/backlinks.json"]={schemaVersion:"1.0.0",backlinks,forward};
+ compiled["site/content-packs/search.json"]={schemaVersion:"1.0.0",documents:search};
+ compiled["site/content-packs/course-catalog.json"]={schemaVersion:"1.0.0",source:"legacy_course_navigation_catalog",publicationState:"outline_only_except_locked_wave1",hierarchy:["group","field","course","lesson"],groups:groupRows,fields:fieldRows,courses:courseRows,lessons:outlineRows};
+}
 const lessons=readdirSync(resolve(root,"content/lessons")).filter(f=>f.endsWith(".json")).sort().map(f=>load("content/lessons/"+f));
 const ids=lessons.map(l=>l.id);
 const old=extractLiteral(read("site/assets/lesson-wave1-core.js"),"PACK");
@@ -130,22 +210,9 @@ for(const level of courseLevels.levels){
  for(const label of level.sourceLabels){if(levelMap.has(label))throw Error("LI_COURSE_DUP_LEVEL_ALIAS: "+label);levelMap.set(label,level.id);}
 }
 if(allLevels.size!==4||new Set(courseLevels.levels.map(x=>x.order)).size!==4)throw Error("LI_COURSE_REQUIRED_FOUR_LEVELS");
-const courseIds=new Set(),outlineIds=new Set(),courseRows=[],fields=[];
-for(const group of legacyCourses.groups){
- for(const field of group.fields){
-  const fId="F"+String(parseInt(field.courses[0]?.id.slice(1,3)??"0",10)).padStart(2,"0");
-  fields.push({id:fId,slug:field.id,title:field.name,groupId:group.id});
-  for(const course of field.courses){
-   if(courseIds.has(course.id))throw Error("LI_COURSE_DUP_ID "+course.id);courseIds.add(course.id);
-   const level=levelMap.get(course.level);
-   if(!level)throw Error("LI_COURSE_UNKNOWN_LEVEL "+course.id+" "+course.level);
-   const lessonIds=lessons.filter(l=>l.hierarchy.course.id==="course:"+course.id).map(l=>l.id);
-   for(const outline of course.lessons){if(outlineIds.has(outline.id))throw Error("LI_COURSE_DUP_OUTLINE "+outline.id);outlineIds.add(outline.id);}
-   if(lessonIds.some(id=>!course.lessons.some(item=>item.id===id)))throw Error("LI_COURSE_MISSING_LESSON "+course.id);
-   courseRows.push({id:course.id,title:course.title,groupId:group.id,fieldId:fId,level,sourceLevel:course.level,status:lessonIds.length?"review_only":"legacy_outline",lessonIds,outlineLessonIds:course.lessons.map(x=>x.id)});
-  }
- }
-}
+const navSrc={"sourceUrl":"https://github.com/sali5610/li/blob/integration/staging/content/curriculum/legacy-catalog.v1.json","sourceSection":"8 groups / 15 fields / 45 courses / 135 lesson navigation outlines (metadata only)","evidenceType":"documented","checkedOn":"2026-11-20"};
+augmentCurriculum(compiled,legacyCourses,lessons,levelMap,navSrc);
+const fields=compiled["site/content-packs/course-catalog.json"].fields;
 const candidateIds=new Set();
 for(const c of researchCandidates.courses){
  if(candidateIds.has(c.id)||!/^PROP-F\d{2}-\d{3}$/.test(c.id))throw Error("LI_COURSE_DUP_RESEARCH_ID "+c.id);
@@ -153,9 +220,7 @@ for(const c of researchCandidates.courses){
  if(!allLevels.has(c.level)||c.status!=="research_candidate"||c.canonicalCourseId!==null||!fields.some(f=>f.id===c.fieldId))throw Error("LI_COURSE_UNAPPROVED_PROMOTION "+c.id);
 }
 if(researchCandidates.publicationStatus!=="not_authorized")throw Error("LI_COURSE_RESEARCH_RELEASE_FORBIDDEN");
-if(lessons.some(l=>!courseIds.has(l.hierarchy.course.id.slice(7))))throw Error("LI_COURSE_LESSON_ORPHAN");
 compiled["site/content-packs/course-levels.json"]={schemaVersion:courseLevels.schemaVersion,levels:courseLevels.levels};
-compiled["site/content-packs/course-catalog.json"]={schemaVersion:"1.0.0",source:"legacy_course_navigation_catalog",publicationState:"outline_only_except_locked_wave1",fields,courses:courseRows};
 
 const check=process.argv.includes("--check");
 for(const [path,value] of Object.entries(compiled)){

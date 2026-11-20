@@ -66,3 +66,35 @@ assert(!research.includes("data-answer="),"React case buttons must not trigger n
 assert(html.includes("caseSnapshot")&&html.includes("selectedText:caseOptions.find"),
  "Saved case notes must freeze the original published question and chosen option");
 console.log("PASS Inquiry direct port: mirror hooks, bookmark, research, real draft, case save, invite and account guards");
+
+
+const search=fs.readFileSync(path.resolve(__dirname,"../tools/step16-real-l09-react-island/src/shell/knowledge-search.tsx"),"utf8");
+const capture=fs.readFileSync(path.resolve(__dirname,"../tools/step16-real-l09-react-island/src/shell/capture-idea.tsx"),"utf8");
+const locale=fs.readFileSync(path.resolve(__dirname,"../tools/step16-real-l09-react-island/src/shell/discovery-locale.ts"),"utf8");
+// Direct component mounts survive removal of legacy page shells by the global migration owner.
+for(const [name,source,exported] of [
+ ["Home + Catalog",home,"Home as HomeScreen,Catalog as CatalogScreen"],
+ ["Research + Case",research,"ResearchScene as ResearchScreen,CaseScene as CaseScreen"],
+ ["Search",search,"KnowledgeSearch as KnowledgeSearchScreen"],
+ ["Capture",capture,"CaptureIdea as CaptureIdeaScreen"]
+]){
+ assert(source.includes(exported),name+" must be mountable without the old HTML page shell");
+ assert(!source.includes("new MutationObserver("),name+" cannot use DOM observers to render or clear React state");
+ assert(source.includes("useDiscoveryLocale"),name+" must support reactive VI/EN");
+}
+assert.match(home,/window\.addEventListener\('li:auth-verified-changed',update\)/,
+ "Home follows the canonical auth lifecycle event");
+assert.match(research,/window\.addEventListener\('li:auth-verified-changed',sync\)/,
+ "Research/Case follow the canonical auth event");
+assert.match(capture,/window\.addEventListener\('li:auth-verified-changed',clearOnSignOut\)/,
+ "Drafts cannot cross account boundaries");
+assert.match(search,/contentClient\.searchKnowledge\(query\)/,
+ "React search queries real canonical data, not mock results");
+assert.match(search,/searchPersonalStudy\(query\)/,
+ "All personal study content stays searchable through the canonical adapter");
+assert.match(search,/function RelationMap\(/,
+ "Graph nodes must come from search response relationships");
+assert.match(search,/record\.links\|\|\[\]/,
+ "The connection map must use returned ontology edges");
+assert.match(locale,/li:localechange/);
+console.log("PASS React discovery parity: direct screen exports, auth events, live ontology and VI/EN");

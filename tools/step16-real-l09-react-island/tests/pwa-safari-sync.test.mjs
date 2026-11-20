@@ -40,7 +40,7 @@ test('PWA offline outbox uploads to Neon and Safari separate browser profile pul
   const readOnSafari=await syncOnce(safari,api,uid,gate);
   assert.equal(readOnSafari.mode,'synced');
   assert.equal(readOnSafari.downloaded,1);
-  const pulled=await safari.records.get(uid+':lesson_attempt:'+id);
+  const pulled=await safari.records.get(JSON.stringify([uid,'lesson_attempt',id]));
   assert.deepEqual(pulled?.payload,payload);
  }finally{
   pwa.close();safari.close();

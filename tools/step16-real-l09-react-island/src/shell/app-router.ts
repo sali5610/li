@@ -135,16 +135,22 @@ export function mountReactRouter():()=>void{
   hasRoute:id=>typeof id==='string'&&!!pageOf(normalize(id))
  };
  window.liReactRouter=port;
+ let wasVerified=canVisit();
  const onSession=(event:Event)=>{
   const verified=(event as CustomEvent<{verified:boolean}>).detail?.verified;
   if(verified!==false){
    if(canVisit()){
+    wasVerified=true;
     // Restore direct links only after invitation and lesson hosts are registered.
     const destination=routeFromUrl();
     if(destination!==active)change(destination,{remember:false,syncUrl:false});
    }
    return;
   }
+  // Initial pending/guest state is not a sign-out. Keep the requested deep
+  // link intact until the invitation resolves; clear it only after a real session.
+  if(!wasVerified)return;
+  wasVerified=false;
   // A new invited account must never inherit the previous learner's Back
   // history or private lesson deep link. No persistence is touched.
   history.length=0;browserDepth=0;active='home';

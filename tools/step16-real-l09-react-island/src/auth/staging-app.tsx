@@ -4,6 +4,7 @@ import {AuthPanel} from './AuthPanel.js';
 import {mountLearningJourney} from '../learning/app-entry.js';
 import {createStagingLearningPorts} from '../learning/staging-ports.js';
 import {mountSharedNavigation} from '../shell/mount-navigation.js';
+import {mountKnowledgeSearch} from '../shell/knowledge-search.js';
 
 // Unified GitHub Pages staging: no guest app. React verifies signed invitation.
 const root=document.getElementById('li-staging-auth-root');
@@ -64,3 +65,7 @@ else enableIntegratedL09();
 // data-page event delegation remains the temporary route bridge.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountSharedNavigation,{once:true});
 else mountSharedNavigation();
+
+// Tra Cứu is React-owned while retaining the one canonical static knowledge client.
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountKnowledgeSearch,{once:true});
+else mountKnowledgeSearch();

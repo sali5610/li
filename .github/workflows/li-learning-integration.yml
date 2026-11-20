@@ -30,6 +30,7 @@ jobs:
         run: |
           set -euo pipefail
           npm install --no-audit --no-fund
+          npm install --prefix ../../design-system/react --no-audit --no-fund
           # React L09 must compile the same canonical, source-versioned content
           # already published as Tàng Thư's static content pack.
           node ../../tools/build_content_packs.mjs --check

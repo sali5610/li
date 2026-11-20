@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
-import type {Attempt,MethodAttempt} from '../native-bridge';
+import type {Attempt,MethodAttempt,MethodCategory,MethodChoice} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
 import {isReleasedLessonId} from './released-lessons';
 import {Button,Card} from '../../../../design-system/react/Components';
@@ -37,7 +37,7 @@ type Localized={
  companion:{moments:CompanionMoment[]};extension:Extension;
 };
 type EditorialLesson={
- id:string;title:Record<Locale,string>;hierarchy:{field:{title:string}};
+ id:string;version:string;title:Record<Locale,string>;hierarchy:{field:{title:string}};
  content:{format:'editorial-structured-v1';localized:Record<Locale,Localized>};
  publishState:'review_only';reviewState:'verified'|'approved';
  rights:{text:'first_party'};
@@ -45,6 +45,18 @@ type EditorialLesson={
 };
 type EditorialAttempt=Attempt;
 const MIN=12,MAX=4000;
+const RETURN_KEY='li.editorial.guide-return.v1';
+const categories:MethodCategory[]=['nominal','ordinal','discrete','continuous'];
+const T06_CASES=['A','B','C','D'] as const;
+function returnToken(id:string):{id:string;phase:Phase;scrollY:number;locale:Locale;at:number}|null{
+ try{
+  const raw=sessionStorage.getItem(RETURN_KEY);if(!raw)return null;
+  const t=JSON.parse(raw);
+  if(t.id!==id||t.phase!=='methods'||!Number.isFinite(t.scrollY)||
+    Date.now()-t.at>3600000||!['vi','en'].includes(t.locale))return null;
+  return t;
+ }catch{return null;}
+}
 const phases:Phase[]=['read','guided','methods','practice','feedback','progress'];
 const defaultMethod=():MethodAttempt=>({draft:'',submission:null,submittedAt:null});
 function fromAttempt(a:EditorialAttempt,method:Method):MethodAttempt{
@@ -350,13 +362,22 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     if(cancelled)return;
     subject.current=learner.subjectId;revision.current=saved.revision;
     setLesson(source);setAttempt(a);setPersistedAttempt(a);
-    setPhase(resume(a));setSync(state);setBusy(false);
+    setPhase(returnToken(id)?.phase??resume(a));setSync(state);setBusy(false);
    }catch{
     if(!cancelled){setBusy(false);setError('Bài chưa được phát hành hoặc chưa thể xác minh quyền học.');}
    }
   })();
   return()=>{cancelled=true;mounted.current=false;};
  },[id,ports,reload]);
+ useEffect(()=>{
+  if(busy||!lesson||phase!=='methods'||!returnToken(id))return;
+  const frame=requestAnimationFrame(()=>{
+   const t=returnToken(id);if(!t)return;
+   window.scrollTo({top:Math.max(0,t.scrollY),behavior:'auto'});
+   try{sessionStorage.removeItem(RETURN_KEY);}catch{/* no source draft is erased */}
+  });
+  return()=>cancelAnimationFrame(frame);
+ },[id,busy,phase,lesson]);
 
  function save(next:EditorialAttempt):Promise<boolean>{
   if(locked||failed.current||!subject.current||!revision.current)return Promise.resolve(false);
@@ -407,6 +428,36 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   if(!attempt||locked||attempt.submitted||value.length>MAX)return;
   void save({...attempt,guidedDraft:value});
  }
+ function chooseMethod(choice:MethodChoice){
+  if(!attempt||locked||saving||attempt.submitted||attempt.methodChoice===choice)return;
+  void save({...attempt,methodChoice:choice});
+ }
+ async function openGuide(method:Method){
+  if(!attempt||locked||failed.current)return;
+  await chain.current;
+  if(failed.current||pending.current>0){
+   setError('Chờ lưu xong bản nháp trước khi mở Sổ Tay Thần Chú.');return;
+  }
+  const host=window as Window&{liMethods?:{open:(id:string,practice?:boolean)=>void}};
+  if(!host.liMethods?.open){setError('Sổ Tay Thần Chú chưa khả dụng.');return;}
+  try{
+   sessionStorage.setItem(RETURN_KEY,JSON.stringify({
+    id,phase:'methods',locale:attempt.locale,scrollY:window.scrollY,
+    method,at:Date.now()
+   }));
+  }catch{setError('Không giữ được vị trí quay lại; bài học vẫn được lưu.');return;}
+  host.liMethods.open(method,false);
+ }
+ function methodClassify(letter:typeof T06_CASES[number],value:string){
+  if(!attempt||locked||attempt.submitted)return;
+  const previous=fromAttempt(attempt,'T06');
+  if(previous.submittedAt||(!categories.includes(value as MethodCategory)&&value!==''))return;
+  const classifications={...previous.classifications};
+  if(value)classifications[letter]=value as MethodCategory;
+  else delete classifications[letter];
+  void save({...attempt,methodAttempts:{...attempt.methodAttempts,
+   T06:{...previous,classifications}}});
+ }
  function methodEdit(method:Method,value:string){
   if(!attempt||locked||attempt.submitted||value.length>MAX)return;
   const previous=fromAttempt(attempt,method);
@@ -419,6 +470,9 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   const previous=fromAttempt(attempt,method);
   if(previous.submittedAt||previous.draft.trim().length<MIN){
    setError('Viết ít nhất 12 ký tự trước khi xem phản hồi Thần Chú.');return;
+  }
+  if(method==='T06'&&T06_CASES.some(k=>!previous.classifications?.[k])){
+   setError('T06 cần phân loại đủ A–D và giải thích lý do.');return;
   }
   setError('');
   const next={...attempt,assisted:true,methodAttempts:{...attempt.methodAttempts,
@@ -551,6 +605,16 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     <Heading level={2} id="li-editorial-methods" role="titleLarge">{labels.methods}</Heading>
     <Text role="support">{vi?'T06 là gợi ý chính, T07 bổ trợ. Cả hai đều không bắt buộc.':
      'T06 is primary and T07 supplementary; both are optional.'}</Text>
+    <div className="li-editorial-method-choice" role="group" aria-label={vi?'Chọn Thần Chú (K2)':'Choose a method (K2)'}>
+     {(['T06','T07','skip'] as const).map(choice=><Button key={choice}
+      variant={attempt.methodChoice===choice?'primary':'secondary'}
+      aria-pressed={persistedAttempt?.methodChoice===choice}
+      disabled={locked||saving||attempt.submitted} onClick={()=>chooseMethod(choice)}>
+      {choice==='skip'?(vi?'Không dùng Thần Chú':'Skip method'):choice}
+     </Button>)}
+    </div>
+    <Text role="support">{vi?'K2: chọn phương pháp. K3: chỉ ghi nhận khi đã nộp lượt luyện; mở hướng dẫn không tính hoàn thành.':
+     'K2 records a choice. K3 requires a submitted exercise; opening the guide is not completion.'}</Text>
     {(['T06','T07'] as const).map(method=>{
      const item=fromAttempt(attempt,method),copy=content.technique_applications[method];
       const persisted=fromAttempt(persistedAttempt??attempt,method);
@@ -559,6 +623,20 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       aria-label={(vi?'Luyện Thần Chú ':'Spell practice ')+method}>
       <Heading level={3} role="titleMedium">{method}</Heading>
       <Markdown md={copy.prompt_md}/>
+      <Button variant="ghost" disabled={saving||locked} onClick={()=>void openGuide(method)}>
+       {vi?'Mở Sổ Tay Thần Chú · '+method:'Open five-step Spellbook · '+method}
+      </Button>
+      {method==='T06'&&<div className="li-editorial-t06-cases" role="group"
+       aria-label={vi?'Phân loại bốn trường A–D':'Classify four fields A–D'}>
+       {T06_CASES.map(letter=><label key={letter} className="li-editorial-t06-case">
+        <strong>{letter}</strong>
+        <select value={item.classifications?.[letter]??''} disabled={locked||attempt.submitted||!!item.submittedAt}
+         onChange={e=>methodClassify(letter,e.currentTarget.value)}>
+         <option value="">{vi?'Chọn loại biến':'Select type'}</option>
+         {categories.map(cat=><option key={cat} value={cat}>{cat}</option>)}
+        </select>
+       </label>)}
+      </div>}
       <Field kind="textarea" rows={4} label={vi?'Lập luận của mày':'Your reasoning'}
        value={item.draft} disabled={locked||attempt.submitted||!!item.submittedAt}
        onChange={e=>methodEdit(method,e.currentTarget.value)}/>
@@ -567,6 +645,9 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
        onClick={()=>void methodSubmit(method)}>{vi?'Nộp lượt luyện':'Submit spell attempt'}</Button>:
        <div role="note" className="li-learning-hint">
         <Text role="support">{vi?'Đã lưu câu trả lời, giờ mới mở phản hồi.':'Attempt saved; feedback unlocked.'}</Text>
+        {method==='T06'&&persisted.classifications&&<p className="li-learning-submitted-answer">
+         {T06_CASES.map(k=>k+': '+(persisted.classifications?.[k]??'—')).join(' · ')}
+        </p>}
         <p className="li-learning-submitted-answer">{persisted.submission}</p>
         <Markdown md={copy.feedback_md}/>
        </div>}

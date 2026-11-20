@@ -5,6 +5,7 @@ on:
       - 'content/**'
       - 'tools/build_content_packs.mjs'
       - 'tools/test_content_adapter.mjs'
+      - 'tools/test_future_lesson_ingestion.mjs'
       - 'site/assets/li-content-adapter.mjs'
       - 'site/assets/lesson-related-wave1.js'
       - 'site/assets/lesson-l09-hifi.css'
@@ -25,4 +26,5 @@ jobs:
       - run: |
           node tools/build_content_packs.mjs --check
           node tools/test_content_adapter.mjs
+          node tools/test_future_lesson_ingestion.mjs
           node tools/test_catalog_drilldown.cjs

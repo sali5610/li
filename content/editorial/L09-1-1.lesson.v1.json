@@ -54,7 +54,7 @@
     ]
   },
   "content": {
-    "format": "locked-structured-v1",
+    "format": "editorial-structured-v1",
     "localized": {
       "vi": {
         "hook": {

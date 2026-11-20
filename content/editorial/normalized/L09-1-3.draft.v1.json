@@ -183,7 +183,7 @@
         {
           "stage": "concept",
           "heading": "concept · l09-concept",
-          "source_md": "<b>Candidate quote IDs:</b> box-models, mencius-sources, hume-evidence; originals and localized glosses tracked in S137/S138 quote audit.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Box's warning that models are approximations is used as an analogy: one center statistic is not the complete observed distribution; this is not a direct theorem from Box about these data.\n\n<b>VI · Lão Lý:</b> Mean có thể bị một ca cực lâu kéo lên, còn median theo vị trí giữa. Chọn số nào phải dựa vào câu hỏi, không dựa vào cái nào nhìn đẹp hơn.\n\n- <b>Mean dùng số nào?</b> Mean cộng toàn bộ quan sát rồi chia số trường hợp; nếu một giá trị lớn bất thường, nó vẫn được tính nên trung bình thay đổi.\n- <b>Median có bất tử không?</b> Median ít nhạy với một cực trị đơn lẻ, nhưng nó không nói hết độ phân tán. Cần nhìn range hoặc hình phân phối cùng lúc.\n\n<b>EN · Lão Lý:</b> One extreme case can shift the mean; the median is the ordered middle. Pick a statistic for the question, not for how impressive it looks.\n\n- <b>How is the mean formed?</b> Sum every observed duration and divide by the number of cases. An extreme duration still contributes to the numerator.\n- <b>Does median solve everything?</b> A median is more resistant to one extreme but does not reveal the variability. Pair it with a spread measure or plot."
+          "source_md": "<b>Candidate quote IDs:</b> analects-think, mencius-sources, hume-evidence; originals and localized glosses tracked in S137/S138 quote audit.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Box's warning that models are approximations is used as an analogy: one center statistic is not the complete observed distribution; this is not a direct theorem from Box about these data.\n\n<b>VI · Lão Lý:</b> Mean có thể bị một ca cực lâu kéo lên, còn median theo vị trí giữa. Chọn số nào phải dựa vào câu hỏi, không dựa vào cái nào nhìn đẹp hơn.\n\n- <b>Mean dùng số nào?</b> Mean cộng toàn bộ quan sát rồi chia số trường hợp; nếu một giá trị lớn bất thường, nó vẫn được tính nên trung bình thay đổi.\n- <b>Median có bất tử không?</b> Median ít nhạy với một cực trị đơn lẻ, nhưng nó không nói hết độ phân tán. Cần nhìn range hoặc hình phân phối cùng lúc.\n\n<b>EN · Lão Lý:</b> One extreme case can shift the mean; the median is the ordered middle. Pick a statistic for the question, not for how impressive it looks.\n\n- <b>How is the mean formed?</b> Sum every observed duration and divide by the number of cases. An extreme duration still contributes to the numerator.\n- <b>Does median solve everything?</b> A median is more resistant to one extreme but does not reveal the variability. Pair it with a spread measure or plot."
         },
         {
           "stage": "guided",
@@ -198,7 +198,7 @@
         {
           "stage": "reflection",
           "heading": "reflection · l09-rubric",
-          "source_md": "<b>Candidate quote IDs:</b> analects-honesty, darwin-confidence, box-models; originals and localized glosses tracked in S137/S138 quote audit.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> The Analects on admitting what one does not know illustrates keeping small-sample and skew claims appropriately bounded.\n\n<b>VI · Lão Lý:</b> Đã nộp rồi thì đối chiếu cả số và lời giải thích. Mean đúng mà che mất outlier là báo cáo thiếu trung thực, dù bảng trông sạch.\n\n- <b>Rubric trọng gì?</b> So mean, median, range và đơn vị của từng nhóm; sau đó kiểm tra đã nói rõ ảnh hưởng của cực trị lên cách hiểu chưa.\n- <b>Chọn biểu đồ nào?</b> Dotplot có thể phơi ra từng quan sát ở mẫu nhỏ; boxplot giúp tóm tắt vị trí và trải rộng. Cần hiển thị đúng dữ liệu gốc, không tô hồng.\n\n<b>EN · Lão Lý:</b> After submission, check both arithmetic and interpretation. A correct mean that hides the extreme case is still an incomplete report.\n\n- <b>What does the rubric test?</b> Validate the mean, median, range and units for each group, then check whether the explanation recognizes the extreme observation.\n- <b>Which plot helps?</b> A dotplot can show each small-sample point; a boxplot summarizes position and spread. Neither makes the sample representative."
+          "source_md": "<b>Candidate quote IDs:</b> analects-honesty, darwin-confidence, hume-evidence; originals and localized glosses tracked in S137/S138 quote audit.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> The Analects on admitting what one does not know illustrates keeping small-sample and skew claims appropriately bounded.\n\n<b>VI · Lão Lý:</b> Đã nộp rồi thì đối chiếu cả số và lời giải thích. Mean đúng mà che mất outlier là báo cáo thiếu trung thực, dù bảng trông sạch.\n\n- <b>Rubric trọng gì?</b> So mean, median, range và đơn vị của từng nhóm; sau đó kiểm tra đã nói rõ ảnh hưởng của cực trị lên cách hiểu chưa.\n- <b>Chọn biểu đồ nào?</b> Dotplot có thể phơi ra từng quan sát ở mẫu nhỏ; boxplot giúp tóm tắt vị trí và trải rộng. Cần hiển thị đúng dữ liệu gốc, không tô hồng.\n\n<b>EN · Lão Lý:</b> After submission, check both arithmetic and interpretation. A correct mean that hides the extreme case is still an incomplete report.\n\n- <b>What does the rubric test?</b> Validate the mean, median, range and units for each group, then check whether the explanation recognizes the extreme observation.\n- <b>Which plot helps?</b> A dotplot can show each small-sample point; a boxplot summarizes position and spread. Neither makes the sample representative."
         },
         {
           "stage": "extension",
@@ -247,12 +247,12 @@
         {
           "stage": "concept",
           "quote_ids": [
-            "box-models",
+            "analects-think",
             "mencius-sources",
             "hume-evidence"
           ],
           "missing_quote_ids": [],
-          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> box-models, mencius-sources, hume-evidence; originals and localized glosses tracked in S137/S138 quote audit.",
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> analects-think, mencius-sources, hume-evidence; originals and localized glosses tracked in S137/S138 quote audit.",
           "vi": {
             "prompt": "Mean có thể bị một ca cực lâu kéo lên, còn median theo vị trí giữa. Chọn số nào phải dựa vào câu hỏi, không dựa vào cái nào nhìn đẹp hơn.",
             "actions": [
@@ -357,10 +357,10 @@
           "quote_ids": [
             "analects-honesty",
             "darwin-confidence",
-            "box-models"
+            "hume-evidence"
           ],
           "missing_quote_ids": [],
-          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> analects-honesty, darwin-confidence, box-models; originals and localized glosses tracked in S137/S138 quote audit.",
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> analects-honesty, darwin-confidence, hume-evidence; originals and localized glosses tracked in S137/S138 quote audit.",
           "vi": {
             "prompt": "Đã nộp rồi thì đối chiếu cả số và lời giải thích. Mean đúng mà che mất outlier là báo cáo thiếu trung thực, dù bảng trông sạch.",
             "actions": [
@@ -465,9 +465,14 @@
       }
     },
     "issues": [],
-    "sourceVerbatim": true,
+    "sourceVerbatim": false,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
     "readOnlyDerived": true,
-    "runnableInReact": false
+    "runnableInReact": false,
+    "githubAuthoredMentorRightsOverride": {
+      "sourcePath": "content/editorial/imported/L09-1-3.source.v1.json",
+      "sourceKey": "content.github_editorial_extensions.mentorQuoteReplacements",
+      "status": "draft_options_remediated_publication_not_cleared"
+    }
   }
 }

@@ -64,6 +64,7 @@ function draw(){
  }
  root.innerHTML='<div class="spell-activity-head"><div><span class="kicker">'+active+' · <span>THỬ THI TRIỂN</span></span><h2>'+e.title+'</h2></div><span class="spell-state">'+(feedback?"Đã đối chiếu":phase===0?"Đang chuẩn bị":"Đang thực hành")+'</span></div><div class="spell-activity-body">'+inner+(feedback?'<div class="spell-feedback" role="status" tabindex="-1"><strong>Phản hồi để tự kiểm chứng</strong><p>'+feedbackMarkup(feedback)+'</p><p class="small">Bài mẫu minh họa, không chứng nhận thành thạo, IQ hay kết quả học thuật ngoài nhiệm vụ này.</p></div>':"")+'</div><footer class="spell-activity-footer"><p class="small">Tự chọn, có thể bỏ qua. Trừ mốc T02 do bạn chủ động đặt, nội dung điền không tự lưu hay gửi lên máy chủ.</p>'+act("reset","Làm lại","action alt")+'</footer>';
  window.liLanguage?.apply?.(root);
+ notifyReactSpell();
 }
 function switchTab(which){
  const practice=which==="practice";
@@ -75,12 +76,14 @@ function switchTab(which){
   draw();
   if(tabDraft){[...root.querySelectorAll("textarea,input")].forEach((el,i)=>{const d=tabDraft[i];if(d){el.value=d.value;el.checked=d.checked;}});tabDraft=null;}
  }
+ notifyReactSpell();
 }
 function open(id,tab="guide"){
  if(!Object.prototype.hasOwnProperty.call(exercises,id))return;
  active=id;phase=0;feedback="";privatePlaces=[];resumeNote="";
  tabDraft=null;
  if(root)switchTab(tab==="practice"?"practice":"guide");
+ notifyReactSpell();
 }
 function missing(){
  for(const f of exercises[active].fields){
@@ -95,6 +98,7 @@ function showMessage(text){
  box.innerHTML='<strong>Phản hồi để tự kiểm chứng</strong><p>'+feedbackMarkup(text)+'</p><p class="small">Đây là bài mẫu minh họa, không chứng nhận thành thạo hay kết quả học thuật ngoài nhiệm vụ.</p>';
  window.liLanguage?.apply?.(box);
  box.focus();
+ notifyReactSpell();
 }
 function check(){
  const e=exercises[active];
@@ -133,6 +137,51 @@ function next(){
  }
  phase=1;feedback="";draw();
 }
+
+/* Existing exercise engine remains single owner of 13 techniques and feedback.
+ * React consumes typed snapshots and calls the same action listeners. */
+function notifyReactSpell(){
+ if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
+  window.dispatchEvent(new Event("li:spell-view-changed"));
+}
+function getView(){
+ if(!active||!exercises[active])return null;
+ const e=exercises[active],mode=e.mode||"direct";
+ let fields=[];
+ if(phase===0){
+  if(!["hide","faded","due"].includes(mode))fields=e.fields;
+ }else if(mode==="faded")fields=[["number","Kết quả (đơn vị)"]];
+ else if(mode==="resume")fields=[["answer","Câu kết luận sau khi quay lại"]];
+ else if(mode==="loci")fields=[1,2,3].map(i=>["recall"+i,"Ý nhớ lại ở nơi "+i]);
+ else fields=e.fields;
+ const due=mode==="due"?scheduleRead():null;
+ return {
+  active,title:e.title,mode,phase,tab:root&&!root.hidden?"practice":"guide",
+  lesson:e.lesson,prompt:e.prompt,fields:fields.map(field=>({
+   id:field[0],label:field[1],options:Array.isArray(field[2])?field[2].slice():null,
+   choiceKind:field[3]==="multi"?"multi":"radio"
+  })),
+  feedback,resumeNote,places:privatePlaces.slice(),dueAt:due?.due||null
+ };
+}
+function performReact(action,values={}){
+ if(!root||!active)return false;
+ if(!["next","check","reset","schedule","clear"].includes(action))return false;
+ if(values&&typeof values==="object"){
+  for(const [key,val] of Object.entries(values)){
+   const field=exercises[active].fields.find(item=>item[0]===key);
+   const synthetic=key==="answer"||key.startsWith("recall")||key==="number";
+   if(!field&&!synthetic)continue;
+   const textarea=root.querySelector("#sp-"+key);
+   if(textarea&&typeof val==="string"){textarea.value=val.slice(0,1200);continue;}
+   const options=root.querySelectorAll('input[name="sp-'+key+'"]');
+   const chosen=Array.isArray(val)?val:[val];
+   for(const input of options)input.checked=chosen.includes(input.value);
+  }
+ }
+ const button=root.querySelector('[data-spell-action="'+action+'"]');
+ if(!button)return false;button.click();notifyReactSpell();return true;
+}
 function setup(){
  const page=document.getElementById("page-guideDetail");if(!page)return;
  guide=page.querySelector(".editorial-grid");if(!guide)return;
@@ -154,7 +203,7 @@ function setup(){
   case "clear":try{localStorage.setItem("li.spell.t02.due.v1",JSON.stringify({clearedAt:Date.now(),due:null}))}catch(err){}feedback="";draw();break;
   }
  });
- window.LiSpellPractice={open,methods:Object.keys(exercises)};
+ window.LiSpellPractice={open,methods:Object.keys(exercises),getView,perform:performReact,setTab:switchTab};
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",setup,{once:true});else setup();
 })();

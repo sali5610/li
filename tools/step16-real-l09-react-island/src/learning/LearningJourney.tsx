@@ -18,6 +18,7 @@ import './journey.css';
 import {LessonBookmark,LessonMentor,LessonSectionIndex,L09Figures,LessonSources} from './LessonDetailParity.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
 import {AiFeedbackPanel} from './AiFeedbackPanel.js';
+import feedbackPolicy from '../../../../content/feedback/ai-question-modes.v1.json';
 import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 
 /** A real invited-only React learner screen, not a second app.
@@ -482,7 +483,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      </div>)}
     </div>
     <AiFeedbackPanel id="L09-1-2" locale={attempt.locale}
-     answers={attempt.submission??attempt.draft}/>
+     answers={attempt.submission??attempt.draft}
+     openQuestionIndices={feedbackPolicy.lessons['L09-1-2'].modes.flatMap((mode,index)=>mode==='open'?[index]:[])}/>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
      locale={attempt.locale} onReviewTheory={()=>go('read')}/>
     <Text role="support">{vi?'Tự chấm theo rubric, không phải điểm tự động.':'Self-review, not automatic grading.'}</Text>

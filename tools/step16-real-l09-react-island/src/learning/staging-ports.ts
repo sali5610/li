@@ -4,7 +4,7 @@ import type {LearningPorts,SyncState} from './ports.js';
 import {isReleasedLessonId} from './released-lessons.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
 import {neonSessionPort} from '../auth/neon-client.js';
-import {AUTH_ORIGIN,IS_GITHUB_STAGING,NEON_DATA_API_URL} from '../auth/config.js';
+import {AUTH_ORIGIN,IS_INTEGRATED_LI_APP,NEON_DATA_API_URL} from '../auth/config.js';
 import {recentOfflineOwner} from '../auth/offline-local.js';
 import {waitForLearnerHydration,saveNativeLearnerAttempt,learnerAttemptSyncState} from '../auth/learner-sync.js';
 
@@ -121,7 +121,7 @@ function valid(a:Attempt){
  validMethodAttempts(a)&&validHistory(a)&&validReviewSnapshot(a);
 }
 function owner(uid:string){
- if(!IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN||
+ if(!IS_INTEGRATED_LI_APP||location.origin!==AUTH_ORIGIN||
  !document.documentElement.classList.contains('li-auth-verified')||
  !uid)throw Error('LEARNING_INVITE_REQUIRED');
  let currentOwner:string|null;

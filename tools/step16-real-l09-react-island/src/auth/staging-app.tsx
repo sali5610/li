@@ -3,6 +3,7 @@ import {createRoot} from 'react-dom/client';
 import {AuthPanel} from './AuthPanel.js';
 import {mountLearningJourney} from '../learning/app-entry.js';
 import {createStagingLearningPorts} from '../learning/staging-ports.js';
+import {mountSharedNavigation} from '../shell/mount-navigation.js';
 
 // Unified GitHub Pages staging: no guest app. React verifies signed invitation.
 const root=document.getElementById('li-staging-auth-root');
@@ -58,3 +59,8 @@ function enableIntegratedL09(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enableIntegratedL09,{once:true});
 else enableIntegratedL09();
+
+// React owns top navigation, bottom navigation and utility controls. Native
+// data-page event delegation remains the temporary route bridge.
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountSharedNavigation,{once:true});
+else mountSharedNavigation();

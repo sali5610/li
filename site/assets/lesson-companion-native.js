@@ -4,7 +4,14 @@
 "use strict";
 const registry=new Map();
 const stages=["opening","concept","guided","independent","reflection","extension"];
-const stageLocale=()=>{const root=displayedLesson()?.root;return (root?.getAttribute("lang")||document.documentElement.lang)==="en"?"en":"vi";};
+const reactStages={read:"opening",guided:"guided",practice:"independent",feedback:"reflection",progress:"extension"};
+let candidateMethods=null;
+const reactLesson=()=>document.querySelector('[data-li-react-journey="L09-1-2"][data-li-lesson-phase]');
+const stageLocale=()=>{
+ const item=displayedLesson(),live=item?.data.lesson_id==="L09-1-2"?reactLesson():null;
+ return (live?.getAttribute("lang")||item?.root.getAttribute("lang")||
+   document.documentElement.lang)==="en"?"en":"vi";
+};
 function hasSubmitted(lessonId){
  try{const v=JSON.parse(localStorage.getItem("li.review."+lessonId+".v1")||"null");return Boolean(v&&v.submitted);}
  catch(e){return false;}
@@ -26,8 +33,12 @@ function activeMoment(item){
 function context(){
  const item=displayedLesson();
  if(!item)return null;
- const moment=activeMoment(item);
- return {page:item.root.id.slice(5),lesson_id:item.data.lesson_id,stage:moment.stage,
+ const live=item.data.lesson_id==="L09-1-2"?reactLesson():null;
+ const submitted=live?live.getAttribute("data-li-lesson-submitted")==="true":hasSubmitted(item.data.lesson_id);
+ const mappedStage=live?reactStages[live.getAttribute("data-li-lesson-phase")]:null;
+ const safeStage=mappedStage==="reflection"&&!submitted?"independent":mappedStage;
+ const moment=(safeStage&&item.data.moments.find(m=>m.stage===safeStage))||activeMoment(item);
+ return {page:item.root.id.slice(5),lesson_id:item.data.lesson_id,stage:moment.stage,submitted,
   topics:item.data.topics,quote_ids:moment.quote_ids,anchor:moment.anchor,wording:moment[stageLocale()]};
 }
 function plan(page){
@@ -35,7 +46,23 @@ function plan(page){
  if(!c||c.page!==page)return null;
  const a=c.wording.actions;
  const actions=a.map(x=>({label:x.label,reply:x.reply,perform:null}));
- actions.push({
+ const suggested=c.submitted&&["reflection","extension"].includes(c.stage)?
+   candidateMethods?.lessons?.[c.lesson_id]?.[0]:null;
+ const supported=suggested&&/^L2-T\d{2}$/.test(suggested.techniqueId)&&
+  suggested.shortId===suggested.techniqueId.slice(3);
+ if(supported){
+  const english=stageLocale()==="en",exercise=c.lesson_id!=="L03-1-2";
+  actions.push({
+   label:(english?"Try optional ":"Thử thần chú gợi ý ")+suggested.shortId,
+   reply:(english?"Editorial suggestion, not reviewed method fit or mastery: ":
+     "Gợi ý theo dạng bài, chưa duyệt ghép phương pháp hay chứng nhận thông thạo: ")+
+     suggested.why[english?"en":"vi"],
+   perform:()=>{
+    closeModal("buddy-modal");
+    if(typeof showMethod==="function")showMethod(suggested.shortId,{practice:exercise});
+   }
+  });
+ }else actions.push({
   label:stageLocale()==="en"?"Read this section":"Đọc lại mục này",
   reply:stageLocale()==="en"?"Return to the section connected to this question.":"Lão đưa ngươi về đúng mục đang học để kiểm tra lại dữ liệu.",
   perform:()=>{
@@ -76,6 +103,13 @@ async function load(root){
 }
 window.liLessonCompanion={getContext:context,getPlan:plan,registered:()=>Array.from(registry.keys())};
 document.querySelectorAll("[data-lesson-id][data-companion-manifest]").forEach(root=>{load(root);});
+// Only editorial candidate method suggestions. Do not promote fit to verified or assign K3 mastery.
+fetch(new URL("./assets/lesson-spell-suggestions.v0.1.json",document.baseURI),{credentials:"same-origin"})
+ .then(r=>{if(!r.ok)throw Error("METHOD_SUGGESTION_UNAVAILABLE");return r.json();})
+ .then(data=>{
+  if(data?.evidenceStatus==="task_matched_editorial_candidates_not_reviewed_method_fit")
+   candidateMethods=data;
+ }).catch(()=>{/* Companion's existing two contextual actions remain usable. */});
 let pending=false;
 function refresh(){
  if(pending)return;pending=true;

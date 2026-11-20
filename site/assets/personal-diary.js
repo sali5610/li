@@ -143,7 +143,8 @@ function actReact(kind,value){
  if(kind==="next"){moveMonth(1);return;}
  if(kind==="checkin"){openCheckin(value||"li-diary-checkin-now");return;}
  if(kind==="consent"){toggleRecording();return;}
- if(kind==="delete"){deleteDiary();return;}
+ if(kind==="delete"){return deleteDiary();}
+  if(kind==="deleteConfirmed"){return deleteDiary(true);}
 }
 function notifyReactDiary(){
  if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
@@ -169,9 +170,9 @@ function toggleRecording(){
  render();personalChanged();
  return !storageError;
 }
-function deleteDiary(){
+function deleteDiary(confirmed=false){
  if(storageError||!Object.keys(diary.days).length)return false;
- if(!window.confirm("Xóa toàn bộ lịch thể trạng và hoạt động trên thiết bị này? Bạn có 7 giây để hoàn tác."))return false;
+ if(!confirmed&&!window.confirm("Xóa toàn bộ lịch thể trạng và hoạt động trên thiết bị này? Bạn có 7 giây để hoàn tác."))return false;
  const prior=JSON.parse(JSON.stringify(diary));
  try{
   const empty=JSON.stringify({schema:1,days:{}});

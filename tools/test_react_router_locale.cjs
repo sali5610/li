@@ -374,6 +374,6 @@ assert.equal(cPort.getPath().length,0,'Signed-out account loses previous Catalog
 assert.equal(cPort.openLesson('L03-1-2'),false,'Unverified account cannot navigate into a lesson');
 stopCatalog();
 assert.equal(cWindow.liCatalog,undefined);
-assert.match(read('.github/workflows/li-pages.yml'),/Expected exactly three retired native Catalog\\/Search scripts/);
-assert.match(read('tools/step16-real-l09-react-island/src/auth/staging-app.tsx'),/installReactCatalogPort\\(\\)/);
+assert.match(read('.github/workflows/li-pages.yml'),/Expected exactly three retired native Catalog\/Search scripts/);
+assert.match(read('tools/step16-real-l09-react-island/src/auth/staging-app.tsx'),/installReactCatalogPort\(\)/);
 console.log('PASS canonical JSON Catalog port: published/private gates, course return, breadcrumb Back and auth isolation');

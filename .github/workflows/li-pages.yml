@@ -140,7 +140,7 @@ jobs:
             'Quản lý tài khoản</button></article>')
           html=html.replace(marker,marker.replace('<article class="surface">',account+'<article class="surface">',1),1)
           old='<b>Đồng bộ giữa các thiết bị</b><p class="small">Chưa hỗ trợ.</p>'
-          new='<b>Đồng bộ tiến độ học</b><p class="small" id="li-cloud-status" role="status" aria-live="polite">Đang kết nối Neon cho các bài đã phát hành…</p>'
+          new='<b>Đồng bộ dữ liệu cá nhân</b><p class="small" id="li-cloud-status" role="status" aria-live="polite">Đang kết nối Neon để đồng bộ dữ liệu theo tài khoản…</p>'
           assert html.count(old)==1,'Settings sync description changed'
           html=html.replace(old,new,1)
           shell=('<div id="li-staging-auth-root" tabindex="-1" '

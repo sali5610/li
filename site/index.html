@@ -35,7 +35,7 @@
 <div class="hero" role="region" aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn">
 
 <div class="hero-left"><button class="home-checkin" id="checkin" type="button"><i data-lucide="check-circle-2" class="icon sm" aria-hidden="true"></i> Check-in hôm nay</button><h1>Mọi câu hỏi<br>đều có rễ.</h1><p>Không cần biết tất cả. Chỉ cần không ngừng tò mò.</p><span class="tiny-note">Một câu hỏi, muôn ngả đường</span></div>
-<div class="mirror-message"><h2 id="mirror-question">90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?</h2><div class="mirror-controls" role="group" aria-label="Chuyển câu hỏi"><button id="previous-question" class="mirror-refresh" type="button" aria-label="Câu hỏi trước" title="Câu hỏi trước"><i data-lucide="arrow-left" class="icon sm" aria-hidden="true"></i></button><button id="shuffle" class="mirror-refresh" type="button" aria-label="Câu hỏi tiếp theo" title="Câu hỏi tiếp theo"><i data-lucide="arrow-right" class="icon sm" aria-hidden="true"></i></button></div></div>
+<div class="mirror-message"><div class="li-home-mirror-artwork" aria-hidden="true" hidden><img id="mirror-topic-image" class="li-home-mirror-art-image" alt="" decoding="async"><span class="li-home-mirror-art-vignette"></span></div><h2 id="mirror-question">90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?</h2><div class="mirror-controls" role="group" aria-label="Chuyển câu hỏi"><button id="previous-question" class="mirror-refresh" type="button" aria-label="Câu hỏi trước" title="Câu hỏi trước"><i data-lucide="arrow-left" class="icon sm" aria-hidden="true"></i></button><button id="shuffle" class="mirror-refresh" type="button" aria-label="Câu hỏi tiếp theo" title="Câu hỏi tiếp theo"><i data-lucide="arrow-right" class="icon sm" aria-hidden="true"></i></button></div></div>
 <aside class="hero-dialogue" aria-label="Lão Lý kể bối cảnh câu hỏi đang hiện trong Gương Vạn Vấn">
   <span class="hero-dialogue-avatar" aria-hidden="true"><img src="./assets/laoly-neutral.png?v=ux-art07-clean-five-20261119" alt="" width="128" height="128" loading="eager" decoding="async"></span>
   <div class="hero-dialogue-bubble" role="note">
@@ -431,6 +431,16 @@ scenarios.splice(5,0,{
 });
 function renderMirrorItem(){
  const item=scenarios[qIndex],isHook=item.type==="hook";
+ // Native fallback uses the SAME catalog artwork as the React mirror.
+ // A first pass may precede catalog loading; window.load replays once below.
+ const topicImage=document.getElementById("mirror-topic-image");
+ if(topicImage){
+  const field=window.LI_CATALOG_DATA?.flatMap(group=>group.fields||[])
+   .find(candidate=>candidate.id===item.fieldId);
+  const src=field?.image||"";
+  if(src&&topicImage.getAttribute("src")!==src)topicImage.setAttribute("src",src);
+  topicImage.parentElement.hidden=!src;
+ }
  document.getElementById("mirror-question").textContent=item.question;
  document.getElementById("home-scene").textContent=item.scene;
  const example=document.querySelector("#page-home .hero-dialogue .example-label");
@@ -1033,5 +1043,5 @@ const liInitialLesson=new URLSearchParams(window.location.search).get("lesson");
 const liInitialCatalog=new URLSearchParams(window.location.search).get("catalog");
 navigate(liInitialCatalog&&!liInitialLesson?"catalog":"home",{focus:false,syncUrl:!(liInitialCatalog||liInitialLesson)});
 setStudyMode(studyMode,{persist:false});
-window.addEventListener("load",()=>{refreshLucide();placeCompanion();});
+window.addEventListener("load",()=>{refreshLucide();placeCompanion();renderMirrorItem();});
 </script><script src="./assets/laoly-context-s112.js?v=react-mentor-query-20261120"></script><script src="./assets/laoly-quotes-s121.js?v=3"></script><script src="./assets/lesson-l09-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-l09-hifi.js"></script><script src="./assets/lesson-l03-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-l15-hifi-markup.js?v=20261118-ia07"></script><script src="./assets/lesson-wave1-core.js"></script><script src="./assets/lesson-l03-hifi.js"></script><script src="./assets/lesson-l15-hifi.js"></script><script src="./assets/lesson-companion-native.js"></script><script src="./assets/lesson-related-wave1.js"></script><script src="./assets/personal-diary.js?v=3"></script><script src="./assets/library-hub.js?v=8"></script><script src="./assets/library-note-editor.js?v=5"></script><script src="./assets/library-bookmarks.js?v=4"></script><script src="./assets/spell-practice.js?v=l03-t06-context-20261120"></script><script src="./assets/lesson-spell-suggestions.js?v=wave1-method-fit-preview"></script><script src="./assets/catalog-curriculum-data.js?v=assets-20261121"></script><script src="./assets/catalog-drilldown.js?v=assets-20261121"></script><script src="./assets/li-catalog-search.js?v=react-mentor-query-20261120"></script><script src="./assets/laoly-drag.js?v=20261119-control-dodge"></script><script src="./assets/ipad-safari-rotation.js?v=20261119-ds33"></script></body></html>

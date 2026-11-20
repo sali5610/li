@@ -110,6 +110,33 @@ assert.match(search,/const direct=\[\.\.\.personal,\.\.\.directCatalogMatches\(q
 assert.match(search,/withNavigableLessons\(query,\{/,
  "Successful semantic searches must retain direct canonical lesson matches");
 
+const catalogTree=JSON.parse(fs.readFileSync(path.resolve(__dirname,"../content/curriculum/legacy-catalog.v1.json"),"utf8"));
+const catalogIndex=JSON.parse(fs.readFileSync(path.resolve(__dirname,"../site/content-packs/course-catalog.json"),"utf8"));
+for(const item of catalogIndex.fields){
+ const group=catalogTree.groups.find(g=>g.id===item.groupId);
+ assert(group?.fields.some(f=>f.id===item.slug),
+  "Semantic field "+item.id+" must map to a real React Catalog field path");
+}
+for(const item of catalogIndex.courses){
+ const group=catalogTree.groups.find(g=>g.id===item.groupId);
+ const field=catalogIndex.fields.find(f=>f.id===item.fieldId);
+ assert(group?.fields.find(f=>f.id===field?.slug)?.courses.some(c=>c.id===item.id),
+  "Semantic course "+item.id+" must map to a real React Catalog course path");
+}
+assert.match(search,/catalogBrowsePaths\.set\('group:'\+group\.id,\[group\.id\]\)/,
+ "Index group search results open a real Catalog group");
+assert.match(search,/catalogBrowsePaths\.set\('field:'\+code,\[group\.id,field\.id\]\)/,
+ "Index fields must use the packed field code to reach the canonical slug");
+assert.match(search,/catalogBrowsePaths\.set\('course:'\+course\.id,\[group\.id,field\.id,course\.id\]\)/,
+ "Course results must point at an existing group/field/course path");
+assert.match(search,/if\(!openRoute\('catalog'\)\)/,
+ "Catalog must use the single global React router");
+assert.match(search,/app\.liCatalog\.openPath\(path,false\)/,
+ "Drilldown path must replace the catalog URL instead of pushing a ghost Back step");
+assert.match(search,/catalogBrowsePaths\.has\(record\.id\)\?\(\)=>browseCatalog\(record\.id\)/,
+ "Search field and course rows must be actionable, not inert labels");
+
+
 const canonicalImport=/import canonicalCatalog from '\.\.\/\.\.\/\.\.\/\.\.\/content\/curriculum\/legacy-catalog\.v1\.json'/;
 assert.match(home,canonicalImport,
  "React Catalog reads the same GitHub JSON as learning, no native boot global");

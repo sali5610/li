@@ -530,7 +530,11 @@ assert 'savedContent:data.savedContent||[]' in page_html
 assert 'ideas:collectedIdeas,savedContent,draft,buddyNames:liBuddyNames' in page_html
 assert 'const savedDraft=window.localStorage.getItem(LI_DRAFT_KEY)' in page_html
 assert 'savedDraft??(window.liReactRouter?"":field?.value||"")' in page_html
-assert 'caseSnapshot' in page_html and 'selectedText:caseOptions.find' in page_html
+# React Case writer must archive visible text; never derive the snapshot from hidden native markup.
+assert 'const reactSnapshot=window.liReactRouter?window.liCaseUi?.getSnapshot?.():null;' in page_html
+assert 'const caseArticle=window.liReactRouter?null:document.querySelector' in page_html
+assert 'const caseSnapshot=reactSnapshot||{' in page_html
+assert 'selectedText:caseOptions.find' in page_html # standalone native fallback
 assert 'id="li-note-case-context"' in page_html
 assert 'data-li-bookmark-kind="case"' in page_html
 assert '<script src="./assets/library-bookmarks.js?v=4"></script>' in page_html

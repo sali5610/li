@@ -35,7 +35,8 @@ for(const entry of draftIndex.entries){
    assert.equal(m.feedback_md,addition.feedback_md,'Source-to-draft feedback mismatch '+loc);
    assert.match(addition.prompt_md,/300/);
    assert.doesNotMatch(m.body_md,/precision=24\/(24\+6)|recall=24\/(24\+36)/i,'T06 method answer leaked before saved attempt');
-  } }
+  }
+ }
 }
 assert.equal(methodGated,34);
 console.log('LI_BATCH_17_METHOD_GATE_PASS: 17 bilingual pairs gated; all remain draft');

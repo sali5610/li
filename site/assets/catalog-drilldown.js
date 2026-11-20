@@ -360,18 +360,7 @@ host.addEventListener("click",event=>{
  if(kind==="open-group"){setPath([v]);return;}
  if(kind==="open-field"){setPath([path[0],v]);return;}
  if(kind==="open-course"){setPath([path[0],path[1],v]);return;}
- if(kind==="open-lesson"){
-  const parts=findParts();const lesson=parts.course?.lessons.find(x=>x.id===v);if(!lesson)return;
-  if(lesson.published){
-   if(history?.replaceState){
-    const u=new URL(location.href);u.searchParams.set("catalog",path.join("/"));history.replaceState(history.state,"",u.pathname+u.search);
-   }
-   const destination=new URL(location.href);destination.searchParams.set("lesson",lesson.id);destination.searchParams.delete("chapter");
-   if(history?.pushState)history.pushState(history.state,"",destination.pathname+destination.search);
-   window.navigate?.(lesson.route);return;
-  }
-  setPath([...path,v]);return;
- }
+ if(kind==="open-lesson"){openCatalogLesson(v);return;}
 });
 document.addEventListener("click",e=>{
  const t=e.target.closest('button[data-page="catalog"]');if(!t)return;
@@ -420,8 +409,11 @@ function openCatalogLesson(id){
  const coursePath=[group.id,field.id,course.id];
  // The React route must match the packed, explicitly approved release gate.
  // The native fallback retains its existing published-lesson contract.
+ const released=window.liReleasedLessonRoutes;
  const approved=lesson.published===true&&typeof lesson.route==="string"&&
-  (!reactOwnsCatalog()||window.liReleasedLessonRoutes?.[id]===lesson.route);
+  (!released||released[id]===lesson.route);
+ if(reactOwnsCatalog()&&(!document.documentElement.classList.contains("li-auth-verified")||
+  document.documentElement.classList.contains("li-account-open")))return false;
  if(!approved){setPath([...coursePath,id]);return false;}
  path=coursePath;
  if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));
@@ -440,7 +432,7 @@ function openCatalogLesson(id){
 function openForLesson(id){
  const found=findCatalogLesson(id);
  if(!found||!found.lesson.published||!found.lesson.route||
-  (reactOwnsCatalog()&&window.liReleasedLessonRoutes?.[id]!==found.lesson.route))return false;
+  (window.liReleasedLessonRoutes&&window.liReleasedLessonRoutes[id]!==found.lesson.route))return false;
  const routeOK=reactOwnsCatalog()?window.liAppRouter?.navigate("catalog"):
   (window.navigate?.("catalog"),true);
  if(routeOK!==true)return false;

@@ -75,13 +75,16 @@ function boot({verified=true,owner="user-a",storagePort=storage}={}){
   createElement:tag=>tag==="div"&&!root?tabs:new FakeElement(tag)
  };
  // Tabs are the first generated div; feedback only uses a div after root exists.
- const window={liLanguage:{get:()=>"vi",apply(){}},dispatchEvent(){}};
+ const handlers={};
+ const window={liLanguage:{get:()=>"vi",apply(){}},dispatchEvent(){},
+  addEventListener(name,fn){handlers[name]=fn;}};
  vm.runInNewContext(native,{document,window,localStorage:storagePort,Event:class Event{}},
   {filename:"spell-practice.js",timeout:2000});
  assert.equal(typeof ready,"function","Native spell controller must register setup");
  ready();
  assert(window.LiSpellPractice,"Native controller must mount");
- return {api:window.LiSpellPractice,root:()=>root,storage:storagePort};
+ return {api:window.LiSpellPractice,root:()=>root,storage:storagePort,
+  cloud:detail=>handlers['li:personal-sync-applied']?.({detail})};
 }
 function open(h,lesson="L09-1-2"){
  h.api.open("T12","practice",lesson);
@@ -134,7 +137,9 @@ v=open(h);
 assert.equal(v.phase,1);
 assert.equal(v.resumeNote,next);
 assert.equal(h.api.perform("reset"),true);
-assert.equal(values.has(key("user-a","L09-1-2")),false,"Reset deletes durable cue");
+assert.equal(JSON.parse(values.get(key("user-a","L09-1-2"))).phase,2,
+ "Reset publishes a redacted terminal checkpoint");
+assert.equal(JSON.parse(values.get(key("user-a","L09-1-2"))).context,'');
 h=boot({owner:"user-a"});
 assert.equal(open(h).phase,0,"Reset must survive reload");
 // Completed self-check clears the unfinished record, not creates a mastery grade.
@@ -142,8 +147,9 @@ h.api.perform("next",{context,next});
 assert.equal(values.has(key("user-a","L09-1-2")),true);
 h.api.perform("check",{answer:"Trong 20 người được hỏi, 15 hài lòng"});
 assert.equal(h.api.getView().reviewedInSession,true);
-assert.equal(values.has(key("user-a","L09-1-2")),false,
- "Completed T12 must not reopen as unfinished");
+assert.equal(JSON.parse(values.get(key("user-a","L09-1-2"))).phase,2,
+ "Completed T12 publishes the terminal checkpoint");
+assert.equal(JSON.parse(values.get(key("user-a","L09-1-2"))).next,'');
 // Malformed stored data fails closed instead of unlocking a stage.
 values.set(key("user-a","L09-1-2"),JSON.stringify({
  schema:"li.spell.t12.v1",phase:1,context:"",next:"unsafe",answer:""
@@ -166,3 +172,24 @@ assert.equal(h.api.setT12Draft("context",context),false);
 assert.equal(h.api.getView().t12SavedOnDevice,false);
 assert.match(h.api.getView().t12StorageError,/Không lưu được/);
 console.log("PASS T12: draft/re-entry across reload, per-user and per-lesson privacy, reset, completion, bad data, storage failure");
+
+// Signed Neon hydration while learner has a clean T12 page open must update
+// the canonical port immediately; React reacts to the viewSession increment.
+const cloudUid="cloud-user",cloudKey=key(cloudUid,"L09-1-2");
+h=boot({owner:cloudUid});
+assert.equal(open(h).phase,0);
+values.set(cloudKey,JSON.stringify({schema:"li.spell.t12.v1",phase:1,
+ context:"Remote context",next:"Remote next",answer:"Remote draft",
+ updatedAt:"2026-11-21T02:00:00Z"}));
+h.cloud({accountId:cloudUid,keys:[cloudKey]});
+assert.equal(h.api.getView().phase,1);
+assert.equal(h.api.getView().resumeNote,"Remote next");
+assert.equal(h.api.getView().t12Draft.answer,"Remote draft");
+// A local unsynced edit cannot be erased by an unrelated late hydration.
+h.api.setT12Draft("answer","Local typing");
+values.set(cloudKey,JSON.stringify({schema:"li.spell.t12.v1",phase:1,
+ context:"Other remote",next:"Overwrite",answer:"Overwrite",
+ updatedAt:"2026-11-21T03:00:00Z"}));
+h.cloud({accountId:cloudUid,keys:[cloudKey]});
+assert.equal(h.api.getView().t12Draft.answer,"Local typing");
+console.log("PASS T12: in-place signed hydration and local-draft conflict guard");

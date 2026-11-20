@@ -1,6 +1,7 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {AuthPanel} from './AuthPanel.js';
+import {ReceiptCanaryPanel} from './ReceiptCanaryPanel.js';
 import {mountLearningJourney,mountWave1Journey,mountEditorialJourney} from '../learning/app-entry.js';
 import {releasedLessonRoutes} from '../learning/released-lessons.js';
 import {createStagingLearningPorts} from '../learning/staging-ports.js';
@@ -103,6 +104,23 @@ else mountHomeAndCatalog();
 // Adopt canonical React Guide + learner's Library / Resume / Collection on the same invited app.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountGuideAndLibrary,{once:true});
 else mountGuideAndLibrary();
+
+// Temporary #161 signed canary fallback for an iPhone still displaying the
+// legacy Settings shell. Its root lives inside that shell, so it disappears
+// automatically when the existing React Settings view takes ownership.
+// No second app, no automatic RPC call, no production widget.
+function mountLegacySettingsCanary(){
+ const grid=document.querySelector<HTMLElement>(
+  '#page-settings > .section-shell .settings-group[aria-labelledby="settings-data"] .settings-group-grid'
+ );
+ if(!grid||grid.querySelector('#li-sync161-legacy-root'))return;
+ const host=document.createElement('div');
+ host.id='li-sync161-legacy-root';
+ grid.append(host);
+ createRoot(host).render(<ReceiptCanaryPanel/>);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountLegacySettingsCanary,{once:true});
+else mountLegacySettingsCanary();
 
 // Signed-in only: React Journal and Settings reuse one native private-data/consent owner.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountJournalAndSettings,{once:true});

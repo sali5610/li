@@ -1,6 +1,6 @@
 import {bindNeonAccount} from '../sync/neon-session.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
-import {storageKey,type JsonValue} from '../sync/contract.js';
+import {storageKey,type JsonValue,type ItemType} from '../sync/contract.js';
 import {PrivateDeviceStore} from '../sync/local-dexie.js';
 import {syncOnce} from '../sync/sync-once.js';
 import type {NeonUserApi} from '../sync/neon-api.js';
@@ -8,7 +8,7 @@ import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_GITHUB_STAGING} from './config.js';
 import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
 import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
- hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,PERSONAL_FIELDS} from './private-state.js';
+ hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS} from './private-state.js';
 
 /**
  * The native lesson UI still writes li.review.* localStorage synchronously.
@@ -49,6 +49,60 @@ export async function changeJournalCloudConsent(uid:string,enabled:boolean):Prom
  setJournalCloudConsent(uid,enabled);
 }
 
+export type PrivateConflictChoice={itemType:ItemType;itemId:string;label:string};
+const CONFLICT_LABELS:Record<string,string>={
+ 'note:library':'Bút Ký, Ý đã nhặt và Dấu Trang',
+ 'note:case-draft':'Bản nháp Phản Chứng',
+ 'note:daily-journal':'Nhật Ký & Check-in',
+ 'preference:daily-enabled':'Bật/tắt ghi Nhật Ký',
+ 'preference:journal-cloud-consent':'Quyền đồng bộ Nhật Ký',
+ 'preference:locale':'Ngôn ngữ',
+ 'preference:study-mode':'Nhịp học',
+ 'preference:buddy-address':'Cách xưng hô Lão Lý',
+ 'review_schedule:spell-t02-due':'Lịch ôn',
+ 'l2_progress:lesson-visits':'Lịch sử mở bài',
+ 'l2_progress:problem-visits':'Lịch sử problem/case'
+};
+export async function listPrivateConflicts(uid:string):Promise<PrivateConflictChoice[]>{
+ if(!uid||localStorage.getItem(OWNER)!==uid||
+ !document.documentElement.classList.contains('li-auth-verified'))
+  throw Error('LEARNER_ACCOUNT_OR_INVITE_REQUIRED');
+ const rows=await store.outbox.where('accountId').equals(uid).toArray();
+ return rows.filter(x=>x.conflict).map(x=>({
+  itemType:x.itemType,itemId:x.itemId,
+  label:CONFLICT_LABELS[x.itemType+':'+x.itemId]||
+   (x.itemType==='lesson_attempt'?'Bài '+x.itemId:'Dữ liệu '+x.itemId)
+ }));
+}
+export async function resolvePrivateConflict(uid:string,type:ItemType,id:string,
+ choice:'keep-local'|'use-remote'):Promise<void>{
+ if(!uid||localStorage.getItem(OWNER)!==uid||
+ !document.documentElement.classList.contains('li-auth-verified'))throw Error('LEARNER_ACCOUNT_OR_INVITE_REQUIRED');
+ if(!await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort))throw Error('INVITE_REVOKED');
+ const api=await bindNeonAccount(NEON_DATA_API_URL,neonSessionPort);
+ if(!api||api.accountId!==uid)throw Error('SESSION_CHANGED');
+ const key=storageKey(uid,type,id),op=await store.outbox.get(key);
+ if(!op?.conflict||op.accountId!==uid)throw Error('CONFLICT_CHANGED_REFRESH_REQUIRED');
+ const remote=await api.one(type,id);
+ if(!remote)throw Error('CONFLICT_REMOTE_MISSING');
+ if(choice==='use-remote'){
+  const localKey=type==='lesson_attempt'?KEY(id):
+   personalRemoteSnapshot(uid,type,id,remote.payload)?.key;
+  if(!localKey)throw Error('CONFLICT_KEY_UNSUPPORTED');
+  const previous=localStorage.getItem(localKey);
+  const raw=type==='lesson_attempt'?JSON.stringify(cloud(remote.payload)):
+   personalRemoteSnapshot(uid,type,id,remote.payload)?.raw;
+  if(raw===undefined)throw Error('CONFLICT_PAYLOAD_UNSUPPORTED');
+  if(localStorage.getItem(localKey)!==previous)throw Error('LOCAL_CHANGED_DURING_RESOLUTION');
+  await store.resolveConflict(uid,op,remote,choice);
+  if(remote.deleted_at)localStorage.removeItem(localKey);
+  else localStorage.setItem(localKey,raw);
+  window.location.reload(); // Rebuild in-memory diary/notes/lesson from selected revision.
+  return;
+ }
+ await store.resolveConflict(uid,op,remote,choice);
+ window.dispatchEvent(new Event('li:private-sync-request'));
+}
 export async function waitForLearnerHydration(uid:string):Promise<void>{
  const state=activeSync;
  if(!state||state.uid!==uid)throw new Error('LEARNER_SYNC_NOT_STARTED');
@@ -348,6 +402,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
  window.addEventListener('li:private-personal-change',onPersonalEvent);
  window.addEventListener('li:localechange',onPersonalEvent);
  window.addEventListener('li:private-sync-consent',resumed);
+ window.addEventListener('li:private-sync-request',resumed);
  window.addEventListener('storage',onPersonalEvent);
  void run();
  return()=>{
@@ -364,6 +419,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
   window.removeEventListener('li:private-personal-change',onPersonalEvent);
   window.removeEventListener('li:localechange',onPersonalEvent);
   window.removeEventListener('li:private-sync-consent',resumed);
+  window.removeEventListener('li:private-sync-request',resumed);
   window.removeEventListener('storage',onPersonalEvent);
   if(!current.settled){current.settled=true;current.finish();}
   if(activeSync===current)activeSync=null;

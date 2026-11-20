@@ -123,7 +123,7 @@ window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:
 assert.equal(act.getCurrent(),'home','Logout clears the previously active private route');
 assert.equal(location.searchParams.has('lesson'),false,'Logout clears private lesson deep link');
 assert.equal(snapshot.id,'home');
-assert.deepEqual(snapshot.h,[]);
+assert.equal(snapshot.h.length,0);
 stop();
 assert.equal(window.liReactRouter,undefined);
 assert.equal(snapshot.id,"home");

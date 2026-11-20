@@ -1,6 +1,9 @@
 /* STAGING ONLY. Generated after the unified Auth+lesson shell is assembled.
  * No Neon, OAuth, external origin, personal progress, or QA data in caches.
  * User-visible content can only be used offline after valid authentication logic allows it.
+ * This is a MULTI-PAGE static site (the React Studio and lesson documents have real URLs).
+ * Do not add navigateFallback: routing every navigation to /li/index.html hijacks
+ * /li/design-system/ into the invited-only app login gate on iOS Safari.
  */
 module.exports={
  globDirectory:"site",
@@ -11,8 +14,11 @@ module.exports={
  maximumFileSizeToCacheInBytes:5*1024*1024,
  cleanupOutdatedCaches:true,
  clientsClaim:true,
- skipWaiting:false,
- navigateFallback:"/li/index.html",
+ // Hotfix: activate the corrected worker when an already-installed broken worker updates.
+ // No indexedDB, account or cached private data is altered by this worker upgrade.
+ skipWaiting:true,
+ // Keep Workbox precache routing for /li/index.html and /li/;
+ // never rewrite other HTML documents (Studio, Component Library, lessons) as the app.
  runtimeCaching:[
   {urlPattern:new RegExp("^/li/assets/.*[.](?:png|jpe?g|webp|gif|avif)$","i"),
    handler:"CacheFirst",

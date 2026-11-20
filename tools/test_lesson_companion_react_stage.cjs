@@ -48,6 +48,7 @@ vm.runInContext(read("site/assets/lesson-companion-native.js"),ctx);
  plan().actions[2].perform();
  assert.equal(invoked.id,"T06");
  assert.equal(invoked.options.practice,true);
+ assert.equal(invoked.options.lessonId,"L09-1-2","Mentor method action must preserve lesson context");
  attrs["data-li-lesson-phase"]="guided";attrs["data-li-lesson-submitted"]="false";
  assert.equal(get().stage,"guided");
  assert.equal(plan().actions[2].label,"Đọc lại mục này");

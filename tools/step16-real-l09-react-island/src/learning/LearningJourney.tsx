@@ -390,7 +390,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      <Button disabled={locked||saving} onClick={()=>void submit()}>{content.submit}</Button>
      <Button variant="secondary" disabled={locked||saving} onClick={clearDraft}>{content.clear}</Button>
     </div>:
-     <Button onClick={()=>go('feedback')}>{vi?'Xem đối chiếu':'See feedback'}</Button>
+     <Button onClick={()=>go('feedback')}>{vi?'Xem đối chiếu':'See feedback'}</Button>}
    </Card>}
    {phase==='feedback'&&<Card variant="flat-study" aria-labelledby="li-learn-feedback">
     <Heading level={2} id="li-learn-feedback" role="titleLarge">{content.answerTitle}</Heading>

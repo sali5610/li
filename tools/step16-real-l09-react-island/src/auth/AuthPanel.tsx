@@ -219,7 +219,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
         'Sync private Journal & Check-ins to Neon'}
       </label>
       <p>{locale==='vi'?
-       'Chỉ bật khi mày đồng ý lưu dữ liệu Check-in và Nhật Ký trên cloud của tài khoản. Tắt sẽ ngừng đồng bộ và xếp lệnh xóa bản cloud; dữ liệu trên máy vẫn giữ.':
+       'Chỉ bật khi bạn đồng ý lưu dữ liệu Check-in và Nhật Ký trên cloud của tài khoản. Tắt sẽ ngừng đồng bộ và xếp lệnh xóa bản cloud; dữ liệu trên máy vẫn giữ.':
        'Opt in to store private check-ins and journal entries in your account cloud. Turning this off queues cloud deletion while preserving local entries.'}</p>
      </div>}
      <button type="button" onClick={()=>void signOut()} disabled={busy!==null}>

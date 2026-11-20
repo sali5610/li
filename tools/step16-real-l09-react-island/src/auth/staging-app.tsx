@@ -14,6 +14,7 @@ import {mountJournalAndSettings} from '../shell/journal-settings.js';
 import {mountCheckinDialog} from '../shell/checkin-dialog.js';
 import {mountLaoLyDialog} from '../shell/laoly-dialog.js';
 import {mountLaoLyFab} from '../shell/laoly-fab.js';
+import {mountReactChrome} from '../shell/react-shell.js';
 
 // Unified GitHub Pages staging: no guest app. React verifies signed invitation.
 const root=document.getElementById('li-staging-auth-root');
@@ -135,6 +136,11 @@ if(import.meta.env.VITE_LI_AUTH_TARGET==='github-pages-staging'){
  else startBatch17Preview();
 }
 
+
+// The persistent header brand, footer and Undo notification are React UI too.
+// The native toast() function is retained only as a pre-mount/error fallback.
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountReactChrome,{once:true});
+else mountReactChrome();
 
 // React owns top navigation, bottom navigation and utility controls. Native
 // data-page event delegation remains the temporary route bridge.

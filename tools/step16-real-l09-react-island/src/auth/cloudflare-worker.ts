@@ -11,10 +11,14 @@ import {handleAuthProxyRequest,processAuthMiddleware} from '@neondatabase/auth/s
 import {FIRST_PARTY_ORIGIN,FIRST_PARTY_AUTH_PREFIX,authProxyPath,isFirstPartyCallback}
  from './first-party-contract.js';
 
+import {handleAiRoute,type AiServerEnv} from './ai-access-server.js';
+import {serverAiActor} from './ai-session-server.js';
+import {reviewedAiLesson} from './ai-reviewed-lessons.js';
+
 const UPSTREAM_NEON_AUTH_URL=
  'https://ep-misty-snow-azfrrm3o.neonauth.c-3.ap-southeast-1.aws.neon.tech/li/auth';
 
-type PagesEnv={
+type PagesEnv=AiServerEnv&{
  NEON_AUTH_COOKIE_SECRET?:string;
  ASSETS:{fetch(request:Request):Promise<Response>};
 };
@@ -29,6 +33,15 @@ export default {
   const url=new URL(request.url);
   if(url.origin!==FIRST_PARTY_ORIGIN)
    return new Response('Forbidden',{status:403,headers:noCacheHeaders()});
+  // AI is never served by GitHub Pages static staging. Cloudflare verifies
+  // its own cookie + Neon RLS before any D1 access or model invocation.
+  if(url.pathname.startsWith('/api/ai/')){
+   const secret=env.NEON_AUTH_COOKIE_SECRET;
+   if(!secret||secret.length<32)
+    return new Response('AI unavailable',{status:503,headers:noCacheHeaders()});
+   const actor=await serverAiActor(request,secret);
+   return handleAiRoute(request,env,actor,reviewedAiLesson);
+  }
   const authRequest=url.pathname.startsWith(FIRST_PARTY_AUTH_PREFIX);
   const oauthReturn=isFirstPartyCallback(url);
   if(!authRequest&&!oauthReturn)return env.ASSETS.fetch(request);

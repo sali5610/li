@@ -6,6 +6,7 @@ import {classifyOAuthReturn,type OAuthReturnCode} from './oauth-return.js';
 import {rememberOfflineInvite,recentOfflineOwner,forgetOfflineInvite} from './offline-local.js';
 import {RlsQaPanel} from './RlsQaPanel.js';
 import {SyncQaPanel} from './SyncQaPanel.js';
+import {AiOwnerControl} from './AiOwnerControl.js';
 import {prepareLearnerAccount,startLearnerSync,journalCloudConsent,changeJournalCloudConsent,
  listPrivateConflicts,resolvePrivateConflict,type PrivateConflictChoice,type SyncReport} from './learner-sync.js';
 
@@ -350,6 +351,8 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
         onClick={()=>void decideConflict(c,'use-remote')}>{locale==='vi'?'Dùng bản trên Neon':'Use Neon version'}</button>
       </div>)}
      </section>}
+     {access==='granted'&&!localOffline&&session?.user?.email&&
+      <AiOwnerControl email={session.user.email} locale={locale}/>}
      <button type="button" onClick={()=>void signOut()} disabled={busy!==null}>
       {busy?t.busy:localOffline?t.lockOffline:t.logout}
      </button>

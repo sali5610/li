@@ -297,6 +297,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   };
   if(!app.liMethods?.open){setError('Sổ Tay Thần Chú chưa khả dụng.');return;}
   try{
+   const returnScrollY=window.scrollY; // navigation resets page scroll synchronously
    // Published routes have a canonical context-aware opener. Personal staging
    // manuscripts use the existing invited-only setLessonContext bridge.
    const opened=isReleasedLessonId(id)
@@ -311,7 +312,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    // must not stop a legitimate exercise.
    try{
     sessionStorage.setItem('li.sectioned.guide-return.v1',
-     JSON.stringify({id,method,at:Date.now(),scrollY:window.scrollY}));
+     JSON.stringify({id,method,at:Date.now(),scrollY:returnScrollY}));
    }catch{/* Lesson return still works without scroll restoration. */}
   }catch{setError('Chưa mở được Thần Chú; bản nháp vẫn được giữ.');}
  }

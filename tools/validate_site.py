@@ -439,6 +439,7 @@ assert html.count('<script src="./assets/laoly-context-s112.js?v=')==1
 assert re.search(r'<script src="\./assets/laoly-context-s112\.js\?v=[a-zA-Z0-9-]+"></script>',html)
 subprocess.run(["node","--check",str(companion)],check=True)
 subprocess.run(["node",str(site.parent/"tools"/"test_buddy.js")],check=True,cwd=site.parent)
+subprocess.run(["node",str(site.parent/"tools"/"test_lesson_companion_react_stage.cjs")],check=True,cwd=site.parent)
 
 # Wave1 L09 bilingual lesson source-safety and syntax gate (not device QA).
 subprocess.run(["python3", str(site.parent/"tools"/"test_l09.py")],check=True,cwd=site.parent)

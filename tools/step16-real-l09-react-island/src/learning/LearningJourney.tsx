@@ -253,7 +253,9 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  const saveMessage=locked?(vi?'Lưu thất bại':'Save failed'):
   saving?(vi?'Đang lưu…':'Saving…'):statusText(sync,vi);
  const transition=reduced?{duration:0}:{duration:0.18,ease:'easeOut' as const};
- return <section className="li-learning-journey" data-li-react-journey="L09-1-2" lang={attempt.locale}>
+ return <section className="li-learning-journey" data-li-react-journey="L09-1-2" lang={attempt.locale}
+  data-li-lesson-phase={phase} data-li-lesson-submitted={attempt.submitted?'true':'false'}
+  data-li-lesson-reviewed={attempt.reviewed?'true':'false'}>
   <header className="li-learning-header">
    <div>
     <Text role="caption">DATA SCIENCE · L09-1-2</Text>

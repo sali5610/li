@@ -84,10 +84,10 @@ function compileContent(lessons,concepts,relations,registry,academic){
   const hier=l.hierarchy;
   for(const [kind,v] of [["DomainGroup",hier.group],["Field",hier.field],["Course",hier.course]]){if(!v||!v.id||!v.title)fail("bad hierarchy "+l.id);
    addNode({id:v.id,kind,title:v.title,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:navSrc,note:"Wave1 navigation metadata, not academic accreditation"});}
+  const frozen=l.editorialStatus==="po_locked";
   addNode({id:"lesson:"+l.id,kind:"Lesson",title:l.title.en,version:l.version,reviewState:l.reviewState,publishState:l.publishState,visibility:"public_curated",rightsState:"first_party",aliases:[{locale:"vi",text:l.title.vi}],provenance:editorial(l,frozen?"PO-locked lesson VI/EN":"Reviewed lesson manuscript VI/EN"),note:frozen?"Editorial lock is not release approval":"Editorial manuscript is not publication approval"});
   const part=(from,to)=>addEdge({id:"edge:content:part:"+from,predicate:"PART_OF",from,to,reviewState:"verified",visibility:"public_curated",provenance:navSrc});
   part(hier.field.id,hier.group.id);part(hier.course.id,hier.field.id);part("lesson:"+l.id,hier.course.id);
-  const frozen=l.editorialStatus==="po_locked";
   const claimId=(frozen?"claim:wave1:":"claim:editorial:")+l.id+":editorial-scope",sourceId="source:editorial:"+l.id+":notion";
   addNode({id:claimId,kind:"SourceClaim",title:(frozen?"Locked lesson scope ":"Editorial lesson scope ")+l.id,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:editorial(l,"Lesson manuscript contents"),note:"Editorial presence only; not a claim of peer-reviewed scientific support"});
   addNode({id:sourceId,kind:"SourceEdition",title:(frozen?"PO-locked editorial edition ":"Reviewed editorial edition ")+l.id,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:editorial(l,frozen?"S126 PO content freeze":"Documented lesson manuscript"),note:"Notion research provenance, never fetched at runtime"});

@@ -4,7 +4,7 @@ import {inquiryFlow} from './inquiry-port.js';
 import type {MirrorView} from './inquiry-port.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {motion,useReducedMotion} from 'motion/react';
+import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {Badge,Button,Card,Heading,Progress,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
 import './home-catalog.css';
@@ -217,7 +217,7 @@ function Catalog(){
 }
 
 const homeLegacy=()=>document.querySelector<HTMLElement>('#page-home > .hero');
-const mirrorFallback:MirrorView={index:0,question:'',scene:'',source:'',
+const mirrorFallback:MirrorView={index:0,fieldId:'',question:'',scene:'',source:'',
  route:'research',cta:'Đào sâu',saved:false};
 function readMirror():MirrorView{
  return inquiryFlow().getMirror()||mirrorFallback;
@@ -240,6 +240,9 @@ function Home(){
   };
  },[]);
  const shift=(direction:-1|1)=>inquiryFlow().shift(direction);
+ // Resolve artwork directly from Tàng Thư's canonical field-to-image entries.
+ const mirrorImage=groups.flatMap(group=>group.fields)
+  .find(field=>field.id===mirror.fieldId)?.image||'';
  // Depth is purely decorative. Never move the real mirror text, tap targets,
  // backdrop crop, or saved learner state with the pointer.
  const moveBackdrop=(event:React.PointerEvent<HTMLDivElement>)=>{
@@ -286,6 +289,18 @@ function Home(){
     const touch=event.changedTouches[0],dx=touch.clientX-start.x,dy=touch.clientY-start.y;
     if(Math.abs(dx)>=42&&Math.abs(dx)>=Math.abs(dy)*1.3)shift(dx<0?1:-1);
    }}>
+   <div className="li-home-mirror-artwork" aria-hidden="true">
+    <AnimatePresence initial={false}>
+     {mirrorImage&&<motion.img key={mirrorImage} src={mirrorImage} alt=""
+      draggable={false} decoding="async"
+      initial={reduced?false:{opacity:0,scale:1.06}}
+      animate={{opacity:1,scale:1}}
+      exit={{opacity:0,scale:1.04}}
+      transition={{duration:reduced?0:.42,ease:'easeInOut'}}
+      className="li-home-mirror-art-image"/>}
+    </AnimatePresence>
+    <span className="li-home-mirror-art-vignette"/>
+   </div>
    <div className="li-home-mirror-float">
    <motion.div key={mirror.question+'|'+mirror.scene} className="li-home-mirror-inner"
     initial={reduced?false:{opacity:0,y:7,scale:.975}}

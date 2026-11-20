@@ -259,4 +259,17 @@ assert.equal(browser.getCurrent(),'search','browser Forward returns to Search, n
 assert.equal(browser.back(),true);
 assert.equal(browser.getCurrent(),'catalog','Back still works after Forward');
 stopBrowser();
-console.log("PASS actual React router: auth, Back/Forward, URL, staging lessons, locale and DOM observer cleanup");
+// An initial "not yet verified" event must NOT erase a bookmarked lesson URL.
+visible=false;
+location.href=new URL('/li/?lesson=L09-1-2',location.origin).href;
+window.history.state={liRouteDepth:0};
+const stopPending=moduleExports.mountReactRouter();
+window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:false}}));
+assert.equal(location.searchParams.get('lesson'),'L09-1-2',
+ 'Pending invite must preserve the requested deep link');
+visible=true;
+window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:true}}));
+assert.equal(window.liReactRouter.getCurrent(),'lessonL09',
+ 'Verified invite restores the originally requested lesson');
+stopPending();
+console.log("PASS actual React router: pending auth, Back/Forward, URL, staging lessons, locale and DOM observer cleanup");

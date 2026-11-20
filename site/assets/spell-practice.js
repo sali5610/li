@@ -165,7 +165,13 @@ function draw(){
  }else{
    inner='<p><strong>Không nhìn lại lời giải:</strong> '+e.prompt+'</p>'+e.fields.map(field).join("")+act("check",e.mode==="due"?"Đối chiếu lượt ôn":"Đối chiếu bài làm");
  }
- root.innerHTML='<div class="spell-activity-head"><div><span class="kicker">'+active+' · <span>THỬ THI TRIỂN</span></span><h2>'+e.title+'</h2></div><span class="spell-state">'+(feedback?"Đã đối chiếu":phase===0?"Đang chuẩn bị":"Đang thực hành")+'</span></div><div class="spell-activity-body">'+inner+(feedback?'<div class="spell-feedback" role="status" tabindex="-1"><strong>Phản hồi để tự kiểm chứng</strong><p>'+feedbackMarkup(feedback)+'</p><p class="small">Bài mẫu minh họa, không chứng nhận thành thạo, IQ hay kết quả học thuật ngoài nhiệm vụ này.</p></div>':"")+'</div><footer class="spell-activity-footer"><p class="small">Tự chọn, có thể bỏ qua. Trừ mốc T02 do bạn chủ động đặt, nội dung điền không tự lưu hay gửi lên máy chủ.</p>'+act("reset","Làm lại","action alt")+'</footer>';
+ root.innerHTML='<div class="spell-activity-head"><div><span class="kicker">'+active+' · <span>THỬ THI TRIỂN</span></span><h2>'+e.title+'</h2></div><span class="spell-state">'+(feedback?"Đã đối chiếu":phase===0?"Đang chuẩn bị":"Đang thực hành")+'</span></div><div class="spell-activity-body">'+inner+(feedback?'<div class="spell-feedback" role="status" tabindex="-1"><strong>Phản hồi để tự kiểm chứng</strong><p>'+feedbackMarkup(feedback)+'</p><p class="small">Bài mẫu minh họa, không chứng nhận thành thạo, IQ hay kết quả học thuật ngoài nhiệm vụ này.</p></div>':"")+'</div><footer class="spell-activity-footer"><p class="small">'+
+  (active==="T12"?
+   (t12StorageError?escape(t12StorageError):
+    t12SavedOnDevice?"Dấu vết T12 đã lưu trên thiết bị này · không đồng bộ.":
+     "T12 tự lưu dấu vết trên thiết bị khi nhập · không đồng bộ."):
+   "Tự chọn, có thể bỏ qua. Trừ mốc T02 do bạn chủ động đặt, nội dung điền không tự lưu hay gửi lên máy chủ.")+
+  '</p>'+act("reset","Làm lại","action alt")+'</footer>';
 
  if(active==="T12"){
   for(const [name,value] of Object.entries(t12Draft)){

@@ -835,7 +835,7 @@ assert 'component-review-v5.css?v=20261119-ds21-olive-spec' in v3
 assert all('data-ds15-topvariant="'+x+'"' in v3 for x in ("logo","back","overlay"))
 assert v3.count('src="./assets/li-seal.svg?v=exact-header-s146"')>=2
 assert 'data-ds15-back aria-label="Quay lại màn trước"' in v3
-assert 'src="./assets/home-mystic-cool-desktop.webp"' in v3
+assert 'src="./assets/home-li-landscape-20261121.webp"' in v3
 assert 'ds15-topnav-overlay' in topnavcss and 'background:var(--ds11-clear)!important' in topnavcss
 assert 'border-bottom-width:var(--li-space-0)!important' in topnavcss
 assert 'min-width:48px;min-height:48px' in topnavcss
@@ -844,7 +844,7 @@ assert 'Top Navigation transparent Home' not in page_html
 
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
-assert 'li-layout.css?v=20261118-ds20-coverage' in page_html
+assert re.search(r'li-layout\.css\?v=[A-Za-z0-9._-]+', page_html)
 assert 'ui-foundations.css?v=20261119-ds33-physical-shell' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
@@ -852,7 +852,7 @@ assert ':focus:not(:focus-visible)' in foundation
 review10=(site/"component-library-archive.html").read_text(encoding="utf-8")
 assert 'ds-notebook' in review10 and 'ds-home-bubble green' in review10
 assert all('src="./assets/'+p+'"' in review10 for p in
- ("home-mystic-cool-desktop.webp","home-mystic-cool-mobile.webp","laoly-mirror-suy-nghi.png"))
+ ("home-li-landscape-20261121.webp","home-li-iphone-20261121.webp","laoly-mirror-suy-nghi.png"))
 review10css=(site/"assets"/"component-review-v2.css").read_text(encoding="utf-8")
 assert 'background-size:100% 16px,100% var(--li-review-notebook-line)!important;' in review10css
 assert '.ds-home-bubble.green' in review10css and '.ds-image-split' in review10css

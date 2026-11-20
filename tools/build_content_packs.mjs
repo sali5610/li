@@ -229,9 +229,55 @@ function augmentCurriculum(compiled,legacyCourses,lessons,levelMap,navSrc){
 }
 const lessons=readdirSync(resolve(root,"content/lessons")).filter(f=>f.endsWith(".json")).sort().map(f=>load("content/lessons/"+f));
 const ids=lessons.map(l=>l.id);
+// Release gate for authored editorial lessons: a complete learning experience
+// includes methods, six authored Lão Lý stages, sourced quotes and real links.
+// Drafts in content/editorial/ never enter packs, regardless of this check.
+const quoteBank=new Set(extractLiteral(read("site/assets/laoly-quotes-s121.js"),"QUOTES")
+ .map(q=>q.id));
+const contentCourseIds=new Set(load("content/curriculum/legacy-catalog.v1.json").groups
+ .flatMap(g=>g.fields.flatMap(f=>f.courses.map(c=>c.id))));
+const contentLessonIds=new Set(load("content/curriculum/legacy-catalog.v1.json").groups
+ .flatMap(g=>g.fields.flatMap(f=>f.courses.flatMap(c=>c.lessons.map(l=>l.id)))));
+function requireCompleteEditorial(l){
+ if(l.content?.format!=="editorial-structured-v1")return;
+ const id=l.id,companion=load("site/lessons/companion/"+id+".json");
+ const required=["opening","concept","guided","independent","reflection","extension"];
+ if(companion.schema!==1||companion.lesson_id!==id||
+  !Array.isArray(companion.moments)||companion.moments.length!==6||
+  companion.moments.some((m,i)=>m.stage!==required[i]||
+   !m.quote_id||!m.quote_ids?.includes(m.quote_id)||m.quote_ids.length<3||
+   m.quote_ids.some(q=>!quoteBank.has(q))||
+   !m.relevance||!m.vi?.prompt||!m.en?.prompt||
+   m.vi?.actions?.length!==2||m.en?.actions?.length!==2||
+   !m.vi?.quote_comment||!m.en?.quote_comment))
+  throw Error("LI_EDITORIAL_MENTOR_INCOMPLETE "+id);
+ const links=companion.connections?.links;
+ if(!Array.isArray(links)||links.length<2||
+  !links.some(x=>x.targetKind==="Course"&&contentCourseIds.has(x.targetId))||
+  !links.some(x=>x.targetKind==="Lesson"&&contentLessonIds.has(x.targetId))||
+  links.some(x=>!x.reason?.vi||!x.reason?.en||
+   !/^https:\/\//.test(x.provenance?.sourceUrl||"")||
+   !["documented","editorial_candidate"].includes(x.reviewState)))
+  throw Error("LI_EDITORIAL_CONNECTIONS_INCOMPLETE "+id);
+ const copy=l.content.localized;
+ for(const locale of ["vi","en"]){
+  const c=copy?.[locale];
+  if(!c?.hook?.md||!c?.goals?.md||!c?.concept?.md||
+   !c?.variable_types?.md||!c?.guided?.md||
+   !c?.technique_applications?.T06?.prompt_md||
+   !c?.technique_applications?.T07?.prompt_md||
+   c.technique_applications.T06.feedback_gate!=="AFTER_T06_MEANINGFUL_ATTEMPT"||
+   c.technique_applications.T07.feedback_gate!=="AFTER_T07_MEANINGFUL_ATTEMPT"||
+   !c.independent?.prompt_md||
+   c.independent.model_answer_gate!=="AFTER_VALID_INDEPENDENT_SUBMISSION"||
+   c.reflection?.gate!=="AFTER_VALID_INDEPENDENT_SUBMISSION")
+   throw Error("LI_EDITORIAL_LEARNING_FLOW_INCOMPLETE "+id+" "+locale);
+ }
+}
 const old=extractLiteral(read("site/assets/lesson-wave1-core.js"),"PACK");
 const l09=extractLiteral(read("site/assets/lesson-l09-hifi.js"),"T");
 for(const l of lessons){
+ requireCompleteEditorial(l);
  // Only frozen Wave1 manuscripts need byte-exact native-copy parity.
  // Future lessons must be validated by the canonical Lesson contract instead.
  if(l.editorialStatus==="po_locked"){

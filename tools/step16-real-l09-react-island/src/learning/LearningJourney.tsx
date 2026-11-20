@@ -300,6 +300,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     (vi?'Đã tự đánh giá 1 lượt, chưa phải điểm thông thạo':'Self-review completed, not a mastery grade'):
     attempt.submitted?(vi?'Đã nộp · tự đánh giá '+rated+'/4':'Submitted · self-review '+rated+'/4'):
     (vi?'Đủ điều kiện nộp '+answered+'/4 câu':'Submission-ready '+answered+'/4 answers')}</Text>
+   {attempt.assisted&&<Text role="support">{content.assisted}</Text>}
   </div>
   {error&&!locked&&<p className="li-learning-error" role="alert">{error}</p>}
   {locked&&<div className="li-learning-recovery">
@@ -338,6 +339,14 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Heading level={2} id="li-learn-practice" role="titleLarge">{content.challengeTitle}</Heading>
     <Text>{strip(content.caseText)}</Text>
     <Text>{content.caseClaim}</Text>
+    {!attempt.submitted&&!attempt.hint&&
+     <Button variant="secondary" disabled={saving||locked}
+      onClick={()=>void save({...attempt,hint:true,assisted:true})}>
+      {content.hintButton}
+     </Button>}
+    {attempt.hint&&<div className="li-learning-hint" role="note">
+     <Text>{strip(content.hint)}</Text>
+    </div>}
     <div className="li-learning-fields">{content.questions.map((question:string,i:number)=>
      <Field key={i} kind="textarea" rows={4} label={(i+1)+'. '+question}
       value={attempt.draft[i]} disabled={attempt.submitted||locked}

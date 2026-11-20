@@ -89,11 +89,18 @@ export async function capturePersonalState(uid:string,api:NeonUserApi|null,
   const raw=localStorage.getItem(field.key);
   snapshots.push({field,raw});
   const firstObservation=!seen.has(field.key);
+  const previous=seen.get(field.key)??null;
   seen.set(field.key,raw);
   const key=storageKey(uid,field.type,field.id);
   let current=await store.records.get(key);
-  // A missing local field on a fresh device means remote hydration, NOT deletion.
-  if(raw===null)continue;
+  // Missing on the FIRST observation means a fresh device may need hydration.
+  // Missing AFTER previously observing a saved value is an explicit removal:
+  // queue a tombstone, never resurrect the deleted note from the cloud.
+  if(raw===null){
+   if(!firstObservation&&previous!==null&&current&&!current.deletedAt)
+    await store.edit(uid,field.type,field.id,wrap(field,''),new Date().toISOString());
+   continue;
+  }
   // The app defaults diary recording ON on a fresh device before Auth runs.
   // The signed account's already-downloaded preference takes precedence; if
   // real local diary work differs, retain BOTH versions as an explicit conflict.

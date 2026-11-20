@@ -153,6 +153,7 @@ function Specimen(){
  case 'stackedActivity':
   panel=<><StackedActivityChart days={days} selectedDate={selectedDate}
    todayDate={todayKey} onSelectDate={setSelectedDate}
+   onToday={()=>setSelectedDate(todayKey)}
    locale={en?'en':'vi'}/>
    <p role="status">{t('Ngày đã chọn: ','Selected date: ')}{selectedDate}</p></>;
   break;

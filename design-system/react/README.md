@@ -83,3 +83,8 @@ All 12 missing families and 8 partial equivalents are represented by **20 import
 - **Sync/update:** installed catalog is automatically recompiled when the DS is built/deployed. To update upstream icon releases, change exact pinned npm version in a reviewed PR; verify the approved role mapping and CI before publishing. **Syncing does not authorize a design change** or auto-write project files from the website. Site says "synced at build", not "up to date with npm latest".
 - **Focus and style:** regular Lucide outlines respect currentColor/stroke and DS size/stroke; keyboard focus belongs to the **button/link hosting** the icon, never an extra outer green ring on the icon itself.
 - **Validation boundary:** CI compile + Pages deployment verify source availability. PO visual G2, mobile Safari and actual app adoption remain separate. No extra test frameworks.
+
+
+### Data Viz Today control · 2026-11-20
+Both MonthCalendar and StackedActivityChart show a labeled **Hôm nay / Today** button. They use caller-supplied `todayDate` (local calendar date), not the device clock inside the library.
+MonthCalendar jumps across months using `onMonthChange` and selects today; its button is disabled if the current month differs and no month-change handler exists. StackedActivityChart selects today when within `days`; for an older seven-day window, provide `onToday` to recenter the caller-owned window and selection, otherwise the action is disabled. Native buttons have 44px targets and a single thicker existing focus border, never an outer green outline. Story data is fixture-only.

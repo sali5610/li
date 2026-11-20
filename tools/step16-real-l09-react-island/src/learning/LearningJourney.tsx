@@ -9,9 +9,9 @@ import {L09_LESSON_ID} from './ports';
 import type {LearningPorts,SyncState} from './ports';
 import './journey.css';
 
-/** A real React learner screen. No parallel shell, synthetic attempt, or fake auth.
- * Existing native L09 editorial is extracted from its authoritative source by
- * scripts/extract-l09.cjs. Staging must supply all real production ports.
+/** A real invited-only React learner screen, not a second app.
+ * Editorial VI/EN copy is compiled from canonical GitHub
+ * content/lessons/L09-1-2.json; signed Dexie/Neon attempts use the stable ID.
  */
 type Phase='read'|'guided'|'practice'|'feedback'|'progress';
 const sequence:Phase[]=['read','guided','practice','feedback','progress'];

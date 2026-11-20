@@ -8,7 +8,8 @@
 module.exports={
  globDirectory:"site",
  globPatterns:["index.html","manifest.webmanifest","assets/*.{js,css,svg}",
-  "assets/li-search-adapter.mjs","assets/li-search-graph.json"],
+  "assets/li-content-adapter.mjs","content-packs/search.json",
+  "content-packs/graph.json","content-packs/course-catalog.json"],
  globIgnores:["**/*.map","**/*qa-secrets*"],
  swDest:"site/sw.js",
  mode:"production",

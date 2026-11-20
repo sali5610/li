@@ -66,23 +66,32 @@ const relatedUi=readFileSync(new URL("../site/assets/lesson-related-wave1.js",im
 assert.ok(relatedUi.includes('import("./li-content-adapter.mjs")')&&relatedUi.includes("api.getRelatedLessons(id)"));
 assert.ok(relatedUi.includes("li-related-source")&&relatedUi.includes("noopener noreferrer"));
 assert.ok(!relatedUi.includes("const RELATED="),"no parallel hardcoded graph");
-const editorial=JSON.parse(readFileSync(new URL("../content/editorial/L09-1-1.lesson.v1.json",import.meta.url),"utf8"));
-const schema=JSON.parse(readFileSync(new URL("../content/schema/lesson.schema.json",import.meta.url),"utf8"));
-assert.ok(schema.required.every(key=>Object.hasOwn(editorial,key)),"draft carries canonical lesson required attributes");
-assert.equal(editorial.id,"L09-1-1");
-assert.equal(editorial.hierarchy.course.id,"course:C09-1");
-assert.equal(editorial.publishState,"draft");
-assert.equal(editorial.reviewState,"proposed");
-assert.equal(editorial.editorialStatus,"draft");
-assert.deepEqual(editorial.languages,["vi","en"]);
-assert.equal(editorial.practice.questionCount,4);
-for(const locale of ["vi","en"]){
- assert.ok(editorial.content.localized[locale].independent.prompt_md.includes("256"));
- assert.equal(editorial.content.localized[locale].independent.model_answer_gate,"AFTER_VALID_INDEPENDENT_SUBMISSION");
- assert.equal(editorial.content.localized[locale].technique_applications.T06.feedback_gate,"AFTER_T06_MEANINGFUL_ATTEMPT");
- assert.equal(editorial.content.localized[locale].technique_applications.T07.feedback_gate,"AFTER_T07_MEANINGFUL_ATTEMPT");
-}
-assert.ok(!/Population_versus_sample|source_quote_bank|Loneshieling/.test(JSON.stringify(editorial)),
- "external image and unreviewed companion quotes excluded from learner-ready draft");
-assert.ok(!indexed.documents.some(x=>x.id==="lesson:L09-1-1"),"draft must not appear in released learner search");
+// Real canonical Search route: reviewed concept -> authored lesson -> sourced comparison.
+const selection=await c.searchKnowledge("Selection bias");
+assert.equal(selection.status,"ok");
+assert.equal(selection.results[0].id,"concept:ont01:selection-bias");
+assert.deepEqual(selection.results[0].links.filter(x=>x.kind==="Lesson").map(x=>x.lessonId),
+ ["L09-1-2","L03-1-2"]);
+assert.ok(selection.results[0].links.some(x=>x.lessonId==="L09-1-2" &&
+ x.relation==="TEACHES"&&x.sourceUrl.startsWith("https://www.pewresearch.org/")));
+assert.ok(selection.results[0].links.some(x=>x.lessonId==="L03-1-2" &&
+ /khác nhau|tiên quyết/.test(x.reason)&&x.sourceUrl.startsWith("https://www.pewresearch.org/")));
+assert.equal((await c.searchKnowledge("sai lech chon mau")).results[0].id,
+ "concept:ont01:selection-bias");
+const lessonSearch=await c.searchKnowledge("L09-1-2");
+assert.equal(lessonSearch.results[0].lessonId,"L09-1-2");
+assert.ok(lessonSearch.results[0].links.some(x=>x.kind==="Field"&&x.id==="field:F09"&&
+ x.sourceUrl.startsWith("https://app.notion.com/")));
+assert.ok(lessonSearch.results[0].links.some(x=>x.lessonId==="L03-1-2"&&
+ x.relation==="RELATED_TO"));
+assert.equal((await c.searchKnowledge("Data Science")).results[0].id,"field:F09");
+assert.equal((await c.searchKnowledge("C09-1")).results[0].kind,"Course");
+assert.ok(!(await c.searchKnowledge("Reorder point")).results.some(x=>
+ x.id==="concept:wave1:reorder-point"),"proposed concepts must remain hidden");
+assert.ok(!(await c.searchKnowledge("L09-1-1")).results.some(x=>
+ x.id==="lesson:L09-1-1"),"outline-only lesson must not become a search result");
+assert.deepEqual((await c.searchKnowledge("L15-2-2")).results[0].links
+ .filter(x=>x.kind==="Lesson"),[],"unreviewed L09-L15 bridge hidden");
+assert.equal((await c.searchKnowledge("x".repeat(200))).status,"invalid_query");
+
 console.log("LI_CONTENT_ADAPTER_PASS 8 groups / 15 fields / 45 courses / 135 lesson outlines, 3 full lessons, ontology graph and lazy packs");

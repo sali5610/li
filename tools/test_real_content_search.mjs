@@ -44,10 +44,15 @@ assert.ok([...index.records.values()].every(x => !['Learner', 'Attempt', 'Feedba
 assert.ok(index.graphIsPilot, 'do not lose pilot provenance signal');
 assert.ok(index.links.every(e => e.evidenceState === 'verified_relation_in_editorial_pilot'));
 
-// Source links must be directly visible in both graph mode and offline/native fallback.
+// The old pilot remains isolated contract research; the deployed Search uses
+// the one canonical Content API, and its visible links are browser-checked separately.
 const searchUi = readFileSync(new URL('../site/assets/li-catalog-search.js', import.meta.url), 'utf8');
-assert.match(searchUi, /sourceLink\(relation\.provenance\?\.sourceUrl,"Nguồn quan hệ \(Notion\)"\)/);
-assert.match(searchUi, /sourceLink\(record\.sourceUrl,"Nguồn danh mục \(Notion\)"\)/);
+assert.ok(searchUi.includes('import(new URL("./assets/li-content-adapter.mjs"'),
+  'real Search must reuse the canonical content client');
+assert.ok(searchUi.includes('client.searchKnowledge(value)'),
+  'native Search must retrieve canonical search/graph relationships');
+assert.ok(!searchUi.includes('li-search-graph.json')&&!searchUi.includes('li-search-adapter.mjs'),
+  'pilot packs must not be loaded by the learner-facing Search');
 assert.match(searchUi, /sourceLink\(item\.sourceUrl,"Nguồn danh mục \(Notion\)"\)/);
 assert.ok(!searchUi.includes('document.createElement("details")'),
   'source evidence must not be hidden in collapsed details');

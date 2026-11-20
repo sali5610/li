@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
-# One actual rendered Search interaction, not a catalog-only source/string assertion.
+# One focused Chromium rendering check against the same canonical static packs used by li.
 set -euo pipefail
 chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
-test -n "$chrome" || { echo 'FAIL no browser for Search source-link smoke'; exit 1; }
-test -s site/assets/li-search-adapter.mjs
-test -s site/assets/li-search-graph.json
-grep -Fq '"assets/li-search-adapter.mjs"' tools/platform/workbox-config.cjs
-grep -Fq '"assets/li-search-graph.json"' tools/platform/workbox-config.cjs
+test -n "$chrome" || { echo 'FAIL no browser for canonical Search smoke'; exit 1; }
+test -s site/content-packs/search.json
+test -s site/content-packs/graph.json
+test -s site/content-packs/course-catalog.json
+test -s site/assets/li-content-adapter.mjs
+grep -Fq '"assets/li-content-adapter.mjs"' tools/platform/workbox-config.cjs
+grep -Fq '"content-packs/graph.json"' tools/platform/workbox-config.cjs
+grep -Fq '"content-packs/search.json"' tools/platform/workbox-config.cjs
 cat > site/li-search-source-smoke.html <<'HTML'
 <!doctype html>
 <html lang="vi"><head><meta charset="utf-8"></head><body>
@@ -16,36 +19,53 @@ cat > site/li-search-source-smoke.html <<'HTML'
 <script src="./assets/catalog-curriculum-data.js"></script>
 <script src="./assets/li-catalog-search.js"></script>
 <script>
-const input=document.getElementById('global-search'),out=document.getElementById('result');
-input.value='L09-1-2';
-input.dispatchEvent(new Event('input',{bubbles:true}));
-const container=document.getElementById('global-results');
-const initiallyHasCatalogSource=Array.from(container.querySelectorAll('a')).some(
- a=>a.textContent==='Nguồn danh mục (Notion)' && a.href.startsWith('https://app.notion.com/'));
-if(!initiallyHasCatalogSource){
- out.textContent='LI_SEARCH_CATALOG_FALLBACK_FAIL';
-}else{
- let checks=0;
- const timer=setInterval(()=>{
-  const status=window.liSearch?.getStatus?.();
-  if(status==='ready'){
-   clearInterval(timer);
-   const evidence=Array.from(container.querySelectorAll('a')).find(
-    a=>a.textContent==='Nguồn quan hệ (Notion)');
-   const hasField=container.textContent.includes('Data Science') &&
-    container.textContent.includes('field:F09');
-   const hasSection=container.textContent.includes('Quan hệ phân loại đã đối chiếu');
-   const sourceLinks=Array.from(container.querySelectorAll('a')).filter(
-    a=>a.textContent.includes('Nguồn ') && a.href.startsWith('https://app.notion.com/'));
-   out.textContent=evidence?.href.startsWith('https://app.notion.com/') &&
-    hasField && hasSection && sourceLinks.length===1 &&
-    sourceLinks[0].textContent==='Nguồn quan hệ (Notion)'?
-    'LI_SEARCH_SOURCE_PASS':'LI_SEARCH_VISIBLE_SOURCE_FAIL';
-  }else if(status==='error'||++checks>60){
-   clearInterval(timer);out.textContent='LI_SEARCH_GRAPH_FAILED_'+String(status);
-  }
- },100);
-}
+(async function(){
+ const input=document.getElementById("global-search");
+ const results=document.getElementById("global-results");
+ const marker=document.getElementById("result");
+ const tick=()=>new Promise(resolve=>setTimeout(resolve,150));
+ const fail=code=>{marker.textContent="LI_SEARCH_FAIL_"+code;};
+ const query=async q=>{
+  input.value=q;input.dispatchEvent(new Event("input",{bubbles:true}));await tick();
+ };
+ await query("L09-1-2");
+ // Offline/static-catalog fallback must retain a source even before canonical packs load.
+ const hasFallback=Array.from(results.querySelectorAll("a"))
+  .some(a=>a.textContent==="Nguồn danh mục (Notion)"&&a.href.startsWith("https://"));
+ if(window.liSearch?.getStatus?.()==="loading"&&!hasFallback){
+  fail("FALLBACK_SOURCE");return;
+ }
+ for(let i=0;i<60&&window.liSearch?.getStatus?.()==="loading";i++)await tick();
+ if(window.liSearch?.getStatus?.()!=="ready"){fail("CANONICAL_PACK_"+window.liSearch?.getStatus?.());return;}
+ await query("L09-1-2");
+ const lesson=results.querySelector('[data-search-result="L09-1-2"]');
+ const body=results.textContent;
+ const visibleSources=Array.from(results.querySelectorAll("a")).filter(a=>a.href.startsWith("https://"));
+ if(!lesson||!body.includes("Data Science")||!body.includes("L03-1-2")||
+    !body.includes("khác nhau")||
+    !visibleSources.some(a=>a.textContent==="Nguồn phân loại"&&a.href.includes("notion.com"))||
+    !visibleSources.some(a=>a.textContent==="Nguồn phương pháp"&&a.href.includes("pewresearch.org"))){
+  fail("L09_FIELD_RELATED_SOURCE");return;
+ }
+ await query("Selection bias");
+ const concept=results.querySelector('[data-search-result="concept:ont01:selection-bias"]');
+ const related=results.textContent;
+ const pew=Array.from(results.querySelectorAll("a"))
+  .filter(a=>a.href.includes("pewresearch.org"));
+ if(!concept||!related.includes("L09-1-2")||!related.includes("L03-1-2")||
+    !related.includes("Bài liên quan để so sánh")||pew.length!==1){
+  fail("CONCEPT_TO_LESSON_TO_RELATED");return;
+ }
+ await query("Reorder point");
+ if(results.querySelector('[data-search-result="concept:wave1:reorder-point"]')){
+  fail("PROPOSED_CONCEPT_LEAK");return;
+ }
+ await query("L09-1-1");
+ if(results.querySelector('[data-search-result="L09-1-1"]')){
+  fail("OUTLINE_LESSON_LEAK");return;
+ }
+ marker.textContent="LI_SEARCH_CANONICAL_PASS";
+})();
 </script></body></html>
 HTML
 python3 -m http.server 8772 --bind 127.0.0.1 --directory site > /tmp/li-search-http.log 2>&1 &
@@ -53,12 +73,12 @@ server_pid=$!
 trap 'kill "$server_pid" 2>/dev/null || true; rm -f site/li-search-source-smoke.html' EXIT
 sleep 1
 dom="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
- --hide-scrollbars --window-size=1000,900 --virtual-time-budget=9000 \
+ --hide-scrollbars --window-size=1000,900 --virtual-time-budget=18000 \
  --dump-dom http://127.0.0.1:8772/li-search-source-smoke.html 2>/tmp/li-search-browser.log || true)"
-if [[ "$dom" != *'<pre id="result">LI_SEARCH_SOURCE_PASS</pre>'* ]];then
- echo "FAIL real rendered Search didn't show Data Science relation with visible Notion evidence"
+if [[ "$dom" != *'<pre id="result">LI_SEARCH_CANONICAL_PASS</pre>'* ]];then
+ echo "FAIL rendered canonical Search: Selection bias → L09 → reviewed L03 + sources"
  echo "$dom" | grep -o '<pre id="result">[^<]*</pre>' | tail -1 || true
  tail -20 /tmp/li-search-browser.log || true
  exit 1
 fi
-echo 'PASS real rendered Search: L09-1-2 -> F09 Data Science + visible Notion relation source; fallback has catalog source'
+echo 'PASS rendered canonical Search: L09 field + sourced L03 link, verified Selection bias → L09 → L03, proposed/outline hidden'

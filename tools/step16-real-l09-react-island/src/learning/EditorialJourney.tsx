@@ -276,7 +276,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   try{
    const cleanup=api.registerEditorial(companion);
    setMentorReady(true);
-   return()=>{setMentorReady(false);cleanup();};
+   return()=>{cleanup();};
   }catch{setError('Manifest Lão Lý không hợp lệ.');}
  },[lesson,companion]);
  useEffect(()=>{

@@ -29,7 +29,10 @@ type Extension={
  id:string;intro_md:string;searchQueries:string[];sourcePrompt:string;
  sources:{title:string;url:string;tier:string}[];recallQuestions:string[];
 };
-type MethodCopy={prompt_md:string;feedback_md:string;feedback_gate:string};
+type MethodCopy={
+ prompt_md:string;feedback_md:string;feedback_gate:string;
+ answer_key?:Record<'A'|'B'|'C'|'D',MethodCategory>;
+};
 type Localized={
  hook:Section;goals:Section;concept:Section;variable_types:Section;guided:Section;
  technique_applications:Record<Method,MethodCopy>;
@@ -91,9 +94,13 @@ function quiz(md:string):{intro:string;questions:string[]}{
  if(questions.length!==4)throw Error('EDITORIAL_FOUR_QUESTIONS_REQUIRED');
  return {intro,questions};
 }
-function rubricNames(md:string):string[]{
- const rows=md.split(/\r?\n/).map(line=>line.trim()).filter(line=>line.startsWith('|'));
- return rows.slice(2).map(line=>line.replace(/^\||\|$/g,'').split('|')[0].trim());
+/** Rubric descriptors stay attached to each 0/1/2 input, not only a distant table. */
+function rubricRows(md:string):[string,string,string,string][]{
+ const lines=md.split(/\r?\n/).map(line=>line.trim()).filter(line=>line.startsWith('|'));
+ return lines.slice(2).filter(line=>!/^\|?\s*-/.test(line))
+  .map(line=>line.replace(/^\||\|$/g,'').split('|').map(cell=>cell.trim()))
+  .filter((cells):cells is [string,string,string,string]=>
+   cells.length===4&&cells.every(cell=>cell.length>0));
 }
 function parseLesson(source:unknown,id:string):EditorialLesson{
  if(!source||typeof source!=='object')throw Error('MISSING_EDITORIAL_CONTENT');
@@ -113,10 +120,12 @@ function parseLesson(source:unknown,id:string):EditorialLesson{
    !c.technique_applications?.T06?.prompt_md||
    !c.technique_applications?.T07?.prompt_md||
    c.technique_applications.T06.feedback_gate!=='AFTER_T06_MEANINGFUL_ATTEMPT'||
-   c.technique_applications.T07.feedback_gate!=='AFTER_T07_MEANINGFUL_ATTEMPT')
+   c.technique_applications.T07.feedback_gate!=='AFTER_T07_MEANINGFUL_ATTEMPT'||
+   T06_CASES.some(letter=>!categories.includes(
+    c.technique_applications.T06.answer_key?.[letter] as MethodCategory)))
     throw Error('EDITORIAL_LEARNING_CONTRACT_INVALID');
   quiz(c.independent.prompt_md);
-  if(rubricNames(c.reflection.md).length!==4)
+  if(rubricRows(c.reflection.md).length!==4)
    throw Error('EDITORIAL_FOUR_RUBRIC_ROWS_REQUIRED');
   if(!c.illustration?.alt||!c.illustration?.caption||!c.guided.hint_md||
     c.extension?.recallQuestions?.length!==3||c.extension?.sources?.length<2||
@@ -695,7 +704,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  </section>;
  const locale=attempt.locale,vi=locale==='vi',content=lesson.content.localized[locale];
  const independent=quiz(content.independent.prompt_md);
- const rubrics=rubricNames(content.reflection.md);
+ const rubrics=rubricRows(content.reflection.md);
  const labels:Record<Phase,string>=vi?
   {read:'Đọc bài',guided:'Thử áp dụng',methods:'Thần Chú',practice:'Làm bài',feedback:'Đối chiếu',progress:'Tiến độ'}:
   {read:'Learn',guided:'Guided example',methods:'Spells',practice:'Practice',feedback:'Feedback',progress:'Progress'};
@@ -845,6 +854,33 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
          {T06_CASES.map(k=>k+': '+(persisted.classifications?.[k]??'—')).join(' · ')}
         </p>}
         <p className="li-learning-submitted-answer">{persisted.submission}</p>
+        {method==='T06'&&persisted.classifications&&copy.answer_key&&
+         <div className="li-learning-table-scroll">
+          <table>
+           <caption>{vi?'Đối chiếu từng trường A–D':'Compare each field A–D'}</caption>
+           <thead><tr>
+            <th scope="col">{vi?'Trường':'Field'}</th>
+            <th scope="col">{vi?'Mày chọn':'Your choice'}</th>
+            <th scope="col">{vi?'Đáp án':'Expected'}</th>
+            <th scope="col">{vi?'Đối chiếu':'Comparison'}</th>
+           </tr></thead>
+           <tbody>{T06_CASES.map(letter=>{
+            const selected=persisted.classifications?.[letter];
+            const expected=copy.answer_key?.[letter];
+            const same=selected===expected;
+            return <tr key={letter}>
+             <th scope="row">{letter}</th>
+             <td>{selected?categoryLabels[locale][selected]:'—'}</td>
+             <td>{expected?categoryLabels[locale][expected]:'—'}</td>
+             <td>{same?(vi?'Khớp loại biến':'Type matches'):
+              (vi?'Xem lại loại biến':'Revisit type')}</td>
+            </tr>;
+           })}</tbody>
+          </table>
+          <Text role="support">{vi?
+           'Chỉ đối chiếu nhãn loại biến; phần giải thích chưa được chấm. Nộp T06 không chứng minh thông thạo.':
+           'Only variable-type labels are compared. Reasoning is not automatically graded; submitting T06 is not mastery.'}</Text>
+         </div>}
         <Markdown md={copy.feedback_md}/>
        </div>}
      </section>;
@@ -889,12 +925,14 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      </>}
     {persistedAttempt.answerRevealed&&[0,1,2,3].map(i=><div className="li-learning-rating" key={i}>
      <label htmlFor={'li-editorial-rating-'+id+'-'+i}>
-      <strong>{rubrics[i]??((vi?'Tiêu chí ':'Criterion ')+(i+1))}</strong>
+      <strong>{rubrics[i]?.[0]??((vi?'Tiêu chí ':'Criterion ')+(i+1))}</strong>
      </label>
      <select id={'li-editorial-rating-'+id+'-'+i} value={attempt.ratings[i]??''}
       disabled={locked||attempt.reviewed} onChange={e=>rate(i,e.currentTarget.value)}>
       <option value="">{vi?'Chưa chấm':'Unrated'}</option>
-      <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+      {([0,1,2] as const).map(score=><option key={score} value={score}>
+       {score+' · '+(rubrics[i]?.[score+1]??'')}
+      </option>)}
      </select>
     </div>)}
     {persistedAttempt.answerRevealed&&(persistedAttempt.reviewed?

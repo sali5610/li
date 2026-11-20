@@ -121,7 +121,7 @@ if(authOnly){
    throw Error('PWA_ICON_SCOPE_CHANGED');
   icon.src=icon.src.slice(3);
  }
- await writeFile(manifestPath,JSON.stringify(manifest,null,2)+'\\n');
+ await writeFile(manifestPath,JSON.stringify(manifest,null,2)+'\n');
  // This candidate's worker is generated separately after assembly. Never
  // cache /api/auth, Neon responses, private note data or OAuth cookies.
  const registration=[
@@ -131,7 +131,7 @@ if(authOnly){
   "window.addEventListener('load',()=>{",
   "navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(()=>{});",
   "});})();"
- ].join('\\n');
+ ].join('\n');
  await writeFile(join(assets,'pwa-register.js'),registration);
 }
 const stale=[];

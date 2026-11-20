@@ -3,7 +3,8 @@ import {LiIcon} from './LucideIcons';
 import type {LiIconRole} from './LucideIcons';
 
 /** Canonical app navigation buttons. Product routing remains owned by the app.
- * Preserve the native data-page contract until each page is fully React.
+ * When an action is supplied, React owns the click and avoids native delegation.
+ * Legacy/Story consumers may still use data-page until their route is migrated.
  */
 export interface AppNavigationItem {
  id:string;
@@ -16,13 +17,15 @@ export interface AppNavigationControlsProps {
  area:'desktop'|'mobile'|'utilities';
  activeId:string;
  items:readonly AppNavigationItem[];
+ onNavigate?:(id:string)=>void;
 }
-export function AppNavigationControls({area,activeId,items}:AppNavigationControlsProps){
+export function AppNavigationControls({area,activeId,items,onNavigate}:AppNavigationControlsProps){
  return <React.Fragment>{items.map(item=><button
   key={item.id}
   type="button"
   className={(area==='utilities'?'tool-button':'nav-btn')+(activeId===item.id?' active':'')}
-  data-page={item.id}
+  data-page={onNavigate?undefined:item.id}
+  onClick={onNavigate?()=>onNavigate(item.id):undefined}
   data-li-component="app-navigation-control"
   aria-current={activeId===item.id?'page':undefined}
   aria-label={item.accessibleLabel}

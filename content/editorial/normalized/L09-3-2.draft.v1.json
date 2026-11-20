@@ -1,0 +1,191 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "L09-3-2",
+  "kind": "Lesson",
+  "title": {
+    "sourceTitle": "W4A · L09-3-2 — Precision, Recall & Error Trade-offs · VI/EN Source-Review Draft"
+  },
+  "content": {
+    "format": "editorial-sectioned-draft-v1",
+    "localized": {
+      "vi": {
+        "intro_md": "<b>Hook:</b> App khoe dự báo giao hàng đúng 92%. Đáng mừng không? Còn tùy nó vừa bỏ sót bao nhiêu đơn sắp trễ, tiểu hữu ạ.",
+        "sections": [
+          {
+            "id": "vi-01",
+            "role": "concept",
+            "heading": "Chương 1 — Định nghĩa positive trước khi ngắm điểm",
+            "body_md": "Trong bài này positive nghĩa là <b>đơn hàng thực sự sẽ trễ</b>. Negative nghĩa là đơn đúng hạn. Bốn loại dự đoán: TP (báo trễ và thực sự trễ), FP (báo trễ nhưng đúng hạn), FN (báo đúng hạn nhưng thực tế trễ), TN (báo đúng hạn và thực tế đúng hạn). Nếu không khóa định nghĩa positive, precision và recall rất dễ bị đảo nghĩa."
+          },
+          {
+            "id": "vi-02",
+            "role": "guided",
+            "heading": "Chương 2 — Worked contrast: 200 đơn, một chỉ số đẹp che một sai sót",
+            "body_md": "Bộ dữ liệu hoàn toàn GIẢ LẬP, không phải số liệu SAP/khách hàng. Có 200 đơn: 30 trễ, 170 đúng hạn. Mô hình cảnh báo: <b>TP=18, FP=12, FN=12, TN=158</b>. Kiểm tra tổng 18+12+12+158=200.\n\n<b>Accuracy</b> = (18+158)/200 = <b>88%</b>. <b>Precision</b> = 18/(18+12) = <b>60%</b>: trong các cảnh báo trễ, 60% đúng. <b>Recall</b> = 18/(18+12) = <b>60%</b>: trong các đơn thật sự trễ, công cụ tìm được 60%. Mô hình luôn dự đoán ‘đúng hạn’ đã đạt <b>170/200=85% accuracy</b>, nhưng recall lớp trễ bằng 0%. Accuracy đơn lẻ không cho biết bỏ sót bao nhiêu đối tượng cần tìm. [Berkeley accuracy](https://inferentialthinking.com/chapters/17/5/accuracy-of-the-classifier/index.html); [scikit precision/recall](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html)."
+          },
+          {
+            "id": "vi-03",
+            "role": "guided",
+            "heading": "Chương 3 — Guided contrast: cùng precision, khác recall",
+            "body_md": "Bộ luyện riêng có <b>500 đơn</b>, 50 trễ và 450 đúng hạn. Dự đoán <b>TP=36, FP=24, FN=14, TN=426</b>; tính tổng 500. Người học tự điền: precision = 36/(36+24) = \\_\\_\\_%, recall = 36/(36+14) = \\_\\_\\_%, accuracy = (36+426)/500 = \\_\\_\\_%. Đây không phải bộ số dùng ở đề độc lập.\n\n<b>ĐÁP ÁN SAU LƯỢT LUYỆN:</b> precision=60%, recall=72%, accuracy=92,4%. So với worked case, precision bằng nhau 60% nhưng recall khác 60% vs 72%, vì mẫu số TP+FN và composition khác. Nếu learner gọi precision là 'phần trăm đơn trễ tìm được', cần quay lại câu hỏi mẫu số."
+          },
+          {
+            "id": "vi-04",
+            "role": "methods",
+            "heading": "Chương 4 — T06: so sánh có mục đích, không xếp hạng máy móc",
+            "body_md": "Mục tiêu của đội vận hành là giảm đơn trễ bị bỏ sót mà không làm ngập hộp cảnh báo. Tăng recall có thể làm nhiều cảnh báo hơn. <b>Precision không phải lúc nào cũng giảm đơn điệu khi di chuyển threshold</b> trên mọi dữ liệu; muốn chọn threshold phải xem đường trade-off cụ thể và hậu quả FP/FN. Một kết quả tốt là chỉ ra rõ người chịu tác động, khả năng can thiệp, chi phí và phạm vi của test set, chứ không chỉ đọc điểm phần trăm.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
+          },
+          {
+            "id": "vi-05",
+            "role": "independent",
+            "heading": "Chương 5 — Bài độc lập, bộ số và quy mô KHÁC",
+            "body_md": "Có <b>1.200 đơn giả lập</b>, trong đó 120 trễ và 1.080 đúng hạn; positive = sẽ trễ. Hai mô hình A và B đã được thử trên cùng tập test độc lập theo giả định đề bài, không bị data leakage:\n\n\\| Thống kê \\| Mô hình A \\| Mô hình B \\|\n\n\\|---\\|---:\\|---:\\|\n\n\\| TP \\| 54 \\| 84 \\|\n\n\\| FP \\| 36 \\| 126 \\|\n\n\\| FN \\| 66 \\| 36 \\|\n\n\\| TN \\| 1044 \\| 954 \\|\n\n\\| Tổng \\| 1200 \\| 1200 \\|\n\n1. Tính accuracy, precision và recall cho A và B, ghi rõ tử số và mẫu số.\n2. So sánh với baseline luôn dự đoán đúng hạn. Vì sao một mô hình có accuracy trên 90% vẫn có thể bỏ sót phần lớn đơn trễ?\n3. Giả sử chi phí bỏ sót một đơn trễ là 20 điểm, chi phí mỗi cảnh báo sai 1 điểm. Tính tổng chi phí A và B; chọn theo giả định đó. Nếu tỷ số chi phí FN/FP đổi thành 2/1 thì lựa chọn đổi không?\n4. Viết một cảnh báo trước khi triển khai: điều kiện nào của test set, độ tin cậy về chi phí và hậu quả phân nhóm vẫn chưa được dữ liệu này chứng minh?\n\n<b>Hint không spoil:</b> accuracy chia cho N=1200; precision chia cho số dự đoán trễ TP+FP; recall chia cho số thực trễ TP+FN. Khi tính chi phí, chỉ cộng FN×chi phí FN và FP×chi phí FP như đề bài quy định.",
+            "model_answer_md": "<b>ĐÁP ÁN BIÊN TẬP — CHỈ HIỆN SAU NỘP:</b> A accuracy=(54+1044)/1200=<b>91,5%</b>, precision=54/(54+36)=<b>60%</b>, recall=54/(54+66)=<b>45%</b>. B accuracy=(84+954)/1200=<b>86,5%</b>, precision=84/(84+126)=<b>40%</b>, recall=84/(84+36)=<b>70%</b>. Baseline all-negative accuracy=1080/1200=<b>90%</b>, recall=0. Với cost FN20/FP1: A=66×20+36=<b>1356</b>, B=36×20+126=<b>846</b> → B tốt hơn theo cost định nghĩa. Với FN2/FP1: A=66×2+36=<b>168</b>, B=36×2+126=<b>198</b> → A tốt hơn. Đây là cost giả định minh họa; không phải chi phí thực tế trong logistics.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "vi-06",
+            "role": "reflection",
+            "heading": "Chương 6 — Rubric 0–8 và lỗi nghiêm trọng",
+            "body_md": "4 tiêu chí × 0/1/2: (1) positive class, TP/FP/FN/TN và các mẫu số; (2) tính đúng 6 metrics trên A/B; (3) so sánh base rate và naive baseline; (4) tính chi phí, nhận diện trade-off, không kết luận vượt dữ liệu. <b>Critical failures:</b> (i) coi precision=recall khi mẫu số khác, (ii) nói 91,5% accuracy nghĩa đã tìm được 91,5% đơn trễ, (iii) khẳng định B luôn tốt hơn bất kể chi phí. Ngưỡng 6/8 chỉ là dự kiến biên tập, chưa phải mastery được hiệu chuẩn; trợ giúp/gợi ý không tính cùng lần tự làm.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "vi-07",
+            "role": "extension",
+            "heading": "Nguồn mở và 3 câu active recall (không hiện đáp án)",
+            "body_md": "- [Berkeley Accuracy](https://inferentialthinking.com/chapters/17/5/accuracy-of-the-classifier/index.html), [scikit precision/recall](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html), [precision/recall threshold example](https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html).\n\n1. Vì sao accuracy tốt không đảm bảo recall của lớp hiếm tốt?\n2. Khi nào tăng recall có thể gây thêm vấn đề vận hành?\n3. Một metric cao có thể dùng để quyết định production ngay không, và bạn còn cần kiểm chứng điều gì?"
+          }
+        ]
+      },
+      "en": {
+        "intro_md": "<b>Hook:</b> Your delivery predictor boasts 92% accuracy. Great—unless it quietly misses the orders that actually arrive late.",
+        "sections": [
+          {
+            "id": "en-01",
+            "role": "concept",
+            "heading": "Chapter 1 — Define the positive label first",
+            "body_md": "<b>Positive = a shipment that will actually be late</b>; negative = on-time. True positive (TP) means flagged late and truly late; false positive (FP) means flagged late but actually on-time; false negative (FN) means predicted on-time but truly late; true negative (TN) means predicted on-time and actually on-time. Without fixing the positive class, metrics can appear to contradict each other."
+          },
+          {
+            "id": "en-02",
+            "role": "guided",
+            "heading": "Chapter 2 — Worked contrast, 200 shipments",
+            "body_md": "Entirely fictional data, not SAP/customer records: 200 shipments with 30 late and 170 on-time. <b>TP=18, FP=12, FN=12, TN=158</b>, sum 200. <b>Accuracy</b>=(18+158)/200=<b>88%</b>. <b>Precision</b>=18/(18+12)=<b>60%</b>: of the alerts, 60% were correct. <b>Recall</b>=18/(18+12)=<b>60%</b>: of all truly late shipments, 60% were found. Always predicting on-time gives <b>170/200=85% accuracy</b>, yet zero recall for late shipments. [Berkeley holdout accuracy](https://inferentialthinking.com/chapters/17/5/accuracy-of-the-classifier/index.html) + [scikit precision/recall](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html)."
+          },
+          {
+            "id": "en-03",
+            "role": "guided",
+            "heading": "Chapter 3 — Guided contrast, 500 separate shipments",
+            "body_md": "Another fictional set: 500 shipments, 50 late and 450 on-time. The classifier yields <b>TP=36, FP=24, FN=14, TN=426</b>. Fill in precision 36/(36+24)=<i><b>%, recall 36/(36+14)=</b></i>%, accuracy (36+426)/500=\\_\\_\\_%.\n\n<b>FEEDBACK AFTER GUIDED ATTEMPT:</b> Precision 60%, recall 72%, accuracy 92.4%. Precision equals the worked case at 60%, but recall is higher at 72%; the denominators and class composition differ. Calling precision 'share of all actual late shipments found' swaps it with recall."
+          },
+          {
+            "id": "en-04",
+            "role": "methods",
+            "heading": "Chapter 4 — Primary T06 contrast and optional T07 assumptions",
+            "body_md": "The operations team wants fewer missed late deliveries, but too many false alerts could overwhelm dispatchers. Higher recall may require more alerts. <b>Precision need not fall monotonically with every lower threshold on every dataset</b>; inspect an actual precision–recall curve and decision costs. A defensible choice states whose mistakes count, possible intervention, the test population and operational limitations.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
+          },
+          {
+            "id": "en-05",
+            "role": "independent",
+            "heading": "Chapter 5 — Independent transfer: 1,200 new fictional shipments",
+            "body_md": "There are 1,200 records, 120 actually late, 1,080 on-time. Positive = late; both models evaluated on the same assumed clean final test set:\n\n\\| Statistic \\| Model A \\| Model B \\|\n\n\\|---\\|---:\\|---:\\|\n\n\\| TP \\| 54 \\| 84 \\|\n\n\\| FP \\| 36 \\| 126 \\|\n\n\\| FN \\| 66 \\| 36 \\|\n\n\\| TN \\| 1044 \\| 954 \\|\n\n\\| Total \\| 1200 \\| 1200 \\|\n\n1. Calculate accuracy, precision and recall for both models, with numerator and denominator.\n2. Compare them with an always-on-time baseline and explain why accuracy above 90% can still miss most late shipments.\n3. If an FN costs 20 points and an FP costs 1 point, compare total costs and decide; does your choice change when FN costs 2 and FP still 1?\n4. Give one valid deployment limitation involving the held-out population, assumed costs or subgroup impacts.\n\n<b>Nonspoiler hint:</b> Divide correct predictions by N for accuracy, TP by TP+FP for precision, and TP by TP+FN for recall. Apply the stated FN and FP costs.",
+            "model_answer_md": "<b>EDITORIAL ANSWER KEY — REVEAL POST SUBMISSION:</b> A accuracy <b>91.5%</b>, precision <b>60%</b>, recall <b>45%</b>; B accuracy <b>86.5%</b>, precision <b>40%</b>, recall <b>70%</b>. Baseline always-on-time accuracy <b>90%</b> and late-class recall 0. Cost FN20/FP1: A=66×20+36=<b>1356</b>, B=36×20+126=<b>846</b>, so B under this hypothetical. Cost FN2/FP1: A=66×2+36=<b>168</b>, B=36×2+126=<b>198</b>, so A. These invented costs are not measured logistics costs.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-06",
+            "role": "reflection",
+            "heading": "Chapter 6 — Rubric 0–8 (uncalibrated)",
+            "body_md": "Four 0/1/2 dimensions: (1) positive class, confusion cells and denominators; (2) six metric calculations; (3) comparison to base rate/naive baseline; (4) cost-sensitive choice, conditions, and limits. <b>Critical fails:</b> confusing precision with recall, treating 91.5% accuracy as detection of 91.5% of late shipments, or claiming one model is always best regardless of costs. Suggested 6/8 remains unvalidated; assistance tracking is separate.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-07",
+            "role": "extension",
+            "heading": "Read further and active recall (unanswered)",
+            "body_md": "- [Berkeley accuracy chapter](https://inferentialthinking.com/chapters/17/5/accuracy-of-the-classifier/index.html), [sklearn definitions](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html), [PR curve](https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html).\n\n1. Why can a high accuracy obscure poor rare-class recall?\n2. When might raising recall impose a large operational cost?\n3. What evidence is still needed before a metric supports deployment?"
+          }
+        ]
+      }
+    },
+    "companion": {
+      "moments": [
+        {
+          "stage": "opening",
+          "heading": "opening · L09-3-2",
+          "source_md": "Quote candidates: analects-honesty, hume-evidence, darwin-confidence. Primary: analects-honesty.\n\nVI 1: Accuracy 92% là tốt chưa lão? — Lão Lý: Chưa biết. Hỏi xem nó bỏ sót lớp trễ bao nhiêu đã.\n\nVI 2: Tại sao phải định nghĩa positive? — Lão Lý: Không chốt nhãn dương, tên metric cũng dễ trở thành trò đánh tráo.\n\nEN 1: Is 92% accuracy good? — Old Li: Too soon to know. Check how many late orders it misses.\n\nEN 2: Why define positive first? — Old Li: Without a fixed positive class, metric labels become slippery."
+        },
+        {
+          "stage": "concept",
+          "heading": "concept · L09-3-2",
+          "source_md": "Quote candidates: analects-think, box-models, bacon-cause. Primary: analects-think.\n\nVI 1: Precision và recall khác sao? — Lão Lý: Precision hỏi trong cảnh báo, bao nhiêu đúng; recall hỏi trong đơn trễ, bao nhiêu được thấy.\n\nVI 2: FN có nghĩa gì? — Lão Lý: Đơn thực sự trễ nhưng ngươi lại báo đúng hạn. Hậu quả tùy quy trình.\n\nEN 1: How is precision different from recall? — Old Li: Precision asks how many alerts are correct; recall asks how many real late orders are found.\n\nEN 2: What is an FN here? — Old Li: A truly late shipment predicted on-time; its cost depends on the workflow."
+        },
+        {
+          "stage": "guided",
+          "heading": "guided · L09-3-2",
+          "source_md": "Quote candidates: analects-practice, zhuangzi-craft, bacon-studies. Primary: analects-practice.\n\nVI 1: 60% precision có nghĩa 60% trễ đã bắt được à? — Lão Lý: Sai mẫu số rồi; đó là recall. Thử chia TP cho TP+FP.\n\nVI 2: Sao bộ 500 đơn có recall 72%? — Lão Lý: Có 36 true positive trong 50 đơn trễ; đó là 36/50.\n\nEN 1: Does 60% precision mean we caught 60% of all late orders? — Old Li: No—that is the recall question. Divide TP by TP+FP for precision.\n\nEN 2: Why is recall 72% on 500 records? — Old Li: There are 36 true positives among 50 truly late orders."
+        },
+        {
+          "stage": "independent",
+          "heading": "independent · L09-3-2",
+          "source_md": "Quote candidates: mencius-sources, hume-evidence, analects-honesty. Primary: mencius-sources.\n\nVI 1: Mô hình A accuracy cao hơn thì luôn thắng? — Lão Lý: Đừng trao vương miện trước khi tính FN, FP và cái giá của chúng.\n\nVI 2: Có nên xem đáp án trước không? — Lão Lý: Không. Lão giữ key sau nộp để phân biệt tự hiểu với xem lời giải.\n\nEN 1: Does A always win because its accuracy is higher? — Old Li: Not until you compare false negatives, false positives and their costs.\n\nEN 2: Can I see the key first? — Old Li: Not in an independent attempt. The answer follows your submission."
+        },
+        {
+          "stage": "reflection",
+          "heading": "reflection · L09-3-2",
+          "source_md": "Quote candidates: analects-review, epictetus-appearance, darwin-confidence. Primary: analects-review.\n\nVI 1: Tại sao cost giả lập lại đổi quyết định? — Lão Lý: Vì cùng một ma trận vẫn có hậu quả khác nhau tùy chi phí sai lầm.\n\nVI 2: Có chắc mô hình này dùng thực tế được không? — Lão Lý: Chưa. Test set và chi phí phải đại diện cho tình huống thật trước đã.\n\nEN 1: Why does the invented cost change the decision? — Old Li: The same errors can have different consequences under different priorities.\n\nEN 2: Are these results deployment ready? — Old Li: Not yet. Validate the target population and actual decision costs."
+        },
+        {
+          "stage": "extension",
+          "heading": "extension · L09-3-2",
+          "source_md": "Quote candidates: analects-peers, zhuangzi-limits, mill-other-side. Primary: analects-peers.\n\nVI 1: Còn cần xem nhóm khách khác nhau không? — Lão Lý: Cần nếu rủi ro phân nhóm quan trọng. Đừng để trung bình che bất lợi.\n\nVI 2: Chọn threshold thế nào? — Lão Lý: Dùng curve, capacity xử lý cảnh báo và chi phí kiểm chứng được, không chỉ chăm một con số.\n\nEN 1: Should we inspect performance across customer groups? — Old Li: Yes when subgroup harms matter; an average can hide disparities.\n\nEN 2: How should we set a threshold? — Old Li: Use the curve, alert capacity and grounded error costs—not one headline score."
+        }
+      ],
+      "reviewState": "proposed"
+    }
+  },
+  "rights": {
+    "status": "unverified",
+    "releaseAuthorized": false
+  },
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "publishState": "draft",
+  "publishedAt": null,
+  "provenance": {
+    "sourceUrl": "https://app.notion.com/p/41d6cf6db72a8103a763ec9a183c6abb",
+    "rawSourcePath": "content/editorial/imported/L09-3-2.source.v1.json",
+    "sourceBodyCharacters": 17907
+  },
+  "normalization": {
+    "status": "sectioned_needs_academic_rights_and_release_review",
+    "counts": {
+      "vi": {
+        "chapters": 7,
+        "independent": 1,
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
+      },
+      "en": {
+        "chapters": 7,
+        "independent": 1,
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
+      }
+    },
+    "issues": [],
+    "sourceVerbatim": true,
+    "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "readOnlyDerived": true,
+    "runnableInReact": false
+  }
+}

@@ -1,3 +1,4 @@
+import {openRoute} from './app-router.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Button,Card,Field,FilterChip,Heading,InlineFeedback,MethodTile,Text,LiIcon} from '../../../../design-system/react/index';
@@ -138,14 +139,14 @@ function ShelfHeader({title,description,target}:{
   <div><Heading level={2} role="titleMedium">{title}</Heading>
    <Text role="support" className="library-group-description">{description}</Text></div>
   {target&&<Button variant="ghost" className="library-text-link library-more-link"
-   data-page={target}>{copy('Xem tất cả','See all')} <LiIcon name="arrow-right" size={17}/></Button>}
+   onClick={()=>openRoute(target)}>{copy('Xem tất cả','See all')} <LiIcon name="arrow-right" size={17}/></Button>}
  </div>;
 }
 function Empty({message,route,action}:{
  message:string;route?:string;action?:string
 }){
  return <div className="li-library-empty"><Text role="support">{message}</Text>
-  {route&&<Button variant="secondary" data-page={route}>{action||copy('Khám phá','Explore')}</Button>}
+  {route&&<Button variant="secondary" onClick={()=>openRoute(route)}>{action||copy('Khám phá','Explore')}</Button>}
  </div>;
 }
 function LessonRows({lessons,limit}:{
@@ -160,7 +161,7 @@ function LessonRows({lessons,limit}:{
     <strong>{item.title}</strong>
     <Text role="support">{item.id} · {item.status} · {item.detail}</Text>
    </div>
-   <Button variant="ghost" className="library-text-link" data-page={item.route}>
+   <Button variant="ghost" className="library-text-link" onClick={()=>openRoute(item.route)}>
     {copy('Tiếp tục','Continue')}
    </Button>
    <Button variant="ghost" className="library-icon-action" aria-pressed={item.saved}
@@ -243,8 +244,8 @@ function Library(){
       <NotePreview note={view.ideas[0]} kind="idea"/></Card>
     </div>
     <div className="library-create-actions action-row">
-     <Button variant="secondary" data-page="case">{copy('Viết Bút Ký','Write a Case Note')}</Button>
-     <Button variant="secondary" data-page="capture">{copy('Nhặt ý','Capture an Idea')}</Button>
+     <Button variant="secondary" onClick={()=>openRoute('case')}>{copy('Viết Bút Ký','Write a Case Note')}</Button>
+     <Button variant="secondary" onClick={()=>openRoute('capture')}>{copy('Nhặt ý','Capture an Idea')}</Button>
     </div>
    </section>
    <section className="library-group" aria-label={copy('Nhìn lại','Reflect')}>
@@ -256,7 +257,7 @@ function Library(){
       <Text role="support">{copy('Ngủ, vận động, nghỉ ngơi, nhịp học và hoạt động mỗi ngày.',
        'Rest, activity, pace and learning each day.')}</Text>
      </div>
-     <Button variant="secondary" data-page="dashboard">{copy('Xem Nhật Ký','Open Journal')}</Button>
+     <Button variant="secondary" onClick={()=>openRoute('dashboard')}>{copy('Xem Nhật Ký','Open Journal')}</Button>
     </Card>
    </section>
   </div>
@@ -276,7 +277,7 @@ function BookmarkRows({items}:{
     <Button variant="ghost" className="library-text-link" disabled={!item.route}
      onClick={()=>app.liLibraryShelf?.openSavedQuestion(item.id)}>
      {item.route?copy('Mở lại','Open'):copy('Chưa có điểm đến','Unavailable')}</Button>:
-    <Button variant="ghost" className="library-text-link" data-page={item.route||undefined}
+    <Button variant="ghost" className="library-text-link" onClick={()=>item.route&&openRoute(item.route)}
      disabled={!item.route}>{copy('Mở lại','Open')}</Button>}
    <Button variant="ghost" className="library-icon-action" aria-label={copy('Bỏ lưu','Remove bookmark')}
     onClick={()=>item.kind==='question'?app.liLibraryShelf?.removeSavedQuestion(item.id):
@@ -293,7 +294,7 @@ function Resume(){
   setTab(next);app.liLibraryShelf?.selectBookmarkTab(next);
  };
  return <div className="section-shell li-react-library" data-li-react-screen="resume">
-  <Button variant="ghost" data-page="library" className="library-back-link">
+  <Button variant="ghost" onClick={()=>openRoute('library')} className="library-back-link">
    <LiIcon name="chevron-left" size={18}/> {copy('Tủ Riêng','Private Library')}</Button>
   <div className="kicker">{copy('HÀNH TRÌNH CỦA BẠN','YOUR LEARNING HISTORY')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Quay lại','Continue')}</Heading>
@@ -338,7 +339,7 @@ function Collection(){
   .sort((a,b)=>(Date.parse(b.sortDate)||0)-(Date.parse(a.sortDate)||0))
   .filter(item=>filter==='all'||item.type===filter);
  return <div className="section-shell li-react-library" data-li-react-screen="collection">
-  <Button variant="ghost" data-page="library" className="library-back-link">
+  <Button variant="ghost" onClick={()=>openRoute('library')} className="library-back-link">
    <LiIcon name="chevron-left" size={18}/> {copy('Tủ Riêng','Private Library')}</Button>
   <div className="kicker">{copy('GHI CHÉP CỦA BẠN','YOUR NOTES')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Bộ sưu tập','Collection')}</Heading>
@@ -373,8 +374,8 @@ function Collection(){
   <div className="library-collection-create">
    <Heading level={2} role="titleMedium">{copy('Thêm ghi chép','Add a Note')}</Heading>
    <div className="action-row library-collection-actions">
-    <Button variant="secondary" data-page="case">{copy('Viết Bút Ký','Write a Case Note')}</Button>
-    <Button variant="secondary" data-page="capture">{copy('Nhặt ý mới','Capture an Idea')}</Button>
+    <Button variant="secondary" onClick={()=>openRoute('case')}>{copy('Viết Bút Ký','Write a Case Note')}</Button>
+    <Button variant="secondary" onClick={()=>openRoute('capture')}>{copy('Nhặt ý mới','Capture an Idea')}</Button>
    </div>
   </div>
  </div>;

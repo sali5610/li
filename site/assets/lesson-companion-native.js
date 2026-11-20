@@ -3,12 +3,14 @@
 (function(){
 "use strict";
 const registry=new Map();
+const editorialRegistry=new Map(); // React editorial lessons share the SAME Lão Lý popup.
 const stages=["opening","concept","guided","independent","reflection","extension"];
 const reactStages={read:"opening",guided:"guided",practice:"independent",feedback:"reflection",progress:"extension"};
 let candidateMethods=null;
 const reactLesson=id=>document.querySelector('[data-li-react-journey="'+id+'"][data-li-lesson-phase]');
 const stageLocale=()=>{
- const item=displayedLesson(),live=item?reactLesson(item.data.lesson_id):null;
+ const item=displayedLesson(),live=item?reactLesson(item.data.lesson_id):
+  document.querySelector('[data-li-editorial-journey][data-li-lesson-phase]');
  return (live?.getAttribute("lang")||item?.root.getAttribute("lang")||
    document.documentElement.lang)==="en"?"en":"vi";
 };
@@ -32,7 +34,34 @@ function activeMoment(item){
 }
 function context(){
  const item=displayedLesson();
- if(!item)return null;
+ if(!item){
+  const host=document.querySelector('[data-li-editorial-journey][data-li-lesson-phase]');
+  const id=host?.getAttribute("data-li-editorial-journey");
+  const data=editorialRegistry.get(id);
+  const page=host?.closest('[id^="page-"]');
+  if(!host||!page?.classList?.contains("active")||!data||
+   !document.documentElement.classList.contains("li-auth-verified"))return null;
+  const actualPhase=host.getAttribute("data-li-lesson-phase");
+  const submitted=host.getAttribute("data-li-lesson-submitted")==="true";
+  const reviewed=host.getAttribute("data-li-lesson-reviewed")==="true";
+  let requested=actualPhase==="methods"?"guided":
+   (reactStages[actualPhase]||"opening");
+  if(actualPhase==="read"){
+   const concept=document.getElementById(data.moments[1].anchor);
+   const rect=concept?.getBoundingClientRect?.();
+   if(rect&&rect.top<Math.min(300,(window.innerHeight||720)*0.42)&&rect.bottom>0)
+    requested="concept";
+  }
+  const safeStage=(requested==="reflection"&&!submitted)?"independent":
+   requested==="extension"&&!reviewed?(submitted?"reflection":"independent"):requested;
+  const moment=data.moments.find(m=>m.stage===safeStage);
+  if(!moment)return null;
+  const english=host.getAttribute("lang")==="en";
+  return {page:page.id.slice(5),lesson_id:id,stage:safeStage,submitted,reviewed,
+   editorial:true,actualPhase,topics:data.topics,quote_ids:moment.quote_ids,
+   anchor:moment.anchor,wording:moment[english?"en":"vi"]};
+ }
+
  const live=reactLesson(item.data.lesson_id);
  const submitted=live?live.getAttribute("data-li-lesson-submitted")==="true":hasSubmitted(item.data.lesson_id);
  const mappedStage=live?reactStages[live.getAttribute("data-li-lesson-phase")]:null;
@@ -70,7 +99,8 @@ function plan(page){
    // React owns the visible lesson step. The old anchor remains in hidden
    // native markup for parity only; scrolling to it would look like a dead link.
    if(reactLesson(c.lesson_id)){
-    const phase={opening:"read",concept:"read",guided:"guided",
+    const phase=c.editorial&&c.actualPhase==="methods"?"methods":
+     {opening:"read",concept:"read",guided:"guided",
       independent:"practice",reflection:"feedback",extension:"progress"}[c.stage];
     if(phase){
      window.dispatchEvent(new CustomEvent("li:mentor-phase-jump",{
@@ -113,7 +143,20 @@ async function load(root){
   console.warn("li. lesson companion:",error.message);
  }
 }
-window.liLessonCompanion={getContext:context,getPlan:plan,registered:()=>Array.from(registry.keys())};
+// Future full editorial lessons participate in the existing authored mentor.
+function registerEditorial(data){
+ if(!data||data.schema!==1||!/^L[0-9]{2}-[0-9]+-[0-9]+$/.test(data.lesson_id)||
+  !Array.isArray(data.moments)||data.moments.length!==stages.length||
+  data.moments.some((m,i)=>m.stage!==stages[i]||
+   !Array.isArray(m.quote_ids)||m.quote_ids.length<3||
+   !m.vi?.prompt||!m.en?.prompt||m.vi?.actions?.length!==2||m.en?.actions?.length!==2))
+   throw Error("EDITORIAL_MENTOR_CONTRACT_INVALID");
+ editorialRegistry.set(data.lesson_id,data);updateLabel();
+ return ()=>{if(editorialRegistry.get(data.lesson_id)===data)editorialRegistry.delete(data.lesson_id);};
+}
+window.liLessonCompanion={getContext:context,getPlan:plan,
+ registered:()=>[...registry.keys(),...editorialRegistry.keys()],
+ registerEditorial};
 document.querySelectorAll("[data-lesson-id][data-companion-manifest]").forEach(root=>{load(root);});
 // Only editorial candidate method suggestions. Do not promote fit to verified or assign K3 mastery.
 fetch(new URL("./assets/lesson-spell-suggestions.v0.1.json",document.baseURI),{credentials:"same-origin"})

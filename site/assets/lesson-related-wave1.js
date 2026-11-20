@@ -2,7 +2,7 @@
 (()=>{
 "use strict";
 const LESSONS={
- "L03-1-2":{route:"lessonL03",title:"Open Questions & Interview Bias",field:"UX Design"},
+ "L03-1-2":{route:"lessonL03",title:"Open Questions & Interview Bias",field:"Human–Computer Interaction (HCI)"},
  "L09-1-2":{route:"lessonL09",title:"Sampling Bias",field:"Data Science"},
  "L15-2-2":{route:"lessonL15",title:"Reorder Points & Safety Stock",field:"Supply Chain"}
 };

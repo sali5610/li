@@ -1,0 +1,190 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "L09-2-3",
+  "kind": "Lesson",
+  "title": {
+    "sourceTitle": "W3C · L09-2-3 — Regression and Possible Confounding · VI/EN editorial"
+  },
+  "content": {
+    "format": "editorial-sectioned-draft-v1",
+    "localized": {
+      "vi": {
+        "intro_md": "<b>“Đường hồi quy dốc lên, nhưng trong từng nhóm người dùng, điểm số có thể chẳng tăng tí nào.”</b>\n\nTrong một mô phỏng hư cấu, người có kinh nghiệm vừa xem tính năng nhiều hơn, vừa có điểm hoàn thành tác vụ cao hơn. Gom hai nhóm lại vẽ một đường, ta thấy xu hướng dương. Nhưng <b>trong mỗi nhóm trình độ</b>, số lần xem tăng lại không đi kèm thay đổi điểm. <b>Cú lật:</b> đường phù hợp với dữ liệu gộp có thể phản ánh khác biệt nhóm, không phải tác động của tính năng. [OpenStax §1.2 — causality/confounding](https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling).",
+        "sections": [
+          {
+            "id": "vi-01",
+            "role": "goals",
+            "heading": "1 · Mục tiêu",
+            "body_md": "Hiểu biến giải thích <code>x</code>, biến kết quả <code>y</code>, đường dự đoán <code>y-hat=a+b×x</code>, độ dốc <code>b</code>, intercept <code>a</code>, <b>residual = y−y-hat</b>; tính OLS đơn giản từ bộ số nhỏ và phạm vi diễn giải; phân biệt <b>association, prediction, causal effect</b>; nghi ngờ variable <b>confounder</b> khi biến thứ ba liên hệ với cả exposure và outcome; đề xuất so sánh phân tầng/thiết kế thử để kiểm tra kết luận."
+          },
+          {
+            "id": "vi-02",
+            "role": "concept",
+            "heading": "2 · Đường khớp không phải cơ chế nhân quả",
+            "body_md": "Đường OLS chọn <code>a, b</code> làm nhỏ nhất tổng bình phương residual trong tập quan sát: <code>b=Σ(x−xbar)(y−ybar)/Σ(x−xbar)²</code>, <code>a=ybar−b×xbar</code> khi x có phương sai dương. <b>Residual</b> đo khoảng cách dọc giữa y quan sát và y-hat dự đoán, không phải cứ có residual là người nhập dữ liệu sai.\n\n<b>Ví dụ tự dựng:</b> ba cặp (lượt thao tác X, điểm Y) = (1,2),(2,4),(3,6). Trung bình x=2, y=4, đường <b>y-hat=2x</b>; dự đoán tại x=2 là 4, residual của quan sát này=0. Nó mô tả ba điểm đã dựng — <b>không chứng minh tăng một lượt thao tác làm tăng hai điểm</b>; x=10 là ngoại suy xa ngoài 1–3, không có dữ liệu hỗ trợ.\n\n<b>Đọc đúng ba tầng:</b>\n\n- <b>Association:</b> x và y thay đổi cùng nhau trong tập quan sát.\n- <b>Prediction:</b> một hàm có thể đưa ra y-hat trong phạm vi hợp lý, cần đánh giá lỗi và tính tổng quát trên dữ liệu chưa thấy.\n- <b>Causation:</b> thay đổi x gây thay đổi y nếu có lập luận thiết kế/đối chứng giải quyết các đường giải thích thay thế; hồi quy một biến đơn lẻ không tự cung cấp điều này.\n\n<b>Confounding:</b> một biến nền như trình độ sử dụng có thể liên quan tới cả số lần xem tính năng và điểm nhiệm vụ. Nếu không ghi nhận nó, ta có thể gán nhầm khác biệt giữa nhóm cho hiệu quả của x. Đó là <b>khả năng cần kiểm</b> chứ không phải tự động xác nhận mọi correlation đều giả."
+          },
+          {
+            "id": "vi-03",
+            "role": "guided",
+            "heading": "3 · Ví dụ hướng dẫn — khác số worked",
+            "body_md": "Một bộ giả định mới: (x,y) = (1,3),(2,5),(3,7). Trung bình x=2, y=5, b=2, intercept=<b>1</b>, <b>y-hat=1+2x</b>. Tại x=2, y-hat=5, residual=0. <b>Hỏi:</b> Có thể nói một lượt xem “gây thêm 2 điểm”? <b>Không</b> từ tập quan sát nhỏ và không có nhóm đối chứng. Khi X biến đổi cùng nhóm kinh nghiệm hoặc các yếu tố khác, slope gộp càng cần thận trọng."
+          },
+          {
+            "id": "vi-04",
+            "role": "methods",
+            "heading": "3b · L2-T07 — kiểm giả định trước khi nói “nhờ X” (bộ luyện mới)",
+            "body_md": "<b>Micropractice GIẢ ĐỊNH:</b> 4 người, X = số lần xem tutorial, Y = điểm quiz: novice (1,4),(2,4); experienced (3,10),(4,10). Cả nhóm experienced có điểm cao hơn, đồng thời xem nhiều lần hơn. Manager nói “X tăng nên Y tăng”.\n\n<b>Người học phải làm:</b> (1) tách hai subgroup; (2) nêu xu hướng X↔Y <b>trong mỗi subgroup</b>; (3) xác định một third variable có thể giải thích xu hướng gộp và giả định thiếu để kết luận nhân quả; (4) đề xuất một phép kiểm hoặc thử nghiệm với phân nhóm/cân bằng kinh nghiệm, sau đó mới nhận feedback. Việc xem guide Thần Chú hoặc tick tên T07 <b>không</b> chứng minh enactment.\n\n<b>Feedback CHỈ SAU attempted response:</b> Trong novice cả hai Y=4 dù X thay; trong experienced cả hai Y=10 dù X thay. Pooled line vẫn có slope dương (OLS b=2,4 trong fixture 4 điểm). <b>Expertise</b> là ứng viên confounder vì ảnh hưởng cả exposure (ở đây tự dựng như vậy) và outcome. Không thể nói tutorial vô tác dụng từ hai nhóm hai người; bộ số chỉ cho thấy tuyên bố “vì X” chưa có chứng cứ nhân quả. Có thể random hóa độ phơi bày tutorial/đối chứng trong nhóm expertise, tiền đăng ký metrics và kiểm bằng dữ liệu lớn hơn nếu phù hợp.\n\n<b>Optional T06:</b> so sánh bằng bảng hai cột “pooled association” và “within-group association”; rút ra điều kiện bất đồng, không dán nhãn Simpson's paradox tùy tiện khi chưa định nghĩa hướng thay đổi tỷ lệ/hệ số.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
+          },
+          {
+            "id": "vi-05",
+            "role": "independent",
+            "heading": "4 · Bài độc lập — case KHÁC hoàn toàn",
+            "body_md": "Một app giáo dục <b>hư cấu</b> có 6 lượt quan sát, X = số phiên xem hướng dẫn, Y = điểm bài thực hành:\n\n- <b>Novice:</b> (1,3), (2,3), (3,3)\n- <b>Experienced:</b> (4,9), (5,9), (6,9)\n\nDữ liệu chỉ mô tả sáu cặp X/Y, không phải bằng chứng hiệu quả hướng dẫn. Mỗi dòng là một người khác nhau, không phải ba lần đo của cùng người.\n\n1. Tính <b>xbar, ybar</b>, OLS slope <code>b</code> và intercept <code>a</code> của <b>dữ liệu gộp</b> từ công thức; nêu đơn vị y-hat.\n2. Mô tả quan hệ X–Y <b>trong novice và experienced riêng</b>; so với slope gộp và nêu ý nghĩa khác biệt.\n3. Đánh giá câu “xem thêm một phiên hướng dẫn <b>gây</b> tăng b điểm”. Nêu confounder hợp lý, một giới hạn khác và tại sao kể cả OLS vừa khớp vẫn không chứng minh nguyên nhân.\n4. Đề xuất bằng chứng bổ sung: một thiết kế đo/trial hoặc phương án phân tầng, biến số cần thu thập, và vì sao dự đoán X=10 từ sáu điểm này là thiếu bảo đảm.\n\n<b>Hint không spoil:</b> Gộp 6 dòng mới tính xbar/ybar; dùng độ lệch so với mean để tìm slope; sau đó so dữ liệu trong từng nhóm trước khi thốt từ “gây ra”.",
+            "model_answer_md": "<b>MODEL ANSWER — CHỈ SAU SUBMIT HỢP LỆ:</b> xbar=<b>3,5</b>, ybar=<b>6</b>. Σ(x−3,5)(y−6)=<b>27</b>, Σ(x−3,5)²=<b>17,5</b>, b=<b>27/17,5≈1,543 điểm/phiên</b>, a=6−(27/17,5)×3,5=<b>0,6</b>; <code>y-hat≈0,6+1,543x</code>. <b>Trong mỗi nhóm</b> y không đổi khi x tăng → within-group observed slope 0, trái với positive pooled slope. Trình độ novice/experienced có thể ảnh hưởng cả tutorial exposure và quiz Y, nên chưa chứng minh một phiên thêm gây tăng 1,543 điểm. Sáu người, không random hóa, không đánh giá model ngoài mẫu; X=10 là ngoại suy ngoài khoảng 1–6. Cần dữ liệu nền, task difficulty, randomization hoặc nhóm tương đương và đo outcome trước/sau nếu hợp lý.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "vi-06",
+            "role": "reflection",
+            "heading": "5 · Rubric tự đánh giá 0–8 chưa hiệu chuẩn",
+            "body_md": "4 × 0/1/2: (A) OLS a/b/units và residual/prediction phân biệt; (B) within-group vs pooled so sánh đúng; (C) confounder và causal humility; (D) dữ liệu/thiết kế bổ sung và ngoại suy giới hạn. Hint/assisted K7 tách K1/K3; tự chấm không thay chuyên gia thống kê xác nhận.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "vi-07",
+            "role": "extension",
+            "heading": "6 · Nguồn, truy xuất, ghi nhớ",
+            "body_md": "- [OpenStax 2e §12.3](https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation) — linear OLS, residual, extrapolation.\n- [OpenStax 2e §1.2](https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling) — correlation vs causation and confounding.\n- <b>Copy prompt:</b> “Tôi học li. L09-2-3. Hãy mở chính xác 2 URL OpenStax, chỉ trích/tóm tắt nội dung đọc được về fitted line, residual và confounders; tách nguyên văn nguồn khỏi case giả định của app; tự tạo bộ số khác và 3 active recall chưa có đáp án. Nếu không đọc được, báo rõ.”\n- <b>Active recall chưa có đáp án:</b> (1) Residual khác với sai dữ liệu như thế nào? (2) Vì sao pooled positive slope có thể trái với within-group flat relationship? (3) Đòi loại bằng chứng nào trước khi diễn giải b như causal effect?\n\n<b>Media contract:</b> original two-group scatterplot conceptual spec, show subgroup symbols and global fit distinctly with text explanation; don't copy OpenStax graphics. Do not chart independent six numbers before submission in future runtime, including image alt/caption. Actual source-quote rights and mobile/VoiceOver review OPEN."
+          }
+        ]
+      },
+      "en": {
+        "intro_md": "<b>“A pooled regression line can slope upward even when scores are completely flat within both user groups.”</b>\n\nIn a <b>fictional</b> product dataset, experienced users view more tutorials and also score higher. A pooled fit points upward, yet within each experience level, increasing tutorial exposure is not associated with improving scores. <b>The reversal:</b> an apparent positive relationship may be explained by group differences rather than the causal effect of tutorial views. [OpenStax on causality/confounding](https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling).",
+        "sections": [
+          {
+            "id": "en-01",
+            "role": "goals",
+            "heading": "1 · Objectives",
+            "body_md": "Explain predictor X, outcome Y, prediction <code>y-hat=a+bx</code>, slope b, intercept a, residual <code>y−y-hat</code> and basic least-squares fitting; separate association, prediction and causal effect; notice when a third variable plausibly affects both X and Y; check a pooled trend against subgroup patterns and design more credible evidence."
+          },
+          {
+            "id": "en-02",
+            "role": "concept",
+            "heading": "2 · A fitted line isn't a causal mechanism",
+            "body_md": "OLS chooses intercept/slope to minimize squared observed prediction residuals. With variable X, <code>b=Σ(x−xbar)(y−ybar)/Σ(x−xbar)²</code> and <code>a=ybar−b×xbar</code>. A residual is observed minus predicted Y, not necessarily a data-entry mistake.\n\n<b>Original worked example:</b> (X,Y)=(1,2),(2,4),(3,6). Means are (2,4), fitted <b>y-hat=2x</b>; residual at X=2, Y=4 is zero. These three invented points do not prove that adding a viewing session causes a two-point gain; predicting far outside observed X 1–3 is unsupported extrapolation.\n\n<b>Three claims to keep apart:</b> association means X/Y co-vary in these observations; prediction is an estimate that needs holdout/external checking and range limits; causation needs credible identification beyond fitting a univariate line. Experience level may influence both tutorial views and task score, creating a possible <b>confounder</b>; label it a hypothesis unless study design actually isolates it."
+          },
+          {
+            "id": "en-03",
+            "role": "guided",
+            "heading": "3 · Guided example, different case",
+            "body_md": "Fictional (X,Y)=(1,3),(2,5),(3,7). Means X=2,Y=5; fitted slope b=2, intercept a=1, so <b>y-hat=1+2x</b>. At X=2 prediction=5, residual=0. It remains unjustified to say an extra tutorial <b>causes</b> two extra points from three uncontrolled observations."
+          },
+          {
+            "id": "en-04",
+            "role": "methods",
+            "heading": "3b · T07 primary: question the causal premise (new micropractice)",
+            "body_md": "Four hypothetical participants: novice (1 tutorial view,4 quiz points),(2,4); experienced (3,10),(4,10). A manager says additional views <b>caused</b> the improvement.\n\n<b>Required learner attempt:</b> split the two groups, compare within-group X/Y movement, identify a plausible third variable influencing exposure and score, and state a discriminating study or controlled trial. Feedback stays locked until actual reasoning is submitted; viewing a method guide alone is not T07 performed.\n\n<b>After-attempt feedback:</b> Novices remain at Y=4 and experienced remain at Y=10 as X changes. Pooled slope is positive (b=2.4 in this four-point fixture), yet each group's observed slope is zero. Baseline experience is an obvious candidate common cause in this invented design; the four points cannot prove that tutorials have no effect either. One better test could randomize tutorial exposure within comparable experience groups with prespecified measures.\n\n<b>Optional T06:</b> compare pooled association to within-group association side by side. Do not automatically call any subgroup contrast a general Simpson's paradox proof.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
+          },
+          {
+            "id": "en-05",
+            "role": "independent",
+            "heading": "4 · Fresh INDEPENDENT assessment, separate six points",
+            "body_md": "A fictional educational app records distinct users: X=tutorial-viewing sessions, Y=task score.\n\n- <b>Novice:</b> (1,3),(2,3),(3,3)\n- <b>Experienced:</b> (4,9),(5,9),(6,9)\n\n1. Find means xbar and ybar and compute pooled OLS b and a with the formulas, noting units.\n2. Explain the X–Y pattern <b>within each group</b> and compare to the pooled fitted slope.\n3. Critique “each extra tutorial session <b>causes</b> an improvement of b points”; name confounder and other data-design limitations.\n4. Propose a more credible comparison/trial and missing measures. Why is forecasting at X=10 unreliable from this dataset?\n\n<b>Non-spoiler hint:</b> Calculate pooled means and sum deviations for b first; then contrast subgroup movements before interpreting the fitted line.",
+            "model_answer_md": "<b>MODEL ANSWER — ONLY AFTER VALID SUBMISSION:</b> xbar=3.5, ybar=6; cross-deviation sum=<b>27</b>, X sum of squares=<b>17.5</b>, b=<b>27/17.5≈1.543 score points per view</b>; intercept a=<b>0.6</b>, so <b>y-hat≈0.6+1.543x</b>. Within each group score Y is constant, yielding observed within-group slope zero even though pooled slope is positive. Experience could be associated with both views and outcomes. There is no randomized exposure, adequate sample, or external predictive validation, and X=10 is outside 1–6. You cannot infer the causal effect of extra views.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-06",
+            "role": "reflection",
+            "heading": "5 · Uncalibrated 0–8 self-rubric",
+            "body_md": "Four dimensions 0/1/2: OLS arithmetic and residual-vs-prediction; grouped-vs-pooled comparison; confounding and causal caveat; credible follow-up design and extrapolation limits. Keep hints/assistance separate from measured knowledge, and do not claim validated mastery from self-score.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-07",
+            "role": "extension",
+            "heading": "6 · Sources and unanswered recall",
+            "body_md": "- [OpenStax 2e §12.3 Regression Equation](https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation).\n- [OpenStax 2e §1.2 Data, Sampling and Confounding](https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling).\n- <b>Copy prompt:</b> “I study li. L09-2-3. Open the exact OpenStax sources and summarize only actually readable claims on residuals, least-squares regression, confounding and causal limits. Clearly distinguish the textbook facts from newly fictional cases. Create an independent example and 3 recall questions without answers.”\n- <b>Active recall, without answers:</b> (1) What is a regression residual, and why isn't it automatically an error? (2) How can a pooled trend disagree with each subgroup? (3) What design would justify a causal interpretation of b?\n\n<b>Figure/rights:</b> original educational two-group scatter conceptual illustration only; text-first accessible examples; no third-party figure copied or independent solution displayed pre-submit."
+          }
+        ]
+      }
+    },
+    "companion": {
+      "moments": [
+        {
+          "stage": "opening",
+          "heading": "opening · <code>l0923-hook</code>",
+          "source_md": "<b>Primary:</b> <code>hume-evidence</code>; alternatives <code>mill-other-side</code>, <code>analects-honesty</code>. <b>Relevance:</b> matching confidence to evidence is an analogy for refusing to equate a pooled fitted line with a causal effect.\n\n<b>VI · Lão Lý:</b> “Đường lên đẹp dữ ha. Nhưng ai bảo từng người thêm một lần xem hướng dẫn sẽ giỏi hơn?”\n\n- <b>“Tại sao không?”</b> → “Hồi quy nhìn mối liên hệ trong dữ liệu quan sát. Causal effect cần loại giải thích khác.”\n- <b>“Cú lật nằm ở đâu?”</b> → “Trình độ người dùng có thể cùng lúc liên hệ với exposure và điểm; hãy xem từng nhóm.”\n\n<b>EN · Lão Lý:</b> “Lovely rising line. Who said an extra tutorial view actually causes the higher score?”\n\n- <b>“Why not?”</b> → “Regression fits an observed relationship; causation needs rival explanations addressed.”\n- <b>“What's the reversal?”</b> → “Experience may relate to both views and score; examine the groups separately.”"
+        },
+        {
+          "stage": "concept",
+          "heading": "concept · <code>l0923-concept</code>",
+          "source_md": "<b>Primary:</b> <code>analects-think</code>; alternatives <code>bacon-cause</code>, <code>zhuangzi-limits</code>. <b>Relevance:</b> deliberate thought before conclusions parallels distinguishing observed y from predicted y-hat; Confucius did not derive least squares.\n\n<b>VI · Lão Lý:</b> “Đừng nhìn residual rồi la dữ liệu sai. Nó chỉ là khoảng cách với dự đoán.”\n\n- <b>“Residual tính sao?”</b> → “Lấy y quan sát trừ y-hat dự đoán tại cùng x. Dấu dương/âm nói line thấp/cao hơn observation.”\n- <b>“Slope có chứng minh nhân quả?”</b> → “Không. b mô tả thay đổi dự đoán trong fitted association, có thể bị confounding.”\n\n<b>EN · Lão Lý:</b> “A residual is not a typo alarm. It's a gap between observation and fit.”\n\n- <b>“How is it calculated?”</b> → “Observed y minus fitted y-hat at the same x; its sign shows under- or overprediction.”\n- <b>“Does slope prove cause?”</b> → “No. The fitted association may reflect a third variable.”"
+        },
+        {
+          "stage": "guided",
+          "heading": "guided · <code>l0923-guided</code>",
+          "source_md": "<b>Primary:</b> <code>analects-practice</code>; alternatives <code>mencius-sources</code>, <code>zhuangzi-craft</code>. <b>Relevance:</b> deliberate repeated examination is a learning analogy for T07's premise-checking exercise.\n\n<b>VI · Lão Lý:</b> “T07 không bắt ngươi tính thật nhiều. Nó bắt ngươi tìm câu nào đang lén biến association thành cause.”\n\n- <b>“Bước đầu làm gì?”</b> → “Ghi câu giả định ‘thêm X khiến Y tăng’, rồi liệt kê biến nền có thể chạm vào cả hai.”\n- <b>“Vì sao so theo nhóm?”</b> → “Vì hệ số gộp có thể do khác biệt trình độ, không phản ánh cùng xu hướng trong từng nhóm.”\n\n<b>EN · Lão Lý:</b> “T07 doesn't require endless arithmetic. It catches the premise that sneaks from association into causation.”\n\n- <b>“First action?”</b> → “State the assumed causal claim, then identify possible shared determinants of exposure and outcome.”\n- <b>“Why split groups?”</b> → “A pooled coefficient may summarize differences between groups rather than variation within them.”"
+        },
+        {
+          "stage": "independent",
+          "heading": "independent · <code>l0923-challenge</code>",
+          "source_md": "<b>Primary:</b> <code>mencius-sources</code>; alternatives <code>hume-evidence</code>, <code>analects-honesty</code>. <b>Relevance:</b> questioning what a source supports parallels checking how a regression coefficient was constructed and what is missing. <b>Strict no-spoiler:</b> no assessed slope/intercept or group-specific keyed result.\n\n<b>VI · Lão Lý:</b> “Ta không tính dùm hồi quy đề này. Tự kiểm bảng số và kiểu bằng chứng ngươi thật sự có.”\n\n- <b>“Bắt đầu từ đâu?”</b> → “Tính mean gộp và tổng độ lệch bình phương; sau đó mới so kết quả theo nhóm.”\n- <b>“Nếu muốn kết luận gây ra?”</b> → “Nêu bằng chứng thiết kế còn thiếu. Đừng lấy slope gộp làm mệnh lệnh nhân quả.”\n\n<b>EN · Lão Lý:</b> “I won't calculate your assessed slope. Check what the records can actually justify.”\n\n- <b>“First step?”</b> → “Calculate pooled means and sums of deviations, then compare group-specific patterns.”\n- <b>“What about a causal claim?”</b> → “Specify the missing identification evidence instead of treating a pooled slope as an effect.”"
+        },
+        {
+          "stage": "reflection",
+          "heading": "reflection · <code>l0923-reflection</code>",
+          "source_md": "<b>Primary:</b> <code>analects-honesty</code>; alternatives <code>analects-review</code>, <code>darwin-confidence</code>. <b>Relevance:</b> recognizing limits and correcting overconfidence parallels separating fit arithmetic from causal identification. <b>Only post-submit.</b>\n\n<b>VI · Lão Lý:</b> “Đã nộp: chỗ nào ngươi làm toán sai, chỗ nào chỉ là nói quá tay về nguyên nhân?”\n\n- <b>“Tự chấm sao?”</b> → “Tách slope/intercept, so sánh nhóm, confounder và đề xuất nghiên cứu tiếp theo.”\n- <b>“Một line khớp tốt đủ chưa?”</b> → “Chưa. Dữ liệu sáu người, thiếu control và external validation không cho tuyên bố hiệu quả sản phẩm.”\n\n<b>EN · Lão Lý:</b> “Submitted? Separate arithmetic mistakes from overconfident causal storytelling.”\n\n- <b>“What should I score?”</b> → “Rate line calculations, group comparison, confounders and follow-up design separately.”\n- <b>“Does a good fit prove the feature works?”</b> → “No; observational coverage, rival causes and generalization remain unresolved.”"
+        },
+        {
+          "stage": "extension",
+          "heading": "extension · <code>l0923-extension</code>",
+          "source_md": "<b>Primary:</b> <code>bacon-studies</code>; alternatives <code>mill-other-side</code>, <code>analects-peers</code>. <b>Relevance:</b> discussing and writing defensible claims is a bounded learning analogy; OpenStax supplies the actual statistical theory.\n\n<b>VI · Lão Lý:</b> “Thành thạo số thì đáng mừng. Nhưng đi họp đừng biến ‘có liên hệ’ thành ‘chính tính năng này tạo ra’.”\n\n- <b>“Đọc sâu gì?”</b> → “OpenStax §12.3 cho OLS/residual, §1.2 cho confounding và hạn chế causal.”\n- <b>“Bài tự tạo?”</b> → “Giữ vài nhóm có baseline khác nhau, đổi phơi bày trong nhóm rồi hỏi liệu xu hướng pooled còn ổn không.”\n\n<b>EN · Lão Lý:</b> “Good arithmetic is welcome. Turning correlation into a product-effect claim in a meeting is not.”\n\n- <b>“What sources?”</b> → “OpenStax §12.3 for least squares and residuals, §1.2 for confounding/causality.”\n- <b>“Fresh probe?”</b> → “Construct new comparable groups and examine exposure/outcome movement within each before pooling.”\n\n<b>Editorial gate:</b> six stage-specific VI/EN contexts, 2 pairs per locale/stage and 3 curated original-bank IDs/stage. No data-derived quote or false classical citation. Source translation/reuse and quote ordering Issue #8, actual runtime and real-device/QA28 remain OPEN."
+        }
+      ],
+      "reviewState": "proposed"
+    }
+  },
+  "rights": {
+    "status": "unverified",
+    "releaseAuthorized": false
+  },
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "publishState": "draft",
+  "publishedAt": null,
+  "provenance": {
+    "sourceUrl": "https://app.notion.com/p/41c6cf6db72a81b6967cc355b0193fa0",
+    "rawSourcePath": "content/editorial/imported/L09-2-3.source.v1.json",
+    "sourceBodyCharacters": 23445
+  },
+  "normalization": {
+    "status": "needs_academic_rights_and_release_review",
+    "counts": {
+      "vi": {
+        "sections": 7,
+        "independent": 1,
+        "solution": 1,
+        "method": 1,
+        "rubric": 1,
+        "spoilersInPrompts": 0
+      },
+      "en": {
+        "sections": 7,
+        "independent": 1,
+        "solution": 1,
+        "method": 1,
+        "rubric": 1,
+        "spoilersInPrompts": 0
+      }
+    },
+    "issues": [],
+    "sourceVerbatim": true,
+    "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "runnableInReact": false
+  }
+}

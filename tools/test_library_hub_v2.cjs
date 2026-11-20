@@ -14,6 +14,7 @@ const ids=["page-library","page-resume","page-collection","case-archive-preview"
 const elements=Object.fromEntries(ids.map(id=>[id,new Element()]));
 const filters=["all","case","idea"].map(name=>{const x=new Element("button");x.dataset.collectionFilter=name;return x;});
 const local=new Map(),events=[],routes=[],messages=[],deleteCalls=[];
+let invited=true,accountOpen=false,storageAvailable=true,nextIdeaId=2;
 const localStorage={getItem:key=>local.has(key)?local.get(key):null,setItem:(key,value)=>local.set(key,value),removeItem:key=>local.delete(key)};
 const cases=[
 {id:"c1",title:"Cũ",revision:"Kết luận thứ nhất",correct:true,savedAt:"2026-10-01T08:00:00.000Z"},
@@ -23,10 +24,11 @@ const savedQuestions=[{question:"Vì sao?",savedAt:"2026-11-17T08:00:00.000Z"}];
 const savedContent=[{type:"lesson",id:"L09-1-2",savedAt:"2026-11-18T08:00:00.000Z"},{type:"case",id:"sampling-bias-90",savedAt:"2026-11-18T07:00:00.000Z"}];
 const ctx={
  window:{localStorage,dispatchEvent:e=>events.push(e)},
- document:{getElementById:id=>elements[id]||null,createElement:tag=>new Element(tag),querySelectorAll:()=>filters},
+ document:{getElementById:id=>elements[id]||null,createElement:tag=>new Element(tag),querySelectorAll:()=>filters,
+ documentElement:{classList:{contains:key=>key==='li-auth-verified'?invited:key==='li-account-open'?accountOpen:false}}},
  localStorage,processedCases:cases,collectedIdeas:ideas,savedQuestions,savedContent,
  scenarios:[{question:"Vì sao?",type:"problem"}],
- liWriteState:()=>true,liStorageError:false,liNewId:()=>"i2",
+ liWriteState:()=>storageAvailable,liStorageError:false,liNewId:()=>"i"+nextIdeaId++,
  qIndex:0,renderMirrorItem:()=>{},navigate:route=>routes.push(route),toast:msg=>messages.push(msg),
  CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},
  console,Intl,Date
@@ -96,4 +98,38 @@ assert.equal(events[0].detail.type,"input");
 assert.equal(routes.at(-1),"collection");
 assert.equal(elements["li-collection-list"].children.length,2,"filtered collection updates after new item");
 assert.equal(JSON.parse(local.get("li.private.lesson.visits.v1")).items.length,2,"visits persisted and deduped");
+// React Nhặt Ý uses this exact saved-items transaction, not a hidden click.
+const capture=ctx.window.liCaptureIdea;
+assert(capture&&Object.isFrozen(capture),"Private save action is shared and immutable");
+const startCount=ideas.length,priorActivity=events.length;
+assert.equal(capture.save("  ").ok,false,"Validation before any personal write");
+assert.equal(capture.save("x".repeat(5001)).reason,"too-long");
+assert.equal(ideas.length,startCount,"Invalid notes must not be inserted");
+storageAvailable=false;
+const failed=capture.save("Ghi chú cần kiểm chứng");
+assert.equal(failed.reason,"write-failed","A failed disk write must be reported");
+assert.equal(ideas.length,startCount,"Failed write rolls back original in-memory array");
+assert.equal(events.length,priorActivity,"Failed write never emits a saved activity");
+storageAvailable=true;
+invited=false;
+assert.equal(capture.save("Không có invite").reason,"invite-required");
+assert.equal(ideas.length,startCount,"Guest cannot write private notes through React");
+invited=true;accountOpen=true;
+assert.equal(capture.save("Account panel mở").reason,"invite-required");
+assert.equal(ideas.length,startCount,"Account overlay blocks writes");
+accountOpen=false;
+const saved=capture.save("  Ý từ React cần kiểm chứng  ");
+assert.equal(saved.ok,true,"React writes with the original owner");
+assert.equal(ideas.length,startCount+1,"Only one new record for one React action");
+assert.equal(ideas[0].id,saved.id);
+assert.equal(ideas[0].text,"Ý từ React cần kiểm chứng","Whitespace trimmed before private write");
+assert.equal(events.length,priorActivity+1,"Only one li:activity event for confirmed write");
+assert.equal(events.at(-1).detail.id,"idea:"+saved.id);
+assert.equal(routes.at(-1),"collection","React save opens the real Collection route");
+const captureUi=fs.readFileSync(path.join(__dirname,"../tools/step16-real-l09-react-island/src/shell/capture-idea.tsx"),"utf8");
+assert.match(captureUi,/app\.liCaptureIdea\?\.save\(text\)/,"React action is direct");
+assert.doesNotMatch(captureUi,/getElementById\(['"]capture-note['"]\)|getElementById\(['"]save-capture-note['"]\)|submit\.click\(\)/,
+ "No hidden HTML textarea or submit button bridge");
+assert.match(captureUi,/li-auth-verified/,"Logout must clear unsaved React text");
+assert.match(captureUi,/onClick=\{goBack\}/,"React Back must use real history action");
 console.log("PASS Tủ Riêng v2 + two separated bookmark tabs: lessons only / questions + cases, filters, keyboard focus, saved state");

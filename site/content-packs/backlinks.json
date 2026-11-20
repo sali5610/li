@@ -3015,13 +3015,13 @@
         "predicate": "CONTRASTS_WITH",
         "from": "concept:ont01:selection-bias",
         "to": "concept:ont01:random-variation",
-        "reviewState": "proposed",
-        "reason": "Bias is distinct from random sampling variation; not synonymous",
+        "reviewState": "verified",
+        "reason": "Random sampling variation results from chance differences among valid samples; selection bias is systematic distortion from who can be selected or who responds. The concepts are not synonyms or prerequisites.",
         "provenance": {
-          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
-          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Bias is distinct from random sampling variation; not synonymous",
-          "evidenceType": "editorial",
-          "checkedOn": "2026-11-20"
+          "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling",
+          "sourceSection": "§1.2 'Variation in Samples' vs 'Sampling Bias'/'Critical Evaluation'; aligned to existing L09-1-2 learning outcome 3, no prerequisite",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-21"
         }
       },
       {
@@ -3029,13 +3029,13 @@
         "predicate": "TEACHES",
         "from": "lesson:L09-1-2",
         "to": "concept:ont01:random-variation",
-        "reviewState": "proposed",
-        "reason": "Lesson explicitly distinguishes random sampling variation",
+        "reviewState": "verified",
+        "reason": "L09-1-2 explicitly teaches how random sample-to-sample variation differs from selection bias.",
         "provenance": {
-          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
-          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explicitly distinguishes random sampling variation",
-          "evidenceType": "editorial",
-          "checkedOn": "2026-11-20"
+          "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling",
+          "sourceSection": "§1.2 'Variation in Samples' vs 'Sampling Bias'/'Critical Evaluation'; aligned to existing L09-1-2 learning outcome 3, no prerequisite",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-21"
         }
       }
     ],
@@ -5291,13 +5291,13 @@
         "predicate": "TEACHES",
         "from": "lesson:L09-1-2",
         "to": "concept:ont01:random-variation",
-        "reviewState": "proposed",
-        "reason": "Lesson explicitly distinguishes random sampling variation",
+        "reviewState": "verified",
+        "reason": "L09-1-2 explicitly teaches how random sample-to-sample variation differs from selection bias.",
         "provenance": {
-          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
-          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explicitly distinguishes random sampling variation",
-          "evidenceType": "editorial",
-          "checkedOn": "2026-11-20"
+          "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling",
+          "sourceSection": "§1.2 'Variation in Samples' vs 'Sampling Bias'/'Critical Evaluation'; aligned to existing L09-1-2 learning outcome 3, no prerequisite",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-21"
         }
       }
     ],
@@ -6389,13 +6389,13 @@
         "predicate": "CONTRASTS_WITH",
         "from": "concept:ont01:selection-bias",
         "to": "concept:ont01:random-variation",
-        "reviewState": "proposed",
-        "reason": "Bias is distinct from random sampling variation; not synonymous",
+        "reviewState": "verified",
+        "reason": "Random sampling variation results from chance differences among valid samples; selection bias is systematic distortion from who can be selected or who responds. The concepts are not synonyms or prerequisites.",
         "provenance": {
-          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
-          "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Bias is distinct from random sampling variation; not synonymous",
-          "evidenceType": "editorial",
-          "checkedOn": "2026-11-20"
+          "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling",
+          "sourceSection": "§1.2 'Variation in Samples' vs 'Sampling Bias'/'Critical Evaluation'; aligned to existing L09-1-2 learning outcome 3, no prerequisite",
+          "evidenceType": "documented",
+          "checkedOn": "2026-11-21"
         }
       },
       {

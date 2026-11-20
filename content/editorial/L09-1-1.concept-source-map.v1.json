@@ -1,0 +1,149 @@
+{
+  "schemaVersion": "1.0.0",
+  "lessonId": "L09-1-1",
+  "status": "editorial_source_map_only",
+  "readiness": {
+    "sourceReview": "internal_source_check",
+    "academicSpecialistApproval": "pending",
+    "poLessonApproval": "pending",
+    "published": false,
+    "includedInRuntimeGraph": false,
+    "includedInSearch": false
+  },
+  "purpose": "Two documented concept identities and candidate TEACHES edges for the existing GitHub L09-1-1 manuscript. This file is excluded from canonical graph compilation while the lesson is draft; do not auto-promote it or use it to authorize a learner route.",
+  "concepts": [
+    {
+      "id": "concept:wave2:population-and-sample",
+      "kind": "Concept",
+      "title": "Population and sample",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Tổng thể và mẫu"
+        }
+      ],
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "senseDefinition": {
+        "vi": "Tổng thể mục tiêu gồm các đơn vị mà câu hỏi nghiên cứu muốn mô tả; mẫu là các đơn vị thực sự được quan sát. Tham số là đặc điểm số của tổng thể, còn thống kê được tính từ mẫu.",
+        "en": "A target population is the set of units the research question concerns; a sample comprises the units actually observed. A parameter describes the population, while a statistic is computed from the sample."
+      },
+      "senseBoundary": {
+        "vi": "Tỷ lệ từ 320 người tự nguyện chỉ mô tả nhóm trả lời; không tự trở thành tỷ lệ của cả 8.000 người. Suy luận cần xem xét cơ chế chọn mẫu và giả định.",
+        "en": "A rate from 320 volunteers describes the respondents, not automatically all 8,000 learners. Generalization requires a defensible selection mechanism and assumptions."
+      },
+      "lessonSections": [
+        "concept",
+        "guided"
+      ],
+      "learningOutcomeIndexes": [
+        0,
+        2,
+        3
+      ],
+      "provenance": {
+        "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/1-1-definitions-of-statistics-probability-and-key-terms",
+        "sourceSection": "Section 1.1: population, sample, parameter, statistic and variable definitions",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-20"
+      },
+      "supportingSources": [
+        {
+          "url": "https://www.itl.nist.gov/div898/handbook/ppc/section1/ppc134.htm",
+          "sourceSection": "Section 3.1.3.4: target population, sample, representativeness and inferential limits"
+        }
+      ]
+    },
+    {
+      "id": "concept:wave2:variable-types",
+      "kind": "Concept",
+      "title": "Statistical variable types",
+      "aliases": [
+        {
+          "locale": "vi",
+          "text": "Các loại biến thống kê"
+        }
+      ],
+      "version": "0.1.0",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "visibility": "public_curated",
+      "rightsState": "first_party",
+      "senseDefinition": {
+        "vi": "Biến phân loại có thể là danh nghĩa (không thứ tự) hoặc thứ bậc (có thứ tự). Biến định lượng gồm số đếm rời rạc và đại lượng đo liên tục; phân loại dựa vào ý nghĩa giá trị, không dựa vào kiểu lưu trữ trên máy.",
+        "en": "Categorical variables can be nominal (unordered) or ordinal (ordered). Quantitative variables include discrete counts and continuous measurements; classification depends on what a value means, not its software representation."
+      },
+      "senseBoundary": {
+        "vi": "Mã ID chỉ là nhãn dù viết bằng chữ số. Một mục đánh giá 1–5 có thứ tự nhưng không tự bảo đảm khoảng cách giữa các mức bằng nhau; không đồng nhất bốn nhãn lớp biến với bốn thang đo.",
+        "en": "An ID remains a label even when written as digits. One 1–5 rating item is ordered but does not establish equal spacing; the four teaching examples are not the four levels of measurement."
+      },
+      "lessonSections": [
+        "variable_types",
+        "guided"
+      ],
+      "learningOutcomeIndexes": [
+        1
+      ],
+      "provenance": {
+        "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling",
+        "sourceSection": "Section 1.2: categorical, quantitative discrete and quantitative continuous data",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-20"
+      },
+      "supportingSources": [
+        {
+          "url": "https://openstax.org/books/introductory-statistics-2e/pages/1-3-frequency-frequency-tables-and-levels-of-measurement",
+          "sourceSection": "Section 1.3: nominal vs ordinal levels; category labels and ordering"
+        }
+      ]
+    }
+  ],
+  "candidateEdges": [
+    {
+      "id": "edge:wave2:l0911-population-sample",
+      "predicate": "TEACHES",
+      "from": "lesson:L09-1-1",
+      "to": "concept:wave2:population-and-sample",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "reasonLocalized": {
+        "vi": "Bài phân biệt tổng thể, mẫu, tham số và thống kê, đồng thời giới hạn suy luận từ mẫu tự nguyện.",
+        "en": "The lesson distinguishes population, sample, parameter and statistic, then limits inference from volunteer responses."
+      },
+      "provenance": {
+        "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/1-1-definitions-of-statistics-probability-and-key-terms",
+        "sourceSection": "Section 1.1 definitions cross-checked against L09-1-1 concept and guided sections",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-20"
+      }
+    },
+    {
+      "id": "edge:wave2:l0911-variable-types",
+      "predicate": "TEACHES",
+      "from": "lesson:L09-1-1",
+      "to": "concept:wave2:variable-types",
+      "reviewState": "proposed",
+      "visibility": "public_curated",
+      "reasonLocalized": {
+        "vi": "Bài phân biệt nhãn danh nghĩa, mức thứ bậc, số đếm và đại lượng liên tục qua ý nghĩa đo lường.",
+        "en": "The lesson distinguishes nominal labels, ordinal levels, counts and continuous measurements by what they represent."
+      },
+      "provenance": {
+        "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/1-3-frequency-frequency-tables-and-levels-of-measurement",
+        "sourceSection": "Section 1.3 nominal/ordinal distinctions, with discrete/continuous from §1.2; checked against L09-1-1 variable_types",
+        "evidenceType": "documented",
+        "checkedOn": "2026-11-20"
+      }
+    }
+  ],
+  "explicitNonClaims": [
+    "No independent academic or legal signoff",
+    "No formal prerequisite relation to L09-1-2",
+    "No approved learner-facing article, Search result or graph backlink",
+    "Reference URLs only; no textbook text, figures or exercises reproduced"
+  ],
+  "nextGate": "Academic owner reviews sense definitions, evidence and edge direction; only then migrate accepted nodes/TEACHES edges to content/graph and consider full invited learner preview."
+}

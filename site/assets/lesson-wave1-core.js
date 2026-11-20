@@ -5,7 +5,7 @@
 "use strict";
 const PACK={
 "L03-1-2":{
- route:"lessonL03",prefix:"l03",subject:"UX Design / User Problems & Research Basics",
+ route:"lessonL03",prefix:"l03",subject:"HCI / User Problems & Research Basics",
  image:{url:"https://upload.wikimedia.org/wikipedia/commons/c/c4/Interview.svg",
  page:"https://commons.wikimedia.org/wiki/File:Interview.svg",
  credit:"Alexander Koenig MA · CC BY-SA 3.0 Germany"},
@@ -68,7 +68,7 @@ const PACK={
  tiers:{intro:"Hiểu nhanh",core:"Nguồn phương pháp",deep:"Đọc sâu"},
  queriesTitle:"Từ khóa tìm thêm",allPrompt:"Copy prompt tổng hợp",openChat:"Mở ChatGPT ↗",
  sourceNote:"Nếu ChatGPT không thực sự đọc được nguồn, hãy dán đoạn liên quan có quyền chia sẻ. Không bịa trích dẫn.",
- sidebarTitle:"LỘ TRÌNH BÀI HỌC",sidebarLead:"UX Design · Interview Bias",
+ sidebarTitle:"LỘ TRÌNH BÀI HỌC",sidebarLead:"HCI · Interview Bias",
  progressBefore:"Chưa tự đánh giá",progressDone:"Đã tự đánh giá 1 lượt",
  navLabels:["Mục tiêu","Hiểu bản chất","Hình minh họa","Ví dụ","Bài độc lập","Rubric","Nguồn học"],
  sidebarExtra:"Đã chốt nội dung · UI Hi-Fi tiếp tục được điều chỉnh.",
@@ -122,7 +122,7 @@ const PACK={
  tiers:{intro:"Start here",core:"Core guidance",deep:"Deep dive"},queriesTitle:"Search keywords",
  allPrompt:"Copy cross-source prompt",openChat:"Open ChatGPT ↗",
  sourceNote:"If ChatGPT cannot access a reference, paste material you are permitted to share. Never invent source access.",
- sidebarTitle:"YOUR LEARNING PATH",sidebarLead:"UX Design · Interview Bias",progressBefore:"No review completed",progressDone:"One self-review completed",
+ sidebarTitle:"YOUR LEARNING PATH",sidebarLead:"HCI · Interview Bias",progressBefore:"No review completed",progressDone:"One self-review completed",
  navLabels:["Goals","Core concepts","Illustrations","Guided example","Independent task","Rubric","Sources"],
  sidebarExtra:"Content locked · Hi-Fi visuals remain open for refinement.",
  back:"Back to Catalog",status:"Content locked · UI QA open",guide:"Study methods",catalog:"Catalog",

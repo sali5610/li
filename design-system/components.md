@@ -221,3 +221,13 @@ The immediately following *portrait-shaped* screenshot showed `innerWidth`/visua
 | \`FeedbackScene\` | Empty/loading/error/complete, status semantics, optional details and callback action. | Do use verified state; don't claim completion from fixture text. |
 
 **Stage07 handoff:** \`design-system/react/README.md\` records real import contracts, owning workstreams, token CSS imports, responsive/a11y rules and explicit evidence boundaries. \`AppConsumerContract.tsx\` includes compile-time imports of representative Stage06 patterns. **Stage06 and Stage07 source deliverables IMPLEMENTED**, not actual app adoption. Stage08 dedupe and global G2/physical Safari Stage09 remain OPEN. Existing Studio should show all six UI patterns in VI/EN at the existing width presets, no second URL/repo. Focused CI verifies TS, build, token roles only; independent device visual approval not claimed.
+
+
+### UX-DS-35 / Stage08 cleanup & Stage09 review affordances · 2026-11-20
+
+**Why:** The Studio had a hardcoded 326px preview height, clipping the new Stage06 organisms. Variant/state/language/viewport were not shareable as a deep link. The old static \`#nav\` example and CSS preview snippets duplicated the actual React AppHeader, confusing the single-source-of-truth story.
+
+**Change:** Keep existing \`site/design-system/\` site and React components. Embed height becomes content-aware for non-fixed presets via same-origin ResizeObserver; explicit device heights remain fixed for realistic scroll. Full-page preview opens the exact story in a separate browser tab. Copy URL shares variant, state, language, device selection and hash; deep links restore those settings. The single remaining navigation specimen is the real React \`AppHeader\`; legacy \`#nav\` and \`#navigation\` aliases resolve to it. Retire unused hard-coded static nav/feedback/dialog/form specimen CSS and stale JavaScript hooks; retain Foundations palette/type/spacing and all React frame entrypoints.
+
+**Risk boundary:** No removal of app runtime CSS or historical archive pages: unknown consumers may exist. No learner Auth/Neon/Cloudflare changes. Focused source/CI gate plus ONE human G2 composition review remain; no full app regression or redundant browser matrices. Actual physical Safari/PO G2 still OPEN.
+

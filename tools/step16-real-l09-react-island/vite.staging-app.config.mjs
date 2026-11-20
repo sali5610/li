@@ -7,9 +7,10 @@ if(process.env.VITE_LI_AUTH_TARGET!=='github-pages-staging'){
  throw Error('This gate is STAGING ONLY');
 }
 export default defineConfig({
+ resolve:{dedupe:['react','react-dom']},
  base:'/li/assets/',
  build:{
-  target:'es2022',outDir:'dist-staging-app',emptyOutDir:true,sourcemap:false,
+  target:'es2022',cssCodeSplit:false,outDir:'dist-staging-app',emptyOutDir:true,sourcemap:false,
   rollupOptions:{
    input:resolve(root,'src/auth/staging-app.tsx'),
    output:{entryFileNames:'staging-auth-gate.js',

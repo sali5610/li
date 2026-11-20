@@ -1,0 +1,36 @@
+name: li. React L09 integration (focused build only)
+on:
+  pull_request:
+    branches: [integration/staging]
+    paths:
+      - 'tools/step16-real-l09-react-island/**'
+      - '.github/workflows/li-pages.yml'
+      - '.github/workflows/li-learning-integration.yml'
+permissions:
+  contents: read
+jobs:
+  integrated-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    env:
+      VITE_LI_AUTH_TARGET: github-pages-staging
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check real invited React module and single staging bundle
+        working-directory: tools/step16-real-l09-react-island
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund
+          npm run extract
+          npx tsc --noEmit
+          npx vite build --config vite.staging-app.config.mjs
+          test -s dist-staging-app/staging-auth-gate.js
+          test "$(find dist-staging-app -maxdepth 1 -type f -name '*.css' | wc -l)" -eq 1
+          grep -Fq 'li-react-l09-host' dist-staging-app/staging-auth-gate.js
+          grep -Fq 'data-li-react-journey' dist-staging-app/staging-auth-gate.js
+          echo 'PASS integrated auth + canonical React L09 bundle, no deployment'

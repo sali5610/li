@@ -30,6 +30,9 @@ jobs:
           # already published as Tàng Thư's static content pack.
           node ../../tools/build_content_packs.mjs --check
           node ../../tools/test_content_adapter.mjs
+          node --check ../../site/assets/lesson-spell-suggestions.js
+          node --check ../../site/assets/spell-practice.js
+          node ../../tools/test_lesson_spell_suggestions.cjs
           npm run extract
           npm run test:sync
           npx tsc --noEmit

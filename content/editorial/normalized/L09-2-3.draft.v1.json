@@ -33,8 +33,8 @@
             "id": "vi-04",
             "role": "methods",
             "heading": "3b · L2-T07 — kiểm giả định trước khi nói “nhờ X” (bộ luyện mới)",
-            "body_md": "<b>Micropractice GIẢ ĐỊNH:</b> 4 người, X = số lần xem tutorial, Y = điểm quiz: novice (1,4),(2,4); experienced (3,10),(4,10). Cả nhóm experienced có điểm cao hơn, đồng thời xem nhiều lần hơn. Manager nói “X tăng nên Y tăng”.\n\n<b>Người học phải làm:</b> (1) tách hai subgroup; (2) nêu xu hướng X↔Y <b>trong mỗi subgroup</b>; (3) xác định một third variable có thể giải thích xu hướng gộp và giả định thiếu để kết luận nhân quả; (4) đề xuất một phép kiểm hoặc thử nghiệm với phân nhóm/cân bằng kinh nghiệm, sau đó mới nhận feedback. Việc xem guide Thần Chú hoặc tick tên T07 <b>không</b> chứng minh enactment.\n\n<b>Feedback CHỈ SAU attempted response:</b> Trong novice cả hai Y=4 dù X thay; trong experienced cả hai Y=10 dù X thay. Pooled line vẫn có slope dương (OLS b=2,4 trong fixture 4 điểm). <b>Expertise</b> là ứng viên confounder vì ảnh hưởng cả exposure (ở đây tự dựng như vậy) và outcome. Không thể nói tutorial vô tác dụng từ hai nhóm hai người; bộ số chỉ cho thấy tuyên bố “vì X” chưa có chứng cứ nhân quả. Có thể random hóa độ phơi bày tutorial/đối chứng trong nhóm expertise, tiền đăng ký metrics và kiểm bằng dữ liệu lớn hơn nếu phù hợp.\n\n<b>Optional T06:</b> so sánh bằng bảng hai cột “pooled association” và “within-group association”; rút ra điều kiện bất đồng, không dán nhãn Simpson's paradox tùy tiện khi chưa định nghĩa hướng thay đổi tỷ lệ/hệ số.",
-            "feedback_md": null,
+            "body_md": "<b>Micropractice GIẢ ĐỊNH:</b> 4 người, X = số lần xem tutorial, Y = điểm quiz: novice (1,4),(2,4); experienced (3,10),(4,10). Cả nhóm experienced có điểm cao hơn, đồng thời xem nhiều lần hơn. Manager nói “X tăng nên Y tăng”.\n\n<b>Người học phải làm:</b> (1) tách hai subgroup; (2) nêu xu hướng X↔Y <b>trong mỗi subgroup</b>; (3) xác định một third variable có thể giải thích xu hướng gộp và giả định thiếu để kết luận nhân quả; (4) đề xuất một phép kiểm hoặc thử nghiệm với phân nhóm/cân bằng kinh nghiệm, sau đó mới nhận feedback. Việc xem guide Thần Chú hoặc tick tên T07 <b>không</b> chứng minh enactment.\n\n<b>Optional T06:</b> so sánh bằng bảng hai cột “pooled association” và “within-group association”; rút ra điều kiện bất đồng, không dán nhãn Simpson's paradox tùy tiện khi chưa định nghĩa hướng thay đổi tỷ lệ/hệ số.",
+            "feedback_md": "<b>Feedback CHỈ SAU attempted response:</b> Trong novice cả hai Y=4 dù X thay; trong experienced cả hai Y=10 dù X thay. Pooled line vẫn có slope dương (OLS b=2,4 trong fixture 4 điểm). <b>Expertise</b> là ứng viên confounder vì ảnh hưởng cả exposure (ở đây tự dựng như vậy) và outcome. Không thể nói tutorial vô tác dụng từ hai nhóm hai người; bộ số chỉ cho thấy tuyên bố “vì X” chưa có chứng cứ nhân quả. Có thể random hóa độ phơi bày tutorial/đối chứng trong nhóm expertise, tiền đăng ký metrics và kiểm bằng dữ liệu lớn hơn nếu phù hợp.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -121,8 +121,8 @@
             "id": "en-04",
             "role": "methods",
             "heading": "3b · T07 primary: question the causal premise (new micropractice)",
-            "body_md": "Four hypothetical participants: novice (1 tutorial view,4 quiz points),(2,4); experienced (3,10),(4,10). A manager says additional views <b>caused</b> the improvement.\n\n<b>Required learner attempt:</b> split the two groups, compare within-group X/Y movement, identify a plausible third variable influencing exposure and score, and state a discriminating study or controlled trial. Feedback stays locked until actual reasoning is submitted; viewing a method guide alone is not T07 performed.\n\n<b>After-attempt feedback:</b> Novices remain at Y=4 and experienced remain at Y=10 as X changes. Pooled slope is positive (b=2.4 in this four-point fixture), yet each group's observed slope is zero. Baseline experience is an obvious candidate common cause in this invented design; the four points cannot prove that tutorials have no effect either. One better test could randomize tutorial exposure within comparable experience groups with prespecified measures.\n\n<b>Optional T06:</b> compare pooled association to within-group association side by side. Do not automatically call any subgroup contrast a general Simpson's paradox proof.",
-            "feedback_md": null,
+            "body_md": "Four hypothetical participants: novice (1 tutorial view,4 quiz points),(2,4); experienced (3,10),(4,10). A manager says additional views <b>caused</b> the improvement.\n\n<b>Required learner attempt:</b> split the two groups, compare within-group X/Y movement, identify a plausible third variable influencing exposure and score, and state a discriminating study or controlled trial. Feedback stays locked until actual reasoning is submitted; viewing a method guide alone is not T07 performed.\n\n<b>Optional T06:</b> compare pooled association to within-group association side by side. Do not automatically call any subgroup contrast a general Simpson's paradox proof.",
+            "feedback_md": "<b>After-attempt feedback:</b> Novices remain at Y=4 and experienced remain at Y=10 as X changes. Pooled slope is positive (b=2.4 in this four-point fixture), yet each group's observed slope is zero. Baseline experience is an obvious candidate common cause in this invented design; the four points cannot prove that tutorials have no effect either. One better test could randomize tutorial exposure within comparable experience groups with prespecified measures.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -465,7 +465,8 @@
         "solution": 1,
         "method": 1,
         "rubric": 1,
-        "spoilersInPrompts": 0
+        "spoilersInPrompts": 0,
+        "methodFeedback": 1
       },
       "en": {
         "sections": 7,
@@ -473,7 +474,8 @@
         "solution": 1,
         "method": 1,
         "rubric": 1,
-        "spoilersInPrompts": 0
+        "spoilersInPrompts": 0,
+        "methodFeedback": 1
       }
     },
     "issues": [],

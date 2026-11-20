@@ -27,7 +27,9 @@
             "id": "vi-03",
             "role": "guided",
             "heading": "Chương 3 — Guided contrast: cùng precision, khác recall",
-            "body_md": "Bộ luyện riêng có <b>500 đơn</b>, 50 trễ và 450 đúng hạn. Dự đoán <b>TP=36, FP=24, FN=14, TN=426</b>; tính tổng 500. Người học tự điền: precision = 36/(36+24) = \\_\\_\\_%, recall = 36/(36+14) = \\_\\_\\_%, accuracy = (36+426)/500 = \\_\\_\\_%. Đây không phải bộ số dùng ở đề độc lập.\n\n<b>ĐÁP ÁN SAU LƯỢT LUYỆN:</b> precision=60%, recall=72%, accuracy=92,4%. So với worked case, precision bằng nhau 60% nhưng recall khác 60% vs 72%, vì mẫu số TP+FN và composition khác. Nếu learner gọi precision là 'phần trăm đơn trễ tìm được', cần quay lại câu hỏi mẫu số."
+            "body_md": "Bộ luyện riêng có <b>500 đơn</b>, 50 trễ và 450 đúng hạn. Dự đoán <b>TP=36, FP=24, FN=14, TN=426</b>; tính tổng 500. Người học tự điền: precision = 36/(36+24) = \\_\\_\\_%, recall = 36/(36+14) = \\_\\_\\_%, accuracy = (36+426)/500 = \\_\\_\\_%. Đây không phải bộ số dùng ở đề độc lập.",
+            "feedback_md": "<b>ĐÁP ÁN SAU LƯỢT LUYỆN:</b> precision=60%, recall=72%, accuracy=92,4%. So với worked case, precision bằng nhau 60% nhưng recall khác 60% vs 72%, vì mẫu số TP+FN và composition khác. Nếu learner gọi precision là 'phần trăm đơn trễ tìm được', cần quay lại câu hỏi mẫu số.",
+            "feedback_gate": "AFTER_SAVED_GUIDED_EXPLANATION"
           },
           {
             "id": "vi-04",
@@ -115,7 +117,9 @@
             "id": "en-03",
             "role": "guided",
             "heading": "Chapter 3 — Guided contrast, 500 separate shipments",
-            "body_md": "Another fictional set: 500 shipments, 50 late and 450 on-time. The classifier yields <b>TP=36, FP=24, FN=14, TN=426</b>. Fill in precision 36/(36+24)=<i><b>%, recall 36/(36+14)=</b></i>%, accuracy (36+426)/500=\\_\\_\\_%.\n\n<b>FEEDBACK AFTER GUIDED ATTEMPT:</b> Precision 60%, recall 72%, accuracy 92.4%. Precision equals the worked case at 60%, but recall is higher at 72%; the denominators and class composition differ. Calling precision 'share of all actual late shipments found' swaps it with recall."
+            "body_md": "Another fictional set: 500 shipments, 50 late and 450 on-time. The classifier yields <b>TP=36, FP=24, FN=14, TN=426</b>. Fill in precision 36/(36+24)=<i><b>%, recall 36/(36+14)=</b></i>%, accuracy (36+426)/500=\\_\\_\\_%.",
+            "feedback_md": "<b>FEEDBACK AFTER GUIDED ATTEMPT:</b> Precision 60%, recall 72%, accuracy 92.4%. Precision equals the worked case at 60%, but recall is higher at 72%; the denominators and class composition differ. Calling precision 'share of all actual late shipments found' swaps it with recall.",
+            "feedback_gate": "AFTER_SAVED_GUIDED_EXPLANATION"
           },
           {
             "id": "en-04",
@@ -488,7 +492,9 @@
         "methodFeedback": 0
       }
     },
-    "issues": [],
+    "issues": [
+      "Method chapter has no separate authored T06 exercise/feedback; requires source authoring"
+    ],
     "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
     "readOnlyDerived": true,

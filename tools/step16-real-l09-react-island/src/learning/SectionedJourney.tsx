@@ -94,6 +94,9 @@ export function validateSectionedLesson(input:unknown,id:string):SectionedLesson
    criteria(c).some(row=>!Array.isArray(row)||row.length!==4||
     row.some(x=>typeof x!=='string'||!x.trim()||x.length>1200)))
    throw Error('SECTIONED_LEARNER_ELEMENTS_MISSING');
+  if(c.sections.some(s=>s.role==='methods'&&/<b>(?:Phản hồi|Đối chiếu sau|Feedback|After-attempt feedback|EDITORIAL GUIDED FEEDBACK|Chỉ hiện phản hồi)/i.test(s.body_md))||
+     c.sections.some(s=>s.role==='guided'&&/<b>(?:ĐÁP ÁN SAU LƯỢT LUYỆN|FEEDBACK AFTER GUIDED ATTEMPT)/i.test(s.body_md)))
+   throw Error('SECTIONED_PRE_SUBMIT_PRACTICE_SPOILER');
   // An author-facing solution marker in pre-submit body is a release blocker.
   if(c.sections.filter(s=>s.role!=='reflection').some(s=>
    /<b>\s*(?:ĐÁP ÁN MẪU|MODEL ANSWER|MODEL RESPONSE|REFERENCE SOLUTION|EDITORIAL ANSWER KEY)/i.test(s.body_md)))
@@ -343,6 +346,11 @@ export function SectionedJourney({lesson,ports}:{lesson:SectionedLesson;ports:Le
    {phase==='guided'&&<>
     <Heading level={2} role="titleLarge">{names.guided}</Heading>
     {block('guided')}{mentor('guided')}
+    {section(c,'guided').filter(x=>!!x.feedback_md).map(x=><div key={x.id} className="li-learning-hint">
+     {persisted.guidedDraft.trim().length>=MIN
+      ? <Markdown md={x.feedback_md||''}/>
+      : <Text role="support">{vi?'Viết và lưu ít nhất 12 ký tự giải thích để xem phản hồi.':'Write and save at least 12 characters to unlock guided feedback.'}</Text>}
+    </div>)}
     <Field kind="textarea" rows={4} label={vi?'Tự giải thích':'Explain in your words'}
      disabled={locked||attempt.submitted} value={attempt.guidedDraft}
      onChange={e=>{if(e.currentTarget.value.length<=MAX)edit(a=>({...a,guidedDraft:e.currentTarget.value}));}}/>

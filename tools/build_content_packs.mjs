@@ -280,6 +280,9 @@ function requireCompleteEditorial(l){
     rows.filter(s=>s.role!=="reflection").some(s=>
      /<b>\s*(?:ĐÁP ÁN MẪU|MODEL ANSWER|MODEL RESPONSE|REFERENCE SOLUTION|EDITORIAL ANSWER KEY)/i.test(s.body_md)))
     fail("locale_sections_or_post_submit_gate "+loc);
+   if(rows.some(s=>s.role==="methods"&&/<b>(?:Phản hồi|Đối chiếu sau|Feedback|After-attempt feedback|EDITORIAL GUIDED FEEDBACK|Chỉ hiện phản hồi)/i.test(s.body_md))||
+      rows.some(s=>s.role==="guided"&&/<b>(?:ĐÁP ÁN SAU LƯỢT LUYỆN|FEEDBACK AFTER GUIDED ATTEMPT)/i.test(s.body_md)))
+    fail("pre_submit_practice_spoiler "+loc);
   }
   return;
  }

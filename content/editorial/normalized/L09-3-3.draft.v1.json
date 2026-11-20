@@ -39,8 +39,8 @@
             "id": "vi-05",
             "role": "methods",
             "heading": "Chương 5 — T06 Compare–Contrast, luyện có hướng dẫn (KHÔNG trùng bộ độc lập)",
-            "body_md": "<b>Nguồn đầu vào:</b> Hai bảng Bắc/Nam 100 đơn ở Chương 2. Người học tự chọn một trong ba tuyên bố và viết <b>2 câu</b> để đối chiếu: A. “Accuracy bằng nhau nên hệ thống công bằng”; B. “Recall ở Nam thấp hơn nên cần điều tra việc bỏ sót và cách hỗ trợ đơn trễ”; C. “Chênh selection rate 16% chứng tỏ mô hình vi phạm luật”.\n\n<b>Bước mẫu:</b> so sánh recall đúng mẫu số. <b>Người học thực hiện:</b> ghi rõ cả số của Bắc/Nam, xác định một hậu quả có thể xảy ra và một dữ kiện còn thiếu. <b>Dấu hiệu dùng đúng T06:</b> đưa <b>ít nhất hai metric</b> đối chiếu và nêu lý do không kết luận đạo đức/pháp lý từ số đơn lẻ. <b>Không mở phản hồi trước khi người học nộp lượt luyện.</b>\n\n<b>PHẢN HỒI SAU LƯỢT LUYỆN:</b> B là khẳng định có căn cứ nhất. Cần điều tra 40 điểm phần trăm recall gap và chênh FPR, thu thập thêm bằng chứng về quy trình dùng cảnh báo, chất lượng nhãn, quy mô/đại diện của nhóm và khả năng khắc phục. A gộp hai câu hỏi khác nhau; C vượt quá bằng chứng. Nếu người học chỉ nói “Nam thấp” mà không chỉ mẫu số, nhắc lại TP/(TP+FN).\n\n<b>T09 nguồn bổ trợ tùy chọn:</b> kiểm tra bốn câu trước khi tin một bảng fairness: nguồn do ai công bố, mô hình/nhóm/nhãn được định nghĩa ra sao, phép tính và uncertainty được kiểm thế nào, và đâu là suy luận vượt dữ liệu. Người học có thể bỏ qua T09 mà vẫn làm độc lập.",
-            "feedback_md": null,
+            "body_md": "<b>Nguồn đầu vào:</b> Hai bảng Bắc/Nam 100 đơn ở Chương 2. Người học tự chọn một trong ba tuyên bố và viết <b>2 câu</b> để đối chiếu: A. “Accuracy bằng nhau nên hệ thống công bằng”; B. “Recall ở Nam thấp hơn nên cần điều tra việc bỏ sót và cách hỗ trợ đơn trễ”; C. “Chênh selection rate 16% chứng tỏ mô hình vi phạm luật”.\n\n<b>Bước mẫu:</b> so sánh recall đúng mẫu số. <b>Người học thực hiện:</b> ghi rõ cả số của Bắc/Nam, xác định một hậu quả có thể xảy ra và một dữ kiện còn thiếu. <b>Dấu hiệu dùng đúng T06:</b> đưa <b>ít nhất hai metric</b> đối chiếu và nêu lý do không kết luận đạo đức/pháp lý từ số đơn lẻ. <b>Không mở phản hồi trước khi người học nộp lượt luyện.</b>\n\n<b>T09 nguồn bổ trợ tùy chọn:</b> kiểm tra bốn câu trước khi tin một bảng fairness: nguồn do ai công bố, mô hình/nhóm/nhãn được định nghĩa ra sao, phép tính và uncertainty được kiểm thế nào, và đâu là suy luận vượt dữ liệu. Người học có thể bỏ qua T09 mà vẫn làm độc lập.",
+            "feedback_md": "<b>PHẢN HỒI SAU LƯỢT LUYỆN:</b> B là khẳng định có căn cứ nhất. Cần điều tra 40 điểm phần trăm recall gap và chênh FPR, thu thập thêm bằng chứng về quy trình dùng cảnh báo, chất lượng nhãn, quy mô/đại diện của nhóm và khả năng khắc phục. A gộp hai câu hỏi khác nhau; C vượt quá bằng chứng. Nếu người học chỉ nói “Nam thấp” mà không chỉ mẫu số, nhắc lại TP/(TP+FN).",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -133,8 +133,8 @@
             "id": "en-05",
             "role": "methods",
             "heading": "Chapter 5 — Guided T06 Compare & Contrast (not the final dataset)",
-            "body_md": "Using the North/South 100-order tables, choose the best-supported claim and defend it in <b>two sentences</b>: A. 'Equal accuracy proves fairness'; B. 'Lower recall in South suggests an investigation of missed delays and operational response'; C. 'A 16-point selection gap proves illegality'.\n\n<b>Given step:</b> start with the recall denominator TP+FN. <b>Learner action:</b> name both group metrics, one plausible consequence and one missing piece of evidence. <b>Evidence of T06:</b> explicitly contrasting two metrics and separating observation from a moral/legal conclusion. <b>Guided feedback appears only after learner attempts the task in the future app.</b>\n\n<b>EDITORIAL GUIDED FEEDBACK:</b> B is defensible. Investigate the 40-point recall gap, the FPR difference, labeling and coverage, how alerts are used, and what safeguards are available. A conflates performance aggregation with fairness; C exceeds the evidence. If recall is misinterpreted, revisit TP/(TP+FN).\n\n<b>Optional T09 Source Appraisal:</b> check publisher, method and cohort, subgroup definitions and error uncertainty, and the boundary between reported evidence and interpretation. No new access gate or forced spell.",
-            "feedback_md": null,
+            "body_md": "Using the North/South 100-order tables, choose the best-supported claim and defend it in <b>two sentences</b>: A. 'Equal accuracy proves fairness'; B. 'Lower recall in South suggests an investigation of missed delays and operational response'; C. 'A 16-point selection gap proves illegality'.\n\n<b>Given step:</b> start with the recall denominator TP+FN. <b>Learner action:</b> name both group metrics, one plausible consequence and one missing piece of evidence. <b>Evidence of T06:</b> explicitly contrasting two metrics and separating observation from a moral/legal conclusion. <b>Guided feedback appears only after learner attempts the task in the future app.</b>\n\n<b>Optional T09 Source Appraisal:</b> check publisher, method and cohort, subgroup definitions and error uncertainty, and the boundary between reported evidence and interpretation. No new access gate or forced spell.",
+            "feedback_md": "<b>EDITORIAL GUIDED FEEDBACK:</b> B is defensible. Investigate the 40-point recall gap, the FPR difference, labeling and coverage, how alerts are used, and what safeguards are available. A conflates performance aggregation with fairness; C exceeds the evidence. If recall is misinterpreted, revisit TP/(TP+FN).",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -489,7 +489,7 @@
         "modelAnswers": 1,
         "methodSections": 1,
         "rubricSections": 1,
-        "methodFeedback": 0
+        "methodFeedback": 1
       },
       "en": {
         "chapters": 8,
@@ -497,7 +497,7 @@
         "modelAnswers": 1,
         "methodSections": 1,
         "rubricSections": 1,
-        "methodFeedback": 0
+        "methodFeedback": 1
       }
     },
     "issues": [],

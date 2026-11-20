@@ -33,8 +33,8 @@
             "id": "vi-04",
             "role": "methods",
             "heading": "3b · L2-T10 — phân rã điều kiện rồi thử ranh giới",
-            "body_md": "<b>Bài luyện KHÁC đề độc lập:</b> Hai điểm σ1=<b>12</b>, σ2=<b>5</b> hộp, cùng protection horizon, z=2.\n\n<b>Task:</b> (1) Tách hệ thành nguồn cầu, mức phục vụ, horizon, tương quan và vị trí kho. (2) Tính buffer riêng và chung khi <b>độc lập</b>. (3) Đổi điều kiện thành <b>ρ=1</b> và phân tích kết quả. (4) Nêu một lý do vận hành khiến phương án có buffer thấp hơn có thể vẫn không tốt hơn. Viết suy luận/đánh đổi trước khi mở phản hồi; chỉ bấm hướng dẫn Thần Chú không tính là hoàn thành phương pháp T10.\n\n<b>Phản hồi CHỈ SAU LƯỢT LUYỆN THỰC SỰ:</b> Trữ riêng z(12+5)=<b>34 hộp</b>; gộp độc lập z sqrt(12²+5²)=2×13=<b>26 hộp</b>, tiết kiệm 8; ρ=1 → z(12+5)=<b>34</b>, không còn tiết kiệm. Kho chung có thể xa điểm giao hàng hơn, gây tăng lead time và vận tải hoặc làm service xấu đi; số học buffer không đủ để chốt placement.\n\n<b>T06 phụ:</b> so sánh hai tình huống <i>cùng σ1, σ2 nhưng ρ khác nhau</i> và giải thích bằng lời vì sao giả định độc lập tạo kết quả khác. Không biến T06 thành một lượt tính lại chép đáp án.",
-            "feedback_md": null,
+            "body_md": "<b>Bài luyện KHÁC đề độc lập:</b> Hai điểm σ1=<b>12</b>, σ2=<b>5</b> hộp, cùng protection horizon, z=2.\n\n<b>Task:</b> (1) Tách hệ thành nguồn cầu, mức phục vụ, horizon, tương quan và vị trí kho. (2) Tính buffer riêng và chung khi <b>độc lập</b>. (3) Đổi điều kiện thành <b>ρ=1</b> và phân tích kết quả. (4) Nêu một lý do vận hành khiến phương án có buffer thấp hơn có thể vẫn không tốt hơn. Viết suy luận/đánh đổi trước khi mở phản hồi; chỉ bấm hướng dẫn Thần Chú không tính là hoàn thành phương pháp T10.\n\n<b>T06 phụ:</b> so sánh hai tình huống <i>cùng σ1, σ2 nhưng ρ khác nhau</i> và giải thích bằng lời vì sao giả định độc lập tạo kết quả khác. Không biến T06 thành một lượt tính lại chép đáp án.",
+            "feedback_md": "<b>Phản hồi CHỈ SAU LƯỢT LUYỆN THỰC SỰ:</b> Trữ riêng z(12+5)=<b>34 hộp</b>; gộp độc lập z sqrt(12²+5²)=2×13=<b>26 hộp</b>, tiết kiệm 8; ρ=1 → z(12+5)=<b>34</b>, không còn tiết kiệm. Kho chung có thể xa điểm giao hàng hơn, gây tăng lead time và vận tải hoặc làm service xấu đi; số học buffer không đủ để chốt placement.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -464,14 +464,16 @@
         "independent": 1,
         "solutions": 1,
         "methods": 1,
-        "rubric": 1
+        "rubric": 1,
+        "methodFeedback": 1
       },
       "en": {
         "sections": 7,
         "independent": 1,
         "solutions": 1,
         "methods": 1,
-        "rubric": 1
+        "rubric": 1,
+        "methodFeedback": 1
       }
     },
     "issues": [],

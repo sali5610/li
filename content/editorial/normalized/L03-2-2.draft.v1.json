@@ -33,8 +33,8 @@
             "id": "vi-04",
             "role": "methods",
             "heading": "3b · T06 luyện so sánh — bộ tình huống riêng",
-            "body_md": "<b>Phân loại mục đích trước khi xem đáp án:</b> (A) Team chưa biết nên chia 20 bài nghiên cứu thành chủ đề nào; (B) Có tree navigation và muốn kiểm liệu “Hướng dẫn nộp báo cáo” dễ tìm; (C) Muốn tìm các tên nhóm người dùng tự nghĩ ra; (D) Muốn đo tác vụ tìm “Thêm thành viên” có tới đúng vị trí trong tree.\n\n<b>Nhiệm vụ:</b> chọn card sorting hay tree testing cho A–D, nêu <b>một dấu hiệu phân biệt</b> mỗi cặp, và giải thích vì sao không thể lấy kết quả card sort làm bằng chứng task success. Phản hồi chỉ mở sau khi gửi câu trả lời.\n\n<b>Feedback SAU lượt luyện:</b> A/C ưu tiên card sorting (khám phá nhóm/nhãn); B/D ưu tiên tree testing (đánh giá cấu trúc xác định). Không bắt buộc mỗi vấn đề chỉ dùng đúng một phương pháp; vấn đề là chọn <b>phương pháp phù hợp câu hỏi hiện tại</b>.\n\n<b>T09 phụ:</b> Với báo cáo “8/10 người hoàn thành tree test, navigation đã chuẩn”, hãy kiểm tra ai được chọn, tác vụ/đích định nghĩa thế nào, số mẫu có phù hợp, và cây thiếu visual cues. Đây là source appraisal, không phải bằng chứng đại diện.",
-            "feedback_md": null,
+            "body_md": "<b>Phân loại mục đích trước khi xem đáp án:</b> (A) Team chưa biết nên chia 20 bài nghiên cứu thành chủ đề nào; (B) Có tree navigation và muốn kiểm liệu “Hướng dẫn nộp báo cáo” dễ tìm; (C) Muốn tìm các tên nhóm người dùng tự nghĩ ra; (D) Muốn đo tác vụ tìm “Thêm thành viên” có tới đúng vị trí trong tree.\n\n<b>Nhiệm vụ:</b> chọn card sorting hay tree testing cho A–D, nêu <b>một dấu hiệu phân biệt</b> mỗi cặp, và giải thích vì sao không thể lấy kết quả card sort làm bằng chứng task success. Phản hồi chỉ mở sau khi gửi câu trả lời.\n\n<b>T09 phụ:</b> Với báo cáo “8/10 người hoàn thành tree test, navigation đã chuẩn”, hãy kiểm tra ai được chọn, tác vụ/đích định nghĩa thế nào, số mẫu có phù hợp, và cây thiếu visual cues. Đây là source appraisal, không phải bằng chứng đại diện.",
+            "feedback_md": "<b>Feedback SAU lượt luyện:</b> A/C ưu tiên card sorting (khám phá nhóm/nhãn); B/D ưu tiên tree testing (đánh giá cấu trúc xác định). Không bắt buộc mỗi vấn đề chỉ dùng đúng một phương pháp; vấn đề là chọn <b>phương pháp phù hợp câu hỏi hiện tại</b>.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -121,8 +121,8 @@
             "id": "en-04",
             "role": "methods",
             "heading": "3b · Primary method T06 — discriminate between research goals",
-            "body_md": "<b>Separate micropractice:</b> (A) The team does not know how 20 research articles should be grouped; (B) The proposed tree exists and it needs to test findability of a reporting guide; (C) The team wants to learn user-generated category names; (D) The team asks if users locate Add Member at the correct branch.\n\n<b>Task:</b> Choose card sorting or tree testing for A–D; describe the <b>diagnostic purpose</b> for each, and explain why a card-sort pattern is not an observed findability rate. Provide your actual attempt before unlocking feedback.\n\n<b>Feedback AFTER method attempt:</b> A and C favor card sorting for discovery; B and D favor tree testing for evaluating a specified hierarchy. A project may use both sequentially, but method fit must follow the research question.\n\n<b>Optional T09:</b> Critique “8/10 people completed a tree test, therefore the navigation is perfect.” Ask about sampling, target/task validity, success destinations and missing UI context. A small observed rate does not prove population-level success.",
-            "feedback_md": null,
+            "body_md": "<b>Separate micropractice:</b> (A) The team does not know how 20 research articles should be grouped; (B) The proposed tree exists and it needs to test findability of a reporting guide; (C) The team wants to learn user-generated category names; (D) The team asks if users locate Add Member at the correct branch.\n\n<b>Task:</b> Choose card sorting or tree testing for A–D; describe the <b>diagnostic purpose</b> for each, and explain why a card-sort pattern is not an observed findability rate. Provide your actual attempt before unlocking feedback.\n\n<b>Optional T09:</b> Critique “8/10 people completed a tree test, therefore the navigation is perfect.” Ask about sampling, target/task validity, success destinations and missing UI context. A small observed rate does not prove population-level success.",
+            "feedback_md": "<b>Feedback AFTER method attempt:</b> A and C favor card sorting for discovery; B and D favor tree testing for evaluating a specified hierarchy. A project may use both sequentially, but method fit must follow the research question.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -465,7 +465,7 @@
         "modelAnswers": 1,
         "methodSections": 1,
         "rubricSections": 1,
-        "methodFeedback": 0
+        "methodFeedback": 1
       },
       "en": {
         "chapters": 7,
@@ -473,7 +473,7 @@
         "modelAnswers": 1,
         "methodSections": 1,
         "rubricSections": 1,
-        "methodFeedback": 0
+        "methodFeedback": 1
       }
     },
     "issues": [],

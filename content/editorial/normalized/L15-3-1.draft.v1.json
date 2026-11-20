@@ -33,8 +33,8 @@
             "id": "vi-04",
             "role": "methods",
             "heading": "3b · T10 — phân rã và thử tình huống biên (micropractice tự chọn)",
-            "body_md": "<b>Bộ luyện MỚI:</b> end sales = <b>50,55,50,45</b>; cửa hàng orders = <b>40,70,40,50</b>; kho upstream orders = <b>20,90,30,60</b>. Tất cả cùng kỳ bốn tuần, đơn vị hộp. Tách thành các lớp: <b>sales → quyết định replenishment → đơn upstream → thông tin/lead time</b>.\n\n<b>Lượt luyện:</b> (1) xác định ba range và thứ tự; (2) đưa ra <b>hai giả thuyết khác nhau</b> có thể làm orders nhảy; (3) ghi một bộ dữ liệu cần yêu cầu để phân biệt hai giả thuyết; (4) phân tích một boundary case khi dữ liệu sales là số bán bị giới hạn bởi stockout hoặc khi đơn bị ghi nhận chậm. Người học phải <b>thực sự gửi phân rã + thử biên</b> trước khi xem phản hồi.\n\n<b>Phản hồi sau micropractice:</b> ranges lần lượt <b>10/30/70 hộp</b>. Các giả thuyết có thể là gom đơn, cập nhật dự báo, khuyến mãi hoặc shortage gaming, nhưng <b>không được khẳng định</b> cái nào là nguyên nhân chỉ nhờ ba chuỗi số. Yêu cầu thêm order-date vs receipt-date, tồn kho, in-transit, lịch promo/lead time, dữ liệu end-demand đã điều chỉnh lost sales. Nếu stockout, sales quan sát có thể thấp hơn nhu cầu tiềm ẩn.\n\n<b>T06 phụ:</b> So sánh hai chuỗi có trung bình bằng nhau nhưng range rất khác nhau; viết một câu rõ <i>số bán cuối</i> khác <i>đơn nhập hàng</i>. T06 là phân biệt chứng cứ, không thay T10 nếu chưa phân rã hệ thống.",
-            "feedback_md": null,
+            "body_md": "<b>Bộ luyện MỚI:</b> end sales = <b>50,55,50,45</b>; cửa hàng orders = <b>40,70,40,50</b>; kho upstream orders = <b>20,90,30,60</b>. Tất cả cùng kỳ bốn tuần, đơn vị hộp. Tách thành các lớp: <b>sales → quyết định replenishment → đơn upstream → thông tin/lead time</b>.\n\n<b>Lượt luyện:</b> (1) xác định ba range và thứ tự; (2) đưa ra <b>hai giả thuyết khác nhau</b> có thể làm orders nhảy; (3) ghi một bộ dữ liệu cần yêu cầu để phân biệt hai giả thuyết; (4) phân tích một boundary case khi dữ liệu sales là số bán bị giới hạn bởi stockout hoặc khi đơn bị ghi nhận chậm. Người học phải <b>thực sự gửi phân rã + thử biên</b> trước khi xem phản hồi.\n\n<b>T06 phụ:</b> So sánh hai chuỗi có trung bình bằng nhau nhưng range rất khác nhau; viết một câu rõ <i>số bán cuối</i> khác <i>đơn nhập hàng</i>. T06 là phân biệt chứng cứ, không thay T10 nếu chưa phân rã hệ thống.",
+            "feedback_md": "<b>Phản hồi sau micropractice:</b> ranges lần lượt <b>10/30/70 hộp</b>. Các giả thuyết có thể là gom đơn, cập nhật dự báo, khuyến mãi hoặc shortage gaming, nhưng <b>không được khẳng định</b> cái nào là nguyên nhân chỉ nhờ ba chuỗi số. Yêu cầu thêm order-date vs receipt-date, tồn kho, in-transit, lịch promo/lead time, dữ liệu end-demand đã điều chỉnh lost sales. Nếu stockout, sales quan sát có thể thấp hơn nhu cầu tiềm ẩn.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -121,8 +121,8 @@
             "id": "en-04",
             "role": "methods",
             "heading": "3b · Primary L2-T10 — decomposition + boundary test",
-            "body_md": "<b>NEW micropractice data (not the independent case):</b> End sales <b>50,55,50,45</b>; retailer orders <b>40,70,40,50</b>; wholesaler orders <b>20,90,30,60</b>, all in boxes over the same four weeks.\n\n<b>Perform four tasks:</b> (1) compute each range and order the variability; (2) propose <b>two competing explanations</b> for spikes; (3) name data that would discriminate them; (4) test one boundary where observed sales are stockout-constrained or where order reports arrive late. Decompose the mechanism as <b>sales → replenishment decision → upstream order → communication/lead time</b> before concluding.\n\n<b>Feedback AFTER meaningful submitted micropractice:</b> ranges <b>10/30/70 boxes</b>. Batching, demand forecast updates, promotions and shortage gaming are possible but cannot be inferred as the actual cause from these series alone. Request order-versus-receipt timestamps, inventory and in-transit stock, lead times, promotions, and a method to estimate lost sales under stockout.\n\n<b>Optional T06:</b> Compare equal-mean but unequal-range series, explicitly differentiating customer sales from replenishment orders. Optional exercise is not a replacement for the T10 decomposition when investigating causes.",
-            "feedback_md": null,
+            "body_md": "<b>NEW micropractice data (not the independent case):</b> End sales <b>50,55,50,45</b>; retailer orders <b>40,70,40,50</b>; wholesaler orders <b>20,90,30,60</b>, all in boxes over the same four weeks.\n\n<b>Perform four tasks:</b> (1) compute each range and order the variability; (2) propose <b>two competing explanations</b> for spikes; (3) name data that would discriminate them; (4) test one boundary where observed sales are stockout-constrained or where order reports arrive late. Decompose the mechanism as <b>sales → replenishment decision → upstream order → communication/lead time</b> before concluding.\n\n<b>Optional T06:</b> Compare equal-mean but unequal-range series, explicitly differentiating customer sales from replenishment orders. Optional exercise is not a replacement for the T10 decomposition when investigating causes.",
+            "feedback_md": "<b>Feedback AFTER meaningful submitted micropractice:</b> ranges <b>10/30/70 boxes</b>. Batching, demand forecast updates, promotions and shortage gaming are possible but cannot be inferred as the actual cause from these series alone. Request order-versus-receipt timestamps, inventory and in-transit stock, lead times, promotions, and a method to estimate lost sales under stockout.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -464,14 +464,16 @@
         "independent": 1,
         "solutions": 1,
         "methods": 1,
-        "rubric": 1
+        "rubric": 1,
+        "methodFeedback": 1
       },
       "en": {
         "sections": 7,
         "independent": 1,
         "solutions": 1,
         "methods": 1,
-        "rubric": 1
+        "rubric": 1,
+        "methodFeedback": 1
       }
     },
     "issues": [],

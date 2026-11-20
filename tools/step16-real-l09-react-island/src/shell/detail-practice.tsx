@@ -10,7 +10,7 @@ type SpellView={
  active:string;title:string;mode:string;phase:number;tab:'guide'|'practice';
  lesson:string;prompt:string;fields:SpellField[];feedback:string;
  resumeNote:string;places:string[];dueAt:number|null;
- lessonId:string|null;reviewedInSession:boolean
+ lessonId:string|null;reviewedInSession:boolean;viewSession:number
 };
 type Version={version:number;title:string;body:string;at:string;change?:string};
 type CaseContext={
@@ -94,7 +94,7 @@ export function GuideDetail(){
    window.removeEventListener('li:study-mode-applied',update);
   };
  },[]);
- useEffect(()=>setAnswers({}),[view?.active,view?.phase]);
+ useEffect(()=>setAnswers({}),[view?.active,view?.phase,view?.lessonId,view?.viewSession]);
  const method=(app.liMethods?.getView().methods||[]).find(x=>x.id===view?.active);
  const setTab=(tab:'guide'|'practice')=>app.LiSpellPractice?.setTab(tab);
  const action=(kind:string)=>{

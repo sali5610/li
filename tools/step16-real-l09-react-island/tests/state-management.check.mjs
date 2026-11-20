@@ -272,14 +272,14 @@ function makeStandardPort(id){
    calls.push(action);
    if(action==='reset')view={...view,phase:0,dueAt:null,reviewedInSession:false,
     viewSession:view.viewSession+1};
-   else if(action==='next'&&mode==='hide'&&view.phase===0)
+   else if(action==='next'&&view.mode==='hide'&&view.phase===0)
     view={...view,phase:1};
-   else if(action==='schedule'&&mode==='due'&&view.phase===0)
+   else if(action==='schedule'&&view.mode==='due'&&view.phase===0)
     view={...view,dueAt:Date.now()+86400000};
-   else if(action==='clear'&&mode==='due'&&view.phase===0)
+   else if(action==='clear'&&view.mode==='due'&&view.phase===0)
     view={...view,dueAt:null};
    else if(action==='check'&&answers.answer==='ready'&&
-     (mode==='direct'||view.phase===1))
+     (view.mode==='direct'||view.phase===1))
     view={...view,reviewedInSession:true};
    return true; // native checker can accept action but report missing fields
   },

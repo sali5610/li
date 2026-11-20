@@ -1,39 +1,30 @@
 import {openRoute} from './app-router.js';
+import {inquiryFlow} from './inquiry-port.js';
+import type {ResearchView,CaseChoice} from './inquiry-port.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {motion,useReducedMotion} from 'motion/react';
 import {Badge,Button,Card,Field,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
 
-type ResearchSnapshot={question:string;branches:string[];observed:string;unknown:string;feedback:string};
-const empty:ResearchSnapshot={question:'',branches:[],observed:'',unknown:'',feedback:''};
-const findText=(selector:string)=>document.querySelector(selector)?.textContent?.trim()||'';
-const originalResearch=()=>document.querySelector<HTMLElement>('#page-research > .section-shell');
-function readResearch():ResearchSnapshot{
- const base=originalResearch();
- if(!base)return empty;
- return {
-  question:base.querySelector('.surface.tinted h2')?.textContent?.trim()||'',
-  branches:[...base.querySelectorAll<HTMLButtonElement>('[data-branch]')].map(node=>node.dataset.branch||''),
-  observed:findText('#research-observed'),unknown:findText('#research-unknown'),
-  feedback:findText('#branch-feedback')
- };
-}
+const empty:ResearchView={question:'',branches:[],observed:'',unknown:'',feedback:''};
+const readResearch=():ResearchView=>inquiryFlow().getResearch()||empty;
 function ResearchScene(){
  const reduced=useReducedMotion();
  const [state,setState]=useState(readResearch);
  useEffect(()=>{
-  const host=originalResearch();if(!host)return;
-  const observer=new MutationObserver(()=>setState(prev=>{
+  const sync=()=>setState(previous=>{
    const next=readResearch();
-   return JSON.stringify(prev)===JSON.stringify(next)?prev:next;
-  }));
-  observer.observe(host,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['data-branch']});
-  return ()=>observer.disconnect();
+   return JSON.stringify(previous)===JSON.stringify(next)?previous:next;
+  });
+  window.addEventListener('li:inquiry-changed',sync);
+  window.addEventListener('li:personal-sync-applied',sync);
+  return ()=>{
+   window.removeEventListener('li:inquiry-changed',sync);
+   window.removeEventListener('li:personal-sync-applied',sync);
+  };
  },[]);
- const choose=(index:number)=>{
-  originalResearch()?.querySelectorAll<HTMLButtonElement>('[data-branch]')[index]?.click();
- };
+ const choose=(index:number)=>inquiryFlow().chooseBranch(index);
  return <div data-li-react-screen="research" className="li-react-research">
   <div className="kicker">THEO DẤU MỘT NGHI VẤN</div>
   <Heading level={1} role="headline">Khảo Chứng</Heading>
@@ -84,16 +75,12 @@ function ResearchScene(){
      “Lập luận hay mà thiếu dữ kiện thì vẫn chỉ là một câu chuyện kể.”
     </Heading>
     <Text role="body">Muốn lão giúp soi tiền đề nào trước?</Text>
-    <Button variant="secondary" data-buddy="1">Đối thoại cùng Lão Lý</Button>
+    <Button variant="secondary" onClick={()=>window.openLaoLy?.()}>Đối thoại cùng Lão Lý</Button>
    </article>
   </div></div>
  </div>;
 }
-function readBookmark(){
- return originalCase()?.querySelector<HTMLButtonElement>('[data-li-bookmark-kind="case"]')
-  ?.getAttribute('aria-pressed')==='true';
-}
-function originalCase(){return document.querySelector<HTMLElement>('#page-case > .section-shell');}
+const readBookmark=()=>inquiryFlow().isCaseBookmarked();
 function CaseScene(){
  const reduced=useReducedMotion();
  const [choice,setChoice]=useState<'right'|'wrong'|null>(null);

@@ -106,7 +106,21 @@ export function mountReactRouter():()=>void{
   hasRoute:id=>typeof id==='string'&&!!pageOf(normalize(id))
  };
  window.liReactRouter=port;
+ const onSession=(event:Event)=>{
+  if((event as CustomEvent<{verified:boolean}>).detail?.verified!==false)return;
+  // A new invited account must never inherit the previous learner's Back
+  // history or private lesson deep link. No persistence is touched.
+  history.length=0;active='home';
+  window.liNativeRouteEffects?.restoreHistory([],active);
+  const home=pageOf('home');
+  if(home)paintRoute(active,home);
+  writeUrl(active);
+  appUiStore.getState().setRoute(active);
+  window.dispatchEvent(new CustomEvent('li:route-changed',{detail:{route:active}}));
+ };
+ window.addEventListener('li:auth-verified-changed',onSession);
  return ()=>{
+  window.removeEventListener('li:auth-verified-changed',onSession);
   if(window.liReactRouter===port)delete window.liReactRouter;
   window.liNativeRouteEffects?.restoreHistory([...history],active);
  };

@@ -192,3 +192,16 @@ The immediately following *portrait-shaped* screenshot showed `innerWidth`/visua
 | \`Breadcrumb\` / molecule | Labeled \`<nav><ol>\` hierarchy; real ancestor links, final current page with \`aria-current=page\`, narrow reflow. | **Do** represent actual ancestors; **Don't** fake page routes or treat a breadcrumb as tab navigation. |
 
 **Evidence boundary:** In the same Studio under \`#saveStatus\`, \`#languageSwitch\`, \`#filterGroup\`, \`#listRow\`, \`#breadcrumb\`, using the existing \`react-molecules.html\` compiled story, locale and viewport controls. Source and typed consumer contract are a handoff, **not** app-level save, sync, filtering, or localization acceptance. Browser interaction/physical Safari and G2 remain separate.
+
+
+### UX-DS-35 / Stage05 Slice03 · Provenance and native disclosure (2026-11-20)
+
+**Canonical React source:** \`design-system/react/Molecules.tsx\`, exported through \`index.ts\`; one existing Studio/React story entrypoint. G2 remains OPEN.
+
+| Component | Anatomy / states / usage | Do / Don't |
+| --- | --- | --- |
+| \`SourceStatus\` | Academic source metadata with a human-readable source label, optional real \`href\`, and caller-owned states \`unreviewed / linked / reviewed / unavailable\`. No invented provenance and no internal academic checks. | **Do** distinguish “link added” from “content reviewed”; **don't** infer reviewed/verified from existence of a URL. |
+| \`Disclosure\` | Native \`details/summary\` for optional information, default-open fixture and open-change callback. Focus, Enter and Space use platform semantics. | **Do** expose secondary help; **don't** hide required instructions or replace navigation. |
+| \`ActionMenu\` | Compact native \`details/summary\` disclosure of link and button actions; selection calls real callbacks, Escape closes and returns focus to the trigger, blur closes, disabled actions stay inert. This is **not** a full ARIA \`role=menu\` keyboard widget. | **Do** use native links and buttons with Tab navigation; **don't** give \`role=menu\` without arrow-key/roving-focus implementation. |
+
+**Stories:** \`#sourceStatus\`, \`#disclosure\`, \`#actionMenu\` on the same Design System Studio, VI/EN and existing widths. Source link and review states are explicitly **demo fixture**, not claims about lesson content. QA: exact-head TS build + focused existing CI. Real Chrome keyboard, physical Safari, PO G2 and course consumer integration are NOT verified by source or CI. No learner flow, content migration, Auth/Neon, Pages workflow, Cloudflare release, or second repo.

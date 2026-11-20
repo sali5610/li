@@ -11,7 +11,7 @@ import type {SaveState} from '../../../../design-system/react/Molecules';
 import type {Attempt} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
 import './journey.css';
-import {LessonBookmark,LessonMentor,LessonSectionIndex,LessonSources,LessonFigure} from './LessonDetailParity.js';
+import {LessonBookmark,LessonMentor,LessonSectionIndex,LessonSources,LessonFigure,openLessonSpell} from './LessonDetailParity.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
 import {AiFeedbackPanel} from './AiFeedbackPanel.js';
 import feedbackPolicy from '../../../../content/feedback/ai-question-modes.v1.json';
@@ -313,7 +313,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
      <strong>{spell.shortId} · {vi?spell.name.vi:spell.name.en}</strong>
      <Text role="support">{vi?spell.why.vi:spell.why.en}</Text>
      <Button variant="secondary" className="li-lesson-spell-action"
-      data-method={spell.shortId} data-spell-practice={index===0?'true':'false'} data-spell-lesson={id}
+      onClick={()=>openLessonSpell(id,spell.shortId,index===0)}
       disabled={locked||saving} aria-label={(vi?'Thử Thần Chú ':'Try spell ')+spell.shortId}>
       {vi?(index===0?'Thử thi triển':'Xem chú bổ trợ'):
        (index===0?'Try this spell':'See optional spell')}

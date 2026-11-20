@@ -2,6 +2,7 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {AuthPanel} from './AuthPanel.js';
 import {mountLearningJourney,mountWave1Journey} from '../learning/app-entry.js';
+import {releasedLessonRoutes} from '../learning/released-lessons.js';
 import {createStagingLearningPorts} from '../learning/staging-ports.js';
 import {mountSharedNavigation} from '../shell/mount-navigation.js';
 import {mountKnowledgeSearch} from '../shell/knowledge-search.js';
@@ -27,43 +28,53 @@ opener?.addEventListener('click',()=>{
 createRoot(root).render(<AuthPanel onClose={closeAccount}/>);
 
 
-/** Activate only the real L09 route after AuthPanel has verified invite + owner.
- * The legacy markup stays available for rollback; it is hidden, not erased.
+/** One invited-only route handler for all released lessons.
+ * Renderers are still explicitly limited to approved Wave1 formats, so a new
+ * editorial JSON cannot silently become an active lesson UI.
  */
-function enableIntegratedL09(){
- const page=document.getElementById('page-lessonL09');
- const legacy=page?.querySelector<HTMLElement>(':scope > .section-shell');
- if(!page||!legacy)return;
- let dispose:(()=>void)|null=null;
- let host:HTMLElement|null=null;
- const ports=createStagingLearningPorts();
- const update=()=>{
-  const allowed=document.documentElement.classList.contains('li-auth-verified');
-  const active=page.classList.contains('active');
-  if(allowed&&active&&!dispose){
-   const node=document.createElement('div');
-   node.id='li-react-l09-host';node.className='section-shell';page.append(node);
-   try{
-    dispose=mountLearningJourney(node,ports);
-    host=node;legacy.hidden=true;legacy.style.display='none';
-    page.setAttribute('aria-labelledby','li-react-l09-title');
-   }catch{
-    node.remove();legacy.hidden=false;legacy.style.removeProperty('display');
-    throw Error('REACT_L09_MOUNT_FAILED');
+function enableIntegratedLessons(){
+ for(const {id,route,slug} of releasedLessonRoutes){
+  const renderer=id==='L09-1-2'?'l09':
+   id==='L03-1-2'||id==='L15-2-2'?'wave1':null;
+  if(!renderer)continue;
+  const page=document.getElementById('page-'+route);
+  const legacy=page?.querySelector<HTMLElement>(':scope > .section-shell');
+  if(!page||!legacy)continue;
+  let dispose:(()=>void)|null=null,host:HTMLElement|null=null;
+  const ports=createStagingLearningPorts(id);
+  const title=renderer==='l09'?'li-react-l09-title':'li-react-'+id+'-title';
+  const update=()=>{
+   const allowed=document.documentElement.classList.contains('li-auth-verified');
+   const active=page.classList.contains('active');
+   if(allowed&&active&&!dispose){
+    const node=document.createElement('div');
+    // Keep the exact existing host IDs (including related-lesson integration).
+    node.id=renderer==='l09'?'li-react-l09-host':'li-react-'+slug+'-host';
+    node.className='section-shell';page.append(node);
+    try{
+     dispose=renderer==='l09'?mountLearningJourney(node,ports):
+      mountWave1Journey(node,id as 'L03-1-2'|'L15-2-2',ports);
+     host=node;legacy.hidden=true;legacy.style.display='none';
+     page.setAttribute('aria-labelledby',title);
+    }catch{
+     node.remove();legacy.hidden=false;legacy.style.removeProperty('display');
+     throw Error('REACT_LESSON_MOUNT_FAILED');
+    }
+   }else if((!allowed||!active)&&dispose){
+    dispose();dispose=null;host?.remove();host=null;
+    legacy.hidden=false;legacy.style.removeProperty('display');
+    page.setAttribute('aria-labelledby',slug+'-title');
    }
-  }else if((!allowed||!active)&&dispose){
-   dispose();dispose=null;host?.remove();host=null;
-   legacy.hidden=false;legacy.style.removeProperty('display');
-   page.setAttribute('aria-labelledby','l09-title');
-  }
- };
- const observer=new MutationObserver(update);
- observer.observe(page,{attributes:true,attributeFilter:['class']});
- observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
- update();
+  };
+  const observer=new MutationObserver(update);
+  observer.observe(page,{attributes:true,attributeFilter:['class']});
+  observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+  update();
+ }
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enableIntegratedL09,{once:true});
-else enableIntegratedL09();
+if(document.readyState==='loading')
+ document.addEventListener('DOMContentLoaded',enableIntegratedLessons,{once:true});
+else enableIntegratedLessons();
 
 // React owns top navigation, bottom navigation and utility controls. Native
 // data-page event delegation remains the temporary route bridge.
@@ -82,49 +93,6 @@ else mountCaptureIdea();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountResearchAndCase,{once:true});
 else mountResearchAndCase();
 
-
-/** Invited-only active React Wave1 lessons. Keep the established routes and
- * native element shell for rollback, but only React owns visible learning UI. */
-function enableIntegratedWave1(){
- const routes=[
-  {id:'L03-1-2' as const,route:'lessonL03',slug:'l03'},
-  {id:'L15-2-2' as const,route:'lessonL15',slug:'l15'}
- ];
- for(const {id,route,slug} of routes){
-  const page=document.getElementById('page-'+route);
-  const legacy=page?.querySelector<HTMLElement>(':scope > .section-shell');
-  if(!page||!legacy)continue;
-  let dispose:(()=>void)|null=null,host:HTMLElement|null=null;
-  const ports=createStagingLearningPorts(id);
-  const update=()=>{
-   const allowed=document.documentElement.classList.contains('li-auth-verified');
-   const active=page.classList.contains('active');
-   if(allowed&&active&&!dispose){
-    const node=document.createElement('div');
-    node.id='li-react-'+slug+'-host';node.className='section-shell';page.append(node);
-    try{
-     dispose=mountWave1Journey(node,id,ports);
-     host=node;legacy.hidden=true;legacy.style.display='none';
-     page.setAttribute('aria-labelledby','li-react-'+id+'-title');
-    }catch{
-     node.remove();
-     legacy.hidden=false;legacy.style.removeProperty('display');
-     throw Error('REACT_WAVE1_MOUNT_FAILED');
-    }
-   }else if((!allowed||!active)&&dispose){
-    dispose();dispose=null;host?.remove();host=null;
-    legacy.hidden=false;legacy.style.removeProperty('display');
-    page.setAttribute('aria-labelledby',slug+'-title');
-   }
-  };
-  const observer=new MutationObserver(update);
-  observer.observe(page,{attributes:true,attributeFilter:['class']});
-  observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
-  update();
- }
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enableIntegratedWave1,{once:true});
-else enableIntegratedWave1();
 
 // One visible React Home→Catalog→Lesson discovery path; native owners remain temporary ports.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountHomeAndCatalog,{once:true});

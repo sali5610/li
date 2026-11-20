@@ -1,6 +1,7 @@
 import type {Attempt} from '../native-bridge.js';
 import {initial} from '../native-bridge.js';
-import type {LearningPorts,SyncState,Wave1LessonId} from './ports.js';
+import type {LearningPorts,SyncState} from './ports.js';
+import {isReleasedLessonId} from './released-lessons.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
 import {neonSessionPort} from '../auth/neon-client.js';
 import {AUTH_ORIGIN,IS_GITHUB_STAGING,NEON_DATA_API_URL} from '../auth/config.js';
@@ -55,7 +56,8 @@ function navigate(route:'catalog'|'search'){
  if(typeof app.navigate==='function')app.navigate(route);
  else document.querySelector<HTMLButtonElement>('button[data-page="'+route+'"]')?.click();
 }
-export function createStagingLearningPorts(lesson:Wave1LessonId='L09-1-2'):LearningPorts{
+export function createStagingLearningPorts(lesson:string):LearningPorts{
+ if(!isReleasedLessonId(lesson))throw Error('LESSON_NOT_RELEASED');
  const LESSON=lesson, KEY='li.review.'+lesson+'.v1';
  return {
  auth:{async requireInvitedLearner(){

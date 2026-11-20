@@ -6,12 +6,12 @@
   "consumer": {
     "screenId": "screen:lesson:L09-1-2",
     "title": "Invited L09 React learning journey",
-    "repoRef": "a0ca5f350628dbedf74ec3fb365a44410c28ea96",
+    "repoRef": "dfaf9577fdbe4ad45f9e7631c1cde1c77d563548",
     "path": "tools/step16-real-l09-react-island/src/learning/LearningJourney.tsx",
     "signature": "data-li-react-journey=\"L09-1-2\"",
     "auth": "invite-only",
     "deployment": "GitHub Pages staging source only; no Cloudflare production claim",
-    "sourceBlob": "ea88b9b963f64bd89fa1e4b3d04c36dc9b4b5951"
+    "sourceBlob": "354dcd22ccca8d9663957e62c4a5f02b32421d80"
   },
   "ontology": {
     "registry": "docs/ontology/registry.v0.1.json",
@@ -250,6 +250,54 @@
       "use": "Attempt progress from answered/submitted/reviewed milestones",
       "rule": "Do not infer mastery from page views",
       "evidence": "Source inspection: TSX declaration, L09 JSX usage and generated CSS var() reference; no G2/Safari approval"
+    },
+    {
+      "studioId": "saveStatus",
+      "component": "SaveStatus",
+      "kind": "Component",
+      "source": "design-system/react/Molecules.tsx",
+      "styleSource": "design-system/react/molecules.css",
+      "selector": ".li-ds-save-status",
+      "relation": "USES_TOKEN",
+      "tokens": [
+        {
+          "kind": "DesignToken",
+          "name": "--rule"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--paper"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--ink"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-space-3"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--muted"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--olive"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--moss"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-color-danger-fill"
+        }
+      ],
+      "variant": "queued · saved-device · synced · unavailable · saving · error",
+      "observedState": "caller-owned SyncState + saving + locked; local/queued/cloud/unknown visually distinct",
+      "use": "Real L09 learning save indicator above current attempt progress; does not perform persistence",
+      "rule": "Never claim verified cloud sync from a locally saved draft or infer offline when status is queued/unavailable.",
+      "evidence": "Static source readback of real L09 JSX, shared molecule and generated token CSS; not UI G2/Safari validation"
     }
   ]
 }

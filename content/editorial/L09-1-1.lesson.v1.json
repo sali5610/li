@@ -161,10 +161,10 @@
               "quote_id": "analects-think",
               "quote_ids": [
                 "analects-think",
-                "box-models",
+                "mencius-sources",
                 "aristotle-know"
               ],
-              "quote_relevance_md": "<b>Quote:</b> primary analects-think, alternates box-models, aristotle-know — Methodical thinking is relevant to separating categorical labels, counted values and continuous measures.",
+              "quote_relevance_md": "<b>Quote:</b> primary analects-think, alternates mencius-sources, aristotle-know — Methodical thinking is relevant to separating categorical labels, counted values and continuous measures.",
               "prompt_md": "<b>VI · Soi loại biến:</b> Mã sinh viên toàn số chưa chắc là định lượng. Cộng mấy cái ID lại rồi tính trung bình là thống kê kiểu gì vậy trời? <b>Lão Lý bình:</b> Hình thức ký tự và ý nghĩa đo lường không phải một chuyện; biết biến đang đại diện cho cái gì mới phân loại đúng.",
               "actions": [
                 {
@@ -208,9 +208,9 @@
               "quote_ids": [
                 "mencius-sources",
                 "analects-honesty",
-                "box-models"
+                "mill-other-side"
               ],
-              "quote_relevance_md": "<b>Quote:</b> primary mencius-sources, alternates analects-honesty, box-models — Source skepticism prevents premature inference from a single opt-in iOS sample without revealing the task-specific proportion.",
+              "quote_relevance_md": "<b>Quote:</b> primary mencius-sources, alternates analects-honesty, mill-other-side — Source skepticism prevents premature inference from a single opt-in iOS sample without revealing the task-specific proportion.",
               "prompt_md": "<b>VI · Tự giải bộ dữ liệu:</b> Bảng của app đã đủ dữ kiện cho bài này. Lão không phân loại tất cả cột hay tính kết luận hộ ngươi trước khi nộp đâu. <b>Lão Lý bình:</b> Muốn suy rộng thì trước hết phải biết 8.000 người ấy là ai, 320 người đã tới từ đâu và các cột có ý nghĩa nào. <b>Khung tự làm:</b> Nếu chọn T07 · Tiền Đề Giám Định, tách chứng cứ từ mẫu và điều kiện cần có trước khi suy rộng; không tính tỷ lệ hộ ngươi.",
               "actions": [
                 {
@@ -411,10 +411,10 @@
               "quote_id": "analects-think",
               "quote_ids": [
                 "analects-think",
-                "box-models",
+                "mencius-sources",
                 "aristotle-know"
               ],
-              "quote_relevance_md": "<b>Quote:</b> primary analects-think, alternates box-models, aristotle-know — Methodical thinking is relevant to separating categorical labels, counted values and continuous measures.",
+              "quote_relevance_md": "<b>Quote:</b> primary analects-think, alternates mencius-sources, aristotle-know — Methodical thinking is relevant to separating categorical labels, counted values and continuous measures.",
               "prompt_md": "<b>EN · Know the data type:</b> A learner ID may be numeric-looking without being a numerical measurement. Averaging ID numbers would be quite a creative mistake. <b>Mentor commentary:</b> The appearance of a value and its measurement meaning are not the same thing; classify the underlying variable, not just its characters.",
               "actions": [
                 {
@@ -458,9 +458,9 @@
               "quote_ids": [
                 "mencius-sources",
                 "analects-honesty",
-                "box-models"
+                "mill-other-side"
               ],
-              "quote_relevance_md": "<b>Quote:</b> primary mencius-sources, alternates analects-honesty, box-models — Source skepticism prevents premature inference from a single opt-in iOS sample without revealing the task-specific proportion.",
+              "quote_relevance_md": "<b>Quote:</b> primary mencius-sources, alternates analects-honesty, mill-other-side — Source skepticism prevents premature inference from a single opt-in iOS sample without revealing the task-specific proportion.",
               "prompt_md": "<b>EN · Work with the dataset:</b> The app case contains the fields you need. I will not classify every column or write the population claim before you submit. <b>Mentor commentary:</b> Before generalizing, determine the intended group, how observations were collected and what each column represents. <b>Independent method cue:</b> If using T07 Premise Checking, separate the sample evidence from any assumptions needed for population inference; I will not compute the final proportion for you.",
               "actions": [
                 {

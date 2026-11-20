@@ -166,7 +166,16 @@ shelf.renderResume();
 assert.equal(elements["li-lesson-history"].children.length,previousVisits+1,
  "React/native Library share the complete recent-lesson model");
 const bookmarks=fs.readFileSync(path.join(__dirname,"../site/assets/library-bookmarks.js"),"utf8");
-assert.match(bookmarks,/window\.liPersonalStudyRoutes\?\.\[id\]/,
- "Only the staged route registry can authorize a personal bookmark");
-assert.match(bookmarks,/li-auth-verified/,"Personal bookmarks require verified invitation");
+ctx.document.addEventListener=()=>{};
+vm.runInContext(bookmarks,ctx);
+const mark=ctx.window.liBookmarks;
+assert.equal(mark.valid("lesson",personalId),true,"The real bookmark action allows a registered invited lesson");
+assert.equal(mark.valid("lesson","FAKE"),false,"Unknown personal lessons cannot be bookmarked");
+assert.equal(mark.toggle("lesson",personalId),true,"Personal bookmark persisted through the original private writer");
+assert.equal(shelf.getView().lessonBookmarks.some(item=>item.id===personalId),true,
+ "Saved personal lesson appears in Quay lại · Dấu Trang");
+invited=false;
+assert.equal(mark.valid("lesson",personalId),false,"Unverified users cannot add personal bookmarks");
+assert.equal(mark.valid("lesson","L09-1-2"),true,"Three released lesson bookmarks remain available");
+invited=true;
 console.log("PASS Tủ Riêng: published + invited personal visits, route dedupe, gated bookmarks, two bookmark tabs and original private note flows");

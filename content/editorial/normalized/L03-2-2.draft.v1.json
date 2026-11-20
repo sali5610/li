@@ -58,7 +58,43 @@
             "heading": "6 · Đào sâu + tự kiểm tra",
             "body_md": "- [NN/g Card Sorting vs Tree Testing](https://www.nngroup.com/articles/card-sorting-tree-testing-differences/) và [NN/g Tree Testing](https://www.nngroup.com/articles/tree-testing/).\n- <b>Copy prompt:</b> “Tôi học li. L03-2-2. Truy cập đúng tài liệu NN/g, tóm tắt chỉ phần đã đọc về card sorting và tree test, đối chiếu phạm vi/giới hạn có URL; tạo research plan và 3 active recall chưa đáp án, không bịa kết quả user test.”\n- <b>Active recall (chưa đáp án):</b> (1) Card sorting phát hiện gì nhưng chưa kiểm tra được gì? (2) Vì sao tree test cần định nghĩa đích đúng trước? (3) Một tree test tốt có thay usability test visual UI không?\n\n<b>Figure spec:</b> original two-column “discover group candidates” versus “evaluate fixed tree” with source labels; no screenshot of licensed research platform, no reproduced NN/g graphics. Text table is initial accessible fallback; rights/device QA open."
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Chọn phương pháp cần làm <b>trước</b> để biết vấn đề nằm ở nhóm nội dung hay khả năng tìm qua cây hiện tại; nêu điều kiện có thể đảo thứ tự.",
+            "Viết <b>2 tác vụ tree test</b> không dùng trực tiếp từ khóa nhãn đích, cho biết đúng <b>expected destination</b> và dữ liệu hành trình cần ghi.",
+            "Nếu một số người đi nhầm sang Tủ Riêng, nêu <b>2 giả thuyết cạnh tranh</b> và cách đối chiếu; không tưởng tượng ra tỷ lệ thành công.",
+            "Xây một vòng <b>discovery → cấu trúc thử nghiệm → evaluation → chỉnh sửa</b>, giới hạn suy rộng mẫu, và cách kiểm nghiệm UI thực tế sau tree test."
+          ],
+          "rubricCriteria": [
+            [
+              "phương pháp gắn đúng research question",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "2 task/target/tracking hợp lệ",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "giả thuyết và bằng chứng phân biệt",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "vòng nghiên cứu + giới hạn suy luận/UX UI thực tế",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       },
       "en": {
         "intro_md": "<b>“Ten participants can sort cards consistently — and still get lost in the menu designed from them.”</b>\n\nImagine <b>fictional</b> participants who group “Study map,” “Flashcards” and “Spaced review” as Learning. That tells designers something about <b>possible groupings</b>, not whether those people can locate “Spaced review” in a proposed navigation tree. <b>The reversal:</b> exploring how people group information and testing whether they can find it are different research goals. [NN/g Card Sorting vs Tree Testing](https://www.nngroup.com/articles/card-sorting-tree-testing-differences/).",
@@ -110,7 +146,43 @@
             "heading": "6 · Sources and unrevealed recall",
             "body_md": "- [NN/g Card Sorting vs Tree Testing](https://www.nngroup.com/articles/card-sorting-tree-testing-differences/) — discovery and evaluation distinction.\n- [NN/g Tree Testing](https://www.nngroup.com/articles/tree-testing/) — labels, findability and visual-context limits.\n- <b>Copy prompt:</b> “I study li. L03-2-2. Open the exact NN/g URLs, summarize only accessible evidence and source links distinguishing card sorting from tree tests, make a separate fictional study plan, label inference and ask three recall questions without answers. If blocked, say so.”\n- <b>Active recall questions, no answers:</b> (1) What does card sorting suggest but not validate? (2) Why must tree tests have correct destinations defined in advance? (3) Why doesn't a clean tree test prove visual-UI usability?\n\n<b>Media spec:</b> an original editable two-stage text diagram “grouping discovery → candidate tree → findability evaluation”, no copied NN/g screenshots. Test VI/EN semantic parity, portrait and VoiceOver later."
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Pick the method to use <b>first</b> given that a proposed tree already exists, and state when you would reverse the order of methods.",
+            "Write <b>two tree-test tasks</b> that do not give away the target menu labels. Specify exact predefined correct destinations and route data to capture.",
+            "If some participants go to Personal rather than Methods, provide <b>two competing explanations</b> and how you would distinguish them; do not invent an actual completion rate.",
+            "Design a <b>discovery → candidate IA → evaluation → revision</b> loop, limits of generalizing beyond participants, and an additional real-UI validation step."
+          ],
+          "rubricCriteria": [
+            [
+              "method chosen for the right question",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "two valid tasks/targets/measurements",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "competing hypotheses and discriminating evidence",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "iterative research plan with sampling/real-UI limitations. A guide view or self-rating is not actual L2/T06 competence",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       }
     },
     "companion": {
@@ -146,7 +218,229 @@
           "source_md": "<b>Primary:</b> <code>bacon-studies</code>; alternates <code>analects-peers</code>, <code>mill-other-side</code>. <b>Relevance:</b> reading, discussion and writing analogize to triangulating research methods; NN/g source is evidence.\n\n<b>VI · Lão Lý:</b> “Menu đẹp chưa hẳn tìm dễ. Nghiên cứu nhóm thẻ xong cũng chưa tới lễ tốt nghiệp IA đâu.”\n\n- <b>“Đọc cái gì tiếp?”</b> → “Đọc NN/g so sánh hai phương pháp, rồi phần giới hạn thiếu visual context của tree test.”\n- <b>“Kiểm nghiệm ngoài đời?”</b> → “Từ kết quả tree test hãy làm usability task trong UI thật, theo dõi icon, search và ngữ cảnh.”\n\n<b>EN · Lão Lý:</b> “A pretty menu is not proof of findability, and a tidy card sort is not an IA diploma.”\n\n- <b>“Read what?”</b> → “Start with NN/g's method comparison, then the limits of a visually stripped tree.”\n- <b>“Real-world follow-up?”</b> → “Test the actual interface after the tree study, including visual affordances and search cues.”\n\n<b>Editorial status:</b> 6 stages/12 VI and 12 EN action-reply pairs, 18 quote candidate placements. Body and answer visibility remain Notion-only; no runtime/VoiceOver/license/specialist QA or deploy."
         }
       ],
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "structuredMoments": [
+        {
+          "stage": "opening",
+          "quote_ids": [
+            "mill-other-side",
+            "analects-others",
+            "hume-evidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>mill-other-side</code>; alternates <code>analects-others</code>, <code>hume-evidence</code>. <b>Relevance:</b> considering perspectives beyond one's own is an analogy for observing how people group and navigate; Mill did not formulate card sorting.",
+          "vi": {
+            "prompt": "Mười người xếp thẻ cùng một nhóm, nhưng tới lúc tìm thì chạy lạc. Thấy sự khác biệt chưa, tiểu hữu?",
+            "actions": [
+              {
+                "label": "Nhóm đẹp chưa đủ?",
+                "reply": "Card sort gợi những nhóm có ý nghĩa với người tham gia; nó chưa đặt họ trước một cây có đường dẫn và đích thực."
+              },
+              {
+                "label": "Làm gì sau nhóm?",
+                "reply": "Xây giả thuyết hierarchy rồi kiểm việc tìm mục bằng tree task, không cần lập tức sơn giao diện."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Ten people group the same cards, yet cannot find the resulting menu path. Notice the distinction?",
+            "actions": [
+              {
+                "label": "Grouping isn't enough?",
+                "reply": "Sorting suggests possible mental groups; it does not observe finding a target in a defined tree."
+              },
+              {
+                "label": "What comes next?",
+                "reply": "Build a candidate hierarchy and test its findability before relying on visual polish."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "concept",
+          "quote_ids": [
+            "analects-think",
+            "bacon-studies",
+            "mencius-sources"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>analects-think</code>; alternates <code>bacon-studies</code>, <code>mencius-sources</code>. <b>Relevance:</b> distinguishing thinking from mere learning is a teaching analogy for differing research questions.",
+          "vi": {
+            "prompt": "Open sort là người ta tự nghĩ nhóm; tree test là ngươi cho sẵn cây rồi hỏi có tìm được không.",
+            "actions": [
+              {
+                "label": "Closed sort khác đâu?",
+                "reply": "Ngươi cho sẵn nhóm để người tham gia phân thẻ; nó vẫn không phải tác vụ điều hướng tìm đích trong một cây."
+              },
+              {
+                "label": "Tree test thiếu gì?",
+                "reply": "Thiếu ngữ cảnh icon, màu, vị trí, bố cục của giao diện thật; đừng tự phong đây là full usability test."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Open sorting lets participants name groups; tree testing hands them a proposed hierarchy to navigate.",
+            "actions": [
+              {
+                "label": "Where does closed sort fit?",
+                "reply": "It supplies category options for classification, but it still doesn't simulate locating a target through branches."
+              },
+              {
+                "label": "What does a tree lack?",
+                "reply": "The actual iconography, placement, color and full interface context."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "guided",
+          "quote_ids": [
+            "analects-practice",
+            "zhuangzi-craft",
+            "laozi-begin"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>analects-practice</code>; alternates <code>zhuangzi-craft</code>, <code>laozi-begin</code>. <b>Relevance:</b> practicing deliberate distinctions parallels learning a study-design method, not a claim about UX outcomes.",
+          "vi": {
+            "prompt": "T06 là hỏi đúng câu nghiên cứu trước. Tìm nhóm mới hay kiểm nhóm đã dựng?",
+            "actions": [
+              {
+                "label": "Phân loại tình huống nào?",
+                "reply": "Nếu muốn khám phá cách gọi nhóm, thử card sorting; nếu đã có cây và kiểm tìm đích, thử tree testing."
+              },
+              {
+                "label": "Tự chấm sao?",
+                "reply": "Cần lý do cho từng lựa chọn; mở Sổ Tay rồi bấm đóng không chứng minh đã dùng phương pháp."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "T06 begins with the actual research question: discover groupings or test an existing tree?",
+            "actions": [
+              {
+                "label": "How do I choose?",
+                "reply": "Grouping discovery points toward card sorting; target findability in a specified tree points toward tree testing."
+              },
+              {
+                "label": "What counts as practice?",
+                "reply": "A justified comparison, not merely opening or closing a guide."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "independent",
+          "quote_ids": [
+            "hume-evidence",
+            "mencius-sources",
+            "analects-honesty"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>hume-evidence</code>; alternates <code>mencius-sources</code>, <code>analects-honesty</code>. <b>Relevance:</b> calibration to evidence parallels not inventing any actual tree-test results. <b>Never pre-reveal proposed target paths or model tasks.</b>",
+          "vi": {
+            "prompt": "Đề không cho data test, ngươi không được ‘báo cáo’ tỷ lệ thành công từ trí tưởng tượng.",
+            "actions": [
+              {
+                "label": "Muốn viết task chuẩn?",
+                "reply": "Đặt mục tiêu tìm thông tin bằng nhu cầu người dùng, không chép nguyên nhãn leaf; đặt đích đúng trước."
+              },
+              {
+                "label": "Có thể đo gì?",
+                "reply": "Đường chọn, đích tới và lỗi; đừng đánh đồng thích giao diện với tìm đúng mục."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "No study data means no invented success percentage, however elegant the spreadsheet looks.",
+            "actions": [
+              {
+                "label": "A sound task?",
+                "reply": "Describe a user need without copying the exact destination label, and predefine the correct target."
+              },
+              {
+                "label": "What might you measure?",
+                "reply": "Path, destination and errors, rather than treating interface preference as task completion."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "reflection",
+          "quote_ids": [
+            "analects-honesty",
+            "analects-review",
+            "darwin-confidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>analects-honesty</code>; alternates <code>analects-review</code>, <code>darwin-confidence</code>. <b>Relevance:</b> intellectual honesty supports distinguishing research design from observed results; Darwin bank item is only a fragment. Unlock after independent submission.",
+          "vi": {
+            "prompt": "Đã nộp: đọc lại xem có nhầm chỗ khám phá với chỗ kiểm chứng không.",
+            "actions": [
+              {
+                "label": "Rubric ở đâu?",
+                "reply": "Chấm chọn phương pháp, task/đích, giả thuyết phân biệt và kế hoạch lặp lại — bốn phần riêng."
+              },
+              {
+                "label": "Một nhánh sai nói được gì?",
+                "reply": "Nó gợi một chỗ cần điều tra; chưa đủ tuyên bố người dùng nói chung không hiểu menu."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Submitted? Separate the proposed discovery study from any actual evaluation results.",
+            "actions": [
+              {
+                "label": "How to score?",
+                "reply": "Review research-method fit, task targets, alternative hypotheses and iteration plan separately."
+              },
+              {
+                "label": "What does a wrong branch prove?",
+                "reply": "It suggests something to investigate; it does not establish a population-wide failure."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "extension",
+          "quote_ids": [
+            "bacon-studies",
+            "analects-peers",
+            "mill-other-side"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>bacon-studies</code>; alternates <code>analects-peers</code>, <code>mill-other-side</code>. <b>Relevance:</b> reading, discussion and writing analogize to triangulating research methods; NN/g source is evidence.",
+          "vi": {
+            "prompt": "Menu đẹp chưa hẳn tìm dễ. Nghiên cứu nhóm thẻ xong cũng chưa tới lễ tốt nghiệp IA đâu.",
+            "actions": [
+              {
+                "label": "Đọc cái gì tiếp?",
+                "reply": "Đọc NN/g so sánh hai phương pháp, rồi phần giới hạn thiếu visual context của tree test."
+              },
+              {
+                "label": "Kiểm nghiệm ngoài đời?",
+                "reply": "Từ kết quả tree test hãy làm usability task trong UI thật, theo dõi icon, search và ngữ cảnh."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "A pretty menu is not proof of findability, and a tidy card sort is not an IA diploma.",
+            "actions": [
+              {
+                "label": "Read what?",
+                "reply": "Start with NN/g's method comparison, then the limits of a visually stripped tree."
+              },
+              {
+                "label": "Real-world follow-up?",
+                "reply": "Test the actual interface after the tree study, including visual affordances and search cues."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "technique": {
+      "primary": "L2-T06",
+      "status": "source_mapped_not_release_approved"
     }
   },
   "rights": {
@@ -163,7 +457,7 @@
     "sourceBodyCharacters": 23997
   },
   "normalization": {
-    "status": "sectioned_needs_academic_rights_and_release_review",
+    "status": "structurally_mapped_needs_rights_review",
     "counts": {
       "vi": {
         "chapters": 7,

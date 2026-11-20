@@ -58,7 +58,43 @@
             "heading": "6 · Nguồn + retrieval",
             "body_md": "- [NN/g success rate](https://www.nngroup.com/articles/success-rate-the-simplest-usability-metric/) — partial success, errors, metric boundaries.\n- [NN/g findability](https://www.nngroup.com/articles/navigation-ia-tests/) — direct/indirect tree paths, first-click, IA vs UI.\n- <b>Copy prompt:</b> “Tôi học li. L03-2-3. Hãy truy cập đúng URL NN/g, phân biệt những gì nguồn thực nói với cách tính tôi tự đặt; tạo task hư cấu mới và phân tích attempt vs error event, source/protocol limitations, rồi hỏi 3 active recall không hiện đáp án. Nếu trang chặn, nói rõ.”\n- <b>Active recall chưa có đáp án:</b> (1) Vì sao 80% completion có thể cùng tồn tại với rất nhiều backtracking? (2) Khi nào error events vượt số participants? (3) Tại sao tree success không chứng minh UI thật đã usability tốt?\n\n<b>Media/rights:</b> original accessible outcomes table; possible original path sketch with direct/indirect/failure arrows and VI/EN alt; never use NN/g screenshots, don't pre-show independent calculations in figures or alt. Visual/VoiceOver device QA OPEN."
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Tính overall completion, direct, indirect, failure — mỗi tỷ lệ phải ghi mẫu số và đơn vị <b>attempts</b>.",
+            "Phân biệt <b>6 attempts first-click sai</b> với <b>9 error events</b>, và vì sao không được trừ 9 khỏi 15 để ra số người thành công.",
+            "Đánh giá câu “80% tất cả người dùng sẽ tìm dễ; menu đã tốt”; phân biệt nguồn hỗ trợ, assistance/selection bias và dữ liệu còn thiếu.",
+            "Thiết kế <b>một vòng kiểm chứng</b> sau khi đề xuất sửa nhãn: target users, task wording/expected leaf, metrics, sample/protocol và kiểm thử trong UI thật; nêu giới hạn phát biểu."
+          ],
+          "rubricCriteria": [
+            [
+              "số học/success category đúng",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "attempt vs event/first-click/assistance phân biệt",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "suy luận có giới hạn dữ liệu và sampling",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "kế hoạch nghiên cứu tiếp theo có task/leaf, metric và UI context",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       },
       "en": {
         "intro_md": "<b>“Eight people finishing a task does not mean eight people found the path easy.”</b>\n\nIn a <b>fictional</b> ten-person study, six find the target directly, two backtrack and eventually reach it, and two fail. Reporting 8/10 task completion is mathematically valid under this protocol, but hides how two participants struggled. <b>The reversal:</b> completion, direct findability and navigation-error observations answer different questions. [NN/g's method boundaries](https://www.nngroup.com/articles/navigation-ia-tests/).",
@@ -110,7 +146,43 @@
             "heading": "6 · Source-first extension",
             "body_md": "- [NN/g on success-rate definitions](https://www.nngroup.com/articles/success-rate-the-simplest-usability-metric/).\n- [NN/g on IA vs UI findability testing](https://www.nngroup.com/articles/navigation-ia-tests/).\n- <b>Copy prompt:</b> “I study li. L03-2-3. Open the exact selected sources, summarize only directly accessible claims about task success, indirect paths and errors, and distinguish them from the fictional protocol. Give a fresh original case and 3 unanswered recall questions; say when you cannot access a source.”\n- <b>Active recall without answers:</b> (1) How can completion hide backtracking? (2) When can there be more error events than participants? (3) Why is tree-test success not a full visual-UI usability result?\n\n<b>Media:</b> self-authored outcome/path table and future original diagram if needed; do not reproduce NN/g figures. Future VI/EN mobile/VoiceOver and real post-submit reveal gating remain OPEN."
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Calculate overall completion, direct, indirect and failed proportions, including the denominator and the unit.",
+            "Distinguish six wrong-first-click attempts from nine error events. Why can't you subtract nine from 15 to obtain the number of successful people?",
+            "Appraise “80% of all users can find the menu easily; navigation is validated.” State which portions are observed and which overreach, identifying assistance and sampling limitations.",
+            "Design one follow-up test after a proposed label change: participant/task/leaf definition, observed metrics, protocol and validation in the actual UI. State the inference limits."
+          ],
+          "rubricCriteria": [
+            [
+              "completion/path rates",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "attempts/events/assistance distinction",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "honest limits of inference and sampling",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "actionable study with target, route metrics and real-UI caveats",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       }
     },
     "companion": {
@@ -146,7 +218,229 @@
           "source_md": "<b>Primary:</b> <code>bacon-studies</code>; alternatives <code>analects-peers</code>, <code>mill-other-side</code>. <b>Relevance:</b> reading, discussion and writing as learning habits parallel triangulating IA and full UI studies, not a source for modern UX methods.\n\n<b>VI · Lão Lý:</b> “Menu đẹp không cứu được task tìm sai. Nhưng cây danh mục đẹp trên giấy cũng chưa chứng minh icon dễ hiểu.”\n\n- <b>“Đọc gì trước?”</b> → “Đọc NN/g success-rate boundaries, rồi phân biệt direct/indirect trong tree tests.”\n- <b>“Thực hành ngoài đời?”</b> → “Viết một task đo được, chạy với người dùng phù hợp rồi phân biệt lỗi IA với lỗi visual/UI.”\n\n<b>EN · Lão Lý:</b> “Pretty menus won't repair failed tasks; a clean tree won't prove icon findability either.”\n\n- <b>“Which reading first?”</b> → “Start with NN/g success measures and direct/indirect paths in IA tests.”\n- <b>“Real-world exercise?”</b> → “Write a measurable task, recruit relevant users and investigate IA separately from visual-UI failure.”\n\n<b>QA constraints:</b> each stage has 3 existing-bank quote IDs and two distinct localized action/reply pairs, primary must be honored in future quote engine; quotes are not paraphrased as precise translations here. L2-T09 exercise and L03 independent fixture distinct, source and rights verification pending, no native release, no paid costs."
         }
       ],
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "structuredMoments": [
+        {
+          "stage": "opening",
+          "quote_ids": [
+            "hume-evidence",
+            "mill-other-side",
+            "analects-honesty"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>hume-evidence</code>; alternatives <code>mill-other-side</code>, <code>analects-honesty</code>. <b>Relevance:</b> proportioning belief to the available evidence parallels refusing to equate completion with ease. It is not a statistical sample-size rule from Hume.",
+          "vi": {
+            "prompt": "Task thành công mà đi lòng vòng? Báo cáo một con số cho đẹp không làm đường đi bớt vòng đâu.",
+            "actions": [
+              {
+                "label": "Success chưa đủ?",
+                "reply": "Đúng đích là một outcome; lối đi trực tiếp hay quay đầu và số lỗi là những tín hiệu khác."
+              },
+              {
+                "label": "Tree test đo gì?",
+                "reply": "Đường tìm qua nhãn/cây. Giao diện thực có thêm visual, điều khiển và ngữ cảnh nên phải kiểm riêng."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "A task succeeds after three detours? A tidy metric does not straighten the path.",
+            "actions": [
+              {
+                "label": "Completion isn't enough?",
+                "reply": "Reaching the target is an outcome; direct versus indirect navigation and error events add distinct clues."
+              },
+              {
+                "label": "What does tree testing show?",
+                "reply": "Label-and-tree findability, not full visual interface performance."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "concept",
+          "quote_ids": [
+            "analects-think",
+            "mencius-sources",
+            "zhuangzi-limits"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>analects-think</code>; alternatives <code>mencius-sources</code>, <code>zhuangzi-limits</code>. <b>Relevance:</b> thinking carefully before claiming knowledge is an analogy for fixing denominators and success criteria before counting.",
+          "vi": {
+            "prompt": "Một người click nhầm năm lần vẫn chỉ là một người. Cái bảng của ngươi có đang trộn event với participant không?",
+            "actions": [
+              {
+                "label": "Đếm attempt hay click?",
+                "reply": "Completion tính trên attempts hợp lệ; error events có thể nhiều hơn attempts. Định nghĩa riêng rồi mới báo."
+              },
+              {
+                "label": "Thế nào là direct?",
+                "reply": "Trong contract bài này, tới đích không backtracking; cùng một chuẩn phải dùng cho mọi session."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "One person can make five wrong clicks and still be one person. Are your denominators confused?",
+            "actions": [
+              {
+                "label": "Attempts or clicks?",
+                "reply": "Task completion uses valid attempts, while error events may repeat within one attempt."
+              },
+              {
+                "label": "What's direct?",
+                "reply": "Under this teaching protocol, reaching the correct destination without backtracking; keep the definition fixed."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "guided",
+          "quote_ids": [
+            "analects-practice",
+            "zhuangzi-craft",
+            "bacon-studies"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>analects-practice</code>; alternatives <code>zhuangzi-craft</code>, <code>bacon-studies</code>. <b>Relevance:</b> deliberate practice is an analogy for inspecting real metadata, not proof that a particular metric is universal.",
+          "vi": {
+            "prompt": "T09 là nhìn nguồn log và điều kiện test trước khi tin câu ‘user tìm dễ lắm’.",
+            "actions": [
+              {
+                "label": "Bắt đầu ở đâu?",
+                "reply": "Tách outcome, path và assistance; tính đúng số trên cùng mẫu số rồi hỏi moderator có can thiệp không."
+              },
+              {
+                "label": "Khi nào được xem feedback?",
+                "reply": "Sau khi ngươi thực sự phân loại nguồn và nêu lý do. Chỉ vào Sổ Tay xem không phải làm bài."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "T09 means checking raw study evidence before trusting ‘users found it easily.’",
+            "actions": [
+              {
+                "label": "Where do I start?",
+                "reply": "Separate outcome, path and assistance, then confirm the protocol and facilitator interventions."
+              },
+              {
+                "label": "When does feedback unlock?",
+                "reply": "After a substantive evidence appraisal, not just opening the guide."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "independent",
+          "quote_ids": [
+            "mencius-sources",
+            "hume-evidence",
+            "analects-honesty"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>mencius-sources</code>; alternatives <code>hume-evidence</code>, <code>analects-honesty</code>. <b>Relevance:</b> judging assertions against their actual provenance is a modern parallel; the classical quote does not validate tree metrics. <b>No independent counts, percentages or computed answer given.</b>",
+          "vi": {
+            "prompt": "Đề đã cho raw log. Ta không tính hộ — nhìn đúng loại dữ liệu và điều còn thiếu.",
+            "actions": [
+              {
+                "label": "Làm thế nào khỏi nhầm?",
+                "reply": "Tạo bảng outcome của attempts rồi bảng riêng các events; xác định denominator trước khi chia."
+              },
+              {
+                "label": "Thiếu trợ giúp thì sao?",
+                "reply": "Đừng đoán assisted attempts thuộc nhóm nào. Ghi không tính được unassisted rate nếu thiếu mapping."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "The log is there. I won't compute the assessed result; define units before arguing.",
+            "actions": [
+              {
+                "label": "How do I avoid mixing records?",
+                "reply": "Tabulate attempt outcomes separately from event counts, then choose the denominator."
+              },
+              {
+                "label": "What if assistance isn't mapped?",
+                "reply": "Do not invent which attempts were assisted; record unassisted completion as unknown."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "reflection",
+          "quote_ids": [
+            "analects-honesty",
+            "analects-review",
+            "darwin-confidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>analects-honesty</code>; alternatives <code>analects-review</code>, <code>darwin-confidence</code>. <b>Relevance:</b> admitting what cannot be inferred is an analogy for bounded UX evidence; Darwin's bank wording is a fragment. <b>Only after submitted.</b>",
+          "vi": {
+            "prompt": "Đã nộp? Giờ soi lại xem cái nào là quan sát, cái nào là câu marketing gắn vào dữ liệu.",
+            "actions": [
+              {
+                "label": "Chấm theo đâu?",
+                "reply": "Tách phép tính, attempt/event, ranh giới suy rộng và kế hoạch test tiếp theo."
+              },
+              {
+                "label": "Lỗi nguy hiểm nhất?",
+                "reply": "Từ vài session tiện lợi nhảy sang ‘80% user trên đời’, hoặc tưởng error events là unique users."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Submitted? Check which claims came from logs and which were decorative marketing.",
+            "actions": [
+              {
+                "label": "How do I self-review?",
+                "reply": "Score arithmetic, attempt/event distinction, inference limits and next-test design."
+              },
+              {
+                "label": "Biggest trap?",
+                "reply": "Extrapolating a tiny convenient sample to the population or counting errors as people."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "extension",
+          "quote_ids": [
+            "bacon-studies",
+            "analects-peers",
+            "mill-other-side"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>bacon-studies</code>; alternatives <code>analects-peers</code>, <code>mill-other-side</code>. <b>Relevance:</b> reading, discussion and writing as learning habits parallel triangulating IA and full UI studies, not a source for modern UX methods.",
+          "vi": {
+            "prompt": "Menu đẹp không cứu được task tìm sai. Nhưng cây danh mục đẹp trên giấy cũng chưa chứng minh icon dễ hiểu.",
+            "actions": [
+              {
+                "label": "Đọc gì trước?",
+                "reply": "Đọc NN/g success-rate boundaries, rồi phân biệt direct/indirect trong tree tests."
+              },
+              {
+                "label": "Thực hành ngoài đời?",
+                "reply": "Viết một task đo được, chạy với người dùng phù hợp rồi phân biệt lỗi IA với lỗi visual/UI."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Pretty menus won't repair failed tasks; a clean tree won't prove icon findability either.",
+            "actions": [
+              {
+                "label": "Which reading first?",
+                "reply": "Start with NN/g success measures and direct/indirect paths in IA tests."
+              },
+              {
+                "label": "Real-world exercise?",
+                "reply": "Write a measurable task, recruit relevant users and investigate IA separately from visual-UI failure."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "technique": {
+      "primary": "L2-T09",
+      "status": "source_mapped_not_release_approved"
     }
   },
   "rights": {
@@ -163,7 +457,7 @@
     "sourceBodyCharacters": 25520
   },
   "normalization": {
-    "status": "sectioned_needs_academic_rights_and_release_review",
+    "status": "structurally_mapped_needs_rights_review",
     "counts": {
       "vi": {
         "chapters": 7,

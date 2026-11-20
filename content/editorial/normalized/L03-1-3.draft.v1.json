@@ -52,7 +52,43 @@
             "body_md": "| Tiêu chí | 0 | 1 | 2 |\n| --- | --- | --- | --- |\n| Evidence classification | Nhầm người hoặc trộn loại | Đúng một phần | Đúng 2 observations + 1 quote |\n| Interpretations | Không nêu hoặc gán chắc nguyên nhân | Một giả thuyết hợp lý | Hai giả thuyết rõ, chưa xác minh |\n| Finding boundary | Suy tỷ lệ hoặc cảm xúc | Giới hạn chung | Nêu đúng 2 phiên, không khái quát |\n| Next evidence | Không có | Một bước có ích | Hai bước phù hợp và confidence thận trọng |",
             "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Tách <b>hai observation</b> và <b>một quote</b> chính xác; gắn đúng P07/P08.",
+            "Nêu <b>hai giả thuyết</b> có thể giải thích hành vi P07; không khẳng định chúng đúng.",
+            "Viết <b>một finding có giới hạn</b>; giải thích vì sao chưa thể viết “đa số người dùng không hiểu filter”.",
+            "Đề xuất <b>hai bước kiểm chứng tiếp</b> và mức độ tin cậy hiện tại."
+          ],
+          "rubricCriteria": [
+            [
+              "Evidence classification",
+              "Nhầm người hoặc trộn loại",
+              "Đúng một phần",
+              "Đúng 2 observations + 1 quote"
+            ],
+            [
+              "Interpretations",
+              "Không nêu hoặc gán chắc nguyên nhân",
+              "Một giả thuyết hợp lý",
+              "Hai giả thuyết rõ, chưa xác minh"
+            ],
+            [
+              "Finding boundary",
+              "Suy tỷ lệ hoặc cảm xúc",
+              "Giới hạn chung",
+              "Nêu đúng 2 phiên, không khái quát"
+            ],
+            [
+              "Next evidence",
+              "Không có",
+              "Một bước có ích",
+              "Hai bước phù hợp và confidence thận trọng"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       },
       "en": {
         "intro_md": "<b>“An 18-second pause can be turned into a verdict: ‘The user can't use the interface.’”</b>\n\nIn the lesson's <b>fictional</b> session, P03 changes a filter and pauses for 18 seconds. The actions and time are observations; “poor digital skills” is an <b>unverified interpretation</b>. Without a boundary between observation and inference, a research note can turn into an unsupported judgment.\n\n<i>The reversal:</i> record what was seen or heard first, then investigate possible explanations. [GOV.UK — Analyse a research session](https://www.gov.uk/service-manual/user-research/analyse-a-research-session).",
@@ -98,7 +134,43 @@
             "body_md": "Four criteria × 0–2: evidence attribution; two explicitly uncertain inferences; properly scoped finding; two useful verification steps. No AI grading or mastery certification. Record assisted attempts separately.",
             "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Extract <b>two observations</b> and <b>one quote</b>, correctly attributed.",
+            "Offer <b>two possible interpretations</b> of P07's behavior; label them hypotheses.",
+            "Write <b>one bounded finding</b> and explain why a claim about most users would not be supported.",
+            "Recommend <b>two ways to verify</b> the issue and state the present confidence level."
+          ],
+          "rubricCriteria": [
+            [
+              "evidence attribution",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "two explicitly uncertain inferences",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "properly scoped finding",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "two useful verification steps. No AI grading or mastery certification. Record assisted attempts separately",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       }
     },
     "companion": {
@@ -134,7 +206,229 @@
           "source_md": "<b>Candidate quote IDs:</b> bacon-studies, analects-review, analects-practice. Exact quote/interpretive gloss QA tracked separately.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Bacon's reading/conversation/writing triad motivates rewriting evidence-led notes; no claim that Bacon described user research protocols.\n\n<b>VI · Lão Lý:</b> [GOV.UK](http://GOV.UK) hướng dẫn lấy note có ngữ cảnh rồi mới tổng hợp. Đọc tài liệu xong, thử biên tập một ghi chú đầy suy đoán thành hai dòng bằng chứng.\n\n- <b>Đọc nguồn nào trước?</b> Mở 'Taking notes and recording user research sessions' để xem cách ghi hành vi và lời nói; sau đó sang 'Analyse a research session' để xem tổng hợp.\n- <b>Active recall thế nào?</b> Đóng trang, tự tạo một quote và một observation khác nhau, rồi nêu một inference chưa xác minh. Nhớ được cấu trúc là thắng.\n\n<b>EN · Lão Lý:</b> [GOV.UK](http://GOV.UK) explains contextual notes before synthesis. Read the guidance, then rewrite a speculation-heavy note into two evidence-led statements.\n\n- <b>Which source first?</b> Read [GOV.UK](http://GOV.UK)'s 'Taking notes and recording user research sessions', then 'Analyse a research session' for synthesis and interpretation.\n- <b>What retrieval practice?</b> Close the references; invent a quote and an observation, then label one plausible but unverified inference."
         }
       ],
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "structuredMoments": [
+        {
+          "stage": "opening",
+          "quote_ids": [
+            "hume-evidence",
+            "analects-think",
+            "analects-honesty"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> hume-evidence, analects-think, analects-honesty. Exact quote/interpretive gloss QA tracked separately.",
+          "vi": {
+            "prompt": "P03 đứng hình 18 giây, có người đã muốn kết luận “không biết dùng giao diện”. Khoan, tiểu hữu: đó là ghi lại hành vi hay tự kể thêm nguyên nhân? Research không phải fanfic.",
+            "actions": [
+              {
+                "label": "Ghi chú tối thiểu?",
+                "reply": "Gắn mã người tham gia, tác vụ, thời điểm và hành động đã thấy. Nếu trích lời, ghi nguyên câu và ngữ cảnh; đừng tự thêm nguyên nhân."
+              },
+              {
+                "label": "Câu nào chưa được nói?",
+                "reply": "Một thao tác chậm không tự chứng minh người đó kém kỹ năng. Chừng nào chưa hỏi/quan sát thêm, nguyên nhân chỉ là giả thuyết."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "P03 paused for 18 seconds, and someone wants to write “can't use the interface.” Is that a recorded action or an invented explanation? Research notes are not fiction.",
+            "actions": [
+              {
+                "label": "What belongs in a note?",
+                "reply": "Attach participant/session ID, task, time and directly recorded action. Keep exact spoken words and their context distinct from inferred causes."
+              },
+              {
+                "label": "What remains unknown?",
+                "reply": "A slow interaction does not establish low skill. Without follow-up evidence, proposed causes remain hypotheses."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "concept",
+          "quote_ids": [
+            "mencius-sources",
+            "analects-honesty",
+            "hume-evidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> mencius-sources, analects-honesty, hume-evidence. Exact quote/interpretive gloss QA tracked separately.",
+          "vi": {
+            "prompt": "P03 đổi filter hai lần là observation; P03 nói 'tưởng lọc được quốc gia' là quote. 'Tên filter tệ' là suy luận. Trộn ba lớp là dữ liệu hóa lời đồn.",
+            "actions": [
+              {
+                "label": "Cách ghi quote?",
+                "reply": "Giữ nguyên lời của P03 và đánh nhãn là lời tham gia, không chuyển nó thành kết luận 'P03 không hiểu hệ thống' hoặc 'mọi người đều nhầm'."
+              },
+              {
+                "label": "Tìm nguyên nhân ra sao?",
+                "reply": "Đề xuất hơn một cách giải thích cho cú click và ghi điểm cần kiểm chứng. Một quan sát có thể phù hợp với nhiều giả thuyết."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "P03 adjusting a filter twice is an observation. P03's comment is a quote. 'The label is bad' is an inference. Don't give speculation the status of footage.",
+            "actions": [
+              {
+                "label": "How to quote P03?",
+                "reply": "Keep P03's statement verbatim with attribution. It is not automatically a validated cause or evidence about every user."
+              },
+              {
+                "label": "How to investigate cause?",
+                "reply": "List competing explanations for the clicks, then seek contextual follow-ups. A single observed behavior can fit multiple hypotheses."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "guided",
+          "quote_ids": [
+            "mill-other-side",
+            "analects-others",
+            "bacon-cause"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> mill-other-side, analects-others, bacon-cause. Exact quote/interpretive gloss QA tracked separately.",
+          "vi": {
+            "prompt": "P01 mở menu Export một lần; còn câu 'tất cả đều mê CSV' là researcher tự thêu thêm. Soi đúng hai loại chứng cứ trước khi rewrite. L2 tự chọn: T09 · Truy Nguyên Giám Chứng: xem ai ghi note, sự kiện có nguồn truy được không, rồi mới đề xuất diễn giải.",
+            "actions": [
+              {
+                "label": "Câu trung lập nào?",
+                "reply": "Ghi: P01 cho biết thường export CSV để đối chiếu; trong phiên P01 mở menu Export một lần. Không chêm 'vì UI tệ' nếu chưa có bằng chứng."
+              },
+              {
+                "label": "Còn thiếu gì?",
+                "reply": "Hỏi thêm P01 đối chiếu với dữ liệu nào, vào lúc nào và có lựa chọn khác không. Đừng lấy một lần mở menu chứng minh thói quen toàn tổ chức."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "P01 opened Export once. 'Everyone loves CSV' was added by the researcher. Separate the direct evidence before rewriting the note. Optional L2: T09 Source Criticism: check who recorded the note, whether the action and quote can be traced, and what remains uncorroborated.",
+            "actions": [
+              {
+                "label": "What is a neutral note?",
+                "reply": "Record P01's comment about CSV comparison and the single observed Export-menu action as two distinct evidence items."
+              },
+              {
+                "label": "What's still missing?",
+                "reply": "Ask what P01 compares against, when and why. One action does not validate an organization-wide preference."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "independent",
+          "quote_ids": [
+            "mencius-sources",
+            "box-models",
+            "hume-evidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> mencius-sources, box-models, hume-evidence. Exact quote/interpretive gloss QA tracked separately.",
+          "vi": {
+            "prompt": "Trong bài P07/P08, hãy lập bảng chứng cứ rồi mới phân tích. Lão không chọn sẵn finding, confidence hay hai giả thuyết cho ngươi. Khung tự làm: Nếu chọn T07 · Tiền Đề Giám Định, hãy tự đặt câu hỏi câu kết luận có vượt dữ liệu hai phiên không; lão không viết finding hộ.",
+            "actions": [
+              {
+                "label": "Lập bảng thế nào?",
+                "reply": "Đặt riêng hai dòng P07 và P08. Mỗi dòng ghi hành động có thể kiểm lại, số liệu thời gian được đề cho, câu quote nếu có; không tự thêm hành vi."
+              },
+              {
+                "label": "Tránh suy rộng bằng cách nào?",
+                "reply": "Chỉ mô tả phạm vi hai phiên tuyển thuận tiện, rồi chỉ ra bằng chứng gì cần thu thêm. Chưa có cơ sở để tính tỷ lệ tất cả người dùng."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "For P07 and P08, build the evidence table before interpreting it. I'll leave the finding, confidence and hypotheses for your own attempt. Independent method cue: If using T07 Premise Checking, ask whether the proposed finding exceeds the two-session evidence; I will not write your finding.",
+            "actions": [
+              {
+                "label": "How should I organize it?",
+                "reply": "Use separate P07 and P08 rows with only the actions, times and quotations actually supplied in the case. Do not invent extra behavior."
+              },
+              {
+                "label": "How do I limit claims?",
+                "reply": "Describe only the two convenience sessions, and name further evidence needed. This does not estimate prevalence across all users."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "reflection",
+          "quote_ids": [
+            "analects-honesty",
+            "darwin-confidence",
+            "hume-evidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> analects-honesty, darwin-confidence, hume-evidence. Exact quote/interpretive gloss QA tracked separately.",
+          "vi": {
+            "prompt": "Sau khi nộp, đọc lại câu nào trong lời giải là footage, câu nào là suy luận. Nếu 'đa số' xuất hiện không có mẫu đúng thì lão phạt bằng dấu hỏi.",
+            "actions": [
+              {
+                "label": "Tự chấm finding?",
+                "reply": "Finding tốt nêu rõ điều xảy ra với P07/P08, không gán nguyên nhân chắc chắn và không khái quát tỷ lệ. Kiểm xem có trường hợp trái chiều chưa."
+              },
+              {
+                "label": "Chấm confidence sao?",
+                "reply": "Mức tin cậy phải gắn với số phiên, cách tuyển, độ rõ nhiệm vụ và log bổ sung; không biến sự chắc giọng của người viết thành điểm cao."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "After submission, label every sentence in your answer as observed evidence or interpretation. If 'most users' appears without a suitable sample, question it.",
+            "actions": [
+              {
+                "label": "How should I rate the finding?",
+                "reply": "A defensible finding identifies the observed P07/P08 behavior, avoids unproven causes and keeps its sample boundary visible."
+              },
+              {
+                "label": "How should I rate confidence?",
+                "reply": "Consider recruitment, number of sessions, task comparability and missing logs, rather than how assertive the writing sounds."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "extension",
+          "quote_ids": [
+            "bacon-studies",
+            "analects-review",
+            "analects-practice"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> bacon-studies, analects-review, analects-practice. Exact quote/interpretive gloss QA tracked separately.",
+          "vi": {
+            "prompt": "[GOV.UK](http://GOV.UK) hướng dẫn lấy note có ngữ cảnh rồi mới tổng hợp. Đọc tài liệu xong, thử biên tập một ghi chú đầy suy đoán thành hai dòng bằng chứng.",
+            "actions": [
+              {
+                "label": "Đọc nguồn nào trước?",
+                "reply": "Mở 'Taking notes and recording user research sessions' để xem cách ghi hành vi và lời nói; sau đó sang 'Analyse a research session' để xem tổng hợp."
+              },
+              {
+                "label": "Active recall thế nào?",
+                "reply": "Đóng trang, tự tạo một quote và một observation khác nhau, rồi nêu một inference chưa xác minh. Nhớ được cấu trúc là thắng."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "[GOV.UK](http://GOV.UK) explains contextual notes before synthesis. Read the guidance, then rewrite a speculation-heavy note into two evidence-led statements.",
+            "actions": [
+              {
+                "label": "Which source first?",
+                "reply": "Read [GOV.UK](http://GOV.UK)'s 'Taking notes and recording user research sessions', then 'Analyse a research session' for synthesis and interpretation."
+              },
+              {
+                "label": "What retrieval practice?",
+                "reply": "Close the references; invent a quote and an observation, then label one plausible but unverified inference."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "technique": {
+      "primary": "L2-T09",
+      "status": "source_mapped_not_release_approved"
     }
   },
   "rights": {
@@ -151,7 +445,7 @@
     "sourceBodyCharacters": 29499
   },
   "normalization": {
-    "status": "needs_academic_rights_and_release_review",
+    "status": "structurally_mapped_needs_rights_review",
     "counts": {
       "vi": {
         "sections": 6,

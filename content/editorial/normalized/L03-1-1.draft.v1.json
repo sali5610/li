@@ -58,7 +58,43 @@
             "body_md": "| Tiêu chí | 0 điểm | 1 điểm | 2 điểm |\n| --- | --- | --- | --- |\n| Request vs need | Đồng nhất với WhatsApp | Phân biệt sơ bộ nhưng need vẫn chứa solution | Tách đề xuất và mục tiêu hợp lý, ghi rõ là giả thuyết |\n| Bằng chứng/câu hỏi | Câu hỏi dẫn dắt hoặc không có | Một câu trung lập hoặc thiếu bối cảnh | Hai câu khai thác sự kiện thật và trở ngại, không dẫn |\n| Lựa chọn phương án | Chỉ một phương án/không kiểm chứng | Hai hướng nhưng thiếu rủi ro | Hai hướng khác nhau và rủi ro cần kiểm tra |\n| Giới hạn kết luận | Suy rộng một lời đề nghị | Có cảnh báo chung | Kết luận đúng đúng phạm vi chứng cứ và chỉ ra điều chưa biết |\n\nTự chấm theo lập luận; không có AI auto-grade. Lời đáp khác mẫu có thể đúng nếu đúng logic. Gợi ý ở bài độc lập đánh dấu <b>assisted</b>; phản tư và đáp án phải khóa trước submit.",
             "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Chỉ ra phần nào trong câu là <b>feature request</b> và viết ra <b>một giả thuyết nhu cầu</b> không chỉ định WhatsApp.",
+            "Đề xuất <b>hai câu hỏi trung lập</b> về lần gần nhất xảy ra vấn đề để kiểm tra giả thuyết, tránh câu hỏi dẫn dắt.",
+            "Nêu <b>hai hướng giải pháp khác nhau</b>, cùng một rủi ro hoặc điều cần kiểm chứng cho từng hướng.",
+            "Viết câu kết luận mà PM được phép nói <b>ngay bây giờ</b>, đồng thời nêu điều <b>chưa đủ chứng cứ</b> để khẳng định."
+          ],
+          "rubricCriteria": [
+            [
+              "Request vs need",
+              "Đồng nhất với WhatsApp",
+              "Phân biệt sơ bộ nhưng need vẫn chứa solution",
+              "Tách đề xuất và mục tiêu hợp lý, ghi rõ là giả thuyết"
+            ],
+            [
+              "Bằng chứng/câu hỏi",
+              "Câu hỏi dẫn dắt hoặc không có",
+              "Một câu trung lập hoặc thiếu bối cảnh",
+              "Hai câu khai thác sự kiện thật và trở ngại, không dẫn"
+            ],
+            [
+              "Lựa chọn phương án",
+              "Chỉ một phương án/không kiểm chứng",
+              "Hai hướng nhưng thiếu rủi ro",
+              "Hai hướng khác nhau và rủi ro cần kiểm tra"
+            ],
+            [
+              "Giới hạn kết luận",
+              "Suy rộng một lời đề nghị",
+              "Có cảnh báo chung",
+              "Kết luận đúng đúng phạm vi chứng cứ và chỉ ra điều chưa biết"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       },
       "en": {
         "intro_md": "<b>“Building exactly what users ask for can be the fastest way to solve the wrong problem.”</b>\n\nSomeone requesting an “Export PDF” button might actually be struggling to share results with a colleague who cannot access their system. PDF is the proposed mechanism; the underlying goal is still <b>a hypothesis to investigate</b>. If we remove the button from the sentence, what job is left to accomplish?\n\n<i>The reversal:</i> a feature request is useful research input, not an already validated user need. [GOV.UK — Understanding user needs](https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs).",
@@ -104,7 +140,43 @@
             "body_md": "Each dimension scores 0/1/2: (1) feature request correctly separated from need hypothesis; (2) two neutral contextual research questions; (3) two alternative approaches with constraints; (4) evidence-bounded conclusion. Two points = complete, one = partial, zero = missing/misleading. No automatic grading or certification.",
             "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Identify the feature request and draft one <b>testable need hypothesis</b> that does not require WhatsApp.",
+            "Write two neutral questions about the person's last real incident.",
+            "Give two different solution directions and one risk or assumption to check for each.",
+            "Write the most defensible PM conclusion <b>now</b>, identifying what the evidence does not establish."
+          ],
+          "rubricCriteria": [
+            [
+              "feature request correctly separated from need hypothesis",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "two neutral contextual research questions",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "two alternative approaches with constraints",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "evidence-bounded conclusion. Two points = complete, one = partial, zero = missing/misleading. No automatic grading or certification",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       }
     },
     "companion": {
@@ -140,7 +212,229 @@
           "source_md": "Primary quote candidate: <b>bacon-studies</b>. Alternate IDs: mencius-sources, analects-think. Relevance: Source-first reading supports revisiting the evidence/solution distinction without pretending sources prove the synthetic case.\n\n<b>VI · Đào sâu cho tới gốc:</b> Đọc [GOV.UK](http://GOV.UK) để xem họ tách user need khỏi solution. Nhưng đừng mở ba tab rồi tưởng mình đã xong research nha.\n\n- <b>VI action 1: Đọc đoạn nào?</b> — Bắt đầu ở Writing user needs và Validating user needs; ghi nguồn nào nói về evidence, nguồn nào nói về wording.\n- <b>VI action 2: Nhớ lâu thế nào?</b> — Đóng tài liệu lại, tự viết một câu yêu cầu tính năng rồi chuyển thành hai giả thuyết về mục tiêu có thể kiểm chứng.\n\n<b>EN · Read for evidence:</b> Read [GOV.UK](http://GOV.UK) on separating user need from solution. Three open tabs still do not count as verified research.\n\n- <b>EN action 1: Which sections?</b> — Start with Writing user needs and Validating user needs; keep the evidence rules distinct from how to phrase a need.\n- <b>EN action 2: How can I retain it?</b> — Close the sources and transform a fictional feature request into two testable hypotheses about the underlying objective."
         }
       ],
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "structuredMoments": [
+        {
+          "stage": "opening",
+          "quote_ids": [
+            "analects-think",
+            "bacon-cause",
+            "hume-evidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Primary quote candidate: <b>analects-think</b>. Alternate IDs: bacon-cause, hume-evidence. Relevance: Thinking before choosing an implementation matches separating outcome from feature.",
+          "vi": {
+            "prompt": "Làm đúng y chang nút người dùng xin mà vẫn giải sai vấn đề? Có đó, tiểu hữu. Trước khi lao vào Figma, hỏi thử người ta đang cố hoàn thành việc gì.",
+            "actions": [
+              {
+                "label": "VI action 1: Hỏi điều gì?",
+                "reply": "Hỏi về lần gần nhất họ gặp tình huống ấy, kết quả mong muốn và cách xử lý hiện nay; chưa buộc họ phải dùng giải pháp đề xuất."
+              },
+              {
+                "label": "VI action 2: Giả thuyết ở đâu?",
+                "reply": "Xem chức năng đề xuất là một giả thuyết giải quyết vấn đề; bản thân yêu cầu chưa phải bằng chứng nó là cách tốt nhất."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "You can build the exact requested button and still miss the problem. Before opening Figma, ask what outcome the user is trying to achieve.",
+            "actions": [
+              {
+                "label": "EN action 1: What should I ask?",
+                "reply": "Ask about the last real incident, desired outcome and current workaround rather than immediately validating the proposed interface."
+              },
+              {
+                "label": "EN action 2: What is a hypothesis?",
+                "reply": "A requested feature is one possible approach to an underlying problem, not proof that the chosen implementation is optimal."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "concept",
+          "quote_ids": [
+            "box-models",
+            "analects-think",
+            "mencius-sources"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Primary quote candidate: <b>box-models</b>. Alternate IDs: analects-think, mencius-sources. Relevance: Distinguishing mental models from evidence helps prevent a request from becoming an unquestioned requirement.",
+          "vi": {
+            "prompt": "Tôi cần nút Export PDF” có thể là lời đề xuất cách làm. Nhu cầu nằm ở công việc họ phải hoàn thành, không nằm sẵn trong nút.",
+            "actions": [
+              {
+                "label": "VI action 1: Chỉ ra sự khác biệt?",
+                "reply": "Ghi câu nói nguyên văn, giả thuyết về mục tiêu và phương án giải quyết vào ba chỗ riêng; đừng biến câu trích thành chân lý sản phẩm."
+              },
+              {
+                "label": "VI action 2: Thế user có sai?",
+                "reply": "Không. Lời đề nghị là tín hiệu đáng nghiên cứu, nhưng người thiết kế cần xác nhận mục tiêu, trở ngại và các lựa chọn trước khi đóng giải pháp."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "I need an Export PDF button” might be a solution request. The need is rooted in a goal and context, not necessarily in the button.",
+            "actions": [
+              {
+                "label": "EN action 1: How do I separate them?",
+                "reply": "Record the verbatim request, the hypothesized goal and a potential solution separately; one quotation is not a validated requirement."
+              },
+              {
+                "label": "EN action 2: Is the user wrong?",
+                "reply": "No. Their proposal is valuable evidence about a situation, but its ability to solve the need still requires validation."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "guided",
+          "quote_ids": [
+            "mill-other-side",
+            "analects-others",
+            "bacon-cause"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Primary quote candidate: <b>mill-other-side</b>. Alternate IDs: analects-others, bacon-cause. Relevance: Checking the absent perspective helps avoid anchoring on one UI solution during a worked example.",
+          "vi": {
+            "prompt": "Một người đòi badge đỏ. Hãy nhìn nhiệm vụ nhận biết sự cố trước khi tán thành màu sắc họ yêu cầu. L2 tự chọn: T06 · Song Tượng Phân Minh (Compare–Contrast): so sánh lời xin badge với kết quả công việc cần đạt, rồi giải thích dấu hiệu khác nhau; đừng xác nhận nhu cầu thay người tham gia.",
+            "actions": [
+              {
+                "label": "VI action 1: Cách hỏi trung lập?",
+                "reply": "Hỏi lúc nào họ nhận ra sự cố muộn và dấu hiệu nào họ từng bỏ lỡ; câu hỏi không cần chứa màu đỏ hay badge."
+              },
+              {
+                "label": "VI action 2: Có giải pháp khác?",
+                "reply": "Có thể thử phân cấp thông tin, lọc exception hoặc tín hiệu phù hợp. Phương án nào hiệu quả phải được kiểm tra với tình huống thật."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Someone asked for a red badge. First study the task of noticing an issue before committing to the requested color. Optional L2: T06 Compare–Contrast: compare the requested red badge with a contextual job outcome, and explain the distinguishing cues without claiming a verified need.",
+            "actions": [
+              {
+                "label": "EN action 1: A neutral question?",
+                "reply": "Ask when they last noticed an incident too late and which signals they missed; there is no need to mention red badges."
+              },
+              {
+                "label": "EN action 2: Other approaches?",
+                "reply": "Information hierarchy, exception filtering or another signal are candidates; the best approach must be tested in context."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "independent",
+          "quote_ids": [
+            "mencius-sources",
+            "analects-honesty",
+            "hume-evidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Primary quote candidate: <b>mencius-sources</b>. Alternate IDs: analects-honesty, hume-evidence. Relevance: Critical evidence review fits the independent WhatsApp-alert proposal without revealing an accepted answer.",
+          "vi": {
+            "prompt": "Bài về thông báo WhatsApp là phần tự làm. Lão sẽ chỉ giúp kiểm tra giả định, không vẽ sẵn need statement hay giải pháp. Khung tự làm: Nếu chọn T06, tự phân biệt câu đề nghị tính năng với giả thuyết nhu cầu; lão không phân loại hộ case WhatsApp trước khi nộp.",
+            "actions": [
+              {
+                "label": "VI action 1: Tự kiểm tra sao?",
+                "reply": "Hãy phân biệt trích dẫn ban đầu, điều thật sự quan sát được và giả thuyết của nhóm thiết kế; chưa có khảo sát thì đừng ghi chắc như đinh."
+              },
+              {
+                "label": "VI action 2: Cần câu hỏi gì?",
+                "reply": "Đặt câu hỏi về lần gần nhất vấn đề xuất hiện và hậu quả đối với công việc; tránh khen hoặc chê trước một kênh thông báo."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "The WhatsApp-alert case is independent work. I can ask about assumptions, but I will not hand you the need statement or a design. Independent method cue: If using T06, distinguish solution wording from a possible need yourself; I will not classify the WhatsApp case for you before submission.",
+            "actions": [
+              {
+                "label": "EN action 1: How can I check?",
+                "reply": "Separate the verbatim request, observations and team hypotheses; without direct evidence do not write uncertain ideas as established facts."
+              },
+              {
+                "label": "EN action 2: What should I ask?",
+                "reply": "Ask about the last occurrence and its effect on the workflow, without praising or dismissing a notification channel."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "reflection",
+          "quote_ids": [
+            "analects-honesty",
+            "darwin-confidence",
+            "analects-review"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Primary quote candidate: <b>analects-honesty</b>. Alternate IDs: darwin-confidence, analects-review. Relevance: After submission, honest evaluation should separate uncertain needs and alternative solution tests.",
+          "vi": {
+            "prompt": "Đã nộp rồi thì soi lại: có giữ nguyên nút bấm trong lời mô tả nhu cầu không, hay đã giải thích mục tiêu và chứng cứ?",
+            "actions": [
+              {
+                "label": "VI action 1: Tự chấm theo gì?",
+                "reply": "Dùng bốn tiêu chí: nhận diện đề xuất, mục tiêu hợp lý, cách kiểm chứng, và nhiều phương án cùng giới hạn chưa biết."
+              },
+              {
+                "label": "VI action 2: Nếu chưa chắc?",
+                "reply": "Gắn nhãn giả thuyết thay vì nhận định đã xác minh; kể rõ cần quan sát hoặc phỏng vấn gì thêm để nâng độ tin cậy."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Now compare your attempt: did the proposed button sneak into the need statement, or did you identify the real desired outcome and evidence?",
+            "actions": [
+              {
+                "label": "EN action 1: What counts as strong?",
+                "reply": "Use the rubric: identify the solution request, state a plausible outcome, propose evidence checks and keep alternatives and uncertainty visible."
+              },
+              {
+                "label": "EN action 2: What if uncertain?",
+                "reply": "Label the need as a hypothesis, then specify observations or interviews that could increase confidence before committing to a design."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "extension",
+          "quote_ids": [
+            "bacon-studies",
+            "mencius-sources",
+            "analects-think"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Primary quote candidate: <b>bacon-studies</b>. Alternate IDs: mencius-sources, analects-think. Relevance: Source-first reading supports revisiting the evidence/solution distinction without pretending sources prove the synthetic case.",
+          "vi": {
+            "prompt": "Đọc [GOV.UK](http://GOV.UK) để xem họ tách user need khỏi solution. Nhưng đừng mở ba tab rồi tưởng mình đã xong research nha.",
+            "actions": [
+              {
+                "label": "VI action 1: Đọc đoạn nào?",
+                "reply": "Bắt đầu ở Writing user needs và Validating user needs; ghi nguồn nào nói về evidence, nguồn nào nói về wording."
+              },
+              {
+                "label": "VI action 2: Nhớ lâu thế nào?",
+                "reply": "Đóng tài liệu lại, tự viết một câu yêu cầu tính năng rồi chuyển thành hai giả thuyết về mục tiêu có thể kiểm chứng."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Read [GOV.UK](http://GOV.UK) on separating user need from solution. Three open tabs still do not count as verified research.",
+            "actions": [
+              {
+                "label": "EN action 1: Which sections?",
+                "reply": "Start with Writing user needs and Validating user needs; keep the evidence rules distinct from how to phrase a need."
+              },
+              {
+                "label": "EN action 2: How can I retain it?",
+                "reply": "Close the sources and transform a fictional feature request into two testable hypotheses about the underlying objective."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "technique": {
+      "primary": "L2-T06",
+      "status": "source_mapped_not_release_approved"
     }
   },
   "rights": {
@@ -157,7 +451,7 @@
     "sourceBodyCharacters": 33389
   },
   "normalization": {
-    "status": "sectioned_needs_academic_rights_and_release_review",
+    "status": "structurally_mapped_needs_rights_review",
     "counts": {
       "vi": {
         "chapters": 7,

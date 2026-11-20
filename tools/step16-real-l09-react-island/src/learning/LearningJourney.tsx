@@ -482,7 +482,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      </div>)}
     </div>
     <AiFeedbackPanel id="L09-1-2" locale={attempt.locale}
-     answers={attempt.submission??attempt.draft}/>
+     answers={attempt.submission??attempt.draft}
+     openQuestionIndices={lesson09.practice.questionFeedbackModes.flatMap((mode,index)=>mode==='open'?[index]:[])}/>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
      locale={attempt.locale} onReviewTheory={()=>go('read')}/>
     <Text role="support">{vi?'Tự chấm theo rubric, không phải điểm tự động.':'Self-review, not automatic grading.'}</Text>

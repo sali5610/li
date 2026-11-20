@@ -17,6 +17,7 @@ import {createLessonPhaseActor} from './phase-machine.js';
 import './journey.css';
 import {LessonBookmark,LessonMentor,LessonSectionIndex,L09Figures,LessonSources} from './LessonDetailParity.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
+import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 
 /** A real invited-only React learner screen, not a second app.
  * Editorial VI/EN copy is compiled from canonical GitHub
@@ -278,6 +279,15 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   if(!window.confirm(exact.langs[attempt.locale].resetConfirm))return;
   void save({...attempt,draft:['','','',''] as Attempt['draft']});
  }
+ async function restartLesson(){
+  if(!attempt||locked||saving||pendingWrites.current>0)return;
+  if(!confirmLessonRestart(L09_LESSON_ID,attempt.locale))return;
+  setError('');
+  if(await save(freshLessonAttempt(attempt))){
+   phaseActor.send({type:'COMMIT',submitted:false,reviewed:false});
+   phaseActor.send({type:'OPEN',phase:'read'});
+  }
+ }
  function go(next:Phase){
   if(!attempt)return;
   phaseActor.send({type:'OPEN',phase:next});
@@ -372,6 +382,10 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     attempt.submitted?(vi?'Đã nộp · tự đánh giá '+rated+'/4':'Submitted · self-review '+rated+'/4'):
     (vi?'Đủ điều kiện nộp '+answered+'/4 câu':'Submission-ready '+answered+'/4 answers')}</Text>
    {attempt.assisted&&<Text role="support">{content.assisted}</Text>}
+   <div className="li-learning-recovery">
+    <Button variant="secondary" disabled={saving||locked}
+     onClick={()=>void restartLesson()}>{vi?'Học lại từ đầu':'Restart this lesson'}</Button>
+   </div>
   </div>
   {error&&!locked&&<p className="li-learning-error" role="alert">{error}</p>}
   {locked&&<div className="li-learning-recovery">

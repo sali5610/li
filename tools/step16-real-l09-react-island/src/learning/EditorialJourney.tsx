@@ -3,6 +3,7 @@ import {motion,useReducedMotion} from 'motion/react';
 import type {Attempt,MethodAttempt} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
 import {isReleasedLessonId} from './released-lessons';
+import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 import {Button,Card} from '../../../../design-system/react/Components';
 import {Field} from '../../../../design-system/react/Controls';
 import {Heading,Text,Progress} from '../../../../design-system/react/Atoms';
@@ -401,6 +402,12 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   setError('');
   if(await save({...attempt,reviewed:true}))setPhase('progress');
  }
+ async function restartLesson(){
+  if(!attempt||locked||saving||pending.current>0)return;
+  if(!confirmLessonRestart(id,attempt.locale))return;
+  setError('');
+  if(await save(freshLessonAttempt(attempt)))setPhase('read');
+ }
  function switchLocale(value:Locale){
   if(!attempt||locked||saving||value===attempt.locale)return;
   const app=window as Window&{liLanguage?:{set?:(value:string)=>void}};
@@ -471,6 +478,10 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     (vi?'Đủ điều kiện nộp '+answered+'/4':'Ready '+answered+'/4')}</Text>
    {attempt.assisted&&<Text role="support">
     {vi?'Đã sử dụng Thần Chú hỗ trợ':'Used an optional learning spell'}</Text>}
+   <div className="li-learning-recovery">
+    <Button variant="secondary" disabled={saving||locked}
+     onClick={()=>void restartLesson()}>{vi?'Học lại từ đầu':'Restart this lesson'}</Button>
+   </div>
   </div>
   {error&&!locked&&<p role="alert" className="li-learning-error">{error}</p>}
   {locked&&<div className="li-learning-recovery">

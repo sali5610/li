@@ -182,7 +182,6 @@ export function GuideDetail(){
  const lessonRoute=view.lessonId?app.liReleasedLessonRoutes?.[view.lessonId]:undefined;
  const personalRoute=(view.lessonId?app.liPersonalStudyRoutes?.[view.lessonId]:undefined)
   ||personalLessonReturn(view.active);
- const returnRoute=lessonRoute||personalRoute;
  const preparing=phase===0;
  const hasSource=preparing;
  let actionLabel=copy('Đối chiếu bài làm','Check your response');
@@ -196,10 +195,13 @@ export function GuideDetail(){
  const ctaKind=preparing&&['faded','hide','resume','loci'].includes(view.mode)?'next':'check';
  return <div className="section-shell li-react-spell-detail" data-li-react-screen="guide-detail">
   <div className="action-row">
-   {returnRoute&&<Button variant="secondary" onClick={()=>openRoute(returnRoute)}
+   {lessonRoute?<Button variant="secondary" onClick={()=>openRoute(lessonRoute)}
     className="library-back-link">
     <LiIcon name="chevron-left" size={18}/> {copy('Về bài học','Back to lesson')}
-   </Button>}
+   </Button>:personalRoute?<Button variant="secondary" onClick={()=>openRoute(personalRoute)}
+    className="library-back-link">
+    <LiIcon name="chevron-left" size={18}/> {copy('Về bài học','Back to lesson')}
+   </Button>:null}
    <Button variant="ghost" onClick={()=>openRoute('guide')} className="library-back-link">
     <LiIcon name="chevron-left" size={18}/> {copy('Sổ Tay Thần Chú','Learning Spells')}
    </Button>

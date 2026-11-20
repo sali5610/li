@@ -83,37 +83,42 @@ function ResearchScene(){
 const readBookmark=()=>inquiryFlow().isCaseBookmarked();
 function CaseScene(){
  const reduced=useReducedMotion();
- const [choice,setChoice]=useState<'right'|'wrong'|null>(null);
- const [revision,setRevision]=useState(()=>{
-  const input=document.getElementById('case-revision') as HTMLTextAreaElement|null;
-  return input?.value||'';
- });
+ const [choice,setChoice]=useState<CaseChoice|null>(null);
+ const [revision,setRevision]=useState(()=>inquiryFlow().getCaseDraft());
  const [message,setMessage]=useState('');
  const [bookmarked,setBookmarked]=useState(readBookmark);
  useEffect(()=>{
-  const original=originalCase()?.querySelector<HTMLButtonElement>('[data-li-bookmark-kind="case"]');
-  if(!original)return;
-  const observer=new MutationObserver(()=>setBookmarked(readBookmark()));
-  observer.observe(original,{attributes:true,attributeFilter:['aria-pressed']});
-  return ()=>observer.disconnect();
+  const sync=()=>{
+   setBookmarked(readBookmark());
+   const saved=inquiryFlow().getCaseDraft();
+   setRevision(previous=>previous===saved?previous:saved);
+  };
+  const authObserver=new MutationObserver(sync);
+  authObserver.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+  window.addEventListener('li:inquiry-changed',sync);
+  window.addEventListener('li:personal-sync-applied',sync);
+  return ()=>{
+   authObserver.disconnect();
+   window.removeEventListener('li:inquiry-changed',sync);
+   window.removeEventListener('li:personal-sync-applied',sync);
+  };
  },[]);
  const updateRevision=(next:string)=>{
   setRevision(next);
-  const original=document.getElementById('case-revision') as HTMLTextAreaElement|null;
-  if(original){original.value=next;original.dispatchEvent(new Event('input',{bubbles:true}));}
+  if(!inquiryFlow().setCaseDraft(next))
+   setMessage('Không thể tự lưu bản nháp trên thiết bị này. Hãy sao chép nội dung trước khi thoát.');
+  else setMessage('');
  };
  const save=()=>{
   if(!choice){setMessage('Hãy chọn một nhận định trước khi lưu.');return;}
   if(revision.trim().length<12){setMessage('Viết lại kết luận ít nhất 12 ký tự.');return;}
-  let saved=false;
-  const onSaved=(event:Event)=>{
-   const detail=(event as CustomEvent<{type?:string;id?:string}>).detail;
-   if(detail?.type==='input'&&detail.id?.startsWith('case:'))saved=true;
-  };
-  window.addEventListener('li:activity',onSaved);
-  try{document.getElementById('finish-case')?.click();}
-  finally{window.removeEventListener('li:activity',onSaved);}
+  const saved=inquiryFlow().submitCase(choice,revision);
   if(saved){setMessage('');setRevision('');setChoice(null);}
+  else setMessage('Không thể lưu Bút Ký trên thiết bị này. Nội dung vẫn giữ trong ô viết.');
+ };
+ const toggleBookmark=()=>{
+  inquiryFlow().toggleCaseBookmark();
+  setBookmarked(readBookmark());
  };
  return <div data-li-react-screen="case" className="li-react-case">
   <div className="kicker">PHẢN CHỨNG · THIÊN LỆCH CHỌN MẪU</div>
@@ -121,7 +126,7 @@ function CaseScene(){
    <Heading level={1} role="headline">Phản Chứng</Heading>
    <Button variant="ghost" aria-label={bookmarked?'Bỏ lưu case':'Lưu case'}
     aria-pressed={bookmarked}
-    onClick={()=>originalCase()?.querySelector<HTMLButtonElement>('[data-li-bookmark-kind="case"]')?.click()}>
+    onClick={toggleBookmark}>
     <LiIcon name="bookmark" size={20}/>{bookmarked?'Đã lưu':'Lưu case'}
    </Button>
   </div>
@@ -130,10 +135,10 @@ function CaseScene(){
     <Heading level={2} role="titleMedium">90% trả lời hài lòng. Chúng ta nên kết luận thế nào?</Heading>
     <Text role="body">Câu hỏi then chốt: người nào được chọn để khảo sát, người nào không được đại diện?</Text>
     <div className="path-list">
-     <Button className="branch" variant="secondary" data-answer="right" aria-pressed={choice==='right'}
+     <Button className="branch" variant="secondary" aria-pressed={choice==='right'}
       onClick={()=>{setChoice('right');setMessage('');}}>
       Kết quả đúng với những người tham gia mẫu này, chưa suy rộng.</Button>
-     <Button className="branch" variant="secondary" data-answer="wrong" aria-pressed={choice==='wrong'}
+     <Button className="branch" variant="secondary" aria-pressed={choice==='wrong'}
       onClick={()=>{setChoice('wrong');setMessage('');}}>
       90% của mọi người chắc chắn đều hài lòng.</Button>
     </div>
@@ -141,7 +146,7 @@ function CaseScene(){
      initial={reduced?false:{opacity:0,y:4}} animate={{opacity:1,y:0}}
      transition={reduced?{duration:0}:{duration:0.16}}>{choice===null?'Chọn một nhận định để bắt đầu.':
      choice==='right'?'Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.':
-     'Chưa đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng.'}</motion.p>
+     'Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.'}</motion.p>
     <Field kind="textarea" label="Luận Kết · Viết lại nhận định không vượt quá dữ kiện"
      rows={5} value={revision} onChange={e=>updateRevision(e.target.value)}
      placeholder="Trong nhóm người đang sử dụng được hỏi, 90% phản hồi tích cực…"/>
@@ -169,6 +174,7 @@ function mountPage(id:string,Component:React.ComponentType){
  return ()=>{root.unmount();host.remove();legacy.hidden=false;legacy.style.removeProperty('display');};
 }
 export function mountResearchAndCase(){
+ inquiryFlow(); // Fail into the untouched native page if the single data owner is unavailable.
  const cleanupResearch=mountPage('research',ResearchScene);
  const cleanupCase=mountPage('case',CaseScene);
  return ()=>{cleanupCase();cleanupResearch();};

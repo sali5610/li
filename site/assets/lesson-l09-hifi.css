@@ -89,14 +89,14 @@
 }
 .li-lesson-spell-header{display:grid;gap:var(--li-space-1)}
 .li-lesson-spell-header h2{font:inherit;font-weight:var(--li-weight-700);font-size:var(--li-font-size-h3,1.1rem);
- margin:0;color:var(--ink)}
-.li-lesson-spell-header p{margin:0}
+ margin:var(--li-space-0);color:var(--ink)}
+.li-lesson-spell-header p{margin:var(--li-space-0)}
 .li-lesson-spell-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--li-space-3)}
 .li-lesson-spell-item{display:grid;grid-template-rows:auto 1fr auto;
  gap:var(--li-space-2);min-width:0;padding:var(--li-space-3);background:var(--paper)}
 .li-lesson-spell-item>strong{font-weight:var(--li-weight-700)}
-.li-lesson-spell-item>p,.li-lesson-spell-item>.li-ds-text{margin:0}
-.li-lesson-spell-action{justify-self:start;min-height:44px}
+.li-lesson-spell-item>p,.li-lesson-spell-item>.li-ds-text{margin:var(--li-space-0)}
+.li-lesson-spell-action{justify-self:start;min-height:var(--li-space-12)}
 :is(#page-lessonL03,#page-lessonL15) .li-lesson-spells{margin-block:var(--li-space-4)}
 @media(max-width:599px){
  .li-lesson-spell-list{grid-template-columns:minmax(0,1fr)}

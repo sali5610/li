@@ -21,13 +21,15 @@ for(const group of groups)for(const field of group.fields||[])for(const course o
   if(item.published&&/^lessonL\d{2}$/.test(item.route||""))routes.set(item.id,item.route);
  }
 }
-let client=null,status="loading",generation=0;
+let client=null,status="loading",generation=0,mentorFocus=null;
 const canOpenLesson=()=>document.documentElement.classList.contains("li-auth-verified") &&
  !document.documentElement.classList.contains("li-account-open");
 function openLesson(id){
  const route=routes.get(id);
- if(canOpenLesson()&&route&&document.getElementById("page-"+route)&&
-    typeof window.navigate==="function")window.navigate(route);
+ if(!canOpenLesson()||!route||!document.getElementById("page-"+route)||
+    typeof window.navigate!=="function")return false;
+ window.navigate(route);
+ return true;
 }
 function sourceLink(url,label){
  if(typeof url!=="string"||!url.startsWith("https://"))return null;
@@ -129,11 +131,28 @@ function renderCanonical(data){
    const src=sourceLink(record.sourceUrl,"Nguồn danh mục (Notion)");
    if(src)row.append(src);
   }
+  // Scoped, public-source-only context for the EXISTING Lão Lý dialog.
+  // Never persist a query, start another chat service or infer from proposed links.
+  if((record.kind==="Concept"||isLesson)&&record.links.some(x=>x.sourceType==="academic"&&x.sourceUrl)){
+   const mentor=document.createElement("button");mentor.type="button";
+   mentor.className="action alt";
+   mentor.textContent="Hỏi Lão Lý về kết nối này";
+   mentor.setAttribute("aria-label","Hỏi Lão Lý về "+record.title);
+   mentor.addEventListener("click",()=>{
+    mentorFocus={id:record.id,kind:record.kind,title:record.title,lessonId:record.lessonId,
+     links:record.links.filter(x=>x.sourceType==="academic"&&x.sourceUrl&&x.kind==="Lesson")
+      .map(x=>({lessonId:x.lessonId,label:x.label,reason:x.reason||null,
+       reasonLocalized:x.reasonLocalized||null,relation:x.relation,sourceUrl:x.sourceUrl}))};
+    document.getElementById("laoly-fab")?.click();
+   });
+   row.append(mentor);
+  }
   output.append(row);
  }
 }
 async function render(value){
  const ticket=++generation;
+ mentorFocus=null;
  if(!value.trim()){
   output.textContent="Nhập tên bài, môn học hoặc khái niệm để tra cứu.";return;
  }
@@ -148,7 +167,8 @@ async function render(value){
  }
 }
 input.addEventListener("input",e=>render(e.target.value));
-window.liSearch={render,getStatus:()=>status};
+window.liSearch={render,getStatus:()=>status,openLesson,
+ getMentorContext:()=>mentorFocus&&input.value.trim()?mentorFocus:null};
 render(input.value);
 import(new URL("./assets/li-content-adapter.mjs",document.baseURI).href)
  .then(async mod=>{

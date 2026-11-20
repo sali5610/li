@@ -267,8 +267,6 @@
           "reorder point",
           "điểm đặt hàng lại",
           "threshold",
-          "tính",
-          "calculate",
           "nhu cầu",
           "demand"
         ],
@@ -302,8 +300,9 @@
           "tồn kho an toàn",
           "mức dự phòng",
           "dự trữ",
-          "buffer",
-          "stockout"
+          "stockout",
+          "inventory buffer",
+          "stock buffer"
         ],
         [
           "rủi ro",

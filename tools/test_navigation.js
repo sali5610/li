@@ -163,25 +163,36 @@ assert.equal(emitted.filter(x=>x==="li:library-view-changed").length,8,
 // vanilla textarea, and imported data must refresh React views without redraw.
 const exportFrom=html.indexOf(" function liExportPersonalData(){");
 const exportTo=html.indexOf(" // S110 canonical validator",exportFrom);
-assert.ok(exportFrom>=0&&exportTo>exportFrom,"Locate shared export action");
-const exportSource=html.slice(exportFrom,exportTo);
+const helperFrom=html.indexOf(" function liHasPendingCaptureDraft(){");
+assert.ok(helperFrom>=0&&helperFrom<exportFrom&&exportTo>exportFrom,
+ "Find React Capture draft safety gate and shared export action");
+const helperSource=html.slice(helperFrom,exportFrom);
+const exportSource=html.slice(helperFrom,exportTo);
 let exported=null;
-let savedReactDraft="CURRENT_REACT_DRAFT";
+let savedReactDraft="CURRENT_REACT_DRAFT",pendingCaptureDraft="";
+const exportAlerts=[];
 const exportSandbox={
  Date,field:{value:"OLD_HIDDEN_DRAFT"},
  LI_DRAFT_KEY:"li.private.case-draft.v1",processedCases:[],savedQuestions:[],
  collectedIdeas:[],savedContent:[],liBuddyNames:{},
- window:{liReactRouter:{},localStorage:{getItem:()=>savedReactDraft}},
+ window:{liReactRouter:{},liCaptureUi:{getDraft:()=>pendingCaptureDraft},
+  localStorage:{getItem:()=>savedReactDraft}},
  Blob:class{constructor(parts){this.json=parts.join("");}},
  URL:{createObjectURL(blob){exported=JSON.parse(blob.json);return"blob:test";},revokeObjectURL(){}},
  document:{createElement:()=>({click(){},remove(){}}),body:{append(){}}},
- setTimeout(){},toast(){}
+ setTimeout(){},toast:message=>exportAlerts.push(message)
 };
 vm.runInNewContext(exportSource+"\nliExportPersonalData()",exportSandbox);
 assert.equal(exported.draft,"CURRENT_REACT_DRAFT","Export actual React Case draft");
 savedReactDraft=null;
 vm.runInNewContext(exportSource+"\nliExportPersonalData()",exportSandbox);
 assert.equal(exported.draft,"","Never export a stale hidden draft for React user");
+pendingCaptureDraft="Uncommitted idea in visible React Capture";
+const priorBackup=exported;
+vm.runInNewContext(exportSource+"\nliExportPersonalData()",exportSandbox);
+assert.equal(exported,priorBackup,"Unsaved Capture draft blocks an incomplete JSON export");
+assert.match(exportAlerts.at(-1),/Nhặt Ý còn bản nháp chưa lưu/);
+pendingCaptureDraft="";
 
 // Use the real import action (including validator and rollback), stub only
 // the browser's file/storage/confirmation APIs and unrelated native renderers.
@@ -194,8 +205,9 @@ assert.match(nativeBackup,/importInput\?\.addEventListener\("change"/,
 const importFrom=html.indexOf(" async function liImportPersonalData(file){");
 const importTo=html.indexOf(" window.liPersonalBackup=Object.freeze",importFrom);
 assert.ok(importFrom>=0&&importTo>importFrom,"Locate validated backup importer");
-const importSource=html.slice(importFrom,importTo);
+const importSource=helperSource+html.slice(importFrom,importTo);
 const emittedImport=[],dataStore=new Map(),nativeRenders=[];
+let pendingImportCapture="Uncommitted React Capture text";
 const failNative=name=>()=>nativeRenders.push(name);
 const importData={
  schema:1,cases:[{title:"Imported",revision:"Sample",correct:false}],
@@ -211,7 +223,7 @@ const importSandbox={
  liStorageError:false,liBuddyNames:{},liRestoreBuddyNames(){return{};},liRefreshBuddyNameInputs(){},
  liNormalizeBuddyName:x=>x,Date,JSON,Event:class{constructor(type){this.type=type;}},
  window:{
-  liReactRouter:{},
+  liReactRouter:{},liCaptureUi:{getDraft:()=>pendingImportCapture},
   localStorage:{
    getItem:key=>dataStore.has(key)?dataStore.get(key):null,
    setItem:(key,value)=>dataStore.set(key,value),
@@ -227,10 +239,16 @@ const importSandbox={
  toast(){}
 };
 const backupFile={size:512,text:async()=>JSON.stringify(importData)};
-vm.runInNewContext(importSource+"\nliImportPersonalData(backupFile)",{
- ...importSandbox,backupFile
-}).then(ok=>{
- assert.equal(ok,true,"Validated React backup import succeeds");
+const importContext=vm.createContext({...importSandbox,backupFile});
+vm.runInContext(importSource+"\nliImportPersonalData(backupFile)",importContext).then(async blocked=>{
+ assert.equal(blocked,false,"Unsaved React Capture draft must block destructive JSON import");
+ assert.match(importSandbox.liBackupImport.error,/Nhặt Ý còn bản nháp chưa lưu/);
+ assert.equal(dataStore.size,0,"Blocked import must not modify the private store");
+ assert.equal(importSandbox.savedContent.length,0,"Blocked import must not mutate records");
+ assert.equal(emittedImport.length,0,"Blocked import must not redraw any React data");
+ pendingImportCapture="";
+ const ok=await vm.runInContext("liImportPersonalData(backupFile)",importContext);
+ assert.equal(ok,true,"Validated React backup import succeeds after draft is handled");
  assert.equal(dataStore.get("li.private.case-draft.v1"),"IMPORTED_REACT_DRAFT");
  assert.equal(importSandbox.field.value,"OLD_HIDDEN_DRAFT","No React import write to hidden textarea");
  assert.equal(nativeRenders.length,0,"No hidden native redraw during React import");

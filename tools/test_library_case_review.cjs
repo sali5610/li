@@ -21,7 +21,7 @@ const cases=[
 ],ideas=[{id:"idea",text:"Một nhận định",savedAt:now}];
 const ctx={
  document:{getElementById:id=>el[id]||null,createElement:t=>new Element(t),querySelector:q=>q==="#page-case .editorial-grid .surface.tinted"?canonical:null},
- window:{confirm:()=>true,liLibraryShelf:{renderHome(){},renderCollection(){}},liBookmarks:{refresh(){}}},
+ window:{confirm:()=>true,liLibraryShelf:{renderHome(){},renderCollection(){}},liBookmarks:{refresh(){},isSaved(){return false;}}},
  processedCases:cases,collectedIdeas:ideas,liStorageError:false,liWriteState:()=>true,
  navigate(){},toast(){},Date,Intl,console
 };

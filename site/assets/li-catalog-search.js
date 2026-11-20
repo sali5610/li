@@ -13,7 +13,7 @@ for(const group of groups)for(const field of group.fields||[])for(const course o
  const context=[group.title,field.name,course.title].filter(Boolean).join(" · ");
  items.push({type:"course",title:course.title,id:course.id,context,group:group.id,field:field.id,course:course.id,published:false});
  for(const lesson of course.lessons||[]){
-  items.push({type:"lesson",title:lesson.title,id:lesson.id,context,group:group.id,field:field.id,course:course.id,route:lesson.route||null,published:lesson.published===true});
+  items.push({type:"lesson",title:lesson.title,id:lesson.id,context,group:group.id,field:field.id,course:course.id,route:lesson.route||null,published:lesson.published===true,sourceUrl:field.source||null});
  }
 }
 let sourceIndex=null,sourceAPI=null;
@@ -38,12 +38,24 @@ function legacyOpen(item){
  if(canOpenLesson()&&typeof window.liCatalog?.openCourse==="function")
   window.liCatalog.openCourse(item.group,item.field,item.course);
 }
+function sourceLink(url,text){
+ if(typeof url!=="string"||!url.startsWith("https://"))return null;
+ const a=document.createElement("a");
+ a.href=url;a.target="_blank";a.rel="noopener noreferrer";
+ a.textContent=text;
+ return a;
+}
 function legacyRow(item){
+ const row=document.createElement("div");
  const b=document.createElement("button");b.type="button";b.className="branch";b.dataset.searchResult=item.id;
  const title=document.createElement("strong");title.textContent=item.title;
  const meta=document.createElement("span");meta.className="small";
  meta.textContent=(item.type==="course"?"Môn học":item.published?"Bài có thể học":"Bài đang biên soạn")+" · "+item.id+" · "+item.context;
- b.append(title,meta);b.addEventListener("click",()=>legacyOpen(item));return b;
+ b.append(title,meta);b.addEventListener("click",()=>legacyOpen(item));row.append(b);
+ // The graph pack may be unavailable offline. Always show the catalog provenance.
+ const source=sourceLink(item.sourceUrl,"Nguồn danh mục (Notion)");
+ if(source)row.append(source);
+ return row;
 }
 function legacyRender(value){
  const q=clean(value);
@@ -73,32 +85,34 @@ function graphRelations(record){
  const rows=sourceAPI.relatedReviewed(sourceIndex,record.id)
   .filter(r=>r.kind==="Field"||r.publishState==="catalog_published");
  if(!rows.length)return null;
- const details=document.createElement("details");
- const summary=document.createElement("summary");
- summary.textContent="Kiến thức liên quan · "+rows.length+" quan hệ có nguồn";
- details.append(summary);
+ // Source belongs alongside the relationship itself, not in collapsed <details>.
+ const related=document.createElement("div");
+ related.className="li-search-related";
+ const intro=document.createElement("p");
+ intro.className="small";
+ intro.textContent="Quan hệ phân loại đã đối chiếu · "+rows.length+" · không phải điều kiện tiên quyết";
+ related.append(intro);
  for(const relation of rows){
   const block=document.createElement("div");
+  block.className="li-search-relation";
   const label=document.createElement("span");label.className="small";
   label.textContent=(relation.relationship==="SCOPED_TO_FIELD"?
    (relation.direction==="outgoing"?"Thuộc lĩnh vực: ":"Bài trong lĩnh vực: "):
    "Liên hệ đã kiểm chứng: ")+relation.title+" · "+relation.id;
   block.append(label,document.createTextNode(" "));
+  // This is the editorial SOURCE FOR THE RELATION, not an academic citation of lesson content.
+  const evidence=sourceLink(relation.provenance?.sourceUrl,"Nguồn quan hệ (Notion)");
+  if(evidence)block.append(evidence);
   if(relation.route){
    const go=document.createElement("button");go.type="button";go.className="action alt";
    go.textContent="Mở bài";go.addEventListener("click",()=>{
     const target=sourceIndex.records.get(relation.id);if(target)openRealLesson(target);
    });
-   block.append(go,document.createTextNode(" "));
+   block.append(document.createTextNode(" "),go);
   }
-  if(relation.provenance?.sourceUrl?.startsWith("https://")){
-   const a=document.createElement("a");a.href=relation.provenance.sourceUrl;
-   a.target="_blank";a.rel="noopener noreferrer";a.textContent="Nguồn liên kết";
-   block.append(a);
-  }
-  details.append(block);
+  related.append(block);
  }
- return details;
+ return related;
 }
 function renderReal(value){
  output.replaceChildren();
@@ -116,18 +130,20 @@ function renderReal(value){
  output.append(count);
  for(const record of matches.results){
   const row=document.createElement("div");
-  const button=document.createElement("button");
-  button.type="button";button.className="branch";button.dataset.searchResult=record.lessonId||record.id;
+  const button=document.createElement(record.kind==="Lesson"?"button":"div");
+  if(record.kind==="Lesson")button.type="button";
+  button.className="branch";button.dataset.searchResult=record.lessonId||record.id;
   const title=document.createElement("strong");title.textContent=record.title;
   const meta=document.createElement("span");meta.className="small";
   meta.textContent=(record.kind==="Lesson"?"Bài đã phát hành":record.kind==="Field"?"Lĩnh vực đã đối chiếu":"Kiến thức tham khảo")+
    " · "+(record.lessonId||record.id)+" · "+record.context;
   button.append(title,meta);
   if(record.kind==="Lesson")button.addEventListener("click",()=>openRealLesson(record));
-  else button.addEventListener("click",()=>{const details=row.querySelector("details");if(details)details.open=!details.open;});
   row.append(button);
   const related=graphRelations(record);
   if(related)row.append(related);
+  const catalogSource=sourceLink(record.sourceUrl,"Nguồn danh mục (Notion)");
+  if(catalogSource)row.append(catalogSource);
   output.append(row);
  }
 }

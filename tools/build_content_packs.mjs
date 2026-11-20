@@ -199,8 +199,10 @@ const compiled=compileContent(lessons,load("content/graph/concepts.json"),load("
 const courseLevels=load("content/curriculum/course-levels.v1.json");
 const legacyCourses=load("content/curriculum/legacy-catalog.v1.json");
 const researchCandidates=load("content/curriculum/research-candidates.v0.1.json");
-const legacySource=JSON.parse(read("site/assets/catalog-curriculum-data.js").split("window.LI_CATALOG_DATA=")[1].trim().replace(/;$/,""));
-if(JSON.stringify(legacySource)!==JSON.stringify(legacyCourses.groups))throw Error("LI_COURSE_CATALOG_DRIFT: legacy navigation changed");
+const canonicalLegacyHeader="/* Canonical S36 Notion roadmap: metadata only, NOT unpublished instructional content.\n   8 groups / 15 fields / 45 candidate courses / 135 candidate lesson titles.\n   Only the explicitly published Wave1 routes are marked published. */\n";
+// Keep the existing native Tàng Thư/search app reading an exact generated copy of the
+// GitHub canonical four-layer tree; no new renderer, site URL or content fork.
+compiled["site/assets/catalog-curriculum-data.js"]=canonicalLegacyHeader+"window.LI_CATALOG_DATA="+JSON.stringify(legacyCourses.groups,null,2)+";\n";
 const levelMap=new Map();
 const allLevels=new Set();
 for(const level of courseLevels.levels){
@@ -224,7 +226,7 @@ compiled["site/content-packs/course-levels.json"]={schemaVersion:courseLevels.sc
 
 const check=process.argv.includes("--check");
 for(const [path,value] of Object.entries(compiled)){
- const payload=JSON.stringify(value,null,2)+"\n";
+ const payload=path.endsWith(".js")?value:JSON.stringify(value,null,2)+"\n";
  if(check){if(read(path)!==payload)throw Error("LI_CONTENT_PACK_STALE: "+path+"; run node tools/build_content_packs.mjs");}
  else{mkdirSync(dirname(resolve(root,path)),{recursive:true});writeFileSync(resolve(root,path),payload);}
 }

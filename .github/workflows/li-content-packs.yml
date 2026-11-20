@@ -6,6 +6,7 @@ on:
       - 'tools/build_content_packs.mjs'
       - 'tools/test_content_adapter.mjs'
       - 'site/assets/li-content-adapter.mjs'
+      - 'site/assets/catalog-curriculum-data.js'
       - 'site/content-packs/**'
       - '.github/workflows/li-content-packs.yml'
 permissions:
@@ -22,3 +23,4 @@ jobs:
       - run: |
           node tools/build_content_packs.mjs --check
           node tools/test_content_adapter.mjs
+          node tools/test_catalog_drilldown.cjs

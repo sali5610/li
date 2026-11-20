@@ -1,6 +1,7 @@
 import {openRoute} from './app-router.js';
 import {releasedLessonRoutes,personalStudyRoute,personalStudyLessonIds} from '../learning/released-lessons.js';
 import {inquiryFlow} from './inquiry-port.js';
+import {useDiscoveryLocale,localized} from './discovery-locale.js';
 import type {MirrorView} from './inquiry-port.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
@@ -39,15 +40,7 @@ const canOpenLesson=(lesson:Lesson)=>!!personalStudyRoute(lesson.id)||
  (lesson.published===true&&typeof lesson.route==='string'&&
  releasedRoutes.get(lesson.id)===lesson.route);
 
-function useLocale():Locale{
- const [locale,setLocale]=useState<Locale>(app.liLanguage?.get()==='en'?'en':'vi');
- useEffect(()=>{
-  const update=()=>setLocale(app.liLanguage?.get()==='en'?'en':'vi');
-  window.addEventListener('li:localechange',update);
-  return ()=>window.removeEventListener('li:localechange',update);
- },[]);
- return locale;
-}
+function useLocale():Locale{return useDiscoveryLocale();}
 function useCatalogPath(){
  const [path,setPath]=useState<string[]>(()=>app.liCatalog?.getPath()||
   (new URL(location.href).searchParams.get('catalog')||'').split('/').filter(Boolean));
@@ -254,6 +247,8 @@ function readMirror():MirrorView{
  return inquiryFlow().getMirror()||mirrorFallback;
 }
 function Home(){
+ const locale=useLocale();
+ const L=(vi:string,en:string)=>localized(locale,vi,en);
  const reduced=useReducedMotion();
  const [mirror,setMirror]=useState<MirrorView>(readMirror);
  const gesture=useRef<{x:number;y:number}|null>(null);
@@ -291,7 +286,7 @@ function Home(){
   scene.current?.style.setProperty('--li-home-depth-y','0px');
  };
  return <div ref={scene} data-li-react-screen="home" data-li-motion={reduced?'reduced':'full'}
-  className="hero" role="region" aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn"
+  className="hero" role="region" aria-label={L("Cảnh thư viện cổ thụ và Gương Vạn Vấn","Ancient library and the Mirror of Questions")}
   onPointerMove={moveBackdrop} onPointerLeave={resetBackdrop}>
   <div className="li-home-ambient" aria-hidden="true">
    <span className="li-home-ambient-glow"/>
@@ -304,11 +299,11 @@ function Home(){
    initial={reduced?false:{opacity:0,y:9}} animate={{opacity:1,y:0}}
    transition={{duration:reduced?0:.5,ease:'easeOut'}}>
    <Button variant="primary" className="home-checkin" onClick={()=>window.dispatchEvent(new CustomEvent('li:open-checkin',{detail:{triggerId:'li-react-home-host'}}))}>
-    <LiIcon name="check" size={18}/> Check-in hôm nay
+    <LiIcon name="check" size={18}/> {L("Check-in hôm nay","Today’s check-in")}
    </Button>
-   <Heading level={1} role="headline">Mọi câu hỏi<br/>đều có rễ.</Heading>
-   <Text role="body">Không cần biết tất cả. Chỉ cần không ngừng tò mò.</Text>
-   <span className="tiny-note">Một câu hỏi, muôn ngả đường</span>
+   <Heading level={1} role="headline">{locale==='vi'?<>Mọi câu hỏi<br/>đều có rễ.</>:<>Every question<br/>has roots.</>}</Heading>
+   <Text role="body">{L("Không cần biết tất cả. Chỉ cần không ngừng tò mò.","You needn’t know everything. Just stay curious.")}</Text>
+   <span className="tiny-note">{L("Một câu hỏi, muôn ngả đường","One question, countless paths")}</span>
   </motion.div>
   <div className="mirror-message" data-li-mirror-topic={mirror.fieldId||"none"}
    data-li-mirror-image={mirrorImage?"mapped":"unmapped"}
@@ -342,20 +337,20 @@ function Home(){
     <div aria-live="polite" aria-atomic="true">
      <Heading level={2} role="titleMedium">{mirror.question}</Heading>
     </div>
-    <div className="mirror-controls" role="group" aria-label="Chuyển câu hỏi">
+    <div className="mirror-controls" role="group" aria-label={L("Chuyển câu hỏi","Switch questions")}>
      <Button variant="ghost" className="mirror-refresh"
-      aria-label="Câu hỏi trước" onClick={()=>shift(-1)}>
+      aria-label={L("Câu hỏi trước","Previous question")} onClick={()=>shift(-1)}>
       <LiIcon name="chevron-left" size={20}/>
      </Button>
      <Button variant="ghost" className="mirror-refresh"
-      aria-label="Câu hỏi tiếp theo" onClick={()=>shift(1)}>
+      aria-label={L("Câu hỏi tiếp theo","Next question")} onClick={()=>shift(1)}>
       <LiIcon name="chevron-right" size={20}/>
      </Button>
     </div>
    </motion.div>
    </div>
   </div>
-  <motion.aside className="hero-dialogue" aria-label="Lão Lý kể bối cảnh câu hỏi"
+  <motion.aside className="hero-dialogue" aria-label={L("Lão Lý kể bối cảnh câu hỏi","Lao Ly explains the question’s context")}
    initial={reduced?false:{opacity:0}} animate={{opacity:1}}
    transition={{duration:reduced?0:.52,delay:reduced?0:.14}}>
    <span className="hero-dialogue-avatar" aria-hidden="true">
@@ -370,15 +365,15 @@ function Home(){
   </motion.aside>
   <div className="hero-actions">
    <Button variant="primary" className="primary" onClick={()=>openRoute(mirror.route)}
-    aria-label={mirror.route.startsWith('lessonL')?'Khám phá vì sao · Mở bài học liên quan':'Đào sâu · Mở Khảo Chứng'}>
+    aria-label={mirror.route.startsWith('lessonL')?L('Khám phá vì sao · Mở bài học liên quan','Explore why · Open related lesson'):L('Đào sâu · Mở Khảo Chứng','Investigate · Open research')}>
     <span className="action-icon"><LiIcon name="arrow-right" size={22}/></span>
-    <span>{mirror.cta}</span>
+    <span>{locale==='en'?L("Đào sâu","Explore why"):mirror.cta}</span>
    </Button>
    <Button variant="primary" className="primary mirror-save-action"
-    aria-label={mirror.saved?'Bỏ lưu câu hỏi':'Lưu câu hỏi'} aria-pressed={mirror.saved}
+    aria-label={mirror.saved?L('Bỏ lưu câu hỏi','Remove saved question'):L('Lưu câu hỏi','Save question')} aria-pressed={mirror.saved}
     onClick={()=>inquiryFlow().toggleQuestion()}>
     <span className="action-icon"><LiIcon name="bookmark" size={22}/></span>
-    <span>{mirror.saved?'Đã lưu':'Lưu câu hỏi'}</span>
+    <span>{mirror.saved?L('Đã lưu','Saved'):L('Lưu câu hỏi','Save question')}</span>
    </Button>
   </div>
  </div>;
@@ -388,7 +383,7 @@ export function mountHomeAndCatalog(){
  const catalog=document.getElementById('page-catalog');
  const oldHome=homeLegacy();
  const oldCatalog=catalog?.querySelector<HTMLElement>(':scope > .section-shell');
- if(!home||!catalog||!oldHome||!oldCatalog||!app.liCatalog||!window.liInquiryFlow){
+ if(!home||!catalog||!app.liCatalog||!window.liInquiryFlow){
   throw Error('REACT_HOME_CATALOG_PORTS_REQUIRED');
  }
  // Avoid constructing learner-specific Home bookmarks and course progress in
@@ -405,22 +400,24 @@ export function mountHomeAndCatalog(){
    const homeRoot=createRoot(homeHost),catalogRoot=createRoot(catalogHost);
    app.liReactCatalogMounted=true;
    homeRoot.render(<Home/>);catalogRoot.render(<Catalog/>);
-   oldHome.hidden=true;oldHome.style.display='none';
-   oldCatalog.hidden=true;oldCatalog.style.display='none';
+   if(oldHome){oldHome.hidden=true;oldHome.style.display='none';}
+   if(oldCatalog){oldCatalog.hidden=true;oldCatalog.style.display='none';}
    dispose=()=>{
     app.liReactCatalogMounted=false;
     homeRoot.unmount();catalogRoot.unmount();homeHost.remove();catalogHost.remove();
     // Refresh the old fallback ONCE on unmount instead of each React path change.
     app.liCatalog?.render();
-    oldHome.hidden=false;oldHome.style.removeProperty('display');
-    oldCatalog.hidden=false;oldCatalog.style.removeProperty('display');
+    if(oldHome){oldHome.hidden=false;oldHome.style.removeProperty('display');}
+    if(oldCatalog){oldCatalog.hidden=false;oldCatalog.style.removeProperty('display');}
    };
   }else if(!allowed&&dispose){
    dispose();dispose=null;
   }
  };
- const observer=new MutationObserver(update);
- observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+ window.addEventListener('li:auth-verified-changed',update);
  update();
- return ()=>{observer.disconnect();dispose?.();};
+ return ()=>{window.removeEventListener('li:auth-verified-changed',update);dispose?.();};
 }
+
+// Direct React screens for the global shell owner to mount without legacy HTML.
+export {Home as HomeScreen,Catalog as CatalogScreen};

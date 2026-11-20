@@ -182,3 +182,41 @@
  #li-react-catalog-host .catalog-lesson-card{flex-wrap:wrap}
  #li-react-catalog-host .catalog-lesson-card>.li-ds-button{margin-left:54px}
 }
+/* Search connection map: edges only from the canonical ontology response. */
+#li-react-search-host .li-knowledge-graph{
+ border:1px solid var(--line,var(--li-border,#b8c2bb));
+ border-radius:var(--li-radius-lg,16px);
+ padding:var(--li-space-4,16px);
+ margin:var(--li-space-3,12px) 0;
+}
+#li-react-search-host .li-knowledge-graph-root{
+ display:inline-block;max-width:100%;
+ border-radius:12px;padding:12px 16px;
+ background:var(--forest,#2d5145);color:#f6f5ee;
+ font-weight:650;overflow-wrap:anywhere;
+}
+#li-react-search-host .li-knowledge-graph-edges{
+ border-left:2px solid var(--forest,#2d5145);
+ padding:10px 0 0 18px;margin-left:16px;
+ display:flex;flex-wrap:wrap;gap:12px;
+}
+#li-react-search-host .li-knowledge-graph-edge{position:relative;min-width:0;max-width:100%}
+#li-react-search-host .li-knowledge-graph-connector{
+ position:absolute;left:-18px;top:24px;width:18px;height:2px;
+ background:var(--forest,#2d5145);pointer-events:none;
+}
+#li-react-search-host .li-knowledge-graph-node,
+#li-react-search-host .li-knowledge-graph-edge .li-ds-button{
+ display:flex;flex-direction:column;align-items:flex-start;
+ min-width:150px;max-width:250px;white-space:normal;
+ overflow-wrap:anywhere;text-align:left;gap:4px;
+}
+#li-react-search-host .li-knowledge-graph-node{
+ padding:12px;border-radius:10px;background:var(--surface,#eeeae0);
+}
+#li-react-search-host .li-knowledge-graph-kind{font-size:.78em;opacity:.78}
+@media(max-width:600px){
+ #li-react-search-host .li-knowledge-graph-edges{flex-direction:column}
+ #li-react-search-host .li-knowledge-graph-edge .li-ds-button,
+ #li-react-search-host .li-knowledge-graph-node{width:100%;max-width:100%}
+}

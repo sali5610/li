@@ -196,6 +196,8 @@ async function hydrate(uid:string,snapshots:Snapshot[],retry:()=>void):Promise<b
 export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):()=>void{
  if(!IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN||!uid.trim())throw new Error('UNTRUSTED_ORIGIN');
  let disposed=false,busy=false,pending=false,timer:ReturnType<typeof setTimeout>|null=null;
+ let transientRetries=0;
+ const retryDelays=[5000,15000,30000] as const;
  let finish!:()=>void;
  const ready=new Promise<void>(resolve=>{finish=resolve;});
  const current:ActiveSync={uid,ready,finish,last:'checking',settled:false};
@@ -209,6 +211,16 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
   if(disposed)return;
   if(timer!==null)clearTimeout(timer);
   timer=setTimeout(()=>{timer=null;void run();},850);
+ }
+ /** Free-tier-safe bounded retry for temporary Data API/network failures.
+  * Real edits, app focus, or coming back online also start a fresh attempt.
+  * Revoked invites and expired sessions are not retried automatically.
+  */
+ function retryTransient(){
+  if(disposed||!navigator.onLine||transientRetries>=retryDelays.length)return;
+  const wait=retryDelays[transientRetries++];
+  if(timer!==null)clearTimeout(timer);
+  timer=setTimeout(()=>{timer=null;void run();},wait);
  }
  async function run(){
   if(disposed)return;
@@ -238,7 +250,11 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
     report('error');
     return;
    }
-   if(result.mode==='offline'||result.mode==='pending'){report(result.mode==='pending'?'queued':'offline');return;}
+   if(result.mode==='offline'||result.mode==='pending'){
+    report(result.mode==='pending'?'queued':'offline');
+    retryTransient();
+    return;
+   }
    if(result.mode==='conflict'){report('conflict');return;}
    // The signed Data API has returned the uploaded row and read all owner rows.
    // Verify actual lesson readback, not merely a successful POST status.
@@ -259,13 +275,15 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
    if(state.conflicts)report('conflict');
    else if(state.pending)report('queued');
    else report((await store.accountRecords(uid)).some(x=>x.itemType==='lesson_attempt')?'saved':'empty');
+   transientRetries=0;
    if(changed&&!disposed)window.location.reload();
   }catch(error){
    const code=error instanceof Error?error.message:'';
-   if(code==='INVITE_REVOKED'||code==='SESSION_CHANGED'||code==='ACCOUNT_CHANGED'||
-      /^NEON_AUTH_|^INVITE_CHECK_HTTP_40[13]$|^NEON_DATA_API_HTTP_40[13]$/.test(code))
-    window.dispatchEvent(new Event('li:auth-recheck'));
+   const authorizationFailure=code==='INVITE_REVOKED'||code==='SESSION_CHANGED'||
+    code==='ACCOUNT_CHANGED'||/^NEON_AUTH_|^INVITE_CHECK_HTTP_40[13]$|^NEON_DATA_API_HTTP_40[13]$/.test(code);
+   if(authorizationFailure)window.dispatchEvent(new Event('li:auth-recheck'));
    report(navigator.onLine?'error':'offline');
+   if(!authorizationFailure)retryTransient();
   }finally{
    busy=false;
    if(!current.settled){current.settled=true;current.finish();}

@@ -104,7 +104,8 @@ function snapshot(key:string):{raw:string|null;attempt:Attempt}{
   return {raw,attempt:state};
  }
  if(raw.length>60000)throw Error('LEARNING_RECORD_TOO_LARGE');
- const data:unknown=JSON.parse(raw);
+ let data:unknown;
+ try{data=JSON.parse(raw);}catch{throw Error('INVALID_ATTEMPT');}
  if(!data||typeof data!=='object'||Array.isArray(data))throw Error('INVALID_ATTEMPT');
  const attempt={...initial(),...data} as Attempt;
  if(!valid(attempt))throw Error('INVALID_ATTEMPT');

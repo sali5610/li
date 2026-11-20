@@ -61,6 +61,14 @@ assert.match(fab,/id="laoly-current-icon"/,'Keep study-mode artwork identity');
 assert.match(fab,/laoly-face smallface/,'Keep approved visual asset geometry');
 assert.match(fab,/li\.companion\.position\.v1/,'No incompatible saved position key');
 assert.match(fab,/liCompanionDrag=port/,'Replace native position port with one React owner');
+assert.match(fab,/getAvatar:\(\)=>avatarSource\.current/,
+ 'React avatar exposes its live asset through the existing companion port');
+assert.match(plans,/window\.liCompanionDrag\?\.getAvatar\?\.\(\)/,
+ 'React mentor view reads avatar state, not a hidden native image');
+assert.match(dialog,/app\.liCompanionDrag\?\.getAvatar\?\.\(\)/,
+ 'Visible mentor dialog reacts to the live React avatar');
+assert.doesNotMatch(dialog,/getElementById\('laoly-current-icon'\)/,
+ 'Do not query the rendered React image to update the dialog');
 assert.match(fab,/app\.openLaoLy\?\.\(event\.currentTarget\)/,
  'Avatar opens original contextual Lao Ly engine, not a hidden-button click');
 assert.match(fab,/Math\.hypot\(dx,dy\)<7/,

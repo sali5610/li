@@ -56,7 +56,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  },[phaseActor]);
  const phase=useSyncExternalStore(subscribePhase,
   ()=>phaseActor.getSnapshot().value as Phase);
- useEffect(()=>()=>phaseActor.stop(),[phaseActor]);
+ useEffect(()=>()=>{phaseActor.stop();},[phaseActor]);
  useEffect(()=>{
   appUiStore.getState().setLessonPhase(phase);
   window.dispatchEvent(new Event('li:lesson-phase-changed'));

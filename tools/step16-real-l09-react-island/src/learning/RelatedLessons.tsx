@@ -53,14 +53,15 @@ export function RelatedLessons({id,locale}:{id:LessonId;locale:Locale}){
    if(!client?.getRelatedLessons||!client.graph)throw Error('CONTENT_GRAPH_MISSING');
    const [related,graph]=await Promise.all([client.getRelatedLessons(id),client.graph()]);
    if(!active)return;
-   const nodes=new Map(graph.nodes.filter(x=>x.kind==='Concept').map(x=>[x.id,x]));
+   const nodes=new Map<string,GraphNode>(
+    graph.nodes.filter(x=>x.kind==='Concept').map(x=>[x.id,x] as const));
    setItems(related.map(x=>approved(x,nodes,locale)).filter((x):x is Link=>!!x));
   }).catch(()=>{if(active)setItems([]);});
   return()=>{active=false;};
  },[id,locale]);
  if(items.length===0)return null;
  const vi=locale==='vi';
- return <section className="li-react-related-lessons" aria-labelledby={'li-related-'+id}>
+ return <section className="li-related-lessons li-react-related-lessons" aria-labelledby={'li-related-'+id}>
   <Card variant="raised">
    <div className="kicker">{vi?'KẾT NỐI KIẾN THỨC':'CONNECTED LEARNING'}</div>
    <Heading level={2} role="titleLarge" id={'li-related-'+id}>

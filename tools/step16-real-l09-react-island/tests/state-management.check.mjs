@@ -256,3 +256,102 @@ test('T12 restart clears its session cue; switching technique cannot leak progre
  assert.equal(flow.getSnapshot(),'capture','no progress without verified cue');
  flow.stop();fresh.stop();
 });
+
+
+import {createStandardSpellFlow,STANDARD_SPELL_IDS,standardSpellPhase
+} from '../.state-test/shell/spell-standard-flow.js';
+
+function makeStandardPort(id){
+ const mode=id==='T01'?'hide':id==='T02'?'due':'direct';
+ let view={active:id,mode,phase:0,dueAt:null,reviewedInSession:false,viewSession:1};
+ const calls=[];
+ return{
+  getView:()=>view,
+  calls,
+  perform:(action,answers={})=>{
+   calls.push(action);
+   if(action==='reset')view={...view,phase:0,dueAt:null,reviewedInSession:false,
+    viewSession:view.viewSession+1};
+   else if(action==='next'&&mode==='hide'&&view.phase===0)
+    view={...view,phase:1};
+   else if(action==='schedule'&&mode==='due'&&view.phase===0)
+    view={...view,dueAt:Date.now()+86400000};
+   else if(action==='clear'&&mode==='due'&&view.phase===0)
+    view={...view,dueAt:null};
+   else if(action==='check'&&answers.answer==='ready'&&
+     (mode==='direct'||view.phase===1))
+    view={...view,reviewedInSession:true};
+   return true; // native checker can accept action but report missing fields
+  },
+  patch:delta=>{view={...view,...delta};}
+ };
+}
+test('all ten remaining spells use one XState gate; no invalid feedback unlocks review',()=>{
+ assert.deepEqual([...STANDARD_SPELL_IDS],[
+  'T01','T02','T04','T05','T06','T07','T08','T09','T10','T11'
+ ]);
+ const specialised=['T03','T12','T13'];
+ assert.equal(new Set([...STANDARD_SPELL_IDS,...specialised]).size,13);
+ for(const id of STANDARD_SPELL_IDS){
+  const port=makeStandardPort(id),flow=createStandardSpellFlow();
+  flow.sync(port.getView());
+  assert.equal(flow.getSnapshot(),'prepare',id+' initially preparing');
+  assert.equal(flow.isCurrent(port.getView()),true);
+  if(id==='T01'){
+   assert.equal(flow.execute('check',{answer:'ready'},port),false,
+    'active recall cannot reveal model answer before hiding source');
+   assert.deepEqual(port.calls,[]);
+   assert.equal(flow.execute('next',{},port),true);
+   assert.equal(flow.getSnapshot(),'recall');
+   assert.equal(standardSpellPhase(flow.getSnapshot(),'hide'),1);
+  }else if(id==='T02'){
+   assert.equal(flow.execute('check',{answer:'ready'},port),false,'no early review');
+   assert.equal(flow.execute('schedule',{},port),true);
+   assert.equal(flow.getSnapshot(),'scheduled');
+   assert.equal(flow.execute('check',{answer:'ready'},port),false,
+    'scheduling is NOT a completed review');
+   assert.equal(flow.execute('clear',{},port),true);
+   assert.equal(flow.getSnapshot(),'prepare');
+   assert.equal(flow.execute('schedule',{},port),true);
+   port.patch({phase:1,dueAt:Date.now()-1000}); // real due gate observed
+   flow.sync(port.getView());
+   assert.equal(flow.getSnapshot(),'recall');
+   assert.equal(standardSpellPhase(flow.getSnapshot(),'due'),1);
+  }else{
+   assert.equal(standardSpellPhase(flow.getSnapshot(),'direct'),0);
+   assert.equal(flow.execute('next',{},port),false,'direct exercise cannot skip prep');
+  }
+  assert.equal(flow.execute('check',{answer:''},port),true,id+' can show missing-field feedback');
+  assert.equal(flow.getSnapshot(),id==='T01'||id==='T02'?'recall':'prepare',
+   id+' stays blocked until the checker confirms the response');
+  assert.equal(flow.execute('check',{answer:'ready'},port),true);
+  assert.equal(flow.getSnapshot(),'reviewed',id+' real self-check unlocks review');
+  assert.equal(flow.execute('check',{answer:'ready'},port),true,'repeat feedback remains available');
+  assert.equal(flow.execute('reset',{},port),true,id+' restart is a real native action');
+  assert.equal(flow.getSnapshot(),'prepare',id+' cleared after restart');
+  assert.equal(port.getView().viewSession,2);
+  flow.stop();
+ }
+});
+test('generic XState actors isolate technique and session; never hydrate another method',()=>{
+ const port=makeStandardPort('T01'),flow=createStandardSpellFlow();
+ flow.sync(port.getView());
+ assert.equal(flow.execute('next',{},port),true);
+ const remount=createStandardSpellFlow();
+ remount.sync(port.getView());
+ assert.equal(remount.getSnapshot(),'recall','hydrate only verified native phase');
+ port.patch({active:'T04',mode:'direct',viewSession:2,phase:0});
+ flow.sync(port.getView());
+ assert.equal(flow.getSnapshot(),'prepare');
+ assert.equal(flow.execute('next',{},port),false,'old T01 stage cannot carry into T04');
+ assert.equal(flow.execute('check',{answer:'ready'},port),true);
+ assert.equal(flow.getSnapshot(),'reviewed');
+ port.patch({active:'T12',viewSession:3,phase:1,reviewedInSession:true});
+ flow.sync(port.getView());
+ assert.equal(flow.isCurrent(port.getView()),false,'specialised T12 cannot enter generic machine');
+ assert.equal(flow.execute('check',{answer:'ready'},port),false);
+ port.patch({active:'T01',mode:'hide',viewSession:4,phase:0,reviewedInSession:false});
+ flow.sync(port.getView());
+ assert.equal(flow.getSnapshot(),'prepare');
+ remount.stop();flow.stop();
+});

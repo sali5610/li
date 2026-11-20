@@ -320,8 +320,7 @@
     "feedbackAfterSubmission": true,
     "rubricKey": "rubricItems",
     "questionsKey": "questions",
-    "answerKey": "answer",
-    "questionFeedbackModes": ["open","open","open","open"]
+    "answerKey": "answer"
   },
   "sources": [
     {

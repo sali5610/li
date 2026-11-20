@@ -39,7 +39,7 @@ function Example(){
   <p className="li-ds-template-message">{t('Chỉ là điều hướng mẫu, không đổi route thật.','Example only, no app routing.')} {locale}</p>
  </div>;
  if(story==='homeMirror')return <HomeMirrorShell
-  artwork={<img src="../assets/home-li-ipad-20261119.jpg" alt="" />}
+  artwork={<img src="../assets/home-li-landscape-20261121.webp" alt="" />}
   artworkLabel={t('Ảnh nền đã lưu trong app li.','Existing li. artwork')}
   title={t('Một câu hỏi để bắt đầu','A question to begin')}
   question={t('Hôm nay mày muốn khám phá điều gì?','What will you explore today?')}

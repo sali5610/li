@@ -1,7 +1,6 @@
 {
   "schema": "li-visual-assets-index-v1",
-  "date": "2026-11-19",
-  "audited_main_sha": "c2e91520b2597d2c05356affe272827ead97663a",
+  "date": "2026-11-21",
   "purpose": "Asset-file custody/audit, not a statement of PO visual approval or original editable artwork source.",
   "authorities": {
     "decisions": "Notion Hub and UI Illustration Asset Library",
@@ -24,40 +23,20 @@
   "file_based_runtime_snapshot": {
     "records": [
       {
-        "name": "home-li-iphone-20261119.jpg",
+        "name": "home-li-landscape-20261121.webp",
         "family": "home",
-        "canonical": "design-assets/home/home-li-iphone-20261119.jpg",
-        "app": "site/assets/home-li-iphone-20261119.jpg",
-        "git_blob_sha": "07b7aa3b2502a93f77d8e037b7ff35e2ea5c6ace",
-        "bytes": 454411,
-        "status": "deployed file snapshot; editable upstream source not confirmed"
+        "canonical": "design-assets/home/home-li-landscape-20261121.webp",
+        "app": "site/assets/home-li-landscape-20261121.webp",
+        "git_blob_sha": "8791df23defddad10a19e47d88b742c4aafce54c",
+        "status": "new artwork; staging release not yet verified"
       },
       {
-        "name": "home-li-ipad-20261119.jpg",
+        "name": "home-li-iphone-20261121.webp",
         "family": "home",
-        "canonical": "design-assets/home/home-li-ipad-20261119.jpg",
-        "app": "site/assets/home-li-ipad-20261119.jpg",
-        "git_blob_sha": "d157c3881fc3c811e7e8db7d848dd7bdd1ba7ac0",
-        "bytes": 7906192,
-        "status": "deployed file snapshot; editable upstream source not confirmed"
-      },
-      {
-        "name": "home-mystic-cool-desktop.webp",
-        "family": "home",
-        "canonical": "design-assets/home/home-mystic-cool-desktop.webp",
-        "app": "site/assets/home-mystic-cool-desktop.webp",
-        "git_blob_sha": "6a5083fbba0742a29ff2a32c9c6cbe2ee946b3de",
-        "bytes": 199610,
-        "status": "deployed file snapshot; editable upstream source not confirmed"
-      },
-      {
-        "name": "home-mystic-cool-mobile.webp",
-        "family": "home",
-        "canonical": "design-assets/home/home-mystic-cool-mobile.webp",
-        "app": "site/assets/home-mystic-cool-mobile.webp",
-        "git_blob_sha": "b528fd92cc9d8d26cb50916870bb5b144cf69b1d",
-        "bytes": 232424,
-        "status": "deployed file snapshot; editable upstream source not confirmed"
+        "canonical": "design-assets/home/home-li-iphone-20261121.webp",
+        "app": "site/assets/home-li-iphone-20261121.webp",
+        "git_blob_sha": "3e8e60fea09c3be78e3c254862f97fed5b35ffca",
+        "status": "new artwork; staging release not yet verified"
       },
       {
         "name": "apple-touch-icon.png",
@@ -87,22 +66,20 @@
         "status": "deployed file snapshot; editable upstream source not confirmed"
       }
     ],
-    "canonical_count": 7,
-    "home_backgrounds": 4,
+    "canonical_count": 5,
+    "home_backgrounds": 2,
     "brand_files": 3
   },
   "embedded_css_images": {
     "owner": "site/assets/li-layout.css",
     "variables": [
-      "--hero-mobile-url",
-      "--hero-url",
       "--shelf-url",
       "--book-url",
       "--roots-url",
       "--wood-url"
     ],
-    "count": 6,
-    "status": "Git-tracked as CSS base64 data only; NOT independent versioned image files; source originals unresolved",
+    "count": 4,
+    "status": "four unchanged legacy non-Home images",
     "action": "extract to design-assets/ after review without changing illustration pixels"
   },
   "missing_or_unverified_asset_sets": [
@@ -117,14 +94,77 @@
       },
       "source": "Notion UI Illustration Asset Library",
       "status": "Not confirmed uploaded to GitHub or Notion as individually managed PNG files; not deployed; do NOT mark shipped"
-    },
-    {
-      "family": "Individual discipline backgrounds",
-      "expected_disciplines": 15,
-      "source": "Notion UI Illustration Asset Library",
-      "status": "Multiple generated/review images absent from main; Chinese-language graded scene approved as image but upload/integration not verified, English v2 awaits approval; do NOT publish pending candidates"
     }
   ],
-  "total_separate_tracked_canonical_image_files": 24,
-  "total_is_not_all_proposed_artwork": true
+  "total_separate_tracked_canonical_image_files": 37,
+  "total_is_not_all_proposed_artwork": true,
+  "audit_basis": "GitHub staging source and user-supplied ZIP files",
+  "discipline_landscapes": {
+    "count": 15,
+    "canonical_dir": "design-assets/discipline/",
+    "app_dir": "site/assets/discipline/",
+    "fields": [
+      {
+        "field_id": "chinese",
+        "file": "chinese-language.webp"
+      },
+      {
+        "field_id": "english",
+        "file": "english-language.webp"
+      },
+      {
+        "field_id": "hci",
+        "file": "human-computer-interaction.webp"
+      },
+      {
+        "field_id": "backend",
+        "file": "backend-development.webp"
+      },
+      {
+        "field_id": "generative-ai",
+        "file": "artificial-intelligence.webp"
+      },
+      {
+        "field_id": "sociology",
+        "file": "sociology.webp"
+      },
+      {
+        "field_id": "anthropology",
+        "file": "anthropology.webp"
+      },
+      {
+        "field_id": "economics",
+        "file": "economics.webp"
+      },
+      {
+        "field_id": "data-science",
+        "file": "data-science.webp"
+      },
+      {
+        "field_id": "world-history",
+        "file": "world-history.webp"
+      },
+      {
+        "field_id": "neurodiversity-studies",
+        "file": "neurodiversity-studies.webp"
+      },
+      {
+        "field_id": "cognitive-psychology",
+        "file": "cognitive-psychology.webp"
+      },
+      {
+        "field_id": "behavioral-psychology",
+        "file": "behavioral-psychology.webp"
+      },
+      {
+        "field_id": "music-theory",
+        "file": "music-theory.webp"
+      },
+      {
+        "field_id": "supply-chain",
+        "file": "supply-chain-management.webp"
+      }
+    ],
+    "status": "uploaded; staging release and real-device acceptance separate"
+  }
 }

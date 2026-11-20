@@ -9,6 +9,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "chinese",
         "name": "Tiếng Trung",
+        "image": "./assets/discipline/chinese-language.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a8108bb0bd51df8ec47fa",
         "courses": [
           {
@@ -82,6 +83,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "english",
         "name": "Tiếng Anh",
+        "image": "./assets/discipline/english-language.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a814eb06ff4b759a43fbc",
         "courses": [
           {
@@ -161,6 +163,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "hci",
         "name": "Human–Computer Interaction (HCI)",
+        "image": "./assets/discipline/human-computer-interaction.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a816da4ebf6c66338f505",
         "courses": [
           {
@@ -235,6 +238,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "backend",
         "name": "Backend",
+        "image": "./assets/discipline/backend-development.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a8185946ae55e49169fe7",
         "courses": [
           {
@@ -308,6 +312,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "generative-ai",
         "name": "Generative AI",
+        "image": "./assets/discipline/artificial-intelligence.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a8196b87bfd951a856bd9",
         "courses": [
           {
@@ -387,6 +392,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "sociology",
         "name": "Xã hội học",
+        "image": "./assets/discipline/sociology.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a815da947e82061596336",
         "courses": [
           {
@@ -460,6 +466,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "anthropology",
         "name": "Nhân học",
+        "image": "./assets/discipline/anthropology.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a8105ba63e4c0f0a47961",
         "courses": [
           {
@@ -533,6 +540,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "economics",
         "name": "Kinh tế học",
+        "image": "./assets/discipline/economics.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a814aa832f892f223fe31",
         "courses": [
           {
@@ -612,6 +620,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "data-science",
         "name": "Data Science",
+        "image": "./assets/discipline/data-science.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a81e1b554fb8dba570b64",
         "courses": [
           {
@@ -692,6 +701,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "world-history",
         "name": "Lịch sử thế giới",
+        "image": "./assets/discipline/world-history.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a81a2a103f5eca455b9fb",
         "courses": [
           {
@@ -771,6 +781,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "neurodiversity-studies",
         "name": "Neurodiversity Studies",
+        "image": "./assets/discipline/neurodiversity-studies.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a814eba11ef40beeceec7",
         "courses": [
           {
@@ -844,6 +855,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "cognitive-psychology",
         "name": "Tâm lý học nhận thức",
+        "image": "./assets/discipline/cognitive-psychology.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a81dbaf20c4c6beac33c5",
         "courses": [
           {
@@ -917,6 +929,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "behavioral-psychology",
         "name": "Tâm lý học hành vi",
+        "image": "./assets/discipline/behavioral-psychology.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a81c68290ff90a4c3f43d",
         "courses": [
           {
@@ -996,6 +1009,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "music-theory",
         "name": "Lý thuyết âm nhạc",
+        "image": "./assets/discipline/music-theory.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a819fab87cd27a70f12b6",
         "courses": [
           {
@@ -1075,6 +1089,7 @@ window.LI_CATALOG_DATA=[
       {
         "id": "supply-chain",
         "name": "Supply Chain",
+        "image": "./assets/discipline/supply-chain-management.webp",
         "source": "https://app.notion.com/p/41a6cf6db72a81b08f1ced178fd8b17c",
         "courses": [
           {

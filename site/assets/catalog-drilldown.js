@@ -83,9 +83,9 @@ function breadcrumbs(){
   else action(nav,name,"crumb",String(i+1),"catalog-crumb");
  });
 }
-function shelfCard(root,title,meta,desc,target,value,index){
+function shelfCard(root,title,meta,desc,target,value,index,image){
  const card=el("article","catalog-card surface tinted",null,root);
- const mark=el("div","catalog-card-mark",String(index).padStart(2,"0"),card);mark.setAttribute("aria-hidden","true");
+ if(image){const img=el("img","catalog-card-art",null,card);img.src=image;img.alt="";img.loading="lazy";img.decoding="async";}else{const mark=el("div","catalog-card-mark",String(index).padStart(2,"0"),card);mark.setAttribute("aria-hidden","true");}
  el("div","kicker",meta,card);el("h2","",title,card);
  if(desc)el("p","small",desc,card);
  action(card,"Khám phá","open-"+target,value,"catalog-card-action action alt");
@@ -103,10 +103,11 @@ function renderRoot(){
 function renderGroup(g){
  header(g.title,"Chọn chuyên ngành để xem lộ trình các môn học.","NHÓM NGÀNH");
  const grid=el("div","catalog-field-grid",null,host);
- g.fields.forEach((f,i)=>shelfCard(grid,f.name,"CHUYÊN NGÀNH",f.courses.length+" môn học theo lộ trình", "field",f.id,i+1));
+ g.fields.forEach((f,i)=>shelfCard(grid,f.name,"CHUYÊN NGÀNH",f.courses.length+" môn học theo lộ trình", "field",f.id,i+1,f.image));
 }
 function renderField(f){
  header(f.name,"Các môn được sắp theo nền tảng → trung cấp → chuyên sâu. Thứ tự này là lộ trình đề xuất, không tự động khóa bài.","CHUYÊN NGÀNH");
+ if(f.image){const img=el("img","catalog-field-hero",null,host);img.src=f.image;img.alt="";img.loading="lazy";img.decoding="async";}
  const stack=el("div","catalog-roadmap",null,host);
  for(const [lev,local] of levels){
   const stage=el("section","catalog-level-band",null,stack);

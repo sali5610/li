@@ -137,3 +137,128 @@ assert.match(search,/if\(app\.liSearch===port\)delete app\.liSearch;/,
  "Unmounted Search must not leave an active global port");
 assert.match(locale,/li:localechange/);
 console.log("PASS React discovery parity: direct screen exports, auth events, live ontology and VI/EN");
+
+
+/* End-to-end scoped Case data contract: save from the real React snapshot
+ * while the old #page-case markup is ABSENT, then open that same stored
+ * record through the canonical React Bút Ký detail data owner.
+ * No credentials, production writes, alternate note store or browser UI. */
+const writerStart=html.indexOf("function liSubmitCaseAnswer(");
+const writerEnd=html.indexOf('\ndocument.getElementById("finish-case")',writerStart);
+assert(writerStart>=0&&writerEnd>writerStart,"Find canonical Case writer");
+const caseRecords=[],caseEvents=[],caseRoutes=[],messages=[],caseDraft=new Map();
+let caseWrites=0,caseCanWrite=true,caseNativeReads=0;
+let savedId=0;
+const reactCaseSnapshot={
+ id:"sampling-bias-90",question:"React visible question · only sample?",
+ scene:"React visible scenario · sampled customers",
+ options:[{key:"right",text:"React visible: only this sample"},
+  {key:"wrong",text:"React visible: everyone is satisfied"}],
+ selectedKey:"right",selectedText:"React visible: only this sample",
+ feedback:"React visible feedback: the sample is limited"
+};
+const writerSandbox={
+ document:{querySelector(selector){caseNativeReads++;throw Error("Hidden native DOM read: "+selector);}},
+ window:{
+  liReactRouter:{},liCaseUi:{getSnapshot:()=>reactCaseSnapshot},
+  localStorage:{getItem:key=>caseDraft.get(key)||null,
+   setItem:(key,value)=>caseDraft.set(key,value)},
+  dispatchEvent:event=>caseEvents.push(event.type)
+ },
+ LI_DRAFT_KEY:"li.private.case-draft.v1",processedCases:caseRecords,
+ liNewId:()=>("case-"+(++savedId)),
+ liWriteState:()=>{caseWrites++;return caseCanWrite;},
+ liCaseFeedback:choice=>"native feedback "+choice,
+ navigate:route=>caseRoutes.push(route),
+ toast:message=>messages.push(message),
+ Event:class{constructor(type){this.type=type;}},
+ CustomEvent:class{constructor(type,init){this.type=type;this.detail=init?.detail;}}
+};
+vm.createContext(writerSandbox);
+vm.runInContext(html.slice(writerStart,writerEnd),writerSandbox);
+caseDraft.set("li.private.case-draft.v1","Visible React draft");
+assert.equal(writerSandbox.liSubmitCaseAnswer("right","Visible conclusion has 12+ characters"),true);
+assert.equal(caseNativeReads,0,"React Case save must not query hidden native HTML");
+assert.equal(caseRecords.length,1);
+assert.equal(caseRecords[0].caseSnapshot.question,reactCaseSnapshot.question);
+assert.equal(caseRecords[0].caseSnapshot.scene,reactCaseSnapshot.scene);
+assert.equal(caseRecords[0].caseSnapshot.selectedKey,"right");
+assert.equal(caseRecords[0].caseSnapshot.selectedText,reactCaseSnapshot.selectedText);
+assert.equal(caseRecords[0].caseSnapshot.feedback,reactCaseSnapshot.feedback);
+assert.equal(caseRecords[0].caseSnapshot.options.length,2);
+assert.equal(caseDraft.get("li.private.case-draft.v1"),"","Successful save clears canonical React draft");
+assert.deepEqual(caseRoutes,["library"],"Successful Case returns to visible private library");
+assert.deepEqual(caseEvents,["li:activity","li:inquiry-changed"]);
+assert.equal(caseWrites,1);
+// A stale/missing React port must fail closed and keep both existing record and draft.
+caseDraft.set("li.private.case-draft.v1","Not-yet-saved text");
+writerSandbox.window.liCaseUi={getSnapshot:()=>null};
+assert.equal(writerSandbox.liSubmitCaseAnswer("right","A valid conclusion still remains"),false);
+writerSandbox.window.liCaseUi={getSnapshot:()=>({...reactCaseSnapshot,selectedKey:"wrong"})};
+assert.equal(writerSandbox.liSubmitCaseAnswer("right","A valid conclusion still remains"),false);
+assert.equal(caseWrites,1);
+assert.equal(caseRecords.length,1);
+assert.equal(caseDraft.get("li.private.case-draft.v1"),"Not-yet-saved text");
+assert.equal(caseNativeReads,0);
+assert(messages.some(text=>text.includes("đề bài Phản Chứng")));
+// Write failure rolls back without clearing the draft or inventing a saved Case.
+writerSandbox.window.liCaseUi={getSnapshot:()=>reactCaseSnapshot};
+caseCanWrite=false;
+assert.equal(writerSandbox.liSubmitCaseAnswer("right","A second valid conclusion"),false);
+assert.equal(caseRecords.length,1);
+assert.equal(caseDraft.get("li.private.case-draft.v1"),"Not-yet-saved text");
+caseCanWrite=true;
+// Standalone native fallback still archives the DOM snapshot.
+delete writerSandbox.window.liReactRouter;
+const nativeChoices=[
+ {dataset:{answer:"right"},textContent:"Native option correct"},
+ {dataset:{answer:"wrong"},textContent:"Native option wrong"}
+];
+writerSandbox.document.querySelector=()=>({
+ querySelector:selector=>({textContent:selector==="h2"?"Native question":"Native scene"}),
+ querySelectorAll:()=>nativeChoices
+});
+assert.equal(writerSandbox.liSubmitCaseAnswer("wrong","Native conclusion long enough"),true);
+assert.equal(caseRecords[0].caseSnapshot.question,"Native question");
+assert.equal(caseRecords[0].caseSnapshot.selectedText,"Native option wrong");
+assert.equal(caseRecords[0].caseSnapshot.feedback,"native feedback wrong");
+// Open the REAL Bút Ký data reader on the React-saved record (not hardcoded test data).
+const noteElements=new Map();
+const noteElement=id=>{
+ if(!noteElements.has(id))noteElements.set(id,{
+  id,hidden:true,dataset:{},addEventListener(){},setAttribute(){},
+  focus(){},replaceChildren(){},textContent:"",value:""
+ });
+ return noteElements.get(id);
+};
+const noteSandbox={
+ document:{
+  getElementById:noteElement,
+  querySelector:selector=>{
+   if(selector.includes("#page-case"))throw Error("React Bút Ký read hidden Case");
+   return null;
+  }
+ },
+ window:{
+  liReactLibraryMounted:true,
+  liBookmarks:{isSaved:()=>false},
+  liLanguage:{translate:value=>value,get:()=> "vi"},
+  dispatchEvent:event=>caseEvents.push(event.type)
+ },
+ processedCases:caseRecords,collectedIdeas:[],liStorageError:false,
+ liWriteState:()=>true,navigate:route=>caseRoutes.push(route),
+ toast(){},Event:writerSandbox.Event,Date,Intl
+};
+vm.createContext(noteSandbox);
+vm.runInContext(fs.readFileSync(path.resolve(__dirname,"../site/assets/library-note-editor.js"),"utf8"),noteSandbox);
+assert(noteSandbox.window.liNotes.openDetail("case","case-1"));
+const notebook=noteSandbox.window.liNotes.getView();
+assert.equal(notebook.context.question,reactCaseSnapshot.question,"Bút Ký shows original React question");
+assert.equal(notebook.context.scene,reactCaseSnapshot.scene);
+assert.equal(notebook.context.options.length,2);
+assert.equal(notebook.context.options[0].selected,true);
+assert.match(notebook.context.choice,/React visible: only this sample/);
+assert.equal(notebook.context.feedback,reactCaseSnapshot.feedback);
+assert.equal(notebook.body,"Visible conclusion has 12+ characters");
+assert.match(notebook.context.provenance,/ghi cùng luận kết/);
+console.log("PASS React Case → canonical save → Bút Ký detail without native HTML; rollback/fallback intact");

@@ -20,14 +20,14 @@ function canonical(v:unknown):string{
 }
 function tuple(v:unknown){return Array.isArray(v)&&v.length===4&&v.every(x=>typeof x==='string'&&x.length<=4000);}
 
-function validMethodAttempts(a:Attempt):boolean{
+function validMethodAttempts(a:Pick<Attempt,'methodAttempts'>):boolean{
  const methods=a.methodAttempts;
  if(methods===undefined)return true; // preserve native Wave1 attempt records
  if(methods===null||Array.isArray(methods)||typeof methods!=='object')return false;
  for(const [id,raw] of Object.entries(methods)){
   if(id!=='T06'&&id!=='T07')return false;
   if(!raw||typeof raw!=='object'||Array.isArray(raw))return false;
-  const m=raw as {draft?:unknown;submission?:unknown;submittedAt?:unknown};
+  const m=raw as {draft?:unknown;submission?:unknown;submittedAt?:unknown;classifications?:unknown};
   if(typeof m.draft!=='string'||m.draft.length>4000||
    !(m.submission===null||(typeof m.submission==='string'&&m.submission.length<=4000))||
    !(m.submittedAt===null||(typeof m.submittedAt==='string'&&
@@ -35,8 +35,45 @@ function validMethodAttempts(a:Attempt):boolean{
    return false;
   if((m.submission===null)!==(m.submittedAt===null))return false;
   if(typeof m.submission==='string'&&m.submission.trim().length<12)return false;
+  if(m.classifications!==undefined){
+   if(id!=='T06'||!m.classifications||typeof m.classifications!=='object'||
+      Array.isArray(m.classifications))return false;
+   const c=m.classifications as Record<string,unknown>;
+   if(Object.keys(c).some(k=>!['A','B','C','D'].includes(k)||
+     !['nominal','ordinal','discrete','continuous'].includes(String(c[k]))))return false;
+   if(m.submittedAt&&['A','B','C','D'].some(k=>!c[k]))return false;
+  }
  }
  return true;
+}
+function validHistory(a:Attempt):boolean{
+ if(a.methodChoice!==undefined&&a.methodChoice!==null&&
+  !['T06','T07','skip'].includes(a.methodChoice))return false;
+ if(a.contentVersion!==undefined&&
+  (typeof a.contentVersion!=='string'||a.contentVersion.length>50))return false;
+ if(a.rubricVersion!==undefined&&
+  (typeof a.rubricVersion!=='string'||a.rubricVersion.length>80))return false;
+ if(a.reviewedAt!==undefined&&a.reviewedAt!==null&&
+  (typeof a.reviewedAt!=='string'||!Number.isFinite(Date.parse(a.reviewedAt))))return false;
+ if(a.attemptNumber!==undefined&&
+  (!Number.isSafeInteger(a.attemptNumber)||a.attemptNumber<1))return false;
+ if(a.attemptHistory===undefined)return true;
+ if(!Array.isArray(a.attemptHistory)||a.attemptHistory.length>50)return false;
+ let last=0;
+ for(const p of a.attemptHistory){
+  if(!p||!tuple(p.submission)||!['vi','en'].includes(p.submissionLocale)||
+   typeof p.submittedAt!=='string'||!Number.isFinite(Date.parse(p.submittedAt))||
+   !Array.isArray(p.ratings)||p.ratings.length!==4||
+   p.ratings.some(x=>x!==0&&x!==1&&x!==2)||
+   typeof p.contentVersion!=='string'||!p.contentVersion||p.contentVersion.length>50||
+   typeof p.rubricVersion!=='string'||!p.rubricVersion||p.rubricVersion.length>80||
+   !Number.isSafeInteger(p.attemptNumber)||p.attemptNumber<=last||
+   typeof p.guidedDraft!=='string'||p.guidedDraft.length>4000||
+   typeof p.hint!=='boolean'||!['T06','T07','skip',null].includes(p.methodChoice)||
+   !validMethodAttempts(p))return false;
+  last=p.attemptNumber;
+ }
+ return a.attemptHistory.length===0||a.attemptNumber===undefined||a.attemptNumber>last;
 }
 function valid(a:Attempt){
  return(a.locale==='vi'||a.locale==='en')&&tuple(a.draft)&&
@@ -47,7 +84,8 @@ function valid(a:Attempt){
  (a.submission===null||tuple(a.submission))&&
  (a.submissionLocale===null||a.submissionLocale==='vi'||a.submissionLocale==='en')&&
  Array.isArray(a.ratings)&&a.ratings.length===4&&
- a.ratings.every(x=>x===null||x===0||x===1||x===2)&&validMethodAttempts(a);
+ a.ratings.every(x=>x===null||x===0||x===1||x===2)&&
+ validMethodAttempts(a)&&validHistory(a);
 }
 function owner(uid:string){
  if(!IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN||

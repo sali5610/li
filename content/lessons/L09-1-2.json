@@ -344,12 +344,7 @@
     "rubricKey": "rubricItems",
     "questionsKey": "questions",
     "answerKey": "answer",
-    "questionFeedbackModes": [
-      "exact",
-      "open",
-      "open",
-      "open"
-    ]
+    "questionFeedbackModes": ["exact","open","open","open"]
   },
   "sources": [
     {

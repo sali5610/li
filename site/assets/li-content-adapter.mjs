@@ -88,6 +88,61 @@ export function createContentClient({ baseUrl=new URL("../content-packs/",import
   const hits=index.documents.filter(permitted).map(d=>({doc:d,score:rank(d)}))
    .filter(x=>x.score>=0).sort((a,b)=>b.score-a.score||a.doc.id.localeCompare(b.doc.id))
    .slice(0,limit);
+  // One SOURCE-GROUNDED natural-language route within this canonical client.
+  // Intent phrases are editorial retrieval hints bound at build-time to REAL
+  // learning outcomes & lesson reference URLs; they are NOT E5 embeddings or AI answers.
+  const queryWords=needle.split(" ").filter(Boolean);
+  const seemsNatural=queryWords.length>=5||/^(?:tai sao|vi sao|lam sao|cach |khi nao|tinh |why |how |when |what |can |should )/.test(needle)||
+   /[?？]/.test(raw);
+  if(seemsNatural&&(!hits.length||hits[0].score<85)){
+   const reviewedPack=await load("answerability.json");
+   if(reviewedPack.schemaVersion!=="1.0.0"||
+      reviewedPack.scope!=="authored_wave1_answerability_not_general_semantic_ai")
+    throw Error("Invalid authored answerability content pack");
+   const hasPhrase=term=>{
+    const phrase=normalize(term);
+    return !!phrase&&(" "+needle+" ").includes(" "+phrase+" ");
+   };
+   const matches=new Map();
+   for(const claim of reviewedPack.intents){
+    const lesson=lessonById.get(claim.lessonId);
+    if(!lesson||reviewedPack.blockedByLesson[claim.lessonId]?.some(hasPhrase)||
+       !claim.groups.every(group=>group.some(hasPhrase)))continue;
+    const strength=claim.groups.reduce((score,group)=>
+      score+Math.max(0,...group.filter(hasPhrase).map(term=>normalize(term).length)),0);
+    const prev=matches.get(claim.lessonId);
+    if(!prev||strength>prev.strength)matches.set(claim.lessonId,{claim,strength});
+   }
+   const asRecord=(lessonId,level,reason,sourceUrl,reasonLocalized=null)=>{
+    const lesson=lessonById.get(lessonId);
+    const doc=index.documents.find(d=>d.id==="lesson:"+lessonId&&permitted(d));
+    if(!lesson||!doc)return null;
+    return {id:doc.id,kind:"Lesson",title:doc.title,aliases:doc.aliases||[],
+      lessonId,fieldId:lesson.fieldId,courseId:lesson.courseId,
+      contentState:lesson.contentState,sourceUrl:null,links:[],
+      score:level==="direct"?105:5,coverage:"authored_wave1_answerability",
+      answerability:{level,reason,reasonLocalized,sourceUrl,
+       evidenceStatus:"editorial_mapped_to_reviewed_learning_outcome"}};
+   };
+   if(matches.size){
+    const found=[...matches].sort((a,b)=>b[1].strength-a[1].strength)
+      .map(([lessonId,hit])=>asRecord(lessonId,"direct",
+       hit.claim.explanation.vi,hit.claim.sourceUrl,hit.claim.explanation))
+      .filter(Boolean).slice(0,limit);
+    return {status:"answerable",results:found,total:found.length,
+      coverage:"authored_wave1_answerability"};
+   }
+   // Only explicit, author-reviewed SCOPE DISCLAIMERS may show "related".
+   // Never turn a cosine-nearest neighbor or an unfinished outline into an answer.
+   const related=(reviewedPack.relatedTopics||[]).filter(item=>
+     lessonById.has(item.lessonId)&&item.triggers.some(hasPhrase))
+     .map(item=>asRecord(item.lessonId,"related",item.reason.vi,
+      null,item.reason)).filter(Boolean).slice(0,limit);
+   if(related.length)return {status:"related_only",results:related,
+     total:related.length,coverage:"authored_wave1_answerability"};
+   return {status:"no_answer",results:[],total:0,
+     coverage:"authored_wave1_answerability"};
+  }
   const results=await Promise.all(hits.map(async ({doc,score})=>{
    const id=doc.id,links=[];
    const lessonId=doc.kind==="Lesson"?id.slice(7):null;

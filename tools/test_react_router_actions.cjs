@@ -128,4 +128,32 @@ assert.match(diaryModel,/consentStatus:recordingStatus\(\)/);
 assert.doesNotMatch(diaryModel,/\$\("li-diary-/,
  'React Journal must not read labels or status from hidden native DOM');
 
+// One complete catalogue→released lesson→learning→course journey.
+// Only packed + reviewed routes may show "Enter lesson" in React.
+const catalog=read('site/assets/catalog-drilldown.js');
+const reactCatalog=read('tools/step16-real-l09-react-island/src/shell/home-catalog.tsx');
+const staging=read('tools/step16-real-l09-react-island/src/auth/staging-app.tsx');
+const lessonPorts=read('tools/step16-real-l09-react-island/src/learning/staging-ports.ts');
+const release=read('tools/step16-real-l09-react-island/src/learning/released-lessons.ts');
+assert.match(release,/l\.navigationPublished===true&&l\.contentState==='review_only'&&/);
+assert.match(release,/l\.publishState==='review_only'&&packed\.has\(l\.id\)/);
+assert.match(reactCatalog,/const releasedRoutes=new Map\(releasedLessonRoutes\.map/);
+assert.match(reactCatalog,/const canOpenLesson=\(lesson:Lesson\)=>lesson\.published===true/);
+assert.match(reactCatalog,/course\.lessons\.filter\(canOpenLesson\)/);
+assert.match(reactCatalog,/if\(canOpenLesson\(item\)\)\{app\.liCatalog\?\.openLesson\(item\.id\);return;\}/);
+assert.match(reactCatalog,/openPath\(\[\.\.\.path\.slice\(0,3\),item\.id\]\)/);
+assert.match(staging,/liReleasedLessonRoutes=Object\.freeze\(Object\.fromEntries\(/);
+assert.match(catalog,/released\[id\]===lesson\.route/);
+assert.match(catalog,/if\(kind==="open-lesson"\)\{openCatalogLesson\(v\);return;\}/);
+assert.match(catalog,/function findCatalogLesson\(id\)/);
+assert.match(catalog,/function openForLesson\(id\)/);
+assert.match(catalog,/setPath\(\[found\.group\.id,found\.field\.id,found\.course\.id\],false\)/);
+assert.match(catalog,/url\.searchParams\.set\("catalog",path\.join\("\/"\)\)/);
+assert.match(catalog,/url\.searchParams\.delete\("lesson"\)/);
+assert.match(lessonPorts,/owner\.liCatalog\?\.openForLesson\?\.\(LESSON\)/);
+assert.match(catalog,/if\(reactOwnsCatalog\(\)\)return;/);
+assert.match(reactCatalog,/app\.liReactCatalogMounted=true/);
+assert.match(reactCatalog,/app\.liReactCatalogMounted=false/);
+assert.match(reactCatalog,/app\.liCatalog\?\.render\(\)/);
+
 console.log('PASS explicit React routes and Back: direct actions, canonical history and search, no hidden click');

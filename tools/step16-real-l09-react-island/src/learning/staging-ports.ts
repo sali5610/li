@@ -200,7 +200,12 @@ export function createStagingLearningPorts(lesson:string):LearningPorts{
   owner(subjectId);
   return learnerAttemptSyncState(subjectId,lessonId);
  }},
- navigation:{openCatalog(){navigate('catalog');}},
+ navigation:{openCatalog(){
+  const owner=window as Window&{liCatalog?:{openForLesson?:(id:string)=>boolean}};
+  // Direct lesson links also return to their real 5-tier course, not Catalogue root.
+  if(owner.liCatalog?.openForLesson?.(LESSON))return;
+  navigate('catalog');
+ }},
  search:{openSearch(query){
   if(!navigate('search'))return;
   const search=window as Window&{liSearch?:{render:(value:string)=>void}};

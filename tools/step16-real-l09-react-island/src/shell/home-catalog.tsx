@@ -259,6 +259,8 @@ function Home(){
    <span className="li-home-ambient-glow"/>
    <span className="li-home-glint li-home-glint-one"/>
    <span className="li-home-glint li-home-glint-two"/>
+   <span className="li-home-glint li-home-glint-three"/>
+   <span className="li-home-glint li-home-glint-four"/>
   </div>
   <motion.div className="hero-left"
    initial={reduced?false:{opacity:0,y:9}} animate={{opacity:1,y:0}}
@@ -281,6 +283,7 @@ function Home(){
     const touch=event.changedTouches[0],dx=touch.clientX-start.x,dy=touch.clientY-start.y;
     if(Math.abs(dx)>=42&&Math.abs(dx)>=Math.abs(dy)*1.3)shift(dx<0?1:-1);
    }}>
+   <div className="li-home-mirror-float">
    <motion.div key={mirror.question+'|'+mirror.scene} className="li-home-mirror-inner"
     initial={reduced?false:{opacity:0,y:7,scale:.975}}
     animate={{opacity:1,y:0,scale:1}}
@@ -299,14 +302,15 @@ function Home(){
      </Button>
     </div>
    </motion.div>
+   </div>
   </div>
   <motion.aside className="hero-dialogue" aria-label="Lão Lý kể bối cảnh câu hỏi"
    initial={reduced?false:{opacity:0}} animate={{opacity:1}}
    transition={{duration:reduced?0:.52,delay:reduced?0:.14}}>
    <span className="hero-dialogue-avatar" aria-hidden="true">
     <motion.img src="./assets/laoly-neutral.png" alt="" width="128" height="128"
-     animate={reduced?{y:0}:{y:[0,-4,0]}}
-     transition={reduced?{duration:0}:{duration:5.2,repeat:Infinity,ease:'easeInOut'}}/>
+     animate={reduced?{y:0}:{y:[0,-9,0]}}
+     transition={reduced?{duration:0}:{duration:4.1,repeat:Infinity,ease:'easeInOut'}}/>
    </span>
    <div className="hero-dialogue-bubble" role="note">
     <div className="hero-dialogue-label"><span className="example-label">{mirror.source}</span></div>

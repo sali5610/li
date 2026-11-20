@@ -13,6 +13,7 @@ import type {LearningPorts,SyncState} from './ports';
 import './journey.css';
 import {LessonBookmark,LessonMentor,LessonSectionIndex,LessonSources,LessonFigure} from './LessonDetailParity.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
+import {AiFeedbackPanel} from './AiFeedbackPanel.js';
 import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 
 type LessonId='L03-1-2'|'L15-2-2';
@@ -429,6 +430,8 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     </div>
     <Text role="support">{content.scoreLabel}: {attempt.ratings.every(x=>x!==null)?
      attempt.ratings.reduce<number>((sum,v)=>sum+(v??0),0)+' / 8':'— / 8'}</Text>
+    <AiFeedbackPanel id={id} locale={attempt.locale}
+     answers={attempt.submission??attempt.draft}/>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
      locale={attempt.locale} onReviewTheory={()=>setPhase('read')}/>
     {attempt.reviewed?<Button onClick={()=>setPhase('progress')}>{labels.progress}</Button>:

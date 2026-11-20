@@ -62,7 +62,11 @@ jobs:
           grep -Fq "prepareLearnerAccount" "$root/src/auth/AuthPanel.tsx"
           grep -Fq "const LESSONS=['L03-1-2','L09-1-2','L15-2-2']" "$root/src/auth/learner-sync.ts"
           grep -Fq "await checkInviteAccess" "$root/src/auth/learner-sync.ts"
-          grep -Fq "await api.write" "$root/src/auth/learner-sync.ts"
+          # The real L03/L09/L15 owner now writes a durable Dexie outbox,
+          # then signed Neon through the shared revision-aware syncOnce.
+          grep -Fq "await store.edit(" "$root/src/auth/learner-sync.ts"
+          grep -Fq "await syncOnce(store,api,uid" "$root/src/auth/learner-sync.ts"
+          grep -Fq "await api.one('lesson_attempt',id)" "$root/src/auth/learner-sync.ts"
           grep -Fq 'isBlankNativeAttempt' "$root/src/auth/learner-sync.ts"
           ! grep -Eq "signIn.email|AuthRecovery|AuthEmailVerification" "$root/src/auth/AuthPanel.tsx"
           test ! -e "$root/src/auth/qa-secrets.ts"

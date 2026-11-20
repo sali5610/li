@@ -46,6 +46,26 @@ function validMethodAttempts(a:Pick<Attempt,'methodAttempts'>):boolean{
  }
  return true;
 }
+/** Review snapshots are optional for old Wave1 records, but strictly validated
+ * when an editorial submission freezes its own localized rubric and solution. */
+function validReviewSnapshot(a:Attempt):boolean{
+ const snapshot=a.reviewSnapshot;
+ if(snapshot===undefined)return true;
+ if(!snapshot||!a.submitted||!a.submission||!a.contentVersion||!a.rubricVersion||
+  snapshot.contentVersion!==a.contentVersion||
+  snapshot.rubricVersion!==a.rubricVersion||
+  !snapshot.modelAnswer||!snapshot.criteria)return false;
+ for(const locale of ['vi','en'] as const){
+  const model=snapshot.modelAnswer[locale];
+  const rows=snapshot.criteria[locale];
+  if(typeof model!=='string'||!model.trim()||model.length>10000||
+   !Array.isArray(rows)||rows.length!==4||
+   rows.some(row=>!Array.isArray(row)||row.length!==4||
+    row.some(cell=>typeof cell!=='string'||cell.length===0||cell.length>1200)))
+   return false;
+ }
+ return true;
+}
 function validHistory(a:Attempt):boolean{
  if(a.methodChoice!==undefined&&a.methodChoice!==null&&
   !['T06','T07','skip'].includes(a.methodChoice))return false;
@@ -89,7 +109,7 @@ function valid(a:Attempt){
  (a.submissionLocale===null||a.submissionLocale==='vi'||a.submissionLocale==='en')&&
  Array.isArray(a.ratings)&&a.ratings.length===4&&
  a.ratings.every(x=>x===null||x===0||x===1||x===2)&&
- validMethodAttempts(a)&&validHistory(a);
+ validMethodAttempts(a)&&validHistory(a)&&validReviewSnapshot(a);
 }
 function owner(uid:string){
  if(!IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN||

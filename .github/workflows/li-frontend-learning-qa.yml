@@ -32,6 +32,6 @@ jobs:
           npx vite build --config vite.learning.config.mjs
           VITE_LI_AUTH_TARGET=github-pages-staging npx vite build --config vite.staging-app.config.mjs
           test -s dist-learning/li-learning.js
-          test -s dist-learning/li-learning.css
+          ! test -e dist-learning/li-learning.css
           test -s dist-staging-app/staging-auth-gate.js
           echo 'PASS L09_REACT_FRONTEND_COMPILED_NONDEPLOY'

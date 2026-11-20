@@ -237,6 +237,25 @@ function pick(ctx=environment()){
  persist();
  return selected;
 }
+/* Canonical quote data view for React and the previous DOM renderer.
+ * Rotation, original-language text, source rights and VI/EN metadata remain
+ * managed by this one S121 engine; React never duplicates the quote bank. */
+function getView(){
+ if((typeof buddyDebateActive==="boolean"&&buddyDebateActive)||
+    document.getElementById("calm-toggle")?.checked)return null;
+ const item=pick();
+ if(!item)return null;
+ const inEnglish=window.liLanguage?.get?.()==="en";
+ const shown=inEnglish?{...item,...QUOTES_EN[item.id]}:item;
+ return {
+  id:item.id,original:item.original,lang:item.lang,
+  translation:(inEnglish?"Meaning: ":"Dịch nghĩa: ")+shown.translation,
+  interpretation:(inEnglish?"Interpretation: ":"Diễn nghĩa: ")+shown.interpretation,
+  meta:shown.meta,url:item.url,comment:shown.comment
+ };
+}
+/* Legacy DOM renderer stays as an adapter until all unaffected owners are
+ * migrated. It calls exactly the same safe data view as the React dialog. */
 function render(){
  const details=document.getElementById("buddy-quote");
  const original=document.getElementById("buddy-quote-original");
@@ -248,14 +267,15 @@ function render(){
   details.hidden=true;original.hidden=true;translation.hidden=true;info.hidden=true;note.hidden=true;
   info.setAttribute("aria-expanded","false");
  };
- if((typeof buddyDebateActive==="boolean"&&buddyDebateActive)||document.getElementById("calm-toggle")?.checked){hide();return;}
- const item=pick();if(!item){hide();return;}
- const inEnglish=window.liLanguage?.get?.()==="en";
- const shown=inEnglish?{...item,...QUOTES_EN[item.id]}:item;
+ const view=getView();if(!view){hide();return;}
  const gloss=document.getElementById("buddy-quote-gloss");
  const meta=document.getElementById("buddy-quote-meta");
  const link=document.getElementById("buddy-quote-link");
  if(!gloss||!meta||!link){hide();return;}
+ const item=QUOTES.find(q=>q.id===view.id);
+ if(!item){hide();return;}
+ const inEnglish=window.liLanguage?.get?.()==="en";
+ const shown=inEnglish?{...item,...QUOTES_EN[item.id]}:item;
  original.textContent=item.original;original.lang=item.lang;original.hidden=false;
  translation.textContent=(inEnglish?"Meaning: ":"Dịch nghĩa: ")+shown.translation;translation.hidden=false;
  gloss.textContent=(inEnglish?"Interpretation: ":"Diễn nghĩa: ")+shown.interpretation;
@@ -264,8 +284,8 @@ function render(){
  note.textContent=shown.comment;note.hidden=false;
  details.hidden=true;info.hidden=false;info.setAttribute("aria-expanded","false");
 }
-/* Read-only localized quote lookup for reviewed editorial lessons.
-   Reuses the same vetted originals, translations and source metadata as Wave1. */
+/** Read-only curated lookup for structured lesson moments.
+ * No change to native/random quote rotation or native first-party glosses. */
 function lookup(id,locale="vi"){
  const q=QUOTES.find(item=>item.id===id);
  if(!q||typeof q.url!=="string"||!q.url.startsWith("https://"))return null;
@@ -277,5 +297,5 @@ function lookup(id,locale="vi"){
   comment:shown.comment,meta:shown.meta
  });
 }
-window.liQuoteEngine={quotes:QUOTES,environment,matchList,pick,render,lookup};
+window.liQuoteEngine={quotes:QUOTES,environment,matchList,pick,getView,render,lookup};
 })();

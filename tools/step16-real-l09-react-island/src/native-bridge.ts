@@ -14,7 +14,7 @@ export type MethodAttempt={
 export type MethodChoice='T06'|'T07'|'skip'|null;
 export type PastEditorialAttempt={
  submission:[string,string,string,string];submissionLocale:Locale;submittedAt:string;
- ratings:[Rating,Rating,Rating,Rating];reviewedAt:string|null;
+ ratings:[Rating,Rating,Rating,Rating];reviewedAt:string|null;answerRevealed:boolean;
  contentVersion:string;rubricVersion:string;attemptNumber:number;
  guidedDraft:string;hint:boolean;methodChoice:MethodChoice;
  methodAttempts?:Partial<Record<'T06'|'T07',MethodAttempt>>;
@@ -39,6 +39,8 @@ export type Attempt={
  contentVersion?:string;
  rubricVersion?:string;
  reviewedAt?:string|null;
+ /** Explicit post-save learner action; no automatic model-answer reveal. */
+ answerRevealed?:boolean;
  startedAt?:string|null;
  attemptNumber?:number;
  attemptHistory?:PastEditorialAttempt[];

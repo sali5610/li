@@ -33,7 +33,7 @@ function IconManager(){
  const [page,setPage]=useState(1);
  const [current,setCurrent]=useState('House');
  const [copied,setCopied]=useState('');
- const approvedNames=new Set(curated.map(r=>r.upstream));
+ const approvedNames=new Set<string>(curated.map(r=>r.upstream));
  const displayed=useMemo(()=>all.filter(icon=>
    (filter==='all'||approvedNames.has(icon.name))&&
    (!search||toKebab(icon.name).includes(search.toLowerCase().replace(/\s+/g,'-'))||

@@ -5,13 +5,13 @@ import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING} from './config.js';
 import {classifyOAuthReturn,type OAuthReturnCode} from './oauth-return.js';
 import {RlsQaPanel} from './RlsQaPanel.js';
 import {SyncQaPanel} from './SyncQaPanel.js';
-import {prepareLearnerAccount,startLearnerSync,type SyncReport} from './learner-sync.js';
+import {prepareLearnerAccount,startLearnerSync,journalCloudConsent,changeJournalCloudConsent,type SyncReport} from './learner-sync.js';
 
 type Locale='vi'|'en';
 type Access='checking'|'granted'|'denied'|'error';
 const syncCopy={
- vi:{checking:'Đang kết nối tiến độ học với Neon…',saved:'Đã đồng bộ tiến độ học với Neon.',empty:'Đã kết nối Neon. Tiến độ sẽ tự đồng bộ khi học.',queued:'Đã lưu, chờ đồng bộ với Neon.',offline:'Đang offline; tiến độ vẫn lưu trên máy và sẽ thử lại.',conflict:'Hai thiết bị có tiến độ khác nhau. Dữ liệu được giữ, chưa ghi đè.',error:'Chưa đồng bộ được với Neon; tiến độ vẫn lưu trên máy.'},
- en:{checking:'Connecting learning progress to Neon…',saved:'Learning progress synced to Neon.',empty:'Connected to Neon. Progress will sync while studying.',queued:'Saved, awaiting Neon sync.',offline:'Offline. Progress remains on device and will retry.',conflict:'Progress differs across devices. Both copies are preserved; nothing was overwritten.',error:'Cannot sync with Neon yet; device progress is preserved.'}
+ vi:{checking:'Đang kết nối tiến độ học với Neon…',saved:'Đã đồng bộ dữ liệu được phép lưu trên Neon.',empty:'Đã kết nối Neon. Tiến độ sẽ tự đồng bộ khi học.',queued:'Đã lưu, chờ đồng bộ với Neon.',offline:'Đang offline; tiến độ vẫn lưu trên máy và sẽ thử lại.',conflict:'Hai thiết bị có tiến độ khác nhau. Dữ liệu được giữ, chưa ghi đè.',error:'Chưa đồng bộ được với Neon; tiến độ vẫn lưu trên máy.'},
+ en:{checking:'Connecting learning progress to Neon…',saved:'Permitted personal data synced to Neon.',empty:'Connected to Neon. Progress will sync while studying.',queued:'Saved, awaiting Neon sync.',offline:'Offline. Progress remains on device and will retry.',conflict:'Progress differs across devices. Both copies are preserved; nothing was overwritten.',error:'Cannot sync with Neon yet; device progress is preserved.'}
 } as const;
 const copy={
  vi:{
@@ -76,6 +76,9 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  const accountId=session?.user?.id??null;
  const [ownerReady,setOwnerReady]=useState(false);
  const [syncStatus,setSyncStatus]=useState<SyncReport>('checking');
+ const [journalChoice,setJournalChoice]=useState(false);
+ const [journalBusy,setJournalBusy]=useState(false);
+ useEffect(()=>{setJournalChoice(Boolean(accountId)&&journalCloudConsent(accountId||''));},[accountId]);
  // Do not reveal native lesson state from another invited account.
  // Local account ownership is prepared synchronously before the app is shown.
  useEffect(()=>{
@@ -150,6 +153,17 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   return()=>{disposed=true;};
  },[accountId,accessEpoch]);
 
+ async function toggleJournalCloud(enabled:boolean){
+  if(!accountId||access!=='granted'||!ownerReady||journalBusy)return;
+  setJournalBusy(true);setFeedback('');
+  try{
+   await changeJournalCloudConsent(accountId,enabled);
+   setJournalChoice(enabled);
+  }catch{
+   setFeedback(locale==='vi'?'Chưa cập nhật được quyền đồng bộ Nhật Ký. Hãy thử lại.':
+    'Could not update your journal sync permission. Try again.');
+  }finally{setJournalBusy(false);}
+ }
  async function signInGoogle(){
   if(busy)return;
   setBusy('login');setFeedback('');
@@ -197,6 +211,17 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
        access==='denied'?t.denied:t.blocked}
      </p>
      {access==='error'&&<p className="auth-error" role="status" data-invite-error-code={inviteError}>{t.inviteErrorCode} <strong>{inviteError||'INV-UNKNOWN'}</strong></p>}
+     {access==='granted'&&ownerReady&&<div className="auth-privacy" data-private-journal-consent="account">
+      <label>
+       <input type="checkbox" checked={journalChoice} disabled={journalBusy}
+        onChange={e=>void toggleJournalCloud(e.currentTarget.checked)}/>
+       {' '}{locale==='vi'?'Đồng bộ Nhật Ký & Check-in riêng tư lên Neon':
+        'Sync private Journal & Check-ins to Neon'}
+      </label>
+      <p>{locale==='vi'?
+       'Chỉ bật khi mày đồng ý lưu dữ liệu Check-in và Nhật Ký trên cloud của tài khoản. Tắt sẽ ngừng đồng bộ và xếp lệnh xóa bản cloud; dữ liệu trên máy vẫn giữ.':
+       'Opt in to store private check-ins and journal entries in your account cloud. Turning this off queues cloud deletion while preserving local entries.'}</p>
+     </div>}
      <button type="button" onClick={()=>void signOut()} disabled={busy!==null}>
       {busy?t.busy:t.logout}
      </button>

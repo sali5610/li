@@ -1,6 +1,6 @@
 import type {Attempt} from '../native-bridge.js';
 import {initial} from '../native-bridge.js';
-import type {LearningPorts,SyncState} from './ports.js';
+import type {LearningPorts,SyncState,Wave1LessonId} from './ports.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
 import {neonSessionPort} from '../auth/neon-client.js';
 import {AUTH_ORIGIN,IS_GITHUB_STAGING,NEON_DATA_API_URL} from '../auth/config.js';
@@ -9,9 +9,7 @@ import {waitForLearnerHydration,saveNativeLearnerAttempt,learnerAttemptSyncState
 /** React uses existing owner-scoped native attempt + Chat 3 Neon sync.
  * No guest, fake account, second local key or independent cloud writer.
  */
-const LESSON='L09-1-2' as const;
-const KEY='li.review.L09-1-2.v1',OWNER='li.sync.local-owner.v1';
-const CHECKPOINT=(uid:string)=>'li.sync.checkpoint.v1:'+uid+':'+LESSON;
+const OWNER='li.sync.local-owner.v1';
 const MISSING='li:missing';
 function canonical(v:unknown):string{
  if(v===null||typeof v!=='object')return JSON.stringify(v)??'null';
@@ -36,8 +34,8 @@ function owner(uid:string){
  !document.documentElement.classList.contains('li-auth-verified')||
  !uid||localStorage.getItem(OWNER)!==uid)throw Error('LEARNING_INVITE_REQUIRED');
 }
-function snapshot():{raw:string|null;attempt:Attempt}{
- const raw=localStorage.getItem(KEY);
+function snapshot(key:string):{raw:string|null;attempt:Attempt}{
+ const raw=localStorage.getItem(key);
  if(raw===null){
   const state=initial(),locale=localStorage.getItem('li.app.locale.v1');
   if(locale==='vi'||locale==='en')state.locale=locale;
@@ -57,7 +55,8 @@ function navigate(route:'catalog'|'search'){
  if(typeof app.navigate==='function')app.navigate(route);
  else document.querySelector<HTMLButtonElement>('button[data-page="'+route+'"]')?.click();
 }
-export function createStagingLearningPorts():LearningPorts{
+export function createStagingLearningPorts(lesson:Wave1LessonId='L09-1-2'):LearningPorts{
+ const LESSON=lesson, KEY='li.review.'+lesson+'.v1';
  return {
  auth:{async requireInvitedLearner(){
   if(!document.documentElement.classList.contains('li-auth-verified'))throw Error('INVITE_REQUIRED');
@@ -75,7 +74,7 @@ export function createStagingLearningPorts():LearningPorts{
    owner(subjectId);
    await waitForLearnerHydration(subjectId);
    owner(subjectId);
-   const state=snapshot();
+   const state=snapshot(KEY);
    return {attempt:state.attempt,revision:revision(state.raw)};
   },
   async save({lessonId,subjectId,attempt,expectedRevision}){

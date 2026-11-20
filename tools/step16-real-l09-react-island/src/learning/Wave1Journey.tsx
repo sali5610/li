@@ -259,12 +259,13 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
  const answered=attempt.draft.filter(x=>x.trim().length>=12).length;
  const rated=attempt.ratings.filter(x=>x!==null).length;
  const saveState:SaveState=locked?'error':saving?'saving':
-  status==='synced'?'synced':status==='queued'?'queued':
+  status==='synced'?'synced':(status==='queued'||status==='conflict')?'queued':
   status==='on-device'?'saved-device':'unavailable';
  const saveMessage=locked?(vi?'Lưu thất bại':'Save failed'):
   saving?(vi?'Đang lưu…':'Saving…'):
   status==='synced'?(vi?'Đã đồng bộ':'Synced'):
   status==='queued'?(vi?'Đã lưu · đang chờ đồng bộ':'Saved · waiting to sync'):
+  status==='conflict'?(vi?'Bài này có xung đột · mở Tài khoản để chọn bản':'Lesson conflict · choose a version in Account'):
   status==='on-device'?(vi?'Đã lưu trên thiết bị':'Saved on device'):
   (vi?'Chưa xác nhận đồng bộ':'Sync status unavailable');
  const sourceImg=images[id];

@@ -8,6 +8,7 @@ import type {NeonUserApi} from '../sync/neon-api.js';
 import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_INTEGRATED_LI_APP} from './config.js';
 import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
+import {validMethodAttempts} from '../learning/validate-method-attempts.js';
 import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
  hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS} from './private-state.js';
 
@@ -142,12 +143,13 @@ export async function saveNativeLearnerAttempt(uid:string,id:string,data:unknown
  * a Neon-accepted Dexie revision, and no pending conflicting edit.
  */
 export async function learnerAttemptSyncState(uid:string,id:string):
- Promise<'on-device'|'queued'|'synced'|'unavailable'>{
+ Promise<'on-device'|'queued'|'synced'|'conflict'|'unavailable'>{
  if(!LESSONS.some(x=>x===id)||localStorage.getItem(OWNER)!==uid)throw Error('LEARNER_ACCOUNT_CHANGED');
  const raw=localStorage.getItem(KEY(id));
  if(raw===null)return 'on-device';
  const key=storageKey(uid,'lesson_attempt',id);
  const [pending,row]=await Promise.all([store.outbox.get(key),store.records.get(key)]);
+ if(pending?.conflict)return 'conflict';
  if(pending||!row||row.deletedAt||row.baseRevision<1||
     canonical(cloud(row.payload))!==canonical(attempt(raw)))return 'queued';
  return activeSync?.uid===uid&&activeSync.last==='saved'?'synced':'queued';
@@ -160,22 +162,6 @@ function canonical(value:unknown):string{
  return '{'+Object.keys(object).sort().map(k=>JSON.stringify(k)+':'+canonical(object[k])).join(',')+'}';
 }
 
-function validOptionalMethods(value:Record<string,unknown>):boolean{
- if(!Object.hasOwn(value,'methodAttempts'))return true;
- const attempts=value.methodAttempts;
- if(!attempts||typeof attempts!=='object'||Array.isArray(attempts))return false;
- for(const [id,item] of Object.entries(attempts)){
-  if(id!=='T06'&&id!=='T07'||!item||typeof item!=='object'||Array.isArray(item))return false;
-  const a=item as Record<string,unknown>;
-  if(typeof a.draft!=='string'||a.draft.length>4000||
-   !(a.submission===null||(typeof a.submission==='string'&&a.submission.length<=4000))||
-   !(a.submittedAt===null||(typeof a.submittedAt==='string'&&a.submittedAt.length<=50&&
-     Number.isFinite(Date.parse(a.submittedAt)))))return false;
-  if((a.submission===null)!==(a.submittedAt===null))return false;
-  if(typeof a.submission==='string'&&a.submission.trim().length<12)return false;
- }
- return true;
-}
 function attempt(raw:string|null):Attempt|null{
  if(raw===null)return null;
  if(raw.length>60000)throw new Error('LOCAL_ATTEMPT_TOO_LARGE');
@@ -183,7 +169,7 @@ function attempt(raw:string|null):Attempt|null{
  if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('INVALID_LOCAL_ATTEMPT');
  const a=value as Attempt;
  if(!Array.isArray(a.draft)||a.draft.length!==4||!a.draft.every(x=>typeof x==='string'&&x.length<=4000)||
-   !Array.isArray(a.ratings)||a.ratings.length!==4||!validOptionalMethods(a))
+   !Array.isArray(a.ratings)||a.ratings.length!==4||!validMethodAttempts(a))
   throw new Error('INVALID_LOCAL_ATTEMPT');
  return a;
 }

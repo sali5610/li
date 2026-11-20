@@ -45,8 +45,10 @@ function resumedPhase(a:Attempt):Phase{
 }
 function statusText(status:SyncState,vi:boolean){
  if(vi)return {synced:'Đã đồng bộ',queued:'Đã lưu trên thiết bị · đang chờ đồng bộ',
+   conflict:'Bài này có xung đột · mở Tài khoản để chọn bản',
    'on-device':'Đã lưu trên thiết bị','unavailable':'Chưa thể xác nhận đồng bộ'}[status];
  return {synced:'Synced',queued:'Saved on device · waiting to sync',
+   conflict:'Lesson conflict · choose a version in Account',
    'on-device':'Saved on this device',unavailable:'Sync status unavailable'}[status];
 }
 
@@ -316,7 +318,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  const percent=attempt.reviewed?100:attempt.submitted?75:Math.round(answered/4*50);
  const accessibleProgress=vi?'Tiến trình hoàn thành lượt bài học':'Lesson attempt progress';
  const saveViewState:SaveState=locked?'error':saving?'saving':
-  sync==='synced'?'synced':sync==='queued'?'queued':
+  sync==='synced'?'synced':(sync==='queued'||sync==='conflict')?'queued':
   sync==='on-device'?'saved-device':'unavailable';
  const saveMessage=locked?(vi?'Lưu thất bại':'Save failed'):
   saving?(vi?'Đang lưu…':'Saving…'):statusText(sync,vi);

@@ -20,8 +20,9 @@ export function rememberOfflineInvite(
  uid:string,now=Date.now(),store:Store=localStorage,origin=location.origin
 ):boolean{
  if(origin!==STAGING_ORIGIN||typeof uid!=='string'||!uid.trim()||
-    store.getItem(OWNER)!==uid||!Number.isFinite(now)||now<=0)return false;
+    !Number.isFinite(now)||now<=0)return false;
  try{
+  if(store.getItem(OWNER)!==uid)return false;
   store.setItem(KEY,JSON.stringify({v:1,uid,verifiedAt:now} satisfies Lease));
   return true;
  }catch{return false;}

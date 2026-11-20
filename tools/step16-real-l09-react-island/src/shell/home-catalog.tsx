@@ -1,4 +1,5 @@
 import {openRoute} from './app-router.js';
+import {releasedLessonRoutes} from '../learning/released-lessons.js';
 import {inquiryFlow} from './inquiry-port.js';
 import type {MirrorView} from './inquiry-port.js';
 import React,{useEffect,useRef,useState} from 'react';
@@ -21,16 +22,21 @@ type Locale='vi'|'en';
 type CatalogPort={
  getPath:()=>string[];
  openPath:(path:string[],save?:boolean)=>void;
- openLesson:(id:string)=>void;
+ openLesson:(id:string)=>boolean;
  openCourse:(group:string,field:string,course:string)=>void;
+ render:()=>void
 };
 type AppWindow=Window&{
  LI_CATALOG_DATA?:Group[];
+ liReactCatalogMounted?:boolean;
  liCatalog?:CatalogPort;
  liLanguage?:{get:()=>string};
 };
 const app=window as AppWindow;
 const groups=Array.isArray(app.LI_CATALOG_DATA)?app.LI_CATALOG_DATA:[];
+const releasedRoutes=new Map(releasedLessonRoutes.map(item=>[item.id,item.route]));
+const canOpenLesson=(lesson:Lesson)=>lesson.published===true&&
+ typeof lesson.route==='string'&&releasedRoutes.get(lesson.id)===lesson.route;
 
 function useLocale():Locale{
  const [locale,setLocale]=useState<Locale>(app.liLanguage?.get()==='en'?'en':'vi');
@@ -57,7 +63,7 @@ function openPath(path:string[]){
  app.liCatalog.openPath(path);
 }
 function courseProgress(course:Course){
- const available=course.lessons.filter(lesson=>lesson.published&&lesson.route);
+ const available=course.lessons.filter(canOpenLesson);
  let done=0;
  let unavailable=false;
  for(const lesson of available){
@@ -119,8 +125,9 @@ function Catalog(){
   group?'Chọn chuyên ngành để xem lộ trình các môn học.':
   'Những lối đi khác nhau vào cùng một thư viện tri thức.';
  const chooseLesson=(item:Lesson)=>{
-  if(!app.liCatalog?.openLesson)return;
-  app.liCatalog.openLesson(item.id);
+  if(canOpenLesson(item)){app.liCatalog?.openLesson(item.id);return;}
+  // Drafts are readable as outlines only, never routes to a hidden native lesson.
+  openPath([...path.slice(0,3),item.id]);
  };
  const available=course?courseProgress(course):null;
  return <motion.div key={path.join('/')||'catalog-root'} data-li-react-screen="catalog"
@@ -166,7 +173,7 @@ function Catalog(){
       <Heading level={3} role="titleMedium">{item.title}</Heading>
       <ol className="catalog-preview-lessons">
        {item.lessons.map(l=><li key={l.id}
-        className={l.published?'catalog-preview-published':undefined}>{l.title}</li>)}
+        className={canOpenLesson(l)?'catalog-preview-published':undefined}>{l.title}</li>)}
       </ol>
       <Button variant="secondary" className="catalog-card-action"
        onClick={()=>openPath([group!.id,field!.id,item.id])}>
@@ -190,10 +197,10 @@ function Catalog(){
     <span className="catalog-lesson-order" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>
     <div className="catalog-lesson-desc">
      <Heading level={2} role="titleSmall">{item.title}</Heading>
-     <Text role="support">{item.id} · {item.published?'Đã phát hành':'Đề cương · chưa phát hành'}</Text>
+     <Text role="support">{item.id} · {canOpenLesson(item)?'Đã phát hành':'Đề cương · chưa phát hành'}</Text>
     </div>
     <Button variant="secondary" onClick={()=>chooseLesson(item)}>
-     {item.published&&item.route?'Vào bài học':'Xem đề cương'}
+     {canOpenLesson(item)?'Vào bài học':'Xem đề cương'}
     </Button>
    </li>)}
   </ol></>}
@@ -307,11 +314,15 @@ export function mountHomeAndCatalog(){
    catalogHost.id='li-react-catalog-host';catalogHost.className='section-shell';
    home.append(homeHost);catalog.append(catalogHost);
    const homeRoot=createRoot(homeHost),catalogRoot=createRoot(catalogHost);
+   app.liReactCatalogMounted=true;
    homeRoot.render(<Home/>);catalogRoot.render(<Catalog/>);
    oldHome.hidden=true;oldHome.style.display='none';
    oldCatalog.hidden=true;oldCatalog.style.display='none';
    dispose=()=>{
+    app.liReactCatalogMounted=false;
     homeRoot.unmount();catalogRoot.unmount();homeHost.remove();catalogHost.remove();
+    // Refresh the old fallback ONCE on unmount instead of each React path change.
+    app.liCatalog?.render();
     oldHome.hidden=false;oldHome.style.removeProperty('display');
     oldCatalog.hidden=false;oldCatalog.style.removeProperty('display');
    };

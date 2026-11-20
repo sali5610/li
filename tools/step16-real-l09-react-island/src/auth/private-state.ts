@@ -23,7 +23,7 @@ export const PERSONAL_FIELDS:readonly Field[]=[
 const T12_CONTEXTS=['standalone','L03-1-2','L09-1-2','L15-2-2'] as const;
 const T12_PREFIX='li.spell.t12.resume.v1:';
 /** One signed owner+lesson record per T12 practice, using existing RLS. */
-const t12Fields=(uid:string):Field[]=>
+export const t12Fields=(uid:string):Field[]=>
  T12_CONTEXTS.map(lesson=>({
   key:T12_PREFIX+encodeURIComponent(uid)+':'+lesson,
   type:'l2_progress',id:'spell-t12-resume-'+lesson

@@ -217,7 +217,7 @@ function PopulationDiagram({illustration}:{illustration:Illustration}){
  </figure>;
 }
 function plain(md:string):string{return md.replace(/<[^>]*>/g,'').replace(/\*\*/g,'').trim();}
-type QuoteRecord={id:string;original:string;gloss?:string;meta:string;url:string;lang?:string;interpretation?:string};
+type QuoteRecord={id:string;original:string;translation:string;meta:string;url:string;lang:string;interpretation:string;comment:string};
 
 export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  const reduced=useReducedMotion();
@@ -258,8 +258,18 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   mentorCleanup.current?.();
   const app=window as Window&{
    openLaoLy?:(trigger?:HTMLElement)=>void;
-   liQuoteEngine?:{quotes:QuoteRecord[]};
+   liQuoteEngine?:{lookup?:(id:string,locale:Locale)=>QuoteRecord|null};
   };
+  const locale=attempt?.locale??'vi';
+  const quotes=moment.quote_ids.map(q=>app.liQuoteEngine?.lookup?.(q,locale)??null);
+  // Fail visibly rather than show a random source or VI-only gloss in English.
+  if(quotes.length<3||quotes.some(q=>!q?.translation||!q.original||
+     !q.url.startsWith('https://'))||quotes[0]?.id!==moment.quote_id){
+   setError(locale==='en'?
+    'The stage quotation sources are unavailable; Lão Lý was not opened.':
+    'Chưa tải đủ trích dẫn có nguồn cho mục này; Lão Lý chưa mở.');
+   return;
+  }
   const trigger=document.activeElement instanceof HTMLElement?document.activeElement:undefined;
   if(app.openLaoLy)app.openLaoLy(trigger);
   else document.querySelector<HTMLButtonElement>('#laoly-fab')?.click();
@@ -267,59 +277,79 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   const spoken=modal?.querySelector<HTMLElement>('#buddy-text');
   const actions=modal?.querySelector<HTMLElement>('.buddy-actions');
   if(!modal?.classList.contains('open')||!spoken||!actions){
-   setError('Không mở được Lão Lý ở màn hình này.');return;
+   setError(locale==='en'?
+    'Lão Lý is unavailable while Silent mode is enabled.':
+    'Chế độ Im Lặng đang tắt hội thoại Lão Lý.');return;
   }
+  setError('');
   spoken.textContent=plain(moment.prompt_md);
   const native=Array.from(actions.querySelectorAll<HTMLButtonElement>(
    '#buddy-question,#buddy-challenge,#buddy-forget'));
+  const previousHidden=native.map(b=>b.hidden);
   native.forEach(b=>{b.hidden=true;});
-  const panel=document.createElement('div');panel.className='li-editorial-buddy-actions';
-  const pickedIds=moment.quote_ids.filter(q=>q!=='box-models');
-  function showQuote(quoteId:string){
-   const quote=app.liQuoteEngine?.quotes.find(q=>q.id===quoteId);
-   if(!quote||!quote.url.startsWith('https://'))return;
+  const panel=document.createElement('div');
+  panel.className='li-editorial-buddy-actions';
+  panel.setAttribute('role','group');
+  panel.setAttribute('aria-label',locale==='en'?
+   'Section-specific questions and source quotations':
+   'Câu hỏi theo mục học và trích dẫn có nguồn');
+
+  function showQuote(quote:QuoteRecord,focus=false){
    const original=modal?.querySelector<HTMLElement>('#buddy-quote-original');
-   const gloss=modal?.querySelector<HTMLElement>('#buddy-quote-translation');
+   const translation=modal?.querySelector<HTMLElement>('#buddy-quote-translation');
    const meta=modal?.querySelector<HTMLElement>('#buddy-quote-meta');
    const link=modal?.querySelector<HTMLAnchorElement>('#buddy-quote-link');
-   const commentary=modal?.querySelector<HTMLElement>('#buddy-quote-gloss');
+   const interpretation=modal?.querySelector<HTMLElement>('#buddy-quote-gloss');
+   const context=modal?.querySelector<HTMLElement>('#buddy-quote-context');
    const info=modal?.querySelector<HTMLElement>('#buddy-quote-info');
-   if(!original||!gloss||!meta||!link||!commentary||!info)return;
-   original.textContent=quote.original;original.lang=quote.lang||'';
-   original.hidden=false;gloss.textContent=quote.gloss||'';gloss.hidden=false;
+   const detail=modal?.querySelector<HTMLElement>('#buddy-quote');
+   if(!original||!translation||!meta||!link||!interpretation||!info||!detail)return;
+   original.textContent=quote.original;original.lang=quote.lang;
+   original.hidden=false;
+   translation.textContent=(locale==='en'?'Meaning: ':'Dịch nghĩa: ')+quote.translation;
+   translation.lang=locale;translation.hidden=false;
    meta.textContent=quote.meta;link.href=quote.url;
-   commentary.textContent=quote.interpretation||plain(moment.quote_relevance_md);
-   info.hidden=false;info.setAttribute('aria-expanded','false');
-   const detail=modal?.querySelector<HTMLElement>('#buddy-quote');if(detail)detail.hidden=true;
+   interpretation.textContent=(locale==='en'?'Interpretation: ':'Diễn nghĩa: ')+
+    quote.interpretation+' · '+plain(moment.quote_relevance_md);
+   if(context){context.textContent=quote.comment;context.hidden=false;}
+   detail.hidden=true;info.hidden=false;info.setAttribute('aria-expanded','false');
+   if(focus){original.tabIndex=-1;original.focus({preventScroll:true});}
   }
   for(const action of moment.actions){
    const button=document.createElement('button');button.type='button';
    button.className='action alt';button.textContent=action.label;
-   button.addEventListener('click',()=>{spoken.textContent=plain(action.reply_md);});
+   button.addEventListener('click',()=>{
+    spoken.textContent=plain(action.reply_md);
+    modal?.querySelector<HTMLElement>('#buddy-scroll')?.scrollTo({top:0});
+    spoken.tabIndex=-1;spoken.focus({preventScroll:true});
+   });
    panel.append(button);
   }
-  if(pickedIds.length){
-   const choices=document.createElement('div');choices.className='li-editorial-buddy-quotes';
-   for(const [index,quoteId] of pickedIds.entries()){
-    const q=app.liQuoteEngine?.quotes.find(q=>q.id===quoteId);
-    if(!q)continue;
-    const button=document.createElement('button');button.type='button';
-    button.className='action alt';button.textContent=index===0?'I · '+q.meta:'· '+q.meta;
-    button.addEventListener('click',()=>showQuote(quoteId));choices.append(button);
-   }
-   panel.append(choices);
-   showQuote(moment.quote_id);
+  const choices=document.createElement('div');choices.className='li-editorial-buddy-quotes';
+  for(const [index,q] of quotes.entries()){
+   if(!q)continue;
+   const button=document.createElement('button');button.type='button';
+   button.className='action alt';
+   button.textContent=(locale==='en'?'Source ':'Nguồn ')+(index+1)+' · '+q.meta;
+   button.addEventListener('click',()=>showQuote(q,true));choices.append(button);
   }
+  panel.append(choices);
   actions.prepend(panel);
+  showQuote(quotes[0]!,false);
+  // Native modal initially focuses a now-hidden default button. Move focus to
+  // the first contextual action, and restore the learner's trigger on close.
+  panel.querySelector<HTMLButtonElement>('button')?.focus();
   const observer=new MutationObserver(()=>{
-   if(!modal.classList.contains('open'))cleanup();
+   if(!modal.classList.contains('open'))cleanup(true);
   });
-  function cleanup(){
-   observer.disconnect();panel.remove();native.forEach(b=>{b.hidden=false;});
+  function cleanup(restoreFocus=false){
+   observer.disconnect();panel.remove();
+   native.forEach((b,i)=>{b.hidden=previousHidden[i];});
    mentorCleanup.current=null;
+   if(restoreFocus&&trigger?.isConnected)trigger.focus({preventScroll:true});
   }
   observer.observe(modal,{attributes:true,attributeFilter:['class']});
-  mentorCleanup.current=cleanup;
+  mentorCleanup.current=()=>cleanup();
  }
  function mentor(stage:CompanionMoment['stage']){
   const moment=lesson?.content.localized[attempt?.locale??'vi'].companion?.moments.find(m=>m.stage===stage);

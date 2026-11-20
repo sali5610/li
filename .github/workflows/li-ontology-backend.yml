@@ -13,6 +13,7 @@ on:
       - 'tools/build_search_pack.mjs'
       - 'site/assets/li-catalog-search.js'
       - 'site/assets/li-content-adapter.mjs'
+      - 'site/assets/laoly-context-s112.js'
       - 'site/content-packs/**'
       - 'tools/test_content_adapter.mjs'
       - '.github/workflows/li-ontology-backend.yml'

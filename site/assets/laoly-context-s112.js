@@ -307,6 +307,7 @@ function reactReply(index){
 window.liBuddyEngine=Object.freeze({open:reactView,choose:reactReply});
 openLaoLy=function(trigger){
  if(window.liBuddyReactMounted){
+  if(!document.documentElement?.classList?.contains("li-auth-verified"))return;
   const view=reactView(trigger);
   if(view)window.dispatchEvent(new CustomEvent("li:buddy-open",{detail:view}));
   return;

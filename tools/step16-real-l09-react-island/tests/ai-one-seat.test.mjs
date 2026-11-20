@@ -160,9 +160,12 @@ test('canonical content marks exact/open by question; only reviewed source owns 
  const expected={'L03-1-2':['open','open','open','open'],
   'L09-1-2':['exact','open','open','open'],
   'L15-2-2':['exact','exact','open','open']};
+ const policy=JSON.parse(readFileSync(new URL('../../content/feedback/ai-question-modes.v1.json',root),'utf8'));
+ assert.equal(policy.approvedBy,'human-po');
  for(const [id,modes] of Object.entries(expected)){
   const lesson=JSON.parse(readFileSync(new URL('../../content/lessons/'+id+'.json',root),'utf8'));
-  assert.deepEqual(lesson.practice.questionFeedbackModes,modes);
+  assert.deepEqual(policy.lessons[id].modes,modes);
+  assert.equal(policy.lessons[id].questionCount,modes.length);
   assert.equal(lesson.practice.questionCount,modes.length);
   for(const locale of ['vi','en']){
    assert.equal(lesson.content.localized[locale].questions.length,modes.length);

@@ -27,3 +27,6 @@ export * from './LegacyNavigation';
 export * from './LegacyCards';
 export * from './LegacyControls';
 export * from './LegacyDataViz';
+
+export {LiIcon,iconRoles,lucideRoleNames} from './LucideIcons';
+export type {LiIconRole,LiIconProps} from './LucideIcons';

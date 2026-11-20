@@ -243,3 +243,8 @@ Human PO correction: old archive's focused input uses the **existing border thic
 **React parity matrix:** `design-system/react/README.md` includes all 20 mapped Studio IDs; `index.ts` exports typed React components from LegacyNavigation, LegacyCards, LegacyControls and LegacyDataViz. `site/design-system/studio.js` routes to `react-legacy.html` compiled from the same source. This closes **React source/story coverage only** for the 12 missing families and 8 partial equivalents recorded in previous audit; it does NOT close G2, existing app consumer integration, semantic design acceptance or real iPhone Safari testing.
 
 **Focus requirement:** `focus.css` imported last; no `outline:3px` nested green box. Focus states use existing border thickness 3px or text underline/background, including Native Select, Calendar days, chart bars, check-in radio and card CTA. The prior archive's translucent chat forest variant retains no border; labels are read-only and are not artificially made focusable.
+
+
+### Lucide icon governance · 2026-11-20
+
+See `design-system/react/README.md` → **Lucide Icon Manager**. Catalog from pinned `lucide-react` builds inside same React Studio, while app consumes only tree-shakable approved `LiIcon` role imports; old Icon and FunctionalIcon API kept. No CDN runtime or custom svg copies, no exterior focus ring. G2 OPEN.

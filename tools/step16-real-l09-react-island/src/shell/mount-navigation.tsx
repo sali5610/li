@@ -2,7 +2,8 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {AppNavigationControls} from '../../../../design-system/react/AppNavigation';
 import type {AppNavigationItem,AppNavigationControlsProps} from '../../../../design-system/react/AppNavigation';
-import {openRoute,currentRoute} from './app-router.js';
+import {openRoute,goBack,currentRoute} from './app-router.js';
+import {LiIcon} from '../../../../design-system/react/LucideIcons';
 
 /** One staging app, not an injected second router.
  * Visible React controls dispatch typed direct routes to the existing one
@@ -35,11 +36,26 @@ export function mountSharedNavigation(){
   host.dataset.liReactNavigation=area;
   return {root,area,items};
  });
+ const originalBack=document.getElementById('li-global-back');
+ if(!originalBack)throw Error('REACT_BACK_HOST_MISSING');
+ const backHost=document.createElement('span');
+ backHost.id='li-react-global-back-root';
+ // Keep header flex geometry: React's button occupies the original flex item.
+ backHost.style.display='contents';
+ originalBack.replaceWith(backHost);
+ const backRoot=createRoot(backHost);
  let active=currentRoute();
- const render=()=>mounts.forEach(({root,area,items})=>root.render(
-  <AppNavigationControls area={area} activeId={active} items={items}
-   onNavigate={openRoute}/>
- ));
+ const render=()=>{
+  mounts.forEach(({root,area,items})=>root.render(
+   <AppNavigationControls area={area} activeId={active} items={items}
+    onNavigate={openRoute}/>
+  ));
+  backRoot.render(<button id="li-global-back" className="li-global-back"
+   type="button" hidden={active==='home'} onClick={goBack}
+   aria-label="Quay lại màn trước" title="Quay lại">
+   <LiIcon name="arrow-left" size={20}/>
+  </button>);
+ };
  const update=()=>{
   const next=currentRoute();
   if(next!==active){active=next;render();}
@@ -48,5 +64,8 @@ export function mountSharedNavigation(){
  document.querySelectorAll('section.page').forEach(section=>
   observer.observe(section,{attributes:true,attributeFilter:['class']}));
  render();
- return ()=>{observer.disconnect();mounts.forEach(({root})=>root.unmount());};
+ return ()=>{
+  observer.disconnect();mounts.forEach(({root})=>root.unmount());
+  backRoot.unmount();backHost.replaceWith(originalBack);
+ };
 }

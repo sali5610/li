@@ -95,7 +95,8 @@
             "primary": true,
             "prompt_md": "### 4b. Luyện phương pháp L2 (tự chọn, trước bài độc lập)\n\n<b>Chính: T06 · Song Tượng Phân Minh — Compare–Contrast / Interleaved Discrimination.</b> Đã học danh nghĩa, thứ bậc, số đếm và đại lượng đo. Trước hết nhớ: <b>ký tự trông như số ≠ đo lường bằng số</b>; một nhãn thứ bậc có thứ tự nhưng chưa chắc có khoảng cách bằng nhau. Có thể mở hướng dẫn Thần Chú T06 hoặc làm ngay.\n\n<b>Micropractice xáo trộn mới:</b> Với một bảng giả định về hoạt động học, phân loại và giải thích <b>vì sao</b> cho từng cột sau:\n\n- A. Mã người học “00091”.\n- B. Số lần mở lại bài trong tuần: 0, 1, 2, 3…\n- C. Mức ưu tiên trợ giúp: 1 = thấp, 2 = vừa, 3 = cao.\n- D. Thời lượng phiên học được đo: 8,2 phút.",
             "feedback_md": "<b>Phản hồi T06 — chỉ sau khi nộp lượt luyện T06:</b> A là ID danh nghĩa; B là số đếm định lượng rời rạc; C là ordinal; D là đại lượng đo thời gian, định lượng liên tục theo phép đo.",
-            "feedback_gate": "AFTER_T06_MEANINGFUL_ATTEMPT"
+            "feedback_gate": "AFTER_T06_MEANINGFUL_ATTEMPT",
+            "answer_key": {"A": "nominal", "B": "discrete", "C": "ordinal", "D": "continuous"}
           },
           "T07": {
             "technique_id": "L2-T07",
@@ -345,7 +346,8 @@
             "primary": true,
             "prompt_md": "### 4b. Optional L2 method practice (before independent assessment)\n\n<b>Primary: T06 · Song Tượng Phân Minh — Compare–Contrast / Interleaved Discrimination.</b> Contrast a numeric-looking identifier, a count, an ordinal rating and measured duration. A digit is not always a measurable quantity; an ordered category does not automatically have equal intervals. Opening the Spellbook is optional.\n\n<b>New interleaved cases:</b> Classify each field and state the decisive cue.\n\n- A. Learner ID “00091”.\n- B. Number of times a lesson was reopened in a week: 0, 1, 2, 3…\n- C. Support priority: 1 = low, 2 = medium, 3 = high.\n- D. Session duration measured at 8.2 minutes.",
             "feedback_md": "<b>T06 feedback — only after a submitted T06 attempt:</b> A is a nominal ID, B discrete count, C ordinal category and D continuous measurement as recorded.",
-            "feedback_gate": "AFTER_T06_MEANINGFUL_ATTEMPT"
+            "feedback_gate": "AFTER_T06_MEANINGFUL_ATTEMPT",
+            "answer_key": {"A": "nominal", "B": "discrete", "C": "ordinal", "D": "continuous"}
           },
           "T07": {
             "technique_id": "L2-T07",

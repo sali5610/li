@@ -11,7 +11,7 @@ import type {SaveState} from '../../../../design-system/react/Molecules';
 import type {Attempt} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
 import './journey.css';
-import {LessonBookmark,LessonMentor,LessonSectionIndex,LessonSources} from './LessonDetailParity.js';
+import {LessonBookmark,LessonMentor,LessonSectionIndex,LessonSources,LessonFigure} from './LessonDetailParity.js';
 
 type LessonId='L03-1-2'|'L15-2-2';
 type Phase='read'|'guided'|'practice'|'feedback'|'progress';
@@ -318,13 +318,13 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
       <p className="li-learning-copy">{safeText(content.compareText2)}</p></div>
     </div>
     <Text>{safeText(content.conceptNote)}</Text>
-    <figure className="li-learning-visual">
+    <div id={'li-react-'+id+'-visuals'} className="li-lesson-single-figure">
      <Heading level={3} role="titleMedium">{content.visualTitle}</Heading>
-     <img src={sourceImg.src} alt={content.visualCaption} loading="lazy"/>
-     <figcaption><Text role="support">{content.visualNote}</Text>
-      <a href={sourceImg.link} target="_blank" rel="noopener noreferrer">
-       {sourceImg.credit}</a></figcaption>
-    </figure>
+     <LessonFigure src={sourceImg.src} link={sourceImg.link} credit={sourceImg.credit}
+      title={content.visualCaption} note={content.visualNote}
+      fallback={vi?'Ảnh chưa tải. Mở ảnh gốc để xem giấy phép.':'Image unavailable. Open the original to check the license.'}
+      openLabel={vi?'Mở ảnh gốc':'Open original image'}/>
+    </div>
     <Button onClick={()=>setPhase('guided')}>{labels.guided}</Button>
    </Card>}
    {phase==='guided'&&<Card variant="flat-study" aria-labelledby="li-wave1-guided">

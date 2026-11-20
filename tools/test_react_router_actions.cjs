@@ -161,6 +161,36 @@ assert.match(diaryModel,/consentStatus:recordingStatus\(\)/);
 assert.doesNotMatch(diaryModel,/\$\("li-diary-/,
  'React Journal must not read labels or status from hidden native DOM');
 
+// Execute the actual Journal handler with stored data, not just source regexes.
+const vm=require('node:vm');
+const trackStart=diary.indexOf('function trackReactLessonSubmission(event){');
+const trackEnd=diary.indexOf('window.addEventListener("li:lesson-attempt-changed"',trackStart);
+assert.ok(trackStart>0&&trackEnd>trackStart,'React lesson submission Journal handler exists');
+const attempt={submitted:false,submittedAt:'2026-11-21T12:00:00.000Z'};
+const diaryLessons=[],diaryDates=[];
+const journalScope={
+ enabled:true,storageError:false,
+ window:{liReleasedLessonRoutes:{'L09-1-2':'lessonL09'},
+  liPersonalStudyRoutes:{'L03-1-1':'draftLessonL0311'}},
+ document:{documentElement:{classList:{contains:key=>key==='li-auth-verified'}}},
+ localStorage:{getItem:key=>key==='li.sync.local-owner.v1'?'owner':
+  key==='li.review.L03-1-1.v1'?JSON.stringify(attempt):null},
+ localDay:raw=>Number.isFinite(Date.parse(raw))?'2026-11-21':null,
+ put:(mutate,date)=>{diaryDates.push(date);return mutate({activities:{lesson:diaryLessons}});}
+};
+const recordReactSubmission=vm.runInNewContext('('+diary.slice(trackStart,trackEnd).trim()+')',journalScope);
+recordReactSubmission({detail:{lessonId:'L03-1-1'}});
+assert.deepEqual(diaryLessons,[],'Typing a lesson draft must not inflate Journal activity');
+attempt.submitted=true;
+recordReactSubmission({detail:{lessonId:'L03-1-1'}});
+recordReactSubmission({detail:{lessonId:'L03-1-1'}});
+assert.deepEqual(diaryLessons,['L03-1-1'],'One persisted personal submission counts once');
+assert.deepEqual(diaryDates,['2026-11-21','2026-11-21'],'Use the actual submission day');
+recordReactSubmission({detail:{lessonId:'L99-9-9'}});
+journalScope.enabled=false;
+recordReactSubmission({detail:{lessonId:'L03-1-1'}});
+assert.deepEqual(diaryLessons,['L03-1-1'],'Do not record unknown or paused lessons');
+
 // One Catalog→Course→Lesson flow. Public releases remain pack-gated;
 // 17 personal-only manuscripts may be learned through invited staging routes.
 const catalog=read('site/assets/catalog-drilldown.js');

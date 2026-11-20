@@ -74,7 +74,8 @@ function DiaryBar({item,max,selected,onClick}:{
 }){
  const height=item.recorded?(item.total===0?'4px':Math.max(12,Math.round(item.total/max*100))+'%'):'0';
  return <button type="button" className={'li-diary-bar-day'+(selected?' selected':'')}
-  aria-label={item.key+': '+(item.recorded?item.total+' hoạt động':'chưa ghi nhận')}
+  aria-label={copy(item.key+': '+(item.recorded?item.total+' hoạt động':'chưa ghi nhận'),
+    item.key+': '+(item.recorded?item.total+' activities':'no journal record'))}
   aria-pressed={selected} onClick={onClick}>
   <span className="li-diary-bar-track" aria-hidden="true">
    <span className={'li-diary-bar-value'+(item.recorded?' recorded':'')}

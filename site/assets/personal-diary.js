@@ -213,6 +213,28 @@ window.addEventListener("li:l1-physical-checkin",e=>{
 });
 window.addEventListener("li:study-mode-applied",e=>{const mode=e.detail?.mode;if(MODE[mode])put(d=>{if(d.mode===mode)return false;d.mode=mode;return true;});});
 window.addEventListener("li:lesson-submitted",e=>{const id=e.detail?.lessonId;if(typeof id==="string"&&["L09-1-2","L03-1-2","L15-2-2"].includes(id))put(d=>{if(d.activities.lesson.includes(id))return false;d.activities.lesson.push(id);return true;});});
+// The invited React learner writes a saved attempt before publishing this event.
+// Count all learnable submissions (3 releases + 17 personal lessons), not drafts.
+function trackReactLessonSubmission(event){
+ const id=event.detail?.lessonId;
+ if(!enabled||storageError||typeof id!=="string"||
+  !document.documentElement.classList.contains("li-auth-verified"))return;
+ // Reuse the actual permitted React routes. No second hard-coded 3/17 registry.
+ if(!Object.prototype.hasOwnProperty.call(window.liReleasedLessonRoutes||{},id)&&
+  !Object.prototype.hasOwnProperty.call(window.liPersonalStudyRoutes||{},id))return;
+ try{
+  if(!localStorage.getItem("li.sync.local-owner.v1"))return;
+  const raw=localStorage.getItem("li.review."+id+".v1");
+  if(!raw||raw.length>60000)return;
+  const attempt=JSON.parse(raw);
+  if(attempt?.submitted!==true||typeof attempt.submittedAt!=="string")return;
+  const date=localDay(attempt.submittedAt);
+  if(!date)return;
+  put(day=>{if(day.activities.lesson.includes(id))return false;
+   day.activities.lesson.push(id);return true;},date);
+ }catch{/* Invalid or inaccessible attempt: never fabricate diary activity. */}
+}
+window.addEventListener("li:lesson-attempt-changed",trackReactLessonSubmission);
 window.addEventListener("li:activity",e=>{
  const detail=e.detail||{},type=detail.type,id=detail.id;
  if(!TYPES.includes(type)||typeof id!=="string"||!id.trim()||id.length>256)return;

@@ -99,7 +99,8 @@ function validHistory(a:Attempt):boolean{
    (p.questionPrompts!==undefined&&
     !(['vi','en'] as const).every(locale=>{
      const questions=p.questionPrompts?.[locale];
-     return tuple(questions)&&questions.every(q=>q.trim().length>0);
+     return Array.isArray(questions)&&questions.length===4&&
+      questions.every(q=>typeof q==='string'&&q.trim().length>0&&q.length<=4000);
     }))||
    !validMethodAttempts(p))return false;
   last=p.attemptNumber;

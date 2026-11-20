@@ -67,8 +67,9 @@ function resume(a:Attempt):Phase{
  if(a.reviewed)return 'progress';
  if(a.submitted)return 'feedback';
  if(a.draft.some(s=>s.trim()))return 'practice';
- if(a.methodAttempts?.T06?.draft||a.methodAttempts?.T07?.draft)return 'methods';
- if(a.guidedDraft.trim())return 'guided';
+ if(a.methodChoice!==undefined&&a.methodChoice!==null||
+    a.methodAttempts?.T06?.draft||a.methodAttempts?.T07?.draft)return 'methods';
+ if(a.guidedDraft.trim()||a.hint)return 'guided';
  return 'read';
 }
 function quiz(md:string):{intro:string;questions:string[]}{
@@ -515,17 +516,24 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   const next:Attempt={...attempt,submitted:true,submittedAt:new Date().toISOString(),
    submission:[...attempt.draft] as Attempt['submission'],submissionLocale:attempt.locale,
    contentVersion:lesson?.version,rubricVersion:(lesson?.version??'unknown')+':rubric:0-8',
-   attemptNumber:attempt.attemptNumber??1};
+   attemptNumber:attempt.attemptNumber??1,answerRevealed:false};
   if(await save(next))setPhase('feedback');
  }
+ async function revealAnswer(){
+  if(!attempt||!persistedAttempt?.submitted||locked||saving||
+     persistedAttempt.answerRevealed)return;
+  setError('');
+  await save({...attempt,answerRevealed:true});
+ }
  function rate(index:number,value:string){
-  if(!attempt||locked||attempt.reviewed)return;
+  if(!attempt||!persistedAttempt?.answerRevealed||locked||attempt.reviewed)return;
   const ratings=[...attempt.ratings] as Attempt['ratings'];
   ratings[index]=value===''?null:Number(value) as 0|1|2;
   void save({...attempt,ratings});
  }
  async function finish(){
-  if(!attempt||locked||saving||!attempt.submitted||attempt.reviewed)return;
+  if(!attempt||!persistedAttempt?.answerRevealed||locked||saving||
+     !attempt.submitted||attempt.reviewed)return;
   if(attempt.ratings.some(v=>v===null)){
    setError('Chọn đủ bốn tiêu chí tự đánh giá.');return;
   }
@@ -544,7 +552,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    submission:[...frozen.submission] as PastEditorialAttempt['submission'],
    submissionLocale:frozen.submissionLocale,submittedAt:frozen.submittedAt,
    ratings:[...frozen.ratings] as PastEditorialAttempt['ratings'],
-   reviewedAt:frozen.reviewedAt??null,
+   reviewedAt:frozen.reviewedAt??null,answerRevealed:!!frozen.answerRevealed,
    contentVersion:frozen.contentVersion??lesson.version,
    rubricVersion:frozen.rubricVersion??lesson.version+':rubric:0-8',
    attemptNumber:frozen.attemptNumber??1,
@@ -554,7 +562,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   const history=[...(frozen.attemptHistory??[]),prior];
   const next:Attempt={...initial(),locale:frozen.locale,attemptHistory:history,
    attemptNumber:prior.attemptNumber+1,contentVersion:lesson.version,
-   rubricVersion:lesson.version+':rubric:0-8',methodChoice:null};
+   rubricVersion:lesson.version+':rubric:0-8',methodChoice:null,answerRevealed:false};
   if(JSON.stringify(next).length>=55000){
    setError('Lịch sử sắp vượt giới hạn lưu trữ. Chưa tạo lượt mới để tránh mất bài cũ.');return;
   }
@@ -652,10 +660,10 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    {phase==='read'&&<Card variant="flat-study" aria-labelledby="li-editorial-read">
     <section id="l0911-hook"><Markdown md={content.hook.md}/>{mentor('opening')}</section>
     <Heading level={2} id="li-editorial-read" role="titleLarge">{vi?'Hiểu bản chất':'Understand the concepts'}</Heading>
-    <Markdown md={content.goals.md}/>
+    <section id="l0911-goals"><Markdown md={content.goals.md}/></section>
     <section id="l0911-concept"><Markdown md={content.concept.md}/>
      <PopulationDiagram illustration={content.illustration}/>
-     <Markdown md={content.variable_types.md}/>{mentor('concept')}</section>
+     <section id="l0911-variables"><Markdown md={content.variable_types.md}/></section>{mentor('concept')}</section>
     <Heading level={3} role="titleMedium">{vi?'Nguồn để đọc thêm':'Read the sources'}</Heading>
     <ul>{lesson.sources.filter(s=>s.url.startsWith('https://')).map(s=><li key={s.url}>
      <a href={s.url} target="_blank" rel="noopener noreferrer">{s.title}</a>
@@ -677,7 +685,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     <Heading level={2} id="li-editorial-methods" role="titleLarge">{labels.methods}</Heading>
     <Text role="support">{vi?'T06 là gợi ý chính, T07 bổ trợ. Cả hai đều không bắt buộc.':
      'T06 is primary and T07 supplementary; both are optional.'}</Text>
-    <div className="li-editorial-method-choice" role="group" aria-label={vi?'Chọn Thần Chú (K2)':'Choose a method (K2)'}>
+    <div id="l0911-method" className="li-editorial-method-choice" role="group" aria-label={vi?'Chọn Thần Chú (K2)':'Choose a method (K2)'}>
      {(['T06','T07','skip'] as const).map(choice=><Button key={choice}
       variant={attempt.methodChoice===choice?'primary':'secondary'}
       aria-pressed={persistedAttempt?.methodChoice===choice}
@@ -748,11 +756,22 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       <p className="li-learning-submitted-answer">{(attempt.submission??attempt.draft)[i]}</p>
      </li>)}
     </ol>
-    <Heading level={3} role="titleMedium">{vi?'Đáp án mẫu · chỉ sau khi nộp':'Model answer · after submission'}</Heading>
-    <Markdown md={content.independent.model_answer_md}/>
-    <section id="l0911-reflection"><Markdown md={content.reflection.md}/>{mentor('reflection')}</section>
-    <Heading level={3} role="titleMedium">{vi?'Tự đánh giá 4 tiêu chí':'Self-rate four criteria'}</Heading>
-    {[0,1,2,3].map(i=><div className="li-learning-rating" key={i}>
+    {!persistedAttempt.answerRevealed?
+     <div className="li-learning-hint">
+      <Text role="support">{vi?
+       'Bài làm đã lưu. Đáp án mẫu vẫn đóng đến khi mày chủ động mở.':
+       'Your answers are saved. The model answer stays hidden until you choose to reveal it.'}</Text>
+      <Button disabled={saving||locked} onClick={()=>void revealAnswer()}>
+       {vi?'Mở đáp án và rubric':'Reveal model answer and rubric'}
+      </Button>
+     </div>:
+     <>
+      <Heading level={3} role="titleMedium">{vi?'Đáp án mẫu · đã mở sau khi lưu':'Model answer · revealed after saving'}</Heading>
+      <Markdown md={content.independent.model_answer_md}/>
+      <section id="l0911-reflection"><Markdown md={content.reflection.md}/>{mentor('reflection')}</section>
+      <Heading level={3} role="titleMedium">{vi?'Tự đánh giá 4 tiêu chí':'Self-rate four criteria'}</Heading>
+     </>}
+    {persistedAttempt.answerRevealed&&[0,1,2,3].map(i=><div className="li-learning-rating" key={i}>
      <label htmlFor={'li-editorial-rating-'+id+'-'+i}>
       <strong>{rubrics[i]??((vi?'Tiêu chí ':'Criterion ')+(i+1))}</strong>
      </label>
@@ -762,8 +781,11 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       <option value="0">0</option><option value="1">1</option><option value="2">2</option>
      </select>
     </div>)}
-    {persistedAttempt?.reviewed?<Button onClick={()=>setPhase('progress')}>{labels.progress}</Button>:
-     <Button disabled={saving||locked||attempt.reviewed} onClick={()=>void finish()}>{vi?'Lưu tự đánh giá':'Save self-review'}</Button>}
+    {persistedAttempt.answerRevealed&&(persistedAttempt.reviewed?
+     <Button onClick={()=>setPhase('progress')}>{labels.progress}</Button>:
+     <Button disabled={saving||locked||attempt.reviewed} onClick={()=>void finish()}>
+      {vi?'Lưu tự đánh giá':'Save self-review'}
+     </Button>)}
    </Card>}
    {phase==='progress'&&persistedAttempt?.reviewed&&<Card variant="flat-study" aria-labelledby="li-editorial-progress">
     <Heading level={2} id="li-editorial-progress" role="titleLarge">{vi?'Hoàn thành lượt học':'Attempt complete'}</Heading>

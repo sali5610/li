@@ -259,8 +259,8 @@ export function GuideDetail(){
     </div>
     <div className="spell-activity-footer">
      <Text role="support">{view.active==='T12'?
-      copy('T12 lưu dấu vết và bản nháp trên thiết bị này, không đồng bộ sang thiết bị khác.',
-       'T12 saves the cue and draft on this device only; no cross-device sync.'):
+      copy('T12 lưu bản nháp trên máy và đồng bộ qua tài khoản khi online.',
+       'T12 stores the draft locally and syncs it through your account when online.'):
       copy('Tự chọn, có thể bỏ qua. Trừ mốc ôn T02, câu trả lời không tự lưu hoặc gửi lên máy chủ.',
        'Optional. Except the T02 schedule, exercise answers are neither saved nor sent to a server.')}</Text>
      {view.active==='T12'&&<p className="small" role={view.t12StorageError?'alert':'status'}

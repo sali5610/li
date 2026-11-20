@@ -150,3 +150,81 @@ test('deleting an observed saved note queues a tombstone; another device removes
   });
  });
 });
+
+test('T12 uses existing signed account outbox and restores the same lesson on another device',async()=>{
+ const uid='t12-account',other='other-user',context='L09-1-2';
+ const id='spell-t12-resume-'+context,key='li.spell.t12.resume.v1:'+encodeURIComponent(uid)+':'+context;
+ const raw=JSON.stringify({schema:'li.spell.t12.v1',phase:1,
+  context:'Đang học',next:'Viết kết luận',answer:'Mới viết dở',
+  updatedAt:'2026-11-21T00:00:00Z'});
+ device();localStorage.setItem(key,raw);
+ await withStore(async first=>{
+  await capturePersonalState(uid,null,first,new Map());
+  const outbox=await first.outbox.get(storageKey(uid,'l2_progress',id));
+  assert.equal(outbox?.payload.raw,raw);
+  const serverRow={owner_id:uid,item_type:'l2_progress',item_id:id,
+   revision:1,changed_at:'2026-11-21T00:01:00Z',deleted_at:null,payload:outbox.payload};
+  await first.accept(uid,outbox,serverRow);
+  device();
+  await withStore(async fresh=>{
+   const snaps=await capturePersonalState(uid,null,fresh,new Map());
+   assert.equal((await fresh.counts(uid)).pending,0,'fresh device must not invent upload');
+   await fresh.apply(uid,serverRow); // existing syncOnce brings this owner-verified row
+   assert.equal(await hydratePersonalState(uid,snaps,fresh,()=>{}),true);
+   assert.equal(localStorage.getItem(key),raw);
+   assert.equal((await fresh.counts(uid)).pending,0);
+   assert.equal(personalRemoteSnapshot(uid,'l2_progress',id,serverRow.payload)?.raw,raw);
+   assert.throws(()=>personalRemoteSnapshot(other,'l2_progress',id,serverRow.payload),
+    /PRIVATE_PAYLOAD_INVALID/,
+    'other signed account cannot decode the first owner key');
+  });
+ });
+});
+test('T12 reset and completion upload a redacted terminal, never stale remote draft',async()=>{
+ const uid='t12-reset',context='standalone',id='spell-t12-resume-'+context;
+ const key='li.spell.t12.resume.v1:'+encodeURIComponent(uid)+':'+context;
+ const draft=JSON.stringify({schema:'li.spell.t12.v1',phase:1,
+  context:'Đang dở',next:'Viết tiếp',answer:'',updatedAt:'2026-11-21T00:00:00Z'});
+ const done=JSON.stringify({schema:'li.spell.t12.v1',phase:2,
+  context:'',next:'',answer:'',updatedAt:'2026-11-21T00:02:00Z'});
+ device();localStorage.setItem(key,draft);
+ await withStore(async first=>{
+  const seen=new Map();
+  await capturePersonalState(uid,null,first,seen);
+  const rowKey=storageKey(uid,'l2_progress',id);
+  const old=await first.outbox.get(rowKey);assert(old);
+  await first.accept(uid,old,{owner_id:uid,item_type:'l2_progress',item_id:id,
+   revision:1,deleted_at:null,changed_at:'2026-11-21T00:01:00Z',payload:old.payload});
+  localStorage.setItem(key,done);
+  await capturePersonalState(uid,null,first,seen);
+  const queued=await first.outbox.get(rowKey);
+  assert(queued);
+  assert.equal(queued.payload.raw,done);
+  assert.equal(JSON.parse(queued.payload.raw).context,'');
+  const remote={owner_id:uid,item_type:'l2_progress',item_id:id,
+   revision:2,deleted_at:null,changed_at:'2026-11-21T00:02:00Z',payload:queued.payload};
+  await first.accept(uid,queued,remote);
+  device();
+  await withStore(async second=>{
+   const snaps=await capturePersonalState(uid,null,second,new Map());
+   await second.apply(uid,remote);
+   await hydratePersonalState(uid,snaps,second,()=>{});
+   assert.equal(localStorage.getItem(key),done);
+  });
+ });
+});
+test('T12 invalid remote checkpoint is rejected before writing personal data',async()=>{
+ const uid='t12-bad',id='spell-t12-resume-standalone';
+ const key='li.spell.t12.resume.v1:'+encodeURIComponent(uid)+':standalone';
+ const payload={schema:'li.personal.storage.v1',storageKey:key,
+  raw:JSON.stringify({schema:'li.spell.t12.v1',phase:1,
+   context:'',next:'Invalid',answer:''})};
+ device();
+ assert.throws(()=>personalRemoteSnapshot(uid,'l2_progress',id,payload),
+  /T12_PRIVATE_CHECKPOINT_INVALID/);
+ await withStore(async first=>{
+  localStorage.setItem(key,payload.raw);
+  await assert.rejects(capturePersonalState(uid,null,first,new Map()),
+   /T12_PRIVATE_CHECKPOINT_INVALID/);
+ });
+});

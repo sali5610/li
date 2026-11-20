@@ -37,3 +37,12 @@
   justify-content:space-between;
  }
 }
+
+
+/* The fourth, React-owned account utility must not crowd a 320px iPhone.
+ * Keep all 44px tap targets; compact the decorative logo only with Back open. */
+@media(max-width:375px){
+ .header:has(#li-global-back:not([hidden])) .brand-copy{display:none}
+ .header:has(#li-global-back:not([hidden])) .brand-stamp{width:32px;height:32px}
+ .header .tools{gap:var(--li-space-0)}
+}

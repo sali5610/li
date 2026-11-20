@@ -73,3 +73,13 @@ All 12 missing families and 8 partial equivalents are represented by **20 import
 | `laoLyCompanion` | Companion FAB & Dialog | `LaoLyCompanion` in `LegacyNavigation.tsx` | Companion | default, focus |
 
 **Ownership:** UI modules do not persist, authenticate, write to Neon or call an AI backend. Calendar and chart take real caller-supplied data and distinguish no record from zero, and never infer user capacity/health. FAB and check-in modal use controlled Dialog. Bottom navigation links are real hrefs in actual consumer and hash fixtures inside the story. Source of truth: React exports, not UX-DS-11 archive. **Focus rule:** no extra outer green rectangle — existing border thickens or underline emphasizes on keyboard. `State: focus` is a fixture, G2 still open.
+
+
+## Lucide Icon Manager · pinned catalog + role governance
+
+- **One source:** \`lucide-react@1.76.0\` pinned exactly in \`design-system/react/package.json\`. \`npm install\` (existing Studio CI) installs it; \`npm run build\` compiles the gallery from real package exports. No CDN/runtime API, manual SVG copies, custom icon duplication or additional repo.
+- **Studio:** \`/li/design-system/#lucideManager\`. Search the full installed Lucide export set, inspect an icon at sizes 18/20/22/24/32/40 and stroke widths 1/1.5/2/2.5, filter the curated li. roles, copy JSX import or stable \`LiIcon\` usage and link to upstream. Gallery code is deliberately Studio-only and is **not imported** in app entrypoints (large full catalog is a design-time cost, not a learner app cost).
+- **Approved product mapping:** \`design-system/react/LucideIcons.tsx\` is the owner of stable icon role names (e.g. \`home\` renders upstream \`House\`, \`close\` renders \`X\`). Existing \`Controls.Icon\` and \`LegacyControls.FunctionalIcon\` preserve their public API but now call the same Lucide adapter. LiIcon is accessible: decorative icons hidden, meaningful ones get label.
+- **Sync/update:** installed catalog is automatically recompiled when the DS is built/deployed. To update upstream icon releases, change exact pinned npm version in a reviewed PR; verify the approved role mapping and CI before publishing. **Syncing does not authorize a design change** or auto-write project files from the website. Site says "synced at build", not "up to date with npm latest".
+- **Focus and style:** regular Lucide outlines respect currentColor/stroke and DS size/stroke; keyboard focus belongs to the **button/link hosting** the icon, never an extra outer green ring on the icon itself.
+- **Validation boundary:** CI compile + Pages deployment verify source availability. PO visual G2, mobile Safari and actual app adoption remain separate. No extra test frameworks.

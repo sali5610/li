@@ -1,5 +1,7 @@
 import React,{useId} from 'react';
-import type {ButtonHTMLAttributes,ChangeEventHandler,InputHTMLAttributes,ReactNode,SVGProps} from 'react';
+import type {ButtonHTMLAttributes,ChangeEventHandler,InputHTMLAttributes,ReactNode} from 'react';
+import {LiIcon} from './LucideIcons';
+import type {LiIconRole,LiIconProps} from './LucideIcons';
 
 /** UX-DS-35 Stage04 native atoms. No routing, persistence, or learner state. */
 type ChoiceProps=Omit<InputHTMLAttributes<HTMLInputElement>,'type'|'children'|'size'> & {label:ReactNode};
@@ -42,23 +44,13 @@ export function Field({label,kind='input',type='text',id:given,hint,error,
   {error?<p className="li-atom-field-error" id={errorId} role="alert">{error}</p>:null}
  </div>;
 }
+/** Existing Stage04 icon names remain stable; all glyphs now come from Lucide. */
 export type IconName='search'|'check'|'info'|'close'|'chevron-left'|'book-open';
-export function Icon({name,label,className='',...props}:Omit<SVGProps<SVGSVGElement>,'children'> &{
+export function Icon({name,label,className='',...props}:Omit<LiIconProps,'name'> &{
  name:IconName;label?:string
 }){
- let glyph:ReactNode;
- switch(name){
- case 'search':glyph=<><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></>;break;
- case 'check':glyph=<path d="m20 6-11 11-5-5"/>;break;
- case 'info':glyph=<><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></>;break;
- case 'close':glyph=<><path d="M18 6 6 18"/><path d="m6 6 12 12"/></>;break;
- case 'chevron-left':glyph=<path d="m15 18-6-6 6-6"/>;break;
- case 'book-open':glyph=<><path d="M12 7v14"/><path d="M3 18V5a2 2 0 0 1 2-2h3a4 4 0 0 1 4 4 4 4 0 0 1 4-4h3a2 2 0 0 1 2 2v13"/><path d="M3 18a2 2 0 0 1 2-2h3a4 4 0 0 1 4 4 4 4 0 0 1 4-4h3a2 2 0 0 1 2 2"/></>;break;
- }
- return <svg {...props} data-li-atom="icon" className={'li-atom-icon '+className}
-  viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
-  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-  role={label?'img':undefined} aria-label={label} aria-hidden={label?undefined:true}>{glyph}</svg>;
+ return <LiIcon {...props} name={name} label={label} className={className}
+  data-li-atom="icon"/>;
 }
 export function IconButton({label,icon,className='',type='button',...props}:
  Omit<ButtonHTMLAttributes<HTMLButtonElement>,'children'> & {label:string;icon:IconName}){

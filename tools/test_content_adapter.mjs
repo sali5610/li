@@ -14,6 +14,7 @@ assert.equal((await c.listCourses({level:"foundation"})).length,15);
 assert.equal((await c.listCourses({fieldId:"F09"})).length,3);
 assert.equal((await c.getCourse("C15-2")).level,"intermediate");
 assert.ok(allCourses.every(x=>!x.id.startsWith("PROP-")),"proposed research candidates must never leak into learner catalog");
+requested.length=0; // isolate lazy course-pack fetch assertion from course catalog requests
 const l09=await c.getLesson("L09-1-2");
 assert.equal(l09.id,"L09-1-2");assert.equal(l09.content.localized.vi.questions.length,4);
 assert.deepEqual(requested,["manifest.json","C09-1.json"],"lazy course load: no other course fetched");

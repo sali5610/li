@@ -1,3 +1,4 @@
+import {openRoute} from './app-router.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Button,Card,Checkbox,Field,Heading,InlineFeedback,LiIcon,Text} from '../../../../design-system/react/index';
@@ -85,7 +86,7 @@ export function Journal(){
   {name:'Input',help:copy('Ghi chú đã lưu','Saved inputs')}
  ];
  return <div className="section-shell li-react-journal" data-li-react-screen="dashboard">
-  <Button variant="ghost" data-page="library" className="library-back-link">
+  <Button variant="ghost" onClick={()=>openRoute('library')} className="library-back-link">
    <LiIcon name="chevron-left" size={18}/> {copy('Tủ Riêng','Private Library')}</Button>
   <div className="kicker">{copy('THEO DÕI THEO NGÀY','DAILY ACTIVITY')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Nhật Ký','Journal')}</Heading>

@@ -1,6 +1,11 @@
 /* Wave1 related learning: existing UI powered by generated source-checked graph. */
 (()=>{
 "use strict";
+// Published GitHub Pages staging renders verified graph relations inside
+// the actual React lesson. Do not append a second vanilla section beside it.
+// Other environments retain their previous native fallback unchanged.
+if(typeof location!=="undefined"&&location.hostname==="sali5610.github.io"&&
+ location.pathname.startsWith("/li/"))return;
 const LESSONS={
  "L03-1-2":{route:"lessonL03",title:"Open Questions & Interview Bias",field:"Human–Computer Interaction (HCI)"},
  "L09-1-2":{route:"lessonL09",title:"Sampling Bias",field:"Data Science"},

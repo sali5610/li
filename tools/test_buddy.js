@@ -86,4 +86,48 @@ ctx.currentPage="home";ctx.qIndex=1;
 ctx.openLaoLy();
 assert.ok(node("buddy-text").textContent.includes("Chuẩn mực"));
 assert.ok(node("buddy-question").textContent);
-console.log("PASS "+tested+" companion plans, 4 study modes, saved counts, case action, opening dialog");
+// Invited React context: every action must operate on the visible UI model,
+// not the previous native page's stale hidden textarea/button/filter state.
+let savedFromReact=0,caseSaves=0,navigated='';
+ctx.window.liBuddyReactMounted=true;
+ctx.window.liInquiryFlow={
+ getMirror:()=>({saved:false}),toggleQuestion:()=>{savedFromReact++;return true;},
+ getResearch:()=>({feedback:"Hãy kiểm chứng: Ai được hỏi?"})
+};
+ctx.currentPage="home";ctx.qIndex=0;
+ctx.window.liGetBuddyPlan().actions[2].perform();
+assert.equal(savedFromReact,1,"React mirror bookmark must call canonical action");
+ctx.window.liInquiryFlow.getMirror=()=>({saved:true});
+assert.equal(ctx.window.liGetBuddyPlan().actions[2].label,"Mở Dấu Trang");
+ctx.window.liAppRouter={navigate:route=>{navigated=route;return true;}};
+ctx.window.liGetBuddyPlan().actions[2].perform();
+assert.equal(navigated,"resume","Saved questions should open the real React bookmark route");
+ctx.currentPage="research";
+assert.equal(ctx.window.liGetBuddyPlan().actions[2].label,"Sang Phản Chứng");
+ctx.currentPage="case";ctx.selectedCaseAnswer=null;
+node("case-revision").value=""; // Stale hidden native form must be ignored.
+ctx.window.liCaseUi={
+ getState:()=>({choice:"right",revision:"Một kết luận dành riêng cho người được hỏi"}),
+ submit:()=>{caseSaves++;return true;}
+};
+const liveCase=ctx.window.liGetBuddyPlan();
+assert.equal(liveCase.actions[2].label,"Lưu Bút Ký");
+liveCase.actions[2].perform();
+assert.equal(caseSaves,1,"Mentor must save using real React Case submit");
+ctx.window.liCaseUi.getState=()=>({choice:null,revision:""});
+assert.equal(ctx.window.liGetBuddyPlan().actions[2].label,"Viết Luận Kết");
+ctx.currentPage="guide";ctx.window.liGuideUi={getState:()=>({query:"T09",category:"Tất cả"})};
+assert.equal(ctx.window.liGetBuddyPlan().actions[2].label,"Sửa từ khóa");
+ctx.currentPage="guideDetail";ctx.window.LiSpellPractice={getView:()=>({active:"T09"})};
+assert.ok(ctx.window.liGetBuddyPlan().intro.includes("Source Criticism"));
+ctx.currentPage="capture";node("capture-note").value="";
+ctx.window.liCaptureUi={getDraft:()=>"Một ý còn cần kiểm chứng"};
+assert.ok(ctx.window.liGetBuddyPlan().intro.includes("Ngươi đã nhặt được một ý"));
+ctx.currentPage="dashboard";
+ctx.window.liPersonalDiary={getView:()=>({totals:{recorded:4},consentStatus:"Đang lưu trên máy"})};
+assert.ok(ctx.window.liGetBuddyPlan().intro.includes("4 ngày ghi nhận"));
+ctx.currentPage="catalog";
+ctx.window.liGetBuddyPlan().actions[2].perform();
+assert.equal(navigated,"lessonL09","Lão Lý must open the actually released React lesson");
+console.log("PASS "+tested+" companion plans, 4 study modes, saved counts, React contextual actions across 8 routes");
+

@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" role="img" aria-labelledby="title desc">
+<title id="title">Population and observed sample</title>
+<desc id="desc">An abstract field of people on the left and a smaller observed subset on the right. The illustration does not imply a random or representative sample.</desc>
+<rect width="720" height="320" fill="#f1f0e9"/>
+<rect x="24" y="24" width="426" height="272" rx="3" fill="#e1e6df" stroke="#536b63" stroke-width="2"/>
+<rect x="490" y="24" width="206" height="272" rx="3" fill="#e8e5d6" stroke="#536b63" stroke-width="2"/>
+<path d="M450 156h40" stroke="#536b63" stroke-width="2" stroke-dasharray="5 7"/>
+<path d="M480 147l10 9-10 9" stroke="#536b63" fill="none" stroke-width="2"/>
+<g fill="#9dae9f" stroke="#526a61" stroke-width="1.5">
+<circle cx="52" cy="53" r="12" fill="#9dae9f"/>
+<circle cx="105" cy="53" r="12" fill="#b38052"/>
+<circle cx="158" cy="53" r="12" fill="#9dae9f"/>
+<circle cx="211" cy="53" r="12" fill="#9dae9f"/>
+<circle cx="264" cy="53" r="12" fill="#9dae9f"/>
+<circle cx="317" cy="53" r="12" fill="#b38052"/>
+<circle cx="370" cy="53" r="12" fill="#9dae9f"/>
+<circle cx="423" cy="53" r="12" fill="#9dae9f"/>
+<circle cx="52" cy="94" r="12" fill="#9dae9f"/>
+<circle cx="105" cy="94" r="12" fill="#9dae9f"/>
+<circle cx="158" cy="94" r="12" fill="#b38052"/>
+<circle cx="211" cy="94" r="12" fill="#9dae9f"/>
+<circle cx="264" cy="94" r="12" fill="#9dae9f"/>
+<circle cx="317" cy="94" r="12" fill="#9dae9f"/>
+<circle cx="370" cy="94" r="12" fill="#b38052"/>
+<circle cx="423" cy="94" r="12" fill="#9dae9f"/>
+<circle cx="52" cy="135" r="12" fill="#9dae9f"/>
+<circle cx="105" cy="135" r="12" fill="#9dae9f"/>
+<circle cx="158" cy="135" r="12" fill="#b38052"/>
+<circle cx="211" cy="135" r="12" fill="#9dae9f"/>
+<circle cx="264" cy="135" r="12" fill="#9dae9f"/>
+<circle cx="317" cy="135" r="12" fill="#9dae9f"/>
+<circle cx="370" cy="135" r="12" fill="#9dae9f"/>
+<circle cx="423" cy="135" r="12" fill="#9dae9f"/>
+<circle cx="52" cy="176" r="12" fill="#9dae9f"/>
+<circle cx="105" cy="176" r="12" fill="#9dae9f"/>
+<circle cx="158" cy="176" r="12" fill="#b38052"/>
+<circle cx="211" cy="176" r="12" fill="#9dae9f"/>
+<circle cx="264" cy="176" r="12" fill="#9dae9f"/>
+<circle cx="317" cy="176" r="12" fill="#b38052"/>
+<circle cx="370" cy="176" r="12" fill="#9dae9f"/>
+<circle cx="423" cy="176" r="12" fill="#9dae9f"/>
+<circle cx="52" cy="217" r="12" fill="#9dae9f"/>
+<circle cx="105" cy="217" r="12" fill="#9dae9f"/>
+<circle cx="158" cy="217" r="12" fill="#9dae9f"/>
+<circle cx="211" cy="217" r="12" fill="#b38052"/>
+<circle cx="264" cy="217" r="12" fill="#9dae9f"/>
+<circle cx="317" cy="217" r="12" fill="#9dae9f"/>
+<circle cx="370" cy="217" r="12" fill="#9dae9f"/>
+<circle cx="423" cy="217" r="12" fill="#9dae9f"/>
+<circle cx="52" cy="258" r="12" fill="#9dae9f"/>
+<circle cx="105" cy="258" r="12" fill="#b38052"/>
+<circle cx="158" cy="258" r="12" fill="#9dae9f"/>
+<circle cx="211" cy="258" r="12" fill="#9dae9f"/>
+<circle cx="264" cy="258" r="12" fill="#9dae9f"/>
+<circle cx="317" cy="258" r="12" fill="#9dae9f"/>
+<circle cx="370" cy="258" r="12" fill="#b38052"/>
+<circle cx="423" cy="258" r="12" fill="#9dae9f"/>
+</g>
+<g fill="#b38052" stroke="#72553c" stroke-width="1.5">
+<circle cx="527" cy="93" r="14"/>
+<circle cx="572" cy="93" r="14"/>
+<circle cx="617" cy="93" r="14"/>
+<circle cx="662" cy="93" r="14"/>
+<circle cx="527" cy="156" r="14"/>
+<circle cx="572" cy="156" r="14"/>
+<circle cx="617" cy="156" r="14"/>
+<circle cx="662" cy="156" r="14"/>
+<circle cx="527" cy="219" r="14"/>
+<circle cx="572" cy="219" r="14"/>
+</g>
+<path d="M38 279h395 M503 279h180" stroke="#536b63" stroke-width="1.5" opacity=".45"/>
+</svg>

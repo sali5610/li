@@ -149,6 +149,11 @@ jobs:
            r'<script src="\./assets/(?:catalog-curriculum-data|catalog-drilldown|li-catalog-search)\.js(?:\?v=[^"]+)?"></script>',
            '',html)
           assert count==3,'Expected exactly three retired native Catalog/Search scripts'
+          # The React FAB now owns drag, focus, normalized position and live
+          # avatar port. Never bind the old pointer/keyboard listeners first.
+          old_drag='<script src="./assets/laoly-drag.js?v=20261119-control-dodge"></script>'
+          assert html.count(old_drag)==1,'Native Lão Lý drag source changed'
+          html=html.replace(old_drag,'',1)
           # Fail CLOSED by default. No guest path or query bypass.
           gate=('<style id="li-auth-gate-critical">'
                 'html:not(.li-auth-verified) .app,'
@@ -196,6 +201,7 @@ jobs:
           grep -Fq 'li-home-mirror-art-image' "site/assets/li-react-learning-${GITHUB_SHA:0:12}.css"
           ! grep -Fq '<script src="./assets/lesson-l09-hifi.js"></script>' site/index.html
           ! grep -Eq '<script src="./assets/(catalog-curriculum-data|catalog-drilldown|li-catalog-search)\.js' site/index.html
+          ! grep -Fq '<script src="./assets/laoly-drag.js' site/index.html
           grep -Fq 'li-auth-gate-critical' site/index.html
           grep -Fq 'id="li-staging-auth-root"' site/index.html
           grep -Fq 'id="li-open-account"' site/index.html

@@ -28,6 +28,8 @@ const location=new URL("https://sali5610.github.io/li/?utm_source=chatgpt.com&le
 const urlReplacements=[];
 const accessClasses=new Set();
 const sandbox={
+ Event:class{constructor(type){this.type=type;}},
+ liResearchFeedback:"",
  currentPage:"home",
  scenarios:[{question:"Giới hạn kết luận khảo sát",type:"problem"}],
  qIndex:0,
@@ -126,4 +128,35 @@ accessClasses.add("li-account-open");
 assert.equal(sandbox.window.liAppRouter.navigate("home"),false,"account overlay blocks route");
 assert.equal(sandbox.window.liAppRouter.back(),false,"account overlay blocks history");
 accessClasses.delete("li-account-open");
-console.log("PASS S118 back navigation: Settings, Search, Capture, chained routes, duplicate prevention, fallback and Guide/Library/Research hooks");
+
+// When the React router owns navigation, the native action port must keep
+// learning history and live React data notifications without re-rendering
+// hidden guide/library/mentor/icon DOM (which would compete with React).
+const emitted=[];
+sandbox.window.dispatchEvent=event=>emitted.push(event.type);
+sandbox.window.liReactRouter={};
+const oldCounts={...calls};
+const oldProblemCount=calls.problems.length;
+sandbox.liAfterNavigate("guide");
+sandbox.liAfterNavigate("library");
+sandbox.liAfterNavigate("resume");
+sandbox.liAfterNavigate("collection");
+assert.equal(calls.guide,oldCounts.guide,"React guide must not render hidden native cards");
+assert.equal(calls.library,oldCounts.library,"React library must not render native shelf");
+assert.equal(calls.resume,oldCounts.resume,"React resume must not render native shelf");
+assert.equal(calls.collection,oldCounts.collection,"React collection must not render native shelf");
+sandbox.liAfterNavigate("research");
+assert.equal(calls.research,oldCounts.research,"React inquiry must not mutate the native research DOM");
+assert.equal(calls.problems.length,oldProblemCount+1,"React research keeps canonical visited problem data");
+assert.equal(sandbox.liResearchFeedback,"Chọn một nhánh để đặt câu hỏi kiểm chứng.");
+sandbox.liAfterNavigate("case");
+assert.equal(calls.problems.at(-1).key,"sampling-bias-90");
+sandbox.liAfterNavigate("lessonL09");
+assert.equal(calls.lesson,oldCounts.lesson+1,"React lesson still records the canonical published lesson visit");
+sandbox.liAfterNavigate("noteDetail");
+assert.ok(emitted.includes("li:library-view-changed"),"React Tủ Riêng receives refreshed private data");
+assert.ok(emitted.includes("li:inquiry-changed"),"React research gets the updated scene");
+assert.ok(emitted.includes("li:note-view-changed"),"React note detail refreshes on route return");
+assert.equal(emitted.filter(x=>x==="li:library-view-changed").length,8,
+ "Every React route change notifies the library once without a native render");
+console.log("PASS S118 native fallback + React route data side effects without double-rendering");

@@ -389,6 +389,10 @@ function Collection(){
  </div>;
 }
 export function mountGuideAndLibrary(){
+ const spellOwner=window as Window&{
+  liReactGuideDetailMounted?:boolean;
+  LiSpellPractice?:{refreshNative?:()=>void}
+ };
  const definitions=[
   {route:'guide',component:<Guide/>},
   {route:'library',component:<Library/>},
@@ -419,11 +423,16 @@ export function mountGuideAndLibrary(){
     legacy.hidden=true;legacy.style.display='none';
     return {root,host,legacy};
    });
+   // One visible exercise owner: pause native spell DOM rendering while
+   // authenticated React Detail is mounted, without replacing its checker.
+   spellOwner.liReactGuideDetailMounted=true;
    mounted=true;
    dispose=()=>{
+    spellOwner.liReactGuideDetailMounted=false;
     roots.forEach(({root,host,legacy})=>{
      root.unmount();host.remove();legacy.hidden=false;legacy.style.removeProperty('display');
     });
+    spellOwner.LiSpellPractice?.refreshNative?.();
    };
   }else if(!allowed&&mounted){
    dispose?.();dispose=null;mounted=false;

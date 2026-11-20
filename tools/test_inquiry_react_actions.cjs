@@ -14,7 +14,7 @@ const scenarios=[
  {question:"Q2",scene:"S2",branches:["When?"],observed:"X",unknown:"Y"}
 ];
 const ctx={
- qIndex:0,scenarios,liResearchFeedback:"Choose a branch",liCurrentProblem:()=>scenarios[0],
+ qIndex:0,scenarios,LI_DRAFT_KEY:"li.private.case-draft.v1",liResearchFeedback:"Choose a branch",liCurrentProblem:()=>scenarios[0],
  liToggleMirrorQuestion:()=>{saved=!saved;calls.push("toggle");return true;},
  findSavedMirrorQuestion:()=>saved?0:-1,
  shiftMirrorQuestion:d=>{ctx.qIndex=(ctx.qIndex+d+scenarios.length)%scenarios.length;calls.push("shift");},

@@ -85,6 +85,9 @@ jobs:
           npx tsc --noEmit
           npx vite build --config vite.staging-app.config.mjs
           test -s dist-staging-app/staging-auth-gate.js
+          test "$(find dist-staging-app -maxdepth 1 -type f -name '*.css' | wc -l)" -eq 1
+          grep -Fq 'data-li-react-journey' dist-staging-app/staging-auth-gate.js
+          grep -Fq 'li-react-l09-host' dist-staging-app/staging-auth-gate.js
           test -z "$(find dist-staging-app -type f -name '*.map' -print -quit)"
           grep -Fq 'li-auth-verified' dist-staging-app/staging-auth-gate.js
           echo "PASS compiled real app login gate, no secrets or maps"
@@ -93,6 +96,7 @@ jobs:
         run: |
           set -euo pipefail
           cp tools/step16-real-l09-react-island/dist-staging-app/*.js site/assets/
+          cp tools/step16-real-l09-react-island/dist-staging-app/*.css site/assets/li-react-learning.css
           cp tools/step16-real-l09-react-island/src/auth/staging-gate.css site/assets/
           node tools/build_search_pack.mjs
           node tools/test_real_content_search.mjs
@@ -112,7 +116,8 @@ jobs:
                 'html.li-auth-verified.li-account-open .app{display:none!important}'
                 'html.li-auth-verified:not(.li-account-open) #li-staging-auth-root'
                 '{display:none!important}</style>'
-                '<link rel="stylesheet" href="./assets/staging-gate.css?v=invite-shell-1">')
+                '<link rel="stylesheet" href="./assets/staging-gate.css?v=invite-shell-1">'
+                '<link rel="stylesheet" href="./assets/li-react-learning.css?v=react-l09-1">')
           html=html.replace('<head>','<head>'+gate,1)
           marker='<div class="settings-group-grid"><article class="surface"><div class="kicker">SAO LƯU</div>'
           assert html.count(marker)==1, 'Settings account slot changed'
@@ -146,6 +151,8 @@ jobs:
           print('PASS one normal app: invited login → native lesson → feedback → progress')
           PY
           test -s site/assets/staging-auth-gate.js
+          test -s site/assets/li-react-learning.css
+          grep -Fq 'li-react-learning.css' site/index.html
           grep -Fq 'li-auth-gate-critical' site/index.html
           grep -Fq 'id="li-staging-auth-root"' site/index.html
           grep -Fq 'id="li-open-account"' site/index.html

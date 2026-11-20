@@ -45,6 +45,14 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  const writes=useRef<Promise<void>>(Promise.resolve());
  const failedWrite=useRef(false),pendingWrites=useRef(0);
  const mounted=useRef(true);
+ useEffect(()=>{
+  const refresh=(event:Event)=>{
+   const detail=(event as CustomEvent<{accountId?:string}>).detail;
+   if(detail?.accountId===subject.current)void refreshStatus();
+  };
+  window.addEventListener('li:learning-sync-report',refresh);
+  return()=>window.removeEventListener('li:learning-sync-report',refresh);
+ },[]);
 
  useEffect(()=>{
   mounted.current=true;
@@ -175,7 +183,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   <header className="li-learning-header">
    <div>
     <Text role="caption">DATA SCIENCE · L09-1-2</Text>
-    <Heading level={1} role="headline">{content.title}</Heading>
+    <Heading level={1} id="li-react-l09-title" role="headline">{content.title}</Heading>
    </div>
    <Button variant="secondary" onClick={ports.navigation.openCatalog}>
     {vi?'Về Tàng Thư':'Back to library'}

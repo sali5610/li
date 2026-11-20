@@ -1,6 +1,8 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {AuthPanel} from './AuthPanel.js';
+import {mountLearningJourney} from '../learning/app-entry.js';
+import {createStagingLearningPorts} from '../learning/staging-ports.js';
 
 // Unified GitHub Pages staging: no guest app. React verifies signed invitation.
 const root=document.getElementById('li-staging-auth-root');
@@ -17,3 +19,42 @@ opener?.addEventListener('click',()=>{
  root.focus();
 });
 createRoot(root).render(<AuthPanel onClose={closeAccount}/>);
+
+
+/** Activate only the real L09 route after AuthPanel has verified invite + owner.
+ * The legacy markup stays available for rollback; it is hidden, not erased.
+ */
+function enableIntegratedL09(){
+ const page=document.getElementById('page-lessonL09');
+ const legacy=page?.querySelector<HTMLElement>(':scope > .section-shell');
+ if(!page||!legacy)return;
+ let dispose:(()=>void)|null=null;
+ let host:HTMLElement|null=null;
+ const ports=createStagingLearningPorts();
+ const update=()=>{
+  const allowed=document.documentElement.classList.contains('li-auth-verified');
+  const active=page.classList.contains('active');
+  if(allowed&&active&&!dispose){
+   const node=document.createElement('div');
+   node.id='li-react-l09-host';node.className='section-shell';page.append(node);
+   try{
+    dispose=mountLearningJourney(node,ports);
+    host=node;legacy.hidden=true;legacy.style.display='none';
+    page.setAttribute('aria-labelledby','li-react-l09-title');
+   }catch{
+    node.remove();legacy.hidden=false;legacy.style.removeProperty('display');
+    throw Error('REACT_L09_MOUNT_FAILED');
+   }
+  }else if((!allowed||!active)&&dispose){
+   dispose();dispose=null;host?.remove();host=null;
+   legacy.hidden=false;legacy.style.removeProperty('display');
+   page.setAttribute('aria-labelledby','l09-title');
+  }
+ };
+ const observer=new MutationObserver(update);
+ observer.observe(page,{attributes:true,attributeFilter:['class']});
+ observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+ update();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enableIntegratedL09,{once:true});
+else enableIntegratedL09();

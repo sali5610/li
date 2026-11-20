@@ -98,6 +98,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   setSyncStatus('checking');
   return startLearnerSync(accountId,value=>{
    setSyncStatus(value);
+   window.dispatchEvent(new CustomEvent('li:learning-sync-report',{detail:{accountId,report:value}}));
    const status=document.getElementById('li-cloud-status');
    if(status)status.textContent=syncCopy[document.documentElement.lang==='en'?'en':'vi'][value];
   });

@@ -78,7 +78,7 @@
  linear-gradient(120deg,var(--forest),var(--moss) 55%,var(--olive))}
 .li-flow-page[data-layout="cinematic"] .li-flow-page-head::before{
  content:"";position:absolute;inset:0;z-index:-1;opacity:.23;
- background:url('../assets/home-li-landscape-20261121.webp') center/cover no-repeat}
+ background:radial-gradient(ellipse at 78% 22%,var(--sage),transparent 65%),linear-gradient(125deg,var(--olive),var(--forest))}
 .li-flow-page[data-layout="cinematic"] .li-flow-page-heading .li-atom-heading,
 .li-flow-page[data-layout="cinematic"] .li-flow-page-heading .li-atom-text,
 .li-flow-page[data-layout="cinematic"] .li-flow-page-kicker{color:var(--cream)}

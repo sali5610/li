@@ -1,5 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
+import {motion,useReducedMotion} from 'motion/react';
 import {Button,Heading,InlineFeedback,ListRow,SearchField,Text} from '../../../../design-system/react/index';
 
 type Relation={id:string;title:string;label:string;kind:string;lessonId?:string;
@@ -60,6 +61,7 @@ function fallback(query:string):KnowledgeResponse{
  return {status:'fallback',results};
 }
 function KnowledgeSearch(){
+ const reduced=useReducedMotion();
  const [query,setQuery]=useState('');
  const [client,setClient]=useState<KnowledgeClient|null>(null);
  const [loadState,setLoadState]=useState<'loading'|'ready'|'error'>('loading');
@@ -113,9 +115,9 @@ function KnowledgeSearch(){
  };
  const navigateTo=(id:string)=>{if(!openLesson(id))setNavError('Chưa thể mở bài học này.');};
  return <div data-li-react-screen="knowledge-search">
-  <button type="button" className="utility-back" data-nav-back>
+  <Button variant="ghost" className="utility-back" data-nav-back>
    <span aria-hidden="true">←</span> Quay lại
-  </button>
+  </Button>
   <div className="kicker">TÌM TRONG THƯ VIỆN</div>
   <Heading level={1} role="headline">Tra Cứu</Heading>
   <Text role="body">Tra bài học, khái niệm và kết nối có nguồn đã kiểm chứng.</Text>
@@ -133,7 +135,9 @@ function KnowledgeSearch(){
      <InlineFeedback tone="info" message="Chưa tìm thấy bài hay khái niệm đã xác minh phù hợp."/>:
      <div className="path-list" aria-live="polite">
       <Text role="caption">{response.results.length} kết quả · {loadState==='ready'?'Knowledge Base canonical':'Danh mục offline'}</Text>
-      {response.results.map(record=><article key={record.kind+':'+record.id} className="li-search-result">
+      {response.results.map(record=><motion.article key={record.kind+':'+record.id}
+        className="li-search-result" initial={reduced?false:{opacity:0,y:6}}
+        animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.17}}> 
        <ListRow title={record.title}
         description={(kindCopy[record.kind]||'Mục kiến thức')+' · '+(record.lessonId||record.id)+
          (record.contentState==='review_only'?' · đang duyệt':'')+
@@ -157,7 +161,7 @@ function KnowledgeSearch(){
         (record.links||[]).some(link=>link.sourceType==='academic'&&sourceIsSafe(link.sourceUrl))&&
         <Button variant="secondary" onClick={()=>askMentor(record)}
          aria-haspopup="dialog" aria-controls="buddy-modal">Hỏi Lão Lý về kết nối này</Button>}
-      </article>)}
+      </motion.article>)}
      </div>}
   </section>
  </div>;

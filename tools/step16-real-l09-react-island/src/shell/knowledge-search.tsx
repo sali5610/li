@@ -51,6 +51,9 @@ const kindCopy:Record<string,string>={
  Lesson:'Bài có nội dung',Concept:'Khái niệm đã đối chiếu',Course:'Đề cương môn',
  Field:'Lĩnh vực',DomainGroup:'Nhóm ngành'
 };
+const englishKind:Record<string,string>={
+ Lesson:'Lesson',Concept:'Concept',Course:'Course',Field:'Field',DomainGroup:'Domain group'
+};
 let mentorFocus:MentorContext|null=null;
 let latestQuery='';
 function withPersonalLessons(query:string,source:KnowledgeResponse):KnowledgeResponse{
@@ -167,7 +170,7 @@ function KnowledgeSearch(){
         className="li-search-result" initial={reduced?false:{opacity:0,y:6}}
         animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.17}}> 
        <ListRow title={record.title}
-        description={(locale==='en'?({Lesson:'Lesson',Concept:'Concept',Course:'Course',Field:'Field',DomainGroup:'Domain group'}[record.kind]||'Knowledge item'):(kindCopy[record.kind]||'Mục kiến thức'))+' · '+(record.lessonId||record.id)+
+        description={(locale==='en'?(englishKind[record.kind]||'Knowledge item'):(kindCopy[record.kind]||'Mục kiến thức'))+' · '+(record.lessonId||record.id)+
          (record.contentState==='review_only'?L(' · đang duyệt',' · under review'):'')+
          (record.context?' · '+record.context:'')}
         onActivate={record.kind==='Lesson'&&!!availableRoute(record.lessonId||record.id)?

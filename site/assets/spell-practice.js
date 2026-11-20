@@ -457,9 +457,143 @@ const t02Exercise=()=>{
   T02_LESSON_CUES[activeLessonId][lang]:null;
  return cue?{...exercises.T02,lesson:cue[0],prompt:cue[1],model:cue[2]}:exercises.T02;
 };
-const currentExercise=()=>active==="T02"?t02Exercise():
- active==="T06"&&activeLessonId==="L03-1-2"?
- (window.liLanguage?.get?.()==="en"?l03T06en:l03T06):exercises[active];
+// Author-approved, previously-taught example for each of the three Wave1
+// suggestions that still used a mismatched standalone exercise. Keep the
+// standalone demo and all 13 canonical answer/checking paths unchanged.
+const CONTEXTUAL_SUGGESTED_EXERCISES={
+  "L03-1-2": {
+    "T04": {
+      "vi": {
+        "lesson": "Bạn nghiên cứu tính năng lưu ghi chú. Người phỏng vấn hỏi: “Tính năng lưu mới tiện hơn nhiều, đúng không?” Người tham gia đáp: “Ừ, cũng tiện.”",
+        "prompt": "Tự giải thích vì sao câu trả lời này chưa chứng minh tính năng tiện hơn. Viết một câu hỏi trung lập để tìm hiểu trải nghiệm thực tế.",
+        "fields": [
+          [
+            "reason",
+            "Giải thích và viết lại câu hỏi"
+          ]
+        ],
+        "model": "Câu hỏi đã gài sẵn nhận định 'tiện hơn' và hướng người tham gia đồng ý; lời đáp có thể do lịch sự hoặc bị dẫn dắt. Cần hỏi về tình huống thật, ví dụ: “Lần gần nhất bạn lưu ghi chú, bạn đã làm những bước nào? Điều gì xảy ra tiếp theo?” Không khẳng định người tham gia chắc chắn bị thiên lệch."
+      },
+      "en": {
+        "lesson": "In a note-saving feature interview, the researcher asks: “The new save feature is much easier, right?” The participant replies: “Yes, fairly easy.”",
+        "prompt": "Explain why this reply does not yet prove the feature is easier. Rewrite the interview prompt as a neutral question about a real experience.",
+        "fields": [
+          [
+            "reason",
+            "Explanation and neutral rewrite"
+          ]
+        ],
+        "model": "The question embeds a positive evaluation and invites agreement; the answer could reflect politeness or leading wording. Ask about an actual event, such as: “Tell me about the last time you saved a note. What steps did you take, and what happened next?” Do not assume the interviewee was definitely biased."
+      }
+    }
+  },
+  "L09-1-2": {
+    "T07": {
+      "vi": {
+        "lesson": "Một khảo sát qua banner chỉ tiếp cận người còn sử dụng app. Nhóm dự án lập luận: “Nếu mẫu phù hợp để suy ra tổng thể, tỷ lệ mẫu có thể dùng làm ước lượng. Mẫu banner này phù hợp để suy ra tất cả khách hàng. Vậy tỷ lệ mẫu có thể ước lượng tỷ lệ của tất cả khách hàng.”",
+        "prompt": "Xét hình thức ‘Nếu P thì Q; P; vậy Q’ có hợp lệ không? Với khảo sát chỉ hiện cho người đang dùng app, có đủ bằng chứng rằng tiền đề P (mẫu phù hợp với tất cả khách hàng) đúng không?",
+        "fields": [
+          [
+            "valid",
+            "Kết luận có theo logic từ hai tiền đề không?",
+            [
+              "Có, hình thức hợp lệ",
+              "Không, hình thức không hợp lệ"
+            ],
+            "radio"
+          ],
+          [
+            "truth",
+            "Đã chứng minh tiền đề mẫu đại diện cho tổng thể chưa?",
+            [
+              "Đã đủ bằng chứng",
+              "Chưa đủ bằng chứng"
+            ],
+            "radio"
+          ]
+        ],
+        "model": "Cấu trúc ‘Nếu P thì Q; P; suy ra Q’ hợp lệ về mặt logic. Nhưng tiền đề ‘mẫu banner phù hợp để suy ra tất cả khách hàng’ chưa được xác minh và có nguy cơ loại người ít dùng hoặc đã rời app. Hợp lệ của phép suy luận không chữa được tiền đề sai; ước lượng cũng không có nghĩa tỷ lệ tổng thể chính xác bằng tỷ lệ mẫu."
+      },
+      "en": {
+        "lesson": "An in-app banner only reaches active users. A team argues: “If a sample is suitable for inference to the target population, its rate can estimate the population rate. This banner sample is suitable for all customers. Therefore its rate can estimate the rate for all customers.”",
+        "prompt": "Is the form ‘If P then Q; P; therefore Q’ logically valid? Has the banner survey established that premise P (a suitable sample for all customers) is true?",
+        "fields": [
+          [
+            "valid",
+            "Does the conclusion logically follow from the premises?",
+            [
+              "Yes, valid form",
+              "No, invalid form"
+            ],
+            "radio"
+          ],
+          [
+            "truth",
+            "Is the sample-suitability premise established?",
+            [
+              "Sufficient evidence",
+              "Insufficient evidence"
+            ],
+            "radio"
+          ]
+        ],
+        "model": "The form ‘If P then Q; P; therefore Q’ is valid. But the claim that active-user banner responses can represent all customers is not established; infrequent or former users may be excluded. Logical validity cannot rescue an unsupported premise, and a sample estimate is not an exact population rate."
+      }
+    }
+  },
+  "L15-2-2": {
+    "T10": {
+      "vi": {
+        "lesson": "Mức dùng bình quân 24 hộp/ngày; lead time cố định theo ví dụ là 5 ngày; safety stock 30 hộp. ROP theo mô hình đơn giản bằng 150 hộp. Inventory position hiện 149 hộp.",
+        "prompt": "Chia quyết định đặt lại thành giả định, các bước kiểm tra và một trường hợp biên. Nếu lead time tăng lên 12 ngày, có còn dùng máy móc ngưỡng ROP 150 không? Đừng tự suy ra lượng đặt tối ưu.",
+        "fields": [
+          [
+            "constraint",
+            "Nêu giả định và ràng buộc của mô hình ROP"
+          ],
+          [
+            "steps",
+            "Hai hoặc ba bước kiểm tra trước khi đặt lại"
+          ],
+          [
+            "edge",
+            "Trường hợp biên và điều cần đánh giá lại"
+          ]
+        ],
+        "model": "Ở giả định lead time 5 ngày và safety stock 30: ROP = 24 × 5 + 30 = 150 hộp. Inventory position 149 ≤ 150 kích hoạt tái đặt trong chính sách continuous review đơn giản. Nếu lead time có thể là 12 ngày, demand trong lead time thành 24 × 12 = 288 hộp (chưa kể đệm), nên cần đánh giá lại ROP, sự bất định và safety stock; không suy ra được số lượng đặt hay service level chỉ từ dữ liệu này."
+      },
+      "en": {
+        "lesson": "Average demand is 24 boxes/day, the example assumes fixed 5-day lead time and 30 safety-stock boxes. Its simple reorder point is 150 boxes. Current inventory position is 149 boxes.",
+        "prompt": "Break the reorder decision into assumptions, checking steps and one boundary case. If lead time reaches 12 days, can the 150-box reorder point still be used without re-evaluation? Do not infer an optimal order quantity.",
+        "fields": [
+          [
+            "constraint",
+            "Assumptions and constraints of the ROP policy"
+          ],
+          [
+            "steps",
+            "Two or three checks before replenishment"
+          ],
+          [
+            "edge",
+            "One boundary case and what to reassess"
+          ]
+        ],
+        "model": "For a fixed 5-day lead time and 30-box buffer, ROP = 24 × 5 + 30 = 150 boxes. With inventory position 149 ≤ 150, the simple continuous-review policy triggers replenishment. If lead time rises to 12 days, expected lead-time demand is 24 × 12 = 288 boxes before the buffer. Reassess ROP, uncertainty and safety stock; this information alone does not determine order size or service level."
+      }
+    }
+  }
+};
+const currentExercise=()=>{
+ if(active==="T02")return t02Exercise();
+ if(active==="T06"&&activeLessonId==="L03-1-2")
+  return window.liLanguage?.get?.()==="en"?l03T06en:l03T06;
+ const byLesson=Object.prototype.hasOwnProperty.call(CONTEXTUAL_SUGGESTED_EXERCISES,activeLessonId)?
+  CONTEXTUAL_SUGGESTED_EXERCISES[activeLessonId]:null;
+ const byMethod=byLesson&&Object.prototype.hasOwnProperty.call(byLesson,active)?byLesson[active]:null;
+ const authored=byMethod?.[window.liLanguage?.get?.()==="en"?"en":"vi"];
+ return authored?{...exercises[active],...authored}:exercises[active];
+};
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 /* Separate authored feedback lead and explanation for accurate VI/EN
    translation and reversible language switching without rewriting input. */
@@ -746,7 +880,12 @@ function check(){
   info=(english?(correct?"Both classifications are correct. ":"Review both classifications. "):
    (correct?"Hai phân loại đúng. ":"Hai phân loại cần đối chiếu lại. "))+info;
  }
- if(active==="T07")info=(radio("valid")==="0"&&radio("truth")==="1"?"Đã tách đúng hai câu hỏi. ":"Một đáp án cần xem lại. ")+info;
+ if(active==="T07"){
+  const correct=radio("valid")==="0"&&radio("truth")==="1";
+  const english=activeLessonId==="L09-1-2"&&window.liLanguage?.get?.()==="en";
+  info=(english?(correct?"Logical form and evidence separated correctly. ":"Recheck logical form and evidence. "):
+   (correct?"Đã tách đúng hai câu hỏi. ":"Một đáp án cần xem lại. "))+info;
+ }
  if(active==="T09")info=(radio("source")==="1"?"B là nguồn tốt hơn cho câu hỏi hẹp này. ":"Hãy kiểm tra lại provenance và cơ chế chọn người. ")+info;
  if(active==="T11")info=(radio("method")==="1"?"T03 phù hợp cho thủ tục mới. ":"Chưa có lần học trước nên T02 không phù hợp ngay. ")+info;
  if(active==="T05")info=(checked("evidence").sort().join(",")==="0,1"?"Bạn chọn hai dữ kiện quan trọng, không chọn khẳng định quá mức. ":"Dữ kiện không có nhóm so sánh và khuyến mãi đồng thời đều quan trọng. ")+info;

@@ -275,6 +275,44 @@ assert.equal(act("check",{recall1:"tổng thể đích",recall2:"cách chọn m�
  recall3:"nhóm không được hỏi"}),true);
 reviewed("T13");
 assert.equal(covered,13);
+// The six Wave1 lesson recommendations must practice the *taught* subject.
+// T06/L03, T06/L09 and T03/L15 were already contextual; these were the
+// remaining three mismatches. Check both language variants and feedback gate.
+const contextual=[
+ {id:"L03-1-2",method:"T04",vi:/câu hỏi|phỏng vấn/i,
+  en:/interview|feature/i,answer:{reason:"Câu hỏi gợi khen ngợi; hãy kể trải nghiệm lưu ghi chú gần nhất."},
+  feedback:/câu hỏi|leading|question/i},
+ {id:"L09-1-2",method:"T07",vi:/banner|tiền đề/i,
+  en:/banner|premise/i,answer:{valid:"0",truth:"1"},
+  feedback:/Logical form|logically/i},
+ {id:"L15-2-2",method:"T10",vi:/ROP|lead time/i,
+  en:/reorder|lead time/i,answer:{constraint:"Lead time 5 ngày, ROP 150",steps:"Kiểm inventory position, rồi so với ROP",edge:"Lead time tăng 12 ngày cần tính lại ROP"},
+  feedback:/ROP|reorder point/i}
+];
+for(const item of contextual){
+ locale="vi";
+ let v=begin(item.method,item.id);
+ assert.match(v.lesson,item.vi,"Vietnamese source must belong to "+item.id);
+ assert.match(v.prompt,item.vi,"Vietnamese practice must belong to "+item.id);
+ assert.equal(v.feedback,"","Answer key must not appear before response");
+ const viPrompt=v.prompt;
+ locale="en";
+ v=api.getView();
+ assert.match(v.lesson,item.en,"English source must belong to "+item.id);
+ assert.match(v.prompt,item.en,"English practice must belong to "+item.id);
+ assert.notEqual(v.prompt,viPrompt,"Switching locale must update prompt");
+ assert.equal(v.feedback,"","Locale change must not leak feedback");
+ assert.equal(act("check",item.answer),true,"Contextual suggested exercise must accept real input");
+ assert.match(api.getView().feedback,item.feedback,"Authored model feedback must match the method and lesson");
+ assert.equal(api.getView().reviewedInSession,true);
+}
+locale="vi";
+for(const method of ["T04","T07","T10"]){
+ const v=begin(method);
+ assert.match(v.lesson,/khảo sát|tiền đề|kho tổng/i,
+  "Standalone method must keep its original independent demo");
+}
+
 const previousCount=api.getView().practiceCount;
 begin("T04");
 const beforeFailure=api.getView().practiceCount,storageWrite=localStorage.setItem;

@@ -1,0 +1,41 @@
+/* App React adoption: Guide + 3 private shelves.
+ * All visual values derive from the current canonical li. design tokens. */
+.li-react-guide .li-guide-tools{align-items:start}
+.li-react-guide .li-react-method-filters{display:flex;flex-wrap:wrap;gap:var(--li-space-2)}
+.li-react-guide .li-react-method-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--li-space-4);margin-top:var(--li-space-6)}
+.li-react-guide .li-react-method-grid>[data-li-legacy="method-tile"]{width:100%;min-width:0;height:100%}
+.li-react-guide .li-atom-field{min-width:0}
+.li-react-guide .guide-mentor{min-width:0;overflow:hidden}
+.li-react-library .library-groups{display:grid;gap:var(--li-space-7);margin-top:var(--li-space-6)}
+.li-react-library .library-group{display:grid;gap:var(--li-space-4)}
+.li-react-library .library-group-header{display:flex;justify-content:space-between;align-items:center;gap:var(--li-space-4)}
+.li-react-library .library-group-header>div{flex:1;min-width:0}
+.li-react-library .library-group-header h2,.li-react-library .library-group-header p{margin:0}
+.li-react-library .library-resume-previews>.li-ds-card,.li-react-library .surface-grid>.li-ds-card{min-width:0;display:grid;align-content:start;gap:var(--li-space-3)}
+.li-react-library .library-list-item{display:flex;align-items:center;flex-wrap:wrap;gap:var(--li-space-3);min-width:0}
+.li-react-library .library-list-copy{flex:1;min-width:min(160px,100%);overflow-wrap:anywhere}
+.li-react-library .library-list-copy strong{display:block;line-height:var(--li-leading-body)}
+.li-react-library .library-list-copy .li-atom-text{margin:var(--li-space-2) 0 0;color:var(--muted)}
+.li-react-library .library-preview{display:grid;gap:var(--li-space-2);min-width:0}
+.li-react-library .library-preview>.li-atom-text{margin:0;overflow-wrap:anywhere}
+.li-react-library .library-preview .library-clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.li-react-library .li-library-empty{display:grid;justify-items:start;gap:var(--li-space-3)}
+.li-react-library .library-bookmark-tabs{display:flex;gap:var(--li-space-2)}
+.li-react-library .library-bookmark-tabs [role="tab"][aria-selected="true"]{background:var(--moss);color:var(--cream)}
+.li-react-library .library-filter-row{display:flex;flex-wrap:wrap;gap:var(--li-space-2)}
+.li-react-library .library-entry-body{white-space:pre-wrap;overflow-wrap:anywhere}
+.li-react-library .library-collection-entry{display:grid;gap:var(--li-space-3)}
+.li-react-library .library-collection-entry .li-atom-text{margin:0}
+.li-react-library .library-note-actions,.li-react-library .library-create-actions{display:flex;gap:var(--li-space-3);flex-wrap:wrap}
+.li-react-library .library-danger-link{color:var(--li-color-danger-fill)}
+.li-react-library .library-back-link{margin-bottom:var(--li-space-5)}
+.li-react-library .library-detail-groups{display:grid;gap:var(--li-space-5);margin-top:var(--li-space-6)}
+.li-react-library .library-detail-groups>.li-ds-card{display:grid;gap:var(--li-space-4)}
+.li-react-library .library-collection-create{border-top:1px solid var(--rule);margin-top:var(--li-space-7);padding-top:var(--li-space-5)}
+.li-react-library .library-activity{display:flex;justify-content:space-between;align-items:center;gap:var(--li-space-4);flex-wrap:wrap}
+@media(max-width:900px){.li-react-guide .li-react-method-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){
+ .li-react-guide .li-react-method-grid{grid-template-columns:1fr}
+ .li-react-library .library-resume-previews,.li-react-library .surface-grid.cols2{grid-template-columns:1fr}
+ .li-react-library .library-list-item>.li-ds-button:not(.library-icon-action){flex:1}
+}

@@ -1,0 +1,242 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "L09-1-1",
+  "kind": "Lesson",
+  "version": "0.1.0",
+  "languages": [
+    "vi",
+    "en"
+  ],
+  "title": {
+    "vi": "Tổng thể, mẫu và loại biến",
+    "en": "Population, Sample & Variable Types"
+  },
+  "aliases": [],
+  "hierarchy": {
+    "group": {
+      "id": "group:mathematics",
+      "title": "Toán học & dữ liệu"
+    },
+    "field": {
+      "id": "field:F09",
+      "title": "Data Science"
+    },
+    "course": {
+      "id": "course:C09-1",
+      "title": "Data & Statistical Foundations"
+    }
+  },
+  "difficulty": "Foundation",
+  "learningOutcomes": {
+    "vi": [
+      "Phân biệt tổng thể, mẫu, đơn vị quan sát, tham số tổng thể và thống kê mẫu.",
+      "Phân biệt biến danh nghĩa, biến thứ bậc, số đếm rời rạc và đại lượng đo liên tục; nhận ra mã ID là nhãn.",
+      "Tính tỷ lệ trong mẫu mà không suy rộng thành tỷ lệ tổng thể khi thiếu thiết kế mẫu.",
+      "Đánh giá một kết luận khảo sát và giải thích giới hạn về đối tượng được chọn và trả lời."
+    ],
+    "en": [
+      "Distinguish target population, sample, observational unit, population parameter, and sample statistic.",
+      "Classify nominal IDs, ordinal categories, discrete counts, and continuous measurements by their meaning.",
+      "Compute sample statistics without asserting an unobserved population parameter.",
+      "Bound conclusions to the actual selection and response mechanism in a survey."
+    ]
+  },
+  "conceptIds": [
+    "concept:wave2:population-and-sample",
+    "concept:wave2:variable-types"
+  ],
+  "prerequisiteLessonIds": [],
+  "methodFit": {
+    "status": "not_reviewed",
+    "primaryTechniqueId": "L2-T06",
+    "optionalTechniqueIds": [
+      "L2-T07"
+    ]
+  },
+  "content": {
+    "format": "locked-structured-v1",
+    "localized": {
+      "vi": {
+        "hook": {
+          "id": "l0911-hook",
+          "role": "hook",
+          "gate": "PRE_SUBMIT",
+          "md": "<b>“90% có thể là một phép tính đúng — và một kết luận sai cùng lúc.”</b>\n\nTrong một ví dụ tưởng tượng riêng với bài kiểm tra, 9/10 người tự nguyện tại một buổi gặp mặt nói họ hài lòng: phép chia 90% không sai. Nhưng biến thành “90% toàn bộ người học hài lòng” là tự cho <b>những người không được hỏi</b> lên tiếng. Vấn đề không nằm ở máy tính — mà ở việc mẫu có đại diện cho ai.\n\n<i>Cú lật:</i> statistic mô tả mẫu quan sát, chưa tự biến thành parameter của tổng thể. [OpenStax — Data, Sampling and Variation](https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling)."
+        },
+        "goals": {
+          "id": "l0911-goals",
+          "role": "goals",
+          "gate": "PRE_SUBMIT",
+          "md": "### 1. Mục tiêu\n\nHọc xong, bạn có thể (1) nói rõ <b>tổng thể</b>, <b>mẫu</b> và <b>đơn vị quan sát</b>; (2) tách <b>tham số tổng thể</b> khỏi <b>thống kê mẫu</b>; (3) phân loại biến thành <b>định tính/categorical</b>, <b>định lượng rời rạc/discrete</b> và <b>định lượng liên tục/continuous</b>; (4) tránh gán sai phạm vi khi đọc một bảng dữ liệu."
+        },
+        "concept": {
+          "id": "l0911-concept",
+          "role": "concept",
+          "gate": "PRE_SUBMIT",
+          "md": "### 2. Khi cả bảng đầy số, đừng để mấy con số dắt mũi\n\nGiả sử li. có <b>8.000 người học có hoạt động trong 30 ngày gần nhất</b>. Một nhóm muốn tìm hiểu đặc điểm của <b>toàn bộ 8.000 người này</b> nhưng chỉ có bảng trả lời của 320 người tự nguyện. Nếu câu hỏi nói về 8.000 người, thì đó là <b>tổng thể mục tiêu</b>. 320 người có dữ liệu là <b>mẫu quan sát</b>, không tự nhiên trở thành tổng thể.\n\n- <b>Đơn vị quan sát:</b> một người học. Mỗi dòng là một người; mỗi cột là một <b>biến</b> được ghi theo định nghĩa.\n- <b>Tổng thể (population):</b> tất cả đơn vị mà câu hỏi nghiên cứu muốn nói đến.\n- <b>Mẫu (sample):</b> tập đơn vị thực sự được quan sát/đo/khảo sát.\n- <b>Tham số (parameter):</b> đặc điểm số của toàn tổng thể, ví dụ tỷ lệ thật trong số 8.000 người.\n- <b>Thống kê (statistic):</b> đặc điểm tính từ mẫu, ví dụ tỷ lệ trong 320 người đã trả lời.\n\nMột thống kê mẫu <b>có thể dùng để ước lượng</b> tham số nếu có thiết kế và giả định phù hợp; không được viết hai khái niệm thành một chỉ vì chúng cùng được biểu diễn bằng phần trăm."
+        },
+        "variable_types": {
+          "id": "l0911-variables",
+          "role": "classification",
+          "gate": "PRE_SUBMIT",
+          "md": "### 3. Biến là gì, phân loại ra sao?\n\n<b>À há thứ hai: “Một cột toàn số vẫn có thể là một cột không nên tính trung bình.”</b>\n\nMã sinh viên 00127 hay số phòng 205 dùng chữ số để <i>đặt tên</i>, không đo một đại lượng. Trung bình các ID có thể tính được trên máy — nhưng thường chẳng mang nghĩa thống kê cho câu hỏi nghiên cứu. Trước khi cộng, hãy hỏi số này <b>đo cái gì</b>.\n\n| Biến ví dụ | Giá trị có thể có | Loại | Lý do |\n| --- | --- | --- | --- |\n| Hệ điều hành thiết bị | iOS / Android | Định tính danh nghĩa (nominal) | Tên nhóm, không phải độ lớn |\n| Số bài đã hoàn thành | 0, 1, 2, 3… | Định lượng rời rạc | Đếm số bài |\n| Thời gian học | 7,5 phút; 12,2 phút | Định lượng liên tục (theo cách đo) | Đo lượng thời gian trên trục số |\n| Mức đồng ý 1–5 | 1: rất không đồng ý → 5: rất đồng ý | Định tính thứ bậc (ordinal) | Có thứ tự, chưa chứng minh khoảng cách 1→2 bằng 4→5 |\n| User ID | “00127” | Nhãn/định tính, dù gồm chữ số | Không có ý nghĩa khi cộng và chia ID |\n\n<b>Bẫy cần né:</b> Dữ liệu hiển thị dạng số chưa chắc là đại lượng số. Mã bưu chính, mã lớp hay ID không trở thành số đo chỉ vì có chữ số."
+        },
+        "guided": {
+          "id": "l0911-guided",
+          "role": "guided",
+          "gate": "PRE_SUBMIT",
+          "md": "### 4. Ví dụ hướng dẫn\n\nMột trường có 2.500 học sinh. Nhóm quan sát chọn 120 học sinh trong một buổi khảo sát. Bảng có cột <b>khối lớp 10/11/12</b>, <b>số bài đã hoàn thành</b> và <b>thời lượng học được đo bằng phút</b>.\n\n<b>Tự giải thích:</b> tổng thể là ai, mẫu là ai, ba cột thuộc kiểu biến nào? Vì sao “lớp 11” không đồng nghĩa “11 bài đã học”?\n\n<b>Gợi ý:</b> hỏi một giá trị biểu thị <b>nhãn nhóm</b>, <b>số lượng đếm</b> hay <b>đại lượng đo</b>. Chỉ 120 người có dữ liệu thì chưa kết luận được chính xác toàn bộ 2.500 người nếu không xem cách chọn mẫu."
+        },
+        "technique_applications": {
+          "T06": {
+            "technique_id": "L2-T06",
+            "required": false,
+            "primary": true,
+            "prompt_md": "### 4b. Luyện phương pháp L2 (tự chọn, trước bài độc lập)\n\n<b>Chính: T06 · Song Tượng Phân Minh — Compare–Contrast / Interleaved Discrimination.</b> Đã học danh nghĩa, thứ bậc, số đếm và đại lượng đo. Trước hết nhớ: <b>ký tự trông như số ≠ đo lường bằng số</b>; một nhãn thứ bậc có thứ tự nhưng chưa chắc có khoảng cách bằng nhau. Có thể mở hướng dẫn Thần Chú T06 hoặc làm ngay.\n\n<b>Micropractice xáo trộn mới:</b> Với một bảng giả định về hoạt động học, phân loại và giải thích <b>vì sao</b> cho từng cột sau:\n\n- A. Mã người học “00091”.\n- B. Số lần mở lại bài trong tuần: 0, 1, 2, 3…\n- C. Mức ưu tiên trợ giúp: 1 = thấp, 2 = vừa, 3 = cao.\n- D. Thời lượng phiên học được đo: 8,2 phút.",
+            "feedback_md": "<b>Phản hồi T06 — chỉ sau khi nộp lượt luyện T06:</b> A là ID danh nghĩa; B là số đếm định lượng rời rạc; C là ordinal; D là đại lượng đo thời gian, định lượng liên tục theo phép đo.",
+            "feedback_gate": "AFTER_T06_MEANINGFUL_ATTEMPT"
+          },
+          "T07": {
+            "technique_id": "L2-T07",
+            "required": false,
+            "primary": false,
+            "prompt_md": "<b>Bổ trợ: T07 · Tiền Đề Giám Định — Logical Inference & Premise Checking.</b> Một slide nói: “30/40 người tự nguyện dùng iOS chấm mức 4–5, nên 75% toàn bộ 1.000 người học đều hài lòng”. Hãy tách tiền đề quan sát, kết luận và <b>giả định suy rộng chưa được chứng minh</b>. Đừng nhầm kiểm tra tính hợp lệ của lập luận với chứng minh số liệu khảo sát là thật.",
+            "feedback_md": "<b>Phản hồi T07 — chỉ sau khi nộp lượt luyện T07:</b> 30/40 = 75% chỉ thuộc <b>40 phản hồi tự nguyện</b>; thiếu thiết kế chọn mẫu bao phủ nhóm đích, thông tin không phản hồi và phương pháp đo để suy rộng.",
+            "feedback_gate": "AFTER_T07_MEANINGFUL_ATTEMPT"
+          },
+          "editorial_evaluation_md": "<b>Cách đánh giá:</b> Chấm T06 theo nhận diện + dấu hiệu; T07 theo chỉ ra đúng bước suy luận thiếu căn cứ. Hai lượt phản hồi mở độc lập; bỏ qua T07 không chặn bài độc lập. Không tính như đã làm bài độc lập 320 phản hồi.",
+          "editorial_state_note_md": "<b>Trạng thái:</b> tự chọn, luyện có feedback; giữ bộ dữ liệu 8.000/320/256 của bài độc lập tách biệt và chưa lộ đáp án."
+        },
+        "independent": {
+          "id": "l0911-challenge",
+          "gate": "PRE_SUBMIT",
+          "prompt_md": "### 5. Bài tập độc lập — bảng khảo sát trong app\n\n<b>Giả định, không phải dữ liệu thực tế:</b> Mục tiêu phân tích là <b>8.000 người học đang hoạt động</b>. Nhóm chỉ gửi khảo sát cho người dùng iOS tự nguyện trả lời. Có <b>320 phản hồi</b>, trong đó <b>256 người chọn mức hài lòng 4 hoặc 5</b>. Mỗi dòng còn có user\\_id dạng “00127”, số bài hoàn thành, thời gian học tính theo phút và mức hài lòng từ 1 đến 5.\n\n1. Xác định <b>tổng thể mục tiêu</b>, <b>mẫu quan sát</b> và <b>một đơn vị quan sát</b>. Ai có cơ hội tham gia, ai bị bỏ ra?\n2. Phân loại <b>user\\_id</b>, số bài hoàn thành, thời gian học và mức hài lòng 1–5. Giải thích tại sao ID chỉ gồm chữ số vẫn không là số đo.\n3. Tính tỷ lệ <b>trong mẫu</b> chọn mức 4 hoặc 5 và gọi tên đúng <b>statistic</b>. Có biết <b>population parameter</b> chưa?\n4. Viết lại kết luận “Tỷ lệ hài lòng trong nhóm trả lời cũng đúng với toàn bộ người học” thành câu có căn cứ; đề xuất một cách làm rõ hơn giới hạn mẫu.\n\n<b>Gợi ý không spoil:</b> phân loại theo ý nghĩa đo, không theo ký tự; tỷ lệ được chia theo mẫu đã trả lời, và khung khảo sát chỉ gồm iOS.",
+          "model_answer_md": "<b>Đáp án mẫu, mở sau khi nộp:</b>\n\n1. Population là 8.000 người hoạt động; sample là 320 người dùng iOS tự chọn phản hồi; mỗi dòng là một người. Android không được mời và người không phản hồi chưa có dữ liệu.\n2. ID là nominal identifier; completed lessons discrete count; minutes measured continuous; 1–5 satisfaction ordinal categorical.\n3. 256 ÷ 320 = <b>0,80 = 80% mẫu</b>; đây là <b>sample statistic</b>, không phải tỷ lệ tham số đã biết của 8.000 người.\n4. “Trong số 320 người dùng iOS tự nguyện trả lời, 80% chọn mức hài lòng 4–5.” Không được suy ra toàn bộ 8.000 người; cần thiết kế tuyển mẫu bao phủ đúng nhóm mục tiêu, đánh giá không phản hồi và định nghĩa thang đo.",
+          "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        },
+        "reflection": {
+          "id": "l0911-reflection",
+          "role": "rubric",
+          "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "md": "### 6. Rubric 0–8 (tự đánh giá; chưa hiệu chuẩn)\n\n| Tiêu chí | 0 | 1 | 2 |\n| --- | --- | --- | --- |\n| Population/sample/unit | Nhầm lẫn | Đúng một phần | Đúng cả ba và cơ hội tham gia |\n| Kiểu biến | Phân loại sai đa số | Đúng một số nhưng nhầm ID/ordinal | Đúng cả bốn với lý do |\n| Statistic/parameter | Nhầm toàn bộ | Tính được nhưng mơ hồ phạm vi | 256/320 = 80% mẫu; parameter chưa biết |\n| Kết luận có căn cứ | Suy rộng iOS ra tất cả | Có cảnh báo chung | Nêu đúng nhóm, mức đo và giới hạn |\n\n<b>Lỗi thường gặp:</b> lấy trung bình user IDs; xem Likert 1–5 mặc nhiên là continuous; lấy 80% opt-in sample thành population prevalence; nhầm đơn vị quan sát với biến. Tự chấm không phải AI grade. Hệ thống phải giữ assisted/independent riêng và khóa đáp án trước submission."
+        }
+      },
+      "en": {
+        "hook": {
+          "id": "l0911-hook",
+          "role": "hook",
+          "gate": "PRE_SUBMIT",
+          "md": "<b>“90% can be correct arithmetic — and the wrong conclusion at the same time.”</b>\n\nIn a fictional example separate from the assessment, 9 out of 10 volunteers at a gathering report satisfaction. The 90% calculation is correct. Declaring that “90% of all learners are satisfied” silently lets <b>people who were never surveyed</b> speak through this sample. The denominator is not the whole population.\n\n<i>The reversal:</i> a sample statistic does not automatically establish a population parameter. [OpenStax — Data, Sampling and Variation](https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling)."
+        },
+        "goals": {
+          "id": "l0911-goals",
+          "role": "goals",
+          "gate": "PRE_SUBMIT",
+          "md": "### 1. Goals\n\nIdentify the <b>target population</b>, <b>observed sample</b> and <b>observational unit</b>; distinguish population <b>parameters</b> from sample <b>statistics</b>; classify variables as categorical, quantitative discrete or quantitative continuous, including ordinal response levels and numeric-looking identifiers; write inference-bounded reports."
+        },
+        "concept": {
+          "id": "l0911-concept",
+          "role": "concept",
+          "gate": "PRE_SUBMIT",
+          "md": "### 2. A table full of numbers is not automatically meaningful\n\nImagine li. has <b>8,000 learners active in the last 30 days</b>. The product team would like to characterize all 8,000, but its survey data contain only <b>320 volunteers</b>. The 8,000 are the <b>target population</b>. The 320 actual respondents are the <b>observed sample</b>. One row records an <b>observational unit</b>, here one learner, and columns represent measured or recorded variables.\n\nA <b>population parameter</b> is a numerical characteristic of the entire target group. A <b>sample statistic</b> is calculated from observed sample values. A sample statistic may estimate a population parameter under a defensible sampling design and assumptions; a figure from respondents is not automatically a fact about every learner."
+        },
+        "variable_types": {
+          "id": "l0911-variables",
+          "role": "classification",
+          "gate": "PRE_SUBMIT",
+          "md": "### 3. Understand what a variable measures\n\n<b>Second insight: “A column full of numbers may still be a column you should never average.”</b>\n\nLearner ID 00127 or room 205 uses digits to <i>label</i> an entity, not to measure a quantity. Software can average IDs, but that calculation usually has no meaningful interpretation for the research question. Ask <b>what the number represents</b> before doing arithmetic.\n\n| Field | Possible values | Data type | Reason |\n| --- | --- | --- | --- |\n| Device OS | iOS / Android | Nominal categorical | Labels a group |\n| Lessons completed | 0, 1, 2 … | Quantitative discrete | Count |\n| Study duration | 7.5 or 12.2 min | Quantitative continuous (as measured) | Measured time |\n| Satisfaction 1–5 | Ordered response levels | Ordinal categorical | Ordered but equal spacing is not established |\n| Learner ID | “00127” | Categorical identifier | Digit-shaped label, not a measurable magnitude |\n\nNumbers printed in a column do not always mean a numerical variable. You cannot usefully average ID codes."
+        },
+        "guided": {
+          "id": "l0911-guided",
+          "role": "guided",
+          "gate": "PRE_SUBMIT",
+          "md": "### 4. Guided example\n\nA school has <b>2,500 students</b> and observes <b>120</b> at a particular survey session. Fields include <b>school year 10/11/12</b>, <b>completed assignments</b> and <b>minutes spent studying</b>. Identify the population and sample, classify the fields and explain why \"year 11\" is a class label while \"11 assignments\" is a count.\n\n<b>Optional hint:</b> identify labels, counts and measurements by meaning. A sample of 120 does not automatically provide an exact population number without examining selection."
+        },
+        "technique_applications": {
+          "T06": {
+            "technique_id": "L2-T06",
+            "required": false,
+            "primary": true,
+            "prompt_md": "### 4b. Optional L2 method practice (before independent assessment)\n\n<b>Primary: T06 · Song Tượng Phân Minh — Compare–Contrast / Interleaved Discrimination.</b> Contrast a numeric-looking identifier, a count, an ordinal rating and measured duration. A digit is not always a measurable quantity; an ordered category does not automatically have equal intervals. Opening the Spellbook is optional.\n\n<b>New interleaved cases:</b> Classify each field and state the decisive cue.\n\n- A. Learner ID “00091”.\n- B. Number of times a lesson was reopened in a week: 0, 1, 2, 3…\n- C. Support priority: 1 = low, 2 = medium, 3 = high.\n- D. Session duration measured at 8.2 minutes.",
+            "feedback_md": "<b>T06 feedback — only after a submitted T06 attempt:</b> A is a nominal ID, B discrete count, C ordinal category and D continuous measurement as recorded.",
+            "feedback_gate": "AFTER_T06_MEANINGFUL_ATTEMPT"
+          },
+          "T07": {
+            "technique_id": "L2-T07",
+            "required": false,
+            "primary": false,
+            "prompt_md": "<b>Secondary: T07 · Tiền Đề Giám Định — Logical Inference & Premise Checking.</b> A slide claims: “30 of 40 self-selected iOS respondents chose satisfaction levels 4–5; therefore 75% of all 1,000 learners are satisfied.” Separate observed premise from conclusion and identify the unsupported generalization assumption. Evaluating this inference does not independently verify the survey's truth.",
+            "feedback_md": "<b>T07 feedback — only after a submitted T07 attempt:</b> 30/40 = 75% of the <b>40 self-selected respondents only</b>. Selection coverage, nonresponse and measurement are unresolved, so the population inference is unwarranted.",
+            "feedback_gate": "AFTER_T07_MEANINGFUL_ATTEMPT"
+          },
+          "editorial_evaluation_md": "<b>Method evaluation:</b> T06 evaluates distinctions; T07 evaluates premises and qualified claims. Their feedback gates are independent. Skipping optional T07 does not block the independent assessment.",
+          "editorial_state_note_md": "<b>State:</b> optional guided practice. Keep the separate 8,000/320/256 independent dataset and its answer hidden until its own submission."
+        },
+        "independent": {
+          "id": "l0911-challenge",
+          "gate": "PRE_SUBMIT",
+          "prompt_md": "### 5. Independent assessment\n\nIn a fictional product survey, the target is <b>8,000 active learners</b>. Only iOS users can opt in; <b>320 respond</b>, of whom <b>256 choose satisfaction level 4 or 5</b>. Each row contains an ID like “00127”, a lesson-completion count, minutes studied and a five-level satisfaction response.\n\n1. Identify target population, observed sample, one observational unit and groups excluded by survey access.\n2. Classify the four variables and explain the numeric-looking ID.\n3. Compute the <b>sample</b> proportion selecting levels 4–5 and say whether the population parameter is known.\n4. Replace “The satisfaction rate among respondents applies to all learners” with an evidence-bounded statement and suggest how to improve the design.\n\n<b>Non-spoiler hint:</b> classify by measurement meaning; the denominator is the number who actually responded; only iOS volunteers were eligible.",
+          "model_answer_md": "<b>Model answer — after first independent attempt:</b> population = 8,000 active learners; observed sample = 320 self-selected iOS respondents; unit = one person. Identifier = nominal label; completion count = discrete; study time = continuous as measured; one 1–5 satisfaction item = ordinal. 256 ÷ 320 = <b>80% of the sample</b>, not a known population parameter. A defensible statement: “Of 320 iOS volunteers who responded, 80% selected levels 4–5.” Better recruitment across the true target and nonresponse review are needed.",
+          "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        },
+        "reflection": {
+          "id": "l0911-reflection",
+          "role": "rubric",
+          "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "md": "### 6. Editorial self-rating rubric (0–8)\n\nFour dimensions scored 0/1/2: (1) population/sample/unit with coverage; (2) four correct variable types including ID and ordinal; (3) correct sample statistic versus unknown parameter; (4) cautious inference and improved recruitment. Do not turn scores into professional qualifications or automatically grade free text."
+        }
+      }
+    }
+  },
+  "practice": {
+    "kind": "written-independent-4",
+    "questionCount": 4,
+    "minimumCharactersPerAnswer": 0,
+    "feedbackAfterSubmission": true,
+    "rubricKey": "reflection.md",
+    "questionsKey": "independent.prompt_md",
+    "answerKey": "independent.model_answer_md"
+  },
+  "sources": [
+    {
+      "title": "OpenStax — Introductory Statistics 2e §1.1, Definitions",
+      "url": "https://openstax.org/books/introductory-statistics-2e/pages/1-1-definitions-of-statistics-probability-and-key-terms",
+      "tier": "intro",
+      "usage": "reference_only"
+    },
+    {
+      "title": "OpenStax — Introductory Statistics 2e §1.2, Data and Sampling",
+      "url": "https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling",
+      "tier": "core",
+      "usage": "reference_only"
+    },
+    {
+      "title": "NIST — Populations and Sampling",
+      "url": "https://www.itl.nist.gov/div898/handbook/ppc/section1/ppc134.htm",
+      "tier": "core",
+      "usage": "reference_only"
+    },
+    {
+      "title": "US Naval Academy — Statistical Data Types",
+      "url": "https://www.usna.edu/Users/cs/roche/courses/s24sd212/units/stattype/",
+      "tier": "core",
+      "usage": "reference_only"
+    }
+  ],
+  "rights": {
+    "text": "first_party",
+    "illustration": "excluded_unapproved_external_media"
+  },
+  "provenance": {
+    "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8149b622ed4b789860fc",
+    "sourceSection": "Wave2A L09-1-1 editorial VI/EN; 2026-11-18 source-preserving pilot",
+    "evidenceType": "editorial",
+    "checkedOn": "2026-11-20",
+    "legacySourcePath": "content/wave2-l0911-cms-offline-20261118/docs/editorial/wave2-cms-l0911/L09-1-1.cms.v1.staging.json"
+  },
+  "reviewState": "proposed",
+  "publishState": "draft",
+  "editorialStatus": "draft",
+  "publishedAt": null,
+  "updatedAt": "2026-11-20"
+}

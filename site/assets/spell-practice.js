@@ -255,15 +255,22 @@ function draw(){
  const e=currentExercise();let inner="";
  if(phase===0){inner='<div class="spell-demo"><span class="kicker">BỐI CẢNH MẪU · ĐÃ ĐƯỢC GIỚI THIỆU</span><p>'+e.lesson+'</p></div><p>'+e.prompt+'</p>';
   if(e.mode==="due"){
-   const due=scheduleRead();if(due&&due.due>Date.now()){inner+='<p class="spell-honest">Đã hẹn ôn lúc '+fmt(due.due)+'. Chưa đến hẹn nên không tính là thực hành ôn giãn cách.</p>'+act("clear","Xóa mốc ôn","action alt")}
-   else if(due&&due.due<=Date.now()){phase=1;draw();return;}
-   else inner+=act("schedule","Đặt mốc ôn sau 24 giờ");
+   const due=scheduleRead();
+   inner+='<p class="spell-honest">Đã hoàn thành '+(due?.reviewCount||0)+' lượt ôn. Mỗi lượt: nhớ lại khi đến hạn → đối chiếu → tự đánh giá → hẹn lượt tiếp.</p>';
+   if(due?.due&&due.due>Date.now()){
+    inner+='<p class="spell-honest">Lần ôn tiếp: '+fmt(due.due)+'. Chưa đến hạn thì không tính là ôn giãn cách.</p>'+act("clear","Hủy lịch lượt tới","action alt");
+   }else if(due?.due&&due.due<=Date.now()){phase=1;draw();return;}
+   else inner+=act("schedule","Bắt đầu · hẹn ôn lần 1 sau 24 giờ");
   }else if(["hide","faded","resume","loci"].includes(e.mode)){
    if(["resume","loci"].includes(e.mode))inner+=e.fields.map(field).join("");
    inner+=act("next",e.mode==="resume"?"Tạm ngắt · Lưu dấu vết trong phiên":e.mode==="loci"?"Giấu nguồn · Đi qua lộ trình":"Giấu nguồn · Tiếp tục");
   }else {inner+=e.fields.map(field).join("")+act("check","Đối chiếu bài làm");}
+ }else if(e.mode==="due"&&scheduleRead()?.awaitingRating){
+   inner='<p class="spell-honest">Đã đối chiếu. Hãy tự đánh giá phần mình thật sự nhớ được trước khi lên lịch lượt tiếp theo.</p>'+
+    act("rate-remembered","Nhớ được · giãn lịch")+
+    act("rate-retry","Chưa nhớ vững · ôn lại sớm","action alt");
  }else if(e.mode==="faded"&&phase===1){
-   inner='<h3>Bước có gợi ý</h3><p>5 đơn vị/ngày × 2 ngày + 4 tồn an toàn = ?</p>'+field(["number","Kết quả (đơn vị)"])+act("check","Kiểm tra để sang bài mới");
+  inner='<h3>Bước có gợi ý</h3><p>5 đơn vị/ngày × 2 ngày + 4 tồn an toàn = ?</p>'+field(["number","Kết quả (đơn vị)"])+act("check","Kiểm tra để sang bài mới");
  }else if(e.mode==="faded"&&phase===2){
    inner='<h3>Bài tương tự, tự làm</h3><p>7 đơn vị/ngày, 3 ngày chờ, 5 đơn vị an toàn. Điểm đặt hàng lại là bao nhiêu?</p>'+field(["number","Kết quả (đơn vị)"])+act("check","Đối chiếu độc lập");
  }else if(e.mode==="resume"){

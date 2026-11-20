@@ -1,0 +1,14 @@
+/* Stage05 molecules: token-only, UI state supplied by a caller. */
+.li-ds-search-field{display:grid;gap:var(--li-space-3);min-width:0;max-width:100%}
+.li-ds-search-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;
+ gap:var(--li-space-2)}
+.li-ds-action-group{display:flex;flex-wrap:wrap;align-items:center;gap:var(--li-space-3);
+ min-width:0;max-width:100%}
+.li-ds-inline-feedback{box-sizing:border-box;display:grid;justify-items:start;gap:var(--li-space-2);
+ max-width:100%;min-width:0;padding:var(--li-space-4);border:1px solid var(--rule);
+ border-inline-start:4px solid var(--moss);background:var(--paper-2);color:var(--ink);
+ overflow-wrap:anywhere}
+.li-ds-inline-feedback[data-tone="error"]{border-inline-start-color:var(--li-color-danger-fill)}
+.li-ds-inline-feedback[data-tone="success"]{border-inline-start-color:var(--olive)}
+.li-ds-inline-feedback strong{font:var(--li-weight-600) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
+.li-ds-inline-feedback p{margin:0;font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}

@@ -1,0 +1,13 @@
+body{margin:0;background:var(--cream);color:var(--ink)}
+.li-molecules-story{box-sizing:border-box;display:grid;gap:var(--li-space-4);
+ padding:var(--li-space-6);font-family:var(--li-font-ui)}
+.li-molecules-story h1{margin:0;color:var(--moss);
+ font:600 var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial)}
+.li-molecules-kicker,.li-molecules-footnote{margin:0;color:var(--muted);
+ font:var(--li-type-caption)/var(--li-leading-caption) var(--li-font-ui)}
+.li-molecules-sample{box-sizing:border-box;min-width:0;padding:var(--li-space-5);
+ border:1px solid var(--rule);background:var(--paper)}
+.li-molecules-sample>div{display:grid;gap:var(--li-space-3)}
+.li-molecules-sample p{margin:0}
+@media(max-width:599px){.li-molecules-story{padding:var(--li-space-4)}
+ .li-molecules-sample{padding:var(--li-space-4)}}

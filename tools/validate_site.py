@@ -343,7 +343,10 @@ assert '<div id="li-note-history-list"' in page_html
 assert '<script src="./assets/library-note-editor.js?v=5"></script>' in page_html
 hub=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert 'Xem trong Bộ sưu tập' not in hub
-assert hub.count('library-detail-link","Xem chi tiết"')==3
+assert hub.count('library-detail-link","Xem chi tiết"')==2
+assert 'library-detail-link",ui("Xem chi tiết","View details")' in hub
+assert 'library-danger-link",ui("Xóa","Delete")' in hub
+assert 'window.liNotes?.deleteNote(item.entryType,item.id)' in hub
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
 # UX-DS-25: honor device-aware Home cache key.

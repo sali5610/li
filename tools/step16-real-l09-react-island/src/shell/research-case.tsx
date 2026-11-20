@@ -30,6 +30,16 @@ function ResearchScene(){
   };
  },[]);
  const choose=(index:number)=>inquiryFlow().chooseBranch(index);
+ // Open the actual Case Notes drawer, not the top of an unrelated Library
+ // overview. The existing owner controls the filter and live note collection.
+ const openNotebook=()=>{
+  const library=(window as Window&{
+   liLibraryShelf?:{setCollectionFilter:(next:'case')=>void}
+  }).liLibraryShelf;
+  if(!library)return openRoute('library'); // Native fallback before port startup.
+  library.setCollectionFilter('case');
+  return openRoute('collection');
+ };
  return <div data-li-react-screen="research" className="li-react-research">
   <div className="kicker">{L("THEO DẤU MỘT NGHI VẤN","FOLLOW THE EVIDENCE")}</div>
   <Heading level={1} role="headline">{L("Khảo Chứng","Investigate")}</Heading>
@@ -68,8 +78,8 @@ function ResearchScene(){
     <div className="kicker">{L("III · BÚT KÝ","III · NOTEBOOK")}</div>
     <Heading level={2} role="titleMedium">{L("Bút Ký ở Tủ Riêng","Notebook in My Shelf")}</Heading>
     <Text role="body">{L("Tìm lại những kết luận bạn tự viết sau mỗi lượt Phản Chứng.","Return to the conclusions you wrote after challenging each claim.")}</Text>
-    <div className="action-row"><Button variant="secondary" onClick={()=>openRoute('library')}
-     data-focus="notebook-section">{L("Mở Bút Ký","Open notebook")}</Button></div>
+    <div className="action-row"><Button variant="secondary" onClick={openNotebook}>
+     {L("Mở Bút Ký","Open notebook")}</Button></div>
    </Card>
    <article className="surface dark">
     <div className="laoly-side-avatar"><span className="laoly-face smallface" aria-hidden="true">

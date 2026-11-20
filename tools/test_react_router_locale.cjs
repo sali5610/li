@@ -143,7 +143,9 @@ assert.match(locale,/data-li-react-navigation/);
 assert.match(locale,/li-react-language-card/);
 assert.match(native,/if\(window\.liReactRouter\?\.navigate\)/);
 assert.match(native,/window\.liNativeRouteEffects=Object\.freeze/);
-assert.match(read("tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx"),
- /li:auth-verified-changed/);
+const authPanel=read("tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx");
+assert.match(authPanel,/li:auth-verified-changed/);
+assert.match(authPanel,/language\.liLanguage\?\.set\?\.\(next\)/);
+assert.match(authPanel,/addEventListener\('li:localechange',sync\)/);
 assert.match(router,/history\.length=0;active='home'/);
 console.log("PASS actual React router: auth/back/history/URL/17-staging preview/no observer + React bilingual settings");

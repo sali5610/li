@@ -114,16 +114,16 @@
  opacity:1;
  z-index:3;
  pointer-events:none;
- /* The upper half is always transparent. Feather in over ~35% of the glass
-    height, so the illustration's own fitted-content top cannot form a line. */
+ /* Upper half remains clear; fade in across ~25% of the glass, then keep
+    the illustration fully visible through the middle of the lower half. */
  -webkit-mask-image:linear-gradient(to bottom,
-  transparent 0%,transparent 52%,rgba(0,0,0,.03) 60%,
-  rgba(0,0,0,.12) 67%,rgba(0,0,0,.36) 74%,
-  rgba(0,0,0,.78) 81%,#000 87%,rgba(0,0,0,.76) 92%,transparent 100%);
+  transparent 0%,transparent 49%,rgba(0,0,0,.12) 54%,
+  rgba(0,0,0,.55) 62%,rgba(0,0,0,.92) 69%,
+  #000 74%,#000 91%,rgba(0,0,0,.78) 95%,transparent 100%);
  mask-image:linear-gradient(to bottom,
-  transparent 0%,transparent 52%,rgba(0,0,0,.03) 60%,
-  rgba(0,0,0,.12) 67%,rgba(0,0,0,.36) 74%,
-  rgba(0,0,0,.78) 81%,#000 87%,rgba(0,0,0,.76) 92%,transparent 100%);
+  transparent 0%,transparent 49%,rgba(0,0,0,.12) 54%,
+  rgba(0,0,0,.55) 62%,rgba(0,0,0,.92) 69%,
+  #000 74%,#000 91%,rgba(0,0,0,.78) 95%,transparent 100%);
 }
 #page-home > .hero > .mirror-message > .li-home-mirror-artwork{
  left:50%;top:50%;
@@ -141,13 +141,14 @@
  object-fit:contain;
  object-position:center bottom;
  filter:saturate(1.03) contrast(1.05);
- /* Strong edge feather, while keeping the actual illustration crisp. */
- -webkit-mask-image:radial-gradient(ellipse 76% 76% at 50% 52%,
-  #000 0%,#000 30%,rgba(0,0,0,.76) 47%,
-  rgba(0,0,0,.22) 69%,transparent 91%);
- mask-image:radial-gradient(ellipse 76% 76% at 50% 52%,
-  #000 0%,#000 30%,rgba(0,0,0,.76) 47%,
-  rgba(0,0,0,.22) 69%,transparent 91%);
+ /* Feather only the perimeter. Preserve the center at 100% opacity;
+    the old inner mask dropped opacity too early and erased the artwork. */
+ -webkit-mask-image:radial-gradient(ellipse 50% 55% at 50% 52%,
+  #000 0%,#000 62%,rgba(0,0,0,.90) 74%,
+  rgba(0,0,0,.55) 86%,transparent 100%);
+ mask-image:radial-gradient(ellipse 50% 55% at 50% 52%,
+  #000 0%,#000 62%,rgba(0,0,0,.90) 74%,
+  rgba(0,0,0,.55) 86%,transparent 100%);
 }
 #li-react-home-host .li-home-mirror-art-vignette,
 #page-home > .hero > .mirror-message .li-home-mirror-art-vignette{

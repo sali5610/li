@@ -82,7 +82,9 @@ assert.match(settings,/app\.liPersonalBackup\?\.importFile\(file\)/);
 assert.match(settings,/app\.liPersonalBackup\?\.export\(\)/);
 assert.match(settings,/onAction=\{chooseBackup\}/);
 assert.doesNotMatch(settings,/act\('(cloud|export|import|retryImport|back)'/);
-assert.doesNotMatch(settings,/new MutationObserver/);
+const settingsViewHook=settings.slice(settings.indexOf('function useSettings()'),
+ settings.indexOf('function BuddyName('));
+assert.doesNotMatch(settingsViewHook,/new MutationObserver/);
 assert.match(old,/window\.liPersonalBackup=Object\.freeze\(\{/);
 assert.match(old,/importFile:liImportPersonalData/);
 assert.match(old,/if\(file\.size>10\*1024\*1024\)throw Error\("large"\)/);

@@ -53,6 +53,15 @@ const app=window as AppWindow;
 const en=()=>app.liLanguage?.get?.()==='en';
 const copy=(vi:string,english:string)=>en()?english:vi;
 const tr=(text:string)=>en()?(app.liLanguage?.translate?.(text)||text):text;
+function personalLessonReturn(method:string):string|null{
+ try{
+  const token=JSON.parse(sessionStorage.getItem('li.sectioned.guide-return.v1')||'null') as
+   {id?:string;method?:string;at?:number}|null;
+  if(!token?.id||token.method!==method||!token.at||
+   Date.now()-token.at>3600000)return null;
+  return app.liPersonalStudyRoutes?.[token.id]||null;
+ }catch{return null;}
+}
 function useSpell(){
  const [view,setView]=useState<SpellView|null>(()=>app.LiSpellPractice?.getView()||null);
  useEffect(()=>{
@@ -170,8 +179,9 @@ export function GuideDetail(){
   <Button variant="ghost" onClick={()=>openRoute('guide')}><LiIcon name="chevron-left" size={18}/> {copy('Sổ Tay Thần Chú','Learning Spells')}</Button>
   <InlineFeedback tone="info" message={copy('Chọn một Thần Chú để đọc và thực hành.','Select a learning spell to begin.')}/>
  </div>;
- const lessonRoute=view.lessonId?
-  (app.liReleasedLessonRoutes?.[view.lessonId]||app.liPersonalStudyRoutes?.[view.lessonId]):undefined;
+ const lessonRoute=(view.lessonId?
+  (app.liReleasedLessonRoutes?.[view.lessonId]||app.liPersonalStudyRoutes?.[view.lessonId]):undefined)
+  ||personalLessonReturn(view.active);
  const preparing=phase===0;
  const hasSource=preparing;
  let actionLabel=copy('Đối chiếu bài làm','Check your response');

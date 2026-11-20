@@ -135,10 +135,22 @@ export function installReactCatalogPort():()=>void{
    path=updated;emitPath();
   }
  };
+ let wasVerified=canVisit();
  const onAuth=(event:Event)=>{
-  if((event as CustomEvent<{verified?:boolean}>).detail?.verified!==false)return;
-  if(!path.length)return;
-  path=[];emitPath(); // Do not erase a pending direct URL or private learner data.
+  const verified=(event as CustomEvent<{verified?:boolean}>).detail?.verified;
+  if(verified!==false){
+   if(canVisit()){
+    wasVerified=true;
+    const restored=urlPath();
+    if(restored.join('/')!==path.join('/')){path=restored;emitPath();}
+   }
+   return;
+  }
+  // Auth starts as pending and emits false before inviting the learner.
+  // Preserve their ?catalog= deep link until a REAL signed-in session ends.
+  if(!wasVerified)return;
+  wasVerified=false;
+  if(path.length){path=[];emitPath();}
  };
  window.addEventListener('popstate',onPop);
  window.addEventListener('li:auth-verified-changed',onAuth);

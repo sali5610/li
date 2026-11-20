@@ -12,7 +12,7 @@ assert.doesNotMatch(source,/button\.click\(\)/);
 assert.doesNotMatch(source,/textarea\.value=val/);
 assert.doesNotMatch(source,/root\.querySelector\('\[data-spell-action="'\+action/);
 const instrumented=source.replace(/\}\)\(\);\s*$/,
- 'window.__spellTest={open,getView,performReact,setT12Draft,switchTab,setLessonContext};\n})();');
+ 'window.__spellTest={open,getView,performReact,setT12Draft,switchTab,setLessonContext,getT02Status};\n})();');
 assert.notEqual(instrumented,source,"The test must instrument the real IIFE engine");
 const storage=new Map([["li.sync.local-owner.v1","test-invited-owner"]]);
 let verified=true,accountOpen=false,locale="vi";
@@ -34,7 +34,7 @@ const localStorage={
 };
 vm.runInNewContext(instrumented,{window,document,localStorage,Event:class{},Date,console});
 const api=window.__spellTest;
-assert.ok(api&&Object.keys(api).length===6);
+assert.ok(api&&Object.keys(api).length===7);
 let covered=0;
 function begin(id,lesson=null){
  api.open(id,"practice",lesson);
@@ -66,6 +66,9 @@ begin("T01");
 assert.equal(api.getView().practiceCount,1);
 assert.equal(api.getView().phase,0,"Completed round starts fresh after reopen");
 begin("T02");
+assert.equal(api.getT02Status("unknown"),null,"Unlisted lessons cannot inspect schedules");
+assert.equal(api.getT02Status("L15-2-2").dueAt,null,
+ "A valid released lesson without a schedule is unscheduled");
 assert.equal(act("check",{reason:sentence}),false,"T02 cannot skip scheduled review");
 assert.equal(act("rate-remembered"),false,"cannot self-rate before retrieval");
 assert.equal(act("schedule"),true);
@@ -76,6 +79,8 @@ assert.equal(t02.schema,"li.spell.t02.v2");
 assert.ok(t02.due>Date.now());
 assert.equal(t02.reviewCount,0);
 assert.equal(api.getView().phase,0);
+assert.equal(api.getT02Status("L09-1-2").dueAt,null,
+ "A standalone schedule cannot be shown as L09 progress");
 assert.equal(act("check",{reason:sentence}),false,"not yet due cannot reveal feedback");
 storage.set(t02key,JSON.stringify({...t02,due:Date.now()-5000}));
 assert.equal(api.getView().phase,1,"due review hides the source");
@@ -215,7 +220,10 @@ assert.equal(api.setLessonContext("unknown"),false,"Non-invited route context is
 begin("T02");
 assert.equal(api.setLessonContext("L03-1-1"),true);
 assert.equal(api.getView().lessonId,"L03-1-1");
+assert.equal(api.getT02Status("L03-1-1").dueAt,null);
 assert.equal(act("schedule"),true);
+assert.ok(api.getT02Status("L03-1-1").dueAt>Date.now(),
+ "Personal lesson Progress reads its own upcoming due date");
 assert([...storage.keys()].some(k=>k.endsWith(":L03-1-1")&&k.startsWith("li.spell.t02.schedule.v2:")),
  "T02 schedule must use the personal draft lesson, not the standalone key");
 begin("T12");
@@ -288,9 +296,13 @@ assert.equal(practice.scopes.standalone.T13.count,1);
 assert.equal(practice.scopes.standalone.T13.places.length,0,
  "Completed T13 removes location cues, keeping only an answer-free receipt");
 verified=false;
+assert.equal(api.getT02Status("L15-2-2"),null,
+ "Anonymous users cannot read private due dates");
 begin("T04");
 assert.equal(act("check",{reason:sentence}),false,"No anonymous exercise action");
 assert.equal(api.getView().reviewedInSession,false);
 verified=true;accountOpen=true;
+assert.equal(api.getT02Status("L15-2-2"),null,
+ "Open account overlay cannot reveal private due dates");
 assert.equal(act("check",{reason:sentence}),false,"Open account overlay blocks writes/actions");
 console.log("PASS 13/13 real spell checkers via direct React action, T02 20/20 contextual VI/EN cues and due/rating/owner/reset, T03 progression, T12 redaction, T13 recall, L03 variant and account guard");

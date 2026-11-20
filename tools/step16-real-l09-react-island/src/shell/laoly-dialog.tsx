@@ -32,7 +32,7 @@ function BuddyDialog({root}:{root:HTMLElement}){
  const [message,setMessage]=useState('');
  const [expanded,setExpanded]=useState(false);
  const [challenge,setChallenge]=useState(false);
- const [locale,setLocale]=useState(0);
+ const [,setLocale]=useState(0);
  const [avatar,setAvatar]=useState('');
  const heading=useRef<HTMLHeadingElement|null>(null);
  const content=useRef<HTMLDivElement|null>(null);
@@ -102,7 +102,7 @@ function BuddyDialog({root}:{root:HTMLElement}){
   if(!reply)return;
   setMessage(reply.text);setChallenge(reply.showChallenge);
   setExpanded(false);
-  content.current?.scrollTo({top:0,behavior:'instant'});
+  content.current?.scrollTo({top:0,behavior:'auto'});
  };
  const submitDebate=(correct:boolean)=>{
   const words=withNickname(correct?debateCorrect:debateWrong);
@@ -133,8 +133,8 @@ function BuddyDialog({root}:{root:HTMLElement}){
    </header>
    <div id="buddy-scroll" className="buddy-scroll" tabIndex={0}
     ref={content} role="region" aria-label={chooseLanguage('Nội dung hội thoại với Lão Lý','Conversation with Lao Ly')}>
-    {!challenge&&quote&&message===view.text&&expanded&&
-     <aside id="buddy-quote" className="ly-cultural"
+    {!challenge&&quote&&message===view.text&&
+     <aside id="buddy-quote" className="ly-cultural" hidden={!expanded}
       aria-label={chooseLanguage('Diễn nghĩa và xuất xứ câu trích dẫn','Quote interpretation and source')}>
       <p id="buddy-quote-gloss" className="small">{quote.interpretation}</p>
       <p className="small"><span id="buddy-quote-meta">{quote.meta}</span>{' · '}

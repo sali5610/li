@@ -94,32 +94,47 @@
  #li-react-home-host .hero-actions .primary{transition:none!important}
 }
 
-/* Visible Gương Vạn Vấn reflections: same canonical discipline image on
-   React and native fallback. Previous design multiplied 33% alpha, a
-   dark vignette, strong blur and a narrow mask into near-invisibility.
-   Keep a gentle oval edge, but let the paper illustration be recognizable. */
+/* Topic reflections must look like actual illustrated disciplines, not ghosts.
+   Fill the WHOLE painted mirror opening with opaque illustration, tint the art
+   gently and feather its perimeter. A semi-transparent whole image blends into
+   the Home's pre-printed clouds and makes different topics indistinguishable. */
 #li-react-home-host .mirror-message,
 #page-home > .hero > .mirror-message{isolation:isolate}
+/* Lower the ORIGINAL painted mirror background; never dim the discipline image. */
+#li-react-home-host .mirror-message::before,
+#page-home > .hero > .mirror-message::before{
+ content:"";position:absolute;left:50%;top:50%;z-index:0;
+ width:121%;max-width:410px;aspect-ratio:.72;
+ transform:translate(-50%,-50%);border-radius:50%;
+ background:var(--forest);opacity:.89;pointer-events:none;
+ -webkit-mask-image:radial-gradient(ellipse at center,#000 0%,#000 82%,transparent 98%);
+ mask-image:radial-gradient(ellipse at center,#000 0%,#000 82%,transparent 98%);
+}
 #li-react-home-host .li-home-mirror-artwork,
 #page-home > .hero > .mirror-message .li-home-mirror-artwork{
- position:absolute;left:50%;top:50%;z-index:0;pointer-events:none;
- width:min(118%,340px);height:clamp(185px,45vw,340px);
+ position:absolute;left:50%;top:50%;z-index:1;pointer-events:none;
+ width:118%;max-width:400px;aspect-ratio:.72;height:auto;
  transform:translate(-50%,-50%);overflow:hidden;
- border-radius:50%;opacity:.79;
- -webkit-mask-image:radial-gradient(ellipse at center,#000 0%,#000 49%,transparent 83%);
- mask-image:radial-gradient(ellipse at center,#000 0%,#000 49%,transparent 83%);
+ border-radius:50%;opacity:1;
+ background:var(--forest);
+ -webkit-mask-image:radial-gradient(ellipse at center,#000 0%,#000 68%,transparent 97%);
+ mask-image:radial-gradient(ellipse at center,#000 0%,#000 68%,transparent 97%);
 }
 #page-home .li-home-mirror-artwork[hidden]{display:none!important}
 #li-react-home-host .li-home-mirror-art-image,
 #page-home > .hero > .mirror-message .li-home-mirror-art-image{
  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
- filter:saturate(.92) brightness(1.08) contrast(1.06);
+ object-position:center center;
+ filter:saturate(1.08) brightness(1.04) contrast(1.12);
 }
 #li-react-home-host .li-home-mirror-art-vignette,
 #page-home > .hero > .mirror-message .li-home-mirror-art-vignette{
- position:absolute;inset:0;
- background:radial-gradient(ellipse at center,transparent 50%,var(--forest) 100%);
- opacity:.12;
+ position:absolute;inset:0;opacity:1;
+ background:linear-gradient(180deg,
+  transparent 17%,
+  color-mix(in srgb,var(--forest) 24%,transparent) 42%,
+  color-mix(in srgb,var(--forest) 30%,transparent) 61%,
+  transparent 88%);
 }
 #li-react-home-host .li-home-mirror-float{position:relative;z-index:2}
 #page-home > .hero > .mirror-message > h2,
@@ -127,7 +142,11 @@
 @media(max-width:600px){
  #li-react-home-host .li-home-mirror-artwork,
  #page-home > .hero > .mirror-message .li-home-mirror-artwork{
-  width:115%;height:clamp(175px,56vw,250px);opacity:.84;
+  width:116%;max-width:none;aspect-ratio:.72;
+ }
+ #li-react-home-host .mirror-message::before,
+ #page-home > .hero > .mirror-message::before{
+  width:119%;max-width:none;aspect-ratio:.72;
  }
 }
 @media(prefers-reduced-motion:reduce){

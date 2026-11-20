@@ -63,8 +63,14 @@ for(const [name,source] of [["Home",home],["Research/Case",research]]){
   name+" must not click/read hidden writing inputs/buttons");
 }
 assert(!research.includes("data-answer="),"React case buttons must not trigger native delegated answer handlers");
-assert(html.includes("caseSnapshot")&&html.includes("selectedText:caseOptions.find"),
- "Saved case notes must freeze the original published question and chosen option");
+assert.match(research,/function caseSnapshot\(answer:CaseChoice\):CaseSnapshot/,
+ "React Case must own the saved question, scene and options without old HTML");
+assert.match(research,/selectedText:caseCopy\.options\[answer\]\.vi/,
+ "Saved Case must carry the exact selected option text");
+assert.match(research,/getSnapshot:\(\)=>document\.documentElement\.classList\.contains\('li-auth-verified'\)/,
+ "React Case snapshot must be hidden when learner is signed out");
+assert.doesNotMatch(research,/querySelector\(['"]#page-case/,
+ "React Case must never read saved context from hidden HTML");
 console.log("PASS Inquiry direct port: mirror hooks, bookmark, research, real draft, case save, invite and account guards");
 
 

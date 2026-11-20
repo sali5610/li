@@ -87,7 +87,39 @@ function ResearchScene(){
 }
 /** The React Case UI owns the selected answer; Lão Lý may inspect and submit
  * that SAME visible draft, never a stale hidden native radio/textarea. */
-type CaseUiPort={getState:()=>{choice:CaseChoice|null;revision:string}|null;submit:()=>boolean};
+type CaseSnapshot={
+ id:'sampling-bias-90';question:string;scene:string;
+ options:{key:CaseChoice;text:string}[];selectedKey:CaseChoice;
+ selectedText:string;feedback:string
+};
+/** The React Case screen owns the canonical text for its saved snapshot:
+ * no reading #page-case markup after the global shell retires that fallback. */
+const caseCopy={
+ question:{vi:'90% trả lời hài lòng. Chúng ta nên kết luận thế nào?',en:'90% of respondents were satisfied. What can we conclude?'},
+ scene:{vi:'Câu hỏi then chốt: người nào được chọn để khảo sát, người nào không được đại diện?',en:'The key question: who was surveyed, and who was left out?'},
+ options:{
+  right:{vi:'Kết quả đúng với những người tham gia mẫu này, chưa suy rộng.',en:'This result describes only the sample, not the wider population.'},
+  wrong:{vi:'90% của mọi người chắc chắn đều hài lòng.',en:'Exactly 90% of everyone is satisfied.'}
+ },
+ feedback:{
+  right:{vi:'Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.',en:'Correct for this scenario: the conclusion applies only to those surveyed.'},
+  wrong:{vi:'Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.',en:'Not quite: this generalizes from a sample to all users. Check who was included and excluded.'}
+ }
+} as const;
+function caseSnapshot(answer:CaseChoice):CaseSnapshot{
+ const options:CaseSnapshot['options']=[
+  {key:'right',text:caseCopy.options.right.vi},
+  {key:'wrong',text:caseCopy.options.wrong.vi}
+ ];
+ return {id:'sampling-bias-90',question:caseCopy.question.vi,scene:caseCopy.scene.vi,
+  options,selectedKey:answer,selectedText:caseCopy.options[answer].vi,
+  feedback:caseCopy.feedback[answer].vi};
+}
+type CaseUiPort={
+ getState:()=>{choice:CaseChoice|null;revision:string}|null;
+ getSnapshot:()=>CaseSnapshot|null;
+ submit:()=>boolean
+};
 declare global{interface Window{liCaseUi?:CaseUiPort;}}
 const readBookmark=()=>inquiryFlow().isCaseBookmarked();
 function CaseScene(){
@@ -133,6 +165,8 @@ function CaseScene(){
   const port:CaseUiPort={
    getState:()=>document.documentElement.classList.contains('li-auth-verified')
     ?{choice,revision}:null,
+   getSnapshot:()=>document.documentElement.classList.contains('li-auth-verified')&&choice
+    ?caseSnapshot(choice):null,
    submit:()=>document.documentElement.classList.contains('li-auth-verified')&&save()
   };
   window.liCaseUi=port;
@@ -154,21 +188,21 @@ function CaseScene(){
   </div>
   <div className="editorial-grid">
    <Card variant="tinted">
-    <Heading level={2} role="titleMedium">{L("90% trả lời hài lòng. Chúng ta nên kết luận thế nào?","90% of respondents were satisfied. What can we conclude?")}</Heading>
-    <Text role="body">{L("Câu hỏi then chốt: người nào được chọn để khảo sát, người nào không được đại diện?","The key question: who was surveyed, and who was left out?")}</Text>
+    <Heading level={2} role="titleMedium">{L(caseCopy.question.vi,caseCopy.question.en)}</Heading>
+    <Text role="body">{L(caseCopy.scene.vi,caseCopy.scene.en)}</Text>
     <div className="path-list">
      <Button className="branch" variant="secondary" aria-pressed={choice==='right'}
       onClick={()=>{setChoice('right');setMessage('');}}>
-      {L("Kết quả đúng với những người tham gia mẫu này, chưa suy rộng.","This result describes only the sample, not the wider population.")}</Button>
+      {L(caseCopy.options.right.vi,caseCopy.options.right.en)}</Button>
      <Button className="branch" variant="secondary" aria-pressed={choice==='wrong'}
       onClick={()=>{setChoice('wrong');setMessage('');}}>
-      {L("90% của mọi người chắc chắn đều hài lòng.","Exactly 90% of everyone is satisfied.")}</Button>
+      {L(caseCopy.options.wrong.vi,caseCopy.options.wrong.en)}</Button>
     </div>
     <motion.p key={choice||'none'} className="state-note" role="status"
      initial={reduced?false:{opacity:0,y:4}} animate={{opacity:1,y:0}}
      transition={reduced?{duration:0}:{duration:0.16}}>{choice===null?L('Chọn một nhận định để bắt đầu.','Choose a statement to begin.'):
-     choice==='right'?L('Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.','Correct for this scenario: the conclusion applies only to those surveyed.'):
-     L('Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.','Not quite: this generalizes from a sample to all users. Check who was included and excluded.')}</motion.p>
+     choice==='right'?L(caseCopy.feedback.right.vi,caseCopy.feedback.right.en):
+     L(caseCopy.feedback.wrong.vi,caseCopy.feedback.wrong.en)}</motion.p>
     <Field id="li-react-case-revision" kind="textarea" label={L("Luận Kết · Viết lại nhận định không vượt quá dữ kiện","Conclusion · Revise your claim without exceeding the evidence")}
      rows={5} value={revision} onChange={e=>updateRevision(e.target.value)}
      placeholder={L("Trong nhóm người đang sử dụng được hỏi, 90% phản hồi tích cực…","Among the current users surveyed, 90% reported satisfaction…")}/>

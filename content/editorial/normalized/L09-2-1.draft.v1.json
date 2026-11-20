@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "L09-2-1",
+  "kind": "Lesson",
+  "content": {
+    "format": "editorial-sectioned-draft-v1",
+    "localized": {
+      "vi": {
+        "intro_md": "<b>“Một hệ thống phát hiện được 90% trường hợp có thật vẫn có thể đưa ra phần lớn cảnh báo sai.”</b>\n\nTrong tình huống <b>giả định</b>, chỉ 2% sự kiện thực sự có rủi ro. Hệ thống phát hiện 90% sự kiện rủi ro, nhưng cũng báo nhầm 10% sự kiện bình thường. Nghe như ‘bắt đúng 90%’ là tuyệt, song muốn biết một <i>cảnh báo đã phát</i> có đáng tin hay không phải xét cả những người <b>không có rủi ro</b>. <b>Cú lật:</b> <code>P(cảnh báo | rủi ro)</code> không đồng nghĩa <code>P(rủi ro | cảnh báo)</code>. [Berkeley STICI](https://www.stat.berkeley.edu/~stark/SticiGui/Text/probabilityAxioms.htm).",
+        "sections": [
+          {
+            "id": "vi-01",
+            "role": "goals",
+            "heading": "1 · Mục tiêu",
+            "body_md": "Phân biệt <b>unconditional/base rate</b>, <b>conditional probability</b>, độ nhạy <code>P(alert|risk)</code>, tỷ lệ báo nhầm <code>P(alert|not risk)</code>, và xác suất hậu nghiệm <code>P(risk|alert)</code>. Lập bảng số đếm, tính xác suất với <b>mẫu số đúng</b>, giải thích tại sao base rate làm thay đổi ý nghĩa cảnh báo; không tự suy rộng tỉ lệ giả định sang sản phẩm thực."
+          },
+          {
+            "id": "vi-02",
+            "role": "concept",
+            "heading": "2 · “Given” làm đổi mẫu số",
+            "body_md": "Khi biết B đã xảy ra, <code>P(A|B) = P(A và B) / P(B)</code>, miễn là <code>P(B)&gt;0</code>. Không lấy toàn bộ quần thể làm mẫu số khi câu hỏi chỉ xét nhóm B.\n\nTrong <b>1.000 sự kiện giả định</b>, có 20 rủi ro và 980 bình thường. Nhóm rủi ro được phát hiện 90% → <b>18 cảnh báo đúng</b> và 2 bỏ sót. Nhóm bình thường có 10% báo nhầm → <b>98 cảnh báo sai</b> và 882 không báo. Tổng cảnh báo là 116; xác suất rủi ro trong <b>những cảnh báo</b> = <b>18/116 ≈ 15,52%</b>. Đó là phép tính trên bộ số giả định; không phải dự báo chính xác ngoài đời.\n\n| Trạng thái thật | Có cảnh báo | Không cảnh báo | Tổng |\n| --- | --- | --- | --- |\n| Có rủi ro | 18 | 2 | 20 |\n| Không rủi ro | 98 | 882 | 980 |\n| Tổng | 116 | 884 | 1.000 |\n\n<b>Bốn phép hỏi không giống nhau:</b> tỷ lệ rủi ro nền = 20/1.000=2%; nhạy = 18/20=90%; false-positive rate = 98/980=10%; <b>positive predictive value trong bộ giả định</b> = 18/116≈15,52%. Khẳng định ‘90% cảnh báo là thật’ từ độ nhạy 90% là đổi nhầm điều kiện."
+          },
+          {
+            "id": "vi-03",
+            "role": "guided",
+            "heading": "3 · Ví dụ hướng dẫn — bộ khác",
+            "body_md": "Một hệ thống giả định giám sát <b>1.000 tác vụ</b>: 100 tác vụ thật sự có vấn đề; phát hiện 80% số có vấn đề; báo sai 10% trong 900 tác vụ bình thường. Hãy đi theo hàng: true alerts 80; false alerts 90; trong 170 alerts thì tỷ lệ có vấn đề = <b>80/170 ≈ 47,06%</b>. <b>Gợi ý:</b> tính <i>số đếm</i> trước, rồi mới chia xác suất. 80% sensitivity không có nghĩa 80% precision."
+          },
+          {
+            "id": "vi-04",
+            "role": "methods",
+            "heading": "3b · L2-T03 — Worked example rồi rút bớt hướng dẫn",
+            "body_md": "<b>Micropractice mới, không phải đề độc lập:</b> Tưởng tượng 2.000 tickets, 5% thực sự khẩn, hệ thống tìm được 90% tickets khẩn và báo nhầm 5% tickets không khẩn.\n\n<b>Bước 1 đã làm:</b> số tickets khẩn = <b>100</b>; bình thường = <b>1.900</b>. <b>Bước 2 để trống:</b> điền số true alerts và false alerts. <b>Bước 3 tự hoàn thành:</b> tính phần trăm cảnh báo là ticket khẩn; ghi mẫu số thực sự dùng. Nhớ không mở lời giải khi mới đọc đề. <b>Quy trình phương pháp:</b> đối chiếu lời giải có hướng dẫn ở §2, điền bước khuyết, rồi tự giải bộ mới; đọc lướt lời giải không phải bằng chứng đã thực hiện T03.\n\n<b>Phản hồi SAU khi nộp lượt luyện:</b> 90 true alerts, 95 false alerts, 185 alerts tổng cộng; <b>90/185≈48,65%</b>. Người học giải thích vì sao mẫu số là 185 chứ không phải 2.000 được coi là chứng cứ phương pháp; ghi hint dùng hay không.\n\n<b>T07 phụ (tự chọn):</b> Chỉ ra giả định sai trong câu “Hệ thống phát hiện 90% ticket khẩn, vậy 90% cảnh báo của nó là ticket khẩn.” Nếu không biết prevalence và false alarm rate, chưa tính được giá trị này. Phản hồi lý luận chỉ mở sau phản hồi người học."
+          },
+          {
+            "id": "vi-05",
+            "role": "concept",
+            "heading": "4 · Độc lập — bộ số MỚI, chưa có lời giải ở các đoạn trước",
+            "body_md": "Một công cụ phân loại giả định xử lý <b>5.000 sự kiện</b> cùng một kỳ: <b>4%</b> thực sự có rủi ro; nó phát hiện <b>85%</b> những sự kiện có rủi ro và báo nhầm <b>5%</b> những sự kiện không có rủi ro. Giả định các tỷ lệ này áp dụng đúng cho bộ dữ liệu giả định, không có dữ kiện về hiệu năng tương lai.\n\n1. Tính số có rủi ro và không có rủi ro.\n2. Tính true alerts, false alerts và tổng alerts (kèm đơn vị sự kiện).\n3. Tính <code>P(rủi ro|cảnh báo)</code>, nêu <b>mẫu số đúng</b> và phân biệt với <code>P(cảnh báo|rủi ro)</code>.\n4. Một báo cáo ghi “85% cảnh báo là đúng” — chỉ ra sai sót và một dữ liệu còn cần để suy rộng sang kỳ sau.\n\n<b>Gợi ý không spoil:</b> Chia thành hai nhóm thật sự có/không có rủi ro trước khi áp dụng hai tỷ lệ khác nhau.\n\n<b>ĐÁP ÁN — CHỈ MỞ SAU BÀI ĐỘC LẬP ĐÃ NỘP:</b> Có rủi ro 200, không rủi ro 4.800; đúng 170, báo sai 240, tổng 410 alerts; <b>170/410 ≈ 41,46%</b>. Độ nhạy 85% khác PPV 41,46% trong fixture này. Báo cáo sai do hoán đổi điều kiện; triển khai thực cần kiểm tra prevalence, độ nhạy/FPR theo giai đoạn/nhóm và sai lệch chọn mẫu. Không khẳng định bộ số tự dựng có ý nghĩa về một mô hình đang tồn tại."
+          },
+          {
+            "id": "vi-06",
+            "role": "reflection",
+            "heading": "5 · Rubric 0–8 tự chấm, chưa hiệu chuẩn",
+            "body_md": "Bốn tiêu chí 0/1/2: phân nhóm và mẫu số chuẩn; true/false/total alert đúng; posterior đúng và không đảo P(A\\|B); giải thích base-rate/generalization boundary có căn cứ. 0 sai/bỏ; 1 một phần; 2 đúng và giải thích được. Hỗ trợ/gợi ý lưu riêng; bài chỉ là một lần thực hành, không chứng minh năng lực thống kê rộng hay tiến bộ của não."
+          },
+          {
+            "id": "vi-07",
+            "role": "extension",
+            "heading": "6 · Đọc tiếp + active recall (đáp án không hiện)",
+            "body_md": "- [OpenStax §3.4 — Contingency Tables](https://openstax.org/books/introductory-statistics-2e/pages/3-4-contingency-tables): bảng hai chiều để thấy mẫu số có điều kiện.\n- [UC Berkeley — Conditioning, Bayes & Base Rate](https://www.stat.berkeley.edu/~stark/SticiGui/Text/probabilityAxioms.htm): công thức và phản ví dụ cho đổi ngược điều kiện.\n- <b>Copy prompt nguồn:</b> “Học li. L09-2-1. Truy cập chính xác URL đã chọn; tóm tắt 5 ý có nguồn về conditional probability và base rate, tách xác minh khỏi suy luận; tạo bộ số mới, giải có giới hạn và hỏi 3 câu active recall không hiện đáp án. Nếu chưa đọc được trang, nói rõ.”\n- <b>Ba câu active recall:</b> (1) Khi viết P(A\\|B), người học nào nằm trong mẫu số? (2) Tại sao tỷ lệ cảnh báo thật không bằng độ nhạy? (3) Cùng sensitivity và FPR, nếu prevalence đổi thì điều gì có thể đổi?\n\n<b>Media contract:</b> original VI/EN 2×2 number table with explicit row/column headers, no medical photographs, no third-party copied graphics. Accessible table is core visual; any future separate picture must not show independent results pre-submit."
+          }
+        ]
+      },
+      "en": {
+        "intro_md": "<b>“A system that detects 90% of real problems can still produce mostly false alarms.”</b>\n\nIn this <b>fictional</b> setting, only 2% of events are actually risky. Detection is 90% among risky events, but 10% of normal events also trigger a false alert. Ninety-percent detection sounds impressive, but after you <i>receive an alert</i>, you must also consider all the alerts coming from people/events without risk. <b>The reversal:</b> <code>P(alert|risk)</code> is NOT <code>P(risk|alert)</code>. [UC Berkeley STICI](https://www.stat.berkeley.edu/~stark/SticiGui/Text/probabilityAxioms.htm).",
+        "sections": [
+          {
+            "id": "en-01",
+            "role": "goals",
+            "heading": "1 · Goals",
+            "body_md": "Distinguish an unconditional prevalence/base rate from conditional probability, sensitivity <code>P(alert|risk)</code>, false-positive rate <code>P(alert|no risk)</code> and the positive predictive probability <code>P(risk|alert)</code>. Use count-first 2×2 tables and the correct denominator; explain how base rates shape alert interpretation; do not project fictional classifier rates onto real devices or people."
+          },
+          {
+            "id": "en-02",
+            "role": "concept",
+            "heading": "2 · “Given” changes the denominator",
+            "body_md": "For event B with positive probability, <code>P(A|B)=P(A and B)/P(B)</code>. Once B is known to have occurred, only the B group belongs in the denominator.\n\nConsider an invented population of <b>1,000 events</b>: 20 genuinely risky, 980 normal. The detector flags 90% of risky ones, yielding <b>18 true alerts</b> and 2 misses. It falsely flags 10% of normal events, yielding <b>98 false alerts</b> and 882 correct non-alerts. There are 116 alerts overall, but the share of risky cases <b>among alerts</b> is <b>18/116 ≈ 15.52%</b>. These numbers were invented for instruction; they are not measured classifier results.\n\n| Real event category | Alert | No alert | Total |\n| --- | --- | --- | --- |\n| Risk | 18 | 2 | 20 |\n| No risk | 98 | 882 | 980 |\n| Total | 116 | 884 | 1,000 |\n\nFour distinct quantities: prevalence <b>20/1,000 = 2%</b>; sensitivity <b>18/20 = 90%</b>; false-positive rate <b>98/980 = 10%</b>; share of true risk among alerts (positive predictive value within this fixture) <b>18/116 ≈ 15.52%</b>. A report asserting “90% of alerts are real” has reversed the conditional."
+          },
+          {
+            "id": "en-03",
+            "role": "concept",
+            "heading": "3 · Guided case — separate figures",
+            "body_md": "A fictional system observes <b>1,000 tasks</b>, 100 of which actually have a problem. It detects 80% of problematic tasks and falsely alerts on 10% of the 900 normal ones. Calculate counts first: 80 true alerts, 90 false alerts; <b>80/170 ≈ 47.06%</b> of alerts correspond to a real problem. <b>Guided hint:</b> distinguish “among all real problems” from “among all alerts.” An 80% detection rate is not automatically 80% precision."
+          },
+          {
+            "id": "en-04",
+            "role": "independent",
+            "heading": "3b · T03 primary: worked example → partial fade → independent new item",
+            "body_md": "<b>New guided micropractice, NOT the independent assessment:</b> In 2,000 fictional tickets, 5% are truly urgent. Detection rate among urgent tickets is 90%, and false-positive rate among nonurgent tickets is 5%.\n\n<b>Fully given first step:</b> 100 urgent; 1,900 nonurgent. <b>Faded step:</b> fill in true-alert and false-alert counts. <b>Unassisted next step:</b> calculate the fraction of alerts that are truly urgent, and identify the denominator. Do not show the keyed explanation until an actual micropractice answer exists. Watching or opening an example is not T03 performance evidence.\n\n<b>Feedback AFTER the micropractice response only:</b> 90 true alerts, 95 false alerts, 185 total alerts; <b>90/185 ≈ 48.65%</b>. Correct explanation uses 185 alerts as the denominator, not all 2,000 tickets. Assistance and hints are logged separately from independent knowledge.\n\n<b>Optional T07 premise check:</b> Analyze “The detector finds 90% of urgent tickets, therefore 90% of its alerts must be urgent.” Why does this inference omit base rate and false positives? Unlock the model reasoning only after a learner attempt.",
+            "model_answer_md": null,
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-05",
+            "role": "independent",
+            "heading": "4 · Fresh INDEPENDENT assessment — different values",
+            "body_md": "A fictional classifier handles <b>5,000 events</b> in one period. <b>4%</b> are genuinely risky, sensitivity is <b>85%</b> and the false-positive rate in normal events is <b>5%</b>. Assume these rates apply exactly to this invented set; no information is supplied about performance in future periods.\n\n1. Calculate risky and nonrisky event counts.\n2. Calculate true alerts, false alerts and total alerts, with units.\n3. Calculate <code>P(risk|alert)</code> with the correct denominator and distinguish it from <code>P(alert|risk)</code>.\n4. Critique a report saying “85% of alerts are correct” and identify one missing piece of evidence before generalizing to a later period.\n\n<b>Non-spoiler hint:</b> First split actual risk versus no risk; apply the detection and false-positive percentages to different groups.",
+            "model_answer_md": "<b>MODEL ANSWER — ONLY AFTER VALID INDEPENDENT SUBMISSION:</b> 200 risky and 4,800 nonrisky events; 170 true alerts, 240 false alerts, 410 total alerts; <b>170/410 ≈ 41.46%</b>. The 85% sensitivity is not the positive predictive fraction 41.46% in this fixture. The claim confuses conditions; an operational report would additionally verify prevalence, sensitivity and FPR across periods/groups and sampling effects. No claim is made about any real classifier.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-06",
+            "role": "reflection",
+            "heading": "5 · Self-scored 0–8 rubric, uncalibrated",
+            "body_md": "Four dimensions × 0/1/2: correct population split and denominators; correct true/false/total alert counts; valid posterior and conditional direction; reasoned base-rate and generalization limitations. 0 absent/incorrect, 1 partially correct, 2 correct with an explanation. Record hint/assisted status apart from proficiency; one made-up problem does not establish broad statistical competence or neural improvement."
+          },
+          {
+            "id": "en-07",
+            "role": "concept",
+            "heading": "6 · Further study and unanswered recall",
+            "body_md": "- [OpenStax §3.4 — Contingency Tables](https://openstax.org/books/introductory-statistics-2e/pages/3-4-contingency-tables): conditioning and 2×2 frequency tables.\n- [UC Berkeley STICI — Probability / Bayes / Base Rate](https://www.stat.berkeley.edu/~stark/SticiGui/Text/probabilityAxioms.htm): formula and cases of conditional-direction confusion.\n- <b>Source-aware copy prompt:</b> “I study li. L09-2-1. Actually open the exact URL, summarize five source-supported ideas on conditioning and base rates with direct source links; separate verified claims from your own inference, use a fresh synthetic example with limits, then ask three unrevealed recall questions. If inaccessible, say so.”\n- <b>Three recall questions (without answers):</b> (1) For P(A\\|B), which set is the denominator? (2) Why is true-alert fraction not equal to sensitivity? (3) What may change when prevalence changes with constant sensitivity and FPR?\n\n<b>Media/a11y:</b> original, bilingual 2×2 tables with headers and accessible number labels; do not copy external diagram screenshots. The synthetic independent answer belongs behind a post-submit UI gate; Notion's full editorial answer is NOT a live reveal gate."
+          }
+        ]
+      }
+    },
+    "companion": {
+      "reviewState": "proposed",
+      "moments": [
+        {
+          "stage": "opening",
+          "heading": "opening · <code>l0921-hook</code>",
+          "source_md": "<b>Primary:</b> <code>hume-evidence</code>; alternates <code>mill-other-side</code>, <code>analects-honesty</code>. <b>Relevance:</b> calibrating belief to evidence is an analogy for judging alarm predictive value rather than assuming a sensitivity figure answers all questions.\n\n<b>VI · Lão Lý:</b> “Báo động chính xác nghe oách nhỉ? Nhưng cái ngươi cần là xác suất <i>sau khi</i> chuông đã reo.”\n\n- <b>“90% nào vậy?”</b> → “90% là tỷ lệ phát hiện trong nhóm thực sự có vấn đề; chưa phải phần trăm cảnh báo là đúng.”\n- <b>“Hỏi gì trước tiên?”</b> → “Hỏi vấn đề hiếm hay phổ biến, và trong nhóm bình thường hệ thống báo nhầm bao nhiêu.”\n\n<b>EN · Lão Lý:</b> “A 90% detection number sounds excellent. But the question comes AFTER the alarm rings.”\n\n- <b>“Which 90%?”</b> → “Detection among genuinely risky cases, not the fraction of correct alarms.”\n- <b>“First missing question?”</b> → “How common is actual risk, and how many normal cases also produce alerts?”"
+        },
+        {
+          "stage": "concept",
+          "heading": "concept · <code>l0921-concept</code>",
+          "source_md": "<b>Primary:</b> <code>analects-think</code>; alternates <code>hume-evidence</code>, <code>mencius-sources</code>. <b>Relevance:</b> distinguishing learning from critical reasoning is a modern analogy for checking which conditional is actually asked, not mathematical source authority.\n\n<b>VI · Lão Lý:</b> “Dấu gạch đứng \\| đâu phải vật trang trí. Nó đổi cả nhóm làm mẫu số.”\n\n- <b>“Đọc A\\|B sao?”</b> → “Đọc là ‘A khi đã biết B’; trước khi chia, khoanh đúng những trường hợp thuộc B.”\n- <b>“Khi nào không tính được?”</b> → “Nếu B không thể xảy ra, xác suất có điều kiện dạng chia P(B) bằng 0 không được định nghĩa theo công thức này.”\n\n<b>EN · Lão Lý:</b> “The bar in P(A\\|B) is not a design flourish. It changes the denominator.”\n\n- <b>“How to read A\\|B?”</b> → “A given B; restrict the denominator to the B cases before calculating.”\n- <b>“When is it undefined?”</b> → “The simple conditional formula requires P(B) greater than zero.”"
+        },
+        {
+          "stage": "guided",
+          "heading": "guided · <code>l0921-guided</code>",
+          "source_md": "<b>Primary:</b> <code>analects-practice</code>; alternates <code>bacon-cause</code>, <code>zhuangzi-craft</code>. <b>Relevance:</b> practicing a procedure repeatedly is a reflection on learning, not proof for classification accuracy.\n\n<b>VI · Lão Lý:</b> “Muốn tập T03, làm hết hai hàng số đếm rồi hãy lôi máy tính ra chia.”\n\n- <b>“Bước nào được làm sẵn?”</b> → “Bài luyện cho trước số tình huống có/không có vấn đề; ngươi tự điền cảnh báo thật và báo nhầm.”\n- <b>“Vì sao giảm gợi ý?”</b> → “Để kiểm tra ngươi có tự suy ra bước tiếp theo, không chỉ nhận diện một bài đã giải sẵn.”\n\n<b>EN · Lão Lý:</b> “For T03, complete both count rows before decorating the page with percentages.”\n\n- <b>“Which step is scaffolded?”</b> → “Risk and nonrisk totals are given; you fill true alerts and false alerts.”\n- <b>“Why fade the guidance?”</b> → “To see whether you can generate the next step, instead of just recognizing a solved example.”"
+        },
+        {
+          "stage": "independent",
+          "heading": "independent · <code>l0921-challenge</code>",
+          "source_md": "<b>Primary:</b> <code>mencius-sources</code>; alternates <code>hume-evidence</code>, <code>analects-honesty</code>. <b>Relevance:</b> asking for evidence before inference is a modern analogical interpretation; <b>never disclose assessed counts or percentages here.</b>\n\n<b>VI · Lão Lý:</b> “Ta không đưa đáp án. Ta chỉ nhắc: mỗi tỷ lệ có người của nó.”\n\n- <b>“Phân nhóm thế nào?”</b> → “Vẽ hai hàng: thật sự có và không có rủi ro, rồi áp dụng tỷ lệ tương ứng; tự ghi số.”\n- <b>“Nếu chưa biết chia cho ai?”</b> → “Đọc lại sau dấu \\| xem điều kiện là cảnh báo hay rủi ro; khoanh nhóm đó làm mẫu số.”\n\n<b>EN · Lão Lý:</b> “I will not give the solution. Every rate belongs to a particular subgroup.”\n\n- <b>“How to partition?”</b> → “Use separate actual-risk and no-risk rows; apply each supplied rate to its own row.”\n- <b>“How to choose the denominator?”</b> → “Read the condition after the bar and identify that group before calculating.”"
+        },
+        {
+          "stage": "reflection",
+          "heading": "reflection · <code>l0921-reflection</code>",
+          "source_md": "<b>Primary:</b> <code>analects-honesty</code>; alternates <code>darwin-confidence</code>, <code>analects-review</code>. <b>Relevance:</b> honest uncertainty and correcting confident mistakes parallel checking the conditional denominator. Darwin's bank entry is a documented clause FRAGMENT, not a freestanding full sentence. <b>Locked before submit.</b>\n\n<b>VI · Lão Lý:</b> “Đã nộp rồi, giờ nhìn lại: ngươi sai phép nhân, hay ngay từ đầu đã chọn sai mẫu số?”\n\n- <b>“Tự soi lỗi nào?”</b> → “Tách lỗi tỷ lệ nền, false alarm, số đếm và điều kiện xác suất; đừng gom thành ‘toán dở’.”\n- <b>“Chấm mastery được chưa?”</b> → “Một đáp án tự chấm 0–8 chưa chứng minh kỹ năng ổn định. Ghi có dùng gợi ý và cần làm bài mới hay không.”\n\n<b>EN · Lão Lý:</b> “Submitted? Now inspect whether the arithmetic failed, or your denominator was wrong from the start.”\n\n- <b>“What errors to label?”</b> → “Separate prevalence, false-positive rate, counts and conditioning errors instead of calling it all ‘bad at math.’”\n- <b>“Is mastery proven?”</b> → “One self-rating does not prove stable ability. Record hints and propose a new independent example.”"
+        },
+        {
+          "stage": "extension",
+          "heading": "extension · <code>l0921-extension</code>",
+          "source_md": "<b>Primary:</b> <code>bacon-studies</code>; alternates <code>zhuangzi-limits</code>, <code>mill-other-side</code>. <b>Relevance:</b> discussion/writing as a learning analogy; the sources of Bayes' mathematical rule are Berkeley/OpenStax, not Bacon.\n\n<b>VI · Lão Lý:</b> “Đem ‘90% chính xác’ ra họp mà không nói 90% của ai là cách làm slide đẹp nhưng quyết định mù.”\n\n- <b>“Đọc tiếp gì?”</b> → “Mở §3.4 OpenStax để làm bảng số đếm, rồi đọc Berkeley để hiểu đổi điều kiện và base-rate fallacy.”\n- <b>“Tự kiểm sâu hơn?”</b> → “Giữ độ nhạy và FPR, thử tăng hoặc giảm prevalence trong một <i>bộ số mới</i>, rồi giải thích vì sao kết quả thay đổi.”\n\n<b>EN · Lão Lý:</b> “Putting ‘90% accurate’ on a slide without saying 90% of whom looks elegant and informs nobody.”\n\n- <b>“Which source next?”</b> → “Use OpenStax §3.4 for the count table, then Berkeley for conditional reversal and base rates.”\n- <b>“Deeper independent probe?”</b> → “Hold sensitivity and FPR fixed, vary prevalence in a <i>fresh dataset</i>, and explain the change.”\n\n<b>Editorial QA contract:</b> six unique context-specific VI+EN prompts, 12 VI and 12 EN action/reply pairs; 3 prevalidated existing-bank quote candidates each stage with contextual rationale, no independently assessed answer in Lão Lý pre-submit; 4-part rubric and T03 actual practice distinguished from T07 optional. VI/EN units/percentages consistent; quote-original/literal translation reuse rights and real locale/interactive QA still OPEN. Cost 0."
+        }
+      ]
+    }
+  },
+  "title": {
+    "sourceTitle": "W3A · L09-2-1 — Conditional Probability and Base Rates · VI/EN editorial"
+  },
+  "publishedAt": null,
+  "publishState": "draft",
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "rights": {
+    "status": "not_verified",
+    "releaseAuthorized": false
+  },
+  "provenance": {
+    "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8102a36fd915de4f9a12",
+    "rawSourcePath": "content/editorial/imported/L09-2-1.source.v1.json",
+    "sourceBodyCharacters": 22837,
+    "sourcePreserved": true
+  },
+  "normalization": {
+    "status": "needs_editorial_fix",
+    "issues": [
+      "vi:independent_count_0",
+      "vi:answer_key_separation_missing",
+      "en:independent_count_2",
+      "companion_contains_undefined_reply"
+    ],
+    "counts": {
+      "vi": {
+        "chapters": 7,
+        "independent": 0,
+        "answersSeparated": 0,
+        "methods": 1,
+        "rubric": 1
+      },
+      "en": {
+        "chapters": 7,
+        "independent": 2,
+        "answersSeparated": 1,
+        "methods": 0,
+        "rubric": 1
+      }
+    },
+    "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "rendering": "not_released_no_React_route"
+  }
+}

@@ -1,0 +1,178 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "L09-1-3",
+  "kind": "Lesson",
+  "content": {
+    "format": "editorial-sectioned-draft-v1",
+    "localized": {
+      "vi": {
+        "intro_md": "<b>“Hai nhóm cùng trung bình 10 phút. Một nhóm không ca nào quá 10; nhóm kia có ca kéo dài 20 phút.”</b>\n\nThử hình dung hai bộ dữ liệu <b>giả định</b> về thời gian xử lý: nhóm X có năm ca 10–10–10–10–10 phút; nhóm Y là 2–8–10–10–20 phút. Cả hai cùng mean 10 phút nhưng thời gian giữa các ca trải ra rất khác nhau. Trung bình không nói dối — <b>nó chỉ không kể hết câu chuyện</b>.\n\n<i>Cú lật:</i> để đánh giá độ nhất quán, ta cần đọc center <b>cùng với</b> spread, không dùng mỗi mean thay cho toàn bộ phân phối. [OpenStax — Measures of the Center](https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data).",
+        "sections": [
+          {
+            "id": "vi-01",
+            "role": "goals",
+            "heading": "1 · Mục tiêu",
+            "body_md": "- Tính mean, median, mode và range cho một bộ số, ghi đơn vị.\n- Hiểu vì sao một giá trị cực lớn có thể kéo mean khỏi median.\n- Phân biệt mô tả hình dáng quan sát với kết luận về phân phối tổng thể.\n- Trình bày center và spread thay vì chọn một số đẹp để báo cáo."
+          },
+          {
+            "id": "vi-02",
+            "role": "concept",
+            "heading": "2 · Center không kể hết spread",
+            "body_md": "Giả sử năm case có thời gian giải quyết <b>2, 3, 3, 4, 8 phút</b>. Tổng 20 phút, <b>mean = 20/5 = 4 phút</b>. Sau khi sắp xếp, <b>median = 3 phút</b>, <b>mode = 3 phút</b> (xuất hiện nhiều nhất), <b>range = 8−2 = 6 phút</b>.\n\n<b>Mean</b> dùng tất cả quan sát nên khá nhạy với giá trị cực đoan; <b>median</b> là vị trí giữa; <b>mode</b> là giá trị lặp thường xuyên nhất; <b>range</b> là độ trải giữa min và max, rất nhạy với hai đầu dãy. Có một quan sát 8 ở phía cao, gợi ý xem thêm đuôi phải, nhưng năm case chưa đủ chứng minh phân phối mọi case là right-skewed.\n\n| Thống kê | Trả lời điều gì? | Bẫy |\n| --- | --- | --- |\n| Mean | Bình quân số học của các quan sát | Có thể bị một ca cực lâu kéo cao |\n| Median | Giá trị giữa sau khi sắp xếp | Không cho biết mọi case cách nhau bao nhiêu |\n| Range | Min đến max | Một giá trị cực trị có thể làm range rất lớn |\n| Shape | Dạng đối xứng, đuôi phải/trái hay cụm | Không thể khẳng định chỉ từ mean |\n\n<b>Ví dụ về dạng:</b> phân phối lệch phải có đuôi kéo về giá trị lớn; mean thường nằm cao hơn median khi có đuôi phải, nhưng đây <b>không phải định luật cho mọi mẫu nhỏ</b>. Muốn xác định shape cần xem histogram/dotplot và cách dữ liệu được thu thập."
+          },
+          {
+            "id": "vi-03",
+            "role": "guided",
+            "heading": "3 · Ví dụ hướng dẫn",
+            "body_md": "Năm lượt học kéo dài <b>4, 4, 5, 5, 6 phút</b>. Mean = <b>4,8 phút</b>; median = <b>5 phút</b>; range = <b>2 phút</b>.\n\n<b>Tự giải thích:</b> tại sao mean và median gần nhau, trong khi range nhỏ hơn ví dụ 2/3/3/4/8? <b>Gợi ý:</b> so min/max và độ cách nhau, nhưng đừng khẳng định mọi lượt học đều gần 5 phút. <b>Giải thích mẫu:</b> bộ này có giá trị quan sát tập trung hơn theo range (2 so với 6), không xác nhận hình dạng dân số."
+          },
+          {
+            "id": "vi-04",
+            "role": "independent",
+            "heading": "3b · Luyện phương pháp L2 (tự chọn, trước bài độc lập)",
+            "body_md": "<b>Chính: T06 · Song Tượng Phân Minh — Compare–Contrast / Interleaved Discrimination.</b> Mean/median là thước đo center, range là thước đo spread; <b>cùng center không đồng nghĩa cùng trải</b>. Đã biết cách tính rồi mới so sánh các nhóm có cấu trúc gần giống. Có thể xem hướng dẫn T06 trong Thần Chú, hoặc bắt đầu ngay.\n\n<b>Micropractice mới, ba nhóm chỉ năm quan sát, đơn vị phút:</b>\n\n- C = 4, 5, 5, 5, 6\n- D = 1, 5, 5, 5, 9\n- E = 5, 5, 5, 5, 5\n\n<b>Luyện phân biệt theo thứ tự xáo trộn:</b> (1) Các nhóm nào có cùng mean/median? (2) So sánh range D với C và E; (3) Nếu một dashboard chỉ hiện “trung bình 5 phút”, thông tin nào bị mất? (4) Có thể từ đây kết luận dân số có phân phối lệch phải không?\n\n<b>Bổ trợ: T04 · Tự Giải Khai Minh — Guided Self-Explanation.</b> Tự giải thích tại sao D có spread lớn dù mean/median giống C. Không được chỉ nói “vì D khác”, cần dẫn min/max và giá trị đã quan sát.\n\n<b>Phản hồi sau lượt luyện:</b> C, D, E đều mean = median = <b>5 phút</b>; range C = <b>2</b>, D = <b>8</b>, E = <b>0</b> phút. Báo cáo center một mình giấu biến động giữa các nhóm; năm quan sát giả định không xác nhận hình dáng phân phối của toàn dân số. T06 được đánh giá bằng so sánh đúng dấu hiệu; T04 bằng giải thích về các đầu mút, không bằng độ dài câu trả lời.",
+            "model_answer_md": "<b>Trạng thái:</b> luyện tuỳ chọn; không dùng A/B bảy case của bài độc lập và không mở đáp án A/B trước lượt nộp.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "vi-05",
+            "role": "independent",
+            "heading": "4 · Bài tập độc lập — không để lộ đáp án",
+            "body_md": "<b>Hai nhóm giả định, cùng đơn vị phút:</b> A = <b>2, 4, 4, 5, 5, 6, 23</b>; B = <b>4, 5, 5, 5, 5, 5, 6</b>. Mỗi nhóm chỉ có bảy case; không có thiết kế mẫu xác suất để suy rộng.\n\n1. Tính <b>mean, median, mode và range</b> của A; giải thích tại sao mean và median khác nhau. Nếu có nhiều mode, ghi đủ.\n2. Tính cùng bốn thống kê cho B; so sánh hai nhóm khi chỉ thấy mean.\n3. Nhận xét <b>giá trị cực đại/đuôi phải</b> quan sát của A mà không tuyên bố shape của cả dân số.\n4. Nêu <b>hai loại chỉ báo hoặc biểu đồ</b> nên báo cáo kết hợp và giới hạn của phát biểu kết luận.\n\n<b>Hint không spoil:</b> với 7 giá trị đã xếp, số thứ tư là median; mean dùng tổng cả 7 giá trị; range = max−min.",
+            "model_answer_md": "<b>Đáp án mẫu, khóa tới sau submit hợp lệ:</b> A tổng 49, mean <b>7 phút</b>, median <b>5 phút</b>, có <b>hai mode là 4 và 5 phút</b> (mỗi giá trị xuất hiện hai lần), range <b>21 phút</b>. B tổng 35, mean <b>5 phút</b>, median <b>5 phút</b>, mode <b>5 phút</b> (xuất hiện năm lần), range <b>2 phút</b>. Giá trị 23 làm mean của A lớn hơn median dù vị trí giữa là 5. Có thể cung cấp mean, median, range và dotplot/boxplot cùng mô tả về cỡ mẫu; không khái quát mọi case từ hai nhóm bảy quan sát.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "vi-06",
+            "role": "reflection",
+            "heading": "5 · Rubric tự đánh giá 0–8",
+            "body_md": "| Tiêu chí | 0 | 1 | 2 |\n| --- | --- | --- | --- |\n| Nhóm A | Sai hoặc không có | Đúng một phần | Mean 7, median 5, mode 4 & 5, range 21 phút và giải thích |\n| Nhóm B | Sai hoặc không có | Đúng một phần | Mean/median/mode 5, range 2 phút và so sánh |\n| Extreme / shape | Phán bừa | Thấy extreme nhưng suy rộng | Nêu tác động của 23, giữ giới hạn quan sát |\n| Truyền đạt | Chỉ một số | Có thêm một chỉ báo | Center + spread + giới hạn mẫu |"
+          }
+        ]
+      },
+      "en": {
+        "intro_md": "<b>“Two groups both average 10 minutes. In one, no case takes longer than 10; in the other, one takes 20.”</b>\n\nPicture two <b>fictional</b> sets of resolution times: X is 10, 10, 10, 10, 10 minutes; Y is 2, 8, 10, 10, 20 minutes. Both have a mean of 10, but their observed variability is very different. The mean is not lying — <b>it just isn't telling the whole story</b>.\n\n<i>The reversal:</i> describe center <b>and</b> spread rather than reporting the mean as though it described the entire distribution. [OpenStax — Measures of the Center](https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data).",
+        "sections": [
+          {
+            "id": "en-01",
+            "role": "goals",
+            "heading": "1 · Learning objectives",
+            "body_md": "Calculate mean, median, mode and range; explain outlier influence; describe observed shape without claiming population shape; communicate center and spread together."
+          },
+          {
+            "id": "en-02",
+            "role": "concept",
+            "heading": "2 · Center versus spread",
+            "body_md": "Five fictional case-resolution times are <b>2, 3, 3, 4 and 8 minutes</b>. Sum = 20, so <b>mean = 4 minutes</b>. Ordered <b>median = 3</b>, <b>mode = 3</b> and <b>range = 8−2 = 6 minutes</b>.\n\nThe <b>mean</b> uses every value, the <b>median</b> is central in the ordered list, <b>mode</b> is most frequent, and <b>range</b> covers max minus min. The single 8-minute case invites inspection of the right tail; this tiny dataset alone does not identify the shape of the full population.\n\n| Measure | Meaning | Caution |\n| --- | --- | --- |\n| Mean | Arithmetic average | Sensitive to extreme cases |\n| Median | Middle ordered value | Does not describe variability |\n| Range | Maximum minus minimum | Driven by extreme endpoints |\n| Shape | Distribution of values and tails | Requires actual distribution evidence |\n\nA right-skewed distribution extends farther toward larger values, often lifting the mean above the median, but the relationship is not an unconditional classification rule."
+          },
+          {
+            "id": "en-03",
+            "role": "guided",
+            "heading": "3 · Guided example",
+            "body_md": "Five session durations are <b>4, 4, 5, 5, 6 minutes</b>: mean <b>4.8 minutes</b>, median <b>5</b>, range <b>2</b>. Explain why they cluster more closely than 2/3/3/4/8, without claiming the entire population must be symmetric.\n\n<b>Guided hint:</b> compare minima/maxima and remember that mean and median do not define the whole shape."
+          },
+          {
+            "id": "en-04",
+            "role": "independent",
+            "heading": "3b · Optional L2 method practice (before independent challenge)",
+            "body_md": "<b>Primary: T06 · Song Tượng Phân Minh — Compare–Contrast / Interleaved Discrimination.</b> Center (mean/median) and spread (range) answer different questions. After learning both, compare closely related datasets: <b>equal centers do not imply equal variability</b>. The Spellbook explanation is optional.\n\n<b>New mixed comparison, five fictional observations per group, in minutes:</b>\n\n- C = 4, 5, 5, 5, 6\n- D = 1, 5, 5, 5, 9\n- E = 5, 5, 5, 5, 5\n\n<b>Practice:</b> (1) Which groups share mean and median? (2) Compare D's range with C and E; (3) What is lost if a dashboard only displays “5 minutes on average”? (4) Can these five-case groups establish the shape of a population?\n\n<b>Secondary: T04 · Tự Giải Khai Minh — Guided Self-Explanation.</b> Explain, with observed endpoints, why D's spread is larger despite its mean and median matching C's.\n\n<b>Feedback — only after a practice attempt:</b> All three groups have mean = median = <b>5 minutes</b>; ranges are C = <b>2</b>, D = <b>8</b>, E = <b>0</b> minutes. A mean-only report hides dispersion; these tiny invented datasets do not establish population skew. T06 evidence is successful discrimination by diagnostic cue; T04 evidence is a correct reasoned explanation, not simply writing more words.",
+            "model_answer_md": "<b>State:</b> optional guided practice. Keep the separate seven-case A/B independent challenge and its answer key gated.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-05",
+            "role": "independent",
+            "heading": "4 · Independent challenge",
+            "body_md": "Two fictional groups, minutes: <b>A = 2, 4, 4, 5, 5, 6, 23</b>; <b>B = 4, 5, 5, 5, 5, 5, 6</b>. Seven cases each; no representative sampling claims.\n\n1. Calculate <b>mean, median, mode and range</b> for A, with units and interpretation. Report all modes if more than one exists.\n2. Calculate the same four measures for B; explain how reporting only the mean can mislead.\n3. Describe an observed <b>high extreme/right-tail feature</b> in A without declaring the population skew.\n4. Recommend at least two complementary statistics/plots and state the generalization boundary.\n\n<b>Non-spoiler hint:</b> the fourth of seven sorted values is the median, and range uses maximum and minimum.\n\n<b>Reference answer (after submission only):</b> A sum 49, mean <b>7 min</b>, median <b>5 min</b>, <b>two modes: 4 and 5 min</b> (twice each), range <b>21 min</b>; B sum 35, mean <b>5 min</b>, median <b>5 min</b>, mode <b>5 min</b> (five occurrences), range <b>2 min</b>. The high A observation 23 pulls its mean above its median. Report center with spread and a distribution plot; do not infer a population from these invented seven-case samples.",
+            "model_answer_md": null,
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-06",
+            "role": "reflection",
+            "heading": "5 · Self-rating rubric 0–8 (uncalibrated)",
+            "body_md": "Four criteria × 0/1/2: A's correct mean 7 / median 5 / modes 4 and 5 / range 21; B's mean 5 / median 5 / mode 5 / range 2; reasoned high extreme without population overclaim; and meaningful presentation of center, spread and limitations. Record independent-assessment hint assistance separately, not as mastery."
+          }
+        ]
+      }
+    },
+    "companion": {
+      "reviewState": "proposed",
+      "moments": [
+        {
+          "stage": "opening",
+          "heading": "opening · l09-goals",
+          "source_md": "<b>Candidate quote IDs:</b> analects-think, hume-evidence, mencius-sources; originals and localized glosses tracked in S137/S138 quote audit.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> The Analects couples learning with reflective thought; interpreting summary statistics after checking definitions is a modern analogy.\n\n<b>VI · Lão Lý:</b> Hai nhóm đều trung bình 10 phút, nhưng nhóm kia có một ca 20 phút. Nghe mỗi mean rồi kết luận hai nhóm y chang thì dữ liệu cũng phải bật cười.\n\n- <b>Đọc báo cáo đầu tiên?</b> Hỏi người báo cáo đang nói về thời gian xử lý của bao nhiêu case, từ nguồn nào, và chỉ báo trung tâm nào được tính.\n- <b>Vì sao cần spread?</b> Một kết quả bình quân không cho thấy khoảng cách giữa ca nhanh nhất và ca lâu nhất; cần thêm range hoặc một đồ thị quan sát.\n\n<b>EN · Lão Lý:</b> Two groups average 10 minutes, yet one has a 20-minute case. If you call them identical from the mean alone, the dataset might laugh first.\n\n- <b>What should I inspect?</b> Check how many cases were observed, their provenance, measurement units and which measure of center was computed.\n- <b>Why also show spread?</b> An average does not reveal the distance between the fastest and slowest observations; compare range or view an honest plot."
+        },
+        {
+          "stage": "concept",
+          "heading": "concept · l09-concept",
+          "source_md": "<b>Candidate quote IDs:</b> box-models, mencius-sources, hume-evidence; originals and localized glosses tracked in S137/S138 quote audit.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Box's warning that models are approximations is used as an analogy: one center statistic is not the complete observed distribution; this is not a direct theorem from Box about these data.\n\n<b>VI · Lão Lý:</b> Mean có thể bị một ca cực lâu kéo lên, còn median theo vị trí giữa. Chọn số nào phải dựa vào câu hỏi, không dựa vào cái nào nhìn đẹp hơn.\n\n- <b>Mean dùng số nào?</b> Mean cộng toàn bộ quan sát rồi chia số trường hợp; nếu một giá trị lớn bất thường, nó vẫn được tính nên trung bình thay đổi.\n- <b>Median có bất tử không?</b> Median ít nhạy với một cực trị đơn lẻ, nhưng nó không nói hết độ phân tán. Cần nhìn range hoặc hình phân phối cùng lúc.\n\n<b>EN · Lão Lý:</b> One extreme case can shift the mean; the median is the ordered middle. Pick a statistic for the question, not for how impressive it looks.\n\n- <b>How is the mean formed?</b> Sum every observed duration and divide by the number of cases. An extreme duration still contributes to the numerator.\n- <b>Does median solve everything?</b> A median is more resistant to one extreme but does not reveal the variability. Pair it with a spread measure or plot."
+        },
+        {
+          "stage": "guided",
+          "heading": "guided · l09-guided",
+          "source_md": "<b>Candidate quote IDs:</b> analects-practice, aristotle-know, bacon-studies; originals and localized glosses tracked in S137/S138 quote audit.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> The Analects on practice illustrates calculating and reviewing a simple example; it is not a historical account of modern statistics.\n\n<b>VI · Lão Lý:</b> Ở ví dụ năm lượt học 4–4–5–5–6, median gần mean. Hãy giải thích khoảng trải hẹp, đừng tự tuyên bố tương lai ai cũng học giống vậy. <b>L2 tự chọn:</b> T06 · Song Tượng Phân Minh: đối chiếu center và spread từ bộ số đã học; T04 giúp giải thích tại sao bằng ví dụ quan sát.\n\n- <b>So hai ví dụ ra sao?</b> Nhìn giá trị lớn nhất và nhỏ nhất của hai bộ năm quan sát; giải thích vì sao có bộ tập trung hơn theo range, không cần suy phân phối dân số.\n- <b>Còn yếu tố nào thiếu?</b> Ta chưa biết cách chọn lượt học, người học có trùng nhau không, và điều kiện đo có đồng nhất. Không kết luận cho mọi buổi học.\n\n<b>EN · Lão Lý:</b> In the guided 4–4–5–5–6 dataset, mean and median are close. Explain the narrow observed range, not an imaginary guarantee for future learners. <b>Optional L2:</b> T06 Compare–Contrast distinguishes center and spread; T04 Self-Explanation asks why the observed numbers support that distinction.\n\n- <b>How do I compare examples?</b> Compare observed maxima and minima of both five-item sets, then discuss the difference in range without asserting population shape.\n- <b>What remains unknown?</b> We do not know the sampling process, whether learners repeat or if conditions were comparable across sessions."
+        },
+        {
+          "stage": "independent",
+          "heading": "independent · l09-challenge",
+          "source_md": "<b>Candidate quote IDs:</b> mencius-sources, analects-honesty, hume-evidence; originals and localized glosses tracked in S137/S138 quote audit.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Mencius's caution about accepting a text uncritically analogically supports checking both datasets before concluding.\n\n<b>VI · Lão Lý:</b> Giờ tới A và B: tự tính từ dãy thời gian cho từng nhóm. Lão chỉ nhắc kiểm tra thứ tự, số phần tử và đơn vị; con số kết quả để ngươi tự ra. <b>Khung tự làm:</b> Nếu dùng T04 · Tự Giải Khai Minh, hãy giải thích tại sao hai nhóm khác nhau sau khi tự tính; không nhận sẵn số của A/B.\n\n- <b>Làm median trước?</b> Với mỗi nhóm, sắp các quan sát theo tăng dần và định vị giá trị giữa bằng số lượng phần tử. Đừng lấy số giữa của bảng chưa sắp.\n- <b>Nhìn cực trị thế nào?</b> Hỏi có giá trị nào xa phần còn lại và range có nhạy với giá trị ấy không. Đừng gọi một dân số lệch phải chỉ từ một nhóm nhỏ.\n\n<b>EN · Lão Lý:</b> Now handle A and B independently. I'll remind you to check ordering, number of observations and units; the final results are yours. <b>Independent method cue:</b> If using T04 Self-Explanation, explain the contrast only after independently calculating both groups; no A/B results before submission.\n\n- <b>How do I start with the median?</b> Sort each group's observations and locate the middle position from its count. Avoid taking the middle row of unsorted input.\n- <b>How should I read extremes?</b> Check whether one observation is unusually far from its peers and how the range responds. Don't infer population skew from a tiny sample."
+        },
+        {
+          "stage": "reflection",
+          "heading": "reflection · l09-rubric",
+          "source_md": "<b>Candidate quote IDs:</b> analects-honesty, darwin-confidence, box-models; originals and localized glosses tracked in S137/S138 quote audit.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> The Analects on admitting what one does not know illustrates keeping small-sample and skew claims appropriately bounded.\n\n<b>VI · Lão Lý:</b> Đã nộp rồi thì đối chiếu cả số và lời giải thích. Mean đúng mà che mất outlier là báo cáo thiếu trung thực, dù bảng trông sạch.\n\n- <b>Rubric trọng gì?</b> So mean, median, range và đơn vị của từng nhóm; sau đó kiểm tra đã nói rõ ảnh hưởng của cực trị lên cách hiểu chưa.\n- <b>Chọn biểu đồ nào?</b> Dotplot có thể phơi ra từng quan sát ở mẫu nhỏ; boxplot giúp tóm tắt vị trí và trải rộng. Cần hiển thị đúng dữ liệu gốc, không tô hồng.\n\n<b>EN · Lão Lý:</b> After submission, check both arithmetic and interpretation. A correct mean that hides the extreme case is still an incomplete report.\n\n- <b>What does the rubric test?</b> Validate the mean, median, range and units for each group, then check whether the explanation recognizes the extreme observation.\n- <b>Which plot helps?</b> A dotplot can show each small-sample point; a boxplot summarizes position and spread. Neither makes the sample representative."
+        },
+        {
+          "stage": "extension",
+          "heading": "extension · l09-sources",
+          "source_md": "<b>Candidate quote IDs:</b> bacon-studies, analects-review, analects-practice; originals and localized glosses tracked in S137/S138 quote audit.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Bacon's emphasis on reading and writing supports summarizing OpenStax/NIST in one's own words; it does not certify a statistical result.\n\n<b>VI · Lão Lý:</b> Đọc OpenStax §2.5 về center rồi §2.6 về skew, sau đó NIST về spread. Một bộ số tự tạo mới sẽ thử xem ngươi hiểu hay chỉ nhớ đáp án.\n\n- <b>Đọc phần nào trước?</b> Tìm định nghĩa mean/median và ví dụ ảnh hưởng của extreme tại OpenStax 2.5, sau đó đọc NIST về thước đo độ trải.\n- <b>Active recall kiểu gì?</b> Đóng ba trang, tự tạo hai bộ có median bằng nhau nhưng range khác nhau rồi giải thích vì sao không được suy sang toàn bộ dân số.\n\n<b>EN · Lão Lý:</b> Read OpenStax §2.5 on center and §2.6 on skew, then NIST on spread. A fresh dataset will test understanding rather than answer memorization.\n\n- <b>Which reference first?</b> Review mean/median and extreme values in OpenStax 2.5, then NIST's measures of scale for variability.\n- <b>How to retrieve actively?</b> Close the sources and invent two datasets with equal medians but different ranges, explaining why this proves nothing about a population."
+        }
+      ]
+    }
+  },
+  "title": {
+    "sourceTitle": "W2B · L09-1-3 — Center, Spread and Distribution Shape · VI/EN draft"
+  },
+  "publishedAt": null,
+  "publishState": "draft",
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "rights": {
+    "status": "not_verified",
+    "releaseAuthorized": false
+  },
+  "provenance": {
+    "sourceUrl": "https://app.notion.com/p/41b6cf6db72a818c9f50c899e6c489b8",
+    "rawSourcePath": "content/editorial/imported/L09-1-3.source.v1.json",
+    "sourceBodyCharacters": 26775,
+    "sourcePreserved": true
+  },
+  "normalization": {
+    "status": "needs_editorial_fix",
+    "issues": [
+      "vi:independent_count_2",
+      "vi:answer_key_separation_missing",
+      "en:independent_count_2"
+    ],
+    "counts": {
+      "vi": {
+        "chapters": 6,
+        "independent": 2,
+        "answersSeparated": 2,
+        "methods": 0,
+        "rubric": 1
+      },
+      "en": {
+        "chapters": 6,
+        "independent": 2,
+        "answersSeparated": 1,
+        "methods": 0,
+        "rubric": 1
+      }
+    },
+    "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "rendering": "not_released_no_React_route"
+  }
+}

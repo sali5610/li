@@ -1,0 +1,177 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "L03-1-3",
+  "kind": "Lesson",
+  "content": {
+    "format": "editorial-sectioned-draft-v1",
+    "localized": {
+      "vi": {
+        "intro_md": "<b>“18 giây dừng thao tác có thể bị biến thành bản án: ‘Người dùng không biết dùng giao diện.’”</b>\n\nTrong tình huống nghiên cứu <b>giả định</b> của bài, P03 đổi bộ lọc rồi dừng 18 giây. Ta ghi được <b>hành vi và thời lượng</b>; còn “kém kỹ năng số” là một lời giải thích chưa có chứng cứ. Chỉ một câu văn thiếu ranh giới giữa observation và inference là biến ghi chú nghiên cứu thành lời phán xét.\n\n<i>Cú lật:</i> ghi đúng điều đã thấy hoặc nghe trước, rồi mới đề xuất giả thuyết cần kiểm tra. [GOV.UK — Analyse a research session](https://www.gov.uk/service-manual/user-research/analyse-a-research-session).",
+        "sections": [
+          {
+            "id": "vi-01",
+            "role": "goals",
+            "heading": "1 · Mục tiêu",
+            "body_md": "- Tách quan sát, lời trích nguyên văn, diễn giải và kết luận.\n- Giữ ai/phiên/tác vụ/nguồn trong ghi chú; không gán lời người A cho người B.\n- Viết finding đúng mức độ bằng chứng và nhận diện suy luận quá đà.\n- Nêu bước đối chiếu để tăng độ tin cậy thay vì suy tỷ lệ từ một vài phiên."
+          },
+          {
+            "id": "vi-02",
+            "role": "concept",
+            "heading": "2 · Observation ≠ Inference",
+            "body_md": "<b>À há thứ hai: “Trích đúng nguyên văn vẫn có thể suy luận sai.”</b>\n\nNếu người tham gia nói “Tôi không thích nút này”, ta có bằng chứng về <b>lời họ nói</b>, chưa tự động có bằng chứng rằng thiết kế là nguyên nhân duy nhất, hay mọi người dùng đều ghét nút. Quote chính xác không miễn cho người nghiên cứu bước kiểm tra ngữ cảnh.\n\nGiả sử trong buổi thử Process Monitor <b>P03 bấm Report, đổi bộ lọc hai lần rồi dừng 18 giây</b>. P03 nói: <b>“Tôi tưởng có thể lọc theo quốc gia ở đây.”</b> Đây là hành vi quan sát và quote trong <i>tình huống giả định</i>. Câu <b>“P03 yếu kỹ năng số”</b> chỉ là suy luận; câu <b>“mọi người ghét Report”</b> còn sai hơn vì vừa gán cảm xúc, vừa suy rộng.\n\n| Mảnh dữ liệu | Loại | Có thể kết luận tới đâu? |\n| --- | --- | --- |\n| P03 thử filter 2 lần; dừng 18 giây | Observation | Đã xảy ra trong phiên P03 nếu bản ghi xác nhận |\n| “Tôi tưởng có thể lọc theo quốc gia ở đây” | Verbatim quote | Điều P03 nói, không tự chứng minh nguyên nhân |\n| “Tên filter có thể gây hiểu nhầm” | Inference / hypothesis | Một khả năng cần kiểm tra |\n| “Người dùng đều không tìm được filter” | Unsupported generalization | Không được suy từ một phiên |\n\n<b>Confidence không phải cảm giác tự tin của researcher.</b> Cần cân nhắc số và tính liên quan của phiên quan sát, các trường hợp trái chiều, cách tuyển người và độ nhất quán khi ghi chép. Một quote là bằng chứng người đó đã <i>nói</i>, không đủ chứng minh toàn bộ người dùng sẽ <i>làm</i> như vậy."
+          },
+          {
+            "id": "vi-03",
+            "role": "guided",
+            "heading": "3 · Ví dụ có hướng dẫn",
+            "body_md": "P01 nói <b>“Tôi thường export CSV để đối chiếu”</b> rồi mở menu Export một lần. Observer viết: “Tất cả người dùng thích CSV vì giao diện quá tệ.”\n\n<b>Thử tự giải thích:</b> tách quote, observation, inference. Viết lại thành hai câu ghi chú trung lập. <b>Gợi ý:</b> bỏ “tất cả”, “thích” và “quá tệ” nếu chúng chưa được ghi nhận.\n\n<b>Phân tích mẫu:</b> Quote: P01 nói thường export CSV để đối chiếu. Observation: P01 mở menu Export một lần. Giả thuyết: tác vụ đối chiếu bên ngoài có thể thúc đẩy hành vi export; cần xác minh thêm."
+          },
+          {
+            "id": "vi-04",
+            "role": "independent",
+            "heading": "3b · Luyện phương pháp L2 (tự chọn, trước bài độc lập)",
+            "body_md": "<b>Chính: T09 · Truy Nguyên Giám Chứng — Source Criticism & Evidence Appraisal.</b> Khi kiểm tra một finding, không chỉ gạch chân chữ “observation”. Hãy truy <b>ai ghi, phiên nào, bằng cách nào, câu nào là quote nguyên văn, có nguồn đối chiếu nào và còn thiếu gì</b>. Có thể mở Sổ Tay Thần Chú T09 để xem quy trình, hoặc làm ngay.\n\n<b>Hai chứng cứ giả định về một bộ lọc mới, không liên quan P03 hay P07/P08:</b>\n\n- Bản A: Slide nội bộ ghi “Ai cũng không hiểu bộ lọc”. Không có mã phiên, tác giả ghi chép hay phương pháp lấy dữ liệu.\n- Bản B: Note của observer trong phiên giả định S02, người tham gia P12, lúc 10:40: “P12 thử filter hai lần rồi nói 'Tôi tưởng ở đây có bộ lọc theo phòng ban'.” Chưa có video/log độc lập và chưa biết cách tuyển P12.\n\n<b>Thực hành:</b> (1) Bản nào hỗ trợ một nhận định <i>có giới hạn</i> tốt hơn và vì sao? (2) Trích riêng action, quote và inference; (3) Đề xuất một bước đối chiếu thực tế; (4) Nêu điều vẫn chưa biết về cả nhóm người dùng.\n\n<b>Bổ trợ: T07 · Tiền Đề Giám Định — Logical Inference & Premise Checking.</b> Kiểm tra mệnh đề “P12 thử filter hai lần → tất cả người dùng đều không hiểu filter”. Tiền đề nào có trong note, còn bước suy luận nào không được chứng minh?\n\n<b>Đối chiếu sau khi nộp micropractice:</b> B có provenance và hành vi/quote gắn người–phiên cụ thể, nên hỗ trợ <b>nhận định về phiên P12</b> tốt hơn A; B không tự chứng minh nguyên nhân hoặc tỷ lệ phổ biến. Hai lần thử là hành động; câu người dùng nói là quote; “nhãn gây hiểu nhầm” chỉ là giả thuyết. Nên đối chiếu log hoặc bản ghi (nếu có sự đồng ý và quyền truy cập), xem thêm phiên có cách tuyển phù hợp. Bản A thiếu provenance, không phải bằng chứng tần suất. T09 ghi nhận kiểm tra độ tin cậy của nguồn; T07 ghi nhận kiểm tra tính hợp lệ của bước suy rộng, không tính bằng số lượng citation gắn cho đẹp.\n\n<b>Trạng thái:</b> tài liệu mẫu do bài học tạo, không có dữ liệu participant thật. Bài độc lập P07/P08 sau đó vẫn phải tự làm và khóa lời giải.",
+            "model_answer_md": null,
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "vi-05",
+            "role": "independent",
+            "heading": "4 · Bài tập độc lập",
+            "body_md": "<b>Hai phiên nghiên cứu hư cấu:</b> P07 lúc 10:05 mở Report, thử filter hai lần, mất 22 giây và nói <b>“Tôi tưởng nút này lọc theo loại exception.”</b> P08 hoàn thành tác vụ cùng loại trong 18 giây mà không bình luận. Chưa có log khác; tuyển mẫu thuận tiện.\n\n1. Tách <b>hai observation</b> và <b>một quote</b> chính xác; gắn đúng P07/P08.\n2. Nêu <b>hai giả thuyết</b> có thể giải thích hành vi P07; không khẳng định chúng đúng.\n3. Viết <b>một finding có giới hạn</b>; giải thích vì sao chưa thể viết “đa số người dùng không hiểu filter”.\n4. Đề xuất <b>hai bước kiểm chứng tiếp</b> và mức độ tin cậy hiện tại.\n\n<b>Gợi ý không spoil:</b> tách chuyện xảy ra, cách giải thích và phạm vi suy luận.",
+            "model_answer_md": "<b>Đáp án — chỉ mở sau lượt tự làm hợp lệ:</b> P07 thử filter hai lần và mất 22 giây; P08 hoàn thành sau 18 giây; quote là của P07. Hai giả thuyết: nhãn filter không phù hợp mental model hoặc P07 kỳ vọng một vị trí khác. Finding có căn cứ: trong hai phiên giả định, P07 thử filter hai lần, nói rằng kỳ vọng bộ lọc theo loại exception và mất 22 giây; P08 hoàn thành tác vụ cùng loại sau 18 giây mà không bình luận. Chưa đủ chứng cứ xác định nguyên nhân thao tác hoặc tỷ lệ gặp vấn đề trong tổng thể. Tuyển thêm người phù hợp, hỏi follow-up trung lập và so với log; confidence ngoài hai phiên còn thấp/chưa xác định.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "vi-06",
+            "role": "reflection",
+            "heading": "5 · Rubric tự đánh giá 0–8",
+            "body_md": "| Tiêu chí | 0 | 1 | 2 |\n| --- | --- | --- | --- |\n| Evidence classification | Nhầm người hoặc trộn loại | Đúng một phần | Đúng 2 observations + 1 quote |\n| Interpretations | Không nêu hoặc gán chắc nguyên nhân | Một giả thuyết hợp lý | Hai giả thuyết rõ, chưa xác minh |\n| Finding boundary | Suy tỷ lệ hoặc cảm xúc | Giới hạn chung | Nêu đúng 2 phiên, không khái quát |\n| Next evidence | Không có | Một bước có ích | Hai bước phù hợp và confidence thận trọng |"
+          }
+        ]
+      },
+      "en": {
+        "intro_md": "<b>“An 18-second pause can be turned into a verdict: ‘The user can't use the interface.’”</b>\n\nIn the lesson's <b>fictional</b> session, P03 changes a filter and pauses for 18 seconds. The actions and time are observations; “poor digital skills” is an <b>unverified interpretation</b>. Without a boundary between observation and inference, a research note can turn into an unsupported judgment.\n\n<i>The reversal:</i> record what was seen or heard first, then investigate possible explanations. [GOV.UK — Analyse a research session](https://www.gov.uk/service-manual/user-research/analyse-a-research-session).",
+        "sections": [
+          {
+            "id": "en-01",
+            "role": "concept",
+            "heading": "1 · Objectives",
+            "body_md": "- Separate observed behavior, verbatim quote, inference and finding.\n- Preserve participant/session/task provenance and distinguish quotation from paraphrase.\n- Match the strength of a finding to its available evidence.\n- Suggest follow-up checks instead of inventing population percentages."
+          },
+          {
+            "id": "en-02",
+            "role": "concept",
+            "heading": "2 · Recorded evidence versus interpretation",
+            "body_md": "<b>Second insight: “An accurate verbatim quotation can still be used to support a wrong inference.”</b>\n\nIf a participant says “I don't like this button,” that establishes <b>what they reported</b>, not that the design is the sole cause or that every user shares the feeling. Verbatim accuracy does not replace checking context.\n\nIn a <b>fictional</b> Process Monitor study, P03 opens Report, adjusts a filter twice and pauses 18 seconds. P03 says <b>“I expected to filter by country here.”</b> Those are an observation and a participant quote. “P03 has poor digital skills” is an <b>unverified explanation</b>; “everyone hates Report” further adds unsupported emotion and population generalization.\n\n| Record | Evidence type | Limitation |\n| --- | --- | --- |\n| P03 adjusted a filter twice and paused | Observation | Only this recorded session |\n| P03's statement about country filter | Verbatim quote | What one person said, not the root cause |\n| “The label might be ambiguous” | Inference | Requires testing |\n| “Most users cannot find filters” | Generalization | No prevalence evidence |\n\nConfidence depends on how evidence was gathered and whether alternatives and contrary observations exist, not on how assertive the researcher sounds."
+          },
+          {
+            "id": "en-03",
+            "role": "guided",
+            "heading": "3 · Guided example",
+            "body_md": "P01 says <b>“I often export CSV to compare records”</b> and opens the Export menu once. The observer writes <b>“Everyone prefers CSV because the interface is terrible.”</b> Explain the evidence/interpretation split and rewrite a neutral note.\n\n<b>Optional hint:</b> remove unsupported “everyone”, preference and usability judgments. <b>Worked response:</b> quote the participant exactly, record the menu action separately and keep the outside-comparison explanation as an unverified hypothesis."
+          },
+          {
+            "id": "en-04",
+            "role": "independent",
+            "heading": "3b · Optional L2 method practice (before independent task)",
+            "body_md": "<b>Primary: T09 · Truy Nguyên Giám Chứng — Source Criticism & Evidence Appraisal.</b> Go beyond labeling “observation”: check <b>who documented a claim, which session, how it was gathered, where direct quotation ends, what could corroborate it, and what remains unknown</b>. Opening the Spellbook is optional.\n\n<b>Two entirely fictional records unrelated to P03 or the P07/P08 assessment:</b>\n\n- Record A: An internal slide says “Nobody understands the filter.” It contains no session ID, note author or method of collection.\n- Record B: Observer note for fictional session S02, participant P12, 10:40: “P12 tried the filter twice and said, 'I expected a department filter here.'” There is no independent video/log yet and recruitment is unspecified.\n\n<b>Practice:</b> (1) Which record better supports a <i>bounded</i> finding, and why? (2) Separate action, quote and inference; (3) propose one real corroboration check; (4) state what remains unknown about other users.\n\n<b>Secondary: T07 · Tiền Đề Giám Định — Logical Inference & Premise Checking.</b> Assess “P12 tried the filter twice, therefore all users misunderstand filters.” Which premise is present and which universal inference is unsupported?\n\n<b>Feedback — reveal after practice attempt:</b> Record B has traceable session/participant detail and distinguishes behavior and wording, so it better supports a <b>claim about this single session</b>. It does not prove a root cause or prevalence. The two attempts are observation; the attributed words are a quote; “label causes confusion” remains a hypothesis. Check authorized recording/logs and additional appropriately recruited sessions. Record A lacks provenance. T09 evaluates source and method appraisal; T07 evaluates an invalid inferential leap, not the count of references.\n\n<b>State:</b> only fictional data; the later P07/P08 independent task keeps its own locked response.",
+            "model_answer_md": null,
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-05",
+            "role": "independent",
+            "heading": "4 · Independent task",
+            "body_md": "Two <b>fictional</b> sessions: P07 opens Report at 10:05, tries a filter twice, takes 22 seconds and says <b>“I expected this control to filter by exception type.”</b> P08 completes the same kind of task in 18 seconds without a verbal comment. Convenience recruitment; no other logs.\n\n1. Extract <b>two observations</b> and <b>one quote</b>, correctly attributed.\n2. Offer <b>two possible interpretations</b> of P07's behavior; label them hypotheses.\n3. Write <b>one bounded finding</b> and explain why a claim about most users would not be supported.\n4. Recommend <b>two ways to verify</b> the issue and state the present confidence level.\n\n<b>Non-spoiler hint:</b> record facts before explanations; do not estimate prevalence from two convenient sessions.",
+            "model_answer_md": "<b>Model answer (only after a valid attempt):</b> P07 tried the filter twice and took 22 seconds; P08 finished in 18 seconds; quotation belongs to P07. Possible explanations are unclear filter labeling or a mismatched mental model. A bounded finding is that P07 tried the filter twice, expressed an expectation about exception-type filtering and took 22 seconds, while P08 finished the comparable task in 18 seconds without a comment. The cause of the behavior is not established; additional suitably recruited sessions, contextual probing or logs are needed. Confidence for a population claim is undetermined.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-06",
+            "role": "reflection",
+            "heading": "5 · Uncalibrated self-rating /8",
+            "body_md": "Four criteria × 0–2: evidence attribution; two explicitly uncertain inferences; properly scoped finding; two useful verification steps. No AI grading or mastery certification. Record assisted attempts separately."
+          }
+        ]
+      }
+    },
+    "companion": {
+      "reviewState": "proposed",
+      "moments": [
+        {
+          "stage": "opening",
+          "heading": "opening · l03-goals",
+          "source_md": "<b>Candidate quote IDs:</b> hume-evidence, analects-think, analects-honesty. Exact quote/interpretive gloss QA tracked separately.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Hume asks that belief be proportional to evidence. Lão Lý applies this to research notes as a present-day analogy, not as an original UX research rule.\n\n<b>VI · Lão Lý:</b> P03 đứng hình 18 giây, có người đã muốn kết luận “không biết dùng giao diện”. Khoan, tiểu hữu: đó là ghi lại hành vi hay tự kể thêm nguyên nhân? Research không phải fanfic.\n\n- <b>Ghi chú tối thiểu?</b> Gắn mã người tham gia, tác vụ, thời điểm và hành động đã thấy. Nếu trích lời, ghi nguyên câu và ngữ cảnh; đừng tự thêm nguyên nhân.\n- <b>Câu nào chưa được nói?</b> Một thao tác chậm không tự chứng minh người đó kém kỹ năng. Chừng nào chưa hỏi/quan sát thêm, nguyên nhân chỉ là giả thuyết.\n\n<b>EN · Lão Lý:</b> P03 paused for 18 seconds, and someone wants to write “can't use the interface.” Is that a recorded action or an invented explanation? Research notes are not fiction.\n\n- <b>What belongs in a note?</b> Attach participant/session ID, task, time and directly recorded action. Keep exact spoken words and their context distinct from inferred causes.\n- <b>What remains unknown?</b> A slow interaction does not establish low skill. Without follow-up evidence, proposed causes remain hypotheses."
+        },
+        {
+          "stage": "concept",
+          "heading": "concept · l03-concept",
+          "source_md": "<b>Candidate quote IDs:</b> mencius-sources, analects-honesty, hume-evidence. Exact quote/interpretive gloss QA tracked separately.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Mencius warns against uncritical belief in the Book of Documents specifically; treating interview notes critically is a clearly labeled modern analogy.\n\n<b>VI · Lão Lý:</b> P03 đổi filter hai lần là observation; P03 nói 'tưởng lọc được quốc gia' là quote. 'Tên filter tệ' là suy luận. Trộn ba lớp là dữ liệu hóa lời đồn.\n\n- <b>Cách ghi quote?</b> Giữ nguyên lời của P03 và đánh nhãn là lời tham gia, không chuyển nó thành kết luận 'P03 không hiểu hệ thống' hoặc 'mọi người đều nhầm'.\n- <b>Tìm nguyên nhân ra sao?</b> Đề xuất hơn một cách giải thích cho cú click và ghi điểm cần kiểm chứng. Một quan sát có thể phù hợp với nhiều giả thuyết.\n\n<b>EN · Lão Lý:</b> P03 adjusting a filter twice is an observation. P03's comment is a quote. 'The label is bad' is an inference. Don't give speculation the status of footage.\n\n- <b>How to quote P03?</b> Keep P03's statement verbatim with attribution. It is not automatically a validated cause or evidence about every user.\n- <b>How to investigate cause?</b> List competing explanations for the clicks, then seek contextual follow-ups. A single observed behavior can fit multiple hypotheses."
+        },
+        {
+          "stage": "guided",
+          "heading": "guided · l03-guided",
+          "source_md": "<b>Candidate quote IDs:</b> mill-other-side, analects-others, bacon-cause. Exact quote/interpretive gloss QA tracked separately.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Mill's argument about knowing opposing positions motivates testing alternatives to a researcher's first explanation, without implying Mill was writing about usability sessions.\n\n<b>VI · Lão Lý:</b> P01 mở menu Export một lần; còn câu 'tất cả đều mê CSV' là researcher tự thêu thêm. Soi đúng hai loại chứng cứ trước khi rewrite. <b>L2 tự chọn:</b> T09 · Truy Nguyên Giám Chứng: xem ai ghi note, sự kiện có nguồn truy được không, rồi mới đề xuất diễn giải.\n\n- <b>Câu trung lập nào?</b> Ghi: P01 cho biết thường export CSV để đối chiếu; trong phiên P01 mở menu Export một lần. Không chêm 'vì UI tệ' nếu chưa có bằng chứng.\n- <b>Còn thiếu gì?</b> Hỏi thêm P01 đối chiếu với dữ liệu nào, vào lúc nào và có lựa chọn khác không. Đừng lấy một lần mở menu chứng minh thói quen toàn tổ chức.\n\n<b>EN · Lão Lý:</b> P01 opened Export once. 'Everyone loves CSV' was added by the researcher. Separate the direct evidence before rewriting the note. <b>Optional L2:</b> T09 Source Criticism: check who recorded the note, whether the action and quote can be traced, and what remains uncorroborated.\n\n- <b>What is a neutral note?</b> Record P01's comment about CSV comparison and the single observed Export-menu action as two distinct evidence items.\n- <b>What's still missing?</b> Ask what P01 compares against, when and why. One action does not validate an organization-wide preference."
+        },
+        {
+          "stage": "independent",
+          "heading": "independent · l03-challenge",
+          "source_md": "<b>Candidate quote IDs:</b> mencius-sources, box-models, hume-evidence. Exact quote/interpretive gloss QA tracked separately.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Mencius's caution about textual sources is used analogically to avoid elevating one convenient session into a population finding.\n\n<b>VI · Lão Lý:</b> Trong bài P07/P08, hãy lập bảng chứng cứ rồi mới phân tích. Lão không chọn sẵn finding, confidence hay hai giả thuyết cho ngươi. <b>Khung tự làm:</b> Nếu chọn T07 · Tiền Đề Giám Định, hãy tự đặt câu hỏi câu kết luận có vượt dữ liệu hai phiên không; lão không viết finding hộ.\n\n- <b>Lập bảng thế nào?</b> Đặt riêng hai dòng P07 và P08. Mỗi dòng ghi hành động có thể kiểm lại, số liệu thời gian được đề cho, câu quote nếu có; không tự thêm hành vi.\n- <b>Tránh suy rộng bằng cách nào?</b> Chỉ mô tả phạm vi hai phiên tuyển thuận tiện, rồi chỉ ra bằng chứng gì cần thu thêm. Chưa có cơ sở để tính tỷ lệ tất cả người dùng.\n\n<b>EN · Lão Lý:</b> For P07 and P08, build the evidence table before interpreting it. I'll leave the finding, confidence and hypotheses for your own attempt. <b>Independent method cue:</b> If using T07 Premise Checking, ask whether the proposed finding exceeds the two-session evidence; I will not write your finding.\n\n- <b>How should I organize it?</b> Use separate P07 and P08 rows with only the actions, times and quotations actually supplied in the case. Do not invent extra behavior.\n- <b>How do I limit claims?</b> Describe only the two convenience sessions, and name further evidence needed. This does not estimate prevalence across all users."
+        },
+        {
+          "stage": "reflection",
+          "heading": "reflection · l03-rubric",
+          "source_md": "<b>Candidate quote IDs:</b> analects-honesty, darwin-confidence, hume-evidence. Exact quote/interpretive gloss QA tracked separately.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> The Analects's distinction between knowing and not knowing supports labeling uncertainties; numerical research confidence is a contemporary application, not part of the original verse.\n\n<b>VI · Lão Lý:</b> Sau khi nộp, đọc lại câu nào trong lời giải là footage, câu nào là suy luận. Nếu 'đa số' xuất hiện không có mẫu đúng thì lão phạt bằng dấu hỏi.\n\n- <b>Tự chấm finding?</b> Finding tốt nêu rõ điều xảy ra với P07/P08, không gán nguyên nhân chắc chắn và không khái quát tỷ lệ. Kiểm xem có trường hợp trái chiều chưa.\n- <b>Chấm confidence sao?</b> Mức tin cậy phải gắn với số phiên, cách tuyển, độ rõ nhiệm vụ và log bổ sung; không biến sự chắc giọng của người viết thành điểm cao.\n\n<b>EN · Lão Lý:</b> After submission, label every sentence in your answer as observed evidence or interpretation. If 'most users' appears without a suitable sample, question it.\n\n- <b>How should I rate the finding?</b> A defensible finding identifies the observed P07/P08 behavior, avoids unproven causes and keeps its sample boundary visible.\n- <b>How should I rate confidence?</b> Consider recruitment, number of sessions, task comparability and missing logs, rather than how assertive the writing sounds."
+        },
+        {
+          "stage": "extension",
+          "heading": "extension · l03-sources",
+          "source_md": "<b>Candidate quote IDs:</b> bacon-studies, analects-review, analects-practice. Exact quote/interpretive gloss QA tracked separately.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Bacon's reading/conversation/writing triad motivates rewriting evidence-led notes; no claim that Bacon described user research protocols.\n\n<b>VI · Lão Lý:</b> [GOV.UK](http://GOV.UK) hướng dẫn lấy note có ngữ cảnh rồi mới tổng hợp. Đọc tài liệu xong, thử biên tập một ghi chú đầy suy đoán thành hai dòng bằng chứng.\n\n- <b>Đọc nguồn nào trước?</b> Mở 'Taking notes and recording user research sessions' để xem cách ghi hành vi và lời nói; sau đó sang 'Analyse a research session' để xem tổng hợp.\n- <b>Active recall thế nào?</b> Đóng trang, tự tạo một quote và một observation khác nhau, rồi nêu một inference chưa xác minh. Nhớ được cấu trúc là thắng.\n\n<b>EN · Lão Lý:</b> [GOV.UK](http://GOV.UK) explains contextual notes before synthesis. Read the guidance, then rewrite a speculation-heavy note into two evidence-led statements.\n\n- <b>Which source first?</b> Read [GOV.UK](http://GOV.UK)'s 'Taking notes and recording user research sessions', then 'Analyse a research session' for synthesis and interpretation.\n- <b>What retrieval practice?</b> Close the references; invent a quote and an observation, then label one plausible but unverified inference."
+        }
+      ]
+    }
+  },
+  "title": {
+    "sourceTitle": "W2B · L03-1-3 — Observation, Quote, Inference and Confidence · VI/EN draft"
+  },
+  "publishedAt": null,
+  "publishState": "draft",
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "rights": {
+    "status": "not_verified",
+    "releaseAuthorized": false
+  },
+  "provenance": {
+    "sourceUrl": "https://app.notion.com/p/41b6cf6db72a816fbb5ddafef2e8a5c2",
+    "rawSourcePath": "content/editorial/imported/L03-1-3.source.v1.json",
+    "sourceBodyCharacters": 29499,
+    "sourcePreserved": true
+  },
+  "normalization": {
+    "status": "needs_editorial_fix",
+    "issues": [
+      "vi:independent_count_2",
+      "en:independent_count_2"
+    ],
+    "counts": {
+      "vi": {
+        "chapters": 6,
+        "independent": 2,
+        "answersSeparated": 1,
+        "methods": 0,
+        "rubric": 1
+      },
+      "en": {
+        "chapters": 6,
+        "independent": 2,
+        "answersSeparated": 1,
+        "methods": 0,
+        "rubric": 1
+      }
+    },
+    "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "rendering": "not_released_no_React_route"
+  }
+}

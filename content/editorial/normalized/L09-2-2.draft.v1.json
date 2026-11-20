@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "L09-2-2",
+  "kind": "Lesson",
+  "content": {
+    "format": "editorial-sectioned-draft-v1",
+    "localized": {
+      "vi": {
+        "intro_md": "<b>“Khoảng tin cậy 95% không có nghĩa rằng sau khi tính xong, tham số có 95% xác suất nằm trong khoảng này.”</b>\n\nNghe hơi ngang, nhưng trong cách diễn giải <b>frequentist</b> đang học, tỷ lệ thật của tổng thể là một giá trị cố định chưa biết; <b>quy trình tạo khoảng</b> mới là thứ có độ phủ 95% nếu các giả định thống kê được đáp ứng. Sau khi đã lấy mẫu và tạo ra một khoảng cụ thể, đừng biến mức tin cậy của thủ tục thành lời hứa về xác suất hậu nghiệm của tham số. [OpenStax §8.3](https://openstax.org/books/introductory-statistics-2e/pages/8-3-a-population-proportion).",
+        "sections": [
+          {
+            "id": "vi-01",
+            "role": "goals",
+            "heading": "1 · Mục tiêu",
+            "body_md": "Phân biệt point estimate p-hat, standard error, margin of error và confidence interval (CI); tính CI 95% cho tỷ lệ bằng <b>normal approximation/Wald interval</b> khi điều kiện phù hợp; diễn giải đúng độ phủ lặp mẫu; phát hiện khi một mẫu convenience, nonresponse hoặc chọn mẫu sai phá hỏng suy luận dù phép cộng trừ vẫn đúng. Không coi khoảng tin cậy là lời hứa mô hình dự báo hay tỷ lệ chính xác tuyệt đối."
+          },
+          {
+            "id": "vi-02",
+            "role": "concept",
+            "heading": "2 · Nói rõ giả định trước khi bấm máy",
+            "body_md": "Trong bộ dữ liệu <b>GIẢ ĐỊNH lấy mẫu ngẫu nhiên đơn</b> (hoặc cơ chế cho suy luận xấp xỉ hợp lý), khảo sát 100 học viên thuộc một population định nghĩa rõ; 60 trả lời “Có” cho câu hỏi nhị phân. Ta có <b>p-hat=60/100=0,60</b>. Với mức 95%, z≈1,96 và công thức minh họa:<br /><code>SE=sqrt(p-hat*(1-p-hat)/n)</code>,<br /><code>MOE=1.96*SE</code>,<br /><code>CI=[p-hat−MOE, p-hat+MOE]</code>.\n\n<b>Worked:</b> SE=sqrt(0,6×0,4/100)≈0,0490; MOE≈0,0960; <b>CI≈\\[0,504;0,696\\]</b> hay 50,4%–69,6%. Đây là <b>khoảng theo một quy trình có độ phủ xấp xỉ</b>, không phải lời khẳng định có 95% người dùng tích cực. Cơ chế xác suất (cách chọn mẫu, độc lập phù hợp, quy mô đủ lớn) là điều kiện, không phải đồ trang trí.\n\n<b>Tránh ba lẫn lộn:</b> (i) CI nói về <b>tham số tổng thể</b>, không phải “95% cá nhân nằm trong khoảng”; (ii) nếu lấy 100 người tự nguyện từ banner, số học vẫn ra CI nhưng <b>không được tự nhận độ phủ 95% của toàn bộ population</b> khi lựa chọn tham gia gây lệch; (iii) khoảng ngắn không tự chứng minh mẫu đại diện. Phương pháp Wald này là công cụ nhập môn, có thể có độ phủ kém khi n nhỏ hoặc p gần 0/1 — hãy dùng phương pháp thích hợp hơn như plus-four/Wilson khi cần."
+          },
+          {
+            "id": "vi-03",
+            "role": "guided",
+            "heading": "3 · Ví dụ hướng dẫn — bộ KHÁC",
+            "body_md": "Một khảo sát ngẫu nhiên giả định n=<b>200</b>, x=<b>120</b> “Có” → p-hat=<b>0,60</b>, SE=sqrt(0,24/200)≈0,03464; margin≈<b>0,0679</b>. Kết quả <b>\\[0,532;0,668\\]</b>. Vì n lớn hơn trong hai ví dụ có p-hat bằng nhau và giả định tương đương, margin mẫu 200 nhỏ hơn mẫu 100. Không kết luận thêm người tham gia sẽ chữa được selection bias."
+          },
+          {
+            "id": "vi-04",
+            "role": "methods",
+            "heading": "3b · Primary T03 — làm theo, lược bớt bước, rồi tự giải",
+            "body_md": "<b>Micropractice tự dựng và khác đề độc lập:</b> Một thiết kế ngẫu nhiên giả định n=<b>400</b>, x=<b>240</b>, câu hỏi nhị phân. <b>Đã cho bước đầu:</b> p-hat=240/400=<b>0,60</b>. <b>Phần tự điền:</b> SE với đúng n, margin khi z=1,96, khoảng trên/dưới. <b>Tự giải không nhìn đáp án:</b> vì sao người ta không thể nói “tỷ lệ thật có 95% xác suất nằm trong khoảng này” theo ý nghĩa frequentist? Cần có ít nhất một phép tính và một câu giải thích mới tính K3 method enacted.\n\n<b>Phản hồi SAU khi người học nộp lượt luyện:</b> SE≈0,02449; margin≈0,0480; CI≈<b>\\[0,552;0,648\\]</b>; đây là hiệu quả của kích thước mẫu trong mô hình giả định, không đảm bảo chống lệch chọn mẫu. 240 successes, 160 failures thỏa điều kiện số đếm đủ lớn của normal approximation.\n\n<b>T07 phụ (tự chọn):</b> Một team gửi link survey trong banner rồi báo “CI 95%, vậy 95% chắc chắn áp dụng cho tất cả 8.000 user”. Hãy nêu thiếu điều kiện chọn mẫu/coverage/nonresponse và cách sửa giới hạn báo cáo. Feedback chỉ mở sau tự viết giả định."
+          },
+          {
+            "id": "vi-05",
+            "role": "independent",
+            "heading": "4 · Bài độc lập — bộ MỚI, không lặp kết quả",
+            "body_md": "Một nghiên cứu <b>giả định đã lấy mẫu ngẫu nhiên đơn hợp lệ</b> từ tổng thể xác định, với 400 người được chọn, 260 trả lời “Có” cho câu hỏi nhị phân (giả định các đơn vị đủ độc lập, mọi người phản hồi, chưa có hiệu chỉnh population-finite). Dùng phương pháp proportion-Wald 95% với z=1,96 để học quy trình, không tuyên bố nó là phương pháp luôn tốt nhất.\n\n1. Tính p-hat, q-hat và số thành công/thất bại; kiểm điều kiện số đếm.\n2. Tính SE, margin of error, khoảng CI 95%, làm tròn <b>3 chữ số thập phân</b>.\n3. Viết một câu <b>đúng nghĩa frequentist</b> về CI và sửa câu sai “95% xác suất tham số nằm trong khoảng này”.\n4. Giả sử nhóm này thực ra được tuyển bằng <b>banner tự nguyện</b>: điều gì không còn được bảo đảm dù giữ nguyên dữ liệu và công thức?\n\n<b>Gợi ý không spoil:</b> Chia thành công cho n trước; dùng sqrt(p-hat q-hat/n); rồi lấy p-hat cộng/trừ margin. CI không giải quyết mọi vấn đề chọn mẫu.",
+            "model_answer_md": "<b>ĐÁP ÁN — CHỈ MỞ SAU NỘP:</b> p-hat=260/400=<b>0,650</b>; q-hat=<b>0,350</b>; 260 successes/140 failures đều >5. SE=sqrt(0,65×0,35/400)≈<b>0,02385</b>; MOE≈<b>0,04674</b>; <b>CI≈\\[0,603;0,697\\]</b> (60,3%–69,7%). Nếu lặp lại quy trình theo đúng giả định, khoảng 95% số CI theo phương pháp sẽ chứa tỷ lệ thật cố định; khoảng cụ thể không gán xác suất hậu nghiệm 95% cho tham số. Banner convenience khiến tuyên bố suy rộng/coverage thực chất không có căn cứ, dù các phép tính vẫn có thể thực hiện.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "vi-06",
+            "role": "reflection",
+            "heading": "5 · Rubric tự chấm 0–8, không hiệu chuẩn",
+            "body_md": "4 tiêu chí × 0/1/2: (1) p-hat/q-hat/số đếm & điều kiện; (2) SE/MOE/CI số học & đơn vị; (3) cách hiểu coverage/fixed parameter; (4) giới hạn sample design, nonresponse và độ suy rộng. Tách assisted/hint khỏi K1 và K3, không xem một bài đúng là chuẩn hóa năng lực suy luận."
+          },
+          {
+            "id": "vi-07",
+            "role": "extension",
+            "heading": "6 · Nguồn và câu hỏi tự nhớ",
+            "body_md": "- [OpenStax 2e §8.3 Population Proportion](https://openstax.org/books/introductory-statistics-2e/pages/8-3-a-population-proportion) — intro/core.\n- [OpenStax Ch. 8 Introduction](https://openstax.org/books/introductory-statistics-2e/pages/8-introduction) — scope limits and interval procedure.\n- <b>Copy prompt:</b> “Tôi học li. L09-2-2. Truy cập đúng nguồn OpenStax, tóm tắt công thức và giới hạn chỉ từ phần đọc được, đính URL; tách giải thích frequentist khỏi Bayesian; tạo bài mới và 3 active recall chưa đáp án. Nếu chưa mở được, nói rõ.”\n- <b>Active recall chưa đáp án:</b> (1) Margin giảm như thế nào khi n tăng, các điều kiện khác giữ nguyên? (2) Độ phủ 95% nói về thứ gì? (3) Tại sao khoảng hẹp từ banner survey vẫn có thể đánh lừa?\n\n<b>Visual spec:</b> original horizontal CI number line with clear point estimate/margin markers and explicit 95% procedure label; VI/EN + readable accessible text fallback from above, not copied textbook images. No independent CI result in pre-submit figure."
+          }
+        ]
+      },
+      "en": {
+        "intro_md": "<b>“A 95% confidence interval does not mean that, after calculation, the unknown population parameter has a 95% chance of falling inside this particular interval.”</b>\n\nThat sounds strange until we distinguish the <b>frequentist procedure</b> from the fixed, unknown population parameter. Under a valid probability-sampling model, a method with approximately 95% coverage produces intervals that contain the fixed true proportion in approximately 95% of repeated samples. Once one particular interval is calculated, the frequentist interpretation is <b>not</b> a 95% posterior probability that the parameter is inside it. [OpenStax §8.3](https://openstax.org/books/introductory-statistics-2e/pages/8-3-a-population-proportion).",
+        "sections": [
+          {
+            "id": "en-01",
+            "role": "concept",
+            "heading": "1 · Objectives",
+            "body_md": "Distinguish the point estimate p-hat, standard error, margin of error and confidence interval (CI); compute an approximate 95% proportion CI with the introductory <b>normal/Wald approximation</b> when its conditions are reasonable; articulate repeated-sampling coverage rather than a posterior probability for a fixed parameter; identify when convenience sampling, nonresponse or an inadequate sample design invalidates broad inference even if the arithmetic is correct."
+          },
+          {
+            "id": "en-02",
+            "role": "concept",
+            "heading": "2 · Identify assumptions before calculating",
+            "body_md": "Imagine a <b>fictional simple random sample</b> (or an equivalently justified probability-sampling process) from a well-defined population. Among n=<b>100</b> sampled learners, x=<b>60</b> answer Yes to a binary item, so p-hat=<b>60/100=0.60</b>. For an introductory approximate 95% CI, z≈1.96:<br /><code>SE = sqrt(p-hat*(1−p-hat)/n)</code>;<br /><code>margin = 1.96*SE</code>;<br /><code>CI = [p-hat−margin, p-hat+margin]</code>.\n\n<b>Worked example:</b> SE=sqrt(0.6×0.4/100)≈<b>0.0490</b>, margin≈<b>0.0960</b>, interval≈<b>\\[0.504, 0.696\\]</b>, or 50.4%–69.6%. This is an <b>approximately calibrated repeated-sampling procedure</b> under the assumptions, NOT a claim that 95% of all people have a particular individual value. Probability sampling and reasonable independence are not decorative footnotes.\n\n<b>Three traps:</b> (1) A CI aims to estimate a <b>population proportion</b>, not where 95% of people lie. (2) A volunteer-only banner survey permits numerical computation, but does not automatically justify advertised 95% population coverage. (3) A narrow interval does not prove that the sample represents the population. The simple Wald interval can behave poorly for small n or extreme proportions; other approaches (e.g. Wilson/plus-four) can be more appropriate."
+          },
+          {
+            "id": "en-03",
+            "role": "guided",
+            "heading": "3 · Guided example — different sample",
+            "body_md": "In another fictional valid simple random sample, n=<b>200</b>, x=<b>120</b> Yes, giving p-hat=0.60. SE=sqrt(0.24/200)≈<b>0.03464</b> and margin≈<b>0.0679</b>, so CI≈<b>\\[0.532,0.668\\]</b>. With the same observed proportion and comparably justified sample assumptions, the larger sample has a smaller standard-error margin. Increasing n does NOT cure selection bias by itself."
+          },
+          {
+            "id": "en-04",
+            "role": "independent",
+            "heading": "3b · Primary L2-T03: worked → faded step → fresh independent item",
+            "body_md": "<b>Separate micropractice:</b> A hypothetical random sample has n=<b>400</b> and x=<b>240</b> Yes on a binary item. <b>Completed first step:</b> p-hat=240/400=<b>0.60</b>. <b>Faded steps for the learner:</b> compute SE with the proper denominator, the z=1.96 margin and both interval endpoints. <b>Then explain without copying:</b> why is “there is a 95% probability the true fixed proportion lies in this interval” not the standard frequentist meaning? Completing both a calculation and a defensible explanation is evidence of actually using T03; simply reading the worked solution is not.\n\n<b>Feedback — only AFTER a real practice submission:</b> SE≈<b>0.02449</b>; margin≈<b>0.0480</b>; CI≈<b>\\[0.552,0.648\\]</b>. The 240 Yes / 160 No counts are large enough for this elementary normal approximation. A smaller margin under the assumptions does not prove absence of selection bias.\n\n<b>Optional T07 premise check:</b> A team invites volunteers through an in-app banner and announces “95% CI, so this definitely applies to every one of our 8,000 users.” Identify missing sampling coverage/nonresponse assumptions and rewrite the claim honestly. Reveal reasoning feedback only after the learner provides it.",
+            "model_answer_md": null,
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-05",
+            "role": "independent",
+            "heading": "4 · INDEPENDENT assessment — new and previously unsolved numbers",
+            "body_md": "A <b>fictional valid simple random sample</b> is drawn from a defined population. Of n=<b>400</b> sampled people, x=<b>260</b> answer Yes on a binary question; assume adequate independence, full response and no finite-population correction. Use the educational 95% Wald proportion CI with z=1.96; do not claim Wald is optimal in every setting.\n\n1. Calculate p-hat, q-hat, Yes/No counts and check the normal-approximation count condition.\n2. Compute SE, margin and CI endpoints, rounded to <b>three decimal places</b>.\n3. Explain the frequentist meaning of 95% coverage and correct the statement “There is a 95% probability that the true parameter lies in this particular interval.”\n4. If the exact same numbers came from a voluntary banner survey, explain what conclusion would <b>no longer be warranted</b> and why.\n\n<b>Non-spoiler hint:</b> Divide Yes by n, then compute sqrt(p-hat\\*q-hat/n) and add/subtract the margin. An interval formula cannot repair a biased recruitment mechanism.\n\n<b>MODEL RESPONSE — ONLY AFTER A VALID INDEPENDENT SUBMISSION:</b> p-hat=260/400=<b>0.650</b>, q-hat=<b>0.350</b>, 260 successes and 140 failures, comfortably more than five of each. SE=sqrt(0.65×0.35/400)≈<b>0.02385</b>, margin≈<b>0.04674</b>, CI≈<b>\\[0.603,0.697\\]</b> (60.3%–69.7%). Across repeated samples under the model, approximately 95% of constructed intervals contain the fixed true population proportion. That is not a Bayesian posterior statement about the one observed interval. Volunteer recruitment removes any automatic population representativeness/coverage guarantee, although the formula can still produce numbers.",
+            "model_answer_md": null,
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-06",
+            "role": "reflection",
+            "heading": "5 · Self-review rubric (0–8, not calibrated)",
+            "body_md": "Four criteria scored 0/1/2 each: (A) p-hat, q-hat, counts and conditions; (B) SE/margin/CI arithmetic and units; (C) proper repeated-sampling coverage/fixed-parameter distinction; (D) sample-design, nonresponse and generalization boundary. Record hint/assisted state separately from independent knowledge evidence; one correct hypothetical calculation does not certify statistical mastery."
+          },
+          {
+            "id": "en-07",
+            "role": "concept",
+            "heading": "6 · Further reading and unanswered recall",
+            "body_md": "- [OpenStax Introductory Statistics 2e §8.3 Population Proportion](https://openstax.org/books/introductory-statistics-2e/pages/8-3-a-population-proportion) — direct procedural and interpretation source.\n- [OpenStax Chapter 8 Introduction](https://openstax.org/books/introductory-statistics-2e/pages/8-introduction) — overview and interval-estimation scope.\n- <b>Source-aware copy prompt:</b> “I study li. L09-2-2. Actually inspect the chosen OpenStax URL, summarize only accessed formulas/conditions and their source links, distinguish frequentist coverage from a Bayesian posterior statement, create a separate original practice case and three unrevealed recall questions. Say explicitly if access fails.”\n- <b>Unanswered active recall:</b> (1) With all else equal, how does the standard-error margin respond to n increasing? (2) What has approximately 95% coverage? (3) Why might a very narrow interval from a volunteer banner still mislead?\n\n<b>Media spec:</b> author-original proportion-interval number line identifying point estimate, margin and interval endpoints, with a written description of the repeated-sampling caveat. VI/EN accessible text-first fallback; no independent keyed endpoints in a pre-submit image, alt or hint. No copyrighted figure reproduced or released."
+          }
+        ]
+      }
+    },
+    "companion": {
+      "reviewState": "proposed",
+      "moments": [
+        {
+          "stage": "opening",
+          "heading": "opening · <code>l0922-hook</code>",
+          "source_md": "<b>Primary:</b> <code>hume-evidence</code>; alternates <code>analects-honesty</code>, <code>mill-other-side</code>. <b>Relevance:</b> proportioning belief to evidence is an analogy for distinguishing the 95% procedure's repeated-coverage promise from an unjustified posterior certainty; Hume does not directly source the Wald CI.\n\n<b>VI · Lão Lý:</b> “Khoảng 95% mà ngươi đọc thành ‘95% chắc tham số ở đây’ thì chính mẫu số niềm tin đang làm trò rồi.”\n\n- <b>“95% của cái gì?”</b> → “Của độ phủ quy trình khi lặp cách chọn mẫu hợp lệ, không tự động của xác suất hậu nghiệm trên tham số đã cố định.”\n- <b>“Sao phải kiểm mẫu?”</b> → “Một công thức đẹp không chữa được banner tự nguyện hay người không phản hồi.”\n\n<b>EN · Lão Lý:</b> “You see ‘95%’ and immediately offer the fixed parameter a 95% chance? Wrong kind of promise.”\n\n- <b>“95% of what?”</b> → “Long-run coverage of a valid repeated sampling and interval procedure, not automatically a posterior probability for a fixed parameter.”\n- <b>“Why check sampling?”</b> → “No elegant formula turns an unrepresentative volunteer survey into a random sample.”"
+        },
+        {
+          "stage": "concept",
+          "heading": "concept · <code>l0922-concept</code>",
+          "source_md": "<b>Primary:</b> <code>analects-think</code>; alternates <code>hume-evidence</code>, <code>zhuangzi-limits</code>. <b>Relevance:</b> the distinction between memorizing and critically checking understanding analogizes to distinguishing standard error from a confidence interpretation; the statistical authority is OpenStax, not Confucius.\n\n<b>VI · Lão Lý:</b> “Có p-hat, SE, margin và CI — bốn cái khác vai, đừng quăng một nồi.”\n\n- <b>“SE và margin khác sao?”</b> → “SE ước lượng dao động mẫu của p-hat theo mô hình; margin ở mức 95% là z nhân SE.”\n- <b>“Mức 95% áp dụng khi nào?”</b> → “Khi thiết kế mẫu và giả định đủ phù hợp, kết quả là độ phủ xấp xỉ của quy trình theo nhiều lần lặp.”\n\n<b>EN · Lão Lý:</b> “Point estimate, SE, margin and CI have different jobs. Don't toss them in one cauldron.”\n\n- <b>“SE versus margin?”</b> → “SE approximates sampling variation of p-hat under the model; the 95% margin is about z times SE.”\n- <b>“When does 95% apply?”</b> → “Under justified sampling/approximation conditions, the procedure has approximate repeated-sample coverage.”"
+        },
+        {
+          "stage": "guided",
+          "heading": "guided · <code>l0922-guided</code>",
+          "source_md": "<b>Primary:</b> <code>analects-practice</code>; alternates <code>zhuangzi-craft</code>, <code>bacon-studies</code>. <b>Relevance:</b> learning by deliberate repeated work is an analogy for the faded worked-example method, not evidence about confidence interval formulas.\n\n<b>VI · Lão Lý:</b> “T03 nghĩa là ta rút bớt tay vịn dần, chứ không phải đọc lời giải rồi tưởng tự làm.”\n\n- <b>“Ta điền gì?”</b> → “Bài luyện cho sẵn p-hat; ngươi tự tính SE, margin và hai cận, rồi giải thích giả định.”\n- <b>“Xem feedback khi nào?”</b> → “Sau khi nộp ít nhất một phép tính và lý do. Chỉ mở guide chưa tính đã luyện T03.”\n\n<b>EN · Lão Lý:</b> “T03 fades the scaffolding. Merely recognizing a completed solution isn't the skill.”\n\n- <b>“What must I fill in?”</b> → “You receive the p-hat and independently compute SE, margin and bounds, then explain the conditions.”\n- <b>“When may feedback appear?”</b> → “After a real calculation and explanation attempt, not after merely opening a method guide.”"
+        },
+        {
+          "stage": "independent",
+          "heading": "independent · <code>l0922-challenge</code>",
+          "source_md": "<b>Primary:</b> <code>mencius-sources</code>; alternates <code>hume-evidence</code>, <code>analects-honesty</code>. <b>Relevance:</b> questioning what evidence truly supports parallels recognizing sampling-design limitations. <b>STRICT no-spoiler:</b> do not provide assessed p-hat, SE, margin or endpoint values.\n\n<b>VI · Lão Lý:</b> “Ta không cho con số. Hãy hỏi bài này lấy mẫu kiểu gì trước khi gắn hai chữ ‘tin cậy’.”\n\n- <b>“Bắt đầu công thức?”</b> → “Tính p-hat và q-hat, kiểm số thành công/thất bại và n, sau đó mới tính SE.”\n- <b>“Khi đổi thành banner?”</b> → “Chỉ ra giả định về cơ hội được chọn và phản hồi không còn bảo đảm, đừng nói ‘n lớn là ổn’.”\n\n<b>EN · Lão Lý:</b> “No keyed numbers from me. First ask what kind of sample justifies the interval procedure.”\n\n- <b>“First calculation?”</b> → “Compute p-hat and q-hat, check the counts and sampling assumptions, then calculate the standard error.”\n- <b>“If it were a banner?”</b> → “Identify the broken probability-coverage or nonresponse premise rather than assuming a large n repairs it.”"
+        },
+        {
+          "stage": "reflection",
+          "heading": "reflection · <code>l0922-reflection</code>",
+          "source_md": "<b>Primary:</b> <code>analects-honesty</code>; alternates <code>analects-review</code>, <code>darwin-confidence</code>. <b>Relevance:</b> admitting uncertainty supports post-attempt self-correction; Darwin's bank quote is an explicitly truncated fragment. <b>Locked until independent submitted.</b>\n\n<b>VI · Lão Lý:</b> “Giờ đã nộp, soi xem mình sai toán hay sai cách hiểu 95% — khác chuyện đó tiểu hữu.”\n\n- <b>“Tự chấm điểm nào?”</b> → “Tách p-hat/số đếm, SE/margin/CI, nghĩa độ phủ, và giả định chọn mẫu thành bốn tiêu chí.”\n- <b>“Sửa câu báo cáo?”</b> → “Nói rõ ‘quy trình này có độ phủ khoảng 95% nếu mô hình hợp lệ’, đừng dùng xác suất hậu nghiệm khi chưa có mô hình Bayesian.”\n\n<b>EN · Lão Lý:</b> “Submitted? Now diagnose whether the arithmetic failed or you misunderstood the 95% claim.”\n\n- <b>“How to self-review?”</b> → “Rate counts, CI calculation, repeated-coverage interpretation and sampling assumptions as four distinct checks.”\n- <b>“Correct the report?”</b> → “Describe approximate long-run procedure coverage under assumptions; don't silently reframe it as a Bayesian posterior.”"
+        },
+        {
+          "stage": "extension",
+          "heading": "extension · <code>l0922-extension</code>",
+          "source_md": "<b>Primary:</b> <code>bacon-studies</code>; alternates <code>mill-other-side</code>, <code>analects-peers</code>. <b>Relevance:</b> study/discussion/writing as a modern analogy for explaining assumptions precisely; OpenStax—not Bacon—is the statistical source.\n\n<b>VI · Lão Lý:</b> “Đừng mang một khoảng hẹp lên dashboard rồi giấu nguyên chuyện ‘lấy ai để hỏi’ dưới chân bàn.”\n\n- <b>“Đọc gì tiếp?”</b> → “Đọc OpenStax §8.3 và đối chiếu điều kiện normal approximation với cơ chế tuyển mẫu.”\n- <b>“Bài thử mới?”</b> → “Dùng hai thiết kế chọn mẫu khác nhau nhưng cùng p-hat, rồi giải thích vì sao chỉ một cái có lập luận suy rộng phù hợp.”\n\n<b>EN · Lão Lý:</b> “Putting a narrow interval on the dashboard while hiding who could be sampled is statistical interior decoration.”\n\n- <b>“Which source next?”</b> → “Open OpenStax §8.3 and assess its normal-approximation assumptions together with the sampling process.”\n- <b>“A fresh probe?”</b> → “Compare two recruitment designs yielding the same p-hat, then distinguish warranted population coverage from unsupported inference.”\n\n<b>Runtime/security boundary:</b> six stages × 2 locale action/reply pairs; 18 vetted bank candidate IDs with declared relevance; primary selection in actual app still subject to Issue #8, no imported quote texts duplicated here, VI/EN source boundaries preserved, no answered independent metrics before submission. Real iPhone/a11y/scholarly rights and Step18/Step22/QA28 OPEN; 0 release and 0 new cost."
+        }
+      ]
+    }
+  },
+  "title": {
+    "sourceTitle": "W3B · L09-2-2 — Confidence Intervals and Uncertainty · VI/EN editorial"
+  },
+  "publishedAt": null,
+  "publishState": "draft",
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "rights": {
+    "status": "not_verified",
+    "releaseAuthorized": false
+  },
+  "provenance": {
+    "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81cf8551d2048d02828b",
+    "rawSourcePath": "content/editorial/imported/L09-2-2.source.v1.json",
+    "sourceBodyCharacters": 24534,
+    "sourcePreserved": true
+  },
+  "normalization": {
+    "status": "needs_editorial_fix",
+    "issues": [
+      "en:independent_count_2",
+      "en:answer_key_separation_missing"
+    ],
+    "counts": {
+      "vi": {
+        "chapters": 7,
+        "independent": 1,
+        "answersSeparated": 1,
+        "methods": 1,
+        "rubric": 1
+      },
+      "en": {
+        "chapters": 7,
+        "independent": 2,
+        "answersSeparated": 0,
+        "methods": 0,
+        "rubric": 1
+      }
+    },
+    "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "rendering": "not_released_no_React_route"
+  }
+}

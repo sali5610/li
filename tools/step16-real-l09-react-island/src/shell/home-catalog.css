@@ -114,16 +114,10 @@
  opacity:1;
  z-index:3;
  pointer-events:none;
- /* Upper half remains clear; fade in across ~25% of the glass, then keep
-    the illustration fully visible through the middle of the lower half. */
- -webkit-mask-image:linear-gradient(to bottom,
-  transparent 0%,transparent 49%,rgba(0,0,0,.12) 54%,
-  rgba(0,0,0,.55) 62%,rgba(0,0,0,.92) 69%,
-  #000 74%,#000 91%,rgba(0,0,0,.78) 95%,transparent 100%);
- mask-image:linear-gradient(to bottom,
-  transparent 0%,transparent 49%,rgba(0,0,0,.12) 54%,
-  rgba(0,0,0,.55) 62%,rgba(0,0,0,.92) 69%,
-  #000 74%,#000 91%,rgba(0,0,0,.78) 95%,transparent 100%);
+ /* Safari: do NOT stack a mask on this transformed/clipped parent.
+    The single child mask feathers the physical image's actual top edge. */
+ -webkit-mask-image:none;
+ mask-image:none;
 }
 #page-home > .hero > .mirror-message > .li-home-mirror-artwork{
  left:50%;top:50%;
@@ -141,14 +135,17 @@
  object-fit:contain;
  object-position:center bottom;
  filter:saturate(1.03) contrast(1.05);
- /* Feather only the perimeter. Preserve the center at 100% opacity;
-    the old inner mask dropped opacity too early and erased the artwork. */
- -webkit-mask-image:radial-gradient(ellipse 50% 55% at 50% 52%,
-  #000 0%,#000 62%,rgba(0,0,0,.90) 74%,
-  rgba(0,0,0,.55) 86%,transparent 100%);
- mask-image:radial-gradient(ellipse 50% 55% at 50% 52%,
-  #000 0%,#000 62%,rgba(0,0,0,.90) 74%,
-  rgba(0,0,0,.55) 86%,transparent 100%);
+ /* One feather on the image itself, including its TOP edge.
+    Clear at the image's first pixels, visible through the subject's center,
+    gently receding at both sides and bottom. No multiplied alpha masks. */
+ -webkit-mask-image:radial-gradient(ellipse 80% 64% at 50% 56%,
+  #000 0%,#000 43%,rgba(0,0,0,.94) 48%,
+  rgba(0,0,0,.66) 59%,rgba(0,0,0,.33) 70%,
+  rgba(0,0,0,.08) 80%,transparent 86%);
+ mask-image:radial-gradient(ellipse 80% 64% at 50% 56%,
+  #000 0%,#000 43%,rgba(0,0,0,.94) 48%,
+  rgba(0,0,0,.66) 59%,rgba(0,0,0,.33) 70%,
+  rgba(0,0,0,.08) 80%,transparent 86%);
 }
 #li-react-home-host .li-home-mirror-art-vignette,
 #page-home > .hero > .mirror-message .li-home-mirror-art-vignette{

@@ -343,26 +343,59 @@ function getView(){
   t12StorageError:active==="T12"?t12StorageError:""
  };
 }
-function performReact(action,values={}){
- if(!root||!active)return false;
- if(!["next","check","reset","schedule","clear"].includes(action))return false;
- if(values&&typeof values==="object"){
-  for(const [key,val] of Object.entries(values)){
-   const field=currentExercise().fields.find(item=>item[0]===key);
-   const synthetic=key==="answer"||key.startsWith("recall")||key==="number";
-   if(!field&&!synthetic)continue;
-   const textarea=root.querySelector("#sp-"+key);
-   if(textarea&&typeof val==="string"){textarea.value=val.slice(0,1200);continue;}
-   const options=root.querySelectorAll('input[name="sp-'+key+'"]');
-   const chosen=Array.isArray(val)?val:[val];
-   for(const input of options)input.checked=chosen.includes(input.value);
-  }
+/** Both frontends invoke the same 13-technique action engine. React values
+ * are supplied to the checker directly; native fallback reads its visible form.
+ * No hidden input writes, synthetic events or button clicks. */
+function runAction(action){
+ if(!active||!["next","check","reset","schedule","clear"].includes(action))return false;
+ const mode=currentExercise().mode||"direct";
+ if(action==="next"&&(phase!==0||!["hide","faded","resume","loci"].includes(mode)))return false;
+ if(action==="check"&&(mode==="due"&&phase===0||
+   phase===0&&["hide","faded","resume","loci"].includes(mode)))return false;
+ if(["schedule","clear"].includes(action)&&(mode!=="due"||phase!==0))return false;
+ switch(action){
+ case "reset":
+  if(active==="T12"&&!t12Clear()){showMessage(t12StorageError);return false;}
+  phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
+  t12Draft={context:"",next:"",answer:""};draw();return true;
+ case "next":next();return true;
+ case "check":check();return true;
+ case "schedule":
+  try{
+   const scheduled={exposed:Date.now(),due:Date.now()+86400000};
+   const raw=JSON.stringify(scheduled);
+   localStorage.setItem("li.spell.t02.due.v1",raw);
+   if(localStorage.getItem("li.spell.t02.due.v1")!==raw)throw Error("verify");
+   feedback="";
+  }catch{feedback="Trình duyệt không lưu được mốc. Chưa có lịch ôn thực nào được tạo.";}
+  draw();return true;
+ case "clear":
+  try{localStorage.setItem("li.spell.t02.due.v1",JSON.stringify({clearedAt:Date.now(),due:null}));}
+  catch{}
+  feedback="";draw();return true;
  }
- const button=root.querySelector('[data-spell-action="'+action+'"]');
- if(!button)return false;
- const beforeSession=viewSession;
- button.click();notifyReactSpell();
- return !(active==="T12"&&action==="reset"&&viewSession===beforeSession);
+ return false;
+}
+function performReact(action,values={}){
+ if(!active||!reactOwnsSpell()||
+   !document.documentElement.classList.contains("li-auth-verified")||
+   document.documentElement.classList.contains("li-account-open")||
+   !values||typeof values!=="object"||Array.isArray(values))return false;
+ const view=getView(),allowed=new Map(view.fields.map(field=>[field.id,field]));
+ const safe=Object.create(null);
+ for(const [id,value] of Object.entries(values)){
+  const field=allowed.get(id);if(!field)continue;
+  if(field.options){
+   const options=field.options.map((_,i)=>String(i));
+   if(field.choiceKind==="multi"){
+    if(!Array.isArray(value)||value.length>options.length)continue;
+    safe[id]=value.filter(item=>typeof item==="string"&&options.includes(item));
+   }else if(typeof value==="string"&&options.includes(value))safe[id]=value;
+  }else if(typeof value==="string")safe[id]=value.slice(0,1200);
+ }
+ actionValues=safe;
+ try{return runAction(action);}
+ finally{actionValues=null;}
 }
 function setup(){
  const page=document.getElementById("page-guideDetail");if(!page)return;

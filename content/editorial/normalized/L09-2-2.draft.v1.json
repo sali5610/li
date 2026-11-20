@@ -33,8 +33,8 @@
             "id": "vi-04",
             "role": "methods",
             "heading": "3b · Primary T03 — làm theo, lược bớt bước, rồi tự giải",
-            "body_md": "<b>Micropractice tự dựng và khác đề độc lập:</b> Một thiết kế ngẫu nhiên giả định n=<b>400</b>, x=<b>240</b>, câu hỏi nhị phân. <b>Đã cho bước đầu:</b> p-hat=240/400=<b>0,60</b>. <b>Phần tự điền:</b> SE với đúng n, margin khi z=1,96, khoảng trên/dưới. <b>Tự giải không nhìn đáp án:</b> vì sao người ta không thể nói “tỷ lệ thật có 95% xác suất nằm trong khoảng này” theo ý nghĩa frequentist? Cần có ít nhất một phép tính và một câu giải thích mới tính K3 method enacted.\n\n<b>Phản hồi SAU khi người học nộp lượt luyện:</b> SE≈0,02449; margin≈0,0480; CI≈<b>\\[0,552;0,648\\]</b>; đây là hiệu quả của kích thước mẫu trong mô hình giả định, không đảm bảo chống lệch chọn mẫu. 240 successes, 160 failures thỏa điều kiện số đếm đủ lớn của normal approximation.\n\n<b>T07 phụ (tự chọn):</b> Một team gửi link survey trong banner rồi báo “CI 95%, vậy 95% chắc chắn áp dụng cho tất cả 8.000 user”. Hãy nêu thiếu điều kiện chọn mẫu/coverage/nonresponse và cách sửa giới hạn báo cáo. Feedback chỉ mở sau tự viết giả định.",
-            "feedback_md": null,
+            "body_md": "<b>Micropractice tự dựng và khác đề độc lập:</b> Một thiết kế ngẫu nhiên giả định n=<b>400</b>, x=<b>240</b>, câu hỏi nhị phân. <b>Đã cho bước đầu:</b> p-hat=240/400=<b>0,60</b>. <b>Phần tự điền:</b> SE với đúng n, margin khi z=1,96, khoảng trên/dưới. <b>Tự giải không nhìn đáp án:</b> vì sao người ta không thể nói “tỷ lệ thật có 95% xác suất nằm trong khoảng này” theo ý nghĩa frequentist? Cần có ít nhất một phép tính và một câu giải thích mới tính K3 method enacted.\n\n<b>T07 phụ (tự chọn):</b> Một team gửi link survey trong banner rồi báo “CI 95%, vậy 95% chắc chắn áp dụng cho tất cả 8.000 user”. Hãy nêu thiếu điều kiện chọn mẫu/coverage/nonresponse và cách sửa giới hạn báo cáo. Feedback chỉ mở sau tự viết giả định.",
+            "feedback_md": "<b>Phản hồi SAU khi người học nộp lượt luyện:</b> SE≈0,02449; margin≈0,0480; CI≈<b>\\[0,552;0,648\\]</b>; đây là hiệu quả của kích thước mẫu trong mô hình giả định, không đảm bảo chống lệch chọn mẫu. 240 successes, 160 failures thỏa điều kiện số đếm đủ lớn của normal approximation.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -121,8 +121,8 @@
             "id": "en-04",
             "role": "methods",
             "heading": "3b · Primary L2-T03: worked → faded step → fresh independent item",
-            "body_md": "<b>Separate micropractice:</b> A hypothetical random sample has n=<b>400</b> and x=<b>240</b> Yes on a binary item. <b>Completed first step:</b> p-hat=240/400=<b>0.60</b>. <b>Faded steps for the learner:</b> compute SE with the proper denominator, the z=1.96 margin and both interval endpoints. <b>Then explain without copying:</b> why is “there is a 95% probability the true fixed proportion lies in this interval” not the standard frequentist meaning? Completing both a calculation and a defensible explanation is evidence of actually using T03; simply reading the worked solution is not.\n\n<b>Feedback — only AFTER a real practice submission:</b> SE≈<b>0.02449</b>; margin≈<b>0.0480</b>; CI≈<b>\\[0.552,0.648\\]</b>. The 240 Yes / 160 No counts are large enough for this elementary normal approximation. A smaller margin under the assumptions does not prove absence of selection bias.\n\n<b>Optional T07 premise check:</b> A team invites volunteers through an in-app banner and announces “95% CI, so this definitely applies to every one of our 8,000 users.” Identify missing sampling coverage/nonresponse assumptions and rewrite the claim honestly. Reveal reasoning feedback only after the learner provides it.",
-            "feedback_md": null,
+            "body_md": "<b>Separate micropractice:</b> A hypothetical random sample has n=<b>400</b> and x=<b>240</b> Yes on a binary item. <b>Completed first step:</b> p-hat=240/400=<b>0.60</b>. <b>Faded steps for the learner:</b> compute SE with the proper denominator, the z=1.96 margin and both interval endpoints. <b>Then explain without copying:</b> why is “there is a 95% probability the true fixed proportion lies in this interval” not the standard frequentist meaning? Completing both a calculation and a defensible explanation is evidence of actually using T03; simply reading the worked solution is not.\n\n<b>Optional T07 premise check:</b> A team invites volunteers through an in-app banner and announces “95% CI, so this definitely applies to every one of our 8,000 users.” Identify missing sampling coverage/nonresponse assumptions and rewrite the claim honestly. Reveal reasoning feedback only after the learner provides it.",
+            "feedback_md": "<b>Feedback — only AFTER a real practice submission:</b> SE≈<b>0.02449</b>; margin≈<b>0.0480</b>; CI≈<b>\\[0.552,0.648\\]</b>. The 240 Yes / 160 No counts are large enough for this elementary normal approximation. A smaller margin under the assumptions does not prove absence of selection bias.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -465,7 +465,7 @@
         "modelAnswers": 1,
         "methodSections": 1,
         "rubricSections": 1,
-        "methodFeedback": 0
+        "methodFeedback": 1
       },
       "en": {
         "chapters": 7,
@@ -473,7 +473,7 @@
         "modelAnswers": 1,
         "methodSections": 1,
         "rubricSections": 1,
-        "methodFeedback": 0
+        "methodFeedback": 1
       }
     },
     "issues": [],

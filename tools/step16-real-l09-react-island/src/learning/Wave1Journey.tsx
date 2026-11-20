@@ -254,6 +254,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     </Button>
    </div>
   </header>
+  <Text role="support" className="li-lesson-status">{content.status}</Text>
   <div className="li-learning-language" role="group" aria-label={vi?'Ngôn ngữ bài học':'Lesson language'}>
    {(['vi','en'] as const).map(lang=><Button key={lang}
     variant={attempt.locale===lang?'primary':'secondary'}
@@ -356,6 +357,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
       value={attempt.draft[i]} disabled={locked||attempt.submitted}
       onChange={e=>editAnswer(i,e.currentTarget.value)}/>)}
     </div>
+    <Text role="support">{content.saveHint}</Text>
     {!attempt.submitted?<div className="li-learning-recovery">
      <Button disabled={saving||locked} onClick={()=>void submit()}>{content.submit}</Button>
      <Button variant="secondary" disabled={saving||locked} onClick={clearDraft}>{content.clear}</Button>
@@ -405,7 +407,8 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
    </Card>}
   </motion.div>
   <LessonSources id={id} locale={attempt.locale} copy={content}
-   sources={source.sources} onSearch={ports.search.openSearch}/>
+   sources={source.sources} subject={source.hierarchy.field.title}
+   conceptTitle={content.conceptTitle} onSearch={ports.search.openSearch}/>
   <LessonMentor id={id} locale={attempt.locale}/>
  </section>;
 }

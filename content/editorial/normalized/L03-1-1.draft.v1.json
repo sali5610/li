@@ -13,7 +13,7 @@
         "sections": [
           {
             "id": "vi-01",
-            "role": "concept",
+            "role": "goals",
             "heading": "1. Học xong biết làm gì?",
             "body_md": "1. Nhận ra sự khác biệt giữa <b>lời yêu cầu tính năng</b>, <b>nhu cầu muốn đạt kết quả</b> và <b>giải pháp đang đề xuất</b>.\n2. Chuyển một yêu cầu chứa tên nút hoặc kênh kỹ thuật thành <b>giả thuyết về công việc người dùng muốn hoàn thành</b>.\n3. Nêu câu hỏi nghiên cứu trung lập để kiểm chứng giả thuyết và đề xuất tối thiểu hai phương án thay thế.\n4. Tách điều đã quan sát được khỏi điều nhóm sản phẩm mới suy luận."
           },
@@ -39,8 +39,8 @@
             "id": "vi-05",
             "role": "methods",
             "heading": "4b. Luyện phương pháp L2 (tự chọn, trước bài độc lập)",
-            "body_md": "<b>Chính: T06 · Song Tượng Phân Minh — Compare–Contrast / Interleaved Discrimination.</b> Sau khi biết feature request, candidate need và solution, thử nhìn <b>dấu hiệu phân biệt</b>: câu nào mô tả mục tiêu trong bối cảnh, câu nào đã chốt giao diện/kênh kỹ thuật? Các nhận định về nhu cầu chưa qua nghiên cứu vẫn chỉ là giả thuyết. Chọn “Xem cách phân biệt” trong Sổ Tay Thần Chú nếu cần, hoặc làm thẳng bên dưới; không bắt buộc mở hướng dẫn.\n\n<b>Lượt luyện mới (khác case WhatsApp của bài tự làm):</b> Hãy phân loại ba câu đang bị xáo trộn thành <i>yêu cầu/phương án giải pháp</i> hoặc <i>giả thuyết nhu cầu</i>, kèm một dấu hiệu nhận biết cho mỗi câu.\n\n- A. “Cho nút ghim đơn hàng lên đầu màn hình.”\n- B. “Khi bàn giao ca, tôi cần đồng nghiệp nhận ra đơn nào đang chờ xử lý để không bỏ sót.”\n- C. “Gửi email tổng hợp trạng thái mỗi 30 phút.”\n\n<b>Bổ trợ: T04 · Tự Giải Khai Minh — Guided Self-Explanation.</b> Giải thích bằng lời của mình: vì sao từ A hoặc C không thể suy ngay B đã được xác thực? Có bằng chứng gì cần hỏi/quan sát trước khi chọn giải pháp?\n\n<b>Phản hồi chỉ mở sau khi người học thử:</b> A và C nêu phương án đã chọn cách làm; B nêu công việc và kết quả mong muốn nên phù hợp dạng <i>candidate need</i>, nhưng chưa xác nhận là nhu cầu thật. Một câu hỏi kiểm chứng hợp lệ là hỏi về lần bàn giao gần nhất, thông tin nào bị bỏ lỡ và người nhận xử lý thế nào. Phân biệt đúng <b>loại câu</b> (T06) và giải thích đúng <b>căn cứ</b> (T04) là hai minh chứng phương pháp khác nhau, không tự động chấm là đã hiểu mọi bài UX.\n\n<b>Trạng thái:</b> luyện có hướng dẫn, có thể bỏ qua; đáp án luyện chỉ sau lượt trả lời. Bài WhatsApp tiếp theo phải giữ đề/đáp án riêng và khóa đáp án đến khi nộp.",
-            "feedback_md": null,
+            "body_md": "<b>Chính: T06 · Song Tượng Phân Minh — Compare–Contrast / Interleaved Discrimination.</b> Sau khi biết feature request, candidate need và solution, thử nhìn <b>dấu hiệu phân biệt</b>: câu nào mô tả mục tiêu trong bối cảnh, câu nào đã chốt giao diện/kênh kỹ thuật? Các nhận định về nhu cầu chưa qua nghiên cứu vẫn chỉ là giả thuyết. Chọn “Xem cách phân biệt” trong Sổ Tay Thần Chú nếu cần, hoặc làm thẳng bên dưới; không bắt buộc mở hướng dẫn.\n\n<b>Lượt luyện mới (khác case WhatsApp của bài tự làm):</b> Hãy phân loại ba câu đang bị xáo trộn thành <i>yêu cầu/phương án giải pháp</i> hoặc <i>giả thuyết nhu cầu</i>, kèm một dấu hiệu nhận biết cho mỗi câu.\n\n- A. “Cho nút ghim đơn hàng lên đầu màn hình.”\n- B. “Khi bàn giao ca, tôi cần đồng nghiệp nhận ra đơn nào đang chờ xử lý để không bỏ sót.”\n- C. “Gửi email tổng hợp trạng thái mỗi 30 phút.”\n\n<b>Bổ trợ: T04 · Tự Giải Khai Minh — Guided Self-Explanation.</b> Giải thích bằng lời của mình: vì sao từ A hoặc C không thể suy ngay B đã được xác thực? Có bằng chứng gì cần hỏi/quan sát trước khi chọn giải pháp?\n\n<b>Trạng thái:</b> luyện có hướng dẫn, có thể bỏ qua; đáp án luyện chỉ sau lượt trả lời. Bài WhatsApp tiếp theo phải giữ đề/đáp án riêng và khóa đáp án đến khi nộp.",
+            "feedback_md": "<b>Phản hồi chỉ mở sau khi người học thử:</b> A và C nêu phương án đã chọn cách làm; B nêu công việc và kết quả mong muốn nên phù hợp dạng <i>candidate need</i>, nhưng chưa xác nhận là nhu cầu thật. Một câu hỏi kiểm chứng hợp lệ là hỏi về lần bàn giao gần nhất, thông tin nào bị bỏ lỡ và người nhận xử lý thế nào. Phân biệt đúng <b>loại câu</b> (T06) và giải thích đúng <b>căn cứ</b> (T04) là hai minh chứng phương pháp khác nhau, không tự động chấm là đã hiểu mọi bài UX.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -121,8 +121,8 @@
             "id": "en-04",
             "role": "methods",
             "heading": "3b. Optional L2 method practice (before independent assessment)",
-            "body_md": "<b>Primary: T06 · Song Tượng Phân Minh — Compare–Contrast / Interleaved Discrimination.</b> After learning feature request, hypothesized need and implementation, compare their <b>diagnostic cues</b>: is the speaker stating a contextual outcome or already selecting an interface/channel? A plausible need is not yet a validated research finding. The Spellbook guide is optional; learners may start directly.\n\n<b>New mixed micropractice (separate from the WhatsApp assessment):</b> Classify A–C as a <i>requested/candidate solution</i> or a <i>hypothesized need</i>, and explain one identifying cue for each.\n\n- A. “Add a button to pin orders to the top.”\n- B. “During shift handovers, I need colleagues to spot unresolved orders so none are missed.”\n- C. “Email a status summary every 30 minutes.”\n\n<b>Secondary: T04 · Tự Giải Khai Minh — Guided Self-Explanation.</b> Explain why neither A nor C proves that B is a verified user need, and name evidence you would seek before choosing an intervention.\n\n<b>Feedback — reveal only after a micropractice attempt:</b> A and C prescribe solution mechanisms. B describes a contextual desired outcome and is only a <i>need hypothesis</i>. A neutral check would ask about the most recent handover, what was missed and how teammates noticed it. Distinguishing cases is T06 evidence; explaining the reasoning is T04 evidence. Neither is a claim of general UX mastery.\n\n<b>State:</b> optional, guided practice; reveal only after micropractice submission. Keep the subsequent WhatsApp case and its answer key separately gated.",
-            "feedback_md": null,
+            "body_md": "<b>Primary: T06 · Song Tượng Phân Minh — Compare–Contrast / Interleaved Discrimination.</b> After learning feature request, hypothesized need and implementation, compare their <b>diagnostic cues</b>: is the speaker stating a contextual outcome or already selecting an interface/channel? A plausible need is not yet a validated research finding. The Spellbook guide is optional; learners may start directly.\n\n<b>New mixed micropractice (separate from the WhatsApp assessment):</b> Classify A–C as a <i>requested/candidate solution</i> or a <i>hypothesized need</i>, and explain one identifying cue for each.\n\n- A. “Add a button to pin orders to the top.”\n- B. “During shift handovers, I need colleagues to spot unresolved orders so none are missed.”\n- C. “Email a status summary every 30 minutes.”\n\n<b>Secondary: T04 · Tự Giải Khai Minh — Guided Self-Explanation.</b> Explain why neither A nor C proves that B is a verified user need, and name evidence you would seek before choosing an intervention.\n\n<b>State:</b> optional, guided practice; reveal only after micropractice submission. Keep the subsequent WhatsApp case and its answer key separately gated.",
+            "feedback_md": "<b>Feedback — reveal only after a micropractice attempt:</b> A and C prescribe solution mechanisms. B describes a contextual desired outcome and is only a <i>need hypothesis</i>. A neutral check would ask about the most recent handover, what was missed and how teammates noticed it. Distinguishing cases is T06 evidence; explaining the reasoning is T04 evidence. Neither is a claim of general UX mastery.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -459,7 +459,7 @@
         "modelAnswers": 1,
         "methodSections": 1,
         "rubricSections": 1,
-        "methodFeedback": 0
+        "methodFeedback": 1
       },
       "en": {
         "chapters": 6,
@@ -467,7 +467,7 @@
         "modelAnswers": 1,
         "methodSections": 1,
         "rubricSections": 1,
-        "methodFeedback": 0
+        "methodFeedback": 1
       }
     },
     "issues": [],

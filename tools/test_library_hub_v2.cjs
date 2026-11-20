@@ -166,7 +166,7 @@ shelf.renderResume();
 assert.equal(elements["li-lesson-history"].children.length,previousVisits+1,
  "React/native Library share the complete recent-lesson model");
 const bookmarks=fs.readFileSync(path.join(__dirname,"../site/assets/library-bookmarks.js"),"utf8");
-assert.match(bookmarks,/window\\.liPersonalStudyRoutes\\?\\.\\[id\\]/,
+assert.match(bookmarks,/window\.liPersonalStudyRoutes\?\.\[id\]/,
  "Only the staged route registry can authorize a personal bookmark");
 assert.match(bookmarks,/li-auth-verified/,"Personal bookmarks require verified invitation");
 console.log("PASS Tủ Riêng: published + invited personal visits, route dedupe, gated bookmarks, two bookmark tabs and original private note flows");

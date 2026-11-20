@@ -20,6 +20,12 @@ const LESSONS={
  lessonL09:{id:"L09-1-2",title:"Sampling Bias · Sai lệch chọn mẫu"},
  lessonL15:{id:"L15-2-2",title:"Điểm đặt hàng lại & tồn kho an toàn"}
 };
+// Preserve saved personal-lesson visits before the invited React route registry
+// is installed. An unknown route is never shown until canonical registration.
+const validLessonVisit=x=>x&&typeof x.route==="string"&&
+ (Object.prototype.hasOwnProperty.call(LESSONS,x.route)||
+  /^draftLesson[A-Za-z0-9]{1,64}$/.test(x.route))&&
+ typeof x.visitedAt==="string"&&!Number.isNaN(Date.parse(x.visitedAt));
 let collectionFilter="all";
 let bookmarkTab="lesson";
 const cloudLessons=new Map(); // Signed Dexie/Neon readback status from Auth owner.
@@ -29,7 +35,7 @@ try{
  if(raw){
   const v=JSON.parse(raw);
   if(!v||v.schema!==1||!Array.isArray(v.items))throw Error("invalid visits");
-  visitStore.items=v.items.filter(x=>x&&Object.prototype.hasOwnProperty.call(LESSONS,x.route)&&typeof x.visitedAt==="string"&&!Number.isNaN(Date.parse(x.visitedAt))).slice(0,40);
+  visitStore.items=v.items.filter(validLessonVisit).slice(0,40);
  }
 }catch(err){visitError=true;}
 /* Activity visits are separate from bookmarks and authored case notes.
@@ -84,7 +90,7 @@ function trackProblem(kind,value){
 }
 function sortedBySavedAt(items){return items.slice().sort((a,b)=>(Date.parse(b.updatedAt||b.savedAt)||0)-(Date.parse(a.updatedAt||a.savedAt)||0));}
 function visits(){
- const tracked=visitStore.items.slice();
+ const tracked=visitStore.items.filter(x=>Object.prototype.hasOwnProperty.call(LESSONS,x.route));
 
  const known=new Set(tracked.map(x=>x.route));
  // Show real saved Wave1 states predating visit tracking in Quay lại only.
@@ -146,6 +152,35 @@ function trackLesson(route){
   visitError=true;
  }
 }
+/* React registers the existing 17 invited-only lesson routes and canonical
+ * Catalog titles with this SAME personal-state owner. No second visit store. */
+function registerPersonalLessons(entries){
+ if(!document.getElementById("li-staging-auth-root")||!Array.isArray(entries))return 0;
+ const allowed=window.liPersonalStudyRoutes||{};
+ let count=0;
+ for(const item of entries){
+  if(!item||typeof item.id!=="string"||typeof item.route!=="string"||
+   typeof item.title!=="string"||!item.title.trim()||item.title.length>200||
+   !/^draftLesson[A-Za-z0-9]{1,64}$/.test(item.route)||
+   allowed[item.id]!==item.route)continue;
+  LESSONS[item.route]={id:item.id,title:item.title};
+  count++;
+ }
+ if(count)notifyReactLibrary();
+ return count;
+}
+// Router is owned by Chat 1. This listens only for an actual authorized
+// personal-lesson visit; the released-lesson history remains unchanged.
+window.addEventListener("li:route-changed",event=>{
+ const route=event.detail?.route;
+ if(!document.documentElement.classList.contains("li-auth-verified")||
+  typeof route!=="string"||!route.startsWith("draftLesson")||
+  !Object.prototype.hasOwnProperty.call(LESSONS,route)||
+  window.liPersonalStudyRoutes?.[LESSONS[route].id]!==route||
+  !document.getElementById("page-"+route)?.classList.contains("active"))return;
+ trackLesson(route);
+ notifyReactLibrary();
+});
 function renderLessonRows(root,limit){
  if(!root)return;root.replaceChildren();
  const items=visits().slice(0,limit||40);
@@ -458,8 +493,7 @@ window.addEventListener?.("li:personal-sync-applied",event=>{
   try{
    const raw=JSON.parse(localStorage.getItem(VISITS_KEY)||'{"schema":1,"items":[]}');
    if(raw.schema!==1||!Array.isArray(raw.items))throw Error("INVALID_VISITS");
-   visitStore={schema:1,items:raw.items.filter(x=>x&&LESSONS[x.route]&&
-    typeof x.visitedAt==="string"&&!Number.isNaN(Date.parse(x.visitedAt))).slice(0,40)};
+   visitStore={schema:1,items:raw.items.filter(validLessonVisit).slice(0,40)};
    visitError=false;
   }catch{visitError=true;}
  }
@@ -585,5 +619,5 @@ function notifyReactLibrary(){
  if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
   window.dispatchEvent(new Event("li:library-view-changed"));
 }
-window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,renderProblemRows,getView,openProblemEntry,openSavedQuestion,removeSavedQuestion,setCollectionFilter});
+window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,registerPersonalLessons,renderProblemRows,getView,openProblemEntry,openSavedQuestion,removeSavedQuestion,setCollectionFilter});
 })();

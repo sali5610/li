@@ -206,7 +206,259 @@ function setT12Draft(field,value){
  notifyReactSpell();
  return saved;
 }
-const currentExercise=()=>active==="T06"&&activeLessonId==="L03-1-2"?
+// Contextual T02 review cues: one bounded, previously-taught concept per
+// canonical lesson. These are recall cues, not unpublished assessment keys.
+// Invited personal draft lessons remain preview-only; no release is implied.
+const T02_LESSON_CUES={
+  "L03-1-1": {
+    "vi": [
+      "Một yêu cầu tính năng như “thêm nút Export PDF” là giải pháp người dùng đề xuất, chưa phải nhu cầu đã kiểm chứng.",
+      "Không nhìn nguồn: phân biệt feature request, giả thuyết user need và giải pháp; cần hỏi gì để biết nhu cầu thật?",
+      "Feature request nêu cách làm cụ thể; user need mô tả kết quả/công việc cần đạt trong bối cảnh. Nhu cầu suy ra từ lời yêu cầu chỉ là giả thuyết, phải kiểm tra bằng câu hỏi trung lập về trải nghiệm thật."
+    ],
+    "en": [
+      "A request such as “add an Export PDF button” proposes a solution, not a verified user need.",
+      "From memory: distinguish a feature request, a user-need hypothesis and a solution. What would you ask to investigate the need?",
+      "A feature request specifies a possible implementation; a need describes the outcome or job in context. The inferred need remains a hypothesis until neutral questions about real experiences test it."
+    ]
+  },
+  "L03-1-2": {
+    "vi": [
+      "Câu hỏi mở vẫn có thể dẫn dắt: “Vì sao giao diện này khó dùng?” đã mặc định nó khó dùng.",
+      "Không nhìn nguồn: điều gì làm một câu hỏi phỏng vấn dẫn dắt, và sửa thế nào để hỏi trung lập?",
+      "Dẫn dắt là nhúng nhận định hoặc đáp án mong muốn vào câu hỏi. Hỏi về một lần sử dụng thật, các bước và điều đã xảy ra; không giả định thích/ghét hay khó/dễ trước."
+    ],
+    "en": [
+      "Open-ended questions can still lead: “Why is this interface hard to use?” assumes difficulty.",
+      "From memory: what makes an interview question leading, and how would you make it neutral?",
+      "A leading question presupposes a judgment or desired response. Ask about a specific recent experience, actions and events without assuming ease, difficulty, praise or dislike."
+    ]
+  },
+  "L03-1-3": {
+    "vi": [
+      "Một người dừng thao tác 18 giây là hành vi quan sát; “người ấy kém kỹ năng số” chỉ là diễn giải chưa kiểm chứng.",
+      "Không nhìn nguồn: tách observation, quote, inference và finding. Vì sao một trích dẫn chính xác vẫn có thể dẫn tới kết luận sai?",
+      "Observation mô tả hành vi; quote là lời nói nguyên văn đúng ngữ cảnh; inference là cách giải thích cần kiểm tra. Finding phải giới hạn theo bằng chứng và không suy từ vài phiên ra tất cả người dùng."
+    ],
+    "en": [
+      "A participant pausing for 18 seconds is an observation; calling them digitally unskilled is an unverified inference.",
+      "From memory: distinguish an observation, a quote, an inference and a finding. Why can an accurate quote still support a poor conclusion?",
+      "Observations record behavior, quotes report actual words, and inferences propose explanations. Findings must stay within the evidence and context, not generalize from a few sessions."
+    ]
+  },
+  "L03-2-1": {
+    "vi": [
+      "Một bài có thể mang nhiều nhãn taxonomy mà không cần nhiều đường dẫn trong menu; canonical concept ID vẫn ổn định.",
+      "Không nhìn nguồn: taxonomy, hierarchy, navigation và content model khác nhau ở đâu?",
+      "Taxonomy quản lý khái niệm/nhãn; hierarchy mô tả quan hệ cha–con; navigation là đường người dùng thấy; content model quy định kiểu và trường dữ liệu. Đừng nhân bản concept ID chỉ vì có nhiều nhãn hay lối vào."
+    ],
+    "en": [
+      "A document may have several taxonomy tags without needing several menu routes; its canonical concept ID stays stable.",
+      "From memory: how do taxonomy, hierarchy, navigation and content models differ?",
+      "Taxonomy manages controlled terms; hierarchy defines parent-child relationships; navigation is the user-facing path; a content model defines object types and fields. Multiple labels or routes do not require duplicate concept IDs."
+    ]
+  },
+  "L03-2-2": {
+    "vi": [
+      "Card sorting giúp khám phá cách người dùng nhóm nội dung; tree testing kiểm tra họ tìm đích trong cây điều hướng cụ thể.",
+      "Không nhìn nguồn: mỗi phương pháp trả lời câu hỏi nghiên cứu gì, và điều gì card sorting không chứng minh được?",
+      "Card sorting gợi ý mental model và cách nhóm/đặt tên; tree testing đo khả năng tìm đúng vị trí với task và đích định trước. Kết quả xếp thẻ giống nhau chưa chứng minh menu cuối cùng dễ tìm."
+    ],
+    "en": [
+      "Card sorting explores how people group content; tree testing checks whether they can find destinations in a proposed navigation tree.",
+      "From memory: what question does each method answer, and what can card sorting not prove?",
+      "Card sorting suggests grouping and labels. Tree testing evaluates findability with a defined task and correct destination. Agreement in a sort does not validate a final navigation tree."
+    ]
+  },
+  "L03-2-3": {
+    "vi": [
+      "Trong 10 người thử, 6 người tìm đúng ngay, 2 người đi vòng rồi đúng và 2 người thất bại: completion khác direct success.",
+      "Không nhìn nguồn: phân biệt overall task completion, direct success, indirect success và navigation error.",
+      "Completion tính mọi người hoàn thành theo tiêu chí đã định; direct success tới đích không đi sai; indirect success phải quay đầu hoặc rẽ nhánh sai rồi vẫn tới đích; error là sự kiện thao tác sai được định nghĩa riêng."
+    ],
+    "en": [
+      "Of 10 participants, 6 reach the goal directly, 2 after backtracking and 2 fail: completion differs from direct success.",
+      "From memory: distinguish overall completion, direct success, indirect success and navigation errors.",
+      "Completion counts participants who eventually meet the task criterion; direct success uses the correct route without backtracking; indirect success reaches it after detours; errors are separately defined wrong actions."
+    ]
+  },
+  "L09-1-2": {
+    "vi": [
+      "Mẫu lớn có thể giảm biến thiên ngẫu nhiên, nhưng không sửa được thiên lệch do nhóm nào đó không có cơ hội được chọn.",
+      "Không nhìn nguồn: selection bias khác random sampling variation như thế nào, và vì sao thêm người không tự chữa bias?",
+      "Selection bias xuất phát từ cơ chế chọn/phản hồi bỏ sót nhóm liên quan kết quả; random variation là khác biệt tình cờ giữa các mẫu ngẫu nhiên hợp lệ. Tăng cỡ mẫu chủ yếu giảm bất định ngẫu nhiên, không sửa khung chọn lệch."
+    ],
+    "en": [
+      "Larger samples can reduce random variation, but cannot fix selection bias when relevant groups have no chance to participate.",
+      "From memory: distinguish selection bias from random sampling variation. Why does a larger sample not automatically remove bias?",
+      "Selection bias follows unequal inclusion or response opportunities related to the outcome; random sampling variation occurs between valid random samples. Larger samples mostly reduce random uncertainty, not exclusion by design."
+    ]
+  },
+  "L09-1-3": {
+    "vi": [
+      "Hai bộ dữ liệu có cùng mean vẫn có thể khác mức phân tán; mean không nói hết hình dạng phân phối.",
+      "Không nhìn nguồn: mean, median, mode và range đo gì? Vì sao một giá trị cực lớn có thể làm mean lệch khỏi median?",
+      "Mean là tổng chia số quan sát, median là giá trị giữa sau sắp xếp, mode là giá trị phổ biến nhất, range bằng max trừ min. Mean nhạy với ngoại lệ; cần mô tả center cùng spread."
+    ],
+    "en": [
+      "Two datasets with the same mean may have very different spreads; a mean does not describe the full distribution.",
+      "From memory: what do mean, median, mode and range measure? Why can an extreme value pull the mean away from the median?",
+      "Mean is total divided by count; median is the ordered middle; mode is the most frequent value; range is maximum minus minimum. The mean is sensitive to extremes, so report center with spread."
+    ]
+  },
+  "L09-2-1": {
+    "vi": [
+      "Nếu rủi ro hiếm, hệ thống báo trúng 90% ca rủi ro vẫn có thể có nhiều cảnh báo nhầm từ nhóm bình thường đông hơn.",
+      "Không nhìn nguồn: P(cảnh báo | rủi ro) khác P(rủi ro | cảnh báo) ra sao và vai trò của base rate là gì?",
+      "Hai xác suất điều kiện đảo chiều có mẫu số khác nhau. Muốn biết nguy cơ trong các cảnh báo phải đếm cả true positives và false positives, có xét tỷ lệ rủi ro ban đầu; không lấy sensitivity thay posterior probability."
+    ],
+    "en": [
+      "When a risk is rare, detecting 90% of risky cases can still yield many false alerts from the much larger normal population.",
+      "From memory: how do P(alert | risk) and P(risk | alert) differ, and why does the base rate matter?",
+      "Reversing conditional probability changes the denominator. The risk among alerts depends on true positives and false positives as well as the original prevalence; sensitivity alone is not posterior probability."
+    ]
+  },
+  "L09-2-2": {
+    "vi": [
+      "Confidence interval 95% trong khung frequentist nói về độ phủ dài hạn của quy trình tạo khoảng dưới các giả định phù hợp.",
+      "Không nhìn nguồn: phân biệt point estimate, standard error, margin of error và confidence interval; vì sao không nói tham số cố định có 95% xác suất nằm trong khoảng đã tính?",
+      "Point estimate là ước lượng một điểm; standard error là độ biến thiên của ước lượng; margin of error là biên cho khoảng; CI có độ phủ qua lặp mẫu nếu giả định đúng. Không biến độ tin cậy của thủ tục thành xác suất hậu nghiệm cho tham số cố định."
+    ],
+    "en": [
+      "A frequentist 95% confidence interval concerns the long-run coverage of the interval procedure under its assumptions.",
+      "From memory: distinguish a point estimate, standard error, margin of error and confidence interval. Why is a fixed parameter not assigned a 95% probability after calculating one interval?",
+      "The point estimate is a single estimate; SE measures sampling variability; the margin defines the interval width; a CI procedure has long-run coverage when assumptions hold, not a posterior probability for a fixed parameter."
+    ]
+  },
+  "L09-2-3": {
+    "vi": [
+      "Hồi quy mô tả mối liên hệ trong dữ liệu; đường dốc lên không tự chứng minh tăng X sẽ gây tăng Y.",
+      "Không nhìn nguồn: slope, intercept, residual là gì; vì sao confounding khiến association khác causal effect?",
+      "Đường dự đoán y-hat=a+b×x; b là slope, a là intercept, residual=y−y-hat. Yếu tố thứ ba ảnh hưởng cả X và Y có thể tạo tương quan giả; prediction và association không tự chứng minh nhân quả."
+    ],
+    "en": [
+      "Regression describes relationships in observed data; an upward slope does not prove that increasing X causes Y to rise.",
+      "From memory: what are slope, intercept and residual? Why can confounding separate association from causal effect?",
+      "A fitted line is y-hat=a+b×x; b is slope, a is intercept and residual=y−y-hat. A third factor affecting both X and Y can create association without a causal effect."
+    ]
+  },
+  "L09-3-1": {
+    "vi": [
+      "Train để học tham số; validation để chọn mô hình hoặc ngưỡng; test giữ lại để đánh giá cuối cùng trên dữ liệu chưa dùng chọn quyết định.",
+      "Không nhìn nguồn: phân biệt train, validation và test; cho ví dụ data leakage phá hỏng độ tin cậy đánh giá.",
+      "Train fit mô hình và tiền xử lý; validation hỗ trợ lựa chọn/tinh chỉnh; test dùng đánh giá cuối sau khi khóa quyết định. Fit preprocessing trên toàn dữ liệu hoặc nhìn test để chọn threshold là leakage làm kết quả lạc quan."
+    ],
+    "en": [
+      "Training fits model parameters; validation guides selection and tuning; the held-out test set supports a final evaluation.",
+      "From memory: distinguish train, validation and test, and give an example of leakage that invalidates evaluation.",
+      "Training fits the model and preprocessing, validation guides model or threshold selection, and the test set is reserved until decisions are fixed. Fitting preprocessing across all data or tuning on test leaks information."
+    ]
+  },
+  "L09-3-2": {
+    "vi": [
+      "Khi positive được định nghĩa là đơn giao trễ, TP/FP/FN/TN đều phải đọc theo định nghĩa này.",
+      "Không nhìn nguồn: precision và recall có mẫu số nào, và tại sao accuracy cao vẫn có thể bỏ sót nhiều đơn trễ?",
+      "Precision=TP/(TP+FP), trong số báo trễ có bao nhiêu thực sự trễ. Recall=TP/(TP+FN), trong số đơn thực sự trễ phát hiện được bao nhiêu. Accuracy có thể cao khi ca trễ hiếm dù FN nhiều."
+    ],
+    "en": [
+      "When positive means a truly late shipment, TP/FP/FN/TN must all follow that definition.",
+      "From memory: what are the denominators of precision and recall, and why might high accuracy miss many late shipments?",
+      "Precision=TP/(TP+FP) is correctness among predicted late cases; recall=TP/(TP+FN) is detection among truly late cases. Accuracy can look high for rare events despite many false negatives."
+    ]
+  },
+  "L09-3-3": {
+    "vi": [
+      "Hai nhóm có cùng accuracy nhưng recall hay false positive rate rất khác nhau, dẫn đến hậu quả phân bổ không đều.",
+      "Không nhìn nguồn: demographic parity, equal opportunity và equalized odds khác nhau thế nào? Vì sao không có một fairness metric hợp mọi trường hợp?",
+      "Demographic parity xem tỷ lệ được dự đoán positive; equal opportunity so sánh true-positive rate giữa nhóm; equalized odds xét cả true-positive và false-positive rate. Chọn tiêu chí phải gắn bối cảnh, ai chịu tác động và hậu quả sai sót."
+    ],
+    "en": [
+      "Two groups may have equal accuracy but different recall or false-positive rates, distributing errors unevenly.",
+      "From memory: distinguish demographic parity, equal opportunity and equalized odds. Why is no fairness metric universally sufficient?",
+      "Demographic parity compares predicted-positive rates; equal opportunity compares true-positive rates; equalized odds considers both true- and false-positive rates. Metric choice depends on context, affected groups and harms."
+    ]
+  },
+  "L15-2-1": {
+    "vi": [
+      "Sales quan sát không mặc nhiên là demand: hết hàng có thể làm số bán về 0 dù khách vẫn muốn mua.",
+      "Không nhìn nguồn: phân biệt sales, demand, forecast và replenishment plan; stockout có thể làm dữ liệu dự báo sai như thế nào?",
+      "Sales là giao dịch hoàn tất, demand là nhu cầu cần đo riêng; forecast ước lượng tương lai còn plan là quyết định hành động chịu tồn kho, lead time và ràng buộc. Stockout che nhu cầu chưa được phục vụ."
+    ],
+    "en": [
+      "Recorded sales are not necessarily demand: stockouts can drive sales to zero while customers still want the item.",
+      "From memory: distinguish sales, demand, forecast and replenishment plan. How can stockouts distort forecasting data?",
+      "Sales count completed transactions; demand includes interest that may be unmet; a forecast estimates future demand while a plan chooses actions under inventory and lead-time constraints. Stockouts can censor demand."
+    ]
+  },
+  "L15-2-2": {
+    "vi": [
+      "Trong continuous review đơn giản, ROP = nhu cầu trong lead time + safety stock; kích hoạt khi inventory position chạm ngưỡng.",
+      "Không nhìn nguồn: viết công thức ROP và inventory position. Vì sao safety stock không mặc nhiên là lượng đặt hàng?",
+      "ROP=demand rate×lead time+safety stock với giả định phù hợp. Inventory position=on-hand+đang đặt−backorders. Safety stock là đệm; ngưỡng tái đặt không xác định luôn số lượng đặt tối ưu hay xác suất phục vụ."
+    ],
+    "en": [
+      "Under a simple continuous-review policy, ROP = lead-time demand + safety stock, triggered by the inventory position reaching the threshold.",
+      "From memory: give the ROP and inventory-position formulas. Why is safety stock not the order quantity?",
+      "ROP=demand rate×lead time+safety stock under stated assumptions; inventory position=on-hand+on-order−backorders. Safety stock is a buffer, not an automatically optimal order size or guaranteed service level."
+    ]
+  },
+  "L15-2-3": {
+    "vi": [
+      "Planned arrival là kế hoạch, ETA là ước lượng tại một thời điểm, actual arrival là sự kiện được báo cáo; message receipt time là lúc hệ thống nhận tin.",
+      "Không nhìn nguồn: phân biệt planned, ETA, actual và receipt time; vì sao chưa có actual không có nghĩa xe chắc chắn chưa đến?",
+      "Planned nói mốc dự kiến theo kế hoạch; ETA là dự đoán có as-of time; actual là giờ sự kiện xảy ra được ghi nhận; receipt time là giờ hệ thống nhận bản tin. Bản tin có thể trễ hoặc thiếu nên phải nói 'chưa xác nhận'."
+    ],
+    "en": [
+      "Planned arrival is a plan, ETA is an as-of prediction, actual arrival is a reported real event, and receipt time is when its message arrives.",
+      "From memory: distinguish planned, ETA, actual and receipt time. Why does a missing actual report not prove the truck has not arrived?",
+      "Planned is the original schedule; ETA is a time-stamped estimate; actual describes reported event time; receipt is message arrival. A delayed or missing report means unconfirmed, not certainly absent."
+    ]
+  },
+  "L15-3-1": {
+    "vi": [
+      "Khách mua đều nhưng đơn bổ sung dọc chuỗi có thể lên xuống mạnh do đặt theo lô, thông tin trễ và cách phản ứng.",
+      "Không nhìn nguồn: bullwhip effect là gì, và vì sao upstream orders không đồng nhất end-customer demand?",
+      "Bullwhip là mức biến động đơn đặt có thể khuếch đại về phía upstream dù nhu cầu cuối ít đổi. Đơn bổ sung phản ánh chính sách tồn kho, lô đặt, lead time và độ trễ thông tin, không chỉ lượng khách mua."
+    ],
+    "en": [
+      "Even with stable customer purchases, orders upstream can oscillate because of batch ordering, delays and inventory responses.",
+      "From memory: what is the bullwhip effect, and why are upstream orders not the same as end-customer demand?",
+      "Bullwhip means order variability can amplify upstream despite steadier final demand. Replenishment orders reflect lot sizes, inventory policy, lead times and information delays, not merely final purchases."
+    ]
+  },
+  "L15-3-2": {
+    "vi": [
+      "Risk pooling có thể giảm safety stock khi nhu cầu các điểm không dao động hoàn toàn cùng nhịp và kho chung thực sự phục vụ được.",
+      "Không nhìn nguồn: vì sao gộp kho có thể giảm tồn dự phòng? Tương quan và lead time ảnh hưởng kết luận ra sao?",
+      "Khi nhu cầu đủ độc lập hoặc không tương quan hoàn toàn, biến động tổng có thể nhỏ hơn tổng mức biến động riêng, giảm safety stock với cùng điều kiện. Tương quan dương cao, lead time hoặc giới hạn phục vụ có thể làm mất lợi ích."
+    ],
+    "en": [
+      "Risk pooling may reduce safety stock when locations' demand is not perfectly correlated and a shared warehouse can genuinely serve them.",
+      "From memory: why might inventory pooling lower buffers? How do correlation and lead time change the conclusion?",
+      "With less-than-perfectly correlated demand, aggregate variability may be lower than the sum of separate variability at comparable service assumptions. High correlation, lead times or service constraints can remove the benefit."
+    ]
+  },
+  "L15-3-3": {
+    "vi": [
+      "Fill rate đo phần nhu cầu theo đơn vị được đáp ứng ngay; cycle service level đo phần chu kỳ không stockout.",
+      "Không nhìn nguồn: unit fill rate khác cycle service level thế nào? Vì sao 98% fill rate vẫn có nhiều chu kỳ hết hàng?",
+      "Unit fill rate=đơn vị đáp ứng ngay/tổng đơn vị nhu cầu; CSL=chu kỳ không stockout/tổng chu kỳ. Một chu kỳ thiếu ít đơn vị vẫn bị tính là có stockout dù tỷ trọng số đơn vị được phục vụ rất cao."
+    ],
+    "en": [
+      "Unit fill rate measures demand units immediately served; cycle service level measures replenishment cycles without stockouts.",
+      "From memory: how does unit fill rate differ from cycle service level? Why can 98% fill rate coexist with many stockout cycles?",
+      "Unit fill rate=units immediately filled/total demand units; CSL=cycles without stockouts/all cycles. A cycle short by a few units still counts as a stockout even when most demand units are served."
+    ]
+  }
+};
+const t02Exercise=()=>{
+ const lang=window.liLanguage?.get?.()==="en"?"en":"vi";
+ const cue=Object.prototype.hasOwnProperty.call(T02_LESSON_CUES,activeLessonId)?
+  T02_LESSON_CUES[activeLessonId][lang]:null;
+ return cue?{...exercises.T02,lesson:cue[0],prompt:cue[1],model:cue[2]}:exercises.T02;
+};
+const currentExercise=()=>active==="T02"?t02Exercise():
+ active==="T06"&&activeLessonId==="L03-1-2"?
  (window.liLanguage?.get?.()==="en"?l03T06en:l03T06):exercises[active];
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 /* Separate authored feedback lead and explanation for accurate VI/EN

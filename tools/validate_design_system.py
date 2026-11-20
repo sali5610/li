@@ -237,7 +237,7 @@ def main() -> int:
     check("ds33-physical-shell" in html,
           "iPad runtime styles use fresh CSS cache versions")
     ipad_canvas = (ROOT / "site/assets/ipad-home-canvas.css").read_text(encoding="utf-8")
-    check("ipad-home-canvas.css?v=20261119-ds33-physical-shell" in html and
+    check("ipad-home-canvas.css?v=assets-20261121" in html and
           "html.li-ipad-home-canvas .app.home-focus" in ipad_canvas and
           "position:fixed!important;" in ipad_canvas and
           "home-li-landscape-20261121.webp" in ipad_canvas,

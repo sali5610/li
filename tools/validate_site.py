@@ -389,27 +389,21 @@ for selector,spacing in (
 ):
     assert re.search(re.escape(selector)+r"\s*\{\s*"+re.escape(spacing)+r";?\s*\}",html),selector
 
-# S119: approved Home assets must be exactly PO-provided originals.
-import hashlib
-for name,expected in [
-    ("home-mystic-cool-mobile.webp","b528fd92cc9d8d26cb50916870bb5b144cf69b1d"),
-    ("home-mystic-cool-desktop.webp","6a5083fbba0742a29ff2a32c9c6cbe2ee946b3de")
-]:
-    data=(site/"assets"/name).read_bytes()
-    assert len(data)>100_000 and data[:4]==b"RIFF" and data[8:12]==b"WEBP",name
-    sha=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\0"+data).hexdigest()
-    assert sha==expected,(name,"approved artwork mismatch")
-# UX-HOME-04: exact user-uploaded image bytes, resolved in the device CSS.
-for name,expected_size,expected_sha256 in [
-    ("home-li-iphone-20261119.jpg",454411,"0cd92ec2cb0734e422004ae633440f12235469e191a7bc656f19332e7d5af068"),
-    ("home-li-ipad-20261119.jpg",7906192,"c86aef27f02511c6d5b5cf21e38e27c7459a834a56f69c58ecbbddec1597acbd")
+# UX-HOME-20261121: validate both new PO-supplied binary snapshots, not retired art.
+for name,git_sha in [
+    ("home-li-iphone-20261121.webp","3e8e60fea09c3be78e3c254862f97fed5b35ffca"),
+    ("home-li-landscape-20261121.webp","8791df23defddad10a19e47d88b742c4aafce54c"),
 ]:
     art=(site/"assets"/name).read_bytes()
-    assert len(art)==expected_size and art.startswith(bytes((0xFF,0xD8))),name
-    assert hashlib.sha256(art).hexdigest()==expected_sha256,(name,"source image changed")
+    assert len(art)>100_000 and art[:4]==b"RIFF" and art[8:12]==b"WEBP",name
+    git_blob=hashlib.sha1(b"blob "+str(len(art)).encode()+b"\0"+art).hexdigest()
+    assert git_blob==git_sha,(name,"PO supplied artwork changed")
+    assert (site.parent/"design-assets"/"home"/name).read_bytes()==art,name
+for obsolete in ("home-li-iphone-20261119.jpg","home-li-ipad-20261119.jpg","home-mystic-cool-desktop.webp","home-mystic-cool-mobile.webp"):
+    assert not (site/"assets"/obsolete).exists(),obsolete
 device_css=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")
-assert 'background-image:url("./home-li-iphone-20261119.jpg")!important;' in device_css
-assert 'background-image:url("./home-li-ipad-20261119.jpg")!important;' in device_css
+assert 'background-image:url("./home-li-iphone-20261121.webp")!important;' in device_css
+assert 'background-image:url("./home-li-landscape-20261121.webp")!important;' in device_css
 assert "(max-width:1420px) and (orientation:landscape)" in device_css
 # UX-DS-30 · Safari rotation recovery is a tightly scoped iPad-only, no-reload fallback.
 rotation_js=(site/"assets"/"ipad-safari-rotation.js").read_text(encoding="utf-8")
@@ -420,10 +414,10 @@ for must in ('screen.orientation', 'window.orientation', 'navigator.maxTouchPoin
 for forbid in ('window.location.reload(', 'localStorage.setItem(', 'indexedDB.deleteDatabase(', 'sessionStorage.clear('):
     assert forbid not in rotation_js, f"Rotation recovery must not touch persistence/reload: {forbid}"
 ipad_canvas=(site/"assets"/"ipad-home-canvas.css").read_text(encoding="utf-8")
-assert 'ipad-home-canvas.css?v=20261119-ds33-physical-shell' in page_html, "single physical iPad Home shell must be loaded"
+assert 'ipad-home-canvas.css?v=assets-20261121' in page_html, "single physical iPad Home shell must be loaded"
 assert 'html.li-ipad-home-canvas .app.home-focus' in ipad_canvas
 assert 'position:fixed!important;' in ipad_canvas
-assert 'home-li-ipad-20261119.jpg' in ipad_canvas
+assert 'home-li-landscape-20261121.webp' in ipad_canvas
 assert 'li-ipad-home-portrait' in ipad_canvas and 'li-ipad-home-landscape' in ipad_canvas
 assert 'html.li-safari-landscape-recovery' not in (site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert 'html.li-safari-landscape-recovery' not in (site/"assets"/"library-hub.css").read_text(encoding="utf-8")
@@ -431,8 +425,8 @@ assert 'background-size:cover!important;' in (site/"assets"/"library-hub.css").r
 
 assert "(any-pointer:coarse)" not in device_css, "Viewport-responsive iPad must not depend on hardware pointer"
 assert html.count("/* S119 · Approved S106 Home art") == 1
-assert layout_css.count('url("./home-mystic-cool-mobile.webp")') == 1, "CSS-relative artwork URL must resolve from assets/"
-assert layout_css.count('url("./home-mystic-cool-desktop.webp")') == 1, "CSS-relative artwork URL must resolve from assets/"
+assert layout_css.count('url("./home-li-iphone-20261121.webp")') >= 1, "CSS-relative artwork URL must resolve from assets/"
+assert layout_css.count('url("./home-li-landscape-20261121.webp")') >= 1, "CSS-relative artwork URL must resolve from assets/"
 home=section("home")
 for identifier in ['id="mirror-question"','id="home-scene"','id="save-question"','id="previous-question"','id="shuffle"']:
     assert home.count(identifier)==1,identifier
@@ -842,7 +836,7 @@ assert 'component-review-v5.css?v=20261119-ds21-olive-spec' in v3
 assert all('data-ds15-topvariant="'+x+'"' in v3 for x in ("logo","back","overlay"))
 assert v3.count('src="./assets/li-seal.svg?v=exact-header-s146"')>=2
 assert 'data-ds15-back aria-label="Quay lại màn trước"' in v3
-assert 'src="./assets/home-mystic-cool-desktop.webp"' in v3
+assert 'src="./assets/home-li-landscape-20261121.webp"' in v3
 assert 'ds15-topnav-overlay' in topnavcss and 'background:var(--ds11-clear)!important' in topnavcss
 assert 'border-bottom-width:var(--li-space-0)!important' in topnavcss
 assert 'min-width:48px;min-height:48px' in topnavcss
@@ -851,7 +845,7 @@ assert 'Top Navigation transparent Home' not in page_html
 
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
-assert 'li-layout.css?v=20261118-ds20-coverage' in page_html
+assert 'li-layout.css?v=assets-20261121' in page_html
 assert 'ui-foundations.css?v=20261119-ds33-physical-shell' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
@@ -859,7 +853,7 @@ assert ':focus:not(:focus-visible)' in foundation
 review10=(site/"component-library-archive.html").read_text(encoding="utf-8")
 assert 'ds-notebook' in review10 and 'ds-home-bubble green' in review10
 assert all('src="./assets/'+p+'"' in review10 for p in
- ("home-mystic-cool-desktop.webp","home-mystic-cool-mobile.webp","laoly-mirror-suy-nghi.png"))
+ ("home-li-landscape-20261121.webp","home-li-iphone-20261121.webp","laoly-mirror-suy-nghi.png"))
 review10css=(site/"assets"/"component-review-v2.css").read_text(encoding="utf-8")
 assert 'background-size:100% 16px,100% var(--li-review-notebook-line)!important;' in review10css
 assert '.ds-home-bubble.green' in review10css and '.ds-image-split' in review10css

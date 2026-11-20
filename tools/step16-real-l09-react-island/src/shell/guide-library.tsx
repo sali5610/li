@@ -2,6 +2,7 @@ import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Button,Card,Field,FilterChip,Heading,InlineFeedback,MethodTile,Text,LiIcon} from '../../../../design-system/react/index';
 import './guide-library.css';
+import {GuideDetail,NoteDetail} from './detail-practice.js';
 
 /* Single invited app. The canonical legacy authoring and account-backed
  * business logic are accessed through explicit ports; React owns all visible
@@ -383,7 +384,9 @@ export function mountGuideAndLibrary(){
   {route:'guide',component:<Guide/>},
   {route:'library',component:<Library/>},
   {route:'resume',component:<Resume/>},
-  {route:'collection',component:<Collection/>}
+  {route:'collection',component:<Collection/>},
+  {route:'guideDetail',component:<GuideDetail/>},
+  {route:'noteDetail',component:<NoteDetail/>}
  ];
  const slots=definitions.map(({route,component})=>{
   const page=document.getElementById('page-'+route);
@@ -391,7 +394,8 @@ export function mountGuideAndLibrary(){
   if(!page||!legacy)throw Error('REACT_'+route.toUpperCase()+'_HOST_MISSING');
   return {route,page,legacy,component};
  });
- if(!app.liMethods||!app.liLibraryShelf||!app.liBookmarks||!app.liNotes)
+ if(!app.liMethods||!app.liLibraryShelf||!app.liBookmarks||!app.liNotes||
+  !(window as Window&{LiSpellPractice?:unknown}).LiSpellPractice)
   throw Error('REACT_GUIDE_LIBRARY_OWNER_PORTS_MISSING');
  let mounted=false;
  let dispose:(()=>void)|null=null;

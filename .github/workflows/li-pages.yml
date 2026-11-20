@@ -60,12 +60,14 @@ jobs:
           grep -Fq "neonAuth.getJWTToken()" "$root/src/auth/neon-client.ts"
           grep -Fq "startLearnerSync" "$root/src/auth/AuthPanel.tsx"
           grep -Fq "prepareLearnerAccount" "$root/src/auth/AuthPanel.tsx"
-          # Owner-scoped sync may only enumerate lessons allowed by the generated pack
-          # AND the explicitly released catalog; no hardcoded three-ID whitelist.
-          grep -Fq "const LESSONS=releasedLessonIds" "$root/src/auth/learner-sync.ts"
-          grep -Fq "isReleasedLessonId(lesson)" "$root/src/learning/staging-ports.ts"
+          # Owner-scoped sync contains public pack-approved lessons plus the 17
+          # personal study manuscripts ONLY in the invited GitHub staging target.
+          grep -Fq "const LESSONS=learnableLessonIds" "$root/src/auth/learner-sync.ts"
+          grep -Fq "isLearnableLessonId(lesson)" "$root/src/learning/staging-ports.ts"
           grep -Fq "navigationPublished===true" "$root/src/learning/released-lessons.ts"
           grep -Fq "packed.has(l.id)" "$root/src/learning/released-lessons.ts"
+          grep -Fq "VITE_LI_AUTH_TARGET==='github-pages-staging'" "$root/src/learning/released-lessons.ts"
+          grep -Fq "personalStudySet.has(id)" "$root/src/learning/released-lessons.ts"
           grep -Fq "await checkInviteAccess" "$root/src/auth/learner-sync.ts"
           # The real L03/L09/L15 owner now writes a durable Dexie outbox,
           # then signed Neon through the shared revision-aware syncOnce.

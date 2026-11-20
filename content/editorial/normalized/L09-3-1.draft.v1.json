@@ -195,7 +195,7 @@
         {
           "stage": "concept",
           "heading": "concept · L09-3-1",
-          "source_md": "Candidate quote IDs: analects-think, box-models, bacon-cause; primary analects-think.\n\nVI action 1: Lọc trước rồi chia dữ liệu có sao không? — Lão Lý: Mean/variance học trên tất cả dòng đã dùng thông tin từ tập đánh giá.\n\nVI action 2: Nếu dùng feature có sau lúc giao hàng thì sao? — Lão Lý: Đó là target leakage: lúc dự đoán tương lai không thể có feature ấy.\n\nEN action 1: Why might fitting a scaler before splitting be dangerous? — Old Li: The transform learned statistics from held-out data.\n\nEN action 2: What if the feature becomes available only after delivery? — Old Li: That's target leakage: it would not exist when predicting future orders."
+          "source_md": "Candidate quote IDs: analects-think, hume-evidence, bacon-cause; primary analects-think.\n\nVI action 1: Lọc trước rồi chia dữ liệu có sao không? — Lão Lý: Mean/variance học trên tất cả dòng đã dùng thông tin từ tập đánh giá.\n\nVI action 2: Nếu dùng feature có sau lúc giao hàng thì sao? — Lão Lý: Đó là target leakage: lúc dự đoán tương lai không thể có feature ấy.\n\nEN action 1: Why might fitting a scaler before splitting be dangerous? — Old Li: The transform learned statistics from held-out data.\n\nEN action 2: What if the feature becomes available only after delivery? — Old Li: That's target leakage: it would not exist when predicting future orders."
         },
         {
           "stage": "guided",
@@ -262,11 +262,11 @@
           "stage": "concept",
           "quote_ids": [
             "analects-think",
-            "box-models",
+            "hume-evidence",
             "bacon-cause"
           ],
           "missing_quote_ids": [],
-          "sourceQuoteHeading": "Candidate quote IDs: analects-think, box-models, bacon-cause; primary analects-think.",
+          "sourceQuoteHeading": "Candidate quote IDs: analects-think, hume-evidence, bacon-cause; primary analects-think.",
           "vi": {
             "prompt": "Mô hình dự đoán đơn hàng sẽ trễ. Nếu chấm chính những đơn dùng để huấn luyện, nó có thể chỉ đang nhớ dữ liệu. Muốn ước lượng khả năng dự đoán đơn chưa thấy, phải giữ một phần dữ liệu thực sự độc lập đến cuối. Berkeley nhấn mạnh rằng tập test chỉ dùng sau khi xây xong mô hình, chứ không mang ra thử rồi chỉnh tiếp. [Nguồ",
             "actions": [
@@ -489,8 +489,13 @@
       }
     },
     "issues": [],
-    "sourceVerbatim": true,
+    "sourceVerbatim": false,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
-    "runnableInReact": false
+    "runnableInReact": false,
+    "githubAuthoredMentorRightsOverride": {
+      "sourcePath": "content/editorial/imported/L09-3-1.source.v1.json",
+      "sourceKey": "content.github_editorial_extensions.mentorQuoteReplacements",
+      "status": "draft_options_remediated_publication_not_cleared"
+    }
   }
 }

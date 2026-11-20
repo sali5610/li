@@ -187,7 +187,7 @@ assert.equal(api.getView().phase,1);
 assert.ok(api.getView().t12SavedOnDevice);
 assert.equal(act("check",{answer:"15 trong 20 người được hỏi hài lòng."}),true);
 reviewed("T12");
-const t12key=[...storage.keys()].find(key=>key.startsWith("li.spell.t12.resume.v1:"));
+const t12key=[...storage.keys()].find(key=>key.startsWith("li.spell.t12.resume.v1:")&&key.endsWith(":L09-1-2"));
 assert.ok(t12key);
 const terminal=JSON.parse(storage.get(t12key));
 assert.equal(terminal.phase,2,"T12 completion must redact the previous cue");

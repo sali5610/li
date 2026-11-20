@@ -193,7 +193,7 @@
         {
           "stage": "independent",
           "heading": "independent · l03-challenge",
-          "source_md": "<b>Candidate quote IDs:</b> mencius-sources, box-models, hume-evidence. Exact quote/interpretive gloss QA tracked separately.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Mencius's caution about textual sources is used analogically to avoid elevating one convenient session into a population finding.\n\n<b>VI · Lão Lý:</b> Trong bài P07/P08, hãy lập bảng chứng cứ rồi mới phân tích. Lão không chọn sẵn finding, confidence hay hai giả thuyết cho ngươi. <b>Khung tự làm:</b> Nếu chọn T07 · Tiền Đề Giám Định, hãy tự đặt câu hỏi câu kết luận có vượt dữ liệu hai phiên không; lão không viết finding hộ.\n\n- <b>Lập bảng thế nào?</b> Đặt riêng hai dòng P07 và P08. Mỗi dòng ghi hành động có thể kiểm lại, số liệu thời gian được đề cho, câu quote nếu có; không tự thêm hành vi.\n- <b>Tránh suy rộng bằng cách nào?</b> Chỉ mô tả phạm vi hai phiên tuyển thuận tiện, rồi chỉ ra bằng chứng gì cần thu thêm. Chưa có cơ sở để tính tỷ lệ tất cả người dùng.\n\n<b>EN · Lão Lý:</b> For P07 and P08, build the evidence table before interpreting it. I'll leave the finding, confidence and hypotheses for your own attempt. <b>Independent method cue:</b> If using T07 Premise Checking, ask whether the proposed finding exceeds the two-session evidence; I will not write your finding.\n\n- <b>How should I organize it?</b> Use separate P07 and P08 rows with only the actions, times and quotations actually supplied in the case. Do not invent extra behavior.\n- <b>How do I limit claims?</b> Describe only the two convenience sessions, and name further evidence needed. This does not estimate prevalence across all users."
+          "source_md": "<b>Candidate quote IDs:</b> mencius-sources, analects-honesty, hume-evidence. Exact quote/interpretive gloss QA tracked separately.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Mencius's caution about textual sources is used analogically to avoid elevating one convenient session into a population finding.\n\n<b>VI · Lão Lý:</b> Trong bài P07/P08, hãy lập bảng chứng cứ rồi mới phân tích. Lão không chọn sẵn finding, confidence hay hai giả thuyết cho ngươi. <b>Khung tự làm:</b> Nếu chọn T07 · Tiền Đề Giám Định, hãy tự đặt câu hỏi câu kết luận có vượt dữ liệu hai phiên không; lão không viết finding hộ.\n\n- <b>Lập bảng thế nào?</b> Đặt riêng hai dòng P07 và P08. Mỗi dòng ghi hành động có thể kiểm lại, số liệu thời gian được đề cho, câu quote nếu có; không tự thêm hành vi.\n- <b>Tránh suy rộng bằng cách nào?</b> Chỉ mô tả phạm vi hai phiên tuyển thuận tiện, rồi chỉ ra bằng chứng gì cần thu thêm. Chưa có cơ sở để tính tỷ lệ tất cả người dùng.\n\n<b>EN · Lão Lý:</b> For P07 and P08, build the evidence table before interpreting it. I'll leave the finding, confidence and hypotheses for your own attempt. <b>Independent method cue:</b> If using T07 Premise Checking, ask whether the proposed finding exceeds the two-session evidence; I will not write your finding.\n\n- <b>How should I organize it?</b> Use separate P07 and P08 rows with only the actions, times and quotations actually supplied in the case. Do not invent extra behavior.\n- <b>How do I limit claims?</b> Describe only the two convenience sessions, and name further evidence needed. This does not estimate prevalence across all users."
         },
         {
           "stage": "reflection",
@@ -320,11 +320,11 @@
           "stage": "independent",
           "quote_ids": [
             "mencius-sources",
-            "box-models",
+            "analects-honesty",
             "hume-evidence"
           ],
           "missing_quote_ids": [],
-          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> mencius-sources, box-models, hume-evidence. Exact quote/interpretive gloss QA tracked separately.",
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> mencius-sources, analects-honesty, hume-evidence. Exact quote/interpretive gloss QA tracked separately.",
           "vi": {
             "prompt": "Trong bài P07/P08, hãy lập bảng chứng cứ rồi mới phân tích. Lão không chọn sẵn finding, confidence hay hai giả thuyết cho ngươi. Khung tự làm: Nếu chọn T07 · Tiền Đề Giám Định, hãy tự đặt câu hỏi câu kết luận có vượt dữ liệu hai phiên không; lão không viết finding hộ.",
             "actions": [
@@ -467,8 +467,13 @@
       }
     },
     "issues": [],
-    "sourceVerbatim": true,
+    "sourceVerbatim": false,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
-    "runnableInReact": false
+    "runnableInReact": false,
+    "githubAuthoredMentorRightsOverride": {
+      "sourcePath": "content/editorial/imported/L03-1-3.source.v1.json",
+      "sourceKey": "content.github_editorial_extensions.mentorQuoteReplacements",
+      "status": "draft_options_remediated_publication_not_cleared"
+    }
   }
 }

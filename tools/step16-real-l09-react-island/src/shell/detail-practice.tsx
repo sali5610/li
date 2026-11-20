@@ -465,6 +465,11 @@ export function GuideDetail(){
         app.LiSpellPractice?.setT12Draft?.(field.id,value);
       }}/>)}
      {view.active==='T02'&&<Text role="support" className="spell-honest">
+      {view.lessonId?
+       copy('Đang ôn kiến thức bài ','Reviewing lesson ')+view.lessonId:
+       copy('Bài ôn mẫu · Không gắn với bài cụ thể','Standalone demo · Not linked to a lesson')}
+     </Text>}
+     {view.active==='T02'&&<Text role="support" className="spell-honest">
       {copy('Đã hoàn thành ','Completed ')}{view.t02ReviewCount}
       {copy(' lượt ôn. Nhớ lại khi đến hạn → đối chiếu → tự đánh giá → hẹn lượt tiếp.',
        ' reviews. Recall when due → check feedback → self-rate → schedule another review.')}

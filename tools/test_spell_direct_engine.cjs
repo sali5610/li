@@ -115,6 +115,55 @@ assert.equal(act("reset"),true);
 t02=JSON.parse(storage.get(t02key));
 assert.equal(t02.reviewCount,0);
 assert.equal(t02.due,null,"reset writes a durable empty schedule, not an unsafe delete");
+// T02 must recall the current lesson, not an unrelated generic sampling case.
+const releasedT02=["L03-1-2","L09-1-2","L15-2-2"];
+const personalT02=["L03-1-1","L03-1-3","L03-2-1","L03-2-2","L03-2-3",
+ "L09-1-3","L09-2-1","L09-2-2","L09-2-3","L09-3-1","L09-3-2","L09-3-3",
+ "L15-2-1","L15-2-3","L15-3-1","L15-3-2","L15-3-3"];
+window.liPersonalStudyRoutes=Object.fromEntries(personalT02.map(id=>[id,"draft:"+id]));
+const knownT02=[...releasedT02,...personalT02],recallCues=[];
+assert.equal(knownT02.length,20);
+for(const id of knownT02){
+ if(releasedT02.includes(id))begin("T02",id);
+ else{begin("T02");assert.equal(api.setLessonContext(id),true,"Personal lesson "+id+" must bind to T02");}
+ const vi=api.getView();
+ assert.equal(vi.lessonId,id);
+ assert.equal(vi.phase,0,"Unscheduled T02 cannot pretend the review was due");
+ assert.equal(vi.feedback,"","Review key must stay hidden before due");
+ assert(vi.lesson.length>30&&vi.prompt.length>30,"Vietnamese lesson-specific cue required: "+id);
+ assert(!vi.lesson.startsWith("Bạn đã đọc: cỡ mẫu lớn"),"Generic cue not allowed within lesson "+id);
+ recallCues.push(vi.prompt);
+ locale="en";
+ const en=api.getView();
+ assert.equal(en.lessonId,id);
+ assert(en.lesson.length>30&&en.prompt.length>30,"English lesson-specific cue required: "+id);
+ assert.notEqual(en.prompt,vi.prompt,"VI/EN must differ: "+id);
+ assert.equal(en.feedback,"","No pre-due model answer for "+id);
+ locale="vi";
+}
+assert.equal(new Set(recallCues).size,20,"Every lesson requires its own retrieval prompt");
+// Actual full T02 cycle on supply chain must reveal supply chain feedback,
+// and keep the schedule in that lesson, not sampling bias or standalone.
+begin("T02","L15-2-2");
+assert.match(api.getView().prompt,/ROP|inventory position/);
+assert.equal(act("check",{reason:sentence}),false,"No checking before due");
+assert.equal(act("schedule"),true);
+const l15DueKey=[...storage.keys()].find(key=>
+ key.startsWith("li.spell.t02.schedule.v2:")&&key.endsWith(":L15-2-2"));
+assert(l15DueKey,"L15 must keep its own T02 schedule");
+const l15Due=JSON.parse(storage.get(l15DueKey));
+storage.set(l15DueKey,JSON.stringify({...l15Due,due:Date.now()-1000}));
+assert.equal(api.getView().phase,1,"Due L15 review must begin hidden-source recall");
+assert.equal(api.getView().fields.length,1,"Only an answer field, no source during due retrieval");
+assert.equal(act("check",{reason:""}),true);
+assert.equal(api.getView().reviewedInSession,false,"Empty recall does not complete review");
+assert.equal(act("check",{reason:"ROP dùng demand trong lead time cộng safety stock."}),true);
+assert.match(api.getView().feedback,/ROP/,"Must show the L15 feedback only after recall");
+assert.doesNotMatch(api.getView().feedback,/Selection bias/i);
+assert.equal(act("rate-retry"),true);
+assert.equal(JSON.parse(storage.get(l15DueKey)).reviewCount,1,"Review must stay scoped to L15");
+assert.equal(JSON.parse(storage.get(t02key)).reviewCount,0,"L15 cannot modify standalone T02 history");
+window.liPersonalStudyRoutes={"L03-1-1":"draftLessonL0311"};
 begin("T03");
 assert.equal(act("next"),true);
 assert.equal(api.getView().phase,1);
@@ -244,4 +293,4 @@ assert.equal(act("check",{reason:sentence}),false,"No anonymous exercise action"
 assert.equal(api.getView().reviewedInSession,false);
 verified=true;accountOpen=true;
 assert.equal(act("check",{reason:sentence}),false,"Open account overlay blocks writes/actions");
-console.log("PASS 13/13 real spell checkers via direct React action, T02 multi-session due/rating/owner/reset, T03 progression, T12 redaction, T13 recall, L03 variant and account guard");
+console.log("PASS 13/13 real spell checkers via direct React action, T02 20/20 contextual VI/EN cues and due/rating/owner/reset, T03 progression, T12 redaction, T13 recall, L03 variant and account guard");

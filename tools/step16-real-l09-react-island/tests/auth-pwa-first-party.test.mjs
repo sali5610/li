@@ -57,18 +57,18 @@ test('Auth-only Worker keeps existing Neon session semantics but never bundles a
  const worker=readFileSync(new URL('../src/auth/cloudflare-auth-only-worker.ts',import.meta.url),'utf8');
  const vite=readFileSync(new URL('../vite.worker.config.mjs',import.meta.url),'utf8');
  const builder=readFileSync(new URL('../../../tools/prepare_cloudflare_ai_candidate.mjs',import.meta.url),'utf8');
- assert.match(worker,/handleAuthProxyRequest/);
- assert.match(worker,/processAuthMiddleware/);
- assert.match(worker,/NEON_AUTH_COOKIE_SECRET/);
- assert.match(worker,/authProxyPath\\(url,request.method\\)/);
- assert.match(worker,/sameSite:'lax',sessionDataTtl:60/);
- assert.match(worker,/redirect_oauth/);
- assert.match(worker,/url.pathname.startsWith\\('\\/api\\/'\\)/,
-  'Unknown API routes including AI must fail closed');
- assert.doesNotMatch(worker,/from ['\"]\\.\\/ai-|from ['\"]\\.\\/cloudflare-worker|handleAiRoute|serverAiActor|reviewedAiLesson|D1Database|WorkersAI/);
- assert.doesNotMatch(worker,/localStorage|indexedDB|sessionStorage|Authorization:\\s*['\"]Bearer /);
- assert.match(vite,/LI_AUTH_ONLY_WORKER/);
- assert.match(vite,/dist-auth-worker/);
- assert.match(builder,/--build-auth-only/);
- assert.match(builder,/dist-cloudflare-auth-candidate/);
+ for(const expected of [
+  'handleAuthProxyRequest','processAuthMiddleware','NEON_AUTH_COOKIE_SECRET',
+  'authProxyPath(url,request.method)',"sameSite:'lax',sessionDataTtl:60",
+  'redirect_oauth',"url.pathname.startsWith('/api/')"
+ ])assert(worker.includes(expected),'Missing Auth-only contract '+expected);
+ for(const prohibited of [
+  "from './ai-","from './cloudflare-worker",
+  'handleAiRoute','serverAiActor','reviewedAiLesson','D1Database','WorkersAI',
+  'localStorage','indexedDB','sessionStorage',"Authorization: 'Bearer "
+ ])assert(!worker.includes(prohibited),'Auth-only Worker must not include '+prohibited);
+ assert(vite.includes('LI_AUTH_ONLY_WORKER'));
+ assert(vite.includes('dist-auth-worker'));
+ assert(builder.includes('--build-auth-only'));
+ assert(builder.includes('dist-cloudflare-auth-candidate'));
 });

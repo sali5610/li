@@ -45,6 +45,79 @@ let root,guide,tabs,active=null,phase=0,exposure=null,feedback="",resumeNote="",
 let activeLessonId=null,reviewedInSession=false,viewSession=0;
 let activeTab="guide",actionValues=null;
 const reactOwnsSpell=()=>window.liReactGuideDetailMounted===true;
+
+/* One answer-free practice receipt per verified account. Existing T02/T12
+ * checkpoints stay canonical; cloud replication requires auth owner's registry. */
+const PRACTICE_PREFIX="li.spell.practice.v1:";
+const PRACTICE_SCHEMA="li.spell.practice.v1";
+let practiceError="",practiceSessionOwner=null;
+const blankReceipt=()=>({count:0,lastAt:null,phase:0,places:[]});
+function verifiedOwner(){
+ try{
+  if(!document.documentElement.classList.contains("li-auth-verified")||
+     document.documentElement.classList.contains("li-account-open"))return null;
+  const uid=localStorage.getItem("li.sync.local-owner.v1");
+  return uid&&uid.length<=128?uid:null;
+ }catch{return null;}
+}
+function receiptKey(){
+ const uid=verifiedOwner();
+ return uid?PRACTICE_PREFIX+encodeURIComponent(uid):null;
+}
+function receiptStore(){
+ const key=receiptKey();if(!key)return null;
+ try{
+  const raw=localStorage.getItem(key),d=raw===null?{schema:PRACTICE_SCHEMA,scopes:{}}:JSON.parse(raw);
+  if(raw!==null&&raw.length>60000||!d||d.schema!==PRACTICE_SCHEMA||
+     !d.scopes||typeof d.scopes!=="object"||Array.isArray(d.scopes)||
+     Object.keys(d.scopes).length>30)throw Error("BAD_PRACTICE_STORE");
+  for(const [ctx,methods] of Object.entries(d.scopes)){
+   if(ctx!=="standalone"&&!/^L\d{2}-\d+-\d+$/.test(ctx)||
+      !methods||typeof methods!=="object"||Array.isArray(methods))throw Error("BAD_CONTEXT");
+   for(const [id,entry] of Object.entries(methods)){
+    if(!Object.prototype.hasOwnProperty.call(exercises,id)||id==="T02"||
+       !entry||typeof entry!=="object"||Array.isArray(entry)||
+       !Number.isSafeInteger(entry.count)||entry.count<0||entry.count>100000||
+       !(entry.lastAt===null||Number.isSafeInteger(entry.lastAt)&&entry.lastAt>0)||
+       !Number.isSafeInteger(entry.phase)||entry.phase<0||
+       entry.phase>(id==="T03"?2:1)||
+       entry.phase>0&&!["T01","T03","T13"].includes(id)||
+       !Array.isArray(entry.places)||entry.places.length>(id==="T13"?3:0)||
+       entry.places.some(x=>typeof x!=="string"||x.length>1200)||
+       entry.phase===0&&entry.places.length!==0||
+       id==="T13"&&entry.phase===1&&
+        (entry.places.length!==3||
+         new Set(entry.places.map(x=>x.trim().toLocaleLowerCase("vi"))).size!==3))
+      throw Error("BAD_RECEIPT");
+   }
+  }
+  practiceError="";return d;
+ }catch{practiceError="Không đọc được lịch sử luyện, chưa ghi đè bản cũ.";return null;}
+}
+function receipt(){
+ if(!active||active==="T02")return blankReceipt();
+ return receiptStore()?.scopes?.[activeLessonId||"standalone"]?.[active]||blankReceipt();
+}
+function saveReceipt({phase:step=0,places=[],complete=false}={}){
+ if(!active||active==="T02")return true;
+ const key=receiptKey(),store=receiptStore();
+ if(!key||!store){if(!practiceError)practiceError="Chưa xác minh tài khoản để lưu.";return false;}
+ const ctx=activeLessonId||"standalone",prior=store.scopes[ctx]?.[active]||blankReceipt();
+ const next={count:prior.count+(complete?1:0),
+  lastAt:complete?Date.now():prior.lastAt,phase:step,
+  places:step===1&&active==="T13"?places.slice():[]};
+ try{
+  const raw=JSON.stringify({schema:PRACTICE_SCHEMA,
+   scopes:{...store.scopes,[ctx]:{...store.scopes[ctx],[active]:next}}});
+  if(raw.length>60000)throw Error("RECEIPT_TOO_LARGE");
+  localStorage.setItem(key,raw);
+  if(localStorage.getItem(key)!==raw)throw Error("RECEIPT_NOT_SAVED");
+  practiceError="";
+  window.dispatchEvent(new Event("li:private-personal-change"));
+  return true;
+ }catch{practiceError="Chưa lưu được lượt luyện trên máy.";return false;}
+}
+
 const T12_OWNER="li.sync.local-owner.v1";
 const T12_PREFIX="li.spell.t12.resume.v1:";
 let t12Draft={context:"",next:"",answer:""};

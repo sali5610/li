@@ -911,7 +911,11 @@ window.addEventListener("resize",placeCompanion,{passive:true});
  }
  function liExportPersonalData(){
   try{
-   const data={schema:1,exportedAt:new Date().toISOString(),cases:processedCases,questions:savedQuestions,ideas:collectedIdeas,savedContent,draft:field?.value||"",buddyNames:liBuddyNames};
+   // React Phản Chứng persists its real draft in the canonical private key.
+   // The hidden legacy textarea can be stale (or belong to an earlier account).
+   const savedDraft=window.localStorage.getItem(LI_DRAFT_KEY);
+   const draft=savedDraft??(window.liReactRouter?"":field?.value||"");
+   const data={schema:1,exportedAt:new Date().toISOString(),cases:processedCases,questions:savedQuestions,ideas:collectedIdeas,savedContent,draft,buddyNames:liBuddyNames};
    const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json;charset=utf-8"});
    const url=URL.createObjectURL(blob),a=document.createElement("a");
    a.href=url;a.download="li-du-lieu-"+new Date().toISOString().slice(0,10)+".json";
@@ -919,7 +923,6 @@ window.addEventListener("resize",placeCompanion,{passive:true});
    toast("Đã tạo bản sao dữ liệu. Hãy kiểm tra tệp trong mục Tải về.");
   }catch(e){toast("Không thể xuất bản sao. Hãy thử lại.");}
  }
- document.getElementById("export-personal-data")?.addEventListener("click",liExportPersonalData);
 
  // S110 canonical validator and rollback shared by native fallback and React.
  const importTrigger=document.getElementById("import-personal-trigger");
@@ -973,11 +976,20 @@ window.addEventListener("resize",placeCompanion,{passive:true});
    savedQuestions.splice(0,savedQuestions.length,...data.questions);
    collectedIdeas.splice(0,collectedIdeas.length,...(data.ideas||[]));
    savedContent.splice(0,savedContent.length,...(data.savedContent||[]));
-   if(field)field.value=data.draft;
    if(data.buddyNames!==undefined){liBuddyNames=liRestoreBuddyNames();liRefreshBuddyNameInputs();}
    liStorageError=false;
-   renderCaseArchive();renderSavedQuestions();window.liLibraryShelf?.renderHome();window.liLibraryShelf?.renderCollection();window.liBookmarks?.refresh();refreshQuestionBookmark();
-   toast("Đã nhập "+data.cases.length+" Bút Ký, "+(data.questions.length+savedContent.length)+" Dấu Trang và "+collectedIdeas.length+" Ý đã nhặt.");
+   if(window.liReactRouter){
+    // React reads canonical state directly; notify mounted screens instead
+    // of redrawing or writing into the hidden native Case/Library hosts.
+    window.dispatchEvent(new Event("li:library-view-changed"));
+    window.dispatchEvent(new Event("li:inquiry-changed"));
+    window.dispatchEvent(new Event("li:note-view-changed"));
+   }else{
+    if(field)field.value=data.draft;
+    renderCaseArchive();renderSavedQuestions();window.liLibraryShelf?.renderHome();
+    window.liLibraryShelf?.renderCollection();window.liBookmarks?.refresh();refreshQuestionBookmark();
+   }
+   toast("Đã nhập "+data.cases.length+" Bút Ký, "+(data.questions.length+(data.savedContent||[]).length)+" Dấu Trang và "+collectedIdeas.length+" Ý đã nhặt.");
    return true;
   }catch(e){
    const message=e.message==="large"?"Tệp vượt quá 10 MB.":e.message==="write"?
@@ -992,14 +1004,23 @@ window.addEventListener("resize",placeCompanion,{passive:true});
   export:liExportPersonalData,importFile:liImportPersonalData,
   getView:()=>({...liBackupImport})
  });
- // Native fallback still opens the platform file chooser. React owns its input.
- importTrigger?.addEventListener("click",()=>importInput?.click());
- document.getElementById("import-state-retry")?.addEventListener("click",()=>importInput?.click());
- importInput?.addEventListener("change",()=>{
-  const selected=importInput.files?.[0];
-  if(selected)void liImportPersonalData(selected);
-  importInput.value="";
- });
+ // Invited staging React owns the visible file picker and backup buttons.
+ // Install old DOM listeners only in standalone native fallback, AFTER the
+ // publisher has had a chance to add the invited auth root.
+ function mountNativeBackupFallback(){
+  if(document.getElementById("li-staging-auth-root"))return;
+  document.getElementById("export-personal-data")?.addEventListener("click",liExportPersonalData);
+  importTrigger?.addEventListener("click",()=>importInput?.click());
+  document.getElementById("import-state-retry")?.addEventListener("click",()=>importInput?.click());
+  importInput?.addEventListener("change",()=>{
+   const selected=importInput.files?.[0];
+   if(selected)void liImportPersonalData(selected);
+   importInput.value="";
+  });
+ }
+ if(document.readyState==="loading")
+  document.addEventListener("DOMContentLoaded",mountNativeBackupFallback,{once:true});
+ else mountNativeBackupFallback();
  if(liStorageError)toast("Không đọc được dữ liệu đã lưu. Tạm dừng ghi mới để tránh ghi đè.");
 })();
 window.addEventListener("li:personal-sync-applied",event=>{

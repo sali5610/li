@@ -167,4 +167,53 @@ assert.equal((await c.searchKnowledge("L09-1-1")).status,"no_match",
  "outline-only lessons never become published matches");
 
 
+// Automatic outcome retrieval: no per-lesson rule when new reviewed content arrives.
+const autoPack=JSON.parse(readFileSync(new URL("answerability.json",root),"utf8"));
+assert.equal(autoPack.autoOutcomes.length,12,"every reviewed Wave1 outcome is auto-indexed");
+for(const item of autoPack.autoOutcomes){
+ const real=await c.getLesson(item.lessonId);
+ assert.equal(item.localized.vi,real.learningOutcomes.vi[item.outcomeIndex]);
+ assert.equal(item.localized.en,real.learningOutcomes.en[item.outcomeIndex]);
+ assert.ok(real.sources.some(src=>src.url===item.sourceUrl));
+ assert.equal(item.evidenceStatus,"reviewed_lesson_outcome_text_not_independent_claim");
+}
+const unmatchedByCurated=await c.searchKnowledge("Identify praise or unverified assumptions built into a prompt");
+assert.equal(unmatchedByCurated.status,"outcome_match");
+assert.equal(unmatchedByCurated.results[0].lessonId,"L03-1-2");
+assert.equal(unmatchedByCurated.results[0].answerability.level,"outcome_match");
+assert.match(unmatchedByCurated.results[0].answerability.reason,/Nhận ra lời khen/);
+assert.equal((await c.searchKnowledge("Rewrite a claim to stay within the observed evidence"))
+ .results[0].lessonId,"L09-1-2");
+const mockLessonId="L07-1-9";
+const existingTree=await c.hierarchy();
+const futureTree={...existingTree,lessons:[...existingTree.lessons,
+ {id:mockLessonId,title:"Shipment Visibility and Events",fieldId:"F07",courseId:"C07-1",
+  groupId:"technology",navigationPublished:true,contentState:"review_only"}]};
+const futureIndex={...indexed,documents:[...indexed.documents,
+ {id:"lesson:"+mockLessonId,kind:"Lesson",title:"Shipment Visibility and Events",
+  aliases:[],reviewState:"approved",publishState:"review_only"}]};
+const futurePack={...autoPack,autoOutcomes:[...autoPack.autoOutcomes,
+ {id:"outcome:"+mockLessonId+":1",lessonId:mockLessonId,outcomeIndex:0,
+  localized:{vi:"Đánh giá sự kiện vận chuyển và thay đổi ETA theo các mốc hành trình.",
+   en:"Evaluate shipment transit events and ETA changes across milestones."},
+  sourceUrl:"https://example.org/fixture",evidenceStatus:"reviewed_lesson_outcome_text_not_independent_claim"}]};
+const fixtureFiles={"course-catalog.json":futureTree,"search.json":futureIndex,
+ "answerability.json":futurePack};
+const futureFetcher=async url=>{
+ const name=new URL(url).pathname.split("/").at(-1);
+ return {ok:true,json:async()=>fixtureFiles[name]??
+  JSON.parse(readFileSync(new URL(name,root),"utf8"))};
+};
+const futureClient=createContentClient({baseUrl:"https://future.example.invalid/packs/",fetcher:futureFetcher});
+const newLessonResult=await futureClient.searchKnowledge(
+ "How can I evaluate shipment transit events and ETA changes?");
+assert.equal(newLessonResult.status,"outcome_match",
+ "new content must enter natural-language Search without any new intent rules");
+assert.equal(newLessonResult.results[0].lessonId,mockLessonId);
+assert.match(newLessonResult.results[0].answerability.reason,/Đánh giá sự kiện/);
+assert.equal((await futureClient.searchKnowledge("How do I prepare an invoice?")).status,"no_answer",
+ "unrelated question must not forcibly match an authored lesson");
+assert.equal((await futureClient.searchKnowledge("L07-1-8")).status,"no_match",
+ "not-yet-authored lesson IDs remain unavailable");
+
 console.log("LI_CONTENT_ADAPTER_PASS 8 groups / 15 fields / 45 courses / 135 lesson outlines, 3 full lessons, ontology graph and lazy packs");

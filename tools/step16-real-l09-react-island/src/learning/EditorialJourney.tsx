@@ -701,10 +701,11 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  const answered=attempt.draft.filter(v=>v.trim().length>=MIN).length;
  const rated=attempt.ratings.filter(v=>v!==null).length;
  const state:SaveState=locked?'error':saving?'saving':sync==='synced'?'synced':
-  sync==='queued'?'queued':sync==='on-device'?'saved-device':'unavailable';
+  (sync==='queued'||sync==='conflict')?'queued':sync==='on-device'?'saved-device':'unavailable';
  const message=locked?(vi?'Lưu thất bại':'Save failed'):
   saving?(vi?'Đang lưu…':'Saving…'):sync==='synced'?(vi?'Đã đồng bộ':'Synced'):
   sync==='queued'?(vi?'Đã lưu · chờ đồng bộ':'Saved · awaiting sync'):
+  sync==='conflict'?(vi?'Bài này có xung đột · mở Tài khoản để chọn bản':'Lesson conflict · choose a version in Account'):
   sync==='on-device'?(vi?'Đã lưu trên thiết bị':'Saved on device'):
   (vi?'Chưa xác nhận đồng bộ':'Sync unconfirmed');
  const progress=persistedAttempt?.reviewed?100:

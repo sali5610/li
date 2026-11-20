@@ -285,5 +285,17 @@ function render(){
  note.textContent=shown.comment;note.hidden=false;
  details.hidden=true;info.hidden=false;info.setAttribute("aria-expanded","false");
 }
-window.liQuoteEngine={quotes:QUOTES,environment,matchList,pick,getView,render};
+/** Read-only source-first lookup for authorized editorial React moments. */
+function lookup(id,locale="vi"){
+ const q=QUOTES.find(item=>item.id===id);
+ if(!q||typeof q.url!=="string"||!q.url.startsWith("https://"))return null;
+ const shown=locale==="en"?{...q,...QUOTES_EN[id]}:q;
+ if(!shown.translation||!shown.interpretation||!shown.meta)return null;
+ return Object.freeze({
+  id:q.id,original:q.original,lang:q.lang,url:q.url,
+  translation:shown.translation,interpretation:shown.interpretation,
+  comment:shown.comment,meta:shown.meta
+ });
+}
+window.liQuoteEngine={quotes:QUOTES,environment,matchList,pick,getView,render,lookup};
 })();

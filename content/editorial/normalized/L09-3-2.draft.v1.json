@@ -58,7 +58,43 @@
             "heading": "Nguồn mở và 3 câu active recall (không hiện đáp án)",
             "body_md": "- [Berkeley Accuracy](https://inferentialthinking.com/chapters/17/5/accuracy-of-the-classifier/index.html), [scikit precision/recall](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html), [precision/recall threshold example](https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html).\n\n1. Vì sao accuracy tốt không đảm bảo recall của lớp hiếm tốt?\n2. Khi nào tăng recall có thể gây thêm vấn đề vận hành?\n3. Một metric cao có thể dùng để quyết định production ngay không, và bạn còn cần kiểm chứng điều gì?"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Tính accuracy, precision và recall cho A và B, ghi rõ tử số và mẫu số.",
+            "So sánh với baseline luôn dự đoán đúng hạn. Vì sao một mô hình có accuracy trên 90% vẫn có thể bỏ sót phần lớn đơn trễ?",
+            "Giả sử chi phí bỏ sót một đơn trễ là 20 điểm, chi phí mỗi cảnh báo sai 1 điểm. Tính tổng chi phí A và B; chọn theo giả định đó. Nếu tỷ số chi phí FN/FP đổi thành 2/1 thì lựa chọn đổi không?",
+            "Viết một cảnh báo trước khi triển khai: điều kiện nào của test set, độ tin cậy về chi phí và hậu quả phân nhóm vẫn chưa được dữ liệu này chứng minh?"
+          ],
+          "rubricCriteria": [
+            [
+              "positive class, TP/FP/FN/TN và các mẫu số",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "tính đúng 6 metrics trên A/B",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "so sánh base rate và naive baseline",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "tính chi phí, nhận diện trade-off, không kết luận vượt dữ liệu. Critical failures: (i) coi precision=recall khi mẫu số khác, (ii) nói 91,5% accuracy nghĩa đã tìm được 91,5% đơn trễ, (iii) khẳng định B luôn tốt hơn bất kể chi phí. Ngưỡng 6/8 chỉ là dự kiến biên tập, chưa phải mastery được hiệu chuẩn; trợ giúp/gợi ý không tính cùng lần tự làm",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       },
       "en": {
         "intro_md": "<b>Hook:</b> Your delivery predictor boasts 92% accuracy. Great—unless it quietly misses the orders that actually arrive late.",
@@ -110,7 +146,43 @@
             "heading": "Read further and active recall (unanswered)",
             "body_md": "- [Berkeley accuracy chapter](https://inferentialthinking.com/chapters/17/5/accuracy-of-the-classifier/index.html), [sklearn definitions](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html), [PR curve](https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html).\n\n1. Why can a high accuracy obscure poor rare-class recall?\n2. When might raising recall impose a large operational cost?\n3. What evidence is still needed before a metric supports deployment?"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Calculate accuracy, precision and recall for both models, with numerator and denominator.",
+            "Compare them with an always-on-time baseline and explain why accuracy above 90% can still miss most late shipments.",
+            "If an FN costs 20 points and an FP costs 1 point, compare total costs and decide; does your choice change when FN costs 2 and FP still 1?",
+            "Give one valid deployment limitation involving the held-out population, assumed costs or subgroup impacts."
+          ],
+          "rubricCriteria": [
+            [
+              "positive class, confusion cells and denominators",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "six metric calculations",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "comparison to base rate/naive baseline",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "cost-sensitive choice, conditions, and limits. Critical fails: confusing precision with recall, treating 91.5% accuracy as detection of 91.5% of late shipments, or claiming one model is always best regardless of costs. Suggested 6/8 remains unvalidated",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       }
     },
     "companion": {
@@ -146,7 +218,241 @@
           "source_md": "Quote candidates: analects-peers, zhuangzi-limits, mill-other-side. Primary: analects-peers.\n\nVI 1: Còn cần xem nhóm khách khác nhau không? — Lão Lý: Cần nếu rủi ro phân nhóm quan trọng. Đừng để trung bình che bất lợi.\n\nVI 2: Chọn threshold thế nào? — Lão Lý: Dùng curve, capacity xử lý cảnh báo và chi phí kiểm chứng được, không chỉ chăm một con số.\n\nEN 1: Should we inspect performance across customer groups? — Old Li: Yes when subgroup harms matter; an average can hide disparities.\n\nEN 2: How should we set a threshold? — Old Li: Use the curve, alert capacity and grounded error costs—not one headline score."
         }
       ],
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "structuredMoments": [
+        {
+          "stage": "opening",
+          "quote_ids": [
+            "analects-honesty",
+            "hume-evidence",
+            "darwin-confidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Quote candidates: analects-honesty, hume-evidence, darwin-confidence. Primary: analects-honesty.",
+          "vi": {
+            "prompt": "Hook: App khoe dự báo giao hàng đúng 92%. Đáng mừng không? Còn tùy nó vừa bỏ sót bao nhiêu đơn sắp trễ, tiểu hữu ạ.",
+            "actions": [
+              {
+                "label": "Accuracy 92% là tốt chưa lão?",
+                "reply": "Chưa biết. Hỏi xem nó bỏ sót lớp trễ bao nhiêu đã."
+              },
+              {
+                "label": "Tại sao phải định nghĩa positive?",
+                "reply": "Không chốt nhãn dương, tên metric cũng dễ trở thành trò đánh tráo."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "Hook: Your delivery predictor boasts 92% accuracy. Great—unless it quietly misses the orders that actually arrive late.",
+            "actions": [
+              {
+                "label": "Is 92% accuracy good?",
+                "reply": "Too soon to know. Check how many late orders it misses."
+              },
+              {
+                "label": "Why define positive first?",
+                "reply": "Without a fixed positive class, metric labels become slippery."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "concept",
+          "quote_ids": [
+            "analects-think",
+            "box-models",
+            "bacon-cause"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Quote candidates: analects-think, box-models, bacon-cause. Primary: analects-think.",
+          "vi": {
+            "prompt": "Trong bài này positive nghĩa là đơn hàng thực sự sẽ trễ. Negative nghĩa là đơn đúng hạn. Bốn loại dự đoán: TP (báo trễ và thực sự trễ), FP (báo trễ nhưng đúng hạn), FN (báo đúng hạn nhưng thực tế trễ), TN (báo đúng hạn và thực tế đúng hạn). Nếu không khóa định nghĩa positive, precision và recall rất dễ bị đảo ng",
+            "actions": [
+              {
+                "label": "Precision và recall khác sao?",
+                "reply": "Precision hỏi trong cảnh báo, bao nhiêu đúng; recall hỏi trong đơn trễ, bao nhiêu được thấy."
+              },
+              {
+                "label": "FN có nghĩa gì?",
+                "reply": "Đơn thực sự trễ nhưng ngươi lại báo đúng hạn. Hậu quả tùy quy trình."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "Positive = a shipment that will actually be late; negative = on-time. True positive (TP) means flagged late and truly late; false positive (FP) means flagged late but actually on-time; false negative (FN) means predicted on-time but truly late; true negative (TN) means predicted on-time and actually on-time. Wit",
+            "actions": [
+              {
+                "label": "How is precision different from recall?",
+                "reply": "Precision asks how many alerts are correct; recall asks how many real late orders are found."
+              },
+              {
+                "label": "What is an FN here?",
+                "reply": "A truly late shipment predicted on-time; its cost depends on the workflow."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "guided",
+          "quote_ids": [
+            "analects-practice",
+            "zhuangzi-craft",
+            "bacon-studies"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Quote candidates: analects-practice, zhuangzi-craft, bacon-studies. Primary: analects-practice.",
+          "vi": {
+            "prompt": "Bộ dữ liệu hoàn toàn GIẢ LẬP, không phải số liệu SAP/khách hàng. Có 200 đơn: 30 trễ, 170 đúng hạn. Mô hình cảnh báo: TP=18, FP=12, FN=12, TN=158. Kiểm tra tổng 18+12+12+158=200.",
+            "actions": [
+              {
+                "label": "60% precision có nghĩa 60% trễ đã bắt được à?",
+                "reply": "Sai mẫu số rồi; đó là recall. Thử chia TP cho TP+FP."
+              },
+              {
+                "label": "Sao bộ 500 đơn có recall 72%?",
+                "reply": "Có 36 true positive trong 50 đơn trễ; đó là 36/50."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "Entirely fictional data, not SAP/customer records: 200 shipments with 30 late and 170 on-time. TP=18, FP=12, FN=12, TN=158, sum 200. Accuracy=(18+158)/200=88%. Precision=18/(18+12)=60%: of the alerts, 60% were correct. Recall=18/(18+12)=60%: of all truly late shipments,",
+            "actions": [
+              {
+                "label": "Does 60% precision mean we caught 60% of all late orders?",
+                "reply": "No—that is the recall question. Divide TP by TP+FP for precision."
+              },
+              {
+                "label": "Why is recall 72% on 500 records?",
+                "reply": "There are 36 true positives among 50 truly late orders."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "independent",
+          "quote_ids": [
+            "mencius-sources",
+            "hume-evidence",
+            "analects-honesty"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Quote candidates: mencius-sources, hume-evidence, analects-honesty. Primary: mencius-sources.",
+          "vi": {
+            "prompt": "Có 1.200 đơn giả lập, trong đó 120 trễ và 1.080 đúng hạn; positive = sẽ trễ. Hai mô hình A và B đã được thử trên cùng tập test độc lập theo giả định đề bài, không bị data leakage:",
+            "actions": [
+              {
+                "label": "Mô hình A accuracy cao hơn thì luôn thắng?",
+                "reply": "Đừng trao vương miện trước khi tính FN, FP và cái giá của chúng."
+              },
+              {
+                "label": "Có nên xem đáp án trước không?",
+                "reply": "Không. Lão giữ key sau nộp để phân biệt tự hiểu với xem lời giải."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "There are 1,200 records, 120 actually late, 1,080 on-time. Positive = late; both models evaluated on the same assumed clean final test set:",
+            "actions": [
+              {
+                "label": "Does A always win because its accuracy is higher?",
+                "reply": "Not until you compare false negatives, false positives and their costs."
+              },
+              {
+                "label": "Can I see the key first?",
+                "reply": "Not in an independent attempt. The answer follows your submission."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "reflection",
+          "quote_ids": [
+            "analects-review",
+            "epictetus-appearance",
+            "darwin-confidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Quote candidates: analects-review, epictetus-appearance, darwin-confidence. Primary: analects-review.",
+          "vi": {
+            "prompt": "4 tiêu chí × 0/1/2: (1) positive class, TP/FP/FN/TN và các mẫu số; (2) tính đúng 6 metrics trên A/B; (3) so sánh base rate và naive baseline; (4) tính chi phí, nhận diện trade-off, không kết luận vượt dữ liệu. Critical failures: (i) coi precision=recall khi mẫu số khác, (ii) nói 91,5% accuracy nghĩa đã tìm được",
+            "actions": [
+              {
+                "label": "Tại sao cost giả lập lại đổi quyết định?",
+                "reply": "Vì cùng một ma trận vẫn có hậu quả khác nhau tùy chi phí sai lầm."
+              },
+              {
+                "label": "Có chắc mô hình này dùng thực tế được không?",
+                "reply": "Chưa. Test set và chi phí phải đại diện cho tình huống thật trước đã."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "Four 0/1/2 dimensions: (1) positive class, confusion cells and denominators; (2) six metric calculations; (3) comparison to base rate/naive baseline; (4) cost-sensitive choice, conditions, and limits. Critical fails: confusing precision with recall, treating 91.5% accuracy as detection of 91.5% of late shipments",
+            "actions": [
+              {
+                "label": "Why does the invented cost change the decision?",
+                "reply": "The same errors can have different consequences under different priorities."
+              },
+              {
+                "label": "Are these results deployment ready?",
+                "reply": "Not yet. Validate the target population and actual decision costs."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "extension",
+          "quote_ids": [
+            "analects-peers",
+            "zhuangzi-limits",
+            "mill-other-side"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Quote candidates: analects-peers, zhuangzi-limits, mill-other-side. Primary: analects-peers.",
+          "vi": {
+            "prompt": "- [Berkeley Accuracy](https://inferentialthinking.com/chapters/17/5/accuracy-of-the-classifier/index.html), [scikit precision/recall](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html), [precision/recall threshold example](https://scikit-learn.org/stable/auto_example",
+            "actions": [
+              {
+                "label": "Còn cần xem nhóm khách khác nhau không?",
+                "reply": "Cần nếu rủi ro phân nhóm quan trọng. Đừng để trung bình che bất lợi."
+              },
+              {
+                "label": "Chọn threshold thế nào?",
+                "reply": "Dùng curve, capacity xử lý cảnh báo và chi phí kiểm chứng được, không chỉ chăm một con số."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "- [Berkeley accuracy chapter](https://inferentialthinking.com/chapters/17/5/accuracy-of-the-classifier/index.html), [sklearn definitions](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html), [PR curve](https://scikit-learn.org/stable/auto_examples/model_selection/plot",
+            "actions": [
+              {
+                "label": "Should we inspect performance across customer groups?",
+                "reply": "Yes when subgroup harms matter; an average can hide disparities."
+              },
+              {
+                "label": "How should we set a threshold?",
+                "reply": "Use the curve, alert capacity and grounded error costs—not one headline score."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        }
+      ]
+    },
+    "technique": {
+      "primary": "L2-T06",
+      "status": "source_mapped_not_release_approved"
     }
   },
   "rights": {
@@ -163,7 +469,7 @@
     "sourceBodyCharacters": 17907
   },
   "normalization": {
-    "status": "sectioned_needs_academic_rights_and_release_review",
+    "status": "structurally_mapped_needs_rights_review",
     "counts": {
       "vi": {
         "chapters": 7,

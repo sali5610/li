@@ -58,7 +58,43 @@
             "heading": "6 · Nguồn, truy xuất, ghi nhớ",
             "body_md": "- [OpenStax 2e §12.3](https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation) — linear OLS, residual, extrapolation.\n- [OpenStax 2e §1.2](https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling) — correlation vs causation and confounding.\n- <b>Copy prompt:</b> “Tôi học li. L09-2-3. Hãy mở chính xác 2 URL OpenStax, chỉ trích/tóm tắt nội dung đọc được về fitted line, residual và confounders; tách nguyên văn nguồn khỏi case giả định của app; tự tạo bộ số khác và 3 active recall chưa có đáp án. Nếu không đọc được, báo rõ.”\n- <b>Active recall chưa có đáp án:</b> (1) Residual khác với sai dữ liệu như thế nào? (2) Vì sao pooled positive slope có thể trái với within-group flat relationship? (3) Đòi loại bằng chứng nào trước khi diễn giải b như causal effect?\n\n<b>Media contract:</b> original two-group scatterplot conceptual spec, show subgroup symbols and global fit distinctly with text explanation; don't copy OpenStax graphics. Do not chart independent six numbers before submission in future runtime, including image alt/caption. Actual source-quote rights and mobile/VoiceOver review OPEN."
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Tính <b>xbar, ybar</b>, OLS slope <code>b</code> và intercept <code>a</code> của <b>dữ liệu gộp</b> từ công thức; nêu đơn vị y-hat.",
+            "Mô tả quan hệ X–Y <b>trong novice và experienced riêng</b>; so với slope gộp và nêu ý nghĩa khác biệt.",
+            "Đánh giá câu “xem thêm một phiên hướng dẫn <b>gây</b> tăng b điểm”. Nêu confounder hợp lý, một giới hạn khác và tại sao kể cả OLS vừa khớp vẫn không chứng minh nguyên nhân.",
+            "Đề xuất bằng chứng bổ sung: một thiết kế đo/trial hoặc phương án phân tầng, biến số cần thu thập, và vì sao dự đoán X=10 từ sáu điểm này là thiếu bảo đảm."
+          ],
+          "rubricCriteria": [
+            [
+              "OLS a/b/units và residual/prediction phân biệt",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "within-group vs pooled so sánh đúng",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "confounder và causal humility",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "dữ liệu/thiết kế bổ sung và ngoại suy giới hạn",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       },
       "en": {
         "intro_md": "<b>“A pooled regression line can slope upward even when scores are completely flat within both user groups.”</b>\n\nIn a <b>fictional</b> product dataset, experienced users view more tutorials and also score higher. A pooled fit points upward, yet within each experience level, increasing tutorial exposure is not associated with improving scores. <b>The reversal:</b> an apparent positive relationship may be explained by group differences rather than the causal effect of tutorial views. [OpenStax on causality/confounding](https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling).",
@@ -110,7 +146,43 @@
             "heading": "6 · Sources and unanswered recall",
             "body_md": "- [OpenStax 2e §12.3 Regression Equation](https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation).\n- [OpenStax 2e §1.2 Data, Sampling and Confounding](https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling).\n- <b>Copy prompt:</b> “I study li. L09-2-3. Open the exact OpenStax sources and summarize only actually readable claims on residuals, least-squares regression, confounding and causal limits. Clearly distinguish the textbook facts from newly fictional cases. Create an independent example and 3 recall questions without answers.”\n- <b>Active recall, without answers:</b> (1) What is a regression residual, and why isn't it automatically an error? (2) How can a pooled trend disagree with each subgroup? (3) What design would justify a causal interpretation of b?\n\n<b>Figure/rights:</b> original educational two-group scatter conceptual illustration only; text-first accessible examples; no third-party figure copied or independent solution displayed pre-submit."
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Find means xbar and ybar and compute pooled OLS b and a with the formulas, noting units.",
+            "Explain the X–Y pattern <b>within each group</b> and compare to the pooled fitted slope.",
+            "Critique “each extra tutorial session <b>causes</b> an improvement of b points”; name confounder and other data-design limitations.",
+            "Propose a more credible comparison/trial and missing measures. Why is forecasting at X=10 unreliable from this dataset?"
+          ],
+          "rubricCriteria": [
+            [
+              "OLS arithmetic and residual-vs-prediction",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "grouped-vs-pooled comparison",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "confounding and causal caveat",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "credible follow-up design and extrapolation limits. Keep hints/assistance separate from measured knowledge, and do not claim validated mastery from self-score",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       }
     },
     "companion": {
@@ -146,7 +218,229 @@
           "source_md": "<b>Primary:</b> <code>bacon-studies</code>; alternatives <code>mill-other-side</code>, <code>analects-peers</code>. <b>Relevance:</b> discussing and writing defensible claims is a bounded learning analogy; OpenStax supplies the actual statistical theory.\n\n<b>VI · Lão Lý:</b> “Thành thạo số thì đáng mừng. Nhưng đi họp đừng biến ‘có liên hệ’ thành ‘chính tính năng này tạo ra’.”\n\n- <b>“Đọc sâu gì?”</b> → “OpenStax §12.3 cho OLS/residual, §1.2 cho confounding và hạn chế causal.”\n- <b>“Bài tự tạo?”</b> → “Giữ vài nhóm có baseline khác nhau, đổi phơi bày trong nhóm rồi hỏi liệu xu hướng pooled còn ổn không.”\n\n<b>EN · Lão Lý:</b> “Good arithmetic is welcome. Turning correlation into a product-effect claim in a meeting is not.”\n\n- <b>“What sources?”</b> → “OpenStax §12.3 for least squares and residuals, §1.2 for confounding/causality.”\n- <b>“Fresh probe?”</b> → “Construct new comparable groups and examine exposure/outcome movement within each before pooling.”\n\n<b>Editorial gate:</b> six stage-specific VI/EN contexts, 2 pairs per locale/stage and 3 curated original-bank IDs/stage. No data-derived quote or false classical citation. Source translation/reuse and quote ordering Issue #8, actual runtime and real-device/QA28 remain OPEN."
         }
       ],
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "structuredMoments": [
+        {
+          "stage": "opening",
+          "quote_ids": [
+            "hume-evidence",
+            "mill-other-side",
+            "analects-honesty"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>hume-evidence</code>; alternatives <code>mill-other-side</code>, <code>analects-honesty</code>. <b>Relevance:</b> matching confidence to evidence is an analogy for refusing to equate a pooled fitted line with a causal effect.",
+          "vi": {
+            "prompt": "Đường lên đẹp dữ ha. Nhưng ai bảo từng người thêm một lần xem hướng dẫn sẽ giỏi hơn?",
+            "actions": [
+              {
+                "label": "Tại sao không?",
+                "reply": "Hồi quy nhìn mối liên hệ trong dữ liệu quan sát. Causal effect cần loại giải thích khác."
+              },
+              {
+                "label": "Cú lật nằm ở đâu?",
+                "reply": "Trình độ người dùng có thể cùng lúc liên hệ với exposure và điểm; hãy xem từng nhóm."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Lovely rising line. Who said an extra tutorial view actually causes the higher score?",
+            "actions": [
+              {
+                "label": "Why not?",
+                "reply": "Regression fits an observed relationship; causation needs rival explanations addressed."
+              },
+              {
+                "label": "What's the reversal?",
+                "reply": "Experience may relate to both views and score; examine the groups separately."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "concept",
+          "quote_ids": [
+            "analects-think",
+            "bacon-cause",
+            "zhuangzi-limits"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>analects-think</code>; alternatives <code>bacon-cause</code>, <code>zhuangzi-limits</code>. <b>Relevance:</b> deliberate thought before conclusions parallels distinguishing observed y from predicted y-hat; Confucius did not derive least squares.",
+          "vi": {
+            "prompt": "Đừng nhìn residual rồi la dữ liệu sai. Nó chỉ là khoảng cách với dự đoán.",
+            "actions": [
+              {
+                "label": "Residual tính sao?",
+                "reply": "Lấy y quan sát trừ y-hat dự đoán tại cùng x. Dấu dương/âm nói line thấp/cao hơn observation."
+              },
+              {
+                "label": "Slope có chứng minh nhân quả?",
+                "reply": "Không. b mô tả thay đổi dự đoán trong fitted association, có thể bị confounding."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "A residual is not a typo alarm. It's a gap between observation and fit.",
+            "actions": [
+              {
+                "label": "How is it calculated?",
+                "reply": "Observed y minus fitted y-hat at the same x; its sign shows under- or overprediction."
+              },
+              {
+                "label": "Does slope prove cause?",
+                "reply": "No. The fitted association may reflect a third variable."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "guided",
+          "quote_ids": [
+            "analects-practice",
+            "mencius-sources",
+            "zhuangzi-craft"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>analects-practice</code>; alternatives <code>mencius-sources</code>, <code>zhuangzi-craft</code>. <b>Relevance:</b> deliberate repeated examination is a learning analogy for T07's premise-checking exercise.",
+          "vi": {
+            "prompt": "T07 không bắt ngươi tính thật nhiều. Nó bắt ngươi tìm câu nào đang lén biến association thành cause.",
+            "actions": [
+              {
+                "label": "Bước đầu làm gì?",
+                "reply": "Ghi câu giả định ‘thêm X khiến Y tăng’, rồi liệt kê biến nền có thể chạm vào cả hai."
+              },
+              {
+                "label": "Vì sao so theo nhóm?",
+                "reply": "Vì hệ số gộp có thể do khác biệt trình độ, không phản ánh cùng xu hướng trong từng nhóm."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "T07 doesn't require endless arithmetic. It catches the premise that sneaks from association into causation.",
+            "actions": [
+              {
+                "label": "First action?",
+                "reply": "State the assumed causal claim, then identify possible shared determinants of exposure and outcome."
+              },
+              {
+                "label": "Why split groups?",
+                "reply": "A pooled coefficient may summarize differences between groups rather than variation within them."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "independent",
+          "quote_ids": [
+            "mencius-sources",
+            "hume-evidence",
+            "analects-honesty"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>mencius-sources</code>; alternatives <code>hume-evidence</code>, <code>analects-honesty</code>. <b>Relevance:</b> questioning what a source supports parallels checking how a regression coefficient was constructed and what is missing. <b>Strict no-spoiler:</b> no assessed slope/intercept or group-specific keyed result.",
+          "vi": {
+            "prompt": "Ta không tính dùm hồi quy đề này. Tự kiểm bảng số và kiểu bằng chứng ngươi thật sự có.",
+            "actions": [
+              {
+                "label": "Bắt đầu từ đâu?",
+                "reply": "Tính mean gộp và tổng độ lệch bình phương; sau đó mới so kết quả theo nhóm."
+              },
+              {
+                "label": "Nếu muốn kết luận gây ra?",
+                "reply": "Nêu bằng chứng thiết kế còn thiếu. Đừng lấy slope gộp làm mệnh lệnh nhân quả."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "I won't calculate your assessed slope. Check what the records can actually justify.",
+            "actions": [
+              {
+                "label": "First step?",
+                "reply": "Calculate pooled means and sums of deviations, then compare group-specific patterns."
+              },
+              {
+                "label": "What about a causal claim?",
+                "reply": "Specify the missing identification evidence instead of treating a pooled slope as an effect."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "reflection",
+          "quote_ids": [
+            "analects-honesty",
+            "analects-review",
+            "darwin-confidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>analects-honesty</code>; alternatives <code>analects-review</code>, <code>darwin-confidence</code>. <b>Relevance:</b> recognizing limits and correcting overconfidence parallels separating fit arithmetic from causal identification. <b>Only post-submit.</b>",
+          "vi": {
+            "prompt": "Đã nộp: chỗ nào ngươi làm toán sai, chỗ nào chỉ là nói quá tay về nguyên nhân?",
+            "actions": [
+              {
+                "label": "Tự chấm sao?",
+                "reply": "Tách slope/intercept, so sánh nhóm, confounder và đề xuất nghiên cứu tiếp theo."
+              },
+              {
+                "label": "Một line khớp tốt đủ chưa?",
+                "reply": "Chưa. Dữ liệu sáu người, thiếu control và external validation không cho tuyên bố hiệu quả sản phẩm."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Submitted? Separate arithmetic mistakes from overconfident causal storytelling.",
+            "actions": [
+              {
+                "label": "What should I score?",
+                "reply": "Rate line calculations, group comparison, confounders and follow-up design separately."
+              },
+              {
+                "label": "Does a good fit prove the feature works?",
+                "reply": "No; observational coverage, rival causes and generalization remain unresolved."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "extension",
+          "quote_ids": [
+            "bacon-studies",
+            "mill-other-side",
+            "analects-peers"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary:</b> <code>bacon-studies</code>; alternatives <code>mill-other-side</code>, <code>analects-peers</code>. <b>Relevance:</b> discussing and writing defensible claims is a bounded learning analogy; OpenStax supplies the actual statistical theory.",
+          "vi": {
+            "prompt": "Thành thạo số thì đáng mừng. Nhưng đi họp đừng biến ‘có liên hệ’ thành ‘chính tính năng này tạo ra’.",
+            "actions": [
+              {
+                "label": "Đọc sâu gì?",
+                "reply": "OpenStax §12.3 cho OLS/residual, §1.2 cho confounding và hạn chế causal."
+              },
+              {
+                "label": "Bài tự tạo?",
+                "reply": "Giữ vài nhóm có baseline khác nhau, đổi phơi bày trong nhóm rồi hỏi liệu xu hướng pooled còn ổn không."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Good arithmetic is welcome. Turning correlation into a product-effect claim in a meeting is not.",
+            "actions": [
+              {
+                "label": "What sources?",
+                "reply": "OpenStax §12.3 for least squares and residuals, §1.2 for confounding/causality."
+              },
+              {
+                "label": "Fresh probe?",
+                "reply": "Construct new comparable groups and examine exposure/outcome movement within each before pooling."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "technique": {
+      "primary": "L2-T07",
+      "status": "source_mapped_not_release_approved"
     }
   },
   "rights": {
@@ -163,7 +457,7 @@
     "sourceBodyCharacters": 23445
   },
   "normalization": {
-    "status": "needs_academic_rights_and_release_review",
+    "status": "structurally_mapped_needs_rights_review",
     "counts": {
       "vi": {
         "sections": 7,

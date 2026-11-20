@@ -11,7 +11,12 @@ type QuoteView={
  id:string;original:string;lang:string;translation:string;
  interpretation:string;meta:string;url:string;comment:string
 };
-type BuddyView={text:string;labels:string[];avatar:string;quote:QuoteView|null;triggerId:string};
+type EditorialBuddy={actions:{label:string;reply:string}[];quotes:QuoteView[]};
+type BuddyView={
+ text:string;labels:string[];avatar:string;quote:QuoteView|null;triggerId:string;
+ /** Structured lesson extension; real native mentor actions remain unchanged. */
+ editorial?:EditorialBuddy;
+};
 type BuddyReply={text:string;showChallenge:boolean};
 type BuddyPort={open:(trigger?:HTMLElement|null)=>BuddyView|null;choose:(index:number)=>BuddyReply|null};
 type AppWindow=Window&{
@@ -31,6 +36,7 @@ function BuddyDialog({root}:{root:HTMLElement}){
  const [view,setView]=useState<BuddyView|null>(null);
  const [message,setMessage]=useState('');
  const [expanded,setExpanded]=useState(false);
+ const [quoteIndex,setQuoteIndex]=useState(0);
  const [challenge,setChallenge]=useState(false);
  const [,setLocale]=useState(0);
  const [avatar,setAvatar]=useState('');
@@ -50,11 +56,18 @@ function BuddyDialog({root}:{root:HTMLElement}){
   const onOpen=(event:Event)=>{
    if(!document.documentElement.classList.contains('li-auth-verified'))return;
    const next=(event as CustomEvent<BuddyView>).detail;
-   if(!next||!Array.isArray(next.labels)||next.labels.length!==3)return;
+   if(!next||!Array.isArray(next.labels))return;
+   const editorial=next.editorial;
+   if(editorial){
+    if(editorial.actions?.length!==2||editorial.quotes?.length<3||
+      editorial.actions.some(action=>!action.label||!action.reply)||
+      editorial.quotes.some(quote=>!quote.original||!quote.meta||!quote.url?.startsWith('https://')))
+     return;
+   }else if(next.labels.length!==3)return;
    current.current=next;
    restore.current=next.triggerId||'laoly-fab';
    setView(next);setMessage(next.text);setAvatar(next.avatar);
-   setExpanded(false);setChallenge(false);setOpen(true);
+   setExpanded(false);setChallenge(false);setQuoteIndex(0);setOpen(true);
    root.dataset.trigger=restore.current;
   };
   const onClose=()=>close();
@@ -98,9 +111,15 @@ function BuddyDialog({root}:{root:HTMLElement}){
   else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
  };
  const choose=(index:number)=>{
-  const reply=app.liBuddyEngine?.choose(index);
-  if(!reply)return;
-  setMessage(reply.text);setChallenge(reply.showChallenge);
+  if(view?.editorial){
+   const reply=view.editorial.actions[index];
+   if(!reply)return;
+   setMessage(reply.reply);setChallenge(false);
+  }else{
+   const reply=app.liBuddyEngine?.choose(index);
+   if(!reply)return;
+   setMessage(reply.text);setChallenge(reply.showChallenge);
+  }
   setExpanded(false);
   content.current?.scrollTo({top:0,behavior:'auto'});
  };
@@ -110,7 +129,8 @@ function BuddyDialog({root}:{root:HTMLElement}){
   setChallenge(false);
  };
  if(!view)return null;
- const quote=view.quote;
+ const quote=view.editorial?.quotes[quoteIndex]??view.quote;
+ const quoteVisible=!challenge&&!!quote&&(!!view.editorial||message===view.text);
  return <div className="buddy-shell li-react-buddy-shell" onKeyDown={onKeyDown}>
   <div className="dialog">
    <header className="buddy-heading">
@@ -118,13 +138,13 @@ function BuddyDialog({root}:{root:HTMLElement}){
      width={48} height={48} decoding="async"/>
     <div className="buddy-heading-copy">
      <h2 id="buddy-title" ref={heading} tabIndex={-1}>Lão Lý</h2>
-     {!challenge&&quote&&message===view.text&&<>
+     {quoteVisible&&<>
       <p id="buddy-quote-original" className="ly-original" lang={quote.lang}>{quote.original}</p>
       <p id="buddy-quote-translation" className="ly-translation" lang={chooseLanguage('vi','en')}>
        {quote.translation}</p>
      </>}
     </div>
-    {!challenge&&quote&&message===view.text&&<Button variant="ghost"
+    {quoteVisible&&<Button variant="ghost"
      id="buddy-quote-info" className="buddy-quote-info"
      title={chooseLanguage('Diễn nghĩa và xuất xứ','Interpretation and source')}
      aria-label={chooseLanguage('Xem diễn nghĩa và xuất xứ câu trích dẫn','Show interpretation and quotation source')}
@@ -133,7 +153,7 @@ function BuddyDialog({root}:{root:HTMLElement}){
    </header>
    <div id="buddy-scroll" className="buddy-scroll" tabIndex={0}
     ref={content} role="region" aria-label={chooseLanguage('Nội dung hội thoại với Lão Lý','Conversation with Lao Ly')}>
-    {!challenge&&quote&&message===view.text&&
+    {quoteVisible&&
      <aside id="buddy-quote" className="ly-cultural" hidden={!expanded}
       aria-label={chooseLanguage('Diễn nghĩa và xuất xứ câu trích dẫn','Quote interpretation and source')}>
       <p id="buddy-quote-gloss" className="small">{quote.interpretation}</p>
@@ -142,7 +162,16 @@ function BuddyDialog({root}:{root:HTMLElement}){
         {chooseLanguage('Xem xuất xứ','View source')}</a></p>
      </aside>}
     <p id="buddy-text" role="status" aria-live="polite">{message}</p>
-    {!challenge&&quote&&message===view.text&&
+    {view.editorial&&<div className="li-editorial-buddy-quotes" role="group"
+     aria-label={chooseLanguage('Nguồn trích dẫn được chọn theo nội dung','Curated lesson quotations')}>
+     {view.editorial.quotes.map((candidate,index)=><Button key={candidate.id}
+      variant={quoteIndex===index?'primary':'secondary'}
+      aria-pressed={quoteIndex===index}
+      onClick={()=>{setQuoteIndex(index);setExpanded(false);}}>
+      {chooseLanguage('Nguồn ','Source ')+(index+1)+' · '+candidate.meta}
+     </Button>)}
+    </div>}
+    {quoteVisible&&
      <p id="buddy-quote-context" className="li-quote-context">{quote.comment}</p>}
     {challenge&&<div id="buddy-debate" className="ly-debate">
      <p className="small">{chooseLanguage(
@@ -158,7 +187,8 @@ function BuddyDialog({root}:{root:HTMLElement}){
     </div>}
    </div>
    <div className="action-row buddy-actions" aria-label={chooseLanguage('Lão Lý gợi ý','Companion actions')}>
-    {view.labels.map((label,index)=><Button key={index} variant="secondary"
+    {(view.editorial?view.editorial.actions.map(action=>action.label):view.labels)
+     .map((label,index)=><Button key={index} variant="secondary"
      className="action alt" onClick={()=>choose(index)}>
      <LiIcon name={index===0?'search':index===1?'chat':'book-open'} size={18}/>
      {label}</Button>)}

@@ -52,7 +52,43 @@
             "body_md": "| Tiêu chí | 0 | 1 | 2 |\n| --- | --- | --- | --- |\n| Nhóm A | Sai hoặc không có | Đúng một phần | Mean 7, median 5, mode 4 & 5, range 21 phút và giải thích |\n| Nhóm B | Sai hoặc không có | Đúng một phần | Mean/median/mode 5, range 2 phút và so sánh |\n| Extreme / shape | Phán bừa | Thấy extreme nhưng suy rộng | Nêu tác động của 23, giữ giới hạn quan sát |\n| Truyền đạt | Chỉ một số | Có thêm một chỉ báo | Center + spread + giới hạn mẫu |",
             "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Tính <b>mean, median, mode và range</b> của A; giải thích tại sao mean và median khác nhau. Nếu có nhiều mode, ghi đủ.",
+            "Tính cùng bốn thống kê cho B; so sánh hai nhóm khi chỉ thấy mean.",
+            "Nhận xét <b>giá trị cực đại/đuôi phải</b> quan sát của A mà không tuyên bố shape của cả dân số.",
+            "Nêu <b>hai loại chỉ báo hoặc biểu đồ</b> nên báo cáo kết hợp và giới hạn của phát biểu kết luận."
+          ],
+          "rubricCriteria": [
+            [
+              "Nhóm A",
+              "Sai hoặc không có",
+              "Đúng một phần",
+              "Mean 7, median 5, mode 4 & 5, range 21 phút và giải thích"
+            ],
+            [
+              "Nhóm B",
+              "Sai hoặc không có",
+              "Đúng một phần",
+              "Mean/median/mode 5, range 2 phút và so sánh"
+            ],
+            [
+              "Extreme / shape",
+              "Phán bừa",
+              "Thấy extreme nhưng suy rộng",
+              "Nêu tác động của 23, giữ giới hạn quan sát"
+            ],
+            [
+              "Truyền đạt",
+              "Chỉ một số",
+              "Có thêm một chỉ báo",
+              "Center + spread + giới hạn mẫu"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       },
       "en": {
         "intro_md": "<b>“Two groups both average 10 minutes. In one, no case takes longer than 10; in the other, one takes 20.”</b>\n\nPicture two <b>fictional</b> sets of resolution times: X is 10, 10, 10, 10, 10 minutes; Y is 2, 8, 10, 10, 20 minutes. Both have a mean of 10, but their observed variability is very different. The mean is not lying — <b>it just isn't telling the whole story</b>.\n\n<i>The reversal:</i> describe center <b>and</b> spread rather than reporting the mean as though it described the entire distribution. [OpenStax — Measures of the Center](https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data).",
@@ -98,7 +134,43 @@
             "body_md": "Four criteria × 0/1/2: A's correct mean 7 / median 5 / modes 4 and 5 / range 21; B's mean 5 / median 5 / mode 5 / range 2; reasoned high extreme without population overclaim; and meaningful presentation of center, spread and limitations. Record independent-assessment hint assistance separately, not as mastery.",
             "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Calculate <b>mean, median, mode and range</b> for A, with units and interpretation. Report all modes if more than one exists.",
+            "Calculate the same four measures for B; explain how reporting only the mean can mislead.",
+            "Describe an observed <b>high extreme/right-tail feature</b> in A without declaring the population skew.",
+            "Recommend at least two complementary statistics/plots and state the generalization boundary."
+          ],
+          "rubricCriteria": [
+            [
+              "A's correct mean 7 / median 5 / modes 4 and 5 / range 21",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "B's mean 5 / median 5 / mode 5 / range 2",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "reasoned high extreme without population overclaim",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "and meaningful presentation of center, spread and limitations. Record independent-assessment hint assistance separately, not as mastery",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       }
     },
     "companion": {
@@ -134,7 +206,229 @@
           "source_md": "<b>Candidate quote IDs:</b> bacon-studies, analects-review, analects-practice; originals and localized glosses tracked in S137/S138 quote audit.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Bacon's emphasis on reading and writing supports summarizing OpenStax/NIST in one's own words; it does not certify a statistical result.\n\n<b>VI · Lão Lý:</b> Đọc OpenStax §2.5 về center rồi §2.6 về skew, sau đó NIST về spread. Một bộ số tự tạo mới sẽ thử xem ngươi hiểu hay chỉ nhớ đáp án.\n\n- <b>Đọc phần nào trước?</b> Tìm định nghĩa mean/median và ví dụ ảnh hưởng của extreme tại OpenStax 2.5, sau đó đọc NIST về thước đo độ trải.\n- <b>Active recall kiểu gì?</b> Đóng ba trang, tự tạo hai bộ có median bằng nhau nhưng range khác nhau rồi giải thích vì sao không được suy sang toàn bộ dân số.\n\n<b>EN · Lão Lý:</b> Read OpenStax §2.5 on center and §2.6 on skew, then NIST on spread. A fresh dataset will test understanding rather than answer memorization.\n\n- <b>Which reference first?</b> Review mean/median and extreme values in OpenStax 2.5, then NIST's measures of scale for variability.\n- <b>How to retrieve actively?</b> Close the sources and invent two datasets with equal medians but different ranges, explaining why this proves nothing about a population."
         }
       ],
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "structuredMoments": [
+        {
+          "stage": "opening",
+          "quote_ids": [
+            "analects-think",
+            "hume-evidence",
+            "mencius-sources"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> analects-think, hume-evidence, mencius-sources; originals and localized glosses tracked in S137/S138 quote audit.",
+          "vi": {
+            "prompt": "Hai nhóm đều trung bình 10 phút, nhưng nhóm kia có một ca 20 phút. Nghe mỗi mean rồi kết luận hai nhóm y chang thì dữ liệu cũng phải bật cười.",
+            "actions": [
+              {
+                "label": "Đọc báo cáo đầu tiên?",
+                "reply": "Hỏi người báo cáo đang nói về thời gian xử lý của bao nhiêu case, từ nguồn nào, và chỉ báo trung tâm nào được tính."
+              },
+              {
+                "label": "Vì sao cần spread?",
+                "reply": "Một kết quả bình quân không cho thấy khoảng cách giữa ca nhanh nhất và ca lâu nhất; cần thêm range hoặc một đồ thị quan sát."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Two groups average 10 minutes, yet one has a 20-minute case. If you call them identical from the mean alone, the dataset might laugh first.",
+            "actions": [
+              {
+                "label": "What should I inspect?",
+                "reply": "Check how many cases were observed, their provenance, measurement units and which measure of center was computed."
+              },
+              {
+                "label": "Why also show spread?",
+                "reply": "An average does not reveal the distance between the fastest and slowest observations; compare range or view an honest plot."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "concept",
+          "quote_ids": [
+            "box-models",
+            "mencius-sources",
+            "hume-evidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> box-models, mencius-sources, hume-evidence; originals and localized glosses tracked in S137/S138 quote audit.",
+          "vi": {
+            "prompt": "Mean có thể bị một ca cực lâu kéo lên, còn median theo vị trí giữa. Chọn số nào phải dựa vào câu hỏi, không dựa vào cái nào nhìn đẹp hơn.",
+            "actions": [
+              {
+                "label": "Mean dùng số nào?",
+                "reply": "Mean cộng toàn bộ quan sát rồi chia số trường hợp; nếu một giá trị lớn bất thường, nó vẫn được tính nên trung bình thay đổi."
+              },
+              {
+                "label": "Median có bất tử không?",
+                "reply": "Median ít nhạy với một cực trị đơn lẻ, nhưng nó không nói hết độ phân tán. Cần nhìn range hoặc hình phân phối cùng lúc."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "One extreme case can shift the mean; the median is the ordered middle. Pick a statistic for the question, not for how impressive it looks.",
+            "actions": [
+              {
+                "label": "How is the mean formed?",
+                "reply": "Sum every observed duration and divide by the number of cases. An extreme duration still contributes to the numerator."
+              },
+              {
+                "label": "Does median solve everything?",
+                "reply": "A median is more resistant to one extreme but does not reveal the variability. Pair it with a spread measure or plot."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "guided",
+          "quote_ids": [
+            "analects-practice",
+            "aristotle-know",
+            "bacon-studies"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> analects-practice, aristotle-know, bacon-studies; originals and localized glosses tracked in S137/S138 quote audit.",
+          "vi": {
+            "prompt": "Ở ví dụ năm lượt học 4–4–5–5–6, median gần mean. Hãy giải thích khoảng trải hẹp, đừng tự tuyên bố tương lai ai cũng học giống vậy. L2 tự chọn: T06 · Song Tượng Phân Minh: đối chiếu center và spread từ bộ số đã học; T04 giúp giải thích tại sao bằng ví dụ quan sát.",
+            "actions": [
+              {
+                "label": "So hai ví dụ ra sao?",
+                "reply": "Nhìn giá trị lớn nhất và nhỏ nhất của hai bộ năm quan sát; giải thích vì sao có bộ tập trung hơn theo range, không cần suy phân phối dân số."
+              },
+              {
+                "label": "Còn yếu tố nào thiếu?",
+                "reply": "Ta chưa biết cách chọn lượt học, người học có trùng nhau không, và điều kiện đo có đồng nhất. Không kết luận cho mọi buổi học."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "In the guided 4–4–5–5–6 dataset, mean and median are close. Explain the narrow observed range, not an imaginary guarantee for future learners. Optional L2: T06 Compare–Contrast distinguishes center and spread; T04 Self-Explanation asks why the observed numbers support that distinction.",
+            "actions": [
+              {
+                "label": "How do I compare examples?",
+                "reply": "Compare observed maxima and minima of both five-item sets, then discuss the difference in range without asserting population shape."
+              },
+              {
+                "label": "What remains unknown?",
+                "reply": "We do not know the sampling process, whether learners repeat or if conditions were comparable across sessions."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "independent",
+          "quote_ids": [
+            "mencius-sources",
+            "analects-honesty",
+            "hume-evidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> mencius-sources, analects-honesty, hume-evidence; originals and localized glosses tracked in S137/S138 quote audit.",
+          "vi": {
+            "prompt": "Giờ tới A và B: tự tính từ dãy thời gian cho từng nhóm. Lão chỉ nhắc kiểm tra thứ tự, số phần tử và đơn vị; con số kết quả để ngươi tự ra. Khung tự làm: Nếu dùng T04 · Tự Giải Khai Minh, hãy giải thích tại sao hai nhóm khác nhau sau khi tự tính; không nhận sẵn số của A/B.",
+            "actions": [
+              {
+                "label": "Làm median trước?",
+                "reply": "Với mỗi nhóm, sắp các quan sát theo tăng dần và định vị giá trị giữa bằng số lượng phần tử. Đừng lấy số giữa của bảng chưa sắp."
+              },
+              {
+                "label": "Nhìn cực trị thế nào?",
+                "reply": "Hỏi có giá trị nào xa phần còn lại và range có nhạy với giá trị ấy không. Đừng gọi một dân số lệch phải chỉ từ một nhóm nhỏ."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Now handle A and B independently. I'll remind you to check ordering, number of observations and units; the final results are yours. Independent method cue: If using T04 Self-Explanation, explain the contrast only after independently calculating both groups; no A/B results before submission.",
+            "actions": [
+              {
+                "label": "How do I start with the median?",
+                "reply": "Sort each group's observations and locate the middle position from its count. Avoid taking the middle row of unsorted input."
+              },
+              {
+                "label": "How should I read extremes?",
+                "reply": "Check whether one observation is unusually far from its peers and how the range responds. Don't infer population skew from a tiny sample."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "reflection",
+          "quote_ids": [
+            "analects-honesty",
+            "darwin-confidence",
+            "box-models"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> analects-honesty, darwin-confidence, box-models; originals and localized glosses tracked in S137/S138 quote audit.",
+          "vi": {
+            "prompt": "Đã nộp rồi thì đối chiếu cả số và lời giải thích. Mean đúng mà che mất outlier là báo cáo thiếu trung thực, dù bảng trông sạch.",
+            "actions": [
+              {
+                "label": "Rubric trọng gì?",
+                "reply": "So mean, median, range và đơn vị của từng nhóm; sau đó kiểm tra đã nói rõ ảnh hưởng của cực trị lên cách hiểu chưa."
+              },
+              {
+                "label": "Chọn biểu đồ nào?",
+                "reply": "Dotplot có thể phơi ra từng quan sát ở mẫu nhỏ; boxplot giúp tóm tắt vị trí và trải rộng. Cần hiển thị đúng dữ liệu gốc, không tô hồng."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "After submission, check both arithmetic and interpretation. A correct mean that hides the extreme case is still an incomplete report.",
+            "actions": [
+              {
+                "label": "What does the rubric test?",
+                "reply": "Validate the mean, median, range and units for each group, then check whether the explanation recognizes the extreme observation."
+              },
+              {
+                "label": "Which plot helps?",
+                "reply": "A dotplot can show each small-sample point; a boxplot summarizes position and spread. Neither makes the sample representative."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "extension",
+          "quote_ids": [
+            "bacon-studies",
+            "analects-review",
+            "analects-practice"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> bacon-studies, analects-review, analects-practice; originals and localized glosses tracked in S137/S138 quote audit.",
+          "vi": {
+            "prompt": "Đọc OpenStax §2.5 về center rồi §2.6 về skew, sau đó NIST về spread. Một bộ số tự tạo mới sẽ thử xem ngươi hiểu hay chỉ nhớ đáp án.",
+            "actions": [
+              {
+                "label": "Đọc phần nào trước?",
+                "reply": "Tìm định nghĩa mean/median và ví dụ ảnh hưởng của extreme tại OpenStax 2.5, sau đó đọc NIST về thước đo độ trải."
+              },
+              {
+                "label": "Active recall kiểu gì?",
+                "reply": "Đóng ba trang, tự tạo hai bộ có median bằng nhau nhưng range khác nhau rồi giải thích vì sao không được suy sang toàn bộ dân số."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Read OpenStax §2.5 on center and §2.6 on skew, then NIST on spread. A fresh dataset will test understanding rather than answer memorization.",
+            "actions": [
+              {
+                "label": "Which reference first?",
+                "reply": "Review mean/median and extreme values in OpenStax 2.5, then NIST's measures of scale for variability."
+              },
+              {
+                "label": "How to retrieve actively?",
+                "reply": "Close the sources and invent two datasets with equal medians but different ranges, explaining why this proves nothing about a population."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "technique": {
+      "primary": "L2-T06",
+      "status": "source_mapped_not_release_approved"
     }
   },
   "rights": {
@@ -151,7 +445,7 @@
     "sourceBodyCharacters": 26775
   },
   "normalization": {
-    "status": "sectioned_needs_academic_rights_and_release_review",
+    "status": "structurally_mapped_needs_rights_review",
     "counts": {
       "vi": {
         "chapters": 6,

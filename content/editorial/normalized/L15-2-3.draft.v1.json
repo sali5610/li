@@ -52,7 +52,43 @@
             "body_md": "| Tiêu chí | 0 | 1 | 2 |\n| --- | --- | --- | --- |\n| Phân loại event và timestamp | Nhầm loại | Đúng một phần | Departure/Arrival và 4 loại giờ rõ |\n| Phép tính | Sai hoặc thiếu | Chỉ đúng một kết quả | Arrival +185, ETA error +35, departure +10 |\n| Giới hạn trạng thái | Coi ETA là actual | Có cảnh báo nhưng mơ hồ | Đúng pending/as-of, không tuyên bố actual ở 13:00 |\n| Schema và edge case | Không đề xuất | Chỉ kể tên vài trường | ≥4 trường phù hợp, nguồn/múi giờ/case thiếu report |\n\nĐây là điểm tự đánh giá chưa hiệu chuẩn, không có AI chấm tự luận hoặc tuyên bố kết quả nghiệp vụ thật.",
             "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Phân loại giờ planned, ETA snapshot, actual event và report receipt; giữ <b>Departure khác Arrival</b>.",
+            "Tính <b>actual Arrival−planned Arrival</b>, <b>actual Arrival−ETA 13:00</b>; ghi đơn vị và diễn giải dấu. Nếu cần, so riêng Departure planned/actual.",
+            "Tại 13:00, dashboard được phép nói điều gì; điều gì <b>chưa</b> được tuyên bố là actual?",
+            "Chọn <b>ít nhất bốn trường data/metadata</b> để tránh nhầm lẫn và nêu một edge case: thiếu report, timezone hoặc cập nhật ETA nhiều lần."
+          ],
+          "rubricCriteria": [
+            [
+              "Phân loại event và timestamp",
+              "Nhầm loại",
+              "Đúng một phần",
+              "Departure/Arrival và 4 loại giờ rõ"
+            ],
+            [
+              "Phép tính",
+              "Sai hoặc thiếu",
+              "Chỉ đúng một kết quả",
+              "Arrival +185, ETA error +35, departure +10"
+            ],
+            [
+              "Giới hạn trạng thái",
+              "Coi ETA là actual",
+              "Có cảnh báo nhưng mơ hồ",
+              "Đúng pending/as-of, không tuyên bố actual ở 13:00"
+            ],
+            [
+              "Schema và edge case",
+              "Không đề xuất",
+              "Chỉ kể tên vài trường",
+              "≥4 trường phù hợp, nguồn/múi giờ/case thiếu report"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       },
       "en": {
         "intro_md": "<b>“The truck may already be at the warehouse — while the dashboard is still waiting to hear it arrived.”</b>\n\nA real-world event can occur <b>before</b> the tracking system receives a report. In this fictional scenario, <i>actual business time</i> and <i>message receipt time</i> are distinct timestamps; ETA is a prediction, not confirmation. Without a reported actual, the dashboard should say <b>unconfirmed</b>, rather than assert an arrival.\n\n<i>The reversal:</i> tracking is not just about “what time?” but “<b>which event clock, from which source?</b>” [Oracle Transportation Management — Agent Variables](https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/agent_manager/agent_variables.htm).",
@@ -98,7 +134,43 @@
             "body_md": "0–2 on each dimension: correct timestamp/event typing; correct 185/+35/+10 minute comparisons; no premature actual claim; useful traceability fields and a missing-data/time-zone edge case. No automated mastery measure; if independent hint used, record assistance.",
             "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Classify planned, ETA snapshot, actual business time and receipt time, matching Departure separately from Arrival.",
+            "Compute actual Arrival minus planned Arrival, and actual Arrival minus the 13:00 ETA, explaining units/sign; optionally compare Departure.",
+            "What is defensible at 13:00, and which actual-arrival claim would be premature?",
+            "Recommend at least four tracking fields plus one missing-data/time-zone/ETA-version edge case."
+          ],
+          "rubricCriteria": [
+            [
+              "correct timestamp/event typing",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "correct 185/+35/+10 minute comparisons",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "no premature actual claim",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "useful traceability fields and a missing-data/time-zone edge case. No automated mastery measure",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       }
     },
     "companion": {
@@ -134,7 +206,229 @@
           "source_md": "<b>Candidate quote IDs:</b> bacon-studies, zhuangzi-limits, analects-review; original source wording and translation signoff remains tracked separately.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Bacon on reading and writing encourages a learner to compare technical definitions, while Oracle remains the actual domain source.\n\n<b>VI · Lão Lý:</b> Đọc Oracle để phân biệt event đã xảy ra và estimate chưa xảy ra. SAP Help chưa đọc được toàn văn thì lão cũng phải nhận là chưa đọc — chứ chém chức năng sản phẩm làm gì.\n\n- <b>Đọc theo thứ tự nào?</b> Đọc định nghĩa estimate-versus-actual trong Oracle Event Group, rồi xem agent variables tách planned arrival, estimate và event/receipt timestamps.\n- <b>Luyện nhớ ra sao?</b> Đóng tài liệu, tự vẽ bảng bốn cột planned–ETA as-of–actual–received cho một sự kiện. Gắn nhãn chưa xác minh cho trường còn thiếu.\n\n<b>EN · Lão Lý:</b> Use the readable Oracle event documentation to distinguish predictions from occurrences. The SAP Help page isn't fully accessible here, so don't invent SAP-specific behavior.\n\n- <b>What should I read first?</b> Start with Oracle Event Group estimated-versus-actual status, then Agent Variables for planned, ETA, actual-event and receipt fields.\n- <b>How can I recall it?</b> Close the documentation and reconstruct four timestamp categories for one event, explicitly identifying any fields that remain unknown."
         }
       ],
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "structuredMoments": [
+        {
+          "stage": "opening",
+          "quote_ids": [
+            "zhuangzi-craft",
+            "bacon-cause",
+            "analects-think"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> zhuangzi-craft, bacon-cause, analects-think; original source wording and translation signoff remains tracked separately.",
+          "vi": {
+            "prompt": "Xe đã tới mà bản tin chưa tới. Ngươi nhìn timeline rồi tính ai đang trễ: xe hay hệ thống? Planned, ETA, actual và receipt không phải bốn tên gọi cho một giờ đâu.",
+            "actions": [
+              {
+                "label": "Trước tiên soi gì?",
+                "reply": "Xác định từng mốc thuộc Arrival hay Departure, lịch dự kiến hay dữ liệu đã ghi nhận. Nếu không có event type, chưa nên tính chênh lệch gì cả."
+              },
+              {
+                "label": "Vì sao quan trọng?",
+                "reply": "Tính năng tracking dùng để hỗ trợ quyết định. Nếu đánh đồng ETA với actual, người xem sẽ tin sai rằng chuyến hàng đã đến."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "The truck may have arrived while its report is still travelling. Who is late: the truck or the data? Planned, ETA, actual and receipt are not four names for one timestamp.",
+            "actions": [
+              {
+                "label": "Where should I start?",
+                "reply": "Match each timestamp to an Arrival or Departure event, then label whether it is scheduled, predicted or observed before calculating delays."
+              },
+              {
+                "label": "Why does it matter?",
+                "reply": "Tracking informs decisions. Presenting a prediction as an occurrence can make users believe a shipment has already arrived."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "concept",
+          "quote_ids": [
+            "box-models",
+            "analects-think",
+            "hume-evidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> box-models, analects-think, hume-evidence; original source wording and translation signoff remains tracked separately.",
+          "vi": {
+            "prompt": "ETA 11:20 không có nghĩa hàng đã đến lúc 11:20. Lúc 09:00 nó mới là ước lượng; actual 11:45 xuất hiện sau đó là một bằng chứng khác.",
+            "actions": [
+              {
+                "label": "Lấy mốc nào so?",
+                "reply": "Muốn đo trễ thực so với kế hoạch, ghép actual Arrival với planned Arrival. Muốn đánh giá ETA, ghép actual với đúng phiên bản ETA đã phát trước đó."
+              },
+              {
+                "label": "Còn giờ nhận bản tin?",
+                "reply": "Giờ hệ thống nhận báo cáo có thể trễ hơn lúc xe đến. Đừng lấy ingestion timestamp thay thế event occurrence time nếu nguồn có cả hai."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "An ETA of 11:20 is not an arrival at 11:20. As of 09:00 it's only an estimate; an actual event reported later carries a different evidential status.",
+            "actions": [
+              {
+                "label": "Which times should I compare?",
+                "reply": "For realized delay, compare matching actual and planned arrivals. For forecast error, compare the actual against a particular earlier ETA snapshot."
+              },
+              {
+                "label": "And message receipt time?",
+                "reply": "A tracking system might receive the report after the shipment arrived. Do not substitute message ingestion time for event occurrence time."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "guided",
+          "quote_ids": [
+            "analects-practice",
+            "zhuangzi-craft",
+            "bacon-cause"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> analects-practice, zhuangzi-craft, bacon-cause; original source wording and translation signoff remains tracked separately.",
+          "vi": {
+            "prompt": "Ví dụ stop có ETA 09:10 nhưng chưa hề có actual. Người vận hành cần phân biệt 'dự kiến đến trễ' với 'đã đến trễ'. L2 tự chọn: T10 · Phân Giải Giới Vực: tách loại event, nguồn và vai trò từng timestamp trước khi phép trừ bắt đầu.",
+            "actions": [
+              {
+                "label": "Tại 07:10 viết sao?",
+                "reply": "Chỉ mô tả ETA mới nhất và độ lệch dự kiến so kế hoạch, kèm as-of và nguồn. Không dùng nhãn Arrived khi chưa có event xác nhận."
+              },
+              {
+                "label": "Nếu carrier im lặng?",
+                "reply": "Ghi chưa xác nhận, giờ ETA và giờ cập nhật gần nhất; hệ thống có thể quá hạn báo tin nhưng không được tự suy ra actual event."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "The guided stop has ETA 09:10, but no actual arrival. Help the operator distinguish 'expected late arrival' from 'confirmed late arrival'. Optional L2: T10 Decomposition: identify event type, source and timestamp roles before subtracting clock values.",
+            "actions": [
+              {
+                "label": "What can be shown at 07:10?",
+                "reply": "Describe the current ETA and predicted deviation from plan with its as-of time and source. Do not mark Arrived without confirmed event evidence."
+              },
+              {
+                "label": "What if no event comes?",
+                "reply": "Show the last estimate and unconfirmed status. A delayed report doesn't establish that a physical arrival occurred or failed."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "independent",
+          "quote_ids": [
+            "mencius-sources",
+            "analects-honesty",
+            "hume-evidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> mencius-sources, analects-honesty, hume-evidence; original source wording and translation signoff remains tracked separately.",
+          "vi": {
+            "prompt": "Bài tự làm lần này có cả Departure lẫn Arrival, thêm ETA snapshot và giờ nhận tin. Ngươi ghép đúng loại event trước, phép tính để ngươi tự làm. Khung tự làm: T10 yêu cầu ghép đúng Departure/Arrival, múi giờ và status, còn các độ lệch giờ ngươi tự tính; T06 giúp phân biệt ETA với actual.",
+            "actions": [
+              {
+                "label": "Bắt đầu lập bảng sao?",
+                "reply": "Lập riêng dòng Departure và Arrival, rồi chia planned, estimate as-of, actual event và report receipt vào các cột phù hợp. Không trừ hai sự kiện khác nhau."
+              },
+              {
+                "label": "Gặp chênh timezone?",
+                "reply": "Đổi các timestamp về cùng múi giờ và cùng ngày trước khi trừ. Nếu thiếu timezone, ghi không đủ dữ kiện thay vì tự đoán dấu trễ."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "The independent case mixes Departure, Arrival, an ETA snapshot and a delayed message receipt. Match event types first; the calculations are yours to perform. Independent method cue: T10 requires matching Departure/Arrival, time zones and status before calculation; T06 distinguishes ETA from actual, without giving away results.",
+            "actions": [
+              {
+                "label": "How do I structure this?",
+                "reply": "Make separate Departure and Arrival records, and classify planned, estimate as-of, actual occurrence and receipt timestamps before subtracting."
+              },
+              {
+                "label": "What about time zones?",
+                "reply": "Normalize event times to the same zone and day first. If zone information is missing, state the limitation instead of guessing a delay."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "reflection",
+          "quote_ids": [
+            "analects-honesty",
+            "darwin-confidence",
+            "box-models"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> analects-honesty, darwin-confidence, box-models; original source wording and translation signoff remains tracked separately.",
+          "vi": {
+            "prompt": "Giờ đã nộp rồi thì kiểm xem ngươi có trừ đúng Arrival với Arrival, và có lấy nhầm giờ bản tin đến hệ thống làm giờ xe thực tới không.",
+            "actions": [
+              {
+                "label": "Tự chấm phép tính?",
+                "reply": "Đối chiếu từng chênh lệch với event type, nguồn timestamp và múi giờ. Kết quả số đúng chỉ có ý nghĩa khi hai mốc đang nói cùng một sự kiện."
+              },
+              {
+                "label": "Kiểm tra status?",
+                "reply": "Tại thời điểm chỉ có ETA, màn hình được hiển thị dự đoán có thời điểm cập nhật, không được ghi actual hoặc hoàn tất."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Now that you've submitted, check whether you compared Arrival to Arrival and kept the message receipt time distinct from the physical event time.",
+            "actions": [
+              {
+                "label": "How should I self-rate?",
+                "reply": "Verify each difference against event type, time zone and timestamp provenance. Correct arithmetic with mismatched events is still incorrect reasoning."
+              },
+              {
+                "label": "How about status labels?",
+                "reply": "At a time when only ETA exists, a dashboard may show an as-of prediction but must not claim actual completion."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "extension",
+          "quote_ids": [
+            "bacon-studies",
+            "zhuangzi-limits",
+            "analects-review"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Candidate quote IDs:</b> bacon-studies, zhuangzi-limits, analects-review; original source wording and translation signoff remains tracked separately.",
+          "vi": {
+            "prompt": "Đọc Oracle để phân biệt event đã xảy ra và estimate chưa xảy ra. SAP Help chưa đọc được toàn văn thì lão cũng phải nhận là chưa đọc — chứ chém chức năng sản phẩm làm gì.",
+            "actions": [
+              {
+                "label": "Đọc theo thứ tự nào?",
+                "reply": "Đọc định nghĩa estimate-versus-actual trong Oracle Event Group, rồi xem agent variables tách planned arrival, estimate và event/receipt timestamps."
+              },
+              {
+                "label": "Luyện nhớ ra sao?",
+                "reply": "Đóng tài liệu, tự vẽ bảng bốn cột planned–ETA as-of–actual–received cho một sự kiện. Gắn nhãn chưa xác minh cho trường còn thiếu."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Use the readable Oracle event documentation to distinguish predictions from occurrences. The SAP Help page isn't fully accessible here, so don't invent SAP-specific behavior.",
+            "actions": [
+              {
+                "label": "What should I read first?",
+                "reply": "Start with Oracle Event Group estimated-versus-actual status, then Agent Variables for planned, ETA, actual-event and receipt fields."
+              },
+              {
+                "label": "How can I recall it?",
+                "reply": "Close the documentation and reconstruct four timestamp categories for one event, explicitly identifying any fields that remain unknown."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "technique": {
+      "primary": "L2-T10",
+      "status": "source_mapped_not_release_approved"
     }
   },
   "rights": {
@@ -151,7 +445,7 @@
     "sourceBodyCharacters": 33941
   },
   "normalization": {
-    "status": "needs_academic_rights_and_release_review",
+    "status": "structurally_mapped_needs_rights_review",
     "counts": {
       "vi": {
         "sections": 6,

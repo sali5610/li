@@ -37,12 +37,28 @@ createRoot(root).render(<AuthPanel onClose={closeAccount}/>);
  * the renderer also rejects non-reviewed or wrong-format content at runtime.
  */
 function enableIntegratedLessons(){
+ // New editorial routes have no legacy HTML page. Materialize their host only
+ // after manifest + catalog + published legacy route ALL authorize them.
+ // In particular L09-1-1 remains absent while its manuscript is a draft.
+ const editorialRouteMap:Record<string,string>=Object.create(null);
  for(const {id,route,slug} of releasedLessonRoutes){
   const renderer=id==='L09-1-2'?'l09':
    id==='L03-1-2'||id==='L15-2-2'?'wave1':'editorial';
-  const page=document.getElementById('page-'+route);
+  let page=document.getElementById('page-'+route);
+  if(renderer==='editorial'&&!page){
+   const main=document.getElementById('main');
+   if(!main)throw Error('EDITORIAL_INTEGRATED_MAIN_MISSING');
+   page=document.createElement('section');
+   page.id='page-'+route;page.className='page';page.tabIndex=-1;
+   const shell=document.createElement('div');
+   shell.className='section-shell';
+   const loading=document.createElement('h1');
+   loading.id=slug+'-title';loading.textContent='Đang tải bài học';
+   shell.append(loading);page.append(shell);main.append(page);
+  }
+  if(renderer==='editorial')editorialRouteMap[route]=id;
   const legacy=page?.querySelector<HTMLElement>(':scope > .section-shell');
-  if(!page||!legacy)continue;
+  if(!page||!legacy)throw Error('RELEASED_LESSON_ROUTE_HOST_MISSING '+id);
   let dispose:(()=>void)|null=null,host:HTMLElement|null=null;
   const ports=createStagingLearningPorts(id);
   const title=renderer==='l09'?'li-react-l09-title':'li-react-'+id+'-title';
@@ -74,6 +90,27 @@ function enableIntegratedLessons(){
   observer.observe(page,{attributes:true,attributeFilter:['class']});
   observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
   update();
+ }
+ // Native app URL sync consumes only this generated and release-verified map.
+ // An unapproved lesson ID is never made navigable by a query parameter.
+ (window as Window&{liReleasedEditorialRoutes?:Readonly<Record<string,string>>})
+  .liReleasedEditorialRoutes=Object.freeze({...editorialRouteMap});
+ const requested=new URLSearchParams(window.location.search).get('lesson');
+ const direct= releasedLessonRoutes.find(x=>x.id===requested&&!!editorialRouteMap[x.route]);
+ if(direct){
+  // Keep a signed-in deep link from silently sending its learner to Home.
+  // Do not override navigation the learner already performed while signing in.
+  const openRequested=()=>{
+   if(!document.documentElement.classList.contains('li-auth-verified')||
+    !document.getElementById('page-home')?.classList.contains('active'))return;
+   const app=window as Window&{navigate?:(route:string)=>void};
+   if(typeof app.navigate!=='function')return;
+   app.navigate(direct.route);
+   watcher.disconnect();
+  };
+  const watcher=new MutationObserver(openRequested);
+  watcher.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+  openRequested();
  }
 }
 if(document.readyState==='loading')

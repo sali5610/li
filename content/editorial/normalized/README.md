@@ -4,7 +4,7 @@
 
 - Source originals remain exclusively under [../imported/](../imported/). This is a **derived migration view**, not a second authoring CMS. Never edit Notion or manipulate generated public `site/content-packs` files.
 - Current runtime renderer demands `editorial-structured-v1` with approved metadata. These new files use `editorial-sectioned-draft-v1`, and deliberately sit outside `content/lessons/`: **React cannot publish them until the missing interaction/source/rights gates are fulfilled**.
-- Two manuscripts have literal `undefined` in authored Lão Lý source replies: `L09-2-1` and `L09-3-1`. Correct these **on GitHub** after content review; never show `undefined` to a learner. Other files are only *structurally parsed*, not academically or legally approved.
+- Earlier import checks misclassified L09-2-1: the word “undefined” correctly describes P(A|B) with P(B)=0. Only L09-3-1 had two missing Lão Lý replies; they are now completed in the authoritative GitHub imported source and derived draft.
 - Source text can include editorial keys, quotes and references. Not all external citations and illustrations are cleared for redistribution. Don't expose imported source, keys, or normalized drafts in the released lesson pack.
 - 8 noncanonical research drafts retain their distinct source identities under `../imported/`; do not assign legacy lesson IDs without PO curriculum mapping. 114/135 old outline entries have no identified complete body.
 - <code>index.v1.json</code> is the honest per-lesson status list. User attempts/progress remain in Neon/Dexie; **no database migration or deployment** happened here.

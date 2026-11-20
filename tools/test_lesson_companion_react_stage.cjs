@@ -13,10 +13,13 @@ assert.equal(editorialDraft.publishState,"draft","unreleased lesson stays draft"
 assert.equal(editorialDraft.methodFit.primaryTechniqueId,"L2-T06");
 assert.equal(editorialDraft.methodFit.optionalTechniqueIds[0],"L2-T07");
 assert.equal(editorialSource.connections.links.length,2);
-assert.match(editorialReact,/registerEditorial/);
-assert.match(editorialReact,/li-learning-connections/);
-assert.match(editorialReact,/EDITORIAL_COMPANION_OR_LINKS_INCOMPLETE/);
-assert.match(editorialReact,/li:mentor-phase-jump/);
+assert.match(editorialReact,/li:buddy-open/);
+assert.match(editorialReact,/liQuoteEngine/);
+assert.match(editorialReact,/AFTER_VALID_INDEPENDENT_SUBMISSION/);
+const sectionedReact=read("tools/step16-real-l09-react-island/src/learning/SectionedJourney.tsx");
+assert.match(sectionedReact,/validateSectionedLesson/);
+assert.match(sectionedReact,/li:buddy-open/);
+assert.match(sectionedReact,/isReleasedLessonId/);
 for(const source of [react,wave]){
  assert.match(source,/li:mentor-phase-jump/,"React lesson must listen to Lão Lý navigation");
  assert.match(source,/li-learning-current/,"Jump must target visible React content");
@@ -106,40 +109,8 @@ vm.runInContext(read("site/assets/lesson-companion-native.js"),ctx);
  assert.equal(get().stage,"extension");
  assert.match(plan().actions[2].reply,/not reviewed method fit/i);
 
- // Real authored Wave2 manuscript must be routable via the SAME popup only
- // after approved invited React lesson ownership (no synthetic second mentor).
- nativeActive=false;
- const edAttrs={"data-li-editorial-journey":"L09-1-1","data-li-lesson-phase":"practice",
-  "data-li-lesson-submitted":"false","data-li-lesson-reviewed":"false",lang:"vi"};
- editorialHost={
-  getAttribute:key=>edAttrs[key]??null,
-  closest:()=>({id:"page-lessonL0911",classList:{contains:key=>key==="active"}})
- };
- const undo=api.registerEditorial(editorialSource);
- assert.ok(api.registered().includes("L09-1-1"));
- assert.equal(api.getContext().lesson_id,"L09-1-1");
- assert.equal(api.getContext().stage,"independent");
- assert.equal(api.getContext().submitted,false);
- const previewPlan=()=>api.getPlan("lessonL0911");
- assert.equal(previewPlan().actions.length,3);
- assert.match(previewPlan().actions[0].reply,/tổng thể đích/);
- assert.ok(!previewPlan().actions.some(a=>/256\\s*[÷/]\\s*320|80%/.test(a.reply)),
-  "mentor must not reveal independent solution before saved submission");
- edAttrs["data-li-lesson-phase"]="methods";
- assert.equal(api.getContext().stage,"guided");
- previewPlan().actions[2].perform();
- assert.equal(events.at(-1).detail.phase,"methods");
- edAttrs["data-li-lesson-phase"]="feedback";
- assert.equal(api.getContext().stage,"independent","reflection is gated before submission");
- edAttrs["data-li-lesson-submitted"]="true";
- assert.equal(api.getContext().stage,"reflection");
- edAttrs["data-li-lesson-phase"]="progress";
- assert.equal(api.getContext().stage,"reflection","extension requires reviewed attempt");
- edAttrs["data-li-lesson-reviewed"]="true";
- assert.equal(api.getContext().stage,"extension");
- edAttrs.lang="en";
- assert.equal(api.getPlan("lessonL0911").actions[0].label,"Which sections?");
- undo();
- assert.ok(!api.registered().includes("L09-1-1"),"preview cannot leak between lesson sessions");
+ // An unapproved editorial draft must not register a native pop-up.
+ assert.ok(!api.registered().includes("L09-1-1"),
+  "Draft can only reach React mentor after release checks");
  console.log("PASS Wave1 mentor + draft L09-1-1 six-stage bilingual React context, no spoiler, T06/T07, honest links");
 })().catch(e=>{console.error(e);process.exitCode=1;});

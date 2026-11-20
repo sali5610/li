@@ -58,7 +58,43 @@
             "heading": "6 · Đọc sâu và tự kiểm tra",
             "body_md": "- [NN/g Taxonomy 101](https://www.nngroup.com/articles/taxonomy-101/) — intro + core; từ khóa <code>controlled vocabulary</code>, <code>navigation vs taxonomy</code>, <code>faceted classification</code>.\n- [Canada.ca Organizing Content](https://design.canada.ca/specifications/information-findability/organizing-content.html) — applied task findability; đọc phần theme navigation / content types.\n- <b>Copy prompt:</b> “Tôi đang học li. L03-2-1. Hãy mở đúng URL được chọn; chỉ tóm tắt phần nguồn truy cập được về taxonomy, hierarchy và navigation, ghi URL cho từng ý; tách dữ kiện nguồn với diễn giải riêng; cho một case độc lập khác và 3 câu active recall chưa hiện đáp án. Nếu không truy cập được, nói rõ.”\n- <b>Active recall chưa hiện đáp án:</b> (1) Vì sao taxonomy có thể chi tiết hơn navigation? (2) ID canonical giúp giải quyết loại trùng lặp nào? (3) Bằng chứng nào cần trước khi tuyên bố menu mới giúp người dùng tìm nhanh hơn?\n\n<b>Figure specification / editorial rights:</b> original explanatory two-lane diagram “backstage canonical terms and synonyms → content records” versus “frontstage task navigation + search → same record”, no copied NN/g diagram. Textual table above is fallback; image authoring/real device rights QA remain OPEN."
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Xây tối đa <b>4 canonical topic IDs</b>, preferred labels và ít nhất 2 aliases; phân biệt nhãn với <b>content type</b>.",
+            "Gắn R1–R6 vào topics; biện minh trường hợp cần <b>nhiều tag</b> (ví dụ R6 có nhiều ngữ cảnh).",
+            "Đề xuất <b>hai lối menu hiển thị</b> theo tác vụ tìm tài liệu, khác với taxonomy hậu trường; nêu giới hạn giả thuyết.",
+            "Thiết kế <b>một phép kiểm chứng</b> (tác vụ tìm thông tin, tiêu chí thành công và đối tượng thử) và nêu điều gì chưa thể kết luận."
+          ],
+          "rubricCriteria": [
+            [
+              "IDs/labels/aliases không trộn khái niệm",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "mapping R1–R6 và multi-tag có lý do",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "tách menu theo tác vụ khỏi taxonomy và content type",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "phép thử có nhiệm vụ, quan sát, ranh giới suy luận",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       },
       "en": {
         "intro_md": "<b>“One article can carry three topic labels without needing three places in the menu.”</b>\n\nImagine a fictional guide about renewing a library card. Its backstage metadata may include Membership, Library Services and Deadlines, while a visitor finds it through a single clear task link, “Renew your card.” <b>The reversal:</b> how content is classified and how people navigate to it are related but not identical. [NN/g — Taxonomy 101](https://www.nngroup.com/articles/taxonomy-101/).",
@@ -110,7 +146,43 @@
             "heading": "6 · Sources and further learning",
             "body_md": "- [NN/g Taxonomy 101](https://www.nngroup.com/articles/taxonomy-101/) — controlled vocabulary, taxonomy/navigation relationships and facets.\n- [Canada.ca Organizing Content](https://design.canada.ca/specifications/information-findability/organizing-content.html) — task-facing navigation versus institution-centred organization.\n- <b>Source-aware copy prompt:</b> “I study li. L03-2-1. Open the exact selected source URL and summarize only inspected claims about taxonomy, hierarchy, navigation and content models with links. Clearly separate the source from original inference. Give a distinct hypothetical exercise and three unrevealed recall questions. If inaccessible, say so and ask for a lawful excerpt.”\n- <b>Unanswered active recall:</b> (1) Why might a taxonomy be more granular than navigation? (2) What duplication does a canonical concept ID prevent? (3) What evidence would justify claiming one menu organization improves findability?\n\n<b>Media contract:</b> author-original “backstage controlled term + synonym → shared content record” versus “frontstage navigation/search → same record” conceptual diagram. No copied NN/g or [Canada.ca](http://Canada.ca) figure. Current instructional table remains the complete accessible fallback; rights and real mobile QA remain OPEN."
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Propose up to <b>four canonical topic IDs</b> with preferred labels and at least two aliases; distinguish these from <b>content types</b>.",
+            "Assign R1–R6 to topic IDs, and justify any <b>multiple tags</b> on one document.",
+            "Propose <b>two visible task-oriented menu paths</b> rather than showing the internal taxonomy verbatim; label your assumptions.",
+            "Specify <b>one test</b> with a user task, a criterion for success and a suitable participant group, then say what cannot yet be concluded."
+          ],
+          "rubricCriteria": [
+            [
+              "IDs/labels/aliases distinct from duplicated concepts",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "complete R1–R6 mapping with defensible multi-tag use",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "visible task navigation clearly separated from taxonomy and content type",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "concrete test with evidence limits",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       }
     },
     "companion": {
@@ -146,7 +218,229 @@
           "source_md": "<b>Primary quote:</b> <code>analects-peers</code>; alternatives <code>bacon-studies</code>, <code>mill-other-side</code>. <b>Relevance:</b> learning from varied perspectives is a bounded analogy for testing IA with people who use different vocabulary; its linked Wikisource chapter numbering requires the documented 7.21 edition-specific caveat.\n\n<b>VI · Lão Lý:</b> “Đào sâu đi: cùng một thư viện, người mới và thủ thư nhìn ra hai bản đồ khác nhau.”\n\n- <b>“Đọc nguồn nào trước?”</b> → “Đọc NN/g để phân biệt taxonomy–navigation; sau đó xem [Canada.ca](http://Canada.ca) vì sao lối tìm theo tác vụ lại quan trọng.”\n- <b>“Tự tạo câu hỏi gì?”</b> → “Thử yêu cầu hai nhóm người dùng tìm cùng tài liệu; ghi cả đường chọn và nơi họ lạc, đừng chỉ hỏi họ thích menu không.”\n\n<b>EN · Lão Lý:</b> “The same library can look like two different maps to a newcomer and to a librarian.”\n\n- <b>“What should I read first?”</b> → “Use NN/g for taxonomy/navigation distinctions and [Canada.ca](http://Canada.ca) for task-first findability.”\n- <b>“Next field test?”</b> → “Give two user groups a genuine retrieval task; observe paths and failure points rather than asking which menu looks nicer.”\n\n<b>QA metadata:</b> VI/EN variants share IDs and facts; answer/rubric exist above for editorial review only and must be hidden before valid submission in future runtime. 6 stages × 2 locale actions×2 replies, 3 quote candidates each stage; source exactness/rights G2/G3/QA28 and physical iPhone/VoiceOver OPEN. No web deployment."
         }
       ],
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "structuredMoments": [
+        {
+          "stage": "opening",
+          "quote_ids": [
+            "analects-others",
+            "mill-other-side",
+            "analects-peers"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary quote:</b> <code>analects-others</code>; alternatives <code>mill-other-side</code>, <code>analects-peers</code>. <b>Relevance:</b> self-checking one's organizing habit and comparing others' perspectives is a reflective analogy for studying real user terms; Confucius did not teach digital taxonomy.",
+          "vi": {
+            "prompt": "Một bài có ba tag, ngươi liền muốn mọc thêm ba menu? Bình tĩnh, từ phân loại tới đường đi là hai chuyện.",
+            "actions": [
+              {
+                "label": "Khác nhau chỗ nào?",
+                "reply": "Tag giúp hệ thống hiểu và tìm nội dung; menu là các ngả người đọc thực sự nhìn thấy. Có thể liên quan nhưng không đồng nhất."
+              },
+              {
+                "label": "Ví dụ một trang?",
+                "reply": "Một hướng dẫn gia hạn thẻ có nhiều chủ đề, nhưng người đọc chỉ cần các lối tìm hữu ích, không cần bản sao lặp."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Three tags on one article and suddenly you want three menus? Classification and a route are different.",
+            "actions": [
+              {
+                "label": "What changes?",
+                "reply": "Metadata supports retrieval and relationships; navigation is the path exposed to people. They may align without being identical."
+              },
+              {
+                "label": "Single-record example?",
+                "reply": "The same renewal guide can be found through search, a task link and an FAQ without duplicate content."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "concept",
+          "quote_ids": [
+            "bacon-studies",
+            "analects-think",
+            "mencius-sources"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary quote:</b> <code>bacon-studies</code>; alternatives <code>analects-think</code>, <code>mencius-sources</code>. <b>Relevance:</b> reading-discussion-writing is an analogy for articulating distinctions accurately, not a source defining content models.",
+          "vi": {
+            "prompt": "Đừng bắt canonical ID đóng vai cái biển hiệu. Một cái giữ nghĩa, một cái giao tiếp với người.",
+            "actions": [
+              {
+                "label": "ID ổn định để làm gì?",
+                "reply": "Một nghĩa có thể đổi tên theo ngôn ngữ hoặc từ đồng nghĩa mà vẫn trỏ về cùng concept."
+              },
+              {
+                "label": "Hierarchy có phải menu?",
+                "reply": "Quan hệ cha–con có thể tổ chức thuật ngữ nội bộ; menu chỉ phơi ra những lối đi được lựa chọn."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Do not ask an internal concept ID to impersonate a signpost.",
+            "actions": [
+              {
+                "label": "Why stable IDs?",
+                "reply": "Several localized labels and synonyms can refer to one stable meaning."
+              },
+              {
+                "label": "Is every hierarchy a menu?",
+                "reply": "A hierarchy is a relation; navigation selectively displays routes through part of the information space."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "guided",
+          "quote_ids": [
+            "zhuangzi-craft",
+            "laozi-begin",
+            "analects-practice"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary quote:</b> <code>zhuangzi-craft</code>; alternatives <code>laozi-begin</code>, <code>analects-practice</code>. <b>Relevance:</b> the Cook Ding analogy emphasizes understanding structure before manipulating the visible interface; this is illustrative philosophy, not formal IA evidence.",
+          "vi": {
+            "prompt": "Bài nhập CSV là guide hay topic hay nút menu? Chọn theo chức năng, không theo vẻ ngoài.",
+            "actions": [
+              {
+                "label": "Bắt đầu T06 sao?",
+                "reply": "Đặt cạnh nhau: đối tượng nội dung, topic ID và đường click. Mỗi thứ trả lời một câu hỏi khác."
+              },
+              {
+                "label": "Vì sao cần hỏi user?",
+                "reply": "Nhãn nội bộ ‘Data Engineering’ có thể xa lạ với người chỉ muốn nhập một file. Kiểm tra từ ngữ và tác vụ."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Is Import CSV a guide, a topic or a button? Look at its job, not its label.",
+            "actions": [
+              {
+                "label": "How do I use T06?",
+                "reply": "Compare content type, canonical topic and clickable destination side by side; identify the diagnostic cue."
+              },
+              {
+                "label": "Why user research?",
+                "reply": "An internal Data Engineering label may not fit someone trying to upload a file. Test vocabulary and tasks."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "independent",
+          "quote_ids": [
+            "mencius-sources",
+            "hume-evidence",
+            "analects-honesty"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary quote:</b> <code>mencius-sources</code>; alternatives <code>hume-evidence</code>, <code>analects-honesty</code>. <b>Relevance:</b> source skepticism parallels refusing to call an untested taxonomy ‘validated’. <b>Strict:</b> no canonical IDs, R1–R6 mapping or model menu solution before submission.",
+          "vi": {
+            "prompt": "Sáu tài liệu chưa đủ thành chân lý phân loại, nhưng đủ để ngươi đề xuất một giả thuyết kiểm được.",
+            "actions": [
+              {
+                "label": "Đề bắt phân biệt gì?",
+                "reply": "Phân biệt topic, content type, alias và menu. Chỉ giải thích cách tự kiểm, không đưa mapping."
+              },
+              {
+                "label": "Nếu có 2 cách hợp lý?",
+                "reply": "Nêu tiêu chí và phép thử phân biệt chúng; trước dữ liệu thật đừng tự phong cách nào là tối ưu."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Six documents do not certify the One True Taxonomy. They do let you propose a testable structure.",
+            "actions": [
+              {
+                "label": "What must I separate?",
+                "reply": "Keep topic, content type, synonym and navigation distinct. I will not map the assessed records for you."
+              },
+              {
+                "label": "If two structures seem valid?",
+                "reply": "State a decision criterion and a task test; avoid declaring a winner without evidence."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "reflection",
+          "quote_ids": [
+            "analects-honesty",
+            "zhuangzi-limits",
+            "analects-review"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary quote:</b> <code>analects-honesty</code>; alternatives <code>zhuangzi-limits</code>, <code>analects-review</code>. <b>Relevance:</b> acknowledging uncertainty parallels honest limits of small invented information sets. <b>Unlock only after independent submission.</b>",
+          "vi": {
+            "prompt": "Đã nộp rồi thì giờ soi: mục nào là lựa chọn của ngươi, mục nào thật sự có bằng chứng?",
+            "actions": [
+              {
+                "label": "Tự chấm theo gì?",
+                "reply": "Bốn tiêu chí: canonical IDs, mapping, menu theo tác vụ và kiểm nghiệm. Cái nào chỉ là giả định thì ghi giả định."
+              },
+              {
+                "label": "Sai ở đâu hay gặp?",
+                "reply": "Tạo 2 ID cho cùng nghĩa, hoặc lấy tên phòng ban làm menu mà chưa kiểm tra người dùng."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "You submitted. Now separate your design decisions from evidence that actually exists.",
+            "actions": [
+              {
+                "label": "How do I self-check?",
+                "reply": "Check concept identity, document mapping, task navigation and test design separately."
+              },
+              {
+                "label": "Typical mistake?",
+                "reply": "Duplicating a concept by synonym, or turning department structure into navigation without validation."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "extension",
+          "quote_ids": [
+            "analects-peers",
+            "bacon-studies",
+            "mill-other-side"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary quote:</b> <code>analects-peers</code>; alternatives <code>bacon-studies</code>, <code>mill-other-side</code>. <b>Relevance:</b> learning from varied perspectives is a bounded analogy for testing IA with people who use different vocabulary; its linked Wikisource chapter numbering requires the documented 7.21 edition-specific caveat.",
+          "vi": {
+            "prompt": "Đào sâu đi: cùng một thư viện, người mới và thủ thư nhìn ra hai bản đồ khác nhau.",
+            "actions": [
+              {
+                "label": "Đọc nguồn nào trước?",
+                "reply": "Đọc NN/g để phân biệt taxonomy–navigation; sau đó xem [Canada.ca](http://Canada.ca) vì sao lối tìm theo tác vụ lại quan trọng."
+              },
+              {
+                "label": "Tự tạo câu hỏi gì?",
+                "reply": "Thử yêu cầu hai nhóm người dùng tìm cùng tài liệu; ghi cả đường chọn và nơi họ lạc, đừng chỉ hỏi họ thích menu không."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "The same library can look like two different maps to a newcomer and to a librarian.",
+            "actions": [
+              {
+                "label": "What should I read first?",
+                "reply": "Use NN/g for taxonomy/navigation distinctions and [Canada.ca](http://Canada.ca) for task-first findability."
+              },
+              {
+                "label": "Next field test?",
+                "reply": "Give two user groups a genuine retrieval task; observe paths and failure points rather than asking which menu looks nicer."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "technique": {
+      "primary": "L2-T06",
+      "status": "source_mapped_not_release_approved"
     }
   },
   "rights": {
@@ -163,7 +457,7 @@
     "sourceBodyCharacters": 26258
   },
   "normalization": {
-    "status": "sectioned_needs_academic_rights_and_release_review",
+    "status": "structurally_mapped_needs_rights_review",
     "counts": {
       "vi": {
         "chapters": 7,

@@ -21,7 +21,8 @@ for(const x of [
  'buddy-quote-translation','buddy-quote-info','buddy-quote','buddy-quote-gloss',
  'buddy-quote-meta','buddy-quote-link','buddy-quote-context','buddy-debate'
 ])assert.ok(dialog.includes(x),'Missing original popup element: '+x);
-assert.match(dialog,/view\.labels\.map/,'All 3 contextual actions must be shown');
+assert.match(dialog,/view\.editorial\?view\.editorial\.actions\.map\(action=>action\.label\):view\.labels/,
+ 'All 3 native Lão Lý actions remain available, with exactly 2 per editorial stage');
 assert.match(dialog,/liBuddyEngine\?\.choose\(index\)/,
  'React actions must use the real contextual engine, not hardcoded replies');
 assert.match(dialog,/aria-expanded=\{expanded\}/,'Source details must disclose interactively');
@@ -40,7 +41,8 @@ assert.match(plans,/localizePlan\(getBuddyPlan\(\)\)/);
 assert.match(plans,/item\.perform\(\)/,'Original side effects and navigation persist');
 assert.match(plans,/li:buddy-open/);
 assert.match(page,/li:buddy-close/);
-assert.match(quotes,/window\.liQuoteEngine=\{quotes:QUOTES,environment,matchList,pick,getView,render\}/);
+assert.match(quotes,/window\.liQuoteEngine=\{quotes:QUOTES,environment,matchList,pick,getView,render,lookup\}/,
+ 'Read-only lesson quote lookup preserves the original quote engine and rotation');
 assert.match(quotes,/sessionStorage/,'Quote rotation persists per session');
 assert.match(quotes,/QUOTES_EN/,'Bilingual quote metadata persists');
 assert.match(drag,/li\.companion\.position\.v1/);

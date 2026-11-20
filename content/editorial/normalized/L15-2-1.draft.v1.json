@@ -58,7 +58,43 @@
             "body_md": "| Tiêu chí | 0 | 1 | 2 |\n| --- | --- | --- | --- |\n| Baseline và phạm vi | Sai phép tính hoặc kỳ | Đúng số nhưng thiếu đơn vị/giả định | 55 bộ/tuần + kỳ + giả định |\n| Sai số | Sai dấu/số | Một phần đúng | +18 signed, 18 absolute, diễn giải đúng |\n| Dữ liệu và stockout | Sales = demand mọi lúc | Nhận ra có rủi ro nhưng không nêu cách kiểm | Giải thích censored sales và dữ liệu cần đối chiếu |\n| Kết luận có điều kiện | Khẳng định mô hình tối ưu | Cảnh báo chung chung | Nêu cải tiến và ≥2 giới hạn không thể suy |\n\nKhông auto-grade hay giả làm forecast engine vận hành thật. Assistance/independent attempts được ghi riêng. Không đẩy bài lên production trước domain QA.",
             "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Tính forecast baseline tuần 5 theo đúng quy tắc; nêu đơn vị, kỳ dự báo và một giả định.",
+            "Tính <b>signed error = actual − forecast</b> và absolute error; giải thích ý nghĩa dấu sai số.",
+            "Nếu <b>tuần 2 từng hết hàng</b> và dữ liệu “55” vốn chỉ là số bán được, lịch sử có thể gây lệch thế nào khi dùng làm demand? Điều gì cần tìm hiểu trước khi sửa dữ liệu?",
+            "Đề xuất một cách cải thiện quá trình dự báo (khuyến mãi/mùa vụ/thời điểm kiểm thử…) và nói rõ <b>hai điều chưa thể kết luận</b> chỉ từ một lần dự báo."
+          ],
+          "rubricCriteria": [
+            [
+              "Baseline và phạm vi",
+              "Sai phép tính hoặc kỳ",
+              "Đúng số nhưng thiếu đơn vị/giả định",
+              "55 bộ/tuần + kỳ + giả định"
+            ],
+            [
+              "Sai số",
+              "Sai dấu/số",
+              "Một phần đúng",
+              "+18 signed, 18 absolute, diễn giải đúng"
+            ],
+            [
+              "Dữ liệu và stockout",
+              "Sales = demand mọi lúc",
+              "Nhận ra có rủi ro nhưng không nêu cách kiểm",
+              "Giải thích censored sales và dữ liệu cần đối chiếu"
+            ],
+            [
+              "Kết luận có điều kiện",
+              "Khẳng định mô hình tối ưu",
+              "Cảnh báo chung chung",
+              "Nêu cải tiến và ≥2 giới hạn không thể suy"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       },
       "en": {
         "intro_md": "<b>“Selling zero units does not mean nobody wanted to buy.”</b>\n\nImagine a store with empty shelves and no record of unfilled requests. Recorded sales can be zero while customers still want the product. This is a <b>teaching counterexample</b>, not a description of the lesson's four-week dataset. Using sales as demand without checking stockouts can teach a forecast about limited availability instead of true demand.\n\n<i>The reversal:</i> recorded sales measure fulfilled transactions; demand and its observation process need their own definition. [IBM — Demand Planning](https://www.ibm.com/think/topics/demand-planning) (background for demand planning; the stockout scenario is an authored illustration).",
@@ -104,7 +140,43 @@
             "body_md": "0/1/2 for each: correct forecast with unit/horizon/assumption; signed and absolute errors with sign meaning; stockout-censored sales versus demand and evidence to verify; suitable improvement plus at least two unsupported conclusions identified. Do not treat this as validated domain competence or an automatic AI grade.",
             "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Calculate the baseline with its unit, horizon and one assumption.",
+            "Calculate signed error <b>Actual − Forecast</b> and absolute error, interpreting the sign.",
+            "Imagine week 2 had a stockout and “55” were only fulfilled sales. How could that bias an attempted demand series? What evidence would you check before correcting values?",
+            "Suggest one forecast-process improvement and name two conclusions you cannot legitimately draw from this single validation period."
+          ],
+          "rubricCriteria": [
+            [
+              "correct forecast with unit/horizon/assumption",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "signed and absolute errors with sign meaning",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "stockout-censored sales versus demand and evidence to verify",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "suitable improvement plus at least two unsupported conclusions identified. Do not treat this as validated domain competence or an automatic AI grade",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       }
     },
     "companion": {
@@ -140,7 +212,229 @@
           "source_md": "<b>Primary quote candidate:</b> bacon-studies; alternative quote IDs: zhuangzi-limits, zhuangzi-craft. Checking the model assumptions in official statistics and operations sources is central to responsible forecasting practice.\n\n<b>VI · Đào sâu thời gian:</b> Đọc IBM về demand planning rồi NIST về chuỗi thời gian. Mỗi nguồn có phạm vi của nó, đừng dùng một đoạn giới thiệu để chứng nhận thuật toán tối ưu. <b>Bình:</b> Từ baseline đơn giản mới có đường tới các mô hình phức tạp; mỗi bước cần dữ liệu, đánh giá và giới hạn riêng.\n\n- <b>Đọc gì trước?</b> Bắt đầu từ quy trình demand planning và dữ liệu lịch sử; sau đó xem NIST nói về trend, seasonality và cấu trúc thời gian.\n- <b>Nhớ bằng cách nào?</b> Đóng tài liệu rồi tự mô tả một biến cố làm dữ liệu doanh số không phản ánh nhu cầu thực, và cách ghi ngoại lệ đó.\n\n<b>EN · Read beyond averages:</b> Read IBM on demand planning and NIST on time-series structure. A short introduction is not a warranty for an optimal algorithm. <b>Comment:</b> A simple baseline is a starting point; more advanced models need evidence about when they outperform it.\n\n- <b>What order to read?</b> Begin with demand-planning inputs and history, then NIST on time-series structure, trend and seasonality.\n- <b>How do I remember?</b> Close the sources and explain one event that makes observed sales an unreliable demand proxy, and how to record that exception."
         }
       ],
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "structuredMoments": [
+        {
+          "stage": "opening",
+          "quote_ids": [
+            "zhuangzi-craft",
+            "box-models",
+            "bacon-cause"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary quote candidate:</b> zhuangzi-craft; alternative quote IDs: box-models, bacon-cause. A forecasting process only works when assumptions and what is being predicted are known.",
+          "vi": {
+            "prompt": "Hôm nay bán được 0 món. Khách không muốn mua, hay kho hết hàng từ sáng? Hai câu chuyện khác nhau một trời một vực đấy. Trước khi dự báo, xác định mình đang đo sales hay demand.",
+            "actions": [
+              {
+                "label": "Chọn đơn vị nào?",
+                "reply": "Phải nói rõ đơn vị nhu cầu, thời gian, nhóm sản phẩm và kỳ dự báo trước khi cộng trừ dữ liệu để lập kế hoạch."
+              },
+              {
+                "label": "Forecast có chắc không?",
+                "reply": "Dự báo có bất định; càng xa kỳ đã quan sát, độ tin cậy càng phụ thuộc dữ liệu, sự ổn định của bối cảnh và mô hình."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Zero sales today: no demand, or the shelves were empty all day? Those are very different stories. Before forecasting, establish what your data measure.",
+            "actions": [
+              {
+                "label": "Which units matter?",
+                "reply": "Specify product or segment, unit of demand, observation interval and forecast horizon before computing a baseline."
+              },
+              {
+                "label": "Is it certain?",
+                "reply": "Forecasts are uncertain; reliability depends on data, horizon, changing circumstances and the model's assumptions."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "concept",
+          "quote_ids": [
+            "box-models",
+            "bacon-cause",
+            "zhuangzi-craft"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary quote candidate:</b> box-models; alternative quote IDs: bacon-cause, zhuangzi-craft. Box's models warning fits the difference between a simple rolling baseline and real demand under promotions or stockouts.",
+          "vi": {
+            "prompt": "Trung bình bốn tuần có thể làm baseline. Nhưng tuần tới có khuyến mãi mà ngươi cứ lấy số cũ thì kho cũng muốn khóc. Bình: Con số dự báo phải đi kèm nguồn số liệu, giả định và điều kiện khiến dự báo có thể lệch.",
+            "actions": [
+              {
+                "label": "Cần kiểm tra gì?",
+                "reply": "Xem các tuần trước có hết hàng, chương trình giảm giá, mùa vụ hoặc thay đổi sản phẩm không; lịch sử bán chưa chắc đúng nhu cầu thật."
+              },
+              {
+                "label": "Error tính thế nào?",
+                "reply": "Chốt quy ước signed error = actual − forecast, rồi mới gọi sai lệch dương là dự báo thấp hơn thực tế."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "A four-week average makes a baseline, but if next week is a promotion, blindly repeating history can mislead your inventory plan. Comment: Every forecast needs a time horizon, measurement definition, assumptions and a plan to review errors.",
+            "actions": [
+              {
+                "label": "What should I inspect?",
+                "reply": "Check for stockouts, promotions, recurring seasonal effects and changes in the products or customers behind historical sales."
+              },
+              {
+                "label": "How do I define error?",
+                "reply": "State signed error as actual minus forecast. A positive result then means actual demand exceeded the forecast."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "guided",
+          "quote_ids": [
+            "analects-practice",
+            "zhuangzi-craft",
+            "box-models"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary quote candidate:</b> analects-practice; alternative quote IDs: zhuangzi-craft, box-models. Worked arithmetic should focus on what a calculated mean implies and what it cannot guarantee.",
+          "vi": {
+            "prompt": "Dữ liệu ba tuần hướng dẫn đã có trên bàn. Ngươi tính trung bình được rồi, nhưng có biết nó đang giả định điều gì không? Bình: Một trung bình đơn giản không tự nhận biết sale, nghỉ lễ hay cú sốc bất ngờ. L2 tự chọn: T03 · Minh Mẫu Tiệm Ẩn: từ phép tính mẫu đầy đủ, tự điền bước còn thiếu ở micropractice mới rồi đối chiếu sau lượt luyện.",
+            "actions": [
+              {
+                "label": "Tại sao chia ba?",
+                "reply": "Vì ví dụ dùng trung bình số học của ba tuần đã quan sát để tạo dự báo baseline tuần kế tiếp; nó chỉ là lựa chọn minh họa."
+              },
+              {
+                "label": "Chỗ nào cần cảnh giác?",
+                "reply": "Nếu các tuần không so sánh được hoặc một tuần thiếu hàng, trung bình lịch sử có thể bỏ qua nhu cầu chưa được ghi nhận."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "The three guided weeks are in front of you. You can average them, but can you explain which assumptions that average makes? Comment: A simple average cannot automatically detect promotions, holidays or sudden demand changes. Optional L2: T03 Worked Examples & Guidance Fading: move from the solved baseline to a new partly completed calculation and review it only after attempting.",
+            "actions": [
+              {
+                "label": "Why divide by three?",
+                "reply": "The worked example uses the arithmetic average of three observed weeks as a deliberately simple next-week baseline."
+              },
+              {
+                "label": "What should I question?",
+                "reply": "If weeks are not comparable or sales were censored by stockouts, historical averages may miss unobserved demand."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "independent",
+          "quote_ids": [
+            "mencius-sources",
+            "bacon-cause",
+            "box-models"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary quote candidate:</b> mencius-sources; alternative quote IDs: bacon-cause, box-models. A critical method check supports independent forecasting without leaking the week's numerical forecast or error.",
+          "vi": {
+            "prompt": "Bốn tuần số liệu để ngươi tự tính. Lão sẽ không đọc sẵn baseline hay sai số; chỉ nhắc ngươi ghi rõ công thức và đơn vị. Bình: Bài kiểm tra xem ngươi hiểu giả định, không phải chỉ bấm máy tính giỏi. Khung tự làm: T10 · Phân Giải Giới Vực có thể nhắc ngươi kiểm tra dữ liệu đầu vào, giả định, kỳ dự báo và cạnh biên; không hé baseline của bài đánh giá.",
+            "actions": [
+              {
+                "label": "Bắt đầu bằng gì?",
+                "reply": "Hãy viết rõ khoảng thời gian quan sát, kỳ cần dự báo và cách tạo baseline trước khi kiểm tra điều gì có thể thay đổi."
+              },
+              {
+                "label": "Lúc nào chưa thể kết luận?",
+                "reply": "Nếu chỉ có một lần đối chiếu dự báo với thực tế, đừng tự kết luận mô hình chắc chắn tốt hoặc xấu ở mọi tuần sau."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Four weeks of numbers are yours to analyze. I won't give the baseline or forecast error before you submit. Comment: This exercise tests assumptions as well as arithmetic, not just calculator speed. Independent method cue: T10 Decomposition can help check input type, assumptions, forecast horizon and edge cases; the independent baseline remains yours to calculate.",
+            "actions": [
+              {
+                "label": "How to begin?",
+                "reply": "Specify the observation window, forecast horizon and the chosen baseline rule before discussing potential changes."
+              },
+              {
+                "label": "What can't I conclude?",
+                "reply": "One forecast-versus-actual comparison cannot establish a model's reliable long-term performance."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "reflection",
+          "quote_ids": [
+            "analects-honesty",
+            "darwin-confidence",
+            "box-models"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary quote candidate:</b> analects-honesty; alternative quote IDs: darwin-confidence, box-models. Accurately recognizing a forecast's limits after a submitted answer aligns with model humility and evidence quality.",
+          "vi": {
+            "prompt": "Giờ mới xem sai số. Đúng phép tính mà quên hỏi doanh số có bị hết hàng bóp méo không thì dự báo cũng chưa đáng tin. Bình: Tự đánh giá theo độ rõ của dữ liệu, cách tính, sai số và giới hạn, không lấy một con số làm huy chương.",
+            "actions": [
+              {
+                "label": "Tự chấm những gì?",
+                "reply": "Kiểm tra baseline tuần tiếp, signed error theo quy ước, nguồn thiên lệch dữ liệu và kế hoạch kiểm chứng trên nhiều kỳ."
+              },
+              {
+                "label": "Nếu dự báo sai?",
+                "reply": "Dự báo khác thực tế là tín hiệu cần điều tra khuyến mãi, mùa vụ, stockout và độ ổn định của chuỗi; không tự chứng minh mô hình vô dụng."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Now inspect the error. Correct arithmetic is not enough if stockouts or promotions distorted what historical sales mean. Comment: Rate the data definition, baseline, error interpretation and limitations rather than awarding a medal for one number.",
+            "actions": [
+              {
+                "label": "What should I rate?",
+                "reply": "Check the forecast baseline, signed error convention, biased observations and plans for testing across several periods."
+              },
+              {
+                "label": "What if it missed?",
+                "reply": "Investigate seasonality, promotions, stockouts and shifting conditions. A miss alone does not prove every version of the model is useless."
+              }
+            ]
+          }
+        },
+        {
+          "stage": "extension",
+          "quote_ids": [
+            "bacon-studies",
+            "zhuangzi-limits",
+            "zhuangzi-craft"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "<b>Primary quote candidate:</b> bacon-studies; alternative quote IDs: zhuangzi-limits, zhuangzi-craft. Checking the model assumptions in official statistics and operations sources is central to responsible forecasting practice.",
+          "vi": {
+            "prompt": "Đọc IBM về demand planning rồi NIST về chuỗi thời gian. Mỗi nguồn có phạm vi của nó, đừng dùng một đoạn giới thiệu để chứng nhận thuật toán tối ưu. Bình: Từ baseline đơn giản mới có đường tới các mô hình phức tạp; mỗi bước cần dữ liệu, đánh giá và giới hạn riêng.",
+            "actions": [
+              {
+                "label": "Đọc gì trước?",
+                "reply": "Bắt đầu từ quy trình demand planning và dữ liệu lịch sử; sau đó xem NIST nói về trend, seasonality và cấu trúc thời gian."
+              },
+              {
+                "label": "Nhớ bằng cách nào?",
+                "reply": "Đóng tài liệu rồi tự mô tả một biến cố làm dữ liệu doanh số không phản ánh nhu cầu thực, và cách ghi ngoại lệ đó."
+              }
+            ]
+          },
+          "en": {
+            "prompt": "Read IBM on demand planning and NIST on time-series structure. A short introduction is not a warranty for an optimal algorithm. Comment: A simple baseline is a starting point; more advanced models need evidence about when they outperform it.",
+            "actions": [
+              {
+                "label": "What order to read?",
+                "reply": "Begin with demand-planning inputs and history, then NIST on time-series structure, trend and seasonality."
+              },
+              {
+                "label": "How do I remember?",
+                "reply": "Close the sources and explain one event that makes observed sales an unreliable demand proxy, and how to record that exception."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "technique": {
+      "primary": "L2-T03",
+      "status": "source_mapped_not_release_approved"
     }
   },
   "rights": {
@@ -157,7 +451,7 @@
     "sourceBodyCharacters": 35968
   },
   "normalization": {
-    "status": "sectioned_needs_academic_rights_and_release_review",
+    "status": "structurally_mapped_needs_rights_review",
     "counts": {
       "vi": {
         "chapters": 7,

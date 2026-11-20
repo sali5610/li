@@ -5,7 +5,31 @@
  */
 export type Locale='vi'|'en';
 export type Rating=0|1|2|null;
-export type MethodAttempt={draft:string;submission:string|null;submittedAt:string|null};
+export type MethodCategory='nominal'|'ordinal'|'discrete'|'continuous';
+export type MethodAttempt={
+ draft:string;submission:string|null;submittedAt:string|null;
+ /** T06 has four explicit classifications in addition to the learner's reasoning. */
+ classifications?:Partial<Record<'A'|'B'|'C'|'D',MethodCategory>>;
+};
+export type EditorialMethodId='T03'|'T04'|'T06'|'T07'|'T09'|'T10';
+export type MethodChoice=EditorialMethodId|'skip'|null;
+export type PastEditorialAttempt={
+ submission:[string,string,string,string];submissionLocale:Locale;submittedAt:string;
+ ratings:[Rating,Rating,Rating,Rating];reviewedAt:string|null;answerRevealed:boolean;
+ contentVersion:string;rubricVersion:string;attemptNumber:number;
+ guidedDraft:string;hint:boolean;methodChoice:MethodChoice;
+ /** Frozen prompts only; old rounds do not repeat model-answer copies. */
+ questionPrompts?:Record<Locale,[string,string,string,string]>;
+ methodAttempts?:Partial<Record<EditorialMethodId,MethodAttempt>>;
+};
+export type EditorialReviewSnapshot={
+ /** A bilingual first-party model answer/rubric frozen at independent submission. */
+ contentVersion:string;rubricVersion:string;
+ modelAnswer:Record<Locale,string>;
+ /** Prompts keep original responses intelligible after editorial revisions. */
+ questions:Record<Locale,[string,string,string,string]>;
+ criteria:Record<Locale,[string,string,string,string][]>;
+};
 export type Attempt={
  locale:Locale;
  draft:[string,string,string,string];
@@ -19,7 +43,20 @@ export type Attempt={
  ratings:[Rating,Rating,Rating,Rating];
  reviewed:boolean;
  /** Optional per-spell attempt; distinct from independent assessment. */
- methodAttempts?:Partial<Record<'T06'|'T07',MethodAttempt>>;
+ methodAttempts?:Partial<Record<EditorialMethodId,MethodAttempt>>;
+ /** K2 selection is separate from K3 actually submitting a method exercise. */
+ methodChoice?:MethodChoice;
+ /** One completed revision stays frozen when a fresh practice round begins. */
+ contentVersion?:string;
+ rubricVersion?:string;
+ reviewedAt?:string|null;
+ /** Explicit post-save learner action; no automatic model-answer reveal. */
+ answerRevealed?:boolean;
+ /** Never compare an older submitted answer against a later editorial revision. */
+ reviewSnapshot?:EditorialReviewSnapshot;
+ startedAt?:string|null;
+ attemptNumber?:number;
+ attemptHistory?:PastEditorialAttempt[];
 };
 export const NATIVE_KEY='li.review.L09-1-2.v1';
 export const PILOT_KEY='step16.l09.react-island.v1';

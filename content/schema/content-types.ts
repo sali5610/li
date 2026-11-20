@@ -8,7 +8,7 @@ export type CanonicalLesson = {
   hierarchy: { group: HierarchyRef; field: HierarchyRef; course: HierarchyRef; chapter?: HierarchyRef };
   difficulty?: string | null; learningOutcomes: Record<Locale, string[]>; conceptIds: string[];
   prerequisiteLessonIds: string[]; methodFit: { status: "not_reviewed" | "reviewed" | "approved"; primaryTechniqueId: string | null; optionalTechniqueIds: string[] };
-  content: { format: "locked-structured-v1" | "editorial-structured-v1"; localized: Record<Locale, Record<string, unknown>> };
+  content: { format: "locked-structured-v1" | "editorial-structured-v1" | "editorial-sectioned-v1"; localized: Record<Locale, Record<string, unknown>> };
   practice: { kind: string; questionCount: number; minimumCharactersPerAnswer: number; feedbackAfterSubmission: boolean; rubricKey: string; questionsKey: string; answerKey: string };
   sources: { title: string; url: string; tier: string; usage: "reference_only" | "claim_verified" }[];
   rights: { text: "first_party" | "external_reference" | "unknown"; illustration: string };

@@ -58,7 +58,43 @@
             "heading": "Nguồn đọc thêm và 3 câu tự nhớ (không hiện đáp án)",
             "body_md": "- [Berkeley Ch17.2 Train/Test](https://inferentialthinking.com/chapters/17/2/training-and-testing/index.html); [scikit-learn Common Pitfalls](https://scikit-learn.org/stable/common_pitfalls.html); [CV](https://scikit-learn.org/stable/modules/cross_validation.html).\n\n1. Vì sao scaler fit trên cả dataset là leakage dù không dùng nhãn y?\n2. Khi nào nên chia theo user và khi nào theo thời gian?\n3. Khi đã dùng test để chọn threshold, bạn còn được phép kết luận gì về score đó?"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Chỉ ra ít nhất <b>ba</b> lỗi thiết kế và giải thích vì sao là lỗi (không chỉ khoanh tên).",
+            "Viết lại pipeline hợp lý từ lúc xác định mốc dự báo đến khi báo cáo final score.",
+            "Quyết định cách chia dữ liệu nào phục vụ mục tiêu khách hàng mới và khi nào cần thêm temporal holdout.",
+            "Viết một câu giới hạn kết luận của con số 97% ban đầu; cho biết muốn công bố score có căn cứ phải kiểm thử lại ra sao."
+          ],
+          "rubricCriteria": [
+            [
+              "xác định đúng thời điểm dự báo và feature khả dụng",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "phát hiện và sửa preprocessing leakage",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "giữ validation/tuning khác biệt final test",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "chọn group/time split theo deployment population và trình bày giới hạn. Lỗi nghiêm trọng: chọn threshold trên test rồi vẫn mô tả đó là đánh giá độc lập. Ngưỡng 6/8 chỉ là gợi ý biên tập, CHƯA là chuẩn mastery; assisted/hint không được tính như lần làm độc lập",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       },
       "en": {
         "intro_md": "<b>Hook:</b> The model boasts a 99% score. Impressive—until you learn it peeked at the answer sheet.",
@@ -110,7 +146,43 @@
             "heading": "Read further and recall (answers hidden)",
             "body_md": "- [Berkeley Ch17.2](https://inferentialthinking.com/chapters/17/2/training-and-testing/index.html); [scikit-learn pitfalls](https://scikit-learn.org/stable/common_pitfalls.html); [CV](https://scikit-learn.org/stable/modules/cross_validation.html).\n\n1. Why can a scaler leak information even without labels?\n2. When should a split be by buyer versus by time?\n3. What can you still claim once test data has been used for tuning?"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Identify at least three flaws and justify each.",
+            "Rewrite the pipeline from prediction time to final score.",
+            "Select the split for new customers and say when a temporal test is also useful.",
+            "State why 97% is not defensible as an independent test result and what fresh evidence would be required."
+          ],
+          "rubricCriteria": [
+            [
+              "prediction-time availability",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "train-only preprocessing",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "validation vs final test roles",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "group/time holdout tied to deployment population and limits. Critical miss: tuning on test then still calling the result independent. A suggested 6/8 threshold is editorial only, NOT validated mastery. Assisted and independent attempts remain separate",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       }
     },
     "companion": {
@@ -118,7 +190,7 @@
         {
           "stage": "opening",
           "heading": "opening · L09-3-1",
-          "source_md": "Candidate quote IDs: analects-honesty, mencius-sources, hume-evidence; primary analects-honesty.\n\nVI action 1: Ngươi nghĩ mô hình được chấm điểm lần đầu lúc nào? — Lão Lý: Sau khi tất cả lựa chọn đã chốt, không phải lúc đang lựa threshold.\n\nVI action 2: Kiểm tra thử xem preprocessing có nhìn sang test chưa. — Lão Lý: undefined\n\nEN action 1: Before we look at a score, when should a model first see its final exam? — Old Li: Only after every modeling choice is settled—not while picking a threshold.\n\nEN action 2: Check if preprocessing peeked at the test rows. — Old Li: undefined"
+          "source_md": "Candidate quote IDs: analects-honesty, mencius-sources, hume-evidence; primary analects-honesty.\n\nVI action 1: Ngươi nghĩ mô hình được chấm điểm lần đầu lúc nào? — Lão Lý: Sau khi tất cả lựa chọn đã chốt, không phải lúc đang lựa threshold.\n\nVI action 2: Kiểm tra thử xem preprocessing có nhìn sang test chưa. — Lão Lý: Nếu chuẩn hóa hoặc chọn feature bằng toàn bộ dữ liệu trước khi tách, test đã rò vào bước chuẩn bị. Tách train/test trước, rồi chỉ fit các bước học tham số trên train.\n\nEN action 1: Before we look at a score, when should a model first see its final exam? — Old Li: Only after every modeling choice is settled—not while picking a threshold.\n\nEN action 2: Check if preprocessing peeked at the test rows. — Old Li: If scaling or feature selection was fitted on all rows before splitting, test information leaked into preparation. Split first, then fit learned preprocessing only on train."
         },
         {
           "stage": "concept",
@@ -146,7 +218,241 @@
           "source_md": "Candidate quote IDs: analects-peers, zhuangzi-limits, mill-other-side; primary analects-peers.\n\nVI action 1: Nếu dữ liệu thay đổi theo mùa thì sao? — Lão Lý: Kiểm tra temporal holdout và drift, đừng quay lùi thời gian để thử.\n\nVI action 2: Có cần GPU để học bài này không? — Lão Lý: Không. Hiểu luồng dữ liệu bằng case giả lập trước đã.\n\nEN action 1: What if the data changes with seasons? — Old Li: Use time-aware holdouts and check drift rather than mixing future into past.\n\nEN action 2: Do we need a GPU for this lesson? — Old Li: No. Reason through the data flow using synthetic examples first."
         }
       ],
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "structuredMoments": [
+        {
+          "stage": "opening",
+          "quote_ids": [
+            "analects-honesty",
+            "mencius-sources",
+            "hume-evidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Candidate quote IDs: analects-honesty, mencius-sources, hume-evidence; primary analects-honesty.",
+          "vi": {
+            "prompt": "Hook: Mô hình khoe đạt 99% điểm kiểm tra. Hay lắm — cho đến khi phát hiện nó đã xem đáp án trước khi làm bài.",
+            "actions": [
+              {
+                "label": "Ngươi nghĩ mô hình được chấm điểm lần đầu lúc nào?",
+                "reply": "Sau khi tất cả lựa chọn đã chốt, không phải lúc đang lựa threshold."
+              },
+              {
+                "label": "Kiểm tra thử xem preprocessing có nhìn sang test chưa.",
+                "reply": "Nếu chuẩn hóa hoặc chọn feature bằng toàn bộ dữ liệu trước khi tách, test đã rò vào bước chuẩn bị. Tách train/test trước, rồi chỉ fit các bước học tham số trên train."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "Hook: The model boasts a 99% score. Impressive—until you learn it peeked at the answer sheet.",
+            "actions": [
+              {
+                "label": "Before we look at a score, when should a model first see its final exam?",
+                "reply": "Only after every modeling choice is settled—not while picking a threshold."
+              },
+              {
+                "label": "Check if preprocessing peeked at the test rows.",
+                "reply": "If scaling or feature selection was fitted on all rows before splitting, test information leaked into preparation. Split first, then fit learned preprocessing only on train."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "concept",
+          "quote_ids": [
+            "analects-think",
+            "box-models",
+            "bacon-cause"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Candidate quote IDs: analects-think, box-models, bacon-cause; primary analects-think.",
+          "vi": {
+            "prompt": "Mô hình dự đoán đơn hàng sẽ trễ. Nếu chấm chính những đơn dùng để huấn luyện, nó có thể chỉ đang nhớ dữ liệu. Muốn ước lượng khả năng dự đoán đơn chưa thấy, phải giữ một phần dữ liệu thực sự độc lập đến cuối. Berkeley nhấn mạnh rằng tập test chỉ dùng sau khi xây xong mô hình, chứ không mang ra thử rồi chỉnh tiếp. [Nguồ",
+            "actions": [
+              {
+                "label": "Lọc trước rồi chia dữ liệu có sao không?",
+                "reply": "Mean/variance học trên tất cả dòng đã dùng thông tin từ tập đánh giá."
+              },
+              {
+                "label": "Nếu dùng feature có sau lúc giao hàng thì sao?",
+                "reply": "Đó là target leakage: lúc dự đoán tương lai không thể có feature ấy."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "A classifier predicting late shipments may simply memorize records it trained on. To estimate performance on truly unseen orders, keep a final holdout separate until the full model is fixed. Berkeley stresses that test records must not be used for developing or tweaking a classifier. [Berkeley Ch17.2/17.5](https://infe",
+            "actions": [
+              {
+                "label": "Why might fitting a scaler before splitting be dangerous?",
+                "reply": "The transform learned statistics from held-out data."
+              },
+              {
+                "label": "What if the feature becomes available only after delivery?",
+                "reply": "That's target leakage: it would not exist when predicting future orders."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "guided",
+          "quote_ids": [
+            "analects-practice",
+            "zhuangzi-craft",
+            "bacon-studies"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Candidate quote IDs: analects-practice, zhuangzi-craft, bacon-studies; primary analects-practice.",
+          "vi": {
+            "prompt": "Hook: Mô hình khoe đạt 99% điểm kiểm tra. Hay lắm — cho đến khi phát hiện nó đã xem đáp án trước khi làm bài.",
+            "actions": [
+              {
+                "label": "Chia 600 dòng kiểu nào cho đúng?",
+                "reply": "Tách theo đúng mục tiêu trước, chỉ fit preprocessing trên train."
+              },
+              {
+                "label": "Thế validation dùng để làm gì?",
+                "reply": "Chọn hyperparameter hay threshold, không tiêu test để thử vận may."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "Hook: The model boasts a 99% score. Impressive—until you learn it peeked at the answer sheet.",
+            "actions": [
+              {
+                "label": "How would you split 600 practice rows?",
+                "reply": "Split according to the target scenario first; fit transforms only on train."
+              },
+              {
+                "label": "What is validation for?",
+                "reply": "Use it to select settings; don't spend the final test on guesswork."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "independent",
+          "quote_ids": [
+            "mencius-sources",
+            "hume-evidence",
+            "analects-honesty"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Candidate quote IDs: mencius-sources, hume-evidence, analects-honesty; primary mencius-sources.",
+          "vi": {
+            "prompt": "Giả lập có 1.200 đơn, chia 720 train, 240 validation, 240 test. Team làm theo thứ tự: (A) lấy mean và scaler từ cả 1.200 dòng; (B) chia ngẫu nhiên từng đơn bất kể mã khách; (C) dùng cột delivery\\_actual để dự báo trễ tại thời điểm đặt hàng; (D) thử 30 thresholds trên test, chọn cái tốt nhất rồi công bố accuracy",
+            "actions": [
+              {
+                "label": "Ta có 1.200 đơn; cần chỉ ra lỗi nào?",
+                "reply": "Tìm feature tương lai hoặc bước fit toàn bộ dữ liệu; viết bằng chứng trước khi mở key."
+              },
+              {
+                "label": "Tại sao chia ngẫu nhiên theo đơn chưa chắc đúng?",
+                "reply": "Nếu mục tiêu khách mới, người mua xuất hiện ở cả hai tập sẽ làm test thiếu trung thực."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "Fictional data: 1,200 orders split 720 train / 240 validation / 240 test. The team (A) fits scaling using all 1,200, (B) randomly splits orders while the same buyer appears on both sides, (C) uses delivery\\_actual to predict lateness at order placement, and (D) tries 30 thresholds on the test set, publishes 97% accurac",
+            "actions": [
+              {
+                "label": "In a 1,200-order case, what is the first flaw you would flag?",
+                "reply": "Look for future-only features or full-data fitting, and justify before reveal."
+              },
+              {
+                "label": "Why might randomly splitting orders be inappropriate?",
+                "reply": "For new-customer predictions, buyer overlap makes the holdout misleading."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "reflection",
+          "quote_ids": [
+            "analects-review",
+            "darwin-confidence",
+            "epictetus-appearance"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Candidate quote IDs: analects-review, darwin-confidence, epictetus-appearance; primary analects-review.",
+          "vi": {
+            "prompt": "Bốn tiêu chí, mỗi tiêu chí 0/1/2: (1) xác định đúng thời điểm dự báo và feature khả dụng; (2) phát hiện và sửa preprocessing leakage; (3) giữ validation/tuning khác biệt final test; (4) chọn group/time split theo deployment population và trình bày giới hạn. Lỗi nghiêm trọng: chọn threshold trên test rồi vẫn mô t",
+            "actions": [
+              {
+                "label": "94% test accuracy đã chứng minh dùng được chưa?",
+                "reply": "Chưa; test chỉ đại diện cho thiết kế đánh giá, chưa chắc đối tượng thực tế."
+              },
+              {
+                "label": "Dùng gợi ý rồi có tính tự làm được không?",
+                "reply": "Không. Lão tách assisted với independent để khỏi tự đánh tráo mức hiểu."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "Four dimensions scored 0/1/2: (1) prediction-time availability, (2) train-only preprocessing, (3) validation vs final test roles, (4) group/time holdout tied to deployment population and limits. Critical miss: tuning on test then still calling the result independent. A suggested 6/8 threshold is editorial only,",
+            "actions": [
+              {
+                "label": "Does a high test score prove deployment readiness?",
+                "reply": "No; the result reflects that evaluation setting, not every deployment population."
+              },
+              {
+                "label": "If you used a hint, is that still an independent attempt?",
+                "reply": "No; helped and independent work should be tracked separately."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "extension",
+          "quote_ids": [
+            "analects-peers",
+            "zhuangzi-limits",
+            "mill-other-side"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Candidate quote IDs: analects-peers, zhuangzi-limits, mill-other-side; primary analects-peers.",
+          "vi": {
+            "prompt": "- [Berkeley Ch17.2 Train/Test](https://inferentialthinking.com/chapters/17/2/training-and-testing/index.html); [scikit-learn Common Pitfalls](https://scikit-learn.org/stable/common_pitfalls.html); [CV](https://scikit-learn.org/stable/modules/cross_validation.html).",
+            "actions": [
+              {
+                "label": "Nếu dữ liệu thay đổi theo mùa thì sao?",
+                "reply": "Kiểm tra temporal holdout và drift, đừng quay lùi thời gian để thử."
+              },
+              {
+                "label": "Có cần GPU để học bài này không?",
+                "reply": "Không. Hiểu luồng dữ liệu bằng case giả lập trước đã."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "- [Berkeley Ch17.2](https://inferentialthinking.com/chapters/17/2/training-and-testing/index.html); [scikit-learn pitfalls](https://scikit-learn.org/stable/common_pitfalls.html); [CV](https://scikit-learn.org/stable/modules/cross_validation.html).",
+            "actions": [
+              {
+                "label": "What if the data changes with seasons?",
+                "reply": "Use time-aware holdouts and check drift rather than mixing future into past."
+              },
+              {
+                "label": "Do we need a GPU for this lesson?",
+                "reply": "No. Reason through the data flow using synthetic examples first."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        }
+      ]
+    },
+    "technique": {
+      "primary": "L2-T10",
+      "status": "source_mapped_not_release_approved"
     }
   },
   "rights": {
@@ -160,10 +466,10 @@
   "provenance": {
     "sourceUrl": "https://app.notion.com/p/41d6cf6db72a81d6a0e1d27b886b3362",
     "rawSourcePath": "content/editorial/imported/L09-3-1.source.v1.json",
-    "sourceBodyCharacters": 17739
+    "sourceBodyCharacters": 18060
   },
   "normalization": {
-    "status": "needs_editorial_correction",
+    "status": "structurally_mapped_needs_rights_review",
     "counts": {
       "vi": {
         "sections": 7,
@@ -180,9 +486,7 @@
         "rubric": 1
       }
     },
-    "issues": [
-      "mentor_reply_is_undefined"
-    ],
+    "issues": [],
     "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
     "runnableInReact": false

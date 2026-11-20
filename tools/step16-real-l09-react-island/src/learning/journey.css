@@ -55,11 +55,6 @@
  white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;color:var(--ink)}
 
 
-/* Step 17: grounded self-review advice, not an automatic grade. */
-.li-learning-next-action{display:grid;gap:var(--li-space-2);padding:var(--li-space-3);
- border-inline-start:3px solid var(--moss);background:var(--porcelain);min-width:0}
-.li-learning-next-action .li-ds-button{justify-self:start}
-
 /* Source-backed L03/L15 React lesson copy and media; canonical DS paints UI. */
 .li-learning-copy{white-space:pre-line;overflow-wrap:anywhere;line-height:var(--li-leading-body);margin:0}
 .li-learning-language{display:flex;flex-wrap:wrap;gap:var(--li-space-2)}
@@ -89,3 +84,39 @@
 }
 .li-learning-method{padding-block:1rem;border-bottom:1px solid var(--color-border-subtle,#c5c9bf)}
 .li-learning-method:last-of-type{border-bottom:0}
+
+/* Full-format editorial learning elements; geometry and hierarchy reuse li. DS. */
+.li-editorial-visual{display:grid;gap:var(--li-space-2);margin:var(--li-space-4) 0;min-width:0}
+.li-editorial-visual svg{display:block;width:100%;height:auto;max-height:360px}
+.li-editorial-visual figcaption{max-width:65ch}
+.li-editorial-mentor{display:flex;align-items:center;gap:var(--li-space-4);min-width:0;
+ border-block:1px solid var(--rule);padding-block:var(--li-space-3);margin-block:var(--li-space-4)}
+.li-editorial-mentor img{width:56px;height:56px;object-fit:contain;flex:none}
+.li-editorial-mentor>div{display:grid;gap:var(--li-space-2);min-width:0}
+.li-editorial-buddy-actions{display:flex;flex-wrap:wrap;gap:var(--li-space-2);min-width:0}
+.li-editorial-buddy-quotes{display:flex;flex-wrap:wrap;gap:var(--li-space-2);width:100%;
+ padding-block-start:var(--li-space-2);border-top:1px solid var(--rule)}
+.li-editorial-buddy-quotes .action{overflow-wrap:anywhere}
+.li-editorial-extension{display:grid;gap:var(--li-space-4);min-width:0}
+.li-editorial-extension>ul,.li-editorial-extension>ol{padding-inline-start:var(--li-space-5)}
+@media(max-width:599px){
+ .li-editorial-mentor{align-items:flex-start}
+ .li-editorial-buddy-actions .action{min-height:44px}
+ .li-editorial-visual svg{max-height:none}
+}
+
+.li-editorial-method-choice{display:flex;flex-wrap:wrap;gap:var(--li-space-2);min-width:0}
+.li-editorial-t06-cases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:var(--li-space-3)}
+.li-editorial-t06-case{display:grid;gap:var(--li-space-2);min-width:0}
+.li-editorial-t06-case select{min-height:44px;width:100%;padding:var(--li-space-2);
+ border:1px solid var(--rule);border-radius:0;font:inherit;background:var(--porcelain);color:var(--ink)}
+.li-editorial-t06-case select:focus-visible{outline:0;border-width:3px;border-color:var(--moss)}
+@media(max-width:599px){.li-editorial-t06-cases{grid-template-columns:minmax(0,1fr)}}
+
+
+/* Preserve shared post-review action styles and accessible header controls. */
+.li-learning-header-actions{display:flex;flex-wrap:wrap;gap:var(--li-space-2)}
+.li-learning-next-action{display:grid;gap:var(--li-space-2);padding:var(--li-space-3);
+ border-inline-start:3px solid var(--moss);background:var(--porcelain);min-width:0}
+.li-learning-next-action .li-ds-button{justify-self:start}

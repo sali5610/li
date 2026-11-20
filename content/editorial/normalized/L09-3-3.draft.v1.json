@@ -64,7 +64,43 @@
             "heading": "Đọc thêm và ba câu tự nhớ (không hiện đáp án)",
             "body_md": "- [Fairlearn 0.15 fairness context](https://fairlearn.org/v0.15/user_guide/fairness_in_machine_learning.html), [group assessment](https://fairlearn.org/v0.15/user_guide/assessment/perform_fairness_assessment.html), [common fairness metrics](https://fairlearn.org/v0.15/user_guide/assessment/common_fairness_metrics.html), [sklearn inspection 1.9.1](https://scikit-learn.org/stable/modules/permutation_importance.html), [Berkeley Fall 2026 DATA C104](https://classes.berkeley.edu/content/2026-fall-history-c184d-001-lec-001).\n\n1. Khi accuracy bằng nhau nhưng recall khác nhau, bạn còn phải hỏi gì?\n2. Chênh selection rate và chênh recall đang đo hai điều gì khác nhau?\n3. Vì sao một feature được đánh giá importance thấp vẫn có thể quan trọng trong mô hình hoặc quy trình thực tế?\n\n---"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Tính accuracy, recall, FPR và selection rate của từng vùng. Mô hình nào có accuracy nhỉnh hơn? Nhóm nào có nhiều đơn trễ bị bỏ sót hơn?",
+            "Tính chênh lệch <b>recall</b> và <b>selection rate</b> theo điểm phần trăm. Đây là dấu hiệu nào của chênh lệch đánh giá theo nhóm? Có đủ để kết luận hợp pháp/công bằng tuyệt đối không?",
+            "Một báo cáo tính <b>accuracy chung</b> từ cả 400 đơn rồi khẳng định “các vùng đều được phục vụ tương đương”. Tính accuracy chung, chỉ rõ logic sai và đưa ra <b>hai thông tin cần thu thập thêm</b> trước khi quyết định điều chỉnh mô hình.",
+            "Một phân tích phụ trên held-out giả lập có score 0,83; tráo cột distance còn 0,75, tráo cột travel\\_time còn 0,82. Giải thích đúng giới hạn permutation importance, đặc biệt nếu hai cột tương quan mạnh. Không được biến feature importance thành kết luận nguyên nhân."
+          ],
+          "rubricCriteria": [
+            [
+              "tính đúng mỗi vùng accuracy/recall/FPR/selection-rate và mẫu số",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "chỉ rõ recall/selection disparity bằng điểm phần trăm và giải thích missed cases",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "vạch ra vì sao accuracy chung không xác nhận fairness và nêu 2 evidence gaps",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ],
+            [
+              "nêu giới hạn model interpretation, correlation và một phương án QA không vượt dữ liệu. Critical miss: 'accuracy cao chứng tỏ fairness', 'selection gap chứng minh vi phạm pháp luật', 'feature importance là nhân quả', hoặc đánh tráo recall và FPR. Ngưỡng 6/8 là gợi ý biên tập, KHÔNG phải mastery chuẩn hóa. Lượt có hint phải tách khỏi K1/K3 độc lập",
+              "Thiếu/sai",
+              "Một phần",
+              "Đúng và có căn cứ"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       },
       "en": {
         "intro_md": "<b>Hook:</b> Both delivery regions report <b>82% accuracy</b>. Fair enough? Not so fast. One model finds nine out of ten genuinely late orders, while the other finds only five out of ten. Same headline score, different people and cases bearing the consequences.",
@@ -122,7 +158,43 @@
             "heading": "Further reading and three unanswered recall questions",
             "body_md": "- [Fairlearn v0.15 human context](https://fairlearn.org/v0.15/user_guide/fairness_in_machine_learning.html), [group metrics](https://fairlearn.org/v0.15/user_guide/assessment/common_fairness_metrics.html), [Fairlearn assessment](https://fairlearn.org/v0.15/user_guide/assessment/perform_fairness_assessment.html), [sklearn 1.9.1 inspection](https://scikit-learn.org/stable/modules/permutation_importance.html), [UC Berkeley DATA C104 Fall 2026](https://classes.berkeley.edu/content/2026-fall-history-c184d-001-lec-001).\n\n1. Why can equal accuracy coexist with unequal recall across groups?\n2. How do selection-rate parity and equal-opportunity metrics ask different questions?\n3. Why can a correlated feature be important even when its measured permutation importance looks small?\n\n---"
           }
-        ]
+        ],
+        "assessment": {
+          "questions": [
+            "Calculate accuracy, recall, FPR and selection rate per region. Which group has slightly higher accuracy, and which has more missed late orders?",
+            "Calculate the recall and selection-rate differences in <b>percentage points</b>. Which questions do these gaps raise, and do the figures alone prove legal compliance or fairness?",
+            "The team reports only <b>overall accuracy on all 400 orders</b> and claims equivalent treatment across regions. Compute it, identify the inference error, and provide <b>two missing evidence items</b> before deployment.",
+            "A hypothetical held-out score of 0.83 falls to 0.75 after shuffling distance and 0.82 after shuffling estimated travel time. Interpret what may and may not be concluded, including if features are strongly correlated."
+          ],
+          "rubricCriteria": [
+            [
+              "correct subgroup formulas/denominators",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "correct recall and selection-rate disparities and their operational meaning",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "identify the overall-accuracy fallacy and request two pieces of missing evidence",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ],
+            [
+              "interpret model-inspection limits including correlation and causal claims. Critical errors: calling high accuracy proof of fairness, a selection-rate gap proof of illegality, or permutation importance a causal intervention; or switching the recall and FPR denominators. Suggested 6/8 is only an editorial provisional check, not a validated mastery sc",
+              "Missing/wrong",
+              "Partial",
+              "Complete and reasoned"
+            ]
+          ],
+          "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+          "rubricGate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+        }
       }
     },
     "companion": {
@@ -158,7 +230,241 @@
           "source_md": "Quote candidates: analects-peers, zhuangzi-limits, mill-other-side; proposed primary analects-peers.\n\nVI action 1: Có nên xoá hết thuộc tính nhóm khỏi mô hình? — Lão Lý: Chưa chắc. Proxy vẫn có thể tồn tại; hãy kiểm tác động và dữ liệu.\n\nVI action 2: Không có đủ mẫu từng nhóm thì sao? — Lão Lý: Đánh dấu bất định, đừng lấy số lẻ làm bản án.\n\nEN action 1: Should we remove every group attribute? — Old Li: Not automatically; proxies and deployment effects can remain.\n\nEN action 2: What if subgroup samples are too small? — Old Li: Report uncertainty instead of pretending a fragile gap is decisive."
         }
       ],
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "structuredMoments": [
+        {
+          "stage": "opening",
+          "quote_ids": [
+            "analects-honesty",
+            "hume-evidence",
+            "mencius-sources"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Quote candidates: analects-honesty, hume-evidence, mencius-sources; proposed primary analects-honesty.",
+          "vi": {
+            "prompt": "Hook: Hai khu vực đều được hệ thống dự báo giao hàng đúng 82%. Nghe công bằng quá hả? Khoan. Ở khu vực này, hệ thống phát hiện 9/10 đơn trễ; khu vực kia chỉ phát hiện 5/10. Cùng accuracy, khác hẳn người chịu hậu quả.",
+            "actions": [
+              {
+                "label": "Accuracy hai vùng bằng nhau mà bất công được hả?",
+                "reply": "Có thể có chênh hại. Nhìn từng loại lỗi theo nhóm trước rồi mới nói."
+              },
+              {
+                "label": "Tưởng 82% là xong chớ?",
+                "reply": "Thêm dấu hỏi vào: 82% đúng cho ai, sai cho ai?"
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "Hook: Both delivery regions report 82% accuracy. Fair enough? Not so fast. One model finds nine out of ten genuinely late orders, while the other finds only five out of ten. Same headline score, different people and cases bearing the consequences.",
+            "actions": [
+              {
+                "label": "Can equal accuracy hide unequal impact?",
+                "reply": "Yes. Look at the types of errors within each group before judging."
+              },
+              {
+                "label": "Isn't 82% enough?",
+                "reply": "Ask whose outcomes the score summarizes—and whose misses it hides."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "concept",
+          "quote_ids": [
+            "analects-think",
+            "box-models",
+            "darwin-confidence"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Quote candidates: analects-think, box-models, darwin-confidence; proposed primary analects-think.",
+          "vi": {
+            "prompt": "Trong hệ thống cảnh báo đơn giao trễ, ta đặt positive = đơn thực tế trễ. Accuracy là tỷ lệ dự đoán đúng trong toàn bộ test; recall là tỷ lệ đơn trễ thực tế được phát hiện; FPR là tỷ lệ đơn đúng hạn bị cảnh báo nhầm. Các đại lượng có mẫu số khác nhau.",
+            "actions": [
+              {
+                "label": "Recall và selection rate cùng là phần trăm, sao khác?",
+                "reply": "Một bên lấy mẫu số là ca trễ thật, bên kia là tất cả đơn trong nhóm."
+              },
+              {
+                "label": "Chênh số có chứng minh phân biệt đối xử không?",
+                "reply": "Chưa. Cần ngữ cảnh, tác động, dữ liệu và cách vận hành."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "Here positive means an actually late shipment. Accuracy counts correct predictions out of all test records; recall is true positives over all truly late cases; the false-positive rate is false alerts divided by actually on-time orders. These denominators differ. Ask: who is affected, what action is triggered by",
+            "actions": [
+              {
+                "label": "Why are recall and selection rate different?",
+                "reply": "Recall divides by genuinely late orders; selection divides by all group orders."
+              },
+              {
+                "label": "Does disparity prove discrimination?",
+                "reply": "Not by itself. We still need context, impacts, data quality and operations."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "guided",
+          "quote_ids": [
+            "analects-practice",
+            "zhuangzi-craft",
+            "bacon-studies"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Quote candidates: analects-practice, zhuangzi-craft, bacon-studies; proposed primary analects-practice.",
+          "vi": {
+            "prompt": "Toàn bộ là dữ liệu giả lập cho bài học, không đại diện cộng đồng hay người thật. Hai nhóm tuyến vận chuyển Bắc/Nam mỗi nhóm có 100 đơn, đều 20 đơn trễ và 80 đúng hạn. Chỉ số positive là đơn trễ. Bảng do li. tự đặt:",
+            "actions": [
+              {
+                "label": "Đề Bắc/Nam hỏi ta đối chiếu cái gì?",
+                "reply": "So ít nhất hai metric, giải thích mẫu số và một hậu quả có thể."
+              },
+              {
+                "label": "Nếu t chỉ nói Nam kém hơn là đủ chưa?",
+                "reply": "Chưa. Kém theo metric nào, và còn điều gì chưa biết?"
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "Entirely fictional educational data. North and South shipping routes each have 100 orders, with 20 truly late and 80 on-time. Positive = late.",
+            "actions": [
+              {
+                "label": "What should I compare in North/South?",
+                "reply": "Use at least two metrics, explain denominators and a possible consequence."
+              },
+              {
+                "label": "Is saying South is worse enough?",
+                "reply": "No. Worse on which metric, and what evidence is still missing?"
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "independent",
+          "quote_ids": [
+            "mencius-sources",
+            "hume-evidence",
+            "analects-honesty"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Quote candidates: mencius-sources, hume-evidence, analects-honesty; proposed primary mencius-sources.",
+          "vi": {
+            "prompt": "Kịch bản mới do li. tạo: hai vùng cung ứng Đông/Tây mỗi vùng có 200 đơn trên một test set giả định độc lập, trong đó mỗi vùng 40 đơn trễ thật, 160 đơn đúng hạn; nhãn positive = đơn thực tế trễ. Sau đây là số giả lập để suy luận, không phải dữ liệu khách hàng:",
+            "actions": [
+              {
+                "label": "Nhìn Tây accuracy 84%, chốt Tây thắng được chưa?",
+                "reply": "Đừng vội. Đếm số đơn trễ thật bị bỏ sót rồi xét hậu quả."
+              },
+              {
+                "label": "Lão cho coi đáp án luôn đi?",
+                "reply": "Tự tính trước. Đáp án chỉ để kiểm sau lượt nộp."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "Two new fictional regions East/West each have 200 orders, 40 truly late and 160 on-time, tested on an assumed independent holdout. Positive=late.",
+            "actions": [
+              {
+                "label": "West has 84% accuracy. Can it be declared the winner?",
+                "reply": "Count genuine late orders it misses and consider consequences first."
+              },
+              {
+                "label": "Can I see the key now?",
+                "reply": "Finish your independent calculation before checking the editorial answer."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "reflection",
+          "quote_ids": [
+            "analects-review",
+            "epictetus-appearance",
+            "laozi-self"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Quote candidates: analects-review, epictetus-appearance, laozi-self; proposed primary analects-review.",
+          "vi": {
+            "prompt": "Bốn tiêu chí × điểm 0/1/2: (1) tính đúng mỗi vùng accuracy/recall/FPR/selection-rate và mẫu số; (2) chỉ rõ recall/selection disparity bằng điểm phần trăm và giải thích missed cases; (3) vạch ra vì sao accuracy chung không xác nhận fairness và nêu 2 evidence gaps; (4) nêu giới hạn model inter",
+            "actions": [
+              {
+                "label": "Permutation importance bảo khoảng cách gây trễ hả?",
+                "reply": "Không. Nó đo độ giảm score khi tráo feature, không phải thử can thiệp nhân quả."
+              },
+              {
+                "label": "T làm đúng số rồi, đủ giỏi chưa?",
+                "reply": "Số học là một phần. Còn phải biết giới hạn kết luận nữa."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "Four 0/1/2 dimensions: (1) correct subgroup formulas/denominators; (2) correct recall and selection-rate disparities and their operational meaning; (3) identify the overall-accuracy fallacy and request two pieces of missing evidence; (4) interpret model-inspection limits including correlatio",
+            "actions": [
+              {
+                "label": "Does permutation importance mean distance causes delay?",
+                "reply": "No. It measures score sensitivity to shuffling, not causal intervention."
+              },
+              {
+                "label": "Are correct calculations enough?",
+                "reply": "Only partway. Good judgment also states what the evidence cannot tell."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        },
+        {
+          "stage": "extension",
+          "quote_ids": [
+            "analects-peers",
+            "zhuangzi-limits",
+            "mill-other-side"
+          ],
+          "missing_quote_ids": [],
+          "sourceQuoteHeading": "Quote candidates: analects-peers, zhuangzi-limits, mill-other-side; proposed primary analects-peers.",
+          "vi": {
+            "prompt": "- [Fairlearn 0.15 fairness context](https://fairlearn.org/v0.15/user_guide/fairness_in_machine_learning.html), [group assessment](https://fairlearn.org/v0.15/user_guide/assessment/perform_fairness_assessment.html), [common fairness metrics](https://fairlearn.org/v0.15/user_guide/assessment/common_fairness_metrics.html)",
+            "actions": [
+              {
+                "label": "Có nên xoá hết thuộc tính nhóm khỏi mô hình?",
+                "reply": "Chưa chắc. Proxy vẫn có thể tồn tại; hãy kiểm tác động và dữ liệu."
+              },
+              {
+                "label": "Không có đủ mẫu từng nhóm thì sao?",
+                "reply": "Đánh dấu bất định, đừng lấy số lẻ làm bản án."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          },
+          "en": {
+            "prompt": "- [Fairlearn v0.15 human context](https://fairlearn.org/v0.15/user_guide/fairness_in_machine_learning.html), [group metrics](https://fairlearn.org/v0.15/user_guide/assessment/common_fairness_metrics.html), [Fairlearn assessment](https://fairlearn.org/v0.15/user_guide/assessment/perform_fairness_assessment.html), [sklea",
+            "actions": [
+              {
+                "label": "Should we remove every group attribute?",
+                "reply": "Not automatically; proxies and deployment effects can remain."
+              },
+              {
+                "label": "What if subgroup samples are too small?",
+                "reply": "Report uncertainty instead of pretending a fragile gap is decisive."
+              }
+            ],
+            "promptOrigin": "author_lesson_excerpt"
+          }
+        }
+      ]
+    },
+    "technique": {
+      "primary": "L2-T06",
+      "status": "source_mapped_not_release_approved"
     }
   },
   "rights": {
@@ -175,7 +481,7 @@
     "sourceBodyCharacters": 31152
   },
   "normalization": {
-    "status": "sectioned_needs_academic_rights_and_release_review",
+    "status": "structurally_mapped_needs_rights_review",
     "counts": {
       "vi": {
         "chapters": 8,

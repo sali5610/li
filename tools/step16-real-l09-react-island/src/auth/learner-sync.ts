@@ -1,5 +1,5 @@
 import {bindNeonAccount} from '../sync/neon-session.js';
-import {releasedLessonIds} from '../learning/released-lessons.js';
+import {learnableLessonIds} from '../learning/released-lessons.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
 import {storageKey,type JsonValue,type ItemType} from '../sync/contract.js';
 import {PrivateDeviceStore} from '../sync/local-dexie.js';
@@ -18,7 +18,7 @@ import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
  * AND their transactionally durable offline outbox, then syncs using the signed
  * Neon Data API. No synthetic attempts, second app shell, or manual sync button.
  */
-const LESSONS=releasedLessonIds; // Only manifest + explicitly available catalog lessons
+const LESSONS=learnableLessonIds; // Released lessons + personal-use drafts on invited staging ONLY
 const OWNER='li.sync.local-owner.v1';
 const KEY=(id:string)=>'li.review.'+id+'.v1';
 const CHECKPOINT=(uid:string,id:string)=>'li.sync.checkpoint.v1:'+uid+':'+id;

@@ -250,7 +250,7 @@ async function capture(uid:string,api:NeonUserApi|null):Promise<Snapshot[]>{
  return snapshots;
 }
 /** Hydration is skipped if the learner edited the native UI during the request. */
-async function hydrate(uid:string,snapshots:Snapshot[],retry:()=>void):Promise<boolean>{
+async function hydrate(uid:string,snapshots:Snapshot[],retry:()=>void,onHydrated?:(id:string)=>void):Promise<boolean>{
  let restored=false;
  for(const {id,raw} of snapshots){
   const key=storageKey(uid,'lesson_attempt',id);
@@ -264,6 +264,7 @@ async function hydrate(uid:string,snapshots:Snapshot[],retry:()=>void):Promise<b
   if(!native||canonical(native)!==canonical(data)){
    localStorage.setItem(KEY(id),JSON.stringify(data));
    restored=true;
+   onHydrated?.(id);
   }
  }
  return restored;
@@ -349,8 +350,11 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
       throw new Error('SIGNED_LEARNER_READBACK_FAILED');
     }
    }
-   const changed=await hydrate(uid,snapshots,()=>{pending=true;});
-   const personalChanged=await hydratePersonalState(uid,personal,store,()=>{pending=true;});
+   const lessonIds:string[]=[];
+   const changed=await hydrate(uid,snapshots,()=>{pending=true;},id=>lessonIds.push(id));
+   const personalKeys:string[]=[];
+   const personalChanged=await hydratePersonalState(uid,personal,store,
+    ()=>{pending=true;},key=>personalKeys.push(key));
    const state=await store.counts(uid);
    if(state.conflicts)report('conflict');
    else if(state.pending)report('queued');
@@ -368,7 +372,13 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
     }));
    }
    transientRetries=0;
-   if((changed||personalChanged)&&!disposed)window.location.reload();
+   // In-place page state refresh; never clear an open editor or scroll position.
+   if(!disposed&&personalChanged)window.dispatchEvent(new CustomEvent('li:personal-sync-applied',{
+    detail:{accountId:uid,keys:personalKeys}
+   }));
+   if(!disposed&&changed)window.dispatchEvent(new CustomEvent('li:lesson-sync-applied',{
+    detail:{accountId:uid,lessonIds}
+   }));
   }catch(error){
    const code=error instanceof Error?error.message:'';
    const authorizationFailure=code==='INVITE_REVOKED'||code==='SESSION_CHANGED'||
@@ -390,11 +400,18 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
   if(hasPersonalLocalChanges(uid,observed))schedule();
  };
  const resumed=()=>schedule();
+ const onVisibility=()=>{if(document.visibilityState==='visible')schedule();};
+ // Poll only while signed tab is visible. Avoid a realtime dependency.
+ const livePoll=setInterval(()=>{
+  if(!disposed&&activeSync===current&&document.visibilityState==='visible'&&navigator.onLine)
+   schedule();
+ },20000);
  const onPersonalEvent=()=>{if(hasPersonalLocalChanges(uid,observed))schedule();};
  document.addEventListener('input',changed);
  document.addEventListener('change',changed);
  document.addEventListener('click',changed);
  window.addEventListener('focus',resumed);
+ document.addEventListener('visibilitychange',onVisibility);
  window.addEventListener('online',resumed);
  window.addEventListener('li:lesson-submitted',resumed);
  window.addEventListener('li:lesson-attempt-changed',resumed);
@@ -407,11 +424,13 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
  void run();
  return()=>{
   disposed=true;
+  clearInterval(livePoll);
   if(timer!==null)clearTimeout(timer);
   document.removeEventListener('input',changed);
   document.removeEventListener('change',changed);
   document.removeEventListener('click',changed);
   window.removeEventListener('focus',resumed);
+  document.removeEventListener('visibilitychange',onVisibility);
   window.removeEventListener('online',resumed);
   window.removeEventListener('li:lesson-submitted',resumed);
   window.removeEventListener('li:lesson-attempt-changed',resumed);

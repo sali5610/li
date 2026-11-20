@@ -85,12 +85,36 @@ function CatalogCard({number,eyebrow,title,detail,onOpen,locale,image}:{
    onClick={onOpen}>{locale==='vi'?'Khám phá':'Explore'}</Button>
  </Card>;
 }
+// In-memory only: a return from a lesson should land on the course row the
+// learner chose, not force them to find it again. Never persist this per-user UI.
+let pendingCatalogReturn:{path:string;top:number}|null=null;
 function Catalog(){
  const reduced=useReducedMotion();
  const locale=useLocale();
  const path=useCatalogPath();
  const [,forceProgress]=useState(0);
  const [lessonNavError,setLessonNavError]=useState('');
+ useEffect(()=>{
+  const onRoute=(event:Event)=>{
+   if((event as CustomEvent<{route?:string}>).detail?.route!=='catalog'||!pendingCatalogReturn)return;
+   const previous=pendingCatalogReturn;
+   pendingCatalogReturn=null;
+   window.requestAnimationFrame(()=>{
+    if(app.liCatalog?.getPath().join('/')===previous.path)
+     window.scrollTo({top:previous.top,left:0,behavior:'instant'});
+   });
+  };
+  const onAuth=(event:Event)=>{
+   if((event as CustomEvent<{verified?:boolean}>).detail?.verified===false)
+    pendingCatalogReturn=null;
+  };
+  window.addEventListener('li:route-changed',onRoute);
+  window.addEventListener('li:auth-verified-changed',onAuth);
+  return()=>{
+   window.removeEventListener('li:route-changed',onRoute);
+   window.removeEventListener('li:auth-verified-changed',onAuth);
+  };
+ },[]);
  useEffect(()=>{
   const update=()=>forceProgress(x=>x+1);
   window.addEventListener('li:personal-sync-applied',update);
@@ -140,14 +164,27 @@ function Catalog(){
   (locale==='vi'?'Những lối đi khác nhau vào cùng một thư viện tri thức.':
    'Different paths into one library of knowledge.');
  const chooseLesson=(item:Lesson)=>{
+  // The canonical router still owns history/deep links. This only remembers
+  // the current Catalog scroll until returning to the SAME course path.
+  const previousReturn=pendingCatalogReturn;
+  pendingCatalogReturn={path:path.slice(0,3).join('/'),top:window.scrollY};
   const personalRoute=personalStudyRoute(item.id);
   if(personalRoute){
    if(!openRoute(personalRoute)){
-    setLessonNavError('Bài học chưa tải được. Thử tải lại trang; tiến độ cũ vẫn được giữ.');
+    pendingCatalogReturn=previousReturn;
+    setLessonNavError(locale==='vi'?'Bài học chưa tải được. Thử tải lại trang; tiến độ cũ vẫn được giữ.':
+     'The lesson could not open. Reload to try again; existing progress is preserved.');
    }else setLessonNavError('');
    return;
   }
-  if(canOpenLesson(item)){app.liCatalog?.openLesson(item.id);return;}
+  if(canOpenLesson(item)){
+   if(app.liCatalog?.openLesson(item.id)!==true){
+    pendingCatalogReturn=previousReturn;
+    setLessonNavError(locale==='vi'?'Bài học hiện chưa mở được.':'This lesson is temporarily unavailable.');
+   }else setLessonNavError('');
+   return;
+  }
+  pendingCatalogReturn=previousReturn;
   // Outlines without content remain non-learnable.
   openPath([...path.slice(0,3),item.id]);
  };

@@ -110,6 +110,7 @@ jobs:
           cp tools/step16-real-l09-react-island/src/auth/staging-gate.css site/assets/
           node tools/build_search_pack.mjs
           node tools/test_real_content_search.mjs
+          bash tools/test_search_rendered.sh
           touch site/.nojekyll
           git diff --exit-code -- site/
           python3 - <<'PY'
@@ -229,6 +230,8 @@ jobs:
           set -euo pipefail
           npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-config.cjs
           test -s site/sw.js
+          grep -Fq 'assets/li-search-adapter.mjs' site/sw.js
+          grep -Fq 'assets/li-search-graph.json' site/sw.js
           test -s site/manifest.webmanifest
           test -s site/assets/pwa-register.js
           python3 - <<'PY'

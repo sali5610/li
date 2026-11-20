@@ -16,7 +16,7 @@ for(const group of groups)for(const field of group.fields||[])for(const course o
   items.push({type:"lesson",title:lesson.title,id:lesson.id,context,group:group.id,field:field.id,course:course.id,route:lesson.route||null,published:lesson.published===true,sourceUrl:field.source||null});
  }
 }
-let sourceIndex=null,sourceAPI=null;
+let sourceIndex=null,sourceAPI=null,sourceStatus='loading';
 const canOpenLesson=()=>document.documentElement.classList.contains("li-auth-verified")
  && !document.documentElement.classList.contains("li-account-open");
 function score(item,query,terms){
@@ -72,7 +72,14 @@ function legacyRender(value){
  }
  const count=document.createElement("p");count.className="small";count.setAttribute("role","status");
  count.textContent=ranked.length+" bài đã phát hành";
- output.append(count);ranked.forEach(x=>output.append(legacyRow(x.item)));
+ output.append(count);
+ const status=document.createElement("p");status.className="small";
+ status.setAttribute("role","status");
+ status.textContent=sourceStatus==="error"
+  ?"Liên kết quan hệ chưa tải được; đây là kết quả và nguồn danh mục."
+  :"Đang tải các liên kết quan hệ có nguồn…";
+ output.append(status);
+ ranked.forEach(x=>output.append(legacyRow(x.item)));
 }
 function openRealLesson(record){
  const route=sourceAPI.resolveLessonRoute(record,{
@@ -152,7 +159,7 @@ function render(value){
 }
 input.addEventListener("input",e=>render(e.target.value));
 render(input.value);
-window.liSearch={render};
+window.liSearch={render,getStatus:()=>sourceStatus};
 Promise.all([
  import(new URL("./assets/li-search-adapter.mjs",document.baseURI).href),
  fetch(new URL("./assets/li-search-graph.json",document.baseURI),{credentials:"same-origin"}).then(response=>{
@@ -163,6 +170,11 @@ Promise.all([
  if(graph.status!=="reviewed_public_subset_of_editorial_pilot"||graph.demoOnly!==true)throw Error("Unexpected search graph version");
  sourceIndex=api.buildRealContentIndex({catalog:groups,academicGraph:graph});
  sourceAPI=api;
+ sourceStatus="ready";
  render(input.value);
-}).catch(()=>{ /* Native published-lesson search remains available offline. */ });
+}).catch(()=>{
+ // Don't silently claim graph evidence is available when only catalog lookup works.
+ sourceStatus="error";
+ render(input.value);
+});
 })();

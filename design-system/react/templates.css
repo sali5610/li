@@ -11,7 +11,6 @@
  color:var(--moss);text-decoration:none;font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
 .li-ds-app-navigation a[aria-current="page"]{border-bottom:2px solid var(--moss);font-weight:var(--li-weight-700)}
 .li-ds-app-utilities{display:flex;align-items:center;flex-wrap:wrap;gap:var(--li-space-2)}
-.li-ds-app-header a:focus-visible{outline:3px solid var(--li-color-general-focus-ring);outline-offset:var(--li-space-1)}
 .li-ds-home-mirror{display:grid;grid-template-areas:"canvas";overflow:hidden;isolation:isolate;
  background:var(--paper-2);min-height:24rem;border:1px solid var(--rule);position:relative}
 .li-ds-home-mirror-art,.li-ds-home-mirror-content{grid-area:canvas;min-width:0}

@@ -122,8 +122,9 @@ function actReact(kind,value){
  }
  if(kind==="prev"){moveMonth(-1);return;}
  if(kind==="next"){moveMonth(1);return;}
- const byAction={checkin:"li-diary-checkin-now",consent:"li-diary-consent",delete:"li-diary-delete"};
- if(byAction[kind])$(byAction[kind])?.click();
+ if(kind==="checkin"){openCheckin(value||"li-diary-checkin-now");return;}
+ if(kind==="consent"){toggleRecording();return;}
+ if(kind==="delete"){deleteDiary();return;}
 }
 function notifyReactDiary(){
  if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
@@ -135,12 +136,23 @@ $("li-diary-bars").addEventListener("click",selectDate);
 function moveMonth(n){const d=new Date(month+"-01T12:00:00");d.setMonth(d.getMonth()+n);month=localDay(d).slice(0,7);selected=month+"-"+String(Math.min(Number(selected.slice(8)),new Date(d.getFullYear(),d.getMonth()+1,0).getDate())).padStart(2,"0");render();}
 $("li-diary-prev").addEventListener("click",()=>moveMonth(-1));
 $("li-diary-next").addEventListener("click",()=>moveMonth(1));
-$("li-diary-checkin-now").addEventListener("click",()=>window.dispatchEvent(new CustomEvent("li:open-checkin",{detail:{triggerId:"li-diary-checkin-now"}})));
-$("li-diary-consent").addEventListener("click",()=>{
- try{if(enabled){localStorage.setItem(CONSENT,"false");if(localStorage.getItem(CONSENT)!=="false")throw Error("readback");enabled=false;}else{localStorage.setItem(CONSENT,"true");if(localStorage.getItem(CONSENT)!=="true")throw Error("readback");enabled=true;}}catch(e){storageError=true;}render();personalChanged();
-});
-$("li-diary-delete").addEventListener("click",()=>{
- if(!window.confirm("Xóa toàn bộ lịch thể trạng và hoạt động trên thiết bị này? Bạn có 7 giây để hoàn tác."))return;
+function openCheckin(triggerId="li-diary-checkin-now"){
+ window.dispatchEvent(new CustomEvent("li:open-checkin",{detail:{triggerId}}));
+}
+function toggleRecording(){
+ if(storageError)return false;
+ try{
+  const next=enabled?"false":"true";
+  localStorage.setItem(CONSENT,next);
+  if(localStorage.getItem(CONSENT)!==next)throw Error("readback");
+  enabled=next==="true";
+ }catch(e){storageError=true;}
+ render();personalChanged();
+ return !storageError;
+}
+function deleteDiary(){
+ if(storageError||!Object.keys(diary.days).length)return false;
+ if(!window.confirm("Xóa toàn bộ lịch thể trạng và hoạt động trên thiết bị này? Bạn có 7 giây để hoàn tác."))return false;
  const prior=JSON.parse(JSON.stringify(diary));
  try{
   const empty=JSON.stringify({schema:1,days:{}});
@@ -168,8 +180,12 @@ $("li-diary-delete").addEventListener("click",()=>{
     diary=restored;render();personalChanged();return true;
    }catch(error){storageError=true;render();return false;}
   });
- }catch(e){storageError=true;render();if(typeof toast==="function")toast("Không xóa được nhật ký. Hãy kiểm tra bộ nhớ trình duyệt.");}
-});
+ }catch(e){storageError=true;render();if(typeof toast==="function")toast("Không xóa được nhật ký. Hãy kiểm tra bộ nhớ trình duyệt.");return false;}
+ return true;
+}
+$("li-diary-checkin-now").addEventListener("click",()=>openCheckin());
+$("li-diary-consent").addEventListener("click",toggleRecording);
+$("li-diary-delete").addEventListener("click",deleteDiary);
 window.addEventListener("li:l1-physical-checkin",e=>{
  const x=e.detail;
  if(!x||!["yes","no","unsure"].includes(x.sleep)||!["yes","no","unsure"].includes(x.move)||!["yes","no","unsure"].includes(x.rest))return;

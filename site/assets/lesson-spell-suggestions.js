@@ -47,6 +47,7 @@ function paint(page,map){
   const button=document.createElement("button");
   button.type="button";button.className="action alt li-lesson-spell-action";
   button.dataset.method=entry.shortId;
+  button.dataset.spellPractice=index===0?"true":"false";
   button.textContent=en?(index?"See optional spell":"Try this spell"):
    (index?"Xem chú bổ trợ":"Thử thi triển");
   button.setAttribute("aria-label",button.textContent+": "+heading.textContent);

@@ -11,6 +11,7 @@ import {mountResearchAndCase} from '../shell/research-case.js';
 import {mountHomeAndCatalog} from '../shell/home-catalog.js';
 import {mountGuideAndLibrary} from '../shell/guide-library.js';
 import {mountJournalAndSettings} from '../shell/journal-settings.js';
+import {mountCheckinDialog} from '../shell/checkin-dialog.js';
 
 // Unified GitHub Pages staging: no guest app. React verifies signed invitation.
 const root=document.getElementById('li-staging-auth-root');
@@ -106,3 +107,7 @@ else mountGuideAndLibrary();
 // Signed-in only: React Journal and Settings reuse one native private-data/consent owner.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountJournalAndSettings,{once:true});
 else mountJournalAndSettings();
+
+// React owns the physical-first Check-in modal and session state, without the legacy form.
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountCheckinDialog,{once:true});
+else mountCheckinDialog();

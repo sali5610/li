@@ -96,6 +96,7 @@ jobs:
           set -euo pipefail
           npm install --no-audit --no-fund
           npm run extract
+          node ../checkin_adaptation_regression.mjs
           npm run test:sync
           npx tsc --noEmit
           npx vite build --config vite.staging-app.config.mjs

@@ -239,7 +239,7 @@ function Home(){
  return <div data-li-react-screen="home" className="hero"
   role="region" aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn">
   <div className="hero-left">
-   <Button variant="primary" className="home-checkin" onClick={()=>legacyAction('checkin')}>
+   <Button variant="primary" className="home-checkin" onClick={()=>window.dispatchEvent(new CustomEvent('li:open-checkin',{detail:{triggerId:'li-react-home-host'}}))}>
     <LiIcon name="check" size={18}/> Check-in hôm nay
    </Button>
    <Heading level={1} role="headline">Mọi câu hỏi<br/>đều có rễ.</Heading>

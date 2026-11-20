@@ -135,7 +135,7 @@ $("li-diary-bars").addEventListener("click",selectDate);
 function moveMonth(n){const d=new Date(month+"-01T12:00:00");d.setMonth(d.getMonth()+n);month=localDay(d).slice(0,7);selected=month+"-"+String(Math.min(Number(selected.slice(8)),new Date(d.getFullYear(),d.getMonth()+1,0).getDate())).padStart(2,"0");render();}
 $("li-diary-prev").addEventListener("click",()=>moveMonth(-1));
 $("li-diary-next").addEventListener("click",()=>moveMonth(1));
-$("li-diary-checkin-now").addEventListener("click",()=>{const source=$("li-diary-checkin-now");const homeCheckin=$("checkin");if(homeCheckin){homeCheckin.click();$("checkin-modal").dataset.trigger=source.id;}});
+$("li-diary-checkin-now").addEventListener("click",()=>window.dispatchEvent(new CustomEvent("li:open-checkin",{detail:{triggerId:"li-diary-checkin-now"}})));
 $("li-diary-consent").addEventListener("click",()=>{
  try{if(enabled){localStorage.setItem(CONSENT,"false");if(localStorage.getItem(CONSENT)!=="false")throw Error("readback");enabled=false;}else{localStorage.setItem(CONSENT,"true");if(localStorage.getItem(CONSENT)!=="true")throw Error("readback");enabled=true;}}catch(e){storageError=true;}render();personalChanged();
 });

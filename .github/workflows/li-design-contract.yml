@@ -45,3 +45,18 @@ jobs:
         run: python3 tools/audit_design_tokens.py --check-zero
       - name: Check legacy intrinsic and scene debt baseline
         run: python3 tools/audit_design_tokens.py --check-baseline
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Typecheck and bundle the one canonical React Studio
+        working-directory: design-system/react
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund
+          npm run check
+          npm run build
+          node --check ../../site/design-system/studio.js
+          test -s ../../site/design-system/react-dialog.js
+          test -s ../../site/design-system/react-molecules.js
+          test -s ../../site/design-system/react-dialog.css
+          test -s ../../site/design-system/react-molecules.css

@@ -25,7 +25,8 @@ type SettingsView={
  importLoading:boolean;importError:string
 };
 type DiaryPort={getView:()=>DiaryView;act:(kind:string,value?:string)=>void};
-type SettingsPort={getView:()=>SettingsView;act:(kind:string,key?:string,value?:string|boolean)=>void};
+type SettingsPort={getView:()=>SettingsView;act:(kind:string,key?:string,value?:string|boolean)=>void;
+ setVoice:(kind:'calm'|'mute',enabled:boolean)=>boolean};
 type AppWindow=Window&{
  liPersonalDiary?:DiaryPort;liSettingsPort?:SettingsPort;
  liLanguage?:{get:()=>string}
@@ -257,9 +258,9 @@ export function Settings(){
       <Text role="body">{copy('Lão hơi tự phụ, đãng trí và có thể nhận sai khi bị phản bác bằng lý lẽ hợp lệ.',
        'A proud, forgetful mentor who can change his mind when you bring sound reasoning.')}</Text>
       <Checkbox label={copy('Giọng Dịu — bớt cà khịa','Gentle voice — less teasing')}
-       checked={view.calm} onChange={event=>act('calm',undefined,event.target.checked)}/>
+       checked={view.calm} onChange={event=>app.liSettingsPort?.setVoice('calm',event.target.checked)}/>
       <Checkbox label={copy('Im Lặng — tắt lời thoại','Silence — mute companion dialogue')}
-       checked={view.mute} onChange={event=>act('mute',undefined,event.target.checked)}/>
+       checked={view.mute} onChange={event=>app.liSettingsPort?.setVoice('mute',event.target.checked)}/>
       <div className="buddy-address-settings">
        <Heading level={3} role="titleSmall">{copy('Lão gọi bạn thế nào?','How should Lao Ly address you?')}</Heading>
        <Text role="support">{copy('Để trống để dùng cách gọi mặc định.','Leave blank to use the default address.')}</Text>

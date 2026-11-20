@@ -241,8 +241,9 @@ function pick(ctx=environment()){
  * Rotation, original-language text, source rights and VI/EN metadata remain
  * managed by this one S121 engine; React never duplicates the quote bank. */
 function getView(){
- if((typeof buddyDebateActive==="boolean"&&buddyDebateActive)||
-    document.getElementById("calm-toggle")?.checked)return null;
+ const calm=window.liBuddyVoice?.get?.()?.calm ??
+  document.getElementById("calm-toggle")?.checked; // native fallback
+ if((typeof buddyDebateActive==="boolean"&&buddyDebateActive)||calm)return null;
  const item=pick();
  if(!item)return null;
  const inEnglish=window.liLanguage?.get?.()==="en";

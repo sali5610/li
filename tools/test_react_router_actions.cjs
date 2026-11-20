@@ -55,4 +55,18 @@ assert.match(old,/else if\(kind==="resetNames"\)liResetBuddyNames\(\)/);
 assert.doesNotMatch(old,/field\.dispatchEvent\(new Event\(kind==="nicknameInput"/);
 assert.doesNotMatch(old,/el\("buddy-names-reset"\)\?\.click\(\)/);
 assert.match(settings,/normalizeDraft\(draft\)!==value/);
+// Calm / Mute must be direct session actions, not clicks on hidden native inputs.
+const buddy=read('site/assets/laoly-context-s112.js');
+assert.match(old,/const liBuddyVoice=\{/);
+assert.match(old,/window\.liBuddyVoice=Object\.freeze\(\{get:/);
+assert.match(old,/setVoice:\(kind,enabled\)=>liSetBuddyVoice\(kind,enabled\)/);
+assert.match(settings,/app\.liSettingsPort\?\.setVoice\('calm',event\.target\.checked\)/);
+assert.match(settings,/app\.liSettingsPort\?\.setVoice\('mute',event\.target\.checked\)/);
+assert.match(old,/calm:liBuddyVoice\.calm,mute:liBuddyVoice\.mute/);
+assert.match(old,/field\?\.addEventListener\("change",\(\)=>liSetBuddyVoice\(kind,field\.checked\)\)/);
+assert.doesNotMatch(old,/field&&field\.checked!==Boolean\(value\)\)field\.click\(\)/);
+assert.match(buddy,/const calm=buddyVoice\("calm"\)/);
+assert.match(buddy,/if\(buddyVoice\("mute"\)\)/);
+assert.match(buddy,/document\.getElementById\(kind==="calm"/); // native fallback only
+
 console.log('PASS explicit React routes and Back: direct actions, canonical history and search, no hidden click');

@@ -55,6 +55,9 @@ function validHistory(a:Attempt):boolean{
   (typeof a.rubricVersion!=='string'||a.rubricVersion.length>80))return false;
  if(a.reviewedAt!==undefined&&a.reviewedAt!==null&&
   (typeof a.reviewedAt!=='string'||!Number.isFinite(Date.parse(a.reviewedAt))))return false;
+ if(a.answerRevealed!==undefined&&typeof a.answerRevealed!=='boolean')return false;
+ if(a.answerRevealed===true&&!a.submitted)return false;
+ if(a.reviewed&&a.answerRevealed===false)return false;
  if(a.attemptNumber!==undefined&&
   (!Number.isSafeInteger(a.attemptNumber)||a.attemptNumber<1))return false;
  if(a.attemptHistory===undefined)return true;
@@ -65,6 +68,7 @@ function validHistory(a:Attempt):boolean{
    typeof p.submittedAt!=='string'||!Number.isFinite(Date.parse(p.submittedAt))||
    !Array.isArray(p.ratings)||p.ratings.length!==4||
    p.ratings.some(x=>x!==0&&x!==1&&x!==2)||
+   typeof p.answerRevealed!=='boolean'||!p.answerRevealed||
    typeof p.contentVersion!=='string'||!p.contentVersion||p.contentVersion.length>50||
    typeof p.rubricVersion!=='string'||!p.rubricVersion||p.rubricVersion.length>80||
    !Number.isSafeInteger(p.attemptNumber)||p.attemptNumber<=last||

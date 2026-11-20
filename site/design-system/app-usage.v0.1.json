@@ -1,0 +1,254 @@
+{
+  "schemaVersion": 1,
+  "checkedOn": "2026-11-20",
+  "status": "source_observed_only",
+  "scope": "UX-DS-35 ONT-02 real L09 subset; NOT a complete approved UI ontology graph",
+  "consumer": {
+    "screenId": "screen:lesson:L09-1-2",
+    "title": "Invited L09 React learning journey",
+    "repoRef": "c97f099d141b9e7dd4ec020f92bbc3051f8fc3bd",
+    "path": "tools/step16-real-l09-react-island/src/learning/LearningJourney.tsx",
+    "signature": "data-li-react-journey=\"L09-1-2\"",
+    "auth": "invite-only",
+    "deployment": "GitHub Pages staging source only; no Cloudflare production claim"
+  },
+  "ontology": {
+    "registry": "docs/ontology/registry.v0.1.json",
+    "supportedPredicate": "USES_TOKEN",
+    "fromKind": "Component",
+    "toKind": "DesignToken",
+    "linkState": "source_observed_not_editorially_approved",
+    "remainingGap": "No Component→Screen predicate is defined in registry. Screen usage is an observation, not a typed graph edge. Pattern/Slot/QA mappings remain open.",
+    "separateDraft": "ONT-02 PR #137 remains unmerged"
+  },
+  "components": [
+    {
+      "component": "Button",
+      "studioId": "button",
+      "kind": "Component",
+      "source": "design-system/react/Components.tsx",
+      "styleSource": "design-system/react/components.css",
+      "selector": ".li-ds-button",
+      "relation": "USES_TOKEN",
+      "tokens": [
+        {
+          "kind": "DesignToken",
+          "name": "--moss"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--forest"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--cream"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--paper"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-space-12"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-space-3"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-space-4"
+        }
+      ],
+      "variant": "primary · secondary · ghost",
+      "observedState": "step-current, disabled while gated/saving, clickable",
+      "use": "Stage navigation, retry, submit and back-to-catalog actions",
+      "rule": "Only an actual successful write can claim completion",
+      "evidence": "Source inspection: TSX declaration, L09 JSX usage and generated CSS var() reference; no G2/Safari approval"
+    },
+    {
+      "component": "Card",
+      "studioId": "card",
+      "kind": "Component",
+      "source": "design-system/react/Components.tsx",
+      "styleSource": "design-system/react/components.css",
+      "selector": ".li-ds-card",
+      "relation": "USES_TOKEN",
+      "tokens": [
+        {
+          "kind": "DesignToken",
+          "name": "--paper-2"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--moss"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--ink"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-space-6"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-space-4"
+        }
+      ],
+      "variant": "flat-study",
+      "observedState": "read/guided/practice/feedback/progress surfaces",
+      "use": "Five lesson panels for reading, practice, rubric feedback and progress",
+      "rule": "Card paint never implies mastery or persisted state",
+      "evidence": "Source inspection: TSX declaration, L09 JSX usage and generated CSS var() reference; no G2/Safari approval"
+    },
+    {
+      "component": "Field",
+      "studioId": "field",
+      "kind": "Component",
+      "source": "design-system/react/Controls.tsx",
+      "styleSource": "design-system/react/controls.css",
+      "selector": ".li-atom-field",
+      "relation": "USES_TOKEN",
+      "tokens": [
+        {
+          "kind": "DesignToken",
+          "name": "--porcelain"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--rule"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--ink"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-space-12"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-space-3"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-color-danger-fill"
+        }
+      ],
+      "variant": "textarea",
+      "observedState": "controlled, labeled, disabled after submission/lock",
+      "use": "Guided draft and four independent practice answers",
+      "rule": "Field itself does not confirm a cloud save",
+      "evidence": "Source inspection: TSX declaration, L09 JSX usage and generated CSS var() reference; no G2/Safari approval"
+    },
+    {
+      "component": "Heading",
+      "studioId": "heading",
+      "kind": "Component",
+      "source": "design-system/react/Atoms.tsx",
+      "styleSource": "design-system/react/atoms.css",
+      "selector": ".li-atom-heading",
+      "relation": "USES_TOKEN",
+      "tokens": [
+        {
+          "kind": "DesignToken",
+          "name": "--li-font-editorial"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--moss"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-type-headline"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-type-title-lg"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-type-title-md"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-type-title-sm"
+        }
+      ],
+      "variant": "headline · titleLarge · titleMedium · titleSmall",
+      "observedState": "h1/h2/h3 semantics, noninteractive",
+      "use": "Lesson title, theory and rubric section hierarchy",
+      "rule": "Use document structure, not only text size",
+      "evidence": "Source inspection: TSX declaration, L09 JSX usage and generated CSS var() reference; no G2/Safari approval"
+    },
+    {
+      "component": "Text",
+      "studioId": "text",
+      "kind": "Component",
+      "source": "design-system/react/Atoms.tsx",
+      "styleSource": "design-system/react/atoms.css",
+      "selector": ".li-atom-text",
+      "relation": "USES_TOKEN",
+      "tokens": [
+        {
+          "kind": "DesignToken",
+          "name": "--ink"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-font-ui"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-type-body"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-type-support"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-type-caption"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-leading-body"
+        }
+      ],
+      "variant": "body · support · caption",
+      "observedState": "readonly text, language from attempt locale",
+      "use": "Learning copy, caveats, sync status and rubric disclaimer",
+      "rule": "Differentiate locally saved, cloud synced and unknown",
+      "evidence": "Source inspection: TSX declaration, L09 JSX usage and generated CSS var() reference; no G2/Safari approval"
+    },
+    {
+      "component": "Progress",
+      "studioId": "progress",
+      "kind": "Component",
+      "source": "design-system/react/Atoms.tsx",
+      "styleSource": "design-system/react/atoms.css",
+      "selector": ".li-atom-progress",
+      "relation": "USES_TOKEN",
+      "tokens": [
+        {
+          "kind": "DesignToken",
+          "name": "--moss"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--paper-2"
+        },
+        {
+          "kind": "DesignToken",
+          "name": "--li-space-3"
+        }
+      ],
+      "variant": "determinate",
+      "observedState": "caller-owned value; explicit accessible label",
+      "use": "Attempt progress from answered/submitted/reviewed milestones",
+      "rule": "Do not infer mastery from page views",
+      "evidence": "Source inspection: TSX declaration, L09 JSX usage and generated CSS var() reference; no G2/Safari approval"
+    }
+  ]
+}

@@ -7,7 +7,7 @@ import React from 'react';
 import {
  Search,Check,Info,X,ChevronLeft,ChevronRight,BookOpen,Bookmark,
  Trash2,Menu,CalendarDays,Clock,Star,House,Settings,Layers,
- MessageCircle,TriangleAlert,Sparkles,Sparkle,ArrowRight,RotateCcw,
+ MessageCircle,TriangleAlert,Sparkles,Sparkle,ArrowRight,ArrowLeft,RotateCcw,
  Trees,LibraryBig,Archive,Feather,Settings2
 } from 'lucide-react';
 import type {LucideProps} from 'lucide-react';
@@ -19,7 +19,7 @@ export const iconRoles={
  calendar:CalendarDays,clock:Clock,star:Star,home:House,
  settings:Settings,layers:Layers,chat:MessageCircle,
  'alert-triangle':TriangleAlert,sparkles:Sparkles,sparkle:Sparkle,
- 'arrow-right':ArrowRight,refresh:RotateCcw,
+ 'arrow-right':ArrowRight,'arrow-left':ArrowLeft,refresh:RotateCcw,
  trees:Trees,'library-big':LibraryBig,archive:Archive,feather:Feather,'settings-2':Settings2
 } as const;
 export type LiIconRole=keyof typeof iconRoles;
@@ -43,6 +43,6 @@ export const lucideRoleNames={
  calendar:'CalendarDays',clock:'Clock',star:'Star',home:'House',
  settings:'Settings',layers:'Layers',chat:'MessageCircle',
  'alert-triangle':'TriangleAlert',sparkles:'Sparkles',sparkle:'Sparkle',
- 'arrow-right':'ArrowRight',refresh:'RotateCcw',
+ 'arrow-right':'ArrowRight','arrow-left':'ArrowLeft',refresh:'RotateCcw',
  trees:'Trees','library-big':'LibraryBig',archive:'Archive',feather:'Feather','settings-2':'Settings2'
 } as const satisfies Record<LiIconRole,string>;

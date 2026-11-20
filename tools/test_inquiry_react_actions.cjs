@@ -63,6 +63,10 @@ for(const [name,source] of [["Home",home],["Research/Case",research]]){
   name+" must not click/read hidden writing inputs/buttons");
 }
 assert(!research.includes("data-answer="),"React case buttons must not trigger native delegated answer handlers");
+assert.match(research,/library\.setCollectionFilter\('case'\);\s*return openRoute\('collection'\)/,
+ "Research Open Notebook must show the Case Notes drawer, not the general Library landing");
+assert.doesNotMatch(research,/data-focus="notebook-section"/,
+ "React Notebook entry must not rely on inert legacy focus attributes");
 assert.match(research,/function caseSnapshot\(answer:CaseChoice\):CaseSnapshot/,
  "React Case must own the saved question, scene and options without old HTML");
 assert.match(research,/selectedText:caseCopy\.options\[answer\]\.vi/,

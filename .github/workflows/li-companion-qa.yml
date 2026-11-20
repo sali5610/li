@@ -12,6 +12,7 @@ on:
       - 'tools/checkin_adaptation_regression.mjs'
       - 'tools/test_i18n_legacy.cjs'
       - 'tools/test_navigation.js'
+      - 'tools/test_inquiry_react_actions.cjs'
       - '.github/workflows/li-companion-qa.yml'
 
 permissions:
@@ -34,3 +35,5 @@ jobs:
         run: node tools/test_i18n_legacy.cjs
       - name: Check React backup and native navigation fallback
         run: node tools/test_navigation.js
+      - name: Check canonical React Case writer and Notebook readback
+        run: node tools/test_inquiry_react_actions.cjs

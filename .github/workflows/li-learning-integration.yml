@@ -37,6 +37,7 @@ jobs:
           node ../../tools/test_content_adapter.mjs
           node --check ../../site/assets/lesson-spell-suggestions.js
           node --check ../../site/assets/spell-practice.js
+          node ../../tools/test_spell_direct_engine.cjs
           node ../../tools/test_lesson_spell_suggestions.cjs
           node ../../tools/test_lesson_companion_react_stage.cjs
           (cd ../.. && node tools/test_buddy.js && node tools/test_quotes.js && node tools/test_laoly_react_parity.cjs)

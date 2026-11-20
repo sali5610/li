@@ -43,6 +43,8 @@ const l03T06en={
 };
 let root,guide,tabs,active=null,phase=0,exposure=null,feedback="",resumeNote="",privatePlaces=[],tabDraft=null;
 let activeLessonId=null,reviewedInSession=false,viewSession=0;
+let activeTab="guide",actionValues=null;
+const reactOwnsSpell=()=>window.liReactGuideDetailMounted===true;
 const T12_OWNER="li.sync.local-owner.v1";
 const T12_PREFIX="li.spell.t12.resume.v1:";
 let t12Draft={context:"",next:"",answer:""};
@@ -122,8 +124,10 @@ function setT12Draft(field,value){
  if(active!=="T12"||reviewedInSession||
     !["context","next","answer"].includes(field)||typeof value!=="string")return false;
  t12Draft[field]=value.slice(0,1200);
- const input=root?.querySelector("#sp-"+field);
- if(input)input.value=t12Draft[field];
+ if(!reactOwnsSpell()){
+  const input=root?.querySelector("#sp-"+field);
+  if(input)input.value=t12Draft[field];
+ }
  const saved=t12Write();
  notifyReactSpell();
  return saved;
@@ -149,12 +153,29 @@ const feedbackMarkup=raw=>{
 const field=f=>{const id="sp-"+f[0];const label='<span>'+escape(f[1])+'</span>';if(f[2])return '<fieldset class="spell-field"><legend>'+escape(f[1])+'</legend>'+f[2].map((o,i)=>'<label class="spell-option"><input type="'+(f[3]==="multi"?"checkbox":"radio")+'" name="'+id+'" value="'+i+'"><span>'+escape(o)+'</span></label>').join("")+'</fieldset>';return '<label class="spell-field" for="'+id+'">'+label+'<textarea id="'+id+'" rows="2" maxlength="1200"></textarea></label>';};
 const act=(a,t,cl="action")=>'<button type="button" class="'+cl+'" data-spell-action="'+a+'">'+t+'</button>';
 const fmt=t=>new Date(t).toLocaleString(window.liLanguage?.get?.()==="en"?"en-US":"vi-VN");
-const rawValue=id=>(root.querySelector("#sp-"+id)?.value||"").trim();
-const radio=id=>(root.querySelector('input[name="sp-'+id+'"]:checked')?.value??null);
-const checked=id=>[...root.querySelectorAll('input[name="sp-'+id+'"]:checked')].map(x=>x.value);
+// One canonical checker accepts React values directly; only native fallback
+// reads its own visible form when no React action is active.
+const rawValue=id=>actionValues!==null?
+ (typeof actionValues[id]==="string"?actionValues[id].trim():""):
+ (root?.querySelector("#sp-"+id)?.value||"").trim();
+const radio=id=>actionValues!==null?
+ (typeof actionValues[id]==="string"?actionValues[id]:null):
+ (root?.querySelector('input[name="sp-'+id+'"]:checked')?.value??null);
+const checked=id=>actionValues!==null?
+ (Array.isArray(actionValues[id])?actionValues[id]:[]):
+ [...(root?.querySelectorAll('input[name="sp-'+id+'"]:checked')||[])].map(x=>x.value);
 function scheduleRead(){try{const d=JSON.parse(localStorage.getItem("li.spell.t02.due.v1")||"null");return d&&Number.isFinite(d.due)?d:null}catch(e){return null}}
+function activateDueReview(){
+ if(active==="T02"&&phase===0){
+  const due=scheduleRead();if(due&&due.due<=Date.now())phase=1;
+ }
+}
 function draw(){
- if(!root||!active)return;
+ if(!active)return;
+ activateDueReview();
+ // Visible React exercises never require a second, hidden DOM rendering.
+ if(reactOwnsSpell()){notifyReactSpell();return;}
+ if(!root)return;
  const e=currentExercise();let inner="";
  if(phase===0){inner='<div class="spell-demo"><span class="kicker">BỐI CẢNH MẪU · ĐÃ ĐƯỢC GIỚI THIỆU</span><p>'+e.lesson+'</p></div><p>'+e.prompt+'</p>';
   if(e.mode==="due"){
@@ -195,6 +216,8 @@ function draw(){
 }
 function switchTab(which){
  const practice=which==="practice";
+ activeTab=practice?"practice":"guide";
+ if(reactOwnsSpell()||!root||!tabs){notifyReactSpell();return;}
  if(!practice&&!root.hidden){tabDraft=[...root.querySelectorAll("textarea,input")].map(x=>({value:x.value,checked:x.checked}));}
  guide.hidden=practice;root.hidden=!practice;
  const g=tabs.querySelector("#spell-tab-guide"),p=tabs.querySelector("#spell-tab-practice");
@@ -221,17 +244,20 @@ function open(id,tab="guide",lessonId=null){
   }
  }
  tabDraft=null;
- if(root)switchTab(tab==="practice"?"practice":"guide");
+ switchTab(tab==="practice"?"practice":"guide");
  notifyReactSpell();
 }
 function missing(){
  for(const f of currentExercise().fields){
-  if(f[2]){if(!root.querySelector('input[name="sp-'+f[0]+'"]:checked'))return f[1];}
-  else if(!rawValue(f[0]))return f[1];
+  if(f[2]){
+   const hasChoice=f[3]==="multi"?checked(f[0]).length>0:radio(f[0])!==null;
+   if(!hasChoice)return f[1];
+  }else if(!rawValue(f[0]))return f[1];
  }return "";
 }
 function showMessage(text){
  feedback=text;
+ if(reactOwnsSpell()||!root){notifyReactSpell();return;}
  let box=root.querySelector(".spell-feedback");
  if(!box){box=document.createElement("div");box.className="spell-feedback";box.setAttribute("role","status");box.tabIndex=-1;root.querySelector(".spell-activity-body").append(box);}
  box.innerHTML='<strong>Phản hồi để tự kiểm chứng</strong><p>'+feedbackMarkup(text)+'</p><p class="small">Đây là bài mẫu minh họa, không chứng nhận thành thạo hay kết quả học thuật ngoài nhiệm vụ.</p>'+
@@ -268,7 +294,7 @@ function check(){
  reviewedInSession=true; // feedback follows successfully stored clearing state
  showMessage(info);
  if(active==="T02")try{localStorage.removeItem("li.spell.t02.due.v1")}catch(err){}
- root.querySelector(".spell-feedback")?.focus();
+ if(!reactOwnsSpell())root?.querySelector(".spell-feedback")?.focus();
 }
 function next(){
  const e=currentExercise();
@@ -296,6 +322,7 @@ function notifyReactSpell(){
 }
 function getView(){
  if(!active||!exercises[active])return null;
+ activateDueReview();
  const e=currentExercise(),mode=e.mode||"direct";
  let fields=[];
  if(phase===0){
@@ -306,7 +333,7 @@ function getView(){
  else fields=e.fields;
  const due=mode==="due"?scheduleRead():null;
  return {
-  active,title:e.title,mode,phase,tab:root&&!root.hidden?"practice":"guide",
+  active,title:e.title,mode,phase,tab:activeTab,
   lesson:e.lesson,prompt:e.prompt,fields:fields.map(field=>({
    id:field[0],label:field[1],options:Array.isArray(field[2])?field[2].slice():null,
    choiceKind:field[3]==="multi"?"multi":"radio"
@@ -318,26 +345,61 @@ function getView(){
   t12StorageError:active==="T12"?t12StorageError:""
  };
 }
-function performReact(action,values={}){
- if(!root||!active)return false;
- if(!["next","check","reset","schedule","clear"].includes(action))return false;
- if(values&&typeof values==="object"){
-  for(const [key,val] of Object.entries(values)){
-   const field=currentExercise().fields.find(item=>item[0]===key);
-   const synthetic=key==="answer"||key.startsWith("recall")||key==="number";
-   if(!field&&!synthetic)continue;
-   const textarea=root.querySelector("#sp-"+key);
-   if(textarea&&typeof val==="string"){textarea.value=val.slice(0,1200);continue;}
-   const options=root.querySelectorAll('input[name="sp-'+key+'"]');
-   const chosen=Array.isArray(val)?val:[val];
-   for(const input of options)input.checked=chosen.includes(input.value);
-  }
+/** Both frontends invoke the same 13-technique action engine. React values
+ * are supplied to the checker directly; native fallback reads its visible form.
+ * No hidden input writes, synthetic events or button clicks. */
+function runAction(action){
+ if(!active||!["next","check","reset","schedule","clear"].includes(action))return false;
+ const mode=currentExercise().mode||"direct";
+ if(action==="next"&&(phase!==0||!["hide","faded","resume","loci"].includes(mode)))return false;
+ if(action==="check"&&(mode==="due"&&phase===0||
+   phase===0&&["hide","faded","resume","loci"].includes(mode)))return false;
+ if(["schedule","clear"].includes(action)&&(mode!=="due"||phase!==0))return false;
+ switch(action){
+ case "reset":
+  if(active==="T12"&&!t12Clear()){showMessage(t12StorageError);return false;}
+  phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
+  t12Draft={context:"",next:"",answer:""};draw();return true;
+ case "next":next();return true;
+ case "check":check();return true;
+ case "schedule":
+  try{
+   const scheduled={exposed:Date.now(),due:Date.now()+86400000};
+   const raw=JSON.stringify(scheduled);
+   localStorage.setItem("li.spell.t02.due.v1",raw);
+   if(localStorage.getItem("li.spell.t02.due.v1")!==raw)throw Error("verify");
+   feedback="";
+  }catch{feedback="Trình duyệt không lưu được mốc. Chưa có lịch ôn thực nào được tạo.";}
+  draw();return true;
+ case "clear":
+  try{localStorage.setItem("li.spell.t02.due.v1",JSON.stringify({clearedAt:Date.now(),due:null}));}
+  catch{}
+  feedback="";draw();return true;
  }
- const button=root.querySelector('[data-spell-action="'+action+'"]');
- if(!button)return false;
- const beforeSession=viewSession;
- button.click();notifyReactSpell();
- return !(active==="T12"&&action==="reset"&&viewSession===beforeSession);
+ return false;
+}
+function performReact(action,values={}){
+ // The explicit port also serves existing native fallback automation and
+ // authorized callers. It never depends on a hidden button or React mount.
+ if(!active||
+   !document.documentElement.classList.contains("li-auth-verified")||
+   document.documentElement.classList.contains("li-account-open")||
+   !values||typeof values!=="object"||Array.isArray(values))return false;
+ const view=getView(),allowed=new Map(view.fields.map(field=>[field.id,field]));
+ const safe=Object.create(null);
+ for(const [id,value] of Object.entries(values)){
+  const field=allowed.get(id);if(!field)continue;
+  if(field.options){
+   const options=field.options.map((_,i)=>String(i));
+   if(field.choiceKind==="multi"){
+    if(!Array.isArray(value)||value.length>options.length)continue;
+    safe[id]=value.filter(item=>typeof item==="string"&&options.includes(item));
+   }else if(typeof value==="string"&&options.includes(value))safe[id]=value;
+  }else if(typeof value==="string")safe[id]=value.slice(0,1200);
+ }
+ actionValues=safe;
+ try{return runAction(action);}
+ finally{actionValues=null;}
 }
 function setup(){
  const page=document.getElementById("page-guideDetail");if(!page)return;
@@ -357,18 +419,10 @@ function setup(){
   t12Draft[field]=target.value.slice(0,1200);
   t12Write();
  });
+ // Native UI is only a fallback; it calls the SAME direct action reducer.
  root.addEventListener("click",ev=>{
-  const b=ev.target.closest("[data-spell-action]");if(!b||!root.contains(b))return;
-  switch(b.dataset.spellAction){
-  case "reset":
-   if(active==="T12"&&!t12Clear()){showMessage(t12StorageError);break;}
-   phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
-   t12Draft={context:"",next:"",answer:""};draw();break;
-  case "next":next();break;
-  case "check":check();break;
-  case "schedule":try{const d={exposed:Date.now(),due:Date.now()+86400000};localStorage.setItem("li.spell.t02.due.v1",JSON.stringify(d));if(localStorage.getItem("li.spell.t02.due.v1")!==JSON.stringify(d))throw Error("verify");feedback="";draw()}catch(err){feedback="Trình duyệt không lưu được mốc. Chưa có lịch ôn thực nào được tạo.";draw()}break;
-  case "clear":try{localStorage.setItem("li.spell.t02.due.v1",JSON.stringify({clearedAt:Date.now(),due:null}))}catch(err){}feedback="";draw();break;
-  }
+  const button=ev.target.closest("[data-spell-action]");
+  if(button&&root.contains(button))runAction(button.dataset.spellAction);
  });
  if(typeof window.addEventListener==="function"){
   window.addEventListener("li:personal-sync-applied",ev=>{
@@ -388,7 +442,8 @@ function setup(){
   });
  }
  window.LiSpellPractice={open,methods:Object.keys(exercises),getView,
-  perform:performReact,setTab:switchTab,setT12Draft};
+  perform:performReact,setTab:switchTab,setT12Draft,
+  refreshNative:()=>{if(!reactOwnsSpell())switchTab(activeTab);}};
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",setup,{once:true});else setup();
 })();

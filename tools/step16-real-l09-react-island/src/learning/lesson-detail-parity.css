@@ -32,3 +32,13 @@
  .li-lesson-stat strong{font-size:var(--li-type-title-md)}
  .li-learning-header-actions{width:100%}
 }
+
+.li-lesson-seven-index{display:grid;gap:var(--li-space-3);padding:var(--li-space-4);
+ border:1px solid var(--rule);min-width:0}
+.li-lesson-seven-index>strong{font-family:var(--li-font-ui);font-size:var(--li-type-caption);
+ letter-spacing:var(--li-tracking-legacy-16);color:var(--ink)}
+.li-lesson-seven-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:var(--li-space-2)}
+.li-lesson-seven-list>.li-ds-button{justify-content:flex-start;text-align:left;white-space:normal;min-width:0}
+.li-lesson-seven-list>.li-ds-button>span{font-variant-numeric:tabular-nums;color:var(--muted)}
+.li-lesson-single-figure{display:grid;gap:var(--li-space-3)}
+.li-lesson-single-figure .li-lesson-figure{width:100%}

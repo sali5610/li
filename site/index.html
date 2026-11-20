@@ -911,7 +911,11 @@ window.addEventListener("resize",placeCompanion,{passive:true});
  }
  function liExportPersonalData(){
   try{
-   const data={schema:1,exportedAt:new Date().toISOString(),cases:processedCases,questions:savedQuestions,ideas:collectedIdeas,savedContent,draft:field?.value||"",buddyNames:liBuddyNames};
+   // React Phản Chứng persists its real draft in the canonical private key.
+   // The hidden legacy textarea can be stale (or belong to an earlier account).
+   const savedDraft=window.localStorage.getItem(LI_DRAFT_KEY);
+   const draft=savedDraft??(window.liReactRouter?"":field?.value||"");
+   const data={schema:1,exportedAt:new Date().toISOString(),cases:processedCases,questions:savedQuestions,ideas:collectedIdeas,savedContent,draft,buddyNames:liBuddyNames};
    const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json;charset=utf-8"});
    const url=URL.createObjectURL(blob),a=document.createElement("a");
    a.href=url;a.download="li-du-lieu-"+new Date().toISOString().slice(0,10)+".json";
@@ -973,11 +977,20 @@ window.addEventListener("resize",placeCompanion,{passive:true});
    savedQuestions.splice(0,savedQuestions.length,...data.questions);
    collectedIdeas.splice(0,collectedIdeas.length,...(data.ideas||[]));
    savedContent.splice(0,savedContent.length,...(data.savedContent||[]));
-   if(field)field.value=data.draft;
    if(data.buddyNames!==undefined){liBuddyNames=liRestoreBuddyNames();liRefreshBuddyNameInputs();}
    liStorageError=false;
-   renderCaseArchive();renderSavedQuestions();window.liLibraryShelf?.renderHome();window.liLibraryShelf?.renderCollection();window.liBookmarks?.refresh();refreshQuestionBookmark();
-   toast("Đã nhập "+data.cases.length+" Bút Ký, "+(data.questions.length+savedContent.length)+" Dấu Trang và "+collectedIdeas.length+" Ý đã nhặt.");
+   if(window.liReactRouter){
+    // React reads canonical state directly; notify mounted screens instead
+    // of redrawing or writing into the hidden native Case/Library hosts.
+    window.dispatchEvent(new Event("li:library-view-changed"));
+    window.dispatchEvent(new Event("li:inquiry-changed"));
+    window.dispatchEvent(new Event("li:note-view-changed"));
+   }else{
+    if(field)field.value=data.draft;
+    renderCaseArchive();renderSavedQuestions();window.liLibraryShelf?.renderHome();
+    window.liLibraryShelf?.renderCollection();window.liBookmarks?.refresh();refreshQuestionBookmark();
+   }
+   toast("Đã nhập "+data.cases.length+" Bút Ký, "+(data.questions.length+(data.savedContent||[]).length)+" Dấu Trang và "+collectedIdeas.length+" Ý đã nhặt.");
    return true;
   }catch(e){
    const message=e.message==="large"?"Tệp vượt quá 10 MB.":e.message==="write"?

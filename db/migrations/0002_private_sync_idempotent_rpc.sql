@@ -23,6 +23,8 @@ BEGIN
 END
 $role$;
 -- @statement
+GRANT li_sync_executor TO li_owner WITH SET TRUE;
+-- @statement
 GRANT USAGE ON SCHEMA public TO li_sync_executor;
 -- @statement
 CREATE FUNCTION public.li_sync_subject_v1() RETURNS text

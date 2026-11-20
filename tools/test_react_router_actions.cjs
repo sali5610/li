@@ -42,4 +42,6 @@ assert.match(details,/onClick=\{\(\)=>openRoute\('case'\)\}/);
 assert.match(details,/onClick=\{\(\)=>openRoute\('guide'\)\}/);
 assert.match(settings,/onClick=\{goBack\}/);
 assert.doesNotMatch(settings,/act\('back'\)/);
+assert.match(old,/if\(kind===\"mode\"&&STUDY_MODES\[key\]\)setStudyMode\(key\)/);
+assert.doesNotMatch(old,/STUDY_MODES\[key\]\).*?\.click\(\)/);
 console.log('PASS explicit React routes and Back: direct actions, canonical history and search, no hidden click');

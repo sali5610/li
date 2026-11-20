@@ -345,6 +345,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
  window.addEventListener('li:lesson-submitted',resumed);
  window.addEventListener('li:lesson-attempt-changed',resumed);
  window.addEventListener('li:activity',onPersonalEvent);
+ window.addEventListener('li:private-personal-change',onPersonalEvent);
  window.addEventListener('li:localechange',onPersonalEvent);
  window.addEventListener('li:private-sync-consent',resumed);
  window.addEventListener('storage',onPersonalEvent);
@@ -360,6 +361,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
   window.removeEventListener('li:lesson-submitted',resumed);
   window.removeEventListener('li:lesson-attempt-changed',resumed);
   window.removeEventListener('li:activity',onPersonalEvent);
+  window.removeEventListener('li:private-personal-change',onPersonalEvent);
   window.removeEventListener('li:localechange',onPersonalEvent);
   window.removeEventListener('li:private-sync-consent',resumed);
   window.removeEventListener('storage',onPersonalEvent);

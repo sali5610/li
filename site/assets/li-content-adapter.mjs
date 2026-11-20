@@ -73,6 +73,11 @@ export function createContentClient({ baseUrl=new URL("../content-packs/",import
    .map(l=>[l.id,l]));
   const fieldById=new Map(tree.fields.map(x=>[x.id,x]));
   const courseById=new Map(tree.courses.map(x=>[x.id,x]));
+  // A precise unavailable lesson ID must NEVER fuzzy-match another lesson.
+  // Editorial outline-only IDs are not searchable as published learning.
+  if(/^L\d{2}-\d+-\d+$/i.test(raw.trim())&&
+     !lessonById.has(raw.trim().toUpperCase()))
+   return {status:"no_match",results:[],total:0,coverage:"canonical_search_graph_v1"};
   const rank=d=>{
    const id=normalize(d.id),title=normalize(d.title);
    const aliases=(d.aliases||[]).map(x=>normalize(x.text));

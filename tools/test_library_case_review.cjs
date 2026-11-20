@@ -21,7 +21,7 @@ const cases=[
 ],ideas=[{id:"idea",text:"Một nhận định",savedAt:now}];
 const ctx={
  document:{getElementById:id=>el[id]||null,createElement:t=>new Element(t),querySelector:q=>q==="#page-case .editorial-grid .surface.tinted"?canonical:null},
- window:{confirm:()=>true,liLibraryShelf:{renderHome(){},renderCollection(){}},liBookmarks:{refresh(){}}},
+ window:{confirm:()=>true,liLibraryShelf:{renderHome(){},renderCollection(){}},liBookmarks:{refresh(){},isSaved(){return false;}}},
  processedCases:cases,collectedIdeas:ideas,liStorageError:false,liWriteState:()=>true,
  navigate(){},toast(){},Date,Intl,console
 };
@@ -46,4 +46,21 @@ assert.equal(el["li-note-detail-body"].textContent,"Bản giải cũ");
 ctx.window.liNotes.openDetail("idea","idea");
 assert.equal(el["li-note-case-context"].hidden,true,"ideas do not inherit case prompt");
 assert.equal(el["li-note-case-bookmark-tools"].hidden,true,"ideas do not have case bookmarks");
+// React note detail must get its source from the stored record, not the now-hidden
+// native renderer. Poison native text to catch accidental DOM read-through.
+ctx.window.liReactLibraryMounted=true;
+el["li-note-case-question"].textContent="STALE HIDDEN HTML";
+el["li-note-detail-status"].textContent="STALE HIDDEN STATUS";
+assert(ctx.window.liNotes.openDetail("case","new"));
+const reactNew=ctx.window.liNotes.getView();
+assert.equal(reactNew.context.question,"Đề bài tại lúc giải");
+assert.match(reactNew.status,/Phản Chứng/);
+assert.equal(reactNew.history.length,1);
+assert.notEqual(reactNew.status,"STALE HIDDEN STATUS");
+assert(ctx.window.liNotes.openDetail("case","old"));
+const reactOld=ctx.window.liNotes.getView();
+assert.match(reactOld.context.question,/90% trả lời hài lòng/);
+assert.match(reactOld.context.provenance,/dựng lại/);
+assert(ctx.window.liNotes.openDetail("idea","idea"));
+assert.equal(ctx.window.liNotes.getView().context,null);
 console.log("PASS UX-IA-06: exact new case snapshot, honest legacy reconstruction and separate idea note");

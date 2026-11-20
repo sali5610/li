@@ -3,7 +3,7 @@ import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Button,Card,Field,FilterChip,Heading,InlineFeedback,MethodTile,Text,LiIcon} from '../../../../design-system/react/index';
 import './guide-library.css';
-import {GuideDetail,NoteDetail} from './detail-practice.js';
+import {GuideDetail,NoteDetail,ConfirmNoteAction} from './detail-practice.js';
 
 /* Single invited app. The canonical legacy authoring and account-backed
  * business logic are accessed through explicit ports; React owns all visible
@@ -34,7 +34,8 @@ type LibraryPort={
 type AppWindow=Window&{
  liMethods?:MethodsPort;liLibraryShelf?:LibraryPort;
  liBookmarks?:{toggle:(kind:string,id:string)=>boolean};
- liNotes?:{openDetail:(kind:string,id:string)=>boolean;deleteNote:(kind:string,id:string)=>boolean};
+ liNotes?:{openDetail:(kind:string,id:string)=>boolean;deleteNote:(kind:string,id:string)=>boolean;
+  deleteFromReact:(kind:string,id:string)=>boolean};
  liLanguage?:{get:()=>string};
 };
 const app=window as AppWindow;
@@ -372,10 +373,11 @@ function Collection(){
     <div className="library-note-actions">
      <Button variant="secondary" onClick={()=>app.liNotes?.openDetail(item.type,item.id)}>
       {copy('Xem chi tiết','View details')}</Button>
-     <Button variant="ghost" className="library-danger-link"
-      aria-label={copy('Xóa ghi chép: ','Delete note: ')+(item.type==='case'?item.title:item.body.slice(0,60))}
-      onClick={()=>app.liNotes?.deleteNote(item.type,item.id)}>
-      <LiIcon name="trash" size={18}/> {copy('Xóa','Delete')}</Button>
+     <ConfirmNoteAction danger
+      label={copy('Xóa ghi chép: ','Delete note: ')+(item.type==='case'?item.title:item.body.slice(0,60))}
+      description={copy('Xóa cả lịch sử phiên bản? Bạn có 7 giây để hoàn tác.',
+       'Delete note and its history? Undo is available for 7 seconds.')}
+      onConfirm={()=>Boolean(app.liNotes?.deleteFromReact(item.type,item.id))}/>
     </div>
    </Card>)}
   </div>

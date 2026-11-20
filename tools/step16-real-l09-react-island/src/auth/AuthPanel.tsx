@@ -203,14 +203,24 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  // network resumes. A revoked account must never keep a stale approved UI.
  useEffect(()=>{
   const refresh=()=>{
-   // iOS Safari/PWA may resume without dispatching an offline/online event.
-   if(document.visibilityState==='visible'){
-    setIsOffline(!navigator.onLine);
-    setAccessEpoch(epoch=>epoch+1);
-   }
+   // iOS Home Screen and Safari can wake without online/visibility events.
+   if(document.visibilityState!=='visible')return;
+   const online=navigator.onLine;
+   setIsOffline(!online);
+   // An offline-failed Neon session hook may stay stale after the network returns.
+   // Refresh managed auth, not the JWT or the server invite permission cache.
+   if(online&&!isPending&&(!liveAccountId||error))void refetch();
+   setAccessEpoch(epoch=>epoch+1);
   };
-  const network=()=>{setIsOffline(!navigator.onLine);setAccessEpoch(epoch=>epoch+1);};
+  const network=()=>{
+   const online=navigator.onLine;
+   setIsOffline(!online);
+   // Force the official Neon session hook to recover BEFORE invite/RLS sync.
+   if(online)void refetch();
+   setAccessEpoch(epoch=>epoch+1);
+  };
   window.addEventListener('focus',refresh);
+  window.addEventListener('pageshow',refresh);
   window.addEventListener('online',network);
   window.addEventListener('offline',network);
   window.addEventListener('li:auth-recheck',refresh);
@@ -219,12 +229,13 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   return()=>{
    clearInterval(expiry);
    window.removeEventListener('focus',refresh);
+   window.removeEventListener('pageshow',refresh);
    window.removeEventListener('online',network);
    window.removeEventListener('offline',network);
    window.removeEventListener('li:auth-recheck',refresh);
    document.removeEventListener('visibilitychange',refresh);
   };
- },[]);
+ },[isPending,liveAccountId,Boolean(error),refetch]);
 
  useEffect(()=>{
   let disposed=false;

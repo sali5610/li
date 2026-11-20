@@ -1,0 +1,98 @@
+name: Step 16 Architecture Spike
+
+on:
+  pull_request:
+    paths:
+      - 'docs/architecture/**'
+      - 'tools/step16_backup_spike.cjs'
+      - 'tools/step16_browser_backup_spike.js'
+      - 'tools/step16_browser_backup_fixture.html'
+      - 'tools/step16_realapp_backup_fixture.html'
+      - 'tools/step16_cross_origin_agent.html'
+      - 'tools/step16_cross_origin_fixture.html'
+      - '.github/workflows/step16-architecture-spike.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-backup-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check isolated spike syntax
+        run: node --check tools/step16_backup_spike.cjs
+      - name: Test synthetic full recovery and current source inventory
+        run: node tools/step16_backup_spike.cjs
+
+  actual-browser-storage-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Real browser localStorage E2E on a localhost-only synthetic fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then
+            echo "FAIL: Chrome/Chromium unavailable, browser test not verified"
+            exit 1
+          fi
+          "$chrome" --version
+          node --check tools/step16_browser_backup_spike.js
+          python3 -m http.server 8767 --bind 127.0.0.1 --directory . > /tmp/li-step16-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          url="http://127.0.0.1:8767/tools/step16_browser_backup_fixture.html"
+          timeout 55s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage             --hide-scrollbars --virtual-time-budget=18000 --dump-dom "$url"             > /tmp/li-step16-browser-result.html 2>/tmp/li-step16-browser-stderr.log || {
+              tail -30 /tmp/li-step16-browser-stderr.log || true
+              echo "FAIL Chromium did not complete"
+              exit 1
+            }
+          if ! grep -F '<pre id="result">LI_STEP16_BROWSER_PASS ' /tmp/li-step16-browser-result.html | grep -F '"count":12' >/dev/null; then
+            echo "FAIL real browser backup and migration scenarios"
+            grep -o 'LI_STEP16_BROWSER_\\(FAIL\\|PENDING\\).*' /tmp/li-step16-browser-result.html | tail -1 | cut -c1-4000 || true
+            exit 1
+          fi
+          grep -F '<pre id="result">LI_STEP16_BROWSER_PASS ' /tmp/li-step16-browser-result.html | tail -1 | cut -c1-4000
+          echo "PASS localhost Chromium synthetic storage fixture, not live app or Safari"
+          echo "Now testing real site/index.html export/import handlers on localhost FAKE storage only"
+          realurl="http://127.0.0.1:8767/tools/step16_realapp_backup_fixture.html"
+          timeout 55s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=20000 --dump-dom "$realurl" > /tmp/li-step16-realapp-result.html 2>/tmp/li-step16-realapp-stderr.log || {
+            echo "FAIL real-app-source browser run did not complete"
+            tail -30 /tmp/li-step16-realapp-stderr.log || true
+            exit 1
+          }
+          if ! grep -F '<pre id="result">LI_STEP16_REALAPP_PASS ' /tmp/li-step16-realapp-result.html | grep -F '"count":2' >/dev/null; then
+            echo "FAIL actual li. code export/import behavior could not be demonstrated"
+            grep -F '<pre id="result">LI_STEP16_REALAPP_' /tmp/li-step16-realapp-result.html | tail -1 | cut -c1-5500 || true
+            exit 1
+          fi
+          grep -F '<pre id="result">LI_STEP16_REALAPP_PASS ' /tmp/li-step16-realapp-result.html | tail -1 | cut -c1-4200
+          echo "PASS current app source schema1 backup gap reproducer; NOT a full-backup fix"
+          echo "Testing two separate localhost origins via explicit portable JSON and message origin restrictions"
+          python3 -m http.server 8768 --bind 127.0.0.1 --directory . > /tmp/li-step16-originB-http.log 2>&1 &
+          origin_b_pid=$!
+          trap 'kill "$server_pid" "$origin_b_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          originurl="http://127.0.0.1:8767/tools/step16_cross_origin_fixture.html"
+          timeout 55s "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=24000 --dump-dom "$originurl" > /tmp/li-step16-origins-result.html 2>/tmp/li-step16-origins-stderr.log || {
+            echo "FAIL cross-origin browser run did not complete"
+            tail -25 /tmp/li-step16-origins-stderr.log || true
+            exit 1
+          }
+          if ! grep -F '<pre id="result">LI_STEP16_ORIGIN_PASS ' /tmp/li-step16-origins-result.html | grep -F '"count":5' >/dev/null; then
+            echo "FAIL cross-origin backup portability"
+            grep -F '<pre id="result">LI_STEP16_ORIGIN_' /tmp/li-step16-origins-result.html | tail -1 | cut -c1-5500 || true
+            exit 1
+          fi
+          grep -F '<pre id="result">LI_STEP16_ORIGIN_PASS ' /tmp/li-step16-origins-result.html | tail -1 | cut -c1-3500
+          echo "PASS two-origin synthetic portability; actual device/CDN migration unverified"
+
+

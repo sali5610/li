@@ -136,10 +136,10 @@
  filter:saturate(1.03) contrast(1.05);
  /* One mask on the natural-size image. TOP, side and bottom edges dissolve,
     but 43% of the elliptical center stays crisp and legible. */
- -webkit-mask-image:radial-gradient(ellipse 55% 50% at 50% 50%,
+ -webkit-mask-image:radial-gradient(ellipse 53% 50% at 50% 50%,
   #000 0%,#000 43%,rgba(0,0,0,.90) 54%,
   rgba(0,0,0,.45) 77%,transparent 100%);
- mask-image:radial-gradient(ellipse 55% 50% at 50% 50%,
+ mask-image:radial-gradient(ellipse 53% 50% at 50% 50%,
   #000 0%,#000 43%,rgba(0,0,0,.90) 54%,
   rgba(0,0,0,.45) 77%,transparent 100%);
 }

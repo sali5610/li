@@ -27,7 +27,7 @@
     "kind": "Concept",
     "title": "Random sampling variation",
     "version": "0.1.0",
-    "reviewState": "proposed",
+    "reviewState": "verified",
     "publishState": "draft",
     "visibility": "public_curated",
     "rightsState": "first_party",
@@ -38,12 +38,12 @@
       }
     ],
     "provenance": {
-      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
-      "sourceSection": "Proposed concept identity from locked L09 content",
+      "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling",
+      "sourceSection": "§1.2 'Variation in Samples': two correctly drawn samples from the same population normally differ; sampling variability persists, distinct from sampling bias and self-selection in §1.2 'Critical Evaluation'",
       "evidenceType": "documented",
-      "checkedOn": "2026-11-19"
+      "checkedOn": "2026-11-21"
     },
-    "note": ""
+    "note": "Source-checked distinction between ordinary chance-driven differences across samples and systematic distortion from recruitment/selection; not blanket academic lesson approval. A larger well-designed random sample may reduce random sampling error but cannot by itself repair selection bias."
   },
   {
     "id": "concept:wave1:leading-interview-question",

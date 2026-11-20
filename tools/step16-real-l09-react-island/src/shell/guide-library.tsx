@@ -298,10 +298,9 @@ function BookmarkRows({items}:{
 }
 function Resume(){
  const view=useLibrary();
- const [tab,setTab]=useState<'lesson'|'question'>(()=>view.bookmarkTab);
- const tabClick=(next:'lesson'|'question')=>{
-  setTab(next);app.liLibraryShelf?.selectBookmarkTab(next);
- };
+ // The shared bookmark port owns the tab; mentor navigation may change it outside this component.
+ const tab=view.bookmarkTab;
+ const tabClick=(next:'lesson'|'question')=>app.liLibraryShelf?.selectBookmarkTab(next);
  return <div className="section-shell li-react-library" data-li-react-screen="resume">
   <Button variant="ghost" onClick={()=>openRoute('library')} className="library-back-link">
    <LiIcon name="chevron-left" size={18}/> {copy('Tủ Riêng','Private Library')}</Button>

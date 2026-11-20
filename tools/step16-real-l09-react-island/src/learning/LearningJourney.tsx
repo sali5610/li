@@ -12,7 +12,7 @@ import type {SaveState} from '../../../../design-system/react/Molecules';
 import {L09_LESSON_ID} from './ports';
 import type {LearningPorts,SyncState} from './ports';
 import './journey.css';
-import {LessonBookmark,LessonMentor,L09Figures,LessonSources} from './LessonDetailParity.js';
+import {LessonBookmark,LessonMentor,LessonSectionIndex,L09Figures,LessonSources} from './LessonDetailParity.js';
 
 /** A real invited-only React learner screen, not a second app.
  * Editorial VI/EN copy is compiled from canonical GitHub
@@ -296,6 +296,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      (item==='progress'&&!attempt.reviewed)}
     onClick={()=>go(item)}>{labels[item]}</Button>)}
   </nav>
+  <LessonSectionIndex id="L09-1-2" locale={attempt.locale}
+   links={content.sidebarLinks} onPhase={go} submitted={attempt.submitted}/>
   <aside className="li-lesson-spells" aria-label={vi?'Thần Chú gợi ý cho bài học':'Suggested study spells'}>
    <div className="li-lesson-spell-header">
     <Heading level={2} role="titleSmall">{vi?'Thần Chú có thể thử':'Spells to try'}</Heading>

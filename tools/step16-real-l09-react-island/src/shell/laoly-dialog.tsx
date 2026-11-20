@@ -22,6 +22,7 @@ type BuddyPort={open:(trigger?:HTMLElement|null)=>BuddyView|null;choose:(index:n
 type AppWindow=Window&{
  liBuddyEngine?:BuddyPort;
  liBuddyReactMounted?:boolean;
+ liCompanionDrag?:{getAvatar?:()=>string};
  liLanguage?:{get?:()=>string;translateComposed?:(value:string)=>string};
  liAddressLine?:(text:string)=>string
 };
@@ -72,7 +73,7 @@ function BuddyDialog({root}:{root:HTMLElement}){
   };
   const onClose=()=>close();
   const language=()=>setLocale(v=>v+1);
-  const mode=()=>setAvatar(document.getElementById('laoly-current-icon')?.getAttribute('src')||'');
+  const mode=()=>setAvatar(app.liCompanionDrag?.getAvatar?.()||current.current?.avatar||'');
   const guard=new MutationObserver(()=>{
    if(!document.documentElement.classList.contains('li-auth-verified')){
     setOpen(false);setView(null);setMessage('');setChallenge(false);

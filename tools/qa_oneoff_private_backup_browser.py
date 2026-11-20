@@ -18,7 +18,9 @@ FIXTURE={
 KEY="li.private.library.v1"
 DRAFT="li.private.case-draft.v1"
 with sync_playwright() as p:
-    browser=p.chromium.launch(headless=True,args=["--no-sandbox","--disable-dev-shm-usage"])
+    chrome=shutil.which("google-chrome") or shutil.which("google-chrome-stable") or shutil.which("chromium")
+    assert chrome,"Runner missing installed system Chromium"
+    browser=p.chromium.launch(executable_path=chrome,headless=True,args=["--no-sandbox","--disable-dev-shm-usage"])
     ctx=browser.new_context(viewport={"width":390,"height":844},accept_downloads=True,service_workers="block")
     # This is scoped to the temporary browser context, never an actual person's device.
     ctx.add_init_script(f"""() => {{

@@ -7,6 +7,7 @@ const t=value=>window.liLanguage?.translate?.(value)||value;
 const ui=(vi,en)=>window.liLanguage?.get?.()==="en"?en:vi;
 if(!$("page-noteDetail"))return;
 let active=null;
+let backRoute="collection";
 const listFor=type=>type==="case"?processedCases:type==="idea"?collectedIdeas:null;
 const current=()=>active&&listFor(active.type)?.find(item=>item.id===active.id)||null;
 const titleOf=(item,type)=>type==="case"?item.title:(item.title||"Ý đã nhặt");
@@ -34,11 +35,14 @@ function openDetail(type,id){
  active={type,id};
  const origin=document.querySelector?.("section.page.active")?.id;
  const dest=origin==="page-library"?"library":origin==="page-resume"?"resume":"collection";
- const back=$("li-note-back");
- if(back)back.dataset.page=dest;
- const label=$("li-note-back-label");
- if(label)label.textContent=dest==="resume"?"Quay lại":dest==="library"?"Tủ Riêng":"Bộ sưu tập";
- $("li-note-editor").hidden=true;
+ backRoute=dest;
+ if(!window.liReactLibraryMounted){
+  const back=$("li-note-back");
+  if(back)back.dataset.page=dest;
+  const label=$("li-note-back-label");
+  if(label)label.textContent=dest==="resume"?"Quay lại":dest==="library"?"Tủ Riêng":"Bộ sưu tập";
+  $("li-note-editor").hidden=true;
+ }
  navigate("noteDetail");
  renderDetail();
  return true;
@@ -220,32 +224,63 @@ function notifyReactNote(){
  if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
   window.dispatchEvent(new Event("li:note-view-changed"));
 }
+/* React's note adapter derives its snapshot directly from stored data.
+ * The legacy case (without a snapshot) is explicitly a reconstruction. */
+const legacyCase={
+ question:"90% trả lời hài lòng. Chúng ta nên kết luận thế nào?",
+ scene:"Câu hỏi then chốt: người nào được chọn để khảo sát, người nào không được đại diện?",
+ options:[
+  {key:"right",text:"Kết quả đúng với những người tham gia mẫu này, chưa suy rộng."},
+  {key:"wrong",text:"90% của mọi người chắc chắn đều hài lòng."}
+ ]
+};
+function caseContext(note,type){
+ if(type!=="case")return null;
+ const sourceKey=note.caseKey||note.caseSnapshot?.id||"";
+ const known=sourceKey==="sampling-bias-90"||/Sampling Bias/i.test(note.title||"")||
+  (Array.isArray(note.versions)&&note.versions.some(v=>/Sampling Bias/i.test(v?.title||"")));
+ const snapshot=note.caseSnapshot;
+ const recorded=Boolean(snapshot&&typeof snapshot.question==="string"&&snapshot.question&&
+  Array.isArray(snapshot.options));
+ if(!recorded&&!known)return null;
+ const source=recorded?snapshot:legacyCase;
+ const options=source.options.filter(item=>item&&typeof item.text==="string");
+ const selected=recorded?(source.selectedKey||""):(note.correct?"right":"wrong");
+ const selectedText=source.selectedText||options.find(x=>x.key===selected)?.text||
+  ui("Không có dữ liệu lựa chọn","No selected answer recorded");
+ return {
+  question:t(source.question),scene:t(source.scene||""),
+  options:options.map(x=>({text:t(x.text),selected:x.key===selected})),
+  choice:ui(recorded?"Lựa chọn của bạn: ":"Lựa chọn suy ra từ trạng thái đúng/sai: ",
+   recorded?"Your selected answer: ":"Answer inferred from the correct/incorrect status: ")+t(selectedText),
+  feedback:recorded?(source.feedback||ui("Bản lưu không có nội dung phản hồi.","No feedback was stored.")):
+   ui("Bản lưu cũ không chứa phản hồi khi bạn chọn đáp án.","This older record did not save the feedback shown when you answered."),
+  provenance:recorded?
+   ui("Đề bài, lựa chọn và phản hồi được ghi cùng luận kết. Chỉnh sửa luận kết không thay đổi bản chụp case.",
+    "The question, answer and feedback were stored with this conclusion; editing does not alter the snapshot."):
+   ui("Bản lưu cũ chỉ có luận kết và đúng/sai. Đề bài hiện hành được dựng lại; lựa chọn là suy ra, không phải dữ liệu lịch sử.",
+    "This old entry only stored a conclusion and correctness. The current case is reconstructed, and the answer is inferred, not historic.")
+ };
+}
 function getView(){
  const note=current();
  if(!active||!note)return {
-  id:null,type:null,backRoute:$("li-note-back")?.dataset.page||"collection",
-  title:ui("Không tìm thấy ghi chép","Note not found"),body:"",
+  id:null,type:null,backRoute,title:ui("Không tìm thấy ghi chép","Note not found"),body:"",
   history:[],context:null,storageAvailable:!liStorageError
  };
- const type=active.type,contextRoot=$("li-note-case-context");
- const context=type==="case"&&contextRoot&&!contextRoot.hidden?{
-  question:$("li-note-case-question").textContent,
-  scene:$("li-note-case-scene").textContent,
-  options:[...$("li-note-case-choices").children].map(el=>({
-   text:el.textContent,selected:el.dataset.chosen==="true"
-  })),
-  choice:$("li-note-case-choice").textContent,
-  feedback:$("li-note-case-feedback").textContent,
-  provenance:$("li-note-case-provenance").textContent
- }:null;
+ const type=active.type,history=historyFor(note,type),context=caseContext(note,type);
  return {
   id:active.id,type,title:titleOf(note,type),body:bodyOf(note,type),
-  status:$("li-note-detail-status").textContent,
-  kind:$("li-note-detail-kind").textContent,
-  bodyTitle:$("li-note-body-heading").textContent,
-  date:$("li-note-detail-date").textContent,
-  history:historyFor(note,type).map(v=>({...v})),
-  context,backRoute:$("li-note-back")?.dataset.page||"collection",
+  status:type==="case"?
+   t("Phản Chứng ·")+" "+t(note.correct?"Đã chọn nhận định phù hợp":"Đã chọn nhận định cần xem lại"):
+   t("Ý tưởng cá nhân · Chưa xác minh"),
+  kind:type==="case"?ui("BÚT KÝ · CASE ĐÃ GIẢI","CASE NOTE · COMPLETED CASE"):
+   ui("Ý ĐÃ NHẶT · CHƯA XÁC MINH","CAPTURED IDEA · UNVERIFIED"),
+  bodyTitle:type==="case"?ui("Luận kết hiện tại","Current conclusion"):ui("Ý tưởng hiện tại","Current idea"),
+  date:ui("Tạo: ","Created: ")+stamp(note.savedAt)+
+   (note.updatedAt?ui(" · Sửa: "," · Edited: ")+stamp(note.updatedAt):"")+
+   " · "+history.length+ui(" phiên bản",history.length===1?" version":" versions"),
+  history:history.map(v=>({...v})),context,backRoute,
   storageAvailable:!liStorageError,
   bookmarked:context?Boolean(window.liBookmarks?.isSaved("case","sampling-bias-90")):false
  };

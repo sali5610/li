@@ -44,4 +44,15 @@ assert.match(settings,/onClick=\{goBack\}/);
 assert.doesNotMatch(settings,/act\('back'\)/);
 assert.match(old,/if\(kind===\"mode\"&&STUDY_MODES\[key\]\)setStudyMode\(key\)/);
 assert.doesNotMatch(old,/STUDY_MODES\[key\]\).*?\.click\(\)/);
+// The React nickname editor must call the same storage owner as the native
+// fallback, not fire synthetic events into hidden textboxes.
+assert.match(old,/function liSetBuddyName\(key,value,persist=false\)/);
+assert.match(old,/liBuddyNames\[key\]=liNormalizeBuddyName\(value\)/);
+assert.match(old,/previews:liBuddyNamePreviews\(\)/);
+assert.match(old,/nicknameFeedback:liAddressFeedback/);
+assert.match(old,/liSetBuddyName\(key,value,kind==="nicknameCommit"\)/);
+assert.match(old,/else if\(kind==="resetNames"\)liResetBuddyNames\(\)/);
+assert.doesNotMatch(old,/field\.dispatchEvent\(new Event\(kind==="nicknameInput"/);
+assert.doesNotMatch(old,/el\("buddy-names-reset"\)\?\.click\(\)/);
+assert.match(settings,/normalizeDraft\(draft\)!==value/);
 console.log('PASS explicit React routes and Back: direct actions, canonical history and search, no hidden click');

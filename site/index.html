@@ -234,7 +234,8 @@ function liBuddyLine(line){
  });
 }
 window.liAddressLine=liBuddyLine;
-function liRenderBuddyNamePreview(){
+/* One preview model for both native fallback and the React Settings screen. */
+function liBuddyNamePreviews(){
  const en=window.liLanguage?.get?.()==="en";
  const examples=en?{
   warm:"take your time. The books can wait.",
@@ -246,9 +247,14 @@ function liRenderBuddyNamePreview(){
   serious:"hãy phân biệt điều đã thấy với điều suy ra."
  };
  const defaultEN={warm:"Young scholar",teasing:"Kid",serious:"You there"};
- for(const key of Object.keys(examples)){
+ return Object.fromEntries(Object.keys(examples).map(key=>[
+  key,(liBuddyNames[key]||(en?defaultEN[key]:LI_BUDDY_DEFAULT_NAMES[key]))+", "+examples[key]
+ ]));
+}
+function liRenderBuddyNamePreview(){
+ for(const [key,preview] of Object.entries(liBuddyNamePreviews())){
   const node=document.getElementById("buddy-preview-"+key);
-  if(node)node.textContent=(liBuddyNames[key]||(en?defaultEN[key]:LI_BUDDY_DEFAULT_NAMES[key]))+", "+examples[key];
+  if(node)node.textContent=preview;
  }
 }
 function liRefreshBuddyNameInputs(){
@@ -263,36 +269,49 @@ function liSaveBuddyNames(){
   return true;
  }catch(e){return false}
 }
+let liAddressFeedback="Chỉ thay cách gọi trong lời Lão Lý, không đổi nội dung học.";
 function liUpdateAddressFeedback(text){
+ liAddressFeedback=text;
  const node=document.getElementById("buddy-name-feedback");if(node)node.textContent=text;
 }
-liRefreshBuddyNameInputs();
-window.addEventListener("li:localechange",liRenderBuddyNamePreview);
-document.querySelectorAll("[data-buddy-name]").forEach(input=>{
- const key=input.dataset.buddyName;
- input.addEventListener("input",()=>{
-  liBuddyNames[key]=liNormalizeBuddyName(input.value);
-  liRenderBuddyNamePreview();
+function liRefreshAddressGuide(){
+ const guide=document.getElementById("guide-mode-copy");
+ if(guide)guide.textContent=liBuddyLine(STUDY_MODES[studyMode].guide);
+}
+function liSetBuddyName(key,value,persist=false){
+ if(!Object.prototype.hasOwnProperty.call(LI_BUDDY_DEFAULT_NAMES,key))return false;
+ liBuddyNames[key]=liNormalizeBuddyName(value);
+ const input=document.getElementById("buddy-name-"+key);
+ // Do not trim the visible native input while the learner types a space.
+ if(input&&persist)input.value=liBuddyNames[key];
+ liRenderBuddyNamePreview();
+ if(!persist){
   liUpdateAddressFeedback("Đang chỉnh cách gọi · Rời ô nhập để lưu trên thiết bị.");
- });
- input.addEventListener("change",()=>{
-  input.value=liBuddyNames[key]=liNormalizeBuddyName(input.value);
-  const saved=liSaveBuddyNames();
-  liUpdateAddressFeedback(saved?"Đã lưu cách gọi trên thiết bị này.":"Chưa lưu được cách gọi. Hãy kiểm tra quyền lưu dữ liệu của trình duyệt.");
-  if(!saved)toast("Không thể lưu cách gọi của Lão Lý trên thiết bị.");
-  const guide=document.getElementById("guide-mode-copy");
-  if(guide)guide.textContent=liBuddyLine(STUDY_MODES[studyMode].guide);
- });
-});
-document.getElementById("buddy-names-reset")?.addEventListener("click",()=>{
+  return true;
+ }
+ const saved=liSaveBuddyNames();
+ liUpdateAddressFeedback(saved?"Đã lưu cách gọi trên thiết bị này.":"Chưa lưu được cách gọi. Hãy kiểm tra quyền lưu dữ liệu của trình duyệt.");
+ if(!saved)toast("Không thể lưu cách gọi của Lão Lý trên thiết bị.");
+ liRefreshAddressGuide();
+ return saved;
+}
+function liResetBuddyNames(){
  liBuddyNames={warm:"",teasing:"",serious:""};
  liRefreshBuddyNameInputs();
  const saved=liSaveBuddyNames();
  liUpdateAddressFeedback(saved?"Đã trở về Tiểu hữu / Nhóc / Ngươi.":"Đã đặt lại trong phiên này nhưng không lưu được.");
  if(!saved)toast("Không thể lưu cách gọi mặc định trên thiết bị.");
- const guide=document.getElementById("guide-mode-copy");
- if(guide)guide.textContent=liBuddyLine(STUDY_MODES[studyMode].guide);
+ liRefreshAddressGuide();
+ return saved;
+}
+liRefreshBuddyNameInputs();
+window.addEventListener("li:localechange",liRenderBuddyNamePreview);
+document.querySelectorAll("[data-buddy-name]").forEach(input=>{
+ const key=input.dataset.buddyName;
+ input.addEventListener("input",()=>liSetBuddyName(key,input.value));
+ input.addEventListener("change",()=>liSetBuddyName(key,input.value,true));
 });
+document.getElementById("buddy-names-reset")?.addEventListener("click",liResetBuddyNames);
 function liRestoreStudyMode(){
  try{const value=window.localStorage.getItem(STUDY_MODE_KEY);return Object.prototype.hasOwnProperty.call(STUDY_MODES,value)?value:"start"}
  catch(e){return "start"}
@@ -917,9 +936,8 @@ window.liSettingsPort=Object.freeze({
    })),
    calm:check("calm-toggle"),mute:check("mute-toggle"),
    nicknames:{...liBuddyNames},
-   previews:Object.fromEntries(["warm","teasing","serious"].map(key=>
-    [key,el("buddy-preview-"+key)?.textContent||""])),
-   nicknameFeedback:el("buddy-name-feedback")?.textContent||"",
+   previews:liBuddyNamePreviews(),
+   nicknameFeedback:liAddressFeedback,
    cloudVisible:Boolean(card&&!card.hidden),
    cloudChecked:Boolean(cloud?.checked),cloudDisabled:Boolean(cloud?.disabled),
    cloudDescription:el("li-journal-cloud-description")?.textContent||"",
@@ -936,11 +954,9 @@ window.liSettingsPort=Object.freeze({
    const field=el(kind==="calm"?"calm-toggle":"mute-toggle");
    if(field&&field.checked!==Boolean(value))field.click();
   }else if(kind==="nicknameInput"||kind==="nicknameCommit"){
-   if(!["warm","teasing","serious"].includes(key))return;
-   const field=el("buddy-name-"+key);if(!field)return;
-   if(typeof value==="string")field.value=value.slice(0,24);
-   field.dispatchEvent(new Event(kind==="nicknameInput"?"input":"change",{bubbles:true}));
-  }else if(kind==="resetNames")el("buddy-names-reset")?.click();
+   if(typeof value!=="string"||!Object.prototype.hasOwnProperty.call(LI_BUDDY_DEFAULT_NAMES,key))return;
+   liSetBuddyName(key,value,kind==="nicknameCommit");
+  }else if(kind==="resetNames")liResetBuddyNames();
   else if(kind==="cloud"){
    const field=el("li-journal-cloud-toggle");
    if(field&&!field.disabled&&!el("li-journal-cloud-settings")?.hidden&&

@@ -197,7 +197,11 @@ function BuddyName({kind,header,placeholder,value,preview,commit}:{
  commit:(kind:string,value:string,final?:boolean)=>void
 }){
  const [draft,setDraft]=useState(value);
- useEffect(()=>setDraft(value),[value]);
+ // Preview normalizes whitespace; keep the raw draft so a space between words
+ // cannot be erased by a React read-back before the learner finishes typing.
+ const normalizeDraft=(raw:string)=>raw.replace(/[\u0000-\u001f\u007f]/g,' ')
+  .replace(/\s+/g,' ').trim().slice(0,24);
+ useEffect(()=>{if(normalizeDraft(draft)!==value)setDraft(value);},[value]);
  return <div className="buddy-address-field li-react-address-field">
   <Field label={header} value={draft} placeholder={placeholder}
    onChange={event=>{
@@ -205,7 +209,9 @@ function BuddyName({kind,header,placeholder,value,preview,commit}:{
     setDraft(next);commit(kind,next);
    }}/>
   <Text role="support">{preview}</Text>
-  <button type="button" className="li-react-commit" onClick={()=>commit(kind,draft,true)}>
+  <button type="button" className="li-react-commit" onClick={()=>{
+   const clean=normalizeDraft(draft);setDraft(clean);commit(kind,clean,true);
+  }}>
    {copy('Lưu cách gọi','Save nickname')}</button>
  </div>;
 }

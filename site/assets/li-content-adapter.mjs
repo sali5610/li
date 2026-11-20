@@ -118,7 +118,7 @@ export function createContentClient({ baseUrl=new URL("../content-packs/",import
       links.push({kind:"Lesson",id:"lesson:"+other.id,lessonId:other.id,title:other.title,
         label:"Bài liên quan để so sánh",sourceUrl:proof.provenance.sourceUrl,
         sourceType:"academic",reason:proof.reasonLocalized?.vi||proof.reason,
-        relation:proof.predicate});
+        reasonLocalized:proof.reasonLocalized||null,relation:proof.predicate});
      }
     }
    }else if(doc.kind==="Lesson"){
@@ -129,7 +129,7 @@ export function createContentClient({ baseUrl=new URL("../content-packs/",import
      links.push({kind:"Lesson",id:"lesson:"+other.id,lessonId:other.id,title:other.title,
        label:"Bài liên quan để so sánh",sourceUrl:proof.provenance.sourceUrl,
        sourceType:"academic",reason:proof.reasonLocalized?.vi||proof.reason,
-       relation:proof.predicate});
+       reasonLocalized:proof.reasonLocalized||null,relation:proof.predicate});
     }
    }
    const lesson=lessonId?lessonById.get(lessonId):null;

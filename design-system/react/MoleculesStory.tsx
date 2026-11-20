@@ -1,7 +1,7 @@
 import React,{useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {ActionGroup,Button,InlineFeedback,SearchField} from './index';
-import type {FeedbackTone} from './index';
+import {ActionGroup,Button,InlineFeedback,SearchField,SaveStatus,LanguageSwitch,FilterGroup,ListRow,Breadcrumb} from './index';
+import type {FeedbackTone,SaveState} from './index';
 import './components.css';
 import './controls.css';
 import './molecules.css';
@@ -16,6 +16,70 @@ function Example(){
  const [clicks,setClicks]=useState(0);
  const [retry,setRetry]=useState(0);
  const disabled=state==='disabled';
+ const [choice,setChoice]=useState<'vi'|'en'>(state==='english'?'en':'vi');
+ const [selected,setSelected]=useState<string[]>(state==='selected'?['psychology']:[]);
+ const [rowHits,setRowHits]=useState(0);
+ const [savedState,setSavedState]=useState<SaveState>(
+  ['unsaved','saving','saved-device','synced','offline','error'].includes(state)?state as SaveState:'unsaved'
+ );
+ if(story==='saveStatus'){
+  const labels:Record<SaveState,[string,string]>={
+   unsaved:['Chưa lưu (mô phỏng)','Unsaved (demo)'],
+   saving:['Đang lưu (mô phỏng)','Saving (demo)'],
+   'saved-device':['Đã lưu trên thiết bị (mô phỏng)','Saved on device (demo)'],
+   synced:['Đã đồng bộ (mô phỏng)','Synced (demo)'],
+   offline:['Chưa đồng bộ — offline (mô phỏng)','Offline — not synced (demo)'],
+   error:['Lưu thất bại (mô phỏng)','Save failed (demo)']
+  };
+  const sequence:SaveState[]=['unsaved','saving','saved-device','synced','offline','error'];
+  return <div data-story-save-status>
+   <SaveStatus state={savedState} message={t(...labels[savedState])}
+    detail={t('Đây chỉ là fixture, không ghi dữ liệu.','This is only a fixture; nothing is written.')}
+    retryLabel={t('Thử lại','Retry')} onRetry={()=>setSavedState('saving')}/>
+   <Button variant="secondary" onClick={()=>setSavedState(
+    sequence[(sequence.indexOf(savedState)+1)%sequence.length])}>
+    {t('Chuyển trạng thái demo','Next demo state')}
+   </Button>
+  </div>;
+ }
+ if(story==='languageSwitch')return <div data-story-language-switch>
+  <LanguageSwitch value={choice} onChange={setChoice} disabled={disabled}
+   label={t('Chọn ngôn ngữ minh họa','Choose demo language')}
+   viLabel="Tiếng Việt" enLabel="English"/>
+  <p role="status">{t('Đang chọn: ','Selected: ')}{choice==='vi'?'Tiếng Việt':'English'}</p>
+ </div>;
+ if(story==='filterGroup')return <div data-story-filter-group>
+  <FilterGroup label={t('Bộ lọc môn thử','Demo subject filters')}
+   options={[{value:'psychology',label:t('Tâm lý học','Psychology')},
+    {value:'logic',label:t('Logic','Logic')},
+    {value:'history',label:t('Lịch sử','History')}]}
+   selected={selected} onChange={setSelected} disabled={disabled}
+   multiple={variant!=='Single'} allowEmpty={true}/>
+  <p role="status">{t('Số mục được chọn: ','Selected filters: ')}{selected.length}</p>
+ </div>;
+ if(story==='listRow')return <div data-story-list-row>
+  {variant==='Link'?
+   <ListRow href="#sample-topic" current={state==='selected'}
+    title={t('Tâm lý học nhận thức','Cognitive psychology')}
+    description={t('Tìm hiểu cách con người xử lý thông tin.','Explore how people process information.')}
+    meta={t('Môn học','Subject')}/>:
+   variant==='Static'?
+   <ListRow title={t('Thông tin tài liệu','Document information')} meta="MDX"
+    description={t('Chỉ để hiển thị, không thể bấm.','Read-only, not clickable.')}/>:
+   <ListRow disabled={disabled} title={t('Mở bài đọc thử','Open example reading')}
+    description={t('Hàng có thể bấm, không điều hướng thật.','Clickable row, no real navigation.')}
+    onActivate={()=>setRowHits(n=>n+1)}/>}
+  <p role="status">{t('Lượt bấm thử: ','Demo activations: ')}{rowHits}</p>
+ </div>;
+ if(story==='breadcrumb')return <div data-story-breadcrumb>
+  <Breadcrumb label={t('Đường dẫn minh họa','Demo breadcrumbs')}
+   items={[{label:t('Tàng Thư','Library'),href:'#library'},
+    {label:t('Tâm lý học','Psychology'),href:'#psychology'},
+    {label:state==='long'?t('Các yếu tố ảnh hưởng tới quá trình nhận thức và ra quyết định',
+     'Factors affecting cognition and decision-making'):t('Nhận thức','Cognition')}]}/>
+  <p>{t('Trang cuối là vị trí hiện tại.','The final item marks the current page.')}</p>
+ </div>;
+
  if(story==='searchField')return <div data-story-search>
   <SearchField label={t('Tra cứu thử','Demo search')} value={query} onQueryChange={setQuery}
    onSearch={setSubmitted} disabled={disabled}
@@ -49,7 +113,7 @@ function Story(){
  return <main className="li-molecules-story" data-ui-react-molecules="mounted"
   data-molecule={story} lang={en?'en':'vi'}>
   <p className="li-molecules-kicker">UX-DS-35 / STAGE05 / REACT</p>
-  <h1>{story==='searchField'?'Search Field':story==='actionGroup'?'Action Group':'Inline Feedback'}</h1>
+  <h1>{({searchField:'Search Field',actionGroup:'Action Group',feedback:'Inline Feedback',saveStatus:'Save Status',languageSwitch:'Language Switch',filterGroup:'Filter Group',listRow:'List Row',breadcrumb:'Breadcrumb'} as Record<string,string>)[story]||'Molecule'}</h1>
   <div className="li-molecules-sample"><Example/></div>
   <p className="li-molecules-footnote">{t('Chỉ là fixture UI · Không thực hiện tìm kiếm hoặc lưu.',
   'UI fixture only · No server search or storage.')}</p>

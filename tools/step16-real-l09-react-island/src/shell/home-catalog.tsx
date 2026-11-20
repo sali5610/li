@@ -1,0 +1,313 @@
+import React,{useEffect,useRef,useState} from 'react';
+import {createRoot} from 'react-dom/client';
+import {Badge,Button,Card,Heading,Progress,Text} from '../../../../design-system/react/index';
+import {LiIcon} from '../../../../design-system/react/LucideIcons';
+
+/** Shared staging screens, not another app shell.
+ * Visible Home and 5-tier Catalog are React-owned. Until the existing account
+ * and navigation ports are extracted, the hidden legacy hosts retain exactly
+ * one owner for bookmarks, scenarios, catalog URLs and progress.
+ */
+type Lesson={id:string;title:string;published?:boolean;route?:string};
+type Course={id:string;title:string;level:string;lessons:Lesson[]};
+type Field={id:string;name:string;source?:string;courses:Course[]};
+type Group={id:string;title:string;fields:Field[]};
+type Locale='vi'|'en';
+type CatalogPort={
+ getPath:()=>string[];
+ openPath:(path:string[],save?:boolean)=>void;
+ openLesson:(id:string)=>void;
+ openCourse:(group:string,field:string,course:string)=>void;
+};
+type AppWindow=Window&{
+ LI_CATALOG_DATA?:Group[];
+ liCatalog?:CatalogPort;
+ liLanguage?:{get:()=>string};
+};
+const app=window as AppWindow;
+const groups=Array.isArray(app.LI_CATALOG_DATA)?app.LI_CATALOG_DATA:[];
+
+function useLocale():Locale{
+ const [locale,setLocale]=useState<Locale>(app.liLanguage?.get()==='en'?'en':'vi');
+ useEffect(()=>{
+  const update=()=>setLocale(app.liLanguage?.get()==='en'?'en':'vi');
+  window.addEventListener('li:localechange',update);
+  return ()=>window.removeEventListener('li:localechange',update);
+ },[]);
+ return locale;
+}
+function useCatalogPath(){
+ const [path,setPath]=useState<string[]>(()=>app.liCatalog?.getPath()||
+  (new URL(location.href).searchParams.get('catalog')||'').split('/').filter(Boolean));
+ useEffect(()=>{
+  const update=()=>setPath(app.liCatalog?.getPath()||
+   (new URL(location.href).searchParams.get('catalog')||'').split('/').filter(Boolean));
+  window.addEventListener('li:catalog-pathchange',update);
+  return ()=>window.removeEventListener('li:catalog-pathchange',update);
+ },[]);
+ return path;
+}
+function openPath(path:string[]){
+ if(!app.liCatalog?.openPath)return;
+ app.liCatalog.openPath(path);
+}
+function courseProgress(course:Course){
+ const available=course.lessons.filter(lesson=>lesson.published&&lesson.route);
+ let done=0;
+ let unavailable=false;
+ for(const lesson of available){
+  try{
+   const raw=localStorage.getItem('li.review.'+lesson.id+'.v1');
+   if(raw&&JSON.parse(raw)?.reviewed===true)done++;
+  }catch{unavailable=true;}
+ }
+ return {available:available.length,done,total:course.lessons.length,unavailable};
+}
+const levelNames:readonly [string,string,string][]=[
+ ['Foundation','Nền tảng','Foundation'],
+ ['Intermediate','Trung cấp','Intermediate'],
+ ['Advanced-topic','Chuyên sâu','Advanced']
+];
+function CatalogCard({number,eyebrow,title,detail,onOpen,locale}:{
+ number:number;eyebrow:string;title:string;detail:string;onOpen:()=>void;locale:Locale
+}){
+ return <Card variant="tinted" className="catalog-card" data-li-react-catalog-card>
+  <div className="catalog-card-mark" aria-hidden="true">{String(number).padStart(2,'0')}</div>
+  <div className="kicker">{eyebrow}</div>
+  <Heading level={2} role="titleMedium">{title}</Heading>
+  <Text role="support" className="small">{detail}</Text>
+  <Button variant="secondary" className="catalog-card-action"
+   onClick={onOpen}>{locale==='vi'?'Khám phá':'Explore'}</Button>
+ </Card>;
+}
+function Catalog(){
+ const locale=useLocale();
+ const path=useCatalogPath();
+ const [,forceProgress]=useState(0);
+ useEffect(()=>{
+  const update=()=>forceProgress(x=>x+1);
+  window.addEventListener('li:personal-sync-applied',update);
+  window.addEventListener('li:learning-sync-report',update);
+  window.addEventListener('li:activity',update);
+  return ()=>{
+   window.removeEventListener('li:personal-sync-applied',update);
+   window.removeEventListener('li:learning-sync-report',update);
+   window.removeEventListener('li:activity',update);
+  };
+ },[]);
+ const group=groups.find(item=>item.id===path[0]);
+ const field=group?.fields.find(item=>item.id===path[1]);
+ const course=field?.courses.find(item=>item.id===path[2]);
+ const lesson=course?.lessons.find(item=>item.id===path[3]);
+ const breadcrumb=[{label:locale==='vi'?'Tàng Thư':'Library',path:[] as string[]}];
+ if(group)breadcrumb.push({label:group.title,path:[group.id]});
+ if(field)breadcrumb.push({label:field.name,path:[group!.id,field.id]});
+ if(course)breadcrumb.push({label:course.title,path:[group!.id,field!.id,course.id]});
+ if(lesson)breadcrumb.push({label:lesson.title,path:[group!.id,field!.id,course!.id,lesson.id]});
+ const heading=lesson?.title||course?.title||field?.name||group?.title||(locale==='vi'?'Tàng Thư':'Library');
+ const eyebrow=lesson?'BÀI HỌC · '+lesson.id:course?'MÔN HỌC · '+course.id:
+  field?'CHUYÊN NGÀNH':group?'NHÓM NGÀNH':'KHÁM PHÁ TRI THỨC';
+ const description=lesson?'Bài này mới có vị trí trong lộ trình. Nội dung chưa được xuất bản.':
+  course?'Theo dõi các bài trong môn và tiếp tục từ nội dung đã phát hành.':
+  field?'Các môn theo nền tảng → trung cấp → chuyên sâu; không tự khóa bài.':
+  group?'Chọn chuyên ngành để xem lộ trình các môn học.':
+  'Những lối đi khác nhau vào cùng một thư viện tri thức.';
+ const chooseLesson=(item:Lesson)=>{
+  if(!app.liCatalog?.openLesson)return;
+  app.liCatalog.openLesson(item.id);
+ };
+ const available=course?courseProgress(course):null;
+ return <div data-li-react-screen="catalog" className="li-react-catalog">
+  <nav className="catalog-breadcrumbs" aria-label={locale==='vi'?'Vị trí trong Tàng Thư':'Library path'}>
+   {breadcrumb.map((item,index)=><React.Fragment key={item.path.join('/')||'root'}>
+    {index>0&&<span aria-hidden="true" className="catalog-crumb-divider">›</span>}
+    {index===breadcrumb.length-1?
+     <span className="catalog-crumb-current" aria-current="page">{item.label}</span>:
+     <Button variant="ghost" className="catalog-crumb" onClick={()=>openPath(item.path)}>{item.label}</Button>}
+   </React.Fragment>)}
+  </nav>
+  <div className="kicker">{eyebrow}</div>
+  <Heading level={1} role="headline" className="display-title">{heading}</Heading>
+  <Text role="body" className="intro">{description}</Text>
+  {!group&&<><div className="catalog-group-grid">
+   {groups.map((item,index)=><CatalogCard key={item.id} number={index+1}
+    title={item.title} eyebrow={locale==='vi'?'NHÓM NGÀNH':'DOMAIN GROUP'}
+    detail={item.fields.length+(locale==='vi'?' chuyên ngành':' fields')}
+    locale={locale} onOpen={()=>openPath([item.id])}/>)}
+  </div>
+  <Text role="support" className="catalog-quiet-note">
+   Danh mục còn đề cương đang biên soạn. Chỉ bài đã phát hành mới có nội dung học.
+  </Text></>}
+  {group&&!field&&<div className="catalog-field-grid">
+   {group.fields.map((item,index)=><CatalogCard key={item.id} number={index+1}
+    title={item.name} eyebrow={locale==='vi'?'CHUYÊN NGÀNH':'FIELD'}
+    detail={item.courses.length+(locale==='vi'?' môn học theo lộ trình':' courses')}
+    locale={locale} onOpen={()=>openPath([group.id,item.id])}/>)}
+  </div>}
+  {field&&!course&&<div className="catalog-roadmap">
+   {levelNames.map(([level,vi,en],index)=><section key={level} className="catalog-level-band">
+    <div className="catalog-level-heading">
+     <span className="catalog-level-dot" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>
+     <Heading level={2} role="titleLarge">{locale==='en'?en:vi}</Heading>
+     <Text role="support">{level}</Text>
+    </div>
+    <div className="catalog-course-list">
+     {field.courses.filter(item=>item.level===level).map(item=><Card variant="raised"
+      key={item.id} className="catalog-course-card">
+      <div className="kicker">{item.id} · {locale==='en'?en:vi}</div>
+      <Heading level={3} role="titleMedium">{item.title}</Heading>
+      <ol className="catalog-preview-lessons">
+       {item.lessons.map(l=><li key={l.id}
+        className={l.published?'catalog-preview-published':undefined}>{l.title}</li>)}
+      </ol>
+      <Button variant="secondary" className="catalog-card-action"
+       onClick={()=>openPath([group!.id,field!.id,item.id])}>
+       {locale==='vi'?'Xem môn học':'View course'}
+      </Button>
+     </Card>)}
+    </div>
+   </section>)}
+  </div>}
+  {course&&!lesson&&<><Card variant="raised" className="catalog-progress">
+   <Heading level={2} role="titleMedium">
+    {available?.unavailable?'Tiến độ chưa xác minh':String(available?.done||0)+'/'+course.lessons.length+' bài đã hoàn thành'}
+   </Heading>
+   <Text role="support">{available?.available||0}/{course.lessons.length} bài đã phát hành
+    · Chỉ tính hoàn thành khi có tự đánh giá đã lưu.</Text>
+   {available&&!available.unavailable&&<Progress label="Tiến độ bài học đã hoàn thành"
+    value={available.done} max={Math.max(1,course.lessons.length)}/>}
+  </Card>
+  <ol className="catalog-lesson-list">
+   {course.lessons.map((item,index)=><li key={item.id} className="surface catalog-lesson-card">
+    <span className="catalog-lesson-order" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>
+    <div className="catalog-lesson-desc">
+     <Heading level={2} role="titleSmall">{item.title}</Heading>
+     <Text role="support">{item.id} · {item.published?'Đã phát hành':'Đề cương · chưa phát hành'}</Text>
+    </div>
+    <Button variant="secondary" onClick={()=>chooseLesson(item)}>
+     {item.published&&item.route?'Vào bài học':'Xem đề cương'}
+    </Button>
+   </li>)}
+  </ol></>}
+  {lesson&&<Card variant="tinted" className="catalog-draft-content">
+   <div className="kicker">CHƯA PHÁT HÀNH</div>
+   <Heading level={2} role="titleMedium">Nội dung đang được biên soạn</Heading>
+   <Text role="body">Bài chưa có chương, bài tập hoặc tiến độ học được phép phát hành.</Text>
+  </Card>}
+ </div>;
+}
+
+type MirrorState={question:string;scene:string;source:string;route:string;cta:string;saved:boolean};
+const homeLegacy=()=>document.querySelector<HTMLElement>('#page-home > .hero');
+function readMirror():MirrorState{
+ const old=homeLegacy();
+ return {
+  question:old?.querySelector('#mirror-question')?.textContent||'',
+  scene:old?.querySelector('#home-scene')?.textContent||'',
+  source:old?.querySelector('.example-label')?.textContent||'',
+  route:old?.querySelector<HTMLButtonElement>('#mirror-primary-action')?.dataset.page||'research',
+  cta:old?.querySelector('#mirror-primary-label')?.textContent||'Đào sâu',
+  saved:old?.querySelector('#save-question')?.getAttribute('aria-pressed')==='true'
+ };
+}
+function legacyAction(id:string){
+ const button=homeLegacy()?.querySelector<HTMLButtonElement>('#'+id);
+ button?.click();
+}
+function Home(){
+ const [mirror,setMirror]=useState<MirrorState>(readMirror);
+ const gesture=useRef<{x:number;y:number}|null>(null);
+ useEffect(()=>{
+  const old=homeLegacy();if(!old)return;
+  const sync=()=>setMirror(before=>{
+   const next=readMirror();
+   return JSON.stringify(next)===JSON.stringify(before)?before:next;
+  });
+  const observer=new MutationObserver(sync);
+  observer.observe(old,{subtree:true,attributes:true,childList:true,characterData:true,
+   attributeFilter:['aria-pressed','data-page','aria-label','title']});
+  window.addEventListener('li:personal-sync-applied',sync);
+  return ()=>{observer.disconnect();window.removeEventListener('li:personal-sync-applied',sync);};
+ },[]);
+ const shift=(direction:-1|1)=>legacyAction(direction===-1?'previous-question':'shuffle');
+ return <div data-li-react-screen="home" className="hero"
+  role="region" aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn">
+  <div className="hero-left">
+   <Button variant="primary" className="home-checkin" onClick={()=>legacyAction('checkin')}>
+    <LiIcon name="check" size={18}/> Check-in hôm nay
+   </Button>
+   <Heading level={1} role="headline">Mọi câu hỏi<br/>đều có rễ.</Heading>
+   <Text role="body">Không cần biết tất cả. Chỉ cần không ngừng tò mò.</Text>
+   <span className="tiny-note">Một câu hỏi, muôn ngả đường</span>
+  </div>
+  <div className="mirror-message"
+   onTouchStart={event=>{
+    if(event.touches.length!==1||(event.target as HTMLElement).closest('button'))return;
+    gesture.current={x:event.touches[0].clientX,y:event.touches[0].clientY};
+   }}
+   onTouchEnd={event=>{
+    const start=gesture.current;gesture.current=null;
+    if(!start||event.changedTouches.length!==1)return;
+    const touch=event.changedTouches[0],dx=touch.clientX-start.x,dy=touch.clientY-start.y;
+    if(Math.abs(dx)>=42&&Math.abs(dx)>=Math.abs(dy)*1.3)shift(dx<0?1:-1);
+   }}>
+   <Heading level={2} role="titleMedium">{mirror.question}</Heading>
+   <div className="mirror-controls" role="group" aria-label="Chuyển câu hỏi">
+    <Button variant="ghost" className="mirror-refresh"
+     aria-label="Câu hỏi trước" onClick={()=>shift(-1)}>
+     <LiIcon name="chevron-left" size={20}/>
+    </Button>
+    <Button variant="ghost" className="mirror-refresh"
+     aria-label="Câu hỏi tiếp theo" onClick={()=>shift(1)}>
+     <LiIcon name="chevron-right" size={20}/>
+    </Button>
+   </div>
+  </div>
+  <aside className="hero-dialogue" aria-label="Lão Lý kể bối cảnh câu hỏi">
+   <span className="hero-dialogue-avatar" aria-hidden="true">
+    <img src="./assets/laoly-neutral.png" alt="" width="128" height="128"/>
+   </span>
+   <div className="hero-dialogue-bubble" role="note">
+    <div className="hero-dialogue-label"><span className="example-label">{mirror.source}</span></div>
+    <Text role="body">{mirror.scene}</Text>
+   </div>
+  </aside>
+  <div className="hero-actions">
+   <Button variant="primary" className="primary" data-page={mirror.route}
+    aria-label={mirror.route.startsWith('lessonL')?'Khám phá vì sao · Mở bài học liên quan':'Đào sâu · Mở Khảo Chứng'}>
+    <span className="action-icon"><LiIcon name="arrow-right" size={22}/></span>
+    <span>{mirror.cta}</span>
+   </Button>
+   <Button variant="primary" className="primary mirror-save-action"
+    aria-label={mirror.saved?'Bỏ lưu câu hỏi':'Lưu câu hỏi'} aria-pressed={mirror.saved}
+    onClick={()=>legacyAction('save-question')}>
+    <span className="action-icon"><LiIcon name="bookmark" size={22}/></span>
+    <span>{mirror.saved?'Đã lưu':'Lưu câu hỏi'}</span>
+   </Button>
+  </div>
+ </div>;
+}
+export function mountHomeAndCatalog(){
+ const home=document.getElementById('page-home');
+ const catalog=document.getElementById('page-catalog');
+ const oldHome=homeLegacy();
+ const oldCatalog=catalog?.querySelector<HTMLElement>(':scope > .section-shell');
+ if(!home||!catalog||!oldHome||!oldCatalog||!app.liCatalog){
+  throw Error('REACT_HOME_CATALOG_PORTS_REQUIRED');
+ }
+ const homeHost=document.createElement('div');
+ homeHost.id='li-react-home-host';
+ const catalogHost=document.createElement('div');
+ catalogHost.id='li-react-catalog-host';
+ catalogHost.className='section-shell';
+ home.append(homeHost);catalog.append(catalogHost);
+ const homeRoot=createRoot(homeHost),catalogRoot=createRoot(catalogHost);
+ homeRoot.render(<Home/>);catalogRoot.render(<Catalog/>);
+ oldHome.hidden=true;oldHome.style.display='none';
+ oldCatalog.hidden=true;oldCatalog.style.display='none';
+ return ()=>{
+  homeRoot.unmount();catalogRoot.unmount();homeHost.remove();catalogHost.remove();
+  oldHome.hidden=false;oldHome.style.removeProperty('display');
+  oldCatalog.hidden=false;oldCatalog.style.removeProperty('display');
+ };
+}

@@ -24,6 +24,8 @@ const published:Readonly<Record<string,string>>={
  lessonL03:'L03-1-2',lessonL09:'L09-1-2',lessonL15:'L15-2-2'
 };
 const preview=new Map(personalStudyLessonIds.map(id=>[personalStudyRoute(id),id]));
+// Browser history tracks real Back/Forward direction, not a second native stack.
+let browserDepth=0;
 const canVisit=()=>document.documentElement.classList.contains('li-auth-verified')&&
  !document.documentElement.classList.contains('li-account-open');
 function normalize(route:string){
@@ -68,9 +70,10 @@ function writeUrl(route:string,remember=false){
  const path=url.pathname+url.search;
  if(path!==window.location.pathname+window.location.search+window.location.hash){
   // A user navigation creates a real browser entry; redirects/auth reset replace it.
-  if(remember&&typeof window.history.pushState==='function')
-   window.history.pushState({...window.history.state,liRoute:route},'',path);
-  else window.history.replaceState({...window.history.state,liRoute:route},'',path);
+  if(remember&&typeof window.history.pushState==='function'){
+   browserDepth++;
+   window.history.pushState({...window.history.state,liRoute:route,liRouteDepth:browserDepth},'',path);
+  }else window.history.replaceState({...window.history.state,liRoute:route,liRouteDepth:browserDepth},'',path);
  }
 }
 function paintRoute(route:string,page:HTMLElement){
@@ -79,21 +82,17 @@ function paintRoute(route:string,page:HTMLElement){
  // existing CSS class so all 17 personal preview route mounts remain intact.
  document.querySelectorAll<HTMLElement>('section.page').forEach(node=>
   node.classList.toggle('active',node===page));
- // Mutate only fallback navigation; visible React controls use Zustand state.
- document.querySelectorAll<HTMLElement>('[data-page]').forEach(node=>{
-  const active=['home','catalog','guide','library'].includes(route)&&node.dataset.page===route;
-  node.classList.toggle('active',active);
-  if(active)node.setAttribute('aria-current','page');
-  else node.removeAttribute('aria-current');
- });
- document.querySelectorAll<HTMLElement>('.header .tool-button').forEach(node=>{
-  const active=node.dataset.page===route;
-  node.classList.toggle('active',active);
-  if(active)node.setAttribute('aria-current','page');
-  else node.removeAttribute('aria-current');
- });
+ // Navigation chrome is React-owned (Zustand + aria-current in React).
+ // Only the host section visibility remains a compatibility bridge until the
+ // feature owners finish removing native HTML data hosts.
 }
 export function mountReactRouter():()=>void{
+ browserDepth=Number.isInteger(window.history.state?.liRouteDepth)&&
+  window.history.state.liRouteDepth>=0?window.history.state.liRouteDepth:0;
+ if(!Number.isInteger(window.history.state?.liRouteDepth)){
+  window.history.replaceState({...window.history.state,liRouteDepth:browserDepth},'',
+   window.location.pathname+window.location.search+window.location.hash);
+ }
  const initial=window.liAppRouter?.getCurrent?.()||'home';
  let active=pageOf(initial)?initial:'home';
  const history=(window.liNativeRouteEffects?.history?.()||[]).filter(id=>!!pageOf(id)).slice(-32);
@@ -121,7 +120,7 @@ export function mountReactRouter():()=>void{
   if(!canVisit())return false;
   // Real browser navigation is the canonical Back operation. The synchronous
   // fallback supports older embedded webviews without the History API.
-  if(history.length&&typeof window.history.back==='function'){
+  if(browserDepth>0&&typeof window.history.back==='function'){
    window.history.back();
    return true;
   }
@@ -148,7 +147,7 @@ export function mountReactRouter():()=>void{
   }
   // A new invited account must never inherit the previous learner's Back
   // history or private lesson deep link. No persistence is touched.
-  history.length=0;active='home';
+  history.length=0;browserDepth=0;active='home';
   window.liNativeRouteEffects?.restoreHistory([],active);
   const home=pageOf('home');
   if(home)paintRoute(active,home);
@@ -160,7 +159,13 @@ export function mountReactRouter():()=>void{
   // Native Catalog still listens for popstate to restore its drill-down path.
   // React is the final owner of the visible screen and route state.
   if(!canVisit())return;
-  if(history.length)history.pop();
+  const next=Number(window.history.state?.liRouteDepth);
+  if(Number.isInteger(next)&&next>=0){
+   // Going Forward restores the trail; going Back shortens it.
+   if(next<browserDepth&&history.length)history.pop();
+   else if(next>browserDepth&&active)history.push(active);
+   browserDepth=next;
+  }else if(history.length)history.pop();
   const restored=routeFromUrl();
   if(restored!==active)change(restored,{remember:false,syncUrl:false});
  };

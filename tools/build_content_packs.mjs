@@ -273,6 +273,40 @@ for(const c of researchCandidates.courses){
 if(researchCandidates.publicationStatus!=="not_authorized")throw Error("LI_COURSE_RESEARCH_RELEASE_FORBIDDEN");
 compiled["site/content-packs/course-levels.json"]={schemaVersion:courseLevels.schemaVersion,levels:courseLevels.levels};
 
+// Answerability is EDITORIAL MATCHING onto existing approved lesson outcomes,
+// not model-generated claims, semantic certainty or a second knowledge engine.
+const answerability=load("content/search/answerability.wave1.json");
+if(answerability.schemaVersion!=="1.0.0"||
+ answerability.scope!=="authored_wave1_answerability_not_general_semantic_ai"||
+ !Array.isArray(answerability.intents)||!Array.isArray(answerability.relatedTopics))
+ throw Error("LI_ANSWERABILITY_BAD_SCHEMA");
+const lessonIndex=new Map(lessons.map(l=>[l.id,l])),claimIds=new Set();
+for(const claim of answerability.intents){
+ const lesson=lessonIndex.get(claim.lessonId);
+ if(!/^answer:l\d{2}:[a-z0-9-]+$/.test(claim.id)||claimIds.has(claim.id)||
+   !lesson||lesson.reviewState!=="approved"||lesson.publishState!=="review_only"||
+   !Number.isInteger(claim.outcomeIndex)||claim.outcomeIndex<0||
+   claim.outcomeIndex>=lesson.learningOutcomes.vi.length||
+   !lesson.learningOutcomes.en[claim.outcomeIndex]||
+   !Array.isArray(claim.groups)||claim.groups.length<2||
+   claim.groups.some(g=>!Array.isArray(g)||!g.length||g.some(t=>typeof t!=="string"||!t.trim()))||
+   !claim.explanation?.vi||!claim.explanation?.en||
+   !lesson.sources.some(x=>x.url===claim.sourceUrl))
+  throw Error("LI_ANSWERABILITY_UNGROUNDED_CLAIM "+claim.id);
+ claimIds.add(claim.id);
+}
+for(const [id,terms] of Object.entries(answerability.blockedByLesson)){
+ if(!lessonIndex.has(id)||!Array.isArray(terms)||!terms.every(t=>typeof t==="string"&&t.trim()))
+  throw Error("LI_ANSWERABILITY_BAD_SCOPE "+id);
+}
+for(const item of answerability.relatedTopics){
+ if(!lessonIndex.has(item.lessonId)||!Array.isArray(item.triggers)||!item.triggers.length||
+    !item.reason?.vi||!item.reason?.en)
+  throw Error("LI_ANSWERABILITY_BAD_RELATED");
+}
+compiled["site/content-packs/answerability.json"]=answerability;
+
+
 const check=process.argv.includes("--check");
 for(const [path,value] of Object.entries(compiled)){
  const payload=path.endsWith(".js")?value:JSON.stringify(value,null,2)+"\n";

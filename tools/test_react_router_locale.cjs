@@ -75,7 +75,7 @@ const scope={
   personalStudyLessonIds:["L09-1-3"],
   personalStudyRoute:id=>id==="L09-1-3"?"draftLessonL0913":null
  }:undefined,
- exports:moduleExports,window,document,URL,CustomEvent:TestEvent
+ exports:moduleExports,window,document,URL,URLSearchParams,CustomEvent:TestEvent
 };
 vm.runInNewContext(generated,scope);
 const stop=moduleExports.mountReactRouter();

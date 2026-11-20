@@ -10,7 +10,7 @@ import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
 import {validMethodAttempts} from '../learning/validate-method-attempts.js';
 import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
- hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS,t12Fields} from './private-state.js';
+ hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS,t12Fields,practiceField} from './private-state.js';
 
 /**
  * The native lesson UI still writes li.review.* localStorage synchronously.
@@ -398,6 +398,22 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
     if(confirmed.length)window.dispatchEvent(new CustomEvent('li:t12-sync-confirmed',{
      detail:{accountId:uid,keys:confirmed}
     }));
+   }
+   // A practice receipt earns its synced badge ONLY after exact signed RLS
+   // readback of the owner-scoped revision, never from local Dexie alone.
+   if(!disposed&&current.last==='saved'){
+    const field=practiceField(uid),key=storageKey(uid,field.type,field.id);
+    const [op,row]=await Promise.all([store.outbox.get(key),store.records.get(key)]);
+    if(!op&&row&&!row.deletedAt&&row.baseRevision>=1&&
+      personalRemoteSnapshot(uid,row.itemType,row.itemId,row.payload)?.raw===
+       localStorage.getItem(field.key)){
+     const signed=await api.one(field.type,field.id);
+     if(signed&&signed.revision===row.baseRevision&&
+       canonical(signed.payload)===canonical(row.payload))
+      window.dispatchEvent(new CustomEvent('li:spell-practice-sync-confirmed',{
+       detail:{accountId:uid,keys:[field.key]}
+      }));
+    }
    }
    // In-place page state refresh; never clear an open editor or scroll position.
    if(!disposed&&personalChanged)window.dispatchEvent(new CustomEvent('li:personal-sync-applied',{

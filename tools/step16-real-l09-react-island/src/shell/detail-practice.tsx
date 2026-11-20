@@ -20,7 +20,7 @@ type SpellView={
  lessonId:string|null;reviewedInSession:boolean;viewSession:number;
  t12Draft?:{context:string;next:string;answer:string};
  t12SavedOnDevice?:boolean;t12Synced?:boolean;t12StorageError?:string;
- practiceCount?:number;practiceLastAt?:number|null;practiceError?:string
+ practiceCount?:number;practiceLastAt?:number|null;practiceError?:string;practiceSynced?:boolean
 };
 type Version={version:number;title:string;body:string;at:string;change?:string};
 type CaseContext={
@@ -329,10 +329,12 @@ export function GuideDetail(){
         'Review schedule and count sync when online; answers are not saved. 1–3–7–14–30 days are app defaults.'):
        copy('Tự chọn, có thể bỏ qua. Câu trả lời không tự lưu hay gửi lên máy chủ.',
         'Optional. Answers are not saved or sent to a server.')}</Text>
-     {view.active!=='T02'&&<>
+     {view.active!=='T02'&&view.active!=='T12'&&<>
        <Text role="support">{copy('Đã ghi nhận trên máy: ','Recorded on device: ')}
-        {view.practiceCount??0} {copy('lượt luyện · chưa đồng bộ giữa thiết bị',
-         'practice rounds · not yet synced across devices')}</Text>
+        {view.practiceCount??0} {view.practiceSynced?
+         copy('lượt luyện · đã đồng bộ','practice rounds · synced'):
+         copy('lượt luyện · đã lưu trên máy, chờ đồng bộ',
+          'practice rounds · saved on device, awaiting sync')}</Text>
        {view.practiceLastAt&&<Text role="support">{copy('Lần gần nhất: ','Last practice: ')}
         {new Date(view.practiceLastAt).toLocaleString(en()?'en-US':'vi-VN')}</Text>}
        {view.practiceError&&<p role="alert">{view.practiceError}</p>}

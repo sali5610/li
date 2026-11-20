@@ -1,6 +1,7 @@
 import {storageKey,type ItemType,type JsonValue} from '../sync/contract.js';
 import {PrivateDeviceStore} from '../sync/local-dexie.js';
 import type {NeonUserApi} from '../sync/neon-api.js';
+import {personalStudyManuscriptIds} from '../learning/personal-study-ids.js';
 
 /** One existing signed Dexie/Neon pipeline for ALL first-party personal state.
  * App shell, lesson drafts and auth tokens themselves are NOT mirrored.
@@ -21,7 +22,14 @@ export const PERSONAL_FIELDS:readonly Field[]=[
  {key:'li.personal.daily.v1',type:'note',id:'daily-journal',diary:true},
  {key:'li.personal.daily.enabled.v1',type:'preference',id:'daily-enabled',diary:true}
 ];
-const SPELL_CONTEXTS=['standalone','L03-1-2','L09-1-2','L15-2-2'] as const;
+/* Never register personal-draft scopes outside the invited staging build. */
+const IS_PERSONAL_STAGING=(import.meta as ImportMeta & {
+ env?:{VITE_LI_AUTH_TARGET?:string}
+}).env?.VITE_LI_AUTH_TARGET==='github-pages-staging';
+const SPELL_CONTEXTS:readonly string[]=[
+ 'standalone','L03-1-2','L09-1-2','L15-2-2',
+ ...(IS_PERSONAL_STAGING?personalStudyManuscriptIds:[])
+];
 const T02_PREFIX='li.spell.t02.schedule.v2:';
 /** Owner- and lesson-scoped successive review schedules through signed Neon RLS. */
 export const t02Fields=(uid:string):Field[]=>
@@ -62,12 +70,53 @@ function assertT12(raw:string):void{
     (data.phase===2&&[data.context,data.next,data.answer].some(Boolean)))
    throw Error('T12_PRIVATE_CHECKPOINT_INVALID');
 }
+const PRACTICE_PREFIX='li.spell.practice.v1:';
+const PRACTICE_ID='spell-practice-history';
+/* A receipt never contains answers, grades or authored learning content.
+ * Strict decode prevents arbitrary browser keys from entering signed RLS sync. */
+function assertPractice(raw:string):void{
+ if(raw.length>60000)throw Error('SPELL_PRACTICE_TOO_LARGE');
+ const d=JSON.parse(raw) as Record<string,unknown>;
+ if(!d||typeof d!=='object'||Array.isArray(d)||
+  Object.keys(d).sort().join(',')!=='schema,scopes'||d.schema!=='li.spell.practice.v1'||
+  !d.scopes||typeof d.scopes!=='object'||Array.isArray(d.scopes))
+  throw Error('SPELL_PRACTICE_INVALID');
+ const scopes=Object.entries(d.scopes as Record<string,unknown>);
+ if(scopes.length>30)throw Error('SPELL_PRACTICE_SCOPE_LIMIT');
+ const allowed=new Set(SPELL_CONTEXTS);
+ const methods=new Set(['T01','T03','T04','T05','T06','T07','T08','T09','T10','T11','T12','T13']);
+ for(const [context,items] of scopes){
+  if(!allowed.has(context)||!items||typeof items!=='object'||Array.isArray(items))
+   throw Error('SPELL_PRACTICE_SCOPE_INVALID');
+  for(const [id,v] of Object.entries(items as Record<string,unknown>)){
+   if(!methods.has(id)||!v||typeof v!=='object'||Array.isArray(v))
+    throw Error('SPELL_PRACTICE_METHOD_INVALID');
+   const r=v as Record<string,unknown>;
+   if(Object.keys(r).sort().join(',')!=='count,lastAt,phase,places'||
+    !Number.isSafeInteger(r.count)||Number(r.count)<0||Number(r.count)>100000||
+    !(r.lastAt===null||(Number.isSafeInteger(r.lastAt)&&Number(r.lastAt)>0))||
+    !Number.isSafeInteger(r.phase)||Number(r.phase)<0||
+    Number(r.phase)>(id==='T03'?2:1)||
+    (Number(r.phase)>0&&!['T01','T03','T13'].includes(id))||
+    !Array.isArray(r.places)||
+    r.places.length>(id==='T13'?3:0)||
+    r.places.some(x=>typeof x!=='string'||x.length>1200)||
+    (r.phase===0&&r.places.length!==0)||
+    (id==='T13'&&r.phase===1&&
+      (r.places.length!==3||new Set(r.places.map(x=>x.trim().toLocaleLowerCase('vi'))).size!==3)))
+    throw Error('SPELL_PRACTICE_RECEIPT_INVALID');
+  }
+ }
+}
+export function practiceField(uid:string):Field{
+ return{key:PRACTICE_PREFIX+encodeURIComponent(uid),type:'l2_progress',id:PRACTICE_ID};
+}
 const CONSENT=(uid:string)=>'li.sync.journal-cloud-consent.v1:'+uid;
 const BACKUP=(uid:string,key:string)=>'li.sync.local-backup.v1:'+uid+':'+key;
 const SCHEMA='li.personal.storage.v1';
 const fieldsFor=(uid:string):readonly Field[]=>[
  {key:CONSENT(uid),type:'preference',id:'journal-cloud-consent'},
- ...PERSONAL_FIELDS,...t02Fields(uid),...t12Fields(uid)
+ ...PERSONAL_FIELDS,...t02Fields(uid),...t12Fields(uid),practiceField(uid)
 ];
 export type PersonalSnapshot={field:Field;raw:string|null};
 const active=(uid:string,field:Field)=>!field.diary||journalCloudConsent(uid);
@@ -103,12 +152,14 @@ function unpack(payload:unknown,key:string):string{
   throw Error('PRIVATE_PAYLOAD_INVALID');
  if(key.startsWith(T12_PREFIX))assertT12(value.raw);
  if(key.startsWith(T02_PREFIX))assertT02(value.raw);
+ if(key.startsWith(PRACTICE_PREFIX))assertPractice(value.raw);
  return value.raw;
 }
 function wrap(field:Field,raw:string):JsonValue{
  if(raw.length>300000)throw Error('PRIVATE_STATE_TOO_LARGE');
  if(field.key.startsWith(T12_PREFIX))assertT12(raw);
  if(field.key.startsWith(T02_PREFIX))assertT02(raw);
+ if(field.key.startsWith(PRACTICE_PREFIX))assertPractice(raw);
  // Validate structured stores before replicating; preserve exact JSON strings.
  if(field.key!=='li.private.case-draft.v1'&&field.key!=='li.study-mode.v1'&&
    field.key!=='li.app.locale.v1'&&field.key!=='li.personal.daily.enabled.v1'&&

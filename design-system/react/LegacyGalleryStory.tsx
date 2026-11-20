@@ -42,7 +42,7 @@ function Specimen(){
  const [value,setValue]=useState('');
  const [choice,setChoice]=useState('');
  const [active,setActive]=useState(state==='selected'?'methods':story==='bottomNav'?'home':'library');
- const [modal,setModal]=useState(false);
+ const [modal,setModal]=useState(state==='open');
  const [selectedDate,setSelectedDate]=useState(todayKey);
  const [year,setYear]=useState(today.getFullYear());
  const [month,setMonth]=useState(today.getMonth()+1);

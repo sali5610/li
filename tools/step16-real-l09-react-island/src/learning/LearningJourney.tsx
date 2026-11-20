@@ -340,6 +340,19 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    {phase==='feedback'&&<Card variant="flat-study" aria-labelledby="li-learn-feedback">
     <Heading level={2} id="li-learn-feedback" role="titleLarge">{content.answerTitle}</Heading>
     <Text>{strip(content.answer)}</Text>
+    <section className="li-learning-submission" aria-label={vi?'Bài làm của bạn':'Your submitted answers'}>
+     <Heading level={3} role="titleMedium">
+      {vi?'Bài làm của bạn — đối chiếu trước khi tự chấm':'Your answers — compare before rating'}
+     </Heading>
+     <ol className="li-learning-submission-list">
+      {content.questions.map((question:string,i:number)=><li key={i}>
+       <Text role="support">{question}</Text>
+       <p className="li-learning-submitted-answer">
+        {(attempt.submission??attempt.draft)[i]}
+       </p>
+      </li>)}
+     </ol>
+    </section>
     <Heading level={3} role="titleMedium">{content.rubricTitle}</Heading>
     <div className="li-learning-fields">
      {content.rubricItems.map((item:string[],i:number)=><div className="li-learning-rating" key={i}>

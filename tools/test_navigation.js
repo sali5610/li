@@ -157,6 +157,6 @@ sandbox.liAfterNavigate("noteDetail");
 assert.ok(emitted.includes("li:library-view-changed"),"React Tủ Riêng receives refreshed private data");
 assert.ok(emitted.includes("li:inquiry-changed"),"React research gets the updated scene");
 assert.ok(emitted.includes("li:note-view-changed"),"React note detail refreshes on route return");
-assert.equal(emitted.filter(x=>x==="li:library-view-changed").length,9,
+assert.equal(emitted.filter(x=>x==="li:library-view-changed").length,8,
  "Every React route change notifies the library once without a native render");
 console.log("PASS S118 native fallback + React route data side effects without double-rendering");

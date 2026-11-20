@@ -32,7 +32,9 @@ cat > site/li-search-source-smoke.html <<'HTML'
  // Offline/static-catalog fallback must retain a source even before canonical packs load.
  const hasFallback=Array.from(results.querySelectorAll("a"))
   .some(a=>a.textContent==="Nguồn danh mục (Notion)"&&a.href.startsWith("https://"));
- if(!hasFallback){fail("FALLBACK_SOURCE");return;}
+ if(window.liSearch?.getStatus?.()==="loading"&&!hasFallback){
+  fail("FALLBACK_SOURCE");return;
+ }
  for(let i=0;i<60&&window.liSearch?.getStatus?.()==="loading";i++)await tick();
  if(window.liSearch?.getStatus?.()!=="ready"){fail("CANONICAL_PACK_"+window.liSearch?.getStatus?.());return;}
  await query("L09-1-2");

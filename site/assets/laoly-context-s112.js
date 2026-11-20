@@ -27,12 +27,16 @@ function methodActionName(m){return inEnglish()?methodDisplayName(m):(m?.[2]||m?
 /* All 12-screen Lão Lý routes use the existing canonical app history.
  * Focus the VISIBLE React screen, never hidden legacy form controls. */
 function go(page,focusId){
+ // Saved-question shortcuts must open the question drawer, even if React Resume
+ // last displayed lesson bookmarks.
+ if(page==="resume"&&focusId==="li-saved-questions")
+  window.liLibraryShelf?.selectBookmarkTab?.("question");
  closeModal("buddy-modal");
  if(window.liBuddyReactMounted&&window.liAppRouter?.navigate)window.liAppRouter.navigate(page);
  else navigate(page);
  if(!focusId)return;
  const reactTargets={
-  "li-saved-questions":"#li-react-resume-host",
+  "li-saved-questions":"#li-react-tab-question",
   "case-archive-preview":"#li-react-library-host",
   "mirror-question":"#li-react-home-host .mirror-message h2",
   "method-search":"#li-react-method-search",
@@ -208,7 +212,10 @@ function settingsPlan(){
   intro:"Nhịp “"+mode.label+"” do chính ngươi chọn. Lão không tự đoán tình trạng sức khỏe hay độ thông minh của ai.",
   actions:[
    action("Nhịp này làm gì?",mode.feedback),
-   action("Dữ liệu cất đâu?","Bút Ký, Dấu Trang và bản nháp lưu trên trình duyệt hiện tại. Muốn chuyển trang hoặc thiết bị, dùng Xuất/Nhập bản sao JSON trong Cài đặt."),
+   action(inEnglish()?"What's in the backup?":"Bản sao gồm gì?",
+    inEnglish()?
+     "Settings exports a partial notes JSON: case notes, captured ideas, bookmarks, Lao Ly nicknames and any legacy draft. It does not include Journal, Check-ins, lesson progress, spell reviews or reminders. Do not erase device data assuming this is a full backup.":
+     "Settings chỉ xuất tệp JSON ghi chú: Bút Ký, Ý đã nhặt, Dấu Trang, tên gọi Lão Lý và bản nháp legacy nếu có. Không có Nhật Ký, Check-in, tiến độ học, lịch ôn Thần Chú hay lời nhắc. Đừng xóa dữ liệu máy vì tưởng đã sao lưu hết."),
    action("Đổi Nhịp học","Lão đưa ngươi tới đúng bốn lựa chọn. Đổi hay không là quyền của ngươi.",()=>go("settings","study-mode-settings"))
   ]
  };

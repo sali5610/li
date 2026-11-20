@@ -86,6 +86,17 @@ assert.doesNotMatch(old,/field&&field\.checked!==Boolean\(value\)\)field\.click\
 assert.match(buddy,/const calm=buddyVoice\("calm"\)/);
 assert.match(buddy,/if\(buddyVoice\("mute"\)\)/);
 assert.match(buddy,/document\.getElementById\(kind==="calm"/); // native fallback only
+const libraryReact=read('tools/step16-real-l09-react-island/src/shell/guide-library.tsx');
+assert.match(libraryReact,/const tab=view\.bookmarkTab;/,
+ 'React Resume tab must follow the canonical bookmark port after mentor navigation');
+assert.doesNotMatch(libraryReact,/\[tab,setTab\]=useState/,
+ 'React must not keep a stale second copy of the bookmark tab');
+assert.match(buddy,/window\.liLibraryShelf\?\.selectBookmarkTab\?\.\("question"\)/,
+ 'Mentor saved-question shortcut must select question bookmarks');
+assert.match(buddy,/"li-saved-questions":"#li-react-tab-question"/,
+ 'Mentor must focus the visible selected React question tab');
+assert.match(buddy,/Settings exports a partial notes JSON/,
+ 'Lao Ly must not claim the notes-only export covers all account data');
 
 // S303: Settings is one React-owned flow, not a collection of hidden-button bridges.
 const auth=read('tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx');

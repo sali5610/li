@@ -51,7 +51,7 @@ function plan(page){
  const supported=suggested&&/^L2-T\d{2}$/.test(suggested.techniqueId)&&
   suggested.shortId===suggested.techniqueId.slice(3);
  if(supported){
-  const english=stageLocale()==="en",exercise=c.lesson_id!=="L03-1-2";
+  const english=stageLocale()==="en",exercise=true;
   actions.push({
    label:(english?"Try optional ":"Thử thần chú gợi ý ")+suggested.shortId,
    reply:(english?"Editorial suggestion, not reviewed method fit or mastery: ":
@@ -59,7 +59,7 @@ function plan(page){
      suggested.why[english?"en":"vi"],
    perform:()=>{
     closeModal("buddy-modal");
-    if(typeof showMethod==="function")showMethod(suggested.shortId,{practice:exercise});
+    if(typeof showMethod==="function")showMethod(suggested.shortId,{practice:exercise,lessonId:c.lesson_id});
    }
   });
  }else actions.push({

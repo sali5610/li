@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "L15-2-1",
+  "kind": "Lesson",
+  "title": {
+    "sourceTitle": "W2A · L15-2-1 — Demand Forecasting & Planning Assumptions · VI/EN draft"
+  },
+  "content": {
+    "format": "editorial-sectioned-draft-v1",
+    "localized": {
+      "vi": {
+        "intro_md": "<b>“Bán được 0 món không có nghĩa là chẳng ai muốn mua.”</b>\n\nGiả sử cửa hàng đã hết sạch hàng trên kệ và không ghi lại yêu cầu mua chưa được đáp ứng. Doanh số có thể về 0 trong khi khách vẫn muốn mua. Đó là <b>tình huống phản ví dụ</b>, không phải mô tả dữ liệu bốn tuần của bài này. Nếu đem sales làm demand mà không kiểm tra stockout, dự báo có thể đang học từ sự thiếu hàng chứ không phải từ nhu cầu thật.\n\n<i>Cú lật:</i> số đã bán đo giao dịch hoàn tất; nhu cầu cần định nghĩa và kiểm chứng riêng, trước khi lập forecast. [IBM — Demand Planning](https://www.ibm.com/think/topics/demand-planning) (nguồn về planning và demand driver; tình huống hết hàng do bài biên soạn để minh họa rủi ro dữ liệu).",
+        "sections": [
+          {
+            "id": "vi-01",
+            "role": "goals",
+            "heading": "1. Mục tiêu",
+            "body_md": "- Phân biệt <b>nhu cầu (demand)</b>, <b>doanh số đã ghi nhận (sales)</b>, <b>dự báo (forecast)</b> và <b>kế hoạch (plan)</b>.\n- Gọi tên đơn vị, kỳ quan sát, thời hạn dự báo (forecast horizon) và giả định của một baseline đơn giản.\n- Tính trung bình số học làm dự báo minh họa và ghi đúng <b>sai số dự báo</b>.\n- Phát hiện ít nhất ba điều khiến quá khứ không đại diện cho tuần tới: khuyến mãi, hết hàng, mùa vụ/thay đổi nhu cầu.\n- Hiểu việc dự báo giúp chuẩn bị cho bài ROP/safety-stock sau, nhưng không tự suy ra tồn kho đệm hay độ tin cậy phục vụ."
+          },
+          {
+            "id": "vi-02",
+            "role": "concept",
+            "heading": "2. Dự báo không phải lời tiên tri của kho",
+            "body_md": "Giả sử cửa hàng A theo dõi số bộ linh kiện <b>đã bán được</b> từng tuần. Đó là dữ liệu sales, không mặc nhiên là toàn bộ demand nếu từng hết hàng. Khi muốn đặt linh kiện trước tuần sau, nhóm lập một <b>forecast</b>: ước lượng nhu cầu tương lai theo thông tin và giả định hiện có. Một <b>plan</b> là quyết định hành động dựa trên dự báo và các giới hạn thật (sức chứa, lead time, chi phí, ngân sách, mức phục vụ).\n\n<b>Dữ liệu quan sát có ba câu hỏi trước khi dùng:</b>\n\n1. <b>Đang đếm gì?</b> số sản phẩm khách muốn mua, số đơn đặt, hay số thực sự bán được? Khi hết hàng, doanh số có thể thấp hơn nhu cầu thật.\n2. <b>Theo khoảng thời gian nào?</b> ngày, tuần, tháng và mốc bắt đầu/kết thúc có nhất quán không?\n3. <b>Sắp có chuyện gì khác?</b> dịp khuyến mãi, đổi giá, hàng mới, đứt nguồn cung, mùa vụ hoặc sự kiện bất thường?\n\n<b>Ví dụ số:</b> bốn tuần liên tiếp ghi nhận <b>40, 50, 60, 50 bộ/tuần</b>. Ta chọn <b>baseline trung bình bốn tuần</b>; trong ví dụ này <b>giả định không có mất doanh số do hết hàng trong bốn tuần</b>, nên tạm dùng sales làm đại diện cho demand. Các tuần được giả định so sánh được; chưa điều chỉnh mùa vụ hoặc khuyến mãi:\n\nForecast tuần 5 = (40 + 50 + 60 + 50) ÷ 4 = <b>50 bộ/tuần</b>.\n\nĐây là dự báo <b>được định nghĩa theo một quy tắc đơn giản</b>, không phải ước lượng xác suất chắc chắn. Nếu sau đó thực tế nhu cầu tuần 5 được quan sát là <b>70 bộ</b>, thì với quy ước <b>signed error = actual − forecast</b>, sai số = <b>+20 bộ</b>; absolute error = <b>20 bộ</b>. Theo quy ước này, dấu dương là dự báo <b>thấp hơn thực tế</b>. Không có một tuần đối chiếu nào đủ để khẳng định mô hình ổn định qua mọi mùa."
+          },
+          {
+            "id": "vi-03",
+            "role": "concept",
+            "heading": "3. Bốn khái niệm dễ bị gộp bừa",
+            "body_md": "<b>À há thứ hai: “Dự báo đúng cũng chưa chắc đặt hàng đúng.”</b>\n\nMột forecast có thể gần nhu cầu thực tế, nhưng quyết định nhập thêm bao nhiêu còn phụ thuộc tồn kho hiện có, đơn đã đặt chưa nhận, lead time và chính sách bổ sung. <b>Forecast trả lời một câu hỏi; order quantity trả lời câu khác.</b>\n\n| Từ | Trong bài nghĩa là | Không nên đồng nhất với |\n| --- | --- | --- |\n| Demand | Số lượng khách muốn/đặt hàng trong kỳ (phải định nghĩa cách đo) | Luôn bằng doanh số ghi nhận nếu có stockout |\n| Sales | Giao dịch được ghi nhận | Nhu cầu chưa được đáp ứng |\n| Forecast | Ước tính tương lai với dữ liệu/giả định | Cam kết chắc chắn |\n| Plan | Lựa chọn đặt hàng/sản xuất/phân phối theo điều kiện | Bản sao forecast không cần trade-off |\n\n<b>Forecast horizon:</b> nếu muốn dự báo tuần kế, ta phải biết thông tin nào đã có tại thời điểm phát dự báo. Không được dùng dữ liệu tương lai để lập baseline rồi giả vờ kiểm định quá khứ. Khi chuỗi có mùa vụ, một trung bình rất ngắn có thể bỏ qua cấu trúc lặp."
+          },
+          {
+            "id": "vi-04",
+            "role": "guided",
+            "heading": "4. Ví dụ có hướng dẫn",
+            "body_md": "Một tiệm ghi số bộ linh kiện bán được ba tuần vừa qua: <b>32, 38, 40 bộ</b>. Chọn quy tắc minh họa là trung bình ba tuần, và giả định không có chương trình giảm giá, thiếu hàng hoặc sự kiện bất thường.\n\n- Baseline tuần kế = (32 + 38 + 40) ÷ 3 = <b>36,67 bộ</b> (có thể làm tròn theo chính sách đặt hàng, nhưng đó là bước lập kế hoạch riêng).\n- <b>Tự giải thích:</b> vì sao không được nói “tuần tới chắc chắn bán 36,67 bộ” hoặc “cứ mua 37 bộ là đủ”? Dự báo khác quyết định mua hàng ra sao?\n\n<b>Gợi ý:</b> dự báo là kỳ vọng mô hình giả định; quy tắc đặt bao nhiêu còn cần tồn kho hiện tại, lead time, rủi ro, mức đệm và chính sách đặt hàng riêng."
+          },
+          {
+            "id": "vi-05",
+            "role": "methods",
+            "heading": "4b. Luyện phương pháp L2 — giảm dần gợi ý (tự chọn)",
+            "body_md": "<b>Chính: T03 · Minh Mẫu Tiệm Ẩn — Worked Examples & Guidance Fading.</b> Bài đã cho mô hình tính đủ 40/50/60/50 → 50 và ví dụ ba tuần 32/38/40. Ở lượt này giảm trợ giúp: chỉ giữ <b>khung công thức</b>, để người học tự điền rồi đối chiếu. Người đã biết có thể bỏ qua và sang bài độc lập.\n\n<b>Micropractice trung gian — dữ liệu riêng, không trùng đề đánh giá:</b> Giả sử ba tuần bán được lần lượt <b>18, 24, 30 bộ/tuần</b>, không hết hàng trong ba tuần và quy tắc dự báo minh hoạ là trung bình ba tuần. Tuần kế sau đó xác nhận nhu cầu thực <b>33 bộ</b>.\n\n- (1) Forecast = (18 + \\_\\_\\_ + 30) ÷ 3 = \\_\\_\\_ bộ/tuần.\n- (2) Signed error theo quy ước actual − forecast = 33 − \\_\\_\\_ = \\_\\_\\_ bộ.\n- (3) Vì sao con số forecast chưa phải kế hoạch mua hàng?\n\n<b>Bổ trợ: T10 · Phân Giải Giới Vực — Problem Decomposition & Boundary Tests.</b> Tách <i>đầu vào sales → giả định demand → horizon → baseline → error → quyết định plan</i>. Thử cạnh biên: nếu thực tế tuần thứ hai <b>đã hết hàng</b>, có được khẳng định số 24 bán được là nhu cầu thật? Cần nguồn nào để điều tra?\n\n<b>Đối chiếu sau khi hoàn thành micropractice:</b> (18+24+30)/3 = <b>24 bộ/tuần</b>, signed error = 33−24 = <b>+9 bộ</b> (dự báo thấp hơn theo quy ước đã nêu). Chỉ số trung bình không đủ để quyết định đặt bao nhiêu vì còn tồn kho hiện tại, lead time và chính sách. Khi stockout, sales có thể bị giới hạn; cần kiểm tra log tồn kho, đơn chưa đáp ứng, không tự điền nhu cầu. T03 tính khi người học tự hoàn tất bước có gợi ý giảm dần; T10 tính khi thật sự tách các bước và kiểm tra giả định cạnh biên. Chỉ xem bài mẫu không tính thực hành.\n\n<b>Trạng thái:</b> gợi ý T03 = assisted, không gộp điểm K3 với bài độc lập 45/55/65/55. Lượt tự làm phải giữ dữ liệu, số và đáp án riêng.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
+          },
+          {
+            "id": "vi-06",
+            "role": "independent",
+            "heading": "5. Bài tập độc lập — fresh attempt",
+            "body_md": "<b>Dữ liệu giả định của một mặt hàng:</b> nhu cầu quan sát theo tuần 1–4 là <b>45, 55, 65, 55 bộ</b>. Nhóm chọn trung bình bốn tuần làm baseline của tuần 5. Sau tuần 5, kiểm đếm được <b>73 bộ</b> nhu cầu thực tế (đề cho biết là nhu cầu quan sát đầy đủ, không có stockout tuần 5).\n\n1. Tính forecast baseline tuần 5 theo đúng quy tắc; nêu đơn vị, kỳ dự báo và một giả định.\n2. Tính <b>signed error = actual − forecast</b> và absolute error; giải thích ý nghĩa dấu sai số.\n3. Nếu <b>tuần 2 từng hết hàng</b> và dữ liệu “55” vốn chỉ là số bán được, lịch sử có thể gây lệch thế nào khi dùng làm demand? Điều gì cần tìm hiểu trước khi sửa dữ liệu?\n4. Đề xuất một cách cải thiện quá trình dự báo (khuyến mãi/mùa vụ/thời điểm kiểm thử…) và nói rõ <b>hai điều chưa thể kết luận</b> chỉ từ một lần dự báo.\n\n<b>Gợi ý không spoil:</b> ghi dữ liệu quá khứ, quy tắc baseline và hiện thực sau kỳ dự báo; tách demand khỏi sales; một lần sai số chưa là bằng chứng toàn bộ hiệu năng.",
+            "model_answer_md": "<b>Đáp án mẫu — chỉ mở sau submit:</b> (1) 55 bộ/tuần theo trung bình bốn tuần; giả định lịch sử có tính so sánh và đại diện cho tuần 5. (2) 73−55 = <b>+18 bộ</b>, absolute error <b>18 bộ</b>; mô hình đã dự báo thấp hơn thực tế theo quy ước được công bố. (3) Nếu tuần 2 stockout, 55 bán được có thể thấp hơn nhu cầu thực; cần xem log tồn kho, đơn đặt chưa đáp ứng, ngày hết hàng và chất lượng dữ liệu; không được tự gán số demand thật. (4) So sánh nhiều kỳ dự báo không dùng dữ liệu tương lai, kiểm tra mùa vụ và campaign; không suy ra service level, safety stock tối ưu, hoặc chứng nhận mô hình tốt chỉ từ một kỳ.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "vi-07",
+            "role": "reflection",
+            "heading": "6. Rubric 0–8 (chưa hiệu chuẩn)",
+            "body_md": "| Tiêu chí | 0 | 1 | 2 |\n| --- | --- | --- | --- |\n| Baseline và phạm vi | Sai phép tính hoặc kỳ | Đúng số nhưng thiếu đơn vị/giả định | 55 bộ/tuần + kỳ + giả định |\n| Sai số | Sai dấu/số | Một phần đúng | +18 signed, 18 absolute, diễn giải đúng |\n| Dữ liệu và stockout | Sales = demand mọi lúc | Nhận ra có rủi ro nhưng không nêu cách kiểm | Giải thích censored sales và dữ liệu cần đối chiếu |\n| Kết luận có điều kiện | Khẳng định mô hình tối ưu | Cảnh báo chung chung | Nêu cải tiến và ≥2 giới hạn không thể suy |\n\nKhông auto-grade hay giả làm forecast engine vận hành thật. Assistance/independent attempts được ghi riêng. Không đẩy bài lên production trước domain QA.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          }
+        ]
+      },
+      "en": {
+        "intro_md": "<b>“Selling zero units does not mean nobody wanted to buy.”</b>\n\nImagine a store with empty shelves and no record of unfilled requests. Recorded sales can be zero while customers still want the product. This is a <b>teaching counterexample</b>, not a description of the lesson's four-week dataset. Using sales as demand without checking stockouts can teach a forecast about limited availability instead of true demand.\n\n<i>The reversal:</i> recorded sales measure fulfilled transactions; demand and its observation process need their own definition. [IBM — Demand Planning](https://www.ibm.com/think/topics/demand-planning) (background for demand planning; the stockout scenario is an authored illustration).",
+        "sections": [
+          {
+            "id": "en-01",
+            "role": "goals",
+            "heading": "1. Learning goals",
+            "body_md": "Separate <b>demand</b>, <b>observed sales</b>, <b>forecast</b> and <b>operational plan</b>; define units, time buckets and the forecast horizon; calculate an illustrative average baseline and signed/absolute errors; recognize how promotions, seasonality, supply shortages and changed conditions affect comparability; prepare for the later safety-stock lesson without pretending to optimize inventory."
+          },
+          {
+            "id": "en-02",
+            "role": "concept",
+            "heading": "2. Forecasts are conditional estimates",
+            "body_md": "Imagine an operations team tracking weekly <b>completed component sales</b>. Sales can be a provisional demand signal, but may understate demand when stockouts prevent purchases. A <b>forecast</b> estimates a future quantity using available information and explicit assumptions. A <b>plan</b> is an operational decision made with the forecast plus stock positions, delivery lead times, constraints and costs.\n\nAsk three questions about historic observations: what exactly was measured (demand, orders or completed sales)? Were the weekly intervals and units comparable? What could change next week (promotion, seasonality, pricing, supply problems or a product launch)?\n\nFor a deliberately simple illustration, four comparable weeks record <b>40, 50, 60 and 50 component sets sold per week</b>. <b>Assume no lost sales from stockouts in these four weeks</b>, so sales are treated as a provisional proxy for demand. The next-week <b>four-week arithmetic-average baseline</b> is:\n\n(40 + 50 + 60 + 50) ÷ 4 = <b>50 sets/week</b>.\n\nIf full observed demand in week 5 later turns out to be <b>70 sets</b>, define <b>signed forecast error = actual minus forecast</b>: <b>70 − 50 = +20 sets</b>. The absolute error is <b>20 sets</b>. With this sign convention a positive value means <b>underforecasting</b>. One result does not validate or invalidate the model for future seasons.\n\n| Concept | Meaning | Common confusion |\n| --- | --- | --- |\n| Demand | Required/requested units over a defined period | Not necessarily equal to sales under a stockout |\n| Sales | Completed recorded transactions | Does not reveal unfulfilled demand by itself |\n| Forecast | Future estimate under assumptions | Not a guarantee |\n| Plan | Decision using forecasts and operating constraints | Not identical to a forecast number |\n\nThe <b>forecast horizon</b> matters. At prediction time, use only information already known; do not leak future data into a supposedly historical evaluation. A short mean is not designed to handle recurring seasonality, trends, or promotion lifts without further assumptions and evidence."
+          },
+          {
+            "id": "en-03",
+            "role": "guided",
+            "heading": "3. Guided worked example",
+            "body_md": "<b>Second insight: “An accurate forecast does not automatically give you the right order quantity.”</b>\n\nEven a useful demand estimate cannot by itself determine replenishment. Current inventory, outstanding orders, lead time and purchasing policy matter. <b>Demand forecast and order quantity answer different questions.</b>\n\nPast three weekly sales are <b>32, 38, 40 sets</b>. Assuming comparable weeks with no unusual events, a three-week arithmetic mean is (32+38+40)/3 = <b>36.67 sets/week</b>. Explain why this does not mean next week will sell precisely 36.67 sets or why the business must purchase exactly 37 sets.\n\n<b>Optional hint:</b> a forecasting baseline and the replenishment order decision are separate; ordering also depends on inventory position, lead time, risk and policy."
+          },
+          {
+            "id": "en-04",
+            "role": "independent",
+            "heading": "3b. Optional L2 faded worked example (before independent assessment)",
+            "body_md": "<b>Primary: T03 · Minh Mẫu Tiệm Ẩn — Worked Examples & Guidance Fading.</b> The lesson already fully models 40/50/60/50 → 50 and guides 32/38/40. This is the <b>partially completed intermediate step</b>: keep only the calculation frame so the learner fills missing steps. Experienced learners can skip it.\n\n<b>Separate guided-fade fixture:</b> Three weeks recorded <b>18, 24 and 30 sets sold/week</b>. Assume no stockouts in those weeks and use a deliberately simple three-week arithmetic mean as the demand baseline. Full demand observed after the following week is <b>33 sets</b>.\n\n- (1) Forecast = (18 + \\_\\_\\_ + 30) ÷ 3 = \\_\\_\\_ sets/week.\n- (2) Signed error with actual − forecast = 33 − \\_\\_\\_ = \\_\\_\\_ sets.\n- (3) Why is this forecast not automatically a purchase quantity?\n\n<b>Secondary: T10 · Phân Giải Giới Vực — Problem Decomposition & Boundary Tests.</b> Decompose <i>recorded sales → demand proxy assumptions → horizon → baseline → error → operational plan</i>. Boundary test: if week 2 had a <b>stockout</b>, could 24 recorded sales be equated with true demand? What source evidence would be needed?",
+            "model_answer_md": "<b>Feedback — only after micropractice attempt:</b> (18+24+30)/3 = <b>24 sets/week</b>; signed error = 33−24 = <b>+9 sets</b>, underforecasting by the stated convention. Ordering requires inventory position, lead times and policies in addition to a forecast. Stockout-censored sales may understate demand; inspect inventory and unmet-order records before revising. T03 practice requires completing the faded steps; T10 requires actual decomposition and testing assumptions. Merely viewing a solution counts as neither.\n\n<b>State:</b> T03 faded fixture is assisted/guided, not the independent 45/55/65/55 case; preserve separate K1/K3 and answer gating.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-05",
+            "role": "independent",
+            "heading": "4. Fresh independent challenge",
+            "body_md": "The fictional demand history for weeks 1–4 is <b>45, 55, 65, 55 sets/week</b>. A four-week arithmetic mean is selected as the week-5 baseline. After week 5, <b>actual demand (not censored by stockouts) is recorded as 73 sets</b>.\n\n1. Calculate the baseline with its unit, horizon and one assumption.\n2. Calculate signed error <b>Actual − Forecast</b> and absolute error, interpreting the sign.\n3. Imagine week 2 had a stockout and “55” were only fulfilled sales. How could that bias an attempted demand series? What evidence would you check before correcting values?\n4. Suggest one forecast-process improvement and name two conclusions you cannot legitimately draw from this single validation period.\n\n<b>Non-spoiler hint:</b> be explicit about the observation window, prediction rule and outcome. Demand and fulfilled sales need not match, and a single forecast result is not long-term model validation.",
+            "model_answer_md": "<b>Model response (after attempt only):</b> (1) baseline = <b>55 sets/week</b>, assuming comparability and suitable historical relevance; (2) <b>+18 signed error</b>, absolute error <b>18</b>, indicating underforecasting under the defined convention; (3) observed sales during a stockout may understate latent demand, requiring inventory logs, backorder records and unfulfilled requests before any adjustment; (4) evaluate across multiple time-ordered periods and investigate promotions/seasonality. No single week establishes optimal safety stock, service level or overall model superiority.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-06",
+            "role": "reflection",
+            "heading": "5. Uncalibrated self-rating rubric (0–8)",
+            "body_md": "0/1/2 for each: correct forecast with unit/horizon/assumption; signed and absolute errors with sign meaning; stockout-censored sales versus demand and evidence to verify; suitable improvement plus at least two unsupported conclusions identified. Do not treat this as validated domain competence or an automatic AI grade.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          }
+        ]
+      }
+    },
+    "companion": {
+      "moments": [
+        {
+          "stage": "opening",
+          "heading": "opening · l15-goals",
+          "source_md": "<b>Primary quote candidate:</b> zhuangzi-craft; alternative quote IDs: box-models, bacon-cause. A forecasting process only works when assumptions and what is being predicted are known.\n\n<b>VI · Mở bản dự báo:</b> Hôm nay bán được 0 món. Khách không muốn mua, hay kho hết hàng từ sáng? Hai câu chuyện khác nhau một trời một vực đấy. Trước khi dự báo, xác định mình đang đo sales hay demand.\n\n- <b>Chọn đơn vị nào?</b> Phải nói rõ đơn vị nhu cầu, thời gian, nhóm sản phẩm và kỳ dự báo trước khi cộng trừ dữ liệu để lập kế hoạch.\n- <b>Forecast có chắc không?</b> Dự báo có bất định; càng xa kỳ đã quan sát, độ tin cậy càng phụ thuộc dữ liệu, sự ổn định của bối cảnh và mô hình.\n\n<b>EN · Start the forecast:</b> Zero sales today: no demand, or the shelves were empty all day? Those are very different stories. Before forecasting, establish what your data measure.\n\n- <b>Which units matter?</b> Specify product or segment, unit of demand, observation interval and forecast horizon before computing a baseline.\n- <b>Is it certain?</b> Forecasts are uncertain; reliability depends on data, horizon, changing circumstances and the model's assumptions."
+        },
+        {
+          "stage": "concept",
+          "heading": "concept · l15-concept",
+          "source_md": "<b>Primary quote candidate:</b> box-models; alternative quote IDs: bacon-cause, zhuangzi-craft. Box's models warning fits the difference between a simple rolling baseline and real demand under promotions or stockouts.\n\n<b>VI · Đọc mô hình cho đúng:</b> Trung bình bốn tuần có thể làm baseline. Nhưng tuần tới có khuyến mãi mà ngươi cứ lấy số cũ thì kho cũng muốn khóc. <b>Bình:</b> Con số dự báo phải đi kèm nguồn số liệu, giả định và điều kiện khiến dự báo có thể lệch.\n\n- <b>Cần kiểm tra gì?</b> Xem các tuần trước có hết hàng, chương trình giảm giá, mùa vụ hoặc thay đổi sản phẩm không; lịch sử bán chưa chắc đúng nhu cầu thật.\n- <b>Error tính thế nào?</b> Chốt quy ước signed error = actual − forecast, rồi mới gọi sai lệch dương là dự báo thấp hơn thực tế.\n\n<b>EN · Understand the model:</b> A four-week average makes a baseline, but if next week is a promotion, blindly repeating history can mislead your inventory plan. <b>Comment:</b> Every forecast needs a time horizon, measurement definition, assumptions and a plan to review errors.\n\n- <b>What should I inspect?</b> Check for stockouts, promotions, recurring seasonal effects and changes in the products or customers behind historical sales.\n- <b>How do I define error?</b> State signed error as actual minus forecast. A positive result then means actual demand exceeded the forecast."
+        },
+        {
+          "stage": "guided",
+          "heading": "guided · l15-guided",
+          "source_md": "<b>Primary quote candidate:</b> analects-practice; alternative quote IDs: zhuangzi-craft, box-models. Worked arithmetic should focus on what a calculated mean implies and what it cannot guarantee.\n\n<b>VI · Thử tính baseline:</b> Dữ liệu ba tuần hướng dẫn đã có trên bàn. Ngươi tính trung bình được rồi, nhưng có biết nó đang giả định điều gì không? <b>Bình:</b> Một trung bình đơn giản không tự nhận biết sale, nghỉ lễ hay cú sốc bất ngờ. <b>L2 tự chọn:</b> T03 · Minh Mẫu Tiệm Ẩn: từ phép tính mẫu đầy đủ, tự điền bước còn thiếu ở micropractice mới rồi đối chiếu sau lượt luyện.\n\n- <b>Tại sao chia ba?</b> Vì ví dụ dùng trung bình số học của ba tuần đã quan sát để tạo dự báo baseline tuần kế tiếp; nó chỉ là lựa chọn minh họa.\n- <b>Chỗ nào cần cảnh giác?</b> Nếu các tuần không so sánh được hoặc một tuần thiếu hàng, trung bình lịch sử có thể bỏ qua nhu cầu chưa được ghi nhận.\n\n<b>EN · Practice the baseline:</b> The three guided weeks are in front of you. You can average them, but can you explain which assumptions that average makes? <b>Comment:</b> A simple average cannot automatically detect promotions, holidays or sudden demand changes. <b>Optional L2:</b> T03 Worked Examples & Guidance Fading: move from the solved baseline to a new partly completed calculation and review it only after attempting.\n\n- <b>Why divide by three?</b> The worked example uses the arithmetic average of three observed weeks as a deliberately simple next-week baseline.\n- <b>What should I question?</b> If weeks are not comparable or sales were censored by stockouts, historical averages may miss unobserved demand."
+        },
+        {
+          "stage": "independent",
+          "heading": "independent · l15-challenge",
+          "source_md": "<b>Primary quote candidate:</b> mencius-sources; alternative quote IDs: bacon-cause, box-models. A critical method check supports independent forecasting without leaking the week's numerical forecast or error.\n\n<b>VI · Lượt tự dự báo:</b> Bốn tuần số liệu để ngươi tự tính. Lão sẽ không đọc sẵn baseline hay sai số; chỉ nhắc ngươi ghi rõ công thức và đơn vị. <b>Bình:</b> Bài kiểm tra xem ngươi hiểu giả định, không phải chỉ bấm máy tính giỏi. <b>Khung tự làm:</b> T10 · Phân Giải Giới Vực có thể nhắc ngươi kiểm tra dữ liệu đầu vào, giả định, kỳ dự báo và cạnh biên; không hé baseline của bài đánh giá.\n\n- <b>Bắt đầu bằng gì?</b> Hãy viết rõ khoảng thời gian quan sát, kỳ cần dự báo và cách tạo baseline trước khi kiểm tra điều gì có thể thay đổi.\n- <b>Lúc nào chưa thể kết luận?</b> Nếu chỉ có một lần đối chiếu dự báo với thực tế, đừng tự kết luận mô hình chắc chắn tốt hoặc xấu ở mọi tuần sau.\n\n<b>EN · Independent forecast:</b> Four weeks of numbers are yours to analyze. I won't give the baseline or forecast error before you submit. <b>Comment:</b> This exercise tests assumptions as well as arithmetic, not just calculator speed. <b>Independent method cue:</b> T10 Decomposition can help check input type, assumptions, forecast horizon and edge cases; the independent baseline remains yours to calculate.\n\n- <b>How to begin?</b> Specify the observation window, forecast horizon and the chosen baseline rule before discussing potential changes.\n- <b>What can't I conclude?</b> One forecast-versus-actual comparison cannot establish a model's reliable long-term performance."
+        },
+        {
+          "stage": "reflection",
+          "heading": "reflection · l15-rubric",
+          "source_md": "<b>Primary quote candidate:</b> analects-honesty; alternative quote IDs: darwin-confidence, box-models. Accurately recognizing a forecast's limits after a submitted answer aligns with model humility and evidence quality.\n\n<b>VI · Đối chiếu sau nộp:</b> Giờ mới xem sai số. Đúng phép tính mà quên hỏi doanh số có bị hết hàng bóp méo không thì dự báo cũng chưa đáng tin. <b>Bình:</b> Tự đánh giá theo độ rõ của dữ liệu, cách tính, sai số và giới hạn, không lấy một con số làm huy chương.\n\n- <b>Tự chấm những gì?</b> Kiểm tra baseline tuần tiếp, signed error theo quy ước, nguồn thiên lệch dữ liệu và kế hoạch kiểm chứng trên nhiều kỳ.\n- <b>Nếu dự báo sai?</b> Dự báo khác thực tế là tín hiệu cần điều tra khuyến mãi, mùa vụ, stockout và độ ổn định của chuỗi; không tự chứng minh mô hình vô dụng.\n\n<b>EN · Review after submission:</b> Now inspect the error. Correct arithmetic is not enough if stockouts or promotions distorted what historical sales mean. <b>Comment:</b> Rate the data definition, baseline, error interpretation and limitations rather than awarding a medal for one number.\n\n- <b>What should I rate?</b> Check the forecast baseline, signed error convention, biased observations and plans for testing across several periods.\n- <b>What if it missed?</b> Investigate seasonality, promotions, stockouts and shifting conditions. A miss alone does not prove every version of the model is useless."
+        },
+        {
+          "stage": "extension",
+          "heading": "extension · l15-sources",
+          "source_md": "<b>Primary quote candidate:</b> bacon-studies; alternative quote IDs: zhuangzi-limits, zhuangzi-craft. Checking the model assumptions in official statistics and operations sources is central to responsible forecasting practice.\n\n<b>VI · Đào sâu thời gian:</b> Đọc IBM về demand planning rồi NIST về chuỗi thời gian. Mỗi nguồn có phạm vi của nó, đừng dùng một đoạn giới thiệu để chứng nhận thuật toán tối ưu. <b>Bình:</b> Từ baseline đơn giản mới có đường tới các mô hình phức tạp; mỗi bước cần dữ liệu, đánh giá và giới hạn riêng.\n\n- <b>Đọc gì trước?</b> Bắt đầu từ quy trình demand planning và dữ liệu lịch sử; sau đó xem NIST nói về trend, seasonality và cấu trúc thời gian.\n- <b>Nhớ bằng cách nào?</b> Đóng tài liệu rồi tự mô tả một biến cố làm dữ liệu doanh số không phản ánh nhu cầu thực, và cách ghi ngoại lệ đó.\n\n<b>EN · Read beyond averages:</b> Read IBM on demand planning and NIST on time-series structure. A short introduction is not a warranty for an optimal algorithm. <b>Comment:</b> A simple baseline is a starting point; more advanced models need evidence about when they outperform it.\n\n- <b>What order to read?</b> Begin with demand-planning inputs and history, then NIST on time-series structure, trend and seasonality.\n- <b>How do I remember?</b> Close the sources and explain one event that makes observed sales an unreliable demand proxy, and how to record that exception."
+        }
+      ],
+      "reviewState": "proposed"
+    }
+  },
+  "rights": {
+    "status": "unverified",
+    "releaseAuthorized": false
+  },
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "publishState": "draft",
+  "publishedAt": null,
+  "provenance": {
+    "sourceUrl": "https://app.notion.com/p/41b6cf6db72a815a9924c508b68f8b99",
+    "rawSourcePath": "content/editorial/imported/L15-2-1.source.v1.json",
+    "sourceBodyCharacters": 35968
+  },
+  "normalization": {
+    "status": "needs_editorial_correction",
+    "counts": {
+      "vi": {
+        "sections": 7,
+        "independent": 1,
+        "solutions": 1,
+        "methods": 1,
+        "rubric": 1
+      },
+      "en": {
+        "sections": 6,
+        "independent": 2,
+        "solutions": 2,
+        "methods": 0,
+        "rubric": 1
+      }
+    },
+    "issues": [
+      "en:independent_sections_2",
+      "en:model_answer_not_isolated",
+      "en:method_unrecognized"
+    ],
+    "sourceVerbatim": true,
+    "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "runnableInReact": false
+  }
+}

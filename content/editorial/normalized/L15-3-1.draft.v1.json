@@ -1,0 +1,188 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "L15-3-1",
+  "kind": "Lesson",
+  "title": {
+    "sourceTitle": "W3A · L15-3-1 — Bullwhip Effect and Information Delays · VI/EN editorial"
+  },
+  "content": {
+    "format": "editorial-sectioned-draft-v1",
+    "localized": {
+      "vi": {
+        "intro_md": "<b>“Khách mua đều 100 hộp mỗi tuần, nhà cung cấp vẫn có thể nhận đơn lúc 0, lúc 200.”</b>\n\nTrong một ví dụ <b>giả định</b>, nhu cầu mua cuối chuỗi liên tục 100 hộp/tuần, nhưng cửa hàng chỉ đặt hàng bù theo lô: tuần 1 đặt 0, tuần 2 đặt 200, tuần 3 đặt 0, tuần 4 đặt 200. Sự lên xuống của <b>đơn đặt</b> không nhất thiết xuất phát từ sự lên xuống của <b>lượng mua cuối</b>. <b>Cú lật:</b> upstream thường thấy orders của mắt xích dưới, không nhìn thẳng vào end-customer demand; vì vậy tín hiệu có thể méo hoặc khuếch đại. [Lee et al., 1997 publisher abstract](https://pubsonline.informs.org/doi/10.1287/mnsc.43.4.546).",
+        "sections": [
+          {
+            "id": "vi-01",
+            "role": "goals",
+            "heading": "1 · Mục tiêu",
+            "body_md": "Phân biệt <b>end-customer sales/demand</b>, <b>retailer replenishment orders</b>, <b>upstream orders</b>, <b>inventory/on-order/lead time</b>; dùng biến động và range để nhận diện <b>dấu hiệu</b> khuếch đại, không coi cùng tổng lượng là cùng nhịp; nhận ra bốn cơ chế bullwhip; đề xuất cách kiểm tra và giảm vấn đề kèm đánh đổi về chi phí, tốc độ, hợp đồng và dữ liệu."
+          },
+          {
+            "id": "vi-02",
+            "role": "concept",
+            "heading": "2 · Đường tín hiệu và chỗ méo",
+            "body_md": "<b>Minh họa hư cấu, cùng bốn tuần và đơn vị hộp:</b>\n\n| Loại quan sát, không đồng nhất | Tuần 1 | Tuần 2 | Tuần 3 | Tuần 4 | Trung bình | Range |\n| --- | --- | --- | --- | --- | --- | --- |\n| End-customer sales | 100 | 100 | 100 | 100 | 100 | 0 |\n| Cửa hàng đặt cho kho | 90 | 110 | 90 | 110 | 100 | 20 |\n| Kho đặt cho nhà sản xuất | 70 | 130 | 70 | 130 | 100 | 60 |\n\nBa hàng đều tổng 400 hộp nhưng <b>range</b> lần lượt <b>0 → 20 → 60</b>. Đây là một mẫu toán thể hiện khả năng khuếch đại trong dữ liệu tác giả tự dựng; <b>không phải chứng minh nguyên nhân</b> của một doanh nghiệp, cũng không khẳng định mỗi tình huống thực tế bắt buộc tăng đều qua tất cả bậc chuỗi.\n\n<b>Bốn nguồn có thể tạo khuếch đại</b> theo nghiên cứu Lee–Padmanabhan–Whang: (i) <b>forecast/demand-signal updating</b>: thay đổi dự báo từ đơn đặt mà không nhìn rõ bán cuối; (ii) <b>order batching</b>: gom đơn theo ngày/chuyến/chi phí; (iii) <b>price variation</b>: mua gom khi có giảm giá; (iv) <b>rationing/shortage gaming</b>: đặt nhiều hơn nhu cầu thật khi dự đoán bị chia thiếu. Lead time và thông tin đến chậm có thể làm các phản ứng khó điều chỉnh, nhưng <b>delay không phải giải thích duy nhất</b>. Hãy hỏi ở mỗi mắt xích: <b>ai quan sát dữ liệu gì, lúc nào, và quyết định nào biến sales thành orders?</b>\n\n<b>Quan trọng:</b> order ≠ sales ≠ inventory on hand ≠ hàng đang đặt/đang vận chuyển. Bốn điểm dữ liệu không chứng minh nhân–quả; thực địa phải khớp kỳ, event time/receipt, thời gian giao, backlog và promo. Không lấy range của các dòng ở những cửa sổ khác nhau rồi tuyên bố chắc chắn có bullwhip."
+          },
+          {
+            "id": "vi-03",
+            "role": "guided",
+            "heading": "3 · Ví dụ hướng dẫn (khác bộ hook)",
+            "body_md": "Bốn tuần giả định: end sales <b>100, 105, 100, 95</b>; cửa hàng đặt <b>90, 120, 85, 105</b>; kho đặt <b>70, 140, 65, 125</b>, cùng đơn vị hộp. Cả ba hàng có tổng 400 và trung bình 100. <b>Range:</b> end sales = 105−95=<b>10</b>; cửa hàng = 120−85=<b>35</b>; kho = 140−65=<b>75</b>. Học viên chỉ có cơ sở nói “bộ này mô tả biến động orders lớn hơn sales”; không thể kết luận do delay, khuyến mãi hay thiếu hàng nếu chưa biết cơ chế.\n\n<b>Gợi ý:</b> Đối chiếu đúng đại lượng: đừng so “giờ xe tới” với “số hộp đặt”. Bài trước về ETA nhắc rằng thời điểm event và khi hệ thống nhận event có thể khác nhau."
+          },
+          {
+            "id": "vi-04",
+            "role": "methods",
+            "heading": "3b · T10 — phân rã và thử tình huống biên (micropractice tự chọn)",
+            "body_md": "<b>Bộ luyện MỚI:</b> end sales = <b>50,55,50,45</b>; cửa hàng orders = <b>40,70,40,50</b>; kho upstream orders = <b>20,90,30,60</b>. Tất cả cùng kỳ bốn tuần, đơn vị hộp. Tách thành các lớp: <b>sales → quyết định replenishment → đơn upstream → thông tin/lead time</b>.\n\n<b>Lượt luyện:</b> (1) xác định ba range và thứ tự; (2) đưa ra <b>hai giả thuyết khác nhau</b> có thể làm orders nhảy; (3) ghi một bộ dữ liệu cần yêu cầu để phân biệt hai giả thuyết; (4) phân tích một boundary case khi dữ liệu sales là số bán bị giới hạn bởi stockout hoặc khi đơn bị ghi nhận chậm. Người học phải <b>thực sự gửi phân rã + thử biên</b> trước khi xem phản hồi.\n\n<b>Phản hồi sau micropractice:</b> ranges lần lượt <b>10/30/70 hộp</b>. Các giả thuyết có thể là gom đơn, cập nhật dự báo, khuyến mãi hoặc shortage gaming, nhưng <b>không được khẳng định</b> cái nào là nguyên nhân chỉ nhờ ba chuỗi số. Yêu cầu thêm order-date vs receipt-date, tồn kho, in-transit, lịch promo/lead time, dữ liệu end-demand đã điều chỉnh lost sales. Nếu stockout, sales quan sát có thể thấp hơn nhu cầu tiềm ẩn.\n\n<b>T06 phụ:</b> So sánh hai chuỗi có trung bình bằng nhau nhưng range rất khác nhau; viết một câu rõ <i>số bán cuối</i> khác <i>đơn nhập hàng</i>. T06 là phân biệt chứng cứ, không thay T10 nếu chưa phân rã hệ thống.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
+          },
+          {
+            "id": "vi-05",
+            "role": "independent",
+            "heading": "4 · Bài độc lập — số MỚI, không lặp ví dụ",
+            "body_md": "Một hệ thống giả định có bốn tuần cùng kỳ (hộp): <b>customer sales 80,85,75,80</b>; <b>retailer orders 60,100,80,80</b>; <b>wholesaler orders 30,120,70,100</b>. Hệ thống chưa cung cấp tồn kho, lead time, ngày xuất đơn, khuyến mãi hay dữ liệu backorders.\n\n1. Tính <b>range và trung bình</b> cho cả ba chuỗi; có dấu hiệu khuếch đại quan sát trong bộ này không?\n2. Phân biệt <b>đúng bản chất</b> sales vs orders và lý do cùng tổng không đảm bảo cùng mức biến động.\n3. Nêu <b>hai cơ chế cạnh tranh</b> có thể giải thích mẫu này; dữ liệu/kiểm tra nào giúp phân biệt?\n4. Đề xuất <b>một can thiệp</b> và hai đánh đổi/rủi ro; giới hạn điều được kết luận từ bốn tuần giả định.\n\n<b>Gợi ý không spoil:</b> Đặt cùng đơn vị/cùng kỳ, range=max−min. Quan sát mẫu không bằng chứng minh nguyên nhân. Hãy xem phân rã dữ liệu và incentive của mỗi bên.",
+            "model_answer_md": "<b>ĐÁP ÁN MẪU — CHỈ MỞ SAU BÀI ĐỘC LẬP ĐƯỢC NỘP:</b> Trung bình cả ba = <b>80 hộp/tuần</b>, ranges end-customer <b>10</b>, retailer <b>40</b>, wholesaler <b>90 hộp</b>. Bộ giả định có đặc điểm orders biến động lớn hơn qua hai tầng upstream. Nguyên nhân chưa xác định; có thể do order batching, forecast updating, promo hoặc thiếu hàng; cần order/event timestamps, tồn kho/on-order, promotions, lead times và actual end-demand. Ví dụ can thiệp: chia sẻ sales cuối + trạng thái tồn/on-order theo chu kỳ ngắn để giảm lệch thông tin; tradeoff gồm chi phí data integration, quyền chia sẻ dữ liệu/bảo mật và khả năng vẫn có batching do chi phí vận chuyển. Không thể định lượng hiệu quả can thiệp từ bốn điểm số.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "vi-06",
+            "role": "reflection",
+            "heading": "5 · Rubric tự chấm 0–8, không chứng nhận",
+            "body_md": "4 tiêu chí 0/1/2: (A) range/trung bình và đơn vị; (B) sales/order/stock phân biệt; (C) ≥2 giả thuyết + dữ liệu kiểm phân biệt + không nhảy sang nguyên nhân; (D) can thiệp kèm tradeoff và giới hạn. 0 sai/vắng, 1 một phần, 2 hợp lý/có căn cứ. Ghi hint, prior exposure và hỗ trợ riêng; không coi việc nhận ra range là chuyên gia quản lý supply chain.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "vi-07",
+            "role": "extension",
+            "heading": "6 · Nguồn học, tự hỏi lại",
+            "body_md": "- [Lee, Padmanabhan, Whang 1997, INFORMS abstract](https://pubsonline.informs.org/doi/10.1287/mnsc.43.4.546) — four causes, distortion/order variance, abstract-only access.\n- [MIT Sloan Management Review article listing](https://shop.sloanreview.mit.edu/store/the-bullwhip-effect-in-supply-chains) — reference pointer, paid full-text not accessed.\n- <b>Source-aware prompt:</b> “Tôi học li. L15-3-1. Hãy mở URL gốc, nói rõ chỉ đọc abstract hay toàn văn; tóm tắt nguyên nhân bullwhip có URL, tách giả định khỏi phát biểu nguồn; cho case khác, phân tích tradeoff và 3 câu active recall không có đáp án. Không giả vờ đọc paper trả phí.”\n- <b>Active recall không hiện đáp án:</b> (1) Vì sao cửa hàng đặt hàng khác khách thực mua? (2) Range đơn lớn hơn range sales đã chứng minh nguyên nhân chưa? (3) Lead time và batching có thể tương tác ra sao?\n\n<b>Visual/rights:</b> original labelled text table above + original line chart specification in future only: three distinct lines with same units/time window, proper legend, summary range in caption, no external stock diagrams. Do not reuse copyrighted Lee/MIT charts; chart accessibility & final mobile QA OPEN."
+          }
+        ]
+      },
+      "en": {
+        "intro_md": "<b>“Customers can buy a steady 100 boxes a week while the supplier receives orders of 0, then 200.”</b>\n\nIn an explicitly <b>fictional</b> four-week case, end-customer sales remain 100 boxes/week, but the shop replenishes by batches: 0, 200, 0, 200 boxes ordered. Changes in <b>orders</b> do not have to reflect equivalent changes in end-customer purchases. <b>The reversal:</b> an upstream business directly observes orders from the downstream firm, not necessarily the end customer's demand; that signal can be distorted or amplified. [Lee et al. (1997), publisher abstract](https://pubsonline.informs.org/doi/10.1287/mnsc.43.4.546).",
+        "sections": [
+          {
+            "id": "en-01",
+            "role": "goals",
+            "heading": "1 · Learning goals",
+            "body_md": "Distinguish <b>end sales/demand</b>, <b>retailer replenishment orders</b>, <b>upstream orders</b>, <b>on-hand/on-order inventory</b> and <b>lead times</b>. Compare variability using matched observations and range without mistaking equal totals for equal variability; identify the four mechanism classes described in the publisher abstract; propose a discriminating investigation and a bounded intervention with real operational trade-offs."
+          },
+          {
+            "id": "en-02",
+            "role": "concept",
+            "heading": "2 · How an order signal becomes distorted",
+            "body_md": "<b>Original four-week fictional data, units of boxes, same time buckets:</b>\n\n| Observed quantity | W1 | W2 | W3 | W4 | Mean | Range |\n| --- | --- | --- | --- | --- | --- | --- |\n| End-customer sales | 100 | 100 | 100 | 100 | 100 | 0 |\n| Retailer replenishment orders | 90 | 110 | 90 | 110 | 100 | 20 |\n| Wholesaler orders placed upstream | 70 | 130 | 70 | 130 | 100 | 60 |\n\nEach series totals 400 boxes, but ranges increase <b>0 → 20 → 60</b>. This is an authored illustration of possible upstream order amplification, <b>not a causal proof</b>, nor evidence that every real chain must always amplify at every stage.\n\n<b>Four possible mechanisms</b> named in Lee–Padmanabhan–Whang's 1997 abstract: (i) <b>demand-signal processing</b>—revising forecasts based on incoming orders and treating orders as demand; (ii) <b>order batching</b>—placing larger periodic orders; (iii) <b>price fluctuations</b>—pulling purchases forward during promotions; (iv) <b>rationing/shortage gaming</b>—inflating requests when a scarce supply may be allocated proportionally. Information and delivery delays can make responses harder to coordinate, but <b>delay is not the only explanation</b>.\n\n<b>Key distinction:</b> orders, actual end sales, inventory on hand and shipments in transit are different observables. A four-week pattern does not prove an underlying cause. To interpret real data you would need aligned observation windows, actual event/receipt timestamps, backlogs, promotional context and lead-time changes; otherwise a week-shift can create misleading apparent variations."
+          },
+          {
+            "id": "en-03",
+            "role": "guided",
+            "heading": "3 · Guided case: a separate fictitious dataset",
+            "body_md": "End sales: <b>100, 105, 100, 95</b>. Retailer orders: <b>90, 120, 85, 105</b>. Wholesaler orders: <b>70, 140, 65, 125</b>. Same four weeks, boxes. All three sum to 400 and average 100. Ranges: customer <b>105−95=10</b>, retailer <b>120−85=35</b>, wholesaler <b>140−65=75</b>. The dataset demonstrates order-series variability being larger than customer-sales variability; it does NOT distinguish batching from a promotion, forecasting updates or shortages without extra evidence.\n\n<b>Guided hint:</b> align the time unit and measured quantity before comparing. Your previous lesson about ETA/events shows that event time and system-receipt time can differ."
+          },
+          {
+            "id": "en-04",
+            "role": "methods",
+            "heading": "3b · Primary L2-T10 — decomposition + boundary test",
+            "body_md": "<b>NEW micropractice data (not the independent case):</b> End sales <b>50,55,50,45</b>; retailer orders <b>40,70,40,50</b>; wholesaler orders <b>20,90,30,60</b>, all in boxes over the same four weeks.\n\n<b>Perform four tasks:</b> (1) compute each range and order the variability; (2) propose <b>two competing explanations</b> for spikes; (3) name data that would discriminate them; (4) test one boundary where observed sales are stockout-constrained or where order reports arrive late. Decompose the mechanism as <b>sales → replenishment decision → upstream order → communication/lead time</b> before concluding.\n\n<b>Feedback AFTER meaningful submitted micropractice:</b> ranges <b>10/30/70 boxes</b>. Batching, demand forecast updates, promotions and shortage gaming are possible but cannot be inferred as the actual cause from these series alone. Request order-versus-receipt timestamps, inventory and in-transit stock, lead times, promotions, and a method to estimate lost sales under stockout.\n\n<b>Optional T06:</b> Compare equal-mean but unequal-range series, explicitly differentiating customer sales from replenishment orders. Optional exercise is not a replacement for the T10 decomposition when investigating causes.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
+          },
+          {
+            "id": "en-05",
+            "role": "independent",
+            "heading": "4 · Fresh INDEPENDENT challenge (different values)",
+            "body_md": "A fictional four-week chain shows <b>end sales 80,85,75,80</b>, <b>retailer orders 60,100,80,80</b> and <b>wholesaler orders 30,120,70,100</b>, in boxes. There are no observations yet of stock on hand, lead time, order creation/receipt timestamps, promotional dates or backorders.\n\n1. Calculate <b>mean and range</b> for each series, with units. Does this fictional set show observed order amplification?\n2. Distinguish sales and orders, explaining why equal four-week totals need not mean equal variability.\n3. Propose <b>two competing mechanisms</b>, and the evidence or test needed to distinguish them.\n4. Suggest <b>one mitigation</b> with two concrete costs/risks and an explicit limitation of the four-week example.\n\n<b>Non-spoiler hint:</b> Keep time buckets and units aligned; range = maximum−minimum. Observing variation is not demonstrating causality.",
+            "model_answer_md": "<b>REFERENCE SOLUTION — ONLY AFTER VALID INDEPENDENT SUBMISSION:</b> All three means = <b>80 boxes/week</b>; ranges are <b>10 customer / 40 retailer / 90 wholesaler boxes</b>. The synthetic dataset exhibits larger variability in upstream orders. Batching, forecast updates, promotional purchases or rationing are competing hypotheses. Seek precise order and event timestamps, in-transit and on-hand stock, promos, true demand and lead times before choosing a cause. One plausible intervention is more timely sharing of end-sales plus inventory/on-order status; trade-offs include integration cost, data access/privacy and residual batch-order incentives. This four-point example does not quantify any actual intervention effect.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-06",
+            "role": "reflection",
+            "heading": "5 · Self-rating rubric (0–8, uncalibrated)",
+            "body_md": "Four criteria × 0/1/2: (A) correct means/ranges/units; (B) accurate sales/order/inventory distinction; (C) at least two plausible mechanisms and targeted discriminating evidence without causal overclaim; (D) proposed intervention with trade-offs and scope limit. 0 missing/incorrect, 1 partial, 2 coherent and supported. Hints and prior exposure are separate fields; a high self-score is not professional supply-chain competence.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-07",
+            "role": "extension",
+            "heading": "6 · Sources and unrevealed recall",
+            "body_md": "- [Lee, Padmanabhan, Whang (1997), INFORMS publisher abstract](https://pubsonline.informs.org/doi/10.1287/mnsc.43.4.546) — four mechanisms and upstream variability (abstract text accessible, <b>not full paper</b>).\n- [MIT Sloan Management Review listing](https://shop.sloanreview.mit.edu/store/the-bullwhip-effect-in-supply-chains) — relevant article pointer, not claimed full access.\n- <b>Source-aware copy prompt:</b> “I study li. L15-3-1. Open the exact link and state whether you could read its abstract or full article. Summarize only verified causes of bullwhip and clearly label your inferences; provide a separate synthetic case with limits and three unrevealed recall questions. Never fabricate access to a paywalled paper.”\n- <b>Active recall without answers:</b> (1) Why can replenishment orders differ from real customer purchases? (2) Does greater order range prove a specific cause? (3) How might lead times and batching interact?\n\n<b>Visual and rights spec:</b> original labeled comparison table and, optionally, a separately authored three-series trend chart with common axes, units and text alternative; do not copy proprietary INFORMS or MIT diagrams. Pre-submit images and captions must never reveal independent 80/40/90 answer. Device and media QA remain OPEN."
+          }
+        ]
+      }
+    },
+    "companion": {
+      "moments": [
+        {
+          "stage": "opening",
+          "heading": "opening · <code>l1531-hook</code>",
+          "source_md": "<b>Primary:</b> <code>bacon-cause</code>; alternates <code>hume-evidence</code>, <code>zhuangzi-craft</code>. <b>Relevance:</b> Bacon's focus on causes can be used as a limited modern analogy for separating observed order spikes from causal explanation; academic sources are Lee et al., not Bacon.\n\n<b>VI · Lão Lý:</b> “Khách mua đều đều mà kho chạy như bị ma dí? Có thể vì mỗi bên chỉ thấy một lát cắt của nhu cầu.”\n\n- <b>“Orders khác sales sao?”</b> → “Sales là hàng cuối được mua; orders là một quyết định bổ sung hàng, có thể chịu tác động của lô đặt và chính sách tồn kho.”\n- <b>“Vậy do delay?”</b> → “Đừng chốt vội. Delay là một mắt xích; batching, khuyến mãi, điều chỉnh dự báo và thiếu hàng cũng đáng kiểm tra.”\n\n<b>EN · Lão Lý:</b> “Steady customer purchases, frantic warehouse orders? Somebody may be acting on a distorted signal.”\n\n- <b>“Orders versus sales?”</b> → “Sales record customer purchases; orders are replenishment decisions shaped by policies and constraints.”\n- <b>“So delay caused it?”</b> → “Not proven. Investigate batching, forecasts, prices and shortage gaming as well as delays.”"
+        },
+        {
+          "stage": "concept",
+          "heading": "concept · <code>l1531-concept</code>",
+          "source_md": "<b>Primary:</b> <code>zhuangzi-craft</code>; alternates <code>bacon-cause</code>, <code>smith-incentive</code>. <b>Relevance:</b> seeing the structure of a process is an illustrative association with understanding the end-to-end signal chain; the original historical story is not supply-chain science.\n\n<b>VI · Lão Lý:</b> “Nhìn ba hàng đều trung bình 100 rồi tuyên bố tình hình ổn định? Đấy là nhìn sổ mà bỏ qua nhịp đặt hàng.”\n\n- <b>“Xem thêm số nào?”</b> → “So range/biến động từng hàng trên cùng kỳ; lưu ý sales, retailer orders và wholesaler orders là ba đại lượng khác.”\n- <b>“Bốn nguồn méo?”</b> → “Demand-signal processing, order batching, price variation, rationing/shortage gaming. Ghi chúng là giả thuyết, chưa phải kết luận của case.”\n\n<b>EN · Lão Lý:</b> “All three rows average 100, so everything is stable? That ignores order timing.”\n\n- <b>“What else do I compare?”</b> → “Compare variability over matched time windows, keeping actual sales separate from each order stream.”\n- <b>“Four possible causes?”</b> → “Forecast updating, batching, price fluctuations, and rationing/shortage gaming. In this case, they remain hypotheses.”"
+        },
+        {
+          "stage": "guided",
+          "heading": "guided · <code>l1531-guided</code>",
+          "source_md": "<b>Primary:</b> <code>analects-think</code>; alternates <code>laozi-begin</code>, <code>analects-practice</code>. <b>Relevance:</b> critical study and careful first steps are learning analogies for decomposing observed process mechanisms.\n\n<b>VI · Lão Lý:</b> “T10 phải bóc từng khớp của chuỗi: đầu vào ai thấy, quyết định ai làm, số nào ra ngoài.”\n\n- <b>“Phân rã bước nào?”</b> → “Tách end sales, replenishment decision, order upstream rồi đến độ trễ thông tin/giao hàng.”\n- <b>“Boundary case là gì?”</b> → “Thử giả sử hết hàng khiến sales quan sát thấp hơn nhu cầu thật, hoặc bản tin đến muộn: kết luận cũ còn chắc không?”\n\n<b>EN · Lão Lý:</b> “For T10, expose the joints: who sees which input, who decides, and which signal leaves the stage.”\n\n- <b>“How to decompose?”</b> → “Separate final sales, retailer replenishment, upstream orders and information/delivery timing.”\n- <b>“A boundary case?”</b> → “Imagine a stockout or a late-received event report. Does the original inference still hold?”"
+        },
+        {
+          "stage": "independent",
+          "heading": "independent · <code>l1531-challenge</code>",
+          "source_md": "<b>Primary:</b> <code>hume-evidence</code>; alternates <code>mencius-sources</code>, <code>analects-honesty</code>. <b>Relevance:</b> proportioning belief to evidence parallels interpreting four-week series without inventing causality. <b>STRICT:</b> never mention the assessed range/mean values before submission.\n\n<b>VI · Lão Lý:</b> “Ta không tính hộ. Ngươi nhìn ba lớp dữ liệu rồi tự định đâu là dấu hiệu, đâu chỉ là suy đoán.”\n\n- <b>“Bắt đầu từ đâu?”</b> → “Đồng bộ kỳ và đơn vị rồi tính cùng một thước đo cho cả sales và orders. Chưa kết luận nguyên nhân.”\n- <b>“Muốn nêu nguyên nhân?”</b> → “Đưa tối thiểu hai giả thuyết cạnh tranh và hỏi thêm dữ liệu nào đủ giúp loại bớt một giả thuyết.”\n\n<b>EN · Lão Lý:</b> “I will not compute the assessed figures. Separate patterns you see from causes you merely suspect.”\n\n- <b>“Where should I start?”</b> → “Align periods and units, then calculate the same variability measure for sales and orders.”\n- <b>“How do I discuss causes?”</b> → “State competing mechanisms and a discriminating observation; do not pretend the four-week numbers prove one.”"
+        },
+        {
+          "stage": "reflection",
+          "heading": "reflection · <code>l1531-reflection</code>",
+          "source_md": "<b>Primary:</b> <code>analects-honesty</code>; alternates <code>zhuangzi-limits</code>, <code>analects-review</code>. <b>Relevance:</b> honest acknowledgement of uncertainty and limited knowledge is apt for descriptive-vs-causal reporting; post-submission only.\n\n<b>VI · Lão Lý:</b> “Bài đã nộp: lúc nào ngươi nói ‘đơn biến động mạnh’, lúc nào ngươi nhảy sang ‘do khuyến mãi’ mà chưa có lịch khuyến mãi?”\n\n- <b>“Chấm theo đâu?”</b> → “Số, phân loại tín hiệu, giả thuyết với phép kiểm, và tradeoff của giải pháp — bốn tiêu chí độc lập.”\n- <b>“Sửa kết luận thế nào?”</b> → “Ghi dữ liệu cho thấy điều gì, cần thêm gì để biết vì sao, và mình mới đề xuất cách xử lý chứ chưa chứng minh hiệu quả.”\n\n<b>EN · Lão Lý:</b> “Submitted? Point to where you observed variability and where you guessed a promotion caused it.”\n\n- <b>“How do I self-assess?”</b> → “Score arithmetic, signal distinction, evidence-discriminating hypotheses and mitigation trade-offs separately.”\n- <b>“Rewrite the conclusion?”</b> → “Say what was observed, what would distinguish competing causes, and why the mitigation is a proposal rather than a measured result.”"
+        },
+        {
+          "stage": "extension",
+          "heading": "extension · <code>l1531-extension</code>",
+          "source_md": "<b>Primary:</b> <code>smith-incentive</code>; alternates <code>bacon-studies</code>, <code>mill-other-side</code>. <b>Relevance:</b> Smith's exchange/incentive sentence is a modern analogy for differing incentives between chain members; it is not experimental proof of bullwhip.\n\n<b>VI · Lão Lý:</b> “Mỗi bên ôm một KPI, không chia tín hiệu, cuối cùng cả chuỗi cùng học cách giật mình.”\n\n- <b>“Nguồn nên đọc sao?”</b> → “Bắt đầu bằng abstract INFORMS để biết bốn cơ chế tác giả nêu; muốn học sâu cần truy cập hợp pháp toàn văn hoặc nguồn khác, không bịa.”\n- <b>“Thử kiểm chứng thực tế?”</b> → “Theo một sản phẩm qua end sales, POS, orders, on-hand/on-order, promo và lead-time; đối chiếu các cửa sổ thời gian.”\n\n<b>EN · Lão Lý:</b> “Each firm optimizes its own little KPI. Signals arrive late; the whole chain acts surprised.”\n\n- <b>“How to read the source?”</b> → “Start with the INFORMS abstract and its four named causes; request lawful full-text access for a deeper methodological claim.”\n- <b>“What to measure next?”</b> → “Trace one product through POS sales, orders, stock/on-order, promotions and lead-time timestamps in aligned windows.”\n\n<b>Editorial QA:</b> 6 distinct VI+EN mentor contexts; 2 unique action/replies in both locales each; 18 three-way quote references, with stage-specific rationales. Primary quote priority is a future engine contract (Issue #8), not a current runtime promise. Four-week sample/hint and explanatory chart are not measured supply-chain evidence. Scholarly/copyright review, actual mobile/a11y and release G2/G3/G4/QA28 stay OPEN; cost 0."
+        }
+      ],
+      "reviewState": "proposed"
+    }
+  },
+  "rights": {
+    "status": "unverified",
+    "releaseAuthorized": false
+  },
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "publishState": "draft",
+  "publishedAt": null,
+  "provenance": {
+    "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81e194effe588152e1ad",
+    "rawSourcePath": "content/editorial/imported/L15-3-1.source.v1.json",
+    "sourceBodyCharacters": 26605
+  },
+  "normalization": {
+    "status": "needs_academic_rights_and_release_review",
+    "counts": {
+      "vi": {
+        "sections": 7,
+        "independent": 1,
+        "solutions": 1,
+        "methods": 1,
+        "rubric": 1
+      },
+      "en": {
+        "sections": 7,
+        "independent": 1,
+        "solutions": 1,
+        "methods": 1,
+        "rubric": 1
+      }
+    },
+    "issues": [],
+    "sourceVerbatim": true,
+    "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "runnableInReact": false
+  }
+}

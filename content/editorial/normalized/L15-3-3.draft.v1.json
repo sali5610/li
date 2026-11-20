@@ -1,0 +1,188 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "L15-3-3",
+  "kind": "Lesson",
+  "title": {
+    "sourceTitle": "W3C · L15-3-3 — Service Level, Resilience and Cost Optimization · VI/EN editorial"
+  },
+  "content": {
+    "format": "editorial-sectioned-draft-v1",
+    "localized": {
+      "vi": {
+        "intro_md": "<b>“Một hệ thống có thể đạt 98% fill rate nhưng vẫn hết hàng ở nhiều chu kỳ bổ sung.”</b>\n\nKhông nghịch lý gì cả: <b>fill rate</b> hỏi có bao nhiêu <b>đơn vị nhu cầu</b> được đáp ứng ngay từ tồn kho; <b>cycle service level</b> hỏi có bao nhiêu <b>chu kỳ</b> không hề stockout. Một chu kỳ thiếu đúng vài hộp vẫn bị tính là chu kỳ có stockout dù tỷ lệ hộp được phục vụ cả kỳ có thể rất cao. <b>Cú lật:</b> trước khi tối ưu “service”, phải nói rõ đó là service <b>của cái gì, trong cửa sổ nào</b>. [PLOS về fill rate](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0263655).",
+        "sections": [
+          {
+            "id": "vi-01",
+            "role": "goals",
+            "heading": "1 · Mục tiêu",
+            "body_md": "Phân biệt <b>unit fill rate</b>, <b>cycle service level (CSL)</b>, thời gian phục hồi dự kiến <b>time to recover</b> và tổng <b>cost</b> ở mức mô hình; tính đúng mẫu số; kiểm một phương án cung ứng có đáp ứng <b>đồng thời</b> các ngưỡng service, recovery và ngân sách hay không; phân tích một <b>boundary case</b> khi ràng buộc thay đổi; không tối ưu một con số rồi tuyên bố cả mạng lưới tốt hơn."
+          },
+          {
+            "id": "vi-02",
+            "role": "concept",
+            "heading": "2 · Hai service metrics, ba năng lực resilience",
+            "body_md": "<b>Định nghĩa vận hành cho case giả định:</b> <code>CSL = số replenishment cycles không stockout / số chu kỳ theo dõi</code>; <code>unit fill rate = số đơn vị nhu cầu được đáp ứng NGAY từ on-hand stock / tổng số đơn vị nhu cầu</code>. Dùng cùng khoảng thời gian, ghi rõ <b>unit vs cycle</b>, chính sách backorder/lost sales, liệu có thiếu nhu cầu bị ẩn do stockout và event reporting delay hay không. <b>Không</b> thay fill-rate unit bằng complete-order-fill rate hoặc OTIF mà giữ nguyên nhãn.\n\n<b>Worked (dữ liệu nguyên bản giả định):</b> trong 20 cycles, 18 cycles không stockout ⇒ CSL=<b>18/20=90%</b>. Trong cùng cửa sổ, tổng nhu cầu 1.000 hộp, 970 đáp ứng ngay ⇒ unit fill rate=<b>970/1000=97%</b>. Hai số khác nhau vẫn hợp lệ: hai chu kỳ thiếu có thể gộp 30 hộp unmet demand, giả định số liệu tương thích. Không suy rộng một lịch sử ngắn thành xác suất phục vụ tương lai được hiệu chuẩn.\n\n<b>Resilience không chỉ là giữ hàng:</b> nghiên cứu hướng tiếp cận thực tế gồm (A) <b>absorb</b> — tồn dự phòng/công suất dư/nhà cung cấp bổ sung, (B) <b>adapt</b> — chuyển nhà cung cấp/đổi tuyến/chia tải, (C) <b>recover</b> — đưa hoạt động thiết yếu về mức chấp nhận được. <b>Time to recover</b> cần nói rõ <i>khôi phục đến chuẩn nào</i>, sau <i>kịch bản disruption nào</i>; chỉ là giả định nếu chưa có exercise dữ liệu thật. Resilience thường tốn tiền và làm xuất hiện trade-off với tồn kho, năng lực thừa, vận tải/coordination. [MIT News](https://news.mit.edu/2022/building-resilience-next-supply-chain-disruption-james-rice-1121), [GOV.UK framework](https://www.gov.uk/government/publications/global-supply-chains-a-foresight-report-on-risk-and-resilience/annex-a-evidence-and-trends-for-supply-chain-vulnerability-and-resilience).\n\n<b>Worked decision rule, hoàn toàn giả định:</b> xét 2 policies cho một loại linh kiện; A chi phí 900 đơn vị tiền/kỳ, fill 95%, recovery 9 ngày; B chi phí 1.300, fill 98%, recovery 4 ngày. Với threshold <b>fill ≥97%, recovery ≤5 ngày, budget ≤1.400</b>, A vi phạm service/recovery, B đạt cả ba. “Chọn B <b>trong hai phương án đã có dưới ngưỡng này</b>” ≠ B tối ưu toàn bộ supply chain hay xác suất đúng 98%."
+          },
+          {
+            "id": "vi-03",
+            "role": "guided",
+            "heading": "3 · Ví dụ có hướng dẫn (fixture mới)",
+            "body_md": "Trong một <b>mẫu ghi chép giả định</b> 16 cycles, có 14 cycles không stockout; 800 hộp nhu cầu, 784 đáp ứng ngay. CSL=<b>14/16=87,5%</b>, unit fill=<b>784/800=98%</b>. Nếu chỉ treo biển “Service 98%”, người đọc có thể ngộ nhận 98% chu kỳ không stockout. Hai plans khác: X cost 1.200, fill 96%, recover 5 ngày; Y cost 1.500, fill 99%, recover 3 ngày. Threshold giả định fill≥98%, recovery≤4 ngày, budget≤1.550 => <b>Y đạt</b>, X không. Đây là chọn điều kiện trong bảng, không phải giải tối ưu ngoài đời."
+          },
+          {
+            "id": "vi-04",
+            "role": "methods",
+            "heading": "3b · T10 chính — phân rã tiêu chí, thử ngưỡng biên",
+            "body_md": "<b>Bộ luyện mới:</b> Một mặt hàng hư cấu có 10 cycles, 8 cycles không stockout, 500 hộp nhu cầu, 490 hộp đáp ứng ngay. Hai policies P (cost 1.150, fill 97%, recover 7d), Q (cost 1.450, fill 98%, recover 4d), tất cả là <b>kịch bản dự kiến</b>, không phải thử nghiệm thật.\n\n<b>Task T10:</b> (1) tách <b>cycles / units / recovery / money</b>; tính hai historical service metrics; (2) với quy tắc <b>fill≥97%, recovery≤5 ngày, budget≤1.500</b> xác định P/Q nào feasible; (3) đổi budget xuống ≤1.300 và đánh giá lại feasible set; (4) nêu ít nhất hai loại dữ liệu cần xác minh để một forecast policy trở thành quyết định thực. Hãy gửi phân rã và boundary test rồi mới xem feedback.\n\n<b>Feedback SAU khi nộp micropractice:</b> CSL=8/10=<b>80%</b>; unit fill 490/500=<b>98%</b>. P qua fill + budget nhưng <b>trượt recovery</b>, Q qua cả ba. Khi ngân sách chỉ còn ≤1.300, <b>không phương án nào</b> thoả cả ngưỡng phục hồi lẫn chi phí: đừng “chọn đại policy rẻ” rồi tuyên bố thành công. Cần kiểm scenario disruption, actual recovery exercise, total-cost accounting, lost-demand measurement và data quality.\n\n<b>T06 tùy chọn:</b> đối chiếu hai báo cáo cùng ghi 98% — một report là unit fill, một report là cycles không stockout; chỉ ra khác mẫu số, tác động quyết định. Mở hướng dẫn mà không trả lời không tính L2 enacted.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
+          },
+          {
+            "id": "vi-05",
+            "role": "independent",
+            "heading": "4 · Bài độc lập — case mới, đáp án chưa dùng ở trên",
+            "body_md": "Một hệ thống cung ứng giả định có lịch sử <b>12 replenishment cycles</b>, trong đó <b>10 không bị stockout</b>; trong cùng cửa sổ có <b>600 đơn vị nhu cầu đã biết</b>, <b>585 đơn vị được đáp ứng ngay</b> từ kho. Với một kịch bản disruption giả định, team mô phỏng 3 phương án; <b>recovery</b> được định nghĩa là số ngày để phục hồi khả năng đáp ứng ≥97% nhu cầu tức thời cho sản phẩm này, không phải cam kết đã kiểm thử:\n\n| Policy (giả định) | Total cost / kỳ (đơn vị tiền) | Unit fill forecast | Estimated recovery |\n| --- | --- | --- | --- |\n| C: Lean | 900 | 95% | 9 ngày |\n| D: Flexible backup | 1.250 | 98% | 4 ngày |\n| E: High redundancy | 1.550 | 99% | 2 ngày |\n\nRàng buộc hiện tại: <b>fill≥97%, recovery≤5 ngày, tổng cost≤1.350</b>. Đây chỉ là ba phương án đề cho, không khẳng định đã khám phá hết feasible network designs.\n\n1. Tính <b>CSL</b> và <b>unit fill rate</b> từ history, ghi mẫu số, và giải thích tại sao cả hai có thể khác.\n2. Đánh dấu C/D/E theo <b>cả ba ràng buộc</b>, chọn phương án feasible có cost nhỏ nhất trong <b>ba options đã xét</b>.\n3. Giải thích hai trade-offs giữa service, recovery, cost; nêu ít nhất hai loại <b>thông tin còn thiếu</b> khiến không thể gọi đây là mức tối ưu được xác nhận.\n4. Nếu threshold phục hồi siết lại <b>≤3 ngày</b> nhưng ngân sách giữ ≤1.350, xác định kết quả và đề xuất <b>một bước thực tế</b> (re-scope, tăng ngân sách, xem phương án khác, xác minh scenario), không phá giả định để lấy số đẹp.\n\n<b>Hint không spoil:</b> Nhìn đơn vị của mẫu số trước; một option phải đáp ứng <b>mọi</b> ràng buộc, không chỉ service; nếu không có phương án khả thi, đó cũng là một kết quả hữu ích.",
+            "model_answer_md": "<b>MODEL ANSWER — CHỈ SAU SUBMISSION HỢP LỆ TRONG APP TƯƠNG LAI:</b> CSL =10/12≈<b>83,33%</b>; unit fill=585/600=<b>97,5%</b>. C fail fill/recovery; D pass 98%/4 ngày/1.250; E pass fill/recovery nhưng fail budget 1.550>1.350. <b>D là feasible option duy nhất trong ba option</b> (và vì vậy rẻ nhất trong feasible set đã cho), không là global optimum. Dưới recovery≤3 ngày, D không đạt, E vẫn vượt ngân sách, C vẫn không đạt ⇒ <b>không feasible option</b>. Cần tradeoff về buffer/supplier capacity, cost, response time, measurement validity, disruption scenarios, missed demand, forecast error và triển khai. Không tuyên bố kết quả mô phỏng là service thật.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "vi-06",
+            "role": "reflection",
+            "heading": "5 · Rubric tự chấm 0–8 chưa chuẩn hóa",
+            "body_md": "Bốn tiêu chí 0/1/2: (A) CSL vs unit fill rate + mẫu số; (B) feasibility của C/D/E và tính chi phí trong các option; (C) tradeoffs, thông tin/các giả định forecast cần xác minh; (D) boundary threshold mới và quyết định khi không feasible. Ghi assistance/hint K7 riêng; đây không phải chứng nhận supply-chain optimization hay SLA.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "vi-07",
+            "role": "extension",
+            "heading": "6 · Đọc sâu và active recall không hiện đáp án",
+            "body_md": "- [PLOS One fill rate (2022)](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0263655) — đúng định nghĩa unit demand fulfilled at shelf; nghiên cứu cụ thể về (s,S) lost-sales assumptions chứ không chứng minh case hư cấu.\n- [MIT News resilience tradeoffs (2022)](https://news.mit.edu/2022/building-resilience-next-supply-chain-disruption-james-rice-1121).\n- [UK Foresight supply chain resilience framework](https://www.gov.uk/government/publications/global-supply-chains-a-foresight-report-on-risk-and-resilience/annex-a-evidence-and-trends-for-supply-chain-vulnerability-and-resilience).\n- <b>Copy prompt:</b> “Tôi học li. L15-3-3; hãy mở đúng nguồn, chỉ nêu những định nghĩa về fill, resilience và tradeoff thực đọc được kèm URL; phân biệt với CSL do bài này operationalize; tạo case mới, xét constraint feasibility và 3 active recall không có đáp án. Không bịa service thật từ forecast.”\n- <b>Active recall:</b> (1) Vì sao CSL và unit fill có thể cách nhau nhiều điểm phần trăm? (2) Nếu cost tối thiểu nhưng recovery vi phạm SLA thì có còn feasible? (3) Khác nhau giữa resilience hấp thụ, thích ứng và phục hồi?\n\n<b>Media & rights:</b> original text table with units and constraints; future editable comparison figure must label cycle/unit/forecast, no copied industry chart, no assessed option result shown before independent submit in UI/alt/mentor. App/VoiceOver QA OPEN."
+          }
+        ]
+      },
+      "en": {
+        "intro_md": "<b>“A system can achieve a 98% unit fill rate while stocking out in several replenishment cycles.”</b>\n\nNo contradiction: <b>unit fill rate</b> concerns the share of demand units immediately supplied from stock; <b>cycle service level</b> counts replenishment cycles with <i>no stockout at all</i>. A cycle that misses only a few boxes still fails the cycle-level no-stockout definition even if almost all demand units are served. <b>The reversal:</b> a “98% service” slide is ambiguous unless it specifies <b>98% of what</b>. [PLOS fill-rate definition](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0263655).",
+        "sections": [
+          {
+            "id": "en-01",
+            "role": "goals",
+            "heading": "1 · Learning goals",
+            "body_md": "Differentiate unit fill rate, cycle service level (CSL), planned time to recover for a specified disruption scenario and total cost within a decision model. Compute honest denominators and units; filter all proposed policies by simultaneous service/recovery/budget constraints; rerun the decision under a tightened boundary; avoid claims of global network optimization from three hypothetical options."
+          },
+          {
+            "id": "en-02",
+            "role": "concept",
+            "heading": "2 · Define service and resilience before optimizing",
+            "body_md": "For this <b>authored fictional protocol</b>, <code>CSL=stockout-free replenishment cycles / observed cycles</code>; <code>unit fill rate=units of demand met immediately from on-hand stock / total known demanded units</code>. State the observation period, units versus cycles, treatment of lost sales, order-line/OTIF differences, and any reporting delay. Do not relabel one measure as another.\n\n<b>Worked fictional record:</b> 20 cycles, 18 stockout-free ⇒ CSL=<b>18/20=90%</b>. Same period: 1,000 known demanded units, 970 served immediately ⇒ unit fill=<b>970/1000=97%</b>. Two cycles can collectively miss 30 units, illustrating why these two legitimate measures differ. This historical toy record does not establish calibrated future fill probability.\n\n<b>Resilience as multiple capabilities:</b> (A) <b>absorb</b> — buffer inventory, spare capacity and sources; (B) <b>adapt</b> — switch source/routes or reallocate operations; (C) <b>recover</b> — restore specified essential output. <b>Recovery time</b> requires a stated target service threshold and disruption scenario; an untested scenario estimate is not real observed recovery. Building buffers, redundant facilities or backup suppliers involves real carrying, transport and coordination costs. [MIT News](https://news.mit.edu/2022/building-resilience-next-supply-chain-disruption-james-rice-1121), [UK Foresight](https://www.gov.uk/government/publications/global-supply-chains-a-foresight-report-on-risk-and-resilience/annex-a-evidence-and-trends-for-supply-chain-vulnerability-and-resilience).\n\n<b>Worked hypothetical constrained choice:</b> A cost 900 period-units, predicted fill 95%, recovery 9 days; B cost 1,300, predicted fill 98%, recovery 4 days. Requirements fill≥97%, recovery≤5 days and budget≤1,400. Only B is <b>feasible among those two options</b>. This is not a verified global optimum or true forecast accuracy."
+          },
+          {
+            "id": "en-03",
+            "role": "guided",
+            "heading": "3 · Guided example, separate values",
+            "body_md": "In a distinct hypothetical record, 16 cycles include 14 without stockouts; 800 known demanded units, 784 immediately filled. CSL=<b>14/16=87.5%</b>, unit fill=<b>784/800=98%</b>. A report labeling the latter simply “98% service” could wrongly imply 98% of cycles were stockout-free. For two newly simulated policies, X cost 1,200, fill 96%, recovery 5d; Y cost 1,500, fill 99%, recovery 3d. Under fill≥98%, recovery≤4d, budget≤1,550, <b>Y</b> satisfies all three; X does not."
+          },
+          {
+            "id": "en-04",
+            "role": "methods",
+            "heading": "3b · Primary L2-T10 method: decompose and boundary-test",
+            "body_md": "<b>Distinct micropractice:</b> 10 cycles, 8 stockout-free, 500 demanded units, 490 fulfilled immediately. Candidate policies P (cost 1,150, fill 97%, recovery 7d) and Q (cost 1,450, fill 98%, recovery 4d), all hypothetical.\n\n<b>Respond before feedback:</b> (1) separate cycles, units, recovery days and money; calculate two observed metrics; (2) with fill≥97%, recovery≤5d and budget≤1,500, assess feasibility of both; (3) tighten budget to ≤1,300 and reassess; (4) name evidence that would convert a speculative forecast into a decision. Simply clicking an L2 guide is not performing T10.\n\n<b>After-attempt feedback:</b> CSL=<b>8/10=80%</b>; unit fill=<b>490/500=98%</b>. P fails recovery, while Q satisfies all initial constraints. With budget≤1,300, <b>neither option is feasible</b>, not “choose the cheapest and call it optimization.” Recovery scenario tests, full cost and demand-measurement accuracy are missing.\n\n<b>Optional T06:</b> Compare two reports both showing 98%—one unit-fill, one cycle-service—with different denominators and different decision implications.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
+          },
+          {
+            "id": "en-05",
+            "role": "independent",
+            "heading": "4 · Fresh INDEPENDENT challenge — different values and options",
+            "body_md": "A fictional supply network observed 12 replenishment cycles, <b>10 without stockouts</b>, and 600 known demand units, <b>585 served immediately</b>. For one specified hypothetical disruption, three <b>predicted policy</b> options define recovery as days to restore at least 97% immediate unit demand coverage (not observed or calibrated):\n\n| Policy | Hypothetical total cost per period | Forecast unit fill | Recovery |\n| --- | --- | --- | --- |\n| C Lean | 900 cost units | 95% | 9 days |\n| D Flexible backup | 1,250 cost units | 98% | 4 days |\n| E High redundancy | 1,550 cost units | 99% | 2 days |\n\nConstraints: <b>forecast fill≥97%, recovery≤5 days, cost≤1,350</b>. The list of three policies is not the entire design universe.\n\n1. Calculate historical <b>CSL and unit fill rate</b> with denominators and explain why the values can differ.\n2. Evaluate every C/D/E policy against <b>all three</b> constraints, selecting the least-cost feasible choice <b>within the displayed candidates</b>.\n3. Explain two trade-offs and identify two unknowns that would stop you from claiming this is a proven optimum.\n4. Tighten recovery to <b>≤3 days</b> without changing the budget; determine the feasible set and one meaningful next step rather than violating constraints.\n\n<b>Non-spoiler hint:</b> Check the type of denominator before computing. A policy must pass every constraint; an empty feasible set is useful information.",
+            "model_answer_md": "<b>REFERENCE SOLUTION — ONLY AFTER VALID INDEPENDENT SUBMISSION:</b> CSL=<b>10/12≈83.33%</b>; unit fill=<b>585/600=97.5%</b>. C fails fill and recovery; D passes 98% fill, 4-day recovery, 1,250 cost; E passes fill/recovery but costs 1,550, above budget. D is the only feasible of the three, not a globally optimal network. If recovery must be ≤3 days, D fails, E remains over budget, C fails, so <b>none is feasible</b>. A defensible follow-up is to seek alternatives, change budget/targets explicitly or verify scenarios rather than declare success from a toy table. Missing inputs include demand lost under stockouts, scenario frequency, tested recovery time, total-cost and service error.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-06",
+            "role": "reflection",
+            "heading": "5 · Uncalibrated 0–8 self-review",
+            "body_md": "Four 0/1/2 criteria: correct CSL/unit-fill distinctions and units; candidate feasibility/least-cost selection within options; evidence/data gaps and service/resilience/cost trade-offs; valid tighter-boundary response. Assistance and hints tracked separately from actual knowledge/method attempts.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+          },
+          {
+            "id": "en-07",
+            "role": "extension",
+            "heading": "6 · Sources and unrevealed active recall",
+            "body_md": "- [PLOS One 2022 — Fill Rate](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0263655).\n- [MIT News 2022 — Resilience and Costs](https://news.mit.edu/2022/building-resilience-next-supply-chain-disruption-james-rice-1121).\n- [UK Government — Supply Chain Resilience Framework](https://www.gov.uk/government/publications/global-supply-chains-a-foresight-report-on-risk-and-resilience/annex-a-evidence-and-trends-for-supply-chain-vulnerability-and-resilience).\n- <b>Source-aware copy prompt:</b> “I study li. L15-3-3. Open the exact selected URLs; summarize only definitions actually read about fill rate, recovery, redundancy and flexibility, linking each. Separate the tutorial's operational CSL definition and fictional decisions from sourced empirical evidence. Provide a new constrained-choice exercise and three unanswered recall questions.”\n- <b>Unanswered recall:</b> (1) Why can unit fill and cycle service disagree? (2) Can a low-cost policy be feasible if recovery violates the requirement? (3) What differs between absorbing, adapting and recovering from disruption?\n\n<b>Original figures:</b> all data tables and source-aware narrative here are original; optional localized infographic must use new assets and accessible descriptions, never a scraped or copyrighted third-party diagram and never reveal this independent decision pre-submit. Mobile/rights/real UI gates OPEN."
+          }
+        ]
+      }
+    },
+    "companion": {
+      "moments": [
+        {
+          "stage": "opening",
+          "heading": "opening · <code>l1533-hook</code>",
+          "source_md": "<b>Primary:</b> <code>hume-evidence</code>; alternatives <code>smith-incentive</code>, <code>analects-honesty</code>. <b>Relevance:</b> evidence-calibrated statements parallel asking what “98% service” actually measured; Hume never defined supply-chain service metrics.\n\n<b>VI · Lão Lý:</b> “Cái slide ghi ‘service 98%’ mà giấu mẫu số thì đúng là dùng số trang điểm cho vấn đề.”\n\n- <b>“Mẫu số gì?”</b> → “Đang đo đơn vị nhu cầu đáp ứng từ tồn kho hay chu kỳ không hề thiếu hàng? Chọn một định nghĩa.”\n- <b>“Hết hàng một lần?”</b> → “Chu kỳ có stockout theo CSL, dù chỉ thiếu chút ít đơn vị; fill rate lại đếm số lượng đáp ứng.”\n\n<b>EN · Lão Lý:</b> “A dashboard saying ‘98% service’ without the denominator is just cosmetics for a KPI.”\n\n- <b>“Which denominator?”</b> → “Demand units immediately filled or replenishment cycles without any stockout? Name the metric.”\n- <b>“One tiny stockout?”</b> → “That cycle fails the no-stockout CSL definition, while unit fill records how much demand was served.”"
+        },
+        {
+          "stage": "concept",
+          "heading": "concept · <code>l1533-concept</code>",
+          "source_md": "<b>Primary:</b> <code>zhuangzi-craft</code>; alternatives <code>bacon-cause</code>, <code>smith-incentive</code>. <b>Relevance:</b> examining the joints of a system is an analogy for separating absorb/adapt/recover mechanisms and their limits.\n\n<b>VI · Lão Lý:</b> “Resilience không chỉ chất thêm thùng hàng. Ngươi còn cần đổi được đường đi và biết khôi phục khi vỡ trận.”\n\n- <b>“Ba tầng resilience?”</b> → “Absorb bằng buffer/capacity, adapt bằng thay tuyến/nguồn, recover bằng khôi phục mức hoạt động định nghĩa trước.”\n- <b>“Recovery time đo sao?”</b> → “Phải ghi disruption nào và tiêu chuẩn phục hồi nào; thời gian phỏng đoán chưa là kết quả thử.”\n\n<b>EN · Lão Lý:</b> “Resilience isn't stacking spare boxes forever. It also needs flexibility and a recovery path.”\n\n- <b>“Three capability types?”</b> → “Absorb with buffers, adapt with alternate routes/sources, recover to a specified operating threshold.”\n- <b>“What defines recovery time?”</b> → “A named disruption and recovery target; a scenario forecast is not a measured outcome.”"
+        },
+        {
+          "stage": "guided",
+          "heading": "guided · <code>l1533-guided</code>",
+          "source_md": "<b>Primary:</b> <code>analects-practice</code>; alternatives <code>zhuangzi-craft</code>, <code>laozi-begin</code>. <b>Relevance:</b> learning through doing serves as a contextual parallel to T10 actually decomposing a constrained decision, not a supply-chain source.\n\n<b>VI · Lão Lý:</b> “T10: tách cycle, unit, cost và recovery thành bốn ô rồi hãy ‘tối ưu’.”\n\n- <b>“Tính gì trước?”</b> → “Lấy đúng mẫu số hai service metrics; sau đó check từng option xem <i>đạt tất cả</i> ràng buộc không.”\n- <b>“Thử biên ra sao?”</b> → “Siết một ngưỡng và tìm lại feasible set. Nếu rỗng thì nói rỗng, không ép con số.”\n\n<b>EN · Lão Lý:</b> “T10: separate cycles, units, money and recovery before shouting ‘optimized.’”\n\n- <b>“What comes first?”</b> → “Use the correct denominator for each service metric, then check each option against every constraint.”\n- <b>“Boundary test?”</b> → “Tighten one target and recompute feasibility. An empty set is a legitimate result.”"
+        },
+        {
+          "stage": "independent",
+          "heading": "independent · <code>l1533-challenge</code>",
+          "source_md": "<b>Primary:</b> <code>mencius-sources</code>; alternatives <code>hume-evidence</code>, <code>analects-honesty</code>. <b>Relevance:</b> source skepticism parallels refusing to call three predicted policy options an observed global optimum. <b>No independent values or winning plan in this mentor before submit.</b>\n\n<b>VI · Lão Lý:</b> “Ta không chọn hộ. Đề cho cả metric lẫn ràng buộc, ngươi tự quyết dựa trên điều có thật trong bảng.”\n\n- <b>“Bắt đầu bài độc lập?”</b> → “Tách lịch sử service ra khỏi forecast của các phương án; chúng không cùng loại chứng cứ.”\n- <b>“Chọn cost rẻ nhất luôn?”</b> → “Chỉ so cost trong tập <i>đạt mọi điều kiện</i>, rồi ghi rõ đây là tập option hữu hạn.”\n\n<b>EN · Lão Lý:</b> “I won't pick the assessed policy. Separate observed metrics from hypothetical forecasts.”\n\n- <b>“How should I start?”</b> → “Tabulate history and policy predictions separately; do not treat forecast as observed evidence.”\n- <b>“Always pick the cheapest?”</b> → “Only among candidates meeting all constraints, and only within the offered finite set.”"
+        },
+        {
+          "stage": "reflection",
+          "heading": "reflection · <code>l1533-reflection</code>",
+          "source_md": "<b>Primary:</b> <code>analects-honesty</code>; alternatives <code>zhuangzi-limits</code>, <code>analects-review</code>. <b>Relevance:</b> admitting incomplete knowledge parallels declaring scenario and data limitations; unlock only after independent submission.\n\n<b>VI · Lão Lý:</b> “Bài đã nộp thì nhìn lại: ngươi có gọi ‘kết quả dự báo’ là ‘SLA thật’ không?”\n\n- <b>“Chấm theo bốn gì?”</b> → “Định nghĩa metrics, feasible constraints, tradeoff và boundary case — bốn loại lỗi khác nhau.”\n- <b>“Chỗ nào cần kiểm?”</b> → “Thời gian khôi phục ngoài đời, nhu cầu bị ẩn do hết hàng, chi phí thật và scenario disruption.”\n\n<b>EN · Lão Lý:</b> “Submitted? Did you mistake a policy forecast for a measured SLA?”\n\n- <b>“Four separate checks?”</b> → “Metric denominators, constraint feasibility, trade-offs and changed-boundary reasoning.”\n- <b>“Which assumptions need evidence?”</b> → “True recovery time, hidden lost demand, full cost and the disruption scenario.”"
+        },
+        {
+          "stage": "extension",
+          "heading": "extension · <code>l1533-extension</code>",
+          "source_md": "<b>Primary:</b> <code>smith-incentive</code>; alternatives <code>bacon-studies</code>, <code>mill-other-side</code>. <b>Relevance:</b> incentives/cost trade-offs are a modern conceptual analogy to supplier/network choices; Smith does not derive inventory service rates.\n\n<b>VI · Lão Lý:</b> “Một phòng ban khoái cắt cost, phòng kia muốn giao đủ và nhanh. Cả hai cùng có việc đúng — phải nói rõ tradeoff.”\n\n- <b>“Đọc nguồn theo thứ tự?”</b> → “PLOS để thấy fill đếm đơn vị nào; MIT để hiểu resilience và chi phí; [GOV.UK](http://GOV.UK) để nhìn absorb/adapt/recover.”\n- <b>“Thử bài mới?”</b> → “Giữ service threshold, đổi loại rủi ro hoặc ngân sách và yêu cầu một kế hoạch có chứng cứ, không chỉ bảng chi phí.”\n\n<b>EN · Lão Lý:</b> “One team celebrates lower cost; another needs faster reliable fulfillment. Both have stakes, so show the trade-off.”\n\n- <b>“What reading order?”</b> → “PLOS for fill-rate units, MIT for resilience/cost choices, [GOV.UK](http://GOV.UK) for absorb/adapt/recover.”\n- <b>“Next independent question?”</b> → “Hold the service constraint, change disruption or budget and demand evidence for the resulting plan.”\n\n<b>Authoring QA contract:</b> stage primaries and alt quote IDs are curated, not statements of working engine priority. Six distinct dialogues, two VI/EN action-reply pairs/stage, six contextual relevance explanations; no live data, no code/merge, no Safari/VoiceOver or scholar rights signoff. Cost 0."
+        }
+      ],
+      "reviewState": "proposed"
+    }
+  },
+  "rights": {
+    "status": "unverified",
+    "releaseAuthorized": false
+  },
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "publishState": "draft",
+  "publishedAt": null,
+  "provenance": {
+    "sourceUrl": "https://app.notion.com/p/41c6cf6db72a81728597ce5d1eec6121",
+    "rawSourcePath": "content/editorial/imported/L15-3-3.source.v1.json",
+    "sourceBodyCharacters": 28269
+  },
+  "normalization": {
+    "status": "needs_academic_rights_and_release_review",
+    "counts": {
+      "vi": {
+        "sections": 7,
+        "independent": 1,
+        "solutions": 1,
+        "methods": 1,
+        "rubric": 1
+      },
+      "en": {
+        "sections": 7,
+        "independent": 1,
+        "solutions": 1,
+        "methods": 1,
+        "rubric": 1
+      }
+    },
+    "issues": [],
+    "sourceVerbatim": true,
+    "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "runnableInReact": false
+  }
+}

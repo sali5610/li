@@ -25,7 +25,8 @@ assert.match(nav,/backRoot\.render/);
 assert.match(nav,/onClick=\{goBack\}/);
 assert.doesNotMatch(nav,/data-nav-back/);
 assert.doesNotMatch(lesson,/button\[data-page=/);
-assert.doesNotMatch(lesson,/global-search/);
+assert.doesNotMatch(lesson,/getElementById\(['"]global-search['"]\)/,
+ 'A published lesson must not set the hidden legacy query field');
 assert.match(lesson,/search\.liSearch\?\.render\(query\)/);
 assert.match(search,/app\.openLaoLy\?\.\(\)/);
 assert.doesNotMatch(search,/getElementById\('laoly-fab'\)\?\.click\(\)/);

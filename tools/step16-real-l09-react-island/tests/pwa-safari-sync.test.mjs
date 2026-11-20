@@ -4,7 +4,8 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {PrivateDeviceStore} from '../.sync-test/local-dexie.js';
 import {syncOnce} from '../.sync-test/sync-once.js';
-import {RevisionConflict} from '../.sync-test/contract.js';
+import {RevisionConflict,storageKey} from '../.sync-test/contract.js';
+import {capturePersonalState,hydratePersonalState} from '../.sync-private-test/auth/private-state.js';
 
 const uid='same-invited-learner',id='L09-1-2';
 const gate={twoUserJwtRlsVerified:true,remoteConsentForPrivateState:true};
@@ -55,4 +56,111 @@ test('iPhone reconnect refreshes managed session and rechecks signed Neon invite
  assert.match(panel,/window\.addEventListener\('online',network\)/);
  assert.match(panel,/const allowed=await checkInviteAccess\(NEON_DATA_API_URL,neonSessionPort\)/);
  assert.match(panel,/return startLearnerSync\(accountId/);
+});
+
+test('complete Wave1 offline learning plus T12 checkpoint replays to second browser and clears on finish',async()=>{
+ const user='wave1-reconnect-account';
+ const ids=['L03-1-2','L09-1-2','L15-2-2'];
+ const methodIds=[['T04','T09'],['T03','T06'],['T07','T10']];
+ const now='2026-11-21T01:00:00.000Z';
+ const gate={twoUserJwtRlsVerified:true,remoteConsentForPrivateState:true};
+ const pwa=new PrivateDeviceStore('li-wave1-pwa-'+crypto.randomUUID());
+ const safari=new PrivateDeviceStore('li-wave1-safari-'+crypto.randomUUID());
+ const snapshots=new Map();
+ const mockStore=()=>({
+  getItem:k=>snapshots.has(k)?snapshots.get(k):null,
+  setItem:(k,v)=>snapshots.set(k,String(v)),
+  removeItem:k=>snapshots.delete(k)
+ });
+ const localA=mockStore(),localBData=new Map();
+ const localB={
+  getItem:k=>localBData.has(k)?localBData.get(k):null,
+  setItem:(k,v)=>localBData.set(k,String(v)),
+  removeItem:k=>localBData.delete(k)
+ };
+ const t12Key='li.spell.t12.resume.v1:'+encodeURIComponent(user)+':L09-1-2';
+ const t12Draft=JSON.stringify({schema:'li.spell.t12.v1',phase:1,
+  context:'Bài học đang làm dở',next:'Viết câu kết luận',answer:'Làm dở',
+  updatedAt:now});
+ const t12Finished=JSON.stringify({schema:'li.spell.t12.v1',phase:2,
+  context:'',next:'',answer:'',updatedAt:'2026-11-21T01:10:00.000Z'});
+ const rows=new Map();
+ const remote={
+  accountId:user,
+  async write(entry){
+   const key=entry.itemType+':'+entry.itemId,previous=rows.get(key);
+   if((previous?.revision??0)!==entry.baseRevision)throw new RevisionConflict();
+   const row={owner_id:user,item_type:entry.itemType,item_id:entry.itemId,
+    revision:entry.baseRevision+1,payload:entry.payload,deleted_at:entry.deletedAt,
+    changed_at:now};
+   rows.set(key,row);return row;
+  },
+  async all(){return [...rows.values()];}
+ };
+ const offline={
+  accountId:user,async write(){throw Error('NETWORK_OFFLINE');},
+  async all(){throw Error('NETWORK_OFFLINE');}
+ };
+ try{
+  // PWA saves legitimate 3 lesson attempts and all 6 method types offline.
+  globalThis.localStorage=localA;globalThis.window={dispatchEvent(){}};
+  for(let i=0;i<ids.length;i++){
+   const methods=Object.fromEntries(methodIds[i].map(id=>[id,{
+    draft:'Bản giải thích cho '+id,submission:'Đã hoàn thành phần thực hành '+id,
+    submittedAt:now,...(id==='T06'?{classifications:{
+     A:'nominal',B:'ordinal',C:'discrete',D:'continuous'}}:{})
+   }]));
+   await pwa.edit(user,'lesson_attempt',ids[i],{
+    schema:'li.native.lesson.v1',
+    data:{locale:'vi',draft:['Bài đang làm','','',''],
+     ratings:[null,null,null,null],methodAttempts:methods}
+   });
+  }
+  localA.setItem(t12Key,t12Draft);
+  const seenPwa=new Map();
+  await capturePersonalState(user,null,pwa,seenPwa);
+  assert.equal((await pwa.counts(user)).pending,4);
+  assert.equal((await syncOnce(pwa,offline,user,gate)).mode,'offline');
+  assert.equal((await pwa.counts(user)).pending,4);
+  assert.equal(rows.size,0,'offline never sends anything to Neon');
+  const uploaded=await syncOnce(pwa,remote,user,gate);
+  assert.equal(uploaded.mode,'synced');
+  assert.equal(uploaded.uploaded,4);
+  assert.equal((await pwa.counts(user)).pending,0);
+
+  // Safari/PWA have separate browser localStorage AND IndexedDB.
+  globalThis.localStorage=localB;
+  const seenSafari=new Map();
+  const emptySnapshots=await capturePersonalState(user,null,safari,seenSafari);
+  assert.equal((await safari.counts(user)).pending,0);
+  const pulled=await syncOnce(safari,remote,user,gate);
+  assert.equal(pulled.mode,'synced');
+  assert.equal(pulled.downloaded,4);
+  for(let i=0;i<ids.length;i++){
+   const received=await safari.records.get(storageKey(user,'lesson_attempt',ids[i]));
+   assert(received?.baseRevision===1);
+   assert.deepEqual(Object.keys(received.payload.data.methodAttempts).sort(),
+    methodIds[i].slice().sort());
+  }
+  assert.equal(await hydratePersonalState(user,emptySnapshots,safari,()=>{}),true);
+  assert.equal(localB.getItem(t12Key),t12Draft);
+  assert.equal((await safari.counts(user)).pending,0,
+   'download must not enqueue a second-device overwrite');
+
+  // T12 finish/reset on PWA must propagate a redacted terminal checkpoint.
+  globalThis.localStorage=localA;
+  localA.setItem(t12Key,t12Finished);
+  await capturePersonalState(user,null,pwa,seenPwa);
+  assert.equal((await pwa.counts(user)).pending,1);
+  assert.equal((await syncOnce(pwa,remote,user,gate)).mode,'synced');
+  globalThis.localStorage=localB;
+  const safariBeforeFinish=await capturePersonalState(user,null,safari,seenSafari);
+  assert.equal((await syncOnce(safari,remote,user,gate)).downloaded,1);
+  assert.equal(await hydratePersonalState(user,safariBeforeFinish,safari,()=>{}),true);
+  assert.equal(localB.getItem(t12Key),t12Finished);
+  assert.equal(JSON.parse(localB.getItem(t12Key)).context,'');
+  assert.equal((await safari.counts(user)).pending,0);
+ }finally{
+  pwa.close();safari.close();await pwa.delete();await safari.delete();
+ }
 });

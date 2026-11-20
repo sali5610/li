@@ -83,13 +83,11 @@ export function WebPushSettings(){
     'Could not revoke server subscription. Reconnect and try again.'));
   }finally{setBusy(false);}
  }
+ // A missing backend must not appear as an inert feature in the real learner app.
+ if(!api)return null;
  return <Card variant="raised" className="li-react-setting-card li-web-push-card">
   <Heading level={3} role="titleMedium">{copy('Thông báo khi đóng app','Notifications while app is closed')}</Heading>
-  {!api?
-   <Text role="support">{copy(
-    'Web Push đang được chuẩn bị trên staging. Lời nhắc trong app vẫn dùng bình thường.',
-    'Web Push is not configured on staging. In-app reminders still work.')}</Text>:
-   !installedPushSupported()?
+  {!installedPushSupported()?
    <Text role="support">{copy(
     'Để bật trên iPhone: mở li. từ biểu tượng đã thêm vào Màn hình chính (không phải tab Safari).',
     'On iPhone, open li. from its Home Screen app icon, not a Safari tab.')}</Text>:

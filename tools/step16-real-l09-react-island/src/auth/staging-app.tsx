@@ -34,6 +34,7 @@ function attachExistingL09(){
  const lesson=document.getElementById('page-lessonL09');
  const shell=lesson?.querySelector<HTMLElement>('.section-shell');
  if(!lesson||!shell||document.getElementById('li-react-learning-host'))return;
+ const page:HTMLElement=lesson;
  const native=Array.from(shell.children).map(node=>({
   node:node as HTMLElement,hidden:(node as HTMLElement).hidden,
   inert:(node as HTMLElement).inert
@@ -62,7 +63,7 @@ function attachExistingL09(){
      if(!document.documentElement.classList.contains('li-auth-verified'))return;
      for(const {node} of native){node.hidden=true;node.inert=true;}
      host.hidden=false;
-     lesson.dataset.liLearningRuntime='react';
+     page.dataset.liLearningRuntime='react';
     },
     onFailure(){
      failed=true;

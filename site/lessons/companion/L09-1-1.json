@@ -271,5 +271,50 @@
         "hume-evidence"
       ]
     }
-  ]
+  ],
+  "connections": {
+    "status": "editorial_candidate_not_published",
+    "links": [
+      {
+        "targetId": "L09-1-2",
+        "targetKind": "Lesson",
+        "relation": "RELATED_LEARNING",
+        "reviewState": "editorial_candidate",
+        "reason": {
+          "vi": "Sau khi phân biệt tổng thể, mẫu và thống kê mẫu, tiếp tục với cơ chế thiên lệch chọn mẫu và biến thiên ngẫu nhiên.",
+          "en": "After separating population, sample and sample statistic, continue with selection bias versus random sampling variation."
+        },
+        "provenance": {
+          "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
+          "sourceSection": "L09-1-2 published Wave1 learning outcomes and original teaching body",
+          "evidenceType": "editorial_crosswalk"
+        }
+      },
+      {
+        "targetId": "C09-1",
+        "targetKind": "Course",
+        "relation": "PART_OF",
+        "reviewState": "documented",
+        "reason": {
+          "vi": "Bài thuộc môn Data & Statistical Foundations (F09), không phải môn mới hay bản sao nội dung.",
+          "en": "This lesson belongs to C09-1 Data & Statistical Foundations in F09; it is not a second course or duplicate lesson."
+        },
+        "provenance": {
+          "sourceUrl": "https://github.com/sali5610/li/blob/integration/staging/content/curriculum/legacy-catalog.v1.json",
+          "sourceSection": "C09-1 includes L09-1-1 and L09-1-2",
+          "evidenceType": "documented_catalog_membership"
+        }
+      }
+    ],
+    "conceptMentions": [
+      {
+        "id": "concept:wave2:population-and-sample",
+        "status": "proposed_not_graph_published"
+      },
+      {
+        "id": "concept:wave2:variable-types",
+        "status": "proposed_not_graph_published"
+      }
+    ]
+  }
 }

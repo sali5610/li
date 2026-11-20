@@ -98,6 +98,14 @@ assert.match(search,/client\.searchKnowledge\(query\)/,
  "React search queries real canonical data, not mock results");
 assert.match(search,/searchPersonalStudy\(query\)/,
  "All personal study content stays searchable through the canonical adapter");
+
+assert.match(search,/function directCatalogMatches\(query:string\):KnowledgeItem\[\]/,
+ "Published titles, lesson IDs and exact course labels stay searchable if ontology returns no answer");
+assert.match(search,/const direct=\[\.\.\.personal,\.\.\.directCatalogMatches\(query\)\]/,
+ "Staging personal lessons and released catalog matches must be combined");
+assert.match(search,/withNavigableLessons\(query,\{/,
+ "Successful semantic searches must retain direct canonical lesson matches");
+
 const canonicalImport=/import canonicalCatalog from '\.\.\/\.\.\/\.\.\/\.\.\/content\/curriculum\/legacy-catalog\.v1\.json'/;
 assert.match(home,canonicalImport,
  "React Catalog reads the same GitHub JSON as learning, no native boot global");

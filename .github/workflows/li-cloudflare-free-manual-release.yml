@@ -13,6 +13,11 @@ on:
         required: false
         type: boolean
         default: false
+      auth_only_mode:
+        description: "First-party iPhone PWA Auth only; no AI/D1 (requires separate approval)"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -25,8 +30,9 @@ jobs:
   release:
     if: >-
       github.ref == 'refs/heads/main' &&
-      ((inputs.ai_mode == false && inputs.confirm == 'PUBLISH_LI_FREE_ONLY') ||
-       (inputs.ai_mode == true && inputs.confirm == 'PUBLISH_LI_AI_FREE_ONLY'))
+      ((inputs.ai_mode == false && inputs.auth_only_mode == false && inputs.confirm == 'PUBLISH_LI_FREE_ONLY') ||
+       (inputs.ai_mode == true && inputs.auth_only_mode == false && inputs.confirm == 'PUBLISH_LI_AI_FREE_ONLY') ||
+       (inputs.ai_mode == false && inputs.auth_only_mode == true && inputs.confirm == 'PUBLISH_LI_AUTH_ONLY'))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: cloudflare-free-production
@@ -51,8 +57,8 @@ jobs:
       # This path exists ONLY behind a distinct human-entered confirmation,
       # on approved main, after separately configuring the Cloudflare bindings.
       # It produces a local artifact, not a second staging site.
-      - name: Set up Node 22 (explicit AI mode only)
-        if: inputs.ai_mode == true
+      - name: Set up Node 22 (explicit first-party mode only)
+        if: inputs.ai_mode == true || inputs.auth_only_mode == true
         uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -77,6 +83,35 @@ jobs:
           test -z "$(find dist-cloudflare-ai-candidate -type f -name '*.map' -print -quit)"
           git diff --exit-code -- site
 
+      - name: Prepare first-party React Auth-only PWA (explicit Auth-only approval)
+        if: inputs.auth_only_mode == true && inputs.ai_mode == false
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund --prefix design-system/react
+          npm install --no-audit --no-fund --prefix tools/step16-real-l09-react-island
+          cd tools/step16-real-l09-react-island
+          npm run extract
+          npm run test:auth-pwa
+          npx tsc --noEmit
+          npm run build:worker:auth-only
+          VITE_LI_AUTH_TARGET=cloudflare-first-party npx vite build --config vite.cloudflare-app.config.mjs
+          cd ../..
+          node tools/prepare_cloudflare_ai_candidate.mjs --build-auth-only
+          npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-auth-only-config.cjs
+          test -s dist-cloudflare-auth-candidate/_worker.js
+          test -s dist-cloudflare-auth-candidate/assets/li-first-party-app.js
+          test -s dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'li-first-party-app.js' dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'li-push-handler.js' dist-cloudflare-auth-candidate/sw.js
+          ! grep -Fq 'neon.tech' dist-cloudflare-auth-candidate/sw.js
+          find dist-cloudflare-auth-candidate -type f -name '*.map' -delete
+          test -z "$(find dist-cloudflare-auth-candidate -type f -name '*.map' -print -quit)"
+          git diff --exit-code -- site
+
+      - name: Verify Cloudflare production Auth-only cookie binding (read-only)
+        if: inputs.auth_only_mode == true && inputs.ai_mode == false
+        run: python3 tools/check_cloudflare_auth_binding.py
+
       - name: Verify Cloudflare production AI/D1 bindings (read-only)
         if: inputs.ai_mode == true
         run: |
@@ -96,6 +131,8 @@ jobs:
               echo "Workers Free plan not explicitly confirmed; stop AI release"; exit 1;
             }
             python3 tools/g3_cloudflare_free_guard.py --site dist-cloudflare-ai-candidate --online
+          elif [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
+            python3 tools/g3_cloudflare_free_guard.py --site dist-cloudflare-auth-candidate --online
           else
             python3 tools/g3_cloudflare_free_guard.py --site site --online
           fi
@@ -105,7 +142,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy ${{ inputs.ai_mode && 'dist-cloudflare-ai-candidate' || 'site' }} --branch=main --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+          command: pages deploy ${{ inputs.auth_only_mode && 'dist-cloudflare-auth-candidate' || (inputs.ai_mode && 'dist-cloudflare-ai-candidate' || 'site') }} --branch=main --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }}
 
       - name: Explicit release log
-        run: echo "Manual Cloudflare release completed; AI mode needs signed-account + invite-RLS + Free quota smoke before user-validated status."
+        run: echo "Manual Cloudflare release completed; Auth-only must still pass signed iPhone PWA session persistence and invite-RLS validation before claiming P0 resolved."

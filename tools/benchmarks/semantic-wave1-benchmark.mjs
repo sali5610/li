@@ -106,8 +106,16 @@ for(const item of rows){
  item.semanticHits=canonicalDocs.map((d,i)=>({...d,score:dot(vec,passages[i])}))
   .sort((a,b)=>b.score-a.score).slice(0,5)
   .map(x=>({id:x.id,lessonIds:x.lessonIds,score:Number(x.score.toFixed(4))}));
- const strongLexical=item.lexicalHits[0]?.score>=65;
+ // Exact lesson IDs always beat a semantic guess, regardless of legacy rank.
+ const directId=/^L\d{2}-\d+-\d+$/i.test(item.query.trim())&&
+  lessonOrder(item.lexicalHits)[0]===item.query.trim();
+ const strongLexical=directId||item.lexicalHits[0]?.score>=65;
  item.hybridHits=strongLexical?item.lexicalHits:item.semanticHits;
+ // Predeclared 0.83 after six calibration negatives; report NEW holdout separately.
+ // Similarity threshold does not authorize app release.
+ const threshold=0.83;
+ item.gatedHits=strongLexical?item.lexicalHits:
+  (item.semanticHits[0]?.score??0)>=threshold?item.semanticHits:[];
 }
 const metrics=(key,subset=rows.filter(r=>r.targetLessonId))=>{
  const eligible=subset.filter(x=>x.targetLessonId);
@@ -121,7 +129,8 @@ for(const cls of ["id","alias","paraphrase"]){
  metricsByType[cls]={
   lexical:metrics("lexicalHits",subset),
   semantic:metrics("semanticHits",subset),
-  hybrid:metrics("hybridHits",subset)};
+  hybrid:metrics("hybridHits",subset),
+  gated:metrics("gatedHits",subset)};
 }
 const negativeRows=rows.filter(x=>x.expected==="no_relevant_lesson");
 const report={
@@ -131,16 +140,26 @@ const report={
   quantized:true,runner:"GitHub Actions CPU-only, not client"},
  baseline:"exact production createContentClient.searchKnowledge + reviewed TEACHES",
  docsCount:canonicalDocs.length,positives:gold.positives.length,hardNegatives:negativeRows.length,
- metrics:{lexical:metrics("lexicalHits"),semantic:metrics("semanticHits"),hybrid:metrics("hybridHits")},
+ metrics:{lexical:metrics("lexicalHits"),semantic:metrics("semanticHits"),
+  hybrid:metrics("hybridHits"),gated:metrics("gatedHits")},
+ similarityGate:{threshold:0.83,chosenOn:"six_first_run_calibration_negatives_not_holdout",
+  status:"research_only_do_not_ship"},
  byType:metricsByType,
  hardNegativeForcedMatches:{
   lexical:negativeRows.filter(x=>lessonOrder(x.lexicalHits).length>0).length,
   semantic:negativeRows.filter(x=>lessonOrder(x.semanticHits).length>0).length,
-  hybrid:negativeRows.filter(x=>lessonOrder(x.hybridHits).length>0).length},
+  hybrid:negativeRows.filter(x=>lessonOrder(x.hybridHits).length>0).length,
+  gated:negativeRows.filter(x=>lessonOrder(x.gatedHits).length>0).length},
+ negativesBySplit:Object.fromEntries(["calibration","holdout"].map(split=>[
+  split,Object.fromEntries(["lexical","semantic","hybrid","gated"].map(k=>[
+   k,negativeRows.filter(x=>x.split===split&&lessonOrder(x[k+"Hits"]).length>0).length
+  ]))])),
  detail:rows.map(x=>({q:x.query,group:x.queryClass||"negative",target:x.targetLessonId||null,
    lexical:lessonOrder(x.lexicalHits).slice(0,3),
    semantic:lessonOrder(x.semanticHits).slice(0,3),
    hybrid:lessonOrder(x.hybridHits).slice(0,3),
+   gated:lessonOrder(x.gatedHits).slice(0,3),
+   negativeSplit:x.split||null,
    vectorTopScore:x.semanticHits[0]?.score||null}))
 };
 fs.writeFileSync(path.join(root,"tools/benchmarks/semantic-wave1-results.json"),
@@ -156,12 +175,13 @@ if(process.env.GITHUB_STEP_SUMMARY){
   "Targets: "+gold.positives.length+" queries over 3 real approved content bodies; "+negativeRows.length+" unsupported negatives.",
   "| Method | Top1 relevant | Recall@3 | Forced match on unsupported queries |",
   "| --- | ---: | ---: | ---: |",
-  "| "+line("lexical")+" |","| "+line("semantic")+" |","| "+line("hybrid")+" |",
+  "| "+line("lexical")+" |","| "+line("semantic")+" |","| "+line("hybrid")+" |","| "+line("gated")+" |",
   "",
   "Paraphrase-only Top1: lexical "+p.lexical.top1+"/"+p.lexical.total+
     ", semantic "+p.semantic.top1+"/"+p.semantic.total+
     ", hybrid "+p.hybrid.top1+"/"+p.hybrid.total+".",
-  "**Do not ship automatically.** Top1 candidate alone is not calibrated abstention; all top semantic matches need a supported-source gate and iOS performance evaluation.",
+  "New near-domain holdout negatives (10) forced matches: "+JSON.stringify(report.negativesBySplit.holdout)+".",
+  "**Do not ship automatically.** Six calibration negatives cannot establish safe abstention; academic approval and iOS performance gates still apply.",
  ].join("\n")+"\n");
 }
-console.log("LI_SEMANTIC_DECISION_GATE=EVAL_ONLY_NEVER_DEPLOY");
+console.log("LI_SEMANTIC_DECISION_GATE=EVAL_ONLY_NEVER_DEPLOY_AND_REVIEW_HOLDOUT");

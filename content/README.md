@@ -1,4 +1,10 @@
 # li. canonical course content — Wave 1
+
+## Binding content ownership (20 Nov 2026)
+**GitHub is the single writable source for EVERY learning-content task, not only Wave1.** Edit `content/curriculum/`, `content/editorial/`, `content/lessons/`, `content/graph/` and `content/schema/` directly. Generate learner-facing `site/content-packs/` from these files. **Never compose new lessons, revise copy/rubrics/sources, or adjudicate academic content in Notion.** The only permitted Notion use for learning content is a bounded, one-time read to import historical manuscripts still missing from GitHub; preserve provenance, rights, VI/EN and draft lifecycle, then archive Notion as read-only. For any non-imported lesson, say `NOT MIGRATED`, rather than silently treating Notion as the current CMS.
+
+**Verified migrated inventory at this checkpoint (integration/staging):** 8 DomainGroups / 15 Fields / 45 Courses / 135 **lesson outlines** in `curriculum/legacy-catalog.v1.json`; 3 actual Wave1 learning bodies in `lessons/`; 1 Wave2 editorial draft `L09-1-1` in `editorial/`; 238 research candidate courses are separate editorial proposals, **not** 238 canonical/published courses. Most lesson bodies authored in earlier Notion waves are **NOT MIGRATED** to this repo. Do not present outline counts as authored lessons, editorial draft as a release, or GitHub as a runtime learner DB. The React app currently runs from its gated release registry; private learner attempts remain in existing Neon/Dexie. Content on `integration/staging` is not automatically present on `main`.
+
 **Source of truth:** `content/lessons/*.json` (GitHub), **not Notion at runtime**.
 Original bilingual learning copy, the four independent questions, hints, answer commentary and four rubric items were copied **verbatim from the PO-frozen native Hi-Fi payloads**. No academic words were rewritten. The three lesson keys remain `L03-1-2`, `L09-1-2`, `L15-2-2`. Sources are references, not a claim that academic release gates passed.
 

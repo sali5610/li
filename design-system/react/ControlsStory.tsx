@@ -5,8 +5,10 @@ import {Checkbox,Radio,Field,Icon,IconButton} from './Controls';
 import type {IconName} from './Controls';
 import './controls.css';
 import './controls-story.css';
+import './focus.css';
 
 const params=new URLSearchParams(location.search);
+if(params.get('state')==='focus')document.documentElement.dataset.dsFocusDemo='true';
 const atom=params.get('story')||'checkbox';
 const variant=params.get('variant')||'Default';
 const state=params.get('state')||'default';

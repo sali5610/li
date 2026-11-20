@@ -28,9 +28,20 @@ export function MonthCalendar({year,month,selectedDate,todayDate,records,
  const move=(direction:number)=>{
   const [y,m]=nextMonth(year,month,direction);onMonthChange?.(y,m);
  };
+ // "today" always comes from the consumer's local calendar timezone.
+ const todayYear=Number(todayDate.slice(0,4)),todayMonth=Number(todayDate.slice(5,7));
+ const visibleTodayMonth=year===todayYear&&month===todayMonth;
+ const jumpToday=()=>{
+  if(!visibleTodayMonth)onMonthChange?.(todayYear,todayMonth);
+  if(visibleTodayMonth||onMonthChange)onSelectDate(todayDate);
+ };
  return <section className="li-legacy-calendar" data-li-legacy="month-calendar">
   <header><strong>{monthName}</strong>
    <div className="li-legacy-calendar-actions">
+    <button className="li-legacy-today-action" type="button" onClick={jumpToday}
+     disabled={!visibleTodayMonth&&!onMonthChange} data-active={selectedDate===todayDate}
+     aria-label={locale==='vi'?'Đi tới hôm nay':'Jump to today'}>
+     {locale==='vi'?'Hôm nay':'Today'}</button>
     {onMonthChange?<><button type="button" onClick={()=>move(-1)}
       aria-label={locale==='vi'?'Tháng trước':'Previous month'}>‹</button>
      <button type="button" onClick={()=>move(1)}
@@ -60,18 +71,31 @@ export interface ActivityBarDatum {
 }
 export interface StackedActivityChartProps {
  days:readonly ActivityBarDatum[];selectedDate:string;todayDate:string;
- onSelectDate:(date:string)=>void;maxTotal?:number;locale?:'vi'|'en';
+ onSelectDate:(date:string)=>void;onToday?:()=>void;
+ maxTotal?:number;locale?:'vi'|'en';
 }
 export function StackedActivityChart({days,selectedDate,todayDate,onSelectDate,
- maxTotal,locale='vi'}:StackedActivityChartProps){
+ onToday,maxTotal,locale='vi'}:StackedActivityChartProps){
  if(days.length>7)throw Error('StackedActivityChart accepts a seven-day window');
  const max=Math.max(1,maxTotal||0,...days.map(d=>(d.lesson||0)+(d.problem||0)+(d.input||0)));
+ const todayVisible=days.some(day=>day.date===todayDate);
+ const jumpToday=()=>{
+  // Caller must reposition older windows; selecting an invisible day is invalid.
+  if(onToday)onToday();
+  else if(todayVisible)onSelectDate(todayDate);
+ };
  return <section className="li-legacy-chart" data-li-legacy="stacked-activity">
-  <div className="li-legacy-chart-legend" aria-label={locale==='vi'?'Chú giải':'Legend'}>
-   <span data-series="lesson">{locale==='vi'?'Bài':'Lessons'}</span>
-   <span data-series="problem">{locale==='vi'?'Vấn đề':'Problems'}</span>
-   <span data-series="input">Input</span>
-  </div>
+  <header className="li-legacy-chart-header">
+   <div className="li-legacy-chart-legend" aria-label={locale==='vi'?'Chú giải':'Legend'}>
+    <span data-series="lesson">{locale==='vi'?'Bài':'Lessons'}</span>
+    <span data-series="problem">{locale==='vi'?'Vấn đề':'Problems'}</span>
+    <span data-series="input">Input</span>
+   </div>
+   <button className="li-legacy-today-action" type="button" onClick={jumpToday}
+    disabled={!todayVisible&&!onToday} data-active={selectedDate===todayDate}
+    aria-label={locale==='vi'?'Đi tới hôm nay':'Jump to today'}>
+    {locale==='vi'?'Hôm nay':'Today'}</button>
+  </header>
   <div className="li-legacy-chart-bars" role="group"
    aria-label={locale==='vi'?'Hoạt động bảy ngày':'Seven-day activity'}>
    {days.map(d=>{

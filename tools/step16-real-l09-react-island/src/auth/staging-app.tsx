@@ -8,6 +8,7 @@ import {mountKnowledgeSearch} from '../shell/knowledge-search.js';
 import {mountCaptureIdea} from '../shell/capture-idea.js';
 import {mountResearchAndCase} from '../shell/research-case.js';
 import {mountHomeAndCatalog} from '../shell/home-catalog.js';
+import {mountGuideAndLibrary} from '../shell/guide-library.js';
 
 // Unified GitHub Pages staging: no guest app. React verifies signed invitation.
 const root=document.getElementById('li-staging-auth-root');
@@ -128,3 +129,7 @@ else enableIntegratedWave1();
 // One visible React Home→Catalog→Lesson discovery path; native owners remain temporary ports.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountHomeAndCatalog,{once:true});
 else mountHomeAndCatalog();
+
+// Adopt canonical React Guide + learner's Library / Resume / Collection on the same invited app.
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountGuideAndLibrary,{once:true});
+else mountGuideAndLibrary();

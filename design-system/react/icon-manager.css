@@ -1,0 +1,55 @@
+/* Lucide icon management is a separate React story in the EXISTING Studio.
+   All colors use li. tokens; keyboard focus uses one existing 3px border. */
+.li-icon-manager,.li-icon-manager *{box-sizing:border-box;min-width:0}
+.li-icon-manager{color:var(--ink);background:var(--cream);padding:var(--li-space-4);
+ display:grid;gap:var(--li-space-5);font-family:var(--li-font-ui)}
+.li-icon-manager-head{display:grid;gap:var(--li-space-3)}
+.li-icon-eyebrow{font:var(--li-weight-700) var(--li-type-caption)/var(--li-leading-caption) var(--li-font-ui);
+ letter-spacing:.08em;color:var(--olive)}
+.li-icon-manager h1,.li-icon-manager h2{font-family:var(--li-font-editorial);color:var(--moss);margin:0}
+.li-icon-manager h1{font-size:var(--li-type-title-lg)}
+.li-icon-manager h2{font-size:var(--li-type-title-md)}
+.li-icon-manager p{margin:0;line-height:1.5}
+.li-icon-meta{display:flex;gap:var(--li-space-2);flex-wrap:wrap}
+.li-icon-meta span{border:1px solid var(--rule);padding:var(--li-space-2);font-size:var(--li-type-caption)}
+.li-icon-workbench{display:grid;gap:var(--li-space-5)}
+.li-icon-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--li-space-3)}
+.li-icon-filters label{display:grid;gap:var(--li-space-2);font-size:var(--li-type-support);font-weight:var(--li-weight-700)}
+.li-icon-filters input,.li-icon-filters select{min-height:44px;min-width:0;width:100%;
+ border:1px solid var(--rule);border-radius:0;background:var(--porcelain);color:var(--ink);
+ padding:var(--li-space-2) var(--li-space-3);font:var(--li-type-body)/var(--li-leading-body) var(--li-font-ui)}
+.li-icon-filters :is(input,select):focus-visible{outline:0;border:3px solid var(--moss)}
+.li-icon-main{display:grid;grid-template-columns:minmax(0,1fr) minmax(13rem,17rem);
+ align-items:start;gap:var(--li-space-4)}
+.li-icon-results{display:grid;gap:var(--li-space-3)}
+.li-icon-results>p{color:var(--muted);font-size:var(--li-type-support)}
+.li-icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,96px),1fr));
+ gap:var(--li-space-2)}
+.li-icon-cell{display:grid;justify-items:center;align-content:center;gap:var(--li-space-2);
+ min-height:88px;padding:var(--li-space-2);border:1px solid var(--rule);border-radius:0;
+ background:var(--paper);color:var(--moss);cursor:pointer}
+.li-icon-cell span{font:var(--li-type-caption)/var(--li-leading-caption) var(--li-font-ui);
+ text-align:center;overflow-wrap:anywhere;max-width:100%}
+.li-icon-cell[aria-pressed="true"]{background:var(--li-color-nav-selected-fill);border-color:var(--moss)}
+.li-icon-cell:focus-visible{outline:0;border:3px solid var(--moss)}
+.li-icon-detail{display:grid;gap:var(--li-space-3);padding:var(--li-space-4);
+ border:1px solid var(--moss);background:var(--paper);position:sticky;top:var(--li-space-3)}
+.li-icon-hero{height:92px;display:grid;place-items:center;background:var(--paper-2);color:var(--moss)}
+.li-icon-code{padding:var(--li-space-3);background:var(--paper-2);
+ overflow-wrap:anywhere;white-space:pre-wrap}
+.li-icon-code code{font:var(--li-type-caption)/1.6 ui-monospace,monospace}
+.li-icon-detail button,.li-icon-more{min-height:44px;border:1px solid var(--moss);border-radius:0;
+ background:var(--moss);color:var(--cream);padding:var(--li-space-2) var(--li-space-4);
+ cursor:pointer;font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
+.li-icon-detail .li-icon-secondary{background:var(--paper);color:var(--moss)}
+.li-icon-detail button:focus-visible,.li-icon-more:focus-visible{outline:0;border:3px solid var(--moss);
+ text-decoration:underline;text-decoration-thickness:3px}
+.li-icon-detail a:focus-visible{outline:0;text-decoration-thickness:3px;background:var(--li-color-nav-selected-fill)}
+.li-icon-copy-status{min-height:1.5em;color:var(--muted);font-size:var(--li-type-caption)}
+.li-icon-foot{display:grid;gap:var(--li-space-2);padding-top:var(--li-space-4);
+ border-top:1px solid var(--rule);color:var(--muted);font-size:var(--li-type-support)}
+@media(max-width:700px){.li-icon-filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .li-icon-main{grid-template-columns:minmax(0,1fr)}
+ .li-icon-detail{position:static;order:-1}
+ .li-icon-grid{grid-template-columns:repeat(auto-fill,minmax(78px,1fr))}
+ .li-icon-manager{padding:var(--li-space-3)}}

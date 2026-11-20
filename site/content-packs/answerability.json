@@ -414,5 +414,139 @@
         "en": "This lesson covers interview question design, not thematic coding of transcripts."
       }
     }
+  ],
+  "autoOutcomes": [
+    {
+      "id": "outcome:L03-1-2:1",
+      "lessonId": "L03-1-2",
+      "outcomeIndex": 0,
+      "localized": {
+        "vi": "Phân biệt câu hỏi mở với câu hỏi trung lập.",
+        "en": "Distinguish open-ended from neutral interview questions."
+      },
+      "sourceUrl": "https://digital.gov/resources/how-conduct-interview",
+      "evidenceStatus": "reviewed_lesson_outcome_text_not_independent_claim"
+    },
+    {
+      "id": "outcome:L03-1-2:2",
+      "lessonId": "L03-1-2",
+      "outcomeIndex": 1,
+      "localized": {
+        "vi": "Nhận ra lời khen, đánh giá hoặc giả định được cài sẵn trong câu hỏi.",
+        "en": "Identify praise or unverified assumptions built into a prompt."
+      },
+      "sourceUrl": "https://digital.gov/resources/how-conduct-interview",
+      "evidenceStatus": "reviewed_lesson_outcome_text_not_independent_claim"
+    },
+    {
+      "id": "outcome:L03-1-2:3",
+      "lessonId": "L03-1-2",
+      "outcomeIndex": 2,
+      "localized": {
+        "vi": "Viết lại câu hỏi để người tham gia kể một tình huống thực tế.",
+        "en": "Rewrite a question to invite a real past episode."
+      },
+      "sourceUrl": "https://digital.gov/resources/how-conduct-interview",
+      "evidenceStatus": "reviewed_lesson_outcome_text_not_independent_claim"
+    },
+    {
+      "id": "outcome:L03-1-2:4",
+      "lessonId": "L03-1-2",
+      "outcomeIndex": 3,
+      "localized": {
+        "vi": "Không tự suy rộng từ vài cuộc phỏng vấn định tính sang tỷ lệ người dùng.",
+        "en": "Avoid claiming population prevalence based only on a few qualitative interviews."
+      },
+      "sourceUrl": "https://digital.gov/resources/how-conduct-interview",
+      "evidenceStatus": "reviewed_lesson_outcome_text_not_independent_claim"
+    },
+    {
+      "id": "outcome:L09-1-2:1",
+      "lessonId": "L09-1-2",
+      "outcomeIndex": 0,
+      "localized": {
+        "vi": "Xác định tổng thể mục tiêu và nhóm thực sự tham gia khảo sát.",
+        "en": "Identify the target population and the observed sample."
+      },
+      "sourceUrl": "https://www.itl.nist.gov/div898/handbook/ppc/section1/ppc134.htm",
+      "evidenceStatus": "reviewed_lesson_outcome_text_not_independent_claim"
+    },
+    {
+      "id": "outcome:L09-1-2:2",
+      "lessonId": "L09-1-2",
+      "outcomeIndex": 1,
+      "localized": {
+        "vi": "Giải thích một cơ chế làm mẫu bị lệch theo cách tuyển người hoặc phản hồi.",
+        "en": "Explain a recruitment or response mechanism linked to selection bias."
+      },
+      "sourceUrl": "https://www.itl.nist.gov/div898/handbook/ppc/section1/ppc134.htm",
+      "evidenceStatus": "reviewed_lesson_outcome_text_not_independent_claim"
+    },
+    {
+      "id": "outcome:L09-1-2:3",
+      "lessonId": "L09-1-2",
+      "outcomeIndex": 2,
+      "localized": {
+        "vi": "Phân biệt selection bias với random sampling variation.",
+        "en": "Distinguish selection bias from random sampling variation."
+      },
+      "sourceUrl": "https://www.itl.nist.gov/div898/handbook/ppc/section1/ppc134.htm",
+      "evidenceStatus": "reviewed_lesson_outcome_text_not_independent_claim"
+    },
+    {
+      "id": "outcome:L09-1-2:4",
+      "lessonId": "L09-1-2",
+      "outcomeIndex": 3,
+      "localized": {
+        "vi": "Viết lại kết luận để không suy rộng quá những gì dữ liệu hỗ trợ.",
+        "en": "Rewrite a claim to stay within the observed evidence."
+      },
+      "sourceUrl": "https://www.itl.nist.gov/div898/handbook/ppc/section1/ppc134.htm",
+      "evidenceStatus": "reviewed_lesson_outcome_text_not_independent_claim"
+    },
+    {
+      "id": "outcome:L15-2-2:1",
+      "lessonId": "L15-2-2",
+      "outcomeIndex": 0,
+      "localized": {
+        "vi": "Phân biệt safety stock, reorder point và order quantity.",
+        "en": "Distinguish safety stock, reorder point and order quantity."
+      },
+      "sourceUrl": "https://ocw.mit.edu/courses/15-762j-supply-chain-planning-spring-2011/pages/syllabus/",
+      "evidenceStatus": "reviewed_lesson_outcome_text_not_independent_claim"
+    },
+    {
+      "id": "outcome:L15-2-2:2",
+      "lessonId": "L15-2-2",
+      "outcomeIndex": 1,
+      "localized": {
+        "vi": "Tính ROP khi giả định về nhu cầu, lead time và buffer đã rõ.",
+        "en": "Calculate a simplified reorder threshold from stated assumptions."
+      },
+      "sourceUrl": "https://ocw.mit.edu/courses/15-762j-supply-chain-planning-spring-2011/pages/syllabus/",
+      "evidenceStatus": "reviewed_lesson_outcome_text_not_independent_claim"
+    },
+    {
+      "id": "outcome:L15-2-2:3",
+      "lessonId": "L15-2-2",
+      "outcomeIndex": 2,
+      "localized": {
+        "vi": "Dùng inventory position để xác định thời điểm kích hoạt đặt thêm.",
+        "en": "Compare the threshold with inventory position."
+      },
+      "sourceUrl": "https://ocw.mit.edu/courses/15-762j-supply-chain-planning-spring-2011/pages/syllabus/",
+      "evidenceStatus": "reviewed_lesson_outcome_text_not_independent_claim"
+    },
+    {
+      "id": "outcome:L15-2-2:4",
+      "lessonId": "L15-2-2",
+      "outcomeIndex": 3,
+      "localized": {
+        "vi": "Nêu giới hạn của mô hình khi lead time hoặc nhu cầu biến động.",
+        "en": "Recognize limits when demand or lead time varies."
+      },
+      "sourceUrl": "https://ocw.mit.edu/courses/15-762j-supply-chain-planning-spring-2011/pages/syllabus/",
+      "evidenceStatus": "reviewed_lesson_outcome_text_not_independent_claim"
+    }
   ]
 }

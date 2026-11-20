@@ -3,13 +3,14 @@ import {checkInviteAccess,safeInviteErrorCode} from '../sync/invite-access.js';
 import {authClient,neonSessionPort} from './neon-client.js';
 import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING} from './config.js';
 import {classifyOAuthReturn,type OAuthReturnCode} from './oauth-return.js';
+import {rememberOfflineInvite,recentOfflineOwner,forgetOfflineInvite} from './offline-local.js';
 import {RlsQaPanel} from './RlsQaPanel.js';
 import {SyncQaPanel} from './SyncQaPanel.js';
 import {prepareLearnerAccount,startLearnerSync,journalCloudConsent,changeJournalCloudConsent,
  listPrivateConflicts,resolvePrivateConflict,type PrivateConflictChoice,type SyncReport} from './learner-sync.js';
 
 type Locale='vi'|'en';
-type Access='checking'|'granted'|'denied'|'error';
+type Access='checking'|'granted'|'offline'|'denied'|'error';
 const syncCopy={
  vi:{checking:'Đang kết nối tiến độ học với Neon…',saved:'Đã đồng bộ dữ liệu được phép lưu trên Neon.',empty:'Đã kết nối Neon. Tiến độ sẽ tự đồng bộ khi học.',queued:'Đã lưu, chờ đồng bộ với Neon.',offline:'Đang offline; tiến độ vẫn lưu trên máy và sẽ thử lại.',conflict:'Hai thiết bị có tiến độ khác nhau. Dữ liệu được giữ, chưa ghi đè.',error:'Chưa đồng bộ được với Neon; tiến độ vẫn lưu trên máy.'},
  en:{checking:'Connecting learning progress to Neon…',saved:'Permitted personal data synced to Neon.',empty:'Connected to Neon. Progress will sync while studying.',queued:'Saved, awaiting Neon sync.',offline:'Offline. Progress remains on device and will retry.',conflict:'Progress differs across devices. Both copies are preserved; nothing was overwritten.',error:'Cannot sync with Neon yet; device progress is preserved.'}
@@ -22,6 +23,9 @@ const copy={
   loading:'Đang kiểm tra phiên đăng nhập…',signed:'Đã đăng nhập với',
   checking:'Đang kiểm tra lời mời trên máy chủ…',
   granted:'Email đã được mời. Quyền truy cập được xác minh.',
+  offline:'Đang học offline trên máy đã xác minh gần đây (tối đa 12 giờ). Lời mời sẽ được kiểm tra lại khi có mạng.',
+  lockOffline:'Khóa quyền mở offline trên máy này',
+  lockedOffline:'Đã khóa chế độ offline. Kết nối mạng để xác minh hoặc đăng xuất Google.',
   denied:'Chưa xác minh được quyền truy cập của tài khoản Google này. Kiểm tra đúng email được mời rồi liên hệ chủ li. nếu vẫn bị chặn.',
   blocked:'Không thể xác minh quyền truy cập. App vẫn khóa để bảo vệ dữ liệu.',
   inviteErrorCode:'Mã kiểm tra an toàn (không chứa dữ liệu riêng tư):',
@@ -45,6 +49,9 @@ const copy={
   loading:'Checking your sign-in session…',signed:'Signed in as',
   checking:'Checking your invitation with the server…',
   granted:'Invitation confirmed. This account is authorized.',
+  offline:'Offline study on this recently verified device (up to 12 hours). Invitation will be rechecked online.',
+  lockOffline:'Lock offline access on this device',
+  lockedOffline:'Offline access locked. Reconnect to verify or sign out of Google.',
   denied:'This Google account is not authorized yet. Check the invited email and contact the owner if it should have access.',
   blocked:'Unable to verify invitation. App access remains locked to protect learner data.',
   inviteErrorCode:'Safe diagnostic code (contains no private data):',
@@ -74,7 +81,12 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  const [access,setAccess]=useState<Access>('checking');
  const [inviteError,setInviteError]=useState('');
  const [accessEpoch,setAccessEpoch]=useState(0);
- const accountId=session?.user?.id??null;
+ const [isOffline,setIsOffline]=useState(!navigator.onLine);
+ const liveAccountId=session?.user?.id??null;
+ // Offline continuity is scoped to the previously invited local owner, not a JWT.
+ const offlineId=recentOfflineOwner(isOffline);
+ const accountId=liveAccountId??offlineId;
+ const localOffline=isOffline&&Boolean(offlineId)&&accountId===offlineId;
  const [ownerReady,setOwnerReady]=useState(false);
  const [syncStatus,setSyncStatus]=useState<SyncReport>('checking');
  const [journalChoice,setJournalChoice]=useState(false);
@@ -127,22 +139,33 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  // Do not reveal native lesson state from another invited account.
  // Local account ownership is prepared synchronously before the app is shown.
  useEffect(()=>{
-  if(!accountId||isPending||error||access!=='granted'){setOwnerReady(false);return;}
+  if(!accountId||(!localOffline&&(isPending||error))||
+    !(access==='granted'&&!isOffline||access==='offline'&&localOffline)){
+  setOwnerReady(false);return;
+ }
   try{
    if(prepareLearnerAccount(accountId)){window.location.reload();return;}
    setOwnerReady(true);
   }catch{setOwnerReady(false);setSyncStatus('error');}
- },[accountId,isPending,error,access]);
+ },[accountId,isPending,error,access,localOffline,isOffline]);
  useEffect(()=>{
   if(!document.getElementById('li-staging-auth-root'))return;
-  const permitted=Boolean(accountId)&&!isPending&&!error&&access==='granted'&&ownerReady;
+  const permitted=Boolean(accountId)&&ownerReady&&
+   ((access==='granted'&&!isOffline&&!isPending&&!error)||
+    (access==='offline'&&localOffline));
   document.documentElement.classList.toggle('li-auth-verified',Boolean(permitted));
   if(!permitted)document.documentElement.classList.remove('li-account-open');
   return()=>{document.documentElement.classList.remove('li-auth-verified');};
- },[accountId,isPending,error,access,ownerReady]);
- // One automatic learner-data session, never manual per-lesson Settings buttons.
+ },[accountId,isPending,error,access,ownerReady,isOffline,localOffline]);
+ // Persist a local time limit only AFTER the real invited account and local owner agree.
  useEffect(()=>{
-  if(!IS_GITHUB_STAGING||!ownerReady||!accountId||access!=='granted')return;
+  if(IS_GITHUB_STAGING&&!isOffline&&!isPending&&!error&&ownerReady&&
+     liveAccountId&&access==='granted')rememberOfflineInvite(liveAccountId);
+ },[isOffline,isPending,error,ownerReady,liveAccountId,access]);
+ // Existing Dexie outbox captures offline edits without server writes.
+ useEffect(()=>{
+  if(!IS_GITHUB_STAGING||!ownerReady||!accountId||
+    !(access==='granted'&&!isOffline||access==='offline'&&localOffline))return;
   setSyncStatus('checking');
   return startLearnerSync(accountId,value=>{
    setSyncStatus(value);
@@ -150,7 +173,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    const status=document.getElementById('li-cloud-status');
    if(status)status.textContent=syncCopy[document.documentElement.lang==='en'?'en':'vi'][value];
   });
- },[accountId,ownerReady,access]);
+ },[accountId,ownerReady,access,isOffline,localOffline]);
  const oauthReturn=classifyOAuthReturn(window.location.search,Boolean(accountId),isPending);
  const oauthMessage=(code:OAuthReturnCode)=>code==='account_not_linked'?t.oauthLink:
   code==='state_mismatch'||code==='state_security_mismatch'||code==='no_callback_url'||code==='invalid_callback_request'?t.oauthState:
@@ -163,13 +186,18 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   const refresh=()=>{
    if(document.visibilityState==='visible')setAccessEpoch(epoch=>epoch+1);
   };
+  const network=()=>{setIsOffline(!navigator.onLine);setAccessEpoch(epoch=>epoch+1);};
   window.addEventListener('focus',refresh);
-  window.addEventListener('online',refresh);
+  window.addEventListener('online',network);
+  window.addEventListener('offline',network);
   window.addEventListener('li:auth-recheck',refresh);
   document.addEventListener('visibilitychange',refresh);
+  const expiry=setInterval(()=>{if(!navigator.onLine)setAccessEpoch(epoch=>epoch+1);},60000);
   return()=>{
+   clearInterval(expiry);
    window.removeEventListener('focus',refresh);
-   window.removeEventListener('online',refresh);
+   window.removeEventListener('online',network);
+   window.removeEventListener('offline',network);
    window.removeEventListener('li:auth-recheck',refresh);
    document.removeEventListener('visibilitychange',refresh);
   };
@@ -179,7 +207,16 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   let disposed=false;
   setAccess('checking');
   setInviteError('');
-  if(!accountId)return()=>{disposed=true;};
+  if(isOffline){
+   setAccess(localOffline?'offline':'error');
+   return()=>{disposed=true;};
+  }
+  if(isPending)return()=>{disposed=true;};
+  if(!liveAccountId){
+   if(!error)forgetOfflineInvite(); // Completed online sign-out or no session.
+   setAccess('error');
+   return()=>{disposed=true;};
+  }
   // A session is never an invitation. The RPC reads the verified identity in
   // neon_auth.user; its table RLS also independently denies all uninvited users.
   void (async()=>{
@@ -187,7 +224,10 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     // The server-backed invitation RPC verifies session↔JWT subject itself.
     // This auth-only pilot NEVER constructs a learner Data API adapter.
     const allowed=await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort);
-    if(!disposed)setAccess(allowed?'granted':'denied');
+    if(!disposed){
+     if(!allowed)forgetOfflineInvite(); // Revocation or explicit denial.
+     setAccess(allowed?'granted':'denied');
+    }
    }catch(problem){
     if(!disposed){
      setInviteError(safeInviteErrorCode(problem));
@@ -196,7 +236,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    }
   })();
   return()=>{disposed=true;};
- },[accountId,accessEpoch]);
+ },[liveAccountId,isOffline,isPending,Boolean(error),localOffline,accessEpoch]);
 
  async function toggleJournalCloud(enabled:boolean){
   if(!accountId||access!=='granted'||!ownerReady||journalBusy)return;
@@ -238,10 +278,15 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  }
  async function signOut(){
   if(busy)return;
+  if(isOffline){
+   forgetOfflineInvite();setAccess('error');setFeedback(t.lockedOffline);
+   return;
+  }
   setBusy('logout');setFeedback('');
   try{
    const result=await authClient.signOut();
    if(result.error)throw Error('SIGN_OUT_FAILED');
+   forgetOfflineInvite();
    setAccess('checking');
    await refetch();
   }catch{setFeedback(t.leave);}
@@ -257,15 +302,15 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   </header>
   <section className="auth-card" aria-busy={busy!==null||(Boolean(accountId)&&access==='checking')}>
    <p>{t.intro}</p>
-   {isPending&&<p role="status">{t.loading}</p>}
-   {error&&<p role="alert">{t.error}</p>}
-   {!isPending&&!error&&(accountId?
+   {isPending&&!localOffline&&<p role="status">{t.loading}</p>}
+   {error&&!localOffline&&<p role="alert">{t.error}</p>}
+   {(!isPending&&!error||localOffline)&&(accountId?
     <div className="auth-account" key={accountId}>
-     <p>{t.signed}: <strong>{session?.user?.email}</strong></p>
-     {onClose&&access==='granted'&&<button type="button" className="qa-secondary" onClick={onClose}>{locale==='vi'?'Vào thư viện':'Return to library'}</button>}
+     <p>{localOffline?(locale==='vi'?'Bản học trên máy này':'This device’s learning copy'):t.signed}: <strong>{localOffline?'li.':session?.user?.email}</strong></p>
+     {onClose&&(access==='granted'||access==='offline')&&<button type="button" className="qa-secondary" onClick={onClose}>{locale==='vi'?'Vào thư viện':'Return to library'}</button>}
      <p role={access==='denied'||access==='error'?'alert':'status'}>
       {access==='checking'?t.checking:access==='granted'?t.granted:
-       access==='denied'?t.denied:t.blocked}
+       access==='offline'?t.offline:access==='denied'?t.denied:t.blocked}
      </p>
      {access==='error'&&<p className="auth-error" role="status" data-invite-error-code={inviteError}>{t.inviteErrorCode} <strong>{inviteError||'INV-UNKNOWN'}</strong></p>}
      {access==='granted'&&syncStatus==='conflict'&&<section className="auth-privacy"
@@ -283,7 +328,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
       </div>)}
      </section>}
      <button type="button" onClick={()=>void signOut()} disabled={busy!==null}>
-      {busy?t.busy:t.logout}
+      {busy?t.busy:localOffline?t.lockOffline:t.logout}
      </button>
     </div>:
     <div className="auth-sign-in">
@@ -300,7 +345,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     <RlsQaPanel uid={accountId} granted={access==='granted'}/>}
    {showDeveloperQa&&accountId&&access==='granted'&&
     <SyncQaPanel uid={accountId} locale={locale}/>}
-   <p className="auth-local" role="status">{IS_GITHUB_STAGING&&accountId&&access==='granted'?syncCopy[locale][syncStatus]:(IS_GITHUB_STAGING?t.l09Local:t.local)}</p>
+   <p className="auth-local" role="status">{access==='offline'?syncCopy[locale].offline:IS_GITHUB_STAGING&&accountId&&access==='granted'?syncCopy[locale][syncStatus]:(IS_GITHUB_STAGING?t.l09Local:t.local)}</p>
    <p className="auth-privacy">{t.privacy}</p>
   </section>
  </main>;

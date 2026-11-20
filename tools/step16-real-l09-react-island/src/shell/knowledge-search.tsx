@@ -117,14 +117,47 @@ function KnowledgeSearch(){
  const [searching,setSearching]=useState(false);
  const [navError,setNavError]=useState('');
  const generation=useRef(0);
+ // Only a temporary return waypoint. The router keeps browser history;
+ // the Search screen keeps the user's place among real results.
+ const returnPosition=useRef<{query:string;top:number}|null>(null);
  const changeQuery=(value:string)=>{
   latestQuery=value;mentorFocus=null;setNavError('');setQuery(value);
  };
  useEffect(()=>{
   setExternalQuery=changeQuery;
-  app.liSearch={render:value=>setExternalQuery(value),getStatus:()=>latestStatus,
+  const port={render:(value:string)=>setExternalQuery(value),getStatus:()=>latestStatus,
    getQuery:()=>latestQuery,openLesson,getMentorContext:()=>latestQuery.trim()?mentorFocus:null};
-  return()=>{setExternalQuery=()=>{};};
+  app.liSearch=port;
+  return()=>{
+   if(app.liSearch===port)delete app.liSearch;
+   setExternalQuery=()=>{};
+  };
+ },[]);
+ useEffect(()=>{
+  const onAuth=(event:Event)=>{
+   const verified=(event as CustomEvent<{verified?:boolean}>).detail?.verified;
+   if(verified!==false&&document.documentElement.classList.contains('li-auth-verified'))return;
+   // Search terms, ontology results and Lao Ly context may describe private
+   // personal lessons: never carry them into the next invited user's session.
+   generation.current++;
+   returnPosition.current=null;
+   latestQuery='';mentorFocus=null;
+   setQuery('');setNavError('');setSearching(false);
+   setResponse({status:'invalid_query',results:[]});
+  };
+  const onRoute=(event:Event)=>{
+   if((event as CustomEvent<{route?:string}>).detail?.route!=='search')return;
+   const previous=returnPosition.current;
+   returnPosition.current=null;
+   if(!previous||previous.query!==latestQuery)return;
+   window.requestAnimationFrame(()=>window.scrollTo({top:previous.top,left:0,behavior:'instant'}));
+  };
+  window.addEventListener('li:auth-verified-changed',onAuth);
+  window.addEventListener('li:route-changed',onRoute);
+  return()=>{
+   window.removeEventListener('li:auth-verified-changed',onAuth);
+   window.removeEventListener('li:route-changed',onRoute);
+  };
  },[]);
  useEffect(()=>{
   let disposed=false;
@@ -162,7 +195,14 @@ function KnowledgeSearch(){
     sourceIsSafe(link.sourceUrl)&&link.kind==='Lesson').map(link=>({...link}))};
   app.openLaoLy?.();
  };
- const navigateTo=(id:string)=>{if(!openLesson(id))setNavError(L('Chưa thể mở bài học này.','This lesson could not be opened.'));};
+ const navigateTo=(id:string)=>{
+  const previous=returnPosition.current;
+  returnPosition.current={query:latestQuery,top:window.scrollY};
+  if(!openLesson(id)){
+   returnPosition.current=previous;
+   setNavError(L('Chưa thể mở bài học này.','This lesson could not be opened.'));
+  }else setNavError('');
+ };
  return <div data-li-react-screen="knowledge-search">
   <Button variant="ghost" className="utility-back" onClick={goBack}>
    <span aria-hidden="true">←</span> {L("Quay lại","Back")}

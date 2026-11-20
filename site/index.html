@@ -609,7 +609,16 @@ window.liMethods=Object.freeze({
    guide:liBuddyLine(mode.guide)
   };
  },
- open:(id,practice=false)=>showMethod(id,{practice})
+ open:(id,practice=false,lessonId=null)=>{
+  // React lesson suggestions use this real action, never a delegated click.
+  // An in-lesson technique is tied only to a manifest-approved lesson route.
+  if(!liInquiryAllowed()||!methods.some(m=>m[0]===id))return false;
+  if(lessonId!==null){
+   const route=Object.keys(LI_LESSON_ROUTES).find(key=>LI_LESSON_ROUTES[key]===lessonId);
+   if(!route||window.liReleasedLessonRoutes?.[lessonId]!==route)return false;
+  }
+  showMethod(id,{practice,lessonId});return true;
+ }
 });
 
 window.addEventListener("li:localechange",()=>{

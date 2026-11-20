@@ -52,7 +52,9 @@ assert.ok(component.includes('Statistical_bias_and_statistical_noise_illustratio
 assert.ok(component.includes('Dan Kernler · CC BY-SA 4.0'));
 assert.ok(component.includes('Tim Isaksson · CC BY-SA 4.0'));
 assert.ok(component.includes('app.liBookmarks.toggle'),'Must reuse canonical private bookmark owner');
-assert.ok(component.includes('data-buddy="1"'),'Lao Ly interaction must remain available.');
+assert.ok(component.includes('onClick={event=>app.openLaoLy?.(event.currentTarget)}'),
+ 'Lao Ly must open directly from the current React lesson button.');
+assert.ok(!component.includes('data-buddy="1"'),'No delegated Lao Ly button in React lessons.');
 assert.ok(component.includes('li:lesson-phase-changed'),'Lao Ly must follow actual React phase.');
 assert.ok(component.includes('index===5&&!submitted'),'Index must not reveal rubric before submission.');
 assert.ok(companion.includes('reactLesson(item.data.lesson_id)'),'Native Lao Ly must observe all 3 current React lessons.');

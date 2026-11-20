@@ -156,4 +156,34 @@ assert.match(reactCatalog,/app\.liReactCatalogMounted=true/);
 assert.match(reactCatalog,/app\.liReactCatalogMounted=false/);
 assert.match(reactCatalog,/app\.liCatalog\?\.render\(\)/);
 
+// All three released learner routes own their actionable UI. Optional
+// technique practice retains the lesson ID and the same authored checker.
+const l09=read('tools/step16-real-l09-react-island/src/learning/LearningJourney.tsx');
+const wave=read('tools/step16-real-l09-react-island/src/learning/Wave1Journey.tsx');
+const parity=read('tools/step16-real-l09-react-island/src/learning/LessonDetailParity.tsx');
+const spellDetail=read('tools/step16-real-l09-react-island/src/shell/detail-practice.tsx');
+assert.match(old,/open:\(id,practice=false,lessonId=null\)=>\{/);
+assert.match(old,/!liInquiryAllowed\(\)\|\|!methods\.some\(m=>m\[0\]===id\)/);
+assert.match(old,/window\.liReleasedLessonRoutes\?\.\[lessonId\]!==route/);
+assert.match(old,/showMethod\(id,\{practice,lessonId\}\);return true/);
+assert.match(l09,/onClick=\{\(\)=>openLessonSpell\('L09-1-2',spell\.shortId,index===0\)\}/);
+assert.match(wave,/onClick=\{\(\)=>openLessonSpell\(id,spell\.shortId,index===0\)\}/);
+for(const [name,src] of [['L09',l09],['L03/L15',wave]]){
+ assert.doesNotMatch(src,/data-method=\{spell\.shortId\}/,
+  name+' must not delegate its visible spell CTA through legacy DOM');
+ assert.doesNotMatch(src,/data-spell-lesson=/);
+ assert.match(src,/onClick=\{ports\.navigation\.openCatalog\}/);
+ assert.match(src,/LessonMentor id=/);
+ assert.match(src,/onClick=\{\(\)=>void restartLesson\(\)\}/);
+ assert.match(src,/AiFeedbackPanel id=/);
+ assert.match(src,/SelfReviewNextStep rubricItems=/);
+}
+assert.match(parity,/export function openLessonSpell\(lessonId:LessonId,methodId:string,practice:boolean\):boolean/);
+assert.match(parity,/app\.liMethods\?\.open\(methodId,practice,lessonId\)===true/);
+assert.match(parity,/onClick=\{event=>app\.openLaoLy\?\.\(event\.currentTarget\)\}/);
+assert.doesNotMatch(parity,/<Button variant="secondary" data-buddy=/);
+assert.match(spellDetail,/const lessonRoute=view\.lessonId\?app\.liReleasedLessonRoutes\?\.\[view\.lessonId\]:undefined/);
+assert.match(spellDetail,/onClick=\{\(\)=>openRoute\(lessonRoute\)\}/);
+assert.match(spellDetail,/onClick=\{\(\)=>openRoute\('guide'\)\}/);
+
 console.log('PASS explicit React routes and Back: direct actions, canonical history and search, no hidden click');

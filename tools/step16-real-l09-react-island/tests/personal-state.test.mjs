@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {PrivateDeviceStore} from '../.sync-private-test/sync/local-dexie.js';
 import {storageKey} from '../.sync-private-test/sync/contract.js';
 import {PERSONAL_FIELDS,capturePersonalState,hydratePersonalState,
- preparePersonalAccount,journalCloudConsent,personalRemoteSnapshot} from '../.sync-private-test/auth/private-state.js';
+ preparePersonalAccount,journalCloudConsent,personalRemoteSnapshot,t02Fields} from '../.sync-private-test/auth/private-state.js';
 
 function device(){
  const data=new Map();
@@ -227,4 +227,46 @@ test('T12 invalid remote checkpoint is rejected before writing personal data',as
   await assert.rejects(capturePersonalState(uid,null,first,new Map()),
    /T12_PRIVATE_CHECKPOINT_INVALID/);
  });
+});
+
+test('T02 spaced review syncs per owner and lesson; fresh device restores due and review count',async()=>{
+ device();
+ const uid='owner-t02',field=t02Fields(uid).find(x=>x.id==='spell-t02-L09-1-2');
+ assert(field,'L09 lesson must have a stable owner-scoped review_schedule field');
+ const data={schema:'li.spell.t02.v2',due:Date.now()+3*86400000,
+  reviewCount:2,streak:1,awaitingRating:false,lastReviewedAt:Date.now()-1000,
+  lastRating:'retry',updatedAt:new Date().toISOString()};
+ const raw=JSON.stringify(data),key=storageKey(uid,field.type,field.id);
+ localStorage.setItem(field.key,raw);
+ await withStore(async deviceA=>{
+  await capturePersonalState(uid,null,deviceA,new Map());
+  const op=await deviceA.outbox.get(key);
+  assert.equal(op?.payload.raw,raw,'real review history must enter owner outbox');
+  assert.equal(op?.accountId,uid);
+  // A second signed device downloads the canonical row via its owner RLS API.
+  device();
+  await withStore(async deviceB=>{
+   const snaps=await capturePersonalState(uid,null,deviceB,new Map());
+   assert.equal(localStorage.getItem(field.key),null);
+   await deviceB.apply(uid,{owner_id:uid,item_type:'review_schedule',item_id:field.id,
+    revision:3,changed_at:new Date().toISOString(),deleted_at:null,payload:op.payload});
+   const changed=await hydratePersonalState(uid,snaps,deviceB,()=>{});
+   assert.equal(changed,true);
+   assert.equal(localStorage.getItem(field.key),raw);
+   assert.equal(JSON.parse(localStorage.getItem(field.key)).reviewCount,2);
+   assert.equal((await deviceB.outbox.get(key)),undefined,'restore is read-only');
+   assert.equal(personalRemoteSnapshot(uid,field.type,field.id,op.payload)?.raw,raw);
+   assert.throws(()=>personalRemoteSnapshot('another-owner',field.type,field.id,op.payload),
+    /PRIVATE_PAYLOAD_INVALID/,'payload from one owner cannot hydrate the other');
+  });
+ });
+});
+test('T02 invalid remote review streak is rejected before hydration',()=>{
+ const uid='owner-t02-invalid',field=t02Fields(uid)[0];
+ const data={schema:'li.spell.t02.v2',due:Date.now()+86400000,
+  reviewCount:0,streak:9,awaitingRating:false,lastReviewedAt:null,
+  lastRating:null,updatedAt:new Date().toISOString()};
+ assert.throws(()=>personalRemoteSnapshot(uid,field.type,field.id,
+  {schema:'li.personal.storage.v1',storageKey:field.key,raw:JSON.stringify(data)}),
+  /T02_PRIVATE_REVIEW_SCHEDULE_INVALID/);
 });

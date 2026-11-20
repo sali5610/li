@@ -164,11 +164,87 @@ const radio=id=>actionValues!==null?
 const checked=id=>actionValues!==null?
  (Array.isArray(actionValues[id])?actionValues[id]:[]):
  [...(root?.querySelectorAll('input[name="sp-'+id+'"]:checked')||[])].map(x=>x.value);
-function scheduleRead(){try{const d=JSON.parse(localStorage.getItem("li.spell.t02.due.v1")||"null");return d&&Number.isFinite(d.due)?d:null}catch(e){return null}}
+// T02 is a successive retrieval cycle, not a single 24h reminder.
+// Intervals are app defaults, not a scientifically universal best schedule.
+const T02_PREFIX="li.spell.t02.schedule.v2:";
+const T02_LEGACY="li.spell.t02.due.v1";
+const T02_DAYS=[1,3,7,14,30],T02_DAY_MS=86400000;
+const t02Empty=()=>({schema:"li.spell.t02.v2",due:null,reviewCount:0,streak:0,
+ awaitingRating:false,lastReviewedAt:null,lastRating:null,updatedAt:new Date().toISOString()});
+function t02Key(){
+ try{
+  if(!document.documentElement.classList.contains("li-auth-verified")||
+     document.documentElement.classList.contains("li-account-open"))return null;
+  const owner=localStorage.getItem(T12_OWNER);
+  if(!owner||owner.length>128)return null;
+  return T02_PREFIX+encodeURIComponent(owner)+":"+(activeLessonId||"standalone");
+ }catch{return null;}
+}
+function t02Valid(d){
+ return !!d&&d.schema==="li.spell.t02.v2"&&
+  (d.due===null||(Number.isSafeInteger(d.due)&&d.due>0))&&
+  Number.isSafeInteger(d.reviewCount)&&d.reviewCount>=0&&d.reviewCount<=10000&&
+  Number.isSafeInteger(d.streak)&&d.streak>=0&&d.streak<=d.reviewCount&&
+  typeof d.awaitingRating==="boolean"&&(!d.awaitingRating||d.due!==null)&&
+  (d.lastReviewedAt===null||(Number.isSafeInteger(d.lastReviewedAt)&&d.lastReviewedAt>0))&&
+  [null,"remembered","retry"].includes(d.lastRating)&&
+  typeof d.updatedAt==="string"&&d.updatedAt.length<=48;
+}
+function t02NotifySync(){
+ if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
+  window.dispatchEvent(new Event("li:private-personal-change"));
+}
+function t02Write(data){
+ const key=t02Key();if(!key)return false;
+ try{
+  const next={...data,schema:"li.spell.t02.v2",updatedAt:new Date().toISOString()};
+  if(!t02Valid(next))return false;
+  const raw=JSON.stringify(next);
+  localStorage.setItem(key,raw);
+  if(localStorage.getItem(key)!==raw)throw Error("T02_SAVE_VERIFY_FAILED");
+  t02NotifySync();return true;
+ }catch{return false;}
+}
+function scheduleRead(){
+ const key=t02Key();if(!key)return null;
+ try{
+  const raw=localStorage.getItem(key);
+  if(raw){
+   if(raw.length>2400)return null;
+   const saved=JSON.parse(raw);
+   return t02Valid(saved)?saved:null;
+  }
+  // Migrate previous 24h review once after verifying the signed owner.
+  const legacy=JSON.parse(localStorage.getItem(T02_LEGACY)||"null");
+  if(!legacy||!Number.isSafeInteger(legacy.due)||legacy.due<=0)return null;
+  const migrated={...t02Empty(),due:legacy.due};
+  if(!t02Write(migrated))return null;
+  localStorage.setItem(T02_LEGACY,JSON.stringify({due:null,migrated:true}));
+  t02NotifySync();return migrated;
+ }catch{return null;}
+}
 function activateDueReview(){
  if(active==="T02"&&phase===0){
-  const due=scheduleRead();if(due&&due.due<=Date.now())phase=1;
+  const due=scheduleRead();
+  if(due&&(due.awaitingRating||(due.due!==null&&due.due<=Date.now()))){
+   phase=1;
+   if(due.awaitingRating){
+    reviewedInSession=true;feedback=currentExercise().model;
+   }
+  }
  }
+}
+function t02Rate(recalled){
+ const previous=scheduleRead();
+ if(active!=="T02"||phase!==1||!previous?.awaitingRating)return false;
+ const streak=recalled?Math.min(previous.streak+1,10000):0;
+ const nextDays=recalled?T02_DAYS[Math.min(streak,T02_DAYS.length-1)]:1;
+ if(!t02Write({...previous,reviewCount:previous.reviewCount+1,streak,
+  awaitingRating:false,lastReviewedAt:Date.now(),
+  lastRating:recalled?"remembered":"retry",due:Date.now()+nextDays*T02_DAY_MS})){
+  showMessage("Không lưu được lượt ôn mới. Hãy kiểm tra bộ nhớ trước khi thoát.");return false;
+ }
+ phase=0;reviewedInSession=false;feedback="";draw();return true;
 }
 function draw(){
  if(!active)return;
@@ -179,15 +255,22 @@ function draw(){
  const e=currentExercise();let inner="";
  if(phase===0){inner='<div class="spell-demo"><span class="kicker">BỐI CẢNH MẪU · ĐÃ ĐƯỢC GIỚI THIỆU</span><p>'+e.lesson+'</p></div><p>'+e.prompt+'</p>';
   if(e.mode==="due"){
-   const due=scheduleRead();if(due&&due.due>Date.now()){inner+='<p class="spell-honest">Đã hẹn ôn lúc '+fmt(due.due)+'. Chưa đến hẹn nên không tính là thực hành ôn giãn cách.</p>'+act("clear","Xóa mốc ôn","action alt")}
-   else if(due&&due.due<=Date.now()){phase=1;draw();return;}
-   else inner+=act("schedule","Đặt mốc ôn sau 24 giờ");
+   const due=scheduleRead();
+   inner+='<p class="spell-honest">Đã hoàn thành '+(due?.reviewCount||0)+' lượt ôn. Mỗi lượt: nhớ lại khi đến hạn → đối chiếu → tự đánh giá → hẹn lượt tiếp.</p>';
+   if(due?.due&&due.due>Date.now()){
+    inner+='<p class="spell-honest">Lần ôn tiếp: '+fmt(due.due)+'. Chưa đến hạn thì không tính là ôn giãn cách.</p>'+act("clear","Hủy lịch lượt tới","action alt");
+   }else if(due?.due&&due.due<=Date.now()){phase=1;draw();return;}
+   else inner+=act("schedule","Bắt đầu · hẹn ôn lần 1 sau 24 giờ");
   }else if(["hide","faded","resume","loci"].includes(e.mode)){
    if(["resume","loci"].includes(e.mode))inner+=e.fields.map(field).join("");
    inner+=act("next",e.mode==="resume"?"Tạm ngắt · Lưu dấu vết trong phiên":e.mode==="loci"?"Giấu nguồn · Đi qua lộ trình":"Giấu nguồn · Tiếp tục");
   }else {inner+=e.fields.map(field).join("")+act("check","Đối chiếu bài làm");}
+ }else if(e.mode==="due"&&scheduleRead()?.awaitingRating){
+   inner='<p class="spell-honest">Đã đối chiếu. Hãy tự đánh giá phần mình thật sự nhớ được trước khi lên lịch lượt tiếp theo.</p>'+
+    act("rate-remembered","Nhớ được · giãn lịch")+
+    act("rate-retry","Chưa nhớ vững · ôn lại sớm","action alt");
  }else if(e.mode==="faded"&&phase===1){
-   inner='<h3>Bước có gợi ý</h3><p>5 đơn vị/ngày × 2 ngày + 4 tồn an toàn = ?</p>'+field(["number","Kết quả (đơn vị)"])+act("check","Kiểm tra để sang bài mới");
+  inner='<h3>Bước có gợi ý</h3><p>5 đơn vị/ngày × 2 ngày + 4 tồn an toàn = ?</p>'+field(["number","Kết quả (đơn vị)"])+act("check","Kiểm tra để sang bài mới");
  }else if(e.mode==="faded"&&phase===2){
    inner='<h3>Bài tương tự, tự làm</h3><p>7 đơn vị/ngày, 3 ngày chờ, 5 đơn vị an toàn. Điểm đặt hàng lại là bao nhiêu?</p>'+field(["number","Kết quả (đơn vị)"])+act("check","Đối chiếu độc lập");
  }else if(e.mode==="resume"){
@@ -203,7 +286,7 @@ function draw(){
     t12Synced?"Dấu vết T12 đã đồng bộ với tài khoản.":
     t12SavedOnDevice?"Đã lưu trên máy · đang chờ đồng bộ.":
      "T12 tự lưu bản nháp và đồng bộ khi có mạng."):
-   "Tự chọn, có thể bỏ qua. Trừ mốc T02 do bạn chủ động đặt, nội dung điền không tự lưu hay gửi lên máy chủ.")+
+   active==="T02"?"Lịch và số lượt ôn T02 lưu theo tài khoản, đồng bộ khi online. Câu trả lời không lưu.":"Tự chọn, có thể bỏ qua. Câu trả lời không tự lưu hay gửi lên máy chủ.")+
   '</p>'+act("reset","Làm lại","action alt")+'</footer>';
 
  if(active==="T12"){
@@ -292,9 +375,19 @@ function check(){
  if(active==="T11")info=(radio("method")==="1"?"T03 phù hợp cho thủ tục mới. ":"Chưa có lần học trước nên T02 không phù hợp ngay. ")+info;
  if(active==="T05")info=(checked("evidence").sort().join(",")==="0,1"?"Bạn chọn hai dữ kiện quan trọng, không chọn khẳng định quá mức. ":"Dữ kiện không có nhóm so sánh và khuyến mãi đồng thời đều quan trọng. ")+info;
  if(active==="T12"&&!t12Clear()){showMessage(t12StorageError);return;}
+ if(active==="T02"){
+  const saved=scheduleRead();
+  if(!saved||saved.awaitingRating||saved.due===null||saved.due>Date.now())return;
+  if(!t02Write({...saved,awaitingRating:true})){
+   showMessage("Không lưu được dấu mốc ôn. Chưa ghi nhận lượt này.");return;
+  }
+  reviewedInSession=true;showMessage(info);
+  if(!reactOwnsSpell())draw();
+  return;
+ }
  reviewedInSession=true; // feedback follows successfully stored clearing state
  showMessage(info);
- if(active==="T02")try{localStorage.removeItem("li.spell.t02.due.v1")}catch(err){}
+ /* T02 history is retained until the learner explicitly resets it. */
  if(!reactOwnsSpell())root?.querySelector(".spell-feedback")?.focus();
 }
 function next(){
@@ -333,13 +426,16 @@ function getView(){
  else if(mode==="loci")fields=[1,2,3].map(i=>["recall"+i,"Ý nhớ lại ở nơi "+i]);
  else fields=e.fields;
  const due=mode==="due"?scheduleRead():null;
+ if(mode==="due"&&due?.awaitingRating)fields=[];
  return {
   active,title:e.title,mode,phase,tab:activeTab,
   lesson:e.lesson,prompt:e.prompt,fields:fields.map(field=>({
    id:field[0],label:field[1],options:Array.isArray(field[2])?field[2].slice():null,
    choiceKind:field[3]==="multi"?"multi":"radio"
   })),
-  feedback,resumeNote,places:privatePlaces.slice(),dueAt:due?.due||null,
+  feedback,resumeNote,places:privatePlaces.slice(),dueAt:due?.due??null,
+  t02ReviewCount:due?.reviewCount??0,t02Streak:due?.streak??0,
+  t02AwaitingRating:!!due?.awaitingRating,
   lessonId:activeLessonId,reviewedInSession,viewSession,
   t12Draft:active==="T12"?{...t12Draft}:undefined,
   t12SavedOnDevice:active==="T12"&&t12SavedOnDevice,
@@ -351,32 +447,42 @@ function getView(){
  * are supplied to the checker directly; native fallback reads its visible form.
  * No hidden input writes, synthetic events or button clicks. */
 function runAction(action){
- if(!active||!["next","check","reset","schedule","clear"].includes(action))return false;
+ if(!active||!["next","check","reset","schedule","clear","rate-remembered","rate-retry"].includes(action))return false;
  const mode=currentExercise().mode||"direct";
  if(action==="next"&&(phase!==0||!["hide","faded","resume","loci"].includes(mode)))return false;
- if(action==="check"&&(mode==="due"&&phase===0||
+ if(action==="check"&&(mode==="due"&&(phase===0||scheduleRead()?.awaitingRating)||
    phase===0&&["hide","faded","resume","loci"].includes(mode)))return false;
+ if(["rate-remembered","rate-retry"].includes(action)&&
+   (mode!=="due"||phase!==1||!scheduleRead()?.awaitingRating))return false;
  if(["schedule","clear"].includes(action)&&(mode!=="due"||phase!==0))return false;
  switch(action){
  case "reset":
   if(active==="T12"&&!t12Clear()){showMessage(t12StorageError);return false;}
+  if(active==="T02"&&!t02Write(t02Empty())){
+   showMessage("Không lưu được lần làm lại T02. Lịch cũ vẫn còn.");return false;
+  }
   phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
   t12Draft={context:"",next:"",answer:""};draw();return true;
  case "next":next();return true;
  case "check":check();return true;
- case "schedule":
-  try{
-   const scheduled={exposed:Date.now(),due:Date.now()+86400000};
-   const raw=JSON.stringify(scheduled);
-   localStorage.setItem("li.spell.t02.due.v1",raw);
-   if(localStorage.getItem("li.spell.t02.due.v1")!==raw)throw Error("verify");
-   feedback="";
-  }catch{feedback="Trình duyệt không lưu được mốc. Chưa có lịch ôn thực nào được tạo.";}
-  draw();return true;
- case "clear":
-  try{localStorage.setItem("li.spell.t02.due.v1",JSON.stringify({clearedAt:Date.now(),due:null}));}
-  catch{}
+ case "schedule":{
+  const saved=scheduleRead()||t02Empty();
+  if(saved.due!==null)return false;
+  if(!t02Write({...saved,due:Date.now()+T02_DAY_MS,awaitingRating:false})){
+   showMessage("Không lưu được lịch ôn theo tài khoản. Chưa đặt hẹn.");return false;
+  }
   feedback="";draw();return true;
+ }
+ case "clear":{
+  const saved=scheduleRead();
+  if(!saved||saved.due===null||saved.due<=Date.now()||saved.awaitingRating)return false;
+  if(!t02Write({...saved,due:null})){
+   showMessage("Không hủy được lịch ôn đã lưu.");return false;
+  }
+  feedback="";draw();return true;
+ }
+ case "rate-remembered":return t02Rate(true);
+ case "rate-retry":return t02Rate(false);
  }
  return false;
 }
@@ -437,6 +543,14 @@ function setup(){
    notifyReactSpell();
   });
   window.addEventListener("li:personal-sync-applied",ev=>{
+   if(active==="T02"){
+    const key=t02Key(),detail=ev.detail;
+    if(key&&detail&&detail.accountId===localStorage.getItem(T12_OWNER)&&
+       Array.isArray(detail.keys)&&detail.keys.includes(key)){
+     phase=0;reviewedInSession=false;feedback="";viewSession++;tabDraft=null;
+     draw();notifyReactSpell();
+    }
+   }
    if(active!=="T12"||!root||t12LocalModified||reviewedInSession)return;
    const key=t12Key(),detail=ev.detail;
    if(!key||!detail||detail.accountId!==localStorage.getItem(T12_OWNER)||

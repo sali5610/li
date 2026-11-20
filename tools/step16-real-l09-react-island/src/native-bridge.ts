@@ -11,7 +11,8 @@ export type MethodAttempt={
  /** T06 has four explicit classifications in addition to the learner's reasoning. */
  classifications?:Partial<Record<'A'|'B'|'C'|'D',MethodCategory>>;
 };
-export type MethodChoice='T06'|'T07'|'skip'|null;
+export type EditorialMethodId='T03'|'T04'|'T06'|'T07'|'T09'|'T10';
+export type MethodChoice=EditorialMethodId|'skip'|null;
 export type PastEditorialAttempt={
  submission:[string,string,string,string];submissionLocale:Locale;submittedAt:string;
  ratings:[Rating,Rating,Rating,Rating];reviewedAt:string|null;answerRevealed:boolean;
@@ -19,7 +20,7 @@ export type PastEditorialAttempt={
  guidedDraft:string;hint:boolean;methodChoice:MethodChoice;
  /** Frozen prompts only; old rounds do not repeat model-answer copies. */
  questionPrompts?:Record<Locale,[string,string,string,string]>;
- methodAttempts?:Partial<Record<'T06'|'T07',MethodAttempt>>;
+ methodAttempts?:Partial<Record<EditorialMethodId,MethodAttempt>>;
 };
 export type EditorialReviewSnapshot={
  /** A bilingual first-party model answer/rubric frozen at independent submission. */
@@ -42,7 +43,7 @@ export type Attempt={
  ratings:[Rating,Rating,Rating,Rating];
  reviewed:boolean;
  /** Optional per-spell attempt; distinct from independent assessment. */
- methodAttempts?:Partial<Record<'T06'|'T07',MethodAttempt>>;
+ methodAttempts?:Partial<Record<EditorialMethodId,MethodAttempt>>;
  /** K2 selection is separate from K3 actually submitting a method exercise. */
  methodChoice?:MethodChoice;
  /** One completed revision stays frozen when a fresh practice round begins. */

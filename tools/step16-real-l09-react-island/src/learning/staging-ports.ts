@@ -25,7 +25,7 @@ function validMethodAttempts(a:Pick<Attempt,'methodAttempts'>):boolean{
  if(methods===undefined)return true; // preserve native Wave1 attempt records
  if(methods===null||Array.isArray(methods)||typeof methods!=='object')return false;
  for(const [id,raw] of Object.entries(methods)){
-  if(id!=='T06'&&id!=='T07')return false;
+  if(!['T03','T04','T06','T07','T09','T10'].includes(id))return false;
   if(!raw||typeof raw!=='object'||Array.isArray(raw))return false;
   const m=raw as {draft?:unknown;submission?:unknown;submittedAt?:unknown;classifications?:unknown};
   if(typeof m.draft!=='string'||m.draft.length>4000||
@@ -70,7 +70,7 @@ function validReviewSnapshot(a:Attempt):boolean{
 }
 function validHistory(a:Attempt):boolean{
  if(a.methodChoice!==undefined&&a.methodChoice!==null&&
-  !['T06','T07','skip'].includes(a.methodChoice))return false;
+  !['T03','T04','T06','T07','T09','T10','skip'].includes(a.methodChoice))return false;
  if(a.contentVersion!==undefined&&
   (typeof a.contentVersion!=='string'||a.contentVersion.length>50))return false;
  if(a.rubricVersion!==undefined&&
@@ -95,7 +95,7 @@ function validHistory(a:Attempt):boolean{
    typeof p.rubricVersion!=='string'||!p.rubricVersion||p.rubricVersion.length>80||
    !Number.isSafeInteger(p.attemptNumber)||p.attemptNumber<=last||
    typeof p.guidedDraft!=='string'||p.guidedDraft.length>4000||
-   typeof p.hint!=='boolean'||!['T06','T07','skip',null].includes(p.methodChoice)||
+   typeof p.hint!=='boolean'||!['T03','T04','T06','T07','T09','T10','skip',null].includes(p.methodChoice)||
    (p.questionPrompts!==undefined&&
     !(['vi','en'] as const).every(locale=>{
      const questions=p.questionPrompts?.[locale];

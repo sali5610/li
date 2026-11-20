@@ -131,8 +131,8 @@ assert.match(diaryModel,/consentStatus:recordingStatus\(\)/);
 assert.doesNotMatch(diaryModel,/\$\("li-diary-/,
  'React Journal must not read labels or status from hidden native DOM');
 
-// One complete catalogue→released lesson→learning→course journey.
-// Only packed + reviewed routes may show "Enter lesson" in React.
+// One Catalog→Course→Lesson flow. Public releases remain pack-gated;
+// 17 personal-only manuscripts may be learned through invited staging routes.
 const catalog=read('site/assets/catalog-drilldown.js');
 const reactCatalog=read('tools/step16-real-l09-react-island/src/shell/home-catalog.tsx');
 const staging=read('tools/step16-real-l09-react-island/src/auth/staging-app.tsx');
@@ -141,7 +141,12 @@ const release=read('tools/step16-real-l09-react-island/src/learning/released-les
 assert.match(release,/l\.navigationPublished===true&&l\.contentState==='review_only'&&/);
 assert.match(release,/l\.publishState==='review_only'&&packed\.has\(l\.id\)/);
 assert.match(reactCatalog,/const releasedRoutes=new Map\(releasedLessonRoutes\.map/);
-assert.match(reactCatalog,/const canOpenLesson=\(lesson:Lesson\)=>lesson\.published===true/);
+assert.match(reactCatalog,/const canOpenLesson=\(lesson:Lesson\)=>!!personalStudyRoute\(lesson\.id\)/);
+assert.match(reactCatalog,/lesson\.published===true&&typeof lesson\.route==='string'/);
+assert.match(reactCatalog,/if\(personalRoute\)\{openRoute\(personalRoute\);return;\}/);
+assert.match(release,/VITE_LI_AUTH_TARGET==='github-pages-staging'/);
+assert.match(release,/export const learnableLessonIds/);
+assert.match(staging,/mountPersonalStudyRoutes\(\)/);
 assert.match(reactCatalog,/course\.lessons\.filter\(canOpenLesson\)/);
 assert.match(reactCatalog,/if\(canOpenLesson\(item\)\)\{app\.liCatalog\?\.openLesson\(item\.id\);return;\}/);
 assert.match(reactCatalog,/openPath\(\[\.\.\.path\.slice\(0,3\),item\.id\]\)/);

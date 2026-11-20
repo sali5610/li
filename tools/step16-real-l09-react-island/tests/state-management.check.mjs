@@ -46,3 +46,66 @@ test('XState restores verified progress and revokes stale gates on account reloa
  assert.equal(actor.getSnapshot().value,'read');
  actor.stop();
 });
+
+import {createFadedT03Flow} from '../.state-test/shell/spell-t03-flow.js';
+
+function makeT03Port(){
+ let view={active:'T03',phase:0,reviewedInSession:false,viewSession:1};
+ const calls=[];
+ return {
+  getView:()=>view,
+  perform:(action,answers={})=>{
+   calls.push(action);
+   if(action==='reset')view={...view,phase:0,reviewedInSession:false,viewSession:view.viewSession+1};
+   else if(action==='next'&&view.phase===0)view={...view,phase:1};
+   else if(action==='check'&&view.phase===1&&answers.number==='14')view={...view,phase:2};
+   else if(action==='check'&&view.phase===2&&answers.number==='26')view={...view,reviewedInSession:true};
+   return true;
+  },
+  setView:delta=>{view={...view,...delta};},calls
+ };
+}
+test('T03 machine advances only after actual grader-confirmed answers, not skipped buttons',()=>{
+ const port=makeT03Port(),flow=createFadedT03Flow();
+ flow.sync(port.getView());
+ assert.equal(flow.getSnapshot(),'example');
+ assert.equal(flow.execute('check',{number:'26'},port),false);
+ assert.deepEqual(port.calls,[],'rejected transition never calls the grading engine');
+ flow.execute('next',{},port);
+ assert.equal(flow.getSnapshot(),'guided');
+ assert.equal(flow.execute('next',{},port),false);
+ flow.execute('check',{number:'13'},port);
+ assert.equal(flow.getSnapshot(),'guided');
+ flow.execute('check',{number:'14'},port);
+ assert.equal(flow.getSnapshot(),'independent');
+ flow.execute('check',{number:'25'},port);
+ assert.equal(flow.getSnapshot(),'independent');
+ flow.execute('check',{number:'26'},port);
+ assert.equal(flow.getSnapshot(),'reviewed');
+ assert.equal(port.getView().reviewedInSession,true);
+ assert.equal(flow.execute('check',{number:'26'},port),true,'repeat self-check remains usable');
+ assert.equal(flow.getSnapshot(),'reviewed');
+ flow.stop();
+});
+test('T03 machine resets per attempt and isolates other techniques and remount',()=>{
+ const port=makeT03Port(),flow=createFadedT03Flow();
+ flow.sync(port.getView());
+ flow.execute('next',{},port);
+ flow.execute('reset',{},port);
+ assert.equal(flow.getSnapshot(),'example');
+ assert.equal(port.getView().viewSession,2);
+ flow.execute('next',{},port);
+ flow.execute('check',{number:'14'},port);
+ assert.equal(flow.getSnapshot(),'independent');
+ const remount=createFadedT03Flow();
+ remount.sync(port.getView());
+ assert.equal(remount.getSnapshot(),'independent');
+ port.setView({active:'T12',phase:1,viewSession:3});
+ flow.sync(port.getView());
+ assert.equal(flow.getSnapshot(),'example');
+ assert.equal(flow.execute('next',{},port),false);
+ port.setView({active:'T03',phase:0,viewSession:4,reviewedInSession:false});
+ flow.sync(port.getView());
+ assert.equal(flow.getSnapshot(),'example');
+ remount.stop();flow.stop();
+});

@@ -98,7 +98,8 @@ export async function capturePersonalState(uid:string,api:NeonUserApi|null,
   // queue a tombstone, never resurrect the deleted note from the cloud.
   if(raw===null){
    if(!firstObservation&&previous!==null&&current&&!current.deletedAt)
-    await store.edit(uid,field.type,field.id,wrap(field,''),new Date().toISOString());
+    await store.edit(uid,field.type,field.id,
+     {schema:SCHEMA,storageKey:field.key,raw:''},new Date().toISOString());
    continue;
   }
   // The app defaults diary recording ON on a fresh device before Auth runs.

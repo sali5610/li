@@ -1,0 +1,92 @@
+/* React detail screens: reuses the currently published classic editorial
+ * surfaces, spacing/type tokens and native spell rhythm; no new theme. */
+#page-guideDetail .li-react-spell-detail>.library-back-link,
+#page-noteDetail .li-react-note-detail>.library-back-link{justify-self:start}
+#page-guideDetail .li-react-spell-detail .spell-tabs{
+ display:flex;gap:var(--li-space-2);
+}
+#page-guideDetail .li-react-spell-detail .li-react-spell-explainer{
+ display:grid;gap:var(--li-space-4);min-width:0;align-content:start
+}
+#page-guideDetail .li-react-spell-detail .li-react-spell-explainer>.li-atom-text{
+ margin:0;overflow-wrap:anywhere
+}
+#page-guideDetail .li-react-spell-detail .li-react-spell-explainer .path-item{
+ display:flex;gap:var(--li-space-3);align-items:flex-start
+}
+#page-guideDetail .li-react-spell-detail .li-react-spell-explainer .path-item>.li-atom-text{
+ flex:1;margin:0
+}
+#page-guideDetail .li-react-spell-detail .li-react-spell-practice .spell-field{
+ display:grid;gap:var(--li-space-3);border:0;min-width:0
+}
+#page-guideDetail .li-react-spell-detail .li-react-spell-practice fieldset.spell-field{
+ padding:0;margin:var(--li-space-5) 0
+}
+#page-guideDetail .li-react-spell-detail .li-react-spell-practice .spell-option{
+ display:block;padding:var(--li-space-2) var(--li-space-3)
+}
+#page-guideDetail .li-react-spell-detail .li-react-spell-practice .spell-option>.li-atom-choice{
+ display:flex;align-items:center;gap:var(--li-space-3);width:100%;min-height:44px
+}
+#page-guideDetail .li-react-spell-detail .li-react-spell-practice .spell-feedback>.li-atom-text{
+ margin:var(--li-space-3) 0 0;white-space:pre-wrap
+}
+#page-guideDetail .li-react-spell-detail .spell-activity-body>.li-atom-text{
+ margin:0 0 var(--li-space-4);overflow-wrap:anywhere
+}
+#page-guideDetail .li-react-spell-detail .spell-activity-body>.li-ds-button{
+ margin-top:var(--li-space-3)
+}
+#page-guideDetail .li-react-spell-detail .spell-activity-footer>.li-atom-text{
+ flex:1;min-width:min(200px,100%)
+}
+#page-noteDetail .li-react-note-detail .library-note-context,
+#page-noteDetail .li-react-note-detail .library-note-review,
+#page-noteDetail .li-react-note-detail .library-note-edit,
+#page-noteDetail .li-react-note-detail .library-note-history{
+ display:grid;gap:var(--li-space-4);min-width:0
+}
+#page-noteDetail .li-react-note-detail .library-note-head,
+#page-noteDetail .li-react-note-detail .library-heading-with-utility{
+ display:flex;justify-content:space-between;align-items:flex-start;gap:var(--li-space-3)
+}
+#page-noteDetail .li-react-note-detail .library-heading-with-utility>.li-atom-heading{
+ min-width:0;overflow-wrap:anywhere;flex:1
+}
+#page-noteDetail .li-react-note-detail .library-entry-body{
+ white-space:pre-wrap;overflow-wrap:anywhere
+}
+#page-noteDetail .li-react-note-detail .library-note-review>.li-atom-text,
+#page-noteDetail .li-react-note-detail .library-note-history>.li-atom-text{
+ margin:0
+}
+#page-noteDetail .li-react-note-detail .library-note-review>.li-ds-button{
+ justify-self:start
+}
+#page-noteDetail .li-react-note-detail .library-note-history .library-version-entry{
+ display:grid;gap:var(--li-space-3);
+ border:1px solid var(--rule);padding:var(--li-space-4)
+}
+#page-noteDetail .li-react-note-detail .library-note-history .library-version-heading{
+ display:flex;justify-content:space-between;gap:var(--li-space-3);flex-wrap:wrap
+}
+#page-noteDetail .li-react-note-detail .library-note-history .library-version-entry>.li-ds-button{
+ justify-self:start
+}
+#page-noteDetail .li-react-note-detail .library-note-edit>.action-row{
+ display:flex;gap:var(--li-space-3);flex-wrap:wrap
+}
+@media(max-width:600px){
+ #page-guideDetail .li-react-spell-detail .spell-tabs>.li-ds-button{
+  flex:1;min-width:0
+ }
+ #page-noteDetail .li-react-note-detail .library-note-edit>.action-row>.li-ds-button{
+  flex:1
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #page-guideDetail .li-react-spell-detail *,#page-noteDetail .li-react-note-detail *{
+  scroll-behavior:auto
+ }
+}

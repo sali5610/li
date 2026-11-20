@@ -228,6 +228,8 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  const reduced=useReducedMotion();
  const [lesson,setLesson]=useState<EditorialLesson|null>(null);
  const [attempt,setAttempt]=useState<EditorialAttempt|null>(null);
+ // Latest optimistic edit must be synchronous so rapid fields never overwrite each other.
+ const attemptRef=useRef<EditorialAttempt|null>(null);
  // Optimistic text edits must not unlock model answers or spell feedback.
  const [persistedAttempt,setPersistedAttempt]=useState<EditorialAttempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
@@ -410,6 +412,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      .catch(()=>'unavailable' as SyncState);
     if(cancelled)return;
     subject.current=learner.subjectId;revision.current=saved.revision;
+    attemptRef.current=a;
     setLesson(source);setAttempt(a);setPersistedAttempt(a);
     setPhase(returnToken(id)?.phase??resume(a));setSync(state);setBusy(false);
    }catch{
@@ -466,6 +469,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
 
  function save(next:EditorialAttempt):Promise<boolean>{
   if(locked||failed.current||!subject.current||!revision.current)return Promise.resolve(false);
+  attemptRef.current=next;
   setAttempt(next);pending.current++;setSaving(true);
   const target=subject.current;
   const operation=chain.current.then(async()=>{
@@ -509,9 +513,16 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    setError('Chưa lưu lại được. Giữ trang mở và kiểm tra kết nối.');
   }finally{if(mounted.current)setSaving(false);}
  }
+ /** Compose edits from the current in-flight draft, not the last React render.
+  * A rapid T06 classification followed by a text edit must preserve BOTH. */
+ function edit(update:(current:EditorialAttempt)=>EditorialAttempt){
+  const current=attemptRef.current;
+  if(!current||locked||failed.current||current.submitted)return;
+  void save(update(current));
+ }
  function editGuided(value:string){
-  if(!attempt||locked||attempt.submitted||value.length>MAX)return;
-  void save({...attempt,guidedDraft:value});
+  if(value.length>MAX)return;
+  edit(current=>({...current,guidedDraft:value}));
  }
  function chooseMethod(choice:MethodChoice){
   if(!attempt||locked||saving||attempt.submitted||attempt.methodChoice===choice)return;
@@ -542,21 +553,25 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   }
  }
  function methodClassify(letter:typeof T06_CASES[number],value:string){
-  if(!attempt||locked||attempt.submitted)return;
-  const previous=fromAttempt(attempt,'T06');
-  if(previous.submittedAt||(!categories.includes(value as MethodCategory)&&value!==''))return;
-  const classifications={...previous.classifications};
-  if(value)classifications[letter]=value as MethodCategory;
-  else delete classifications[letter];
-  void save({...attempt,methodAttempts:{...attempt.methodAttempts,
-   T06:{...previous,classifications}}});
+  if(!categories.includes(value as MethodCategory)&&value!=='')return;
+  edit(current=>{
+   const previous=fromAttempt(current,'T06');
+   if(previous.submittedAt)return current;
+   const classifications={...previous.classifications};
+   if(value)classifications[letter]=value as MethodCategory;
+   else delete classifications[letter];
+   return {...current,methodAttempts:{...current.methodAttempts,
+    T06:{...previous,classifications}}};
+  });
  }
  function methodEdit(method:Method,value:string){
-  if(!attempt||locked||attempt.submitted||value.length>MAX)return;
-  const previous=fromAttempt(attempt,method);
-  if(previous.submittedAt)return;
-  void save({...attempt,methodAttempts:{...attempt.methodAttempts,
-   [method]:{...previous,draft:value}}});
+  if(value.length>MAX)return;
+  edit(current=>{
+   const previous=fromAttempt(current,method);
+   if(previous.submittedAt)return current;
+   return {...current,methodAttempts:{...current.methodAttempts,
+    [method]:{...previous,draft:value}}};
+  });
  }
  async function methodSubmit(method:Method){
   if(!attempt||locked||saving||attempt.submitted)return;
@@ -573,9 +588,11 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   await save(next);
  }
  function editAnswer(index:number,value:string){
-  if(!attempt||locked||attempt.submitted||value.length>MAX)return;
-  const draft=[...attempt.draft] as Attempt['draft'];draft[index]=value;
-  void save({...attempt,draft});
+  if(index<0||index>3||value.length>MAX)return;
+  edit(current=>{
+   const draft=[...current.draft] as Attempt['draft'];draft[index]=value;
+   return {...current,draft};
+  });
  }
  async function submit(){
   if(!attempt||locked||saving||attempt.submitted)return;
@@ -605,10 +622,13 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   }
  }
  function rate(index:number,value:string){
-  if(!attempt||!persistedAttempt?.answerRevealed||locked||attempt.reviewed)return;
-  const ratings=[...attempt.ratings] as Attempt['ratings'];
+  if(!persistedAttempt?.answerRevealed||locked||index<0||index>3||
+     !['','0','1','2'].includes(value))return;
+  const current=attemptRef.current;
+  if(!current||current.reviewed||failed.current)return;
+  const ratings=[...current.ratings] as Attempt['ratings'];
   ratings[index]=value===''?null:Number(value) as 0|1|2;
-  void save({...attempt,ratings});
+  void save({...current,ratings});
  }
  async function finish(){
   if(!attempt||!persistedAttempt?.answerRevealed||locked||saving||

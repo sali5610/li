@@ -59,16 +59,33 @@ const englishKind:Record<string,string>={
 };
 let mentorFocus:MentorContext|null=null;
 let latestQuery='';
-function withPersonalLessons(query:string,source:KnowledgeResponse):KnowledgeResponse{
+/** Exact catalog title/ID (or whole field/course label) must always work
+ * even if the semantic client returns no match for an existing released lesson.
+ * Do not pretend these literal matches answer a natural-language question. */
+function directCatalogMatches(query:string):KnowledgeItem[]{
+ const q=clean(query);
+ if(q.length<2)return [];
+ return published.filter(item=>{
+  const context=clean(item.context||'').split(' · ');
+  return clean(item.id).includes(q)||clean(item.title).includes(q)||
+   context.some(label=>label===q);
+ }).slice(0,14);
+}
+function withNavigableLessons(query:string,source:KnowledgeResponse):KnowledgeResponse{
  const personal=searchPersonalStudy(query).map(item=>({
   id:item.id,lessonId:item.id,title:item.title,kind:'Lesson',
   contentState:'personal_study',context:item.context,links:[] as Relation[]
  }));
- if(!personal.length)return source;
- const exists=new Set(personal.map(item=>item.id));
- return {status:'personal_match',results:[...personal,
-  ...(Array.isArray(source.results)?source.results:[]).filter(item=>
-   !exists.has(item.lessonId||item.id))]};
+ const direct=[...personal,...directCatalogMatches(query)];
+ if(!direct.length)return source;
+ const original=Array.isArray(source.results)?source.results:[];
+ const byLesson=new Map(original.map(item=>[item.lessonId||item.id,item] as const));
+ const seen=new Set(direct.map(item=>item.lessonId||item.id));
+ return {
+  status:personal.length?'personal_match':original.length?source.status:'catalog_match',
+  results:[...direct.map(item=>({...item,...(byLesson.get(item.id)||{})})),
+   ...original.filter(item=>!seen.has(item.lessonId||item.id))]
+ };
 }
 let latestStatus='loading';
 let setExternalQuery:(value:string)=>void=()=>{};
@@ -179,16 +196,16 @@ function KnowledgeSearch(){
   const ticket=++generation.current;
   mentorFocus=null;
   if(!query.trim()){setSearching(false);setResponse({status:'invalid_query',results:[]});return;}
-  if(!client){setSearching(false);setResponse(withPersonalLessons(query,fallback(query)));return;}
+  if(!client){setSearching(false);setResponse(withNavigableLessons(query,fallback(query)));return;}
   setSearching(true);
   void client.searchKnowledge(query).then(result=>{
-   if(ticket===generation.current)setResponse(withPersonalLessons(query,{
+   if(ticket===generation.current)setResponse(withNavigableLessons(query,{
     status:result.status,results:Array.isArray(result.results)?result.results:[]
    }));
   }).catch(()=>{
    if(ticket===generation.current){
     latestStatus='error';setLoadState('error');setClient(null);
-    setResponse(withPersonalLessons(query,fallback(query)));
+    setResponse(withNavigableLessons(query,fallback(query)));
    }
   }).finally(()=>{if(ticket===generation.current)setSearching(false);});
  },[client,query,submitCount]);
@@ -232,7 +249,7 @@ function KnowledgeSearch(){
       L("Chưa tìm thấy bài hay khái niệm đã xác minh phù hợp.","No matching reviewed lesson or concept found.")}/>:
      <div className="path-list" aria-live="polite">
       <Text role="caption">{response.results.length} {L("kết quả","results")} · {response.status==='answerable'||response.status==='related_only'||response.status==='outcome_match'?
-       L('Câu hỏi tự nhiên · phạm vi 3 bài Wave1','Natural-language search · 3 Wave1 lessons'):response.status==='personal_match'?
+       L('Câu hỏi tự nhiên · phạm vi 3 bài Wave1','Natural-language search · 3 Wave1 lessons'):response.status==='catalog_match'?L('Khớp tên/mã bài trong danh mục','Catalog title/ID match'):response.status==='personal_match'?
         L('Bài học cá nhân trên staging + Knowledge Base','Personal staging lessons + knowledge base'):L('Knowledge Base canonical','Canonical knowledge base')}</Text>
       {response.results.map((record,index)=><motion.article key={record.kind+':'+record.id}
         className="li-search-result" initial={reduced?false:{opacity:0,y:6}}

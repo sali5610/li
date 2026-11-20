@@ -447,6 +447,12 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     <Text>{content.scoreLabel}: {attempt.ratings.reduce<number>((n,v)=>n+(v??0),0)} / 8</Text>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
      locale={attempt.locale} onReviewTheory={()=>setPhase('read')}/>
+    <Text role="support">{vi?'Đặt lịch T02 không tính là đã ôn; hãy quay lại khi đến hạn để gọi nhớ.':'Scheduling T02 is not a review; come back when due to recall.'}</Text>
+    <Button variant="secondary" disabled={locked||saving}
+     onClick={()=>{if(!openLessonSpell(id,'T02',true))
+      setError(vi?'Không mở được lịch ôn cho bài này.':'Could not open this lesson review.');}}>
+     {vi?'Hẹn ôn bài này · T02':'Schedule this lesson · T02'}
+    </Button>
     <Button variant="secondary" onClick={ports.navigation.openCatalog}>
      {vi?'Về Tàng Thư':'Back to library'}</Button>
    </Card>}

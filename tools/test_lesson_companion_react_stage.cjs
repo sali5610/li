@@ -22,7 +22,10 @@ assert.match(sectionedReact,/li:buddy-open/);
 assert.match(sectionedReact,/isReleasedLessonId/);
 // Real SectionedJourney opener: released lesson passes its exact ID to the
 // canonical allowlisted port; staging draft retains the invited-only bridge.
-assert.match(sectionedReact,/isReleasedLessonId\(id\)\s*\?app\.liMethods\.open\(method,false,id\)/);
+assert.match(sectionedReact,/isReleasedLessonId\(id\)\s*\?app\.liMethods\.open\(requestMethod,practice,id\)/,
+ "Released lesson opener must forward the selected method and current lesson ID");
+assert.match(sectionedReact,/app\.liMethods\.open\(requestMethod,practice\)===true/,
+ "Personal lessons must use the invited-only context bridge");
 assert.match(sectionedReact,/app\.LiSpellPractice\?\.setLessonContext\?\.\(id\)===true/);
 assert.match(sectionedReact,/if\(!opened\)\{/);
 assert.match(sectionedReact,/const returnScrollY=window\.scrollY/);

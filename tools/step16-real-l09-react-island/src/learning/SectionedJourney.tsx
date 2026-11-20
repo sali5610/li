@@ -158,9 +158,10 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      const key='li.sectioned.guide-return.v1';
      const token=JSON.parse(sessionStorage.getItem(key)||'null') as
       {id?:string;at?:number;scrollY?:number;method?:string}|null;
-     if(token?.id===id&&token.method===method&&token.at&&
+     if(token?.id===id&&(token.method===method||token.method==='T02')&&token.at&&
       Date.now()-token.at<3600000&&Number.isFinite(token.scrollY)){
-      setPhase('methods');sessionStorage.removeItem(key);
+      setPhase(token.method==='T02'&&saved.attempt.reviewed?'progress':'methods');
+      sessionStorage.removeItem(key);
       requestAnimationFrame(()=>window.scrollTo({top:token.scrollY??0}));
      }
     }catch{/* still display the saved lesson */}
@@ -289,7 +290,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     }}>{attempt?.locale==='en'?'Ask Lão Lý':'Hỏi Lão Lý'}</Button>
   </aside>;
  }
- function openGuide(){
+ function openGuide(requestMethod:string=method,practice=false){
   if(locked||pending)return;
   const app=window as Window&{
    liMethods?:{open?:(methodId:string,practice?:boolean,lessonId?:string)=>boolean};
@@ -301,8 +302,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    // Published routes have a canonical context-aware opener. Personal staging
    // manuscripts use the existing invited-only setLessonContext bridge.
    const opened=isReleasedLessonId(id)
-    ?app.liMethods.open(method,false,id)
-    :app.liMethods.open(method,false)===true&&
+    ?app.liMethods.open(requestMethod,practice,id)
+    :app.liMethods.open(requestMethod,practice)===true&&
      app.LiSpellPractice?.setLessonContext?.(id)===true;
    if(!opened){
     setError('Chưa gắn được Thần Chú với bài học; bản nháp vẫn được giữ.');
@@ -312,7 +313,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    // must not stop a legitimate exercise.
    try{
     sessionStorage.setItem('li.sectioned.guide-return.v1',
-     JSON.stringify({id,method,at:Date.now(),scrollY:returnScrollY}));
+     JSON.stringify({id,method:requestMethod,at:Date.now(),scrollY:returnScrollY}));
    }catch{/* Lesson return still works without scroll restoration. */}
   }catch{setError('Chưa mở được Thần Chú; bản nháp vẫn được giữ.');}
  }
@@ -411,7 +412,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     <Heading level={2} role="titleLarge">{names.methods} · {method}</Heading>
     <Text role="support">{vi?'Phương pháp này tự chọn, không phải điểm bài độc lập.':'Optional method practice, separate from the independent task.'}</Text>
     {block('methods')}
-    <Button variant="secondary" onClick={openGuide}>{vi?'Xem Sổ Tay Thần Chú':'Open Spellbook'} · {method}</Button>
+    <Button variant="secondary" onClick={()=>openGuide()}>{vi?'Xem Sổ Tay Thần Chú':'Open Spellbook'} · {method}</Button>
     <Field kind="textarea" rows={4} label={vi?'Giải thích lượt luyện':'Explain method practice'}
      value={methodData?.draft||''} disabled={locked||attempt.submitted||!!savedMethod?.submittedAt}
      onChange={e=>{const value=e.currentTarget.value;if(value.length<=MAX)edit(a=>({
@@ -477,6 +478,11 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     {block('extension')}{mentor('extension')}
     <SelfReviewNextStep rubricItems={rubric} ratings={persisted.ratings}
      locale={locale} onReviewTheory={()=>setPhase('read')}/>
+    <Text role="support">{vi?'T02 hẹn lượt gọi nhớ sau 24 giờ; đặt lịch không phải đã ôn.':'T02 schedules recall after 24 hours; scheduling is not a completed review.'}</Text>
+    <Button variant="secondary" disabled={pending>0||locked}
+     onClick={()=>openGuide('T02',true)}>
+     {vi?'Hẹn ôn bài này · T02':'Schedule this lesson · T02'}
+    </Button>
     <Button disabled={pending>0||locked} onClick={()=>void newRound()}>
      {vi?'Lượt mới · giữ lịch sử':'New round · preserve history'}</Button>
    </>}

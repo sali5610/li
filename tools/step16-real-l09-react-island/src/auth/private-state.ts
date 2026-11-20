@@ -21,7 +21,30 @@ export const PERSONAL_FIELDS:readonly Field[]=[
  {key:'li.personal.daily.v1',type:'note',id:'daily-journal',diary:true},
  {key:'li.personal.daily.enabled.v1',type:'preference',id:'daily-enabled',diary:true}
 ];
-const T12_CONTEXTS=['standalone','L03-1-2','L09-1-2','L15-2-2'] as const;
+const SPELL_CONTEXTS=['standalone','L03-1-2','L09-1-2','L15-2-2'] as const;
+const T02_PREFIX='li.spell.t02.schedule.v2:';
+/** Owner- and lesson-scoped successive review schedules through signed Neon RLS. */
+export const t02Fields=(uid:string):Field[]=>
+ SPELL_CONTEXTS.map(lesson=>({
+  key:T02_PREFIX+encodeURIComponent(uid)+':'+lesson,
+  type:'review_schedule',id:'spell-t02-'+lesson
+ }));
+function assertT02(raw:string):void{
+ const d=JSON.parse(raw) as Record<string,unknown>;
+ if(!d||typeof d!=='object'||Array.isArray(d)||
+    d.schema!=='li.spell.t02.v2'||
+    !(d.due===null||(Number.isSafeInteger(d.due)&&Number(d.due)>0))||
+    !Number.isSafeInteger(d.reviewCount)||Number(d.reviewCount)<0||
+    !Number.isSafeInteger(d.streak)||Number(d.streak)<0||
+    d.streak>d.reviewCount||
+    typeof d.awaitingRating!=='boolean'||
+    !(d.lastReviewedAt===null||(Number.isSafeInteger(d.lastReviewedAt)&&Number(d.lastReviewedAt)>0))||
+    ![null,'remembered','retry'].includes(d.lastRating as string|null)||
+    typeof d.updatedAt!=='string'||d.updatedAt.length>48||
+    (d.awaitingRating&&d.due===null))
+  throw Error('T02_PRIVATE_REVIEW_SCHEDULE_INVALID');
+}
+const T12_CONTEXTS=SPELL_CONTEXTS;
 const T12_PREFIX='li.spell.t12.resume.v1:';
 /** One signed owner+lesson record per T12 practice, using existing RLS. */
 export const t12Fields=(uid:string):Field[]=>
@@ -44,7 +67,7 @@ const BACKUP=(uid:string,key:string)=>'li.sync.local-backup.v1:'+uid+':'+key;
 const SCHEMA='li.personal.storage.v1';
 const fieldsFor=(uid:string):readonly Field[]=>[
  {key:CONSENT(uid),type:'preference',id:'journal-cloud-consent'},
- ...PERSONAL_FIELDS,...t12Fields(uid)
+ ...PERSONAL_FIELDS,...t02Fields(uid),...t12Fields(uid)
 ];
 export type PersonalSnapshot={field:Field;raw:string|null};
 const active=(uid:string,field:Field)=>!field.diary||journalCloudConsent(uid);
@@ -79,11 +102,13 @@ function unpack(payload:unknown,key:string):string{
  if(value.schema!==SCHEMA||value.storageKey!==key||typeof value.raw!=='string')
   throw Error('PRIVATE_PAYLOAD_INVALID');
  if(key.startsWith(T12_PREFIX))assertT12(value.raw);
+ if(key.startsWith(T02_PREFIX))assertT02(value.raw);
  return value.raw;
 }
 function wrap(field:Field,raw:string):JsonValue{
  if(raw.length>300000)throw Error('PRIVATE_STATE_TOO_LARGE');
  if(field.key.startsWith(T12_PREFIX))assertT12(raw);
+ if(field.key.startsWith(T02_PREFIX))assertT02(raw);
  // Validate structured stores before replicating; preserve exact JSON strings.
  if(field.key!=='li.private.case-draft.v1'&&field.key!=='li.study-mode.v1'&&
    field.key!=='li.app.locale.v1'&&field.key!=='li.personal.daily.enabled.v1'&&

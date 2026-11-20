@@ -233,6 +233,56 @@ const ids=lessons.map(l=>l.id);
 // includes methods, six authored Lão Lý stages, sourced quotes and real links.
 // Drafts in content/editorial/ never enter packs, regardless of this check.
 function requireCompleteEditorial(l){
+ // Second editorial format preserves authored multi-chapter sections and
+ // lesson-specific L2 methods. Never treat an imported sectioned draft as ready.
+ if(l.content?.format==="editorial-sectioned-v1"){
+  const fail=code=>{throw Error("LI_SECTIONED_RELEASE_BLOCKED "+l.id+" "+code)};
+  const stageNames=["opening","concept","guided","independent","reflection","extension"];
+  const method=l.content?.technique?.primary;
+  if(l.publishState!=="review_only"||!["verified","approved"].includes(l.reviewState)||
+   l.rights?.text!=="first_party"||
+   l.rights?.quotations?.policy!=="public_domain_original_short_excerpt_with_first_party_gloss"||
+   l.content?.technique?.status!=="approved"||
+   !/^L2-T(?:03|04|06|07|09|10)$/.test(method||"")||
+   l.methodFit?.primaryTechniqueId!==method||
+   !l.sources?.some(x=>x.url?.startsWith("https://")))
+   fail("academic_method_rights_or_source");
+  const quotes=new Set(extractLiteral(read("site/assets/laoly-quotes-s121.js"),"QUOTES").map(x=>x.id));
+  const moments=l.content.companion?.structuredMoments;
+  if(!Array.isArray(moments)||moments.length!==6||
+   moments.some((m,i)=>m.stage!==stageNames[i]||
+    !Array.isArray(m.quote_ids)||m.quote_ids.length<3||
+    m.quote_ids.some(q=>!quotes.has(q))||
+    (m.missing_quote_ids?.length??0)>0||
+    ["vi","en"].some(loc=>!m[loc]?.prompt?.trim()||
+     m[loc].actions?.length!==2||
+     m[loc].actions.some(a=>!a.label?.trim()||!a.reply?.trim()||
+      a.reply==="undefined"))))
+   fail("mentor_quotes_or_actions");
+  for(const loc of ["vi","en"]){
+   const x=l.content.localized?.[loc],rows=x?.sections||[];
+   const independent=rows.filter(s=>s.role==="independent");
+   const methodSections=rows.filter(s=>s.role==="methods");
+   const rubric=rows.filter(s=>s.role==="reflection");
+   const q=x?.assessment?.questions,score=x?.assessment?.rubricCriteria;
+   if(!x?.intro_md?.trim()||independent.length!==1||
+    methodSections.length<1||rubric.length!==1||
+    !rows.some(s=>s.role==="guided")||
+    !Array.isArray(q)||q.length!==4||q.some(t=>!t?.trim())||
+    !Array.isArray(score)||score.length!==4||
+    score.some(r=>!Array.isArray(r)||r.length!==4||
+     r.some(cell=>typeof cell!=="string"||!cell.trim()))||
+    independent[0]?.model_answer_gate!=="AFTER_VALID_INDEPENDENT_SUBMISSION"||
+    !independent[0]?.model_answer_md?.trim()||
+    x.assessment.modelAnswerGate!=="AFTER_VALID_INDEPENDENT_SUBMISSION"||
+    x.assessment.rubricGate!=="AFTER_VALID_INDEPENDENT_SUBMISSION"||
+    rows.some(s=>!s.heading||!s.id||!s.body_md?.trim())||
+    rows.filter(s=>s.role!=="reflection").some(s=>
+     /<b>\\s*(?:ĐÁP ÁN MẪU|MODEL ANSWER|MODEL RESPONSE|REFERENCE SOLUTION|EDITORIAL ANSWER KEY)/i.test(s.body_md)))
+    fail("locale_sections_or_post_submit_gate "+loc);
+  }
+  return;
+ }
  if(l.content?.format!=="editorial-structured-v1")return;
  // Only touch editorial dependencies for a real editorial lesson, never for
  // the existing Wave1-only isolated canonical-pack test fixture.

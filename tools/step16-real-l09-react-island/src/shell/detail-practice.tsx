@@ -347,8 +347,8 @@ function time(iso:string){
 }
 /** React owns the confirmation; the existing note service owns atomic writes,
  * version history, sync and the 7-second Undo transaction. */
-export function ConfirmNoteAction({label,description,onConfirm,iconOnly=false,danger=false}:{
- label:string;description:string;onConfirm:()=>boolean;iconOnly?:boolean;danger?:boolean
+export function ConfirmNoteAction({label,description,onConfirm,iconOnly=false,danger=false,confirmLabel}:{
+ label:string;description:string;onConfirm:()=>boolean;iconOnly?:boolean;danger?:boolean;confirmLabel?:string
 }){
  const [asking,setAsking]=useState(false);
  const titleId=useId();
@@ -389,7 +389,7 @@ export function ConfirmNoteAction({label,description,onConfirm,iconOnly=false,da
      <button ref={cancel} className="action alt" type="button" onClick={dismiss}>
       {copy('Hủy','Cancel')}</button>
      <Button variant="primary" onClick={()=>{if(onConfirm())setAsking(false);}}>
-      {danger?copy('Xóa ghi chép','Delete note'):copy('Khôi phục','Restore')}</Button>
+      {confirmLabel|| (danger?copy('Xóa ghi chép','Delete note'):copy('Khôi phục','Restore'))}</Button>
     </div>
    </div>
   </div>,document.body)}

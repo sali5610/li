@@ -29,6 +29,20 @@ assert.doesNotMatch(lesson,/getElementById\(['"]global-search['"]\)/,
  'A published lesson must not set the hidden legacy query field');
 assert.match(lesson,/search\.liSearch\?\.render\(query\)/);
 assert.match(search,/app\.openLaoLy\?\.\(\)/);
+
+assert.match(search,/searchPersonalStudy\(query\)/,
+ 'React search must include canonical personal-study lesson manuscripts');
+assert.match(search,/onSearch=\{\(\)=>setSubmitCount\(n=>n\+1\)\}/,
+ 'The visible Search submit button must perform a real search');
+assert.match(search,/availableRoute\(record\.lessonId\|\|record\.id\)/,
+ 'Search results must navigate to learnable personal routes');
+const stagePreview=read('tools/step16-real-l09-react-island/src/learning/staging-draft-preview.tsx');
+const stagingApp=read('tools/step16-real-l09-react-island/src/auth/staging-app.tsx');
+assert.match(stagingApp,/import \{mountPersonalStudyRoutes\} from/);
+assert.doesNotMatch(stagingApp,/import\('\.\.\/learning\/staging-draft-preview\.js'\)/,
+ 'Lesson routes cannot rely on asynchronous import after the Catalog is interactive');
+assert.match(stagePreview,/export function mountPersonalStudyRoutes\(\)/);
+
 assert.doesNotMatch(search,/getElementById\('laoly-fab'\)\?\.click\(\)/);
 for(const name of ['home-catalog','guide-library','research-case','journal-settings','knowledge-search','detail-practice']){
  const file=read('tools/step16-real-l09-react-island/src/shell/'+name+'.tsx');
@@ -143,7 +157,9 @@ assert.match(release,/l\.publishState==='review_only'&&packed\.has\(l\.id\)/);
 assert.match(reactCatalog,/const releasedRoutes=new Map\(releasedLessonRoutes\.map/);
 assert.match(reactCatalog,/const canOpenLesson=\(lesson:Lesson\)=>!!personalStudyRoute\(lesson\.id\)/);
 assert.match(reactCatalog,/lesson\.published===true&&typeof lesson\.route==='string'/);
-assert.match(reactCatalog,/if\(personalRoute\)\{openRoute\(personalRoute\);return;\}/);
+assert.match(reactCatalog,/if\(personalRoute\)\{/);
+assert.match(reactCatalog,/if\(!openRoute\(personalRoute\)\)\{/);
+assert.match(reactCatalog,/setLessonNavError\(/);
 assert.match(release,/VITE_LI_AUTH_TARGET==='github-pages-staging'/);
 assert.match(release,/export const learnableLessonIds/);
 assert.match(staging,/mountPersonalStudyRoutes\(\)/);

@@ -4,6 +4,7 @@ import {AuthPanel} from './AuthPanel.js';
 import {mountLearningJourney,mountWave1Journey,mountEditorialJourney} from '../learning/app-entry.js';
 import {releasedLessonRoutes} from '../learning/released-lessons.js';
 import {createStagingLearningPorts} from '../learning/staging-ports.js';
+import {mountPersonalStudyRoutes} from '../learning/staging-draft-preview.js';
 import {mountSharedNavigation} from '../shell/mount-navigation.js';
 import {mountKnowledgeSearch} from '../shell/knowledge-search.js';
 import {mountCaptureIdea} from '../shell/capture-idea.js';
@@ -126,14 +127,19 @@ else enableIntegratedLessons();
 // Personal-study manuscripts mount as ordinary Catalog → Course → Lesson routes.
 // Existing invited login and owner-scoped learner sync remain authoritative.
 if(import.meta.env.VITE_LI_AUTH_TARGET==='github-pages-staging'){
- const startBatch17Preview=()=>{
-  void import('../learning/staging-draft-preview.js')
-   .then(m=>m.mountPersonalStudyRoutes())
-   .catch(e=>{console.error('LI_PERSONAL_STUDY_ROUTES_UNAVAILABLE',e);});
+ const registerPersonalLessons=()=>{
+  try{mountPersonalStudyRoutes();}
+  catch(error){
+   console.error('LI_PERSONAL_STUDY_ROUTES_UNAVAILABLE',error);
+   // Fail visibly rather than displaying an inoperative "Vào bài học".
+   (window as Window&{liPersonalStudyRouteError?:string}).liPersonalStudyRouteError=
+    error instanceof Error?error.message:'LESSON_ROUTE_SETUP_FAILED';
+   window.dispatchEvent(new Event('li:personal-study-route-error'));
+  }
  };
  if(document.readyState==='loading')
-  document.addEventListener('DOMContentLoaded',startBatch17Preview,{once:true});
- else startBatch17Preview();
+  document.addEventListener('DOMContentLoaded',registerPersonalLessons,{once:true});
+ else registerPersonalLessons();
 }
 
 

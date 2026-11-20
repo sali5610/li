@@ -9,10 +9,17 @@ class Button{
 const buttons=[new Button("lesson","L03-1-2"),new Button("lesson","L09-1-2"),new Button("case","sampling-bias-90"),new Button("lesson","L15-2-2")];
 const handlers={},savedContent=[],messages=[],calls=[],undoActions=[];
 const processedCases=[{id:"existing",title:"90% người dùng hài lòng — Sampling Bias",revision:"Luận kết cũ",correct:true,versions:[{version:1,title:"Case",body:"Luận kết cũ",at:"2026-11-18"}]}];
-let writable=true;
+let writable=true,authorized=false;
 const context={
- document:{querySelectorAll:selector=>selector==="[data-li-bookmark-kind][data-li-bookmark-id]"?buttons:[],addEventListener:(type,cb)=>handlers[type]=cb},
- window:{liLibraryShelf:{renderResume:()=>calls.push("render")}},
+ document:{
+  documentElement:{classList:{contains:name=>name==="li-auth-verified"&&authorized}},
+  getElementById:id=>id==="page-draftLessonL0913"?{}:null,
+  querySelectorAll:selector=>selector==="[data-li-bookmark-kind][data-li-bookmark-id]"?buttons:[],
+  addEventListener:(type,cb)=>handlers[type]=cb
+ },
+ window:{
+  liPersonalStudyRoutes:{"L09-1-3":"draftLessonL0913"},
+  liLibraryShelf:{renderResume:()=>calls.push("render")}},
  savedContent,processedCases,liStorageError:false,liWriteState:()=>writable,
  toast:(msg,opts)=>{messages.push(msg);if(typeof opts?.undo==="function")undoActions.push(opts.undo);},Date,console
 };
@@ -58,5 +65,14 @@ assert.equal(undoActions.at(-1)(),true,"undo can persist previous bookmark");
 assert.equal(savedContent.length,1,"undo restores saved bookmark");
 assert.equal(savedContent[0].id,"L15-2-2");
 assert.equal(buttons[3].attributes["aria-pressed"],"true");
+// Invited personal manuscripts may be bookmarked, but never by a guest
+// or when the registered route is missing. This is NOT a publish grant.
+assert.equal(api.toggle("lesson","L09-1-3"),false,"guest cannot bookmark a personal draft");
+authorized=true;
+assert.equal(api.toggle("lesson","L09-1-3"),true,"verified learner can bookmark a registered draft");
+assert.equal(savedContent[0].id,"L09-1-3");
+assert.equal(api.toggle("lesson","L09-1-3"),true,"draft bookmark is reversible");
+authorized=false;
+assert.equal(api.toggle("lesson","L09-1-3"),false,"sign-out blocks private draft bookmark");
 assert(calls.length>=5);
-console.log("PASS UX-IA-06/12: save/unsave, background-free icon contract, undo persistence, case/version history");
+console.log("PASS UX-IA-06/12: save/unsave, invited personal drafts, undo and case/version history");

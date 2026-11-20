@@ -321,12 +321,7 @@
     "rubricKey": "rubricItems",
     "questionsKey": "questions",
     "answerKey": "answer",
-    "questionFeedbackModes": [
-      "open",
-      "open",
-      "open",
-      "open"
-    ]
+    "questionFeedbackModes": ["open","open","open","open"]
   },
   "sources": [
     {

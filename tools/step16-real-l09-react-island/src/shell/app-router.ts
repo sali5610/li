@@ -34,20 +34,44 @@ function normalize(route:string){
 function pageOf(route:string):HTMLElement|null{
  return document.getElementById('page-'+route);
 }
-function writeUrl(route:string){
+/** URL routing is allowlisted by the React host registry. An arbitrary
+ * ?view=lesson... cannot grant an unpublished lesson route.
+ */
+function routeFromUrl():string{
+ const query=new URLSearchParams(window.location.search);
+ const lesson=query.get('lesson');
+ if(lesson){
+  const target=window.liReleasedLessonRoutes?.[lesson]||
+   [...preview.entries()].find(([,id])=>id===lesson)?.[0]||
+   Object.entries(published).find(([,id])=>id===lesson)?.[0];
+  return target&&pageOf(target)?target:'home';
+ }
+ const view=query.get('view');
+ if(view&&view!=='lesson'&&!view.toLowerCase().includes('lesson')&&
+  /^[A-Za-z][A-Za-z0-9]*$/.test(view)&&pageOf(view))return view;
+ return query.has('catalog')&&pageOf('catalog')?'catalog':'home';
+}
+function writeUrl(route:string,remember=false){
  const url=new URL(window.location.href);
  const lesson=published[route]||window.liReleasedEditorialRoutes?.[route]||
   preview.get(route);
  if(lesson)url.searchParams.set('lesson',lesson);
  else url.searchParams.delete('lesson');
+ // Keep non-lesson screens directly addressable, including Settings and Search.
+ if(lesson||route==='home')url.searchParams.delete('view');
+ else url.searchParams.set('view',route);
  if(!lesson){
   url.searchParams.delete('chapter');
   if(route!=='catalog')url.searchParams.delete('catalog');
  }
  url.hash='';
  const path=url.pathname+url.search;
- if(path!==window.location.pathname+window.location.search+window.location.hash)
-  window.history.replaceState(window.history.state,'',path);
+ if(path!==window.location.pathname+window.location.search+window.location.hash){
+  // A user navigation creates a real browser entry; redirects/auth reset replace it.
+  if(remember&&typeof window.history.pushState==='function')
+   window.history.pushState({...window.history.state,liRoute:route},'',path);
+  else window.history.replaceState({...window.history.state,liRoute:route},'',path);
+ }
 }
 function paintRoute(route:string,page:HTMLElement){
  document.querySelector('.app')?.classList.toggle('home-focus',route==='home');
@@ -85,7 +109,7 @@ export function mountReactRouter():()=>void{
   }
   active=route;
   paintRoute(route,page);
-  if(syncUrl)writeUrl(route);
+  if(syncUrl)writeUrl(route,remember);
   appUiStore.getState().setRoute(route);
   window.liNativeRouteEffects?.afterNavigate(route);
   window.scrollTo(0,0);
@@ -95,6 +119,12 @@ export function mountReactRouter():()=>void{
  };
  const back=():boolean=>{
   if(!canVisit())return false;
+  // Real browser navigation is the canonical Back operation. The synchronous
+  // fallback supports older embedded webviews without the History API.
+  if(history.length&&typeof window.history.back==='function'){
+   window.history.back();
+   return true;
+  }
   while(history.length){
    const previous=history.pop()!;
    if(previous!==active&&pageOf(previous))return change(previous,{remember:false});
@@ -107,7 +137,15 @@ export function mountReactRouter():()=>void{
  };
  window.liReactRouter=port;
  const onSession=(event:Event)=>{
-  if((event as CustomEvent<{verified:boolean}>).detail?.verified!==false)return;
+  const verified=(event as CustomEvent<{verified:boolean}>).detail?.verified;
+  if(verified!==false){
+   if(canVisit()){
+    // Restore direct links only after invitation and lesson hosts are registered.
+    const destination=routeFromUrl();
+    if(destination!==active)change(destination,{remember:false,syncUrl:false});
+   }
+   return;
+  }
   // A new invited account must never inherit the previous learner's Back
   // history or private lesson deep link. No persistence is touched.
   history.length=0;active='home';
@@ -118,8 +156,22 @@ export function mountReactRouter():()=>void{
   appUiStore.getState().setRoute(active);
   window.dispatchEvent(new CustomEvent('li:route-changed',{detail:{route:active}}));
  };
+ const onPopState=()=>{
+  // Native Catalog still listens for popstate to restore its drill-down path.
+  // React is the final owner of the visible screen and route state.
+  if(!canVisit())return;
+  if(history.length)history.pop();
+  const restored=routeFromUrl();
+  if(restored!==active)change(restored,{remember:false,syncUrl:false});
+ };
+ window.addEventListener('popstate',onPopState);
  window.addEventListener('li:auth-verified-changed',onSession);
+ if(canVisit()){
+  const requested=routeFromUrl();
+  if(requested!==active)change(requested,{remember:false,syncUrl:false});
+ }
  return ()=>{
+  window.removeEventListener('popstate',onPopState);
   window.removeEventListener('li:auth-verified-changed',onSession);
   if(window.liReactRouter===port)delete window.liReactRouter;
   window.liNativeRouteEffects?.restoreHistory([...history],active);

@@ -22,7 +22,10 @@ export interface InquiryFlowPort{
  isCaseBookmarked():boolean;
  toggleCaseBookmark():boolean;
 }
-declare global{interface Window{liInquiryFlow?:InquiryFlowPort;}}
+declare global{interface Window{
+ liInquiryFlow?:InquiryFlowPort;
+ openLaoLy?:(trigger?:HTMLElement|null)=>void;
+}}
 export function inquiryFlow():InquiryFlowPort{
  const service=window.liInquiryFlow;
  if(!service)throw Error('REACT_INQUIRY_PORT_MISSING');

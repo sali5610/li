@@ -148,7 +148,7 @@ for(const group of legacyCourses.groups){
 }
 const candidateIds=new Set();
 for(const c of researchCandidates.courses){
- if(candidateIds.has(c.id)||!/^PROP-F\\d{2}-\\d{3}$/.test(c.id))throw Error("LI_COURSE_DUP_RESEARCH_ID "+c.id);
+ if(candidateIds.has(c.id)||!/^PROP-F\d{2}-\d{3}$/.test(c.id))throw Error("LI_COURSE_DUP_RESEARCH_ID "+c.id);
  candidateIds.add(c.id);
  if(!allLevels.has(c.level)||c.status!=="research_candidate"||c.canonicalCourseId!==null||!fields.some(f=>f.id===c.fieldId))throw Error("LI_COURSE_UNAPPROVED_PROMOTION "+c.id);
 }

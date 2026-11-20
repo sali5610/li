@@ -193,6 +193,22 @@ assert.equal(act("check",{recall1:"tổng thể đích",recall2:"cách chọn m�
  recall3:"nhóm không được hỏi"}),true);
 reviewed("T13");
 assert.equal(covered,13);
+const previousCount=api.getView().practiceCount;
+begin("T04");
+const beforeFailure=api.getView().practiceCount,storageWrite=localStorage.setItem;
+localStorage.setItem=(key,value)=>{
+ if(key.startsWith("li.spell.practice.v1:"))throw Error("STORAGE_QUOTA");
+ storageWrite(key,value);
+};
+assert.equal(act("check",{reason:sentence}),true,"Feedback may be shown even when receipt save fails");
+assert.equal(api.getView().practiceCount,beforeFailure,"Failed writes cannot invent progress");
+assert.match(api.getView().practiceError,/Chưa lưu được/,"Failure remains visible after React reads state");
+assert.equal(act("reset"),false,"A failed reset must not claim to have cleared saved phase");
+localStorage.setItem=storageWrite;
+begin("T04");
+assert.equal(act("check",{reason:sentence}),true);
+assert.equal(api.getView().practiceCount,beforeFailure+1);
+assert.equal(api.getView().practiceError,"","A confirmed save clears the warning");
 practice=JSON.parse(storage.get(practiceKey));
 assert.equal(practice.scopes.standalone.T13.count,1);
 assert.equal(practice.scopes.standalone.T13.places.length,0,

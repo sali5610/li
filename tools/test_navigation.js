@@ -192,7 +192,7 @@ assert.match(nativeBackup,/document\.getElementById\("li-staging-auth-root"\)\)r
 assert.match(nativeBackup,/importInput\?\.addEventListener\("change"/,
  "Standalone native backup input still works");
 const importFrom=html.indexOf(" async function liImportPersonalData(file){");
-const importTo=html.indexOf(" // Invited staging React owns the visible file picker",importFrom);
+const importTo=html.indexOf(" window.liPersonalBackup=Object.freeze",importFrom);
 assert.ok(importFrom>=0&&importTo>importFrom,"Locate validated backup importer");
 const importSource=html.slice(importFrom,importTo);
 const emittedImport=[],dataStore=new Map(),nativeRenders=[];

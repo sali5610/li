@@ -81,7 +81,8 @@ assert(react.includes("phase==='progress'")&&wave.includes("phase==='progress'")
 assert(reactDetail.includes("onClick={()=>openRoute(lessonRoute)}")&&
  reactDetail.includes("onClick={()=>openRoute(personalRoute)}"),
  "T02 must offer direct Back to either released or personal source lesson");
-assert(spell.includes('const currentExercise=()=>active==="T02"?t02Exercise()'),
+assert(spell.includes('const currentExercise=()=>{')&&
+ spell.includes('if(active==="T02")return t02Exercise();'),
  "T02 must use contextual recall content, not a generic unrelated card");
 assert(native.includes("button.dataset.spellLesson=page.dataset.lessonId"),
  "Native suggestions also forward lesson context");

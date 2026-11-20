@@ -2,6 +2,7 @@ import 'fake-indexeddb/auto';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {runInNewContext} from 'node:vm';
 import {PrivateDeviceStore} from '../.sync-test/local-dexie.js';
 import {syncOnce} from '../.sync-test/sync-once.js';
 import {RevisionConflict,storageKey} from '../.sync-test/contract.js';
@@ -162,5 +163,164 @@ test('complete Wave1 offline learning plus T12 checkpoint replays to second brow
   assert.equal((await safari.counts(user)).pending,0);
  }finally{
   pwa.close();safari.close();await pwa.delete();await safari.delete();
+ }
+});
+
+
+test('saved Case note survives PWA offline → signed sync → Safari React Bút Ký → edit → PWA',async()=>{
+ const user='case-cross-device-'+crypto.randomUUID();
+ const pwa=new PrivateDeviceStore('li-case-pwa-'+crypto.randomUUID());
+ const safari=new PrivateDeviceStore('li-case-safari-'+crypto.randomUUID());
+ const oldLocal=globalThis.localStorage,oldWindow=globalThis.window;
+ const memory=()=>{const values=new Map();return{
+  getItem:key=>values.has(key)?values.get(key):null,
+  setItem:(key,value)=>values.set(key,String(value)),
+  removeItem:key=>values.delete(key)
+ };};
+ const localA=memory(),localB=memory(),rows=new Map();
+ const key='li.private.library.v1',when='2026-11-21T02:00:00.000Z';
+ const snapshot={
+  id:'sampling-bias-90',question:'Visible React Case: Who did we survey?',
+  scene:'Only active subscribers answered this survey',
+  options:[{key:'right',text:'Only the surveyed subscribers'},
+   {key:'wrong',text:'Every potential subscriber'}],
+  selectedKey:'right',selectedText:'Only the surveyed subscribers',
+  feedback:'Correct: do not extrapolate beyond the sample'
+ };
+ const note={
+  id:'case-device-roundtrip',caseKey:'sampling-bias-90',
+  title:'Sample representation — saved from PWA',
+  revision:'This result only describes the sampled active subscribers.',
+  correct:true,savedAt:when,caseSnapshot:snapshot,
+  versions:[{version:1,title:'Sample representation — saved from PWA',
+   body:'This result only describes the sampled active subscribers.',at:when,change:'Bản gốc'}]
+ };
+ const library={schema:1,cases:[note],questions:[],ideas:[],savedContent:[]};
+ const api={
+  accountId:user,
+  async write(entry){
+   const route=entry.itemType+':'+entry.itemId,previous=rows.get(route);
+   if((previous?.revision??0)!==entry.baseRevision)throw new RevisionConflict();
+   const next={owner_id:user,item_type:entry.itemType,item_id:entry.itemId,
+    revision:entry.baseRevision+1,payload:entry.payload,
+    deleted_at:entry.deletedAt,changed_at:when};
+   rows.set(route,next);return next;
+  },
+  async all(){return [...rows.values()];}
+ };
+ const offline={
+  accountId:user,async write(){throw Error('NETWORK_OFFLINE');},
+  async all(){throw Error('NETWORK_OFFLINE');}
+ };
+ const seenA=new Map(),seenB=new Map();
+ try{
+  // A = PWA: the ONLY saved Case is local and offline, with full original context.
+  globalThis.localStorage=localA;
+  globalThis.window={dispatchEvent(){}};
+  localA.setItem(key,JSON.stringify(library));
+  await capturePersonalState(user,null,pwa,seenA);
+  assert.equal((await pwa.counts(user)).pending,1);
+  assert.equal((await syncOnce(pwa,offline,user,gate)).mode,'offline');
+  assert.equal(rows.size,0,'Offline cannot upload learner notes');
+  const upload=await syncOnce(pwa,api,user,gate);
+  assert.equal(upload.mode,'synced');
+  assert.equal(upload.uploaded,1);
+  assert.equal((await pwa.counts(user)).pending,0);
+  assert.equal(rows.get('note:library')?.payload.raw,JSON.stringify(library),
+   'The signed remote snapshot contains the complete Case and feedback');
+
+  // B = Safari: distinct localStorage AND IndexedDB; no shared in-memory record.
+  globalThis.localStorage=localB;
+  const empty=await capturePersonalState(user,null,safari,seenB);
+  assert.equal(localB.getItem(key),null);
+  assert.equal((await safari.counts(user)).pending,0);
+  const download=await syncOnce(safari,api,user,gate);
+  assert.equal(download.mode,'synced');
+  assert.equal(download.downloaded,1);
+  const hydratedKeys=[];
+  assert.equal(await hydratePersonalState(user,empty,safari,()=>{},
+   changedKey=>hydratedKeys.push(changedKey)),true);
+  assert.deepEqual(hydratedKeys,[key]);
+  assert.equal((await safari.counts(user)).pending,0,
+   'Cloud hydration must not re-upload stale Safari data');
+  const restored=JSON.parse(localB.getItem(key));
+  assert.deepEqual(restored.cases[0].caseSnapshot,snapshot);
+  assert.deepEqual(restored.cases[0].versions,note.versions);
+
+  // Open the REAL React-facing Bút Ký port: no native Case/Note DOM source.
+  const caseElements=new Map();
+  const element=id=>{
+   if(!caseElements.has(id))caseElements.set(id,{hidden:true,dataset:{},
+    addEventListener(){},setAttribute(){},focus(){},replaceChildren(){},
+    textContent:'',value:''});
+   return caseElements.get(id);
+  };
+  const caseEvents=[];
+  const sandbox={
+   document:{getElementById:element,querySelector:selector=>{
+    if(selector.includes('#page-case'))throw Error('Hidden native Case accessed');
+    return null;
+   }},
+   window:{liReactLibraryMounted:true,dispatchEvent:event=>caseEvents.push(event.type),
+    liLanguage:{translate:v=>v,get:()=> 'vi'},
+    liBookmarks:{isSaved:()=>false},liLibraryShelf:{renderHome(){},renderCollection(){}}},
+   processedCases:restored.cases,collectedIdeas:restored.ideas,
+   liStorageError:false,
+   liWriteState:()=>{
+    localB.setItem(key,JSON.stringify(restored));
+    return localB.getItem(key)===JSON.stringify(restored);
+   },
+   navigate(){},toast(){},Date,Intl,
+   Event:class{constructor(type){this.type=type;}}
+  };
+  runInNewContext(readFileSync(new URL('../../../site/assets/library-note-editor.js',
+   import.meta.url),'utf8'),sandbox);
+  assert.equal(sandbox.window.liNotes.openDetail('case',note.id),true);
+  const shown=sandbox.window.liNotes.getView();
+  assert.equal(shown.body,note.revision);
+  assert.equal(shown.context.question,snapshot.question);
+  assert.equal(shown.context.scene,snapshot.scene);
+  assert.equal(shown.context.options.length,2);
+  assert.equal(shown.context.options[0].selected,true);
+  assert.match(shown.context.choice,/Only the surveyed subscribers/);
+  assert.equal(shown.context.feedback,snapshot.feedback);
+  assert.equal(shown.history.length,1);
+  assert(caseEvents.includes('li:note-view-changed'),
+   'React note view gets refreshed without legacy DOM');
+
+  // Edit in Safari with the REAL canonical version writer and send back to PWA.
+  const edited='The sample excludes former users and cannot represent everyone.';
+  const save=sandbox.window.liNotes.saveFromReact(note.title,edited,1);
+  assert.equal(save.ok,true);
+  assert.equal(save.changed,true);
+  assert.equal(sandbox.window.liNotes.getView().history.length,2);
+  assert.equal(sandbox.window.liNotes.getView().context.feedback,snapshot.feedback,
+   'Editing a conclusion must never rewrite the original feedback');
+  await capturePersonalState(user,null,safari,seenB);
+  assert.equal((await safari.counts(user)).pending,1);
+  const pushBack=await syncOnce(safari,api,user,gate);
+  assert.equal(pushBack.mode,'synced');
+  assert.equal(pushBack.uploaded,1);
+  assert.equal(rows.get('note:library').revision,2);
+
+  globalThis.localStorage=localA;
+  const previous=await capturePersonalState(user,null,pwa,seenA);
+  const back=await syncOnce(pwa,api,user,gate);
+  assert.equal(back.mode,'synced');
+  assert.equal(back.downloaded,1);
+  assert.equal(await hydratePersonalState(user,previous,pwa,()=>{}),true);
+  const final=JSON.parse(localA.getItem(key)).cases[0];
+  assert.equal(final.revision,edited);
+  assert.equal(final.versions.length,2);
+  assert.deepEqual(final.caseSnapshot,snapshot);
+  assert.equal((await pwa.counts(user)).pending,0);
+  await assert.rejects(syncOnce(pwa,api,'other-account',gate),/ACCOUNT_BINDING_REQUIRED/);
+ }finally{
+  if(oldLocal===undefined)delete globalThis.localStorage;
+  else globalThis.localStorage=oldLocal;
+  if(oldWindow===undefined)delete globalThis.window;
+  else globalThis.window=oldWindow;
+  pwa.close();safari.close();
+  await pwa.delete();await safari.delete();
  }
 });

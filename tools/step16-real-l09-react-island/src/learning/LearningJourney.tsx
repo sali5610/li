@@ -361,6 +361,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Field kind="textarea" label={content.guidedLabel} rows={5}
      value={attempt.guidedDraft} disabled={locked}
      onChange={event=>editGuided(event.currentTarget.value)}/>
+    <Text role="support">{content.guidedSaveNote}</Text>
     <details className="li-learning-hint"><summary>{vi?'Xem gợi ý phân tích':'See analysis hint'}</summary>
      <Text>{strip(content.exHelp)}</Text></details>
     <Button onClick={()=>go('practice')}>{vi?'Làm bài độc lập':'Independent practice'}</Button>
@@ -391,6 +392,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    {phase==='feedback'&&<Card variant="flat-study" aria-labelledby="li-learn-feedback">
     <Heading level={2} id="li-learn-feedback" role="titleLarge">{content.answerTitle}</Heading>
     <Text>{strip(content.answer)}</Text>
+    <Text role="support">{strip(content.answerCaution)}</Text>
     <section className="li-learning-submission" aria-label={vi?'Bài làm của bạn':'Your submitted answers'}>
      <Heading level={3} role="titleMedium">
       {vi?'Bài làm của bạn — đối chiếu trước khi tự chấm':'Your answers — compare before rating'}
@@ -405,6 +407,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      </ol>
     </section>
     <Heading level={3} role="titleMedium">{content.rubricTitle}</Heading>
+    <Text role="support">{content.rubricLead}</Text>
     <div className="li-learning-fields">
      {content.rubricItems.map((item:string[],i:number)=><div className="li-learning-rating" key={i}>
       <label htmlFor={'li-rating-'+i}><strong>{item[0]}</strong><Text role="support">{item[1]}</Text></label>

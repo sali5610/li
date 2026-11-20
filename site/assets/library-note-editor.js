@@ -179,24 +179,35 @@ $("li-note-save").addEventListener("click",()=>{
  }
  refreshAfterChange();toast("Đã lưu phiên bản mới; bản cũ vẫn nằm trong lịch sử.");
 });
-$("li-note-delete").addEventListener("click",()=>{
- const note=current();if(!note)return;
- if(!window.confirm("Xóa ghi chép này và toàn bộ lịch sử phiên bản trên thiết bị? Bạn có 7 giây để hoàn tác."))return;
- const arr=listFor(active.type),index=arr.findIndex(x=>x.id===note.id);
- if(index<0)return;
+/* One delete path for the collection row and detail icon: same confirmation,
+   persisted removal, 7-second Undo and rollback on storage failure. */
+function deleteNote(type,id){
+ const arr=listFor(type),index=arr?.findIndex(item=>item.id===id);
+ if(!arr||index<0||liStorageError)return false;
+ const note=arr[index];
+ if(!window.confirm("Xóa ghi chép này và toàn bộ lịch sử phiên bản? Bạn có 7 giây để hoàn tác."))return false;
  arr.splice(index,1);
- if(!liWriteState()){arr.splice(index,0,note);toast("Không thể xóa ghi chép; dữ liệu được giữ nguyên.");return;}
- active=null;
+ if(!liWriteState()){
+  arr.splice(index,0,note);
+  toast("Không thể xóa ghi chép; dữ liệu được giữ nguyên.");
+  return false;
+ }
+ const showingDetail=active?.type===type&&active?.id===id;
+ if(showingDetail)active=null;
  window.liLibraryShelf?.renderHome();
  window.liLibraryShelf?.renderCollection();
- navigate("collection");
+ if(showingDetail)navigate("collection");
  toast("Đã xóa ghi chép và lịch sử phiên bản.",{undo:()=>{
   if(arr.some(item=>item.id===note.id))return true;
   const at=Math.min(index,arr.length);arr.splice(at,0,note);
   if(!liWriteState()){arr.splice(at,1);return false;}
   window.liLibraryShelf?.renderHome();window.liLibraryShelf?.renderCollection();return true;
  }});
+ return true;
+}
+$("li-note-delete").addEventListener("click",()=>{
+ if(active)deleteNote(active.type,active.id);
 });
 window.addEventListener?.("li:localechange",()=>{if(active&&$("li-note-editor").hidden)renderDetail();});
-window.liNotes=Object.freeze({openDetail,renderDetail});
+window.liNotes=Object.freeze({openDetail,renderDetail,deleteNote});
 })();

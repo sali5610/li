@@ -375,8 +375,13 @@ function renderCollection(){
   add(card,"p","small",ui("Lưu ngày ","Saved ")+formatDate(item.savedAt)+(item.updatedAt?ui(" · Sửa "," · Edited ")+formatDate(item.updatedAt):""));
   add(card,"p","library-entry-body",item.entryType==="case"?item.revision:item.text);
   const actions=add(card,"div","library-note-actions");
-  const detail=add(actions,"button","library-text-link library-detail-link","Xem chi tiết");
+  const detail=add(actions,"button","library-text-link library-detail-link",ui("Xem chi tiết","View details"));
   detail.type="button";detail.addEventListener("click",()=>window.liNotes?.openDetail(item.entryType,item.id));
+  const remove=add(actions,"button","library-text-link library-danger-link",ui("Xóa","Delete"));
+  remove.type="button";
+  remove.setAttribute("aria-label",ui("Xóa ghi chép: ","Delete note: ")+
+   (item.entryType==="case"?item.title:item.text.slice(0,60)));
+  remove.addEventListener("click",()=>window.liNotes?.deleteNote(item.entryType,item.id));
  }
 }
 $("save-capture-note")?.addEventListener("click",()=>{

@@ -259,6 +259,10 @@ const PACK={
 }
 };
 function init(id){
+// The ONE invited GitHub Pages staging uses React for L03/L15. Do not bind
+// a second native writer to the same private attempt key in that environment.
+if(typeof location!=='undefined'&&location.hostname==='sali5610.github.io'&&
+ location.pathname.startsWith('/li/')&&(id==='L03-1-2'||id==='L15-2-2'))return;
 const data=PACK[id];if(!data)throw Error("Unknown lesson "+id);
 const p=data.prefix,root=document.getElementById("page-"+data.route);if(!root)return;
 const $=part=>document.getElementById(p+"-"+part);

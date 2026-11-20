@@ -217,6 +217,25 @@ function liRestoreBuddyNames(){
  }catch(e){return {warm:"",teasing:"",serious:""}}
 }
 let liBuddyNames=liRestoreBuddyNames();
+/* One session-only voice owner for native fallback and React Settings.
+ * The legacy checkboxes mirror state; they are not action targets for React. */
+const liBuddyVoice={
+ calm:Boolean(document.getElementById("calm-toggle")?.checked),
+ mute:Boolean(document.getElementById("mute-toggle")?.checked)
+};
+function liSetBuddyVoice(kind,enabled){
+ if(kind!=="calm"&&kind!=="mute")return false;
+ liBuddyVoice[kind]=Boolean(enabled);
+ const legacy=document.getElementById(kind==="calm"?"calm-toggle":"mute-toggle");
+ if(legacy)legacy.checked=liBuddyVoice[kind];
+ window.dispatchEvent(new Event("li:settings-view-changed"));
+ return true;
+}
+for(const kind of ["calm","mute"]){
+ const field=document.getElementById(kind==="calm"?"calm-toggle":"mute-toggle");
+ field?.addEventListener("change",()=>liSetBuddyVoice(kind,field.checked));
+}
+window.liBuddyVoice=Object.freeze({get:()=>({...liBuddyVoice})});
 function liBuddyLine(line){
  if(typeof line!=="string")return line;
  if(window.liLanguage?.get?.()==="en"){
@@ -234,7 +253,8 @@ function liBuddyLine(line){
  });
 }
 window.liAddressLine=liBuddyLine;
-function liRenderBuddyNamePreview(){
+/* One preview model for both native fallback and the React Settings screen. */
+function liBuddyNamePreviews(){
  const en=window.liLanguage?.get?.()==="en";
  const examples=en?{
   warm:"take your time. The books can wait.",
@@ -246,9 +266,14 @@ function liRenderBuddyNamePreview(){
   serious:"hãy phân biệt điều đã thấy với điều suy ra."
  };
  const defaultEN={warm:"Young scholar",teasing:"Kid",serious:"You there"};
- for(const key of Object.keys(examples)){
+ return Object.fromEntries(Object.keys(examples).map(key=>[
+  key,(liBuddyNames[key]||(en?defaultEN[key]:LI_BUDDY_DEFAULT_NAMES[key]))+", "+examples[key]
+ ]));
+}
+function liRenderBuddyNamePreview(){
+ for(const [key,preview] of Object.entries(liBuddyNamePreviews())){
   const node=document.getElementById("buddy-preview-"+key);
-  if(node)node.textContent=(liBuddyNames[key]||(en?defaultEN[key]:LI_BUDDY_DEFAULT_NAMES[key]))+", "+examples[key];
+  if(node)node.textContent=preview;
  }
 }
 function liRefreshBuddyNameInputs(){
@@ -263,36 +288,49 @@ function liSaveBuddyNames(){
   return true;
  }catch(e){return false}
 }
+let liAddressFeedback="Chỉ thay cách gọi trong lời Lão Lý, không đổi nội dung học.";
 function liUpdateAddressFeedback(text){
+ liAddressFeedback=text;
  const node=document.getElementById("buddy-name-feedback");if(node)node.textContent=text;
 }
-liRefreshBuddyNameInputs();
-window.addEventListener("li:localechange",liRenderBuddyNamePreview);
-document.querySelectorAll("[data-buddy-name]").forEach(input=>{
- const key=input.dataset.buddyName;
- input.addEventListener("input",()=>{
-  liBuddyNames[key]=liNormalizeBuddyName(input.value);
-  liRenderBuddyNamePreview();
+function liRefreshAddressGuide(){
+ const guide=document.getElementById("guide-mode-copy");
+ if(guide)guide.textContent=liBuddyLine(STUDY_MODES[studyMode].guide);
+}
+function liSetBuddyName(key,value,persist=false){
+ if(!Object.prototype.hasOwnProperty.call(LI_BUDDY_DEFAULT_NAMES,key))return false;
+ liBuddyNames[key]=liNormalizeBuddyName(value);
+ const input=document.getElementById("buddy-name-"+key);
+ // Do not trim the visible native input while the learner types a space.
+ if(input&&persist)input.value=liBuddyNames[key];
+ liRenderBuddyNamePreview();
+ if(!persist){
   liUpdateAddressFeedback("Đang chỉnh cách gọi · Rời ô nhập để lưu trên thiết bị.");
- });
- input.addEventListener("change",()=>{
-  input.value=liBuddyNames[key]=liNormalizeBuddyName(input.value);
-  const saved=liSaveBuddyNames();
-  liUpdateAddressFeedback(saved?"Đã lưu cách gọi trên thiết bị này.":"Chưa lưu được cách gọi. Hãy kiểm tra quyền lưu dữ liệu của trình duyệt.");
-  if(!saved)toast("Không thể lưu cách gọi của Lão Lý trên thiết bị.");
-  const guide=document.getElementById("guide-mode-copy");
-  if(guide)guide.textContent=liBuddyLine(STUDY_MODES[studyMode].guide);
- });
-});
-document.getElementById("buddy-names-reset")?.addEventListener("click",()=>{
+  return true;
+ }
+ const saved=liSaveBuddyNames();
+ liUpdateAddressFeedback(saved?"Đã lưu cách gọi trên thiết bị này.":"Chưa lưu được cách gọi. Hãy kiểm tra quyền lưu dữ liệu của trình duyệt.");
+ if(!saved)toast("Không thể lưu cách gọi của Lão Lý trên thiết bị.");
+ liRefreshAddressGuide();
+ return saved;
+}
+function liResetBuddyNames(){
  liBuddyNames={warm:"",teasing:"",serious:""};
  liRefreshBuddyNameInputs();
  const saved=liSaveBuddyNames();
  liUpdateAddressFeedback(saved?"Đã trở về Tiểu hữu / Nhóc / Ngươi.":"Đã đặt lại trong phiên này nhưng không lưu được.");
  if(!saved)toast("Không thể lưu cách gọi mặc định trên thiết bị.");
- const guide=document.getElementById("guide-mode-copy");
- if(guide)guide.textContent=liBuddyLine(STUDY_MODES[studyMode].guide);
+ liRefreshAddressGuide();
+ return saved;
+}
+liRefreshBuddyNameInputs();
+window.addEventListener("li:localechange",liRenderBuddyNamePreview);
+document.querySelectorAll("[data-buddy-name]").forEach(input=>{
+ const key=input.dataset.buddyName;
+ input.addEventListener("input",()=>liSetBuddyName(key,input.value));
+ input.addEventListener("change",()=>liSetBuddyName(key,input.value,true));
 });
+document.getElementById("buddy-names-reset")?.addEventListener("click",liResetBuddyNames);
 function liRestoreStudyMode(){
  try{const value=window.localStorage.getItem(STUDY_MODE_KEY);return Object.prototype.hasOwnProperty.call(STUDY_MODES,value)?value:"start"}
  catch(e){return "start"}
@@ -396,9 +434,29 @@ function renderMirrorItem(){
  action.setAttribute("aria-label",isHook?"Khám phá vì sao · Mở bài học liên quan":"Đào sâu · Mở Khảo Chứng");
  document.getElementById("mirror-primary-label").textContent=isHook?"Khám phá vì sao":"Đào sâu";
  if(typeof refreshQuestionBookmark==="function")refreshQuestionBookmark();
+ if(typeof window!=="undefined"&&typeof Event!=="undefined")window.dispatchEvent(new Event("li:inquiry-changed"));
+}
+function liCaseFeedback(answer){
+ return answer==="right"?
+ "Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.":
+ "Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.";
 }
 let selectedCaseAnswer=null;
-function syncResearch(){const s=scenarios[qIndex].type==="hook"?scenarios.find(item=>item.type!=="hook"):scenarios[qIndex];const title=document.querySelector("#page-research .surface.tinted h2");if(title)title.textContent=s.question;document.querySelectorAll('#page-research [data-branch]').forEach((el,i)=>{if(s.branches[i]){el.dataset.branch=s.branches[i];el.textContent=String(i+1).padStart(2,"0")+" · "+s.branches[i]}});document.getElementById("research-observed").textContent=s.observed;document.getElementById("research-unknown").textContent=s.unknown;document.getElementById("branch-feedback").textContent="Chọn một nhánh để đặt câu hỏi kiểm chứng.";}
+let liResearchFeedback="Chọn một nhánh để đặt câu hỏi kiểm chứng.";
+function liCurrentProblem(){
+ return scenarios[qIndex].type==="hook"?scenarios.find(item=>item.type!=="hook"):scenarios[qIndex];
+}
+function liChooseResearchBranch(value){
+ const problem=liCurrentProblem();
+ if(!problem?.branches?.includes(value))return false;
+ liResearchFeedback="Hãy kiểm chứng: "+value;
+ const target=document.getElementById("branch-feedback");
+ if(target)target.textContent=liResearchFeedback;
+ window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"branch",id:scenarios[qIndex].question+"::"+value}}));
+ window.dispatchEvent(new Event("li:inquiry-changed"));
+ return true;
+}
+function syncResearch(){const s=scenarios[qIndex].type==="hook"?scenarios.find(item=>item.type!=="hook"):scenarios[qIndex];const title=document.querySelector("#page-research .surface.tinted h2");if(title)title.textContent=s.question;document.querySelectorAll('#page-research [data-branch]').forEach((el,i)=>{if(s.branches[i]){el.dataset.branch=s.branches[i];el.textContent=String(i+1).padStart(2,"0")+" · "+s.branches[i]}});document.getElementById("research-observed").textContent=s.observed;document.getElementById("research-unknown").textContent=s.unknown;liResearchFeedback="Chọn một nhánh để đặt câu hỏi kiểm chứng.";document.getElementById("branch-feedback").textContent=liResearchFeedback;window.dispatchEvent(new Event("li:inquiry-changed"));}
 const buddyCopy={
 home:"Tiểu hữu nhìn vào gương rồi à? Ai được hỏi? Ai bị bỏ sót? Lão nghi câu sau mới thú vị.",
 catalog:"Đọc bản đồ trước khi đi. Đừng chọn cả khu rừng rồi than không thấy đường, nhóc.",
@@ -433,7 +491,7 @@ const translation=document.getElementById("buddy-quote-translation");
 const info=document.getElementById("buddy-quote-info");
 const note=document.getElementById("buddy-quote-context");
 const data=quotedByScreen[currentPage];
-if(!data||buddyDebateActive||document.getElementById("calm-toggle")?.checked){
+if(!data||buddyDebateActive||liBuddyVoice.calm){
  box.hidden=true;original.hidden=true;translation.hidden=true;info.hidden=true;note.hidden=true;
  info.setAttribute("aria-expanded","false");return;
 }
@@ -473,9 +531,9 @@ function setStudyMode(key,{persist=true}={}){
 }
 document.querySelectorAll(".ly-mode-choice").forEach(b=>b.addEventListener("click",()=>setStudyMode(b.dataset.lyMode)));
 function openLaoLy(trigger){
-if(document.getElementById("mute-toggle").checked){toast("Im Lặng · Lời thoại Lão Lý đang tắt. Các nội dung chính vẫn đọc được.");return}
+if(liBuddyVoice.mute){toast("Im Lặng · Lời thoại Lão Lý đang tắt. Các nội dung chính vẫn đọc được.");return}
 buddyDebateActive=false;document.getElementById("buddy-debate").hidden=true;
-document.getElementById("buddy-text").textContent=liBuddyLine(document.getElementById("calm-toggle").checked
+document.getElementById("buddy-text").textContent=liBuddyLine(liBuddyVoice.calm
 ?"Chúng ta chưa biết đủ để kết luận. Hãy xác định điều quan sát được và dữ kiện còn thiếu."
 :(currentPage==="home"?scenarios[qIndex].buddy:buddyCopy[currentPage]||buddyCopy.default));
 showBuddyQuote();document.getElementById("buddy-title-avatar").src=document.getElementById("laoly-current-icon").src;document.getElementById("buddy-scroll").scrollTop=0;openModal("buddy-modal",trigger);refreshLucide();
@@ -502,6 +560,25 @@ function syncLiRoute(id){
 }
 function navigate(id,{focus=true,remember=true,syncUrl=true}={}){const e=document.getElementById("page-"+id);if(!e)return;if(remember&&id!==currentPage){pageHistory.push(currentPage);if(pageHistory.length>32)pageHistory.shift()}currentPage=id;document.querySelector?.(".app")?.classList.toggle("home-focus",id==="home");const back=document.getElementById("li-global-back");if(back)back.hidden=id==="home";document.querySelectorAll("section.page").forEach(x=>x.classList.toggle("active",x===e));document.querySelectorAll("[data-page]").forEach(x=>{const t=["home","catalog","guide","library"].includes(id)&&x.dataset.page===id;x.classList.toggle("active",t);if(t)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});document.querySelectorAll(".header .tool-button").forEach(x=>{const active=x.dataset.page===id;x.classList.toggle("active",active);if(active)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});if(syncUrl)syncLiRoute(id);window.scrollTo(0,0);if(focus)e.focus({preventScroll:true});if(id==="guide")renderMethods();if(id==="library")window.liLibraryShelf?.renderHome();if(id==="resume")window.liLibraryShelf?.renderResume();if(id==="collection")window.liLibraryShelf?.renderCollection();if(id==="noteDetail")window.liNotes?.renderDetail();window.liBookmarks?.refresh();if(Object.prototype.hasOwnProperty.call(LI_LESSON_ROUTES,id))window.liLibraryShelf?.trackLesson(id);if(id==="research"){syncResearch();window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);}if(id==="case")window.liLibraryShelf?.trackProblem("case","sampling-bias-90");refreshLucide();placeCompanion();}
 function goBack(){while(pageHistory.length){const previous=pageHistory.pop();if(previous!==currentPage&&document.getElementById("page-"+previous)){navigate(previous,{remember:false});return}}navigate("home",{remember:false})}
+/* Step16: expose the existing canonical route/history/URL/focus controller as
+ * an action port. React controls call this directly; static controls retain the
+ * existing delegated data-page/data-nav-back contract until migrated. */
+window.liAppRouter=Object.freeze({
+ navigate:(id,options)=>{
+  if(!document.documentElement.classList.contains("li-auth-verified")||
+     document.documentElement.classList.contains("li-account-open")||
+     typeof id!=="string"||!document.getElementById("page-"+id))return false;
+  navigate(id,options);return true;
+ },
+ back:()=>{
+  if(!document.documentElement.classList.contains("li-auth-verified")||
+     document.documentElement.classList.contains("li-account-open"))return false;
+  goBack();return true;
+ },
+ getCurrent:()=>currentPage,
+ hasRoute:id=>typeof id==="string"&&!!document.getElementById("page-"+id)
+});
+
 function renderMethods(){const el=document.getElementById("method-cards");const q=(document.getElementById("method-search").value||"").trim().toLocaleLowerCase("vi");const preset=STUDY_MODES[studyMode].suggestions;const visible=methods.filter(m=>{const match=(!q||((m.join(" ")+" "+(window.LI_LEGACY_EN?.[m[1]]||"")+" "+(window.LI_LEGACY_EN?.[m[4]]||"")).toLocaleLowerCase("vi").includes(q)));const cat=currentCategory==="Tất cả"||m[4]===currentCategory;const picked=Boolean(q)||currentCategory!=="Tất cả"||!preset||preset.includes(m[0]);return match&&cat&&picked});el.innerHTML=visible.length?visible.map(m=>'<button class="method-card" data-method="'+m[0]+'"><i data-lucide="'+(m[4]==="Luận Chứng Thuật"?"git-branch":m[4]==="Phá Giải Thuật"?"puzzle":m[4]==="Minh Giải Thuật"?"lightbulb":m[4]==="Tự Chủ Thuật"?"brain-circuit":"book-open-check")+'" class="method-icon" aria-hidden="true"></i><span class="kicker">'+m[0]+' · <span>'+m[4]+'</span></span><h3>'+m[1]+'</h3><span class="original">'+m[2]+'</span><span class="purpose">'+m[3]+'</span><span class="end">CHÚ GIẢI →</span></button>').join(""):'<div class="surface">Không tìm thấy. Thử đổi bộ lọc hoặc tìm bằng tên học thuật.</div>';
 document.getElementById("method-count").textContent="Hiển thị "+visible.length+"/13 phương pháp"+(q?" · kết quả tìm kiếm trên cả 13":currentCategory!=="Tất cả"?" · theo nhóm":STUDY_MODES[studyMode].suggestions?" · "+STUDY_MODES[studyMode].label:" · đầy đủ");
 refreshLucide();document.getElementById("guide-mode-copy").textContent=liBuddyLine(STUDY_MODES[studyMode].guide);
@@ -546,7 +623,7 @@ function openModal(id,trigger){if(id==="buddy-modal"&&window.liBuddyReactMounted
 function closeModal(id){if(id==="buddy-modal"&&window.liBuddyReactMounted){window.dispatchEvent(new Event("li:buddy-close"));return;}const el=document.getElementById(id);el.classList.remove("open");document.activeElement?.blur?.()}
 document.querySelectorAll(".page").forEach(e=>e.setAttribute("aria-label",e.id.replace("page-","")));
 document.getElementById("method-filters").innerHTML=categories.map((c,i)=>'<button class="filter" data-cat="'+c+'" aria-pressed="'+(i===0)+'">'+c+'</button>').join("");
-document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.hasAttribute("data-nav-back")){goBack();return}if(t.dataset.page){navigate(t.dataset.page);if(t.dataset.focus){const field=document.getElementById(t.dataset.focus);document.getElementById("notebook-section")?.scrollIntoView?.({block:"start"});field?.focus?.({preventScroll:true})}return}if(t.dataset.method){showMethod(t.dataset.method,{practice:t.dataset.spellPractice==="true",lessonId:t.dataset.spellLesson||null});return}if(t.dataset.cat){currentCategory=t.dataset.cat;document.querySelectorAll("[data-cat]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));renderMethods();return}if(t.dataset.branch){document.getElementById("branch-feedback").textContent="Hãy kiểm chứng: "+t.dataset.branch;window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"branch",id:scenarios[qIndex].question+"::"+t.dataset.branch}}));return}if(t.dataset.answer){const isCase=t.closest("section.page").id==="page-case";if(isCase)selectedCaseAnswer=t.dataset.answer;const id=isCase?"case-feedback":"lesson-feedback";document.getElementById(id).textContent=t.dataset.answer==="right"?"Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.":"Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.";return}if(t.dataset.demo){toast(t.dataset.demo);return}if(t.dataset.buddy){openLaoLy(t);return}});
+document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.hasAttribute("data-nav-back")){goBack();return}if(t.dataset.page){navigate(t.dataset.page);if(t.dataset.focus){const field=document.getElementById(t.dataset.focus);document.getElementById("notebook-section")?.scrollIntoView?.({block:"start"});field?.focus?.({preventScroll:true})}return}if(t.dataset.method){showMethod(t.dataset.method,{practice:t.dataset.spellPractice==="true",lessonId:t.dataset.spellLesson||null});return}if(t.dataset.cat){currentCategory=t.dataset.cat;document.querySelectorAll("[data-cat]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));renderMethods();return}if(t.dataset.branch){liChooseResearchBranch(t.dataset.branch);return}if(t.dataset.answer){const isCase=t.closest("section.page").id==="page-case";if(isCase)selectedCaseAnswer=t.dataset.answer;const id=isCase?"case-feedback":"lesson-feedback";document.getElementById(id).textContent=liCaseFeedback(t.dataset.answer);return}if(t.dataset.demo){toast(t.dataset.demo);return}if(t.dataset.buddy){openLaoLy(t);return}});
 /* UX-DS-28 · Keep native Safari pinch-zoom and rotation reflow enabled.
    The mirror swipe listener below handles a single-purpose horizontal gesture. */
 /* S137 · Bidirectional mirror carousel. Both directions keep question, context and mentor in sync. */
@@ -579,23 +656,24 @@ mirrorSwipeSurface.addEventListener("touchend",event=>{
   shiftMirrorQuestion(dx<0?1:-1);
 },{passive:true});
 mirrorSwipeSurface.addEventListener("touchcancel",()=>{mirrorSwipeStart=null},{passive:true});
-document.getElementById("finish-case").addEventListener("click",()=>{const v=document.getElementById("case-revision").value.trim();if(!selectedCaseAnswer){toast("Chưa Chọn · Hãy chọn một nhận định hoặc tạm gác.");return}if(v.length<12){toast("Luận Kết còn thiếu · Hãy viết lại nhận định ít nhất 12 ký tự.");return}const caseArticle=document.querySelector("#page-case .editorial-grid .surface.tinted");
+function liSubmitCaseAnswer(choice,revision){const v=String(revision||"").trim();if(choice!=="right"&&choice!=="wrong"){toast("Chưa Chọn · Hãy chọn một nhận định hoặc tạm gác.");return false}if(v.length<12){toast("Luận Kết còn thiếu · Hãy viết lại nhận định ít nhất 12 ký tự.");return false}const caseArticle=document.querySelector("#page-case .editorial-grid .surface.tinted");
 const caseOptions=Array.from(caseArticle?.querySelectorAll("[data-answer]")||[]).map(el=>({key:el.dataset.answer,text:el.textContent.trim()}));
 const caseSnapshot={
  id:"sampling-bias-90",
  question:caseArticle?.querySelector("h2")?.textContent.trim()||"",
  scene:caseArticle?.querySelector("p")?.textContent.trim()||"",
  options:caseOptions,
- selectedKey:selectedCaseAnswer,
- selectedText:caseOptions.find(x=>x.key===selectedCaseAnswer)?.text||"",
- feedback:document.getElementById("case-feedback")?.textContent.trim()||""
+ selectedKey:choice,
+ selectedText:caseOptions.find(x=>x.key===choice)?.text||"",
+ feedback:liCaseFeedback(choice)
 };
-const item={id:liNewId(),caseKey:"sampling-bias-90",caseSnapshot,title:"90% người dùng hài lòng — Sampling Bias",correct:selectedCaseAnswer==="right",revision:v,savedAt:new Date().toISOString()};
+const item={id:liNewId(),caseKey:"sampling-bias-90",caseSnapshot,title:"90% người dùng hài lòng — Sampling Bias",correct:choice==="right",revision:v,savedAt:new Date().toISOString()};
 processedCases.unshift(item);
-if(!liWriteState()){processedCases.shift();toast("Không thể lưu Bút Ký trên thiết bị. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.");return}
+if(!liWriteState()){processedCases.shift();toast("Không thể lưu Bút Ký trên thiết bị. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.");return false}
 try{window.localStorage.setItem(LI_DRAFT_KEY,"")}catch(e){}
 const noteKey=Array.from((item.title+"|"+v).normalize("NFKC").toLocaleLowerCase("vi")).reduce((h,ch)=>Math.imul(h^ch.codePointAt(0),16777619)>>>0,2166136261).toString(36);
-window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"input",id:"case:"+noteKey}}));navigate("library");toast("Đã lưu Bút Ký trên thiết bị này.");});
+window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"input",id:"case:"+noteKey}}));navigate("library");toast("Đã lưu Bút Ký trên thiết bị này.");window.dispatchEvent(new Event("li:inquiry-changed"));return true;}
+document.getElementById("finish-case").addEventListener("click",()=>liSubmitCaseAnswer(selectedCaseAnswer,document.getElementById("case-revision").value));
 /* React owns the L1 form, rules and session self-report. The old hidden
  * Home entry remains only as a compatibility navigation entrypoint. */
 document.getElementById("checkin")?.addEventListener("click",event=>{
@@ -612,26 +690,86 @@ function refreshQuestionBookmark(){
  button.title=saved?"Bỏ lưu câu hỏi":"Lưu câu hỏi";
  const label=document.getElementById("mirror-save-label");if(label)label.textContent=saved?"Đã lưu":"Lưu câu hỏi";
 }
-document.getElementById("save-question").addEventListener("click",()=>{
+function liToggleMirrorQuestion(){
  const sc=scenarios[qIndex],index=findSavedMirrorQuestion(sc);
- if(liStorageError){toast("Không đọc được Dấu Trang đã lưu. Chưa thay đổi dữ liệu.");return;}
+ if(liStorageError){toast("Không đọc được Dấu Trang đã lưu. Chưa thay đổi dữ liệu.");return false;}
  if(index>=0){
   const [removed]=savedQuestions.splice(index,1);
-  if(!liWriteState()){savedQuestions.splice(index,0,removed);toast("Không bỏ lưu được. Dấu Trang vẫn giữ nguyên.");return;}
+  if(!liWriteState()){savedQuestions.splice(index,0,removed);toast("Không bỏ lưu được. Dấu Trang vẫn giữ nguyên.");return false;}
   toast("Đã bỏ lưu câu hỏi.",{undo:()=>{
    if(savedQuestions.some(item=>item.id===removed.id))return true;
    const at=Math.min(index,savedQuestions.length);savedQuestions.splice(at,0,removed);
    if(!liWriteState()){savedQuestions.splice(at,1);return false;}
-   refreshQuestionBookmark();window.liLibraryShelf?.renderResume();return true;
+   refreshQuestionBookmark();window.liLibraryShelf?.renderResume();window.dispatchEvent(new Event("li:inquiry-changed"));return true;
   }});
  }else{
   const item={id:liNewId(),scenarioKey:sc.key||null,question:sc.question,scene:sc.scene,type:sc.type||"problem",lessonRoute:sc.type==="hook"?sc.lessonRoute:null,savedAt:new Date().toISOString()};
   savedQuestions.unshift(item);
-  if(!liWriteState()){savedQuestions.shift();toast("Không thể lưu Dấu Trang trên thiết bị.");return;}
+  if(!liWriteState()){savedQuestions.shift();toast("Không thể lưu Dấu Trang trên thiết bị.");return false;}
   toast(sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang.":"Đã lưu câu hỏi vào Dấu Trang.");
  }
  refreshQuestionBookmark();window.liLibraryShelf?.renderResume();
+ window.dispatchEvent(new Event("li:inquiry-changed"));
+ return true;
+}
+document.getElementById("save-question").addEventListener("click",liToggleMirrorQuestion);
+/* Step16 · One canonical Inquiry domain owner, two UI entrypoints.
+ * React consumes trusted model/actions rather than clicking hidden buttons,
+ * editing hidden textarea values, or writing a second private library store.
+ * Legacy handlers above remain functional until full UI parity is proven. */
+function liInquiryAllowed(){
+ return document.documentElement.classList.contains("li-auth-verified")&&
+  !document.documentElement.classList.contains("li-account-open");
+}
+window.liInquiryFlow=Object.freeze({
+ getMirror:()=>{
+  const sc=scenarios[qIndex];if(!sc)return null;
+  return {
+   index:qIndex,question:sc.question,scene:sc.scene,
+   source:sc.type==="hook"?"TỪ BÀI HỌC ĐÃ XUẤT BẢN":"VÍ DỤ GIẢ ĐỊNH",
+   route:sc.type==="hook"?sc.lessonRoute:"research",
+   cta:sc.type==="hook"?"Khám phá vì sao":"Đào sâu",
+   saved:findSavedMirrorQuestion(sc)>=0
+  };
+ },
+ shift:direction=>{
+  if(!liInquiryAllowed()||(direction!==1&&direction!==-1))return false;
+  shiftMirrorQuestion(direction);return true;
+ },
+ toggleQuestion:()=>liInquiryAllowed()?liToggleMirrorQuestion():false,
+ getResearch:()=>{
+  const sc=liCurrentProblem();
+  return sc?{question:sc.question,branches:[...(sc.branches||[])],
+   observed:sc.observed,unknown:sc.unknown,feedback:liResearchFeedback}:null;
+ },
+ chooseBranch:index=>{
+  if(!liInquiryAllowed()||!Number.isInteger(index))return false;
+  return liChooseResearchBranch(liCurrentProblem()?.branches?.[index]);
+ },
+ getCaseDraft:()=>{
+  if(!liInquiryAllowed())return "";
+  try{return window.localStorage.getItem(LI_DRAFT_KEY)||""}catch{return ""}
+ },
+ setCaseDraft:text=>{
+  if(!liInquiryAllowed()||typeof text!=="string")return false;
+  try{
+   window.localStorage.setItem(LI_DRAFT_KEY,text);
+   return window.localStorage.getItem(LI_DRAFT_KEY)===text;
+  }catch{return false}
+ },
+ submitCase:(choice,revision)=>{
+  if(!liInquiryAllowed())return false;
+  return liSubmitCaseAnswer(choice,revision);
+ },
+ isCaseBookmarked:()=>liInquiryAllowed()&&Boolean(window.liBookmarks?.isSaved("case","sampling-bias-90")),
+ toggleCaseBookmark:()=>{
+  if(!liInquiryAllowed()||!window.liBookmarks?.toggle)return false;
+  const changed=window.liBookmarks.toggle("case","sampling-bias-90");
+  if(changed)window.dispatchEvent(new Event("li:inquiry-changed"));
+  return changed;
+ }
 });
+
 document.getElementById("buddy-challenge").addEventListener("click",()=>{buddyDebateActive=true;document.getElementById("buddy-debate").hidden=false;document.getElementById("buddy-quote").hidden=true;document.getElementById("buddy-text").textContent="Thử phản biện lão: 90% người được hỏi nói hài lòng. Lão kết luận cả thị trường cũng hài lòng.";});
 document.getElementById("buddy-right").addEventListener("click",()=>{document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent=liBuddyLine("Cuối cùng cũng chịu dùng đến bộ não rồi đấy. Nhà thông thái, ngươi đã bắt đúng lỗi suy rộng từ người dùng sang toàn thị trường. Lão xin rút kết luận.");});
 document.getElementById("buddy-wrong").addEventListener("click",()=>{document.getElementById("buddy-debate").hidden=true;document.getElementById("buddy-text").textContent=liBuddyLine("Ồ, một cách suy luận rất sáng tạo. Tiếc là sai. Nhóc, lão chỉ hỏi người đang dùng; người chưa dùng có thể nghĩ khác. Đừng bắt mẫu khảo sát gánh cả thị trường.");});
@@ -807,6 +945,7 @@ window.addEventListener("li:personal-sync-applied",event=>{
  * importer/exporter and verified Auth consent remain the action/data owners. */
 window.liSettingsPort=Object.freeze({
  setMode:(mode)=>setStudyMode(mode),
+ setVoice:(kind,enabled)=>liSetBuddyVoice(kind,enabled),
  getView:()=>{
   const el=id=>document.getElementById(id),check=id=>Boolean(el(id)?.checked);
   const card=el("li-journal-cloud-settings"),cloud=el("li-journal-cloud-toggle");
@@ -815,11 +954,10 @@ window.liSettingsPort=Object.freeze({
    modes:Object.entries(STUDY_MODES).map(([key,info])=>({
     key,label:info.label,image:info.image,feedback:info.feedback
    })),
-   calm:check("calm-toggle"),mute:check("mute-toggle"),
+   calm:liBuddyVoice.calm,mute:liBuddyVoice.mute,
    nicknames:{...liBuddyNames},
-   previews:Object.fromEntries(["warm","teasing","serious"].map(key=>
-    [key,el("buddy-preview-"+key)?.textContent||""])),
-   nicknameFeedback:el("buddy-name-feedback")?.textContent||"",
+   previews:liBuddyNamePreviews(),
+   nicknameFeedback:liAddressFeedback,
    cloudVisible:Boolean(card&&!card.hidden),
    cloudChecked:Boolean(cloud?.checked),cloudDisabled:Boolean(cloud?.disabled),
    cloudDescription:el("li-journal-cloud-description")?.textContent||"",
@@ -831,16 +969,11 @@ window.liSettingsPort=Object.freeze({
  },
  act:(kind,key,value)=>{
   const el=id=>document.getElementById(id);
-  if(kind==="mode"&&STUDY_MODES[key])Array.from(el("study-mode-settings")?.querySelectorAll(".ly-mode-choice")||[]).find(node=>node.dataset.lyMode===key)?.click();
-  else if(kind==="calm"||kind==="mute"){
-   const field=el(kind==="calm"?"calm-toggle":"mute-toggle");
-   if(field&&field.checked!==Boolean(value))field.click();
-  }else if(kind==="nicknameInput"||kind==="nicknameCommit"){
-   if(!["warm","teasing","serious"].includes(key))return;
-   const field=el("buddy-name-"+key);if(!field)return;
-   if(typeof value==="string")field.value=value.slice(0,24);
-   field.dispatchEvent(new Event(kind==="nicknameInput"?"input":"change",{bubbles:true}));
-  }else if(kind==="resetNames")el("buddy-names-reset")?.click();
+  if(kind==="mode"&&STUDY_MODES[key])setStudyMode(key);
+  else if(kind==="nicknameInput"||kind==="nicknameCommit"){
+   if(typeof value!=="string"||!Object.prototype.hasOwnProperty.call(LI_BUDDY_DEFAULT_NAMES,key))return;
+   liSetBuddyName(key,value,kind==="nicknameCommit");
+  }else if(kind==="resetNames")liResetBuddyNames();
   else if(kind==="cloud"){
    const field=el("li-journal-cloud-toggle");
    if(field&&!field.disabled&&!el("li-journal-cloud-settings")?.hidden&&

@@ -95,7 +95,7 @@ def main() -> int:
         registry = json.loads(visual_registry.read_text(encoding="utf-8"))
         entries = registry.get("file_based_runtime_snapshot", {}).get("records", [])
         check(registry.get("schema") == "li-visual-assets-index-v1", "visual asset registry schema current")
-        check(len(entries) == 7, "Home and brand images inventoried")
+        check(len(entries) == 5, "Home and brand images inventoried")
         for entry in entries:
             canonical = ROOT / entry.get("canonical", "")
             runtime = ROOT / entry.get("app", "")
@@ -105,8 +105,8 @@ def main() -> int:
         check((ROOT / "design-assets" / "README.md").is_file(), "visual asset registry README exists")
         css = (ROOT / "site" / "assets" / "li-layout.css").read_text(encoding="utf-8")
         inline = registry.get("embedded_css_images", {}).get("variables", [])
-        check(len(inline) == 6 and all(re.search(re.escape(var) + r"\s*:\s*url\(['\"]data:image/", css) for var in inline),
-              "six legacy embedded CSS art variables recorded as outstanding asset debt")
+        check(len(inline) == 4 and all(re.search(re.escape(var) + r"\s*:\s*url\(['\"]data:image/", css) for var in inline),
+              "four remaining non-Home embedded CSS illustrations inventoried")
 
     # UX-DS-23: contract navigation is a CI-guarded invariant, not a wiki convention.
     library_entrypoint = ROOT / "design-system" / "README.md"
@@ -240,7 +240,7 @@ def main() -> int:
     check("ipad-home-canvas.css?v=20261119-ds33-physical-shell" in html and
           "html.li-ipad-home-canvas .app.home-focus" in ipad_canvas and
           "position:fixed!important;" in ipad_canvas and
-          "home-li-ipad-20261119.jpg" in ipad_canvas,
+          "home-li-landscape-20261121.webp" in ipad_canvas,
           "one physical iPad Home shell reuses approved artwork")
     check("--li-ipad-active-mode: landscape" in ipad_canvas and
           "--li-ipad-active-mode: portrait" in ipad_canvas and

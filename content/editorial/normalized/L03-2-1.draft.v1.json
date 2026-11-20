@@ -2,6 +2,9 @@
   "schemaVersion": "1.0.0",
   "id": "L03-2-1",
   "kind": "Lesson",
+  "title": {
+    "sourceTitle": "W3A · L03-2-1 — Taxonomy, Hierarchy and Canonical Concepts · VI/EN editorial"
+  },
   "content": {
     "format": "editorial-sectioned-draft-v1",
     "localized": {
@@ -30,7 +33,9 @@
             "id": "vi-04",
             "role": "methods",
             "heading": "3b · Luyện L2-T06 — So sánh để phân biệt (tự chọn)",
-            "body_md": "<b>Khởi động:</b> Xem bốn mảnh của một thư viện tưởng tượng — A menu “Mượn & Trả”; B concept ID <code>loan-renewal</code> với tên “Gia hạn lượt mượn”; C các từ tìm kiếm “gia hạn mượn”/“renew loan” trỏ tới cùng B; D một mẫu bài <i>How-to</i> có trường <code>steps</code>, <code>requirements</code>.\n\n<b>Nhiệm vụ:</b> Đặt A–D vào bốn vai <i>visible navigation</i>, <i>canonical concept</i>, <i>synonym map</i>, <i>content model</i>. Với từng cặp dễ nhầm, giải thích một đặc điểm quyết định. Sau khi người học <b>thật sự gửi phân loại và lý do</b> mới mở phản hồi.\n\n<b>Phản hồi sau lượt luyện:</b> A là navigation; B là canonical concept; C là synonyms/alias của B; D là content model. Lý do quan trọng hơn việc nhớ chữ viết tắt: A là lối click, B là định danh nghĩa, C giúp tìm cùng nghĩa, D quy định trường của một loại nội dung. Không đánh dấu hoàn tất phương pháp nếu chỉ mở Sổ Tay.\n\n<b>T10 phụ, tự chọn:</b> Tách yêu cầu thành (i) người dùng cần tìm tác vụ gì, (ii) nhãn nào là dữ liệu nội bộ, (iii) quan hệ cha–con, (iv) đường tìm kiếm, (v) cạnh tranh giữa các tên gần nghĩa. Tạm tránh T10 nếu chưa xác định được đối tượng nội dung."
+            "body_md": "<b>Khởi động:</b> Xem bốn mảnh của một thư viện tưởng tượng — A menu “Mượn & Trả”; B concept ID <code>loan-renewal</code> với tên “Gia hạn lượt mượn”; C các từ tìm kiếm “gia hạn mượn”/“renew loan” trỏ tới cùng B; D một mẫu bài <i>How-to</i> có trường <code>steps</code>, <code>requirements</code>.\n\n<b>Nhiệm vụ:</b> Đặt A–D vào bốn vai <i>visible navigation</i>, <i>canonical concept</i>, <i>synonym map</i>, <i>content model</i>. Với từng cặp dễ nhầm, giải thích một đặc điểm quyết định. Sau khi người học <b>thật sự gửi phân loại và lý do</b> mới mở phản hồi.\n\n<b>Phản hồi sau lượt luyện:</b> A là navigation; B là canonical concept; C là synonyms/alias của B; D là content model. Lý do quan trọng hơn việc nhớ chữ viết tắt: A là lối click, B là định danh nghĩa, C giúp tìm cùng nghĩa, D quy định trường của một loại nội dung. Không đánh dấu hoàn tất phương pháp nếu chỉ mở Sổ Tay.\n\n<b>T10 phụ, tự chọn:</b> Tách yêu cầu thành (i) người dùng cần tìm tác vụ gì, (ii) nhãn nào là dữ liệu nội bộ, (iii) quan hệ cha–con, (iv) đường tìm kiếm, (v) cạnh tranh giữa các tên gần nghĩa. Tạm tránh T10 nếu chưa xác định được đối tượng nội dung.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "vi-05",
@@ -44,7 +49,8 @@
             "id": "vi-06",
             "role": "reflection",
             "heading": "5 · Rubric tự đối chiếu (0–8, chưa chuẩn hóa)",
-            "body_md": "4 tiêu chí × 0/1/2: (A) IDs/labels/aliases không trộn khái niệm; (B) mapping R1–R6 và multi-tag có lý do; (C) tách menu theo tác vụ khỏi taxonomy và content type; (D) phép thử có nhiệm vụ, quan sát, ranh giới suy luận. 0 = không đạt, 1 = một phần, 2 = rõ và có căn cứ. Ghi <b>hint/assistance</b> riêng, không gọi self-rating là kết quả chứng nhận."
+            "body_md": "4 tiêu chí × 0/1/2: (A) IDs/labels/aliases không trộn khái niệm; (B) mapping R1–R6 và multi-tag có lý do; (C) tách menu theo tác vụ khỏi taxonomy và content type; (D) phép thử có nhiệm vụ, quan sát, ranh giới suy luận. 0 = không đạt, 1 = một phần, 2 = rõ và có căn cứ. Ghi <b>hint/assistance</b> riêng, không gọi self-rating là kết quả chứng nhận.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
             "id": "vi-07",
@@ -79,7 +85,9 @@
             "id": "en-04",
             "role": "methods",
             "heading": "3b · Optional real L2 method application: T06 Compare–Contrast",
-            "body_md": "<b>Separate practice fixture:</b> A: navigation menu “Borrow & Return”; B: concept ID <code>loan-renewal</code>, preferred label “Renew a loan”; C: the search terms “extend borrowing” and “renew loan” both map to B; D: <i>How-to</i> type with fields <code>steps</code> and <code>requirements</code>.\n\n<b>Task:</b> Match A–D to visible navigation, canonical concept, synonym map, and content model. For each confusing pair, provide a diagnostic reason, not just a label.\n\n<b>Feedback — only AFTER a meaningful practice response:</b> A navigation, B canonical concept, C synonyms, D content model. The decisive cues are user-clickable destination, stable meaning identity, alternative expressions for that identity, and the required data fields of a content type. Simply opening the Spellbook does NOT count as performing T06.\n\n<b>Optional secondary T10 Decomposition:</b> Split the design into user tasks, internal terms, parent–child relations, search aliases and ambiguous labels. Skip this exercise if the underlying content objects are still undefined."
+            "body_md": "<b>Separate practice fixture:</b> A: navigation menu “Borrow & Return”; B: concept ID <code>loan-renewal</code>, preferred label “Renew a loan”; C: the search terms “extend borrowing” and “renew loan” both map to B; D: <i>How-to</i> type with fields <code>steps</code> and <code>requirements</code>.\n\n<b>Task:</b> Match A–D to visible navigation, canonical concept, synonym map, and content model. For each confusing pair, provide a diagnostic reason, not just a label.\n\n<b>Feedback — only AFTER a meaningful practice response:</b> A navigation, B canonical concept, C synonyms, D content model. The decisive cues are user-clickable destination, stable meaning identity, alternative expressions for that identity, and the required data fields of a content type. Simply opening the Spellbook does NOT count as performing T06.\n\n<b>Optional secondary T10 Decomposition:</b> Split the design into user tasks, internal terms, parent–child relations, search aliases and ambiguous labels. Skip this exercise if the underlying content objects are still undefined.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "en-05",
@@ -93,7 +101,8 @@
             "id": "en-06",
             "role": "reflection",
             "heading": "5 · Self-rating rubric (0–8, not calibrated)",
-            "body_md": "Four criteria × 0/1/2: (A) IDs/labels/aliases distinct from duplicated concepts; (B) complete R1–R6 mapping with defensible multi-tag use; (C) visible task navigation clearly separated from taxonomy and content type; (D) concrete test with evidence limits. 0 = absent/incorrect, 1 = partial, 2 = coherent and supported. Log hints/assistance separately; this is not a certified proficiency score."
+            "body_md": "Four criteria × 0/1/2: (A) IDs/labels/aliases distinct from duplicated concepts; (B) complete R1–R6 mapping with defensible multi-tag use; (C) visible task navigation clearly separated from taxonomy and content type; (D) concrete test with evidence limits. 0 = absent/incorrect, 1 = partial, 2 = coherent and supported. Log hints/assistance separately; this is not a certified proficiency score.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
             "id": "en-07",
@@ -105,7 +114,6 @@
       }
     },
     "companion": {
-      "reviewState": "proposed",
       "moments": [
         {
           "stage": "opening",
@@ -137,48 +145,48 @@
           "heading": "extension · <code>l0321-extension</code>",
           "source_md": "<b>Primary quote:</b> <code>analects-peers</code>; alternatives <code>bacon-studies</code>, <code>mill-other-side</code>. <b>Relevance:</b> learning from varied perspectives is a bounded analogy for testing IA with people who use different vocabulary; its linked Wikisource chapter numbering requires the documented 7.21 edition-specific caveat.\n\n<b>VI · Lão Lý:</b> “Đào sâu đi: cùng một thư viện, người mới và thủ thư nhìn ra hai bản đồ khác nhau.”\n\n- <b>“Đọc nguồn nào trước?”</b> → “Đọc NN/g để phân biệt taxonomy–navigation; sau đó xem [Canada.ca](http://Canada.ca) vì sao lối tìm theo tác vụ lại quan trọng.”\n- <b>“Tự tạo câu hỏi gì?”</b> → “Thử yêu cầu hai nhóm người dùng tìm cùng tài liệu; ghi cả đường chọn và nơi họ lạc, đừng chỉ hỏi họ thích menu không.”\n\n<b>EN · Lão Lý:</b> “The same library can look like two different maps to a newcomer and to a librarian.”\n\n- <b>“What should I read first?”</b> → “Use NN/g for taxonomy/navigation distinctions and [Canada.ca](http://Canada.ca) for task-first findability.”\n- <b>“Next field test?”</b> → “Give two user groups a genuine retrieval task; observe paths and failure points rather than asking which menu looks nicer.”\n\n<b>QA metadata:</b> VI/EN variants share IDs and facts; answer/rubric exist above for editorial review only and must be hidden before valid submission in future runtime. 6 stages × 2 locale actions×2 replies, 3 quote candidates each stage; source exactness/rights G2/G3/QA28 and physical iPhone/VoiceOver OPEN. No web deployment."
         }
-      ]
+      ],
+      "reviewState": "proposed"
     }
   },
-  "title": {
-    "sourceTitle": "W3A · L03-2-1 — Taxonomy, Hierarchy and Canonical Concepts · VI/EN editorial"
-  },
-  "publishedAt": null,
-  "publishState": "draft",
-  "reviewState": "proposed",
-  "editorialStatus": "draft",
   "rights": {
-    "status": "not_verified",
+    "status": "unverified",
     "releaseAuthorized": false
   },
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "publishState": "draft",
+  "publishedAt": null,
   "provenance": {
     "sourceUrl": "https://app.notion.com/p/41b6cf6db72a811e9646e73ace162250",
     "rawSourcePath": "content/editorial/imported/L03-2-1.source.v1.json",
-    "sourceBodyCharacters": 26258,
-    "sourcePreserved": true
+    "sourceBodyCharacters": 26258
   },
   "normalization": {
-    "status": "needs_editorial_fix",
-    "issues": [
-      "en:answer_key_separation_missing"
-    ],
+    "status": "needs_editorial_correction",
     "counts": {
       "vi": {
-        "chapters": 7,
+        "sections": 7,
         "independent": 1,
-        "answersSeparated": 1,
-        "methods": 1,
-        "rubric": 1
+        "solution": 1,
+        "method": 1,
+        "rubric": 1,
+        "spoilersInPrompts": 0
       },
       "en": {
-        "chapters": 7,
+        "sections": 7,
         "independent": 1,
-        "answersSeparated": 0,
-        "methods": 1,
-        "rubric": 1
+        "solution": 0,
+        "method": 1,
+        "rubric": 1,
+        "spoilersInPrompts": 0
       }
     },
+    "issues": [
+      "en:model_answer_not_isolated"
+    ],
+    "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
-    "rendering": "not_released_no_React_route"
+    "runnableInReact": false
   }
 }

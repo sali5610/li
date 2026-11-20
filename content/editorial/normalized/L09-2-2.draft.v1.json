@@ -2,6 +2,9 @@
   "schemaVersion": "1.0.0",
   "id": "L09-2-2",
   "kind": "Lesson",
+  "title": {
+    "sourceTitle": "W3B · L09-2-2 — Confidence Intervals and Uncertainty · VI/EN editorial"
+  },
   "content": {
     "format": "editorial-sectioned-draft-v1",
     "localized": {
@@ -30,7 +33,9 @@
             "id": "vi-04",
             "role": "methods",
             "heading": "3b · Primary T03 — làm theo, lược bớt bước, rồi tự giải",
-            "body_md": "<b>Micropractice tự dựng và khác đề độc lập:</b> Một thiết kế ngẫu nhiên giả định n=<b>400</b>, x=<b>240</b>, câu hỏi nhị phân. <b>Đã cho bước đầu:</b> p-hat=240/400=<b>0,60</b>. <b>Phần tự điền:</b> SE với đúng n, margin khi z=1,96, khoảng trên/dưới. <b>Tự giải không nhìn đáp án:</b> vì sao người ta không thể nói “tỷ lệ thật có 95% xác suất nằm trong khoảng này” theo ý nghĩa frequentist? Cần có ít nhất một phép tính và một câu giải thích mới tính K3 method enacted.\n\n<b>Phản hồi SAU khi người học nộp lượt luyện:</b> SE≈0,02449; margin≈0,0480; CI≈<b>\\[0,552;0,648\\]</b>; đây là hiệu quả của kích thước mẫu trong mô hình giả định, không đảm bảo chống lệch chọn mẫu. 240 successes, 160 failures thỏa điều kiện số đếm đủ lớn của normal approximation.\n\n<b>T07 phụ (tự chọn):</b> Một team gửi link survey trong banner rồi báo “CI 95%, vậy 95% chắc chắn áp dụng cho tất cả 8.000 user”. Hãy nêu thiếu điều kiện chọn mẫu/coverage/nonresponse và cách sửa giới hạn báo cáo. Feedback chỉ mở sau tự viết giả định."
+            "body_md": "<b>Micropractice tự dựng và khác đề độc lập:</b> Một thiết kế ngẫu nhiên giả định n=<b>400</b>, x=<b>240</b>, câu hỏi nhị phân. <b>Đã cho bước đầu:</b> p-hat=240/400=<b>0,60</b>. <b>Phần tự điền:</b> SE với đúng n, margin khi z=1,96, khoảng trên/dưới. <b>Tự giải không nhìn đáp án:</b> vì sao người ta không thể nói “tỷ lệ thật có 95% xác suất nằm trong khoảng này” theo ý nghĩa frequentist? Cần có ít nhất một phép tính và một câu giải thích mới tính K3 method enacted.\n\n<b>Phản hồi SAU khi người học nộp lượt luyện:</b> SE≈0,02449; margin≈0,0480; CI≈<b>\\[0,552;0,648\\]</b>; đây là hiệu quả của kích thước mẫu trong mô hình giả định, không đảm bảo chống lệch chọn mẫu. 240 successes, 160 failures thỏa điều kiện số đếm đủ lớn của normal approximation.\n\n<b>T07 phụ (tự chọn):</b> Một team gửi link survey trong banner rồi báo “CI 95%, vậy 95% chắc chắn áp dụng cho tất cả 8.000 user”. Hãy nêu thiếu điều kiện chọn mẫu/coverage/nonresponse và cách sửa giới hạn báo cáo. Feedback chỉ mở sau tự viết giả định.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "vi-05",
@@ -44,7 +49,8 @@
             "id": "vi-06",
             "role": "reflection",
             "heading": "5 · Rubric tự chấm 0–8, không hiệu chuẩn",
-            "body_md": "4 tiêu chí × 0/1/2: (1) p-hat/q-hat/số đếm & điều kiện; (2) SE/MOE/CI số học & đơn vị; (3) cách hiểu coverage/fixed parameter; (4) giới hạn sample design, nonresponse và độ suy rộng. Tách assisted/hint khỏi K1 và K3, không xem một bài đúng là chuẩn hóa năng lực suy luận."
+            "body_md": "4 tiêu chí × 0/1/2: (1) p-hat/q-hat/số đếm & điều kiện; (2) SE/MOE/CI số học & đơn vị; (3) cách hiểu coverage/fixed parameter; (4) giới hạn sample design, nonresponse và độ suy rộng. Tách assisted/hint khỏi K1 và K3, không xem một bài đúng là chuẩn hóa năng lực suy luận.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
             "id": "vi-07",
@@ -59,7 +65,7 @@
         "sections": [
           {
             "id": "en-01",
-            "role": "concept",
+            "role": "goals",
             "heading": "1 · Objectives",
             "body_md": "Distinguish the point estimate p-hat, standard error, margin of error and confidence interval (CI); compute an approximate 95% proportion CI with the introductory <b>normal/Wald approximation</b> when its conditions are reasonable; articulate repeated-sampling coverage rather than a posterior probability for a fixed parameter; identify when convenience sampling, nonresponse or an inadequate sample design invalidates broad inference even if the arithmetic is correct."
           },
@@ -77,11 +83,11 @@
           },
           {
             "id": "en-04",
-            "role": "independent",
+            "role": "methods",
             "heading": "3b · Primary L2-T03: worked → faded step → fresh independent item",
             "body_md": "<b>Separate micropractice:</b> A hypothetical random sample has n=<b>400</b> and x=<b>240</b> Yes on a binary item. <b>Completed first step:</b> p-hat=240/400=<b>0.60</b>. <b>Faded steps for the learner:</b> compute SE with the proper denominator, the z=1.96 margin and both interval endpoints. <b>Then explain without copying:</b> why is “there is a 95% probability the true fixed proportion lies in this interval” not the standard frequentist meaning? Completing both a calculation and a defensible explanation is evidence of actually using T03; simply reading the worked solution is not.\n\n<b>Feedback — only AFTER a real practice submission:</b> SE≈<b>0.02449</b>; margin≈<b>0.0480</b>; CI≈<b>\\[0.552,0.648\\]</b>. The 240 Yes / 160 No counts are large enough for this elementary normal approximation. A smaller margin under the assumptions does not prove absence of selection bias.\n\n<b>Optional T07 premise check:</b> A team invites volunteers through an in-app banner and announces “95% CI, so this definitely applies to every one of our 8,000 users.” Identify missing sampling coverage/nonresponse assumptions and rewrite the claim honestly. Reveal reasoning feedback only after the learner provides it.",
-            "model_answer_md": null,
-            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "en-05",
@@ -95,11 +101,12 @@
             "id": "en-06",
             "role": "reflection",
             "heading": "5 · Self-review rubric (0–8, not calibrated)",
-            "body_md": "Four criteria scored 0/1/2 each: (A) p-hat, q-hat, counts and conditions; (B) SE/margin/CI arithmetic and units; (C) proper repeated-sampling coverage/fixed-parameter distinction; (D) sample-design, nonresponse and generalization boundary. Record hint/assisted state separately from independent knowledge evidence; one correct hypothetical calculation does not certify statistical mastery."
+            "body_md": "Four criteria scored 0/1/2 each: (A) p-hat, q-hat, counts and conditions; (B) SE/margin/CI arithmetic and units; (C) proper repeated-sampling coverage/fixed-parameter distinction; (D) sample-design, nonresponse and generalization boundary. Record hint/assisted state separately from independent knowledge evidence; one correct hypothetical calculation does not certify statistical mastery.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
             "id": "en-07",
-            "role": "concept",
+            "role": "extension",
             "heading": "6 · Further reading and unanswered recall",
             "body_md": "- [OpenStax Introductory Statistics 2e §8.3 Population Proportion](https://openstax.org/books/introductory-statistics-2e/pages/8-3-a-population-proportion) — direct procedural and interpretation source.\n- [OpenStax Chapter 8 Introduction](https://openstax.org/books/introductory-statistics-2e/pages/8-introduction) — overview and interval-estimation scope.\n- <b>Source-aware copy prompt:</b> “I study li. L09-2-2. Actually inspect the chosen OpenStax URL, summarize only accessed formulas/conditions and their source links, distinguish frequentist coverage from a Bayesian posterior statement, create a separate original practice case and three unrevealed recall questions. Say explicitly if access fails.”\n- <b>Unanswered active recall:</b> (1) With all else equal, how does the standard-error margin respond to n increasing? (2) What has approximately 95% coverage? (3) Why might a very narrow interval from a volunteer banner still mislead?\n\n<b>Media spec:</b> author-original proportion-interval number line identifying point estimate, margin and interval endpoints, with a written description of the repeated-sampling caveat. VI/EN accessible text-first fallback; no independent keyed endpoints in a pre-submit image, alt or hint. No copyrighted figure reproduced or released."
           }
@@ -107,7 +114,6 @@
       }
     },
     "companion": {
-      "reviewState": "proposed",
       "moments": [
         {
           "stage": "opening",
@@ -139,49 +145,48 @@
           "heading": "extension · <code>l0922-extension</code>",
           "source_md": "<b>Primary:</b> <code>bacon-studies</code>; alternates <code>mill-other-side</code>, <code>analects-peers</code>. <b>Relevance:</b> study/discussion/writing as a modern analogy for explaining assumptions precisely; OpenStax—not Bacon—is the statistical source.\n\n<b>VI · Lão Lý:</b> “Đừng mang một khoảng hẹp lên dashboard rồi giấu nguyên chuyện ‘lấy ai để hỏi’ dưới chân bàn.”\n\n- <b>“Đọc gì tiếp?”</b> → “Đọc OpenStax §8.3 và đối chiếu điều kiện normal approximation với cơ chế tuyển mẫu.”\n- <b>“Bài thử mới?”</b> → “Dùng hai thiết kế chọn mẫu khác nhau nhưng cùng p-hat, rồi giải thích vì sao chỉ một cái có lập luận suy rộng phù hợp.”\n\n<b>EN · Lão Lý:</b> “Putting a narrow interval on the dashboard while hiding who could be sampled is statistical interior decoration.”\n\n- <b>“Which source next?”</b> → “Open OpenStax §8.3 and assess its normal-approximation assumptions together with the sampling process.”\n- <b>“A fresh probe?”</b> → “Compare two recruitment designs yielding the same p-hat, then distinguish warranted population coverage from unsupported inference.”\n\n<b>Runtime/security boundary:</b> six stages × 2 locale action/reply pairs; 18 vetted bank candidate IDs with declared relevance; primary selection in actual app still subject to Issue #8, no imported quote texts duplicated here, VI/EN source boundaries preserved, no answered independent metrics before submission. Real iPhone/a11y/scholarly rights and Step18/Step22/QA28 OPEN; 0 release and 0 new cost."
         }
-      ]
+      ],
+      "reviewState": "proposed"
     }
   },
-  "title": {
-    "sourceTitle": "W3B · L09-2-2 — Confidence Intervals and Uncertainty · VI/EN editorial"
-  },
-  "publishedAt": null,
-  "publishState": "draft",
-  "reviewState": "proposed",
-  "editorialStatus": "draft",
   "rights": {
-    "status": "not_verified",
+    "status": "unverified",
     "releaseAuthorized": false
   },
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "publishState": "draft",
+  "publishedAt": null,
   "provenance": {
     "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81cf8551d2048d02828b",
     "rawSourcePath": "content/editorial/imported/L09-2-2.source.v1.json",
-    "sourceBodyCharacters": 24534,
-    "sourcePreserved": true
+    "sourceBodyCharacters": 24534
   },
   "normalization": {
-    "status": "needs_editorial_fix",
-    "issues": [
-      "en:independent_count_2",
-      "en:answer_key_separation_missing"
-    ],
+    "status": "needs_editorial_correction",
     "counts": {
       "vi": {
-        "chapters": 7,
+        "sections": 7,
         "independent": 1,
-        "answersSeparated": 1,
-        "methods": 1,
-        "rubric": 1
+        "solution": 1,
+        "method": 1,
+        "rubric": 1,
+        "spoilersInPrompts": 0
       },
       "en": {
-        "chapters": 7,
-        "independent": 2,
-        "answersSeparated": 0,
-        "methods": 0,
-        "rubric": 1
+        "sections": 7,
+        "independent": 1,
+        "solution": 0,
+        "method": 1,
+        "rubric": 1,
+        "spoilersInPrompts": 0
       }
     },
+    "issues": [
+      "en:model_answer_not_isolated"
+    ],
+    "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
-    "rendering": "not_released_no_React_route"
+    "runnableInReact": false
   }
 }

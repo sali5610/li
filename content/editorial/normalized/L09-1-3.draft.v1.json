@@ -2,6 +2,9 @@
   "schemaVersion": "1.0.0",
   "id": "L09-1-3",
   "kind": "Lesson",
+  "title": {
+    "sourceTitle": "W2B · L09-1-3 — Center, Spread and Distribution Shape · VI/EN draft"
+  },
   "content": {
     "format": "editorial-sectioned-draft-v1",
     "localized": {
@@ -28,11 +31,11 @@
           },
           {
             "id": "vi-04",
-            "role": "independent",
+            "role": "methods",
             "heading": "3b · Luyện phương pháp L2 (tự chọn, trước bài độc lập)",
-            "body_md": "<b>Chính: T06 · Song Tượng Phân Minh — Compare–Contrast / Interleaved Discrimination.</b> Mean/median là thước đo center, range là thước đo spread; <b>cùng center không đồng nghĩa cùng trải</b>. Đã biết cách tính rồi mới so sánh các nhóm có cấu trúc gần giống. Có thể xem hướng dẫn T06 trong Thần Chú, hoặc bắt đầu ngay.\n\n<b>Micropractice mới, ba nhóm chỉ năm quan sát, đơn vị phút:</b>\n\n- C = 4, 5, 5, 5, 6\n- D = 1, 5, 5, 5, 9\n- E = 5, 5, 5, 5, 5\n\n<b>Luyện phân biệt theo thứ tự xáo trộn:</b> (1) Các nhóm nào có cùng mean/median? (2) So sánh range D với C và E; (3) Nếu một dashboard chỉ hiện “trung bình 5 phút”, thông tin nào bị mất? (4) Có thể từ đây kết luận dân số có phân phối lệch phải không?\n\n<b>Bổ trợ: T04 · Tự Giải Khai Minh — Guided Self-Explanation.</b> Tự giải thích tại sao D có spread lớn dù mean/median giống C. Không được chỉ nói “vì D khác”, cần dẫn min/max và giá trị đã quan sát.\n\n<b>Phản hồi sau lượt luyện:</b> C, D, E đều mean = median = <b>5 phút</b>; range C = <b>2</b>, D = <b>8</b>, E = <b>0</b> phút. Báo cáo center một mình giấu biến động giữa các nhóm; năm quan sát giả định không xác nhận hình dáng phân phối của toàn dân số. T06 được đánh giá bằng so sánh đúng dấu hiệu; T04 bằng giải thích về các đầu mút, không bằng độ dài câu trả lời.",
-            "model_answer_md": "<b>Trạng thái:</b> luyện tuỳ chọn; không dùng A/B bảy case của bài độc lập và không mở đáp án A/B trước lượt nộp.",
-            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+            "body_md": "<b>Chính: T06 · Song Tượng Phân Minh — Compare–Contrast / Interleaved Discrimination.</b> Mean/median là thước đo center, range là thước đo spread; <b>cùng center không đồng nghĩa cùng trải</b>. Đã biết cách tính rồi mới so sánh các nhóm có cấu trúc gần giống. Có thể xem hướng dẫn T06 trong Thần Chú, hoặc bắt đầu ngay.\n\n<b>Micropractice mới, ba nhóm chỉ năm quan sát, đơn vị phút:</b>\n\n- C = 4, 5, 5, 5, 6\n- D = 1, 5, 5, 5, 9\n- E = 5, 5, 5, 5, 5\n\n<b>Luyện phân biệt theo thứ tự xáo trộn:</b> (1) Các nhóm nào có cùng mean/median? (2) So sánh range D với C và E; (3) Nếu một dashboard chỉ hiện “trung bình 5 phút”, thông tin nào bị mất? (4) Có thể từ đây kết luận dân số có phân phối lệch phải không?\n\n<b>Bổ trợ: T04 · Tự Giải Khai Minh — Guided Self-Explanation.</b> Tự giải thích tại sao D có spread lớn dù mean/median giống C. Không được chỉ nói “vì D khác”, cần dẫn min/max và giá trị đã quan sát.\n\n<b>Phản hồi sau lượt luyện:</b> C, D, E đều mean = median = <b>5 phút</b>; range C = <b>2</b>, D = <b>8</b>, E = <b>0</b> phút. Báo cáo center một mình giấu biến động giữa các nhóm; năm quan sát giả định không xác nhận hình dáng phân phối của toàn dân số. T06 được đánh giá bằng so sánh đúng dấu hiệu; T04 bằng giải thích về các đầu mút, không bằng độ dài câu trả lời.\n\n<b>Trạng thái:</b> luyện tuỳ chọn; không dùng A/B bảy case của bài độc lập và không mở đáp án A/B trước lượt nộp.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "vi-05",
@@ -46,7 +49,8 @@
             "id": "vi-06",
             "role": "reflection",
             "heading": "5 · Rubric tự đánh giá 0–8",
-            "body_md": "| Tiêu chí | 0 | 1 | 2 |\n| --- | --- | --- | --- |\n| Nhóm A | Sai hoặc không có | Đúng một phần | Mean 7, median 5, mode 4 & 5, range 21 phút và giải thích |\n| Nhóm B | Sai hoặc không có | Đúng một phần | Mean/median/mode 5, range 2 phút và so sánh |\n| Extreme / shape | Phán bừa | Thấy extreme nhưng suy rộng | Nêu tác động của 23, giữ giới hạn quan sát |\n| Truyền đạt | Chỉ một số | Có thêm một chỉ báo | Center + spread + giới hạn mẫu |"
+            "body_md": "| Tiêu chí | 0 | 1 | 2 |\n| --- | --- | --- | --- |\n| Nhóm A | Sai hoặc không có | Đúng một phần | Mean 7, median 5, mode 4 & 5, range 21 phút và giải thích |\n| Nhóm B | Sai hoặc không có | Đúng một phần | Mean/median/mode 5, range 2 phút và so sánh |\n| Extreme / shape | Phán bừa | Thấy extreme nhưng suy rộng | Nêu tác động của 23, giữ giới hạn quan sát |\n| Truyền đạt | Chỉ một số | Có thêm một chỉ báo | Center + spread + giới hạn mẫu |",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           }
         ]
       },
@@ -73,11 +77,11 @@
           },
           {
             "id": "en-04",
-            "role": "independent",
+            "role": "methods",
             "heading": "3b · Optional L2 method practice (before independent challenge)",
-            "body_md": "<b>Primary: T06 · Song Tượng Phân Minh — Compare–Contrast / Interleaved Discrimination.</b> Center (mean/median) and spread (range) answer different questions. After learning both, compare closely related datasets: <b>equal centers do not imply equal variability</b>. The Spellbook explanation is optional.\n\n<b>New mixed comparison, five fictional observations per group, in minutes:</b>\n\n- C = 4, 5, 5, 5, 6\n- D = 1, 5, 5, 5, 9\n- E = 5, 5, 5, 5, 5\n\n<b>Practice:</b> (1) Which groups share mean and median? (2) Compare D's range with C and E; (3) What is lost if a dashboard only displays “5 minutes on average”? (4) Can these five-case groups establish the shape of a population?\n\n<b>Secondary: T04 · Tự Giải Khai Minh — Guided Self-Explanation.</b> Explain, with observed endpoints, why D's spread is larger despite its mean and median matching C's.\n\n<b>Feedback — only after a practice attempt:</b> All three groups have mean = median = <b>5 minutes</b>; ranges are C = <b>2</b>, D = <b>8</b>, E = <b>0</b> minutes. A mean-only report hides dispersion; these tiny invented datasets do not establish population skew. T06 evidence is successful discrimination by diagnostic cue; T04 evidence is a correct reasoned explanation, not simply writing more words.",
-            "model_answer_md": "<b>State:</b> optional guided practice. Keep the separate seven-case A/B independent challenge and its answer key gated.",
-            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+            "body_md": "<b>Primary: T06 · Song Tượng Phân Minh — Compare–Contrast / Interleaved Discrimination.</b> Center (mean/median) and spread (range) answer different questions. After learning both, compare closely related datasets: <b>equal centers do not imply equal variability</b>. The Spellbook explanation is optional.\n\n<b>New mixed comparison, five fictional observations per group, in minutes:</b>\n\n- C = 4, 5, 5, 5, 6\n- D = 1, 5, 5, 5, 9\n- E = 5, 5, 5, 5, 5\n\n<b>Practice:</b> (1) Which groups share mean and median? (2) Compare D's range with C and E; (3) What is lost if a dashboard only displays “5 minutes on average”? (4) Can these five-case groups establish the shape of a population?\n\n<b>Secondary: T04 · Tự Giải Khai Minh — Guided Self-Explanation.</b> Explain, with observed endpoints, why D's spread is larger despite its mean and median matching C's.\n\n<b>Feedback — only after a practice attempt:</b> All three groups have mean = median = <b>5 minutes</b>; ranges are C = <b>2</b>, D = <b>8</b>, E = <b>0</b> minutes. A mean-only report hides dispersion; these tiny invented datasets do not establish population skew. T06 evidence is successful discrimination by diagnostic cue; T04 evidence is a correct reasoned explanation, not simply writing more words.\n\n<b>State:</b> optional guided practice. Keep the separate seven-case A/B independent challenge and its answer key gated.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "en-05",
@@ -91,13 +95,13 @@
             "id": "en-06",
             "role": "reflection",
             "heading": "5 · Self-rating rubric 0–8 (uncalibrated)",
-            "body_md": "Four criteria × 0/1/2: A's correct mean 7 / median 5 / modes 4 and 5 / range 21; B's mean 5 / median 5 / mode 5 / range 2; reasoned high extreme without population overclaim; and meaningful presentation of center, spread and limitations. Record independent-assessment hint assistance separately, not as mastery."
+            "body_md": "Four criteria × 0/1/2: A's correct mean 7 / median 5 / modes 4 and 5 / range 21; B's mean 5 / median 5 / mode 5 / range 2; reasoned high extreme without population overclaim; and meaningful presentation of center, spread and limitations. Record independent-assessment hint assistance separately, not as mastery.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           }
         ]
       }
     },
     "companion": {
-      "reviewState": "proposed",
       "moments": [
         {
           "stage": "opening",
@@ -129,50 +133,48 @@
           "heading": "extension · l09-sources",
           "source_md": "<b>Candidate quote IDs:</b> bacon-studies, analects-review, analects-practice; originals and localized glosses tracked in S137/S138 quote audit.\n\n<b>Editorial relevance of primary quote (modern analogy, not domain evidence):</b> Bacon's emphasis on reading and writing supports summarizing OpenStax/NIST in one's own words; it does not certify a statistical result.\n\n<b>VI · Lão Lý:</b> Đọc OpenStax §2.5 về center rồi §2.6 về skew, sau đó NIST về spread. Một bộ số tự tạo mới sẽ thử xem ngươi hiểu hay chỉ nhớ đáp án.\n\n- <b>Đọc phần nào trước?</b> Tìm định nghĩa mean/median và ví dụ ảnh hưởng của extreme tại OpenStax 2.5, sau đó đọc NIST về thước đo độ trải.\n- <b>Active recall kiểu gì?</b> Đóng ba trang, tự tạo hai bộ có median bằng nhau nhưng range khác nhau rồi giải thích vì sao không được suy sang toàn bộ dân số.\n\n<b>EN · Lão Lý:</b> Read OpenStax §2.5 on center and §2.6 on skew, then NIST on spread. A fresh dataset will test understanding rather than answer memorization.\n\n- <b>Which reference first?</b> Review mean/median and extreme values in OpenStax 2.5, then NIST's measures of scale for variability.\n- <b>How to retrieve actively?</b> Close the sources and invent two datasets with equal medians but different ranges, explaining why this proves nothing about a population."
         }
-      ]
+      ],
+      "reviewState": "proposed"
     }
   },
-  "title": {
-    "sourceTitle": "W2B · L09-1-3 — Center, Spread and Distribution Shape · VI/EN draft"
-  },
-  "publishedAt": null,
-  "publishState": "draft",
-  "reviewState": "proposed",
-  "editorialStatus": "draft",
   "rights": {
-    "status": "not_verified",
+    "status": "unverified",
     "releaseAuthorized": false
   },
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "publishState": "draft",
+  "publishedAt": null,
   "provenance": {
     "sourceUrl": "https://app.notion.com/p/41b6cf6db72a818c9f50c899e6c489b8",
     "rawSourcePath": "content/editorial/imported/L09-1-3.source.v1.json",
-    "sourceBodyCharacters": 26775,
-    "sourcePreserved": true
+    "sourceBodyCharacters": 26775
   },
   "normalization": {
-    "status": "needs_editorial_fix",
-    "issues": [
-      "vi:independent_count_2",
-      "vi:answer_key_separation_missing",
-      "en:independent_count_2"
-    ],
+    "status": "needs_editorial_correction",
     "counts": {
       "vi": {
-        "chapters": 6,
-        "independent": 2,
-        "answersSeparated": 2,
-        "methods": 0,
-        "rubric": 1
+        "sections": 6,
+        "independent": 1,
+        "solution": 1,
+        "method": 1,
+        "rubric": 1,
+        "spoilersInPrompts": 0
       },
       "en": {
-        "chapters": 6,
-        "independent": 2,
-        "answersSeparated": 1,
-        "methods": 0,
-        "rubric": 1
+        "sections": 6,
+        "independent": 1,
+        "solution": 0,
+        "method": 1,
+        "rubric": 1,
+        "spoilersInPrompts": 0
       }
     },
+    "issues": [
+      "en:model_answer_not_isolated"
+    ],
+    "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
-    "rendering": "not_released_no_React_route"
+    "runnableInReact": false
   }
 }

@@ -2,6 +2,9 @@
   "schemaVersion": "1.0.0",
   "id": "L03-2-3",
   "kind": "Lesson",
+  "title": {
+    "sourceTitle": "W3C · L03-2-3 — Usability Tasks, Errors and Findability Measures · VI/EN editorial"
+  },
   "content": {
     "format": "editorial-sectioned-draft-v1",
     "localized": {
@@ -28,21 +31,26 @@
           },
           {
             "id": "vi-04",
-            "role": "extension",
+            "role": "methods",
             "heading": "3b · L2-T09 — Truy nguồn trước khi tin dashboard (micropractice khác đề độc lập)",
-            "body_md": "Giả sử một báo cáo nội bộ <b>hư cấu</b> nói “77,8% người dùng tìm dễ dàng”. Raw session log của 9 attempts lại ghi 4 direct, 3 indirect, 2 failed. Team tuyển người tiện lợi trong một nhóm chat; có 2 lần moderator gợi ý đường đi nhưng <b>chưa ghi chúng thuộc attempt nào</b>.\n\n<b>Lượt luyện bắt buộc nếu chọn T09:</b> (1) tính số hoàn thành trên 9 attempts, (2) tách direct/indirect/failure, (3) đánh dấu điều gì raw log <b>hỗ trợ</b>, điều gì <b>không</b> (như “dễ dàng”, representativeness, unassisted completion), (4) đề xuất tối thiểu 2 metadata cần truy hồi để biết tác động của moderator và task wording. Gửi câu trả lời trước mới thấy feedback; mở Sổ Tay không tính đã enact T09.\n\n<b>Feedback sau khi làm:</b> completion (4+3)/9=<b>7/9≈77,8%</b>; direct=<b>4/9≈44,4%</b>; indirect=3/9≈33,3%, failed=2/9≈22,2%. “Hoàn thành 7/9 attempts” có căn cứ; “tìm dễ dàng” không được chứng minh, vì 3 phải backtrack và có 2 guided interventions chưa map. Nên truy moderator-event timestamps/assistance flag, participant-recruitment criteria, task text, expected correct leaf, route-level paths, repeat attempts. Không được suy rộng ra population.\n\n<b>T06 phụ:</b> đặt 4 thẻ “correct first path”, “correct after backtracking”, “never reached target”, “clicked a wrong branch once but later succeeded” vào cột <i>completion / path / error</i>; có thể một attempt mang cả error lẫn complete. Không phải mọi nhóm loại trừ nhau."
+            "body_md": "Giả sử một báo cáo nội bộ <b>hư cấu</b> nói “77,8% người dùng tìm dễ dàng”. Raw session log của 9 attempts lại ghi 4 direct, 3 indirect, 2 failed. Team tuyển người tiện lợi trong một nhóm chat; có 2 lần moderator gợi ý đường đi nhưng <b>chưa ghi chúng thuộc attempt nào</b>.\n\n<b>Lượt luyện bắt buộc nếu chọn T09:</b> (1) tính số hoàn thành trên 9 attempts, (2) tách direct/indirect/failure, (3) đánh dấu điều gì raw log <b>hỗ trợ</b>, điều gì <b>không</b> (như “dễ dàng”, representativeness, unassisted completion), (4) đề xuất tối thiểu 2 metadata cần truy hồi để biết tác động của moderator và task wording. Gửi câu trả lời trước mới thấy feedback; mở Sổ Tay không tính đã enact T09.\n\n<b>Feedback sau khi làm:</b> completion (4+3)/9=<b>7/9≈77,8%</b>; direct=<b>4/9≈44,4%</b>; indirect=3/9≈33,3%, failed=2/9≈22,2%. “Hoàn thành 7/9 attempts” có căn cứ; “tìm dễ dàng” không được chứng minh, vì 3 phải backtrack và có 2 guided interventions chưa map. Nên truy moderator-event timestamps/assistance flag, participant-recruitment criteria, task text, expected correct leaf, route-level paths, repeat attempts. Không được suy rộng ra population.\n\n<b>T06 phụ:</b> đặt 4 thẻ “correct first path”, “correct after backtracking”, “never reached target”, “clicked a wrong branch once but later succeeded” vào cột <i>completion / path / error</i>; có thể một attempt mang cả error lẫn complete. Không phải mọi nhóm loại trừ nhau.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "vi-05",
-            "role": "concept",
+            "role": "independent",
             "heading": "4 · Độc lập — bộ dữ liệu mới, đáp án chỉ dành cho sau nộp",
-            "body_md": "Một tree test hư cấu về tìm <b>“Hướng dẫn xuất chứng nhận”</b> có 15 valid attempts: <b>8 direct</b>, <b>3 indirect</b>, <b>4 failed</b>. Từ raw path annotation: <b>6 attempts có first-click sang nhánh sai</b> (thuộc nhóm indirect/failed); log ghi <b>9 wrong-branch events</b> từ các attempts đó. Có <b>3 attempts được moderator trợ giúp</b> nhưng chưa biết thuộc nhóm outcome nào. Người tham gia được tuyển từ cộng đồng fan sẵn có, không random. Chưa đo task time.\n\n1. Tính overall completion, direct, indirect, failure — mỗi tỷ lệ phải ghi mẫu số và đơn vị <b>attempts</b>.\n2. Phân biệt <b>6 attempts first-click sai</b> với <b>9 error events</b>, và vì sao không được trừ 9 khỏi 15 để ra số người thành công.\n3. Đánh giá câu “80% tất cả người dùng sẽ tìm dễ; menu đã tốt”; phân biệt nguồn hỗ trợ, assistance/selection bias và dữ liệu còn thiếu.\n4. Thiết kế <b>một vòng kiểm chứng</b> sau khi đề xuất sửa nhãn: target users, task wording/expected leaf, metrics, sample/protocol và kiểm thử trong UI thật; nêu giới hạn phát biểu.\n\n<b>Hint không spoil:</b> Chia nhóm outcome trước, đừng nhét số error events vào mẫu số người; mỗi attempt có thể có nhiều sự kiện lỗi và vẫn complete.\n\n<b>MODEL ANSWER — CHỈ HIỆN SAU SUBMIT HỢP LỆ TRONG APP TƯƠNG LAI:</b> Complete=(8+3)/15=<b>11/15≈73,3%</b>; direct=8/15≈<b>53,3%</b>, indirect=3/15=<b>20%</b>, failed=4/15≈<b>26,7%</b>. Câu báo cáo “80%” còn sai ngay cả với mẫu hư cấu, chưa kể suy rộng population. Sáu attempts first-click sai khác chín wrong-branch events; vì một attempt có thể phát sinh nhiều event. Không biết 3 assisted attempts thuộc nhóm nào nên <b>không tính được unassisted success rate</b>. Convenience recruitment hạn chế suy rộng; task success không tự đo sự “dễ dàng” hay visual UI thật. Đo lại từ task, expected destination, route logs, assistance flags và UI usability with meaningful target users; kết quả vẫn gắn với mẫu/protocol."
+            "body_md": "Một tree test hư cấu về tìm <b>“Hướng dẫn xuất chứng nhận”</b> có 15 valid attempts: <b>8 direct</b>, <b>3 indirect</b>, <b>4 failed</b>. Từ raw path annotation: <b>6 attempts có first-click sang nhánh sai</b> (thuộc nhóm indirect/failed); log ghi <b>9 wrong-branch events</b> từ các attempts đó. Có <b>3 attempts được moderator trợ giúp</b> nhưng chưa biết thuộc nhóm outcome nào. Người tham gia được tuyển từ cộng đồng fan sẵn có, không random. Chưa đo task time.\n\n1. Tính overall completion, direct, indirect, failure — mỗi tỷ lệ phải ghi mẫu số và đơn vị <b>attempts</b>.\n2. Phân biệt <b>6 attempts first-click sai</b> với <b>9 error events</b>, và vì sao không được trừ 9 khỏi 15 để ra số người thành công.\n3. Đánh giá câu “80% tất cả người dùng sẽ tìm dễ; menu đã tốt”; phân biệt nguồn hỗ trợ, assistance/selection bias và dữ liệu còn thiếu.\n4. Thiết kế <b>một vòng kiểm chứng</b> sau khi đề xuất sửa nhãn: target users, task wording/expected leaf, metrics, sample/protocol và kiểm thử trong UI thật; nêu giới hạn phát biểu.\n\n<b>Hint không spoil:</b> Chia nhóm outcome trước, đừng nhét số error events vào mẫu số người; mỗi attempt có thể có nhiều sự kiện lỗi và vẫn complete.",
+            "model_answer_md": "<b>MODEL ANSWER — CHỈ HIỆN SAU SUBMIT HỢP LỆ TRONG APP TƯƠNG LAI:</b> Complete=(8+3)/15=<b>11/15≈73,3%</b>; direct=8/15≈<b>53,3%</b>, indirect=3/15=<b>20%</b>, failed=4/15≈<b>26,7%</b>. Câu báo cáo “80%” còn sai ngay cả với mẫu hư cấu, chưa kể suy rộng population. Sáu attempts first-click sai khác chín wrong-branch events; vì một attempt có thể phát sinh nhiều event. Không biết 3 assisted attempts thuộc nhóm nào nên <b>không tính được unassisted success rate</b>. Convenience recruitment hạn chế suy rộng; task success không tự đo sự “dễ dàng” hay visual UI thật. Đo lại từ task, expected destination, route logs, assistance flags và UI usability with meaningful target users; kết quả vẫn gắn với mẫu/protocol.",
+            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
             "id": "vi-06",
             "role": "reflection",
             "heading": "5 · Rubric 0–8 (tự chấm, chưa hiệu chuẩn)",
-            "body_md": "4×0/1/2 cho (A) số học/success category đúng, (B) attempt vs event/first-click/assistance phân biệt, (C) suy luận có giới hạn dữ liệu và sampling, (D) kế hoạch nghiên cứu tiếp theo có task/leaf, metric và UI context. 0 thiếu/sai, 1 một phần, 2 đúng kèm lý do. Hint/assisted giữ riêng; completion của bài không phải chứng minh phương pháp T09 đã được dùng trong app."
+            "body_md": "4×0/1/2 cho (A) số học/success category đúng, (B) attempt vs event/first-click/assistance phân biệt, (C) suy luận có giới hạn dữ liệu và sampling, (D) kế hoạch nghiên cứu tiếp theo có task/leaf, metric và UI context. 0 thiếu/sai, 1 một phần, 2 đúng kèm lý do. Hint/assisted giữ riêng; completion của bài không phải chứng minh phương pháp T09 đã được dùng trong app.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
             "id": "vi-07",
@@ -57,7 +65,7 @@
         "sections": [
           {
             "id": "en-01",
-            "role": "concept",
+            "role": "goals",
             "heading": "1 · Objectives",
             "body_md": "Write a realistic task with an observable success criterion and predefined destination; distinguish <b>direct</b> (correct without backtracking), <b>indirect</b> (correct after backtracking), <b>failed</b> outcomes, and <b>error events</b> (predefined wrong actions). Calculate rates with an explicit denominator of valid attempts and avoid extrapolating a small convenience sample to a population or calling a text-only tree test a visual UI test."
           },
@@ -69,7 +77,7 @@
           },
           {
             "id": "en-03",
-            "role": "concept",
+            "role": "guided",
             "heading": "3 · Guided case, different numbers",
             "body_md": "Twelve fictional valid attempts to find a language setting show 7 direct, 3 indirect and 2 failed. Completion 10/12≈<b>83.3%</b>; direct 7/12≈58.3%, indirect 3/12=25%, failed 2/12≈16.7%. A participant taking three wrong turns creates three error events but remains one participant. Distinguish valid attempts and timeouts in reporting; these numbers are teaching fixtures."
           },
@@ -77,7 +85,9 @@
             "id": "en-04",
             "role": "methods",
             "heading": "3b · L2-T09 primary — appraise raw study evidence",
-            "body_md": "<b>Separate micropractice, not the assessment:</b> A synthetic report proclaims “77.8% of users found the item easily.” The underlying nine attempts record 4 direct, 3 indirect and 2 failed. Participants were recruited from one fan community and two moderator hints were given with no mapping to attempt IDs.\n\n<b>Do the method:</b> compute completion and its denominator; break down direct/indirect/fail; mark what the raw log DOES and does NOT support about ease, unassisted outcomes or all users; name at least two missing fields needed to appraise the claim. Answer before feedback appears; viewing an L2 guide alone is not T09.\n\n<b>Feedback only AFTER meaningful micropractice attempt:</b> complete 7/9≈77.8%; direct 4/9≈44.4%, indirect 3/9≈33.3%, failure 2/9≈22.2%. “7 of 9 attempts eventually completed” is supported, while “easily” and generalization are not. Request per-attempt assistance flags and timing, exact recruitment/task/expected leaf, first-click and path records, repeat exposure. The hinted attempts cannot be subtracted from a group without their IDs.\n\n<b>Optional T06:</b> contrast correct first path, correct after backtracking, failed target and wrong click then completion. A successful attempt may still have error events, so labels are not all mutually exclusive."
+            "body_md": "<b>Separate micropractice, not the assessment:</b> A synthetic report proclaims “77.8% of users found the item easily.” The underlying nine attempts record 4 direct, 3 indirect and 2 failed. Participants were recruited from one fan community and two moderator hints were given with no mapping to attempt IDs.\n\n<b>Do the method:</b> compute completion and its denominator; break down direct/indirect/fail; mark what the raw log DOES and does NOT support about ease, unassisted outcomes or all users; name at least two missing fields needed to appraise the claim. Answer before feedback appears; viewing an L2 guide alone is not T09.\n\n<b>Feedback only AFTER meaningful micropractice attempt:</b> complete 7/9≈77.8%; direct 4/9≈44.4%, indirect 3/9≈33.3%, failure 2/9≈22.2%. “7 of 9 attempts eventually completed” is supported, while “easily” and generalization are not. Request per-attempt assistance flags and timing, exact recruitment/task/expected leaf, first-click and path records, repeat exposure. The hinted attempts cannot be subtracted from a group without their IDs.\n\n<b>Optional T06:</b> contrast correct first path, correct after backtracking, failed target and wrong click then completion. A successful attempt may still have error events, so labels are not all mutually exclusive.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "en-05",
@@ -91,7 +101,8 @@
             "id": "en-06",
             "role": "reflection",
             "heading": "5 · Uncalibrated 0–8 self-review",
-            "body_md": "Four criteria each worth 0/1/2: (A) completion/path rates, (B) attempts/events/assistance distinction, (C) honest limits of inference and sampling, (D) actionable study with target, route metrics and real-UI caveats. Hints and guide exposure separate from knowledge evidence."
+            "body_md": "Four criteria each worth 0/1/2: (A) completion/path rates, (B) attempts/events/assistance distinction, (C) honest limits of inference and sampling, (D) actionable study with target, route metrics and real-UI caveats. Hints and guide exposure separate from knowledge evidence.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
             "id": "en-07",
@@ -103,7 +114,6 @@
       }
     },
     "companion": {
-      "reviewState": "proposed",
       "moments": [
         {
           "stage": "opening",
@@ -135,50 +145,48 @@
           "heading": "extension · <code>l0323-extension</code>",
           "source_md": "<b>Primary:</b> <code>bacon-studies</code>; alternatives <code>analects-peers</code>, <code>mill-other-side</code>. <b>Relevance:</b> reading, discussion and writing as learning habits parallel triangulating IA and full UI studies, not a source for modern UX methods.\n\n<b>VI · Lão Lý:</b> “Menu đẹp không cứu được task tìm sai. Nhưng cây danh mục đẹp trên giấy cũng chưa chứng minh icon dễ hiểu.”\n\n- <b>“Đọc gì trước?”</b> → “Đọc NN/g success-rate boundaries, rồi phân biệt direct/indirect trong tree tests.”\n- <b>“Thực hành ngoài đời?”</b> → “Viết một task đo được, chạy với người dùng phù hợp rồi phân biệt lỗi IA với lỗi visual/UI.”\n\n<b>EN · Lão Lý:</b> “Pretty menus won't repair failed tasks; a clean tree won't prove icon findability either.”\n\n- <b>“Which reading first?”</b> → “Start with NN/g success measures and direct/indirect paths in IA tests.”\n- <b>“Real-world exercise?”</b> → “Write a measurable task, recruit relevant users and investigate IA separately from visual-UI failure.”\n\n<b>QA constraints:</b> each stage has 3 existing-bank quote IDs and two distinct localized action/reply pairs, primary must be honored in future quote engine; quotes are not paraphrased as precise translations here. L2-T09 exercise and L03 independent fixture distinct, source and rights verification pending, no native release, no paid costs."
         }
-      ]
+      ],
+      "reviewState": "proposed"
     }
   },
-  "title": {
-    "sourceTitle": "W3C · L03-2-3 — Usability Tasks, Errors and Findability Measures · VI/EN editorial"
-  },
-  "publishedAt": null,
-  "publishState": "draft",
-  "reviewState": "proposed",
-  "editorialStatus": "draft",
   "rights": {
-    "status": "not_verified",
+    "status": "unverified",
     "releaseAuthorized": false
   },
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "publishState": "draft",
+  "publishedAt": null,
   "provenance": {
     "sourceUrl": "https://app.notion.com/p/41c6cf6db72a8101a552cf40a7e6faab",
     "rawSourcePath": "content/editorial/imported/L03-2-3.source.v1.json",
-    "sourceBodyCharacters": 25520,
-    "sourcePreserved": true
+    "sourceBodyCharacters": 25520
   },
   "normalization": {
-    "status": "needs_editorial_fix",
-    "issues": [
-      "vi:independent_count_0",
-      "vi:answer_key_separation_missing",
-      "en:answer_key_separation_missing"
-    ],
+    "status": "needs_editorial_correction",
     "counts": {
       "vi": {
-        "chapters": 7,
-        "independent": 0,
-        "answersSeparated": 0,
-        "methods": 0,
-        "rubric": 1
+        "sections": 7,
+        "independent": 1,
+        "solution": 1,
+        "method": 1,
+        "rubric": 1,
+        "spoilersInPrompts": 0
       },
       "en": {
-        "chapters": 7,
+        "sections": 7,
         "independent": 1,
-        "answersSeparated": 0,
-        "methods": 1,
-        "rubric": 1
+        "solution": 0,
+        "method": 1,
+        "rubric": 1,
+        "spoilersInPrompts": 0
       }
     },
+    "issues": [
+      "en:model_answer_not_isolated"
+    ],
+    "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
-    "rendering": "not_released_no_React_route"
+    "runnableInReact": false
   }
 }

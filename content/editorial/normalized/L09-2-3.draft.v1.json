@@ -2,6 +2,9 @@
   "schemaVersion": "1.0.0",
   "id": "L09-2-3",
   "kind": "Lesson",
+  "title": {
+    "sourceTitle": "W3C · L09-2-3 — Regression and Possible Confounding · VI/EN editorial"
+  },
   "content": {
     "format": "editorial-sectioned-draft-v1",
     "localized": {
@@ -30,7 +33,9 @@
             "id": "vi-04",
             "role": "methods",
             "heading": "3b · L2-T07 — kiểm giả định trước khi nói “nhờ X” (bộ luyện mới)",
-            "body_md": "<b>Micropractice GIẢ ĐỊNH:</b> 4 người, X = số lần xem tutorial, Y = điểm quiz: novice (1,4),(2,4); experienced (3,10),(4,10). Cả nhóm experienced có điểm cao hơn, đồng thời xem nhiều lần hơn. Manager nói “X tăng nên Y tăng”.\n\n<b>Người học phải làm:</b> (1) tách hai subgroup; (2) nêu xu hướng X↔Y <b>trong mỗi subgroup</b>; (3) xác định một third variable có thể giải thích xu hướng gộp và giả định thiếu để kết luận nhân quả; (4) đề xuất một phép kiểm hoặc thử nghiệm với phân nhóm/cân bằng kinh nghiệm, sau đó mới nhận feedback. Việc xem guide Thần Chú hoặc tick tên T07 <b>không</b> chứng minh enactment.\n\n<b>Feedback CHỈ SAU attempted response:</b> Trong novice cả hai Y=4 dù X thay; trong experienced cả hai Y=10 dù X thay. Pooled line vẫn có slope dương (OLS b=2,4 trong fixture 4 điểm). <b>Expertise</b> là ứng viên confounder vì ảnh hưởng cả exposure (ở đây tự dựng như vậy) và outcome. Không thể nói tutorial vô tác dụng từ hai nhóm hai người; bộ số chỉ cho thấy tuyên bố “vì X” chưa có chứng cứ nhân quả. Có thể random hóa độ phơi bày tutorial/đối chứng trong nhóm expertise, tiền đăng ký metrics và kiểm bằng dữ liệu lớn hơn nếu phù hợp.\n\n<b>Optional T06:</b> so sánh bằng bảng hai cột “pooled association” và “within-group association”; rút ra điều kiện bất đồng, không dán nhãn Simpson's paradox tùy tiện khi chưa định nghĩa hướng thay đổi tỷ lệ/hệ số."
+            "body_md": "<b>Micropractice GIẢ ĐỊNH:</b> 4 người, X = số lần xem tutorial, Y = điểm quiz: novice (1,4),(2,4); experienced (3,10),(4,10). Cả nhóm experienced có điểm cao hơn, đồng thời xem nhiều lần hơn. Manager nói “X tăng nên Y tăng”.\n\n<b>Người học phải làm:</b> (1) tách hai subgroup; (2) nêu xu hướng X↔Y <b>trong mỗi subgroup</b>; (3) xác định một third variable có thể giải thích xu hướng gộp và giả định thiếu để kết luận nhân quả; (4) đề xuất một phép kiểm hoặc thử nghiệm với phân nhóm/cân bằng kinh nghiệm, sau đó mới nhận feedback. Việc xem guide Thần Chú hoặc tick tên T07 <b>không</b> chứng minh enactment.\n\n<b>Feedback CHỈ SAU attempted response:</b> Trong novice cả hai Y=4 dù X thay; trong experienced cả hai Y=10 dù X thay. Pooled line vẫn có slope dương (OLS b=2,4 trong fixture 4 điểm). <b>Expertise</b> là ứng viên confounder vì ảnh hưởng cả exposure (ở đây tự dựng như vậy) và outcome. Không thể nói tutorial vô tác dụng từ hai nhóm hai người; bộ số chỉ cho thấy tuyên bố “vì X” chưa có chứng cứ nhân quả. Có thể random hóa độ phơi bày tutorial/đối chứng trong nhóm expertise, tiền đăng ký metrics và kiểm bằng dữ liệu lớn hơn nếu phù hợp.\n\n<b>Optional T06:</b> so sánh bằng bảng hai cột “pooled association” và “within-group association”; rút ra điều kiện bất đồng, không dán nhãn Simpson's paradox tùy tiện khi chưa định nghĩa hướng thay đổi tỷ lệ/hệ số.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "vi-05",
@@ -44,7 +49,8 @@
             "id": "vi-06",
             "role": "reflection",
             "heading": "5 · Rubric tự đánh giá 0–8 chưa hiệu chuẩn",
-            "body_md": "4 × 0/1/2: (A) OLS a/b/units và residual/prediction phân biệt; (B) within-group vs pooled so sánh đúng; (C) confounder và causal humility; (D) dữ liệu/thiết kế bổ sung và ngoại suy giới hạn. Hint/assisted K7 tách K1/K3; tự chấm không thay chuyên gia thống kê xác nhận."
+            "body_md": "4 × 0/1/2: (A) OLS a/b/units và residual/prediction phân biệt; (B) within-group vs pooled so sánh đúng; (C) confounder và causal humility; (D) dữ liệu/thiết kế bổ sung và ngoại suy giới hạn. Hint/assisted K7 tách K1/K3; tự chấm không thay chuyên gia thống kê xác nhận.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
             "id": "vi-07",
@@ -59,7 +65,7 @@
         "sections": [
           {
             "id": "en-01",
-            "role": "concept",
+            "role": "goals",
             "heading": "1 · Objectives",
             "body_md": "Explain predictor X, outcome Y, prediction <code>y-hat=a+bx</code>, slope b, intercept a, residual <code>y−y-hat</code> and basic least-squares fitting; separate association, prediction and causal effect; notice when a third variable plausibly affects both X and Y; check a pooled trend against subgroup patterns and design more credible evidence."
           },
@@ -79,7 +85,9 @@
             "id": "en-04",
             "role": "methods",
             "heading": "3b · T07 primary: question the causal premise (new micropractice)",
-            "body_md": "Four hypothetical participants: novice (1 tutorial view,4 quiz points),(2,4); experienced (3,10),(4,10). A manager says additional views <b>caused</b> the improvement.\n\n<b>Required learner attempt:</b> split the two groups, compare within-group X/Y movement, identify a plausible third variable influencing exposure and score, and state a discriminating study or controlled trial. Feedback stays locked until actual reasoning is submitted; viewing a method guide alone is not T07 performed.\n\n<b>After-attempt feedback:</b> Novices remain at Y=4 and experienced remain at Y=10 as X changes. Pooled slope is positive (b=2.4 in this four-point fixture), yet each group's observed slope is zero. Baseline experience is an obvious candidate common cause in this invented design; the four points cannot prove that tutorials have no effect either. One better test could randomize tutorial exposure within comparable experience groups with prespecified measures.\n\n<b>Optional T06:</b> compare pooled association to within-group association side by side. Do not automatically call any subgroup contrast a general Simpson's paradox proof."
+            "body_md": "Four hypothetical participants: novice (1 tutorial view,4 quiz points),(2,4); experienced (3,10),(4,10). A manager says additional views <b>caused</b> the improvement.\n\n<b>Required learner attempt:</b> split the two groups, compare within-group X/Y movement, identify a plausible third variable influencing exposure and score, and state a discriminating study or controlled trial. Feedback stays locked until actual reasoning is submitted; viewing a method guide alone is not T07 performed.\n\n<b>After-attempt feedback:</b> Novices remain at Y=4 and experienced remain at Y=10 as X changes. Pooled slope is positive (b=2.4 in this four-point fixture), yet each group's observed slope is zero. Baseline experience is an obvious candidate common cause in this invented design; the four points cannot prove that tutorials have no effect either. One better test could randomize tutorial exposure within comparable experience groups with prespecified measures.\n\n<b>Optional T06:</b> compare pooled association to within-group association side by side. Do not automatically call any subgroup contrast a general Simpson's paradox proof.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "en-05",
@@ -93,7 +101,8 @@
             "id": "en-06",
             "role": "reflection",
             "heading": "5 · Uncalibrated 0–8 self-rubric",
-            "body_md": "Four dimensions 0/1/2: OLS arithmetic and residual-vs-prediction; grouped-vs-pooled comparison; confounding and causal caveat; credible follow-up design and extrapolation limits. Keep hints/assistance separate from measured knowledge, and do not claim validated mastery from self-score."
+            "body_md": "Four dimensions 0/1/2: OLS arithmetic and residual-vs-prediction; grouped-vs-pooled comparison; confounding and causal caveat; credible follow-up design and extrapolation limits. Keep hints/assistance separate from measured knowledge, and do not claim validated mastery from self-score.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
             "id": "en-07",
@@ -105,7 +114,6 @@
       }
     },
     "companion": {
-      "reviewState": "proposed",
       "moments": [
         {
           "stage": "opening",
@@ -137,46 +145,46 @@
           "heading": "extension · <code>l0923-extension</code>",
           "source_md": "<b>Primary:</b> <code>bacon-studies</code>; alternatives <code>mill-other-side</code>, <code>analects-peers</code>. <b>Relevance:</b> discussing and writing defensible claims is a bounded learning analogy; OpenStax supplies the actual statistical theory.\n\n<b>VI · Lão Lý:</b> “Thành thạo số thì đáng mừng. Nhưng đi họp đừng biến ‘có liên hệ’ thành ‘chính tính năng này tạo ra’.”\n\n- <b>“Đọc sâu gì?”</b> → “OpenStax §12.3 cho OLS/residual, §1.2 cho confounding và hạn chế causal.”\n- <b>“Bài tự tạo?”</b> → “Giữ vài nhóm có baseline khác nhau, đổi phơi bày trong nhóm rồi hỏi liệu xu hướng pooled còn ổn không.”\n\n<b>EN · Lão Lý:</b> “Good arithmetic is welcome. Turning correlation into a product-effect claim in a meeting is not.”\n\n- <b>“What sources?”</b> → “OpenStax §12.3 for least squares and residuals, §1.2 for confounding/causality.”\n- <b>“Fresh probe?”</b> → “Construct new comparable groups and examine exposure/outcome movement within each before pooling.”\n\n<b>Editorial gate:</b> six stage-specific VI/EN contexts, 2 pairs per locale/stage and 3 curated original-bank IDs/stage. No data-derived quote or false classical citation. Source translation/reuse and quote ordering Issue #8, actual runtime and real-device/QA28 remain OPEN."
         }
-      ]
+      ],
+      "reviewState": "proposed"
     }
   },
-  "title": {
-    "sourceTitle": "W3C · L09-2-3 — Regression and Possible Confounding · VI/EN editorial"
-  },
-  "publishedAt": null,
-  "publishState": "draft",
-  "reviewState": "proposed",
-  "editorialStatus": "draft",
   "rights": {
-    "status": "not_verified",
+    "status": "unverified",
     "releaseAuthorized": false
   },
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "publishState": "draft",
+  "publishedAt": null,
   "provenance": {
     "sourceUrl": "https://app.notion.com/p/41c6cf6db72a81b6967cc355b0193fa0",
     "rawSourcePath": "content/editorial/imported/L09-2-3.source.v1.json",
-    "sourceBodyCharacters": 23445,
-    "sourcePreserved": true
+    "sourceBodyCharacters": 23445
   },
   "normalization": {
-    "status": "sectioned_requires_academic_and_rights_review",
-    "issues": [],
+    "status": "needs_academic_rights_and_release_review",
     "counts": {
       "vi": {
-        "chapters": 7,
+        "sections": 7,
         "independent": 1,
-        "answersSeparated": 1,
-        "methods": 1,
-        "rubric": 1
+        "solution": 1,
+        "method": 1,
+        "rubric": 1,
+        "spoilersInPrompts": 0
       },
       "en": {
-        "chapters": 7,
+        "sections": 7,
         "independent": 1,
-        "answersSeparated": 1,
-        "methods": 1,
-        "rubric": 1
+        "solution": 1,
+        "method": 1,
+        "rubric": 1,
+        "spoilersInPrompts": 0
       }
     },
+    "issues": [],
+    "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
-    "rendering": "not_released_no_React_route"
+    "runnableInReact": false
   }
 }

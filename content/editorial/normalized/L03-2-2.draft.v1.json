@@ -2,6 +2,9 @@
   "schemaVersion": "1.0.0",
   "id": "L03-2-2",
   "kind": "Lesson",
+  "title": {
+    "sourceTitle": "W3B · L03-2-2 — Card Sorting versus Tree Testing · VI/EN editorial"
+  },
   "content": {
     "format": "editorial-sectioned-draft-v1",
     "localized": {
@@ -18,7 +21,9 @@
             "id": "vi-02",
             "role": "methods",
             "heading": "2 · Hai phương pháp, hai loại câu hỏi",
-            "body_md": "| Khía cạnh | Card sorting | Tree testing |\n| --- | --- | --- |\n| Đầu vào | Các thẻ nội dung; open: người dùng tự nhóm/đặt tên; closed: nhóm đã cho sẵn | Một cây danh mục + label dự kiến, <b>không kèm giao diện đồ họa</b> |\n| Nhiệm vụ | Sắp nhóm thẻ theo cách có ý nghĩa | Tìm vị trí thích hợp cho một mục qua các nhánh |\n| Kết quả | Gợi ý mental model, nhóm/nhãn có thể thử | Đường chọn, tỷ lệ tới đích đúng, first path, nhánh dễ gây lạc |\n| Không chứng minh | Menu cuối cùng đã findable | Giao diện trực quan thực tế đã usability tốt |\n\n<b>Original worked example:</b> Một thư viện học trực tuyến có 6 thẻ: A “Khái niệm lấy mẫu”, B “Video phân phối xác suất”, C “Bài luyện thống kê”, D “Tự kiểm tra”, E “Ghi chú cá nhân”, F “Theo dõi tiến độ”. Card sort có thể gợi ý ba nhóm “Kiến thức”, “Luyện tập”, “Cá nhân” nhưng đó chỉ là <b>phương án để thiết kế</b>; muốn biết người dùng tìm được “Tự kiểm tra” ở nhánh nào, cần một tree đã định nghĩa và tác vụ tìm nội dung ấy. Hai bước có thể bổ sung cho nhau chứ không thay thế nhau."
+            "body_md": "| Khía cạnh | Card sorting | Tree testing |\n| --- | --- | --- |\n| Đầu vào | Các thẻ nội dung; open: người dùng tự nhóm/đặt tên; closed: nhóm đã cho sẵn | Một cây danh mục + label dự kiến, <b>không kèm giao diện đồ họa</b> |\n| Nhiệm vụ | Sắp nhóm thẻ theo cách có ý nghĩa | Tìm vị trí thích hợp cho một mục qua các nhánh |\n| Kết quả | Gợi ý mental model, nhóm/nhãn có thể thử | Đường chọn, tỷ lệ tới đích đúng, first path, nhánh dễ gây lạc |\n| Không chứng minh | Menu cuối cùng đã findable | Giao diện trực quan thực tế đã usability tốt |\n\n<b>Original worked example:</b> Một thư viện học trực tuyến có 6 thẻ: A “Khái niệm lấy mẫu”, B “Video phân phối xác suất”, C “Bài luyện thống kê”, D “Tự kiểm tra”, E “Ghi chú cá nhân”, F “Theo dõi tiến độ”. Card sort có thể gợi ý ba nhóm “Kiến thức”, “Luyện tập”, “Cá nhân” nhưng đó chỉ là <b>phương án để thiết kế</b>; muốn biết người dùng tìm được “Tự kiểm tra” ở nhánh nào, cần một tree đã định nghĩa và tác vụ tìm nội dung ấy. Hai bước có thể bổ sung cho nhau chứ không thay thế nhau.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "vi-03",
@@ -30,7 +35,9 @@
             "id": "vi-04",
             "role": "methods",
             "heading": "3b · T06 luyện so sánh — bộ tình huống riêng",
-            "body_md": "<b>Phân loại mục đích trước khi xem đáp án:</b> (A) Team chưa biết nên chia 20 bài nghiên cứu thành chủ đề nào; (B) Có tree navigation và muốn kiểm liệu “Hướng dẫn nộp báo cáo” dễ tìm; (C) Muốn tìm các tên nhóm người dùng tự nghĩ ra; (D) Muốn đo tác vụ tìm “Thêm thành viên” có tới đúng vị trí trong tree.\n\n<b>Nhiệm vụ:</b> chọn card sorting hay tree testing cho A–D, nêu <b>một dấu hiệu phân biệt</b> mỗi cặp, và giải thích vì sao không thể lấy kết quả card sort làm bằng chứng task success. Phản hồi chỉ mở sau khi gửi câu trả lời.\n\n<b>Feedback SAU lượt luyện:</b> A/C ưu tiên card sorting (khám phá nhóm/nhãn); B/D ưu tiên tree testing (đánh giá cấu trúc xác định). Không bắt buộc mỗi vấn đề chỉ dùng đúng một phương pháp; vấn đề là chọn <b>phương pháp phù hợp câu hỏi hiện tại</b>.\n\n<b>T09 phụ:</b> Với báo cáo “8/10 người hoàn thành tree test, navigation đã chuẩn”, hãy kiểm tra ai được chọn, tác vụ/đích định nghĩa thế nào, số mẫu có phù hợp, và cây thiếu visual cues. Đây là source appraisal, không phải bằng chứng đại diện."
+            "body_md": "<b>Phân loại mục đích trước khi xem đáp án:</b> (A) Team chưa biết nên chia 20 bài nghiên cứu thành chủ đề nào; (B) Có tree navigation và muốn kiểm liệu “Hướng dẫn nộp báo cáo” dễ tìm; (C) Muốn tìm các tên nhóm người dùng tự nghĩ ra; (D) Muốn đo tác vụ tìm “Thêm thành viên” có tới đúng vị trí trong tree.\n\n<b>Nhiệm vụ:</b> chọn card sorting hay tree testing cho A–D, nêu <b>một dấu hiệu phân biệt</b> mỗi cặp, và giải thích vì sao không thể lấy kết quả card sort làm bằng chứng task success. Phản hồi chỉ mở sau khi gửi câu trả lời.\n\n<b>Feedback SAU lượt luyện:</b> A/C ưu tiên card sorting (khám phá nhóm/nhãn); B/D ưu tiên tree testing (đánh giá cấu trúc xác định). Không bắt buộc mỗi vấn đề chỉ dùng đúng một phương pháp; vấn đề là chọn <b>phương pháp phù hợp câu hỏi hiện tại</b>.\n\n<b>T09 phụ:</b> Với báo cáo “8/10 người hoàn thành tree test, navigation đã chuẩn”, hãy kiểm tra ai được chọn, tác vụ/đích định nghĩa thế nào, số mẫu có phù hợp, và cây thiếu visual cues. Đây là source appraisal, không phải bằng chứng đại diện.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "vi-05",
@@ -44,7 +51,8 @@
             "id": "vi-06",
             "role": "reflection",
             "heading": "5 · Rubric 0–8 tự chấm",
-            "body_md": "4 tiêu chí × 0/1/2: (1) phương pháp gắn đúng research question; (2) 2 task/target/tracking hợp lệ; (3) giả thuyết và bằng chứng phân biệt; (4) vòng nghiên cứu + giới hạn suy luận/UX UI thực tế. 0 vắng/sai, 1 một phần, 2 cụ thể/hợp lý. Gợi ý và previous exposure lưu riêng; không đồng nhất tự chấm với năng lực UX chuyên gia."
+            "body_md": "4 tiêu chí × 0/1/2: (1) phương pháp gắn đúng research question; (2) 2 task/target/tracking hợp lệ; (3) giả thuyết và bằng chứng phân biệt; (4) vòng nghiên cứu + giới hạn suy luận/UX UI thực tế. 0 vắng/sai, 1 một phần, 2 cụ thể/hợp lý. Gợi ý và previous exposure lưu riêng; không đồng nhất tự chấm với năng lực UX chuyên gia.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
             "id": "vi-07",
@@ -65,9 +73,11 @@
           },
           {
             "id": "en-02",
-            "role": "concept",
+            "role": "methods",
             "heading": "2 · Different questions need different methods",
-            "body_md": "| Dimension | Card sorting | Tree testing |\n| --- | --- | --- |\n| Input | Content cards; open sorting lets participants group/name, closed sorting supplies predefined categories | Proposed text-only hierarchy with known destinations |\n| Participant action | Organize content into meaningful clusters | Find the destination of a given item or task by choosing branches |\n| Output | Grouping patterns, candidate terms or mental-model hypotheses | Destination success, paths/first branch, dead ends, confusing labels |\n| Does not establish | That a particular final menu is findable | That the fully styled UI, icons, layout and interaction are usable |\n\n<b>Original fictional worked case:</b> An online learning library has six items: A “Sampling concepts,” B “Probability video,” C “Statistics practice,” D “Self-check,” E “Personal notes” and F “Progress tracking.” A card sort may suggest Knowledge, Practice and Personal — <b>ideas, not a verified sitemap</b>. To evaluate whether someone can find Self-check, the team needs an actual navigation hierarchy, a realistic retrieval task and a known correct destination. Both methods are useful at different points, not interchangeable."
+            "body_md": "| Dimension | Card sorting | Tree testing |\n| --- | --- | --- |\n| Input | Content cards; open sorting lets participants group/name, closed sorting supplies predefined categories | Proposed text-only hierarchy with known destinations |\n| Participant action | Organize content into meaningful clusters | Find the destination of a given item or task by choosing branches |\n| Output | Grouping patterns, candidate terms or mental-model hypotheses | Destination success, paths/first branch, dead ends, confusing labels |\n| Does not establish | That a particular final menu is findable | That the fully styled UI, icons, layout and interaction are usable |\n\n<b>Original fictional worked case:</b> An online learning library has six items: A “Sampling concepts,” B “Probability video,” C “Statistics practice,” D “Self-check,” E “Personal notes” and F “Progress tracking.” A card sort may suggest Knowledge, Practice and Personal — <b>ideas, not a verified sitemap</b>. To evaluate whether someone can find Self-check, the team needs an actual navigation hierarchy, a realistic retrieval task and a known correct destination. Both methods are useful at different points, not interchangeable.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "en-03",
@@ -77,9 +87,11 @@
           },
           {
             "id": "en-04",
-            "role": "goals",
+            "role": "methods",
             "heading": "3b · Primary method T06 — discriminate between research goals",
-            "body_md": "<b>Separate micropractice:</b> (A) The team does not know how 20 research articles should be grouped; (B) The proposed tree exists and it needs to test findability of a reporting guide; (C) The team wants to learn user-generated category names; (D) The team asks if users locate Add Member at the correct branch.\n\n<b>Task:</b> Choose card sorting or tree testing for A–D; describe the <b>diagnostic purpose</b> for each, and explain why a card-sort pattern is not an observed findability rate. Provide your actual attempt before unlocking feedback.\n\n<b>Feedback AFTER method attempt:</b> A and C favor card sorting for discovery; B and D favor tree testing for evaluating a specified hierarchy. A project may use both sequentially, but method fit must follow the research question.\n\n<b>Optional T09:</b> Critique “8/10 people completed a tree test, therefore the navigation is perfect.” Ask about sampling, target/task validity, success destinations and missing UI context. A small observed rate does not prove population-level success."
+            "body_md": "<b>Separate micropractice:</b> (A) The team does not know how 20 research articles should be grouped; (B) The proposed tree exists and it needs to test findability of a reporting guide; (C) The team wants to learn user-generated category names; (D) The team asks if users locate Add Member at the correct branch.\n\n<b>Task:</b> Choose card sorting or tree testing for A–D; describe the <b>diagnostic purpose</b> for each, and explain why a card-sort pattern is not an observed findability rate. Provide your actual attempt before unlocking feedback.\n\n<b>Feedback AFTER method attempt:</b> A and C favor card sorting for discovery; B and D favor tree testing for evaluating a specified hierarchy. A project may use both sequentially, but method fit must follow the research question.\n\n<b>Optional T09:</b> Critique “8/10 people completed a tree test, therefore the navigation is perfect.” Ask about sampling, target/task validity, success destinations and missing UI context. A small observed rate does not prove population-level success.",
+            "feedback_md": null,
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "en-05",
@@ -91,9 +103,10 @@
           },
           {
             "id": "en-06",
-            "role": "concept",
+            "role": "reflection",
             "heading": "5 · Self-assessment 0–8, not a calibrated score",
-            "body_md": "Four 0/1/2 criteria: method chosen for the right question; two valid tasks/targets/measurements; competing hypotheses and discriminating evidence; iterative research plan with sampling/real-UI limitations. A guide view or self-rating is not actual L2/T06 competence."
+            "body_md": "Four 0/1/2 criteria: method chosen for the right question; two valid tasks/targets/measurements; competing hypotheses and discriminating evidence; iterative research plan with sampling/real-UI limitations. A guide view or self-rating is not actual L2/T06 competence.",
+            "gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
             "id": "en-07",
@@ -105,7 +118,6 @@
       }
     },
     "companion": {
-      "reviewState": "proposed",
       "moments": [
         {
           "stage": "opening",
@@ -137,49 +149,48 @@
           "heading": "extension · <code>l0322-extension</code>",
           "source_md": "<b>Primary:</b> <code>bacon-studies</code>; alternates <code>analects-peers</code>, <code>mill-other-side</code>. <b>Relevance:</b> reading, discussion and writing analogize to triangulating research methods; NN/g source is evidence.\n\n<b>VI · Lão Lý:</b> “Menu đẹp chưa hẳn tìm dễ. Nghiên cứu nhóm thẻ xong cũng chưa tới lễ tốt nghiệp IA đâu.”\n\n- <b>“Đọc cái gì tiếp?”</b> → “Đọc NN/g so sánh hai phương pháp, rồi phần giới hạn thiếu visual context của tree test.”\n- <b>“Kiểm nghiệm ngoài đời?”</b> → “Từ kết quả tree test hãy làm usability task trong UI thật, theo dõi icon, search và ngữ cảnh.”\n\n<b>EN · Lão Lý:</b> “A pretty menu is not proof of findability, and a tidy card sort is not an IA diploma.”\n\n- <b>“Read what?”</b> → “Start with NN/g's method comparison, then the limits of a visually stripped tree.”\n- <b>“Real-world follow-up?”</b> → “Test the actual interface after the tree study, including visual affordances and search cues.”\n\n<b>Editorial status:</b> 6 stages/12 VI and 12 EN action-reply pairs, 18 quote candidate placements. Body and answer visibility remain Notion-only; no runtime/VoiceOver/license/specialist QA or deploy."
         }
-      ]
+      ],
+      "reviewState": "proposed"
     }
   },
-  "title": {
-    "sourceTitle": "W3B · L03-2-2 — Card Sorting versus Tree Testing · VI/EN editorial"
-  },
-  "publishedAt": null,
-  "publishState": "draft",
-  "reviewState": "proposed",
-  "editorialStatus": "draft",
   "rights": {
-    "status": "not_verified",
+    "status": "unverified",
     "releaseAuthorized": false
   },
+  "reviewState": "proposed",
+  "editorialStatus": "draft",
+  "publishState": "draft",
+  "publishedAt": null,
   "provenance": {
     "sourceUrl": "https://app.notion.com/p/41b6cf6db72a819b88cdecc42c439714",
     "rawSourcePath": "content/editorial/imported/L03-2-2.source.v1.json",
-    "sourceBodyCharacters": 23997,
-    "sourcePreserved": true
+    "sourceBodyCharacters": 23997
   },
   "normalization": {
-    "status": "needs_editorial_fix",
-    "issues": [
-      "en:answer_key_separation_missing",
-      "en:rubric_count_0"
-    ],
+    "status": "needs_editorial_correction",
     "counts": {
       "vi": {
-        "chapters": 7,
+        "sections": 7,
         "independent": 1,
-        "answersSeparated": 1,
-        "methods": 2,
-        "rubric": 1
+        "solution": 1,
+        "method": 2,
+        "rubric": 1,
+        "spoilersInPrompts": 0
       },
       "en": {
-        "chapters": 7,
+        "sections": 7,
         "independent": 1,
-        "answersSeparated": 0,
-        "methods": 0,
-        "rubric": 0
+        "solution": 0,
+        "method": 2,
+        "rubric": 1,
+        "spoilersInPrompts": 0
       }
     },
+    "issues": [
+      "en:model_answer_not_isolated"
+    ],
+    "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
-    "rendering": "not_released_no_React_route"
+    "runnableInReact": false
   }
 }

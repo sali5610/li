@@ -42,6 +42,12 @@ function findParts(){
  const lesson=course?.lessons.find(x=>x.id===path[3])||null;
  return {group,field,course,lesson};
 }
+function reactOwnsCatalog(){return window.liReactCatalogMounted===true;}
+function focusCatalogHeading(){
+ const heading=reactOwnsCatalog()?document.querySelector("#li-react-catalog-host h1"):host.querySelector("h1");
+ if(!heading)return;
+ heading.tabIndex=-1;heading.focus?.({preventScroll:true});
+}
 function setPath(next,save=true){
  path=normalizePath(next);
  const parts=findParts();
@@ -58,8 +64,8 @@ function setPath(next,save=true){
  if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));
  if(save){
   window.scrollTo?.({top:0,left:0,behavior:"instant"});
-  const heading=host.querySelector("h1");
-  if(heading){heading.tabIndex=-1;heading.focus?.({preventScroll:true});}
+  if(reactOwnsCatalog())window.requestAnimationFrame?.(focusCatalogHeading);
+  else focusCatalogHeading();
  }
 }
 function header(title,desc,eyebrow){
@@ -166,6 +172,9 @@ function renderUnpublishedLesson(l){
  el("p","","Đây chỉ là đề cương trong roadmap. Chưa có chương được phát hành. Chưa có bài tập hoặc tiến độ học.",main);
 }
 function render(){
+ // React is the visible catalogue. Do not rebuild its hidden native twin on
+ // every breadcrumb, browser Back, locale or progress change.
+ if(reactOwnsCatalog())return;
  host.replaceChildren();
  try{
  breadcrumbs();
@@ -375,38 +384,81 @@ document.addEventListener("click",e=>{
  }
 },true);
 window.addEventListener("popstate",()=>{
- const u=new URL(location.href),route=u.searchParams.get("lesson");
- const found=[["L03-1-2","lessonL03"],["L09-1-2","lessonL09"],["L15-2-2","lessonL15"]].find(p=>p[0]===route);
- if(found){window.navigate?.(found[1],{remember:false,syncUrl:false});document.getElementById("page-"+found[1])?._catalogChooseChapter?.(u.searchParams.get("chapter"),false);}
- else if(u.searchParams.has("catalog")){
+ const u=new URL(location.href),lessonId=u.searchParams.get("lesson");
+ const released=window.liReleasedLessonRoutes||{};
+ const fallback={"L03-1-2":"lessonL03","L09-1-2":"lessonL09","L15-2-2":"lessonL15"};
+ const route=released[lessonId]||fallback[lessonId];
+ if(route&&document.getElementById("page-"+route)){
+  window.navigate?.(route,{remember:false,syncUrl:false});
+  document.getElementById("page-"+route)?._catalogChooseChapter?.(u.searchParams.get("chapter"),false);
+ }else if(u.searchParams.has("catalog")){
   path=readPathFromUrl();
-  window.navigate?.("catalog",{remember:false,syncUrl:false});render();if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));
- }else{path=[];render();if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));window.navigate?.("home",{remember:false,syncUrl:false});}
+  window.navigate?.("catalog",{remember:false,syncUrl:false});
+  render();if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));
+ }else{
+  path=[];render();
+  if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));
+  window.navigate?.("home",{remember:false,syncUrl:false});
+ }
 });
 path=readPathFromUrl();
 if(path.length&&!new URL(location.href).searchParams.has("lesson")){window.navigate?.("catalog",{remember:false,syncUrl:false});}
 render();
 ["lessonL03","lessonL09","lessonL15"].forEach(mountNative);
-function openCatalogLesson(id){
- const parts=findParts(),lesson=parts.course?.lessons.find(item=>item.id===id);
- if(!lesson)return;
- if(lesson.published&&lesson.route){
-  if(history?.replaceState){
-   const u=new URL(location.href);u.searchParams.set("catalog",path.join("/"));
-   history.replaceState(history.state,"",u.pathname+u.search);
+function findCatalogLesson(id){
+ for(const group of groups)for(const field of group.fields)
+  for(const course of field.courses){
+   const lesson=course.lessons.find(item=>item.id===id);
+   if(lesson)return {group,field,course,lesson};
   }
-  const destination=new URL(location.href);
-  destination.searchParams.set("lesson",lesson.id);
-  destination.searchParams.delete("chapter");
-  if(history?.pushState)history.pushState(history.state,"",destination.pathname+destination.search);
-  window.navigate?.(lesson.route);return;
+ return null;
+}
+function openCatalogLesson(id){
+ const found=findCatalogLesson(id);
+ if(!found)return false;
+ const {group,field,course,lesson}=found;
+ const coursePath=[group.id,field.id,course.id];
+ // The React route must match the packed, explicitly approved release gate.
+ // The native fallback retains its existing published-lesson contract.
+ const approved=lesson.published===true&&typeof lesson.route==="string"&&
+  (!reactOwnsCatalog()||window.liReleasedLessonRoutes?.[id]===lesson.route);
+ if(!approved){setPath([...coursePath,id]);return false;}
+ path=coursePath;
+ if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));
+ if(window.history?.replaceState){
+  const previous=new URL(location.href);
+  previous.searchParams.set("catalog",coursePath.join("/"));
+  history.replaceState(history.state,"",previous.pathname+previous.search);
  }
- setPath([...path,id]);
+ const destination=new URL(location.href);
+ destination.searchParams.set("lesson",id);destination.searchParams.delete("chapter");
+ if(window.history?.pushState)history.pushState(history.state,"",destination.pathname+destination.search);
+ const navigated=reactOwnsCatalog()?window.liAppRouter?.navigate(lesson.route):
+  (window.navigate?.(lesson.route),true);
+ return navigated===true;
+}
+function openForLesson(id){
+ const found=findCatalogLesson(id);
+ if(!found||!found.lesson.published||!found.lesson.route||
+  (reactOwnsCatalog()&&window.liReleasedLessonRoutes?.[id]!==found.lesson.route))return false;
+ const routeOK=reactOwnsCatalog()?window.liAppRouter?.navigate("catalog"):
+  (window.navigate?.("catalog"),true);
+ if(routeOK!==true)return false;
+ setPath([found.group.id,found.field.id,found.course.id],false);
+ if(window.history?.replaceState){
+  const url=new URL(location.href);
+  url.searchParams.set("catalog",path.join("/"));
+  url.searchParams.delete("lesson");url.searchParams.delete("chapter");
+  history.replaceState(history.state,"",url.pathname+url.search);
+ }
+ window.requestAnimationFrame?.(focusCatalogHeading);
+ return true;
 }
 window.liCatalog={
  render,getPath:()=>[...path],
  openPath:(next,save=true)=>setPath(next,save),
  openLesson:openCatalogLesson,
+ openForLesson,
  openCourse:(group,field,course)=>{window.navigate?.("catalog");setPath([group,field,course]);}
 };
 })();

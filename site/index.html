@@ -1075,11 +1075,20 @@ window.addEventListener("li:personal-sync-applied",event=>{
    collectedIdeas.splice(0,collectedIdeas.length,...next.ideas);
    savedContent.splice(0,savedContent.length,...next.savedContent);
    liStorageError=false;
-   renderCaseArchive();renderSavedQuestions();
-   window.liLibraryShelf?.renderHome();window.liLibraryShelf?.renderResume();
-   window.liLibraryShelf?.renderCollection();
-   window.liBookmarks?.refresh();refreshQuestionBookmark();
-   if(currentPage==="noteDetail")window.liNotes?.renderDetail?.();
+   if(window.liReactRouter){
+    // The in-memory private ledger is the single data owner. Notify React
+    // after hydration; do not redraw hidden native Library/Case/Note hosts.
+    window.dispatchEvent(new Event("li:library-view-changed"));
+    window.dispatchEvent(new Event("li:inquiry-changed"));
+    window.dispatchEvent(new Event("li:note-view-changed"));
+   }else{
+    // Standalone native fallback keeps its original rendering contract.
+    renderCaseArchive();renderSavedQuestions();
+    window.liLibraryShelf?.renderHome();window.liLibraryShelf?.renderResume();
+    window.liLibraryShelf?.renderCollection();
+    window.liBookmarks?.refresh();refreshQuestionBookmark();
+    if(currentPage==="noteDetail")window.liNotes?.renderDetail?.();
+   }
   }catch{toast("Dữ liệu cloud chưa đọc được, vẫn giữ ghi chép hiện tại.");}
  }
  if(keys.has(STUDY_MODE_KEY))setStudyMode(liRestoreStudyMode(),{persist:false});

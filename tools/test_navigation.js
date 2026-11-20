@@ -259,3 +259,93 @@ vm.runInContext(importSource+"\nliImportPersonalData(backupFile)",importContext)
  console.log("PASS S118 native+React routing and canonical React backup import/export");
 }).catch(error=>{console.error(error);process.exitCode=1;});
 
+
+
+// Chat 1: a cloud-applied private note/bookmark must refresh React from the
+// canonical in-memory ledger, without touching a removed native Tủ Riêng host.
+const syncFrom=html.indexOf('window.addEventListener("li:personal-sync-applied",event=>{');
+const syncTo=html.indexOf("/* UI adapter only;",syncFrom);
+assert(syncFrom>=0&&syncTo>syncFrom,"Find canonical private sync observer");
+const syncCode=html.slice(syncFrom,syncTo);
+const syncListeners={},syncEvents=[],hiddenRenders=[],syncAlerts=[];
+const syncSaved={
+ cases:[{id:"case-from-ipad",title:"Case from iPad",revision:"New conclusion",correct:true}],
+ questions:[{question:"Saved on iPad"}],
+ ideas:[{id:"idea-from-ipad",text:"Real learner idea",savedAt:"2026-11-21"}],
+ savedContent:[{type:"lesson",id:"L03-1-2",savedAt:"2026-11-21"}]
+};
+const livePrivate={cases:[],questions:[],ideas:[],savedContent:[]};
+const syncStore=new Map([
+ ["li.sync.local-owner.v1","invited-account-A"],
+ ["li.private.library.v1",JSON.stringify({schema:1,cases:syncSaved.cases,questions:syncSaved.questions})]
+]);
+let syncVerified=true;
+const nativeRedraw=name=>()=>hiddenRenders.push(name);
+const syncCtx={
+ LI_STORAGE_KEY:"li.private.library.v1",
+ STUDY_MODE_KEY:"li.personal.study-mode.v1",
+ LI_BUDDY_NAMES_KEY:"li.buddy-address.v1",
+ LI_DRAFT_KEY:"li.private.case-draft.v1",
+ processedCases:livePrivate.cases,savedQuestions:livePrivate.questions,
+ collectedIdeas:livePrivate.ideas,savedContent:livePrivate.savedContent,
+ liStorageError:false,currentPage:"noteDetail",
+ liReadState:()=>syncSaved,
+ renderCaseArchive:nativeRedraw("case-archive"),
+ renderSavedQuestions:nativeRedraw("saved-questions"),
+ refreshQuestionBookmark:nativeRedraw("question-bookmark"),
+ window:{
+  liReactRouter:{},
+  addEventListener:(name,handler)=>{syncListeners[name]=handler},
+  dispatchEvent:ev=>syncEvents.push(ev.type),
+  liLibraryShelf:{
+   renderHome:nativeRedraw("home"),renderResume:nativeRedraw("resume"),
+   renderCollection:nativeRedraw("collection")
+  },
+  liBookmarks:{refresh:nativeRedraw("bookmarks")},
+  liNotes:{renderDetail:nativeRedraw("note-detail")}
+ },
+ document:{
+  documentElement:{classList:{contains:cls=>cls==="li-auth-verified"&&syncVerified}},
+  getElementById:()=>{throw Error("Invited React sync read legacy input");}
+ },
+ localStorage:{getItem:key=>syncStore.get(key)||null},
+ toast:msg=>syncAlerts.push(msg),
+ Event:class{constructor(type){this.type=type;}}
+};
+vm.createContext(syncCtx);
+vm.runInContext(syncCode,syncCtx);
+const applied=syncListeners["li:personal-sync-applied"];
+assert.equal(typeof applied,"function");
+const syncPayload={detail:{accountId:"invited-account-A",keys:["li.private.library.v1"]}};
+applied(syncPayload);
+assert.equal(livePrivate.cases[0].id,"case-from-ipad","Cases hydrate from synced model");
+assert.equal(livePrivate.questions[0].question,"Saved on iPad");
+assert.equal(livePrivate.ideas[0].id,"idea-from-ipad");
+assert.equal(livePrivate.savedContent[0].id,"L03-1-2");
+assert.deepEqual(syncEvents,[
+ "li:library-view-changed","li:inquiry-changed","li:note-view-changed"
+],"React Library, Case and Note detail must update after canonical hydration");
+assert.deepEqual(hiddenRenders,[],"No hidden native redraw on React private sync");
+assert.deepEqual(syncAlerts,[]);
+// Signed-in data is private. Other accounts or a signed-out browser do nothing.
+applied({detail:{accountId:"different-account",keys:["li.private.library.v1"]}});
+syncVerified=false;applied(syncPayload);
+assert.equal(syncEvents.length,3,"Other-account/sign-out events must not notify stale data");
+assert.equal(hiddenRenders.length,0);
+syncVerified=true;
+// Bad cloud shape cannot mutate the existing learner's in-memory records.
+syncStore.set("li.private.library.v1",JSON.stringify({schema:9,cases:[],questions:[]}));
+applied(syncPayload);
+assert.equal(livePrivate.cases[0].id,"case-from-ipad");
+assert.equal(syncEvents.length,3);
+assert.equal(syncAlerts.length,1,"Invalid cloud content is reported, never applied");
+// Standalone fallback retains its original HTML render path.
+delete syncCtx.window.liReactRouter;
+syncStore.set("li.private.library.v1",JSON.stringify({schema:1,cases:[],questions:[]}));
+applied(syncPayload);
+assert.deepEqual(hiddenRenders,[
+ "case-archive","saved-questions","home","resume","collection",
+ "bookmarks","question-bookmark","note-detail"
+],"Native fallback behavior remains unchanged");
+assert.equal(syncEvents.length,3,"Native fallback does not emit React-only repaint events");
+console.log("PASS React private sync hydration without hidden DOM; auth guard and native fallback");

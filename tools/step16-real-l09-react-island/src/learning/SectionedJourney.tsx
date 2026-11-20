@@ -296,7 +296,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   try{
    sessionStorage.setItem('li.sectioned.guide-return.v1',
     JSON.stringify({id,method,at:Date.now(),scrollY:window.scrollY}));
-   if(!app.liMethods.open(method,false,id))setError('Chưa mở được Thần Chú; bản nháp vẫn được giữ.');
+   if(!app.liMethods.open(method,false))setError('Chưa mở được Thần Chú; bản nháp vẫn được giữ.');
   }catch{setError('Chưa mở được Thần Chú; bản nháp vẫn được giữ.');}
  }
  if(busy)return <section role="status" className="li-learning-journey" aria-busy="true">Đang xác minh quyền học…</section>;

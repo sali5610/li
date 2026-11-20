@@ -1,4 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
+import {openRoute,goBack,hasRoute} from './app-router.js';
 import {createRoot} from 'react-dom/client';
 import {motion,useReducedMotion} from 'motion/react';
 import {Button,Heading,InlineFeedback,ListRow,SearchField,Text} from '../../../../design-system/react/index';
@@ -16,7 +17,7 @@ type KnowledgeClient={searchKnowledge:(query:string)=>Promise<KnowledgeResponse>
 type CatalogLesson={id:string;title:string;route?:string;published?:boolean};
 type CatalogGroup={title:string;fields?:{name:string;source?:string;courses?:{title:string;lessons?:CatalogLesson[]}[]}[]};
 type MentorContext={id:string;kind:string;title:string;lessonId?:string;links:Relation[]};
-type SearchWindow=Window&{LI_CATALOG_DATA?:CatalogGroup[];navigate?:(page:string)=>void;
+type SearchWindow=Window&{LI_CATALOG_DATA?:CatalogGroup[];openLaoLy?:(trigger?:HTMLElement|null)=>void;
  liSearch?:{render:(query:string)=>void;getStatus:()=>string;getQuery:()=>string;openLesson:(id:string)=>boolean;
  getMentorContext:()=>MentorContext|null}};
 
@@ -38,12 +39,7 @@ const sourceIsSafe=(url?:string)=>typeof url==='string'&&url.startsWith('https:/
 
 function openLesson(id:string){
  const route=routes.get(id);
- if(!route||!document.getElementById('page-'+route)||
-  !document.documentElement.classList.contains('li-auth-verified')||
-  document.documentElement.classList.contains('li-account-open')||
-  typeof app.navigate!=='function')return false;
- app.navigate(route);
- return true;
+ return !!route&&hasRoute(route)&&openRoute(route);
 }
 const kindCopy:Record<string,string>={
  Lesson:'Bài có nội dung',Concept:'Khái niệm đã đối chiếu',Course:'Đề cương môn',
@@ -115,11 +111,11 @@ function KnowledgeSearch(){
   mentorFocus={id:record.id,kind:record.kind,title:record.title,lessonId:record.lessonId,
    links:(record.links||[]).filter(link=>link.sourceType==='academic'&&
     sourceIsSafe(link.sourceUrl)&&link.kind==='Lesson').map(link=>({...link}))};
-  document.getElementById('laoly-fab')?.click();
+  app.openLaoLy?.();
  };
  const navigateTo=(id:string)=>{if(!openLesson(id))setNavError('Chưa thể mở bài học này.');};
  return <div data-li-react-screen="knowledge-search">
-  <Button variant="ghost" className="utility-back" data-nav-back>
+  <Button variant="ghost" className="utility-back" onClick={goBack}>
    <span aria-hidden="true">←</span> Quay lại
   </Button>
   <div className="kicker">TÌM TRONG THƯ VIỆN</div>

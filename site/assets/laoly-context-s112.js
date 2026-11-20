@@ -270,7 +270,47 @@ function updatePlan(){
  showBuddyQuote();
  scrollEl.scrollTop=0;
 }
+/* New React owner receives a complete view and action intents. The original
+ * plan evaluator, source localization, spell/navigation actions and privacy
+ * behavior remain authoritative; no duplicate mentor content/AI service. */
+function reactView(trigger){
+ if(document.getElementById("mute-toggle")?.checked){
+  toast("Im Lặng · Lời thoại Lão Lý đang tắt.");return null;
+ }
+ activePlan=localizePlan(getBuddyPlan());
+ buddyDebateActive=false;
+ const calm=!!document.getElementById("calm-toggle")?.checked;
+ const intro=calm?"Ta đi từng bước. "+activePlan.intro:activePlan.intro;
+ const line=localizePlanText(window.liAddressLine?window.liAddressLine(intro):intro);
+ const quote=window.liQuoteEngine?.getView?.()||null;
+ return {
+  text:line,
+  labels:activePlan.actions.map(item=>
+   window.liLanguage?.translateComposed?.(item.label)||item.label),
+  avatar:document.getElementById("laoly-current-icon")?.src||"./assets/laoly-neutral.png",
+  quote,triggerId:trigger?.id||"laoly-fab"
+ };
+}
+function reactReply(index){
+ if(!Number.isInteger(index)||index<0||index>2)return null;
+ if(!activePlan)activePlan=localizePlan(getBuddyPlan());
+ const item=activePlan.actions[index];
+ if(!item)return null;
+ buddyDebateActive=true;
+ const line=localizePlanText(window.liAddressLine?
+  window.liAddressLine(item.reply):item.reply);
+ // Actions preserve original navigation, saved-question, approved-source,
+ // study-method and note-taking side effects.
+ if(typeof item.perform==="function")item.perform();
+ return {text:line,showChallenge:index===1};
+}
+window.liBuddyEngine=Object.freeze({open:reactView,choose:reactReply});
 openLaoLy=function(trigger){
+ if(window.liBuddyReactMounted){
+  const view=reactView(trigger);
+  if(view)window.dispatchEvent(new CustomEvent("li:buddy-open",{detail:view}));
+  return;
+ }
  if(document.getElementById("mute-toggle")?.checked){toast("Im Lặng · Lời thoại Lão Lý đang tắt.");return;}
  updatePlan();
  document.getElementById("buddy-title-avatar").src=document.getElementById("laoly-current-icon").src;

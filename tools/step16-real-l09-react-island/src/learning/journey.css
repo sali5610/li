@@ -55,6 +55,11 @@
  white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;color:var(--ink)}
 
 
+/* Step 17: grounded self-review advice, not an automatic grade. */
+.li-learning-next-action{display:grid;gap:var(--li-space-2);padding:var(--li-space-3);
+ border-inline-start:3px solid var(--moss);background:var(--porcelain);min-width:0}
+.li-learning-next-action .li-ds-button{justify-self:start}
+
 /* Source-backed L03/L15 React lesson copy and media; canonical DS paints UI. */
 .li-learning-copy{white-space:pre-line;overflow-wrap:anywhere;line-height:var(--li-leading-body);margin:0}
 .li-learning-language{display:flex;flex-wrap:wrap;gap:var(--li-space-2)}

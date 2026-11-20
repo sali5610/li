@@ -16,6 +16,7 @@ import type {LessonPhase} from '../shell/app-store.js';
 import {createLessonPhaseActor} from './phase-machine.js';
 import './journey.css';
 import {LessonBookmark,LessonMentor,LessonSectionIndex,L09Figures,LessonSources} from './LessonDetailParity.js';
+import {SelfReviewNextStep} from './SelfReviewNextStep.js';
 
 /** A real invited-only React learner screen, not a second app.
  * Editorial VI/EN copy is compiled from canonical GitHub
@@ -465,6 +466,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
       </select>
      </div>)}
     </div>
+    <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
+     locale={attempt.locale} onReviewTheory={()=>go('read')}/>
     <Text role="support">{vi?'Tự chấm theo rubric, không phải điểm tự động.':'Self-review, not automatic grading.'}</Text>
     {attempt.reviewed?<Button onClick={()=>go('progress')}>{labels.progress}</Button>:
      <Button disabled={locked||saving} onClick={()=>void finish()}>{content.saveReview}</Button>}
@@ -475,6 +478,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     </Heading>
     <Text>{vi?'Đây là một lượt học đã lưu, không phải chứng nhận thông thạo.':
      'This is one saved learning attempt, not a mastery certificate.'}</Text>
+    <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
+     locale={attempt.locale} onReviewTheory={()=>go('read')}/>
     <Text role="support">{content.scoreLabel}: {attempt.ratings.reduce<number>((n,x)=>n+(x??0),0)} / 8</Text>
     <Button variant="secondary" onClick={()=>ports.search.openSearch('sampling bias random sampling variation')}>
      {vi?'Tìm bài liên quan':'Find related lessons'}

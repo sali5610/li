@@ -186,3 +186,73 @@ test('T13 restarts per session, restores verified recall, and never leaks to T03
  assert.equal(flow.getSnapshot(),'setup');
  flow.stop();remount.stop();
 });
+
+import {createResumeT12Flow} from '../.state-test/shell/spell-t12-flow.js';
+
+function makeT12Port(){
+ let view={active:'T12',phase:0,reviewedInSession:false,resumeNote:'',viewSession:1};
+ const calls=[];
+ return {
+  getView:()=>view,
+  perform:(action,answers={})=>{
+   calls.push(action);
+   if(action==='reset'){
+    view={...view,phase:0,reviewedInSession:false,resumeNote:'',viewSession:view.viewSession+1};
+   }else if(action==='next'&&view.phase===0){
+    const context=answers.context;
+    const next=answers.next;
+    if(typeof context==='string'&&context.trim()&&typeof next==='string'&&next.trim()){
+     view={...view,phase:1,resumeNote:next.trim()};
+    }
+   }else if(action==='check'&&view.phase===1){
+    if(typeof answers.answer==='string'&&answers.answer.trim()){
+     view={...view,reviewedInSession:true};
+    }
+   }
+   return true; // real controller returns true even on missing-field feedback
+  },
+  change:delta=>{view={...view,...delta};},
+  calls
+ };
+}
+const t12Cue={context:'Đang đọc kết quả khảo sát 15/20',next:'Viết câu kết luận đúng phạm vi'};
+test('T12 XState guards cue capture, pause, re-entry and self-check feedback',()=>{
+ const port=makeT12Port(),flow=createResumeT12Flow();
+ flow.sync(port.getView());
+ assert.equal(flow.getSnapshot(),'capture');
+ assert.equal(flow.execute('check',{answer:'15/20'},port),false,'cannot review before pause');
+ assert.deepEqual(port.calls,[]);
+ assert.equal(flow.execute('next',{...t12Cue,next:'  '},port),false,'blank next step must not pause');
+ assert.equal(flow.getSnapshot(),'capture');
+ assert.equal(flow.execute('next',{...t12Cue,context:''},port),false,'missing context must not pause');
+ assert.equal(flow.execute('next',t12Cue,port),true);
+ assert.equal(flow.getSnapshot(),'resume');
+ assert.equal(port.getView().resumeNote,'Viết câu kết luận đúng phạm vi');
+ assert.equal(flow.execute('next',t12Cue,port),false,'cannot reveal source again');
+ assert.equal(flow.execute('check',{answer:'   '},port),true);
+ assert.equal(flow.getSnapshot(),'resume','empty returned answer keeps self-check locked');
+ assert.equal(flow.execute('check',{answer:'Trong 20 người được hỏi, 15 người hài lòng.'},port),true);
+ assert.equal(flow.getSnapshot(),'reviewed');
+ assert.equal(port.getView().reviewedInSession,true);
+ flow.stop();
+});
+test('T12 restart clears its session cue; switching technique cannot leak progression',()=>{
+ const port=makeT12Port(),flow=createResumeT12Flow();
+ flow.sync(port.getView());
+ flow.execute('next',t12Cue,port);
+ assert.equal(flow.getSnapshot(),'resume');
+ const fresh=createResumeT12Flow();
+ fresh.sync(port.getView());
+ assert.equal(fresh.getSnapshot(),'resume','trusted session snapshot restores step');
+ flow.execute('reset',{},port);
+ assert.equal(flow.getSnapshot(),'capture');
+ assert.equal(port.getView().resumeNote,'');
+ assert.equal(port.getView().viewSession,2);
+ port.change({active:'T03',phase:2,viewSession:3});
+ flow.sync(port.getView());
+ assert.equal(flow.execute('next',t12Cue,port),false);
+ port.change({active:'T12',phase:1,reviewedInSession:true,resumeNote:'',viewSession:4});
+ flow.sync(port.getView());
+ assert.equal(flow.getSnapshot(),'capture','no progress without verified cue');
+ flow.stop();fresh.stop();
+});

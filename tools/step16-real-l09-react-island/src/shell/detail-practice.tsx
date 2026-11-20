@@ -3,6 +3,7 @@ import React,{useEffect,useState,useSyncExternalStore} from 'react';
 import {Button,Card,Checkbox,Field,Heading,InlineFeedback,Radio,Text,LiIcon} from '../../../../design-system/react/index';
 import {createFadedT03Flow,fadedT03Phase} from './spell-t03-flow.js';
 import {createLociT13Flow,lociT13Phase} from './spell-t13-flow.js';
+import {createResumeT12Flow,resumeT12Phase} from './spell-t12-flow.js';
 import './detail-practice.css';
 
 /** The existing authored exercise checker and private-note transaction owners
@@ -92,15 +93,20 @@ export function GuideDetail(){
  const t03Stage=useSyncExternalStore(t03Flow.subscribe,t03Flow.getSnapshot);
  const [t13Flow]=useState(createLociT13Flow);
  const t13Stage=useSyncExternalStore(t13Flow.subscribe,t13Flow.getSnapshot);
+ const [t12Flow]=useState(createResumeT12Flow);
+ const t12Stage=useSyncExternalStore(t12Flow.subscribe,t12Flow.getSnapshot);
  useEffect(()=>{
   t03Flow.sync(view);
   t13Flow.sync(view);
- },[t03Flow,t13Flow,view?.active,view?.phase,view?.viewSession,view?.reviewedInSession]);
- useEffect(()=>()=>{t03Flow.stop();t13Flow.stop();},[t03Flow,t13Flow]);
+  t12Flow.sync(view);
+ },[t03Flow,t13Flow,t12Flow,view?.active,view?.phase,view?.viewSession,view?.reviewedInSession,view?.resumeNote]);
+ useEffect(()=>()=>{t03Flow.stop();t13Flow.stop();t12Flow.stop();},[t03Flow,t13Flow,t12Flow]);
  const phase=view?.active==='T03'&&t03Flow.isCurrent(view)
   ?fadedT03Phase(t03Stage):
   view?.active==='T13'&&t13Flow.isCurrent(view)
-   ?lociT13Phase(t13Stage):(view?.phase??0);
+   ?lociT13Phase(t13Stage):
+  view?.active==='T12'&&t12Flow.isCurrent(view)
+   ?resumeT12Phase(t12Stage):(view?.phase??0);
  const [methodTick,setMethodTick]=useState(0);
  const [answers,setAnswers]=useState<Record<string,string|string[]>>({});
  useEffect(()=>{
@@ -120,7 +126,9 @@ export function GuideDetail(){
    ?t03Flow.execute(kind,answers,app.LiSpellPractice)
    :view?.active==='T13'
     ?t13Flow.execute(kind,answers,app.LiSpellPractice)
-    :app.LiSpellPractice?.perform(kind,answers);
+    :view?.active==='T12'
+     ?t12Flow.execute(kind,answers,app.LiSpellPractice)
+     :app.LiSpellPractice?.perform(kind,answers);
   if(ok&&['reset','clear','schedule','next'].includes(kind))setAnswers({});
  };
  const prompt=()=>{
@@ -129,7 +137,7 @@ export function GuideDetail(){
    return copy('Bước có gợi ý: 5 đơn vị/ngày × 2 ngày chờ + 4 tồn an toàn = ?', 'Guided step: 5 units/day × 2 days + 4 safety stock = ?');
   if(view.mode==='faded'&&phase===2)
    return copy('Bài độc lập: 7 đơn vị/ngày, 3 ngày chờ, 5 đơn vị an toàn. Điểm đặt hàng lại?', 'Independent step: 7 units/day, 3-day lead time, 5 safety stock. Reorder point?');
-  if(view.mode==='resume'&&view.phase===1)
+  if(view.mode==='resume'&&phase===1)
    return copy('Hãy viết một câu kết luận chỉ về 20 người được khảo sát.', 'Write one claim limited to the 20 surveyed people.');
   if(view.mode==='loci'&&phase===1)
    return copy('Hình dung đi qua ba nơi đã chọn. Không xem lại nguồn hoặc liên tưởng.', 'Walk through your three places mentally. Do not reread the source or cues.');
@@ -198,6 +206,7 @@ export function GuideDetail(){
    <section role="tabpanel" aria-labelledby="li-react-spell-tab-practice"
     data-li-react-t03-stage={view.active==='T03'?t03Stage:undefined}
     data-li-react-t13-stage={view.active==='T13'?t13Stage:undefined}
+    data-li-react-t12-stage={view.active==='T12'?t12Stage:undefined}
     className="spell-practice-root li-react-spell-practice">
     <div className="spell-activity-head"><div>
      <div className="kicker">{view.active} · {copy('THỬ THI TRIỂN','PRACTICE')}</div>
@@ -208,7 +217,7 @@ export function GuideDetail(){
     <div className="spell-activity-body">
      {hasSource&&<div className="spell-demo"><div className="kicker">{copy('BỐI CẢNH MẪU · ĐÃ GIỚI THIỆU','EXAMPLE CONTEXT')}</div>
       <Text role="body">{tr(view.lesson)}</Text></div>}
-     {view.mode==='resume'&&view.phase===1&&<Text role="body">
+     {view.mode==='resume'&&phase===1&&<Text role="body">
       {copy('Hành động nhỏ đã tự đặt: ','Your next small action: ')}<strong>{view.resumeNote}</strong>
      </Text>}
      {view.mode==='loci'&&phase===1&&<Text role="body">

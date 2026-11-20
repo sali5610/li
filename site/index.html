@@ -945,6 +945,7 @@ window.addEventListener("li:personal-sync-applied",event=>{
  * importer/exporter and verified Auth consent remain the action/data owners. */
 window.liSettingsPort=Object.freeze({
  setMode:(mode)=>setStudyMode(mode),
+ setVoice:(kind,enabled)=>liSetBuddyVoice(kind,enabled),
  getView:()=>{
   const el=id=>document.getElementById(id),check=id=>Boolean(el(id)?.checked);
   const card=el("li-journal-cloud-settings"),cloud=el("li-journal-cloud-toggle");
@@ -969,7 +970,6 @@ window.liSettingsPort=Object.freeze({
  act:(kind,key,value)=>{
   const el=id=>document.getElementById(id);
   if(kind==="mode"&&STUDY_MODES[key])setStudyMode(key);
-  else if(kind==="calm"||kind==="mute"){liSetBuddyVoice(kind,value);return;}
   else if(kind==="nicknameInput"||kind==="nicknameCommit"){
    if(typeof value!=="string"||!Object.prototype.hasOwnProperty.call(LI_BUDDY_DEFAULT_NAMES,key))return;
    liSetBuddyName(key,value,kind==="nicknameCommit");

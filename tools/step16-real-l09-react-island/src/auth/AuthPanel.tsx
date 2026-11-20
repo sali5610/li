@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {checkInviteAccess,safeInviteErrorCode} from '../sync/invite-access.js';
 import {authClient,neonSessionPort} from './neon-client.js';
-import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING} from './config.js';
+import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING,IS_INTEGRATED_LI_APP} from './config.js';
 import {classifyOAuthReturn,type OAuthReturnCode} from './oauth-return.js';
 import {rememberOfflineInvite,recentOfflineOwner,forgetOfflineInvite} from './offline-local.js';
 import {RlsQaPanel} from './RlsQaPanel.js';
@@ -120,7 +120,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   const checkbox=document.getElementById('li-journal-cloud-toggle') as HTMLInputElement|null;
   const detail=document.getElementById('li-journal-cloud-description');
   if(!card||!checkbox)return;
-  const permitted=Boolean(IS_GITHUB_STAGING&&accountId&&access==='granted'&&ownerReady);
+  const permitted=Boolean(IS_INTEGRATED_LI_APP&&accountId&&access==='granted'&&ownerReady);
   card.hidden=!permitted;
   checkbox.disabled=!permitted||journalBusy;
   checkbox.checked=permitted&&journalChoice;
@@ -178,12 +178,12 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  },[accountId,isPending,error,access,ownerReady,isOffline,localOffline]);
  // Persist a local time limit only AFTER the real invited account and local owner agree.
  useEffect(()=>{
-  if(IS_GITHUB_STAGING&&!isOffline&&!isPending&&!error&&ownerReady&&
+  if(IS_INTEGRATED_LI_APP&&!isOffline&&!isPending&&!error&&ownerReady&&
      liveAccountId&&access==='granted')rememberOfflineInvite(liveAccountId);
  },[isOffline,isPending,error,ownerReady,liveAccountId,access]);
  // Existing Dexie outbox captures offline edits without server writes.
  useEffect(()=>{
-  if(!IS_GITHUB_STAGING||!ownerReady||!accountId||
+  if(!IS_INTEGRATED_LI_APP||!ownerReady||!accountId||
     !(access==='granted'&&!isOffline||access==='offline'&&localOffline))return;
   setSyncStatus('checking');
   return startLearnerSync(accountId,value=>{
@@ -382,7 +382,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     <RlsQaPanel uid={accountId} granted={access==='granted'}/>}
    {showDeveloperQa&&accountId&&access==='granted'&&
     <SyncQaPanel uid={accountId} locale={locale}/>}
-   <p className="auth-local" role="status">{access==='offline'?syncCopy[locale].offline:IS_GITHUB_STAGING&&accountId&&access==='granted'?syncCopy[locale][syncStatus]:(IS_GITHUB_STAGING?t.l09Local:t.local)}</p>
+   <p className="auth-local" role="status">{access==='offline'?syncCopy[locale].offline:IS_INTEGRATED_LI_APP&&accountId&&access==='granted'?syncCopy[locale][syncStatus]:(IS_GITHUB_STAGING?t.l09Local:t.local)}</p>
    <p className="auth-privacy">{t.privacy}</p>
   </section>
  </main>;

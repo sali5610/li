@@ -162,7 +162,7 @@ assert.equal(emitted.filter(x=>x==="li:library-view-changed").length,8,
 // Chat 1: backup must use the draft the learner edits in React, not a hidden
 // vanilla textarea, and imported data must refresh React views without redraw.
 const exportFrom=html.indexOf(" function liExportPersonalData(){");
-const exportTo=html.indexOf(" document.getElementById(\"export-personal-data\")",exportFrom);
+const exportTo=html.indexOf(" // S110 canonical validator",exportFrom);
 assert.ok(exportFrom>=0&&exportTo>exportFrom,"Locate shared export action");
 const exportSource=html.slice(exportFrom,exportTo);
 let exported=null;
@@ -192,7 +192,7 @@ assert.match(nativeBackup,/document\.getElementById\("li-staging-auth-root"\)\)r
 assert.match(nativeBackup,/importInput\?\.addEventListener\("change"/,
  "Standalone native backup input still works");
 const importFrom=html.indexOf(" async function liImportPersonalData(file){");
-const importTo=html.indexOf(" window.liPersonalBackup=Object.freeze",importFrom);
+const importTo=html.indexOf(" // Invited staging React owns the visible file picker",importFrom);
 assert.ok(importFrom>=0&&importTo>importFrom,"Locate validated backup importer");
 const importSource=html.slice(importFrom,importTo);
 const emittedImport=[],dataStore=new Map(),nativeRenders=[];

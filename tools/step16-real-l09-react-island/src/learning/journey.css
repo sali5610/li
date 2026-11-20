@@ -53,3 +53,19 @@
  border-inline-start:1px solid var(--rule);min-width:0}
 .li-learning-submitted-answer{margin:var(--li-space-2) 0 0;
  white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;color:var(--ink)}
+
+
+/* Source-backed L03/L15 React lesson copy and media; canonical DS paints UI. */
+.li-learning-copy{white-space:pre-line;overflow-wrap:anywhere;line-height:var(--li-leading-body);margin:0}
+.li-learning-language{display:flex;flex-wrap:wrap;gap:var(--li-space-2)}
+.li-learning-visual{display:grid;gap:var(--li-space-3);margin:0;min-width:0}
+.li-learning-visual img{display:block;max-width:100%;height:auto;max-height:320px;object-fit:contain}
+.li-learning-visual figcaption{display:grid;gap:var(--li-space-2)}
+.li-learning-visual figcaption a,.li-learning-sources a{
+ color:var(--moss);text-decoration:underline;text-underline-offset:var(--li-space-1);
+ overflow-wrap:anywhere
+}
+.li-learning-sources{display:grid;gap:var(--li-space-3);min-width:0;
+ padding-block:var(--li-space-4);border-top:1px solid var(--rule)}
+.li-learning-sources ul{display:grid;gap:var(--li-space-2);
+ padding-inline-start:var(--li-space-5);margin:0}

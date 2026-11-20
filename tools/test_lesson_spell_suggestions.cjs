@@ -41,7 +41,28 @@ assert(native.includes("button.dataset.method=entry.shortId"),"Native suggestion
 assert(native.includes('button.dataset.spellPractice=index===0?"true":"false"'));
 assert(react.includes("spellSuggestions.lessons['L09-1-2']"),"React route shares the map");
 assert(react.includes("data-spell-practice={index===0?'true':'false'}"));
-assert(html.includes('practice:t.dataset.spellPractice==="true"'),
- "Existing delegated action must open the practice directly");
+assert(html.includes('practice:t.dataset.spellPractice==="true",lessonId:t.dataset.spellLesson||null'),
+ "Lesson buttons must carry their real lesson context into the same practice owner");
+const wave=read("tools/step16-real-l09-react-island/src/learning/Wave1Journey.tsx");
+const reactDetail=read("tools/step16-real-l09-react-island/src/shell/detail-practice.tsx");
+const companion=read("site/assets/lesson-companion-native.js");
+assert(wave.includes("data-spell-lesson={id}"),"L03/L15 React suggestions forward lesson ID");
+assert(react.includes('data-spell-lesson="L09-1-2"'),"L09 React suggestions retain its context");
+assert(native.includes("button.dataset.spellLesson=page.dataset.lessonId"),
+ "Native suggestions also forward lesson context");
+assert(companion.includes("lessonId:c.lesson_id"),"Lão Lý forwards current lesson context");
+assert(companion.includes("exercise=true"),"L03 Mentor now opens an actual method exercise");
+assert(spell.includes('active==="T06"&&activeLessonId==="L03-1-2"'),
+ "Dedicated L03 comparison must not overwrite L09 T06");
+assert(spell.includes('["rewrite","Viết lại câu A thành câu hỏi trung lập"]'),
+ "L03 exercise requires a written neutral rewrite before feedback");
+assert(spell.includes('["rewrite","Rewrite A as a neutral question"]'),
+ "L03 English practice must show the equivalent authored task");
+assert(spell.includes("reviewedInSession=true"),"Meaningful check produces session-only evidence");
+assert(reactDetail.includes("view.reviewedInSession")&&
+ reactDetail.includes("[view?.active,view?.phase,view?.lessonId,view?.viewSession]"),
+ "React must display truthful evidence and clear draft on method/lesson reopen");
+assert(spell.includes("reviewedInSession=false;viewSession++"),
+ "Reopening method cannot inherit stale evidence or user-entered answers");
 assert(spell.includes('switchTab(tab==="practice"?"practice":"guide")'));
 console.log("PASS Wave1 suggested spells: 3 real lessons, 6 verified techniques, live practice actions, explicit editorial-only status");

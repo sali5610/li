@@ -15,7 +15,36 @@ T11:{title:"Chọn cách học phù hợp",lesson:"Bạn mới thấy công th�
 T12:{title:"Lấy lại mạch học",mode:"resume",lesson:"Bài đang dở: 15 trong 20 người dùng app được hỏi hài lòng; cần viết kết luận không vượt phạm vi mẫu.",prompt:"Ghi dấu vết trước khi tạm ngắt công việc.",fields:[["context","Mình đang dở bước nào?"],["next","Một hành động nhỏ khi quay lại"]],model:"Một kết luận đúng phạm vi: ‘Trong 20 người đang dùng app được hỏi, 15 người (75%) hài lòng.’ Chưa thể suy rộng cho tất cả người dùng."},
 T13:{title:"Cung lộ ghi nhớ",mode:"loci",lesson:"Ba ý đã học theo thứ tự: (1) Tổng thể đích = nhóm ta muốn kết luận tới; (2) Cách chọn mẫu = ai có cơ hội tham gia; (3) Người bị bỏ sót = nhóm không được khảo sát.",prompt:"Chọn ba vị trí quen thuộc KHÁC NHAU theo lộ trình, gắn một liên tưởng tự nghĩ cho từng ý.",fields:[["place1","Nơi thứ nhất"],["cue1","Liên tưởng cho ý 1"],["place2","Nơi thứ hai"],["cue2","Liên tưởng cho ý 2"],["place3","Nơi thứ ba"],["cue3","Liên tưởng cho ý 3"]],model:"So lần lượt với ba khái niệm: Tổng thể đích; Cách chọn mẫu; Người bị bỏ sót. Kiểm tra bằng nghĩa, không chỉ đúng tên chữ. Chọn địa điểm và đặt liên tưởng chưa phải trí nhớ: phải nhớ không nhìn và đối chiếu."}
 };
+// Same reviewed L03 learning outcomes as the real lesson, not L09's generic T06.
+// Exercise answers are disclosed only after a meaningful attempt, never stored.
+const l03T06={
+ ...exercises.T06,
+ lesson:"Hai câu hỏi phỏng vấn người dùng: A — ‘Điều gì khiến bạn yêu thích giao diện mới?’; B — ‘Hãy kể lần gần nhất bạn dùng giao diện mới. Bạn đã thực hiện những bước nào?’",
+ prompt:"Câu hỏi mở chưa chắc trung lập. Phân loại A và B, giải thích giả định nằm trong câu A, rồi viết lại A để hỏi về một trải nghiệm thật.",
+ fields:[
+  ["case1","Câu A",["Mở nhưng dẫn dắt","Mở và trung lập"],"radio"],
+  ["case2","Câu B",["Mở nhưng dẫn dắt","Mở và trung lập"],"radio"],
+  ["reason","Vì sao A có thể dẫn dắt?"],
+  ["rewrite","Viết lại câu A thành câu hỏi trung lập"]
+ ],
+ model:"A là câu hỏi mở nhưng dẫn dắt: nó mặc định người dùng yêu thích giao diện mới. B là câu hỏi mở trung lập vì hỏi về một lần sử dụng thật, không ép đánh giá. Ví dụ sửa A: ‘Hãy kể lần gần nhất bạn dùng giao diện mới. Bạn đã làm gì? Điều gì thuận lợi hoặc khó khăn?’ Tự đối chiếu xem câu của bạn có bỏ giả định khen ngợi và hỏi được tình huống cụ thể hay không."
+};
+const l03T06en={
+ ...exercises.T06,
+ lesson:"Two user interview questions: A — ‘What makes you love the new interface?’; B — ‘Tell me about the last time you used the new interface. What steps did you take?’",
+ prompt:"Open-ended does not always mean neutral. Classify A and B, explain the assumption in A, then rewrite A as a neutral question about a real experience.",
+ fields:[
+  ["case1","Question A",["Open but leading","Open and neutral"],"radio"],
+  ["case2","Question B",["Open but leading","Open and neutral"],"radio"],
+  ["reason","Why might A lead the participant?"],
+  ["rewrite","Rewrite A as a neutral question"]
+ ],
+ model:"A is open-ended but leading: it assumes that the participant loves the new interface. B is open and neutral: it asks about an actual occasion without requiring praise. Example rewrite: ‘Tell me about the last time you used the new interface. What did you do? What was easy or difficult?’ Compare your wording with that example: did you remove the praise assumption and ask about a concrete experience?"
+};
 let root,guide,tabs,active=null,phase=0,exposure=null,feedback="",resumeNote="",privatePlaces=[],tabDraft=null;
+let activeLessonId=null,reviewedInSession=false,viewSession=0;
+const currentExercise=()=>active==="T06"&&activeLessonId==="L03-1-2"?
+ (window.liLanguage?.get?.()==="en"?l03T06en:l03T06):exercises[active];
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 /* Separate authored feedback lead and explanation for accurate VI/EN
    translation and reversible language switching without rewriting input. */
@@ -41,7 +70,7 @@ const checked=id=>[...root.querySelectorAll('input[name="sp-'+id+'"]:checked')].
 function scheduleRead(){try{const d=JSON.parse(localStorage.getItem("li.spell.t02.due.v1")||"null");return d&&Number.isFinite(d.due)?d:null}catch(e){return null}}
 function draw(){
  if(!root||!active)return;
- const e=exercises[active];let inner="";
+ const e=currentExercise();let inner="";
  if(phase===0){inner='<div class="spell-demo"><span class="kicker">BỐI CẢNH MẪU · ĐÃ ĐƯỢC GIỚI THIỆU</span><p>'+e.lesson+'</p></div><p>'+e.prompt+'</p>';
   if(e.mode==="due"){
    const due=scheduleRead();if(due&&due.due>Date.now()){inner+='<p class="spell-honest">Đã hẹn ôn lúc '+fmt(due.due)+'. Chưa đến hẹn nên không tính là thực hành ôn giãn cách.</p>'+act("clear","Xóa mốc ôn","action alt")}
@@ -78,15 +107,16 @@ function switchTab(which){
  }
  notifyReactSpell();
 }
-function open(id,tab="guide"){
+function open(id,tab="guide",lessonId=null){
  if(!Object.prototype.hasOwnProperty.call(exercises,id))return;
- active=id;phase=0;feedback="";privatePlaces=[];resumeNote="";
+ active=id;activeLessonId=["L03-1-2","L09-1-2","L15-2-2"].includes(lessonId)?lessonId:null;
+ phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
  tabDraft=null;
  if(root)switchTab(tab==="practice"?"practice":"guide");
  notifyReactSpell();
 }
 function missing(){
- for(const f of exercises[active].fields){
+ for(const f of currentExercise().fields){
   if(f[2]){if(!root.querySelector('input[name="sp-'+f[0]+'"]:checked'))return f[1];}
   else if(!rawValue(f[0]))return f[1];
  }return "";
@@ -95,17 +125,19 @@ function showMessage(text){
  feedback=text;
  let box=root.querySelector(".spell-feedback");
  if(!box){box=document.createElement("div");box.className="spell-feedback";box.setAttribute("role","status");box.tabIndex=-1;root.querySelector(".spell-activity-body").append(box);}
- box.innerHTML='<strong>Phản hồi để tự kiểm chứng</strong><p>'+feedbackMarkup(text)+'</p><p class="small">Đây là bài mẫu minh họa, không chứng nhận thành thạo hay kết quả học thuật ngoài nhiệm vụ.</p>';
+ box.innerHTML='<strong>Phản hồi để tự kiểm chứng</strong><p>'+feedbackMarkup(text)+'</p><p class="small">Đây là bài mẫu minh họa, không chứng nhận thành thạo hay kết quả học thuật ngoài nhiệm vụ.</p>'+
+  (reviewedInSession?'<p class="small" role="status">Đã thực hành và tự đối chiếu trong phiên này · chưa lưu hoặc đồng bộ · không phải điểm thông thạo.</p>':"");
  window.liLanguage?.apply?.(box);
  box.focus();
  notifyReactSpell();
 }
 function check(){
- const e=exercises[active];
+ const e=currentExercise();
  if(e.mode==="faded"){
   const n=rawValue("number");if(!n){showMessage("Nhập số trước khi kiểm tra.");return;}
   if(Number(n)!==(phase===1?14:26)){showMessage("Chưa đúng: nhu cầu mỗi ngày × số ngày chờ + tồn an toàn. Thử lại.");return;}
   if(phase===1){phase=2;feedback="";draw();return;}
+  reviewedInSession=true;
   showMessage("Ví dụ độc lập đúng: 7×3+5 = 26 đơn vị.");return;
  }
  if(e.mode==="loci"&&phase===1){
@@ -113,17 +145,23 @@ function check(){
  }else if(e.mode==="resume"&&phase===1){if(!rawValue("answer")){showMessage("Hãy viết câu kết luận nhỏ của bạn.");return;}}
  else{const m=missing();if(m){showMessage("Cần hoàn thành: "+escape(m)+". Chưa có đủ thao tác để đối chiếu.");return;}}
  let info=e.model;
- if(active==="T06")info=(radio("case1")==="0"&&radio("case2")==="1"?"Hai phân loại đúng. ":"Hãy nhìn lại dấu hiệu chọn mẫu. ")+info;
+ if(active==="T06"){
+  const correct=radio("case1")==="0"&&radio("case2")==="1";
+  const english=activeLessonId==="L03-1-2"&&window.liLanguage?.get?.()==="en";
+  info=(english?(correct?"Both classifications are correct. ":"Review both classifications. "):
+   (correct?"Hai phân loại đúng. ":"Hai phân loại cần đối chiếu lại. "))+info;
+ }
  if(active==="T07")info=(radio("valid")==="0"&&radio("truth")==="1"?"Đã tách đúng hai câu hỏi. ":"Một đáp án cần xem lại. ")+info;
  if(active==="T09")info=(radio("source")==="1"?"B là nguồn tốt hơn cho câu hỏi hẹp này. ":"Hãy kiểm tra lại provenance và cơ chế chọn người. ")+info;
  if(active==="T11")info=(radio("method")==="1"?"T03 phù hợp cho thủ tục mới. ":"Chưa có lần học trước nên T02 không phù hợp ngay. ")+info;
  if(active==="T05")info=(checked("evidence").sort().join(",")==="0,1"?"Bạn chọn hai dữ kiện quan trọng, không chọn khẳng định quá mức. ":"Dữ kiện không có nhóm so sánh và khuyến mãi đồng thời đều quan trọng. ")+info;
+ reviewedInSession=true; // all task-specific fields completed and model feedback unlocked
  showMessage(info);
  if(active==="T02")try{localStorage.removeItem("li.spell.t02.due.v1")}catch(err){}
  root.querySelector(".spell-feedback")?.focus();
 }
 function next(){
- const e=exercises[active];
+ const e=currentExercise();
  if(e.mode==="resume"){
   if(!rawValue("context")||!rawValue("next")){showMessage("Ghi rõ công việc đang dở và bước kế tiếp rồi mới tạm ngắt.");return;}
   resumeNote=rawValue("next");phase=1;feedback="";draw();return;
@@ -146,7 +184,7 @@ function notifyReactSpell(){
 }
 function getView(){
  if(!active||!exercises[active])return null;
- const e=exercises[active],mode=e.mode||"direct";
+ const e=currentExercise(),mode=e.mode||"direct";
  let fields=[];
  if(phase===0){
   if(!["hide","faded","due"].includes(mode))fields=e.fields;
@@ -161,7 +199,8 @@ function getView(){
    id:field[0],label:field[1],options:Array.isArray(field[2])?field[2].slice():null,
    choiceKind:field[3]==="multi"?"multi":"radio"
   })),
-  feedback,resumeNote,places:privatePlaces.slice(),dueAt:due?.due||null
+  feedback,resumeNote,places:privatePlaces.slice(),dueAt:due?.due||null,
+  lessonId:activeLessonId,reviewedInSession,viewSession
  };
 }
 function performReact(action,values={}){
@@ -169,7 +208,7 @@ function performReact(action,values={}){
  if(!["next","check","reset","schedule","clear"].includes(action))return false;
  if(values&&typeof values==="object"){
   for(const [key,val] of Object.entries(values)){
-   const field=exercises[active].fields.find(item=>item[0]===key);
+   const field=currentExercise().fields.find(item=>item[0]===key);
    const synthetic=key==="answer"||key.startsWith("recall")||key==="number";
    if(!field&&!synthetic)continue;
    const textarea=root.querySelector("#sp-"+key);
@@ -196,7 +235,7 @@ function setup(){
  root.addEventListener("click",ev=>{
   const b=ev.target.closest("[data-spell-action]");if(!b||!root.contains(b))return;
   switch(b.dataset.spellAction){
-  case "reset":phase=0;feedback="";privatePlaces=[];resumeNote="";draw();break;
+  case "reset":phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";draw();break;
   case "next":next();break;
   case "check":check();break;
   case "schedule":try{const d={exposed:Date.now(),due:Date.now()+86400000};localStorage.setItem("li.spell.t02.due.v1",JSON.stringify(d));if(localStorage.getItem("li.spell.t02.due.v1")!==JSON.stringify(d))throw Error("verify");feedback="";draw()}catch(err){feedback="Trình duyệt không lưu được mốc. Chưa có lịch ôn thực nào được tạo.";draw()}break;

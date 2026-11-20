@@ -281,6 +281,10 @@ function makeStandardPort(id){
    else if(action==='check'&&answers.answer==='ready'&&
      (view.mode==='direct'||view.phase===1))
     view={...view,reviewedInSession:true};
+   else if((action==='rate-remembered'||action==='rate-retry')&&
+     view.mode==='due'&&view.reviewedInSession)
+    view={...view,phase:0,reviewedInSession:false,
+     dueAt:Date.now()+(action==='rate-remembered'?3:1)*86400000};
    return true; // native checker can accept action but report missing fields
   },
   patch:delta=>{view={...view,...delta};}
@@ -326,7 +330,21 @@ test('all ten remaining spells use one XState gate; no invalid feedback unlocks 
    id+' stays blocked until the checker confirms the response');
   assert.equal(flow.execute('check',{answer:'ready'},port),true);
   assert.equal(flow.getSnapshot(),'reviewed',id+' real self-check unlocks review');
-  assert.equal(flow.execute('check',{answer:'ready'},port),true,'repeat feedback remains available');
+  if(id==='T02'){
+   assert.equal(flow.execute('check',{answer:'ready'},port),false,
+    'cannot repeat a T02 check instead of self-rating');
+   assert.equal(flow.execute('rate-remembered',{},port),true,
+    'rating actually schedules the next review through XState');
+   assert.equal(flow.getSnapshot(),'scheduled');
+   assert.equal(flow.execute('rate-retry',{},port),false,'no duplicate rating');
+   port.patch({phase:1,dueAt:Date.now()-1000});
+   flow.sync(port.getView());
+   assert.equal(flow.getSnapshot(),'recall','next spaced session is recall again');
+   assert.equal(flow.execute('check',{answer:'ready'},port),true);
+   assert.equal(flow.execute('rate-retry',{},port),true);
+   assert.equal(flow.getSnapshot(),'scheduled','hard recall schedules shorter retry');
+  }else assert.equal(flow.execute('check',{answer:'ready'},port),true,
+   'other spells preserve repeat self-check');
   assert.equal(flow.execute('reset',{},port),true,id+' restart is a real native action');
   assert.equal(flow.getSnapshot(),'prepare',id+' cleared after restart');
   assert.equal(port.getView().viewSession,2);

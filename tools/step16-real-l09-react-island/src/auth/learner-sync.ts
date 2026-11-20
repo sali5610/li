@@ -143,12 +143,13 @@ export async function saveNativeLearnerAttempt(uid:string,id:string,data:unknown
  * a Neon-accepted Dexie revision, and no pending conflicting edit.
  */
 export async function learnerAttemptSyncState(uid:string,id:string):
- Promise<'on-device'|'queued'|'synced'|'unavailable'>{
+ Promise<'on-device'|'queued'|'synced'|'conflict'|'unavailable'>{
  if(!LESSONS.some(x=>x===id)||localStorage.getItem(OWNER)!==uid)throw Error('LEARNER_ACCOUNT_CHANGED');
  const raw=localStorage.getItem(KEY(id));
  if(raw===null)return 'on-device';
  const key=storageKey(uid,'lesson_attempt',id);
  const [pending,row]=await Promise.all([store.outbox.get(key),store.records.get(key)]);
+ if(pending?.conflict)return 'conflict';
  if(pending||!row||row.deletedAt||row.baseRevision<1||
     canonical(cloud(row.payload))!==canonical(attempt(raw)))return 'queued';
  return activeSync?.uid===uid&&activeSync.last==='saved'?'synced':'queued';

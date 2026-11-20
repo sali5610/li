@@ -33,8 +33,8 @@
             "id": "vi-04",
             "role": "methods",
             "heading": "3b · Luyện L2-T06 — So sánh để phân biệt (tự chọn)",
-            "body_md": "<b>Khởi động:</b> Xem bốn mảnh của một thư viện tưởng tượng — A menu “Mượn & Trả”; B concept ID <code>loan-renewal</code> với tên “Gia hạn lượt mượn”; C các từ tìm kiếm “gia hạn mượn”/“renew loan” trỏ tới cùng B; D một mẫu bài <i>How-to</i> có trường <code>steps</code>, <code>requirements</code>.\n\n<b>Nhiệm vụ:</b> Đặt A–D vào bốn vai <i>visible navigation</i>, <i>canonical concept</i>, <i>synonym map</i>, <i>content model</i>. Với từng cặp dễ nhầm, giải thích một đặc điểm quyết định. Sau khi người học <b>thật sự gửi phân loại và lý do</b> mới mở phản hồi.\n\n<b>Phản hồi sau lượt luyện:</b> A là navigation; B là canonical concept; C là synonyms/alias của B; D là content model. Lý do quan trọng hơn việc nhớ chữ viết tắt: A là lối click, B là định danh nghĩa, C giúp tìm cùng nghĩa, D quy định trường của một loại nội dung. Không đánh dấu hoàn tất phương pháp nếu chỉ mở Sổ Tay.\n\n<b>T10 phụ, tự chọn:</b> Tách yêu cầu thành (i) người dùng cần tìm tác vụ gì, (ii) nhãn nào là dữ liệu nội bộ, (iii) quan hệ cha–con, (iv) đường tìm kiếm, (v) cạnh tranh giữa các tên gần nghĩa. Tạm tránh T10 nếu chưa xác định được đối tượng nội dung.",
-            "feedback_md": null,
+            "body_md": "<b>Khởi động:</b> Xem bốn mảnh của một thư viện tưởng tượng — A menu “Mượn & Trả”; B concept ID <code>loan-renewal</code> với tên “Gia hạn lượt mượn”; C các từ tìm kiếm “gia hạn mượn”/“renew loan” trỏ tới cùng B; D một mẫu bài <i>How-to</i> có trường <code>steps</code>, <code>requirements</code>.\n\n<b>Nhiệm vụ:</b> Đặt A–D vào bốn vai <i>visible navigation</i>, <i>canonical concept</i>, <i>synonym map</i>, <i>content model</i>. Với từng cặp dễ nhầm, giải thích một đặc điểm quyết định. Sau khi người học <b>thật sự gửi phân loại và lý do</b> mới mở phản hồi.\n\n<b>T10 phụ, tự chọn:</b> Tách yêu cầu thành (i) người dùng cần tìm tác vụ gì, (ii) nhãn nào là dữ liệu nội bộ, (iii) quan hệ cha–con, (iv) đường tìm kiếm, (v) cạnh tranh giữa các tên gần nghĩa. Tạm tránh T10 nếu chưa xác định được đối tượng nội dung.",
+            "feedback_md": "<b>Phản hồi sau lượt luyện:</b> A là navigation; B là canonical concept; C là synonyms/alias của B; D là content model. Lý do quan trọng hơn việc nhớ chữ viết tắt: A là lối click, B là định danh nghĩa, C giúp tìm cùng nghĩa, D quy định trường của một loại nội dung. Không đánh dấu hoàn tất phương pháp nếu chỉ mở Sổ Tay.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -121,8 +121,8 @@
             "id": "en-04",
             "role": "methods",
             "heading": "3b · Optional real L2 method application: T06 Compare–Contrast",
-            "body_md": "<b>Separate practice fixture:</b> A: navigation menu “Borrow & Return”; B: concept ID <code>loan-renewal</code>, preferred label “Renew a loan”; C: the search terms “extend borrowing” and “renew loan” both map to B; D: <i>How-to</i> type with fields <code>steps</code> and <code>requirements</code>.\n\n<b>Task:</b> Match A–D to visible navigation, canonical concept, synonym map, and content model. For each confusing pair, provide a diagnostic reason, not just a label.\n\n<b>Feedback — only AFTER a meaningful practice response:</b> A navigation, B canonical concept, C synonyms, D content model. The decisive cues are user-clickable destination, stable meaning identity, alternative expressions for that identity, and the required data fields of a content type. Simply opening the Spellbook does NOT count as performing T06.\n\n<b>Optional secondary T10 Decomposition:</b> Split the design into user tasks, internal terms, parent–child relations, search aliases and ambiguous labels. Skip this exercise if the underlying content objects are still undefined.",
-            "feedback_md": null,
+            "body_md": "<b>Separate practice fixture:</b> A: navigation menu “Borrow & Return”; B: concept ID <code>loan-renewal</code>, preferred label “Renew a loan”; C: the search terms “extend borrowing” and “renew loan” both map to B; D: <i>How-to</i> type with fields <code>steps</code> and <code>requirements</code>.\n\n<b>Task:</b> Match A–D to visible navigation, canonical concept, synonym map, and content model. For each confusing pair, provide a diagnostic reason, not just a label.\n\n<b>Optional secondary T10 Decomposition:</b> Split the design into user tasks, internal terms, parent–child relations, search aliases and ambiguous labels. Skip this exercise if the underlying content objects are still undefined.",
+            "feedback_md": "<b>Feedback — only AFTER a meaningful practice response:</b> A navigation, B canonical concept, C synonyms, D content model. The decisive cues are user-clickable destination, stable meaning identity, alternative expressions for that identity, and the required data fields of a content type. Simply opening the Spellbook does NOT count as performing T06.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -465,7 +465,7 @@
         "modelAnswers": 1,
         "methodSections": 1,
         "rubricSections": 1,
-        "methodFeedback": 0
+        "methodFeedback": 1
       },
       "en": {
         "chapters": 7,
@@ -473,7 +473,7 @@
         "modelAnswers": 1,
         "methodSections": 1,
         "rubricSections": 1,
-        "methodFeedback": 0
+        "methodFeedback": 1
       }
     },
     "issues": [],

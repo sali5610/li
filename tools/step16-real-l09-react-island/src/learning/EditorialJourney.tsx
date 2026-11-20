@@ -603,7 +603,9 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    setError('T06 cần phân loại đủ A–D và giải thích lý do.');return;
   }
   setError('');
-  const next={...attempt,assisted:true,methodAttempts:{...attempt.methodAttempts,
+  // K3 enacted spell != K7 assisted independent answer. The latter tracks
+  // explicit hint usage, not merely completing optional method practice.
+  const next={...attempt,methodAttempts:{...attempt.methodAttempts,
    [method]:{...previous,submission:previous.draft,submittedAt:new Date().toISOString()}}};
   await save(next);
  }
@@ -773,8 +775,10 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     persistedAttempt?.submitted?(vi?'Đã nộp · tự chấm '+rated+'/4':'Submitted · '+rated+'/4 ratings'):
     (vi?'Đủ điều kiện nộp '+answered+'/4':'Ready '+answered+'/4')}</Text>
    {attempt.assisted&&<Text role="support">
-    {vi?'Đã sử dụng Thần Chú hỗ trợ':'Used an optional learning spell'}</Text>}
-   <Text role="support">{'K2: '+(persistedAttempt?.methodChoice??'—')}
+    {vi?'Đã mở gợi ý có hỗ trợ (K7)':'A guided hint was used (K7)'}</Text>}
+   <Text role="support">{'K1: '}{persistedAttempt?.submitted?
+    (vi?'Đã nộp 4 câu độc lập (chưa chấm đúng/sai)':'Four independent answers submitted (not automatically graded)'):'—'}
+    {' · K2: '+(persistedAttempt?.methodChoice??'—')}
     {' · K3: '}{(['T06','T07'] as const).filter(k=>
      !!persistedAttempt?.methodAttempts?.[k]?.submittedAt).join(', ')||'—'}
     {' · K4: '}{(persistedAttempt?.guidedDraft.trim().length??0)>=MIN?
@@ -815,7 +819,8 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      <section id="l0911-variables"><Markdown md={content.variable_types.md}/></section>{mentor('concept')}</section>
     <Heading level={3} role="titleMedium">{vi?'Nguồn để đọc thêm':'Read the sources'}</Heading>
     <ul>{lesson.sources.filter(s=>s.url.startsWith('https://')).map(s=><li key={s.url}>
-     <a href={s.url} target="_blank" rel="noopener noreferrer">{s.title}</a>
+     <a href={s.url} target="_blank" rel="noopener noreferrer"
+      aria-label={s.title+(vi?' (mở tab mới)':' (opens in a new tab)')}>{s.title}</a>
     </li>)}</ul>
     <Button onClick={()=>moveTo('guided')}>{labels.guided}</Button>
    </Card>}
@@ -823,7 +828,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     <Heading level={2} id="li-editorial-guided" role="titleLarge">{labels.guided}</Heading>
     <section id="l0911-guided"><Markdown md={content.guided.md}/>{mentor('guided')}</section>
     {persistedAttempt?.hint?<div className="li-learning-hint"><Markdown md={content.guided.hint_md??''}/></div>:
-     <Button variant="secondary" disabled={saving||locked} onClick={()=>{if(attempt&&!attempt.hint)void save({...attempt,hint:true});}}>
+     <Button variant="secondary" disabled={saving||locked} onClick={()=>{if(attempt&&!attempt.hint)void save({...attempt,hint:true,assisted:true});}}>
       {vi?'Mở gợi ý':'Show hint'}
      </Button>}
     <Field kind="textarea" rows={5} label={vi?'Tự giải thích bằng lời của mày':'Explain in your own words'}
@@ -988,7 +993,8 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      <Heading level={3} role="titleMedium">{vi?'Nguồn theo cấp':'Source tiers'}</Heading>
      <ul>{content.extension.sources.map(src=><li key={src.url}>
       <Text role="support">{src.tier==='intro'?(vi?'Nhập môn':'Intro'):(vi?'Đọc sâu':'Core')}</Text>
-      {' · '}<a href={src.url} target="_blank" rel="noopener noreferrer">{src.title}</a>
+      {' · '}<a href={src.url} target="_blank" rel="noopener noreferrer"
+       aria-label={src.title+(vi?' (mở tab mới)':' (opens in a new tab)')}>{src.title}</a>
      </li>)}</ul>
      <Heading level={3} role="titleMedium">{vi?'Truy vấn gợi ý':'Suggested queries'}</Heading>
      <ul>{content.extension.searchQueries.map(q=><li key={q}><Button variant="ghost"

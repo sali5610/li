@@ -20,11 +20,30 @@ export const PERSONAL_FIELDS:readonly Field[]=[
  {key:'li.personal.daily.v1',type:'note',id:'daily-journal',diary:true},
  {key:'li.personal.daily.enabled.v1',type:'preference',id:'daily-enabled',diary:true}
 ];
+const T12_CONTEXTS=['standalone','L03-1-2','L09-1-2','L15-2-2'] as const;
+const T12_PREFIX='li.spell.t12.resume.v1:';
+/** One signed owner+lesson record per T12 practice, using existing RLS. */
+const t12Fields=(uid:string):Field[]=>
+ T12_CONTEXTS.map(lesson=>({
+  key:T12_PREFIX+encodeURIComponent(uid)+':'+lesson,
+  type:'l2_progress',id:'spell-t12-resume-'+lesson
+ }));
+function assertT12(raw:string):void{
+ const data=JSON.parse(raw) as Record<string,unknown>;
+ if(!data||typeof data!=='object'||Array.isArray(data)||
+    data.schema!=='li.spell.t12.v1'||![0,1,2].includes(Number(data.phase))||
+    !['context','next','answer'].every(k=>
+      typeof data[k]==='string'&&(data[k] as string).length<=1200)||
+    (data.phase===1&&(!(data.context as string).trim()||!(data.next as string).trim()))||
+    (data.phase===2&&[data.context,data.next,data.answer].some(Boolean)))
+   throw Error('T12_PRIVATE_CHECKPOINT_INVALID');
+}
 const CONSENT=(uid:string)=>'li.sync.journal-cloud-consent.v1:'+uid;
 const BACKUP=(uid:string,key:string)=>'li.sync.local-backup.v1:'+uid+':'+key;
 const SCHEMA='li.personal.storage.v1';
 const fieldsFor=(uid:string):readonly Field[]=>[
- {key:CONSENT(uid),type:'preference',id:'journal-cloud-consent'},...PERSONAL_FIELDS
+ {key:CONSENT(uid),type:'preference',id:'journal-cloud-consent'},
+ ...PERSONAL_FIELDS,...t12Fields(uid)
 ];
 export type PersonalSnapshot={field:Field;raw:string|null};
 const active=(uid:string,field:Field)=>!field.diary||journalCloudConsent(uid);
@@ -58,10 +77,12 @@ function unpack(payload:unknown,key:string):string{
  const value=payload as Record<string,unknown>;
  if(value.schema!==SCHEMA||value.storageKey!==key||typeof value.raw!=='string')
   throw Error('PRIVATE_PAYLOAD_INVALID');
+ if(key.startsWith(T12_PREFIX))assertT12(value.raw);
  return value.raw;
 }
 function wrap(field:Field,raw:string):JsonValue{
  if(raw.length>300000)throw Error('PRIVATE_STATE_TOO_LARGE');
+ if(field.key.startsWith(T12_PREFIX))assertT12(raw);
  // Validate structured stores before replicating; preserve exact JSON strings.
  if(field.key!=='li.private.case-draft.v1'&&field.key!=='li.study-mode.v1'&&
    field.key!=='li.app.locale.v1'&&field.key!=='li.personal.daily.enabled.v1'&&

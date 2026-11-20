@@ -2,7 +2,7 @@
   "schema": "li-semantic-gold-v1",
   "asOf": "2026-11-20",
   "scope": "three_published_wave1_lessons_only",
-  "note": "Gold targets label real supported lesson intents; no private learner data. Hard negatives must not be forced onto unrelated lessons.",
+  "note": "Gold targets label real supported lesson intents; no private learner data. Hard negatives must not be forced onto unrelated lessons. Calibration negatives are the original six inspected after the first run; the ten new near-domain hard negatives form a separately predeclared holdout; no learner/private data.",
   "positives": [
     {
       "query": "L09-1-2",
@@ -143,27 +143,83 @@
   "negatives": [
     {
       "query": "thuyết tương đối của einstein",
-      "expected": "no_relevant_lesson"
+      "expected": "no_relevant_lesson",
+      "split": "calibration"
     },
     {
       "query": "how to compose music in C minor",
-      "expected": "no_relevant_lesson"
+      "expected": "no_relevant_lesson",
+      "split": "calibration"
     },
     {
       "query": "lịch sử đế chế La Mã",
-      "expected": "no_relevant_lesson"
+      "expected": "no_relevant_lesson",
+      "split": "calibration"
     },
     {
       "query": "công thức lãi suất kép ngân hàng",
-      "expected": "no_relevant_lesson"
+      "expected": "no_relevant_lesson",
+      "split": "calibration"
     },
     {
       "query": "how to build a React authentication system",
-      "expected": "no_relevant_lesson"
+      "expected": "no_relevant_lesson",
+      "split": "calibration"
     },
     {
       "query": "cách trồng lan hồ điệp trong nhà",
-      "expected": "no_relevant_lesson"
+      "expected": "no_relevant_lesson",
+      "split": "calibration"
+    },
+    {
+      "query": "tính economic order quantity EOQ tối ưu cho kho hàng",
+      "expected": "no_relevant_lesson",
+      "split": "holdout"
+    },
+    {
+      "query": "thiết kế A/B test kiểm tra phiên bản giao diện mới",
+      "expected": "no_relevant_lesson",
+      "split": "holdout"
+    },
+    {
+      "query": "công thức hồi quy tuyến tính và hệ số tương quan",
+      "expected": "no_relevant_lesson",
+      "split": "holdout"
+    },
+    {
+      "query": "kiểm định giả thuyết và khoảng tin cậy 95 phần trăm",
+      "expected": "no_relevant_lesson",
+      "split": "holdout"
+    },
+    {
+      "query": "phân tích transcript phỏng vấn bằng thematic coding",
+      "expected": "no_relevant_lesson",
+      "split": "holdout"
+    },
+    {
+      "query": "dự báo nhu cầu bằng mô hình ARIMA theo tháng",
+      "expected": "no_relevant_lesson",
+      "split": "holdout"
+    },
+    {
+      "query": "viết SQL truy vấn bảng tồn kho trong database",
+      "expected": "no_relevant_lesson",
+      "split": "holdout"
+    },
+    {
+      "query": "thiết lập SAP EWM warehouse tasks và storage bins",
+      "expected": "no_relevant_lesson",
+      "split": "holdout"
+    },
+    {
+      "query": "how to implement a survey with Google Forms API",
+      "expected": "no_relevant_lesson",
+      "split": "holdout"
+    },
+    {
+      "query": "how to recruit candidates for job interviews",
+      "expected": "no_relevant_lesson",
+      "split": "holdout"
     }
   ]
 }

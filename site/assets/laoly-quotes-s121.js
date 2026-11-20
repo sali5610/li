@@ -272,11 +272,16 @@ function render(){
  const meta=document.getElementById("buddy-quote-meta");
  const link=document.getElementById("buddy-quote-link");
  if(!gloss||!meta||!link){hide();return;}
- original.textContent=view.original;original.lang=view.lang;original.hidden=false;
- translation.textContent=view.translation;translation.hidden=false;
- gloss.textContent=view.interpretation;meta.textContent=view.meta;
- link.href=view.url;link.target="_blank";link.rel="noopener noreferrer";
- note.textContent=view.comment;note.hidden=false;
+ const item=QUOTES.find(q=>q.id===view.id);
+ if(!item){hide();return;}
+ const inEnglish=window.liLanguage?.get?.()==="en";
+ const shown=inEnglish?{...item,...QUOTES_EN[item.id]}:item;
+ original.textContent=item.original;original.lang=item.lang;original.hidden=false;
+ translation.textContent=(inEnglish?"Meaning: ":"Dịch nghĩa: ")+shown.translation;translation.hidden=false;
+ gloss.textContent=(inEnglish?"Interpretation: ":"Diễn nghĩa: ")+shown.interpretation;
+ meta.textContent=shown.meta;
+ link.href=item.url;link.target="_blank";link.rel="noopener noreferrer";
+ note.textContent=shown.comment;note.hidden=false;
  details.hidden=true;info.hidden=false;info.setAttribute("aria-expanded","false");
 }
 window.liQuoteEngine={quotes:QUOTES,environment,matchList,pick,getView,render};

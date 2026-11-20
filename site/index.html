@@ -876,6 +876,53 @@ window.addEventListener("resize",placeCompanion,{passive:true});
  });
  if(liStorageError)toast("Không đọc được dữ liệu đã lưu. Tạm dừng ghi mới để tránh ghi đè.");
 })();
+window.addEventListener("li:personal-sync-applied",event=>{
+ const detail=event.detail||{};
+ if(!document.documentElement.classList.contains("li-auth-verified")||
+  detail.accountId!==localStorage.getItem("li.sync.local-owner.v1")||
+  !Array.isArray(detail.keys))return;
+ const keys=new Set(detail.keys);
+ if(keys.has(LI_STORAGE_KEY)){
+  try{
+   const raw=localStorage.getItem(LI_STORAGE_KEY);
+   if(raw){
+    const data=JSON.parse(raw);
+    if(data.schema!==1||!Array.isArray(data.cases)||!Array.isArray(data.questions))throw Error("INVALID_LIBRARY");
+   }
+   const next=liReadState();
+   processedCases.splice(0,processedCases.length,...next.cases);
+   savedQuestions.splice(0,savedQuestions.length,...next.questions);
+   collectedIdeas.splice(0,collectedIdeas.length,...next.ideas);
+   savedContent.splice(0,savedContent.length,...next.savedContent);
+   liStorageError=false;
+   renderCaseArchive();renderSavedQuestions();
+   window.liLibraryShelf?.renderHome();window.liLibraryShelf?.renderResume();
+   window.liLibraryShelf?.renderCollection();
+   window.liBookmarks?.refresh();refreshQuestionBookmark();
+   if(currentPage==="noteDetail")window.liNotes?.renderDetail?.();
+  }catch{toast("Dữ liệu cloud chưa đọc được, vẫn giữ ghi chép hiện tại.");}
+ }
+ if(keys.has(STUDY_MODE_KEY))setStudyMode(liRestoreStudyMode(),{persist:false});
+ if(keys.has(LI_BUDDY_NAMES_KEY)){
+  const updateNames=()=>{
+   liBuddyNames=liRestoreBuddyNames();
+   liRefreshBuddyNameInputs();
+   const guide=document.getElementById("guide-mode-copy");
+   if(guide)guide.textContent=liBuddyLine(STUDY_MODES[studyMode].guide);
+  };
+  if(document.activeElement?.matches?.("[data-buddy-name]")){
+   document.activeElement.addEventListener("blur",updateNames,{once:true});
+  }else updateNames();
+ }
+ if(keys.has("li.app.locale.v1")){
+  const next=localStorage.getItem("li.app.locale.v1");
+  if(["vi","en"].includes(next)&&next!==window.liLanguage?.get?.())window.liLanguage.set(next);
+ }
+ if(keys.has(LI_DRAFT_KEY)){
+  const draft=document.getElementById("case-revision");
+  if(draft&&draft!==document.activeElement)draft.value=localStorage.getItem(LI_DRAFT_KEY)||"";
+ }
+});
 const liInitialLesson=new URLSearchParams(window.location.search).get("lesson");
 const liInitialCatalog=new URLSearchParams(window.location.search).get("catalog");
 navigate(liInitialCatalog&&!liInitialLesson?"catalog":"home",{focus:false,syncUrl:!(liInitialCatalog||Object.values(LI_LESSON_ROUTES).includes(liInitialLesson))});

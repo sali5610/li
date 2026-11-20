@@ -95,11 +95,20 @@ function Catalog(){
   const update=()=>forceProgress(x=>x+1);
   window.addEventListener('li:personal-sync-applied',update);
   window.addEventListener('li:learning-sync-report',update);
+  // The React lesson saves to Dexie before cloud sync. Reflect the completed
+  // self-review immediately, including while offline.
+  window.addEventListener('li:lesson-attempt-changed',update);
   window.addEventListener('li:activity',update);
+  const onStorage=(event:StorageEvent)=>{
+   if(event.key?.startsWith('li.review.'))update();
+  };
+  window.addEventListener('storage',onStorage);
   return ()=>{
    window.removeEventListener('li:personal-sync-applied',update);
    window.removeEventListener('li:learning-sync-report',update);
+   window.removeEventListener('li:lesson-attempt-changed',update);
    window.removeEventListener('li:activity',update);
+   window.removeEventListener('storage',onStorage);
   };
  },[]);
  const group=groups.find(item=>item.id===path[0]);

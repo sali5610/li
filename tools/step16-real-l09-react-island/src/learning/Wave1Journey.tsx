@@ -12,6 +12,8 @@ import type {Attempt} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
 import './journey.css';
 import {LessonBookmark,LessonMentor,LessonSectionIndex,LessonSources,LessonFigure} from './LessonDetailParity.js';
+import {SelfReviewNextStep} from './SelfReviewNextStep.js';
+import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 
 type LessonId='L03-1-2'|'L15-2-2';
 type Phase='read'|'guided'|'practice'|'feedback'|'progress';
@@ -195,6 +197,12 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
   if(!window.confirm(current.content.localized[attempt.locale].reset))return;
   void save({...attempt,draft:['','','',''] as Attempt['draft']});
  }
+ async function restartLesson(){
+  if(!attempt||locked||saving||pending.current>0)return;
+  if(!confirmLessonRestart(id,attempt.locale))return;
+  setError('');
+  if(await save(freshLessonAttempt(attempt)))setPhase('read');
+ }
  function revealHint(){
   if(!attempt||locked||attempt.submitted||attempt.hint)return;
   void save({...attempt,hint:true,assisted:true});
@@ -319,6 +327,10 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     attempt.submitted?(vi?'Đã nộp · tự đánh giá '+rated+'/4':'Submitted · '+rated+'/4 ratings'):
     (vi?'Đủ điều kiện nộp '+answered+'/4 câu':'Ready to submit '+answered+'/4 answers')}</Text>
    {attempt.assisted&&<Text role="support">{content.assistStatus}</Text>}
+   <div className="li-learning-recovery">
+    <Button variant="secondary" disabled={saving||locked}
+     onClick={()=>void restartLesson()}>{vi?'Học lại từ đầu':'Restart this lesson'}</Button>
+   </div>
   </div>
   {error&&!locked&&<p role="alert" className="li-learning-error">{error}</p>}
   {locked&&<div className="li-learning-recovery">
@@ -417,6 +429,8 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     </div>
     <Text role="support">{content.scoreLabel}: {attempt.ratings.every(x=>x!==null)?
      attempt.ratings.reduce<number>((sum,v)=>sum+(v??0),0)+' / 8':'— / 8'}</Text>
+    <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
+     locale={attempt.locale} onReviewTheory={()=>setPhase('read')}/>
     {attempt.reviewed?<Button onClick={()=>setPhase('progress')}>{labels.progress}</Button>:
      <Button disabled={locked||saving} onClick={()=>void finish()}>{content.saveReview}</Button>}
    </Card>}
@@ -424,6 +438,8 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     <Heading level={2} id="li-wave1-progress" role="titleLarge">{content.reviewDone}</Heading>
     <Text>{content.progressDone}</Text>
     <Text>{content.scoreLabel}: {attempt.ratings.reduce<number>((n,v)=>n+(v??0),0)} / 8</Text>
+    <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
+     locale={attempt.locale} onReviewTheory={()=>setPhase('read')}/>
     <Button variant="secondary" onClick={ports.navigation.openCatalog}>
      {vi?'Về Tàng Thư':'Back to library'}</Button>
    </Card>}

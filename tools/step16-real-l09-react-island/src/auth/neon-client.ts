@@ -2,27 +2,21 @@ import {createInternalNeonAuth,type ReactBetterAuthClient} from '@neondatabase/a
 import {BetterAuthReactAdapter} from '@neondatabase/auth/react/adapters';
 import type {NeonAuthSessionPort} from '../sync/neon-session.js';
 import {sessionJwtCandidate,safeJwtFetchError} from '../sync/invite-access.js';
-import {NEON_AUTH_URL} from './config.js';
+import {AUTH_API_URL} from './config.js';
 
 /**
- * Managed Better Auth with official Neon SDK and Google's shared OAuth provider.
- * A Google identity/session is NOT a li. membership. The verified-email allowlist
- * and restrictive PostgreSQL RLS (migration 0002) enforce access server-side.
- * No anonymous tokens, self-serve app membership or privileged credentials.
+ * Managed Neon Better Auth with invite-only RLS. On the Cloudflare app origin
+ * session cookies are first-party through the server proxy, not third-party
+ * cookies from *.neon.tech (iPhone PWA restriction).
+ * Do not store JWTs, session IDs, or Google credentials in web storage.
  */
-// @neondatabase/auth v0.7.0-beta exports the managed internal JWT helper.
- // Use ONE adapter instance for both the React session and JWT acquisition.
- // The helper obtains the SDK-managed session token; do not fetch /token ad hoc.
-const neonAuth=createInternalNeonAuth(NEON_AUTH_URL,{
+const neonAuth=createInternalNeonAuth(AUTH_API_URL,{
  adapter:BetterAuthReactAdapter(),
  allowAnonymous:false
 });
-// SDK v0.7.0-beta's generic conditional resolves the React adapter as its
-// Vanilla type, even though BetterAuthReactAdapter() instantiates React hooks.
-// The explicit bridge is isolated here; runtime Auth-only fixture must verify.
 export const authClient=neonAuth.adapter as unknown as ReactBetterAuthClient;
 
-/** Identity-only adapter. Never cache/store the JWT or raw session in IndexedDB. */
+/** Identity-only adapter. Invite/RLS are checked independently on every entry. */
 export const neonSessionPort:NeonAuthSessionPort={
  async getSession(){
   const response=await authClient.getSession();
@@ -30,15 +24,13 @@ export const neonSessionPort:NeonAuthSessionPort={
    error:response.error??undefined};
  },
  async getJWTToken(){
-  // Neon SDK injects the authenticated JWT from set-auth-jwt into a session
-  // response. Without that header session.token may be an opaque session ID.
-  // Only use the SDK helper, then validate candidate shape + sub binding and
-  // require the backend to verify JWT signature, invite membership and RLS.
+  // The official SDK obtains only a short-lived signed JWT, used directly for
+  // Neon Data API requests. Never persist it across browser restarts.
   try{
    const jwt=await neonAuth.getJWTToken();
    return sessionJwtCandidate(jwt);
   }catch(problem){
-   throw safeJwtFetchError(problem); // Never expose provider text or token.
+   throw safeJwtFetchError(problem);
   }
  }
 };

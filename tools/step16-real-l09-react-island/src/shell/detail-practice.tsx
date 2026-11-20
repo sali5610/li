@@ -1,5 +1,7 @@
-import React,{useEffect,useState} from 'react';
+import {openRoute} from './app-router.js';
+import React,{useEffect,useState,useSyncExternalStore} from 'react';
 import {Button,Card,Checkbox,Field,Heading,InlineFeedback,Radio,Text,LiIcon} from '../../../../design-system/react/index';
+import {createFadedT03Flow,fadedT03Phase} from './spell-t03-flow.js';
 import './detail-practice.css';
 
 /** The existing authored exercise checker and private-note transaction owners
@@ -83,6 +85,16 @@ function PracticeField({field,value,onChange}:{
 }
 export function GuideDetail(){
  const view=useSpell();
+ // XState owns T03 React transitions; the existing exercise engine
+ // still owns answers, grading, feedback, and the local session receipt.
+ const [t03Flow]=useState(createFadedT03Flow);
+ const t03Stage=useSyncExternalStore(t03Flow.subscribe,t03Flow.getSnapshot);
+ useEffect(()=>{
+  t03Flow.sync(view);
+ },[t03Flow,view?.active,view?.phase,view?.viewSession,view?.reviewedInSession]);
+ useEffect(()=>()=>{t03Flow.stop();},[t03Flow]);
+ const phase=view?.active==='T03'&&t03Flow.isCurrent(view)
+  ?fadedT03Phase(t03Stage):(view?.phase??0);
  const [methodTick,setMethodTick]=useState(0);
  const [answers,setAnswers]=useState<Record<string,string|string[]>>({});
  useEffect(()=>{
@@ -98,14 +110,16 @@ export function GuideDetail(){
  const method=(app.liMethods?.getView().methods||[]).find(x=>x.id===view?.active);
  const setTab=(tab:'guide'|'practice')=>app.LiSpellPractice?.setTab(tab);
  const action=(kind:string)=>{
-  const ok=app.LiSpellPractice?.perform(kind,answers);
+  const ok=view?.active==='T03'
+   ?t03Flow.execute(kind,answers,app.LiSpellPractice)
+   :app.LiSpellPractice?.perform(kind,answers);
   if(ok&&['reset','clear','schedule','next'].includes(kind))setAnswers({});
  };
  const prompt=()=>{
   if(!view)return '';
-  if(view.mode==='faded'&&view.phase===1)
+  if(view.mode==='faded'&&phase===1)
    return copy('Bước có gợi ý: 5 đơn vị/ngày × 2 ngày chờ + 4 tồn an toàn = ?', 'Guided step: 5 units/day × 2 days + 4 safety stock = ?');
-  if(view.mode==='faded'&&view.phase===2)
+  if(view.mode==='faded'&&phase===2)
    return copy('Bài độc lập: 7 đơn vị/ngày, 3 ngày chờ, 5 đơn vị an toàn. Điểm đặt hàng lại?', 'Independent step: 7 units/day, 3-day lead time, 5 safety stock. Reorder point?');
   if(view.mode==='resume'&&view.phase===1)
    return copy('Hãy viết một câu kết luận chỉ về 20 người được khảo sát.', 'Write one claim limited to the 20 surveyed people.');
@@ -114,22 +128,22 @@ export function GuideDetail(){
   return tr(view.prompt);
  };
  if(!view||!method)return <div className="section-shell" data-li-react-screen="guide-detail">
-  <Button variant="ghost" data-page="guide"><LiIcon name="chevron-left" size={18}/> {copy('Sổ Tay Thần Chú','Learning Spells')}</Button>
+  <Button variant="ghost" onClick={()=>openRoute('guide')}><LiIcon name="chevron-left" size={18}/> {copy('Sổ Tay Thần Chú','Learning Spells')}</Button>
   <InlineFeedback tone="info" message={copy('Chọn một Thần Chú để đọc và thực hành.','Select a learning spell to begin.')}/>
  </div>;
- const preparing=view.phase===0;
+ const preparing=phase===0;
  const hasSource=preparing;
  let actionLabel=copy('Đối chiếu bài làm','Check your response');
  if(preparing&&view.mode==='resume')actionLabel=copy('Tạm ngắt · Lưu dấu vết trong phiên','Pause · Keep a session cue');
  else if(preparing&&view.mode==='loci')actionLabel=copy('Giấu nguồn · Đi qua lộ trình','Hide source · Walk the route');
  else if(preparing&&['faded','hide'].includes(view.mode))actionLabel=copy('Giấu nguồn · Tiếp tục','Hide source · Continue');
- else if(view.mode==='faded'&&view.phase===1)actionLabel=copy('Kiểm tra để sang bài mới','Check to continue');
- else if(view.mode==='faded'&&view.phase===2)actionLabel=copy('Đối chiếu độc lập','Check independently');
+ else if(view.mode==='faded'&&phase===1)actionLabel=copy('Kiểm tra để sang bài mới','Check to continue');
+ else if(view.mode==='faded'&&phase===2)actionLabel=copy('Đối chiếu độc lập','Check independently');
  const isDuePreparing=preparing&&view.mode==='due';
  const dueFuture=isDuePreparing&&view.dueAt!==null&&view.dueAt>Date.now();
  const ctaKind=preparing&&['faded','hide','resume','loci'].includes(view.mode)?'next':'check';
  return <div className="section-shell li-react-spell-detail" data-li-react-screen="guide-detail">
-  <Button variant="ghost" data-page="guide" className="library-back-link">
+  <Button variant="ghost" onClick={()=>openRoute('guide')} className="library-back-link">
    <LiIcon name="chevron-left" size={18}/> {copy('Sổ Tay Thần Chú','Learning Spells')}</Button>
   <div className="kicker">{view.active} · {tr(method.category)}</div>
   <Heading level={1} role="headline" className="display-title">{method.title}</Heading>
@@ -174,6 +188,7 @@ export function GuideDetail(){
     </Card>
    </div>:
    <section role="tabpanel" aria-labelledby="li-react-spell-tab-practice"
+    data-li-react-t03-stage={view.active==='T03'?t03Stage:undefined}
     className="spell-practice-root li-react-spell-practice">
     <div className="spell-activity-head"><div>
      <div className="kicker">{view.active} · {copy('THỬ THI TRIỂN','PRACTICE')}</div>
@@ -267,7 +282,7 @@ export function NoteDetail(){
  };
  const back=note.backRoute||'collection';
  return <div className="section-shell li-react-note-detail" data-li-react-screen="note-detail">
-  <Button variant="ghost" data-page={back} className="library-back-link">
+  <Button variant="ghost" onClick={()=>openRoute(back)} className="library-back-link">
    <LiIcon name="chevron-left" size={18}/> {back==='resume'?copy('Quay lại','Continue'):
     back==='library'?copy('Tủ Riêng','Private Library'):copy('Bộ sưu tập','Collection')}</Button>
   <div className="kicker">{note.kind||copy('CHI TIẾT GHI CHÉP','NOTE DETAIL')}</div>
@@ -293,7 +308,7 @@ export function NoteDetail(){
     <Text role="body">{note.context.choice}</Text>
     <InlineFeedback tone="info" message={note.context.feedback}/>
     <Text role="support">{note.context.provenance}</Text>
-    <Button variant="secondary" data-page="case">{copy('Làm lại Phản Chứng','Retry the Case')}</Button>
+    <Button variant="secondary" onClick={()=>openRoute('case')}>{copy('Làm lại Phản Chứng','Retry the Case')}</Button>
    </Card>}
    <Card variant="raised" className="library-note-review">
     <div className="library-note-head">

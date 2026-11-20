@@ -13,8 +13,6 @@ assert.equal(editorialDraft.publishState,"draft","unreleased lesson stays draft"
 assert.equal(editorialDraft.methodFit.primaryTechniqueId,"L2-T06");
 assert.equal(editorialDraft.methodFit.optionalTechniqueIds[0],"L2-T07");
 assert.equal(editorialSource.connections.links.length,2);
-// Editorial React now owns the *same* real popup directly; the retired
-// native registerEditorial overlay must not be mounted as a second mentor.
 assert.match(editorialReact,/li:buddy-open/);
 assert.match(editorialReact,/liQuoteEngine/);
 assert.match(editorialReact,/AFTER_VALID_INDEPENDENT_SUBMISSION/);
@@ -24,12 +22,20 @@ assert.match(sectionedReact,/li:buddy-open/);
 assert.match(sectionedReact,/isReleasedLessonId/);
 for(const source of [react,wave]){
  assert.match(source,/li:mentor-phase-jump/,"React lesson must listen to Lão Lý navigation");
- assert.match(source,/next==='feedback'.*!attempt\?\.submitted/,
-  "Never reveal feedback before real submission");
- assert.match(source,/next==='progress'.*!attempt\?\.reviewed/,
-  "Progress remains gated by real review");
  assert.match(source,/li-learning-current/,"Jump must target visible React content");
 }
+// L09 now routes mentor jumps through the real XState actor; Wave1 retains its
+// guarded React path. Validate both rather than demanding an obsolete inline if.
+const phaseMachine=read("tools/step16-real-l09-react-island/src/learning/phase-machine.ts");
+assert.match(react,/phaseActor\.send\(\{type:'OPEN',phase:next\}\)/);
+assert.match(phaseMachine,/event\.phase==='feedback'&&context\.submitted/,
+ "XState feedback must require confirmed submission");
+assert.match(phaseMachine,/event\.phase==='progress'&&context\.submitted&&context\.reviewed/,
+ "XState progress must require confirmed review");
+assert.match(wave,/next==='feedback'.*!attempt\?\.submitted/,
+ "Wave1 feedback must remain locked before submission");
+assert.match(wave,/next==='progress'.*!attempt\?\.reviewed/,
+ "Wave1 progress must remain locked before review");
 assert.match(react,/data-li-lesson-phase=\{phase\}/);
 assert.match(react,/data-li-lesson-submitted=\{attempt\.submitted\?/);
 const stages=["opening","concept","guided","independent","reflection","extension"];
@@ -103,8 +109,8 @@ vm.runInContext(read("site/assets/lesson-companion-native.js"),ctx);
  assert.equal(get().stage,"extension");
  assert.match(plan().actions[2].reply,/not reviewed method fit/i);
 
- // Wave2 draft has NO native preview registration. Only the gated React
- // renderer may open the existing React-owned Lão Lý dialog once released.
- assert.ok(!api.registered().includes("L09-1-1"),"draft has no native popup route");
+ // An unapproved editorial draft must not register a native pop-up.
+ assert.ok(!api.registered().includes("L09-1-1"),
+  "Draft can only reach React mentor after release checks");
  console.log("PASS Wave1 mentor + draft L09-1-1 six-stage bilingual React context, no spoiler, T06/T07, honest links");
 })().catch(e=>{console.error(e);process.exitCode=1;});

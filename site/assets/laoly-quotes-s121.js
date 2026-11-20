@@ -241,8 +241,9 @@ function pick(ctx=environment()){
  * Rotation, original-language text, source rights and VI/EN metadata remain
  * managed by this one S121 engine; React never duplicates the quote bank. */
 function getView(){
- if((typeof buddyDebateActive==="boolean"&&buddyDebateActive)||
-    document.getElementById("calm-toggle")?.checked)return null;
+ const calm=window.liBuddyVoice?.get?.()?.calm ??
+  document.getElementById("calm-toggle")?.checked; // native fallback
+ if((typeof buddyDebateActive==="boolean"&&buddyDebateActive)||calm)return null;
  const item=pick();
  if(!item)return null;
  const inEnglish=window.liLanguage?.get?.()==="en";
@@ -284,8 +285,7 @@ function render(){
  note.textContent=shown.comment;note.hidden=false;
  details.hidden=true;info.hidden=false;info.setAttribute("aria-expanded","false");
 }
-/** Read-only curated lookup for structured lesson moments.
- * No change to native/random quote rotation or native first-party glosses. */
+/** Read-only source-first lookup for authorized editorial React moments. */
 function lookup(id,locale="vi"){
  const q=QUOTES.find(item=>item.id===id);
  if(!q||typeof q.url!=="string"||!q.url.startsWith("https://"))return null;

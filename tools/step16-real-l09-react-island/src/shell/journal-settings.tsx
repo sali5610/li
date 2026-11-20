@@ -1,4 +1,4 @@
-import {openRoute} from './app-router.js';
+import {goBack,openRoute} from './app-router.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Button,Card,Checkbox,Field,Heading,InlineFeedback,LiIcon,Text} from '../../../../design-system/react/index';
@@ -25,7 +25,8 @@ type SettingsView={
  importLoading:boolean;importError:string
 };
 type DiaryPort={getView:()=>DiaryView;act:(kind:string,value?:string)=>void};
-type SettingsPort={getView:()=>SettingsView;act:(kind:string,key?:string,value?:string|boolean)=>void};
+type SettingsPort={getView:()=>SettingsView;act:(kind:string,key?:string,value?:string|boolean)=>void;
+ setVoice:(kind:'calm'|'mute',enabled:boolean)=>boolean};
 type AppWindow=Window&{
  liPersonalDiary?:DiaryPort;liSettingsPort?:SettingsPort;
  liLanguage?:{get:()=>string}
@@ -197,7 +198,11 @@ function BuddyName({kind,header,placeholder,value,preview,commit}:{
  commit:(kind:string,value:string,final?:boolean)=>void
 }){
  const [draft,setDraft]=useState(value);
- useEffect(()=>setDraft(value),[value]);
+ // Preview normalizes whitespace; keep the raw draft so a space between words
+ // cannot be erased by a React read-back before the learner finishes typing.
+ const normalizeDraft=(raw:string)=>raw.replace(/[\u0000-\u001f\u007f]/g,' ')
+  .replace(/\s+/g,' ').trim().slice(0,24);
+ useEffect(()=>{if(normalizeDraft(draft)!==value)setDraft(value);},[value]);
  return <div className="buddy-address-field li-react-address-field">
   <Field label={header} value={draft} placeholder={placeholder}
    onChange={event=>{
@@ -205,7 +210,9 @@ function BuddyName({kind,header,placeholder,value,preview,commit}:{
     setDraft(next);commit(kind,next);
    }}/>
   <Text role="support">{preview}</Text>
-  <button type="button" className="li-react-commit" onClick={()=>commit(kind,draft,true)}>
+  <button type="button" className="li-react-commit" onClick={()=>{
+   const clean=normalizeDraft(draft);setDraft(clean);commit(kind,clean,true);
+  }}>
    {copy('Lưu cách gọi','Save nickname')}</button>
  </div>;
 }
@@ -213,7 +220,7 @@ export function Settings(){
  const view=useSettings();
  const act=(kind:string,key?:string,value?:string|boolean)=>app.liSettingsPort?.act(kind,key,value);
  return <div className="section-shell li-react-settings" data-li-react-screen="settings">
-  <Button variant="ghost" className="library-back-link" onClick={()=>act('back')}>
+  <Button variant="ghost" className="library-back-link" onClick={goBack}>
    <LiIcon name="chevron-left" size={18}/> {copy('Quay lại','Back')}</Button>
   <div className="kicker">{copy('CÀI ĐẶT','SETTINGS')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Cài đặt','Settings')}</Heading>
@@ -251,9 +258,9 @@ export function Settings(){
       <Text role="body">{copy('Lão hơi tự phụ, đãng trí và có thể nhận sai khi bị phản bác bằng lý lẽ hợp lệ.',
        'A proud, forgetful mentor who can change his mind when you bring sound reasoning.')}</Text>
       <Checkbox label={copy('Giọng Dịu — bớt cà khịa','Gentle voice — less teasing')}
-       checked={view.calm} onChange={event=>act('calm',undefined,event.target.checked)}/>
+       checked={view.calm} onChange={event=>app.liSettingsPort?.setVoice('calm',event.target.checked)}/>
       <Checkbox label={copy('Im Lặng — tắt lời thoại','Silence — mute companion dialogue')}
-       checked={view.mute} onChange={event=>act('mute',undefined,event.target.checked)}/>
+       checked={view.mute} onChange={event=>app.liSettingsPort?.setVoice('mute',event.target.checked)}/>
       <div className="buddy-address-settings">
        <Heading level={3} role="titleSmall">{copy('Lão gọi bạn thế nào?','How should Lao Ly address you?')}</Heading>
        <Text role="support">{copy('Để trống để dùng cách gọi mặc định.','Leave blank to use the default address.')}</Text>

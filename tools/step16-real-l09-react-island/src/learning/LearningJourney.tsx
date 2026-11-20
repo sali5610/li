@@ -1,4 +1,4 @@
-import React,{useEffect,useRef,useState} from 'react';
+import React,{useCallback,useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
 import exact from '../l09-exact.generated.json';
 import lesson09 from '../../../../content/lessons/L09-1-2.json';
@@ -11,14 +11,19 @@ import {SaveStatus} from '../../../../design-system/react/Molecules';
 import type {SaveState} from '../../../../design-system/react/Molecules';
 import {L09_LESSON_ID} from './ports';
 import type {LearningPorts,SyncState} from './ports';
+import {appUiStore} from '../shell/app-store.js';
+import type {LessonPhase} from '../shell/app-store.js';
+import {createLessonPhaseActor} from './phase-machine.js';
 import './journey.css';
 import {LessonBookmark,LessonMentor,LessonSectionIndex,L09Figures,LessonSources} from './LessonDetailParity.js';
+import {SelfReviewNextStep} from './SelfReviewNextStep.js';
+import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 
 /** A real invited-only React learner screen, not a second app.
  * Editorial VI/EN copy is compiled from canonical GitHub
  * content/lessons/L09-1-2.json; signed Dexie/Neon attempts use the stable ID.
  */
-type Phase='read'|'guided'|'practice'|'feedback'|'progress';
+type Phase=LessonPhase;
 const sequence:Phase[]=['read','guided','practice','feedback','progress'];
 const MAX_ANSWER_CHARS=4000;
 const comparableFields:(keyof Attempt)[]=['locale','draft','guidedDraft','hint','assisted',
@@ -46,8 +51,19 @@ function statusText(status:SyncState,vi:boolean){
 export function LearningJourney({ports}:{ports:LearningPorts}){
  const reduced=useReducedMotion();
  const [attempt,setAttempt]=useState<Attempt|null>(null);
- const [phase,setPhase]=useState<Phase>('read');
- useEffect(()=>{window.dispatchEvent(new Event('li:lesson-phase-changed'));},[phase]);
+ const [phaseActor]=useState(createLessonPhaseActor);
+ const subscribePhase=useCallback((notify:()=>void)=>{
+  const subscription=phaseActor.subscribe(notify);
+  return ()=>subscription.unsubscribe();
+ },[phaseActor]);
+ const phase=useSyncExternalStore(subscribePhase,
+  ()=>phaseActor.getSnapshot().value as Phase);
+ useEffect(()=>()=>{phaseActor.stop();},[phaseActor]);
+ useEffect(()=>{
+  appUiStore.getState().setLessonPhase(phase);
+  window.dispatchEvent(new Event('li:lesson-phase-changed'));
+  return ()=>appUiStore.getState().setLessonPhase(null);
+ },[phase]);
  // Lão Lý's Read this section must navigate the visible React workflow, not
  // hidden legacy lesson anchors. The existing submission/review gates apply.
  useEffect(()=>{
@@ -56,11 +72,10 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    if(!detail||detail.lessonId!=='L09-1-2'||
     !['read','guided','practice','feedback','progress'].includes(detail.phase||''))return;
    const next=detail.phase as Phase;
-   if((next==='feedback'||next==='progress')&&!attempt?.submitted)return;
-   if(next==='progress'&&!attempt?.reviewed)return;
    const root=document.querySelector('[data-li-react-journey="L09-1-2"]');
    if(!root||root.closest('.page')?.classList.contains('active')===false)return;
-   setPhase(next);
+   phaseActor.send({type:'OPEN',phase:next});
+   if(phaseActor.getSnapshot().value!==next)return;
    window.requestAnimationFrame(()=>{
     root.querySelector('.li-learning-current')
      ?.scrollIntoView({block:'start',behavior:reduced?'auto':'smooth'});
@@ -68,7 +83,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   };
   window.addEventListener('li:mentor-phase-jump',onMentorJump);
   return()=>window.removeEventListener('li:mentor-phase-jump',onMentorJump);
- },[attempt?.submitted,attempt?.reviewed,reduced]);
+ },[phaseActor,reduced]);
 
  const [busy,setBusy]=useState(true);
  const [loadAttempt,setLoadAttempt]=useState(0);
@@ -126,7 +141,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     subject.current=learner.subjectId;
     revision.current=saved.revision;
     setAttempt(saved.attempt);
-    setPhase(resumedPhase(saved.attempt));
+    phaseActor.send({type:'COMMIT',submitted:data.submitted,reviewed:data.reviewed});
+    phaseActor.send({type:'OPEN',phase:resumedPhase(data)});
     setSync(status);
     setBusy(false);
    }catch{
@@ -134,7 +150,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    }
   })();
   return()=>{cancelled=true;mounted.current=false;};
- },[ports,loadAttempt]);
+ },[ports,loadAttempt,phaseActor]);
 
  async function refreshStatus(){
   if(!subject.current)return;
@@ -236,7 +252,10 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   setError('');
   const next:Attempt={...attempt,submitted:true,submittedAt:new Date().toISOString(),
    submission:[...attempt.draft] as Attempt['submission'],submissionLocale:attempt.locale};
-  if(await save(next))setPhase('feedback');
+  if(await save(next)){
+   phaseActor.send({type:'COMMIT',submitted:true,reviewed:false});
+   phaseActor.send({type:'OPEN',phase:'feedback'});
+  }
  }
  async function finish(){
   if(!attempt||!attempt.submitted||attempt.reviewed||locked)return;
@@ -244,7 +263,10 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    setError('Chọn đủ 4 tiêu chí tự đánh giá trước khi hoàn tất.');return;
   }
   setError('');
-  if(await save({...attempt,reviewed:true}))setPhase('progress');
+  if(await save({...attempt,reviewed:true})){
+   phaseActor.send({type:'COMMIT',submitted:true,reviewed:true});
+   phaseActor.send({type:'OPEN',phase:'progress'});
+  }
  }
  function switchLocale(locale:'vi'|'en'){
   if(!attempt||locked||saving||attempt.locale===locale)return;
@@ -257,11 +279,19 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   if(!window.confirm(exact.langs[attempt.locale].resetConfirm))return;
   void save({...attempt,draft:['','','',''] as Attempt['draft']});
  }
+ async function restartLesson(){
+  if(!attempt||locked||saving||pendingWrites.current>0)return;
+  if(!confirmLessonRestart(L09_LESSON_ID,attempt.locale))return;
+  setError('');
+  if(await save(freshLessonAttempt(attempt))){
+   phaseActor.send({type:'COMMIT',submitted:false,reviewed:false});
+   phaseActor.send({type:'OPEN',phase:'read'});
+  }
+ }
  function go(next:Phase){
   if(!attempt)return;
-  if((next==='feedback'||next==='progress')&&!attempt.submitted)return;
-  if(next==='progress'&&!attempt.reviewed)return;
-  setError('');setPhase(next);
+  phaseActor.send({type:'OPEN',phase:next});
+  if(phaseActor.getSnapshot().value===next)setError('');
  }
  if(busy)return <section className="li-learning-journey" aria-busy="true" role="status">
   Đang xác minh quyền học và tải tiến độ…
@@ -352,6 +382,10 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     attempt.submitted?(vi?'Đã nộp · tự đánh giá '+rated+'/4':'Submitted · self-review '+rated+'/4'):
     (vi?'Đủ điều kiện nộp '+answered+'/4 câu':'Submission-ready '+answered+'/4 answers')}</Text>
    {attempt.assisted&&<Text role="support">{content.assisted}</Text>}
+   <div className="li-learning-recovery">
+    <Button variant="secondary" disabled={saving||locked}
+     onClick={()=>void restartLesson()}>{vi?'Học lại từ đầu':'Restart this lesson'}</Button>
+   </div>
   </div>
   {error&&!locked&&<p className="li-learning-error" role="alert">{error}</p>}
   {locked&&<div className="li-learning-recovery">
@@ -446,6 +480,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
       </select>
      </div>)}
     </div>
+    <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
+     locale={attempt.locale} onReviewTheory={()=>go('read')}/>
     <Text role="support">{vi?'Tự chấm theo rubric, không phải điểm tự động.':'Self-review, not automatic grading.'}</Text>
     {attempt.reviewed?<Button onClick={()=>go('progress')}>{labels.progress}</Button>:
      <Button disabled={locked||saving} onClick={()=>void finish()}>{content.saveReview}</Button>}
@@ -456,6 +492,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     </Heading>
     <Text>{vi?'Đây là một lượt học đã lưu, không phải chứng nhận thông thạo.':
      'This is one saved learning attempt, not a mastery certificate.'}</Text>
+    <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
+     locale={attempt.locale} onReviewTheory={()=>go('read')}/>
     <Text role="support">{content.scoreLabel}: {attempt.ratings.reduce<number>((n,x)=>n+(x??0),0)} / 8</Text>
     <Button variant="secondary" onClick={()=>ports.search.openSearch('sampling bias random sampling variation')}>
      {vi?'Tìm bài liên quan':'Find related lessons'}

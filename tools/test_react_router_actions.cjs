@@ -30,9 +30,43 @@ assert.doesNotMatch(lesson,/getElementById\(['"]global-search['"]\)/,
 assert.match(lesson,/search\.liSearch\?\.render\(query\)/);
 assert.match(search,/app\.openLaoLy\?\.\(\)/);
 assert.doesNotMatch(search,/getElementById\('laoly-fab'\)\?\.click\(\)/);
-for(const name of ['home-catalog','guide-library','research-case','journal-settings','knowledge-search']){
+for(const name of ['home-catalog','guide-library','research-case','journal-settings','knowledge-search','detail-practice']){
  const file=read('tools/step16-real-l09-react-island/src/shell/'+name+'.tsx');
  assert.doesNotMatch(file,/<Button[^>]*\bdata-page=/,
   name+' has delegated navigation on a React control');
 }
+const details=read('tools/step16-real-l09-react-island/src/shell/detail-practice.tsx');
+const settings=read('tools/step16-real-l09-react-island/src/shell/journal-settings.tsx');
+assert.match(details,/onClick=\{\(\)=>openRoute\(back\)\}/);
+assert.match(details,/onClick=\{\(\)=>openRoute\('case'\)\}/);
+assert.match(details,/onClick=\{\(\)=>openRoute\('guide'\)\}/);
+assert.match(settings,/onClick=\{goBack\}/);
+assert.doesNotMatch(settings,/act\('back'\)/);
+assert.match(old,/if\(kind===\"mode\"&&STUDY_MODES\[key\]\)setStudyMode\(key\)/);
+assert.doesNotMatch(old,/STUDY_MODES\[key\]\).*?\.click\(\)/);
+// The React nickname editor must call the same storage owner as the native
+// fallback, not fire synthetic events into hidden textboxes.
+assert.match(old,/function liSetBuddyName\(key,value,persist=false\)/);
+assert.match(old,/liBuddyNames\[key\]=liNormalizeBuddyName\(value\)/);
+assert.match(old,/previews:liBuddyNamePreviews\(\)/);
+assert.match(old,/nicknameFeedback:liAddressFeedback/);
+assert.match(old,/liSetBuddyName\(key,value,kind==="nicknameCommit"\)/);
+assert.match(old,/else if\(kind==="resetNames"\)liResetBuddyNames\(\)/);
+assert.doesNotMatch(old,/field\.dispatchEvent\(new Event\(kind==="nicknameInput"/);
+assert.doesNotMatch(old,/el\("buddy-names-reset"\)\?\.click\(\)/);
+assert.match(settings,/normalizeDraft\(draft\)!==value/);
+// Calm / Mute must be direct session actions, not clicks on hidden native inputs.
+const buddy=read('site/assets/laoly-context-s112.js');
+assert.match(old,/const liBuddyVoice=\{/);
+assert.match(old,/window\.liBuddyVoice=Object\.freeze\(\{get:/);
+assert.match(old,/setVoice:\(kind,enabled\)=>liSetBuddyVoice\(kind,enabled\)/);
+assert.match(settings,/app\.liSettingsPort\?\.setVoice\('calm',event\.target\.checked\)/);
+assert.match(settings,/app\.liSettingsPort\?\.setVoice\('mute',event\.target\.checked\)/);
+assert.match(old,/calm:liBuddyVoice\.calm,mute:liBuddyVoice\.mute/);
+assert.match(old,/field\?\.addEventListener\("change",\(\)=>liSetBuddyVoice\(kind,field\.checked\)\)/);
+assert.doesNotMatch(old,/field&&field\.checked!==Boolean\(value\)\)field\.click\(\)/);
+assert.match(buddy,/const calm=buddyVoice\("calm"\)/);
+assert.match(buddy,/if\(buddyVoice\("mute"\)\)/);
+assert.match(buddy,/document\.getElementById\(kind==="calm"/); // native fallback only
+
 console.log('PASS explicit React routes and Back: direct actions, canonical history and search, no hidden click');

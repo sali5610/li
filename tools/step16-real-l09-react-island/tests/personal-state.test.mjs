@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {PrivateDeviceStore} from '../.sync-private-test/sync/local-dexie.js';
 import {storageKey} from '../.sync-private-test/sync/contract.js';
 import {PERSONAL_FIELDS,capturePersonalState,hydratePersonalState,
- preparePersonalAccount,journalCloudConsent,personalRemoteSnapshot,t02Fields} from '../.sync-private-test/auth/private-state.js';
+ preparePersonalAccount,journalCloudConsent,personalRemoteSnapshot,t02Fields,practiceField} from '../.sync-private-test/auth/private-state.js';
 
 function device(){
  const data=new Map();
@@ -269,4 +269,65 @@ test('T02 invalid remote review streak is rejected before hydration',()=>{
  assert.throws(()=>personalRemoteSnapshot(uid,field.type,field.id,
   {schema:'li.personal.storage.v1',storageKey:field.key,raw:JSON.stringify(data)}),
   /T02_PRIVATE_REVIEW_SCHEDULE_INVALID/);
+});
+
+test('spell receipts reuse signed owner RLS outbox; second device restores without copying answers',async()=>{
+ const uid='spell-owner-1',field=practiceField(uid);
+ const key=storageKey(uid,field.type,field.id);
+ const receipt={schema:'li.spell.practice.v1',scopes:{
+  standalone:{T04:{count:2,lastAt:Date.now(),phase:0,places:[]}},
+  'L09-1-2':{T13:{count:1,lastAt:Date.now()-1000,phase:1,places:['cửa','bàn','bếp']}}
+ }};
+ const raw=JSON.stringify(receipt);
+ device();localStorage.setItem(field.key,raw);
+ await withStore(async first=>{
+  const snapshots=await capturePersonalState(uid,null,first,new Map());
+  assert(snapshots.some(x=>x.field.id===field.id));
+  const op=await first.outbox.get(key);
+  assert(op,'offline receipt must enter the existing signed Dexie outbox');
+  assert.equal(op.payload.raw,raw);
+  assert.equal(op.itemType,field.type);
+  assert.equal(raw.includes('Đáp án của tôi'),false,'answers are not part of the receipt');
+  const signed={owner_id:uid,item_type:field.type,item_id:field.id,
+   revision:3,changed_at:new Date().toISOString(),deleted_at:null,payload:op.payload};
+  device();
+  await withStore(async fresh=>{
+   const before=await capturePersonalState(uid,null,fresh,new Map());
+   assert.equal((await fresh.counts(uid)).pending,0,'fresh device must not queue an overwrite');
+   await fresh.apply(uid,signed);
+   assert.equal(await hydratePersonalState(uid,before,fresh,()=>{}),true);
+   assert.equal(localStorage.getItem(field.key),raw);
+   assert.equal((await fresh.counts(uid)).pending,0);
+   assert.equal(personalRemoteSnapshot(uid,field.type,field.id,op.payload)?.raw,raw);
+   assert.throws(()=>personalRemoteSnapshot('other-owner',field.type,field.id,op.payload),
+    /PRIVATE_PAYLOAD_INVALID/,'another user cannot read the first owner scope');
+  });
+ });
+});
+
+test('spell cloud contract rejects unsafe contexts, arbitrary answers and malformed receipts',async()=>{
+ device();const uid='spell-bad',field=practiceField(uid);
+ const correct={schema:'li.spell.practice.v1',scopes:{
+  standalone:{T04:{count:1,lastAt:Date.now(),phase:0,places:[]}}
+ }};
+ const errors=[
+  {...correct,scopes:{'L99-1-1':correct.scopes.standalone}},
+  {...correct,scopes:{standalone:{T04:{...correct.scopes.standalone.T04,answer:'secret'}}}},
+  {...correct,scopes:{standalone:{T04:{...correct.scopes.standalone.T04,count:-5}}}},
+  {...correct,scopes:{standalone:{T02:correct.scopes.standalone.T04}}},
+  {...correct,scopes:{standalone:{T13:{count:0,lastAt:null,phase:1,places:['same','same','same']}}}}
+ ];
+ for(const entry of errors){
+  const raw=JSON.stringify(entry);
+  const payload={schema:'li.personal.storage.v1',storageKey:field.key,raw};
+  assert.throws(()=>personalRemoteSnapshot(uid,field.type,field.id,payload),
+   /SPELL_PRACTICE_/);
+ }
+ const invalid=JSON.stringify(errors[1]);
+ localStorage.setItem(field.key,invalid);
+ await withStore(async store=>{
+  await assert.rejects(capturePersonalState(uid,null,store,new Map()),/SPELL_PRACTICE_/);
+  assert.equal(await store.outbox.get(storageKey(uid,field.type,field.id)),undefined,
+   'invalid browser state never reaches the signed outbox');
+ });
 });

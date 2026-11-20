@@ -6,7 +6,8 @@ import {isReleasedLessonId} from './released-lessons';
 import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 import {Button,Card} from '../../../../design-system/react/Components';
 import {Field} from '../../../../design-system/react/Controls';
-import {Heading,Text} from '../../../../design-system/react/Atoms';
+import {Heading,Text,Progress} from '../../../../design-system/react/Atoms';
+import {SelfReviewNextStep} from './SelfReviewNextStep';
 import {Markdown} from './EditorialJourney';
 import './journey.css';
 
@@ -129,6 +130,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  const [persisted,setPersisted]=useState<Attempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
  const [busy,setBusy]=useState(true),[pending,setPending]=useState(0);
+ const [reload,setReload]=useState(0);
  const [locked,setLocked]=useState(false),[error,setError]=useState('');
  const [sync,setSync]=useState<SyncState>('unavailable');
  const current=useRef<Attempt|null>(null),revision=useRef('');
@@ -167,7 +169,19 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    }
   })();
   return()=>{alive=false;mounted.current=false;};
- },[id,method,ports]);
+ },[id,method,ports,reload]);
+ // The existing account-scoped Dexie/Neon adapter owns background hydration.
+ // Never replace a locally pending attempt with an older cloud snapshot.
+ useEffect(()=>{
+  const hydrate=(event:Event)=>{
+   const detail=(event as CustomEvent<{accountId?:string;lessonIds?:string[]}>).detail;
+   if(detail?.accountId!==owner.current||!detail.lessonIds?.includes(id)||
+    count.current>0||failed.current)return;
+   setReload(n=>n+1);
+  };
+  window.addEventListener('li:lesson-sync-applied',hydrate);
+  return()=>window.removeEventListener('li:lesson-sync-applied',hydrate);
+ },[id]);
  function persist(next:Attempt):Promise<boolean>{
   if(failed.current||!owner.current)return Promise.resolve(false);
   current.current=next;setAttempt(next);
@@ -277,12 +291,12 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  }
  function openGuide(){
   if(locked||pending)return;
-  const app=window as Window&{liMethods?:{open?:(id:string,practice?:boolean)=>void}};
+  const app=window as Window&{liMethods?:{open?:(methodId:string,practice?:boolean,lessonId?:string)=>boolean}};
   if(!app.liMethods?.open){setError('Sổ Tay Thần Chú chưa khả dụng.');return;}
   try{
    sessionStorage.setItem('li.sectioned.guide-return.v1',
     JSON.stringify({id,method,at:Date.now(),scrollY:window.scrollY}));
-   app.liMethods.open(method,false);
+   if(!app.liMethods.open(method,false,id))setError('Chưa mở được Thần Chú; bản nháp vẫn được giữ.');
   }catch{setError('Chưa mở được Thần Chú; bản nháp vẫn được giữ.');}
  }
  if(busy)return <section role="status" className="li-learning-journey" aria-busy="true">Đang xác minh quyền học…</section>;
@@ -303,6 +317,11 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   persisted.contentVersion!==lesson.version&&!review;
  const methodData=attempt.methodAttempts?.[method];
  const savedMethod=persisted.methodAttempts?.[method];
+ const answersSaved=persisted.draft.filter(x=>x.trim().length>=MIN).length;
+ const rated=persisted.ratings.filter(x=>x!==null).length;
+ const percent=persisted.reviewed?100:persisted.submitted?75:
+  Math.round(answersSaved/4*50);
+ const history=persisted.attemptHistory||[];
  const setAnswer=(i:number,v:string)=>{
   if(v.length>MAX)return;
   edit(a=>{const draft=[...a.draft] as Attempt['draft'];draft[i]=v;return {...a,draft};});
@@ -340,6 +359,18 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     disabled={(i>=4&&!persisted.submitted)||(i===5&&!persisted.reviewed)}
     onClick={()=>setPhase(p)}>{names[p]}</Button>)}
   </nav>
+  <Progress label={vi?'Tiến độ lượt học':'Lesson attempt progress'} value={percent}/>
+  <Text role="support">{persisted.reviewed?
+   (vi?'Đã lưu tự đánh giá · không phải chứng nhận thông thạo':'Self-review saved · not a mastery certificate'):
+   persisted.submitted?(vi?'Đã nộp · tự chấm '+rated+'/4':'Submitted · '+rated+'/4 ratings'):
+   (vi?'Đã lưu '+answersSaved+'/4 câu trả lời':'Saved '+answersSaved+'/4 answers')}</Text>
+  {history.length>0&&<details className="li-learning-attempt-history">
+   <summary>{vi?'Lịch sử lượt học':'Saved attempt history'} · {history.length}</summary>
+   <ol>{history.map((entry,index)=><li key={index}>
+    <Text role="support">{vi?'Lượt':'Attempt'} {entry.attemptNumber} ·
+     {' '}{entry.submittedAt} · {entry.ratings.reduce<number>((total,score)=>total+(score??0),0)}/8</Text>
+   </li>)}</ol>
+  </details>}
   <Card variant="flat-study">
    {phase==='read'&&<>
     <Markdown md={c.intro_md}/>{mentor('opening')}
@@ -416,6 +447,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
        {[0,1,2].map(v=><option key={v} value={v}>{v} · {row[v+1]}</option>)}
       </select>
      </div>)}
+     <SelfReviewNextStep rubricItems={rubric} ratings={attempt.ratings}
+      locale={locale} onReviewTheory={()=>setPhase('read')}/>
      <Button disabled={pending>0||locked||attempt.ratings.some(x=>x===null)}
       onClick={()=>void finish()}>{vi?'Lưu tự đánh giá':'Save review'}</Button>
     </>}
@@ -425,6 +458,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     <Text>{vi?'Điểm tự chấm':'Self-rating'}: {persisted.ratings.reduce<number>((n,x)=>n+(x??0),0)} / 8</Text>
     <Text role="support">{vi?'K5 chưa đo: bài này chưa chứng minh ghi nhớ dài hạn.':'K5 not measured: long-term retention is not established.'}</Text>
     {block('extension')}{mentor('extension')}
+    <SelfReviewNextStep rubricItems={rubric} ratings={persisted.ratings}
+     locale={locale} onReviewTheory={()=>setPhase('read')}/>
     <Button disabled={pending>0||locked} onClick={()=>void newRound()}>
      {vi?'Lượt mới · giữ lịch sử':'New round · preserve history'}</Button>
    </>}

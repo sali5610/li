@@ -174,6 +174,11 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     (access==='offline'&&localOffline));
   document.documentElement.classList.toggle('li-auth-verified',Boolean(permitted));
   if(!permitted)document.documentElement.classList.remove('li-account-open');
+  // Explicit session state for React router cleanup. No DOM class observer or
+  // cross-account Back stack survives a verified sign-out.
+  window.dispatchEvent(new CustomEvent('li:auth-verified-changed',{
+   detail:{verified:Boolean(permitted)}
+  }));
   return()=>{document.documentElement.classList.remove('li-auth-verified');};
  },[accountId,isPending,error,access,ownerReady,isOffline,localOffline]);
  // Persist a local time limit only AFTER the real invited account and local owner agree.

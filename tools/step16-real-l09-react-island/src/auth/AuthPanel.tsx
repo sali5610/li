@@ -5,7 +5,8 @@ import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING} from './config.js';
 import {classifyOAuthReturn,type OAuthReturnCode} from './oauth-return.js';
 import {RlsQaPanel} from './RlsQaPanel.js';
 import {SyncQaPanel} from './SyncQaPanel.js';
-import {prepareLearnerAccount,startLearnerSync,journalCloudConsent,changeJournalCloudConsent,type SyncReport} from './learner-sync.js';
+import {prepareLearnerAccount,startLearnerSync,journalCloudConsent,changeJournalCloudConsent,
+ listPrivateConflicts,resolvePrivateConflict,type PrivateConflictChoice,type SyncReport} from './learner-sync.js';
 
 type Locale='vi'|'en';
 type Access='checking'|'granted'|'denied'|'error';
@@ -78,6 +79,15 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  const [syncStatus,setSyncStatus]=useState<SyncReport>('checking');
  const [journalChoice,setJournalChoice]=useState(false);
  const [journalBusy,setJournalBusy]=useState(false);
+ const [conflicts,setConflicts]=useState<PrivateConflictChoice[]>([]);
+ const [resolving,setResolving]=useState(false);
+ useEffect(()=>{
+  let cancelled=false;
+  if(syncStatus!=='conflict'||!accountId||!ownerReady){setConflicts([]);return;}
+  void listPrivateConflicts(accountId).then(x=>{if(!cancelled)setConflicts(x);})
+   .catch(()=>{if(!cancelled)setConflicts([]);});
+  return()=>{cancelled=true;};
+ },[syncStatus,accountId,ownerReady]);
  useEffect(()=>{setJournalChoice(Boolean(accountId)&&journalCloudConsent(accountId||''));},[accountId]);
  // Do not reveal native lesson state from another invited account.
  // Local account ownership is prepared synchronously before the app is shown.
@@ -164,6 +174,18 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     'Could not update your journal sync permission. Try again.');
   }finally{setJournalBusy(false);}
  }
+ async function decideConflict(c:PrivateConflictChoice,choice:'keep-local'|'use-remote'){
+  if(!accountId||access!=='granted'||resolving)return;
+  setResolving(true);setFeedback('');
+  try{
+   await resolvePrivateConflict(accountId,c.itemType,c.itemId,choice);
+   setConflicts(list=>list.filter(x=>!(x.itemType===c.itemType&&x.itemId===c.itemId)));
+   setSyncStatus('checking');
+  }catch{
+   setFeedback(locale==='vi'?'Chưa giải quyết được khác biệt. Hai bản vẫn được giữ lại.':
+    'Could not resolve the difference. Both versions remain protected.');
+  }finally{setResolving(false);}
+ }
  async function signInGoogle(){
   if(busy)return;
   setBusy('login');setFeedback('');
@@ -222,6 +244,20 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
        'Chỉ bật khi bạn đồng ý lưu dữ liệu Check-in và Nhật Ký trên cloud của tài khoản. Tắt sẽ ngừng đồng bộ và xếp lệnh xóa bản cloud; dữ liệu trên máy vẫn giữ.':
        'Opt in to store private check-ins and journal entries in your account cloud. Turning this off queues cloud deletion while preserving local entries.'}</p>
      </div>}
+     {access==='granted'&&syncStatus==='conflict'&&<section className="auth-privacy"
+      aria-label={locale==='vi'?'Khác biệt giữa các thiết bị':'Device conflicts'}>
+      <p><strong>{locale==='vi'?'Có dữ liệu khác nhau trên hai thiết bị':'Two versions differ'}</strong></p>
+      <p>{locale==='vi'?
+       'Không tự ghi đè ghi chép. Chọn bản muốn giữ cho từng mục; bản còn lại sẽ được thay thế sau khi đồng bộ.':
+       'No silent overwrite. Choose which version to keep for each item; the other version is replaced after syncing.'}</p>
+      {conflicts.map(c=><div key={c.itemType+':'+c.itemId}>
+       <p>{c.label}</p>
+       <button type="button" className="qa-secondary" disabled={resolving}
+        onClick={()=>void decideConflict(c,'keep-local')}>{locale==='vi'?'Giữ bản trên máy này':'Keep this device'}</button>
+       <button type="button" className="qa-secondary" disabled={resolving}
+        onClick={()=>void decideConflict(c,'use-remote')}>{locale==='vi'?'Dùng bản trên Neon':'Use Neon version'}</button>
+      </div>)}
+     </section>}
      <button type="button" onClick={()=>void signOut()} disabled={busy!==null}>
       {busy?t.busy:t.logout}
      </button>

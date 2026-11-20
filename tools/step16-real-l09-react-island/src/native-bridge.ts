@@ -5,6 +5,7 @@
  */
 export type Locale='vi'|'en';
 export type Rating=0|1|2|null;
+export type MethodAttempt={draft:string;submission:string|null;submittedAt:string|null};
 export type Attempt={
  locale:Locale;
  draft:[string,string,string,string];
@@ -17,6 +18,8 @@ export type Attempt={
  submissionLocale:Locale|null;
  ratings:[Rating,Rating,Rating,Rating];
  reviewed:boolean;
+ /** Optional per-spell attempt; distinct from independent assessment. */
+ methodAttempts?:Partial<Record<'T06'|'T07',MethodAttempt>>;
 };
 export const NATIVE_KEY='li.review.L09-1-2.v1';
 export const PILOT_KEY='step16.l09.react-island.v1';

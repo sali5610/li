@@ -1,7 +1,7 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {AuthPanel} from './AuthPanel.js';
-import {mountLearningJourney,mountWave1Journey} from '../learning/app-entry.js';
+import {mountLearningJourney,mountWave1Journey,mountEditorialJourney} from '../learning/app-entry.js';
 import {releasedLessonRoutes} from '../learning/released-lessons.js';
 import {createStagingLearningPorts} from '../learning/staging-ports.js';
 import {mountSharedNavigation} from '../shell/mount-navigation.js';
@@ -29,14 +29,13 @@ createRoot(root).render(<AuthPanel onClose={closeAccount}/>);
 
 
 /** One invited-only route handler for all released lessons.
- * Renderers are still explicitly limited to approved Wave1 formats, so a new
- * editorial JSON cannot silently become an active lesson UI.
+ * Future editorial routes require the same explicit pack + catalog release gate;
+ * the renderer also rejects non-reviewed or wrong-format content at runtime.
  */
 function enableIntegratedLessons(){
  for(const {id,route,slug} of releasedLessonRoutes){
   const renderer=id==='L09-1-2'?'l09':
-   id==='L03-1-2'||id==='L15-2-2'?'wave1':null;
-  if(!renderer)continue;
+   id==='L03-1-2'||id==='L15-2-2'?'wave1':'editorial';
   const page=document.getElementById('page-'+route);
   const legacy=page?.querySelector<HTMLElement>(':scope > .section-shell');
   if(!page||!legacy)continue;
@@ -53,7 +52,8 @@ function enableIntegratedLessons(){
     node.className='section-shell';page.append(node);
     try{
      dispose=renderer==='l09'?mountLearningJourney(node,ports):
-      mountWave1Journey(node,id as 'L03-1-2'|'L15-2-2',ports);
+      renderer==='wave1'?mountWave1Journey(node,id as 'L03-1-2'|'L15-2-2',ports):
+      mountEditorialJourney(node,id,ports);
      host=node;legacy.hidden=true;legacy.style.display='none';
      page.setAttribute('aria-labelledby',title);
     }catch{

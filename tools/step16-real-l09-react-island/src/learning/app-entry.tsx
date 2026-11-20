@@ -2,6 +2,8 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {LearningJourney} from './LearningJourney';
 import {Wave1Journey} from './Wave1Journey';
+import {EditorialJourney} from './EditorialJourney';
+import {isReleasedLessonId} from './released-lessons';
 import type {LearningPorts} from './ports';
 import '../../../../design-system/react/atoms.css';
 import '../../../../design-system/react/controls.css';
@@ -34,5 +36,21 @@ export function mountWave1Journey(host:HTMLElement,
   throw Error('WAVE1_REAL_PORTS_REQUIRED');
  const root=createRoot(host);
  root.render(<Wave1Journey id={id} ports={ports}/>);
+ return()=>root.unmount();
+}
+
+
+/** Single future structured-lesson renderer, mounted only for explicit
+ * catalog + manifest authorized IDs by the same verified invited router.
+ * No standalone preview URL or alternate database path.
+ */
+export function mountEditorialJourney(host:HTMLElement,id:string,ports:LearningPorts):()=>void{
+ if(!host?.isConnected||!isReleasedLessonId(id)||
+  !ports?.auth?.requireInvitedLearner||!ports?.attempts?.load||
+  !ports?.attempts?.save||!ports?.sync?.getStatus||
+  !ports?.navigation?.openCatalog||!ports?.search?.openSearch)
+   throw Error('EDITORIAL_LEARNER_RELEASE_OR_PORTS_REQUIRED');
+ const root=createRoot(host);
+ root.render(<EditorialJourney id={id} ports={ports}/>);
  return()=>root.unmount();
 }

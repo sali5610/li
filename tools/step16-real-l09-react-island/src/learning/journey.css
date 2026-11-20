@@ -69,3 +69,18 @@
  padding-block:var(--li-space-4);border-top:1px solid var(--rule)}
 .li-learning-sources ul{display:grid;gap:var(--li-space-2);
  padding-inline-start:var(--li-space-5);margin:0}
+
+
+/* Editorial structured lessons: reuses existing tokens and flat-study Cards. */
+.li-editorial-markdown p{white-space:pre-wrap}
+.li-editorial-markdown ul,.li-editorial-markdown ol{padding-inline-start:1.5rem}
+.li-learning-table-scroll{overflow-x:auto;max-width:100%;margin-block:1rem}
+.li-learning-table-scroll table{width:100%;border-collapse:collapse;text-align:start}
+.li-learning-table-scroll th,.li-learning-table-scroll td{
+ padding:0.65rem 0.75rem;
+ border-bottom:1px solid var(--color-border-subtle,#c5c9bf);
+ text-align:start;
+ vertical-align:top
+}
+.li-learning-method{padding-block:1rem;border-bottom:1px solid var(--color-border-subtle,#c5c9bf)}
+.li-learning-method:last-of-type{border-bottom:0}

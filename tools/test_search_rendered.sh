@@ -15,9 +15,25 @@ cat > site/li-search-source-smoke.html <<'HTML'
 <html lang="vi"><head><meta charset="utf-8"></head><body>
 <input id="global-search" aria-label="Tra Cứu">
 <div id="global-results"></div>
+<div id="buddy-modal" class="modal">
+ <p id="buddy-text"></p><div id="buddy-scroll"></div><div id="buddy-quote"></div>
+ <div id="buddy-debate"></div><img id="buddy-title-avatar" alt="">
+ <button id="buddy-question">Lão hỏi ngược</button>
+ <button id="buddy-challenge">Phản biện lão</button>
+ <button id="buddy-forget">Lão quên gì rồi?</button>
+</div>
+<button id="laoly-fab">Lão Lý</button><img id="laoly-current-icon" alt="">
 <pre id="result">LI_SEARCH_PENDING</pre>
+<script>
+ var currentPage="search",buddyDebateActive=false;
+ var openLaoLy=function(){},showBuddyQuote=function(){},refreshLucide=function(){};
+ var openModal=function(id){document.getElementById(id).classList.add("open");};
+ var closeModal=function(id){document.getElementById(id).classList.remove("open");};
+ document.getElementById("laoly-fab").addEventListener("click",()=>openLaoLy(document.getElementById("laoly-fab")));
+</script>
 <script src="./assets/catalog-curriculum-data.js"></script>
 <script src="./assets/li-catalog-search.js"></script>
+<script src="./assets/laoly-context-s112.js"></script>
 <script>
 (async function(){
  const input=document.getElementById("global-search");
@@ -56,7 +72,30 @@ cat > site/li-search-source-smoke.html <<'HTML'
     !related.includes("Bài liên quan để so sánh")||pew.length!==1){
   fail("CONCEPT_TO_LESSON_TO_RELATED");return;
  }
+ const mentor=Array.from(results.querySelectorAll("button")).find(
+  b=>b.textContent==="Hỏi Lão Lý về kết nối này");
+ if(!mentor){fail("MENTOR_ENTRY");return;}
+ mentor.click();
+ const dialog=document.getElementById("buddy-modal");
+ const plan=window.liGetBuddyPlan?.();
+ if(!dialog.classList.contains("open")||
+    !document.getElementById("buddy-text").textContent.includes("Selection bias")||
+    !plan?.actions?.[0]?.reply.includes("khác nhau")||
+    !plan?.actions?.[2]?.label.includes("L09-1-2")){
+  fail("MENTOR_CONTEXT");return;
+ }
+ document.getElementById("buddy-question").click();
+ if(!document.getElementById("buddy-text").textContent.includes("khác nhau")){
+  fail("MENTOR_REVIEWED_REASON");return;
+ }
+ document.getElementById("buddy-challenge").click();
+ if(!document.getElementById("buddy-text").textContent.includes("Nguồn phương pháp")){
+  fail("MENTOR_SOURCE_RESPONSE");return;
+ }
  await query("Reorder point");
+ if(window.liSearch?.getMentorContext?.()!==null){
+  fail("MENTOR_STALE_CONTEXT");return;
+ }
  if(results.querySelector('[data-search-result="concept:wave1:reorder-point"]')){
   fail("PROPOSED_CONCEPT_LEAK");return;
  }
@@ -81,4 +120,4 @@ if [[ "$dom" != *'<pre id="result">LI_SEARCH_CANONICAL_PASS</pre>'* ]];then
  tail -20 /tmp/li-search-browser.log || true
  exit 1
 fi
-echo 'PASS rendered canonical Search: L09 field + sourced L03 link, verified Selection bias → L09 → L03, proposed/outline hidden'
+echo 'PASS rendered Search + existing Lão Lý popup: sourced concept→L09→L03, real source explanation, context reset, proposed hidden'

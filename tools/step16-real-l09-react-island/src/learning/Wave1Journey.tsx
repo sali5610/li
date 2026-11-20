@@ -11,7 +11,7 @@ import type {SaveState} from '../../../../design-system/react/Molecules';
 import type {Attempt} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
 import './journey.css';
-import {LessonBookmark,LessonMentor,LessonSources} from './LessonDetailParity.js';
+import {LessonBookmark,LessonMentor,LessonSectionIndex,LessonSources} from './LessonDetailParity.js';
 
 type LessonId='L03-1-2'|'L15-2-2';
 type Phase='read'|'guided'|'practice'|'feedback'|'progress';
@@ -268,6 +268,8 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
       (step==='progress'&&!attempt.reviewed)}
     onClick={()=>setPhase(step)}>{labels[step]}</Button>)}
   </nav>
+  <LessonSectionIndex id={id} locale={attempt.locale}
+   links={content.navLabels} onPhase={setPhase} submitted={attempt.submitted}/>
   <aside className="li-lesson-spells" aria-label={vi?'Thần Chú gợi ý':'Suggested spells'}>
    <Heading level={2} role="titleSmall">{vi?'Thần Chú có thể thử':'Spells to try'}</Heading>
    <Text role="support">{vi?

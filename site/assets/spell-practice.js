@@ -415,18 +415,10 @@ function setup(){
   t12Draft[field]=target.value.slice(0,1200);
   t12Write();
  });
+ // Native UI is only a fallback; it calls the SAME direct action reducer.
  root.addEventListener("click",ev=>{
-  const b=ev.target.closest("[data-spell-action]");if(!b||!root.contains(b))return;
-  switch(b.dataset.spellAction){
-  case "reset":
-   if(active==="T12"&&!t12Clear()){showMessage(t12StorageError);break;}
-   phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
-   t12Draft={context:"",next:"",answer:""};draw();break;
-  case "next":next();break;
-  case "check":check();break;
-  case "schedule":try{const d={exposed:Date.now(),due:Date.now()+86400000};localStorage.setItem("li.spell.t02.due.v1",JSON.stringify(d));if(localStorage.getItem("li.spell.t02.due.v1")!==JSON.stringify(d))throw Error("verify");feedback="";draw()}catch(err){feedback="Trình duyệt không lưu được mốc. Chưa có lịch ôn thực nào được tạo.";draw()}break;
-  case "clear":try{localStorage.setItem("li.spell.t02.due.v1",JSON.stringify({clearedAt:Date.now(),due:null}))}catch(err){}feedback="";draw();break;
-  }
+  const button=ev.target.closest("[data-spell-action]");
+  if(button&&root.contains(button))runAction(button.dataset.spellAction);
  });
  if(typeof window.addEventListener==="function"){
   window.addEventListener("li:personal-sync-applied",ev=>{
@@ -446,7 +438,8 @@ function setup(){
   });
  }
  window.LiSpellPractice={open,methods:Object.keys(exercises),getView,
-  perform:performReact,setTab:switchTab,setT12Draft};
+  perform:performReact,setTab:switchTab,setT12Draft,
+  refreshNative:()=>{if(!reactOwnsSpell())switchTab(activeTab);}};
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",setup,{once:true});else setup();
 })();

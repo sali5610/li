@@ -1,0 +1,93 @@
+name: TEMP self-check live Tra Cuu #291 (close without merge)
+on:
+  pull_request:
+    branches: [integration/staging]
+    paths:
+      - '.github/workflows/li-temp-live-search-291.yml'
+permissions:
+  contents: read
+jobs:
+  live-search:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Browser driver (uses runner Chromium)
+        run: python3 -m pip install --quiet playwright==1.56.0
+      - name: Assert LIVE published Pages data plus rendered Search in Chromium (no login)
+        run: |
+          python3 - <<'PY'
+          import json, shutil, urllib.request
+          from playwright.sync_api import sync_playwright
+          ORIGIN='https://sali5610.github.io/li/'
+          def published(name):
+              req=urllib.request.Request(ORIGIN+name,headers={'User-Agent':'li-live-search-self-check','Cache-Control':'no-cache','Pragma':'no-cache'})
+              with urllib.request.urlopen(req,timeout=35) as r:
+                  return json.loads(r.read())
+          graph=published('content-packs/graph.json')
+          search=published('content-packs/search.json')
+          backs=published('content-packs/backlinks.json')
+          cid='concept:ont01:random-variation'
+          concept=next(x for x in graph['nodes'] if x['id']==cid)
+          doc=next(x for x in search['documents'] if x['id']==cid)
+          assert concept['reviewState']=='verified',concept
+          assert doc['reviewState']=='verified',doc
+          for id in ['edge:wave1:l09-variation','edge:wave1:l09-contrast']:
+              edge=next(x for x in graph['edges'] if x['id']==id)
+              assert edge['reviewState']=='verified',edge
+              assert edge['provenance']['sourceUrl'].startswith('https://openstax.org/'),edge
+              assert edge['reasonLocalized']['vi'] and edge['reasonLocalized']['en'],edge
+          assert any(x['id']=='edge:wave1:l09-variation' for x in backs['backlinks'][cid])
+          assert not any(x['id']=='lesson:L09-1-1' for x in search['documents'])
+          assert next(x for x in search['documents'] if x['id']=='concept:wave1:reorder-point')['reviewState']=='proposed'
+          print('PASS LIVE_PACKS',json.dumps({'concept':cid,'conceptReview':doc['reviewState'],'links':['TEACHES','CONTRASTS_WITH'],'L0911Hidden':True}))
+          chrome=shutil.which('google-chrome') or shutil.which('google-chrome-stable') or shutil.which('chromium')
+          assert chrome,'Chromium missing on runner'
+          with sync_playwright() as p:
+              browser=p.chromium.launch(executable_path=chrome,headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
+              page=browser.new_page(viewport={'width':390,'height':844},service_workers='block')
+              errors=[]
+              page.on('pageerror',lambda err:errors.append(str(err)[:250]))
+              page.goto(ORIGIN,wait_until='domcontentloaded',timeout=50000)
+              page.wait_for_function("window.liSearch && window.liSearch.getStatus() === 'ready'",timeout=35000)
+              data=page.evaluate("""async () => {
+                const {contentClient}=await import(new URL('./assets/li-content-adapter.mjs',document.baseURI).href);
+                const one=await contentClient.searchKnowledge('Random sampling variation');
+                const two=await contentClient.searchKnowledge('biến thiên lấy mẫu');
+                const draft=await contentClient.searchKnowledge('L09-1-1');
+                const proposed=await contentClient.searchKnowledge('Reorder point');
+                return {one,two,draft,proposed};
+              }""")
+              for query in ('one','two'):
+                  result=data[query]
+                  assert result['status']=='ok',(query,result)
+                  assert result['results'][0]['id']==cid,(query,result)
+                  links=result['results'][0]['links']
+                  assert any(x.get('lessonId')=='L09-1-2' and x.get('sourceUrl','').startswith('https://openstax.org/') for x in links),links
+              assert data['draft']['status']=='no_match',data['draft']
+              assert not any(x['id']=='concept:wave1:reorder-point' for x in data['proposed']['results']),data['proposed']
+              print('PASS LIVE_BROWSER_SEARCH',json.dumps({'english':data['one']['results'][0]['id'],'vietnamese':data['two']['results'][0]['id'],'lessonLink':'L09-1-2','draftHidden':True},ensure_ascii=False))
+              page.evaluate("""() => {
+                const input=document.querySelector('#global-search');
+                input.value='biến thiên lấy mẫu';
+                input.dispatchEvent(new Event('input',{bubbles:true}));
+              }""")
+              page.wait_for_function("""() => {
+                const node=document.querySelector('#global-results');
+                return !!node && node.textContent.includes('Random sampling variation') && node.textContent.includes('L09-1-2');
+              }""",timeout=15000)
+              ui=page.evaluate("""() => {
+                const node=document.querySelector('#global-results');
+                const links=[...node.querySelectorAll('a[href]')].map(a=>({href:a.href,rel:a.rel,target:a.target}));
+                return {resultText:node.textContent.slice(0,550),hasLessonButton:!![...node.querySelectorAll('button')].find(x=>x.textContent.includes('L09-1-2')),
+                  links,canOpenWithoutAuth:window.liSearch.openLesson('L09-1-2')};
+              }""")
+              assert ui['hasLessonButton'],ui
+              assert any(x['href'].startswith('https://openstax.org/') and 'noopener' in x['rel'] and 'noreferrer' in x['rel'] for x in ui['links']),ui
+              assert ui['canOpenWithoutAuth'] is False,'auth guard unexpectedly bypassed'
+              print('PASS LIVE_RENDERED_SEARCH',json.dumps(ui,ensure_ascii=False)[:1500])
+              print('PAGE_ERRORS',json.dumps(errors[:6]))
+              browser.close()
+          PY

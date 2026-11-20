@@ -6,7 +6,7 @@
 const fs=require("node:fs");
 const vm=require("node:vm");
 const assert=require("node:assert/strict");
-const source=fs.readFileSync("site/assets/spell-practice.js","utf8");
+const source=fs.readFileSync(require("node:path").resolve(__dirname,"../site/assets/spell-practice.js"),"utf8");
 assert.match(source,/function performReact\(action,values=\{\}\)/);
 assert.doesNotMatch(source,/button\.click\(\)/);
 assert.doesNotMatch(source,/textarea\.value=val/);

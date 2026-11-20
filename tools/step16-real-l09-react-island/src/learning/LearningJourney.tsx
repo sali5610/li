@@ -312,7 +312,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
       <strong>{spell.shortId} · {vi?spell.name.vi:spell.name.en}</strong>
       <Text role="support">{vi?spell.why.vi:spell.why.en}</Text>
       <Button variant="secondary" className="li-lesson-spell-action"
-       data-method={spell.shortId} data-spell-practice={index===0?'true':'false'}
+       data-method={spell.shortId} data-spell-practice={index===0?'true':'false'} data-spell-lesson="L09-1-2"
        disabled={saving||locked}
        aria-label={(vi?'Thử Thần Chú ':'Try spell ')+spell.shortId}>
        {vi?(index?'Xem chú bổ trợ':'Thử thi triển'):

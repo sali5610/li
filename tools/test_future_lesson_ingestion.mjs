@@ -27,7 +27,15 @@ try{
  const original=load('content/editorial/L09-1-1.lesson.v1.json');
  assert.equal(original.id,'L09-1-1');
  assert.equal(original.publishState,'draft');
- assert.equal(original.reviewState,'proposed');
+ assert.equal(original.reviewState,'verified');
+ assert.equal(original.editorialStatus,'reviewed');
+ assert.equal(original.practice.minimumCharactersPerAnswer,12);
+ assert.equal(original.sources.some(s=>s.url==='https://rcompanion.org/handbook/E_01.html'),true);
+ for(const loc of ['vi','en']){
+  const md=original.content.localized[loc].reflection.md;
+  const table=md.split(/\r?\n/).filter(line=>line.trim().startsWith('|')).slice(2);
+  assert.equal(table.length,4,'VI/EN rubric must have 4 scored criteria: '+loc);
+ }
  assert.equal(original.content.format,'editorial-structured-v1');
  const fixture=structuredClone(original);
  // This is a test-only promotion in /tmp, NOT content/lessons in the real repo.

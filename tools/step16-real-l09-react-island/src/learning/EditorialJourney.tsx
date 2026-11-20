@@ -57,6 +57,10 @@ function quiz(md:string):{intro:string;questions:string[]}{
  if(questions.length!==4)throw Error('EDITORIAL_FOUR_QUESTIONS_REQUIRED');
  return {intro,questions};
 }
+function rubricNames(md:string):string[]{
+ const rows=md.split(/\r?\n/).map(line=>line.trim()).filter(line=>line.startsWith('|'));
+ return rows.slice(2).map(line=>line.replace(/^\||\|$/g,'').split('|')[0].trim());
+}
 function parseLesson(source:unknown,id:string):EditorialLesson{
  if(!source||typeof source!=='object')throw Error('MISSING_EDITORIAL_CONTENT');
  const l=source as Partial<EditorialLesson>;
@@ -78,6 +82,8 @@ function parseLesson(source:unknown,id:string):EditorialLesson{
    c.technique_applications.T07.feedback_gate!=='AFTER_T07_MEANINGFUL_ATTEMPT')
     throw Error('EDITORIAL_LEARNING_CONTRACT_INVALID');
   quiz(c.independent.prompt_md);
+  if(rubricNames(c.reflection.md).length!==4)
+   throw Error('EDITORIAL_FOUR_RUBRIC_ROWS_REQUIRED');
  }
  return l as EditorialLesson;
 }
@@ -157,6 +163,8 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  const reduced=useReducedMotion();
  const [lesson,setLesson]=useState<EditorialLesson|null>(null);
  const [attempt,setAttempt]=useState<EditorialAttempt|null>(null);
+ // Optimistic text edits must not unlock model answers or spell feedback.
+ const [persistedAttempt,setPersistedAttempt]=useState<EditorialAttempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
  const [busy,setBusy]=useState(true);
  const [reload,setReload]=useState(0);
@@ -210,7 +218,8 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      .catch(()=>'unavailable' as SyncState);
     if(cancelled)return;
     subject.current=learner.subjectId;revision.current=saved.revision;
-    setLesson(source);setAttempt(a);setPhase(resume(a));setSync(state);setBusy(false);
+    setLesson(source);setAttempt(a);setPersistedAttempt(a);
+    setPhase(resume(a));setSync(state);setBusy(false);
    }catch{
     if(!cancelled){setBusy(false);setError('Bài chưa được phát hành hoặc chưa thể xác minh quyền học.');}
    }
@@ -228,7 +237,9 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     lessonId:id,subjectId:target,attempt:next,expectedRevision:revision.current
    });
    if(!result?.revision)throw Error('SAVE_WITHOUT_REVISION');
-   revision.current=result.revision;return true;
+   revision.current=result.revision;
+    if(mounted.current)setPersistedAttempt(next);
+    return true;
   }).catch(()=>{
    failed.current=true;
    if(mounted.current){
@@ -254,7 +265,8 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    }
    const result=await ports.attempts.save({lessonId:id,subjectId:learner.subjectId,
     attempt,expectedRevision:latest.revision});
-   revision.current=result.revision;failed.current=false;setLocked(false);setError('');
+   revision.current=result.revision;setPersistedAttempt(attempt);
+    failed.current=false;setLocked(false);setError('');
    await refreshStatus();
   }catch{
    setError('Chưa lưu lại được. Giữ trang mở và kiểm tra kết nối.');
@@ -327,6 +339,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  </section>;
  const locale=attempt.locale,vi=locale==='vi',content=lesson.content.localized[locale];
  const independent=quiz(content.independent.prompt_md);
+ const rubrics=rubricNames(content.reflection.md);
  const labels:Record<Phase,string>=vi?
   {read:'Đọc bài',guided:'Thử áp dụng',methods:'Thần Chú',practice:'Làm bài',feedback:'Đối chiếu',progress:'Tiến độ'}:
   {read:'Learn',guided:'Guided example',methods:'Spells',practice:'Practice',feedback:'Feedback',progress:'Progress'};
@@ -339,7 +352,8 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   sync==='queued'?(vi?'Đã lưu · chờ đồng bộ':'Saved · awaiting sync'):
   sync==='on-device'?(vi?'Đã lưu trên thiết bị':'Saved on device'):
   (vi?'Chưa xác nhận đồng bộ':'Sync unconfirmed');
- const progress=attempt.reviewed?100:attempt.submitted?75:Math.round(answered/4*50);
+ const progress=persistedAttempt?.reviewed?100:
+  persistedAttempt?.submitted?75:Math.round(answered/4*50);
  return <section className="li-learning-journey" data-li-editorial-journey={id}
   data-li-react-journey={id} lang={locale}>
   <header className="li-learning-header">
@@ -357,14 +371,15 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   <nav className="li-learning-steps" aria-label={vi?'Các bước học':'Learning steps'}>
    {phases.map(p=><Button key={p} variant={p===phase?'primary':'ghost'}
     aria-current={p===phase?'step':undefined}
-    disabled={(p==='feedback'&&!attempt.submitted)||(p==='progress'&&!attempt.reviewed)}
+    disabled={(p==='feedback'&&!persistedAttempt?.submitted)||
+     (p==='progress'&&!persistedAttempt?.reviewed)}
     onClick={()=>setPhase(p)}>{labels[p]}</Button>)}
   </nav>
   <div className="li-learning-save">
    <Progress label={vi?'Tiến độ lượt học':'Lesson attempt progress'} value={progress}/>
    <SaveStatus state={state} message={message} detail={locked?error:undefined}/>
-   <Text role="support">{attempt.reviewed?(vi?'Đã tự đánh giá · chưa phải thông thạo':'Self-reviewed, not mastery'):
-    attempt.submitted?(vi?'Đã nộp · tự chấm '+rated+'/4':'Submitted · '+rated+'/4 ratings'):
+   <Text role="support">{persistedAttempt?.reviewed?(vi?'Đã tự đánh giá · chưa phải thông thạo':'Self-reviewed, not mastery'):
+    persistedAttempt?.submitted?(vi?'Đã nộp · tự chấm '+rated+'/4':'Submitted · '+rated+'/4 ratings'):
     (vi?'Đủ điều kiện nộp '+answered+'/4':'Ready '+answered+'/4')}</Text>
    {attempt.assisted&&<Text role="support">
     {vi?'Đã sử dụng Thần Chú hỗ trợ':'Used an optional learning spell'}</Text>}
@@ -402,6 +417,8 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      'T06 is primary and T07 supplementary; both are optional.'}</Text>
     {(['T06','T07'] as const).map(method=>{
      const item=fromAttempt(attempt,method),copy=content.technique_applications[method];
+      const persisted=fromAttempt(persistedAttempt??attempt,method);
+      const feedbackUnlocked=!!persistedAttempt&&!!persisted.submittedAt;
      return <section className="li-learning-method" key={method}
       aria-label={(vi?'Luyện Thần Chú ':'Spell practice ')+method}>
       <Heading level={3} role="titleMedium">{method}</Heading>
@@ -409,11 +426,12 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       <Field kind="textarea" rows={4} label={vi?'Lập luận của mày':'Your reasoning'}
        value={item.draft} disabled={locked||attempt.submitted||!!item.submittedAt}
        onChange={e=>methodEdit(method,e.currentTarget.value)}/>
-      {!item.submittedAt?<Button variant="secondary" disabled={saving||locked||attempt.submitted}
+      {!feedbackUnlocked?<Button variant="secondary"
+       disabled={saving||locked||attempt.submitted||!!item.submittedAt}
        onClick={()=>void methodSubmit(method)}>{vi?'Nộp lượt luyện':'Submit spell attempt'}</Button>:
        <div role="note" className="li-learning-hint">
         <Text role="support">{vi?'Đã lưu câu trả lời, giờ mới mở phản hồi.':'Attempt saved; feedback unlocked.'}</Text>
-        <p className="li-learning-submitted-answer">{item.submission}</p>
+        <p className="li-learning-submitted-answer">{persisted.submission}</p>
         <Markdown md={copy.feedback_md}/>
        </div>}
      </section>;
@@ -428,11 +446,11 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       label={String(i+1)+'. '+q} value={attempt.draft[i]} disabled={locked||attempt.submitted}
       onChange={e=>editAnswer(i,e.currentTarget.value)}/>)}
     </div>
-    {!attempt.submitted?<Button disabled={saving||locked} onClick={()=>void submit()}>
+    {!persistedAttempt?.submitted?<Button disabled={saving||locked||attempt.submitted} onClick={()=>void submit()}>
      {vi?'Nộp bài độc lập':'Submit independent answers'}</Button>:
      <Button onClick={()=>setPhase('feedback')}>{labels.feedback}</Button>}
    </Card>}
-   {phase==='feedback'&&attempt.submitted&&<Card variant="flat-study" aria-labelledby="li-editorial-feedback">
+   {phase==='feedback'&&persistedAttempt?.submitted&&<Card variant="flat-study" aria-labelledby="li-editorial-feedback">
     <Heading level={2} id="li-editorial-feedback" role="titleLarge">{labels.feedback}</Heading>
     <Heading level={3} role="titleMedium">{vi?'Bài làm của mày':'Your submission'}</Heading>
     <ol className="li-learning-submission-list">
@@ -447,7 +465,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     <Heading level={3} role="titleMedium">{vi?'Tự đánh giá 4 tiêu chí':'Self-rate four criteria'}</Heading>
     {[0,1,2,3].map(i=><div className="li-learning-rating" key={i}>
      <label htmlFor={'li-editorial-rating-'+id+'-'+i}>
-      <strong>{vi?'Tiêu chí ':'Criterion '}{i+1}</strong>
+      <strong>{rubrics[i]??((vi?'Tiêu chí ':'Criterion ')+(i+1))}</strong>
      </label>
      <select id={'li-editorial-rating-'+id+'-'+i} value={attempt.ratings[i]??''}
       disabled={locked||attempt.reviewed} onChange={e=>rate(i,e.currentTarget.value)}>
@@ -455,10 +473,10 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       <option value="0">0</option><option value="1">1</option><option value="2">2</option>
      </select>
     </div>)}
-    {attempt.reviewed?<Button onClick={()=>setPhase('progress')}>{labels.progress}</Button>:
-     <Button disabled={saving||locked} onClick={()=>void finish()}>{vi?'Lưu tự đánh giá':'Save self-review'}</Button>}
+    {persistedAttempt?.reviewed?<Button onClick={()=>setPhase('progress')}>{labels.progress}</Button>:
+     <Button disabled={saving||locked||attempt.reviewed} onClick={()=>void finish()}>{vi?'Lưu tự đánh giá':'Save self-review'}</Button>}
    </Card>}
-   {phase==='progress'&&attempt.reviewed&&<Card variant="flat-study" aria-labelledby="li-editorial-progress">
+   {phase==='progress'&&persistedAttempt?.reviewed&&<Card variant="flat-study" aria-labelledby="li-editorial-progress">
     <Heading level={2} id="li-editorial-progress" role="titleLarge">{vi?'Hoàn thành lượt học':'Attempt complete'}</Heading>
     <Text>{vi?'Đây là một lượt tự đánh giá đã lưu, không phải chứng nhận thông thạo.':
      'A saved self-assessment, not a mastery certificate.'}</Text>

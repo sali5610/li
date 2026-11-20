@@ -83,11 +83,11 @@
           },
           {
             "id": "en-04",
-            "role": "independent",
+            "role": "methods",
             "heading": "3b. Optional L2 faded worked example (before independent assessment)",
             "body_md": "<b>Primary: T03 · Minh Mẫu Tiệm Ẩn — Worked Examples & Guidance Fading.</b> The lesson already fully models 40/50/60/50 → 50 and guides 32/38/40. This is the <b>partially completed intermediate step</b>: keep only the calculation frame so the learner fills missing steps. Experienced learners can skip it.\n\n<b>Separate guided-fade fixture:</b> Three weeks recorded <b>18, 24 and 30 sets sold/week</b>. Assume no stockouts in those weeks and use a deliberately simple three-week arithmetic mean as the demand baseline. Full demand observed after the following week is <b>33 sets</b>.\n\n- (1) Forecast = (18 + \\_\\_\\_ + 30) ÷ 3 = \\_\\_\\_ sets/week.\n- (2) Signed error with actual − forecast = 33 − \\_\\_\\_ = \\_\\_\\_ sets.\n- (3) Why is this forecast not automatically a purchase quantity?\n\n<b>Secondary: T10 · Phân Giải Giới Vực — Problem Decomposition & Boundary Tests.</b> Decompose <i>recorded sales → demand proxy assumptions → horizon → baseline → error → operational plan</i>. Boundary test: if week 2 had a <b>stockout</b>, could 24 recorded sales be equated with true demand? What source evidence would be needed?",
-            "model_answer_md": "<b>Feedback — only after micropractice attempt:</b> (18+24+30)/3 = <b>24 sets/week</b>; signed error = 33−24 = <b>+9 sets</b>, underforecasting by the stated convention. Ordering requires inventory position, lead times and policies in addition to a forecast. Stockout-censored sales may understate demand; inspect inventory and unmet-order records before revising. T03 practice requires completing the faded steps; T10 requires actual decomposition and testing assumptions. Merely viewing a solution counts as neither.\n\n<b>State:</b> T03 faded fixture is assisted/guided, not the independent 45/55/65/55 case; preserve separate K1/K3 and answer gating.",
-            "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
+            "feedback_md": "<b>Feedback — only after micropractice attempt:</b> (18+24+30)/3 = <b>24 sets/week</b>; signed error = 33−24 = <b>+9 sets</b>, underforecasting by the stated convention. Ordering requires inventory position, lead times and policies in addition to a forecast. Stockout-censored sales may understate demand; inspect inventory and unmet-order records before revising. T03 practice requires completing the faded steps; T10 requires actual decomposition and testing assumptions. Merely viewing a solution counts as neither.\n\n<b>State:</b> T03 faded fixture is assisted/guided, not the independent 45/55/65/55 case; preserve separate K1/K3 and answer gating.",
+            "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
             "id": "en-05",
@@ -157,30 +157,29 @@
     "sourceBodyCharacters": 35968
   },
   "normalization": {
-    "status": "needs_editorial_correction",
+    "status": "sectioned_needs_academic_rights_and_release_review",
     "counts": {
       "vi": {
-        "sections": 7,
+        "chapters": 7,
         "independent": 1,
-        "solutions": 1,
-        "methods": 1,
-        "rubric": 1
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       },
       "en": {
-        "sections": 6,
-        "independent": 2,
-        "solutions": 2,
-        "methods": 0,
-        "rubric": 1
+        "chapters": 6,
+        "independent": 1,
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 1
       }
     },
-    "issues": [
-      "en:independent_sections_2",
-      "en:model_answer_not_isolated",
-      "en:method_unrecognized"
-    ],
+    "issues": [],
     "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "readOnlyDerived": true,
     "runnableInReact": false
   }
 }

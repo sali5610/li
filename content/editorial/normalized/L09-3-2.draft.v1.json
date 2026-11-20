@@ -93,8 +93,8 @@
             "id": "en-05",
             "role": "independent",
             "heading": "Chapter 5 — Independent transfer: 1,200 new fictional shipments",
-            "body_md": "There are 1,200 records, 120 actually late, 1,080 on-time. Positive = late; both models evaluated on the same assumed clean final test set:\n\n\\| Statistic \\| Model A \\| Model B \\|\n\n\\|---\\|---:\\|---:\\|\n\n\\| TP \\| 54 \\| 84 \\|\n\n\\| FP \\| 36 \\| 126 \\|\n\n\\| FN \\| 66 \\| 36 \\|\n\n\\| TN \\| 1044 \\| 954 \\|\n\n\\| Total \\| 1200 \\| 1200 \\|\n\n1. Calculate accuracy, precision and recall for both models, with numerator and denominator.\n2. Compare them with an always-on-time baseline and explain why accuracy above 90% can still miss most late shipments.\n3. If an FN costs 20 points and an FP costs 1 point, compare total costs and decide; does your choice change when FN costs 2 and FP still 1?\n4. Give one valid deployment limitation involving the held-out population, assumed costs or subgroup impacts.\n\n<b>Nonspoiler hint:</b> Divide correct predictions by N for accuracy, TP by TP+FP for precision, and TP by TP+FN for recall. Apply the stated FN and FP costs.\n\n<b>EDITORIAL ANSWER KEY — REVEAL POST SUBMISSION:</b> A accuracy <b>91.5%</b>, precision <b>60%</b>, recall <b>45%</b>; B accuracy <b>86.5%</b>, precision <b>40%</b>, recall <b>70%</b>. Baseline always-on-time accuracy <b>90%</b> and late-class recall 0. Cost FN20/FP1: A=66×20+36=<b>1356</b>, B=36×20+126=<b>846</b>, so B under this hypothetical. Cost FN2/FP1: A=66×2+36=<b>168</b>, B=36×2+126=<b>198</b>, so A. These invented costs are not measured logistics costs.",
-            "model_answer_md": null,
+            "body_md": "There are 1,200 records, 120 actually late, 1,080 on-time. Positive = late; both models evaluated on the same assumed clean final test set:\n\n\\| Statistic \\| Model A \\| Model B \\|\n\n\\|---\\|---:\\|---:\\|\n\n\\| TP \\| 54 \\| 84 \\|\n\n\\| FP \\| 36 \\| 126 \\|\n\n\\| FN \\| 66 \\| 36 \\|\n\n\\| TN \\| 1044 \\| 954 \\|\n\n\\| Total \\| 1200 \\| 1200 \\|\n\n1. Calculate accuracy, precision and recall for both models, with numerator and denominator.\n2. Compare them with an always-on-time baseline and explain why accuracy above 90% can still miss most late shipments.\n3. If an FN costs 20 points and an FP costs 1 point, compare total costs and decide; does your choice change when FN costs 2 and FP still 1?\n4. Give one valid deployment limitation involving the held-out population, assumed costs or subgroup impacts.\n\n<b>Nonspoiler hint:</b> Divide correct predictions by N for accuracy, TP by TP+FP for precision, and TP by TP+FN for recall. Apply the stated FN and FP costs.",
+            "model_answer_md": "<b>EDITORIAL ANSWER KEY — REVEAL POST SUBMISSION:</b> A accuracy <b>91.5%</b>, precision <b>60%</b>, recall <b>45%</b>; B accuracy <b>86.5%</b>, precision <b>40%</b>, recall <b>70%</b>. Baseline always-on-time accuracy <b>90%</b> and late-class recall 0. Cost FN20/FP1: A=66×20+36=<b>1356</b>, B=36×20+126=<b>846</b>, so B under this hypothetical. Cost FN2/FP1: A=66×2+36=<b>168</b>, B=36×2+126=<b>198</b>, so A. These invented costs are not measured logistics costs.",
             "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
@@ -163,28 +163,29 @@
     "sourceBodyCharacters": 17907
   },
   "normalization": {
-    "status": "needs_editorial_correction",
+    "status": "sectioned_needs_academic_rights_and_release_review",
     "counts": {
       "vi": {
-        "sections": 7,
+        "chapters": 7,
         "independent": 1,
-        "solutions": 1,
-        "methods": 1,
-        "rubric": 1
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       },
       "en": {
-        "sections": 7,
+        "chapters": 7,
         "independent": 1,
-        "solutions": 0,
-        "methods": 1,
-        "rubric": 1
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       }
     },
-    "issues": [
-      "en:model_answer_not_isolated"
-    ],
+    "issues": [],
     "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "readOnlyDerived": true,
     "runnableInReact": false
   }
 }

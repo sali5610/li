@@ -105,8 +105,8 @@
             "id": "en-06",
             "role": "independent",
             "heading": "Chapter 6 — Independent transfer: different 200-order segments",
-            "body_md": "Two new fictional regions East/West each have <b>200 orders</b>, 40 truly late and 160 on-time, tested on an assumed independent holdout. Positive=late.\n\n\\| Segment (200 orders) \\| TP \\| FN \\| FP \\| TN \\| Total \\|\n\n\\|---\\|---:\\|---:\\|---:\\|---:\\|---:\\|\n\n\\| East \\| 28 \\| 12 \\| 24 \\| 136 \\| 200 \\|\n\n\\| West \\| 16 \\| 24 \\| 8 \\| 152 \\| 200 \\|\n\n1. Calculate accuracy, recall, FPR and selection rate per region. Which group has slightly higher accuracy, and which has more missed late orders?\n2. Calculate the recall and selection-rate differences in <b>percentage points</b>. Which questions do these gaps raise, and do the figures alone prove legal compliance or fairness?\n3. The team reports only <b>overall accuracy on all 400 orders</b> and claims equivalent treatment across regions. Compute it, identify the inference error, and provide <b>two missing evidence items</b> before deployment.\n4. A hypothetical held-out score of 0.83 falls to 0.75 after shuffling distance and 0.82 after shuffling estimated travel time. Interpret what may and may not be concluded, including if features are strongly correlated.\n\n<b>Nonspoiler hint:</b> Recall divides by actual positives, FPR by actual negatives, selection by all records in a group. When comparing percentages, distinguish <i>percentage-point gaps</i> from relative changes.\n\n<b>EDITORIAL ANSWER — POST-SUBMISSION ONLY:</b> East accuracy <b>82%</b>, recall <b>70%</b>, FPR <b>15%</b>, selection <b>26%</b>. West accuracy <b>84%</b>, recall <b>40%</b>, FPR <b>5%</b>, selection <b>12%</b>. West has 24 missed delays versus East's 12. Recall gap <b>30 percentage points</b>, selection-rate gap <b>14 percentage points</b>, FPR gap 10. Overall accuracy is <b>83%</b>, which hides subgroup error differences. Missing information includes whether labels are reliable, whether cohort coverage is representative, what interventions the alert prompts and relative harm or response costs. Per-feature permutation score changes 0.08 and 0.01 measure model score sensitivity, <b>not causality</b>; correlated features can obscure their individual importance. Do not certify fairness/legal compliance from any one metric.",
-            "model_answer_md": null,
+            "body_md": "Two new fictional regions East/West each have <b>200 orders</b>, 40 truly late and 160 on-time, tested on an assumed independent holdout. Positive=late.\n\n\\| Segment (200 orders) \\| TP \\| FN \\| FP \\| TN \\| Total \\|\n\n\\|---\\|---:\\|---:\\|---:\\|---:\\|---:\\|\n\n\\| East \\| 28 \\| 12 \\| 24 \\| 136 \\| 200 \\|\n\n\\| West \\| 16 \\| 24 \\| 8 \\| 152 \\| 200 \\|\n\n1. Calculate accuracy, recall, FPR and selection rate per region. Which group has slightly higher accuracy, and which has more missed late orders?\n2. Calculate the recall and selection-rate differences in <b>percentage points</b>. Which questions do these gaps raise, and do the figures alone prove legal compliance or fairness?\n3. The team reports only <b>overall accuracy on all 400 orders</b> and claims equivalent treatment across regions. Compute it, identify the inference error, and provide <b>two missing evidence items</b> before deployment.\n4. A hypothetical held-out score of 0.83 falls to 0.75 after shuffling distance and 0.82 after shuffling estimated travel time. Interpret what may and may not be concluded, including if features are strongly correlated.\n\n<b>Nonspoiler hint:</b> Recall divides by actual positives, FPR by actual negatives, selection by all records in a group. When comparing percentages, distinguish <i>percentage-point gaps</i> from relative changes.",
+            "model_answer_md": "<b>EDITORIAL ANSWER — POST-SUBMISSION ONLY:</b> East accuracy <b>82%</b>, recall <b>70%</b>, FPR <b>15%</b>, selection <b>26%</b>. West accuracy <b>84%</b>, recall <b>40%</b>, FPR <b>5%</b>, selection <b>12%</b>. West has 24 missed delays versus East's 12. Recall gap <b>30 percentage points</b>, selection-rate gap <b>14 percentage points</b>, FPR gap 10. Overall accuracy is <b>83%</b>, which hides subgroup error differences. Missing information includes whether labels are reliable, whether cohort coverage is representative, what interventions the alert prompts and relative harm or response costs. Per-feature permutation score changes 0.08 and 0.01 measure model score sensitivity, <b>not causality</b>; correlated features can obscure their individual importance. Do not certify fairness/legal compliance from any one metric.",
             "model_answer_gate": "AFTER_VALID_INDEPENDENT_SUBMISSION"
           },
           {
@@ -175,28 +175,29 @@
     "sourceBodyCharacters": 31152
   },
   "normalization": {
-    "status": "needs_editorial_correction",
+    "status": "sectioned_needs_academic_rights_and_release_review",
     "counts": {
       "vi": {
-        "sections": 8,
+        "chapters": 8,
         "independent": 1,
-        "solutions": 1,
-        "methods": 1,
-        "rubric": 1
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       },
       "en": {
-        "sections": 8,
+        "chapters": 8,
         "independent": 1,
-        "solutions": 0,
-        "methods": 1,
-        "rubric": 1
+        "modelAnswers": 1,
+        "methodSections": 1,
+        "rubricSections": 1,
+        "methodFeedback": 0
       }
     },
-    "issues": [
-      "en:model_answer_not_isolated"
-    ],
+    "issues": [],
     "sourceVerbatim": true,
     "modelAnswerGate": "AFTER_VALID_INDEPENDENT_SUBMISSION",
+    "readOnlyDerived": true,
     "runnableInReact": false
   }
 }

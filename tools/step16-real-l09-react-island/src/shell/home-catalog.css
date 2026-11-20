@@ -1,0 +1,21 @@
+/* React app adoption: reuse the current Home art/crop and catalog grids.
+   No alternate theme, tokens or layout fork. */
+#li-react-home-host{width:100%}
+#li-react-home-host .mirror-message{pointer-events:auto;touch-action:pan-y}
+#li-react-home-host .mirror-controls{display:flex;align-items:center;justify-content:center}
+#li-react-home-host .mirror-refresh{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px}
+#li-react-home-host .mirror-refresh>span{display:flex;align-items:center;justify-content:center}
+#li-react-home-host .hero-actions .li-ds-button.primary{width:100%;text-align:left}
+#li-react-home-host .hero-actions .li-ds-button.primary>span{
+ display:flex;justify-content:space-between;align-items:center;width:100%;gap:var(--li-space-3);
+}
+#li-react-home-host .hero-left .home-checkin>span{display:inline-flex;align-items:center;gap:var(--li-space-2)}
+#li-react-home-host .hero-dialogue-bubble .li-atom-text{margin:0}
+#li-react-catalog-host .catalog-crumb{min-height:44px}
+#li-react-catalog-host .catalog-lesson-desc{flex:1;min-width:0}
+#li-react-catalog-host .catalog-course-card .catalog-card-action{align-self:flex-start;margin-top:auto}
+#li-react-catalog-host .catalog-progress progress{display:block;width:100%;margin-top:var(--li-space-3)}
+@media(max-width:600px){
+ #li-react-catalog-host .catalog-lesson-card{flex-wrap:wrap}
+ #li-react-catalog-host .catalog-lesson-card>.li-ds-button{margin-left:54px}
+}

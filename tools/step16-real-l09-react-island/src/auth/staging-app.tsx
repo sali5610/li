@@ -7,6 +7,7 @@ import {mountSharedNavigation} from '../shell/mount-navigation.js';
 import {mountKnowledgeSearch} from '../shell/knowledge-search.js';
 import {mountCaptureIdea} from '../shell/capture-idea.js';
 import {mountResearchAndCase} from '../shell/research-case.js';
+import {mountHomeAndCatalog} from '../shell/home-catalog.js';
 
 // Unified GitHub Pages staging: no guest app. React verifies signed invitation.
 const root=document.getElementById('li-staging-auth-root');
@@ -123,3 +124,7 @@ function enableIntegratedWave1(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enableIntegratedWave1,{once:true});
 else enableIntegratedWave1();
+
+// One visible React Home→Catalog→Lesson discovery path; native owners remain temporary ports.
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountHomeAndCatalog,{once:true});
+else mountHomeAndCatalog();

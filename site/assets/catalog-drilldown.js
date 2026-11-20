@@ -39,6 +39,7 @@ function setPath(next,save=true){
   history.pushState(history.state,"",u.pathname+u.search);
  }
  render();
+ if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));
  if(save){
   window.scrollTo?.({top:0,left:0,behavior:"instant"});
   const heading=host.querySelector("h1");
@@ -363,12 +364,33 @@ window.addEventListener("popstate",()=>{
  if(found){window.navigate?.(found[1],{remember:false,syncUrl:false});document.getElementById("page-"+found[1])?._catalogChooseChapter?.(u.searchParams.get("chapter"),false);}
  else if(u.searchParams.has("catalog")){
   path=(u.searchParams.get("catalog")||"").split("/").filter(Boolean).slice(0,4);
-  window.navigate?.("catalog",{remember:false,syncUrl:false});render();
- }else{path=[];render();window.navigate?.("home",{remember:false,syncUrl:false});}
+  window.navigate?.("catalog",{remember:false,syncUrl:false});render();if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));
+ }else{path=[];render();if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));window.navigate?.("home",{remember:false,syncUrl:false});}
 });
 path=(new URL(location.href).searchParams.get("catalog")||"").split("/").filter(Boolean).slice(0,4);
 if(path.length&&!new URL(location.href).searchParams.has("lesson")){window.navigate?.("catalog",{remember:false,syncUrl:false});}
 render();
 ["lessonL03","lessonL09","lessonL15"].forEach(mountNative);
-window.liCatalog={render,openCourse:(group,field,course)=>{window.navigate?.("catalog");setPath([group,field,course]);}};
+function openCatalogLesson(id){
+ const parts=findParts(),lesson=parts.course?.lessons.find(item=>item.id===id);
+ if(!lesson)return;
+ if(lesson.published&&lesson.route){
+  if(history?.replaceState){
+   const u=new URL(location.href);u.searchParams.set("catalog",path.join("/"));
+   history.replaceState(history.state,"",u.pathname+u.search);
+  }
+  const destination=new URL(location.href);
+  destination.searchParams.set("lesson",lesson.id);
+  destination.searchParams.delete("chapter");
+  if(history?.pushState)history.pushState(history.state,"",destination.pathname+destination.search);
+  window.navigate?.(lesson.route);return;
+ }
+ setPath([...path,id]);
+}
+window.liCatalog={
+ render,getPath:()=>[...path],
+ openPath:(next,save=true)=>setPath(next,save),
+ openLesson:openCatalogLesson,
+ openCourse:(group,field,course)=>{window.navigate?.("catalog");setPath([group,field,course]);}
+};
 })();

@@ -12,6 +12,7 @@ import type {Attempt} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
 import './journey.css';
 import {LessonBookmark,LessonMentor,LessonSectionIndex,LessonSources,LessonFigure,openLessonSpell} from './LessonDetailParity.js';
+import {RelatedLessons} from './RelatedLessons.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
 import {AiFeedbackPanel} from './AiFeedbackPanel.js';
 import feedbackPolicy from '../../../../content/feedback/ai-question-modes.v1.json';
@@ -453,6 +454,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
   <LessonSources id={id} locale={attempt.locale} copy={content}
    sources={source.sources} subject={source.hierarchy.field.title}
    conceptTitle={content.conceptTitle} onSearch={ports.search.openSearch}/>
+  <RelatedLessons id={id} locale={attempt.locale}/>
   <LessonMentor id={id} locale={attempt.locale}/>
  </section>;
 }

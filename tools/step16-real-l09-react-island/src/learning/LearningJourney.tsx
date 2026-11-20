@@ -16,6 +16,7 @@ import type {LessonPhase} from '../shell/app-store.js';
 import {createLessonPhaseActor} from './phase-machine.js';
 import './journey.css';
 import {LessonBookmark,LessonMentor,LessonSectionIndex,L09Figures,LessonSources,openLessonSpell} from './LessonDetailParity.js';
+import {RelatedLessons} from './RelatedLessons.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
 import {AiFeedbackPanel} from './AiFeedbackPanel.js';
 import feedbackPolicy from '../../../../content/feedback/ai-question-modes.v1.json';
@@ -514,6 +515,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   <LessonSources id="L09-1-2" locale={attempt.locale} copy={content}
    sources={lesson09.sources} subject={lesson09.hierarchy.field.title}
    conceptTitle={content.theoryTitle} onSearch={ports.search.openSearch}/>
+  <RelatedLessons id="L09-1-2" locale={attempt.locale}/>
   <LessonMentor id="L09-1-2" locale={attempt.locale}/>
  </section>;
 }

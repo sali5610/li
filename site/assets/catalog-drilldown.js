@@ -10,6 +10,22 @@ const levels=[["Foundation","Nền tảng"],["Intermediate","Trung cấp"],["Adv
 const isEnglish=()=>window.liLanguage?.get?.()==="en";
 const copy=(vi,en)=>isEnglish()?en:vi;
 let path=[];
+function normalizePath(next){
+ const normalized=Array.isArray(next)?next.filter(Boolean):[];
+ // Keep pre-HCI deep links working without retaining UX as a field.
+ if(normalized[0]==="technology"&&normalized[1]==="ux-design")normalized[1]="hci";
+ return normalized;
+}
+function readPathFromUrl(){
+ const u=new URL(location.href);
+ const original=(u.searchParams.get("catalog")||"").split("/").filter(Boolean).slice(0,4);
+ const normalized=normalizePath(original);
+ if(original.join("/")!==normalized.join("/")&&window.history?.replaceState){
+  u.searchParams.set("catalog",normalized.join("/"));
+  history.replaceState(history.state,"",u.pathname+u.search);
+ }
+ return normalized;
+}
 function el(tag,cls,value,parent){
  const node=document.createElement(tag);if(cls)node.className=cls;
  if(value!==undefined&&value!==null)node.textContent=String(value);
@@ -27,7 +43,7 @@ function findParts(){
  return {group,field,course,lesson};
 }
 function setPath(next,save=true){
- path=Array.isArray(next)?next.filter(Boolean):[];
+ path=normalizePath(next);
  const parts=findParts();
  if(!parts.group)path=[];
  else if(!parts.field)path=path.slice(0,1);
@@ -363,11 +379,11 @@ window.addEventListener("popstate",()=>{
  const found=[["L03-1-2","lessonL03"],["L09-1-2","lessonL09"],["L15-2-2","lessonL15"]].find(p=>p[0]===route);
  if(found){window.navigate?.(found[1],{remember:false,syncUrl:false});document.getElementById("page-"+found[1])?._catalogChooseChapter?.(u.searchParams.get("chapter"),false);}
  else if(u.searchParams.has("catalog")){
-  path=(u.searchParams.get("catalog")||"").split("/").filter(Boolean).slice(0,4);
+  path=readPathFromUrl();
   window.navigate?.("catalog",{remember:false,syncUrl:false});render();if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));
  }else{path=[];render();if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));window.navigate?.("home",{remember:false,syncUrl:false});}
 });
-path=(new URL(location.href).searchParams.get("catalog")||"").split("/").filter(Boolean).slice(0,4);
+path=readPathFromUrl();
 if(path.length&&!new URL(location.href).searchParams.has("lesson")){window.navigate?.("catalog",{remember:false,syncUrl:false});}
 render();
 ["lessonL03","lessonL09","lessonL15"].forEach(mountNative);

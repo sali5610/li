@@ -78,7 +78,7 @@ function validHistory(a:Attempt):boolean{
      return Array.isArray(questions)&&questions.length===4&&
       questions.every(q=>typeof q==='string'&&q.trim().length>0&&q.length<=4000);
     }))||
-   !validMethodAttempts(p))return false;
+   !validEditorialMethodAttempts(p.methodAttempts))return false;
   last=p.attemptNumber;
  }
  return a.attemptHistory.length===0||a.attemptNumber===undefined||a.attemptNumber>last;

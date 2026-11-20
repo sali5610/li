@@ -25,6 +25,9 @@ const stagingPersonalIds=import.meta.env.VITE_LI_AUTH_TARGET==='github-pages-sta
 export const personalStudyLessonIds:readonly string[]=Object.freeze(stagingPersonalIds);
 const personalStudySet=new Set(personalStudyLessonIds);
 export function isPersonalStudyLessonId(id:string):boolean{return personalStudySet.has(id);}
+export function personalStudyRoute(id:string):string|null{
+ return personalStudySet.has(id)?'draftLesson'+id.replace(/[^a-z0-9]/gi,''):null;
+}
 export const learnableLessonIds:readonly string[]=Object.freeze(
  [...new Set([...releasedLessonIds,...personalStudyLessonIds])].sort());
 export function isLearnableLessonId(id:string):boolean{

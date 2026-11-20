@@ -72,6 +72,35 @@ async function copyText(text:string){
 /** Existing lesson/case bookmark store, including undo and remote sync, is the
  * only write owner. A real React icon button replaces the missing native one.
  */
+type LessonPhase='read'|'guided'|'practice'|'feedback'|'progress';
+/** The original seven-section lesson index, retained alongside the gated study
+ * workflow. The index cannot reveal feedback/model answers before submission. */
+export function LessonSectionIndex({id,locale,links,onPhase,submitted}:{
+ id:LessonId;locale:Locale;links:readonly string[];
+ onPhase:(next:LessonPhase)=>void;submitted:boolean
+}){
+ const go=(index:number)=>{
+  if(index===6){
+   document.getElementById('li-react-'+id+'-sources')
+    ?.scrollIntoView({block:'start',behavior:'smooth'});return;
+  }
+  if(index===2&&id==='L09-1-2'){
+   document.getElementById('li-react-l09-illustrations')
+    ?.scrollIntoView({block:'start',behavior:'smooth'});return;
+  }
+  const next:LessonPhase=index<3?'read':index===3?'guided':index===4?'practice':'feedback';
+  onPhase(next);
+ };
+ return <nav className="li-lesson-seven-index" aria-label={
+  locale==='vi'?'Mục lục 7 phần bài học':'Seven-section lesson index'}>
+  <strong>{locale==='vi'?'MỤC LỤC BÀI HỌC':'LESSON OUTLINE'}</strong>
+  <div className="li-lesson-seven-list">{links.map((label,index)=>
+   <Button key={index} variant="ghost" disabled={index===5&&!submitted}
+    onClick={()=>go(index)}>
+    <span aria-hidden="true">{String(index+1).padStart(2,'0')} · </span>{label}
+   </Button>)}</div>
+ </nav>;
+}
 export function LessonBookmark({id,locale}:{id:LessonId;locale:Locale}){
  const [saved,setSaved]=useState(()=>app.liBookmarks?.isSaved('lesson',id)??false);
  useEffect(()=>{

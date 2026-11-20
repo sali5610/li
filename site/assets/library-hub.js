@@ -390,20 +390,47 @@ function renderCollection(){
   remove.addEventListener("click",()=>window.liNotes?.deleteNote(item.entryType,item.id));
  }
 }
-$("save-capture-note")?.addEventListener("click",()=>{
- const field=$("capture-note");
- const value=field?.value.trim()||"";
- if(value.length<3){toast("Ý này còn quá ngắn. Viết ít nhất 3 ký tự đã.");field?.focus();return;}
- if(value.length>5000){toast("Ý dài quá 5.000 ký tự, hãy tách thành vài ghi chú.");return;}
- if(liStorageError){toast("Dữ liệu cá nhân chưa đọc được. Hãy sao chép nội dung trước khi thoát.");return;}
+/* The canonical private transaction is shared by the native fallback and
+   React Nhặt Ý. No second localStorage writer, key or synthetic DOM click. */
+function saveCapturedIdea(text){
+ const value=typeof text==="string"?text.trim():"";
+ if(value.length<3){
+  const message="Ý này còn quá ngắn. Viết ít nhất 3 ký tự đã.";
+  toast(message);return {ok:false,reason:"too-short",message};
+ }
+ if(value.length>5000){
+  const message="Ý dài quá 5.000 ký tự, hãy tách thành vài ghi chú.";
+  toast(message);return {ok:false,reason:"too-long",message};
+ }
+ if(liStorageError){
+  const message="Dữ liệu cá nhân chưa đọc được. Hãy sao chép nội dung trước khi thoát.";
+  toast(message);return {ok:false,reason:"read-failed",message};
+ }
  const idea={id:liNewId(),text:value,savedAt:new Date().toISOString()};
  collectedIdeas.unshift(idea);
  if(!liWriteState()){
-  collectedIdeas.shift();toast("Không lưu được ý này. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.");return;
+  collectedIdeas.shift();
+  const message="Không lưu được ý này. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.";
+  toast(message);return {ok:false,reason:"write-failed",message};
  }
- if(field)field.value="";
  window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"input",id:"idea:"+idea.id}}));
- navigate("collection");renderCollection();toast("Đã lưu Ý đã nhặt trên thiết bị này. Chưa xác minh.");
+ navigate("collection");renderCollection();
+ toast("Đã lưu Ý đã nhặt trên thiết bị này. Chưa xác minh.");
+ return {ok:true,id:idea.id};
+}
+$("save-capture-note")?.addEventListener("click",()=>{
+ const field=$("capture-note"),result=saveCapturedIdea(field?.value||"");
+ if(result.ok&&field)field.value="";
+ if(!result.ok&&result.reason==="too-short")field?.focus();
+});
+window.liCaptureIdea=Object.freeze({
+ save:text=>{
+  if(!document.documentElement?.classList?.contains("li-auth-verified")||
+     document.documentElement.classList.contains("li-account-open")){
+   return {ok:false,reason:"invite-required",message:"Hãy đăng nhập bằng tài khoản được mời trước khi lưu."};
+  }
+  return saveCapturedIdea(text);
+ }
 });
 document.querySelectorAll("[data-collection-filter]").forEach(button=>button.addEventListener("click",()=>{
  collectionFilter=button.dataset.collectionFilter;

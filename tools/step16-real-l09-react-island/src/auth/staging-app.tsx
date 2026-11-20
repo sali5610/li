@@ -122,6 +122,20 @@ if(document.readyState==='loading')
  document.addEventListener('DOMContentLoaded',enableIntegratedLessons,{once:true});
 else enableIntegratedLessons();
 
+// Preview is a separate, invited-account STAGING surface. It does not mark
+// manuscripts released, add published navigation entries or write Neon rows.
+if(import.meta.env.VITE_LI_AUTH_TARGET==='github-pages-staging'){
+ const startBatch17Preview=()=>{
+  void import('../learning/staging-draft-preview.js')
+   .then(m=>m.mountStagingDraftPreview())
+   .catch(e=>{console.error('LI_BATCH17_STAGING_PREVIEW_UNAVAILABLE',e);});
+ };
+ if(document.readyState==='loading')
+  document.addEventListener('DOMContentLoaded',startBatch17Preview,{once:true});
+ else startBatch17Preview();
+}
+
+
 // React owns top navigation, bottom navigation and utility controls. Native
 // data-page event delegation remains the temporary route bridge.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountSharedNavigation,{once:true});

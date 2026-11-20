@@ -123,7 +123,7 @@ function phaseFor(a:Attempt,method:EditorialMethodId):Phase{
  return 'read';
 }
 type Quote={id:string;original:string;translation:string;interpretation:string;comment:string;lang:string;meta:string;url:string};
-export function SectionedJourney({lesson,ports}:{lesson:SectionedLesson;ports:LearningPorts}){
+export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedLesson;ports:LearningPorts;preview?:boolean}){
  const id=lesson.id,method=lesson.content.technique.primary.slice(3) as EditorialMethodId;
  const [attempt,setAttempt]=useState<Attempt|null>(null);
  const [persisted,setPersisted]=useState<Attempt|null>(null);
@@ -138,7 +138,7 @@ export function SectionedJourney({lesson,ports}:{lesson:SectionedLesson;ports:Le
   let alive=true;mounted.current=true;
   (async()=>{
    try{
-    if(!isReleasedLessonId(id))throw Error('LESSON_NOT_RELEASED');
+    if(!preview&&!isReleasedLessonId(id))throw Error('LESSON_NOT_RELEASED');
     const auth=await ports.auth.requireInvitedLearner();
     if(!auth?.subjectId)throw Error('INVITED_LEARNER_REQUIRED');
     const saved=await ports.attempts.load({lessonId:id,subjectId:auth.subjectId});
@@ -317,7 +317,8 @@ export function SectionedJourney({lesson,ports}:{lesson:SectionedLesson;ports:Le
   data-li-react-journey={id} data-li-sectioned-journey={id}>
   <header className="li-learning-header">
    <div><Text role="caption">{lesson.hierarchy.field.title} · {id}</Text>
-    <Heading level={1} role="headline">{lesson.title[locale]}</Heading></div>
+    <Heading level={1} role="headline">{lesson.title[locale]}</Heading>
+     {preview&&<Text role="support">Bản học thử cá nhân · lưu riêng trên thiết bị · chưa qua rà nội dung toàn bộ</Text>}</div>
    <div className="li-learning-header-actions">
     <Button variant="secondary" disabled={pending>0||locked} onClick={()=>void restartLesson()}>
      {attempt.locale==='vi'?'Học lại từ đầu':'Restart lesson'}
@@ -330,7 +331,8 @@ export function SectionedJourney({lesson,ports}:{lesson:SectionedLesson;ports:Le
     variant={locale===l?'primary':'secondary'} aria-pressed={locale===l}
     onClick={()=>{if(locale!==l)void persist({...attempt,locale:l});}}>{l.toUpperCase()}</Button>)}
    <Text role="support">{locked?'Lưu lỗi':pending?'Đang lưu…':
-    sync==='synced'?'Đã đồng bộ':sync==='queued'?'Chờ đồng bộ':'Đã lưu / đang kiểm tra'}</Text>
+    sync==='synced'?'Đã đồng bộ':sync==='queued'?'Chờ đồng bộ':
+     preview&&sync==='on-device'?'Đã lưu trên máy này':'Đã lưu / đang kiểm tra'}</Text>
   </div>
   {error&&<p role="alert">{error}</p>}
   <nav className="li-learning-stepper" aria-label={vi?'Các bước học':'Learning steps'}>

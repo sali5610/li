@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "S182-Q06",
+  "kind": "ResearchLessonDraft",
+  "title": "S182-Q06 · Social Networks — Homophily vs Influence & Network Baselines (VI/EN Source-Led DRAFT)",
+  "languages": [
+    "vi",
+    "en"
+  ],
+  "publishState": "draft",
+  "reviewState": "proposed",
+  "navigationPublished": false,
+  "editorialStatus": "source_imported_unreviewed",
+  "migration": {
+    "status": "full_source_preserved_not_runtime_normalized",
+    "sourceUrl": "https://app.notion.com/p/41d6cf6db72a812ba226e1897bbee766",
+    "importedOn": "2026-11-20",
+    "sourceBodyCharacters": 7432,
+    "viFound": false,
+    "enFound": false,
+    "rightsReviewed": false
+  },
+  "content": {
+    "format": "notion-editorial-import-v1",
+    "localized": {
+      "vi": {
+        "body_md": ""
+      },
+      "en": {
+        "body_md": ""
+      }
+    },
+    "full_original_markdown": "<b>Status:</b> ORIGINAL VI/EN EDITORIAL DRAFT — not a source-provided lecture, not a canonical lesson ID, not G2 approved, and not deployed. Source-audit parent: <mention url=\"https://app.notion.com/p/41d6cf6db72a81ddb20eeed107e5d47a\">S182 · F09 Economics & QSS 2026 Source Audit — ECON148 Spring26, ECON140 Fall26, DEMOG180 Fall25 & QSS Expansion (DRAFT)</mention>. No proprietary course assignment reproduced. All worked numbers and learner cases below are invented by li.\n\n## 0. Metadata / định danh\n\n- <b>Candidate lesson:</b> S182-Q06/Q14 · Homophily, Network Baselines & Causal Overclaim / Kết nối cùng nhóm, chuẩn so sánh và ngộ nhận nhân quả.\n- <b>Source course:</b> F09 QSS → DEMOG180 Social Networks (4 units, approved QSS upper choice). [Fall2026 official offered section](https://classes.berkeley.edu/content/2026-fall-demog-180-101-dis-101); [Fall2025 instructor full weekly syllabus](https://dennisfeehan.org/teaching/2025fa_demog180/). The latter covers homophily (Sep16 2025), networks, diffusion and causal caveats; <b>not</b> verified as Fall2026 schedule.\n- <b>Additional source:</b> [Berkeley Demography department current course description](https://www.demog.berkeley.edu/courses/). Original reasoning about null expectations is editorial applied statistics, not purported past university homework.\n- <b>Outcomes VI:</b> phân biệt homophily quan sát được, baseline theo số nút mỗi nhóm, lựa chọn bạn vì giống nhau, ảnh hưởng do bạn bè, common shocks; tính tỉ lệ cạnh cùng nhóm và baseline đơn giản.\n- <b>Outcomes EN:</b> measure within-group edge share, construct a meaningful null reference, identify homophily-vs-influence ambiguity, and write a privacy-aware sampling plan.\n- <b>Prereqs:</b> undirected simple graphs, nodes/edges, combinations, observational bias, basic descriptive rates.\n\n## 1. VI · Bài học nguyên bản\n\n### Chương 1 — Một đồ thị có thể đánh lừa ra sao?\n\nTưởng tượng sáu người thuộc hai nhóm màu A/B, mỗi nhóm ba người: A1,A2,A3 và B1,B2,B3. Mạng không hướng có 6 mối liên hệ: A1–A2, A2–A3, B1–B2, B2–B3 (4 cạnh cùng nhóm), cộng A1–B1 và A2–B1 (2 cạnh khác nhóm). Quan sát <b>4/6=66.7%</b> cạnh nối người cùng nhóm.\n\n### Chương 2 — Baseline không phải lúc nào cũng là 50%\n\nNếu chọn một cặp người khác nhau một cách đồng đều từ tất cả $\\binom{6}{2}=15$ cặp có thể có, cặp cùng nhóm có $\\binom{3}{2}+\\binom{3}{2}=6$ khả năng. Baseline cùng nhóm theo mô hình này là <b>6/15=40%</b>. Con số 66.7% quan sát cao hơn baseline đơn giản 40%, nhưng chỉ có 6 cạnh: một đồ thị bé không chứng minh quan hệ dân số, ý nghĩa thống kê hay cơ chế nhân quả. Baseline này chỉ thích hợp dưới giả định mọi cặp đều có cơ hội như nhau; mạng có hạn chế địa lý/cơ hội tương tác cần null model phù hợp hơn.\n\n### Chương 3 — Ba cơ chế khác nhau\n\n- <b>Selection/homophily:</b> hai người giống nhau từ trước nên dễ kết bạn.\n- <b>Influence/contagion:</b> người này thay đổi sau khi tương tác với người kia.\n- <b>Common environment:</b> cả hai cùng chịu ảnh hưởng một trường lớp, hệ thống gợi ý hoặc chiến dịch tiếp thị.\n\nChỉ có ảnh chụp các cạnh hôm nay không đủ để tách ba giải thích. Muốn nói “bạn bè khiến họ đổi hành vi”, cần dữ liệu theo thời gian, logic nhận dạng nhân quả, xử lý common shocks và sự thiếu hụt quan sát.\n\n### Chương 4 — Thu thập mạng cũng có rủi ro\n\nDanh sách quan hệ có thể tiết lộ người khác, kể cả người chưa đồng ý tham gia. Thiết kế bài học chỉ dùng đồ thị giả lập; khi dùng dữ liệu thật cần nêu rõ subject, consent/notice, độ đầy đủ của cạnh, quyền xóa và giới hạn suy luận.\n\n## 2. EN · Original learner explanation\n\n### Chapter 1 — Describe what you see\n\nA toy network with two equal groups of three people has six observed undirected edges. Four connect same-group pairs, so 4/6=66.7% of observed ties are within-group.\n\n### Chapter 2 — Compare against a model\n\nAmong all unordered pairs of six distinct nodes, there are 15 possible dyads. Six of them are within-group dyads, giving a 6/15=40% expectation if each possible dyad is equally eligible. This simple baseline does not account for degree constraints, geography or selection into the network; a larger observed share is only a descriptive signal, not proof of a social mechanism.\n\n### Chapter 3 — Do not infer contagion from a snapshot\n\nSimilar friends may have selected one another (homophily), influenced each other over time (contagion), or experienced a common environment. The same observational pattern can arise through different mechanisms; an app recommendation system can be one common cause.\n\n### Chapter 4 — Be careful with missing ties\n\nMissing nonparticipants or one-sided nominations distort the network. Even seemingly anonymous tie lists can reveal information about other people. Design collection and retention accordingly.\n\n## 3. Independent transfer case / Bài tập độc lập\n\n<b>VI:</b> Mạng giả lập có 8 người: 5 người nhóm X và 3 người nhóm Y. Quan sát 10 cạnh không hướng, trong đó 7 cạnh cùng nhóm. Hãy tính (a) tỉ lệ cạnh cùng nhóm quan sát, (b) baseline nếu mọi cặp người có cơ hội ngang nhau, (c) giải thích vì sao sự khác biệt không chứng minh người này ảnh hưởng người kia, (d) đề xuất một dữ liệu theo thời gian và một điều kiện privacy cần để kiểm chứng sâu hơn.\n\n<b>EN:</b> In an invented network of 8 people (5 X, 3 Y), 7 of 10 undirected ties connect same-group pairs. Compute the observed within-group share and the equally eligible dyad baseline. Discuss selection, influence and shared context, then propose one longitudinal design improvement and one privacy safeguard.\n\n### Editorial instructor key — POST-SUBMIT ONLY\n\nObserved = 7/10=<b>70%</b>. Possible within-group dyads C(5,2)+C(3,2)=10+3=<b>13</b>; all pairs C(8,2)=<b>28</b>; naive baseline 13/28 ≈ <b>46.4%</b>. Differences are descriptive under a simple uniform-dyad null, not a p-value nor a network-permutation hypothesis test. Other plausible mechanisms: sorting by interests before friendship, diffusion after friendship, shared classroom/algorithm; panel observation of tie formation and attribute change can help, but temporal sequencing alone does not eliminate confounding. Privacy: limits on third-party edge exposure, consent and retention.\n\n### Diagnostic rubric 0–8 (NOT calibrated)\n\n| Criterion | 0 | 1 | 2 |\n| --- | --- | --- | --- |\n| Graph arithmetic | Wrong | Partial | 70% and 13/28 ≈ 46.4% correct |\n| Appropriate null baseline | Assumes unconditional 50% | Computes but not contextualized | Correct conditional availability and null-model limitations |\n| Mechanism inference | Claims causal influence | Mentions two mechanisms | Separates selection, influence and common cause |\n| Design/privacy | None | One suggestion | Longitudinal data plan + third-party privacy safeguard |\n\nCritical misconception: treating 70% same-group edges as proof “friends caused similarity” cannot receive full credit.\n\n## 4. Active recall — no answers\n\n1. Khi nào baseline chọn cặp người đều nhau không còn phù hợp?\n2. Vì sao có dữ liệu nhiều thời điểm vẫn chưa đủ để kết luận nhân quả?\n3. What is the difference between homophily and peer influence?\n\n## 5. Source and rights QA\n\nFall25 syllabus supports broad topical scope and historical teaching modules only; current Fall26 registrar supports offering but not week-level mapping. All graph inputs, null model and independent case are authored for li. Expert network-science reviewer, mathematically justified null model for realistic networks, content-rights and G2 approval OPEN."
+  },
+  "rights": {
+    "status": "unverified",
+    "releaseAuthorized": false
+  },
+  "provenance": {
+    "sourceUrl": "https://app.notion.com/p/41d6cf6db72a812ba226e1897bbee766",
+    "evidenceType": "source_preserved_import"
+  }
+}

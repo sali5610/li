@@ -71,7 +71,10 @@ assert.match(buddy,/document\.getElementById\(kind==="calm"/); // native fallbac
 
 // S303: Settings is one React-owned flow, not a collection of hidden-button bridges.
 const auth=read('tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx');
-assert.match(auth,/const permitted=Boolean\(IS_GITHUB_STAGING&&accountId&&access==='granted'&&ownerReady\)/);
+assert.match(auth,/const permitted=Boolean\(IS_INTEGRATED_LI_APP&&accountId&&access==='granted'&&ownerReady\)/);
+const appConfig=read('tools/step16-real-l09-react-island/src/auth/config.ts');
+assert.match(appConfig,/IS_INTEGRATED_LI_APP=IS_GITHUB_STAGING\|\|/);
+assert.match(appConfig,/VITE_LI_AUTH_TARGET==='cloudflare-first-party'/);
 assert.match(auth,/owner\.liJournalCloudConsent=port/);
 assert.match(auth,/set:\(enabled:boolean\)=>\{if\(permitted&&!journalBusy\)void toggleJournalCloud\(enabled\)/);
 assert.match(auth,/changeJournalCloudConsent\(accountId,enabled\)/,

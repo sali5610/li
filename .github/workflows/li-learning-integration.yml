@@ -51,6 +51,14 @@ jobs:
           npm run build:worker
           test -s dist-worker/_worker.js
           test -z "$(find dist-worker -type f -name '*.map' -print -quit)"
+          # First-party candidate only. No Cloudflare API, secrets or deploy.
+          VITE_LI_AUTH_TARGET=cloudflare-first-party npx vite build --config vite.cloudflare-app.config.mjs
+          node ../../tools/prepare_cloudflare_ai_candidate.mjs --build
+          test -s ../../dist-cloudflare-ai-candidate/_worker.js
+          grep -Fq 'li-first-party-app.js' ../../dist-cloudflare-ai-candidate/index.html
+          grep -Fq 'li-auth-gate-critical' ../../dist-cloudflare-ai-candidate/index.html
+          git diff --exit-code -- ../../site
+          # Preserve the one existing shared GitHub Pages staging build.
           npx vite build --config vite.staging-app.config.mjs
           test -s dist-staging-app/staging-auth-gate.js
           test "$(find dist-staging-app -maxdepth 1 -type f -name '*.css' | wc -l)" -eq 1

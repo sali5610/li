@@ -5,7 +5,7 @@ import {storageKey,type JsonValue,type ItemType} from '../sync/contract.js';
 import {PrivateDeviceStore} from '../sync/local-dexie.js';
 import {syncOnce} from '../sync/sync-once.js';
 import type {NeonUserApi} from '../sync/neon-api.js';
-import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_GITHUB_STAGING} from './config.js';
+import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_INTEGRATED_LI_APP} from './config.js';
 import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
 import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
@@ -121,7 +121,7 @@ export async function waitForLearnerHydration(uid:string):Promise<void>{
 export async function saveNativeLearnerAttempt(uid:string,id:string,data:unknown,
  expectedRaw:string|null):Promise<string>{
  if(!LESSONS.some(x=>x===id)||localStorage.getItem(OWNER)!==uid||
-    !IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN||
+    !IS_INTEGRATED_LI_APP||location.origin!==AUTH_ORIGIN||
     !document.documentElement.classList.contains('li-auth-verified'))
   throw new Error('LEARNER_ACCOUNT_OR_INVITE_REQUIRED');
  const key=KEY(id);
@@ -215,7 +215,7 @@ function oldCheckpoint(uid:string,id:string):{revision:number;data:string}|null{
 
 /** Preserve existing native-device work when switching between invited accounts. */
 export function prepareLearnerAccount(uid:string):boolean{
- if(!IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN||!uid.trim())throw new Error('UNTRUSTED_ACCOUNT');
+ if(!IS_INTEGRATED_LI_APP||location.origin!==AUTH_ORIGIN||!uid.trim())throw new Error('UNTRUSTED_ACCOUNT');
  const before=localStorage.getItem(OWNER);
  if(before===uid)return false;
  if(before){
@@ -294,7 +294,7 @@ async function hydrate(uid:string,snapshots:Snapshot[],retry:()=>void,onHydrated
 
 /** Account is verified by AuthPanel and must be rechecked by Neon/RLS on sync. */
 export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):()=>void{
- if(!IS_GITHUB_STAGING||location.origin!==AUTH_ORIGIN||!uid.trim())throw new Error('UNTRUSTED_ORIGIN');
+ if(!IS_INTEGRATED_LI_APP||location.origin!==AUTH_ORIGIN||!uid.trim())throw new Error('UNTRUSTED_ORIGIN');
  let disposed=false,busy=false,pending=false,timer:ReturnType<typeof setTimeout>|null=null;
  let transientRetries=0;
  const retryDelays=[5000,15000,30000] as const;

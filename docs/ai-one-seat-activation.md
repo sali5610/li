@@ -21,12 +21,18 @@ credential shortcuts or any AI API token to React.
 4. Configure the private Pages Worker variable `LI_AI_OWNER_EMAIL` to the
    **verified Google email belonging to the human owner**, without committing
    that email. Retain `NEON_AUTH_COOKIE_SECRET` (32+ characters).
-5. The release must bundle `src/auth/cloudflare-worker.ts` with
-   `npm run build:worker` and deploy its output as `site/_worker.js`
-   alongside the **matching first-party React app**. Current Cloudflare
-   manual workflow only uploads static `site/`, so it does **not** yet
-   perform this release. Do not claim AI is live until this is fixed,
-   a human approves G4, and the deployed endpoint verifies signed accounts.
+5. The release now has an **opt-in manual AI mode**, not an automatic
+   deployment. On approved `main` only, select `ai_mode=true` and enter
+   `PUBLISH_LI_AI_FREE_ONLY` after explicit G4 approval. The workflow
+   builds first-party React and `_worker.js` into
+   `dist-cloudflare-ai-candidate/`, verifies the existing Free-only Pages
+   guard, and checks read-only production AI/D1/secret binding names.
+   Set repository variable `LI_AI_FREE_PLAN_CONFIRMED=true` **only after
+   verifying Workers Free in Cloudflare Dashboard**. Static `ai_mode=false`
+   still uses the original `PUBLISH_LI_FREE_ONLY` confirmation.
+   GitHub staging/CI can produce the candidate locally but never deploys
+   it. Production requires main branch approval and the actual dispatch.
+   A successful deployment is NOT proof of signed invite or model feedback.
 6. Before enabling, smoke the real invitation/RLS gate: owner assignment;
    another invited account can receive the seat and the former holder is
    denied immediately; revoked/uninvited accounts cannot call the model;
@@ -51,5 +57,8 @@ credential shortcuts or any AI API token to React.
 - On offline, missing bindings or quota exhaustion: existing deterministic
   self-review remains available. No payment or fallback to paid providers.
 
-**Not done:** production Worker integration/deployment, Cloudflare bindings
-and real signed-device/inference validation. Keep Step17 In Progress.
+**Not done:** production dispatch/G4 approval, Cloudflare D1/Workers AI binding
+and owner secret provisioning, D1 schema application, real signed-device
+invite/RLS + feedback validation. The integrated release candidate and manual
+release path are built but AI has **not** been enabled on any live account.
+Keep Step17 In Progress.

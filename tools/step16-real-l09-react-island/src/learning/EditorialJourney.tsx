@@ -1,6 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
-import type {Attempt,MethodAttempt,MethodCategory,MethodChoice} from '../native-bridge';
+import {initial} from '../native-bridge';
+import type {Attempt,MethodAttempt,MethodCategory,MethodChoice,PastEditorialAttempt} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
 import {isReleasedLessonId} from './released-lessons';
 import {Button,Card} from '../../../../design-system/react/Components';
@@ -90,7 +91,7 @@ function parseLesson(source:unknown,id:string):EditorialLesson{
  if(l.id!==id||l.publishState!=='review_only'||
   !['verified','approved'].includes(l.reviewState??'')||
   l.rights?.text!=='first_party'||l.content?.format!=='editorial-structured-v1'||
-  !l.title?.vi||!l.title?.en||!l.content.localized?.vi||!l.content.localized?.en)
+  !l.version||!l.title?.vi||!l.title?.en||!l.content.localized?.vi||!l.content.localized?.en)
    throw Error('EDITORIAL_NOT_REVIEWED_OR_NOT_PUBLISHED');
  for(const locale of ['vi','en'] as const){
   const c=l.content.localized[locale];
@@ -491,7 +492,9 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   }
   setError('');
   const next:Attempt={...attempt,submitted:true,submittedAt:new Date().toISOString(),
-   submission:[...attempt.draft] as Attempt['submission'],submissionLocale:attempt.locale};
+   submission:[...attempt.draft] as Attempt['submission'],submissionLocale:attempt.locale,
+   contentVersion:lesson?.version,rubricVersion:(lesson?.version??'unknown')+':rubric:0-8',
+   attemptNumber:attempt.attemptNumber??1};
   if(await save(next))setPhase('feedback');
  }
  function rate(index:number,value:string){
@@ -506,7 +509,36 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    setError('Chọn đủ bốn tiêu chí tự đánh giá.');return;
   }
   setError('');
-  if(await save({...attempt,reviewed:true}))setPhase('progress');
+  if(await save({...attempt,reviewed:true,reviewedAt:new Date().toISOString()}))
+   setPhase('progress');
+ }
+ async function newAttempt(){
+  if(!attempt||!lesson||!persistedAttempt?.reviewed||locked||saving)return;
+  const frozen=persistedAttempt;
+  if(!frozen.submission||!frozen.submissionLocale||!frozen.submittedAt||
+     frozen.ratings.some(r=>r===null)){
+   setError('Chưa có lượt nộp đầy đủ để lưu vào lịch sử.');return;
+  }
+  const prior:PastEditorialAttempt={
+   submission:[...frozen.submission] as PastEditorialAttempt['submission'],
+   submissionLocale:frozen.submissionLocale,submittedAt:frozen.submittedAt,
+   ratings:[...frozen.ratings] as PastEditorialAttempt['ratings'],
+   reviewedAt:frozen.reviewedAt??null,
+   contentVersion:frozen.contentVersion??lesson.version,
+   rubricVersion:frozen.rubricVersion??lesson.version+':rubric:0-8',
+   attemptNumber:frozen.attemptNumber??1,
+   guidedDraft:frozen.guidedDraft,hint:frozen.hint,
+   methodChoice:frozen.methodChoice??null,methodAttempts:frozen.methodAttempts
+  };
+  const history=[...(frozen.attemptHistory??[]),prior];
+  const next:Attempt={...initial(),locale:frozen.locale,attemptHistory:history,
+   attemptNumber:prior.attemptNumber+1,contentVersion:lesson.version,
+   rubricVersion:lesson.version+':rubric:0-8',methodChoice:null};
+  if(JSON.stringify(next).length>=55000){
+   setError('Lịch sử sắp vượt giới hạn lưu trữ. Chưa tạo lượt mới để tránh mất bài cũ.');return;
+  }
+  setError('');
+  if(await save(next))setPhase('read');
  }
  function switchLocale(value:Locale){
   if(!attempt||locked||saving||value===attempt.locale)return;
@@ -568,6 +600,25 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     (vi?'Đủ điều kiện nộp '+answered+'/4':'Ready '+answered+'/4')}</Text>
    {attempt.assisted&&<Text role="support">
     {vi?'Đã sử dụng Thần Chú hỗ trợ':'Used an optional learning spell'}</Text>}
+   <Text role="support">{'K2: '+(persistedAttempt?.methodChoice??'—')}
+    {' · K3: '}{(['T06','T07'] as const).filter(k=>
+     !!persistedAttempt?.methodAttempts?.[k]?.submittedAt).join(', ')||'—'}
+    {' · K4: '}{(persistedAttempt?.guidedDraft.trim().length??0)>=MIN?
+      (vi?'Đã giải thích (chưa chấm)':'Explanation written (ungraded)'):'—'}
+    {' · K7: '}{persistedAttempt?.hint?(vi?'Đã mở gợi ý':'Hint used'):'—'}
+   </Text>
+   {!!attempt.attemptHistory?.length&&<details className="li-editorial-attempt-history">
+    <summary>{vi?'Lịch sử các lượt đã lưu':'Saved attempt history'} · {attempt.attemptHistory.length}</summary>
+    <ol>{attempt.attemptHistory.map((previous,i)=><li key={i}>
+     <strong>{vi?'Lượt':'Attempt'} {previous.attemptNumber}</strong>
+     {' · '}{previous.submittedAt.slice(0,10)}
+     {' · '}{previous.ratings.reduce<number>((n,x)=>n+(x??0),0)}/8
+     {' · '}{previous.contentVersion}
+     <details><summary>{vi?'Xem bản đã nộp':'Read frozen submission'}</summary>
+      <ol>{previous.submission.map((answer,k)=><li key={k} className="li-learning-submitted-answer">{answer}</li>)}</ol>
+     </details>
+    </li>)}</ol>
+   </details>}
   </div>
   {error&&!locked&&<p role="alert" className="li-learning-error">{error}</p>}
   {locked&&<div className="li-learning-recovery">
@@ -697,7 +748,11 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     <Heading level={2} id="li-editorial-progress" role="titleLarge">{vi?'Hoàn thành lượt học':'Attempt complete'}</Heading>
     <Text>{vi?'Đây là một lượt tự đánh giá đã lưu, không phải chứng nhận thông thạo.':
      'A saved self-assessment, not a mastery certificate.'}</Text>
-    <Text>{vi?'Điểm tự chấm':'Self-rating'}: {attempt.ratings.reduce<number>((n,v)=>n+(v??0),0)} / 8</Text>
+    <Text>{vi?'Điểm tự chấm':'Self-rating'}: {persistedAttempt.ratings.reduce<number>((n,v)=>n+(v??0),0)} / 8</Text>
+    <Text role="support">{vi?'K5 chưa đo: luyện lại ngay không chứng minh nhớ lâu.':'K5 not measured: an immediate retry does not prove retention.'}</Text>
+    <Button variant="secondary" disabled={saving||locked} onClick={()=>void newAttempt()}>
+     {vi?'Luyện lượt mới · giữ lịch sử':'New practice round · keep history'}
+    </Button>
     <section id="l0911-extension" className="li-editorial-extension">
      <Markdown md={content.extension.intro_md}/>
      <Heading level={3} role="titleMedium">{vi?'Nguồn theo cấp':'Source tiers'}</Heading>

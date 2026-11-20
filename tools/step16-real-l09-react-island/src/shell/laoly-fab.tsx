@@ -18,7 +18,7 @@ type Normalized={x:number;y:number};
 type Coordinates={x:number;y:number};
 type Gesture={id:number;startX:number;startY:number;x:number;y:number;moved:boolean};
 type Bounds={minX:number;minY:number;maxX:number;maxY:number};
-type DragPort={place:()=>void;reset:()=>void};
+type DragPort={place:()=>void;reset:()=>void;getAvatar:()=>string};
 type AppWindow=Window&{
  liCompanionDrag?:DragPort;
  openLaoLy?:(trigger?:HTMLElement|null)=>void;
@@ -58,6 +58,8 @@ function FloatingLaoLy({host,initialAvatar,initialTitle}:{
  );
  const [mode,setMode]=useState(document.body.dataset.studyMode||'start');
  const [avatar,setAvatar]=useState(initialAvatar);
+ const avatarSource=useRef(initialAvatar);
+ avatarSource.current=avatar||MODE_ICONS[mode]||initialAvatar;
  const [locale,setLocale]=useState(0);
  const fab=useRef<HTMLButtonElement|null>(null);
  const saved=useRef<Normalized|null>(readSavedPosition());
@@ -149,7 +151,8 @@ function FloatingLaoLy({host,initialAvatar,initialTitle}:{
    const next=(event as CustomEvent<{mode?:string}>).detail?.mode||
     document.body.dataset.studyMode||'start';
    setMode(next);
-   setAvatar(MODE_ICONS[next]||initialAvatar);
+   avatarSource.current=MODE_ICONS[next]||initialAvatar;
+   setAvatar(avatarSource.current);
   };
   const language=()=>setLocale(v=>v+1);
   window.addEventListener('li:study-mode-applied',refresh);
@@ -161,7 +164,7 @@ function FloatingLaoLy({host,initialAvatar,initialTitle}:{
  },[initialAvatar]);
  useEffect(()=>{
   host.classList.add('li-companion-draggable');
-  const port:DragPort={place,reset};
+  const port:DragPort={place,reset,getAvatar:()=>avatarSource.current};
   // Transfer position ownership from the native fallback to this React FAB.
   // Existing navigate()/load handlers keep calling the exact same port API.
   app.liCompanionDrag=port;
@@ -243,7 +246,7 @@ function FloatingLaoLy({host,initialAvatar,initialTitle}:{
   onPointerUp={finish} onPointerCancel={finish} onClick={onClick} onKeyDown={onKeyDown}
   data-li-react-companion="true" data-locale-sequence={locale}>
   <span className="laoly-face smallface" aria-hidden="true">
-   <img src={avatar||MODE_ICONS[mode]||initialAvatar} id="laoly-current-icon"
+   <img src={avatarSource.current} id="laoly-current-icon"
     alt="" width={128} height={128} decoding="async" loading="eager"
     className="laoly-approved-img"/>
   </span>

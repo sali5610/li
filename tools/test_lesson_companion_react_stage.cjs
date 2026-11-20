@@ -32,7 +32,8 @@ vm.runInContext(fs.readFileSync("site/assets/lesson-companion-native.js","utf8")
 (async()=>{
  for(let n=0;n<8;n++)await Promise.resolve();
  const api=ctx.window.liLessonCompanion;
- assert.deepEqual(api.registered(),["page-lessonL09"]);
+ assert.equal(api.registered().length,1);
+ assert.ok(api.registered().includes("page-lessonL09"));
  const plan=()=>api.getPlan("lessonL09"),get=()=>api.getContext();
  assert.equal(get().stage,"independent");
  assert.equal(get().submitted,false);

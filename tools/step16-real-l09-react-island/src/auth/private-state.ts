@@ -31,7 +31,7 @@ const t12Fields=(uid:string):Field[]=>
 function assertT12(raw:string):void{
  const data=JSON.parse(raw) as Record<string,unknown>;
  if(!data||typeof data!=='object'||Array.isArray(data)||
-    data.schema!=='li.spell.t12.v1'||![0,1,2].includes(Number(data.phase))||
+    data.schema!=='li.spell.t12.v1'||![0,1,2].includes(data.phase as number)||
     !['context','next','answer'].every(k=>
       typeof data[k]==='string'&&(data[k] as string).length<=1200)||
     (data.phase===1&&(!(data.context as string).trim()||!(data.next as string).trim()))||

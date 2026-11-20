@@ -16,6 +16,8 @@ export type PastEditorialAttempt={
  submission:[string,string,string,string];submissionLocale:Locale;submittedAt:string;
  ratings:[Rating,Rating,Rating,Rating];reviewedAt:string|null;
  contentVersion:string;rubricVersion:string;attemptNumber:number;
+ guidedDraft:string;hint:boolean;methodChoice:MethodChoice;
+ methodAttempts?:Partial<Record<'T06'|'T07',MethodAttempt>>;
 };
 export type Attempt={
  locale:Locale;
@@ -37,6 +39,7 @@ export type Attempt={
  contentVersion?:string;
  rubricVersion?:string;
  reviewedAt?:string|null;
+ startedAt?:string|null;
  attemptNumber?:number;
  attemptHistory?:PastEditorialAttempt[];
 };

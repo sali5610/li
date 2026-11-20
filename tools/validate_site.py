@@ -311,7 +311,8 @@ if "function showMethod(id,{practice=false}={}){" in html:
 if "function showMethod(id,{practice=false,lessonId=null}={}){" in html:
     assert 'practice:t.dataset.spellPractice==="true",lessonId:t.dataset.spellLesson||null' in html
     assert 'window.LiSpellPractice?.open(id,practice?"practice":"guide",lessonId)' in html
-    assert 'data-spell-lesson={id}' in (site.parent/"tools/step16-real-l09-react-island/src/learning/Wave1Journey.tsx").read_text(encoding="utf-8")
+    # React owns the direct Thần Chú action; hidden DOM attributes were retired.
+    assert 'onClick={()=>openLessonSpell(id,spell.shortId,index===0)}' in (site.parent/"tools/step16-real-l09-react-island/src/learning/Wave1Journey.tsx").read_text(encoding="utf-8")
     assert 'activeLessonId==="L03-1-2"' in (site/"assets/spell-practice.js").read_text(encoding="utf-8")
 assert "/* S114 — restrained Lão Lý peek:" in html
 

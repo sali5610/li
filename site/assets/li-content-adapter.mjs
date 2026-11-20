@@ -50,7 +50,7 @@ export function createContentClient({ baseUrl=new URL("../content-packs/",import
    for(const bridge of bridges)for(const other of g.edges.filter(x=>x.predicate==="TEACHES"&&x.to===bridge.concept&&x.from!==origin&&allowed(x))){
     const key=other.from.slice("lesson:".length);
     if(!found.has(key))found.set(key,{lessonId:key,explanations:[]});
-    found.get(key).explanations.push({fromConcept:e.to,concept:bridge.concept,predicate:bridge.relation?.predicate??"SHARED_CONCEPT",reason:bridge.relation?.reason??"Both lessons teach this concept",reviewState:bridge.relation?.reviewState??e.reviewState,provenance:bridge.relation?.provenance??e.provenance});
+    found.get(key).explanations.push({fromConcept:e.to,concept:bridge.concept,predicate:bridge.relation?.predicate??"SHARED_CONCEPT",reason:bridge.relation?.reason??"Both lessons teach this concept",reasonLocalized:bridge.relation?.reasonLocalized??null,reviewState:bridge.relation?.reviewState??e.reviewState,provenance:bridge.relation?.provenance??e.provenance});
    }
   }
   return [...found.values()].sort((a,b)=>a.lessonId.localeCompare(b.lessonId));

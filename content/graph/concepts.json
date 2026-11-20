@@ -4,7 +4,7 @@
     "kind": "Concept",
     "title": "Selection bias",
     "version": "0.1.0",
-    "reviewState": "proposed",
+    "reviewState": "verified",
     "publishState": "draft",
     "visibility": "public_curated",
     "rightsState": "first_party",
@@ -15,12 +15,12 @@
       }
     ],
     "provenance": {
-      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81a9906ed8a22d2e83f4",
-      "sourceSection": "Proposed concept identity from locked L09 content",
+      "sourceUrl": "https://www.pewresearch.org/u-s-survey-methodology/",
+      "sourceSection": "U.S. Survey Methodology: sampling, coverage and nonresponse as distinct from measurement error; exact L09-1-2 outcomes",
       "evidenceType": "documented",
-      "checkedOn": "2026-11-19"
+      "checkedOn": "2026-11-20"
     },
-    "note": ""
+    "note": "Concept documented by method source, but curricular/academic release still pending."
   },
   {
     "id": "concept:ont01:random-variation",
@@ -50,7 +50,7 @@
     "kind": "Concept",
     "title": "Leading interview question",
     "version": "0.1.0",
-    "reviewState": "proposed",
+    "reviewState": "verified",
     "publishState": "draft",
     "visibility": "public_curated",
     "rightsState": "first_party",
@@ -61,12 +61,12 @@
       }
     ],
     "provenance": {
-      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a81d38ef2f15f913d4e83",
-      "sourceSection": "Locked lesson §concepts; proposed stable concept identity",
-      "evidenceType": "editorial",
+      "sourceUrl": "https://aapor.org/standards-and-ethics/best-practices/",
+      "sourceSection": "Designing your questionnaire: neutral wording and questions that push respondents; exact L03-1-2 outcomes",
+      "evidenceType": "documented",
       "checkedOn": "2026-11-20"
     },
-    "note": "Semantic identity proposed, not an approved cross-disciplinary equivalence"
+    "note": "Concept documented by method source, but curricular/academic release still pending."
   },
   {
     "id": "concept:wave1:reorder-point",

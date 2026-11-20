@@ -520,7 +520,11 @@ subprocess.run(["node",str(site.parent/"tools"/"test_library_wave1_mount_ia.cjs"
 # or deleting a Bút Ký. Full case context must survive in the saved snapshot.
 assert 'const savedContent=liInitialState.savedContent;' in page_html
 assert 'savedContent:data.savedContent||[]' in page_html
-assert 'ideas:collectedIdeas,savedContent,draft:' in page_html
+# React Case persists to canonical storage; the hidden native textarea may be stale.
+# Keep the notes-only backup shape and assert its data source, not old code formatting.
+assert 'ideas:collectedIdeas,savedContent,draft,buddyNames:liBuddyNames' in page_html
+assert 'const savedDraft=window.localStorage.getItem(LI_DRAFT_KEY)' in page_html
+assert 'savedDraft??(window.liReactRouter?"":field?.value||"")' in page_html
 assert 'caseSnapshot' in page_html and 'selectedText:caseOptions.find' in page_html
 assert 'id="li-note-case-context"' in page_html
 assert 'data-li-bookmark-kind="case"' in page_html

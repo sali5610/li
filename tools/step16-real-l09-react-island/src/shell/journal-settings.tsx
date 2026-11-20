@@ -1,4 +1,4 @@
-import {openRoute} from './app-router.js';
+import {goBack,openRoute} from './app-router.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Button,Card,Checkbox,Field,Heading,InlineFeedback,LiIcon,Text} from '../../../../design-system/react/index';
@@ -213,7 +213,7 @@ export function Settings(){
  const view=useSettings();
  const act=(kind:string,key?:string,value?:string|boolean)=>app.liSettingsPort?.act(kind,key,value);
  return <div className="section-shell li-react-settings" data-li-react-screen="settings">
-  <Button variant="ghost" className="library-back-link" onClick={()=>act('back')}>
+  <Button variant="ghost" className="library-back-link" onClick={goBack}>
    <LiIcon name="chevron-left" size={18}/> {copy('Quay lại','Back')}</Button>
   <div className="kicker">{copy('CÀI ĐẶT','SETTINGS')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Cài đặt','Settings')}</Heading>

@@ -145,6 +145,51 @@ export function createContentClient({ baseUrl=new URL("../content-packs/",import
       null,item.reason)).filter(Boolean).slice(0,limit);
    if(related.length)return {status:"related_only",results:related,
      total:related.length,coverage:"authored_wave1_answerability"};
+   // Future approved lessons become searchable automatically through their
+   // authored VI/EN learning outcomes. Require a strong LITERAL intersection:
+   // this is retrieval of a learning goal, not proof the lesson answers a
+   // paraphrase or semantic similarity based on guesses.
+   const common=new Set(("tai sao vi sao lam sao cach nao khi nao gi la cua va voi " +
+    "trong duoc khong cho nhung mot toi ban minh nay kia phai nen hay " +
+    "why what when how where which who can could would should does do is are " +
+    "the a an on in to of for from by with without about please explain tell me " +
+    "dieu nay nhu the ve sau truoc").split(" "));
+   const tokens=s=>[...new Set(normalize(s).split(" ").filter(t=>t.length>=3&&!common.has(t)))];
+   const queryTokens=new Set(tokens(raw));
+   const inferred=[];
+   for(const outcome of reviewedPack.autoOutcomes||[]){
+    if(!lessonById.has(outcome.lessonId)||
+      reviewedPack.blockedByLesson[outcome.lessonId]?.some(hasPhrase)||
+      outcome.evidenceStatus!=="reviewed_lesson_outcome_text_not_independent_claim")
+      continue;
+    for(const locale of ["vi","en"]){
+     const terms=tokens(outcome.localized?.[locale]||"");
+     const shared=terms.filter(t=>queryTokens.has(t));
+     if(shared.length<3||shared.length/Math.max(terms.length,4)<0.5)
+      continue;
+     inferred.push({outcome,shared:shared.length,ratio:shared.length/terms.length});
+    }
+   }
+   inferred.sort((a,b)=>b.ratio-a.ratio||b.shared-a.shared||
+     a.outcome.id.localeCompare(b.outcome.id));
+   const autoRecords=[],seenLessons=new Set();
+   for(const {outcome} of inferred){
+    if(seenLessons.has(outcome.lessonId))continue;
+    seenLessons.add(outcome.lessonId);
+    const reason={
+     vi:"Mục tiêu bài học: "+outcome.localized.vi,
+     en:"Lesson learning outcome: "+outcome.localized.en
+    };
+    const row=asRecord(outcome.lessonId,"direct",reason.vi,
+      outcome.sourceUrl,reason);
+    if(!row)continue;
+    row.answerability.level="outcome_match";
+    row.answerability.evidenceStatus=outcome.evidenceStatus;
+    autoRecords.push(row);
+    if(autoRecords.length>=limit)break;
+   }
+   if(autoRecords.length)return {status:"outcome_match",results:autoRecords,
+     total:autoRecords.length,coverage:"approved_lesson_outcome_match"};
    return {status:"no_answer",results:[],total:0,
      coverage:"authored_wave1_answerability"};
   }

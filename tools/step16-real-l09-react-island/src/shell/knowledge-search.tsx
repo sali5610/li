@@ -5,9 +5,10 @@ import {Button,Heading,InlineFeedback,ListRow,SearchField,Text} from '../../../.
 
 type Relation={id:string;title:string;label:string;kind:string;lessonId?:string;
  reason?:string;reasonLocalized?:string;relation?:string;sourceUrl?:string;sourceType?:string};
-type Answerability={level:'direct'|'related';reason:string;
+type Answerability={level:'direct'|'related'|'outcome_match';reason:string;
  reasonLocalized?:{vi:string;en:string};sourceUrl?:string;
- evidenceStatus:'editorial_mapped_to_reviewed_learning_outcome'};
+ evidenceStatus:'editorial_mapped_to_reviewed_learning_outcome'|
+ 'reviewed_lesson_outcome_text_not_independent_claim'};
 type KnowledgeItem={id:string;title:string;kind:string;lessonId?:string;contentState?:string;
  sourceUrl?:string;links:Relation[];context?:string;answerability?:Answerability};
 type KnowledgeResponse={status:string;results:KnowledgeItem[]};
@@ -141,7 +142,7 @@ function KnowledgeSearch(){
       "Chưa có bài có mục tiêu học trả lời được câu hỏi này. Thử hỏi cách khác hoặc tìm theo tên/mã bài.":
       "Chưa tìm thấy bài hay khái niệm đã xác minh phù hợp."}/>:
      <div className="path-list" aria-live="polite">
-      <Text role="caption">{response.results.length} kết quả · {response.status==='answerable'||response.status==='related_only'?
+      <Text role="caption">{response.results.length} kết quả · {response.status==='answerable'||response.status==='related_only'||response.status==='outcome_match'?
        'Câu hỏi tự nhiên · phạm vi 3 bài Wave1':loadState==='ready'?'Knowledge Base canonical':'Danh mục offline'}</Text>
       {response.results.map(record=><motion.article key={record.kind+':'+record.id}
         className="li-search-result" initial={reduced?false:{opacity:0,y:6}}
@@ -153,10 +154,13 @@ function KnowledgeSearch(){
         onActivate={record.kind==='Lesson'&&routes.has(record.lessonId||record.id)?
          ()=>navigateTo(record.lessonId||record.id):undefined}/>
        {record.answerability&&<div className="li-search-related">
-        <Text role="support"><strong>{record.answerability.level==='direct'?
-         'Mục tiêu bài học phù hợp':'Chỉ liên quan — chưa trả lời câu hỏi'}</strong></Text>
+        <Text role="support"><strong>{record.answerability.level==='direct'?'Mục tiêu bài học phù hợp':
+         record.answerability.level==='outcome_match'?
+          'Khớp mục tiêu học đã duyệt':'Chỉ liên quan — chưa trả lời câu hỏi'}</strong></Text>
         <Text role="support">{record.answerability.reason}</Text>
-        <Text role="support">Đối chiếu theo mục tiêu bài đã biên soạn · chưa phải câu trả lời do AI tạo hoặc kiểm chứng học thuật độc lập.</Text>
+        <Text role="support">{record.answerability.level==='outcome_match'?
+         'Khớp từ ngữ trong mục tiêu học đã duyệt; chưa khẳng định bài trả lời đầy đủ câu hỏi. Không phải câu trả lời AI.':
+         'Đối chiếu theo mục tiêu bài đã biên soạn · chưa phải câu trả lời do AI tạo hoặc kiểm chứng học thuật độc lập.'}</Text>
         {sourceIsSafe(record.answerability.sourceUrl)&&
          <a href={record.answerability.sourceUrl} target="_blank" rel="noopener noreferrer">
           Nguồn tham khảo của bài</a>}

@@ -51,3 +51,24 @@ test('worker uses managed toolkit and never grants membership or stores bearer c
  assert.match(worker,/redirect_oauth/);
  assert.doesNotMatch(worker,/localStorage|sessionStorage|local\.session_token|Authorization:\s*'Bearer '/);
 });
+
+
+test('Auth-only Worker keeps existing Neon session semantics but never bundles an AI backend',()=>{
+ const worker=readFileSync(new URL('../src/auth/cloudflare-auth-only-worker.ts',import.meta.url),'utf8');
+ const vite=readFileSync(new URL('../vite.worker.config.mjs',import.meta.url),'utf8');
+ const builder=readFileSync(new URL('../../../tools/prepare_cloudflare_ai_candidate.mjs',import.meta.url),'utf8');
+ for(const expected of [
+  'handleAuthProxyRequest','processAuthMiddleware','NEON_AUTH_COOKIE_SECRET',
+  'authProxyPath(url,request.method)',"sameSite:'lax',sessionDataTtl:60",
+  'redirect_oauth',"url.pathname.startsWith('/api/')"
+ ])assert(worker.includes(expected),'Missing Auth-only contract '+expected);
+ for(const prohibited of [
+  "from './ai-","from './cloudflare-worker",
+  'handleAiRoute','serverAiActor','reviewedAiLesson','D1Database','WorkersAI',
+  'localStorage','indexedDB','sessionStorage',"Authorization: 'Bearer "
+ ])assert(!worker.includes(prohibited),'Auth-only Worker must not include '+prohibited);
+ assert(vite.includes('LI_AUTH_ONLY_WORKER'));
+ assert(vite.includes('dist-auth-worker'));
+ assert(builder.includes('--build-auth-only'));
+ assert(builder.includes('dist-cloudflare-auth-candidate'));
+});

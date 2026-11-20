@@ -1,137 +1,75 @@
-// li. L1 physical-first Check-in: complete evidence, radio UI, no forced global gate.
-import assert from "node:assert/strict";
-import {readFileSync} from "node:fs";
-import vm from "node:vm";
-const html=readFileSync(new URL("../site/index.html",import.meta.url),"utf8");
-const css=readFileSync(new URL("../site/assets/checkin-adaptation.css",import.meta.url),"utf8");
-const between=(a,b)=>{let i=html.indexOf(a),j=html.indexOf(b,i+a.length);assert.ok(i>=0&&j>i,"Missing "+a);return html.slice(i,j)};
-const modalHtml=between('<div id="checkin-modal"','<div id="toast"');
-assert.equal((modalHtml.match(/<select\b/g)||[]).length,0,"No selects allowed in check-in modal");
-assert.ok(!modalHtml.includes("Không rõ")&&!modalHtml.includes('value="unsure"'),"No unsure choice or helper copy");
-for(const key of ["sleep","move","rest"]){
- assert.ok(modalHtml.includes(`<fieldset class="checkin-physical-field" data-checkin-field="${key}"`));
- for(const value of ["yes","no"])assert.ok(modalHtml.includes(`name="checkin-${key}" value="${value}"`));
- assert.equal((modalHtml.match(new RegExp(`name="checkin-${key}"`,"g"))||[]).length,2);
-}
-for(const v of ["","start","focus","overload","recover"])assert.ok(modalHtml.includes(`name="checkin-override" value="${v}"`));
-assert.ok(modalHtml.includes('class="checkin-scroll"'));
-assert.ok(modalHtml.indexOf('class="action-row checkin-actions"')>modalHtml.indexOf('class="checkin-scroll"'));
-assert.ok(html.includes("checkin-adaptation.css?v=20261118-ds20-coverage"),"Update cache key whenever changing CSS");
-assert.ok(css.includes("#checkin-modal .checkin-radio-row{display:grid"));
-assert.ok(css.includes("grid-template-columns:repeat(2,minmax(0,1fr))"),"Physical choices must be two columns");
-assert.ok(css.includes("#checkin-modal .checkin-actions{")&&css.includes("position:relative"));
-assert.ok(css.includes("body:has(#checkin-modal.open) .laoly-support"));
-assert.ok(css.includes("#checkin-modal .checkin-scroll"));
-assert.ok(!css.includes("position:sticky"));
-const state={sleep:"",move:"",rest:"",energy:"",attention:"",override:""};
-const listeners={},fields={
- "checkin-recommendation":{textContent:""},
- "apply-checkin":{disabled:true,addEventListener(t,cb){listeners["apply:"+t]=cb}},
- "close-checkin":{addEventListener(t,cb){listeners["skip:"+t]=cb}},
- "checkin":{addEventListener(t,cb){listeners["open:"+t]=cb},focus(){context.focused++}},
- "checkin-override":{open:false}
-};
-const radioInputs=[];
-for(const n of ["sleep","move","rest","energy","attention","override"]){
- for(const v of (n==="override"?["","start","focus","overload","recover"]:n==="sleep"||n==="move"||n==="rest"?["yes","no"]:["high","medium","low","steady","warming","hard"])){
-  radioInputs.push({name:"checkin-"+n,value:v,get checked(){return state[n]===v},set checked(on){if(on)state[n]=v;else if(state[n]===v)state[n]=""},focus(){}});
- }
-}
-const modal={
- querySelector(q){const m=q.match(/name="checkin-([^"]+)"/);assert.ok(m,"Unexpected "+q);return state[m[1]]?{value:state[m[1]]}:null},
- addEventListener(t,cb){listeners["modal:"+t]=cb}
-};
-fields["checkin-modal"]=modal;
-const scroll={scrollTop:10},contextObj={open:false};
-const context=vm.createContext({
- Date,CustomEvent:class{constructor(type,o){this.type=type;this.detail=o.detail}},
- window:{dispatchEvent(){}},focused:0,
- document:{
-  getElementById(id){if(!fields[id])throw Error("Unexpected ID "+id);return fields[id]},
-  querySelector(q){
-   if(q.includes('input[name="checkin-override"][value=""]'))return {set checked(v){state.override=""}};
-   if(q.includes('input[name="checkin-override"]:checked'))return state.override?{value:state.override}:null;
-   if(q==='input[name="checkin-sleep"]')return {focus(){context.focused++}};
-   if(q.includes(".checkin-context"))return contextObj;
-   if(q.includes(".checkin-scroll"))return scroll;
-   throw Error("Unknown selector: "+q);
-  },
-  querySelectorAll(q){assert.ok(q.includes("checkin-modal input"));return radioInputs}
- },
- STUDY_MODES:{start:{label:"Vào nhịp"},focus:{label:"Đào sâu"},recover:{label:"Hồi trí"},overload:{label:"Quá tải"}},
- openModal(){},closeModal(){},setStudyMode(key){context.applied=key;return true},toast(message){context.toastMessage=message}
-});
-const logic=between("/* L1 physical-first self-report + learning rhythm heuristic.","document.getElementById(\"save-question\").addEventListener");
-vm.runInContext(logic,context,{timeout:1000});
-vm.runInContext(between('document.getElementById("close-checkin").addEventListener("click",closeCheckinModal);','document.getElementById("buddy-challenge").addEventListener'),context,{timeout:1000});
-const physical=(sleep,move,rest)=>({sleep,move,rest});
-const cases=[
- [physical("","",""),"","",null],
- [physical("yes","",""),"","",null],
- [physical("yes","yes",""),"high","steady",null],
- [physical("yes","yes","yes"),"","", "focus"],
- [physical("yes","no","yes"),"high","steady","start"],
- [physical("no","no","no"),"","", "recover"],
- [physical("yes","unsure","yes"),"","",null],
- [physical("unsure","unsure","unsure"),"","",null],
- [physical("yes","yes","yes"),"medium","", "start"],
- [physical("yes","yes","yes"),"","warming", "start"],
- [physical("yes","yes","yes"),"low","", "recover"],
- [physical("yes","yes","yes"),"","hard", "recover"],
- [physical("no","yes","yes"),"low","hard","overload"],
- [physical("yes","yes","yes"),"low","hard","overload"],
- [physical("no","yes","yes"),"high","steady","start"],
- [physical("yes","yes","yes"),"high","steady","focus"],
- [physical("yes","yes","yes"),"medium","steady","focus"],
- [physical("yes","yes","yes"),"high","warming","focus"],
- [physical("yes","no","yes"),"high","","start"],
- [physical("yes","no","yes"),"high","steady","start"],
- [physical("yes","no","yes"),"","steady","start"],
- [physical("yes","no","yes"),"high","hard","recover"],
- [physical("no","no","yes"),"high","steady","recover"],
- [physical("invalid","yes","yes"),"","",null]
-];
-for(const [p,e,a,want] of cases){
- assert.equal(context.recommendStudyMode(p,e,a)?.mode??null,want,JSON.stringify({p,e,a,want}));
-}
-// Explicit positive-point invariant: additions are real, and may change the recommended mode.
-const basePhysical=physical("yes","no","yes");
-const base=context.recommendStudyMode(basePhysical);
-const high=context.recommendStudyMode(basePhysical,"high");
-const clear=context.recommendStudyMode(basePhysical,"","steady");
-const both=context.recommendStudyMode(basePhysical,"high","steady");
-assert.equal(base.mode,"recover");
-assert.equal(high.mode,"start","High energy must actually promote Recover -> Start when L1 allows");
-assert.equal(high.points,base.points+1,"High energy must contribute exactly +1");
-assert.equal(high.energyPoints,1);
-assert.equal(clear.points,base.points+1,"Clear focus must contribute exactly +1");
-assert.equal(both.points,base.points+2,"Two positive inputs add, not overwrite each other");
-assert.equal(both.mode,"start","A physical Chưa must cap the automatic suggestion at Start");
-assert.ok(high.positives.includes("Năng lượng dồi dào +1"));
-assert.equal(context.recommendStudyMode(physical("yes","yes","yes"),"medium","steady").mode,"focus");
-assert.equal(context.recommendStudyMode(physical("yes","yes","yes"),"medium").mode,"start");
+/* React L1 Check-in parity + source ownership regression.
+ * No DOM mocking: the decision model is pure, the React layer owns all UI.
+ * No privileged session is fabricated for a test fixture. */
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {
+ completePhysical,recommendStudyRhythm,STUDY_RHYTHMS
+} from './step16-real-l09-react-island/src/shell/checkin-domain.js';
 
-Object.assign(state,{sleep:"yes",move:"yes",rest:"",override:"focus"});
-listeners["modal:change"]();
-assert.equal(fields["apply-checkin"].disabled,true,"Override cannot bypass physical answer");
-listeners["apply:click"]();assert.equal(context.applied,undefined);
-state.rest="yes";listeners["modal:change"]();
-assert.equal(fields["apply-checkin"].disabled,false);
-assert.match(fields["checkin-recommendation"].textContent,/chọn Đào sâu thủ công/);
-listeners["apply:click"]();assert.equal(context.applied,"focus");
-assert.equal(context.toastMessage,"Đã chọn nhịp Đào sâu. Đổi lúc nào cũng được!");
-assert.ok(!context.toastMessage.includes("L1")&&!context.toastMessage.includes("thể trạng"),"Snackbar must not expose implementation vocabulary");
-assert.equal(context.window.LiL1.getPhysicalState().sleep,"yes");
-state.sleep="no";state.energy="low";state.attention="hard";state.override="overload";
-radioInputs[0].checked=true;contextObj.open=true;fields["checkin-override"].open=true;
-listeners["open:click"]({currentTarget:fields["checkin"]});
-for(const key of ["sleep","move","rest"])assert.equal(state[key],"","New check-in must clear "+key);
-assert.equal(state.override,"");
-assert.equal(fields["checkin-override"].open,false);
-assert.equal(contextObj.open,false);
-assert.equal(scroll.scrollTop,0);
-assert.equal(radioInputs[0].checked,false);
-assert.equal(fields["apply-checkin"].disabled,true);
-listeners["skip:click"]();assert.equal(context.window.LiL1.getPhysicalState().sleep,"yes");
-assert.ok(!logic.includes("localStorage"),"Self-report is in-memory only");
-console.log(`LI_CHECKIN_PASS ${cases.length} mappings + required radio form / override / restart / skip / privacy assertions`);
+const read=p=>readFileSync(new URL(p,import.meta.url),'utf8');
+const page=read('../site/index.html');
+const react=read('./step16-real-l09-react-island/src/shell/checkin-dialog.tsx');
+const diary=read('../site/assets/personal-diary.js');
+const rules=read('./step16-real-l09-react-island/src/shell/checkin-domain.js');
+const shell=read('./step16-real-l09-react-island/src/auth/staging-app.tsx');
+const css=read('../site/assets/checkin-adaptation.css');
+assert.ok(page.includes('id="li-react-checkin-root"'),'React portal root must exist');
+assert.ok(!page.includes('id="checkin-modal"'),'old static check-in form must be gone');
+assert.ok(!page.includes('function recommendStudyMode('),'no duplicated inline heuristic');
+assert.ok(!page.includes('function refreshCheckinRecommendation('),'no legacy modal input reader');
+assert.ok(react.includes('id="checkin-modal"')&&react.includes('data-react-owner="checkin"'));
+assert.ok(react.includes('id="li-checkin-recording-disclosure"'));
+assert.ok(react.includes('li:open-checkin')&&react.includes('li:l1-physical-checkin'));
+assert.ok(react.includes('li-auth-verified'),'uninvited accounts must not open modal');
+assert.ok(react.includes("latest=null"),'clear sensitive in-memory check-in on signout');
+assert.ok(react.includes("if(!chosen||!complete)return"),'manual override cannot bypass physical questions');
+assert.ok(react.includes("if(!app.liSettingsPort?.setMode?.("),'existing study-mode account state owns persistence');
+assert.ok(shell.includes('mountCheckinDialog'),'check-in must mount from the one React app');
+assert.ok(diary.includes('li:open-checkin')&&diary.includes('li:l1-physical-checkin'));
+assert.ok(!diary.includes('$("checkin-modal").dataset.trigger'),'old modal controller must not be used');
+assert.ok(!rules.includes('localStorage')&&!rules.includes('document.')&&!rules.includes('window.'),'recommendation rules must be pure');
+assert.ok(css.includes('#checkin-modal .checkin-scroll')&&css.includes('#checkin-modal .checkin-actions{'));
+assert.ok(css.includes('position:relative'), 'footer remains separate from scroll body');
+assert.ok(!css.includes('position:sticky'),'no modal footer overlay');
+assert.equal(Object.keys(STUDY_RHYTHMS).length,4);
+const p=(sleep,move,rest)=>({sleep,move,rest});
+const examples=[
+ [p('','',''),'','',null],
+ [p('yes','',''),'','',null],
+ [p('yes','yes',''),'high','steady',null],
+ [p('yes','yes','yes'),'','','focus'],
+ [p('yes','no','yes'),'high','steady','start'],
+ [p('no','no','no'),'','','recover'],
+ [p('yes','unsure','yes'),'','',null],
+ [p('unsure','unsure','unsure'),'','',null],
+ [p('yes','yes','yes'),'medium','','start'],
+ [p('yes','yes','yes'),'','warming','start'],
+ [p('yes','yes','yes'),'low','','recover'],
+ [p('yes','yes','yes'),'','hard','recover'],
+ [p('no','yes','yes'),'low','hard','overload'],
+ [p('yes','yes','yes'),'low','hard','overload'],
+ [p('no','yes','yes'),'high','steady','start'],
+ [p('yes','yes','yes'),'high','steady','focus'],
+ [p('yes','yes','yes'),'medium','steady','focus'],
+ [p('yes','yes','yes'),'high','warming','focus'],
+ [p('yes','no','yes'),'high','','start'],
+ [p('yes','no','yes'),'high','steady','start'],
+ [p('yes','no','yes'),'','steady','start'],
+ [p('yes','no','yes'),'high','hard','recover'],
+ [p('no','no','yes'),'high','steady','recover'],
+ [p('invalid','yes','yes'),'','',null]
+];
+for(const [physical,energy,attention,expected] of examples){
+ const actual=recommendStudyRhythm(physical,energy,attention);
+ assert.equal(actual?.mode??null,expected,JSON.stringify({physical,energy,attention,expected}));
+ assert.equal(completePhysical(physical),expected!==null);
+}
+const base=recommendStudyRhythm(p('yes','no','yes'));
+const high=recommendStudyRhythm(p('yes','no','yes'),'high');
+const both=recommendStudyRhythm(p('yes','no','yes'),'high','steady');
+assert.equal(base.mode,'recover');assert.equal(high.mode,'start');assert.equal(high.points,base.points+1);
+assert.equal(both.points,base.points+2);
+assert.ok(both.positives.some(x=>x.includes('Năng lượng dồi dào +1')));
+assert.ok(both.positives.some(x=>x.includes('Tập trung rõ +1')));
+console.log('LI_REACT_CHECKIN_PASS '+examples.length+' pure decision cases; React UI owner; invite/record/skip/consent contracts');

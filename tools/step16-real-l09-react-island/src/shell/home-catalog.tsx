@@ -97,6 +97,7 @@ function Catalog(){
  const locale=useLocale();
  const path=useCatalogPath();
  const [,forceProgress]=useState(0);
+ const [lessonNavError,setLessonNavError]=useState('');
  useEffect(()=>{
   const update=()=>forceProgress(x=>x+1);
   window.addEventListener('li:personal-sync-applied',update);
@@ -138,7 +139,12 @@ function Catalog(){
    'Different paths into one library of knowledge.');
  const chooseLesson=(item:Lesson)=>{
   const personalRoute=personalStudyRoute(item.id);
-  if(personalRoute){openRoute(personalRoute);return;}
+  if(personalRoute){
+   if(!openRoute(personalRoute)){
+    setLessonNavError('Bài học chưa tải được. Thử tải lại trang; tiến độ cũ vẫn được giữ.');
+   }else setLessonNavError('');
+   return;
+  }
   if(canOpenLesson(item)){app.liCatalog?.openLesson(item.id);return;}
   // Outlines without content remain non-learnable.
   openPath([...path.slice(0,3),item.id]);
@@ -157,6 +163,7 @@ function Catalog(){
   </nav>
   <div className="kicker">{eyebrow}</div>
   <Heading level={1} role="headline" className="display-title">{heading}</Heading>
+   {lessonNavError&&<p role="alert" className="li-catalog-error">{lessonNavError}</p>}
   <Text role="body" className="intro">{description}</Text>
    {field&&!course&&field.image&&<img className="catalog-field-hero" src={field.image} alt="" loading="lazy" decoding="async"/>}
   {!group&&<><div className="catalog-group-grid">

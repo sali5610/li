@@ -265,12 +265,12 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     {showSpells.map((spell,index)=><div className="li-lesson-spell-item" key={spell.techniqueId}>
      <strong>{spell.shortId} · {vi?spell.name.vi:spell.name.en}</strong>
      <Text role="support">{vi?spell.why.vi:spell.why.en}</Text>
-     <button type="button" className="action alt li-lesson-spell-action"
+     <Button variant="secondary" className="li-lesson-spell-action"
       data-method={spell.shortId} data-spell-practice={index===0?'true':'false'}
-      disabled={locked||saving}>
+      disabled={locked||saving} aria-label={(vi?'Thử Thần Chú ':'Try spell ')+spell.shortId}>
       {vi?(index===0?'Thử thi triển':'Xem chú bổ trợ'):
        (index===0?'Try this spell':'See optional spell')}
-     </button>
+     </Button>
     </div>)}
    </div>
   </aside>

@@ -1,5 +1,6 @@
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
+import {motion,useReducedMotion} from 'motion/react';
 import {Badge,Button,Card,Field,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
 
@@ -18,6 +19,7 @@ function readResearch():ResearchSnapshot{
  };
 }
 function ResearchScene(){
+ const reduced=useReducedMotion();
  const [state,setState]=useState(readResearch);
  useEffect(()=>{
   const host=originalResearch();if(!host)return;
@@ -47,7 +49,9 @@ function ResearchScene(){
       {String(index+1).padStart(2,'0')} · {branch}
      </Button>)}
     </div>
-    <p className="state-note" role="status">{state.feedback}</p>
+    <motion.p key={state.feedback} className="state-note" role="status"
+     initial={reduced?false:{opacity:0,y:4}} animate={{opacity:1,y:0}}
+     transition={reduced?{duration:0}:{duration:0.16}}>{state.feedback}</motion.p>
     <div className="action-row"><Button data-page="case">Phản Chứng</Button></div>
    </Card>
    <Card variant="raised">
@@ -90,6 +94,7 @@ function readBookmark(){
 }
 function originalCase(){return document.querySelector<HTMLElement>('#page-case > .section-shell');}
 function CaseScene(){
+ const reduced=useReducedMotion();
  const [choice,setChoice]=useState<'right'|'wrong'|null>(null);
  const [revision,setRevision]=useState(()=>{
   const input=document.getElementById('case-revision') as HTMLTextAreaElement|null;
@@ -144,9 +149,11 @@ function CaseScene(){
       onClick={()=>{setChoice('wrong');setMessage('');}}>
       90% của mọi người chắc chắn đều hài lòng.</Button>
     </div>
-    <p className="state-note" role="status">{choice===null?'Chọn một nhận định để bắt đầu.':
+    <motion.p key={choice||'none'} className="state-note" role="status"
+     initial={reduced?false:{opacity:0,y:4}} animate={{opacity:1,y:0}}
+     transition={reduced?{duration:0}:{duration:0.16}}>{choice===null?'Chọn một nhận định để bắt đầu.':
      choice==='right'?'Chính xác trong tình huống này: kết luận chỉ áp dụng cho nhóm được hỏi.':
-     'Chưa đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng.'}</p>
+     'Chưa đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng.'}</motion.p>
     <Field kind="textarea" label="Luận Kết · Viết lại nhận định không vượt quá dữ kiện"
      rows={5} value={revision} onChange={e=>updateRevision(e.target.value)}
      placeholder="Trong nhóm người đang sử dụng được hỏi, 90% phản hồi tích cực…"/>

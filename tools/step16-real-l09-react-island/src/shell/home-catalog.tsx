@@ -1,5 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
+import {motion,useReducedMotion} from 'motion/react';
 import {Badge,Button,Card,Heading,Progress,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
 import './home-catalog.css';
@@ -82,6 +83,7 @@ function CatalogCard({number,eyebrow,title,detail,onOpen,locale}:{
  </Card>;
 }
 function Catalog(){
+ const reduced=useReducedMotion();
  const locale=useLocale();
  const path=useCatalogPath();
  const [,forceProgress]=useState(0);
@@ -118,7 +120,9 @@ function Catalog(){
   app.liCatalog.openLesson(item.id);
  };
  const available=course?courseProgress(course):null;
- return <div data-li-react-screen="catalog" className="li-react-catalog">
+ return <motion.div key={path.join('/')||'catalog-root'} data-li-react-screen="catalog"
+   className="li-react-catalog" initial={reduced?false:{opacity:0,y:7}}
+   animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.18}}>
   <nav className="catalog-breadcrumbs" aria-label={locale==='vi'?'Vị trí trong Tàng Thư':'Library path'}>
    {breadcrumb.map((item,index)=><React.Fragment key={item.path.join('/')||'root'}>
     {index>0&&<span aria-hidden="true" className="catalog-crumb-divider">›</span>}
@@ -195,7 +199,7 @@ function Catalog(){
    <Heading level={2} role="titleMedium">Nội dung đang được biên soạn</Heading>
    <Text role="body">Bài chưa có chương, bài tập hoặc tiến độ học được phép phát hành.</Text>
   </Card>}
- </div>;
+ </motion.div>;
 }
 
 type MirrorState={question:string;scene:string;source:string;route:string;cta:string;saved:boolean};
@@ -216,6 +220,7 @@ function legacyAction(id:string){
  button?.click();
 }
 function Home(){
+ const reduced=useReducedMotion();
  const [mirror,setMirror]=useState<MirrorState>(readMirror);
  const gesture=useRef<{x:number;y:number}|null>(null);
  useEffect(()=>{
@@ -241,7 +246,9 @@ function Home(){
    <Text role="body">Không cần biết tất cả. Chỉ cần không ngừng tò mò.</Text>
    <span className="tiny-note">Một câu hỏi, muôn ngả đường</span>
   </div>
-  <div className="mirror-message"
+  <motion.div key={mirror.question+'|'+mirror.scene} className="mirror-message"
+   initial={reduced?false:{opacity:0}} animate={{opacity:1}}
+   transition={reduced?{duration:0}:{duration:0.16}}
    onTouchStart={event=>{
     if(event.touches.length!==1||(event.target as HTMLElement).closest('button'))return;
     gesture.current={x:event.touches[0].clientX,y:event.touches[0].clientY};
@@ -263,7 +270,7 @@ function Home(){
      <LiIcon name="chevron-right" size={20}/>
     </Button>
    </div>
-  </div>
+  </motion.div>
   <aside className="hero-dialogue" aria-label="Lão Lý kể bối cảnh câu hỏi">
    <span className="hero-dialogue-avatar" aria-hidden="true">
     <img src="./assets/laoly-neutral.png" alt="" width="128" height="128"/>

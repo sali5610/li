@@ -44,3 +44,32 @@ High-value direct Studio pattern links: \`#appHeader\`, \`#homeMirror\`, \`#cata
 ## Focus behavior (PO correction 2026-11-20)
 
 All keyboard-accessible controls keep **visible focus**, but do **not** draw an extra green outline. In the canonical \`focus.css\`, the **same** border changes thickness from 1px to 3px in moss/forest, or borderless actions thicken an underline / emphasize the existing surface. Invalid fields retain the error color. \`focus.css\` imports last in every React Studio story. Select \`State → focus\` to see the deterministic specimen and Tab for actual keyboard focus. G2 and Safari physical device remain open.
+
+## UX-DS-11 → UX-DS-35 parity restoration (candidate React source, 2026-11-20)
+
+All 12 missing families and 8 partial equivalents are represented by **20 importable React APIs and real interactive stories**, not an embedded copy of old static HTML. They live in `LegacyNavigation.tsx`, `LegacyCards.tsx`, `LegacyControls.tsx`, `LegacyDataViz.tsx` with shared `legacy.css`, bundle `LegacyGalleryStory.tsx` and the SAME Studio catalog. Archive review assets are reused via story URLs. Human PO G2 approval **not inferred** from parity. Legacy candidates remain DRAFT.
+
+| Studio route | Historical family | React API | Variants | States |
+| --- | --- | --- | --- | --- |
+| `bottomNav` | Bottom Navigation | `MobileBottomNav` in `LegacyNavigation.tsx` | 4 tabs | default, selected, focus |
+| `sidebarMenu` | Sidebar Menu | `SidebarMenu` in `LegacyNavigation.tsx` | Sections | default, focus |
+| `topNavVariants` | Top Nav Variants | `TopNavContext` in `LegacyNavigation.tsx` | Logo, Back, Transparent | default, focus |
+| `methodTile` | Thần Chú Method Tile | `MethodTile` in `LegacyCards.tsx` | Primary, Secondary, Dark | default, focus |
+| `mediaCard` | Illustrated & Image Card | `MediaCard` in `LegacyCards.tsx` | Top, Side, Contained | default, dark |
+| `horizontalCard` | Horizontal Media Card | `HorizontalCard` in `LegacyCards.tsx` | Text, Photo, Illustration, Icon | default, dark |
+| `chatBubble` | Home Chat Bubble | `ChatBubble` in `LegacyCards.tsx` | Forest, Paper | default |
+| `tagChip` | Static Tag Chip | `TagChip` in `LegacyCards.tsx` | Category | default |
+| `editorialCard` | Editorial Card Anatomy | `EditorialCard` in `LegacyCards.tsx` | Cream, Ivory, Secondary, Dark | default, focus |
+| `selectField` | Selection Dropdown | `SelectField` in `LegacyControls.tsx` | Native select | default, disabled, focus |
+| `notebookTextarea` | Ruled Notebook Textarea | `NotebookTextarea` in `LegacyControls.tsx` | Ruled | default, readonly, disabled, focus |
+| `functionalIcons` | Functional Icon Roles | `FunctionalIcon` in `LegacyControls.tsx` | 18px, 20px, 22px, 24px | default |
+| `smallAction` | Small & Text Action | `SmallAction` in `LegacyControls.tsx` | Primary, Secondary, Text | default, disabled, focus |
+| `progressVariants` | Progress Variants | `ProgressVariants` in `LegacyControls.tsx` | Linear, Compact, Indeterminate | default |
+| `iconField` | Icon-bearing Input | `IconField` in `LegacyControls.tsx` | Search | default, error, disabled, focus |
+| `checkinRadioModal` | Check-in Radio Modal | `CheckinRadioModal` in `LegacyControls.tsx` | Yes / No | default, focus |
+| `monthCalendar` | Monthly Activity Calendar | `MonthCalendar` in `LegacyDataViz.tsx` | Month | default, focus |
+| `stackedActivity` | Seven-day Activity Bars | `StackedActivityChart` in `LegacyDataViz.tsx` | 7 days | default, focus |
+| `laoLyState` | Lão Lý Loading & Error Art | `LaoLyStateScene` in `LegacyDataViz.tsx` | Loading, Error | default |
+| `laoLyCompanion` | Companion FAB & Dialog | `LaoLyCompanion` in `LegacyNavigation.tsx` | Companion | default, focus |
+
+**Ownership:** UI modules do not persist, authenticate, write to Neon or call an AI backend. Calendar and chart take real caller-supplied data and distinguish no record from zero, and never infer user capacity/health. FAB and check-in modal use controlled Dialog. Bottom navigation links are real hrefs in actual consumer and hash fixtures inside the story. Source of truth: React exports, not UX-DS-11 archive. **Focus rule:** no extra outer green rectangle — existing border thickens or underline emphasizes on keyboard. `State: focus` is a fixture, G2 still open.

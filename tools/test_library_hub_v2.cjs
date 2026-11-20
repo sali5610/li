@@ -13,7 +13,7 @@ class Element{
 const ids=["page-library","page-resume","page-collection","case-archive-preview","li-library-latest-idea","li-library-latest-lesson","li-lesson-history","li-bookmarks-empty-lessons","li-bookmarks-empty-questions","li-saved-lessons","li-saved-questions","li-bookmark-tab-lessons","li-bookmark-tab-questions","li-bookmark-panel-lessons","li-bookmark-panel-questions","li-collection-list","save-capture-note","capture-note"];
 const elements=Object.fromEntries(ids.map(id=>[id,new Element()]));
 const filters=["all","case","idea"].map(name=>{const x=new Element("button");x.dataset.collectionFilter=name;return x;});
-const local=new Map(),events=[],routes=[],messages=[];
+const local=new Map(),events=[],routes=[],messages=[],deleteCalls=[];
 const localStorage={getItem:key=>local.has(key)?local.get(key):null,setItem:(key,value)=>local.set(key,value),removeItem:key=>local.delete(key)};
 const cases=[
 {id:"c1",title:"Cũ",revision:"Kết luận thứ nhất",correct:true,savedAt:"2026-10-01T08:00:00.000Z"},
@@ -35,6 +35,7 @@ const code=fs.readFileSync(path.join(__dirname,"../site/assets/library-hub.js"),
 vm.createContext(ctx);vm.runInContext(code,ctx);
 const shelf=ctx.window.liLibraryShelf;
 assert(shelf,"library controller registers");
+ctx.window.liNotes={deleteNote:(type,id)=>{deleteCalls.push({type,id});return true;}};
 shelf.renderHome();
 assert.equal(elements["case-archive-preview"].children.length,1,"only one latest Bút Ký preview");
 assert.equal(elements["li-library-latest-idea"].children.length,1,"only one latest Ý đã nhặt preview");
@@ -75,6 +76,13 @@ assert.equal(elements["li-bookmark-panel-lessons"].hidden,false);
 assert.equal(elements["li-bookmark-tab-lessons"].focused,true,"keyboard tab switch moves focus");
 shelf.renderCollection();
 assert.equal(elements["li-collection-list"].children.length,3,"full combined Bút Ký / Ý list");
+const noteCard=elements["li-collection-list"].children[0];
+const rowActions=noteCard.children.at(-1).children;
+assert.equal(rowActions.length,2,"collection has both view-details and visible delete");
+assert.equal(rowActions[1].textContent,"Xóa");
+assert.match(rowActions[1].attributes["aria-label"],/Xóa ghi chép/);
+rowActions[1].handlers.click();
+assert.deepEqual(deleteCalls,[{type:"idea",id:"i1"}],"delete forwards the exact note to shared delete handler");
 filters[1].handlers.click();
 assert.equal(elements["li-collection-list"].children.length,2,"Bút Ký filter");
 filters[2].handlers.click();

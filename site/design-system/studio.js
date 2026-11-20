@@ -2,7 +2,6 @@
  * Stories use current native runtime CSS or explicitly labeled draft specimens.
  * No product routing, persistence, auth or network writes. */
 const u='https://github.com/sali5610/li/blob/main/';
-const draftSource='https://github.com/sali5610/li/blob/main/';
 const catalog=[
  {id:'colors',group:'Foundations',title:'Colors & roles',short:'Canonical paint roles',status:'RUNTIME',variants:['Palette'],states:['default'],source:'design-system/tokens.json',do:'Use semantic color roles and generated token CSS.',dont:'Hardcode new hex colors or use Olive for a primary CTA.',code:'color: var(--moss);\nbackground: var(--paper);'},
  {id:'type',group:'Foundations',title:'Typography',short:'Editorial / UI scale',status:'RUNTIME',variants:['Type scale'],states:['default'],source:'design-system/typography-spacing.md',do:'Use Crimson Text for editorial hierarchy and UI sans for controls.',dont:'Treat 12px metadata as an essential body-label size.',code:'font: var(--li-type-title-md)/var(--li-leading-title-md) var(--li-font-editorial);'},
@@ -38,11 +37,10 @@ const catalog=[
  {id:'learningShell',group:'Patterns',title:'Learning flow shell',short:'Prompt → response → feedback → actions',status:'DRAFT',variants:["Lesson"],states:["default","feedback","completed"],source:'design-system/react/Templates.tsx',do:'Pass real lesson state, feedback and persisted save evidence; keep reading order accessible.',dont:'Put answer validation, mastery or Neon sync into DS.',code:'<LearningFlowShell title={lesson.title} prompt={prompt} response={response} progressLabel="Step" actions={actions} />'},
  {id:'accountShell',group:'Patterns',title:'Account / access shell',short:'Invite gate or settings panel layout',status:'DRAFT',variants:["Access","Settings"],states:["default"],source:'design-system/react/Templates.tsx',do:'Use for layout only; own signed auth and account data outside DS.',dont:'Make an example Google button a live login action.',code:'<AccountShell mode="access" title="Sign in">{authForm}</AccountShell>'},
  {id:'feedbackScene',group:'Patterns',title:'Feedback / error scene',short:'Loading, empty, error, complete',status:'DRAFT',variants:["Empty","Loading","Error","Complete"],states:["default"],source:'design-system/react/Templates.tsx',do:'Present caller-owned real status with action; use alert only for errors.',dont:'Show complete based on a fake timer or fixture loading state.',code:'<FeedbackScene kind="error" title="Could not load" message={error} action={retryButton} />'},
- {id:'nav',group:'Patterns',title:'Navigation',short:'Exactly one current route',status:'DRAFT',variants:['Global'],states:['default'],source:'design-system/ux-patterns-and-behavior.md',do:'Expose one active destination with aria-current="page".',dont:'Conflate selected navigation state with focus or hover.',code:'<a href="#guide" aria-current="page">Thần Chú</a>'},
  {id:'feedback',group:'Molecules',title:'Inline feedback',short:'Accurate status / alert + retry',status:'DRAFT',variants:['Info','Error','Success','Loading'],states:['default'],source:'design-system/react/Molecules.tsx',do:'Render only a caller-provided true status and use a real retry callback.',dont:'Imply a server write or successful sync from UI fixture state.',code:'<InlineFeedback tone="error" message="Không thể hoàn tất" onAction={retry} actionLabel="Thử lại" />'},
  {id:'dialog',group:'Components',title:'Dialog',short:'Controlled native modal & focus return',status:'DRAFT',variants:['Modal'],states:['default','long'],source:'design-system/react/Dialog.tsx',do:'Open with showModal, close with Escape/Close, and restore triggering focus.',dont:'Use a clickable div or call save on close.',code:'<Dialog open={open} title="Xác nhận" closeLabel="Đóng" onRequestClose={close}>Nội dung</Dialog>'},
 ];
-const byId=id=>catalog.find(x=>x.id===id)||catalog[0];
+const byId=id=>catalog.find(x=>x.id===(id==='nav'||id==='navigation'?'appHeader':id))||catalog[0];
 const query=new URLSearchParams(location.search);
 const safe=(value,values)=>values.includes(value)?value:values[0];
 const tr=(vi,en,lang)=>lang==='en'?en:vi;
@@ -58,19 +56,13 @@ function canvasStory(record,variant,state,lang){
  if(record.id==='type')return heading+'<div class="studio-layout-stack"><div style="font:600 38px/1.2 var(--li-font-editorial);color:var(--moss)">'+tr('Một thư viện sống','A living library',lang)+'</div><div style="font:600 25px/1.3 var(--li-font-editorial)">'+tr('Tiêu đề chương','Chapter heading',lang)+'</div><div style="font:var(--li-type-body)/var(--li-leading-body) var(--li-font-ui)">'+tr('Nội dung chính: rõ ràng, có nhịp thở.','Body text with measured, readable rhythm.',lang)+'</div><div style="font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);color:var(--muted)">'+tr('Thông tin hỗ trợ / 14px','Supporting information / 14px',lang)+'</div></div>';
  if(record.id==='spacing')return heading+[1,2,3,4,5,6,8,10].map(n=>'<div class="studio-space-row"><code>space-'+n+'</code><span style="--space:var(--li-space-'+n+')"></span><small>'+n*4+'px</small></div>').join('');
 // Layout is intentionally mounted by React-only iframe route.
- if(record.id==='nav')return heading+'<nav class="studio-canvas-nav" aria-label="'+tr('Điều hướng chính','Global navigation',lang)+'"><a href="#home">'+tr('Đại Sảnh','Home',lang)+'</a><a href="#guide" aria-current="page">'+tr('Thần Chú','Methods',lang)+'</a><a href="#library">'+tr('Tàng Thư','Library',lang)+'</a></nav>';
  return heading;
-}
-function bindCanvasInteractions(root){
- root.querySelector('#story-action')?.addEventListener('click',()=>{const r=root.querySelector('#story-result');if(r)r.textContent='✓ '+(query.get('lang')==='en'?'Demo click':'Đã bấm thử');});
- root.querySelectorAll('.studio-canvas-nav a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();root.querySelectorAll('.studio-canvas-nav a').forEach(x=>x.removeAttribute('aria-current'));a.setAttribute('aria-current','page');}));
 }
 if(query.has('embed')){
  document.body.classList.add('is-canvas');
  const root=document.querySelector('#studio-canvas');root.hidden=false;
  const item=byId(query.get('story')),variant=safe(query.get('variant'),item.variants),state=safe(query.get('state'),item.states),lang=query.get('lang')==='en'?'en':'vi';
  root.innerHTML=canvasStory(item,variant,state,lang);
- bindCanvasInteractions(root);
 }else{
  const $=selector=>document.querySelector(selector),nav=$('#studio-nav'),search=$('#studio-search'),v=$('#studio-variant'),s=$('#studio-state'),language=$('#studio-language'),width=$('#studio-width'),frame=$('#studio-frame');
  let active=byId(location.hash.slice(1)),tab='usage';
@@ -85,30 +77,94 @@ if(query.has('embed')){
   nav.querySelectorAll('[data-story]').forEach(button=>button.addEventListener('click',()=>select(byId(button.dataset.story))));
  }
  function fillOptions(select,items){select.innerHTML=items.map(x=>'<option value="'+esc(x)+'">'+esc(x)+'</option>').join('');select.disabled=items.length===1;}
- function refresh(){
+
+ const initial={variant:query.get('variant'),state:query.get('state'),lang:query.get('lang'),width:query.get('width')};
+ let resizeObserver;
+ function previewURL(){
   const options=new URLSearchParams({embed:'1',story:active.id,variant:v.value,state:s.value,lang:language.value});
-  frame.src=active.id==='layout'?'./react-layout.html?'+options.toString():['text','heading','link','divider','badge','progress'].includes(active.id)?'./react-atoms.html?'+options.toString():['checkbox','radio','field','icon','iconButton'].includes(active.id)?'./react-controls.html?'+options.toString():['button','card','chip'].includes(active.id)?'./react-components.html?'+options.toString():['appHeader','homeMirror','catalogShell','learningShell','accountShell','feedbackScene'].includes(active.id)?'./react-templates.html?'+options.toString():active.id==='dialog'?'./react-dialog.html?'+options.toString():['feedback','searchField','actionGroup','saveStatus','languageSwitch','filterGroup','listRow','breadcrumb','sourceStatus','disclosure','actionMenu'].includes(active.id)?'./react-molecules.html?'+options.toString():'./index.html?'+options.toString();
+  const entry=active.id==='layout'?'./react-layout.html':
+   ['text','heading','link','divider','badge','progress'].includes(active.id)?'./react-atoms.html':
+   ['checkbox','radio','field','icon','iconButton'].includes(active.id)?'./react-controls.html':
+   ['button','card','chip'].includes(active.id)?'./react-components.html':
+   ['appHeader','homeMirror','catalogShell','learningShell','accountShell','feedbackScene'].includes(active.id)?'./react-templates.html':
+   active.id==='dialog'?'./react-dialog.html':
+   ['feedback','searchField','actionGroup','saveStatus','languageSwitch','filterGroup','listRow','breadcrumb','sourceStatus','disclosure','actionMenu'].includes(active.id)?'./react-molecules.html':
+   './index.html';
+  return entry+'?'+options.toString();
+ }
+ function fitPreviewHeight(){
+  if(width.value.includes('x'))return;
+  try{
+   const body=frame.contentDocument?.body;
+   if(!body)return;
+   const height=Math.min(5000,Math.max(480,Math.ceil(body.scrollHeight+8)));
+   if(Math.abs(frame.getBoundingClientRect().height-height)>2)frame.style.height=height+'px';
+  }catch{ /* Cross-origin or stale iframe: keep an internally scrollable preview. */ }
+ }
+ frame.addEventListener('load',()=>{
+  resizeObserver?.disconnect();
+  if(width.value.includes('x'))return;
+  try{
+   const body=frame.contentDocument?.body;
+   if(!body)return;
+   fitPreviewHeight();
+   if(typeof ResizeObserver!=='undefined'){
+    resizeObserver=new ResizeObserver(fitPreviewHeight);
+    resizeObserver.observe(body);
+   }
+  }catch{ /* A non-readable iframe keeps its explicit fallback height. */ }
+ });
+ function refresh(){
+  resizeObserver?.disconnect();
+  const url=previewURL();
+  frame.src=url;
+  $('#studio-full-preview').href=url;
   const [viewportWidth,viewportHeight]=width.value.split('x');
   frame.style.width=width.value==='auto'?'100%':viewportWidth+'px';
-  frame.style.height=viewportHeight?viewportHeight+'px':'326px';
-  $('#studio-frame-label').textContent=width.value==='auto'?'FLUID':(viewportWidth+' × '+(viewportHeight||326)+' CSS PX');
+  frame.style.height=viewportHeight?viewportHeight+'px':'520px';
+  $('#studio-frame-label').textContent=width.value==='auto'?'FLUID · AUTO HEIGHT':
+    (viewportWidth+' × '+(viewportHeight||'AUTO')+' CSS PX');
+  const link=new URL(location.href);
+  link.searchParams.delete('embed');
+  link.searchParams.set('variant',v.value);
+  link.searchParams.set('state',s.value);
+  link.searchParams.set('lang',language.value);
+  link.searchParams.set('width',width.value);
+  link.hash=active.id;
+  history.replaceState(null,'',link.pathname+link.search+link.hash);
+  $('#studio-link-status').textContent='';
  }
  function renderDetails(){
   const content=$('#studio-details-content');
   if(tab==='code')content.innerHTML='<div class="studio-code"></div>',content.querySelector('.studio-code').textContent=active.code;
-  else if(tab==='source')content.innerHTML='<div class="studio-sources"><strong>Canonical reference</strong><a target="_blank" rel="noopener noreferrer" href="'+(active.source.startsWith('design-system/react/')?draftSource:u)+active.source+'">'+active.source+'</a><a target="_blank" rel="noopener noreferrer" href="'+u+'design-system/tokens.json">design-system/tokens.json — token values</a><p>Global G2 is open. A Draft specimen does not claim production component parity.</p><a href="../component-library-archive.html">Component Library phiên bản cũ (archive) ↗</a></div>';
+  else if(tab==='source')content.innerHTML='<div class="studio-sources"><strong>Canonical reference</strong><a target="_blank" rel="noopener noreferrer" href="'+u+active.source+'">'+active.source+'</a><a target="_blank" rel="noopener noreferrer" href="'+u+'design-system/tokens.json">design-system/tokens.json — token values</a><p>Global G2 is open. A Draft specimen does not claim production component parity.</p><a href="../component-library-archive.html">Component Library phiên bản cũ (archive) ↗</a></div>';
   else content.innerHTML='<div class="studio-do-grid"><div class="studio-guideline"><strong>DO</strong><p>'+esc(active.do)+'</p></div><div class="studio-guideline no"><strong>DON’T</strong><p>'+esc(active.dont)+'</p></div></div>';
  }
- function select(item){
-  active=item;history.replaceState(null,'',location.pathname+location.search+'#'+item.id);
+ function select(item,restore=false){
+  active=item;
   $('#studio-title').textContent=item.title;$('#studio-category').textContent=item.group.toUpperCase();$('#studio-summary').textContent=item.short;
   $('#studio-section-name').textContent=item.group;$('#studio-crumb-name').textContent=item.title;$('#studio-readiness').textContent=item.status;
-  fillOptions(v,item.variants);fillOptions(s,item.states);updateNav();renderDetails();refresh();
+  fillOptions(v,item.variants);fillOptions(s,item.states);
+  if(restore){
+   v.value=safe(initial.variant,item.variants);
+   s.value=safe(initial.state,item.states);
+   language.value=initial.lang==='en'?'en':'vi';
+   if([...width.options].some(option=>option.value===initial.width))width.value=initial.width;
+  }
+  updateNav();renderDetails();refresh();
  }
  search.addEventListener('input',updateNav);
  [v,s,language,width].forEach(x=>x.addEventListener('change',refresh));
  $('#studio-refresh').addEventListener('click',refresh);
+ $('#studio-copy-link').addEventListener('click',async()=>{
+  try{
+   await navigator.clipboard.writeText(location.href);
+   $('#studio-link-status').textContent='Review link copied';
+  }catch{
+   $('#studio-link-status').textContent='Copy this page URL from the address bar';
+  }
+ });
  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-selected',String(x===b)));$('#studio-details-content').setAttribute('aria-labelledby',b.id);renderDetails();}));
  window.addEventListener('hashchange',()=>select(byId(location.hash.slice(1))));
- select(active);
+ select(active,true);
 }

@@ -305,18 +305,6 @@ function Home(){
    <Text role="body">{L("Không cần biết tất cả. Chỉ cần không ngừng tò mò.","You needn’t know everything. Just stay curious.")}</Text>
    <span className="tiny-note">{L("Một câu hỏi, muôn ngả đường","One question, countless paths")}</span>
   </motion.div>
-  <div className="mirror-message" data-li-mirror-topic={mirror.fieldId||"none"}
-   data-li-mirror-image={mirrorImage?"mapped":"unmapped"}
-   onTouchStart={event=>{
-    if(event.touches.length!==1||(event.target as HTMLElement).closest('button'))return;
-    gesture.current={x:event.touches[0].clientX,y:event.touches[0].clientY};
-   }}
-   onTouchEnd={event=>{
-    const start=gesture.current;gesture.current=null;
-    if(!start||event.changedTouches.length!==1)return;
-    const touch=event.changedTouches[0],dx=touch.clientX-start.x,dy=touch.clientY-start.y;
-    if(Math.abs(dx)>=42&&Math.abs(dx)>=Math.abs(dy)*1.3)shift(dx<0?1:-1);
-   }}>
    <div className="li-home-mirror-artwork" aria-hidden="true">
     <AnimatePresence initial={false}>
      {mirrorImage&&<motion.img key={mirrorImage} src={mirrorImage} alt=""
@@ -329,6 +317,18 @@ function Home(){
     </AnimatePresence>
     <span className="li-home-mirror-art-vignette"/>
    </div>
+  <div className="mirror-message" data-li-mirror-topic={mirror.fieldId||"none"}
+   data-li-mirror-image={mirrorImage?"mapped":"unmapped"}
+   onTouchStart={event=>{
+    if(event.touches.length!==1||(event.target as HTMLElement).closest('button'))return;
+    gesture.current={x:event.touches[0].clientX,y:event.touches[0].clientY};
+   }}
+   onTouchEnd={event=>{
+    const start=gesture.current;gesture.current=null;
+    if(!start||event.changedTouches.length!==1)return;
+    const touch=event.changedTouches[0],dx=touch.clientX-start.x,dy=touch.clientY-start.y;
+    if(Math.abs(dx)>=42&&Math.abs(dx)>=Math.abs(dy)*1.3)shift(dx<0?1:-1);
+   }}>
    <div className="li-home-mirror-float">
    <motion.div key={mirror.question+'|'+mirror.scene} className="li-home-mirror-inner"
     initial={reduced?false:{opacity:0,y:7,scale:.975}}

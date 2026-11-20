@@ -8,6 +8,7 @@ import {Button,Card} from '../../../../design-system/react/Components';
 import {Field} from '../../../../design-system/react/Controls';
 import {Heading,Text,Progress} from '../../../../design-system/react/Atoms';
 import {SelfReviewNextStep} from './SelfReviewNextStep';
+import {T02ReviewEntry} from './T02ReviewEntry.js';
 import {Markdown} from './EditorialJourney';
 import './journey.css';
 
@@ -478,11 +479,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     {block('extension')}{mentor('extension')}
     <SelfReviewNextStep rubricItems={rubric} ratings={persisted.ratings}
      locale={locale} onReviewTheory={()=>setPhase('read')}/>
-    <Text role="support">{vi?'T02 hẹn lượt gọi nhớ sau 24 giờ; đặt lịch không phải đã ôn.':'T02 schedules recall after 24 hours; scheduling is not a completed review.'}</Text>
-    <Button variant="secondary" disabled={pending>0||locked}
-     onClick={()=>openGuide('T02',true)}>
-     {vi?'Hẹn ôn bài này · T02':'Schedule this lesson · T02'}
-    </Button>
+    <T02ReviewEntry lessonId={id} vi={vi} disabled={pending>0||locked}
+     onOpen={()=>openGuide('T02',true)}/>
     <Button disabled={pending>0||locked} onClick={()=>void newRound()}>
      {vi?'Lượt mới · giữ lịch sử':'New round · preserve history'}</Button>
    </>}

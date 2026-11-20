@@ -8,6 +8,7 @@ import type {NeonUserApi} from '../sync/neon-api.js';
 import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_INTEGRATED_LI_APP} from './config.js';
 import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
+import {validEditorialMethodAttempts} from '../learning/method-attempt-contract.js';
 import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
  hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS} from './private-state.js';
 
@@ -160,22 +161,6 @@ function canonical(value:unknown):string{
  return '{'+Object.keys(object).sort().map(k=>JSON.stringify(k)+':'+canonical(object[k])).join(',')+'}';
 }
 
-function validOptionalMethods(value:Record<string,unknown>):boolean{
- if(!Object.hasOwn(value,'methodAttempts'))return true;
- const attempts=value.methodAttempts;
- if(!attempts||typeof attempts!=='object'||Array.isArray(attempts))return false;
- for(const [id,item] of Object.entries(attempts)){
-  if(id!=='T06'&&id!=='T07'||!item||typeof item!=='object'||Array.isArray(item))return false;
-  const a=item as Record<string,unknown>;
-  if(typeof a.draft!=='string'||a.draft.length>4000||
-   !(a.submission===null||(typeof a.submission==='string'&&a.submission.length<=4000))||
-   !(a.submittedAt===null||(typeof a.submittedAt==='string'&&a.submittedAt.length<=50&&
-     Number.isFinite(Date.parse(a.submittedAt)))))return false;
-  if((a.submission===null)!==(a.submittedAt===null))return false;
-  if(typeof a.submission==='string'&&a.submission.trim().length<12)return false;
- }
- return true;
-}
 function attempt(raw:string|null):Attempt|null{
  if(raw===null)return null;
  if(raw.length>60000)throw new Error('LOCAL_ATTEMPT_TOO_LARGE');
@@ -183,7 +168,7 @@ function attempt(raw:string|null):Attempt|null{
  if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('INVALID_LOCAL_ATTEMPT');
  const a=value as Attempt;
  if(!Array.isArray(a.draft)||a.draft.length!==4||!a.draft.every(x=>typeof x==='string'&&x.length<=4000)||
-   !Array.isArray(a.ratings)||a.ratings.length!==4||!validOptionalMethods(a))
+   !Array.isArray(a.ratings)||a.ratings.length!==4||!validEditorialMethodAttempts(a.methodAttempts))
   throw new Error('INVALID_LOCAL_ATTEMPT');
  return a;
 }

@@ -244,7 +244,7 @@ function open(id,tab="guide",lessonId=null){
   }
  }
  tabDraft=null;
- if(root)switchTab(tab==="practice"?"practice":"guide");
+ switchTab(tab==="practice"?"practice":"guide");
  notifyReactSpell();
 }
 function missing(){

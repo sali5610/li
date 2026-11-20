@@ -273,6 +273,7 @@ function updatePlan(){
 /* New React owner receives a complete view and action intents. The original
  * plan evaluator, source localization, spell/navigation actions and privacy
  * behavior remain authoritative; no duplicate mentor content/AI service. */
+const applyNickname=line=>window.liAddressLine?.(line)??line;
 function reactView(trigger){
  if(document.getElementById("mute-toggle")?.checked){
   toast("Im Lặng · Lời thoại Lão Lý đang tắt.");return null;
@@ -281,7 +282,7 @@ function reactView(trigger){
  buddyDebateActive=false;
  const calm=!!document.getElementById("calm-toggle")?.checked;
  const intro=calm?"Ta đi từng bước. "+activePlan.intro:activePlan.intro;
- const line=localizePlanText(window.liAddressLine?window.liAddressLine(intro):intro);
+ const line=localizePlanText(applyNickname(intro));
  const quote=window.liQuoteEngine?.getView?.()||null;
  return {
   text:line,
@@ -297,8 +298,7 @@ function reactReply(index){
  const item=activePlan.actions[index];
  if(!item)return null;
  buddyDebateActive=true;
- const line=localizePlanText(window.liAddressLine?
-  window.liAddressLine(item.reply):item.reply);
+ const line=localizePlanText(applyNickname(item.reply));
  // Actions preserve original navigation, saved-question, approved-source,
  // study-method and note-taking side effects.
  const supportsSamplingDebate=

@@ -43,7 +43,8 @@ function go(page,focusId){
  };
  const focus=()=>{
   const selector=window.liBuddyReactMounted?reactTargets[focusId]:null;
-  const node=(selector?document.querySelector(selector):null)||document.getElementById(focusId);
+  const node=window.liBuddyReactMounted?
+   (selector?document.querySelector(selector):null):document.getElementById(focusId);
   node?.scrollIntoView?.({block:"center",behavior:"smooth"});
   node?.focus?.({preventScroll:true});
  };
@@ -90,7 +91,8 @@ function researchPlan(){
  };
 }
 function casePlan(){
- const live=window.liBuddyReactMounted?window.liCaseUi?.getState?.():null;
+ const live=window.liBuddyReactMounted?
+  (window.liCaseUi?.getState?.()||{choice:null,revision:""}):null;
  const choice=live?live.choice:selectedCaseAnswer;
  const draft=live?live.revision.trim():(document.getElementById("case-revision")?.value.trim()||"");
  const valid=Boolean(choice)&&draft.length>=12;
@@ -111,7 +113,8 @@ function casePlan(){
 }
 function guidePlan(){
  const mode=STUDY_MODES[studyMode];
- const live=window.liBuddyReactMounted?window.liGuideUi?.getState?.():null;
+ const live=window.liBuddyReactMounted?
+  (window.liGuideUi?.getState?.()||{query:"",category:"Tất cả"}):null;
  const query=live?live.query.trim():(document.getElementById("method-search")?.value.trim()||"");
  const category=live?live.category:currentCategory;
  const matches=methods.filter(m=>(!query||methodSearchBlob(m).toLocaleLowerCase("vi").includes(query.toLocaleLowerCase("vi")))&&(category==="Tất cả"||m[4]===category));
@@ -128,7 +131,8 @@ function guidePlan(){
 }
 function guideDetailPlan(){
  const liveId=window.liBuddyReactMounted?window.LiSpellPractice?.getView?.()?.active:null;
- const id=liveId||(document.getElementById("detail-id")?.textContent||"").match(/T\d\d/)?.[0]||"T01";
+ const id=liveId||(!window.liBuddyReactMounted?
+  (document.getElementById("detail-id")?.textContent||"").match(/T\d\d/)?.[0]:null)||"T01";
  const m=methods.find(x=>x[0]===id)||methods[0];
  const cross=methods.find(x=>x[4]===m[4]&&x[0]!==m[0])||methods[0];
  return {
@@ -163,7 +167,9 @@ function settingsPlan(){
  };
 }
 function searchPlan(){
- const q=(window.liSearch?.getQuery?.()??document.getElementById("global-search")?.value??"").trim();
+ const q=(window.liBuddyReactMounted?
+  (window.liSearch?.getQuery?.()??""):
+  (window.liSearch?.getQuery?.()??document.getElementById("global-search")?.value??"")).trim();
  const focus=window.liSearch?.getMentorContext?.();
  // Only explicitly selected, source-reviewed PUBLIC graph links; no personal data,
  // hallucinated answer, paid LLM, spoiler or implicit learning prerequisite.
@@ -206,9 +212,9 @@ function searchPlan(){
  };
 }
 function capturePlan(){
- const q=window.liBuddyReactMounted&&window.liCaptureUi
-  ?window.liCaptureUi.getDraft().trim()
-  :(document.getElementById("capture-note")?.value.trim()||"");
+ const q=window.liBuddyReactMounted?
+  (window.liCaptureUi?.getDraft?.()||"").trim():
+  (document.getElementById("capture-note")?.value.trim()||"");
  return {
   intro:q?"Ngươi đã nhặt được một ý. Giờ nên ghi thêm nguồn và điều chưa chắc, kẻo mai lại tưởng mình đã kiểm chứng.":"Nhặt ý trước khi quên là tốt. Nhưng ý vừa nghe chưa tự biến thành sự thật đâu.",
   actions:[

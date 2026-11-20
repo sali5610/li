@@ -158,9 +158,10 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      const key='li.sectioned.guide-return.v1';
      const token=JSON.parse(sessionStorage.getItem(key)||'null') as
       {id?:string;at?:number;scrollY?:number;method?:string}|null;
-     if(token?.id===id&&token.method===method&&token.at&&
+     if(token?.id===id&&(token.method===method||token.method==='T02')&&token.at&&
       Date.now()-token.at<3600000&&Number.isFinite(token.scrollY)){
-      setPhase('methods');sessionStorage.removeItem(key);
+      setPhase(token.method==='T02'&&saved.attempt.reviewed?'progress':'methods');
+      sessionStorage.removeItem(key);
       requestAnimationFrame(()=>window.scrollTo({top:token.scrollY??0}));
      }
     }catch{/* still display the saved lesson */}

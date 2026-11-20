@@ -102,7 +102,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 else mountHomeAndCatalog();
 
 // Adopt canonical React Guide + learner's Library / Resume / Collection on the same invited app.
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountGuideAndLibrary,{once:true});
+// Native Spell Practice publishes its port during DOMContentLoaded, not before.
+// A deferred Vite module runs at readyState=interactive: mounting Guide here
+// used to throw and abort every subsequent React screen, including Settings.
+// Always wait for the native port when DOMContentLoaded has not fired yet.
+if(document.readyState!=='complete')document.addEventListener('DOMContentLoaded',mountGuideAndLibrary,{once:true});
 else mountGuideAndLibrary();
 
 // Temporary #161 signed canary fallback for an iPhone still displaying the

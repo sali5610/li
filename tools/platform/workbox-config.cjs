@@ -7,12 +7,15 @@
  */
 module.exports={
  globDirectory:"site",
- globPatterns:["index.html","manifest.webmanifest","assets/*.{js,css,svg}"],
+ globPatterns:["index.html","manifest.webmanifest","assets/*.{js,css,svg}",
+  "assets/li-search-adapter.mjs","assets/li-search-graph.json"],
  globIgnores:["**/*.map","**/*qa-secrets*"],
  swDest:"site/sw.js",
  mode:"production",
  maximumFileSizeToCacheInBytes:5*1024*1024,
  cleanupOutdatedCaches:true,
+ // HTML uses ?v=cache-version, which must still resolve to the revisioned precache offline.
+ ignoreURLParametersMatching:[/^v$/,/^utm_/,/^fbclid$/],
  clientsClaim:true,
  // Hotfix: activate the corrected worker when an already-installed broken worker updates.
  // No indexedDB, account or cached private data is altered by this worker upgrade.

@@ -39,7 +39,7 @@ function setPath(next,save=true){
   history.pushState(history.state,"",u.pathname+u.search);
  }
  render();
- window.dispatchEvent(new Event("li:catalog-pathchange"));
+ if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));
  if(save){
   window.scrollTo?.({top:0,left:0,behavior:"instant"});
   const heading=host.querySelector("h1");
@@ -364,8 +364,8 @@ window.addEventListener("popstate",()=>{
  if(found){window.navigate?.(found[1],{remember:false,syncUrl:false});document.getElementById("page-"+found[1])?._catalogChooseChapter?.(u.searchParams.get("chapter"),false);}
  else if(u.searchParams.has("catalog")){
   path=(u.searchParams.get("catalog")||"").split("/").filter(Boolean).slice(0,4);
-  window.navigate?.("catalog",{remember:false,syncUrl:false});render();window.dispatchEvent(new Event("li:catalog-pathchange"));
- }else{path=[];render();window.dispatchEvent(new Event("li:catalog-pathchange"));window.navigate?.("home",{remember:false,syncUrl:false});}
+  window.navigate?.("catalog",{remember:false,syncUrl:false});render();if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));
+ }else{path=[];render();if(typeof Event==="function")window.dispatchEvent(new Event("li:catalog-pathchange"));window.navigate?.("home",{remember:false,syncUrl:false});}
 });
 path=(new URL(location.href).searchParams.get("catalog")||"").split("/").filter(Boolean).slice(0,4);
 if(path.length&&!new URL(location.href).searchParams.has("lesson")){window.navigate?.("catalog",{remember:false,syncUrl:false});}

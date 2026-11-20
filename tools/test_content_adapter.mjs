@@ -94,4 +94,77 @@ assert.deepEqual((await c.searchKnowledge("L15-2-2")).results[0].links
  .filter(x=>x.kind==="Lesson"),[],"unreviewed L09-L15 bridge hidden");
 assert.equal((await c.searchKnowledge("x".repeat(200))).status,"invalid_query");
 
+// Natural-language answerability runs against THIS SAME canonical content client.
+// It is an editorial learning-outcome mapping, NOT ONNX runtime inference.
+const nlCases=[
+ ["Tại sao khảo sát 1.000 người vẫn có thể sai?","L09-1-2"],
+ ["khảo sát chỉ hỏi người đang dùng app","L09-1-2"],
+ ["mẫu có một nghìn người mà vẫn không đại diện","L09-1-2"],
+ ["người bỏ app không có cơ hội tham gia khảo sát","L09-1-2"],
+ ["why bigger samples cannot fix biased recruitment","L09-1-2"],
+ ["80% người trả lời không đại diện cho mọi khách hàng","L09-1-2"],
+ ["biến thiên ngẫu nhiên và thiên lệch mẫu khác nhau thế nào","L09-1-2"],
+ ["Làm sao hỏi user mà không dẫn dắt câu trả lời?","L03-1-2"],
+ ["hỏi khách hàng nút này tiện hơn đúng không","L03-1-2"],
+ ["viết câu hỏi phỏng vấn trung lập để người dùng kể chuyện thật","L03-1-2"],
+ ["a leading question can bias interview answers","L03-1-2"],
+ ["câu phỏng vấn có sẵn lời khen và muốn người ta đồng ý","L03-1-2"],
+ ["why can an open ended question still be leading","L03-1-2"],
+ ["How do I ask a user a neutral question?","L03-1-2"],
+ ["kho chưa hết hàng thì khi nào phải đặt thêm","L15-2-2"],
+ ["tính ngưỡng đặt hàng từ nhu cầu mỗi ngày và thời gian giao","L15-2-2"],
+ ["calculate inventory reorder threshold from lead time and daily demand","L15-2-2"],
+ ["tồn kho đang trên đường có ảnh hưởng thời điểm mua","L15-2-2"],
+ ["why is a reorder point different from order quantity","L15-2-2"],
+ ["safety stock buffer and stockout risk","L15-2-2"],
+ ["mức dự phòng tồn kho khi lead time thay đổi","L15-2-2"],
+ ["thời điểm cần đặt hàng lại","L15-2-2"]
+];
+for(const [query,lessonId] of nlCases){
+ const result=await c.searchKnowledge(query);
+ assert.equal(result.status,"answerable","should recognize question intent: "+query);
+ assert.equal(result.results[0]?.lessonId,lessonId,"wrong directly answerable lesson: "+query);
+ assert.equal(result.results[0]?.answerability?.level,"direct");
+ assert.match(result.results[0]?.answerability?.reason||"",/./);
+ assert.ok(result.results[0]?.answerability?.sourceUrl?.startsWith("https://"));
+ assert.deepEqual(result.results[0]?.links,[],"do not invent reviewed graph edges");
+}
+const relatedEOQ=await c.searchKnowledge("Làm sao tính lượng đặt hàng tối ưu EOQ?");
+assert.equal(relatedEOQ.status,"related_only");
+assert.equal(relatedEOQ.results[0].lessonId,"L15-2-2");
+assert.equal(relatedEOQ.results[0].answerability.level,"related");
+assert.match(relatedEOQ.results[0].answerability.reason,/không dạy/);
+const otherRelated=await c.searchKnowledge("phân tích transcript phỏng vấn bằng thematic coding");
+assert.equal(otherRelated.status,"related_only");
+assert.equal(otherRelated.results[0].answerability.level,"related");
+const unsupported=[
+ "thuyết tương đối của einstein",
+ "how to compose music in C minor",
+ "lịch sử đế chế La Mã",
+ "công thức lãi suất kép ngân hàng",
+ "how to build a React authentication system",
+ "cách trồng lan hồ điệp trong nhà",
+ "thiết kế A/B test kiểm tra phiên bản giao diện mới",
+ "công thức hồi quy tuyến tính và hệ số tương quan",
+ "kiểm định giả thuyết và khoảng tin cậy 95 phần trăm",
+ "dự báo nhu cầu bằng mô hình ARIMA theo tháng",
+ "viết SQL truy vấn bảng tồn kho trong database",
+ "thiết lập SAP EWM warehouse tasks và storage bins",
+ "how to implement a survey with Google Forms API",
+ "how to recruit candidates for job interviews"
+];
+for(const query of unsupported){
+ const result=await c.searchKnowledge(query);
+ assert.notEqual(result.status,"answerable","unsupported natural query must not claim direct answer: "+query);
+ assert.ok(result.results.every(x=>x.answerability?.level!=="direct"),
+  "no direct answer for unsupported query: "+query);
+}
+assert.equal((await c.searchKnowledge("L09-1-2")).results[0].lessonId,"L09-1-2",
+ "exact IDs outrank any editorial paraphrase");
+assert.equal((await c.searchKnowledge("Selection bias")).results[0].kind,"Concept",
+ "verified concept lookup unchanged");
+assert.equal((await c.searchKnowledge("L09-1-1")).status,"no_match",
+ "outline-only lessons never become published matches");
+
+
 console.log("LI_CONTENT_ADAPTER_PASS 8 groups / 15 fields / 45 courses / 135 lesson outlines, 3 full lessons, ontology graph and lazy packs");

@@ -42,7 +42,7 @@ const l03T06en={
  model:"A is open-ended but leading: it assumes that the participant loves the new interface. B is open and neutral: it asks about an actual occasion without requiring praise. Example rewrite: ‘Tell me about the last time you used the new interface. What did you do? What was easy or difficult?’ Compare your wording with that example: did you remove the praise assumption and ask about a concrete experience?"
 };
 let root,guide,tabs,active=null,phase=0,exposure=null,feedback="",resumeNote="",privatePlaces=[],tabDraft=null;
-let activeLessonId=null,reviewedInSession=false;
+let activeLessonId=null,reviewedInSession=false,viewSession=0;
 const currentExercise=()=>active==="T06"&&activeLessonId==="L03-1-2"?
  (window.liLanguage?.get?.()==="en"?l03T06en:l03T06):exercises[active];
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -110,7 +110,7 @@ function switchTab(which){
 function open(id,tab="guide",lessonId=null){
  if(!Object.prototype.hasOwnProperty.call(exercises,id))return;
  active=id;activeLessonId=["L03-1-2","L09-1-2","L15-2-2"].includes(lessonId)?lessonId:null;
- phase=0;feedback="";reviewedInSession=false;privatePlaces=[];resumeNote="";
+ phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
  tabDraft=null;
  if(root)switchTab(tab==="practice"?"practice":"guide");
  notifyReactSpell();
@@ -200,7 +200,7 @@ function getView(){
    choiceKind:field[3]==="multi"?"multi":"radio"
   })),
   feedback,resumeNote,places:privatePlaces.slice(),dueAt:due?.due||null,
-  lessonId:activeLessonId,reviewedInSession
+  lessonId:activeLessonId,reviewedInSession,viewSession
  };
 }
 function performReact(action,values={}){
@@ -235,7 +235,7 @@ function setup(){
  root.addEventListener("click",ev=>{
   const b=ev.target.closest("[data-spell-action]");if(!b||!root.contains(b))return;
   switch(b.dataset.spellAction){
-  case "reset":phase=0;feedback="";reviewedInSession=false;privatePlaces=[];resumeNote="";draw();break;
+  case "reset":phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";draw();break;
   case "next":next();break;
   case "check":check();break;
   case "schedule":try{const d={exposed:Date.now(),due:Date.now()+86400000};localStorage.setItem("li.spell.t02.due.v1",JSON.stringify(d));if(localStorage.getItem("li.spell.t02.due.v1")!==JSON.stringify(d))throw Error("verify");feedback="";draw()}catch(err){feedback="Trình duyệt không lưu được mốc. Chưa có lịch ôn thực nào được tạo.";draw()}break;

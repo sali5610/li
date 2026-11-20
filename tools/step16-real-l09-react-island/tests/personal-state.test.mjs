@@ -77,3 +77,35 @@ test('switching invited accounts preserves private keys without leaking current 
  assert.equal(localStorage.getItem('li.study-mode.v1'),'focus');
  assert(PERSONAL_FIELDS.length>=10);
 });
+
+test('fresh-device diary default cannot overwrite signed cloud recording preference',async()=>{
+ device();const uid='account-diary-default';
+ localStorage.setItem('li.sync.journal-cloud-consent.v1:'+uid,'true');
+ localStorage.setItem('li.personal.daily.enabled.v1','true'); // auto-created by app, not a user edit
+ await withStore(async store=>{
+  const remote={owner_id:uid,item_type:'preference',item_id:'daily-enabled',revision:5,
+   changed_at:'2026-11-20T06:25:00Z',deleted_at:null,
+   payload:{schema:'li.personal.storage.v1',storageKey:'li.personal.daily.enabled.v1',raw:'false'}};
+  await store.apply(uid,remote);
+  const snaps=await capturePersonalState(uid,null,store,new Map());
+  assert.equal(await store.outbox.get(storageKey(uid,'preference','daily-enabled')),undefined);
+  assert.equal(await hydratePersonalState(uid,snaps,store,()=>{}),true);
+  assert.equal(localStorage.getItem('li.personal.daily.enabled.v1'),'false');
+ });
+});
+test('a true journal divergence is retained as a conflict, never overwritten silently',async()=>{
+ device();const uid='account-journal-diverged';
+ localStorage.setItem('li.sync.journal-cloud-consent.v1:'+uid,'true');
+ const local='{"schema":1,"days":{"2026-11-20":{"checkins":2}}}';
+ const remote='{"schema":1,"days":{"2026-11-20":{"checkins":1}}}';
+ localStorage.setItem('li.personal.daily.v1',local);
+ await withStore(async store=>{
+  await store.apply(uid,{owner_id:uid,item_type:'note',item_id:'daily-journal',
+   revision:3,changed_at:'2026-11-20T06:25:00Z',deleted_at:null,
+   payload:{schema:'li.personal.storage.v1',storageKey:'li.personal.daily.v1',raw:remote}});
+  await capturePersonalState(uid,null,store,new Map());
+  const pending=await store.outbox.get(storageKey(uid,'note','daily-journal'));
+  assert.equal(pending?.conflict,true);
+  assert.equal((await store.records.get(storageKey(uid,'note','daily-journal')))?.payload.raw,local);
+ });
+});

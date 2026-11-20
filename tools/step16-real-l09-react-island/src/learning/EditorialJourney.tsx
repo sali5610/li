@@ -379,6 +379,27 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   });
   return()=>cancelAnimationFrame(frame);
  },[id,busy,phase,lesson]);
+ // Native navigation hides pages without necessarily unmounting React.
+ // Listen for return to the existing app page, then restore the guide anchor.
+ useEffect(()=>{
+  if(busy||!lesson)return;
+  const page=document.querySelector('[data-li-editorial-journey="'+id+'"]')?.closest('section.page');
+  if(!page)return;
+  let frame=0;
+  const restore=()=>{
+   if(!page.classList.contains('active')||!returnToken(id))return;
+   const token=returnToken(id);if(!token)return;
+   setPhase('methods');
+   frame=requestAnimationFrame(()=>{
+    window.scrollTo({top:Math.max(0,token.scrollY),behavior:'auto'});
+    try{sessionStorage.removeItem(RETURN_KEY);}catch{/* keep learner work */}
+   });
+  };
+  const observer=new MutationObserver(restore);
+  observer.observe(page,{attributes:true,attributeFilter:['class']});
+  restore();
+  return()=>{observer.disconnect();cancelAnimationFrame(frame);};
+ },[id,busy,lesson]);
 
  function save(next:EditorialAttempt):Promise<boolean>{
   if(locked||failed.current||!subject.current||!revision.current)return Promise.resolve(false);
@@ -629,8 +650,8 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.18}}
    className="li-learning-current">
    {phase==='read'&&<Card variant="flat-study" aria-labelledby="li-editorial-read">
-    <Heading level={2} id="li-editorial-read" role="titleLarge">{vi?'Hiểu bản chất':'Understand the concepts'}</Heading>
     <section id="l0911-hook"><Markdown md={content.hook.md}/>{mentor('opening')}</section>
+    <Heading level={2} id="li-editorial-read" role="titleLarge">{vi?'Hiểu bản chất':'Understand the concepts'}</Heading>
     <Markdown md={content.goals.md}/>
     <section id="l0911-concept"><Markdown md={content.concept.md}/>
      <PopulationDiagram illustration={content.illustration}/>

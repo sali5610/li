@@ -63,6 +63,17 @@ export function mountPersonalStudyRoutes():void{
  if(import.meta.env.VITE_LI_AUTH_TARGET!=='github-pages-staging')return;
  const main=document.getElementById('main');
  if(!main)throw Error('PERSONAL_STUDY_MAIN_MISSING');
+ // This map exists in invited staging ONLY. Neither production nor static
+ // catalog publication status grants access to personal draft manuscripts.
+ const routeMap=Object.fromEntries(personalStudyLessonIds.map(id=>
+  [id,personalStudyRoute(id)!]));
+ const app=window as Window&{
+  liPersonalStudyRoutes?:Readonly<Record<string,string>>;
+  liAppRouter?:{navigate:(id:string,options?:{
+   focus?:boolean;remember?:boolean;syncUrl?:boolean
+  })=>boolean};
+ };
+ app.liPersonalStudyRoutes=Object.freeze(routeMap);
  for(const id of personalStudyLessonIds){
   const route=personalStudyRoute(id);
   if(!route)throw Error('PERSONAL_STUDY_ROUTE_MISSING '+id);
@@ -94,5 +105,25 @@ export function mountPersonalStudyRoutes():void{
   observer.observe(page,{attributes:true,attributeFilter:['class']});
   observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
   update();
+ }
+ // A bookmarked personal lesson must resume after an authenticated reload,
+ // not silently drop the learner at Home. Never bypass the invited-account
+ // guard; do not override a route chosen while signing in.
+ const requested=new URLSearchParams(window.location.search).get('lesson');
+ const direct=requested?app.liPersonalStudyRoutes?.[requested]:undefined;
+ if(direct){
+  const resume=()=>{
+   if(!document.documentElement.classList.contains('li-auth-verified')||
+    document.documentElement.classList.contains('li-account-open')||
+    !document.getElementById('page-home')?.classList.contains('active'))return;
+   if(app.liAppRouter?.navigate(direct,{remember:false,syncUrl:false})){
+    observer.disconnect();
+    window.removeEventListener('li:auth-verified-changed',resume);
+   }
+  };
+  const observer=new MutationObserver(resume);
+  observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+  window.addEventListener('li:auth-verified-changed',resume);
+  resume();
  }
 }

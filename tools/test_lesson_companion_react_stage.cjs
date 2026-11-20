@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /* Focused native mentor × React L09 stage handoff, no private learner data. */
-const assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm");
-const react=fs.readFileSync("tools/step16-real-l09-react-island/src/learning/LearningJourney.tsx","utf8");
+const assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm"),path=require("node:path");
+const read=filename=>fs.readFileSync(path.join(__dirname,"..",filename),"utf8");
+const react=read("tools/step16-real-l09-react-island/src/learning/LearningJourney.tsx");
 assert.match(react,/data-li-lesson-phase=\{phase\}/);
 assert.match(react,/data-li-lesson-submitted=\{attempt\.submitted\?/);
 const stages=["opening","concept","guided","independent","reflection","extension"];
@@ -20,7 +21,7 @@ const document={baseURI:"http://localhost/li/",documentElement:{lang:"vi"},
  querySelector:()=>live,
  querySelectorAll:q=>q==="[data-lesson-id][data-companion-manifest]"?[root]:[],
  getElementById:()=>target,addEventListener(){}};
-const methods=JSON.parse(fs.readFileSync("site/assets/lesson-spell-suggestions.v0.1.json","utf8"));
+const methods=JSON.parse(read("site/assets/lesson-spell-suggestions.v0.1.json"));
 let invoked=null;
 const ctx={document,window:{innerHeight:820,addEventListener(){}},
  localStorage:{getItem:()=>null},console,URL,
@@ -28,7 +29,7 @@ const ctx={document,window:{innerHeight:820,addEventListener(){}},
  requestAnimationFrame:fn=>fn(),closeModal:()=>{},
  showMethod:(id,options)=>{invoked={id,options}}};
 vm.createContext(ctx);
-vm.runInContext(fs.readFileSync("site/assets/lesson-companion-native.js","utf8"),ctx);
+vm.runInContext(read("site/assets/lesson-companion-native.js"),ctx);
 (async()=>{
  for(let n=0;n<8;n++)await Promise.resolve();
  const api=ctx.window.liLessonCompanion;

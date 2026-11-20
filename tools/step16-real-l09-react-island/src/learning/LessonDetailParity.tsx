@@ -45,19 +45,24 @@ const queryByLesson:Record<LessonId,readonly string[]>={
 function external(url:string):boolean{
  try{const u=new URL(url);return u.protocol==='https:';}catch{return false;}
 }
-function buildPrompt(id:LessonId,locale:Locale,sources:LessonSource[]){
- const titleById:Record<LessonId,string>={
-  'L09-1-2':'Sampling Bias vs Random Sampling Variation',
-  'L03-1-2':'Open Questions & Interview Bias',
-  'L15-2-2':'Reorder Points & Safety Stock'
- };
- const start=locale==='vi'?
-  'Tôi đang học bài '+id+' của li. (理): '+titleById[id]+'. Đối chiếu các nguồn bên dưới, KHÔNG giả định đã đọc trang web.\nNguồn:\n':
-  'I am studying li. (理) lesson '+id+': '+titleById[id]+'. Compare the sources below; NEVER assume you have read a web page.\nSources:\n';
+function buildPrompt(id:LessonId,locale:Locale,sources:LessonSource[],subject:string,conceptTitle:string){
  const list=sources.map(x=>'- '+x.title+': '+x.url).join('\n');
+ if(id==='L09-1-2'){
+  const start=locale==='vi'?
+   'Tôi đang học bài L09-1-2 của li. (理): Sampling Bias vs Random Sampling Variation. Mục tiêu: phân biệt sai lệch chọn mẫu với biến động ngẫu nhiên; không suy rộng hơn dữ liệu.\nNguồn:\n':
+   'I am studying li. (理) lesson L09-1-2: Sampling Bias versus Random Sampling Variation. Focus on sampling mechanisms, chance variation and evidence-based inference.\nSources:\n';
+  const end=locale==='vi'?
+   '\n\nHãy chỉ tóm tắt những gì bạn thực sự truy cập được. Nếu link bị chặn, không có toàn văn hoặc không đọc được, hãy nói rõ và nhờ tôi dán phần liên quan; không bịa nội dung/trích dẫn. Trả lời bằng tiếng Việt: 1) 5 ý chính, 2) target population, sample, selection bias, nonresponse và random sampling variation, 3) điều nguồn nói và phần suy luận riêng, 4) ví dụ khảo sát qua banner và giới hạn kết luận, 5) giả định/điểm cần kiểm chứng, 6) 3 câu active recall không hiện đáp án. Kèm đúng URL cho từng nhận định được nguồn hỗ trợ.':
+   '\n\nSummarize only what you actually access. If a page is blocked or you lack the full text, say so and ask me to paste relevant material; do not fabricate citations. In English give: (1) five main points, (2) target population, sample, selection bias, nonresponse and random sampling variation, (3) what each source establishes versus your inference, (4) a banner-survey case and inference limits, (5) assumptions and cautions, (6) three active recall questions without showing answers. Cite actual accessed source URLs.';
+  return start+list+end;
+ }
+ // Equivalent to the old L03/L15 authored source-aware copy workflow.
+ const start=locale==='vi'?
+  'Tôi đang học bài '+id+' thuộc '+subject+' trong app li. (理), nội dung đã chốt: '+conceptTitle+'.\nNguồn đọc:\n':
+  'I am studying li. (理) lesson '+id+' in '+subject+': '+conceptTitle+'.\nSources:\n';
  const end=locale==='vi'?
-  '\n\nChỉ tóm tắt điều bạn thật sự truy cập được. Nếu URL bị chặn, thiếu toàn văn, hoặc nguồn không nói về trường hợp trong bài, hãy nói rõ; yêu cầu tôi dán phần được phép chia sẻ. Tách chứng cứ có trích URL khỏi suy luận. Đối chiếu khái niệm, cơ chế, giới hạn áp dụng và các giả định còn thiếu. Cho ví dụ ứng dụng trong tình huống bài học, rồi tạo 3 câu tự nhớ không hiện đáp án. Không bịa trích dẫn.':
-  '\n\nSummarize only material you actually accessed. If a URL is blocked, lacks full text, or does not cover this exact lesson case, say so and ask for excerpts I may share. Separate source-backed evidence with actual URLs from your inferences. Compare concepts, mechanisms, limits and unresolved assumptions. Apply them to the lesson case and create three answer-free recall questions. Never fabricate citations.';
+  '\n\nChỉ tóm tắt phần bạn thực sự truy cập. Nếu URL bị chặn hoặc không có toàn văn, hãy nói rõ và đề nghị tôi dán nội dung, tuyệt đối không bịa trích dẫn. Trả lời bằng tiếng Việt: 1) tóm tắt 5 ý có link nguồn; 2) định nghĩa các khái niệm của bài; 3) tách điều nguồn nói và suy luận; 4) phân tích một tình huống thực tế cùng giới hạn suy rộng; 5) giả định/cảnh báo; 6) ba câu active recall không hiện đáp án. Nếu nguồn có mô hình khác bài học, hãy giải thích sự khác biệt thay vì ép đồng nhất.':
+  '\n\nSummarize only materials you can actually access. If URLs are blocked or full text is missing, say so and request excerpts rather than inventing citations. In English: (1) five source-linked insights; (2) main concepts; (3) verified source claims versus your inferences; (4) a practical case with limits; (5) assumptions and cautions; and (6) three active recall questions without immediate answers. Explain differences if a source uses a different model.';
  return start+list+end;
 }
 async function copyText(text:string){
@@ -193,15 +198,15 @@ export function LessonFigure({src,link,credit,title,note,fallback,openLabel}:{
   </figcaption>
  </figure>;
 }
-export function LessonSources({id,locale,copy,sources,onSearch}:{
+export function LessonSources({id,locale,copy,sources,subject,conceptTitle,onSearch}:{
  id:LessonId;locale:Locale;copy:ReferenceLabels;sources:LessonSource[];
- onSearch:(query:string)=>void
+ subject:string;conceptTitle:string;onSearch:(query:string)=>void
 }){
  const [feedback,setFeedback]=useState('');
  const safe=sources.filter(s=>external(s.url));
  const copyPrompt=async(source?:LessonSource)=>{
   try{
-   await copyText(buildPrompt(id,locale,source?[source]:safe));
+   await copyText(buildPrompt(id,locale,source?[source]:safe,subject,conceptTitle));
    setFeedback(copy.copied||(locale==='vi'?'Đã copy prompt.':'Prompt copied.'));
   }catch{
    setFeedback(copy.copyFailed||(locale==='vi'?'Không thể sao chép.':'Clipboard unavailable.'));

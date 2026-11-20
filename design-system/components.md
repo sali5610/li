@@ -231,3 +231,15 @@ The immediately following *portrait-shaped* screenshot showed `innerWidth`/visua
 
 **Risk boundary:** No removal of app runtime CSS or historical archive pages: unknown consumers may exist. No learner Auth/Neon/Cloudflare changes. Focused source/CI gate plus ONE human G2 composition review remain; no full app regression or redundant browser matrices. Actual physical Safari/PO G2 still OPEN.
 
+
+
+### Focus parity rule · 2026-11-20
+
+Human PO correction: old archive's focused input uses the **existing border thickened to 3px**, not a second green outer line. All interactive React controls and the Studio shell now have this focus grammar, backed by canonical \`design-system/react/focus.css\`. No \`outline:3px solid var(--li-color-general-focus-ring)\` on interactive React specimens. Focus styling is observable with Tab and \`State → focus\` (demo only); still requires Human G2 and device review.
+
+
+### Restored archive parity and no outer focus ring (2026-11-20)
+
+**React parity matrix:** `design-system/react/README.md` includes all 20 mapped Studio IDs; `index.ts` exports typed React components from LegacyNavigation, LegacyCards, LegacyControls and LegacyDataViz. `site/design-system/studio.js` routes to `react-legacy.html` compiled from the same source. This closes **React source/story coverage only** for the 12 missing families and 8 partial equivalents recorded in previous audit; it does NOT close G2, existing app consumer integration, semantic design acceptance or real iPhone Safari testing.
+
+**Focus requirement:** `focus.css` imported last; no `outline:3px` nested green box. Focus states use existing border thickness 3px or text underline/background, including Native Select, Calendar days, chart bars, check-in radio and card CTA. The prior archive's translucent chat forest variant retains no border; labels are read-only and are not artificially made focusable.

@@ -10,8 +10,10 @@ import './layout.css';
 import './molecules.css';
 import './templates.css';
 import './templates-story.css';
+import './focus.css';
 
 const params=new URLSearchParams(location.search);
+if(params.get('state')==='focus')document.documentElement.dataset.dsFocusDemo='true';
 const story=params.get('story')||'catalogShell',variant=params.get('variant')||'Default';
 const state=params.get('state')||'default',en=params.get('lang')==='en';
 const t=(vi:string,english:string)=>en?english:vi;

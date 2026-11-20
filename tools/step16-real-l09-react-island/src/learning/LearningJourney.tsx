@@ -17,6 +17,7 @@ import {createLessonPhaseActor} from './phase-machine.js';
 import './journey.css';
 import {LessonBookmark,LessonMentor,LessonSectionIndex,L09Figures,LessonSources} from './LessonDetailParity.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
+import {AiFeedbackPanel} from './AiFeedbackPanel.js';
 import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 
 /** A real invited-only React learner screen, not a second app.
@@ -480,6 +481,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
       </select>
      </div>)}
     </div>
+    <AiFeedbackPanel id="L09-1-2" locale={attempt.locale}
+     answers={attempt.submission??attempt.draft}/>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
      locale={attempt.locale} onReviewTheory={()=>go('read')}/>
     <Text role="support">{vi?'Tự chấm theo rubric, không phải điểm tự động.':'Self-review, not automatic grading.'}</Text>

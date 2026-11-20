@@ -18,6 +18,7 @@ import './journey.css';
 import {LessonBookmark,LessonMentor,LessonSectionIndex,L09Figures,LessonSources,openLessonSpell} from './LessonDetailParity.js';
 import {RelatedLessons} from './RelatedLessons.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
+import {T02ReviewEntry} from './T02ReviewEntry.js';
 import {AiFeedbackPanel} from './AiFeedbackPanel.js';
 import feedbackPolicy from '../../../../content/feedback/ai-question-modes.v1.json';
 import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
@@ -503,12 +504,9 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
      locale={attempt.locale} onReviewTheory={()=>go('read')}/>
     <Text role="support">{content.scoreLabel}: {attempt.ratings.reduce<number>((n,x)=>n+(x??0),0)} / 8</Text>
-    <Text role="support">{vi?'Ôn giãn cách cần quay lại khi đến hạn; đặt lịch hôm nay chưa tính là một lượt ôn.':'Spaced review requires returning when due; scheduling today is not a completed review.'}</Text>
-    <Button variant="secondary" disabled={locked||saving}
-     onClick={()=>{if(!openLessonSpell('L09-1-2','T02',true))
-      setError(vi?'Không mở được lịch ôn cho bài này.':'Could not open this lesson review.');}}>
-     {vi?'Hẹn ôn bài này · T02':'Schedule this lesson · T02'}
-    </Button>
+    <T02ReviewEntry lessonId="L09-1-2" vi={vi} disabled={locked||saving}
+     onOpen={()=>{if(!openLessonSpell('L09-1-2','T02',true))
+      setError(vi?'Không mở được lịch ôn cho bài này.':'Could not open this lesson review.');}}/>
     <Button variant="secondary" onClick={()=>ports.search.openSearch('sampling bias random sampling variation')}>
      {vi?'Tìm bài liên quan':'Find related lessons'}
     </Button>

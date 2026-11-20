@@ -497,13 +497,13 @@ const T02_LEGACY="li.spell.t02.due.v1";
 const T02_DAYS=[1,3,7,14,30],T02_DAY_MS=86400000;
 const t02Empty=()=>({schema:"li.spell.t02.v2",due:null,reviewCount:0,streak:0,
  awaitingRating:false,lastReviewedAt:null,lastRating:null,updatedAt:new Date().toISOString()});
-function t02Key(){
+function t02Key(lessonId=activeLessonId){
  try{
   if(!document.documentElement.classList.contains("li-auth-verified")||
      document.documentElement.classList.contains("li-account-open"))return null;
   const owner=localStorage.getItem(T12_OWNER);
   if(!owner||owner.length>128)return null;
-  return T02_PREFIX+encodeURIComponent(owner)+":"+(activeLessonId||"standalone");
+  return T02_PREFIX+encodeURIComponent(owner)+":"+(lessonId||"standalone");
  }catch{return null;}
 }
 function t02Valid(d){
@@ -515,6 +515,24 @@ function t02Valid(d){
   (d.lastReviewedAt===null||(Number.isSafeInteger(d.lastReviewedAt)&&d.lastReviewedAt>0))&&
   [null,"remembered","retry"].includes(d.lastRating)&&
   typeof d.updatedAt==="string"&&d.updatedAt.length<=48;
+}
+/** Read-only, invite-guarded lesson status for the React Progress screen.
+ * Never switches active exercises, migrates old data, or edits a schedule. */
+function getT02Status(lessonId){
+ if(typeof lessonId!=="string"||!Object.prototype.hasOwnProperty.call(T02_LESSON_CUES,lessonId))
+  return null;
+ const released=["L03-1-2","L09-1-2","L15-2-2"].includes(lessonId);
+ const personal=Object.prototype.hasOwnProperty.call(window.liPersonalStudyRoutes||{},lessonId);
+ if(!released&&!personal)return null;
+ const key=t02Key(lessonId);if(!key)return null;
+ try{
+  const raw=localStorage.getItem(key);
+  if(!raw)return {dueAt:null,awaitingRating:false,reviewCount:0};
+  if(raw.length>2400)return null;
+  const saved=JSON.parse(raw);
+  if(!t02Valid(saved))return null;
+  return {dueAt:saved.due,awaitingRating:saved.awaitingRating,reviewCount:saved.reviewCount};
+ }catch{return null;}
 }
 function t02NotifySync(){
  if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
@@ -963,7 +981,7 @@ function setup(){
    notifyReactSpell();
   });
  }
- window.LiSpellPractice={open,methods:Object.keys(exercises),getView,
+ window.LiSpellPractice={open,methods:Object.keys(exercises),getView,getT02Status,
   perform:performReact,setTab:switchTab,setT12Draft,setLessonContext,
   refreshNative:()=>{if(!reactOwnsSpell())switchTab(activeTab);}};
 }

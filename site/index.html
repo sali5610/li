@@ -618,23 +618,24 @@ mirrorSwipeSurface.addEventListener("touchend",event=>{
   shiftMirrorQuestion(dx<0?1:-1);
 },{passive:true});
 mirrorSwipeSurface.addEventListener("touchcancel",()=>{mirrorSwipeStart=null},{passive:true});
-document.getElementById("finish-case").addEventListener("click",()=>{const v=document.getElementById("case-revision").value.trim();if(!selectedCaseAnswer){toast("Chưa Chọn · Hãy chọn một nhận định hoặc tạm gác.");return}if(v.length<12){toast("Luận Kết còn thiếu · Hãy viết lại nhận định ít nhất 12 ký tự.");return}const caseArticle=document.querySelector("#page-case .editorial-grid .surface.tinted");
+function liSubmitCaseAnswer(choice,revision){const v=String(revision||"").trim();if(choice!=="right"&&choice!=="wrong"){toast("Chưa Chọn · Hãy chọn một nhận định hoặc tạm gác.");return false}if(v.length<12){toast("Luận Kết còn thiếu · Hãy viết lại nhận định ít nhất 12 ký tự.");return false}const caseArticle=document.querySelector("#page-case .editorial-grid .surface.tinted");
 const caseOptions=Array.from(caseArticle?.querySelectorAll("[data-answer]")||[]).map(el=>({key:el.dataset.answer,text:el.textContent.trim()}));
 const caseSnapshot={
  id:"sampling-bias-90",
  question:caseArticle?.querySelector("h2")?.textContent.trim()||"",
  scene:caseArticle?.querySelector("p")?.textContent.trim()||"",
  options:caseOptions,
- selectedKey:selectedCaseAnswer,
- selectedText:caseOptions.find(x=>x.key===selectedCaseAnswer)?.text||"",
- feedback:document.getElementById("case-feedback")?.textContent.trim()||""
+ selectedKey:choice,
+ selectedText:caseOptions.find(x=>x.key===choice)?.text||"",
+ feedback:liCaseFeedback(choice)
 };
-const item={id:liNewId(),caseKey:"sampling-bias-90",caseSnapshot,title:"90% người dùng hài lòng — Sampling Bias",correct:selectedCaseAnswer==="right",revision:v,savedAt:new Date().toISOString()};
+const item={id:liNewId(),caseKey:"sampling-bias-90",caseSnapshot,title:"90% người dùng hài lòng — Sampling Bias",correct:choice==="right",revision:v,savedAt:new Date().toISOString()};
 processedCases.unshift(item);
-if(!liWriteState()){processedCases.shift();toast("Không thể lưu Bút Ký trên thiết bị. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.");return}
+if(!liWriteState()){processedCases.shift();toast("Không thể lưu Bút Ký trên thiết bị. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.");return false}
 try{window.localStorage.setItem(LI_DRAFT_KEY,"")}catch(e){}
 const noteKey=Array.from((item.title+"|"+v).normalize("NFKC").toLocaleLowerCase("vi")).reduce((h,ch)=>Math.imul(h^ch.codePointAt(0),16777619)>>>0,2166136261).toString(36);
-window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"input",id:"case:"+noteKey}}));navigate("library");toast("Đã lưu Bút Ký trên thiết bị này.");});
+window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"input",id:"case:"+noteKey}}));navigate("library");toast("Đã lưu Bút Ký trên thiết bị này.");window.dispatchEvent(new Event("li:inquiry-changed"));return true;}
+document.getElementById("finish-case").addEventListener("click",()=>liSubmitCaseAnswer(selectedCaseAnswer,document.getElementById("case-revision").value));
 /* React owns the L1 form, rules and session self-report. The old hidden
  * Home entry remains only as a compatibility navigation entrypoint. */
 document.getElementById("checkin")?.addEventListener("click",event=>{

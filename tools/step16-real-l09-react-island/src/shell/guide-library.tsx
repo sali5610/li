@@ -390,8 +390,11 @@ function Collection(){
 }
 export function mountGuideAndLibrary(){
  const spellOwner=window as Window&{
-  liReactGuideDetailMounted?:boolean;
-  LiSpellPractice?:{refreshNative?:()=>void}
+  liReactGuideDetailMounted?:boolean;liReactLibraryMounted?:boolean;
+  LiSpellPractice?:{refreshNative?:()=>void};
+  liLibraryShelf?:{renderHome?:()=>void;renderResume?:()=>void;
+   renderCollection?:()=>void;renderBookmarks?:()=>void};
+  liNotes?:{renderDetail?:()=>void}
  };
  const definitions=[
   {route:'guide',component:<Guide/>},
@@ -426,13 +429,22 @@ export function mountGuideAndLibrary(){
    // One visible exercise owner: pause native spell DOM rendering while
    // authenticated React Detail is mounted, without replacing its checker.
    spellOwner.liReactGuideDetailMounted=true;
+   spellOwner.liReactLibraryMounted=true;
    mounted=true;
    dispose=()=>{
     spellOwner.liReactGuideDetailMounted=false;
+    spellOwner.liReactLibraryMounted=false;
     roots.forEach(({root,host,legacy})=>{
      root.unmount();host.remove();legacy.hidden=false;legacy.style.removeProperty('display');
     });
     spellOwner.LiSpellPractice?.refreshNative?.();
+    // Native HTML remains a safe fallback but is rebuilt only when React
+    // really unmounts, rather than on every synced learner update.
+    spellOwner.liLibraryShelf?.renderHome?.();
+    spellOwner.liLibraryShelf?.renderResume?.();
+    spellOwner.liLibraryShelf?.renderCollection?.();
+    spellOwner.liLibraryShelf?.renderBookmarks?.();
+    spellOwner.liNotes?.renderDetail?.();
    };
   }else if(!allowed&&mounted){
    dispose?.();dispose=null;mounted=false;

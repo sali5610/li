@@ -1,0 +1,39 @@
+/* One React-owned notification surface; preserve the legacy 7-second Undo. */
+.li-snackbar.li-react-toast-owner{
+ position:fixed;
+ z-index:1200;
+ left:50%;
+ transform:translateX(-50%);
+ bottom:calc(max(16px,env(safe-area-inset-bottom)) + 20px);
+ max-width:min(560px,calc(100vw - 32px));
+ width:max-content;
+ padding:var(--li-space-3,12px) var(--li-space-4,16px);
+ border-radius:var(--li-radius-md,12px);
+ color:var(--cream,#f8f6ed);
+ background:var(--moss,#243a29);
+ box-shadow:0 10px 36px rgba(17,31,23,.24);
+ align-items:center;
+ gap:var(--li-space-3,12px);
+ font-size:var(--li-type-support,14px);
+ line-height:1.45;
+}
+.li-react-toast-owner .li-snackbar-message{overflow-wrap:anywhere;}
+.li-react-toast-owner .li-snackbar-undo{
+ font:inherit;
+ font-weight:700;
+ flex-shrink:0;
+ cursor:pointer;
+ border:1px solid currentColor;
+ border-radius:8px;
+ padding:6px 10px;
+ color:inherit;
+ background:transparent;
+}
+.li-react-toast-owner .li-snackbar-undo:focus-visible{outline:3px solid var(--cream,#f8f6ed);outline-offset:3px;}
+@media(max-width:600px){
+ .li-snackbar.li-react-toast-owner{
+  bottom:calc(76px + env(safe-area-inset-bottom));
+  width:calc(100vw - 32px);
+  justify-content:space-between;
+ }
+}

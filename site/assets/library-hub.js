@@ -187,7 +187,7 @@ function renderProblemRows(root,limit){
   const row=add(root,"div","path-item library-list-item library-problem-item");
   const body=add(row,"div","library-list-copy");
   const title=entry.kind==="problem"?scenario.question:
-   (document.querySelector?.("#page-case .editorial-grid .surface.tinted h2")?.textContent?.trim()||"90% trả lời hài lòng. Chúng ta nên kết luận thế nào?");
+   (note?.caseSnapshot?.question||"90% trả lời hài lòng. Chúng ta nên kết luận thế nào?");
   add(body,"strong","",window.liLanguage?.translate?.(title)||title);
   const activity=entry.legacy?
    ui("Có Bút Ký đã lưu · ","Saved case note · ")+formatDate(entry.savedAt):
@@ -217,6 +217,8 @@ function renderProblemRows(root,limit){
  }
 }
 function renderCases(){
+ // React Library reads the same canonical model; never repaint hidden HTML.
+ if(window.liReactLibraryMounted){notifyReactLibrary();return;}
  const root=$("case-archive-preview");if(!root)return;root.replaceChildren();
  const item=sortedBySavedAt(processedCases)[0];
  if(!item){empty(root,"Chưa có Bút Ký. Thử Phản Chứng rồi lưu kết luận đầu tiên.");return;}
@@ -228,6 +230,8 @@ function renderCases(){
  detail.type="button";detail.addEventListener("click",()=>window.liNotes?.openDetail("case",item.id));
 }
 function renderIdeas(){
+ // React Library reads the same canonical model; never repaint hidden HTML.
+ if(window.liReactLibraryMounted){notifyReactLibrary();return;}
  const root=$("li-library-latest-idea");if(!root)return;root.replaceChildren();
  const item=sortedBySavedAt(collectedIdeas)[0];
  if(!item){empty(root,"Chưa có ý nào được lưu. Những ý gặp ngoài đời sẽ nằm ở đây.");return;}
@@ -244,6 +248,7 @@ function renderIdeas(){
 function selectBookmarkTab(type,focus=false){
  if(type!=="lesson"&&type!=="question")return;
  bookmarkTab=type;
+ if(window.liReactLibraryMounted){notifyReactLibrary();return;}
  for(const kind of ["lesson","question"]){
   const tab=$(kind==="lesson"?"li-bookmark-tab-lessons":"li-bookmark-tab-questions");
   const panel=$(kind==="lesson"?"li-bookmark-panel-lessons":"li-bookmark-panel-questions");
@@ -328,6 +333,8 @@ function renderSavedBookmarkEntries(root,entries,knownCases,lessonById){
  }
 }
 function renderBookmarks(){
+ // React Library reads the same canonical model; never repaint hidden HTML.
+ if(window.liReactLibraryMounted){notifyReactLibrary();return;}
  const lessonRoot=$("li-saved-lessons"),questionRoot=$("li-saved-questions");
  if(!lessonRoot||!questionRoot)return;
  const currentSaved=typeof savedContent!=="undefined"?savedContent:[];
@@ -348,6 +355,8 @@ function renderBookmarks(){
  notifyReactLibrary();
 }
 function renderHome(){
+ // React Library reads the same canonical model; never repaint hidden HTML.
+ if(window.liReactLibraryMounted){notifyReactLibrary();return;}
  renderLessonRows($("li-library-latest-lesson"),1);
  renderProblemRows($("li-library-latest-problem"),1);
  renderCases();
@@ -356,6 +365,8 @@ function renderHome(){
  notifyReactLibrary();
 }
 function renderResume(){
+ // React Library reads the same canonical model; never repaint hidden HTML.
+ if(window.liReactLibraryMounted){notifyReactLibrary();return;}
  renderLessonRows($("li-lesson-history"),40);
  renderProblemRows($("li-problem-history"),40);
  renderBookmarks();
@@ -363,6 +374,7 @@ function renderResume(){
  notifyReactLibrary();
 }
 function renderCollection(){
+ if(window.liReactLibraryMounted){notifyReactLibrary();return;}
  const root=$("li-collection-list");if(!root)return;root.replaceChildren();
  document.querySelectorAll("[data-collection-filter]").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.collectionFilter===collectionFilter)));
  const cases=processedCases.map(x=>({...x,entryType:"case"}));
@@ -496,8 +508,7 @@ function getView(){
   if(entry.kind==="problem"&&!scenario)return [];
   const note=entry.kind==="case"?findCaseNote():null;
   const title=entry.kind==="problem"?scenario.question:
-   (document.querySelector?.("#page-case .editorial-grid .surface.tinted h2")?.textContent?.trim()||
-    "90% trả lời hài lòng. Chúng ta nên kết luận thế nào?");
+   (note?.caseSnapshot?.question||"90% trả lời hài lòng. Chúng ta nên kết luận thế nào?");
   return [{kind:entry.kind,key:entry.key,title:window.liLanguage?.translate?.(title)||title,
    detail:(entry.legacy?ui("Có Bút Ký · ","Saved case · ")+formatDate(entry.savedAt):
     ui("Mở ","Opened ")+formatDate(entry.visitedAt))+

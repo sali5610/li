@@ -189,4 +189,66 @@ assert.match(spellDetail,/const lessonRoute=view\.lessonId\?app\.liReleasedLesso
 assert.match(spellDetail,/onClick=\{\(\)=>openRoute\(lessonRoute\)\}/);
 assert.match(spellDetail,/onClick=\{\(\)=>openRoute\('guide'\)\}/);
 
+// Product-level React UI coverage: every addressable legacy page must
+// have an explicitly mounted React screen or a guarded redirect. If a new
+// page is added to index.html without a React owner, this test fails.
+const shell=read('tools/step16-real-l09-react-island/src/shell/react-shell.tsx');
+const noteEditor=read('site/assets/library-note-editor.js');
+const nativeLibrary=read('site/assets/library-hub.js');
+const declared=[...old.matchAll(/<section id="page-([^"]+)"/g)].map(x=>x[1]);
+const ownerByRoute={
+ home:'home-catalog',catalog:'home-catalog',
+ research:'research-case',case:'research-case',
+ guide:'guide-library',guideDetail:'guide-library',
+ library:'guide-library',resume:'guide-library',
+ collection:'guide-library',noteDetail:'guide-library',
+ dashboard:'journal-settings',settings:'journal-settings',
+ search:'knowledge-search',capture:'capture-idea'
+};
+assert.deepEqual([...new Set(declared)].sort(),
+ [...Object.keys(ownerByRoute),'lesson'].sort(),
+ 'An unexpected vanilla page was introduced without a React UI owner');
+const routeFingerprints={
+ home:"'page-home'",catalog:"'page-catalog'",
+ research:"mountPage('research'",case:"mountPage('case'",
+ guide:"route:'guide'",guideDetail:"route:'guideDetail'",
+ library:"route:'library'",resume:"route:'resume'",
+ collection:"route:'collection'",noteDetail:"route:'noteDetail'",
+ dashboard:"route:'dashboard'",settings:"route:'settings'",
+ search:"'page-search'",capture:"'page-capture'"
+};
+for(const [route,owner] of Object.entries(ownerByRoute)){
+ const ui=read('tools/step16-real-l09-react-island/src/shell/'+owner+'.tsx');
+ assert.ok(ui.includes(routeFingerprints[route]),
+  route+' has no identified React mount target in '+owner);
+ assert.match(ui,/createRoot\(/,route+' is not mounted through React');
+}
+assert.match(staging,/mountReactChrome/);
+assert.match(staging,/mountLearningJourney\(node,ports\)/);
+assert.match(staging,/mountWave1Journey\(node,id as/);
+assert.match(staging,/mountEditorialJourney\(node,id,ports\)/);
+assert.match(staging,/releasedLessonRoutes/);
+assert.match(old,/if\(id==="lesson"\)id=window\.liReleasedLessonRoutes\?\.\["L09-1-2"\]==="lessonL09"\?/,
+ 'Retired vanilla sample must redirect to a released React lesson');
+assert.match(old,/const react=window\.liReactToastPort/);
+assert.match(old,/react\.show\(String\(message\),typeof options\.undo==="function"\?options\.undo:null\)/);
+assert.match(old,/window\.liShowUndo=\(message,undo\)=>toast\(message,\{undo\}\)/);
+assert.match(shell,/createRoot\(brand\),footerRoot=createRoot\(footer\),toastRoot=createRoot\(toast\)/);
+assert.match(shell,/app\.liReactToastPort=port/);
+assert.match(shell,/notice\.undo\?7000:2600/);
+assert.match(shell,/restored\?'Đã hoàn tác\.'/);
+assert.match(shell,/className="li-snackbar-undo"/);
+assert.match(shell,/function Brand\(\)/);
+assert.match(shell,/function Footer\(\)/);
+
+// These native modules own storage/undo but may not repaint duplicate hidden
+// calendars, bookmarks, case titles or version histories during React use.
+assert.match(diary,/if\(window\.liReactDiaryMounted\)\{notifyReactDiary\(\);return;\}/);
+assert.match(settings,/native\.liReactDiaryMounted=true/);
+assert.match(nativeLibrary,/if\(window\.liReactLibraryMounted\)\{notifyReactLibrary\(\);return;\}/);
+assert.match(read('tools/step16-real-l09-react-island/src/shell/guide-library.tsx'),
+ /spellOwner\.liReactLibraryMounted=true/);
+assert.match(noteEditor,/if\(window\.liReactLibraryMounted\)\{notifyReactNote\(\);return;\}/);
+assert.doesNotMatch(nativeLibrary,/document\.querySelector\?\.\("#page-case \.editorial-grid \.surface\.tinted h2"\)/);
+
 console.log('PASS explicit React routes and Back: direct actions, canonical history and search, no hidden click');

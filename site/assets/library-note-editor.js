@@ -100,6 +100,8 @@ function renderCaseContext(note,type){
  window.liBookmarks?.refresh();
 }
 function renderDetail(){
+ // Keep the note history in its canonical model; the React editor renders it.
+ if(window.liReactLibraryMounted){notifyReactNote();return;}
  if(!$("page-noteDetail"))return;
  const note=current(),historyRoot=$("li-note-history-list");historyRoot.replaceChildren();
  $("li-note-editor").hidden=true;

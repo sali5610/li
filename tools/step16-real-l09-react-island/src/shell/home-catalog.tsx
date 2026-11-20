@@ -1,4 +1,5 @@
 import {openRoute} from './app-router.js';
+import canonicalCatalog from '../../../../content/curriculum/legacy-catalog.v1.json';
 import {releasedLessonRoutes,personalStudyRoute,personalStudyLessonIds} from '../learning/released-lessons.js';
 import {inquiryFlow} from './inquiry-port.js';
 import {useDiscoveryLocale,localized} from './discovery-locale.js';
@@ -28,13 +29,15 @@ type CatalogPort={
  render:()=>void
 };
 type AppWindow=Window&{
- LI_CATALOG_DATA?:Group[];
  liReactCatalogMounted?:boolean;
  liCatalog?:CatalogPort;
  liLanguage?:{get:()=>string};
 };
 const app=window as AppWindow;
-const groups=Array.isArray(app.LI_CATALOG_DATA)?app.LI_CATALOG_DATA:[];
+// One GitHub curriculum source also used by released-lesson routes and all 17
+// personal study lessons. The React catalog must survive removal of the old
+// global window.LI_CATALOG_DATA script by the core migration owner.
+const groups:Group[]=canonicalCatalog.groups;
 const releasedRoutes=new Map(releasedLessonRoutes.map(item=>[item.id,item.route]));
 const canOpenLesson=(lesson:Lesson)=>!!personalStudyRoute(lesson.id)||
  (lesson.published===true&&typeof lesson.route==='string'&&
@@ -313,8 +316,7 @@ function Home(){
  },[]);
  const shift=(direction:-1|1)=>inquiryFlow().shift(direction);
  // Resolve artwork directly from Tàng Thư's canonical field-to-image entries.
- const mirrorImage=(Array.isArray(app.LI_CATALOG_DATA)?app.LI_CATALOG_DATA:[])
-  .flatMap(group=>group.fields)
+ const mirrorImage=groups.flatMap(group=>group.fields)
   .find(field=>field.id===mirror.fieldId)?.image||'';
  // Depth is purely decorative. Never move the real mirror text, tap targets,
  // backdrop crop, or saved learner state with the pointer.

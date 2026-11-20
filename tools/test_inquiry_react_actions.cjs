@@ -92,6 +92,17 @@ assert.match(search,/client\.searchKnowledge\(query\)/,
  "React search queries real canonical data, not mock results");
 assert.match(search,/searchPersonalStudy\(query\)/,
  "All personal study content stays searchable through the canonical adapter");
+const canonicalImport=/import canonicalCatalog from '\.\.\/\.\.\/\.\.\/\.\.\/content\/curriculum\/legacy-catalog\.v1\.json'/;
+assert.match(home,canonicalImport,
+ "React Catalog reads the same GitHub JSON as learning, no native boot global");
+assert.match(search,canonicalImport,
+ "React Search routes come from the same canonical curriculum JSON");
+assert.match(home,/const groups:Group\[\]=canonicalCatalog\.groups;/);
+assert.match(search,/for\(const group of canonicalCatalog\.groups as CatalogGroup\[\]\)/);
+assert.doesNotMatch(home,/app\.LI_CATALOG_DATA|window\.LI_CATALOG_DATA\s*\?/,
+ "Visible React Catalog cannot depend on the old native global");
+assert.doesNotMatch(search,/app\.LI_CATALOG_DATA/,
+ "Visible React Search cannot depend on a global populated by native HTML");
 assert.match(search,/function RelationMap\(/,
  "Graph nodes must come from search response relationships");
 assert.match(search,/record\.links\|\|\[\]/,

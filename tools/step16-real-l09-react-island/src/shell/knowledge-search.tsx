@@ -1,4 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
+import canonicalCatalog from '../../../../content/curriculum/legacy-catalog.v1.json';
 import {openRoute,goBack,hasRoute} from './app-router.js';
 import {useDiscoveryLocale,localized} from './discovery-locale.js';
 import {personalStudyRoute} from '../learning/released-lessons.js';
@@ -20,14 +21,16 @@ type KnowledgeClient={searchKnowledge:(query:string)=>Promise<KnowledgeResponse>
 type CatalogLesson={id:string;title:string;route?:string;published?:boolean};
 type CatalogGroup={title:string;fields?:{name:string;source?:string;courses?:{title:string;lessons?:CatalogLesson[]}[]}[]};
 type MentorContext={id:string;kind:string;title:string;lessonId?:string;links:Relation[]};
-type SearchWindow=Window&{LI_CATALOG_DATA?:CatalogGroup[];openLaoLy?:(trigger?:HTMLElement|null)=>void;
+type SearchWindow=Window&{openLaoLy?:(trigger?:HTMLElement|null)=>void;
  liSearch?:{render:(query:string)=>void;getStatus:()=>string;getQuery:()=>string;openLesson:(id:string)=>boolean;
  getMentorContext:()=>MentorContext|null}};
 
 const app=window as SearchWindow;
 const routes=new Map<string,string>();
 const published:KnowledgeItem[]=[];
-for(const group of Array.isArray(app.LI_CATALOG_DATA)?app.LI_CATALOG_DATA:[]){
+// Search and Catalog share the same GitHub-owned curriculum source, not a
+// startup global set by the obsolete native Catalog UI script.
+for(const group of canonicalCatalog.groups as CatalogGroup[]){
  for(const field of group.fields||[])for(const course of field.courses||[])for(const lesson of course.lessons||[]){
   if(lesson.published!==true||!/^lessonL\d{2}$/.test(lesson.route||''))continue;
   routes.set(lesson.id,lesson.route!);

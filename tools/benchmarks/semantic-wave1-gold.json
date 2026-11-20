@@ -1,0 +1,169 @@
+{
+  "schema": "li-semantic-gold-v1",
+  "asOf": "2026-11-20",
+  "scope": "three_published_wave1_lessons_only",
+  "note": "Gold targets label real supported lesson intents; no private learner data. Hard negatives must not be forced onto unrelated lessons.",
+  "positives": [
+    {
+      "query": "L09-1-2",
+      "targetLessonId": "L09-1-2",
+      "queryClass": "id"
+    },
+    {
+      "query": "Sai lệch chọn mẫu",
+      "targetLessonId": "L09-1-2",
+      "queryClass": "alias"
+    },
+    {
+      "query": "Selection bias",
+      "targetLessonId": "L09-1-2",
+      "queryClass": "alias"
+    },
+    {
+      "query": "khảo sát chỉ hỏi người đang dùng app",
+      "targetLessonId": "L09-1-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "mẫu có một nghìn người mà vẫn không đại diện",
+      "targetLessonId": "L09-1-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "người bỏ app không có cơ hội tham gia khảo sát",
+      "targetLessonId": "L09-1-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "why bigger samples cannot fix biased recruitment",
+      "targetLessonId": "L09-1-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "80% người trả lời không đại diện cho mọi khách hàng",
+      "targetLessonId": "L09-1-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "biến thiên ngẫu nhiên và thiên lệch mẫu khác nhau thế nào",
+      "targetLessonId": "L09-1-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "L03-1-2",
+      "targetLessonId": "L03-1-2",
+      "queryClass": "id"
+    },
+    {
+      "query": "Câu hỏi dẫn dắt trong phỏng vấn",
+      "targetLessonId": "L03-1-2",
+      "queryClass": "alias"
+    },
+    {
+      "query": "Open Questions and Interview Bias",
+      "targetLessonId": "L03-1-2",
+      "queryClass": "alias"
+    },
+    {
+      "query": "hỏi khách hàng nút này tiện hơn đúng không",
+      "targetLessonId": "L03-1-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "viết câu hỏi phỏng vấn trung lập để người dùng kể chuyện thật",
+      "targetLessonId": "L03-1-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "a leading question can bias interview answers",
+      "targetLessonId": "L03-1-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "câu phỏng vấn có sẵn lời khen và muốn người ta đồng ý",
+      "targetLessonId": "L03-1-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "why can an open ended question still be leading",
+      "targetLessonId": "L03-1-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "L15-2-2",
+      "targetLessonId": "L15-2-2",
+      "queryClass": "id"
+    },
+    {
+      "query": "Điểm đặt hàng lại & tồn kho an toàn",
+      "targetLessonId": "L15-2-2",
+      "queryClass": "alias"
+    },
+    {
+      "query": "Reorder Points and Safety Stock",
+      "targetLessonId": "L15-2-2",
+      "queryClass": "alias"
+    },
+    {
+      "query": "kho chưa hết hàng thì khi nào phải đặt thêm",
+      "targetLessonId": "L15-2-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "tính ngưỡng đặt hàng từ nhu cầu mỗi ngày và thời gian giao",
+      "targetLessonId": "L15-2-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "calculate inventory reorder threshold from lead time and daily demand",
+      "targetLessonId": "L15-2-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "tồn kho đang trên đường có ảnh hưởng thời điểm mua",
+      "targetLessonId": "L15-2-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "why is a reorder point different from order quantity",
+      "targetLessonId": "L15-2-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "safety stock buffer and stockout risk",
+      "targetLessonId": "L15-2-2",
+      "queryClass": "paraphrase"
+    },
+    {
+      "query": "mức dự phòng tồn kho khi lead time thay đổi",
+      "targetLessonId": "L15-2-2",
+      "queryClass": "paraphrase"
+    }
+  ],
+  "negatives": [
+    {
+      "query": "thuyết tương đối của einstein",
+      "expected": "no_relevant_lesson"
+    },
+    {
+      "query": "how to compose music in C minor",
+      "expected": "no_relevant_lesson"
+    },
+    {
+      "query": "lịch sử đế chế La Mã",
+      "expected": "no_relevant_lesson"
+    },
+    {
+      "query": "công thức lãi suất kép ngân hàng",
+      "expected": "no_relevant_lesson"
+    },
+    {
+      "query": "how to build a React authentication system",
+      "expected": "no_relevant_lesson"
+    },
+    {
+      "query": "cách trồng lan hồ điệp trong nhà",
+      "expected": "no_relevant_lesson"
+    }
+  ]
+}

@@ -9,7 +9,8 @@ type SpellField={id:string;label:string;options:string[]|null;choiceKind:'multi'
 type SpellView={
  active:string;title:string;mode:string;phase:number;tab:'guide'|'practice';
  lesson:string;prompt:string;fields:SpellField[];feedback:string;
- resumeNote:string;places:string[];dueAt:number|null
+ resumeNote:string;places:string[];dueAt:number|null;
+ lessonId:string|null;reviewedInSession:boolean
 };
 type Version={version:number;title:string;body:string;at:string;change?:string};
 type CaseContext={
@@ -178,7 +179,7 @@ export function GuideDetail(){
      <div className="kicker">{view.active} · {copy('THỬ THI TRIỂN','PRACTICE')}</div>
      <Heading level={2} role="titleMedium">{tr(view.title)}</Heading>
     </div>
-    <span className="spell-state">{view.feedback?copy('Đã đối chiếu','Checked'):
+    <span className="spell-state">{view.reviewedInSession?copy('Đã tự đối chiếu','Self-checked'):
      preparing?copy('Đang chuẩn bị','Preparing'):copy('Đang thực hành','Practicing')}</span></div>
     <div className="spell-activity-body">
      {hasSource&&<div className="spell-demo"><div className="kicker">{copy('BỐI CẢNH MẪU · ĐÃ GIỚI THIỆU','EXAMPLE CONTEXT')}</div>
@@ -203,6 +204,9 @@ export function GuideDetail(){
      </>:
       <Button variant="primary" onClick={()=>action(ctaKind)}>
        {actionLabel}</Button>}
+     {view.reviewedInSession&&<Text role="support" aria-live="polite">{copy(
+      'Đã thực hành và đối chiếu trong phiên này · Chưa lưu/đồng bộ · Không phải điểm thông thạo.',
+      'Practiced and self-checked in this session · Not saved/synced · Not a mastery grade.')}</Text>}
      {view.feedback&&<div className="spell-feedback" role="status" aria-live="polite">
       <strong>{copy('Phản hồi để tự kiểm chứng','Feedback for self-check')}</strong>
       <Text role="body">{tr(view.feedback)}</Text>

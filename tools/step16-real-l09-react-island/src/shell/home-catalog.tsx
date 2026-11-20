@@ -306,6 +306,48 @@ function Home(){
  const [mirror,setMirror]=useState<MirrorView>(readMirror);
  const gesture=useRef<{x:number;y:number}|null>(null);
  const scene=useRef<HTMLDivElement>(null);
+ const [backdropReady,setBackdropReady]=useState(false);
+ const [decodedMirrorImage,setDecodedMirrorImage]=useState('');
+ // CSS owns the iPhone/iPad/desktop crop. Read the actual ::before URL so
+ // discipline artwork cannot request or reveal before that backdrop decodes.
+ useEffect(()=>{
+  const hero=scene.current;
+  if(!hero)return;
+  let active=true;
+  let currentUrl='';
+  let frame=0;
+  let image:HTMLImageElement|null=null;
+  const checkBackdrop=()=>{
+   const css=getComputedStyle(hero,'::before').backgroundImage;
+   const url=css.match(/url\((["']?)(.*?)\1\)/)?.[2]||'';
+   if(!url||url===currentUrl)return;
+   currentUrl=url;
+   setBackdropReady(false);
+   image=new Image();
+   const candidate=image;
+   const reveal=()=>{
+    if(!active||currentUrl!==url)return;
+    frame=requestAnimationFrame(()=>{
+     if(active&&currentUrl===url)setBackdropReady(true);
+    });
+   };
+   candidate.onload=()=>{
+    if(typeof candidate.decode==='function')candidate.decode().then(reveal,reveal);
+    else reveal();
+   };
+   candidate.src=url;
+  };
+  checkBackdrop();
+  window.addEventListener('resize',checkBackdrop);
+  window.addEventListener('orientationchange',checkBackdrop);
+  return ()=>{
+   active=false;
+   cancelAnimationFrame(frame);
+   if(image)image.onload=null;
+   window.removeEventListener('resize',checkBackdrop);
+   window.removeEventListener('orientationchange',checkBackdrop);
+  };
+ },[]);
  useEffect(()=>{
   const sync=()=>setMirror(previous=>{
    const next=readMirror();
@@ -322,6 +364,20 @@ function Home(){
  // Resolve artwork directly from Tàng Thư's canonical field-to-image entries.
  const mirrorImage=groups.flatMap(group=>group.fields)
   .find(field=>field.id===mirror.fieldId)?.image||'';
+ useEffect(()=>{
+  setDecodedMirrorImage('');
+  if(!backdropReady||!mirrorImage)return;
+  let active=true;
+  const image=new Image();
+  const reveal=()=>{if(active)setDecodedMirrorImage(mirrorImage);};
+  image.onload=()=>{
+   if(typeof image.decode==='function')image.decode().then(reveal,reveal);
+   else reveal();
+  };
+  image.src=mirrorImage;
+  if(image.complete&&image.naturalWidth)image.onload();
+  return ()=>{active=false;image.onload=null;};
+ },[backdropReady,mirrorImage]);
  // Depth is purely decorative. Never move the real mirror text, tap targets,
  // backdrop crop, or saved learner state with the pointer.
  const moveBackdrop=(event:React.PointerEvent<HTMLDivElement>)=>{
@@ -359,7 +415,7 @@ function Home(){
   </motion.div>
    <div className="li-home-mirror-artwork" aria-hidden="true">
     <AnimatePresence initial={false}>
-     {mirrorImage&&<motion.img key={mirrorImage} src={mirrorImage} alt=""
+     {backdropReady&&decodedMirrorImage===mirrorImage&&mirrorImage&&<motion.img key={mirrorImage} src={mirrorImage} alt=""
       draggable={false} decoding="async"
       initial={reduced?false:{opacity:0,scale:1.06}}
       animate={{opacity:1,scale:1}}

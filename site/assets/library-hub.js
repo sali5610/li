@@ -22,6 +22,7 @@ const LESSONS={
 };
 let collectionFilter="all";
 let bookmarkTab="lesson";
+const cloudLessons=new Map(); // Signed Dexie/Neon readback status from Auth owner.
 let visitStore={schema:1,items:[]},visitError=false;
 try{
  const raw=window.localStorage.getItem(VISITS_KEY);
@@ -83,16 +84,24 @@ function trackProblem(kind,value){
 }
 function sortedBySavedAt(items){return items.slice().sort((a,b)=>(Date.parse(b.updatedAt||b.savedAt)||0)-(Date.parse(a.updatedAt||a.savedAt)||0));}
 function visits(){
- const tracked=visitStore.items.slice().sort((a,b)=>(Date.parse(b.visitedAt)||0)-(Date.parse(a.visitedAt)||0));
+ const tracked=visitStore.items.slice();
+
  const known=new Set(tracked.map(x=>x.route));
  // Show real saved Wave1 states predating visit tracking in Quay lại only.
  for(const [route,meta] of Object.entries(LESSONS)){
   if(known.has(route))continue;
   const state=getLessonState(meta.id);
   if(!state||!(state.submitted||state.reviewed||state.guidedDraft?.trim()||state.draft?.some(x=>typeof x==="string"&&x.trim())))continue;
-  tracked.push({route,visitedAt:null,legacy:true});
+  tracked.push({route,visitedAt:state.submittedAt||null,legacy:true});
  }
- return tracked;
+ // One truthful recent list: latest local view OR actual confirmed cloud edit.
+ // Opening a different device should not bury a recently synced lesson.
+ const lastActivity=item=>{
+  const lesson=LESSONS[item.route];
+  const cloud=lesson&&cloudLessons.get(lesson.id);
+  return Math.max(Date.parse(item.visitedAt)||0,Date.parse(cloud?.changedAt)||0);
+ };
+ return tracked.sort((a,b)=>lastActivity(b)-lastActivity(a));
 }
 function add(parent,tag,cls,text){
  const el=document.createElement(tag);
@@ -146,7 +155,12 @@ function renderLessonRows(root,limit){
   const row=add(root,"div","path-item library-list-item");
   const body=add(row,"div","library-list-copy");
   add(body,"strong","",lessonTitle(info));
-  add(body,"p","small",info.id+" · "+lessonStatusText(info)+(item.legacy?ui(" · Bài có dữ liệu đã lưu"," · Saved progress available"):ui(" · Mở "," · Opened ")+formatDate(item.visitedAt)));
+  const cloud=cloudLessons.get(info.id);
+  const detail=cloud&&getLessonState(info.id)?
+   ui(" · Đã đồng bộ Neon"," · Synced to Neon"):
+   item.legacy?ui(" · Bài có dữ liệu đã lưu"," · Saved progress available"):
+   ui(" · Mở "," · Opened ")+formatDate(item.visitedAt);
+  add(body,"p","small",info.id+" · "+lessonStatusText(info)+detail);
   btn(row,"Tiếp tục",item.route,"library-text-link library-open-lesson");
   const utility=add(row,"div","library-icon-utility library-row-utility");
   const save=add(utility,"button","library-icon-action library-lesson-save");
@@ -385,5 +399,18 @@ document.querySelectorAll("[data-collection-filter]").forEach(button=>button.add
  renderCollection();
 }));
 window.addEventListener?.("li:localechange",()=>{renderHome();renderResume();renderCollection();});
+window.addEventListener?.("li:lesson-cloud-state",event=>{
+ const detail=event.detail;
+ if(!detail||detail.accountId!==localStorage.getItem("li.sync.local-owner.v1")||
+  !document.documentElement?.classList?.contains("li-auth-verified")||
+  !Array.isArray(detail.lessons))return;
+ cloudLessons.clear();
+ for(const x of detail.lessons){
+  if(!x||!Object.values(LESSONS).some(meta=>meta.id===x.id)||
+    typeof x.changedAt!=="string"||!Number.isFinite(Date.parse(x.changedAt)))continue;
+  cloudLessons.set(x.id,{changedAt:x.changedAt});
+ }
+ renderHome();renderResume();
+});
 window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,renderProblemRows});
 })();

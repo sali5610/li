@@ -7,7 +7,7 @@
 /* Keep the already-shared GitHub Pages URL; one authored Studio at /design-system/. */
 (function(){
  const map={tokens:'colors',actions:'button',cards:'card',inputs:'field',controls:'checkbox',
- navigation:'navigation',feedback:'feedback',icons:'icon',dataviz:'progress'};
+ navigation:'appHeader',feedback:'feedback',icons:'icon',dataviz:'progress'};
  const target=new URL('./design-system/',location.href);
  const hash=decodeURIComponent(location.hash.slice(1));
  if(hash)target.hash=map[hash]||hash;

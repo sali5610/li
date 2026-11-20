@@ -60,7 +60,12 @@ jobs:
           grep -Fq "neonAuth.getJWTToken()" "$root/src/auth/neon-client.ts"
           grep -Fq "startLearnerSync" "$root/src/auth/AuthPanel.tsx"
           grep -Fq "prepareLearnerAccount" "$root/src/auth/AuthPanel.tsx"
-          grep -Fq "const LESSONS=['L03-1-2','L09-1-2','L15-2-2']" "$root/src/auth/learner-sync.ts"
+          # Owner-scoped sync may only enumerate lessons allowed by the generated pack
+          # AND the explicitly released catalog; no hardcoded three-ID whitelist.
+          grep -Fq "const LESSONS=releasedLessonIds" "$root/src/auth/learner-sync.ts"
+          grep -Fq "isReleasedLessonId(lesson)" "$root/src/learning/staging-ports.ts"
+          grep -Fq "navigationPublished===true" "$root/src/learning/released-lessons.ts"
+          grep -Fq "packed.has(l.id)" "$root/src/learning/released-lessons.ts"
           grep -Fq "await checkInviteAccess" "$root/src/auth/learner-sync.ts"
           # The real L03/L09/L15 owner now writes a durable Dexie outbox,
           # then signed Neon through the shared revision-aware syncOnce.
@@ -70,7 +75,7 @@ jobs:
           grep -Fq 'isBlankNativeAttempt' "$root/src/auth/learner-sync.ts"
           ! grep -Eq "signIn.email|AuthRecovery|AuthEmailVerification" "$root/src/auth/AuthPanel.tsx"
           test ! -e "$root/src/auth/qa-secrets.ts"
-          echo "PASS invited-only Google sign-in gate and three published native lessons on Neon"
+          echo "PASS invited-only Google sign-in gate and canonical released-lesson registry for Neon"
 
       - name: Set up free GitHub runner
         uses: actions/setup-node@v4

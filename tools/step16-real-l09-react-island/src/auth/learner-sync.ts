@@ -398,6 +398,12 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
   if(target instanceof Element&&target.closest('#page-lessonL03,#page-lessonL09,#page-lessonL15')){
    schedule();return;
   }
+  // Pull on entering a private screen instead of waiting for the next timer.
+  if(event.type==='click'&&target instanceof Element&&
+    target.closest('[data-page="library"],[data-page="collection"],[data-page="resume"],'+
+      '[data-page="dashboard"],[data-page="settings"]')){
+   schedule();return;
+  }
   if(hasPersonalLocalChanges(uid,observed))schedule();
  };
  const resumed=()=>schedule();
@@ -426,6 +432,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
  document.addEventListener('click',changed);
  window.addEventListener('focus',resumed);
  window.addEventListener('pageshow',onPageShow);
+ window.addEventListener('popstate',resumed);
  document.addEventListener('visibilitychange',onVisibility);
  window.addEventListener('online',resumed);
  window.addEventListener('li:lesson-submitted',resumed);
@@ -446,6 +453,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
   document.removeEventListener('click',changed);
   window.removeEventListener('focus',resumed);
   window.removeEventListener('pageshow',onPageShow);
+  window.removeEventListener('popstate',resumed);
   document.removeEventListener('visibilitychange',onVisibility);
   window.removeEventListener('online',resumed);
   window.removeEventListener('li:lesson-submitted',resumed);

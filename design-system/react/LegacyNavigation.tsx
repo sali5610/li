@@ -6,12 +6,13 @@ export interface NavChoice {id:string;label:string;href:string;icon?:ReactNode}
 
 /** UX-DS-11 bottom nav parity: four actual links, active sand icon surface. */
 export interface MobileBottomNavProps {
- label:string;items:readonly NavChoice[];activeId:string;
+ label:string;items:readonly NavChoice[];activeId:string;onNavigate?:(id:string)=>void;
 }
-export function MobileBottomNav({label,items,activeId}:MobileBottomNavProps){
+export function MobileBottomNav({label,items,activeId,onNavigate}:MobileBottomNavProps){
  if(items.length!==4)throw Error('MobileBottomNav expects four navigation items');
  return <nav className="li-legacy-bottom-nav" data-li-legacy="bottom-nav" aria-label={label}>
   <ul>{items.map(item=><li key={item.id}><a href={item.href}
+   onClick={()=>onNavigate?.(item.id)}
    aria-current={item.id===activeId?'page':undefined}>
    <span className="li-legacy-bottom-icon" aria-hidden="true">{item.icon||'✦'}</span>
    <span>{item.label}</span></a></li>)}</ul>
@@ -19,12 +20,13 @@ export function MobileBottomNav({label,items,activeId}:MobileBottomNavProps){
 }
 
 export interface SidebarMenuProps {
- label:string;items:readonly NavChoice[];activeId?:string;
+ label:string;items:readonly NavChoice[];activeId?:string;onNavigate?:(id:string)=>void;
 }
-export function SidebarMenu({label,items,activeId}:SidebarMenuProps){
+export function SidebarMenu({label,items,activeId,onNavigate}:SidebarMenuProps){
  return <nav className="li-legacy-sidebar" data-li-legacy="sidebar-menu" aria-label={label}>
   <ul>{items.map(item=><li key={item.id}>
-   <a href={item.href} aria-current={activeId===item.id?'page':undefined}>
+   <a href={item.href} onClick={()=>onNavigate?.(item.id)}
+   aria-current={activeId===item.id?'page':undefined}>
     {item.icon?<span aria-hidden="true">{item.icon}</span>:null}<span>{item.label}</span>
    </a>
   </li>)}</ul>

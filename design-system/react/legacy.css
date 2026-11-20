@@ -38,7 +38,12 @@
 .li-legacy-top-actions{display:flex;flex-wrap:wrap;gap:var(--li-space-2);align-items:center}
 .li-legacy-top-nav :is(a,button):focus-visible{outline:0;text-decoration:underline;
  text-decoration-thickness:3px;background:var(--li-color-nav-selected-fill)}
-.li-legacy-companion-fab{display:flex;align-items:center;gap:var(--li-space-2);min-height:56px;
+/* A real viewport-anchored companion FAB; stays in the story iframe on preview. */
+[data-li-legacy="companion"]{min-height:116px}
+.li-legacy-companion-fab{position:fixed;z-index:20;
+ inset-inline-end:max(var(--li-space-4),env(safe-area-inset-right,0px));
+ inset-block-end:max(var(--li-space-4),env(safe-area-inset-bottom,0px));
+ display:flex;align-items:center;gap:var(--li-space-2);min-height:56px;
  max-width:100%;padding:var(--li-space-2) var(--li-space-3);border:1px solid var(--moss);
  background:var(--forest);color:var(--cream);cursor:pointer;
  font:var(--li-weight-600) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}

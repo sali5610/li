@@ -41,7 +41,7 @@ function Specimen(){
  const [lang,setLang]=useState('vi');
  const [value,setValue]=useState('');
  const [choice,setChoice]=useState('');
- const [active,setActive]=useState('library');
+ const [active,setActive]=useState(state==='selected'?'methods':story==='bottomNav'?'home':'library');
  const [modal,setModal]=useState(false);
  const [selectedDate,setSelectedDate]=useState(todayKey);
  const [year,setYear]=useState(today.getFullYear());
@@ -72,11 +72,11 @@ function Specimen(){
  switch(story){
  case 'bottomNav':
   panel=<div className="li-legacy-story-phone"><MobileBottomNav label={t('Điều hướng chính','Main nav')}
-   items={nav} activeId={state==='selected'?'methods':'home'}/></div>;
+   items={nav} activeId={active} onNavigate={setActive}/></div>;
   break;
  case 'sidebarMenu':
   panel=<SidebarMenu label={t('Danh mục bên','Section menu')}
-   items={nav} activeId={active}/>;
+   items={nav} activeId={active} onNavigate={setActive}/>;
   break;
  case 'topNavVariants':
   panel=<TopNavContext mode={selected('Back')?'back':selected('Transparent')?'transparent':'logo'}

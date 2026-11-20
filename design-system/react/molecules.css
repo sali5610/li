@@ -12,3 +12,52 @@
 .li-ds-inline-feedback[data-tone="success"]{border-inline-start-color:var(--olive)}
 .li-ds-inline-feedback strong{font:var(--li-weight-600) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
 .li-ds-inline-feedback p{margin:0;font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
+
+/* Stage05 controlled status and navigation molecules; no app-owned state inside DS. */
+.li-ds-save-status{box-sizing:border-box;display:flex;align-items:flex-start;flex-wrap:wrap;
+ gap:var(--li-space-3);min-width:0;max-width:100%;padding:var(--li-space-3);
+ border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+.li-ds-save-status-dot{display:block;flex:0 0 var(--li-space-3);height:var(--li-space-3);
+ margin-top:var(--li-space-1);background:var(--muted);border-radius:50%}
+.li-ds-save-status[data-state="saving"] .li-ds-save-status-dot{background:var(--olive)}
+.li-ds-save-status[data-state="saved-device"] .li-ds-save-status-dot,
+.li-ds-save-status[data-state="synced"] .li-ds-save-status-dot{background:var(--moss)}
+.li-ds-save-status[data-state="error"]{border-color:var(--li-color-danger-fill)}
+.li-ds-save-status[data-state="error"] .li-ds-save-status-dot{background:var(--li-color-danger-fill)}
+.li-ds-save-status-copy{display:grid;gap:var(--li-space-1);flex:1 1 14rem;min-width:0;
+ overflow-wrap:anywhere;font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
+.li-ds-save-status-copy p{margin:0;color:var(--muted)}
+.li-ds-language-switch{display:inline-flex;max-width:100%;flex-wrap:wrap;border:1px solid var(--moss)}
+.li-ds-language-switch button{min-height:44px;min-width:72px;padding:var(--li-space-2) var(--li-space-4);
+ border:0;border-radius:0;background:var(--paper);color:var(--moss);cursor:pointer;
+ font:var(--li-weight-600) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
+.li-ds-language-switch button+button{border-inline-start:1px solid var(--moss)}
+.li-ds-language-switch button[aria-pressed="true"]{background:var(--moss);color:var(--cream)}
+.li-ds-language-switch button:focus-visible{outline:3px solid var(--li-color-general-focus-ring);
+ outline-offset:var(--li-space-1);position:relative}
+.li-ds-language-switch button:disabled{cursor:not-allowed;opacity:.6}
+.li-ds-filter-group{display:flex;gap:var(--li-space-2);flex-wrap:wrap;min-width:0;max-width:100%}
+.li-ds-list-row{box-sizing:border-box;display:flex;align-items:center;gap:var(--li-space-3);
+ min-height:var(--li-space-12);padding:var(--li-space-3) 0;width:100%;min-width:0;
+ border:0;border-bottom:1px solid var(--rule);border-radius:0;background:transparent;color:var(--ink);
+ text-align:start;text-decoration:none;font:var(--li-type-body)/var(--li-leading-body) var(--li-font-ui)}
+:is(a,button).li-ds-list-row{cursor:pointer}
+button.li-ds-list-row{font-family:var(--li-font-ui)}
+:is(a,button).li-ds-list-row:hover{background:var(--paper-2)}
+:is(a,button).li-ds-list-row:focus-visible,
+.li-ds-breadcrumb a:focus-visible{outline:3px solid var(--li-color-general-focus-ring);outline-offset:var(--li-space-1)}
+.li-ds-list-row[aria-disabled="true"]{opacity:.55}
+.li-ds-list-row-content{display:grid;gap:var(--li-space-1);flex:1 1 12rem;min-width:0;
+ overflow-wrap:anywhere}
+.li-ds-list-row-content strong{font-weight:var(--li-weight-600)}
+.li-ds-list-row-description,.li-ds-list-row-meta{color:var(--muted);
+ font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
+.li-ds-list-row-meta{max-width:35%;text-align:end;overflow-wrap:anywhere}
+.li-ds-list-row-leading,.li-ds-list-row-trailing{flex-shrink:0}
+.li-ds-breadcrumb{max-width:100%;min-width:0}
+.li-ds-breadcrumb ol{display:flex;flex-wrap:wrap;gap:var(--li-space-2);padding:0;margin:0;list-style:none}
+.li-ds-breadcrumb li{display:inline-flex;align-items:center;gap:var(--li-space-2);
+ min-width:0;overflow-wrap:anywhere;font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
+.li-ds-breadcrumb li+li:before{content:"/";color:var(--muted)}
+.li-ds-breadcrumb a{color:var(--moss);text-underline-offset:var(--li-space-1)}
+.li-ds-breadcrumb [aria-current="page"]{color:var(--ink);font-weight:var(--li-weight-600)}

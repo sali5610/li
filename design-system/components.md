@@ -177,3 +177,18 @@ The immediately following *portrait-shaped* screenshot showed `innerWidth`/visua
 | `Molecules.tsx:InlineFeedback` / Molecule (Stage05) | Info/error/success/loading, role=status/alert, optional real callback action. Error announces; loading exposes aria-busy. | Uses existing paint/status and type tokens. Do pass truthful caller-owned status and retry. Don't claim synced/saved until real readback. |
 
 **Studio:** `#dialog`, `#searchField`, `#actionGroup`, `#feedback` from the same Component Library, VI/EN and existing iPhone/iPad width presets. **Acceptance boundary:** TSX browser fixture for user interface only; app integration, real iPad Safari, G2 visual approval and production release NOT verified by source or CI. No live Auth/Neon/learning work in this slice.
+
+
+### UX-DS-35 / Stage05 Slice02 · Save / language / filters / rows / breadcrumbs · 2026-11-20
+
+**Status:** React implementation DRAFT until exact-head CI and public Pages build; Human PO G2 OPEN. All source owners remain in \`design-system/react/Molecules.tsx\`, exported through \`design-system/react/index.ts\`. Shared canonical token CSS only, no new app logic or preview site.
+
+| ID / level | Use, anatomy, relevant states | Do / Don't |
+| --- | --- | --- |
+| \`SaveStatus\` / molecule | Controlled caller-supplied \`state/message/detail\`. States: unsaved, saving, saved-device, synced, offline, error; live \`status\` except \`alert\` on error, pending \`aria-busy\` and optional retry action. | **Do** label local save vs cloud sync distinctly; **Don't** show “synced” unless the app has real evidence. Story strings explicitly marked demo. |
+| \`LanguageSwitch\` / molecule | Controlled \`vi/en\`, one named group of two square toggle buttons with \`aria-pressed\`, 44px targets, disabled. | **Do** trigger \`onChange\` and let consumer own locale; **Don't** store or change global app language from DS. |
+| \`FilterGroup\` / molecule | Controlled single/multiple selected values, grouped filter chips, selected/disabled, native button and pressed states. | **Do** bind to real filter state and allow wrapping; **Don't** claim filtering happened without an app handler. |
+| \`ListRow\` / molecule | Semantic \`<a>\` for href, \`<button>\` for onActivate, \`<div>\` for read-only/disabled; leading/text/description/meta/trailing slots, current-page metadata, long-copy wrapping. | **Do** choose one interaction purpose; **Don't** use click-only divs or combine action and link. |
+| \`Breadcrumb\` / molecule | Labeled \`<nav><ol>\` hierarchy; real ancestor links, final current page with \`aria-current=page\`, narrow reflow. | **Do** represent actual ancestors; **Don't** fake page routes or treat a breadcrumb as tab navigation. |
+
+**Evidence boundary:** In the same Studio under \`#saveStatus\`, \`#languageSwitch\`, \`#filterGroup\`, \`#listRow\`, \`#breadcrumb\`, using the existing \`react-molecules.html\` compiled story, locale and viewport controls. Source and typed consumer contract are a handoff, **not** app-level save, sync, filtering, or localization acceptance. Browser interaction/physical Safari and G2 remain separate.

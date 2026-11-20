@@ -1,7 +1,7 @@
 import React from 'react';
 import type {FormEventHandler,HTMLAttributes,ReactNode} from 'react';
 import {Field,IconButton} from './Controls';
-import {Button} from './Components';
+import {Button,FilterChip} from './Components';
 
 /** Stage05: UI-only composition; consumers own query, result and persistence state. */
 export interface SearchFieldProps {
@@ -44,4 +44,90 @@ export function InlineFeedback({tone,message,title,actionLabel,onAction}:InlineF
   {actionLabel&&onAction&&tone!=='loading'?
    <Button variant="ghost" onClick={onAction}>{actionLabel}</Button>:null}
  </div>;
+}
+
+/** Stage05 controlled presentation-only status, not a persistence confirmation. */
+export type SaveState='unsaved'|'saving'|'saved-device'|'synced'|'offline'|'error';
+export interface SaveStatusProps {
+ state:SaveState;message:string;detail?:string;retryLabel?:string;onRetry?:()=>void;
+}
+export function SaveStatus({state,message,detail,retryLabel,onRetry}:SaveStatusProps){
+ if(!message.trim())throw Error('SaveStatus requires truthful caller-supplied status copy');
+ return <div className="li-ds-save-status" data-li-molecule="save-status" data-state={state}
+  role={state==='error'?'alert':'status'} aria-busy={state==='saving'||undefined}>
+  <span className="li-ds-save-status-dot" aria-hidden="true"/>
+  <div className="li-ds-save-status-copy"><strong>{message}</strong>{detail?<p>{detail}</p>:null}</div>
+  {state==='error'&&onRetry&&retryLabel?
+   <Button variant="ghost" onClick={onRetry}>{retryLabel}</Button>:null}
+ </div>;
+}
+
+export type LanguageCode='vi'|'en';
+export interface LanguageSwitchProps {
+ label:string;value:LanguageCode;onChange:(next:LanguageCode)=>void;
+ viLabel:string;enLabel:string;disabled?:boolean;
+}
+export function LanguageSwitch({label,value,onChange,viLabel,enLabel,disabled=false}:LanguageSwitchProps){
+ if(!label.trim())throw Error('LanguageSwitch requires an accessible group label');
+ return <div role="group" aria-label={label} className="li-ds-language-switch"
+  data-li-molecule="language-switch">
+  {([{code:'vi',name:viLabel},{code:'en',name:enLabel}] as const).map(({code,name})=>
+   <button key={code} type="button" lang={code} aria-pressed={value===code} disabled={disabled}
+    onClick={()=>{if(value!==code)onChange(code);}}>{name}</button>)}
+ </div>;
+}
+
+export interface FilterOption {value:string;label:string}
+export interface FilterGroupProps {
+ label:string;options:readonly FilterOption[];selected:readonly string[];
+ onChange:(next:string[])=>void;multiple?:boolean;allowEmpty?:boolean;disabled?:boolean;
+}
+export function FilterGroup({label,options,selected,onChange,multiple=true,
+ allowEmpty=true,disabled=false}:FilterGroupProps){
+ if(!label.trim())throw Error('FilterGroup requires an accessible group label');
+ function toggle(value:string){
+  const chosen=selected.includes(value);
+  if(chosen&&!allowEmpty&&!multiple&&selected.length===1)return;
+  onChange(multiple?(chosen?selected.filter(s=>s!==value):[...selected,value]):(chosen?[]:[value]));
+ }
+ return <div role="group" aria-label={label} className="li-ds-filter-group"
+  data-li-molecule="filter-group" data-mode={multiple?'multiple':'single'}>
+  {options.map(option=><FilterChip key={option.value} pressed={selected.includes(option.value)}
+   disabled={disabled} onClick={()=>toggle(option.value)}>{option.label}</FilterChip>)}
+ </div>;
+}
+
+export interface ListRowProps {
+ title:string;description?:string;meta?:string;leading?:ReactNode;trailing?:ReactNode;
+ href?:string;onActivate?:()=>void;current?:boolean;disabled?:boolean;
+}
+export function ListRow({title,description,meta,leading,trailing,href,
+ onActivate,current=false,disabled=false}:ListRowProps){
+ if(!title.trim())throw Error('ListRow needs a visible title');
+ if(href&&onActivate)throw Error('ListRow is a link OR an action, not both');
+ const body=<>
+  {leading?<span className="li-ds-list-row-leading">{leading}</span>:null}
+  <span className="li-ds-list-row-content"><strong>{title}</strong>
+   {description?<span className="li-ds-list-row-description">{description}</span>:null}</span>
+  {meta?<small className="li-ds-list-row-meta">{meta}</small>:null}
+  {trailing?<span className="li-ds-list-row-trailing">{trailing}</span>:null}
+ </>;
+ const attrs={className:'li-ds-list-row', 'data-li-molecule':'list-row'} as const;
+ if(disabled)return <div {...attrs} aria-disabled="true">{body}</div>;
+ if(href)return <a {...attrs} href={href} aria-current={current?'page':undefined}>{body}</a>;
+ if(onActivate)return <button {...attrs} type="button" onClick={onActivate}>{body}</button>;
+ return <div {...attrs}>{body}</div>;
+}
+
+export interface BreadcrumbItem {label:string;href?:string}
+export interface BreadcrumbProps {label:string;items:readonly BreadcrumbItem[]}
+export function Breadcrumb({label,items}:BreadcrumbProps){
+ if(!label.trim()||!items.length)throw Error('Breadcrumb needs a label and at least one item');
+ return <nav aria-label={label} className="li-ds-breadcrumb" data-li-molecule="breadcrumb">
+  <ol>{items.map((item,i)=>{
+   const last=i===items.length-1;
+   return <li key={i}>{!last&&item.href?<a href={item.href}>{item.label}</a>:
+     <span aria-current={last?'page':undefined}>{item.label}</span>}</li>;
+  })}</ol>
+ </nav>;
 }

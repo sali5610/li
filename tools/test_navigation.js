@@ -159,4 +159,79 @@ assert.ok(emitted.includes("li:inquiry-changed"),"React research gets the update
 assert.ok(emitted.includes("li:note-view-changed"),"React note detail refreshes on route return");
 assert.equal(emitted.filter(x=>x==="li:library-view-changed").length,8,
  "Every React route change notifies the library once without a native render");
-console.log("PASS S118 native fallback + React route data side effects without double-rendering");
+// Chat 1: backup must use the draft the learner edits in React, not a hidden
+// vanilla textarea, and imported data must refresh React views without redraw.
+const exportFrom=html.indexOf(" function liExportPersonalData(){");
+const exportTo=html.indexOf(" document.getElementById(\"export-personal-data\")",exportFrom);
+assert.ok(exportFrom>=0&&exportTo>exportFrom,"Locate shared export action");
+const exportSource=html.slice(exportFrom,exportTo);
+let exported=null;
+let savedReactDraft="CURRENT_REACT_DRAFT";
+const exportSandbox={
+ Date,field:{value:"OLD_HIDDEN_DRAFT"},
+ LI_DRAFT_KEY:"li.private.case-draft.v1",processedCases:[],savedQuestions:[],
+ collectedIdeas:[],savedContent:[],liBuddyNames:{},
+ window:{liReactRouter:{},localStorage:{getItem:()=>savedReactDraft}},
+ Blob:class{constructor(parts){this.json=parts.join("");}},
+ URL:{createObjectURL(blob){exported=JSON.parse(blob.json);return"blob:test";},revokeObjectURL(){}},
+ document:{createElement:()=>({click(){},remove(){}}),body:{append(){}}},
+ setTimeout(){},toast(){}
+};
+vm.runInNewContext(exportSource+"\nliExportPersonalData()",exportSandbox);
+assert.equal(exported.draft,"CURRENT_REACT_DRAFT","Export actual React Case draft");
+savedReactDraft=null;
+vm.runInNewContext(exportSource+"\nliExportPersonalData()",exportSandbox);
+assert.equal(exported.draft,"","Never export a stale hidden draft for React user");
+
+// Use the real import action (including validator and rollback), stub only
+// the browser's file/storage/confirmation APIs and unrelated native renderers.
+const importFrom=html.indexOf(" async function liImportPersonalData(file){");
+const importTo=html.indexOf(" window.liPersonalBackup=Object.freeze",importFrom);
+assert.ok(importFrom>=0&&importTo>importFrom,"Locate validated backup importer");
+const importSource=html.slice(importFrom,importTo);
+const emittedImport=[],dataStore=new Map(),nativeRenders=[];
+const failNative=name=>()=>nativeRenders.push(name);
+const importData={
+ schema:1,cases:[{title:"Imported",revision:"Sample",correct:false}],
+ questions:[{question:"Remember me"}],ideas:[{id:"idea-1",text:"Idea",savedAt:"2026-11-21"}],
+ savedContent:[{type:"lesson",id:"L03-1-2",savedAt:"2026-11-21"}],
+ draft:"IMPORTED_REACT_DRAFT"
+};
+const importSandbox={
+ LI_STORAGE_KEY:"li.private.library.v1",LI_DRAFT_KEY:"li.private.case-draft.v1",
+ LI_BUDDY_NAMES_KEY:"li.buddy-address.v1",LI_BUDDY_DEFAULT_NAMES:{warm:"",teasing:"",serious:""},
+ liBackupImport:{loading:false,error:""},liPublishBackup(){},
+ field:{value:"OLD_HIDDEN_DRAFT"},processedCases:[],savedQuestions:[],collectedIdeas:[],savedContent:[],
+ liStorageError:false,liBuddyNames:{},liRestoreBuddyNames(){return{};},liRefreshBuddyNameInputs(){},
+ liNormalizeBuddyName:x=>x,Date,JSON,Event:class{constructor(type){this.type=type;}},
+ window:{
+  liReactRouter:{},
+  localStorage:{
+   getItem:key=>dataStore.has(key)?dataStore.get(key):null,
+   setItem:(key,value)=>dataStore.set(key,value),
+   removeItem:key=>dataStore.delete(key)
+  },
+  confirm:()=>true,dispatchEvent:event=>emittedImport.push(event.type),
+  liLibraryShelf:{renderHome:failNative("home"),renderCollection:failNative("collection")},
+  liBookmarks:{refresh:failNative("bookmark")},
+  liLanguage:{translate:x=>x}
+ },
+ renderCaseArchive:failNative("archive"),renderSavedQuestions:failNative("questions"),
+ refreshQuestionBookmark:failNative("questionBookmark"),
+ toast(){}
+};
+const backupFile={size:512,text:async()=>JSON.stringify(importData)};
+vm.runInNewContext(importSource+"\nliImportPersonalData(backupFile)",{
+ ...importSandbox,backupFile
+}).then(ok=>{
+ assert.equal(ok,true,"Validated React backup import succeeds");
+ assert.equal(dataStore.get("li.private.case-draft.v1"),"IMPORTED_REACT_DRAFT");
+ assert.equal(importSandbox.field.value,"OLD_HIDDEN_DRAFT","No React import write to hidden textarea");
+ assert.equal(nativeRenders.length,0,"No hidden native redraw during React import");
+ assert.equal(emittedImport.join(","),
+  "li:library-view-changed,li:inquiry-changed,li:note-view-changed",
+  "React Library/Case/Note surfaces refresh from canonical imported data");
+ assert.equal(importSandbox.savedContent.length,1);
+ console.log("PASS S118 native+React routing and canonical React backup import/export");
+}).catch(error=>{console.error(error);process.exitCode=1;});
+

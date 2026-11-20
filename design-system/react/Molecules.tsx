@@ -47,7 +47,7 @@ export function InlineFeedback({tone,message,title,actionLabel,onAction}:InlineF
 }
 
 /** Stage05 controlled presentation-only status, not a persistence confirmation. */
-export type SaveState='unsaved'|'saving'|'saved-device'|'synced'|'offline'|'error';
+export type SaveState='unsaved'|'saving'|'saved-device'|'queued'|'synced'|'offline'|'unavailable'|'error';
 export interface SaveStatusProps {
  state:SaveState;message:string;detail?:string;retryLabel?:string;onRetry?:()=>void;
 }

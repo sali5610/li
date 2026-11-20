@@ -6,6 +6,8 @@ import type {Attempt,Rating} from '../native-bridge';
 import {Button,Card} from '../../../../design-system/react/Components';
 import {Field} from '../../../../design-system/react/Controls';
 import {Heading,Text,Progress} from '../../../../design-system/react/Atoms';
+import {SaveStatus} from '../../../../design-system/react/Molecules';
+import type {SaveState} from '../../../../design-system/react/Molecules';
 import {L09_LESSON_ID} from './ports';
 import type {LearningPorts,SyncState} from './ports';
 import './journey.css';
@@ -33,9 +35,9 @@ function resumedPhase(a:Attempt):Phase{
  return 'read';
 }
 function statusText(status:SyncState,vi:boolean){
- if(vi)return {synced:'Đã đồng bộ',queued:'Đang chờ đồng bộ',
+ if(vi)return {synced:'Đã đồng bộ',queued:'Đã lưu trên thiết bị · đang chờ đồng bộ',
    'on-device':'Đã lưu trên thiết bị','unavailable':'Chưa thể xác nhận đồng bộ'}[status];
- return {synced:'Synced',queued:'Waiting to sync',
+ return {synced:'Synced',queued:'Saved on device · waiting to sync',
    'on-device':'Saved on this device',unavailable:'Sync status unavailable'}[status];
 }
 
@@ -245,6 +247,11 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  const rated=attempt.ratings.filter(x=>x!==null).length;
  const percent=attempt.reviewed?100:attempt.submitted?75:Math.round(answered/4*50);
  const accessibleProgress=vi?'Tiến trình hoàn thành lượt bài học':'Lesson attempt progress';
+ const saveViewState:SaveState=locked?'error':saving?'saving':
+  sync==='synced'?'synced':sync==='queued'?'queued':
+  sync==='on-device'?'saved-device':'unavailable';
+ const saveMessage=locked?(vi?'Lưu thất bại':'Save failed'):
+  saving?(vi?'Đang lưu…':'Saving…'):statusText(sync,vi);
  const transition=reduced?{duration:0}:{duration:0.18,ease:'easeOut' as const};
  return <section className="li-learning-journey" data-li-react-journey="L09-1-2" lang={attempt.locale}>
   <header className="li-learning-header">
@@ -285,14 +292,16 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      </div>)}
    </div>
   </aside>
-  <div className="li-learning-save" role="status" aria-live="polite">
+  <div className="li-learning-save">
    <Progress label={accessibleProgress} value={percent}/>
-   <Text role="support">{saving?(vi?'Đang lưu…':'Saving…'):statusText(sync,vi)}
-     {' · '}{attempt.reviewed?(vi?'Đã tự đánh giá 1 lượt, chưa phải điểm thông thạo':'Self-review completed, not a mastery grade'):
-     attempt.submitted?(vi?'Đã nộp · tự đánh giá '+rated+'/4':'Submitted · self-review '+rated+'/4'):
-     (vi?'Đủ điều kiện nộp '+answered+'/4 câu':'Submission-ready '+answered+'/4 answers')}</Text>
+   <SaveStatus state={saveViewState} message={saveMessage}
+    detail={locked?error:undefined}/>
+   <Text role="support">{attempt.reviewed?
+    (vi?'Đã tự đánh giá 1 lượt, chưa phải điểm thông thạo':'Self-review completed, not a mastery grade'):
+    attempt.submitted?(vi?'Đã nộp · tự đánh giá '+rated+'/4':'Submitted · self-review '+rated+'/4'):
+    (vi?'Đủ điều kiện nộp '+answered+'/4 câu':'Submission-ready '+answered+'/4 answers')}</Text>
   </div>
-  {error&&<p className="li-learning-error" role="alert">{error}</p>}
+  {error&&!locked&&<p className="li-learning-error" role="alert">{error}</p>}
   {locked&&<div className="li-learning-recovery">
    <Button disabled={saving} onClick={()=>void retryFailedSave()}>
     {vi?'Thử lưu lại':'Retry saving'}

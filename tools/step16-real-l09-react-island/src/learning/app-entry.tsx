@@ -5,6 +5,7 @@ import type {LearningPorts} from './ports';
 import '../../../../design-system/react/atoms.css';
 import '../../../../design-system/react/controls.css';
 import '../../../../design-system/react/components.css';
+import '../../../../design-system/react/molecules.css';
 import '../../../../design-system/react/focus.css';
 
 /** Mount into Chat 1's existing lesson route (not a second app).

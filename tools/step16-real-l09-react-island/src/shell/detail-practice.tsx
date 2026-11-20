@@ -375,7 +375,7 @@ export function ConfirmNoteAction({label,description,onConfirm,iconOnly=false,da
  };
  return <>
   <button ref={trigger} type="button"
-   className={danger?'library-danger-link library-icon-action':'library-text-link'}
+   className={danger?(iconOnly?'library-danger-link library-icon-action':'library-danger-link library-text-link'):'library-text-link'}
    aria-label={label} onClick={()=>setAsking(true)}>
    {iconOnly?<LiIcon name="trash" size={20}/>:label}
   </button>

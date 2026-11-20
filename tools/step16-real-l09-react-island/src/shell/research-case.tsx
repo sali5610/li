@@ -93,6 +93,8 @@ function CaseScene(){
  const [bookmarked,setBookmarked]=useState(readBookmark);
  useEffect(()=>{
   const sync=()=>{
+   const permitted=document.documentElement.classList.contains('li-auth-verified');
+   if(!permitted){setChoice(null);setMessage('');}
    setBookmarked(readBookmark());
    const saved=inquiryFlow().getCaseDraft();
    setRevision(previous=>previous===saved?previous:saved);

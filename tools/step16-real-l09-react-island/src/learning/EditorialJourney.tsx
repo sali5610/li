@@ -1,7 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
 import {initial} from '../native-bridge';
-import type {Attempt,MethodAttempt,MethodCategory,MethodChoice,PastEditorialAttempt} from '../native-bridge';
+import type {Attempt,MethodAttempt,MethodCategory,MethodChoice,PastEditorialAttempt,EditorialReviewSnapshot} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
 import {isReleasedLessonId} from './released-lessons';
 import {Button,Card} from '../../../../design-system/react/Components';
@@ -615,20 +615,35 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   });
  }
  async function submit(){
-  if(!attempt||locked||saving||attempt.submitted)return;
+  if(!attempt||!lesson||locked||saving||attempt.submitted)return;
   if(attempt.draft.some(s=>s.trim().length<MIN)){
    setError('Cần trả lời đủ 4 câu, mỗi câu ít nhất 12 ký tự.');return;
   }
+  // Freeze the same VI/EN rubric and solution used for this submission.
+  // A later content release must never silently change an already submitted review.
+  const rubricVersion=lesson.version+':rubric:0-8';
+  const reviewSnapshot:EditorialReviewSnapshot={
+   contentVersion:lesson.version,rubricVersion,
+   modelAnswer:{
+    vi:lesson.content.localized.vi.independent.model_answer_md,
+    en:lesson.content.localized.en.independent.model_answer_md
+   },
+   criteria:{
+    vi:rubricRows(lesson.content.localized.vi.reflection.md),
+    en:rubricRows(lesson.content.localized.en.reflection.md)
+   }
+  };
   setError('');
   const next:Attempt={...attempt,submitted:true,submittedAt:new Date().toISOString(),
    submission:[...attempt.draft] as Attempt['submission'],submissionLocale:attempt.locale,
-   contentVersion:lesson?.version,rubricVersion:(lesson?.version??'unknown')+':rubric:0-8',
+   contentVersion:lesson.version,rubricVersion,reviewSnapshot,
    attemptNumber:attempt.attemptNumber??1,answerRevealed:false};
   if(await save(next))moveTo('feedback');
  }
  async function revealAnswer(){
-  if(!attempt||!persistedAttempt?.submitted||locked||saving||
-     persistedAttempt.answerRevealed)return;
+  if(!attempt||!lesson||!persistedAttempt?.submitted||locked||saving||
+     persistedAttempt.answerRevealed||
+     (attempt.contentVersion!==lesson.version&&!attempt.reviewSnapshot))return;
   setError('');
   if(await save({...attempt,answerRevealed:true})){
    cancelAnimationFrame(focusFrame.current);
@@ -651,8 +666,9 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   void save({...current,ratings});
  }
  async function finish(){
-  if(!attempt||!persistedAttempt?.answerRevealed||locked||saving||
-     !attempt.submitted||attempt.reviewed)return;
+  if(!attempt||!lesson||!persistedAttempt?.answerRevealed||locked||saving||
+     !attempt.submitted||attempt.reviewed||
+     (attempt.contentVersion!==lesson.version&&!attempt.reviewSnapshot))return;
   if(attempt.ratings.some(v=>v===null)){
    setError('Chọn đủ bốn tiêu chí tự đánh giá.');return;
   }
@@ -704,7 +720,11 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  </section>;
  const locale=attempt.locale,vi=locale==='vi',content=lesson.content.localized[locale];
  const independent=quiz(content.independent.prompt_md);
- const rubrics=rubricRows(content.reflection.md);
+ const rubrics=attempt.reviewSnapshot?.criteria[locale]??rubricRows(content.reflection.md);
+ const modelAnswer=attempt.reviewSnapshot?.modelAnswer[locale]??
+  content.independent.model_answer_md;
+ const reviewVersionMismatch=attempt.submitted&&!!attempt.contentVersion&&
+  attempt.contentVersion!==lesson.version&&!attempt.reviewSnapshot;
  const labels:Record<Phase,string>=vi?
   {read:'Đọc bài',guided:'Thử áp dụng',methods:'Thần Chú',practice:'Làm bài',feedback:'Đối chiếu',progress:'Tiến độ'}:
   {read:'Learn',guided:'Guided example',methods:'Spells',practice:'Practice',feedback:'Feedback',progress:'Progress'};
@@ -905,7 +925,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     <ol className="li-learning-submission-list">
      {independent.questions.map((q,i)=><li key={i}>
       <Text role="support">{q}</Text>
-      <p className="li-learning-submitted-answer">{(attempt.submission??attempt.draft)[i]}</p>
+      <p className="li-learning-submitted-answer">{(persistedAttempt.submission??persistedAttempt.draft)[i]}</p>
      </li>)}
     </ol>
     {!persistedAttempt.answerRevealed?
@@ -913,13 +933,16 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       <Text role="support">{vi?
        'Bài làm đã lưu. Đáp án mẫu vẫn đóng đến khi mày chủ động mở.':
        'Your answers are saved. The model answer stays hidden until you choose to reveal it.'}</Text>
-      <Button disabled={saving||locked} onClick={()=>void revealAnswer()}>
+      {reviewVersionMismatch&&<Text role="support">{vi?
+       'Bài đã nộp theo phiên bản cũ nhưng thiếu bản chụp rubric. Tao giữ bài làm, không dùng đáp án mới để tự chấm sai phiên bản.':
+       'This submitted attempt predates a rubric revision and has no frozen review. Your answers remain saved; the new rubric cannot be applied to the old attempt.'}</Text>}
+      <Button disabled={saving||locked||reviewVersionMismatch} onClick={()=>void revealAnswer()}>
        {vi?'Mở đáp án và rubric':'Reveal model answer and rubric'}
       </Button>
      </div>:
      <>
       <Heading id="li-editorial-answer" level={3} role="titleMedium">{vi?'Đáp án mẫu · đã mở sau khi lưu':'Model answer · revealed after saving'}</Heading>
-      <Markdown md={content.independent.model_answer_md}/>
+      <Markdown md={modelAnswer}/>
       <section id="l0911-reflection"><Markdown md={content.reflection.md}/>{mentor('reflection')}</section>
       <Heading level={3} role="titleMedium">{vi?'Tự đánh giá 4 tiêu chí':'Self-rate four criteria'}</Heading>
      </>}
@@ -937,7 +960,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     </div>)}
     {persistedAttempt.answerRevealed&&(persistedAttempt.reviewed?
      <Button onClick={()=>moveTo('progress')}>{labels.progress}</Button>:
-     <Button disabled={saving||locked||attempt.reviewed} onClick={()=>void finish()}>
+     <Button disabled={saving||locked||attempt.reviewed||reviewVersionMismatch} onClick={()=>void finish()}>
       {vi?'Lưu tự đánh giá':'Save self-review'}
      </Button>)}
    </Card>}

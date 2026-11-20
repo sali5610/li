@@ -148,4 +148,55 @@ assert.match(authPanel,/li:auth-verified-changed/);
 assert.match(authPanel,/language\.liLanguage\?\.set\?\.\(next\)/);
 assert.match(authPanel,/addEventListener\('li:localechange',sync\)/);
 assert.match(router,/history\.length=0;active='home'/);
-console.log("PASS actual React router: auth/back/history/URL/17-staging preview/no observer + React bilingual settings");
+// A personal draft is an invited staging lesson, NOT a public release.
+// Exercise the real native popstate listener used by the React route bridge.
+const nativeCatalog=read("site/assets/catalog-drilldown.js");
+const draftPreview=read("tools/step16-real-l09-react-island/src/learning/staging-draft-preview.tsx");
+const reactCatalog=read("tools/step16-real-l09-react-island/src/shell/home-catalog.tsx");
+const start=nativeCatalog.indexOf('window.addEventListener("popstate",()=>{');
+const end=nativeCatalog.indexOf('\npath=readPathFromUrl();',start);
+assert.ok(start>=0&&end>start,"Canonical Catalog popstate handler must exist");
+const listener=nativeCatalog.slice(start,end);
+let pop=null,visitedRoute='',routeOptions=null,verified=true,opened=false;
+const deepLink=new URL('https://sali5610.github.io/li/?lesson=L09-1-3');
+const popWindow={
+ liPersonalStudyRoutes:{'L09-1-3':'draftLessonL0913'},
+ liReleasedLessonRoutes:{'L09-1-2':'lessonL09'},
+ addEventListener:(kind,fn)=>{if(kind==='popstate')pop=fn;},
+ navigate:(route,opts)=>{visitedRoute=route;routeOptions=opts;},
+ dispatchEvent:()=>{}
+};
+const popDocument={
+ documentElement:{classList:{contains:id=>id==='li-auth-verified'?verified:
+  id==='li-account-open'?opened:false}},
+ getElementById:id=>id==='page-draftLessonL0913'?{}:null
+};
+const popContext={window:popWindow,document:popDocument,location:deepLink,
+ URL,Event:class{constructor(type){this.type=type;}},path:[],
+ render:()=>{},readPathFromUrl:()=>[]};
+vm.runInNewContext(listener,popContext);
+assert.equal(typeof pop,'function');
+pop();
+assert.equal(visitedRoute,'draftLessonL0913',"Browser Back must restore the exact personal lesson");
+assert.equal(routeOptions.remember,false);
+assert.equal(routeOptions.syncUrl,false);
+verified=false;visitedRoute='';
+pop();
+assert.equal(visitedRoute,'home',"Unverified session cannot reactivate a personal lesson");
+verified=true;opened=true;visitedRoute='';
+pop();
+assert.equal(visitedRoute,'home',"Account overlay blocks personal lesson popstate");
+assert.match(nativeCatalog,/const personal=personalAllowed\?\(window\.liPersonalStudyRoutes\|\|\{\}\):\{\}/);
+assert.match(nativeCatalog,/function openForLesson\(id\)/);
+assert.match(nativeCatalog,/window\.liPersonalStudyRoutes\?\.\[id\]/);
+assert.match(nativeCatalog,/setPath\(\[found\.group\.id,found\.field\.id,found\.course\.id\],false\)/);
+assert.match(draftPreview,/liPersonalStudyRoutes=Object\.freeze\(routeMap\)/);
+assert.match(draftPreview,/const requested=new URLSearchParams\(window\.location\.search\)\.get\('lesson'\)/);
+assert.match(draftPreview,/app\.liAppRouter\?\.navigate\(direct,\{remember:false,syncUrl:false\}\)/);
+assert.match(draftPreview,/VITE_LI_AUTH_TARGET!=='github-pages-staging'/);
+assert.match(reactCatalog,/Personal study · Complete lesson/);
+assert.match(reactCatalog,/Open lesson/);
+assert.match(reactCatalog,/Progress could not be verified/);
+assert.match(locale,/\[data-li-react-screen="catalog"\]/);
+
+console.log("PASS actual React router: auth/back/history/URL/17-staging preview/deep-link/Back/no observer + React bilingual settings");

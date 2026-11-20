@@ -46,7 +46,13 @@ let activeLessonId=null,reviewedInSession=false,viewSession=0;
 const T12_OWNER="li.sync.local-owner.v1";
 const T12_PREFIX="li.spell.t12.resume.v1:";
 let t12Draft={context:"",next:"",answer:""};
-let t12SavedOnDevice=false,t12StorageError="";
+let t12SavedOnDevice=false,t12StorageError="",t12LocalModified=false;
+function t12NotifySync(){
+ if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
+  window.dispatchEvent(new Event("li:private-personal-change"));
+}
+const t12Terminal=()=>JSON.stringify({schema:"li.spell.t12.v1",phase:2,
+ context:"",next:"",answer:"",updatedAt:new Date().toISOString()});
 // Restore only the verified active owner's cue for the same lesson context.
 // Device-local only: no unapproved Neon writer or cross-device sync.
 function t12Key(){
@@ -86,7 +92,8 @@ function t12Write(){
    updatedAt:new Date().toISOString()});
   localStorage.setItem(key,raw);
   if(localStorage.getItem(key)!==raw)throw Error("SAVE_VERIFY_FAILED");
-  t12SavedOnDevice=true;t12StorageError="";
+  t12SavedOnDevice=true;t12StorageError="";t12LocalModified=true;
+  t12NotifySync();
   return true;
  }catch{
   t12SavedOnDevice=false;
@@ -98,9 +105,13 @@ function t12Clear(){
  const key=t12Key();
  if(!key){t12SavedOnDevice=false;t12StorageError="";return true;}
  try{
-  localStorage.removeItem(key);
-  if(localStorage.getItem(key)!==null)throw Error("DELETE_VERIFY_FAILED");
-  t12SavedOnDevice=false;t12StorageError="";
+  // A redacted terminal checkpoint prevents stale cloud drafts resurfacing
+  // after reset or completion, even on a device without prior observation.
+  const cleared=t12Terminal();
+  localStorage.setItem(key,cleared);
+  if(localStorage.getItem(key)!==cleared)throw Error("DELETE_VERIFY_FAILED");
+  t12SavedOnDevice=false;t12StorageError="";t12LocalModified=true;
+  t12NotifySync();
   return true;
  }catch{
   t12StorageError="Không xóa được dấu vết T12 đã lưu trên thiết bị.";
@@ -168,8 +179,8 @@ function draw(){
  root.innerHTML='<div class="spell-activity-head"><div><span class="kicker">'+active+' · <span>THỬ THI TRIỂN</span></span><h2>'+e.title+'</h2></div><span class="spell-state">'+(feedback?"Đã đối chiếu":phase===0?"Đang chuẩn bị":"Đang thực hành")+'</span></div><div class="spell-activity-body">'+inner+(feedback?'<div class="spell-feedback" role="status" tabindex="-1"><strong>Phản hồi để tự kiểm chứng</strong><p>'+feedbackMarkup(feedback)+'</p><p class="small">Bài mẫu minh họa, không chứng nhận thành thạo, IQ hay kết quả học thuật ngoài nhiệm vụ này.</p></div>':"")+'</div><footer class="spell-activity-footer"><p class="small">'+
   (active==="T12"?
    (t12StorageError?escape(t12StorageError):
-    t12SavedOnDevice?"Dấu vết T12 đã lưu trên thiết bị này · không đồng bộ.":
-     "T12 tự lưu dấu vết trên thiết bị khi nhập · không đồng bộ."):
+    t12SavedOnDevice?"Dấu vết đã lưu trên máy · sẽ đồng bộ khi online.":
+     "T12 lưu bản nháp trên máy và đồng bộ khi có mạng."):
    "Tự chọn, có thể bỏ qua. Trừ mốc T02 do bạn chủ động đặt, nội dung điền không tự lưu hay gửi lên máy chủ.")+
   '</p>'+act("reset","Làm lại","action alt")+'</footer>';
 
@@ -199,6 +210,7 @@ function open(id,tab="guide",lessonId=null){
  active=id;activeLessonId=["L03-1-2","L09-1-2","L15-2-2"].includes(lessonId)?lessonId:null;
  phase=0;feedback="";reviewedInSession=false;viewSession++;privatePlaces=[];resumeNote="";
  t12Draft={context:"",next:"",answer:""};t12SavedOnDevice=false;t12StorageError="";
+ t12LocalModified=false;
  if(id==="T12"){
   const saved=t12Read();
   if(saved){
@@ -252,8 +264,8 @@ function check(){
  if(active==="T09")info=(radio("source")==="1"?"B là nguồn tốt hơn cho câu hỏi hẹp này. ":"Hãy kiểm tra lại provenance và cơ chế chọn người. ")+info;
  if(active==="T11")info=(radio("method")==="1"?"T03 phù hợp cho thủ tục mới. ":"Chưa có lần học trước nên T02 không phù hợp ngay. ")+info;
  if(active==="T05")info=(checked("evidence").sort().join(",")==="0,1"?"Bạn chọn hai dữ kiện quan trọng, không chọn khẳng định quá mức. ":"Dữ kiện không có nhóm so sánh và khuyến mãi đồng thời đều quan trọng. ")+info;
- reviewedInSession=true; // all task-specific fields completed and model feedback unlocked
- if(active==="T12")t12Clear(); // completed activity is no longer an unfinished cue
+ if(active==="T12"&&!t12Clear()){showMessage(t12StorageError);return;}
+ reviewedInSession=true; // feedback follows successfully stored clearing state
  showMessage(info);
  if(active==="T02")try{localStorage.removeItem("li.spell.t02.due.v1")}catch(err){}
  root.querySelector(".spell-feedback")?.focus();
@@ -322,7 +334,10 @@ function performReact(action,values={}){
   }
  }
  const button=root.querySelector('[data-spell-action="'+action+'"]');
- if(!button)return false;button.click();notifyReactSpell();return true;
+ if(!button)return false;
+ const beforeSession=viewSession;
+ button.click();notifyReactSpell();
+ return !(active==="T12"&&action==="reset"&&viewSession===beforeSession);
 }
 function setup(){
  const page=document.getElementById("page-guideDetail");if(!page)return;
@@ -355,6 +370,23 @@ function setup(){
   case "clear":try{localStorage.setItem("li.spell.t02.due.v1",JSON.stringify({clearedAt:Date.now(),due:null}))}catch(err){}feedback="";draw();break;
   }
  });
+ if(typeof window.addEventListener==="function"){
+  window.addEventListener("li:personal-sync-applied",ev=>{
+   if(active!=="T12"||!root||t12LocalModified||reviewedInSession)return;
+   const key=t12Key(),detail=ev.detail;
+   if(!key||!detail||detail.accountId!==localStorage.getItem(T12_OWNER)||
+      !Array.isArray(detail.keys)||!detail.keys.includes(key))return;
+   const saved=t12Read();
+   phase=saved?saved.phase:0;
+   t12Draft=saved?{context:saved.context,next:saved.next,answer:saved.answer}:
+    {context:"",next:"",answer:""};
+   resumeNote=saved?saved.next:"";
+   t12SavedOnDevice=!!saved;t12StorageError="";feedback="";
+   viewSession++;tabDraft=null;
+   if(!root.hidden)draw();
+   notifyReactSpell();
+  });
+ }
  window.LiSpellPractice={open,methods:Object.keys(exercises),getView,
   perform:performReact,setTab:switchTab,setT12Draft};
 }

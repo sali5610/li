@@ -97,10 +97,10 @@ function validHistory(a:Attempt):boolean{
    typeof p.guidedDraft!=='string'||p.guidedDraft.length>4000||
    typeof p.hint!=='boolean'||!['T06','T07','skip',null].includes(p.methodChoice)||
    (p.questionPrompts!==undefined&&
-    (typeof p.questionPrompts!=='object'||p.questionPrompts===null||
-     !(['vi','en'] as const).every(locale=>
-      tuple(p.questionPrompts?.[locale])&&
-      p.questionPrompts[locale].every(q=>q.trim().length>0))))||
+    !(['vi','en'] as const).every(locale=>{
+     const questions=p.questionPrompts?.[locale];
+     return tuple(questions)&&questions.every(q=>q.trim().length>0);
+    }))||
    !validMethodAttempts(p))return false;
   last=p.attemptNumber;
  }

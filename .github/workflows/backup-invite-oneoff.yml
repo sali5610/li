@@ -1,0 +1,31 @@
+name: TEMP one-off Backup / Invite revocation verification (no live writes)
+on:
+  pull_request:
+    branches: [integration/staging]
+    paths:
+      - '.github/workflows/backup-invite-oneoff.yml'
+      - 'tools/qa_oneoff_private_backup_browser.py'
+      - 'tools/step16-real-l09-react-island/tests/backup-revocation-oneoff.test.mjs'
+permissions:
+  contents: read
+jobs:
+  focused-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compile only backup and auth invite sources, test isolated IndexedDB and revoked signed session
+        working-directory: tools/step16-real-l09-react-island
+        run: |
+          npm install --no-audit --no-fund
+          npx tsc --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM --skipLibCheck --outDir .sync-test src/sync/contract.ts src/sync/local-dexie.ts src/sync/account-backup.ts src/sync/invite-access.ts src/sync/neon-session.ts src/sync/neon-api.ts
+          node --test tests/backup-revocation-oneoff.test.mjs
+      - name: Install minimal Chromium browser client
+        run: python3 -m pip install --quiet playwright==1.56.0
+      - name: Export and import FAKE library data via deployed GitHub Pages React Settings
+        run: python3 tools/qa_oneoff_private_backup_browser.py

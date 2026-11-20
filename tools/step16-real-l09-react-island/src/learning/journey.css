@@ -26,8 +26,8 @@
 .li-learning-rating select{width:100%;min-height:var(--li-space-12);
  padding:var(--li-space-3);font:inherit;color:var(--ink);
  border:1px solid var(--rule);border-radius:0;background:var(--porcelain)}
-.li-learning-rating select:focus-visible{outline:3px solid var(--li-color-general-focus-ring);
- outline-offset:var(--li-space-1)}
+/* Keyboard focus thickens the existing select edge, without a second green outline. */
+.li-learning-rating select:focus-visible{outline:0;border-width:3px;border-color:var(--moss)}
 .li-learning-hint{padding:var(--li-space-4);border:1px solid var(--rule)}
 .li-learning-hint summary{cursor:pointer}
 .li-learning-hint[open]{display:grid;gap:var(--li-space-3)}

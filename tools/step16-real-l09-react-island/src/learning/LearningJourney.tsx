@@ -16,6 +16,12 @@ import './journey.css';
  */
 type Phase='read'|'guided'|'practice'|'feedback'|'progress';
 const sequence:Phase[]=['read','guided','practice','feedback','progress'];
+const MAX_ANSWER_CHARS=4000;
+const comparableFields:(keyof Attempt)[]=['locale','draft','guidedDraft','hint','assisted',
+ 'submitted','submittedAt','submission','submissionLocale','ratings','reviewed'];
+function sameAttempt(a:Attempt,b:Attempt):boolean{
+ return comparableFields.every(field=>JSON.stringify(a[field])===JSON.stringify(b[field]));
+}
 const strip=(html:string)=>html.replace(/<[^>]*>/g,'').replace(/&amp;/g,'&')
  .replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&nbsp;/g,' ');
 
@@ -143,14 +149,50 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   });
   return operation;
  }
+ async function retryFailedSave(){
+  if(!attempt||!subject.current||!failedWrite.current||pendingWrites.current>0)return;
+  const uid=subject.current,unsaved=attempt;
+  setSaving(true);
+  try{
+   const learner=await ports.auth.requireInvitedLearner();
+   if(learner.subjectId!==uid)throw Error('LEARNER_CHANGED');
+   const latest=await ports.attempts.load({lessonId:L09_LESSON_ID,subjectId:uid});
+   // LocalStorage might have accepted our draft before Dexie failed. Retry that
+   // exact draft at its latest revision; never clobber another device/tab.
+   if(latest.revision!==revision.current&&!sameAttempt(latest.attempt,unsaved)){
+    setError('Tiến độ đã thay đổi ở nơi khác. Bản chưa lưu vẫn nằm trên màn hình; không tự ghi đè.');
+    return;
+   }
+   const saved=await ports.attempts.save({
+    lessonId:L09_LESSON_ID,subjectId:uid,attempt:unsaved,
+    expectedRevision:latest.revision
+   });
+   if(!saved?.revision)throw Error('SAVE_WITHOUT_REVISION');
+   revision.current=saved.revision;
+   failedWrite.current=false;
+   setLocked(false);
+   setError('');
+   await refreshStatus();
+  }catch{
+   setError('Chưa lưu lại được. Bản đang sửa vẫn trên màn hình; hãy kiểm tra bộ nhớ thiết bị và thử lại.');
+  }finally{if(mounted.current)setSaving(false);}
+ }
  function editDraft(index:number,value:string){
   if(!attempt||attempt.submitted||locked)return;
+  if(value.length>MAX_ANSWER_CHARS){
+   setError('Mỗi câu trả lời tối đa 4.000 ký tự để lưu an toàn.');return;
+  }
+  if(error)setError('');
   const draft=[...attempt.draft] as Attempt['draft'];
   draft[index]=value;
   void save({...attempt,draft});
  }
  function editGuided(value:string){
-  if(!attempt||locked)return;
+  if(!attempt||attempt.submitted||locked)return;
+  if(value.length>MAX_ANSWER_CHARS){
+   setError('Phần thử áp dụng tối đa 4.000 ký tự để lưu an toàn.');return;
+  }
+  if(error)setError('');
   void save({...attempt,guidedDraft:value});
  }
  function changeRating(index:number,value:string){
@@ -251,6 +293,12 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      (vi?'Đủ điều kiện nộp '+answered+'/4 câu':'Submission-ready '+answered+'/4 answers')}</Text>
   </div>
   {error&&<p className="li-learning-error" role="alert">{error}</p>}
+  {locked&&<div className="li-learning-recovery">
+   <Button disabled={saving} onClick={()=>void retryFailedSave()}>
+    {vi?'Thử lưu lại':'Retry saving'}
+   </Button>
+   <Text role="support">{vi?'Không tải lại trang khi bản nháp chưa lưu.':'Keep this page open while changes are unsaved.'}</Text>
+  </div>}
   <motion.div key={phase} initial={reduced?false:{opacity:0,y:8}}
    animate={{opacity:1,y:0}} transition={transition} className="li-learning-current">
    {phase==='read'&&<Card variant="flat-study" aria-labelledby="li-learn-read">

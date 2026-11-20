@@ -1,0 +1,275 @@
+{
+  "schema": 1,
+  "lesson_id": "L09-1-1",
+  "title": "Population, Sample & Variable Types",
+  "topics": [
+    "sampling",
+    "evidence",
+    "critique",
+    "knowledge",
+    "reading",
+    "methods",
+    "practice",
+    "models",
+    "reflection"
+  ],
+  "objectives": [
+    "Phân biệt tổng thể, mẫu và đơn vị quan sát",
+    "Phân loại biến từ ý nghĩa đo, không từ hình thức con số",
+    "Giới hạn kết luận theo đối tượng được chọn và phản hồi"
+  ],
+  "editorial": {
+    "status": "review",
+    "provenance": "Authored from Notion L09-1-1 Wave2A manuscript six VI/EN stage drafts, source-verified lesson body and existing sourced S125 quote IDs; original lesson text unchanged.",
+    "spoiler_policy": "Independent stage only metacognitive prompts; no 256/320 calculation, model answer or rubric score revealed before persisted independent submission. Reflection and extension require saved submission/review gating in React.",
+    "review_gate": "PO conditional acceptance requires complete live React structure, both L2 spell tasks, six-stage Lão Lý popup, source-grounded connections, preview rights and scoped CI; specialist academic signoff remains separately open."
+  },
+  "moments": [
+    {
+      "stage": "opening",
+      "anchor": "l09-goals",
+      "quote_id": "hume-evidence",
+      "relevance": "Hume's evidence principle fits the need to identify who or what a statistic is about before interpreting it.",
+      "vi": {
+        "label": "Đặt đúng câu hỏi",
+        "prompt": "90% nghe thuyết phục, nhưng lão chỉ hỏi: 90% của ai? Đếm đúng mười người mà đem nói thay cả nghìn người thì số không sai — người kể mới có vấn đề.",
+        "actions": [
+          {
+            "label": "Ai được nói tới?",
+            "reply": "Tách tất cả người mà kết luận muốn mô tả khỏi những người được chọn hoặc tự tham gia khảo sát trong thực tế."
+          },
+          {
+            "label": "Dữ liệu gì?",
+            "reply": "Mỗi dòng là một đơn vị quan sát; mỗi cột nên có định nghĩa và kiểu giá trị rõ ràng trước khi đem tính toán."
+          }
+        ],
+        "quote_comment": "Đừng suy rộng quá bằng chứng; xem đúng nhóm quan sát và loại biến đang đo."
+      },
+      "en": {
+        "label": "Begin with the population",
+        "prompt": "“90%” sounds persuasive. But 90% of whom? If ten volunteers stand in for a thousand learners, the arithmetic can be right while the claim goes wrong.",
+        "actions": [
+          {
+            "label": "Which people?",
+            "reply": "Separate the target population from the subset who actually supplied observations or survey responses in a specific study."
+          },
+          {
+            "label": "What are the variables?",
+            "reply": "Each row has an observational unit, and each column needs a definition and a value type before numerical analysis."
+          }
+        ],
+        "quote_comment": "Do not infer beyond the sample or misread what each variable measures."
+      },
+      "quote_ids": [
+        "hume-evidence",
+        "analects-think",
+        "mencius-sources"
+      ]
+    },
+    {
+      "stage": "concept",
+      "anchor": "l09-concept",
+      "quote_id": "analects-think",
+      "relevance": "Methodical thinking is relevant to separating categorical labels, counted values and continuous measures.",
+      "vi": {
+        "label": "Soi loại biến",
+        "prompt": "Mã sinh viên toàn số chưa chắc là định lượng. Cộng mấy cái ID lại rồi tính trung bình là thống kê kiểu gì vậy trời?",
+        "actions": [
+          {
+            "label": "Phân loại ra sao?",
+            "reply": "Hỏi giá trị có biểu diễn nhóm nhãn, số lần đếm hay đại lượng đo trên thang số; đừng chỉ nhìn thấy chữ số là gọi quantitative."
+          },
+          {
+            "label": "Likert 1–5 thì sao?",
+            "reply": "Một mức đồng ý 1–5 thường là thang thứ bậc ordinal; phép trừ hay lấy trung bình cần giả định đo lường rõ, không mặc nhiên là liên tục."
+          }
+        ],
+        "quote_comment": "Hình thức ký tự và ý nghĩa đo lường không phải một chuyện; biết biến đang đại diện cho cái gì mới phân loại đúng."
+      },
+      "en": {
+        "label": "Know the data type",
+        "prompt": "A learner ID may be numeric-looking without being a numerical measurement. Averaging ID numbers would be quite a creative mistake.",
+        "actions": [
+          {
+            "label": "How do I classify?",
+            "reply": "Ask whether values label categories, count occurrences or measure quantities; digit-shaped labels do not automatically become quantitative data."
+          },
+          {
+            "label": "What about a 1–5 scale?",
+            "reply": "A single five-point rating is ordinarily ordinal. Treating distances as numerically equal requires a stated measurement assumption."
+          }
+        ],
+        "quote_comment": "The appearance of a value and its measurement meaning are not the same thing; classify the underlying variable, not just its characters."
+      },
+      "quote_ids": [
+        "analects-think",
+        "box-models",
+        "aristotle-know"
+      ]
+    },
+    {
+      "stage": "guided",
+      "anchor": "l09-guided",
+      "quote_id": "analects-practice",
+      "relevance": "Worked classification benefits from retrieving earlier definitions and testing them against sample fields.",
+      "vi": {
+        "label": "Thử phân loại",
+        "prompt": "Trong ví dụ trường học, “lớp 11” là nhãn khối lớp, còn “11 tiết đã học” là một số đếm. Cùng số 11 mà khác hẳn nhé.",
+        "actions": [
+          {
+            "label": "Giờ học kiểu gì?",
+            "reply": "Số giờ đo được có thể là biến định lượng liên tục; số bài đã hoàn thành là số đếm rời rạc. Kiểm tra đơn vị theo từng cột."
+          },
+          {
+            "label": "Mẫu nào?",
+            "reply": "Phân biệt toàn bộ học sinh nhà trường với nhóm học sinh được đo; hỏi rõ có phải tất cả lớp hay chỉ người trong một buổi khảo sát."
+          }
+        ],
+        "quote_comment": "Phải đọc cả tên cột và cách đo; một chữ số tự nó không mang theo kiểu dữ liệu."
+      },
+      "en": {
+        "label": "Classify the field",
+        "prompt": "In the school example, “grade 11” is a class label while “11 lessons completed” is a count. The same digits can mean very different variables.",
+        "actions": [
+          {
+            "label": "What about study time?",
+            "reply": "Measured time may be a quantitative continuous variable; completed lessons form a discrete count. Record units separately."
+          },
+          {
+            "label": "Which sample?",
+            "reply": "Distinguish every student in the school from the students who actually supplied observations to the exercise."
+          }
+        ],
+        "quote_comment": "Read the variable definition and measurement procedure rather than assigning a type from the visible digits."
+      },
+      "quote_ids": [
+        "analects-practice",
+        "hume-evidence",
+        "mencius-sources"
+      ]
+    },
+    {
+      "stage": "independent",
+      "anchor": "l09-challenge",
+      "quote_id": "mencius-sources",
+      "relevance": "Source skepticism prevents premature inference from a single opt-in iOS sample without revealing the task-specific proportion.",
+      "vi": {
+        "label": "Tự giải bộ dữ liệu",
+        "prompt": "Bảng của app đã đủ dữ kiện cho bài này. Lão không phân loại tất cả cột hay tính kết luận hộ ngươi trước khi nộp đâu.",
+        "actions": [
+          {
+            "label": "Khởi đầu chỗ nào?",
+            "reply": "Viết rõ tổng thể đích và mẫu quan sát, rồi định nghĩa biến theo đúng cách thu thập dữ liệu thay vì nhìn mặt chữ số."
+          },
+          {
+            "label": "Lúc nào chưa chắc?",
+            "reply": "Khi nhóm được hỏi không có cùng cơ hội tham gia hoặc cách đo chưa rõ, hãy ghi giới hạn thay vì khẳng định cho mọi người dùng."
+          }
+        ],
+        "quote_comment": "Muốn suy rộng thì trước hết phải biết 8.000 người ấy là ai, 320 người đã tới từ đâu và các cột có ý nghĩa nào."
+      },
+      "en": {
+        "label": "Work with the dataset",
+        "prompt": "The app case contains the fields you need. I will not classify every column or write the population claim before you submit.",
+        "actions": [
+          {
+            "label": "Where do I begin?",
+            "reply": "State the target and observed sample first, then classify fields by the information recorded rather than by digit appearance."
+          },
+          {
+            "label": "When should I qualify?",
+            "reply": "If participation is restricted or measurement is unclear, mark the inference limit rather than claiming a population-level estimate."
+          }
+        ],
+        "quote_comment": "Before generalizing, determine the intended group, how observations were collected and what each column represents."
+      },
+      "quote_ids": [
+        "mencius-sources",
+        "analects-honesty",
+        "box-models"
+      ]
+    },
+    {
+      "stage": "reflection",
+      "anchor": "l09-rubric",
+      "quote_id": "analects-honesty",
+      "relevance": "Honest uncertainty after first submission fits reporting observed statistics separately from unknown parameters.",
+      "vi": {
+        "label": "Đối chiếu bằng chứng",
+        "prompt": "Sau khi nộp, xem lại có nhầm 320 người trả lời với cả 8.000 người không. Một con số đúng vẫn có thể bị gắn sai phạm vi.",
+        "actions": [
+          {
+            "label": "Tự chấm sao?",
+            "reply": "Đối chiếu bốn tiêu chí: tổng thể-mẫu, kiểu biến, thống kê mẫu so với tham số, và câu kết luận có giới hạn."
+          },
+          {
+            "label": "Nếu nhầm loại biến?",
+            "reply": "Đọc lại mục đích của cột: ID là nhãn, điểm mức độ hài lòng có thứ bậc, và số lần hoàn thành là số đếm."
+          }
+        ],
+        "quote_comment": "Rubric đánh giá khả năng phân loại và cách suy luận, không thưởng cho vẻ tự tin khi báo cáo dữ liệu."
+      },
+      "en": {
+        "label": "Review the evidence",
+        "prompt": "After submission, check whether you confused 320 respondents with all 8,000 users. Correct arithmetic can still support an incorrect scope.",
+        "actions": [
+          {
+            "label": "How should I rate?",
+            "reply": "Compare target versus sample, variable types, sample statistic versus parameter, and defensible inference wording."
+          },
+          {
+            "label": "What if I mistyped a field?",
+            "reply": "Return to the field definition: IDs label records, satisfaction levels have order, and completed lessons are counts."
+          }
+        ],
+        "quote_comment": "The rubric checks variable definitions and inference boundaries rather than confidence in a data report."
+      },
+      "quote_ids": [
+        "analects-honesty",
+        "darwin-confidence",
+        "analects-review"
+      ]
+    },
+    {
+      "stage": "extension",
+      "anchor": "l09-sources",
+      "quote_id": "bacon-studies",
+      "relevance": "Source-first statistical literacy requires knowing which exact textbook definitions support the classification.",
+      "vi": {
+        "label": "Đào sâu có trích nguồn",
+        "prompt": "Mở chương thống kê rồi tìm đúng định nghĩa population, sample và variable. Lão không cho dùng “nghe có vẻ khoa học” làm tài liệu tham khảo.",
+        "actions": [
+          {
+            "label": "Nên đọc mục nào?",
+            "reply": "Bắt đầu từ OpenStax 1.1 cho tổng thể/mẫu/thống kê rồi 1.2 cho categorical, discrete và continuous, sau đó tự lấy ví dụ."
+          },
+          {
+            "label": "Active recall?",
+            "reply": "Đóng trang, tự nói thành tiếng khác biệt giữa nhãn số, số đếm và đại lượng đo; viết một kết luận giữ đúng phạm vi mẫu."
+          }
+        ],
+        "quote_comment": "Luyện bằng ví dụ mới để chắc mình phân loại được cả những cột nhìn có vẻ giống nhau."
+      },
+      "en": {
+        "label": "Research the definitions",
+        "prompt": "Read the actual statistics sections and trace which passage supports each term. “Sounds scientific” is not a source.",
+        "actions": [
+          {
+            "label": "Which sections?",
+            "reply": "Start with OpenStax 1.1 on population and sample, then 1.2 on categorical/discrete/continuous variables, followed by original examples."
+          },
+          {
+            "label": "Active recall?",
+            "reply": "Close the page and explain numeric labels, counts and measurements without looking, then write one properly scoped sample conclusion."
+          }
+        ],
+        "quote_comment": "Practice on a new dataset so that visually similar column values do not fool your classification."
+      },
+      "quote_ids": [
+        "bacon-studies",
+        "analects-review",
+        "hume-evidence"
+      ]
+    }
+  ]
+}

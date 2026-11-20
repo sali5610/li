@@ -8,7 +8,7 @@ const LESSONS={
 };
 const client=import("./li-content-adapter.mjs").then(m=>m.contentClient);
 const lang=id=>{
- const react=id==="L09-1-2"?document.querySelector('[data-li-react-journey="L09-1-2"]'):null;
+ const react=document.querySelector('[data-li-react-journey="'+id+'"]');
  if(react?.getAttribute("lang")==="en"||react?.getAttribute("lang")==="vi")return react.getAttribute("lang");
  const active=document.querySelector('[data-lesson-id="'+id+'"] #'+id.slice(0,3).toLowerCase()+'-en');
  if(active)return active.getAttribute("aria-pressed")==="true"?"en":"vi";

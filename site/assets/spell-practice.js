@@ -379,7 +379,9 @@ function runAction(action){
  return false;
 }
 function performReact(action,values={}){
- if(!active||!reactOwnsSpell()||
+ // The explicit port also serves existing native fallback automation and
+ // authorized callers. It never depends on a hidden button or React mount.
+ if(!active||
    !document.documentElement.classList.contains("li-auth-verified")||
    document.documentElement.classList.contains("li-account-open")||
    !values||typeof values!=="object"||Array.isArray(values))return false;

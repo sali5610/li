@@ -935,8 +935,8 @@ assert ".li-state-scene[hidden]" in shared and "prefers-reduced-motion:reduce" i
 assert 'id="import-state-loading" role="status" aria-live="polite"' in page_html
 assert 'id="import-state-error" role="alert"' in page_html
 assert 'id="import-state-retry"' in page_html
-assert 'importLoading.hidden=false' in page_html and 'importError.hidden=false' in page_html
-assert 'importTrigger.disabled=true' in page_html and 'importTrigger.disabled=false' in page_html
+assert 'importLoading.hidden=!liBackupImport.loading' in page_html and 'importError.hidden=!liBackupImport.error' in page_html
+assert 'importTrigger.disabled=liBackupImport.loading' in page_html
 assert 'importInput.value="";' in page_html, "Selecting same file must work on Retry"
 assert 'document.getElementById("import-state-retry")?.addEventListener("click",()=>importInput?.click());' in page_html
 assert 'const data=JSON.parse(await file.text());' in page_html, "Only real async file read may show Loading"

@@ -110,8 +110,10 @@ export function createStagingLearningPorts():LearningPorts{
      const data=payload.schema==='li.native.lesson.v1'?payload.data:
        payload.schema==='li.step16.l09.native.v1'?payload.attempt:null;
      if(!valid(data))return 'unavailable';
-     const local=parse(localStorage.getItem(KEY));
-     return canonical(data)===canonical(local)?'synced':'on-device';
+     const localRaw=localStorage.getItem(KEY);
+     if(localRaw===null)return 'on-device';
+     parse(localRaw); // validate before comparing persisted source data
+     return canonical(data)===canonical(JSON.parse(localRaw))?'synced':'on-device';
     }catch{return 'unavailable';}
    }
   },

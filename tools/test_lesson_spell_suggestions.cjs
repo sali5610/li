@@ -40,14 +40,26 @@ assert(html.includes('lesson-spell-suggestions.js'),"Native pages must mount rec
 assert(native.includes("button.dataset.method=entry.shortId"),"Native suggestions must open real spell routes");
 assert(native.includes('button.dataset.spellPractice=index===0?"true":"false"'));
 assert(react.includes("spellSuggestions.lessons['L09-1-2']"),"React route shares the map");
-assert(react.includes("data-spell-practice={index===0?'true':'false'}"));
+assert(react.includes("openLessonSpell('L09-1-2',spell.shortId,index===0)"),
+ "L09 first suggestion must enter real practice, second opens explanation");
 assert(html.includes('practice:t.dataset.spellPractice==="true",lessonId:t.dataset.spellLesson||null'),
  "Lesson buttons must carry their real lesson context into the same practice owner");
 const wave=read("tools/step16-real-l09-react-island/src/learning/Wave1Journey.tsx");
 const reactDetail=read("tools/step16-real-l09-react-island/src/shell/detail-practice.tsx");
 const companion=read("site/assets/lesson-companion-native.js");
-assert(wave.includes("data-spell-lesson={id}"),"L03/L15 React suggestions forward lesson ID");
-assert(react.includes('data-spell-lesson="L09-1-2"'),"L09 React suggestions retain its context");
+assert(wave.includes("openLessonSpell(id,spell.shortId,index===0)"),
+ "L03/L15 React suggestions must keep their real lesson context");
+assert(react.includes("openLessonSpell('L09-1-2',spell.shortId,index===0)"),
+ "L09 React suggestions retain its released lesson ID");
+const parity=read("tools/step16-real-l09-react-island/src/learning/LessonDetailParity.tsx");
+assert(parity.includes("app.liMethods?.open(methodId,practice,lessonId)===true"),
+ "Visible React lesson must call the canonical method owner, not native delegated clicks");
+assert(!react.includes("data-spell-practice=")&&!wave.includes("data-spell-practice="),
+ "No visible React lesson may depend on native data-spell event delegation");
+assert(html.includes("open:(id,practice=false,lessonId=null)=>"),
+ "The approved method port must accept explicit lesson context");
+assert(reactDetail.includes("onClick={()=>openRoute(lessonRoute)}"),
+ "A suggested spell must offer a direct route back to its approved lesson");
 assert(native.includes("button.dataset.spellLesson=page.dataset.lessonId"),
  "Native suggestions also forward lesson context");
 assert(companion.includes("lessonId:c.lesson_id"),"Lão Lý forwards current lesson context");

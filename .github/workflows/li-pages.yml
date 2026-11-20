@@ -94,6 +94,8 @@ jobs:
         working-directory: tools/step16-real-l09-react-island
         env:
           VITE_LI_AUTH_TARGET: github-pages-staging
+          # Public only; unset until a separate FREE push Worker is approved/deployed.
+          VITE_LI_PUSH_STAGING_URL: ${{ vars.LI_PUSH_STAGING_URL }}
         run: |
           set -euo pipefail
           npm install --no-audit --no-fund
@@ -238,6 +240,8 @@ jobs:
           set -euo pipefail
           npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-config.cjs
           test -s site/sw.js
+          test -s site/assets/li-push-handler.js
+          grep -Fq 'li-push-handler.js' site/sw.js
           grep -Fq 'assets/li-content-adapter.mjs' site/sw.js
           grep -Fq 'content-packs/graph.json' site/sw.js
           grep -Fq 'content-packs/search.json' site/sw.js

@@ -141,6 +141,17 @@ assert.equal(api.getView().practiceCount,0,"Another account has no access to pri
 storage.set("li.sync.local-owner.v1","test-invited-owner");
 begin("T04");
 assert.equal(api.getView().practiceCount,1,"Returning owner recovers own receipt");
+// Each published lesson must own its own practice receipt, never 'standalone'.
+for(const lesson of ["L03-1-2","L09-1-2","L15-2-2"]){
+ begin("T04",lesson);
+ assert.equal(api.getView().practiceCount,0,lesson+" should not inherit standalone practice");
+ assert.equal(act("check",{reason:sentence}),true);
+ assert.equal(api.getView().practiceCount,1,lesson+" saved a scoped round");
+ const stored=JSON.parse(storage.get(practiceKey));
+ assert.equal(stored.scopes[lesson]?.T04?.count,1);
+}
+begin("T04");
+assert.equal(api.getView().practiceCount,1,"Published lessons do not inflate standalone count");
 window.liPersonalStudyRoutes={"L03-1-1":"draftLessonL0311"};
 begin("T04");
 assert.equal(api.setLessonContext("L03-1-1"),true);

@@ -6,6 +6,7 @@ import {createStagingLearningPorts} from '../learning/staging-ports.js';
 import {mountSharedNavigation} from '../shell/mount-navigation.js';
 import {mountKnowledgeSearch} from '../shell/knowledge-search.js';
 import {mountCaptureIdea} from '../shell/capture-idea.js';
+import {mountResearchAndCase} from '../shell/research-case.js';
 
 // Unified GitHub Pages staging: no guest app. React verifies signed invitation.
 const root=document.getElementById('li-staging-auth-root');
@@ -74,3 +75,7 @@ else mountKnowledgeSearch();
 // React-owned Nhặt Ý UI; persistence remains the existing invited-user private store.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountCaptureIdea,{once:true});
 else mountCaptureIdea();
+
+// Real React learner research/case views share the existing app navigation and private store.
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountResearchAndCase,{once:true});
+else mountResearchAndCase();

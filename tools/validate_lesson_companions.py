@@ -21,7 +21,8 @@ quotes={q["id"]:q for q in Q}
 assert len(quotes)>=24 and len(quotes)==len(Q),"Quote bank IDs not unique"
 
 assert INDEX.count('src="./assets/lesson-companion-native.js"')==1,"Native companion must load once"
-assert INDEX.count('src="./assets/laoly-context-s112.js?v=20261119-mentor-en"')==1
+# The app must load the one canonical mentor module; asset revision is allowed to change.
+assert len(re.findall(r'src="\./assets/laoly-context-s112\.js\?v=[A-Za-z0-9-]+"',INDEX))==1
 context_js=(ASSETS/"laoly-context-s112.js").read_text(encoding="utf-8")
 assert "window.liLessonCompanion?.getPlan?.(currentPage)" in context_js,"Chat popup not wired to lesson content"
 assert "window.liLessonCompanion?.getContext?.()" in qt,"Quote selection not wired to lesson content"

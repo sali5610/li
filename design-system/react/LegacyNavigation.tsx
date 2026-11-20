@@ -1,6 +1,7 @@
 import React from 'react';
 import type {ReactNode} from 'react';
 import {Dialog} from './Dialog';
+import {LiIcon} from './LucideIcons';
 
 export interface NavChoice {id:string;label:string;href:string;icon?:ReactNode}
 
@@ -14,7 +15,7 @@ export function MobileBottomNav({label,items,activeId,onNavigate}:MobileBottomNa
   <ul>{items.map(item=><li key={item.id}><a href={item.href}
    onClick={()=>onNavigate?.(item.id)}
    aria-current={item.id===activeId?'page':undefined}>
-   <span className="li-legacy-bottom-icon" aria-hidden="true">{item.icon||'✦'}</span>
+   <span className="li-legacy-bottom-icon" aria-hidden="true">{item.icon||null}</span>
    <span>{item.label}</span></a></li>)}</ul>
  </nav>;
 }
@@ -44,7 +45,7 @@ export function TopNavContext({mode,brand,homeHref,backHref,backLabel,
  return <header className="li-legacy-top-nav" data-li-legacy="top-nav" data-mode={mode}>
   <div className="li-legacy-top-brand">
    {mode==='back'&&backHref?<a href={backHref} className="li-legacy-top-back">
-    <span aria-hidden="true">‹</span>{backLabel||'Back'}</a>:
+    <LiIcon name="chevron-left" size={24}/>{backLabel||'Back'}</a>:
     <a className="li-legacy-top-home" href={homeHref}>
      {artwork?<span className="li-legacy-top-art" aria-hidden="true">{artwork}</span>:null}
      <span>{brand}</span>
@@ -61,7 +62,7 @@ export interface LaoLyCompanionProps {
 }
 export function LaoLyCompanion({label,title,open,onOpenChange,artworkSrc,
  description,children,closeLabel}:LaoLyCompanionProps){
- return <div data-li-legacy="companion">
+ return <div data-li-legacy="companion" data-open={open?'true':'false'}>
   <button className="li-legacy-companion-fab" type="button" aria-label={label}
    aria-haspopup="dialog" aria-expanded={open} onClick={()=>onOpenChange(true)}>
    <img src={artworkSrc} alt="" aria-hidden="true" loading="lazy"/>

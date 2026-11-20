@@ -34,8 +34,8 @@ export function dueInApp(p:ReminderPreference,delivery:ReminderDelivery,now:Date
  const due=new Date(now.getFullYear(),now.getMonth(),now.getDate(),hours,minutes).getTime();
  const time=now.getTime();
  // A user-snoozed reminder may reappear later today, never on a different day.
- if(delivery.snoozedUntil>0){
-  return localDay(new Date(delivery.snoozedUntil))===localDay(now)&&time>=delivery.snoozedUntil;
+ if(delivery.snoozedUntil>0&&localDay(new Date(delivery.snoozedUntil))===localDay(now)){
+  return time>=delivery.snoozedUntil&&time<delivery.snoozedUntil+90*60*1000;
  }
  // Don't fire a "morning" reminder at midnight just because the user opened
  // the app many hours later. A 90-minute window avoids a missed-day backlog.

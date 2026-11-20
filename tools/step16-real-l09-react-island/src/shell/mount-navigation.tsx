@@ -1,8 +1,8 @@
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {AppNavigationControls} from '../../../../design-system/react/AppNavigation';
 import type {AppNavigationItem,AppNavigationControlsProps} from '../../../../design-system/react/AppNavigation';
-import {openRoute,goBack,syncCanonicalRoute} from './app-router.js';
+import {openRoute,goBack,syncCanonicalRoute,mountReactRouter} from './app-router.js';
 import {useAppUiStore} from './app-store.js';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
 
@@ -22,15 +22,38 @@ const utilities:readonly AppNavigationItem[]=[
  {id:'settings',label:'Cài đặt',accessibleLabel:'Cài đặt',title:'Cài đặt',icon:'settings-2'}
 ];
 
+const english:Record<string,[string,string,string]>={
+ home:['Great Hall','Great Hall — Home','Home'],
+ catalog:['Library','Library — Explore fields','Explore fields'],
+ guide:['Spells','Spells — 13 learning techniques','13 learning techniques'],
+ library:['My Shelf','My Shelf — Your learning and notes','Your shelf'],
+ search:['Search','Search the library','Search'],
+ capture:['Capture','Capture an idea','Capture an idea'],
+ settings:['Settings','Settings','Settings']
+};
+function useAppLocale(){
+ const [locale,setLocale]=useState(()=>window.liLanguage?.get?.()||'vi');
+ useEffect(()=>{
+  const sync=()=>setLocale(window.liLanguage?.get?.()||'vi');
+  window.addEventListener('li:localechange',sync);
+  return()=>window.removeEventListener('li:localechange',sync);
+ },[]);
+ return locale;
+}
 function NavigationSurface({area,items}:{area:AppNavigationControlsProps['area'];items:readonly AppNavigationItem[]}){
- const active=useAppUiStore(state=>state.route);
- return <AppNavigationControls area={area} activeId={active} items={items} onNavigate={openRoute}/>;
+ const active=useAppUiStore(state=>state.route),locale=useAppLocale();
+ const localized=locale==='en'?items.map(item=>{
+  const [label,accessibleLabel,title]=english[item.id]||[item.label,item.accessibleLabel,item.title];
+  return {...item,label,accessibleLabel,title};
+ }):items;
+ return <AppNavigationControls area={area} activeId={active} items={localized} onNavigate={openRoute}/>;
 }
 function BackControl(){
- const active=useAppUiStore(state=>state.route);
+ const active=useAppUiStore(state=>state.route),locale=useAppLocale();
  return <button id="li-global-back" className="li-global-back"
   type="button" hidden={active==='home'} onClick={goBack}
-  aria-label="Quay lại màn trước" title="Quay lại">
+  aria-label={locale==='en'?'Go back':'Quay lại màn trước'}
+  title={locale==='en'?'Back':'Quay lại'}>
   <LiIcon name="arrow-left" size={20}/>
  </button>;
 }
@@ -56,17 +79,18 @@ export function mountSharedNavigation(){
  backHost.style.display='contents';
  originalBack.replaceWith(backHost);
  const backRoot=createRoot(backHost);
- // The old route controller remains authoritative; Zustand notifies all
- // React navigation roots together (including native-origin route changes).
- const observer=new MutationObserver(syncCanonicalRoute);
- document.querySelectorAll('section.page').forEach(section=>
-  observer.observe(section,{attributes:true,attributeFilter:['class']}));
+ // React owns route state. All native, draft-preview and browser history
+ // entrypoints dispatch through the same port and explicit state event.
+ const stopRouter=mountReactRouter();
+ window.addEventListener('li:route-changed',syncCanonicalRoute);
  syncCanonicalRoute();
  mounts.forEach(({root,area,items})=>
   root.render(<NavigationSurface area={area} items={items}/>));
  backRoot.render(<BackControl/>);
  return ()=>{
-  observer.disconnect();mounts.forEach(({root})=>root.unmount());
+  window.removeEventListener('li:route-changed',syncCanonicalRoute);
+  mounts.forEach(({root})=>root.unmount());
   backRoot.unmount();backHost.replaceWith(originalBack);
+  stopRouter();
  };
 }

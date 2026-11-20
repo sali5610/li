@@ -49,6 +49,27 @@ function NavigationSurface({area,items}:{area:AppNavigationControlsProps['area']
  }):items;
  return <AppNavigationControls area={area} activeId={active} items={localized} onNavigate={openRoute}/>;
 }
+/** The only visible account entry point: no hidden legacy Settings button. */
+function AccountControl(){
+ const locale=useAppLocale();
+ const open=(trigger:HTMLElement)=>{
+  const owner=window as Window&{
+   liAccountOverlay?:{open:(trigger:HTMLElement)=>boolean}
+  };
+  owner.liAccountOverlay?.open(trigger);
+ };
+ return <button id="li-react-account-trigger" className="tool-button"
+  type="button" aria-label={locale==='en'?'Manage account':'Quản lý tài khoản'}
+  title={locale==='en'?'Account':'Tài khoản'}
+  onClick={event=>open(event.currentTarget)}>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+   stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"
+   strokeLinejoin="round" aria-hidden="true">
+   <circle cx="12" cy="8" r="3.5"/>
+   <path d="M4 21v-2a8 8 0 0 1 16 0v2"/>
+  </svg>
+ </button>;
+}
 function BackControl(){
  const active=useAppUiStore(state=>state.route),locale=useAppLocale();
  return <button id="li-global-back" className="li-global-back"
@@ -86,7 +107,10 @@ export function mountSharedNavigation(){
  window.addEventListener('li:route-changed',syncCanonicalRoute);
  syncCanonicalRoute();
  mounts.forEach(({root,area,items})=>
-  root.render(<NavigationSurface area={area} items={items}/>));
+  root.render(<>
+   <NavigationSurface area={area} items={items}/>
+   {area==='utilities'&&<AccountControl/>}
+  </>));
  backRoot.render(<BackControl/>);
  return ()=>{
   window.removeEventListener('li:route-changed',syncCanonicalRoute);

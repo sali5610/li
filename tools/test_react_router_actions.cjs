@@ -164,7 +164,19 @@ assert.match(release,/VITE_LI_AUTH_TARGET==='github-pages-staging'/);
 assert.match(release,/export const learnableLessonIds/);
 assert.match(staging,/mountPersonalStudyRoutes\(\)/);
 assert.match(reactCatalog,/course\.lessons\.filter\(canOpenLesson\)/);
-assert.match(reactCatalog,/if\(canOpenLesson\(item\)\)\{app\.liCatalog\?\.openLesson\(item\.id\);return;\}/);
+assert.match(reactCatalog,/if\(canOpenLesson\(item\)\)\{/);
+assert.match(reactCatalog,/app\.liCatalog\?\.openLesson\(item\.id\)!==true/,
+ 'An unavailable canonical route must display an error instead of a silent dead-end');
+assert.match(reactCatalog,/window\.addEventListener\('li:lesson-attempt-changed',update\)/,
+ 'A saved offline lesson self-review must refresh course progress immediately');
+assert.match(reactCatalog,/window\.removeEventListener\('li:lesson-attempt-changed',update\)/,
+ 'React Catalog progress listener must be cleaned up');
+assert.match(reactCatalog,/pendingCatalogReturn=\{path:path\.slice\(0,3\)\.join\('\/'\),top:window\.scrollY\}/,
+ 'Opening a lesson should remember the selected course scroll position');
+assert.match(reactCatalog,/window\.addEventListener\('li:route-changed',onRoute\)/,
+ 'Returning to Catalog should restore the course location without replacing router history');
+assert.match(reactCatalog,/window\.addEventListener\('li:auth-verified-changed',onAuth\)/,
+ 'Pending scroll location must be cleared across invited-account changes');
 assert.match(reactCatalog,/openPath\(\[\.\.\.path\.slice\(0,3\),item\.id\]\)/);
 assert.match(staging,/liReleasedLessonRoutes=Object\.freeze\(Object\.fromEntries\(/);
 assert.match(catalog,/released\[id\]===lesson\.route/);

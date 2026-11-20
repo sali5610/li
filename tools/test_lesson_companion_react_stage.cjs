@@ -20,6 +20,13 @@ const sectionedReact=read("tools/step16-real-l09-react-island/src/learning/Secti
 assert.match(sectionedReact,/validateSectionedLesson/);
 assert.match(sectionedReact,/li:buddy-open/);
 assert.match(sectionedReact,/isReleasedLessonId/);
+// Real SectionedJourney opener: released lesson passes its exact ID to the
+// canonical allowlisted port; staging draft retains the invited-only bridge.
+assert.match(sectionedReact,/isReleasedLessonId\(id\)\s*\?app\.liMethods\.open\(method,false,id\)/);
+assert.match(sectionedReact,/app\.LiSpellPractice\?\.setLessonContext\?\.\(id\)===true/);
+assert.match(sectionedReact,/if\(!opened\)\{/);
+const authoredMethodPort=read("site/index.html");
+assert.match(authoredMethodPort,/if\(lessonId!==null\)\{[\s\S]*?window\.liReleasedLessonRoutes\?\.\[lessonId\]!==route\)return false/);
 for(const source of [react,wave]){
  assert.match(source,/li:mentor-phase-jump/,"React lesson must listen to Lão Lý navigation");
  assert.match(source,/li-learning-current/,"Jump must target visible React content");

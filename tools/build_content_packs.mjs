@@ -232,14 +232,17 @@ const ids=lessons.map(l=>l.id);
 // Release gate for authored editorial lessons: a complete learning experience
 // includes methods, six authored Lão Lý stages, sourced quotes and real links.
 // Drafts in content/editorial/ never enter packs, regardless of this check.
-const quoteBank=new Set(extractLiteral(read("site/assets/laoly-quotes-s121.js"),"QUOTES")
- .map(q=>q.id));
-const contentCourseIds=new Set(load("content/curriculum/legacy-catalog.v1.json").groups
- .flatMap(g=>g.fields.flatMap(f=>f.courses.map(c=>c.id))));
-const contentLessonIds=new Set(load("content/curriculum/legacy-catalog.v1.json").groups
- .flatMap(g=>g.fields.flatMap(f=>f.courses.flatMap(c=>c.lessons.map(l=>l.id)))));
 function requireCompleteEditorial(l){
  if(l.content?.format!=="editorial-structured-v1")return;
+ // Only touch editorial dependencies for a real editorial lesson, never for
+ // the existing Wave1-only isolated canonical-pack test fixture.
+ const quoteBank=new Set(extractLiteral(read("site/assets/laoly-quotes-s121.js"),"QUOTES")
+  .map(q=>q.id));
+ const legacy=load("content/curriculum/legacy-catalog.v1.json");
+ const contentCourseIds=new Set(legacy.groups
+  .flatMap(g=>g.fields.flatMap(f=>f.courses.map(c=>c.id))));
+ const contentLessonIds=new Set(legacy.groups
+  .flatMap(g=>g.fields.flatMap(f=>f.courses.flatMap(c=>c.lessons.map(l=>l.id)))));
  const id=l.id,companion=load("site/lessons/companion/"+id+".json");
  const required=["opening","concept","guided","independent","reflection","extension"];
  if(companion.schema!==1||companion.lesson_id!==id||

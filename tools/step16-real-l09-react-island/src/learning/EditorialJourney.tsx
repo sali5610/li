@@ -928,7 +928,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       <p className="li-learning-submitted-answer">{(persistedAttempt.submission??persistedAttempt.draft)[i]}</p>
      </li>)}
     </ol>
-    {!persistedAttempt.answerRevealed?
+    {(!persistedAttempt.answerRevealed||reviewVersionMismatch)?
      <div className="li-learning-hint">
       <Text role="support">{vi?
        'Bài làm đã lưu. Đáp án mẫu vẫn đóng đến khi mày chủ động mở.':
@@ -946,7 +946,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       <section id="l0911-reflection"><Markdown md={content.reflection.md}/>{mentor('reflection')}</section>
       <Heading level={3} role="titleMedium">{vi?'Tự đánh giá 4 tiêu chí':'Self-rate four criteria'}</Heading>
      </>}
-    {persistedAttempt.answerRevealed&&[0,1,2,3].map(i=><div className="li-learning-rating" key={i}>
+    {persistedAttempt.answerRevealed&&!reviewVersionMismatch&&[0,1,2,3].map(i=><div className="li-learning-rating" key={i}>
      <label htmlFor={'li-editorial-rating-'+id+'-'+i}>
       <strong>{rubrics[i]?.[0]??((vi?'Tiêu chí ':'Criterion ')+(i+1))}</strong>
      </label>
@@ -958,7 +958,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       </option>)}
      </select>
     </div>)}
-    {persistedAttempt.answerRevealed&&(persistedAttempt.reviewed?
+    {persistedAttempt.answerRevealed&&!reviewVersionMismatch&&(persistedAttempt.reviewed?
      <Button onClick={()=>moveTo('progress')}>{labels.progress}</Button>:
      <Button disabled={saving||locked||attempt.reviewed||reviewVersionMismatch} onClick={()=>void finish()}>
       {vi?'Lưu tự đánh giá':'Save self-review'}

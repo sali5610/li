@@ -19,7 +19,7 @@ function Example(){
  const [retry,setRetry]=useState(0);
  const disabled=state==='disabled';
  const [choice,setChoice]=useState<'vi'|'en'>(state==='english'?'en':'vi');
- const [selected,setSelected]=useState<string[]>(state==='selected'?['psychology']:[]);
+ const [selected,setSelected]=useState<string[]>(state==='selected'||(story==='filterGroup'&&variant==='Required')?['psychology']:[]);
  const [rowHits,setRowHits]=useState(0);
  const [savedState,setSavedState]=useState<SaveState>(
   ['unsaved','saving','saved-device','synced','offline','error'].includes(state)?state as SaveState:'unsaved'
@@ -56,7 +56,7 @@ function Example(){
     {value:'logic',label:t('Logic','Logic')},
     {value:'history',label:t('Lịch sử','History')}]}
    selected={selected} onChange={setSelected} disabled={disabled}
-   multiple={variant!=='Single'} allowEmpty={true}/>
+   multiple={variant!=='Single'} allowEmpty={variant!=='Required'}/>
   <p role="status">{t('Số mục được chọn: ','Selected filters: ')}{selected.length}</p>
  </div>;
  if(story==='listRow')return <div data-story-list-row>

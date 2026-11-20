@@ -49,6 +49,10 @@
  font:var(--li-weight-600) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
 .li-legacy-companion-fab img{width:44px;height:44px;object-fit:contain}
 .li-legacy-companion-fab:focus-visible{outline:0;border-width:3px;border-color:var(--moss)}
+/* Keep the opener mounted for native dialog focus return; visually hide while modal is open. */
+[data-li-legacy="companion"][data-open="true"] .li-legacy-companion-fab{
+ opacity:0;pointer-events:none
+}
 .li-legacy-companion-body{display:grid;gap:var(--li-space-4)}
 .li-legacy-companion-body>img{width:min(100%,160px);height:auto;object-fit:contain}
 .li-legacy-editorial{display:grid;gap:var(--li-space-3)}
@@ -153,7 +157,9 @@
  text-decoration:underline;text-underline-offset:var(--li-space-1)}
 .li-legacy-small-action:focus-visible{outline:0;border-width:3px;
  text-decoration:underline;text-decoration-thickness:3px}
-.li-legacy-small-action:disabled{opacity:.55;cursor:not-allowed}
+.li-legacy-small-action:disabled,.li-legacy-small-action[aria-disabled="true"]{
+ opacity:.55;cursor:not-allowed;pointer-events:none
+}
 .li-legacy-progress{display:flex;align-items:center;gap:var(--li-space-3);flex-wrap:wrap;
  font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
 .li-legacy-progress>span{flex:1 1 5rem}
@@ -180,10 +186,10 @@
 .li-legacy-calendar header strong{color:var(--moss);
  font:600 var(--li-type-title-md)/var(--li-leading-title-md) var(--li-font-editorial)}
 .li-legacy-calendar-actions{display:flex;gap:var(--li-space-2)}
-.li-legacy-calendar-actions button{min-height:44px;min-width:44px;border:1px solid var(--rule);
+.li-legacy-calendar-actions button{min-height:48px;min-width:44px;border:1px solid var(--rule);
  background:var(--paper);color:var(--moss);cursor:pointer}
 /* Today: one existing edge, no additional exterior focus outline. */
-.li-legacy-today-action{min-height:44px;min-width:76px;padding:var(--li-space-2) var(--li-space-3);
+.li-legacy-today-action{min-height:48px;min-width:76px;padding:var(--li-space-2) var(--li-space-3);
  border:1px solid var(--moss);border-radius:0;background:var(--paper);color:var(--moss);
  cursor:pointer;font:var(--li-weight-600) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
 .li-legacy-today-action[data-active="true"]{background:var(--li-color-nav-selected-fill)}
@@ -195,7 +201,7 @@
 .li-legacy-calendar-weekday{display:grid;place-items:center;color:var(--muted);
  font-size:var(--li-type-caption);min-height:24px}
 .li-legacy-calendar-grid button{display:grid;justify-items:center;align-content:center;
- gap:var(--li-space-1);min-height:44px;min-width:0;border:1px solid transparent;
+ gap:var(--li-space-1);min-height:48px;min-width:0;border:1px solid transparent;
  background:transparent;color:var(--ink);cursor:pointer}
 .li-legacy-calendar-dot{display:block;width:5px;height:5px;background:transparent}
 .li-legacy-calendar-grid button[data-today="true"] .li-legacy-calendar-dot{

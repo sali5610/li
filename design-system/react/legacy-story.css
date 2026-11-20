@@ -20,7 +20,13 @@ body{margin:0;background:var(--cream);color:var(--ink)}
  background:var(--paper);color:var(--moss);cursor:pointer}
 .li-legacy-story-utility:focus-visible{outline:0;border-width:3px;border-color:var(--moss)}
 /* Mobile review: method cards stack instead of two cramped 160px columns. */
-@media(max-width:599px){.li-legacy-story-two{grid-template-columns:minmax(0,1fr)}}
+/* PO-approved Guide compact method cards remain TWO-UP on small phones.
+   Preserve full names and allow wraps; avoid generic one-column collapse. */
+@media(max-width:599px){
+ .li-legacy-story-two{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .li-legacy-story-two .li-legacy-method{padding:var(--li-space-3);
+  gap:var(--li-space-2);overflow-wrap:break-word}
+}
 @media(max-width:420px){.li-legacy-story{padding:var(--li-space-2)}
  .li-legacy-gallery-sample{padding:var(--li-space-3)}
  .li-legacy-story-two{gap:var(--li-space-2)}}

@@ -10,7 +10,7 @@ import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
 import {validEditorialMethodAttempts} from '../learning/method-attempt-contract.js';
 import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
- hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS} from './private-state.js';
+ hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS,t12Fields} from './private-state.js';
 
 /**
  * The native lesson UI still writes li.review.* localStorage synchronously.
@@ -382,6 +382,22 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
     }));
    }
    transientRetries=0;
+   // A generic "saved" badge alone cannot release T12's local-edit guard.
+   // Acknowledge only the exact owner+lesson payload accepted by signed sync,
+   // with no pending outbox entry and no edits made during this network run.
+   if(!disposed&&current.last==='saved'){
+    const confirmed:string[]=[];
+    for(const field of t12Fields(uid)){
+     const key=storageKey(uid,field.type,field.id);
+     const [op,row]=await Promise.all([store.outbox.get(key),store.records.get(key)]);
+     if(op||!row||row.deletedAt||row.baseRevision<1)continue;
+     const verified=personalRemoteSnapshot(uid,row.itemType,row.itemId,row.payload);
+     if(verified?.raw===localStorage.getItem(field.key))confirmed.push(field.key);
+    }
+    if(confirmed.length)window.dispatchEvent(new CustomEvent('li:t12-sync-confirmed',{
+     detail:{accountId:uid,keys:confirmed}
+    }));
+   }
    // In-place page state refresh; never clear an open editor or scroll position.
    if(!disposed&&personalChanged)window.dispatchEvent(new CustomEvent('li:personal-sync-applied',{
     detail:{accountId:uid,keys:personalKeys}

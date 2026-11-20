@@ -32,6 +32,33 @@ type EditorialLesson={
  rights:{text:'first_party'};
  sources:{title:string;url:string;usage?:string}[];
 };
+type CompanionLink={
+ targetId:string;targetKind:'Lesson'|'Course';reviewState:'editorial_candidate'|'documented';
+ reason:{vi:string;en:string};provenance:{sourceUrl:string}
+};
+type Companion={
+ schema:1;lesson_id:string;topics:string[];moments:{
+  stage:string;anchor:string;quote_ids:string[];
+  vi:{label:string;prompt:string;actions:{label:string;reply:string}[]};
+  en:{label:string;prompt:string;actions:{label:string;reply:string}[]}
+ }[];
+ connections:{status:string;links:CompanionLink[]}
+};
+function validCompanion(v:unknown,id:string):Companion{
+ if(!v||typeof v!=='object'||Array.isArray(v))throw Error('EDITORIAL_COMPANION_REQUIRED');
+ const c=v as Companion;
+ const stages=['opening','concept','guided','independent','reflection','extension'];
+ if(c.schema!==1||c.lesson_id!==id||!Array.isArray(c.moments)||
+  c.moments.length!==6||c.moments.some((m,i)=>m.stage!==stages[i]||
+   !Array.isArray(m.quote_ids)||m.quote_ids.length<3||
+   m.vi?.actions?.length!==2||m.en?.actions?.length!==2||
+   !m.vi?.prompt||!m.en?.prompt)||
+  !Array.isArray(c.connections?.links)||!c.connections.links.some(l=>
+   l.targetKind==='Lesson'&&l.reviewState==='editorial_candidate'&&
+   l.reason?.vi&&l.reason?.en))
+  throw Error('EDITORIAL_COMPANION_OR_LINKS_INCOMPLETE');
+ return c;
+}
 type EditorialAttempt=Attempt;
 const MIN=12,MAX=4000;
 const phases:Phase[]=['read','guided','methods','practice','feedback','progress'];
@@ -87,7 +114,7 @@ function parseLesson(source:unknown,id:string):EditorialLesson{
  }
  return l as EditorialLesson;
 }
-async function loadLesson(id:string):Promise<EditorialLesson>{
+async function loadLesson(id:string):Promise<{lesson:EditorialLesson;companion:Companion}>{
  // Import at runtime from this deployed app's one canonical pack adapter.
  // No fallback to content/editorial, Notion, draft JSON or anonymous access.
  const url=new URL('./assets/li-content-adapter.mjs',document.baseURI).href;
@@ -95,7 +122,15 @@ async function loadLesson(id:string):Promise<EditorialLesson>{
   contentClient?:{getLesson:(lessonId:string)=>Promise<unknown>}
  };
  if(!m.contentClient?.getLesson)throw Error('CONTENT_PACK_CLIENT_UNAVAILABLE');
- return parseLesson(await m.contentClient.getLesson(id),id);
+ const [lessonData,mentorResponse]=await Promise.all([
+  m.contentClient.getLesson(id),
+  fetch(new URL('./lessons/companion/'+encodeURIComponent(id)+'.json',document.baseURI),{
+   credentials:'same-origin'
+  })
+ ]);
+ if(!mentorResponse.ok)throw Error('EDITORIAL_MENTOR_NOT_AVAILABLE');
+ const companion=validCompanion(await mentorResponse.json(),id);
+ return {lesson:parseLesson(lessonData,id),companion};
 }
 function inline(value:string):React.ReactNode[]{
  const normalized=value.replace(/<\/?b>/gi,'**').replace(/<\/?i>/gi,'*')
@@ -162,6 +197,8 @@ function Markdown({md}:{md:string}){
 export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  const reduced=useReducedMotion();
  const [lesson,setLesson]=useState<EditorialLesson|null>(null);
+ const [companion,setCompanion]=useState<Companion|null>(null);
+ const [mentorReady,setMentorReady]=useState(false);
  const [attempt,setAttempt]=useState<EditorialAttempt|null>(null);
  // Optimistic text edits must not unlock model answers or spell feedback.
  const [persistedAttempt,setPersistedAttempt]=useState<EditorialAttempt|null>(null);
@@ -206,7 +243,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     if(!isReleasedLessonId(id))throw Error('LESSON_NOT_RELEASED');
     const learner=await ports.auth.requireInvitedLearner();
     if(!learner?.subjectId)throw Error('INVITE_REQUIRED');
-    const source=await loadLesson(id);
+    const bundle=await loadLesson(id);
     const saved=await ports.attempts.load({lessonId:id,subjectId:learner.subjectId});
     const a=saved?.attempt;
     if(!saved?.revision||!a||!Array.isArray(a.draft)||a.draft.length!==4||
@@ -218,7 +255,8 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      .catch(()=>'unavailable' as SyncState);
     if(cancelled)return;
     subject.current=learner.subjectId;revision.current=saved.revision;
-    setLesson(source);setAttempt(a);setPersistedAttempt(a);
+    setLesson(bundle.lesson);setCompanion(bundle.companion);
+    setAttempt(a);setPersistedAttempt(a);
     setPhase(resume(a));setSync(state);setBusy(false);
    }catch{
     if(!cancelled){setBusy(false);setError('Bài chưa được phát hành hoặc chưa thể xác minh quyền học.');}
@@ -226,6 +264,46 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   })();
   return()=>{cancelled=true;mounted.current=false;};
  },[id,ports,reload]);
+
+ // Same Lão Lý avatar, dialog, sourced quote bank, and lesson-phase actions.
+ // No duplicate tutor, no anonymous preview and no independent answer leakage.
+ useEffect(()=>{
+  if(!lesson||!companion)return;
+  const api=(window as Window&{liLessonCompanion?:{
+   registerEditorial?:(data:Companion)=>()=>void
+  }}).liLessonCompanion;
+  if(!api?.registerEditorial){setError('Lão Lý chưa sẵn sàng cho bài này.');return;}
+  try{
+   const cleanup=api.registerEditorial(companion);
+   setMentorReady(true);
+   return()=>{cleanup();};
+  }catch{setError('Manifest Lão Lý không hợp lệ.');}
+ },[lesson,companion]);
+ useEffect(()=>{
+  if(!mentorReady)return;
+  window.dispatchEvent(new Event('li:lesson-phase-changed'));
+ },[mentorReady,phase,persistedAttempt?.submitted,persistedAttempt?.reviewed]);
+ useEffect(()=>{
+  const onJump=(event:Event)=>{
+   const detail=(event as CustomEvent<{lessonId?:string;phase?:string}>).detail;
+   if(detail?.lessonId!==id||
+    !['read','guided','methods','practice','feedback','progress'].includes(detail.phase||''))
+    return;
+   const next=detail.phase as Phase;
+   if((next==='feedback'&&!persistedAttempt?.submitted)||
+    (next==='progress'&&!persistedAttempt?.reviewed))return;
+   const host=document.querySelector('[data-li-editorial-journey="'+id+'"]');
+   if(!host?.closest('[id^="page-"]')?.classList.contains('active'))return;
+   setPhase(next);
+   window.requestAnimationFrame(()=>{
+    host.querySelector('.li-learning-current')?.scrollIntoView({
+     block:'start',behavior:reduced?'auto':'smooth'
+    });
+   });
+  };
+  window.addEventListener('li:mentor-phase-jump',onJump);
+  return()=>window.removeEventListener('li:mentor-phase-jump',onJump);
+ },[id,persistedAttempt?.submitted,persistedAttempt?.reviewed,reduced]);
 
  function save(next:EditorialAttempt):Promise<boolean>{
   if(locked||failed.current||!subject.current||!revision.current)return Promise.resolve(false);
@@ -337,6 +415,9 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   <Button onClick={()=>setReload(n=>n+1)}>Thử lại</Button>
   <Button variant="secondary" onClick={ports.navigation.openCatalog}>Về Tàng Thư</Button>
  </section>;
+ if(!mentorReady||!companion)return <section role="status" className="li-learning-journey">
+  {error||'Đang kiểm tra Lão Lý và liên kết bài học…'}
+ </section>;
  const locale=attempt.locale,vi=locale==='vi',content=lesson.content.localized[locale];
  const independent=quiz(content.independent.prompt_md);
  const rubrics=rubricNames(content.reflection.md);
@@ -355,13 +436,20 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  const progress=persistedAttempt?.reviewed?100:
   persistedAttempt?.submitted?75:Math.round(answered/4*50);
  return <section className="li-learning-journey" data-li-editorial-journey={id}
-  data-li-react-journey={id} lang={locale}>
+  data-li-react-journey={id} data-li-lesson-phase={phase}
+  data-li-lesson-submitted={persistedAttempt?.submitted?'true':'false'}
+  data-li-lesson-reviewed={persistedAttempt?.reviewed?'true':'false'} lang={locale}>
   <header className="li-learning-header">
    <div>
     <Text role="caption">{lesson.hierarchy.field.title} · {id}</Text>
     <Heading level={1} id={'li-react-'+id+'-title'} role="headline">{lesson.title[locale]}</Heading>
    </div>
-   <Button variant="secondary" onClick={ports.navigation.openCatalog}>{vi?'Về Tàng Thư':'Back to library'}</Button>
+   <div className="li-learning-header-actions">
+    <Button variant="secondary" data-buddy="1">
+     {vi?'Hỏi Lão Lý theo mục đang học':'Ask Lão Lý about this step'}
+    </Button>
+    <Button variant="secondary" onClick={ports.navigation.openCatalog}>{vi?'Về Tàng Thư':'Back to library'}</Button>
+   </div>
   </header>
   <div className="li-learning-language" role="group" aria-label={vi?'Ngôn ngữ':'Language'}>
    {(['vi','en'] as const).map(lang=><Button key={lang}
@@ -394,10 +482,10 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    className="li-learning-current">
    {phase==='read'&&<Card variant="flat-study" aria-labelledby="li-editorial-read">
     <Heading level={2} id="li-editorial-read" role="titleLarge">{vi?'Hiểu bản chất':'Understand the concepts'}</Heading>
-    <Markdown md={content.hook.md}/>
-    <Markdown md={content.goals.md}/>
-    <Markdown md={content.concept.md}/>
-    <Markdown md={content.variable_types.md}/>
+    <div id={companion.moments[0].anchor}><Markdown md={content.hook.md}/>
+     <Markdown md={content.goals.md}/></div>
+    <div id={companion.moments[1].anchor}><Markdown md={content.concept.md}/>
+     <Markdown md={content.variable_types.md}/></div>
     <Heading level={3} role="titleMedium">{vi?'Nguồn để đọc thêm':'Read the sources'}</Heading>
     <ul>{lesson.sources.filter(s=>s.url.startsWith('https://')).map(s=><li key={s.url}>
      <a href={s.url} target="_blank" rel="noopener noreferrer">{s.title}</a>
@@ -406,7 +494,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    </Card>}
    {phase==='guided'&&<Card variant="flat-study" aria-labelledby="li-editorial-guided">
     <Heading level={2} id="li-editorial-guided" role="titleLarge">{labels.guided}</Heading>
-    <Markdown md={content.guided.md}/>
+    <div id={companion.moments[2].anchor}><Markdown md={content.guided.md}/></div>
     <Field kind="textarea" rows={5} label={vi?'Tự giải thích bằng lời của mày':'Explain in your own words'}
      value={attempt.guidedDraft} disabled={locked||attempt.submitted} onChange={e=>editGuided(e.currentTarget.value)}/>
     <Button onClick={()=>setPhase('methods')}>{labels.methods}</Button>
@@ -440,7 +528,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    </Card>}
    {phase==='practice'&&<Card variant="flat-study" aria-labelledby="li-editorial-practice">
     <Heading level={2} id="li-editorial-practice" role="titleLarge">{labels.practice}</Heading>
-    <Markdown md={independent.intro}/>
+    <div id={companion.moments[3].anchor}><Markdown md={independent.intro}/></div>
     <div className="li-learning-fields">
      {independent.questions.map((q,i)=><Field key={i} kind="textarea" rows={4}
       label={String(i+1)+'. '+q} value={attempt.draft[i]} disabled={locked||attempt.submitted}
@@ -452,6 +540,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    </Card>}
    {phase==='feedback'&&persistedAttempt?.submitted&&<Card variant="flat-study" aria-labelledby="li-editorial-feedback">
     <Heading level={2} id="li-editorial-feedback" role="titleLarge">{labels.feedback}</Heading>
+    <div id={companion.moments[4].anchor}/>
     <Heading level={3} role="titleMedium">{vi?'Bài làm của mày':'Your submission'}</Heading>
     <ol className="li-learning-submission-list">
      {independent.questions.map((q,i)=><li key={i}>
@@ -478,6 +567,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    </Card>}
    {phase==='progress'&&persistedAttempt?.reviewed&&<Card variant="flat-study" aria-labelledby="li-editorial-progress">
     <Heading level={2} id="li-editorial-progress" role="titleLarge">{vi?'Hoàn thành lượt học':'Attempt complete'}</Heading>
+    <div id={companion.moments[5].anchor}/>
     <Text>{vi?'Đây là một lượt tự đánh giá đã lưu, không phải chứng nhận thông thạo.':
      'A saved self-assessment, not a mastery certificate.'}</Text>
     <Text>{vi?'Điểm tự chấm':'Self-rating'}: {attempt.ratings.reduce<number>((n,v)=>n+(v??0),0)} / 8</Text>
@@ -486,5 +576,24 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     <Button variant="ghost" onClick={ports.navigation.openCatalog}>{vi?'Về Tàng Thư':'Back to library'}</Button>
    </Card>}
   </motion.div>
+  <section className="li-learning-connections" aria-label={vi?'Kết nối kiến thức':'Learning connections'}>
+   <Heading level={2} role="titleMedium">{vi?'Kết nối kiến thức':'Learning connections'}</Heading>
+   <Text role="support">{vi?
+    'Liên kết biên tập có ghi nguồn; không tự coi là tiên quyết chính thức hay khái niệm graph đã duyệt.':
+    'Source-traced editorial links, not official prerequisites or approved graph concepts.'}</Text>
+   <ul>{companion.connections.links.map(link=>{
+    const label=link.targetKind==='Lesson'?link.targetId:
+     'Data & Statistical Foundations · '+link.targetId;
+    const url=link.targetKind==='Lesson'?'./?lesson='+encodeURIComponent(link.targetId):
+     './?catalog=mathematics/F09/C09-1';
+    return <li key={link.targetKind+link.targetId}>
+     <a href={url}>{label}</a>
+     <Text role="support">{link.reason[locale]}</Text>
+     <Text role="caption">{link.reviewState==='documented'?
+      (vi?'Quan hệ danh mục đã ghi nhận':'Documented catalog membership'):
+      (vi?'Gợi ý liên quan · chờ duyệt quan hệ học thuật':'Editorial connection · academic graph review pending')}</Text>
+    </li>;
+   })}</ul>
+  </section>
  </section>;
 }

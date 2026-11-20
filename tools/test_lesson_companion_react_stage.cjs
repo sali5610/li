@@ -4,6 +4,19 @@ const assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("nod
 const read=filename=>fs.readFileSync(path.join(__dirname,"..",filename),"utf8");
 const react=read("tools/step16-real-l09-react-island/src/learning/LearningJourney.tsx");
 const wave=read("tools/step16-real-l09-react-island/src/learning/Wave1Journey.tsx");
+const editorialReact=read("tools/step16-real-l09-react-island/src/learning/EditorialJourney.tsx");
+const editorialSource=JSON.parse(read("site/lessons/companion/L09-1-1.json"));
+const editorialDraft=JSON.parse(read("content/editorial/L09-1-1.lesson.v1.json"));
+const editorialMentorStages=["opening","concept","guided","independent","reflection","extension"];
+assert.deepEqual(editorialSource.moments.map(m=>m.stage),editorialMentorStages);
+assert.equal(editorialDraft.publishState,"draft","unreleased lesson stays draft");
+assert.equal(editorialDraft.methodFit.primaryTechniqueId,"L2-T06");
+assert.equal(editorialDraft.methodFit.optionalTechniqueIds[0],"L2-T07");
+assert.equal(editorialSource.connections.links.length,2);
+assert.match(editorialReact,/registerEditorial/);
+assert.match(editorialReact,/li-learning-connections/);
+assert.match(editorialReact,/EDITORIAL_COMPANION_OR_LINKS_INCOMPLETE/);
+assert.match(editorialReact,/li:mentor-phase-jump/);
 for(const source of [react,wave]){
  assert.match(source,/li:mentor-phase-jump/,"React lesson must listen to Lão Lý navigation");
  assert.match(source,/next==='feedback'.*!attempt\?\.submitted/,
@@ -17,7 +30,8 @@ assert.match(react,/data-li-lesson-submitted=\{attempt\.submitted\?/);
 const stages=["opening","concept","guided","independent","reflection","extension"];
 const attrs={"data-li-lesson-phase":"practice","data-li-lesson-submitted":"false",lang:"vi"};
 const live={getAttribute:key=>attrs[key]??null};
-const root={id:"page-lessonL09",classList:{contains:k=>k==="active"},
+let nativeActive=true;
+const root={id:"page-lessonL09",classList:{contains:k=>nativeActive&&k==="active"},
  getAttribute:k=>({"data-lesson-id":"L09-1-2",
  "data-companion-manifest":"./lessons/companion/L09-1-2.json",lang:"vi"}[k]??null),
  querySelector:()=>null};
@@ -28,8 +42,10 @@ const manifest={schema:1,lesson_id:"L09-1-2",topics:["sampling","bias"],
 let legacyScrolls=0;
 const target={textContent:"",getBoundingClientRect:()=>({top:0}),
  scrollIntoView(){legacyScrolls++}};
-const document={baseURI:"http://localhost/li/",documentElement:{lang:"vi"},
- querySelector:()=>live,
+let editorialHost=null;
+const document={baseURI:"http://localhost/li/",documentElement:{lang:"vi",
+ classList:{contains:k=>k==="li-auth-verified"}},
+ querySelector:q=>q.includes("data-li-editorial-journey")?editorialHost:live,
  querySelectorAll:q=>q==="[data-lesson-id][data-companion-manifest]"?[root]:[],
  getElementById:()=>target,addEventListener(){}};
 const methods=JSON.parse(read("site/assets/lesson-spell-suggestions.v0.1.json"));
@@ -81,5 +97,41 @@ vm.runInContext(read("site/assets/lesson-companion-native.js"),ctx);
  attrs["data-li-lesson-phase"]="progress";attrs["data-li-lesson-submitted"]="true";
  assert.equal(get().stage,"extension");
  assert.match(plan().actions[2].reply,/not reviewed method fit/i);
- console.log("PASS L09 React stage → Lão Lý, no early reflection, post-submit real L2 method practice, VI/EN");
+
+ // Real authored Wave2 manuscript must be routable via the SAME popup only
+ // after approved invited React lesson ownership (no synthetic second mentor).
+ nativeActive=false;
+ const edAttrs={"data-li-editorial-journey":"L09-1-1","data-li-lesson-phase":"practice",
+  "data-li-lesson-submitted":"false","data-li-lesson-reviewed":"false",lang:"vi"};
+ editorialHost={
+  getAttribute:key=>edAttrs[key]??null,
+  closest:()=>({id:"page-lessonL0911",classList:{contains:key=>key==="active"}})
+ };
+ const undo=api.registerEditorial(editorialSource);
+ assert.ok(api.registered().includes("L09-1-1"));
+ assert.equal(api.getContext().lesson_id,"L09-1-1");
+ assert.equal(api.getContext().stage,"independent");
+ assert.equal(api.getContext().submitted,false);
+ const previewPlan=()=>api.getPlan("lessonL0911");
+ assert.equal(previewPlan().actions.length,3);
+ assert.match(previewPlan().actions[0].reply,/tổng thể đích/);
+ assert.ok(!previewPlan().actions.some(a=>/256\\s*[÷/]\\s*320|80%/.test(a.reply)),
+  "mentor must not reveal independent solution before saved submission");
+ edAttrs["data-li-lesson-phase"]="methods";
+ assert.equal(api.getContext().stage,"guided");
+ previewPlan().actions[2].perform();
+ assert.equal(events.at(-1).detail.phase,"methods");
+ edAttrs["data-li-lesson-phase"]="feedback";
+ assert.equal(api.getContext().stage,"independent","reflection is gated before submission");
+ edAttrs["data-li-lesson-submitted"]="true";
+ assert.equal(api.getContext().stage,"reflection");
+ edAttrs["data-li-lesson-phase"]="progress";
+ assert.equal(api.getContext().stage,"reflection","extension requires reviewed attempt");
+ edAttrs["data-li-lesson-reviewed"]="true";
+ assert.equal(api.getContext().stage,"extension");
+ edAttrs.lang="en";
+ assert.equal(api.getPlan("lessonL0911").actions[0].label,"Which sections?");
+ undo();
+ assert.ok(!api.registered().includes("L09-1-1"),"preview cannot leak between lesson sessions");
+ console.log("PASS Wave1 mentor + draft L09-1-1 six-stage bilingual React context, no spoiler, T06/T07, honest links");
 })().catch(e=>{console.error(e);process.exitCode=1;});

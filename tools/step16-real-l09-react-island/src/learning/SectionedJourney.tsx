@@ -291,12 +291,17 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  }
  function openGuide(){
   if(locked||pending)return;
-  const app=window as Window&{liMethods?:{open?:(methodId:string,practice?:boolean,lessonId?:string)=>boolean}};
+  const app=window as Window&{
+   liMethods?:{open?:(methodId:string,practice?:boolean,lessonId?:string)=>boolean};
+   LiSpellPractice?:{setLessonContext?:(lessonId:string)=>boolean}
+  };
   if(!app.liMethods?.open){setError('Sổ Tay Thần Chú chưa khả dụng.');return;}
   try{
    sessionStorage.setItem('li.sectioned.guide-return.v1',
     JSON.stringify({id,method,at:Date.now(),scrollY:window.scrollY}));
-   if(!app.liMethods.open(method,false))setError('Chưa mở được Thần Chú; bản nháp vẫn được giữ.');
+   if(!app.liMethods.open(method,false)||
+      !app.LiSpellPractice?.setLessonContext?.(id))
+      setError('Chưa gắn được Thần Chú với bài học; bản nháp vẫn được giữ.');
   }catch{setError('Chưa mở được Thần Chú; bản nháp vẫn được giữ.');}
  }
  if(busy)return <section role="status" className="li-learning-journey" aria-busy="true">Đang xác minh quyền học…</section>;

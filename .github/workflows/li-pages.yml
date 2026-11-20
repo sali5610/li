@@ -77,6 +77,12 @@ jobs:
         with:
           node-version: '22'
 
+      # The app imports canonical React DS components from a sibling directory.
+      # Install its already-pinned icon/React dependencies before app TypeScript resolves them.
+      - name: Install shared Design System dependencies once
+        working-directory: design-system/react
+        run: npm install --no-audit --no-fund
+
       - name: Build signed-in app shell and run focused Neon contracts
         working-directory: tools/step16-real-l09-react-island
         env:
@@ -242,7 +248,6 @@ jobs:
         working-directory: design-system/react
         run: |
           set -euo pipefail
-          npm install --no-audit --no-fund
           npm run check
           npm run build
           test -s ../../site/design-system/react-layout.js

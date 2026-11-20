@@ -3,7 +3,7 @@
  * button click, hidden textarea event, duplicated scenario, or new writer.
  */
 export type MirrorView={
- index:number;question:string;scene:string;source:string;
+ index:number;fieldId:string;question:string;scene:string;source:string;
  route:string;cta:string;saved:boolean
 };
 export type ResearchView={

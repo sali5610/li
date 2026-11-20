@@ -24,7 +24,7 @@ export function mountLearningJourney(host:HTMLElement,ports:LearningPorts,
  if(!document.getElementById('li-learning-canonical-style')){
   const style=document.createElement('style');
   style.id='li-learning-canonical-style';
-  style.textContent=[atomsCSS,controlsCSS,componentsCSS,journeyCSS].join('\\n');
+  style.textContent=[atomsCSS,controlsCSS,componentsCSS,journeyCSS].join('\n');
   document.head.appendChild(style);
  }
  const root=createRoot(host);

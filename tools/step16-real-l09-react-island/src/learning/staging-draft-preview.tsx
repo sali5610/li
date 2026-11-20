@@ -4,6 +4,7 @@ import {SectionedJourney} from './SectionedJourney';
 import type {SectionedLesson} from './SectionedJourney';
 import {createStagingLearningPorts} from './staging-ports';
 import {personalStudyLessonIds,personalStudyRoute} from './released-lessons';
+import catalog from '../../../../content/curriculum/legacy-catalog.v1.json';
 import '../../../../design-system/react/atoms.css';
 import '../../../../design-system/react/components.css';
 import '../../../../design-system/react/controls.css';
@@ -28,6 +29,8 @@ const manuscripts=import.meta.glob('../../../../content/editorial/normalized/*.d
 const byId=new Map(Object.values(manuscripts).map(raw=>{
  const d=raw as Manuscript;return [d.id,d] as const;
 }));
+const catalogLessons=new Map(catalog.groups.flatMap(g=>g.fields.flatMap(f=>
+ f.courses.flatMap(c=>c.lessons.map(l=>[l.id,{title:l.title,field:f.name}] as const)))));
 function lessonForStudy(id:string):SectionedLesson{
  if(!personalStudyRoute(id))throw Error('PERSONAL_LESSON_NOT_IN_STAGING_CATALOG');
  const d=byId.get(id);
@@ -43,11 +46,12 @@ function lessonForStudy(id:string):SectionedLesson{
     c.assessment?.questions?.length===4&&c.assessment?.rubricCriteria?.length===4;
   })||d.content.companion?.structuredMoments?.length!==6)
   throw Error('PERSONAL_STUDY_MANUSCRIPT_INCOMPLETE '+id);
- const field=id.startsWith('L03')?'Human–Computer Interaction':
-  id.startsWith('L09')?'Data Science':'Supply Chain Management';
+ const catalogEntry=catalogLessons.get(id);
+ if(!catalogEntry)throw Error('PERSONAL_STUDY_NOT_IN_REAL_CATALOG '+id);
+ const field=catalogEntry.field;
  return {...d,
   version:'personal-study-2026-11-21-'+id,
-  title:{vi:d.title.sourceTitle,en:d.title.sourceTitle},
+  title:{vi:catalogEntry.title,en:catalogEntry.title},
   hierarchy:{field:{title:field}},
   content:{...d.content,format:'editorial-sectioned-v1'}
  } as unknown as SectionedLesson;

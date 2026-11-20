@@ -1,0 +1,19 @@
+name: SYNC-161 live RPC route probe (temporary)
+on:
+  pull_request:
+    branches: [integration/staging]
+    paths:
+      - 'tools/sync161-live-rpc-route-probe.mjs'
+      - '.github/workflows/sync161-live-rpc-route-probe.yml'
+permissions:
+  contents: read
+jobs:
+  anonymous-rpc-security:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Probe active Neon Data API without JWT (no data writes)
+        run: node tools/sync161-live-rpc-route-probe.mjs

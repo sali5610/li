@@ -1,4 +1,4 @@
-/* Opt-in local daily diary: check-in and real activity events; no server or health scoring. */
+/* Daily diary/check-ins: local-first; signed Neon replication only after explicit per-account consent. No health scoring. */
 (function(){
 "use strict";
 const KEY="li.personal.daily.v1",CONSENT="li.personal.daily.enabled.v1";

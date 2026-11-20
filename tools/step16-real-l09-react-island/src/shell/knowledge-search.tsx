@@ -1,5 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import canonicalCatalog from '../../../../content/curriculum/legacy-catalog.v1.json';
+import searchableCatalog from '../../../../site/content-packs/course-catalog.json';
 import {openRoute,goBack,hasRoute} from './app-router.js';
 import {useDiscoveryLocale,localized} from './discovery-locale.js';
 import {personalStudyRoute} from '../learning/released-lessons.js';
@@ -19,24 +20,35 @@ type KnowledgeItem={id:string;title:string;kind:string;lessonId?:string;contentS
 type KnowledgeResponse={status:string;results:KnowledgeItem[]};
 type KnowledgeClient={searchKnowledge:(query:string)=>Promise<KnowledgeResponse>};
 type CatalogLesson={id:string;title:string;route?:string;published?:boolean};
-type CatalogGroup={title:string;fields?:{name:string;source?:string;courses?:{title:string;lessons?:CatalogLesson[]}[]}[]};
+type CatalogGroup={id:string;title:string;fields?:{id:string;name:string;source?:string;courses?:{id:string;title:string;lessons?:CatalogLesson[]}[]}[]};
 type MentorContext={id:string;kind:string;title:string;lessonId?:string;links:Relation[]};
 type SearchWindow=Window&{openLaoLy?:(trigger?:HTMLElement|null)=>void;
+ liCatalog?:{openPath:(path:string[],save?:boolean)=>void};
  liSearch?:{render:(query:string)=>void;getStatus:()=>string;getQuery:()=>string;openLesson:(id:string)=>boolean;
  getMentorContext:()=>MentorContext|null}};
 
 const app=window as SearchWindow;
 const routes=new Map<string,string>();
 const published:KnowledgeItem[]=[];
+const catalogBrowsePaths=new Map<string,string[]>();
+const fieldCodes=new Map<string,string>(searchableCatalog.fields.map(f=>[f.groupId+'/'+f.slug,f.id] as const));
 // Search and Catalog share the same GitHub-owned curriculum source, not a
 // startup global set by the obsolete native Catalog UI script.
 for(const group of canonicalCatalog.groups as CatalogGroup[]){
- for(const field of group.fields||[])for(const course of field.courses||[])for(const lesson of course.lessons||[]){
-  if(lesson.published!==true||!/^lessonL\d{2}$/.test(lesson.route||''))continue;
-  routes.set(lesson.id,lesson.route!);
-  published.push({id:lesson.id,lessonId:lesson.id,title:lesson.title,kind:'Lesson',
-   context:[group.title,field.name,course.title].filter(Boolean).join(' · '),
-   sourceUrl:field.source,links:[]});
+ catalogBrowsePaths.set('group:'+group.id,[group.id]);
+ for(const field of group.fields||[]){
+  const code=fieldCodes.get(group.id+'/'+field.id);
+  if(code)catalogBrowsePaths.set('field:'+code,[group.id,field.id]);
+  for(const course of field.courses||[]){
+   catalogBrowsePaths.set('course:'+course.id,[group.id,field.id,course.id]);
+   for(const lesson of course.lessons||[]){
+    if(lesson.published!==true||!/^lessonL\d{2}$/.test(lesson.route||''))continue;
+    routes.set(lesson.id,lesson.route!);
+    published.push({id:lesson.id,lessonId:lesson.id,title:lesson.title,kind:'Lesson',
+     context:[group.title,field.name,course.title].filter(Boolean).join(' · '),
+     sourceUrl:field.source,links:[]});
+   }
+  }
  }
 }
 const clean=(text:string)=>text.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
@@ -223,6 +235,24 @@ function KnowledgeSearch(){
    setNavError(L('Chưa thể mở bài học này.','This lesson could not be opened.'));
   }else setNavError('');
  };
+ // Group, field and course results are places to browse, not dead-end rows.
+ // Route first, then REPLACE only the Catalog path to keep one Back entry.
+ const browseCatalog=(id:string)=>{
+  const path=catalogBrowsePaths.get(id);
+  if(!path||!app.liCatalog||!hasRoute('catalog')){
+   setNavError(L('Chưa thể mở mục này trong Tàng Thư.','This section cannot be opened in the Catalog.'));
+   return;
+  }
+  const previous=returnPosition.current;
+  returnPosition.current={query:latestQuery,top:window.scrollY};
+  if(!openRoute('catalog')){
+   returnPosition.current=previous;
+   setNavError(L('Chưa thể mở Tàng Thư.','The Catalog could not be opened.'));
+   return;
+  }
+  app.liCatalog.openPath(path,false);
+  setNavError('');
+ };
  return <div data-li-react-screen="knowledge-search">
   <Button variant="ghost" className="utility-back" onClick={goBack}>
    <span aria-hidden="true">←</span> {L("Quay lại","Back")}
@@ -258,9 +288,11 @@ function KnowledgeSearch(){
        <ListRow title={record.title}
         description={(locale==='en'?(englishKind[record.kind]||'Knowledge item'):(kindCopy[record.kind]||'Mục kiến thức'))+' · '+(record.lessonId||record.id)+
          (record.contentState==='review_only'?L(' · đang duyệt',' · under review'):'')+
-         (record.context?' · '+record.context:'')}
+         (record.context?' · '+record.context:'')+
+         (catalogBrowsePaths.has(record.id)?L(' · Xem trong Tàng Thư',' · Browse in Catalog'):'')}
         onActivate={record.kind==='Lesson'&&!!availableRoute(record.lessonId||record.id)?
-         ()=>navigateTo(record.lessonId||record.id):undefined}/>
+         ()=>navigateTo(record.lessonId||record.id):
+         catalogBrowsePaths.has(record.id)?()=>browseCatalog(record.id):undefined}/>
        {record.answerability&&<div className="li-search-related">
         <Text role="support"><strong>{record.answerability.level==='direct'?L('Mục tiêu bài học phù hợp','Relevant learning outcome'):
          record.answerability.level==='outcome_match'?

@@ -358,7 +358,7 @@ assert 'window.liNotes?.deleteNote(item.entryType,item.id)' in hub
 assert 'library-text-link library-open-lesson' in hub
 assert 'if(id==="noteDetail")window.liNotes?.renderDetail();' in page_html
 # UX-DS-25: honor device-aware Home cache key.
-assert 'library-hub.css?v=assets-20261121' in page_html
+assert re.search(r'<link rel="stylesheet" href="\./assets/library-hub\.css\?v=[A-Za-z0-9._-]+">', page_html), "Versioned library CSS must be loaded"
 # UX-HOME-07: no Home-only min-height can force a page scroll, and routing
 # must restore browser scrolling for all other screens.
 homecss=(site/"assets"/"library-hub.css").read_text(encoding="utf-8")

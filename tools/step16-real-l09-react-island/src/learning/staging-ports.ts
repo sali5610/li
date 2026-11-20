@@ -118,6 +118,6 @@ export function createStagingLearningPorts(lesson:string):LearningPorts{
   // into the old hidden #global-search input or dispatch a synthetic event.
   search.liSearch?.render(query);
   document.querySelector<HTMLInputElement>('#li-react-search-host input')?.focus();
- }}}
+ }}
  };
 }

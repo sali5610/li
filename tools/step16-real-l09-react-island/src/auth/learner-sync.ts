@@ -62,7 +62,11 @@ const CONFLICT_LABELS:Record<string,string>={
  'preference:buddy-address':'Cách xưng hô Lão Lý',
  'review_schedule:spell-t02-due':'Lịch ôn',
  'l2_progress:lesson-visits':'Lịch sử mở bài',
- 'l2_progress:problem-visits':'Lịch sử problem/case'
+ 'l2_progress:problem-visits':'Lịch sử problem/case',
+ 'l2_progress:spell-t12-resume-standalone':'T12 · Dấu vết đang học',
+ 'l2_progress:spell-t12-resume-L03-1-2':'T12 · L03',
+ 'l2_progress:spell-t12-resume-L09-1-2':'T12 · L09',
+ 'l2_progress:spell-t12-resume-L15-2-2':'T12 · L15'
 };
 export async function listPrivateConflicts(uid:string):Promise<PrivateConflictChoice[]>{
  if(!uid||localStorage.getItem(OWNER)!==uid||
@@ -435,7 +439,8 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
  // from another device. Keep other screens on the existing free-tier-safe cadence.
  const personalPageActive=()=>Boolean(document.querySelector(
   '#page-library.active,#page-collection.active,#page-resume.active,'+
-  '#page-dashboard.active,#page-settings.active,#page-noteDetail.active'
+  '#page-dashboard.active,#page-settings.active,#page-noteDetail.active,'+
+  '#page-guideDetail.active'
  ));
  let lastPoll=Date.now();
  const livePoll=setInterval(()=>{

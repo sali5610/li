@@ -18,7 +18,8 @@ type SpellView={
  t02ReviewCount:number;t02Streak:number;t02AwaitingRating:boolean;
  lessonId:string|null;reviewedInSession:boolean;viewSession:number;
  t12Draft?:{context:string;next:string;answer:string};
- t12SavedOnDevice?:boolean;t12Synced?:boolean;t12StorageError?:string
+ t12SavedOnDevice?:boolean;t12Synced?:boolean;t12StorageError?:string;
+ practiceCount?:number;practiceLastAt?:number|null;practiceError?:string
 };
 type Version={version:number;title:string;body:string;at:string;change?:string};
 type CaseContext={
@@ -298,8 +299,8 @@ export function GuideDetail(){
      {view.reviewedInSession&&<Text role="support" aria-live="polite">{view.active==='T02'?
       copy('Lượt gọi nhớ đã ghi nhận. Tự đánh giá để đặt lịch tiếp; đây không phải điểm thông thạo.',
        'Recall recorded. Self-rate for next review; this is not a mastery score.'):
-      copy('Đã thực hành và đối chiếu trong phiên này · Chưa lưu/đồng bộ · Không phải điểm thông thạo.',
-       'Practiced and self-checked in this session · Not saved/synced · Not a mastery grade.')}</Text>}
+      copy('Đã tự đối chiếu · Xem trạng thái lưu lượt luyện bên dưới · Không phải điểm thông thạo.',
+       'Self-checked · Check practice save status below · Not a mastery grade.')}</Text>}
      {view.feedback&&<div className="spell-feedback" role="status" aria-live="polite">
       <strong>{copy('Phản hồi để tự kiểm chứng','Feedback for self-check')}</strong>
       <Text role="body">{tr(view.feedback)}</Text>
@@ -326,7 +327,15 @@ export function GuideDetail(){
         'Review schedule and count sync when online; answers are not saved. 1–3–7–14–30 days are app defaults.'):
        copy('Tự chọn, có thể bỏ qua. Câu trả lời không tự lưu hay gửi lên máy chủ.',
         'Optional. Answers are not saved or sent to a server.')}</Text>
-     {view.active==='T12'&&<p className="small" role={view.t12StorageError?'alert':'status'}
+     {view.active!=='T02'&&<>
+       <Text role="support">{copy('Đã ghi nhận trên máy: ','Recorded on device: ')}
+        {view.practiceCount??0} {copy('lượt luyện · chưa đồng bộ giữa thiết bị',
+         'practice rounds · not yet synced across devices')}</Text>
+       {view.practiceLastAt&&<Text role="support">{copy('Lần gần nhất: ','Last practice: ')}
+        {new Date(view.practiceLastAt).toLocaleString(en()?'en-US':'vi-VN')}</Text>}
+       {view.practiceError&&<p role="alert">{view.practiceError}</p>}
+      </>}
+      {view.active==='T12'&&<p className="small" role={view.t12StorageError?'alert':'status'}
        aria-live="polite">{view.t12StorageError||
         (view.t12Synced?
          copy('T12 đã đồng bộ với tài khoản.','T12 synced to your account.'):

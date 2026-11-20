@@ -1,6 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
 import exact from '../l09-exact.generated.json';
+import spellSuggestions from '../../../../site/assets/lesson-spell-suggestions.v0.1.json';
 import type {Attempt,Rating} from '../native-bridge';
 import {Button,Card} from '../../../../design-system/react/Components';
 import {Field} from '../../../../design-system/react/Controls';
@@ -262,6 +263,28 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      (item==='progress'&&!attempt.reviewed)}
     onClick={()=>go(item)}>{labels[item]}</Button>)}
   </nav>
+  <aside className="li-lesson-spells" aria-label={vi?'Thần Chú gợi ý cho bài học':'Suggested study spells'}>
+   <div className="li-lesson-spell-header">
+    <Heading level={2} role="titleSmall">{vi?'Thần Chú có thể thử':'Spells to try'}</Heading>
+    <Text role="support">{vi?
+     'Gợi ý theo dạng bài · Không bắt buộc · Chưa duyệt ghép phương pháp.':
+     'Optional task-based suggestions · Lesson method fit not yet reviewed.'}</Text>
+   </div>
+   <div className="li-lesson-spell-list">
+    {spellSuggestions.lessons['L09-1-2'].map((spell,index)=>
+     <div className="li-lesson-spell-item" key={spell.techniqueId}>
+      <strong>{spell.shortId} · {vi?spell.name.vi:spell.name.en}</strong>
+      <Text role="support">{vi?spell.why.vi:spell.why.en}</Text>
+      <button type="button" className="action alt li-lesson-spell-action"
+       data-method={spell.shortId} data-spell-practice={index===0?'true':'false'}
+       disabled={saving||locked}
+       aria-label={(vi?'Thử Thần Chú ':'Try spell ')+spell.shortId}>
+       {vi?(index?'Xem chú bổ trợ':'Thử thi triển'):
+        (index?'See optional spell':'Try this spell')}
+      </button>
+     </div>)}
+   </div>
+  </aside>
   <div className="li-learning-save" role="status" aria-live="polite">
    <Progress label={accessibleProgress} value={percent}/>
    <Text role="support">{saving?(vi?'Đang lưu…':'Saving…'):statusText(sync,vi)}

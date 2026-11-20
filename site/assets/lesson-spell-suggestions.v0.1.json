@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "0.1.0",
+  "intent": "optional_in_lesson_method_suggestions",
+  "evidenceStatus": "task_matched_editorial_candidates_not_reviewed_method_fit",
+  "description": "Existing reviewed L2 technique definitions matched to the real Wave1 lesson tasks. These are optional suggestions, NOT approved method-fit, proven efficacy or mastery outcomes.",
+  "lessons": {
+    "L03-1-2": [
+      {
+        "techniqueId": "L2-T06",
+        "shortId": "T06",
+        "name": {
+          "vi": "Song Tượng Phân Minh",
+          "en": "Compare–Contrast"
+        },
+        "why": {
+          "vi": "So sánh câu hỏi mở trung lập với câu hỏi dẫn dắt, tìm dấu hiệu gài sẵn giả định.",
+          "en": "Compare neutral open questions with leading prompts and spot built-in assumptions."
+        }
+      },
+      {
+        "techniqueId": "L2-T04",
+        "shortId": "T04",
+        "name": {
+          "vi": "Tự Giải Khai Minh",
+          "en": "Guided Self-Explanation"
+        },
+        "why": {
+          "vi": "Giải thích vì sao cách đặt câu hỏi có thể làm lệch lời kể của người tham gia.",
+          "en": "Explain how a question's wording can bias a participant's answer."
+        }
+      }
+    ],
+    "L09-1-2": [
+      {
+        "techniqueId": "L2-T06",
+        "shortId": "T06",
+        "name": {
+          "vi": "Song Tượng Phân Minh",
+          "en": "Compare–Contrast"
+        },
+        "why": {
+          "vi": "Phân biệt thiên lệch chọn mẫu với biến thiên ngẫu nhiên bằng cơ chế chọn người.",
+          "en": "Distinguish selection bias from random variation using how respondents were selected."
+        }
+      },
+      {
+        "techniqueId": "L2-T07",
+        "shortId": "T07",
+        "name": {
+          "vi": "Tiền Đề Giám Định",
+          "en": "Premise Checking"
+        },
+        "why": {
+          "vi": "Kiểm tra tiền đề trước khi suy kết quả khảo sát ra toàn bộ người dùng.",
+          "en": "Check assumptions before generalizing survey results to the whole population."
+        }
+      }
+    ],
+    "L15-2-2": [
+      {
+        "techniqueId": "L2-T03",
+        "shortId": "T03",
+        "name": {
+          "vi": "Minh Mẫu Tiệm Ẩn",
+          "en": "Worked Examples & Guidance Fading"
+        },
+        "why": {
+          "vi": "Theo mẫu tính điểm đặt hàng lại, rồi tự tính khi giảm dần gợi ý.",
+          "en": "Follow a reorder-point example, then calculate it with fewer hints."
+        }
+      },
+      {
+        "techniqueId": "L2-T10",
+        "shortId": "T10",
+        "name": {
+          "vi": "Phân Giải Giới Vực",
+          "en": "Boundary Tests"
+        },
+        "why": {
+          "vi": "Thử điều kiện biên của thời gian chờ và tồn kho an toàn trước khi kết luận.",
+          "en": "Test lead-time and safety-stock edge conditions before drawing conclusions."
+        }
+      }
+    ]
+  }
+}

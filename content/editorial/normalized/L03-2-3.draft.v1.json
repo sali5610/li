@@ -33,8 +33,8 @@
             "id": "vi-04",
             "role": "methods",
             "heading": "3b · L2-T09 — Truy nguồn trước khi tin dashboard (micropractice khác đề độc lập)",
-            "body_md": "Giả sử một báo cáo nội bộ <b>hư cấu</b> nói “77,8% người dùng tìm dễ dàng”. Raw session log của 9 attempts lại ghi 4 direct, 3 indirect, 2 failed. Team tuyển người tiện lợi trong một nhóm chat; có 2 lần moderator gợi ý đường đi nhưng <b>chưa ghi chúng thuộc attempt nào</b>.\n\n<b>Lượt luyện bắt buộc nếu chọn T09:</b> (1) tính số hoàn thành trên 9 attempts, (2) tách direct/indirect/failure, (3) đánh dấu điều gì raw log <b>hỗ trợ</b>, điều gì <b>không</b> (như “dễ dàng”, representativeness, unassisted completion), (4) đề xuất tối thiểu 2 metadata cần truy hồi để biết tác động của moderator và task wording. Gửi câu trả lời trước mới thấy feedback; mở Sổ Tay không tính đã enact T09.\n\n<b>Feedback sau khi làm:</b> completion (4+3)/9=<b>7/9≈77,8%</b>; direct=<b>4/9≈44,4%</b>; indirect=3/9≈33,3%, failed=2/9≈22,2%. “Hoàn thành 7/9 attempts” có căn cứ; “tìm dễ dàng” không được chứng minh, vì 3 phải backtrack và có 2 guided interventions chưa map. Nên truy moderator-event timestamps/assistance flag, participant-recruitment criteria, task text, expected correct leaf, route-level paths, repeat attempts. Không được suy rộng ra population.\n\n<b>T06 phụ:</b> đặt 4 thẻ “correct first path”, “correct after backtracking”, “never reached target”, “clicked a wrong branch once but later succeeded” vào cột <i>completion / path / error</i>; có thể một attempt mang cả error lẫn complete. Không phải mọi nhóm loại trừ nhau.",
-            "feedback_md": null,
+            "body_md": "Giả sử một báo cáo nội bộ <b>hư cấu</b> nói “77,8% người dùng tìm dễ dàng”. Raw session log của 9 attempts lại ghi 4 direct, 3 indirect, 2 failed. Team tuyển người tiện lợi trong một nhóm chat; có 2 lần moderator gợi ý đường đi nhưng <b>chưa ghi chúng thuộc attempt nào</b>.\n\n<b>Lượt luyện bắt buộc nếu chọn T09:</b> (1) tính số hoàn thành trên 9 attempts, (2) tách direct/indirect/failure, (3) đánh dấu điều gì raw log <b>hỗ trợ</b>, điều gì <b>không</b> (như “dễ dàng”, representativeness, unassisted completion), (4) đề xuất tối thiểu 2 metadata cần truy hồi để biết tác động của moderator và task wording. Gửi câu trả lời trước mới thấy feedback; mở Sổ Tay không tính đã enact T09.\n\n<b>T06 phụ:</b> đặt 4 thẻ “correct first path”, “correct after backtracking”, “never reached target”, “clicked a wrong branch once but later succeeded” vào cột <i>completion / path / error</i>; có thể một attempt mang cả error lẫn complete. Không phải mọi nhóm loại trừ nhau.",
+            "feedback_md": "<b>Feedback sau khi làm:</b> completion (4+3)/9=<b>7/9≈77,8%</b>; direct=<b>4/9≈44,4%</b>; indirect=3/9≈33,3%, failed=2/9≈22,2%. “Hoàn thành 7/9 attempts” có căn cứ; “tìm dễ dàng” không được chứng minh, vì 3 phải backtrack và có 2 guided interventions chưa map. Nên truy moderator-event timestamps/assistance flag, participant-recruitment criteria, task text, expected correct leaf, route-level paths, repeat attempts. Không được suy rộng ra population.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -121,8 +121,8 @@
             "id": "en-04",
             "role": "methods",
             "heading": "3b · L2-T09 primary — appraise raw study evidence",
-            "body_md": "<b>Separate micropractice, not the assessment:</b> A synthetic report proclaims “77.8% of users found the item easily.” The underlying nine attempts record 4 direct, 3 indirect and 2 failed. Participants were recruited from one fan community and two moderator hints were given with no mapping to attempt IDs.\n\n<b>Do the method:</b> compute completion and its denominator; break down direct/indirect/fail; mark what the raw log DOES and does NOT support about ease, unassisted outcomes or all users; name at least two missing fields needed to appraise the claim. Answer before feedback appears; viewing an L2 guide alone is not T09.\n\n<b>Feedback only AFTER meaningful micropractice attempt:</b> complete 7/9≈77.8%; direct 4/9≈44.4%, indirect 3/9≈33.3%, failure 2/9≈22.2%. “7 of 9 attempts eventually completed” is supported, while “easily” and generalization are not. Request per-attempt assistance flags and timing, exact recruitment/task/expected leaf, first-click and path records, repeat exposure. The hinted attempts cannot be subtracted from a group without their IDs.\n\n<b>Optional T06:</b> contrast correct first path, correct after backtracking, failed target and wrong click then completion. A successful attempt may still have error events, so labels are not all mutually exclusive.",
-            "feedback_md": null,
+            "body_md": "<b>Separate micropractice, not the assessment:</b> A synthetic report proclaims “77.8% of users found the item easily.” The underlying nine attempts record 4 direct, 3 indirect and 2 failed. Participants were recruited from one fan community and two moderator hints were given with no mapping to attempt IDs.\n\n<b>Do the method:</b> compute completion and its denominator; break down direct/indirect/fail; mark what the raw log DOES and does NOT support about ease, unassisted outcomes or all users; name at least two missing fields needed to appraise the claim. Answer before feedback appears; viewing an L2 guide alone is not T09.\n\n<b>Optional T06:</b> contrast correct first path, correct after backtracking, failed target and wrong click then completion. A successful attempt may still have error events, so labels are not all mutually exclusive.",
+            "feedback_md": "<b>Feedback only AFTER meaningful micropractice attempt:</b> complete 7/9≈77.8%; direct 4/9≈44.4%, indirect 3/9≈33.3%, failure 2/9≈22.2%. “7 of 9 attempts eventually completed” is supported, while “easily” and generalization are not. Request per-attempt assistance flags and timing, exact recruitment/task/expected leaf, first-click and path records, repeat exposure. The hinted attempts cannot be subtracted from a group without their IDs.",
             "feedback_gate": "AFTER_MEANINGFUL_METHOD_ATTEMPT"
           },
           {
@@ -142,7 +142,7 @@
           },
           {
             "id": "en-07",
-            "role": "concept",
+            "role": "extension",
             "heading": "6 · Source-first extension",
             "body_md": "- [NN/g on success-rate definitions](https://www.nngroup.com/articles/success-rate-the-simplest-usability-metric/).\n- [NN/g on IA vs UI findability testing](https://www.nngroup.com/articles/navigation-ia-tests/).\n- <b>Copy prompt:</b> “I study li. L03-2-3. Open the exact selected sources, summarize only directly accessible claims about task success, indirect paths and errors, and distinguish them from the fictional protocol. Give a fresh original case and 3 unanswered recall questions; say when you cannot access a source.”\n- <b>Active recall without answers:</b> (1) How can completion hide backtracking? (2) When can there be more error events than participants? (3) Why is tree-test success not a full visual-UI usability result?\n\n<b>Media:</b> self-authored outcome/path table and future original diagram if needed; do not reproduce NN/g figures. Future VI/EN mobile/VoiceOver and real post-submit reveal gating remain OPEN."
           }
@@ -465,7 +465,7 @@
         "modelAnswers": 1,
         "methodSections": 1,
         "rubricSections": 1,
-        "methodFeedback": 0
+        "methodFeedback": 1
       },
       "en": {
         "chapters": 7,
@@ -473,7 +473,7 @@
         "modelAnswers": 1,
         "methodSections": 1,
         "rubricSections": 1,
-        "methodFeedback": 0
+        "methodFeedback": 1
       }
     },
     "issues": [],

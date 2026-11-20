@@ -49,9 +49,11 @@ function boot({verified=true,owner="user-a",storagePort=storage}={}){
    if(selector.startsWith("#sp-"))return this.fields.get(selector.slice(1))||null;
    if(selector===".spell-feedback")return this.feedback||null;
    if(selector===".spell-activity-body")return {append:node=>{this.feedback=node;}};
-   const match=selector.match(/^\\[data-spell-action="([a-z]+)"\\]$/);
-   if(match&&this.html.includes('data-spell-action="'+match[1]+'"')){
-    const action=match[1];
+   const prefix='[data-spell-action="';
+   const match=selector.startsWith(prefix)&&selector.endsWith('"]')?
+    selector.slice(prefix.length,-2):null;
+   if(match&&this.html.includes('data-spell-action="'+match+'"')){
+    const action=match;
     return {click:()=>this.events.click({
      target:{dataset:{spellAction:action},closest:()=>({
       dataset:{spellAction:action}

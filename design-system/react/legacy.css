@@ -182,6 +182,15 @@
 .li-legacy-calendar-actions{display:flex;gap:var(--li-space-2)}
 .li-legacy-calendar-actions button{min-height:44px;min-width:44px;border:1px solid var(--rule);
  background:var(--paper);color:var(--moss);cursor:pointer}
+/* Today: one existing edge, no additional exterior focus outline. */
+.li-legacy-today-action{min-height:44px;min-width:76px;padding:var(--li-space-2) var(--li-space-3);
+ border:1px solid var(--moss);border-radius:0;background:var(--paper);color:var(--moss);
+ cursor:pointer;font:var(--li-weight-600) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
+.li-legacy-today-action[data-active="true"]{background:var(--li-color-nav-selected-fill)}
+.li-legacy-today-action:disabled{opacity:.5;cursor:not-allowed}
+.li-legacy-today-action:focus-visible{outline:0;border-width:3px;border-color:var(--moss)}
+.li-legacy-chart-header{display:flex;align-items:center;justify-content:space-between;
+ gap:var(--li-space-3);flex-wrap:wrap}
 .li-legacy-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:var(--li-space-1)}
 .li-legacy-calendar-weekday{display:grid;place-items:center;color:var(--muted);
  font-size:var(--li-type-caption);min-height:24px}

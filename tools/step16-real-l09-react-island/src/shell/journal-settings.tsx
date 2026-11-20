@@ -361,6 +361,10 @@ export function Settings(){
  </div>;
 }
 export function mountJournalAndSettings(){
+ const native=window as Window&{
+  liReactDiaryMounted?:boolean;
+  liPersonalDiary?:{refreshNative?:()=>void}
+ };
  const screens=[{route:'dashboard',ui:<Journal/>},{route:'settings',ui:<Settings/>}];
  const slots=screens.map(({route,ui})=>{
   const page=document.getElementById('page-'+route);
@@ -381,10 +385,13 @@ export function mountJournalAndSettings(){
     legacy.hidden=true;legacy.style.display='none';
     return {root,host,legacy};
    });
+   native.liReactDiaryMounted=true;
    mounted=true;cleanup=()=>{
+    native.liReactDiaryMounted=false;
     roots.forEach(({root,host,legacy})=>{
      root.unmount();host.remove();legacy.hidden=false;legacy.style.removeProperty('display');
     });
+    native.liPersonalDiary?.refreshNative?.();
    };
   }else if(!permitted&&mounted){cleanup?.();cleanup=null;mounted=false;}
  };

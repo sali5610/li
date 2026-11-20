@@ -26,11 +26,13 @@ const assertUtility=(page)=>{
 const calls={guide:0,library:0,resume:0,collection:0,lesson:0,research:0,problems:[]};
 const location=new URL("https://sali5610.github.io/li/?utm_source=chatgpt.com&lesson=L09-1-2#l09-goals");
 const urlReplacements=[];
+const accessClasses=new Set();
 const sandbox={
  currentPage:"home",
  scenarios:[{question:"Giới hạn kết luận khảo sát",type:"problem"}],
  qIndex:0,
  document:{
+   documentElement:{classList:{contains(name){return accessClasses.has(name)}}},
    getElementById(id){return pages.get(id.replace(/^page-/,""))||null},
    querySelectorAll(selector){
      if(selector==="section.page")return [...pages.values()];
@@ -109,4 +111,19 @@ sandbox.navigate("home");assert.equal(location.searchParams.has("lesson"),false)
 assert.equal(calls.lesson,3,"record only published lesson navigation");
 sandbox.navigate("case");assert.equal(calls.problems.at(-1).key,"sampling-bias-90","opening Phản Chứng records case activity");
 assert.ok(urlReplacements.length>=5,"Route updates should be captured without reloading");
+// The visible React navigation uses an invite-guarded action, not a hidden click.
+assert.equal(typeof sandbox.window.liAppRouter.navigate,"function");
+assert.equal(typeof sandbox.window.liAppRouter.back,"function");
+assert.equal(sandbox.window.liAppRouter.getCurrent(),"case");
+assert.equal(sandbox.window.liAppRouter.navigate("catalog"),false,"invitation required");
+accessClasses.add("li-auth-verified");
+assert.equal(sandbox.window.liAppRouter.navigate("nonexistent"),false,"no phantom route");
+assert.equal(sandbox.window.liAppRouter.navigate("catalog"),true,"real route action works");
+assert.equal(active(),"catalog");
+assert.equal(sandbox.window.liAppRouter.back(),true,"back action restores old history");
+assert.equal(active(),"case");
+accessClasses.add("li-account-open");
+assert.equal(sandbox.window.liAppRouter.navigate("home"),false,"account overlay blocks route");
+assert.equal(sandbox.window.liAppRouter.back(),false,"account overlay blocks history");
+accessClasses.delete("li-account-open");
 console.log("PASS S118 back navigation: Settings, Search, Capture, chained routes, duplicate prevention, fallback and Guide/Library/Research hooks");

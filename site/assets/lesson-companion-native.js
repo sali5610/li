@@ -44,8 +44,14 @@ function context(){
   const actualPhase=host.getAttribute("data-li-lesson-phase");
   const submitted=host.getAttribute("data-li-lesson-submitted")==="true";
   const reviewed=host.getAttribute("data-li-lesson-reviewed")==="true";
-  const requested=actualPhase==="methods"?"guided":
+  let requested=actualPhase==="methods"?"guided":
    (reactStages[actualPhase]||"opening");
+  if(actualPhase==="read"){
+   const concept=document.getElementById(data.moments[1].anchor);
+   const rect=concept?.getBoundingClientRect?.();
+   if(rect&&rect.top<Math.min(300,(window.innerHeight||720)*0.42)&&rect.bottom>0)
+    requested="concept";
+  }
   const safeStage=(requested==="reflection"&&!submitted)?"independent":
    requested==="extension"&&!reviewed?(submitted?"reflection":"independent"):requested;
   const moment=data.moments.find(m=>m.stage===safeStage);

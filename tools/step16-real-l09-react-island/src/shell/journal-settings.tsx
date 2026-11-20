@@ -326,8 +326,8 @@ export function Settings(){
     </div>
     <div className="settings-group-grid">
      <Card variant="raised" className="li-react-setting-card">
-      <div className="kicker">{copy('SAO LƯU','BACKUP')}</div>
-      <Heading level={3} role="titleMedium">{copy('Dữ liệu trên thiết bị','Device data')}</Heading>
+      <div className="kicker">{copy('SAO LƯU MỘT PHẦN','PARTIAL BACKUP')}</div>
+      <Heading level={3} role="titleMedium">{copy('Ghi chú & Dấu Trang','Notes & Bookmarks')}</Heading>
       <div className="path-list">
        <div className="path-item"><div><strong>{copy('Lưu trên thiết bị','Local-first storage')}</strong>
         <Text role="support">{copy('Dữ liệu được lưu trước tiên trong trình duyệt này.',
@@ -346,11 +346,11 @@ export function Settings(){
       <div className="settings-data-actions">
        <Button variant="secondary" onClick={()=>app.liPersonalBackup?.export()}
         disabled={!view.exportReady||view.importLoading}>
-        <LiIcon name="archive" size={18}/> {copy('Xuất bản sao','Export backup')}</Button>
+        <LiIcon name="archive" size={18}/> {copy('Xuất ghi chú (.json)','Export notes (.json)')}</Button>
        <Button variant="secondary" onClick={chooseBackup} disabled={view.importLoading}>
-        {copy('Nhập bản sao','Import backup')}</Button>
+        {copy('Nhập ghi chú (.json)','Import notes (.json)')}</Button>
        <input ref={backupInput} type="file" className="visually-hidden-file"
-        accept=".json,application/json" aria-label={copy('Chọn bản sao JSON li.','Choose a li. JSON backup')}
+        accept=".json,application/json" aria-label={copy('Chọn tệp ghi chú JSON li.','Choose a li. notes JSON file')}
         onChange={event=>{
          importBackup(event.currentTarget.files?.[0]);
          event.currentTarget.value='';
@@ -362,8 +362,11 @@ export function Settings(){
        actionLabel={copy('Chọn tệp khác','Choose another file')}
        onAction={chooseBackup}/>}
       <Text role="support">{copy(
-       'Xuất bản sao trước khi đổi thiết bị hoặc xóa dữ liệu trình duyệt. Nhập bản sao dùng bộ kiểm tra dữ liệu hiện tại.',
-       'Export a backup before switching devices or clearing browser data. Import uses the existing validated parser.')}</Text>
+       'Tệp JSON chỉ gồm Bút Ký, Ý đã nhặt, Dấu Trang và tên gọi Lão Lý; bản nháp legacy nếu có. KHÔNG gồm Nhật Ký, Check-in, tiến độ học, lịch ôn Thần Chú, lịch nhắc hay toàn bộ cài đặt. Bản nháp Nhặt Ý chưa lưu có thể vắng mặt.',
+       'This JSON includes case notes, captured ideas, bookmarks, Lao Ly nicknames and any legacy draft. It does NOT include Journal, Check-ins, learning progress, spell review schedules, reminders or all settings. Unsaved React Capture drafts may be missing.')}</Text>
+     <Text role="support">{copy(
+      'Nhập tệp thay thế ghi chú và Dấu Trang hiện có sau khi xác nhận. Đây không phải bản sao toàn bộ tài khoản trước khi xóa dữ liệu máy.',
+      'Import replaces existing notes and bookmarks after confirmation. This is not a complete account backup before clearing device data.')}</Text>
      </Card>
      <Card variant="raised" className="li-react-setting-card">
       <div className="kicker">{copy('QUYỀN RIÊNG TƯ','PRIVACY')}</div>

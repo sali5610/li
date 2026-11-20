@@ -31,3 +31,24 @@ jobs:
         run: node --check site/assets/spell-practice.js
       - name: Check VI/EN companion copy and quote coverage
         run: node tools/test_i18n_legacy.cjs
+      - name: Run L03 → T06 → feedback → L09 in actual Chromium (phone + tablet)
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$chrome" || { echo 'Chrome unavailable'; exit 1; }
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory . > /tmp/li-spell-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          for width in 390 820; do
+            url="http://127.0.0.1:8765/tools/spell_practice_fixture.html?w=$width"
+            result="$("$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1200,900 --virtual-time-budget=14000 --dump-dom "$url" 2>/tmp/li-spell-chrome.log || true)"
+            if [[ "$result" != *'LI_SPELL_PASS width='* ]]; then
+              echo "FAIL real Chromium T06 at width $width"
+              echo "$result" | grep -E 'LI_SPELL_(FAIL|PENDING)' | tail -1 | cut -c1-1200 || true
+              tail -18 /tmp/li-spell-chrome.log || true
+              exit 1
+            fi
+            echo "PASS actual Chromium L03 interview practice + L09 reset at $width CSS px"
+          done

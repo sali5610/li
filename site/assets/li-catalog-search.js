@@ -136,6 +136,7 @@ function renderCanonical(data){
   if((record.kind==="Concept"||isLesson)&&record.links.some(x=>x.sourceType==="academic"&&x.sourceUrl)){
    const mentor=document.createElement("button");mentor.type="button";
    mentor.className="action alt";
+   mentor.setAttribute("aria-haspopup","dialog");mentor.setAttribute("aria-controls","buddy-modal");
    mentor.textContent="Hỏi Lão Lý về kết nối này";
    mentor.setAttribute("aria-label","Hỏi Lão Lý về "+record.title);
    mentor.addEventListener("click",()=>{

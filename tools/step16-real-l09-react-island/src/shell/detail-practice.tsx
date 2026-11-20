@@ -4,6 +4,7 @@ import {Button,Card,Checkbox,Field,Heading,InlineFeedback,Radio,Text,LiIcon} fro
 import {createFadedT03Flow,fadedT03Phase} from './spell-t03-flow.js';
 import {createLociT13Flow,lociT13Phase} from './spell-t13-flow.js';
 import {createResumeT12Flow,resumeT12Phase} from './spell-t12-flow.js';
+import {createStandardSpellFlow,standardSpellPhase} from './spell-standard-flow.js';
 import './detail-practice.css';
 
 /** The existing authored exercise checker and private-note transaction owners
@@ -56,9 +57,17 @@ function useSpell(){
   const update=()=>setView(app.LiSpellPractice?.getView()||null);
   window.addEventListener('li:spell-view-changed',update);
   window.addEventListener('li:localechange',update);
+  // T02 becomes due with wall-clock time; re-evaluate resumed PWA/Safari tabs.
+  const onVisible=()=>{if(document.visibilityState==='visible')update();};
+  window.addEventListener('focus',update);
+  window.addEventListener('pageshow',update);
+  document.addEventListener('visibilitychange',onVisible);
   return ()=>{
    window.removeEventListener('li:spell-view-changed',update);
    window.removeEventListener('li:localechange',update);
+   window.removeEventListener('focus',update);
+   window.removeEventListener('pageshow',update);
+   document.removeEventListener('visibilitychange',onVisible);
   };
  },[]);
  return view;
@@ -91,26 +100,32 @@ function PracticeField({field,value,onChange}:{
 }
 export function GuideDetail(){
  const view=useSpell();
- // XState owns T03 React transitions; the existing exercise engine
- // still owns answers, grading, feedback, and the local session receipt.
+ // All 13 techniques use XState for verified progression. One generic actor
+ // handles T01/T02/T04–T11; specialised T03/T12/T13 actors are reused.
+ // The authored checker remains the sole owner of answers and feedback.
  const [t03Flow]=useState(createFadedT03Flow);
  const t03Stage=useSyncExternalStore(t03Flow.subscribe,t03Flow.getSnapshot);
  const [t13Flow]=useState(createLociT13Flow);
  const t13Stage=useSyncExternalStore(t13Flow.subscribe,t13Flow.getSnapshot);
  const [t12Flow]=useState(createResumeT12Flow);
  const t12Stage=useSyncExternalStore(t12Flow.subscribe,t12Flow.getSnapshot);
+ const [standardFlow]=useState(createStandardSpellFlow);
+ const standardStage=useSyncExternalStore(standardFlow.subscribe,standardFlow.getSnapshot);
  useEffect(()=>{
   t03Flow.sync(view);
   t13Flow.sync(view);
   t12Flow.sync(view);
- },[t03Flow,t13Flow,t12Flow,view?.active,view?.phase,view?.viewSession,view?.reviewedInSession,view?.resumeNote]);
- useEffect(()=>()=>{t03Flow.stop();t13Flow.stop();t12Flow.stop();},[t03Flow,t13Flow,t12Flow]);
+  standardFlow.sync(view);
+ },[t03Flow,t13Flow,t12Flow,standardFlow,view?.active,view?.mode,view?.phase,view?.dueAt,view?.viewSession,view?.reviewedInSession,view?.resumeNote]);
+ useEffect(()=>()=>{t03Flow.stop();t13Flow.stop();t12Flow.stop();standardFlow.stop();},[t03Flow,t13Flow,t12Flow,standardFlow]);
  const phase=view?.active==='T03'&&t03Flow.isCurrent(view)
   ?fadedT03Phase(t03Stage):
   view?.active==='T13'&&t13Flow.isCurrent(view)
    ?lociT13Phase(t13Stage):
   view?.active==='T12'&&t12Flow.isCurrent(view)
-   ?resumeT12Phase(t12Stage):(view?.phase??0);
+   ?resumeT12Phase(t12Stage):
+    standardFlow.isCurrent(view)
+     ?standardSpellPhase(standardStage,view?.mode??'direct'):(view?.phase??0);
  const [methodTick,setMethodTick]=useState(0);
  const [answers,setAnswers]=useState<Record<string,string|string[]>>({});
  useEffect(()=>{
@@ -134,7 +149,7 @@ export function GuideDetail(){
     ?t13Flow.execute(kind,answers,app.LiSpellPractice)
     :view?.active==='T12'
      ?t12Flow.execute(kind,answers,app.LiSpellPractice)
-     :app.LiSpellPractice?.perform(kind,answers);
+     :standardFlow.execute(kind,answers,app.LiSpellPractice);
   if(ok&&['reset','clear','schedule','next'].includes(kind))setAnswers({});
  };
  const prompt=()=>{
@@ -221,6 +236,9 @@ export function GuideDetail(){
     data-li-react-t03-stage={view.active==='T03'?t03Stage:undefined}
     data-li-react-t13-stage={view.active==='T13'?t13Stage:undefined}
     data-li-react-t12-stage={view.active==='T12'?t12Stage:undefined}
+    data-li-react-standard-spell-stage={standardFlow.isCurrent(view)?standardStage:undefined}
+    data-li-react-xstate-stage={view.active==='T03'?t03Stage:
+     view.active==='T12'?t12Stage:view.active==='T13'?t13Stage:standardStage}
     className="spell-practice-root li-react-spell-practice">
     <div className="spell-activity-head"><div>
      <div className="kicker">{view.active} · {copy('THỬ THI TRIỂN','PRACTICE')}</div>

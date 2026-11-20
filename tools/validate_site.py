@@ -299,7 +299,13 @@ assert "#page-guide #method-cards>.method-card .purpose{" not in html, "Retired 
 assert "#page-guide #method-cards > .method-card .purpose {" in foundation
 assert "--li-guide-s118-col-gap: var(--li-micro-guide-column-gap-18);" in foundation and "--li-guide-s118-row-gap: var(--li-space-5);" in foundation
 assert "--li-guide-s118-col-gap: var(--li-micro-guide-column-gap-14);" in foundation and "--li-guide-s118-row-gap: var(--li-micro-guide-row-gap-18);" in foundation
-assert "function renderMethods(){" in html and "function showMethod(id){" in html
+assert "function renderMethods(){" in html and (
+    "function showMethod(id){" in html or
+    "function showMethod(id,{practice=false}={}){" in html
+), "Spells must retain the existing working detail/practice route"
+if "function showMethod(id,{practice=false}={}){" in html:
+    assert 'practice:t.dataset.spellPractice==="true"' in html
+    assert 'window.LiSpellPractice?.open(id,practice?"practice":"guide")' in html
 assert "/* S114 — restrained Lão Lý peek:" in html
 
 # S134: all native writing areas use a real 32px background TILE, not an

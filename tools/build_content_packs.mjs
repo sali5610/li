@@ -25,7 +25,7 @@ function extractLiteral(source, name) {
  if(end<0)throw Error("Unclosed literal "+name);
  return eval("("+source.slice(start,end)+")");
 }
-function compileContent(lessons,concepts,relations,registry,academic){
+function compileContent(lessons,concepts,relations,registry,academic,navigationCatalog){
  const fail=msg=>{throw Error("LI_CONTENT_INVALID: "+msg)};
  const allowed=new Map([...registry.predicates,...academic.relations].map(x=>[x.name,x]));
  const kinds=new Set(registry.nodeKinds.map(x=>x.name));
@@ -60,6 +60,13 @@ function compileContent(lessons,concepts,relations,registry,academic){
  const navSrc={sourceUrl:"https://github.com/sali5610/li/blob/main/site/assets/catalog-curriculum-data.js",sourceSection:"S36 mapped Wave1 hierarchy",evidenceType:"documented",checkedOn:"2026-11-20"};
  const packs=new Map(),search=[];
  const lessonIds=new Set();
+ // Old manuscript group labels remain content snapshots; current grouping is
+ // defined by the stable Field ID in the versioned navigation catalog.
+ const currentGroupByField=new Map();
+ for(const group of navigationCatalog.groups)for(const field of group.fields){
+  const fieldId="field:F"+field.courses[0].id.slice(1,3);
+  currentGroupByField.set(fieldId,{id:"group:"+group.id,title:group.title});
+ }
  for(const l of [...lessons].sort((a,b)=>a.id.localeCompare(b.id))){
   for(const k of ["schemaVersion","id","kind","version","languages","title","hierarchy","learningOutcomes","conceptIds","content","practice","sources","provenance","reviewState","publishState","rights","editorialStatus","updatedAt"])if(l[k]===undefined)fail(l.id+" missing "+k);
   if(lessonIds.has(l.id))fail("duplicate lesson ID "+l.id);lessonIds.add(l.id);
@@ -97,13 +104,14 @@ function compileContent(lessons,concepts,relations,registry,academic){
   if(!Array.isArray(l.conceptIds)||l.conceptIds.length===0)fail("missing concept mapping "+l.id);
   if(l.prerequisiteLessonIds?.some(x=>x===l.id))fail("self prerequisite "+l.id);
   for(const src of l.sources){if(!src.title||!src.url?.startsWith("https://"))fail("invalid external source "+l.id);}
-  const hier=l.hierarchy;
-  for(const [kind,v] of [["DomainGroup",hier.group],["Field",hier.field],["Course",hier.course]]){if(!v||!v.id||!v.title)fail("bad hierarchy "+l.id);
+  const hier=l.hierarchy,activeGroup=currentGroupByField.get(l.hierarchy.field.id);
+  if(!activeGroup)fail("missing current group "+l.hierarchy.field.id);
+  for(const [kind,v] of [["DomainGroup",activeGroup],["Field",hier.field],["Course",hier.course]]){if(!v||!v.id||!v.title)fail("bad hierarchy "+l.id);
    addNode({id:v.id,kind,title:v.title,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:navSrc,note:"Wave1 navigation metadata, not academic accreditation"});}
   const frozen=l.editorialStatus==="po_locked";
   addNode({id:"lesson:"+l.id,kind:"Lesson",title:l.title.en,version:l.version,reviewState:l.reviewState,publishState:l.publishState,visibility:"public_curated",rightsState:"first_party",aliases:[{locale:"vi",text:l.title.vi}],provenance:editorial(l,frozen?"PO-locked lesson VI/EN":"Reviewed lesson manuscript VI/EN"),note:frozen?"Editorial lock is not release approval":"Editorial manuscript is not publication approval"});
   const part=(from,to)=>addEdge({id:"edge:content:part:"+from,predicate:"PART_OF",from,to,reviewState:"verified",visibility:"public_curated",provenance:navSrc});
-  part(hier.field.id,hier.group.id);part(hier.course.id,hier.field.id);part("lesson:"+l.id,hier.course.id);
+  part(hier.field.id,activeGroup.id);part(hier.course.id,hier.field.id);part("lesson:"+l.id,hier.course.id);
   const claimId=(frozen?"claim:wave1:":"claim:editorial:")+l.id+":editorial-scope",sourceId="source:editorial:"+l.id+":notion";
   addNode({id:claimId,kind:"SourceClaim",title:(frozen?"Locked lesson scope ":"Editorial lesson scope ")+l.id,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:editorial(l,"Lesson manuscript contents"),note:"Editorial presence only; not a claim of peer-reviewed scientific support"});
   addNode({id:sourceId,kind:"SourceEdition",title:(frozen?"PO-locked editorial edition ":"Reviewed editorial edition ")+l.id,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:editorial(l,frozen?"S126 PO content freeze":"Documented lesson manuscript"),note:"Notion research provenance, never fetched at runtime"});
@@ -192,7 +200,7 @@ function augmentCurriculum(compiled,legacyCourses,lessons,levelMap,navSrc){
      if(outlineIds.has(outline.id)||!outline.id.startsWith("L"+course.id.slice(1)+"-")||!outline.title)throw Error("LI_COURSE_DUP_LESSON "+outline.id);
      outlineIds.add(outline.id);
      const body=authoredById.get(outline.id);
-     if(body&&(body.hierarchy.group.id!==groupId||body.hierarchy.field.id!==fieldId||body.hierarchy.course.id!==courseId||body.hierarchy.group.title!==group.title||body.hierarchy.field.title!==field.name||body.hierarchy.course.title!==course.title))throw Error("LI_COURSE_WRONG_PARENT "+outline.id);
+     if(body&&((legacyCourses.legacyGroupAliases?.[body.hierarchy.group.id.slice(6)]??body.hierarchy.group.id.slice(6))!==group.id||body.hierarchy.field.id!==fieldId||body.hierarchy.course.id!==courseId||body.hierarchy.field.title!==field.name||body.hierarchy.course.title!==course.title))throw Error("LI_COURSE_WRONG_PARENT "+outline.id);
      outlineRows.push({id:outline.id,title:outline.title,groupId:group.id,fieldId:fId,courseId:course.id,order:i+1,navigationPublished:outline.published===true,contentState:body?"review_only":"outline_only",publishState:body?body.publishState:"draft",localizedTitle:body?body.title:null});
      addNode(lessonId,"Lesson",outline.title,"Navigation outline only; no reviewed body, exercise or release");
      addPart(lessonId,courseId);
@@ -200,9 +208,9 @@ function augmentCurriculum(compiled,legacyCourses,lessons,levelMap,navSrc){
     if(authored.some(l=>!course.lessons.some(o=>o.id===l.id)))throw Error("LI_COURSE_UNLISTED_BODY "+course.id);
     courseRows.push({id:course.id,title:course.title,groupId:group.id,fieldId:fId,level,sourceLevel:course.level,status:authored.length?"review_only":"legacy_outline",lessonIds:authored.map(l=>l.id),outlineLessonIds:course.lessons.map(l=>l.id)});
    }
-   fieldRows.push({id:fId,slug:field.id,title:field.name,groupId:group.id,source:field.source??null,courseIds:courseList});
+   fieldRows.push({id:fId,slug:field.id,title:field.name,groupId:group.id,category:field.category,iscedDetailCode:field.iscedDetailCode,classificationStatus:field.classificationStatus,source:field.source??null,courseIds:courseList});
   }
-  groupRows.push({id:group.id,title:group.title,fieldIds:fieldList});
+  groupRows.push({id:group.id,title:group.title,titleEn:group.titleEn,iscedBroadCode:group.iscedBroadCode,fieldIds:fieldList});
  }
  if(lessons.some(l=>!outlineIds.has(l.id)))throw Error("LI_COURSE_ORPHAN_BODY");
  const nodes=[...nodesById.values()].sort((a,b)=>a.id.localeCompare(b.id));
@@ -346,14 +354,14 @@ for(const l of lessons){
 }
 const schema=load("content/schema/lesson.schema.json");
 for(const l of lessons)for(const key of schema.required)if(!(key in l))throw Error("LI_CONTENT_SCHEMA_REQUIRED: "+l.id+"."+key);
-const compiled=compileContent(lessons,load("content/graph/concepts.json"),load("content/graph/edges.json"),load("docs/ontology/registry.v0.1.json"),load("docs/ontology/academic/registry.v0.1.json"));
-const courseLevels=load("content/curriculum/course-levels.v1.json");
 const legacyCourses=load("content/curriculum/legacy-catalog.v1.json");
+const compiled=compileContent(lessons,load("content/graph/concepts.json"),load("content/graph/edges.json"),load("docs/ontology/registry.v0.1.json"),load("docs/ontology/academic/registry.v0.1.json"),legacyCourses);
+const courseLevels=load("content/curriculum/course-levels.v1.json");
 const researchCandidates=load("content/curriculum/research-candidates.v0.1.json");
-const canonicalLegacyHeader="/* GENERATED from GitHub content/curriculum/legacy-catalog.v1.json — DO NOT EDIT.\n   8 groups / 15 fields / 45 course outlines / 135 lesson outlines.\n   Navigation metadata only. A published route is NOT an academic release approval. */\n";
+const canonicalLegacyHeader="/* GENERATED from GitHub content/curriculum/legacy-catalog.v1.json — DO NOT EDIT.\n   5 ISCED-F groups / 15 fields / 45 course outlines / 135 lesson outlines.\n   Navigation metadata only. A published route is NOT an academic release approval. */\n";
 // Keep the existing native Tàng Thư/search app reading an exact generated copy of the
 // GitHub canonical four-layer tree; no new renderer, site URL or content fork.
-compiled["site/assets/catalog-curriculum-data.js"]=canonicalLegacyHeader+"window.LI_CATALOG_DATA="+JSON.stringify(legacyCourses.groups,null,2)+";\n";
+compiled["site/assets/catalog-curriculum-data.js"]=canonicalLegacyHeader+"window.LI_CATALOG_DATA="+JSON.stringify(legacyCourses.groups,null,2)+";\nwindow.LI_CATALOG_GROUP_ALIASES="+JSON.stringify(legacyCourses.legacyGroupAliases,null,2)+";\n";
 const levelMap=new Map();
 const allLevels=new Set();
 for(const level of courseLevels.levels){
@@ -363,7 +371,7 @@ for(const level of courseLevels.levels){
  for(const label of level.sourceLabels){if(levelMap.has(label))throw Error("LI_COURSE_DUP_LEVEL_ALIAS: "+label);levelMap.set(label,level.id);}
 }
 if(allLevels.size!==4||new Set(courseLevels.levels.map(x=>x.order)).size!==4)throw Error("LI_COURSE_REQUIRED_FOUR_LEVELS");
-const navSrc={"sourceUrl":"https://github.com/sali5610/li/blob/integration/staging/content/curriculum/legacy-catalog.v1.json","sourceSection":"8 groups / 15 fields / 45 courses / 135 lesson navigation outlines (metadata only)","evidenceType":"documented","checkedOn":"2026-11-20"};
+const navSrc={"sourceUrl":"https://github.com/sali5610/li/blob/integration/staging/content/curriculum/legacy-catalog.v1.json","sourceSection":"5 ISCED-F groups / 15 fields / 45 courses / 135 lesson navigation outlines (metadata only)","evidenceType":"documented","checkedOn":"2026-11-22"};
 augmentCurriculum(compiled,legacyCourses,lessons,levelMap,navSrc);
 const fields=compiled["site/content-packs/course-catalog.json"].fields;
 const candidateIds=new Set();

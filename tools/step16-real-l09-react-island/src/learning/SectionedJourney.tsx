@@ -181,9 +181,21 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    reflection:'li-sectioned-'+id+'-feedback',
    extension:'li-sectioned-'+id+'-progress'
   };
+  const labels:{
+   vi:Record<MentorMoment['stage'],string>;en:Record<MentorMoment['stage'],string>
+  }={
+   vi:{opening:'Mở đầu',concept:'Khái niệm',guided:'Thử áp dụng',
+    independent:'Tự luyện tập',reflection:'Đối chiếu',extension:'Học tiếp'},
+   en:{opening:'Opening',concept:'Concept',guided:'Guided example',
+    independent:'Independent practice',reflection:'Feedback',extension:'Further study'}
+  };
   const unregister=api.registerEditorial({
    schema:1,lesson_id:id,topics:[],
-   moments:lesson.content.companion.structuredMoments.map(m=>({...m,anchor:anchors[m.stage]}))
+   moments:lesson.content.companion.structuredMoments.map(m=>({
+    ...m,anchor:anchors[m.stage],
+    vi:{...m.vi,label:labels.vi[m.stage]},
+    en:{...m.en,label:labels.en[m.stage]}
+   }))
   });
   window.dispatchEvent(new Event('li:lesson-phase-changed'));
   return()=>unregister();

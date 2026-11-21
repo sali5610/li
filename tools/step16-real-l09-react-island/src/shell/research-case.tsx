@@ -5,7 +5,7 @@ import type {ResearchView,CaseChoice} from './inquiry-port.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {motion,useReducedMotion} from 'motion/react';
-import {Badge,Button,Card,Field,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
+import {Badge,Button,Field,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
 
 const empty:ResearchView={question:'',branches:[],observed:'',unknown:'',feedback:''};
@@ -44,8 +44,8 @@ function ResearchScene(){
   <div className="kicker">{L("THEO DẤU MỘT NGHI VẤN","FOLLOW THE EVIDENCE")}</div>
   <Heading level={1} role="headline">{L("Khảo Chứng","Investigate")}</Heading>
   <Text role="body">{L("Mỗi kết luận bắt đầu từ một câu hỏi: ta đã biết gì, và còn thiếu gì?","Every conclusion begins with a question: what do we know, and what is missing?")}</Text>
-  <div className="editorial-grid"><div className="stack-sm">
-   <Card variant="tinted">
+  <div className="research-layout"><main className="research-primary">
+   <section className="research-hypothesis">
     <div className="kicker">{L("I · GIẢ THUYẾT","I · HYPOTHESIS")}</div>
     <Heading level={2} role="titleMedium">{state.question||L('Một kết luận cần kiểm chứng','A claim to investigate')}</Heading>
     <Badge tone="neutral">{L("Ví dụ giả định","Hypothetical example")}</Badge>
@@ -60,8 +60,8 @@ function ResearchScene(){
      initial={reduced?false:{opacity:0,y:4}} animate={{opacity:1,y:0}}
      transition={reduced?{duration:0}:{duration:0.16}}>{state.feedback}</motion.p>
     <div className="action-row"><Button onClick={()=>openRoute('case')}>{L("Phản Chứng","Challenge the claim")}</Button></div>
-   </Card>
-   <Card variant="raised">
+   </section>
+   <section className="research-evidence">
     <div className="kicker">{L("II · NGUỒN / CHỨNG CỨ","II · SOURCES / EVIDENCE")}</div>
     <Heading level={2} role="titleMedium">{L("Chưa đủ dữ kiện","Insufficient evidence")}</Heading>
     <Text role="body">{L("Một tỷ lệ chưa cho biết cách chọn mẫu, nên chưa đủ để kết luận về toàn bộ tổng thể.","A percentage alone says nothing about sampling, so it cannot establish a population-wide conclusion.")}</Text>
@@ -71,17 +71,17 @@ function ResearchScene(){
     <div className="path-item"><span className="path-num">02</span>
      <div><strong>{L("Điều chưa biết","Unknown")}</strong><Text role="support">{state.unknown}</Text></div>
     </div>
-   </Card>
-  </div>
-  <div className="stack-sm">
-   <Card variant="raised">
+   </section>
+  </main>
+  <aside className="research-secondary">
+   <section className="research-notebook">
     <div className="kicker">{L("III · BÚT KÝ","III · NOTEBOOK")}</div>
     <Heading level={2} role="titleMedium">{L("Bút Ký ở Tủ Riêng","Notebook in My Shelf")}</Heading>
     <Text role="body">{L("Tìm lại những kết luận bạn tự viết sau mỗi lượt Phản Chứng.","Return to the conclusions you wrote after challenging each claim.")}</Text>
     <div className="action-row"><Button variant="secondary" onClick={openNotebook}>
      {L("Mở Bút Ký","Open notebook")}</Button></div>
-   </Card>
-   <article className="surface dark">
+   </section>
+   <article className="research-mentor surface dark">
     <div className="laoly-side-avatar"><span className="laoly-face smallface" aria-hidden="true">
      <img src="./assets/laoly-neutral.png" alt="" width="128" height="128" loading="lazy"/></span>
      <span className="kicker">{L("LÃO LÝ NHẮN NHỦ","A NOTE FROM LAO LY")}</span>
@@ -92,7 +92,7 @@ function ResearchScene(){
     <Text role="body">{L("Muốn lão giúp soi tiền đề nào trước?","Which assumption should we examine first?")}</Text>
     <Button variant="secondary" onClick={()=>window.openLaoLy?.()}>{L("Đối thoại cùng Lão Lý","Talk with Lao Ly")}</Button>
    </article>
-  </div></div>
+  </aside></div>
  </div>;
 }
 /** The React Case UI owns the selected answer; Lão Lý may inspect and submit
@@ -196,11 +196,12 @@ function CaseScene(){
     <LiIcon name="bookmark" size={20}/>{bookmarked?L('Đã lưu','Saved'):L('Lưu case','Bookmark case')}
    </Button>
   </div>
-  <div className="editorial-grid">
-   <Card variant="tinted">
-    <Heading level={2} role="titleMedium">{L(caseCopy.question.vi,caseCopy.question.en)}</Heading>
+  <div className="case-layout">
+   <main className="case-workspace">
+    <div className="case-question"><Heading level={2} role="titleMedium">{L(caseCopy.question.vi,caseCopy.question.en)}</Heading>
     <Text role="body">{L(caseCopy.scene.vi,caseCopy.scene.en)}</Text>
-    <div className="path-list">
+    </div>
+    <div className="path-list case-options">
      <Button className="branch" variant="secondary" aria-pressed={choice==='right'}
       onClick={()=>{setChoice('right');setMessage('');}}>
       {L(caseCopy.options.right.vi,caseCopy.options.right.en)}</Button>
@@ -213,19 +214,19 @@ function CaseScene(){
      transition={reduced?{duration:0}:{duration:0.16}}>{choice===null?L('Chọn một nhận định để bắt đầu.','Choose a statement to begin.'):
      choice==='right'?L(caseCopy.feedback.right.vi,caseCopy.feedback.right.en):
      L(caseCopy.feedback.wrong.vi,caseCopy.feedback.wrong.en)}</motion.p>
-    <Field id="li-react-case-revision" kind="textarea" label={L("Luận Kết · Viết lại nhận định không vượt quá dữ kiện","Conclusion · Revise your claim without exceeding the evidence")}
+    <div className="case-revision"><Field id="li-react-case-revision" kind="textarea" label={L("Luận Kết · Viết lại nhận định không vượt quá dữ kiện","Conclusion · Revise your claim without exceeding the evidence")}
      rows={5} value={revision} onChange={e=>updateRevision(e.target.value)}
      placeholder={L("Trong nhóm người đang sử dụng được hỏi, 90% phản hồi tích cực…","Among the current users surveyed, 90% reported satisfaction…")}/>
     {message&&<InlineFeedback tone="error" message={message}/>}
     <div className="action-row"><Button onClick={save}><LiIcon name="check" size={20}/> {L("Lưu vào Bút Ký","Save to Notebook")}</Button></div>
-    <Text role="support">{L("Sau khi xem phản hồi, hãy viết lại kết luận bằng lời của bạn.","After the feedback, rewrite the conclusion in your own words.")}</Text>
-   </Card>
-   <Card variant="raised">
+    <Text role="support">{L("Sau khi xem phản hồi, hãy viết lại kết luận bằng lời của bạn.","After the feedback, rewrite the conclusion in your own words.")}</Text></div>
+   </main>
+   <aside className="case-coach">
     <div className="kicker">{L("THỦ THUẬT TƯ DUY","THINKING TECHNIQUE")}</div>
     <Heading level={2} role="titleMedium">{L("Hỏi về đối tượng bị thiếu.","Ask who is missing.")}</Heading>
     <Text role="body">{L("Chỉ một câu hỏi “Ai không nằm trong mẫu?” cũng có thể mở ra một nhánh kiểm chứng quan trọng.","One question—“Who is not in this sample?”—can reveal a key line of inquiry.")}</Text>
     <Button onClick={()=>openRoute('research')} variant="secondary">{L("Về Khảo Chứng","Back to Investigate")}</Button>
-   </Card>
+   </aside>
   </div>
  </div>;
 }

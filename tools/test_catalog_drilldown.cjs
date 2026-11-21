@@ -19,7 +19,7 @@ assert(!fields.some(x=>x.id==="ux-design"));
 assert.equal(courses.length,45);
 assert.equal(lessons.length,135);
 assert.equal(new Set(groups.map(x=>x.id)).size,5);
-assert.deepEqual(groups.map(x=>x.iscedBroadCode),["02","03","04","05","06"]);
+assert.equal(Array.from(groups,x=>x.iscedBroadCode).join(","),"02,03,04,05,06");
 assert(fields.every(x=>x.category?.id&&x.category?.label?.vi&&x.category?.label?.en));
 assert.equal(new Set(fields.map(x=>x.id)).size,15);
 assert.equal(new Set(courses.map(x=>x.id)).size,45);

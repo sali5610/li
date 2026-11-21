@@ -5,6 +5,7 @@ import {useDiscoveryLocale,localized} from './discovery-locale.js';
 import {createRoot} from 'react-dom/client';
 import {motion,useReducedMotion} from 'motion/react';
 import {Badge,Button,Field,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
+import {FieldPicker} from './library-taxonomy.js';
 
 /** React owns Nhặt Ý input and button; one original private library owner
  * handles validation, persistence, rollback, activity and Collection navigation.
@@ -15,7 +16,7 @@ type CaptureResult=
 type CaptureUiPort={getDraft:()=>string};
 declare global{interface Window{liCaptureUi?:CaptureUiPort;}}
 type CaptureWindow=Window&{
- liCaptureIdea?:{save:(text:string)=>CaptureResult};
+ liCaptureIdea?:{save:(text:string,fieldId?:string|null)=>CaptureResult};
 };
 const app=window as CaptureWindow;
 function CaptureIdea(){
@@ -23,6 +24,7 @@ function CaptureIdea(){
  const L=(vi:string,en:string)=>localized(locale,vi,en);
  const reduced=useReducedMotion();
  const [text,setText]=useState('');
+ const [fieldId,setFieldId]=useState<string|null>(null);
  const [message,setMessage]=useState('');
  useEffect(()=>{
   const port:CaptureUiPort={getDraft:()=>document.documentElement.classList.contains('li-auth-verified')?text:''};
@@ -33,19 +35,19 @@ function CaptureIdea(){
   // An unsaved idea must never leak into the next invited learner session.
   const clearOnSignOut=()=>{
    if(!document.documentElement.classList.contains('li-auth-verified')){
-    setText('');setMessage('');
+    setText('');setFieldId(null);setMessage('');
    }
   };
   window.addEventListener('li:auth-verified-changed',clearOnSignOut);
   return ()=>window.removeEventListener('li:auth-verified-changed',clearOnSignOut);
  },[]);
  function save(){
-  const result=app.liCaptureIdea?.save(text);
+  const result=app.liCaptureIdea?.save(text,fieldId);
   if(!result){
    setMessage(L('Chưa thể lưu ghi chú. Hãy sao chép nội dung trước khi rời trang.','Unable to save this note. Copy your text before leaving.'));
    return;
   }
-  if(result.ok){setText('');setMessage('');return;}
+  if(result.ok){setText('');setFieldId(null);setMessage('');return;}
   // Truthful inline failure; the original storage owner also handles snackbar.
   setMessage(result.message);
  }
@@ -63,6 +65,7 @@ function CaptureIdea(){
      kind="textarea" rows={9} value={text} className="li-react-capture-field"
      placeholder={L("Mình vừa đọc thấy…","I just came across…")}
      onChange={event=>{setText(event.target.value);if(message)setMessage('');}}/>
+    <FieldPicker id="li-capture-field-id" value={fieldId} onChange={setFieldId}/>
     {message&&<motion.div key={message} initial={reduced?false:{opacity:0,y:4}}
      animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.16}}>
      <InlineFeedback tone="error" message={message}/>

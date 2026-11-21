@@ -9,6 +9,7 @@ import {Button,Card,FilterGroup,Heading,IconButton,InlineFeedback,SearchField,Te
 import '../../../../design-system/react/legacy.css';
 import './guide-library.css';
 import {GuideDetail,NoteDetail,ConfirmNoteAction} from './detail-practice.js';
+import {TaxonomyFilters,emptyTaxonomy,matchesTaxonomy,fieldLabel} from './library-taxonomy.js';
 
 /* Single invited app. The canonical legacy authoring and account-backed
  * business logic are accessed through explicit ports; React owns all visible
@@ -18,11 +19,11 @@ type MethodsView={
  methods:Method[];categories:{key:string;label:string}[];suggestions:string[]|null;
  modeLabel:string;guide:string
 };
-type Lesson={id:string;route:string;title:string;status:string;detail:string;saved:boolean};
+type Lesson={id:string;route:string;title:string;status:string;detail:string;saved:boolean;lessonId?:string|null;fieldId?:string|null};
 type T02Status={dueAt:number|null;awaitingRating:boolean;reviewCount:number};
-type Problem={kind:string;key:string;title:string;detail:string;saved:boolean};
-type Note={id:string;type:'case'|'idea';title:string;body:string;date:string;sortDate:string;correct?:boolean};
-type Bookmark={kind:string;id:string;title:string;route:string|null;date:string};
+type Problem={kind:string;key:string;title:string;detail:string;saved:boolean;lessonId?:string|null;fieldId?:string|null};
+type Note={id:string;type:'case'|'idea';title:string;body:string;date:string;sortDate:string;correct?:boolean;fieldId?:string|null;lessonId?:string|null};
+type Bookmark={kind:string;id:string;title:string;route:string|null;date:string;fieldId?:string|null;lessonId?:string|null};
 type LibraryView={
  lessons:Lesson[];problems:Problem[];cases:Note[];ideas:Note[];
  lessonBookmarks:Bookmark[];questionBookmarks:Bookmark[];
@@ -368,20 +369,22 @@ function BookmarkRows({items}:{
 }
 export function Resume(){
  const view=useLibrary();
+ const [taxonomy,setTaxonomy]=useState(emptyTaxonomy);
  return <div className="section-shell li-react-library" data-li-react-screen="resume">
   <Heading level={1} role="headline" className="display-title">{copy('Quay lại','Continue')}</Heading>
   <Text role="body" className="intro">{copy(
    'Tiếp tục bài học hoặc tình huống đã xem gần đây.',
    'Continue recently viewed lessons or scenarios.')}</Text>
+  <TaxonomyFilters records={[...view.lessons,...view.problems]} value={taxonomy} onChange={setTaxonomy}/>
   <div className="library-resume-layout">
    <div className="library-resume-stream">
     <section className="library-resume-section">
      <Heading level={2} role="titleMedium">{copy('Bài học gần đây','Recent lessons')}</Heading>
-     <LessonRows lessons={view.lessons}/>
+     <LessonRows lessons={view.lessons.filter(item=>matchesTaxonomy(item,taxonomy))}/>
     </section>
     <section className="library-resume-section">
      <Heading level={2} role="titleMedium">{copy('Tình huống đã xem','Recently viewed scenarios')}</Heading>
-     <ProblemRows problems={view.problems}/>
+     <ProblemRows problems={view.problems.filter(item=>matchesTaxonomy(item,taxonomy))}/>
     </section>
    </div>
   </div>
@@ -389,13 +392,16 @@ export function Resume(){
 }
 export function Bookmarks(){
  const view=useLibrary();
+ const [taxonomy,setTaxonomy]=useState(emptyTaxonomy);
  const tab=view.bookmarkTab;
- const tabClick=(next:'lesson'|'question')=>app.liLibraryShelf?.selectBookmarkTab(next);
+ const tabClick=(next:'lesson'|'question')=>{setTaxonomy(emptyTaxonomy);app.liLibraryShelf?.selectBookmarkTab(next);};
+ const items=tab==='lesson'?view.lessonBookmarks:view.questionBookmarks;
  return <div className="section-shell li-react-library" data-li-react-screen="bookmarks">
   <Heading level={1} role="headline" className="display-title">{copy('Dấu trang','Bookmarks')}</Heading>
   <Text role="body" className="intro">{copy(
    'Những bài học và câu hỏi đã lưu để xem lại.',
    'Lessons and questions you saved for later.')}</Text>
+  <TaxonomyFilters records={items} value={taxonomy} onChange={setTaxonomy}/>
   <section className="library-bookmarks-layout" aria-label={copy('Danh sách Dấu trang','Saved bookmarks')}>
    <div className="library-bookmark-tabs" role="tablist" aria-label={copy('Loại Dấu Trang','Bookmark type')}
     onKeyDown={event=>{
@@ -412,7 +418,7 @@ export function Bookmarks(){
      className="library-bookmark-tab">{kind==='lesson'?copy('Bài học','Lessons'):copy('Câu hỏi','Questions')}</Button>)}
    </div>
    <div role="tabpanel" aria-labelledby={'li-react-tab-'+tab} tabIndex={0}>
-    <BookmarkRows items={tab==='lesson'?view.lessonBookmarks:view.questionBookmarks}/>
+    <BookmarkRows items={items.filter(item=>matchesTaxonomy(item,taxonomy))}/>
    </div>
   </section>
  </div>;
@@ -420,12 +426,14 @@ export function Bookmarks(){
 function Collection(){
  const view=useLibrary();
  const [search,setSearch]=useState('');
+ const [taxonomy,setTaxonomy]=useState(emptyTaxonomy);
  const filter=view.collectionFilter;
  const q=search.trim().toLocaleLowerCase('vi');
  const items=[...view.cases,...view.ideas]
   .sort((a,b)=>(Date.parse(b.sortDate)||0)-(Date.parse(a.sortDate)||0))
   .filter(item=>(filter==='all'||item.type===filter)&&
-   (!q||[item.title,item.body,item.date].join(' ').toLocaleLowerCase('vi').includes(q)));
+   (!q||[item.title,item.body,item.date].join(' ').toLocaleLowerCase('vi').includes(q))&&
+   matchesTaxonomy(item,taxonomy));
  return <div className="section-shell li-react-library" data-li-react-screen="collection">
   <Heading level={1} role="headline" className="display-title">{copy('Bộ sưu tập','Collection')}</Heading>
   <Text role="body" className="intro">{copy(
@@ -446,16 +454,17 @@ function Collection(){
        {value:'idea',label:copy('Ý đã nhặt','Ideas')}
       ]} selected={[filter]} multiple={false} allowEmpty={false}
       onChange={next=>app.liLibraryShelf?.setCollectionFilter(next[0]||'all')}/>
+     <TaxonomyFilters records={[...view.cases,...view.ideas]} value={taxonomy} onChange={setTaxonomy}/>
      <Text role="support" className="library-result-count" aria-live="polite">
       {copy('Hiển thị ','Showing ')}{items.length}/{view.cases.length+view.ideas.length}
      </Text>
     </div>
     <div className="library-collection-list" aria-live="polite">
      {!items.length&&<div className="library-collection-empty">
-      <Empty message={q||filter!=='all'?copy('Không có ghi chép phù hợp.','No matching notes.'):
+      <Empty message={q||filter!=='all'||taxonomy.group!=='all'||taxonomy.field!=='all'||taxonomy.lesson!=='all'?copy('Không có ghi chép phù hợp.','No matching notes.'):
        copy('Chưa có ghi chép được lưu.','No saved notes yet.')}/>
-      {(q||filter!=='all')&&<Button variant="secondary" onClick={()=>{
-       setSearch('');app.liLibraryShelf?.setCollectionFilter('all');
+      {(q||filter!=='all'||taxonomy.group!=='all'||taxonomy.field!=='all'||taxonomy.lesson!=='all')&&<Button variant="secondary" onClick={()=>{
+       setSearch('');setTaxonomy(emptyTaxonomy);app.liLibraryShelf?.setCollectionFilter('all');
       }}>{copy('Xóa bộ lọc','Clear filters')}</Button>}
      </div>}
      {items.map(item=><article key={item.type+item.id} className="library-collection-entry">
@@ -465,7 +474,7 @@ function Collection(){
         copy('Ý ĐÃ NHẶT · CHƯA XÁC MINH','CAPTURED IDEA · UNVERIFIED')}</div>
        {item.type==='case'&&<Heading level={3} role="titleSmall">{item.title}</Heading>}
        <Text role="body" className="library-entry-body">{item.body}</Text>
-       <Text role="support">{copy('Lưu ngày ','Saved ')}{item.date}</Text>
+       <Text role="support">{copy('Lưu ngày ','Saved ')}{item.date}{fieldLabel(item.fieldId)?' · '+fieldLabel(item.fieldId):''}</Text>
       </div>
       <div className="library-note-actions">
        <Button variant="ghost" className="library-text-link" onClick={()=>app.liNotes?.openDetail(item.type,item.id)}>

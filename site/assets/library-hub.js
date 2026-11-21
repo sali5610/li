@@ -439,7 +439,13 @@ function renderCollection(){
 }
 /* The canonical private transaction is shared by the native fallback and
    React Nhặt Ý. No second localStorage writer, key or synthetic DOM click. */
-function saveCapturedIdea(text){
+function saveCapturedIdea(text,fieldId=null){
+ const allowed=window.liTaxonomyFieldIds||
+  (window.LI_CATALOG_DATA||[]).flatMap(group=>group.fields.map(field=>field.id));
+ if(fieldId!==null&&fieldId!==""&&(!allowed.includes(fieldId)||typeof fieldId!=="string")){
+  const message="Chuyên ngành không hợp lệ. Chưa lưu ghi chép.";
+  toast(message);return {ok:false,reason:"invalid-field",message};
+ }
  const value=typeof text==="string"?text.trim():"";
  if(value.length<3){
   const message="Ý này còn quá ngắn. Viết ít nhất 3 ký tự đã.";
@@ -453,7 +459,7 @@ function saveCapturedIdea(text){
   const message="Dữ liệu cá nhân chưa đọc được. Hãy sao chép nội dung trước khi thoát.";
   toast(message);return {ok:false,reason:"read-failed",message};
  }
- const idea={id:liNewId(),text:value,savedAt:new Date().toISOString()};
+ const idea={id:liNewId(),text:value,fieldId:fieldId||null,savedAt:new Date().toISOString()};
  collectedIdeas.unshift(idea);
  if(!liWriteState()){
   collectedIdeas.shift();
@@ -471,12 +477,12 @@ $("save-capture-note")?.addEventListener("click",()=>{
  if(!result.ok&&result.reason==="too-short")field?.focus();
 });
 window.liCaptureIdea=Object.freeze({
- save:text=>{
+ save:(text,fieldId=null)=>{
   if(!document.documentElement?.classList?.contains("li-auth-verified")||
      document.documentElement.classList.contains("li-account-open")){
    return {ok:false,reason:"invite-required",message:"Hãy đăng nhập bằng tài khoản được mời trước khi lưu."};
   }
-  return saveCapturedIdea(text);
+  return saveCapturedIdea(text,fieldId);
  }
 });
 document.querySelectorAll("[data-collection-filter]").forEach(button=>button.addEventListener("click",()=>{
@@ -534,7 +540,7 @@ function getView(){
    detail:cloud&&getLessonState(info.id)?ui("Đã đồng bộ Neon","Synced to Neon"):
     item.legacy?ui("Có dữ liệu đã lưu","Saved progress available"):
     ui("Mở ","Opened ")+formatDate(item.visitedAt),
-   saved:Boolean(window.liBookmarks?.isSaved("lesson",info.id))}];
+   saved:Boolean(window.liBookmarks?.isSaved("lesson",info.id)),lessonId:info.id}];
  });
  const problems=problemHistory().slice(0,40).flatMap(entry=>{
   const scenario=entry.kind==="problem"?
@@ -547,20 +553,23 @@ function getView(){
    detail:(entry.legacy?ui("Có Bút Ký · ","Saved case · ")+formatDate(entry.savedAt):
     ui("Mở ","Opened ")+formatDate(entry.visitedAt))+
     (note&&entry.kind==="case"?ui(" · Có luận kết"," · Revised conclusion available"):""),
-   saved:entry.kind==="case"&&Boolean(window.liBookmarks?.isSaved("case",NATIVE_CASE_KEY))}];
+   saved:entry.kind==="case"&&Boolean(window.liBookmarks?.isSaved("case",NATIVE_CASE_KEY)),
+   lessonId:entry.kind==="case"?"L09-1-2":null}];
  });
  const cases=sortedBySavedAt(processedCases).map(item=>({
   id:item.id,type:"case",title:item.title,body:item.revision,
-  date:formatDate(item.updatedAt||item.savedAt),sortDate:item.updatedAt||item.savedAt,correct:item.correct
+  date:formatDate(item.updatedAt||item.savedAt),sortDate:item.updatedAt||item.savedAt,correct:item.correct,
+  fieldId:item.fieldId||null,lessonId:item.caseKey===NATIVE_CASE_KEY||item.caseSnapshot?.id===NATIVE_CASE_KEY||/Sampling Bias/i.test(item.title||"")?"L09-1-2":null
  }));
  const ideas=sortedBySavedAt(collectedIdeas).map(item=>({
   id:item.id,type:"idea",title:ui("Ý đã nhặt","Captured idea"),body:item.text,
-  date:formatDate(item.updatedAt||item.savedAt),sortDate:item.updatedAt||item.savedAt
+  date:formatDate(item.updatedAt||item.savedAt),sortDate:item.updatedAt||item.savedAt,
+  fieldId:item.fieldId||null
  }));
  const lessonBookmarks=sortedBySavedAt(savedContent.filter(item=>item.type==="lesson"&&
   Object.values(LESSONS).some(meta=>meta.id===item.id))).map(item=>{
   const [route,info]=Object.entries(LESSONS).find(([,meta])=>meta.id===item.id);
-  return {kind:"lesson",id:item.id,title:lessonTitle(info),route,date:formatDate(item.savedAt)};
+  return {kind:"lesson",id:item.id,title:lessonTitle(info),route,date:formatDate(item.savedAt),lessonId:item.id};
  });
  const questionBookmarks=[
   ...savedQuestions.map(item=>{
@@ -569,11 +578,12 @@ function getView(){
    const sc=index>=0?scenarios[index]:null;
    return {kind:"question",id:item.id,title:sc?.question||item.question,
     route:sc?(sc.type==="hook"?sc.lessonRoute:"research"):null,
-    date:formatDate(item.savedAt),sortDate:item.savedAt};
+    date:formatDate(item.savedAt),sortDate:item.savedAt,
+    lessonId:Object.entries(LESSONS).find(([route])=>route===sc?.lessonRoute)?.[1]?.id||null};
   }),
   ...savedContent.filter(item=>item.type==="case"&&item.id===NATIVE_CASE_KEY).map(item=>({
    kind:"case",id:item.id,title:ui("90% trả lời hài lòng · Phản Chứng","90% satisfied · Test a claim"),
-   route:"case",date:formatDate(item.savedAt),sortDate:item.savedAt
+   route:"case",date:formatDate(item.savedAt),sortDate:item.savedAt,lessonId:"L09-1-2"
   }))
  ].sort((a,b)=>(Date.parse(b.sortDate)||0)-(Date.parse(a.sortDate)||0));
  return {lessons,problems,cases,ideas,lessonBookmarks,questionBookmarks,

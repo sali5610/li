@@ -18,7 +18,7 @@ export interface InquiryFlowPort{
  chooseBranch(index:number):boolean;
  getCaseDraft():string;
  setCaseDraft(text:string):boolean;
- submitCase(choice:CaseChoice|null,revision:string):boolean;
+ submitCase(choice:CaseChoice|null,revision:string,fieldId?:string|null):boolean;
  isCaseBookmarked():boolean;
  toggleCaseBookmark():boolean;
 }

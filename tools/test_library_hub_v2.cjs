@@ -128,7 +128,14 @@ assert.equal(events.length,priorActivity+1,"Only one li:activity event for confi
 assert.equal(events.at(-1).detail.id,"idea:"+saved.id);
 assert.equal(routes.at(-1),"collection","React save opens the real Collection route");
 const captureUi=fs.readFileSync(path.join(__dirname,"../tools/step16-real-l09-react-island/src/shell/capture-idea.tsx"),"utf8");
-assert.match(captureUi,/app\.liCaptureIdea\?\.save\(text\)/,"React action is direct");
+assert.match(captureUi,/app\.liCaptureIdea\?\.save\(text,fieldId\)/,"React action passes optional field to canonical owner");
+ctx.window.liTaxonomyFieldIds=["hci"];
+const tagged=capture.save("Ý cần đối chiếu với ngành HCI","hci");
+assert.equal(tagged.ok,true,"A valid specialization can be saved");
+assert.equal(ideas[0].fieldId,"hci","Field ID persists on the same canonical note");
+const beforeInvalid=ideas.length;
+assert.equal(capture.save("Ghi chép phân ngành sai","forged").reason,"invalid-field");
+assert.equal(ideas.length,beforeInvalid,"Invalid field cannot create a private note");
 assert.doesNotMatch(captureUi,/getElementById\(['"]capture-note['"]\)|getElementById\(['"]save-capture-note['"]\)|submit\.click\(\)/,
  "No hidden HTML textarea or submit button bridge");
 assert.match(captureUi,/li-auth-verified/,"Logout must clear unsaved React text");

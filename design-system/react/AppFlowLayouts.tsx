@@ -60,7 +60,7 @@ export const appLabPageVariants:readonly {id:PageVariant;vi:string;en:string}[]=
  {id:'split',vi:'Split focus',en:'Split focus'},
  {id:'cinematic',vi:'Cinematic',en:'Cinematic'},
  {id:'notebook',vi:'Notebook · Ghi chú tay',en:'Notebook · Handwritten'},
- {id:'bookworm',vi:'Bookworm · Sách minh họa',en:'Bookworm · Illustrated Folio'}
+ {id:'bookworm',vi:'Bookworm · Sách tối giản',en:'Bookworm · Vintage Minimal'}
 ];
 export interface AppPageLayoutProps {
  page:Exclude<PageId,'home'>;variant:PageVariant;locale:'vi'|'en';

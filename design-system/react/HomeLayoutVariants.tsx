@@ -33,7 +33,7 @@ export const homeLayoutVariants:readonly {id:HomeLayoutVariant;vi:string;en:stri
  {id:'editorial',vi:'Editorial',en:'Editorial'},
  {id:'immersive',vi:'Immersive',en:'Immersive'},
  {id:'notebook',vi:'Notebook · Ghi chú tay',en:'Notebook · Handwritten'},
- {id:'bookworm',vi:'Bookworm · Sách minh họa',en:'Bookworm · Illustrated Folio'},
+ {id:'bookworm',vi:'Bookworm · Sách tối giản',en:'Bookworm · Vintage Minimal'},
 ];
 export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
  question,scene,source,saved,onPrevious,onNext,onExplore,onSave,onCheckin}:HomeLayoutProps){

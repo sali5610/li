@@ -8,20 +8,21 @@ export interface SearchFieldProps {
  label:string;value:string;onQueryChange:(next:string)=>void;
  onSearch?:(query:string)=>void;hint?:string;placeholder?:string;
  clearLabel:string;submitLabel:string;disabled?:boolean;
+ inputId?:string;showSubmit?:boolean;
 }
 export function SearchField({label,value,onQueryChange,onSearch,hint,placeholder,
- clearLabel,submitLabel,disabled=false}:SearchFieldProps){
+ clearLabel,submitLabel,disabled=false,inputId,showSubmit=true}:SearchFieldProps){
  const submit:FormEventHandler<HTMLFormElement>=event=>{
   event.preventDefault();if(!disabled)onSearch?.(value.trim());
  };
  return <form role="search" className="li-ds-search-field" data-li-molecule="search-field" onSubmit={submit}>
-  <Field label={label} type="search" value={value} disabled={disabled}
+  <Field id={inputId} label={label} type="search" value={value} disabled={disabled}
    hint={hint} placeholder={placeholder} onChange={event=>onQueryChange(event.target.value)}/>
-  <div className="li-ds-search-actions">
+  {(value.length>0||showSubmit)&&<div className="li-ds-search-actions">
    {value.length>0?<IconButton icon="close" disabled={disabled}
      label={clearLabel} onClick={()=>onQueryChange('')}/>:null}
-   <Button type="submit" disabled={disabled} variant="secondary">{submitLabel}</Button>
-  </div>
+   {showSubmit&&<Button type="submit" disabled={disabled} variant="secondary">{submitLabel}</Button>}
+  </div>}
  </form>;
 }
 export function ActionGroup({label,className='',children,...props}:

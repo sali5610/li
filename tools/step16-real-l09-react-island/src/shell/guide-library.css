@@ -329,3 +329,50 @@
   grid-column:2;grid-row:1
  }
 }
+
+/* Both real find surfaces now share the library SearchField's live-filter UX. */
+.li-react-guide .guide-find>.li-ds-search-field,
+.li-react-library .library-collection-tools>.li-ds-search-field{
+ width:100%;min-width:0;max-width:100%;gap:var(--li-space-2)
+}
+.li-react-guide .guide-find>.li-ds-search-field .li-atom-field,
+.li-react-library .library-collection-tools>.li-ds-search-field .li-atom-field{
+ width:100%;min-width:0;max-width:none
+}
+.li-react-guide .guide-find>.li-ds-search-field :is(input,.li-ds-search-actions),
+.li-react-library .library-collection-tools>.li-ds-search-field :is(input,.li-ds-search-actions){
+ max-width:100%;box-sizing:border-box
+}
+.li-react-guide .guide-find>.li-ds-search-field .li-ds-search-actions,
+.li-react-library .library-collection-tools>.li-ds-search-field .li-ds-search-actions{
+ justify-content:flex-start;margin-top:0
+}
+.li-react-guide .guide-find>.li-ds-search-field .li-atom-icon-button,
+.li-react-library .library-collection-tools>.li-ds-search-field .li-atom-icon-button{
+ min-width:44px;min-height:44px
+}
+
+/* Canonical icon-only actions keep a full 44px target without a second button shadow. */
+.li-react-library .library-list-item>.library-icon-action.li-atom-icon-button{
+ flex:0 0 44px;inline-size:44px;block-size:44px;
+ min-inline-size:44px;min-block-size:44px;
+ padding:var(--li-space-2);background:transparent;
+ color:var(--moss);border-color:transparent;box-shadow:none
+}
+.li-react-library .library-list-item>.library-icon-action.li-atom-icon-button[aria-pressed="true"]{
+ background:var(--li-color-nav-selected-fill);border-color:var(--moss)
+}
+.li-react-library .library-list-item>.library-icon-action.li-atom-icon-button:focus-visible{
+ outline:2px solid var(--moss);outline-offset:2px
+}
+
+/* The canonical filters remain pills even when legacy button resets load. */
+.li-react-guide .li-ds-filter-group>.li-ds-filter-chip,
+.li-react-library .li-ds-filter-group>.li-ds-filter-chip{
+ border-radius:999px;background:var(--paper);border:1px solid var(--moss);
+ color:var(--moss);box-shadow:none
+}
+.li-react-guide .li-ds-filter-group>.li-ds-filter-chip[aria-pressed="true"],
+.li-react-library .li-ds-filter-group>.li-ds-filter-chip[aria-pressed="true"]{
+ background:var(--moss);color:var(--cream)
+}

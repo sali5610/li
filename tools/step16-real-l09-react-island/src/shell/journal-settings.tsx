@@ -1,7 +1,7 @@
 import {goBack,openRoute} from './app-router.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button,Card,Checkbox,Field,Heading,InlineFeedback,LiIcon,StackedActivityChart,Text} from '../../../../design-system/react/index';
+import {Button,Card,Checkbox,Field,Heading,InlineFeedback,LanguageSwitch,LiIcon,MonthCalendar,StackedActivityChart,Text} from '../../../../design-system/react/index';
 import './journal-settings.css';
 import {InAppReminderPanel} from './in-app-reminder-ui.js';
 import {WebPushSettings} from './web-push-settings.js';
@@ -57,18 +57,6 @@ function useDiary(){
  },[]);
  return view;
 }
-function DiaryDate({item,selected,onClick}:{
- item:Day;selected:boolean;onClick:()=>void
-}){
- const label=copy(
-  item.key+': '+(item.recorded?item.total+' hoạt động':'chưa ghi nhận'),
-  item.key+': '+(item.recorded?item.total+' activities':'no journal record')
- );
- return <button className={'li-diary-date'+(item.recorded?' recorded':'')+(selected?' selected':'')}
-  type="button" aria-pressed={selected} aria-label={label} onClick={onClick}>
-  {item.day}{item.recorded?<span className="li-diary-dot" aria-hidden="true">{item.total}</span>:null}
- </button>;
-}
 export function Journal(){
  const view=useDiary();
  const act=(kind:string,value?:string)=>app.liPersonalDiary?.act(kind,value);
@@ -95,8 +83,6 @@ export function Journal(){
   {name:'Input',help:copy('Ghi chú đã lưu','Saved inputs')}
  ];
  return <div className="section-shell li-react-journal" data-li-react-screen="dashboard">
-  <Button variant="ghost" onClick={()=>openRoute('library')} className="library-back-link">
-   <LiIcon name="chevron-left" size={18}/> {copy('Tủ Riêng','Private Library')}</Button>
   <div className="kicker">{copy('THEO DÕI THEO NGÀY','DAILY ACTIVITY')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Nhật Ký','Journal')}</Heading>
   <Text role="body" className="intro">{copy(
@@ -105,16 +91,7 @@ export function Journal(){
   <div className="stack-sm li-diary-layout">
    <div className="li-diary-workspace">
     <Card variant="raised" className="li-diary-month">
-    <div className="li-diary-month-heading">
-     <div><div className="kicker">{copy('LỊCH HOẠT ĐỘNG','ACTIVITY CALENDAR')}</div>
-      <Heading level={2} role="titleLarge">{view.monthLabel}</Heading></div>
-     <div className="action-row">
-      <Button variant="secondary" aria-label={copy('Tháng trước','Previous month')}
-       onClick={()=>act('prev')}><LiIcon name="chevron-left" size={18}/></Button>
-      <Button variant="secondary" aria-label={copy('Tháng sau','Next month')}
-       onClick={()=>act('next')}><LiIcon name="chevron-right" size={18}/></Button>
-     </div>
-    </div>
+    <div className="kicker">{copy('LỊCH HOẠT ĐỘNG','ACTIVITY CALENDAR')}</div>
     <section className="li-diary-trend" aria-label={copy('Hoạt động 7 ngày quanh ngày chọn','Seven-day activity around selection')}>
      <div className="kicker"><LiIcon name="chart-column" size={16}/> {copy('NHỊP HOẠT ĐỘNG · 7 NGÀY','ACTIVITY RHYTHM · 7 DAYS')}</div>
      <StackedActivityChart days={chartDays} selectedDate={view.selected}
@@ -124,15 +101,17 @@ export function Journal(){
       'Bài · Vấn đề · Input; ngày chưa có ghi nhận để trống, không tính thành 0.',
       'Lessons · Problems · Inputs; unrecorded days stay blank, not zero.')}</Text>
     </section>
-    <div className="li-diary-weekdays" aria-hidden="true">
-     {(app.liLanguage?.get?.()==='en'?['M','T','W','T','F','S','S']:
-      ['T2','T3','T4','T5','T6','T7','CN']).map((label,i)=><span key={i}>{label}</span>)}
-    </div>
-    <div className="li-diary-calendar" role="group" aria-label={copy('Chọn ngày trong tháng','Select a day')}>
-     {Array.from({length:view.offset},(_,i)=><span className="li-diary-blank" key={'blank-'+i} aria-hidden="true"/>)}
-     {view.days.map(day=><DiaryDate key={day.key} item={day} selected={view.selected===day.key}
-      onClick={()=>act('select',day.key)}/>)}
-    </div>
+    <MonthCalendar year={Number(view.month.slice(0,4))}
+     month={Number(view.month.slice(5,7))}
+     selectedDate={view.selected} todayDate={todayKey}
+     showTodayAction={false} locale={app.liLanguage?.get?.()==='en'?'en':'vi'}
+     records={view.days.filter(day=>day.recorded).map(day=>({date:day.key,count:day.total}))}
+     onSelectDate={date=>act('select',date)}
+     onMonthChange={(year,month)=>{
+      const shown=Number(view.month.slice(0,4))*12+Number(view.month.slice(5,7));
+      const next=year*12+month;
+      if(next!==shown)act(next<shown?'prev':'next');
+     }}/>
     <Text role="support">{view.totals.recorded?
      copy('Trong ','Across ')+view.totals.recorded+copy(' ngày ghi nhận: ',' recorded days: ')+
       view.totals.counts[0]+copy(' bài · ',' lessons · ')+view.totals.counts[1]+
@@ -221,10 +200,10 @@ function BuddyName({kind,header,placeholder,value,preview,commit}:{
     setDraft(next);commit(kind,next);
    }}/>
   <Text role="support">{preview}</Text>
-  <button type="button" className="li-react-commit" onClick={()=>{
+  <Button variant="ghost" className="li-react-commit" onClick={()=>{
    const clean=normalizeDraft(draft);setDraft(clean);commit(kind,clean,true);
   }}>
-   {copy('Lưu cách gọi','Save nickname')}</button>
+   {copy('Lưu cách gọi','Save nickname')}</Button>
  </div>;
 }
 export function Settings(){
@@ -237,8 +216,6 @@ export function Settings(){
   if(file)void app.liPersonalBackup?.importFile(file);
  };
  return <div className="section-shell li-react-settings" data-li-react-screen="settings">
-  <Button variant="ghost" className="library-back-link" onClick={goBack}>
-   <LiIcon name="chevron-left" size={18}/> {copy('Quay lại','Back')}</Button>
   <div className="kicker">{copy('CÀI ĐẶT','SETTINGS')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Cài đặt','Settings')}</Heading>
   <Text role="body" className="intro">{copy(
@@ -258,13 +235,10 @@ export function Settings(){
       <Text role="support">{copy(
        'Một lựa chọn cho toàn bộ giao diện và các bài đã có bản song ngữ. Nội dung chưa dịch giữ nguyên.',
        'One choice for the whole app and bilingual lessons. Untranslated material stays in its authored language.')}</Text>
-      <div className="li-locale-control" role="group"
-       aria-label={copy('Ngôn ngữ toàn ứng dụng','App language')}>
-       {([['vi','Tiếng Việt'],['en','English']] as const).map(([id,label])=>
-        <Button key={id} variant={locale===id?'primary':'secondary'}
-         className="action li-locale-choice" aria-pressed={locale===id}
-         onClick={()=>app.liLanguage?.set(id)}>{label}</Button>)}
-      </div>
+      <LanguageSwitch label={copy('Ngôn ngữ toàn ứng dụng','App language')}
+       value={locale} viLabel="Tiếng Việt" enLabel="English"
+       onChange={id=>app.liLanguage?.set(id)}/>
+
      </Card>
      <Card variant="raised" className="li-react-setting-card">
       <div className="kicker">{copy('HỌC TẬP','LEARNING')}</div>

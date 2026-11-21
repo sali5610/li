@@ -19,7 +19,8 @@ assert.match(component,/const visible=view\.methods\.filter\(method=>\{/,
  "Visible entries must come from all canonical methods, not just suggestions");
 assert.match(component,/className="guide-method-entry" onClick=\{\(\)=>app\.liMethods\?\.open\(method\.id\)\}/,
  "Each method must open its real detail through the canonical port");
-assert.match(component,/id="li-react-method-search"/,"Method search must remain accessible");
+assert.match(component,/<SearchField inputId="li-react-method-search"/,
+ "Method search must use the accessible canonical SearchField");
 assert.match(component,/app\.liGuideUi|window\.liGuideUi/,"Search state port must remain registered");
 assert.doesNotMatch(component,/<MethodTile\b/,"Legacy two-tile markup must not return");
 console.log("PASS React Thần Chú field guide: grouped chapters, readable iPhone list and direct method routes");

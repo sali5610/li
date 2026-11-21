@@ -45,7 +45,7 @@ export function Field({label,kind='input',type='text',id:given,hint,error,
  </div>;
 }
 /** Existing Stage04 icon names remain stable; all glyphs now come from Lucide. */
-export type IconName='search'|'check'|'info'|'close'|'chevron-left'|'book-open';
+export type IconName='search'|'check'|'info'|'close'|'chevron-left'|'book-open'|'bookmark'|'trash'|'chevron-right';
 export function Icon({name,label,className='',...props}:Omit<LiIconProps,'name'> &{
  name:IconName;label?:string
 }){

@@ -304,3 +304,66 @@
   flex-wrap:wrap
  }
 }
+
+/* Canonical DS MonthCalendar replaces duplicated journal-only date markup. */
+#page-dashboard .li-react-journal .li-diary-month>.li-legacy-calendar{
+ display:grid;gap:var(--li-space-3);min-width:0;
+ padding:var(--li-space-3) 0;
+ border:0;background:transparent;box-shadow:none
+}
+#page-dashboard .li-react-journal .li-legacy-calendar>header{
+ align-items:center;gap:var(--li-space-3)
+}
+#page-dashboard .li-react-journal .li-legacy-calendar>header strong{
+ color:var(--moss);
+ font:600 var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial)
+}
+#page-dashboard .li-react-journal .li-legacy-calendar-actions button{
+ display:grid;place-items:center;
+ width:44px;height:44px;min-height:44px;min-width:44px;
+ border:1px solid var(--moss)
+}
+#page-dashboard .li-react-journal .li-legacy-calendar-grid{gap:var(--li-space-1)}
+#page-dashboard .li-react-journal .li-legacy-calendar-grid button{
+ min-height:44px;padding:var(--li-space-1);
+ font:var(--li-weight-700) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)
+}
+#page-dashboard .li-react-journal .li-legacy-calendar-grid button[data-recorded="true"]{
+ background:var(--li-color-nav-selected-fill)
+}
+#page-dashboard .li-react-journal .li-legacy-calendar-grid button[aria-pressed="true"]{
+ outline:2px solid var(--moss);outline-offset:0
+}
+#page-dashboard .li-react-journal .li-legacy-calendar-count{
+ font-size:var(--li-type-caption);font-variant-numeric:tabular-nums
+}
+#page-settings .li-react-settings .li-ds-language-switch{display:grid;grid-template-columns:1fr 1fr;width:100%}
+#page-settings .li-react-settings .li-ds-language-switch button{
+ min-width:0;min-height:44px;white-space:normal
+}
+#page-settings .li-react-settings .li-react-commit.li-ds-button{
+ width:max-content;min-height:44px;box-shadow:none;border:0;
+ padding:var(--li-space-2) 0;text-decoration:underline;
+ text-underline-offset:var(--li-space-1)
+}
+@media(max-width:480px){
+ #page-dashboard .li-react-journal .li-diary-month>.li-legacy-calendar{gap:var(--li-space-2)}
+ #page-dashboard .li-react-journal .li-legacy-calendar>header strong{font-size:var(--li-type-title-md)}
+ #page-dashboard .li-react-journal .li-legacy-calendar-actions{gap:var(--li-space-2)}
+ #page-dashboard .li-react-journal .li-legacy-calendar-grid{gap:2px}
+}
+
+/* Keep month heading and its two actions on the same line at 390 CSS px. */
+@media(max-width:480px){
+ #page-dashboard .li-react-journal .li-legacy-calendar>header{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;gap:var(--li-space-2)
+ }
+ #page-dashboard .li-react-journal .li-legacy-calendar>header strong{
+  min-width:0;white-space:nowrap;letter-spacing:-.025em;
+  font-size:clamp(19px,5.45vw,24px)
+ }
+ #page-dashboard .li-react-journal .li-legacy-calendar-actions button{
+  min-width:44px;width:44px;min-height:44px;height:44px
+ }
+}

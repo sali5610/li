@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button,LiIcon} from '../../../../design-system/react/index';
+import {Button,IconButton,LiIcon} from '../../../../design-system/react/index';
 import './laoly-dialog.css';
 
 /** Full React visual owner for the existing Lão Lý bubble.
@@ -154,11 +154,11 @@ export function BuddyDialog({root}:{root:HTMLElement}){
     {quoteVisible&&<section className="li-buddy-source" aria-label={chooseLanguage('Đọc thêm · Trích dẫn','Further reading · Quotation')}>
      <div className="li-buddy-source-header">
       <span className="kicker">{chooseLanguage('GÓC DẪN NGUỒN','SOURCE NOTE')}</span>
-      <Button variant="ghost" id="buddy-quote-info" className="buddy-quote-info"
+      <IconButton icon="info" id="buddy-quote-info" className="buddy-quote-info"
+       label={chooseLanguage('Xem diễn nghĩa và xuất xứ câu trích dẫn','Show interpretation and quotation source')}
        title={chooseLanguage('Diễn nghĩa và xuất xứ','Interpretation and source')}
-       aria-label={chooseLanguage('Xem diễn nghĩa và xuất xứ câu trích dẫn','Show interpretation and quotation source')}
        aria-controls="buddy-quote" aria-expanded={expanded}
-       onClick={()=>setExpanded(v=>!v)}><LiIcon name="info" size={18}/></Button>
+       onClick={()=>setExpanded(v=>!v)}/>
      </div>
      <p id="buddy-quote-original" className="ly-original" lang={quote.lang}>{quote.original}</p>
      <p id="buddy-quote-translation" className="ly-translation" lang={chooseLanguage('vi','en')}>

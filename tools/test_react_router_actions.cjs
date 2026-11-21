@@ -58,7 +58,10 @@ const settings=read('tools/step16-real-l09-react-island/src/shell/journal-settin
 assert.match(details,/onClick=\{\(\)=>openRoute\(back\)\}/);
 assert.match(details,/onClick=\{\(\)=>openRoute\('case'\)\}/);
 assert.match(details,/onClick=\{\(\)=>openRoute\('guide'\)\}/);
-assert.match(settings,/onClick=\{goBack\}/);
+// The canonical header Back owns history. Avoid a second in-page Back
+// that duplicates the action and pushes actual content below the fold.
+assert.doesNotMatch(settings,/onClick=\{goBack\}/);
+assert.match(nav,/onClick=\{goBack\}/);
 assert.doesNotMatch(settings,/act\('back'\)/);
 assert.match(old,/if\(kind===\"mode\"&&STUDY_MODES\[key\]\)setStudyMode\(key\)/);
 assert.doesNotMatch(old,/STUDY_MODES\[key\]\).*?\.click\(\)/);

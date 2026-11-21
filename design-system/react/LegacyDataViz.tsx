@@ -1,13 +1,14 @@
 import React from 'react';
+import {LiIcon} from './LucideIcons';
 import type {ReactNode} from 'react';
 
 export type ActivityMode='overload'|'recover'|'start'|'focus';
-export interface CalendarRecord {date:string;mode:ActivityMode}
+export interface CalendarRecord {date:string;mode?:ActivityMode;count?:number}
 export interface MonthCalendarProps {
  year:number;month:number;selectedDate:string;todayDate:string;
  records:readonly CalendarRecord[];onSelectDate:(date:string)=>void;
  onMonthChange?:(year:number,month:number)=>void;
- locale?:'vi'|'en';
+ locale?:'vi'|'en';showTodayAction?:boolean;
 }
 const pad=(v:number)=>String(v).padStart(2,'0');
 const dayKey=(y:number,m:number,d:number)=>y+'-'+pad(m)+'-'+pad(d);
@@ -16,11 +17,11 @@ function nextMonth(year:number,month:number,delta:number){
  return [d.getUTCFullYear(),d.getUTCMonth()+1] as const;
 }
 export function MonthCalendar({year,month,selectedDate,todayDate,records,
- onSelectDate,onMonthChange,locale='vi'}:MonthCalendarProps){
+ onSelectDate,onMonthChange,locale='vi',showTodayAction=true}:MonthCalendarProps){
  if(month<1||month>12)throw Error('MonthCalendar month must be 1–12');
  const total=new Date(Date.UTC(year,month,0)).getUTCDate();
  const first=(new Date(Date.UTC(year,month-1,1)).getUTCDay()+6)%7;
- const byDate=new Map(records.map(r=>[r.date,r.mode]));
+ const byDate=new Map(records.map(r=>[r.date,r]));
  const weekdays=locale==='en'?['M','T','W','T','F','S','S']:
   ['T2','T3','T4','T5','T6','T7','CN'];
  const monthName=new Intl.DateTimeFormat(locale==='en'?'en-US':'vi-VN',
@@ -38,14 +39,14 @@ export function MonthCalendar({year,month,selectedDate,todayDate,records,
  return <section className="li-legacy-calendar" data-li-legacy="month-calendar">
   <header><strong>{monthName}</strong>
    <div className="li-legacy-calendar-actions">
-    <button className="li-legacy-today-action" type="button" onClick={jumpToday}
+    {showTodayAction&&<button className="li-legacy-today-action" type="button" onClick={jumpToday}
      disabled={!visibleTodayMonth&&!onMonthChange} data-active={selectedDate===todayDate}
      aria-label={locale==='vi'?'Đi tới hôm nay':'Jump to today'}>
-     {locale==='vi'?'Hôm nay':'Today'}</button>
+     {locale==='vi'?'Hôm nay':'Today'}</button>}
     {onMonthChange?<><button type="button" onClick={()=>move(-1)}
-      aria-label={locale==='vi'?'Tháng trước':'Previous month'}>‹</button>
+      aria-label={locale==='vi'?'Tháng trước':'Previous month'}><LiIcon name="chevron-left" size={18}/></button>
      <button type="button" onClick={()=>move(1)}
-      aria-label={locale==='vi'?'Tháng sau':'Next month'}>›</button></>:null}
+      aria-label={locale==='vi'?'Tháng sau':'Next month'}><LiIcon name="chevron-right" size={18}/></button></>:null}
    </div>
   </header>
   <div className="li-legacy-calendar-grid" role="group"
@@ -54,12 +55,18 @@ export function MonthCalendar({year,month,selectedDate,todayDate,records,
     key={i}>{day}</span>)}
    {Array.from({length:first},(_,i)=><span key={'blank'+i} aria-hidden="true"/>)}
    {Array.from({length:total},(_,i)=>{
-    const date=dayKey(year,month,i+1),mode=byDate.get(date);
-    return <button key={date} type="button" data-mode={mode||'none'}
-     data-today={date===todayDate} aria-pressed={date===selectedDate}
-     aria-label={date+(mode?' · '+mode:' · no record')}
+    const date=dayKey(year,month,i+1),record=byDate.get(date);
+    const hasCount=record&&typeof record.count==='number';
+    const status=record?(hasCount?
+     String(record.count)+' '+(locale==='vi'?'hoạt động':'activities'):
+     record.mode|| (locale==='vi'?'đã ghi nhận':'recorded')):
+     (locale==='vi'?'chưa ghi nhận':'no record');
+    return <button key={date} type="button" data-mode={record?.mode||'none'}
+     data-recorded={Boolean(record)} data-today={date===todayDate}
+     aria-pressed={date===selectedDate} aria-label={date+' · '+status}
      onClick={()=>onSelectDate(date)}>
-     {i+1}<span className="li-legacy-calendar-dot" aria-hidden="true"/>
+     {i+1}{hasCount?<span className="li-legacy-calendar-count" aria-hidden="true">{record.count}</span>:null}
+     <span className="li-legacy-calendar-dot" aria-hidden="true"/>
     </button>;
    })}
   </div>

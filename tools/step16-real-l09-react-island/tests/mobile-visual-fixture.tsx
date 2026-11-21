@@ -1,4 +1,9 @@
 import React from 'react';
+/* Match the real signed-in React bundle, not a partial CSS fixture. */
+import '../../../design-system/react/atoms.css';
+import '../../../design-system/react/controls.css';
+import '../../../design-system/react/components.css';
+import '../../../design-system/react/molecules.css';
 import {createRoot} from 'react-dom/client';
 import {Journal} from '../src/shell/journal-settings.js';
 import {Guide,Library} from '../src/shell/guide-library.js';
@@ -112,16 +117,19 @@ setTimeout(()=>{
  assert('no-horizontal-overflow',document.documentElement.scrollWidth<=windowWidth+4,
   {scrollWidth:document.documentElement.scrollWidth,windowWidth});
  if(viewName==='journal'){
-  const chart=select('.li-diary-month .li-legacy-chart'),cal=select('.li-diary-calendar');
+  const chart=select('.li-diary-month .li-legacy-chart'),cal=select('.li-diary-month .li-legacy-calendar');
   assert('real-DS-chart-visible',Boolean(chart&&bounds(chart)!.w>200),bounds(chart));
   assert('chart-above-calendar',Boolean(chart&&cal&&chart.getBoundingClientRect().bottom<cal.getBoundingClientRect().top),
     {chart:bounds(chart),calendar:bounds(cal)});
   assert('chart-actually-above-first-fold',Boolean(chart&&chart.getBoundingClientRect().top<690),bounds(chart));
   assert('seven-day-chart',document.querySelectorAll('.li-legacy-chart-bars button').length===7);
-  assert('thirty-month-dates',document.querySelectorAll('.li-diary-calendar button').length===30);
+  assert('thirty-month-dates',document.querySelectorAll('.li-legacy-calendar-grid button').length===30);
+  assert('calendar-from-DS',Boolean(select('[data-li-legacy="month-calendar"]')));
+  assert('calendar-recorded-zero-distinct',Boolean(select('.li-legacy-calendar-grid button[aria-label*="2026-11-19"][data-recorded="true"] .li-legacy-calendar-count')?.textContent==='0'));
  } else if(viewName==='guide'){
   const filter=select('[data-li-molecule="filter-group"]'),mentor=select('.guide-margin-note');
   assert('canonical-filter-present',Boolean(filter),bounds(filter));
+  assert('canonical-search-field-present',Boolean(select('.guide-find [data-li-molecule="search-field"]')));
   assert('search-before-filter',Boolean(filter&&select('#li-react-method-search')&&
    select('#li-react-method-search')!.getBoundingClientRect().top<filter.getBoundingClientRect().top));
   assert('filter-before-mentor',Boolean(filter&&mentor&&filter.getBoundingClientRect().top<mentor.getBoundingClientRect().top),
@@ -134,10 +142,14 @@ setTimeout(()=>{
   assert('all-categories-visible-not-clipped',chips.length===6&&chips.every(chip=>{
    const c=chip.getBoundingClientRect();return c.left>=0&&c.right<=windowWidth+2;
   }),chips.map(bounds));
+  assert('filters-actually-pill-shaped',chips.length===6&&chips.every(chip=>
+   Number.parseFloat(getComputedStyle(chip).borderTopLeftRadius)>=20));
   assert('thirteen-methods',document.querySelectorAll('.guide-method-entry').length===13);
  } else if(viewName==='library'){
   const titles=[...document.querySelectorAll('.library-saved-shortlist .library-list-copy strong')];
   assert('saved-bookmarks-have-rows',titles.length>0);
+  assert('canonical-icon-only-bookmarks',
+   document.querySelectorAll('.li-react-library .library-icon-action[data-li-atom="icon-button"]').length>0);
   const resumeTitle=select('.library-resume-feature .library-list-item .library-list-copy');
   assert('resume-title-full-width',Boolean(resumeTitle&&resumeTitle.getBoundingClientRect().width>=250),bounds(resumeTitle));
   assert('bookmark-title-usable-width',titles.every(n=>n.getBoundingClientRect().width>=170),

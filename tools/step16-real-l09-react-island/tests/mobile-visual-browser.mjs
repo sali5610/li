@@ -54,7 +54,7 @@ try{
   screenWidth:390,screenHeight:844
  });
  await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
- for(const view of ['journal','guide','library','buddy']){
+ for(const view of ['journal','guide','library','buddy','breadcrumb','lesson']){
   await send('Page.navigate',{url:target+'?view='+view});
   const report=await wait(async()=>{
    const result=await send('Runtime.evaluate',{
@@ -75,11 +75,23 @@ try{
   writeFileSync(file,Buffer.from(result.data,'base64'));
   if(!existsSync(file))throw Error('Missing screenshot '+file);
   console.log('SCREENSHOT '+file);
+  if(view==='lesson'){
+   const opened=await send('Runtime.evaluate',{
+    expression:"(()=>{const b=document.querySelector('body > .catalog-chapter-fab[data-lesson-owner=\\\"page-lessonL09\\\"]');b?.click();return document.querySelector('body > .catalog-sheet-layer[data-lesson-owner=\\\"page-lessonL09\\\"]')?.hidden===false})()",
+    returnByValue:true
+   });
+   if(opened.result?.value!==true)throw Error('Lesson left side sheet failed screenshot-open interaction');
+   const overlay=await send('Page.captureScreenshot',{
+    format:'png',captureBeyondViewport:false,fromSurface:true
+   });
+   writeFileSync(resolve(out,'lesson-sheet-open.png'),Buffer.from(overlay.data,'base64'));
+   console.log('SCREENSHOT '+resolve(out,'lesson-sheet-open.png'));
+  }
   if(report.viewport!==390 || report.status!=='LI_VISUAL_QA_PASS'){
    throw Error('VISUAL_QA_FAILED '+view+' '+JSON.stringify(report));
   }
  }
- console.log('PASS 4 REAL CSS MOBILE VIEWPORT SCREENS 390x844');
+ console.log('PASS 6 REAL CSS MOBILE VIEWPORT SCREENS + NATIVE OPEN SHEET 390x844');
 }finally{
  if(socket){for(const p of pending.values())clearTimeout(p.t);socket.close();}
  proc.kill('SIGTERM');

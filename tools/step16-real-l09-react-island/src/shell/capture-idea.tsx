@@ -55,7 +55,7 @@ function CaptureIdea(){
   <div className="kicker">{L("NHẶT Ý","CAPTURE AN IDEA")}</div>
   <Heading level={1} role="headline">{L("Nhặt ý","Capture")}</Heading>
   <div className="editorial-grid">
-   <Card variant="tinted">
+   <Card variant="flat-study" className="li-capture-editor">
     <Heading level={2} role="titleMedium">{L("Nhặt một ý cần kiểm chứng","Capture an idea worth checking")}</Heading>
     <Field id="li-react-capture-note" label={L("Ý nghĩ, câu sách hoặc nhận định chưa được kiểm chứng","A thought, quotation or unverified claim")}
      kind="textarea" rows={6} value={text} className="li-react-capture-field"
@@ -67,7 +67,7 @@ function CaptureIdea(){
     </motion.div>}
     <div className="action-row"><Button onClick={save}>{L("Lưu ý đã nhặt","Save idea")}</Button></div>
    </Card>
-   <Card variant="raised">
+   <Card variant="flat-study" className="li-capture-aside">
     <Heading level={2} role="titleMedium">{L("Đừng nhầm chuyện được kể với bằng chứng.","A compelling story is not evidence.")}</Heading>
     <Text role="body">{L("Giữ lại câu hỏi và nguồn bạn gặp để tiện kiểm chứng sau.","Keep the question and source so you can verify them later.")}</Text>
     <Badge tone="neutral">{L("Nguồn cá nhân · Chưa xác minh","Personal note · Unverified")}</Badge>

@@ -2,8 +2,8 @@
  * Only activated inside the opt-in React UI Lab vintagePop preview. */
 .li-ui-lab-preview[data-visual-theme="vintage-pop"]{
  --pop-ink:#214d3a;
- --pop-rose:#dccfea;
- --pop-tape:#d5e1d8;
+ --pop-rose:#d5cbd4;
+ --pop-tape:#b9c4b7;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-collage{
  position:relative;isolation:isolate;display:grid;place-items:center;
@@ -33,12 +33,12 @@
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-collage-tape{
  position:absolute;z-index:3;width:41%;height:17px;top:-10px;left:29%;
- background:#d5e1d89c;border-top:1px solid #5b836caa;border-bottom:1px solid #5b836caa;
+ background:#b9c4b79c;border-top:1px solid #718575aa;border-bottom:1px solid #718575aa;
  transform:rotate(-5deg);pointer-events:none;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-collage-postmark{
  position:absolute;z-index:3;right:-10px;bottom:-12px;width:32px;height:32px;
- display:grid;place-items:center;background:#dccfea;color:#214d3a;
+ display:grid;place-items:center;background:#d5cbd4;color:#214d3a;
  border:1px solid #214d3a;border-radius:50%;transform:rotate(12deg);
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-header-art{
@@ -84,7 +84,7 @@
 }
 /* Scrapbook is a paper spread, rather than another stack of square cards. */
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-scrapbook{
- background:#f8e6d0;border:2px solid #214d3a;box-shadow:7px 7px 0 #a05a6e;
+ background:#f8e6d0;border:2px solid #214d3a;box-shadow:7px 7px 0 #bf8b7c;
  padding:12px 16px 18px;position:relative;min-width:0;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-scrapbook-top{
@@ -107,7 +107,7 @@
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-scrapbook-toggle:focus-visible,
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-page-corner:focus-visible,
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson-bookmark:focus-visible{
- outline:3px solid #7b233b;outline-offset:3px;
+ outline:3px solid #ba725d;outline-offset:3px;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-scrapbook-pages{
  display:grid;grid-template-columns:minmax(120px,.34fr) minmax(0,1fr);
@@ -136,7 +136,7 @@
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="collection"] .li-pop-scrapbook-body .li-ds-card{
  display:grid;grid-template-columns:80px minmax(0,1fr);align-items:center;
  gap:10px 14px;padding:15px 18px;background:#fff8e8;border:1.5px solid #214d3a;
- box-shadow:4px 4px 0 #dccfea;
+ box-shadow:4px 4px 0 #d5cbd4;
  clip-path:polygon(0 0,100% 0,100% 100%,0 100%);
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="collection"] .li-pop-scrapbook-body .li-ds-card>.li-pop-collage{
@@ -170,7 +170,7 @@
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-page-corner{
  position:absolute;z-index:5;right:9px;bottom:10px;width:48px;height:48px;
  display:grid;place-items:center;cursor:pointer;
- background:#dccfea;color:#214d3a;border:1.5px solid #214d3a;
+ background:#d5cbd4;color:#214d3a;border:1.5px solid #214d3a;
  clip-path:polygon(0 0,100% 0,100% 100%,0 100%);
  box-shadow:3px 3px 0 #214d3a;
 }
@@ -181,7 +181,7 @@
  display:grid;place-items:start center;padding-top:12px;cursor:pointer;color:#214d3a;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson-bookmark[aria-pressed="true"]{
- background:#7b233b;
+ background:#ba725d;
 }
 /* Newspaper-like clipping entrance and subtle paper rhythm. */
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-head::before{

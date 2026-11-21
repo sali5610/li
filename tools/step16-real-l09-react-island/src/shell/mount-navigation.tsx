@@ -72,13 +72,12 @@ function BackControl(){
  * The Catalog owns its deeper group > field > course > lesson trail.
  * Route labels are UI-only. No second router or data owner is introduced. */
 type TrailPart={id?:string;path?:readonly string[];vi:string;en:string};
-const homeTrail:TrailPart={id:'home',vi:'Đại Sảnh',en:'Great Hall'};
 const catalogTrail:TrailPart={id:'catalog',vi:'Tàng Thư',en:'Library'};
 const libraryTrail:TrailPart={id:'library',vi:'Tủ Riêng',en:'My Shelf'};
 const guideTrail:TrailPart={id:'guide',vi:'Thần Chú',en:'Spells'};
 const researchTrail:TrailPart={id:'research',vi:'Khảo Chứng',en:'Investigate'};
 const collectionTrail:TrailPart={id:'collection',vi:'Bộ Sưu Tập',en:'Collection'};
-const routesWithoutTrail=new Set(['home','catalog','search','capture','settings']);
+const routesWithoutTrail=new Set(['home','catalog','guide','library','search','capture','settings']);
 const trails:Record<string,TrailPart[]>={
  research:[researchTrail],
  case:[researchTrail,{vi:'Phản Chứng',en:'Challenge'}],
@@ -145,7 +144,7 @@ export function RouteTrail(){
    fullLessonTrail(route,lessonTitle)||
     [catalogTrail,{vi:lessonTitle||'Bài Học',en:lessonTitle||'Lesson'}]:
    [{vi:'Trang hiện tại',en:'Current page'}]);
- const parts=[homeTrail,...flow];
+ const parts=flow;
  return <div className="li-app-route-trail" data-li-review-status="draft">
   <Breadcrumb label={en?'You are here':'Vị trí hiện tại'}
    visibleParents={2} moreLabel={en?'Earlier levels':'Các cấp trước'}

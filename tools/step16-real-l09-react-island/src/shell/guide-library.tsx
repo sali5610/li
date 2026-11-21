@@ -75,7 +75,7 @@ function useMethods(){
  },[]);
  return view;
 }
-function Guide(){
+export function Guide(){
  const view=useMethods();
  const [query,setQuery]=useState('');
  const [category,setCategory]=useState('Tất cả');

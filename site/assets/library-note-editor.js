@@ -82,7 +82,6 @@ function renderCaseContext(note,type){
  const isCase=type==="case"&&Boolean(note);
  const sourceKey=isCase?(note.caseKey||note.caseSnapshot?.id||""):"";
  const known=isCase&&(sourceKey==="sampling-bias-90"||
-   /^draft-case-L(?:03|09|15)-[1-3]-[1-3]$/.test(sourceKey)||
   /Sampling Bias/i.test(note.title||"")||
   (Array.isArray(note.versions)&&note.versions.some(v=>/Sampling Bias/i.test(v.title||""))));
  const hasSnapshot=isCase&&note.caseSnapshot&&typeof note.caseSnapshot.question==="string"&&

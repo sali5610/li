@@ -64,9 +64,9 @@ function TaxonomyDropdown({label:heading,value,options,onChange,disabled=false}:
   </select>
  </label>;
 }
-export function TaxonomyFilters({records,value,onChange,onClear,otherFiltersActive=false}:{
+export function TaxonomyFilters({records,value,onChange,onClear,otherFiltersActive=false,showLesson=true}:{
  records:TaxonomyRecord[];value:FilterValue;onChange:(next:FilterValue)=>void;
- onClear?:()=>void;otherFiltersActive?:boolean
+ onClear?:()=>void;otherFiltersActive?:boolean;showLesson?:boolean
 }){
  const available=records.map(metadataOf);
  const groupIds=new Set(available.map(item=>item.groupId).filter(Boolean));
@@ -93,16 +93,16 @@ export function TaxonomyFilters({records,value,onChange,onClear,otherFiltersActi
  const isFiltered=value.group!=='all'||value.field!=='all'||value.lesson!=='all';
  return <div className="li-library-taxonomy" role="group"
   aria-label={label('Lọc theo chương trình học','Filter by curriculum')}>
-  <div className="li-library-taxonomy-fields">
+  <div className="li-library-taxonomy-fields" data-levels={showLesson?'three':'two'}>
    <TaxonomyDropdown label={label('Ngành','Group')} value={value.group}
     options={groupOptions} disabled={groupOptions.length===1}
     onChange={group=>onChange({group,field:'all',lesson:'all'})}/>
    <TaxonomyDropdown label={label('Chuyên ngành','Field')} value={value.field}
     options={fieldOptions} disabled={value.group==='unclassified'||fieldOptions.length===1}
     onChange={field=>onChange({...value,field,lesson:'all'})}/>
-   <TaxonomyDropdown label={label('Bài','Lesson')} value={value.lesson}
+   {showLesson&&<TaxonomyDropdown label={label('Bài','Lesson')} value={value.lesson}
     options={lessonOptions} disabled={value.group==='unclassified'||lessonOptions.length===1}
-    onChange={lesson=>onChange({...value,lesson})}/>
+    onChange={lesson=>onChange({...value,lesson})}/>}
   </div>
   <div className="li-library-taxonomy-footer">
    {!records.length&&<Text role="support">{label('Chưa có mục nào để lọc.','Nothing saved to filter yet.')}</Text>}

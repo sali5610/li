@@ -25,8 +25,9 @@ export function PortalCategoryCard({title,detail,eyebrow,actionLabel,portal,
     {illustrationSrc?<img src={illustrationSrc} alt={illustrationAlt} loading="lazy" decoding="async"/>:
      <span className="li-portal-category-placeholder" aria-hidden="true">{placeholder||null}</span>}
    </div>
+   <span className="li-portal-category-fallback-arch" aria-hidden="true"/>
    <img className="li-portal-category-overlay" src={portalPath} alt="" aria-hidden="true"
-    loading="lazy" decoding="async" onError={event=>{event.currentTarget.hidden=true;}}/>
+    loading="lazy" decoding="async" onLoad={event=>{event.currentTarget.parentElement?.setAttribute("data-overlay-loaded","true");}} onError={event=>{event.currentTarget.hidden=true;}}/>
   </div>
   <div className="li-portal-category-copy">
    {eyebrow?<span className="li-portal-category-eyebrow">{eyebrow}</span>:null}

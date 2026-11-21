@@ -66,6 +66,14 @@ assert.match(reader,/li:mentor-phase-jump/,
  'Companion navigation returns to a visible React stage');
 assert.match(nativeMentor,/editorialRegistry\.get\(id\)/,
  'No second chat context resolver');
+assert.match(nativeMentor,/function pendingEditorialWording\(data,stage,locale,submitted\)/,
+ 'Steps 4/5 have spoiler-free contextual copy even before completion');
+assert.match(nativeMentor,/stage:requested,submitted,reviewed/,
+ 'Active chat stage must stay on Feedback/Progress, not roll back to Practice');
+assert.match(nativeMentor,/pending=requested==="reflection"&&!submitted\?"submission"/,
+ 'Feedback has a distinct pre-submit chat');
+assert.match(nativeMentor,/requested==="extension"&&!reviewed\?\(submitted\?"review":"submission"\)/,
+ 'Progress has distinct unsubmitted and unreviewed chat states');
 assert.match(nativeBuddy,/lessonContext\?\.editorial\?null/,
  'No unrelated global quote during authored lesson chat');
 assert.match(entry,/root.render\(<SectionedJourney lesson={lesson} ports={ports} preview\/>\)/,

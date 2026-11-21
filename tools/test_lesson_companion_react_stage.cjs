@@ -179,16 +179,63 @@ vm.runInContext(read("site/assets/lesson-companion-native.js"),ctx);
     "Floating chat must open with the current page's prompt");
   }
  }
- personalLang="vi";submitted=false;reviewed=false;personalPhase="feedback";
- assert.equal(api.getContext().stage,"independent",
-  "Unsubmitted feedback cannot reveal reflection mentor");
- personalPhase="progress";
- assert.equal(api.getContext().stage,"independent",
-  "Unreviewed progress cannot reveal extension mentor");
- submitted=true;
- assert.equal(api.getContext().stage,"reflection",
-  "Submitted and unreviewed progress stays in reflection context");
- submitted=false;personalPhase="practice";
+ // Browsing Steps 4/5 is not completion. Their chats must remain
+ // step-specific, relevant to this lesson and spoiler-free in both languages.
+ for(const lang of ["vi","en"]){
+  personalLang=lang;submitted=false;reviewed=false;personalPhase="practice";
+  const practiceContext=api.getContext();
+  personalPhase="feedback";
+  const feedback=api.getContext();
+  assert.equal(feedback.stage,"reflection",
+   "Step 4 must have Feedback context before submission");
+  assert.equal(feedback.pending,"submission");
+  assert.notEqual(feedback.wording.prompt,practiceContext.wording.prompt,
+   "Feedback may not repeat the Step 3 prompt");
+  assert.notEqual(feedback.wording.prompt,authored[4][lang].prompt,
+   "Pre-submit Feedback must not expose authored post-submission rubric");
+  assert.ok(feedback.wording.prompt.includes(personalId),
+   "Pre-submit prompt must mention the current lesson");
+  assert.equal(feedback.wording.actions.length,2);
+  assert.equal(feedback.wording.actions[0].reply,authored[3][lang].actions[0].reply,
+   "Feedback uses only already-visible independent-study coaching");
+  assert.equal(api.getPlan(route).actions.length,3);
+  const feedbackBefore=events.length;
+  api.getPlan(route).actions[2].perform();
+  assert.equal(events[feedbackBefore].detail.phase,"practice",
+   "Pre-submit chat must take learner to Practice rather than the locked answer");
+  personalPhase="progress";
+  const progress=api.getContext();
+  assert.equal(progress.stage,"extension",
+   "Step 5 must have Progress context before self-review");
+  assert.equal(progress.pending,"submission");
+  assert.notEqual(progress.wording.prompt,feedback.wording.prompt);
+  assert.notEqual(progress.wording.prompt,authored[5][lang].prompt,
+   "No post-completion advice before review");
+  assert.ok(progress.wording.prompt.includes(personalId));
+  assert.equal(progress.wording.actions.length,2);
+  const progressBefore=events.length;
+  api.getPlan(route).actions[2].perform();
+  assert.equal(events[progressBefore].detail.phase,"practice");
+  submitted=true;
+  const unreviewed=api.getContext();
+  assert.equal(unreviewed.stage,"extension");
+  assert.equal(unreviewed.pending,"review",
+   "Submitted-but-unreviewed Progress has its own safe context");
+  assert.notEqual(unreviewed.wording.prompt,progress.wording.prompt);
+  const reviewBefore=events.length;
+  api.getPlan(route).actions[2].perform();
+  assert.equal(events[reviewBefore].detail.phase,"feedback",
+   "Progress chat returns to self-review after submission");
+  personalPhase="feedback";
+  assert.equal(api.getContext().pending,null);
+  assert.equal(api.getContext().wording.prompt,authored[4][lang].prompt,
+   "Actual submitted Feedback unlocks its authored step 4 chat");
+  reviewed=true;personalPhase="progress";
+  assert.equal(api.getContext().pending,null);
+  assert.equal(api.getContext().wording.prompt,authored[5][lang].prompt,
+   "Completed review unlocks authored Progress chat");
+ }
+ submitted=false;reviewed=false;personalLang="vi";personalPhase="practice";
  const before=events.length;
  api.getPlan(route).actions[2].perform();
  assert.equal(events[before].type,"li:mentor-phase-jump");
@@ -201,5 +248,5 @@ vm.runInContext(read("site/assets/lesson-companion-native.js"),ctx);
  // An unapproved editorial draft must not register a native pop-up.
  assert.ok(!api.registered().includes("L09-1-1"),
   "Draft can only reach React mentor after release checks");
- console.log("PASS Wave1 mentor + draft L09-1-1 six-stage bilingual React context, no spoiler, T06/T07, honest links");
+ console.log("PASS canonical mentor + personal Steps 4/5 VI/EN gated prompts, review return, no spoilers");
 })().catch(e=>{console.error(e);process.exitCode=1;});

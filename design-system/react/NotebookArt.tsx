@@ -2,6 +2,7 @@ import React from 'react';
 import {motion,useReducedMotion} from 'motion/react';
 import {BookwormIllustration} from './BookwormIllustration';
 import './notebook-illustrations.css';
+import './notebook-existing-assets.css';
 
 /** Reusable, decor-only illustration slot for approved React compositions.
  * Reuses the existing li. discipline / Lao Ly assets; never mutates content.
@@ -10,10 +11,23 @@ export type NotebookArtKind=
  'book'|'shelf'|'discipline'|'sampling'|'method'|'recall'|'calendar'|
  'question'|'notes'|'progress'|'companion'|'checkin';
 export type NotebookArtSize='hero'|'card'|'spot';
+/** Real files already uploaded to li./site/assets; do not substitute generated artwork. */
 export const notebookDisciplineImages={
  society:'../assets/discipline/sociology.webp',
  hci:'../assets/discipline/human-computer-interaction.webp',
- supply:'../assets/discipline/supply-chain-management.webp'
+ supply:'../assets/discipline/supply-chain-management.webp',
+ cognitivePsychology:'../assets/discipline/cognitive-psychology.webp',
+ behavioralPsychology:'../assets/discipline/behavioral-psychology.webp',
+ anthropology:'../assets/discipline/anthropology.webp',
+ artificialIntelligence:'../assets/discipline/artificial-intelligence.webp',
+ dataScience:'../assets/discipline/data-science.webp',
+ economics:'../assets/discipline/economics.webp',
+ worldHistory:'../assets/discipline/world-history.webp',
+ chineseLanguage:'../assets/discipline/chinese-language.webp',
+ englishLanguage:'../assets/discipline/english-language.webp',
+ backendDevelopment:'../assets/discipline/backend-development.webp',
+ musicTheory:'../assets/discipline/music-theory.webp',
+ neurodiversityStudies:'../assets/discipline/neurodiversity-studies.webp'
 } as const;
 export function NotebookArt({kind,size='spot',src,className=''}:{
  kind:NotebookArtKind;size?:NotebookArtSize;src?:string;className?:string

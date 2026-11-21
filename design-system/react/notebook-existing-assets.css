@@ -1,0 +1,73 @@
+/* Existing uploaded art + canonical icon accents, Notebook UI Lab only.
+   All labels, data, interactions remain sourced from the existing React screens. */
+.li-flow-page[data-layout="notebook"] .li-nb-card-icon{
+ display:inline-flex;justify-content:center;align-items:center;
+ width:34px;height:34px;flex:none;
+ border:1px dashed var(--nb-wine,#8D2537);
+ color:var(--nb-wine,#8D2537);
+ background:var(--nb-sheet,#FFFCF5);
+ transform:rotate(-5deg);
+}
+.li-flow-page[data-layout="notebook"] .li-flow-card-grid>.li-ds-card>.li-nb-card-icon{
+ justify-self:start;
+}
+.li-flow-page[data-layout="notebook"] .li-flow-stat-grid .li-nb-card-icon{
+ margin-bottom:3px;
+}
+.li-flow-page[data-layout="notebook"] .li-nb-method-icon{
+ display:inline-flex;align-items:center;justify-content:center;
+ width:32px;height:32px;border-radius:50%;
+ color:var(--nb-wine,#8D2537);
+ background:var(--nb-olive,#CBD4AC);
+}
+.li-flow-page[data-layout="notebook"] .li-flow-method-plate .li-nb-method-icon{
+ position:absolute;top:13px;right:15px;
+}
+.li-flow-page[data-layout="notebook"] .li-flow-method-plate{
+ position:relative;
+}
+.li-flow-page[data-layout="notebook"] .li-nb-library-clippings{
+ display:flex;flex-wrap:wrap;align-items:center;
+ gap:clamp(10px,2vw,20px);padding:14px 14px 20px;
+ border-bottom:1px dotted var(--nb-rule,#BEB3A2);
+}
+.li-flow-page[data-layout="notebook"] .li-nb-library-clippings .li-notebook-art{
+ width:clamp(105px,22%,205px);max-width:100%;
+}
+.li-flow-page[data-layout="notebook"] .li-nb-library-clippings .li-notebook-art:nth-child(2){
+ transform:rotate(-3deg);
+}
+.li-flow-page[data-layout="notebook"] .li-nb-library-clippings .li-notebook-art:nth-child(3){
+ transform:rotate(3deg);
+}
+.li-nb-book-source-art{
+ display:flex;justify-content:flex-end;align-items:center;
+ margin-top:-4px;position:relative;
+}
+.li-nb-book-source-art .li-notebook-art{
+ width:min(40%,170px);min-width:108px;
+ aspect-ratio:1.55;
+ transform:rotate(3deg);
+}
+.li-nb-book-source-art .li-notebook-art-paper{
+ background:#EFF0E5;
+}
+.li-nb-book-source-art .li-notebook-art img{
+ object-fit:cover;
+}
+@container lab-preview (max-width:540px){
+ .li-flow-page[data-layout="notebook"] .li-nb-library-clippings{
+  gap:10px;padding:12px;
+ }
+ .li-flow-page[data-layout="notebook"] .li-nb-library-clippings .li-notebook-art{
+  width:calc((100% - 20px)/3);min-width:0;
+ }
+ .li-nb-book-source-art .li-notebook-art{
+  width:115px;min-width:0;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .li-flow-page[data-layout="notebook"] .li-nb-library-clippings .li-notebook-art{
+  transform:none!important;
+ }
+}

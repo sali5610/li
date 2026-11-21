@@ -4,6 +4,7 @@ import {Button} from './Components';
 import {Badge,Heading,Text} from './Atoms';
 import {LiIcon} from './LucideIcons';
 import {NotebookInk} from './NotebookInk';
+import {NotebookArt} from './NotebookArt';
 
 /** A real open-book reading composition, not card wrappers.
  * All existing lesson content is supplied by the canonical lesson screen.
@@ -14,8 +15,9 @@ export interface NotebookLessonSection {
  description:string;
 }
 export function NotebookLessonBook({title,eyebrow,description,diagram,sections,
- onPractice,locale}:{
+ onPractice,locale,illustrationSrc}:{
  title:string;eyebrow:string;description:string;diagram:React.ReactNode;
+ illustrationSrc?:string;
  sections:readonly NotebookLessonSection[];onPractice:()=>void;locale:'vi'|'en';
 }){
  const [spread,setSpread]=useState<0|1>(0);
@@ -57,6 +59,9 @@ export function NotebookLessonBook({title,eyebrow,description,diagram,sections,
          <LiIcon name="layers" size={18}/><span>{t('Minh hoạ khái niệm','Concept illustration')}</span>
         </div>
         <div className="li-nb-book-visual">{diagram}</div>
+        {illustrationSrc&&<div className="li-nb-book-source-art">
+         <NotebookArt kind="discipline" src={illustrationSrc} size="spot"/>
+        </div>}
         {marked&&<div className="li-nb-book-ink-doodle">
          <NotebookInk kind="circle" tone="wine">
           <LiIcon name="sparkles" size={24}/>

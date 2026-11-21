@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#F1F0E9">
+  <title>Memorycraft 01 · Ký Ức — li. Post-MVP Exploration</title>
+  <link rel="stylesheet" href="../../assets/design-tokens.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --wf-paper: var(--paper, #F1F0E9); --wf-cream: var(--cream, #FAF9F5);
+      --wf-field: var(--porcelain, #FEFDFC); --wf-moss: var(--moss, #243A29);
+      --wf-ink: var(--ink, #272A23); --wf-muted: var(--muted, #615F51);
+      --wf-rule: var(--rule, #C6C1B5); --wf-wood: var(--wood, #856D4B);
+      --wf-paper2: var(--paper-2, #E7E3D9); --wf-sage: var(--sage, #BAC9A7);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin:0; background:var(--wf-paper); color:var(--wf-ink); font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; }
+    button, input, select, textarea { font:inherit; }
+    button, select { cursor:pointer; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    [hidden] { display:none!important; }
+    :focus-visible { outline:3px solid #7E984F; outline-offset:3px; }
+    .eyebrow { color:var(--wf-moss); font-size:12px; line-height:16px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; }
+    .notice { background:var(--wf-moss); color:var(--wf-cream); font-size:14px; padding:8px 24px; text-align:center; }
+    a { color:var(--wf-moss); }
+    .topbar { max-width:1240px; margin:auto; display:flex; justify-content:space-between; align-items:center; gap:16px; padding:24px 32px 16px; border-bottom:1px solid var(--wf-rule); }
+    .brand { color:var(--wf-moss); font:700 38px/1 "Crimson Text",Georgia,serif; text-decoration:none; }
+    .top-link { font-size:14px; }
+    .layout { max-width:1240px; margin:auto; display:grid; grid-template-columns:216px minmax(0,1fr); gap:32px; padding:28px 32px 96px; }
+    .sidebar { position:sticky; top:20px; align-self:start; border-right:1px solid var(--wf-rule); padding-right:20px; }
+    .side-label { color:var(--wf-muted); font-size:12px; margin-bottom:12px; }
+    .side-nav { display:grid; gap:8px; }
+    .nav-btn { text-align:left; width:100%; border:1px solid transparent; background:transparent; color:var(--wf-moss); padding:12px; min-height:48px; font-weight:600; }
+    .nav-btn[aria-current="page"] { background:#E8E4D9; border-color:var(--wf-rule); border-radius:28px; }
+    .side-note { margin:32px 0 0; padding:16px; background:var(--wf-paper2); font-size:14px; line-height:20px; color:var(--wf-muted); border-left:3px solid var(--wf-moss); }
+    .main { min-width:0; }
+    .hero { display:flex; flex-wrap:wrap; align-items:end; justify-content:space-between; gap:20px; margin-bottom:28px; }
+    h1,h2,h3 { font-family:"Crimson Text",Georgia,serif; color:var(--wf-moss); margin:0; }
+    h1 { font-size:clamp(38px,5vw,56px); line-height:1.1; margin:8px 0 12px; }
+    h2 { font-size:30px; line-height:36px; margin:0 0 12px; }
+    h3 { font-size:24px; line-height:30px; }
+    p { margin:0; }
+    .lead { max-width:640px; color:var(--wf-muted); font-size:17px; line-height:26px; }
+    .method-markers { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+    .method-markers span { padding:6px 10px; border:1px solid var(--wf-rule); font-size:12px; color:var(--wf-moss); }
+    .work-grid { display:grid; grid-template-columns:minmax(0,1.6fr) minmax(250px,1fr); align-items:start; gap:20px; }
+    .card { background:var(--wf-cream); border:1px solid var(--wf-moss); box-shadow:4px 4px 0 var(--wf-wood); padding:24px; min-width:0; margin-bottom:20px; }
+    .card.soft { background:var(--wf-paper2); border-color:var(--wf-rule); box-shadow:none; }
+    .card-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px; }
+    .pill { border:1px solid var(--wf-moss); padding:4px 10px; font-size:12px; white-space:nowrap; border-radius:30px; color:var(--wf-moss); }
+    .numbers { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; padding:16px 0; border-top:1px solid var(--wf-rule); border-bottom:1px solid var(--wf-rule); margin:18px 0; }
+    .number { font-family:"Crimson Text",Georgia,serif; font-weight:600; font-size:36px; line-height:40px; color:var(--wf-moss); }
+    .number-label { font-size:13px; color:var(--wf-muted); line-height:20px; }
+    .muted { font-size:14px; line-height:20px; color:var(--wf-muted); }
+    .small { font-size:14px; line-height:20px; }
+    .stack { display:grid; gap:12px; }
+    .btn { border:1px solid var(--wf-moss); color:var(--wf-moss); background:var(--wf-cream); padding:10px 16px; min-height:48px; min-width:48px; font-weight:650; border-radius:0; text-align:center; }
+    .btn.primary { background:var(--wf-moss); color:var(--wf-cream); }
+    .btn.text { border-color:transparent; background:transparent; text-decoration:underline; }
+    .btn.wide { width:100%; }
+    .btn-row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:16px; }
+    .item-row { display:flex; justify-content:space-between; align-items:start; gap:12px; border-bottom:1px solid var(--wf-rule); padding:14px 0; }
+    .item-row:last-child { border-bottom:0; }
+    .item-title { font-weight:650; margin-bottom:4px; overflow-wrap:anywhere; }
+    .item-actions { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
+    .item-actions .btn { font-size:14px; min-height:44px; padding:8px 12px; }
+    .controls { display:grid; grid-template-columns:minmax(0,1fr) minmax(150px,190px); gap:12px; margin:16px 0; }
+    .field { width:100%; min-height:48px; background:var(--wf-field); border:1px solid var(--wf-rule); color:var(--wf-ink); border-radius:0; padding:10px 12px; }
+    textarea.field { min-height:120px; resize:vertical; }
+    label { display:block; font-weight:650; font-size:14px; margin-bottom:6px; }
+    .form-row { margin:0 0 16px; }
+    .checkbox-label { display:flex; align-items:start; gap:12px; font-weight:400; font-size:14px; line-height:21px; }
+    .checkbox-label input { width:20px; height:20px; accent-color:var(--wf-moss); flex:none; }
+    .status { border-left:3px solid var(--wf-moss); background:var(--wf-paper2); padding:12px; margin:12px 0; font-size:14px; }
+    .empty { padding:24px; border:1px dashed var(--wf-rule); color:var(--wf-muted); }
+    .review-card { min-height:280px; display:flex; flex-direction:column; justify-content:center; gap:16px; padding:24px; border:2px solid var(--wf-moss); background:var(--wf-field); margin:20px 0; }
+    .review-question { font:600 30px/36px "Crimson Text",Georgia,serif; color:var(--wf-moss); }
+    .review-answer { border-top:1px solid var(--wf-rule); padding-top:16px; }
+    .review-answer strong { display:block; margin-bottom:8px; }
+    .steps { margin:0; padding:0 0 0 20px; }
+    .steps li { margin:0 0 10px; }
+    .loci { list-style:decimal; padding:0 0 0 28px; margin:20px 0; }
+    .loci li { padding:16px; border:1px solid var(--wf-rule); margin-bottom:12px; background:var(--wf-cream); }
+    .loci li::marker { color:var(--wf-moss); font-weight:700; }
+    .loci .field { margin-top:8px; }
+    .section-intro { margin:0 0 20px; color:var(--wf-muted); }
+    .page-footer { border-top:1px solid var(--wf-rule); margin-top:36px; padding-top:20px; color:var(--wf-muted); font-size:13px; }
+    .mobile-nav { display:none; }
+    @media(max-width:950px) { .work-grid { grid-template-columns:minmax(0,1fr); } .layout { grid-template-columns:184px minmax(0,1fr); gap:20px; padding:24px 20px 96px; } .topbar { padding:20px; } }
+    @media(max-width:700px) { .layout { display:block; padding:24px 16px 108px; } .sidebar { display:none; } .topbar { padding:16px; } .notice { padding:8px 12px; font-size:12px; } .hero { margin-bottom:24px; } .lead { font-size:16px; line-height:24px; } .card { padding:20px; } .controls { grid-template-columns:1fr; } .mobile-nav { display:grid; grid-template-columns:repeat(3,1fr); position:fixed; bottom:0; left:0; right:0; padding:8px max(12px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left)); background:var(--wf-paper); border-top:1px solid var(--wf-moss); z-index:10; gap:8px; } .mobile-nav .nav-btn { font-size:13px; text-align:center; min-height:48px; padding:8px 4px; } h1 { font-size:42px; } .item-row { flex-direction:column; } .review-question { font-size:28px; line-height:36px; } }
+    @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+  </style>
+</head>
+<body>
+  <div class="notice">Bản khám phá Post-MVP · Dữ liệu chỉ nằm trong phiên xem này, tải lại sẽ đặt về mẫu · Không dùng dữ liệu cá nhân thật</div>
+  <header class="topbar">
+    <a class="brand" href="../../index.html" aria-label="li. — về ứng dụng">li.</a>
+    <div class="top-link"><a href="https://github.com/sali5610/li/tree/integration/staging/site/explore/memorycraft">GitHub source</a> · <a href="https://app.notion.com/p/41f6cf6db72a818eb10ec5c95b1268a3">Concept</a></div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" aria-label="Điều hướng không gian">
+      <div class="side-label">MEMORYCRAFT · SPACE 01</div>
+      <nav class="side-nav" aria-label="Chọn khu vực">
+        <button type="button" class="nav-btn" data-route="today" aria-current="page">01 · Ôn hôm nay</button>
+        <button type="button" class="nav-btn" data-route="library">02 · Kho kiến thức</button>
+        <button type="button" class="nav-btn" data-route="palace">03 · Cung điện ký ức</button>
+      </nav>
+      <p class="side-note">Một kiến thức, một thẻ gốc. Active Recall, Spaced Review và Memory Palace dùng chung dữ liệu.</p>
+    </aside>
+    <main class="main" id="main">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">Sổ Tay Thần Chú / Memorycraft · T01 · T02 · T13</div>
+          <h1>Không gian Ký Ức</h1>
+          <p class="lead">Lưu điều đáng nhớ, thử tự gọi lại và quay về ôn khi cần. Không phải một kho thẻ khiến ngươi mắc nợ mỗi ngày.</p>
+          <div class="method-markers"><span>T01 · Nhớ lại chủ động</span><span>T02 · Ôn giãn cách</span><span>T13 · Ghi nhớ theo địa điểm</span></div>
+        </div>
+      </div>
+      <section id="panel-today" data-panel aria-labelledby="heading-today">
+        <div class="work-grid">
+          <div>
+            <article class="card">
+              <div class="card-head"><span class="eyebrow">Bàn ôn tập</span><span class="pill">Bản mẫu tương tác</span></div>
+              <h2 id="heading-today">Ôn hôm nay</h2>
+              <p class="muted">Chỉ đề xuất thẻ đến hạn. Thẻ chưa học và thẻ tạm dừng không bị tính là bỏ lỡ.</p>
+              <div class="numbers">
+                <div><div id="dueCount" class="number">0</div><div class="number-label">Thẻ đến hạn</div></div>
+                <div><div id="studiedCount" class="number">0</div><div class="number-label">Đã ôn phiên này</div></div>
+                <div><div id="totalCount" class="number">0</div><div class="number-label">Trong kho</div></div>
+              </div>
+              <label for="sessionSize">Giới hạn một phiên</label>
+              <select id="sessionSize" class="field"><option value="5">5 thẻ</option><option value="10" selected>10 thẻ</option><option value="20">20 thẻ</option></select>
+              <div class="btn-row"><button id="startReview" type="button" class="btn primary">Bắt đầu tự nhớ →</button><button type="button" class="btn" data-route="library">Xem kho thẻ</button></div>
+              <div id="todayMessage" class="status" role="status" aria-live="polite" hidden></div>
+            </article>
+            <article class="card soft">
+              <div class="card-head"><h3>Cơ chế ôn</h3><span class="pill">T02</span></div>
+              <ol class="steps">
+                <li>Thẻ từng được học mới được đưa vào lịch.</li>
+                <li>Ngươi trả lời trước khi thấy đáp án, rồi tự đánh giá.</li>
+                <li>Nhớ tốt → giãn lịch; chưa nhớ → ôn sớm hơn. Bỏ qua không bị phạt.</li>
+              </ol>
+              <p class="muted">Lịch ở wireframe chỉ là mô phỏng thích ứng đơn giản, <strong>không phải FSRS</strong> hay thuật toán đã được hiệu chuẩn.</p>
+            </article>
+          </div>
+          <aside>
+            <article class="card">
+              <div class="card-head"><h3>Sắp đến hạn</h3><span class="eyebrow">HÀNG ĐỢI</span></div>
+              <div id="duePreview" aria-live="polite"></div>
+            </article>
+            <article class="card soft">
+              <h3>Không quá tải</h3>
+              <p class="small">Kho có thể lớn lên. Phiên ôn vẫn ngắn; phần còn lại chờ lượt, không chặn bài mới và không có streak trừng phạt.</p>
+              <div class="btn-row"><button type="button" class="btn" data-route="palace">Thử Memory Palace →</button></div>
+            </article>
+          </aside>
+        </div>
+      </section>
+      <section id="panel-library" data-panel aria-labelledby="heading-library" hidden>
+        <div class="card">
+          <div class="card-head"><div><span class="eyebrow">Một kho chung</span><h2 id="heading-library">Kho kiến thức</h2></div><span id="libraryCount" class="pill">0 thẻ</span></div>
+          <p class="section-intro">Thẻ đi theo nguồn học và chủ đề, không phải tự phân loại vào 5 kho. Thử thêm thẻ hoặc tạm dừng lịch ôn ngay tại đây.</p>
+          <div class="controls">
+            <div><label for="searchCards">Tìm kiến thức</label><input class="field" id="searchCards" type="search" placeholder="Sampling Bias, T01, nguồn..."></div>
+            <div><label for="filterCards">Trạng thái</label><select class="field" id="filterCards"><option value="all">Tất cả</option><option value="due">Đến hạn</option><option value="later">Sắp ôn</option><option value="paused">Tạm dừng</option><option value="draft">Chưa học</option></select></div>
+          </div>
+          <div class="btn-row"><button class="btn primary" id="toggleAdd" type="button" aria-expanded="false" aria-controls="addForm">+ Lưu kiến thức</button></div>
+          <form id="addForm" hidden>
+            <div class="status">Wireframe chỉ ghi trong bộ nhớ trang hiện tại, không lưu lên GitHub, Neon hay thiết bị sau refresh.</div>
+            <div class="form-row"><label for="newQuestion">Câu hỏi gợi nhớ *</label><input class="field" id="newQuestion" required maxlength="250" placeholder="Điểm khác giữa A và B là gì?"></div>
+            <div class="form-row"><label for="newAnswer">Đáp án / ý chính *</label><textarea class="field" id="newAnswer" required maxlength="1500" placeholder="Ghi một ý chính cần tự nhớ lại..."></textarea></div>
+            <div class="form-row"><label for="newSource">Nguồn / bài học</label><input class="field" id="newSource" maxlength="160" placeholder="Ví dụ: L09-1-2 hoặc ghi chú cá nhân"></div>
+            <div class="form-row"><label for="newSubject">Chủ đề</label><input class="field" id="newSubject" maxlength="100" placeholder="Ví dụ: Thống kê"></div>
+            <div class="form-row"><label class="checkbox-label" for="newEligible"><input type="checkbox" id="newEligible" checked><span>Tôi đã học nội dung này và muốn bắt đầu kiểm tra trí nhớ. Bỏ chọn để lưu nháp chưa đưa vào lịch ôn.</span></label></div>
+            <div class="btn-row"><button type="submit" class="btn primary">Thêm vào kho mẫu</button><button id="cancelAdd" type="button" class="btn">Hủy</button></div>
+            <div id="addStatus" role="status" aria-live="polite" class="status" hidden></div>
+          </form>
+          <div id="libraryList"></div>
+        </div>
+      </section>
+      <section id="panel-palace" data-panel aria-labelledby="heading-palace" hidden>
+        <div class="work-grid">
+          <article class="card">
+            <span class="eyebrow">T13 · Phương pháp địa điểm</span>
+            <h2 id="heading-palace">Cung điện ký ức</h2>
+            <p class="section-intro">Một phương pháp ghi nhớ <strong>tùy chọn</strong>, không phải kho dữ liệu thứ hai. Gắn các thẻ <em>đã học</em> vào những địa điểm quen thuộc, rồi ẩn gợi ý và tự đi qua chúng.</p>
+            <label class="checkbox-label" for="showPalaceCues"><input type="checkbox" id="showPalaceCues" checked><span>Hiện kiến thức được gắn tại mỗi địa điểm</span></label>
+            <ol class="loci" id="locusList"></ol>
+            <div id="palaceStatus" class="status" role="status" aria-live="polite" hidden></div>
+          </article>
+          <aside class="card soft">
+            <h3>Thử nhớ không gợi ý</h3>
+            <p class="small">1. Chọn thẻ đã học cho từng địa điểm.</p>
+            <p class="small">2. Tắt “Hiện kiến thức”.</p>
+            <p class="small">3. Nhẩm lại theo thứ tự rồi mở đáp án để tự so sánh.</p>
+            <p class="muted" style="margin-top:16px">Đây là bản tuyến tính hỗ trợ bàn phím, không ép hình dung không gian 3D. Chưa tính điểm mastery.</p>
+          </aside>
+        </div>
+      </section>
+      <section id="panel-review" data-panel aria-labelledby="heading-review" hidden>
+        <article class="card">
+          <div class="card-head"><span class="eyebrow">T01 → T02 · Bàn ôn tập</span><span class="pill" id="reviewPosition">1 / 1</span></div>
+          <h2 id="heading-review">Tự nhớ trước khi lật</h2>
+          <p class="muted">Đừng nhìn đáp án trước. Viết điều ngươi nhớ, hoặc chọn “Chưa nhớ” để mở đáp án. Tự đánh giá không phải chứng nhận đã thành thạo.</p>
+          <div id="reviewScreen">
+            <div class="review-card">
+              <div class="muted" id="reviewSource"></div>
+              <div class="review-question" id="reviewQuestion"></div>
+              <div id="answerInputArea">
+                <label for="recallText">Ngươi nhớ được gì?</label>
+                <textarea class="field" id="recallText" placeholder="Tự trả lời bằng trí nhớ, chưa nhìn nguồn..."></textarea>
+                <div class="btn-row"><button id="revealAnswer" type="button" class="btn primary" disabled>Xem đáp án</button><button id="cannotRemember" type="button" class="btn">Chưa nhớ</button><button id="skipCard" type="button" class="btn text">Bỏ qua</button></div>
+              </div>
+              <div id="answerFeedback" class="review-answer" hidden>
+                <strong>Đáp án tham chiếu</strong><p id="reviewAnswer"></p>
+                <div class="status">So sánh với câu mình đã nghĩ. Đây là tự đánh giá, không có AI chấm đúng/sai.</div>
+                <div class="btn-row"><button id="markRemembered" type="button" class="btn primary">Đã nhớ</button><button id="markForgotten" type="button" class="btn">Chưa nhớ</button></div>
+              </div>
+            </div>
+          </div>
+          <div id="sessionEnd" hidden>
+            <h3>Đã hết phiên ôn mẫu</h3><p id="sessionSummary" class="small"></p>
+            <div class="btn-row"><button type="button" class="btn primary" data-route="today">Về Ôn hôm nay</button><button type="button" class="btn" data-route="library">Xem kho thẻ</button></div>
+          </div>
+          <p class="muted">Quy tắc lịch mô phỏng: “Đã nhớ” tăng khoảng cách, “Chưa nhớ” hẹn ôn lại sớm. Không cố định 1–3–7 ngày, không nhắc nhở nền.</p>
+        </article>
+      </section>
+      <footer class="page-footer">li. · Memorycraft Space 01 · Wireframe để review UX, không phải feature MVP / production. Nội dung demo, thuật toán minh họa, không lưu hoặc đồng bộ dữ liệu. <a href="https://app.notion.com/p/41f6cf6db72a818eb10ec5c95b1268a3">Mở tài liệu quyết định</a>.</footer>
+    </main>
+  </div>
+  <nav class="mobile-nav" aria-label="Điều hướng Memorycraft trên điện thoại">
+    <button type="button" class="nav-btn" data-route="today" aria-current="page">Ôn hôm nay</button>
+    <button type="button" class="nav-btn" data-route="library">Kho thẻ</button>
+    <button type="button" class="nav-btn" data-route="palace">Cung điện</button>
+  </nav>
+<script>
+(function () {
+  "use strict";
+  var today = new Date(); today.setHours(0,0,0,0);
+  function offsetDate(days) { var d = new Date(today); d.setDate(d.getDate()+days); return d; }
+  function formatDate(d) { return d ? new Intl.DateTimeFormat("vi-VN", { day:"2-digit", month:"2-digit" }).format(d) : "Chưa lên lịch"; }
+  function normalized(s) { return String(s||"").trim().replace(/\s+/g," ").toLocaleLowerCase("vi"); }
+  var cards = [
+    {id:"sampling",q:"Sampling bias xuất hiện khi nào?",a:"Khi cách chọn mẫu khiến một số nhóm có xác suất được chọn không phù hợp với quần thể đích, làm mẫu có thể lệch một cách có hệ thống.",subject:"Thống kê",source:"Ví dụ minh họa · L09-1-2",eligible:true,paused:false,interval:1,streak:0,due:offsetDate(-2)},
+    {id:"recall",q:"Tại sao Active Recall phải nhớ trước khi xem đáp án?",a:"Để thực hiện hành động truy hồi thông tin từ trí nhớ; việc chỉ đọc lại hoặc nhận ra đáp án không tương đương với tự nhớ lại.",subject:"Thần chú",source:"L2-T01 · Retrieval Practice",eligible:true,paused:false,interval:2,streak:1,due:offsetDate(0)},
+    {id:"bias",q:"Sampling bias khác với random sampling variation ở đâu?",a:"Sampling bias là sai lệch có hệ thống gắn với cơ chế lấy mẫu; random sampling variation là dao động do tính ngẫu nhiên của việc chọn mẫu.",subject:"Thống kê",source:"Ví dụ minh họa · L09-1-2",eligible:true,paused:false,interval:3,streak:1,due:offsetDate(-1)},
+    {id:"spacing",q:"Spaced Review dùng để giải quyết vấn đề gì?",a:"Phân bố các lượt ôn theo thời gian để hỗ trợ ghi nhớ lâu hơn, thay vì dồn toàn bộ vào một lượt.",subject:"Thần chú",source:"L2-T02 · Spaced Review",eligible:true,paused:false,interval:4,streak:2,due:offsetDate(4)},
+    {id:"palace",q:"Ba bước cốt lõi của Method of Loci?",a:"Chọn địa điểm quen thuộc → gắn điều đã hiểu vào từng điểm → đi qua các điểm và tự nhớ lại không nhìn gợi ý.",subject:"Thần chú",source:"L2-T13 · Method of Loci",eligible:false,paused:false,interval:1,streak:0,due:null}
+  ];
+  var locusNames = ["Lối vào thư viện","Cầu thang xoắn","Gương cổ"];
+  var locusLinks = ["sampling","recall","bias"];
+  var active = "today", sessionQueue = [], current = null, done = 0, skipped = 0, firstAttempt = false, revealReason = "";
+  var $ = function(id) { return document.getElementById(id); };
+  function isDue(c) { return c.eligible && !c.paused && c.due && c.due.getTime()<=today.getTime(); }
+  function dueCards() { return cards.filter(isDue).sort(function(a,b){return a.due-b.due;}); }
+  function setText(id,value) { $(id).textContent=String(value); }
+  function showStatus(id,value) { var el=$(id); el.hidden=!value; if(value) el.textContent=value; }
+  function clearChildren(el) { while(el.firstChild) el.removeChild(el.firstChild); }
+  function make(tag, cls, text) { var e=document.createElement(tag); if(cls)e.className=cls; if(text!==undefined)e.textContent=text; return e; }
+  function nav(route) {
+    active=route;
+    document.querySelectorAll("[data-panel]").forEach(function(el) { el.hidden=(el.id!=="panel-"+route); });
+    document.querySelectorAll("[data-route]").forEach(function(el) {
+      if (el.classList.contains("nav-btn")) { if(el.dataset.route===route) el.setAttribute("aria-current","page"); else el.removeAttribute("aria-current"); }
+    });
+    renderAll(); window.scrollTo({top:0,behavior:"instant"});
+    var heading=document.querySelector("#panel-"+route+" h2"); if(heading)heading.setAttribute("tabindex","-1");
+  }
+  function renderToday() {
+    setText("dueCount",dueCards().length);setText("studiedCount",done);setText("totalCount",cards.length);
+    $("startReview").disabled=(dueCards().length===0);
+    var root=$("duePreview");clearChildren(root);
+    var due=dueCards().slice(0,5);
+    if(!due.length){ root.appendChild(make("p","muted","Chưa có thẻ đến hạn. Có thể học tiếp hoặc xem kho kiến thức."));return; }
+    due.forEach(function(c){
+      var row=make("div","item-row");var block=make("div","");
+      block.appendChild(make("div","item-title",c.q));
+      block.appendChild(make("div","muted",c.subject+" · Hạn "+formatDate(c.due)));
+      row.appendChild(block);root.appendChild(row);
+    });
+  }
+  function statusOf(c) { if(c.paused)return "Tạm dừng"; if(!c.eligible)return "Chưa học"; if(isDue(c))return "Đến hạn"; return "Ôn "+formatDate(c.due); }
+  function renderLibrary() {
+    setText("libraryCount",cards.length+" thẻ");
+    var q=normalized($("searchCards").value), filter=$("filterCards").value;
+    var list=cards.filter(function(c){
+      var matches=(!q||normalized(c.q+" "+c.a+" "+c.subject+" "+c.source).includes(q));
+      if(!matches)return false;
+      return filter==="all"||(filter==="due"&&isDue(c))||(filter==="paused"&&c.paused)||(filter==="draft"&&!c.eligible)||(filter==="later"&&c.eligible&&!c.paused&&!isDue(c));
+    });
+    var root=$("libraryList");clearChildren(root);
+    if(!list.length){root.appendChild(make("div","empty","Không có thẻ phù hợp bộ lọc. Hãy thử bỏ lọc hoặc thêm thẻ."));return;}
+    list.forEach(function(c){
+      var row=make("div","item-row"), info=make("div",""), actions=make("div","item-actions");
+      info.appendChild(make("div","item-title",c.q));
+      info.appendChild(make("div","muted",c.subject+" · "+c.source+" · "+statusOf(c)));
+      var btn=make("button","btn",c.paused?"Tiếp tục ôn":"Tạm dừng");btn.type="button";btn.dataset.pauseId=c.id; btn.setAttribute("aria-label",(c.paused?"Tiếp tục ôn: ":"Tạm dừng: ")+c.q);
+      actions.appendChild(btn);
+      if(!c.eligible) {
+        var activate=make("button","btn primary","Đã học");activate.type="button";activate.dataset.learnId=c.id;activate.setAttribute("aria-label","Đánh dấu đã học: "+c.q);actions.appendChild(activate);
+      }
+      row.appendChild(info);row.appendChild(actions);root.appendChild(row);
+    });
+  }
+  function renderPalace() {
+    var root=$("locusList"), show=$("showPalaceCues").checked;clearChildren(root);
+    locusNames.forEach(function(name,index) {
+      var item=make("li",""),title=make("strong","",name);
+      var label=make("label","small","Gắn thẻ đã học");label.htmlFor="locus-"+index;
+      var select=make("select","field");select.id="locus-"+index;select.dataset.locusIndex=String(index);
+      select.appendChild(new Option("— Chưa gắn —",""));
+      cards.filter(function(c){return c.eligible;}).forEach(function(c){ select.appendChild(new Option(c.q,c.id)); });
+      select.value=locusLinks[index]||"";
+      var linked=cards.find(function(c){return c.id===locusLinks[index];});
+      var cue=make("p","small",linked?(show?"Gợi ý: "+linked.q:"Gợi ý đã ẩn. Hãy tự nhớ thẻ ở vị trí này."):"Chưa gắn kiến thức");
+      cue.style.marginTop="12px";
+      item.appendChild(title);item.appendChild(label);item.appendChild(select);item.appendChild(cue);root.appendChild(item);
+    });
+  }
+  function renderAll() { renderToday();renderLibrary();renderPalace(); }
+  function startSession() {
+    sessionQueue=dueCards().slice(0,Number($("sessionSize").value)).map(function(c){return c.id;});
+    current=null;skipped=0;
+    if(!sessionQueue.length){showStatus("todayMessage","Không có thẻ đến hạn để ôn. Có thể lưu kiến thức mới trong Kho thẻ.");return;}
+    nav("review");nextCard();
+  }
+  function nextCard() {
+    $("sessionEnd").hidden=true; $("reviewScreen").hidden=false;
+    if(!sessionQueue.length) {
+      current=null;$("reviewScreen").hidden=true;$("sessionEnd").hidden=false;
+      setText("sessionSummary","Đã ghi nhận "+done+" lượt tự đánh giá trong phiên xem này; "+skipped+" thẻ bỏ qua không bị đổi lịch. Không có dữ liệu nào được gửi đi.");
+      setText("reviewPosition","Hoàn tất");return;
+    }
+    var id=sessionQueue.shift();current=cards.find(function(c){return c.id===id;});
+    if(!current){nextCard();return;}
+    firstAttempt=false;revealReason="";
+    setText("reviewSource",current.subject+" · "+current.source);
+    setText("reviewQuestion",current.q);setText("reviewAnswer",current.a);
+    setText("reviewPosition","Còn "+(sessionQueue.length+1)+" thẻ");
+    $("recallText").value="";$("revealAnswer").disabled=true;$("answerInputArea").hidden=false;$("answerFeedback").hidden=true;
+    $("markRemembered").disabled=false;
+    $("recallText").focus();
+  }
+  function reveal(reason) {
+    if(!current)return;
+    revealReason=reason;
+    firstAttempt=!!normalized($("recallText").value);
+    if(reason==="typed"&&!firstAttempt)return;
+    $("answerInputArea").hidden=true;$("answerFeedback").hidden=false;
+    // A user who immediately chose "Chưa nhớ" cannot rate the unseen attempt as remembered.
+    $("markRemembered").disabled=!firstAttempt;
+    $("markForgotten").focus();
+  }
+  function rate(remembered) {
+    if(!current)return;
+    if(remembered && !firstAttempt)return;
+    if(remembered) {current.streak+=1;current.interval=Math.min(60,Math.max(2,Math.round(current.interval*(current.streak>1?2.1:1.7))));}
+    else {current.streak=0;current.interval=1;}
+    current.due=offsetDate(current.interval);done+=1;current=null;
+    nextCard();
+  }
+  document.querySelectorAll("[data-route]").forEach(function(b){ b.addEventListener("click",function(){nav(b.dataset.route);});});
+  $("startReview").addEventListener("click",startSession);
+  $("recallText").addEventListener("input",function(){ $("revealAnswer").disabled=!normalized(this.value); });
+  $("revealAnswer").addEventListener("click",function(){reveal("typed");});
+  $("cannotRemember").addEventListener("click",function(){reveal("missing");});
+  $("skipCard").addEventListener("click",function(){skipped+=1;nextCard();});
+  $("markRemembered").addEventListener("click",function(){rate(true);});
+  $("markForgotten").addEventListener("click",function(){rate(false);});
+  $("searchCards").addEventListener("input",renderLibrary);
+  $("filterCards").addEventListener("change",renderLibrary);
+  $("libraryList").addEventListener("click",function(e){
+    var btn=e.target.closest("button");if(!btn)return;
+    if(btn.dataset.pauseId){
+      var c=cards.find(function(x){return x.id===btn.dataset.pauseId;});if(!c)return;
+      c.paused=!c.paused;renderAll();
+    } else if(btn.dataset.learnId){
+      var d=cards.find(function(x){return x.id===btn.dataset.learnId;});if(!d)return;
+      d.eligible=true;d.due=offsetDate(0);renderAll();
+    }
+  });
+  function toggleForm(show) {
+    $("addForm").hidden=!show;$("toggleAdd").setAttribute("aria-expanded",String(show));
+    if(show)$("newQuestion").focus();
+  }
+  $("toggleAdd").addEventListener("click",function(){toggleForm($("addForm").hidden);});
+  $("cancelAdd").addEventListener("click",function(){toggleForm(false);});
+  $("addForm").addEventListener("submit",function(e){
+    e.preventDefault();
+    var q=$("newQuestion").value.trim(),a=$("newAnswer").value.trim();
+    if(!q||!a)return;
+    if(cards.some(function(c){return normalized(c.q)===normalized(q);})){showStatus("addStatus","Câu hỏi này đã tồn tại trong kho mẫu. Hãy sửa thẻ gốc thay vì tạo bản sao.");return;}
+    var eligible=$("newEligible").checked;
+    cards.push({id:"local-"+Date.now()+"-"+cards.length,q:q,a:a,subject:$("newSubject").value.trim()||"Chưa phân loại",source:$("newSource").value.trim()||"Ghi chú cá nhân · chưa kiểm chứng",eligible:eligible,paused:false,interval:1,streak:0,due:eligible?offsetDate(0):null});
+    this.reset();$("newEligible").checked=true;showStatus("addStatus",eligible?"Đã thêm thẻ vào lịch ôn mẫu. Tải lại trang sẽ mất.":"Đã lưu nháp trong phiên xem. Không tính là thẻ đến hạn.");
+    renderAll();
+  });
+  $("showPalaceCues").addEventListener("change",renderPalace);
+  $("locusList").addEventListener("change",function(e){
+    var el=e.target;
+    if(!el.matches("select[data-locus-index]"))return;
+    var idx=Number(el.dataset.locusIndex),id=el.value;
+    // Each card may occupy only one demo locus, so users do not unknowingly duplicate a memory.
+    locusLinks=locusLinks.map(function(x,i){return i!==idx&&x===id?"":x;});
+    locusLinks[idx]=id;renderPalace();
+    showStatus("palaceStatus",id?"Đã đổi liên kết tại "+locusNames[idx]+". Đây chỉ là lựa chọn trong phiên demo.":"Đã bỏ liên kết tại "+locusNames[idx]+".");
+  });
+  renderAll();
+})();
+</script>
+</body>
+</html>

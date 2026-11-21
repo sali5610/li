@@ -313,7 +313,7 @@ function Catalog(){
    <button type="button" className="catalog-outline-return" onClick={()=>openPath(path.slice(0,3))}>
     <span aria-hidden="true">←</span> {locale==='vi'?'Xem bài khác trong môn':'Browse other lessons'}
    </button>
-  </section>
+  </section>}
  </motion.div>;
 }
 

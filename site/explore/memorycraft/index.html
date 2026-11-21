@@ -92,6 +92,31 @@
     .section-intro { margin:0 0 20px; color:var(--wf-muted); }
     .page-footer { border-top:1px solid var(--wf-rule); margin-top:36px; padding-top:20px; color:var(--wf-muted); font-size:13px; }
     .mobile-nav { display:none; }
+
+    /* Post-MVP alternatives comparison: one wireframe, three entry-flow variants. */
+    .flow-explore { margin:0 0 28px; }
+    .flow-explore h2 { margin:4px 0 8px; }
+    .flow-cards { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px; }
+    .flow-choice { display:flex;flex-direction:column;gap:12px;background:var(--wf-cream);border:1px solid var(--wf-rule);padding:16px;min-width:0; }
+    .flow-choice[aria-current="true"] { border:2px solid var(--wf-moss);padding:15px;box-shadow:4px 4px 0 var(--wf-wood); }
+    .flow-choice .btn { margin-top:auto; }
+    .flow-choice h3 { font-size:22px;line-height:28px; }
+    .flow-steps { font-size:14px;line-height:21px;font-weight:650;color:var(--wf-moss);min-height:62px; }
+    .flow-benefit { font-size:14px;line-height:20px;padding-top:8px;border-top:1px solid var(--wf-rule); }
+    .flow-benefit strong { display:block;margin-bottom:4px; }
+    .flow-benefit p { color:var(--wf-muted); }
+    .flow-current { color:var(--wf-moss);font-size:13px;line-height:20px;margin-top:8px; }
+    .flow-preview-intro { padding:16px 20px;border-left:4px solid var(--wf-moss);background:var(--wf-paper2);margin-bottom:20px; }
+    .flow-lesson-item { border:1px solid var(--wf-rule);padding:16px;margin:12px 0;background:var(--wf-field);display:flex;gap:16px;align-items:start;justify-content:space-between; }
+    .flow-lesson-item .btn { flex:none;min-width:132px; }
+    .flow-checklist { padding-left:20px;margin:12px 0; }
+    .flow-checklist li { margin:8px 0; }
+    body[data-review="true"] .flow-explore { display:none; }
+    body[data-flow="b"] .sidebar,body[data-flow="c"] .sidebar { display:none; }
+    body[data-flow="b"] .layout,body[data-flow="c"] .layout { grid-template-columns:minmax(0,1fr); }
+    body[data-flow="b"] .mobile-nav,body[data-flow="c"] .mobile-nav { display:none; }
+    @media(max-width:900px){ .flow-cards{grid-template-columns:1fr;} .flow-steps{min-height:0;} .flow-choice{gap:8px;} }
+    @media(max-width:700px){ .flow-lesson-item{flex-direction:column;} .flow-lesson-item .btn{width:100%;} }
     @media(max-width:950px) { .work-grid { grid-template-columns:minmax(0,1fr); } .layout { grid-template-columns:184px minmax(0,1fr); gap:20px; padding:24px 20px 96px; } .topbar { padding:20px; } }
     @media(max-width:700px) { .layout { display:block; padding:24px 16px 108px; } .sidebar { display:none; } .topbar { padding:16px; } .notice { padding:8px 12px; font-size:12px; } .hero { margin-bottom:24px; } .lead { font-size:16px; line-height:24px; } .card { padding:20px; } .controls { grid-template-columns:1fr; } .mobile-nav { display:grid; grid-template-columns:repeat(3,1fr); position:fixed; bottom:0; left:0; right:0; padding:8px max(12px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left)); background:var(--wf-paper); border-top:1px solid var(--wf-moss); z-index:10; gap:8px; } .mobile-nav .nav-btn { font-size:13px; text-align:center; min-height:48px; padding:8px 4px; } h1 { font-size:42px; } .item-row { flex-direction:column; } .review-question { font-size:28px; line-height:36px; } }
     @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
@@ -122,6 +147,76 @@
           <div class="method-markers"><span>T01 · Nhớ lại chủ động</span><span>T02 · Ôn giãn cách</span><span>T13 · Ghi nhớ theo địa điểm</span></div>
         </div>
       </div>
+
+      <section class="flow-explore" aria-labelledby="flow-heading">
+        <div class="eyebrow">EXPLORE · 3 SOLUTION FLOWS · CHƯA CHỐT</div>
+        <h2 id="flow-heading">Bắt đầu ôn theo cách nào?</h2>
+        <p class="muted">Cùng một kho thẻ và ba thần chú T01/T02/T13. Khác nhau ở <strong>điểm bắt đầu và hành trình</strong>. Chọn từng phương án để thử tương tác bên dưới.</p>
+        <div class="flow-cards" role="group" aria-label="Ba phương án Memorycraft">
+          <article class="flow-choice" data-flow-card="a" aria-current="true">
+            <div class="eyebrow">OPTION A · CURRENT</div>
+            <h3>Ôn theo lịch</h3>
+            <p class="flow-steps">Mở Ký Ức → Thẻ đến hạn → Tự nhớ → Feedback</p>
+            <div class="flow-benefit"><strong>✓ Ưu</strong><p>Vào ôn ngay, ít quyết định; quản lý được lượng thẻ lớn với một hàng đợi xuyên môn.</p></div>
+            <div class="flow-benefit"><strong>− Nhược</strong><p>Dễ tạo cảm giác “nợ ôn”, mất ngữ cảnh bài học; người dùng ít quyền chọn nội dung.</p></div>
+            <button class="btn primary" type="button" data-flow-select="a" aria-pressed="true">Thử flow A</button>
+          </article>
+          <article class="flow-choice" data-flow-card="b">
+            <div class="eyebrow">OPTION B · ALTERNATIVE</div>
+            <h3>Đi từ bài học</h3>
+            <p class="flow-steps">Học bài → Chọn ý cần nhớ → Thử nhớ ngay → Hẹn ôn</p>
+            <div class="flow-benefit"><strong>✓ Ưu</strong><p>Rõ nguồn gốc, đúng lúc người học còn hiểu bài; tiết kiệm bước tạo thẻ và tránh nhập trùng.</p></div>
+            <div class="flow-benefit"><strong>− Nhược</strong><p>Phụ thuộc luồng học; dễ lưu quá nhiều sau mỗi bài và thiếu điểm quay lại ôn dài hạn.</p></div>
+            <button class="btn" type="button" data-flow-select="b" aria-pressed="false">Thử flow B</button>
+          </article>
+          <article class="flow-choice" data-flow-card="c">
+            <div class="eyebrow">OPTION C · ALTERNATIVE</div>
+            <h3>Ôn theo mục tiêu</h3>
+            <p class="flow-steps">Chọn chủ đề → Chọn phạm vi → Luyện nhớ → Tiếp tục học</p>
+            <div class="flow-benefit"><strong>✓ Ưu</strong><p>Chủ động chọn thứ đang cần, dễ tập trung cho môn/đầu việc cụ thể, giảm áp lực số thẻ tổng.</p></div>
+            <div class="flow-benefit"><strong>− Nhược</strong><p>Thêm bước chọn; dễ chỉ ôn môn thích và bỏ quên kiến thức đến hạn ở các môn khác.</p></div>
+            <button class="btn" type="button" data-flow-select="c" aria-pressed="false">Thử flow C</button>
+          </article>
+        </div>
+        <p class="flow-current" id="selectedFlowNote" role="status" aria-live="polite">Đang thử Option A — phiên ôn toàn bộ thẻ đến hạn.</p>
+      </section>
+      <section id="flow-b-preview" data-flow-preview="b" aria-labelledby="heading-flow-b" hidden>
+        <div class="flow-preview-intro"><strong>Option B · Lesson-first</strong><p class="small">Mô phỏng kết thúc một bài học. Thẻ bên dưới đã tồn tại trong kho mẫu; chọn để đem vào lượt tự nhớ, không tạo bản sao.</p></div>
+        <div class="work-grid">
+          <article class="card">
+            <div class="eyebrow">TÀNG THƯ → BÀI HỌC MẪU</div>
+            <h2 id="heading-flow-b">Sampling Bias</h2>
+            <p class="section-intro">Đọc bài → chọn ý cần giữ lại → tự nhớ lại sau khi đóng nội dung. Demo dùng kiến thức có sẵn, không ghi thay đổi vào bài gốc.</p>
+            <div id="lessonFlowCards" aria-live="polite"></div>
+            <div class="btn-row"><button type="button" class="btn primary" id="startLessonFlow">Thử nhớ các ý đã chọn →</button></div>
+            <div id="lessonFlowStatus" class="status" role="status" aria-live="polite" hidden></div>
+          </article>
+          <aside class="card soft">
+            <h3>Flow B giải quyết điều gì?</h3>
+            <ol class="flow-checklist"><li>Không bắt người học rời bài để tự tạo thẻ từ số không.</li><li>Gợi ý vài ý cốt lõi, người dùng chủ động chọn.</li><li>Kiểm tra tự nhớ ngắn ngay sau bài; lịch ôn dài hạn vẫn do một kho chung quản lý.</li></ol>
+            <p class="muted">Lượt tự nhớ ngay sau bài ở wireframe là <strong>luyện thử</strong>, không làm giả trạng thái ôn đến hạn.</p>
+          </aside>
+        </div>
+      </section>
+      <section id="flow-c-preview" data-flow-preview="c" aria-labelledby="heading-flow-c" hidden>
+        <div class="flow-preview-intro"><strong>Option C · Goal-first</strong><p class="small">Tự chọn chủ đề đang cần luyện, thay vì xử lý cả hàng đợi toàn cục. Lịch ôn T02 giữ nguyên khi dùng chế độ tự luyện này.</p></div>
+        <div class="work-grid">
+          <article class="card">
+            <div class="eyebrow">CHỌN MỤC TIÊU ÔN</div>
+            <h2 id="heading-flow-c">Hôm nay muốn nhớ gì?</h2>
+            <div class="form-row"><label for="topicSelect">Chủ đề muốn ôn</label><select id="topicSelect" class="field"></select></div>
+            <div class="form-row"><label for="topicScope">Chọn phạm vi</label><select id="topicScope" class="field"><option value="due">Chỉ thẻ đang đến hạn trong chủ đề</option><option value="any">Mọi thẻ đã học trong chủ đề (tự luyện)</option></select></div>
+            <div class="status" id="topicCount" role="status" aria-live="polite">Đang đọc thẻ mẫu…</div>
+            <div class="btn-row"><button type="button" class="btn primary" id="startTopicFlow">Luyện chủ đề này →</button></div>
+            <p class="muted" style="margin-top:16px">Giới hạn 5 thẻ mỗi lượt. Chế độ này không thay lịch hẹn toàn cục; thẻ chưa học/tạm dừng không được đưa vào.</p>
+          </article>
+          <aside class="card soft">
+            <h3>Flow C giải quyết điều gì?</h3>
+            <p class="small">Khi đang ôn một kỳ thi, chuẩn bị meeting hoặc muốn củng cố riêng một môn, ngươi được quyền bắt đầu theo mục tiêu thay vì số thẻ quá hạn.</p>
+            <div class="btn-row"><button type="button" class="btn" data-flow-select="a">So lại lịch toàn cục ở A</button></div>
+          </aside>
+        </div>
+      </section>
       <section id="panel-today" data-panel aria-labelledby="heading-today">
         <div class="work-grid">
           <div>
@@ -226,7 +321,7 @@
           </div>
           <div id="sessionEnd" hidden>
             <h3>Đã hết phiên ôn mẫu</h3><p id="sessionSummary" class="small"></p>
-            <div class="btn-row"><button type="button" class="btn primary" data-route="today">Về Ôn hôm nay</button><button type="button" class="btn" data-route="library">Xem kho thẻ</button></div>
+            <div class="btn-row"><button type="button" class="btn primary" id="exitSession">Quay lại flow đang thử</button><button type="button" class="btn" data-route="library">Xem kho thẻ</button></div>
           </div>
           <p class="muted">Quy tắc lịch mô phỏng: “Đã nhớ” tăng khoảng cách, “Chưa nhớ” hẹn ôn lại sớm. Không cố định 1–3–7 ngày, không nhắc nhở nền.</p>
         </article>
@@ -255,7 +350,7 @@
   ];
   var locusNames = ["Lối vào thư viện","Cầu thang xoắn","Gương cổ"];
   var locusLinks = ["sampling","recall","bias"];
-  var active = "today", sessionQueue = [], current = null, done = 0, skipped = 0, firstAttempt = false, revealReason = "";
+  var active = "today", selectedFlow="a", reviewMode="scheduled", lessonSelected=new Set(), sessionQueue = [], current = null, done = 0, skipped = 0, firstAttempt = false, revealReason = "";
   var $ = function(id) { return document.getElementById(id); };
   function isDue(c) { return c.eligible && !c.paused && c.due && c.due.getTime()<=today.getTime(); }
   function dueCards() { return cards.filter(isDue).sort(function(a,b){return a.due-b.due;}); }
@@ -263,14 +358,39 @@
   function showStatus(id,value) { var el=$(id); el.hidden=!value; if(value) el.textContent=value; }
   function clearChildren(el) { while(el.firstChild) el.removeChild(el.firstChild); }
   function make(tag, cls, text) { var e=document.createElement(tag); if(cls)e.className=cls; if(text!==undefined)e.textContent=text; return e; }
+  function updateFlowSurface() {
+    document.body.dataset.flow=selectedFlow;
+    document.body.dataset.review=String(active==="review");
+    document.querySelectorAll("[data-panel]").forEach(function(el) {
+      el.hidden=el.id!=="panel-"+active || (selectedFlow!=="a" && active!=="review");
+    });
+    document.querySelectorAll("[data-flow-preview]").forEach(function(el) {
+      el.hidden=active==="review" || el.dataset.flowPreview!==selectedFlow;
+    });
+    document.querySelectorAll("[data-route]").forEach(function(el) {
+      if(!el.classList.contains("nav-btn"))return;
+      if(selectedFlow==="a" && el.dataset.route===active)el.setAttribute("aria-current","page");
+      else el.removeAttribute("aria-current");
+    });
+    document.querySelectorAll("[data-flow-select]").forEach(function(btn){
+      var selected=btn.dataset.flowSelect===selectedFlow;
+      btn.setAttribute("aria-pressed",String(selected));
+      btn.classList.toggle("primary",selected);
+    });
+    document.querySelectorAll("[data-flow-card]").forEach(function(card) {
+      if(card.dataset.flowCard===selectedFlow)card.setAttribute("aria-current","true");
+      else card.removeAttribute("aria-current");
+    });
+    var notes={a:"Đang thử Option A — phiên ôn toàn bộ thẻ đến hạn.",b:"Đang thử Option B — bắt đầu từ bài học mẫu, chọn ý để tự nhớ.",c:"Đang thử Option C — chọn chủ đề trước rồi luyện tập theo mục tiêu."};
+    setText("selectedFlowNote",notes[selectedFlow]);
+  }
+  function chooseFlow(flow) {
+    selectedFlow=flow; active="today"; updateFlowSurface();renderAll();window.scrollTo(0,0);
+  }
   function nav(route) {
     active=route;
-    document.querySelectorAll("[data-panel]").forEach(function(el) { el.hidden=(el.id!=="panel-"+route); });
-    document.querySelectorAll("[data-route]").forEach(function(el) {
-      if (el.classList.contains("nav-btn")) { if(el.dataset.route===route) el.setAttribute("aria-current","page"); else el.removeAttribute("aria-current"); }
-    });
-    renderAll(); window.scrollTo({top:0,behavior:"instant"});
-    var heading=document.querySelector("#panel-"+route+" h2"); if(heading)heading.setAttribute("tabindex","-1");
+    if(route!=="review") selectedFlow="a";
+    updateFlowSurface();renderAll();window.scrollTo(0,0);
   }
   function renderToday() {
     setText("dueCount",dueCards().length);setText("studiedCount",done);setText("totalCount",cards.length);
@@ -323,9 +443,37 @@
       item.appendChild(title);item.appendChild(label);item.appendChild(select);item.appendChild(cue);root.appendChild(item);
     });
   }
-  function renderAll() { renderToday();renderLibrary();renderPalace(); }
+  function renderLessonFlow(){
+    var root=$("lessonFlowCards");clearChildren(root);
+    ["sampling","bias"].forEach(function(id){
+      var c=cards.find(function(x){return x.id===id;});if(!c)return;
+      var row=make("div","flow-lesson-item"),info=make("div",""),btn=make("button","btn",lessonSelected.has(id)?"Đã chọn ✓":"Chọn ý này");
+      info.appendChild(make("div","item-title",c.q));
+      info.appendChild(make("p","muted",c.a));
+      btn.type="button";btn.dataset.lessonSave=id;btn.setAttribute("aria-pressed",String(lessonSelected.has(id)));
+      row.appendChild(info);row.appendChild(btn);root.appendChild(row);
+    });
+    $("startLessonFlow").disabled=lessonSelected.size===0;
+  }
+  function renderTopicFlow(){
+    var select=$("topicSelect"),old=select.value;
+    var subjects=Array.from(new Set(cards.filter(function(c){return c.eligible&&!c.paused;}).map(function(c){return c.subject;}))).sort();
+    clearChildren(select);
+    subjects.forEach(function(s){select.appendChild(new Option(s,s));});
+    if(subjects.includes(old)) select.value=old;
+    var chosen=select.value,scope=$("topicScope").value;
+    var items=cards.filter(function(c){return c.subject===chosen&&c.eligible&&!c.paused&&(scope==="any"||isDue(c));});
+    setText("topicCount",items.length+" thẻ phù hợp · tối đa 5 thẻ/lượt. Những môn khác không thay đổi.");
+    $("startTopicFlow").disabled=items.length===0;
+  }
+  function startCustomSession(ids){
+    reviewMode="practice";done=0;skipped=0;current=null;
+    sessionQueue=ids.slice(0,5);if(!sessionQueue.length)return;
+    nav("review");nextCard();
+  }
+  function renderAll() { renderToday();renderLibrary();renderPalace();renderLessonFlow();renderTopicFlow(); }
   function startSession() {
-    done=0;
+    reviewMode="scheduled";done=0;
     sessionQueue=dueCards().slice(0,Number($("sessionSize").value)).map(function(c){return c.id;});
     current=null;skipped=0;
     if(!sessionQueue.length){showStatus("todayMessage","Không có thẻ đến hạn để ôn. Có thể lưu kiến thức mới trong Kho thẻ.");return;}
@@ -335,7 +483,7 @@
     $("sessionEnd").hidden=true; $("reviewScreen").hidden=false;
     if(!sessionQueue.length) {
       current=null;$("reviewScreen").hidden=true;$("sessionEnd").hidden=false;
-      setText("sessionSummary","Đã ghi nhận "+done+" lượt tự đánh giá trong phiên xem này; "+skipped+" thẻ bỏ qua không bị đổi lịch. Không có dữ liệu nào được gửi đi.");
+      setText("sessionSummary","Đã thử "+done+" thẻ; "+skipped+" thẻ bỏ qua. "+(reviewMode==="practice"?"Đây là phiên tự luyện nên lịch hẹn T02 không đổi.":"Kết quả tự đánh giá được áp vào lịch mô phỏng.")+" Không có dữ liệu nào được gửi đi.");
       setText("reviewPosition","Hoàn tất");return;
     }
     var id=sessionQueue.shift();current=cards.find(function(c){return c.id===id;});
@@ -361,12 +509,32 @@
   function rate(remembered) {
     if(!current)return;
     if(remembered && !firstAttempt)return;
-    if(remembered) {current.streak+=1;current.interval=Math.min(60,Math.max(2,Math.round(current.interval*(current.streak>1?2.1:1.7))));}
-    else {current.streak=0;current.interval=1;}
-    current.due=offsetDate(current.interval);done+=1;current=null;
+    if(reviewMode==="scheduled") {
+      if(remembered) {current.streak+=1;current.interval=Math.min(60,Math.max(2,Math.round(current.interval*(current.streak>1?2.1:1.7))));}
+      else {current.streak=0;current.interval=1;}
+      current.due=offsetDate(current.interval);
+    }
+    done+=1;current=null;
     nextCard();
   }
   document.querySelectorAll("[data-route]").forEach(function(b){ b.addEventListener("click",function(){nav(b.dataset.route);});});
+  document.querySelectorAll("[data-flow-select]").forEach(function(b){ b.addEventListener("click",function(){chooseFlow(b.dataset.flowSelect);});});
+  $("lessonFlowCards").addEventListener("click",function(e){
+    var button=e.target.closest("button[data-lesson-save]");if(!button)return;
+    var id=button.dataset.lessonSave;
+    if(lessonSelected.has(id))lessonSelected.delete(id);else lessonSelected.add(id);
+    showStatus("lessonFlowStatus",lessonSelected.size+" ý được chọn cho phiên tự nhớ. Thẻ gốc không bị sao chép.");
+    renderLessonFlow();
+  });
+  $("startLessonFlow").addEventListener("click",function(){startCustomSession(Array.from(lessonSelected));});
+  $("topicSelect").addEventListener("change",renderTopicFlow);
+  $("topicScope").addEventListener("change",renderTopicFlow);
+  $("startTopicFlow").addEventListener("click",function(){
+    var s=$("topicSelect").value,scope=$("topicScope").value;
+    var ids=cards.filter(function(c){return c.subject===s&&c.eligible&&!c.paused&&(scope==="any"||isDue(c));}).map(function(c){return c.id;});
+    startCustomSession(ids);
+  });
+  $("exitSession").addEventListener("click",function(){chooseFlow(selectedFlow);});
   $("startReview").addEventListener("click",startSession);
   $("recallText").addEventListener("input",function(){ $("revealAnswer").disabled=!normalized(this.value); });
   $("revealAnswer").addEventListener("click",function(){reveal("typed");});
@@ -412,7 +580,7 @@
     locusLinks[idx]=id;renderPalace();
     showStatus("palaceStatus",id?"Đã đổi liên kết tại "+locusNames[idx]+". Đây chỉ là lựa chọn trong phiên demo.":"Đã bỏ liên kết tại "+locusNames[idx]+".");
   });
-  renderAll();
+  chooseFlow("a");
 })();
 </script>
 </body>

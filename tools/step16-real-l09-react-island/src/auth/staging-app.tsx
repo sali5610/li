@@ -28,6 +28,10 @@ createRoot(root).render(<AuthPanel/>);
 // Keep the native Home invisible until all React roots have painted and Home
 // artwork has decoded; no arbitrary minimum splash duration or fake progress.
 const bootSplash=document.getElementById('li-boot-splash');
+const bootLoading=document.getElementById('li-boot-loading');
+const bootError=document.getElementById('li-boot-error');
+type BootFailure='timeout'|'offline'|'runtime'|'bundle';
+let bootFailure:BootFailure|null=null;
 let bootComplete=false;
 let bootFrame=0;
 const isVerified=()=>document.documentElement.classList.contains('li-auth-verified');
@@ -35,21 +39,56 @@ function localizeBoot(){
  const language=window as Window&{liLanguage?:{get?:()=>string}};
  const locale=language.liLanguage?.get?.()||'vi';
  const en=locale==='en';
- const labels:[string,string,string]=en?
-  ['Preparing your library…','Elder Ly is getting everything ready.','Reload the app']:
-  ['Đang mở Tàng Thư…','Lão Lý đang chuẩn bị mọi thứ.','Tải lại ứng dụng'];
+ const labels:[string,string]=en?
+  ['Preparing your library…','Elder Ly is getting everything ready.']:
+  ['Đang mở Tàng Thư…','Lão Lý đang chuẩn bị mọi thứ.'];
+ const errors:Record<BootFailure,[string,string]>=en?{
+  timeout:['The library did not finish loading','Some parts of the app are still not ready. Reload to try again.'],
+  offline:['No internet connection','Check your connection, then reload the app.'],
+  runtime:['The library could not open','A part of the app failed during startup. Reload to try again.'],
+  bundle:['The app could not be downloaded','A required app file did not load. Check your connection and reload.']
+ }:{
+  timeout:['Tàng Thư chưa tải xong','Một số phần của ứng dụng chưa sẵn sàng. Hãy thử tải lại.'],
+  offline:['Chưa có kết nối mạng','Kiểm tra kết nối rồi tải lại ứng dụng.'],
+  runtime:['Chưa thể mở Tàng Thư','Một phần ứng dụng gặp lỗi khi khởi động. Hãy thử tải lại.'],
+  bundle:['Không tải được ứng dụng','Một tệp cần thiết chưa tải được. Kiểm tra mạng rồi thử lại.']
+ };
  const title=document.getElementById('li-boot-title');
  const description=document.getElementById('li-boot-description');
- const retry=document.getElementById('li-boot-retry');
- const slow=document.getElementById('li-boot-slow-copy');
+ const errorTitle=document.getElementById('li-boot-error-title');
+ const errorDescription=document.getElementById('li-boot-error-description');
+ const retry=document.getElementById('li-boot-error-retry');
  if(title)title.textContent=labels[0];
  if(description)description.textContent=labels[1];
- if(retry)retry.textContent=labels[2];
- if(slow)slow.textContent=en?'Loading is taking longer than expected.':'Tải lâu hơn dự kiến.';
+ if(errorTitle)errorTitle.textContent=errors[bootFailure||'runtime'][0];
+ if(errorDescription)errorDescription.textContent=errors[bootFailure||'runtime'][1];
+ if(retry)retry.textContent=en?'Reload the app':'Tải lại ứng dụng';
+}
+function showBootError(reason:BootFailure){
+ if(bootComplete||document.documentElement.classList.contains('li-boot-ready'))return;
+ bootFailure=reason;
+ bootLoading?.setAttribute('hidden','');
+ bootError?.removeAttribute('hidden');
+ localizeBoot();
+}
+function resetBoot(){
+ bootFailure=null;
+ bootLoading?.removeAttribute('hidden');
+ bootError?.setAttribute('hidden','');
 }
 localizeBoot();
 window.addEventListener('li:localechange',localizeBoot);
-document.getElementById('li-boot-retry')?.addEventListener('click',()=>window.location.reload());
+document.getElementById('li-boot-error-retry')?.addEventListener('click',()=>window.location.reload());
+// Report a real startup fault, not normal empty data, a rejected invitation,
+// or an asynchronous background sync problem after the app has opened.
+window.addEventListener('error',event=>{
+ if(bootComplete)return;
+ if(event.target instanceof HTMLScriptElement &&
+    event.target.src.includes('staging-auth-gate.js'))showBootError('bundle');
+ else if(event instanceof ErrorEvent &&
+  /(?:REACT_.*(?:MISSING|FAILED|REQUIRED)|STAGING_.*MISSING|Failed to fetch dynamically imported module)/.test(event.message))
+  showBootError('runtime');
+},true);
 function revealBoot(){
  if(bootComplete)return;
  bootComplete=true;
@@ -78,6 +117,7 @@ function checkAppBoot(){
 window.addEventListener('li:auth-verified-changed',event=>{
  const verified=Boolean((event as CustomEvent<{verified?:boolean}>).detail?.verified);
  if(verified){
+  resetBoot();
   // A guest may sign in without a full navigation; restore the cover before
   // React replaces the signed-out Auth view with private screen content.
   document.documentElement.classList.remove('li-boot-ready');
@@ -96,11 +136,11 @@ window.addEventListener('li:auth-verified-changed',event=>{
 window.addEventListener('li:auth-startup-settled',()=>{
  if(!isVerified())revealBoot();
 });
-// If a network or bundle fails, keep private content covered but offer
-// a working recovery action instead of trapping the user forever.
+// A genuine startup timeout is a recoverable failure, not endless loading.
+// We cannot infer its underlying cause; offer a clear message and real reload.
 window.setTimeout(()=>{
  if(document.documentElement.classList.contains('li-boot-ready'))return;
- document.getElementById('li-boot-slow')?.removeAttribute('hidden');
+ showBootError(navigator.onLine?'timeout':'offline');
 },20000);
 
 // Replace the native Catalog path controller before any Home, Search or

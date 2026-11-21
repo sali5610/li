@@ -1,0 +1,187 @@
+/* Bookworm's actual two-page lesson: opt-in in UI Lab, no app runtime overrides.
+   The paper, gutter and folio tabs replace a generic card grid. */
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="lesson"] .li-flow-page-columns{
+ grid-template-columns:minmax(0,1fr);gap:32px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="lesson"] .li-flow-page-main{
+ width:100%;max-width:1120px;justify-self:center;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="lesson"] .li-flow-page-aside{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ border:0;border-top:1px solid #bdb7ae;padding:18px 0 0;gap:12px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="lesson"] .li-flow-page-aside>.li-flow-page-kicker,
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="lesson"] .li-flow-page-aside>.li-atom-text{
+ grid-column:1/-1;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader{
+ display:grid;gap:20px;min-width:0;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-folio-label{
+ display:flex;justify-content:space-between;align-items:center;gap:16px;
+ font:500 10px/1.4 var(--li-font-ui);letter-spacing:.16em;color:#665e54;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-spread{
+ position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ background:#eee7da;border:1px solid #c7bdaf;
+ box-shadow:0 7px 0 -2px #e0d8c9,0 14px 22px -18px #685d4e;
+ min-height:440px;isolation:isolate;
+ perspective:1200px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-spread::after{
+ content:"";position:absolute;top:0;bottom:0;left:calc(50% - 7px);
+ width:14px;z-index:2;pointer-events:none;
+ background:linear-gradient(90deg,#9f948226,transparent 38%,#aa9c8638 56%,transparent);
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-leaf{
+ position:relative;display:flex;flex-direction:column;gap:14px;
+ padding:clamp(22px,3.3vw,43px);
+ background:#faf6ee;overflow:hidden;min-width:0;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-leaf--left{
+ border-right:1px solid #ded3c0;background:
+ linear-gradient(90deg,#faf6ee 0%,#faf6ee 93%,#eee4d4 100%);
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-leaf--right{
+ background:linear-gradient(90deg,#eee6d7 0%,#faf6ee 7%,#faf6ee 100%);
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-intro{
+ display:grid;gap:17px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-intro .li-flow-lesson-top{
+ gap:14px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-intro .li-flow-lesson-top .li-atom-heading{
+ font:400 clamp(27px,3vw,44px)/1.1 Georgia,'Times New Roman',serif;
+ letter-spacing:-.048em;color:#272521;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-intro .li-flow-lesson-top .li-atom-text{
+ font-size:15px;line-height:1.75;max-width:42ch;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-figure{
+ margin-top:auto;padding:15px 0;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-figure .li-flow-lesson-diagram{
+ border:0;border-top:1px solid #c8c0b4;background:transparent;
+ border-radius:0;padding:23px 3px 0;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-figure .li-flow-dots i{
+ border-radius:50%;border:1px solid #668ca7;background:transparent;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-figure .li-flow-dots i[data-highlight="true"]{
+ background:#d9b154;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-folio{
+ display:block;margin-top:auto;padding-top:18px;text-align:center;
+ font:400 12px/1.3 Georgia,serif;color:#777066;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-chapter{
+ display:grid;align-content:start;justify-items:start;gap:22px;
+ height:100%;min-height:320px;transform-origin:left center;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-chapter-number{
+ border-bottom:1px solid #bdb7ae;min-width:45px;padding-bottom:8px;
+ color:#6f6558;font:400 23px/1 Georgia,serif;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-chapter .li-atom-heading{
+ font:400 clamp(31px,3.8vw,55px)/1.08 Georgia,'Times New Roman',serif;
+ color:#272521;letter-spacing:-.055em;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-chapter .li-atom-text{
+ font-size:clamp(15px,1.7vw,19px);line-height:1.75;color:#4b4640;
+ max-width:34ch;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-engraving{
+ width:min(100%,240px);justify-self:center;align-self:end;margin-top:auto;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-engraving svg{
+ width:100%;height:auto;display:block;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-controls{
+ display:flex;align-items:center;justify-content:space-between;gap:10px;
+ border-block:1px solid #bdb7ae;padding:12px 0;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-controls .li-ds-button{
+ min-height:44px;display:inline-flex;align-items:center;justify-content:center;
+ gap:6px;padding-inline:13px;white-space:normal;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-controls .li-ds-button:disabled{
+ opacity:.42;cursor:not-allowed;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-page-tabs{
+ display:flex;align-items:center;justify-content:center;gap:7px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-page-tab{
+ display:inline-flex;justify-content:center;align-items:center;
+ width:44px;height:44px;background:transparent;border:0;border-bottom:2px solid transparent;
+ color:#6d675e;cursor:pointer;font:400 15px/1 Georgia,serif;
+ transition:color .18s ease,border-color .18s ease,background-color .18s ease;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-page-tab[aria-current="page"]{
+ border-bottom-color:#d9b154;color:#272521;background:#f0eadf;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-page-tab:focus-visible{
+ outline:2px solid #547e9f;outline-offset:2px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-next{
+ display:flex;justify-content:flex-end;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-next>.li-ds-button{
+ min-height:48px;
+}
+@container lab-preview (max-width:740px){
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-spread{
+  grid-template-columns:minmax(0,1fr);min-height:0;
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-spread::after{content:none}
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-leaf{
+  padding:clamp(21px,4.5vw,32px);min-height:0;
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-leaf--left{
+  border-right:0;border-bottom:2px solid #d1c6b4;
+  background:#faf6ee;
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-leaf--right{
+  min-height:350px;background:#faf6ee;
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-chapter{
+  min-height:280px;
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="lesson"] .li-flow-page-aside{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+}
+@container lab-preview (max-width:440px){
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-figure .li-flow-lesson-diagram{
+  justify-content:space-between;gap:6px;
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-figure .li-flow-dots{
+  grid-template-columns:repeat(6,10px);gap:5px;
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-figure .li-flow-dots.sample{
+  grid-template-columns:repeat(4,10px);
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-figure .li-flow-dots i{
+  width:10px;height:10px;
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-controls{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-page-tabs{
+  grid-row:1;grid-column:1/-1;
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-controls .li-ds-button{
+  width:100%;
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-chapter .li-atom-heading{
+  font-size:34px;
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="lesson"] .li-flow-page-aside{
+  grid-template-columns:minmax(0,1fr);
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-page-tab{
+  transition:none!important;
+ }
+}

@@ -1075,3 +1075,10 @@
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap
  }
 }
+
+/* The 17 personal manuscripts share the five-page study book. Their optional
+ * method exercise is a quiet, expandable part of Guided — never a sixth page. */
+.li-sectioned-method-details>summary{min-height:44px;align-content:center}
+.li-sectioned-method-content{display:grid;gap:var(--li-space-4);min-width:0;
+ padding-block:var(--li-space-3)}
+.li-sectioned-method-content>.li-ds-button{justify-self:start;max-width:100%}

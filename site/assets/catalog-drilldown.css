@@ -220,10 +220,12 @@
  border:0;border-bottom:1px solid var(--rule);
  border-radius:0;box-shadow:none;background:transparent;
 }
+/* The image itself is a full arch, not an arched image within a rectangle. */
 #page-catalog .catalog-field-card .catalog-card-art{
- grid-column:1;grid-row:1 / 5;width:100%;height:auto;
- aspect-ratio:4/5;object-fit:cover;align-self:center;
- border:0;border-radius:50% 50% 0 0;
+ grid-column:1;grid-row:1 / 5;display:block;width:100%;height:auto;
+ aspect-ratio:4/5;object-fit:cover;object-position:center;align-self:center;
+ border:0;border-radius:50% 50% 0 0 / 40% 40% 0 0;
+ clip-path:inset(0 round 50% 50% 0 0 / 40% 40% 0 0);
 }
 #page-catalog .catalog-field-card :is(.catalog-category-tag,h2,.small,.catalog-card-action){
  grid-column:2;min-width:0;

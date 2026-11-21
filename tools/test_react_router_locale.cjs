@@ -357,7 +357,78 @@ window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:
 assert.equal(window.liReactRouter.getCurrent(),'lessonL09',
  'Verified invite restores the originally requested lesson');
 stopPending();
-console.log("PASS actual React router: pending auth, Back/Forward, URL, staging lessons, locale and DOM observer cleanup");
+// Reload contract: the same guide method and active tab must return after
+// a browser refresh; a bare URL reload may recover a route from same-tab state.
+const reloadStore=new Map();
+window.sessionStorage={
+ getItem:key=>reloadStore.get(key)??null,
+ setItem:(key,value)=>reloadStore.set(key,value),
+ removeItem:key=>reloadStore.delete(key)
+};
+window.performance={getEntriesByType:()=>[{type:'reload'}]};
+window.history.replaceState=(state,title,url)=>{
+ window.history.state=state;location.href=new URL(url,location.origin).href;
+};
+window.history.pushState=(state,title,url)=>{
+ window.history.state=state;location.href=new URL(url,location.origin).href;
+};
+const spell={active:null,tab:'guide',lessonId:null};
+window.LiSpellPractice={
+ getView:()=>spell.active?{...spell}:null,
+ open:(id,tab='guide',lessonId=null)=>{
+  spell.active=id;spell.tab=tab;spell.lessonId=lessonId;
+  window.dispatchEvent(new TestEvent('li:spell-view-changed'));
+ }
+};
+visible=true;route='home';
+location.href=new URL('/li/?view=guideDetail',location.origin).href;
+window.history.state={liRouteDepth:0};
+const stopSpell=moduleExports.mountReactRouter();
+assert.equal(window.liReactRouter.getCurrent(),'guideDetail');
+window.LiSpellPractice.open('T07','practice');
+assert.equal(location.searchParams.get('method'),'T07');
+assert.equal(location.searchParams.get('spellTab'),'practice');
+assert.ok(reloadStore.has('li.router.reload-route.v1'));
+const spellUrl=location.href;
+stopSpell();
+
+// Re-run router startup as if Safari refreshed the current tab.
+visible=false;route='home';spell.active=null;
+location.href=spellUrl;window.history.state={liRouteDepth:0};
+const stopSpellReload=moduleExports.mountReactRouter();
+window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:false}}));
+assert.equal(location.searchParams.get('method'),'T07','Auth pending preserves method deep link');
+visible=true;
+window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:true}}));
+assert.equal(window.liReactRouter.getCurrent(),'guideDetail');
+assert.equal(spell.active,'T07','Refresh restores the same spell');
+assert.equal(spell.tab,'practice','Refresh restores its practice tab');
+stopSpellReload();
+
+// Even if a PWA refresh loses its route query, the verified current-tab
+// snapshot restores only whitelisted route params, not auth or tracking data.
+visible=false;route='home';spell.active=null;
+location.href=new URL('/li/?ui=cache-buster',location.origin).href;
+window.history.state={liRouteDepth:0};
+const stopBareReload=moduleExports.mountReactRouter();
+window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:false}}));
+visible=true;
+window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:true}}));
+assert.equal(window.liReactRouter.getCurrent(),'guideDetail');
+assert.equal(spell.active,'T07');
+assert.equal(spell.tab,'practice');
+assert.equal(location.searchParams.get('view'),'guideDetail');
+assert.equal(location.searchParams.get('ui'),'cache-buster');
+visible=false;
+window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:false}}));
+assert.equal(reloadStore.has('li.router.reload-route.v1'),false,
+ 'Real logout erases private same-tab route snapshot');
+assert.equal(location.searchParams.has('method'),false,
+ 'Logout removes old spell detail parameters');
+stopBareReload();
+
+
+console.log('PASS reload current route and spell with Back/Forward');
 
 /* The actual canonical Catalog adapter replaces the native controller on
  * invited staging. Test its compiled TypeScript and URL/history actions here,

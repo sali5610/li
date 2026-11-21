@@ -152,10 +152,18 @@ export function installReactCatalogPort():()=>void{
   wasVerified=false;
   if(path.length){path=[];emitPath();}
  };
+ // The global router may reconstruct a missing ?catalog= query on reload
+ // after this adapter's auth listener has already run. Sync the same path
+ // when the Catalog route paints; do not reset course context on lesson exits.
+ const onRoute=(event:Event)=>{
+  if((event as CustomEvent<{route?:string}>).detail?.route==='catalog')onPop();
+ };
  window.addEventListener('popstate',onPop);
+ window.addEventListener('li:route-changed',onRoute);
  window.addEventListener('li:auth-verified-changed',onAuth);
  return ()=>{
   window.removeEventListener('popstate',onPop);
+  window.removeEventListener('li:route-changed',onRoute);
   window.removeEventListener('li:auth-verified-changed',onAuth);
   if(app.liCatalog===port){
    if(existing)app.liCatalog=existing;

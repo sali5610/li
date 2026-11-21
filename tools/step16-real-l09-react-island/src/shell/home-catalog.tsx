@@ -79,14 +79,20 @@ const levelNames:readonly [string,string,string][]=[
 function CatalogCard({number,eyebrow,title,detail,onOpen,locale,image}:{
  number:number;eyebrow:string;title:string;detail:string;onOpen:()=>void;locale:Locale;image?:string
 }){
- return <Card variant="tinted" className="catalog-card" data-li-react-catalog-card>
-  {image?<img className="catalog-card-art" src={image} alt="" loading="lazy" decoding="async"/>:<div className="catalog-card-mark" aria-hidden="true">{String(number).padStart(2,'0')}</div>}
-  <div className="kicker">{eyebrow}</div>
-  <Heading level={2} role="titleMedium">{title}</Heading>
-  <Text role="support" className="small">{detail}</Text>
-  <Button variant="secondary" className="catalog-card-action"
-   onClick={onOpen}>{locale==='vi'?'Khám phá':'Explore'}</Button>
- </Card>;
+ return <article className="catalog-feature-row" data-li-react-catalog-card>
+  <div className="catalog-feature-media">
+   {image?<img className="catalog-card-art" src={image} alt="" loading="lazy" decoding="async"/>:
+    <span className="catalog-card-mark" aria-hidden="true">{String(number).padStart(2,'0')}</span>}
+  </div>
+  <div className="catalog-card-copy">
+   <div className="kicker">{eyebrow}</div>
+   <Heading level={2} role="titleMedium">{title}</Heading>
+   <Text role="support" className="small">{detail}</Text>
+  </div>
+  <Button variant="secondary" className="catalog-card-action" onClick={onOpen}>
+   {locale==='vi'?'Khám phá':'Explore'} <LiIcon name="arrow-up-right" size={18}/>
+  </Button>
+ </article>;
 }
 // In-memory only: a return from a lesson should land on the course row the
 // learner chose, not force them to find it again. Never persist this per-user UI.
@@ -206,10 +212,12 @@ function Catalog(){
      onActivate:index<breadcrumb.length-1?()=>openPath(item.path):undefined
     }))}/>
   </div>
-  <div className="kicker">{eyebrow}</div>
-  <Heading level={1} role="headline" className="display-title">{heading}</Heading>
-   {lessonNavError&&<p role="alert" className="li-catalog-error">{lessonNavError}</p>}
-  <Text role="body" className="intro">{description}</Text>
+  <header className="catalog-lead">
+   <div className="kicker">{eyebrow}</div>
+   <Heading level={1} role="headline" className="display-title">{heading}</Heading>
+   <Text role="body" className="intro">{description}</Text>
+  </header>
+  {lessonNavError&&<p role="alert" className="li-catalog-error">{lessonNavError}</p>
    {field&&!course&&field.image&&<img className="catalog-field-hero" src={field.image} alt="" loading="lazy" decoding="async"/>}
   {!group&&<><div className="catalog-group-grid">
    {groups.map((item,index)=><CatalogCard key={item.id} number={index+1}
@@ -238,7 +246,7 @@ function Catalog(){
      <Text role="support">{level}</Text>
     </div>
     <div className="catalog-course-list">
-     {field.courses.filter(item=>item.level===level).map(item=><Card variant="raised"
+     {field.courses.filter(item=>item.level===level).map(item=><article
       key={item.id} className="catalog-course-card">
       <div className="kicker">{item.id} · {locale==='en'?en:vi}</div>
       <Heading level={3} role="titleMedium">{item.title}</Heading>
@@ -248,13 +256,13 @@ function Catalog(){
       </ol>
       <Button variant="secondary" className="catalog-card-action"
        onClick={()=>openPath([group!.id,field!.id,item.id])}>
-       {locale==='vi'?'Xem môn học':'View course'}
+       {locale==='vi'?'Xem môn học':'View course'} <LiIcon name="arrow-up-right" size={16}/>
       </Button>
-     </Card>)}
+     </article>)}
     </div>
    </section>)}
   </div>}
-  {course&&!lesson&&<><Card variant="raised" className="catalog-progress">
+  {course&&!lesson&&<><section className="catalog-progress" aria-label={locale==='vi'?'Tiến độ môn học':'Course progress'}>
    <Heading level={2} role="titleMedium">
     {available?.unavailable?(locale==='vi'?'Tiến độ chưa xác minh':'Progress could not be verified'):
      String(available?.done||0)+'/'+course.lessons.length+
@@ -266,9 +274,13 @@ function Catalog(){
    {available&&!available.unavailable&&<Progress
     label={locale==='vi'?'Tiến độ bài học đã hoàn thành':'Completed lesson progress'}
     value={available.done} max={Math.max(1,course.lessons.length)}/>}
-  </Card>
+   {course.lessons.find(canOpenLesson)&&
+    <Button className="catalog-start-lesson" onClick={()=>chooseLesson(course.lessons.find(canOpenLesson)!)}>
+     {locale==='vi'?'Bắt đầu bài học':'Start a lesson'} <LiIcon name="arrow-right" size={18}/>
+    </Button>}
+  </section>
   <ol className="catalog-lesson-list">
-   {course.lessons.map((item,index)=><li key={item.id} className="surface catalog-lesson-card">
+   {course.lessons.map((item,index)=><li key={item.id} className="catalog-lesson-card">
     <span className="catalog-lesson-order" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>
     <div className="catalog-lesson-desc">
      <Heading level={2} role="titleSmall">{item.title}</Heading>
@@ -283,12 +295,12 @@ function Catalog(){
     </Button>
    </li>)}
   </ol></>}
-  {lesson&&<Card variant="tinted" className="catalog-draft-content">
+  {lesson&&<section className="catalog-draft-content">
    <div className="kicker">{locale==='vi'?'CHƯA PHÁT HÀNH':'NOT RELEASED'}</div>
    <Heading level={2} role="titleMedium">{locale==='vi'?'Nội dung đang được biên soạn':'Content in progress'}</Heading>
    <Text role="body">{locale==='vi'?'Bài chưa có chương, bài tập hoặc tiến độ học được phép phát hành.':
     'This outline has no lesson content, practice or progress approved for release.'}</Text>
-  </Card>}
+  </section>}
  </motion.div>;
 }
 
@@ -406,7 +418,7 @@ function Home(){
   <motion.div className="hero-left"
    initial={reduced?false:{opacity:0,y:9}} animate={{opacity:1,y:0}}
    transition={{duration:reduced?0:.5,ease:'easeOut'}}>
-   <Button variant="primary" className="home-checkin" onClick={()=>window.dispatchEvent(new CustomEvent('li:open-checkin',{detail:{triggerId:'li-react-home-host'}}))}>
+   <Button variant="ghost" className="home-checkin" onClick={()=>window.dispatchEvent(new CustomEvent('li:open-checkin',{detail:{triggerId:'li-react-home-host'}}))}>
     <LiIcon name="check" size={18}/> {L("Check-in hôm nay","Today’s check-in")}
    </Button>
    <Heading level={1} role="headline">{locale==='vi'?<>Mọi câu hỏi<br/>đều có rễ.</>:<>Every question<br/>has roots.</>}</Heading>
@@ -477,7 +489,7 @@ function Home(){
     <span className="action-icon"><LiIcon name="arrow-right" size={22}/></span>
     <span>{locale==='en'?L("Đào sâu","Explore why"):mirror.cta}</span>
    </Button>
-   <Button variant="primary" className="primary mirror-save-action"
+   <Button variant="secondary" className="mirror-save-action"
     aria-label={mirror.saved?L('Bỏ lưu câu hỏi','Remove saved question'):L('Lưu câu hỏi','Save question')} aria-pressed={mirror.saved}
     onClick={()=>inquiryFlow().toggleQuestion()}>
     <span className="action-icon"><LiIcon name="bookmark" size={22}/></span>

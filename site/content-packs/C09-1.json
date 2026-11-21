@@ -18,8 +18,8 @@
       "aliases": [],
       "hierarchy": {
         "group": {
-          "id": "group:mathematics",
-          "title": "Toán học & dữ liệu"
+          "id": "group:natural-sciences-math",
+          "title": "Khoa học tự nhiên, Toán & Thống kê"
         },
         "field": {
           "id": "field:F09",

@@ -106,6 +106,10 @@ function compileContent(lessons,concepts,relations,registry,academic,navigationC
   for(const src of l.sources){if(!src.title||!src.url?.startsWith("https://"))fail("invalid external source "+l.id);}
   const hier=l.hierarchy,activeGroup=currentGroupByField.get(l.hierarchy.field.id);
   if(!activeGroup)fail("missing current group "+l.hierarchy.field.id);
+  const sourceGroupSlug=hier.group.id.replace(/^group:/,"");
+  const mappedGroupSlug=navigationCatalog.legacyGroupAliases?.[sourceGroupSlug]??sourceGroupSlug;
+  if(mappedGroupSlug!==activeGroup.id.replace(/^group:/,""))
+   fail("authored lesson references unrelated group "+l.id);
   for(const [kind,v] of [["DomainGroup",activeGroup],["Field",hier.field],["Course",hier.course]]){if(!v||!v.id||!v.title)fail("bad hierarchy "+l.id);
    addNode({id:v.id,kind,title:v.title,version:l.version,reviewState:"verified",publishState:"review_only",visibility:"public_curated",rightsState:"first_party",aliases:[],provenance:navSrc,note:"Wave1 navigation metadata, not academic accreditation"});}
   const frozen=l.editorialStatus==="po_locked";
@@ -119,7 +123,9 @@ function compileContent(lessons,concepts,relations,registry,academic,navigationC
   addEdge({id:"edge:content:support:"+l.id,predicate:"SUPPORTED_BY",from:claimId,to:sourceId,reviewState:"verified",visibility:"public_curated",provenance:editorial(l,"Editorial provenance (not academic proof)")});
   const courseId=hier.course.id.slice("course:".length);
   if(!packs.has(courseId))packs.set(courseId,{courseId,courseTitle:hier.course.title,version:"1.0.0",lessons:[]});
-  packs.get(courseId).lessons.push(l);
+  // Keep locked academic manuscripts intact; deliver current canonical group
+  // metadata in the learner-facing course pack, not a historic 8-group parent.
+  packs.get(courseId).lessons.push({...l,hierarchy:{...hier,group:activeGroup}});
  }
  for(const c of concepts)addNode(c);
  for(const r of relations)addEdge(r);

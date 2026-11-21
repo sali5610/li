@@ -40,6 +40,23 @@ requested.length=0; // isolate lazy course-pack fetch assertion from course cata
 const l09=await c.getLesson("L09-1-2");
 assert.equal(l09.id,"L09-1-2");assert.equal(l09.content.localized.vi.questions.length,4);
 assert.deepEqual(requested,["manifest.json","C09-1.json"],"lazy course load: no other course fetched");
+// Public reader packs must expose current UNESCO navigation, but must not
+// mutate the three original PO-locked manuscripts or their lesson body.
+const currentGroups=new Map(groups.map(g=>[g.id,g]));
+for(const [id,currentGroupId] of [
+ ["L03-1-2","ict"],["L09-1-2","natural-sciences-math"],
+ ["L15-2-2","business-administration-law"]
+]){
+ const publicLesson=await c.getLesson(id);
+ const original=JSON.parse(readFileSync(new URL("../content/lessons/"+id+".json",import.meta.url),"utf8"));
+ assert.equal(publicLesson.id,original.id,"stable lesson ID "+id);
+ assert.equal(publicLesson.hierarchy.group.id,"group:"+currentGroupId,"public group "+id);
+ assert.equal(publicLesson.hierarchy.group.title,currentGroups.get(currentGroupId).title,"public group title "+id);
+ assert.notEqual(original.hierarchy.group.id,publicLesson.hierarchy.group.id,"archival hierarchy retained "+id);
+ assert.deepEqual(publicLesson.content,original.content,"PO-locked content must remain byte-equivalent "+id);
+ assert.deepEqual(publicLesson.hierarchy.field,original.hierarchy.field,"stable Field ID "+id);
+ assert.deepEqual(publicLesson.hierarchy.course,original.hierarchy.course,"stable Course ID "+id);
+}
 assert.equal((await c.getLesson("L03-1-2")).id,"L03-1-2");
 assert.equal((await c.getLesson("L15-2-2")).id,"L15-2-2");
 assert.equal(await c.getLesson("L00-0-0"),null);

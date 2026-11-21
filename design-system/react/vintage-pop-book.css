@@ -36,7 +36,7 @@
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-catalog-art{
  width:100%;max-height:150px;align-self:start;justify-self:center;
  display:grid;place-items:center;overflow:hidden;
- background:linear-gradient(115deg,#c7cfac,#dcd2e3);
+ background:linear-gradient(115deg,#c4d18d,#d6bce8);
  border-bottom:1.5px solid #214d3a;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-catalog-art>.li-pop-art{
@@ -61,7 +61,7 @@
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-result-art{
  height:90px;width:96px;display:grid;place-items:center;align-self:start;
- background:#c7cfac;border:1.5px solid #214d3a;
+ background:#c4d18d;border:1.5px solid #214d3a;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-result-art>.li-pop-art{
  max-width:86px;max-height:82px;
@@ -73,7 +73,7 @@
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-workspace-art{
  min-height:154px;display:flex;align-items:center;justify-content:flex-end;
  padding:8px 18px;border:2px solid #214d3a;
- background:linear-gradient(115deg,#214d3a 0%,#214d3a 55%,#dcd2e3 55%,#c7cfac 100%);
+ background:linear-gradient(115deg,#214d3a 0%,#214d3a 55%,#d6bce8 55%,#c4d18d 100%);
  overflow:hidden;position:relative;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-guide-art::before,
@@ -88,7 +88,7 @@
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-method-plate{
  padding:12px 12px 0;background:#fff5de;border:2px solid #214d3a;
  display:grid;align-content:start;justify-items:center;
- box-shadow:5px 5px 0 #dcd2e3;
+ box-shadow:5px 5px 0 #d6bce8;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-method-plate .li-pop-art{
  max-height:140px;
@@ -122,7 +122,7 @@
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson-bookmark{
  position:absolute;z-index:4;top:-2px;right:35px;width:40px;height:74px;
- background:#dcd2e3;border:2px solid #214d3a;
+ background:#d6bce8;border:2px solid #214d3a;
  clip-path:polygon(0 0,100% 0,100% 100%,50% 79%,0 100%);
  box-shadow:4px 5px 0 #214d3a;pointer-events:none;
 }
@@ -141,7 +141,7 @@
  max-width:35ch;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson .li-flow-lesson-top>.li-atom-badge{
- width:max-content;max-width:100%;background:#dcd2e3;
+ width:max-content;max-width:100%;background:#d6bce8;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson-illustration{
  margin-top:auto;display:flex;justify-content:center;max-width:100%;
@@ -178,7 +178,7 @@
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-book-chapter .li-flow-index{
  width:34px;height:34px;flex-shrink:0;display:grid;place-items:center;
- background:#dcd2e3;color:#214d3a;border-radius:50%;letter-spacing:0;
+ background:#d6bce8;color:#214d3a;border-radius:50%;letter-spacing:0;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-book-chapter>div{
  display:grid;gap:7px;min-width:0;
@@ -196,7 +196,7 @@
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson>.li-ds-button{
  grid-area:action;align-self:end;justify-self:end;
  margin:0 36px 28px 12px;max-width:calc(100% - 48px);
- background:#c7cfac;position:relative;z-index:2;
+ background:#c4d18d;position:relative;z-index:2;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson:focus-within{
  box-shadow:0 9px 0 #183b2d,9px 14px 0 #b98978,16px 19px 0 #214d3a;

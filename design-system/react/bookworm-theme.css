@@ -733,3 +733,10 @@
   grid-column:auto;grid-row:auto;max-width:100%;justify-self:start;
  }
 }
+
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-mini{
+ display:flex;align-items:center;gap:10px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-mini svg{
+ color:#547e9f;flex-shrink:0;
+}

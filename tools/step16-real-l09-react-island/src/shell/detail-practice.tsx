@@ -591,8 +591,10 @@ export function ConfirmNoteAction({label,description,onConfirm,iconOnly=false,da
  };
  return <>
   <button ref={trigger} type="button"
-   className={danger?(iconOnly?'library-danger-link library-icon-action':'library-danger-link library-text-link'):'library-text-link'}
-   aria-label={label} onClick={()=>setAsking(true)}>
+   className={iconOnly
+    ?'li-atom-icon-button library-icon-action library-note-delete'+(danger?' library-danger-link':'')
+    :danger?'library-danger-link library-text-link':'library-text-link'}
+   aria-label={label} title={iconOnly?label:undefined} onClick={()=>setAsking(true)}>
    {iconOnly?<LiIcon name="trash" size={20}/>:label}
   </button>
   {asking&&createPortal(<div className="modal open li-react-note-confirm" role="dialog"
@@ -670,7 +672,7 @@ export function NoteDetail(){
    {!editing&&<article className="library-note-review">
     <div className="library-note-head">
      <div className="kicker">{copy('NỘI DUNG HIỆN TẠI','CURRENT CONTENT')}</div>
-     <ConfirmNoteAction
+     <ConfirmNoteAction iconOnly
       label={copy('Xóa ghi chép','Delete note')}
       description={copy('Xóa ghi chép này? Bạn có 7 giây để hoàn tác sau khi xóa.',
        'Delete this note? You have 7 seconds to undo after deletion.')}

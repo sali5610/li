@@ -462,7 +462,7 @@ function Collection(){
       <div className="library-note-actions">
        <Button variant="ghost" className="library-text-link" onClick={()=>app.liNotes?.openDetail(item.type,item.id)}>
         {copy('Mở ghi chép','Open note')} <LiIcon name="arrow-right" size={17}/></Button>
-       <ConfirmNoteAction danger
+       <ConfirmNoteAction danger iconOnly
         label={copy('Xóa ghi chép: ','Delete note: ')+(item.type==='case'?item.title:item.body.slice(0,60))}
         description={copy('Xóa cả lịch sử phiên bản? Bạn có 7 giây để hoàn tác.',
          'Delete note and its history? Undo is available for 7 seconds.')}

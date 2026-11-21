@@ -81,6 +81,12 @@ jobs:
           npx vite build --config vite.staging-app.config.mjs
           test -s dist-staging-app/staging-auth-gate.js
           test "$(find dist-staging-app -maxdepth 1 -type f -name '*.css' | wc -l)" -eq 1
+          # The live iPhone Guide uses React MethodTile, not the retired
+          # native .method-card. A missing shared DS stylesheet renders raw
+          # bright-blue buttons with all labels visually concatenated.
+          grep -Fq '.li-legacy-method{' dist-staging-app/*.css
+          grep -Fq '.li-legacy-method-kicker' dist-staging-app/*.css
+          grep -Fq '.li-legacy-method-cta' dist-staging-app/*.css
           grep -Fq 'li-react-l09-host' dist-staging-app/staging-auth-gate.js
           grep -Fq 'data-li-react-journey' dist-staging-app/staging-auth-gate.js
           echo 'PASS integrated auth + canonical React L09 bundle, no deployment'

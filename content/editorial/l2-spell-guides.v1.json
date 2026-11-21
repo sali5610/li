@@ -1,0 +1,976 @@
+{
+  "schemaVersion": 1,
+  "status": "Editorial draft — source-reviewed, not PO-approved or production released",
+  "provenance": "Migrated existing 13 spell guidance from React detail; examples, Do & Don't, diagram captions and evidence bounds authored from linked academic/educational sources on 2026-11-22. Examples are explanatory, not empirical observations or certified task solutions.",
+  "methods": {
+    "T01": {
+      "vi": {
+        "steps": [
+          "Chọn một khái niệm đã học, đọc nguồn một lần rồi che đi.",
+          "Tự viết hoặc nói lại bằng trí nhớ, không mở lời giải khi đang nhớ.",
+          "Mở nguồn để đối chiếu, ghi điều nhớ thiếu hoặc hiểu sai."
+        ],
+        "existingNote": "Chỉ xem đáp án hoặc nhận ra câu đúng khi nhìn lại chưa phải là tự gọi nhớ.",
+        "example": {
+          "title": "Ví dụ: nhớ lại khái niệm ETA",
+          "scenario": "Bạn vừa học rằng ETA là thời điểm đến dự kiến của một chuyến vận chuyển.",
+          "walkthrough": [
+            "Đóng tài liệu, tự trả lời: ETA là gì? Có phải giờ đến thực tế không?",
+            "Mở lại nguồn: ETA là thời điểm dự kiến và có thể thay đổi; thời điểm đến thực tế là actual arrival."
+          ],
+          "takeaway": "Nếu chỉ nhận ra định nghĩa sau khi nhìn đáp án, hãy thử gọi nhớ lại sau ít phút."
+        },
+        "do": [
+          "Tự trả lời trước khi mở đáp án.",
+          "So thiếu sót với nguồn chuẩn và sửa ngay."
+        ],
+        "dont": [
+          "Đọc lặp lại rồi tự nhận là đã nhớ.",
+          "Dùng để kiểm tra kiến thức chưa từng được dạy."
+        ],
+        "evidence": "Có bằng chứng mạnh cho ghi nhớ dài hạn sau khi đã học; không tự đo hiểu sâu hay khả năng chuyển giao.",
+        "diagram": [
+          "Học",
+          "Giấu",
+          "Nhớ",
+          "So"
+        ]
+      },
+      "en": {
+        "steps": [
+          "Choose a concept you have already studied, then hide the source.",
+          "Recall it aloud or in writing without peeking at the answer.",
+          "Reveal the source, compare, and identify what you missed."
+        ],
+        "existingNote": "Recognising an answer after seeing it is not the same as retrieving it from memory.",
+        "example": {
+          "title": "Example: recalling ETA",
+          "scenario": "You have learned that ETA is the estimated arrival time for a shipment.",
+          "walkthrough": [
+            "Close the source. Explain ETA from memory. Is it the same as actual arrival?",
+            "Check: ETA is a prediction that may change; actual arrival is the observed arrival time."
+          ],
+          "takeaway": "Recognising the definition after seeing it is not an independent retrieval attempt."
+        },
+        "do": [
+          "Answer before revealing the source.",
+          "Correct missed details against reliable material."
+        ],
+        "dont": [
+          "Keep rereading and call recognition 'recall'.",
+          "Test unfamiliar material before teaching it."
+        ],
+        "evidence": "Strong evidence for long-term retention of previously taught material; not a standalone test of deep understanding.",
+        "diagram": [
+          "Learn",
+          "Hide",
+          "Recall",
+          "Check"
+        ]
+      },
+      "diagramKind": "flow",
+      "sources": [
+        {
+          "title": "Dunlosky et al. (2013) · Review",
+          "url": "https://www.psychologicalscience.org/journals/pspi/1529100612453266/"
+        },
+        {
+          "title": "Roediger & Karpicke (2006) · Retrieval",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/16507066/"
+        }
+      ]
+    },
+    "T02": {
+      "vi": {
+        "steps": [
+          "Chọn kiến thức đã học và đặt lịch ôn đầu tiên sau 24 giờ.",
+          "Khi thật sự đến hạn, giấu nguồn, tự gọi nhớ rồi đối chiếu phản hồi.",
+          "Tự đánh giá nhớ được hay chưa vững để hẹn lượt kế tiếp; lặp lại qua nhiều ngày."
+        ],
+        "existingNote": "Mốc 1–3–7–14–30 ngày là mặc định của app, không phải lịch tối ưu cho mọi người. Mở Thần Chú trước hạn không tính là đã ôn.",
+        "example": {
+          "title": "Ví dụ: ôn từ vựng Trung Quốc",
+          "scenario": "Hôm nay bạn học từ 学生 (xuésheng) nghĩa là học sinh.",
+          "walkthrough": [
+            "Học và thử nhớ ngay hôm nay; vài ngày sau giấu nghĩa và tự đọc lại trước khi xem đáp án.",
+            "Nếu quên, xem phản hồi, sửa lại rồi đặt lượt ôn phù hợp tiếp theo; đừng cố ép lịch cố định."
+          ],
+          "takeaway": "Giãn cách các lượt gọi nhớ giúp lưu giữ dài hạn; 1–3–7–14–30 chỉ là lịch mặc định của app."
+        },
+        "do": [
+          "Đặt ôn ở thời điểm sau lần học thật.",
+          "Ôn chủ động rồi mới mở đáp án."
+        ],
+        "dont": [
+          "Tính lượt mở thẻ trước hạn như đã ôn.",
+          "Coi một chuỗi ngày là lịch tối ưu cho mọi người."
+        ],
+        "evidence": "Bằng chứng mạnh về hiệu ứng giãn cách; khoảng cách phù hợp còn tùy mục tiêu giữ nhớ và độ khó.",
+        "diagram": [
+          "Học",
+          "Ôn 1",
+          "Ôn 2",
+          "Ôn tiếp"
+        ]
+      },
+      "en": {
+        "steps": [
+          "Choose previously learned material and schedule the first review after 24 hours.",
+          "When it is truly due, recall without the source, then check the feedback.",
+          "Rate recall as secure or needing retry to schedule the next review across days."
+        ],
+        "existingNote": "The 1–3–7–14–30-day intervals are app defaults, not a universal optimum. Opening the spell before its due time does not count as a review.",
+        "example": {
+          "title": "Example: spaced Chinese vocabulary review",
+          "scenario": "Today you learn 学生 (xuésheng), meaning 'student'.",
+          "walkthrough": [
+            "Test it briefly today, then on a later day hide the translation and retrieve it first.",
+            "If recall fails, check the answer, correct it and schedule another appropriate review."
+          ],
+          "takeaway": "Spacing benefits retention; the app's 1–3–7–14–30 schedule is only a default."
+        },
+        "do": [
+          "Schedule real later reviews of learned material.",
+          "Recall before revealing the answer."
+        ],
+        "dont": [
+          "Count opening an early card as a due review.",
+          "Treat one fixed interval pattern as universal."
+        ],
+        "evidence": "Strong evidence for spacing; optimal intervals depend on retention goals and task difficulty.",
+        "diagram": [
+          "Learn",
+          "Review 1",
+          "Review 2",
+          "Later"
+        ]
+      },
+      "diagramKind": "timeline",
+      "sources": [
+        {
+          "title": "Cepeda et al. (2006) · Distributed practice",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/16719566/"
+        },
+        {
+          "title": "Dunlosky et al. (2013) · Review",
+          "url": "https://www.psychologicalscience.org/journals/pspi/1529100612453266/"
+        }
+      ]
+    },
+    "T03": {
+      "vi": {
+        "steps": [
+          "Quan sát ví dụ đã giải và hiểu vì sao mỗi bước đúng.",
+          "Giải bài tương tự với một phần gợi ý được giữ lại.",
+          "Giải bài mới không gợi ý, nộp rồi mới xem phản hồi."
+        ],
+        "existingNote": "Xem ví dụ mẫu không được tính là tự giải bài độc lập.",
+        "example": {
+          "title": "Ví dụ: tính điểm đặt hàng lại",
+          "scenario": "Bài mẫu: Nhu cầu 5 sản phẩm/ngày, thời gian chờ 2 ngày, tồn an toàn 4 → 5 × 2 + 4 = 14.",
+          "walkthrough": [
+            "Bài có gợi ý: 6 sản phẩm/ngày, chờ 3 ngày, tồn an toàn 2 → điền phép tính 6 × 3 + 2.",
+            "Bài mới tự giải: 7 sản phẩm/ngày, chờ 3 ngày, tồn an toàn 5 → đáp án 26; tự làm trước khi đối chiếu."
+          ],
+          "takeaway": "Chỉ dùng công thức minh họa khi nhu cầu và lead time được giả định cố định; thực tế có thể phức tạp hơn."
+        },
+        "do": [
+          "Hiểu lý do của từng bước mẫu.",
+          "Rút dần gợi ý trước bài độc lập."
+        ],
+        "dont": [
+          "Giữ lời giải mẫu cạnh bài kiểm tra.",
+          "Ép người đã thành thạo làm quá nhiều bài mẫu."
+        ],
+        "evidence": "Có ích cho người mới học quy trình; hiệu quả giảm khi hướng dẫn dư thừa đối với người đã thành thạo.",
+        "diagram": [
+          "Làm mẫu",
+          "Gợi ý",
+          "Tự làm"
+        ]
+      },
+      "en": {
+        "steps": [
+          "Study a worked example and understand why each step works.",
+          "Solve a similar case with some guidance removed.",
+          "Solve a new case independently before checking feedback."
+        ],
+        "existingNote": "Viewing the worked example does not count as independent practice.",
+        "example": {
+          "title": "Example: reorder point",
+          "scenario": "Worked example: demand 5 units/day, lead time 2 days, safety stock 4 → 5 × 2 + 4 = 14.",
+          "walkthrough": [
+            "Partly guided: 6 units/day, 3-day lead time, safety stock 2 → complete 6 × 3 + 2.",
+            "Independent: 7 units/day, 3-day lead time, safety stock 5 → 26; solve before checking."
+          ],
+          "takeaway": "This simplified formula assumes stable demand and lead time; real inventory systems may need more."
+        },
+        "do": [
+          "Explain why every example step works.",
+          "Fade guidance before an independent problem."
+        ],
+        "dont": [
+          "Display the solved answer during the test.",
+          "Over-scaffold learners who already know the procedure."
+        ],
+        "evidence": "Useful for novices learning procedures; redundant guidance may hinder more expert learners.",
+        "diagram": [
+          "Model",
+          "Fade hints",
+          "Solve"
+        ]
+      },
+      "diagramKind": "stair",
+      "sources": [
+        {
+          "title": "Renkl (2022) · Worked examples",
+          "url": "https://www.cambridge.org/core/books/abs/cambridge-handbook-of-multimedia-learning/worked-example-principle-in-multimedia-learning/CDECDB094C169A37A79F589994C8F641"
+        }
+      ]
+    },
+    "T04": {
+      "vi": {
+        "steps": [
+          "Chọn một bước hoặc kết luận trong tình huống đã đọc.",
+          "Tự giải thích cơ chế: vì sao nó xảy ra, theo điều kiện nào.",
+          "Đối chiếu giải thích với dữ kiện, chỉnh chỗ thiếu hoặc suy diễn quá mức."
+        ],
+        "existingNote": "Đừng chỉ chép lại nội dung; giải thích phải thể hiện mối quan hệ hoặc cơ chế.",
+        "example": {
+          "title": "Ví dụ: giải thích một bước tính",
+          "scenario": "Trong ví dụ ROP = nhu cầu/ngày × số ngày chờ + tồn an toàn, hãy hỏi: tại sao lại nhân?",
+          "walkthrough": [
+            "Vì trong thời gian chờ vẫn tiêu thụ hàng: 5/ngày × 2 ngày = 10 sản phẩm cần để chờ nhập.",
+            "Tồn an toàn 4 sản phẩm cộng thêm để phòng biến động; tổng 14 trong ví dụ đã cho."
+          ],
+          "takeaway": "Giải thích mối liên hệ giữa bước và ý nghĩa, không chỉ đọc lại biểu thức."
+        },
+        "do": [
+          "Chọn một bước đã biết bối cảnh.",
+          "Giải thích bằng quan hệ nhân quả hoặc nguyên tắc rồi đối chiếu."
+        ],
+        "dont": [
+          "Chép lại công thức như lời giải thích.",
+          "Tự bịa cơ chế vượt quá dữ kiện bài."
+        ],
+        "evidence": "Bằng chứng có điều kiện; giải thích sai mà không sửa có thể củng cố hiểu nhầm.",
+        "diagram": [
+          "Bước",
+          "Vì sao?",
+          "Cơ chế",
+          "Kiểm chứng"
+        ]
+      },
+      "en": {
+        "steps": [
+          "Choose one step or conclusion from the example.",
+          "Explain why it works and under which conditions.",
+          "Check your explanation against the evidence and correct unsupported leaps."
+        ],
+        "existingNote": "Copying the source is not self-explanation; articulate the relationship or mechanism.",
+        "example": {
+          "title": "Example: explaining a calculation",
+          "scenario": "In reorder point = daily demand × lead time + safety stock, ask why multiplication is needed.",
+          "walkthrough": [
+            "Demand continues during the wait: 5/day × 2 days = 10 units to cover that interval.",
+            "Add 4 safety units for variation, yielding 14 under this example's assumptions."
+          ],
+          "takeaway": "Explain the relationship between steps and meaning, not just repeat the formula."
+        },
+        "do": [
+          "Start from an already taught step.",
+          "Explain mechanisms and check against the source."
+        ],
+        "dont": [
+          "Copy a formula as an explanation.",
+          "Invent mechanisms beyond the evidence."
+        ],
+        "evidence": "Context-dependent evidence; uncorrected faulty explanations may reinforce misconceptions.",
+        "diagram": [
+          "Step",
+          "Why?",
+          "Mechanism",
+          "Check"
+        ]
+      },
+      "diagramKind": "chain",
+      "sources": [
+        {
+          "title": "Dunlosky et al. (2013) · Review",
+          "url": "https://www.psychologicalscience.org/journals/pspi/1529100612453266/"
+        }
+      ]
+    },
+    "T05": {
+      "vi": {
+        "steps": [
+          "Đặt câu hỏi 'Vì sao?' cho nhận định hoặc mối quan hệ trong bài.",
+          "Tìm bằng chứng, điều kiện và yếu tố khác có thể giải thích kết quả.",
+          "Viết lý do có giới hạn, phân biệt giả thuyết với điều đã kiểm chứng."
+        ],
+        "existingNote": "Có hai việc xảy ra cùng lúc không đủ chứng minh quan hệ nhân quả.",
+        "example": {
+          "title": "Ví dụ: vì sao phải lấy mẫu ngẫu nhiên?",
+          "scenario": "Nhận định: lấy mẫu ngẫu nhiên có thể giảm thiên lệch lựa chọn trong khảo sát.",
+          "walkthrough": [
+            "Hỏi vì sao: khi từng phần tử trong khung mẫu có xác suất chọn đã biết, người nghiên cứu giảm việc cố chọn người thuận tiện.",
+            "Kiểm tra giới hạn: chọn ngẫu nhiên không tự xử lý người không phản hồi hay khung mẫu thiếu nhóm."
+          ],
+          "takeaway": "Một lời giải nghe hợp lý vẫn phải quay về thiết kế nghiên cứu và bằng chứng."
+        },
+        "do": [
+          "Đặt câu hỏi vì sao cho nhận định có căn cứ.",
+          "Kiểm tra ít nhất một điều kiện hoặc ngoại lệ."
+        ],
+        "dont": [
+          "Tưởng câu chuyện hợp lý là chứng minh.",
+          "Suy từ hai hiện tượng đi cùng nhau ra nhân quả."
+        ],
+        "evidence": "Có thể giúp gắn kiến thức mới với cái đã biết; mức hiệu quả tùy nền tảng và chất lượng giải thích.",
+        "diagram": [
+          "Nhận định",
+          "Vì sao?",
+          "Điều kiện",
+          "Ngoại lệ"
+        ]
+      },
+      "en": {
+        "steps": [
+          "Ask why a claim or relationship might hold.",
+          "Check the evidence, conditions, and alternative explanations.",
+          "State a bounded explanation and distinguish hypotheses from verified facts."
+        ],
+        "existingNote": "Two changes happening together do not establish causation.",
+        "example": {
+          "title": "Example: why random sampling?",
+          "scenario": "Claim: random sampling can reduce selection bias.",
+          "walkthrough": [
+            "Ask why: known selection probabilities reduce the researcher's tendency to choose convenient respondents.",
+            "Test limits: random selection does not solve non-response or an incomplete sampling frame."
+          ],
+          "takeaway": "A plausible story still requires method details and evidence."
+        },
+        "do": [
+          "Ask why about a grounded claim.",
+          "Check one condition or counterexample."
+        ],
+        "dont": [
+          "Treat a plausible story as proof.",
+          "Infer causation from correlation."
+        ],
+        "evidence": "Can support integration with prior knowledge; benefits depend on prerequisite knowledge and explanation accuracy.",
+        "diagram": [
+          "Claim",
+          "Why?",
+          "Conditions",
+          "Limits"
+        ]
+      },
+      "diagramKind": "branch",
+      "sources": [
+        {
+          "title": "Dunlosky et al. (2013) · Review",
+          "url": "https://www.psychologicalscience.org/journals/pspi/1529100612453266/"
+        }
+      ]
+    },
+    "T06": {
+      "vi": {
+        "steps": [
+          "Đặt hai khái niệm dễ nhầm cạnh nhau, nêu điểm giống và khác.",
+          "Phân loại từng trường hợp bằng dấu hiệu quyết định, không nhìn từ khóa.",
+          "Đối chiếu đáp án rồi thử giải thích vì sao trường hợp kia không phù hợp."
+        ],
+        "existingNote": "Gắn nhãn đúng mà không nêu được tiêu chí phân biệt vẫn chưa chứng minh hiểu.",
+        "example": {
+          "title": "Ví dụ: phân biệt bias và random variation",
+          "scenario": "Sampling bias: một nhóm bị bỏ khỏi khung khảo sát → kết quả lệch có hệ thống.",
+          "walkthrough": [
+            "Random sampling variation: hai mẫu ngẫu nhiên hợp lệ cho kết quả hơi khác nhau do may rủi.",
+            "Trộn hai tình huống mới: bỏ sót người làm ca đêm thuộc bias; hai mẫu hợp lệ có 48% và 51% thuộc biến động ngẫu nhiên."
+          ],
+          "takeaway": "Dấu hiệu phân biệt là lỗi chọn mẫu mang tính hệ thống hay sai khác do chọn ngẫu nhiên."
+        },
+        "do": [
+          "Học riêng từng khái niệm trước khi trộn.",
+          "Giải thích tiêu chí phân loại ở mỗi ví dụ."
+        ],
+        "dont": [
+          "Trộn chủ đề không liên quan rồi gọi là interleaving.",
+          "Chọn đáp án chỉ vì từ khóa trùng."
+        ],
+        "evidence": "Xen kẽ phù hợp khi cần phân biệt loại bài tương tự, không phải càng trộn ngẫu nhiên càng tốt.",
+        "diagram": [
+          "A",
+          "B",
+          "A / B?",
+          "Giải thích"
+        ]
+      },
+      "en": {
+        "steps": [
+          "Compare two confusable concepts, including similarities and differences.",
+          "Classify each case by the decisive feature, not a superficial keyword.",
+          "Check feedback and explain why the alternative classification fails."
+        ],
+        "existingNote": "A correct label without a discriminating reason does not demonstrate understanding.",
+        "example": {
+          "title": "Example: bias versus random variation",
+          "scenario": "Sampling bias: a group is excluded from a survey frame, systematically distorting estimates.",
+          "walkthrough": [
+            "Random sampling variation: two valid random samples differ slightly by chance.",
+            "Mixed cases: excluding night-shift workers suggests bias; two valid samples reporting 48% and 51% may reflect chance variation."
+          ],
+          "takeaway": "Use the diagnostic distinction: systematic selection problem versus random variation."
+        },
+        "do": [
+          "Teach each category before mixing.",
+          "Explain the discriminating feature."
+        ],
+        "dont": [
+          "Mix unrelated topics and call it interleaving.",
+          "Classify by a surface keyword."
+        ],
+        "evidence": "Interleaving best fits discriminating related types, not arbitrary mixing.",
+        "diagram": [
+          "Type A",
+          "Type B",
+          "Which?",
+          "Explain"
+        ]
+      },
+      "diagramKind": "compare",
+      "sources": [
+        {
+          "title": "Dunlosky et al. (2013) · Review",
+          "url": "https://www.psychologicalscience.org/journals/pspi/1529100612453266/"
+        }
+      ]
+    },
+    "T07": {
+      "vi": {
+        "steps": [
+          "Viết rõ tiền đề và kết luận trong lập luận.",
+          "Kiểm tra kết luận có theo logic từ tiền đề hay không.",
+          "Kiểm tra riêng tiền đề có chứng cứ thật không rồi mới đánh giá kết luận ngoài đời."
+        ],
+        "existingNote": "Lập luận hợp lệ về hình thức không có nghĩa các tiền đề đúng.",
+        "example": {
+          "title": "Ví dụ: kiểm tra suy luận đúng",
+          "scenario": "Tiền đề 1: Mọi đơn hàng giao trễ đều được gắn cờ. Tiền đề 2: Đơn X giao trễ.",
+          "walkthrough": [
+            "Kết luận: đơn X được gắn cờ — hợp lệ nếu hai tiền đề đúng.",
+            "Phản ví dụ cho lỗi ngược: đơn Y được gắn cờ không suy ra Y giao trễ; có thể bị gắn cờ vì lỗi chứng từ."
+          ],
+          "takeaway": "Tách tính hợp lệ của cấu trúc lập luận khỏi việc kiểm chứng dữ liệu đầu vào."
+        },
+        "do": [
+          "Viết rõ tiền đề và kết luận.",
+          "Tìm phản ví dụ cho chiều suy luận ngược."
+        ],
+        "dont": [
+          "Coi kết luận hợp lệ là dữ kiện ngoài đời đã đúng.",
+          "Khẳng định chiều đảo mà không kiểm tra."
+        ],
+        "evidence": "Logic hình thức đánh giá tính kéo theo; độ đúng của tiền đề phải kiểm chứng riêng.",
+        "diagram": [
+          "P1",
+          "P2",
+          "Suy ra",
+          "Kết luận"
+        ]
+      },
+      "en": {
+        "steps": [
+          "Separate the argument into premises and conclusion.",
+          "Test whether the conclusion logically follows from the premises.",
+          "Separately check whether the premises are true before claiming real-world truth."
+        ],
+        "existingNote": "A valid argument form does not prove its premises are true.",
+        "example": {
+          "title": "Example: checking a valid inference",
+          "scenario": "Premise 1: All late shipments are flagged. Premise 2: Shipment X is late.",
+          "walkthrough": [
+            "Conclusion: shipment X is flagged—valid if the premises hold.",
+            "Invalid converse: shipment Y being flagged does not prove it is late; a document problem could also trigger a flag."
+          ],
+          "takeaway": "Separate formal validity from whether the input facts are actually true."
+        },
+        "do": [
+          "Write premises and conclusion explicitly.",
+          "Try a countermodel of the converse."
+        ],
+        "dont": [
+          "Confuse logical validity with verified reality.",
+          "Reverse an implication without checking."
+        ],
+        "evidence": "Formal logic tests entailment; empirical premises still need verification.",
+        "diagram": [
+          "P1",
+          "P2",
+          "Entails",
+          "Conclusion"
+        ]
+      },
+      "diagramKind": "logic",
+      "sources": [
+        {
+          "title": "Stanford Encyclopedia · Classical Logic",
+          "url": "https://plato.stanford.edu/entries/logic-classical/"
+        }
+      ]
+    },
+    "T08": {
+      "vi": {
+        "steps": [
+          "Tách luận điểm và bằng chứng đang được đưa ra.",
+          "Viết giả định nối bằng chứng với luận điểm (cầu nối).",
+          "Thêm phản biện hoặc bằng chứng ngược mạnh nhất rồi đánh giá lại luận điểm."
+        ],
+        "existingNote": "Sơ đồ đủ ô chưa có nghĩa lập luận có chứng cứ tốt.",
+        "example": {
+          "title": "Ví dụ: có nên thêm bộ lọc ngày?",
+          "scenario": "Luận điểm: màn Process Monitor nên có lọc theo khoảng ngày.",
+          "walkthrough": [
+            "Bằng chứng: người dùng cần xem các ngoại lệ theo giai đoạn; cầu nối: lọc ngày giúp thu hẹp tập dữ liệu cần xử lý.",
+            "Phản biện mạnh: người dùng cũng cần thấy lỗi chưa giải quyết từ trước; sửa đề xuất: mặc định hiển thị tồn đọng và cho lọc khoảng ngày tùy chọn."
+          ],
+          "takeaway": "Sơ đồ lập luận làm rõ giả định; chưa thay thế được nghiên cứu người dùng hoặc đo lường thực tế."
+        },
+        "do": [
+          "Tách luận điểm, dữ kiện và cầu nối.",
+          "Đưa phản biện có liên quan và sửa phạm vi kết luận."
+        ],
+        "dont": [
+          "Vẽ mũi tên cho đẹp rồi coi là có bằng chứng.",
+          "Dựng phản biện yếu để thắng dễ."
+        ],
+        "evidence": "Sơ đồ lập luận có ứng dụng giáo dục nhưng kết quả nghiên cứu đa dạng; không bảo đảm tăng tư duy phản biện.",
+        "diagram": [
+          "Bằng chứng",
+          "Cầu nối",
+          "Luận điểm",
+          "Phản biện"
+        ]
+      },
+      "en": {
+        "steps": [
+          "Separate the claim from the evidence offered for it.",
+          "Identify the warrant that links the evidence to the claim.",
+          "Add a relevant objection or counterevidence and reassess the claim."
+        ],
+        "existingNote": "A complete-looking argument map does not make the argument sound.",
+        "example": {
+          "title": "Example: should we add a date filter?",
+          "scenario": "Claim: Process Monitor should offer a date-range filter.",
+          "walkthrough": [
+            "Grounds: users inspect exceptions across time; warrant: a date filter could narrow the working set.",
+            "Counterpoint: unresolved older exceptions must remain visible. Revision: show backlog by default with optional date filtering."
+          ],
+          "takeaway": "A map exposes assumptions, but does not replace user research or performance evidence."
+        },
+        "do": [
+          "Separate claim, grounds and warrant.",
+          "Include meaningful objections and revise scope."
+        ],
+        "dont": [
+          "Draw arrows and call them evidence.",
+          "Use a straw-man counterargument."
+        ],
+        "evidence": "Educational argument maps have mixed outcomes; no guaranteed critical-thinking gain.",
+        "diagram": [
+          "Evidence",
+          "Warrant",
+          "Claim",
+          "Rebuttal"
+        ]
+      },
+      "diagramKind": "argument",
+      "sources": [
+        {
+          "title": "Purdue OWL · Toulmin argument",
+          "url": "https://owl.purdue.edu/owl/general_writing/academic_writing/historical_perspectives_on_argumentation/toulmin_argument.html"
+        },
+        {
+          "title": "Argument Mapping · Systematic review (2025)",
+          "url": "https://doi.org/10.1111/hequ.70063"
+        }
+      ]
+    },
+    "T09": {
+      "vi": {
+        "steps": [
+          "Xác định tác giả, ngày, nguồn gốc và cách tạo ra dữ liệu.",
+          "Đọc phạm vi mẫu, phương pháp và bằng chứng trái chiều nếu có.",
+          "Chỉ kết luận trong phạm vi nguồn thực sự hỗ trợ; ghi điều chưa xác minh."
+        ],
+        "existingNote": "Không khẳng định đã kiểm tra nguồn gốc nếu chỉ đọc bản tóm tắt hoặc slide.",
+        "example": {
+          "title": "Ví dụ: bài viết nói 80% người dùng thích AI",
+          "scenario": "Bài báo ghi '80% người dùng thích AI' nhưng không nêu báo cáo khảo sát gốc.",
+          "walkthrough": [
+            "Truy ngược người thực hiện, thời điểm, câu hỏi, số người tham gia và cách chọn mẫu.",
+            "Nếu chỉ là khảo sát 20 nhân viên công ty, không được suy rộng cho 'mọi người dùng'; ghi [Chưa xác minh] khi chưa có phương pháp."
+          ],
+          "takeaway": "Một đường link hay tên tổ chức uy tín không thay thế bước kiểm tra điều nguồn thật sự nói."
+        },
+        "do": [
+          "Tìm nguồn gốc và phương pháp lấy dữ liệu.",
+          "Đối chiếu với nguồn độc lập phù hợp."
+        ],
+        "dont": [
+          "Chỉ đọc tiêu đề rồi khẳng định đã xác minh.",
+          "Lấy quy mô mẫu nhỏ để nói cho toàn dân số."
+        ],
+        "evidence": "Đây là kỹ năng đánh giá nguồn theo lĩnh vực; hoàn thành checklist không đồng nghĩa nguồn đã đáng tin.",
+        "diagram": [
+          "Tuyên bố",
+          "Nguồn gốc",
+          "Phương pháp",
+          "Giới hạn"
+        ]
+      },
+      "en": {
+        "steps": [
+          "Identify the author, date, provenance, and data-collection method.",
+          "Check the sampled population, methods, and conflicting evidence.",
+          "Limit conclusions to what the source supports and mark unverified gaps."
+        ],
+        "existingNote": "Do not claim an original source was inspected if you only read a summary or slide.",
+        "example": {
+          "title": "Example: '80% of users like AI'",
+          "scenario": "An article claims 80% of users like AI without linking the original survey.",
+          "walkthrough": [
+            "Trace who collected the data, when, how the question was asked and who was sampled.",
+            "If only 20 company employees were surveyed, do not generalise to all users; mark the claim unverified until the method is known."
+          ],
+          "takeaway": "An impressive website or organisation name does not substitute for checking the original evidence."
+        },
+        "do": [
+          "Trace original data and methods.",
+          "Cross-check with suitable independent sources."
+        ],
+        "dont": [
+          "Read a headline and claim full verification.",
+          "Generalise a convenience sample to a whole population."
+        ],
+        "evidence": "Source appraisal is disciplinary; completing a checklist does not certify a source.",
+        "diagram": [
+          "Claim",
+          "Origin",
+          "Method",
+          "Limits"
+        ]
+      },
+      "diagramKind": "source",
+      "sources": [
+        {
+          "title": "Stanford Graduate School of Education · Civic Online Reasoning",
+          "url": "https://ed.stanford.edu/node/21844"
+        },
+        {
+          "title": "OpenStax · Primary Sources",
+          "url": "https://openstax.org/books/world-history-volume-1/pages/1-2-primary-sources"
+        }
+      ]
+    },
+    "T10": {
+      "vi": {
+        "steps": [
+          "Nêu mục tiêu và các ràng buộc thực tế của vấn đề.",
+          "Chia thành các bước nhỏ có thể kiểm tra hoặc tính toán.",
+          "Thử một trường hợp biên có khả năng làm kế hoạch thất bại."
+        ],
+        "existingNote": "Đánh dấu đủ bước kiểm tra không tự chứng minh lời giải chạy đúng.",
+        "example": {
+          "title": "Ví dụ: điều kiện bật nút 'Tiếp tục'",
+          "scenario": "Mục tiêu: nút chỉ bật khi người học hoàn tất câu hỏi bắt buộc.",
+          "walkthrough": [
+            "Chia nhỏ: (1) xác định câu bắt buộc; (2) kiểm tra đáp án hợp lệ; (3) tính trạng thái disabled; (4) hiển thị lỗi rõ ràng.",
+            "Kiểm tra biên: chưa chọn gì, thiếu một câu, chọn đủ, thoát rồi quay lại, nhấn nhanh hai lần."
+          ],
+          "takeaway": "Chỉ tick đủ bước chưa chứng minh được tương tác; phải thử kết quả thật."
+        },
+        "do": [
+          "Bắt đầu từ đầu ra và ràng buộc.",
+          "Test ít nhất một trường hợp biên bất lợi."
+        ],
+        "dont": [
+          "Chia vụn một tác vụ vốn đơn giản.",
+          "Giả sử happy path chạy là đã giải quyết xong."
+        ],
+        "evidence": "Đây là kỹ thuật giải quyết vấn đề phụ thuộc lĩnh vực; không có bằng chứng tự thân cho tăng năng lực nhận thức chung.",
+        "diagram": [
+          "Mục tiêu",
+          "Nhánh A/B",
+          "Kiểm tra biên",
+          "Tích hợp"
+        ]
+      },
+      "en": {
+        "steps": [
+          "Define the goal and practical constraints.",
+          "Break the problem into testable or computable steps.",
+          "Test an edge condition that could cause the plan to fail."
+        ],
+        "existingNote": "Checking off a list is not proof that the solution works.",
+        "example": {
+          "title": "Example: when should Continue enable?",
+          "scenario": "Goal: enable the button only when required questions are complete.",
+          "walkthrough": [
+            "Decompose: (1) identify required questions; (2) validate answers; (3) derive disabled state; (4) give clear errors.",
+            "Edge cases: nothing chosen, one missing answer, all answered, resume after exit, rapid double click."
+          ],
+          "takeaway": "A completed checklist is not proof; test actual behaviour."
+        },
+        "do": [
+          "Start with output and constraints.",
+          "Test a plausible failure edge case."
+        ],
+        "dont": [
+          "Over-decompose a trivial task.",
+          "Assume the happy path proves correctness."
+        ],
+        "evidence": "A domain-specific problem-solving technique, not proven general cognitive enhancement.",
+        "diagram": [
+          "Goal",
+          "Split",
+          "Edge test",
+          "Integrate"
+        ]
+      },
+      "diagramKind": "split",
+      "sources": [
+        {
+          "title": "MDN · Problem-solving in web development",
+          "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side"
+        }
+      ]
+    },
+    "T11": {
+      "vi": {
+        "steps": [
+          "Xác định mình đã hiểu gì và đang cần học điều gì.",
+          "So điều kiện của từng phương pháp với nhiệm vụ hiện tại.",
+          "Chọn một cách phù hợp hoặc chủ động bỏ qua; giải thích lý do."
+        ],
+        "existingNote": "Không bắt buộc dùng Thần Chú cho mọi bài. Ôn giãn cách không thay thế lần học đầu.",
+        "example": {
+          "title": "Ví dụ: chọn cách học theo mục tiêu",
+          "scenario": "Hôm nay bạn mới bắt đầu học SQL JOIN, chưa hiểu bảng quan hệ.",
+          "walkthrough": [
+            "Chọn ví dụ đã giải (T03) để học cách nối bảng trước; sau khi hiểu mới chuyển sang tự gọi nhớ (T01).",
+            "Nếu đang học định nghĩa cũ, có thể chọn T01 hoặc T02; nếu không cần kỹ thuật nào thì bắt đầu học thẳng."
+          ],
+          "takeaway": "Câu trả lời phù hợp với tình huống quan trọng hơn việc bấm chọn càng nhiều phương pháp càng tốt."
+        },
+        "do": [
+          "Nhìn mục tiêu, kiến thức nền và khó khăn.",
+          "Xem lại kết quả để điều chỉnh lựa chọn lần sau."
+        ],
+        "dont": [
+          "Ép mọi bài đều chọn một Thần Chú.",
+          "Coi cảm giác 'học dễ' là bằng chứng học tốt."
+        ],
+        "evidence": "Siêu nhận thức có cơ sở trong giáo dục; hiệu quả riêng của giao diện chọn phương pháp trong li. chưa được kiểm nghiệm.",
+        "diagram": [
+          "Mục tiêu",
+          "Điều kiện",
+          "Chọn / Bỏ",
+          "Đánh giá"
+        ]
+      },
+      "en": {
+        "steps": [
+          "Identify what you already know and what you need to learn.",
+          "Match the task and prerequisites to the available techniques.",
+          "Choose a suitable technique or deliberately skip one, with a reason."
+        ],
+        "existingNote": "A technique is optional for each lesson. Spaced review does not replace initial learning.",
+        "example": {
+          "title": "Example: choose the technique to fit the goal",
+          "scenario": "You are new to SQL JOIN and have not yet learned table relationships.",
+          "walkthrough": [
+            "Start with a worked example (T03); use retrieval (T01) only after the concepts have been taught.",
+            "For old definitions, choose T01 or T02; if no technique helps, start studying directly."
+          ],
+          "takeaway": "Matching a technique to the task matters more than selecting many techniques."
+        },
+        "do": [
+          "Consider the goal, prerequisites and challenge.",
+          "Reflect on the outcome and adjust next time."
+        ],
+        "dont": [
+          "Force a spell choice in every lesson.",
+          "Mistake feeling fluent for evidence of learning."
+        ],
+        "evidence": "Metacognitive teaching has support; this app's specific selection interface has not been efficacy-tested.",
+        "diagram": [
+          "Goal",
+          "Prerequisites",
+          "Pick/Skip",
+          "Reflect"
+        ]
+      },
+      "diagramKind": "fit",
+      "sources": [
+        {
+          "title": "Education Endowment Foundation · Metacognition",
+          "url": "https://educationendowmentfoundation.org.uk/education-evidence/guidance-reports/metacognition"
+        },
+        {
+          "title": "CAST · UDL strategy development",
+          "url": "https://udlguidelines.cast.org/action-expression/strategy-development/"
+        }
+      ]
+    },
+    "T12": {
+      "vi": {
+        "steps": [
+          "Trước khi tạm ngắt, ghi lại mình đang làm dở việc gì.",
+          "Ghi một hành động nhỏ, cụ thể để bắt đầu khi quay lại.",
+          "Khi trở lại, đọc dấu vết rồi thực hiện bước đó và tự đối chiếu."
+        ],
+        "existingNote": "Đây là công cụ quay lại nhiệm vụ, không phải bài đo sự tập trung hay trí thông minh.",
+        "example": {
+          "title": "Ví dụ: tạm dừng đọc một bài nghiên cứu",
+          "scenario": "Bạn dừng ở phần phương pháp, đang kiểm tra có thiên lệch chọn mẫu không.",
+          "walkthrough": [
+            "Trước khi thoát ghi: 'Đã đọc mục 2.1; chưa xem cách tuyển mẫu. Khi quay lại, tìm tiêu chí chọn người ở mục 2.2'.",
+            "Lúc trở lại đọc ghi chú rồi thực hiện đúng bước: mở mục 2.2 và ghi cách tuyển mẫu."
+          ],
+          "takeaway": "Dấu vết là công cụ nối lại công việc, không phải thước đo ADHD, năng lực tập trung hay sự chăm chỉ."
+        },
+        "do": [
+          "Ghi điểm dừng và một hành động nhỏ rõ ràng.",
+          "Thực hiện hành động đó khi quay lại."
+        ],
+        "dont": [
+          "Ghi việc mơ hồ như 'học tiếp'.",
+          "Ép đồng hồ, streak hoặc cam kết tập trung."
+        ],
+        "evidence": "Nghiên cứu về kế hoạch quay lại nhiệm vụ hỗ trợ tình huống gián đoạn; không chứng minh điều trị vấn đề chú ý.",
+        "diagram": [
+          "Đang làm",
+          "Tạm ngắt",
+          "Dấu vết",
+          "Quay lại"
+        ]
+      },
+      "en": {
+        "steps": [
+          "Before pausing, capture where you stopped.",
+          "Write one specific, small action to take when returning.",
+          "On return, read the cue, perform that step, and review what changed."
+        ],
+        "existingNote": "This supports re-entry to a task; it does not measure attention or intelligence.",
+        "example": {
+          "title": "Example: pausing a research article",
+          "scenario": "You stop in the Methods section while examining possible selection bias.",
+          "walkthrough": [
+            "Before leaving: 'Read section 2.1; participant recruitment remains unchecked. On return, find sampling criteria in 2.2'.",
+            "On returning, read the note, open 2.2 and record how participants were recruited."
+          ],
+          "takeaway": "The cue helps resume the task; it does not measure ADHD, attention capacity or diligence."
+        },
+        "do": [
+          "Capture the stopping point and one small concrete action.",
+          "Perform that action on return."
+        ],
+        "dont": [
+          "Write only a vague 'study more'.",
+          "Force timers, streaks or focus promises."
+        ],
+        "evidence": "Task-resumption research supports a re-entry plan in interrupted work; no clinical attention claim follows.",
+        "diagram": [
+          "Working",
+          "Pause",
+          "Cue",
+          "Resume"
+        ]
+      },
+      "diagramKind": "resume",
+      "sources": [
+        {
+          "title": "Leroy (2018) · Ready-to-resume plans",
+          "url": "https://experts.umn.edu/en/publications/tasks-interrupted-how-anticipating-time-pressure-on-resumption-of/"
+        },
+        {
+          "title": "CAST · UDL strategy development",
+          "url": "https://udlguidelines.cast.org/action-expression/strategy-development/"
+        }
+      ]
+    },
+    "T13": {
+      "vi": {
+        "steps": [
+          "Chọn ba địa điểm quen thuộc, khác nhau, theo một lộ trình cố định.",
+          "Gắn từng ý đã học với một hình ảnh liên tưởng riêng tại mỗi nơi.",
+          "Giấu nguồn, đi lại lộ trình trong trí óc, gọi nhớ theo thứ tự rồi đối chiếu nghĩa."
+        ],
+        "existingNote": "Chỉ tạo cung điện trí nhớ chưa phải đã nhớ được; phải thử gọi nhớ không nhìn nguồn.",
+        "example": {
+          "title": "Ví dụ: nhớ 3 tầng của nghiên cứu",
+          "scenario": "Chọn lộ trình trong nhà: cửa chính → bàn → cửa sổ.",
+          "walkthrough": [
+            "Tại cửa chính tưởng tượng người mang câu hỏi nghiên cứu; trên bàn là kính lúp tượng trưng phương pháp; ở cửa sổ là tờ kết luận.",
+            "Giấu cả 3 gợi ý, đi lại lộ trình để tự nhắc 'câu hỏi → phương pháp → kết luận', rồi đối chiếu nội dung chính xác."
+          ],
+          "takeaway": "Hình liên tưởng giúp lấy ra thứ tự; không tự bảo đảm hiểu hay kiểm chứng độ đúng của từng khái niệm."
+        },
+        "do": [
+          "Dùng nơi quen thuộc, thứ tự cố định.",
+          "Tự đi lại bằng trí nhớ rồi kiểm tra độ đúng."
+        ],
+        "dont": [
+          "Chỉ ngắm hình và nhận là thuộc.",
+          "Gắn nhiều ý na ná vào cùng một chỗ."
+        ],
+        "evidence": "Có bằng chứng về hỗ trợ nhớ danh sách; chất lượng tổng hợp nghiên cứu còn hạn chế và không đồng nghĩa tăng trí nhớ toàn diện.",
+        "diagram": [
+          "Cửa",
+          "Bàn",
+          "Cửa sổ"
+        ]
+      },
+      "en": {
+        "steps": [
+          "Choose three distinct familiar places in a fixed route.",
+          "Attach each learned idea to a memorable image at a different place.",
+          "Hide the source, mentally walk the route, retrieve in order, and check meaning."
+        ],
+        "existingNote": "Building a memory palace is not retrieval; test recall without the source.",
+        "example": {
+          "title": "Example: remembering three research stages",
+          "scenario": "Choose a familiar route: front door → desk → window.",
+          "walkthrough": [
+            "At the door picture a person holding a research question; on the desk a magnifier for method; at the window a report for conclusion.",
+            "Hide the cues, mentally walk the route and retrieve 'question → method → conclusion', then check the exact meanings."
+          ],
+          "takeaway": "Images may cue order; they do not ensure conceptual understanding or source accuracy."
+        },
+        "do": [
+          "Use distinct familiar places in fixed order.",
+          "Retrieve the route without cues and check accuracy."
+        ],
+        "dont": [
+          "Simply view pictures and count it as recall.",
+          "Attach similar ideas to one undifferentiated place."
+        ],
+        "evidence": "Some evidence for list recall, but the research base has limitations; no proof of broad memory enhancement.",
+        "diagram": [
+          "Door",
+          "Desk",
+          "Window"
+        ]
+      },
+      "diagramKind": "route",
+      "sources": [
+        {
+          "title": "Method of Loci · Meta-analysis (2025)",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/40457944/"
+        }
+      ]
+    }
+  }
+}

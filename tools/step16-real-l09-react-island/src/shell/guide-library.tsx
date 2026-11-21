@@ -366,7 +366,7 @@ function BookmarkRows({items}:{
   </div>)}
  </div>;
 }
-function Resume(){
+export function Resume(){
  const view=useLibrary();
  return <div className="section-shell li-react-library" data-li-react-screen="resume">
   <Heading level={1} role="headline" className="display-title">{copy('Quay lại','Continue')}</Heading>
@@ -387,7 +387,7 @@ function Resume(){
   </div>
  </div>;
 }
-function Bookmarks(){
+export function Bookmarks(){
  const view=useLibrary();
  const tab=view.bookmarkTab;
  const tabClick=(next:'lesson'|'question')=>app.liLibraryShelf?.selectBookmarkTab(next);

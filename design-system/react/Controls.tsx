@@ -19,13 +19,13 @@ export function Radio({label,id:given,className='',name,...props}:ChoiceProps&{n
  </label>;
 }
 export interface FieldProps {
- label:string;richLabel?:ReactNode;kind?:'input'|'textarea';type?:'text'|'email'|'search';name?:string;
+ label:string;kind?:'input'|'textarea';type?:'text'|'email'|'search';name?:string;
  id?:string;placeholder?:string;hint?:string;error?:string;required?:boolean;
  disabled?:boolean;readOnly?:boolean;rows?:number;value?:string;defaultValue?:string;
  className?:string;autoComplete?:string;
  onChange?:ChangeEventHandler<HTMLInputElement|HTMLTextAreaElement>
 }
-export function Field({label,richLabel,kind='input',type='text',id:given,hint,error,
+export function Field({label,kind='input',type='text',id:given,hint,error,
  className='',rows=3,...props}:FieldProps){
  const auto=useId();
  if(!label.trim())throw Error('Field requires a visible label');
@@ -38,7 +38,7 @@ export function Field({label,richLabel,kind='input',type='text',id:given,hint,er
   'aria-invalid':error?true:undefined,'aria-describedby':describedBy};
  return <div className={'li-atom-field '+className} data-li-atom="field"
   data-kind={kind} data-invalid={error?'true':undefined}>
-  <label htmlFor={id}>{richLabel??label}{props.required?<span aria-hidden="true"> *</span>:null}</label>
+  <label htmlFor={id}>{label}{props.required?<span aria-hidden="true"> *</span>:null}</label>
   {kind==='textarea'?<textarea {...attrs} rows={rows}/>:<input {...attrs} type={type}/>}
   {hint?<p className="li-atom-field-hint" id={hintId}>{hint}</p>:null}
   {error?<p className="li-atom-field-error" id={errorId} role="alert">{error}</p>:null}

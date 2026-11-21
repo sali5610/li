@@ -60,12 +60,13 @@ function ResearchScene(){
     <motion.p key={authoredCopy(state.feedback)} className="state-note" role="status"
      initial={reduced?false:{opacity:0,y:4}} animate={{opacity:1,y:0}}
      transition={reduced?{duration:0}:{duration:0.16}}>{authoredCopy(state.feedback)}</motion.p>
-    <div className="action-row"><Button onClick={()=>openRoute('case')}>{L("Phản Chứng","Challenge the claim")}</Button></div>
+    {state.caseId&&<div className="action-row"><Button onClick={()=>openRoute('case')}>{L("Phản Chứng","Challenge the claim")}</Button></div>}
    </section>
    <section className="research-evidence">
     <div className="kicker">{L("II · NGUỒN / CHỨNG CỨ","II · SOURCES / EVIDENCE")}</div>
     <Heading level={2} role="titleMedium">{L("Chưa đủ dữ kiện","Insufficient evidence")}</Heading>
-    <Text role="body">{L("Một tỷ lệ chưa cho biết cách chọn mẫu, nên chưa đủ để kết luận về toàn bộ tổng thể.","A percentage alone says nothing about sampling, so it cannot establish a population-wide conclusion.")}</Text>
+    <Text role="body">{L("Dữ kiện quan sát được và phần chưa biết quyết định kết luận nào có thể bảo vệ. Đây là tình huống giả định, không phải nguồn thực nghiệm.",
+"Observed facts and unknowns set the limits of a defensible conclusion. This is a hypothetical case, not empirical evidence.")}</Text>
     <NumberedCard number="01">
      <div><strong>{L("Điều quan sát","Observed")}</strong><Text role="support">{authoredCopy(state.observed)}</Text></div>
     </NumberedCard>

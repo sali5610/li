@@ -107,6 +107,18 @@ assert.match(search,/function directCatalogMatches\(query:string\):KnowledgeItem
  "Published titles, lesson IDs and exact course labels stay searchable if ontology returns no answer");
 assert.match(search,/const direct=\[\.\.\.personal,\.\.\.directCatalogMatches\(query\)\]/,
  "Staging personal lessons and released catalog matches must be combined");
+
+assert.match(search,/const catalogSections:KnowledgeItem\[\]=\[\]/,
+ "Discovery Search retains a local canonical curriculum lookup without a network content pack");
+for(const kind of ["DomainGroup","Field","Course"]){
+ assert(search.includes("kind:'"+kind+"'"),
+  "Offline fallback must include real "+kind+" rows");
+}
+assert.match(search,/\[\.\.\.catalogSections,\.\.\.published\]\.map\(item=>\{/,
+ "Offline knowledge search fallback includes browsable groups, fields, courses, and released lessons");
+assert.match(search,/catalogBrowsePaths\.set\('course:'\+course\.id/,
+ "Offline course results must navigate into real React Catalog paths");
+
 assert.match(search,/withNavigableLessons\(query,\{/,
  "Successful semantic searches must retain direct canonical lesson matches");
 

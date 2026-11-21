@@ -212,8 +212,16 @@ function BuddyName({kind,header,placeholder,value,preview,commit}:{
    {copy('Lưu cách gọi','Save nickname')}</Button>
  </div>;
 }
+const settingsSections=[
+ {id:'learning',vi:'Học tập',en:'Learning'},
+ {id:'companion',vi:'Lão Lý',en:'Lao Ly'},
+ {id:'reminders',vi:'Nhắc nhở',en:'Reminders'},
+ {id:'data',vi:'Dữ liệu & riêng tư',en:'Data & privacy'},
+] as const;
+
 export function Settings(){
  const view=useSettings();
+ const [section,setSection]=useState<(typeof settingsSections)[number]['id']>('learning');
  const backupInput=useRef<HTMLInputElement>(null);
  const locale=app.liLanguage?.get?.()==='en'?'en':'vi';
  const act=(kind:string,key?:string,value?:string|boolean)=>app.liSettingsPort?.act(kind,key,value);
@@ -227,13 +235,16 @@ export function Settings(){
   <Text role="body" className="intro">{copy(
    'Tùy chỉnh cách học, cách Lão Lý trò chuyện và dữ liệu của bạn.',
    'Customize learning, Lao Ly and your private data.')}</Text>
+  <div className="settings-section-selector" role="group" aria-label={copy('Mục cài đặt','Settings sections')}>
+   {settingsSections.map(item=><Button key={item.id}
+    variant={item.id===section?'primary':'secondary'}
+    id={'li-settings-select-'+item.id}
+    aria-pressed={item.id===section} aria-controls={'li-settings-'+item.id}
+    onClick={()=>setSection(item.id)}>{item[locale]}</Button>)}
+  </div>
   <div className="settings-groups">
-   <section className="settings-group" aria-label={copy('Cá nhân hóa','Personalization')}>
-    <div className="settings-group-heading"><div className="kicker">01 · {copy('CÁ NHÂN HÓA','PERSONALIZATION')}</div>
-     <Heading level={2} role="titleLarge">{copy('Trải nghiệm của bạn','Your experience')}</Heading>
-     <Text role="support">{copy('Chọn nhịp học và cách trò chuyện cùng Lão Lý.',
-      'Choose a study rhythm and how Lao Ly speaks.')}</Text>
-    </div>
+   <section className="settings-group" id="li-settings-learning"
+    aria-labelledby="li-settings-select-learning" hidden={section!=='learning'}>
     <div className="settings-group-grid">
      <Card variant="raised" className="li-react-setting-card li-react-language-card">
       <div className="kicker">{copy('NGÔN NGỮ TOÀN APP','APP LANGUAGE')}</div>
@@ -259,6 +270,11 @@ export function Settings(){
       </div>
       <Text role="support" aria-live="polite" className="state-note">{view.modeFeedback}</Text>
      </Card>
+    </div>
+   </section>
+   <section className="settings-group" id="li-settings-companion"
+    aria-labelledby="li-settings-select-companion" hidden={section!=='companion'}>
+    <div className="settings-group-grid">
      <Card variant="raised" className="li-react-setting-card li-react-companion-card">
       <div className="kicker">{copy('NGƯỜI ĐỒNG HÀNH','COMPANION')}</div>
       <div className="settings-buddy-heading">
@@ -293,14 +309,13 @@ export function Settings(){
      </Card>
     </div>
    </section>
-   <section className="settings-group" aria-label={copy('Nhắc nhở','Reminders')}>
-    <div className="settings-group-heading"><div className="kicker">02 · {copy('NHẮC NHỞ','REMINDERS')}</div>
-     <Heading level={2} role="titleLarge">{copy('Lời nhắc','Reminders')}</Heading>
-    </div>
+   <section className="settings-group" id="li-settings-reminders"
+    aria-labelledby="li-settings-select-reminders" hidden={section!=='reminders'}>
     <div className="li-reminder-channel-stack"><InAppReminderPanel/><WebPushSettings/></div>
    </section>
-   <section className="settings-group" aria-label={copy('Dữ liệu & riêng tư','Data & privacy')}>
-    <div className="settings-group-heading"><div className="kicker">03 · {copy('DỮ LIỆU & RIÊNG TƯ','DATA & PRIVACY')}</div>
+   <section className="settings-group" id="li-settings-data"
+    aria-labelledby="li-settings-select-data" hidden={section!=='data'}>
+    <div className="settings-group-heading">
      <Heading level={2} role="titleLarge">{copy('Dữ liệu của bạn','Your data')}</Heading>
      <Text role="support">{copy('Quản lý đồng bộ, bản sao và quyền riêng tư.',
       'Manage sync, backups and privacy.')}</Text>

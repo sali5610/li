@@ -3,7 +3,7 @@ import curriculum from '../../../../content/curriculum/legacy-catalog.v1.json';
 import {personalStudyRoute} from '../learning/released-lessons.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button,FilterGroup,Heading,IconButton,InlineFeedback,SearchField,Text,LiIcon} from '../../../../design-system/react/index';
+import {Button,Card,FilterGroup,Heading,IconButton,InlineFeedback,SearchField,Text,LiIcon} from '../../../../design-system/react/index';
 // Retain the canonical legacy stylesheet for the existing staging bundle contract;
 // the visible field-guide rows below no longer render legacy MethodTile cards.
 import '../../../../design-system/react/legacy.css';
@@ -303,11 +303,11 @@ export function Library(){
     'Your recent learning, bookmarks and notes in one private place.')}</Text>
   </header>
   <div className="library-workspace">
-   <section className="library-resume-feature" aria-label={copy('Tiếp tục học','Continue learning')}>
+   <Card variant="flat-study" className="library-resume-feature" aria-label={copy('Tiếp tục học','Continue learning')}>
     <div className="library-feature-heading">
      <div><div className="kicker">{copy('TIẾP TỤC TỪ ĐÂY','PICK UP HERE')}</div>
       <Heading level={2} role="titleLarge">{copy('Quay lại với bài học','Resume learning')}</Heading></div>
-     <Button variant="ghost" onClick={()=>openRoute('resume')}>
+     <Button variant="ghost" className="library-text-link" onClick={()=>openRoute('resume')}>
       {copy('Tất cả hoạt động','All activity')} <LiIcon name="arrow-right" size={18}/></Button>
     </div>
     <div className="library-feature-grid">
@@ -320,20 +320,20 @@ export function Library(){
       <ProblemRows problems={view.problems} limit={1}/>
      </div>
     </div>
-   </section>
+   </Card>
    <div className="library-workspace-columns">
     <section className="library-workspace-main" aria-label={copy('Ghi chép gần đây','Recent notes')}>
      <ShelfHeader title={copy('Ghi chép gần đây','Recent notes')}
       description={copy('Kết luận và ý tưởng bạn đã giữ lại.','Your saved conclusions and ideas.')} target="collection"/>
      <div className="library-note-previews">
-      <article className="library-note-preview">
+      <Card variant="flat-study" className="library-note-preview">
        <div className="kicker"><LiIcon name="book-open" size={16}/> {copy('BÚT KÝ','CASE NOTES')}</div>
        <NotePreview note={view.cases[0]} kind="case"/>
-      </article>
-      <article className="library-note-preview">
+      </Card>
+      <Card variant="flat-study" className="library-note-preview">
        <div className="kicker"><LiIcon name="feather" size={16}/> {copy('Ý ĐÃ NHẶT','CAPTURED IDEAS')}</div>
        <NotePreview note={view.ideas[0]} kind="idea"/>
-      </article>
+      </Card>
      </div>
      <div className="library-create-actions">
       <Button variant="secondary" onClick={()=>openRoute('case')}>{copy('Viết Bút Ký','Write a Case Note')}</Button>
@@ -351,7 +351,7 @@ export function Library(){
       <Heading level={2} role="titleMedium">{copy('Nhịp học của bạn','Your Learning Rhythm')}</Heading>
       <Text role="support">{copy('Ngủ, vận động, nghỉ ngơi, nhịp học và hoạt động mỗi ngày.',
        'Rest, activity, pace and learning each day.')}</Text>
-      <Button variant="ghost" onClick={()=>openRoute('dashboard')}>
+      <Button variant="ghost" className="library-text-link" onClick={()=>openRoute('dashboard')}>
        {copy('Xem Nhật Ký','Open Journal')} <LiIcon name="arrow-right" size={18}/></Button>
      </section>
     </aside>
@@ -481,7 +481,7 @@ function Collection(){
        <Text role="support">{copy('Lưu ngày ','Saved ')}{item.date}</Text>
       </div>
       <div className="library-note-actions">
-       <Button variant="ghost" onClick={()=>app.liNotes?.openDetail(item.type,item.id)}>
+       <Button variant="ghost" className="library-text-link" onClick={()=>app.liNotes?.openDetail(item.type,item.id)}>
         {copy('Mở ghi chép','Open note')} <LiIcon name="arrow-right" size={17}/></Button>
        <ConfirmNoteAction danger
         label={copy('Xóa ghi chép: ','Delete note: ')+(item.type==='case'?item.title:item.body.slice(0,60))}

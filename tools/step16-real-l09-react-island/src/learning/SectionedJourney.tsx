@@ -1,4 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
+import {motion,useReducedMotion} from 'motion/react';
 import {initial} from '../native-bridge';
 import type {Attempt,EditorialMethodId,EditorialReviewSnapshot,PastEditorialAttempt} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
@@ -11,6 +12,7 @@ import {SelfReviewNextStep} from './SelfReviewNextStep';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
 import {Markdown} from './EditorialJourney';
 import './journey.css';
+import {StudyBookFolio} from './StudyBookFolio';
 
 type Locale='vi'|'en';
 type Phase='read'|'guided'|'methods'|'practice'|'feedback'|'progress';
@@ -127,6 +129,7 @@ function phaseFor(a:Attempt,method:EditorialMethodId):Phase{
 type Quote={id:string;original:string;translation:string;interpretation:string;comment:string;lang:string;meta:string;url:string};
 export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedLesson;ports:LearningPorts;preview?:boolean}){
  const id=lesson.id,method=lesson.content.technique.primary.slice(3) as EditorialMethodId;
+ const reduced=useReducedMotion();
  const [attempt,setAttempt]=useState<Attempt|null>(null);
  const [persisted,setPersisted]=useState<Attempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
@@ -352,7 +355,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   </section>)}
  </>;
  return <section className="li-learning-journey" lang={locale}
-  data-li-react-journey={id} data-li-sectioned-journey={id}>
+  data-li-react-journey={id} data-li-sectioned-journey={id} data-li-lesson-phase={phase}>
   <header className="li-learning-header">
    <div><Text role="caption">{lesson.hierarchy.field.title} · {id}</Text>
     <Heading level={1} role="headline">{lesson.title[locale]}</Heading>
@@ -373,6 +376,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      sync==='on-device'?'Đã lưu trên thiết bị':'Đã lưu / đang kiểm tra'}</Text>
   </div>
   {error&&<p role="alert">{error}</p>}
+  <aside className="li-learning-rail" aria-label="Learning navigation and status">
   <nav className="li-learning-stepper" aria-label={vi?'Các bước học':'Learning steps'}>
    {PAGES.map((p,i)=><Button key={p} variant={p===phase?'primary':'secondary'}
     disabled={(i>=4&&!persisted.submitted)||(i===5&&!persisted.reviewed)}
@@ -390,7 +394,12 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      {' '}{entry.submittedAt} · {entry.ratings.reduce<number>((total,score)=>total+(score??0),0)}/8</Text>
    </li>)}</ol>
   </details>}
-  <Card variant="flat-study">
+  </aside>
+  <motion.div key={phase} initial={reduced?false:{opacity:0,x:12,rotateY:-1}}
+   animate={{opacity:1,x:0,rotateY:0}} transition={reduced?{duration:0}:{duration:0.2}}
+   className="li-learning-current">
+  <StudyBookFolio phase={phase} steps={PAGES} locale={locale}/>
+  <Card variant="flat-study" className="li-study-book-page">
    {phase==='read'&&<>
     <Markdown md={c.intro_md}/>{mentor('opening')}
     {block('goals')}{block('concept')}{mentor('concept')}
@@ -485,5 +494,6 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      {vi?'Lượt mới · giữ lịch sử':'New round · preserve history'}</Button>
    </>}
   </Card>
+  </motion.div>
  </section>;
 }

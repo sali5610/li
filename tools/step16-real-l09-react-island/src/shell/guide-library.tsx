@@ -458,7 +458,7 @@ function Collection(){
        if(kind==='idea')setTaxonomy(previous=>({...previous,lesson:'all'}));
        app.liLibraryShelf?.setCollectionFilter(kind);
       }}/>
-     <TaxonomyFilters records={filter==='case'?view.cases:filter==='idea'?view.ideas:[...view.cases,...view.ideas]}
+     <TaxonomyFilters records={[...view.cases,...view.ideas]}
       value={taxonomy} showLesson={filter!=='idea'}
       onChange={setTaxonomy} otherFiltersActive={Boolean(q||filter!=='all')}
       onClear={()=>{

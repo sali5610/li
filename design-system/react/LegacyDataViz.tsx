@@ -58,11 +58,11 @@ export function MonthCalendar({year,month,selectedDate,todayDate,records,
    {Array.from({length:first},(_,i)=><span key={'blank'+i} aria-hidden="true"/>)}
    {Array.from({length:total},(_,i)=>{
     const date=dayKey(year,month,i+1),record=byDate.get(date);
-    const hasCount=record&&typeof record.count==='number';
+    const count=record?.count,hasCount=typeof count==='number';
     const intensity=colorScale==='activity'&&hasCount?
-     (record.count===0?'zero':record.count<=2?'low':record.count<=6?'medium':'high'):'none';
+     (count===0?'zero':count<=2?'low':count<=6?'medium':'high'):'none';
     const status=record?(hasCount?
-     String(record.count)+' '+(locale==='vi'?'hoạt động':'activities'):
+     String(count)+' '+(locale==='vi'?'hoạt động':'activities'):
      record.mode|| (locale==='vi'?'đã ghi nhận':'recorded')):
      (locale==='vi'?'chưa ghi nhận':'no record');
     return <button key={date} type="button" data-mode={record?.mode||'none'}
@@ -70,7 +70,7 @@ export function MonthCalendar({year,month,selectedDate,todayDate,records,
      data-recorded={Boolean(record)} data-today={date===todayDate}
      aria-pressed={date===selectedDate} aria-label={date+' · '+status}
      onClick={()=>onSelectDate(date)}>
-     {i+1}{hasCount&&colorScale!=='activity'?<span className="li-legacy-calendar-count" aria-hidden="true">{record.count}</span>:null}
+     {i+1}{hasCount&&colorScale!=='activity'?<span className="li-legacy-calendar-count" aria-hidden="true" >{count}</span>:null}
      <span className="li-legacy-calendar-dot" aria-hidden="true"/>
     </button>;
    })}

@@ -127,6 +127,7 @@ function phaseFor(a:Attempt,method:EditorialMethodId):Phase{
  if(a.reviewed)return 'progress';
  if(a.submitted)return 'feedback';
  if(a.draft.some(x=>x.trim()))return 'practice';
+ if(a.methodChoice==='skip'||a.methodAttempts?.[method]?.submittedAt)return 'practice';
  if(a.methodChoice||a.methodAttempts?.[method]?.draft)return 'guided';
  if(a.guidedDraft.trim())return 'guided';
  return 'read';

@@ -320,3 +320,27 @@
  #page-guideDetail .spell-visual-process[data-count="4"]
   .spell-visual-stage:nth-child(2)::after{display:none}
 }
+
+/* T04: source-aligned worked explanation, not an unrelated decorative photo. */
+#page-guideDetail .spell-why-example{
+ display:grid;gap:var(--li-space-3);min-width:0;
+ padding:var(--li-space-4) 0 var(--li-space-5);
+ border-bottom:1px solid var(--rule)
+}
+#page-guideDetail .spell-why-title{
+ font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;
+ color:var(--moss);font-weight:700
+}
+#page-guideDetail .spell-why-equation{
+ font-family:var(--li-font-display,Georgia,serif);
+ font-size:clamp(1.85rem,5vw,2.7rem);font-weight:650;
+ line-height:1.35;color:var(--moss);overflow-wrap:anywhere
+}
+#page-guideDetail .spell-why-example p{
+ margin:0;max-width:65ch;line-height:1.65
+}
+#page-guideDetail .spell-why-question{font-weight:700}
+#page-guideDetail .spell-why-reason{
+ padding-inline-start:var(--li-space-4);border-inline-start:2px solid var(--moss)
+}
+#page-guideDetail .spell-why-check{color:var(--muted)}

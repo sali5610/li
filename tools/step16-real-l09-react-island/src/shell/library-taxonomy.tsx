@@ -107,7 +107,7 @@ export function TaxonomyFilters({records,value,onChange,onClear,otherFiltersActi
   <div className="li-library-taxonomy-footer">
    {!records.length&&<Text role="support">{label('Chưa có mục nào để lọc.','Nothing saved to filter yet.')}</Text>}
    <Button variant="ghost" className="li-library-taxonomy-reset"
-    disabled={!isFiltered&&!otherFiltersActive} onClick={()=>onClear?.()||onChange(emptyTaxonomy)}>
+    disabled={!isFiltered&&!otherFiltersActive} onClick={()=>onClear?onClear():onChange(emptyTaxonomy)}>
     {label('Xóa bộ lọc','Clear filters')}
    </Button>
   </div>

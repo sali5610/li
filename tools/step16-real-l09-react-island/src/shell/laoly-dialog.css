@@ -99,3 +99,32 @@
   min-height:44px;flex:1 1 44%
  }
 }
+
+/* DS Button has an inner span: align icon and label inside it, not on the wrapper. */
+#buddy-modal .li-react-buddy-shell .buddy-actions .li-ds-button>span{
+ display:inline-flex;align-items:center;justify-content:center;
+ gap:var(--li-space-2);min-width:0;max-width:100%;
+ line-height:var(--li-leading-support);overflow-wrap:anywhere
+}
+#buddy-modal .li-react-buddy-shell .buddy-actions .li-ds-button>span>svg{
+ flex:0 0 auto
+}
+#buddy-modal .li-react-buddy-shell .buddy-actions{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:var(--li-space-2);min-width:0
+}
+#buddy-modal .li-react-buddy-shell .buddy-actions .li-ds-button{
+ min-width:0;width:100%;padding:var(--li-space-3)
+}
+@media(max-width:600px){
+ #buddy-modal .li-react-buddy-shell .buddy-actions{
+  grid-template-columns:1fr;gap:var(--li-space-2)
+ }
+ #buddy-modal .li-react-buddy-shell .buddy-actions .li-ds-button{
+  min-height:48px;padding:var(--li-space-2) var(--li-space-3)
+ }
+ #buddy-modal .li-react-buddy-shell .buddy-actions .li-ds-button>span{
+  width:100%;justify-content:flex-start;text-align:left
+ }
+ #buddy-modal .li-react-buddy-shell .li-buddy-source{gap:var(--li-space-3)}
+}

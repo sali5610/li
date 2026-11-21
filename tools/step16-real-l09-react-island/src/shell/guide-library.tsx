@@ -433,7 +433,7 @@ function Collection(){
   .sort((a,b)=>(Date.parse(b.sortDate)||0)-(Date.parse(a.sortDate)||0))
   .filter(item=>(filter==='all'||item.type===filter)&&
    (!q||[item.title,item.body,item.date].join(' ').toLocaleLowerCase('vi').includes(q))&&
-   matchesTaxonomy(item,taxonomy));
+   matchesTaxonomy(item,filter==='idea'?{...taxonomy,lesson:'all'}:taxonomy));
  return <div className="section-shell li-react-library" data-li-react-screen="collection">
   <Heading level={1} role="headline" className="display-title">{copy('Bộ sưu tập','Collection')}</Heading>
   <Text role="body" className="intro">{copy(
@@ -453,8 +453,13 @@ function Collection(){
        {value:'case',label:copy('Bút Ký','Case Notes')},
        {value:'idea',label:copy('Ý đã nhặt','Ideas')}
       ]} selected={[filter]} multiple={false} allowEmpty={false}
-      onChange={next=>app.liLibraryShelf?.setCollectionFilter(next[0]||'all')}/>
-     <TaxonomyFilters records={[...view.cases,...view.ideas]} value={taxonomy}
+      onChange={next=>{
+       const kind=next[0]||'all';
+       if(kind==='idea')setTaxonomy(previous=>({...previous,lesson:'all'}));
+       app.liLibraryShelf?.setCollectionFilter(kind);
+      }}/>
+     <TaxonomyFilters records={[...view.cases,...view.ideas]}
+      value={taxonomy} showLesson={filter!=='idea'}
       onChange={setTaxonomy} otherFiltersActive={Boolean(q||filter!=='all')}
       onClear={()=>{
        setSearch('');setTaxonomy(emptyTaxonomy);app.liLibraryShelf?.setCollectionFilter('all');

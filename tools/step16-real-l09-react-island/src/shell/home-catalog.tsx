@@ -2,7 +2,7 @@ import {openRoute} from './app-router.js';
 import canonicalCatalog from '../../../../content/curriculum/legacy-catalog.v1.json';
 import {releasedLessonRoutes,personalStudyRoute,personalStudyLessonIds} from '../learning/released-lessons.js';
 import {inquiryFlow} from './inquiry-port.js';
-import {useDiscoveryLocale,localized} from './discovery-locale.js';
+import {authoredCopy,useDiscoveryLocale,localized} from './discovery-locale.js';
 import type {MirrorView} from './inquiry-port.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
@@ -31,7 +31,6 @@ type CatalogPort={
 type AppWindow=Window&{
  liReactCatalogMounted?:boolean;
  liCatalog?:CatalogPort;
- liLanguage?:{get:()=>string;translate:(value:string)=>string};
 };
 const app=window as AppWindow;
 // One GitHub curriculum source also used by released-lesson routes and all 17
@@ -148,14 +147,13 @@ function Catalog(){
  const field=group?.fields.find(item=>item.id===path[1]);
  const course=field?.courses.find(item=>item.id===path[2]);
  const lesson=course?.lessons.find(item=>item.id===path[3]);
- const catalogTitle=(title:string)=>locale==='en'?(app.liLanguage?.translate?.(title)??title):title;
  const breadcrumb=[{label:locale==='vi'?'Tàng Thư':'Library',path:[] as string[]}];
- if(group)breadcrumb.push({label:catalogTitle(group.title),path:[group.id]});
- if(field)breadcrumb.push({label:catalogTitle(field.name),path:[group!.id,field.id]});
- if(course)breadcrumb.push({label:catalogTitle(course.title),path:[group!.id,field!.id,course.id]});
- if(lesson)breadcrumb.push({label:catalogTitle(lesson.title),path:[group!.id,field!.id,course!.id,lesson.id]});
+ if(group)breadcrumb.push({label:authoredCopy(group.title),path:[group.id]});
+ if(field)breadcrumb.push({label:authoredCopy(field.name),path:[group!.id,field.id]});
+ if(course)breadcrumb.push({label:authoredCopy(course.title),path:[group!.id,field!.id,course.id]});
+ if(lesson)breadcrumb.push({label:authoredCopy(lesson.title),path:[group!.id,field!.id,course!.id,lesson.id]});
  const currentTitle=lesson?.title||course?.title||field?.name||group?.title;
- const heading=currentTitle?catalogTitle(currentTitle):(locale==='vi'?'Tàng Thư':'Library');
+ const heading=currentTitle?authoredCopy(currentTitle):(locale==='vi'?'Tàng Thư':'Library');
  const description=lesson?(personalStudyRoute(lesson.id)?
   (locale==='vi'?'Bài học cá nhân · Có thể học ngay trong Tàng Thư.':
    'Personal study lesson · Ready to learn in your library.'):
@@ -225,7 +223,7 @@ function Catalog(){
    {field&&!course&&field.image&&<img className="catalog-field-hero" src={field.image} alt="" loading="lazy" decoding="async"/>}
   {!group&&<><div className="catalog-group-grid">
    {groups.map((item,index)=><CatalogCard key={item.id} number={index+1}
-    title={catalogTitle(item.title)} eyebrow={locale==='vi'?'NHÓM NGÀNH':'DOMAIN GROUP'}
+    title={authoredCopy(item.title)} eyebrow={locale==='vi'?'NHÓM NGÀNH':'DOMAIN GROUP'}
     detail={item.fields.length+(locale==='vi'?' chuyên ngành':' fields')}
     locale={locale} onOpen={()=>openPath([item.id])}/>)}
   </div>
@@ -238,7 +236,7 @@ function Catalog(){
   </Text></>}
   {group&&!field&&<div className="catalog-field-grid">
    {group.fields.map((item,index)=><CatalogCard key={item.id} number={index+1}
-    title={catalogTitle(item.name)} image={item.image} eyebrow={locale==='vi'?'CHUYÊN NGÀNH':'FIELD'}
+    title={authoredCopy(item.name)} image={item.image} eyebrow={locale==='vi'?'CHUYÊN NGÀNH':'FIELD'}
     detail={item.courses.length+(locale==='vi'?' môn học theo lộ trình':' courses')}
     locale={locale} onOpen={()=>openPath([group.id,item.id])}/>)}
   </div>}
@@ -253,10 +251,10 @@ function Catalog(){
      {field.courses.filter(item=>item.level===level).map(item=><article
       key={item.id} className="catalog-course-card">
       <div className="kicker">{item.id} · {locale==='en'?en:vi}</div>
-      <Heading level={3} role="titleMedium">{catalogTitle(item.title)}</Heading>
+      <Heading level={3} role="titleMedium">{authoredCopy(item.title)}</Heading>
       <ol className="catalog-preview-lessons">
        {item.lessons.map(l=><li key={l.id}
-        className={canOpenLesson(l)?'catalog-preview-published':undefined}>{catalogTitle(l.title)}</li>)}
+        className={canOpenLesson(l)?'catalog-preview-published':undefined}>{authoredCopy(l.title)}</li>)}
       </ol>
       <Button variant="secondary" className="catalog-card-action"
        onClick={()=>openPath([group!.id,field!.id,item.id])}>
@@ -287,7 +285,7 @@ function Catalog(){
    {course.lessons.map((item,index)=><li key={item.id} className="catalog-lesson-card">
     <span className="catalog-lesson-order" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>
     <div className="catalog-lesson-desc">
-     <Heading level={2} role="titleSmall">{catalogTitle(item.title)}</Heading>
+     <Heading level={2} role="titleSmall">{authoredCopy(item.title)}</Heading>
      <Text role="support">{item.id} · {personalStudyRoute(item.id)?
       (locale==='vi'?'Học cá nhân · Có bài đầy đủ':'Personal study · Complete lesson'):
       canOpenLesson(item)?(locale==='vi'?'Đã phát hành':'Released'):
@@ -463,7 +461,7 @@ function Home(){
     animate={{opacity:1,y:0,scale:1}}
     transition={reduced?{duration:0}:{duration:.36,ease:'easeOut'}}>
     <div aria-live="polite" aria-atomic="true">
-     <Heading level={2} role="titleMedium">{mirror.question}</Heading>
+     <Heading level={2} role="titleMedium">{authoredCopy(mirror.question)}</Heading>
     </div>
     <div className="mirror-controls" role="group" aria-label={L("Chuyển câu hỏi","Switch questions")}>
      <Button variant="ghost" className="mirror-refresh"
@@ -487,8 +485,8 @@ function Home(){
      transition={reduced?{duration:0}:{duration:4.1,repeat:Infinity,ease:'easeInOut'}}/>
    </span>
    <div className="hero-dialogue-bubble" role="note">
-    <div className="hero-dialogue-label"><span className="example-label">{mirror.source}</span></div>
-    <Text role="body">{mirror.scene}</Text>
+    <div className="hero-dialogue-label"><span className="example-label">{authoredCopy(mirror.source)}</span></div>
+    <Text role="body">{authoredCopy(mirror.scene)}</Text>
    </div>
   </motion.aside>
   <div className="hero-actions">

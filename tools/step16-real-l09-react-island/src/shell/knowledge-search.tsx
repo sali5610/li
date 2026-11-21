@@ -3,7 +3,7 @@ import './home-catalog.css';
 import canonicalCatalog from '../../../../content/curriculum/legacy-catalog.v1.json';
 import searchableCatalog from '../../../../site/content-packs/course-catalog.json';
 import {openRoute,goBack,hasRoute} from './app-router.js';
-import {useDiscoveryLocale,localized} from './discovery-locale.js';
+import {authoredCopy,useDiscoveryLocale,localized} from './discovery-locale.js';
 import {personalStudyRoute} from '../learning/released-lessons.js';
 import {searchPersonalStudy} from '../learning/staging-draft-preview.js';
 import {createRoot} from 'react-dom/client';
@@ -11,7 +11,7 @@ import {motion,useReducedMotion} from 'motion/react';
 import {Button,Heading,InlineFeedback,ListRow,SearchField,Text} from '../../../../design-system/react/index';
 
 type Relation={id:string;title:string;label:string;kind:string;lessonId?:string;
- reason?:string;reasonLocalized?:string;relation?:string;sourceUrl?:string;sourceType?:string};
+ reason?:string;reasonLocalized?:{vi:string;en:string};relation?:string;sourceUrl?:string;sourceType?:string};
 type Answerability={level:'direct'|'related'|'outcome_match';reason:string;
  reasonLocalized?:{vi:string;en:string};sourceUrl?:string;
  evidenceStatus:'editorial_mapped_to_reviewed_learning_outcome'|
@@ -63,6 +63,8 @@ for(const group of canonicalCatalog.groups as CatalogGroup[]){
 }
 const clean=(text:string)=>text.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
  .replace(/đ/gi,'d').toLocaleLowerCase('vi').replace(/\s+/g,' ').trim();
+const searchText=(text:string)=>clean(text+' '+authoredCopy(text));
+const localizedContext=(text:string)=>text.split(' · ').map(authoredCopy).join(' · ');
 const sourceIsSafe=(url?:string)=>typeof url==='string'&&url.startsWith('https://');
 
 function availableRoute(id:string):string|undefined{
@@ -88,9 +90,9 @@ function directCatalogMatches(query:string):KnowledgeItem[]{
  const q=clean(query);
  if(q.length<2)return [];
  return published.filter(item=>{
-  const context=clean(item.context||'').split(' · ');
-  return clean(item.id).includes(q)||clean(item.title).includes(q)||
-   context.some(label=>label===q);
+  const context=(item.context||'').split(' · ');
+  return clean(item.id).includes(q)||searchText(item.title).includes(q)||
+   context.some(label=>clean(label)===q||clean(authoredCopy(label))===q);
  }).slice(0,14);
 }
 function withNavigableLessons(query:string,source:KnowledgeResponse):KnowledgeResponse{
@@ -99,6 +101,7 @@ function withNavigableLessons(query:string,source:KnowledgeResponse):KnowledgeRe
   contentState:'personal_study',context:item.context,links:[] as Relation[]
  }));
  const direct=[...personal,...directCatalogMatches(query)];
+ direct.push(...fallback(query).results.filter(item=>catalogBrowsePaths.has(item.id)));
  if(!direct.length)return source;
  const original=Array.isArray(source.results)?source.results:[];
  const byLesson=new Map(original.map(item=>[item.lessonId||item.id,item] as const));
@@ -116,7 +119,7 @@ function fallback(query:string):KnowledgeResponse{
  // Bundled canonical curriculum is available even if the content-pack client
  // fails offline: groups/fields/courses remain browseable, not just Wave1 lessons.
  const results=[...catalogSections,...published].map(item=>{
-  const title=clean(item.title),id=clean(item.id),context=clean(item.context||'');
+  const title=searchText(item.title),id=clean(item.id),context=searchText(item.context||'');
   const score=id===q?120:title.includes(q)?75:id.includes(q)?65:
    q.split(' ').every(token=>(title+' '+id+' '+context).includes(token))?15:-1;
   return {item,score};
@@ -132,7 +135,7 @@ function RelationMap({record,locale,onOpen}:{record:KnowledgeItem;locale:'vi'|'e
  const L=(vi:string,en:string)=>localized(locale,vi,en);
  return <div className="li-knowledge-graph" role="group" aria-label={L('Bản đồ kết nối tri thức','Knowledge connection map')}>
   <Text role="caption">{L('BẢN ĐỒ KẾT NỐI','CONNECTION MAP')}</Text>
-  <div className="li-knowledge-graph-root">{record.title}</div>
+  <div className="li-knowledge-graph-root">{authoredCopy(record.title)}</div>
   <div className="li-knowledge-graph-edges">
    {links.map((link,i)=>{
     const id=link.lessonId||link.id;
@@ -140,8 +143,8 @@ function RelationMap({record,locale,onOpen}:{record:KnowledgeItem;locale:'vi'|'e
     return <div key={link.id+':'+i} className="li-knowledge-graph-edge">
      <span className="li-knowledge-graph-connector" aria-hidden="true"/>
      {canOpen?<Button variant="secondary" onClick={()=>onOpen(id)}>
-      <span>{link.title}</span><span className="li-knowledge-graph-kind">{L('Mở bài','Open lesson')} · {id}</span>
-     </Button>:<span className="li-knowledge-graph-node">{link.title}
+      <span>{authoredCopy(link.title)}</span><span className="li-knowledge-graph-kind">{L('Mở bài','Open lesson')} · {id}</span>
+     </Button>:<span className="li-knowledge-graph-node">{authoredCopy(link.title)}
       <span className="li-knowledge-graph-kind">{link.kind==='Concept'?L('Khái niệm','Concept'):id}</span>
      </span>}
     </div>;
@@ -232,7 +235,7 @@ function KnowledgeSearch(){
     setResponse(withNavigableLessons(query,fallback(query)));
    }
   }).finally(()=>{if(ticket===generation.current)setSearching(false);});
- },[client,query,submitCount]);
+ },[client,locale,query,submitCount]);
  const askMentor=(record:KnowledgeItem)=>{
   mentorFocus={id:record.id,kind:record.kind,title:record.title,lessonId:record.lessonId,
    links:(record.links||[]).filter(link=>link.sourceType==='academic'&&
@@ -273,7 +276,7 @@ function KnowledgeSearch(){
   <Heading level={1} role="headline">{L("Tra Cứu","Search")}</Heading>
   <Text role="body">{L("Tìm bằng tên, mã bài hoặc hỏi bằng câu tự nhiên. Li. chỉ dẫn đến nội dung bài thực sự có, không tự bịa đáp án.","Search by title, lesson ID or a natural-language question. Li. links to real lesson content instead of inventing answers.")}</Text>
   </header>
-   <div className="search-query-area"><SearchField label={L("Bạn muốn tìm gì?","What would you like to explore?")} value={query} onQueryChange={changeQuery}
+   <div className="search-query-area"><SearchField inputId="li-knowledge-search-input" label={L("Bạn muốn tìm gì?","What would you like to explore?")} value={query} onQueryChange={changeQuery}
     onSearch={()=>setSubmitCount(n=>n+1)}
    placeholder={L("Ví dụ: Tại sao khảo sát 1.000 người vẫn có thể sai?","For example: Why can a survey of 1,000 people be misleading?")}
    clearLabel={L("Xóa tìm kiếm","Clear search")} submitLabel={L("Tìm kiếm","Search")}/></div>
@@ -298,10 +301,10 @@ function KnowledgeSearch(){
         className={index===0?'li-search-result is-featured':'li-search-result'} initial={reduced?false:{opacity:0,y:6}}
         animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.17}}> 
        
-       <ListRow title={record.title}
+       <ListRow title={authoredCopy(record.title)}
         description={(locale==='en'?(englishKind[record.kind]||'Knowledge item'):(kindCopy[record.kind]||'Mục kiến thức'))+' · '+(record.lessonId||record.id)+
          (record.contentState==='review_only'?L(' · đang duyệt',' · under review'):'')+
-         (record.context?' · '+record.context:'')+
+         (record.context?' · '+localizedContext(record.context):'')+
          (catalogBrowsePaths.has(record.id)?L(' · Xem trong Tàng Thư',' · Browse in Catalog'):'')}
         onActivate={record.kind==='Lesson'&&!!availableRoute(record.lessonId||record.id)?
          ()=>navigateTo(record.lessonId||record.id):
@@ -327,8 +330,8 @@ function KnowledgeSearch(){
         <div className="li-search-related">
         <Text role="support">{L("Kết nối kiến thức có nguồn · không mặc định là bài tiên quyết","Source-backed connections · not automatically prerequisites")}</Text>
         {record.links.map((link,i)=><div key={link.id+':'+i} className="li-search-relation">
-         <Text role="support">{locale==='en'?link.relation||link.label:link.label}: {link.title} · {link.lessonId||link.id}</Text>
-         {link.reason&&<Text role="support">{locale==='en'&&link.reasonLocalized?link.reasonLocalized:link.reason}</Text>}
+         <Text role="support">{locale==='en'?link.relation||link.label:link.label}: {authoredCopy(link.title)} · {link.lessonId||link.id}</Text>
+         {(link.reasonLocalized?.[locale]||link.reason)&&<Text role="support">{link.reasonLocalized?.[locale]||link.reason}</Text>}
          {link.kind==='Lesson'&&!!availableRoute(link.lessonId||'')&&
           <Button variant="secondary" onClick={()=>navigateTo(link.lessonId!)}>{L("Mở bài","Open lesson")} {link.lessonId}</Button>}
          {sourceIsSafe(link.sourceUrl)&&record.links.findIndex(item=>item.sourceUrl===link.sourceUrl)===i&&<a href={link.sourceUrl} target="_blank" rel="noopener noreferrer">

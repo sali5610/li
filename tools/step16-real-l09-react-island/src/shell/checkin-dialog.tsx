@@ -1,4 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
+import {authoredCopy} from './discovery-locale.js';
 import {createRoot} from 'react-dom/client';
 import {Button,Progress} from '../../../../design-system/react/index';
 import {
@@ -33,7 +34,7 @@ const energyItems:readonly [EnergyAnswer,string,string][]=[
  ['high','Dồi dào','Plenty'],['medium','Vừa đủ','Enough'],['low','Đang cạn','Low']
 ];
 const attentionItems:readonly [AttentionAnswer,string,string][]=[
- ['steady','Rõ ràng','Clear'],['warming','Chập chờn','Unsteady'],['hard','Rất khó','Difficult']
+ ['steady','Rõ ràng','Clear'],['warming','Chập chờn','Wavering'],['hard','Rất khó','Difficult']
 ];
 const rhythmNames:Record<StudyRhythm,string>={...STUDY_RHYTHMS};
 const defaultConsent='Đang lưu Check-in trong Nhật Ký trên thiết bị; chỉ đồng bộ lên Neon khi bạn đã bật quyền Nhật Ký.';
@@ -118,11 +119,13 @@ function CheckinDialog(){
    'Answer all three physical questions before applying a rhythm, or skip to study without a check-in.'):
   override?
    copy('L1 đã đủ ba câu. Bạn chọn '+rhythmNames[override]+' thủ công; quyền quyết định vẫn thuộc về bạn.',
-    'All three questions answered. You manually chose '+override+'. The choice is yours.'):
+    'All three questions answered. You manually chose '+authoredCopy(rhythmNames[override])+'. The choice is yours.'):
    copy('Gợi ý: '+rhythmNames[suggestion!.mode]+'. '+suggestion!.reason+
     (suggestion!.positives.length?' Điểm cộng gợi ý: '+suggestion!.positives.join(' · ')+'.':'')+
     ' Đây không phải đánh giá sức khỏe.',
-    'Suggested rhythm: '+suggestion!.mode+'. '+suggestion!.reason+' Not a health assessment.');
+    'Suggested rhythm: '+authoredCopy(rhythmNames[suggestion!.mode])+'. '+authoredCopy(suggestion!.reason)+
+     (suggestion!.positives.length?' Suggestion bonuses: '+suggestion!.positives.map(authoredCopy).join(' · ')+'.':'')+
+     ' This is not a health assessment.');
  return <div id="checkin-modal" className="modal open" role="dialog" aria-modal="true"
   aria-labelledby="checkin-title" aria-describedby="checkin-description"
   ref={dialogRef} onKeyDown={onKeyDown} data-react-owner="checkin">
@@ -187,11 +190,11 @@ function CheckinDialog(){
         .map(([key,label])=><label key={key} className="checkin-radio">
          <input type="radio" name="checkin-override" value={key}
           checked={override===key} onChange={()=>setOverride(key as StudyRhythm|'')}/>
-         <span>{label}</span></label>)}
+         <span>{authoredCopy(label)}</span></label>)}
       </div>
      </fieldset>
     </details>
-    <p id="li-checkin-recording-disclosure" className="checkin-privacy">{consent}</p>
+    <p id="li-checkin-recording-disclosure" className="checkin-privacy">{authoredCopy(consent)}</p>
    </div>
    <div className="action-row checkin-actions">
     <Button variant="secondary" className="action alt" id="close-checkin" onClick={close}>

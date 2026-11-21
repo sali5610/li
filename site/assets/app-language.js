@@ -176,6 +176,9 @@ function dateForScreenReader(day,month,year){
  return new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",year:"numeric"}).format(new Date(Number(year),Number(month)-1,Number(day)));
 }
 const DYNAMIC_TEMPLATES=[
+ [/^Hãy kiểm chứng: (.+)$/,m=>TEXT[m[1]]?"Investigate: "+TEXT[m[1]]:null],
+ [/^Bài (L[0-9-]+)$/,m=>"Lesson "+m[1]],
+ [/^Dữ liệu ([a-z0-9:_-]+)$/i,m=>"Data "+m[1]],
  [/^Hiển thị (\d+)\/13 phương pháp(?: · (.+))?$/,m=>{
   const suffix={"kết quả tìm kiếm trên cả 13":"search results across all 13","theo nhóm":"filtered by group","đầy đủ":"all techniques"}[m[2]]||TEXT[m[2]]||m[2]||"";
   return "Showing "+m[1]+"/13 spells"+(suffix?" · "+suffix:"");

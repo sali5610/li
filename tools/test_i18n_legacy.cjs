@@ -42,6 +42,21 @@ for(const phrase of [
  "Selection bias là thiên lệch xuất phát từ cách chọn người tham gia: nhóm bị bỏ sót có thể khác nhóm được hỏi. Một banner chỉ hiện cho người đang dùng app không hỏi được người đã rời app.",
  "Ý đã nhặt chỉ lưu trên thiết bị khi ngươi bấm Lưu. Nếu lưu lỗi, app sẽ báo rõ; lão không nhận vơ."
 ])assert(paired(phrase),"Missing cross-feature copy: "+phrase);
+// The React shells consume these dynamic authored models via the same dictionary.
+const scenariosSource=index.slice(index.indexOf("const scenarios=["),index.indexOf("function renderMirrorItem"));
+const scenarios=vm.runInNewContext(scenariosSource+";scenarios");
+for(const scenario of scenarios){
+ for(const text of [scenario.question,scenario.scene,scenario.observed,scenario.unknown,...(scenario.branches||[])].filter(Boolean))
+  assert(paired(text),"Missing English Mirror/Investigate text: "+text);
+}
+for(const text of [
+ "Vào nhịp","Đào sâu","Quá tải","Hồi trí",
+ "Hiển thị đầy đủ 13 phương pháp để đào sâu.",
+ "“Đã muốn đào sâu thì lão mở cả mười ba phép. Chọn thứ ngươi muốn hiểu kỹ.”",
+ "Chỉ thay cách gọi trong lời Lão Lý, không đổi nội dung học.",
+ "Lịch sử mở bài",
+ "Đang ghi Check-in và hoạt động, đồng bộ riêng tư với Neon theo tài khoản."
+])assert(paired(text),"Missing English runtime UI text: "+text);
 /* Every canonical VI spell remains paired with an English fantasy display name.
    Academic method identity, T13 ordering and filter keys must stay untouched. */
 const entries=JSON.parse(index.match(/const methods=(\[[\s\S]*?\]);\s*const categories=/)[1]);

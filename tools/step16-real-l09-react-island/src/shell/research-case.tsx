@@ -1,7 +1,7 @@
 import {openRoute} from './app-router.js';
 import './home-catalog.css';
 import {inquiryFlow} from './inquiry-port.js';
-import {useDiscoveryLocale,localized} from './discovery-locale.js';
+import {authoredCopy,useDiscoveryLocale,localized} from './discovery-locale.js';
 import type {ResearchView,CaseChoice} from './inquiry-port.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
@@ -47,18 +47,18 @@ function ResearchScene(){
   <div className="research-layout"><section className="research-primary">
    <section className="research-hypothesis">
     <div className="kicker">{L("I · GIẢ THUYẾT","I · HYPOTHESIS")}</div>
-    <Heading level={2} role="titleMedium">{state.question||L('Một kết luận cần kiểm chứng','A claim to investigate')}</Heading>
+    <Heading level={2} role="titleMedium">{authoredCopy(state.question)||L('Một kết luận cần kiểm chứng','A claim to investigate')}</Heading>
     <Badge tone="neutral">{L("Ví dụ giả định","Hypothetical example")}</Badge>
     <div className="section-rule"/>
     <div className="path-list">
      {state.branches.map((branch,index)=><Button key={index} variant="secondary"
       className="branch" onClick={()=>choose(index)}>
-      {String(index+1).padStart(2,'0')} · {branch}
+      {String(index+1).padStart(2,'0')} · {authoredCopy(branch)}
      </Button>)}
     </div>
-    <motion.p key={state.feedback} className="state-note" role="status"
+    <motion.p key={authoredCopy(state.feedback)} className="state-note" role="status"
      initial={reduced?false:{opacity:0,y:4}} animate={{opacity:1,y:0}}
-     transition={reduced?{duration:0}:{duration:0.16}}>{state.feedback}</motion.p>
+     transition={reduced?{duration:0}:{duration:0.16}}>{authoredCopy(state.feedback)}</motion.p>
     <div className="action-row"><Button onClick={()=>openRoute('case')}>{L("Phản Chứng","Challenge the claim")}</Button></div>
    </section>
    <section className="research-evidence">
@@ -66,10 +66,10 @@ function ResearchScene(){
     <Heading level={2} role="titleMedium">{L("Chưa đủ dữ kiện","Insufficient evidence")}</Heading>
     <Text role="body">{L("Một tỷ lệ chưa cho biết cách chọn mẫu, nên chưa đủ để kết luận về toàn bộ tổng thể.","A percentage alone says nothing about sampling, so it cannot establish a population-wide conclusion.")}</Text>
     <div className="path-item"><span className="path-num">01</span>
-     <div><strong>{L("Điều quan sát","Observed")}</strong><Text role="support">{state.observed}</Text></div>
+     <div><strong>{L("Điều quan sát","Observed")}</strong><Text role="support">{authoredCopy(state.observed)}</Text></div>
     </div>
     <div className="path-item"><span className="path-num">02</span>
-     <div><strong>{L("Điều chưa biết","Unknown")}</strong><Text role="support">{state.unknown}</Text></div>
+     <div><strong>{L("Điều chưa biết","Unknown")}</strong><Text role="support">{authoredCopy(state.unknown)}</Text></div>
     </div>
    </section>
   </section>

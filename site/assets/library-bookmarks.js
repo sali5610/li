@@ -42,15 +42,15 @@ function toggle(type,id){
   refresh();toast("Không lưu được thay đổi trên thiết bị. Dấu Trang vẫn giữ nguyên.");return false;
  }
  refresh();
- window.liLibraryShelf?.renderResume();
+ window.liLibraryShelf?.renderBookmarks();
  if(removing){
   toast(isEnglish()?(type==="lesson"?"Lesson bookmark removed.":"Case bookmark removed."):"Đã bỏ lưu "+(type==="lesson"?"bài học.":"case."),{undo:()=>{
    if(savedContent.some(item=>item.type===type&&item.id===id))return true;
    const at=Math.min(index,savedContent.length);savedContent.splice(at,0,removed);
    if(!liWriteState()){savedContent.splice(at,1);return false;}
-   refresh();window.liLibraryShelf?.renderResume();return true;
+   refresh();window.liLibraryShelf?.renderBookmarks();return true;
   }});
- }else toast(isEnglish()?(type==="lesson"?"Lesson saved to Continue · Bookmarks.":"Case saved to Continue · Bookmarks."):"Đã lưu "+(type==="lesson"?"bài học":"case")+" vào Quay lại · Dấu Trang.");
+ }else toast(isEnglish()?(type==="lesson"?"Lesson saved to Bookmarks.":"Case saved to Bookmarks."):"Đã lưu "+(type==="lesson"?"bài học":"case")+" vào Dấu trang.");
  return true;
 }
 document.addEventListener("click",event=>{

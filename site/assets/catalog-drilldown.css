@@ -210,3 +210,29 @@
 #page-catalog .catalog-category-filter[aria-pressed="true"]{background:var(--moss);border-color:var(--moss);color:var(--cream)}
 #page-catalog .catalog-category-filter:focus-visible{outline:2px solid var(--moss);outline-offset:3px}
 #page-catalog .catalog-category-tag{display:inline-flex;align-self:flex-start;background:var(--paper-3);color:var(--moss);border-radius:999px;padding:var(--li-space-1) var(--li-space-2);font-size:var(--li-type-support)}
+
+/* Native fallback for the shared Tàng Thư field-card variant. */
+#page-catalog .catalog-field-card{
+ display:grid;grid-template-columns:minmax(0,40%) minmax(0,1fr);
+ grid-template-rows:repeat(4,auto);align-items:start;
+ column-gap:var(--li-space-4);row-gap:var(--li-space-2);
+ min-height:0;padding:var(--li-space-5) 0;
+ border:0;border-bottom:1px solid var(--rule);
+ border-radius:0;box-shadow:none;background:transparent;
+}
+#page-catalog .catalog-field-card .catalog-card-art{
+ grid-column:1;grid-row:1 / 5;width:100%;height:auto;
+ aspect-ratio:4/5;object-fit:cover;align-self:center;
+ border:0;border-radius:50% 50% 0 0;
+}
+#page-catalog .catalog-field-card :is(.catalog-category-tag,h2,.small,.catalog-card-action){
+ grid-column:2;min-width:0;
+}
+#page-catalog .catalog-field-card .catalog-card-action{
+ margin-top:var(--li-space-2);
+}
+@media(max-width:700px){
+ #page-catalog .catalog-field-card{
+  grid-template-columns:minmax(0,42%) minmax(0,1fr);
+ }
+}

@@ -8,7 +8,6 @@ import {createRoot} from 'react-dom/client';
 import {motion,useReducedMotion} from 'motion/react';
 import {Badge,Button,Field,Heading,InlineFeedback,NumberedCard,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
-import {FieldPicker} from './library-taxonomy.js';
 import {CopyAnalysisPrompt} from '../learning/CopyAnalysisPrompt.js';
 
 const empty:ResearchView={question:'',branches:[],observed:'',unknown:'',feedback:''};
@@ -131,7 +130,6 @@ function CaseScene(){
  const [completed,setCompleted]=useState<{choice:CaseChoice;conclusion:string}|null>(null);
  const [revision,setRevision]=useState(()=>inquiryFlow().getCaseDraft());
  const [message,setMessage]=useState('');
- const [fieldId,setFieldId]=useState<string|null>(null);
  const [bookmarked,setBookmarked]=useState(readBookmark);
  useEffect(()=>{
   const sync=()=>{
@@ -161,8 +159,8 @@ function CaseScene(){
  const save=():boolean=>{
   if(!choice){setMessage(L('Hãy chọn một nhận định trước khi lưu.','Choose an answer before saving.'));return false;}
   if(revision.trim().length<12){setMessage(L('Viết lại kết luận ít nhất 12 ký tự.','Revise your conclusion using at least 12 characters.'));return false;}
-  const saved=inquiryFlow().submitCase(choice,revision,fieldId);
-  if(saved){setCompleted({choice,conclusion:revision});setMessage('');setRevision('');setChoice(null);setFieldId(null);}
+  const saved=inquiryFlow().submitCase(choice,revision);
+  if(saved){setCompleted({choice,conclusion:revision});setMessage('');setRevision('');setChoice(null);}
   else setMessage(L('Không thể lưu Bút Ký trên thiết bị này. Nội dung vẫn giữ trong ô viết.','Unable to save to Notebook on this device. Your text is preserved here.'));
   return saved;
  };
@@ -176,7 +174,7 @@ function CaseScene(){
   };
   window.liCaseUi=port;
   return()=>{if(window.liCaseUi===port)delete window.liCaseUi;};
- },[choice,revision,fieldId]);
+ },[choice,revision]);
  const toggleBookmark=()=>{
   inquiryFlow().toggleCaseBookmark();
   setBookmarked(readBookmark());
@@ -216,7 +214,6 @@ function CaseScene(){
     <div className="case-revision"><Field id="li-react-case-revision" kind="textarea" label={L("Luận Kết · Viết lại nhận định không vượt quá dữ kiện","Conclusion · Revise your claim without exceeding the evidence")}
      rows={5} value={revision} onChange={e=>updateRevision(e.target.value)}
      placeholder={L("Trong nhóm người đang sử dụng được hỏi, 90% phản hồi tích cực…","Among the current users surveyed, 90% reported satisfaction…")}/>
-    <FieldPicker id="li-case-field-id" value={fieldId} onChange={setFieldId}/>
     {message&&<InlineFeedback tone="error" message={message}/>}
     <div className="action-row"><Button onClick={save}><LiIcon name="check" size={20}/> {L("Lưu vào Bút Ký","Save to Notebook")}</Button></div>
     <Text role="support">{L("Sau khi xem phản hồi, hãy viết lại kết luận bằng lời của bạn.","After the feedback, rewrite the conclusion in your own words.")}</Text>

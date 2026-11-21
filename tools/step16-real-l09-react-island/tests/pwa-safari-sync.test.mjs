@@ -263,6 +263,7 @@ test('saved Case note survives PWA offline → signed sync → Safari React Bút
    }},
    window:{liReactLibraryMounted:true,dispatchEvent:event=>caseEvents.push(event.type),
     liLanguage:{translate:v=>v,get:()=> 'vi'},
+    liTaxonomyFieldIds:['data-science'],
     liBookmarks:{isSaved:()=>false},liLibraryShelf:{renderHome(){},renderCollection(){}}},
    processedCases:restored.cases,collectedIdeas:restored.ideas,
    liStorageError:false,
@@ -278,6 +279,7 @@ test('saved Case note survives PWA offline → signed sync → Safari React Bút
   assert.equal(sandbox.window.liNotes.openDetail('case',note.id),true);
   const shown=sandbox.window.liNotes.getView();
   assert.equal(shown.body,note.revision);
+  assert.equal(shown.fieldId,'data-science','Case note inherits source field after PWA/Safari sync');
   assert.equal(shown.context.question,snapshot.question);
   assert.equal(shown.context.scene,snapshot.scene);
   assert.equal(shown.context.options.length,2);

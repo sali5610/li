@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "status": "Editorial draft — source-reviewed, not PO-approved or production released",
-  "provenance": "Migrated existing 13 spell guidance from React detail; examples, Do & Don't, diagram captions and evidence bounds authored from linked academic/educational sources on 2026-11-22. Examples are explanatory, not empirical observations or certified task solutions. Illustrations are editorial/contextual, not evidence of technique effectiveness. Illustration selection reviewed 2026-11-22: 13 sourced, method-related diagrams from Stuon (CC BY), Wikimedia Commons (CC0/PD/CC BY-SA), and Frontiers (CC BY); T04 now uses a related CC BY 4.0 worked-example learning diagram featuring the 'explain why each step' technique; the diagram also covers subsequent solo practice, so it is an illustrative fit rather than an exact standalone Guided Self-Explanation infographic. Source/license metadata preserved in versioned JSON; no source annotations in learning UI.",
+  "provenance": "Migrated existing 13 spell guidance from React detail; examples, Do & Don't, diagram captions and evidence bounds authored from linked academic/educational sources on 2026-11-22. Examples are explanatory, not empirical observations or certified task solutions. Illustrations are editorial/contextual, not evidence of technique effectiveness. Illustration selection reviewed 2026-11-22: 12 sourced method-related diagrams from Stuon (CC BY), Wikimedia Commons (CC0/PD/CC BY-SA), and Frontiers (CC BY); T04 external figure withdrawn after user review: its math-study overview was not specific to guided self-explanation. Source/license metadata preserved in versioned JSON; no source annotations in learning UI.",
   "methods": {
     "T01": {
       "vi": {
@@ -330,15 +330,22 @@
           "url": "https://www.psychologicalscience.org/journals/pspi/1529100612453266/"
         }
       ],
-      "illustration": {
-        "src": "https://stuon.space/imgs/figures/blog-how-to-study-math.webp",
-        "source": "https://stuon.space/blog/how-to-study-math",
-        "credit": "Stuon",
-        "license": "CC BY 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-        "altVi": "Chu trình học từ ví dụ giải sẵn: trước tiên tự giải thích vì sao từng bước đúng, sau đó che lời giải, giải bài mới và kiểm tra lỗi.",
-        "altEn": "Learning from worked examples: first explain why each step works, then solve independently and check errors.",
-        "match": "CLOSE"
+      "illustration": null,
+      "visualExample": {
+        "vi": {
+          "title": "Điểm đặt hàng lại · ví dụ đang học",
+          "equation": "5 × 2 + 4 = 14",
+          "question": "Tại sao phải nhân 5 × 2, rồi cộng thêm 4?",
+          "reasoning": "Mỗi ngày cần 5 đơn vị. Chờ hàng 2 ngày nên phải đủ 10 đơn vị trong thời gian chờ.",
+          "check": "Cộng thêm 4 đơn vị tồn an toàn → 14. Kết quả đúng khi nhu cầu và thời gian chờ cố định."
+        },
+        "en": {
+          "title": "Reorder point · worked example",
+          "equation": "5 × 2 + 4 = 14",
+          "question": "Why multiply 5 × 2 before adding 4?",
+          "reasoning": "Demand is 5 units a day. A 2-day wait means 10 units are needed during lead time.",
+          "check": "Add 4 safety units → 14. This assumes stable demand and lead time."
+        }
       }
     },
     "T05": {

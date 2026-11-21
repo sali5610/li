@@ -20,6 +20,8 @@ export interface BookwormLessonBookProps{
 export function BookwormLessonBook({locale,intro,diagram,chapters,practiceAction}:BookwormLessonBookProps){
  const reduced=useReducedMotion();
  const [page,setPage]=useState(0);
+ const [bookmark,setBookmark]=useState<number|null>(null);
+ const [paperNoteOpen,setPaperNoteOpen]=useState(false);
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  const chapter=chapters[page];
  return <div className="li-bw-reader">
@@ -48,9 +50,44 @@ export function BookwormLessonBook({locale,intro,diagram,chapters,practiceAction
       </div>
      </motion.div>
     </AnimatePresence>
+    <button className="li-bw-reader-ribbon" type="button"
+     aria-pressed={bookmark===page}
+     aria-label={bookmark===page?t('Bỏ dấu trang hiện tại','Remove bookmark from current page'):
+      t('Đánh dấu trang hiện tại','Bookmark current page')}
+     title={bookmark===page?t('Bỏ dấu trang','Remove bookmark'):t('Đánh dấu trang','Bookmark page')}
+     onClick={()=>setBookmark(marked=>marked===page?null:page)}>
+     <motion.span aria-hidden="true"
+      initial={false} animate={reduced?{}:{y:bookmark===page?10:0,scale:bookmark===page?1.05:1}}
+      transition={{type:'spring',stiffness:270,damping:19}}>
+      <LiIcon name="bookmark" size={19}/>
+     </motion.span>
+    </button>
     <span className="li-bw-reader-folio" aria-hidden="true">{String(page+2).padStart(2,'0')}</span>
    </article>
   </div>
+  <div className="li-bw-reader-scrap-tools">
+   <button className="li-bw-reader-note-toggle" type="button"
+    aria-expanded={paperNoteOpen} onClick={()=>setPaperNoteOpen(v=>!v)}>
+    <LiIcon name="feather" size={16}/>
+    {paperNoteOpen?t('Gấp mẩu giấy','Fold note'):t('Mở mẩu giấy','Unfold note')}
+   </button>
+   {bookmark!==null&&<button className="li-bw-reader-bookmark-jump" type="button"
+     onClick={()=>setPage(bookmark)}>
+     <LiIcon name="bookmark" size={16}/>
+     {t('Dấu trang','Bookmarked')}: {chapters[bookmark].title}
+    </button>}
+  </div>
+  <AnimatePresence initial={false}>
+   {paperNoteOpen&&<motion.div key="scrap-note" className="li-bw-reader-scrap-note"
+     initial={reduced?false:{opacity:0,rotate:-5,y:-14,scale:.96}}
+     animate={{opacity:1,rotate:-1.5,y:0,scale:1}}
+     exit={reduced?{opacity:0}:{opacity:0,rotate:3,y:-8,scale:.97}}
+     transition={{duration:reduced?0:.32,ease:'easeOut'}}>
+     <LiIcon name="feather" size={18}/>
+     <span>{chapter.title}</span>
+     <Text role="support">{chapter.description}</Text>
+    </motion.div>}
+  </AnimatePresence>
   <nav className="li-bw-reader-controls" aria-label={t('Điều hướng trang sách','Book page navigation')}>
    <Button variant="secondary" disabled={page===0} onClick={()=>setPage(i=>Math.max(0,i-1))}>
     <LiIcon name="chevron-left" size={17}/>{t('Trang trước','Previous page')}

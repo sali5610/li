@@ -249,7 +249,7 @@ export function BuddyDialog({root}:{root:HTMLElement}){
      <LiIcon name={index===0?'search':index===1?'chat':'book-open'} size={18}/>
      {label}</Button>)}
     <Button variant="ghost" className="action"
-     id="li-react-close-buddy" onClick={close}>
+     id="li-react-close-buddy" onClick={()=>close()}>
      <LiIcon name="close" size={18}/> {chooseLanguage('Đóng','Close')}</Button>
    </div>
   </div>

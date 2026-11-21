@@ -387,6 +387,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
   <nav className="li-learning-stepper" aria-label={vi?'Các bước học':'Learning steps'}>
    {PAGES.map((p,i)=><Button key={p} variant={p===phase?'primary':'secondary'}
+    aria-current={p===phase?'step':undefined}
     disabled={(i>=4&&!persisted.submitted)||(i===5&&!persisted.reviewed)}
     onClick={()=>setPhase(p)}><span className="li-learning-step-index">{String(i+1).padStart(2,'0')}</span><span>{names[p]}</span></Button>)}
   </nav>

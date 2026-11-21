@@ -42,7 +42,6 @@ function ResearchScene(){
   return openRoute('collection');
  };
  return <div data-li-react-screen="research" className="li-react-research">
-  <div className="kicker">{L("THEO DẤU MỘT NGHI VẤN","FOLLOW THE EVIDENCE")}</div>
   <Heading level={1} role="headline">{L("Khảo Chứng","Investigate")}</Heading>
   <Text role="body">{L("Mỗi kết luận bắt đầu từ một câu hỏi: ta đã biết gì, và còn thiếu gì?","Every conclusion begins with a question: what do we know, and what is missing?")}</Text>
   <div className="research-layout"><section className="research-primary">
@@ -188,7 +187,6 @@ function CaseScene(){
   setBookmarked(readBookmark());
  };
  return <div data-li-react-screen="case" className="li-react-case">
-  <div className="kicker">{L("PHẢN CHỨNG · THIÊN LỆCH CHỌN MẪU","CHALLENGE · SAMPLING BIAS")}</div>
   <div className="library-heading-with-utility">
    <Heading level={1} role="headline">{L("Phản Chứng","Challenge")}</Heading>
    <Button variant="ghost" aria-label={bookmarked?L('Bỏ lưu case','Remove case bookmark'):L('Lưu case','Bookmark case')}
@@ -197,6 +195,7 @@ function CaseScene(){
     <LiIcon name="bookmark" size={20}/>{bookmarked?L('Đã lưu','Saved'):L('Lưu case','Bookmark case')}
    </Button>
   </div>
+  <Text role="caption">{L("Thiên lệch chọn mẫu","Sampling bias")}</Text>
   <div className="case-layout">
    <section className="case-workspace">
     <div className="case-question"><Heading level={2} role="titleMedium">{L(caseCopy.question.vi,caseCopy.question.en)}</Heading>

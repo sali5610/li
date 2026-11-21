@@ -104,7 +104,6 @@ export function Guide(){
  return <div className="section-shell li-react-guide" data-li-react-screen="guide">
   <header className="guide-opening">
    <div className="guide-opening-copy">
-    <div className="kicker">{copy('CẨM NANG TƯ DUY','THINKING FIELD GUIDE')}</div>
     <Heading level={1} role="headline" className="display-title">{copy('Sổ Tay Thần Chú','Learning Spells')}</Heading>
     <Text role="body" className="intro">{copy(
      '13 phương pháp để học, ghi nhớ và suy nghĩ. Mỗi pháp danh đều có tên học thuật gốc đi kèm.',

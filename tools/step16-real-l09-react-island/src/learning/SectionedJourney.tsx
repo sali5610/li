@@ -366,11 +366,13 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  return <section className="li-learning-journey" lang={locale}
   data-li-react-journey={id} data-li-sectioned-journey={id} data-li-lesson-phase={phase}>
   <header className="li-learning-header">
-   <div><Text role="caption">{lesson.hierarchy.field.title} · {id}</Text>
+   <div>
     <Heading level={1} role="headline">{lesson.title[locale]}</Heading>
-     {preview&&<Text role="support">{vi?
-      'Học cá nhân · tiến độ theo tài khoản · nội dung đang hoàn thiện':
-      'Personal study · account-synced progress · content in progress'}</Text>}</div>
+    <Text role="caption">{lesson.hierarchy.field.title} · {id}</Text>
+    {preview&&<Text role="support">{vi?
+     'Học cá nhân · tiến độ theo tài khoản · nội dung đang hoàn thiện':
+     'Personal study · account-synced progress · content in progress'}</Text>}
+   </div>
    <div className="li-learning-header-actions">
     <details className="li-lesson-header-more">
      <summary>{vi?'Tùy chọn':'Options'}</summary>

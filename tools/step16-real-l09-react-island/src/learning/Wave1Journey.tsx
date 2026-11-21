@@ -276,8 +276,9 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
    data-li-react-journey={id}
    data-li-lesson-phase={phase} data-li-lesson-submitted={attempt.submitted?'true':'false'}>
   <header className="li-learning-header">
-   <div><Text role="caption">{source.hierarchy.field.title} · {id}</Text>
+   <div>
     <Heading level={1} id={'li-react-'+id+'-title'} role="headline">{content.title}</Heading>
+    <Text role="caption">{source.hierarchy.field.title} · {id}</Text>
     <Text>{content.intro}</Text>
    </div>
    <div className="li-learning-header-actions">

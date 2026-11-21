@@ -154,11 +154,6 @@ function Catalog(){
  if(course)breadcrumb.push({label:course.title,path:[group!.id,field!.id,course.id]});
  if(lesson)breadcrumb.push({label:lesson.title,path:[group!.id,field!.id,course!.id,lesson.id]});
  const heading=lesson?.title||course?.title||field?.name||group?.title||(locale==='vi'?'Tàng Thư':'Library');
- const eyebrow=lesson?(locale==='vi'?'BÀI HỌC · ':'LESSON · ')+lesson.id:
-  course?(locale==='vi'?'MÔN HỌC · ':'COURSE · ')+course.id:
-  field?(locale==='vi'?'CHUYÊN NGÀNH':'FIELD'):
-  group?(locale==='vi'?'NHÓM NGÀNH':'DOMAIN GROUP'):
-  (locale==='vi'?'KHÁM PHÁ TRI THỨC':'EXPLORE KNOWLEDGE');
  const description=lesson?(personalStudyRoute(lesson.id)?
   (locale==='vi'?'Bài học cá nhân · Có thể học ngay trong Tàng Thư.':
    'Personal study lesson · Ready to learn in your library.'):
@@ -205,7 +200,7 @@ function Catalog(){
  return <motion.div key={path.join('/')||'catalog-root'} data-li-react-screen="catalog"
    className="li-react-catalog" initial={reduced?false:{opacity:0,y:7}}
    animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.18}}>
-  <div className={'catalog-breadcrumbs'+(lesson?' is-lesson':'')}>
+  {group&&<div className={'catalog-breadcrumbs'+(lesson?' is-lesson':'')}>
    <div className="catalog-breadcrumbs-full">
     <Breadcrumb label={locale==='vi'?'Vị trí trong Tàng Thư':'Library path'}
      visibleParents={2} moreLabel={locale==='vi'?'Các cấp trước':'Earlier levels'}
@@ -214,14 +209,14 @@ function Catalog(){
       onActivate:index<breadcrumb.length-1?()=>openPath(item.path):undefined
      }))}/>
    </div>
-
-  </div>
+  </div>}
   <header className={'catalog-lead'+(lesson?' catalog-lead--outline':'')}>
-   {lesson?<div className="catalog-outline-overline">
+   <Heading level={1} role="headline" className="display-title">{heading}</Heading>
+   {lesson&&<div className="catalog-outline-meta">
     <span>{locale==='vi'?'ĐỀ CƯƠNG BÀI HỌC':'LESSON OUTLINE'} · {lesson.id}</span>
     <span className="catalog-outline-status">{locale==='vi'?'Chưa phát hành':'Unreleased'}</span>
-   </div>:<div className="kicker">{eyebrow}</div>}
-   <Heading level={1} role="headline" className="display-title">{heading}</Heading>
+   </div>}
+   {course&&!lesson&&<Text role="caption">{course.id}</Text>}
    {!lesson&&<Text role="body" className="intro">{description}</Text>}
   </header>
   {lessonNavError&&<p role="alert" className="li-catalog-error">{lessonNavError}</p>}

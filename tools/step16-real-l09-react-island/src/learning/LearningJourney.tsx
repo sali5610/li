@@ -334,8 +334,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   data-li-lesson-reviewed={attempt.reviewed?'true':'false'}>
   <header className="li-learning-header">
    <div>
-    <Text role="caption">DATA SCIENCE · L09-1-2</Text>
     <Heading level={1} id="li-react-l09-title" role="headline">{content.title}</Heading>
+    <Text role="caption">DATA SCIENCE · L09-1-2</Text>
     <Text role="body">{content.intro}</Text>
    </div>
    <div className="li-learning-header-actions">

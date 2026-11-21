@@ -54,7 +54,6 @@ function CaptureIdea(){
    <span aria-hidden="true">←</span> {L('Quay lại','Back')}
   </Button>
   <header className="capture-lead">
-   <div className="kicker">{L("NHẶT Ý","CAPTURE AN IDEA")}</div>
    <Heading level={1} role="headline">{L("Nhặt ý","Capture")}</Heading>
   </header>
   <div className="capture-writing">

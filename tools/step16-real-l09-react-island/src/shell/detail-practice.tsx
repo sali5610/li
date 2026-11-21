@@ -1,6 +1,7 @@
 import {openRoute} from './app-router.js';
 import React,{useEffect,useId,useRef,useState,useSyncExternalStore} from 'react';
 import {createPortal} from 'react-dom';
+import {FieldPicker,fieldLabel} from './library-taxonomy.js';
 import {Button,Checkbox,Field,Heading,InlineFeedback,Radio,Text,LiIcon} from '../../../../design-system/react/index';
 import {createFadedT03Flow,fadedT03Phase} from './spell-t03-flow.js';
 import {createLociT13Flow,lociT13Phase} from './spell-t13-flow.js';
@@ -31,7 +32,8 @@ type CaseContext={
 type NoteView={
  id:string|null;type:'case'|'idea'|null;title:string;body:string;status?:string;
  kind?:string;bodyTitle?:string;date?:string;backRoute:string;
- history:Version[];context:CaseContext|null;bookmarked?:boolean;storageAvailable:boolean
+ history:Version[];context:CaseContext|null;bookmarked?:boolean;storageAvailable:boolean;
+ fieldId?:string|null
 };
 type NoteOutcome={ok:boolean;changed?:boolean;message:string};
 type AppWindow=Window&{
@@ -46,7 +48,7 @@ type AppWindow=Window&{
  liLanguage?:{get:()=>string;translate?:(value:string)=>string};
  liNotes?:{
   getView:()=>NoteView;
-  saveFromReact:(title:string,body:string,baseVersion:number)=>NoteOutcome;
+  saveFromReact:(title:string,body:string,baseVersion:number,fieldId?:string|null)=>NoteOutcome;
   restoreFromReact:(version:number,confirmed?:boolean)=>boolean;
   deleteNote:(type:'case'|'idea',id:string)=>boolean;
   deleteFromReact:(type:'case'|'idea',id:string)=>boolean
@@ -501,14 +503,15 @@ export function NoteDetail(){
  const [title,setTitle]=useState('');
  const [body,setBody]=useState('');
  const [baseVersion,setBaseVersion]=useState(0);
+ const [fieldId,setFieldId]=useState<string|null>(null);
  const [message,setMessage]=useState('');
  useEffect(()=>{setEditing(false);setMessage('');},[note.id,note.type]);
  const startEdit=()=>{
-  setTitle(note.title);setBody(note.body);setBaseVersion(note.history.length);
+  setTitle(note.title);setBody(note.body);setFieldId(note.fieldId||null);setBaseVersion(note.history.length);
   setMessage('');setEditing(true);
  };
  const save=()=>{
-  const result=app.liNotes?.saveFromReact(title,body,baseVersion);
+  const result=app.liNotes?.saveFromReact(title,body,baseVersion,fieldId);
   if(!result){setMessage(copy('Không kết nối được bộ lưu.','Save service unavailable.'));return;}
   setMessage(result.message);
   if(result.ok){setEditing(false);refresh();}
@@ -560,7 +563,7 @@ export function NoteDetail(){
     </div>
     <Heading level={2} role="titleMedium">{note.bodyTitle||copy('Luận kết hiện tại','Current text')}</Heading>
     <Text role="body" className="library-entry-body">{note.body}</Text>
-    <Text role="support">{note.date}</Text>
+    <Text role="support">{note.date}{fieldLabel(note.fieldId)?' · '+fieldLabel(note.fieldId):''}</Text>
     <Button variant="primary" onClick={startEdit}>{copy('Chỉnh sửa','Edit')}</Button>
    </article>}
    {editing&&<section className="library-note-edit">
@@ -570,6 +573,7 @@ export function NoteDetail(){
      onChange={event=>setTitle(event.target.value.slice(0,180))}/>
     <Field label={copy('Nội dung / Luận kết','Content / Conclusion')} kind="textarea" rows={7}
      value={body} onChange={event=>setBody(event.target.value.slice(0,5000))}/>
+    <FieldPicker id="li-note-specialization" value={fieldId} onChange={setFieldId}/>
     {message&&<InlineFeedback tone="error" message={message}/>}
     <div className="action-row">
      <Button variant="primary" onClick={save}>{copy('Lưu phiên bản mới','Save a new version')}</Button>

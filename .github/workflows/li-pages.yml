@@ -2,6 +2,7 @@ name: Publish li. STAGING to GitHub Pages (Cloudflare-independent)
 
 # GitHub Pages is the low-cost test environment, not the Cloudflare production site.
 # Only integration/staging pushes update STAGING. No Cloudflare API, secrets or deploy.
+# Re-publish request: copy-analysis prompt in lesson steps 2/4/5 and saved counterargument (PR #540).
 on:
   push:
     branches: [integration/staging]

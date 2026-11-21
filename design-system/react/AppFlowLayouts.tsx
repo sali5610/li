@@ -454,7 +454,7 @@ const notebookArtForPage:Record<Exclude<PageId,'home'>,React.ComponentProps<type
 const notebookPageIcons={
  catalog:'layers',search:'search',research:'search',case:'check',
  capture:'feather',lesson:'book-open',practice:'feather',feedback:'check',
- guide:'sparkles',guideDetail:'calendar',library:'library',resume:'book-open',
+ guide:'sparkles',guideDetail:'calendar',library:'library-big',resume:'book-open',
  collection:'bookmark',noteDetail:'feather',dashboard:'calendar',
  settings:'settings',checkin:'check',laoly:'chat',account:'home'
 } as const;

@@ -1,4 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
+import {openRoute} from './app-router.js';
 import {createRoot} from 'react-dom/client';
 import {Button,ChatBubble,LiIcon} from '../../../../design-system/react/index';
 import '../../../../design-system/react/legacy.css';
@@ -16,6 +17,7 @@ type QuoteView={
 type EditorialBuddy={actions:{label:string;reply:string}[];quotes?:QuoteView[]};
 type BuddyView={
  text:string;labels:string[];avatar:string;quote:QuoteView|null;triggerId:string;
+ relatedLesson?:{id:string;route:string}|null;
  /** Structured lesson extension; real native mentor actions remain unchanged. */
  editorial?:EditorialBuddy;
 };
@@ -163,6 +165,13 @@ export function BuddyDialog({root}:{root:HTMLElement}){
   close(false);
   app.liMethods?.open(id);
  };
+ const openRelatedLesson=()=>{
+  const related=view.relatedLesson;
+  if(related?.id!=='L09-1-2'||related.route!=='lessonL09')return;
+  // Router pushes real browser history; Back restores the still-mounted Case
+  // screen, its selected option, saved draft and previous scroll position.
+  if(openRoute(related.route))close(false);
+ };
  const quoteVisible=!challenge&&!!quote&&(!!view.editorial||message===view.text);
  return <div className="buddy-shell li-react-buddy-shell" onKeyDown={onKeyDown}>
   <div className="dialog">
@@ -245,6 +254,13 @@ export function BuddyDialog({root}:{root:HTMLElement}){
     </div>}
    </div>
    <div className="action-row buddy-actions" aria-label={chooseLanguage('Lão Lý gợi ý','Companion actions')}>
+    {view.relatedLesson?.id==='L09-1-2'&&view.relatedLesson.route==='lessonL09'&&
+     <Button variant="secondary" className="action alt" id="li-buddy-related-lesson"
+      onClick={openRelatedLesson}>
+      <LiIcon name="book-open" size={18}/>
+      {chooseLanguage('Mở bài liên quan · Thiên lệch chọn mẫu','Related lesson · Sampling Bias')}
+      <LiIcon name="arrow-right" size={16}/>
+     </Button>}
     {(view.editorial?view.editorial.actions.map(action=>action.label):view.labels)
      .map((label,index)=><Button key={index} variant="secondary"
      className="action alt" onClick={()=>choose(index)}>

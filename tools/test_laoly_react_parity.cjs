@@ -122,4 +122,27 @@ assert.match(researchCase,/if\(!permitted\)\{setChoice\(null\);setMessage\(''\);
 assert.match(guide,/window\.liGuideUi=port/);
 assert.match(capture,/window\.liCaptureUi=port/);
 
+
+// The Case mentor suggests the known published sample-bias lesson without
+// replacing any of its existing 3 explanations/save actions.
+const routing=read('tools/step16-real-l09-react-island/src/shell/app-router.ts');
+const lessonCta=dialog.indexOf('id="li-buddy-related-lesson"');
+const normalActions=dialog.indexOf('(view.editorial?view.editorial.actions.map');
+assert.match(plans,/currentPage==="case"\?/,'Only the Case screen exposes its learning link');
+assert.match(plans,/window\.liReleasedLessonRoutes\?\.\["L09-1-2"\]/,
+ 'Use the released-lesson registry, not an arbitrary catalog draft');
+assert.match(plans,/window\.liAppRouter\?\.hasRoute\?\.\(caseLessonRoute\)/,
+ 'Unregistered lessons are not advertised as navigable');
+assert.match(dialog,/if\(openRoute\(related\.route\)\)close\(false\)/,
+ 'Open through the canonical router, then close without returning focus to hidden Case');
+assert(lessonCta>=0&&lessonCta<normalActions,
+ 'Related lesson CTA must be discoverable before ordinary mentor actions');
+assert.match(routing,/window\.history\.pushState\(/,
+ 'Case-to-lesson keeps its own browser history entry');
+assert.match(routing,/window\.history\.back\(\)/,
+ 'Existing global Back returns to the exact originating Case entry');
+assert.match(researchCase,/const \[choice,setChoice\]=useState<CaseChoice\|null>\(null\)/);
+assert.match(researchCase,/const \[revision,setRevision\]=useState\(\(\)=>inquiryFlow\(\)\.getCaseDraft\(\)\)/,
+ 'Case text remains on its mounted page and canonical draft storage during lesson navigation');
+
 console.log('PASS Lao Ly React full popup parity: 3 actions, 2 debate results, quotes, provenance, preferences, invite, drag, navigation');

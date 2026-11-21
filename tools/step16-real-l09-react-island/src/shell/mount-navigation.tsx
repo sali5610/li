@@ -107,7 +107,7 @@ const trails:Record<string,TrailPart[]>={
  dashboard:[libraryTrail,{vi:'Nhật Ký',en:'Journal'}],
  settings:[{vi:'Cài Đặt',en:'Settings'}]
 };
-function RouteTrail(){
+export function RouteTrail(){
  const route=useAppUiStore(state=>state.route);
  const locale=useAppLocale(),en=locale==='en';
  // Actual lesson routes still need the canonical clickable breadcrumb.

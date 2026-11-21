@@ -177,7 +177,7 @@ const bookmarkSandbox={
  refreshQuestionBookmark:()=>{nativeSaveRedraws++;},
  window:{
   liReactRouter:{},
-  liLibraryShelf:{renderResume:()=>{nativeSaveRedraws++;}},
+  liLibraryShelf:{renderBookmarks:()=>{nativeSaveRedraws++;}},
   dispatchEvent:event=>bookmarkEvents.push(event.type)
  },
  Event:class{constructor(type){this.type=type;}},
@@ -201,5 +201,5 @@ assert.equal(nativeSaveRedraws,0,"React writes never redraw hidden Resume or boo
 delete bookmarkSandbox.window.liReactRouter;
 assert.equal(bookmarkSandbox.liToggleMirrorQuestion(),true,"Native standalone bookmark remains functional");
 assert.equal(savedQuestions.length,0);
-assert.equal(nativeSaveRedraws,2,"Native fallback still updates button and Resume UI");
+assert.equal(nativeSaveRedraws,2,"Native fallback still updates button and Bookmarks UI");
 console.log("PASS React mirror/Khảo Chứng/bookmark/Undo without hidden DOM and native fallback");

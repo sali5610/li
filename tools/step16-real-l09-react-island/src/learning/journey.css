@@ -383,9 +383,6 @@
 .li-learning-journey[data-li-lesson-phase="read"] .li-learning-current .li-study-book-page{
  gap:var(--li-space-6,var(--li-space-5));
 }
-.li-learning-journey[data-li-lesson-phase="practice"] .li-learning-current .li-study-book-page{
- background:var(--porcelain)!important;
-}
 .li-learning-journey[data-li-lesson-phase="practice"] .li-learning-current .li-learning-fields,
 .li-learning-journey[data-li-lesson-phase="feedback"] .li-learning-current .li-learning-fields{
  padding-block:var(--li-space-3);
@@ -1058,5 +1055,23 @@
  .li-learning-journey[data-li-react-journey] > .li-learning-rail > .li-learning-save > .li-learning-ready-count{
   max-width:140px;
   font-size:.74rem;
+ }
+}
+
+/* Practice page uses the shared app paper, not a separate white rectangle. */
+.li-learning-journey[data-li-react-journey][data-li-lesson-phase="practice"]
+ .li-learning-current .li-study-book-page{background:transparent!important}
+.li-study-book-pager{display:flex;align-items:center;gap:2px;flex:none;margin-inline-start:auto}
+.li-study-book-pager .li-ds-button{
+ display:inline-flex;align-items:center;justify-content:center;gap:6px;
+ min-width:44px;min-height:44px;padding:7px 8px!important;
+ border:0!important;background:transparent!important;color:var(--moss)!important;
+ box-shadow:none!important;font-size:.82rem;font-weight:700;white-space:nowrap
+}
+.li-study-book-pager .li-ds-button:focus-visible{outline:2px solid var(--moss);outline-offset:2px}
+@media(max-width:599px){
+ .li-learning-journey[data-li-react-journey] > .li-study-book-folio{gap:7px}
+ .li-learning-journey[data-li-react-journey] > .li-study-book-folio .li-study-book-folio-title{
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap
  }
 }

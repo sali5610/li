@@ -154,6 +154,22 @@ assert.ok(Array.isArray(snapshot.h));
 const nav=read("tools/step16-real-l09-react-island/src/shell/mount-navigation.tsx");
 const settings=read("tools/step16-real-l09-react-island/src/shell/journal-settings.tsx");
 const auth=read("tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx");
+// Read the exact production Auth classification rather than hand-coding an
+// event; React can restore invite access before ownerReady has rehydrated.
+const expression=auth.match(/const transient=([\s\S]*?);\n  window\.dispatchEvent\(new CustomEvent\('li:auth-verified-changed'/)?.[1];
+assert.ok(expression,'Find real AuthPanel transient recheck condition');
+const isTransient=new Function('permitted','isPending','access','error','accountId','ownerReady',
+ 'return ('+expression+');');
+assert.equal(isTransient(false,false,'granted',null,'invited-user',false),true,
+ 'Auth granted but account hydration pending is transient, not logout');
+assert.equal(isTransient(false,false,'offline',null,'invited-user',false),true,
+ 'Offline continuity also keeps the route while local owner is prepared');
+assert.equal(isTransient(false,false,'denied',null,'invited-user',false),false,
+ 'Denied invite is terminal and clears private route');
+assert.equal(isTransient(false,false,'granted',null,null,false),false,
+ 'Signed-out session is not mistaken for same-account owner recheck');
+assert.equal(isTransient(true,false,'granted',null,'invited-user',true),false,
+ 'Fully verified session is not transient');
 const stagingApp=read("tools/step16-real-l09-react-island/src/auth/staging-app.tsx");
 const locale=read("site/assets/app-language.js");
 const native=read("site/index.html");

@@ -204,7 +204,12 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   // Focus/pageshow/online revalidation locks private UI but is NOT logout.
   // Preserve the active Catalog/lesson URL until invite verification resolves.
   const transient=!permitted&&(isPending||access==='checking'||
-   Boolean(error)||access==='error');
+   Boolean(error)||access==='error'||
+   // Access may be granted one React effect before ownerReady catches up.
+   // During this same-account hydration gap, private UI stays locked,
+   // but the Catalog/lesson route must not be mistaken for a real logout.
+   (Boolean(accountId)&&!ownerReady&&
+    (access==='granted'||access==='offline')));
   window.dispatchEvent(new CustomEvent('li:auth-verified-changed',{
    detail:{verified:Boolean(permitted),transient,accountId:accountId||null}
   }));

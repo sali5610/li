@@ -11,6 +11,7 @@ import {Badge,Breadcrumb,Button,FilterGroup,Heading,Progress,Text} from '../../.
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
 import {PortalCategoryCard} from '../../../../design-system/react/PortalCategoryCard';
 import {CatalogFieldCard} from '../../../../design-system/react/CatalogFieldCard';
+import '../../../../design-system/react/components.css';
 import '../../../../design-system/react/catalog-field-card.css';
 import '../../../../design-system/react/portal-category-card.css';
 import './home-catalog.css';

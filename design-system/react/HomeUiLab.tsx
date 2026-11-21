@@ -1,4 +1,4 @@
-import React,{useEffect,useMemo,useState} from 'react';
+import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {Button} from './Components';
@@ -21,6 +21,7 @@ import './vintage-pop-theme.css';
 import './vintage-pop-book.css';
 import './vintage-pop-scrapbook.css';
 import './bookworm-theme.css';
+import './bookworm-open-space.css';
 
 type LayoutKey='classic'|'split'|'cinematic'|'notebook'|'vintagePop'|'bookworm';
 type ViewMode='focus'|'gallery';
@@ -81,6 +82,9 @@ function Lab(){
  const [completed,setCompleted]=useState(false);
  const [questionIndex,setQuestionIndex]=useState(0);
  const [notice,setNotice]=useState('');
+ const stageRef=useRef<HTMLDivElement>(null);
+ const [stageFullscreen,setStageFullscreen]=useState(false);
+ const bookwormOpen=layout==='bookworm'&&mode==='focus'&&!compare&&viewport==='fluid';
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  const activeFlow=appLabFlows.find(item=>item.id===flow)!;
  const activeIndex=activeFlow.steps.indexOf(page);
@@ -105,6 +109,25 @@ function Lab(){
   window.history.replaceState(window.history.state,'',
    location.pathname+navUrl(page,flow,layout,viewport,mode,compare,other,locale));
  },[page,flow,layout,viewport,mode,compare,other,locale]);
+ useEffect(()=>{
+  const syncFullscreen=()=>setStageFullscreen(document.fullscreenElement===stageRef.current);
+  document.addEventListener('fullscreenchange',syncFullscreen);
+  return ()=>document.removeEventListener('fullscreenchange',syncFullscreen);
+ },[]);
+ const toggleStageFullscreen=()=>{
+  if(document.fullscreenElement){
+   void document.exitFullscreen().catch(()=>setNotice(t('Không thoát được chế độ toàn màn hình.',
+    'Could not exit fullscreen.')));
+   return;
+  }
+  if(!stageRef.current?.requestFullscreen){
+   setNotice(t('Trình duyệt này không hỗ trợ toàn màn hình.', 'Fullscreen is unavailable in this browser.'));
+   return;
+  }
+  setViewport('fluid');
+  void stageRef.current.requestFullscreen().catch(()=>setNotice(
+   t('Trình duyệt đã chặn chế độ toàn màn hình.','The browser blocked fullscreen.')));
+ };
  const view={
   locale,query,answer,selected,saved,completed,
   onQuery:setQuery,onAnswer:setAnswer,onSelect:setSelected,
@@ -149,17 +172,23 @@ function Lab(){
    delay:mini&&animateVariant(style)?Math.min(activeFlow.steps.indexOf(target),5)*.045:0,
    ease:[.22,1,.36,1]}}
   data-visual-theme={style==='vintagePop'?'vintage-pop':style==='bookworm'?'bookworm':undefined}
-  data-mini={mini?'true':'false'} aria-label={label(target)+' / '+style}>
+  data-mini={mini?'true':'false'}
+  data-open-space={style==='bookworm'&&!mini&&!compare&&viewport==='fluid'?'true':'false'}
+  aria-label={label(target)+' / '+style}>
   <header className="li-ui-lab-preview-label">
    <span>{label(target)}</span><span>{layoutChoices.find(item=>item.id===style)?.label}</span>
-   {mini?<Button variant="ghost" onClick={()=>{choose(target);setMode('focus');}}>
+   {stageFullscreen&&!mini&&style==='bookworm'&&<Button variant="ghost" onClick={toggleStageFullscreen}>
+    {t('Thoát toàn màn hình','Exit fullscreen')} <LiIcon name="arrow-left" size={15}/>
+   </Button>}
+   {mini?<Button variant="ghost" onClick={()=>{choose(target);setMode('focus');}}> 
     {t('Phóng to','Open')} <LiIcon name="arrow-right" size={15}/></Button>:null}
   </header>
   <div className="li-ui-lab-viewport" data-viewport={viewport}>
    {renderPage(target,style)}
   </div>
  </motion.section>;
- return <main className="li-ui-lab" lang={locale} data-li-react-ui-lab="mounted">
+ return <main className="li-ui-lab" lang={locale} data-li-react-ui-lab="mounted"
+  data-bookworm-open={bookwormOpen?'true':'false'}>
   <header className="li-ui-lab-header">
    <div className="li-ui-lab-intro">
     <span className="li-ui-lab-eyebrow">li. / DESIGN SYSTEM / UI EXPERIMENTS</span>
@@ -226,6 +255,11 @@ function Lab(){
        <option value="1440">Desktop · 1440</option>
       </select>
      </div>
+     {layout==='bookworm'&&mode==='focus'&&!compare&&
+      <Button variant="secondary" onClick={toggleStageFullscreen}>
+       <LiIcon name="book-open" size={17}/>
+       {stageFullscreen?t('Thu nhỏ','Leave fullscreen'):t('Toàn màn hình','Fullscreen')}
+      </Button>}
      <Button variant="secondary" onClick={()=>setLocale(x=>x==='vi'?'en':'vi')}>
       {locale.toUpperCase()}</Button>
     </div>
@@ -239,7 +273,10 @@ function Lab(){
       aria-current={page===id?'step':undefined} onClick={()=>choose(id)}>
       <span>{String(i+1).padStart(2,'0')}</span> {label(id)}</Button>)}
     </nav>
-    <div className="li-ui-lab-stage" data-gallery={mode==='gallery'?'true':'false'}
+    <div className="li-ui-lab-stage" ref={stageRef}
+     data-bookworm-open={bookwormOpen?'true':'false'}
+     data-bookworm-fullscreen={stageFullscreen?'true':'false'}
+     data-gallery={mode==='gallery'?'true':'false'}
      data-compare={compare&&mode==='focus'?'true':'false'}>
      <AnimatePresence initial={false} mode="sync">
       {mode==='gallery'?activeFlow.steps.map(id=>preview(id,layout,true,'gallery')):

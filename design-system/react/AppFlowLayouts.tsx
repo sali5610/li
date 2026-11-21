@@ -7,6 +7,7 @@ import {CatalogShell,LearningFlowShell,AccountShell} from './Templates';
 import {MethodTile,ChatBubble} from './LegacyCards';
 import {LiIcon} from './LucideIcons';
 import {NotebookAnnotation} from './NotebookAnnotation';
+import {BookwormIllustration} from './BookwormIllustration';
 import './app-flow-layouts.css';
 
 /** Exported presentational UI: Lab passes fixture props; the approved real
@@ -16,7 +17,7 @@ import './app-flow-layouts.css';
 export type PageId='home'|'catalog'|'search'|'research'|'case'|'capture'|
  'lesson'|'practice'|'feedback'|'guide'|'guideDetail'|'library'|'resume'|
  'collection'|'noteDetail'|'dashboard'|'settings'|'checkin'|'laoly'|'account';
-export type PageVariant='editorial'|'split'|'cinematic'|'notebook';
+export type PageVariant='editorial'|'split'|'cinematic'|'notebook'|'bookworm';
 export type AppLabFlowId='discovery'|'learning'|'techniques'|'personal'|'daily';
 export const appLabFlows:readonly {
  id:AppLabFlowId;vi:string;en:string;steps:readonly PageId[]
@@ -57,7 +58,9 @@ export const appLabPages:readonly {id:PageId;vi:string;en:string;descriptionVi:s
 export const appLabPageVariants:readonly {id:PageVariant;vi:string;en:string}[]=[
  {id:'editorial',vi:'Editorial',en:'Editorial'},
  {id:'split',vi:'Split focus',en:'Split focus'},
- {id:'cinematic',vi:'Cinematic',en:'Cinematic'}
+ {id:'cinematic',vi:'Cinematic',en:'Cinematic'},
+ {id:'notebook',vi:'Notebook · Ghi chú tay',en:'Notebook · Handwritten'},
+ {id:'bookworm',vi:'Bookworm · Sách minh họa',en:'Bookworm · Illustrated Folio'}
 ];
 export interface AppPageLayoutProps {
  page:Exclude<PageId,'home'>;variant:PageVariant;locale:'vi'|'en';
@@ -385,6 +388,9 @@ export function AppPageLayout(props:AppPageLayoutProps){
  const meta=appLabPages.find(item=>item.id===page)!;
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  return <section className="li-flow-page" data-page={page} data-layout={variant} lang={locale}>
+  {variant==='bookworm'&&<div className="li-flow-bookworm-masthead" aria-hidden="true">
+   <span>li. · Illustrated Folio</span><span>THE LIBRARY OF QUESTIONS / VOL. 01</span>
+  </div>}
   {variant==='notebook'&&<div className="li-flow-notebook-masthead" aria-hidden="true">
    <span>li. <em>Notes on Knowing Why</em></span>
    <span>THE STUDY JOURNAL · VOL. 01</span>
@@ -399,6 +405,10 @@ export function AppPageLayout(props:AppPageLayoutProps){
       notebookNotes[page]?.[1]||'A thought worth keeping.'}
      tone={page==='capture'||page==='noteDetail'?'blue':'wine'}/>}
    </div>
+   {variant==='bookworm'&&<div className="li-flow-bookworm-hero-art" aria-hidden="true">
+    <BookwormIllustration kind={['catalog','search','library','resume','collection','noteDetail'].includes(page)?'shelf':
+     ['lesson','practice','feedback','guide','guideDetail','research','case'].includes(page)?'open':'stack'}/>
+   </div>}
    <span className="li-flow-page-index" aria-hidden="true">{String(appLabPages.findIndex(item=>item.id===page)+1).padStart(2,'0')}</span>
   </header>
   <div className="li-flow-page-columns">

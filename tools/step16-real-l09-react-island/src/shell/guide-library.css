@@ -376,3 +376,22 @@
 .li-react-library .path-list>.path-item.library-list-item:last-child{
  padding-block-end:0
 }
+
+/* Saved-note delete is a 44px icon action, never an underlined title link. */
+.li-react-library .library-note-actions>.library-note-delete,
+#page-noteDetail .library-note-head>.library-note-delete{
+ display:inline-flex;align-items:center;justify-content:center;
+ inline-size:44px;block-size:44px;min-inline-size:44px;min-block-size:44px;
+ flex:none;padding:var(--li-space-2);max-width:none;
+ background:transparent;border:1px solid transparent;box-shadow:none;
+ color:var(--li-color-danger-fill);text-decoration:none;cursor:pointer;
+ line-height:1
+}
+.li-react-library .library-note-actions>.library-note-delete:hover,
+#page-noteDetail .library-note-head>.library-note-delete:hover{
+ background:color-mix(in srgb,var(--li-color-danger-fill) 9%,transparent)
+}
+.li-react-library .library-note-actions>.library-note-delete:focus-visible,
+#page-noteDetail .library-note-head>.library-note-delete:focus-visible{
+ outline:2px solid var(--li-color-danger-fill);outline-offset:2px
+}

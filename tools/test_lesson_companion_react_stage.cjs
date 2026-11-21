@@ -128,6 +128,72 @@ vm.runInContext(read("site/assets/lesson-companion-native.js"),ctx);
  assert.equal(get().stage,"extension");
  assert.match(plan().actions[2].reply,/not reviewed method fit/i);
 
+ // The 17 invited-only manuscripts reuse the canonical stage-aware port.
+ nativeActive=false;
+ const personalId="L03-1-1",route="draftLessonL0311";
+ const source=JSON.parse(read("content/editorial/normalized/L03-1-1.draft.v1.json"));
+ const authored=source.content.companion.structuredMoments;
+ let personalPhase="read",submitted=false,reviewed=false,personalLang="vi";
+ const personalPage={id:"page-"+route,classList:{contains:key=>key==="active"}};
+ editorialHost={
+  getAttribute:key=>({
+   "data-li-editorial-journey":personalId,
+   "data-li-lesson-phase":personalPhase,
+   "data-li-lesson-submitted":submitted?"true":"false",
+   "data-li-lesson-reviewed":reviewed?"true":"false",
+   lang:personalLang
+  })[key]??null,
+  closest:()=>personalPage
+ };
+ const labels={
+  vi:{opening:"Mở đầu",concept:"Khái niệm",guided:"Thử áp dụng",
+   independent:"Tự luyện tập",reflection:"Đối chiếu",extension:"Học tiếp"},
+  en:{opening:"Opening",concept:"Concept",guided:"Guided example",
+   independent:"Independent practice",reflection:"Feedback",extension:"Further study"}
+ };
+ const unregister=api.registerEditorial({
+  schema:1,lesson_id:personalId,topics:[],
+  moments:authored.map(m=>({...m,anchor:"personal-"+m.stage,
+   vi:{...m.vi,label:labels.vi[m.stage]},
+   en:{...m.en,label:labels.en[m.stage]}}))
+ });
+ assert.ok(api.registered().includes(personalId),"Invited lesson must register");
+ const stagesByPhase={
+  read:"opening",guided:"guided",practice:"independent",
+  feedback:"reflection",progress:"extension"
+ };
+ for(const lang of ["vi","en"]){
+  personalLang=lang;
+  for(const [phase,expected] of Object.entries(stagesByPhase)){
+   personalPhase=phase;submitted=true;reviewed=true;
+   const current=api.getContext();
+   assert.equal(current.lesson_id,personalId);
+   assert.equal(current.stage,expected,"Correct chat stage for "+phase+" "+lang);
+   const moment=authored.find(m=>m.stage===expected);
+   assert.equal(current.wording.prompt,moment[lang].prompt);
+   assert.equal(api.getPlan(route).actions[0].label,moment[lang].actions[0].label);
+   assert.ok(api.getPlan(route).intro.includes(moment[lang].prompt),
+    "Floating chat must open with the current page's prompt");
+  }
+ }
+ personalLang="vi";submitted=false;reviewed=false;personalPhase="feedback";
+ assert.equal(api.getContext().stage,"independent",
+  "Unsubmitted feedback cannot reveal reflection mentor");
+ personalPhase="progress";
+ assert.equal(api.getContext().stage,"independent",
+  "Unreviewed progress cannot reveal extension mentor");
+ submitted=true;
+ assert.equal(api.getContext().stage,"reflection",
+  "Submitted and unreviewed progress stays in reflection context");
+ const before=events.length;
+ api.getPlan(route).actions[2].perform();
+ assert.equal(events[before].type,"li:mentor-phase-jump");
+ assert.equal(events[before].detail.lessonId,personalId);
+ assert.equal(events[before].detail.phase,"feedback");
+ unregister();editorialHost=null;nativeActive=true;
+ assert.ok(!api.registered().includes(personalId),
+  "Private lesson context must unregister on route unmount");
+
  // An unapproved editorial draft must not register a native pop-up.
  assert.ok(!api.registered().includes("L09-1-1"),
   "Draft can only reach React mentor after release checks");

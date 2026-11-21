@@ -380,7 +380,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  };
  const block=(role:Role)=><>
   {section(c,role).map(x=><section key={x.id} id={'li-sectioned-'+id+'-'+x.id}>
-   <Heading level={3} role="titleMedium">{x.heading}</Heading>
+   <Heading level={['goals','concept','guided'].includes(role)?2:3}
+    role={['goals','concept','guided'].includes(role)?'titleLarge':'titleMedium'}>{x.heading}</Heading>
    <Markdown md={x.body_md}/>
   </section>)}
  </>;
@@ -447,7 +448,6 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     <Button onClick={()=>setPhase('guided')}>{vi?'Tiếp: Thử áp dụng':'Next: Guided example'} →</Button>
    </>}
    {phase==='guided'&&<>
-    <Heading level={2} role="titleLarge">{names.guided}</Heading>
     {block('guided')}{mentor('guided')}
     <Field kind="textarea" rows={4} label={vi?'Tự giải thích':'Explain in your words'}
      disabled={locked||attempt.submitted} value={attempt.guidedDraft}

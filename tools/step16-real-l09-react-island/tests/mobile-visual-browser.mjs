@@ -57,7 +57,7 @@ try{
  for(const view of ['journal','guide','library','resume','bookmarks','buddy','breadcrumbPrivate','breadcrumb','lesson',
   'settings','catalogRoot','catalogGroup','searchEnglish']){
   const params=new URLSearchParams({view});
-  if(view==='catalogGroup')params.set('catalog','language');
+  if(view==='catalogGroup')params.set('catalog','arts-humanities');
   await send('Page.navigate',{url:target+'?'+params});
   const report=await wait(async()=>{
    const result=await send('Runtime.evaluate',{

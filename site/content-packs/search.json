@@ -612,54 +612,36 @@
       "fieldId": null
     },
     {
-      "id": "group:business",
+      "id": "group:arts-humanities",
       "kind": "DomainGroup",
-      "title": "Kinh doanh & vận hành",
+      "title": "Nghệ thuật & Nhân văn",
       "aliases": [],
       "reviewState": "verified",
       "publishState": "review_only",
       "fieldId": null
     },
     {
-      "id": "group:history",
+      "id": "group:business-administration-law",
       "kind": "DomainGroup",
-      "title": "Lịch sử",
+      "title": "Kinh doanh, Quản trị & Luật",
       "aliases": [],
       "reviewState": "verified",
       "publishState": "review_only",
       "fieldId": null
     },
     {
-      "id": "group:language",
+      "id": "group:ict",
       "kind": "DomainGroup",
-      "title": "Ngôn ngữ",
+      "title": "Công nghệ thông tin & Truyền thông",
       "aliases": [],
       "reviewState": "verified",
       "publishState": "review_only",
       "fieldId": null
     },
     {
-      "id": "group:mathematics",
+      "id": "group:natural-sciences-math",
       "kind": "DomainGroup",
-      "title": "Toán học & dữ liệu",
-      "aliases": [],
-      "reviewState": "verified",
-      "publishState": "review_only",
-      "fieldId": null
-    },
-    {
-      "id": "group:music",
-      "kind": "DomainGroup",
-      "title": "Âm nhạc",
-      "aliases": [],
-      "reviewState": "verified",
-      "publishState": "review_only",
-      "fieldId": null
-    },
-    {
-      "id": "group:psychology",
-      "kind": "DomainGroup",
-      "title": "Tâm lý học",
+      "title": "Khoa học tự nhiên, Toán & Thống kê",
       "aliases": [],
       "reviewState": "verified",
       "publishState": "review_only",
@@ -668,16 +650,7 @@
     {
       "id": "group:social-sciences",
       "kind": "DomainGroup",
-      "title": "Khoa học xã hội",
-      "aliases": [],
-      "reviewState": "verified",
-      "publishState": "review_only",
-      "fieldId": null
-    },
-    {
-      "id": "group:technology",
-      "kind": "DomainGroup",
-      "title": "Công nghệ",
+      "title": "Khoa học xã hội, Báo chí & Thông tin",
       "aliases": [],
       "reviewState": "verified",
       "publishState": "review_only",

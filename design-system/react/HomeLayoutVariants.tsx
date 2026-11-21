@@ -4,12 +4,13 @@ import {Heading,Text} from './Atoms';
 import {HomeMirrorShell} from './Templates';
 import {ChatBubble} from './LegacyCards';
 import {LiIcon} from './LucideIcons';
+import {NotebookAnnotation} from './NotebookAnnotation';
 import './home-layout-variants.css';
 
 /** Presentation only. Both the Lab and a future approved app Home import
  * this exact component. No router, auth, persistence or global listeners.
  */
-export type HomeLayoutVariant='heritage'|'editorial'|'immersive';
+export type HomeLayoutVariant='heritage'|'editorial'|'immersive'|'notebook';
 export interface HomeLayoutProps {
  variant:HomeLayoutVariant;
  locale:'vi'|'en';
@@ -30,12 +31,17 @@ export const homeLayoutVariants:readonly {id:HomeLayoutVariant;vi:string;en:stri
  {id:'heritage',vi:'Heritage',en:'Heritage'},
  {id:'editorial',vi:'Editorial',en:'Editorial'},
  {id:'immersive',vi:'Immersive',en:'Immersive'},
+ {id:'notebook',vi:'Notebook · Ghi chú tay',en:'Notebook · Handwritten'},
 ];
 export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
  question,scene,source,saved,onPrevious,onNext,onExplore,onSave,onCheckin}:HomeLayoutProps){
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  return <section className="li-ui-home" data-home-layout={variant} lang={locale}
   aria-label={t('Khám phá layout Đại Sảnh','Home layout composition')}>
+  {variant==='notebook'&&<div className="li-ui-home-notebook-masthead" aria-hidden="true">
+   <span>li. <em>field notes</em></span>
+   <span>THE WONDER JOURNAL / VOL. 01</span>
+  </div>}
   <img className="li-ui-home-backdrop" src={backgroundSrc} alt="" aria-hidden="true"/>
   <div className="li-ui-home-tint" aria-hidden="true"/>
   <div className="li-ui-home-intro">
@@ -44,6 +50,10 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
    <Text role="body">{t('Không cần biết tất cả. Chỉ cần không ngừng tò mò.',
     'You needn’t know everything. Just stay curious.')}</Text>
   </div>
+  {variant==='notebook'&&<div className="li-ui-home-notebook-annotation">
+   <NotebookAnnotation text={t('Viết xuống câu hỏi, rồi để trí tò mò dẫn đường.',
+    'Jot down the question; let curiosity lead the way.')} tone="blue"/>
+  </div>}
   <div className="li-ui-home-mirror">
    <HomeMirrorShell artwork={<img src={mirrorArtSrc} alt=""/>}
     artworkLabel={t('Minh họa câu hỏi trong gương','Question artwork in the mirror')}

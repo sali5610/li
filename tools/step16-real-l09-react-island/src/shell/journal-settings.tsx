@@ -237,7 +237,7 @@ export function Settings(){
        'One choice for the whole app and bilingual lessons. Untranslated material stays in its authored language.')}</Text>
       <LanguageSwitch label={copy('Ngôn ngữ toàn ứng dụng','App language')}
        value={locale} viLabel="Tiếng Việt" enLabel="English"
-       onChange={next=>app.liLanguage?.set(next)}/>
+       onChange={id=>app.liLanguage?.set(id)}/>
 
      </Card>
      <Card variant="raised" className="li-react-setting-card">

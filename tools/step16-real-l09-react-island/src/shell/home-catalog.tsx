@@ -208,6 +208,7 @@ function Catalog(){
   <div className={'catalog-breadcrumbs'+(lesson?' is-lesson':'')}>
    <div className="catalog-breadcrumbs-full">
     <Breadcrumb label={locale==='vi'?'Vị trí trong Tàng Thư':'Library path'}
+     visibleParents={2} moreLabel={locale==='vi'?'Các cấp trước':'Earlier levels'}
      items={breadcrumb.map((item,index)=>({
       label:item.label,
       onActivate:index<breadcrumb.length-1?()=>openPath(item.path):undefined

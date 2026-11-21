@@ -90,7 +90,7 @@ function CatalogCard({number,eyebrow,title,detail,onOpen,locale,image}:{
    <Text role="support" className="small">{detail}</Text>
   </div>
   <Button variant="secondary" className="catalog-card-action" onClick={onOpen}>
-   {locale==='vi'?'Khám phá':'Explore'} <LiIcon name="arrow-up-right" size={18}/>
+   {locale==='vi'?'Khám phá':'Explore'} <LiIcon name="arrow-right" size={18}/>
   </Button>
  </article>;
 }
@@ -256,7 +256,7 @@ function Catalog(){
       </ol>
       <Button variant="secondary" className="catalog-card-action"
        onClick={()=>openPath([group!.id,field!.id,item.id])}>
-       {locale==='vi'?'Xem môn học':'View course'} <LiIcon name="arrow-up-right" size={16}/>
+       {locale==='vi'?'Xem môn học':'View course'} <LiIcon name="arrow-right" size={16}/>
       </Button>
      </article>)}
     </div>

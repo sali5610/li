@@ -10,7 +10,7 @@ import {Field} from '../../../../design-system/react/Controls';
 import {Heading,Text,Progress} from '../../../../design-system/react/Atoms';
 import {SelfReviewNextStep} from './SelfReviewNextStep';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
-import {Markdown} from './EditorialJourney';
+import {Markdown,inline as formatLessonInline} from './EditorialJourney';
 import {LessonBookmark} from './LessonDetailParity.js';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
@@ -244,17 +244,6 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    reviewSnapshot:frozen,answerRevealed:false,reviewed:false}))
    setPhase('feedback');
  }
- /** Optional method attempt stays in Guided; skipping it cannot block Practice. */
- async function goToPractice(){
-  const a=current.current;
-  if(!a||locked||pending>0)return;
-  if(a.submitted){setPhase('feedback');return;}
-  if(!a.methodChoice){
-   if(await persist({...a,methodChoice:'skip'}))setPhase('practice');
-   return;
-  }
-  setPhase('practice');
- }
  async function methodSubmit(){
   const a=current.current;if(!a||locked||pending||a.submitted)return;
   const prior=a.methodAttempts?.[method];
@@ -412,10 +401,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   </header>
   <StudyBookFolio phase={phase} steps={PAGES} locale={locale}
    onPrevious={pageIndex>0?()=>setPhase(PAGES[pageIndex-1]):undefined}
-   onNext={phase==='read'?()=>setPhase('guided'):
-    phase==='guided'?()=>void goToPractice():
-    phase==='practice'&&persisted.submitted?()=>setPhase('feedback'):
-    phase==='feedback'&&persisted.reviewed?()=>setPhase('progress'):undefined}/>
+   onNext={pageIndex<PAGES.length-1?()=>setPhase(PAGES[pageIndex+1]):undefined}/>
   <aside className="li-learning-rail" aria-label={vi?'Điều hướng và tiến độ học':'Learning navigation and status'}>
    <div className="li-learning-save">
     <Progress label={vi?'Tiến độ lượt học':'Lesson attempt progress'} value={percent}/>
@@ -486,7 +472,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       </>}
      </div>
     </details>
-    <Button disabled={locked||pending>0} onClick={()=>void goToPractice()}>
+    <Button onClick={()=>setPhase('practice')}>
      {vi?'Tiếp: Làm bài':'Next: Practice'} →
     </Button>
    </>}
@@ -494,15 +480,26 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     <Heading level={2} role="titleLarge">{names.practice}</Heading>
     <Markdown md={independent(c).body_md.split(/^[1-4]\.\s*/m)[0]}/>
     {c.assessment.questions.map((question,i)=><Field key={i} kind="textarea" rows={4}
-     label={String(i+1)+'. '+question} disabled={locked||attempt.submitted}
+     label={String(i+1)+'. '+question.replace(/<[^>]*>/g,'')}
+     richLabel={<>{i+1}. {formatLessonInline(question)}</>}
+     disabled={locked||attempt.submitted}
      value={attempt.draft[i]} onChange={e=>setAnswer(i,e.currentTarget.value)}/>)}
     {!persisted.submitted?<Button disabled={locked||pending>0} onClick={()=>void submit()}>
      {vi?'Nộp bốn câu':'Submit four answers'}</Button>:
      <Button onClick={()=>setPhase('feedback')}>{vi?'Tiếp: Đối chiếu':'Next: Feedback'} →</Button>}
    </>}
+   {phase==='feedback'&&!persisted.submitted&&<>
+    <Heading level={2} role="titleLarge">{names.feedback}</Heading>
+    <Text role="support">{vi?
+     'Ngươi chưa nộp bài. Vẫn có thể xem các phần khác; đáp án và tự đánh giá chỉ mở sau khi nộp.':
+     'Not submitted yet. You can browse all pages; model answers and self-review unlock after submission.'}</Text>
+    <Button variant="secondary" onClick={()=>setPhase('practice')}>
+     {vi?'Quay lại tự luyện tập':'Return to practice'}
+    </Button>
+   </>}
    {phase==='feedback'&&persisted.submitted&&<>
     <Heading level={2} role="titleLarge">{names.feedback}</Heading>
-    <ol>{questions.map((q,i)=><li key={i}><Text role="support">{q}</Text>
+    <ol>{questions.map((q,i)=><li key={i}><Markdown md={q}/>
      <p>{(persisted.submission??persisted.draft)[i]}</p></li>)}</ol>
     {!showAnswer||conflict?<div>
      <Text role="support">{vi?'Đã lưu bài. Đáp án mẫu đóng đến khi tự mở.':'Saved. Reveal the model answer explicitly.'}</Text>
@@ -529,6 +526,15 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      <Button disabled={pending>0||locked||attempt.ratings.some(x=>x===null)}
       onClick={()=>void finish()}>{vi?'Lưu tự đánh giá':'Save review'}</Button>
     </>}
+   </>}
+   {phase==='progress'&&!persisted.reviewed&&<>
+    <Heading level={2} role="titleLarge">{names.progress}</Heading>
+    <Text role="support">{vi?
+     'Chưa hoàn thành lượt tự đánh giá. Ngươi vẫn xem được trang này; tiến độ hoàn thành chỉ ghi nhận sau khi nộp bài và lưu tự đánh giá.':
+     'Self-review is not complete. This page is still accessible; completion is recorded after submission and saved self-review.'}</Text>
+    <Button variant="secondary" onClick={()=>setPhase('practice')}>
+     {vi?'Quay lại tự luyện tập':'Return to practice'}
+    </Button>
    </>}
    {phase==='progress'&&persisted.reviewed&&<>
     <Heading level={2} role="titleLarge">{names.progress}</Heading>

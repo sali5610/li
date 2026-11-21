@@ -5,12 +5,13 @@ import {HomeMirrorShell} from './Templates';
 import {ChatBubble} from './LegacyCards';
 import {LiIcon} from './LucideIcons';
 import {NotebookAnnotation} from './NotebookAnnotation';
+import {BookwormIllustration} from './BookwormIllustration';
 import './home-layout-variants.css';
 
 /** Presentation only. Both the Lab and a future approved app Home import
  * this exact component. No router, auth, persistence or global listeners.
  */
-export type HomeLayoutVariant='heritage'|'editorial'|'immersive'|'notebook';
+export type HomeLayoutVariant='heritage'|'editorial'|'immersive'|'notebook'|'bookworm';
 export interface HomeLayoutProps {
  variant:HomeLayoutVariant;
  locale:'vi'|'en';
@@ -32,12 +33,16 @@ export const homeLayoutVariants:readonly {id:HomeLayoutVariant;vi:string;en:stri
  {id:'editorial',vi:'Editorial',en:'Editorial'},
  {id:'immersive',vi:'Immersive',en:'Immersive'},
  {id:'notebook',vi:'Notebook · Ghi chú tay',en:'Notebook · Handwritten'},
+ {id:'bookworm',vi:'Bookworm · Sách minh họa',en:'Bookworm · Illustrated Folio'},
 ];
 export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
  question,scene,source,saved,onPrevious,onNext,onExplore,onSave,onCheckin}:HomeLayoutProps){
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  return <section className="li-ui-home" data-home-layout={variant} lang={locale}
   aria-label={t('Khám phá layout Đại Sảnh','Home layout composition')}>
+  {variant==='bookworm'&&<div className="li-ui-home-bookworm-masthead" aria-hidden="true">
+   <span>li. · The Book of Questions</span><span>ILLUSTRATED FOLIO / VOL. 01</span>
+  </div>}
   {variant==='notebook'&&<div className="li-ui-home-notebook-masthead" aria-hidden="true">
    <span>li. <em>field notes</em></span>
    <span>THE WONDER JOURNAL / VOL. 01</span>
@@ -53,6 +58,9 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
   {variant==='notebook'&&<div className="li-ui-home-notebook-annotation">
    <NotebookAnnotation text={t('Viết xuống câu hỏi, rồi để trí tò mò dẫn đường.',
     'Jot down the question; let curiosity lead the way.')} tone="blue"/>
+  </div>}
+  {variant==='bookworm'&&<div className="li-ui-home-bookworm-art" aria-hidden="true">
+   <BookwormIllustration kind="stack"/>
   </div>}
   <div className="li-ui-home-mirror">
    <HomeMirrorShell artwork={<img src={mirrorArtSrc} alt=""/>}

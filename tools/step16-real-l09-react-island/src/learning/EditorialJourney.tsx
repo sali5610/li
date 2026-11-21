@@ -12,6 +12,7 @@ import {SaveStatus} from '../../../../design-system/react/Molecules';
 import type {SaveState} from '../../../../design-system/react/Molecules';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
+import {CopyAnalysisPrompt} from './CopyAnalysisPrompt.js';
 import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discovery-locale.js';
 import {useStepScreen} from './step-screen.js';
 
@@ -792,6 +793,12 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      </Button>}
     <Field kind="textarea" rows={5} label={vi?'Tự giải thích bằng lời của mình':'Explain in your own words'}
      value={attempt.guidedDraft} disabled={locked||attempt.submitted} onChange={e=>editGuided(e.currentTarget.value)}/>
+    <CopyAnalysisPrompt locale={locale} step="guided" data={{
+     title:lesson.title[locale],lessonId:id,activity:content.guided.md,
+     questions:[vi?'Giải thích ví dụ bằng lời của ngươi.':'Explain the example in your own words.'],
+     answers:[attempt.guidedDraft],
+     reference:persistedAttempt?.hint?content.guided.hint_md:undefined
+    }}/>
     <Button onClick={()=>moveTo('methods')}>{vi?'Tiếp: Thần Chú':'Next: Study methods'} →</Button>
    </Card>}
    {phase==='methods'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-methods">
@@ -892,6 +899,10 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     {!persistedAttempt?.submitted?<Button disabled={saving||locked||attempt.submitted} onClick={()=>void submit()}>
      {vi?'Nộp bài độc lập':'Submit independent answers'}</Button>:
      <Button onClick={()=>moveTo('feedback')}>{vi?'Tiếp: Đối chiếu':'Next: Feedback'} →</Button>}
+    <CopyAnalysisPrompt locale={locale} step="practice" data={{
+     title:lesson.title[locale],lessonId:id,activity:independent.intro,
+     questions:independent.questions,answers:attempt.draft
+    }}/>
    </Card>}
    {phase==='feedback'&&persistedAttempt?.submitted&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-feedback">
     <Heading level={2} id="li-editorial-feedback" role="titleLarge">{labels.feedback}</Heading>
@@ -937,6 +948,12 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      <Button disabled={saving||locked||attempt.reviewed||reviewVersionMismatch} onClick={()=>void finish()}>
       {vi?'Lưu tự đánh giá':'Save self-review'}
      </Button>)}
+    <CopyAnalysisPrompt locale={locale} step="feedback" data={{
+     title:lesson.title[locale],lessonId:id,activity:independent.intro,
+     questions:submittedQuestions,answers:persistedAttempt.submission??persistedAttempt.draft,
+     reference:persistedAttempt.answerRevealed&&!reviewVersionMismatch?modelAnswer:undefined,
+     extra:persistedAttempt.answerRevealed&&!reviewVersionMismatch?rubrics.map(r=>r.join(' · ')).join('\n'):undefined
+    }}/>
    </Card>}
    {phase==='progress'&&persistedAttempt?.reviewed&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-progress">
     <Heading level={2} id="li-editorial-progress" role="titleLarge">{vi?'Hoàn thành lượt học':'Attempt complete'}</Heading>

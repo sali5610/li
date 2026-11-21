@@ -71,11 +71,10 @@ function scenarioPlan(){
   actions:[
    action(s[0],s[1]),
    action("Lão cho ví dụ",s[2]),
-   action(saved?"Mở Dấu Trang":"Lưu câu hỏi",saved?"Câu này đã có trong Dấu Trang. Lão đưa ngươi đến đó.":"Lưu lại câu đáng nghĩ này. Lão sẽ dùng nút lưu thật, không diễn sâu.",()=>{
-    if(saved)go(window.liBuddyReactMounted?"resume":"library","li-saved-questions");
-    else if(window.liBuddyReactMounted)window.liInquiryFlow?.toggleQuestion?.();
+   ...(!saved?[action("Lưu câu hỏi","Lưu lại câu đáng nghĩ này. Lão sẽ dùng nút lưu thật, không diễn sâu.",()=>{
+    if(window.liBuddyReactMounted)window.liInquiryFlow?.toggleQuestion?.();
     else document.getElementById("save-question")?.click();
-   })
+   })]:[])
   ]
  };
 }
@@ -304,8 +303,7 @@ function genericPlan(page){
  }
  default:return {intro:"Nói ngắn thôi: màn này giúp ngươi đi sâu vào một câu hỏi. Bắt đầu bằng dữ kiện.",actions:[
   action("Bắt đầu từ đâu?","Viết rõ câu hỏi và điều đã quan sát."),
-  action("Thử kiểm tra","Điều gì có thể khiến kết luận ban đầu sai?"),
-  action("Về Đại Sảnh","Lão đưa về Gương Vạn Vấn.",()=>go("home"))
+  action("Thử kiểm tra","Điều gì có thể khiến kết luận ban đầu sai?")
  ]};
  }
 }
@@ -377,7 +375,11 @@ function updatePlan(){
  const calm=buddyVoice("calm");
  const intro=calm?"Ta đi từng bước. "+activePlan.intro:activePlan.intro;
  textEl.textContent=localizePlanText(window.liAddressLine?window.liAddressLine(intro):intro);
- buttons.forEach((b,i)=>setButtonText(b,activePlan.actions[i].label));
+ buttons.forEach((button,index)=>{
+  const item=activePlan.actions[index];
+  button.hidden=!item;
+  if(item)setButtonText(button,item.label);
+ });
  debateEl.hidden=true;buddyDebateActive=false;
  showBuddyQuote();
  scrollEl.scrollTop=0;
@@ -444,6 +446,7 @@ document.addEventListener("click",function(event){
  event.preventDefault();event.stopImmediatePropagation();
  if(!activePlan)updatePlan();
  const item=activePlan.actions[index];
+ if(!item)return;
  debateEl.hidden=true;buddyDebateActive=true;quoteEl.hidden=true;
  textEl.textContent=localizePlanText(window.liAddressLine?window.liAddressLine(item.reply):item.reply);
  scrollEl.scrollTop=0;

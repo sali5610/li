@@ -1,4 +1,5 @@
 import React,{useEffect,useState} from 'react';
+import {localized,useDiscoveryLocale} from '../shell/discovery-locale';
 import {createRoot} from 'react-dom/client';
 import {LearningJourney} from './LearningJourney';
 import {Wave1Journey} from './Wave1Journey';
@@ -46,6 +47,7 @@ type EditorialRouteState=
  |{kind:'loading'}|{kind:'structured'}|{kind:'sectioned';lesson:SectionedLesson}
  |{kind:'error'};
 function ReleasedEditorialRoute({id,ports}:{id:string;ports:LearningPorts}){
+ const locale=useDiscoveryLocale();
  const [status,setStatus]=useState<EditorialRouteState>({kind:'loading'});
  useEffect(()=>{
   let alive=true;
@@ -74,10 +76,10 @@ function ReleasedEditorialRoute({id,ports}:{id:string;ports:LearningPorts}){
   return()=>{alive=false;};
  },[id,ports]);
  if(status.kind==='loading')return <section role="status" className="li-learning-journey"
-  aria-busy="true">Đang xác minh bài học và quyền truy cập…</section>;
+  aria-busy="true">{localized(locale,'Đang xác minh bài học và quyền truy cập…','Verifying the lesson and your access…')}</section>;
  if(status.kind==='error')return <section role="alert" className="li-learning-journey">
-  <p>Bài học chưa đủ điều kiện phát hành hoặc không đọc được content pack.</p>
-  <button onClick={ports.navigation.openCatalog}>Về Tàng Thư</button>
+  <p>{localized(locale,'Bài học chưa đủ điều kiện phát hành hoặc không đọc được content pack.','This lesson is unavailable or its content could not be loaded.')}</p>
+  <button onClick={ports.navigation.openCatalog}>{localized(locale,'Về Tàng Thư','Back to Library')}</button>
  </section>;
  if(status.kind==='sectioned')return <SectionedJourney lesson={status.lesson} ports={ports}/>;
  return <EditorialJourney id={id} ports={ports}/>;

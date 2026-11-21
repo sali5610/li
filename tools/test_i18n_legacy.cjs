@@ -13,6 +13,16 @@ const translations=sandbox.window.LI_LEGACY_EN;
 assert(translations&&Object.keys(translations).length>800,"Legacy VI/EN ledger is missing");
 const old=new Map([...runtime.matchAll(/"([^"]+)":"([^"]+)"/g)].map(m=>[m[1],m[2]]));
 const paired=k=>(Object.hasOwn(translations,k)&&String(translations[k]).trim())||(old.has(k)&&old.get(k).trim());
+// The React Catalog reads canonical titles directly. Every title containing
+// Vietnamese must have an authored English entry in the shared dictionary.
+const vietnamese=/[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/iu;
+const {groups}=JSON.parse(read("content/curriculum/legacy-catalog.v1.json"));
+const titles=groups.flatMap(group=>[group.title,...group.fields.flatMap(field=>
+ [field.name,...field.courses.flatMap(course=>[course.title,...course.lessons.map(lesson=>lesson.title)])])]);
+for(const title of titles.filter(title=>vietnamese.test(title))){
+ const english=translations[title]||old.get(title);
+ assert(english&&!vietnamese.test(english),"Missing English Catalog title: "+title);
+}
 const stripped=index.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,"")
  .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,"")
  .replace(/<!--[\s\S]*?-->/g,"");

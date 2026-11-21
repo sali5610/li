@@ -1,6 +1,7 @@
 import {useEffect,useState} from 'react';
 
 export type DiscoveryLocale='vi'|'en';
+export type BilingualCopy=readonly [vi:string,en:string];
 type LanguageWindow=Window&{liLanguage?:{get:()=>string}};
 export function discoveryLocale():DiscoveryLocale{
  return (window as LanguageWindow).liLanguage?.get?.()==='en'?'en':'vi';

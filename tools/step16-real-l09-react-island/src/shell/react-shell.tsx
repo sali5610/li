@@ -1,5 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
+import {useDiscoveryLocale} from './discovery-locale';
 import './react-shell.css';
 
 /** The visual chrome of the invited app is React-owned. The existing legacy
@@ -8,7 +9,7 @@ import './react-shell.css';
  */
 type Undo=()=>boolean|void;
 type ToastPort={show:(message:string,undo?:Undo|null)=>void};
-type ToastWindow=Window&{liReactToastPort?:ToastPort};
+type ToastWindow=Window&{liReactToastPort?:ToastPort;liLanguage?:{translate:(message:string)=>string}};
 type Notice={serial:number;message:string;undo:Undo|null};
 const app=window as ToastWindow;
 
@@ -23,6 +24,8 @@ function Footer(){
  return <><b>li. (理)</b><span className="footer-tagline">THE WORLD OF KNOWING WHY</span></>;
 }
 function Notification({host}:{host:HTMLElement}){
+ const locale=useDiscoveryLocale();
+ const undoLabel=locale==='en'?'Undo':'Hoàn tác';
  const [notice,setNotice]=useState<Notice|null>(null);
  const serial=useRef(0);
  useEffect(()=>{
@@ -62,10 +65,11 @@ function Notification({host}:{host:HTMLElement}){
    message:restored?'Đã hoàn tác.':'Không thể hoàn tác. Dữ liệu chưa được khôi phục.',
    undo:null});
  };
+ const message=notice?(locale==='en'?(app.liLanguage?.translate?.(notice.message)??notice.message):notice.message):'';
  return notice?<>
-  <span className="li-snackbar-message" role="status" aria-live="polite" aria-atomic="true">{notice.message}</span>
+  <span className="li-snackbar-message" role="status" aria-live="polite" aria-atomic="true">{message}</span>
   {notice.undo&&<button type="button" className="li-snackbar-undo"
-   aria-label={'Hoàn tác: '+notice.message} onClick={undo}>Hoàn tác</button>}
+   aria-label={undoLabel+': '+message} onClick={undo}>{undoLabel}</button>}
  </>:null;
 }
 

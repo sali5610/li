@@ -31,7 +31,7 @@ type CatalogPort={
 type AppWindow=Window&{
  liReactCatalogMounted?:boolean;
  liCatalog?:CatalogPort;
- liLanguage?:{get:()=>string};
+ liLanguage?:{get:()=>string;translate:(value:string)=>string};
 };
 const app=window as AppWindow;
 // One GitHub curriculum source also used by released-lesson routes and all 17
@@ -148,12 +148,14 @@ function Catalog(){
  const field=group?.fields.find(item=>item.id===path[1]);
  const course=field?.courses.find(item=>item.id===path[2]);
  const lesson=course?.lessons.find(item=>item.id===path[3]);
+ const catalogTitle=(title:string)=>locale==='en'?(app.liLanguage?.translate?.(title)??title):title;
  const breadcrumb=[{label:locale==='vi'?'Tàng Thư':'Library',path:[] as string[]}];
- if(group)breadcrumb.push({label:group.title,path:[group.id]});
- if(field)breadcrumb.push({label:field.name,path:[group!.id,field.id]});
- if(course)breadcrumb.push({label:course.title,path:[group!.id,field!.id,course.id]});
- if(lesson)breadcrumb.push({label:lesson.title,path:[group!.id,field!.id,course!.id,lesson.id]});
- const heading=lesson?.title||course?.title||field?.name||group?.title||(locale==='vi'?'Tàng Thư':'Library');
+ if(group)breadcrumb.push({label:catalogTitle(group.title),path:[group.id]});
+ if(field)breadcrumb.push({label:catalogTitle(field.name),path:[group!.id,field.id]});
+ if(course)breadcrumb.push({label:catalogTitle(course.title),path:[group!.id,field!.id,course.id]});
+ if(lesson)breadcrumb.push({label:catalogTitle(lesson.title),path:[group!.id,field!.id,course!.id,lesson.id]});
+ const currentTitle=lesson?.title||course?.title||field?.name||group?.title;
+ const heading=currentTitle?catalogTitle(currentTitle):(locale==='vi'?'Tàng Thư':'Library');
  const description=lesson?(personalStudyRoute(lesson.id)?
   (locale==='vi'?'Bài học cá nhân · Có thể học ngay trong Tàng Thư.':
    'Personal study lesson · Ready to learn in your library.'):
@@ -223,7 +225,7 @@ function Catalog(){
    {field&&!course&&field.image&&<img className="catalog-field-hero" src={field.image} alt="" loading="lazy" decoding="async"/>}
   {!group&&<><div className="catalog-group-grid">
    {groups.map((item,index)=><CatalogCard key={item.id} number={index+1}
-    title={item.title} eyebrow={locale==='vi'?'NHÓM NGÀNH':'DOMAIN GROUP'}
+    title={catalogTitle(item.title)} eyebrow={locale==='vi'?'NHÓM NGÀNH':'DOMAIN GROUP'}
     detail={item.fields.length+(locale==='vi'?' chuyên ngành':' fields')}
     locale={locale} onOpen={()=>openPath([item.id])}/>)}
   </div>
@@ -236,7 +238,7 @@ function Catalog(){
   </Text></>}
   {group&&!field&&<div className="catalog-field-grid">
    {group.fields.map((item,index)=><CatalogCard key={item.id} number={index+1}
-    title={item.name} image={item.image} eyebrow={locale==='vi'?'CHUYÊN NGÀNH':'FIELD'}
+    title={catalogTitle(item.name)} image={item.image} eyebrow={locale==='vi'?'CHUYÊN NGÀNH':'FIELD'}
     detail={item.courses.length+(locale==='vi'?' môn học theo lộ trình':' courses')}
     locale={locale} onOpen={()=>openPath([group.id,item.id])}/>)}
   </div>}
@@ -251,10 +253,10 @@ function Catalog(){
      {field.courses.filter(item=>item.level===level).map(item=><article
       key={item.id} className="catalog-course-card">
       <div className="kicker">{item.id} · {locale==='en'?en:vi}</div>
-      <Heading level={3} role="titleMedium">{item.title}</Heading>
+      <Heading level={3} role="titleMedium">{catalogTitle(item.title)}</Heading>
       <ol className="catalog-preview-lessons">
        {item.lessons.map(l=><li key={l.id}
-        className={canOpenLesson(l)?'catalog-preview-published':undefined}>{l.title}</li>)}
+        className={canOpenLesson(l)?'catalog-preview-published':undefined}>{catalogTitle(l.title)}</li>)}
       </ol>
       <Button variant="secondary" className="catalog-card-action"
        onClick={()=>openPath([group!.id,field!.id,item.id])}>
@@ -285,7 +287,7 @@ function Catalog(){
    {course.lessons.map((item,index)=><li key={item.id} className="catalog-lesson-card">
     <span className="catalog-lesson-order" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>
     <div className="catalog-lesson-desc">
-     <Heading level={2} role="titleSmall">{item.title}</Heading>
+     <Heading level={2} role="titleSmall">{catalogTitle(item.title)}</Heading>
      <Text role="support">{item.id} · {personalStudyRoute(item.id)?
       (locale==='vi'?'Học cá nhân · Có bài đầy đủ':'Personal study · Complete lesson'):
       canOpenLesson(item)?(locale==='vi'?'Đã phát hành':'Released'):

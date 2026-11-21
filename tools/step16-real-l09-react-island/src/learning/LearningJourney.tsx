@@ -16,7 +16,7 @@ import type {LessonPhase} from '../shell/app-store.js';
 import {createLessonPhaseActor} from './phase-machine.js';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
-import {useDiscoveryLocale} from '../shell/discovery-locale.js';
+import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discovery-locale.js';
 import {useStepScreen} from './step-screen.js';
 import {LessonBookmark,LessonMentor,L09Figures,LessonSources,openLessonSpell} from './LessonDetailParity.js';
 import {RelatedLessons} from './RelatedLessons.js';
@@ -100,7 +100,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  const [loadAttempt,setLoadAttempt]=useState(0);
  const [saving,setSaving]=useState(false);
  const [sync,setSync]=useState<SyncState>('unavailable');
- const [error,setError]=useState('');
+ const [errorCopy,setError]=useState<BilingualCopy|null>(null);
+ const error=errorCopy?localized(appLocale,...errorCopy):'';
  const [locked,setLocked]=useState(false);
  const subject=useRef<string|null>(null), revision=useRef<string|null>(null);
  const writes=useRef<Promise<void>>(Promise.resolve());
@@ -130,7 +131,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   subject.current=null;
   revision.current=null;
   setBusy(true);
-  setError('');
+  setError(null);
   let cancelled=false;
   (async()=>{
    try{
@@ -157,7 +158,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     setSync(status);
     setBusy(false);
    }catch{
-    if(!cancelled){setError('Không thể xác minh quyền truy cập hoặc tải bài học. Không mở chế độ khách.');setBusy(false);}
+    if(!cancelled){setError(['Không thể xác minh quyền truy cập hoặc tải bài học. Không mở chế độ khách.','Could not verify access or load the lesson. Guest access is unavailable.']);setBusy(false);}
    }
   })();
   return()=>{cancelled=true;mounted.current=false;};
@@ -190,7 +191,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    failedWrite.current=true;
    if(mounted.current){
     setLocked(true);
-    setError('Không lưu được dữ liệu. Bản đang sửa vẫn hiển thị; đừng tải lại trước khi xử lý lỗi.');
+    setError(['Không lưu được dữ liệu. Bản đang sửa vẫn hiển thị; đừng tải lại trước khi xử lý lỗi.','Could not save. Your edits are still here. Resolve the issue before reloading.']);
    }
    return false;
   });
@@ -214,7 +215,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    // LocalStorage might have accepted our draft before Dexie failed. Retry that
    // exact draft at its latest revision; never clobber another device/tab.
    if(latest.revision!==revision.current&&!sameAttempt(latest.attempt,unsaved)){
-    setError('Tiến độ đã thay đổi ở nơi khác. Bản chưa lưu vẫn nằm trên màn hình; không tự ghi đè.');
+    setError(['Tiến độ đã thay đổi ở nơi khác. Bản chưa lưu vẫn nằm trên màn hình; không tự ghi đè.','Progress changed elsewhere. Your unsaved work is still here and nothing was overwritten.']);
     return;
    }
    const saved=await ports.attempts.save({
@@ -225,18 +226,18 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    revision.current=saved.revision;
    failedWrite.current=false;
    setLocked(false);
-   setError('');
+   setError(null);
    await refreshStatus();
   }catch{
-   setError('Chưa lưu lại được. Bản đang sửa vẫn trên màn hình; hãy kiểm tra bộ nhớ thiết bị và thử lại.');
+   setError(['Chưa lưu lại được. Bản đang sửa vẫn trên màn hình; hãy kiểm tra bộ nhớ thiết bị và thử lại.','Could not save. Your edits are still here. Check device storage and retry.']);
   }finally{if(mounted.current)setSaving(false);}
  }
  function editDraft(index:number,value:string){
   if(!attempt||attempt.submitted||locked)return;
   if(value.length>MAX_ANSWER_CHARS){
-   setError('Mỗi câu trả lời tối đa 4.000 ký tự để lưu an toàn.');return;
+   setError(['Mỗi câu trả lời tối đa 4.000 ký tự để lưu an toàn.','Use at most 4,000 characters per answer.']);return;
   }
-  if(error)setError('');
+  if(error)setError(null);
   const draft=[...attempt.draft] as Attempt['draft'];
   draft[index]=value;
   void save({...attempt,draft});
@@ -244,9 +245,9 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  function editGuided(value:string){
   if(!attempt||attempt.submitted||locked)return;
   if(value.length>MAX_ANSWER_CHARS){
-   setError('Phần thử áp dụng tối đa 4.000 ký tự để lưu an toàn.');return;
+   setError(['Phần thử áp dụng tối đa 4.000 ký tự để lưu an toàn.','Use at most 4,000 characters for the guided response.']);return;
   }
-  if(error)setError('');
+  if(error)setError(null);
   void save({...attempt,guidedDraft:value});
  }
  function changeRating(index:number,value:string){
@@ -258,9 +259,9 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  async function submit(){
   if(!attempt||attempt.submitted||locked)return;
   if(attempt.draft.some(x=>x.trim().length<12)){
-   setError('Trả lời cả 4 câu (mỗi câu ít nhất 12 ký tự) trước khi nộp.');return;
+   setError(['Trả lời cả 4 câu (mỗi câu ít nhất 12 ký tự) trước khi nộp.','Answer all four questions with at least 12 characters each before submitting.']);return;
   }
-  setError('');
+  setError(null);
   const next:Attempt={...attempt,submitted:true,submittedAt:new Date().toISOString(),
    submission:[...attempt.draft] as Attempt['submission'],submissionLocale:attempt.locale};
   if(await save(next)){
@@ -271,9 +272,9 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  async function finish(){
   if(!attempt||!attempt.submitted||attempt.reviewed||locked)return;
   if(attempt.ratings.some(x=>x===null)){
-   setError('Chọn đủ 4 tiêu chí tự đánh giá trước khi hoàn tất.');return;
+   setError(['Chọn đủ 4 tiêu chí tự đánh giá trước khi hoàn tất.','Rate all four self-review criteria before finishing.']);return;
   }
-  setError('');
+  setError(null);
   if(await save({...attempt,reviewed:true})){
    phaseActor.send({type:'COMMIT',submitted:true,reviewed:true});
    phaseActor.send({type:'OPEN',phase:'progress'});
@@ -287,7 +288,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  async function restartLesson(){
   if(!attempt||locked||saving||pendingWrites.current>0)return;
   if(!confirmLessonRestart(L09_LESSON_ID,attempt.locale))return;
-  setError('');
+  setError(null);
   if(await save(freshLessonAttempt(attempt))){
    phaseActor.send({type:'COMMIT',submitted:false,reviewed:false});
    phaseActor.send({type:'OPEN',phase:'read'});
@@ -296,7 +297,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  function go(next:Phase){
   if(!attempt)return;
   phaseActor.send({type:'OPEN',phase:next});
-  if(phaseActor.getSnapshot().value===next)setError('');
+  if(phaseActor.getSnapshot().value===next)setError(null);
  }
  // Settings is the only app language control. Saved lesson locale follows it.
  useEffect(()=>{
@@ -305,13 +306,13 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   void save({...attempt,locale:appLocale});
  },[appLocale,attempt?.locale,busy,locked,saving]);
  if(busy)return <section className="li-learning-journey" aria-busy="true" role="status">
-  Đang xác minh quyền học và tải tiến độ…
+  {localized(appLocale,'Đang xác minh quyền học và tải tiến độ…','Verifying access and loading progress…')}
  </section>;
  if(!attempt)return <section className="li-learning-journey" role="alert">
-  <Heading level={2} role="titleMedium">Chưa mở được bài L09</Heading>
-  <Text>{error||'Không tải được dữ liệu học. Quyền truy cập vẫn được bảo vệ.'}</Text>
+  <Heading level={2} role="titleMedium">{localized(appLocale,'Chưa mở được bài L09','Could not open lesson L09')}</Heading>
+  <Text>{error||localized(appLocale,'Không tải được dữ liệu học. Quyền truy cập vẫn được bảo vệ.','Could not load your learning data. Access is still protected.')}</Text>
   <div className="li-learning-recovery">
-   <Button onClick={()=>setLoadAttempt(value=>value+1)}>Thử lại</Button>
+   <Button onClick={()=>setLoadAttempt(value=>value+1)}>{localized(appLocale,'Thử lại','Try again')}</Button>
   </div>
  </section>;
 
@@ -523,7 +524,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Text role="support">{content.scoreLabel}: {attempt.ratings.reduce<number>((n,x)=>n+(x??0),0)} / 8</Text>
     <T02ReviewEntry lessonId="L09-1-2" vi={vi} disabled={locked||saving}
      onOpen={()=>{if(!openLessonSpell('L09-1-2','T02',true))
-      setError(vi?'Không mở được lịch ôn cho bài này.':'Could not open this lesson review.');}}/>
+      setError(['Không mở được lịch ôn cho bài này.','Could not open this lesson review.']);}}/>
     <Button variant="secondary" onClick={()=>ports.search.openSearch('sampling bias random sampling variation')}>
      {vi?'Tìm bài liên quan':'Find related lessons'}
     </Button>

@@ -12,7 +12,7 @@ import type {Attempt} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
-import {useDiscoveryLocale} from '../shell/discovery-locale.js';
+import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discovery-locale.js';
 import {useStepScreen} from './step-screen.js';
 import {LessonBookmark,LessonMentor,LessonSources,LessonFigure,openLessonSpell} from './LessonDetailParity.js';
 import {RelatedLessons} from './RelatedLessons.js';
@@ -80,7 +80,8 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
  const [saving,setSaving]=useState(false);
  const [status,setStatus]=useState<SyncState>('unavailable');
  const [locked,setLocked]=useState(false);
- const [error,setError]=useState('');
+ const [errorCopy,setError]=useState<BilingualCopy|null>(null);
+ const error=errorCopy?localized(appLocale,...errorCopy):'';
  const subject=useRef<string|null>(null);
  const revision=useRef<string|null>(null);
  const chain=useRef<Promise<void>>(Promise.resolve());
@@ -113,7 +114,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
  useEffect(()=>{
   mounted.current=true;
   let cancelled=false;
-  setLoading(true);setError('');
+  setLoading(true);setError(null);
   (async()=>{
    try{
     const learner=await ports.auth.requireInvitedLearner();
@@ -133,7 +134,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     setAttempt(a);setPhase(resume(a));setStatus(cloud);setLoading(false);
    }catch{
     if(!cancelled){
-     setError('Không thể xác minh quyền học hoặc tải bài. Không mở chế độ khách.');
+     setError(['Không thể xác minh quyền học hoặc tải bài. Không mở chế độ khách.','Could not verify access or load the lesson. Guest access is unavailable.']);
      setLoading(false);
     }
    }
@@ -157,7 +158,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
    failed.current=true;
    if(mounted.current){
     setLocked(true);
-    setError('Không lưu được bản đang sửa. Đừng tải lại trước khi thử lưu lại.');
+    setError(['Không lưu được bản đang sửa. Đừng tải lại trước khi thử lưu lại.','Could not save your edits. Retry saving before reloading.']);
    }
    return false;
   });
@@ -177,16 +178,16 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
    if(learner.subjectId!==uid)throw Error('ACCOUNT_CHANGED');
    const latest=await ports.attempts.load({lessonId:id,subjectId:uid});
    if(latest.revision!==revision.current&&!equalAttempt(latest.attempt,unsaved)){
-    setError('Dữ liệu đã thay đổi ở thiết bị khác. Bản chưa lưu vẫn ở đây; không tự ghi đè.');
+    setError(['Dữ liệu đã thay đổi ở thiết bị khác. Bản chưa lưu vẫn ở đây; không tự ghi đè.','Data changed on another device. Your unsaved work is still here and nothing was overwritten.']);
     return;
    }
    const written=await ports.attempts.save({
     lessonId:id,subjectId:uid,attempt:unsaved,expectedRevision:latest.revision
    });
    revision.current=written.revision;
-   failed.current=false;setLocked(false);setError('');await refreshStatus();
+   failed.current=false;setLocked(false);setError(null);await refreshStatus();
   }catch{
-   setError('Chưa lưu lại được. Giữ trang này mở và kiểm tra bộ nhớ hoặc kết nối.');
+   setError(['Chưa lưu lại được. Giữ trang này mở và kiểm tra bộ nhớ hoặc kết nối.','Could not save. Keep this page open and check storage or your connection.']);
   }finally{if(mounted.current)setSaving(false);}
  }
  function editGuided(value:string){
@@ -207,7 +208,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
  async function restartLesson(){
   if(!attempt||locked||saving||pending.current>0)return;
   if(!confirmLessonRestart(id,attempt.locale))return;
-  setError('');
+  setError(null);
   if(await save(freshLessonAttempt(attempt)))setPhase('read');
  }
  function revealHint(){
@@ -217,9 +218,9 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
  async function submit(){
   if(!attempt||locked||saving||attempt.submitted)return;
   if(attempt.draft.some(x=>x.trim().length<12)){
-   setError('Cần trả lời đủ 4 câu, mỗi câu ít nhất 12 ký tự.');return;
+   setError(['Cần trả lời đủ 4 câu, mỗi câu ít nhất 12 ký tự.','Answer all four questions with at least 12 characters each.']);return;
   }
-  setError('');
+  setError(null);
   const next={...attempt,submitted:true,submittedAt:new Date().toISOString(),
    submission:[...attempt.draft] as Attempt['submission'],submissionLocale:attempt.locale};
   if(await save(next))setPhase('feedback');
@@ -233,9 +234,9 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
  async function finish(){
   if(!attempt||locked||saving||!attempt.submitted||attempt.reviewed)return;
   if(attempt.ratings.some(x=>x===null)){
-   setError('Chọn đủ bốn tiêu chí tự đánh giá trước khi hoàn tất.');return;
+   setError(['Chọn đủ bốn tiêu chí tự đánh giá trước khi hoàn tất.','Rate all four self-review criteria before finishing.']);return;
   }
-  setError('');if(await save({...attempt,reviewed:true}))setPhase('progress');
+  setError(null);if(await save({...attempt,reviewed:true}))setPhase('progress');
  }
  // Settings owns the application language; update the stored attempt without
  // putting a language selector or a second navigation menu inside the lesson.
@@ -244,10 +245,10 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
      pending.current>0)return;
   void save({...attempt,locale:appLocale});
  },[appLocale,attempt?.locale,loading,locked,saving]);
- if(loading)return <div className="li-learning-journey" role="status">Đang tải bài học đã lưu…</div>;
+ if(loading)return <div className="li-learning-journey" role="status">{localized(appLocale,'Đang tải bài học đã lưu…','Loading saved lesson…')}</div>;
  if(!attempt)return <section className="li-learning-journey" role="alert">
-  <p>{error||'Không tải được bài học.'}</p>
-  <Button onClick={()=>setReload(n=>n+1)}>Thử lại</Button>
+  <p>{error||localized(appLocale,'Không tải được bài học.','Could not load the lesson.')}</p>
+  <Button onClick={()=>setReload(n=>n+1)}>{localized(appLocale,'Thử lại','Try again')}</Button>
  </section>;
  const vi=appLocale==='vi';
  const content=source.content.localized[appLocale];
@@ -454,7 +455,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
      locale={appLocale} onReviewTheory={()=>setPhase('read')}/>
     <T02ReviewEntry lessonId={id} vi={vi} disabled={locked||saving}
      onOpen={()=>{if(!openLessonSpell(id,'T02',true))
-      setError(vi?'Không mở được lịch ôn cho bài này.':'Could not open this lesson review.');}}/>
+      setError(['Không mở được lịch ôn cho bài này.','Could not open this lesson review.']);}}/>
    </Card>}
   </motion.div>
   {phase==='read'&&<details className="li-learning-extra-sources">

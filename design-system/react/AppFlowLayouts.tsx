@@ -12,6 +12,7 @@ import {NotebookArt,notebookDisciplineImages} from './NotebookArt';
 import {NotebookInk} from './NotebookInk';
 import {NotebookLessonBook} from './NotebookLessonBook';
 import {BookwormIllustration} from './BookwormIllustration';
+import {BookwormSourceArt} from './BookwormSourceArt';
 import type {BookwormArtKind} from './BookwormIllustration';
 import {BookwormLessonBook} from './BookwormLessonBook';
 import {BookwormScrapbook} from './BookwormScrapbook';
@@ -123,7 +124,9 @@ function ScreenBody(props:AppPageLayoutProps){
       kind={item.id==='hci'?'hci':item.id==='supply'?'supply':'globe'} size="spot"/></div>}
      {variant==='notebook'&&<NotebookArt kind="discipline" size="card"
       src={notebookDisciplineImages[item.id as keyof typeof notebookDisciplineImages]}/>}
-     {bookwormPlate(item.id==='society'?'balance':item.id==='hci'?'lens':'chart')}
+     {variant==='bookworm'&&<BookwormSourceArt format="card"
+      src={notebookDisciplineImages[item.id as keyof typeof notebookDisciplineImages]}
+      fallback={item.id==='society'?'balance':item.id==='hci'?'lens':'chart'}/>} 
      <span className="li-flow-index">{String(i+1).padStart(2,'0')}</span>
      {variant==='notebook'&&<span className="li-nb-card-icon" aria-hidden="true">
       <LiIcon name={item.id==='hci'?'search':item.id==='supply'?'layers':'library-big'} size={19}/>
@@ -148,7 +151,9 @@ function ScreenBody(props:AppPageLayoutProps){
      kind={i===0?'sampling':i===1?'hci':'guide'} size="tiny"/></div>}
     {variant==='notebook'&&<NotebookArt kind={i===0?'sampling':i===1?'discipline':'method'}
      src={i===1?notebookDisciplineImages.hci:undefined} size="spot"/>}
-    {bookwormPlate(i===0?'lens':i===1?'compass':'open')}
+    {variant==='bookworm'&&(name.includes('HCI')?
+      <BookwormSourceArt src={notebookDisciplineImages.hci} format="spot" fallback="lens"/>:
+      bookwormPlate(i===0?'lens':'open'))}
     <Badge>{desc}</Badge>
     {variant==='notebook'&&<span className="li-nb-card-icon" aria-hidden="true">
      <LiIcon name={i===0?'book-open':i===1?'search':'sparkles'} size={18}/>
@@ -163,7 +168,8 @@ function ScreenBody(props:AppPageLayoutProps){
    <Badge>{t('VÍ DỤ GIẢ ĐỊNH','HYPOTHETICAL EXAMPLE')}</Badge>
    {variant==='vintagePop'&&<div className="li-pop-research-art"><VintagePopArt kind="sampling" size="spot"/></div>}
    {variant==='notebook'&&<NotebookArt kind="sampling" size="spot"/>}
-   {bookwormPlate('lens')}
+   {variant==='bookworm'&&<BookwormSourceArt src={notebookDisciplineImages.hci}
+    format="spot" fallback="lens"/>}
    <Heading level={2} role="titleMedium">{t('90% người khảo sát hài lòng. Có đại diện cho tất cả không?',
     '90% were satisfied. Does that represent everyone?')}</Heading>
    <div className="li-flow-stack">{[
@@ -277,6 +283,8 @@ function ScreenBody(props:AppPageLayoutProps){
   {action('dashboard','Xem tiến độ','View progress')}
  </div>;
  case 'guide':return <div className="li-flow-stack">
+  {variant==='bookworm'&&<BookwormSourceArt format="banner"
+   src="../assets/discipline/cognitive-psychology.webp" fallback="open"/>}
   {variant==='vintagePop'&&<div className="li-pop-guide-art"><VintagePopArt kind="guide" size="hero"/></div>}
   <Text role="body">{t('Các phương pháp học có hướng dẫn, luyện tập và phản hồi. Dưới đây là UI mẫu.',
    'Learning methods with instructions, practice and feedback. UI fixture only.')}</Text>
@@ -357,7 +365,9 @@ function ScreenBody(props:AppPageLayoutProps){
    {variant==='notebook'&&<span className="li-nb-card-icon" aria-hidden="true">
     <LiIcon name={i===0?'book-open':'feather'} size={19}/>
    </span>}
-   {bookwormPlate(i===0?'open':'quill')}
+   {variant==='bookworm'&&(i===1?
+    <BookwormSourceArt src={notebookDisciplineImages.hci} format="spot" fallback="quill"/>:
+    bookwormPlate('open'))}
    <Heading level={3} role="titleMedium">{name}</Heading>
    <Progress label={t('Tiến độ mẫu','Sample progress')} value={i?70:40}/>
    <Text role="support">{desc}</Text>
@@ -557,8 +567,9 @@ export function AppPageLayout(props:AppPageLayoutProps){
   <header className="li-flow-page-head">
    <motion.div className="li-flow-page-heading" {...reveal(.06)}>
     <span className="li-flow-page-kicker">
-     {variant==='notebook'&&<span className="li-nb-page-icon" aria-hidden="true">
-      <LiIcon name={notebookPageIcons[page]} size={20}/>
+     {(variant==='notebook'||bookworm)&&<span
+      className={bookworm?'li-bw-page-icon':'li-nb-page-icon'} aria-hidden="true">
+      <LiIcon name={notebookPageIcons[page]} size={bookworm?16:20}/>
      </span>}
      li. / {t('THƯ VIỆN TRI THỨC','THE KNOWLEDGE LIBRARY')}
     </span>

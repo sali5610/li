@@ -108,7 +108,7 @@ function Specimen(){
   panel=<div style={{maxWidth:680}}>
    <PortalCategoryCard portal={portal} title={t('Ngôn ngữ','Languages')}
     eyebrow={t('NHÓM NGÀNH','DOMAIN GROUP')}
-    detail={t('2 chuyên ngành','2 fields')} actionLabel={t('Khám phá','Explore')}
+    detail={t('2 chuyên ngành','2 fields')}
     onOpen={click}/>
   </div>;
   break;

@@ -9,12 +9,19 @@
 | [Lão Lý](lao-ly/README.md) | **17**: 10 expression illustrations + 5 mini head icons + 2 loading/error scenes | 9 byte-identical aliases under `site/assets/`; 10-pose library sources are retained | Uploaded and traceable. Individual assets approved as recorded; whole visual identity G2 remains open |
 | [Home background](home/README.md) | **2**: current iPhone and landscape WebP | Homepage CSS & Component Library image specimens | New PO-supplied artwork, original pixel dimensions retained |
 | Discipline landscapes | **15**: `discipline/*.webp` | React/native field cards + detail | New PO-supplied image set (including HCI and AI) |
+| **ISCED-F group illustrations** | **5** original JPEGs: `groups/*.jpg` | Five optimized WebP aliases under `site/assets/groups/` inside the existing React PortalCategoryCard | PO-supplied `Nhom nganh.zip`; real-device review separate |
 | [Group portal overlays](portals/README.md) | **7**: `portals/cong-moi-01..07.webp` transparent alpha derivatives | 7 byte-identical `site/assets/portals/` aliases in Studio / React component | Imported from PO-supplied PNG ZIP, resized for responsive review; G2 review pending |
 | [Brand marks](brand/README.md) | **3**: SVG seal, SVG favicon, PNG Apple touch icon | Header, favicon and app icon | Canonical copies added using exact existing Git blobs |
 | Lão Lý historical contact sheet | 1 review reference (not counted above) | No current source of icon truth | Review archive; icon thumbnails superseded by five clean-edge minis |
 | Inline non-Home legacy art | **4 embedded WebP data URIs** in `site/assets/li-layout.css` | Shelf, book, roots, wood | Retired Home data URIs removed; unrelated art untouched |
 
-That is **44 separately managed image files** (17 + 2 + 15 + 7 + 3), plus a historical 1-file review contact sheet. These are **not** all generated or proposed art assets.
+That is **49 separately managed canonical image files** (17 + 2 + 15 + 7 + 5 + 3), plus a historical 1-file review contact sheet. These are **not** all generated or proposed art assets.
+
+## Group illustration custody
+
+- The five JPEGs from `Nhom nganh.zip` are archived byte-exact in [`groups/`](groups/); WebP runtime derivatives stay full-resolution and do not crop the source.
+- The canonical ISCED-F group ID matches each runtime filename. React Catalog places the image beneath the existing transparent portal overlay without changing the portal component or entry motion.
+- Catalog displays Elder Ly loading/error until all five portal overlays and five group illustrations decode. GitHub integration alone is not Cloudflare deployment or PO real-device acceptance.
 
 ## Known gaps — no false complete claims
 

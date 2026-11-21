@@ -139,21 +139,25 @@ function Catalog(){
   };
  },[]);
  const group=groups.find(item=>item.id===path[0]);
- // Render ONE Elder Ly loading state for the whole group list. Do not mount
- // any illustration/placeholder until all foreground arch images decode.
+ // Keep Elder Ly visible until BOTH the foreground arches and illustrations decode.
+ // The group list mounts together, with no empty arch or exposed image flash.
  useEffect(()=>{
   if(group||portalLoad==='ready')return;
   let active=true;
-  const loads=groups.map((_,index)=>new Promise<void>((resolve,reject)=>{
+  const artworkUrls=groups.flatMap((item,index)=>[
+   './assets/portals/cong-moi-'+
+    String(groupPortals[index%groupPortals.length]).padStart(2,'0')+'.webp',
+   './assets/groups/'+item.id+'.webp'
+  ]);
+  const loads=artworkUrls.map(src=>new Promise<void>((resolve,reject)=>{
    const img=new Image();
    img.decoding='async';
    img.onload=()=>{
     if(typeof img.decode==='function')void img.decode().then(resolve,reject);
     else resolve();
    };
-   img.onerror=()=>reject(new Error('Portal arch could not load'));
-   img.src='./assets/portals/cong-moi-'+
-    String(groupPortals[index%groupPortals.length]).padStart(2,'0')+'.webp';
+   img.onerror=()=>reject(new Error('Group portal artwork could not load: '+src));
+   img.src=src;
   }));
   void Promise.all(loads).then(()=>{
    if(active)setPortalLoad('ready');
@@ -246,6 +250,8 @@ function Catalog(){
    {groups.map((item,index)=><PortalCategoryCard key={item.id}
     portal={groupPortals[index%groupPortals.length]}
     portalPreloaded
+    illustrationSrc={'./assets/groups/'+item.id+'.webp'}
+    illustrationAlt=""
     locale={locale}
     title={localized(locale,item.title,item.titleEn)}
     eyebrow={locale==='vi'?'NHÓM NGÀNH':'DOMAIN GROUP'}

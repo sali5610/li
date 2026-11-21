@@ -130,8 +130,15 @@ export function installReactCatalogPort():()=>void{
  };
  const existing=app.liCatalog;
  app.liCatalog=port;
-  // Replace historical ?catalog= paths once, without creating a Back entry.
-  writePath(path,false,false);
+  // Canonicalize a legacy URL without claiming the active screen is Catalog.
+  // Its history.state can belong to a lesson/search route and must survive.
+  const current=new URL(window.location.href);
+  const raw=(current.searchParams.get('catalog')||'').split('/').filter(Boolean).join('/');
+  if(raw!==path.join('/')){
+    if(path.length)current.searchParams.set('catalog',path.join('/'));
+    else current.searchParams.delete('catalog');
+    window.history.replaceState(window.history.state,'',current.pathname+current.search+current.hash);
+  }
  // Back/Forward within Catalog changes ?catalog without changing ?view.
  const onPop=()=>{
   const updated=urlPath();

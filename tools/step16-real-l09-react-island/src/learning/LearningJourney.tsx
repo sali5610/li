@@ -19,6 +19,7 @@ import {StudyBookFolio} from './StudyBookFolio';
 import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discovery-locale.js';
 import {useStepScreen} from './step-screen.js';
 import {LessonBookmark,LessonMentor,L09Figures,LessonSources,openLessonSpell} from './LessonDetailParity.js';
+import {CopyAnalysisPrompt} from './CopyAnalysisPrompt.js';
 import {RelatedLessons} from './RelatedLessons.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
@@ -434,6 +435,11 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
        </div>
       </aside>
       </details>
+    <CopyAnalysisPrompt locale={appLocale} step="guided" data={{
+     title:content.title,lessonId:'L09-1-2',activity:content.exBody+'\n'+content.exQuestion,
+     questions:[content.exQuestion],answers:[attempt.guidedDraft],
+     reference:attempt.hint?content.exHelp:undefined
+    }}/>
     <Button onClick={()=>go('practice')}>{vi?'Tiếp: Làm bài':'Next: Practice'} →</Button>
    </Card>}
    {phase==='practice'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-practice">
@@ -505,6 +511,12 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Text role="support">{vi?'Tự chấm theo rubric, không phải điểm tự động.':'Self-review, not automatic grading.'}</Text>
     {attempt.reviewed?<Button onClick={()=>go('progress')}>{vi?'Tiếp: Tiến độ':'Next: Progress'} →</Button>:
      <Button disabled={locked||saving} onClick={()=>void finish()}>{content.saveReview}</Button>}
+    <CopyAnalysisPrompt locale={appLocale} step="feedback" data={{
+     title:content.title,lessonId:'L09-1-2',activity:content.caseText+'\n'+content.caseClaim,
+     questions:content.questions,answers:attempt.submission??attempt.draft,
+     reference:content.answer+'\n'+content.answerCaution,
+     extra:content.rubricItems.map(item=>item.join(' · ')).join('\n')
+    }}/>
    </Card>}
    {phase==='progress'&&!attempt.reviewed&&<Card variant="flat-study" className="li-study-book-page">
     <Heading level={2} role="titleLarge">{labels.progress}</Heading>
@@ -528,6 +540,12 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Button variant="secondary" onClick={()=>ports.search.openSearch('sampling bias random sampling variation')}>
      {vi?'Tìm bài liên quan':'Find related lessons'}
     </Button>
+    <CopyAnalysisPrompt locale={appLocale} step="progress" data={{
+     title:content.title,lessonId:'L09-1-2',activity:content.caseText,
+     questions:content.questions,answers:attempt.submission??attempt.draft,
+     reference:content.answer,
+     extra:(vi?'Tự đánh giá: ':'Self-ratings: ')+attempt.ratings.join(', ')+' / 2'
+    }}/>
    </Card>}
   </motion.div>
   {phase==='read'&&<section className="li-lesson-step-resources" aria-label={vi?'Minh họa và nguồn':'Illustrations and sources'}>

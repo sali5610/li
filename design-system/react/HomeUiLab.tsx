@@ -131,12 +131,17 @@ function Lab(){
   const item=allPages.find(item=>item.id===id)!;
   return locale==='vi'?item.vi:item.en;
  };
+ const animateVariant=(style:LayoutKey)=>(style==='vintagePop'||style==='notebook')&&!reduceMotion;
  const preview=(target:PageId,style:LayoutKey,mini=false,slot='main')=><motion.section
   key={target+'-'+style+'-'+slot} className="li-ui-lab-preview"
-  initial={style==='vintagePop'&&!reduceMotion?{opacity:0,y:26,scale:.982}:false}
-  animate={{opacity:1,y:0,scale:1}}
-  exit={style==='vintagePop'&&!reduceMotion?{opacity:0,y:-12,scale:.992}:undefined}
-  transition={{duration:.42,ease:[.22,1,.36,1]}}
+  initial={animateVariant(style)?{opacity:0,y:mini?16:26,scale:mini?.993:.982}:false}
+  animate={mini&&animateVariant(style)?undefined:{opacity:1,y:0,scale:1}}
+  whileInView={mini&&animateVariant(style)?{opacity:1,y:0,scale:1}:undefined}
+  viewport={{once:true,amount:.06}}
+  exit={animateVariant(style)?{opacity:0,y:-12,scale:.992}:undefined}
+  transition={{duration:animateVariant(style)?mini?.38:.42:0,
+   delay:mini&&animateVariant(style)?Math.min(activeFlow.steps.indexOf(target),5)*.035:0,
+   ease:[.22,1,.36,1]}}
   data-visual-theme={style==='vintagePop'?'vintage-pop':style==='bookworm'?'bookworm':undefined}
   data-mini={mini?'true':'false'} aria-label={label(target)+' / '+style}>
   <header className="li-ui-lab-preview-label">

@@ -1,0 +1,279 @@
+/* Notebook experimental motion / composition, scoped to the opt-in layout.
+   Keep all copy and real DS components; only recompose visual placement. */
+.li-notebook-annotation{position:relative;padding-bottom:14px}
+.li-notebook-annotation .li-notebook-ink-swash{
+ position:absolute;left:27px;bottom:-1px;width:min(73%,245px);height:14px;
+ overflow:visible;pointer-events:none
+}
+.li-notebook-annotation>span:last-of-type::after{display:none}
+.li-flow-page[data-layout="notebook"] .li-flow-marginalia{
+ display:flex;align-items:flex-start;gap:12px;margin-top:6px;max-width:100%
+}
+.li-flow-page[data-layout="notebook"] .li-flow-note-toggle{
+ flex:0 0 40px;display:grid;place-items:center;width:40px;height:40px;
+ background:var(--nb-sheet);color:var(--nb-wine);border:1px dashed var(--nb-wine);
+ cursor:pointer;transition:background-color .2s ease,transform .2s ease;
+}
+.li-flow-page[data-layout="notebook"] .li-flow-note-toggle:hover{
+ background:var(--nb-olive);transform:rotate(-7deg)
+}
+.li-flow-page[data-layout="notebook"] .li-flow-marginalia-content{
+ overflow:hidden;min-width:0;padding-bottom:9px
+}
+.li-flow-page[data-layout="notebook"] .li-flow-note-toggle:focus-visible{
+ outline:3px solid var(--nb-blue);outline-offset:3px
+}
+.li-flow-page[data-layout="notebook"] .li-flow-page-heading{
+ align-items:start;min-width:0
+}
+.li-flow-page[data-layout="notebook"] .li-flow-page-main,
+.li-flow-page[data-layout="notebook"] .li-flow-page-aside{
+ min-width:0;will-change:auto
+}
+/* Ink accents are transient; cards do not hint at clickability unless
+   they actually contain a button/link. */
+.li-flow-page[data-layout="notebook"] :is(.li-ds-card:has(button),.li-legacy-method){
+ transition:transform .25s cubic-bezier(.2,.72,.23,1),
+  border-color .25s ease,box-shadow .25s ease;
+}
+.li-flow-page[data-layout="notebook"] :is(.li-ds-card:has(button),.li-legacy-method):hover{
+ transform:translateY(-3px);border-color:var(--nb-wine);
+ box-shadow:4px 4px 0 color-mix(in srgb,var(--nb-wine) 12%,transparent)
+}
+.li-flow-page[data-layout="notebook"] .li-ds-button{
+ transition:background-color .18s ease,color .18s ease,
+ transform .18s cubic-bezier(.2,.72,.23,1)
+}
+.li-flow-page[data-layout="notebook"] .li-ds-button:active:not(:disabled){
+ transform:scale(.975)
+}
+.li-flow-page[data-layout="notebook"] .li-ds-button svg{
+ transition:transform .24s ease
+}
+.li-flow-page[data-layout="notebook"] .li-ds-button:hover svg{
+ transform:translateX(3px)
+}
+.li-ui-home[data-home-layout="notebook"] .li-ui-home-actions .li-ds-button:active,
+.li-ui-home[data-home-layout="notebook"] .li-ui-home-mirror-actions .li-ds-button:active{
+ transform:scale(.97)
+}
+.li-ui-home[data-home-layout="notebook"] .li-ui-home-notebook-masthead{
+ position:relative
+}
+.li-ui-home[data-home-layout="notebook"] .li-ui-home-mirror{
+ transition:box-shadow .35s ease,border-color .35s ease
+}
+.li-ui-home[data-home-layout="notebook"] .li-ui-home-mirror:hover{
+ box-shadow:8px 9px 0 var(--nb-soft);
+ border-color:var(--nb-wine)
+}
+/* Tàng Thư — editorial index: featured first field, supporting fields stacked */
+.li-flow-page[data-layout="notebook"][data-page="catalog"] .li-ds-catalog{
+ gap:23px
+}
+.li-flow-page[data-layout="notebook"][data-page="catalog"] .li-ds-catalog-intro{
+ padding:14px 0 18px;border-bottom:2px dotted var(--nb-rule)
+}
+.li-flow-page[data-layout="notebook"][data-page="catalog"] .li-ds-catalog-body{
+ grid-template-columns:minmax(155px,.25fr) minmax(0,1fr);
+ gap:22px
+}
+.li-flow-page[data-layout="notebook"][data-page="catalog"] .li-flow-card-grid{
+ grid-template-columns:minmax(0,1.16fr) minmax(0,.84fr);
+ grid-auto-rows:minmax(145px,auto);
+ gap:14px
+}
+.li-flow-page[data-layout="notebook"][data-page="catalog"] .li-flow-card-grid>.li-ds-card:first-child{
+ grid-row:span 2;align-content:space-between;padding:clamp(20px,3vw,40px);
+ background:#F2F0E1;border-top:4px solid var(--nb-wine)
+}
+.li-flow-page[data-layout="notebook"][data-page="catalog"] .li-flow-card-grid>.li-ds-card:first-child .li-atom-heading{
+ font-size:clamp(29px,3.1vw,43px);line-height:1.06
+}
+/* Tra Cứu — a focused index card with staggered result slips */
+.li-flow-page[data-layout="notebook"][data-page="search"] .li-flow-card-grid{
+ grid-template-columns:repeat(2,minmax(0,1fr))
+}
+.li-flow-page[data-layout="notebook"][data-page="search"] .li-flow-card-grid>.li-ds-card:first-child{
+ grid-column:1/-1;border-left:4px solid var(--nb-wine)
+}
+.li-flow-page[data-layout="notebook"][data-page="search"] .li-flow-page-main>.li-flow-stack>.li-ds-search-field{
+ padding:22px;background:var(--nb-sheet);
+ border:1px solid var(--nb-rule)
+}
+/* Bài học — lesson text adjacent to illustration, study sections below */
+.li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-page-main>.li-flow-stack{
+ grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+ align-items:start;column-gap:24px;row-gap:26px
+}
+.li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-lesson-top{
+ grid-column:1;padding:20px 0 20px 18px;border-left:3px solid var(--nb-wine)
+}
+.li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-lesson-diagram{
+ grid-column:2;min-height:220px
+}
+.li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-card-grid{
+ grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr))
+}
+.li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-stack>.li-ds-button{
+ grid-column:1/-1;justify-self:start
+}
+/* Luyện tập — prompt and answer are adjacent notebook leaves */
+.li-flow-page[data-layout="notebook"][data-page="practice"] .li-ds-learning{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ align-items:start;gap:18px
+}
+.li-flow-page[data-layout="notebook"][data-page="practice"] .li-ds-learning-head,
+.li-flow-page[data-layout="notebook"][data-page="practice"] .li-ds-learning-feedback,
+.li-flow-page[data-layout="notebook"][data-page="practice"] .li-ds-learning-footer{
+ grid-column:1/-1
+}
+.li-flow-page[data-layout="notebook"][data-page="practice"] .li-ds-learning-prompt{
+ align-self:stretch;min-height:235px;border-left:4px solid var(--nb-wine)
+}
+.li-flow-page[data-layout="notebook"][data-page="practice"] .li-ds-learning-response{
+ align-self:stretch;min-height:235px
+}
+/* Phản hồi — separate response, evidence and self-rating */
+.li-flow-page[data-layout="notebook"][data-page="feedback"] .li-flow-page-main>.li-flow-stack{
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ align-items:start
+}
+.li-flow-page[data-layout="notebook"][data-page="feedback"] .li-flow-page-main>.li-flow-stack>:first-child,
+.li-flow-page[data-layout="notebook"][data-page="feedback"] .li-flow-page-main>.li-flow-stack>:last-child{
+ grid-column:1/-1
+}
+/* Khảo Chứng and Phản Chứng — claim + choice in editorial columns */
+.li-flow-page[data-layout="notebook"][data-page="research"] .li-flow-page-main>.li-flow-stack>.li-ds-card{
+ border-left:4px solid var(--nb-wine);padding:clamp(20px,3vw,36px)
+}
+.li-flow-page[data-layout="notebook"][data-page="case"] .li-flow-page-main>.li-flow-stack{
+ grid-template-columns:repeat(2,minmax(0,1fr))
+}
+.li-flow-page[data-layout="notebook"][data-page="case"] .li-flow-page-main>.li-flow-stack>:first-child,
+.li-flow-page[data-layout="notebook"][data-page="case"] .li-flow-page-main>.li-flow-stack>:nth-last-child(-n+2){
+ grid-column:1/-1
+}
+/* Methods — three catalogue stamps side by side on wide pages */
+.li-flow-page[data-layout="notebook"][data-page="guide"] .li-flow-card-grid{
+ grid-template-columns:repeat(3,minmax(0,1fr))
+}
+.li-flow-page[data-layout="notebook"][data-page="guide"] .li-legacy-method:first-child{
+ background:#EDF0DE;border-top:4px solid var(--nb-wine)
+}
+.li-flow-page[data-layout="notebook"][data-page="guideDetail"] .li-flow-steps{
+ grid-template-columns:repeat(3,minmax(0,1fr));
+}
+.li-flow-page[data-layout="notebook"][data-page="guideDetail"] .li-flow-steps>div{
+ align-items:start;flex-direction:column;gap:16px;min-height:120px
+}
+/* Tủ Riêng / Nhật Ký — asymmetric overview, tall main statistic */
+.li-flow-page[data-layout="notebook"][data-page="library"] .li-flow-card-grid{
+ grid-template-columns:repeat(3,minmax(0,1fr))
+}
+.li-flow-page[data-layout="notebook"][data-page="dashboard"] .li-flow-stat-grid{
+ grid-template-columns:2fr 1fr 1fr
+}
+.li-flow-page[data-layout="notebook"][data-page="dashboard"] .li-flow-stat-grid>.li-ds-card:first-child{
+ background:#EDF0DE;border-top:4px solid var(--nb-wine)
+}
+.li-flow-page[data-layout="notebook"][data-page="dashboard"] .li-flow-week{
+ height:210px;border-bottom:1px dotted var(--nb-rule)
+}
+/* Bút Ký — open ruled pages; edit area wider, saved notes as paper slips */
+.li-flow-page[data-layout="notebook"][data-page="collection"] .li-flow-page-main>.li-flow-stack{
+ grid-template-columns:repeat(2,minmax(0,1fr))
+}
+.li-flow-page[data-layout="notebook"][data-page="collection"] .li-flow-page-main>.li-flow-stack>:first-child{
+ grid-column:1/-1
+}
+.li-flow-page[data-layout="notebook"][data-page="capture"] .li-flow-page-main>.li-flow-stack,
+.li-flow-page[data-layout="notebook"][data-page="noteDetail"] .li-flow-page-main>.li-flow-stack{
+ max-width:840px
+}
+.li-flow-page[data-layout="notebook"][data-page="capture"] .li-ds-card,
+.li-flow-page[data-layout="notebook"][data-page="noteDetail"] .li-ds-card{
+ border-left:3px solid var(--nb-blue);
+}
+.li-flow-page[data-layout="notebook"][data-page="resume"] .li-flow-page-main>.li-flow-stack{
+ grid-template-columns:repeat(2,minmax(0,1fr))
+}
+/* Daily and quiet forms are full-height journal entries, not cards in a grid. */
+.li-flow-page[data-layout="notebook"][data-page="checkin"] .li-flow-page-main>.li-flow-stack,
+.li-flow-page[data-layout="notebook"][data-page="laoly"] .li-flow-page-main>.li-flow-stack{
+ max-width:810px;margin-inline:auto
+}
+.li-flow-page[data-layout="notebook"][data-page="checkin"] .li-ds-card,
+.li-flow-page[data-layout="notebook"][data-page="laoly"] .li-ds-card{
+ padding:clamp(24px,4vw,48px);border-top:4px solid var(--nb-wine)
+}
+/* Lab interaction: focused pages turn lightly; never animate layout positions
+   on each keystroke or save. Respect reduced motion and touch. */
+.li-ui-lab-stage>.li-ui-lab-preview{
+ transform-origin:top center;backface-visibility:hidden
+}
+.li-ui-lab-stage[data-gallery="true"]>.li-ui-lab-preview{
+ transition:border-color .2s ease
+}
+.li-ui-lab-stage[data-gallery="true"]>.li-ui-lab-preview:hover{
+ border-color:var(--olive)
+}
+@container lab-preview (max-width:990px){
+ .li-flow-page[data-layout="notebook"][data-page="catalog"] .li-ds-catalog-body{
+  grid-template-columns:minmax(0,1fr)
+ }
+ .li-flow-page[data-layout="notebook"][data-page="guide"] .li-flow-card-grid,
+ .li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-card-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))
+ }
+ .li-flow-page[data-layout="notebook"][data-page="guideDetail"] .li-flow-steps{
+  grid-template-columns:minmax(0,1fr)
+ }
+}
+@container lab-preview (max-width:720px){
+ .li-flow-page[data-layout="notebook"][data-page="catalog"] .li-flow-card-grid,
+ .li-flow-page[data-layout="notebook"][data-page="search"] .li-flow-card-grid,
+ .li-flow-page[data-layout="notebook"][data-page="case"] .li-flow-page-main>.li-flow-stack,
+ .li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-page-main>.li-flow-stack,
+ .li-flow-page[data-layout="notebook"][data-page="feedback"] .li-flow-page-main>.li-flow-stack,
+ .li-flow-page[data-layout="notebook"][data-page="collection"] .li-flow-page-main>.li-flow-stack,
+ .li-flow-page[data-layout="notebook"][data-page="resume"] .li-flow-page-main>.li-flow-stack,
+ .li-flow-page[data-layout="notebook"][data-page="guide"] .li-flow-card-grid,
+ .li-flow-page[data-layout="notebook"][data-page="library"] .li-flow-card-grid,
+ .li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-card-grid,
+ .li-flow-page[data-layout="notebook"][data-page="practice"] .li-ds-learning{
+  grid-template-columns:minmax(0,1fr)
+ }
+ .li-flow-page[data-layout="notebook"][data-page="catalog"] .li-flow-card-grid>.li-ds-card:first-child{
+  grid-row:auto
+ }
+ .li-flow-page[data-layout="notebook"][data-page="search"] .li-flow-card-grid>.li-ds-card:first-child,
+ .li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-lesson-top,
+ .li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-lesson-diagram,
+ .li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-card-grid,
+ .li-flow-page[data-layout="notebook"][data-page="practice"] .li-ds-learning>*{
+  grid-column:1
+ }
+ .li-flow-page[data-layout="notebook"][data-page="dashboard"] .li-flow-stat-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))
+ }
+}
+@media(max-width:900px){
+ .li-flow-page[data-layout="notebook"][data-page="catalog"] .li-ds-catalog-body{
+  grid-template-columns:minmax(0,1fr)
+ }
+ .li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-page-main>.li-flow-stack,
+ .li-flow-page[data-layout="notebook"][data-page="practice"] .li-ds-learning,
+ .li-flow-page[data-layout="notebook"][data-page="feedback"] .li-flow-page-main>.li-flow-stack{
+  grid-template-columns:minmax(0,1fr)
+ }
+ .li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-page-main>.li-flow-stack>*,
+ .li-flow-page[data-layout="notebook"][data-page="practice"] .li-ds-learning>*{
+  grid-column:1
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .li-flow-page[data-layout="notebook"] *,
+ .li-ui-home[data-home-layout="notebook"] *,
+ .li-ui-lab-stage>.li-ui-lab-preview{animation:none!important;transition:none!important}
+}

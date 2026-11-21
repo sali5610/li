@@ -1,4 +1,5 @@
 import React from 'react';
+import {motion,AnimatePresence,useReducedMotion} from 'motion/react';
 import {Button,Card} from './Components';
 import {Badge,Heading,Text,Progress} from './Atoms';
 import {Field} from './Controls';
@@ -388,6 +389,13 @@ export function AppPageLayout(props:AppPageLayoutProps){
  const {page,variant,locale,onNavigate}=props;
  const meta=appLabPages.find(item=>item.id===page)!;
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
+ const reduced=useReducedMotion();
+ const [marginOpen,setMarginOpen]=React.useState(true);
+ const reveal=(delay:number)=>variant==='notebook'&&!reduced?{
+  initial:{opacity:0,y:14},
+  animate:{opacity:1,y:0},
+  transition:{duration:.48,delay,ease:'easeOut' as const}
+ }:{};
  return <section className="li-flow-page" data-page={page} data-layout={variant} lang={locale}>
   {variant==='bookworm'&&<div className="li-flow-bookworm-masthead" aria-hidden="true">
    <span>li. · Illustrated Folio</span><span>THE LIBRARY OF QUESTIONS / VOL. 01</span>
@@ -397,15 +405,31 @@ export function AppPageLayout(props:AppPageLayoutProps){
    <span>THE STUDY JOURNAL · VOL. 01</span>
   </div>}
   <header className="li-flow-page-head">
-   <div className="li-flow-page-heading">
+   <motion.div className="li-flow-page-heading" {...reveal(.06)}>
     <span className="li-flow-page-kicker">li. / {t('THƯ VIỆN TRI THỨC','THE KNOWLEDGE LIBRARY')}</span>
     <Heading level={1} role="headline">{t(meta.vi,meta.en)}</Heading>
     <Text role="body">{t(meta.descriptionVi,meta.descriptionEn)}</Text>
-    {variant==='notebook'&&<NotebookAnnotation
-     text={locale==='vi'?notebookNotes[page]?.[0]||'Ghi lại điều đáng nhớ.':
-      notebookNotes[page]?.[1]||'A thought worth keeping.'}
-     tone={page==='capture'||page==='noteDetail'?'blue':'wine'}/>}
-   </div>
+    {variant==='notebook'&&<div className="li-flow-marginalia">
+     <button className="li-flow-note-toggle" type="button"
+      onClick={()=>setMarginOpen(value=>!value)} aria-expanded={marginOpen}
+      aria-label={t('Hiện hoặc ẩn ghi chú bên lề','Toggle marginal note')}
+      title={t('Gập/mở ghi chú','Fold/unfold note')}>
+      <LiIcon name={marginOpen?'feather':'bookmark'} size={18}/>
+     </button>
+     <AnimatePresence initial={false}>
+      {marginOpen&&<motion.div key="notebook-note" className="li-flow-marginalia-content"
+       initial={reduced?false:{opacity:0,height:0,y:-6}}
+       animate={{opacity:1,height:'auto',y:0}}
+       exit={reduced?{opacity:0,height:0}:{opacity:0,height:0,y:-5}}
+       transition={{duration:reduced?0:.3,ease:'easeOut'}}>
+       <NotebookAnnotation
+        text={locale==='vi'?notebookNotes[page]?.[0]||'Ghi lại điều đáng nhớ.':
+         notebookNotes[page]?.[1]||'A thought worth keeping.'}
+        tone={page==='capture'||page==='noteDetail'?'blue':'wine'}/>
+      </motion.div>}
+     </AnimatePresence>
+    </div>}
+   </motion.div>
    {variant==='bookworm'&&<div className="li-flow-bookworm-hero-art" aria-hidden="true">
     <BookwormIllustration kind={['catalog','search','library','resume','collection','noteDetail'].includes(page)?'shelf':
      ['lesson','practice','feedback','guide','guideDetail','research','case'].includes(page)?'open':'stack'}/>
@@ -413,8 +437,11 @@ export function AppPageLayout(props:AppPageLayoutProps){
    <span className="li-flow-page-index" aria-hidden="true">{String(appLabPages.findIndex(item=>item.id===page)+1).padStart(2,'0')}</span>
   </header>
   <div className="li-flow-page-columns">
-   <div className="li-flow-page-main"><ScreenBody {...props}/></div>
-   <aside className="li-flow-page-aside" aria-label={t('Lối đi liên quan','Related paths')}>
+   <motion.div className="li-flow-page-main" {...reveal(.14)}>
+    <ScreenBody {...props}/>
+   </motion.div>
+   <motion.aside className="li-flow-page-aside" {...reveal(.25)}
+    aria-label={t('Lối đi liên quan','Related paths')}>
     <span className="li-flow-page-kicker">{t('LỐI ĐI TIẾP','NEXT DESTINATIONS')}</span>
     <Text role="support">{t('Bản thiết kế thử nghiệm dùng dữ liệu giả lập.',
      'Design preview using fixture data.')}</Text>
@@ -428,7 +455,7 @@ export function AppPageLayout(props:AppPageLayoutProps){
        {t(item.vi,item.en)} <LiIcon name="arrow-right" size={16}/>
       </Button>;
     })}
-   </aside>
+   </motion.aside>
   </div>
  </section>;
 }

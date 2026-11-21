@@ -294,7 +294,7 @@ function NotePreview({note,kind}:{
    onClick={()=>app.liNotes?.openDetail(kind,note.id)}>{copy('Xem chi tiết','View details')}</Button>
  </div>;
 }
-function Library(){
+export function Library(){
  const view=useLibrary();
  return <div className="section-shell li-react-library" data-li-react-screen="library">
   <header className="library-introduction">

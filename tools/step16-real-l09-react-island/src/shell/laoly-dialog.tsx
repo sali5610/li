@@ -151,7 +151,7 @@ export function BuddyDialog({root}:{root:HTMLElement}){
     {quoteVisible&&<details key={quote.id} className="li-buddy-quote-thought">
      <summary aria-label={chooseLanguage('Câu Lão Lý đang nghĩ. Chạm để xem diễn nghĩa và nguồn','What Lao Ly is thinking. Expand for translation and source')}>
       <span id="buddy-quote-original" className="ly-original" lang={quote.lang}>{quote.original}</span>
-      <LiIcon name="chevron-down" size={16}/>
+      <LiIcon name="chevron-right" size={16}/>
      </summary>
      <div id="buddy-quote" className="li-buddy-quote-expanded">
       <p id="buddy-quote-translation" className="ly-translation" lang={chooseLanguage('vi','en')}>{quote.translation}</p>

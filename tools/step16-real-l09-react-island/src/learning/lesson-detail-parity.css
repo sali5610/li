@@ -18,9 +18,10 @@
  padding:var(--li-space-2) 0}
 .li-learning-keywords{display:flex;flex-wrap:wrap;gap:var(--li-space-2)}
 .li-learning-keywords .li-ds-button{max-width:100%;white-space:normal;text-align:left;overflow-wrap:anywhere}
-.li-lesson-companion{display:grid;gap:var(--li-space-3);padding:var(--li-space-4);
+.li-lesson-companion{display:grid;gap:var(--li-space-2);padding:var(--li-space-3);
  border:1px solid var(--rule);background:var(--paper-2)}
-.li-lesson-companion>.li-ds-button{justify-self:start}
+.li-lesson-companion>.li-atom-text{margin:0}
+.li-lesson-companion>.li-ds-button{justify-self:start;min-height:44px;max-width:100%}
 .li-lesson-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--li-space-3)}
 .li-lesson-stats .li-lesson-stat{border:1px solid var(--rule);padding:var(--li-space-3);
  display:grid;gap:var(--li-space-2)}

@@ -6,6 +6,7 @@ import {HomeMirrorShell} from './Templates';
 import {ChatBubble} from './LegacyCards';
 import {LiIcon} from './LucideIcons';
 import {NotebookAnnotation} from './NotebookAnnotation';
+import {NotebookArt} from './NotebookArt';
 import {BookwormIllustration} from './BookwormIllustration';
 import './home-layout-variants.css';
 
@@ -66,6 +67,7 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
   {variant==='notebook'&&<div className="li-ui-home-notebook-annotation">
    <NotebookAnnotation text={t('Viết xuống câu hỏi, rồi để trí tò mò dẫn đường.',
     'Jot down the question; let curiosity lead the way.')} tone="blue"/>
+   <NotebookArt kind="book" size="spot"/>
   </div>}
   {variant==='bookworm'&&<div className="li-ui-home-bookworm-art" aria-hidden="true">
    <BookwormIllustration kind="stack"/>

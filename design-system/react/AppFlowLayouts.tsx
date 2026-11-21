@@ -8,6 +8,7 @@ import {CatalogShell,LearningFlowShell,AccountShell} from './Templates';
 import {MethodTile,ChatBubble} from './LegacyCards';
 import {LiIcon} from './LucideIcons';
 import {NotebookAnnotation} from './NotebookAnnotation';
+import {NotebookArt,notebookDisciplineImages} from './NotebookArt';
 import {BookwormIllustration} from './BookwormIllustration';
 import './app-flow-layouts.css';
 
@@ -78,7 +79,7 @@ const examples=[
 ];
 const lessonTitle='L09-1-2 · Sampling Bias';
 function ScreenBody(props:AppPageLayoutProps){
- const {page,locale,query,answer,selected,saved,completed,onQuery,onAnswer,
+ const {page,variant,locale,query,answer,selected,saved,completed,onQuery,onAnswer,
   onSelect,onToggleSaved,onComplete,onNavigate,onNotice}=props;
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  const action=(pageId:PageId,vi:string,en:string)=><Button onClick={()=>onNavigate(pageId)}>
@@ -103,6 +104,8 @@ function ScreenBody(props:AppPageLayoutProps){
   <div className="li-flow-card-grid">
    {examples.filter(item=>(item.vi+item.en).toLowerCase().includes(query.toLowerCase()))
     .map((item,i)=><Card key={item.id} variant="tinted">
+     {variant==='notebook'&&<NotebookArt kind="discipline" size="card"
+      src={notebookDisciplineImages[item.id as keyof typeof notebookDisciplineImages]}/>}
      <span className="li-flow-index">{String(i+1).padStart(2,'0')}</span>
      <Heading level={3} role="titleMedium">{locale==='vi'?item.vi:item.en}</Heading>
      <Text role="support">{t(item.descVi,item.descEn)}</Text>
@@ -119,7 +122,10 @@ function ScreenBody(props:AppPageLayoutProps){
    [t('HCI · Nghiên cứu người dùng','HCI · User research'),t('Chuyên ngành','Field')],
    [t('T06 · Elaborative Interrogation','T06 · Elaborative Interrogation'),t('Thần Chú liên quan','Related method')]
   ].filter(([name])=>!query||name.toLowerCase().includes(query.toLowerCase())).map(([name,desc],i)=>
-   <Card key={name} variant="flat-study"><Badge>{desc}</Badge>
+   <Card key={name} variant="flat-study">
+    {variant==='notebook'&&<NotebookArt kind={i===0?'sampling':i===1?'discipline':'method'}
+     src={i===1?notebookDisciplineImages.hci:undefined} size="spot"/>}
+    <Badge>{desc}</Badge>
     <Heading level={3} role="titleMedium">{name}</Heading>
     <Button variant="secondary" onClick={()=>onNavigate(i===2?'guideDetail':'lesson')}>
      {t('Mở kết quả','Open result')}</Button>
@@ -128,6 +134,7 @@ function ScreenBody(props:AppPageLayoutProps){
  case 'research':return <div className="li-flow-stack">
   <Card variant="tinted">
    <Badge>{t('VÍ DỤ GIẢ ĐỊNH','HYPOTHETICAL EXAMPLE')}</Badge>
+   {variant==='notebook'&&<NotebookArt kind="sampling" size="spot"/>}
    <Heading level={2} role="titleMedium">{t('90% người khảo sát hài lòng. Có đại diện cho tất cả không?',
     '90% were satisfied. Does that represent everyone?')}</Heading>
    <div className="li-flow-stack">{[
@@ -190,7 +197,8 @@ function ScreenBody(props:AppPageLayoutProps){
   stepLabel={completed?'2/2':'1/2'}
   prompt={<div className="li-flow-stack"><Heading level={2} role="titleMedium">{t('Ai có thể bị bỏ sót?','Who might be excluded?')}</Heading>
    <Text role="body">{t('Một nhóm chỉ hỏi người đang sử dụng ứng dụng. Điều gì cần kiểm chứng?',
-    'A team only interviews current app users. What needs checking?')}</Text></div>}
+    'A team only interviews current app users. What needs checking?')}</Text>
+   {variant==='notebook'&&<NotebookArt kind="sampling" size="spot"/>}</div>}
   response={<Field kind="textarea" rows={5} label={t('Lập luận của mày','Your reasoning')}
    value={answer} onChange={event=>onAnswer(event.target.value)}/>}
   feedback={completed?<InlineFeedback tone="info" message={t('Phản hồi chỉ là ví dụ giao diện, chưa chấm bài thật.',
@@ -221,14 +229,21 @@ function ScreenBody(props:AppPageLayoutProps){
     ['T01',t('Tự gọi nhớ','Active Recall'),t('Che nguồn và tự kể lại','Recall without the source')],
     ['T02',t('Ôn cách quãng','Spaced Repetition'),t('Nhắc lại khi đến hạn','Review when due')],
     ['T06',t('Hỏi vì sao','Elaborative Interrogation'),t('Tự giải thích điều đã học','Explain the reason')]
-   ].map(([code,title,purpose])=><MethodTile key={code} code={code} title={title}
-    purpose={purpose} actionLabel={t('Khám phá','Explore')}
-    onActivate={()=>onNavigate('guideDetail')}/>)}
+   ].map(([code,title,purpose])=>{
+    const tile=<MethodTile code={code} title={title}
+     purpose={purpose} actionLabel={t('Khám phá','Explore')}
+     onActivate={()=>onNavigate('guideDetail')}/>;
+    return variant==='notebook'?<div className="li-flow-method-plate" key={code}>
+     <NotebookArt kind={code==='T01'?'recall':code==='T02'?'calendar':'question'} size="card"/>
+     {tile}
+    </div>:<React.Fragment key={code}>{tile}</React.Fragment>;
+   })}
   </div>
  </div>;
  case 'guideDetail':return <div className="li-flow-stack">
   <Card variant="tinted"><Badge>T02 · SPACED REPETITION</Badge>
    <Heading level={2} role="titleLarge">{t('Ôn tập cách quãng','Spaced Repetition')}</Heading>
+   {variant==='notebook'&&<NotebookArt kind="calendar" size="spot"/>}
    <div className="li-flow-steps">{[
     t('Chọn bài đã học','Choose material you learned'),
     t('Đợi đến hạn, tự gọi nhớ','Wait until due, then retrieve'),
@@ -239,6 +254,7 @@ function ScreenBody(props:AppPageLayoutProps){
   </Card>{action('practice','Thi triển thử','Try practice')}
  </div>;
  case 'library':return <div className="li-flow-stack">
+  {variant==='notebook'&&<div className="li-flow-library-art"><NotebookArt kind="shelf" size="spot"/></div>}
   <div className="li-flow-stat-grid">{[
    [t('Bài đang học','Active lessons'),'03'],
    [t('Dấu Trang','Bookmarks'),'08'],
@@ -385,6 +401,13 @@ const notebookNotes:Partial<Record<PageId,readonly [string,string]>>={
  laoly:['Lão Lý có vài lời ở lề trang.','A note from Lao Ly in the margin.'],
  account:['Trang cá nhân, giữ riêng tư.','Your own private pages.'],
 };
+const notebookArtForPage:Record<Exclude<PageId,'home'>,React.ComponentProps<typeof NotebookArt>['kind']>={
+ catalog:'shelf',search:'question',research:'sampling',case:'sampling',capture:'notes',
+ lesson:'sampling',practice:'sampling',feedback:'sampling',guide:'method',
+ guideDetail:'calendar',library:'shelf',resume:'book',collection:'notes',
+ noteDetail:'notes',dashboard:'progress',settings:'notes',checkin:'checkin',
+ laoly:'companion',account:'book'
+};
 export function AppPageLayout(props:AppPageLayoutProps){
  const {page,variant,locale,onNavigate}=props;
  const meta=appLabPages.find(item=>item.id===page)!;
@@ -430,6 +453,9 @@ export function AppPageLayout(props:AppPageLayoutProps){
      </AnimatePresence>
     </div>}
    </motion.div>
+   {variant==='notebook'&&<div className="li-flow-notebook-hero-art">
+    <NotebookArt kind={notebookArtForPage[page]} size="hero"/>
+   </div>}
    {variant==='bookworm'&&<div className="li-flow-bookworm-hero-art" aria-hidden="true">
     <BookwormIllustration kind={['catalog','search','library','resume','collection','noteDetail'].includes(page)?'shelf':
      ['lesson','practice','feedback','guide','guideDetail','research','case'].includes(page)?'open':'stack'}/>

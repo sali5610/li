@@ -247,8 +247,32 @@ jobs:
            'id="li-boot-error-retry">Tải lại ứng dụng</button>'
            '</div></div>'
           )
+          # If the React entry bundle itself fails, its error handler cannot
+          # run. Keep one tiny failure-only fallback in the document shell.
+          # The normal React startup code signals when it has taken ownership.
+          boot_fallback=(
+           '<script>(function(){'
+           'function fail(){'
+           'if(window.liBootRuntimeReady||document.documentElement.classList.contains("li-boot-ready"))return;'
+           'var loading=document.getElementById("li-boot-loading");'
+           'var error=document.getElementById("li-boot-error");'
+           'if(loading)loading.hidden=true;if(error)error.hidden=false;'
+           'var text=document.getElementById("li-boot-error-description");'
+           'if(text)text.textContent="Không tải được phần khởi động ứng dụng. '
+           'Kiểm tra kết nối rồi thử tải lại.";'
+           '}'
+           'window.addEventListener("error",function(event){'
+           'var target=event.target;'
+           'if(target&&target.tagName==="SCRIPT"&&'
+           'String(target.src||"").indexOf("staging-auth-gate.js")!==-1)fail();'
+           '},true);'
+           'window.setTimeout(fail,20000);'
+           'var retry=document.getElementById("li-boot-error-retry");'
+           'if(retry)retry.addEventListener("click",function(){location.reload()});'
+           '})();</script>'
+          )
           assert html.count('<body>')==1,'Missing unique app body'
-          html=html.replace('<body>','<body>'+boot,1)
+          html=html.replace('<body>','<body>'+boot+boot_fallback,1)
           assert html.count('id="li-boot-splash"')==1
           index.write_text(html,encoding='utf-8')
           for path in ['auth-pilot','l09-preview']:

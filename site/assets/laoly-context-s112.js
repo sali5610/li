@@ -146,9 +146,13 @@ function guideDetailPlan(){
  const cross=methods.find(x=>x[0]===related[m[0]])||methods.find(x=>x[0]!==m[0]);
  const comparison={
   ...action("So với "+methodActionName(cross),
-   "Khác ở việc cần làm: "+methodDisplayName(m)+" giúp "+methodPurpose(m).toLowerCase()+
-   "; còn "+methodDisplayName(cross)+" giúp "+methodPurpose(cross).toLowerCase()+
-   ". Lão đặt ví dụ cả hai bên dưới để ngươi đối chiếu trước khi chuyển trang."),
+   inEnglish()?
+    "The difference is what you need to do: "+methodDisplayName(m)+" helps you "+
+     methodPurpose(m).toLowerCase()+"; "+methodDisplayName(cross)+" helps you "+
+     methodPurpose(cross).toLowerCase()+". Compare both methods and examples below before opening another page.":
+    "Khác ở việc cần làm: "+methodDisplayName(m)+" giúp "+methodPurpose(m).toLowerCase()+
+     "; còn "+methodDisplayName(cross)+" giúp "+methodPurpose(cross).toLowerCase()+
+     ". Lão đặt ví dụ cả hai bên dưới để ngươi đối chiếu trước khi chuyển trang."),
   comparison:{from:m[0],to:cross[0]}
  };
  return {

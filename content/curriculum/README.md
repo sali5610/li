@@ -1,6 +1,6 @@
 # li. — Current curriculum navigation (ISCED-F 2013)
 
-**Status:** IA implementation candidate for staging, 2026-11-22. This document supersedes the historical 8-group navigation map; it does **not** approve or publish any new teaching content.
+**Status:** 5-group IA merged to `integration/staging` via PR #516, 2026-11-22. The historical 8-group navigation is superseded; this does **not** approve or publish any new teaching content.
 
 ## Source of truth
 
@@ -34,6 +34,7 @@ The app's displayed group titles and category tags are bilingual. Filter chips l
 
 - Keep all **15 F IDs, 45 C IDs, 135 L IDs**, original academic manuscript bodies, rights, course/lesson publication flags and personal learning records unchanged.
 - Old group path aliases, including `technology/hci/C03-1`, `technology/ux-design/C03-1`, `language/chinese/C01-1`, are normalized to the new Group IDs; refresh, Back and direct links must continue to work.
+- The **public** generated `site/content-packs/C*.json` lesson `hierarchy.group` follows the current ISCED-F parent, preserving identical locked lesson body and stable lesson/field/course IDs. The generator derives current parents by Field ID.
 - Legacy manuscript `hierarchy.group` fields are provenance snapshots, not today's navigation taxonomy. The pack builder resolves current parent groups through stable Field IDs; **do not rewrite locked lesson text** or Neon/Dexie progress.
 - New categories/groups must be appended based on real curriculum needs, not a fixed quota; academic research candidate lists remain editorial drafts. No Cloudflare production, content release or user-data migration is implied.
 

@@ -46,3 +46,16 @@
  .header:has(#li-global-back:not([hidden])) .brand-stamp{width:32px;height:32px}
  .header .tools{gap:var(--li-space-0)}
 }
+
+
+/* Keep draggable companion out of account and companion dialogs. Check-in
+   visibility is already owned by the canonical checkin-adaptation.css. */
+html.li-account-open .laoly-support,
+body:has(#buddy-modal.open) .laoly-support{
+ visibility:hidden!important;pointer-events:none!important;opacity:0!important
+}
+.li-companion-draggable #laoly-fab:focus-visible{
+ outline:3px solid var(--li-role-focus-ring,var(--olive));outline-offset:3px
+}
+.li-companion-draggable.is-dragging #laoly-fab{cursor:grabbing}
+.li-snackbar.li-react-toast-owner{max-height:min(40svh,260px);overflow-y:auto}

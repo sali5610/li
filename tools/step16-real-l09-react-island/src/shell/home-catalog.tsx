@@ -427,8 +427,10 @@ function Home(){
   <motion.div className="hero-left"
    initial={reduced?false:{opacity:0,y:9}} animate={{opacity:1,y:0}}
    transition={{duration:reduced?0:.5,ease:'easeOut'}}>
-   <Button variant="ghost" className="home-checkin" onClick={()=>window.dispatchEvent(new CustomEvent('li:open-checkin',{detail:{triggerId:'li-react-home-host'}}))}>
-    <LiIcon name="check" size={18}/> {L("Check-in hôm nay","Today’s check-in")}
+   <Button variant="ghost" className="home-checkin"
+    aria-label={L("Check-in hôm nay","Today's check-in")}
+    onClick={()=>window.dispatchEvent(new CustomEvent('li:open-checkin',{detail:{triggerId:'li-react-home-host'}}))}>
+    <LiIcon name="calendar" size={16}/> <span className="home-checkin-label">Check-in</span>
    </Button>
    <Heading level={1} role="headline">{locale==='vi'?<>Mọi câu hỏi<br/>đều có rễ.</>:<>Every question<br/>has roots.</>}</Heading>
    <Text role="body">{L("Không cần biết tất cả. Chỉ cần không ngừng tò mò.","You needn’t know everything. Just stay curious.")}</Text>

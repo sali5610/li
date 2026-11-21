@@ -90,7 +90,7 @@ function breadcrumbs(){
 function shelfCard(root,title,meta,desc,target,value,index,image,category){
  const card=el("article","catalog-card surface tinted",null,root);
  if(target==="field")card.classList.add("catalog-field-card");
- if(image){const img=el("img","catalog-card-art",null,card);img.src=image;img.alt="";img.loading="lazy";img.decoding="async";}else{const mark=el("div","catalog-card-mark",String(index).padStart(2,"0"),card);mark.setAttribute("aria-hidden","true");}
+ if(image){const media=target==="field"?el("div","catalog-card-art-frame",null,card):card;const img=el("img","catalog-card-art",null,media);img.src=image;img.alt="";img.loading="lazy";img.decoding="async";}else{const mark=el("div","catalog-card-mark",String(index).padStart(2,"0"),card);mark.setAttribute("aria-hidden","true");}
  if(target!=="field")el("div","kicker",meta,card);
  if(category)el("span","catalog-category-tag",category,card);
  el("h2","",title,card);

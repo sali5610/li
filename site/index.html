@@ -983,7 +983,7 @@ function liInquiryAllowed(){
 window.liInquiryFlow=Object.freeze({
  getMirror:()=>{
   const sc=scenarios[qIndex];if(!sc)return null;
-  const related=liMirrorRelatedLesson(sc);
+  const related=window.liMirrorRelatedLesson?.(sc)||null;
   const en=window.liLanguage?.get?.()==="en",c=sc.localized?.[en?"en":"vi"]||sc;
   return {
    index:qIndex,fieldId:sc.fieldId||"",question:c.question,scene:c.scene,

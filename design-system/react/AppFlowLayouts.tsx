@@ -596,7 +596,7 @@ export function AppPageLayout(props:AppPageLayoutProps){
      {(variant==='notebook'||bookworm)&&<span
       className={bookworm?'li-bw-page-icon':'li-nb-page-icon'} aria-hidden="true">
       <LiIcon name={notebookPageIcons[page]} size={bookworm?16:20}/>
-     </span>
+     </span>}
      {variant==='vintagePop'&&<LiIcon name={notebookPageIcons[page]} size={17}/>}
      li. / {t('THƯ VIỆN TRI THỨC','THE KNOWLEDGE LIBRARY')}
     </span>

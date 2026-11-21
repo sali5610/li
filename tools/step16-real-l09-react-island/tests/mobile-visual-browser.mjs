@@ -86,8 +86,10 @@ try{
    })).result?.value;
    await evalBool("document.querySelector('.li-catalog-field-card')?.scrollIntoView({block:'center',behavior:'instant'})");
    await wait(()=>evalBool("(()=>{const i=document.querySelector('.li-catalog-field-card__media img');return Boolean(i?.complete&&i.naturalWidth>0)})()"),15000);
+   await evalBool("window.__liEntryScroll=scrollY");
    const started=await evalBool("(()=>{document.querySelector('.li-catalog-field-card__action')?.click();return Boolean(document.querySelector('.li-catalog-field-shared-hero img'))})()");
    if(started!==true)throw Error('Explore must start a visible shared-image morph on mobile');
+   await wait(()=>evalBool("(()=>{const h=document.querySelector('.catalog-field-hero');return Boolean(h&&document.querySelector('.li-catalog-field-shared-hero')&&getComputedStyle(h).visibility==='hidden')})()"),3000);
    await wait(()=>evalBool("(()=>{const h=document.querySelector('.catalog-field-hero');return Boolean(h&&new URLSearchParams(location.search).get('catalog')?.split('/').length===2&&!document.querySelector('.li-catalog-field-shared-hero')&&getComputedStyle(h).visibility!=='hidden')})()"),5000);
    console.log('PASS field card arch → detail hero shared-element transition at 390px, no stuck overlay');
    // First prove an in-app Back path launches the reverse morph while
@@ -95,7 +97,8 @@ try{
    const crumbPressed=await evalBool("(()=>{const crumb=[...document.querySelectorAll('.catalog-breadcrumbs button')].find(b=>b.textContent?.includes('Nghệ thuật'));crumb?.click();return Boolean(crumb)})()");
    if(!crumbPressed)throw Error('Missing actual Group breadcrumb Back control');
    await wait(()=>evalBool("Boolean(document.querySelector('.li-catalog-field-shared-hero img'))"),5000);
-   await wait(()=>evalBool("(()=>{const i=document.querySelector('.li-catalog-field-card__media img');return Boolean(i&&!document.querySelector('.li-catalog-field-shared-hero')&&getComputedStyle(i).visibility!=='hidden')})()"),9000);
+   await wait(()=>evalBool("(()=>{const i=document.querySelector('.li-catalog-field-card__media img');return Boolean(i&&document.querySelector('.li-catalog-field-shared-hero')&&getComputedStyle(i).visibility==='hidden')})()"),3000);
+   await wait(()=>evalBool("(()=>{const i=document.querySelector('.li-catalog-field-card__media img');return Boolean(i&&!document.querySelector('.li-catalog-field-shared-hero')&&getComputedStyle(i).visibility!=='hidden'&&Math.abs(scrollY-window.__liEntryScroll)<3)})()"),9000);
    console.log('PASS breadcrumb Back: full hero shrinks back into matching card arch');
    // Re-enter with Explore. Browser Back should reuse exactly the same
    // pre-navigation event and shared-element morph, not a separate UI hack.

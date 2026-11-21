@@ -107,7 +107,7 @@ function Guide(){
    '13 phương pháp để học, ghi nhớ và suy nghĩ. Mỗi pháp danh đều có tên học thuật gốc đi kèm.',
    '13 evidence-informed techniques for learning, memory and reasoning, with their academic names.'
   )}</Text>
-  <div className="editorial-grid li-guide-tools" style={{marginTop:'var(--li-space-4)'}}>
+  <div className="editorial-grid li-guide-tools">
    <div className="stack-sm">
     <Field id="li-react-method-search" label={copy('Tìm trong 13 phương pháp','Search all 13 methods')}
      type="search" value={query} onChange={event=>setQuery(event.target.value)}
@@ -118,7 +118,7 @@ function Guide(){
       onClick={()=>setCategory(item.key)}>{item.label}</FilterChip>)}
     </div>
    </div>
-   <Card variant="tinted" className="guide-mentor" aria-label="Lời Lão Lý về nhịp học">
+   <Card variant="flat-study" className="guide-mentor" aria-label="Lời Lão Lý về nhịp học">
     <img className="guide-mentor-illustration" src="./assets/laoly-guide-rest.png"
      width="1024" height="1024" alt={copy('Lão Lý ngái ngủ','Sleepy mentor Lao Ly')}/>
     <div className="guide-mentor-copy">
@@ -273,9 +273,9 @@ function Library(){
     <ShelfHeader title={copy('Quay lại','Continue')}
      description={copy('Tiếp tục hành trình đang học.','Resume recent learning.')} target="resume"/>
     <div className="surface-grid cols2 library-resume-previews">
-     <Card variant="tinted"><div className="kicker"><LiIcon name="book-open" size={16}/> {copy('BÀI HỌC · GẦN NHẤT','LATEST LESSON')}</div>
+     <Card variant="flat-study"><div className="kicker"><LiIcon name="book-open" size={16}/> {copy('BÀI HỌC · GẦN NHẤT','LATEST LESSON')}</div>
       <LessonRows lessons={view.lessons} limit={1}/></Card>
-     <Card variant="tinted"><div className="kicker"><LiIcon name="layers" size={16}/> {copy('VẤN ĐỀ / CASE · GẦN NHẤT','LATEST PROBLEM / CASE')}</div>
+     <Card variant="flat-study"><div className="kicker"><LiIcon name="layers" size={16}/> {copy('VẤN ĐỀ / CASE · GẦN NHẤT','LATEST PROBLEM / CASE')}</div>
       <ProblemRows problems={view.problems} limit={1}/></Card>
     </div>
    </section>
@@ -283,11 +283,11 @@ function Library(){
     <ShelfHeader title={copy('Bộ sưu tập','Collection')}
      description={copy('Ghi chép mới nhất ở mỗi ngăn.','Recent notes in each drawer.')} target="collection"/>
     <div className="surface-grid cols2">
-     <Card variant="raised"><div className="kicker"><LiIcon name="book-open" size={16}/> {copy('CASE ĐÃ XỬ LÝ','REVIEWED CASES')}</div>
+     <Card variant="flat-study"><div className="kicker"><LiIcon name="book-open" size={16}/> {copy('CASE ĐÃ XỬ LÝ','REVIEWED CASES')}</div>
       <Heading level={3} role="titleSmall">{copy('Bút Ký','Case Notes')}</Heading>
       <Text role="support">{copy('Kết luận do bạn tự viết · Gần nhất','Your own conclusions · Latest')}</Text>
       <NotePreview note={view.cases[0]} kind="case"/></Card>
-     <Card variant="raised"><div className="kicker"><LiIcon name="feather" size={16}/> {copy('Ý TƯỞNG CHƯA XÁC MINH','UNVERIFIED IDEAS')}</div>
+     <Card variant="flat-study"><div className="kicker"><LiIcon name="feather" size={16}/> {copy('Ý TƯỞNG CHƯA XÁC MINH','UNVERIFIED IDEAS')}</div>
       <Heading level={3} role="titleSmall">{copy('Ý đã nhặt','Captured Ideas')}</Heading>
       <Text role="support">{copy('Ghi nhanh · Gần nhất','Quick notes · Latest')}</Text>
       <NotePreview note={view.ideas[0]} kind="idea"/></Card>
@@ -300,7 +300,7 @@ function Library(){
    <section className="library-group" aria-label={copy('Nhìn lại','Reflect')}>
     <ShelfHeader title={copy('Nhìn lại','Reflect')}
      description={copy('Theo dõi thể trạng và các hoạt động theo ngày.','Track each day and your learning rhythm.')}/>
-    <Card variant="raised" className="library-activity">
+    <Card variant="flat-study" className="library-activity">
      <div><div className="kicker"><LiIcon name="calendar" size={16}/> {copy('NHẬT KÝ','JOURNAL')}</div>
       <Heading level={3} role="titleSmall">{copy('Nhịp học của bạn','Your Learning Rhythm')}</Heading>
       <Text role="support">{copy('Ngủ, vận động, nghỉ ngơi, nhịp học và hoạt động mỗi ngày.',
@@ -356,7 +356,7 @@ function Resume(){
    <Card variant="raised"><div className="kicker">02 · {copy('PROBLEM / CASE','PROBLEM / CASE')}</div>
     <Heading level={2} role="titleMedium">{copy('Tình huống đã xem','Recently viewed scenarios')}</Heading>
     <ProblemRows problems={view.problems}/></Card>
-   <Card variant="raised" className="library-bookmark-section">
+   <Card variant="flat-study" className="library-bookmark-section">
     <div className="kicker">03 · {copy('DẤU TRANG','BOOKMARKS')}</div>
     <Heading level={2} role="titleMedium">{copy('Đã lưu để quay lại','Saved for later')}</Heading>
     <div className="library-bookmark-tabs" role="tablist" aria-label={copy('Loại Dấu Trang','Bookmark type')}
@@ -401,7 +401,7 @@ function Collection(){
   </div>
   <div className="stack-sm library-collection-list" aria-live="polite">
    {!items.length&&<Empty message={copy('Chưa có ghi chép được lưu.','No saved notes yet.')}/>}
-   {items.map(item=><Card variant="raised" key={item.type+item.id}
+   {items.map(item=><Card variant="flat-study" key={item.type+item.id}
     className="library-collection-entry">
     <div className="kicker">{item.type==='case'?
      copy('BÚT KÝ · KẾT LUẬN SAU PHẢN CHỨNG','CASE NOTE · REVISED CONCLUSION'):

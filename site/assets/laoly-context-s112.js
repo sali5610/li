@@ -418,6 +418,13 @@ function reactView(trigger){
  // rights are still under review. Never attach an unrelated global quote.
  const lessonContext=window.liLessonCompanion?.getContext?.();
  const quote=lessonContext?.editorial?null:(window.liQuoteEngine?.getView?.()||null);
+ // The sample-bias case links only to its existing, released L09 lesson.
+ // Hide shortcuts to unpublished or unmounted lesson routes.
+ const caseLessonRoute=currentPage==="case"?
+  window.liReleasedLessonRoutes?.["L09-1-2"]:null;
+ const relatedLesson=caseLessonRoute==="lessonL09"&&
+  window.liAppRouter?.hasRoute?.(caseLessonRoute)?
+  {id:"L09-1-2",route:caseLessonRoute}:null;
  return {
   text:line,
   labels:activePlan.actions.map(item=>
@@ -425,7 +432,7 @@ function reactView(trigger){
   // Prefer the live React avatar; old markup remains fallback-only in native mode.
   avatar:window.liCompanionDrag?.getAvatar?.()||(!window.liBuddyReactMounted?
    document.getElementById("laoly-current-icon")?.src:null)||"./assets/laoly-neutral.png",
-  quote,triggerId:trigger?.id||"laoly-fab"
+  quote,triggerId:trigger?.id||"laoly-fab",relatedLesson
  };
 }
 function reactReply(index){

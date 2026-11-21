@@ -9,6 +9,8 @@ import {createRoot} from 'react-dom/client';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {Badge,Breadcrumb,Button,Heading,Progress,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
+import {PortalCategoryCard} from '../../../../design-system/react/PortalCategoryCard';
+import '../../../../design-system/react/portal-category-card.css';
 import './home-catalog.css';
 
 /** Shared staging screens, not another app shell.
@@ -38,6 +40,9 @@ const app=window as AppWindow;
 // personal study lessons. The React catalog must survive removal of the old
 // global window.LI_CATALOG_DATA script by the core migration owner.
 const groups:Group[]=canonicalCatalog.groups;
+// Stable visual assignment for the current broad groups; all seven portal
+// variations stay available in the shared component library.
+const groupPortals=[1,2,3,4,5,6,7] as const;
 const releasedRoutes=new Map(releasedLessonRoutes.map(item=>[item.id,item.route]));
 const canOpenLesson=(lesson:Lesson)=>!!personalStudyRoute(lesson.id)||
  (lesson.published===true&&typeof lesson.route==='string'&&
@@ -228,10 +233,13 @@ function Catalog(){
   {lessonNavError&&<p role="alert" className="li-catalog-error">{lessonNavError}</p>}
    {field&&!course&&field.image&&<img className="catalog-field-hero" src={field.image} alt="" loading="lazy" decoding="async"/>}
   {!group&&<><div className="catalog-group-grid">
-   {groups.map((item,index)=><CatalogCard key={item.id} number={index+1}
-    title={localized(locale,item.title,item.titleEn)} eyebrow={locale==='vi'?'NHÓM NGÀNH':'DOMAIN GROUP'}
+   {groups.map((item,index)=><PortalCategoryCard key={item.id}
+    portal={groupPortals[index%groupPortals.length]}
+    title={localized(locale,item.title,item.titleEn)}
+    eyebrow={locale==='vi'?'NHÓM NGÀNH':'DOMAIN GROUP'}
     detail={item.fields.length+(locale==='vi'?' chuyên ngành':' fields')}
-    locale={locale} onOpen={()=>openPath([item.id])}/>)}
+    openLabel={locale==='vi'?'Mở nhóm ngành '+item.title:'Open '+item.titleEn+' group'}
+    onOpen={()=>openPath([item.id])}/>)}
   </div>
   <Text role="support" className="catalog-quiet-note">
    {personalStudyLessonIds.length?

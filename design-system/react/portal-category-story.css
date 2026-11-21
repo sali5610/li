@@ -44,3 +44,14 @@ body{margin:0;background:var(--paper);color:var(--moss);font-family:var(--li-fon
  color:var(--moss);background:var(--paper);cursor:pointer;
  font:700 var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
 .li-portal-story-back:focus-visible{outline:0;border-width:3px}
+
+/* Arrival is a quiet reveal after crossing the arch, not another card pop. */
+.li-portal-story-opened{animation:li-portal-arrive 260ms cubic-bezier(.2,.65,.25,1) both}
+@keyframes li-portal-arrive{
+ from{opacity:0;transform:translateY(10px)}
+ to{opacity:1;transform:translateY(0)}
+}
+.li-portal-story-opened h2:focus{outline:none}
+@media(prefers-reduced-motion:reduce){
+ .li-portal-story-opened{animation:none}
+}

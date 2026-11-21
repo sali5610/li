@@ -92,7 +92,7 @@ function researchPlan(){
    action("Điều đã biết",c.observed),
    action("Điều còn thiếu",c.unknown+(hasBranch?" Nhánh: "+selected+".":"")),
    action(hasCase?"Sang Phản Chứng":"Xem đánh giá nguồn",
-    hasCase?"Case riêng cho câu hỏi này: chọn nhận định và sửa kết luận.":"Tình huống này chưa có case riêng; hãy kiểm tra nguồn.",
+    hasCase?"Case riêng cho câu hỏi này: chọn nhận định và sửa kết luận.":"Tình huống này chưa có case riêng; hãy dùng "+methodSourceName("T09")+" để kiểm tra nguồn.",
     ()=>hasCase?go("case"):(closeModal("buddy-modal"),showMethod("T09")))
   ]};
 }

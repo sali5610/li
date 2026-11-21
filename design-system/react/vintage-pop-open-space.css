@@ -33,7 +33,7 @@
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card>.li-flow-index{
  display:inline-grid;place-items:center;width:max-content;
  min-width:34px;min-height:34px;padding:5px 8px;
- border:1px solid #214d3a;background:#dccfea;
+ border:1px solid #214d3a;background:#d5cbd4;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="search"] .li-pop-result-art{
  width:min(100%,170px);height:auto;overflow:visible;justify-self:start;
@@ -78,11 +78,11 @@
  display:block;margin:0;
 }
 .li-ui-lab-stage[data-vintage-open="true"]>.li-ui-lab-preview[data-vintage-open="true"]{
- border:0;overflow:visible;width:100%;background:#fff8ef;
+ border:0;overflow:visible;width:100%;background:#f6f1e8;
 }
 .li-ui-lab-preview[data-vintage-open="true"]>.li-ui-lab-preview-label{
  min-height:40px;padding:9px var(--vp-shell-edge,24px);
- font-size:11px;background:#214d3a;color:#fff8ef;border:0;
+ font-size:11px;background:#214d3a;color:#f6f1e8;border:0;
 }
 .li-ui-lab-preview[data-vintage-open="true"]>.li-ui-lab-viewport{
  width:100%;max-width:none;margin:0;overflow:visible;
@@ -91,24 +91,24 @@
 /* 2 — A magazine cover / open canvas instead of a framed header panel. */
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-layout="vintagePop"]{
  display:grid;grid-template-columns:minmax(0,1fr);gap:0;
- min-height:100svh;padding:0;overflow:clip;background:#fff8ef;
+ min-height:100svh;padding:0;overflow:clip;background:#f6f1e8;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-head{
  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.68fr);
  align-items:center;min-height:clamp(520px,78svh,880px);
  gap:0;padding:clamp(50px,8vw,150px) var(--vp-edge);
  position:relative;isolation:isolate;overflow:visible;
- background:#d5e1d8;border:0;box-shadow:none;transform:none;
+ background:#b9c4b7;border:0;box-shadow:none;transform:none;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page-head::before{
  content:"";z-index:0;position:absolute;inset:auto -3% -12% auto;
  width:min(67%,840px);height:104%;border-radius:48% 48% 12% 12%;
- background:#7b233b;transform:rotate(-10deg);
+ background:#ba725d;transform:rotate(-10deg);
  opacity:.94;pointer-events:none;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page-head::after{
  content:"";z-index:0;position:absolute;right:-8%;top:5%;
- width:min(33%,390px);aspect-ratio:1;border:34px solid #dccfea;
+ width:min(33%,390px);aspect-ratio:1;border:34px solid #d5cbd4;
  border-radius:50%;pointer-events:none;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page-heading{
@@ -140,7 +140,7 @@
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page-head .li-flow-page-index{
  position:absolute;z-index:4;bottom:30px;left:var(--vp-edge);
  width:76px;height:76px;font-size:34px;transform:rotate(-12deg);
- background:#183b2d;color:#fff8ef;box-shadow:none;
+ background:#183b2d;color:#f6f1e8;box-shadow:none;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page-columns{
  display:grid;grid-template-columns:minmax(0,1fr);
@@ -190,7 +190,7 @@
  width:calc(100% + clamp(10px,3.6vw,50px));max-width:none;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-card-grid .li-pop-catalog-art>.li-pop-collage{
- max-width:none;aspect-ratio:4/3;box-shadow:10px 14px 0 #dccfea;
+ max-width:none;aspect-ratio:4/3;box-shadow:10px 14px 0 #d5cbd4;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-card-grid .li-atom-heading{
  font-family:Georgia,'Times New Roman',serif;
@@ -211,7 +211,7 @@
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-page="lesson"] .li-pop-lesson{
  width:100%;max-width:none;min-height:clamp(570px,73svh,950px);
  border-width:clamp(7px,1vw,14px);border-radius:10px;
- box-shadow:0 12px 0 #183b2d,12px 18px 0 #a05a6e;
+ box-shadow:0 12px 0 #183b2d,12px 18px 0 #bf8b7c;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-page="lesson"] .li-pop-book-left{
  padding:clamp(30px,5vw,88px);min-width:0;
@@ -240,7 +240,7 @@
  box-shadow:none;padding:20px 28px 20px 0;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-page="practice"] .li-ds-learning-response{
- background:#d5e1d8;box-shadow:12px 12px 0 #dccfea;padding:clamp(20px,2.8vw,48px);
+ background:#b9c4b7;box-shadow:12px 12px 0 #d5cbd4;padding:clamp(20px,2.8vw,48px);
 }
 .li-ui-lab-preview[data-vintage-open="true"] :is(
  .li-flow-page[data-page="feedback"],.li-flow-page[data-page="research"],
@@ -273,12 +273,12 @@
  grid-template-rows:auto 1fr auto;
  grid-template-areas:"intro mirror" "guide mirror" "actions mirror";
  align-content:stretch;gap:clamp(20px,3.4vw,65px);
- border:0;overflow:visible;background:#d5e1d8;isolation:isolate;
+ border:0;overflow:visible;background:#b9c4b7;isolation:isolate;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-ui-home[data-home-layout="vintagePop"]::before{
  content:"";position:absolute;z-index:0;pointer-events:none;
  width:min(48vw,760px);height:78%;top:-13%;right:-6%;
- background:#dccfea;border-radius:50% 50% 4% 4%;transform:rotate(9deg);
+ background:#d5cbd4;border-radius:50% 50% 4% 4%;transform:rotate(9deg);
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-backdrop{
  opacity:.17;filter:grayscale(.35);inset:0;width:100%;height:100%;object-fit:cover;
@@ -301,7 +301,7 @@
  min-height:min(75svh,770px);
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-ui-home-mirror .li-ds-home-mirror-content{
- box-shadow:6px 7px 0 #7b233b;
+ box-shadow:6px 7px 0 #ba725d;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-guide{
  position:relative;z-index:3;max-width:650px;padding:14px 0;
@@ -316,7 +316,7 @@
 
 /* Real fullscreen uses the stage's existing browser Fullscreen API. */
 .li-ui-lab-stage:fullscreen[data-vintage-open="true"]{
- background:#fff8ef;
+ background:#f6f1e8;
 }
 .li-ui-lab-stage:fullscreen[data-vintage-open="true"]>.li-ui-lab-preview{
  min-height:100dvh;
@@ -466,7 +466,7 @@
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-ds-catalog-tools{
  padding:clamp(18px,3vw,42px);border:0;border-top:2px solid #214d3a;
- background:#dccfea;box-shadow:none;
+ background:#d5cbd4;box-shadow:none;
  margin-left:calc(-1 * var(--vp-edge));margin-right:calc(-1 * var(--vp-edge));
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-ds-catalog-body[data-with-aside="true"]{
@@ -481,7 +481,7 @@
  display:flex;flex-wrap:wrap;gap:10px;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-ds-catalog-aside .li-flow-mini{
- background:#d5e1d8;border:1px solid #214d3a;transform:rotate(-1deg);
+ background:#b9c4b7;border:1px solid #214d3a;transform:rotate(-1deg);
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-ds-catalog-results{
  gap:clamp(26px,4vw,64px);
@@ -608,13 +608,13 @@
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-head .li-flow-page-heading :is(.li-atom-heading,.li-atom-text),
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-head .li-flow-page-kicker{
- color:#FFF8EF;
+ color:#f6f1e8;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-head::before{
- background:#7B233B;
+ background:#ba725d;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-head::after{
- border-color:#DCCFEA;
+ border-color:#d5cbd4;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-ui-home[data-home-layout="vintagePop"]{
  background:#214D3A;
@@ -622,11 +622,27 @@
 .li-ui-lab-preview[data-vintage-open="true"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro .li-atom-heading,
 .li-ui-lab-preview[data-vintage-open="true"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro .li-atom-text,
 .li-ui-lab-preview[data-vintage-open="true"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro .li-ui-home-kicker{
- color:#FFF8EF;
+ color:#f6f1e8;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-ui-home[data-home-layout="vintagePop"]::before{
- background:#DCCFEA;
+ background:#d5cbd4;
 }
 .li-ui-lab-preview[data-vintage-open="true"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-tint{
  background:linear-gradient(110deg,#214D3A80 0%,#214D3A40 45%,transparent 100%);
+}
+
+/* Unboxed cover: forest holds the visual weight; muted coral appears only as
+   overprinted shape, lavender as quiet paper. */
+.li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-head,
+.li-ui-lab-preview[data-vintage-open="true"] .li-ui-home[data-home-layout="vintagePop"]{
+ background:#214D3A;
+}
+.li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-head::before{
+ background:#BA725D;
+}
+.li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-head::after{
+ border-color:#D5CBD4;
+}
+.li-ui-lab-preview[data-vintage-open="true"] .li-ui-home[data-home-layout="vintagePop"]::before{
+ background:#D5CBD4;
 }

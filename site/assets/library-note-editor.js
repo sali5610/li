@@ -21,6 +21,11 @@ function element(parent,tag,cls,value){
  if(value!==undefined)x.textContent=String(value);
  parent.append(x);return x;
 }
+function canonicalCaseField(note){
+ // Older Sampling Bias notes also inherit the fixed case's Data Science parent.
+ return note&&(note.caseKey==="sampling-bias-90"||note.caseSnapshot?.id==="sampling-bias-90"||
+  /Sampling Bias/i.test(note.title||""))?"data-science":null;
+}
 function historyFor(item,type){
  const raw=item.versions;
  if(Array.isArray(raw)&&raw.length){
@@ -282,7 +287,7 @@ function getView(){
    (note.updatedAt?ui(" · Sửa: "," · Edited: ")+stamp(note.updatedAt):"")+
    " · "+history.length+ui(" phiên bản",history.length===1?" version":" versions"),
   history:history.map(v=>({...v})),context,backRoute,
-  fieldId:note.fieldId||null,
+  fieldId:(type==="case"?canonicalCaseField(note):null)||note.fieldId||null,
   storageAvailable:!liStorageError,
   bookmarked:context?Boolean(window.liBookmarks?.isSaved("case","sampling-bias-90")):false
  };
@@ -292,7 +297,8 @@ function saveFromReact(title,body,baseVersion,fieldId){
  if(liStorageError)return {ok:false,message:ui("Không đọc được dữ liệu cá nhân.","Personal data cannot be read.")};
  title=String(title||"").trim();body=String(body||"").trim();
  const minimum=active.type==="case"?12:3;
- const assigned=fieldId===undefined?(note.fieldId||null):(fieldId||null);
+ const assigned=(active.type==="case"?canonicalCaseField(note):null)||
+  (fieldId===undefined?(note.fieldId||null):(fieldId||null));
  if(assigned&&!window.liTaxonomyFieldIds?.includes(assigned))
   return {ok:false,message:ui("Chuyên ngành không hợp lệ.","Invalid field.")};
  if(!title||title.length>180||body.length<minimum||body.length>5000)

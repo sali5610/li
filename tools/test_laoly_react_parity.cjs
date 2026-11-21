@@ -141,10 +141,10 @@ const routing=read('tools/step16-real-l09-react-island/src/shell/app-router.ts')
 const lessonCta=dialog.indexOf('id="li-buddy-related-lesson"');
 const normalActions=dialog.indexOf('(view.editorial?view.editorial.actions.map');
 assert.match(plans,/currentPage==="case"\?/,'Only the Case screen exposes its learning link');
-assert.match(plans,/window\.liReleasedLessonRoutes\?\.\["L09-1-2"\]/,
- 'Use the released-lesson registry, not an arbitrary catalog draft');
-assert.match(plans,/window\.liAppRouter\?\.hasRoute\?\.\(caseLessonRoute\)/,
- 'Unregistered lessons are not advertised as navigable');
+assert.match(plans,/window\.liInquiryFlow\?\.getCase\?\.\(\)/,
+ 'Use the active Case identity, not the old Sampling Bias constant');
+assert.match(plans,/window\.liMirrorRelatedLesson\?\.\(\{/,
+ 'Resolve a Case source lesson through the canonical invite and release gate');
 assert.match(dialog,/if\(openRoute\(related\.route\)\)close\(false\)/,
  'Open through the canonical router, then close without returning focus to hidden Case');
 assert(lessonCta>=0&&lessonCta<normalActions,

@@ -2,7 +2,7 @@ import {openRoute} from './app-router.js';
 import React,{useEffect,useId,useRef,useState,useSyncExternalStore} from 'react';
 import {createPortal} from 'react-dom';
 import {FieldPicker,fieldLabel} from './library-taxonomy.js';
-import {Button,Checkbox,Field,Heading,InlineFeedback,Radio,Text,LiIcon} from '../../../../design-system/react/index';
+import {Button,Checkbox,Field,Heading,InlineFeedback,NumberedCard,Radio,Text,LiIcon} from '../../../../design-system/react/index';
 import {createFadedT03Flow,fadedT03Phase} from './spell-t03-flow.js';
 import {createLociT13Flow,lociT13Phase} from './spell-t13-flow.js';
 import {createResumeT12Flow,resumeT12Phase} from './spell-t12-flow.js';
@@ -277,10 +277,10 @@ export function GuideDetail(){
       ?guideRecord.visualExample[en()?'en':'vi']:null}/>}
      <section className="spell-guide-section">
       <div className="kicker">II · {copy('LÀM THEO TỪNG BƯỚC','STEP-BY-STEP')}</div>
-      <div className="path-list">{(guide?.steps||[]).map((step,index)=><div className="path-item" key={step}>
-       <span className="path-num">{String(index+1).padStart(2,'0')}</span>
+      <div className="path-list">{(guide?.steps||[]).map((step,index)=><NumberedCard
+       number={String(index+1).padStart(2,'0')} key={step}>
        <Text role="body">{step}</Text>
-      </div>)}</div>
+      </NumberedCard>)}</div>
      </section>
      {guide&&<section className="spell-guide-section spell-example">
       <div className="kicker">III · {copy('VÍ DỤ CÓ LỜI GIẢI','WORKED EXAMPLE')}</div>

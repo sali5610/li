@@ -5,8 +5,8 @@ export {Text,Heading,Link,Divider,Badge,Progress} from './Atoms';
 export type {TextRole,HeadingRole} from './Atoms';
 export {Checkbox,Radio,Field,Icon,IconButton} from './Controls';
 export type {FieldProps,IconName} from './Controls';
-export {Button,Card,FilterChip} from './Components';
-export type {ButtonProps,ButtonVariant,CardProps,CardVariant,FilterChipProps} from './Components';
+export {Button,Card,NumberedCard,FilterChip} from './Components';
+export type {ButtonProps,ButtonVariant,CardProps,CardVariant,NumberedCardProps,FilterChipProps} from './Components';
 
 export {Dialog} from './Dialog';
 export type {DialogProps} from './Dialog';

@@ -450,7 +450,7 @@ scenarios.splice(5,0,{
  buddy:"Con số lớn nghe rất thuyết phục. Nhưng ai đã có cơ hội trả lời mới đáng hỏi, tiểu hữu."
 });
 /* Draft Home hooks: previews only; no lesson manuscript or route is released. */
-const mirrorDrafts=(window.LI_MIRROR_DRAFT_HOOKS||[]).filter(x=>
+const mirrorDrafts=(globalThis.window?.LI_MIRROR_DRAFT_HOOKS||[]).filter(x=>
  x.reviewState==="proposed"&&x.publishState==="draft"&&x.localized?.vi&&x.localized?.en
 ).map(x=>({type:"hook",key:"mirror-draft-"+x.id,lessonId:x.id,fieldId:x.fieldId,
  lessonRoute:"research",previewState:"draft",localized:x.localized,...x.localized.vi}));

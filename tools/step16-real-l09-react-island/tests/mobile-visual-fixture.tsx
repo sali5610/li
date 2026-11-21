@@ -119,9 +119,9 @@ setTimeout(()=>{
  if(viewName==='journal'){
   const chart=select('.li-diary-month .li-legacy-chart'),cal=select('.li-diary-month .li-legacy-calendar');
   assert('real-DS-chart-visible',Boolean(chart&&bounds(chart)!.w>200),bounds(chart));
-  assert('chart-above-calendar',Boolean(chart&&cal&&chart.getBoundingClientRect().bottom<cal.getBoundingClientRect().top),
+  assert('calendar-before-secondary-chart',Boolean(chart&&cal&&cal.getBoundingClientRect().bottom<chart.getBoundingClientRect().top),
     {chart:bounds(chart),calendar:bounds(cal)});
-  assert('chart-actually-above-first-fold',Boolean(chart&&chart.getBoundingClientRect().top<690),bounds(chart));
+  assert('calendar-visible-in-first-fold',Boolean(cal&&cal.getBoundingClientRect().top<480&&cal.getBoundingClientRect().bottom<844),bounds(cal));
   assert('seven-day-chart',document.querySelectorAll('.li-legacy-chart-bars button').length===7);
   assert('thirty-month-dates',document.querySelectorAll('.li-legacy-calendar-grid button').length===30);
   assert('calendar-from-DS',Boolean(select('[data-li-legacy="month-calendar"]')));

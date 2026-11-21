@@ -62,7 +62,7 @@ export function RelatedLessons({id,locale}:{id:LessonId;locale:Locale}){
  if(items.length===0)return null;
  const vi=locale==='vi';
  return <section className="li-related-lessons li-react-related-lessons" aria-labelledby={'li-related-'+id}>
-  <Card variant="raised">
+  <div className="li-related-inner">
    <div className="kicker">{vi?'KẾT NỐI KIẾN THỨC':'CONNECTED LEARNING'}</div>
    <Heading level={2} role="titleLarge" id={'li-related-'+id}>
     {vi?'Nối tiếp mạch kiến thức':'Follow the learning thread'}
@@ -91,6 +91,6 @@ export function RelatedLessons({id,locale}:{id:LessonId;locale:Locale}){
       rel="noopener noreferrer">{vi?'Nguồn phương pháp · Pew Research Center':
        'Method source · Pew Research Center'}</a>
     </li>)}</ul>
-  </Card>
+  </div>
  </section>;
 }

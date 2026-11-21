@@ -56,15 +56,13 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
  useStepScreen(phase,id);
  useEffect(()=>{window.dispatchEvent(new Event('li:lesson-phase-changed'));},[phase]);
  // Lão Lý's Read this section must navigate the visible React workflow, not
- // hidden legacy lesson anchors. The existing submission/review gates apply.
+ // hidden legacy lesson anchors. Navigating does not submit or review work.
  useEffect(()=>{
   const onMentorJump=(event:Event)=>{
    const detail=(event as CustomEvent<{lessonId?:string;phase?:string}>).detail;
    if(!detail||detail.lessonId!==id||
     !['read','guided','practice','feedback','progress'].includes(detail.phase||''))return;
    const next=detail.phase as Phase;
-   if((next==='feedback'||next==='progress')&&!attempt?.submitted)return;
-   if(next==='progress'&&!attempt?.reviewed)return;
    const root=document.querySelector('[data-li-react-journey="'+id+'"]');
    if(!root||root.closest('.page')?.classList.contains('active')===false)return;
    setPhase(next);
@@ -75,7 +73,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
   };
   window.addEventListener('li:mentor-phase-jump',onMentorJump);
   return()=>window.removeEventListener('li:mentor-phase-jump',onMentorJump);
- },[id,attempt?.submitted,attempt?.reviewed,reduced]);
+ },[id,reduced]);
 
  const [loading,setLoading]=useState(true);
  const [reload,setReload]=useState(0);
@@ -272,6 +270,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
  const showSpells=spells.lessons[id];
  const pct=attempt.reviewed?100:attempt.submitted?75:Math.round(answered/4*50);
  const displayed=attempt.submission??attempt.draft;
+ const pageIndex=steps.indexOf(phase);
  return <section className="li-learning-journey" lang={appLocale}
    data-li-react-journey={id}
    data-li-lesson-phase={phase} data-li-lesson-submitted={attempt.submitted?'true':'false'}>
@@ -290,7 +289,9 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     </details>
    </div>
   </header>
-    <StudyBookFolio phase={phase} steps={steps} locale={appLocale}/>
+    <StudyBookFolio phase={phase} steps={steps} locale={appLocale}
+   onPrevious={pageIndex>0?()=>setPhase(steps[pageIndex-1]):undefined}
+   onNext={pageIndex<steps.length-1?()=>setPhase(steps[pageIndex+1]):undefined}/>
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
 
   <div className="li-learning-save">
@@ -392,7 +393,14 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     </div>:<Button onClick={()=>setPhase('feedback')}>
      {labels.feedback}</Button>}
    </Card>}
-   {phase==='feedback'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-wave1-feedback">
+   {phase==='feedback'&&!attempt.submitted&&<Card variant="flat-study" className="li-study-book-page">
+    <Heading level={2} role="titleLarge">{labels.feedback}</Heading>
+    <Text>{vi?'Mày chưa nộp bài. Vẫn có thể qua phần khác; đáp án và tự đánh giá chỉ mở sau khi nộp.':
+     'You have not submitted. You can keep browsing; answers and self-review unlock after submission.'}</Text>
+    <Button variant="secondary" onClick={()=>setPhase('practice')}>
+     {vi?'Quay lại làm bài':'Return to practice'}</Button>
+   </Card>}
+   {phase==='feedback'&&attempt.submitted&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-wave1-feedback">
     <Heading level={2} id="li-wave1-feedback" role="titleLarge">{content.answerTitle}</Heading>
     <p className="li-learning-copy">{safeText(content.answer)}</p>
     <Text>{safeText(content.answerNote)}</Text>
@@ -431,7 +439,14 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     {attempt.reviewed?<Button onClick={()=>setPhase('progress')}>{vi?'Tiếp: Tiến độ':'Next: Progress'} →</Button>:
      <Button disabled={locked||saving} onClick={()=>void finish()}>{content.saveReview}</Button>}
    </Card>}
-   {phase==='progress'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-wave1-progress">
+   {phase==='progress'&&!attempt.reviewed&&<Card variant="flat-study" className="li-study-book-page">
+    <Heading level={2} role="titleLarge">{labels.progress}</Heading>
+    <Text>{vi?'Chưa hoàn thành lượt học. Chuyển phần không tự nộp bài, tự chấm hay cộng tiến độ.':
+     'This attempt is not complete. Skipping sections does not submit, score or mark progress.'}</Text>
+    <Button variant="secondary" onClick={()=>setPhase('practice')}>
+     {vi?'Quay lại làm bài':'Return to practice'}</Button>
+   </Card>}
+   {phase==='progress'&&attempt.reviewed&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-wave1-progress">
     <Heading level={2} id="li-wave1-progress" role="titleLarge">{content.reviewDone}</Heading>
     <Text>{content.progressDone}</Text>
     <Text>{content.scoreLabel}: {attempt.ratings.reduce<number>((n,v)=>n+(v??0),0)} / 8</Text>

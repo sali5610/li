@@ -15,35 +15,36 @@ test('Zustand shares one reactive route and phase across consumers',()=>{
  appUiStore.getState().setRoute('home');
  stop();
 });
-test('XState denies locked feedback/progress before confirmed persistence',()=>{
+test('XState lets learners browse any page without recording false completion',()=>{
  const actor=createLessonPhaseActor();
  const open=phase=>actor.send({type:'OPEN',phase});
  const commit=(submitted,reviewed)=>actor.send({type:'COMMIT',submitted,reviewed});
  assert.equal(actor.getSnapshot().value,'read');
- open('guided');open('practice');
- assert.equal(actor.getSnapshot().value,'practice');
- open('feedback');open('progress');
- assert.equal(actor.getSnapshot().value,'practice');
- commit(true,false);open('feedback');
- assert.equal(actor.getSnapshot().value,'feedback');
- open('progress');
- assert.equal(actor.getSnapshot().value,'feedback');
- commit(true,true);open('progress');
+ open('guided');open('practice');open('feedback');open('progress');
  assert.equal(actor.getSnapshot().value,'progress');
+ assert.deepEqual(actor.getSnapshot().context,{submitted:false,reviewed:false},
+  'Browsing must not submit or mark an attempt reviewed');
+ open('practice');commit(true,false);open('progress');
+ assert.equal(actor.getSnapshot().value,'progress');
+ assert.deepEqual(actor.getSnapshot().context,{submitted:true,reviewed:false});
+ commit(true,true);
+ assert.deepEqual(actor.getSnapshot().context,{submitted:true,reviewed:true});
  actor.stop();
 });
-test('XState restores verified progress and revokes stale gates on account reload',()=>{
+test('XState distinguishes free navigation from persisted submission/review status',()=>{
  const actor=createLessonPhaseActor();
  actor.send({type:'COMMIT',submitted:true,reviewed:true});
  actor.send({type:'OPEN',phase:'progress'});
- assert.equal(actor.getSnapshot().value,'progress');
+ assert.deepEqual(actor.getSnapshot().context,{submitted:true,reviewed:true});
  actor.send({type:'COMMIT',submitted:false,reviewed:false});
  actor.send({type:'OPEN',phase:'read'});
  actor.send({type:'OPEN',phase:'progress'});
- assert.equal(actor.getSnapshot().value,'read');
- actor.send({type:'COMMIT',submitted:false,reviewed:true}); // invalid review never unlocks
- actor.send({type:'OPEN',phase:'progress'});
- assert.equal(actor.getSnapshot().value,'read');
+ assert.equal(actor.getSnapshot().value,'progress','Browsing remains possible after reload');
+ assert.deepEqual(actor.getSnapshot().context,{submitted:false,reviewed:false},
+  'Reload must revoke completion status even when viewing the progress page');
+ actor.send({type:'COMMIT',submitted:false,reviewed:true});
+ assert.deepEqual(actor.getSnapshot().context,{submitted:false,reviewed:false},
+  'Invalid review cannot be recorded without submission');
  actor.stop();
 });
 

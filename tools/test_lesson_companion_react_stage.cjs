@@ -37,18 +37,24 @@ for(const source of [react,wave]){
  assert.match(source,/li:mentor-phase-jump/,"React lesson must listen to Lão Lý navigation");
  assert.match(source,/li-learning-current/,"Jump must target visible React content");
 }
-// L09 now routes mentor jumps through the real XState actor; Wave1 retains its
-// guarded React path. Validate both rather than demanding an obsolete inline if.
+// Mentor and reader can navigate every lesson page without completing it.
+// Submission/review remain protected in the rendered content and save path.
 const phaseMachine=read("tools/step16-real-l09-react-island/src/learning/phase-machine.ts");
 assert.match(react,/phaseActor\.send\(\{type:'OPEN',phase:next\}\)/);
-assert.match(phaseMachine,/event\.phase==='feedback'&&context\.submitted/,
- "XState feedback must require confirmed submission");
-assert.match(phaseMachine,/event\.phase==='progress'&&context\.submitted&&context\.reviewed/,
- "XState progress must require confirmed review");
-assert.match(wave,/next==='feedback'.*!attempt\?\.submitted/,
- "Wave1 feedback must remain locked before submission");
-assert.match(wave,/next==='progress'.*!attempt\?\.reviewed/,
- "Wave1 progress must remain locked before review");
+assert.match(phaseMachine,/event\.phase==='feedback',target:'\.feedback'/,
+ "XState must allow browsing feedback before submission");
+assert.match(phaseMachine,/event\.phase==='progress',target:'\.progress'/,
+ "XState must allow browsing progress before review");
+assert.match(react,/phase==='feedback'&&!attempt\.submitted/,
+ "L09 must hide answers when browsing feedback before submission");
+assert.match(react,/phase==='progress'&&!attempt\.reviewed/,
+ "L09 must not show completed progress before review");
+assert.match(wave,/phase==='feedback'&&!attempt\.submitted/,
+ "Wave1 must hide answers before submission");
+assert.match(wave,/phase==='progress'&&!attempt\.reviewed/,
+ "Wave1 must not show completed progress before review");
+assert.match(wave,/onNext=\{pageIndex<steps\.length-1/,
+ "Wave1 must offer a next-page control independent of submission");
 assert.match(react,/data-li-lesson-phase=\{phase\}/);
 assert.match(react,/data-li-lesson-submitted=\{attempt\.submitted\?/);
 const stages=["opening","concept","guided","independent","reflection","extension"];

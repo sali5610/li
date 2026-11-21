@@ -76,7 +76,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   return ()=>appUiStore.getState().setLessonPhase(null);
  },[phase]);
  // Lão Lý's Read this section must navigate the visible React workflow, not
- // hidden legacy lesson anchors. The existing submission/review gates apply.
+ // hidden legacy lesson anchors. Navigating does not submit or review work.
  useEffect(()=>{
   const onMentorJump=(event:Event)=>{
    const detail=(event as CustomEvent<{lessonId?:string;phase?:string}>).detail;
@@ -329,6 +329,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  const saveMessage=locked?(vi?'Lưu thất bại':'Save failed'):
   saving?(vi?'Đang lưu…':'Saving…'):statusText(sync,vi);
  const transition=reduced?{duration:0}:{duration:0.18,ease:'easeOut' as const};
+ const pageIndex=sequence.indexOf(phase);
  return <section className="li-learning-journey" data-li-react-journey="L09-1-2" lang={appLocale}
   data-li-lesson-phase={phase} data-li-lesson-submitted={attempt.submitted?'true':'false'}
   data-li-lesson-reviewed={attempt.reviewed?'true':'false'}>
@@ -347,7 +348,9 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     </details>
    </div>
   </header>
-    <StudyBookFolio phase={phase} steps={sequence} locale={appLocale}/>
+    <StudyBookFolio phase={phase} steps={sequence} locale={appLocale}
+   onPrevious={pageIndex>0?()=>go(sequence[pageIndex-1]):undefined}
+   onNext={pageIndex<sequence.length-1?()=>go(sequence[pageIndex+1]):undefined}/>
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
 
   <div className="li-learning-save">
@@ -457,7 +460,14 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     </div>:
      <Button onClick={()=>go('feedback')}>{vi?'Tiếp: Đối chiếu':'Next: Feedback'} →</Button>}
    </Card>}
-   {phase==='feedback'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-feedback">
+   {phase==='feedback'&&!attempt.submitted&&<Card variant="flat-study" className="li-study-book-page">
+    <Heading level={2} role="titleLarge">{labels.feedback}</Heading>
+    <Text>{vi?'Chưa nộp bài. Vẫn có thể qua phần khác; đáp án và tự đánh giá chỉ mở sau khi nộp.':
+     'Not submitted yet. You can keep browsing; answers and self-review unlock after submission.'}</Text>
+    <Button variant="secondary" onClick={()=>go('practice')}>
+     {vi?'Quay lại làm bài':'Return to practice'}</Button>
+   </Card>}
+   {phase==='feedback'&&attempt.submitted&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-feedback">
     <Heading level={2} id="li-learn-feedback" role="titleLarge">{content.answerTitle}</Heading>
     <Text>{strip(content.answer)}</Text>
     <Text role="support">{strip(content.answerCaution)}</Text>
@@ -496,7 +506,14 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     {attempt.reviewed?<Button onClick={()=>go('progress')}>{vi?'Tiếp: Tiến độ':'Next: Progress'} →</Button>:
      <Button disabled={locked||saving} onClick={()=>void finish()}>{content.saveReview}</Button>}
    </Card>}
-   {phase==='progress'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-progress">
+   {phase==='progress'&&!attempt.reviewed&&<Card variant="flat-study" className="li-study-book-page">
+    <Heading level={2} role="titleLarge">{labels.progress}</Heading>
+    <Text>{vi?'Chưa hoàn thành lượt học. Chuyển phần không tự nộp bài, tự chấm hay cộng tiến độ.':
+     'This attempt is not complete. Skipping sections does not submit, score or mark progress.'}</Text>
+    <Button variant="secondary" onClick={()=>go('practice')}>
+     {vi?'Quay lại làm bài':'Return to practice'}</Button>
+   </Card>}
+   {phase==='progress'&&attempt.reviewed&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-progress">
     <Heading level={2} id="li-learn-progress" role="titleLarge">
      {vi?'Hoàn thành lượt tự đánh giá':'Self-review completed'}
     </Heading>

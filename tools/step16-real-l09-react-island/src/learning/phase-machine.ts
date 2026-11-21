@@ -1,8 +1,8 @@
 import {assign,createActor,setup} from 'xstate';
 import type {LessonPhase} from '../shell/app-store.js';
 
-/** One L09 learning flow: state-machine owns progression gates,
- * existing invited Dexie/Neon ports own actual saved attempts.
+/** One L09 learning flow: state-machine owns the visible page,
+ * Existing invited Dexie/Neon ports still own submitted/reviewed records.
  * COMMIT is sent only after a successful persisted save or verified load.
  */
 type LessonEvent=
@@ -29,8 +29,8 @@ export const lessonPhaseMachine=setup({
    {guard:({event})=>event.phase==='read',target:'.read'},
    {guard:({event})=>event.phase==='guided',target:'.guided'},
    {guard:({event})=>event.phase==='practice',target:'.practice'},
-   {guard:({context,event})=>event.phase==='feedback'&&context.submitted,target:'.feedback'},
-   {guard:({context,event})=>event.phase==='progress'&&context.submitted&&context.reviewed,target:'.progress'}
+   {guard:({event})=>event.phase==='feedback',target:'.feedback'},
+   {guard:({event})=>event.phase==='progress',target:'.progress'}
   ]
  },
  states:{read:{},guided:{},practice:{},feedback:{},progress:{}}

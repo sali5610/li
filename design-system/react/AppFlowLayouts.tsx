@@ -115,7 +115,11 @@ function ScreenBody(props:AppPageLayoutProps){
   asideTitle={t('Cấp độ khám phá','Browse levels')}
   aside={<div className="li-flow-stack">
    {['Nhóm ngành','Chuyên ngành','Môn học','Bài học'].map((name,i)=>
-    <div className="li-flow-mini" key={name}>{String(i+1).padStart(2,'0')} · {name}</div>)}
+    <div className="li-flow-mini" key={name}>
+     {variant==='bookworm'&&<LiIcon name={i===0?'layers':i===1?'library-big':i===2?'book-open':'bookmark'}
+      size={17} strokeWidth={1.6}/>}
+     {String(i+1).padStart(2,'0')} · {name}
+    </div>)}
   </div>} countLabel={t('Nhóm ngành · Mẫu','Sample fields')}>
   <div className="li-flow-card-grid">
    {examples.filter(item=>(item.vi+item.en).toLowerCase().includes(query.toLowerCase()))

@@ -24,6 +24,81 @@ if(!root)throw Error('STAGING_AUTH_ROOT_MISSING');
 // Auth gate is only for sign-in; account management is in Settings.
 createRoot(root).render(<AuthPanel/>);
 
+// The Pages HTML paints the canonical UX-ART-06 state *before* JS downloads.
+// Keep the native Home invisible until all React roots have painted and Home
+// artwork has decoded; no arbitrary minimum splash duration or fake progress.
+const bootSplash=document.getElementById('li-boot-splash');
+let bootComplete=false;
+let bootFrame=0;
+const isVerified=()=>document.documentElement.classList.contains('li-auth-verified');
+function localizeBoot(){
+ const language=window as Window&{liLanguage?:{get?:()=>string}};
+ const locale=language.liLanguage?.get?.()||'vi';
+ const en=locale==='en';
+ const labels:[string,string,string]=en?
+  ['Preparing your library…','Elder Ly is getting everything ready.','Reload the app']:
+  ['Đang mở Tàng Thư…','Lão Lý đang chuẩn bị mọi thứ.','Tải lại ứng dụng'];
+ const title=document.getElementById('li-boot-title');
+ const description=document.getElementById('li-boot-description');
+ const retry=document.getElementById('li-boot-retry');
+ const slow=document.getElementById('li-boot-slow-copy');
+ if(title)title.textContent=labels[0];
+ if(description)description.textContent=labels[1];
+ if(retry)retry.textContent=labels[2];
+ if(slow)slow.textContent=en?'Loading is taking longer than expected.':'Tải lâu hơn dự kiến.';
+}
+localizeBoot();
+window.addEventListener('li:localechange',localizeBoot);
+document.getElementById('li-boot-retry')?.addEventListener('click',()=>window.location.reload());
+function revealBoot(){
+ if(bootComplete)return;
+ bootComplete=true;
+ document.documentElement.classList.add('li-boot-ready');
+ bootSplash?.setAttribute('aria-hidden','true');
+}
+function appPainted(){
+ const route=window.liReactRouter?.getCurrent?.();
+ const page=route?document.getElementById('page-'+route):null;
+ const home=document.querySelector<HTMLElement>('#li-react-home-host [data-li-react-screen="home"]');
+ const navigation=document.querySelector('.header .topnav[data-li-react-navigation="desktop"] button');
+ const catalogReady=route!=='catalog'||Boolean(page?.querySelector('[data-li-react-screen="catalog"]'));
+ return Boolean(route&&page?.classList.contains('active')&&home&&navigation&&
+  catalogReady&&(route!=='home'||home.dataset.liBootArtReady==='true'));
+}
+function checkAppBoot(){
+ bootFrame=0;
+ if(bootComplete||!isVerified())return;
+ if(appPainted()){
+  window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>{
+   if(isVerified()&&appPainted())revealBoot();
+   else checkAppBoot();
+  }));
+ }else bootFrame=window.requestAnimationFrame(checkAppBoot);
+}
+window.addEventListener('li:auth-verified-changed',event=>{
+ const verified=Boolean((event as CustomEvent<{verified?:boolean}>).detail?.verified);
+ if(verified){
+  bootComplete=false;
+  window.cancelAnimationFrame(bootFrame);
+  bootFrame=window.requestAnimationFrame(checkAppBoot);
+ }else{
+  window.cancelAnimationFrame(bootFrame);
+  bootComplete=false;
+  document.documentElement.classList.remove('li-boot-ready');
+  bootSplash?.removeAttribute('aria-hidden');
+ }
+});
+// Signed-out/denied visitors get the real Auth UI, never a transient homepage.
+window.addEventListener('li:auth-startup-settled',()=>{
+ if(!isVerified())revealBoot();
+});
+// If a network or bundle fails, keep private content covered but offer
+// a working recovery action instead of trapping the user forever.
+window.setTimeout(()=>{
+ if(document.documentElement.classList.contains('li-boot-ready'))return;
+ document.getElementById('li-boot-slow')?.removeAttribute('hidden');
+},20000);
+
 // Replace the native Catalog path controller before any Home, Search or
 // lesson React mounts. Native fallback is still shipped in standalone site.
 installReactCatalogPort();

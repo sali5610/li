@@ -54,3 +54,6 @@ export type {NotebookArtKind,NotebookArtSize} from './NotebookArt';
 export {NotebookInk} from './NotebookInk';
 export {NotebookLessonBook} from './NotebookLessonBook';
 export type {NotebookLessonSection} from './NotebookLessonBook';
+
+export {PortalCategoryCard} from './PortalCategoryCard';
+export type {PortalCategoryCardProps,PortalVariant} from './PortalCategoryCard';

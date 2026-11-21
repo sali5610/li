@@ -64,8 +64,9 @@ function TaxonomyDropdown({label:heading,value,options,onChange,disabled=false}:
   </select>
  </label>;
 }
-export function TaxonomyFilters({records,value,onChange}:{
- records:TaxonomyRecord[];value:FilterValue;onChange:(next:FilterValue)=>void
+export function TaxonomyFilters({records,value,onChange,onClear,otherFiltersActive=false}:{
+ records:TaxonomyRecord[];value:FilterValue;onChange:(next:FilterValue)=>void;
+ onClear?:()=>void;otherFiltersActive?:boolean
 }){
  const available=records.map(metadataOf);
  const groupIds=new Set(available.map(item=>item.groupId).filter(Boolean));
@@ -106,7 +107,7 @@ export function TaxonomyFilters({records,value,onChange}:{
   <div className="li-library-taxonomy-footer">
    {!records.length&&<Text role="support">{label('Chưa có mục nào để lọc.','Nothing saved to filter yet.')}</Text>}
    <Button variant="ghost" className="li-library-taxonomy-reset"
-    disabled={!isFiltered} onClick={()=>onChange(emptyTaxonomy)}>
+    disabled={!isFiltered&&!otherFiltersActive} onClick={()=>onClear?.()||onChange(emptyTaxonomy)}>
     {label('Xóa bộ lọc','Clear filters')}
    </Button>
   </div>

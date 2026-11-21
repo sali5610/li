@@ -12,7 +12,7 @@ type QuoteView={
  id:string;original:string;lang:string;translation:string;
  interpretation:string;meta:string;url:string;comment:string
 };
-type EditorialBuddy={actions:{label:string;reply:string}[];quotes:QuoteView[]};
+type EditorialBuddy={actions:{label:string;reply:string}[];quotes?:QuoteView[]};
 type BuddyView={
  text:string;labels:string[];avatar:string;quote:QuoteView|null;triggerId:string;
  /** Structured lesson extension; real native mentor actions remain unchanged. */
@@ -60,9 +60,10 @@ export function BuddyDialog({root}:{root:HTMLElement}){
    if(!next||!Array.isArray(next.labels))return;
    const editorial=next.editorial;
    if(editorial){
-    if(editorial.actions?.length!==2||editorial.quotes?.length<3||
+    if(editorial.actions?.length!==2||
       editorial.actions.some(action=>!action.label||!action.reply)||
-      editorial.quotes.some(quote=>!quote.original||!quote.meta||!quote.url?.startsWith('https://')))
+      (editorial.quotes!==undefined&&(editorial.quotes.length<3||
+       editorial.quotes.some(quote=>!quote.original||!quote.meta||!quote.url?.startsWith('https://')))))
      return;
    }else if(next.labels.length!==3)return;
    current.current=next;
@@ -138,7 +139,7 @@ export function BuddyDialog({root}:{root:HTMLElement}){
   setChallenge(false);
  };
  if(!view)return null;
- const quote=view.editorial?.quotes[quoteIndex]??view.quote;
+ const quote=view.editorial?.quotes?.[quoteIndex]??view.quote;
  const quoteVisible=!challenge&&!!quote&&(!!view.editorial||message===view.text);
  return <div className="buddy-shell li-react-buddy-shell" onKeyDown={onKeyDown}>
   <div className="dialog">
@@ -172,7 +173,7 @@ export function BuddyDialog({root}:{root:HTMLElement}){
      {message!==view.text&&<p className="li-buddy-context">{view.text}</p>}
      <p id="buddy-text" role="status" aria-live="polite">{message}</p>
     </div>
-    {view.editorial&&<div className="li-editorial-buddy-quotes" role="group"
+    {view.editorial?.quotes&&<div className="li-editorial-buddy-quotes" role="group"
      aria-label={chooseLanguage('Nguồn trích dẫn được chọn theo nội dung','Curated lesson quotations')}>
      {view.editorial.quotes.map((candidate,index)=><Button key={candidate.id}
       variant={quoteIndex===index?'primary':'secondary'}

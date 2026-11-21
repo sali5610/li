@@ -132,7 +132,6 @@ function phaseFor(a:Attempt,method:EditorialMethodId):Phase{
  if(a.guidedDraft.trim())return 'guided';
  return 'read';
 }
-type Quote={id:string;original:string;translation:string;interpretation:string;comment:string;lang:string;meta:string;url:string};
 export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedLesson;ports:LearningPorts;preview?:boolean}){
  const id=lesson.id,method=lesson.content.technique.primary.slice(3) as EditorialMethodId;
  const reduced=useReducedMotion();
@@ -308,18 +307,15 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    <Button id={'li-sectioned-mentor-'+id+'-'+stage} variant="secondary"
     onClick={()=>{
      const locale=appLocale;
-     const app=window as Window&{liBuddyReactMounted?:boolean;
-      liQuoteEngine?:{lookup?:(id:string,locale:Locale)=>Quote|null}};
-     const quotes=moment.quote_ids.map(key=>app.liQuoteEngine?.lookup?.(key,locale)||null);
-     if(!app.liBuddyReactMounted||quotes.length<3||
-      quotes.some(q=>!q?.url?.startsWith('https://'))){
-      setError(['Lão Lý hoặc nguồn trích dẫn chưa khả dụng.','Elder Li or the cited source is unavailable.']);return;
+     const app=window as Window&{liBuddyReactMounted?:boolean};
+     if(!app.liBuddyReactMounted){
+      setError(['Lão Lý chưa khả dụng.','Elder Li is unavailable.']);return;
      }
      window.dispatchEvent(new CustomEvent('li:buddy-open',{detail:{
       text:moment[locale].prompt,avatar:'./assets/laoly-neutral.png',
-      quote:quotes[0],triggerId:'li-sectioned-mentor-'+id+'-'+stage,
+      quote:null,triggerId:'li-sectioned-mentor-'+id+'-'+stage,
       labels:moment[locale].actions.map(a=>a.label),
-      editorial:{actions:moment[locale].actions.map(a=>({label:a.label,reply:a.reply})),quotes}
+      editorial:{actions:moment[locale].actions.map(a=>({label:a.label,reply:a.reply}))}
      }}));
     }}>{appLocale==='en'?'Ask Elder Li about this lesson':'Hỏi Lão Lý theo bài học'}</Button>
   </section>;

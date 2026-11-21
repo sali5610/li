@@ -779,5 +779,12 @@
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-page="capture"] .li-pop-scrapbook{
  border-top:2px solid var(--vp-primary);box-shadow:none;
 }
+
+/* Featured catalog index is an unframed label, not another miniature card. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"]
+ .li-flow-page[data-page="catalog"] .li-flow-card-grid>.li-ds-card:first-child>.li-flow-index{
+ border:0;outline:0;box-shadow:none;
+}
+
 /* Native focus rings, card boundaries, buttons and navigational/section rules
    intentionally remain untouched for interaction and accessibility. */

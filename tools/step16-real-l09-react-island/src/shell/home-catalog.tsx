@@ -156,10 +156,12 @@ function Catalog(){
    const toFrame={left:px(end.left),top:px(end.top),
     width:px(end.width),height:px(end.height),borderRadius:'0px'};
    const timing={duration:620,easing:'cubic-bezier(.22,.68,.19,1)',fill:'forwards' as const};
-   const frame=layer.animate([fromFrame,toFrame],timing);
-   const art=clone.animate([artFrom,artTo],timing);
-   fallback=window.setTimeout(finish,850);
-   void Promise.allSettled([frame.finished,art.finished]).then(finish);
+   try{
+    const frame=layer.animate([fromFrame,toFrame],timing);
+    const art=clone.animate([artFrom,artTo],timing);
+    fallback=window.setTimeout(finish,850);
+    void Promise.allSettled([frame.finished,art.finished]).then(finish);
+   }catch{finish();}
   }));
  }
  useEffect(()=>{

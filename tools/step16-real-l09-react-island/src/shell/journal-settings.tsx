@@ -218,7 +218,7 @@ export function Settings(){
  const accountHost=useRef<HTMLDivElement>(null);
  useEffect(()=>{
   window.dispatchEvent(new CustomEvent('li:settings-account-host',{detail:{host:accountHost.current}}));
-  return()=>window.dispatchEvent(new CustomEvent('li:settings-account-host',{detail:{host:null}}));
+  return()=>{window.dispatchEvent(new CustomEvent('li:settings-account-host',{detail:{host:null}}));};
  },[]);
  const locale=app.liLanguage?.get?.()==='en'?'en':'vi';
  const act=(kind:string,key?:string,value?:string|boolean)=>app.liSettingsPort?.act(kind,key,value);

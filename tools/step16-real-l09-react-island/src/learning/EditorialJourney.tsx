@@ -724,6 +724,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     </details>
    </div>
   </header>
+    <StudyBookFolio phase={phase} steps={phases} locale={locale}/>
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
   <div className="li-learning-save">
    <Progress label={vi?'Tiến độ lượt học':'Lesson attempt progress'} value={progress}/>
@@ -765,7 +766,6 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    <Button onClick={()=>void retry()} disabled={saving}>{vi?'Thử lưu lại':'Retry saving'}</Button>
    <Text role="support">{vi?'Đừng tải lại khi còn bản chưa lưu.':'Keep this page open with unsaved work.'}</Text>
   </div>}
-    <StudyBookFolio phase={phase} steps={phases} locale={locale}/>
   <motion.div key={phase} initial={reduced?false:{opacity:0,x:12,rotateY:-1}}
    animate={{opacity:1,x:0,rotateY:0}} transition={reduced?{duration:0}:{duration:0.18}}
    className="li-learning-current">

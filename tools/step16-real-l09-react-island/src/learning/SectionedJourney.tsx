@@ -388,6 +388,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      sync==='synced'?'Synced':sync==='queued'?'Waiting to sync':
       sync==='on-device'?'Saved on device':'Saved / checking status')}</Text>
   {error&&<p role="alert">{error}</p>}
+    <StudyBookFolio phase={phase} steps={PAGES} locale={locale}/>
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
   <Progress label={vi?'Tiến độ lượt học':'Lesson attempt progress'} value={percent}/>
   <Text role="support">{persisted.reviewed?
@@ -402,7 +403,6 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    </li>)}</ol>
   </details>}
   </aside>
-    <StudyBookFolio phase={phase} steps={PAGES} locale={locale}/>
   <motion.div key={phase} initial={reduced?false:{opacity:0,x:12,rotateY:-1}}
    animate={{opacity:1,x:0,rotateY:0}} transition={reduced?{duration:0}:{duration:0.2}}
    className="li-learning-current">

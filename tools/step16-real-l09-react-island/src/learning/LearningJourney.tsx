@@ -340,14 +340,24 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    </div>
    <div className="li-learning-header-actions">
     <LessonBookmark id="L09-1-2" locale={appLocale}/>
+    <details className="li-lesson-header-more">
+     <summary>{vi?'Tùy chọn':'Options'}</summary>
+     <Button variant="ghost" disabled={saving||locked}
+      onClick={()=>void restartLesson()}>{vi?'Học lại từ đầu':'Restart lesson'}</Button>
+    </details>
    </div>
   </header>
+    <StudyBookFolio phase={phase} steps={sequence} locale={appLocale}/>
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
 
   <div className="li-learning-save">
-   <Progress label={accessibleProgress} value={percent}/>
    <SaveStatus state={saveViewState} message={saveMessage}
     detail={locked?error:undefined}/>
+   <Text role="support" className="li-learning-ready-count">{attempt.reviewed?
+    (vi?'Đã tự đánh giá':'Self-reviewed'):
+    attempt.submitted?(vi?'Đã nộp · '+rated+'/4 tự chấm':'Submitted · '+rated+'/4 rated'):
+    (vi?answered+'/4 câu sẵn sàng':answered+'/4 answers ready')}</Text>
+   <Progress label={accessibleProgress} value={percent}/>
    <details className="li-learning-attempt-meta">
     <summary>{vi?'Chi tiết lượt học':'Attempt details'}</summary>
     <Text role="support">{attempt.reviewed?
@@ -355,10 +365,6 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      attempt.submitted?(vi?'Đã nộp · tự đánh giá '+rated+'/4':'Submitted · self-review '+rated+'/4'):
      (vi?'Đủ điều kiện nộp '+answered+'/4 câu':'Submission-ready '+answered+'/4 answers')}</Text>
     {attempt.assisted&&<Text role="support">{content.assisted}</Text>}
-    <div className="li-learning-recovery">
-     <Button variant="secondary" disabled={saving||locked}
-      onClick={()=>void restartLesson()}>{vi?'Học lại từ đầu':'Restart this lesson'}</Button>
-    </div>
    </details>
   </div>
   </aside>
@@ -369,7 +375,6 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    </Button>
    <Text role="support">{vi?'Không tải lại trang khi bản nháp chưa lưu.':'Keep this page open while changes are unsaved.'}</Text>
   </div>}
-    <StudyBookFolio phase={phase} steps={sequence} locale={appLocale}/>
   <motion.div key={phase} initial={reduced?false:{opacity:0,x:12,rotateY:-1}}
    animate={{opacity:1,x:0,rotateY:0}} transition={transition} className="li-learning-current">
    

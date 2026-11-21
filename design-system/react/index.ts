@@ -36,6 +36,8 @@ export type {LiIconRole,LiIconProps} from './LucideIcons';
 /** Share the same presentational Home layout between the UI Lab and real React Home. */
 export {HomeLayout,homeLayoutVariants} from './HomeLayoutVariants';
 export type {HomeLayoutProps,HomeLayoutVariant} from './HomeLayoutVariants';
+export {BookwormIllustration} from './BookwormIllustration';
+export type {BookwormArtKind} from './BookwormIllustration';
 
 /** Notebook annotations are a shared, presentational component. */
 export {NotebookAnnotation} from './NotebookAnnotation';

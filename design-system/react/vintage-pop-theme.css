@@ -1,0 +1,234 @@
+/* Vintage Pop / Postcard: opt-in presentation skin for the React UI Lab only.
+   No global token edits, app routes, storage, or real learner UI changes. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"]{
+ --paper:#fff3d9;
+ --paper-2:#ffdf72;
+ --paper-3:#ffd24f;
+ --cream:#fff9eb;
+ --ink:#1d3b2c;
+ --forest:#183f30;
+ --moss:#204835;
+ --olive:#9f3e46;
+ --wood:#e96b37;
+ --sage:#f4abb9;
+ --rule:#294535;
+ --muted:#645543;
+ --li-font-editorial:Georgia,'Times New Roman',serif;
+ background:#f6e8d2;
+ border-color:#254532;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-lab-preview-label{
+ background:#214a37;color:#fff3d9;letter-spacing:.07em;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-lab-preview-label .li-ds-button{
+ border-color:#f7d46b;background:#fff1d1;color:#1f4433;
+}
+/* Flat, outlined shapes and archival labels; geometry comes from the existing React DS. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page,.li-ui-home,.li-ds-card,.li-ds-button,.li-atom-badge,
+ .li-ds-catalog-tools,.li-ds-catalog-aside,.li-ds-learning-prompt,
+ .li-ds-learning-response,.li-ds-account-panel,.li-ds-inline-feedback,
+ .li-ds-home-mirror-content,.li-flow-page-aside,.li-flow-lesson-diagram,
+ input,textarea,select
+){border-radius:0}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page{
+ background-color:#fff4dd;
+ background-image:radial-gradient(#21463216 .8px,transparent 1px);
+ background-size:16px 16px;
+ gap:28px;color:#1d3b2c;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-head{
+ position:relative;isolation:isolate;overflow:hidden;
+ background:#ffe05b;border:2px solid #214532;
+ padding:clamp(20px,3.5vw,42px);
+ align-items:center;box-shadow:6px 6px 0 #efa8b7;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-head::after{
+ content:"";position:absolute;z-index:-1;right:-32px;bottom:-78px;
+ width:220px;height:220px;border:34px solid #ef7a49;border-radius:50%;opacity:.3;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-heading{
+ max-width:65ch;gap:16px;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-heading .li-atom-heading{
+ font-family:Georgia,'Times New Roman',serif;font-weight:500;
+ color:#20422f;letter-spacing:-.04em;
+ font-size:clamp(40px,5vw,74px);line-height:1.02;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-kicker,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-index,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-kicker,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-guide-source{
+ font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+ font-size:11px;line-height:1.5;letter-spacing:.13em;
+ color:#244735;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-index{
+ position:relative;z-index:1;display:grid;place-items:center;
+ min-width:76px;height:76px;padding:9px;
+ color:#fff8e7;background:#214532;border:2px solid #fff8e7;
+ outline:2px solid #214532;border-radius:50%;
+ font:600 32px/1 Georgia,'Times New Roman',serif;
+ transform:rotate(8deg);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-columns{
+ gap:28px;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ds-card{
+ border:2px solid #214532;background:#fff9ea;
+ box-shadow:5px 5px 0 #eaa4b2;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-card-grid>.li-ds-card:nth-child(3n + 2){
+ background:#f5b5c3;box-shadow:5px 5px 0 #214532;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-card-grid>.li-ds-card:nth-child(3n + 3){
+ background:#ffdd64;box-shadow:5px 5px 0 #e97343;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ds-card[data-variant="inverse"]{
+ background:#214532;color:#fff9ec;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ds-button{
+ border:1.5px solid #214532;
+ background:#ed7642;color:#182d23;
+ box-shadow:3px 3px 0 #214532;
+ min-height:44px;
+ font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+ font-weight:650;letter-spacing:.015em;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ds-button[data-variant="secondary"]{
+ background:#ffe06a;color:#214532;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ds-button[data-variant="ghost"]{
+ color:#214532;background:#fff8e7;box-shadow:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ds-button[aria-pressed="true"]{
+ background:#204b36;color:#fff8e9;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ds-button:focus-visible{
+ border-width:3px;outline:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-atom-badge{
+ background:#f1b0bf;color:#1b4030;border:1px solid #214532;
+ font:700 11px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;
+ letter-spacing:.09em;text-transform:uppercase;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-ds-catalog-tools,.li-ds-learning-prompt,.li-flow-lesson-diagram
+){background:#ffe27d;border:2px solid #254735}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-ds-catalog-aside,.li-ds-learning-response,.li-ds-account-note
+){background:#f9ced2;border:1px solid #294535}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-ds-account-panel,.li-ds-inline-feedback,.li-ds-source-status,.li-flow-mini
+){background:#fffaf0;border:1.5px solid #214532}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(input,textarea,select){
+ background:#fffbef;border:1.5px solid #214532;color:#183b2b;
+ box-shadow:none;font-family:inherit;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ds-list-row{
+ border-bottom:1.5px solid #244633;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-steps>div{
+ border:1.5px solid #214532;background:#fff6df;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-week>span>i{
+ background:#e57542;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-week>span:nth-child(2n)>i{
+ background:#214c37;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-dots i{
+ background:#214c37;border-radius:0;transform:rotate(45deg) scale(.78);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-dots i[data-highlight="true"]{
+ background:#e96e42;
+}
+/* Stamp-like perforated panel is reserved for featured 'related paths' cards. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-page-aside,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="case"] .li-flow-page-aside,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="collection"] .li-flow-page-aside{
+ position:relative;isolation:isolate;
+ border:8px solid #efb0c0;background:#fff6df;
+ outline:1.5px solid #214532;
+ box-shadow:4px 4px 0 #214532;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page[data-page="lesson"],.li-flow-page[data-page="case"],
+ .li-flow-page[data-page="collection"]
+) .li-flow-page-aside::after{
+ content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+ background:
+ radial-gradient(circle 4px at 50% 0,#fff4dd 98%,transparent 100%) top left/16px 8px repeat-x,
+ radial-gradient(circle 4px at 50% 100%,#fff4dd 98%,transparent 100%) bottom left/16px 8px repeat-x,
+ radial-gradient(circle 4px at 0 50%,#fff4dd 98%,transparent 100%) top left/8px 16px repeat-y,
+ radial-gradient(circle 4px at 100% 50%,#fff4dd 98%,transparent 100%) top right/8px 16px repeat-y;
+}
+/* Home composition: graphic colour fields, preserved real illustration and controls. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home{
+ background:#fff3d9;gap:22px;border:8px solid #204633;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-backdrop{
+ opacity:.28;filter:saturate(.8) sepia(.1);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-tint{
+ background:linear-gradient(110deg,#fff4dceF 0%,#fff4dccc 44%,#ffdf7f9c 100%);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-intro{
+ background:#ffdf65;border:2px solid #214532;padding:clamp(16px,2vw,30px);
+ box-shadow:6px 6px 0 #f2a9b8;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-intro .li-atom-heading{
+ font-family:Georgia,'Times New Roman',serif;letter-spacing:-.055em;
+ color:#204432;font-size:clamp(38px,4.6vw,68px);line-height:1.03;font-weight:500;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-mirror .li-ds-home-mirror{
+ border:10px solid #f3aebb;outline:2px solid #214532;
+ box-shadow:6px 6px 0 #214532;
+ background:#f5b0bf;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-mirror .li-ds-home-mirror::after{
+ content:"";position:absolute;inset:0;z-index:4;pointer-events:none;
+ background:
+ radial-gradient(circle 4px at 50% 0,#fff3d9 98%,transparent 100%) top left/16px 8px repeat-x,
+ radial-gradient(circle 4px at 50% 100%,#fff3d9 98%,transparent 100%) bottom left/16px 8px repeat-x,
+ radial-gradient(circle 4px at 0 50%,#fff3d9 98%,transparent 100%) top left/8px 16px repeat-y,
+ radial-gradient(circle 4px at 100% 50%,#fff3d9 98%,transparent 100%) top right/8px 16px repeat-y;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-mirror .li-ds-home-mirror-content{
+ border:2px solid #204633;background:#fff6df;
+ box-shadow:5px 5px 0 #e87646;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-mirror .li-ds-home-mirror-content .li-atom-heading{
+ font:500 clamp(22px,2.8vw,35px)/1.1 Georgia,'Times New Roman',serif;
+ color:#1d3d2e;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-guide{
+ background:#fff4db;border-bottom:2px solid #214532;padding:12px;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-guide .li-legacy-chat-bubble{
+ border-radius:0;background:#214532;color:#fff7e6;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-actions .li-ds-button:first-child{
+ background:#ffda69;
+}
+@container lab-preview (max-width:440px){
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-head{
+  padding:18px;align-items:flex-start;gap:12px;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-heading .li-atom-heading{
+  font-size:39px;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-index{
+  min-width:44px;height:44px;font-size:19px;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home{border-width:4px}
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-intro{padding:18px}
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-mirror .li-ds-home-mirror{
+  border-width:8px;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] *{
+  animation:none!important;transition:none!important;
+ }
+}

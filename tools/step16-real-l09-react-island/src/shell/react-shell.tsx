@@ -48,7 +48,7 @@ function Notification({host}:{host:HTMLElement}){
   const current=notice.serial;
   const timer=window.setTimeout(()=>{
    setNotice(previous=>previous?.serial===current?null:previous);
-  },notice.undo?7000:Math.min(8000,Math.max(4000,notice.message.length*45)));
+  },notice.undo?7000:2600);
   return ()=>window.clearTimeout(timer);
  },[host,notice?.serial]);
  const undo=()=>{

@@ -286,3 +286,21 @@
   font-size:var(--li-type-support);line-height:var(--li-leading-support)
  }
 }
+
+/* 390px iPhone: search takes the full reading column; all five categories
+   stay discoverable instead of clipping the final chip offscreen. */
+@media(max-width:600px){
+ .li-react-guide .guide-find .li-atom-field,
+ .li-react-guide .guide-find .li-atom-field input{
+  display:block;width:100%;max-width:none;min-width:0;box-sizing:border-box
+ }
+ .li-react-guide .guide-find>.li-ds-filter-group{
+  display:flex;flex-wrap:wrap;overflow:visible;
+  align-items:center;gap:var(--li-space-2);padding:0;max-width:100%
+ }
+ .li-react-guide .guide-find>.li-ds-filter-group>.li-ds-filter-chip{
+  flex:0 0 auto;white-space:normal;min-height:44px;
+  font-size:var(--li-type-caption);padding:var(--li-space-2);
+  max-width:100%;line-height:var(--li-leading-caption)
+ }
+}

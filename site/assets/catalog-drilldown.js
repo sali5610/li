@@ -211,7 +211,9 @@ function mountNative(route){
  // Leave the native two-column editorial grid and self-review sidebar untouched.
  const toolbar=el("div","catalog-native-toolbar",null,layout.parentElement);
  layout.before(toolbar);
- const trigger=el("button","catalog-chapter-fab","☰",page);
+ const trigger=el("button","catalog-chapter-fab li-ds-button","☰",page);
+ trigger.dataset.liComponent="button";
+ trigger.dataset.variant="primary";
  trigger.type="button";
  trigger.setAttribute("aria-label","Mục lục chương");
  trigger.setAttribute("title","Mục lục chương");

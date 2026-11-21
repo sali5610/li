@@ -123,7 +123,8 @@ export function Journal(){
      <Text role="support">{copy(
       'Bài · Vấn đề · Input; ngày chưa có ghi nhận để trống, không tính thành 0.',
       'Lessons · Problems · Inputs; unrecorded days stay blank, not zero.')}</Text>
-    </section>\n    <div className="li-diary-weekdays" aria-hidden="true">
+    </section>
+    <div className="li-diary-weekdays" aria-hidden="true">
      {(app.liLanguage?.get?.()==='en'?['M','T','W','T','F','S','S']:
       ['T2','T3','T4','T5','T6','T7','CN']).map((label,i)=><span key={i}>{label}</span>)}
     </div>

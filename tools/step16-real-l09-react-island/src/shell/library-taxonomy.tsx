@@ -1,0 +1,91 @@
+import React from 'react';
+import curriculum from '../../../../content/curriculum/legacy-catalog.v1.json';
+import {FilterGroup,Text} from '../../../../design-system/react/index';
+import './library-taxonomy.css';
+
+/** The existing published Catalog owns taxonomy; private notes only store stable IDs. */
+type TaxonomyRecord={fieldId?:string|null;lessonId?:string|null};
+type FilterValue={group:string;field:string;lesson:string};
+export const emptyTaxonomy:FilterValue={group:'all',field:'all',lesson:'all'};
+const groups=curriculum.groups;
+const fields=groups.flatMap(group=>group.fields.map(field=>({
+ id:field.id,name:field.name,groupId:group.id,groupName:group.title,groupNameEn:group.titleEn,
+ lessons:field.courses.flatMap(course=>course.lessons.map(lesson=>({id:lesson.id,title:lesson.title})))
+})));
+const byField=new Map(fields.map(item=>[item.id,item]));
+const byLesson=new Map(fields.flatMap(field=>field.lessons.map(lesson=>[lesson.id,{field,...lesson}] as const)));
+// Legacy storage port validates selections against this read-only Catalog allowlist.
+(window as Window&{liTaxonomyFieldIds?:string[]}).liTaxonomyFieldIds=fields.map(item=>item.id);
+
+const english=()=>((window as Window&{liLanguage?:{get?:()=>string}}).liLanguage?.get?.()==='en');
+const label=(vi:string,en:string)=>english()?en:vi;
+export function metadataOf(record:TaxonomyRecord){
+ const explicit=record.fieldId?byField.get(record.fieldId):undefined;
+ const fromLesson=record.lessonId?byLesson.get(record.lessonId):undefined;
+ const field=explicit||fromLesson?.field||null;
+ const lesson=fromLesson&&field?.id===fromLesson.field.id?fromLesson:null;
+ return {groupId:field?.groupId||null,fieldId:field?.id||null,lessonId:lesson?.id||null};
+}
+export function matchesTaxonomy(record:TaxonomyRecord,value:FilterValue){
+ const ref=metadataOf(record);
+ if(value.group==='unclassified')return !ref.groupId;
+ if(value.group!=='all'&&ref.groupId!==value.group)return false;
+ if(value.field!=='all'&&ref.fieldId!==value.field)return false;
+ if(value.lesson!=='all'&&ref.lessonId!==value.lesson)return false;
+ return true;
+}
+export function fieldLabel(id:string|null|undefined){
+ return byField.get(id||'')?.name||null;
+}
+export function FieldPicker({id,value,onChange}:{
+ id:string;value:string|null|undefined;onChange:(fieldId:string|null)=>void
+}){
+ return <label className="li-note-field-picker" htmlFor={id}>
+  <span>{label('Gắn vào chuyên ngành (không bắt buộc)','Link to a field (optional)')}</span>
+  <select id={id} className="searchbox li-taxonomy-select" value={value||''}
+   onChange={event=>onChange(event.target.value||null)}>
+   <option value="">{label('Chưa gắn chuyên ngành','No field selected')}</option>
+   {groups.map(group=><optgroup key={group.id} label={english()?group.titleEn:group.title}>
+    {group.fields.map(field=><option key={field.id} value={field.id}>{field.name}</option>)}
+   </optgroup>)}
+  </select>
+ </label>;
+}
+export function TaxonomyFilters({records,value,onChange}:{
+ records:TaxonomyRecord[];value:FilterValue;onChange:(next:FilterValue)=>void
+}){
+ const available=records.map(metadataOf);
+ const groupIds=new Set(available.map(item=>item.groupId).filter(Boolean));
+ const hasUnclassified=available.some(item=>!item.groupId);
+ const groupOptions=[
+  {value:'all',label:label('Tất cả ngành','All groups')},
+  ...groups.filter(group=>groupIds.has(group.id)).map(group=>({
+   value:group.id,label:english()?group.titleEn:group.title
+  })),
+  ...(hasUnclassified?[{value:'unclassified',label:label('Chưa phân loại','Unclassified')}]:[])
+ ];
+ const fieldIds=new Set(available.filter(ref=>value.group==='all'||ref.groupId===value.group)
+  .map(ref=>ref.fieldId).filter(Boolean));
+ const fieldOptions=[{value:'all',label:label('Tất cả chuyên ngành','All fields')},
+  ...fields.filter(field=>fieldIds.has(field.id)).map(field=>({value:field.id,label:field.name}))];
+ const lessonIds=new Set(available.filter(ref=>
+  (value.group==='all'||ref.groupId===value.group)&&
+  (value.field==='all'||ref.fieldId===value.field)).map(ref=>ref.lessonId).filter(Boolean));
+ const lessonOptions=[{value:'all',label:label('Tất cả bài','All lessons')},
+  ...Array.from(lessonIds).flatMap(id=>{
+   const entry=id?byLesson.get(id):undefined;
+   return entry?[{value:entry.id,label:entry.title}]:[];
+  })];
+ return <div className="li-library-taxonomy" aria-label={label('Lọc theo chương trình học','Filter by curriculum')}>
+  <FilterGroup label={label('Ngành','Group')} options={groupOptions}
+   selected={[value.group]} multiple={false} allowEmpty={false}
+   onChange={next=>onChange({group:next[0]||'all',field:'all',lesson:'all'})}/>
+  {value.group!=='unclassified'&&<FilterGroup label={label('Chuyên ngành','Field')}
+   options={fieldOptions} selected={[value.field]} multiple={false} allowEmpty={false}
+   onChange={next=>onChange({...value,field:next[0]||'all',lesson:'all'})}/>}
+  {value.group!=='unclassified'&&<FilterGroup label={label('Bài','Lesson')}
+   options={lessonOptions} selected={[value.lesson]} multiple={false} allowEmpty={false}
+   onChange={next=>onChange({...value,lesson:next[0]||'all'})}/>}
+  {!records.length&&<Text role="support">{label('Chưa có mục nào để lọc.','Nothing saved to filter yet.')}</Text>}
+ </div>;
+}

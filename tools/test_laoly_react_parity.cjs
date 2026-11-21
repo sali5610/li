@@ -21,14 +21,20 @@ assert.match(dialog,/document\.getElementById\('buddy-modal'\)/,
  'Reuse original popup host, no extra/hidden duplicate dialog');
 for(const x of [
  'buddy-title','buddy-title-avatar','buddy-text','buddy-scroll','buddy-quote-original',
- 'buddy-quote-translation','buddy-quote-info','buddy-quote','buddy-quote-gloss',
+ 'buddy-quote-translation','li-buddy-quote-thought','buddy-quote','buddy-quote-gloss',
  'buddy-quote-meta','buddy-quote-link','buddy-quote-context','buddy-debate'
 ])assert.ok(dialog.includes(x),'Missing original popup element: '+x);
 assert.match(dialog,/view\.editorial\?view\.editorial\.actions\.map\(action=>action\.label\):view\.labels/,
  'All 3 native Lão Lý actions remain available, with exactly 2 per editorial stage');
 assert.match(dialog,/liBuddyEngine\?\.choose\(index\)/,
  'React actions must use the real contextual engine, not hardcoded replies');
-assert.match(dialog,/aria-expanded=\{expanded\}/,'Source details must disclose interactively');
+assert.match(dialog,/<details key=\{quote\.id\} className="li-buddy-quote-thought">/,
+ 'The original quotation must appear in native collapsed accordion by the avatar');
+assert.match(dialog,/<summary aria-label=\{chooseLanguage/,
+ 'Thought bubble must be keyboard accessible');
+assert.ok(dialog.indexOf('li-buddy-quote-thought')<dialog.indexOf('id="buddy-scroll"'),
+ 'Original quote belongs beside portrait, before the scroll conversation');
+assert.doesNotMatch(dialog,/setExpanded\(/,'Quote disclosure belongs to one native accordion');
 assert.match(dialog,/setChallenge\(reply\.showChallenge\)/,
  'Original 90% counterexample challenge must remain available');
 assert.match(dialog,/onClick=\{\(\)=>submitDebate\(true\)\}/);

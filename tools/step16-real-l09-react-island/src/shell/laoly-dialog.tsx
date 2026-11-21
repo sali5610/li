@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button,IconButton,LiIcon} from '../../../../design-system/react/index';
+import {Button,LiIcon} from '../../../../design-system/react/index';
 import './laoly-dialog.css';
 
 /** Full React visual owner for the existing Lão Lý bubble.
@@ -36,7 +36,6 @@ export function BuddyDialog({root}:{root:HTMLElement}){
  const [open,setOpen]=useState(false);
  const [view,setView]=useState<BuddyView|null>(null);
  const [message,setMessage]=useState('');
- const [expanded,setExpanded]=useState(false);
  const [quoteIndex,setQuoteIndex]=useState(0);
  const [challenge,setChallenge]=useState(false);
  const [,setLocale]=useState(0);
@@ -46,7 +45,7 @@ export function BuddyDialog({root}:{root:HTMLElement}){
  const restore=useRef<string>('laoly-fab');
  const current=useRef<BuddyView|null>(null);
  const close=()=>{
-  setOpen(false);setChallenge(false);setExpanded(false);
+  setOpen(false);setChallenge(false);
   root.classList.remove('open');
   const focusId=restore.current;
   requestAnimationFrame(()=>{
@@ -68,7 +67,7 @@ export function BuddyDialog({root}:{root:HTMLElement}){
    current.current=next;
    restore.current=next.triggerId||'laoly-fab';
    setView(next);setMessage(next.text);setAvatar(next.avatar);
-   setExpanded(false);setChallenge(false);setQuoteIndex(0);setOpen(true);
+   setChallenge(false);setQuoteIndex(0);setOpen(true);
    // Reopening the dialog must start at the conversation, not the last quote scroll.
    requestAnimationFrame(()=>content.current?.scrollTo({top:0,behavior:'auto'}));
    root.dataset.trigger=restore.current;
@@ -130,7 +129,6 @@ export function BuddyDialog({root}:{root:HTMLElement}){
    if(!reply)return;
    setMessage(reply.text);setChallenge(reply.showChallenge);
   }
-  setExpanded(false);
   content.current?.scrollTo({top:0,behavior:'auto'});
  };
  const submitDebate=(correct:boolean)=>{
@@ -150,33 +148,24 @@ export function BuddyDialog({root}:{root:HTMLElement}){
      <h2 id="buddy-title" ref={heading} tabIndex={-1}>Lão Lý</h2>
      <p className="li-buddy-subtitle">{chooseLanguage('Cùng học, cùng phản biện','Learn and question together')}</p>
     </div>
-
+    {quoteVisible&&<details key={quote.id} className="li-buddy-quote-thought">
+     <summary aria-label={chooseLanguage('Câu Lão Lý đang nghĩ. Chạm để xem diễn nghĩa và nguồn','What Lao Ly is thinking. Expand for translation and source')}>
+      <span id="buddy-quote-original" className="ly-original" lang={quote.lang}>{quote.original}</span>
+      <LiIcon name="chevron-right" size={16}/>
+     </summary>
+     <div id="buddy-quote" className="li-buddy-quote-expanded">
+      <p id="buddy-quote-translation" className="ly-translation" lang={chooseLanguage('vi','en')}>{quote.translation}</p>
+      <p id="buddy-quote-gloss">{quote.interpretation}</p>
+      <p id="buddy-quote-context">{quote.comment}</p>
+      <p className="li-buddy-quote-credit"><span id="buddy-quote-meta">{quote.meta}</span>{' · '}
+       <a id="buddy-quote-link" href={quote.url} target="_blank" rel="noopener noreferrer">
+        {chooseLanguage('Xem xuất xứ','View source')}</a>
+      </p>
+     </div>
+    </details>}
    </header>
    <div id="buddy-scroll" className="buddy-scroll" tabIndex={0}
     ref={content} role="region" aria-label={chooseLanguage('Nội dung hội thoại với Lão Lý','Conversation with Lao Ly')}>
-    {quoteVisible&&<section className="li-buddy-source" aria-label={chooseLanguage('Đọc thêm · Trích dẫn','Further reading · Quotation')}>
-     <div className="li-buddy-source-header">
-      <span className="kicker">{chooseLanguage('GÓC DẪN NGUỒN','SOURCE NOTE')}</span>
-      <IconButton icon="info" id="buddy-quote-info" className="buddy-quote-info"
-       label={chooseLanguage('Xem diễn nghĩa và xuất xứ câu trích dẫn','Show interpretation and quotation source')}
-       title={chooseLanguage('Diễn nghĩa và xuất xứ','Interpretation and source')}
-       aria-controls="buddy-quote" aria-expanded={expanded}
-       onClick={()=>setExpanded(v=>!v)}/>
-     </div>
-     <p id="buddy-quote-original" className="ly-original" lang={quote.lang}>{quote.original}</p>
-     <p id="buddy-quote-translation" className="ly-translation" lang={chooseLanguage('vi','en')}>
-      {quote.translation}</p>
-    {quoteVisible&&
-     <aside id="buddy-quote" className="ly-cultural" hidden={!expanded}
-      aria-label={chooseLanguage('Diễn nghĩa và xuất xứ câu trích dẫn','Quote interpretation and source')}>
-      <p id="buddy-quote-gloss" className="small">{quote.interpretation}</p>
-      <p className="small"><span id="buddy-quote-meta">{quote.meta}</span>{' · '}
-       <a id="buddy-quote-link" href={quote.url} target="_blank" rel="noopener noreferrer">
-        {chooseLanguage('Xem xuất xứ','View source')}</a></p>
-     </aside>}
-
-     <p id="buddy-quote-context" className="li-quote-context">{quote.comment}</p>
-    </section>}
     <div className="li-buddy-conversation">
      {message!==view.text&&<p className="li-buddy-context">{view.text}</p>}
      <p id="buddy-text" role="status" aria-live="polite">{message}</p>
@@ -186,7 +175,7 @@ export function BuddyDialog({root}:{root:HTMLElement}){
      {view.editorial.quotes.map((candidate,index)=><Button key={candidate.id}
       variant={quoteIndex===index?'primary':'secondary'}
       aria-pressed={quoteIndex===index}
-      onClick={()=>{setQuoteIndex(index);setExpanded(false);}}>
+      onClick={()=>setQuoteIndex(index)}>
       {chooseLanguage('Nguồn ','Source ')+(index+1)+' · '+candidate.meta}
      </Button>)}
     </div>}

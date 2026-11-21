@@ -394,6 +394,9 @@ console.log("PASS React private sync hydration without hidden DOM; auth guard an
  ];
  const namesCtx={
   LI_BUDDY_NAMES_KEY:"li.buddy-address.v1",
+  LI_STORAGE_KEY:"li.private.library.v1",
+  STUDY_MODE_KEY:"li.study-mode.v1",
+  LI_DRAFT_KEY:"li.private.case-draft.v1",
   LI_BUDDY_DEFAULT_NAMES:{warm:"Tiểu hữu",teasing:"Nhóc",serious:"Ngươi"},
   liBuddyNames:{warm:"",teasing:"",serious:""},
   liAddressFeedback:"",studyMode:"start",STUDY_MODES:{start:{guide:"Tiểu hữu hãy thử."}},

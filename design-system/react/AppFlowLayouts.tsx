@@ -14,6 +14,7 @@ import {NotebookLessonBook} from './NotebookLessonBook';
 import {BookwormIllustration} from './BookwormIllustration';
 import type {BookwormArtKind} from './BookwormIllustration';
 import {BookwormLessonBook} from './BookwormLessonBook';
+import {BookwormScrapbook} from './BookwormScrapbook';
 import {VintagePopLessonBook} from './VintagePopLessonBook';
 import {VintagePopArt} from './VintagePopArt';
 import type {VintagePopArtKind} from './VintagePopArt';
@@ -573,7 +574,12 @@ export function AppPageLayout(props:AppPageLayoutProps){
   </header>
   <div className="li-flow-page-columns">
    <motion.div className="li-flow-page-main" layout={bookworm&&!reduced} {...reveal(.14)}>
-    <ScreenBody {...props}/>
+    {bookworm&&['collection','noteDetail','capture'].includes(page)?
+     <BookwormScrapbook key={page} locale={locale}
+      kind={page==='collection'?'collection':page==='noteDetail'?'note':'capture'}>
+      <ScreenBody {...props}/>
+     </BookwormScrapbook>:<ScreenBody {...props}/>}
+    
    </motion.div>
    <AnimatePresence initial={false}>
    {(!bookworm||indexOpen)&&<motion.aside id={indexId} key="related-index"

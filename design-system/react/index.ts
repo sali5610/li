@@ -40,6 +40,7 @@ export {BookwormIllustration} from './BookwormIllustration';
 export type {BookwormArtKind} from './BookwormIllustration';
 export {BookwormLessonBook} from './BookwormLessonBook';
 export type {BookwormLessonBookProps} from './BookwormLessonBook';
+export {BookwormScrapbook} from './BookwormScrapbook';
 
 /** Notebook annotations are a shared, presentational component. */
 export {NotebookAnnotation} from './NotebookAnnotation';

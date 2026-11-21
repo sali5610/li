@@ -192,15 +192,14 @@ function useLibrary(){
  },[]);
  return view;
 }
-function ShelfHeader({title,description,target}:{
- title:string;description:string;target?:string
+function ShelfHeader({id,title,target,action}:{
+ id:string;title:string;target:string;action:string
 }){
- return <div className="library-group-header">
-  <div><Heading level={2} role="titleMedium">{title}</Heading>
-   <Text role="support" className="library-group-description">{description}</Text></div>
-  {target&&<Button variant="ghost" className="library-text-link library-more-link"
-   onClick={()=>openRoute(target)}>{copy('Xem tất cả','See all')} <LiIcon name="arrow-right" size={17}/></Button>}
- </div>;
+ return <header className="library-group-header">
+  <Heading id={id} level={2} role="titleMedium">{title}</Heading>
+  <Button variant="ghost" className="library-text-link"
+   onClick={()=>openRoute(target)}>{action} <LiIcon name="arrow-right" size={17}/></Button>
+ </header>;
 }
 function Empty({message,route,action}:{
  message:string;route?:string;action?:string
@@ -295,67 +294,53 @@ function NotePreview({note,kind}:{
 export function Library(){
  const view=useLibrary();
  return <div className="section-shell li-react-library" data-li-react-screen="library">
-  <header className="library-introduction">
-   <div className="kicker">{copy('GÓC RIÊNG CỦA BẠN','YOUR PRIVATE SPACE')}</div>
-   <Heading level={1} role="headline" className="display-title">{copy('Tủ Riêng','Private Library')}</Heading>
-   <Text role="body" className="intro">{copy(
-    'Một góc nhìn nhanh. Mọi bài học, dấu trang và ghi chú đầy đủ đều nằm trong từng ngăn riêng.',
-    'Your recent learning, bookmarks and notes in one private place.')}</Text>
-  </header>
+  <Heading level={1} role="headline" className="display-title">{copy('Tủ Riêng','Private Library')}</Heading>
   <div className="library-workspace">
-   <Card variant="flat-study" className="library-resume-feature" aria-label={copy('Tiếp tục học','Continue learning')}>
-    <div className="library-feature-heading">
-     <div><div className="kicker">{copy('TIẾP TỤC TỪ ĐÂY','PICK UP HERE')}</div>
-      <Heading level={2} role="titleLarge">{copy('Quay lại với bài học','Resume learning')}</Heading></div>
-     <Button variant="ghost" className="library-text-link" onClick={()=>openRoute('resume')}>
-      {copy('Tất cả hoạt động','All activity')} <LiIcon name="arrow-right" size={18}/></Button>
-    </div>
+   <Card variant="flat-study" className="library-resume-feature" aria-labelledby="library-resume-heading">
+    <ShelfHeader id="library-resume-heading" title={copy('Quay lại','Continue')}
+     target="resume" action={copy('Hoạt động','Activity')}/>
     <div className="library-feature-grid">
-     <div className="library-feature-primary">
-      <div className="kicker"><LiIcon name="book-open" size={16}/> {copy('BÀI HỌC GẦN NHẤT','LATEST LESSON')}</div>
+     <div>
+      <Heading level={3} role="titleSmall">{copy('Bài học gần nhất','Latest lesson')}</Heading>
       <LessonRows lessons={view.lessons} limit={1}/>
      </div>
-     <div className="library-feature-secondary">
-      <div className="kicker"><LiIcon name="layers" size={16}/> {copy('VẤN ĐỀ / CASE GẦN NHẤT','LATEST PROBLEM / CASE')}</div>
+     <div>
+      <Heading level={3} role="titleSmall">{copy('Tình huống gần nhất','Latest scenario')}</Heading>
       <ProblemRows problems={view.problems} limit={1}/>
      </div>
     </div>
    </Card>
    <div className="library-workspace-columns">
-    <section className="library-workspace-main" aria-label={copy('Ghi chép gần đây','Recent notes')}>
-     <ShelfHeader title={copy('Ghi chép gần đây','Recent notes')}
-      description={copy('Kết luận và ý tưởng bạn đã giữ lại.','Your saved conclusions and ideas.')} target="collection"/>
+    <section className="library-workspace-main" aria-labelledby="library-notes-heading">
+     <ShelfHeader id="library-notes-heading" title={copy('Ghi chép','Notes')}
+      target="collection" action={copy('Bộ sưu tập','Collection')}/>
      <div className="library-note-previews">
-      <Card variant="flat-study" className="library-note-preview">
-       <div className="kicker"><LiIcon name="book-open" size={16}/> {copy('BÚT KÝ','CASE NOTES')}</div>
+      <div className="library-note-preview">
+       <Heading level={3} role="titleSmall">{copy('Bút Ký','Case Notes')}</Heading>
        <NotePreview note={view.cases[0]} kind="case"/>
-      </Card>
-      <Card variant="flat-study" className="library-note-preview">
-       <div className="kicker"><LiIcon name="feather" size={16}/> {copy('Ý ĐÃ NHẶT','CAPTURED IDEAS')}</div>
+      </div>
+      <div className="library-note-preview">
+       <Heading level={3} role="titleSmall">{copy('Ý đã nhặt','Captured Ideas')}</Heading>
        <NotePreview note={view.ideas[0]} kind="idea"/>
-      </Card>
+      </div>
      </div>
      <div className="library-create-actions">
       <Button variant="secondary" onClick={()=>openRoute('case')}>{copy('Viết Bút Ký','Write a Case Note')}</Button>
       <Button variant="secondary" onClick={()=>openRoute('capture')}>{copy('Nhặt ý','Capture an Idea')}</Button>
      </div>
     </section>
-    <aside className="library-workspace-side">
-     <section className="library-saved-shortlist">
-      <ShelfHeader title={copy('Dấu trang','Bookmarks')}
-       description={copy('Giữ để mở lại khi cần.','Saved for a later visit.')} target="resume"/>
-      <BookmarkRows items={[...view.lessonBookmarks,...view.questionBookmarks].slice(0,3)}/>
-     </section>
-     <section className="library-rhythm">
-      <div className="kicker"><LiIcon name="calendar" size={16}/> {copy('NHẬT KÝ','JOURNAL')}</div>
-      <Heading level={2} role="titleMedium">{copy('Nhịp học của bạn','Your Learning Rhythm')}</Heading>
-      <Text role="support">{copy('Ngủ, vận động, nghỉ ngơi, nhịp học và hoạt động mỗi ngày.',
-       'Rest, activity, pace and learning each day.')}</Text>
-      <Button variant="ghost" className="library-text-link" onClick={()=>openRoute('dashboard')}>
-       {copy('Xem Nhật Ký','Open Journal')} <LiIcon name="arrow-right" size={18}/></Button>
-     </section>
-    </aside>
+    <section className="library-saved-shortlist" aria-labelledby="library-saved-heading">
+     <ShelfHeader id="library-saved-heading" title={copy('Dấu trang','Bookmarks')}
+      target="resume" action={copy('Xem tất cả','See all')}/>
+     <BookmarkRows items={[...view.lessonBookmarks,...view.questionBookmarks].slice(0,3)}/>
+    </section>
    </div>
+   <section className="library-rhythm" aria-labelledby="library-journal-heading">
+    <ShelfHeader id="library-journal-heading" title={copy('Nhật Ký','Journal')}
+     target="dashboard" action={copy('Mở Nhật Ký','Open Journal')}/>
+    <Text role="support">{copy('Nhịp học, nghỉ ngơi, vận động và hoạt động mỗi ngày.',
+     'Daily learning, rest and activity.')}</Text>
+   </section>
   </div>
  </div>;
 }
@@ -387,7 +372,6 @@ function Resume(){
  const tab=view.bookmarkTab;
  const tabClick=(next:'lesson'|'question')=>app.liLibraryShelf?.selectBookmarkTab(next);
  return <div className="section-shell li-react-library" data-li-react-screen="resume">
-  <div className="kicker">{copy('HÀNH TRÌNH CỦA BẠN','YOUR LEARNING HISTORY')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Quay lại','Continue')}</Heading>
   <Text role="body" className="intro">{copy(
    'Tiếp tục bài học, quay lại vấn đề đang tìm hiểu và mở những Dấu Trang đã lưu.',
@@ -395,19 +379,16 @@ function Resume(){
   <div className="library-resume-layout">
    <div className="library-resume-stream">
     <section className="library-resume-section">
-     <div className="kicker">01 · {copy('TIẾP TỤC HỌC','CONTINUE LEARNING')}</div>
      <Heading level={2} role="titleMedium">{copy('Bài học gần đây','Recent lessons')}</Heading>
      <LessonRows lessons={view.lessons}/>
     </section>
     <section className="library-resume-section">
-     <div className="kicker">02 · {copy('VẤN ĐỀ / CASE','PROBLEM / CASE')}</div>
      <Heading level={2} role="titleMedium">{copy('Tình huống đã xem','Recently viewed scenarios')}</Heading>
      <ProblemRows problems={view.problems}/>
     </section>
    </div>
-   <aside className="library-resume-section library-bookmark-section">
-    <div className="kicker">03 · {copy('DẤU TRANG','BOOKMARKS')}</div>
-    <Heading level={2} role="titleMedium">{copy('Đã lưu để quay lại','Saved for later')}</Heading>
+   <section className="library-resume-section" aria-labelledby="library-all-bookmarks">
+    <Heading id="library-all-bookmarks" level={2} role="titleMedium">{copy('Dấu trang','Bookmarks')}</Heading>
     <div className="library-bookmark-tabs" role="tablist" aria-label={copy('Loại Dấu Trang','Bookmark type')}
      onKeyDown={event=>{
       const next=(event.key==='ArrowLeft'||event.key==='ArrowRight')?
@@ -425,7 +406,7 @@ function Resume(){
     <div role="tabpanel" aria-labelledby={'li-react-tab-'+tab} tabIndex={0}>
      <BookmarkRows items={tab==='lesson'?view.lessonBookmarks:view.questionBookmarks}/>
     </div>
-   </aside>
+   </section>
   </div>
  </div>;
 }
@@ -439,7 +420,6 @@ function Collection(){
   .filter(item=>(filter==='all'||item.type===filter)&&
    (!q||[item.title,item.body,item.date].join(' ').toLocaleLowerCase('vi').includes(q)));
  return <div className="section-shell li-react-library" data-li-react-screen="collection">
-  <div className="kicker">{copy('GHI CHÉP CỦA BẠN','YOUR NOTES')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Bộ sưu tập','Collection')}</Heading>
   <Text role="body" className="intro">{copy(
    'Bút Ký là kết luận sau Phản Chứng; Ý đã nhặt là điều bạn ghi lại nhưng chưa xác minh.',

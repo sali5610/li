@@ -304,7 +304,14 @@ setTimeout(()=>{
   const titles=[...document.querySelectorAll('.library-saved-shortlist .library-list-copy strong')];
   assert('saved-bookmarks-have-rows',titles.length>0);
   assert('canonical-feature-card',Boolean(select('.library-resume-feature[data-li-component="card"][data-variant="flat-study"]')));
-  assert('canonical-note-cards',document.querySelectorAll('.library-note-preview[data-li-component="card"][data-variant="flat-study"]').length===2);
+  const shelves=[...document.querySelectorAll('.library-workspace h2')];
+  assert('four-shelves-in-reading-order',shelves.map(heading=>heading.id).join(',')===
+   'library-resume-heading,library-notes-heading,library-saved-heading,library-journal-heading'&&
+   shelves.every((heading,index)=>index===0||
+    heading.getBoundingClientRect().top>shelves[index-1].getBoundingClientRect().bottom));
+  const notePreviews=[...document.querySelectorAll('.library-note-preview')];
+  assert('notes-share-an-unframed-section',notePreviews.length===2&&notePreviews.every(preview=>
+   preview.closest('.library-workspace-main')&&getComputedStyle(preview).borderTopWidth==='0px'));
   const links=[...document.querySelectorAll('.li-react-library .library-text-link.li-ds-button')];
   assert('text-actions-are-unboxed',links.length>=3&&links.every(n=>{
    const c=getComputedStyle(n);return c.borderTopWidth==='0px'&&c.boxShadow==='none';

@@ -74,50 +74,29 @@
 .li-react-guide .guide-mentor-illustration{
  width:min(100%,168px);height:auto;justify-self:center;object-fit:contain
 }
-/* Private library: one clear resume action; notes, saved items and rhythm are secondary. */
-.li-react-library .library-introduction{max-width:70ch}
-.li-react-library .library-workspace{display:grid;gap:var(--li-space-7);margin-top:var(--li-space-6)}
-.li-react-library .library-resume-feature{
- display:grid;gap:var(--li-space-4);
- padding:clamp(var(--li-space-4),3vw,var(--li-space-6));
- background:color-mix(in srgb,var(--moss) 9%,var(--cream));
- border-left:3px solid var(--moss)
+/* Use spacing between shelves and rules only between peer list entries. */
+.li-react-library .library-workspace{
+ display:grid;gap:var(--li-space-7);margin-block-start:var(--li-space-5)
 }
-.li-react-library .library-feature-heading,.li-react-library .library-group-header{
- display:flex;justify-content:space-between;align-items:start;gap:var(--li-space-4)
+.li-react-library .library-group-header{
+ display:flex;justify-content:space-between;align-items:center;gap:var(--li-space-3)
 }
-.li-react-library .library-feature-heading>div,.li-react-library .library-group-header>div{min-width:0;flex:1}
-.li-react-library .library-feature-heading :is(.li-atom-heading,.kicker),
-.li-react-library .library-group-header :is(.li-atom-heading,.li-atom-text){margin:0}
-.li-react-library .library-feature-grid{
- display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);
- gap:var(--li-space-6);align-items:start
+.li-react-library .library-group-header .library-text-link{flex-shrink:0}
+.li-react-library .library-workspace .li-atom-heading,
+.li-react-library .library-rhythm>.li-atom-text{margin:0}
+.li-react-library :is(.library-feature-grid,.library-note-previews){
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:var(--li-space-5);align-items:start
 }
-.li-react-library .library-feature-primary,.li-react-library .library-feature-secondary{
- display:grid;gap:var(--li-space-3);min-width:0
-}
-.li-react-library .library-feature-secondary{
- padding-left:var(--li-space-5);border-left:1px solid var(--rule)
+.li-react-library :is(.library-feature-grid>div,.library-note-preview,.library-rhythm){
+ display:grid;gap:var(--li-space-2);min-width:0
 }
 .li-react-library .library-workspace-columns{
- display:grid;grid-template-columns:minmax(0,1.55fr) minmax(220px,.8fr);
- gap:clamp(var(--li-space-5),4vw,var(--li-space-7));align-items:start
+ display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);
+ gap:var(--li-space-7);align-items:start
 }
-.li-react-library .library-workspace-main,.li-react-library .library-workspace-side{
- display:grid;gap:var(--li-space-5);min-width:0
-}
-.li-react-library .library-workspace-side>section{display:grid;gap:var(--li-space-3)}
-.li-react-library .library-workspace-side .library-group-header{margin-bottom:var(--li-space-2)}
-.li-react-library .library-rhythm{
- border-top:1px solid var(--rule);padding-top:var(--li-space-5)
-}
-.li-react-library .library-rhythm>.li-ds-button{justify-self:start}
-.li-react-library .library-note-previews{
- display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--li-space-6)
-}
-.li-react-library .library-note-preview{
- display:grid;gap:var(--li-space-3);min-width:0;border-top:1px solid var(--rule);
- padding-top:var(--li-space-3)
+.li-react-library :is(.library-workspace-main,.library-saved-shortlist){
+ display:grid;gap:var(--li-space-3);min-width:0
 }
 .li-react-library .library-preview{display:grid;justify-items:start;gap:var(--li-space-2);min-width:0}
 .li-react-library .library-preview>.li-atom-text{margin:0}
@@ -127,7 +106,7 @@
 .li-react-library .library-create-actions{display:flex;gap:var(--li-space-3);flex-wrap:wrap}
 .li-react-library .library-list-item{
  display:flex;align-items:center;gap:var(--li-space-3);min-width:0;
- flex-wrap:wrap;border-bottom:1px solid var(--rule);padding:var(--li-space-3) 0
+ flex-wrap:wrap
 }
 .li-react-library .library-list-copy{flex:1;min-width:min(160px,100%);overflow-wrap:anywhere}
 .li-react-library .library-list-copy strong{display:block;line-height:1.5}
@@ -136,7 +115,7 @@
 }
 .li-react-library .library-list-item>.li-ds-button{flex-shrink:0}
 .li-react-library .library-list-item>.library-icon-action{min-width:44px;min-height:44px}
-.li-react-library .li-library-empty{display:grid;justify-items:start;gap:var(--li-space-3);padding:var(--li-space-3) 0}
+.li-react-library .li-library-empty{display:grid;justify-items:start;gap:var(--li-space-2)}
 .li-react-library .li-library-empty .li-atom-text{margin:0}
 .li-react-library .library-back-link{margin-bottom:var(--li-space-4);justify-self:start}
 .li-react-library .library-resume-layout{
@@ -147,11 +126,6 @@
 .li-react-library .library-resume-stream{display:grid;gap:var(--li-space-7);min-width:0}
 .li-react-library .library-resume-section{display:grid;align-content:start;gap:var(--li-space-3);min-width:0}
 .li-react-library .library-resume-section .li-atom-heading{margin:0}
-.li-react-library .library-resume-section>.kicker{margin:0}
-.li-react-library .library-bookmark-section{
- padding:var(--li-space-5);border-left:2px solid var(--moss);
- background:color-mix(in srgb,var(--cream) 45%,transparent)
-}
 .li-react-library .library-bookmark-tabs{display:flex;gap:var(--li-space-2);flex-wrap:wrap}
 .li-react-library .library-bookmark-tabs [role="tab"][aria-selected="true"]{
  background:var(--moss);color:var(--cream)
@@ -168,10 +142,12 @@
 .li-react-library .library-collection-list{display:grid}
 .li-react-library .library-collection-entry{
  display:grid;grid-template-columns:minmax(0,1fr) auto;
- gap:var(--li-space-4);align-items:center;padding:var(--li-space-5) 0;
- border-top:1px solid var(--rule);min-width:0
+ gap:var(--li-space-3);align-items:center;padding-block-end:var(--li-space-4);
+ min-width:0
 }
-.li-react-library .library-collection-entry:last-child{border-bottom:1px solid var(--rule)}
+.li-react-library .library-collection-entry+.library-collection-entry{
+ padding-block-start:var(--li-space-4);border-block-start:1px solid var(--rule)
+}
 .li-react-library .library-collection-entry-main{display:grid;gap:var(--li-space-2);min-width:0}
 .li-react-library .library-collection-entry-main>.li-atom-text{margin:0}
 .li-react-library .library-entry-body{
@@ -184,15 +160,13 @@
 }
 .li-react-library .library-collection-empty{display:grid;justify-items:start;gap:var(--li-space-3)}
 .li-react-library .library-collection-side{
- position:sticky;top:var(--li-space-6);display:grid;gap:var(--li-space-3);
- padding-left:var(--li-space-5);border-left:2px solid var(--moss)
+ position:sticky;top:var(--li-space-6);display:grid;gap:var(--li-space-3)
 }
 .li-react-library .library-collection-side .li-atom-text{margin:0}
 .li-react-library .library-collection-actions{display:grid;gap:var(--li-space-3);justify-items:start}
 .li-react-library .library-danger-link{color:var(--li-color-danger-fill)}
 @media(max-width:1050px){
  .li-react-guide .guide-index-contents{grid-template-columns:1fr}
- .li-react-library .library-workspace-columns{grid-template-columns:minmax(0,1.3fr) minmax(220px,.8fr)}
 }
 @media(max-width:800px){
  .li-react-guide .guide-catalog-layout{grid-template-columns:1fr}
@@ -209,13 +183,10 @@
  .li-react-guide .guide-index-contents{grid-template-columns:1fr}
  .li-react-guide .guide-margin-note{grid-template-columns:70px minmax(0,1fr);padding:var(--li-space-3)}
  .li-react-guide .guide-method-entry{grid-template-columns:36px minmax(0,1fr) 18px}
- .li-react-library .library-feature-heading{align-items:start;flex-direction:column}
  .li-react-library .library-feature-grid,.li-react-library .library-note-previews{grid-template-columns:1fr}
- .li-react-library .library-feature-secondary{padding:var(--li-space-4) 0 0;border-left:0;border-top:1px solid var(--rule)}
  .li-react-library .library-collection-entry{grid-template-columns:1fr}
  .li-react-library .library-note-actions{display:flex;justify-content:space-between;align-items:center}
  .li-react-library .library-note-actions>.library-danger-link{text-align:left}
- .li-react-library .library-list-item>.li-ds-button:not(.library-icon-action){flex:1}
 }
 @media(prefers-reduced-motion:reduce){
  .li-react-guide .guide-method-entry{transition:none;transform:none}
@@ -233,7 +204,7 @@
 .li-react-library .library-saved-shortlist .library-list-item{
  display:grid;grid-template-columns:minmax(0,1fr) 44px;
  column-gap:var(--li-space-3);row-gap:var(--li-space-1);
- align-items:start;padding-block:var(--li-space-4)
+  align-items:start
 }
 .li-react-library .library-saved-shortlist .library-list-copy{
  grid-column:1;grid-row:1;min-width:0
@@ -255,10 +226,6 @@
   flex:0 0 auto;min-height:44px;white-space:nowrap;
   padding:var(--li-space-2) var(--li-space-3);
   font-size:var(--li-type-support)
- }
- .li-react-library .library-create-actions{gap:var(--li-space-3);margin-bottom:var(--li-space-3)}
- .li-react-library .library-workspace-side>.library-saved-shortlist{
-  padding-top:var(--li-space-4);border-top:1px solid var(--rule)
  }
 }
 
@@ -377,19 +344,11 @@
  background:var(--moss);color:var(--cream)
 }
 
-/* Use DS Card for purposeful featured surfaces; leave saved rows editorial. */
 .li-react-library .library-resume-feature.li-ds-card[data-variant="flat-study"]{
  display:grid;gap:var(--li-space-4);min-width:0;
  padding:clamp(var(--li-space-4),3vw,var(--li-space-6));
- border:1px solid var(--rule);border-inline-start:3px solid var(--moss);
- box-shadow:none;background:var(--paper-2)
+ border:0;box-shadow:none;background:var(--paper-2)
 }
-.li-react-library .library-note-preview.li-ds-card[data-variant="flat-study"]{
- display:grid;gap:var(--li-space-3);min-width:0;
- padding:var(--li-space-4);border:1px solid var(--rule);
- box-shadow:none;background:var(--paper-2)
-}
-.li-react-library .library-note-preview.li-ds-card :is(h2,h3,p){margin:0}
 /* Internal navigation actions are text links visually, buttons semantically. */
 .li-react-library .library-text-link.li-ds-button{
  display:inline-flex;align-items:center;justify-content:flex-start;
@@ -405,24 +364,14 @@
 .li-react-library .library-text-link.li-ds-button:hover:not(:disabled){text-decoration-thickness:2px;filter:none}
 .li-react-library .library-text-link.li-ds-button:focus-visible{outline:2px solid var(--moss);outline-offset:2px}
 .li-react-library .library-text-link.li-ds-button:disabled{opacity:.55;text-decoration:none}
-.li-react-library .library-preview>.library-text-link,
-.li-react-library .library-rhythm>.library-text-link{justify-self:start}
-@media(max-width:600px){
- .li-react-library .library-resume-feature.li-ds-card,
- .li-react-library .library-note-preview.li-ds-card{padding:var(--li-space-4)}
- .li-react-library .library-feature-heading{align-items:start;flex-wrap:wrap}
- .li-react-library .library-feature-heading>.library-text-link{flex:0 0 auto}
- .li-react-library .library-note-previews{gap:var(--li-space-3)}
-}
-/* Remove legacy .path-item's faux cards inside actual DS Card containers.
-   Recent activity and bookmarks are list rows, not nested framed surfaces. */
+.li-react-library .li-react-shelf-list.path-list{gap:0}
 .li-react-library .path-list>.path-item.library-list-item{
- /* Preserve the responsive grid for full-width titles; only reset legacy paint. */
- min-width:0;padding:var(--li-space-3) 0;
- border:0 solid var(--rule);border-bottom:1px solid var(--rule);
- background:color-mix(in srgb,var(--paper) 0%,transparent);
- box-shadow:0 0 0 var(--wood)
+ min-width:0;padding:0 0 var(--li-space-2);border:0;
+ background:transparent;box-shadow:none
+}
+.li-react-library .path-list>.path-item.library-list-item+.library-list-item{
+ padding-block-start:var(--li-space-2);border-block-start:1px solid var(--rule)
 }
 .li-react-library .path-list>.path-item.library-list-item:last-child{
- border-bottom:0 solid var(--rule)
+ padding-block-end:0
 }

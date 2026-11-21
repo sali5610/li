@@ -1,5 +1,6 @@
 import React,{useEffect,useMemo,useState} from 'react';
 import {createRoot} from 'react-dom/client';
+import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {Button} from './Components';
 import {Heading,Text,Badge} from './Atoms';
 import {LiIcon} from './LucideIcons';
@@ -32,11 +33,11 @@ const layoutChoices:readonly {id:LayoutKey;label:string}[]=[
 ];
 const homeVariant:Record<LayoutKey,HomeLayoutVariant>={
  classic:'heritage',split:'editorial',cinematic:'immersive',notebook:'notebook',
- vintagePop:'heritage',bookworm:'bookworm'
+ vintagePop:'vintagePop',bookworm:'bookworm'
 };
 const pageVariant:Record<LayoutKey,PageVariant>={
  classic:'editorial',split:'split',cinematic:'cinematic',notebook:'notebook',
- vintagePop:'editorial',bookworm:'bookworm'
+ vintagePop:'vintagePop',bookworm:'bookworm'
 };
 const questions=[
  {questionVi:'90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?',
@@ -62,6 +63,7 @@ const navUrl=(page:PageId,flow:AppLabFlowId,layout:LayoutKey,viewport:Viewport,
  return '?'+q.toString();
 };
 function Lab(){
+ const reduceMotion=useReducedMotion();
  const [flow,setFlow]=useState<AppLabFlowId>(()=>readChoice('flow',flowChoices,'learning'));
  const [page,setPage]=useState<PageId>(()=>readChoice('page',pageChoices,'catalog'));
  const [layout,setLayout]=useState<LayoutKey>(()=>readChoice('layout',layouts,'classic'));
@@ -129,8 +131,12 @@ function Lab(){
   const item=allPages.find(item=>item.id===id)!;
   return locale==='vi'?item.vi:item.en;
  };
- const preview=(target:PageId,style:LayoutKey,mini=false)=><section
-  key={target+'-'+style} className="li-ui-lab-preview"
+ const preview=(target:PageId,style:LayoutKey,mini=false,slot='main')=><motion.section
+  key={target+'-'+style+'-'+slot} className="li-ui-lab-preview"
+  initial={style==='vintagePop'&&!reduceMotion?{opacity:0,y:26,scale:.982}:false}
+  animate={{opacity:1,y:0,scale:1}}
+  exit={style==='vintagePop'&&!reduceMotion?{opacity:0,y:-12,scale:.992}:undefined}
+  transition={{duration:.42,ease:[.22,1,.36,1]}}
   data-visual-theme={style==='vintagePop'?'vintage-pop':style==='bookworm'?'bookworm':undefined}
   data-mini={mini?'true':'false'} aria-label={label(target)+' / '+style}>
   <header className="li-ui-lab-preview-label">
@@ -141,7 +147,7 @@ function Lab(){
   <div className="li-ui-lab-viewport" data-viewport={viewport}>
    {renderPage(target,style)}
   </div>
- </section>;
+ </motion.section>;
  return <main className="li-ui-lab" lang={locale} data-li-react-ui-lab="mounted">
   <header className="li-ui-lab-header">
    <div className="li-ui-lab-intro">
@@ -224,8 +230,11 @@ function Lab(){
     </nav>
     <div className="li-ui-lab-stage" data-gallery={mode==='gallery'?'true':'false'}
      data-compare={compare&&mode==='focus'?'true':'false'}>
-     {mode==='gallery'?activeFlow.steps.map(id=>preview(id,layout,true)):
-      <>{preview(page,layout)}{compare?preview(page,other):null}</>}
+     <AnimatePresence initial={false} mode="sync">
+      {mode==='gallery'?activeFlow.steps.map(id=>preview(id,layout,true,'gallery')):
+       [preview(page,layout,false,'primary'),
+        ...(compare?[preview(page,other,false,'secondary')]:[])]}
+     </AnimatePresence>
     </div>
     <div className="li-ui-lab-understage">
      <div className="li-ui-lab-actions">

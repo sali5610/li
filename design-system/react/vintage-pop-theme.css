@@ -232,3 +232,423 @@
   animation:none!important;transition:none!important;
  }
 }
+
+
+/* v2 — layout compositions: same ScreenBody JSX/text/data/actions, different
+   grid placement by actual screen task. Scoped to the opt-in Vintage Pop Lab. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"]{
+ --pop-green:#204734;--pop-yellow:#ffe06e;--pop-orange:#eb7945;
+ --pop-pink:#f3aec0;--pop-cream:#fff7e5;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"]{
+ grid-template-columns:minmax(0,.9fr) minmax(0,1.16fr);
+ grid-template-rows:auto 1fr auto;
+ grid-template-areas:"intro mirror" "guide mirror" "actions mirror";
+ gap:clamp(16px,2.8vw,36px);align-content:stretch;
+ min-height:720px;padding:clamp(22px,3.8vw,58px);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro{
+ align-content:center;align-self:start;min-height:280px;position:relative;
+ transform:rotate(-.8deg);transition:transform .35s cubic-bezier(.2,.8,.2,1);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro:hover{
+ transform:rotate(0);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro::after{
+ content:"";width:72px;height:72px;border-radius:50%;background:#ef845a;
+ border:2px solid #214532;position:absolute;top:-24px;right:18px;
+ box-shadow:6px 6px 0 #214532;pointer-events:none;
+ animation:li-pop-orbit 5s ease-in-out infinite;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-mirror{
+ align-self:stretch;min-width:0;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-mirror .li-ds-home-mirror{
+ min-height:520px;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-guide{
+ align-self:center;max-width:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-actions{
+ align-self:end;justify-content:flex-start;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-head{
+ min-height:190px;align-items:center;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-aside{
+ border:2px solid #244634;background:#f6d6d4;padding:22px;
+ box-shadow:5px 5px 0 #244634;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-aside .li-ds-button{
+ width:100%;min-height:46px;justify-content:space-between;
+}
+/* Discovery has a two-column editorial index with a bold catalog spread. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-flow-page-columns,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="search"] .li-flow-page-columns,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="guide"] .li-flow-page-columns{
+ grid-template-columns:minmax(0,1fr) 205px;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-flow-card-grid,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="search"] .li-flow-card-grid{
+ grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-flow-card-grid>.li-ds-card:first-child,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="search"] .li-flow-card-grid>.li-ds-card:first-child{
+ grid-column:1/-1;min-height:175px;background:#ffe16b;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-flow-card-grid>.li-ds-card:first-child{
+ display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto auto;
+ align-content:center;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-flow-card-grid>.li-ds-card:first-child>.li-flow-index{
+ grid-column:2;grid-row:1/-1;align-self:start;
+ border:1.5px solid #214532;padding:10px 12px;background:#fff7e5;
+ font-size:20px;transform:rotate(6deg);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-flow-card-grid>.li-ds-card:first-child :is(.li-atom-heading,.li-atom-text,.li-ds-button){
+ grid-column:1;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-ds-catalog-aside{
+ background:#f8b8c5;transform:rotate(-.4deg);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-ds-catalog-tools{
+ border:2px solid #214532;background:#ffe176;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="guide"] .li-flow-card-grid{
+ grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="guide"] .li-legacy-method{
+ height:100%;border:2px solid #214532;
+}
+/* Academic/critical journey: content-first full-width spreads, related links at end. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page[data-page="lesson"],.li-flow-page[data-page="practice"],
+ .li-flow-page[data-page="feedback"],.li-flow-page[data-page="research"],
+ .li-flow-page[data-page="case"],.li-flow-page[data-page="guideDetail"]
+) .li-flow-page-columns{grid-template-columns:minmax(0,1fr);gap:36px}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page[data-page="lesson"],.li-flow-page[data-page="practice"],
+ .li-flow-page[data-page="feedback"],.li-flow-page[data-page="research"],
+ .li-flow-page[data-page="case"],.li-flow-page[data-page="guideDetail"]
+) .li-flow-page-aside{
+ display:flex;align-items:center;flex-wrap:wrap;gap:12px;position:relative;
+ padding:20px;background:#f3b6c3;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page[data-page="lesson"],.li-flow-page[data-page="practice"],
+ .li-flow-page[data-page="feedback"],.li-flow-page[data-page="research"],
+ .li-flow-page[data-page="case"],.li-flow-page[data-page="guideDetail"]
+) .li-flow-page-aside>.li-atom-text{flex-basis:100%}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page[data-page="lesson"],.li-flow-page[data-page="practice"],
+ .li-flow-page[data-page="feedback"],.li-flow-page[data-page="research"],
+ .li-flow-page[data-page="case"],.li-flow-page[data-page="guideDetail"]
+) .li-flow-page-aside>.li-ds-button{flex:1 1 150px;width:auto}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-page-main>.li-flow-stack{
+ grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);
+ align-items:stretch;gap:22px;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-lesson-top{
+ border:2px solid #214532;background:#f8b8c5;padding:28px;
+ align-content:center;max-width:none;
+ box-shadow:6px 6px 0 #214532;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-lesson-top .li-atom-heading{
+ font:500 clamp(30px,3vw,47px)/1.05 Georgia,'Times New Roman',serif;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-lesson-diagram{
+ display:flex;min-height:255px;gap:24px;box-shadow:6px 6px 0 #ee7848;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-card-grid{
+ grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr));
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-page-main>.li-flow-stack>.li-ds-button{
+ grid-column:1/-1;justify-self:end;min-width:220px;
+}
+/* Practice is a genuine prompt→response focus spread, same input & submit actions. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] .li-ds-learning{
+ max-width:none;width:100%;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);
+ column-gap:22px;row-gap:20px;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] .li-ds-learning-head,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] .li-ds-learning-footer,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] .li-ds-learning-feedback{
+ grid-column:1/-1;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] .li-ds-learning-prompt{
+ grid-column:1;background:#f2b4c3;align-self:stretch;box-shadow:5px 5px 0 #214532;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] .li-ds-learning-response{
+ grid-column:2;background:#fff9ed;border:2px solid #214532;
+ box-shadow:5px 5px 0 #ee814d;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] textarea:focus{
+ background:#fffdf6;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="feedback"] .li-flow-page-main>.li-flow-stack{
+ grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="feedback"] .li-flow-page-main>.li-flow-stack>.li-ds-inline-feedback{
+ grid-column:1/-1;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="feedback"] .li-flow-page-main>.li-flow-stack>.li-ds-button{
+ grid-column:1/-1;justify-self:end;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="research"] .li-flow-page-main>.li-flow-stack>.li-ds-card{
+ background:#ffe176;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="research"] .li-flow-page-main .li-ds-card .li-flow-stack{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="research"] .li-flow-page-main .li-ds-inline-feedback{
+ grid-column:1/-1;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="case"] .li-flow-page-main>.li-flow-stack{
+ max-width:860px;margin-inline:auto;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="case"] .li-flow-page-main>.li-flow-stack>.li-ds-button{
+ justify-self:stretch;justify-content:space-between;
+}
+/* Workspace: bento overview, ticket collections, clean settings list. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page[data-page="library"],.li-flow-page[data-page="dashboard"],
+ .li-flow-page[data-page="resume"],.li-flow-page[data-page="collection"]
+) .li-flow-page-columns{grid-template-columns:minmax(0,1fr) 205px}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page[data-page="library"],.li-flow-page[data-page="dashboard"]
+) .li-flow-stat-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page[data-page="library"],.li-flow-page[data-page="dashboard"]
+) .li-flow-stat-grid>.li-ds-card{
+ min-height:138px;justify-content:end;
+ border-width:2px;box-shadow:5px 5px 0 #204633;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page[data-page="library"],.li-flow-page[data-page="dashboard"]
+) .li-flow-stat-grid>.li-ds-card:nth-child(1){background:#ffe06c}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page[data-page="library"],.li-flow-page[data-page="dashboard"]
+) .li-flow-stat-grid>.li-ds-card:nth-child(2){background:#efb1c0}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page[data-page="library"],.li-flow-page[data-page="dashboard"]
+) .li-flow-stat-grid>.li-ds-card:nth-child(3){background:#f38b52}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="dashboard"] .li-flow-page-main>.li-flow-stack{
+ grid-template-columns:1fr;gap:24px;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="dashboard"] .li-flow-week{
+ height:200px;overflow:hidden;align-items:end;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="dashboard"] .li-flow-week>span>i{
+ transform-origin:bottom;animation:li-pop-grow .8s cubic-bezier(.2,.85,.25,1) both;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="dashboard"] .li-flow-week>span:nth-child(2)>i{animation-delay:.05s}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="dashboard"] .li-flow-week>span:nth-child(3)>i{animation-delay:.1s}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="dashboard"] .li-flow-week>span:nth-child(4)>i{animation-delay:.15s}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="dashboard"] .li-flow-week>span:nth-child(5)>i{animation-delay:.2s}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="dashboard"] .li-flow-week>span:nth-child(6)>i{animation-delay:.25s}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="dashboard"] .li-flow-week>span:nth-child(7)>i{animation-delay:.3s}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="resume"] .li-flow-page-main>.li-flow-stack{
+ grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:stretch;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="resume"] .li-flow-page-main>.li-flow-stack>.li-ds-card{
+ display:grid;gap:16px;background:#fff7e5;border-left-width:10px;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="collection"] .li-flow-page-main>.li-flow-stack{
+ grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="collection"] .li-flow-page-main>.li-flow-stack>.li-flow-actions{
+ grid-column:1/-1;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="collection"] .li-flow-page-main>.li-flow-stack>.li-ds-card:first-of-type{
+ grid-column:1/-1;background:#ffe16e;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page[data-page="settings"],.li-flow-page[data-page="noteDetail"],
+ .li-flow-page[data-page="capture"],.li-flow-page[data-page="checkin"],
+ .li-flow-page[data-page="account"],.li-flow-page[data-page="laoly"]
+) .li-flow-page-columns{grid-template-columns:minmax(0,1fr)}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page[data-page="settings"],.li-flow-page[data-page="noteDetail"],
+ .li-flow-page[data-page="capture"],.li-flow-page[data-page="checkin"],
+ .li-flow-page[data-page="account"],.li-flow-page[data-page="laoly"]
+) .li-flow-page-main{width:min(100%,800px);margin-inline:auto}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-flow-page[data-page="settings"],.li-flow-page[data-page="noteDetail"],
+ .li-flow-page[data-page="capture"],.li-flow-page[data-page="checkin"],
+ .li-flow-page[data-page="account"],.li-flow-page[data-page="laoly"]
+) .li-flow-page-aside{max-width:800px;width:100%;margin-inline:auto}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="settings"] .li-ds-account{
+ max-width:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="settings"] .li-ds-account-panel{
+ border:2px solid #214532;background:#fff9ec;padding:26px 32px;box-shadow:7px 7px 0 #f3b4c1;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="settings"] .li-flow-setting{
+ padding:20px 0;border-color:#214532;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="settings"] .li-flow-setting:first-child{
+ border-top:1px solid #214532;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="capture"] textarea,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="noteDetail"] textarea{
+ background:repeating-linear-gradient(transparent 0,transparent 31px,#d5c6b5 32px),#fffbec;
+ line-height:32px;
+}
+/* Interaction semantics stay with real DS controls; visual feedback enhances them. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page .li-ds-card,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page .li-legacy-method{
+ transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s ease,background-color .25s ease;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page .li-flow-card-grid>.li-ds-card:hover,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="resume"] .li-ds-card:hover,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="collection"] .li-ds-card:hover,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page .li-legacy-method:hover{
+ transform:translateY(-5px) rotate(-.4deg);box-shadow:9px 10px 0 #214532;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page .li-ds-button,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home .li-ds-button{
+ transition:transform .2s ease,background-color .2s ease,box-shadow .2s ease;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page .li-ds-button:hover:not(:disabled),
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home .li-ds-button:hover:not(:disabled){
+ transform:translate(-2px,-2px);box-shadow:5px 5px 0 #214532;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page .li-ds-button:active:not(:disabled),
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home .li-ds-button:active:not(:disabled){
+ transform:translate(2px,2px);box-shadow:1px 1px 0 #214532;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page .li-ds-button[aria-pressed="true"]{
+ background:#214532;color:#fff8e6;box-shadow:2px 2px 0 #ed7d4e;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page .li-ds-button svg,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home .li-ds-button svg{
+ transition:transform .2s cubic-bezier(.2,.85,.2,1);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page .li-ds-button:hover svg,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home .li-ds-button:hover svg{
+ transform:translateX(3px);
+}
+/* Entrance reveal scoped per screen — no scroll-based hiding of content. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-head{
+ animation:li-pop-reveal .5s cubic-bezier(.2,.8,.2,1) both;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-main,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-mirror{
+ animation:li-pop-reveal .55s .07s cubic-bezier(.2,.8,.2,1) both;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-aside,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-guide{
+ animation:li-pop-reveal .55s .14s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes li-pop-reveal{
+ from{opacity:.2;transform:translateY(15px)}
+ to{opacity:1;transform:translateY(0)}
+}
+@keyframes li-pop-grow{from{transform:scaleY(.08)}to{transform:scaleY(1)}}
+@keyframes li-pop-orbit{
+ 0%,100%{transform:translateY(0) rotate(-10deg)}
+ 50%{transform:translateY(9px) rotate(6deg)}
+}
+/* In Lab, width belongs to its selected preview frame, not the browser chrome. */
+@container lab-preview (max-width:900px){
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-columns{
+  grid-template-columns:minmax(0,1fr);
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-aside{
+  position:static;max-width:none;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="guide"] .li-flow-card-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-lesson-top{
+  padding:20px;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-card-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"]{
+  grid-template-columns:minmax(0,1fr);
+  grid-template-areas:"intro" "mirror" "guide" "actions";
+  min-height:0;padding:24px;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro{
+  min-height:0;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-mirror .li-ds-home-mirror{
+  min-height:380px;
+ }
+}
+@container lab-preview (max-width:580px){
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"]{
+  padding:14px;gap:16px;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-head{
+  min-height:0;gap:8px;padding:20px;align-items:start;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-heading .li-atom-heading{
+  font-size:clamp(33px,8vw,44px);
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-index{
+  min-width:43px;width:43px;height:43px;font-size:16px;padding:5px;flex-shrink:0;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-flow-card-grid,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="search"] .li-flow-card-grid,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="guide"] .li-flow-card-grid,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-card-grid,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="feedback"] .li-flow-page-main>.li-flow-stack,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="resume"] .li-flow-page-main>.li-flow-stack,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="collection"] .li-flow-page-main>.li-flow-stack,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-page-main>.li-flow-stack,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="research"] .li-flow-page-main .li-ds-card .li-flow-stack{
+  grid-template-columns:minmax(0,1fr);
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-flow-card-grid>.li-ds-card:first-child,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="search"] .li-flow-card-grid>.li-ds-card:first-child,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="collection"] .li-flow-page-main>.li-flow-stack>.li-ds-card:first-of-type,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="feedback"] .li-flow-page-main>.li-flow-stack>.li-ds-inline-feedback,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-page-main>.li-flow-stack>.li-ds-button{
+  grid-column:1;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-lesson-diagram{
+  min-height:180px;overflow:hidden;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] .li-ds-learning{
+  grid-template-columns:minmax(0,1fr);
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] .li-ds-learning-prompt,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] .li-ds-learning-response,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] .li-ds-learning-head,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] .li-ds-learning-footer,
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] .li-ds-learning-feedback{
+  grid-column:1;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-flow-card-grid>.li-ds-card:first-child{
+  display:grid;grid-template-columns:1fr;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-flow-card-grid>.li-ds-card:first-child>*{
+  grid-column:1;grid-row:auto;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="settings"] .li-ds-account-panel{
+  padding:16px;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="settings"] .li-flow-setting{
+  align-items:start;flex-wrap:wrap;gap:12px;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"]{
+  border-width:4px;padding:16px;gap:18px;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro::after{
+  width:38px;height:38px;right:8px;top:-12px;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro{
+  padding:18px;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-mirror .li-ds-home-mirror{
+  min-height:315px;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] *{
+  animation:none!important;transition:none!important;transform:none!important;
+ }
+}

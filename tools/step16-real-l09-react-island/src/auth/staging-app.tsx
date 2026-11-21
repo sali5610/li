@@ -27,6 +27,8 @@ createRoot(root).render(<AuthPanel/>);
 // The Pages HTML paints the canonical UX-ART-06 state *before* JS downloads.
 // Keep the native Home invisible until all React roots have painted and Home
 // artwork has decoded; no arbitrary minimum splash duration or fake progress.
+// Tell the tiny HTML fallback that the real startup controller is alive.
+(window as Window&{liBootRuntimeReady?:boolean}).liBootRuntimeReady=true;
 const bootSplash=document.getElementById('li-boot-splash');
 const bootLoading=document.getElementById('li-boot-loading');
 const bootError=document.getElementById('li-boot-error');

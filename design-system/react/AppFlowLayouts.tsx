@@ -9,6 +9,8 @@ import {MethodTile,ChatBubble} from './LegacyCards';
 import {LiIcon} from './LucideIcons';
 import {NotebookAnnotation} from './NotebookAnnotation';
 import {NotebookArt,notebookDisciplineImages} from './NotebookArt';
+import {NotebookInk} from './NotebookInk';
+import {NotebookLessonBook} from './NotebookLessonBook';
 import {BookwormIllustration} from './BookwormIllustration';
 import type {BookwormArtKind} from './BookwormIllustration';
 import {BookwormLessonBook} from './BookwormLessonBook';
@@ -180,12 +182,14 @@ function ScreenBody(props:AppPageLayoutProps){
   </Card>{action('collection','Mở Bộ Sưu Tập','Open collection')}
  </div>;
  case 'lesson':{
-  // Canonical lesson copy is shared by ordinary card layout and Bookworm pages.
+  // Canonical lesson copy is shared by all layout variants.
+  const eyebrow=t('BÀI HỌC · VÍ DỤ','LESSON · SAMPLE');
+  const description=t('Sai lệch chọn mẫu xuất hiện khi mẫu không phản ánh đúng tổng thể cần nghiên cứu.',
+    'Sampling bias can arise when a sample does not reflect the population of interest.');
   const intro=<div className="li-flow-lesson-top">
-   <Badge>{t('BÀI HỌC · VÍ DỤ','LESSON · SAMPLE')}</Badge>
+   <Badge>{eyebrow}</Badge>
    <Heading level={2} role="titleLarge">{lessonTitle}</Heading>
-   <Text role="body">{t('Sai lệch chọn mẫu xuất hiện khi mẫu không phản ánh đúng tổng thể cần nghiên cứu.',
-    'Sampling bias can arise when a sample does not reflect the population of interest.')}</Text>
+   <Text role="body">{description}</Text>
   </div>;
   const diagram=<div className="li-flow-lesson-diagram" aria-label={t('Minh họa tổng thể và mẫu','Population and sample illustration')}>
    <div><span>{t('Tổng thể','Population')}</span><div className="li-flow-dots">
@@ -203,6 +207,11 @@ function ScreenBody(props:AppPageLayoutProps){
   if(variant==='bookworm')return <BookwormLessonBook
    locale={locale} intro={intro} diagram={diagram} chapters={chapters}
    practiceAction={next}/>;
+  if(variant==='notebook')return <NotebookLessonBook
+   locale={locale} title={lessonTitle} eyebrow={eyebrow}
+   description={description} diagram={diagram}
+   sections={chapters.map(({title,description})=>({heading:title,description}))}
+   onPractice={()=>onNavigate('practice')}/>;
   return <div className="li-flow-stack">
    {intro}
    {diagram}
@@ -442,6 +451,13 @@ const notebookArtForPage:Record<Exclude<PageId,'home'>,React.ComponentProps<type
  noteDetail:'notes',dashboard:'progress',settings:'notes',checkin:'checkin',
  laoly:'companion',account:'book'
 };
+const notebookPageIcons={
+ catalog:'layers',search:'search',research:'search',case:'check',
+ capture:'feather',lesson:'book-open',practice:'feather',feedback:'check',
+ guide:'sparkles',guideDetail:'calendar',library:'library',resume:'book-open',
+ collection:'bookmark',noteDetail:'feather',dashboard:'calendar',
+ settings:'settings',checkin:'check',laoly:'chat',account:'home'
+} as const;
 export function AppPageLayout(props:AppPageLayoutProps){
  const {page,variant,locale,onNavigate}=props;
  const meta=appLabPages.find(item=>item.id===page)!;
@@ -473,8 +489,17 @@ export function AppPageLayout(props:AppPageLayoutProps){
   </div>}
   <header className="li-flow-page-head">
    <motion.div className="li-flow-page-heading" {...reveal(.06)}>
-    <span className="li-flow-page-kicker">li. / {t('THƯ VIỆN TRI THỨC','THE KNOWLEDGE LIBRARY')}</span>
-    <Heading level={1} role="headline">{t(meta.vi,meta.en)}</Heading>
+    <span className="li-flow-page-kicker">
+     {variant==='notebook'&&<span className="li-nb-page-icon" aria-hidden="true">
+      <LiIcon name={notebookPageIcons[page]} size={20}/>
+     </span>}
+     li. / {t('THƯ VIỆN TRI THỨC','THE KNOWLEDGE LIBRARY')}
+    </span>
+    <Heading level={1} role="headline">
+     {variant==='notebook'
+      ?<NotebookInk kind="highlight" tone="olive">{t(meta.vi,meta.en)}</NotebookInk>
+      :t(meta.vi,meta.en)}
+    </Heading>
     <Text role="body">{t(meta.descriptionVi,meta.descriptionEn)}</Text>
     {bookworm&&<button type="button" className="li-bookworm-index-toggle"
       aria-controls={indexId} aria-expanded={indexOpen}

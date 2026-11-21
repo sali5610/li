@@ -6,6 +6,7 @@ import {HomeMirrorShell} from './Templates';
 import {ChatBubble} from './LegacyCards';
 import {LiIcon} from './LucideIcons';
 import {NotebookAnnotation} from './NotebookAnnotation';
+import {NotebookInk} from './NotebookInk';
 import {NotebookArt} from './NotebookArt';
 import {BookwormIllustration} from './BookwormIllustration';
 import './home-layout-variants.css';
@@ -74,7 +75,10 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
   <div className="li-ui-home-tint" aria-hidden="true"/>
   <motion.div className="li-ui-home-intro" {...entrance(.05)}>
    <span className="li-ui-home-kicker">li. · {t('ĐẠI SẢNH','THE HALL')}</span>
-   <Heading level={1} role="display">{locale==='vi'?<>Mọi câu hỏi<br/>đều có rễ.</>:<>Every question<br/>has roots.</>}</Heading>
+   <Heading level={1} role="display">{variant==='notebook'
+    ?locale==='vi'?<><NotebookInk kind="highlight" tone="olive">Mọi câu hỏi</NotebookInk><br/>đều có rễ.</>
+      :<><NotebookInk kind="highlight" tone="olive">Every question</NotebookInk><br/>has roots.</>
+    :locale==='vi'?<>Mọi câu hỏi<br/>đều có rễ.</>:<>Every question<br/>has roots.</>}</Heading>
    <Text role="body">{t('Không cần biết tất cả. Chỉ cần không ngừng tò mò.',
     'You needn’t know everything. Just stay curious.')}</Text>
   </motion.div>

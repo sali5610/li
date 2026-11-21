@@ -1,0 +1,172 @@
+/* Opt-in Notebook ink + open-book reader. No global DS or app overrides. */
+.li-nb-ink{
+ --nb-ink-mark:#cbd4ac;
+ position:relative;display:inline;isolation:isolate;box-decoration-break:clone;
+ -webkit-box-decoration-break:clone;
+}
+.li-nb-ink[data-tone="wine"]{--nb-ink-mark:#8d2537;color:inherit}
+.li-nb-ink[data-tone="blue"]{--nb-ink-mark:#536f8f;color:inherit}
+.li-nb-ink-words{position:relative;z-index:1}
+.li-nb-ink-highlight{
+ position:absolute;z-index:0;left:-2%;right:-2%;bottom:4%;height:48%;
+ background:var(--nb-ink-mark);opacity:.67;
+ border-radius:13% 9% 11% 7%;transform-origin:left center;
+ transform:rotate(-1.3deg);pointer-events:none;
+}
+.li-nb-ink-circle{
+ position:absolute;left:-13%;top:-36%;width:126%;height:174%;
+ overflow:visible;pointer-events:none;z-index:2;color:var(--nb-ink-mark);
+}
+/* The hand-drawn icon sits beside the real title (same words as before). */
+.li-flow-page[data-layout="notebook"] .li-nb-page-icon{
+ display:inline-flex;align-items:center;justify-content:center;flex:none;
+ width:34px;height:34px;color:var(--nb-wine);border:1px dotted var(--nb-rule);
+ background:var(--nb-sheet);transform:rotate(-7deg);
+}
+.li-flow-page[data-layout="notebook"] .li-flow-page-kicker:has(.li-nb-page-icon){
+ display:flex;align-items:center;gap:12px;
+}
+.li-flow-page[data-layout="notebook"] .li-flow-page-heading>.li-atom-heading .li-nb-ink-highlight{
+ bottom:8%;height:32%;
+}
+/* Open book stays within the original lesson content region. */
+.li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-page-columns{
+ grid-template-columns:minmax(0,1fr);
+}
+.li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-page-aside{
+ border-left:0;border-top:1px dotted var(--nb-rule);
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ align-items:center;padding:14px 0;
+}
+.li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-page-aside>.li-flow-page-kicker,
+.li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-page-aside>.li-atom-text{
+ grid-column:1/-1;
+}
+.li-nb-book{width:100%;min-width:0;max-width:1200px;margin-inline:auto;
+ display:grid;gap:16px;color:var(--nb-ink);font-family:var(--li-font-ui)}
+.li-nb-book *{box-sizing:border-box}
+.li-nb-book-topline{
+ display:flex;justify-content:space-between;gap:15px;align-items:center;
+ color:var(--nb-wine);font:700 12px/1.4 ui-monospace,Consolas,monospace;
+ letter-spacing:.1em;padding-inline:8px;
+}
+.li-nb-book-topline>span{display:inline-flex;align-items:center;gap:10px}
+.li-nb-book-mark-toggle{
+ display:inline-flex;align-items:center;justify-content:center;gap:8px;
+ min-height:44px;padding:8px 12px;border:1px dashed var(--nb-wine);
+ color:var(--nb-wine);background:var(--nb-sheet);
+ cursor:pointer;font:650 13px/1.3 var(--li-font-ui);
+}
+.li-nb-book-mark-toggle:hover{background:#e9ead6}
+.li-nb-book-mark-toggle[aria-pressed="false"]{opacity:.72}
+.li-nb-book-mark-toggle:focus-visible{outline:3px solid var(--nb-blue);outline-offset:3px}
+.li-nb-book-cover{
+ position:relative;isolation:isolate;background:#e5d6be;
+ border:1px solid #b7a88d;border-radius:9px 13px 13px 9px;
+ padding:13px 17px 18px 14px;
+ box-shadow:9px 13px 0 #d4c5ac,0 14px 30px rgb(53 38 27 / 13%);
+ overflow:hidden;
+}
+.li-nb-book-cover::before{
+ content:"";position:absolute;left:1%;top:14px;bottom:14px;width:9px;
+ background:linear-gradient(90deg,#8b6e57,#d6c2a2,#8b6e57);
+ border-radius:3px;opacity:.5;
+}
+.li-nb-book-spread{
+ min-height:470px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:0;position:relative;transform-origin:center center;
+ background:var(--nb-sheet);box-shadow:0 3px 11px rgb(57 44 27 / 16%);
+ border-radius:3px 11px 9px 3px;overflow:hidden;
+}
+.li-nb-book-spread::after{
+ content:"";position:absolute;z-index:2;left:calc(50% - 12px);
+ top:0;bottom:0;width:24px;pointer-events:none;
+ background:linear-gradient(90deg,transparent 1%,rgb(56 44 31 / 8%) 37%,
+ rgb(69 54 36 / 17%) 48%,rgb(255 252 245 / 44%) 56%,transparent 100%);
+}
+.li-nb-book-leaf{
+ min-width:0;position:relative;display:flex;flex-direction:column;
+ gap:19px;padding:clamp(23px,3.2vw,45px) clamp(22px,3.3vw,43px) 48px;
+ background:
+ repeating-linear-gradient(to bottom,transparent 0,transparent 32px,
+  rgba(173,157,137,.075) 32px,rgba(173,157,137,.075) 33px),
+ var(--nb-sheet);
+}
+.li-nb-book-leaf--left{border-right:1px solid #d1c5b6}
+.li-nb-book-leaf--right{border-left:1px solid #e0d5c7}
+.li-nb-book-leaf-head{
+ display:flex;gap:9px;align-items:center;color:var(--nb-wine);
+ padding-bottom:12px;border-bottom:1px dotted var(--nb-rule);
+ font:700 11px/1.5 ui-monospace,Consolas,monospace;letter-spacing:.09em;
+}
+.li-nb-book-leaf>.li-atom-heading{
+ font:600 clamp(29px,3.2vw,44px)/1.08 'Crimson Text',Georgia,serif;
+ color:var(--nb-ink);margin:0;
+}
+.li-nb-book-leaf>.li-atom-text{
+ font:400 clamp(16px,1.5vw,19px)/1.67 var(--li-font-ui);
+ max-width:44ch;color:#5d554d
+}
+.li-nb-book-leaf .li-atom-badge{align-self:flex-start}
+.li-nb-book-visual{display:grid;place-items:center;min-width:0;flex:1;
+ padding:clamp(8px,1.2vw,20px)}
+.li-nb-book-visual .li-flow-lesson-diagram{width:100%;min-height:240px;
+ border:1px dotted var(--nb-wine);padding:18px 10px;background:#eef0df;
+}
+.li-nb-book-visual .li-flow-lesson-diagram>div{min-width:0}
+.li-nb-book-visual .li-flow-dots{grid-template-columns:repeat(6,clamp(9px,1.1vw,14px));
+ gap:clamp(4px,.7vw,9px)}
+.li-nb-book-visual .li-flow-dots.sample{
+ grid-template-columns:repeat(4,clamp(9px,1.1vw,14px));
+}
+.li-nb-book-visual .li-flow-dots i{width:100%;height:auto;aspect-ratio:1}
+.li-nb-book-ink-doodle{display:flex;justify-content:flex-end;padding-right:18px;
+ color:var(--nb-wine)}
+.li-nb-book-ink-doodle .li-nb-ink{display:inline-block}
+.li-nb-book-paragraph{display:grid;gap:10px;padding-bottom:19px;border-bottom:1px dotted var(--nb-rule)}
+.li-nb-book-paragraph>.li-atom-heading{
+ font:600 clamp(23px,2.2vw,32px)/1.16 'Crimson Text',Georgia,serif;
+ color:var(--nb-ink);margin:0
+}
+.li-nb-book-paragraph>.li-atom-text{font:400 16px/1.65 var(--li-font-ui);
+ color:#605951;max-width:48ch}
+.li-nb-book-action{margin-top:auto;align-self:flex-start;padding-bottom:10px}
+.li-nb-book-folio{
+ position:absolute;bottom:17px;right:25px;color:var(--nb-wine);
+ font:600 13px/1 'Crimson Text',Georgia,serif;
+}
+.li-nb-book-leaf--left .li-nb-book-folio{left:25px;right:auto}
+.li-nb-book-pagination{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.li-nb-book-pagination>span{font:650 14px/1.35 'Crimson Text',Georgia,serif;
+ color:var(--nb-wine);letter-spacing:.09em;white-space:nowrap}
+.li-nb-book-pagination .li-ds-button{min-height:44px;display:inline-flex}
+.li-nb-book-pagination .li-ds-button>span{display:flex;align-items:center;gap:9px}
+.li-nb-book-pagination .li-ds-button:disabled{opacity:.46;cursor:not-allowed}
+@container lab-preview (max-width:720px){
+ .li-flow-page[data-layout="notebook"][data-page="lesson"] .li-flow-page-aside{
+  grid-template-columns:minmax(0,1fr)}
+ .li-nb-book-cover{padding:10px 11px 14px;border-radius:6px}
+ .li-nb-book-spread{grid-template-columns:minmax(0,1fr);min-height:0}
+ .li-nb-book-spread::after{left:0;right:0;top:50%;bottom:auto;
+  width:auto;height:17px;background:linear-gradient(180deg,transparent,
+  rgb(53 38 27 / 9%),transparent)}
+ .li-nb-book-leaf{padding:22px 20px 46px;min-height:260px;gap:13px}
+ .li-nb-book-leaf--left{border-right:0;border-bottom:1px solid #d1c5b6}
+ .li-nb-book-leaf--right{border-left:0;border-top:1px solid #eee3d3}
+ .li-nb-book-visual .li-flow-lesson-diagram{min-height:205px}
+ .li-nb-book-topline{flex-wrap:wrap}
+ .li-nb-book-leaf>.li-atom-heading{font-size:clamp(29px,7cqw,40px)}
+}
+@container lab-preview (max-width:420px){
+ .li-nb-book-cover{padding:8px 8px 11px}
+ .li-nb-book-leaf{padding:19px 15px 42px}
+ .li-nb-book-visual{padding:4px}
+ .li-nb-book-visual .li-flow-dots{grid-template-columns:repeat(6,8px);gap:4px}
+ .li-nb-book-visual .li-flow-dots.sample{grid-template-columns:repeat(4,8px)}
+ .li-nb-book-pagination{gap:6px}
+ .li-nb-book-pagination .li-ds-button{padding:9px}
+ .li-nb-book-pagination .li-ds-button>span{gap:4px}
+}
+@media(prefers-reduced-motion:reduce){
+ .li-nb-ink *, .li-nb-book *{animation:none!important;transition:none!important}
+}

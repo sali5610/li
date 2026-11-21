@@ -142,6 +142,8 @@ setTimeout(()=>{
   assert('all-categories-visible-not-clipped',chips.length===6&&chips.every(chip=>{
    const c=chip.getBoundingClientRect();return c.left>=0&&c.right<=windowWidth+2;
   }),chips.map(bounds));
+  assert('filters-actually-pill-shaped',chips.length===6&&chips.every(chip=>
+   Number.parseFloat(getComputedStyle(chip).borderTopLeftRadius)>=20));
   assert('thirteen-methods',document.querySelectorAll('.guide-method-entry').length===13);
  } else if(viewName==='library'){
   const titles=[...document.querySelectorAll('.library-saved-shortlist .library-list-copy strong')];

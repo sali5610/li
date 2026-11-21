@@ -208,6 +208,8 @@ export function BuddyDialog({root}:{root:HTMLElement}){
         <strong>{id} · {method.title}{index===0?
          <span> · {chooseLanguage('Đang đọc','Current')}</span>:null}</strong>
         <p>{method.purpose}</p>
+        {guide?.steps?.[0]&&<p className="li-buddy-spell-example">
+         <b>{chooseLanguage('Cách bắt đầu:','First step:')}</b> {guide.steps[0]}</p>}
         {guide?.example&&<p className="li-buddy-spell-example">
          <b>{chooseLanguage('Ví dụ:','Example:')}</b> {guide.example.scenario}</p>}
        </article>;

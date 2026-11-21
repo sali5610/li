@@ -893,3 +893,66 @@
    linear-gradient(90deg,#f6f0e4,#fffaf0 6%,#fffaf0 94%,#edd8b8);
  }
 }
+
+/* Vintage postal reference: the PAPER stamp and the INK cancellation are
+   separate layers. The stamp is ivory stock with even punched notches;
+   cancellation is an overlapping, partially imperfect brick ink impression.
+   Keep the canvas grain on the open book only. No decorative rectangle stroke. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"]
+ .li-flow-page[data-layout="vintagePop"]:is(
+  [data-page="lesson"],[data-page="case"],[data-page="collection"]
+ ) .li-flow-page-aside{
+ --vp-stamp-pitch:20px;
+ --vp-stamp-notch:6px;
+ background-color:#FFF9EC;
+ background-image:none;
+ border:0;outline:0;
+ filter:drop-shadow(0 7px 10px #102E2D1d);
+}
+/* The actual perforated silhouette was defined above: do not draw fake
+   white dots, an outer box, or a second offset picture frame. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"]
+ .li-flow-page[data-layout="vintagePop"]:is(
+  [data-page="lesson"],[data-page="case"],[data-page="collection"]
+ ) .li-flow-page-aside>.li-flow-page-kicker{
+ width:max-content;
+ max-width:calc(100% - 100px);
+ background:var(--vp-accent-lavender);
+ padding:5px 9px;
+ color:var(--vp-primary-deep);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"]
+ .li-flow-page-aside>.li-pop-postal-cancel{
+ position:absolute;
+ z-index:0;
+ top:5px;right:8px;
+ display:block;
+ width:clamp(118px,26%,192px);
+ color:var(--vp-secondary-deep);
+ opacity:.53;
+ mix-blend-mode:multiply;
+ pointer-events:none;
+ transform:rotate(-8deg);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"]
+ .li-flow-page-aside>.li-pop-postal-cancel svg{
+ display:block;width:100%;height:auto;overflow:visible;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"]
+ .li-flow-page-aside>:not(.li-pop-postal-cancel){
+ position:relative;z-index:1;
+}
+/* On a narrow phone, the printed mark stays out of the button stack.
+   Its overlap is decorative, like an authentic postcard cancellation. */
+@media(max-width:600px){
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"]
+  .li-flow-page-aside>.li-pop-postal-cancel{
+  width:122px;right:-4px;top:3px;opacity:.39;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"]
+  .li-flow-page[data-layout="vintagePop"]:is(
+   [data-page="lesson"],[data-page="case"],[data-page="collection"]
+  ) .li-flow-page-aside>.li-flow-page-kicker{
+  max-width:calc(100% - 72px);
+ }
+}

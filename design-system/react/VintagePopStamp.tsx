@@ -15,3 +15,35 @@ export function VintagePopStamp({active}:{active:boolean}){
   </motion.span>}
  </AnimatePresence>;
 }
+
+/** Decorative postal cancellation, intentionally different from the existing
+ * official li. seal. Linework is stamp INK, not a UI container border.
+ * The arc has a per-instance ID so multiple previews can coexist. */
+export function VintagePopPostalMark(){
+ const arcId=React.useId();
+ return <span className="li-pop-postal-cancel" aria-hidden="true">
+  <svg viewBox="0 0 220 124" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+   <defs><path id={arcId} d="M121 64 A43 43 0 0 1 207 64"/></defs>
+   <g stroke="currentColor" strokeLinecap="round">
+    <path d="M6 35 C30 28 48 43 72 35 S111 31 130 36
+             M5 45 C29 38 51 53 76 45 S112 41 131 45
+             M4 55 C30 48 48 63 74 55 S112 50 130 56
+             M5 65 C29 59 52 74 76 65 S110 61 130 66"
+     strokeWidth="1.7" opacity=".76"/>
+    <circle cx="164" cy="65" r="47" strokeWidth="2.3"
+     strokeDasharray="194 2 90 2"/>
+    <circle cx="164" cy="65" r="38" strokeWidth="1.2" opacity=".74"
+     strokeDasharray="85 2 64 1 84 1"/>
+    <path d="M136 66H192" strokeWidth=".95" opacity=".7"/>
+   </g>
+   <text fill="currentColor" fontFamily="Georgia,serif" fontSize="10.5"
+    letterSpacing="1.4" fontWeight="700">
+    <textPath href={`#${arcId}`} textAnchor="middle" startOffset="50%">LI. POSTAL</textPath>
+   </text>
+   <text x="164" y="60" textAnchor="middle" fill="currentColor"
+    fontFamily="Georgia,serif" fontSize="16" fontWeight="700">理 · li.</text>
+   <text x="164" y="80" textAnchor="middle" fill="currentColor"
+    fontFamily="monospace" fontSize="9" letterSpacing="1.3">ARCHIVE 26</text>
+  </svg>
+ </span>;
+}

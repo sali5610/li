@@ -19,7 +19,7 @@ import {BookwormScrapbook} from './BookwormScrapbook';
 import {VintagePopLessonBook} from './VintagePopLessonBook';
 import {VintagePopCollage} from './VintagePopCollage';
 import type {VintagePopAsset} from './VintagePopCollage';
-import {VintagePopStamp} from './VintagePopStamp';
+import {VintagePopStamp,VintagePopPostalMark} from './VintagePopStamp';
 import {VintagePopScrapbook} from './VintagePopScrapbook';
 import {VintagePopArt} from './VintagePopArt';
 import type {VintagePopArtKind} from './VintagePopArt';
@@ -676,6 +676,7 @@ export function AppPageLayout(props:AppPageLayoutProps){
     transition={bookworm?{duration:reduced?0:.3,ease:[.22,1,.36,1]}:
      variant==='notebook'?{duration:reduced?0:.48,delay:reduced?0:.25,ease:'easeOut'}:undefined}
     aria-label={t('Lối đi liên quan','Related paths')}>
+    {variant==='vintagePop'&&['lesson','case','collection'].includes(page)&&<VintagePopPostalMark/>}
     <span className="li-flow-page-kicker">{t('LỐI ĐI TIẾP','NEXT DESTINATIONS')}</span>
     <Text role="support">{t('Bản thiết kế thử nghiệm dùng dữ liệu giả lập.',
      'Design preview using fixture data.')}</Text>

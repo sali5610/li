@@ -8,6 +8,8 @@ import type {AppNavigationItem,AppNavigationControlsProps} from '../../../../des
 import {openRoute,goBack,syncCanonicalRoute,mountReactRouter} from './app-router.js';
 import {useAppUiStore} from './app-store.js';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
+import canonicalCatalog from '../../../../content/curriculum/legacy-catalog.v1.json';
+import {releasedLessonRoutes,personalStudyLessonIds,personalStudyRoute} from '../learning/released-lessons.js';
 
 /** One staging app, not an injected second router.
  * Visible React controls dispatch typed direct routes to the existing one
@@ -86,7 +88,7 @@ function BackControl(){
 /** The global Back follows history; these crumbs express IA, not history.
  * The Catalog owns its deeper group > field > course > lesson trail.
  * Route labels are UI-only. No second router or data owner is introduced. */
-type TrailPart={id?:string;vi:string;en:string};
+type TrailPart={id?:string;path?:readonly string[];vi:string;en:string};
 const homeTrail:TrailPart={id:'home',vi:'Đại Sảnh',en:'Great Hall'};
 const catalogTrail:TrailPart={id:'catalog',vi:'Tàng Thư',en:'Library'};
 const libraryTrail:TrailPart={id:'library',vi:'Tủ Riêng',en:'My Shelf'};
@@ -107,6 +109,38 @@ const trails:Record<string,TrailPart[]>={
  dashboard:[libraryTrail,{vi:'Nhật Ký',en:'Journal'}],
  settings:[{vi:'Cài Đặt',en:'Settings'}]
 };
+/** Derive semantic ancestors from the same canonical Catalog source, never
+ * fake an intermediate level from browser history or a generic 'Lesson' label. */
+const lessonIdByRoute=new Map<string,string>(releasedLessonRoutes.map(item=>[item.route,item.id]));
+for(const id of personalStudyLessonIds){
+ const route=personalStudyRoute(id);
+ if(route)lessonIdByRoute.set(route,id);
+}
+function fullLessonTrail(route:string,title:string):TrailPart[]|null{
+ const id=lessonIdByRoute.get(route);
+ if(!id)return null;
+ for(const group of canonicalCatalog.groups)for(const field of group.fields)
+  for(const course of field.courses)for(const lesson of course.lessons){
+   if(lesson.id!==id)continue;
+   const groupPath=[group.id],fieldPath=[group.id,field.id];
+   const coursePath=[group.id,field.id,course.id];
+   const label=title||lesson.title;
+   return [
+    catalogTrail,
+    {vi:group.title,en:group.title,path:groupPath},
+    {vi:field.name,en:field.name,path:fieldPath},
+    {vi:course.title,en:course.title,path:coursePath},
+    {vi:label,en:label}
+   ];
+  }
+ return null;
+}
+function openCatalogAncestor(path:readonly string[]){
+ if(!openRoute('catalog'))return;
+ const owner=window as Window&{liCatalog?:{openPath:(ids:string[],save?:boolean)=>void}};
+ owner.liCatalog?.openPath([...path]);
+}
+
 export function RouteTrail(){
  const route=useAppUiStore(state=>state.route);
  const locale=useAppLocale(),en=locale==='en';
@@ -126,16 +160,19 @@ export function RouteTrail(){
  // The global Back handles history; this trail shows hierarchy only.
  if(route==='home'||route==='catalog')return null;
  const flow=trails[route]||
-  (/^(lesson|draftLesson)/.test(route)?
-   [catalogTrail,{vi:lessonTitle||'Bài Học',en:lessonTitle||'Lesson'}]:
+  (lessonRoute?
+   fullLessonTrail(route,lessonTitle)||
+    [catalogTrail,{vi:lessonTitle||'Bài Học',en:lessonTitle||'Lesson'}]:
    [{vi:'Trang hiện tại',en:'Current page'}]);
  const parts=[homeTrail,...flow];
  return <div className="li-app-route-trail" data-li-review-status="draft">
   <Breadcrumb label={en?'You are here':'Vị trí hiện tại'}
+   visibleParents={2} moreLabel={en?'Earlier levels':'Các cấp trước'}
    items={parts.map((part,index)=>({
     label:en?part.en:part.vi,
-    onActivate:index<parts.length-1&&part.id?
-     ()=>openRoute(part.id!):undefined
+    onActivate:index<parts.length-1?
+     part.path?()=>openCatalogAncestor(part.path!):
+     part.id?()=>openRoute(part.id!):undefined:undefined
    }))}/>
  </div>;
 }

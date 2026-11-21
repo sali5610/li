@@ -75,6 +75,19 @@ try{
   writeFileSync(file,Buffer.from(result.data,'base64'));
   if(!existsSync(file))throw Error('Missing screenshot '+file);
   console.log('SCREENSHOT '+file);
+  if(view==='breadcrumb'){
+   const opened=await send('Runtime.evaluate',{
+    expression:"(()=>{const menu=document.querySelector('.li-ds-breadcrumb-overflow .li-ds-action-menu');menu?.querySelector('summary')?.click();const box=menu?.querySelector('ul')?.getBoundingClientRect();return Boolean(menu?.open&&box&&box.width>100&&box.left>=0&&box.right<=innerWidth)})()",
+    returnByValue:true
+   });
+   if(opened.result?.value!==true)throw Error('Breadcrumb ellipsis dropdown is not visible inside mobile viewport');
+   const shot=await send('Page.captureScreenshot',{
+    format:'png',captureBeyondViewport:false,fromSurface:true
+   });
+   const menuFile=resolve(out,'breadcrumb-ellipsis-open.png');
+   writeFileSync(menuFile,Buffer.from(shot.data,'base64'));
+   console.log('SCREENSHOT '+menuFile);
+  }
   if(view==='lesson'){
    const opened=await send('Runtime.evaluate',{
     expression:"(()=>{const b=document.querySelector('body > .catalog-chapter-fab[data-lesson-owner=\\\"page-lessonL09\\\"]');b?.click();return document.querySelector('body > .catalog-sheet-layer[data-lesson-owner=\\\"page-lessonL09\\\"]')?.hidden===false})()",

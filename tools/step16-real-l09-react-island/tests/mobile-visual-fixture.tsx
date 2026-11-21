@@ -155,15 +155,35 @@ setTimeout(()=>{
   {scrollWidth:document.documentElement.scrollWidth,windowWidth});
  if(viewName==='breadcrumb'){
   const trail=select('.li-app-route-trail .li-ds-breadcrumb');
-  const actions=[...document.querySelectorAll('.li-app-route-trail .li-ds-breadcrumb button')];
-  assert('REAL-ROUTE-TRAIL-MOUNTED-ON-LESSON',Boolean(trail&&
-   document.querySelector('.li-app-route-trail [aria-current="page"]')),bounds(trail));
-  assert('breadcrumb-has-real-ancestors',actions.length===2,actions.map(n=>n.textContent));
-  assert('breadcrumb-ancestors-are-text-links',actions.length===2&&actions.every(node=>{
+  const ancestors=[...document.querySelectorAll<HTMLButtonElement>(
+   '.li-app-route-trail .li-ds-breadcrumb>ol>li>button')];
+  const overflow=select('.li-ds-breadcrumb-overflow .li-ds-action-menu') as HTMLDetailsElement|null;
+  const summary=overflow?.querySelector('summary') as HTMLElement|null;
+  const hidden=overflow?.querySelectorAll('ul>li');
+  const crumbs=[...document.querySelectorAll('.li-ds-breadcrumb>ol>li')];
+  assert('real-lesson-breadcrumb-hierarchy',Boolean(trail&&
+   trail.querySelector('[aria-current="page"]')&&overflow&&hidden?.length===3),bounds(trail));
+  assert('two-closest-parent-links',ancestors.length===2,
+   ancestors.map(n=>n.textContent));
+  assert('visible-ancestors-are-course-and-field',Boolean(
+   ancestors[0]?.textContent?.trim()&&ancestors[1]?.textContent?.trim()&&
+   !ancestors.some(n=>n.textContent?.includes('Đại Sảnh'))),
+   ancestors.map(n=>n.textContent));
+  assert('one-row-aligned-crumbs',crumbs.length===4&&
+   crumbs.every(n=>Math.abs(n.getBoundingClientRect().top-crumbs[0].getBoundingClientRect().top)<4),
+   crumbs.map(bounds));
+  assert('breadcrumb-ancestors-are-text-links',ancestors.length===2&&ancestors.every(node=>{
    const cs=getComputedStyle(node);
    return cs.borderTopWidth==='0px'&&cs.boxShadow==='none'&&
     cs.textDecorationLine.includes('underline');
-  }),actions.map(node=>({text:node.textContent,border:getComputedStyle(node).borderTopWidth})));
+  }),ancestors.map(node=>({text:node.textContent,border:getComputedStyle(node).borderTopWidth})));
+  if(summary&&overflow){
+   summary.click();
+   assert('ellipsis-dropdown-opens',overflow.open&&
+    (hidden?.length||0)>=3&&getComputedStyle(summary).borderTopWidth==='0px');
+   summary.click();
+   assert('ellipsis-dropdown-closes',!overflow.open);
+  }
  } else if(viewName==='lesson'){
   const page=select('#page-lessonL09');
   const trigger=select('body > .catalog-chapter-fab[data-lesson-owner="page-lessonL09"]') as HTMLButtonElement|null;
@@ -173,8 +193,15 @@ setTimeout(()=>{
    page.classList.contains('active')&&page.querySelector('.l09-stack')&&
    layer?.querySelector('.l09-index')));
   const trail=select('#li-react-route-trail .li-ds-breadcrumb');
-  assert('breadcrumb-on-actual-lesson-page',Boolean(trail&&trail.textContent?.includes('Sampling Bias')&&
-   trail.querySelectorAll('button').length===2),bounds(trail));
+  assert('breadcrumb-on-actual-lesson-page',Boolean(trail&&
+   trail.querySelector('[aria-current="page"]')?.getAttribute('title')?.includes('Sampling Bias')&&
+   trail.querySelectorAll(':scope > ol > li > button').length===2&&
+   trail.querySelector('.li-ds-breadcrumb-overflow .li-ds-action-menu')),
+   bounds(trail));
+  assert('floating-button-uses-square-library-grammar',Boolean(trigger&&
+   trigger.dataset.liComponent==='button'&&trigger.dataset.variant==='primary'&&
+   style?.borderTopLeftRadius==='0px'&&style?.borderTopRightRadius==='0px'),
+   {radius:style?.borderTopLeftRadius,ds:trigger?.dataset.liComponent});
   assert('visible-viewport-fixed-lesson-menu',Boolean(trigger&&!trigger.hidden&&style?.position==='fixed'&&
    style.display!=='none'&&trigger.getBoundingClientRect().width>=44&&
    trigger.getBoundingClientRect().bottom<=844&&trigger.getBoundingClientRect().left>=0),

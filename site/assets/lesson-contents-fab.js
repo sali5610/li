@@ -39,7 +39,8 @@ function sync(){
   // React owns its text/content; this only offers in-document navigation.
   // Never hide, replace or mutate lesson sections or learning state.
   const trigger=document.createElement("button");
-  trigger.type="button";trigger.className="catalog-chapter-fab";
+  trigger.type="button";trigger.className="catalog-chapter-fab li-ds-button";
+  trigger.dataset.liComponent="button";trigger.dataset.variant="primary";
   trigger.dataset.lessonOwner=page.id;
   trigger.textContent="☰";
   trigger.setAttribute("aria-label",labels().menu);

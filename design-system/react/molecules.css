@@ -53,15 +53,6 @@ button.li-ds-list-row{font-family:var(--li-font-ui)}
  font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
 .li-ds-list-row-meta{max-width:35%;text-align:end;overflow-wrap:anywhere}
 .li-ds-list-row-leading,.li-ds-list-row-trailing{flex-shrink:0}
-.li-ds-breadcrumb{max-width:100%;min-width:0}
-.li-ds-breadcrumb ol{display:flex;flex-wrap:wrap;gap:var(--li-space-2);padding:0;margin:0;list-style:none}
-.li-ds-breadcrumb li{display:inline-flex;align-items:center;gap:var(--li-space-2);
- min-width:0;overflow-wrap:anywhere;font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
-.li-ds-breadcrumb li+li:before{content:"/";color:var(--muted)}
-.li-ds-breadcrumb a{color:var(--moss);text-underline-offset:var(--li-space-1)}
-.li-ds-breadcrumb [aria-current="page"]{color:var(--ink);font-weight:var(--li-weight-600)}
-
-
 /* Stage05: source attribution and native disclosure/menu. Token-backed surfaces. */
 .li-ds-source-status{box-sizing:border-box;display:grid;gap:var(--li-space-2);min-width:0;max-width:100%;
  border:1px solid var(--rule);border-inline-start:3px solid var(--olive);
@@ -102,25 +93,59 @@ button.li-ds-list-row{font-family:var(--li-font-ui)}
 .li-ds-action-menu :is(a,button):hover{background:var(--paper-2)}
 .li-ds-action-menu button:disabled{opacity:.55;cursor:not-allowed}
 
-/* Breadcrumb ancestors are text links, not framed CTAs. */
-.li-ds-breadcrumb{max-width:100%;padding-block:var(--li-space-1)}
-.li-ds-breadcrumb ol{align-items:center;column-gap:var(--li-space-2);row-gap:var(--li-space-1)}
-.li-ds-breadcrumb li{min-width:0;white-space:normal}
-.li-ds-breadcrumb li+li:before{content:"›";color:var(--muted);font-size:1.1em}
-.li-ds-breadcrumb button,.li-ds-breadcrumb a{
- display:inline;color:var(--moss);font:inherit;line-height:inherit;
- min-height:44px;padding:var(--li-space-2) 0;
- border:0!important;border-radius:0;background:transparent!important;
- box-shadow:none!important;text-decoration:underline;
- text-underline-offset:var(--li-space-1);cursor:pointer
-}
-.li-ds-breadcrumb button:focus-visible,.li-ds-breadcrumb a:focus-visible{
- outline:2px solid var(--moss);outline-offset:2px
-}
-.li-ds-breadcrumb [aria-current="page"]{font-weight:var(--li-weight-600);text-decoration:none}
+/* One-line, location-based breadcrumb. Separators stay attached to the next
+   crumb; a real ActionMenu owns hidden ancestors rather than horizontal scrolling. */
+.li-ds-breadcrumb{position:relative;max-width:100%;min-width:0;
+ padding-block:var(--li-space-1);font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
+.li-ds-breadcrumb>ol{display:flex;flex-wrap:nowrap;align-items:center;
+ column-gap:var(--li-space-2);padding:0;margin:0;list-style:none;min-width:0}
+.li-ds-breadcrumb>ol>li{box-sizing:border-box;display:inline-flex;align-items:center;
+ min-width:0;max-width:min(31vw,18rem);flex:0 1 auto;white-space:nowrap;
+ line-height:var(--li-leading-support)}
+.li-ds-breadcrumb>ol>li:last-child{flex:1 1 auto;max-width:none;overflow:hidden}
+.li-ds-breadcrumb>ol>li+li::before{content:"›";flex:0 0 auto;
+ margin-inline-end:var(--li-space-2);color:var(--muted);font-size:1.1em;
+ align-self:center}
+.li-ds-breadcrumb>ol>li>:is(a,button,span){display:block;box-sizing:border-box;
+ min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li-ds-breadcrumb>ol>li>:is(a,button){min-height:44px;padding:var(--li-space-2) 0;
+ border:0!important;border-radius:0!important;background:transparent!important;
+ box-shadow:none!important;color:var(--moss);font:inherit;line-height:inherit;
+ text-decoration:underline;text-underline-offset:var(--li-space-1);cursor:pointer}
+.li-ds-breadcrumb>ol>li>:is(a,button):focus-visible{
+ outline:2px solid var(--moss);outline-offset:2px}
+.li-ds-breadcrumb>ol>li>[aria-current="page"]{color:var(--ink);
+ font-weight:var(--li-weight-600);text-decoration:none}
+.li-ds-breadcrumb>ol>li.li-ds-breadcrumb-overflow{flex:0 0 auto;max-width:none;overflow:visible}
+.li-ds-breadcrumb .li-ds-breadcrumb-overflow>.li-ds-action-menu{display:block;
+ position:relative;overflow:visible}
+.li-ds-breadcrumb .li-ds-breadcrumb-overflow>.li-ds-action-menu>summary{
+ display:grid;place-items:center;box-sizing:border-box;
+ width:44px;height:44px;min-width:44px;padding:0;
+ list-style:none;border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ color:var(--moss);font:var(--li-weight-700) var(--li-type-support)/1 var(--li-font-ui);
+ text-decoration:underline;text-underline-offset:var(--li-space-1);cursor:pointer}
+.li-ds-breadcrumb .li-ds-action-menu>summary::-webkit-details-marker{display:none}
+.li-ds-breadcrumb .li-ds-breadcrumb-overflow>.li-ds-action-menu>ul{
+ position:absolute;z-index:2205;inset-inline-start:0;top:calc(100% + var(--li-space-1));
+ width:max-content;min-width:min(14rem,76vw);max-width:min(22rem,82vw);
+ padding:var(--li-space-2) 0;margin:0;
+ border:1px solid var(--moss);background:var(--cream);
+ box-shadow:4px 4px 0 var(--wood);list-style:none}
+.li-ds-breadcrumb .li-ds-action-menu>ul>li{display:block;white-space:normal;min-width:0}
+.li-ds-breadcrumb .li-ds-action-menu>ul>li::before{content:none!important}
+.li-ds-breadcrumb .li-ds-action-menu>ul>li>:is(a,button){
+ display:block;box-sizing:border-box;width:100%;min-height:44px;
+ padding:var(--li-space-2) var(--li-space-4);
+ border:0!important;background:transparent!important;box-shadow:none!important;
+ color:var(--ink);font:inherit;text-decoration:none;text-align:start;
+ white-space:normal;overflow-wrap:anywhere}
+.li-ds-breadcrumb .li-ds-action-menu>ul>li>:is(a,button):hover{
+ background:var(--paper-2)!important}
 @media(max-width:599px){
- .li-ds-breadcrumb ol{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none}
- .li-ds-breadcrumb ol::-webkit-scrollbar{display:none}
- .li-ds-breadcrumb li{flex:0 0 auto;max-width:56vw}
- .li-ds-breadcrumb li:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .li-ds-breadcrumb>ol{column-gap:var(--li-space-1)}
+ .li-ds-breadcrumb>ol>li{max-width:28vw}
+ .li-ds-breadcrumb>ol>li:last-child{max-width:none}
+ .li-ds-breadcrumb>ol>li+li::before{margin-inline-end:var(--li-space-1)}
 }

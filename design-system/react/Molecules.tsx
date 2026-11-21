@@ -121,17 +121,32 @@ export function ListRow({title,description,meta,leading,trailing,href,
 }
 
 export interface BreadcrumbItem {label:string;href?:string;onActivate?:()=>void}
-export interface BreadcrumbProps {label:string;items:readonly BreadcrumbItem[]}
-export function Breadcrumb({label,items}:BreadcrumbProps){
+export interface BreadcrumbProps {
+ label:string;items:readonly BreadcrumbItem[];
+ /** Show the two closest ancestors and current leaf; earlier ancestors are navigable via ellipsis. */
+ visibleParents?:number;moreLabel?:string;
+}
+export function Breadcrumb({label,items,visibleParents=2,moreLabel='Earlier levels'}:BreadcrumbProps){
  if(!label.trim()||!items.length)throw Error('Breadcrumb needs a label and at least one item');
+ const count=Math.max(1,Math.floor(visibleParents));
+ const hiddenCount=Math.max(0,items.length-(count+1));
+ const hidden=items.slice(0,hiddenCount),visible=items.slice(hiddenCount);
  return <nav aria-label={label} className="li-ds-breadcrumb" data-li-molecule="breadcrumb">
-  <ol>{items.map((item,i)=>{
-   const last=i===items.length-1;
-   return <li key={i}>{!last&&item.onActivate?
-     <button type="button" onClick={item.onActivate}>{item.label}</button>:
-     !last&&item.href?<a href={item.href}>{item.label}</a>:
-     <span aria-current={last?'page':undefined}>{item.label}</span>}</li>;
-  })}</ol>
+  <ol>
+   {hidden.length>0?<li className="li-ds-breadcrumb-overflow">
+    <ActionMenu label="…" accessibleLabel={moreLabel} items={hidden.map((item,i)=>({
+     id:String(i),label:item.label,
+     ...(item.onActivate?{onSelect:item.onActivate}:item.href?{href:item.href}:{disabled:true})
+    }))}/>
+   </li>:null}
+   {visible.map((item,i)=>{
+    const last=i===visible.length-1;
+    return <li key={hiddenCount+i}>{!last&&item.onActivate?
+      <button type="button" title={item.label} onClick={item.onActivate}>{item.label}</button>:
+      !last&&item.href?<a href={item.href} title={item.label}>{item.label}</a>:
+      <span aria-current={last?'page':undefined} title={item.label}>{item.label}</span>}</li>;
+   })}
+  </ol>
  </nav>;
 }
 
@@ -175,9 +190,9 @@ export interface ActionMenuItem {
  id:string;label:string;href?:string;onSelect?:()=>void;disabled?:boolean;
 }
 export interface ActionMenuProps {
- label:string;items:readonly ActionMenuItem[];
+ label:string;items:readonly ActionMenuItem[];accessibleLabel?:string;
 }
-export function ActionMenu({label,items}:ActionMenuProps){
+export function ActionMenu({label,items,accessibleLabel}:ActionMenuProps){
  const root=React.useRef<HTMLDetailsElement>(null);
  const trigger=React.useRef<HTMLElement>(null);
  if(!label.trim())throw Error('ActionMenu needs a visible trigger label');
@@ -187,7 +202,7 @@ export function ActionMenu({label,items}:ActionMenuProps){
    event.preventDefault();event.stopPropagation();close();
   }}}
   onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))event.currentTarget.open=false;}}>
-  <summary ref={trigger}>{label}</summary>
+  <summary ref={trigger} aria-label={accessibleLabel}>{label}</summary>
   <ul>{items.map(item=>{
    if(item.href&&item.onSelect)throw Error('ActionMenu item must be link OR action');
    const unavailable=item.disabled||(!item.href&&!item.onSelect);

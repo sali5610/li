@@ -10,7 +10,18 @@ class Element {
  setAttribute(key,value){this.attributes[key]=value;}
  focus(){}
 }
-const ids=["page-library","page-resume","page-collection","li-library-latest-lesson","li-library-latest-problem","li-lesson-history","li-problem-history","case-archive-preview","li-library-latest-idea","li-saved-lessons","li-saved-questions","li-bookmarks-empty-lessons","li-bookmarks-empty-questions","li-bookmark-tab-lessons","li-bookmark-tab-questions","li-bookmark-panel-lessons","li-bookmark-panel-questions","li-collection-list","save-capture-note","capture-note"];
+const ids=["page-library","page-resume","page-bookmarks","page-collection","li-library-latest-lesson","li-library-latest-problem","li-lesson-history","li-problem-history","case-archive-preview","li-library-latest-idea","li-saved-lessons","li-saved-questions","li-bookmarks-empty-lessons","li-bookmarks-empty-questions","li-bookmark-tab-lessons","li-bookmark-tab-questions","li-bookmark-panel-lessons","li-bookmark-panel-questions","li-collection-list","save-capture-note","capture-note"];
+const html=fs.readFileSync(path.join(__dirname,"../site/index.html"),"utf8");
+const resumeHtml=html.slice(html.indexOf('<section id="page-resume"'),html.indexOf('<section id="page-bookmarks"'));
+const bookmarksHtml=html.slice(html.indexOf('<section id="page-bookmarks"'),html.indexOf('<section id="page-collection"'));
+assert.match(resumeHtml,/id="li-lesson-history"/,"Continue still owns learning history");
+assert.doesNotMatch(resumeHtml,/li-saved-lessons|li-bookmark-tab-lessons/,"Continue excludes bookmarks");
+assert.match(bookmarksHtml,/id="li-saved-lessons"/,"Bookmarks owns saved lessons");
+assert.match(bookmarksHtml,/id="li-saved-questions"/,"Bookmarks owns saved questions");
+assert.match(html,/data-page="bookmarks"/,"Tủ Riêng links to standalone bookmarks");
+const reactLibrary=fs.readFileSync(path.join(__dirname,"../tools/step16-real-l09-react-island/src/shell/guide-library.tsx"),"utf8");
+assert.match(reactLibrary, /route:'bookmarks',component:<Bookmarks\/>/,"React mounts a standalone bookmarks page");
+assert.match(reactLibrary, /target="bookmarks" action=/,"React Tủ Riêng bookmark entry points to own page");
 const cases=[],ideas=[],savedQuestions=[],savedContent=[],events=[],routes=[],openedNotes=[],listeners={};
 const map=new Map();
 const localStorage={

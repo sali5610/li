@@ -96,7 +96,7 @@
       "status": "Not confirmed uploaded to GitHub or Notion as individually managed PNG files; not deployed; do NOT mark shipped"
     }
   ],
-  "total_separate_tracked_canonical_image_files": 37,
+  "total_separate_tracked_canonical_image_files": 49,
   "total_is_not_all_proposed_artwork": true,
   "audit_basis": "GitHub staging source and user-supplied ZIP files",
   "discipline_landscapes": {
@@ -166,5 +166,81 @@
       }
     ],
     "status": "uploaded; staging release and real-device acceptance separate"
+  },
+  "group_illustrations": {
+    "count": 5,
+    "source": "PO-supplied Nhom nganh.zip",
+    "original_format": "JPEG; byte-exact copies",
+    "runtime_format": "WebP quality 86, full-resolution, no crop in exported asset",
+    "original_dir": "design-assets/groups/",
+    "runtime_dir": "site/assets/groups/",
+    "entries": [
+      {
+        "group_id": "arts-humanities",
+        "original_name_in_upload": "Arts & Humanities.jpg",
+        "original_file": "design-assets/groups/arts-humanities.jpg",
+        "original_blob_sha": "7071489c35688cb79fe75f5a6b0a24c719b2a3e8",
+        "runtime_file": "site/assets/groups/arts-humanities.webp",
+        "runtime_blob_sha": "58a1614712ee044098c9efed92136ce3d026403f",
+        "original_dimensions": [
+          1088,
+          1445
+        ],
+        "portal_variant": 1
+      },
+      {
+        "group_id": "social-sciences",
+        "original_name_in_upload": "Social Sciences, Journalism & Information.jpg",
+        "original_file": "design-assets/groups/social-sciences.jpg",
+        "original_blob_sha": "7605d1f6b282da8c9157cfc5e1239ef34204f55a",
+        "runtime_file": "site/assets/groups/social-sciences.webp",
+        "runtime_blob_sha": "e04063a2fa62329c2a7d7e24e70b4f17d3e1a224",
+        "original_dimensions": [
+          1087,
+          1447
+        ],
+        "portal_variant": 2
+      },
+      {
+        "group_id": "business-administration-law",
+        "original_name_in_upload": "Business, Administration & Law.jpg",
+        "original_file": "design-assets/groups/business-administration-law.jpg",
+        "original_blob_sha": "9b0c17d0556365b79ade79276927e43a9bf1ba5b",
+        "runtime_file": "site/assets/groups/business-administration-law.webp",
+        "runtime_blob_sha": "316111f5461381f042db19cc624e64834d5f154c",
+        "original_dimensions": [
+          1086,
+          1448
+        ],
+        "portal_variant": 3
+      },
+      {
+        "group_id": "natural-sciences-math",
+        "original_name_in_upload": "Natural Sciences, Mathematics & Statistics.jpg",
+        "original_file": "design-assets/groups/natural-sciences-math.jpg",
+        "original_blob_sha": "1fed6f9bba2cc8956ce2a2b052c96e461531037a",
+        "runtime_file": "site/assets/groups/natural-sciences-math.webp",
+        "runtime_blob_sha": "0e2b4ff17f9e06baaf5c2574fabeac6aafd85847",
+        "original_dimensions": [
+          1086,
+          1448
+        ],
+        "portal_variant": 4
+      },
+      {
+        "group_id": "ict",
+        "original_name_in_upload": "Information & Communication Technologies.jpg",
+        "original_file": "design-assets/groups/ict.jpg",
+        "original_blob_sha": "a5790f79cfe2c5b99031b6bbb96c65176b3fd24a",
+        "runtime_file": "site/assets/groups/ict.webp",
+        "runtime_blob_sha": "e57990f4577e976eead391ada56d42c9eb33c22a",
+        "original_dimensions": [
+          1087,
+          1446
+        ],
+        "portal_variant": 5
+      }
+    ],
+    "status": "Feature-branch source integration; staging deployment and PO visual approval separate"
   }
 }

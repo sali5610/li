@@ -61,26 +61,19 @@ const tr=(text:string)=>en()?(app.liLanguage?.translate?.(text)||text):text;
 // Text-only process steps remain usable if an image is unavailable or offline.
 type SpellIllustration = {
  src:string;source:string;credit:string;license:string;licenseUrl:string;
- altVi:string;altEn:string
+ altVi:string;altEn:string;match:string
 };
+// Display only imagery that explains the actual technique. Source and licensing
+// live with canonical content; do not surface attribution noise in the reader.
 function SpellDiagram({id,labels,illustration}:{
- id:string;labels:readonly string[];illustration:SpellIllustration
+ id:string;labels:readonly string[];illustration:SpellIllustration|null
 }){
  return <figure className="spell-concept-visual" aria-label={id+' · '+labels.join(' → ')}>
-  <div className="spell-visual-art">
-   <img src={illustration.src} alt={en()?illustration.altEn:illustration.altVi}
-    loading="lazy" decoding="async" width={760} height={520}/>
-  </div>
-  <div className="spell-visual-credit">
-   <a href={illustration.source} target="_blank" rel="noopener noreferrer">
-    {copy('Hình minh hoạ','Illustration')} · {illustration.credit}
-   </a>
-   <span aria-hidden="true"> · </span>
-   <a href={illustration.licenseUrl} target="_blank" rel="noopener noreferrer">
-    {illustration.license}
-   </a>
-  </div>
-  <figcaption>{id} · {en()?'Practice process':'Sơ đồ quy trình thực hành'}</figcaption>
+  {illustration&&<div className="spell-visual-art">
+   <img src={illustration.src}
+    alt={en()?illustration.altEn:illustration.altVi}
+    loading="lazy" decoding="async" width={1200} height={675}/>
+  </div>}
   <div className="spell-visual-process" data-count={labels.length} role="list">
    {labels.map((label,index)=><div className="spell-visual-stage" role="listitem"
     key={id+'-'+index}>

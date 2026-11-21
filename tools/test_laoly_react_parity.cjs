@@ -145,4 +145,16 @@ assert.match(researchCase,/const \[choice,setChoice\]=useState<CaseChoice\|null>
 assert.match(researchCase,/const \[revision,setRevision\]=useState\(\(\)=>inquiryFlow\(\)\.getCaseDraft\(\)\)/,
  'Case text remains on its mounted page and canonical draft storage during lesson navigation');
 
+
+assert.match(plans,/window\.liMirrorRelatedLesson\?\.\(currentPage==="home"\?scenarios\[qIndex\]:liCurrentProblem\(\)\)/,
+ 'The Home and Research mentor must use the exact active question');
+assert.match(dialog,/app\.liPersonalStudyRoutes\?\.\[related\.id\]===related\.route/,
+ 'A draft lesson needs its actual staging route mapping');
+assert.match(dialog,/app\.liReleasedLessonRoutes\?\.\[related\.id\]===related\.route/,
+ 'Published lessons need their actual release route mapping');
+assert.match(dialog,/!app\.liAppRouter\?\.hasRoute\(related\.route\)/,
+ 'Unmounted or unauthorized lesson routes are not followed');
+assert.match(dialog,/\{view\.relatedLesson&&/,
+ 'Related CTA is not restricted to the original L09 Case');
+
 console.log('PASS Lao Ly React full popup parity: 3 actions, 2 debate results, quotes, provenance, preferences, invite, drag, navigation');

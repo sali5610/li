@@ -270,4 +270,53 @@ assert(draftResearch.qIndex>=0,"Preview lesson remains reachable after shuffle")
 vm.runInNewContext(html.slice(problemStart,problemEnd),draftResearch);
 assert.equal(draftResearch.liCurrentProblem().lessonId,"L03-1-1",
  "Draft Home CTA must preserve its own lesson-specific Research context");
+
+// The 17 authored personal previews link to their corresponding existing
+// invited STAGING lesson, never to a fabricated public or missing route.
+const fullStart=html.indexOf("const scenarios=[");
+const fullEnd=html.indexOf("/* Draft Home hooks:",fullStart);
+assert(fullStart>=0&&fullEnd>fullStart,"Find canonical real mirror scenarios");
+const realMirrorSandbox={};
+vm.runInNewContext(html.slice(fullStart,fullEnd)+";globalThis.canonical=scenarios;",realMirrorSandbox);
+const allQuestions=[...realMirrorSandbox.canonical,...draftItems.map(x=>({
+ type:"hook",lessonId:x.id,lessonRoute:"research",previewState:"draft"
+}))];
+assert.equal(allQuestions.length,23,"23 questions remain available");
+const personalRoutes=Object.fromEntries(draftItems.map(x=>
+ [x.id,"draftLesson"+x.id.replace(/[^a-z0-9]/gi,"")]));
+const releasedRoutes={"L03-1-2":"lessonL03","L09-1-2":"lessonL09","L15-2-2":"lessonL15"};
+const resolverStart=html.indexOf("function liMirrorRelatedLesson(");
+const resolverEnd=html.indexOf("function renderMirrorItem(){",resolverStart);
+assert(resolverStart>0&&resolverEnd>resolverStart,"One canonical live related-lesson resolver");
+const mountWindow={liPersonalStudyRoutes:personalRoutes,
+ liReleasedLessonRoutes:releasedRoutes,
+ liAppRouter:{hasRoute:r=>Object.values({...personalRoutes,...releasedRoutes}).includes(r)}};
+const resolverCtx={window:mountWindow};
+vm.runInNewContext(html.slice(resolverStart,resolverEnd),resolverCtx);
+const links=allQuestions.map(q=>({q,match:resolverCtx.liMirrorRelatedLesson(q)}));
+assert.equal(links.filter(x=>x.match).length,22,
+ "17 personal + 3 published hooks + 2 grounded originals; Sociology remains without a guessed lesson");
+for(const item of links){
+ if(!item.match)continue;
+ assert.equal(item.match.id,item.q.lessonId,"Each link belongs to the current question, not a shuffled index");
+ assert.equal(item.match.route,item.q.previewState==="draft"?personalRoutes[item.q.lessonId]:
+  releasedRoutes[item.q.lessonId],"Every link resolves to a real lesson route");
+}
+assert.equal(links.filter(x=>x.q.previewState==="draft"&&x.match).length,17,
+ "17/17 personal hook links work in invited staging");
+assert.equal(links.find(x=>x.q.fieldId==="sociology")?.match,null,
+ "Do not invent a Sociology lesson");
+delete mountWindow.liPersonalStudyRoutes;
+assert.equal(allQuestions.filter(q=>q.previewState==="draft"&&resolverCtx.liMirrorRelatedLesson(q)).length,0,
+ "Personal drafts cannot be linked outside invited staging");
+mountWindow.liPersonalStudyRoutes=personalRoutes;
+mountWindow.liAppRouter.hasRoute=route=>route!=="draftLessonL0311" &&
+ Object.values({...personalRoutes,...releasedRoutes}).includes(route);
+assert.equal(resolverCtx.liMirrorRelatedLesson(allQuestions.find(q=>q.lessonId==="L03-1-1")),null,
+ "Never show a lesson link when its route has not mounted");
+assert.match(html,/route:sc.type==="hook"&&related\?related.route:/,
+ "The real Home CTA follows the verified lesson link instead of blindly opening Research");
+assert.match(html,/sc.type==="hook"&&related\?"Khám phá vì sao":"Đào sâu"/,
+ "Only genuine linked hooks promise to explore a lesson");
+
 console.log("PASS 17 VI/EN Home draft hooks: preview, correct context, safe routing, 3 Wave1 intact");

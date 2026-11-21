@@ -422,28 +422,28 @@ function liWriteState(){
 function liNewId(){return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,10)}
 /* LI_PERSISTENCE_END */
 const scenarios=[
-{fieldId:"hci",question:"90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?",scene:"Nhóm UX chỉ khảo sát người đang dùng sản phẩm. Từ 90% phản hồi tích cực, họ kết luận: “Ai cũng muốn tính năng này”.",branches:["Ai được hỏi?","Ai bị bỏ sót?","Suy rộng đến ai?"],observed:"Khảo sát hiện chỉ gồm người đang dùng sản phẩm; 90% phản hồi tích cực trong mẫu này.",unknown:"Ý kiến người chưa dùng và người đã rời sản phẩm; tổng thể đích và cách chọn mẫu.",buddy:"Một khảo sát chỉ nói về nhóm được hỏi. Lão muốn biết ai vắng mặt trước khi tin lời kết luận."},
+{fieldId:"hci",lessonId:"L09-1-2",question:"90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?",scene:"Nhóm UX chỉ khảo sát người đang dùng sản phẩm. Từ 90% phản hồi tích cực, họ kết luận: “Ai cũng muốn tính năng này”.",branches:["Ai được hỏi?","Ai bị bỏ sót?","Suy rộng đến ai?"],observed:"Khảo sát hiện chỉ gồm người đang dùng sản phẩm; 90% phản hồi tích cực trong mẫu này.",unknown:"Ý kiến người chưa dùng và người đã rời sản phẩm; tổng thể đích và cách chọn mẫu.",buddy:"Một khảo sát chỉ nói về nhóm được hỏi. Lão muốn biết ai vắng mặt trước khi tin lời kết luận."},
 {fieldId:"sociology",question:"Một nhóm gọi ai đó là “khác thường”. Ai đặt ra chuẩn mực?",scene:"Một cộng đồng gọi người họ chưa hiểu là “khác thường”. Ai đã đặt ra chuẩn mực đó?",branches:["Ai đặt chuẩn mực?","Nhãn gọi thay đổi điều gì?","Bằng chứng ở đâu?"],observed:"Trong câu chuyện hư cấu, cộng đồng dùng một nhãn để mô tả một người.",unknown:"Ai đặt ra chuẩn mực, hành vi nào thực sự quan sát được, và nhãn đó ảnh hưởng ra sao?",buddy:"Nhãn gọi có thể dễ hơn tìm hiểu. Nhưng ai đặt ra cái chuẩn đó, tiểu hữu?"},
-{fieldId:"supply-chain",question:"Hàng còn đầy trong kho. Vì sao khách vẫn không mua được?",scene:"Kho tổng vẫn còn hàng, nhưng quầy bán lại trống. Hàng đang ở đâu?",branches:["Hàng nằm ở đâu?","Bao giờ hàng đến?","Dự báo đúng không?"],observed:"Số tồn kho tổng toàn công ty dương, nhưng cửa hàng chưa có hàng bán.",unknown:"Hàng đang ở kho nào, có bị giữ chỗ hay đang vận chuyển không; thời gian bổ sung và nhu cầu thực tế.",buddy:"Tồn kho tổng đâu có tự chạy đến quầy. Lão muốn xem vị trí hàng và lịch giao trước."}
+{fieldId:"supply-chain",lessonId:"L15-2-2",question:"Hàng còn đầy trong kho. Vì sao khách vẫn không mua được?",scene:"Kho tổng vẫn còn hàng, nhưng quầy bán lại trống. Hàng đang ở đâu?",branches:["Hàng nằm ở đâu?","Bao giờ hàng đến?","Dự báo đúng không?"],observed:"Số tồn kho tổng toàn công ty dương, nhưng cửa hàng chưa có hàng bán.",unknown:"Hàng đang ở kho nào, có bị giữ chỗ hay đang vận chuyển không; thời gian bổ sung và nhu cầu thực tế.",buddy:"Tồn kho tổng đâu có tự chạy đến quầy. Lão muốn xem vị trí hàng và lịch giao trước."}
 ];
 /* S158 · Mix problems with short, source-grounded hooks from three PUBLISHED Wave1 lessons.
    The lesson text itself remains PO locked. Never add an unpublished lesson here. */
 scenarios.splice(1,0,{
- type:"hook",lessonRoute:"lessonL03",fieldId:"hci",
+ type:"hook",lessonId:"L03-1-2",lessonRoute:"lessonL03",fieldId:"hci",
  key:"open-question-bias",previousQuestion:"Một câu hỏi mở vẫn có thể gài sẵn câu trả lời.",
  question:"Câu hỏi mở vẫn có thể âm thầm dẫn dắt câu trả lời. Vì sao?",
  scene:"“Vì sao giao diện này khó dùng?” nghe như một câu hỏi mở. Nhưng nó đã giả định điều gì trước khi người dùng kể chuyện?",
  buddy:"Câu hỏi mở chưa chắc trung lập. Tiểu hữu nhìn thử xem ta đã gài giả định gì vào câu chữ."
 });
 scenarios.splice(3,0,{
- type:"hook",lessonRoute:"lessonL15",fieldId:"supply-chain",
+ type:"hook",lessonId:"L15-2-2",lessonRoute:"lessonL15",fieldId:"supply-chain",
  key:"reorder-threshold",previousQuestion:"Ngưỡng đặt hàng không phải số lượng đặt hàng.",
  question:"Ngưỡng đặt hàng khác lượng hàng cần mua. Nhầm hai thứ ấy thì sao?",
  scene:"Khi tồn kho chạm ngưỡng, ta quyết định đặt hàng. Nhưng ngưỡng đó có thực sự cho biết phải mua bao nhiêu?",
  buddy:"Ngưỡng để bắt đầu hành động và lượng cần mua là hai chuyện khác nhau. Chớ gộp làm một, nhóc."
 });
 scenarios.splice(5,0,{
- type:"hook",lessonRoute:"lessonL09",fieldId:"data-science",
+ type:"hook",lessonId:"L09-1-2",lessonRoute:"lessonL09",fieldId:"data-science",
  key:"sample-representativeness",previousQuestion:"Một ngàn câu trả lời vẫn có thể dẫn tới kết luận lệch.",
  question:"Có tới một ngàn người trả lời khảo sát. Sao kết luận vẫn có thể lệch?",
  scene:"Một ngàn người đang dùng ứng dụng trả lời khảo sát. Những người đã bỏ đi hoặc chưa từng dùng có được nghe tiếng nói không?",
@@ -512,6 +512,21 @@ function liShuffleMirrorByField(items,random=Math.random){
  return order;
 }
 scenarios.splice(0,scenarios.length,...liShuffleMirrorByField(scenarios));
+/* A Gương question can suggest a lesson only if the SAME invited app
+   has mounted its canonical route. Personal draft hooks stay PROPOSED and
+   never become public releases merely by receiving a navigation link. */
+function liMirrorRelatedLesson(sc){
+ if(!sc||typeof sc.lessonId!=="string")return null;
+ const id=sc.lessonId;
+ const published=window.liReleasedLessonRoutes?.[id]||null;
+ const personal=window.liPersonalStudyRoutes?.[id]||null;
+ const route=sc.previewState==="draft"?personal:
+  sc.type==="hook"?published===sc.lessonRoute?published:null:
+  published||personal;
+ if(typeof route!=="string"||!window.liAppRouter?.hasRoute?.(route))return null;
+ return {id,route};
+}
+if(typeof window!=="undefined")window.liMirrorRelatedLesson=liMirrorRelatedLesson;
 function renderMirrorItem(){
  const item=scenarios[qIndex],isHook=item.type==="hook",isDraft=item.previewState==="draft";
  const localized=item.localized?.[window.liLanguage?.get?.()==="en"?"en":"vi"]||item;
@@ -968,12 +983,16 @@ function liInquiryAllowed(){
 window.liInquiryFlow=Object.freeze({
  getMirror:()=>{
   const sc=scenarios[qIndex];if(!sc)return null;
+  const related=window.liMirrorRelatedLesson?.(sc)||null;
   const en=window.liLanguage?.get?.()==="en",c=sc.localized?.[en?"en":"vi"]||sc;
   return {
    index:qIndex,fieldId:sc.fieldId||"",question:c.question,scene:c.scene,
    source:sc.previewState==="draft"?(en?"DRAFT · NOT APPROVED":"BẢN THẢO · CHƯA DUYỆT"):sc.type==="hook"?"TỪ BÀI HỌC ĐÃ XUẤT BẢN":"VÍ DỤ GIẢ ĐỊNH",
-   route:sc.type==="hook"&&sc.lessonRoute?sc.lessonRoute:"research",
-   cta:sc.type==="hook"?"Khám phá vì sao":"Đào sâu",
+   // Problem cases keep their investigation step; authored lesson hooks
+   // open their real lesson on invited staging, or fall back to Research.
+   route:sc.type==="hook"&&related?related.route:
+    sc.type==="hook"&&sc.lessonRoute!=="research"?sc.lessonRoute:"research",
+   cta:sc.type==="hook"&&related?"Khám phá vì sao":"Đào sâu",
    draft:sc.previewState==="draft",saved:findSavedMirrorQuestion(sc)>=0
   };
  },

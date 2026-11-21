@@ -32,6 +32,55 @@ function activeMoment(item){
  if(item.data.moments[position].stage==="reflection"&&!hasSubmitted(item.data.lesson_id))position=3;
  return item.data.moments[position];
 }
+/** Only the editorial reader uses these pre-completion prompts. A reader may
+ * freely browse step 4/5, but source-authored reflection and extension can
+ * refer to answers or completed work. Use already-visible independent-study
+ * questions to coach this precise lesson without leaking gated material. */
+function pendingEditorialWording(data,stage,locale,submitted){
+ const english=locale==="en";
+ const practice=data.moments.find(m=>m.stage==="independent")?.[locale];
+ const actions=practice?.actions||[];
+ const label=text=>String(text||"").replace(/^(?:VI|EN) action [12]:\\s*/i,"").trim();
+ const first=label(actions[0]?.label)||data.lesson_id;
+ const second=label(actions[1]?.label)||first;
+ if(stage==="reflection"){
+  return {
+   label:english?"Feedback · before submission":"Đối chiếu · trước khi nộp",
+   prompt:english?
+    "You are viewing Feedback for "+data.lesson_id+", but your four answers have not been submitted. The solution stays hidden. Before submitting, question your own reasoning: “"+first+"”":
+    "Ngươi đang ở Đối chiếu bài "+data.lesson_id+" nhưng chưa nộp đủ bốn câu. Lời giải vẫn được giữ kín. Trước khi nộp, hãy tự chất vấn: “"+first+"”",
+   actions:[
+    {label:english?"Challenge my assumption":"Soi giả định của ta",
+     reply:actions[0]?.reply||""},
+    {label:english?"What else should I test?":"Còn điều gì cần kiểm?",
+     reply:actions[1]?.reply||""}
+   ]
+  };
+ }
+ const status=english?
+  (submitted?"Your answers are saved, but self-review is still incomplete.":
+   "You have not submitted your answers or completed self-review."):
+  (submitted?"Ngươi đã nộp bài nhưng chưa lưu tự đánh giá.":
+   "Ngươi chưa nộp bài và chưa tự đánh giá.");
+ return {
+  label:english?"Progress · not yet complete":"Tiến độ · chưa hoàn thành",
+  prompt:english?
+   "This is the Progress page for "+data.lesson_id+". "+status+
+   " Completion cannot be claimed yet. One thing to retrieve from memory is: “"+second+"”":
+   "Đây là trang Tiến độ của bài "+data.lesson_id+". "+status+
+   " Lão chưa thể ghi hoàn thành. Thử tự nhớ lại mà không nhìn đáp án: “"+second+"”",
+  actions:[
+   {label:english?"What counts as completion?":"Khi nào được tính hoàn thành?",
+    reply:english?
+     "First submit all four answers, then compare your work and save a self-review. Browsing this page does not count as completion.":
+     "Phải nộp bốn câu, đối chiếu bài làm rồi lưu tự đánh giá. Chỉ mở trang Tiến độ chưa được tính hoàn thành."},
+   {label:english?"What should I revisit?":"Nên ôn lại điều gì?",
+    reply:english?
+     "Revisit your lesson's independent question: “"+second+"”. Try answering from memory first, then check your evidence in Practice.":
+     "Hãy thử trả lời câu hỏi của bài: “"+second+"” bằng trí nhớ trước, rồi kiểm lại chứng cứ trong Tự luyện tập."}
+  ]
+ };
+}
 function context(){
  const item=displayedLesson();
  if(!item){
@@ -52,14 +101,16 @@ function context(){
    if(rect&&rect.top<Math.min(300,(window.innerHeight||720)*0.42)&&rect.bottom>0)
     requested="concept";
   }
-  const safeStage=(requested==="reflection"&&!submitted)?"independent":
-   requested==="extension"&&!reviewed?(submitted?"reflection":"independent"):requested;
-  const moment=data.moments.find(m=>m.stage===safeStage);
+  const pending=requested==="reflection"&&!submitted?"submission":
+   requested==="extension"&&!reviewed?(submitted?"review":"submission"):null;
+  const moment=data.moments.find(m=>m.stage===requested);
   if(!moment)return null;
-  const english=host.getAttribute("lang")==="en";
-  return {page:page.id.slice(5),lesson_id:id,stage:safeStage,submitted,reviewed,
-   editorial:true,actualPhase,topics:data.topics,quote_ids:moment.quote_ids,
-   anchor:moment.anchor,wording:moment[english?"en":"vi"]};
+  const locale=host.getAttribute("lang")==="en"?"en":"vi";
+  const wording=pending?pendingEditorialWording(data,requested,locale,submitted):
+   moment[locale];
+  return {page:page.id.slice(5),lesson_id:id,stage:requested,submitted,reviewed,
+   editorial:true,actualPhase,pending,topics:data.topics,quote_ids:moment.quote_ids,
+   anchor:moment.anchor,wording};
  }
 
  const live=reactLesson(item.data.lesson_id);
@@ -75,7 +126,7 @@ function plan(page){
  if(!c||c.page!==page)return null;
  const a=c.wording.actions;
  const actions=a.map(x=>({label:x.label,reply:x.reply,perform:null}));
- const suggested=c.submitted&&["reflection","extension"].includes(c.stage)?
+ const suggested=!c.pending&&c.submitted&&["reflection","extension"].includes(c.stage)?
    candidateMethods?.lessons?.[c.lesson_id]?.[0]:null;
  const supported=suggested&&/^L2-T\d{2}$/.test(suggested.techniqueId)&&
   suggested.shortId===suggested.techniqueId.slice(3);
@@ -92,14 +143,24 @@ function plan(page){
    }
   });
  }else actions.push({
-  label:stageLocale()==="en"?"Read this section":"Đọc lại mục này",
-  reply:stageLocale()==="en"?"Return to the section connected to this question.":"Lão đưa ngươi về đúng mục đang học để kiểm tra lại dữ liệu.",
+  label:c.pending?(stageLocale()==="en"?
+   (c.pending==="review"?"Go to self-review":"Go to practice"):
+   (c.pending==="review"?"Về phần tự đánh giá":"Về phần luyện tập")):
+   (stageLocale()==="en"?"Read this section":"Đọc lại mục này"),
+  reply:c.pending?(stageLocale()==="en"?
+   (c.pending==="review"?"Return to Feedback to save your self-review.":
+    "Return to Practice and submit your four answers when ready."):
+   (c.pending==="review"?"Trở lại Đối chiếu để lưu tự đánh giá.":
+    "Về Tự luyện tập, hoàn thành và nộp bốn câu khi sẵn sàng.")):
+   (stageLocale()==="en"?"Return to the section connected to this question.":
+    "Lão đưa ngươi về đúng mục đang học để kiểm tra lại dữ liệu."),
   perform:()=>{
    closeModal("buddy-modal");
    // React owns the visible lesson step. The old anchor remains in hidden
    // native markup for parity only; scrolling to it would look like a dead link.
    if(reactLesson(c.lesson_id)){
-    const phase=c.editorial&&c.actualPhase==="methods"?"methods":
+    const phase=c.pending?(c.pending==="review"?"feedback":"practice"):
+     c.editorial&&c.actualPhase==="methods"?"methods":
      {opening:"read",concept:"read",guided:"guided",
       independent:"practice",reflection:"feedback",extension:"progress"}[c.stage];
     if(phase){

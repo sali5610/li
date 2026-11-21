@@ -38,6 +38,8 @@ export {HomeLayout,homeLayoutVariants} from './HomeLayoutVariants';
 export type {HomeLayoutProps,HomeLayoutVariant} from './HomeLayoutVariants';
 export {BookwormIllustration} from './BookwormIllustration';
 export type {BookwormArtKind} from './BookwormIllustration';
+export {BookwormLessonBook} from './BookwormLessonBook';
+export type {BookwormLessonBookProps} from './BookwormLessonBook';
 
 /** Notebook annotations are a shared, presentational component. */
 export {NotebookAnnotation} from './NotebookAnnotation';
@@ -46,7 +48,7 @@ export {NotebookAnnotation} from './NotebookAnnotation';
 export {NotebookArt,notebookDisciplineImages} from './NotebookArt';
 export type {NotebookArtKind,NotebookArtSize} from './NotebookArt';
 
-/** Notebook reading: shared ink marks and book layout, opt-in only. */
+/** Notebook reading: animated ink marks and open-book reader. */
 export {NotebookInk} from './NotebookInk';
 export {NotebookLessonBook} from './NotebookLessonBook';
 export type {NotebookLessonSection} from './NotebookLessonBook';

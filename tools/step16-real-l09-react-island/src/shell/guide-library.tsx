@@ -16,6 +16,7 @@ type MethodsView={
  modeLabel:string;guide:string
 };
 type Lesson={id:string;route:string;title:string;status:string;detail:string;saved:boolean};
+type T02Status={dueAt:number|null;awaitingRating:boolean;reviewCount:number};
 type Problem={kind:string;key:string;title:string;detail:string;saved:boolean};
 type Note={id:string;type:'case'|'idea';title:string;body:string;date:string;sortDate:string;correct?:boolean};
 type Bookmark={kind:string;id:string;title:string;route:string|null;date:string};
@@ -40,6 +41,7 @@ type AppWindow=Window&{
  liNotes?:{openDetail:(kind:string,id:string)=>boolean;deleteNote:(kind:string,id:string)=>boolean;
   deleteFromReact:(kind:string,id:string)=>boolean};
  liLanguage?:{get:()=>string};
+ LiSpellPractice?:{getT02Status?:(id:string)=>T02Status|null};
 };
 const app=window as AppWindow;
 // The canonical Catalog and staging allowlist are the only source of
@@ -171,24 +173,49 @@ function Empty({message,route,action}:{
 function LessonRows({lessons,limit}:{
  lessons:Lesson[];limit?:number
 }){
+ // Read only the existing per-lesson T02 schedule; refresh when returning
+ // to Quay Lại and as the clock crosses a due minute.
+ const [now,setNow]=useState(()=>Date.now());
+ useEffect(()=>{
+  const refresh=()=>setNow(Date.now());
+  const events=['li:route-changed','li:private-personal-change','li:personal-sync-applied',
+   'li:lesson-sync-applied','focus','pageshow'];
+  for(const name of events)window.addEventListener(name,refresh);
+  document.addEventListener('visibilitychange',refresh);
+  const timer=window.setInterval(()=>{if(document.visibilityState==='visible')refresh();},60_000);
+  return()=>{
+   window.clearInterval(timer);
+   for(const name of events)window.removeEventListener(name,refresh);
+   document.removeEventListener('visibilitychange',refresh);
+  };
+ },[]);
  const subset=limit?lessons.slice(0,limit):lessons;
  if(!subset.length)return <Empty message={copy('Chưa có bài học gần đây.','No recently opened lessons.')}
   route="catalog" action={copy('Mở Tàng Thư','Browse courses')}/>;
  return <div className="path-list li-react-shelf-list">
-  {subset.map(item=><div className="path-item library-list-item" key={item.id}>
-   <div className="library-list-copy">
-    <strong>{item.title}</strong>
-    <Text role="support">{item.id} · {item.status} · {item.detail}</Text>
-   </div>
-   <Button variant="ghost" className="library-text-link" onClick={()=>openRoute(item.route)}>
-    {copy('Tiếp tục','Continue')}
-   </Button>
-   <Button variant="ghost" className="library-icon-action" aria-pressed={item.saved}
-    aria-label={(item.saved?copy('Bỏ lưu bài ','Unsave lesson '):copy('Lưu bài ','Save lesson '))+item.id}
-    onClick={()=>app.liBookmarks?.toggle('lesson',item.id)}>
-    <LiIcon name="bookmark" size={18}/>
-   </Button>
-  </div>)}
+  {subset.map(item=>{
+   const status=app.LiSpellPractice?.getT02Status?.(item.id);
+   const needsRating=status?.awaitingRating===true;
+   const due=!needsRating&&typeof status?.dueAt==='number'&&status.dueAt<=now;
+   return <div className="path-item library-list-item" key={item.id}>
+    <div className="library-list-copy">
+     <strong>{item.title}</strong>
+     <Text role="support">{item.id} · {item.status} · {item.detail}</Text>
+     {(needsRating||due)&&<Text role="support" className="library-review-due">
+      {needsRating?copy('T02 · Chờ tự đánh giá','T02 · Finish self-rating'):
+       copy('T02 · Đến hạn ôn','T02 · Review due')}
+     </Text>}
+    </div>
+    <Button variant="ghost" className="library-text-link" onClick={()=>openRoute(item.route)}>
+     {copy('Tiếp tục','Continue')}
+    </Button>
+    <Button variant="ghost" className="library-icon-action" aria-pressed={item.saved}
+     aria-label={(item.saved?copy('Bỏ lưu bài ','Unsave lesson '):copy('Lưu bài ','Save lesson '))+item.id}
+     onClick={()=>app.liBookmarks?.toggle('lesson',item.id)}>
+     <LiIcon name="bookmark" size={18}/>
+    </Button>
+   </div>;
+  })}
  </div>;
 }
 function ProblemRows({problems,limit}:{

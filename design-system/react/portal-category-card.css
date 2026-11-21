@@ -1,11 +1,11 @@
 /* Shared DS Portal Category Card: portal overlay is independent from the illustration slot. */
-.li-portal-category-card{display:grid;grid-template-columns:minmax(0,42%) minmax(0,1fr);
+.li-portal-category-card{display:grid;grid-template-columns:minmax(0,46%) minmax(0,1fr);
  gap:var(--li-space-4);align-items:center;min-width:0;padding:var(--li-space-5) 0;
  border-bottom:1px solid var(--rule);color:var(--moss);background:transparent}
 .li-portal-category-art{position:relative;width:100%;aspect-ratio:1000/1217;isolation:isolate;
  min-width:0;overflow:hidden}
-.li-portal-category-interior{position:absolute;z-index:0;inset:9% 13% 9%;
- display:grid;place-items:center;overflow:hidden;border-radius:48% 48% 0 0;
+.li-portal-category-interior{position:absolute;z-index:0;inset:16% 16% 7%;
+ display:grid;place-items:center;overflow:hidden;border-radius:50% 50% 0 0;
  background:var(--paper-2)}
 .li-portal-category-interior>img{width:100%;height:100%;object-fit:cover;object-position:center}
 .li-portal-category-placeholder{width:100%;height:100%;display:grid;place-items:center}
@@ -28,7 +28,7 @@
 .li-portal-category-action:focus-visible{outline:3px solid var(--moss);outline-offset:5px}
 .li-portal-category-action:disabled{opacity:.5;cursor:not-allowed}
 @media(max-width:599px){
- .li-portal-category-card{grid-template-columns:minmax(0,43%) minmax(0,1fr);
+ .li-portal-category-card{grid-template-columns:minmax(0,44%) minmax(0,1fr);
   gap:var(--li-space-3);padding:var(--li-space-4) 0}
  .li-portal-category-copy{gap:var(--li-space-2)}
  .li-portal-category-action{margin-top:var(--li-space-2);padding:var(--li-space-2) var(--li-space-3)}
@@ -39,3 +39,8 @@
  border:clamp(8px,2.5vw,20px) solid var(--wood);border-bottom-width:clamp(12px,3vw,24px);
  border-radius:49% 49% 0 0;pointer-events:none}
 .li-portal-category-art[data-overlay-loaded="true"] .li-portal-category-fallback-arch{display:none}
+
+@media(max-width:359px){
+ .li-portal-category-card{grid-template-columns:minmax(0,41%) minmax(0,1fr)}
+ .li-portal-category-action{gap:var(--li-space-2);padding:var(--li-space-2)}
+}

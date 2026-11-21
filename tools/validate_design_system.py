@@ -95,7 +95,7 @@ def main() -> int:
         registry = json.loads(visual_registry.read_text(encoding="utf-8"))
         entries = registry.get("file_based_runtime_snapshot", {}).get("records", [])
         check(registry.get("schema") == "li-visual-assets-index-v1", "visual asset registry schema current")
-        check(len(entries) == 5, "Home and brand images inventoried")
+        check(len(entries) == 6, "Home and brand images inventoried")
         for entry in entries:
             canonical = ROOT / entry.get("canonical", "")
             runtime = ROOT / entry.get("app", "")

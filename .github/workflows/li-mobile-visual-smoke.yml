@@ -52,6 +52,7 @@ jobs:
               exit 1
             fi
             echo "PASS $view viewport 390x844 — real React DOM + computed mobile geometry"
+            grep -o '<pre id="qa-report"[^>]*>[^<]*' ".qa-iphone-screens/$view.dom" | tail -1 || true
             "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
               --hide-scrollbars --window-size=390,844 --virtual-time-budget=5000 \
               --screenshot="$PWD/.qa-iphone-screens/$view.png" "$url" >/dev/null 2>&1
@@ -64,3 +65,4 @@ jobs:
           name: li-iphone-react-screen-smoke
           path: .qa-iphone-screens/
           retention-days: 3
+          include-hidden-files: true

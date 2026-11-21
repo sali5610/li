@@ -1,4 +1,7 @@
 import React,{useEffect,useState} from 'react';
+import {Button,Card,Heading,Text} from '../../../../design-system/react/index';
+import '../../../../design-system/react/atoms.css';
+import '../../../../design-system/react/components.css';
 import {checkInviteAccess,safeInviteErrorCode} from '../sync/invite-access.js';
 import {authClient,neonSessionPort} from './neon-client.js';
 import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING,IS_INTEGRATED_LI_APP} from './config.js';
@@ -345,20 +348,23 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  }
  return <main className="auth-pilot">
   <header className="auth-header">
-   <div><p className="auth-tag">{stageLabel}</p><h1>{t.heading}</h1></div>
+   <div><Text role="support" className="auth-tag">{stageLabel}</Text>
+    <Heading level={1} role="headline" className="auth-title">{t.heading}</Heading></div>
    <div className="auth-lang" aria-label="Language">
-    <button type="button" aria-pressed={locale==='vi'} onClick={()=>setLanguage('vi')}>{t.switchVi}</button>
-    <button type="button" aria-pressed={locale==='en'} onClick={()=>setLanguage('en')}>{t.switchEn}</button>
+    <Button variant={locale==='vi'?'primary':'secondary'} aria-pressed={locale==='vi'}
+     onClick={()=>setLanguage('vi')}>{t.switchVi}</Button>
+    <Button variant={locale==='en'?'primary':'secondary'} aria-pressed={locale==='en'}
+     onClick={()=>setLanguage('en')}>{t.switchEn}</Button>
    </div>
   </header>
-  <section className="auth-card" aria-busy={busy!==null||(Boolean(accountId)&&access==='checking')}>
-   <p>{t.intro}</p>
+  <Card variant="raised" className="auth-card" aria-busy={busy!==null||(Boolean(accountId)&&access==='checking')}>
+   <Text role="body">{t.intro}</Text>
    {isPending&&!localOffline&&<p role="status">{t.loading}</p>}
    {error&&!localOffline&&<p role="alert">{t.error}</p>}
    {(!isPending&&!error||localOffline)&&(accountId?
     <div className="auth-account" key={accountId}>
      <p>{localOffline?(locale==='vi'?'Bản học trên máy này':'This device’s learning copy'):t.signed}: <strong>{localOffline?'li.':session?.user?.email}</strong></p>
-     {onClose&&(access==='granted'||access==='offline')&&<button type="button" className="qa-secondary" onClick={onClose}>{locale==='vi'?'Vào thư viện':'Return to library'}</button>}
+     {onClose&&(access==='granted'||access==='offline')&&<Button variant="primary" onClick={onClose}>{locale==='vi'?'Vào thư viện':'Return to library'}</Button>}
      <p role={access==='denied'||access==='error'?'alert':'status'}>
       {access==='checking'?t.checking:access==='granted'?t.granted:
        access==='offline'?t.offline:access==='denied'?t.denied:t.blocked}
@@ -372,22 +378,22 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
        'No silent overwrite. Choose which version to keep for each item; the other version is replaced after syncing.'}</p>
       {conflicts.map(c=><div key={c.itemType+':'+c.itemId}>
        <p>{c.label}</p>
-       <button type="button" className="qa-secondary" disabled={resolving}
-        onClick={()=>void decideConflict(c,'keep-local')}>{locale==='vi'?'Giữ bản trên máy này':'Keep this device'}</button>
-       <button type="button" className="qa-secondary" disabled={resolving}
-        onClick={()=>void decideConflict(c,'use-remote')}>{locale==='vi'?'Dùng bản trên Neon':'Use Neon version'}</button>
+       <Button variant="secondary" disabled={resolving}
+        onClick={()=>void decideConflict(c,'keep-local')}>{locale==='vi'?'Giữ bản trên máy này':'Keep this device'}</Button>
+       <Button variant="secondary" disabled={resolving}
+        onClick={()=>void decideConflict(c,'use-remote')}>{locale==='vi'?'Dùng bản trên Neon':'Use Neon version'}</Button>
       </div>)}
      </section>}
      {access==='granted'&&!localOffline&&session?.user?.email&&
       <AiOwnerControl email={session.user.email} locale={locale}/>}
-     <button type="button" onClick={()=>void signOut()} disabled={busy!==null}>
+     <Button variant="secondary" onClick={()=>void signOut()} disabled={busy!==null}>
       {busy?t.busy:localOffline?t.lockOffline:t.logout}
-     </button>
+     </Button>
     </div>:
     <div className="auth-sign-in">
-     <button type="button" onClick={()=>void signInGoogle()} disabled={busy!==null}>
+     <Button variant="primary" onClick={()=>void signInGoogle()} disabled={busy!==null}>
       {busy?t.busy:t.google}
-     </button>
+     </Button>
     </div>
    )}
    {!accountId&&oauthReturn&&<p className="auth-error" role="alert" data-oauth-return={oauthReturn.kind}>
@@ -400,6 +406,6 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     <SyncQaPanel uid={accountId} locale={locale}/>}
    <p className="auth-local" role="status">{access==='offline'?syncCopy[locale].offline:IS_INTEGRATED_LI_APP&&accountId&&access==='granted'?syncCopy[locale][syncStatus]:(IS_GITHUB_STAGING?t.l09Local:t.local)}</p>
    <p className="auth-privacy">{t.privacy}</p>
-  </section>
+  </Card>
  </main>;
 }

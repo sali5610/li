@@ -788,3 +788,83 @@
 
 /* Native focus rings, card boundaries, buttons and navigational/section rules
    intentionally remain untouched for interaction and accessibility. */
+
+/* PO refinement: a stamp is die-cut paper, NOT a rectangle with fake cream
+   circles painted onto its border. CSS alpha masks punch *real transparent*
+   semicircles from all four edges at an even pitch. There is no outer stroke.
+   Two low-opacity cross-grain layers suggest woven canvas stock, not torn
+   or artificially stacked paper. Applies equally in Gallery and Focus/Fluid. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"]
+ .li-flow-page[data-layout="vintagePop"]:is(
+  [data-page="lesson"],[data-page="case"],[data-page="collection"]
+ ) .li-flow-page-aside{
+ --vp-stamp-pitch:18px;
+ --vp-stamp-notch:7px;
+ position:relative;
+ isolation:isolate;
+ background-color:var(--vp-accent-lavender);
+ background-image:
+  repeating-linear-gradient(0deg,rgba(255,255,255,.09) 0 1px,transparent 1px 4px),
+  repeating-linear-gradient(90deg,rgba(16,46,45,.035) 0 1px,transparent 1px 5px);
+ background-blend-mode:normal;
+ border:0;
+ outline:0;
+ box-shadow:none;
+ filter:drop-shadow(0 6px 9px rgba(16,46,45,.14));
+ padding:clamp(24px,3.4vw,44px);
+ /* Each mask spans the whole opposite axis. Intersecting the four masks
+    cuts identical inward semicircles; no fake white dots or edge overlay. */
+ -webkit-mask-image:
+  radial-gradient(circle var(--vp-stamp-notch) at 50% 0,transparent 96%,#000 100%),
+  radial-gradient(circle var(--vp-stamp-notch) at 50% 100%,transparent 96%,#000 100%),
+  radial-gradient(circle var(--vp-stamp-notch) at 0 50%,transparent 96%,#000 100%),
+  radial-gradient(circle var(--vp-stamp-notch) at 100% 50%,transparent 96%,#000 100%);
+ mask-image:
+  radial-gradient(circle var(--vp-stamp-notch) at 50% 0,transparent 96%,#000 100%),
+  radial-gradient(circle var(--vp-stamp-notch) at 50% 100%,transparent 96%,#000 100%),
+  radial-gradient(circle var(--vp-stamp-notch) at 0 50%,transparent 96%,#000 100%),
+  radial-gradient(circle var(--vp-stamp-notch) at 100% 50%,transparent 96%,#000 100%);
+ -webkit-mask-size:
+  var(--vp-stamp-pitch) 100%,var(--vp-stamp-pitch) 100%,
+  100% var(--vp-stamp-pitch),100% var(--vp-stamp-pitch);
+ mask-size:
+  var(--vp-stamp-pitch) 100%,var(--vp-stamp-pitch) 100%,
+  100% var(--vp-stamp-pitch),100% var(--vp-stamp-pitch);
+ -webkit-mask-position:top left,bottom left,top left,top right;
+ mask-position:top left,bottom left,top left,top right;
+ -webkit-mask-repeat:repeat-x,repeat-x,repeat-y,repeat-y;
+ mask-repeat:repeat-x,repeat-x,repeat-y,repeat-y;
+ -webkit-mask-composite:source-in,source-in,source-in;
+ mask-composite:intersect,intersect,intersect;
+}
+/* Remove the old four white radial-gradient rails that looked like
+   dotted/torn paper and sat on TOP of actual content. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"]
+ .li-flow-page[data-layout="vintagePop"]:is(
+  [data-page="lesson"],[data-page="case"],[data-page="collection"]
+ ) .li-flow-page-aside::after{
+ content:none;
+ background:none;
+}
+/* Same responsive reading/navigation structure; leave the real buttons,
+   focus rings, internal content and navigational section lines alone. */
+@media(max-width:600px){
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"]
+  .li-flow-page[data-layout="vintagePop"]:is(
+   [data-page="lesson"],[data-page="case"],[data-page="collection"]
+  ) .li-flow-page-aside{
+  padding:25px 22px 27px;
+  gap:16px;
+ }
+}
+/* Plain, clean-edged lavender ticket is a safe fallback for older engines;
+   iOS/Safari capable of mask intersection receives the punched stamp. */
+@supports not (mask-composite:intersect){
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"]
+  .li-flow-page[data-layout="vintagePop"]:is(
+   [data-page="lesson"],[data-page="case"],[data-page="collection"]
+  ) .li-flow-page-aside{
+  -webkit-mask:none;
+  mask:none;
+ }
+}

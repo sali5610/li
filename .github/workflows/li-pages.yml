@@ -173,7 +173,15 @@ jobs:
                 'html.li-auth-verified.li-account-open .app{display:none!important}'
                 'html.li-auth-verified:not(.li-account-open) #li-staging-auth-root'
                 '{display:none!important}</style>')
-          html=html.replace('<head>','<head>'+gate,1)
+          # Embed the published revision in the REAL app shell so an iPhone
+          # with a stale Workbox document can compare it to public build-info.
+          published_sha=os.environ['GITHUB_SHA']
+          html=html.replace('<head>','<head>'+gate+
+            '<meta name="li-staging-build" content="'+published_sha+'">',1)
+          pwa_script='<script defer src="./assets/pwa-register.js"></script>'
+          assert html.count(pwa_script)==1,'PWA updater script tag changed'
+          html=html.replace(pwa_script,
+            '<script defer src="./assets/pwa-register.js?li_build='+published_sha[:12]+'"></script>',1)
           react_css='./assets/li-react-learning-'+os.environ['GITHUB_SHA'][:12]+'.css'
           final_styles=(
            '<link rel="stylesheet" href="./assets/staging-gate.css?v=invite-shell-1">'
@@ -218,7 +226,11 @@ jobs:
           print('PASS one normal app: invited login → native lesson → feedback → progress')
           PY
           test -s site/assets/staging-auth-gate.js
+          test -s site/assets/pwa-register.js
+          node --check site/assets/pwa-register.js
           test -s "site/assets/li-react-learning-${GITHUB_SHA:0:12}.css"
+          grep -Fq "name=\"li-staging-build\" content=\"${GITHUB_SHA}\"" site/index.html
+          grep -Fq "pwa-register.js?li_build=${GITHUB_SHA:0:12}" site/index.html
           grep -Fq "li-react-learning-${GITHUB_SHA:0:12}.css" site/index.html
           # Verify that the submitted mirror styling exists in the emitted bundle.
           grep -Fq 'li-home-mirror-art-image' "site/assets/li-react-learning-${GITHUB_SHA:0:12}.css"
@@ -392,20 +404,32 @@ jobs:
           url="https://sali5610.github.io/li/build-info.json?source=${GITHUB_SHA}"
           lab_url="https://sali5610.github.io/li/design-system/ui-lab.html?source=${GITHUB_SHA}"
           rev="${GITHUB_SHA:0:12}"
+          app_url="https://sali5610.github.io/li/?li_build=${rev}"
+          js_url="https://sali5610.github.io/li/assets/staging-auth-gate.js?li_build=${rev}"
+          css_url="https://sali5610.github.io/li/assets/li-react-learning-${rev}.css"
           for attempt in $(seq 1 15); do
             payload="$(curl -fsSL --max-time 10 -H 'Cache-Control: no-cache' "$url" || true)"
             lab="$(curl -fsSL --max-time 10 -H 'Cache-Control: no-cache' "$lab_url" || true)"
+            app="$(curl -fsSL --max-time 10 -H 'Cache-Control: no-cache' "$app_url" || true)"
+            js_status="$(curl -sSL -o /dev/null --max-time 10 -w '%{http_code}' "$js_url" || true)"
+            css_status="$(curl -sSL -o /dev/null --max-time 10 -w '%{http_code}' "$css_url" || true)"
             if [[ "$payload" == *"\"sha\":\"${GITHUB_SHA}\""* &&
                   "$lab" == *"react-ui-lab.js?li_build=${rev}"* &&
-                  "$lab" == *"react-ui-lab.css?li_build=${rev}"* ]]; then
+                  "$lab" == *"react-ui-lab.css?li_build=${rev}"* &&
+                  "$app" == *"name=\"li-staging-build\" content=\"${GITHUB_SHA}\""* &&
+                  "$app" == *"pwa-register.js?li_build=${rev}"* &&
+                  "$app" == *"staging-auth-gate.js?li_build=${rev}"* &&
+                  "$app" == *"li-react-learning-${rev}.css"* &&
+                  "$js_status" == "200" && "$css_status" == "200" ]]; then
               echo "LIVE_SHA_PASS ${GITHUB_SHA} — $url"
               echo "LIVE_UI_LAB_REV_PASS ${rev} — $lab_url"
+              echo "LIVE_APP_REV_PASS ${rev} — HTML + React JS/CSS + updater"
               exit 0
             fi
             echo "Public staging revision not yet visible (attempt ${attempt}/15)"
             sleep 8
           done
-          echo "LIVE_STAGING_FAIL: app SHA and UI Lab JS/CSS must match ${GITHUB_SHA}"
+          echo "LIVE_STAGING_FAIL: deployed app HTML, React bundles and UI Lab must match ${GITHUB_SHA}"
           exit 1
 
       - name: Staging-only release note

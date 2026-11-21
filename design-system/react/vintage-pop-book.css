@@ -108,7 +108,7 @@
  background:
  linear-gradient(90deg,#fff0d0 0%,#fff7e8 3%,#fff9ee 47%,#ebdcc4 49.5%,
  #cbb69c 50%,#f6f1e8 51.5%,#fffaf0 98%,#eddbbf 100%);
- box-shadow:0 9px 0 #183b2d,9px 14px 0 #b98978,16px 19px 0 #214d3a;
+ box-shadow:0 9px 0 #183b2d,9px 14px 0 #ca7960,16px 19px 0 #214d3a;
  overflow:hidden;perspective:1200px;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson::before{
@@ -199,7 +199,7 @@
  background:#c4d18d;position:relative;z-index:2;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson:focus-within{
- box-shadow:0 9px 0 #183b2d,9px 14px 0 #b98978,16px 19px 0 #214d3a;
+ box-shadow:0 9px 0 #183b2d,9px 14px 0 #ca7960,16px 19px 0 #214d3a;
 }
 @keyframes li-pop-book-ink{
  from{opacity:0;transform:translateY(10px) scale(.94)}
@@ -214,7 +214,7 @@
   grid-template-rows:auto auto auto auto auto;
   grid-template-areas:"intro" "diagram" "chapters" "folio" "action";
   border-width:8px;border-radius:8px 15px 15px 8px;
-  min-height:0;box-shadow:0 7px 0 #183b2d,6px 12px 0 #b98978;
+  min-height:0;box-shadow:0 7px 0 #183b2d,6px 12px 0 #ca7960;
   background:linear-gradient(90deg,#f6f0e4,#fffaf0 6%,#fffaf0 94%,#edd8b8);
  }
  .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson::before{

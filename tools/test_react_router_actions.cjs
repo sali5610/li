@@ -20,7 +20,7 @@ assert.match(port,/window\.liAppRouter\?\.back\(\)/);
 assert.match(controls,/onNavigate\?:\(id:string\)=>void/);
 assert.match(controls,/data-page=\{onNavigate\?undefined:item\.id\}/);
 assert.match(controls,/onClick=\{onNavigate\?\(\)=>onNavigate\(item\.id\):undefined\}/);
-assert.match(nav,/onNavigate=\{openRoute\}/);
+assert.match(nav,/onNavigate=\{id=>\{\s*if\(!openRoute\(id\)\|\|id!=='search'\)return;/);
 assert.match(nav,/backRoot\.render/);
 assert.match(nav,/onClick=\{goBack\}/);
 assert.doesNotMatch(nav,/li-react-account-trigger|liAccountOverlay/,

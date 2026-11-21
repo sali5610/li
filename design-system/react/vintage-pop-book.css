@@ -286,3 +286,26 @@
 
 /* Keep the canonical nested lesson intro's text roles, avoid doubled framing. */
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson .li-pop-book-left>.li-flow-lesson-top{padding:0;min-height:0;max-width:none;}
+
+/* The v2 experiment had card paint with a more specific selector. Explicitly
+   reset it on the book's shared content, otherwise the 'pages' become cards. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-pop-lesson .li-pop-book-left>.li-flow-lesson-top{
+ border:0;background:transparent;box-shadow:none;padding:0;min-height:0;max-width:none;
+ display:grid;gap:16px;align-content:start;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-pop-lesson>.li-flow-card-grid{
+ display:grid;grid-template-columns:minmax(0,1fr);grid-area:chapters;
+ padding:0 32px 20px;gap:0;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-pop-lesson>.li-flow-lesson-diagram{
+ grid-area:diagram;min-height:195px;margin:30px 30px 8px;padding:14px 10px;
+ background:transparent;border:0;border-bottom:1px solid #c7ac8d;box-shadow:none;
+}
+@container lab-preview (max-width:860px){
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-pop-lesson>.li-flow-card-grid{
+  grid-template-columns:minmax(0,1fr);padding:0 22px 12px;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-pop-lesson>.li-flow-lesson-diagram{
+  margin:12px 22px;padding:12px 8px;min-height:145px;
+ }
+}

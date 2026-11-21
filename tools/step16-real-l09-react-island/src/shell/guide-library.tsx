@@ -121,7 +121,7 @@ export function Guide(){
       label={copy('Tìm trong 13 phương pháp','Search all 13 methods')}
       value={query} onQueryChange={setQuery} showSubmit={false}
       submitLabel={copy('Tìm','Search')} clearLabel={copy('Xóa tìm kiếm','Clear search')}
-      placeholder="Method of Loci, T01, Triệu Ức..."/>
+      placeholder={copy('Method of Loci, T01, Triệu Ức…','Method of Loci, T01…')}/>
      <FilterGroup label={copy('Bộ lọc nhóm kỹ thuật','Method category filters')}
       options={view.categories.map(item=>({value:item.key,label:item.label}))}
       selected={[category]} onChange={next=>setCategory(next[0]||'Tất cả')}

@@ -14,7 +14,7 @@ import {Markdown} from './EditorialJourney';
 import {LessonBookmark} from './LessonDetailParity.js';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
-import {useDiscoveryLocale} from '../shell/discovery-locale.js';
+import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discovery-locale.js';
 import {useStepScreen} from './step-screen.js';
 
 type Locale='vi'|'en';
@@ -143,7 +143,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  useStepScreen(phase,id);
  const [busy,setBusy]=useState(true),[pending,setPending]=useState(0);
  const [reload,setReload]=useState(0);
- const [locked,setLocked]=useState(false),[error,setError]=useState('');
+ const [locked,setLocked]=useState(false),[errorCopy,setError]=useState<BilingualCopy|null>(null);
+ const error=errorCopy?localized(appLocale,...errorCopy):'';
  const [sync,setSync]=useState<SyncState>('unavailable');
  const current=useRef<Attempt|null>(null),revision=useRef('');
  const owner=useRef(''),chain=useRef<Promise<void>>(Promise.resolve());
@@ -177,8 +178,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       requestAnimationFrame(()=>window.scrollTo({top:token.scrollY??0}));
      }
     }catch{/* still display the saved lesson */}
-   }catch(e){
-    if(alive){setBusy(false);setError(e instanceof Error?e.message:'LEARNING_LOAD_FAILED');}
+   }catch{
+    if(alive){setBusy(false);setError(['Không tải được bài học hoặc chưa xác minh được quyền truy cập.','Could not load the lesson or verify access.']);}
    }
   })();
   return()=>{alive=false;mounted.current=false;};
@@ -209,14 +210,14 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   chain.current=job.catch(()=>undefined);
   return job.then(()=>true,()=>{
    failed.current=true;if(mounted.current){setLocked(true);
-    setError('Không lưu được bài. Bản nháp hiện tại chưa xác nhận đã lưu; không ghi đè tiến độ cũ.');}
+    setError(['Không lưu được bài. Bản nháp hiện tại chưa xác nhận đã lưu; không ghi đè tiến độ cũ.','Could not save the draft. Previously saved progress was not overwritten.']);}
    return false;
   }).finally(()=>{count.current--;if(mounted.current)setPending(count.current);});
  }
  /** Use the same recoverable save-error affordance as the three exemplar lessons. */
  async function retryFailedSave(){
   if(!failed.current||!owner.current||!current.current)return;
-  failed.current=false;setLocked(false);setError('');
+  failed.current=false;setLocked(false);setError(null);
   await persist(current.current);
  }
  function edit(change:(a:Attempt)=>Attempt){
@@ -227,7 +228,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  }
  async function submit(){
   const a=current.current;if(!a||locked||pending||a.submitted)return;
-  if(a.draft.some(x=>x.trim().length<MIN)){setError('Cần đủ bốn câu trả lời, mỗi câu ít nhất 12 ký tự.');return;}
+  if(a.draft.some(x=>x.trim().length<MIN)){setError(['Cần đủ bốn câu trả lời, mỗi câu ít nhất 12 ký tự.','Answer all four questions with at least 12 characters each.']);return;}
   const local=lesson.content.localized,version=lesson.version;
   const frozen:EditorialReviewSnapshot={
    contentVersion:version,rubricVersion:version+':rubric:0-8',
@@ -236,7 +237,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     en:[...local.en.assessment.questions] as [string,string,string,string]},
    criteria:{vi:local.vi.assessment.rubricCriteria,en:local.en.assessment.rubricCriteria}
   };
-  setError('');
+  setError(null);
   if(await persist({...a,submission:[...a.draft],submitted:true,
    submittedAt:new Date().toISOString(),submissionLocale:a.locale,
    contentVersion:version,rubricVersion:frozen.rubricVersion,
@@ -258,16 +259,16 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   const a=current.current;if(!a||locked||pending||a.submitted)return;
   const prior=a.methodAttempts?.[method];
   if(prior?.submittedAt||!prior||prior.draft.trim().length<MIN){
-   setError('Viết ít nhất 12 ký tự để nộp lượt luyện Thần Chú.');return;
+   setError(['Viết ít nhất 12 ký tự để nộp lượt luyện Thần Chú.','Write at least 12 characters to submit your spell practice.']);return;
   }
-  setError('');
+  setError(null);
   await persist({...a,methodAttempts:{...a.methodAttempts,
    [method]:{...prior,submission:prior.draft,submittedAt:new Date().toISOString()}}});
  }
  async function finish(){
   const a=current.current;if(!a||locked||pending||!persisted?.answerRevealed||
    a.ratings.some(x=>x===null))return;
-  setError('');
+  setError(null);
   if(await persist({...a,reviewed:true,reviewedAt:new Date().toISOString()}))setPhase('progress');
  }
  async function restartLesson(){
@@ -291,7 +292,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   const next:Attempt={...initial(),locale:a.locale,
    attemptNumber:previous.attemptNumber+1,attemptHistory:[...(a.attemptHistory||[]),previous],
    answerRevealed:false,contentVersion:lesson.version};
-  if(JSON.stringify(next).length>55000){setError('Lịch sử bài học vượt giới hạn lưu.');return;}
+  if(JSON.stringify(next).length>55000){setError(['Lịch sử bài học vượt giới hạn lưu.','Lesson history exceeds the storage limit.']);return;}
   if(await persist(next))setPhase('read');
  }
  function mentor(stage:MentorMoment['stage']){
@@ -306,13 +307,13 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     id={'li-react-mentor-'+id}>{moment[appLocale].prompt}</Text>
    <Button id={'li-sectioned-mentor-'+id+'-'+stage} variant="secondary"
     onClick={()=>{
-     const locale=attempt?.locale||'vi';
+     const locale=appLocale;
      const app=window as Window&{liBuddyReactMounted?:boolean;
       liQuoteEngine?:{lookup?:(id:string,locale:Locale)=>Quote|null}};
      const quotes=moment.quote_ids.map(key=>app.liQuoteEngine?.lookup?.(key,locale)||null);
      if(!app.liBuddyReactMounted||quotes.length<3||
       quotes.some(q=>!q?.url?.startsWith('https://'))){
-      setError('Lão Lý hoặc nguồn trích dẫn chưa khả dụng.');return;
+      setError(['Lão Lý hoặc nguồn trích dẫn chưa khả dụng.','Elder Li or the cited source is unavailable.']);return;
      }
      window.dispatchEvent(new CustomEvent('li:buddy-open',{detail:{
       text:moment[locale].prompt,avatar:'./assets/laoly-neutral.png',
@@ -320,7 +321,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       labels:moment[locale].actions.map(a=>a.label),
       editorial:{actions:moment[locale].actions.map(a=>({label:a.label,reply:a.reply})),quotes}
      }}));
-    }}>{appLocale==='en'?'Ask Lao Ly about this lesson':'Hỏi Lão Lý theo bài học'}</Button>
+    }}>{appLocale==='en'?'Ask Elder Li about this lesson':'Hỏi Lão Lý theo bài học'}</Button>
   </section>;
  }
  function openGuide(requestMethod:string=method,practice=false){
@@ -329,7 +330,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    liMethods?:{open?:(methodId:string,practice?:boolean,lessonId?:string)=>boolean};
    LiSpellPractice?:{setLessonContext?:(lessonId:string)=>boolean}
   };
-  if(!app.liMethods?.open){setError('Sổ Tay Thần Chú chưa khả dụng.');return;}
+  if(!app.liMethods?.open){setError(['Sổ Tay Thần Chú chưa khả dụng.','The Spellbook is unavailable.']);return;}
   try{
    const returnScrollY=window.scrollY; // navigation resets page scroll synchronously
    // Published routes have a canonical context-aware opener. Personal staging
@@ -339,7 +340,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     :app.liMethods.open(requestMethod,practice)===true&&
      app.LiSpellPractice?.setLessonContext?.(id)===true;
    if(!opened){
-    setError('Chưa gắn được Thần Chú với bài học; bản nháp vẫn được giữ.');
+    setError(['Chưa gắn được Thần Chú với bài học; bản nháp vẫn được giữ.','Could not link the spell to the lesson. Your draft was kept.']);
     return;
    }
    // Only successful navigation gets a return token; unavailable sessionStorage
@@ -348,7 +349,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     sessionStorage.setItem('li.sectioned.guide-return.v1',
      JSON.stringify({id,method:requestMethod,at:Date.now(),scrollY:returnScrollY}));
    }catch{/* Lesson return still works without scroll restoration. */}
-  }catch{setError('Chưa mở được Thần Chú; bản nháp vẫn được giữ.');}
+  }catch{setError(['Chưa mở được Thần Chú; bản nháp vẫn được giữ.','Could not open the spell. Your draft was kept.']);}
  }
  // App language comes only from Settings. Preserve the lesson's saved
  // attempt locale through its existing account-scoped write path.
@@ -356,9 +357,9 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   if(busy||!attempt||attempt.locale===appLocale||locked||pending>0)return;
   void persist({...attempt,locale:appLocale});
  },[appLocale,attempt?.locale,busy,locked,pending]);
- if(busy)return <section role="status" className="li-learning-journey" aria-busy="true">Đang xác minh quyền học…</section>;
+ if(busy)return <section role="status" className="li-learning-journey" aria-busy="true">{localized(appLocale,'Đang xác minh quyền học…','Verifying lesson access…')}</section>;
  if(!attempt||!persisted)return <section role="alert" className="li-learning-journey">
-  <Text>{error||'Không tải được bài.'}</Text>
+  <Text>{error||localized(appLocale,'Không tải được bài.','Could not load the lesson.')}</Text>
  </section>;
  const locale=appLocale,vi=locale==='vi',c=lesson.content.localized[locale];
  const names:Record<Phase,string>=vi?

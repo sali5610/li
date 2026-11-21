@@ -9,6 +9,11 @@ const supported=["vi","en"];
 let locale="vi";
 try{const raw=localStorage.getItem(KEY);if(supported.includes(raw))locale=raw;}catch(error){/* no storage available */}
 const TEXT={
+ "Chưa lấy được đề bài Phản Chứng đang hiển thị. Nội dung vẫn được giữ; hãy thử lưu lại.":"Could not read the current claim. Your work was kept. Try saving again.",
+ "Dữ liệu cloud chưa đọc được, vẫn giữ ghi chép hiện tại.":"Could not read cloud data. Your current notes were kept.",
+ "Vấn đề không còn trong Gương Vạn Vấn.":"This problem is no longer in the Mirror of Questions.",
+ "Không đọc được dữ liệu lưu; chưa thay đổi Dấu Trang.":"Could not read saved data. Bookmarks were kept.",
+ "Không bỏ lưu được.":"Could not remove the bookmark.",
  "Đồng bộ Nhật Ký & Check-in lên cloud":"Sync Journal & Check-ins to cloud",
  "Bảo vệ riêng tư: chỉ lưu cloud khi bạn đồng ý. Dữ liệu vẫn lưu trên máy khi tắt.":"Private by default: cloud storage only with your consent. Data stays on this device when disabled.",
 

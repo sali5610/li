@@ -213,7 +213,7 @@ function BuddyName({kind,header,placeholder,value,preview,commit}:{
 }
 const settingsSections=[
  {id:'learning',vi:'Học tập',en:'Learning'},
- {id:'companion',vi:'Lão Lý',en:'Lao Ly'},
+ {id:'companion',vi:'Lão Lý',en:'Elder Li'},
  {id:'reminders',vi:'Nhắc nhở',en:'Reminders'},
  {id:'data',vi:'Dữ liệu & riêng tư',en:'Data & privacy'},
 ] as const;
@@ -281,7 +281,7 @@ export function Settings(){
      <Card variant="raised" className="li-react-setting-card li-react-companion-card">
       <div className="kicker">{copy('NGƯỜI ĐỒNG HÀNH','COMPANION')}</div>
       <div className="settings-buddy-heading">
-       <Heading level={2} role="titleMedium">Lão Lý</Heading>
+       <Heading level={2} role="titleMedium">{copy('Lão Lý','Elder Li')}</Heading>
        <img className="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"
         alt="" aria-hidden="true" loading="lazy" decoding="async"/>
       </div>
@@ -295,13 +295,13 @@ export function Settings(){
        <Heading level={3} role="titleSmall">{copy('Lão gọi bạn thế nào?','How should Lao Ly address you?')}</Heading>
        <Text role="support">{copy('Để trống để dùng cách gọi mặc định.','Leave blank to use the default address.')}</Text>
        <div className="buddy-address-grid">
-        <BuddyName kind="warm" header={copy('Thân tình','Warm')} placeholder="Tiểu hữu"
+        <BuddyName kind="warm" header={copy('Thân tình','Warm')} placeholder={copy('Tiểu hữu','Young friend')}
          value={view.nicknames.warm||''} preview={view.previews.warm||''}
          commit={(kind,value,done)=>act(done?'nicknameCommit':'nicknameInput',kind,value)}/>
-        <BuddyName kind="teasing" header={copy('Cà khịa','Teasing')} placeholder="Nhóc"
+        <BuddyName kind="teasing" header={copy('Cà khịa','Teasing')} placeholder={copy('Nhóc','Kid')}
          value={view.nicknames.teasing||''} preview={view.previews.teasing||''}
          commit={(kind,value,done)=>act(done?'nicknameCommit':'nicknameInput',kind,value)}/>
-        <BuddyName kind="serious" header={copy('Nghiêm nghị','Serious')} placeholder="Ngươi"
+        <BuddyName kind="serious" header={copy('Nghiêm nghị','Serious')} placeholder={copy('Ngươi','You')}
          value={view.nicknames.serious||''} preview={view.previews.serious||''}
          commit={(kind,value,done)=>act(done?'nicknameCommit':'nicknameInput',kind,value)}/>
        </div>

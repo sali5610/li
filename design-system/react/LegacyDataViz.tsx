@@ -1,4 +1,5 @@
 import React from 'react';
+import {LiIcon} from './LucideIcons';
 import type {ReactNode} from 'react';
 
 export type ActivityMode='overload'|'recover'|'start'|'focus';
@@ -43,9 +44,9 @@ export function MonthCalendar({year,month,selectedDate,todayDate,records,
      aria-label={locale==='vi'?'Đi tới hôm nay':'Jump to today'}>
      {locale==='vi'?'Hôm nay':'Today'}</button>}
     {onMonthChange?<><button type="button" onClick={()=>move(-1)}
-      aria-label={locale==='vi'?'Tháng trước':'Previous month'}>‹</button>
+      aria-label={locale==='vi'?'Tháng trước':'Previous month'}><LiIcon name="chevron-left" size={18}/></button>
      <button type="button" onClick={()=>move(1)}
-      aria-label={locale==='vi'?'Tháng sau':'Next month'}>›</button></>:null}
+      aria-label={locale==='vi'?'Tháng sau':'Next month'}><LiIcon name="chevron-right" size={18}/></button></>:null}
    </div>
   </header>
   <div className="li-legacy-calendar-grid" role="group"

@@ -54,7 +54,7 @@ function NavigationSurface({area,items}:{area:AppNavigationControlsProps['area']
  }):items;
  const navActive=/^(lesson|draftLesson)/.test(active)?'catalog':
   active==='guideDetail'?'guide':
-  ['resume','collection','noteDetail','dashboard'].includes(active)?'library':
+  ['resume','bookmarks','collection','noteDetail','dashboard'].includes(active)?'library':
   ['research','case'].includes(active)?'home':active;
  return <AppNavigationControls area={area} activeId={navActive} items={localized} onNavigate={openRoute}/>;
 }
@@ -85,6 +85,7 @@ const trails:Record<string,TrailPart[]>={
  guideDetail:[guideTrail,{vi:'Chi tiết Thần Chú',en:'Spell detail'}],
  library:[libraryTrail],
  resume:[libraryTrail,{vi:'Quay Lại',en:'Continue'}],
+ bookmarks:[libraryTrail,{vi:'Dấu trang',en:'Bookmarks'}],
  collection:[libraryTrail,collectionTrail],
  noteDetail:[libraryTrail,collectionTrail,{vi:'Chi tiết ghi chú',en:'Note detail'}],
  dashboard:[libraryTrail,{vi:'Nhật Ký',en:'Journal'}]

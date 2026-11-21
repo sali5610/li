@@ -102,7 +102,8 @@ for forbidden in ("user-scalable=no", "maximum-scale=1",
 foundations=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert "html { touch-action: pan-x pan-y pinch-zoom; }" in foundations
 assert "#page-home .mirror-message { touch-action: pan-y pinch-zoom; }" in foundations
-assert "20261119-ds33-physical-shell" in page_html
+# Assert the active Safari/iPad physical-shell stylesheet, not an obsolete cache-buster.
+assert re.search(r'ipad-home-canvas\\.css\\?v=[\\w-]+', page_html), "iPad physical shell stylesheet missing"
 
 
 # S137: previous/next arrows cycle questions in both directions; buttons remain stationary.
@@ -188,11 +189,16 @@ assert seal_root.attrib.get("viewBox")=="0 0 256 256"
 assert seal.count("<path ")==1 and "<text" not in seal, "Logo reverted to text glyph"
 assert "理" in seal_root.attrib.get("aria-label","")
 assert 'fill="#243A29"' in seal, "Logo ink must match approved moss theme"
-# S146: favicon MUST use the exact same SVG URL as the approved header seal.
-# A separately inverted moss-background/cream-ink SVG is not the header logo.
-seal_url="./assets/li-seal.svg?v=geometric-20261122"
-assert html.count('src="'+seal_url+'"')==1, "Header seal must be approved SVG"
-assert html.count('rel="icon" type="image/svg+xml" href="'+seal_url+'"')==1, "Favicon must share exact header logo asset"
+# S146: favicon and standard header use the same approved geometric SVG.
+# The transparent Home header swaps to the separately shipped cream SVG,
+# so the visual contrast stays correct without CSS filter inversion.
+seal_matches=re.findall(r'<link rel="icon" type="image/svg\\+xml" href="(\\./assets/li-seal\\.svg\\?v=[\\w-]+)">',page_html)
+assert len(seal_matches)==1, "Favicon must reference the approved geometric seal"
+seal_url=seal_matches[0]
+assert page_html.count('class="brand-stamp brand-stamp--default" src="'+seal_url+'"')==1, "Standard header must share favicon SVG URL"
+home_seal=site/"assets"/"li-seal-home.svg"
+assert home_seal.is_file() and 'fill="#FAF9F5"' in home_seal.read_text(encoding="utf-8"), "Geometric cream Home seal missing"
+assert page_html.count('class="brand-stamp brand-stamp--home" src="./assets/li-seal-home.svg?v=')==1, "Home must use the light geometric SVG"
 assert 'rel="icon" type="image/svg+xml" href="./assets/li-favicon.svg' not in html, "Legacy inverse-color favicon must not be referenced"
 assert seal.count('<path fill="#243A29"')==1, "Approved transparent green seal altered"
 

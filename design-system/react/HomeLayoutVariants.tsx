@@ -12,7 +12,7 @@ import './home-layout-variants.css';
 /** Presentation only. Both the Lab and a future approved app Home import
  * this exact component. No router, auth, persistence or global listeners.
  */
-export type HomeLayoutVariant='heritage'|'editorial'|'immersive'|'notebook'|'bookworm';
+export type HomeLayoutVariant='heritage'|'editorial'|'immersive'|'notebook'|'bookworm'|'vintagePop';
 export interface HomeLayoutProps {
  variant:HomeLayoutVariant;
  locale:'vi'|'en';
@@ -35,6 +35,7 @@ export const homeLayoutVariants:readonly {id:HomeLayoutVariant;vi:string;en:stri
  {id:'immersive',vi:'Immersive',en:'Immersive'},
  {id:'notebook',vi:'Notebook · Ghi chú tay',en:'Notebook · Handwritten'},
  {id:'bookworm',vi:'Bookworm · Sách tối giản',en:'Bookworm · Vintage Minimal'},
+ {id:'vintagePop',vi:'Vintage Pop · Tem giấy',en:'Vintage Pop · Stamp'},
 ];
 export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
  question,scene,source,saved,onPrevious,onNext,onExplore,onSave,onCheckin}:HomeLayoutProps){

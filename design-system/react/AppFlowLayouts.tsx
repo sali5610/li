@@ -18,7 +18,7 @@ import './app-flow-layouts.css';
 export type PageId='home'|'catalog'|'search'|'research'|'case'|'capture'|
  'lesson'|'practice'|'feedback'|'guide'|'guideDetail'|'library'|'resume'|
  'collection'|'noteDetail'|'dashboard'|'settings'|'checkin'|'laoly'|'account';
-export type PageVariant='editorial'|'split'|'cinematic'|'notebook'|'bookworm';
+export type PageVariant='editorial'|'split'|'cinematic'|'notebook'|'bookworm'|'vintagePop';
 export type AppLabFlowId='discovery'|'learning'|'techniques'|'personal'|'daily';
 export const appLabFlows:readonly {
  id:AppLabFlowId;vi:string;en:string;steps:readonly PageId[]
@@ -61,7 +61,8 @@ export const appLabPageVariants:readonly {id:PageVariant;vi:string;en:string}[]=
  {id:'split',vi:'Split focus',en:'Split focus'},
  {id:'cinematic',vi:'Cinematic',en:'Cinematic'},
  {id:'notebook',vi:'Notebook · Ghi chú tay',en:'Notebook · Handwritten'},
- {id:'bookworm',vi:'Bookworm · Sách tối giản',en:'Bookworm · Vintage Minimal'}
+ {id:'bookworm',vi:'Bookworm · Sách tối giản',en:'Bookworm · Vintage Minimal'},
+ {id:'vintagePop',vi:'Vintage Pop · Tem giấy',en:'Vintage Pop · Stamp'}
 ];
 export interface AppPageLayoutProps {
  page:Exclude<PageId,'home'>;variant:PageVariant;locale:'vi'|'en';

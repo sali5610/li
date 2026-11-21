@@ -70,3 +70,46 @@
  font-size:.88rem;
  line-height:1.5;
 }
+
+
+/* Progressive disclosure for endnotes; search links and sourced lessons remain
+   fully accessible without crowding the reading flow. */
+.li-learning-query-details{
+ border-top:1px solid var(--rule);padding-block:var(--li-space-2);min-width:0
+}
+.li-learning-query-details>summary{
+ cursor:pointer;min-height:44px;padding:var(--li-space-2) 0;
+ color:var(--moss);font:650 .92rem/1.4 var(--li-font-ui)
+}
+.li-learning-query-details .li-learning-keywords{margin-top:var(--li-space-2)}
+.li-learning-query-details .li-learning-keywords .li-ds-button{
+ flex:0 1 auto;min-height:40px;padding:var(--li-space-2) var(--li-space-3);
+ background:transparent;box-shadow:none;border:1px solid var(--rule);
+ color:var(--moss);font-size:.85rem;line-height:1.35;text-align:left
+}
+.li-learning-journey .li-lesson-reference-extra .li-learning-reference-actions>.li-ds-button{
+ min-height:44px;max-width:100%;white-space:normal
+}
+.li-react-related-lessons>.li-ds-card,
+.li-react-related-lessons>[data-li-component="card"]{
+ background:transparent;border:0;box-shadow:none;padding:var(--li-space-3) 0;
+}
+.li-react-related-lessons .li-related-list{
+ margin:var(--li-space-3) 0 0;padding:0;list-style:none
+}
+.li-react-related-lessons .li-related-item{
+ border-top:1px solid var(--rule);padding:var(--li-space-4) 0;
+ min-width:0;overflow-wrap:anywhere
+}
+.li-react-related-lessons .li-related-link{
+ display:grid;gap:var(--li-space-2);text-decoration:none;min-width:0
+}
+.li-react-related-lessons .li-related-link .li-related-go{
+ color:var(--moss);font-weight:650;text-decoration:underline
+}
+@media(max-width:600px){
+ .li-lesson-reference-extra{gap:var(--li-space-3)}
+ .li-lesson-reference-extra>.li-atom-heading{font-size:1.4rem}
+ .li-learning-query-details .li-learning-keywords{gap:var(--li-space-2)}
+ .li-react-related-lessons .li-related-item{padding-block:var(--li-space-3)}
+}

@@ -93,3 +93,45 @@
  :root.li-auth-verified :where(.li-react-note-confirm,.modal[data-react-owner="checkin"])
   .action-row>.li-ds-button{flex:1 1 auto}
 }
+
+
+/* Chat 4 UX draft · fast physical check-in progress, no extra required questions. */
+#checkin-modal[data-react-owner="checkin"] .li-checkin-progress{
+ display:grid;gap:var(--li-space-2);margin-bottom:var(--li-space-4);
+ font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);
+ color:var(--muted)
+}
+#checkin-modal[data-react-owner="checkin"] .li-checkin-progress>span:first-child{
+ display:flex;justify-content:space-between;align-items:center;gap:var(--li-space-3)
+}
+#checkin-modal[data-react-owner="checkin"] .li-checkin-progress strong{
+ color:var(--moss);font-variant-numeric:tabular-nums
+}
+#checkin-modal[data-react-owner="checkin"] .li-checkin-progress-track{
+ display:block;height:4px;background:var(--rule);overflow:hidden
+}
+#checkin-modal[data-react-owner="checkin"] .li-checkin-progress-track>span{
+ display:block;height:100%;background:var(--moss);
+ transition:width .2s ease
+}
+#checkin-modal[data-react-owner="checkin"] .checkin-result.is-ready{
+ border-inline-start-color:var(--moss);background:var(--li-color-nav-selected-fill)
+}
+#checkin-modal[data-react-owner="checkin"] .checkin-physical-field{
+ background:transparent;border-color:var(--rule)
+}
+#checkin-modal[data-react-owner="checkin"] .checkin-physical-field:has(input:checked){
+ border-color:var(--moss)
+}
+@media(prefers-reduced-motion:reduce){
+ #checkin-modal[data-react-owner="checkin"] .li-checkin-progress-track>span{transition:none}
+}
+
+/* Global primary Back remains reachable without adding a second local Back. */
+#li-global-back:focus-visible,
+#li-react-account-trigger:focus-visible{
+ outline:3px solid var(--li-role-focus-ring,var(--olive));outline-offset:2px
+}
+@media(min-width:744px) and (max-width:1100px){
+ .li-app-route-trail{padding-inline:var(--li-space-3)}
+}

@@ -41,3 +41,61 @@
 @media(prefers-reduced-motion:reduce){
  #buddy-modal .li-react-buddy-shell *{animation:none!important;transition:none!important}
 }
+
+
+/* UX draft · Conversation first; citation and provenance are secondary. */
+#buddy-modal .li-react-buddy-shell .buddy-heading{
+ align-items:center;gap:var(--li-space-3);padding-bottom:var(--li-space-3);
+ border-bottom:1px solid var(--rule)
+}
+#buddy-modal .li-react-buddy-shell .buddy-heading-copy{min-width:0}
+#buddy-modal .li-react-buddy-shell .li-buddy-subtitle{
+ margin:var(--li-space-1) 0 0;color:var(--muted);
+ font-size:var(--li-type-support);line-height:var(--li-leading-support)
+}
+#buddy-modal .li-react-buddy-shell .buddy-scroll{
+ display:grid;align-content:start;gap:var(--li-space-4)
+}
+#buddy-modal .li-react-buddy-shell .li-buddy-conversation{
+ display:grid;gap:var(--li-space-3);min-width:0
+}
+#buddy-modal .li-react-buddy-shell .li-buddy-context{
+ margin:0;border-inline-start:2px solid var(--rule);
+ padding:var(--li-space-2) var(--li-space-3);color:var(--muted);
+ font-size:var(--li-type-support);line-height:var(--li-leading-support)
+}
+#buddy-modal .li-react-buddy-shell #buddy-text{
+ margin:0;padding:var(--li-space-4);background:var(--paper-2);
+ border-inline-start:3px solid var(--moss);
+ font-size:var(--li-type-body);line-height:var(--li-leading-body)
+}
+#buddy-modal .li-react-buddy-shell .li-buddy-source{
+ border-top:1px solid var(--rule);padding-top:var(--li-space-3);
+ display:grid;gap:var(--li-space-2);min-width:0
+}
+#buddy-modal .li-react-buddy-shell .li-buddy-source-header{
+ display:flex;justify-content:space-between;align-items:center;gap:var(--li-space-3)
+}
+#buddy-modal .li-react-buddy-shell .li-buddy-source :is(.ly-original,.ly-translation,.li-quote-context){
+ margin:0;overflow-wrap:anywhere
+}
+#buddy-modal .li-react-buddy-shell .li-buddy-source .ly-original{
+ font-family:var(--li-font-editorial);font-size:var(--li-type-title-sm,var(--li-type-body))
+}
+#buddy-modal .li-react-buddy-shell .li-buddy-source .li-quote-context{
+ color:var(--muted);font-size:var(--li-type-support);
+ line-height:var(--li-leading-support)
+}
+#buddy-modal .li-react-buddy-shell .buddy-actions{
+ border-top:1px solid var(--rule);padding-top:var(--li-space-3)
+}
+#buddy-modal .li-react-buddy-shell .buddy-actions #li-react-close-buddy{
+ border-color:transparent;background:transparent;color:var(--moss)
+}
+@media(max-width:600px){
+ #buddy-modal .li-react-buddy-shell #buddy-text{padding:var(--li-space-3)}
+ #buddy-modal .li-react-buddy-shell .buddy-actions{gap:var(--li-space-2)}
+ #buddy-modal .li-react-buddy-shell .buddy-actions .li-ds-button{
+  min-height:44px;flex:1 1 44%
+ }
+}

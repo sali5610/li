@@ -108,7 +108,8 @@ export function Journal(){
    'Xem thể trạng tự check-in, nhịp học đã áp dụng và hoạt động thực sự ghi nhận. Không phải điểm sức khỏe hay năng lực học tập.',
    'Your self-reported check-ins, study rhythm and actual activity. Not a health or learning ability score.')}</Text>
   <div className="stack-sm li-diary-layout">
-   <Card variant="raised" className="li-diary-month">
+   <div className="li-diary-workspace">
+    <Card variant="raised" className="li-diary-month">
     <div className="li-diary-month-heading">
      <div><div className="kicker">{copy('LỊCH HOẠT ĐỘNG','ACTIVITY CALENDAR')}</div>
       <Heading level={2} role="titleLarge">{view.monthLabel}</Heading></div>
@@ -133,6 +134,34 @@ export function Journal(){
       view.totals.counts[0]+copy(' bài · ',' lessons · ')+view.totals.counts[1]+
       copy(' vấn đề · ',' problems · ')+view.totals.counts[2]+' input.':
       copy('Tháng này chưa có dữ liệu được ghi nhận.','No recorded journal data this month.')}</Text>
+   </Card>
+   <section className="li-diary-detail" aria-label={copy('Chi tiết ngày','Daily details')}>
+    <Heading level={2} role="titleLarge">{view.selectedLabel}</Heading>
+    <div className="li-diary-day-grid">
+     <section className="li-diary-panel"><div className="kicker">01 · {copy('CHECK-IN THỂ TRẠNG','SELF CHECK-IN')}</div>
+      <div className="li-diary-facts">{facts.map(fact=><div key={fact.label}>
+       <span>{fact.label}</span><strong>{fact.value}</strong></div>)}</div>
+     </section>
+     <section className="li-diary-panel"><div className="kicker">02 · {copy('NHỊP HỌC','STUDY RHYTHM')}</div>
+      <Heading level={3} role="titleMedium">{view.mode}</Heading>
+      <Text role="support">{copy('Nhịp cuối cùng được áp dụng trong ngày; không đo năng lượng từ activity.',
+       'Last selected rhythm of the day; not inferred from activity count.')}</Text>
+      <Button variant="secondary" id="li-react-diary-checkin"
+       onClick={()=>act('checkin','li-react-diary-checkin')}>
+       {copy('Check-in hôm nay','Check in today')}</Button>
+     </section>
+    </div>
+    <section className="li-diary-panel li-diary-activity"><div className="kicker">03 · {copy('HOẠT ĐỘNG THỰC TẾ','RECORDED ACTIVITY')}</div>
+     <div className="li-diary-counters">{activityNames.map((item,index)=><div key={index}>
+      <strong>{view.counts[index]}</strong><span>{item.name}</span><small>{item.help}</small>
+     </div>)}</div>
+     <Text role="support" aria-live="polite">{view.dayStatus}</Text>
+    </section>
+   </section>
+  </div>
+   <details className="li-diary-trend">
+    <summary><LiIcon name="chart-column" size={18}/> {copy('Xem biểu đồ hoạt động từng ngày','View daily activity chart')}</summary>
+    <div className="li-diary-trend-content">
     <div className="kicker">{copy('SỐ HOẠT ĐỘNG TỪNG NGÀY','DAILY ACTIVITY TOTALS')}</div>
     <div className="li-diary-bars" role="group" aria-label={copy('Biểu đồ hoạt động theo ngày','Daily activity chart')}>
      {view.days.map(day=><DiaryBar key={day.key} item={day} max={max}
@@ -141,30 +170,8 @@ export function Journal(){
     <Text role="support">{copy(
      'Cột = Bài + Vấn đề + Input. Ngày chưa ghi nhận để trống, không tính thành 0.',
      'Bars show lessons + problems + inputs. Missing records are blank, not zero.')}</Text>
-   </Card>
-   <section className="li-diary-detail" aria-label={copy('Chi tiết ngày','Daily details')}>
-    <Heading level={2} role="titleLarge">{view.selectedLabel}</Heading>
-    <div className="surface-grid cols2">
-     <Card variant="raised"><div className="kicker">01 · {copy('CHECK-IN THỂ TRẠNG','SELF CHECK-IN')}</div>
-      <div className="li-diary-facts">{facts.map(fact=><div key={fact.label}>
-       <span>{fact.label}</span><strong>{fact.value}</strong></div>)}</div>
-     </Card>
-     <Card variant="raised"><div className="kicker">02 · {copy('NHỊP HỌC','STUDY RHYTHM')}</div>
-      <Heading level={3} role="titleMedium">{view.mode}</Heading>
-      <Text role="support">{copy('Nhịp cuối cùng được áp dụng trong ngày; không đo năng lượng từ activity.',
-       'Last selected rhythm of the day; not inferred from activity count.')}</Text>
-      <Button variant="secondary" id="li-react-diary-checkin"
-       onClick={()=>act('checkin','li-react-diary-checkin')}>
-       {copy('Check-in hôm nay','Check in today')}</Button>
-     </Card>
     </div>
-    <Card variant="raised"><div className="kicker">03 · {copy('HOẠT ĐỘNG THỰC TẾ','RECORDED ACTIVITY')}</div>
-     <div className="li-diary-counters">{activityNames.map((item,index)=><div key={index}>
-      <strong>{view.counts[index]}</strong><span>{item.name}</span><small>{item.help}</small>
-     </div>)}</div>
-     <Text role="support" aria-live="polite">{view.dayStatus}</Text>
-    </Card>
-   </section>
+   </details>
    <Card variant="tinted" className="li-diary-privacy">
     <div><div className="kicker">{copy('QUYỀN RIÊNG TƯ','PRIVACY')}</div>
      <Heading level={2} role="titleMedium">{copy('Lưu trên thiết bị','Device-first storage')}</Heading>
@@ -279,7 +286,7 @@ export function Settings(){
       </div>
       <Text role="support" aria-live="polite" className="state-note">{view.modeFeedback}</Text>
      </Card>
-     <Card variant="raised" className="li-react-setting-card">
+     <Card variant="raised" className="li-react-setting-card li-react-companion-card">
       <div className="kicker">{copy('NGƯỜI ĐỒNG HÀNH','COMPANION')}</div>
       <div className="settings-buddy-heading">
        <Heading level={2} role="titleMedium">Lão Lý</Heading>
@@ -326,7 +333,7 @@ export function Settings(){
       'Manage sync, backups and privacy.')}</Text>
     </div>
     <div className="settings-group-grid">
-     <Card variant="raised" className="li-react-setting-card">
+     <Card variant="raised" className="li-react-setting-card li-react-backup-card">
       <div className="kicker">{copy('SAO LƯU MỘT PHẦN','PARTIAL BACKUP')}</div>
       <Heading level={3} role="titleMedium">{copy('Ghi chú & Dấu Trang','Notes & Bookmarks')}</Heading>
       <div className="path-list">
@@ -369,7 +376,7 @@ export function Settings(){
       'Nhập tệp thay thế ghi chú và Dấu Trang hiện có sau khi xác nhận. Đây không phải bản sao toàn bộ tài khoản trước khi xóa dữ liệu máy.',
       'Import replaces existing notes and bookmarks after confirmation. This is not a complete account backup before clearing device data.')}</Text>
      </Card>
-     <Card variant="raised" className="li-react-setting-card">
+     <Card variant="raised" className="li-react-setting-card li-react-privacy-card">
       <div className="kicker">{copy('QUYỀN RIÊNG TƯ','PRIVACY')}</div>
       <Heading level={3} role="titleMedium">{copy('Kiểm soát thuộc về bạn','You stay in control')}</Heading>
       <Text role="body">{copy(

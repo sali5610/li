@@ -62,3 +62,50 @@ button:disabled{opacity:.65;cursor:not-allowed}
 @media(max-width:600px){
  .auth-card.li-ds-card .auth-account .li-ds-button{width:100%}
 }
+
+
+/* UX draft · One account summary, visible access + sync states, quiet privacy. */
+.auth-card.li-ds-card .auth-session-identity{
+ display:grid;gap:var(--li-space-1);margin:0;
+ padding-bottom:var(--li-space-3);border-bottom:1px solid var(--rule);
+ overflow-wrap:anywhere
+}
+.auth-card.li-ds-card .auth-session-identity span{
+ font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);
+ color:var(--muted)
+}
+.auth-card.li-ds-card .auth-session-identity strong{
+ font:var(--li-weight-600) var(--li-type-body)/var(--li-leading-body) var(--li-font-ui)
+}
+.auth-card.li-ds-card .auth-access-state{
+ border-inline-start:3px solid var(--moss);padding:var(--li-space-2) var(--li-space-3);
+ background:var(--paper-2)
+}
+.auth-card.li-ds-card .auth-access-state[data-access="checking"]{
+ border-inline-start-color:var(--olive)
+}
+.auth-card.li-ds-card .auth-access-state:is([data-access="denied"],[data-access="error"]){
+ border-inline-start-color:var(--li-color-danger-fill)
+}
+.auth-card.li-ds-card .auth-sync-state{
+ margin:0;font-weight:var(--li-weight-600);
+ font-size:var(--li-type-support);line-height:var(--li-leading-support)
+}
+.auth-card.li-ds-card .auth-conflicts{
+ display:grid;gap:var(--li-space-3);border-top:1px solid var(--rule);
+ padding-top:var(--li-space-4)
+}
+.auth-card.li-ds-card .auth-conflicts>p:first-child{font-weight:var(--li-weight-600)}
+.auth-card.li-ds-card .auth-conflict-item{
+ display:flex;flex-wrap:wrap;gap:var(--li-space-2);
+ align-items:center;padding:var(--li-space-3);background:var(--paper-2)
+}
+.auth-card.li-ds-card .auth-conflict-item>p{flex:1 1 100%}
+.auth-card.li-ds-card .auth-conflict-item .li-ds-button{flex:1 1 180px}
+.auth-card.li-ds-card>.auth-privacy{
+ border-top:1px solid var(--rule);padding-top:var(--li-space-3)
+}
+@media(max-width:600px){
+ .auth-card.li-ds-card .auth-conflict-item .li-ds-button{flex-basis:100%}
+ .auth-header{gap:var(--li-space-3)}
+}

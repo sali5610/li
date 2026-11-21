@@ -363,20 +363,23 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    {error&&!localOffline&&<p role="alert">{t.error}</p>}
    {(!isPending&&!error||localOffline)&&(accountId?
     <div className="auth-account" key={accountId}>
-     <p>{localOffline?(locale==='vi'?'Bản học trên máy này':'This device’s learning copy'):t.signed}: <strong>{localOffline?'li.':session?.user?.email}</strong></p>
+     <p className="auth-session-identity">
+      <span>{localOffline?(locale==='vi'?'Bản học trên máy này':'This device’s learning copy'):t.signed}</span>
+      <strong>{localOffline?'li.':session?.user?.email}</strong>
+     </p>
      {onClose&&(access==='granted'||access==='offline')&&<Button variant="primary" onClick={onClose}>{locale==='vi'?'Vào thư viện':'Return to library'}</Button>}
-     <p role={access==='denied'||access==='error'?'alert':'status'}>
+     <p className="auth-access-state" data-access={access} role={access==='denied'||access==='error'?'alert':'status'}>
       {access==='checking'?t.checking:access==='granted'?t.granted:
        access==='offline'?t.offline:access==='denied'?t.denied:t.blocked}
      </p>
      {access==='error'&&<p className="auth-error" role="status" data-invite-error-code={inviteError}>{t.inviteErrorCode} <strong>{inviteError||'INV-UNKNOWN'}</strong></p>}
-     {access==='granted'&&syncStatus==='conflict'&&<section className="auth-privacy"
+     {access==='granted'&&syncStatus==='conflict'&&<section className="auth-conflicts"
       aria-label={locale==='vi'?'Khác biệt giữa các thiết bị':'Device conflicts'}>
       <p><strong>{locale==='vi'?'Có dữ liệu khác nhau trên hai thiết bị':'Two versions differ'}</strong></p>
       <p>{locale==='vi'?
        'Không tự ghi đè ghi chép. Chọn bản muốn giữ cho từng mục; bản còn lại sẽ được thay thế sau khi đồng bộ.':
        'No silent overwrite. Choose which version to keep for each item; the other version is replaced after syncing.'}</p>
-      {conflicts.map(c=><div key={c.itemType+':'+c.itemId}>
+      {conflicts.map(c=><div className="auth-conflict-item" key={c.itemType+':'+c.itemId}>
        <p>{c.label}</p>
        <Button variant="secondary" disabled={resolving}
         onClick={()=>void decideConflict(c,'keep-local')}>{locale==='vi'?'Giữ bản trên máy này':'Keep this device'}</Button>
@@ -404,7 +407,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     <RlsQaPanel uid={accountId} granted={access==='granted'}/>}
    {showDeveloperQa&&accountId&&access==='granted'&&
     <SyncQaPanel uid={accountId} locale={locale}/>}
-   <p className="auth-local" role="status">{access==='offline'?syncCopy[locale].offline:IS_INTEGRATED_LI_APP&&accountId&&access==='granted'?syncCopy[locale][syncStatus]:(IS_GITHUB_STAGING?t.l09Local:t.local)}</p>
+   <p className="auth-local auth-sync-state" role="status">{access==='offline'?syncCopy[locale].offline:IS_INTEGRATED_LI_APP&&accountId&&access==='granted'?syncCopy[locale][syncStatus]:(IS_GITHUB_STAGING?t.l09Local:t.local)}</p>
    <p className="auth-privacy">{t.privacy}</p>
   </Card>
  </main>;

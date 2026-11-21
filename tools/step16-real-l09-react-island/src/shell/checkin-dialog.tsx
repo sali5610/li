@@ -50,6 +50,7 @@ function CheckinDialog(){
  const dialogRef=useRef<HTMLDivElement>(null);
  const suggestion=recommendStudyRhythm(physical,energy,attention);
  const complete=completePhysical(physical);
+ const answered=CHECKIN_PHYSICAL.filter(key=>Boolean(physical[key])).length;
  const chosen=complete?(override||suggestion?.mode||''):'';
  const updateConsent=()=>setConsent(app.liPersonalDiary?.getView()?.consentStatus||defaultConsent);
  useEffect(()=>{
@@ -133,6 +134,10 @@ function CheckinDialog(){
     <p id="checkin-description">{copy(
      'Chọn Có hoặc Chưa cho cả ba mục để nhận gợi ý nhịp học.',
      'Answer all three questions to get a study-rhythm suggestion.')}</p>
+    <div className="li-checkin-progress" role="status" aria-live="polite">
+     <span>{copy('Đã trả lời','Answered')} <strong>{answered}/3</strong></span>
+     <span className="li-checkin-progress-track" aria-hidden="true"><span style={{width:(answered/3*100)+'%'}}/></span>
+    </div>
     <div className="checkin-physical" role="group"
      aria-label={copy('Ba câu hỏi thể trạng','Three physical check-in questions')}>
      {CHECKIN_PHYSICAL.map((key,index)=><fieldset className="checkin-physical-field"
@@ -151,7 +156,7 @@ function CheckinDialog(){
       </div>
      </fieldset>)}
     </div>
-    <p id="checkin-recommendation" className="state-note checkin-result"
+    <p id="checkin-recommendation" className={"state-note checkin-result"+(complete?" is-ready":"") }
      role="status" aria-live="polite">{recommendation}</p>
     <details className="checkin-context">
      <summary>{copy('Cảm nhận hiện tại · Bổ sung','Current feelings · Optional')}</summary>

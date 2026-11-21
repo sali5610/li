@@ -139,21 +139,28 @@ function BuddyDialog({root}:{root:HTMLElement}){
      width={48} height={48} decoding="async"/>
     <div className="buddy-heading-copy">
      <h2 id="buddy-title" ref={heading} tabIndex={-1}>Lão Lý</h2>
-     {quoteVisible&&<>
-      <p id="buddy-quote-original" className="ly-original" lang={quote.lang}>{quote.original}</p>
-      <p id="buddy-quote-translation" className="ly-translation" lang={chooseLanguage('vi','en')}>
-       {quote.translation}</p>
-     </>}
+     <p className="li-buddy-subtitle">{chooseLanguage('Cùng học, cùng phản biện','Learn and question together')}</p>
     </div>
-    {quoteVisible&&<Button variant="ghost"
-     id="buddy-quote-info" className="buddy-quote-info"
-     title={chooseLanguage('Diễn nghĩa và xuất xứ','Interpretation and source')}
-     aria-label={chooseLanguage('Xem diễn nghĩa và xuất xứ câu trích dẫn','Show interpretation and quotation source')}
-     aria-controls="buddy-quote" aria-expanded={expanded}
-     onClick={()=>setExpanded(v=>!v)}><LiIcon name="info" size={18}/></Button>}
+
    </header>
    <div id="buddy-scroll" className="buddy-scroll" tabIndex={0}
     ref={content} role="region" aria-label={chooseLanguage('Nội dung hội thoại với Lão Lý','Conversation with Lao Ly')}>
+    <div className="li-buddy-conversation">
+     {message!==view.text&&<p className="li-buddy-context">{view.text}</p>}
+     <p id="buddy-text" role="status" aria-live="polite">{message}</p>
+    </div>
+    {quoteVisible&&<section className="li-buddy-source" aria-label={chooseLanguage('Đọc thêm · Trích dẫn','Further reading · Quotation')}>
+     <div className="li-buddy-source-header">
+      <span className="kicker">{chooseLanguage('GÓC DẪN NGUỒN','SOURCE NOTE')}</span>
+      <Button variant="ghost" id="buddy-quote-info" className="buddy-quote-info"
+       title={chooseLanguage('Diễn nghĩa và xuất xứ','Interpretation and source')}
+       aria-label={chooseLanguage('Xem diễn nghĩa và xuất xứ câu trích dẫn','Show interpretation and quotation source')}
+       aria-controls="buddy-quote" aria-expanded={expanded}
+       onClick={()=>setExpanded(v=>!v)}><LiIcon name="info" size={18}/></Button>
+     </div>
+     <p id="buddy-quote-original" className="ly-original" lang={quote.lang}>{quote.original}</p>
+     <p id="buddy-quote-translation" className="ly-translation" lang={chooseLanguage('vi','en')}>
+      {quote.translation}</p>
     {quoteVisible&&
      <aside id="buddy-quote" className="ly-cultural" hidden={!expanded}
       aria-label={chooseLanguage('Diễn nghĩa và xuất xứ câu trích dẫn','Quote interpretation and source')}>
@@ -162,7 +169,9 @@ function BuddyDialog({root}:{root:HTMLElement}){
        <a id="buddy-quote-link" href={quote.url} target="_blank" rel="noopener noreferrer">
         {chooseLanguage('Xem xuất xứ','View source')}</a></p>
      </aside>}
-    <p id="buddy-text" role="status" aria-live="polite">{message}</p>
+
+     <p id="buddy-quote-context" className="li-quote-context">{quote.comment}</p>
+    </section>}
     {view.editorial&&<div className="li-editorial-buddy-quotes" role="group"
      aria-label={chooseLanguage('Nguồn trích dẫn được chọn theo nội dung','Curated lesson quotations')}>
      {view.editorial.quotes.map((candidate,index)=><Button key={candidate.id}
@@ -172,8 +181,7 @@ function BuddyDialog({root}:{root:HTMLElement}){
       {chooseLanguage('Nguồn ','Source ')+(index+1)+' · '+candidate.meta}
      </Button>)}
     </div>}
-    {quoteVisible&&
-     <p id="buddy-quote-context" className="li-quote-context">{quote.comment}</p>}
+
     {challenge&&<div id="buddy-debate" className="ly-debate">
      <p className="small">{chooseLanguage(
       'Lão hỏi toàn người dùng đang hoạt động, rồi kết luận 90% toàn thị trường hài lòng. Ngươi bắt được chỗ suy rộng không?',

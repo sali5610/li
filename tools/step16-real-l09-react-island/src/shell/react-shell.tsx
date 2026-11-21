@@ -63,7 +63,7 @@ function Notification({host}:{host:HTMLElement}){
    undo:null});
  };
  return notice?<>
-  <span className="li-snackbar-message">{notice.message}</span>
+  <span className="li-snackbar-message" role="status" aria-live="polite" aria-atomic="true">{notice.message}</span>
   {notice.undo&&<button type="button" className="li-snackbar-undo"
    aria-label={'Hoàn tác: '+notice.message} onClick={undo}>Hoàn tác</button>}
  </>:null;

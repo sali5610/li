@@ -378,6 +378,8 @@ export function Settings(){
       <Text role="body">{copy(
        'Nhật Ký chỉ đồng bộ cloud khi được cho phép riêng. Ghi chép không tự gửi đến AI bên ngoài. Đăng xuất ngay trong Cài đặt.',
        'Journal cloud sync requires separate permission. Notes are not automatically sent to an external AI. Sign out here in Settings.')}</Text>
+      <Text role="support"><a href="./illustration-credits.html" target="_blank"
+       rel="noopener noreferrer">{copy('Giấy phép hình minh hoạ','Illustration licenses')}</a></Text>
      </Card>
     </div>
    </section>

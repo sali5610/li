@@ -34,6 +34,59 @@ let scrollEntrySequence=0;
 let currentScrollEntry=0;
 let scrollRestoreToken=0;
 let restoringScroll=false;
+// A hard reload should recover the current React screen even if an external
+// refresh flow removed its query parameters. The browser URL always wins.
+const reloadRouteKey='li.router.reload-route.v1';
+const spellIdPattern=/^T(?:0[1-9]|1[0-3])$/;
+function isReload():boolean{
+ try{
+  const navigation=window.performance?.getEntriesByType?.('navigation')?.[0] as
+   PerformanceNavigationTiming|undefined;
+  return navigation?.type==='reload';
+ }catch{return false;}
+}
+function saveReloadRoute(route:string){
+ try{
+  if(route==='home')window.sessionStorage?.removeItem(reloadRouteKey);
+  else window.sessionStorage?.setItem(reloadRouteKey,JSON.stringify({
+   pathname:window.location.pathname,route
+  }));
+ }catch{/* Private browsing may disable session storage; URLs still work. */}
+}
+function reloadRoute():string|null{
+ if(!isReload())return null;
+ const fromHistory=window.history.state?.liRoute;
+ if(typeof fromHistory==='string'&&pageOf(fromHistory))return fromHistory;
+ try{
+  const raw=window.sessionStorage?.getItem(reloadRouteKey);
+  if(!raw)return null;
+  const saved=JSON.parse(raw) as {pathname?:string;route?:string};
+  return saved.pathname===window.location.pathname&&
+   typeof saved.route==='string'&&pageOf(saved.route)?saved.route:null;
+ }catch{return null;}
+}
+function hasExplicitRoute():boolean{
+ const query=new URLSearchParams(window.location.search);
+ return query.has('lesson')||query.has('view')||query.has('catalog');
+}
+type SpellView={active:string;tab?:string;lessonId?:string|null};
+function spellPort(){
+ return (window as Window&{LiSpellPractice?:{
+  getView:()=>SpellView|null;
+  open:(id:string,tab?:string,lessonId?:string|null)=>void;
+ }}).LiSpellPractice;
+}
+function restoreSpellRoute(){
+ const query=new URLSearchParams(window.location.search);
+ const id=query.get('spell');
+ if(!id||!spellIdPattern.test(id)||!canVisit())return;
+ const tab=query.get('spellTab')==='practice'?'practice':'guide';
+ const lessonId=query.get('spellLesson');
+ const port=spellPort(),current=port?.getView?.();
+ if(current?.active===id&&current.tab===tab&&
+  (current.lessonId||null)===(lessonId||null))return;
+ port?.open?.(id,tab,lessonId);
+}
 function ensureScrollEntry():number{
  const existing=Number(window.history.state?.liScrollEntryId);
  if(Number.isInteger(existing)&&existing>0){
@@ -71,7 +124,10 @@ function routeFromUrl():string{
  const view=query.get('view');
  if(view&&view!=='lesson'&&!view.toLowerCase().includes('lesson')&&
   /^[A-Za-z][A-Za-z0-9]*$/.test(view)&&pageOf(view))return view;
- return query.has('catalog')&&pageOf('catalog')?'catalog':'home';
+ if(query.has('catalog')&&pageOf('catalog'))return 'catalog';
+ // Never override an explicit, invalid or unauthorized deep link with a stale
+ // previous route. Reload fallback is allowed only on a bare app URL.
+ return !hasExplicitRoute()?reloadRoute()||'home':'home';
 }
 function writeUrl(route:string,remember=false){
  const url=new URL(window.location.href);
@@ -82,6 +138,11 @@ function writeUrl(route:string,remember=false){
  // Keep non-lesson screens directly addressable, including Settings and Search.
  if(lesson||route==='home')url.searchParams.delete('view');
  else url.searchParams.set('view',route);
+ if(route!=='guideDetail'){
+  url.searchParams.delete('spell');
+  url.searchParams.delete('spellTab');
+  url.searchParams.delete('spellLesson');
+ }
  if(!lesson){
   url.searchParams.delete('chapter');
   if(route!=='catalog')url.searchParams.delete('catalog');
@@ -102,6 +163,11 @@ function writeUrl(route:string,remember=false){
    },'',path);
    currentScrollEntry=scrollEntrySequence;
   }else window.history.replaceState({
+   ...window.history.state,liRoute:route,liRouteDepth:browserDepth,
+   liScrollEntryId:currentScrollEntry
+  },'',path);
+ }else if(window.history.state?.liRoute!==route){
+  window.history.replaceState({
    ...window.history.state,liRoute:route,liRouteDepth:browserDepth,
    liScrollEntryId:currentScrollEntry
   },'',path);
@@ -168,6 +234,8 @@ export function mountReactRouter():()=>void{
   appUiStore.getState().setRoute(route);
   window.liNativeRouteEffects?.afterNavigate(route);
   applyScroll(restoreScroll,route);
+  if(route==='guideDetail'&&!remember)restoreSpellRoute();
+  saveReloadRoute(route);
   if(focus)page.focus({preventScroll:true});
   window.dispatchEvent(new CustomEvent('li:route-changed',{detail:{route}}));
   return true;
@@ -206,7 +274,10 @@ export function mountReactRouter():()=>void{
     wasVerified=true;
     // Restore direct links only after invitation and lesson hosts are registered.
     const destination=routeFromUrl();
-    if(destination!==active)change(destination,{remember:false,syncUrl:false});
+    if(destination!==active)change(destination,{
+     remember:false,syncUrl:!hasExplicitRoute()
+    });
+    else if(destination==='guideDetail')restoreSpellRoute();
    }
    return;
   }
@@ -217,6 +288,7 @@ export function mountReactRouter():()=>void{
   // A new invited account must never inherit the previous learner's Back
   // history or private lesson deep link. No persistence is touched.
   history.length=0;browserDepth=0;active='home';
+  saveReloadRoute('home');
   scrollByEntry.clear();
   currentScrollEntry=++scrollEntrySequence;
   window.liNativeRouteEffects?.restoreHistory([],active);
@@ -244,15 +316,35 @@ export function mountReactRouter():()=>void{
    // Catalog can push its own history entries without changing React screens.
    rememberScroll();
    currentScrollEntry=ensureScrollEntry();
+   if(active==='guideDetail')restoreSpellRoute();
   }
  };
+ const onSpellView=()=>{
+  if(active!=='guideDetail'||!canVisit())return;
+  const view=spellPort()?.getView?.();
+  if(!view?.active||!spellIdPattern.test(view.active))return;
+  const url=new URL(window.location.href);
+  url.searchParams.set('spell',view.active);
+  if(view.tab==='practice')url.searchParams.set('spellTab','practice');
+  else url.searchParams.delete('spellTab');
+  if(view.lessonId)url.searchParams.set('spellLesson',view.lessonId);
+  else url.searchParams.delete('spellLesson');
+  const next=url.pathname+url.search+url.hash;
+  if(next!==window.location.pathname+window.location.search+window.location.hash)
+   window.history.replaceState({...window.history.state,liRoute:active},'',next);
+ };
+ window.addEventListener('li:spell-view-changed',onSpellView);
  window.addEventListener('popstate',onPopState);
  window.addEventListener('li:auth-verified-changed',onSession);
  if(canVisit()){
   const requested=routeFromUrl();
-  if(requested!==active)change(requested,{remember:false,syncUrl:false});
+  if(requested!==active)change(requested,{
+   remember:false,syncUrl:!hasExplicitRoute()
+  });
+  else if(requested==='guideDetail')restoreSpellRoute();
  }
  return ()=>{
+  window.removeEventListener('li:spell-view-changed',onSpellView);
   window.removeEventListener('popstate',onPopState);
   window.removeEventListener('scroll',onScroll);
   window.history.scrollRestoration=previousScrollRestoration;

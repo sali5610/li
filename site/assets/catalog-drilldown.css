@@ -117,7 +117,7 @@
  display:grid;place-items:center;z-index:1990;
  border:2px solid var(--moss);border-radius:50%!important;
  background:var(--moss);color:var(--cream);
- box-shadow:4px 4px 0 var(--wood);font-size:26px;
+ box-shadow:4px 4px 0 var(--wood);font-size:var(--li-type-title-lg);
 }
 :is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .catalog-chapter-fab[aria-expanded="true"]{
  visibility:hidden;pointer-events:none

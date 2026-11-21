@@ -255,3 +255,16 @@
  .li-legacy-horizontal-copy{padding:var(--li-space-3)}
  .li-legacy-chat-bubble{padding:var(--li-space-4)}
 }
+
+/* Count-aware canonical calendar: recorded zero is distinct from missing. */
+.li-legacy-calendar-grid button[data-recorded="true"][data-mode="none"]{
+ background:var(--li-color-nav-selected-fill)
+}
+.li-legacy-calendar-grid button[aria-pressed="true"]{outline:2px solid var(--moss);outline-offset:0}
+.li-legacy-calendar-grid button{position:relative;font-variant-numeric:tabular-nums}
+.li-legacy-calendar-count{
+ position:absolute;inset-inline-end:1px;inset-block-end:1px;
+ display:grid;place-items:center;min-width:18px;min-height:18px;padding-inline:2px;
+ background:var(--moss);color:var(--cream);
+ font:var(--li-weight-700) var(--li-type-caption)/1 var(--li-font-ui)
+}

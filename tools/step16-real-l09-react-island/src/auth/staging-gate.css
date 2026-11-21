@@ -1,8 +1,7 @@
 /* Exact staging-only sign-in gate: app remains invisible until invited JWT check.
    Private Neon data is still protected by server-side RLS. */
-html:not(.li-auth-verified) .app,
-html.li-auth-verified.li-account-open .app{display:none!important}
-html.li-auth-verified:not(.li-account-open) #li-staging-auth-root{display:none!important}
+html:not(.li-auth-verified) .app{display:none!important}
+html.li-auth-verified #li-staging-auth-root{display:none!important}
 #li-staging-auth-root{box-sizing:border-box;min-height:100dvh;padding:clamp(20px,5vw,64px) 16px;background:var(--paper,#F1F0E9);color:var(--ink,#1f2b22)}
 #li-staging-auth-root *{box-sizing:border-box}
 #li-staging-auth-root .auth-pilot{max-width:680px;margin:0 auto}

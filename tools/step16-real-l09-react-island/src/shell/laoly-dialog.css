@@ -321,10 +321,11 @@
  flex:0 0 16px;
  margin-top:3px;
  color:var(--moss);
+ transform:rotate(90deg);
  transition:transform .18s ease;
 }
 #buddy-modal .li-react-buddy-shell .li-buddy-quote-thought[open] > summary svg{
- transform:rotate(180deg);
+ transform:rotate(-90deg);
 }
 #buddy-modal .li-react-buddy-shell .li-buddy-quote-thought > summary:focus-visible{
  outline:2px solid var(--moss);

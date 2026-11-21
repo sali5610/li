@@ -388,10 +388,13 @@ export function GuideDetail(){
    <Button variant="ghost" onClick={()=>openRoute('guide')} className="library-back-link">
     <LiIcon name="chevron-left" size={18}/> {copy('Sổ Tay Thần Chú','Learning Spells')}
    </Button>
-   {(lessonRoute||personalRoute)&&<Button variant="ghost"
-    onClick={()=>openRoute((lessonRoute||personalRoute)!)} className="spell-linked-lesson">
+   {lessonRoute?<Button variant="ghost" onClick={()=>openRoute(lessonRoute)}
+    className="spell-linked-lesson">
     {copy('Mở bài học liên quan','Open related lesson')} <LiIcon name="arrow-right" size={18}/>
-   </Button>}
+   </Button>:personalRoute?<Button variant="ghost" onClick={()=>openRoute(personalRoute)}
+    className="spell-linked-lesson">
+    {copy('Mở bài học liên quan','Open related lesson')} <LiIcon name="arrow-right" size={18}/>
+   </Button>:null}
   </nav>
   <header className="spell-detail-heading">
    <div className="kicker">{view.active} · {tr(method.category)}</div>

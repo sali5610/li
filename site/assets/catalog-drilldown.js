@@ -5,11 +5,28 @@
 "use strict";
 const host=document.querySelector("#page-catalog .section-shell");
 const groups=window.LI_CATALOG_DATA;
-if(!host||!Array.isArray(groups)||groups.length!==8)return;
+const aliases=window.LI_CATALOG_GROUP_ALIASES||{};
+if(!host||!Array.isArray(groups)||groups.length!==5)return;
 const levels=[["Foundation","Nền tảng"],["Intermediate","Trung cấp"],["Advanced-topic","Chuyên sâu"]];
 const isEnglish=()=>window.liLanguage?.get?.()==="en";
 const copy=(vi,en)=>isEnglish()?en:vi;
-let path=[];
+let path=[],activeCategory="all";
+function normalizePath(next){
+ const normalized=Array.isArray(next)?next.filter(Boolean):[];
+ if(normalized[1]==="ux-design")normalized[1]="hci";
+ if(normalized[0])normalized[0]=aliases[normalized[0]]||normalized[0];
+ return normalized;
+}
+function readPathFromUrl(){
+ const u=new URL(location.href);
+ const initial=(u.searchParams.get("catalog")||"").split("/").filter(Boolean).slice(0,4);
+ const normalized=normalizePath(initial);
+ if(initial.join("/")!==normalized.join("/")&&window.history?.replaceState){
+  u.searchParams.set("catalog",normalized.join("/"));
+  history.replaceState(history.state,"",u.pathname+u.search);
+ }
+ return normalized;
+}
 function el(tag,cls,value,parent){
  const node=document.createElement(tag);if(cls)node.className=cls;
  if(value!==undefined&&value!==null)node.textContent=String(value);
@@ -27,7 +44,9 @@ function findParts(){
  return {group,field,course,lesson};
 }
 function setPath(next,save=true){
- path=Array.isArray(next)?next.filter(Boolean):[];
+ const previousGroup=path[0];
+ path=normalizePath(next);
+ if(previousGroup!==path[0])activeCategory="all";
  const parts=findParts();
  if(!parts.group)path=[];
  else if(!parts.field)path=path.slice(0,1);
@@ -60,10 +79,12 @@ function breadcrumbs(){
   else action(nav,name,"crumb",String(i+1),"catalog-crumb");
  });
 }
-function shelfCard(root,title,meta,desc,target,value,index){
+function shelfCard(root,title,meta,desc,target,value,index,category){
  const card=el("article","catalog-card surface tinted",null,root);
  const mark=el("div","catalog-card-mark",String(index).padStart(2,"0"),card);mark.setAttribute("aria-hidden","true");
- el("div","kicker",meta,card);el("h2","",title,card);
+ el("div","kicker",meta,card);
+ if(category)el("span","catalog-category-tag",category,card);
+ el("h2","",title,card);
  if(desc)el("p","small",desc,card);
  action(card,"Khám phá","open-"+target,value,"catalog-card-action action alt");
  return card;
@@ -72,15 +93,27 @@ function localize(root){
  if(typeof window.liLanguage?.apply==="function")window.liLanguage.apply(root||host);
 }
 function renderRoot(){
- header("Tàng Thư","Tám nhóm ngành, những lối đi khác nhau vào cùng một thư viện tri thức.","KHÁM PHÁ TRI THỨC");
+ header(copy("Tàng Thư","Library"),copy("Năm nhóm ngành, những lối đi khác nhau vào cùng một thư viện tri thức.","Five domains, different paths into one library of knowledge."),copy("KHÁM PHÁ TRI THỨC","EXPLORE KNOWLEDGE"));
  const grid=el("div","catalog-group-grid",null,host);
- groups.forEach((g,i)=>shelfCard(grid,g.title,"NHÓM NGÀNH",g.fields.length+" chuyên ngành", "group",g.id,i+1));
+ groups.forEach((g,i)=>shelfCard(grid,copy(g.title,g.titleEn),copy("NHÓM NGÀNH","DOMAIN GROUP"),g.fields.length+copy(" chuyên ngành"," fields"),"group",g.id,i+1));
  el("p","catalog-quiet-note","Danh mục gồm chương trình đang biên soạn. Chỉ bài đã phát hành mới có nội dung học.",host);
 }
 function renderGroup(g){
- header(g.title,"Chọn chuyên ngành để xem lộ trình các môn học.","NHÓM NGÀNH");
+ header(copy(g.title,g.titleEn),copy("Chọn chuyên ngành để xem lộ trình các môn học.","Choose a field to explore its courses."),copy("NHÓM NGÀNH","DOMAIN GROUP"));
+ const categories=[...new Map(g.fields.map(f=>[f.category.id,f.category.label])).entries()];
+ if(activeCategory!=="all"&&!categories.some(([id])=>id===activeCategory))activeCategory="all";
+ if(categories.length>1){
+  const filters=el("div","catalog-category-filters",null,host);
+  filters.setAttribute("role","group");
+  filters.setAttribute("aria-label",copy("Lọc chuyên ngành theo danh mục","Filter fields by category"));
+  for(const [id,label] of [["all",{vi:"Tất cả",en:"All"}],...categories]){
+   const button=action(filters,copy(label.vi,label.en),"filter-category",id,"catalog-category-filter");
+   button.setAttribute("aria-pressed",String(activeCategory===id));
+  }
+ }
  const grid=el("div","catalog-field-grid",null,host);
- g.fields.forEach((f,i)=>shelfCard(grid,f.name,"CHUYÊN NGÀNH",f.courses.length+" môn học theo lộ trình", "field",f.id,i+1));
+ g.fields.filter(f=>activeCategory==="all"||f.category.id===activeCategory)
+  .forEach((f,i)=>shelfCard(grid,f.name,copy("CHUYÊN NGÀNH","FIELD"),f.courses.length+copy(" môn học theo lộ trình"," courses"),"field",f.id,i+1,copy(f.category.label.vi,f.category.label.en)));
 }
 function renderField(f){
  header(f.name,"Các môn được sắp theo nền tảng → trung cấp → chuyên sâu. Thứ tự này là lộ trình đề xuất, không tự động khóa bài.","CHUYÊN NGÀNH");
@@ -330,7 +363,8 @@ host.addEventListener("click",event=>{
  const t=event.target.closest("button[data-catalog-kind]");if(!t)return;
  event.preventDefault();event.stopPropagation();
  const v=t.dataset.catalogValue,kind=t.dataset.catalogKind;
- if(kind==="crumb"){setPath(v?path.slice(0,Number(v)):[]);return;}
+ if(kind==="filter-category"){activeCategory=v;render();return;}
+  if(kind==="crumb"){setPath(v?path.slice(0,Number(v)):[]);return;}
  if(kind==="open-group"){setPath([v]);return;}
  if(kind==="open-field"){setPath([path[0],v]);return;}
  if(kind==="open-course"){setPath([path[0],path[1],v]);return;}
@@ -362,11 +396,11 @@ window.addEventListener("popstate",()=>{
  const found=[["L03-1-2","lessonL03"],["L09-1-2","lessonL09"],["L15-2-2","lessonL15"]].find(p=>p[0]===route);
  if(found){window.navigate?.(found[1],{remember:false,syncUrl:false});document.getElementById("page-"+found[1])?._catalogChooseChapter?.(u.searchParams.get("chapter"),false);}
  else if(u.searchParams.has("catalog")){
-  path=(u.searchParams.get("catalog")||"").split("/").filter(Boolean).slice(0,4);
+  path=readPathFromUrl();
   window.navigate?.("catalog",{remember:false,syncUrl:false});render();
  }else{path=[];render();window.navigate?.("home",{remember:false,syncUrl:false});}
 });
-path=(new URL(location.href).searchParams.get("catalog")||"").split("/").filter(Boolean).slice(0,4);
+path=readPathFromUrl();
 if(path.length&&!new URL(location.href).searchParams.has("lesson")){window.navigate?.("catalog",{remember:false,syncUrl:false});}
 render();
 ["lessonL03","lessonL09","lessonL15"].forEach(mountNative);

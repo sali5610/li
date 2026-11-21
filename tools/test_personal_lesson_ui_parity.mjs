@@ -8,6 +8,9 @@ const sample03=read(root+'Wave1Journey.tsx');
 const sample09=read(root+'LearningJourney.tsx');
 const reader=read(root+'SectionedJourney.tsx');
 const editorial=read(root+'EditorialJourney.tsx');
+const companion=read(root+'LessonDetailParity.tsx');
+const nativeMentor=read('site/assets/lesson-companion-native.js');
+const nativeBuddy=read('site/assets/laoly-context-s112.js');
 const entry=read(root+'staging-draft-preview.tsx');
 const ids=read(root+'personal-study-ids.ts').match(/'L\d+-\d+-\d+'/g)?.map(x=>x.slice(1,-1))??[];
 const drafts=JSON.parse(read('content/editorial/normalized/index.v1.json')).entries;
@@ -45,22 +48,43 @@ assert.match(editorial,/export function inline\(/,
 assert.match(reader,/<Markdown md=\{q\}\/>/,
  'Previously submitted questions must keep emphasis in the feedback phase');
 assert.doesNotMatch(reader,/className="li-lesson-status"/,'Remove the large redundant sync strip');
-assert.equal((reader.match(/\{mentor\(/g)||[]).length,1,
- 'Personal reader must render one contextual Lao Ly companion, not six scattered buttons');
-assert.match(reader,/className="li-lesson-companion"/,
- 'Personal companion shares the exemplar panel style');
-assert.match(reader,/LÃO LÝ ĐỌC CÙNG NGƯƠI/,
- 'Keep the approved Lao Ly companion heading');
-assert.match(reader,/phase==='feedback'\?'reflection':'extension'/,
- 'Companion context follows the active page, never a different lesson stage');
-assert.match(reader,/li:buddy-open/,
- 'Retain the verified source-backed Lao Ly dialogue action');
+assert.match(reader,/<LessonMentor id={id} locale={locale}\/>/,
+ 'Personal lessons must use the same Lão Lý panel as three samples');
+assert.match(companion,/export function LessonMentor\(\{id,locale\}:\{id:string;locale:Locale\}\)/,
+ 'Shared mentor must support all personal lesson IDs');
+assert.match(reader,/registerEditorial\(/,
+ 'Every personal lesson registers its authored mentor moments into the existing engine');
+assert.match(reader,/data-li-editorial-journey=\{id\}/,
+ 'Expose the current personal lesson to the same contextual engine');
+assert.match(reader,/data-li-lesson-submitted=\{persisted\.submitted\?/,
+ 'Native safety gate must use persisted submission');
+assert.match(reader,/data-li-lesson-reviewed=\{persisted\.reviewed\?/,
+ 'Native safety gate must use persisted review');
+assert.match(reader,/li:lesson-phase-changed/,
+ 'Companion refreshes when visible lesson stage changes');
+assert.match(reader,/li:mentor-phase-jump/,
+ 'Companion navigation returns to a visible React stage');
+assert.match(nativeMentor,/editorialRegistry\.get\(id\)/,
+ 'No second chat context resolver');
+assert.match(nativeBuddy,/lessonContext\?\.editorial\?null/,
+ 'No unrelated global quote during authored lesson chat');
 assert.match(entry,/root.render\(<SectionedJourney lesson={lesson} ports={ports} preview\/>\)/,
  'Real personal routes must use the shared fixed renderer, not another static preview');
 for(const item of drafts){
  const d=JSON.parse(read(item.normalizedPath));
  assert.equal(d.publishState,'draft','Do not publish '+item.id);
  assert.equal(d.rights.releaseAuthorized,false,'Do not bypass rights gate '+item.id);
+ const moments=d.content.companion?.structuredMoments||[];
+ assert.deepEqual(moments.map(m=>m.stage),
+  ['opening','concept','guided','independent','reflection','extension'],
+  'All six authored Lão Lý moments present: '+item.id);
+ for(const loc of ['vi','en']){
+  assert.ok(new Set(moments.map(m=>m[loc]?.prompt)).size>=5,
+   'At least five distinct contextual '+loc+' prompts: '+item.id);
+  assert.ok(moments.every(m=>m[loc]?.actions?.length===2),
+   'Two authored actions in each stage: '+item.id);
+ }
+
  for(const loc of ['vi','en']){
   const roles=d.content.localized[loc].sections.map(x=>x.role);
   for(const role of ['guided','methods','independent','reflection']){
@@ -71,4 +95,4 @@ for(const item of drafts){
   assert.equal(d.content.localized[loc].assessment.questions.length,4);
  }
 }
-console.log('PERSONAL_17_UI_PARITY_PASS: 5-page reader, gated optional method, save/bookmark controls, 17 draft rights intact');
+console.log('PERSONAL_17_UI_PARITY_PASS: 5 pages, 17 contextual six-stage mentors, spoiler-safe and draft rights intact');

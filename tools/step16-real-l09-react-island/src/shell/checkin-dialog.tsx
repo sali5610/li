@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button} from '../../../../design-system/react/index';
+import {Button,Progress} from '../../../../design-system/react/index';
 import {
  CHECKIN_PHYSICAL,STUDY_RHYTHMS,completePhysical,recommendStudyRhythm
 } from './checkin-domain.js';
@@ -136,7 +136,8 @@ function CheckinDialog(){
      'Answer all three questions to get a study-rhythm suggestion.')}</p>
     <div className="li-checkin-progress" role="status" aria-live="polite">
      <span>{copy('Đã trả lời','Answered')} <strong>{answered}/3</strong></span>
-     <span className="li-checkin-progress-track" aria-hidden="true"><span style={{width:(answered/3*100)+'%'}}/></span>
+     <Progress label={copy('Đã trả lời câu hỏi','Answered questions')}
+      value={answered} max={3} className="li-checkin-progress-bar"/>
     </div>
     <div className="checkin-physical" role="group"
      aria-label={copy('Ba câu hỏi thể trạng','Three physical check-in questions')}>

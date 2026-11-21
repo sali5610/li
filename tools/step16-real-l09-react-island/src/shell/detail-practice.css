@@ -8,8 +8,10 @@
 }
 #page-guideDetail .spell-detail-navigation{
  display:flex;align-items:center;justify-content:space-between;gap:var(--li-space-4);
- flex-wrap:wrap;margin-bottom:var(--li-space-6)
+ flex-wrap:wrap;margin-block-start:var(--li-space-3)
 }
+#li-react-route-trail:has(.li-app-route-trail) ~ #main
+ #page-guideDetail .spell-detail-navigation:not(:has(> .spell-linked-lesson)){display:none}
 #page-guideDetail .spell-detail-navigation>.li-ds-button,
 #page-noteDetail .li-react-note-detail>.library-back-link{justify-self:start}
 #page-guideDetail .spell-detail-heading{

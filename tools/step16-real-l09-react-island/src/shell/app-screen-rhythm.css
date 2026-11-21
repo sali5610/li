@@ -1,8 +1,14 @@
 /* React app-wide draft adoption: one component/token rhythm across every
  * user-facing screen. No changes to lesson data, navigation owners or theme.
  * Global Back = history; Breadcrumb = hierarchy (Catalog supplies deep trail). */
+:root.li-auth-verified{
+ --li-page-heading-gap:var(--li-space-3);
+}
+:root.li-auth-verified #main > .page.active:not(#page-home) .section-shell{
+ padding-block-start:var(--li-page-heading-gap);
+}
 #li-react-route-trail{box-sizing:border-box;position:relative;z-index:1;width:100%;
- min-width:0;max-width:100%;padding:var(--li-space-3) 0 0}
+ min-width:0;max-width:100%;padding-block-start:var(--li-page-heading-gap)}
 :root:not(.li-auth-verified) #li-react-route-trail{display:none}
 #li-react-route-trail:empty{display:none}
 .li-app-route-trail{box-sizing:border-box;max-width:1180px;margin-inline:auto;min-width:0}
@@ -55,7 +61,6 @@
  }
 }
 @media(max-width:600px){
- #li-react-route-trail{padding:var(--li-space-2) 0 0}
  #li-react-route-trail .li-ds-breadcrumb ol{gap:var(--li-space-1)}
  #li-react-route-trail .li-ds-breadcrumb li{font-size:var(--li-type-caption)}
  :root.li-auth-verified .page.active :where([data-li-react-screen])

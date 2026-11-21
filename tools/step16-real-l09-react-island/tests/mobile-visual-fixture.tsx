@@ -5,8 +5,9 @@ import '../../../design-system/react/controls.css';
 import '../../../design-system/react/components.css';
 import '../../../design-system/react/molecules.css';
 import {createRoot} from 'react-dom/client';
-import {Journal} from '../src/shell/journal-settings.js';
+import {Journal,Settings} from '../src/shell/journal-settings.js';
 import {Guide,Library} from '../src/shell/guide-library.js';
+import {CatalogScreen} from '../src/shell/home-catalog.js';
 import {BuddyDialog} from '../src/shell/laoly-dialog.js';
 import {RouteTrail} from '../src/shell/mount-navigation.js';
 import {appUiStore} from '../src/shell/app-store.js';
@@ -136,8 +137,23 @@ if(viewName==='breadcrumb'||viewName==='breadcrumbPrivate'){
    lang:'en',translation:'Tri thức và sức mạnh của con người là một; không biết nguyên nhân thì không đạt được kết quả.',
    interpretation:'Ý nghĩa về tư duy nguyên nhân.',meta:'Francis Bacon',url:'https://example.org',comment:''}
  }})),150);
+} else if(viewName==='catalogRoot'||viewName==='catalogGroup'){
+ root.parentElement!.classList.remove('active');
+ const page=document.getElementById('page-catalog')!;
+ page.classList.add('active');
+ createRoot(page.querySelector('.section-shell')!).render(<CatalogScreen/>);
+} else if(viewName==='settings'){
+ root.parentElement!.id='page-settings';
+ createRoot(root).render(<Settings/>);
 } else {
  root.parentElement!.id=viewName==='guide'?'page-guide':viewName==='library'?'page-library':'page-dashboard';
+ if(viewName==='guide'||viewName==='library'){
+  const trail=document.createElement('div');
+  trail.id='li-react-route-trail';
+  document.getElementById('main')!.before(trail);
+  appUiStore.getState().setRoute(viewName);
+  createRoot(trail).render(<RouteTrail/>);
+ }
  createRoot(root).render(viewName==='guide'?<Guide/>:viewName==='library'?<Library/>:<Journal/>);
 }
 const bounds=(node:Element|null)=>{
@@ -153,6 +169,21 @@ setTimeout(()=>{
  assert('true-390-css-mobile-viewport',windowWidth===390,{innerWidth,clientWidth:windowWidth});
  assert('no-horizontal-overflow',document.documentElement.scrollWidth<=windowWidth+4,
   {scrollWidth:document.documentElement.scrollWidth,windowWidth});
+ if(['settings','catalogRoot','catalogGroup','guide','library'].includes(viewName)){
+  const header=select('.app > .header');
+  const heading=select('#main > .page.active h1');
+  const trail=select('#li-react-route-trail .li-ds-breadcrumb, .catalog-breadcrumbs .li-ds-breadcrumb');
+  const expectsTrail=['catalogGroup','guide','library'].includes(viewName);
+  const gap=Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--li-space-3'));
+  const headerBottom=header?.getBoundingClientRect().bottom??NaN;
+  const trailBox=trail?.getBoundingClientRect();
+  const headingTop=heading?.getBoundingClientRect().top??NaN;
+  const leadingGap=(trailBox?.top??headingTop)-headerBottom;
+  const trailingGap=trailBox?headingTop-trailBox.bottom:null;
+  assert('page-title-uses-shared-navigation-spacing',Boolean(trail)===expectsTrail&&
+   Math.abs(leadingGap-gap)<1&&(trailingGap===null||Math.abs(trailingGap-gap)<1),
+   {gap,leadingGap,trailingGap});
+ }
  const textCenter=(node:Element)=>{
   const text=[...node.childNodes].find(n=>n.nodeType===Node.TEXT_NODE&&Boolean(n.textContent?.trim()));
   if(!text)return NaN;

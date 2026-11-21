@@ -384,6 +384,11 @@ export function GuideDetail(){
  const dueFuture=isDuePreparing&&view.dueAt!==null&&view.dueAt>Date.now();
  const ctaKind=preparing&&['faded','hide','resume','loci'].includes(view.mode)?'next':'check';
  return <div className="section-shell li-react-spell-detail" data-li-react-screen="guide-detail">
+  <header className="spell-detail-heading">
+   <Heading level={1} role="headline" className="display-title">{method.title}</Heading>
+   <Text role="caption">{view.active} · {tr(method.category)}</Text>
+   <Text role="body" className="intro">{method.original}</Text>
+  </header>
   <nav className="spell-detail-navigation" aria-label={copy('Điều hướng Thần Chú','Spell navigation')}>
    <Button variant="ghost" onClick={()=>openRoute('guide')} className="library-back-link">
     <LiIcon name="chevron-left" size={18}/> {copy('Sổ Tay Thần Chú','Learning Spells')}
@@ -396,11 +401,6 @@ export function GuideDetail(){
     {copy('Mở bài học liên quan','Open related lesson')} <LiIcon name="arrow-right" size={18}/>
    </Button>:null}
   </nav>
-  <header className="spell-detail-heading">
-   <Heading level={1} role="headline" className="display-title">{method.title}</Heading>
-   <Text role="caption">{view.active} · {tr(method.category)}</Text>
-   <Text role="body" className="intro">{method.original}</Text>
-  </header>
   <div className="spell-tabs" role="tablist" aria-label={copy('Chế độ Thần Chú','Spell mode')}
    onKeyDown={event=>{
     const next=['ArrowLeft','Home'].includes(event.key)?'guide':

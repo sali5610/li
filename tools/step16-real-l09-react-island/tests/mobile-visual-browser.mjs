@@ -54,8 +54,11 @@ try{
   screenWidth:390,screenHeight:844
  });
  await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
- for(const view of ['journal','guide','library','buddy','breadcrumbPrivate','breadcrumb','lesson']){
-  await send('Page.navigate',{url:target+'?view='+view});
+ for(const view of ['journal','guide','library','buddy','breadcrumbPrivate','breadcrumb','lesson',
+  'settings','catalogRoot','catalogGroup']){
+  const params=new URLSearchParams({view});
+  if(view==='catalogGroup')params.set('catalog','language');
+  await send('Page.navigate',{url:target+'?'+params});
   const report=await wait(async()=>{
    const result=await send('Runtime.evaluate',{
     expression:"document.querySelector('#qa-report')?.textContent || ''",

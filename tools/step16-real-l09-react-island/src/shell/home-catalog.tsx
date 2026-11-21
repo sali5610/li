@@ -213,12 +213,7 @@ function Catalog(){
       onActivate:index<breadcrumb.length-1?()=>openPath(item.path):undefined
      }))}/>
    </div>
-   {lesson&&<nav className="catalog-breadcrumbs-short" aria-label={locale==='vi'?'Quay lại môn học':'Return to course'}>
-    <button type="button" onClick={()=>openPath(path.slice(0,3))}>
-     <span aria-hidden="true">‹</span> <span className="catalog-crumb-parent">{course?.title||group?.title}</span>
-    </button>
-    <span aria-current="page">{locale==='vi'?'Bài học':'Lesson'}</span>
-   </nav>}
+
   </div>
   <header className={'catalog-lead'+(lesson?' catalog-lead--outline':'')}>
    {lesson?<div className="catalog-outline-overline">

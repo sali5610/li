@@ -1093,3 +1093,20 @@
 .li-learning-journey[data-li-sectioned-journey] .li-sectioned-question-field>label strong{
  font-weight:700;
 }
+
+/* Explicit copy-to-ChatGPT handoff: no automatic sharing of private work. */
+.li-learning-copy-prompt{
+ display:grid;
+ justify-items:start;
+ gap:var(--li-space-2);
+ padding:var(--li-space-4);
+ border:1px solid var(--rule);
+ background:var(--porcelain);
+ max-width:74ch;
+ min-width:0;
+}
+.li-learning-copy-prompt .li-ds-button{max-width:100%;white-space:normal}
+@media(max-width:599px){
+ .li-learning-copy-prompt{width:100%}
+ .li-learning-copy-prompt .li-ds-button{width:100%}
+}

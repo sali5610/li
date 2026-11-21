@@ -8,6 +8,7 @@ import {createRoot} from 'react-dom/client';
 import {motion,useReducedMotion} from 'motion/react';
 import {Badge,Button,Field,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
+import {CopyAnalysisPrompt} from '../learning/CopyAnalysisPrompt.js';
 
 const empty:ResearchView={question:'',branches:[],observed:'',unknown:'',feedback:''};
 const readResearch=():ResearchView=>inquiryFlow().getResearch()||empty;
@@ -126,6 +127,7 @@ function CaseScene(){
  const L=(vi:string,en:string)=>localized(locale,vi,en);
  const reduced=useReducedMotion();
  const [choice,setChoice]=useState<CaseChoice|null>(null);
+ const [completed,setCompleted]=useState<{choice:CaseChoice;conclusion:string}|null>(null);
  const [revision,setRevision]=useState(()=>inquiryFlow().getCaseDraft());
  const [message,setMessage]=useState('');
  const [bookmarked,setBookmarked]=useState(readBookmark);
@@ -133,6 +135,7 @@ function CaseScene(){
   const sync=()=>{
    const permitted=document.documentElement.classList.contains('li-auth-verified');
    if(!permitted){setChoice(null);setMessage('');}
+   if(!permitted)setCompleted(null);
    setBookmarked(readBookmark());
    const saved=inquiryFlow().getCaseDraft();
    setRevision(previous=>previous===saved?previous:saved);
@@ -148,6 +151,7 @@ function CaseScene(){
  },[]);
  const updateRevision=(next:string)=>{
   setRevision(next);
+  setCompleted(null);
   if(!inquiryFlow().setCaseDraft(next))
    setMessage(L('Không thể tự lưu bản nháp trên thiết bị này. Hãy sao chép nội dung trước khi thoát.','Unable to save this draft on your device. Copy it before leaving.'));
   else setMessage('');
@@ -156,7 +160,7 @@ function CaseScene(){
   if(!choice){setMessage(L('Hãy chọn một nhận định trước khi lưu.','Choose an answer before saving.'));return false;}
   if(revision.trim().length<12){setMessage(L('Viết lại kết luận ít nhất 12 ký tự.','Revise your conclusion using at least 12 characters.'));return false;}
   const saved=inquiryFlow().submitCase(choice,revision);
-  if(saved){setMessage('');setRevision('');setChoice(null);}
+  if(saved){setCompleted({choice,conclusion:revision});setMessage('');setRevision('');setChoice(null);}
   else setMessage(L('Không thể lưu Bút Ký trên thiết bị này. Nội dung vẫn giữ trong ô viết.','Unable to save to Notebook on this device. Your text is preserved here.'));
   return saved;
  };
@@ -192,10 +196,10 @@ function CaseScene(){
     </div>
     <div className="path-list case-options">
      <Button className="branch" variant="secondary" aria-pressed={choice==='right'}
-      onClick={()=>{setChoice('right');setMessage('');}}>
+      onClick={()=>{setChoice('right');setCompleted(null);setMessage('');}}>
       {L(caseCopy.options.right.vi,caseCopy.options.right.en)}</Button>
      <Button className="branch" variant="secondary" aria-pressed={choice==='wrong'}
-      onClick={()=>{setChoice('wrong');setMessage('');}}>
+      onClick={()=>{setChoice('wrong');setCompleted(null);setMessage('');}}>
       {L(caseCopy.options.wrong.vi,caseCopy.options.wrong.en)}</Button>
     </div>
     <motion.p key={choice||'none'} className="state-note" role="status"
@@ -208,7 +212,15 @@ function CaseScene(){
      placeholder={L("Trong nhóm người đang sử dụng được hỏi, 90% phản hồi tích cực…","Among the current users surveyed, 90% reported satisfaction…")}/>
     {message&&<InlineFeedback tone="error" message={message}/>}
     <div className="action-row"><Button onClick={save}><LiIcon name="check" size={20}/> {L("Lưu vào Bút Ký","Save to Notebook")}</Button></div>
-    <Text role="support">{L("Sau khi xem phản hồi, hãy viết lại kết luận bằng lời của bạn.","After the feedback, rewrite the conclusion in your own words.")}</Text></div>
+    <Text role="support">{L("Sau khi xem phản hồi, hãy viết lại kết luận bằng lời của bạn.","After the feedback, rewrite the conclusion in your own words.")}</Text>
+    {completed&&<CopyAnalysisPrompt locale={locale} step="case" data={{
+     title:L(caseCopy.question.vi,caseCopy.question.en),lessonId:'sampling-bias-90',
+     activity:L(caseCopy.scene.vi,caseCopy.scene.en),
+     questions:[L('Bạn chọn nhận định nào?','Which claim did you select?'),
+      L('Bạn sửa lại luận kết ra sao?','How did you revise the conclusion?')],
+     answers:[L(caseCopy.options[completed.choice].vi,caseCopy.options[completed.choice].en),completed.conclusion],
+     reference:L(caseCopy.feedback[completed.choice].vi,caseCopy.feedback[completed.choice].en)
+    }}/>}</div>
    </section>
    <aside className="case-coach">
     <div className="kicker">{L("THỦ THUẬT TƯ DUY","THINKING TECHNIQUE")}</div>

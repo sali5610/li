@@ -44,7 +44,7 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
  const entrance=(delay:number)=>(variant==='notebook'||variant==='bookworm')&&!reduced?{
   initial:{opacity:0,y:variant==='bookworm'?23:17},
   animate:{opacity:1,y:0},
-  transition:{duration:variant==='bookworm'?.58:.48,delay,ease:[.22,1,.36,1] as const}
+  transition:{duration:variant==='bookworm'?.58:.48,delay,ease:'easeOut' as const}
  }:{};
  const mirrorShell=<HomeMirrorShell artwork={<motion.img src={mirrorArtSrc} alt=""
     whileHover={variant==='notebook'&&!reduced?{scale:1.035}:undefined}

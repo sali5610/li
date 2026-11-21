@@ -334,7 +334,6 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  if(busy)return <section role="status" className="li-learning-journey" aria-busy="true">Đang xác minh quyền học…</section>;
  if(!attempt||!persisted)return <section role="alert" className="li-learning-journey">
   <Text>{error||'Không tải được bài.'}</Text>
-  <Button onClick={ports.navigation.openCatalog}>Về Tàng Thư</Button>
  </section>;
  const locale=appLocale,vi=locale==='vi',c=lesson.content.localized[locale];
  const names:Record<Phase,string>=vi?
@@ -403,10 +402,11 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    </li>)}</ol>
   </details>}
   </aside>
+    <StudyBookFolio phase={phase} steps={PAGES} locale={locale}/>
   <motion.div key={phase} initial={reduced?false:{opacity:0,x:12,rotateY:-1}}
    animate={{opacity:1,x:0,rotateY:0}} transition={reduced?{duration:0}:{duration:0.2}}
    className="li-learning-current">
-  <StudyBookFolio phase={phase} steps={PAGES} locale={locale}/>
+  
   <Card variant="flat-study" className="li-study-book-page">
    {phase==='read'&&<>
     <Markdown md={c.intro_md}/>{mentor('opening')}

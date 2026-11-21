@@ -853,3 +853,58 @@
   width:100%;min-height:48px;justify-content:space-between
  }
 }
+
+
+/* Single active-page heading stays visible while reading, below the global
+   sticky header. The folio is a sibling of the animated page so it does not
+   stop sticking before read-only sources and completion links. */
+.li-learning-journey[data-li-react-journey] > .li-study-book-folio{
+ position:sticky;
+ top:76px;
+ z-index:38; /* Global app header is z-index:42. */
+ display:flex;
+ flex-wrap:nowrap;
+ align-items:center;
+ gap:12px;
+ min-height:52px;
+ margin:0;
+ padding:10px clamp(8px,2vw,18px);
+ border:0;
+ border-bottom:1px solid var(--moss);
+ background:var(--paper);
+ box-shadow:none;
+}
+.li-learning-journey[data-li-react-journey] > .li-study-book-folio .li-study-book-seal{
+ display:none;
+}
+.li-learning-journey[data-li-react-journey] > .li-study-book-folio .li-study-book-folio-index{
+ flex:none;
+ font-size:.69rem;
+ white-space:nowrap;
+}
+.li-learning-journey[data-li-react-journey] > .li-study-book-folio .li-study-book-folio-title{
+ flex:1 1 auto;
+ min-width:0;
+ margin:0;
+ color:var(--ink);
+ font-size:clamp(.82rem,1.4vw,.95rem);
+ line-height:1.3;
+ font-weight:750;
+ text-transform:none;
+ letter-spacing:0;
+ text-wrap:pretty;
+}
+.li-learning-journey[data-li-react-journey] > .li-learning-current{
+ scroll-margin-top:142px;
+}
+@media(max-width:600px){
+ .li-learning-journey[data-li-react-journey] > .li-study-book-folio{
+  top:62px;
+  min-height:48px;
+  padding:8px 10px;
+  gap:9px;
+ }
+ .li-learning-journey[data-li-react-journey] > .li-learning-current{
+  scroll-margin-top:126px;
+ }
+}

@@ -685,7 +685,6 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  if(!lesson||!attempt)return <section role="alert" className="li-learning-journey">
   <Text>{error||'Không tải được bài.'}</Text>
   <Button onClick={()=>setReload(n=>n+1)}>Thử lại</Button>
-  <Button variant="secondary" onClick={ports.navigation.openCatalog}>Về Tàng Thư</Button>
  </section>;
  const locale=appLocale,vi=locale==='vi',content=lesson.content.localized[locale];
  const independent=quiz(content.independent.prompt_md);
@@ -766,10 +765,11 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    <Button onClick={()=>void retry()} disabled={saving}>{vi?'Thử lưu lại':'Retry saving'}</Button>
    <Text role="support">{vi?'Đừng tải lại khi còn bản chưa lưu.':'Keep this page open with unsaved work.'}</Text>
   </div>}
+    <StudyBookFolio phase={phase} steps={phases} locale={locale}/>
   <motion.div key={phase} initial={reduced?false:{opacity:0,x:12,rotateY:-1}}
    animate={{opacity:1,x:0,rotateY:0}} transition={reduced?{duration:0}:{duration:0.18}}
    className="li-learning-current">
-   <StudyBookFolio phase={phase} steps={phases} locale={locale}/>
+   
    {phase==='read'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-read">
     <section id="l0911-hook"><Markdown md={content.hook.md}/>{mentor('opening')}</section>
     <Heading level={2} id="li-editorial-read" role="titleLarge">{vi?'Hiểu bản chất':'Understand the concepts'}</Heading>
@@ -972,7 +972,6 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     </section>
     <Button variant="secondary" onClick={()=>ports.search.openSearch(lesson.title[locale])}>
      {vi?'Tra cứu kiến thức liên quan':'Explore related knowledge'}</Button>
-    <Button variant="ghost" onClick={ports.navigation.openCatalog}>{vi?'Về Tàng Thư':'Back to library'}</Button>
    </Card>}
   </motion.div>
  </section>;

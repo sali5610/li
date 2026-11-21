@@ -264,7 +264,11 @@ for(const [name,src] of [['L09',l09],['L03/L15',wave]]){
  assert.doesNotMatch(src,/data-method=\{spell\.shortId\}/,
   name+' must not delegate its visible spell CTA through legacy DOM');
  assert.doesNotMatch(src,/data-spell-lesson=/);
- assert.match(src,/onClick=\{ports\.navigation\.openCatalog\}/);
+ assert.doesNotMatch(src,/onClick=\{ports\.navigation\.openCatalog\}/,
+  name+' must use the existing breadcrumb/global Back, not a duplicate Library return');
+ assert.ok(src.indexOf('<StudyBookFolio phase={phase}')>=0&&
+  src.indexOf('<StudyBookFolio phase={phase}')<src.indexOf('<motion.div key={phase}'),
+  name+' keeps the current-step heading outside the animated page for sticky reading');
  assert.match(src,/LessonMentor id=/);
  assert.match(src,/onClick=\{\(\)=>void restartLesson\(\)\}/);
  assert.match(src,/AiFeedbackPanel id=/);

@@ -10,12 +10,23 @@ export type ResearchView={
  question:string;branches:string[];observed:string;unknown:string;feedback:string
 };
 export type CaseChoice='right'|'wrong';
+export type AuthoredCaseLocale={
+ question:string;scene:string;
+ options:{right:string;wrong:string};
+ feedback:{right:string;wrong:string};
+ technique:{title:string;body:string}
+};
+export type CaseView={
+ id:string;fieldId:string;lessonId:string;draft:boolean;
+ localized?:{vi:AuthoredCaseLocale;en:AuthoredCaseLocale}
+};
 export interface InquiryFlowPort{
  getMirror():MirrorView|null;
  shift(direction:-1|1):boolean;
  toggleQuestion():boolean;
  getResearch():ResearchView|null;
  chooseBranch(index:number):boolean;
+ getCase():CaseView;
  getCaseDraft():string;
  setCaseDraft(text:string):boolean;
  submitCase(choice:CaseChoice|null,revision:string,fieldId?:string|null):boolean;

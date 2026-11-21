@@ -155,3 +155,51 @@
 @media(prefers-reduced-motion:reduce){
  .catalog-sheet-layer *{scroll-behavior:auto;animation:none!important;transition:none!important}
 }
+
+/* Real routes: content trigger is portaled to <body>, not the clipped page.
+   All lesson kinds share one bottom-left position above the app tab bar. */
+.catalog-chapter-fab{
+ position:fixed!important;top:auto!important;right:auto!important;
+ left:calc(var(--li-space-4) + env(safe-area-inset-left,0px))!important;
+ bottom:calc(92px + env(safe-area-inset-bottom,0px))!important;
+ width:56px;height:56px;min-width:56px;min-height:56px;
+ display:grid;place-items:center;z-index:2190!important;
+ border:2px solid var(--moss);
+ border-radius:50%!important;background:var(--forest);color:var(--cream);
+ box-shadow:4px 4px 0 var(--wood);cursor:pointer
+}
+.catalog-chapter-fab[hidden],.catalog-chapter-fab[aria-expanded="true"]{
+ display:none!important
+}
+.catalog-sheet-layer{position:fixed!important;inset:0!important;z-index:2200!important}
+.catalog-sheet-layer[hidden]{display:none!important}
+.catalog-chapter-sheet{
+ position:absolute!important;inset-inline-start:0!important;
+ inset-inline-end:auto!important;inset-block:0;
+ max-width:calc(100vw - var(--li-space-6));
+ width:min(380px,calc(100vw - var(--li-space-6)));
+ height:100dvh;overflow-y:auto;overscroll-behavior:contain;
+ background:var(--cream)
+}
+.catalog-chapter-sheet .catalog-left-index{
+ display:grid;gap:var(--li-space-1);
+}
+.catalog-chapter-sheet .catalog-left-index a,
+.catalog-chapter-sheet .catalog-left-index button{
+ display:block;min-height:44px;width:100%;
+ padding:var(--li-space-3) var(--li-space-2);
+ border:0 solid var(--rule);border-bottom:1px solid var(--rule);
+ border-radius:0!important;
+ background:color-mix(in srgb,var(--cream) 0%,transparent);
+ box-shadow:0 0 0 var(--wood);
+ color:var(--ink);text-align:start;text-decoration:none;
+ font:var(--li-weight-500) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);
+}
+.catalog-chapter-sheet .catalog-sheet-close{
+ min-height:44px;border:0 solid var(--rule);
+ background:color-mix(in srgb,var(--cream) 0%,transparent);
+ box-shadow:0 0 0 var(--wood);color:var(--moss)
+}
+@media(min-width:700px){
+ .catalog-chapter-fab{bottom:var(--li-space-6)!important}
+}

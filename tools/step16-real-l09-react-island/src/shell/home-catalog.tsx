@@ -87,6 +87,12 @@ const levelNames:readonly [string,string,string][]=[
 // In-memory only: a return from a lesson should land on the course row the
 // learner chose, not force them to find it again. Never persist this per-user UI.
 let pendingCatalogReturn:{path:string;top:number}|null=null;
+/** Morph one decoded illustration from the arched crop to its real hero. */
+function fittedImage(rect:DOMRect,width:number,height:number,mode:'cover'|'contain'){
+ const scale=(mode==='cover'?Math.max:Math.min)(rect.width/width,rect.height/height);
+ const w=width*scale,h=height*scale;
+ return {left:(rect.width-w)/2,top:(rect.height-h)/2,width:w,height:h};
+}
 function Catalog(){
  const reduced=useReducedMotion();
  const locale=useLocale();
@@ -96,6 +102,68 @@ function Catalog(){
  const [activeCategory,setActiveCategory]=useState('all');
  const [portalLoad,setPortalLoad]=useState<'loading'|'ready'|'error'>('loading');
  const [portalRetry,setPortalRetry]=useState(0);
+ const [morphFieldId,setMorphFieldId]=useState<string|null>(null);
+ const morphBusy=useRef(false);
+ function enterField(item:Field,media:HTMLElement|null){
+  const source=media?.querySelector('img');
+  const canMorph=!!media&&!!source?.complete&&!!source.naturalWidth&&
+   typeof media.animate==='function'&&
+   !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!canMorph){openPath([path[0],item.id]);return;}
+  if(morphBusy.current)return;
+  const start=media!.getBoundingClientRect();
+  if(start.width<=0||start.height<=0){openPath([path[0],item.id]);return;}
+  morphBusy.current=true;
+  const image=source!;
+  const clone=document.createElement('img');
+  clone.src=image.currentSrc||image.src;
+  clone.alt='';
+  clone.setAttribute('aria-hidden','true');
+  const layer=document.createElement('div');
+  layer.className='li-catalog-field-shared-hero';
+  const fromFrame={left:start.left+'px',top:start.top+'px',
+   width:start.width+'px',height:start.height+'px',
+   borderRadius:'50% 50% 0 0 / 40% 40% 0 0'};
+  Object.assign(layer.style,fromFrame);
+  const fitFrom=fittedImage(start,image.naturalWidth,image.naturalHeight,'cover');
+  const px=(v:number)=>v+'px';
+  const artFrom={left:px(fitFrom.left),top:px(fitFrom.top),
+   width:px(fitFrom.width),height:px(fitFrom.height)};
+  Object.assign(clone.style,artFrom);
+  layer.appendChild(clone);
+  document.body.appendChild(layer);
+  let done=false;
+  let fallback:number|undefined;
+  const finish=()=>{
+   if(done)return;
+   done=true;
+   if(fallback!==undefined)window.clearTimeout(fallback);
+   layer.remove();
+   morphBusy.current=false;
+   setMorphFieldId(null);
+  };
+  setMorphFieldId(item.id);
+  openPath([path[0],item.id]);
+  // Wait for the new React path and its top-of-page scroll before measuring.
+  window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>{
+   const hero=document.querySelector<HTMLImageElement>(
+    '#li-react-catalog-host .catalog-field-hero');
+   const end=hero?.getBoundingClientRect();
+   if(!end||end.width<=0||end.height<=0){finish();return;}
+   const fitTo=fittedImage(end,image.naturalWidth,image.naturalHeight,'contain');
+   const artTo={left:px(fitTo.left),top:px(fitTo.top),
+    width:px(fitTo.width),height:px(fitTo.height)};
+   const toFrame={left:px(end.left),top:px(end.top),
+    width:px(end.width),height:px(end.height),borderRadius:'0px'};
+   const timing={duration:620,easing:'cubic-bezier(.22,.68,.19,1)',fill:'forwards' as const};
+   try{
+    const frame=layer.animate([fromFrame,toFrame],timing);
+    const art=clone.animate([artFrom,artTo],timing);
+    fallback=window.setTimeout(finish,850);
+    void Promise.allSettled([frame.finished,art.finished]).then(finish);
+   }catch{finish();}
+  }));
+ }
  useEffect(()=>{
   const onRoute=(event:Event)=>{
    if((event as CustomEvent<{route?:string}>).detail?.route!=='catalog'||!pendingCatalogReturn)return;
@@ -245,7 +313,8 @@ function Catalog(){
    {!lesson&&<Text role="body" className="intro">{description}</Text>}
   </header>
   {lessonNavError&&<p role="alert" className="li-catalog-error">{lessonNavError}</p>}
-   {field&&!course&&field.image&&<img className="catalog-field-hero" src={field.image} alt="" loading="lazy" decoding="async"/>}
+   {field&&!course&&field.image&&<img className="catalog-field-hero" src={field.image} alt="" loading="eager" decoding="async"
+    style={morphFieldId===field.id?{visibility:'hidden'}:undefined}/>}
   {!group&&<>{portalLoad==='ready'?<div className="catalog-group-grid">
    {groups.map((item,index)=><PortalCategoryCard key={item.id}
     portal={groupPortals[index%groupPortals.length]}
@@ -286,7 +355,7 @@ function Catalog(){
      category={item.category.label[locale]}
      detail={item.courses.length+(locale==='vi'?' môn học theo lộ trình':' courses')}
      actionLabel={locale==='vi'?'Khám phá':'Explore'}
-     onOpen={()=>openPath([group.id,item.id])}/>)}
+     onOpen={media=>enterField(item,media)}/>)}
    </div>
   </div>}
   {field&&!course&&<div className="catalog-roadmap">

@@ -78,6 +78,19 @@ try{
   writeFileSync(file,Buffer.from(result.data,'base64'));
   if(!existsSync(file))throw Error('Missing screenshot '+file);
   console.log('SCREENSHOT '+file);
+  if(view==='catalogGroup'){
+   // Real interaction contract: Explore morphs the SAME arched card art into
+   // its horizontal field hero and releases the overlay after animation.
+   const evalBool=async expression=>(await send('Runtime.evaluate',{
+    expression,returnByValue:true
+   })).result?.value;
+   await evalBool("document.querySelector('.li-catalog-field-card')?.scrollIntoView({block:'center',behavior:'instant'})");
+   await wait(()=>evalBool("(()=>{const i=document.querySelector('.li-catalog-field-card__media img');return Boolean(i?.complete&&i.naturalWidth>0)})()"),15000);
+   const started=await evalBool("(()=>{document.querySelector('.li-catalog-field-card__action')?.click();return Boolean(document.querySelector('.li-catalog-field-shared-hero img'))})()");
+   if(started!==true)throw Error('Explore must start a visible shared-image morph on mobile');
+   await wait(()=>evalBool("(()=>{const h=document.querySelector('.catalog-field-hero');return Boolean(h&&new URLSearchParams(location.search).get('catalog')?.split('/').length===2&&!document.querySelector('.li-catalog-field-shared-hero')&&getComputedStyle(h).visibility!=='hidden')})()"),5000);
+   console.log('PASS field card arch → detail hero shared-element transition at 390px, no stuck overlay');
+  }
   if(view==='searchEnglish'){
    const evaluate=async expression=>(await send('Runtime.evaluate',{expression,returnByValue:true})).result?.value;
    await evaluate("window.liLanguage.set('en')");

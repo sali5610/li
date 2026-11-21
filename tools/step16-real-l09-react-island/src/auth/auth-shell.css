@@ -42,3 +42,23 @@ button:disabled{opacity:.65;cursor:not-allowed}
 .l09-cloud-replace span{flex:1;overflow-wrap:anywhere}
 .qa-panel a{color:var(--moss);font-weight:600;text-underline-offset:4px}
 .qa-panel a:focus-visible{outline:3px solid var(--li-color-focus-ring);outline-offset:4px}
+
+
+/* Invited account screen adopts the same draft DS Card/Button/Heading atoms
+ * as the learner without changing auth, invite, sync or device state. */
+.auth-title.li-atom-heading{margin:var(--li-space-2) 0 var(--li-space-5)}
+.auth-card.li-ds-card{display:grid;gap:var(--li-space-4)}
+.auth-card.li-ds-card :is(.auth-account,.auth-sign-in){display:grid;gap:var(--li-space-3);min-width:0}
+.auth-card.li-ds-card p{margin:0;font:var(--li-type-body)/var(--li-leading-body) var(--li-font-ui)}
+.auth-card.li-ds-card .auth-privacy{
+ font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);
+ color:var(--muted)
+}
+.auth-card.li-ds-card .auth-local{margin-top:var(--li-space-2)}
+.auth-card.li-ds-card .li-ds-button{justify-self:start;max-width:100%}
+.auth-card.li-ds-card .auth-sign-in .li-ds-button{width:100%}
+.auth-lang .li-ds-button{box-shadow:none;min-height:48px;padding:var(--li-space-2) var(--li-space-3)}
+.auth-card.li-ds-card .auth-account .auth-privacy{margin-block-start:var(--li-space-2)}
+@media(max-width:600px){
+ .auth-card.li-ds-card .auth-account .li-ds-button{width:100%}
+}

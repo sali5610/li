@@ -359,21 +359,28 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   <header className="li-learning-header">
    <div><Text role="caption">{lesson.hierarchy.field.title} · {id}</Text>
     <Heading level={1} role="headline">{lesson.title[locale]}</Heading>
-     {preview&&<Text role="support">Học cá nhân · tiến độ theo tài khoản · nội dung đang hoàn thiện</Text>}</div>
+     {preview&&<Text role="support">{vi?
+      'Học cá nhân · tiến độ theo tài khoản · nội dung đang hoàn thiện':
+      'Personal study · account-synced progress · content in progress'}</Text>}</div>
    <div className="li-learning-header-actions">
     <Button variant="secondary" disabled={pending>0||locked} onClick={()=>void restartLesson()}>
      {attempt.locale==='vi'?'Học lại từ đầu':'Restart lesson'}
     </Button>
-    <Button variant="secondary" onClick={ports.navigation.openCatalog}>Tàng Thư</Button>
+    <Button variant="secondary" onClick={ports.navigation.openCatalog}>
+     {vi?'Tàng Thư':'Library'}</Button>
    </div>
   </header>
   <div className="li-learning-toolbar" role="group" aria-label="Language">
    {(['vi','en'] as const).map(l=><Button key={l} disabled={pending>0||locked}
     variant={locale===l?'primary':'secondary'} aria-pressed={locale===l}
     onClick={()=>{if(locale!==l)void persist({...attempt,locale:l});}}>{l.toUpperCase()}</Button>)}
-   <Text role="support">{locked?'Lưu lỗi':pending?'Đang lưu…':
-    sync==='synced'?'Đã đồng bộ':sync==='queued'?'Chờ đồng bộ':
-     sync==='on-device'?'Đã lưu trên thiết bị':'Đã lưu / đang kiểm tra'}</Text>
+   <Text role="support">{vi?
+    (locked?'Lưu lỗi':pending?'Đang lưu…':
+     sync==='synced'?'Đã đồng bộ':sync==='queued'?'Chờ đồng bộ':
+      sync==='on-device'?'Đã lưu trên thiết bị':'Đã lưu / đang kiểm tra'):
+    (locked?'Save failed':pending?'Saving…':
+     sync==='synced'?'Synced':sync==='queued'?'Waiting to sync':
+      sync==='on-device'?'Saved on device':'Saved / checking status')}</Text>
   </div>
   {error&&<p role="alert">{error}</p>}
   <aside className="li-learning-rail" aria-label="Learning navigation and status">

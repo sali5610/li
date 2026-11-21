@@ -329,3 +329,25 @@
   grid-column:2;grid-row:1
  }
 }
+
+/* Both real find surfaces now share the library SearchField's live-filter UX. */
+.li-react-guide .guide-find>.li-ds-search-field,
+.li-react-library .library-collection-tools>.li-ds-search-field{
+ width:100%;min-width:0;max-width:100%;gap:var(--li-space-2)
+}
+.li-react-guide .guide-find>.li-ds-search-field .li-atom-field,
+.li-react-library .library-collection-tools>.li-ds-search-field .li-atom-field{
+ width:100%;min-width:0;max-width:none
+}
+.li-react-guide .guide-find>.li-ds-search-field :is(input,.li-ds-search-actions),
+.li-react-library .library-collection-tools>.li-ds-search-field :is(input,.li-ds-search-actions){
+ max-width:100%;box-sizing:border-box
+}
+.li-react-guide .guide-find>.li-ds-search-field .li-ds-search-actions,
+.li-react-library .library-collection-tools>.li-ds-search-field .li-ds-search-actions{
+ justify-content:flex-start;margin-top:0
+}
+.li-react-guide .guide-find>.li-ds-search-field .li-atom-icon-button,
+.li-react-library .library-collection-tools>.li-ds-search-field .li-atom-icon-button{
+ min-width:44px;min-height:44px
+}

@@ -457,12 +457,12 @@ export function AppPageLayout(props:AppPageLayoutProps){
    <span className="li-flow-page-index" aria-hidden="true">{String(appLabPages.findIndex(item=>item.id===page)+1).padStart(2,'0')}</span>
   </header>
   <div className="li-flow-page-columns">
-   <motion.div className="li-flow-page-main" {...reveal(.14)}>
+   <motion.div className="li-flow-page-main" layout={bookworm&&!reduced} {...reveal(.14)}>
     <ScreenBody {...props}/>
    </motion.div>
    <AnimatePresence initial={false}>
    {(!bookworm||indexOpen)&&<motion.aside id={indexId} key="related-index"
-    className="li-flow-page-aside"
+    className="li-flow-page-aside" layout={bookworm&&!reduced}
     initial={bookworm&&!reduced?{opacity:0,height:0,y:-10}:
      variant==='notebook'&&!reduced?{opacity:0,y:14}:false}
     animate={bookworm?{opacity:1,height:'auto',y:0}:

@@ -11,18 +11,21 @@ export interface CatalogFieldCardProps {
  category:string;
  detail:string;
  imageSrc:string;
+ fieldId?:string;
+ hideImage?:boolean;
  actionLabel:string;
  onOpen:(media:HTMLElement|null)=>void;
  className?:string;
 }
 export function CatalogFieldCard({
- title,category,detail,imageSrc,actionLabel,onOpen,className=''
+ title,category,detail,imageSrc,fieldId,hideImage=false,actionLabel,onOpen,className=''
 }:CatalogFieldCardProps){
  const mediaRef=useRef<HTMLDivElement>(null);
  return <article className={['li-catalog-field-card',className].filter(Boolean).join(' ')}
-  data-li-component="catalog-field-card">
+  data-li-component="catalog-field-card" data-field-id={fieldId}>
   <div className="li-catalog-field-card__media" ref={mediaRef}>
-   <img src={imageSrc} alt="" loading="lazy" decoding="async"/>
+   <img src={imageSrc} alt="" loading="lazy" decoding="async"
+    style={hideImage?{visibility:'hidden'}:undefined}/>
   </div>
   <div className="li-catalog-field-card__copy">
    <span className="li-catalog-field-card__tag">{category}</span>

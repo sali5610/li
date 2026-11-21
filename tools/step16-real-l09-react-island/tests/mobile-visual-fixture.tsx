@@ -156,7 +156,12 @@ if(viewName==='searchEnglish'){
  root.parentElement!.classList.remove('active');
  const page=document.getElementById('page-catalog')!;
  page.classList.add('active');
- createRoot(page.querySelector('.section-shell')!).render(<CatalogScreen/>);
+ // Production mounts the Catalog under #li-react-catalog-host. The shared
+ // image transition measures its destination there; fixture must use the
+ // same host instead of a simplified root.
+ const catalogHost=page.querySelector<HTMLElement>('.section-shell')!;
+ catalogHost.id='li-react-catalog-host';
+ createRoot(catalogHost).render(<CatalogScreen/>);
 } else if(viewName==='settings'){
  root.parentElement!.id='page-settings';
  app.liSettingsPort={getView:()=>({mode:'start',modes:[],calm:false,mute:false,

@@ -335,7 +335,8 @@ function Home(){
   const checkBackdrop=()=>{
    const css=getComputedStyle(hero,'::before').backgroundImage;
    const url=css.match(/url\((["']?)(.*?)\1\)/)?.[2]||'';
-   if(!url||url===currentUrl)return;
+   if(!url){setBackdropReady(true);return;}
+   if(url===currentUrl)return;
    currentUrl=url;
    setBackdropReady(false);
    image=new Image();
@@ -410,6 +411,7 @@ function Home(){
   scene.current?.style.setProperty('--li-home-depth-y','0px');
  };
  return <div ref={scene} data-li-react-screen="home" data-li-motion={reduced?'reduced':'full'}
+  data-li-boot-art-ready={backdropReady&&(!mirrorImage||!!decodedMirrorImage)?"true":"false"}
   className="hero" role="region" aria-label={L("Cảnh thư viện cổ thụ và Gương Vạn Vấn","Ancient library and the Mirror of Questions")}
   onPointerMove={moveBackdrop} onPointerLeave={resetBackdrop}>
   <div className="li-home-ambient" aria-hidden="true">

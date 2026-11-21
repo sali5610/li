@@ -171,9 +171,16 @@ jobs:
           # let legacy CSS silently override the redesigned iPhone layouts.
           gate=('<style id="li-auth-gate-critical">'
                 'html:not(.li-auth-verified) .app,'
+                'html:not(.li-boot-ready) .app,'
                 'html.li-auth-verified.li-account-open .app{display:none!important}'
+                'html:not(.li-boot-ready) #li-staging-auth-root'
+                '{visibility:hidden!important}'
                 'html.li-auth-verified:not(.li-account-open) #li-staging-auth-root'
-                '{display:none!important}</style>')
+                '{display:none!important}'
+                '#li-boot-splash{position:fixed;inset:0;z-index:1400;'
+                'display:grid;place-items:center;background:#F1F0E9;color:#243A29}'
+                'html.li-boot-ready #li-boot-splash{display:none!important}'
+                '</style>')
           # Embed the published revision in the REAL app shell so an iPhone
           # with a stale Workbox document can compare it to public build-info.
           published_sha=os.environ['GITHUB_SHA']
@@ -214,6 +221,27 @@ jobs:
             '<script type="module" src="./assets/staging-auth-gate.js?li_build='
             +os.environ['GITHUB_SHA'][:12]+'"></script>')
           html=html.replace('</body></html>',shell+'</body></html>',1)
+          # Reuse the approved global loading illustration, not a second
+          # Home mock. This markup is parsed immediately after <body>, so no
+          # native Home frame can paint while React downloads or checks Auth.
+          boot=(
+           '<div id="li-boot-splash" role="status" aria-live="polite" aria-atomic="true">'
+           '<div class="li-state-scene" data-li-state="loading">'
+           '<img class="li-state-scene__art" src="./assets/laoly-state-loading.png" '
+           'width="220" height="220" loading="eager" fetchpriority="high" '
+           'alt="" aria-hidden="true">'
+           '<p class="li-state-scene__title" id="li-boot-title">Đang mở Tàng Thư…</p>'
+           '<p class="li-state-scene__description" id="li-boot-description">'
+           'Lão Lý đang chuẩn bị mọi thứ.</p>'
+           '<div id="li-boot-slow" hidden>'
+           '<p class="li-state-scene__description" id="li-boot-slow-copy">'
+           'Tải lâu hơn dự kiến.</p>'
+           '<button type="button" class="li-boot-retry" id="li-boot-retry">'
+           'Tải lại ứng dụng</button></div></div></div>'
+          )
+          assert html.count('<body>')==1,'Missing unique app body'
+          html=html.replace('<body>','<body>'+boot,1)
+          assert html.count('id="li-boot-splash"')==1
           index.write_text(html,encoding='utf-8')
           for path in ['auth-pilot','l09-preview']:
            legacy=Path('site')/path/'index.html'
@@ -242,6 +270,9 @@ jobs:
           grep -Fq 'li-auth-gate-critical' site/index.html
           grep -Fq "staging-auth-gate.js?li_build=${GITHUB_SHA:0:12}" site/index.html
           grep -Fq 'id="li-staging-auth-root"' site/index.html
+          grep -Fq 'id="li-boot-splash"' site/index.html
+          grep -Fq 'laoly-state-loading.png' site/index.html
+          grep -Fq 'html:not(.li-boot-ready) .app' site/index.html
           grep -Fq 'id="li-open-account"' site/index.html
           grep -Fq 'id="li-cloud-status"' site/index.html
           test -z "$(find site -type f \( -name '*.map' -o -name '.env*' -o -name '*qa-secrets*' \) -print -quit)"

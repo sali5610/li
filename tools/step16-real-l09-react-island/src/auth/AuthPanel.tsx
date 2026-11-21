@@ -208,6 +208,13 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   }));
   return()=>{document.documentElement.classList.remove('li-auth-verified');};
  },[accountId,isPending,error,access,ownerReady,isOffline,localOffline]);
+ // A signed-out/denied visitor can see the real Auth screen only after the
+ // session check settles; never reveal a static Home during auth bootstrap.
+ useEffect(()=>{
+  if(!IS_INTEGRATED_LI_APP||isPending)return;
+  if(!accountId||Boolean(error)||access==='denied'||access==='error')
+   window.dispatchEvent(new Event('li:auth-startup-settled'));
+ },[isPending,accountId,error,access]);
  // Persist a local time limit only AFTER the real invited account and local owner agree.
  useEffect(()=>{
   if(IS_INTEGRATED_LI_APP&&!isOffline&&!isPending&&!error&&ownerReady&&

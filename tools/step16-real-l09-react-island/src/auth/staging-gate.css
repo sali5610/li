@@ -27,3 +27,37 @@ html.li-auth-verified #li-staging-auth-root{display:none!important}
 #li-staging-auth-root .l09-cloud-replace span{flex:1}
 #li-staging-auth-root .qa-panel button{white-space:normal}
 @media(max-width:360px){#li-staging-auth-root .auth-lang{width:100%}}
+
+
+/* Boot is a real pending state, not a placeholder Home. The canonical
+   UX-ART-06 illustrated scene is reused; the critical rule is injected in
+   the <head> so the legacy HTML cannot flash before React takes ownership. */
+#li-boot-splash{
+ position:fixed;inset:0;z-index:1400;
+ display:grid;place-items:center;
+ overflow-y:auto;overscroll-behavior:contain;
+ padding:calc(20px + env(safe-area-inset-top))
+         max(20px,env(safe-area-inset-right))
+         calc(20px + env(safe-area-inset-bottom))
+         max(20px,env(safe-area-inset-left));
+ background:var(--paper,#F1F0E9);color:var(--ink,#1f2b22);
+}
+#li-boot-splash .li-state-scene{
+ max-width:380px;min-height:0;margin:0;
+ padding:var(--li-space-4,16px);
+}
+#li-boot-splash .li-state-scene__art{width:min(56vw,236px)}
+#li-boot-splash .li-state-scene__title{font-size:clamp(24px,5vw,30px)}
+#li-boot-splash .li-boot-retry{
+ margin-top:var(--li-space-4,16px);
+ padding:12px 18px;min-height:48px;
+ background:var(--moss,#243A29);color:var(--cream,#FAF9F5);
+ border:1px solid var(--moss,#243A29);cursor:pointer;
+}
+#li-boot-splash .li-boot-retry:focus-visible{
+ outline:3px solid var(--li-color-focus-ring,#466B53);outline-offset:3px
+}
+#li-boot-splash [hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){
+ #li-boot-splash .li-state-scene__art{animation:none!important}
+}

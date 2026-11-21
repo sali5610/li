@@ -337,25 +337,21 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    </div>
    <div className="li-learning-header-actions">
     <LessonBookmark id="L09-1-2" locale={attempt.locale}/>
-    <Button variant="secondary" onClick={ports.navigation.openCatalog}>
-     {vi?'Về Tàng Thư':'Back to library'}
-    </Button>
+    <div className="li-learning-language" role="group" aria-label={vi?'Ngôn ngữ bài học':'Lesson language'}>
+     {(['vi','en'] as const).map(lang=><Button key={lang}
+      variant={attempt.locale===lang?'primary':'secondary'}
+      aria-pressed={attempt.locale===lang} disabled={saving||locked}
+      onClick={()=>switchLocale(lang)}>{lang.toUpperCase()}</Button>)}
+    </div>
    </div>
   </header>
-  <Text role="support" className="li-lesson-status">{content.status}</Text>
-  <div className="li-learning-language" role="group" aria-label={vi?'Ngôn ngữ bài học':'Lesson language'}>
-   {(['vi','en'] as const).map(lang=><Button key={lang}
-    variant={attempt.locale===lang?'primary':'secondary'}
-    aria-pressed={attempt.locale===lang} disabled={saving||locked}
-    onClick={()=>switchLocale(lang)}>{lang.toUpperCase()}</Button>)}
-  </div>
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
   <nav className="li-learning-steps" aria-label={vi?'Các bước học':'Learning steps'}>
-   {sequence.map(item=><Button key={item} variant={phase===item?'primary':'ghost'}
+   {sequence.map((item,index)=><Button key={item} variant={phase===item?'primary':'ghost'}
     aria-current={phase===item?'step':undefined}
     disabled={((item==='feedback'||item==='progress')&&!attempt.submitted)||
      (item==='progress'&&!attempt.reviewed)}
-    onClick={()=>go(item)}>{labels[item]}</Button>)}
+    onClick={()=>go(item)}><span className="li-learning-step-index">{String(index+1).padStart(2,'0')}</span><span>{labels[item]}</span></Button>)}
   </nav>
   <details className="li-learning-extras">
    <summary>{vi?'Mục lục & Thần Chú gợi ý':'Outline & optional study spells'}</summary>

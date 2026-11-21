@@ -306,7 +306,10 @@ function KnowledgeSearch(){
         onActivate={record.kind==='Lesson'&&!!availableRoute(record.lessonId||record.id)?
          ()=>navigateTo(record.lessonId||record.id):
          catalogBrowsePaths.has(record.id)?()=>browseCatalog(record.id):undefined}/>
-        {index===0&&<RelationMap record={record} locale={locale} onOpen={navigateTo}/>}
+        {index===0&&(record.links||[]).length>0&&<details className="li-search-map-details">
+         <summary>{L('Xem bản đồ kết nối','Show knowledge map')}</summary>
+         <RelationMap record={record} locale={locale} onOpen={navigateTo}/>
+        </details>}
        {record.answerability&&<div className="li-search-related">
         <Text role="support"><strong>{record.answerability.level==='direct'?L('Mục tiêu bài học phù hợp','Relevant learning outcome'):
          record.answerability.level==='outcome_match'?

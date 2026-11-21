@@ -110,8 +110,9 @@ const trails:Record<string,TrailPart[]>={
 function RouteTrail(){
  const route=useAppUiStore(state=>state.route);
  const locale=useAppLocale(),en=locale==='en';
- // Home is immersive; Catalog has its own content-level Breadcrumb.
- if(route==='home'||route==='catalog')return null;
+ // Learning screens already have global Back, bottom Catalog navigation and
+ // their own lesson title. A second 3-level crumb only wastes mobile space.
+ if(route==='home'||route==='catalog'||/^(lesson|draftLesson)/.test(route))return null;
  const flow=trails[route]||
   (/^(lesson|draftLesson)/.test(route)?
    [catalogTrail,{vi:'Bài Học',en:'Lesson'}]:

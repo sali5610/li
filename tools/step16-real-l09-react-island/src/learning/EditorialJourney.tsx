@@ -719,23 +719,25 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     <Heading level={1} id={'li-react-'+id+'-title'} role="headline">{lesson.title[locale]}</Heading>
    </div>
    <div className="li-learning-header-actions">
-    <Button variant="secondary" disabled={locked||saving||pending.current>0}
-     onClick={()=>void restartLesson()}>{vi?'Học lại từ đầu':'Restart lesson'}</Button>
-    <Button variant="secondary" onClick={ports.navigation.openCatalog}>{vi?'Về Tàng Thư':'Back to library'}</Button>
+    <div className="li-learning-language" role="group" aria-label={vi?'Ngôn ngữ':'Language'}>
+     {(['vi','en'] as const).map(lang=><Button key={lang}
+      variant={locale===lang?'primary':'secondary'} aria-pressed={locale===lang}
+      disabled={saving||locked} onClick={()=>switchLocale(lang)}>{lang.toUpperCase()}</Button>)}
+    </div>
+    <details className="li-lesson-header-more">
+     <summary>{vi?'Tùy chọn':'Options'}</summary>
+     <Button variant="secondary" disabled={locked||saving||pending.current>0}
+      onClick={()=>void restartLesson()}>{vi?'Học lại từ đầu':'Restart lesson'}</Button>
+    </details>
    </div>
   </header>
-  <div className="li-learning-language" role="group" aria-label={vi?'Ngôn ngữ':'Language'}>
-   {(['vi','en'] as const).map(lang=><Button key={lang}
-    variant={locale===lang?'primary':'secondary'} aria-pressed={locale===lang}
-    disabled={saving||locked} onClick={()=>switchLocale(lang)}>{lang.toUpperCase()}</Button>)}
-  </div>
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
   <nav className="li-learning-steps" aria-label={vi?'Các bước học':'Learning steps'}>
-   {phases.map(p=><Button key={p} variant={p===phase?'primary':'ghost'}
+   {phases.map((p,index)=><Button key={p} variant={p===phase?'primary':'ghost'}
     aria-current={p===phase?'step':undefined}
     disabled={(p==='feedback'&&!persistedAttempt?.submitted)||
      (p==='progress'&&!persistedAttempt?.reviewed)}
-    onClick={()=>moveTo(p)}>{labels[p]}</Button>)}
+    onClick={()=>moveTo(p)}><span className="li-learning-step-index">{String(index+1).padStart(2,'0')}</span><span>{labels[p]}</span></Button>)}
   </nav>
   <div className="li-learning-save">
    <Progress label={vi?'Tiến độ lượt học':'Lesson attempt progress'} value={progress}/>

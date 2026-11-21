@@ -220,8 +220,11 @@ function Catalog(){
     <span aria-current="page">{locale==='vi'?'Bài học':'Lesson'}</span>
    </nav>}
   </div>
-  <header className="catalog-lead">
-   <div className="kicker">{eyebrow}</div>
+  <header className={'catalog-lead'+(lesson?' catalog-lead--outline':'')}>
+   {lesson?<div className="catalog-outline-overline">
+    <span>{locale==='vi'?'ĐỀ CƯƠNG BÀI HỌC':'LESSON OUTLINE'} · {lesson.id}</span>
+    <span className="catalog-outline-status">{locale==='vi'?'Chưa phát hành':'Unreleased'}</span>
+   </div>:<div className="kicker">{eyebrow}</div>}
    <Heading level={1} role="headline" className="display-title">{heading}</Heading>
    {!lesson&&<Text role="body" className="intro">{description}</Text>}
   </header>
@@ -303,11 +306,13 @@ function Catalog(){
     </Button>
    </li>)}
   </ol></>}
-  {lesson&&<section className="catalog-draft-content">
-   <div className="kicker">{locale==='vi'?'CHƯA PHÁT HÀNH':'NOT RELEASED'}</div>
-   <Heading level={2} role="titleMedium">{locale==='vi'?'Nội dung đang được biên soạn':'Content in progress'}</Heading>
-   <Text role="body">{locale==='vi'?'Bài chưa có chương, bài tập hoặc tiến độ học được phép phát hành.':
-    'This outline has no lesson content, practice or progress approved for release.'}</Text>
+  {lesson&&<section className="catalog-draft-content" aria-label={locale==='vi'?'Trạng thái bài học':'Lesson status'}>
+   <p>{locale==='vi'?
+    'Bài này đang được biên soạn; chưa có nội dung hay bài luyện để bắt đầu học.':
+    'This outline is being prepared. Reading and practice are not available yet.'}</p>
+   <button type="button" className="catalog-outline-return" onClick={()=>openPath(path.slice(0,3))}>
+    <span aria-hidden="true">←</span> {locale==='vi'?'Xem bài khác trong môn':'Browse other lessons'}
+   </button>
   </section>}
  </motion.div>;
 }

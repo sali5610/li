@@ -11,6 +11,10 @@
 .li-portal-category-trigger:focus-visible{outline:0;box-shadow:inset 0 0 0 3px var(--moss)}
 .li-portal-category-interior{position:absolute;z-index:0;inset:16% 16% 7%;
  display:grid;place-items:center;overflow:hidden;border-radius:50% 50% 0 0;
+ /* Remove the square top corners from the placeholder and all future illustrations.
+    Keep the architectural PNG/WebP overlay unmasked in its own foreground layer. */
+ clip-path:polygon(0 34%,8% 23%,18% 12%,30% 4%,40% 0,60% 0,
+  70% 4%,82% 12%,92% 23%,100% 34%,100% 100%,0 100%);
  background:var(--paper-2)}
 .li-portal-category-interior>img{width:100%;height:100%;object-fit:cover;object-position:center}
 .li-portal-category-placeholder{width:100%;height:100%;display:grid;place-items:center}

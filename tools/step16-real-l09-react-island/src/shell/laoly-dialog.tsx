@@ -32,7 +32,7 @@ const debateCorrect='Cuối cùng cũng chịu dùng đến bộ não rồi đ�
 const debateWrong='Ồ, một cách suy luận rất sáng tạo. Tiếc là sai. Nhóc, lão chỉ hỏi người đang dùng; người chưa dùng có thể nghĩ khác. Đừng bắt mẫu khảo sát gánh cả thị trường.';
 const withNickname=(text:string)=>app.liAddressLine?app.liAddressLine(text):text;
 
-function BuddyDialog({root}:{root:HTMLElement}){
+export function BuddyDialog({root}:{root:HTMLElement}){
  const [open,setOpen]=useState(false);
  const [view,setView]=useState<BuddyView|null>(null);
  const [message,setMessage]=useState('');

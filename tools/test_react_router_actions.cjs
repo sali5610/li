@@ -397,3 +397,80 @@ assert.deepEqual(nativeRenders,['native-mode','hidden-guide','native-mode','hidd
 assert.equal(changes.length,3,'Standalone startup refresh never invents a learner mode event');
 assert.deepEqual(modeAlerts,[]);
 console.log('PASS React study mode: local/cross-device updates without hidden Guide/FAB DOM; standalone fallback');
+
+
+// Auth's journal-consent DATA port must exist even when Chat 4 removed every
+// native Settings/checkbox element. Execute the actual TS useEffect body,
+// rather than asserting its name exists or clicking a hidden checkbox.
+{
+ const authSource=read('tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx');
+ const a=authSource.indexOf(' // Privacy consent is a DATA setting, never an authentication control.');
+ const b=authSource.indexOf(' // Do not reveal native lesson state from another invited account.',a);
+ assert(a>=0&&b>a,'Find actual Auth-owned private journal consent effect');
+ const ts=require('./step16-real-l09-react-island/node_modules/typescript');
+ const compiled=ts.transpileModule('function mountConsent(){\n'+
+  authSource.slice(a,b)+'\n}',{compilerOptions:{
+   target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.None
+  }}).outputText;
+ const events=[],writes=[];
+ let clean=()=>{};
+ const ctx={
+  accountId:'invited-A',access:'granted',ownerReady:true,
+  journalBusy:false,journalChoice:false,journalError:'',locale:'vi',
+  IS_INTEGRATED_LI_APP:true,
+  toggleJournalCloud:next=>writes.push(next),
+  document:{getElementById:()=>null,documentElement:{lang:'vi'}},
+  window:{dispatchEvent:event=>events.push(event.type)},
+  Event:class{constructor(type){this.type=type}},
+  useEffect:(effect)=>{clean=effect()||(()=>{});}
+ };
+ vm.createContext(ctx);
+ vm.runInContext(compiled+'\nmountConsent();',ctx);
+ const port=ctx.window.liJournalCloudConsent;
+ assert(port,'React private Journal control must mount without hidden native nodes');
+ assert.deepEqual({...port.getView()},{
+  visible:true,checked:false,disabled:false,
+  description:'Mặc định riêng tư: Nhật Ký & Check-in chỉ lưu trên thiết bị.'
+ });
+ port.set(true);
+ assert.deepEqual(writes,[true],'React calls the original consent action, no alternate writer');
+ assert.deepEqual(events,['li:journal-cloud-view-changed']);
+ clean();
+ assert.equal(ctx.window.liJournalCloudConsent,undefined,
+  'Auth cleanup cannot leave an unsafe consent port for a signed-out account');
+
+ // No native checkbox => permission state is still enforced by verified Auth.
+ ctx.access='denied';
+ vm.runInContext('mountConsent();',ctx);
+ const denied=ctx.window.liJournalCloudConsent;
+ assert.equal(denied.getView().visible,false);
+ assert.equal(denied.getView().disabled,true);
+ denied.set(true);
+ assert.deepEqual(writes,[true],'Unverified account cannot opt into cloud Journal');
+ clean();
+
+ // The shipped source-site/native fallback remains functional if present.
+ ctx.access='granted';ctx.journalChoice=true;
+ let listener,unsubscribed=false;
+ const card={hidden:true},detail={textContent:''};
+ const checkbox={
+  checked:false,disabled:true,
+  addEventListener(name,fn){assert.equal(name,'change');listener=fn;},
+  removeEventListener(name,fn){unsubscribed=name==='change'&&fn===listener;}
+ };
+ ctx.document.getElementById=id=>({
+  'li-journal-cloud-settings':card,
+  'li-journal-cloud-toggle':checkbox,
+  'li-journal-cloud-description':detail
+ })[id]??null;
+ vm.runInContext('mountConsent();',ctx);
+ assert.equal(card.hidden,false);
+ assert.equal(checkbox.checked,true);
+ assert.equal(checkbox.disabled,false);
+ assert.equal(detail.textContent,'Nhật Ký & Check-in đang được phép đồng bộ lên Neon.');
+ checkbox.checked=false;listener();
+ assert.deepEqual(writes,[true,false]);
+ clean();
+ assert.equal(unsubscribed,true,'Native listener is removed on Auth cleanup');
+ console.log('PASS React Journal cloud consent: no native host, invited-only, native fallback');
+}

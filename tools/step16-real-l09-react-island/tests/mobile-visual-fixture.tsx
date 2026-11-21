@@ -148,6 +148,12 @@ setTimeout(()=>{
  } else if(viewName==='library'){
   const titles=[...document.querySelectorAll('.library-saved-shortlist .library-list-copy strong')];
   assert('saved-bookmarks-have-rows',titles.length>0);
+  assert('canonical-feature-card',Boolean(select('.library-resume-feature[data-li-component="card"][data-variant="flat-study"]')));
+  assert('canonical-note-cards',document.querySelectorAll('.library-note-preview[data-li-component="card"][data-variant="flat-study"]').length===2);
+  const links=[...document.querySelectorAll('.li-react-library .library-text-link.li-ds-button')];
+  assert('text-actions-are-unboxed',links.length>=3&&links.every(n=>{
+   const c=getComputedStyle(n);return c.borderTopWidth==='0px'&&c.boxShadow==='none';
+  }),links.map(n=>({label:n.textContent,border:getComputedStyle(n).borderTopWidth,shadow:getComputedStyle(n).boxShadow})));
   assert('canonical-icon-only-bookmarks',
    document.querySelectorAll('.li-react-library .library-icon-action[data-li-atom="icon-button"]').length>0);
   const resumeTitle=select('.library-resume-feature .library-list-item .library-list-copy');

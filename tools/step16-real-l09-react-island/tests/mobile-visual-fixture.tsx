@@ -8,6 +8,8 @@ import {createRoot} from 'react-dom/client';
 import {Journal} from '../src/shell/journal-settings.js';
 import {Guide,Library} from '../src/shell/guide-library.js';
 import {BuddyDialog} from '../src/shell/laoly-dialog.js';
+import {RouteTrail} from '../src/shell/mount-navigation.js';
+import {appUiStore} from '../src/shell/app-store.js';
 // Uses the real React screen components and their production CSS. No login,
 // user data, network auth, or public route bypass: this HTML is deleted
 // BEFORE upload-pages-artifact in staging.
@@ -87,7 +89,37 @@ app.LiSpellPractice={getT02Status:()=>null};
 app.liBuddyEngine={choose:(i:number)=>({text:i===0?'Chọn cách học phù hợp với câu hỏi.':'Thử một bài luyện ngắn.',showChallenge:false})};
 const root=document.getElementById('visual-root')!;
 const buddyRoot=document.getElementById('buddy-modal')!;
-if(viewName==='buddy') {
+if(viewName==='breadcrumb'){
+ appUiStore.getState().setRoute('lessonL09');
+ root.id='li-react-route-trail';
+ createRoot(root).render(<RouteTrail/>);
+} else if(viewName==='lesson'){
+ root.parentElement!.classList.remove('active');
+ const load=(name:string)=>new Promise<void>((resolve,reject)=>{
+  const script=document.createElement('script');
+  script.src='./assets/'+name;
+  script.onload=()=>resolve();
+  script.onerror=()=>reject(new Error('Missing native fixture script '+name));
+  document.body.append(script);
+ });
+ (async()=>{
+  try{
+   for(const name of [
+    'lesson-l09-hifi-markup.js',
+    'lesson-l09-hifi.js',
+    'catalog-curriculum-data.js',
+    'catalog-drilldown.js',
+    'lesson-contents-fab.js'
+   ])await load(name);
+   const page=document.getElementById('page-lessonL09');
+   if(!page)throw Error('Real native L09 page was not mounted');
+   page.classList.add('active');
+   window.dispatchEvent(new Event('li:route-changed'));
+  }catch(error){
+   (window as any).__liLessonFixtureError=String(error);
+  }
+ })();
+} else if(viewName==='buddy') {
  root.parentElement!.id='page-guide';
  buddyRoot.classList.add('open');
  createRoot(buddyRoot).render(<BuddyDialog root={buddyRoot}/>);
@@ -116,7 +148,51 @@ setTimeout(()=>{
  assert('true-390-css-mobile-viewport',windowWidth===390,{innerWidth,clientWidth:windowWidth});
  assert('no-horizontal-overflow',document.documentElement.scrollWidth<=windowWidth+4,
   {scrollWidth:document.documentElement.scrollWidth,windowWidth});
- if(viewName==='journal'){
+ if(viewName==='breadcrumb'){
+  const trail=select('.li-app-route-trail .li-ds-breadcrumb');
+  const actions=[...document.querySelectorAll('.li-app-route-trail .li-ds-breadcrumb button')];
+  assert('REAL-ROUTE-TRAIL-MOUNTED-ON-LESSON',Boolean(trail&&
+   document.querySelector('.li-app-route-trail [aria-current="page"]')),bounds(trail));
+  assert('breadcrumb-has-real-ancestors',actions.length===2,actions.map(n=>n.textContent));
+  assert('breadcrumb-ancestors-are-text-links',actions.length===2&&actions.every(node=>{
+   const cs=getComputedStyle(node);
+   return cs.borderTopWidth==='0px'&&cs.boxShadow==='none'&&
+    cs.textDecorationLine.includes('underline');
+  }),actions.map(node=>({text:node.textContent,border:getComputedStyle(node).borderTopWidth})));
+ } else if(viewName==='lesson'){
+  const page=select('#page-lessonL09');
+  const trigger=select('body > .catalog-chapter-fab[data-lesson-owner="page-lessonL09"]') as HTMLButtonElement|null;
+  const layer=select('body > .catalog-sheet-layer[data-lesson-owner="page-lessonL09"]') as HTMLElement|null;
+  const style=trigger?getComputedStyle(trigger):null;
+  assert('real-native-L09-hifi-markup-loaded',Boolean(page&&
+   page.classList.contains('active')&&page.querySelector('.l09-index')));
+  assert('visible-viewport-fixed-lesson-menu',Boolean(trigger&&!trigger.hidden&&style?.position==='fixed'&&
+   style.display!=='none'&&trigger.getBoundingClientRect().width>=44&&
+   trigger.getBoundingClientRect().bottom<=844&&trigger.getBoundingClientRect().left>=0),
+   {trigger:bounds(trigger),display:style?.display,position:style?.position,error:(window as any).__liLessonFixtureError});
+  assert('sheet-portaled-to-body',Boolean(layer&&layer.hidden&&
+   layer.querySelector('.catalog-chapter-sheet')));
+  if(trigger&&layer&&!trigger.hidden){
+   const oldTop=trigger.getBoundingClientRect().top;
+   window.scrollTo(0,350);
+   assert('floating-menu-stays-fixed-through-scroll',
+    Math.abs(trigger.getBoundingClientRect().top-oldTop)<3,
+    {before:oldTop,after:trigger.getBoundingClientRect().top});
+   trigger.click();
+   const sheet=layer.querySelector('.catalog-chapter-sheet');
+   assert('left-sheet-opens-on-real-click',Boolean(!layer.hidden&&
+    trigger.getAttribute('aria-expanded')==='true'&&
+    sheet&&sheet.getBoundingClientRect().left<=1&&
+    sheet.getBoundingClientRect().width>300),
+    {sheet:bounds(sheet),open:!layer.hidden});
+   assert('real-chapter-links-in-sheet',Boolean(layer.querySelectorAll('.catalog-left-index a[href^="#"]').length>=3),
+    layer.querySelectorAll('.catalog-left-index a[href^="#"]').length);
+   (layer.querySelector('.catalog-sheet-close') as HTMLButtonElement|null)?.click();
+   assert('sheet-closes-and-focus-restores',Boolean(layer.hidden&&
+    trigger.getAttribute('aria-expanded')==='false'));
+   window.scrollTo(0,0);
+  }
+ } else if(viewName==='journal'){
   const chart=select('.li-diary-month .li-legacy-chart'),cal=select('.li-diary-month .li-legacy-calendar');
   assert('real-DS-chart-visible',Boolean(chart&&bounds(chart)!.w>200),bounds(chart));
   assert('calendar-before-secondary-chart',Boolean(chart&&cal&&cal.getBoundingClientRect().bottom<chart.getBoundingClientRect().top),
@@ -176,4 +252,4 @@ setTimeout(()=>{
  const report={status:ok?'LI_VISUAL_QA_PASS':'LI_VISUAL_QA_FAIL',
                view:viewName,viewport:windowWidth,checks};
  document.getElementById('qa-report')!.textContent=JSON.stringify(report);
-},1400);
+},viewName==='lesson'?2600:1400);

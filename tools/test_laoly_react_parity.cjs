@@ -118,6 +118,18 @@ assert.match(plans,/window\.LiSpellPractice\?\.getView\?\.\(\)\?\.active/);
 assert.match(plans,/window\.liPersonalDiary\?\.getView\?\.\(\)/);
 assert.match(plans,/go\("lessonL09"\)/);
 assert.match(researchCase,/window\.liCaseUi=port/);
+const copyPrompt=read('tools/step16-real-l09-react-island/src/learning/CopyAnalysisPrompt.tsx');
+assert.match(researchCase,/const analysis=completed\?\?\(choice&&revision\.trim\(\)\.length>=12/,
+ 'Case review action must unlock from completed draft, not require a Notebook save');
+assert.match(researchCase,/<CopyAnalysisPrompt locale=\{locale\} step="case" disabled=\{!analysis\}/,
+ 'Visible Case button stays on screen with a clear disabled state until ready');
+assert.match(researchCase,/data-li-case-analysis-state=\{completed\?'saved':analysis\?'ready':'incomplete'\}/,
+ 'Case button must remain visible after a successful save clears the form');
+assert.match(researchCase,/setCompleted\(\{choice,conclusion:revision\}\)/,
+ 'Saved conclusion must persist in the in-session analysis prompt');
+assert.match(copyPrompt,/disabled\?:boolean/);
+assert.match(copyPrompt,/<Button variant="secondary" disabled=\{disabled\}/,
+ 'Shared copy button must honor disabled state instead of copying an empty draft');
 assert.match(researchCase,/if\(!permitted\)\{setChoice\(null\);setMessage\(''\);\}/);
 assert.match(guide,/window\.liGuideUi=port/);
 assert.match(capture,/window\.liCaptureUi=port/);

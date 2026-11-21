@@ -78,8 +78,11 @@ function FloatingLaoLy({host,initialAvatar,initialTitle}:{
    const navTop=nav.getBoundingClientRect().top;
    if(Number.isFinite(navTop)&&navTop>0)visibleBottom=Math.min(height,navTop);
   }
-  return {minX:PAD,minY:PAD,maxX:Math.max(PAD,width-fw-PAD),
-   maxY:Math.max(PAD,visibleBottom-fh-PAD)};
+  // Keep the draggable control below the sticky global Back/header chrome.
+  const headerBottom=document.querySelector<HTMLElement>('.header')?.getBoundingClientRect().bottom||0;
+  const maxY=Math.max(PAD,visibleBottom-fh-PAD);
+  const minY=Math.min(maxY,Math.max(PAD,headerBottom+PAD));
+  return {minX:PAD,minY,maxX:Math.max(PAD,width-fw-PAD),maxY};
  },[]);
  const setPosition=useCallback((x:number,y:number)=>{
   const b=bounds();

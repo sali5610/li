@@ -1,3 +1,4 @@
+import {authoredCopy} from '../shell/discovery-locale.js';
 import React,{useEffect,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {Button,Card,Heading,Text} from '../../../../design-system/react/index';
@@ -380,7 +381,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     'Không tự ghi đè ghi chép. Chọn bản muốn giữ cho từng mục; bản còn lại sẽ được thay thế sau khi đồng bộ.':
     'No silent overwrite. Choose which version to keep for each item; the other version is replaced after syncing.'}</Text>
    {conflicts.map(c=><div className="li-auth-settings-conflict" key={c.itemType+':'+c.itemId}>
-    <strong>{c.label}</strong>
+    <strong>{locale==='en'?authoredCopy(c.label):c.label}</strong>
     <div className="li-auth-settings-conflict-actions">
      <Button variant="secondary" disabled={resolving} onClick={()=>void decideConflict(c,'keep-local')}>
       {locale==='vi'?'Giữ bản trên máy này':'Keep this device'}</Button>
@@ -437,7 +438,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
        'Không tự ghi đè ghi chép. Chọn bản muốn giữ cho từng mục; bản còn lại sẽ được thay thế sau khi đồng bộ.':
        'No silent overwrite. Choose which version to keep for each item; the other version is replaced after syncing.'}</p>
       {conflicts.map(c=><div className="auth-conflict-item" key={c.itemType+':'+c.itemId}>
-       <p>{c.label}</p>
+       <p>{locale==='en'?authoredCopy(c.label):c.label}</p>
        <Button variant="secondary" disabled={resolving}
         onClick={()=>void decideConflict(c,'keep-local')}>{locale==='vi'?'Giữ bản trên máy này':'Keep this device'}</Button>
        <Button variant="secondary" disabled={resolving}

@@ -1,3 +1,4 @@
+import {authoredCopy} from './discovery-locale.js';
 import {goBack,openRoute} from './app-router.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
@@ -129,10 +130,10 @@ export function Journal(){
     <div className="li-diary-day-grid">
      <section className="li-diary-panel"><div className="kicker">01 · {copy('CHECK-IN THỂ TRẠNG','SELF CHECK-IN')}</div>
       <div className="li-diary-facts">{facts.map(fact=><div key={fact.label}>
-       <span>{fact.label}</span><strong>{fact.value}</strong></div>)}</div>
+       <span>{fact.label}</span><strong>{authoredCopy(fact.value)}</strong></div>)}</div>
      </section>
      <section className="li-diary-panel"><div className="kicker">02 · {copy('NHỊP HỌC','STUDY RHYTHM')}</div>
-      <Heading level={3} role="titleMedium">{view.mode}</Heading>
+      <Heading level={3} role="titleMedium">{authoredCopy(view.mode)}</Heading>
       <Text role="support">{copy('Nhịp cuối cùng được áp dụng trong ngày; không đo năng lượng từ activity.',
        'Last selected rhythm of the day; not inferred from activity count.')}</Text>
       <Button variant="secondary" id="li-react-diary-checkin"
@@ -144,7 +145,7 @@ export function Journal(){
      <div className="li-diary-counters">{activityNames.map((item,index)=><div key={index}>
       <strong>{view.counts[index]}</strong><span>{item.name}</span><small>{item.help}</small>
      </div>)}</div>
-     <Text role="support" aria-live="polite">{view.dayStatus}</Text>
+     <Text role="support" aria-live="polite">{authoredCopy(view.dayStatus)}</Text>
     </section>
    </section>
   </div>
@@ -152,7 +153,7 @@ export function Journal(){
    <Card variant="tinted" className="li-diary-privacy">
     <div><div className="kicker">{copy('QUYỀN RIÊNG TƯ','PRIVACY')}</div>
      <Heading level={2} role="titleMedium">{copy('Lưu trên thiết bị','Device-first storage')}</Heading>
-     <Text role="support" aria-live="polite">{view.consentStatus}</Text>
+     <Text role="support" aria-live="polite">{authoredCopy(view.consentStatus)}</Text>
     </div>
     {view.storageError&&<InlineFeedback tone="error" message={copy(
      'Không thể đọc hoặc ghi lịch. Đã dừng ghi mới để bảo vệ dữ liệu.',
@@ -269,9 +270,9 @@ export function Settings(){
         className="ly-mode-choice" aria-pressed={item.key===view.mode}
         onClick={()=>act('mode',item.key)}>
         <img src={item.image} alt="" width="42" height="42"/>
-        <span>{item.label}</span></button>)}
+        <span>{authoredCopy(item.label)}</span></button>)}
       </div>
-      <Text role="support" aria-live="polite" className="state-note">{view.modeFeedback}</Text>
+      <Text role="support" aria-live="polite" className="state-note">{authoredCopy(view.modeFeedback)}</Text>
      </Card>
     </div>
    </section>
@@ -305,7 +306,7 @@ export function Settings(){
          value={view.nicknames.serious||''} preview={view.previews.serious||''}
          commit={(kind,value,done)=>act(done?'nicknameCommit':'nicknameInput',kind,value)}/>
        </div>
-       <Text role="support" aria-live="polite">{view.nicknameFeedback}</Text>
+       <Text role="support" aria-live="polite">{authoredCopy(view.nicknameFeedback)}</Text>
        <Button variant="secondary" onClick={()=>act('resetNames')}>
         {copy('Dùng cách gọi mặc định','Reset to default')}</Button>
       </div>
@@ -362,7 +363,7 @@ export function Settings(){
       </div>
       {view.importLoading&&<InlineFeedback tone="loading" message={copy(
        'Đang đọc và kiểm tra bản sao…','Reading and checking the backup…')}/>}
-      {view.importError&&<InlineFeedback tone="error" message={view.importError}
+      {view.importError&&<InlineFeedback tone="error" message={authoredCopy(view.importError)}
        actionLabel={copy('Chọn tệp khác','Choose another file')}
        onAction={chooseBackup}/>}
       <Text role="support">{copy(

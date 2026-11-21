@@ -9,7 +9,8 @@ import {Journal,Settings} from '../src/shell/journal-settings.js';
 import {Guide,Library,Resume,Bookmarks} from '../src/shell/guide-library.js';
 import {CatalogScreen} from '../src/shell/home-catalog.js';
 import {BuddyDialog} from '../src/shell/laoly-dialog.js';
-import {RouteTrail} from '../src/shell/mount-navigation.js';
+import {mountKnowledgeSearch} from '../src/shell/knowledge-search.js';
+import {mountSharedNavigation,RouteTrail} from '../src/shell/mount-navigation.js';
 import {appUiStore} from '../src/shell/app-store.js';
 // Uses the real React screen components and their production CSS. No login,
 // user data, network auth, or public route bypass: this HTML is deleted
@@ -60,7 +61,7 @@ const libraryData={
                      route:'research',date:'20/11/2026'}],
  collectionFilter:'all',bookmarkTab:'question',storageAvailable:true
 };
-app.liLanguage={get:()=> 'vi'};
+if(viewName!=='searchEnglish')app.liLanguage={get:()=> 'vi'};
 app.liPersonalDiary={
  getView:()=>({...journalView}),
  act:(kind:string,value?:string)=>{
@@ -90,7 +91,16 @@ app.LiSpellPractice={getT02Status:()=>null};
 app.liBuddyEngine={choose:(i:number)=>({text:i===0?'Chọn cách học phù hợp với câu hỏi.':'Thử một bài luyện ngắn.',showChallenge:false})};
 const root=document.getElementById('visual-root')!;
 const buddyRoot=document.getElementById('buddy-modal')!;
-if(viewName==='breadcrumb'||viewName==='breadcrumbPrivate'){
+if(viewName==='searchEnglish'){
+ const header=document.querySelector('.header')!;
+ header.insertAdjacentHTML('beforeend','<button id="li-global-back"></button><div class="topnav"></div><div class="tools"></div>');
+ header.insertAdjacentHTML('afterend','<nav class="mobile-nav"></nav>');
+ root.closest('section')!.id='page-home';
+ root.closest('main')!.insertAdjacentHTML('beforeend','<section id="page-search" class="page" tabindex="-1"></section>');
+ app.liLanguage.set('vi');
+ mountKnowledgeSearch();
+ mountSharedNavigation();
+} else if(viewName==='breadcrumb'||viewName==='breadcrumbPrivate'){
  appUiStore.getState().setRoute(viewName==='breadcrumbPrivate'?'bookmarks':'lessonL09');
  root.id='li-react-route-trail';
  createRoot(root).render(<RouteTrail/>);
@@ -199,7 +209,9 @@ setTimeout(()=>{
   const measured=nodes.map(el=>({label:el.textContent?.trim(),textMid:textCenter(el),boxMid:el.getBoundingClientRect().top+el.getBoundingClientRect().height/2}));
   return {measured,maxTextDiff:Math.max(...measured.map(m=>m.textMid))-Math.min(...measured.map(m=>m.textMid))};
  };
- if(viewName==='breadcrumbPrivate'){
+ if(viewName==='searchEnglish'){
+  assert('real-search-navigation-mounted',Boolean(select('.header .tools [aria-label="Tìm kiếm"]')));
+ } else if(viewName==='breadcrumbPrivate'){
   const trail=select('.li-app-route-trail .li-ds-breadcrumb');
   const result=baseline(trail);
   const labels=[...(trail?.querySelectorAll(':scope > ol > li')||[])].map(n=>n.textContent?.trim());

@@ -2,7 +2,7 @@ import {useEffect,useState} from 'react';
 
 export type DiscoveryLocale='vi'|'en';
 export type BilingualCopy=readonly [vi:string,en:string];
-type LanguageWindow=Window&{liLanguage?:{get:()=>string}};
+type LanguageWindow=Window&{liLanguage?:{get:()=>string;translate?:(value:string)=>string}};
 export function discoveryLocale():DiscoveryLocale{
  return (window as LanguageWindow).liLanguage?.get?.()==='en'?'en':'vi';
 }
@@ -18,4 +18,9 @@ export function useDiscoveryLocale():DiscoveryLocale{
 }
 export function localized(locale:DiscoveryLocale,vi:string,en:string):string{
  return locale==='en'?en:vi;
+}
+
+/** Localize authored app data such as catalog titles and status messages. */
+export function authoredCopy(value:string):string{
+ return (window as LanguageWindow).liLanguage?.translate?.(value)??value;
 }

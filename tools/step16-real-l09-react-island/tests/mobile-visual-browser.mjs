@@ -55,7 +55,7 @@ try{
  });
  await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
  for(const view of ['journal','guide','library','resume','bookmarks','buddy','breadcrumbPrivate','breadcrumb','lesson',
-  'settings','catalogRoot','catalogGroup']){
+  'settings','catalogRoot','catalogGroup','searchEnglish']){
   const params=new URLSearchParams({view});
   if(view==='catalogGroup')params.set('catalog','language');
   await send('Page.navigate',{url:target+'?'+params});
@@ -78,6 +78,25 @@ try{
   writeFileSync(file,Buffer.from(result.data,'base64'));
   if(!existsSync(file))throw Error('Missing screenshot '+file);
   console.log('SCREENSHOT '+file);
+  if(view==='searchEnglish'){
+   const evaluate=async expression=>(await send('Runtime.evaluate',{expression,returnByValue:true})).result?.value;
+   await evaluate("window.liLanguage.set('en')");
+   await wait(()=>evaluate("Boolean(document.querySelector('.header [aria-label=\"Search the library\"]'))"));
+   const point=await evaluate("(()=>{const b=document.querySelector('.header [aria-label=\"Search the library\"]').getBoundingClientRect();return {x:b.x+b.width/2,y:b.y+b.height/2}})()");
+   await send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[point]});
+   await send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+   await wait(()=>evaluate("document.activeElement?.id==='li-knowledge-search-input' && document.querySelector('#page-search.active h1')?.textContent==='Search'"));
+   await send('Input.insertText',{text:'Sociology'});
+   await wait(()=>evaluate("Array.from(document.querySelectorAll('#page-search .li-search-result h3, #page-search .li-search-result button, #page-search .li-search-result strong')).some(n=>n.textContent?.trim()==='Sociology')"));
+   await evaluate("document.querySelector('#page-search [aria-label=\"Clear search\"]').click()");
+   await wait(()=>evaluate("document.querySelector('#li-knowledge-search-input')?.value===''"));
+   await evaluate("document.querySelector('#li-knowledge-search-input').focus()");
+   await send('Input.insertText',{text:'L09-1-2'});
+   await wait(()=>evaluate("document.querySelector('#page-search .li-search-evidence')?.textContent.includes('Leading wording affects measurement')"));
+   await evaluate("document.querySelector('#page-search .li-search-evidence summary').click()");
+   await wait(()=>evaluate("document.querySelector('#page-search .li-search-evidence')?.open"));
+   console.log('PASS English Search after locale switch: tap, focus, catalog match, clear and English knowledge connections');
+  }
   if(view==='breadcrumb'){
    const opened=await send('Runtime.evaluate',{
     expression:"(()=>{const menu=document.querySelector('.li-ds-breadcrumb-overflow .li-ds-action-menu');menu?.querySelector('summary')?.click();const box=menu?.querySelector('ul')?.getBoundingClientRect();return Boolean(menu?.open&&box&&box.width>100&&box.left>=0&&box.right<=innerWidth)})()",
@@ -107,7 +126,7 @@ try{
    throw Error('VISUAL_QA_FAILED '+view+' '+JSON.stringify(report));
   }
  }
- console.log('PASS 12 REAL CSS MOBILE VIEWPORT SCREENS + NATIVE OPEN SHEET 390x844');
+ console.log('PASS 13 REAL CSS MOBILE VIEWPORT SCREENS + NATIVE OPEN SHEET 390x844');
 }finally{
  if(socket){for(const p of pending.values())clearTimeout(p.t);socket.close();}
  proc.kill('SIGTERM');

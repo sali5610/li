@@ -1,3 +1,4 @@
+import {authoredCopy} from './discovery-locale.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {AppNavigationControls} from '../../../../design-system/react/AppNavigation';
@@ -56,7 +57,10 @@ function NavigationSurface({area,items}:{area:AppNavigationControlsProps['area']
   active==='guideDetail'?'guide':
   ['resume','bookmarks','collection','noteDetail','dashboard'].includes(active)?'library':
   ['research','case'].includes(active)?'home':active;
- return <AppNavigationControls area={area} activeId={navActive} items={localized} onNavigate={openRoute}/>;
+ return <AppNavigationControls area={area} activeId={navActive} items={localized} onNavigate={id=>{
+  if(!openRoute(id)||id!=='search')return;
+  document.getElementById('li-knowledge-search-input')?.focus({preventScroll:true});
+ }}/>;
 }
 function BackControl(){
  const active=useAppUiStore(state=>state.route),locale=useAppLocale();
@@ -150,7 +154,7 @@ export function RouteTrail(){
   <Breadcrumb label={en?'You are here':'Vị trí hiện tại'}
    visibleParents={2} moreLabel={en?'Earlier levels':'Các cấp trước'}
    items={parts.map((part,index)=>({
-    label:en?part.en:part.vi,
+    label:en?authoredCopy(part.en):part.vi,
     onActivate:index<parts.length-1?
      part.path?()=>openCatalogAncestor(part.path!):
      part.id?()=>openRoute(part.id!):undefined:undefined

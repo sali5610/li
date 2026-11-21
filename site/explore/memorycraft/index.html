@@ -111,6 +111,7 @@
     .flow-lesson-item .btn { flex:none;min-width:132px; }
     .flow-checklist { padding-left:20px;margin:12px 0; }
     .flow-checklist li { margin:8px 0; }
+    body[data-review="true"] .flow-explore { display:none; }
     body[data-flow="b"] .sidebar,body[data-flow="c"] .sidebar { display:none; }
     body[data-flow="b"] .layout,body[data-flow="c"] .layout { grid-template-columns:minmax(0,1fr); }
     body[data-flow="b"] .mobile-nav,body[data-flow="c"] .mobile-nav { display:none; }
@@ -359,6 +360,7 @@
   function make(tag, cls, text) { var e=document.createElement(tag); if(cls)e.className=cls; if(text!==undefined)e.textContent=text; return e; }
   function updateFlowSurface() {
     document.body.dataset.flow=selectedFlow;
+    document.body.dataset.review=String(active==="review");
     document.querySelectorAll("[data-panel]").forEach(function(el) {
       el.hidden=el.id!=="panel-"+active || (selectedFlow!=="a" && active!=="review");
     });

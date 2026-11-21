@@ -91,7 +91,7 @@ app.liBuddyEngine={choose:(i:number)=>({text:i===0?'Chọn cách học phù hợ
 const root=document.getElementById('visual-root')!;
 const buddyRoot=document.getElementById('buddy-modal')!;
 if(viewName==='breadcrumb'||viewName==='breadcrumbPrivate'){
- appUiStore.getState().setRoute(viewName==='breadcrumbPrivate'?'library':'lessonL09');
+ appUiStore.getState().setRoute(viewName==='breadcrumbPrivate'?'bookmarks':'lessonL09');
  root.id='li-react-route-trail';
  createRoot(root).render(<RouteTrail/>);
 } else if(viewName==='lesson'){
@@ -203,7 +203,7 @@ setTimeout(()=>{
   const trail=select('.li-app-route-trail .li-ds-breadcrumb');
   const result=baseline(trail);
   const labels=[...(trail?.querySelectorAll(':scope > ol > li')||[])].map(n=>n.textContent?.trim());
-  assert('actual-private-library-two-item-crumb',Boolean(trail&&labels.length===2&&labels[0]?.includes('Đại Sảnh')&&labels[1]==='Tủ Riêng'),labels);
+  assert('actual-bookmarks-child-two-item-crumb',Boolean(trail&&labels.length===2&&labels[0]==='Tủ Riêng'&&labels[1]==='Dấu trang'),labels);
   assert('private-crumb-text-baseline-matches',result.measured.length===2&&result.maxTextDiff<=2,result);
  } else if(viewName==='breadcrumb'){
   const trail=select('.li-app-route-trail .li-ds-breadcrumb');

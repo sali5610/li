@@ -702,7 +702,7 @@ export function NoteDetail(){
       <summary className="library-version-heading">
        <strong>{copy('Phiên bản ','Version ')}{version.version}
         {index===0?copy(' · Hiện tại',' · Current'):''}</strong>
-       <Text role="support">{time(version.at)} · {version.change||copy('Chỉnh sửa','Edited')}</Text>
+       <Text as="span" role="support">{time(version.at)} · {version.change||copy('Chỉnh sửa','Edited')}</Text>
       </summary>
       {version.title!==note.title&&<Text role="support">{copy('Tiêu đề lúc đó: ','Title then: ')}
        {version.title}</Text>}

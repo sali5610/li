@@ -550,6 +550,16 @@ function setStudyMode(key,{persist=true}={}){
   window.localStorage.setItem(STUDY_MODE_KEY,key);
   if(window.localStorage.getItem(STUDY_MODE_KEY)!==key)throw Error("readback");
  }catch(e){toast("Nhịp học đã đổi trong phiên này nhưng không thể lưu lựa chọn trên thiết bị.");}}
+ if(window.liReactRouter){
+  // Settings, Guide and the floating Lão Lý are React-owned. Updating the
+  // canonical mode and emitting one event is enough; the old DOM controls
+  // may no longer exist. Cloud hydration (persist:false) also needs a
+  // visible avatar/Settings refresh on the second signed-in device.
+  document.body.dataset.studyMode=studyMode;
+  window.dispatchEvent(new CustomEvent("li:study-mode-applied",{detail:{mode:key}}));
+  return true;
+ }
+ // Standalone native fallback retains its original study-mode UI.
  syncStudyModeUI();
  renderMethods();
  if(persist)window.dispatchEvent(new CustomEvent("li:study-mode-applied",{detail:{mode:key}}));

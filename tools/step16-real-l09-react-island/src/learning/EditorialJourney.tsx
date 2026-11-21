@@ -12,6 +12,8 @@ import {SaveStatus} from '../../../../design-system/react/Molecules';
 import type {SaveState} from '../../../../design-system/react/Molecules';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
+import {useDiscoveryLocale} from '../shell/discovery-locale.js';
+import {useStepScreen} from './step-screen.js';
 
 /** Generic editorial-structured-v1 learner surface. It is intentionally gated
  * by the SAME released-lesson registry and invited owner scoped saving ports.
@@ -250,6 +252,7 @@ type QuoteRecord={id:string;original:string;translation:string;meta:string;url:s
 
 export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  const reduced=useReducedMotion();
+ const appLocale=useDiscoveryLocale();
  const [lesson,setLesson]=useState<EditorialLesson|null>(null);
  const [attempt,setAttempt]=useState<EditorialAttempt|null>(null);
  // Latest optimistic edit must be synchronous so rapid fields never overwrite each other.
@@ -257,6 +260,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  // Optimistic text edits must not unlock model answers or spell feedback.
  const [persistedAttempt,setPersistedAttempt]=useState<EditorialAttempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
+ useStepScreen(phase,id);
  const [busy,setBusy]=useState(true);
  const [reload,setReload]=useState(0);
  const [saving,setSaving]=useState(false);
@@ -423,10 +427,6 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      if(!page.classList.contains('active'))return;
      const anchor=document.getElementById(token.sectionId);
      if(!anchor||!page.contains(anchor))return;
-     const language=window as Window&{liLanguage?:{
-      get?:()=>string;set?:(locale:Locale)=>void}};
-     if(language.liLanguage?.get?.()!==token.locale)
-      language.liLanguage?.set?.(token.locale);
      const heading=document.getElementById('li-editorial-methods');
      heading?.setAttribute('tabindex','-1');
      heading?.focus({preventScroll:true});
@@ -674,12 +674,11 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   setError('');
   if(await save(next))moveTo('read');
  }
- function switchLocale(value:Locale){
-  if(!attempt||locked||saving||value===attempt.locale)return;
-  const app=window as Window&{liLanguage?:{set?:(value:string)=>void}};
-  if(app.liLanguage?.set)app.liLanguage.set(value);
-  void save({...attempt,locale:value});
- }
+ // Settings is the single language source for all lesson screens.
+ useEffect(()=>{
+  if(busy||!attempt||attempt.locale===appLocale||locked||saving||pending.current>0)return;
+  void save({...attempt,locale:appLocale});
+ },[appLocale,attempt?.locale,busy,locked,saving]);
  if(busy)return <section role="status" className="li-learning-journey" aria-busy="true">
   Đang xác minh quyền học và tải nội dung…
  </section>;
@@ -688,7 +687,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   <Button onClick={()=>setReload(n=>n+1)}>Thử lại</Button>
   <Button variant="secondary" onClick={ports.navigation.openCatalog}>Về Tàng Thư</Button>
  </section>;
- const locale=attempt.locale,vi=locale==='vi',content=lesson.content.localized[locale];
+ const locale=appLocale,vi=locale==='vi',content=lesson.content.localized[locale];
  const independent=quiz(content.independent.prompt_md);
  const submittedQuestions=attempt.reviewSnapshot?.questions[locale]??independent.questions;
  const rubrics=attempt.reviewSnapshot?.criteria[locale]??rubricRows(content.reflection.md);
@@ -719,11 +718,6 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     <Heading level={1} id={'li-react-'+id+'-title'} role="headline">{lesson.title[locale]}</Heading>
    </div>
    <div className="li-learning-header-actions">
-    <div className="li-learning-language" role="group" aria-label={vi?'Ngôn ngữ':'Language'}>
-     {(['vi','en'] as const).map(lang=><Button key={lang}
-      variant={locale===lang?'primary':'secondary'} aria-pressed={locale===lang}
-      disabled={saving||locked} onClick={()=>switchLocale(lang)}>{lang.toUpperCase()}</Button>)}
-    </div>
     <details className="li-lesson-header-more">
      <summary>{vi?'Tùy chọn':'Options'}</summary>
      <Button variant="secondary" disabled={locked||saving||pending.current>0}
@@ -732,13 +726,6 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    </div>
   </header>
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
-  <nav className="li-learning-steps" aria-label={vi?'Các bước học':'Learning steps'}>
-   {phases.map((p,index)=><Button key={p} variant={p===phase?'primary':'ghost'}
-    aria-current={p===phase?'step':undefined}
-    disabled={(p==='feedback'&&!persistedAttempt?.submitted)||
-     (p==='progress'&&!persistedAttempt?.reviewed)}
-    onClick={()=>moveTo(p)}><span className="li-learning-step-index">{String(index+1).padStart(2,'0')}</span><span>{labels[p]}</span></Button>)}
-  </nav>
   <div className="li-learning-save">
    <Progress label={vi?'Tiến độ lượt học':'Lesson attempt progress'} value={progress}/>
    <SaveStatus state={state} message={message} detail={locked?error:undefined}/>
@@ -795,7 +782,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      <a href={s.url} target="_blank" rel="noopener noreferrer"
       aria-label={s.title+(vi?' (mở tab mới)':' (opens in a new tab)')}>{s.title}</a>
     </li>)}</ul>
-    <Button onClick={()=>moveTo('guided')}>{labels.guided}</Button>
+    <Button onClick={()=>moveTo('guided')}>{vi?'Tiếp: Thử áp dụng':'Next: Guided example'} →</Button>
    </Card>}
    {phase==='guided'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-guided">
     <Heading level={2} id="li-editorial-guided" role="titleLarge">{labels.guided}</Heading>
@@ -806,7 +793,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      </Button>}
     <Field kind="textarea" rows={5} label={vi?'Tự giải thích bằng lời của mày':'Explain in your own words'}
      value={attempt.guidedDraft} disabled={locked||attempt.submitted} onChange={e=>editGuided(e.currentTarget.value)}/>
-    <Button onClick={()=>moveTo('methods')}>{labels.methods}</Button>
+    <Button onClick={()=>moveTo('methods')}>{vi?'Tiếp: Thần Chú':'Next: Study methods'} →</Button>
    </Card>}
    {phase==='methods'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-methods">
     <Heading level={2} id="li-editorial-methods" role="titleLarge">{labels.methods}</Heading>
@@ -893,7 +880,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
        </div>}
      </section>;
     })}
-    <Button onClick={()=>moveTo('practice')}>{vi?'Làm bài độc lập':'Continue to independent practice'}</Button>
+    <Button onClick={()=>moveTo('practice')}>{vi?'Tiếp: Làm bài':'Next: Practice'} →</Button>
    </Card>}
    {phase==='practice'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-practice">
     <Heading level={2} id="li-editorial-practice" role="titleLarge">{labels.practice}</Heading>
@@ -905,7 +892,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     </div>
     {!persistedAttempt?.submitted?<Button disabled={saving||locked||attempt.submitted} onClick={()=>void submit()}>
      {vi?'Nộp bài độc lập':'Submit independent answers'}</Button>:
-     <Button onClick={()=>moveTo('feedback')}>{labels.feedback}</Button>}
+     <Button onClick={()=>moveTo('feedback')}>{vi?'Tiếp: Đối chiếu':'Next: Feedback'} →</Button>}
    </Card>}
    {phase==='feedback'&&persistedAttempt?.submitted&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-feedback">
     <Heading level={2} id="li-editorial-feedback" role="titleLarge">{labels.feedback}</Heading>
@@ -947,7 +934,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      </select>
     </div>)}
     {persistedAttempt.answerRevealed&&!reviewVersionMismatch&&(persistedAttempt.reviewed?
-     <Button onClick={()=>moveTo('progress')}>{labels.progress}</Button>:
+     <Button onClick={()=>moveTo('progress')}>{vi?'Tiếp: Tiến độ':'Next: Progress'} →</Button>:
      <Button disabled={saving||locked||attempt.reviewed||reviewVersionMismatch} onClick={()=>void finish()}>
       {vi?'Lưu tự đánh giá':'Save self-review'}
      </Button>)}

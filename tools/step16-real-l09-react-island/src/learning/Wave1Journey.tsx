@@ -395,7 +395,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
    </Card>}
    {phase==='feedback'&&!attempt.submitted&&<Card variant="flat-study" className="li-study-book-page">
     <Heading level={2} role="titleLarge">{labels.feedback}</Heading>
-    <Text>{vi?'Mày chưa nộp bài. Vẫn có thể qua phần khác; đáp án và tự đánh giá chỉ mở sau khi nộp.':
+    <Text>{vi?'Chưa nộp bài. Vẫn có thể qua phần khác; đáp án và tự đánh giá chỉ mở sau khi nộp.':
      'You have not submitted. You can keep browsing; answers and self-review unlock after submission.'}</Text>
     <Button variant="secondary" onClick={()=>setPhase('practice')}>
      {vi?'Quay lại làm bài':'Return to practice'}</Button>

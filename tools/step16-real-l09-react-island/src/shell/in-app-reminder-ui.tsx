@@ -32,7 +32,7 @@ const vietnamese=()=>(window as Window&{liLanguage?:{get?:()=>string}}).liLangua
 const reminderMessage=(kind:ReminderKind,lang:boolean)=>({
  study:['Bài đang học vẫn ở đây. Khi muốn, quay lại đúng chỗ đang dở.',
   'Your lesson is still here. Resume whenever you like.'],
- sleep:['Nếu sắp đi ngủ, mày có thể dành chút thời gian thư giãn trước giờ nghỉ.',
+ sleep:['Nếu sắp đi ngủ, có thể thư giãn một chút trước giờ nghỉ.',
   'If bedtime is near, consider winding down.'],
  movement:['Ngồi lâu rồi? Đổi tư thế hoặc vận động nhẹ khi tiện cũng được.',
   'Been sitting a while? Change position or move a little if convenient.'],

@@ -65,7 +65,7 @@ export function AiFeedbackPanel({id,locale,answers,openQuestionIndices}:{
     availability?.enabledForMe&&availability.ready?
      <>
       <Text role="support">{vi?
-       'Chỉ gửi câu trả lời mở đã nộp cùng đáp án/rubric đã duyệt khi mày bấm nút. Không tự chấm điểm.':
+       'Chỉ gửi câu trả lời mở đã nộp cùng đáp án/rubric đã duyệt khi nhấn nút. Không tự chấm điểm.':
        'Only submitted open-ended answers and their reviewed rubric are sent on click. No automatic grade.'}</Text>
       <Button disabled={busy||!navigator.onLine} onClick={()=>void review()}>
        {busy?(vi?'Đang nhận xét…':'Reviewing…'):

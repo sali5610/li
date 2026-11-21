@@ -791,7 +791,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      <Button variant="secondary" disabled={saving||locked} onClick={()=>{if(attempt&&!attempt.hint)void save({...attempt,hint:true,assisted:true});}}>
       {vi?'Mở gợi ý':'Show hint'}
      </Button>}
-    <Field kind="textarea" rows={5} label={vi?'Tự giải thích bằng lời của mày':'Explain in your own words'}
+    <Field kind="textarea" rows={5} label={vi?'Tự giải thích bằng lời của mình':'Explain in your own words'}
      value={attempt.guidedDraft} disabled={locked||attempt.submitted} onChange={e=>editGuided(e.currentTarget.value)}/>
     <Button onClick={()=>moveTo('methods')}>{vi?'Tiếp: Thần Chú':'Next: Study methods'} →</Button>
    </Card>}
@@ -837,7 +837,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       </label>;
      })}
       </div>}
-      <Field kind="textarea" rows={4} label={vi?'Lập luận của mày':'Your reasoning'}
+      <Field kind="textarea" rows={4} label={vi?'Giải thích lập luận':'Your reasoning'}
        value={item.draft} disabled={locked||attempt.submitted||!!item.submittedAt}
        onChange={e=>methodEdit(method,e.currentTarget.value)}/>
       {!feedbackUnlocked?<Button variant="secondary"
@@ -855,7 +855,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
            <caption>{vi?'Đối chiếu từng trường A–D':'Compare each field A–D'}</caption>
            <thead><tr>
             <th scope="col">{vi?'Trường':'Field'}</th>
-            <th scope="col">{vi?'Mày chọn':'Your choice'}</th>
+            <th scope="col">{vi?'Đã chọn':'Your choice'}</th>
             <th scope="col">{vi?'Đáp án':'Expected'}</th>
             <th scope="col">{vi?'Đối chiếu':'Comparison'}</th>
            </tr></thead>
@@ -896,7 +896,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    </Card>}
    {phase==='feedback'&&persistedAttempt?.submitted&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-feedback">
     <Heading level={2} id="li-editorial-feedback" role="titleLarge">{labels.feedback}</Heading>
-    <Heading level={3} role="titleMedium">{vi?'Bài làm của mày':'Your submission'}</Heading>
+    <Heading level={3} role="titleMedium">{vi?'Bài đã nộp':'Your submission'}</Heading>
     <ol className="li-learning-submission-list">
      {submittedQuestions.map((q,i)=><li key={i}>
       <Text role="support">{q}</Text>
@@ -906,10 +906,10 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     {(!persistedAttempt.answerRevealed||reviewVersionMismatch)?
      <div className="li-learning-hint">
       <Text role="support">{vi?
-       'Bài làm đã lưu. Đáp án mẫu vẫn đóng đến khi mày chủ động mở.':
+       'Bài làm đã lưu. Đáp án mẫu vẫn đóng đến khi được mở.':
        'Your answers are saved. The model answer stays hidden until you choose to reveal it.'}</Text>
       {reviewVersionMismatch&&<Text role="support">{vi?
-       'Bài đã nộp theo phiên bản cũ nhưng thiếu bản chụp rubric. Tao giữ bài làm, không dùng đáp án mới để tự chấm sai phiên bản.':
+       'Bài đã nộp theo phiên bản cũ nhưng thiếu bản chụp rubric. Bài làm vẫn được giữ nguyên; không dùng đáp án mới để chấm sai phiên bản.':
        'This submitted attempt predates a rubric revision and has no frozen review. Your answers remain saved; the new rubric cannot be applied to the old attempt.'}</Text>}
       <Button disabled={saving||locked||reviewVersionMismatch} onClick={()=>void revealAnswer()}>
        {vi?'Mở đáp án và rubric':'Reveal model answer and rubric'}

@@ -185,11 +185,12 @@ vm.runInContext(read("site/assets/lesson-companion-native.js"),ctx);
  submitted=true;
  assert.equal(api.getContext().stage,"reflection",
   "Submitted and unreviewed progress stays in reflection context");
+ submitted=false;personalPhase="practice";
  const before=events.length;
  api.getPlan(route).actions[2].perform();
  assert.equal(events[before].type,"li:mentor-phase-jump");
  assert.equal(events[before].detail.lessonId,personalId);
- assert.equal(events[before].detail.phase,"feedback");
+ assert.equal(events[before].detail.phase,"practice");
  unregister();editorialHost=null;nativeActive=true;
  assert.ok(!api.registered().includes(personalId),
   "Private lesson context must unregister on route unmount");

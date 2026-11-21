@@ -145,9 +145,9 @@ export function BuddyDialog({root}:{root:HTMLElement}){
    <header className="buddy-heading">
     <img id="buddy-title-avatar" src={avatar||view.avatar} alt=""
      width={48} height={48} decoding="async"/>
-    <div className="buddy-heading-copy">
-     <h2 id="buddy-title" ref={heading} tabIndex={-1}>Lão Lý</h2>
-    </div>
+    {/* Keep an accessible dialog name for VoiceOver without a visible title. */}
+    <h2 id="buddy-title" className="li-buddy-sr-title"
+     ref={heading} tabIndex={-1}>Lão Lý</h2>
     {quoteVisible&&<ChatBubble surface="paper" tail="left" className="li-buddy-quote-thought">
      <details key={quote.id}>
      <summary aria-label={chooseLanguage('Câu Lão Lý đang nghĩ. Chạm để xem diễn nghĩa và nguồn','What Lao Ly is thinking. Expand for translation and source')}>

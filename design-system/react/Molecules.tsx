@@ -119,14 +119,16 @@ export function ListRow({title,description,meta,leading,trailing,href,
  return <div {...attrs}>{body}</div>;
 }
 
-export interface BreadcrumbItem {label:string;href?:string}
+export interface BreadcrumbItem {label:string;href?:string;onActivate?:()=>void}
 export interface BreadcrumbProps {label:string;items:readonly BreadcrumbItem[]}
 export function Breadcrumb({label,items}:BreadcrumbProps){
  if(!label.trim()||!items.length)throw Error('Breadcrumb needs a label and at least one item');
  return <nav aria-label={label} className="li-ds-breadcrumb" data-li-molecule="breadcrumb">
   <ol>{items.map((item,i)=>{
    const last=i===items.length-1;
-   return <li key={i}>{!last&&item.href?<a href={item.href}>{item.label}</a>:
+   return <li key={i}>{!last&&item.onActivate?
+     <button type="button" onClick={item.onActivate}>{item.label}</button>:
+     !last&&item.href?<a href={item.href}>{item.label}</a>:
      <span aria-current={last?'page':undefined}>{item.label}</span>}</li>;
   })}</ol>
  </nav>;

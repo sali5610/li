@@ -15,6 +15,7 @@ import {appUiStore} from '../shell/app-store.js';
 import type {LessonPhase} from '../shell/app-store.js';
 import {createLessonPhaseActor} from './phase-machine.js';
 import './journey.css';
+import {StudyBookFolio} from './StudyBookFolio';
 import {LessonBookmark,LessonMentor,LessonSectionIndex,L09Figures,LessonSources,openLessonSpell} from './LessonDetailParity.js';
 import {RelatedLessons} from './RelatedLessons.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
@@ -348,6 +349,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     aria-pressed={attempt.locale===lang} disabled={saving||locked}
     onClick={()=>switchLocale(lang)}>{lang.toUpperCase()}</Button>)}
   </div>
+  <aside className="li-learning-rail" aria-label="Learning navigation and status">
   <nav className="li-learning-steps" aria-label={vi?'Các bước học':'Learning steps'}>
    {sequence.map(item=><Button key={item} variant={phase===item?'primary':'ghost'}
     aria-current={phase===item?'step':undefined}
@@ -355,6 +357,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      (item==='progress'&&!attempt.reviewed)}
     onClick={()=>go(item)}>{labels[item]}</Button>)}
   </nav>
+  <details className="li-learning-extras">
+   <summary>{vi?'Mục lục & Thần Chú gợi ý':'Outline & optional study spells'}</summary>
   <LessonSectionIndex id="L09-1-2" locale={attempt.locale}
    links={content.sidebarLinks} onPhase={go} submitted={attempt.submitted}/>
   <aside className="li-lesson-spells" aria-label={vi?'Thần Chú gợi ý cho bài học':'Suggested study spells'}>
@@ -379,6 +383,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      </div>)}
    </div>
   </aside>
+  </details>
   <div className="li-learning-save">
    <Progress label={accessibleProgress} value={percent}/>
    <SaveStatus state={saveViewState} message={saveMessage}
@@ -393,6 +398,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      onClick={()=>void restartLesson()}>{vi?'Học lại từ đầu':'Restart this lesson'}</Button>
    </div>
   </div>
+  </aside>
   {error&&!locked&&<p className="li-learning-error" role="alert">{error}</p>}
   {locked&&<div className="li-learning-recovery">
    <Button disabled={saving} onClick={()=>void retryFailedSave()}>
@@ -400,9 +406,10 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    </Button>
    <Text role="support">{vi?'Không tải lại trang khi bản nháp chưa lưu.':'Keep this page open while changes are unsaved.'}</Text>
   </div>}
-  <motion.div key={phase} initial={reduced?false:{opacity:0,y:8}}
-   animate={{opacity:1,y:0}} transition={transition} className="li-learning-current">
-   {phase==='read'&&<Card variant="flat-study" aria-labelledby="li-learn-read">
+  <motion.div key={phase} initial={reduced?false:{opacity:0,x:12,rotateY:-1}}
+   animate={{opacity:1,x:0,rotateY:0}} transition={transition} className="li-learning-current">
+   <StudyBookFolio phase={phase} steps={sequence} locale={attempt.locale}/>
+   {phase==='read'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-read">
     <Heading level={2} id="li-learn-read" role="titleLarge">{content.theoryTitle}</Heading>
     <Text>{strip(content.theoryLead)}</Text>
     <div className="li-lesson-stats" aria-label={vi?'Số liệu ví dụ':'Example figures'}>
@@ -420,7 +427,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <ul>{content.goals.map((goal:string,i:number)=><li key={i}>{goal}</li>)}</ul>
     <Button onClick={()=>go('guided')}>{vi?'Thử áp dụng':'Try an example'}</Button>
    </Card>}
-   {phase==='guided'&&<Card variant="flat-study" aria-labelledby="li-learn-guided">
+   {phase==='guided'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-guided">
     <Heading level={2} id="li-learn-guided" role="titleLarge">{content.exTitle}</Heading>
     <Text>{strip(content.exBody)}</Text>
     <Text>{strip(content.exQuestion)}</Text>
@@ -432,7 +439,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      <Text>{strip(content.exHelp)}</Text></details>
     <Button onClick={()=>go('practice')}>{vi?'Làm bài độc lập':'Independent practice'}</Button>
    </Card>}
-   {phase==='practice'&&<Card variant="flat-study" aria-labelledby="li-learn-practice">
+   {phase==='practice'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-practice">
     <Heading level={2} id="li-learn-practice" role="titleLarge">{content.challengeTitle}</Heading>
     <Text>{strip(content.caseText)}</Text>
     <Text>{content.caseClaim}</Text>
@@ -456,7 +463,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     </div>:
      <Button onClick={()=>go('feedback')}>{vi?'Xem đối chiếu':'See feedback'}</Button>}
    </Card>}
-   {phase==='feedback'&&<Card variant="flat-study" aria-labelledby="li-learn-feedback">
+   {phase==='feedback'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-feedback">
     <Heading level={2} id="li-learn-feedback" role="titleLarge">{content.answerTitle}</Heading>
     <Text>{strip(content.answer)}</Text>
     <Text role="support">{strip(content.answerCaution)}</Text>
@@ -495,7 +502,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     {attempt.reviewed?<Button onClick={()=>go('progress')}>{labels.progress}</Button>:
      <Button disabled={locked||saving} onClick={()=>void finish()}>{content.saveReview}</Button>}
    </Card>}
-   {phase==='progress'&&<Card variant="flat-study" aria-labelledby="li-learn-progress">
+   {phase==='progress'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-progress">
     <Heading level={2} id="li-learn-progress" role="titleLarge">
      {vi?'Hoàn thành lượt tự đánh giá':'Self-review completed'}
     </Heading>

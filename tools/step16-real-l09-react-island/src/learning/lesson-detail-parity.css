@@ -42,3 +42,31 @@
 .li-lesson-seven-list>.li-ds-button>span{font-variant-numeric:tabular-nums;color:var(--muted)}
 .li-lesson-single-figure{display:grid;gap:var(--li-space-3)}
 .li-lesson-single-figure .li-lesson-figure{width:100%}
+
+/* Reader references should read like endnotes, not a stack of promotional cards. */
+.li-learning-journey .li-learning-source-list{
+ grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));
+ gap:var(--li-space-5);
+}
+.li-learning-journey .li-learning-source-item{
+ padding:var(--li-space-3) 0;
+ border:0;
+ border-top:1px solid var(--rule);
+ background:transparent;
+ box-shadow:none;
+ border-radius:0;
+}
+.li-learning-journey .li-lesson-companion{
+ border:0;
+ border-inline-start:3px solid var(--moss);
+ background:var(--paper-2,var(--porcelain));
+}
+.li-learning-journey .li-lesson-figure-media{
+ border:0;
+ background:var(--paper-2,var(--porcelain));
+}
+.li-learning-journey .li-lesson-figure figcaption{
+ max-width:65ch;
+ font-size:.88rem;
+ line-height:1.5;
+}

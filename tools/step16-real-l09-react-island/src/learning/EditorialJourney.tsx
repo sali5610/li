@@ -11,6 +11,7 @@ import {Heading,Text,Progress} from '../../../../design-system/react/Atoms';
 import {SaveStatus} from '../../../../design-system/react/Molecules';
 import type {SaveState} from '../../../../design-system/react/Molecules';
 import './journey.css';
+import {StudyBookFolio} from './StudyBookFolio';
 
 /** Generic editorial-structured-v1 learner surface. It is intentionally gated
  * by the SAME released-lesson registry and invited owner scoped saving ports.
@@ -711,7 +712,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  const progress=persistedAttempt?.reviewed?100:
   persistedAttempt?.submitted?75:Math.round(answered/4*50);
  return <section className="li-learning-journey" data-li-editorial-journey={id}
-  data-li-react-journey={id} lang={locale}>
+  data-li-react-journey={id} data-li-lesson-phase={phase} lang={locale}>
   <header className="li-learning-header">
    <div>
     <Text role="caption">{lesson.hierarchy.field.title} · {id}</Text>
@@ -728,6 +729,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     variant={locale===lang?'primary':'secondary'} aria-pressed={locale===lang}
     disabled={saving||locked} onClick={()=>switchLocale(lang)}>{lang.toUpperCase()}</Button>)}
   </div>
+  <aside className="li-learning-rail" aria-label="Learning navigation and status">
   <nav className="li-learning-steps" aria-label={vi?'Các bước học':'Learning steps'}>
    {phases.map(p=><Button key={p} variant={p===phase?'primary':'ghost'}
     aria-current={p===phase?'step':undefined}
@@ -769,15 +771,17 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     </li>)}</ol>
    </details>}
   </div>
+  </aside>
   {error&&!locked&&<p role="alert" className="li-learning-error">{error}</p>}
   {locked&&<div className="li-learning-recovery">
    <Button onClick={()=>void retry()} disabled={saving}>{vi?'Thử lưu lại':'Retry saving'}</Button>
    <Text role="support">{vi?'Đừng tải lại khi còn bản chưa lưu.':'Keep this page open with unsaved work.'}</Text>
   </div>}
-  <motion.div key={phase} initial={reduced?false:{opacity:0,y:8}}
-   animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.18}}
+  <motion.div key={phase} initial={reduced?false:{opacity:0,x:12,rotateY:-1}}
+   animate={{opacity:1,x:0,rotateY:0}} transition={reduced?{duration:0}:{duration:0.18}}
    className="li-learning-current">
-   {phase==='read'&&<Card variant="flat-study" aria-labelledby="li-editorial-read">
+   <StudyBookFolio phase={phase} steps={phases} locale={locale}/>
+   {phase==='read'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-read">
     <section id="l0911-hook"><Markdown md={content.hook.md}/>{mentor('opening')}</section>
     <Heading level={2} id="li-editorial-read" role="titleLarge">{vi?'Hiểu bản chất':'Understand the concepts'}</Heading>
     <section id="l0911-goals"><Markdown md={content.goals.md}/></section>
@@ -791,7 +795,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     </li>)}</ul>
     <Button onClick={()=>moveTo('guided')}>{labels.guided}</Button>
    </Card>}
-   {phase==='guided'&&<Card variant="flat-study" aria-labelledby="li-editorial-guided">
+   {phase==='guided'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-guided">
     <Heading level={2} id="li-editorial-guided" role="titleLarge">{labels.guided}</Heading>
     <section id="l0911-guided"><Markdown md={content.guided.md}/>{mentor('guided')}</section>
     {persistedAttempt?.hint?<div className="li-learning-hint"><Markdown md={content.guided.hint_md??''}/></div>:
@@ -802,7 +806,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      value={attempt.guidedDraft} disabled={locked||attempt.submitted} onChange={e=>editGuided(e.currentTarget.value)}/>
     <Button onClick={()=>moveTo('methods')}>{labels.methods}</Button>
    </Card>}
-   {phase==='methods'&&<Card variant="flat-study" aria-labelledby="li-editorial-methods">
+   {phase==='methods'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-methods">
     <Heading level={2} id="li-editorial-methods" role="titleLarge">{labels.methods}</Heading>
     <Text role="support">{vi?'T06 là gợi ý chính, T07 bổ trợ. Cả hai đều không bắt buộc.':
      'T06 is primary and T07 supplementary; both are optional.'}</Text>
@@ -889,7 +893,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
     })}
     <Button onClick={()=>moveTo('practice')}>{vi?'Làm bài độc lập':'Continue to independent practice'}</Button>
    </Card>}
-   {phase==='practice'&&<Card variant="flat-study" aria-labelledby="li-editorial-practice">
+   {phase==='practice'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-practice">
     <Heading level={2} id="li-editorial-practice" role="titleLarge">{labels.practice}</Heading>
     <section id="l0911-challenge"><Markdown md={independent.intro}/>{mentor('independent')}</section>
     <div className="li-learning-fields">
@@ -901,7 +905,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
      {vi?'Nộp bài độc lập':'Submit independent answers'}</Button>:
      <Button onClick={()=>moveTo('feedback')}>{labels.feedback}</Button>}
    </Card>}
-   {phase==='feedback'&&persistedAttempt?.submitted&&<Card variant="flat-study" aria-labelledby="li-editorial-feedback">
+   {phase==='feedback'&&persistedAttempt?.submitted&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-feedback">
     <Heading level={2} id="li-editorial-feedback" role="titleLarge">{labels.feedback}</Heading>
     <Heading level={3} role="titleMedium">{vi?'Bài làm của mày':'Your submission'}</Heading>
     <ol className="li-learning-submission-list">
@@ -946,7 +950,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       {vi?'Lưu tự đánh giá':'Save self-review'}
      </Button>)}
    </Card>}
-   {phase==='progress'&&persistedAttempt?.reviewed&&<Card variant="flat-study" aria-labelledby="li-editorial-progress">
+   {phase==='progress'&&persistedAttempt?.reviewed&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-editorial-progress">
     <Heading level={2} id="li-editorial-progress" role="titleLarge">{vi?'Hoàn thành lượt học':'Attempt complete'}</Heading>
     <Text>{vi?'Đây là một lượt tự đánh giá đã lưu, không phải chứng nhận thông thạo.':
      'A saved self-assessment, not a mastery certificate.'}</Text>

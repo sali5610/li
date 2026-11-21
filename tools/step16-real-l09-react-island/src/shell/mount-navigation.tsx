@@ -66,15 +66,11 @@ function AccountControl(){
   owner.liAccountOverlay?.open(trigger);
  };
  return <button id="li-react-account-trigger" className="tool-button"
-  type="button" aria-label={locale==='en'?'Manage account':'Quản lý tài khoản'}
+  type="button" aria-haspopup="dialog"
+  aria-label={locale==='en'?'Manage account':'Quản lý tài khoản'}
   title={locale==='en'?'Account':'Tài khoản'}
   onClick={event=>open(event.currentTarget)}>
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-   stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"
-   strokeLinejoin="round" aria-hidden="true">
-   <circle cx="12" cy="8" r="3.5"/>
-   <path d="M4 21v-2a8 8 0 0 1 16 0v2"/>
-  </svg>
+  <LiIcon name="user-round" size={22}/>
  </button>;
 }
 function BackControl(){

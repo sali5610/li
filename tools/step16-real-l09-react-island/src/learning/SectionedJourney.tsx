@@ -363,31 +363,32 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       'Học cá nhân · tiến độ theo tài khoản · nội dung đang hoàn thiện':
       'Personal study · account-synced progress · content in progress'}</Text>}</div>
    <div className="li-learning-header-actions">
-    <Button variant="secondary" disabled={pending>0||locked} onClick={()=>void restartLesson()}>
-     {attempt.locale==='vi'?'Học lại từ đầu':'Restart lesson'}
-    </Button>
-    <Button variant="secondary" onClick={ports.navigation.openCatalog}>
-     {vi?'Tàng Thư':'Library'}</Button>
+    <div className="li-learning-toolbar" role="group" aria-label={vi?'Ngôn ngữ':'Language'}>
+     {(['vi','en'] as const).map(l=><Button key={l} disabled={pending>0||locked}
+      variant={locale===l?'primary':'secondary'} aria-pressed={locale===l}
+      onClick={()=>{if(locale!==l)void persist({...attempt,locale:l});}}>{l.toUpperCase()}</Button>)}
+    </div>
+    <details className="li-lesson-header-more">
+     <summary>{vi?'Tùy chọn':'Options'}</summary>
+     <Button variant="secondary" disabled={pending>0||locked} onClick={()=>void restartLesson()}>
+      {vi?'Học lại từ đầu':'Restart lesson'}
+     </Button>
+    </details>
    </div>
   </header>
-  <div className="li-learning-toolbar" role="group" aria-label="Language">
-   {(['vi','en'] as const).map(l=><Button key={l} disabled={pending>0||locked}
-    variant={locale===l?'primary':'secondary'} aria-pressed={locale===l}
-    onClick={()=>{if(locale!==l)void persist({...attempt,locale:l});}}>{l.toUpperCase()}</Button>)}
-   <Text role="support">{vi?
+  <Text role="support" className="li-lesson-status">{vi?
     (locked?'Lưu lỗi':pending?'Đang lưu…':
      sync==='synced'?'Đã đồng bộ':sync==='queued'?'Chờ đồng bộ':
       sync==='on-device'?'Đã lưu trên thiết bị':'Đã lưu / đang kiểm tra'):
     (locked?'Save failed':pending?'Saving…':
      sync==='synced'?'Synced':sync==='queued'?'Waiting to sync':
       sync==='on-device'?'Saved on device':'Saved / checking status')}</Text>
-  </div>
   {error&&<p role="alert">{error}</p>}
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
   <nav className="li-learning-stepper" aria-label={vi?'Các bước học':'Learning steps'}>
    {PAGES.map((p,i)=><Button key={p} variant={p===phase?'primary':'secondary'}
     disabled={(i>=4&&!persisted.submitted)||(i===5&&!persisted.reviewed)}
-    onClick={()=>setPhase(p)}>{names[p]}</Button>)}
+    onClick={()=>setPhase(p)}><span className="li-learning-step-index">{String(i+1).padStart(2,'0')}</span><span>{names[p]}</span></Button>)}
   </nav>
   <Progress label={vi?'Tiến độ lượt học':'Lesson attempt progress'} value={percent}/>
   <Text role="support">{persisted.reviewed?

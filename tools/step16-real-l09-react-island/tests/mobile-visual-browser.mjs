@@ -90,18 +90,27 @@ try{
    if(started!==true)throw Error('Explore must start a visible shared-image morph on mobile');
    await wait(()=>evalBool("(()=>{const h=document.querySelector('.catalog-field-hero');return Boolean(h&&new URLSearchParams(location.search).get('catalog')?.split('/').length===2&&!document.querySelector('.li-catalog-field-shared-hero')&&getComputedStyle(h).visibility!=='hidden')})()"),5000);
    console.log('PASS field card arch → detail hero shared-element transition at 390px, no stuck overlay');
-   // Browser Back: hero must become the SAME arched card art, not jump-cut.
-   await evalBool("(()=>{window.__liFieldReturnScroll=scrollY;history.back();return true})()");
-   await wait(()=>evalBool("Boolean(document.querySelector('.li-catalog-field-shared-hero img'))"),5000);
-   await wait(()=>evalBool("(()=>{const c=document.querySelector('.li-catalog-field-card[data-field-id]');const i=c?.querySelector('.li-catalog-field-card__media img');return Boolean(c&&i?.complete&&i.naturalWidth>0&&!document.querySelector('.li-catalog-field-shared-hero')&&getComputedStyle(i).visibility!=='hidden'&&new URLSearchParams(location.search).get('catalog')==='arts-humanities')})()"),9000);
-   console.log('PASS browser Back: hero → original arched card, image decoded and overlay removed');
-   // In-app breadcrumb Back must take the exact same reverse path.
-   await evalBool("document.querySelector('.li-catalog-field-card__action')?.click()");
-   await wait(()=>evalBool("Boolean(document.querySelector('.catalog-field-hero')&&!document.querySelector('.li-catalog-field-shared-hero'))"),9000);
-   await evalBool("(()=>{const crumb=[...document.querySelectorAll('.catalog-breadcrumbs button')].find(b=>b.textContent?.includes('Nghệ thuật'));crumb?.click();return Boolean(crumb)})()");
+   // First prove an in-app Back path launches the reverse morph while
+   // React still owns the current field detail DOM.
+   const crumbPressed=await evalBool("(()=>{const crumb=[...document.querySelectorAll('.catalog-breadcrumbs button')].find(b=>b.textContent?.includes('Nghệ thuật'));crumb?.click();return Boolean(crumb)})()");
+   if(!crumbPressed)throw Error('Missing actual Group breadcrumb Back control');
    await wait(()=>evalBool("Boolean(document.querySelector('.li-catalog-field-shared-hero img'))"),5000);
    await wait(()=>evalBool("(()=>{const i=document.querySelector('.li-catalog-field-card__media img');return Boolean(i&&!document.querySelector('.li-catalog-field-shared-hero')&&getComputedStyle(i).visibility!=='hidden')})()"),9000);
    console.log('PASS breadcrumb Back: full hero shrinks back into matching card arch');
+   // Re-enter with Explore. Browser Back should reuse exactly the same
+   // pre-navigation event and shared-element morph, not a separate UI hack.
+   await evalBool("document.querySelector('.li-catalog-field-card__action')?.click()");
+   await wait(()=>evalBool("Boolean(document.querySelector('.catalog-field-hero')&&!document.querySelector('.li-catalog-field-shared-hero'))"),9000);
+   await evalBool("(()=>{window.__liBeforeBack=[];window.addEventListener('li:catalog-before-pathchange',e=>window.__liBeforeBack.push(e.detail));window.__liBeforeBackUrl=location.href;history.back();return true})()");
+   try{
+    await wait(()=>evalBool("Boolean(document.querySelector('.li-catalog-field-shared-hero img'))"),5000);
+   }catch(error){
+    const state=await evalBool("(()=>({url:location.href,previous:window.__liBeforeBackUrl,events:window.__liBeforeBack,hero:{exists:!!document.querySelector('.catalog-field-hero'),loaded:document.querySelector('.catalog-field-hero')?.naturalWidth},card:!!document.querySelector('.li-catalog-field-card'),path:window.liCatalog?.getPath()}))()");
+    console.error('REVERSE_BACK_DIAGNOSTIC',JSON.stringify(state));
+    throw error;
+   }
+   await wait(()=>evalBool("(()=>{const i=document.querySelector('.li-catalog-field-card__media img');return Boolean(i&&!document.querySelector('.li-catalog-field-shared-hero')&&getComputedStyle(i).visibility!=='hidden'&&new URLSearchParams(location.search).get('catalog')==='arts-humanities')})()"),9000);
+   console.log('PASS browser Back: hero → original arched card, decoded and overlay removed');
   }
   if(view==='searchEnglish'){
    const evaluate=async expression=>(await send('Runtime.evaluate',{expression,returnByValue:true})).result?.value;

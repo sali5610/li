@@ -12,6 +12,9 @@ export function useStepScreen(phase:string,lessonId:string){
   const frame=requestAnimationFrame(()=>{
    const root=Array.from(document.querySelectorAll<HTMLElement>('[data-li-react-journey]'))
     .find(node=>node.dataset.liReactJourney===lessonId);
+   const page=root?.closest('section.page');
+   // Do not steal scroll/focus while another app route is active.
+   if(page&&!page.classList.contains('active'))return;
    const current=root?.querySelector<HTMLElement>('.li-learning-current');
    if(!current)return;
    current.scrollIntoView({block:'start',behavior:'auto'});

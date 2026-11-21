@@ -422,7 +422,7 @@ export function AppPageLayout(props:AppPageLayoutProps){
     {bookworm&&<button type="button" className="li-bookworm-index-toggle"
       aria-controls={indexId} aria-expanded={indexOpen}
       onClick={()=>setIndexOpen(open=>!open)}>
-      <LiIcon name={indexOpen?'book-open':'book'} size={16}/>
+      <LiIcon name={indexOpen?'book-open':'bookmark'} size={16}/>
       {indexOpen?t('Gập mục lục','Close index'):t('Mở mục lục','Open index')}
      </button>}
     {variant==='notebook'&&<div className="li-flow-marginalia">

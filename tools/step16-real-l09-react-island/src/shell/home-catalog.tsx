@@ -7,7 +7,7 @@ import type {MirrorView} from './inquiry-port.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
-import {Badge,Breadcrumb,Button,Heading,Progress,Text} from '../../../../design-system/react/index';
+import {Badge,Breadcrumb,Button,FilterGroup,Heading,Progress,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
 import {PortalCategoryCard} from '../../../../design-system/react/PortalCategoryCard';
 import {CatalogFieldCard} from '../../../../design-system/react/CatalogFieldCard';
@@ -232,13 +232,12 @@ function Catalog(){
      'Some outlines are in progress. Only released lessons are available to study.')}
   </Text></>}
   {group&&!field&&<div className="catalog-field-browser">
-   {categories.length>1&&<div className="catalog-category-filters" role="group"
-    aria-label={locale==='vi'?'Lọc chuyên ngành theo danh mục':'Filter fields by category'}>
-    <button type="button" className="catalog-category-filter" aria-pressed={activeCategory==='all'}
-     onClick={()=>setActiveCategory('all')}>{locale==='vi'?'Tất cả':'All'}</button>
-    {categories.map(([id,label])=><button key={id} type="button" className="catalog-category-filter"
-     aria-pressed={activeCategory===id} onClick={()=>setActiveCategory(id)}>{label[locale]}</button>)}
-   </div>}
+   {categories.length>1&&<FilterGroup
+    label={locale==='vi'?'Lọc chuyên ngành theo danh mục':'Filter fields by category'}
+    options={[{value:'all',label:locale==='vi'?'Tất cả':'All'},
+     ...categories.map(([id,label])=>({value:id,label:label[locale]}))]}
+    selected={[activeCategory]} multiple={false} allowEmpty={false}
+    onChange={next=>setActiveCategory(next[0]||'all')}/>}
    <div className="catalog-field-grid">
     {group.fields.filter(item=>activeCategory==='all'||item.category.id===activeCategory)
      .map(item=><CatalogFieldCard key={item.id}

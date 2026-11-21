@@ -102,7 +102,7 @@ export function Journal(){
       const shown=Number(view.month.slice(0,4))*12+Number(view.month.slice(5,7));
       const next=year*12+month;
       if(next!==shown)act(next<shown?'prev':'next');
-     }
+     }}/>
     <section className="li-diary-trend" aria-label={copy('Hoạt động 7 ngày quanh ngày chọn','Seven-day activity around selection')}>
      <div className="kicker"><LiIcon name="chart-column" size={16}/> {copy('NHỊP HOẠT ĐỘNG · 7 NGÀY','ACTIVITY RHYTHM · 7 DAYS')}</div>
      <StackedActivityChart days={chartDays} selectedDate={view.selected}
@@ -111,7 +111,7 @@ export function Journal(){
      <Text role="support">{copy(
       'Bài · Vấn đề · Input; ngày chưa có ghi nhận để trống, không tính thành 0.',
       'Lessons · Problems · Inputs; unrecorded days stay blank, not zero.')}</Text>
-    </section>}/>
+    </section>
     <Text role="support">{view.totals.recorded?
      copy('Trong ','Across ')+view.totals.recorded+copy(' ngày ghi nhận: ',' recorded days: ')+
       view.totals.counts[0]+copy(' bài · ',' lessons · ')+view.totals.counts[1]+

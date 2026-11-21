@@ -312,7 +312,6 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   <Text>{error||'Không tải được dữ liệu học. Quyền truy cập vẫn được bảo vệ.'}</Text>
   <div className="li-learning-recovery">
    <Button onClick={()=>setLoadAttempt(value=>value+1)}>Thử lại</Button>
-   <Button variant="secondary" onClick={ports.navigation.openCatalog}>Về Tàng Thư</Button>
   </div>
  </section>;
 
@@ -370,9 +369,10 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    </Button>
    <Text role="support">{vi?'Không tải lại trang khi bản nháp chưa lưu.':'Keep this page open while changes are unsaved.'}</Text>
   </div>}
+    <StudyBookFolio phase={phase} steps={sequence} locale={appLocale}/>
   <motion.div key={phase} initial={reduced?false:{opacity:0,x:12,rotateY:-1}}
    animate={{opacity:1,x:0,rotateY:0}} transition={transition} className="li-learning-current">
-   <StudyBookFolio phase={phase} steps={sequence} locale={appLocale}/>
+   
    {phase==='read'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-read">
     <Heading level={2} id="li-learn-read" role="titleLarge">{content.theoryTitle}</Heading>
     <Text>{strip(content.theoryLead)}</Text>
@@ -505,9 +505,6 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
       setError(vi?'Không mở được lịch ôn cho bài này.':'Could not open this lesson review.');}}/>
     <Button variant="secondary" onClick={()=>ports.search.openSearch('sampling bias random sampling variation')}>
      {vi?'Tìm bài liên quan':'Find related lessons'}
-    </Button>
-    <Button variant="ghost" onClick={ports.navigation.openCatalog}>
-     {vi?'Trở lại Tàng Thư':'Return to library'}
     </Button>
    </Card>}
   </motion.div>

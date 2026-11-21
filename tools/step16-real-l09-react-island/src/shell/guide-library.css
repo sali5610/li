@@ -120,13 +120,15 @@
 .li-react-library .li-library-empty .li-atom-text{margin:0}
 .li-react-library .library-back-link{margin-bottom:var(--li-space-4);justify-self:start}
 .li-react-library .library-resume-layout{
- display:grid;grid-template-columns:minmax(0,1.5fr) minmax(245px,.8fr);
- gap:clamp(var(--li-space-5),4vw,var(--li-space-8));
- align-items:start;margin-top:var(--li-space-6)
+ display:grid;grid-template-columns:minmax(0,1fr);max-width:920px;
+ gap:var(--li-space-5);align-items:start;margin-top:var(--li-space-6)
 }
 .li-react-library .library-resume-stream{display:grid;gap:var(--li-space-8);min-width:0}
 .li-react-library .library-resume-section{display:grid;align-content:start;gap:var(--li-space-3);min-width:0}
 .li-react-library .library-resume-section .li-atom-heading{margin:0}
+.li-react-library .library-bookmarks-layout{
+ display:grid;gap:var(--li-space-4);max-width:920px;margin-top:var(--li-space-6);min-width:0
+}
 .li-react-library .library-bookmark-tabs{display:flex;gap:var(--li-space-2);flex-wrap:wrap}
 .li-react-library .library-bookmark-tabs [role="tab"][aria-selected="true"]{
  background:var(--moss);color:var(--cream)

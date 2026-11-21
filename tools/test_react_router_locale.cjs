@@ -126,6 +126,21 @@ assert.ok(replaced.length>=4);
 location.href=new URL('/li/?view=guide',location.origin).href;
 window.dispatchEvent(new TestEvent('popstate'));
 assert.equal(act.getCurrent(),'guide','browser popstate restores a React-owned screen');
+// Safari focus/pageshow can revalidate a valid invite while Catalog is open.
+assert.equal(act.navigate('catalog'),true);
+const catalogBeforeRecheck=location.href;
+visible=false;
+window.dispatchEvent(new TestEvent('li:auth-verified-changed',{
+ detail:{verified:false,transient:true}
+}));
+assert.equal(act.navigate('home'),false,'Transient recheck locks private navigation');
+assert.equal(act.getCurrent(),'catalog','Transient recheck keeps the active Catalog');
+assert.equal(location.href,catalogBeforeRecheck,'Transient recheck preserves Catalog URL');
+visible=true;
+window.dispatchEvent(new TestEvent('li:auth-verified-changed',{
+ detail:{verified:true,transient:false}
+}));
+assert.equal(act.getCurrent(),'catalog','Verified session resumes Catalog, not Home');
 window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:false}}));
 assert.equal(act.getCurrent(),'home','Logout clears the previously active private route');
 assert.equal(location.searchParams.has('lesson'),false,'Logout clears private lesson deep link');
@@ -515,6 +530,13 @@ assert.equal(cRoutes.at(-1),'catalog');
 assert.equal(cPort.getPath().join('/'),personalPath.join('/'));
 assert.equal(cPort.openForLesson('L03-1-2'),true);
 assert.equal(cPort.getPath().join('/'),releasedPath.join('/'));
+cVerified=false;
+cWindow.dispatchEvent({type:'li:auth-verified-changed',detail:{verified:false,transient:true}});
+assert.equal(cPort.getPath().join('/'),releasedPath.join('/'),
+ 'Temporary invite recheck preserves Catalog breadcrumbs');
+cVerified=true;cWindow.dispatchEvent({type:'li:auth-verified-changed',detail:{verified:true}});
+assert.equal(cPort.getPath().join('/'),releasedPath.join('/'),
+ 'Verified return resumes the same Catalog course');
 cVerified=false;cWindow.dispatchEvent({type:'li:auth-verified-changed',detail:{verified:false}});
 assert.equal(cPort.getPath().length,0,'Signed-out account loses previous Catalog path');
 assert.equal(cPort.openLesson('L03-1-2'),false,'Unverified account cannot navigate into a lesson');

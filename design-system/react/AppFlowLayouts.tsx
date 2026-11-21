@@ -405,7 +405,8 @@ export function AppPageLayout(props:AppPageLayoutProps){
   transition:{duration:bookworm?.56:.48,delay,ease:[.22,1,.36,1] as const}
  }:{};
  return <section className="li-flow-page" data-page={page} data-layout={variant}
-  data-bookworm-composition={bookworm?bookwormComposition:undefined} lang={locale}>
+  data-bookworm-composition={bookworm?bookwormComposition:undefined}
+  data-bookworm-index={bookworm?(indexOpen?'open':'closed'):undefined} lang={locale}>
   {variant==='bookworm'&&<div className="li-flow-bookworm-masthead" aria-hidden="true">
    <span>li. · Illustrated Folio</span><span>THE LIBRARY OF QUESTIONS / VOL. 01</span>
   </div>}
@@ -461,11 +462,14 @@ export function AppPageLayout(props:AppPageLayoutProps){
    </motion.div>
    <AnimatePresence initial={false}>
    {(!bookworm||indexOpen)&&<motion.aside id={indexId} key="related-index"
-    className="li-flow-page-aside" {...reveal(.25)}
-    initial={bookworm&&!reduced?{opacity:0,height:0,y:-10}:undefined}
-    animate={bookworm?{opacity:1,height:'auto',y:0}:undefined}
-    exit={bookworm?{opacity:0,height:0,y:-8}:undefined}
-    transition={bookworm?{duration:reduced?0:.3,ease:[.22,1,.36,1]}:undefined}
+    className="li-flow-page-aside"
+    initial={bookworm&&!reduced?{opacity:0,height:0,y:-10}:
+     variant==='notebook'&&!reduced?{opacity:0,y:14}:false}
+    animate={bookworm?{opacity:1,height:'auto',y:0}:
+     variant==='notebook'?{opacity:1,y:0}:undefined}
+    exit={bookworm&&!reduced?{opacity:0,height:0,y:-8}:undefined}
+    transition={bookworm?{duration:reduced?0:.3,ease:[.22,1,.36,1]}:
+     variant==='notebook'?{duration:reduced?0:.48,delay:reduced?0:.25,ease:'easeOut'}:undefined}
     aria-label={t('Lối đi liên quan','Related paths')}>
     <span className="li-flow-page-kicker">{t('LỐI ĐI TIẾP','NEXT DESTINATIONS')}</span>
     <Text role="support">{t('Bản thiết kế thử nghiệm dùng dữ liệu giả lập.',

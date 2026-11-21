@@ -156,7 +156,7 @@ const settings=read("tools/step16-real-l09-react-island/src/shell/journal-settin
 const auth=read("tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx");
 // Read the exact production Auth classification rather than hand-coding an
 // event; React can restore invite access before ownerReady has rehydrated.
-const expression=auth.match(/const transient=([\\s\\S]*?);\\n  window\\.dispatchEvent\\(new CustomEvent\\('li:auth-verified-changed'/)?.[1];
+const expression=auth.match(/const transient=([\s\S]*?);\n  window\.dispatchEvent\(new CustomEvent\('li:auth-verified-changed'/)?.[1];
 assert.ok(expression,'Find real AuthPanel transient recheck condition');
 const isTransient=new Function('permitted','isPending','access','error','accountId','ownerReady',
  'return ('+expression+');');

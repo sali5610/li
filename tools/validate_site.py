@@ -190,7 +190,7 @@ assert "理" in seal_root.attrib.get("aria-label","")
 assert 'fill="#243A29"' in seal, "Logo ink must match approved moss theme"
 # S146: favicon MUST use the exact same SVG URL as the approved header seal.
 # A separately inverted moss-background/cream-ink SVG is not the header logo.
-seal_url="./assets/li-seal.svg?v=exact-header-s146"
+seal_url="./assets/li-seal.svg?v=geometric-20261122"
 assert html.count('src="'+seal_url+'"')==1, "Header seal must be approved SVG"
 assert html.count('rel="icon" type="image/svg+xml" href="'+seal_url+'"')==1, "Favicon must share exact header logo asset"
 assert 'rel="icon" type="image/svg+xml" href="./assets/li-favicon.svg' not in html, "Legacy inverse-color favicon must not be referenced"
@@ -858,7 +858,7 @@ assert 'ds12-horizontal-illustration .ds12-horizontal-media.figure img{width:100
 topnavcss=(site/"assets"/"component-review-v5.css").read_text(encoding="utf-8")
 assert 'component-review-v5.css?v=20261119-ds21-olive-spec' in v3
 assert all('data-ds15-topvariant="'+x+'"' in v3 for x in ("logo","back","overlay"))
-assert v3.count('src="./assets/li-seal.svg?v=exact-header-s146"')>=2
+assert v3.count('src="./assets/li-seal.svg?v=geometric-20261122"')>=2
 assert 'data-ds15-back aria-label="Quay lại màn trước"' in v3
 assert 'src="./assets/home-li-landscape-20261121.webp"' in v3
 assert 'ds15-topnav-overlay' in topnavcss and 'background:var(--ds11-clear)!important' in topnavcss

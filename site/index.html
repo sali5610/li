@@ -820,7 +820,12 @@ mirrorSwipeSurface.addEventListener("touchend",event=>{
   shiftMirrorQuestion(dx<0?1:-1);
 },{passive:true});
 mirrorSwipeSurface.addEventListener("touchcancel",()=>{mirrorSwipeStart=null},{passive:true});
-function liSubmitCaseAnswer(choice,revision){const v=String(revision||"").trim();if(choice!=="right"&&choice!=="wrong"){toast("Chưa Chọn · Hãy chọn một nhận định hoặc tạm gác.");return false}if(v.length<12){toast("Luận Kết còn thiếu · Hãy viết lại nhận định ít nhất 12 ký tự.");return false}// React Case is the visible source of truth. Never archive the hidden
+function liSubmitCaseAnswer(choice,revision,fieldId=null){const v=String(revision||"").trim();
+const validFields=window.liTaxonomyFieldIds||
+ (window.LI_CATALOG_DATA||[]).flatMap(group=>group.fields.map(field=>field.id));
+if(fieldId!==null&&(!validFields.includes(fieldId)||typeof fieldId!=="string")){
+ toast("Chuyên ngành không hợp lệ. Chưa lưu Bút Ký.");return false;
+}if(choice!=="right"&&choice!=="wrong"){toast("Chưa Chọn · Hãy chọn một nhận định hoặc tạm gác.");return false}if(v.length<12){toast("Luận Kết còn thiếu · Hãy viết lại nhận định ít nhất 12 ký tự.");return false}// React Case is the visible source of truth. Never archive the hidden
 // vanilla question/options when the invited React router owns this screen.
 const reactSnapshot=window.liReactRouter?window.liCaseUi?.getSnapshot?.():null;
 if(window.liReactRouter&&(
@@ -846,7 +851,7 @@ const caseSnapshot=reactSnapshot||{
  selectedText:caseOptions.find(x=>x.key===choice)?.text||"",
  feedback:liCaseFeedback(choice)
 };
-const item={id:liNewId(),caseKey:"sampling-bias-90",caseSnapshot,title:"90% người dùng hài lòng — Sampling Bias",correct:choice==="right",revision:v,savedAt:new Date().toISOString()};
+const item={id:liNewId(),caseKey:"sampling-bias-90",caseSnapshot,title:"90% người dùng hài lòng — Sampling Bias",correct:choice==="right",revision:v,fieldId:fieldId||null,savedAt:new Date().toISOString()};
 processedCases.unshift(item);
 if(!liWriteState()){processedCases.shift();toast("Không thể lưu Bút Ký trên thiết bị. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.");return false}
 try{window.localStorage.setItem(LI_DRAFT_KEY,"")}catch(e){}
@@ -948,9 +953,9 @@ window.liInquiryFlow=Object.freeze({
    return window.localStorage.getItem(LI_DRAFT_KEY)===text;
   }catch{return false}
  },
- submitCase:(choice,revision)=>{
+ submitCase:(choice,revision,fieldId=null)=>{
   if(!liInquiryAllowed())return false;
-  return liSubmitCaseAnswer(choice,revision);
+  return liSubmitCaseAnswer(choice,revision,fieldId);
  },
  isCaseBookmarked:()=>liInquiryAllowed()&&Boolean(window.liBookmarks?.isSaved("case","sampling-bias-90")),
  toggleCaseBookmark:()=>{

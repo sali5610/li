@@ -204,6 +204,7 @@ const writerSandbox={
  document:{querySelector(selector){caseNativeReads++;throw Error("Hidden native DOM read: "+selector);}},
  window:{
   liReactRouter:{},liCaseUi:{getSnapshot:()=>reactCaseSnapshot},
+  liTaxonomyFieldIds:["data-science","hci"],
   localStorage:{getItem:key=>caseDraft.get(key)||null,
    setItem:(key,value)=>caseDraft.set(key,value)},
   dispatchEvent:event=>caseEvents.push(event.type)
@@ -229,6 +230,7 @@ assert.equal(caseRecords[0].caseSnapshot.selectedKey,"right");
 assert.equal(caseRecords[0].caseSnapshot.selectedText,reactCaseSnapshot.selectedText);
 assert.equal(caseRecords[0].caseSnapshot.feedback,reactCaseSnapshot.feedback);
 assert.equal(caseRecords[0].caseSnapshot.options.length,2);
+assert.equal(caseRecords[0].fieldId,"data-science","Case inherits canonical Data Science field");
 assert.equal(caseDraft.get("li.private.case-draft.v1"),"","Successful save clears canonical React draft");
 assert.deepEqual(caseRoutes,["library"],"Successful Case returns to visible private library");
 assert.deepEqual(caseEvents,["li:activity","li:inquiry-changed"]);
@@ -265,6 +267,7 @@ assert.equal(writerSandbox.liSubmitCaseAnswer("wrong","Native conclusion long en
 assert.equal(caseRecords[0].caseSnapshot.question,"Native question");
 assert.equal(caseRecords[0].caseSnapshot.selectedText,"Native option wrong");
 assert.equal(caseRecords[0].caseSnapshot.feedback,"native feedback wrong");
+assert.equal(caseRecords[0].fieldId,"data-science","Native Case inherits same field without picker");
 // Open the REAL Bút Ký data reader on the React-saved record (not hardcoded test data).
 const noteElements=new Map();
 const noteElement=id=>{
@@ -303,5 +306,6 @@ assert.equal(notebook.context.options[0].selected,true);
 assert.match(notebook.context.choice,/React visible: only this sample/);
 assert.equal(notebook.context.feedback,reactCaseSnapshot.feedback);
 assert.equal(notebook.body,"Visible conclusion has 12+ characters");
+assert.equal(notebook.fieldId,"data-science","Bút Ký exposes inherited field without user input");
 assert.match(notebook.context.provenance,/ghi cùng luận kết/);
 console.log("PASS React Case → canonical save → Bút Ký detail without native HTML; rollback/fallback intact");

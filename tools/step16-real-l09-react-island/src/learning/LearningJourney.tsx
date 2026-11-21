@@ -342,6 +342,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <LessonBookmark id="L09-1-2" locale={appLocale}/>
    </div>
   </header>
+    <StudyBookFolio phase={phase} steps={sequence} locale={appLocale}/>
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
 
   <div className="li-learning-save">
@@ -369,7 +370,6 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    </Button>
    <Text role="support">{vi?'Không tải lại trang khi bản nháp chưa lưu.':'Keep this page open while changes are unsaved.'}</Text>
   </div>}
-    <StudyBookFolio phase={phase} steps={sequence} locale={appLocale}/>
   <motion.div key={phase} initial={reduced?false:{opacity:0,x:12,rotateY:-1}}
    animate={{opacity:1,x:0,rotateY:0}} transition={transition} className="li-learning-current">
    

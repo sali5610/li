@@ -716,11 +716,19 @@
  grid-template-columns:minmax(104px,40%) minmax(0,1fr);
 }
 [data-li-react-screen="catalog"] .catalog-feature-row[data-li-catalog-kind="field"] .catalog-feature-media{
- min-height:0;max-height:none;aspect-ratio:4/5;
- border-radius:50% 50% 0 0;
+ position:relative;isolation:isolate;min-height:0;max-height:none;aspect-ratio:4/5;
+ border-radius:0;background:var(--paper-2);
+}
+/* A thin inner arch OUTLINE sits in a rectangular paper panel, like a vintage
+   book niche. The image sits just inside it; the panel itself is never arched. */
+[data-li-react-screen="catalog"] .catalog-feature-row[data-li-catalog-kind="field"] .catalog-feature-media::after{
+ content:"";position:absolute;z-index:2;inset:5% 7% 0;
+ border:1px solid var(--rule);border-radius:50% 50% 0 0;
+ pointer-events:none;
 }
 [data-li-react-screen="catalog"] .catalog-feature-row[data-li-catalog-kind="field"] .catalog-card-art{
- object-fit:cover;
+ position:absolute;inset:8% 10% 3%;width:80%;height:89%;
+ object-fit:cover;object-position:center;border-radius:50% 50% 0 0;
 }
 @media(max-width:720px){
  [data-li-react-screen="catalog"] .catalog-feature-row[data-li-catalog-kind="field"]{

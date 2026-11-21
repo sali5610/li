@@ -18,8 +18,8 @@ export function PortalCategoryCard({title,detail,eyebrow,actionLabel,portal,
  placeholder}:PortalCategoryCardProps){
  // Site is served at /li/ on GitHub Pages and at / on Cloudflare.
  // Keep the default relative to the current app document, not the domain root.
- // Nested Studio stories can pass portalSrc="../assets/portals/cong-moi-01.png".
- const portalPath=portalSrc||'./assets/portals/cong-moi-'+String(portal).padStart(2,'0')+'.png';
+ // Nested Studio stories can pass portalSrc="../assets/portals/cong-moi-01.webp".
+ const portalPath=portalSrc||'./assets/portals/cong-moi-'+String(portal).padStart(2,'0')+'.webp';
  const action=<>{actionLabel}<LiIcon name="arrow-right" size={18}/></>;
  return <article className={'li-portal-category-card '+className} data-li-component="portal-category-card"
   data-portal-variant={portal}>

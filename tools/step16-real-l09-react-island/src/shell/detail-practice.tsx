@@ -302,7 +302,8 @@ export function GuideDetail(){
       <div className="spell-source-links">
        <strong>{copy('Nguồn tham khảo','References')}</strong>
        <ul>{guideRecord.sources.map(source=><li key={source.url}>
-        <a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}<span aria-hidden="true"> ↗</span></a>
+        <a href={source.url} target="_blank" rel="noopener noreferrer"
+         aria-label={source.title+' · '+copy('Mở trong tab mới','Opens in a new tab')}>{source.title}<span aria-hidden="true"> ↗</span></a>
        </li>)}</ul>
       </div>
      </section>}

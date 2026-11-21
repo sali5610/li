@@ -149,6 +149,19 @@
 #page-home > .hero > .mirror-message .li-home-mirror-art-vignette{
  display:none!important;
 }
+/* The whole elliptical glass, not only the question copy, accepts swipes.
+   The existing touch handlers stay on .mirror-message: its ::before receives
+   touches outside the text and bubbles them to the same handlers. */
+#li-react-home-host .mirror-message::before{
+ content:"";position:absolute;left:50%;top:50%;
+ width:min(28vw,340px);aspect-ratio:.72;
+ transform:translate(-50%,-50%);
+ border-radius:50%;clip-path:ellipse(49% 49% at 50% 50%);
+ pointer-events:auto;touch-action:pan-y;z-index:0;
+}
+@media(max-width:600px){
+ #li-react-home-host .mirror-message::before{width:min(63vw,258px)}
+}
 #li-react-home-host .mirror-message{position:absolute;z-index:6}
 #li-react-home-host .li-home-mirror-float{position:relative;z-index:2}
 #li-react-home-host .mirror-message h2,

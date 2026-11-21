@@ -1402,3 +1402,16 @@ html{
 @media(max-width:600px){
   html{scroll-padding-top:74px}
 }
+
+/* Native Home fallback: match the whole mirror-glass swipe hit area to the
+   same elliptical artwork, without covering adjacent Home actions. */
+#page-home > .hero > .mirror-message::before{
+ content:"";position:absolute;left:50%;top:50%;
+ width:min(28vw,340px);aspect-ratio:.72;
+ transform:translate(-50%,-50%);
+ border-radius:50%;clip-path:ellipse(49% 49% at 50% 50%);
+ pointer-events:auto;touch-action:pan-y;z-index:0;
+}
+@media(max-width:600px){
+ #page-home > .hero > .mirror-message::before{width:min(63vw,258px)}
+}

@@ -90,7 +90,7 @@ export function Journal(){
    'Your self-reported check-ins, study rhythm and actual activity. Not a health or learning ability score.')}</Text>
   <div className="stack-sm li-diary-layout">
    <div className="li-diary-workspace">
-    <Card variant="raised" className="li-diary-month">
+    <section className="li-diary-month" aria-label={copy('Lịch và hoạt động theo tháng','Month calendar and activity')}>
     <div className="kicker">{copy('LỊCH HOẠT ĐỘNG','ACTIVITY CALENDAR')}</div>
     <section className="li-diary-trend" aria-label={copy('Hoạt động 7 ngày quanh ngày chọn','Seven-day activity around selection')}>
      <div className="kicker"><LiIcon name="chart-column" size={16}/> {copy('NHỊP HOẠT ĐỘNG · 7 NGÀY','ACTIVITY RHYTHM · 7 DAYS')}</div>
@@ -118,7 +118,7 @@ export function Journal(){
       copy(' vấn đề · ',' problems · ')+view.totals.counts[2]+' input.':
       copy('Tháng này chưa có dữ liệu được ghi nhận.','No recorded journal data this month.')}</Text>
 
-   </Card>
+   </section>
    <section className="li-diary-detail" aria-label={copy('Chi tiết ngày','Daily details')}>
     <Heading level={2} role="titleLarge">{view.selectedLabel}</Heading>
     <div className="li-diary-day-grid">

@@ -29,6 +29,17 @@ let browserDepth=0;
 // Scroll belongs to a browser history entry, not just a route: A -> B -> A
 // may visit the same screen at different reading positions.
 type ScrollPosition={x:number;y:number};
+type SpellPort={getView:()=>{active:string}|null;open:(id:string,tab?:'guide'|'practice')=>void};
+const spellPort=()=>(window as Window&{LiSpellPractice?:SpellPort}).LiSpellPractice;
+const validSpell=(id:string|null):id is string=>!!id&&/^T(?:0[1-9]|1[0-3])$/.test(id);
+function restoreSpellFromUrl(route:string):boolean{
+ if(route!=='guideDetail')return false;
+ const id=new URLSearchParams(window.location.search).get('method');
+ const port=spellPort();
+ if(!validSpell(id)||!port||port.getView()?.active===id)return false;
+ port.open(id,'guide');
+ return true;
+}
 const scrollByEntry=new Map<number,ScrollPosition>();
 let scrollEntrySequence=0;
 let currentScrollEntry=0;
@@ -79,6 +90,11 @@ function writeUrl(route:string,remember=false){
   preview.get(route);
  if(lesson)url.searchParams.set('lesson',lesson);
  else url.searchParams.delete('lesson');
+ // Spell detail is one React screen, but every selected method needs its own
+ // history entry so Back can restore the original technique and scroll.
+ const spell=route==='guideDetail'?spellPort()?.getView()?.active:null;
+ if(validSpell(spell||null))url.searchParams.set('method',spell!);
+ else url.searchParams.delete('method');
  // Keep non-lesson screens directly addressable, including Settings and Search.
  if(lesson||route==='home')url.searchParams.delete('view');
  else url.searchParams.set('view',route);
@@ -207,6 +223,7 @@ export function mountReactRouter():()=>void{
     // Restore direct links only after invitation and lesson hosts are registered.
     const destination=routeFromUrl();
     if(destination!==active)change(destination,{remember:false,syncUrl:false});
+    restoreSpellFromUrl(destination);
    }
    return;
   }
@@ -239,18 +256,23 @@ export function mountReactRouter():()=>void{
    }
    browserDepth=next;
   }else if(restored!==active&&history.length)history.pop();
-  if(restored!==active)change(restored,{remember:false,syncUrl:false,restoreScroll:true});
+  const sameRoute=restored===active;
+  if(!sameRoute)change(restored,{remember:false,syncUrl:false,restoreScroll:true});
   else{
-   // Catalog can push its own history entries without changing React screens.
+   // Preserve the outgoing entry before reading the incoming browser entry.
    rememberScroll();
    currentScrollEntry=ensureScrollEntry();
   }
+  // Back between T01 and T02 changes ?method but not the React route.
+  // Rehydrate the original spell, then restore that history entry's scroll.
+  if(restoreSpellFromUrl(restored)&&sameRoute)applyScroll(true,restored);
  };
  window.addEventListener('popstate',onPopState);
  window.addEventListener('li:auth-verified-changed',onSession);
  if(canVisit()){
   const requested=routeFromUrl();
   if(requested!==active)change(requested,{remember:false,syncUrl:false});
+  restoreSpellFromUrl(requested);
  }
  return ()=>{
   window.removeEventListener('popstate',onPopState);

@@ -7,7 +7,7 @@ const fs=require("node:fs");
 const path=require("node:path");
 const vm=require("node:vm");
 const source=fs.readFileSync(path.join(__dirname,"../site/assets/ipad-safari-rotation.js"),"utf8");
-const normalMeta="width=device-width,initial-scale=1,viewport-fit=cover";
+const normalMeta="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover";
 function env(initial={}){
  const data=Object.assign({
   outerWidth:970,outerHeight:1408,innerWidth:970,innerHeight:1270,
@@ -118,4 +118,20 @@ assert.equal(desktop.classes.has("li-ipad-home-canvas"),false,"no desktop fixed 
 assert.ok(!source.includes("window.location.reload("));
 assert.ok(!source.includes("localStorage.setItem("));
 assert.ok(!/meta\.content\s*=\s*["']width=\d/.test(source));
-console.log("PASS DS33: healthy, 05:08 stale portrait, 05:24 stale landscape, multiple rotations, split, desktop, route exit");
+
+// Root document must never pan horizontally when a decorative element
+// overflows. Keep normal pinch zoom accessible and horizontal scroll inside
+// dedicated components (filter rails, image galleries) unaffected.
+const page=fs.readFileSync(path.join(__dirname,"../site/index.html"),"utf8");
+const css=fs.readFileSync(path.join(__dirname,"../site/assets/ui-foundations.css"),"utf8");
+assert.ok(page.includes('<meta name="viewport" content="'+normalMeta+'">'),
+ "Safari and initial HTML share the same 1x viewport contract");
+assert.doesNotMatch(normalMeta,/user-scalable=no|maximum-scale=1/i,
+ "Do not disable native user zoom or accessibility magnification");
+assert.match(css,/html, body\s*\{\s*max-width:\s*100%;\s*overflow-x:\s*clip;\s*overscroll-behavior-x:\s*none;/,
+ "Clip only the root document's horizontal overflow");
+assert.match(css,/html\s*\{\s*touch-action:\s*pan-x pan-y pinch-zoom;/,
+ "Keep native pinching and intentional child horizontal gestures");
+assert.doesNotMatch(css,/html\s*\{\s*touch-action:\s*none;/,
+ "Do not disable document gestures to solve root overflow");
+console.log("PASS DS33 + root viewport: rotation, 1x baseline, no sideways document pan, native pinch zoom");

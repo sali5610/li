@@ -9,7 +9,7 @@
  const root=document.documentElement;
  const app=document.querySelector(".app");
  const meta=document.querySelector('meta[name="viewport"]');
- const normalMeta="width=device-width,initial-scale=1,viewport-fit=cover";
+ const normalMeta="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover";
  if(!app||!meta)return;
  const keys=["--li-ipad-shell-width","--li-ipad-shell-height"];
  const classes=["li-ipad-home-canvas","li-ipad-home-landscape","li-ipad-home-portrait",

@@ -1,16 +1,23 @@
-/* Vintage Pop / Postcard: opt-in presentation skin for the React UI Lab only.
+/* Vintage Pop / Postcard: GREEN · RED · VIOLET palette (2026-11-21).
+   Opt-in presentation skin for the React UI Lab only.
    No global token edits, app routes, storage, or real learner UI changes. */
 .li-ui-lab-preview[data-visual-theme="vintage-pop"]{
+ --vp-green:#2c996f;
+ --vp-green-pop:#8bddb4;
+ --vp-red:#e9707e;
+ --vp-red-ink:#b73551;
+ --vp-violet:#8159bb;
+ --vp-lilac:#c6a5eb;
  --paper:#fff3d9;
- --paper-2:#ffdf72;
- --paper-3:#ffd24f;
+ --paper-2:#8bddb4;
+ --paper-3:#4bc892;
  --cream:#fff9eb;
  --ink:#1d3b2c;
  --forest:#183f30;
  --moss:#204835;
- --olive:#9f3e46;
- --wood:#e96b37;
- --sage:#f4abb9;
+ --olive:#b73551;
+ --wood:#e9707e;
+ --sage:#c6a5eb;
  --rule:#294535;
  --muted:#645543;
  --li-font-editorial:Georgia,'Times New Roman',serif;
@@ -21,7 +28,7 @@
  background:#214a37;color:#fff3d9;letter-spacing:.07em;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-lab-preview-label .li-ds-button{
- border-color:#f7d46b;background:#fff1d1;color:#1f4433;
+ border-color:#8bddb4;background:#fff1d1;color:#1f4433;
 }
 /* Flat, outlined shapes and archival labels; geometry comes from the existing React DS. */
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
@@ -39,13 +46,13 @@
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-head{
  position:relative;isolation:isolate;overflow:hidden;
- background:#ffe05b;border:2px solid #214532;
+ background:#4bc892;border:2px solid #214532;
  padding:clamp(20px,3.5vw,42px);
- align-items:center;box-shadow:6px 6px 0 #efa8b7;
+ align-items:center;box-shadow:6px 6px 0 #c6a5eb;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-head::after{
  content:"";position:absolute;z-index:-1;right:-32px;bottom:-78px;
- width:220px;height:220px;border:34px solid #ef7a49;border-radius:50%;opacity:.3;
+ width:220px;height:220px;border:34px solid #e9707e;border-radius:50%;opacity:.3;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-heading{
  max-width:65ch;gap:16px;
@@ -76,27 +83,27 @@
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ds-card{
  border:2px solid #214532;background:#fff9ea;
- box-shadow:5px 5px 0 #eaa4b2;
+ box-shadow:5px 5px 0 #c6a5eb;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-card-grid>.li-ds-card:nth-child(3n + 2){
- background:#f5b5c3;box-shadow:5px 5px 0 #214532;
+ background:#c6a5eb;box-shadow:5px 5px 0 #214532;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-card-grid>.li-ds-card:nth-child(3n + 3){
- background:#ffdd64;box-shadow:5px 5px 0 #e97343;
+ background:#8bddb4;box-shadow:5px 5px 0 #e9707e;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ds-card[data-variant="inverse"]{
  background:#214532;color:#fff9ec;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ds-button{
  border:1.5px solid #214532;
- background:#ed7642;color:#182d23;
+ background:#e9707e;color:#182d23;
  box-shadow:3px 3px 0 #214532;
  min-height:44px;
  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
  font-weight:650;letter-spacing:.015em;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ds-button[data-variant="secondary"]{
- background:#ffe06a;color:#214532;
+ background:#8bddb4;color:#214532;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ds-button[data-variant="ghost"]{
  color:#214532;background:#fff8e7;box-shadow:none;
@@ -108,16 +115,16 @@
  border-width:3px;outline:none;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-atom-badge{
- background:#f1b0bf;color:#1b4030;border:1px solid #214532;
+ background:#c6a5eb;color:#1b4030;border:1px solid #214532;
  font:700 11px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;
  letter-spacing:.09em;text-transform:uppercase;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
  .li-ds-catalog-tools,.li-ds-learning-prompt,.li-flow-lesson-diagram
-){background:#ffe27d;border:2px solid #254735}
+){background:#8bddb4;border:2px solid #254735}
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
  .li-ds-catalog-aside,.li-ds-learning-response,.li-ds-account-note
-){background:#f9ced2;border:1px solid #294535}
+){background:#dfcef4;border:1px solid #294535}
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
  .li-ds-account-panel,.li-ds-inline-feedback,.li-ds-source-status,.li-flow-mini
 ){background:#fffaf0;border:1.5px solid #214532}
@@ -132,7 +139,7 @@
  border:1.5px solid #214532;background:#fff6df;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-week>span>i{
- background:#e57542;
+ background:#e9707e;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-week>span:nth-child(2n)>i{
  background:#214c37;
@@ -141,14 +148,14 @@
  background:#214c37;border-radius:0;transform:rotate(45deg) scale(.78);
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-dots i[data-highlight="true"]{
- background:#e96e42;
+ background:#e9707e;
 }
 /* Stamp-like perforated panel is reserved for featured 'related paths' cards. */
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-page-aside,
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="case"] .li-flow-page-aside,
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="collection"] .li-flow-page-aside{
  position:relative;isolation:isolate;
- border:8px solid #efb0c0;background:#fff6df;
+ border:8px solid #c6a5eb;background:#fff6df;
  outline:1.5px solid #214532;
  box-shadow:4px 4px 0 #214532;
 }
@@ -171,20 +178,20 @@
  opacity:.28;filter:saturate(.8) sepia(.1);
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-tint{
- background:linear-gradient(110deg,#fff4dceF 0%,#fff4dccc 44%,#ffdf7f9c 100%);
+ background:linear-gradient(110deg,#fff4dcef 0%,#fff4dccc 44%,#8bddb49c 100%);
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-intro{
- background:#ffdf65;border:2px solid #214532;padding:clamp(16px,2vw,30px);
- box-shadow:6px 6px 0 #f2a9b8;
+ background:#8bddb4;border:2px solid #214532;padding:clamp(16px,2vw,30px);
+ box-shadow:6px 6px 0 #c6a5eb;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-intro .li-atom-heading{
  font-family:Georgia,'Times New Roman',serif;letter-spacing:-.055em;
  color:#204432;font-size:clamp(38px,4.6vw,68px);line-height:1.03;font-weight:500;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-mirror .li-ds-home-mirror{
- border:10px solid #f3aebb;outline:2px solid #214532;
+ border:10px solid #c6a5eb;outline:2px solid #214532;
  box-shadow:6px 6px 0 #214532;
- background:#f5b0bf;
+ background:#c6a5eb;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-mirror .li-ds-home-mirror::after{
  content:"";position:absolute;inset:0;z-index:4;pointer-events:none;
@@ -196,7 +203,7 @@
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-mirror .li-ds-home-mirror-content{
  border:2px solid #204633;background:#fff6df;
- box-shadow:5px 5px 0 #e87646;
+ box-shadow:5px 5px 0 #e9707e;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-mirror .li-ds-home-mirror-content .li-atom-heading{
  font:500 clamp(22px,2.8vw,35px)/1.1 Georgia,'Times New Roman',serif;
@@ -209,7 +216,7 @@
  border-radius:0;background:#214532;color:#fff7e6;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-actions .li-ds-button:first-child{
- background:#ffda69;
+ background:#8bddb4;
 }
 @container lab-preview (max-width:440px){
  .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-head{
@@ -237,8 +244,8 @@
 /* v2 — layout compositions: same ScreenBody JSX/text/data/actions, different
    grid placement by actual screen task. Scoped to the opt-in Vintage Pop Lab. */
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"]{
- --pop-green:#204734;--pop-yellow:#ffe06e;--pop-orange:#eb7945;
- --pop-pink:#f3aec0;--pop-cream:#fff7e5;
+ --pop-green:#204734;--pop-yellow:#8bddb4;--pop-orange:#e9707e;
+ --pop-pink:#c6a5eb;--pop-cream:#fff7e5;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"]{
  grid-template-columns:minmax(0,.9fr) minmax(0,1.16fr);
@@ -255,7 +262,7 @@
  transform:rotate(0);
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro::after{
- content:"";width:72px;height:72px;border-radius:50%;background:#ef845a;
+ content:"";width:72px;height:72px;border-radius:50%;background:#e9707e;
  border:2px solid #214532;position:absolute;top:-24px;right:18px;
  box-shadow:6px 6px 0 #214532;pointer-events:none;
  animation:li-pop-orbit 5s ease-in-out infinite;
@@ -276,7 +283,7 @@
  min-height:190px;align-items:center;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-aside{
- border:2px solid #244634;background:#f6d6d4;padding:22px;
+ border:2px solid #244634;background:#dfcef4;padding:22px;
  box-shadow:5px 5px 0 #244634;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-aside .li-ds-button{
@@ -294,7 +301,7 @@
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-flow-card-grid>.li-ds-card:first-child,
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="search"] .li-flow-card-grid>.li-ds-card:first-child{
- grid-column:1/-1;min-height:175px;background:#ffe16b;
+ grid-column:1/-1;min-height:175px;background:#8bddb4;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-flow-card-grid>.li-ds-card:first-child{
  display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto auto;
@@ -309,10 +316,10 @@
  grid-column:1;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-ds-catalog-aside{
- background:#f8b8c5;transform:rotate(-.4deg);
+ background:#c6a5eb;transform:rotate(-.4deg);
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="catalog"] .li-ds-catalog-tools{
- border:2px solid #214532;background:#ffe176;
+ border:2px solid #214532;background:#8bddb4;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="guide"] .li-flow-card-grid{
  grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;
@@ -332,7 +339,7 @@
  .li-flow-page[data-page="case"],.li-flow-page[data-page="guideDetail"]
 ) .li-flow-page-aside{
  display:flex;align-items:center;flex-wrap:wrap;gap:12px;position:relative;
- padding:20px;background:#f3b6c3;
+ padding:20px;background:#c6a5eb;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
  .li-flow-page[data-page="lesson"],.li-flow-page[data-page="practice"],
@@ -349,7 +356,7 @@
  align-items:stretch;gap:22px;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-lesson-top{
- border:2px solid #214532;background:#f8b8c5;padding:28px;
+ border:2px solid #214532;background:#c6a5eb;padding:28px;
  align-content:center;max-width:none;
  box-shadow:6px 6px 0 #214532;
 }
@@ -357,7 +364,7 @@
  font:500 clamp(30px,3vw,47px)/1.05 Georgia,'Times New Roman',serif;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-lesson-diagram{
- display:flex;min-height:255px;gap:24px;box-shadow:6px 6px 0 #ee7848;
+ display:flex;min-height:255px;gap:24px;box-shadow:6px 6px 0 #e9707e;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="lesson"] .li-flow-card-grid{
  grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr));
@@ -376,11 +383,11 @@
  grid-column:1/-1;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] .li-ds-learning-prompt{
- grid-column:1;background:#f2b4c3;align-self:stretch;box-shadow:5px 5px 0 #214532;
+ grid-column:1;background:#c6a5eb;align-self:stretch;box-shadow:5px 5px 0 #214532;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] .li-ds-learning-response{
  grid-column:2;background:#fff9ed;border:2px solid #214532;
- box-shadow:5px 5px 0 #ee814d;
+ box-shadow:5px 5px 0 #e9707e;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="practice"] textarea:focus{
  background:#fffdf6;
@@ -395,7 +402,7 @@
  grid-column:1/-1;justify-self:end;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="research"] .li-flow-page-main>.li-flow-stack>.li-ds-card{
- background:#ffe176;
+ background:#8bddb4;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="research"] .li-flow-page-main .li-ds-card .li-flow-stack{
  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
@@ -425,13 +432,13 @@
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
  .li-flow-page[data-page="library"],.li-flow-page[data-page="dashboard"]
-) .li-flow-stat-grid>.li-ds-card:nth-child(1){background:#ffe06c}
+) .li-flow-stat-grid>.li-ds-card:nth-child(1){background:#8bddb4}
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
  .li-flow-page[data-page="library"],.li-flow-page[data-page="dashboard"]
-) .li-flow-stat-grid>.li-ds-card:nth-child(2){background:#efb1c0}
+) .li-flow-stat-grid>.li-ds-card:nth-child(2){background:#c6a5eb}
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
  .li-flow-page[data-page="library"],.li-flow-page[data-page="dashboard"]
-) .li-flow-stat-grid>.li-ds-card:nth-child(3){background:#f38b52}
+) .li-flow-stat-grid>.li-ds-card:nth-child(3){background:#e9707e}
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="dashboard"] .li-flow-page-main>.li-flow-stack{
  grid-template-columns:1fr;gap:24px;
 }
@@ -460,7 +467,7 @@
  grid-column:1/-1;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="collection"] .li-flow-page-main>.li-flow-stack>.li-ds-card:first-of-type{
- grid-column:1/-1;background:#ffe16e;
+ grid-column:1/-1;background:#8bddb4;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
  .li-flow-page[data-page="settings"],.li-flow-page[data-page="noteDetail"],
@@ -481,7 +488,7 @@
  max-width:none;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="settings"] .li-ds-account-panel{
- border:2px solid #214532;background:#fff9ec;padding:26px 32px;box-shadow:7px 7px 0 #f3b4c1;
+ border:2px solid #214532;background:#fff9ec;padding:26px 32px;box-shadow:7px 7px 0 #c6a5eb;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-page="settings"] .li-flow-setting{
  padding:20px 0;border-color:#214532;
@@ -518,7 +525,7 @@
  transform:translate(2px,2px);box-shadow:1px 1px 0 #214532;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page .li-ds-button[aria-pressed="true"]{
- background:#214532;color:#fff8e6;box-shadow:2px 2px 0 #ed7d4e;
+ background:#214532;color:#fff8e6;box-shadow:2px 2px 0 #e9707e;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page .li-ds-button svg,
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home .li-ds-button svg{

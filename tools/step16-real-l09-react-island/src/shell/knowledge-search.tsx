@@ -1,4 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
+import './home-catalog.css';
 import canonicalCatalog from '../../../../content/curriculum/legacy-catalog.v1.json';
 import searchableCatalog from '../../../../site/content-packs/course-catalog.json';
 import {openRoute,goBack,hasRoute} from './app-router.js';
@@ -264,18 +265,19 @@ function KnowledgeSearch(){
   app.liCatalog.openPath(path,false);
   setNavError('');
  };
- return <div data-li-react-screen="knowledge-search">
+ return <div data-li-react-screen="knowledge-search" className="li-react-knowledge-search">
   <Button variant="ghost" className="utility-back" onClick={goBack}>
    <span aria-hidden="true">←</span> {L("Quay lại","Back")}
   </Button>
-  <div className="kicker">{L("TÌM TRONG THƯ VIỆN","SEARCH THE LIBRARY")}</div>
+  <header className="search-lead"><div className="kicker">{L("TÌM TRONG THƯ VIỆN","SEARCH THE LIBRARY")}</div>
   <Heading level={1} role="headline">{L("Tra Cứu","Search")}</Heading>
   <Text role="body">{L("Tìm bằng tên, mã bài hoặc hỏi bằng câu tự nhiên. Li. chỉ dẫn đến nội dung bài thực sự có, không tự bịa đáp án.","Search by title, lesson ID or a natural-language question. Li. links to real lesson content instead of inventing answers.")}</Text>
-  <SearchField label={L("Bạn muốn tìm gì?","What would you like to explore?")} value={query} onQueryChange={changeQuery}
+  </header>
+   <div className="search-query-area"><SearchField label={L("Bạn muốn tìm gì?","What would you like to explore?")} value={query} onQueryChange={changeQuery}
     onSearch={()=>setSubmitCount(n=>n+1)}
    placeholder={L("Ví dụ: Tại sao khảo sát 1.000 người vẫn có thể sai?","For example: Why can a survey of 1,000 people be misleading?")}
-   clearLabel={L("Xóa tìm kiếm","Clear search")} submitLabel={L("Tìm kiếm","Search")}/>
-  <section className="surface" aria-label={L("Kết quả tra cứu","Search results")}>
+   clearLabel={L("Xóa tìm kiếm","Clear search")} submitLabel={L("Tìm kiếm","Search")}/></div>
+  <section className="search-results" aria-label={L("Kết quả tra cứu","Search results")}>
    <Heading level={2} role="titleMedium">{L("Kết quả tra cứu","Search results")}</Heading>
    {loadState==='error'&&query.trim()&&
     <InlineFeedback tone="info" message={L("Knowledge Base chưa khả dụng. Vẫn có thể tìm ngành, môn và bài đã phát hành trong danh mục có sẵn.","Knowledge Base is unavailable. You can still browse available fields, courses and released lessons.")}/>}
@@ -288,14 +290,14 @@ function KnowledgeSearch(){
      <InlineFeedback tone="info" message={response.status==='no_answer'?
       L("Chưa có bài có mục tiêu học trả lời được câu hỏi này. Thử hỏi cách khác hoặc tìm theo tên/mã bài.","No lesson outcome directly answers this question. Try different wording or a lesson ID."):
       L("Chưa tìm thấy bài hay khái niệm đã xác minh phù hợp.","No matching reviewed lesson or concept found.")}/>:
-     <div className="path-list" aria-live="polite">
+     <div className="li-search-result-list" aria-live="polite">
       <Text role="caption">{response.results.length} {L("kết quả","results")} · {response.status==='answerable'||response.status==='related_only'||response.status==='outcome_match'?
        L('Câu hỏi tự nhiên · phạm vi 3 bài Wave1','Natural-language search · 3 Wave1 lessons'):response.status==='catalog_match'?L('Khớp tên/mã bài trong danh mục','Catalog title/ID match'):response.status==='personal_match'?
         L('Bài học cá nhân trên staging + Knowledge Base','Personal staging lessons + knowledge base'):L('Knowledge Base canonical','Canonical knowledge base')}</Text>
       {response.results.map((record,index)=><motion.article key={record.kind+':'+record.id}
-        className="li-search-result" initial={reduced?false:{opacity:0,y:6}}
+        className={index===0?'li-search-result is-featured':'li-search-result'} initial={reduced?false:{opacity:0,y:6}}
         animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.17}}> 
-       {index===0&&<RelationMap record={record} locale={locale} onOpen={navigateTo}/>}
+       
        <ListRow title={record.title}
         description={(locale==='en'?(englishKind[record.kind]||'Knowledge item'):(kindCopy[record.kind]||'Mục kiến thức'))+' · '+(record.lessonId||record.id)+
          (record.contentState==='review_only'?L(' · đang duyệt',' · under review'):'')+
@@ -304,6 +306,7 @@ function KnowledgeSearch(){
         onActivate={record.kind==='Lesson'&&!!availableRoute(record.lessonId||record.id)?
          ()=>navigateTo(record.lessonId||record.id):
          catalogBrowsePaths.has(record.id)?()=>browseCatalog(record.id):undefined}/>
+        {index===0&&<RelationMap record={record} locale={locale} onOpen={navigateTo}/>}
        {record.answerability&&<div className="li-search-related">
         <Text role="support"><strong>{record.answerability.level==='direct'?L('Mục tiêu bài học phù hợp','Relevant learning outcome'):
          record.answerability.level==='outcome_match'?

@@ -163,7 +163,7 @@ async function loadLesson(id:string):Promise<EditorialLesson>{
  if(!m.contentClient?.getLesson)throw Error('CONTENT_PACK_CLIENT_UNAVAILABLE');
  return parseLesson(await m.contentClient.getLesson(id),id);
 }
-function inline(value:string):React.ReactNode[]{
+export function inline(value:string):React.ReactNode[]{
  const normalized=value.replace(/<\/?b>/gi,'**').replace(/<\/?i>/gi,'*')
   .replace(/\\_/g,'_').replace(/<[^>]+>/g,'');
  return normalized.split(/(\[[^\]]+\]\(https:\/\/[^)]+\)|\*\*[^*]+\*\*|\*[^*]+\*)/g)

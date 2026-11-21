@@ -22,6 +22,7 @@ import './vintage-pop-book.css';
 import './vintage-pop-scrapbook.css';
 import './bookworm-theme.css';
 import './bookworm-open-space.css';
+import './notebook-open-space.css';
 
 type LayoutKey='classic'|'split'|'cinematic'|'notebook'|'vintagePop'|'bookworm';
 type ViewMode='focus'|'gallery';
@@ -85,6 +86,7 @@ function Lab(){
  const stageRef=useRef<HTMLDivElement>(null);
  const [stageFullscreen,setStageFullscreen]=useState(false);
  const bookwormOpen=layout==='bookworm'&&mode==='focus'&&!compare&&viewport==='fluid';
+ const notebookOpen=layout==='notebook'&&mode==='focus'&&!compare&&viewport==='fluid';
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  const activeFlow=appLabFlows.find(item=>item.id===flow)!;
  const activeIndex=activeFlow.steps.indexOf(page);
@@ -174,10 +176,11 @@ function Lab(){
   data-visual-theme={style==='vintagePop'?'vintage-pop':style==='bookworm'?'bookworm':undefined}
   data-mini={mini?'true':'false'}
   data-open-space={style==='bookworm'&&!mini&&!compare&&viewport==='fluid'?'true':'false'}
+  data-notebook-bleed={style==='notebook'&&!mini&&!compare&&viewport==='fluid'?'true':'false'}
   aria-label={label(target)+' / '+style}>
   <header className="li-ui-lab-preview-label">
    <span>{label(target)}</span><span>{layoutChoices.find(item=>item.id===style)?.label}</span>
-   {stageFullscreen&&!mini&&style==='bookworm'&&<Button variant="ghost" onClick={toggleStageFullscreen}>
+   {stageFullscreen&&!mini&&(style==='bookworm'||style==='notebook')&&<Button variant="ghost" onClick={toggleStageFullscreen}>
     {t('Thoát toàn màn hình','Exit fullscreen')} <LiIcon name="arrow-left" size={15}/>
    </Button>}
    {mini?<Button variant="ghost" onClick={()=>{choose(target);setMode('focus');}}> 
@@ -188,7 +191,8 @@ function Lab(){
   </div>
  </motion.section>;
  return <main className="li-ui-lab" lang={locale} data-li-react-ui-lab="mounted"
-  data-bookworm-open={bookwormOpen?'true':'false'}>
+  data-bookworm-open={bookwormOpen?'true':'false'}
+  data-notebook-open={notebookOpen?'true':'false'}>
   <header className="li-ui-lab-header">
    <div className="li-ui-lab-intro">
     <span className="li-ui-lab-eyebrow">li. / DESIGN SYSTEM / UI EXPERIMENTS</span>
@@ -255,7 +259,7 @@ function Lab(){
        <option value="1440">Desktop · 1440</option>
       </select>
      </div>
-     {layout==='bookworm'&&mode==='focus'&&!compare&&
+     {(layout==='bookworm'||layout==='notebook')&&mode==='focus'&&!compare&&
       <Button variant="secondary" onClick={toggleStageFullscreen}>
        <LiIcon name="book-open" size={17}/>
        {stageFullscreen?t('Thu nhỏ','Leave fullscreen'):t('Toàn màn hình','Fullscreen')}
@@ -275,6 +279,7 @@ function Lab(){
     </nav>
     <div className="li-ui-lab-stage" ref={stageRef}
      data-bookworm-open={bookwormOpen?'true':'false'}
+     data-notebook-open={notebookOpen?'true':'false'}
      data-bookworm-fullscreen={stageFullscreen?'true':'false'}
      data-gallery={mode==='gallery'?'true':'false'}
      data-compare={compare&&mode==='focus'?'true':'false'}>

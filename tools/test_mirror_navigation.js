@@ -232,9 +232,31 @@ for(const item of draftItems){
 const mixStart=html.indexOf("const mirrorDrafts=");
 const mixEnd=html.indexOf("function renderMirrorItem(){",mixStart);
 assert(mixStart>=0&&mixEnd>mixStart,"Draft hook adapter must load before Mirror render");
-const testMix={window:packContext.window,scenarios:scenarios.slice()};
-vm.runInNewContext(html.slice(mixStart,mixEnd),testMix);
+const makeMirrorMix=(seed)=>{
+ let state=seed;
+ const random=()=>((state=(Math.imul(state,1664525)+1013904223)>>>0)/4294967296);
+ const mix={window:packContext.window,scenarios:scenarios.slice(),
+  Math:{random,floor:Math.floor,ceil:Math.ceil}};
+ vm.runInNewContext(html.slice(mixStart,mixEnd),mix);
+ return mix;
+};
+const testMix=makeMirrorMix(1);
 assert.equal(testMix.scenarios.length,23,"3 existing problems + 3 published hooks + 17 draft hooks");
+// Each app load has a new discipline-aware playlist. Check stable identity,
+// source/route parity, different orders, no adjacent or wraparound repeats.
+const signature=item=>item.lessonId||item.key||item.question;
+const expectedItems=[...scenarios.map(signature),...draftItems.map(x=>x.id)].sort();
+const observedOrders=new Set();
+for(let seed=1;seed<=32;seed++){
+ const shuffled=makeMirrorMix(seed).scenarios;
+ assert.deepEqual(shuffled.map(signature).sort(),expectedItems,"No mirror question lost or duplicated");
+ const fields=shuffled.map(item=>item.fieldId);
+ assert(fields.every((field,i)=>i===0||field!==fields[i-1]),
+  "Adjacent questions must use different disciplines");
+ assert.notEqual(fields[0],fields.at(-1),"Carousel wraparound must change discipline");
+ observedOrders.add(shuffled.map(signature).join("|"));
+}
+assert(observedOrders.size>1,"Mirror discipline sequence changes between app loads");
 const draftMirrors=testMix.scenarios.filter(x=>x.previewState==="draft");
 assert.equal(draftMirrors.length,17);
 assert(draftMirrors.every(x=>x.type==="hook"&&x.lessonRoute==="research"),
@@ -242,7 +264,9 @@ assert(draftMirrors.every(x=>x.type==="hook"&&x.lessonRoute==="research"),
 assert.equal(testMix.scenarios.filter(x=>x.type==="hook"&&x.previewState!=="draft").length,3);
 const problemStart=html.indexOf("function liCurrentProblem(){");
 const problemEnd=html.indexOf("function liChooseResearchBranch",problemStart);
-const draftResearch={scenarios:testMix.scenarios,qIndex:1};
+const draftResearch={scenarios:testMix.scenarios,
+ qIndex:testMix.scenarios.findIndex(item=>item.lessonId==="L03-1-1")};
+assert(draftResearch.qIndex>=0,"Preview lesson remains reachable after shuffle");
 vm.runInNewContext(html.slice(problemStart,problemEnd),draftResearch);
 assert.equal(draftResearch.liCurrentProblem().lessonId,"L03-1-1",
  "Draft Home CTA must preserve its own lesson-specific Research context");

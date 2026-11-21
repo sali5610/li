@@ -711,3 +711,14 @@
 /* Catalog root waits for decoded transparent portal frames before mounting cards. */
 [data-li-react-screen="catalog"] .catalog-group-loading{display:grid;place-items:center;
  min-height:min(48vh,360px);width:100%;border-bottom:1px solid var(--discovery-rule)}
+
+/* Shared-element field entry: the arched card crop becomes the destination hero. */
+.li-catalog-field-shared-hero{
+ position:fixed;z-index:11001;overflow:hidden;isolation:isolate;
+ pointer-events:none;box-sizing:border-box;
+ will-change:left,top,width,height,border-radius;background:var(--paper);
+}
+.li-catalog-field-shared-hero img{
+ position:absolute;display:block;max-width:none;max-height:none;
+ object-fit:fill;will-change:left,top,width,height;
+}

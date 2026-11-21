@@ -43,6 +43,7 @@ jobs:
           (cd ../.. && node tools/test_buddy.js && node tools/test_quotes.js && node tools/test_laoly_react_parity.cjs)
           (cd ../.. && node tools/test_navigation.js && node tools/test_react_router_locale.cjs && node tools/test_react_router_actions.cjs)
           (cd ../.. && node tools/test_mirror_navigation.js && node tools/test_library_case_review.cjs && node tools/test_inquiry_react_actions.cjs)
+          node ../../tools/test_react_guide_mobile_grid.cjs
           node ../../tools/test_published_lesson_parity.mjs
           npm run extract
           npm run test:sync

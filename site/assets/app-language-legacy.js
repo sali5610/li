@@ -917,6 +917,7 @@ window.LI_LEGACY_EN={
   "LÃO LÝ": "ELDER LI",
   "Lão gọi bạn thế nào?": "How should Elder Li address you?",
   "Dấu trang": "Bookmarks",
+  "Xem tất cả Dấu trang": "View all bookmarks",
   "Bài học và câu hỏi đã lưu.": "Saved lessons and questions.",
   "Tiếp tục bài học hoặc tình huống đã xem gần đây.": "Continue recently viewed lessons or scenarios.",
   "Những bài học và câu hỏi đã lưu để xem lại.": "Lessons and questions you saved for later."

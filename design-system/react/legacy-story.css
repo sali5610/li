@@ -30,3 +30,19 @@ body{margin:0;background:var(--cream);color:var(--ink)}
 @media(max-width:420px){.li-legacy-story{padding:var(--li-space-2)}
  .li-legacy-gallery-sample{padding:var(--li-space-3)}
  .li-legacy-story-two{gap:var(--li-space-2)}}
+
+/* Shared left/right speech tails are visible in the Component Library specimen. */
+.li-legacy-story-chat-pair{
+ display:flex;flex-direction:column;gap:24px;
+ padding:8px 16px;min-width:0;align-items:flex-start
+}
+.li-legacy-story-chat-pair>.li-legacy-chat-bubble{
+ max-width:85%
+}
+.li-legacy-story-chat-pair>.li-legacy-chat-bubble:last-child{
+ align-self:flex-end
+}
+@media(max-width:420px){
+ .li-legacy-story-chat-pair{padding:8px 14px}
+ .li-legacy-story-chat-pair>.li-legacy-chat-bubble{max-width:95%}
+}

@@ -6,6 +6,9 @@
  box-shadow:4px 4px 0 var(--wood);
  font:var(--li-weight-750) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);
  overflow-wrap:anywhere;transition:transform .13s ease,box-shadow .13s ease}
+.li-ds-button>span{display:inline-flex;align-items:center;justify-content:center;
+ gap:var(--li-space-2);min-width:0;max-width:100%;flex-wrap:wrap;text-align:center}
+.li-ds-button>span>svg{flex:0 0 auto}
 .li-ds-button[data-variant="secondary"]{background:var(--paper);color:var(--moss);border-color:var(--moss)}
 .li-ds-button[data-variant="ghost"]{background:transparent;color:var(--moss);border-color:var(--moss);box-shadow:none}
 .li-ds-button:hover:not(:disabled){filter:brightness(.96)}
@@ -22,8 +25,10 @@
 .li-ds-card[data-variant="tinted"]{background:var(--paper-2)}
 .li-ds-card[data-variant="inverse"]{background:var(--moss);color:var(--cream)}
 .li-ds-card[data-variant="flat-study"]{background:var(--paper-2);box-shadow:none}
-.li-ds-card :is(h1,h2,h3){margin:0 0 var(--li-space-3);color:inherit;
+/* Let the actual Heading role own hierarchy, including inside a Card. */
+.li-ds-card :is(h1,h2,h3):not(.li-atom-heading){margin:0 0 var(--li-space-3);color:inherit;
  font:600 var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial)}
+.li-ds-card .li-atom-heading{margin:0;color:inherit}
 .li-ds-card p{margin:0;font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
 @media(max-width:599px){.li-ds-card{padding:var(--li-space-4)}}
 @media(prefers-reduced-motion:reduce){.li-ds-button,.li-ds-button-spinner{animation:none;transition:none}}

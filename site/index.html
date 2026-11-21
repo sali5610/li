@@ -1041,7 +1041,8 @@ window.liInquiryFlow=Object.freeze({
   if(!sc)return null;
   const c=sc.localized?.[window.liLanguage?.get?.()==="en"?"en":"vi"]||sc;
   return {question:c.question,branches:[...(c.branches||[])],
-   observed:c.observed,unknown:c.unknown,feedback:liResearchFeedback};
+   observed:c.observed,unknown:c.unknown,feedback:liResearchFeedback,
+   caseId:sc.caseKey||(sc.lessonId==="L09-1-2"&&sc.type!=="hook"?"sampling-bias-90":null)};
  },
  chooseBranch:index=>{
   if(!liInquiryAllowed()||!Number.isInteger(index))return false;

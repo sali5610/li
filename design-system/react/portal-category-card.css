@@ -38,3 +38,42 @@
 @media(max-width:359px){
  .li-portal-category-card{grid-template-columns:minmax(0,53%) minmax(0,1fr)}
 }
+
+/* One continuous portal-entry motion: the overlay begins at the tapped
+ * image's exact screen rect, advances toward the viewer, then dissolves to
+ * paper so the next section reads as arriving on the other side. */
+.li-portal-enter-layer{position:fixed;inset:0;z-index:11000;overflow:hidden;
+ pointer-events:all;isolation:isolate;background:transparent}
+.li-portal-enter-layer::before,.li-portal-enter-layer::after{
+ content:"";position:absolute;inset:0;pointer-events:none}
+.li-portal-enter-layer::before{z-index:0;background:var(--forest);
+ animation:li-portal-enter-shadow 640ms ease-in both}
+.li-portal-enter-layer::after{z-index:2;background:var(--paper);
+ animation:li-portal-enter-reveal 640ms ease-in-out both}
+.li-portal-enter-frame{position:fixed;z-index:1;margin:0;
+ transform-origin:50% 50%;will-change:transform;
+ animation:li-portal-enter-zoom 640ms cubic-bezier(.32,.08,.66,.98) both}
+.li-portal-enter-frame .li-portal-category-placeholder{position:relative}
+.li-portal-enter-frame .li-portal-category-placeholder::before{
+ content:"";position:absolute;inset:0;
+ background:radial-gradient(ellipse at 50% 55%,var(--sage),var(--olive) 68%,var(--forest));
+ animation:li-portal-enter-depth 640ms ease-in both}
+@keyframes li-portal-enter-zoom{
+ 0%{transform:translate3d(0,0,0) scale(1);filter:brightness(1)}
+ 100%{transform:translate3d(var(--li-portal-travel-x),var(--li-portal-travel-y),0)
+  scale(var(--li-portal-travel-scale));filter:brightness(1.06)}
+}
+@keyframes li-portal-enter-shadow{
+ 0%,22%{opacity:0}75%{opacity:.12}100%{opacity:.14}
+}
+@keyframes li-portal-enter-depth{
+ 0%,20%{opacity:0}85%,100%{opacity:1}
+}
+@keyframes li-portal-enter-reveal{
+ 0%,76%{opacity:0}100%{opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+ .li-portal-enter-layer,.li-portal-enter-layer::before,.li-portal-enter-layer::after,
+ .li-portal-enter-frame,.li-portal-enter-frame .li-portal-category-placeholder::before{
+  animation:none!important;transition:none!important}
+}

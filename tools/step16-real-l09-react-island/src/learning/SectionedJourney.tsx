@@ -370,7 +370,6 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  const methodData=attempt.methodAttempts?.[method];
  const savedMethod=persisted.methodAttempts?.[method];
  const answersSaved=persisted.draft.filter(x=>x.trim().length>=MIN).length;
- const rated=persisted.ratings.filter(x=>x!==null).length;
  const percent=persisted.reviewed?100:persisted.submitted?75:
   Math.round(answersSaved/4*50);
  const history=persisted.attemptHistory||[];
@@ -427,6 +426,9 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     </details>}
    </div>
   </aside>
+  {sync==='conflict'&&<p className="li-learning-error" role="alert">{vi?
+   'Tiến độ bài này đang có xung đột đồng bộ. Kiểm tra bản lưu trước khi học tiếp.':
+   'This lesson has a sync conflict. Review the saved version before continuing.'}</p>}
   {error&&!locked&&<p className="li-learning-error" role="alert">{error}</p>}
   {locked&&<div className="li-learning-recovery" role="alert">
    <Text role="support">{error|| (vi?'Chưa lưu được thay đổi.':'Could not save changes.')}</Text>

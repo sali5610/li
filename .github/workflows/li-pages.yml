@@ -188,10 +188,14 @@ jobs:
           new='<b>Đồng bộ dữ liệu cá nhân</b><p class="small" id="li-cloud-status" role="status" aria-live="polite">Đang kết nối Neon để đồng bộ dữ liệu theo tài khoản…</p>'
           assert html.count(old)==1,'Settings sync description changed'
           html=html.replace(old,new,1)
+          # The iOS Workbox precache intentionally ignores the legacy ?v=
+          # query parameter. An actual build-id parameter forces old workers to
+          # fetch the new app JS while the replacement worker takes control.
           shell=('<div id="li-staging-auth-root" tabindex="-1" '
             'role="region" aria-label="Đăng nhập li.">'
             '<p role="status">Đang xác minh quyền truy cập…</p></div>'
-            '<script type="module" src="./assets/staging-auth-gate.js?v=invite-shell-1"></script>')
+            '<script type="module" src="./assets/staging-auth-gate.js?li_build='
+            +os.environ['GITHUB_SHA'][:12]+'"></script>')
           html=html.replace('</body></html>',shell+'</body></html>',1)
           index.write_text(html,encoding='utf-8')
           for path in ['auth-pilot','l09-preview']:

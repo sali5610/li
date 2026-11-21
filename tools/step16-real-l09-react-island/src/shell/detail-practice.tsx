@@ -384,21 +384,20 @@ export function GuideDetail(){
  const dueFuture=isDuePreparing&&view.dueAt!==null&&view.dueAt>Date.now();
  const ctaKind=preparing&&['faded','hide','resume','loci'].includes(view.mode)?'next':'check';
  return <div className="section-shell li-react-spell-detail" data-li-react-screen="guide-detail">
-  <div className="action-row">
-   {lessonRoute?<Button variant="secondary" onClick={()=>openRoute(lessonRoute)}
-    className="library-back-link">
-    <LiIcon name="chevron-left" size={18}/> {copy('Về bài học','Back to lesson')}
-   </Button>:personalRoute?<Button variant="secondary" onClick={()=>openRoute(personalRoute)}
-    className="library-back-link">
-    <LiIcon name="chevron-left" size={18}/> {copy('Về bài học','Back to lesson')}
-   </Button>:null}
+  <nav className="spell-detail-navigation" aria-label={copy('Điều hướng Thần Chú','Spell navigation')}>
    <Button variant="ghost" onClick={()=>openRoute('guide')} className="library-back-link">
     <LiIcon name="chevron-left" size={18}/> {copy('Sổ Tay Thần Chú','Learning Spells')}
    </Button>
-  </div>
-  <div className="kicker">{view.active} · {tr(method.category)}</div>
-  <Heading level={1} role="headline" className="display-title">{method.title}</Heading>
-  <Text role="body" className="intro">{method.original}</Text>
+   {(lessonRoute||personalRoute)&&<Button variant="ghost"
+    onClick={()=>openRoute((lessonRoute||personalRoute)!)} className="spell-linked-lesson">
+    {copy('Mở bài học liên quan','Open related lesson')} <LiIcon name="arrow-right" size={18}/>
+   </Button>}
+  </nav>
+  <header className="spell-detail-heading">
+   <div className="kicker">{view.active} · {tr(method.category)}</div>
+   <Heading level={1} role="headline" className="display-title">{method.title}</Heading>
+   <Text role="body" className="intro">{method.original}</Text>
+  </header>
   <div className="spell-tabs" role="tablist" aria-label={copy('Chế độ Thần Chú','Spell mode')}
    onKeyDown={event=>{
     const next=['ArrowLeft','Home'].includes(event.key)?'guide':
@@ -413,7 +412,7 @@ export function GuideDetail(){
   </div>
   {view.tab==='guide'?
    <div role="tabpanel" aria-labelledby="li-react-spell-tab-guide" className="editorial-grid">
-    <Card variant="tinted" className="li-react-spell-explainer">
+    <section className="li-react-spell-explainer li-react-spell-manual">
      <div className="kicker">I · {copy('KHI DÙNG','WHEN TO USE')}</div>
      <Heading level={2} role="titleLarge">{method.purpose}</Heading>
      <div className="section-rule"/>
@@ -422,17 +421,17 @@ export function GuideDetail(){
       <span className="path-num">{String(index+1).padStart(2,'0')}</span>
       <Text role="body">{text}</Text>
      </div>)}</div>
-    </Card>
-    <Card variant="raised" className="li-react-spell-explainer">
+    </section>
+    <aside className="li-react-spell-explainer li-react-spell-aside">
      <div className="kicker">III · {copy('GIẢI CHÚ','APPLICATION')}</div>
      <Heading level={2} role="titleMedium">{copy('Dùng thế nào cho đúng?','How to apply it?')}</Heading>
      <Text role="body">{SPELL_GUIDANCE[view.active]?.[en()?'noteEn':'noteVi']}</Text>
      <div className="kicker">IV · {copy('LƯU Ý','WATCH OUT')}</div>
      <Text role="support">{copy('Hoàn thành tương tác không có nghĩa đã thông thạo. Hãy đối chiếu kết quả trước khi tự đánh giá.',
       'Completing an interaction is not proof of mastery. Check the feedback before self-rating.')}</Text>
-     <Button variant="secondary" onClick={()=>setTab('practice')}>
-      {copy('Thử thi triển','Try the practice')}</Button>
-    </Card>
+     <Button variant="primary" onClick={()=>setTab('practice')}>
+      {copy('Thử thi triển','Try the practice')} <LiIcon name="arrow-right" size={17}/></Button>
+    </aside>
    </div>:
    <section role="tabpanel" aria-labelledby="li-react-spell-tab-practice"
     data-li-react-t03-stage={view.active==='T03'?t03Stage:undefined}
@@ -602,7 +601,9 @@ export function ConfirmNoteAction({label,description,onConfirm,iconOnly=false,da
     <div className="action-row">
      <button ref={cancel} className="action alt" type="button" onClick={dismiss}>
       {copy('Hủy','Cancel')}</button>
-     <Button variant="primary" onClick={()=>{if(onConfirm())setAsking(false);}}>
+     <Button variant={danger?'secondary':'primary'}
+       className={danger?'library-confirm-danger':undefined}
+       onClick={()=>{if(onConfirm())setAsking(false);}}>
       {confirmLabel|| (danger?copy('Xóa ghi chép','Delete note'):copy('Khôi phục','Restore'))}</Button>
     </div>
    </div>

@@ -16,7 +16,9 @@ import type {LessonPhase} from '../shell/app-store.js';
 import {createLessonPhaseActor} from './phase-machine.js';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
-import {LessonBookmark,LessonMentor,LessonSectionIndex,L09Figures,LessonSources,openLessonSpell} from './LessonDetailParity.js';
+import {useDiscoveryLocale} from '../shell/discovery-locale.js';
+import {useStepScreen} from './step-screen.js';
+import {LessonBookmark,LessonMentor,L09Figures,LessonSources,openLessonSpell} from './LessonDetailParity.js';
 import {RelatedLessons} from './RelatedLessons.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
@@ -57,6 +59,7 @@ function statusText(status:SyncState,vi:boolean){
 
 export function LearningJourney({ports}:{ports:LearningPorts}){
  const reduced=useReducedMotion();
+ const appLocale=useDiscoveryLocale();
  const [attempt,setAttempt]=useState<Attempt|null>(null);
  const [phaseActor]=useState(createLessonPhaseActor);
  const subscribePhase=useCallback((notify:()=>void)=>{
@@ -65,6 +68,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  },[phaseActor]);
  const phase=useSyncExternalStore(subscribePhase,
   ()=>phaseActor.getSnapshot().value as Phase);
+ useStepScreen(phase,'L09-1-2');
  useEffect(()=>()=>{phaseActor.stop();},[phaseActor]);
  useEffect(()=>{
   appUiStore.getState().setLessonPhase(phase);
@@ -275,12 +279,6 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    phaseActor.send({type:'OPEN',phase:'progress'});
   }
  }
- function switchLocale(locale:'vi'|'en'){
-  if(!attempt||locked||saving||attempt.locale===locale)return;
-  const global=window as Window&{liLanguage?:{set?:(value:string)=>void}};
-  global.liLanguage?.set?.(locale);
-  void save({...attempt,locale});
- }
  function clearDraft(){
   if(!attempt||locked||saving||attempt.submitted)return;
   if(!window.confirm(exact.langs[attempt.locale].resetConfirm))return;
@@ -300,6 +298,12 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   phaseActor.send({type:'OPEN',phase:next});
   if(phaseActor.getSnapshot().value===next)setError('');
  }
+ // Settings is the only app language control. Saved lesson locale follows it.
+ useEffect(()=>{
+  if(busy||!attempt||attempt.locale===appLocale||locked||saving||
+     pendingWrites.current>0)return;
+  void save({...attempt,locale:appLocale});
+ },[appLocale,attempt?.locale,busy,locked,saving]);
  if(busy)return <section className="li-learning-journey" aria-busy="true" role="status">
   Đang xác minh quyền học và tải tiến độ…
  </section>;
@@ -312,7 +316,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   </div>
  </section>;
 
- const vi=attempt.locale==='vi',content=exact.langs[attempt.locale];
+ const vi=appLocale==='vi',content=exact.langs[appLocale];
  const labels:Record<Phase,string>=vi?
   {read:'Đọc bài',guided:'Thử áp dụng',practice:'Làm bài',feedback:'Đối chiếu',progress:'Tiến độ'}:
   {read:'Learn',guided:'Try it',practice:'Practice',feedback:'Feedback',progress:'Progress'};
@@ -326,7 +330,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  const saveMessage=locked?(vi?'Lưu thất bại':'Save failed'):
   saving?(vi?'Đang lưu…':'Saving…'):statusText(sync,vi);
  const transition=reduced?{duration:0}:{duration:0.18,ease:'easeOut' as const};
- return <section className="li-learning-journey" data-li-react-journey="L09-1-2" lang={attempt.locale}
+ return <section className="li-learning-journey" data-li-react-journey="L09-1-2" lang={appLocale}
   data-li-lesson-phase={phase} data-li-lesson-submitted={attempt.submitted?'true':'false'}
   data-li-lesson-reviewed={attempt.reviewed?'true':'false'}>
   <header className="li-learning-header">
@@ -336,50 +340,11 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Text role="body">{content.intro}</Text>
    </div>
    <div className="li-learning-header-actions">
-    <LessonBookmark id="L09-1-2" locale={attempt.locale}/>
-    <div className="li-learning-language" role="group" aria-label={vi?'Ngôn ngữ bài học':'Lesson language'}>
-     {(['vi','en'] as const).map(lang=><Button key={lang}
-      variant={attempt.locale===lang?'primary':'secondary'}
-      aria-pressed={attempt.locale===lang} disabled={saving||locked}
-      onClick={()=>switchLocale(lang)}>{lang.toUpperCase()}</Button>)}
-    </div>
+    <LessonBookmark id="L09-1-2" locale={appLocale}/>
    </div>
   </header>
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
-  <nav className="li-learning-steps" aria-label={vi?'Các bước học':'Learning steps'}>
-   {sequence.map((item,index)=><Button key={item} variant={phase===item?'primary':'ghost'}
-    aria-current={phase===item?'step':undefined}
-    disabled={((item==='feedback'||item==='progress')&&!attempt.submitted)||
-     (item==='progress'&&!attempt.reviewed)}
-    onClick={()=>go(item)}><span className="li-learning-step-index">{String(index+1).padStart(2,'0')}</span><span>{labels[item]}</span></Button>)}
-  </nav>
-  <details className="li-learning-extras">
-   <summary>{vi?'Mục lục & Thần Chú gợi ý':'Outline & optional study spells'}</summary>
-  <LessonSectionIndex id="L09-1-2" locale={attempt.locale}
-   links={content.sidebarLinks} onPhase={go} submitted={attempt.submitted}/>
-  <aside className="li-lesson-spells" aria-label={vi?'Thần Chú gợi ý cho bài học':'Suggested study spells'}>
-   <div className="li-lesson-spell-header">
-    <Heading level={2} role="titleSmall">{vi?'Thần Chú có thể thử':'Spells to try'}</Heading>
-    <Text role="support">{vi?
-     'Gợi ý theo dạng bài · Không bắt buộc · Chưa duyệt ghép phương pháp.':
-     'Optional task-based suggestions · Lesson method fit not yet reviewed.'}</Text>
-   </div>
-   <div className="li-lesson-spell-list">
-    {spellSuggestions.lessons['L09-1-2'].map((spell,index)=>
-     <div className="li-lesson-spell-item" key={spell.techniqueId}>
-      <strong>{spell.shortId} · {vi?spell.name.vi:spell.name.en}</strong>
-      <Text role="support">{vi?spell.why.vi:spell.why.en}</Text>
-      <Button variant="secondary" className="li-lesson-spell-action"
-       onClick={()=>openLessonSpell('L09-1-2',spell.shortId,index===0)}
-       disabled={saving||locked}
-       aria-label={(vi?'Thử Thần Chú ':'Try spell ')+spell.shortId}>
-       {vi?(index?'Xem chú bổ trợ':'Thử thi triển'):
-        (index?'See optional spell':'Try this spell')}
-      </Button>
-     </div>)}
-   </div>
-  </aside>
-  </details>
+
   <div className="li-learning-save">
    <Progress label={accessibleProgress} value={percent}/>
    <SaveStatus state={saveViewState} message={saveMessage}
@@ -407,7 +372,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   </div>}
   <motion.div key={phase} initial={reduced?false:{opacity:0,x:12,rotateY:-1}}
    animate={{opacity:1,x:0,rotateY:0}} transition={transition} className="li-learning-current">
-   <StudyBookFolio phase={phase} steps={sequence} locale={attempt.locale}/>
+   <StudyBookFolio phase={phase} steps={sequence} locale={appLocale}/>
    {phase==='read'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-read">
     <Heading level={2} id="li-learn-read" role="titleLarge">{content.theoryTitle}</Heading>
     <Text>{strip(content.theoryLead)}</Text>
@@ -424,7 +389,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Text role="support">{strip(content.limit)}</Text>
     <Heading level={3} role="titleMedium">{content.goalsTitle}</Heading>
     <ul>{content.goals.map((goal:string,i:number)=><li key={i}>{goal}</li>)}</ul>
-    <Button onClick={()=>go('guided')}>{vi?'Thử áp dụng':'Try an example'}</Button>
+    <Button onClick={()=>go('guided')}>{vi?'Tiếp: Thử áp dụng':'Next: Guided example'} →</Button>
    </Card>}
    {phase==='guided'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-guided">
     <Heading level={2} id="li-learn-guided" role="titleLarge">{content.exTitle}</Heading>
@@ -436,7 +401,32 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Text role="support">{content.guidedSaveNote}</Text>
     <details className="li-learning-hint"><summary>{vi?'Xem gợi ý phân tích':'See analysis hint'}</summary>
      <Text>{strip(content.exHelp)}</Text></details>
-    <Button onClick={()=>go('practice')}>{vi?'Làm bài độc lập':'Independent practice'}</Button>
+    <details className="li-learning-extras">
+       <summary>{vi?'Thần Chú gợi ý':'Optional study methods'}</summary>
+      <aside className="li-lesson-spells" aria-label={vi?'Thần Chú gợi ý cho bài học':'Suggested study spells'}>
+       <div className="li-lesson-spell-header">
+        <Heading level={2} role="titleSmall">{vi?'Thần Chú có thể thử':'Spells to try'}</Heading>
+        <Text role="support">{vi?
+         'Gợi ý theo dạng bài · Không bắt buộc · Chưa duyệt ghép phương pháp.':
+         'Optional task-based suggestions · Lesson method fit not yet reviewed.'}</Text>
+       </div>
+       <div className="li-lesson-spell-list">
+        {spellSuggestions.lessons['L09-1-2'].map((spell,index)=>
+         <div className="li-lesson-spell-item" key={spell.techniqueId}>
+          <strong>{spell.shortId} · {vi?spell.name.vi:spell.name.en}</strong>
+          <Text role="support">{vi?spell.why.vi:spell.why.en}</Text>
+          <Button variant="secondary" className="li-lesson-spell-action"
+           onClick={()=>openLessonSpell('L09-1-2',spell.shortId,index===0)}
+           disabled={saving||locked}
+           aria-label={(vi?'Thử Thần Chú ':'Try spell ')+spell.shortId}>
+           {vi?(index?'Xem chú bổ trợ':'Thử thi triển'):
+            (index?'See optional spell':'Try this spell')}
+          </Button>
+         </div>)}
+       </div>
+      </aside>
+      </details>
+    <Button onClick={()=>go('practice')}>{vi?'Tiếp: Làm bài':'Next: Practice'} →</Button>
    </Card>}
    {phase==='practice'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-practice">
     <Heading level={2} id="li-learn-practice" role="titleLarge">{content.challengeTitle}</Heading>
@@ -460,7 +450,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      <Button disabled={locked||saving} onClick={()=>void submit()}>{content.submit}</Button>
      <Button variant="secondary" disabled={locked||saving} onClick={clearDraft}>{content.clear}</Button>
     </div>:
-     <Button onClick={()=>go('feedback')}>{vi?'Xem đối chiếu':'See feedback'}</Button>}
+     <Button onClick={()=>go('feedback')}>{vi?'Tiếp: Đối chiếu':'Next: Feedback'} →</Button>}
    </Card>}
    {phase==='feedback'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-feedback">
     <Heading level={2} id="li-learn-feedback" role="titleLarge">{content.answerTitle}</Heading>
@@ -492,13 +482,13 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
       </select>
      </div>)}
     </div>
-    <AiFeedbackPanel id="L09-1-2" locale={attempt.locale}
+    <AiFeedbackPanel id="L09-1-2" locale={appLocale}
      answers={attempt.submission??attempt.draft}
      openQuestionIndices={feedbackPolicy.lessons['L09-1-2'].modes.flatMap((mode,index)=>mode==='open'?[index]:[])}/>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
-     locale={attempt.locale} onReviewTheory={()=>go('read')}/>
+     locale={appLocale} onReviewTheory={()=>go('read')}/>
     <Text role="support">{vi?'Tự chấm theo rubric, không phải điểm tự động.':'Self-review, not automatic grading.'}</Text>
-    {attempt.reviewed?<Button onClick={()=>go('progress')}>{labels.progress}</Button>:
+    {attempt.reviewed?<Button onClick={()=>go('progress')}>{vi?'Tiếp: Tiến độ':'Next: Progress'} →</Button>:
      <Button disabled={locked||saving} onClick={()=>void finish()}>{content.saveReview}</Button>}
    </Card>}
    {phase==='progress'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-progress">
@@ -508,7 +498,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Text>{vi?'Đây là một lượt học đã lưu, không phải chứng nhận thông thạo.':
      'This is one saved learning attempt, not a mastery certificate.'}</Text>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
-     locale={attempt.locale} onReviewTheory={()=>go('read')}/>
+     locale={appLocale} onReviewTheory={()=>go('read')}/>
     <Text role="support">{content.scoreLabel}: {attempt.ratings.reduce<number>((n,x)=>n+(x??0),0)} / 8</Text>
     <T02ReviewEntry lessonId="L09-1-2" vi={vi} disabled={locked||saving}
      onOpen={()=>{if(!openLessonSpell('L09-1-2','T02',true))
@@ -521,11 +511,16 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     </Button>
    </Card>}
   </motion.div>
-  <L09Figures locale={attempt.locale} copy={content}/>
-  <LessonSources id="L09-1-2" locale={attempt.locale} copy={content}
-   sources={lesson09.sources} subject={lesson09.hierarchy.field.title}
-   conceptTitle={content.theoryTitle} onSearch={ports.search.openSearch}/>
-  <RelatedLessons id="L09-1-2" locale={attempt.locale}/>
-  <LessonMentor id="L09-1-2" locale={attempt.locale}/>
+  {phase==='read'&&<section className="li-lesson-step-resources" aria-label={vi?'Minh họa và nguồn':'Illustrations and sources'}>
+   <L09Figures locale={appLocale} copy={content}/>
+   <details className="li-learning-extra-sources">
+    <summary>{vi?'Nguồn & đọc thêm':'Sources & further reading'}</summary>
+    <LessonSources id="L09-1-2" locale={appLocale} copy={content}
+     sources={lesson09.sources} subject={lesson09.hierarchy.field.title}
+     conceptTitle={content.theoryTitle} onSearch={ports.search.openSearch}/>
+   </details>
+  </section>}
+  {phase==='progress'&&<RelatedLessons id="L09-1-2" locale={appLocale}/>} 
+  <LessonMentor id="L09-1-2" locale={appLocale}/>
  </section>;
 }

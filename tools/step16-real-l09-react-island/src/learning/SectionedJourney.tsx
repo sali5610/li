@@ -13,6 +13,8 @@ import {T02ReviewEntry} from './T02ReviewEntry.js';
 import {Markdown} from './EditorialJourney';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
+import {useDiscoveryLocale} from '../shell/discovery-locale.js';
+import {useStepScreen} from './step-screen.js';
 
 type Locale='vi'|'en';
 type Phase='read'|'guided'|'methods'|'practice'|'feedback'|'progress';
@@ -130,9 +132,11 @@ type Quote={id:string;original:string;translation:string;interpretation:string;c
 export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedLesson;ports:LearningPorts;preview?:boolean}){
  const id=lesson.id,method=lesson.content.technique.primary.slice(3) as EditorialMethodId;
  const reduced=useReducedMotion();
+ const appLocale=useDiscoveryLocale();
  const [attempt,setAttempt]=useState<Attempt|null>(null);
  const [persisted,setPersisted]=useState<Attempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
+ useStepScreen(phase,id);
  const [busy,setBusy]=useState(true),[pending,setPending]=useState(0);
  const [reload,setReload]=useState(0);
  const [locked,setLocked]=useState(false),[error,setError]=useState('');
@@ -321,12 +325,18 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    }catch{/* Lesson return still works without scroll restoration. */}
   }catch{setError('Chưa mở được Thần Chú; bản nháp vẫn được giữ.');}
  }
+ // App language comes only from Settings. Preserve the lesson's saved
+ // attempt locale through its existing account-scoped write path.
+ useEffect(()=>{
+  if(busy||!attempt||attempt.locale===appLocale||locked||pending>0)return;
+  void persist({...attempt,locale:appLocale});
+ },[appLocale,attempt?.locale,busy,locked,pending]);
  if(busy)return <section role="status" className="li-learning-journey" aria-busy="true">Đang xác minh quyền học…</section>;
  if(!attempt||!persisted)return <section role="alert" className="li-learning-journey">
   <Text>{error||'Không tải được bài.'}</Text>
   <Button onClick={ports.navigation.openCatalog}>Về Tàng Thư</Button>
  </section>;
- const locale=attempt.locale,vi=locale==='vi',c=lesson.content.localized[locale];
+ const locale=appLocale,vi=locale==='vi',c=lesson.content.localized[locale];
  const names:Record<Phase,string>=vi?
   {read:'Đọc bài',guided:'Thử áp dụng',methods:'Thần Chú',practice:'Làm bài',feedback:'Đối chiếu',progress:'Tiến độ'}:
   {read:'Learn',guided:'Guided',methods:'Spells',practice:'Practice',feedback:'Feedback',progress:'Progress'};
@@ -363,11 +373,6 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       'Học cá nhân · tiến độ theo tài khoản · nội dung đang hoàn thiện':
       'Personal study · account-synced progress · content in progress'}</Text>}</div>
    <div className="li-learning-header-actions">
-    <div className="li-learning-toolbar" role="group" aria-label={vi?'Ngôn ngữ':'Language'}>
-     {(['vi','en'] as const).map(l=><Button key={l} disabled={pending>0||locked}
-      variant={locale===l?'primary':'secondary'} aria-pressed={locale===l}
-      onClick={()=>{if(locale!==l)void persist({...attempt,locale:l});}}>{l.toUpperCase()}</Button>)}
-    </div>
     <details className="li-lesson-header-more">
      <summary>{vi?'Tùy chọn':'Options'}</summary>
      <Button variant="secondary" disabled={pending>0||locked} onClick={()=>void restartLesson()}>
@@ -385,12 +390,6 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       sync==='on-device'?'Saved on device':'Saved / checking status')}</Text>
   {error&&<p role="alert">{error}</p>}
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
-  <nav className="li-learning-stepper" aria-label={vi?'Các bước học':'Learning steps'}>
-   {PAGES.map((p,i)=><Button key={p} variant={p===phase?'primary':'secondary'}
-    aria-current={p===phase?'step':undefined}
-    disabled={(i>=4&&!persisted.submitted)||(i===5&&!persisted.reviewed)}
-    onClick={()=>setPhase(p)}><span className="li-learning-step-index">{String(i+1).padStart(2,'0')}</span><span>{names[p]}</span></Button>)}
-  </nav>
   <Progress label={vi?'Tiến độ lượt học':'Lesson attempt progress'} value={percent}/>
   <Text role="support">{persisted.reviewed?
    (vi?'Đã lưu tự đánh giá · không phải chứng nhận thông thạo':'Self-review saved · not a mastery certificate'):
@@ -412,7 +411,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    {phase==='read'&&<>
     <Markdown md={c.intro_md}/>{mentor('opening')}
     {block('goals')}{block('concept')}{mentor('concept')}
-    <Button onClick={()=>setPhase('guided')}>{names.guided}</Button>
+    <Button onClick={()=>setPhase('guided')}>{vi?'Tiếp: Thử áp dụng':'Next: Guided example'} →</Button>
    </>}
    {phase==='guided'&&<>
     <Heading level={2} role="titleLarge">{names.guided}</Heading>
@@ -425,7 +424,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     <Field kind="textarea" rows={4} label={vi?'Tự giải thích':'Explain in your words'}
      disabled={locked||attempt.submitted} value={attempt.guidedDraft}
      onChange={e=>{if(e.currentTarget.value.length<=MAX)edit(a=>({...a,guidedDraft:e.currentTarget.value}));}}/>
-    <Button onClick={()=>setPhase('methods')}>{names.methods}</Button>
+    <Button onClick={()=>setPhase('methods')}>{vi?'Tiếp: Thần Chú':'Next: Study methods'} →</Button>
    </>}
    {phase==='methods'&&<>
     <Heading level={2} role="titleLarge">{names.methods} · {method}</Heading>
@@ -445,8 +444,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       <Markdown md={x.feedback_md||''}/></div>)}
     </>}
     <Button variant="secondary" disabled={locked||pending>0}
-     onClick={()=>{if(!attempt.methodChoice)void persist({...attempt,methodChoice:'skip'});setPhase('practice');}}>
-     {vi?'Tiếp tục bài độc lập':'Continue to independent task'}
+     onClick={()=>{if(!attempt.methodChoice)void persist({...attempt,methodChoice:'skip'}).then(ok=>{if(ok)setPhase('practice');});else setPhase('practice');}}>
+     {vi?'Tiếp: Làm bài':'Next: Practice'} →
     </Button>
    </>}
    {phase==='practice'&&<>
@@ -458,7 +457,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      value={attempt.draft[i]} onChange={e=>setAnswer(i,e.currentTarget.value)}/>)}
     {!persisted.submitted?<Button disabled={locked||pending>0} onClick={()=>void submit()}>
      {vi?'Nộp bốn câu':'Submit four answers'}</Button>:
-     <Button onClick={()=>setPhase('feedback')}>{names.feedback}</Button>}
+     <Button onClick={()=>setPhase('feedback')}>{vi?'Tiếp: Đối chiếu':'Next: Feedback'} →</Button>}
    </>}
    {phase==='feedback'&&persisted.submitted&&<>
     <Heading level={2} role="titleLarge">{names.feedback}</Heading>

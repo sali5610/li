@@ -6,7 +6,7 @@
  outline:2px solid var(--moss);outline-offset:3px
 }
 .li-react-guide .guide-opening{
- display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;
+ display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;
  gap:var(--li-space-6);padding-bottom:var(--li-space-6);border-bottom:1px solid var(--rule)
 }
 .li-react-guide .guide-opening .intro{max-width:62ch}

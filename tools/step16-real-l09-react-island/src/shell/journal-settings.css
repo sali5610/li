@@ -308,8 +308,8 @@
 /* Canonical DS MonthCalendar replaces duplicated journal-only date markup. */
 #page-dashboard .li-react-journal .li-diary-month>.li-legacy-calendar{
  display:grid;gap:var(--li-space-3);min-width:0;
- padding-block:var(--li-space-3);
- border-block:1px solid var(--rule)
+ padding:var(--li-space-3) 0;
+ border:0;background:transparent;box-shadow:none
 }
 #page-dashboard .li-react-journal .li-legacy-calendar>header{
  align-items:center;gap:var(--li-space-3)

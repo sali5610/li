@@ -43,9 +43,9 @@
         "family": "brand",
         "canonical": "design-assets/brand/apple-touch-icon.png",
         "app": "site/assets/apple-touch-icon.png",
-        "git_blob_sha": "654abe47333748b1637dc51fbd0ef9d7f31e21ca",
-        "bytes": 629,
-        "status": "new geometric square version; staging QA pending PO visual acceptance"
+        "git_blob_sha": "3df2fb3812f079113f5747aa94c7520240beec8c",
+        "bytes": 996,
+        "status": "retained existing typography-only iOS Home Screen icon per S145; unchanged"
       },
       {
         "name": "favicon-32.png",

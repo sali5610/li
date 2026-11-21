@@ -635,6 +635,7 @@ function liAfterNavigate(id){
  if(id==="guide")renderMethods();
  if(id==="library")window.liLibraryShelf?.renderHome();
  if(id==="resume")window.liLibraryShelf?.renderResume();
+ if(id==="bookmarks")window.liLibraryShelf?.renderBookmarks();
  if(id==="collection")window.liLibraryShelf?.renderCollection();
  if(id==="noteDetail")window.liNotes?.renderDetail();
  window.liBookmarks?.refresh();
@@ -844,7 +845,7 @@ function liAfterQuestionBookmarkChange(){
   window.dispatchEvent(new Event("li:library-view-changed"));
  }else{
   refreshQuestionBookmark();
-  window.liLibraryShelf?.renderResume();
+  window.liLibraryShelf?.renderBookmarks();
  }
  window.dispatchEvent(new Event("li:inquiry-changed"));
 }

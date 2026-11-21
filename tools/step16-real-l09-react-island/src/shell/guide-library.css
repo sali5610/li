@@ -286,3 +286,46 @@
   font-size:var(--li-type-support);line-height:var(--li-leading-support)
  }
 }
+
+/* 390px iPhone: search takes the full reading column; all five categories
+   stay discoverable instead of clipping the final chip offscreen. */
+@media(max-width:600px){
+ .li-react-guide .guide-find .li-atom-field,
+ .li-react-guide .guide-find .li-atom-field input{
+  display:block;width:100%;max-width:none;min-width:0;box-sizing:border-box
+ }
+ .li-react-guide .guide-find>.li-ds-filter-group{
+  display:flex;flex-wrap:wrap;overflow:visible;
+  align-items:center;gap:var(--li-space-2);padding:0;max-width:100%
+ }
+ .li-react-guide .guide-find>.li-ds-filter-group>.li-ds-filter-chip{
+  flex:0 0 auto;white-space:normal;min-height:44px;
+  font-size:var(--li-type-caption);padding:var(--li-space-2);
+  max-width:100%;line-height:var(--li-leading-caption)
+ }
+}
+
+/* The earlier mobile correction only fixed the bookmark shortlist. The
+   primary Continue/Recent rows were still crushed into three columns. */
+@media(max-width:600px){
+ .li-react-library .library-list-item{
+  display:grid;grid-template-columns:minmax(0,1fr) 44px;
+  gap:var(--li-space-1) var(--li-space-3);align-items:start
+ }
+ .li-react-library .library-list-item>.library-list-copy{
+  grid-column:1 / -1;grid-row:1;min-width:0
+ }
+ .li-react-library .library-list-item>.library-text-link{
+  grid-column:1;grid-row:2;justify-self:start;min-width:0;
+  min-height:44px
+ }
+ .li-react-library .library-list-item>.library-icon-action{
+  grid-column:2;grid-row:2;justify-self:end
+ }
+ .li-react-library .library-saved-shortlist .library-list-item>.library-list-copy{
+  grid-column:1;grid-row:1
+ }
+ .li-react-library .library-saved-shortlist .library-list-item>.library-icon-action{
+  grid-column:2;grid-row:1
+ }
+}

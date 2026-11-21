@@ -1,0 +1,72 @@
+name: li. iPhone React screen smoke (isolated, no login)
+on:
+  pull_request:
+    branches: [integration/staging]
+    paths:
+      - 'tools/step16-real-l09-react-island/**'
+      - 'design-system/react/**'
+      - '.github/workflows/li-mobile-visual-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  iphone-visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned app and shared Design System dependencies
+        run: |
+          npm install --no-audit --no-fund --prefix design-system/react
+          npm install --no-audit --no-fund --prefix tools/step16-real-l09-react-island
+      - name: Inspect actual public Pages revision and HTML (read-only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "EXPECTED_STAGING_SHA=$(git ls-remote origin refs/heads/integration/staging | cut -f1)"
+          live="$(curl -fLsS --retry 2 --max-time 15 \
+            -H 'Cache-Control: no-cache' \
+            "https://sali5610.github.io/li/build-info.json?probe=${GITHUB_RUN_ID}" || true)"
+          echo "PUBLIC_BUILD_INFO=$live"
+          html="$(curl -fLsS --retry 2 --max-time 15 \
+            -H 'Cache-Control: no-cache' \
+            "https://sali5610.github.io/li/?probe=${GITHUB_RUN_ID}" || true)"
+          if [[ -z "$html" ]]; then
+            echo "PUBLIC_HTML_UNAVAILABLE: staging public endpoint could not be fetched"
+          else
+            echo "PUBLIC_HTML_BYTES=${#html}"
+            echo "PUBLIC_HTML_VERSIONED_ENTRY=$(grep -o 'staging-auth-gate.js?li_build=[^"]*' <<<"$html" | head -1 || true)"
+            echo "PUBLIC_REACT_CSS=$(grep -o 'li-react-learning-[^"]*css' <<<"$html" | head -1 || true)"
+            echo "PUBLIC_HAS_AUTH_GATE=$([[ "$html" == *'li-auth-gate-critical'* ]] && echo yes || echo no)"
+          fi
+
+      - name: Build isolated fixture using real screen React and CSS
+        working-directory: tools/step16-real-l09-react-island
+        run: |
+          npx vite build --config vite.mobile-visual.config.mjs
+          test -s dist-mobile-visual/mobile-visual.html
+          cp -a dist-mobile-visual/. ../../site/
+          test -s ../../site/mobile-visual.html
+      - name: Open four REAL 390 CSS-pixel iPhone viewports via Chrome DevTools
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$chrome" || { echo "Chrome unavailable"; exit 1; }
+          mkdir -p .qa-iphone-screens
+          python3 -m http.server 8766 --bind 127.0.0.1 --directory site >/tmp/li-visual-http.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+          sleep 1
+          CHROME_BIN="$chrome" node tools/step16-real-l09-react-island/tests/mobile-visual-browser.mjs
+      - name: Upload screenshots for self-inspection (never deployed)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-iphone-react-screen-smoke
+          path: .qa-iphone-screens/
+          retention-days: 3
+          include-hidden-files: true

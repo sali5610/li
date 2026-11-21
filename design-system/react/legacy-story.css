@@ -46,3 +46,6 @@ body{margin:0;background:var(--cream);color:var(--ink)}
  .li-legacy-story-chat-pair{padding:8px 14px}
  .li-legacy-story-chat-pair>.li-legacy-chat-bubble{max-width:95%}
 }
+
+/* Shared field-card specimen: constrain the sample to a realistic list width. */
+.li-legacy-story-field-card{width:min(100%,540px);min-width:0}

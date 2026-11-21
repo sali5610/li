@@ -248,3 +248,7 @@ Human PO correction: old archive's focused input uses the **existing border thic
 ### Lucide icon governance · 2026-11-20
 
 See `design-system/react/README.md` → **Lucide Icon Manager**. Catalog from pinned `lucide-react` builds inside same React Studio, while app consumes only tree-shakable approved `LiIcon` role imports; old Icon and FunctionalIcon API kept. No CDN runtime or custom svg copies, no exterior focus ring. G2 OPEN.
+
+### CatalogFieldCard · Tàng Thư chuyên ngành (DRAFT, 2026-11-22)
+
+`design-system/react/CatalogFieldCard.tsx` + `catalog-field-card.css` is the single React field-card component used in Tàng Thư and Design System Studio (`#catalogFieldCard`). Slots/props: `title`, `category`, `detail`, `imageSrc`, `actionLabel`, `onOpen`. Do: clip the **entire** 4:5 illustration into a top arch, 40%/42% media rail, flat bottom, preserve category/title/course count/button. Don't: show the former CHUYÊN NGÀNH kicker or place the image inside a rectangular frame. Use the caller's actual route and localized copy; Studio examples do not persist learner data. G2 remains DRAFT.

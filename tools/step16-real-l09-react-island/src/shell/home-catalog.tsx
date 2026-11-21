@@ -10,6 +10,8 @@ import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {Badge,Breadcrumb,Button,Heading,Progress,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
 import {PortalCategoryCard} from '../../../../design-system/react/PortalCategoryCard';
+import {CatalogFieldCard} from '../../../../design-system/react/CatalogFieldCard';
+import '../../../../design-system/react/catalog-field-card.css';
 import '../../../../design-system/react/portal-category-card.css';
 import './home-catalog.css';
 
@@ -81,25 +83,6 @@ const levelNames:readonly [string,string,string][]=[
  ['Intermediate','Trung cấp','Intermediate'],
  ['Advanced-topic','Chuyên sâu','Advanced']
 ];
-function CatalogCard({number,eyebrow,title,detail,onOpen,locale,image,category}:{
- number:number;eyebrow:string;title:string;detail:string;onOpen:()=>void;locale:Locale;image?:string;category?:string
-}){
- return <article className="catalog-feature-row" data-li-react-catalog-card data-li-catalog-kind={category?'field':'group'}>
-  <div className="catalog-feature-media">
-   {image?<img className="catalog-card-art" src={image} alt="" loading="lazy" decoding="async"/>:
-    <span className="catalog-card-mark" aria-hidden="true">{String(number).padStart(2,'0')}</span>}
-  </div>
-  <div className="catalog-card-copy">
-   {!category&&<div className="kicker">{eyebrow}</div>}
-   {category&&<span className="catalog-category-tag">{category}</span>}
-   <Heading level={2} role="titleMedium">{title}</Heading>
-   <Text role="support" className="small">{detail}</Text>
-  </div>
-  <Button variant="secondary" className="catalog-card-action" onClick={onOpen}>
-   {locale==='vi'?'Khám phá':'Explore'} <LiIcon name="arrow-right" size={18}/>
-  </Button>
- </article>;
-}
 // In-memory only: a return from a lesson should land on the course row the
 // learner chose, not force them to find it again. Never persist this per-user UI.
 let pendingCatalogReturn:{path:string;top:number}|null=null;
@@ -258,11 +241,12 @@ function Catalog(){
    </div>}
    <div className="catalog-field-grid">
     {group.fields.filter(item=>activeCategory==='all'||item.category.id===activeCategory)
-     .map((item,index)=><CatalogCard key={item.id} number={index+1}
-     title={authoredCopy(item.name)} image={item.image} eyebrow={locale==='vi'?'CHUYÊN NGÀNH':'FIELD'}
+     .map(item=><CatalogFieldCard key={item.id}
+     title={authoredCopy(item.name)} imageSrc={item.image||''}
      category={item.category.label[locale]}
      detail={item.courses.length+(locale==='vi'?' môn học theo lộ trình':' courses')}
-     locale={locale} onOpen={()=>openPath([group.id,item.id])}/>)}
+     actionLabel={locale==='vi'?'Khám phá':'Explore'}
+     onOpen={()=>openPath([group.id,item.id])}/>)}
    </div>
   </div>}
   {field&&!course&&<div className="catalog-roadmap">

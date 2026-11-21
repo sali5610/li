@@ -57,3 +57,7 @@ export type {NotebookLessonSection} from './NotebookLessonBook';
 
 export {PortalCategoryCard} from './PortalCategoryCard';
 export type {PortalCategoryCardProps,PortalVariant} from './PortalCategoryCard';
+
+/** Shared Tàng Thư specialist/field card (one whole arched illustration). */
+export {CatalogFieldCard} from './CatalogFieldCard';
+export type {CatalogFieldCardProps} from './CatalogFieldCard';

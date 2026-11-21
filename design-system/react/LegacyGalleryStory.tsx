@@ -4,6 +4,7 @@ import {Button,Card,Dialog,Heading,Text} from './index';
 import {MobileBottomNav,SidebarMenu,TopNavContext,LaoLyCompanion} from './LegacyNavigation';
 import {EditorialCard,MethodTile,MediaCard,HorizontalCard,ChatBubble,TagChip} from './LegacyCards';
 import {PortalCategoryCard} from './PortalCategoryCard';
+import {CatalogFieldCard} from './CatalogFieldCard';
 import {SelectField,NotebookTextarea,IconField,SmallAction,ProgressVariants,
  CheckinRadioModal,FunctionalIcon} from './LegacyControls';
 import type {FunctionalIconName} from './LegacyControls';
@@ -15,6 +16,7 @@ import './controls.css';
 import './dialog.css';
 import './legacy.css';
 import './portal-category-card.css';
+import './catalog-field-card.css';
 import './focus.css';
 import './legacy-story.css';
 
@@ -102,6 +104,19 @@ function Specimen(){
     variant="secondary" icon={<FunctionalIcon name="clock"/>}
     actionLabel={t('CHÚ GIẢI','EXPLAIN')} onActivate={click}/></div>;
   break;
+ case 'catalogFieldCard':{
+  const anthropology=selected('Anthropology');
+  panel=<div className="li-legacy-story-field-card">
+   <CatalogFieldCard
+    title={anthropology?t('Nhân học','Anthropology'):t('Xã hội học','Sociology')}
+    category={t('Xã hội & văn hóa','Society & culture')}
+    detail={t('3 môn học theo lộ trình','3 courses')}
+    imageSrc={asset('discipline/'+(anthropology?'anthropology':'sociology')+'.webp')}
+    actionLabel={t('Khám phá','Explore')}
+    onOpen={click}/>
+  </div>;
+  break;
+ }
  case 'portalCategoryCard':{
   const requested=Number(variant.replace(/[^0-9]/g,''))||1;
   const portal=Math.max(1,Math.min(7,requested)) as 1|2|3|4|5|6|7;
@@ -253,13 +268,14 @@ function Specimen(){
  }
  return <div ref={sampleRef} className="li-legacy-gallery" data-state={state}>
   <div className="li-legacy-gallery-sample">{panel}</div>
-  {['methodTile','topNavVariants','smallAction'].includes(story)?status:null}
+  {['methodTile','topNavVariants','smallAction','catalogFieldCard'].includes(story)?status:null}
  </div>;
 }
 const titles:Record<string,string>={
  bottomNav:'Bottom Navigation',sidebarMenu:'Sidebar Menu',topNavVariants:'Top Navigation',
  methodTile:'Compact Method Tile',mediaCard:'Illustrated / Image Card',
   portalCategoryCard:'Portal Category Card',
+ catalogFieldCard:'Tàng Thư · Arched Field Card',
  horizontalCard:'Horizontal Media Card',chatBubble:'Chat Bubble',tagChip:'Static Tag Chip',
  selectField:'Selection Dropdown',monthCalendar:'Monthly Calendar',
  stackedActivity:'Seven-Day Stacked Bar',laoLyState:'Elder Ly System State',

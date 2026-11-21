@@ -172,11 +172,11 @@ setTimeout(()=>{
  assert('true-390-css-mobile-viewport',windowWidth===390,{innerWidth,clientWidth:windowWidth});
  assert('no-horizontal-overflow',document.documentElement.scrollWidth<=windowWidth+4,
   {scrollWidth:document.documentElement.scrollWidth,windowWidth});
- if(['settings','catalogRoot','catalogGroup','guide','library'].includes(viewName)){
+ if(['settings','catalogRoot','catalogGroup','guide','library','resume','bookmarks'].includes(viewName)){
   const header=select('.app > .header');
   const heading=select('#main > .page.active h1');
   const trail=select('#li-react-route-trail .li-ds-breadcrumb, .catalog-breadcrumbs .li-ds-breadcrumb');
-  const expectsTrail=['catalogGroup','guide','library'].includes(viewName);
+  const expectsTrail=['catalogGroup','resume','bookmarks'].includes(viewName);
   const gap=Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--li-space-3'));
   const headerBottom=header?.getBoundingClientRect().bottom??NaN;
   const trailBox=trail?.getBoundingClientRect();

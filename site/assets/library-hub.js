@@ -353,7 +353,8 @@ function renderSavedBookmarkEntries(root,entries,knownCases,lessonById){
     if(!$("page-"+target)){toast("Chưa mở được bài học.");return;}
     navigate(target);
    });
-  }else open.dataset.page=route;
+  }else if(entry.kind==="case")open.addEventListener("click",()=>openProblemEntry("case",entry.record.id));
+   else open.dataset.page=route;
   const utility=add(row,"div","library-icon-utility library-row-utility");
   const remove=add(utility,"button","library-icon-action library-unsave-icon");
   remove.type="button";

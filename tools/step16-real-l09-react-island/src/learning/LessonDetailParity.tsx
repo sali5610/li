@@ -158,8 +158,9 @@ export function LessonMentor({id,locale}:{id:string;locale:Locale}){
     'Lão đang theo dõi phần học hiện tại để hỏi đúng vấn đề.':
     'Elder Ly follows the active section to ask a relevant question.')}
   </Text>
-  <Button variant="secondary" onClick={event=>app.openLaoLy?.(event.currentTarget)}>
-   {locale==='vi'?'Hỏi Lão Lý theo bài học':'Ask Elder Ly about this lesson'}
+  <Button variant="secondary" aria-label={locale==='vi'?'Hỏi Lão Lý theo bài học':'Ask Elder Ly about this lesson'}
+   onClick={event=>app.openLaoLy?.(event.currentTarget)}>
+   {locale==='vi'?'Hỏi Lão Lý':'Ask Elder Ly'}
   </Button>
  </section>;
 }

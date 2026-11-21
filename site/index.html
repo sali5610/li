@@ -454,7 +454,7 @@ scenarios.splice(5,0,{
 const mirrorDrafts=(globalThis.window?.LI_MIRROR_DRAFT_HOOKS||[]).filter(x=>
  x.reviewState==="proposed"&&x.publishState==="draft"&&x.localized?.vi&&x.localized?.en
 ).map(x=>({type:"hook",key:"mirror-draft-"+x.id,lessonId:x.id,fieldId:x.fieldId,
- lessonRoute:"research",previewState:"draft",localized:x.localized,...x.localized.vi}));
+ lessonRoute:"research",previewState:"draft",case:x.case,localized:x.localized,...x.localized.vi}));
 /* Draft Hook and fictional Problem Case are separate Gương entries. */
 const mirrorDraftCases=mirrorDrafts.filter(x=>x.case?.localized?.vi&&x.case?.localized?.en).map(x=>{
  const localized=Object.fromEntries(["vi","en"].map(locale=>[locale,{

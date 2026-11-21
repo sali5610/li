@@ -78,6 +78,10 @@ function checkAppBoot(){
 window.addEventListener('li:auth-verified-changed',event=>{
  const verified=Boolean((event as CustomEvent<{verified?:boolean}>).detail?.verified);
  if(verified){
+  // A guest may sign in without a full navigation; restore the cover before
+  // React replaces the signed-out Auth view with private screen content.
+  document.documentElement.classList.remove('li-boot-ready');
+  bootSplash?.removeAttribute('aria-hidden');
   bootComplete=false;
   window.cancelAnimationFrame(bootFrame);
   bootFrame=window.requestAnimationFrame(checkAppBoot);

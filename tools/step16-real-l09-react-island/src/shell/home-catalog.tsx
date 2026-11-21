@@ -107,7 +107,8 @@ function Catalog(){
    });
   };
   const onAuth=(event:Event)=>{
-   if((event as CustomEvent<{verified?:boolean}>).detail?.verified===false)
+   const detail=(event as CustomEvent<{verified?:boolean;transient?:boolean}>).detail;
+   if(detail?.verified===false&&detail.transient!==true)
     pendingCatalogReturn=null;
   };
   window.addEventListener('li:route-changed',onRoute);

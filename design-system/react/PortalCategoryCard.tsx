@@ -3,8 +3,8 @@ import type {ReactNode} from 'react';
 import {LiIcon} from './LucideIcons';
 
 /** Portal artwork stays independent of the future discipline illustration.
- * Portal images are transparent PNG overlays; the illustration is rendered behind.
- * The seven masters are supplied separately as /assets/portals/cong-moi-01..07.png.
+ * Portal images are transparent WebP overlays derived from supplied PNGs; illustration is rendered behind.
+ * Runtime derivatives use seven WebP alpha overlays in site/assets/portals; original PNG masters are supplied separately.
  */
 export type PortalVariant=1|2|3|4|5|6|7;
 export interface PortalCategoryCardProps{
@@ -16,7 +16,10 @@ export interface PortalCategoryCardProps{
 export function PortalCategoryCard({title,detail,eyebrow,actionLabel,portal,
  illustrationSrc,illustrationAlt='',portalSrc,onOpen,href,className='',
  placeholder}:PortalCategoryCardProps){
- const portalPath=portalSrc||'/assets/portals/cong-moi-'+String(portal).padStart(2,'0')+'.png';
+ // Site is served at /li/ on GitHub Pages and at / on Cloudflare.
+ // Keep the default relative to the current app document, not the domain root.
+ // Nested Studio stories can pass portalSrc="../assets/portals/cong-moi-01.webp".
+ const portalPath=portalSrc||'./assets/portals/cong-moi-'+String(portal).padStart(2,'0')+'.webp';
  const action=<>{actionLabel}<LiIcon name="arrow-right" size={18}/></>;
  return <article className={'li-portal-category-card '+className} data-li-component="portal-category-card"
   data-portal-variant={portal}>
@@ -27,7 +30,7 @@ export function PortalCategoryCard({title,detail,eyebrow,actionLabel,portal,
    </div>
    <span className="li-portal-category-fallback-arch" aria-hidden="true"/>
    <img className="li-portal-category-overlay" src={portalPath} alt="" aria-hidden="true"
-    loading="lazy" decoding="async" onLoad={event=>{event.currentTarget.parentElement?.setAttribute("data-overlay-loaded","true");}} onError={event=>{event.currentTarget.hidden=true;}}/>
+    loading="lazy" decoding="async" onLoad={event=>{event.currentTarget.hidden=false;event.currentTarget.parentElement?.setAttribute("data-overlay-loaded","true");}} onError={event=>{event.currentTarget.hidden=true;}}/>
   </div>
   <div className="li-portal-category-copy">
    {eyebrow?<span className="li-portal-category-eyebrow">{eyebrow}</span>:null}

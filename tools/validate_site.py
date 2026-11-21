@@ -345,8 +345,9 @@ assert html.count('class="text-editor"') >= 2
 
 # UX-IA-04: note review belongs under the collection list; edit history is append-only.
 library=section("library")
-assert library.count('library-more-link')==2
-assert library.count('data-lucide="arrow-right"')>=2
+assert library.count('library-more-link')==3
+assert library.count('data-page="bookmarks"')==1, "Tủ Riêng must link to the standalone Dấu trang page"
+assert library.count('data-lucide="arrow-right"')>=3
 assert library.count('id="li-library-latest-lesson"')==1
 assert 'id="li-saved-questions"' not in library
 assert '<section id="page-noteDetail"' in page_html

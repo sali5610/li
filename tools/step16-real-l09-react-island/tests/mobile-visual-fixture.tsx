@@ -1,4 +1,9 @@
 import React from 'react';
+/* Match the real signed-in React bundle, not a partial CSS fixture. */
+import '../../../design-system/react/atoms.css';
+import '../../../design-system/react/controls.css';
+import '../../../design-system/react/components.css';
+import '../../../design-system/react/molecules.css';
 import {createRoot} from 'react-dom/client';
 import {Journal} from '../src/shell/journal-settings.js';
 import {Guide,Library} from '../src/shell/guide-library.js';

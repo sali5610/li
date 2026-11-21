@@ -526,7 +526,7 @@ function liMirrorRelatedLesson(sc){
  if(typeof route!=="string"||!window.liAppRouter?.hasRoute?.(route))return null;
  return {id,route};
 }
-window.liMirrorRelatedLesson=liMirrorRelatedLesson;
+if(typeof window!=="undefined")window.liMirrorRelatedLesson=liMirrorRelatedLesson;
 function renderMirrorItem(){
  const item=scenarios[qIndex],isHook=item.type==="hook",isDraft=item.previewState==="draft";
  const localized=item.localized?.[window.liLanguage?.get?.()==="en"?"en":"vi"]||item;

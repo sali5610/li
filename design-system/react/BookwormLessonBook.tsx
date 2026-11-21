@@ -26,7 +26,9 @@ export function BookwormLessonBook({locale,intro,diagram,chapters,practiceAction
  const chapter=chapters[page];
  return <div className="li-bw-reader">
   <div className="li-bw-reader-folio-label" aria-hidden="true">
-   <span>li. / {t('BÀI HỌC · SÁCH MINH HỌA','ILLUSTRATED LESSON')}</span>
+   <span className="li-bw-reader-source-mark"><img src="../assets/li-seal.svg"
+     width={29} height={29} loading="lazy" decoding="async" alt="" aria-hidden="true"/>
+    li. / {t('BÀI HỌC · SÁCH MINH HỌA','ILLUSTRATED LESSON')}</span>
    <span>{String(page+1).padStart(2,'0')} / {String(chapters.length).padStart(2,'0')}</span>
   </div>
   <div className="li-bw-reader-spread" aria-label={t('Sách học hai trang','Two-page lesson book')}>

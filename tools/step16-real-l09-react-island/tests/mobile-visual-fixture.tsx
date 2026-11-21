@@ -8,6 +8,7 @@ import {createRoot} from 'react-dom/client';
 import {Journal,Settings} from '../src/shell/journal-settings.js';
 import {Guide,Library,Resume,Bookmarks} from '../src/shell/guide-library.js';
 import {CatalogScreen} from '../src/shell/home-catalog.js';
+import {installReactCatalogPort} from '../src/shell/catalog-route-adapter.js';
 import {BuddyDialog} from '../src/shell/laoly-dialog.js';
 import {mountKnowledgeSearch} from '../src/shell/knowledge-search.js';
 import {mountSharedNavigation,RouteTrail} from '../src/shell/mount-navigation.js';
@@ -148,6 +149,10 @@ if(viewName==='searchEnglish'){
    interpretation:'Ý nghĩa về tư duy nguyên nhân.',meta:'Francis Bacon',url:'https://example.org',comment:''}
  }})),150);
 } else if(viewName==='catalogRoot'||viewName==='catalogGroup'){
+ // Exercise the REAL Catalog path adapter in this isolated browser fixture.
+ // The synthetic auth class is never bundled in the user-facing app.
+ document.documentElement.classList.add('li-auth-verified');
+ installReactCatalogPort();
  root.parentElement!.classList.remove('active');
  const page=document.getElementById('page-catalog')!;
  page.classList.add('active');

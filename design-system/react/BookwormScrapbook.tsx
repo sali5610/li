@@ -36,7 +36,9 @@ export function BookwormScrapbook({locale,kind,children}:{
     animate={{opacity:1,rotateX:0,y:0}}
     exit={reduced?{opacity:0}:{opacity:0,rotateX:-8,y:-10}}
     transition={{duration:reduced?0:.4,ease:[.22,1,.36,1]}}>
-    <div className="li-bw-scrapbook-seal" aria-hidden="true"><LiIcon name="star" size={18}/></div>
+    <div className="li-bw-scrapbook-seal" aria-hidden="true">
+     <img src="../assets/li-seal.svg" width={24} height={24} alt="" loading="lazy" decoding="async"/>
+    </div>
     <div className="li-bw-scrapbook-body">{children}</div>
     <div className="li-bw-scrapbook-engraving" aria-hidden="true"><BookwormIllustration kind={art}/></div>
    </motion.div>}

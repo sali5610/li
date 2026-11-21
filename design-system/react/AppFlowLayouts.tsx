@@ -9,6 +9,8 @@ import {MethodTile,ChatBubble} from './LegacyCards';
 import {LiIcon} from './LucideIcons';
 import {NotebookAnnotation} from './NotebookAnnotation';
 import {NotebookArt,notebookDisciplineImages} from './NotebookArt';
+import {NotebookInk} from './NotebookInk';
+import {NotebookLessonBook} from './NotebookLessonBook';
 import {BookwormIllustration} from './BookwormIllustration';
 import './app-flow-layouts.css';
 
@@ -170,26 +172,39 @@ function ScreenBody(props:AppPageLayoutProps){
     'Preview memory only; nothing was sent to Neon.'))}>{t('Lưu thử','Sample save')}</Button>
   </Card>{action('collection','Mở Bộ Sưu Tập','Open collection')}
  </div>;
- case 'lesson':return <div className="li-flow-stack">
-  <div className="li-flow-lesson-top"><Badge>{t('BÀI HỌC · VÍ DỤ','LESSON · SAMPLE')}</Badge>
-   <Heading level={2} role="titleLarge">{lessonTitle}</Heading>
-   <Text role="body">{t('Sai lệch chọn mẫu xuất hiện khi mẫu không phản ánh đúng tổng thể cần nghiên cứu.',
-    'Sampling bias can arise when a sample does not reflect the population of interest.')}</Text>
-  </div>
-  <div className="li-flow-lesson-diagram" aria-label={t('Minh họa tổng thể và mẫu','Population and sample illustration')}>
+ case 'lesson':{
+  const eyebrow=t('BÀI HỌC · VÍ DỤ','LESSON · SAMPLE');
+  const description=t('Sai lệch chọn mẫu xuất hiện khi mẫu không phản ánh đúng tổng thể cần nghiên cứu.',
+   'Sampling bias can arise when a sample does not reflect the population of interest.');
+  const sections=[
+   {heading:t('Lý thuyết','Theory'),
+    description:t('Phân biệt tính đại diện và cách chọn mẫu.','Distinguish representation from selection.')},
+   {heading:t('Ví dụ','Example'),
+    description:t('Khảo sát chỉ người đang dùng app có thể bỏ sót người đã rời đi.','Surveying current users can omit those who left.')},
+   {heading:t('Hướng dẫn','Guided practice'),
+    description:t('Xem phương pháp tuyển chọn trước khi kết luận.','Check recruitment before drawing conclusions.')}
+  ];
+  const diagram=<div className="li-flow-lesson-diagram"
+   aria-label={t('Minh họa tổng thể và mẫu','Population and sample illustration')}>
    <div><span>{t('Tổng thể','Population')}</span><div className="li-flow-dots">
     {Array.from({length:24},(_,i)=><i key={i} data-highlight={i%5===0?'true':'false'}/>)}</div></div>
    <LiIcon name="arrow-right" size={26}/>
    <div><span>{t('Mẫu','Sample')}</span><div className="li-flow-dots sample">
     {Array.from({length:8},(_,i)=><i key={i} data-highlight={i%4===0?'true':'false'}/>)}</div></div>
-  </div>
-  <div className="li-flow-card-grid">{[
-   [t('Lý thuyết','Theory'),t('Phân biệt tính đại diện và cách chọn mẫu.','Distinguish representation from selection.')],
-   [t('Ví dụ','Example'),t('Khảo sát chỉ người đang dùng app có thể bỏ sót người đã rời đi.','Surveying current users can omit those who left.')],
-   [t('Hướng dẫn','Guided practice'),t('Xem phương pháp tuyển chọn trước khi kết luận.','Check recruitment before drawing conclusions.')]
-  ].map(([name,desc],i)=>card(name,desc,i))}</div>
-  {action('practice','Làm bài tập','Start practice')}
- </div>;
+  </div>;
+  if(variant==='notebook')return <NotebookLessonBook title={lessonTitle}
+   eyebrow={eyebrow} description={description} diagram={diagram}
+   sections={sections} onPractice={()=>onNavigate('practice')} locale={locale}/>;
+  return <div className="li-flow-stack">
+   <div className="li-flow-lesson-top"><Badge>{eyebrow}</Badge>
+    <Heading level={2} role="titleLarge">{lessonTitle}</Heading>
+    <Text role="body">{description}</Text>
+   </div>
+   {diagram}
+   <div className="li-flow-card-grid">{sections.map((item,i)=>card(item.heading,item.description,i))}</div>
+   {action('practice','Làm bài tập','Start practice')}
+  </div>;
+ }
  case 'practice':return <LearningFlowShell
   title={t('Luyện tập · Sampling Bias','Practice · Sampling Bias')}
   eyebrow={t('BÀI MẪU · KHÔNG GHI TIẾN ĐỘ','SAMPLE · NO PROGRESS IS STORED')}
@@ -408,6 +423,13 @@ const notebookArtForPage:Record<Exclude<PageId,'home'>,React.ComponentProps<type
  noteDetail:'notes',dashboard:'progress',settings:'notes',checkin:'checkin',
  laoly:'companion',account:'book'
 };
+const notebookPageIcons={
+ catalog:'layers',search:'search',research:'search',case:'check',
+ capture:'feather',lesson:'book-open',practice:'feather',feedback:'check',
+ guide:'sparkles',guideDetail:'calendar',library:'library',resume:'book-open',
+ collection:'bookmark',noteDetail:'feather',dashboard:'calendar',
+ settings:'settings',checkin:'check',laoly:'chat',account:'home'
+} as const;
 export function AppPageLayout(props:AppPageLayoutProps){
  const {page,variant,locale,onNavigate}=props;
  const meta=appLabPages.find(item=>item.id===page)!;
@@ -439,8 +461,17 @@ export function AppPageLayout(props:AppPageLayoutProps){
   </div>}
   <header className="li-flow-page-head">
    <motion.div className="li-flow-page-heading" {...reveal(.06)}>
-    <span className="li-flow-page-kicker">li. / {t('THƯ VIỆN TRI THỨC','THE KNOWLEDGE LIBRARY')}</span>
-    <Heading level={1} role="headline">{t(meta.vi,meta.en)}</Heading>
+    <span className="li-flow-page-kicker">
+     {variant==='notebook'&&<span className="li-nb-page-icon" aria-hidden="true">
+      <LiIcon name={notebookPageIcons[page]} size={20}/>
+     </span>}
+     li. / {t('THƯ VIỆN TRI THỨC','THE KNOWLEDGE LIBRARY')}
+    </span>
+    <Heading level={1} role="headline">
+     {variant==='notebook'
+      ?<NotebookInk kind="highlight" tone="olive">{t(meta.vi,meta.en)}</NotebookInk>
+      :t(meta.vi,meta.en)}
+    </Heading>
     <Text role="body">{t(meta.descriptionVi,meta.descriptionEn)}</Text>
     {bookworm&&<button type="button" className="li-bookworm-index-toggle"
       aria-controls={indexId} aria-expanded={indexOpen}

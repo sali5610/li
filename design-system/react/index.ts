@@ -45,3 +45,8 @@ export {NotebookAnnotation} from './NotebookAnnotation';
 /** Content-preserving, opt-in Notebook illustration slots. */
 export {NotebookArt,notebookDisciplineImages} from './NotebookArt';
 export type {NotebookArtKind,NotebookArtSize} from './NotebookArt';
+
+/** Notebook reading: shared ink marks and book layout, opt-in only. */
+export {NotebookInk} from './NotebookInk';
+export {NotebookLessonBook} from './NotebookLessonBook';
+export type {NotebookLessonSection} from './NotebookLessonBook';

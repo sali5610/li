@@ -31,7 +31,10 @@ type AppWindow=Window&{
  liLanguage?:{get?:()=>string;translateComposed?:(value:string)=>string};
  liAddressLine?:(text:string)=>string;
  liMethods?:{getView:()=>{methods:{id:string;title:string;purpose:string;original:string}[]};
-  open:(id:string)=>boolean}
+  open:(id:string)=>boolean};
+ liReleasedLessonRoutes?:Readonly<Record<string,string>>;
+ liPersonalStudyRoutes?:Readonly<Record<string,string>>;
+ liAppRouter?:{hasRoute:(route:string)=>boolean}
 };
 const app=window as AppWindow;
 const chooseLanguage=(vi:string,en:string)=>app.liLanguage?.get?.()==='en'?en:vi;
@@ -167,9 +170,12 @@ export function BuddyDialog({root}:{root:HTMLElement}){
  };
  const openRelatedLesson=()=>{
   const related=view.relatedLesson;
-  if(related?.id!=='L09-1-2'||related.route!=='lessonL09')return;
-  // Router pushes real browser history; Back restores the still-mounted Case
-  // screen, its selected option, saved draft and previous scroll position.
+  if(!related)return;
+  const released=app.liReleasedLessonRoutes?.[related.id]===related.route;
+  const personal=app.liPersonalStudyRoutes?.[related.id]===related.route;
+  // Only mounted, registry-backed lessons are clickable. The canonical
+  // router preserves Back history; a Case draft stays on its mounted screen.
+  if(!(released||personal)||!app.liAppRouter?.hasRoute(related.route))return;
   if(openRoute(related.route))close(false);
  };
  const quoteVisible=!challenge&&!!quote&&(!!view.editorial||message===view.text);
@@ -254,7 +260,7 @@ export function BuddyDialog({root}:{root:HTMLElement}){
     </div>}
    </div>
    <div className="action-row buddy-actions" aria-label={chooseLanguage('Lão Lý gợi ý','Companion actions')}>
-    {view.relatedLesson?.id==='L09-1-2'&&view.relatedLesson.route==='lessonL09'&&
+    {view.relatedLesson&&
      <Button variant="secondary" className="action alt" id="li-buddy-related-lesson"
       onClick={openRelatedLesson}>
       <LiIcon name="book-open" size={18}/>

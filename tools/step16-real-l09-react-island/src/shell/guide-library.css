@@ -414,3 +414,15 @@
  .li-react-library .library-feature-heading>.library-text-link{flex:0 0 auto}
  .li-react-library .library-note-previews{gap:var(--li-space-3)}
 }
+/* Remove legacy .path-item's faux cards inside actual DS Card containers.
+   Recent activity and bookmarks are list rows, not nested framed surfaces. */
+.li-react-library .path-list>.path-item.library-list-item{
+ display:flex;align-items:center;flex-wrap:wrap;gap:var(--li-space-3);
+ min-width:0;padding:var(--li-space-3) 0;
+ border:0 solid var(--rule);border-bottom:1px solid var(--rule);
+ background:color-mix(in srgb,var(--paper) 0%,transparent);
+ box-shadow:0 0 0 var(--wood)
+}
+.li-react-library .path-list>.path-item.library-list-item:last-child{
+ border-bottom:0 solid var(--rule)
+}

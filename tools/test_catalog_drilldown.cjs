@@ -12,13 +12,15 @@ assert(Array.isArray(groups));
 const fields=groups.flatMap(x=>x.fields);
 const courses=fields.flatMap(x=>x.courses);
 const lessons=courses.flatMap(x=>x.lessons);
-assert.equal(groups.length,8);
+assert.equal(groups.length,5);
 assert.equal(fields.length,15);
 assert.equal(fields.find(x=>x.id==="hci")?.name,"Human–Computer Interaction (HCI)");
 assert(!fields.some(x=>x.id==="ux-design"));
 assert.equal(courses.length,45);
 assert.equal(lessons.length,135);
-assert.equal(new Set(groups.map(x=>x.id)).size,8);
+assert.equal(new Set(groups.map(x=>x.id)).size,5);
+assert.deepEqual(groups.map(x=>x.iscedBroadCode),["02","03","04","05","06"]);
+assert(fields.every(x=>x.category?.id&&x.category?.label?.vi&&x.category?.label?.en));
 assert.equal(new Set(fields.map(x=>x.id)).size,15);
 assert.equal(new Set(courses.map(x=>x.id)).size,45);
 assert.equal(new Set(lessons.map(x=>x.id)).size,135);
@@ -78,6 +80,7 @@ const document={
 };
 const window={
  LI_CATALOG_DATA:groups,
+ LI_CATALOG_GROUP_ALIASES:manifestContext.window.LI_CATALOG_GROUP_ALIASES,
  history,location,localStorage,
  navigate:route=>navigation.push(route),
  addEventListener:(name,handler)=>{winHandlers[name]=handler},
@@ -93,9 +96,14 @@ function click(kind,value){
  host.listeners.click({target,preventDefault(){},stopPropagation(){}});
 }
 function displayed(s){return descendants(host).some(e=>e.textContent.includes(s));}
-assert.equal(descendants(host).filter(x=>x.className.split(/\s+/).includes("catalog-card")).length,8,"root eight groups");
-click("open-group","technology");
-assert(displayed("Công nghệ"));
+assert.equal(descendants(host).filter(x=>x.className.split(/\s+/).includes("catalog-card")).length,5,"root five groups");
+click("open-group","ict");
+assert(displayed("Công nghệ thông tin"));
+assert(findButton("filter-category","interaction-design"));
+click("filter-category","software");
+assert(findButton("open-field","backend"));
+assert(!findButton("open-field","hci"));
+click("filter-category","all");
 assert(findButton("open-field","hci"));
 click("open-field","hci");
 assert(displayed("Nền tảng"));
@@ -122,9 +130,9 @@ click("crumb","3");
 click("open-lesson","L03-1-2");
 assert.equal(navigation.at(-1),"lessonL03");
 assert.equal(new URL(location.href).searchParams.get("lesson"),"L03-1-2");
-assert.equal(new URL(location.href).searchParams.get("catalog"),"technology/hci/C03-1");
+assert.equal(new URL(location.href).searchParams.get("catalog"),"ict/hci/C03-1");
 // Draft-only courses still display an explicit 0/3 bar, without fabricated completion.
-window.liCatalog.openCourse("language","chinese","C01-1");
+window.liCatalog.openCourse("arts-humanities","chinese","C01-1");
 assert(displayed("0/3 bài đã hoàn thành"));
 assert(displayed("0/3 bài đã phát hành"));
 bar=descendants(host).find(x=>x.attributes.role==="progressbar");
@@ -136,10 +144,10 @@ assert.equal(typeof winHandlers.popstate,"function");
 history.pushState(null,"","/?catalog=technology/ux-design/C03-1");
 winHandlers.popstate();
 assert.equal(new URL(location.href).searchParams.get("catalog"),"technology/hci/C03-1");
-assert.equal(window.liCatalog.getPath().join("/"),"technology/hci/C03-1");
+assert.equal(window.liCatalog.getPath().join("/"),"ict/hci/C03-1");
 assert(displayed("Human–Computer Interaction (HCI)"));
 window.liCatalog.openCourse("technology","ux-design","C03-1");
-assert.equal(window.liCatalog.getPath().join("/"),"technology/hci/C03-1");
+assert.equal(window.liCatalog.getPath().join("/"),"ict/hci/C03-1");
 // No Wave 2/3 published from these outline navigation changes.
 assert.equal(lessons.filter(l=>l.published).length,3);
-console.log("PASS Tàng Thư IA: 8/15/45/135, 3 published routes, drill-down, 1/3 true progress, draft visibility, browser URLs");
+console.log("PASS Tàng Thư IA: 5/15/45/135, 3 published routes, drill-down, 1/3 true progress, draft visibility, browser URLs");

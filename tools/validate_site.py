@@ -478,7 +478,8 @@ library_section=section("library")
 assert '<article id="notebook-section" class="surface" tabindex="-1"' in library_section
 assert '<article id="notebook-section" class="surface tinted"' not in library_section
 # UX-DASH-01: cards are grouped by the user's job, not the legacy card 03/04 DOM adjacency.
-assert library_section.count('class="library-group" role="region"')==3
+# Dấu trang is a standalone fourth Tủ Riêng group, not nested in Quay lại.
+assert library_section.count('class="library-group" role="region"')==4
 assert all(x in library_section for x in ('library-resume-heading','library-collection-heading','library-reflection-heading'))
 assert '<div class="surface-grid cols2">' in library_section
 assert library_section.count('id="case-archive-preview"')==1

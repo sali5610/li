@@ -100,6 +100,13 @@ export function BuddyDialog({root}:{root:HTMLElement}){
   root.classList.toggle('open',open);
   if(open)requestAnimationFrame(()=>heading.current?.focus());
  },[open,root]);
+ // iOS Safari may restore a previous overflow offset after React commits.
+ // Start every opened/changed citation at its heading, not mid-dialog text.
+ useEffect(()=>{
+  if(!open)return;
+  const frame=requestAnimationFrame(()=>content.current?.scrollTo({top:0,behavior:'instant'}));
+  return()=>cancelAnimationFrame(frame);
+ },[open,view,quoteIndex]);
  const onKeyDown=(event:React.KeyboardEvent)=>{
   if(event.key==='Escape'){
    event.preventDefault();event.stopPropagation();close();return;
@@ -147,10 +154,6 @@ export function BuddyDialog({root}:{root:HTMLElement}){
    </header>
    <div id="buddy-scroll" className="buddy-scroll" tabIndex={0}
     ref={content} role="region" aria-label={chooseLanguage('Nội dung hội thoại với Lão Lý','Conversation with Lao Ly')}>
-    <div className="li-buddy-conversation">
-     {message!==view.text&&<p className="li-buddy-context">{view.text}</p>}
-     <p id="buddy-text" role="status" aria-live="polite">{message}</p>
-    </div>
     {quoteVisible&&<section className="li-buddy-source" aria-label={chooseLanguage('Đọc thêm · Trích dẫn','Further reading · Quotation')}>
      <div className="li-buddy-source-header">
       <span className="kicker">{chooseLanguage('GÓC DẪN NGUỒN','SOURCE NOTE')}</span>
@@ -174,6 +177,10 @@ export function BuddyDialog({root}:{root:HTMLElement}){
 
      <p id="buddy-quote-context" className="li-quote-context">{quote.comment}</p>
     </section>}
+    <div className="li-buddy-conversation">
+     {message!==view.text&&<p className="li-buddy-context">{view.text}</p>}
+     <p id="buddy-text" role="status" aria-live="polite">{message}</p>
+    </div>
     {view.editorial&&<div className="li-editorial-buddy-quotes" role="group"
      aria-label={chooseLanguage('Nguồn trích dẫn được chọn theo nội dung','Curated lesson quotations')}>
      {view.editorial.quotes.map((candidate,index)=><Button key={candidate.id}

@@ -493,16 +493,16 @@ function Home(){
    </div>
   </motion.aside>
   <div className="hero-actions">
-   <Button variant="primary" className="primary" onClick={()=>openRoute(mirror.route)}
-    aria-label={mirror.route.startsWith('lessonL')?L('Khám phá vì sao · Mở bài học liên quan','Explore why · Open related lesson'):L('Đào sâu · Mở Khảo Chứng','Investigate · Open research')}>
-    <span className="action-icon"><LiIcon name="arrow-right" size={22}/></span>
-    <span>{locale==='en'?L("Đào sâu","Explore why"):mirror.cta}</span>
-   </Button>
    <Button variant="secondary" className="mirror-save-action"
     aria-label={mirror.saved?L('Bỏ lưu câu hỏi','Remove saved question'):L('Lưu câu hỏi','Save question')} aria-pressed={mirror.saved}
     onClick={()=>inquiryFlow().toggleQuestion()}>
     <span className="action-icon"><LiIcon name="bookmark" size={22}/></span>
     <span>{mirror.saved?L('Đã lưu','Saved'):L('Lưu câu hỏi','Save question')}</span>
+   </Button>
+   <Button variant="primary" className="primary" onClick={()=>openRoute(mirror.route)}
+    aria-label={mirror.route.startsWith('lessonL')?L('Khám phá · Mở bài học liên quan','Explore · Open related lesson'):L('Đào sâu · Mở Khảo Chứng','Investigate · Open research')}>
+    <span className="action-icon"><LiIcon name="arrow-right" size={22}/></span>
+    <span>{mirror.route.startsWith('lessonL')?L('Khám phá','Explore'):L('Đào sâu','Investigate')}</span>
    </Button>
   </div>
  </div>;

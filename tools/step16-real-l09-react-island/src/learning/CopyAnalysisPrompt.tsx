@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useEffect,useState} from 'react';
 import {Button} from '../../../../design-system/react/Components';
 import {Text} from '../../../../design-system/react/Atoms';
 
@@ -21,7 +21,7 @@ export function buildAnalysisPrompt(locale:Locale,step:AnalysisStep,data:Analysi
  const stepName:Record<AnalysisStep,[string,string]>={
   guided:['Step 2 · Thử áp dụng','Step 2 · Guided practice'],
   practice:['Step 4 · Làm bài','Step 4 · Independent practice'],
-  feedback:['Step 4/5 · Đối chiếu','Step 4/5 · Feedback'],
+  feedback:['Đối chiếu bài làm','Feedback and review'],
   progress:['Step 5 · Tiến độ','Step 5 · Progress'],
   case:['Phản Chứng · Luận kết đã lưu','Challenge · Saved conclusion']
  };
@@ -72,12 +72,14 @@ export function CopyAnalysisPrompt({locale,step,data}:{
  locale:Locale;step:AnalysisStep;data:AnalysisContext;
 }){
  const [status,setStatus]=useState<'idle'|'copied'|'error'>('idle');
+ const prompt=buildAnalysisPrompt(locale,step,data);
+ useEffect(()=>setStatus('idle'),[prompt]);
  const vi=locale==='vi';
  return <div className="li-learning-copy-prompt" data-li-copy-analysis={step}>
   <Text role="support">{vi?
    'Muốn ChatGPT phân tích bài của ngươi? Copy prompt rồi dán vào cuộc trò chuyện. Không tự gửi dữ liệu.':
    'Want ChatGPT to review your work? Copy and paste the prompt into a chat. Nothing is sent automatically.'}</Text>
-  <Button variant="secondary" onClick={()=>void copyPrompt(buildAnalysisPrompt(locale,step,data))
+  <Button variant="secondary" onClick={()=>void copyPrompt(prompt)
    .then(()=>setStatus('copied')).catch(()=>setStatus('error'))}>
    {status==='copied'?(vi?'Đã copy prompt':'Prompt copied'):(vi?'Copy prompt phân tích':'Copy analysis prompt')}
   </Button>

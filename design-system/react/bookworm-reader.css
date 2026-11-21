@@ -185,3 +185,16 @@
   transition:none!important;
  }
 }
+
+/* Original li. seal adds identity without changing the supplied lesson copy. */
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-source-mark{
+ display:inline-flex;gap:9px;align-items:center;min-width:0;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-source-mark img{
+ display:block;width:29px;height:29px;flex-shrink:0;object-fit:contain;
+}
+@container lab-preview (max-width:440px){
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-reader-source-mark img{
+  width:25px;height:25px;
+ }
+}

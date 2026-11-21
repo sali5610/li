@@ -227,6 +227,17 @@ for(const item of draftItems){
   for(const k of ["question","scene","buddy","observed","unknown"])
    assert.equal(typeof copy[k],"string",item.id+" "+locale+" "+k);
   assert.equal(copy.branches.length,3);
+   const problem=item.case?.localized?.[locale];
+   assert.equal(item.case?.reviewState,"proposed");
+   assert.equal(item.case?.publishState,"draft");
+   assert.equal(item.case?.kind,"fictional_problem_case");
+   for(const key of ["question","scene"])
+    assert.equal(typeof problem?.[key],"string",item.id+" Case "+key);
+   for(const answer of ["right","wrong"]){
+    assert.equal(typeof problem?.options?.[answer],"string");
+    assert.equal(typeof problem?.feedback?.[answer],"string");
+   }
+   assert.notEqual(problem.options.right,problem.options.wrong);
  }
 }
 const mixStart=html.indexOf("const mirrorDrafts=");
@@ -237,15 +248,18 @@ const makeMirrorMix=(seed)=>{
  const random=()=>((state=(Math.imul(state,1664525)+1013904223)>>>0)/4294967296);
  const mix={window:packContext.window,scenarios:scenarios.slice(),
   Math:{random,floor:Math.floor,ceil:Math.ceil}};
- vm.runInNewContext(html.slice(mixStart,mixEnd),mix);
+ vm.runInNewContext(html.slice(mixStart,mixEnd)+
+   ";globalThis.cases=mirrorDraftCases;globalThis.orig=originalMirrorScenarios;",mix);
  return mix;
 };
 const testMix=makeMirrorMix(1);
-assert.equal(testMix.scenarios.length,23,"3 existing problems + 3 published hooks + 17 draft hooks");
+assert.equal(testMix.scenarios.length,40,"6 original + 17 hooks + 17 Problem Cases");
 // Each app load has a new discipline-aware playlist. Check stable identity,
 // source/route parity, different orders, no adjacent or wraparound repeats.
-const signature=item=>item.lessonId||item.key||item.question;
-const expectedItems=[...scenarios.map(signature),...draftItems.map(x=>x.id)].sort();
+const signature=item=>item.key||item.lessonId||item.question;
+const expectedItems=[...scenarios.map(signature),
+ ...draftItems.map(x=>"mirror-draft-"+x.id),
+ ...draftItems.map(x=>"mirror-problem-"+x.id)].sort();
 const observedOrders=new Set();
 for(let seed=1;seed<=32;seed++){
  const shuffled=makeMirrorMix(seed).scenarios;
@@ -257,19 +271,24 @@ for(let seed=1;seed<=32;seed++){
  observedOrders.add(shuffled.map(signature).join("|"));
 }
 assert(observedOrders.size>1,"Mirror discipline sequence changes between app loads");
-const draftMirrors=testMix.scenarios.filter(x=>x.previewState==="draft");
+const draftMirrors=testMix.scenarios.filter(x=>x.previewState==="draft"&&x.type==="hook");
+const draftCases=testMix.scenarios.filter(x=>x.previewState==="draft"&&x.type==="problem");
 assert.equal(draftMirrors.length,17);
-assert(draftMirrors.every(x=>x.type==="hook"&&x.lessonRoute==="research"),
- "Draft teaser CTA must not claim an unpublished lesson route");
+assert.equal(draftCases.length,17);
+assert(draftMirrors.every(x=>x.lessonRoute==="research"),"Draft hooks retain Research fallback");
+assert(draftCases.every(x=>x.caseKey==="draft-case-"+x.lessonId&&x.caseData?.localized?.vi),
+ "Each Problem Case has its own stable ID");
 assert.equal(testMix.scenarios.filter(x=>x.type==="hook"&&x.previewState!=="draft").length,3);
 const problemStart=html.indexOf("function liCurrentProblem(){");
 const problemEnd=html.indexOf("function liChooseResearchBranch",problemStart);
 const draftResearch={scenarios:testMix.scenarios,
- qIndex:testMix.scenarios.findIndex(item=>item.lessonId==="L03-1-1")};
+ mirrorDraftCases:testMix.cases,originalMirrorScenarios:testMix.orig,
+ LI_DRAFT_KEY:"li.private.case-draft.v1",
+ qIndex:testMix.scenarios.findIndex(item=>item.lessonId==="L03-1-1"&&item.type==="hook")};
 assert(draftResearch.qIndex>=0,"Preview lesson remains reachable after shuffle");
 vm.runInNewContext(html.slice(problemStart,problemEnd),draftResearch);
-assert.equal(draftResearch.liCurrentProblem().lessonId,"L03-1-1",
- "Draft Home CTA must preserve its own lesson-specific Research context");
+assert.equal(draftResearch.liCurrentProblem().caseKey,"draft-case-L03-1-1",
+ "Draft hook's Research context resolves its matching Case");
 
 // The 17 authored personal previews link to their corresponding existing
 // invited STAGING lesson, never to a fabricated public or missing route.
@@ -278,10 +297,10 @@ const fullEnd=html.indexOf("/* Draft Home hooks:",fullStart);
 assert(fullStart>=0&&fullEnd>fullStart,"Find canonical real mirror scenarios");
 const realMirrorSandbox={};
 vm.runInNewContext(html.slice(fullStart,fullEnd)+";globalThis.canonical=scenarios;",realMirrorSandbox);
-const allQuestions=[...realMirrorSandbox.canonical,...draftItems.map(x=>({
- type:"hook",lessonId:x.id,lessonRoute:"research",previewState:"draft"
-}))];
-assert.equal(allQuestions.length,23,"23 questions remain available");
+const allQuestions=[...realMirrorSandbox.canonical,
+ ...draftItems.map(x=>({type:"hook",lessonId:x.id,lessonRoute:"research",previewState:"draft"})),
+ ...draftItems.map(x=>({type:"problem",lessonId:x.id,previewState:"draft",caseKey:"draft-case-"+x.id}))];
+assert.equal(allQuestions.length,40,"40 entries, 17 with individual Cases");
 const personalRoutes=Object.fromEntries(draftItems.map(x=>
  [x.id,"draftLesson"+x.id.replace(/[^a-z0-9]/gi,"")]));
 const releasedRoutes={"L03-1-2":"lessonL03","L09-1-2":"lessonL09","L15-2-2":"lessonL15"};
@@ -294,16 +313,16 @@ const mountWindow={liPersonalStudyRoutes:personalRoutes,
 const resolverCtx={window:mountWindow};
 vm.runInNewContext(html.slice(resolverStart,resolverEnd),resolverCtx);
 const links=allQuestions.map(q=>({q,match:resolverCtx.liMirrorRelatedLesson(q)}));
-assert.equal(links.filter(x=>x.match).length,22,
- "17 personal + 3 published hooks + 2 grounded originals; Sociology remains without a guessed lesson");
+assert.equal(links.filter(x=>x.match).length,39,
+ "34 draft entries + 3 published hooks + 2 originals; Sociology unlinked");
 for(const item of links){
  if(!item.match)continue;
  assert.equal(item.match.id,item.q.lessonId,"Each link belongs to the current question, not a shuffled index");
  assert.equal(item.match.route,item.q.previewState==="draft"?personalRoutes[item.q.lessonId]:
   releasedRoutes[item.q.lessonId],"Every link resolves to a real lesson route");
 }
-assert.equal(links.filter(x=>x.q.previewState==="draft"&&x.match).length,17,
- "17/17 personal hook links work in invited staging");
+assert.equal(links.filter(x=>x.q.previewState==="draft"&&x.match).length,34,
+ "All 17 Hook and 17 Case entries link to invited lessons");
 assert.equal(links.find(x=>x.q.fieldId==="sociology")?.match,null,
  "Do not invent a Sociology lesson");
 delete mountWindow.liPersonalStudyRoutes;
@@ -330,4 +349,4 @@ assert.match(homeReact,/mirrorOpensLesson\?L\('Vào bài học','Open lesson'\)/
 assert.match(homeReact,/mirrorOpensLesson\?L\('Vào bài học · Mở bài học liên quan'/,
  "Lesson destination must also be accurate in the accessible label");
 
-console.log("PASS 17 VI/EN Home draft hooks: preview, correct context, safe routing, 3 Wave1 intact");
+console.log("PASS 17 Hook + 17 draft Problem Case entries, case selection and safe lesson routes");

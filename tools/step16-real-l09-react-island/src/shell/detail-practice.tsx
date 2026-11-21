@@ -1,7 +1,7 @@
 import {openRoute} from './app-router.js';
 import React,{useEffect,useId,useRef,useState,useSyncExternalStore} from 'react';
 import {createPortal} from 'react-dom';
-import {Button,Card,Checkbox,Field,Heading,InlineFeedback,Radio,Text,LiIcon} from '../../../../design-system/react/index';
+import {Button,Checkbox,Field,Heading,InlineFeedback,Radio,Text,LiIcon} from '../../../../design-system/react/index';
 import {createFadedT03Flow,fadedT03Phase} from './spell-t03-flow.js';
 import {createLociT13Flow,lociT13Phase} from './spell-t13-flow.js';
 import {createResumeT12Flow,resumeT12Phase} from './spell-t12-flow.js';
@@ -651,8 +651,8 @@ export function NoteDetail(){
   {note.status&&<Text role="body" className="intro">{note.status}</Text>}
   {!note.id||!note.type?<InlineFeedback tone="info" message={copy(
    'Ghi chép này không còn trong Tủ Riêng.','This note is no longer in your private library.')}/>:
-  <>
-   {note.context&&<Card variant="raised" className="library-note-context">
+  <div className="library-note-workspace">
+   {note.context&&<aside className="library-note-context">
     <div className="kicker">{copy('PHẢN CHỨNG · TÌNH HUỐNG GỐC','ORIGINAL CASE CONTEXT')}</div>
     <Heading level={2} role="titleMedium">{note.context.question}</Heading>
     <Text role="body">{note.context.scene}</Text>
@@ -663,22 +663,22 @@ export function NoteDetail(){
     <InlineFeedback tone="info" message={note.context.feedback}/>
     <Text role="support">{note.context.provenance}</Text>
     <Button variant="secondary" onClick={()=>openRoute('case')}>{copy('Làm lại Phản Chứng','Retry the Case')}</Button>
-   </Card>}
-   <Card variant="raised" className="library-note-review">
+   </aside>}
+   {!editing&&<article className="library-note-review">
     <div className="library-note-head">
      <div className="kicker">{copy('NỘI DUNG HIỆN TẠI','CURRENT CONTENT')}</div>
      <ConfirmNoteAction
-      label={copy('Xóa ghi chép và lịch sử phiên bản','Delete note and all versions')}
+      label={copy('Xóa ghi chép','Delete note')}
       description={copy('Xóa ghi chép này? Bạn có 7 giây để hoàn tác sau khi xóa.',
        'Delete this note? You have 7 seconds to undo after deletion.')}
-      danger iconOnly onConfirm={()=>Boolean(app.liNotes?.deleteFromReact(note.type!,note.id!))}/>
+      danger onConfirm={()=>Boolean(app.liNotes?.deleteFromReact(note.type!,note.id!))}/>
     </div>
     <Heading level={2} role="titleMedium">{note.bodyTitle||copy('Luận kết hiện tại','Current text')}</Heading>
     <Text role="body" className="library-entry-body">{note.body}</Text>
     <Text role="support">{note.date}</Text>
-    {!editing&&<Button variant="secondary" onClick={startEdit}>{copy('Chỉnh sửa','Edit')}</Button>}
-   </Card>
-   {editing&&<Card variant="tinted" className="library-note-edit">
+    <Button variant="primary" onClick={startEdit}>{copy('Chỉnh sửa','Edit')}</Button>
+   </article>}
+   {editing&&<section className="library-note-edit">
     <Heading level={2} role="titleMedium">{copy('Chỉnh sửa ghi chép','Edit note')}</Heading>
     <Text role="support">{copy('Lưu tạo phiên bản mới, không xóa bản cũ.','Saving creates a new version, preserving history.')}</Text>
     <Field label={copy('Tiêu đề','Title')} value={title}
@@ -691,18 +691,19 @@ export function NoteDetail(){
      <Button variant="secondary" onClick={()=>{setEditing(false);setMessage('');}}>
       {copy('Hủy','Cancel')}</Button>
     </div>
-   </Card>}
-   <Card variant="raised" className="library-note-history">
+   </section>}
+   <section className="library-note-history">
     <Heading level={2} role="titleMedium">{copy('Lịch sử phiên bản','Version history')}</Heading>
     <Text role="support">{copy('Khôi phục cũng tạo một phiên bản mới, không xóa lịch sử.',
      'Restoring creates a new version and preserves all previous versions.')}</Text>
     <div className="stack-sm" aria-live="polite">
-     {[...note.history].reverse().map((version,index)=><article className="library-version-entry" key={version.version}>
-      <div className="library-version-heading">
+     {[...note.history].reverse().map((version,index)=><details className="library-version-entry"
+      key={version.version} open={index===0}>
+      <summary className="library-version-heading">
        <strong>{copy('Phiên bản ','Version ')}{version.version}
         {index===0?copy(' · Hiện tại',' · Current'):''}</strong>
        <Text role="support">{time(version.at)} · {version.change||copy('Chỉnh sửa','Edited')}</Text>
-      </div>
+      </summary>
       {version.title!==note.title&&<Text role="support">{copy('Tiêu đề lúc đó: ','Title then: ')}
        {version.title}</Text>}
       <Text role="body" className="library-entry-body">{version.body}</Text>
@@ -711,9 +712,9 @@ export function NoteDetail(){
        description={copy('Tạo một phiên bản mới, mọi bản cũ đều giữ nguyên.',
         'Creates a new version, preserving all previous versions.')}
        onConfirm={()=>restore(version.version)}/>} 
-     </article>)}
+     </details>)}
     </div>
-   </Card>
-  </>}
+   </section>
+  </div>}
  </div>;
 }

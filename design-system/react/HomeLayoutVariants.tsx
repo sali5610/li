@@ -10,6 +10,8 @@ import {NotebookInk} from './NotebookInk';
 import {NotebookArt} from './NotebookArt';
 import {BookwormIllustration} from './BookwormIllustration';
 import {VintagePopArt} from './VintagePopArt';
+import {VintagePopCollage} from './VintagePopCollage';
+import {VintagePopStamp} from './VintagePopStamp';
 import './home-layout-variants.css';
 
 /** Presentation only. Both the Lab and a future approved app Home import
@@ -82,11 +84,12 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
     :locale==='vi'?<>Mọi câu hỏi<br/>đều có rễ.</>:<>Every question<br/>has roots.</>}</Heading>
    <Text role="body">{t('Không cần biết tất cả. Chỉ cần không ngừng tò mò.',
     'You needn’t know everything. Just stay curious.')}</Text>
+   {variant==='vintagePop'&&<VintagePopStamp active={saved}/>}
    {variant==='vintagePop'&&<motion.div className="li-pop-home-art" aria-hidden="true"
     initial={reduced?false:{opacity:0,scale:.82,rotate:-14}}
     animate={{opacity:1,scale:1,rotate:0}}
     transition={{duration:reduced?0:.55,delay:reduced?0:.12}}>
-    <VintagePopArt kind="idea" size="spot"/>
+    <VintagePopCollage kind="laoly" size="spot"/>
    </motion.div>}
   </motion.div>
   {variant==='notebook'&&<div className="li-ui-home-notebook-annotation">

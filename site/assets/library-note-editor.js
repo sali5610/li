@@ -299,7 +299,9 @@ function saveFromReact(title,body,baseVersion,fieldId){
  const minimum=active.type==="case"?12:3;
  const assigned=(active.type==="case"?canonicalCaseField(note):null)||
   (fieldId===undefined?(note.fieldId||null):(fieldId||null));
- if(assigned&&!window.liTaxonomyFieldIds?.includes(assigned))
+ const allowedFields=window.liTaxonomyFieldIds||
+  (window.LI_CATALOG_DATA||[]).flatMap(group=>group.fields.map(field=>field.id));
+ if(assigned&&!allowedFields.includes(assigned))
   return {ok:false,message:ui("Chuyên ngành không hợp lệ.","Invalid field.")};
  if(!title||title.length>180||body.length<minimum||body.length>5000)
   return {ok:false,message:"Tiêu đề cần 1–180 ký tự; nội dung cần "+minimum+"–5.000 ký tự."};

@@ -54,7 +54,7 @@ try{
   screenWidth:390,screenHeight:844
  });
  await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
- for(const view of ['journal','guide','library','buddy','breadcrumb','lesson']){
+ for(const view of ['journal','guide','library','buddy','breadcrumbPrivate','breadcrumb','lesson']){
   await send('Page.navigate',{url:target+'?view='+view});
   const report=await wait(async()=>{
    const result=await send('Runtime.evaluate',{
@@ -104,7 +104,7 @@ try{
    throw Error('VISUAL_QA_FAILED '+view+' '+JSON.stringify(report));
   }
  }
- console.log('PASS 6 REAL CSS MOBILE VIEWPORT SCREENS + NATIVE OPEN SHEET 390x844');
+ console.log('PASS 7 REAL CSS MOBILE VIEWPORT SCREENS + NATIVE OPEN SHEET 390x844');
 }finally{
  if(socket){for(const p of pending.values())clearTimeout(p.t);socket.close();}
  proc.kill('SIGTERM');

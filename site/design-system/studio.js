@@ -192,6 +192,9 @@ if(query.has('embed')){
  function fillOptions(select,items){select.innerHTML=items.map(x=>'<option value="'+esc(x)+'">'+esc(x)+'</option>').join('');select.disabled=items.length===1;}
 
  const initial={variant:query.get('variant'),state:query.get('state'),lang:query.get('lang'),width:query.get('width')};
+ // Overview does not render a story yet: choose the device viewport before its first story click.
+ if([...width.options].some(option=>option.value===initial.width))width.value=initial.width;
+ else if(isMobile())width.value='390x844';
  let resizeObserver;
  function previewURL(){
   const options=new URLSearchParams({embed:'1',story:active.id,variant:v.value,state:s.value,lang:language.value});
@@ -310,8 +313,7 @@ if(query.has('embed')){
    v.value=safe(initial.variant,item.variants);
    s.value=safe(initial.state,item.states);
    language.value=initial.lang==='en'?'en':'vi';
-   if([...width.options].some(option=>option.value===initial.width))width.value=initial.width;
-   else if(isMobile())width.value='390x844';
+   // Viewport is initialized once so Overview -> Story retains the device frame.
   }
   updateNav();renderDetails();refresh();
  }

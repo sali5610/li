@@ -16,6 +16,9 @@
  clip-path:polygon(0 34%,8% 23%,18% 12%,30% 4%,40% 0,60% 0,
   70% 4%,82% 12%,92% 23%,100% 34%,100% 100%,0 100%);
  background:var(--forest)}
+/* Portal 04 has a shallower, exposed footplate. Stop the interior at the
+ * stone base so its rectangular lower edge cannot protrude below the arch. */
+.li-portal-category-card[data-portal-variant="4"] .li-portal-category-interior{bottom:12%}
 /* Forest-green interior remains visible until the illustration finishes
  * loading AND decoding. Never flash an unfinished image below the arch. */
 .li-portal-category-interior>img{width:100%;height:100%;object-fit:cover;object-position:center;

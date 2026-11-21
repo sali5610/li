@@ -178,4 +178,18 @@ invited=false;
 assert.equal(mark.valid("lesson",personalId),false,"Unverified users cannot add personal bookmarks");
 assert.equal(mark.valid("lesson","L09-1-2"),true,"Three released lesson bookmarks remain available");
 invited=true;
-console.log("PASS Tủ Riêng: published + invited personal visits, route dedupe, gated bookmarks, two bookmark tabs and original private note flows");
+// React Quay Lại should advertise a real due T02 review, not a fabricated
+// reminder or a blanket "due" badge for unscheduled lessons.
+const reactLibrary=fs.readFileSync(path.join(__dirname,
+ "../tools/step16-real-l09-react-island/src/shell/guide-library.tsx"),"utf8");
+assert.match(reactLibrary,/LiSpellPractice\\?\\.getT02Status\\?\\.\\(item\\.id\\)/,
+ "Recent and Resume lesson rows must read the real T02 lesson schedule");
+assert(reactLibrary.includes("status?.awaitingRating===true")&&
+ reactLibrary.includes("typeof status?.dueAt==='number'&&status.dueAt<=now"),
+ "Only an awaiting self-rating or genuinely due review may surface T02");
+assert(reactLibrary.includes("'li:private-personal-change'")&&
+ reactLibrary.includes("'visibilitychange'")&&reactLibrary.includes("60_000"),
+ "Returning to Continue and crossing a due minute updates visible review status");
+assert(reactLibrary.includes("onClick={()=>openRoute(item.route)}"),
+ "Continue still opens the exact lesson and its existing Progress/T02 entry");
+console.log("PASS Tủ Riêng: 20 eligible lessons and truthful T02 due/rating visibility, existing private history and notes");

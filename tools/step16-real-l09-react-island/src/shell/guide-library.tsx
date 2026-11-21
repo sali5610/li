@@ -3,7 +3,7 @@ import curriculum from '../../../../content/curriculum/legacy-catalog.v1.json';
 import {personalStudyRoute} from '../learning/released-lessons.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button,Field,FilterGroup,Heading,InlineFeedback,Text,LiIcon} from '../../../../design-system/react/index';
+import {Button,FilterGroup,Heading,InlineFeedback,SearchField,Text,LiIcon} from '../../../../design-system/react/index';
 // Retain the canonical legacy stylesheet for the existing staging bundle contract;
 // the visible field-guide rows below no longer render legacy MethodTile cards.
 import '../../../../design-system/react/legacy.css';
@@ -118,8 +118,10 @@ export function Guide(){
   <div className="guide-catalog-layout">
    <div className="guide-index">
     <div className="guide-find">
-     <Field id="li-react-method-search" label={copy('Tìm trong 13 phương pháp','Search all 13 methods')}
-      type="search" value={query} onChange={event=>setQuery(event.target.value)}
+     <SearchField inputId="li-react-method-search"
+      label={copy('Tìm trong 13 phương pháp','Search all 13 methods')}
+      value={query} onQueryChange={setQuery} showSubmit={false}
+      submitLabel={copy('Tìm','Search')} clearLabel={copy('Xóa tìm kiếm','Clear search')}
       placeholder="Method of Loci, T01, Triệu Ức..."/>
      <FilterGroup label={copy('Bộ lọc nhóm kỹ thuật','Method category filters')}
       options={view.categories.map(item=>({value:item.key,label:item.label}))}
@@ -390,8 +392,6 @@ function Resume(){
  const tab=view.bookmarkTab;
  const tabClick=(next:'lesson'|'question')=>app.liLibraryShelf?.selectBookmarkTab(next);
  return <div className="section-shell li-react-library" data-li-react-screen="resume">
-  <Button variant="ghost" onClick={()=>openRoute('library')} className="library-back-link">
-   <LiIcon name="chevron-left" size={18}/> {copy('Tủ Riêng','Private Library')}</Button>
   <div className="kicker">{copy('HÀNH TRÌNH CỦA BẠN','YOUR LEARNING HISTORY')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Quay lại','Continue')}</Heading>
   <Text role="body" className="intro">{copy(
@@ -444,8 +444,6 @@ function Collection(){
   .filter(item=>(filter==='all'||item.type===filter)&&
    (!q||[item.title,item.body,item.date].join(' ').toLocaleLowerCase('vi').includes(q)));
  return <div className="section-shell li-react-library" data-li-react-screen="collection">
-  <Button variant="ghost" onClick={()=>openRoute('library')} className="library-back-link">
-   <LiIcon name="chevron-left" size={18}/> {copy('Tủ Riêng','Private Library')}</Button>
   <div className="kicker">{copy('GHI CHÉP CỦA BẠN','YOUR NOTES')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Bộ sưu tập','Collection')}</Heading>
   <Text role="body" className="intro">{copy(
@@ -454,8 +452,10 @@ function Collection(){
   <div className="library-collection-layout">
    <div className="library-collection-main">
     <div className="library-collection-tools">
-     <Field id="li-react-note-search" label={copy('Tìm ghi chép','Search notes')}
-      type="search" value={search} onChange={event=>setSearch(event.target.value)}
+     <SearchField inputId="li-react-note-search"
+      label={copy('Tìm ghi chép','Search notes')}
+      value={search} onQueryChange={setSearch} showSubmit={false}
+      submitLabel={copy('Tìm','Search')} clearLabel={copy('Xóa tìm kiếm','Clear search')}
       placeholder={copy('Tìm theo tiêu đề hoặc nội dung','Search title or content')}/>
      <FilterGroup label={copy('Lọc ghi chép','Filter notes')}
       options={[

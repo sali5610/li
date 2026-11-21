@@ -1,45 +1,223 @@
-/* App React adoption: Guide + 3 private shelves.
- * All visual values derive from the current canonical li. design tokens. */
-.li-react-guide .li-guide-tools{align-items:start}
-.li-react-guide .li-react-method-filters{display:flex;flex-wrap:wrap;gap:var(--li-space-2)}
-.li-react-guide .li-react-method-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--li-space-4);margin-top:var(--li-space-6)}
-.li-react-guide .li-react-method-grid>[data-li-legacy="method-tile"]{width:100%;min-width:0;height:100%}
-.li-react-guide .li-atom-field{min-width:0}
-.li-react-guide .guide-mentor{min-width:0;overflow:hidden}
-.li-react-library .library-groups{display:grid;gap:var(--li-space-7);margin-top:var(--li-space-6)}
-.li-react-library .library-group{display:grid;gap:var(--li-space-4)}
-.li-react-library .library-group-header{display:flex;justify-content:space-between;align-items:center;gap:var(--li-space-4)}
-.li-react-library .library-group-header>div{flex:1;min-width:0}
-.li-react-library .library-group-header h2,.li-react-library .library-group-header p{margin:0}
-.li-react-library .library-resume-previews>.li-ds-card,.li-react-library .surface-grid>.li-ds-card{min-width:0;display:grid;align-content:start;gap:var(--li-space-3)}
-.li-react-library .library-list-item{display:flex;align-items:center;flex-wrap:wrap;gap:var(--li-space-3);min-width:0}
+/* Methods field guide + personal workspace. G2 visual draft.
+ * Surface, colour and spacing inherit canonical li. tokens. */
+.li-react-guide,.li-react-library{min-width:0}
+.li-react-guide .li-atom-text,.li-react-library .li-atom-text{overflow-wrap:anywhere}
+.li-react-guide :is(button,a):focus-visible,.li-react-library :is(button,a,[role="tabpanel"]):focus-visible{
+ outline:2px solid var(--moss);outline-offset:3px
+}
+.li-react-guide .guide-opening{
+ display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;
+ gap:var(--li-space-6);padding-bottom:var(--li-space-6);border-bottom:1px solid var(--rule)
+}
+.li-react-guide .guide-opening .intro{max-width:62ch}
+.li-react-guide .guide-opening-mark{
+ display:grid;place-items:center;gap:var(--li-space-2);min-width:108px;
+ color:var(--moss);padding:var(--li-space-4);border:1px solid var(--rule);
+ border-radius:80px 80px 5px 5px;transform:rotate(3deg)
+}
+.li-react-guide .guide-opening-mark span{font-size:.73rem;letter-spacing:.15em;font-weight:700}
+.li-react-guide .guide-catalog-layout{
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(194px,240px);
+ gap:clamp(var(--li-space-5),3vw,var(--li-space-7));align-items:start;margin-top:var(--li-space-6)
+}
+.li-react-guide .guide-index,.li-react-guide .guide-index-contents{min-width:0}
+.li-react-guide .guide-find{display:grid;gap:var(--li-space-3)}
+.li-react-guide .guide-find .li-atom-field{min-width:0;max-width:520px}
+.li-react-guide .li-react-method-filters{
+ display:flex;flex-wrap:wrap;gap:var(--li-space-2);align-items:center
+}
+.li-react-guide .guide-result-count{margin:0;text-align:left;color:var(--muted)}
+.li-react-guide .guide-index-contents{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ column-gap:var(--li-space-6);row-gap:var(--li-space-7);margin-top:var(--li-space-6)
+}
+.li-react-guide .guide-chapter{min-width:0}
+.li-react-guide .guide-chapter-heading{
+ display:flex;align-items:center;gap:var(--li-space-3);
+ border-bottom:1px solid var(--moss);padding-bottom:var(--li-space-3);margin-bottom:var(--li-space-2)
+}
+.li-react-guide .guide-chapter-heading .li-atom-heading{min-width:0;flex:1;margin:0}
+.li-react-guide .guide-chapter-heading>.li-atom-text{font-variant-numeric:tabular-nums;margin:0}
+.li-react-guide .guide-chapter-icon{color:var(--moss);display:grid;place-items:center}
+.li-react-guide .guide-method-list{display:grid}
+.li-react-guide .guide-method-entry{
+ display:grid;grid-template-columns:38px minmax(0,1fr) 20px;
+ gap:var(--li-space-3);align-items:start;width:100%;min-height:82px;
+ padding:var(--li-space-4) var(--li-space-2);
+ border:0;border-bottom:1px solid var(--rule);border-radius:0;
+ background:transparent;color:inherit;text-align:left;cursor:pointer;
+ transition:background-color .18s ease,transform .18s ease
+}
+.li-react-guide .guide-method-entry:hover{
+ background:color-mix(in srgb,var(--moss) 6%,transparent);transform:translateX(2px)
+}
+.li-react-guide .guide-method-entry>svg{align-self:center;color:var(--moss);flex:none}
+.li-react-guide .guide-method-number{
+ color:var(--moss);font-size:.83rem;font-weight:800;font-variant-numeric:tabular-nums;
+ letter-spacing:.04em;padding-top:2px
+}
+.li-react-guide .guide-method-description{display:grid;gap:var(--li-space-1);min-width:0}
+.li-react-guide .guide-method-description strong{font-weight:700;line-height:1.4}
+.li-react-guide .guide-method-original{font-size:.85rem;color:var(--muted);line-height:1.45}
+.li-react-guide .guide-method-purpose{font-size:.91rem;line-height:1.6}
+.li-react-guide .guide-method-recommendation{
+ display:inline-flex;align-items:center;gap:var(--li-space-1);margin-top:var(--li-space-2);
+ font-size:.76rem;font-weight:700;color:var(--moss)
+}
+.li-react-guide .guide-no-results{display:grid;justify-items:start;gap:var(--li-space-3)}
+.li-react-guide .guide-margin-note{
+ display:grid;gap:var(--li-space-3);position:sticky;top:var(--li-space-6);
+ padding:var(--li-space-5);border-left:2px solid var(--moss);
+ background:color-mix(in srgb,var(--cream) 50%,transparent)
+}
+.li-react-guide .guide-margin-note .li-atom-text{margin:0}
+.li-react-guide .guide-mentor-illustration{
+ width:min(100%,168px);height:auto;justify-self:center;object-fit:contain
+}
+/* Private library: one clear resume action; notes, saved items and rhythm are secondary. */
+.li-react-library .library-introduction{max-width:70ch}
+.li-react-library .library-workspace{display:grid;gap:var(--li-space-7);margin-top:var(--li-space-6)}
+.li-react-library .library-resume-feature{
+ display:grid;gap:var(--li-space-4);
+ padding:clamp(var(--li-space-4),3vw,var(--li-space-6));
+ background:color-mix(in srgb,var(--moss) 9%,var(--cream));
+ border-left:3px solid var(--moss)
+}
+.li-react-library .library-feature-heading,.li-react-library .library-group-header{
+ display:flex;justify-content:space-between;align-items:start;gap:var(--li-space-4)
+}
+.li-react-library .library-feature-heading>div,.li-react-library .library-group-header>div{min-width:0;flex:1}
+.li-react-library .library-feature-heading :is(.li-atom-heading,.kicker),
+.li-react-library .library-group-header :is(.li-atom-heading,.li-atom-text){margin:0}
+.li-react-library .library-feature-grid{
+ display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);
+ gap:var(--li-space-6);align-items:start
+}
+.li-react-library .library-feature-primary,.li-react-library .library-feature-secondary{
+ display:grid;gap:var(--li-space-3);min-width:0
+}
+.li-react-library .library-feature-secondary{
+ padding-left:var(--li-space-5);border-left:1px solid var(--rule)
+}
+.li-react-library .library-workspace-columns{
+ display:grid;grid-template-columns:minmax(0,1.55fr) minmax(220px,.8fr);
+ gap:clamp(var(--li-space-5),4vw,var(--li-space-7));align-items:start
+}
+.li-react-library .library-workspace-main,.li-react-library .library-workspace-side{
+ display:grid;gap:var(--li-space-5);min-width:0
+}
+.li-react-library .library-workspace-side>section{display:grid;gap:var(--li-space-3)}
+.li-react-library .library-workspace-side .library-group-header{margin-bottom:var(--li-space-2)}
+.li-react-library .library-rhythm{
+ border-top:1px solid var(--rule);padding-top:var(--li-space-5)
+}
+.li-react-library .library-rhythm>.li-ds-button{justify-self:start}
+.li-react-library .library-note-previews{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--li-space-6)
+}
+.li-react-library .library-note-preview{
+ display:grid;gap:var(--li-space-3);min-width:0;border-top:1px solid var(--rule);
+ padding-top:var(--li-space-3)
+}
+.li-react-library .library-preview{display:grid;justify-items:start;gap:var(--li-space-2);min-width:0}
+.li-react-library .library-preview>.li-atom-text{margin:0}
+.li-react-library .library-clamp{
+ display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden
+}
+.li-react-library .library-create-actions{display:flex;gap:var(--li-space-3);flex-wrap:wrap}
+.li-react-library .library-list-item{
+ display:flex;align-items:center;gap:var(--li-space-3);min-width:0;
+ flex-wrap:wrap;border-bottom:1px solid var(--rule);padding:var(--li-space-3) 0
+}
 .li-react-library .library-list-copy{flex:1;min-width:min(160px,100%);overflow-wrap:anywhere}
-.li-react-library .library-list-copy strong{display:block;line-height:var(--li-leading-body)}
-.li-react-library .library-list-copy .li-atom-text{margin:var(--li-space-2) 0 0;color:var(--muted)}
-.li-react-library .library-preview{display:grid;gap:var(--li-space-2);min-width:0}
-.li-react-library .library-preview>.li-atom-text{margin:0;overflow-wrap:anywhere}
-.li-react-library .library-preview .library-clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.li-react-library .li-library-empty{display:grid;justify-items:start;gap:var(--li-space-3)}
-.li-react-library .library-bookmark-tabs{display:flex;gap:var(--li-space-2)}
-.li-react-library .library-bookmark-tabs [role="tab"][aria-selected="true"]{background:var(--moss);color:var(--cream)}
+.li-react-library .library-list-copy strong{display:block;line-height:1.5}
+.li-react-library .library-list-copy .li-atom-text{
+ margin:var(--li-space-1) 0 0;color:var(--muted);font-size:.84rem
+}
+.li-react-library .library-list-item>.li-ds-button{flex-shrink:0}
+.li-react-library .library-list-item>.library-icon-action{min-width:44px;min-height:44px}
+.li-react-library .li-library-empty{display:grid;justify-items:start;gap:var(--li-space-3);padding:var(--li-space-3) 0}
+.li-react-library .li-library-empty .li-atom-text{margin:0}
+.li-react-library .library-back-link{margin-bottom:var(--li-space-4);justify-self:start}
+.li-react-library .library-resume-layout{
+ display:grid;grid-template-columns:minmax(0,1.5fr) minmax(245px,.8fr);
+ gap:clamp(var(--li-space-5),4vw,var(--li-space-7));
+ align-items:start;margin-top:var(--li-space-6)
+}
+.li-react-library .library-resume-stream{display:grid;gap:var(--li-space-7);min-width:0}
+.li-react-library .library-resume-section{display:grid;align-content:start;gap:var(--li-space-3);min-width:0}
+.li-react-library .library-resume-section .li-atom-heading{margin:0}
+.li-react-library .library-resume-section>.kicker{margin:0}
+.li-react-library .library-bookmark-section{
+ padding:var(--li-space-5);border-left:2px solid var(--moss);
+ background:color-mix(in srgb,var(--cream) 45%,transparent)
+}
+.li-react-library .library-bookmark-tabs{display:flex;gap:var(--li-space-2);flex-wrap:wrap}
+.li-react-library .library-bookmark-tabs [role="tab"][aria-selected="true"]{
+ background:var(--moss);color:var(--cream)
+}
+.li-react-library .library-collection-layout{
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,240px);
+ gap:clamp(var(--li-space-5),4vw,var(--li-space-7));align-items:start;margin-top:var(--li-space-6)
+}
+.li-react-library .library-collection-main{min-width:0}
+.li-react-library .library-collection-tools{display:grid;gap:var(--li-space-3);margin-bottom:var(--li-space-5)}
+.li-react-library .library-collection-tools .li-atom-field{max-width:520px;min-width:0}
 .li-react-library .library-filter-row{display:flex;flex-wrap:wrap;gap:var(--li-space-2)}
-.li-react-library .library-entry-body{white-space:pre-wrap;overflow-wrap:anywhere}
-.li-react-library .library-collection-entry{display:grid;gap:var(--li-space-3)}
-.li-react-library .library-collection-entry .li-atom-text{margin:0}
-.li-react-library .library-note-actions,.li-react-library .library-create-actions{display:flex;gap:var(--li-space-3);flex-wrap:wrap}
+.li-react-library .library-result-count{color:var(--muted);margin:0}
+.li-react-library .library-collection-list{display:grid}
+.li-react-library .library-collection-entry{
+ display:grid;grid-template-columns:minmax(0,1fr) auto;
+ gap:var(--li-space-4);align-items:center;padding:var(--li-space-5) 0;
+ border-top:1px solid var(--rule);min-width:0
+}
+.li-react-library .library-collection-entry:last-child{border-bottom:1px solid var(--rule)}
+.li-react-library .library-collection-entry-main{display:grid;gap:var(--li-space-2);min-width:0}
+.li-react-library .library-collection-entry-main>.li-atom-text{margin:0}
+.li-react-library .library-entry-body{
+ white-space:pre-wrap;overflow-wrap:anywhere;
+ display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;overflow:hidden
+}
+.li-react-library .library-note-actions{display:grid;justify-items:end;gap:var(--li-space-2)}
+.li-react-library .library-note-actions>.library-danger-link{
+ font-size:.83rem;max-width:170px;text-align:right;color:var(--li-color-danger-fill)
+}
+.li-react-library .library-collection-empty{display:grid;justify-items:start;gap:var(--li-space-3)}
+.li-react-library .library-collection-side{
+ position:sticky;top:var(--li-space-6);display:grid;gap:var(--li-space-3);
+ padding-left:var(--li-space-5);border-left:2px solid var(--moss)
+}
+.li-react-library .library-collection-side .li-atom-text{margin:0}
+.li-react-library .library-collection-actions{display:grid;gap:var(--li-space-3);justify-items:start}
 .li-react-library .library-danger-link{color:var(--li-color-danger-fill)}
-.li-react-library .library-back-link{margin-bottom:var(--li-space-5)}
-.li-react-library .library-detail-groups{display:grid;gap:var(--li-space-5);margin-top:var(--li-space-6)}
-.li-react-library .library-detail-groups>.li-ds-card{display:grid;gap:var(--li-space-4)}
-.li-react-library .library-collection-create{border-top:1px solid var(--rule);margin-top:var(--li-space-7);padding-top:var(--li-space-5)}
-.li-react-library .library-activity{display:flex;justify-content:space-between;align-items:center;gap:var(--li-space-4);flex-wrap:wrap}
-@media(max-width:900px){.li-react-guide .li-react-method-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1050px){
+ .li-react-guide .guide-index-contents{grid-template-columns:1fr}
+ .li-react-library .library-workspace-columns{grid-template-columns:minmax(0,1.3fr) minmax(220px,.8fr)}
+}
+@media(max-width:800px){
+ .li-react-guide .guide-catalog-layout{grid-template-columns:1fr}
+ .li-react-guide .guide-index-contents{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .li-react-guide .guide-margin-note{position:static;grid-row:1;grid-template-columns:90px minmax(0,1fr)}
+ .li-react-guide .guide-mentor-illustration{grid-row:span 3;width:100%}
+ .li-react-library .library-workspace-columns,.li-react-library .library-resume-layout,
+ .li-react-library .library-collection-layout{grid-template-columns:1fr}
+ .li-react-library .library-collection-side{position:static}
+}
 @media(max-width:600px){
- /* Preserve the original compact two-column iPhone Guide layout. */
- .li-react-guide .li-react-method-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--li-space-3)}
- .li-react-guide .li-react-method-grid>[data-li-legacy="method-tile"]{
-  min-width:0;padding:var(--li-space-3);gap:var(--li-space-2);overflow-wrap:anywhere
- }
- .li-react-library .library-resume-previews,.li-react-library .surface-grid.cols2{grid-template-columns:1fr}
+ .li-react-guide .guide-opening{grid-template-columns:1fr}
+ .li-react-guide .guide-opening-mark{display:none}
+ .li-react-guide .guide-index-contents{grid-template-columns:1fr}
+ .li-react-guide .guide-margin-note{grid-template-columns:70px minmax(0,1fr);padding:var(--li-space-3)}
+ .li-react-guide .guide-method-entry{grid-template-columns:36px minmax(0,1fr) 18px}
+ .li-react-library .library-feature-heading{align-items:start;flex-direction:column}
+ .li-react-library .library-feature-grid,.li-react-library .library-note-previews{grid-template-columns:1fr}
+ .li-react-library .library-feature-secondary{padding:var(--li-space-4) 0 0;border-left:0;border-top:1px solid var(--rule)}
+ .li-react-library .library-collection-entry{grid-template-columns:1fr}
+ .li-react-library .library-note-actions{display:flex;justify-content:space-between;align-items:center}
+ .li-react-library .library-note-actions>.library-danger-link{text-align:left}
  .li-react-library .library-list-item>.li-ds-button:not(.library-icon-action){flex:1}
+}
+@media(prefers-reduced-motion:reduce){
+ .li-react-guide .guide-method-entry{transition:none;transform:none}
+ .li-react-guide .guide-method-entry:hover{transform:none}
 }

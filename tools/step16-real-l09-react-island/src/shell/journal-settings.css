@@ -118,3 +118,113 @@
 }
 
 #page-settings .li-reminder-channel-stack{display:grid;gap:var(--li-space-4)}
+
+
+/* UX draft · Day-first Journal: calendar and selected date share one workspace.
+   Activity trend stays available but no longer crowds the primary day view. */
+#page-dashboard .li-react-journal .li-diary-layout{gap:var(--li-space-6)}
+#page-dashboard .li-react-journal .li-diary-workspace{
+ display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);
+ align-items:start;gap:var(--li-space-5);min-width:0
+}
+#page-dashboard .li-react-journal .li-diary-workspace>*{min-width:0}
+#page-dashboard .li-react-journal .li-diary-month{
+ box-shadow:none;border-color:var(--rule);background:var(--paper);
+ padding:var(--li-space-5)
+}
+#page-dashboard .li-react-journal .li-diary-date{
+ border-color:transparent;border-radius:var(--li-radius-sm,6px);
+ background:transparent;min-height:48px
+}
+#page-dashboard .li-react-journal .li-diary-date:hover{background:var(--paper-2)}
+#page-dashboard .li-react-journal .li-diary-date.recorded{background:var(--li-color-nav-selected-fill)}
+#page-dashboard .li-react-journal .li-diary-date.selected{
+ outline:none;border-color:var(--moss);box-shadow:inset 0 0 0 1px var(--moss)
+}
+#page-dashboard .li-react-journal .li-diary-date:focus-visible,
+#page-dashboard .li-react-journal .li-diary-bar-day:focus-visible{
+ outline:3px solid var(--li-role-focus-ring,var(--olive));outline-offset:2px
+}
+#page-dashboard .li-react-journal .li-diary-dot{
+ min-width:18px;min-height:18px;display:grid;place-items:center;
+ border-radius:50%;font-size:var(--li-type-caption)
+}
+#page-dashboard .li-react-journal .li-diary-detail{gap:var(--li-space-4)}
+#page-dashboard .li-react-journal .li-diary-detail>.li-atom-heading{
+ padding-block-end:var(--li-space-3);border-bottom:1px solid var(--rule)
+}
+#page-dashboard .li-react-journal .li-diary-day-grid{display:grid;gap:var(--li-space-4)}
+#page-dashboard .li-react-journal .li-diary-panel{
+ display:grid;align-content:start;gap:var(--li-space-3);
+ border-bottom:1px solid var(--rule);padding-bottom:var(--li-space-4);min-width:0
+}
+#page-dashboard .li-react-journal .li-diary-panel .li-atom-heading,
+#page-dashboard .li-react-journal .li-diary-panel .li-atom-text{margin:0}
+#page-dashboard .li-react-journal .li-diary-panel .li-diary-facts>div{
+ padding-block:var(--li-space-1) var(--li-space-2)
+}
+#page-dashboard .li-react-journal .li-diary-counters{margin:var(--li-space-2) 0}
+#page-dashboard .li-react-journal .li-diary-counters>div{
+ border:0;border-inline-start:1px solid var(--rule);
+ padding:var(--li-space-2) var(--li-space-3);text-align:start
+}
+#page-dashboard .li-react-journal .li-diary-counters>div:first-child{border-inline-start:0;padding-inline-start:0}
+#page-dashboard .li-react-journal .li-diary-counters strong{color:var(--moss)}
+#page-dashboard .li-react-journal .li-diary-trend{
+ min-width:0;border-block:1px solid var(--rule);padding:var(--li-space-3) 0
+}
+#page-dashboard .li-react-journal .li-diary-trend summary{
+ display:flex;align-items:center;gap:var(--li-space-3);cursor:pointer;
+ min-height:44px;font-weight:var(--li-weight-600);color:var(--moss)
+}
+#page-dashboard .li-react-journal .li-diary-trend summary:focus-visible{
+ outline:3px solid var(--li-role-focus-ring,var(--olive));outline-offset:2px
+}
+#page-dashboard .li-react-journal .li-diary-trend-content{
+ display:grid;gap:var(--li-space-3);padding-block:var(--li-space-3)
+}
+#page-dashboard .li-react-journal .li-diary-bars{max-width:100%;min-width:0}
+
+/* UX draft · Settings as readable groups, not a wall of nested raised cards. */
+#page-settings .li-react-settings .settings-groups{gap:var(--li-space-8)}
+#page-settings .li-react-settings .settings-group{
+ border-top:1px solid var(--rule);padding-top:var(--li-space-5)
+}
+#page-settings .li-react-settings .settings-group:first-child{border-top:0;padding-top:0}
+#page-settings .li-react-settings .settings-group-grid{gap:var(--li-space-5)}
+#page-settings .li-react-settings .li-react-setting-card.li-ds-card{
+ border:1px solid var(--rule);box-shadow:none;background:var(--paper);
+ padding:var(--li-space-5)
+}
+#page-settings .li-react-settings .li-react-companion-card,
+#page-settings .li-react-settings .li-react-backup-card,
+#page-settings .li-react-settings .li-react-privacy-card{grid-column:1/-1}
+#page-settings .li-react-settings .li-react-companion-card.li-ds-card{
+ background:var(--paper-2)
+}
+#page-settings .li-react-settings .buddy-address-grid{
+ grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--li-space-5)
+}
+#page-settings .li-react-settings .buddy-address-grid>*{min-width:0}
+#page-settings .li-react-settings .li-react-commit{min-height:44px}
+#page-settings .li-react-settings .li-react-setting-card .path-list{
+ display:grid;gap:var(--li-space-4)
+}
+#page-settings .li-react-settings .li-react-privacy-card.li-ds-card{
+ background:transparent;border-inline:0;border-bottom:0;padding-inline:0
+}
+@media(max-width:960px){
+ #page-settings .li-react-settings .buddy-address-grid{grid-template-columns:1fr}
+}
+@media(max-width:780px){
+ #page-dashboard .li-react-journal .li-diary-workspace{grid-template-columns:1fr}
+ #page-settings .li-react-settings .settings-group-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+ #page-dashboard .li-react-journal .li-diary-month{padding:var(--li-space-3)}
+ #page-dashboard .li-react-journal .li-diary-calendar{gap:var(--li-space-1)}
+ #page-dashboard .li-react-journal .li-diary-date{min-height:44px}
+ #page-dashboard .li-react-journal .li-diary-counters{gap:0}
+ #page-dashboard .li-react-journal .li-diary-counters>div{padding:var(--li-space-2)}
+ #page-settings .li-react-settings .li-react-setting-card.li-ds-card{padding:var(--li-space-4)}
+}

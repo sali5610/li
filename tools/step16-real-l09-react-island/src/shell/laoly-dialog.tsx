@@ -70,7 +70,7 @@ function BuddyDialog({root}:{root:HTMLElement}){
    setView(next);setMessage(next.text);setAvatar(next.avatar);
    setExpanded(false);setChallenge(false);setQuoteIndex(0);setOpen(true);
    // Reopening the dialog must start at the conversation, not the last quote scroll.
-   requestAnimationFrame(()=>content.current?.scrollTo({top:0,behavior:'instant'}));
+   requestAnimationFrame(()=>content.current?.scrollTo({top:0,behavior:'auto'}));
    root.dataset.trigger=restore.current;
   };
   const onClose=()=>close();

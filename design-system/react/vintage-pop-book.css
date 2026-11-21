@@ -36,8 +36,8 @@
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-catalog-art{
  width:100%;max-height:150px;align-self:start;justify-self:center;
  display:grid;place-items:center;overflow:hidden;
- background:linear-gradient(115deg,#8bddb4,#c6a5eb);
- border-bottom:1.5px solid #214532;
+ background:linear-gradient(115deg,#d5e1d8,#dccfea);
+ border-bottom:1.5px solid #214d3a;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-catalog-art>.li-pop-art{
  max-height:160px;width:auto;
@@ -61,7 +61,7 @@
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-result-art{
  height:90px;width:96px;display:grid;place-items:center;align-self:start;
- background:#8bddb4;border:1.5px solid #214532;
+ background:#d5e1d8;border:1.5px solid #214d3a;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-result-art>.li-pop-art{
  max-width:86px;max-height:82px;
@@ -72,8 +72,8 @@
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-guide-art,
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-workspace-art{
  min-height:154px;display:flex;align-items:center;justify-content:flex-end;
- padding:8px 18px;border:2px solid #214532;
- background:linear-gradient(115deg,#214734 0%,#214734 55%,#c6a5eb 55%,#8bddb4 100%);
+ padding:8px 18px;border:2px solid #214d3a;
+ background:linear-gradient(115deg,#214d3a 0%,#214d3a 55%,#dccfea 55%,#d5e1d8 100%);
  overflow:hidden;position:relative;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-guide-art::before,
@@ -86,9 +86,9 @@
  max-width:220px;max-height:160px;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-method-plate{
- padding:12px 12px 0;background:#fff5de;border:2px solid #214532;
+ padding:12px 12px 0;background:#fff5de;border:2px solid #214d3a;
  display:grid;align-content:start;justify-items:center;
- box-shadow:5px 5px 0 #c6a5eb;
+ box-shadow:5px 5px 0 #dccfea;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-method-plate .li-pop-art{
  max-height:140px;
@@ -104,11 +104,11 @@
  grid-template-rows:minmax(240px,auto) 1fr auto;
  grid-template-areas:"intro diagram" "intro chapters" "folio action";
  min-height:650px;column-gap:0;row-gap:0;
- border:12px solid #234c37;border-radius:11px 20px 20px 11px;
+ border:12px solid #214d3a;border-radius:11px 20px 20px 11px;
  background:
  linear-gradient(90deg,#fff0d0 0%,#fff7e8 3%,#fff9ee 47%,#ebdcc4 49.5%,
- #cbb69c 50%,#fff9ea 51.5%,#fffaf0 98%,#eddbbf 100%);
- box-shadow:0 9px 0 #132d22,9px 14px 0 #ec8790,16px 19px 0 #204633;
+ #cbb69c 50%,#fff8ef 51.5%,#fffaf0 98%,#eddbbf 100%);
+ box-shadow:0 9px 0 #183b2d,9px 14px 0 #a05a6e,16px 19px 0 #214d3a;
  overflow:hidden;perspective:1200px;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson::before{
@@ -122,9 +122,9 @@
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson-bookmark{
  position:absolute;z-index:4;top:-2px;right:35px;width:40px;height:74px;
- background:#c6a5eb;border:2px solid #224734;
+ background:#dccfea;border:2px solid #214d3a;
  clip-path:polygon(0 0,100% 0,100% 100%,50% 79%,0 100%);
- box-shadow:4px 5px 0 #204633;pointer-events:none;
+ box-shadow:4px 5px 0 #214d3a;pointer-events:none;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson .li-pop-book-left{
  grid-area:intro;position:relative;min-width:0;max-width:none;
@@ -134,14 +134,14 @@
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson .li-flow-lesson-top .li-atom-heading{
  font:500 clamp(33px,3.8vw,58px)/1.05 Georgia,'Times New Roman',serif;
- letter-spacing:-.048em;color:#214532;
+ letter-spacing:-.048em;color:#214d3a;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson .li-flow-lesson-top>.li-atom-text{
- font:400 17px/1.65 Georgia,'Times New Roman',serif;color:#243e31;
+ font:400 17px/1.65 Georgia,'Times New Roman',serif;color:#183b2d;
  max-width:35ch;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson .li-flow-lesson-top>.li-atom-badge{
- width:max-content;max-width:100%;background:#c6a5eb;
+ width:max-content;max-width:100%;background:#dccfea;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson-illustration{
  margin-top:auto;display:flex;justify-content:center;max-width:100%;
@@ -178,13 +178,13 @@
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-book-chapter .li-flow-index{
  width:34px;height:34px;flex-shrink:0;display:grid;place-items:center;
- background:#c6a5eb;color:#204633;border-radius:50%;letter-spacing:0;
+ background:#dccfea;color:#214d3a;border-radius:50%;letter-spacing:0;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-book-chapter>div{
  display:grid;gap:7px;min-width:0;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-book-chapter .li-atom-heading{
- font:500 clamp(21px,2vw,30px)/1.1 Georgia,serif;color:#204733;
+ font:500 clamp(21px,2vw,30px)/1.1 Georgia,serif;color:#214d3a;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-book-chapter .li-atom-text{
  color:#403e33;font:400 15px/1.5 var(--li-font-ui);
@@ -196,10 +196,10 @@
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson>.li-ds-button{
  grid-area:action;align-self:end;justify-self:end;
  margin:0 36px 28px 12px;max-width:calc(100% - 48px);
- background:#8bddb4;position:relative;z-index:2;
+ background:#d5e1d8;position:relative;z-index:2;
 }
 .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson:focus-within{
- box-shadow:0 9px 0 #132d22,9px 14px 0 #ec8790,16px 19px 0 #204633;
+ box-shadow:0 9px 0 #183b2d,9px 14px 0 #a05a6e,16px 19px 0 #214d3a;
 }
 @keyframes li-pop-book-ink{
  from{opacity:0;transform:translateY(10px) scale(.94)}
@@ -214,7 +214,7 @@
   grid-template-rows:auto auto auto auto auto;
   grid-template-areas:"intro" "diagram" "chapters" "folio" "action";
   border-width:8px;border-radius:8px 15px 15px 8px;
-  min-height:0;box-shadow:0 7px 0 #132d22,6px 12px 0 #ec8790;
+  min-height:0;box-shadow:0 7px 0 #183b2d,6px 12px 0 #a05a6e;
   background:linear-gradient(90deg,#fff3dc,#fffaf0 6%,#fffaf0 94%,#edd8b8);
  }
  .li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson::before{

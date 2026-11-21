@@ -108,7 +108,7 @@ export function Journal(){
    'Xem thể trạng tự check-in, nhịp học đã áp dụng và hoạt động thực sự ghi nhận. Không phải điểm sức khỏe hay năng lực học tập.',
    'Your self-reported check-ins, study rhythm and actual activity. Not a health or learning ability score.')}</Text>
   <div className="stack-sm li-diary-layout">
-   <Card variant="raised" className="li-diary-month">
+   <Card variant="flat-study" className="li-diary-month">
     <div className="li-diary-month-heading">
      <div><div className="kicker">{copy('LỊCH HOẠT ĐỘNG','ACTIVITY CALENDAR')}</div>
       <Heading level={2} role="titleLarge">{view.monthLabel}</Heading></div>
@@ -165,7 +165,7 @@ export function Journal(){
      <Text role="support" aria-live="polite">{view.dayStatus}</Text>
     </Card>
    </section>
-   <Card variant="tinted" className="li-diary-privacy">
+   <Card variant="flat-study" className="li-diary-privacy">
     <div><div className="kicker">{copy('QUYỀN RIÊNG TƯ','PRIVACY')}</div>
      <Heading level={2} role="titleMedium">{copy('Lưu trên thiết bị','Device-first storage')}</Heading>
      <Text role="support" aria-live="polite">{view.consentStatus}</Text>
@@ -252,7 +252,7 @@ export function Settings(){
       'Choose a study rhythm and how Lao Ly speaks.')}</Text>
     </div>
     <div className="settings-group-grid">
-     <Card variant="raised" className="li-react-setting-card li-react-language-card">
+     <Card variant="flat-study" className="li-react-setting-card li-react-language-card">
       <div className="kicker">{copy('NGÔN NGỮ TOÀN APP','APP LANGUAGE')}</div>
       <Heading level={2} role="titleMedium">{copy('Ngôn ngữ','Language')}</Heading>
       <Text role="support">{copy(
@@ -266,7 +266,7 @@ export function Settings(){
          onClick={()=>app.liLanguage?.set(id)}>{label}</Button>)}
       </div>
      </Card>
-     <Card variant="raised" className="li-react-setting-card">
+     <Card variant="flat-study" className="li-react-setting-card">
       <div className="kicker">{copy('HỌC TẬP','LEARNING')}</div>
       <Heading level={2} role="titleMedium">{copy('Nhịp học của bạn','Your study rhythm')}</Heading>
       <Text role="support">{copy('Lão Lý đồng hành theo nhịp bạn chọn.','Lao Ly adjusts to your chosen pace.')}</Text>
@@ -279,7 +279,7 @@ export function Settings(){
       </div>
       <Text role="support" aria-live="polite" className="state-note">{view.modeFeedback}</Text>
      </Card>
-     <Card variant="raised" className="li-react-setting-card">
+     <Card variant="flat-study" className="li-react-setting-card">
       <div className="kicker">{copy('NGƯỜI ĐỒNG HÀNH','COMPANION')}</div>
       <div className="settings-buddy-heading">
        <Heading level={2} role="titleMedium">Lão Lý</Heading>
@@ -326,7 +326,7 @@ export function Settings(){
       'Manage sync, backups and privacy.')}</Text>
     </div>
     <div className="settings-group-grid">
-     <Card variant="raised" className="li-react-setting-card">
+     <Card variant="flat-study" className="li-react-setting-card">
       <div className="kicker">{copy('SAO LƯU MỘT PHẦN','PARTIAL BACKUP')}</div>
       <Heading level={3} role="titleMedium">{copy('Ghi chú & Dấu Trang','Notes & Bookmarks')}</Heading>
       <div className="path-list">
@@ -369,7 +369,7 @@ export function Settings(){
       'Nhập tệp thay thế ghi chú và Dấu Trang hiện có sau khi xác nhận. Đây không phải bản sao toàn bộ tài khoản trước khi xóa dữ liệu máy.',
       'Import replaces existing notes and bookmarks after confirmation. This is not a complete account backup before clearing device data.')}</Text>
      </Card>
-     <Card variant="raised" className="li-react-setting-card">
+     <Card variant="flat-study" className="li-react-setting-card">
       <div className="kicker">{copy('QUYỀN RIÊNG TƯ','PRIVACY')}</div>
       <Heading level={3} role="titleMedium">{copy('Kiểm soát thuộc về bạn','You stay in control')}</Heading>
       <Text role="body">{copy(

@@ -1,4 +1,5 @@
 import React from 'react';
+import {motion,useReducedMotion} from 'motion/react';
 import {Button} from './Components';
 import {Heading,Text} from './Atoms';
 import {HomeMirrorShell} from './Templates';
@@ -38,6 +39,12 @@ export const homeLayoutVariants:readonly {id:HomeLayoutVariant;vi:string;en:stri
 export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
  question,scene,source,saved,onPrevious,onNext,onExplore,onSave,onCheckin}:HomeLayoutProps){
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
+ const reduced=useReducedMotion();
+ const entrance=(delay:number)=>variant==='notebook'&&!reduced?{
+  initial:{opacity:0,y:17},
+  animate:{opacity:1,y:0},
+  transition:{duration:.48,delay,ease:'easeOut' as const}
+ }:{};
  return <section className="li-ui-home" data-home-layout={variant} lang={locale}
   aria-label={t('Khám phá layout Đại Sảnh','Home layout composition')}>
   {variant==='bookworm'&&<div className="li-ui-home-bookworm-masthead" aria-hidden="true">
@@ -49,12 +56,12 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
   </div>}
   <img className="li-ui-home-backdrop" src={backgroundSrc} alt="" aria-hidden="true"/>
   <div className="li-ui-home-tint" aria-hidden="true"/>
-  <div className="li-ui-home-intro">
+  <motion.div className="li-ui-home-intro" {...entrance(.05)}>
    <span className="li-ui-home-kicker">li. · {t('ĐẠI SẢNH','THE HALL')}</span>
    <Heading level={1} role="display">{locale==='vi'?<>Mọi câu hỏi<br/>đều có rễ.</>:<>Every question<br/>has roots.</>}</Heading>
    <Text role="body">{t('Không cần biết tất cả. Chỉ cần không ngừng tò mò.',
     'You needn’t know everything. Just stay curious.')}</Text>
-  </div>
+  </motion.div>
   {variant==='notebook'&&<div className="li-ui-home-notebook-annotation">
    <NotebookAnnotation text={t('Viết xuống câu hỏi, rồi để trí tò mò dẫn đường.',
     'Jot down the question; let curiosity lead the way.')} tone="blue"/>
@@ -62,8 +69,10 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
   {variant==='bookworm'&&<div className="li-ui-home-bookworm-art" aria-hidden="true">
    <BookwormIllustration kind="stack"/>
   </div>}
-  <div className="li-ui-home-mirror">
-   <HomeMirrorShell artwork={<img src={mirrorArtSrc} alt=""/>}
+  <motion.div className="li-ui-home-mirror" {...entrance(.16)}>
+   <HomeMirrorShell artwork={<motion.img src={mirrorArtSrc} alt=""
+    whileHover={variant==='notebook'&&!reduced?{scale:1.035}:undefined}
+    transition={{duration:.55,ease:'easeOut'}}/>}
     artworkLabel={t('Minh họa câu hỏi trong gương','Question artwork in the mirror')}
     title={t('GƯƠNG VẠN VẤN','MIRROR OF QUESTIONS')}
     question={question}
@@ -75,15 +84,15 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
       <LiIcon name="chevron-right" size={18}/>
      </Button>
     </div>}/>;
-  </div>
-  <aside className="li-ui-home-guide" aria-label={t('Lão Lý kể chuyện','Lao Ly explains')}>
+  </motion.div>
+  <motion.aside className="li-ui-home-guide" {...entrance(.27)} aria-label={t('Lão Lý kể chuyện','Lao Ly explains')}>
    <img src={avatarSrc} alt="" loading="lazy" width={84} height={84}/>
    <div className="li-ui-home-guide-copy">
     <span className="li-ui-home-guide-source">{source}</span>
     <ChatBubble text={scene} surface="forest"/>
    </div>
-  </aside>
-  <div className="li-ui-home-actions">
+  </motion.aside>
+  <motion.div className="li-ui-home-actions" {...entrance(.32)}>
    <Button variant="secondary" onClick={onCheckin}>
     <LiIcon name="check" size={18}/> {t('Check-in','Check in')}
    </Button>
@@ -93,6 +102,6 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
    <Button variant="secondary" onClick={onSave} aria-pressed={saved}>
     <LiIcon name="bookmark" size={18}/> {saved?t('Đã lưu','Saved'):t('Lưu câu hỏi','Save')}
    </Button>
-  </div>
+  </motion.div>
  </section>;
 }

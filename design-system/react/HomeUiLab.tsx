@@ -1,4 +1,5 @@
 import React,{useEffect,useMemo,useState} from 'react';
+import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {createRoot} from 'react-dom/client';
 import {Button} from './Components';
 import {Heading,Text,Badge} from './Atoms';
@@ -78,6 +79,7 @@ function Lab(){
  const [questionIndex,setQuestionIndex]=useState(0);
  const [notice,setNotice]=useState('');
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
+ const reduced=useReducedMotion();
  const activeFlow=appLabFlows.find(item=>item.id===flow)!;
  const activeIndex=activeFlow.steps.indexOf(page);
  const allPages=useMemo(()=>appLabPages,[]);
@@ -129,8 +131,16 @@ function Lab(){
   const item=allPages.find(item=>item.id===id)!;
   return locale==='vi'?item.vi:item.en;
  };
- const preview=(target:PageId,style:LayoutKey,mini=false)=><section
-  key={target+'-'+style} className="li-ui-lab-preview"
+ const preview=(target:PageId,style:LayoutKey,mini=false,slot='primary')=><motion.section
+  key={target+'-'+style+'-'+slot} className="li-ui-lab-preview"
+  initial={reduced?false:{opacity:0,y:mini?15:24,scale:mini?.992:.986}}
+  animate={mini?undefined:{opacity:1,y:0,scale:1}}
+  whileInView={mini&&!reduced?{opacity:1,y:0,scale:1}:undefined}
+  viewport={{once:true,amount:.06}}
+  exit={reduced?undefined:{opacity:0,y:-12,scale:.995}}
+  transition={{duration:reduced?0:mini?.38:.44,
+   delay:mini&&!reduced?Math.min(activeFlow.steps.indexOf(target),5)*.04:0,
+   ease:'easeOut'}}
   data-visual-theme={style==='vintagePop'?'vintage-pop':style==='bookworm'?'bookworm':undefined}
   data-mini={mini?'true':'false'} aria-label={label(target)+' / '+style}>
   <header className="li-ui-lab-preview-label">
@@ -141,7 +151,7 @@ function Lab(){
   <div className="li-ui-lab-viewport" data-viewport={viewport}>
    {renderPage(target,style)}
   </div>
- </section>;
+ </motion.section>;
  return <main className="li-ui-lab" lang={locale} data-li-react-ui-lab="mounted">
   <header className="li-ui-lab-header">
    <div className="li-ui-lab-intro">
@@ -224,8 +234,10 @@ function Lab(){
     </nav>
     <div className="li-ui-lab-stage" data-gallery={mode==='gallery'?'true':'false'}
      data-compare={compare&&mode==='focus'?'true':'false'}>
-     {mode==='gallery'?activeFlow.steps.map(id=>preview(id,layout,true)):
-      <>{preview(page,layout)}{compare?preview(page,other):null}</>}
+     <AnimatePresence initial={false} mode="sync">
+      {mode==='gallery'?activeFlow.steps.map(id=>preview(id,layout,true)):
+       [preview(page,layout),...(compare?[preview(page,other,false,'compare')]:[])]}
+     </AnimatePresence>
     </div>
     <div className="li-ui-lab-understage">
      <div className="li-ui-lab-actions">

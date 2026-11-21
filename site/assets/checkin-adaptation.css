@@ -94,3 +94,9 @@ body:has(#checkin-modal.open) .laoly-support{visibility:hidden!important;opacity
  #checkin-modal .dialog{height:calc(100svh - var(--li-space-6));max-height:calc(100svh - var(--li-space-6))}
  #checkin-modal .checkin-scroll{padding:var(--li-space-3)}
 }
+
+/* Check-in question progress uses the same accessible DS Progress atom as lessons. */
+#checkin-modal .li-checkin-progress .li-checkin-progress-bar{
+ display:block;inline-size:100%;block-size:var(--li-space-3);margin:var(--li-space-2) 0 0;
+ accent-color:var(--moss)
+}

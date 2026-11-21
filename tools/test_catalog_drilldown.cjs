@@ -12,11 +12,11 @@ assert(Array.isArray(groups));
 const fields=groups.flatMap(x=>x.fields);
 const courses=fields.flatMap(x=>x.courses);
 const lessons=courses.flatMap(x=>x.lessons);
-assert.equal(groups.length,8);
+assert.equal(groups.length,5);
 assert.equal(fields.length,15);
 assert.equal(courses.length,45);
 assert.equal(lessons.length,135);
-assert.equal(new Set(groups.map(x=>x.id)).size,8);
+assert.equal(new Set(groups.map(x=>x.id)).size,5);
 assert.equal(new Set(fields.map(x=>x.id)).size,15);
 assert.equal(new Set(courses.map(x=>x.id)).size,45);
 assert.equal(new Set(lessons.map(x=>x.id)).size,135);
@@ -76,6 +76,7 @@ const document={
 };
 const window={
  LI_CATALOG_DATA:groups,
+ LI_CATALOG_GROUP_ALIASES:manifestContext.window.LI_CATALOG_GROUP_ALIASES,
  history,location,localStorage,
  navigate:route=>navigation.push(route),
  addEventListener:(name,handler)=>{winHandlers[name]=handler},
@@ -91,11 +92,22 @@ function click(kind,value){
  host.listeners.click({target,preventDefault(){},stopPropagation(){}});
 }
 function displayed(s){return descendants(host).some(e=>e.textContent.includes(s));}
-assert.equal(descendants(host).filter(x=>x.className.split(/\s+/).includes("catalog-card")).length,8,"root eight groups");
-click("open-group","technology");
-assert(displayed("Công nghệ"));
-assert(findButton("open-field","ux-design"));
-click("open-field","ux-design");
+assert.equal(descendants(host).filter(x=>x.className.split(/\s+/).includes("catalog-card")).length,5,"root five UNESCO groups");
+assert.equal(groups[0].id,"arts-humanities");
+assert.equal(manifestContext.window.LI_CATALOG_GROUP_ALIASES.technology,"ict");
+click("open-group","arts-humanities");
+assert(findButton("filter-category","history"),"Category filters must be visible");
+click("filter-category","history");
+assert(findButton("open-field","world-history"),"History category must show its field");
+assert(!findButton("open-field","chinese"),"Filtering must hide unrelated fields");
+click("filter-category","all");
+assert(findButton("open-field","chinese"),"All must restore the fields");
+click("crumb","");
+
+click("open-group","ict");
+assert(displayed("Công nghệ thông tin"));
+assert(findButton("open-field","hci"));
+click("open-field","hci");
 assert(displayed("Nền tảng"));
 assert(displayed("Trung cấp"));
 assert(displayed("Chuyên sâu"));
@@ -120,7 +132,7 @@ click("crumb","3");
 click("open-lesson","L03-1-2");
 assert.equal(navigation.at(-1),"lessonL03");
 assert.equal(new URL(location.href).searchParams.get("lesson"),"L03-1-2");
-assert.equal(new URL(location.href).searchParams.get("catalog"),"technology/ux-design/C03-1");
+assert.equal(new URL(location.href).searchParams.get("catalog"),"ict/hci/C03-1");
 // Draft-only courses still display an explicit 0/3 bar, without fabricated completion.
 window.liCatalog.openCourse("language","chinese","C01-1");
 assert(displayed("0/3 bài đã hoàn thành"));
@@ -132,4 +144,4 @@ assert.equal(descendants(bar)[0].style.width,"0%");
 assert.equal(typeof winHandlers.popstate,"function");
 // No Wave 2/3 published from these outline navigation changes.
 assert.equal(lessons.filter(l=>l.published).length,3);
-console.log("PASS Tàng Thư IA: 8/15/45/135, 3 published routes, drill-down, 1/3 true progress, draft visibility, browser URLs");
+console.log("PASS Tàng Thư IA: 5/15/45/135, 3 published routes, drill-down, 1/3 true progress, draft visibility, browser URLs");

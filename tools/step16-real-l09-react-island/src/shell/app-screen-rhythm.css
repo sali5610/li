@@ -77,3 +77,19 @@
  :root.li-auth-verified .page.active :where([data-li-react-screen])
   :where(.action-row)>.li-ds-button{max-width:100%}
 }
+
+
+/* The three React overlays keep their own focus/state controllers; only
+ * shared geometry and token rhythm are adopted. No new modal framework. */
+:root.li-auth-verified :where(.li-react-buddy-shell,.li-react-note-confirm,.modal[data-react-owner="checkin"])
+ :where(.dialog){box-sizing:border-box;max-inline-size:min(100%,720px);min-inline-size:0}
+:root.li-auth-verified :where(.li-react-buddy-shell,.li-react-note-confirm,.modal[data-react-owner="checkin"])
+ :where(.action-row){display:flex;flex-wrap:wrap;gap:var(--li-space-3)}
+:root.li-auth-verified :where(.li-react-buddy-shell,.li-react-note-confirm,.modal[data-react-owner="checkin"])
+ :where(.dialog,fieldset,textarea){min-inline-size:0}
+:root.li-auth-verified :where(.li-react-buddy-shell,.li-react-note-confirm,.modal[data-react-owner="checkin"])
+ :where(h2){overflow-wrap:anywhere;text-wrap:balance}
+@media(max-width:600px){
+ :root.li-auth-verified :where(.li-react-note-confirm,.modal[data-react-owner="checkin"])
+  .action-row>.li-ds-button{flex:1 1 auto}
+}

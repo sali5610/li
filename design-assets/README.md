@@ -9,15 +9,16 @@
 | [Lão Lý](lao-ly/README.md) | **17**: 10 expression illustrations + 5 mini head icons + 2 loading/error scenes | 9 byte-identical aliases under `site/assets/`; 10-pose library sources are retained | Uploaded and traceable. Individual assets approved as recorded; whole visual identity G2 remains open |
 | [Home background](home/README.md) | **2**: current iPhone and landscape WebP | Homepage CSS & Component Library image specimens | New PO-supplied artwork, original pixel dimensions retained |
 | Discipline landscapes | **15**: `discipline/*.webp` | React/native field cards + detail | New PO-supplied image set (including HCI and AI) |
+| [Group portal overlays](portals/README.md) | **7**: `portals/cong-moi-01..07.webp` transparent alpha derivatives | 7 byte-identical `site/assets/portals/` aliases in Studio / React component | Imported from PO-supplied PNG ZIP, resized for responsive review; G2 review pending |
 | [Brand marks](brand/README.md) | **3**: SVG seal, SVG favicon, PNG Apple touch icon | Header, favicon and app icon | Canonical copies added using exact existing Git blobs |
 | Lão Lý historical contact sheet | 1 review reference (not counted above) | No current source of icon truth | Review archive; icon thumbnails superseded by five clean-edge minis |
 | Inline non-Home legacy art | **4 embedded WebP data URIs** in `site/assets/li-layout.css` | Shelf, book, roots, wood | Retired Home data URIs removed; unrelated art untouched |
 
-That is **37 separately managed image files** (17 + 2 + 15 + 3), plus a historical 1-file review contact sheet. These are **not** all generated or proposed art assets.
+That is **44 separately managed image files** (17 + 2 + 15 + 7 + 3), plus a historical 1-file review contact sheet. These are **not** all generated or proposed art assets.
 
 ## Known gaps — no false complete claims
 
-- **25 planned concept PNGs** in the Notion UI Illustration Asset Library: **8 group portals + 6 discipline windows + 8 subject books + 3 Home entrances**. Notion contains checklist/specs and chat-file references; current GitHub main does not contain the expected files. Not all are Human PO approved. Do **not** auto-publish pending drafts or count naming/checklist items as uploaded binaries.
+- **Portal masters:** 7 PO-supplied transparent PNGs exist in the original uploaded `Portal(1).zip`, but GitHub archives only their 7 resized WebP derivatives so far, not byte-exact original PNG files. Studio can review all seven; this is not final G2 approval. The wider concept list (8 group portals, 6 windows, 8 books, 3 entrances) remains a separate planning inventory; avoid treating the other concept PNGs as uploaded.
 - **Individual discipline landscapes**: all 15 now have GitHub binaries and app references; that does not imply academic-content release or blanket visual-identity sign-off.
 - **Four non-Home CSS-embedded illustrations** remain (`--shelf-url`, `--book-url`, `--roots-url`, `--wood-url`), unchanged.
 - **Source-file provenance** for the Home/brand binaries: the exact deployed raster/SVG bytes are mirrored here, but the original upstream editable design/vector/large render, if any, is not verified.

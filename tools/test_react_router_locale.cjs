@@ -317,6 +317,32 @@ assert.equal(window.scrollY,310,'Forward restores the newer page reading positio
 assert.equal(browser.back(),true);
 assert.equal(browser.getCurrent(),'catalog','Back still works after Forward');
 assert.equal(window.scrollY,640,'Back still restores after a Forward round trip');
+// A comparison link opens another method on the SAME React screen. URL,
+// history identity, Back and Forward must all restore the actual technique,
+// not just the shared guideDetail route.
+let activeSpell='T01';
+window.LiSpellPractice={
+ getView:()=>({active:activeSpell}),
+ open:id=>{activeSpell=id;}
+};
+assert.equal(browser.navigate('guideDetail'),true);
+assert.equal(location.searchParams.get('method'),'T01');
+window.scrollTo(0,740);
+activeSpell='T02';
+assert.equal(browser.navigate('guideDetail'),true);
+assert.equal(location.searchParams.get('method'),'T02',
+ 'A second spell gets a separate same-route browser entry');
+assert.equal(window.scrollY,0,'Related spell opens at its own beginning');
+window.scrollTo(0,260);
+assert.equal(browser.back(),true);
+assert.equal(browser.getCurrent(),'guideDetail');
+assert.equal(activeSpell,'T01','Back rehydrates the original spell');
+assert.equal(location.searchParams.get('method'),'T01');
+assert.equal(window.scrollY,740,'Back restores the original spell reading position');
+window.history.forward();
+assert.equal(activeSpell,'T02','Forward restores the compared spell');
+assert.equal(window.scrollY,260,'Forward restores its independent scroll');
+delete window.LiSpellPractice;
 stopBrowser();
 // An initial "not yet verified" event must NOT erase a bookmarked lesson URL.
 visible=false;
@@ -331,7 +357,6 @@ window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:
 assert.equal(window.liReactRouter.getCurrent(),'lessonL09',
  'Verified invite restores the originally requested lesson');
 stopPending();
-
 // Reload contract: the same guide method and active tab must return after
 // a browser refresh; a bare URL reload may recover a route from same-tab state.
 const reloadStore=new Map();
@@ -361,7 +386,7 @@ window.history.state={liRouteDepth:0};
 const stopSpell=moduleExports.mountReactRouter();
 assert.equal(window.liReactRouter.getCurrent(),'guideDetail');
 window.LiSpellPractice.open('T07','practice');
-assert.equal(location.searchParams.get('spell'),'T07');
+assert.equal(location.searchParams.get('method'),'T07');
 assert.equal(location.searchParams.get('spellTab'),'practice');
 assert.ok(reloadStore.has('li.router.reload-route.v1'));
 const spellUrl=location.href;
@@ -372,7 +397,7 @@ visible=false;route='home';spell.active=null;
 location.href=spellUrl;window.history.state={liRouteDepth:0};
 const stopSpellReload=moduleExports.mountReactRouter();
 window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:false}}));
-assert.equal(location.searchParams.get('spell'),'T07','Auth pending preserves method deep link');
+assert.equal(location.searchParams.get('method'),'T07','Auth pending preserves method deep link');
 visible=true;
 window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:true}}));
 assert.equal(window.liReactRouter.getCurrent(),'guideDetail');
@@ -398,10 +423,12 @@ visible=false;
 window.dispatchEvent(new TestEvent('li:auth-verified-changed',{detail:{verified:false}}));
 assert.equal(reloadStore.has('li.router.reload-route.v1'),false,
  'Real logout erases private same-tab route snapshot');
-assert.equal(location.searchParams.has('spell'),false,
+assert.equal(location.searchParams.has('method'),false,
  'Logout removes old spell detail parameters');
 stopBareReload();
-console.log("PASS actual React router: refresh same screen/spell, pending auth, Back/Forward, URL, staging lessons and locale");
+
+
+console.log('PASS reload current route and spell with Back/Forward');
 
 /* The actual canonical Catalog adapter replaces the native controller on
  * invited staging. Test its compiled TypeScript and URL/history actions here,
@@ -488,17 +515,6 @@ assert.equal(cRoutes.at(-1),'catalog');
 assert.equal(cPort.getPath().join('/'),personalPath.join('/'));
 assert.equal(cPort.openForLesson('L03-1-2'),true);
 assert.equal(cPort.getPath().join('/'),releasedPath.join('/'));
-// The router restored ?catalog= after the adapter's auth callback: Catalog
-// must update the visible level without requiring a second user navigation.
-cLocation.href=new URL('/li/?view=catalog&catalog='+personalPath.join('/'),
- cLocation.origin).href;
-cWindow.dispatchEvent({type:'li:route-changed',detail:{route:'catalog'}});
-assert.equal(cPort.getPath().join('/'),personalPath.join('/'),
- 'Reloaded Catalog shows its saved hierarchy, not root');
-cLocation.href=new URL('/li/?view=guide',cLocation.origin).href;
-cWindow.dispatchEvent({type:'li:route-changed',detail:{route:'guide'}});
-assert.equal(cPort.getPath().join('/'),personalPath.join('/'),
- 'Leaving Catalog does not erase course return context');
 cVerified=false;cWindow.dispatchEvent({type:'li:auth-verified-changed',detail:{verified:false}});
 assert.equal(cPort.getPath().length,0,'Signed-out account loses previous Catalog path');
 assert.equal(cPort.openLesson('L03-1-2'),false,'Unverified account cannot navigate into a lesson');

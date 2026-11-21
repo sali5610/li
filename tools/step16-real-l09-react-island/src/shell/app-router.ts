@@ -38,6 +38,7 @@ let restoringScroll=false;
 // refresh flow removed its query parameters. The browser URL always wins.
 const reloadRouteKey='li.router.reload-route.v1';
 const spellIdPattern=/^T(?:0[1-9]|1[0-3])$/;
+const validSpell=(id:string|null):id is string=>!!id&&spellIdPattern.test(id);
 function isReload():boolean{
  try{
   const navigation=window.performance?.getEntriesByType?.('navigation')?.[0] as
@@ -45,7 +46,7 @@ function isReload():boolean{
   return navigation?.type==='reload';
  }catch{return false;}
 }
-const reloadParams=['lesson','view','catalog','chapter','spell','spellTab','spellLesson'] as const;
+const reloadParams=['lesson','view','catalog','chapter','method','spellTab','spellLesson'] as const;
 function saveReloadRoute(route:string){
  try{
   if(route==='home'){window.sessionStorage?.removeItem(reloadRouteKey);return;}
@@ -92,23 +93,21 @@ function hasExplicitRoute():boolean{
  const query=new URLSearchParams(window.location.search);
  return query.has('lesson')||query.has('view')||query.has('catalog');
 }
-type SpellView={active:string;tab?:string;lessonId?:string|null};
-function spellPort(){
- return (window as Window&{LiSpellPractice?:{
-  getView:()=>SpellView|null;
-  open:(id:string,tab?:string,lessonId?:string|null)=>void;
- }}).LiSpellPractice;
-}
-function restoreSpellRoute(){
+type SpellView={active:string;tab?:'guide'|'practice';lessonId?:string|null};
+type SpellPort={getView:()=>SpellView|null;open:(id:string,tab?:'guide'|'practice',lessonId?:string|null)=>void};
+const spellPort=()=>(window as Window&{LiSpellPractice?:SpellPort}).LiSpellPractice;
+function restoreSpellFromUrl(route:string):boolean{
+ if(route!=='guideDetail'||!canVisit())return false;
  const query=new URLSearchParams(window.location.search);
- const id=query.get('spell');
- if(!id||!spellIdPattern.test(id)||!canVisit())return;
+ const id=query.get('method');
+ if(!validSpell(id))return false;
  const tab=query.get('spellTab')==='practice'?'practice':'guide';
  const lessonId=query.get('spellLesson');
  const port=spellPort(),current=port?.getView?.();
- if(current?.active===id&&current.tab===tab&&
-  (current.lessonId||null)===(lessonId||null))return;
- port?.open?.(id,tab,lessonId);
+ if(!port||current?.active===id&&(current.tab||'guide')===tab&&
+  (current.lessonId||null)===(lessonId||null))return false;
+ port.open(id,tab,lessonId);
+ return true;
 }
 function ensureScrollEntry():number{
  const existing=Number(window.history.state?.liScrollEntryId);
@@ -158,14 +157,22 @@ function writeUrl(route:string,remember=false){
   preview.get(route);
  if(lesson)url.searchParams.set('lesson',lesson);
  else url.searchParams.delete('lesson');
+ // Every selected spell is directly refreshable and preserves its comparison history.
+ const spellView=route==='guideDetail'?spellPort()?.getView?.():null;
+ const spell=spellView?.active||null;
+ if(validSpell(spell))url.searchParams.set('method',spell);
+ else url.searchParams.delete('method');
+ if(route==='guideDetail'&&validSpell(spell)){
+  if(spellView?.tab==='practice')url.searchParams.set('spellTab','practice');
+  else url.searchParams.delete('spellTab');
+  if(spellView?.lessonId)url.searchParams.set('spellLesson',spellView.lessonId);
+  else url.searchParams.delete('spellLesson');
+ }else{
+  url.searchParams.delete('spellTab');url.searchParams.delete('spellLesson');
+ }
  // Keep non-lesson screens directly addressable, including Settings and Search.
  if(lesson||route==='home')url.searchParams.delete('view');
  else url.searchParams.set('view',route);
- if(route!=='guideDetail'){
-  url.searchParams.delete('spell');
-  url.searchParams.delete('spellTab');
-  url.searchParams.delete('spellLesson');
- }
  if(!lesson){
   url.searchParams.delete('chapter');
   if(route!=='catalog')url.searchParams.delete('catalog');
@@ -257,7 +264,6 @@ export function mountReactRouter():()=>void{
   appUiStore.getState().setRoute(route);
   window.liNativeRouteEffects?.afterNavigate(route);
   applyScroll(restoreScroll,route);
-  if(route==='guideDetail'&&!remember)restoreSpellRoute();
   saveReloadRoute(route);
   if(focus)page.focus({preventScroll:true});
   window.dispatchEvent(new CustomEvent('li:route-changed',{detail:{route}}));
@@ -300,7 +306,7 @@ export function mountReactRouter():()=>void{
     if(destination!==active)change(destination,{
      remember:false,syncUrl:!hasExplicitRoute()
     });
-    else if(destination==='guideDetail')restoreSpellRoute();
+    restoreSpellFromUrl(destination);
    }
    return;
   }
@@ -334,27 +340,25 @@ export function mountReactRouter():()=>void{
    }
    browserDepth=next;
   }else if(restored!==active&&history.length)history.pop();
-  if(restored!==active)change(restored,{remember:false,syncUrl:false,restoreScroll:true});
+  const sameRoute=restored===active;
+  if(!sameRoute)change(restored,{remember:false,syncUrl:false,restoreScroll:true});
   else{
-   // Catalog can push its own history entries without changing React screens.
    rememberScroll();
    currentScrollEntry=ensureScrollEntry();
-   if(active==='guideDetail')restoreSpellRoute();
   }
+  // Preserve compared spell's own position across browser Back/Forward.
+  if(restoreSpellFromUrl(restored)&&sameRoute)applyScroll(true,restored);
  };
  const onSpellView=()=>{
   if(active!=='guideDetail'||!canVisit())return;
   const view=spellPort()?.getView?.();
-  if(!view?.active||!spellIdPattern.test(view.active))return;
-  const url=new URL(window.location.href);
-  url.searchParams.set('spell',view.active);
-  if(view.tab==='practice')url.searchParams.set('spellTab','practice');
-  else url.searchParams.delete('spellTab');
-  if(view.lessonId)url.searchParams.set('spellLesson',view.lessonId);
-  else url.searchParams.delete('spellLesson');
-  const next=url.pathname+url.search+url.hash;
-  if(next!==window.location.pathname+window.location.search+window.location.hash)
-   window.history.replaceState({...window.history.state,liRoute:active},'',next);
+  if(!validSpell(view?.active||null))return;
+  const previous=new URLSearchParams(window.location.search).get('method');
+  if(validSpell(previous)&&previous!==view!.active){
+   rememberScroll();
+   writeUrl('guideDetail',true);
+   applyScroll(false,'guideDetail');
+  }else writeUrl('guideDetail',false);
   saveReloadRoute(active);
  };
  window.addEventListener('li:spell-view-changed',onSpellView);
@@ -365,7 +369,7 @@ export function mountReactRouter():()=>void{
   if(requested!==active)change(requested,{
    remember:false,syncUrl:!hasExplicitRoute()
   });
-  else if(requested==='guideDetail')restoreSpellRoute();
+  restoreSpellFromUrl(requested);
  }
  return ()=>{
   window.removeEventListener('li:spell-view-changed',onSpellView);

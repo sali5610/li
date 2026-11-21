@@ -4,6 +4,9 @@ on:
     branches: [integration/staging]
     paths:
       - 'tools/step16-real-l09-react-island/**'
+      - 'site/assets/lesson-companion-native.js'
+      - 'tools/test_lesson_companion_react_stage.cjs'
+      - 'tools/test_personal_lesson_ui_parity.mjs'
       - '.github/workflows/li-pages.yml'
       - '.github/workflows/li-learning-integration.yml'
 permissions:

@@ -328,3 +328,34 @@
   transition:none
  }
 }
+
+/* Compare two sourced techniques in the existing conversation, never a route jump. */
+#buddy-modal .li-react-buddy-shell .li-buddy-spell-comparison{
+ display:grid;gap:var(--li-space-3);min-width:0
+}
+#buddy-modal .li-react-buddy-shell .li-buddy-spell-comparison h3{
+ margin:0;font-size:var(--li-type-title-sm,var(--li-type-body))
+}
+#buddy-modal .li-react-buddy-shell .li-buddy-spell-pair{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--li-space-3)
+}
+#buddy-modal .li-react-buddy-shell .li-buddy-spell-pair article{
+ min-width:0;padding:var(--li-space-3);background:var(--paper-2);
+ border-inline-start:2px solid var(--rule)
+}
+#buddy-modal .li-react-buddy-shell .li-buddy-spell-pair :is(p,strong){
+ display:block;margin:0;overflow-wrap:anywhere
+}
+#buddy-modal .li-react-buddy-shell .li-buddy-spell-pair p{
+ margin-top:var(--li-space-2);line-height:var(--li-leading-body)
+}
+#buddy-modal .li-react-buddy-shell .li-buddy-spell-example{
+ font-size:var(--li-type-support);color:var(--muted)
+}
+#buddy-modal .li-react-buddy-shell .li-buddy-spell-link{
+ justify-self:start;text-align:left;white-space:normal;text-decoration:underline;
+ text-underline-offset:var(--li-space-1)
+}
+@media(max-width:600px){
+ #buddy-modal .li-react-buddy-shell .li-buddy-spell-pair{grid-template-columns:minmax(0,1fr)}
+}

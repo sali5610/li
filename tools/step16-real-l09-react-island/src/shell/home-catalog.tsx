@@ -6,6 +6,7 @@ import {authoredCopy,useDiscoveryLocale,localized} from './discovery-locale.js';
 import type {MirrorView} from './inquiry-port.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
+import {flushSync} from 'react-dom';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {Badge,Breadcrumb,Button,FilterGroup,Heading,Progress,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
@@ -104,66 +105,103 @@ function Catalog(){
  const [portalRetry,setPortalRetry]=useState(0);
  const [morphFieldId,setMorphFieldId]=useState<string|null>(null);
  const morphBusy=useRef(false);
- function enterField(item:Field,media:HTMLElement|null){
-  const source=media?.querySelector('img');
-  const canMorph=!!media&&!!source?.complete&&!!source.naturalWidth&&
-   typeof media.animate==='function'&&
-   !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(!canMorph){openPath([path[0],item.id]);return;}
-  if(morphBusy.current)return;
-  const start=media!.getBoundingClientRect();
-  if(start.width<=0||start.height<=0){openPath([path[0],item.id]);return;}
+ const fieldEntryScroll=useRef(new Map<string,number>());
+ type ImageMode='cover'|'contain';
+ // The copied pixels stay above BOTH React screens until the destination
+ // image is decoded and revealed in the same frame. No paper-colored flash.
+ function startFieldMorph(fieldId:string,source:HTMLImageElement,sourceBox:HTMLElement,
+  fromMode:ImageMode,toMode:ImageMode,toSelector:string,toIsArch:boolean,
+  beforeMeasure?:()=>void):boolean{
+  if(reduced||morphBusy.current||!source.complete||source.naturalWidth<=0||
+   typeof sourceBox.animate!=='function')return false;
+  const from=sourceBox.getBoundingClientRect();
+  if(from.width<=0||from.height<=0)return false;
   morphBusy.current=true;
-  const image=source!;
-  const clone=document.createElement('img');
-  clone.src=image.currentSrc||image.src;
-  clone.alt='';
-  clone.setAttribute('aria-hidden','true');
   const layer=document.createElement('div');
   layer.className='li-catalog-field-shared-hero';
-  const fromFrame={left:start.left+'px',top:start.top+'px',
-   width:start.width+'px',height:start.height+'px',
-   borderRadius:'50% 50% 0 0 / 40% 40% 0 0'};
+  layer.setAttribute('aria-hidden','true');
+  const clone=document.createElement('img');
+  clone.src=source.currentSrc||source.src;
+  clone.alt='';
+  const fromFrame={left:from.left+'px',top:from.top+'px',
+   width:from.width+'px',height:from.height+'px',
+   borderRadius:fromMode==='cover'?'50% 50% 0 0 / 40% 40% 0 0':'0px'};
   Object.assign(layer.style,fromFrame);
-  const fitFrom=fittedImage(start,image.naturalWidth,image.naturalHeight,'cover');
   const px=(v:number)=>v+'px';
+  const fitFrom=fittedImage(from,source.naturalWidth,source.naturalHeight,fromMode);
   const artFrom={left:px(fitFrom.left),top:px(fitFrom.top),
    width:px(fitFrom.width),height:px(fitFrom.height)};
   Object.assign(clone.style,artFrom);
   layer.appendChild(clone);
   document.body.appendChild(layer);
   let done=false;
-  let fallback:number|undefined;
+  let timeout:number|undefined;
   const finish=()=>{
    if(done)return;
    done=true;
-   if(fallback!==undefined)window.clearTimeout(fallback);
+   if(timeout!==undefined)window.clearTimeout(timeout);
+   // Reveal the already-decoded destination BEFORE removing its overlay.
+   flushSync(()=>setMorphFieldId(null));
    layer.remove();
    morphBusy.current=false;
-   setMorphFieldId(null);
   };
-  setMorphFieldId(item.id);
-  openPath([path[0],item.id]);
-  // Wait for the new React path and its top-of-page scroll before measuring.
+  setMorphFieldId(fieldId);
   window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>{
-   const hero=document.querySelector<HTMLImageElement>(
-    '#li-react-catalog-host .catalog-field-hero');
-   const end=hero?.getBoundingClientRect();
-   if(!end||end.width<=0||end.height<=0){finish();return;}
-   const fitTo=fittedImage(end,image.naturalWidth,image.naturalHeight,'contain');
+   beforeMeasure?.();
+   const target=document.querySelector<HTMLElement>(toSelector);
+   const img=target?.querySelector<HTMLImageElement>('img')||
+    (target instanceof HTMLImageElement?target:null);
+   const end=target?.getBoundingClientRect();
+   if(!img||!end||end.width<=0||end.height<=0){finish();return;}
+   if(toMode==='cover')img.loading='eager';
+   const fitTo=fittedImage(end,source.naturalWidth,source.naturalHeight,toMode);
    const artTo={left:px(fitTo.left),top:px(fitTo.top),
     width:px(fitTo.width),height:px(fitTo.height)};
    const toFrame={left:px(end.left),top:px(end.top),
-    width:px(end.width),height:px(end.height),borderRadius:'0px'};
+    width:px(end.width),height:px(end.height),
+    borderRadius:toIsArch?'50% 50% 0 0 / 40% 40% 0 0':'0px'};
    const timing={duration:620,easing:'cubic-bezier(.22,.68,.19,1)',fill:'forwards' as const};
    try{
     const frame=layer.animate([fromFrame,toFrame],timing);
     const art=clone.animate([artFrom,artTo],timing);
-    fallback=window.setTimeout(finish,850);
-    void Promise.allSettled([frame.finished,art.finished]).then(finish);
+    const decoded=typeof img.decode==='function'?
+     img.decode().catch(()=>undefined):Promise.resolve();
+    // Only clean up when the animation AND the new image are ready.
+    // Failure fallback avoids a permanently obscured app.
+    timeout=window.setTimeout(finish,6000);
+    void Promise.allSettled([frame.finished,art.finished,decoded]).then(finish);
    }catch{finish();}
   }));
+  return true;
  }
+ function enterField(item:Field,media:HTMLElement|null){
+  if(morphBusy.current)return;
+  const key=path[0]+'/'+item.id;
+  fieldEntryScroll.current.set(key,window.scrollY);
+  const source=media?.querySelector('img');
+  if(media&&source)startFieldMorph(item.id,source,media,'cover','contain',
+   '#li-react-catalog-host .catalog-field-hero',false);
+  openPath([path[0],item.id]);
+ }
+ useEffect(()=>{
+  const onBeforePath=(event:Event)=>{
+   const {from,to}=(event as CustomEvent<{from:string[];to:string[]}>).detail||{};
+   if(!from||!to||from.length!==2||to.length!==1||from[0]!==to[0])return;
+   const key=from[0]+'/'+from[1];
+   const savedTop=fieldEntryScroll.current.get(key);
+   const restore=()=>{if(savedTop!==undefined)
+    window.scrollTo({top:savedTop,left:0,behavior:'instant'});};
+   const hero=document.querySelector<HTMLImageElement>(
+    '#li-react-catalog-host .catalog-field-hero');
+   const target='.li-catalog-field-card[data-field-id="'+from[1]+'"] .li-catalog-field-card__media';
+   if(!hero||!startFieldMorph(from[1],hero,hero,'contain','cover',
+    target,true,restore)){
+    window.requestAnimationFrame(()=>window.requestAnimationFrame(restore));
+   }
+  };
+  window.addEventListener('li:catalog-before-pathchange',onBeforePath);
+  return()=>window.removeEventListener('li:catalog-before-pathchange',onBeforePath);
+ },[reduced]);
  useEffect(()=>{
   const onRoute=(event:Event)=>{
    if((event as CustomEvent<{route?:string}>).detail?.route!=='catalog'||!pendingCatalogReturn)return;
@@ -291,8 +329,8 @@ function Catalog(){
  };
  const available=course?courseProgress(course):null;
  return <motion.div key={path.join('/')||'catalog-root'} data-li-react-screen="catalog"
-   className="li-react-catalog" initial={reduced?false:{opacity:0,y:7}}
-   animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.18}}>
+   className="li-react-catalog" initial={reduced||morphFieldId?false:{opacity:0,y:7}}
+   animate={{opacity:1,y:0}} transition={reduced||morphFieldId?{duration:0}:{duration:0.18}}>
   {group&&<div className={'catalog-breadcrumbs'+(lesson?' is-lesson':'')}>
    <div className="catalog-breadcrumbs-full">
     <Breadcrumb label={locale==='vi'?'Vị trí trong Tàng Thư':'Library path'}
@@ -355,6 +393,7 @@ function Catalog(){
      category={item.category.label[locale]}
      detail={item.courses.length+(locale==='vi'?' môn học theo lộ trình':' courses')}
      actionLabel={locale==='vi'?'Khám phá':'Explore'}
+     fieldId={item.id} hideImage={morphFieldId===item.id}
      onOpen={media=>enterField(item,media)}/>)}
    </div>
   </div>}

@@ -443,7 +443,7 @@ compiled["site/content-packs/answerability.json"]={...answerability,autoOutcomes
 const check=process.argv.includes("--check");
 for(const [path,value] of Object.entries(compiled)){
  const payload=path.endsWith(".js")?value:JSON.stringify(value,null,2)+"\n";
- if(check){if(read(path)!==payload)throw Error("LI_CONTENT_PACK_STALE: "+path+"; run node tools/build_content_packs.mjs");}
+ if(check){const saved=read(path);if(saved!==payload){let i=0;while(i<Math.min(saved.length,payload.length)&&saved[i]===payload[i])i++;throw Error("LI_CONTENT_PACK_STALE: "+path+" @"+i+" old="+JSON.stringify(saved.slice(i,i+140))+" wanted="+JSON.stringify(payload.slice(i,i+140))+"; run node tools/build_content_packs.mjs");}}
  else{mkdirSync(dirname(resolve(root,path)),{recursive:true});writeFileSync(resolve(root,path),payload);}
 }
 console.log("LI_CONTENT_PACKS_PASS lessons="+ids.length+" files="+Object.keys(compiled).length+" mode="+(check?"check":"build"));

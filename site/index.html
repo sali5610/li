@@ -226,8 +226,12 @@ const liBuddyVoice={
 function liSetBuddyVoice(kind,enabled){
  if(kind!=="calm"&&kind!=="mute")return false;
  liBuddyVoice[kind]=Boolean(enabled);
- const legacy=document.getElementById(kind==="calm"?"calm-toggle":"mute-toggle");
- if(legacy)legacy.checked=liBuddyVoice[kind];
+ // The invited React Settings checkbox is the visible owner. Never write
+ // to the retired native checkbox; standalone retains its working fallback.
+ if(!window.liReactRouter){
+  const legacy=document.getElementById(kind==="calm"?"calm-toggle":"mute-toggle");
+  if(legacy)legacy.checked=liBuddyVoice[kind];
+ }
  window.dispatchEvent(new Event("li:settings-view-changed"));
  return true;
 }
@@ -271,12 +275,16 @@ function liBuddyNamePreviews(){
  ]));
 }
 function liRenderBuddyNamePreview(){
+ // React renders the canonical preview from getView(), not the old paragraphs.
+ if(window.liReactRouter)return;
  for(const [key,preview] of Object.entries(liBuddyNamePreviews())){
   const node=document.getElementById("buddy-preview-"+key);
   if(node)node.textContent=preview;
  }
 }
 function liRefreshBuddyNameInputs(){
+ // React controlled fields retain the learner's in-progress raw draft.
+ if(window.liReactRouter)return;
  document.querySelectorAll("[data-buddy-name]").forEach(input=>{input.value=liBuddyNames[input.dataset.buddyName]||"";});
  liRenderBuddyNamePreview();
 }
@@ -291,18 +299,24 @@ function liSaveBuddyNames(){
 let liAddressFeedback="Chỉ thay cách gọi trong lời Lão Lý, không đổi nội dung học.";
 function liUpdateAddressFeedback(text){
  liAddressFeedback=text;
- const node=document.getElementById("buddy-name-feedback");if(node)node.textContent=text;
+ if(!window.liReactRouter){
+  const node=document.getElementById("buddy-name-feedback");if(node)node.textContent=text;
+ }
 }
 function liRefreshAddressGuide(){
+ if(window.liReactRouter)return; // React Guide and companion read canonical data.
  const guide=document.getElementById("guide-mode-copy");
  if(guide)guide.textContent=liBuddyLine(STUDY_MODES[studyMode].guide);
 }
 function liSetBuddyName(key,value,persist=false){
  if(!Object.prototype.hasOwnProperty.call(LI_BUDDY_DEFAULT_NAMES,key))return false;
  liBuddyNames[key]=liNormalizeBuddyName(value);
- const input=document.getElementById("buddy-name-"+key);
- // Do not trim the visible native input while the learner types a space.
- if(input&&persist)input.value=liBuddyNames[key];
+ // Only standalone owns the old textbox; React's controlled field preserves
+ // spaces until the learner confirms the normalized 24-character name.
+ if(!window.liReactRouter&&persist){
+  const input=document.getElementById("buddy-name-"+key);
+  if(input)input.value=liBuddyNames[key];
+ }
  liRenderBuddyNamePreview();
  if(!persist){
   liUpdateAddressFeedback("Đang chỉnh cách gọi · Rời ô nhập để lưu trên thiết bị.");
@@ -1126,6 +1140,11 @@ window.addEventListener("li:personal-sync-applied",event=>{
  if(keys.has(LI_BUDDY_NAMES_KEY)){
   const updateNames=()=>{
    liBuddyNames=liRestoreBuddyNames();
+   if(window.liReactRouter){
+    // Notify React AFTER signed cloud hydration; no hidden Settings/Guide UI.
+    window.dispatchEvent(new Event("li:settings-view-changed"));
+    return;
+   }
    liRefreshBuddyNameInputs();
    const guide=document.getElementById("guide-mode-copy");
    if(guide)guide.textContent=liBuddyLine(STUDY_MODES[studyMode].guide);

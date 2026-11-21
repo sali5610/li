@@ -349,3 +349,122 @@ assert.deepEqual(hiddenRenders,[
 ],"Native fallback behavior remains unchanged");
 assert.equal(syncEvents.length,3,"Native fallback does not emit React-only repaint events");
 console.log("PASS React private sync hydration without hidden DOM; auth guard and native fallback");
+
+
+// Chat 1: visible React Settings owns its controlled voice & nickname fields.
+// Run the ACTUAL canonical setters and signed sync callback with no legacy
+// Settings/Guide nodes. Native standalone controls retain their fallback path.
+{
+ const voiceFrom=html.indexOf("function liSetBuddyVoice(kind,enabled){");
+ const voiceTo=html.indexOf('for(const kind of ["calm","mute"])',voiceFrom);
+ assert(voiceFrom>=0&&voiceTo>voiceFrom,"Find actual voice setter");
+ const voiceEvents=[],nativeVoice={};
+ const voiceCtx={
+  liBuddyVoice:{calm:false,mute:false},
+  window:{liReactRouter:{},dispatchEvent:ev=>voiceEvents.push(ev.type)},
+  document:{getElementById:()=>{throw Error("React voice read a hidden checkbox");}},
+  Event:class{constructor(type){this.type=type;}}
+ };
+ vm.createContext(voiceCtx);
+ vm.runInContext(html.slice(voiceFrom,voiceTo),voiceCtx);
+ assert.equal(voiceCtx.liSetBuddyVoice("calm",true),true);
+ assert.equal(voiceCtx.liSetBuddyVoice("mute",true),true);
+ assert.equal(voiceCtx.liBuddyVoice.calm,true);
+ assert.equal(voiceCtx.liBuddyVoice.mute,true);
+ assert.equal(voiceCtx.liSetBuddyVoice("volume",true),false);
+ assert.deepEqual(voiceEvents,["li:settings-view-changed","li:settings-view-changed"]);
+ delete voiceCtx.window.liReactRouter;
+ voiceCtx.document.getElementById=id=>(nativeVoice[id]||=({checked:false}));
+ assert.equal(voiceCtx.liSetBuddyVoice("mute",false),true);
+ assert.equal(nativeVoice["mute-toggle"].checked,false,
+  "Standalone voice checkbox still mirrors the canonical session setting");
+
+ const normalizeFrom=html.indexOf("function liNormalizeBuddyName(value){");
+ const normalizeTo=html.indexOf("function liRestoreBuddyNames(){",normalizeFrom);
+ const restoreFrom=normalizeTo;
+ const restoreTo=html.indexOf("let liBuddyNames=liRestoreBuddyNames();",restoreFrom);
+ const namesFrom=html.indexOf("function liBuddyNamePreviews(){");
+ const namesTo=html.indexOf('liRefreshBuddyNameInputs();\nwindow.addEventListener("li:localechange"',namesFrom);
+ assert(normalizeFrom>=0&&normalizeTo>normalizeFrom&&restoreTo>restoreFrom&&namesFrom>0&&namesTo>namesFrom);
+ const namesSaved=new Map(),namesEvents=[],alerts=[],nativeNames={};
+ const nativeFields=[
+  {dataset:{buddyName:"warm"},value:""},
+  {dataset:{buddyName:"teasing"},value:""},
+  {dataset:{buddyName:"serious"},value:""}
+ ];
+ const namesCtx={
+  LI_BUDDY_NAMES_KEY:"li.buddy-address.v1",
+  LI_STORAGE_KEY:"li.private.library.v1",
+  STUDY_MODE_KEY:"li.study-mode.v1",
+  LI_DRAFT_KEY:"li.private.case-draft.v1",
+  LI_BUDDY_DEFAULT_NAMES:{warm:"Tiểu hữu",teasing:"Nhóc",serious:"Ngươi"},
+  liBuddyNames:{warm:"",teasing:"",serious:""},
+  liAddressFeedback:"",studyMode:"start",STUDY_MODES:{start:{guide:"Tiểu hữu hãy thử."}},
+  liBuddyLine:value=>value,
+  window:{
+   liReactRouter:{},
+   liLanguage:{get:()=> "vi"},
+   localStorage:{
+    setItem:(key,value)=>namesSaved.set(key,value),
+    getItem:key=>namesSaved.get(key)||null
+   },
+   dispatchEvent:event=>namesEvents.push(event.type),
+   addEventListener(name,fn){if(name==="li:personal-sync-applied")this.apply=fn}
+  },
+  localStorage:{getItem:key=>namesSaved.get(key)||null},
+  document:{
+   documentElement:{classList:{contains:key=>key==="li-auth-verified"}},
+   activeElement:null,
+   getElementById:()=>{throw Error("React nickname read hidden Settings/Guide");},
+   querySelectorAll:()=>{throw Error("React nickname read hidden inputs");}
+  },
+  toast:msg=>alerts.push(msg),Event:class{constructor(type){this.type=type;}}
+ };
+ namesSaved.set("li.sync.local-owner.v1","invited-account-A");
+ vm.createContext(namesCtx);
+ vm.runInContext(
+  html.slice(normalizeFrom,normalizeTo)+
+  html.slice(restoreFrom,restoreTo)+
+  html.slice(namesFrom,namesTo),namesCtx);
+ assert.equal(namesCtx.liSetBuddyName("warm","  New    scholar ",false),true);
+ assert.equal(namesCtx.liBuddyNames.warm,"New scholar");
+ assert.equal(namesSaved.has(namesCtx.LI_BUDDY_NAMES_KEY),false,
+  "Typing previews nickname without saving unfinished React text");
+ assert.equal(namesCtx.liSetBuddyName("warm","  New    scholar ",true),true);
+ assert.equal(JSON.parse(namesSaved.get(namesCtx.LI_BUDDY_NAMES_KEY)).warm,"New scholar");
+ assert.equal(namesCtx.liBuddyNamePreviews().warm.startsWith("New scholar"),true);
+ assert.equal(namesCtx.liSetBuddyName("invalid","oops",true),false);
+ assert.equal(namesCtx.liResetBuddyNames(),true);
+ assert.equal(JSON.parse(namesSaved.get(namesCtx.LI_BUDDY_NAMES_KEY)).warm,"");
+ assert.deepEqual(alerts,[]);
+
+ // Signed remote hydration must notify React *after* restoring its data,
+ // with no calls to old preview paragraphs or Guide on the receiving device.
+ const syncFrom=html.indexOf('window.addEventListener("li:personal-sync-applied",event=>{');
+ const syncTo=html.indexOf("/* UI adapter only;",syncFrom);
+ assert(syncFrom>0&&syncTo>syncFrom);
+ vm.runInContext(html.slice(syncFrom,syncTo),namesCtx);
+ const remote={warm:"Companion",teasing:"Rascal",serious:"Scholar"};
+ namesSaved.set(namesCtx.LI_BUDDY_NAMES_KEY,JSON.stringify(remote));
+ namesCtx.window.apply({detail:{accountId:"invited-account-A",keys:[namesCtx.LI_BUDDY_NAMES_KEY]}});
+ assert.equal(namesCtx.liBuddyNames.warm,"Companion");
+ assert.equal(namesCtx.liBuddyNamePreviews().teasing.startsWith("Rascal"),true);
+ assert.deepEqual(namesEvents,["li:settings-view-changed"],
+  "Cloud nickname hydration refreshes React Settings after restoring canonical names");
+ namesCtx.window.apply({detail:{accountId:"other-account",keys:[namesCtx.LI_BUDDY_NAMES_KEY]}});
+ assert.equal(namesEvents.length,1,"Other-account change cannot refresh this learner's preferences");
+
+ // Old source site continues to mirror visible textboxes and previews.
+ delete namesCtx.window.liReactRouter;
+ namesCtx.document.querySelectorAll=()=>nativeFields;
+ namesCtx.document.getElementById=id=>(nativeNames[id]||=({textContent:"",value:""}));
+ assert.equal(namesCtx.liSetBuddyName("teasing","  Native name ",true),true);
+ assert.equal(nativeNames["buddy-name-teasing"].value,"Native name");
+ assert(nativeNames["buddy-preview-teasing"].textContent.startsWith("Native name"));
+ assert.equal(nativeNames["buddy-name-feedback"].textContent.includes("Đã lưu"),true);
+ assert.equal(nativeNames["guide-mode-copy"].textContent,"Tiểu hữu hãy thử.");
+ assert.equal(namesCtx.liResetBuddyNames(),true);
+ assert.equal(nativeFields.every(field=>field.value===""),true,
+  "Standalone reset continues to clear native name inputs");
+ console.log("PASS React Lão Lý voice, nickname preview/save/reset and signed sync without hidden DOM; native fallback");
+}

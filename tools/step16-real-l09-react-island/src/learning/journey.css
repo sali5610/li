@@ -754,3 +754,102 @@
 @media(prefers-reduced-motion:reduce){
  .li-learning-journey .li-learning-current{animation:none!important}
 }
+
+
+/* One active step per screen. The book folio is the ONLY step indicator;
+   Settings owns VI/EN. Remove the old sticky two-column phase menu layout. */
+.li-learning-journey[data-li-react-journey]{
+ display:flex;flex-direction:column;align-items:stretch;
+ gap:clamp(12px,2.5vw,24px);
+ width:min(100%,960px);max-width:960px;margin-inline:auto
+}
+.li-learning-journey[data-li-react-journey]>.li-learning-header{
+ width:100%;padding:8px 0 18px;gap:12px;
+ border-bottom:1px solid var(--rule)
+}
+.li-learning-journey[data-li-react-journey]>.li-learning-header .li-learning-header-actions{
+ width:auto;display:flex;justify-content:flex-end;align-items:center;
+ gap:8px;margin-inline-start:auto
+}
+.li-learning-journey[data-li-react-journey]>.li-learning-rail{
+ position:static;top:auto;max-height:none;overflow:visible;
+ width:100%;padding:0;display:block
+}
+.li-learning-journey[data-li-react-journey]>.li-learning-rail>.li-learning-save{
+ display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;
+ padding:8px 0;border:0;background:transparent
+}
+.li-learning-journey[data-li-react-journey]>.li-learning-rail>progress,
+.li-learning-journey[data-li-react-journey]>.li-learning-rail>.li-ds-progress{
+ flex:1 1 160px;max-width:360px
+}
+.li-learning-journey[data-li-react-journey]>.li-learning-rail>.li-atom-text{
+ font-size:.8rem;color:var(--muted)
+}
+.li-learning-journey[data-li-react-journey]>.li-learning-current{
+ width:100%;min-width:0;scroll-margin-top:24px
+}
+.li-learning-journey .li-learning-extras{
+ margin:12px 0;max-width:100%;border-top:1px solid var(--rule);border-bottom:0;
+ padding:10px 0;box-shadow:none;background:transparent
+}
+.li-learning-journey .li-learning-extra-sources{
+ min-width:0;max-width:100%;border-top:1px solid var(--rule);
+ padding:12px 0;margin:0
+}
+.li-learning-journey .li-learning-extra-sources>summary{
+ cursor:pointer;min-height:44px;padding:12px 0;
+ color:var(--moss);font-size:.91rem;font-weight:650
+}
+.li-learning-journey .li-lesson-step-resources{
+ display:grid;gap:12px;min-width:0
+}
+.li-learning-journey .li-learning-current .li-study-book-page>.li-ds-button{
+ justify-self:start;min-height:46px;max-width:100%;
+ width:auto;white-space:normal;text-align:start;
+ padding:10px 18px;box-shadow:none
+}
+@media(min-width:960px){
+ .li-learning-journey[data-li-react-journey]{
+  grid-template-columns:none
+ }
+ .li-learning-journey[data-li-react-journey]>.li-learning-rail,
+ .li-learning-journey[data-li-react-journey]>.li-learning-current{
+  grid-column:auto
+ }
+ .li-learning-journey[data-li-react-journey]>.li-learning-current .li-study-book-page{
+  min-height:0
+ }
+}
+@media(max-width:599px){
+ .li-learning-journey[data-li-react-journey]{
+  gap:12px;width:100%;padding-inline:0
+ }
+ .li-learning-journey[data-li-react-journey]>.li-learning-header{
+  padding:6px 0 12px;gap:10px
+ }
+ .li-learning-journey[data-li-react-journey]>.li-learning-header .li-learning-header-actions{
+  width:auto;justify-content:flex-start;margin:0
+ }
+ .li-learning-journey[data-li-react-journey]>.li-learning-rail{
+  padding:0;margin:0
+ }
+ .li-learning-journey[data-li-react-journey]>.li-learning-rail>.li-learning-save{
+  padding:4px 0 8px;gap:6px 12px
+ }
+ .li-learning-journey[data-li-react-journey]>.li-learning-current{
+  scroll-margin-top:12px
+ }
+ .li-learning-journey[data-li-react-journey] .li-study-book-folio{
+  padding:10px 0;gap:4px 10px
+ }
+ .li-learning-journey[data-li-react-journey] .li-study-book-folio-title{
+  flex:0 1 auto;margin:0;font-size:.74rem
+ }
+ .li-learning-journey[data-li-react-journey] .li-learning-current .li-study-book-page{
+  min-height:0;padding:18px 0 26px
+ }
+ .li-learning-journey[data-li-react-journey] .li-learning-current .li-study-book-page>.li-ds-button{
+  width:100%;min-height:48px;justify-content:space-between
+ }
+}

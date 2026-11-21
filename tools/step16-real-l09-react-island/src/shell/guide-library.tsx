@@ -3,7 +3,7 @@ import curriculum from '../../../../content/curriculum/legacy-catalog.v1.json';
 import {personalStudyRoute} from '../learning/released-lessons.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button,FilterGroup,Heading,InlineFeedback,SearchField,Text,LiIcon} from '../../../../design-system/react/index';
+import {Button,FilterGroup,Heading,IconButton,InlineFeedback,SearchField,Text,LiIcon} from '../../../../design-system/react/index';
 // Retain the canonical legacy stylesheet for the existing staging bundle contract;
 // the visible field-guide rows below no longer render legacy MethodTile cards.
 import '../../../../design-system/react/legacy.css';
@@ -248,11 +248,9 @@ function LessonRows({lessons,limit}:{
     <Button variant="ghost" className="library-text-link" onClick={()=>openRoute(item.route)}>
      {copy('Tiếp tục','Continue')}
     </Button>
-    <Button variant="ghost" className="library-icon-action" aria-pressed={item.saved}
-     aria-label={(item.saved?copy('Bỏ lưu bài ','Unsave lesson '):copy('Lưu bài ','Save lesson '))+item.id}
-     onClick={()=>app.liBookmarks?.toggle('lesson',item.id)}>
-     <LiIcon name="bookmark" size={18}/>
-    </Button>
+    <IconButton className="library-icon-action" icon="bookmark" aria-pressed={item.saved}
+     label={(item.saved?copy('Bỏ lưu bài ','Unsave lesson '):copy('Lưu bài ','Save lesson '))+item.id}
+     onClick={()=>app.liBookmarks?.toggle('lesson',item.id)}/>
    </div>;
   })}
  </div>;
@@ -273,12 +271,10 @@ function ProblemRows({problems,limit}:{
     onClick={()=>app.liLibraryShelf?.openProblemEntry(item.kind,item.key)}>
     {copy('Tiếp tục','Continue')}
    </Button>
-   {item.kind==='case'&&<Button variant="ghost" className="library-icon-action"
-    aria-label={item.saved?copy('Bỏ lưu case','Unsave case'):copy('Lưu case','Save case')}
+   {item.kind==='case'&&<IconButton className="library-icon-action" icon="bookmark"
+    label={item.saved?copy('Bỏ lưu case','Unsave case'):copy('Lưu case','Save case')}
     aria-pressed={item.saved}
-    onClick={()=>app.liBookmarks?.toggle('case','sampling-bias-90')}>
-    <LiIcon name="bookmark" size={18}/>
-   </Button>}
+    onClick={()=>app.liBookmarks?.toggle('case','sampling-bias-90')}/>
   </div>)}
  </div>;
 }
@@ -379,11 +375,10 @@ function BookmarkRows({items}:{
      {item.route?copy('Mở lại','Open'):copy('Chưa có điểm đến','Unavailable')}</Button>:
     <Button variant="ghost" className="library-text-link" onClick={()=>item.route&&openRoute(item.route)}
      disabled={!item.route}>{copy('Mở lại','Open')}</Button>}
-   <Button variant="ghost" className="library-icon-action" aria-label={copy('Bỏ lưu','Remove bookmark')}
+   <IconButton className="library-icon-action" icon="bookmark"
+    label={copy('Bỏ lưu','Remove bookmark')}
     onClick={()=>item.kind==='question'?app.liLibraryShelf?.removeSavedQuestion(item.id):
-     app.liBookmarks?.toggle(item.kind,item.id)}>
-    <LiIcon name="bookmark" size={18}/>
-   </Button>
+     app.liBookmarks?.toggle(item.kind,item.id)}/>
   </div>)}
  </div>;
 }

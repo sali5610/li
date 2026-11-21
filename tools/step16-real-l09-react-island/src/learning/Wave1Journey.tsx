@@ -305,10 +305,11 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
    <Button disabled={saving} onClick={()=>void retry()}>{vi?'Thử lưu lại':'Retry saving'}</Button>
    <Text role="support">{vi?'Giữ trang mở để bảo toàn bản chưa lưu.':'Keep the page open while saving.'}</Text>
   </div>}
+    <StudyBookFolio phase={phase} steps={steps} locale={appLocale}/>
   <motion.div key={phase} initial={reduced?false:{opacity:0,x:12,rotateY:-1}}
    animate={{opacity:1,x:0,rotateY:0}}
    transition={reduced?{duration:0}:{duration:0.18}} className="li-learning-current">
-   <StudyBookFolio phase={phase} steps={steps} locale={appLocale}/>
+   
    {phase==='read'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-wave1-read">
     <Heading level={2} id="li-wave1-read" role="titleLarge">{content.goalsTitle}</Heading>
     <ul>{content.goals.map((goal,i)=><li key={i}>{goal}</li>)}</ul>
@@ -436,8 +437,6 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     <T02ReviewEntry lessonId={id} vi={vi} disabled={locked||saving}
      onOpen={()=>{if(!openLessonSpell(id,'T02',true))
       setError(vi?'Không mở được lịch ôn cho bài này.':'Could not open this lesson review.');}}/>
-    <Button variant="secondary" onClick={ports.navigation.openCatalog}>
-     {vi?'Về Tàng Thư':'Back to library'}</Button>
    </Card>}
   </motion.div>
   {phase==='read'&&<details className="li-learning-extra-sources">

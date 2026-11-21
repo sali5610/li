@@ -48,7 +48,7 @@ function Notification({host}:{host:HTMLElement}){
   const current=notice.serial;
   const timer=window.setTimeout(()=>{
    setNotice(previous=>previous?.serial===current?null:previous);
-  },notice.undo?7000:2600);
+  },notice.undo?7000:Math.min(8000,Math.max(4000,notice.message.length*45)));
   return ()=>window.clearTimeout(timer);
  },[host,notice?.serial]);
  const undo=()=>{
@@ -63,7 +63,7 @@ function Notification({host}:{host:HTMLElement}){
    undo:null});
  };
  return notice?<>
-  <span className="li-snackbar-message">{notice.message}</span>
+  <span className="li-snackbar-message" role="status" aria-live="polite" aria-atomic="true">{notice.message}</span>
   {notice.undo&&<button type="button" className="li-snackbar-undo"
    aria-label={'Hoàn tác: '+notice.message} onClick={undo}>Hoàn tác</button>}
  </>:null;

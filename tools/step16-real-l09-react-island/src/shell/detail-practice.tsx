@@ -413,7 +413,7 @@ export function GuideDetail(){
   </div>
   {view.tab==='guide'?
    <div role="tabpanel" aria-labelledby="li-react-spell-tab-guide" className="editorial-grid">
-    <Card variant="tinted" className="li-react-spell-explainer">
+    <Card variant="flat-study" className="li-react-spell-explainer">
      <div className="kicker">I · {copy('KHI DÙNG','WHEN TO USE')}</div>
      <Heading level={2} role="titleLarge">{method.purpose}</Heading>
      <div className="section-rule"/>
@@ -423,7 +423,7 @@ export function GuideDetail(){
       <Text role="body">{text}</Text>
      </div>)}</div>
     </Card>
-    <Card variant="raised" className="li-react-spell-explainer">
+    <Card variant="flat-study" className="li-react-spell-explainer">
      <div className="kicker">III · {copy('GIẢI CHÚ','APPLICATION')}</div>
      <Heading level={2} role="titleMedium">{copy('Dùng thế nào cho đúng?','How to apply it?')}</Heading>
      <Text role="body">{SPELL_GUIDANCE[view.active]?.[en()?'noteEn':'noteVi']}</Text>

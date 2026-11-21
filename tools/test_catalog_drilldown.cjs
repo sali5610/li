@@ -99,8 +99,16 @@ function displayed(s){return descendants(host).some(e=>e.textContent.includes(s)
 assert.equal(descendants(host).filter(x=>x.className.split(/\s+/).includes("catalog-card")).length,5,"root five groups");
 click("open-group","ict");
 assert(displayed("Công nghệ thông tin"));
-assert(findButton("filter-category","interaction-design"));
+const filterGroup=descendants(host).find(x=>x.dataset.liMolecule==="filter-group");
+assert(filterGroup,"Catalog group must use the canonical FilterGroup contract");
+assert.equal(filterGroup.dataset.mode,"single");
+assert.equal(filterGroup.attributes.role,"group");
+const filterChip=findButton("filter-category","interaction-design");
+assert(filterChip?.classList.contains("li-ds-filter-chip"),"Catalog filters must use FilterChip, not a custom button");
+assert.equal(filterChip.dataset.liComponent,"filter-chip");
+assert.equal(filterChip.attributes["aria-pressed"],"false");
 click("filter-category","software");
+assert.equal(findButton("filter-category","software").attributes["aria-pressed"],"true");
 assert(findButton("open-field","backend"));
 assert(!findButton("open-field","hci"));
 click("filter-category","all");

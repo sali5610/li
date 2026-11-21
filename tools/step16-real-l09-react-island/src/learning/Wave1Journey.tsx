@@ -284,6 +284,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     <LessonBookmark id={id} locale={appLocale}/>
    </div>
   </header>
+    <StudyBookFolio phase={phase} steps={steps} locale={appLocale}/>
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
 
   <div className="li-learning-save">
@@ -305,7 +306,6 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
    <Button disabled={saving} onClick={()=>void retry()}>{vi?'Thử lưu lại':'Retry saving'}</Button>
    <Text role="support">{vi?'Giữ trang mở để bảo toàn bản chưa lưu.':'Keep the page open while saving.'}</Text>
   </div>}
-    <StudyBookFolio phase={phase} steps={steps} locale={appLocale}/>
   <motion.div key={phase} initial={reduced?false:{opacity:0,x:12,rotateY:-1}}
    animate={{opacity:1,x:0,rotateY:0}}
    transition={reduced?{duration:0}:{duration:0.18}} className="li-learning-current">

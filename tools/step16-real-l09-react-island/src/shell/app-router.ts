@@ -26,8 +26,7 @@ const published:Readonly<Record<string,string>>={
 const preview=new Map(personalStudyLessonIds.map(id=>[personalStudyRoute(id),id]));
 // Browser history tracks real Back/Forward direction, not a second native stack.
 let browserDepth=0;
-const canVisit=()=>document.documentElement.classList.contains('li-auth-verified')&&
- !document.documentElement.classList.contains('li-account-open');
+const canVisit=()=>document.documentElement.classList.contains('li-auth-verified');
 function normalize(route:string){
  return route==='lesson'?
   (window.liReleasedLessonRoutes?.['L09-1-2']==='lessonL09'?'lessonL09':'catalog'):

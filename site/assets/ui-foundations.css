@@ -948,6 +948,15 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
 
 /* UX-DS-28 · Safari/iPad: native browser scaling and rotation must remain enabled.
    Overrides legacy S139 touch-action without changing the mirror-only swipe contract. */
+/* Keep native two-finger zoom and intentional horizontal chip galleries.
+   The document itself must not become horizontally pannable because of
+   decorative overspill or full-bleed sections. overflow-x:clip (not hidden)
+   avoids creating a new scroll container that breaks sticky navigation. */
+html, body {
+  max-width: 100%;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+}
 html { touch-action: pan-x pan-y pinch-zoom; }
 #page-home .mirror-message { touch-action: pan-y pinch-zoom; }
 

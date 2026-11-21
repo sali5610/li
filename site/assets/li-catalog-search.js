@@ -12,7 +12,7 @@ const items=[];
 for(const group of groups){
  for(const field of group.fields||[]){
   for(const course of field.courses||[]){
-   const context=[group.title,field.name,course.title].filter(Boolean).join(" · ");
+   const context=[group.title,field.category?.label?.vi,field.category?.label?.en,field.name,course.title].filter(Boolean).join(" · ");
    items.push({type:"course",title:course.title,id:course.id,context,group:group.id,field:field.id,course:course.id,published:false});
    for(const lesson of course.lessons||[]){
     items.push({type:"lesson",title:lesson.title,id:lesson.id,context,group:group.id,field:field.id,course:course.id,route:lesson.route||null,published:lesson.published===true});

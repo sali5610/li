@@ -9,6 +9,8 @@ export interface MonthCalendarProps {
  records:readonly CalendarRecord[];onSelectDate:(date:string)=>void;
  onMonthChange?:(year:number,month:number)=>void;
  locale?:'vi'|'en';showTodayAction?:boolean;
+ /** Activity counts share the library calendar's tile grammar without inventing a study-mode status. */
+ colorScale?:'mode'|'activity';
 }
 const pad=(v:number)=>String(v).padStart(2,'0');
 const dayKey=(y:number,m:number,d:number)=>y+'-'+pad(m)+'-'+pad(d);
@@ -17,7 +19,7 @@ function nextMonth(year:number,month:number,delta:number){
  return [d.getUTCFullYear(),d.getUTCMonth()+1] as const;
 }
 export function MonthCalendar({year,month,selectedDate,todayDate,records,
- onSelectDate,onMonthChange,locale='vi',showTodayAction=true}:MonthCalendarProps){
+ onSelectDate,onMonthChange,locale='vi',showTodayAction=true,colorScale='mode'}:MonthCalendarProps){
  if(month<1||month>12)throw Error('MonthCalendar month must be 1–12');
  const total=new Date(Date.UTC(year,month,0)).getUTCDate();
  const first=(new Date(Date.UTC(year,month-1,1)).getUTCDay()+6)%7;
@@ -36,7 +38,7 @@ export function MonthCalendar({year,month,selectedDate,todayDate,records,
   if(!visibleTodayMonth)onMonthChange?.(todayYear,todayMonth);
   if(visibleTodayMonth||onMonthChange)onSelectDate(todayDate);
  };
- return <section className="li-legacy-calendar" data-li-legacy="month-calendar">
+ return <section className="li-legacy-calendar" data-li-legacy="month-calendar" data-calendar-scale={colorScale}>
   <header><strong>{monthName}</strong>
    <div className="li-legacy-calendar-actions">
     {showTodayAction&&<button className="li-legacy-today-action" type="button" onClick={jumpToday}
@@ -56,16 +58,19 @@ export function MonthCalendar({year,month,selectedDate,todayDate,records,
    {Array.from({length:first},(_,i)=><span key={'blank'+i} aria-hidden="true"/>)}
    {Array.from({length:total},(_,i)=>{
     const date=dayKey(year,month,i+1),record=byDate.get(date);
-    const hasCount=record&&typeof record.count==='number';
+    const count=record?.count,hasCount=typeof count==='number';
+    const intensity=colorScale==='activity'&&hasCount?
+     (count===0?'zero':count<=2?'low':count<=6?'medium':'high'):'none';
     const status=record?(hasCount?
-     String(record.count)+' '+(locale==='vi'?'hoạt động':'activities'):
+     String(count)+' '+(locale==='vi'?'hoạt động':'activities'):
      record.mode|| (locale==='vi'?'đã ghi nhận':'recorded')):
      (locale==='vi'?'chưa ghi nhận':'no record');
     return <button key={date} type="button" data-mode={record?.mode||'none'}
+     data-activity-level={colorScale==='activity'?intensity:undefined}
      data-recorded={Boolean(record)} data-today={date===todayDate}
      aria-pressed={date===selectedDate} aria-label={date+' · '+status}
      onClick={()=>onSelectDate(date)}>
-     {i+1}{hasCount?<span className="li-legacy-calendar-count" aria-hidden="true">{record.count}</span>:null}
+     {i+1}{hasCount&&colorScale!=='activity'?<span className="li-legacy-calendar-count" aria-hidden="true" >{count}</span>:null}
      <span className="li-legacy-calendar-dot" aria-hidden="true"/>
     </button>;
    })}

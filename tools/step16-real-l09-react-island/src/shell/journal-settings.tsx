@@ -95,7 +95,7 @@ export function Journal(){
     <MonthCalendar year={Number(view.month.slice(0,4))}
      month={Number(view.month.slice(5,7))}
      selectedDate={view.selected} todayDate={todayKey}
-     showTodayAction={false} locale={app.liLanguage?.get?.()==='en'?'en':'vi'}
+     colorScale="activity" locale={app.liLanguage?.get?.()==='en'?'en':'vi'}
      records={view.days.filter(day=>day.recorded).map(day=>({date:day.key,count:day.total}))}
      onSelectDate={date=>act('select',date)}
      onMonthChange={(year,month)=>{
@@ -103,6 +103,12 @@ export function Journal(){
       const next=year*12+month;
       if(next!==shown)act(next<shown?'prev':'next');
      }}/>
+    <div className="li-diary-calendar-legend" aria-label={copy('Màu ô theo số hoạt động đã ghi nhận','Cell colors represent recorded activity counts')}>
+     <span data-level="zero">{copy('0 hoạt động','0 activities')}</span>
+     <span data-level="low">1–2</span>
+     <span data-level="medium">3–6</span>
+     <span data-level="high">7+</span>
+    </div>
     <section className="li-diary-trend" aria-label={copy('Hoạt động 7 ngày quanh ngày chọn','Seven-day activity around selection')}>
      <div className="kicker"><LiIcon name="chart-column" size={16}/> {copy('NHỊP HOẠT ĐỘNG · 7 NGÀY','ACTIVITY RHYTHM · 7 DAYS')}</div>
      <StackedActivityChart days={chartDays} selectedDate={view.selected}

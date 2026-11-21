@@ -268,3 +268,24 @@
  background:var(--moss);color:var(--cream);
  font:var(--li-weight-700) var(--li-type-caption)/1 var(--li-font-ui)
 }
+
+/* MonthCalendar's activity palette is part of the SAME library component.
+   0 is recorded-but-empty; absent means no data. Never fabricate mode records. */
+.li-legacy-calendar[data-calendar-scale="activity"] .li-legacy-calendar-grid button{
+ background:var(--paper);color:var(--ink)
+}
+.li-legacy-calendar[data-calendar-scale="activity"] .li-legacy-calendar-grid button[data-activity-level="zero"]{
+ background:var(--paper-2);color:var(--ink)
+}
+.li-legacy-calendar[data-calendar-scale="activity"] .li-legacy-calendar-grid button[data-activity-level="low"]{
+ background:var(--sage);color:var(--ink)
+}
+.li-legacy-calendar[data-calendar-scale="activity"] .li-legacy-calendar-grid button[data-activity-level="medium"]{
+ background:var(--olive);color:var(--cream)
+}
+.li-legacy-calendar[data-calendar-scale="activity"] .li-legacy-calendar-grid button[data-activity-level="high"]{
+ background:var(--moss);color:var(--cream)
+}
+.li-legacy-calendar[data-calendar-scale="activity"] .li-legacy-calendar-grid button[aria-pressed="true"]{
+ border-color:var(--moss);outline:2px solid var(--moss);outline-offset:-2px
+}

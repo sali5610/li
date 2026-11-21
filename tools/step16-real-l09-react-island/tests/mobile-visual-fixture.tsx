@@ -210,7 +210,30 @@ setTimeout(()=>{
   assert('seven-day-chart',document.querySelectorAll('.li-legacy-chart-bars button').length===7);
   assert('thirty-month-dates',document.querySelectorAll('.li-legacy-calendar-grid button').length===30);
   assert('calendar-from-DS',Boolean(select('[data-li-legacy="month-calendar"]')));
-  assert('calendar-recorded-zero-distinct',Boolean(select('.li-legacy-calendar-grid button[aria-label*="2026-11-19"][data-recorded="true"] .li-legacy-calendar-count')?.textContent==='0'));
+  const tile=(day:string)=>select('.li-legacy-calendar-grid button[aria-label*="2026-11-'+day+'"]');
+  const paint=(day:string)=>{const n=tile(day);return n?getComputedStyle(n).backgroundColor:''};
+  const month=select('.li-diary-month>.li-legacy-calendar');
+  const monthCss=month?getComputedStyle(month):null;
+  assert('library-calendar-frame-restored',Boolean(month&&
+   monthCss?.borderTopWidth==='1px'&&Number.parseFloat(monthCss.paddingLeft)>=12),
+   {frame:bounds(month),border:monthCss?.borderTopWidth,padding:monthCss?.paddingLeft});
+  const today=select('.li-legacy-today-action') as HTMLButtonElement|null;
+  assert('library-today-action-visible',Boolean(today&&
+   getComputedStyle(today).display!=='none'&&today.getBoundingClientRect().width>=76));
+  assert('real-activity-heatmap-intensities',Boolean(
+   month?.getAttribute('data-calendar-scale')==='activity'&&
+   tile('19')?.getAttribute('data-activity-level')==='zero'&&
+   tile('21')?.getAttribute('data-activity-level')==='low'&&
+   tile('18')?.getAttribute('data-activity-level')==='medium'&&
+   tile('20')?.getAttribute('data-activity-level')==='high'&&
+   tile('22')?.getAttribute('data-activity-level')==='none'&&
+   new Set(['18','19','20','21','22'].map(paint)).size===5),
+   ['18','19','20','21','22'].map(day=>({day,level:tile(day)?.getAttribute('data-activity-level'),color:paint(day)})));
+  assert('zero-recorded-separate-from-missing',Boolean(tile('19')?.getAttribute('data-recorded')==='true'&&
+   tile('19')?.getAttribute('aria-label')?.includes('0 hoạt động')&&
+   tile('22')?.getAttribute('data-recorded')==='false'));
+  assert('no-bespoke-count-badges-in-activity-tiles',
+   !document.querySelector('.li-diary-month .li-legacy-calendar-count'));
  } else if(viewName==='guide'){
   const filter=select('[data-li-molecule="filter-group"]'),mentor=select('.guide-margin-note');
   assert('canonical-filter-present',Boolean(filter),bounds(filter));

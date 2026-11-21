@@ -57,37 +57,36 @@ const app=window as AppWindow;
 const en=()=>app.liLanguage?.get?.()==='en';
 const copy=(vi:string,english:string)=>en()?english:vi;
 const tr=(text:string)=>en()?(app.liLanguage?.translate?.(text)||text):text;
-// Explanatory diagrams are original SVG illustrations, not evidence of a technique's effect.
-function SpellDiagram({id,labels,kind}:{id:string;labels:readonly string[];kind:string}){
- const figure=(()=>{
-  switch(kind){
-   case 'timeline':return <><path d="M13 47H73M17 20v12m52-12v12M18 32h52v30H18zM27 43h10m8 0h14M27 53h10m8 0h14" /><path d="M26 48l5 5 10-12"/></>;
-   case 'stair':return <><path d="M12 66h21V52h19V38h21V22h14" /><path d="M22 45l9-9 8 7 15-17 9 4 15-17"/><circle cx="22" cy="45" r="4"/><circle cx="78" cy="13" r="4"/></>;
-   case 'chain':return <><circle cx="30" cy="44" r="17"/><circle cx="65" cy="44" r="17"/><path d="M39 44h17M29 20V9m36 67v10"/><circle cx="29" cy="8" r="3"/><circle cx="65" cy="86" r="3"/></>;
-   case 'branch':return <><path d="M10 43h29l20-22h23M39 43l20 22h23"/><circle cx="11" cy="43" r="7"/><circle cx="82" cy="21" r="7"/><circle cx="82" cy="65" r="7"/><path d="M35 43h4"/></>;
-   case 'compare':return <><circle cx="28" cy="45" r="20"/><rect x="57" y="25" width="38" height="40" rx="5"/><path d="M45 36l-4 9 4 9M52 45h10M74 33v24M65 45h18"/></>;
-   case 'logic':return <><rect x="8" y="13" width="25" height="24" rx="3"/><rect x="8" y="55" width="25" height="24" rx="3"/><path d="M34 25h19v18h14M34 67h19V49h14m-8-7 9 7-9 7"/><circle cx="78" cy="49" r="15"/></>;
-   case 'argument':return <><path d="M26 24h26l14 22-14 22H26L12 46z"/><circle cx="12" cy="46" r="6"/><circle cx="68" cy="46" r="6"/><path d="M34 36h11m-16 11h21m-16 11h11M71 70l14 14m-4-13 5 13-13-4"/></>;
-   case 'source':return <><path d="M23 9h40l14 14v57H23zM63 9v14h14M33 35h30M33 45h26M33 55h20"/><circle cx="66" cy="69" r="18"/><path d="M80 83l14 12"/></>;
-   case 'split':return <><rect x="28" y="7" width="43" height="24" rx="4"/><path d="M49 31v17m-28 0h57M21 48v14m28-14v14m29-14v14"/><rect x="8" y="62" width="26" height="19" rx="3"/><rect x="36" y="62" width="26" height="19" rx="3"/><rect x="65" y="62" width="26" height="19" rx="3"/></>;
-   case 'fit':return <><circle cx="42" cy="45" r="27"/><circle cx="65" cy="45" r="27"/><path d="M49 40l8 8 13-16M11 12l11 9m65 56 11 9"/><circle cx="53" cy="45" r="2"/></>;
-   case 'resume':return <><path d="M26 11h49v72L50 68 26 83zM38 28h24M38 39h16"/><path d="M10 51h32l-10-10m10 10-10 10"/><circle cx="75" cy="13" r="6"/></>;
-   case 'route':return <><path d="M15 67C22 12 63 85 81 19" strokeDasharray="4 8"/><circle cx="18" cy="65" r="10"/><circle cx="47" cy="45" r="10"/><circle cx="80" cy="20" r="10"/><path d="M76 9V1m-5 2 5-2 5 2"/></>;
-   default:return <><path d="M20 14h29v64H20zM49 14h29v64H49zM28 24h14m-14 9h14m14-9h14m-14 9h14"/><path d="M33 55l10 9 21-23"/></>;
-  }
- })();
+// Source and license are attached to every externally published illustration.
+// Text-only process steps remain usable if an image is unavailable or offline.
+type SpellIllustration = {
+ src:string;source:string;credit:string;license:string;licenseUrl:string;
+ altVi:string;altEn:string
+};
+function SpellDiagram({id,labels,illustration}:{
+ id:string;labels:readonly string[];illustration:SpellIllustration
+}){
  return <figure className="spell-concept-visual" aria-label={id+' · '+labels.join(' → ')}>
-  <div className="spell-visual-mark" aria-hidden="true">
-   <svg viewBox="0 0 104 104" fill="none" stroke="currentColor" strokeWidth="3"
-    strokeLinecap="round" strokeLinejoin="round" focusable="false">{figure}</svg>
+  <div className="spell-visual-art">
+   <img src={illustration.src} alt={en()?illustration.altEn:illustration.altVi}
+    loading="lazy" decoding="async" width={760} height={520}/>
   </div>
-  <div className="spell-visual-process" aria-hidden="true">
-   {labels.map((label,index)=><React.Fragment key={id+'-'+index}>
-    {index>0&&<span className="spell-visual-arrow">→</span>}
-    <span className="spell-visual-stage"><b>{String(index+1).padStart(2,'0')}</b><span>{label}</span></span>
-   </React.Fragment>)}
+  <div className="spell-visual-credit">
+   <a href={illustration.source} target="_blank" rel="noopener noreferrer">
+    {copy('Hình minh hoạ','Illustration')} · {illustration.credit}
+   </a>
+   <span aria-hidden="true"> · </span>
+   <a href={illustration.licenseUrl} target="_blank" rel="noopener noreferrer">
+    {illustration.license}
+   </a>
   </div>
-  <figcaption>{id} · {en()?'Illustrated learning process':'Sơ đồ quy trình thực hành'}</figcaption>
+  <figcaption>{id} · {en()?'Practice process':'Sơ đồ quy trình thực hành'}</figcaption>
+  <div className="spell-visual-process" data-count={labels.length} role="list">
+   {labels.map((label,index)=><div className="spell-visual-stage" role="listitem"
+    key={id+'-'+index}>
+    <b>{String(index+1).padStart(2,'0')}</b><span>{label}</span>
+   </div>)}
+  </div>
  </figure>;
 }
 
@@ -268,7 +267,8 @@ export function GuideDetail(){
     <article className="li-react-spell-explainer li-react-spell-manual">
      <div className="kicker">I · {copy('KHI NÊN DÙNG','WHEN IT HELPS')}</div>
      <Heading level={2} role="titleLarge">{method.purpose}</Heading>
-     {guide&&<SpellDiagram id={view.active} labels={guide.diagram} kind={guideRecord.diagramKind}/>}
+     {guide&&<SpellDiagram id={view.active} labels={guide.diagram}
+     illustration={guideRecord.illustration}/>}
      <section className="spell-guide-section">
       <div className="kicker">II · {copy('LÀM THEO TỪNG BƯỚC','STEP-BY-STEP')}</div>
       <div className="path-list">{(guide?.steps||[]).map((step,index)=><div className="path-item" key={step}>

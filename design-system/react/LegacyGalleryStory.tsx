@@ -102,6 +102,17 @@ function Specimen(){
     variant="secondary" icon={<FunctionalIcon name="clock"/>}
     actionLabel={t('CHÚ GIẢI','EXPLAIN')} onActivate={click}/></div>;
   break;
+ case 'portalCategoryCard':{
+  const requested=Number(variant.replace(/[^0-9]/g,''))||1;
+  const portal=Math.max(1,Math.min(7,requested)) as 1|2|3|4|5|6|7;
+  panel=<div style={{maxWidth:680}}>
+   <PortalCategoryCard portal={portal} title={t('Ngôn ngữ','Languages')}
+    eyebrow={t('NHÓM NGÀNH','DOMAIN GROUP')}
+    detail={t('2 chuyên ngành','2 fields')} actionLabel={t('Khám phá','Explore')}
+    onOpen={click}/>
+  </div>;
+  break;
+ }
  case 'mediaCard':
   panel=<MediaCard title={t('Đi vào thư viện','Enter the library')}
    description={t('Ảnh, chữ và CTA tách vùng.','Image, text and CTA use separate zones.')}

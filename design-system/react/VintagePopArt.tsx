@@ -15,10 +15,13 @@ export function VintagePopArt({kind='book',size='spot'}:{
  const telescope=kind==='telescope';
  const idea=kind==='idea';
  const journal=kind==='journal'||kind==='notes';
+ // Every illustration uses one of the three equal, paper-muted accent fields.
+ const paperAccent=books||supply||journal?'#C7CFAC':
+  hci||sampling||idea?'#E8D8A6':'#DCD2E3';
  return <svg className={'li-pop-art li-pop-art--'+kind+' li-pop-art--'+size}
   viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg"
   fill="none" aria-hidden="true" focusable="false">
-  <circle cx="161" cy="103" r="84" fill="#8a9873"/>
+  <circle cx="161" cy="103" r="84" fill={paperAccent}/>
   <circle cx="222" cy="39" r="24" fill="#dcd2e3"/>
   <path d="M35 173L88 107L130 177Z" fill="#9d5744"/>
   <g fill="#214d3a" opacity=".9">

@@ -1,4 +1,5 @@
 import {openRoute} from './app-router.js';
+import './home-catalog.css';
 import {inquiryFlow} from './inquiry-port.js';
 import {useDiscoveryLocale,localized} from './discovery-locale.js';
 import type {ResearchView,CaseChoice} from './inquiry-port.js';
@@ -44,7 +45,7 @@ function ResearchScene(){
   <div className="kicker">{L("THEO DẤU MỘT NGHI VẤN","FOLLOW THE EVIDENCE")}</div>
   <Heading level={1} role="headline">{L("Khảo Chứng","Investigate")}</Heading>
   <Text role="body">{L("Mỗi kết luận bắt đầu từ một câu hỏi: ta đã biết gì, và còn thiếu gì?","Every conclusion begins with a question: what do we know, and what is missing?")}</Text>
-  <div className="research-layout"><main className="research-primary">
+  <div className="research-layout"><section className="research-primary">
    <section className="research-hypothesis">
     <div className="kicker">{L("I · GIẢ THUYẾT","I · HYPOTHESIS")}</div>
     <Heading level={2} role="titleMedium">{state.question||L('Một kết luận cần kiểm chứng','A claim to investigate')}</Heading>
@@ -72,7 +73,7 @@ function ResearchScene(){
      <div><strong>{L("Điều chưa biết","Unknown")}</strong><Text role="support">{state.unknown}</Text></div>
     </div>
    </section>
-  </main>
+  </section>
   <aside className="research-secondary">
    <section className="research-notebook">
     <div className="kicker">{L("III · BÚT KÝ","III · NOTEBOOK")}</div>
@@ -197,7 +198,7 @@ function CaseScene(){
    </Button>
   </div>
   <div className="case-layout">
-   <main className="case-workspace">
+   <section className="case-workspace">
     <div className="case-question"><Heading level={2} role="titleMedium">{L(caseCopy.question.vi,caseCopy.question.en)}</Heading>
     <Text role="body">{L(caseCopy.scene.vi,caseCopy.scene.en)}</Text>
     </div>
@@ -220,7 +221,7 @@ function CaseScene(){
     {message&&<InlineFeedback tone="error" message={message}/>}
     <div className="action-row"><Button onClick={save}><LiIcon name="check" size={20}/> {L("Lưu vào Bút Ký","Save to Notebook")}</Button></div>
     <Text role="support">{L("Sau khi xem phản hồi, hãy viết lại kết luận bằng lời của bạn.","After the feedback, rewrite the conclusion in your own words.")}</Text></div>
-   </main>
+   </section>
    <aside className="case-coach">
     <div className="kicker">{L("THỦ THUẬT TƯ DUY","THINKING TECHNIQUE")}</div>
     <Heading level={2} role="titleMedium">{L("Hỏi về đối tượng bị thiếu.","Ask who is missing.")}</Heading>

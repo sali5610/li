@@ -296,7 +296,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
    liBuddyReactMounted?:boolean;
    liQuoteEngine?:{lookup?:(id:string,locale:Locale)=>QuoteRecord|null};
   };
-  const locale=attempt?.locale??'vi';
+  const locale=appLocale;
   const candidates=moment.quote_ids.map(q=>app.liQuoteEngine?.lookup?.(q,locale)??null);
   if(!app.liBuddyReactMounted||candidates.length<3||
     candidates.some(q=>!q?.translation||!q.original||!q.url.startsWith('https://'))||
@@ -325,11 +325,11 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   }}));
  }
  function mentor(stage:CompanionMoment['stage']){
-  const moment=lesson?.content.localized[attempt?.locale??'vi'].companion?.moments.find(m=>m.stage===stage);
+  const moment=lesson?.content.localized[appLocale].companion?.moments.find(m=>m.stage===stage);
   if(!moment||(moment.gate==='AFTER_VALID_INDEPENDENT_SUBMISSION'&&!persistedAttempt?.submitted))return null;
   return <aside className="li-editorial-mentor" aria-label={localized(appLocale,'Lão Lý','Elder Li')}>
    <img src="./assets/laoly-neutral.png" width="56" height="56" alt="" loading="lazy"/>
-   <div><Text role="support">Lão Lý · {stage}</Text>
+   <div><Text role="support">{localized(appLocale,'Lão Lý','Elder Li')}</Text>
     <Button id={'li-editorial-mentor-'+id+'-'+stage}
      variant="secondary" onClick={()=>openMentor(moment)}>
      {appLocale==='en'?'Ask Elder Li about this section':'Hỏi Lão Lý theo mục này'}

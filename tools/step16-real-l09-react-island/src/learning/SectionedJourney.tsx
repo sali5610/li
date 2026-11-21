@@ -303,7 +303,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   return <aside className="li-editorial-mentor">
    <Button id={'li-sectioned-mentor-'+id+'-'+stage} variant="secondary"
     onClick={()=>{
-     const locale=attempt?.locale||'vi';
+     const locale=appLocale;
      const app=window as Window&{liBuddyReactMounted?:boolean;
       liQuoteEngine?:{lookup?:(id:string,locale:Locale)=>Quote|null}};
      const quotes=moment.quote_ids.map(key=>app.liQuoteEngine?.lookup?.(key,locale)||null);

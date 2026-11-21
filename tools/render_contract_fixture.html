@@ -52,7 +52,8 @@
     const topCss=topHeader?w.getComputedStyle(topHeader):null;
     const heroBox=scene?.getBoundingClientRect();
     const headerBox=topHeader?.getBoundingClientRect();
-    const brandSeal=doc.querySelector(".app > .header .brand-stamp");
+    const brandSeal=doc.querySelector(".app > .header .brand-stamp--home");
+    const defaultSeal=doc.querySelector(".app > .header .brand-stamp--default");
     const tool=doc.querySelector(".app > .header .tool-button");
     const cssClear=value=>value==="rgba(0, 0, 0, 0)"||value==="transparent";
     report("Home header uses genuinely transparent Component Library overlay",!!topCss&&cssClear(topCss.backgroundColor)&&topCss.borderBottomWidth==="0px"&&topCss.boxShadow==="none",topCss?.backgroundColor+"/"+topCss?.borderBottomWidth);
@@ -62,7 +63,7 @@
     const bodyScroll=w.getComputedStyle(doc.body).overflowY;
     report("Home vertical scrolling disabled on document and body",rootScroll==="hidden"&&bodyScroll==="hidden",rootScroll+"/"+bodyScroll);
     report("Home hero exactly one visible dynamic viewport tall",!!heroBox&&Math.abs(heroBox.height-w.innerHeight)<3,"hero="+heroBox?.height+" viewport="+w.innerHeight);
-    report("Home overlay renders light seal and icon ink",!!brandSeal&&w.getComputedStyle(brandSeal).filter.includes("invert(1)")&&!!tool&&w.getComputedStyle(tool).color==="rgb(250, 249, 245)",brandSeal?w.getComputedStyle(brandSeal).filter:"missing");
+    report("Home overlay renders the dedicated geometric white seal and icon ink",!!brandSeal&&brandSeal.getAttribute("src")?.includes("li-seal-home.svg")&&w.getComputedStyle(brandSeal).display!=="none"&&w.getComputedStyle(brandSeal).filter==="none"&&!!defaultSeal&&w.getComputedStyle(defaultSeal).display==="none"&&!!tool&&w.getComputedStyle(tool).color==="rgb(250, 249, 245)",brandSeal?brandSeal.getAttribute("src")+"/"+w.getComputedStyle(brandSeal).display:"missing");
     report("Home overlay utility keeps 48px touch area",!!tool&&tool.getBoundingClientRect().width>=48&&tool.getBoundingClientRect().height>=48,tool?.getBoundingClientRect().width+"x"+tool?.getBoundingClientRect().height);
     if(landscape){
       const titleRail=doc.querySelector("#page-home .hero-left").getBoundingClientRect();

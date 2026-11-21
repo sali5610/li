@@ -330,7 +330,7 @@ export function Library(){
     </section>
     <section className="library-saved-shortlist" aria-labelledby="library-saved-heading">
      <ShelfHeader id="library-saved-heading" title={copy('Dấu trang','Bookmarks')}
-      target="resume" action={copy('Xem tất cả','See all')}/>
+      target="bookmarks" action={copy('Xem tất cả','See all')}/>
      <BookmarkRows items={[...view.lessonBookmarks,...view.questionBookmarks].slice(0,3)}/>
     </section>
    </div>
@@ -368,13 +368,11 @@ function BookmarkRows({items}:{
 }
 function Resume(){
  const view=useLibrary();
- const tab=view.bookmarkTab;
- const tabClick=(next:'lesson'|'question')=>app.liLibraryShelf?.selectBookmarkTab(next);
  return <div className="section-shell li-react-library" data-li-react-screen="resume">
   <Heading level={1} role="headline" className="display-title">{copy('Quay lại','Continue')}</Heading>
   <Text role="body" className="intro">{copy(
-   'Tiếp tục bài học, quay lại vấn đề đang tìm hiểu và mở những Dấu Trang đã lưu.',
-   'Pick up where you left off or revisit something you bookmarked.')}</Text>
+   'Tiếp tục bài học hoặc tình huống đã xem gần đây.',
+   'Continue recently viewed lessons or scenarios.')}</Text>
   <div className="library-resume-layout">
    <div className="library-resume-stream">
     <section className="library-resume-section">
@@ -386,27 +384,37 @@ function Resume(){
      <ProblemRows problems={view.problems}/>
     </section>
    </div>
-   <section className="library-resume-section" aria-labelledby="library-all-bookmarks">
-    <Heading id="library-all-bookmarks" level={2} role="titleMedium">{copy('Dấu trang','Bookmarks')}</Heading>
-    <div className="library-bookmark-tabs" role="tablist" aria-label={copy('Loại Dấu Trang','Bookmark type')}
-     onKeyDown={event=>{
-      const next=(event.key==='ArrowLeft'||event.key==='ArrowRight')?
-       (tab==='lesson'?'question':'lesson'):
-       event.key==='Home'?'lesson':event.key==='End'?'question':null;
-      if(!next)return;
-      event.preventDefault();tabClick(next);
-      requestAnimationFrame(()=>document.getElementById('li-react-tab-'+next)?.focus());
-     }}>
-     {(['lesson','question'] as const).map(kind=><Button key={kind} variant="ghost"
-      id={'li-react-tab-'+kind} role="tab" aria-selected={tab===kind}
-      tabIndex={tab===kind?0:-1} onClick={()=>tabClick(kind)}
-      className="library-bookmark-tab">{kind==='lesson'?copy('Bài học','Lessons'):copy('Câu hỏi','Questions')}</Button>)}
-    </div>
-    <div role="tabpanel" aria-labelledby={'li-react-tab-'+tab} tabIndex={0}>
-     <BookmarkRows items={tab==='lesson'?view.lessonBookmarks:view.questionBookmarks}/>
-    </div>
-   </section>
   </div>
+ </div>;
+}
+function Bookmarks(){
+ const view=useLibrary();
+ const tab=view.bookmarkTab;
+ const tabClick=(next:'lesson'|'question')=>app.liLibraryShelf?.selectBookmarkTab(next);
+ return <div className="section-shell li-react-library" data-li-react-screen="bookmarks">
+  <Heading level={1} role="headline" className="display-title">{copy('Dấu trang','Bookmarks')}</Heading>
+  <Text role="body" className="intro">{copy(
+   'Những bài học và câu hỏi đã lưu để xem lại.',
+   'Lessons and questions you saved for later.')}</Text>
+  <section className="library-bookmarks-layout" aria-label={copy('Danh sách Dấu trang','Saved bookmarks')}>
+   <div className="library-bookmark-tabs" role="tablist" aria-label={copy('Loại Dấu Trang','Bookmark type')}
+    onKeyDown={event=>{
+     const next=(event.key==='ArrowLeft'||event.key==='ArrowRight')?
+      (tab==='lesson'?'question':'lesson'):
+      event.key==='Home'?'lesson':event.key==='End'?'question':null;
+     if(!next)return;
+     event.preventDefault();tabClick(next);
+     requestAnimationFrame(()=>document.getElementById('li-react-tab-'+next)?.focus());
+    }}>
+    {(['lesson','question'] as const).map(kind=><Button key={kind} variant="ghost"
+     id={'li-react-tab-'+kind} role="tab" aria-selected={tab===kind}
+     tabIndex={tab===kind?0:-1} onClick={()=>tabClick(kind)}
+     className="library-bookmark-tab">{kind==='lesson'?copy('Bài học','Lessons'):copy('Câu hỏi','Questions')}</Button>)}
+   </div>
+   <div role="tabpanel" aria-labelledby={'li-react-tab-'+tab} tabIndex={0}>
+    <BookmarkRows items={tab==='lesson'?view.lessonBookmarks:view.questionBookmarks}/>
+   </div>
+  </section>
  </div>;
 }
 function Collection(){
@@ -496,6 +504,7 @@ export function mountGuideAndLibrary(){
   {route:'guide',component:<Guide/>},
   {route:'library',component:<Library/>},
   {route:'resume',component:<Resume/>},
+  {route:'bookmarks',component:<Bookmarks/>},
   {route:'collection',component:<Collection/>},
   {route:'guideDetail',component:<GuideDetail/>},
   {route:'noteDetail',component:<NoteDetail/>}

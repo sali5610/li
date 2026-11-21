@@ -37,7 +37,7 @@ assert.match(reader,/phase==='progress'&&!persisted\.reviewed&&/,
  'Unreviewed progress is readable as a not-yet-completed placeholder');
 assert.match(reader,/richLabel=\{<>\{i\+1\}\. \{formatLessonInline\(question\)\}<\/>\}/,
  'Question markup must be formatted as real inline emphasis, not raw <b> tags');
-assert.match(reader,/question\.replace\(\/<\[\^>\]\*\>\/g,''\)/,
+assert.ok(reader.includes("question.replace(/<[^>]*>/g,'')"),
  'Plain accessible label must never expose authored HTML tags');
 assert.match(editorial,/export function inline\(/,
  'Reuse the existing safe source-markup parser without dangerouslySetInnerHTML');

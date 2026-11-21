@@ -181,6 +181,10 @@ function CaseScene(){
   inquiryFlow().toggleCaseBookmark();
   setBookmarked(readBookmark());
  };
+ // A completed Phản Chứng is ready for analysis before it is saved.
+ // Keep the last successful snapshot available after the save clears the form.
+ const analysis=completed??(choice&&revision.trim().length>=12
+  ?{choice,conclusion:revision.trim()}:null);
  return <div data-li-react-screen="case" className="li-react-case">
   <div className="library-heading-with-utility">
    <Heading level={1} role="headline">{L("Phản Chứng","Challenge")}</Heading>
@@ -216,14 +220,21 @@ function CaseScene(){
     {message&&<InlineFeedback tone="error" message={message}/>}
     <div className="action-row"><Button onClick={save}><LiIcon name="check" size={20}/> {L("Lưu vào Bút Ký","Save to Notebook")}</Button></div>
     <Text role="support">{L("Sau khi xem phản hồi, hãy viết lại kết luận bằng lời của bạn.","After the feedback, rewrite the conclusion in your own words.")}</Text>
-    {completed&&<CopyAnalysisPrompt locale={locale} step="case" data={{
-     title:L(caseCopy.question.vi,caseCopy.question.en),lessonId:'sampling-bias-90',
-     activity:L(caseCopy.scene.vi,caseCopy.scene.en),
-     questions:[L('Bạn chọn nhận định nào?','Which claim did you select?'),
-      L('Bạn sửa lại luận kết ra sao?','How did you revise the conclusion?')],
-     answers:[L(caseCopy.options[completed.choice].vi,caseCopy.options[completed.choice].en),completed.conclusion],
-     reference:L(caseCopy.feedback[completed.choice].vi,caseCopy.feedback[completed.choice].en)
-    }}/>}</div>
+    <div className="li-case-analysis-action"
+     data-li-case-analysis-state={completed?'saved':analysis?'ready':'incomplete'}>
+     {completed&&<Text role="support">{L('Đã lưu Luận Kết vào Bút Ký. Ngươi có thể copy prompt để phân tích.',
+      'Conclusion saved to Notebook. You can now copy the analysis prompt.')}</Text>}
+     {!analysis&&<Text role="support">{L('Chọn một nhận định và viết Luận Kết ít nhất 12 ký tự để mở nút phân tích.',
+      'Choose a claim and write a conclusion of at least 12 characters to enable analysis.')}</Text>}
+     <CopyAnalysisPrompt locale={locale} step="case" disabled={!analysis} data={{
+      title:L(caseCopy.question.vi,caseCopy.question.en),lessonId:'sampling-bias-90',
+      activity:L(caseCopy.scene.vi,caseCopy.scene.en),
+      questions:[L('Bạn chọn nhận định nào?','Which claim did you select?'),
+       L('Bạn sửa lại luận kết ra sao?','How did you revise the conclusion?')],
+      answers:analysis?[L(caseCopy.options[analysis.choice].vi,caseCopy.options[analysis.choice].en),analysis.conclusion]:[],
+      reference:analysis?L(caseCopy.feedback[analysis.choice].vi,caseCopy.feedback[analysis.choice].en):undefined
+     }}/>
+    </div></div>
    </section>
    <aside className="case-coach">
     <div className="kicker">{L("THỦ THUẬT TƯ DUY","THINKING TECHNIQUE")}</div>

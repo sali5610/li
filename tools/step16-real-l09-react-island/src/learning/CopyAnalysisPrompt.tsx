@@ -68,8 +68,8 @@ async function copyPrompt(value:string):Promise<void>{
  try{if(!document.execCommand('copy'))throw Error('COPY_FAILED');}
  finally{textarea.remove();}
 }
-export function CopyAnalysisPrompt({locale,step,data}:{
- locale:Locale;step:AnalysisStep;data:AnalysisContext;
+export function CopyAnalysisPrompt({locale,step,data,disabled=false}:{
+ locale:Locale;step:AnalysisStep;data:AnalysisContext;disabled?:boolean;
 }){
  const [status,setStatus]=useState<'idle'|'copied'|'error'>('idle');
  const prompt=buildAnalysisPrompt(locale,step,data);
@@ -79,7 +79,7 @@ export function CopyAnalysisPrompt({locale,step,data}:{
   <Text role="support">{vi?
    'Muốn ChatGPT phân tích bài của ngươi? Copy prompt rồi dán vào cuộc trò chuyện. Không tự gửi dữ liệu.':
    'Want ChatGPT to review your work? Copy and paste the prompt into a chat. Nothing is sent automatically.'}</Text>
-  <Button variant="secondary" onClick={()=>void copyPrompt(prompt)
+  <Button variant="secondary" disabled={disabled} onClick={()=>void copyPrompt(prompt)
    .then(()=>setStatus('copied')).catch(()=>setStatus('error'))}>
    {status==='copied'?(vi?'Đã copy prompt':'Prompt copied'):(vi?'Copy prompt phân tích':'Copy analysis prompt')}
   </Button>

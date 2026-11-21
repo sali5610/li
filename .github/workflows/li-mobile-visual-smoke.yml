@@ -22,6 +22,27 @@ jobs:
         run: |
           npm install --no-audit --no-fund --prefix design-system/react
           npm install --no-audit --no-fund --prefix tools/step16-real-l09-react-island
+      - name: Inspect actual public Pages revision and HTML (read-only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "EXPECTED_STAGING_SHA=$(git ls-remote origin refs/heads/integration/staging | cut -f1)"
+          live="$(curl -fLsS --retry 2 --max-time 15 \
+            -H 'Cache-Control: no-cache' \
+            "https://sali5610.github.io/li/build-info.json?probe=${GITHUB_RUN_ID}" || true)"
+          echo "PUBLIC_BUILD_INFO=$live"
+          html="$(curl -fLsS --retry 2 --max-time 15 \
+            -H 'Cache-Control: no-cache' \
+            "https://sali5610.github.io/li/?probe=${GITHUB_RUN_ID}" || true)"
+          if [[ -z "$html" ]]; then
+            echo "PUBLIC_HTML_UNAVAILABLE: staging public endpoint could not be fetched"
+          else
+            echo "PUBLIC_HTML_BYTES=${#html}"
+            echo "PUBLIC_HTML_VERSIONED_ENTRY=$(grep -o 'staging-auth-gate.js?li_build=[^"]*' <<<"$html" | head -1 || true)"
+            echo "PUBLIC_REACT_CSS=$(grep -o 'li-react-learning-[^"]*css' <<<"$html" | head -1 || true)"
+            echo "PUBLIC_HAS_AUTH_GATE=$([[ "$html" == *'li-auth-gate-critical'* ]] && echo yes || echo no)"
+          fi
+
       - name: Build isolated fixture using real screen React and CSS
         working-directory: tools/step16-real-l09-react-island
         run: |

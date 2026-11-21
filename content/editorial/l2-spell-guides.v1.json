@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "status": "Editorial draft — source-reviewed, not PO-approved or production released",
-  "provenance": "Migrated existing 13 spell guidance from React detail; examples, Do & Don't, diagram captions and evidence bounds authored from linked academic/educational sources on 2026-11-22. Examples are explanatory, not empirical observations or certified task solutions.",
+  "provenance": "Migrated existing 13 spell guidance from React detail; examples, Do & Don't, diagram captions and evidence bounds authored from linked academic/educational sources on 2026-11-22. Examples are explanatory, not empirical observations or certified task solutions. Illustration assets: 13 distinct original, published CC BY-SA 4.0 educational artworks from Wikimedia Commons (Wikimedia Foundation Education team). Source and licence link present per illustration; no drawn replacements. Illustrations are editorial/contextual, not evidence of technique effectiveness.",
   "methods": {
     "T01": {
       "vi": {
@@ -78,7 +78,16 @@
           "title": "Roediger & Karpicke (2006) · Retrieval",
           "url": "https://pubmed.ncbi.nlm.nih.gov/16507066/"
         }
-      ]
+      ],
+      "illustration": {
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_17.png?width=760",
+        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_17.png",
+        "credit": "Wikimedia Foundation · Education team",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
+        "altEn": "Wikimedia Foundation education illustration"
+      }
     },
     "T02": {
       "vi": {
@@ -155,7 +164,16 @@
           "title": "Dunlosky et al. (2013) · Review",
           "url": "https://www.psychologicalscience.org/journals/pspi/1529100612453266/"
         }
-      ]
+      ],
+      "illustration": {
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_18.png?width=760",
+        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_18.png",
+        "credit": "Wikimedia Foundation · Education team",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
+        "altEn": "Wikimedia Foundation education illustration"
+      }
     },
     "T03": {
       "vi": {
@@ -226,7 +244,16 @@
           "title": "Renkl (2022) · Worked examples",
           "url": "https://www.cambridge.org/core/books/abs/cambridge-handbook-of-multimedia-learning/worked-example-principle-in-multimedia-learning/CDECDB094C169A37A79F589994C8F641"
         }
-      ]
+      ],
+      "illustration": {
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_19.png?width=760",
+        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_19.png",
+        "credit": "Wikimedia Foundation · Education team",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
+        "altEn": "Wikimedia Foundation education illustration"
+      }
     },
     "T04": {
       "vi": {
@@ -299,7 +326,16 @@
           "title": "Dunlosky et al. (2013) · Review",
           "url": "https://www.psychologicalscience.org/journals/pspi/1529100612453266/"
         }
-      ]
+      ],
+      "illustration": {
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_20.png?width=760",
+        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_20.png",
+        "credit": "Wikimedia Foundation · Education team",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
+        "altEn": "Wikimedia Foundation education illustration"
+      }
     },
     "T05": {
       "vi": {
@@ -372,7 +408,16 @@
           "title": "Dunlosky et al. (2013) · Review",
           "url": "https://www.psychologicalscience.org/journals/pspi/1529100612453266/"
         }
-      ]
+      ],
+      "illustration": {
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_21.png?width=760",
+        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_21.png",
+        "credit": "Wikimedia Foundation · Education team",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
+        "altEn": "Wikimedia Foundation education illustration"
+      }
     },
     "T06": {
       "vi": {
@@ -445,7 +490,16 @@
           "title": "Dunlosky et al. (2013) · Review",
           "url": "https://www.psychologicalscience.org/journals/pspi/1529100612453266/"
         }
-      ]
+      ],
+      "illustration": {
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_22.png?width=760",
+        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_22.png",
+        "credit": "Wikimedia Foundation · Education team",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
+        "altEn": "Wikimedia Foundation education illustration"
+      }
     },
     "T07": {
       "vi": {
@@ -518,7 +572,16 @@
           "title": "Stanford Encyclopedia · Classical Logic",
           "url": "https://plato.stanford.edu/entries/logic-classical/"
         }
-      ]
+      ],
+      "illustration": {
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_23.png?width=760",
+        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_23.png",
+        "credit": "Wikimedia Foundation · Education team",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
+        "altEn": "Wikimedia Foundation education illustration"
+      }
     },
     "T08": {
       "vi": {
@@ -595,7 +658,16 @@
           "title": "Argument Mapping · Systematic review (2025)",
           "url": "https://doi.org/10.1111/hequ.70063"
         }
-      ]
+      ],
+      "illustration": {
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_24.png?width=760",
+        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_24.png",
+        "credit": "Wikimedia Foundation · Education team",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
+        "altEn": "Wikimedia Foundation education illustration"
+      }
     },
     "T09": {
       "vi": {
@@ -672,7 +744,16 @@
           "title": "OpenStax · Primary Sources",
           "url": "https://openstax.org/books/world-history-volume-1/pages/1-2-primary-sources"
         }
-      ]
+      ],
+      "illustration": {
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_25.png?width=760",
+        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_25.png",
+        "credit": "Wikimedia Foundation · Education team",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
+        "altEn": "Wikimedia Foundation education illustration"
+      }
     },
     "T10": {
       "vi": {
@@ -745,7 +826,16 @@
           "title": "OpenStax · Computational Thinking (decomposition)",
           "url": "https://openstax.org/books/introduction-computer-science/pages/2-1-computational-thinking"
         }
-      ]
+      ],
+      "illustration": {
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_26.png?width=760",
+        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_26.png",
+        "credit": "Wikimedia Foundation · Education team",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
+        "altEn": "Wikimedia Foundation education illustration"
+      }
     },
     "T11": {
       "vi": {
@@ -822,7 +912,16 @@
           "title": "CAST · UDL strategy development",
           "url": "https://udlguidelines.cast.org/action-expression/strategy-development/"
         }
-      ]
+      ],
+      "illustration": {
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_27.png?width=760",
+        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_27.png",
+        "credit": "Wikimedia Foundation · Education team",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
+        "altEn": "Wikimedia Foundation education illustration"
+      }
     },
     "T12": {
       "vi": {
@@ -899,7 +998,16 @@
           "title": "CAST · UDL strategy development",
           "url": "https://udlguidelines.cast.org/action-expression/strategy-development/"
         }
-      ]
+      ],
+      "illustration": {
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_28.png?width=760",
+        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_28.png",
+        "credit": "Wikimedia Foundation · Education team",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
+        "altEn": "Wikimedia Foundation education illustration"
+      }
     },
     "T13": {
       "vi": {
@@ -970,7 +1078,16 @@
           "title": "Method of Loci · Meta-analysis (2025)",
           "url": "https://pubmed.ncbi.nlm.nih.gov/40457944/"
         }
-      ]
+      ],
+      "illustration": {
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_29.png?width=760",
+        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_29.png",
+        "credit": "Wikimedia Foundation · Education team",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
+        "altEn": "Wikimedia Foundation education illustration"
+      }
     }
   }
 }

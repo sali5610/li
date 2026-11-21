@@ -136,7 +136,8 @@ export function LaoLyStateScene({kind,artworkSrc,title,description,action}:LaoLy
  return <section className="li-legacy-laoly-state" data-li-legacy="laoly-state"
   data-state={kind} role={kind==='error'?'alert':'status'}
   aria-busy={kind==='loading'||undefined}>
-  <img src={artworkSrc} alt="" aria-hidden="true" decoding="async" loading="lazy"/>
+  <img src={artworkSrc} alt="" aria-hidden="true" decoding="async"
+   loading={kind==='loading'?'eager':'lazy'}/>
   <h3>{title}</h3><p>{description}</p>
   {action?<div>{action}</div>:null}
  </section>;

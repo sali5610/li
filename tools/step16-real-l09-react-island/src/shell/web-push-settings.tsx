@@ -93,7 +93,7 @@ export function WebPushSettings(){
     'On iPhone, open li. from its Home Screen app icon, not a Safari tab.')}</Text>:
    <>
     <Text role="support">{copy(
-     'Mặc định tắt. Chỉ xin quyền khi mày bấm cho phép. Dùng các lịch đã bật phía trên; mỗi loại tối đa một lần vào ngày được chọn. Mỗi thiết bị bật riêng.',
+     'Mặc định tắt. Chỉ xin quyền khi nhấn cho phép. Dùng các lịch đã bật phía trên; mỗi loại tối đa một lần vào ngày được chọn. Mỗi thiết bị bật riêng.',
      'Off by default. Permission is requested only on tap. Uses enabled schedules above, at most once per selected day per type. Enable per device.')}</Text>
     <div className="action-row">
      {!enabled?<Button variant="primary" disabled={busy} onClick={()=>void enable()}>

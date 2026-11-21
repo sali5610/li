@@ -297,7 +297,8 @@ export function mountReactRouter():()=>void{
  window.liAppRouter=port;
  let wasVerified=canVisit();
  const onSession=(event:Event)=>{
-  const verified=(event as CustomEvent<{verified:boolean}>).detail?.verified;
+  const detail=(event as CustomEvent<{verified:boolean;transient?:boolean}>).detail;
+  const verified=detail?.verified;
   if(verified!==false){
    if(canVisit()){
     wasVerified=true;
@@ -310,6 +311,9 @@ export function mountReactRouter():()=>void{
    }
    return;
   }
+  // A recheck hides protected UI without destroying the learner's place.
+  // Only definitive sign-out or invite denial may clear route/history.
+  if(detail?.transient===true)return;
   // Initial pending/guest state is not a sign-out. Keep the requested deep
   // link intact until the invitation resolves; clear it only after a real session.
   if(!wasVerified)return;

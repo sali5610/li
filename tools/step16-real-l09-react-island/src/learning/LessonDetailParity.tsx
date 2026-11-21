@@ -115,7 +115,8 @@ export function LessonSectionIndex({id,locale,links,onPhase,submitted}:{
    </Button>)}</div>
  </nav>;
 }
-export function LessonBookmark({id,locale}:{id:LessonId;locale:Locale}){
+/** A private lesson bookmark accepts released and invited-staging IDs alike. */
+export function LessonBookmark({id,locale}:{id:string;locale:Locale}){
  const [saved,setSaved]=useState(()=>app.liBookmarks?.isSaved('lesson',id)??false);
  useEffect(()=>{
   const refresh=()=>setSaved(app.liBookmarks?.isSaved('lesson',id)??false);

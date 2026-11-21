@@ -240,12 +240,13 @@ export function LessonSources({id,locale,copy,sources,subject,conceptTitle,onSea
     </div>
    </Card>)}
   </div>
-  <div className="section-rule"/>
-  <Heading level={3} role="titleMedium">{copy.queriesTitle}</Heading>
-  <div className="li-learning-keywords">
-   {queries.map(query=><Button key={query} variant="ghost" onClick={()=>onSearch(query)}>
-    {query}</Button>)}
-  </div>
+  <details className="li-learning-query-details">
+   <summary>{copy.queriesTitle} · {queries.length}</summary>
+   <div className="li-learning-keywords">
+    {queries.map(query=><Button key={query} variant="ghost" onClick={()=>onSearch(query)}>
+     {query}</Button>)}
+   </div>
+  </details>
   <div className="li-learning-reference-actions">
    <Button variant="primary" onClick={()=>void copyPrompt()}>{copy.allPrompt}</Button>
    <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">{copy.openChat}</a>

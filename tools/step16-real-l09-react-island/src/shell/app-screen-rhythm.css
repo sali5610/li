@@ -1,0 +1,95 @@
+/* React app-wide draft adoption: one component/token rhythm across every
+ * user-facing screen. No changes to lesson data, navigation owners or theme.
+ * Global Back = history; Breadcrumb = hierarchy (Catalog supplies deep trail). */
+#li-react-route-trail{box-sizing:border-box;position:relative;z-index:1;width:100%;
+ min-width:0;max-width:100%;padding:var(--li-space-3) 0 0}
+:root:not(.li-auth-verified) #li-react-route-trail{display:none}
+#li-react-route-trail:empty{display:none}
+.li-app-route-trail{box-sizing:border-box;max-width:1180px;margin-inline:auto;min-width:0}
+.li-app-route-trail .li-ds-breadcrumb{overflow-wrap:anywhere}
+#li-react-route-trail .li-ds-breadcrumb li,
+.catalog-breadcrumbs .li-ds-breadcrumb li{align-items:stretch}
+#li-react-route-trail .li-ds-breadcrumb button,
+.catalog-breadcrumbs .li-ds-breadcrumb button{
+ display:inline-flex;align-items:center;min-height:44px;
+ padding:var(--li-space-2);border:0;border-radius:0;background:none;
+ color:var(--moss);font:inherit;text-align:start;cursor:pointer;
+ text-decoration:underline;text-underline-offset:var(--li-space-1);
+}
+#li-react-route-trail .li-ds-breadcrumb button:focus-visible,
+.catalog-breadcrumbs .li-ds-breadcrumb button:focus-visible{
+ outline:3px solid var(--li-role-focus-ring,var(--olive));outline-offset:2px;
+}
+#li-react-route-trail .li-ds-breadcrumb [aria-current="page"],
+.catalog-breadcrumbs .li-ds-breadcrumb [aria-current="page"]{
+ display:inline-flex;align-items:center;min-height:44px;padding:var(--li-space-2) 0;
+}
+/* The legacy local Back is redundant only while the semantic trail exists.
+ * One globally visible Back remains in the header. */
+#li-react-route-trail:has(.li-app-route-trail) ~ #main .page.active
+ :is(.utility-back,.library-back-link){display:none}
+:root.li-auth-verified .page.active :where([data-li-react-screen]:not([data-li-react-screen="home"])){
+ min-width:0;
+}
+:root.li-auth-verified .page.active :where([data-li-react-screen]) :where(.intro){
+ max-width:72ch;overflow-wrap:anywhere;
+ font-size:var(--li-type-body);line-height:var(--li-leading-body);
+}
+:root.li-auth-verified .page.active :where([data-li-react-screen])
+ :where(.display-title,.li-atom-heading[data-role="headline"]){
+ max-width:24ch;text-wrap:balance;line-height:var(--li-leading-headline);
+}
+:root.li-auth-verified .page.active :where([data-li-react-screen])
+ :where(.kicker){max-width:100%;overflow-wrap:anywhere}
+:root.li-auth-verified .page.active :where([data-li-react-screen])
+ :where(.editorial-grid,.surface-grid,.catalog-course-list,.settings-group-grid,
+ .library-groups,.li-diary-layout,.catalog-field-grid,.catalog-group-grid,
+ .li-react-method-grid)>*{min-width:0}
+:root.li-auth-verified .page.active :where([data-li-react-screen])
+ :where(.action-row,.li-react-shelf-list,.library-heading-with-utility){
+ gap:var(--li-space-3);min-width:0;
+}
+:root.li-auth-verified .page.active :where([data-li-react-screen])
+ :where([data-li-component="card"]){
+ min-width:0;overflow-wrap:anywhere;
+}
+:root.li-auth-verified .page.active :where([data-li-react-screen])
+ :where([data-li-component="card"])>.kicker+
+ :where(.li-atom-heading){margin-block-start:var(--li-space-2)}
+:root.li-auth-verified .page.active :where([data-li-react-screen])
+ :where(.li-atom-heading+.li-atom-text){margin-block-start:var(--li-space-2)}
+:root.li-auth-verified .page.active :where([data-li-react-screen])
+ :where(.li-atom-field,.li-ds-search-field){max-width:100%;min-width:0}
+:root.li-auth-verified .page.active :where([data-li-react-screen])
+ :where(.action-row)>.li-ds-button{min-width:0}
+@media(min-width:744px){
+ :root.li-auth-verified .page.active .li-react-library
+  :where(.surface-grid.cols2,.library-resume-previews){
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+}
+@media(max-width:600px){
+ #li-react-route-trail{padding:var(--li-space-2) 0 0}
+ #li-react-route-trail .li-ds-breadcrumb ol{gap:var(--li-space-1)}
+ #li-react-route-trail .li-ds-breadcrumb li{font-size:var(--li-type-caption)}
+ :root.li-auth-verified .page.active :where([data-li-react-screen])
+  :where(.library-heading-with-utility){flex-wrap:wrap}
+ :root.li-auth-verified .page.active :where([data-li-react-screen])
+  :where(.action-row)>.li-ds-button{max-width:100%}
+}
+
+
+/* The three React overlays keep their own focus/state controllers; only
+ * shared geometry and token rhythm are adopted. No new modal framework. */
+:root.li-auth-verified :where(.li-react-buddy-shell,.li-react-note-confirm,.modal[data-react-owner="checkin"])
+ :where(.dialog){box-sizing:border-box;max-inline-size:min(100%,720px);min-inline-size:0}
+:root.li-auth-verified :where(.li-react-buddy-shell,.li-react-note-confirm,.modal[data-react-owner="checkin"])
+ :where(.action-row){display:flex;flex-wrap:wrap;gap:var(--li-space-3)}
+:root.li-auth-verified :where(.li-react-buddy-shell,.li-react-note-confirm,.modal[data-react-owner="checkin"])
+ :where(.dialog,fieldset,textarea){min-inline-size:0}
+:root.li-auth-verified :where(.li-react-buddy-shell,.li-react-note-confirm,.modal[data-react-owner="checkin"])
+ :where(h2){overflow-wrap:anywhere;text-wrap:balance}
+@media(max-width:600px){
+ :root.li-auth-verified :where(.li-react-note-confirm,.modal[data-react-owner="checkin"])
+  .action-row>.li-ds-button{flex:1 1 auto}
+}

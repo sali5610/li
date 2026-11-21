@@ -1,6 +1,9 @@
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {AppNavigationControls} from '../../../../design-system/react/AppNavigation';
+import {Breadcrumb} from '../../../../design-system/react/Molecules';
+import '../../../../design-system/react/molecules.css';
+import './app-screen-rhythm.css';
 import type {AppNavigationItem,AppNavigationControlsProps} from '../../../../design-system/react/AppNavigation';
 import {openRoute,goBack,syncCanonicalRoute,mountReactRouter} from './app-router.js';
 import {useAppUiStore} from './app-store.js';
@@ -47,7 +50,11 @@ function NavigationSurface({area,items}:{area:AppNavigationControlsProps['area']
   const [label,accessibleLabel,title]=english[item.id]||[item.label,item.accessibleLabel,item.title];
   return {...item,label,accessibleLabel,title};
  }):items;
- return <AppNavigationControls area={area} activeId={active} items={localized} onNavigate={openRoute}/>;
+ const navActive=/^(lesson|draftLesson)/.test(active)?'catalog':
+  active==='guideDetail'?'guide':
+  ['resume','collection','noteDetail','dashboard'].includes(active)?'library':
+  ['research','case'].includes(active)?'home':active;
+ return <AppNavigationControls area={area} activeId={navActive} items={localized} onNavigate={openRoute}/>;
 }
 /** The only visible account entry point: no hidden legacy Settings button. */
 function AccountControl(){
@@ -80,6 +87,50 @@ function BackControl(){
  </button>;
 }
 
+/** The global Back follows history; these crumbs express IA, not history.
+ * The Catalog owns its deeper group > field > course > lesson trail.
+ * Route labels are UI-only. No second router or data owner is introduced. */
+type TrailPart={id?:string;vi:string;en:string};
+const homeTrail:TrailPart={id:'home',vi:'Đại Sảnh',en:'Great Hall'};
+const catalogTrail:TrailPart={id:'catalog',vi:'Tàng Thư',en:'Library'};
+const libraryTrail:TrailPart={id:'library',vi:'Tủ Riêng',en:'My Shelf'};
+const guideTrail:TrailPart={id:'guide',vi:'Thần Chú',en:'Spells'};
+const researchTrail:TrailPart={id:'research',vi:'Khảo Chứng',en:'Investigate'};
+const collectionTrail:TrailPart={id:'collection',vi:'Bộ Sưu Tập',en:'Collection'};
+const trails:Record<string,TrailPart[]>={
+ search:[{vi:'Tra Cứu',en:'Search'}],
+ research:[researchTrail],
+ case:[researchTrail,{vi:'Phản Chứng',en:'Challenge'}],
+ capture:[{vi:'Nhặt Ý',en:'Capture'}],
+ guide:[guideTrail],
+ guideDetail:[guideTrail,{vi:'Chi tiết Thần Chú',en:'Spell detail'}],
+ library:[libraryTrail],
+ resume:[libraryTrail,{vi:'Quay Lại',en:'Continue'}],
+ collection:[libraryTrail,collectionTrail],
+ noteDetail:[libraryTrail,collectionTrail,{vi:'Chi tiết ghi chú',en:'Note detail'}],
+ dashboard:[libraryTrail,{vi:'Nhật Ký',en:'Journal'}],
+ settings:[{vi:'Cài Đặt',en:'Settings'}]
+};
+function RouteTrail(){
+ const route=useAppUiStore(state=>state.route);
+ const locale=useAppLocale(),en=locale==='en';
+ // Home is immersive; Catalog has its own content-level Breadcrumb.
+ if(route==='home'||route==='catalog')return null;
+ const flow=trails[route]||
+  (/^(lesson|draftLesson)/.test(route)?
+   [catalogTrail,{vi:'Bài Học',en:'Lesson'}]:
+   [{vi:'Trang hiện tại',en:'Current page'}]);
+ const parts=[homeTrail,...flow];
+ return <div className="li-app-route-trail" data-li-review-status="draft">
+  <Breadcrumb label={en?'You are here':'Vị trí hiện tại'}
+   items={parts.map((part,index)=>({
+    label:en?part.en:part.vi,
+    onActivate:index<parts.length-1&&part.id?
+     ()=>openRoute(part.id!):undefined
+   }))}/>
+ </div>;
+}
+
 export function mountSharedNavigation(){
  const surfaces:{selector:string;area:AppNavigationControlsProps['area'];items:readonly AppNavigationItem[]}[]=[
   {selector:'.header .topnav',area:'desktop',items:destinations},
@@ -101,6 +152,12 @@ export function mountSharedNavigation(){
  backHost.style.display='contents';
  originalBack.replaceWith(backHost);
  const backRoot=createRoot(backHost);
+ const main=document.getElementById('main');
+ if(!main)throw Error('REACT_MAIN_FOR_ROUTE_TRAIL_MISSING');
+ const trailHost=document.createElement('div');
+ trailHost.id='li-react-route-trail';
+ main.before(trailHost);
+ const trailRoot=createRoot(trailHost);
  // React owns route state. All native, draft-preview and browser history
  // entrypoints dispatch through the same port and explicit state event.
  const stopRouter=mountReactRouter();
@@ -112,10 +169,12 @@ export function mountSharedNavigation(){
    {area==='utilities'&&<AccountControl/>}
   </>));
  backRoot.render(<BackControl/>);
+ trailRoot.render(<RouteTrail/>);
  return ()=>{
   window.removeEventListener('li:route-changed',syncCanonicalRoute);
   mounts.forEach(({root})=>root.unmount());
   backRoot.unmount();backHost.replaceWith(originalBack);
+  trailRoot.unmount();trailHost.remove();
   stopRouter();
  };
 }

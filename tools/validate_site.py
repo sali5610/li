@@ -75,7 +75,7 @@ assert 'aria-label="Cảnh thư viện cổ thụ và Gương Vạn Vấn"' in h
 
 # UX-DS-28: native Safari viewport and zoom remain enabled; mirror swipe stays local.
 for needle in (
-    'content="width=device-width,initial-scale=1,viewport-fit=cover"',
+    'content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"',
     '/* S139 · Sticky top navigation, fixed touch-viewport scale.',
     'touch-action:pan-x pan-y;',
     'scroll-padding-top:88px;',
@@ -94,8 +94,8 @@ for needle in (
 ):
     assert needle in html, f"Mobile sticky viewport/swipe rule missing: {needle}"
 
-# No global gesture interception: Safari must recompute layout on rotation and allow text zoom.
-for forbidden in ("user-scalable=no", "maximum-scale=1", "minimum-scale=1",
+# No global gesture interception: 1x is the zoom-out floor; pinch-in stays available.
+for forbidden in ("user-scalable=no", "maximum-scale=1",
                   'document.addEventListener("gesturestart"', 'document.addEventListener("gesturechange"',
                   "event.touches?.length>1)event.preventDefault()"):
     assert forbidden not in page_html, f"Native pinch-zoom blocked by {forbidden}"
@@ -415,7 +415,7 @@ assert "(max-width:1420px) and (orientation:landscape)" in device_css
 rotation_js=(site/"assets"/"ipad-safari-rotation.js").read_text(encoding="utf-8")
 assert 'ipad-safari-rotation.js?v=20261119-ds33' in page_html
 assert 'ipad-viewport-debug.js' not in page_html, "iPad QA overlay must not ship in app"
-for must in ('screen.orientation', 'window.orientation', 'navigator.maxTouchPoints>1', 'setTimeout(reconcile,0)', '--li-ipad-shell-width', '--li-ipad-shell-height', 'li-ipad-home-canvas', 'width=device-width,initial-scale=1,viewport-fit=cover'):
+for must in ('screen.orientation', 'window.orientation', 'navigator.maxTouchPoints>1', 'setTimeout(reconcile,0)', '--li-ipad-shell-width', '--li-ipad-shell-height', 'li-ipad-home-canvas', 'width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover'):
     assert must in rotation_js, f"Safari recovery missing: {must}"
 for forbid in ('window.location.reload(', 'localStorage.setItem(', 'indexedDB.deleteDatabase(', 'sessionStorage.clear('):
     assert forbid not in rotation_js, f"Rotation recovery must not touch persistence/reload: {forbid}"

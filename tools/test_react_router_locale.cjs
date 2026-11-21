@@ -488,6 +488,17 @@ assert.equal(cRoutes.at(-1),'catalog');
 assert.equal(cPort.getPath().join('/'),personalPath.join('/'));
 assert.equal(cPort.openForLesson('L03-1-2'),true);
 assert.equal(cPort.getPath().join('/'),releasedPath.join('/'));
+// The router restored ?catalog= after the adapter's auth callback: Catalog
+// must update the visible level without requiring a second user navigation.
+cLocation.href=new URL('/li/?view=catalog&catalog='+personalPath.join('/'),
+ cLocation.origin).href;
+cWindow.dispatchEvent({type:'li:route-changed',detail:{route:'catalog'}});
+assert.equal(cPort.getPath().join('/'),personalPath.join('/'),
+ 'Reloaded Catalog shows its saved hierarchy, not root');
+cLocation.href=new URL('/li/?view=guide',cLocation.origin).href;
+cWindow.dispatchEvent({type:'li:route-changed',detail:{route:'guide'}});
+assert.equal(cPort.getPath().join('/'),personalPath.join('/'),
+ 'Leaving Catalog does not erase course return context');
 cVerified=false;cWindow.dispatchEvent({type:'li:auth-verified-changed',detail:{verified:false}});
 assert.equal(cPort.getPath().length,0,'Signed-out account loses previous Catalog path');
 assert.equal(cPort.openLesson('L03-1-2'),false,'Unverified account cannot navigate into a lesson');

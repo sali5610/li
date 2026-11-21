@@ -12,6 +12,7 @@ import {SelfReviewNextStep} from './SelfReviewNextStep';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
 import {Markdown,inline as formatLessonInline} from './EditorialJourney';
 import {LessonBookmark,LessonMentor} from './LessonDetailParity.js';
+import {CopyAnalysisPrompt} from './CopyAnalysisPrompt.js';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
 import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discovery-locale.js';
@@ -509,6 +510,14 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       </>}
      </div>
     </details>
+    <CopyAnalysisPrompt locale={locale} step="guided" data={{
+     title:lesson.title[locale],lessonId:id,
+     activity:section(c,'guided').map(x=>x.body_md).join('\n'),
+     questions:[vi?'Hãy tự giải thích ví dụ bằng lời của mình.':'Explain the guided example in your own words.'],
+     answers:[attempt.guidedDraft],
+     reference:persisted.guidedDraft.trim().length>=MIN
+      ?section(c,'guided').map(x=>x.feedback_md||'').filter(Boolean).join('\n'):undefined
+    }}/>
     <Button onClick={()=>setPhase('practice')}>
      {vi?'Tiếp: Làm bài':'Next: Practice'} →
     </Button>
@@ -562,6 +571,12 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      <Button disabled={pending>0||locked||attempt.ratings.some(x=>x===null)}
       onClick={()=>void finish()}>{vi?'Lưu tự đánh giá':'Save review'}</Button>
     </>}
+    <CopyAnalysisPrompt locale={locale} step="feedback" data={{
+     title:lesson.title[locale],lessonId:id,activity:independent(c).body_md,
+     questions,answers:persisted.submission??persisted.draft,
+     reference:showAnswer&&!conflict?modelAnswer:undefined,
+     extra:showAnswer&&!conflict?rubric.map(row=>row.join(' · ')).join('\n'):undefined
+    }}/>
    </>}
    {phase==='progress'&&!persisted.reviewed&&<>
     <Heading level={2} role="titleLarge">{names.progress}</Heading>
@@ -583,6 +598,12 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      onOpen={()=>openGuide('T02',true)}/>
     <Button disabled={pending>0||locked} onClick={()=>void newRound()}>
      {vi?'Lượt mới · giữ lịch sử':'New round · preserve history'}</Button>
+    <CopyAnalysisPrompt locale={locale} step="progress" data={{
+     title:lesson.title[locale],lessonId:id,activity:section(c,'extension').map(x=>x.body_md).join('\n'),
+     questions,answers:persisted.submission??persisted.draft,
+     reference:showAnswer&&!conflict?modelAnswer:undefined,
+     extra:(vi?'Điểm tự đánh giá: ':'Self-ratings: ')+persisted.ratings.join(', ')+' / 2'
+    }}/>
    </>}
   </Card>
   </motion.div>

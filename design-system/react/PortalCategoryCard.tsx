@@ -3,7 +3,7 @@ import type {ReactNode} from 'react';
 import {LiIcon} from './LucideIcons';
 
 /** Portal artwork stays independent of the future discipline illustration.
- * Portal images are transparent PNG overlays; the illustration is rendered behind.
+ * Portal images are transparent WebP overlays derived from supplied PNGs; illustration is rendered behind.
  * Runtime derivatives use seven WebP alpha overlays in site/assets/portals; original PNG masters are supplied separately.
  */
 export type PortalVariant=1|2|3|4|5|6|7;
@@ -30,7 +30,7 @@ export function PortalCategoryCard({title,detail,eyebrow,actionLabel,portal,
    </div>
    <span className="li-portal-category-fallback-arch" aria-hidden="true"/>
    <img className="li-portal-category-overlay" src={portalPath} alt="" aria-hidden="true"
-    loading="lazy" decoding="async" onLoad={event=>{event.currentTarget.parentElement?.setAttribute("data-overlay-loaded","true");}} onError={event=>{event.currentTarget.hidden=true;}}/>
+    loading="lazy" decoding="async" onLoad={event=>{event.currentTarget.hidden=false;event.currentTarget.parentElement?.setAttribute("data-overlay-loaded","true");}} onError={event=>{event.currentTarget.hidden=true;}}/>
   </div>
   <div className="li-portal-category-copy">
    {eyebrow?<span className="li-portal-category-eyebrow">{eyebrow}</span>:null}

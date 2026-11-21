@@ -17,8 +17,9 @@ import './legacy.css';
 import './focus.css';
 import './home-ui-lab.css';
 import './vintage-pop-theme.css';
+import './bookworm-theme.css';
 
-type LayoutKey='classic'|'split'|'cinematic'|'notebook'|'vintagePop';
+type LayoutKey='classic'|'split'|'cinematic'|'notebook'|'vintagePop'|'bookworm';
 type ViewMode='focus'|'gallery';
 type Viewport='fluid'|'390'|'820'|'1440';
 const layoutChoices:readonly {id:LayoutKey;label:string}[]=[
@@ -26,15 +27,16 @@ const layoutChoices:readonly {id:LayoutKey;label:string}[]=[
  {id:'split',label:'Split focus'},
  {id:'cinematic',label:'Cinematic'},
  {id:'notebook',label:'Notebook · Handwritten'},
- {id:'vintagePop',label:'Vintage Pop · Stamp'}
+ {id:'vintagePop',label:'Vintage Pop · Stamp'},
+ {id:'bookworm',label:'Bookworm · Illustrated Folio'}
 ];
 const homeVariant:Record<LayoutKey,HomeLayoutVariant>={
  classic:'heritage',split:'editorial',cinematic:'immersive',notebook:'notebook',
- vintagePop:'heritage'
+ vintagePop:'heritage',bookworm:'bookworm'
 };
 const pageVariant:Record<LayoutKey,PageVariant>={
  classic:'editorial',split:'split',cinematic:'cinematic',notebook:'notebook',
- vintagePop:'editorial'
+ vintagePop:'editorial',bookworm:'bookworm'
 };
 const questions=[
  {questionVi:'90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?',
@@ -129,7 +131,7 @@ function Lab(){
  };
  const preview=(target:PageId,style:LayoutKey,mini=false)=><section
   key={target+'-'+style} className="li-ui-lab-preview"
-  data-visual-theme={style==='vintagePop'?'vintage-pop':undefined}
+  data-visual-theme={style==='vintagePop'?'vintage-pop':style==='bookworm'?'bookworm':undefined}
   data-mini={mini?'true':'false'} aria-label={label(target)+' / '+style}>
   <header className="li-ui-lab-preview-label">
    <span>{label(target)}</span><span>{layoutChoices.find(item=>item.id===style)?.label}</span>

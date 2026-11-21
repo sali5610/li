@@ -88,13 +88,13 @@ function ResearchScene(){
 /** The React Case UI owns the selected answer; Lão Lý may inspect and submit
  * that SAME visible draft, never a stale hidden native radio/textarea. */
 type CaseSnapshot={
- id:'sampling-bias-90';question:string;scene:string;
+ id:string;question:string;scene:string;
  options:{key:CaseChoice;text:string}[];selectedKey:CaseChoice;
  selectedText:string;feedback:string
 };
 /** The React Case screen owns the canonical text for its saved snapshot:
  * no reading #page-case markup after the global shell retires that fallback. */
-const caseCopy={
+const fallbackCaseCopy={
  question:{vi:'90% trả lời hài lòng. Chúng ta nên kết luận thế nào?',en:'90% of respondents were satisfied. What can we conclude?'},
  scene:{vi:'Câu hỏi then chốt: người nào được chọn để khảo sát, người nào không được đại diện?',en:'The key question: who was surveyed, and who was left out?'},
  options:{
@@ -106,12 +106,41 @@ const caseCopy={
   wrong:{vi:'Chưa Đúng · Bạn đã suy từ mẫu khảo sát sang toàn bộ người dùng. Hãy kiểm tra cách chọn mẫu và người bị bỏ sót.',en:'Not quite: this generalizes from a sample to all users. Check who was included and excluded.'}
  }
 } as const;
+type BiText={vi:string;en:string};
+type ActiveCase={
+ id:string;lessonId:string;draft:boolean;
+ question:BiText;scene:BiText;
+ options:{right:BiText;wrong:BiText};
+ feedback:{right:BiText;wrong:BiText};
+ technique:{title:BiText;body:BiText}
+};
+function readCaseCopy():ActiveCase{
+ const item=inquiryFlow().getCase();
+ const vi=item.localized?.vi,en=item.localized?.en;
+ if(!item.draft||!vi||!en)return {
+  id:'sampling-bias-90',lessonId:'L09-1-2',draft:false,
+  ...fallbackCaseCopy,technique:{
+   title:{vi:'Hỏi về đối tượng bị thiếu.',en:'Ask who is missing.'},
+   body:{vi:'Ai không nằm trong mẫu? Đây là một nhánh kiểm chứng quan trọng.',
+    en:'Who is not represented? That is an important line of inquiry.'}
+  }
+ };
+ return {id:item.id,lessonId:item.lessonId,draft:true,
+  question:{vi:vi.question,en:en.question},scene:{vi:vi.scene,en:en.scene},
+  options:{right:{vi:vi.options.right,en:en.options.right},
+   wrong:{vi:vi.options.wrong,en:en.options.wrong}},
+  feedback:{right:{vi:vi.feedback.right,en:en.feedback.right},
+   wrong:{vi:vi.feedback.wrong,en:en.feedback.wrong}},
+  technique:{title:{vi:vi.technique.title,en:en.technique.title},
+   body:{vi:vi.technique.body,en:en.technique.body}}};
+}
 function caseSnapshot(answer:CaseChoice):CaseSnapshot{
+ const caseCopy=readCaseCopy();
  const options:CaseSnapshot['options']=[
   {key:'right',text:caseCopy.options.right.vi},
   {key:'wrong',text:caseCopy.options.wrong.vi}
  ];
- return {id:'sampling-bias-90',question:caseCopy.question.vi,scene:caseCopy.scene.vi,
+ return {id:caseCopy.id,question:caseCopy.question.vi,scene:caseCopy.scene.vi,
   options,selectedKey:answer,selectedText:caseCopy.options[answer].vi,
   feedback:caseCopy.feedback[answer].vi};
 }
@@ -126,6 +155,7 @@ function CaseScene(){
  const locale=useDiscoveryLocale();
  const L=(vi:string,en:string)=>localized(locale,vi,en);
  const reduced=useReducedMotion();
+ const [caseCopy,setCaseCopy]=useState(readCaseCopy);
  const [choice,setChoice]=useState<CaseChoice|null>(null);
  const [completed,setCompleted]=useState<{choice:CaseChoice;conclusion:string}|null>(null);
  const [revision,setRevision]=useState(()=>inquiryFlow().getCaseDraft());
@@ -137,6 +167,8 @@ function CaseScene(){
    if(!permitted){setChoice(null);setMessage('');}
    if(!permitted)setCompleted(null);
    setBookmarked(readBookmark());
+   const latest=readCaseCopy();
+   setCaseCopy(previous=>previous.id===latest.id?previous:latest);
    const saved=inquiryFlow().getCaseDraft();
    setRevision(previous=>previous===saved?previous:saved);
   };
@@ -149,6 +181,11 @@ function CaseScene(){
    window.removeEventListener('li:personal-sync-applied',sync);
   };
  },[]);
+ useEffect(()=>{
+  setChoice(null);setCompleted(null);setMessage('');
+  setRevision(inquiryFlow().getCaseDraft());
+  setBookmarked(readBookmark());
+ },[caseCopy.id]);
  const updateRevision=(next:string)=>{
   setRevision(next);
   setCompleted(null);
@@ -174,7 +211,7 @@ function CaseScene(){
   };
   window.liCaseUi=port;
   return()=>{if(window.liCaseUi===port)delete window.liCaseUi;};
- },[choice,revision]);
+ },[choice,revision,caseCopy.id]);
  const toggleBookmark=()=>{
   inquiryFlow().toggleCaseBookmark();
   setBookmarked(readBookmark());
@@ -192,7 +229,9 @@ function CaseScene(){
     <LiIcon name="bookmark" size={20}/>{bookmarked?L('Đã lưu','Saved'):L('Lưu case','Bookmark case')}
    </Button>
   </div>
-  <Text role="caption">{L("Thiên lệch chọn mẫu","Sampling bias")}</Text>
+  <Text role="caption">{caseCopy.draft?
+    L("CASE GIẢ ĐỊNH · BẢN THẢO CHƯA DUYỆT","FICTIONAL CASE · DRAFT NOT APPROVED"):
+    L("Thiên lệch chọn mẫu","Sampling bias")}</Text>
   <div className="case-layout">
    <section className="case-workspace">
     <div className="case-question"><Heading level={2} role="titleMedium">{L(caseCopy.question.vi,caseCopy.question.en)}</Heading>
@@ -213,7 +252,8 @@ function CaseScene(){
      L(caseCopy.feedback.wrong.vi,caseCopy.feedback.wrong.en)}</motion.p>
     <div className="case-revision"><Field id="li-react-case-revision" kind="textarea" label={L("Luận Kết · Viết lại nhận định không vượt quá dữ kiện","Conclusion · Revise your claim without exceeding the evidence")}
      rows={5} value={revision} onChange={e=>updateRevision(e.target.value)}
-     placeholder={L("Trong nhóm người đang sử dụng được hỏi, 90% phản hồi tích cực…","Among the current users surveyed, 90% reported satisfaction…")}/>
+     placeholder={caseCopy.draft?L("Từ dữ kiện hiện có, có thể kết luận rằng…","Based on the available evidence, we can conclude that…"):
+      L("Trong nhóm người đang sử dụng được hỏi, 90% phản hồi tích cực…","Among the current users surveyed, 90% reported satisfaction…")}/>
     {message&&<InlineFeedback tone="error" message={message}/>}
     <div className="action-row"><Button onClick={save}><LiIcon name="check" size={20}/> {L("Lưu vào Bút Ký","Save to Notebook")}</Button></div>
     <Text role="support">{L("Sau khi xem phản hồi, hãy viết lại kết luận bằng lời của bạn.","After the feedback, rewrite the conclusion in your own words.")}</Text>
@@ -224,7 +264,7 @@ function CaseScene(){
      {!analysis&&<Text role="support">{L('Chọn một nhận định và viết Luận Kết ít nhất 12 ký tự để mở nút phân tích.',
       'Choose a claim and write a conclusion of at least 12 characters to enable analysis.')}</Text>}
      <CopyAnalysisPrompt locale={locale} step="case" disabled={!analysis} data={{
-      title:L(caseCopy.question.vi,caseCopy.question.en),lessonId:'sampling-bias-90',
+      title:L(caseCopy.question.vi,caseCopy.question.en),lessonId:caseCopy.id,
       activity:L(caseCopy.scene.vi,caseCopy.scene.en),
       questions:[L('Bạn chọn nhận định nào?','Which claim did you select?'),
        L('Bạn sửa lại luận kết ra sao?','How did you revise the conclusion?')],
@@ -235,8 +275,8 @@ function CaseScene(){
    </section>
    <aside className="case-coach">
     <div className="kicker">{L("THỦ THUẬT TƯ DUY","THINKING TECHNIQUE")}</div>
-    <Heading level={2} role="titleMedium">{L("Hỏi về đối tượng bị thiếu.","Ask who is missing.")}</Heading>
-    <Text role="body">{L("Chỉ một câu hỏi “Ai không nằm trong mẫu?” cũng có thể mở ra một nhánh kiểm chứng quan trọng.","One question—“Who is not in this sample?”—can reveal a key line of inquiry.")}</Text>
+    <Heading level={2} role="titleMedium">{L(caseCopy.technique.title.vi,caseCopy.technique.title.en)}</Heading>
+    <Text role="body">{L(caseCopy.technique.body.vi,caseCopy.technique.body.en)}</Text>
     <Button onClick={()=>openRoute('research')} variant="secondary">{L("Về Khảo Chứng","Back to Investigate")}</Button>
    </aside>
   </div>

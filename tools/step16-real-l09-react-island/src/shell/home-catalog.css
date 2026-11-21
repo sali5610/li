@@ -483,7 +483,8 @@
  [data-li-react-screen="catalog"] .catalog-lesson-card{
   grid-template-columns:30px minmax(0,1fr);
  }
- [data-li-react-screen="catalog"] .catalog-lesson-card > .li-ds-button{
+ [data-li-react-screen="catalog"] .catalog-lesson-card > .li-ds-button,
+ #li-react-catalog-host [data-li-react-screen="catalog"] .catalog-lesson-card > .li-ds-button{
   grid-column:2;justify-self:start;margin-left:0;
  }
  [data-li-react-screen="research"] .research-secondary{grid-template-columns:1fr}

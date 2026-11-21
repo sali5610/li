@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "status": "Editorial draft — source-reviewed, not PO-approved or production released",
-  "provenance": "Migrated existing 13 spell guidance from React detail; examples, Do & Don't, diagram captions and evidence bounds authored from linked academic/educational sources on 2026-11-22. Examples are explanatory, not empirical observations or certified task solutions. Illustration assets: 13 distinct original, published CC BY-SA 4.0 educational artworks from Wikimedia Commons (Wikimedia Foundation Education team). Source and licence link present per illustration; no drawn replacements. Illustrations are editorial/contextual, not evidence of technique effectiveness. Asset URLs use Commons original file paths, avoiding runtime Special:FilePath redirects.",
+  "provenance": "Migrated existing 13 spell guidance from React detail; examples, Do & Don't, diagram captions and evidence bounds authored from linked academic/educational sources on 2026-11-22. Examples are explanatory, not empirical observations or certified task solutions. Illustrations are editorial/contextual, not evidence of technique effectiveness. Illustration selection reviewed 2026-11-22: 12 sourced method-relevant diagrams from Stuon (CC BY), Wikimedia Commons (CC0/PD/CC BY-SA), and Frontiers (CC BY); T04 image omitted instead of showing a different technique. Source/license metadata preserved in versioned JSON; no source annotations in learning UI.",
   "methods": {
     "T01": {
       "vi": {
@@ -80,13 +80,14 @@
         }
       ],
       "illustration": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Illustration_of_Reading_Wikipedia_in_the_Classroom_17.png",
-        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_17.png",
-        "credit": "Wikimedia Foundation · Education team",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
-        "altEn": "Wikimedia Foundation education illustration"
+        "src": "https://stuon.space/imgs/figures/fig-active-recall.webp",
+        "source": "https://stuon.space/active-recall",
+        "credit": "Stuon",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "altVi": "Quy trình Active Recall: học một phần ngắn, che tài liệu, tự nhớ lại, đối chiếu và ôn điều còn thiếu.",
+        "altEn": "Active recall process: learn, hide the source, retrieve, check and revisit gaps.",
+        "match": "EXACT"
       }
     },
     "T02": {
@@ -166,13 +167,14 @@
         }
       ],
       "illustration": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/6/63/Illustration_of_Reading_Wikipedia_in_the_Classroom_18.png",
-        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_18.png",
-        "credit": "Wikimedia Foundation · Education team",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
-        "altEn": "Wikimedia Foundation education illustration"
+        "src": "https://stuon.space/imgs/figures/tool-spaced-repetition-schedule.webp",
+        "source": "https://stuon.space/spaced-repetition-schedule-generator",
+        "credit": "Stuon",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "altVi": "Lịch ôn cách quãng: ngày học đầu và các mốc ôn lại 1, 3, 7, 14, 30 ngày minh họa.",
+        "altEn": "Spaced repetition calendar with example 1, 3, 7, 14 and 30 day intervals.",
+        "match": "EXACT"
       }
     },
     "T03": {
@@ -246,13 +248,14 @@
         }
       ],
       "illustration": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Illustration_of_Reading_Wikipedia_in_the_Classroom_19.png",
-        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_19.png",
-        "credit": "Wikimedia Foundation · Education team",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
-        "altEn": "Wikimedia Foundation education illustration"
+        "src": "https://stuon.space/imgs/figures/blog-how-to-study-math.webp",
+        "source": "https://stuon.space/blog/how-to-study-math",
+        "credit": "Stuon",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "altVi": "Chu trình học quy trình toán: xem ví dụ có lời giải, tự làm, trộn dạng bài và sửa lỗi.",
+        "altEn": "Procedural learning: worked examples, independent solving, mixed problems and error review.",
+        "match": "CLOSE"
       }
     },
     "T04": {
@@ -327,15 +330,7 @@
           "url": "https://www.psychologicalscience.org/journals/pspi/1529100612453266/"
         }
       ],
-      "illustration": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Illustration_of_Reading_Wikipedia_in_the_Classroom_20.png",
-        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_20.png",
-        "credit": "Wikimedia Foundation · Education team",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
-        "altEn": "Wikimedia Foundation education illustration"
-      }
+      "illustration": null
     },
     "T05": {
       "vi": {
@@ -410,13 +405,14 @@
         }
       ],
       "illustration": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/7/77/Illustration_of_Reading_Wikipedia_in_the_Classroom_21.png",
-        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_21.png",
-        "credit": "Wikimedia Foundation · Education team",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
-        "altEn": "Wikimedia Foundation education illustration"
+        "src": "https://stuon.space/imgs/figures/learn-elaborative-interrogation.webp",
+        "source": "https://stuon.space/elaborative-interrogation",
+        "credit": "Stuon",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "altVi": "Elaborative Interrogation: từ một sự thật đặt câu hỏi vì sao, kết nối kiến thức và đối chiếu nguồn.",
+        "altEn": "Elaborative interrogation: fact, why question, prior knowledge and source check.",
+        "match": "EXACT"
       }
     },
     "T06": {
@@ -492,13 +488,14 @@
         }
       ],
       "illustration": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/c/c2/Illustration_of_Reading_Wikipedia_in_the_Classroom_22.png",
-        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_22.png",
-        "credit": "Wikimedia Foundation · Education team",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
-        "altEn": "Wikimedia Foundation education illustration"
+        "src": "https://stuon.space/imgs/figures/fig-interleaving.webp",
+        "source": "https://stuon.space/interleaving",
+        "credit": "Stuon",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "altVi": "So sánh luyện tập theo từng khối A-A-A B-B-B với luyện xen kẽ dạng bài A-B-C-B-A-C.",
+        "altEn": "Blocked practice compared with interleaved problem types.",
+        "match": "EXACT"
       }
     },
     "T07": {
@@ -574,13 +571,14 @@
         }
       ],
       "illustration": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/6/66/Illustration_of_Reading_Wikipedia_in_the_Classroom_23.png",
-        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_23.png",
-        "credit": "Wikimedia Foundation · Education team",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
-        "altEn": "Wikimedia Foundation education illustration"
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Modus_ponens_%26_affirming_the_consequent.svg/1280px-Modus_ponens_%26_affirming_the_consequent.svg.png",
+        "source": "https://commons.wikimedia.org/wiki/File:Modus_ponens_%26_affirming_the_consequent.svg",
+        "credit": "Phlsph7",
+        "license": "CC0 1.0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "altVi": "Đối chiếu modus ponens hợp lệ và lỗi khẳng định hệ quả: nếu P thì Q, P suy ra Q; Q không suy ra P.",
+        "altEn": "Valid modus ponens contrasted with the fallacy of affirming the consequent.",
+        "match": "EXACT"
       }
     },
     "T08": {
@@ -660,13 +658,14 @@
         }
       ],
       "illustration": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Illustration_of_Reading_Wikipedia_in_the_Classroom_24.png",
-        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_24.png",
-        "credit": "Wikimedia Foundation · Education team",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
-        "altEn": "Wikimedia Foundation education illustration"
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Toulmin%20Argumentation%20Example.png",
+        "source": "https://commons.wikimedia.org/wiki/File:Toulmin_Argumentation_Example.png",
+        "credit": "Chiswick Chap",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "altVi": "Sơ đồ Toulmin nối luận điểm với bằng chứng, cầu nối giải thích và phản biện.",
+        "altEn": "Toulmin map linking claims, grounds, warrants and rebuttals.",
+        "match": "EXACT"
       }
     },
     "T09": {
@@ -746,13 +745,14 @@
         }
       ],
       "illustration": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/1/11/Illustration_of_Reading_Wikipedia_in_the_Classroom_25.png",
-        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_25.png",
-        "credit": "Wikimedia Foundation · Education team",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
-        "altEn": "Wikimedia Foundation education illustration"
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/CRAAP%20Scheem%20-%20visual%20selection(4).png",
+        "source": "https://commons.wikimedia.org/wiki/File:CRAAP_Scheem_-_visual_selection(4).png",
+        "credit": "Napkin.AI / Wikimedia Commons",
+        "license": "CC0 1.0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "altVi": "Sơ đồ đánh giá chất lượng nguồn theo thời điểm, mức liên quan, thẩm quyền, độ chính xác và mục đích.",
+        "altEn": "CRAAP source appraisal criteria: currency, relevance, authority, accuracy, purpose.",
+        "match": "CLOSE"
       }
     },
     "T10": {
@@ -828,13 +828,14 @@
         }
       ],
       "illustration": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Illustration_of_Reading_Wikipedia_in_the_Classroom_26.png",
-        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_26.png",
-        "credit": "Wikimedia Foundation · Education team",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
-        "altEn": "Wikimedia Foundation education illustration"
+        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Sample%20Work%20Breakdown%20Structure.png",
+        "source": "https://commons.wikimedia.org/wiki/File:Sample_Work_Breakdown_Structure.png",
+        "credit": "SchoderDietmar",
+        "license": "Public domain",
+        "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+        "altVi": "Sơ đồ Work Breakdown Structure phân rã công việc lớn thành các phần việc nhỏ để kiểm tra.",
+        "altEn": "Work breakdown structure splitting a complex task into smaller verifiable components.",
+        "match": "CLOSE"
       }
     },
     "T11": {
@@ -914,13 +915,14 @@
         }
       ],
       "illustration": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/3/39/Illustration_of_Reading_Wikipedia_in_the_Classroom_27.png",
-        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_27.png",
-        "credit": "Wikimedia Foundation · Education team",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
-        "altEn": "Wikimedia Foundation education illustration"
+        "src": "https://stuon.space/imgs/figures/term-metacognition.webp",
+        "source": "https://stuon.space/glossary/metacognition",
+        "credit": "Stuon",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "altVi": "Vòng siêu nhận thức: lên kế hoạch học, theo dõi hiểu đến đâu và đánh giá để điều chỉnh cách học.",
+        "altEn": "Metacognition plan, monitor and evaluate cycle.",
+        "match": "EXACT"
       }
     },
     "T12": {
@@ -1000,13 +1002,14 @@
         }
       ],
       "illustration": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Illustration_of_Reading_Wikipedia_in_the_Classroom_28.png",
-        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_28.png",
-        "credit": "Wikimedia Foundation · Education team",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
-        "altEn": "Wikimedia Foundation education illustration"
+        "src": "https://www.frontiersin.org/files/Articles/703422/fnhum-15-703422-HTML/image_m/fnhum-15-703422-g001.jpg",
+        "source": "https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2021.703422/full",
+        "credit": "Frontiers / authors",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "altVi": "Dòng thời gian công việc chính, bị gián đoạn và quay lại công việc; có độ trễ tái nhập nhiệm vụ.",
+        "altEn": "Task interruption and resumption timeline with resumption lag.",
+        "match": "CLOSE"
       }
     },
     "T13": {
@@ -1080,13 +1083,14 @@
         }
       ],
       "illustration": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Illustration_of_Reading_Wikipedia_in_the_Classroom_29.png",
-        "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_29.png",
-        "credit": "Wikimedia Foundation · Education team",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "altVi": "Minh hoạ giáo dục của Wikimedia Foundation",
-        "altEn": "Wikimedia Foundation education illustration"
+        "src": "https://stuon.space/imgs/figures/learn-memory-palace-route.webp",
+        "source": "https://stuon.space/memory-palace",
+        "credit": "Stuon",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "altVi": "Sơ đồ cung điện trí nhớ: gắn vật cần nhớ với các vị trí theo lộ trình cố định trong nhà.",
+        "altEn": "Memory palace floor plan: ordered locations with vivid memory cues.",
+        "match": "EXACT"
       }
     }
   }

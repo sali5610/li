@@ -33,3 +33,9 @@
  .li-portal-category-copy{gap:var(--li-space-2)}
  .li-portal-category-action{margin-top:var(--li-space-2);padding:var(--li-space-2) var(--li-space-3)}
 }
+
+/* Preview-only visible frame until the original PNG is hosted; hidden on successful image load. */
+.li-portal-category-fallback-arch{position:absolute;z-index:1;inset:3% 7% 0;
+ border:clamp(8px,2.5vw,20px) solid var(--wood);border-bottom-width:clamp(12px,3vw,24px);
+ border-radius:49% 49% 0 0;pointer-events:none}
+.li-portal-category-art[data-overlay-loaded="true"] .li-portal-category-fallback-arch{display:none}

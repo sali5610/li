@@ -43,7 +43,8 @@ try{
 let problemVisits={schema:1,items:[]},problemVisitError=false;
 function isKnownProblem(entry){
  if(!entry||typeof entry.key!=="string")return false;
- if(entry.kind==="case")return entry.key===NATIVE_CASE_KEY;
+ if(entry.kind==="case")return entry.key===NATIVE_CASE_KEY||
+  scenarios.some(sc=>sc.caseKey===entry.key);
  return entry.kind==="problem"&&scenarios.some(sc=>sc.type!=="hook"&&sc.question===entry.key);
 }
 try{
@@ -54,11 +55,11 @@ try{
   problemVisits.items=data.items.filter(x=>isKnownProblem(x)&&typeof x.visitedAt==="string"&&!Number.isNaN(Date.parse(x.visitedAt))).slice(0,40);
  }
 }catch(err){problemVisitError=true;}
-function findCaseNote(){
+function findCaseNote(key=NATIVE_CASE_KEY){
  return sortedBySavedAt(processedCases.filter(note=>note&&(
-  note.caseKey===NATIVE_CASE_KEY||note.caseSnapshot?.id===NATIVE_CASE_KEY||
-  /Sampling Bias/i.test(note.title||"")||
-  (Array.isArray(note.versions)&&note.versions.some(v=>/Sampling Bias/i.test(v?.title||"")))
+  note.caseKey===key||note.caseSnapshot?.id===key||
+  (key===NATIVE_CASE_KEY&&(/Sampling Bias/i.test(note.title||"")||
+   (Array.isArray(note.versions)&&note.versions.some(v=>/Sampling Bias/i.test(v?.title||"")))))
  )))[0]||null;
 }
 function problemHistory(){
@@ -71,7 +72,7 @@ function problemHistory(){
 }
 function trackProblem(kind,value){
  const entry=kind==="research"&&value&&value.type!=="hook"?{kind:"problem",key:value.question}:
-  kind==="case"&&value===NATIVE_CASE_KEY?{kind:"case",key:NATIVE_CASE_KEY}:null;
+  kind==="case"&&typeof value==="string"?{kind:"case",key:value}:null;
  if(!isKnownProblem(entry))return false;
  const next={...entry,visitedAt:new Date().toISOString()};
  const items=[next,...problemVisits.items.filter(x=>!(x.kind===entry.kind&&x.key===entry.key))].slice(0,40);
@@ -218,11 +219,13 @@ function renderProblemRows(root,limit){
  for(const entry of items){
   const scenario=entry.kind==="problem"?scenarios.find(sc=>sc.type!=="hook"&&sc.question===entry.key):null;
   if(entry.kind==="problem"&&!scenario)continue;
-  const note=entry.kind==="case"?findCaseNote():null;
+  const note=entry.kind==="case"?findCaseNote(entry.key):null;
   const row=add(root,"div","path-item library-list-item library-problem-item");
   const body=add(row,"div","library-list-copy");
   const title=entry.kind==="problem"?scenario.question:
-   (note?.caseSnapshot?.question||"90% trả lời hài lòng. Chúng ta nên kết luận thế nào?");
+   (note?.caseSnapshot?.question||
+    scenarios.find(sc=>sc.caseKey===entry.key)?.caseData?.localized?.vi?.question||
+    "90% trả lời hài lòng. Chúng ta nên kết luận thế nào?");
   add(body,"strong","",window.liLanguage?.translate?.(title)||title);
   const activity=entry.legacy?
    ui("Có Bút Ký đã lưu · ","Saved case note · ")+formatDate(entry.savedAt):
@@ -236,17 +239,25 @@ function renderProblemRows(root,limit){
     if(index<0){toast("Vấn đề này không còn trong Gương Vạn Vấn.");return;}
     qIndex=index;renderMirrorItem();navigate("research");
    }else if(note){
-    trackProblem("case",NATIVE_CASE_KEY);
-    if(!window.liNotes?.openDetail("case",note.id))navigate("case");
-   }else navigate("case");
+    trackProblem("case",entry.key);
+    if(!window.liNotes?.openDetail("case",note.id)){
+     const index=scenarios.findIndex(sc=>sc.caseKey===entry.key);
+     if(index>=0){qIndex=index;renderMirrorItem();}
+     navigate("case");
+    }
+   }else{
+    const index=scenarios.findIndex(sc=>sc.caseKey===entry.key);
+    if(index>=0){qIndex=index;renderMirrorItem();}
+    navigate("case");
+   }
   });
   if(entry.kind==="case"){
    const utility=add(row,"div","library-icon-utility library-row-utility");
    const save=add(utility,"button","library-icon-action library-case-save");
-   save.type="button";save.dataset.liBookmarkKind="case";save.dataset.liBookmarkId=NATIVE_CASE_KEY;
+   save.type="button";save.dataset.liBookmarkKind="case";save.dataset.liBookmarkId=entry.key;
    save.setAttribute("aria-label",ui("Lưu case","Bookmark case"));
    save.setAttribute("title",ui("Lưu case","Bookmark case"));
-   save.setAttribute("aria-pressed",String(Boolean(window.liBookmarks?.isSaved("case",NATIVE_CASE_KEY))));
+   save.setAttribute("aria-pressed",String(Boolean(window.liBookmarks?.isSaved("case",entry.key))));
    save.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
   }
  }
@@ -546,9 +557,11 @@ function getView(){
   const scenario=entry.kind==="problem"?
    scenarios.find(sc=>sc.type!=="hook"&&sc.question===entry.key):null;
   if(entry.kind==="problem"&&!scenario)return [];
-  const note=entry.kind==="case"?findCaseNote():null;
+  const note=entry.kind==="case"?findCaseNote(entry.key):null;
   const title=entry.kind==="problem"?scenario.question:
-   (note?.caseSnapshot?.question||"90% trả lời hài lòng. Chúng ta nên kết luận thế nào?");
+   (note?.caseSnapshot?.question||
+    scenarios.find(sc=>sc.caseKey===entry.key)?.caseData?.localized?.vi?.question||
+    "90% trả lời hài lòng. Chúng ta nên kết luận thế nào?");
   return [{kind:entry.kind,key:entry.key,title:window.liLanguage?.translate?.(title)||title,
    detail:(entry.legacy?ui("Có Bút Ký · ","Saved case · ")+formatDate(entry.savedAt):
     ui("Mở ","Opened ")+formatDate(entry.visitedAt))+

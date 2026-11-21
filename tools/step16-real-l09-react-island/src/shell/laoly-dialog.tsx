@@ -1,6 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button,LiIcon} from '../../../../design-system/react/index';
+import {Button,ChatBubble,LiIcon} from '../../../../design-system/react/index';
+import '../../../../design-system/react/legacy.css';
 import './laoly-dialog.css';
 
 /** Full React visual owner for the existing Lão Lý bubble.
@@ -146,9 +147,9 @@ export function BuddyDialog({root}:{root:HTMLElement}){
      width={48} height={48} decoding="async"/>
     <div className="buddy-heading-copy">
      <h2 id="buddy-title" ref={heading} tabIndex={-1}>Lão Lý</h2>
-     <p className="li-buddy-subtitle">{chooseLanguage('Cùng học, cùng phản biện','Learn and question together')}</p>
     </div>
-    {quoteVisible&&<details key={quote.id} className="li-buddy-quote-thought">
+    {quoteVisible&&<ChatBubble surface="paper" tail="left" className="li-buddy-quote-thought">
+     <details key={quote.id}>
      <summary aria-label={chooseLanguage('Câu Lão Lý đang nghĩ. Chạm để xem diễn nghĩa và nguồn','What Lao Ly is thinking. Expand for translation and source')}>
       <span id="buddy-quote-original" className="ly-original" lang={quote.lang}>{quote.original}</span>
       <LiIcon name="chevron-right" size={16}/>
@@ -162,7 +163,8 @@ export function BuddyDialog({root}:{root:HTMLElement}){
         {chooseLanguage('Xem xuất xứ','View source')}</a>
       </p>
      </div>
-    </details>}
+     </details>
+    </ChatBubble>}
    </header>
    <div id="buddy-scroll" className="buddy-scroll" tabIndex={0}
     ref={content} role="region" aria-label={chooseLanguage('Nội dung hội thoại với Lão Lý','Conversation with Lao Ly')}>

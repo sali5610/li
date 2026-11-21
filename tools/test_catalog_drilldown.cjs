@@ -143,7 +143,7 @@ assert.equal(typeof winHandlers.popstate,"function");
 // Historical deep links are accepted and their URL is canonicalized.
 history.pushState(null,"","/?catalog=technology/ux-design/C03-1");
 winHandlers.popstate();
-assert.equal(new URL(location.href).searchParams.get("catalog"),"technology/hci/C03-1");
+assert.equal(new URL(location.href).searchParams.get("catalog"),"ict/hci/C03-1");
 assert.equal(window.liCatalog.getPath().join("/"),"ict/hci/C03-1");
 assert(displayed("Human–Computer Interaction (HCI)"));
 window.liCatalog.openCourse("technology","ux-design","C03-1");

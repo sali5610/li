@@ -7,7 +7,7 @@ export type MirrorView={
  route:string;cta:string;saved:boolean
 };
 export type ResearchView={
- question:string;branches:string[];observed:string;unknown:string;feedback:string
+ question:string;branches:string[];observed:string;unknown:string;feedback:string;caseId?:string|null
 };
 export type CaseChoice='right'|'wrong';
 export type AuthoredCaseLocale={

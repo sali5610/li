@@ -90,7 +90,7 @@ function renderCaseContext(note,type){
  surface.hidden=!allowed;
  if(bookmarks)bookmarks.hidden=!allowed;
  if(bookmarks&&allowed){
-  const action=bookmarks.querySelector("[data-li-bookmark-kind='case']");
+  const action=bookmarks.querySelector?.("[data-li-bookmark-kind='case']");
   if(action)action.dataset.liBookmarkId=sourceKey||"sampling-bias-90";
  }
  if(!allowed)return;

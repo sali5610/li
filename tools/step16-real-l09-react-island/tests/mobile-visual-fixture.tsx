@@ -6,7 +6,7 @@ import '../../../design-system/react/components.css';
 import '../../../design-system/react/molecules.css';
 import {createRoot} from 'react-dom/client';
 import {Journal,Settings} from '../src/shell/journal-settings.js';
-import {Guide,Library} from '../src/shell/guide-library.js';
+import {Guide,Library,Resume,Bookmarks} from '../src/shell/guide-library.js';
 import {CatalogScreen} from '../src/shell/home-catalog.js';
 import {BuddyDialog} from '../src/shell/laoly-dialog.js';
 import {RouteTrail} from '../src/shell/mount-navigation.js';
@@ -82,7 +82,7 @@ app.liLibraryShelf={
  getView:()=>({...libraryData}),setCollectionFilter:()=>{},
  registerPersonalLessons:()=>0,openProblemEntry:()=>{},
  openSavedQuestion:()=>{},removeSavedQuestion:()=>{},
- selectBookmarkTab:()=>{}
+ selectBookmarkTab:(next:string)=>{libraryData.bookmarkTab=next;window.dispatchEvent(new Event('li:library-view-changed'));}
 };
 app.liBookmarks={toggle:()=>true};
 app.liNotes={openDetail:()=>true,deleteFromReact:()=>true};
@@ -91,7 +91,7 @@ app.liBuddyEngine={choose:(i:number)=>({text:i===0?'Chọn cách học phù hợ
 const root=document.getElementById('visual-root')!;
 const buddyRoot=document.getElementById('buddy-modal')!;
 if(viewName==='breadcrumb'||viewName==='breadcrumbPrivate'){
- appUiStore.getState().setRoute(viewName==='breadcrumbPrivate'?'library':'lessonL09');
+ appUiStore.getState().setRoute(viewName==='breadcrumbPrivate'?'bookmarks':'lessonL09');
  root.id='li-react-route-trail';
  createRoot(root).render(<RouteTrail/>);
 } else if(viewName==='lesson'){
@@ -148,15 +148,16 @@ if(viewName==='breadcrumb'||viewName==='breadcrumbPrivate'){
   nicknames:{},previews:{},cloudVisible:false,exportReady:false,importLoading:false})};
  createRoot(root).render(<Settings/>);
 } else {
- root.parentElement!.id=viewName==='guide'?'page-guide':viewName==='library'?'page-library':'page-dashboard';
- if(viewName==='guide'||viewName==='library'){
+ root.parentElement!.id=['guide','library','resume','bookmarks'].includes(viewName)?'page-'+viewName:'page-dashboard';
+ if(['guide','library','resume','bookmarks'].includes(viewName)){
   const trail=document.createElement('div');
   trail.id='li-react-route-trail';
   document.getElementById('main')!.before(trail);
   appUiStore.getState().setRoute(viewName);
   createRoot(trail).render(<RouteTrail/>);
  }
- createRoot(root).render(viewName==='guide'?<Guide/>:viewName==='library'?<Library/>:<Journal/>);
+ createRoot(root).render(viewName==='guide'?<Guide/>:viewName==='library'?<Library/>:
+  viewName==='resume'?<Resume/>:viewName==='bookmarks'?<Bookmarks/>:<Journal/>);
 }
 const bounds=(node:Element|null)=>{
  if(!node)return null;
@@ -171,11 +172,11 @@ setTimeout(()=>{
  assert('true-390-css-mobile-viewport',windowWidth===390,{innerWidth,clientWidth:windowWidth});
  assert('no-horizontal-overflow',document.documentElement.scrollWidth<=windowWidth+4,
   {scrollWidth:document.documentElement.scrollWidth,windowWidth});
- if(['settings','catalogRoot','catalogGroup','guide','library'].includes(viewName)){
+ if(['settings','catalogRoot','catalogGroup','guide','library','resume','bookmarks'].includes(viewName)){
   const header=select('.app > .header');
   const heading=select('#main > .page.active h1');
   const trail=select('#li-react-route-trail .li-ds-breadcrumb, .catalog-breadcrumbs .li-ds-breadcrumb');
-  const expectsTrail=['catalogGroup','guide','library'].includes(viewName);
+  const expectsTrail=['catalogGroup','resume','bookmarks'].includes(viewName);
   const gap=Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--li-space-3'));
   const headerBottom=header?.getBoundingClientRect().bottom??NaN;
   const trailBox=trail?.getBoundingClientRect();
@@ -202,7 +203,7 @@ setTimeout(()=>{
   const trail=select('.li-app-route-trail .li-ds-breadcrumb');
   const result=baseline(trail);
   const labels=[...(trail?.querySelectorAll(':scope > ol > li')||[])].map(n=>n.textContent?.trim());
-  assert('actual-private-library-two-item-crumb',Boolean(trail&&labels.length===2&&labels[0]?.includes('Đại Sảnh')&&labels[1]==='Tủ Riêng'),labels);
+  assert('actual-bookmarks-child-two-item-crumb',Boolean(trail&&labels.length===2&&labels[0]==='Tủ Riêng'&&labels[1]==='Dấu trang'),labels);
   assert('private-crumb-text-baseline-matches',result.measured.length===2&&result.maxTextDiff<=2,result);
  } else if(viewName==='breadcrumb'){
   const trail=select('.li-app-route-trail .li-ds-breadcrumb');
@@ -215,7 +216,7 @@ setTimeout(()=>{
   const hidden=overflow?.querySelectorAll('ul>li');
   const crumbs=[...document.querySelectorAll('.li-ds-breadcrumb>ol>li')];
   assert('real-lesson-breadcrumb-hierarchy',Boolean(trail&&
-   trail.querySelector('[aria-current="page"]')&&overflow&&hidden?.length===3),bounds(trail));
+   trail.querySelector('[aria-current="page"]')&&overflow&&hidden?.length===2),bounds(trail));
   assert('two-closest-parent-links',ancestors.length===2,
    ancestors.map(n=>n.textContent));
   assert('visible-ancestors-are-course-and-field',Boolean(
@@ -233,7 +234,7 @@ setTimeout(()=>{
   if(summary&&overflow){
    summary.click();
    assert('ellipsis-dropdown-opens',overflow.open&&
-    (hidden?.length||0)>=3&&getComputedStyle(summary).borderTopWidth==='0px');
+    (hidden?.length||0)>=2&&getComputedStyle(summary).borderTopWidth==='0px');
    summary.click();
    assert('ellipsis-dropdown-closes',!overflow.open);
   }
@@ -367,6 +368,17 @@ setTimeout(()=>{
   assert('resume-title-full-width',Boolean(resumeTitle&&resumeTitle.getBoundingClientRect().width>=250),bounds(resumeTitle));
   assert('bookmark-title-usable-width',titles.every(n=>n.getBoundingClientRect().width>=170),
     titles.map(bounds));
+ } else if(viewName==='resume'){
+  assert('continue-only-recency',document.querySelectorAll('[data-li-react-screen="resume"] .library-resume-section').length===2);
+  assert('continue-has-no-bookmarks',!select('[data-li-react-screen="resume"] .library-bookmark-tabs'));
+ } else if(viewName==='bookmarks'){
+  const tabs=[...document.querySelectorAll('[data-li-react-screen="bookmarks"] [role="tab"]')];
+  assert('bookmarks-own-page',Boolean(select('[data-li-react-screen="bookmarks"] h1')));
+  assert('bookmark-tabs-present',tabs.length===2);
+  assert('question-tab-visible',tabs[1]?.getAttribute('aria-selected')==='true'&&
+   document.querySelectorAll('[data-li-react-screen="bookmarks"] .library-list-item').length===1);
+  const rows=[...document.querySelectorAll('[data-li-react-screen="bookmarks"] .library-list-item')];
+  assert('bookmark-rows-fit-mobile',rows.every(row=>row.getBoundingClientRect().right<=windowWidth+2));
  } else if(viewName==='buddy'){
   const btns=[...document.querySelectorAll('#buddy-modal .buddy-actions .li-ds-button')];
   assert('conversation-and-actions-rendered',Boolean(select('#buddy-text'))&&btns.length===4);

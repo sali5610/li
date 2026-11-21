@@ -54,7 +54,7 @@ try{
   screenWidth:390,screenHeight:844
  });
  await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
- for(const view of ['journal','guide','library','buddy','breadcrumbPrivate','breadcrumb','lesson',
+ for(const view of ['journal','guide','library','resume','bookmarks','buddy','breadcrumbPrivate','breadcrumb','lesson',
   'settings','catalogRoot','catalogGroup']){
   const params=new URLSearchParams({view});
   if(view==='catalogGroup')params.set('catalog','language');
@@ -107,7 +107,7 @@ try{
    throw Error('VISUAL_QA_FAILED '+view+' '+JSON.stringify(report));
   }
  }
- console.log('PASS 7 REAL CSS MOBILE VIEWPORT SCREENS + NATIVE OPEN SHEET 390x844');
+ console.log('PASS 12 REAL CSS MOBILE VIEWPORT SCREENS + NATIVE OPEN SHEET 390x844');
 }finally{
  if(socket){for(const p of pending.values())clearTimeout(p.t);socket.close();}
  proc.kill('SIGTERM');

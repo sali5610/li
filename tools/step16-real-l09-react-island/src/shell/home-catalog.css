@@ -707,3 +707,7 @@
 /* Layout only: all filter appearance/pressed states come from the canonical FilterGroup + FilterChip. */
 [data-li-react-screen="catalog"] .catalog-field-browser>.li-ds-filter-group{display:flex;align-items:center;flex-wrap:wrap;gap:var(--li-space-2,8px);min-width:0;max-width:100%;margin-top:var(--li-space-4,16px)}
 [data-li-react-screen="catalog"] .catalog-category-tag{display:inline-flex;align-self:flex-start;padding:var(--li-space-1,4px) var(--li-space-2,8px);border-radius:999px;background:var(--paper-3);color:var(--moss);font-size:var(--li-type-support);line-height:1.3}
+
+/* Catalog root waits for decoded transparent portal frames before mounting cards. */
+[data-li-react-screen="catalog"] .catalog-group-loading{display:grid;place-items:center;
+ min-height:min(48vh,360px);width:100%;border-bottom:1px solid var(--discovery-rule)}

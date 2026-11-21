@@ -746,7 +746,10 @@ function liAfterNavigate(id){
    window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);
    window.dispatchEvent(new Event("li:inquiry-changed"));
   }
-  if(id==="case")window.liLibraryShelf?.trackProblem("case",liCurrentCase().id);
+  if(id==="case"){
+   window.liLibraryShelf?.trackProblem("case",liCurrentCase().id);
+   window.dispatchEvent(new Event("li:inquiry-changed"));
+  }
   if(id==="noteDetail")window.dispatchEvent(new Event("li:note-view-changed"));
   // React Tủ Riêng uses its canonical getView() data port and event-driven
   // state. This replaces native renderHome/Resume/Collection/Bookmark DOM work.

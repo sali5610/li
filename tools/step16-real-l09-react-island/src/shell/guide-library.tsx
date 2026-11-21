@@ -3,7 +3,7 @@ import curriculum from '../../../../content/curriculum/legacy-catalog.v1.json';
 import {personalStudyRoute} from '../learning/released-lessons.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button,Field,FilterChip,Heading,InlineFeedback,Text,LiIcon} from '../../../../design-system/react/index';
+import {Button,Field,FilterGroup,Heading,InlineFeedback,Text,LiIcon} from '../../../../design-system/react/index';
 // Retain the canonical legacy stylesheet for the existing staging bundle contract;
 // the visible field-guide rows below no longer render legacy MethodTile cards.
 import '../../../../design-system/react/legacy.css';
@@ -121,11 +121,10 @@ function Guide(){
      <Field id="li-react-method-search" label={copy('Tìm trong 13 phương pháp','Search all 13 methods')}
       type="search" value={query} onChange={event=>setQuery(event.target.value)}
       placeholder="Method of Loci, T01, Triệu Ức..."/>
-     <div className="filters li-react-method-filters" role="group"
-      aria-label={copy('Bộ lọc nhóm kỹ thuật','Method category filters')}>
-      {view.categories.map(item=><FilterChip key={item.key} pressed={item.key===category}
-       onClick={()=>setCategory(item.key)}>{item.label}</FilterChip>)}
-     </div>
+     <FilterGroup label={copy('Bộ lọc nhóm kỹ thuật','Method category filters')}
+      options={view.categories.map(item=>({value:item.key,label:item.label}))}
+      selected={[category]} onChange={next=>setCategory(next[0]||'Tất cả')}
+      multiple={false} allowEmpty={false}/>
      <Text role="support" className="guide-result-count" aria-live="polite">
       {copy('Hiển thị ','Showing ')}{visible.length}/{view.methods.length}
       {q?copy(' · kết quả tìm kiếm',' · search results'):category!=='Tất cả'?
@@ -458,11 +457,13 @@ function Collection(){
      <Field id="li-react-note-search" label={copy('Tìm ghi chép','Search notes')}
       type="search" value={search} onChange={event=>setSearch(event.target.value)}
       placeholder={copy('Tìm theo tiêu đề hoặc nội dung','Search title or content')}/>
-     <div className="library-filter-row" role="group" aria-label={copy('Lọc ghi chép','Filter notes')}>
-      {(['all','case','idea'] as const).map(key=><FilterChip key={key} pressed={filter===key}
-       onClick={()=>app.liLibraryShelf?.setCollectionFilter(key)}>
-       {key==='all'?copy('Tất cả','All'):key==='case'?copy('Bút Ký','Case Notes'):copy('Ý đã nhặt','Ideas')}</FilterChip>)}
-     </div>
+     <FilterGroup label={copy('Lọc ghi chép','Filter notes')}
+      options={[
+       {value:'all',label:copy('Tất cả','All')},
+       {value:'case',label:copy('Bút Ký','Case Notes')},
+       {value:'idea',label:copy('Ý đã nhặt','Ideas')}
+      ]} selected={[filter]} multiple={false} allowEmpty={false}
+      onChange={next=>app.liLibraryShelf?.setCollectionFilter(next[0]||'all')}/>
      <Text role="support" className="library-result-count" aria-live="polite">
       {copy('Hiển thị ','Showing ')}{items.length}/{view.cases.length+view.ideas.length}
      </Text>

@@ -221,3 +221,43 @@
  .li-react-guide .guide-method-entry{transition:none;transform:none}
  .li-react-guide .guide-method-entry:hover{transform:none}
 }
+/* One canonical DS FilterGroup, with horizontally browsable mobile chips. */
+.li-react-guide .li-ds-filter-group,
+.li-react-library .li-ds-filter-group{
+ display:flex;align-items:center;flex-wrap:wrap;gap:var(--li-space-2);
+ min-width:0;max-width:100%
+}
+.li-react-guide .guide-find>.li-ds-filter-group{margin-top:var(--li-space-1)}
+.li-react-library .library-collection-tools>.li-ds-filter-group{margin-top:var(--li-space-1)}
+/* On narrow sidebars, place actions below the bookmark title instead of squeezing it. */
+.li-react-library .library-saved-shortlist .library-list-item{
+ display:grid;grid-template-columns:minmax(0,1fr) 44px;
+ column-gap:var(--li-space-3);row-gap:var(--li-space-1);
+ align-items:start;padding-block:var(--li-space-4)
+}
+.li-react-library .library-saved-shortlist .library-list-copy{
+ grid-column:1;grid-row:1;min-width:0
+}
+.li-react-library .library-saved-shortlist .library-list-item>.library-text-link{
+ grid-column:1;grid-row:2;justify-self:start;min-width:0
+}
+.li-react-library .library-saved-shortlist .library-list-item>.library-icon-action{
+ grid-column:2;grid-row:1;justify-self:end
+}
+@media(max-width:600px){
+ .li-react-guide .guide-find>.li-ds-filter-group,
+ .li-react-library .library-collection-tools>.li-ds-filter-group{
+  flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;
+  padding:var(--li-space-1);scrollbar-width:thin
+ }
+ .li-react-guide .li-ds-filter-group>.li-ds-filter-chip,
+ .li-react-library .li-ds-filter-group>.li-ds-filter-chip{
+  flex:0 0 auto;min-height:44px;white-space:nowrap;
+  padding:var(--li-space-2) var(--li-space-3);
+  font-size:var(--li-type-support)
+ }
+ .li-react-library .library-create-actions{gap:var(--li-space-3);margin-bottom:var(--li-space-3)}
+ .li-react-library .library-workspace-side>.library-saved-shortlist{
+  padding-top:var(--li-space-4);border-top:1px solid var(--rule)
+ }
+}

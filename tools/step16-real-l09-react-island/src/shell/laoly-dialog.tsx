@@ -69,6 +69,8 @@ function BuddyDialog({root}:{root:HTMLElement}){
    restore.current=next.triggerId||'laoly-fab';
    setView(next);setMessage(next.text);setAvatar(next.avatar);
    setExpanded(false);setChallenge(false);setQuoteIndex(0);setOpen(true);
+   // Reopening the dialog must start at the conversation, not the last quote scroll.
+   requestAnimationFrame(()=>content.current?.scrollTo({top:0,behavior:'auto'}));
    root.dataset.trigger=restore.current;
   };
   const onClose=()=>close();
@@ -201,7 +203,7 @@ function BuddyDialog({root}:{root:HTMLElement}){
      className="action alt" onClick={()=>choose(index)}>
      <LiIcon name={index===0?'search':index===1?'chat':'book-open'} size={18}/>
      {label}</Button>)}
-    <Button variant="primary" className="action"
+    <Button variant="ghost" className="action"
      id="li-react-close-buddy" onClick={close}>
      <LiIcon name="close" size={18}/> {chooseLanguage('Đóng','Close')}</Button>
    </div>

@@ -546,11 +546,11 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     <Heading level={2} role="titleLarge">{names.feedback}</Heading>
     <ol>{questions.map((q,i)=><li key={i}><Markdown md={q}/>
      <p>{(persisted.submission??persisted.draft)[i]}</p></li>)}</ol>
-    {!showAnswer||conflict?<div>
-     <Text role="support">{vi?'Đã lưu bài. Đáp án mẫu đóng đến khi tự mở.':'Saved. Reveal the model answer explicitly.'}</Text>
+    {!showAnswer||conflict?<div className="li-learning-answer-gate">
+     <Text role="support">{vi?'Đã lưu · Đáp án đang ẩn':'Saved · Answer hidden'}</Text>
      {conflict&&<Text role="support">{vi?'Bài đã dùng phiên bản cũ không có rubric đóng băng.':'Old attempt lacks a frozen rubric.'}</Text>}
      <Button disabled={locked||pending>0||conflict} onClick={()=>void persist({...attempt,answerRevealed:true})}>
-      {vi?'Mở đáp án và rubric':'Reveal answer and rubric'}</Button>
+      {vi?'Xem đáp án & rubric':'Reveal answer & rubric'}</Button>
     </div>:<>
      <Markdown md={modelAnswer}/>
      {block('reflection')}

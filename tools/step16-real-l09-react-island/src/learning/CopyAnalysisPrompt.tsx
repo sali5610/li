@@ -77,11 +77,11 @@ export function CopyAnalysisPrompt({locale,step,data,disabled=false}:{
  const vi=locale==='vi';
  return <div className="li-learning-copy-prompt" data-li-copy-analysis={step}>
   <Text role="support">{vi?
-   'Muốn ChatGPT phân tích bài của ngươi? Copy prompt rồi dán vào cuộc trò chuyện. Không tự gửi dữ liệu.':
-   'Want ChatGPT to review your work? Copy and paste the prompt into a chat. Nothing is sent automatically.'}</Text>
+   'Muốn ChatGPT góp ý? Sao chép prompt rồi dán vào chat. Không tự gửi dữ liệu.':
+   'Want ChatGPT feedback? Copy the prompt into a chat. Nothing is sent automatically.'}</Text>
   <Button variant="secondary" disabled={disabled} onClick={()=>void copyPrompt(prompt)
    .then(()=>setStatus('copied')).catch(()=>setStatus('error'))}>
-   {status==='copied'?(vi?'Đã copy prompt':'Prompt copied'):(vi?'Copy prompt phân tích':'Copy analysis prompt')}
+   {status==='copied'?(vi?'Đã sao chép':'Prompt copied'):(vi?'Sao chép prompt':'Copy prompt')}
   </Button>
   {status==='error'&&<Text role="support" aria-live="polite">{vi?
    'Không thể sao chép. Hãy thử lại trên kết nối HTTPS.':

@@ -1,0 +1,555 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "HomeMirrorDraftHooks",
+  "reviewState": "proposed",
+  "publishState": "draft",
+  "homePreview": "staging_review",
+  "lessonPublicationAuthorized": false,
+  "description": "17 authored bilingual Gương Vạn Vấn teaser hooks. Home-preview only; do not publish the underlying lessons or treat hooks as academically approved.",
+  "items": [
+    {
+      "id": "L03-1-1",
+      "fieldId": "hci",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Người dùng đòi nút Export PDF. Họ thật sự cần PDF?",
+          "scene": "Một nhân viên muốn gửi kết quả cho đồng nghiệp không có quyền vào hệ thống, nên yêu cầu thêm nút xuất PDF.",
+          "buddy": "Tiểu hữu, yêu cầu về nút bấm chưa chắc là nhu cầu thật. Hỏi mục đích trước đã.",
+          "observed": "Một nhân viên muốn gửi kết quả cho đồng nghiệp không có quyền vào hệ thống, nên yêu cầu thêm nút xuất PDF.",
+          "unknown": "Người dùng cần đạt kết quả gì, và PDF có phải cách duy nhất?",
+          "branches": [
+            "Công việc thật là gì?",
+            "Vì sao họ chọn PDF?",
+            "Còn cách nào khác?"
+          ]
+        },
+        "en": {
+          "question": "A user asks for Export PDF. Is PDF what they really need?",
+          "scene": "A colleague cannot access the system, so a user requests a PDF export button to share results.",
+          "buddy": "A button request is not necessarily a need. Ask about the goal first.",
+          "observed": "A colleague cannot access the system, so a user requests a PDF export button to share results.",
+          "unknown": "What outcome is needed, and is PDF the only way?",
+          "branches": [
+            "What is the underlying job?",
+            "Why PDF?",
+            "What alternatives exist?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L03-1-3",
+      "fieldId": "hci",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Người dùng đứng hình 18 giây. Có chắc họ không biết dùng?",
+          "scene": "Trong một buổi thử nghiệm giả định, người tham gia đổi bộ lọc rồi dừng thao tác 18 giây.",
+          "buddy": "Lão thấy 18 giây im lặng, chưa thấy bằng chứng người ấy kém kỹ năng.",
+          "observed": "Trong một buổi thử nghiệm giả định, người tham gia đổi bộ lọc rồi dừng thao tác 18 giây.",
+          "unknown": "Điều gì đã quan sát được và điều gì chỉ là diễn giải?",
+          "branches": [
+            "Thật sự đã thấy gì?",
+            "Ai nói câu ấy?",
+            "Cần hỏi thêm gì?"
+          ]
+        },
+        "en": {
+          "question": "A user pauses for 18 seconds. Does that mean they are confused?",
+          "scene": "In a hypothetical usability session, a participant changes a filter and pauses for 18 seconds.",
+          "buddy": "I saw a pause, not proof of low digital skill.",
+          "observed": "In a hypothetical usability session, a participant changes a filter and pauses for 18 seconds.",
+          "unknown": "Which facts were observed and which are interpretations?",
+          "branches": [
+            "What was actually seen?",
+            "Who said it?",
+            "What needs checking?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L03-2-1",
+      "fieldId": "hci",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Một bài viết có ba chủ đề. Phải nằm ở ba menu sao?",
+          "scene": "Một bài về gia hạn thẻ thư viện được gắn nhiều nhãn nội dung nhưng người đọc chỉ cần một đường tìm chính.",
+          "buddy": "Nhãn để phân loại không tự nhiên biến thành lối đi trong menu đâu.",
+          "observed": "Một bài về gia hạn thẻ thư viện được gắn nhiều nhãn nội dung nhưng người đọc chỉ cần một đường tìm chính.",
+          "unknown": "Nhãn taxonomy, phân cấp nội dung và điều hướng khác nhau thế nào?",
+          "branches": [
+            "Nhãn phục vụ ai?",
+            "Đường vào chính là gì?",
+            "Có bị nhân bản không?"
+          ]
+        },
+        "en": {
+          "question": "One article has three topics. Does it need three menu entries?",
+          "scene": "A library-card renewal article has several content tags but may need one primary navigation path.",
+          "buddy": "A classification tag is not automatically a menu path.",
+          "observed": "A library-card renewal article has several content tags but may need one primary navigation path.",
+          "unknown": "How do taxonomy, hierarchy and navigation differ?",
+          "branches": [
+            "Who uses the tags?",
+            "What is the main path?",
+            "Is content duplicated?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L03-2-2",
+      "fieldId": "hci",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Mười người xếp thẻ giống nhau. Sao menu vẫn khó tìm?",
+          "scene": "Những người tham gia card sorting thống nhất cách nhóm thẻ, nhưng chưa ai thử tìm một mục trong menu thật.",
+          "buddy": "Xếp cùng nhóm đâu chứng minh được tìm đúng đường, nhóc.",
+          "observed": "Những người tham gia card sorting thống nhất cách nhóm thẻ, nhưng chưa ai thử tìm một mục trong menu thật.",
+          "unknown": "Kết quả card sorting đã trả lời điều gì, còn tree testing cần kiểm tra gì?",
+          "branches": [
+            "Nhóm thẻ nói lên gì?",
+            "Tác vụ tìm ở đâu?",
+            "Đã test cây menu chưa?"
+          ]
+        },
+        "en": {
+          "question": "Ten people sort cards alike. Why can the menu still fail?",
+          "scene": "Participants agree on card categories, but nobody has yet tried locating an item in the proposed menu.",
+          "buddy": "Grouping items does not prove that people can find them.",
+          "observed": "Participants agree on card categories, but nobody has yet tried locating an item in the proposed menu.",
+          "unknown": "What does card sorting reveal, and what must tree testing verify?",
+          "branches": [
+            "What do groups reveal?",
+            "What is the finding task?",
+            "Was the menu tested?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L03-2-3",
+      "fieldId": "hci",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "8/10 người hoàn thành tác vụ. Sao vẫn có người đi lạc?",
+          "scene": "Trong thử nghiệm giả định, sáu người tìm đúng ngay, hai người đi vòng rồi đúng, hai người thất bại.",
+          "buddy": "80% nghe đẹp, nhưng hai người phải quay đầu đã kể thêm chuyện.",
+          "observed": "Trong thử nghiệm giả định, sáu người tìm đúng ngay, hai người đi vòng rồi đúng, hai người thất bại.",
+          "unknown": "Tỷ lệ hoàn thành có đang che mất lỗi và đường đi vòng?",
+          "branches": [
+            "Ai tìm đúng ngay?",
+            "Ai phải quay lại?",
+            "Lỗi nằm ở đâu?"
+          ]
+        },
+        "en": {
+          "question": "Eight of ten finish the task. Why did some still get lost?",
+          "scene": "In a hypothetical test, six succeed directly, two backtrack before succeeding, and two fail.",
+          "buddy": "An 80% success rate can hide a lot of wrong turns.",
+          "observed": "In a hypothetical test, six succeed directly, two backtrack before succeeding, and two fail.",
+          "unknown": "Does task completion hide backtracking and navigation errors?",
+          "branches": [
+            "Who succeeded directly?",
+            "Who backtracked?",
+            "Where did errors happen?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L09-1-3",
+      "fieldId": "data-science",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Hai nhóm cùng trung bình 10 phút. Hiệu suất có giống nhau?",
+          "scene": "Nhóm X đều tốn 10 phút; nhóm Y có ca chỉ 2 phút và ca kéo dài 20 phút. Trung bình vẫn bằng nhau.",
+          "buddy": "Trung bình không nói dối. Nó chỉ lười kể phần còn lại thôi.",
+          "observed": "Nhóm X đều tốn 10 phút; nhóm Y có ca chỉ 2 phút và ca kéo dài 20 phút. Trung bình vẫn bằng nhau.",
+          "unknown": "Mức độ phân tán và hình dạng phân phối có khác nhau không?",
+          "branches": [
+            "Trung bình che gì?",
+            "Khoảng dao động bao nhiêu?",
+            "Có giá trị cực đoan?"
+          ]
+        },
+        "en": {
+          "question": "Both teams average ten minutes. Are they equally consistent?",
+          "scene": "Team X always takes ten minutes; Team Y ranges from two to twenty, yet has the same mean.",
+          "buddy": "The mean is not lying. It simply leaves out the rest.",
+          "observed": "Team X always takes ten minutes; Team Y ranges from two to twenty, yet has the same mean.",
+          "unknown": "How do spread and distribution shape differ?",
+          "branches": [
+            "What does the mean hide?",
+            "How wide is the range?",
+            "Any extremes?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L09-2-1",
+      "fieldId": "data-science",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Bắt đúng 90% rủi ro. Sao đa số cảnh báo vẫn có thể sai?",
+          "scene": "Trong ví dụ giả định, rủi ro hiếm gặp nhưng hệ thống cũng phát cảnh báo nhầm cho tình huống bình thường.",
+          "buddy": "Nghe 90% thì hay. Nhưng rủi ro hiếm đến mức nào mới là câu hỏi.",
+          "observed": "Trong ví dụ giả định, rủi ro hiếm gặp nhưng hệ thống cũng phát cảnh báo nhầm cho tình huống bình thường.",
+          "unknown": "Tỷ lệ nền và tỷ lệ báo nhầm ảnh hưởng xác suất sau cảnh báo ra sao?",
+          "branches": [
+            "Rủi ro phổ biến không?",
+            "Báo nhầm bao nhiêu?",
+            "Cảnh báo đáng tin không?"
+          ]
+        },
+        "en": {
+          "question": "A system catches 90% of risks. Can most alerts still be false?",
+          "scene": "In a hypothetical case, real risks are rare and the system also flags ordinary events.",
+          "buddy": "Ninety percent sounds impressive. But how rare is the risk?",
+          "observed": "In a hypothetical case, real risks are rare and the system also flags ordinary events.",
+          "unknown": "How do base rates and false positives affect a flagged case?",
+          "branches": [
+            "How common is risk?",
+            "How many false alarms?",
+            "How reliable is an alert?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L09-2-2",
+      "fieldId": "data-science",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Khoảng tin cậy 95% nghĩa là có 95% cơ hội chứa đáp án thật?",
+          "scene": "Một nhóm báo cáo confidence interval 95% rồi diễn giải nó như xác suất của tham số sau khi đã tính khoảng.",
+          "buddy": "Đừng đổi độ tin cậy của cách làm thành lời tiên tri về một khoảng cụ thể.",
+          "observed": "Một nhóm báo cáo confidence interval 95% rồi diễn giải nó như xác suất của tham số sau khi đã tính khoảng.",
+          "unknown": "Điều gì có độ phủ 95% trong cách hiểu frequentist?",
+          "branches": [
+            "Thủ tục có ý nghĩa gì?",
+            "Tham số thay đổi không?",
+            "Các giả định có đúng?"
+          ]
+        },
+        "en": {
+          "question": "Does a 95% confidence interval give a 95% chance of containing the truth?",
+          "scene": "A team treats a computed frequentist confidence interval as a posterior probability for the parameter.",
+          "buddy": "Do not turn a procedure's coverage into a prophecy about one interval.",
+          "observed": "A team treats a computed frequentist confidence interval as a posterior probability for the parameter.",
+          "unknown": "What has 95% coverage under the frequentist interpretation?",
+          "branches": [
+            "What does coverage mean?",
+            "Is the parameter random?",
+            "Do assumptions hold?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L09-2-3",
+      "fieldId": "data-science",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Biểu đồ cho thấy tương quan. Vậy tính năng gây ra kết quả tốt?",
+          "scene": "Những người có kinh nghiệm vừa dùng tính năng nhiều hơn vừa hoàn thành tác vụ tốt hơn.",
+          "buddy": "Một đường dốc lên không phải giấy chứng nhận quan hệ nhân quả đâu.",
+          "observed": "Những người có kinh nghiệm vừa dùng tính năng nhiều hơn vừa hoàn thành tác vụ tốt hơn.",
+          "unknown": "Biến gây nhiễu hoặc cách chia nhóm có thể giải thích tương quan không?",
+          "branches": [
+            "Nhóm nào khác biệt?",
+            "Có biến gây nhiễu?",
+            "Đã chứng minh nhân quả?"
+          ]
+        },
+        "en": {
+          "question": "The chart shows correlation. Did the feature cause better results?",
+          "scene": "Experienced users both view a feature more often and finish tasks more successfully.",
+          "buddy": "An upward slope is not a certificate of causation.",
+          "observed": "Experienced users both view a feature more often and finish tasks more successfully.",
+          "unknown": "Could confounding or group composition explain the relationship?",
+          "branches": [
+            "Which groups differ?",
+            "What might confound it?",
+            "Is causation established?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L09-3-1",
+      "fieldId": "data-science",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Mô hình đạt 99% bài kiểm tra. Hay nó đã xem đáp án?",
+          "scene": "Dữ liệu đánh giá bị dùng trong lúc chọn mô hình hoặc các bước xử lý đã làm rò rỉ thông tin.",
+          "buddy": "Thi mà được xem đáp án trước thì 99% đâu còn đáng khoe.",
+          "observed": "Dữ liệu đánh giá bị dùng trong lúc chọn mô hình hoặc các bước xử lý đã làm rò rỉ thông tin.",
+          "unknown": "Tập test đã thực sự độc lập với quá trình huấn luyện và chỉnh sửa chưa?",
+          "branches": [
+            "Train dùng để làm gì?",
+            "Validation dùng lúc nào?",
+            "Test có bị lộ?"
+          ]
+        },
+        "en": {
+          "question": "The model scores 99%. Or did it peek at the answers?",
+          "scene": "Evaluation data leaks into model selection or preprocessing before the final test.",
+          "buddy": "A perfect score means little if the answers leaked.",
+          "observed": "Evaluation data leaks into model selection or preprocessing before the final test.",
+          "unknown": "Was the test set truly held out from training and tuning?",
+          "branches": [
+            "What is train for?",
+            "When is validation used?",
+            "Did test data leak?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L09-3-2",
+      "fieldId": "data-science",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Dự báo đúng 92%. Sao vẫn bỏ sót quá nhiều đơn giao trễ?",
+          "scene": "Trong một tập dữ liệu giả lập, phần lớn đơn đúng hạn khiến accuracy trông đẹp dù nhiều đơn trễ không được cảnh báo.",
+          "buddy": "Accuracy đẹp không cứu được đơn trễ bị bỏ sót đâu, tiểu hữu.",
+          "observed": "Trong một tập dữ liệu giả lập, phần lớn đơn đúng hạn khiến accuracy trông đẹp dù nhiều đơn trễ không được cảnh báo.",
+          "unknown": "Precision, recall và chi phí của false negative có đang bị che khuất?",
+          "branches": [
+            "Positive là gì?",
+            "Bỏ sót bao nhiêu?",
+            "Lỗi nào đắt hơn?"
+          ]
+        },
+        "en": {
+          "question": "Delivery predictions are 92% accurate. Why are delays missed?",
+          "scene": "In a simulated dataset, most orders are on time, making accuracy look strong despite missed late deliveries.",
+          "buddy": "Nice accuracy does not recover a missed late shipment.",
+          "observed": "In a simulated dataset, most orders are on time, making accuracy look strong despite missed late deliveries.",
+          "unknown": "Are precision, recall and false-negative costs being hidden?",
+          "branches": [
+            "What counts as positive?",
+            "How many misses?",
+            "Which error costs more?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L09-3-3",
+      "fieldId": "data-science",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Hai vùng cùng đúng 82%. Vậy hệ thống công bằng rồi?",
+          "scene": "Hai khu vực có cùng accuracy nhưng tỷ lệ phát hiện đơn giao trễ khác nhau đáng kể.",
+          "buddy": "Cùng một điểm tổng không có nghĩa ai cũng chịu sai sót như nhau.",
+          "observed": "Hai khu vực có cùng accuracy nhưng tỷ lệ phát hiện đơn giao trễ khác nhau đáng kể.",
+          "unknown": "Nhóm nào bị bỏ sót hoặc nhận cảnh báo sai nhiều hơn?",
+          "branches": [
+            "Nhóm nào chịu ảnh hưởng?",
+            "Recall từng vùng ra sao?",
+            "Sai sót gây hậu quả gì?"
+          ]
+        },
+        "en": {
+          "question": "Both regions score 82% accuracy. Does that prove fairness?",
+          "scene": "Two regions share the same overall accuracy but detect late orders at different rates.",
+          "buddy": "The same headline score can hide very different harms.",
+          "observed": "Two regions share the same overall accuracy but detect late orders at different rates.",
+          "unknown": "Which groups face more missed delays or false alerts?",
+          "branches": [
+            "Who is affected?",
+            "Recall by region?",
+            "What harm follows?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L15-2-1",
+      "fieldId": "supply-chain",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Bán được 0 món. Có chắc chẳng ai muốn mua?",
+          "scene": "Cửa hàng hết hàng nên không ghi nhận giao dịch, dù khách vẫn có thể muốn mua.",
+          "buddy": "Không bán được khác với không có nhu cầu. Thiếu hàng còn làm số liệu méo nữa.",
+          "observed": "Cửa hàng hết hàng nên không ghi nhận giao dịch, dù khách vẫn có thể muốn mua.",
+          "unknown": "Doanh số có đang bị giới hạn bởi tình trạng hết hàng?",
+          "branches": [
+            "Hàng có sẵn không?",
+            "Nhu cầu chưa đáp ứng?",
+            "Forecast dùng số nào?"
+          ]
+        },
+        "en": {
+          "question": "Zero sales today. Does that mean zero demand?",
+          "scene": "A store runs out of stock and records no sales, although customers may still want the product.",
+          "buddy": "No sales and no demand are different things. Stockouts distort the record.",
+          "observed": "A store runs out of stock and records no sales, although customers may still want the product.",
+          "unknown": "Did the stockout censor observed sales?",
+          "branches": [
+            "Was stock available?",
+            "What demand went unmet?",
+            "What feeds the forecast?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L15-2-3",
+      "fieldId": "supply-chain",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Xe đã tới kho. Sao dashboard vẫn báo chưa đến?",
+          "scene": "Sự kiện thực đã xảy ra, nhưng bản tin xác nhận về hệ thống muộn hơn; ETA vẫn chỉ là ước tính.",
+          "buddy": "Một chuyến xe có nhiều mốc giờ. Đừng gom tất cả làm một.",
+          "observed": "Sự kiện thực đã xảy ra, nhưng bản tin xác nhận về hệ thống muộn hơn; ETA vẫn chỉ là ước tính.",
+          "unknown": "Giờ dự kiến, giờ sự kiện thực tế và giờ nhận bản tin khác nhau ra sao?",
+          "branches": [
+            "ETA đo điều gì?",
+            "Actual xảy ra lúc nào?",
+            "Tin được nhận khi nào?"
+          ]
+        },
+        "en": {
+          "question": "The truck has arrived. Why does the dashboard say not yet?",
+          "scene": "The physical arrival happened before the system received its confirmation; ETA is still only an estimate.",
+          "buddy": "One shipment can have several clocks. Do not merge them.",
+          "observed": "The physical arrival happened before the system received its confirmation; ETA is still only an estimate.",
+          "unknown": "How do planned, actual and message receipt times differ?",
+          "branches": [
+            "What is ETA?",
+            "When did arrival occur?",
+            "When was it reported?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L15-3-1",
+      "fieldId": "supply-chain",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Khách mua đều 100 hộp. Sao nhà cung cấp nhận đơn lúc 0 lúc 200?",
+          "scene": "Nhu cầu cuối chuỗi ổn định nhưng cửa hàng đặt hàng theo lô, khiến tín hiệu đơn đặt lên xuống.",
+          "buddy": "Người mua đều tay, người đặt hàng giật cục. Lão thấy mùi bullwhip rồi.",
+          "observed": "Nhu cầu cuối chuỗi ổn định nhưng cửa hàng đặt hàng theo lô, khiến tín hiệu đơn đặt lên xuống.",
+          "unknown": "Biến động đơn đặt đã bị khuếch đại ở mắt xích nào?",
+          "branches": [
+            "Khách mua bao nhiêu?",
+            "Cửa hàng đặt thế nào?",
+            "Độ trễ ảnh hưởng gì?"
+          ]
+        },
+        "en": {
+          "question": "Customers buy 100 boxes weekly. Why do orders swing from 0 to 200?",
+          "scene": "End demand stays steady while the retailer orders in batches, creating volatile upstream orders.",
+          "buddy": "Stable buyers, jumpy orders. That smells like the bullwhip effect.",
+          "observed": "End demand stays steady while the retailer orders in batches, creating volatile upstream orders.",
+          "unknown": "Where is order variability amplified?",
+          "branches": [
+            "How much do buyers use?",
+            "How are batches placed?",
+            "What role do delays play?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L15-3-2",
+      "fieldId": "supply-chain",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Gộp hai kho có thể giảm tồn dự phòng. Nhưng khi nào lại không?",
+          "scene": "Hai khu vực có nhu cầu dao động; gộp dự trữ chỉ hữu ích nếu biến động có thể bù trừ và mức phục vụ vẫn đạt.",
+          "buddy": "Kho lớn không phải phép màu. Hai nơi cùng sốt hàng thì vẫn thiếu như thường.",
+          "observed": "Hai khu vực có nhu cầu dao động; gộp dự trữ chỉ hữu ích nếu biến động có thể bù trừ và mức phục vụ vẫn đạt.",
+          "unknown": "Mức tương quan nhu cầu và thời gian giao có cho phép pooling không?",
+          "branches": [
+            "Nhu cầu có đồng pha?",
+            "Lead time thay đổi?",
+            "Service có giữ được?"
+          ]
+        },
+        "en": {
+          "question": "Combining two warehouses can cut safety stock. When does it fail?",
+          "scene": "Two regions have variable demand; pooling helps only if variation offsets and service constraints remain workable.",
+          "buddy": "A bigger warehouse is no magic trick when both regions spike together.",
+          "observed": "Two regions have variable demand; pooling helps only if variation offsets and service constraints remain workable.",
+          "unknown": "Do demand correlation and delivery time support pooling?",
+          "branches": [
+            "Are demands correlated?",
+            "What changes in lead time?",
+            "Can service be maintained?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L15-3-3",
+      "fieldId": "supply-chain",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Fill rate 98%. Sao vẫn có nhiều đợt hết hàng?",
+          "scene": "Tỷ lệ số đơn vị giao được cao nhưng một số chu kỳ bổ sung vẫn thiếu hàng.",
+          "buddy": "98% của cái gì mới quan trọng. Đừng để một KPI đẹp che mất stockout.",
+          "observed": "Tỷ lệ số đơn vị giao được cao nhưng một số chu kỳ bổ sung vẫn thiếu hàng.",
+          "unknown": "Fill rate và cycle service level dùng mẫu số khác nhau thế nào?",
+          "branches": [
+            "Đếm đơn vị hay chu kỳ?",
+            "Thiếu ở bao nhiêu chu kỳ?",
+            "Đánh đổi với chi phí?"
+          ]
+        },
+        "en": {
+          "question": "A 98% fill rate. Why are there still frequent stockouts?",
+          "scene": "A high share of requested units is filled, yet several replenishment cycles still experience shortages.",
+          "buddy": "Ninety-eight percent of what? A shiny KPI can hide stockouts.",
+          "observed": "A high share of requested units is filled, yet several replenishment cycles still experience shortages.",
+          "unknown": "How do fill rate and cycle service level use different denominators?",
+          "branches": [
+            "Units or cycles?",
+            "How many stockout cycles?",
+            "What is the cost trade-off?"
+          ]
+        }
+      }
+    }
+  ]
+}

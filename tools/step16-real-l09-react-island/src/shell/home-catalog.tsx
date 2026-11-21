@@ -217,7 +217,7 @@ function Catalog(){
    <Heading level={1} role="headline" className="display-title">{heading}</Heading>
    <Text role="body" className="intro">{description}</Text>
   </header>
-  {lessonNavError&&<p role="alert" className="li-catalog-error">{lessonNavError}</p>
+  {lessonNavError&&<p role="alert" className="li-catalog-error">{lessonNavError}</p>}
    {field&&!course&&field.image&&<img className="catalog-field-hero" src={field.image} alt="" loading="lazy" decoding="async"/>}
   {!group&&<><div className="catalog-group-grid">
    {groups.map((item,index)=><CatalogCard key={item.id} number={index+1}

@@ -8,7 +8,6 @@ const sample03=read(root+'Wave1Journey.tsx');
 const sample09=read(root+'LearningJourney.tsx');
 const reader=read(root+'SectionedJourney.tsx');
 const editorial=read(root+'EditorialJourney.tsx');
-const fields=read('design-system/react/Controls.tsx');
 const entry=read(root+'staging-draft-preview.tsx');
 const ids=read(root+'personal-study-ids.ts').match(/'L\d+-\d+-\d+'/g)?.map(x=>x.slice(1,-1))??[];
 const drafts=JSON.parse(read('content/editorial/normalized/index.v1.json')).entries;
@@ -35,14 +34,14 @@ assert.match(reader,/phase==='feedback'&&!persisted\.submitted&&/,
  'Unsubmitted feedback is readable as a spoiler-free placeholder');
 assert.match(reader,/phase==='progress'&&!persisted\.reviewed&&/,
  'Unreviewed progress is readable as a not-yet-completed placeholder');
-assert.match(reader,/richLabel=\{<>\{i\+1\}\. \{formatLessonInline\(question\)\}<\/>\}/,
- 'Question markup must be formatted as real inline emphasis, not raw <b> tags');
-assert.ok(reader.includes("question.replace(/<[^>]*>/g,'')"),
- 'Plain accessible label must never expose authored HTML tags');
+assert.match(reader,/function FormattedLessonQuestion\(/,
+ 'All personal questions use one safely formatted text-field component');
+assert.match(reader,/<label htmlFor=\{inputId\}>\{index\+1\}\. \{formatLessonInline\(question\)\}<\/label>/,
+ 'Actual accessible question label includes bold emphasis instead of raw HTML');
+assert.match(reader,/className="li-atom-field" data-li-atom="field"/,
+ 'Question textareas reuse the existing design-system field styling');
 assert.match(editorial,/export function inline\(/,
- 'Reuse the existing safe source-markup parser without dangerouslySetInnerHTML');
-assert.match(fields,/richLabel\?\?label/,
- 'Design-system field renders accessible formatted label content');
+ 'Reuse the existing safe inline source-markup parser, never HTML injection');
 assert.match(reader,/<Markdown md=\{q\}\/>/,
  'Previously submitted questions must keep emphasis in the feedback phase');
 assert.doesNotMatch(reader,/className="li-lesson-status"/,'Remove the large redundant sync strip');

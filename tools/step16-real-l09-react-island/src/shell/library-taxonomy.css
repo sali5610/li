@@ -1,0 +1,11 @@
+/* Scoped cascade: canonical FilterGroup pills, not custom fake filter buttons. */
+.li-library-taxonomy{display:grid;gap:var(--li-space-3);min-width:0;margin-block:var(--li-space-4)}
+.li-library-taxonomy .li-ds-filter-group{display:flex;flex-wrap:wrap;align-items:center;
+ gap:var(--li-space-2);min-width:0;max-width:100%}
+.li-library-taxonomy .li-ds-filter-chip{max-width:100%;white-space:normal;overflow-wrap:anywhere;
+ min-height:44px;border-radius:999px}
+.li-note-field-picker{display:grid;gap:var(--li-space-2);min-width:0;font-weight:var(--li-weight-600)}
+.li-note-field-picker .li-taxonomy-select{display:block;width:100%;max-width:100%;
+ min-height:48px;box-sizing:border-box;background:var(--porcelain);color:var(--moss);
+ border:1px solid var(--moss);padding:var(--li-space-3);font:inherit}
+.li-note-field-picker .li-taxonomy-select:focus-visible{border:3px solid var(--moss);outline:none}

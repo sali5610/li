@@ -93,8 +93,13 @@ function ScreenBody(props:AppPageLayoutProps){
  const bookwormPlate=(kind:BookwormArtKind)=>variant==='bookworm'?
   <div className="li-bw-inline-plate" aria-hidden="true"><BookwormIllustration kind={kind}/></div>:null;
  const action=(pageId:PageId,vi:string,en:string)=><Button onClick={()=>onNavigate(pageId)}>
-  {t(vi,en)} <LiIcon name="arrow-right" size={17}/></Button>;
+  {variant==='notebook'&&<LiIcon name={pageId==='home'?'home':notebookPageIcons[pageId]} size={17}/>}
+  {t(vi,en)} {variant!=='notebook'&&<LiIcon name="arrow-right" size={17}/>}
+ </Button>;
  const card=(heading:string,body:string,i:number)=><Card key={heading} variant={i%2?'raised':'tinted'}>
+  {variant==='notebook'&&<span className="li-nb-card-icon" aria-hidden="true">
+   <LiIcon name={(['book-open','search','check'] as const)[i%3]} size={19}/>
+  </span>}
   <span className="li-flow-index">{String(i+1).padStart(2,'0')}</span>
   <Heading level={3} role="titleMedium">{heading}</Heading>
   <Text role="support">{body}</Text>
@@ -120,6 +125,9 @@ function ScreenBody(props:AppPageLayoutProps){
       src={notebookDisciplineImages[item.id as keyof typeof notebookDisciplineImages]}/>}
      {bookwormPlate(item.id==='society'?'balance':item.id==='hci'?'lens':'chart')}
      <span className="li-flow-index">{String(i+1).padStart(2,'0')}</span>
+     {variant==='notebook'&&<span className="li-nb-card-icon" aria-hidden="true">
+      <LiIcon name={item.id==='hci'?'search':item.id==='supply'?'layers':'library-big'} size={19}/>
+     </span>}
      <Heading level={3} role="titleMedium">{locale==='vi'?item.vi:item.en}</Heading>
      <Text role="support">{t(item.descVi,item.descEn)}</Text>
      {action('lesson','Xem bài mẫu','View example lesson')}
@@ -142,6 +150,9 @@ function ScreenBody(props:AppPageLayoutProps){
      src={i===1?notebookDisciplineImages.hci:undefined} size="spot"/>}
     {bookwormPlate(i===0?'lens':i===1?'compass':'open')}
     <Badge>{desc}</Badge>
+    {variant==='notebook'&&<span className="li-nb-card-icon" aria-hidden="true">
+     <LiIcon name={i===0?'book-open':i===1?'search':'sparkles'} size={18}/>
+    </span>}
     <Heading level={3} role="titleMedium">{name}</Heading>
     <Button variant="secondary" onClick={()=>onNavigate(i===2?'guideDetail':'lesson')}>
      {t('Mở kết quả','Open result')}</Button>
@@ -221,6 +232,7 @@ function ScreenBody(props:AppPageLayoutProps){
   if(variant==='notebook')return <NotebookLessonBook
    locale={locale} title={lessonTitle} eyebrow={eyebrow}
    description={description} diagram={diagram}
+   illustrationSrc={notebookDisciplineImages.hci}
    sections={chapters.map(({title,description})=>({heading:title,description}))}
    onPractice={()=>onNavigate('practice')}/>;
   return <div className="li-flow-stack">
@@ -284,7 +296,11 @@ function ScreenBody(props:AppPageLayoutProps){
      {bookwormPlate(code==='T01'?'open':code==='T02'?'compass':'lens')}
      {tile}
     </div>:variant==='notebook'?<div className="li-flow-method-plate" key={code}>
-     <NotebookArt kind={code==='T01'?'recall':code==='T02'?'calendar':'question'} size="card"/>
+     <NotebookArt kind={code==='T01'?'recall':code==='T02'?'calendar':'question'}
+      src={code==='T01'?notebookDisciplineImages.cognitivePsychology:undefined} size="card"/>
+     <span className="li-nb-method-icon" aria-hidden="true">
+      <LiIcon name={code==='T01'?'sparkles':code==='T02'?'calendar':'search'} size={19}/>
+     </span>
      {tile}
     </div>:<React.Fragment key={code}>{tile}</React.Fragment>;
    })}
@@ -306,7 +322,11 @@ function ScreenBody(props:AppPageLayoutProps){
  </div>;
  case 'library':return <div className="li-flow-stack">
   {variant==='vintagePop'&&<div className="li-pop-workspace-art"><VintagePopArt kind="library" size="hero"/></div>}
-  {variant==='notebook'&&<div className="li-flow-library-art"><NotebookArt kind="shelf" size="spot"/></div>}
+  {variant==='notebook'&&<div className="li-flow-library-art li-nb-library-clippings">
+   <NotebookArt kind="shelf" size="spot"/>
+   <NotebookArt kind="discipline" src={notebookDisciplineImages.society} size="spot"/>
+   <NotebookArt kind="discipline" src={notebookDisciplineImages.hci} size="spot"/>
+  </div>}
   {bookwormPlate('shelf')}
   <div className="li-flow-stat-grid">{[
    [t('Bài đang học','Active lessons'),'03'],
@@ -320,6 +340,9 @@ function ScreenBody(props:AppPageLayoutProps){
    [t('Bộ Sưu Tập','Collection'),'collection'],
    [t('Nhật Ký','Journal'),'dashboard']
   ].map(([label,id])=><Card key={id} variant="tinted">
+   {variant==='notebook'&&<span className="li-nb-card-icon" aria-hidden="true">
+    <LiIcon name={id==='resume'?'book-open':id==='collection'?'bookmark':'calendar'} size={20}/>
+   </span>}
    <Heading level={3} role="titleMedium">{label}</Heading>
    <Button variant="secondary" onClick={()=>onNavigate(id as PageId)}>{t('Mở','Open')}</Button>
   </Card>)}</div>
@@ -331,6 +354,9 @@ function ScreenBody(props:AppPageLayoutProps){
     t('Đã đọc lý thuyết','Theory reviewed'),'lesson']
   ].map(([name,desc,id],i)=><Card key={id+i} variant={i?'raised':'tinted'}>
    <Badge>{t('GẦN ĐÂY','RECENT')}</Badge>
+   {variant==='notebook'&&<span className="li-nb-card-icon" aria-hidden="true">
+    <LiIcon name={i===0?'book-open':'feather'} size={19}/>
+   </span>}
    {bookwormPlate(i===0?'open':'quill')}
    <Heading level={3} role="titleMedium">{name}</Heading>
    <Progress label={t('Tiến độ mẫu','Sample progress')} value={i?70:40}/>
@@ -349,6 +375,9 @@ function ScreenBody(props:AppPageLayoutProps){
    [t('Có đủ dữ kiện không?','Is this enough evidence?'),t('Nhặt Ý · Ví dụ','Capture · Example')]
   ].map(([name,desc],i)=><Card key={name} variant={i===0?'tinted':'flat-study'}>
    {variant==='vintagePop'&&<VintagePopArt kind={i===0?'notes':i===1?'book':'idea'} size="tiny"/>}
+   {variant==='notebook'&&<span className="li-nb-card-icon" aria-hidden="true">
+    <LiIcon name={i===0?'feather':i===1?'bookmark':'sparkles'} size={19}/>
+   </span>}
    <Badge>{desc}</Badge><Heading level={3} role="titleMedium">{name}</Heading>
    <Button variant="secondary" onClick={()=>onNavigate('noteDetail')}>{t('Xem chi tiết','View detail')}</Button>
   </Card>)}
@@ -370,7 +399,10 @@ function ScreenBody(props:AppPageLayoutProps){
   <div className="li-flow-stat-grid">{[
    [t('Bài đã ôn','Reviewed'),'03'],[t('Ngày có hoạt động','Active days'),'07'],
    [t('Lượt check-in','Check-ins'),'05']
-  ].map(([label,val])=><Card key={label} variant="flat-study">
+  ].map(([label,val],i)=><Card key={label} variant="flat-study">
+   {variant==='notebook'&&<span className="li-nb-card-icon" aria-hidden="true">
+    <LiIcon name={i===0?'check':i===1?'calendar':'bookmark'} size={19}/>
+   </span>}
    <Heading level={3} role="titleLarge">{val}</Heading><Text role="support">{label}</Text>
   </Card>)}</div>
   <Card variant="tinted"><Heading level={3} role="titleMedium">{t('Nhịp học tuần này','This week')}</Heading>
@@ -476,6 +508,16 @@ const notebookArtForPage:Record<Exclude<PageId,'home'>,React.ComponentProps<type
  noteDetail:'notes',dashboard:'progress',settings:'notes',checkin:'checkin',
  laoly:'companion',account:'book'
 };
+const notebookPageAssets:Partial<Record<Exclude<PageId,'home'>,string>>={
+ search:notebookDisciplineImages.hci,
+ research:notebookDisciplineImages.hci,
+ lesson:notebookDisciplineImages.hci,
+ guide:notebookDisciplineImages.cognitivePsychology,
+ guideDetail:notebookDisciplineImages.cognitivePsychology,
+ resume:notebookDisciplineImages.hci,
+ laoly:'../assets/laoly-mirror-suy-nghi.png',
+ checkin:'../assets/laoly-guide-rest.png'
+};
 const notebookPageIcons={
  catalog:'layers',search:'search',research:'search',case:'check',
  capture:'feather',lesson:'book-open',practice:'feather',feedback:'check',
@@ -560,7 +602,7 @@ export function AppPageLayout(props:AppPageLayoutProps){
     <VintagePopArt kind={vintageArtForPage[page]} size="hero"/>
    </motion.div>}
    {variant==='notebook'&&<div className="li-flow-notebook-hero-art">
-    <NotebookArt kind={notebookArtForPage[page]} size="hero"/>
+    <NotebookArt kind={notebookArtForPage[page]} src={notebookPageAssets[page]} size="hero"/>
    </div>}
    {bookworm&&<motion.div className="li-flow-bookworm-hero-art" aria-hidden="true"
     initial={reduced?false:{opacity:0,x:24,rotate:2}}

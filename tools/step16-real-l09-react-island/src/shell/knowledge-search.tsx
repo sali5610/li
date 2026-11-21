@@ -30,17 +30,26 @@ type SearchWindow=Window&{openLaoLy?:(trigger?:HTMLElement|null)=>void;
 const app=window as SearchWindow;
 const routes=new Map<string,string>();
 const published:KnowledgeItem[]=[];
+const catalogSections:KnowledgeItem[]=[];
 const catalogBrowsePaths=new Map<string,string[]>();
 const fieldCodes=new Map<string,string>(searchableCatalog.fields.map(f=>[f.groupId+'/'+f.slug,f.id] as const));
 // Search and Catalog share the same GitHub-owned curriculum source, not a
 // startup global set by the obsolete native Catalog UI script.
 for(const group of canonicalCatalog.groups as CatalogGroup[]){
  catalogBrowsePaths.set('group:'+group.id,[group.id]);
+ catalogSections.push({id:'group:'+group.id,title:group.title,kind:'DomainGroup',
+  links:[]});
  for(const field of group.fields||[]){
   const code=fieldCodes.get(group.id+'/'+field.id);
-  if(code)catalogBrowsePaths.set('field:'+code,[group.id,field.id]);
+  if(code){
+   catalogBrowsePaths.set('field:'+code,[group.id,field.id]);
+   catalogSections.push({id:'field:'+code,title:field.name,kind:'Field',
+    context:group.title,sourceUrl:field.source,links:[]});
+  }
   for(const course of field.courses||[]){
    catalogBrowsePaths.set('course:'+course.id,[group.id,field.id,course.id]);
+   catalogSections.push({id:'course:'+course.id,title:course.title,kind:'Course',
+    context:[group.title,field.name].join(' · '),sourceUrl:field.source,links:[]});
    for(const lesson of course.lessons||[]){
     if(lesson.published!==true||!/^lessonL\d{2}$/.test(lesson.route||''))continue;
     routes.set(lesson.id,lesson.route!);
@@ -103,7 +112,9 @@ let latestStatus='loading';
 let setExternalQuery:(value:string)=>void=()=>{};
 function fallback(query:string):KnowledgeResponse{
  const q=clean(query);
- const results=published.map(item=>{
+ // Bundled canonical curriculum is available even if the content-pack client
+ // fails offline: groups/fields/courses remain browseable, not just Wave1 lessons.
+ const results=[...catalogSections,...published].map(item=>{
   const title=clean(item.title),id=clean(item.id),context=clean(item.context||'');
   const score=id===q?120:title.includes(q)?75:id.includes(q)?65:
    q.split(' ').every(token=>(title+' '+id+' '+context).includes(token))?15:-1;

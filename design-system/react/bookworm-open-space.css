@@ -1,0 +1,413 @@
+/* Bookworm · Open-space composition
+ * Deliberately opt-in to this visual candidate. Keeps all fixture copy,
+ * DS controls, real two-page reader and existing interaction state.
+ * Focus/Fluid opens the canvas; Gallery and fixed-size device previews
+ * remain contained so they can be compared without overflow. */
+
+/* 1. Undo the default boxed-card rhythm in every Bookworm preview. */
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-card-grid{
+ border:0;gap:clamp(16px,2.5vw,36px);
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-card-grid>.li-ds-card{
+ border:0;border-top:1px solid #bfb6a9;
+ border-bottom:0;background:transparent;
+ box-shadow:none;min-height:0;padding:22px 4px 26px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-card-grid>.li-ds-card:nth-child(n){
+ background:transparent;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-card-grid>.li-ds-card::before{
+ content:none;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-card-grid>.li-ds-card:hover{
+ background:transparent;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page .li-ds-catalog{
+ background:transparent;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page .li-flow-card-grid .li-bw-source-art{
+ width:100%;min-height:0;border:0;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page .li-flow-card-grid .li-bw-source-art img{
+ max-height:none;aspect-ratio:7/5;object-fit:contain;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page .li-flow-card-grid .li-atom-heading{
+ font-size:clamp(21px,2.35vw,36px);line-height:1.15;
+}
+/* Sections remain distinguishable with proportion and hairlines instead of boxes. */
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="dashboard"] .li-flow-stat-grid>.li-ds-card,
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="library"] .li-flow-stat-grid>.li-ds-card{
+ border:0;border-bottom:1px solid #bfb6a9;
+ border-radius:0;align-items:start;text-align:start;
+ min-height:140px;padding:16px 4px 22px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="dashboard"] .li-flow-stat-grid>.li-ds-card:first-child,
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="library"] .li-flow-stat-grid>.li-ds-card:first-child{
+ border-top:0;
+}
+
+/* 2. Open the LAB itself, only for single Bookworm focus on fluid desktop. */
+.li-ui-lab[data-bookworm-open="true"]{
+ max-width:none;padding-inline:0;overflow-x:clip;
+ --bw-edge:clamp(20px,6vw,112px);
+}
+.li-ui-lab[data-bookworm-open="true"] :is(
+ .li-ui-lab-header,.li-ui-lab-toolbar,.li-ui-lab-flow-head,
+ .li-ui-lab-stepper,.li-ui-lab-understage,.li-ui-lab-footer
+){
+ padding-inline:var(--bw-edge);
+}
+.li-ui-lab[data-bookworm-open="true"] .li-ui-lab-workspace{
+ display:grid;grid-template-columns:minmax(0,1fr);
+ gap:12px;padding-top:12px;
+}
+.li-ui-lab[data-bookworm-open="true"] .li-ui-lab-sidebar{
+ position:static;max-height:none;overflow:visible;
+ width:auto;margin:0 var(--bw-edge);
+ display:grid;grid-template-columns:auto minmax(0,1fr);
+ align-items:center;gap:10px 18px;
+ padding:10px 0;background:transparent;border:0;
+ border-bottom:1px solid var(--rule);
+}
+.li-ui-lab[data-bookworm-open="true"] .li-ui-lab-panel-heading{
+ grid-column:auto;white-space:nowrap;
+}
+.li-ui-lab[data-bookworm-open="true"] .li-ui-lab-flows{
+ grid-column:auto;display:flex;gap:4px;
+ overflow-x:auto;padding-bottom:3px;
+}
+.li-ui-lab[data-bookworm-open="true"] .li-ui-lab-flows>.li-ds-button{
+ flex:0 0 auto;min-height:38px;white-space:nowrap;
+}
+.li-ui-lab[data-bookworm-open="true"] .li-ui-lab-all-screens,
+.li-ui-lab[data-bookworm-open="true"] .li-ui-lab-side-note{
+ display:none;
+}
+/* The flow selector and stepper still expose every screen through its flow. */
+.li-ui-lab[data-bookworm-open="true"] .li-ui-lab-content{
+ width:100%;min-width:0;
+}
+.li-ui-lab[data-bookworm-open="true"] .li-ui-lab-stage{
+ width:100%;margin:0;display:block;min-width:0;
+}
+.li-ui-lab-stage[data-bookworm-open="true"]>.li-ui-lab-preview[data-open-space="true"]{
+ width:100%;overflow:visible;border:0;background:#f6f1e8;
+}
+.li-ui-lab-preview[data-open-space="true"]>.li-ui-lab-preview-label{
+ position:relative;z-index:8;
+ min-height:38px;padding:8px var(--bw-edge,24px);
+ background:#f6f1e8;border-block:1px solid #d5cbbb;
+ font-size:10px;font-weight:500;
+}
+.li-ui-lab-preview[data-open-space="true"]>.li-ui-lab-viewport{
+ width:100%;max-width:none;margin:0;overflow:visible;
+}
+
+/* 3. Full-bleed chapter / screen cover, with imagery crossing section edges. */
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-layout="bookworm"]{
+ --bw-page-edge:clamp(22px,7vw,134px);
+ padding:0;gap:0;min-height:100svh;display:grid;
+ grid-template-columns:minmax(0,1fr);background:#f6f1e8;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-bookworm-masthead{
+ margin:0 var(--bw-page-edge);padding-block:20px 12px;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page-head{
+ min-height:clamp(420px,73svh,820px);
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.78fr);
+ align-items:center;padding:clamp(55px,8vh,125px) var(--bw-page-edge);
+ border:0;background:linear-gradient(155deg,#f6f1e8 6%,#f0e8dc 65%,#e8e0d3 100%);
+ isolation:isolate;position:relative;overflow:visible;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page-head::before{
+ content:"";z-index:0;position:absolute;pointer-events:none;
+ right:4%;bottom:-11%;width:min(44vw,640px);height:89%;
+ border-radius:48% 48% 0 0;
+ background:#e7d7b4;opacity:.66;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page-head::after{
+ content:"";z-index:0;position:absolute;pointer-events:none;
+ right:8%;bottom:-16%;width:min(39vw,570px);height:83%;
+ border:1px solid #b4a18a;border-radius:49% 49% 0 0;opacity:.65;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page-heading{
+ position:relative;z-index:3;max-width:min(58vw,870px);
+ gap:clamp(17px,2vw,31px);
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page-heading .li-atom-heading{
+ font-size:clamp(70px,7.1vw,138px);line-height:.95;letter-spacing:-.067em;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page-heading .li-atom-text{
+ max-width:45ch;font-size:clamp(16px,1.4vw,23px);
+ line-height:1.67;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-bookworm-hero-art{
+ position:absolute;z-index:2;pointer-events:none;
+ right:clamp(-70px,-2vw,-20px);bottom:clamp(-145px,-8vw,-64px);
+ width:min(48vw,740px);max-width:none;min-height:0;
+ overflow:visible;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-bookworm-hero-art::before{
+ left:auto;right:22%;top:12%;width:39%;height:61%;
+ background:#e2b854;opacity:.3;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-bookworm-hero-art svg{
+ display:block;width:100%;max-height:none;filter:none;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page-index{
+ position:absolute;z-index:3;right:var(--bw-page-edge);bottom:38px;
+ font:400 clamp(25px,2.2vw,44px)/1 Georgia,serif;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page-columns{
+ display:grid;grid-template-columns:minmax(0,1fr);
+ gap:clamp(42px,6vw,100px);
+ padding:clamp(70px,10vw,155px) var(--bw-page-edge)
+  clamp(80px,11vw,165px);
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page-main{
+ width:100%;max-width:none;justify-self:stretch;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page-main>.li-flow-stack{
+ gap:clamp(32px,4.3vw,73px);
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page-aside{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:16px 36px;border:0;border-top:1px solid #b7ab99;
+ padding:24px 0 0;background:transparent;box-shadow:none;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page-aside>.li-flow-page-kicker,
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page-aside>.li-atom-text{
+ grid-column:1/-1;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page-aside .li-ds-button{
+ width:100%;text-align:start;min-height:58px;border-bottom:1px solid #d5cbbc;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-card-grid{
+ display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
+ gap:clamp(22px,3vw,52px);
+ border:0;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-card-grid>.li-ds-card{
+ grid-column:span 4;min-height:0;align-content:start;
+ padding:18px 0 30px;border:0;border-top:1px solid #bdb1a1;
+ background:transparent;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-bookworm-composition="shelf"] .li-flow-card-grid>.li-ds-card:nth-child(3n+1){
+ grid-column:span 5;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-bookworm-composition="shelf"] .li-flow-card-grid>.li-ds-card:nth-child(3n+2){
+ grid-column:span 4;margin-top:65px;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-bookworm-composition="shelf"] .li-flow-card-grid>.li-ds-card:nth-child(3n){
+ grid-column:span 3;margin-top:125px;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-bookworm-composition="shelf"] .li-flow-card-grid>.li-ds-card:nth-child(n){
+ background:transparent;min-height:0;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-card-grid .li-bw-source-art{
+ width:calc(100% + clamp(10px,2vw,35px));
+ max-width:none;margin-left:calc(-1*clamp(8px,1vw,17px));
+ padding-bottom:0;position:relative;z-index:1;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-card-grid .li-bw-source-art img{
+ aspect-ratio:auto;max-height:clamp(175px,24vw,330px);
+ object-fit:contain;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-bookworm-composition="reading"] .li-flow-page-columns,
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-bookworm-composition="study"] .li-flow-page-columns,
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-bookworm-composition="journal"] .li-flow-page-columns,
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-page="lesson"] .li-flow-page-columns{
+ grid-template-columns:minmax(0,1fr);
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-bookworm-composition="reading"] .li-flow-page-main,
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-bookworm-composition="study"] .li-flow-page-main,
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-bookworm-composition="journal"] .li-flow-page-main,
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-page="lesson"] .li-flow-page-main{
+ max-width:none;width:100%;justify-self:stretch;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-page="lesson"] .li-bw-reader{
+ width:100%;max-width:none;gap:28px;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-page="lesson"] .li-bw-reader-spread{
+ width:calc(100% + clamp(20px,4vw,80px));
+ margin-left:calc(-1*clamp(10px,2vw,40px));
+ min-height:clamp(530px,73svh,940px);
+ border:0;box-shadow:0 14px 40px -28px #69574795;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-page="lesson"] .li-bw-reader-leaf{
+ padding:clamp(34px,5vw,82px);
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-page="lesson"] .li-bw-reader-engraving{
+ width:min(85%,340px);
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-page="dashboard"] .li-flow-stat-grid>.li-ds-card,
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-page="library"] .li-flow-stat-grid>.li-ds-card{
+ min-height:170px;justify-content:end;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-page="guide"] .li-flow-card-grid{
+ grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(36px,6vw,110px);
+}
+.li-ui-lab-preview[data-open-space="true"] .li-bw-method-plate{
+ grid-column:auto;display:grid;grid-template-columns:minmax(100px,.34fr) minmax(0,1fr);
+ gap:18px;padding:16px 0;border:0;border-top:1px solid #bdb1a1;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-page="guide"] .li-bw-source-art--banner{
+ width:min(100%,800px);border:0;margin-inline:auto;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-page="guide"] .li-bw-source-art--banner img{
+ max-height:350px;
+}
+
+/* 4. Home is a layered book cover, not a center-aligned card collection. */
+.li-ui-lab-preview[data-open-space="true"] .li-ui-home[data-home-layout="bookworm"]{
+ --bw-page-edge:clamp(22px,7vw,134px);
+ min-height:calc(100svh - 38px);padding:26px var(--bw-page-edge) 66px;
+ grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);
+ grid-template-areas:"mast mast" "intro art" "mirror art" "guide actions";
+ gap:clamp(30px,4vw,64px);align-content:space-between;
+ overflow:visible;position:relative;isolation:isolate;
+ background:#f6f1e8;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-ui-home-bookworm-art{
+ position:relative;z-index:1;max-height:none;min-height:360px;
+ justify-items:center;overflow:visible;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-ui-home-bookworm-art::before{
+ left:8%;top:-3%;width:85%;height:109%;
+ border-radius:48% 48% 0 0;background:#e8d7b5;opacity:.7;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-ui-home-bookworm-art svg{
+ width:min(54vw,740px);max-height:none;
+ transform:translateX(8%) rotate(-5deg);
+}
+.li-ui-lab-preview[data-open-space="true"] .li-ui-home-intro{
+ position:relative;z-index:2;padding-top:30px;align-content:center;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-ui-home-intro .li-atom-heading{
+ font-size:clamp(60px,6.9vw,130px);
+}
+.li-ui-lab-preview[data-open-space="true"] .li-ui-home-mirror{
+ position:relative;z-index:2;align-self:center;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-ui-home-mirror .li-ds-home-mirror{
+ min-height:215px;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-ui-home-guide{
+ position:relative;z-index:2;
+}
+.li-ui-lab-preview[data-open-space="true"] .li-ui-home-actions{
+ position:relative;z-index:2;align-self:end;
+}
+
+/* 5. Fullscreen is an actual browser stage, not a fake scale transform. */
+.li-ui-lab-stage:fullscreen{
+ width:100vw;height:100dvh;max-width:100vw;overflow:auto;
+ overscroll-behavior:contain;display:block;margin:0;background:#f6f1e8;
+}
+.li-ui-lab-stage:fullscreen>.li-ui-lab-preview{
+ border:0;min-height:100dvh;overflow:visible;
+}
+.li-ui-lab-stage:fullscreen .li-ui-lab-preview-label{
+ position:sticky;top:0;z-index:30;
+ background:#f6f1e8f2;backdrop-filter:blur(10px);
+}
+
+/* 6. Fluid layout reflows gracefully instead of overflowing small viewports. */
+@media(max-width:1100px){
+ .li-ui-lab[data-bookworm-open="true"] .li-ui-lab-sidebar{
+  grid-template-columns:minmax(0,1fr);
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page-head{
+  min-height:600px;
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page-heading .li-atom-heading{
+  font-size:clamp(62px,7.4vw,100px);
+ }
+}
+@media(max-width:760px){
+ .li-ui-lab[data-bookworm-open="true"]{--bw-edge:20px}
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-layout="bookworm"]{
+  --bw-page-edge:clamp(18px,5vw,32px);
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page-head{
+  display:flex;flex-direction:column;align-items:stretch;
+  justify-content:flex-start;min-height:510px;gap:0;
+  padding:68px var(--bw-page-edge) 215px;
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page-heading{
+  max-width:100%;z-index:3;
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page-heading .li-atom-heading{
+  font-size:clamp(44px,10vw,76px);
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page-heading .li-atom-text{
+  font-size:15px;max-width:34ch;
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-bookworm-hero-art{
+  right:-10px;bottom:-58px;width:min(74vw,350px);
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page-head::before{
+  width:57vw;height:47%;right:8%;bottom:-5%;
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page-head::after{
+  width:50vw;height:48%;bottom:-12%;
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page-columns{
+  padding:100px var(--bw-page-edge) 72px;
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-card-grid,
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-bookworm-composition="shelf"] .li-flow-card-grid,
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-page="guide"] .li-flow-card-grid{
+  grid-template-columns:minmax(0,1fr);gap:22px;
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-card-grid>.li-ds-card,
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-bookworm-composition="shelf"] .li-flow-card-grid>.li-ds-card:nth-child(n){
+  grid-column:1/-1;margin-top:0;padding-block:20px 32px;
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page-aside{
+  grid-template-columns:minmax(0,1fr);
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-page="lesson"] .li-bw-reader-spread{
+  width:100%;margin:0;min-height:0;
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page[data-page="lesson"] .li-bw-reader-leaf{
+  padding:28px;
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-ui-home[data-home-layout="bookworm"]{
+  --bw-page-edge:clamp(18px,5vw,32px);
+  min-height:0;grid-template-columns:minmax(0,1fr);
+  grid-template-areas:"mast" "intro" "art" "mirror" "guide" "actions";
+  padding:20px var(--bw-page-edge) 56px;gap:25px;
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-ui-home-bookworm-art{
+  min-height:250px;max-height:290px;
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-ui-home-bookworm-art svg{
+  width:min(86vw,420px);max-height:310px;transform:rotate(-3deg);
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-ui-home-intro .li-atom-heading{
+  font-size:clamp(48px,10vw,76px);
+ }
+}
+@media(max-width:430px){
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page-head{
+  min-height:440px;padding-top:56px;padding-bottom:160px;
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page-heading .li-atom-heading{
+  font-size:clamp(39px,10vw,52px);
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-bookworm-hero-art{
+  right:-5px;bottom:-35px;width:min(67vw,280px);
+ }
+ .li-ui-lab-preview[data-open-space="true"] .li-flow-page-columns{
+  padding-top:78px;padding-bottom:50px;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .li-ui-lab-preview[data-open-space="true"] *,
+ .li-ui-lab-stage:fullscreen *{
+  scroll-behavior:auto!important;
+  transition:none!important;
+  animation:none!important;
+ }
+}

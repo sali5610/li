@@ -45,6 +45,7 @@ jobs:
           (cd ../.. && node tools/test_mirror_navigation.js && node tools/test_library_case_review.cjs && node tools/test_inquiry_react_actions.cjs)
           node ../../tools/test_react_guide_mobile_grid.cjs
           node ../../tools/test_published_lesson_parity.mjs
+          node ../../tools/test_personal_lesson_ui_parity.mjs
           npm run extract
           npm run test:sync
           npx tsc --noEmit

@@ -11,13 +11,14 @@ import {Heading,Text,Progress} from '../../../../design-system/react/Atoms';
 import {SelfReviewNextStep} from './SelfReviewNextStep';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
 import {Markdown} from './EditorialJourney';
+import {LessonBookmark} from './LessonDetailParity.js';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
 import {useDiscoveryLocale} from '../shell/discovery-locale.js';
 import {useStepScreen} from './step-screen.js';
 
 type Locale='vi'|'en';
-type Phase='read'|'guided'|'methods'|'practice'|'feedback'|'progress';
+type Phase='read'|'guided'|'practice'|'feedback'|'progress';
 type Role='goals'|'concept'|'guided'|'methods'|'independent'|'reflection'|'extension';
 type Section={
  id:string;role:Role;heading:string;body_md:string;
@@ -49,7 +50,9 @@ export type SectionedLesson={
 const MIN=12,MAX=4000;
 const STAGES=['opening','concept','guided','independent','reflection','extension'] as const;
 const METHODS:readonly EditorialMethodId[]=['T03','T04','T06','T07','T09','T10'];
-const PAGES:Phase[]=['read','guided','methods','practice','feedback','progress'];
+/** Match the five-page reader used by L03-1-2, L09-1-2 and L15-2-2.
+ * Optional method practice lives inside Guided instead of becoming a sixth page. */
+const PAGES:Phase[]=['read','guided','practice','feedback','progress'];
 function isMethod(s:string):s is EditorialMethodId{
  return METHODS.includes(s as EditorialMethodId);
 }
@@ -124,7 +127,8 @@ function phaseFor(a:Attempt,method:EditorialMethodId):Phase{
  if(a.reviewed)return 'progress';
  if(a.submitted)return 'feedback';
  if(a.draft.some(x=>x.trim()))return 'practice';
- if(a.methodChoice||a.methodAttempts?.[method]?.draft)return 'methods';
+ if(a.methodChoice==='skip'||a.methodAttempts?.[method]?.submittedAt)return 'practice';
+ if(a.methodChoice||a.methodAttempts?.[method]?.draft)return 'guided';
  if(a.guidedDraft.trim())return 'guided';
  return 'read';
 }
@@ -168,7 +172,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       {id?:string;at?:number;scrollY?:number;method?:string}|null;
      if(token?.id===id&&(token.method===method||token.method==='T02')&&token.at&&
       Date.now()-token.at<3600000&&Number.isFinite(token.scrollY)){
-      setPhase(token.method==='T02'&&saved.attempt.reviewed?'progress':'methods');
+      setPhase(token.method==='T02'&&saved.attempt.reviewed?'progress':'guided');
       sessionStorage.removeItem(key);
       requestAnimationFrame(()=>window.scrollTo({top:token.scrollY??0}));
      }
@@ -209,6 +213,12 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    return false;
   }).finally(()=>{count.current--;if(mounted.current)setPending(count.current);});
  }
+ /** Use the same recoverable save-error affordance as the three exemplar lessons. */
+ async function retryFailedSave(){
+  if(!failed.current||!owner.current||!current.current)return;
+  failed.current=false;setLocked(false);setError('');
+  await persist(current.current);
+ }
  function edit(change:(a:Attempt)=>Attempt){
   // Independent fields/buttons disable themselves after submit, but the
   // four rubric ratings MUST remain editable during feedback after submit.
@@ -232,6 +242,17 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    contentVersion:version,rubricVersion:frozen.rubricVersion,
    reviewSnapshot:frozen,answerRevealed:false,reviewed:false}))
    setPhase('feedback');
+ }
+ /** Optional method attempt stays in Guided; skipping it cannot block Practice. */
+ async function goToPractice(){
+  const a=current.current;
+  if(!a||locked||pending>0)return;
+  if(a.submitted){setPhase('feedback');return;}
+  if(!a.methodChoice){
+   if(await persist({...a,methodChoice:'skip'}))setPhase('practice');
+   return;
+  }
+  setPhase('practice');
  }
  async function methodSubmit(){
   const a=current.current;if(!a||locked||pending||a.submitted)return;
@@ -337,8 +358,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  </section>;
  const locale=appLocale,vi=locale==='vi',c=lesson.content.localized[locale];
  const names:Record<Phase,string>=vi?
-  {read:'Đọc bài',guided:'Thử áp dụng',methods:'Thần Chú',practice:'Làm bài',feedback:'Đối chiếu',progress:'Tiến độ'}:
-  {read:'Learn',guided:'Guided',methods:'Spells',practice:'Practice',feedback:'Feedback',progress:'Progress'};
+  {read:'Đọc bài',guided:'Thử áp dụng',practice:'Làm bài',feedback:'Đối chiếu',progress:'Tiến độ'}:
+  {read:'Learn',guided:'Guided',practice:'Practice',feedback:'Feedback',progress:'Progress'};
  const review=persisted.reviewSnapshot;
  const rubric=review?.criteria[locale]??criteria(c);
  const modelAnswer=review?.modelAnswer[locale]??independent(c).model_answer_md??'';
@@ -349,17 +370,18 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  const methodData=attempt.methodAttempts?.[method];
  const savedMethod=persisted.methodAttempts?.[method];
  const answersSaved=persisted.draft.filter(x=>x.trim().length>=MIN).length;
- const rated=persisted.ratings.filter(x=>x!==null).length;
  const percent=persisted.reviewed?100:persisted.submitted?75:
   Math.round(answersSaved/4*50);
  const history=persisted.attemptHistory||[];
+ const pageIndex=PAGES.indexOf(phase);
  const setAnswer=(i:number,v:string)=>{
   if(v.length>MAX)return;
   edit(a=>{const draft=[...a.draft] as Attempt['draft'];draft[i]=v;return {...a,draft};});
  };
  const block=(role:Role)=><>
   {section(c,role).map(x=><section key={x.id} id={'li-sectioned-'+id+'-'+x.id}>
-   <Heading level={3} role="titleMedium">{x.heading}</Heading>
+   <Heading level={['goals','concept','guided'].includes(role)?2:3}
+    role={['goals','concept','guided'].includes(role)?'titleLarge':'titleMedium'}>{x.heading}</Heading>
    <Markdown md={x.body_md}/>
   </section>)}
  </>;
@@ -374,6 +396,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      'Personal study · account-synced progress · content in progress'}</Text>}
    </div>
    <div className="li-learning-header-actions">
+    <LessonBookmark id={id} locale={locale}/>
     <details className="li-lesson-header-more">
      <summary>{vi?'Tùy chọn':'Options'}</summary>
      <Button variant="secondary" disabled={pending>0||locked} onClick={()=>void restartLesson()}>
@@ -382,71 +405,83 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     </details>
    </div>
   </header>
-  <Text role="support" className="li-lesson-status">{vi?
-    (locked?'Lưu lỗi':pending?'Đang lưu…':
-     sync==='synced'?'Đã đồng bộ':sync==='queued'?'Chờ đồng bộ':
-      sync==='on-device'?'Đã lưu trên thiết bị':'Đã lưu / đang kiểm tra'):
-    (locked?'Save failed':pending?'Saving…':
-     sync==='synced'?'Synced':sync==='queued'?'Waiting to sync':
-      sync==='on-device'?'Saved on device':'Saved / checking status')}</Text>
-  {error&&<p role="alert">{error}</p>}
-    <StudyBookFolio phase={phase} steps={PAGES} locale={locale}/>
-  <aside className="li-learning-rail" aria-label="Learning navigation and status">
-  <Progress label={vi?'Tiến độ lượt học':'Lesson attempt progress'} value={percent}/>
-  <Text role="support">{persisted.reviewed?
-   (vi?'Đã lưu tự đánh giá · không phải chứng nhận thông thạo':'Self-review saved · not a mastery certificate'):
-   persisted.submitted?(vi?'Đã nộp · tự chấm '+rated+'/4':'Submitted · '+rated+'/4 ratings'):
-   (vi?'Đã lưu '+answersSaved+'/4 câu trả lời':'Saved '+answersSaved+'/4 answers')}</Text>
-  {history.length>0&&<details className="li-learning-attempt-history">
-   <summary>{vi?'Lịch sử lượt học':'Saved attempt history'} · {history.length}</summary>
-   <ol>{history.map((entry,index)=><li key={index}>
-    <Text role="support">{vi?'Lượt':'Attempt'} {entry.attemptNumber} ·
-     {' '}{entry.submittedAt} · {entry.ratings.reduce<number>((total,score)=>total+(score??0),0)}/8</Text>
-   </li>)}</ol>
-  </details>}
+  <StudyBookFolio phase={phase} steps={PAGES} locale={locale}
+   onPrevious={pageIndex>0?()=>setPhase(PAGES[pageIndex-1]):undefined}
+   onNext={phase==='read'?()=>setPhase('guided'):
+    phase==='guided'?()=>void goToPractice():
+    phase==='practice'&&persisted.submitted?()=>setPhase('feedback'):
+    phase==='feedback'&&persisted.reviewed?()=>setPhase('progress'):undefined}/>
+  <aside className="li-learning-rail" aria-label={vi?'Điều hướng và tiến độ học':'Learning navigation and status'}>
+   <div className="li-learning-save">
+    <Progress label={vi?'Tiến độ lượt học':'Lesson attempt progress'} value={percent}/>
+    {(history.length>0||attempt.assisted)&&<details className="li-learning-attempt-meta">
+     <summary>{vi?'Chi tiết lượt học':'Attempt details'}</summary>
+     {attempt.assisted&&<Text role="support">{vi?'Đã dùng gợi ý':'Hint used'}</Text>}
+     {history.length>0&&<details className="li-learning-attempt-history">
+      <summary>{vi?'Lịch sử lượt học':'Saved attempt history'} · {history.length}</summary>
+      <ol>{history.map((entry,index)=><li key={index}>
+       <Text role="support">{vi?'Lượt':'Attempt'} {entry.attemptNumber} ·
+        {' '}{entry.submittedAt} · {entry.ratings.reduce<number>((total,score)=>total+(score??0),0)}/8</Text>
+      </li>)}</ol>
+     </details>}
+    </details>}
+   </div>
   </aside>
+  {sync==='conflict'&&<p className="li-learning-error" role="alert">{vi?
+   'Tiến độ bài này đang có xung đột đồng bộ. Kiểm tra bản lưu trước khi học tiếp.':
+   'This lesson has a sync conflict. Review the saved version before continuing.'}</p>}
+  {error&&!locked&&<p className="li-learning-error" role="alert">{error}</p>}
+  {locked&&<div className="li-learning-recovery" role="alert">
+   <Text role="support">{error|| (vi?'Chưa lưu được thay đổi.':'Could not save changes.')}</Text>
+   <Button disabled={pending>0} onClick={()=>void retryFailedSave()}>
+    {vi?'Thử lưu lại':'Retry saving'}
+   </Button>
+  </div>}
   <motion.div key={phase} initial={reduced?false:{opacity:0,x:12,rotateY:-1}}
    animate={{opacity:1,x:0,rotateY:0}} transition={reduced?{duration:0}:{duration:0.2}}
    className="li-learning-current">
   
-  <Card variant="flat-study" className="li-study-book-page">
+  <Card variant="flat-study" className="li-study-book-page" aria-label={names[phase]}>
    {phase==='read'&&<>
     <Markdown md={c.intro_md}/>{mentor('opening')}
     {block('goals')}{block('concept')}{mentor('concept')}
     <Button onClick={()=>setPhase('guided')}>{vi?'Tiếp: Thử áp dụng':'Next: Guided example'} →</Button>
    </>}
    {phase==='guided'&&<>
-    <Heading level={2} role="titleLarge">{names.guided}</Heading>
     {block('guided')}{mentor('guided')}
+    <Field kind="textarea" rows={4} label={vi?'Tự giải thích':'Explain in your words'}
+     disabled={locked||attempt.submitted} value={attempt.guidedDraft}
+     onChange={e=>{if(e.currentTarget.value.length<=MAX)edit(a=>({...a,guidedDraft:e.currentTarget.value}));}}/>
     {section(c,'guided').filter(x=>!!x.feedback_md).map(x=><div key={x.id} className="li-learning-hint">
      {persisted.guidedDraft.trim().length>=MIN
       ? <Markdown md={x.feedback_md||''}/>
       : <Text role="support">{vi?'Viết và lưu ít nhất 12 ký tự giải thích để xem phản hồi.':'Write and save at least 12 characters to unlock guided feedback.'}</Text>}
     </div>)}
-    <Field kind="textarea" rows={4} label={vi?'Tự giải thích':'Explain in your words'}
-     disabled={locked||attempt.submitted} value={attempt.guidedDraft}
-     onChange={e=>{if(e.currentTarget.value.length<=MAX)edit(a=>({...a,guidedDraft:e.currentTarget.value}));}}/>
-    <Button onClick={()=>setPhase('methods')}>{vi?'Tiếp: Thần Chú':'Next: Study methods'} →</Button>
-   </>}
-   {phase==='methods'&&<>
-    <Heading level={2} role="titleLarge">{names.methods} · {method}</Heading>
-    <Text role="support">{vi?'Phương pháp này tự chọn, không phải điểm bài độc lập.':'Optional method practice, separate from the independent task.'}</Text>
-    {block('methods')}
-    <Button variant="secondary" onClick={()=>openGuide()}>{vi?'Xem Sổ Tay Thần Chú':'Open Spellbook'} · {method}</Button>
-    <Field kind="textarea" rows={4} label={vi?'Giải thích lượt luyện':'Explain method practice'}
-     value={methodData?.draft||''} disabled={locked||attempt.submitted||!!savedMethod?.submittedAt}
-     onChange={e=>{const value=e.currentTarget.value;if(value.length<=MAX)edit(a=>({
-      ...a,methodChoice:method,methodAttempts:{...a.methodAttempts,
-       [method]:{draft:value,submission:null,submittedAt:null}}
-     }));}}/>
-    {!savedMethod?.submittedAt?<Button disabled={locked||pending>0} onClick={()=>void methodSubmit()}>
-     {vi?'Nộp lượt luyện':'Submit method practice'}</Button>:<>
-     <Text role="support">{vi?'Đã lưu lượt luyện':'Method attempt saved'}</Text>
-     {section(c,'methods').filter(x=>!!x.feedback_md).map(x=><div key={x.id} className="li-learning-hint">
-      <Markdown md={x.feedback_md||''}/></div>)}
-    </>}
-    <Button variant="secondary" disabled={locked||pending>0}
-     onClick={()=>{if(!attempt.methodChoice)void persist({...attempt,methodChoice:'skip'}).then(ok=>{if(ok)setPhase('practice');});else setPhase('practice');}}>
+    <details className="li-learning-extras li-sectioned-method-details"
+     key={'method-'+id}>
+     <summary>{vi?'Thử Thần Chú':'Try a study method'} · {method} {vi?'(tùy chọn)':'(optional)'}</summary>
+     <div className="li-sectioned-method-content">
+      <Text role="support">{vi?'Phương pháp luyện thêm, không bắt buộc trước bài độc lập.':
+       'Optional method practice, not required for the independent exercise.'}</Text>
+      {block('methods')}
+      <Button variant="secondary" onClick={()=>openGuide()}>
+       {vi?'Xem Sổ Tay Thần Chú':'Open Spellbook'} · {method}
+      </Button>
+      <Field kind="textarea" rows={4} label={vi?'Giải thích lượt luyện':'Explain method practice'}
+       value={methodData?.draft||''} disabled={locked||attempt.submitted||!!savedMethod?.submittedAt}
+       onChange={e=>{const value=e.currentTarget.value;if(value.length<=MAX)edit(a=>({
+        ...a,methodChoice:method,methodAttempts:{...a.methodAttempts,
+         [method]:{draft:value,submission:null,submittedAt:null}}
+       }));}}/>
+      {!savedMethod?.submittedAt?<Button disabled={locked||pending>0} onClick={()=>void methodSubmit()}>
+       {vi?'Nộp lượt luyện':'Submit method practice'}</Button>:<>
+       <Text role="support">{vi?'Đã lưu lượt luyện':'Method attempt saved'}</Text>
+       {section(c,'methods').filter(x=>!!x.feedback_md).map(x=><div key={x.id} className="li-learning-hint">
+        <Markdown md={x.feedback_md||''}/></div>)}
+      </>}
+     </div>
+    </details>
+    <Button disabled={locked||pending>0} onClick={()=>void goToPractice()}>
      {vi?'Tiếp: Làm bài':'Next: Practice'} →
     </Button>
    </>}

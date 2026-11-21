@@ -144,6 +144,8 @@ if(viewName==='breadcrumb'||viewName==='breadcrumbPrivate'){
  createRoot(page.querySelector('.section-shell')!).render(<CatalogScreen/>);
 } else if(viewName==='settings'){
  root.parentElement!.id='page-settings';
+ app.liSettingsPort={getView:()=>({mode:'start',modes:[],calm:false,mute:false,
+  nicknames:{},previews:{},cloudVisible:false,exportReady:false,importLoading:false})};
  createRoot(root).render(<Settings/>);
 } else {
  root.parentElement!.id=viewName==='guide'?'page-guide':viewName==='library'?'page-library':'page-dashboard';

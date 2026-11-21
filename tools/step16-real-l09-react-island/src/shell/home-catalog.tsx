@@ -18,8 +18,9 @@ import './home-catalog.css';
  */
 type Lesson={id:string;title:string;published?:boolean;route?:string};
 type Course={id:string;title:string;level:string;lessons:Lesson[]};
-type Field={id:string;name:string;source?:string;image?:string;courses:Course[]};
-type Group={id:string;title:string;fields:Field[]};
+type Category={id:string;label:{vi:string;en:string}};
+type Field={id:string;name:string;source?:string;image?:string;category:Category;courses:Course[]};
+type Group={id:string;title:string;titleEn:string;iscedBroadCode:string;fields:Field[]};
 type Locale='vi'|'en';
 type CatalogPort={
  getPath:()=>string[];
@@ -75,8 +76,8 @@ const levelNames:readonly [string,string,string][]=[
  ['Intermediate','Trung cấp','Intermediate'],
  ['Advanced-topic','Chuyên sâu','Advanced']
 ];
-function CatalogCard({number,eyebrow,title,detail,onOpen,locale,image}:{
- number:number;eyebrow:string;title:string;detail:string;onOpen:()=>void;locale:Locale;image?:string
+function CatalogCard({number,eyebrow,title,detail,onOpen,locale,image,category}:{
+ number:number;eyebrow:string;title:string;detail:string;onOpen:()=>void;locale:Locale;image?:string;category?:string
 }){
  return <article className="catalog-feature-row" data-li-react-catalog-card>
   <div className="catalog-feature-media">
@@ -85,6 +86,7 @@ function CatalogCard({number,eyebrow,title,detail,onOpen,locale,image}:{
   </div>
   <div className="catalog-card-copy">
    <div className="kicker">{eyebrow}</div>
+   {category&&<span className="catalog-category-tag">{category}</span>}
    <Heading level={2} role="titleMedium">{title}</Heading>
    <Text role="support" className="small">{detail}</Text>
   </div>
@@ -102,6 +104,7 @@ function Catalog(){
  const path=useCatalogPath();
  const [,forceProgress]=useState(0);
  const [lessonNavError,setLessonNavError]=useState('');
+ const [activeCategory,setActiveCategory]=useState('all');
  useEffect(()=>{
   const onRoute=(event:Event)=>{
    if((event as CustomEvent<{route?:string}>).detail?.route!=='catalog'||!pendingCatalogReturn)return;
@@ -144,16 +147,19 @@ function Catalog(){
   };
  },[]);
  const group=groups.find(item=>item.id===path[0]);
+ useEffect(()=>setActiveCategory('all'),[group?.id]);
+ const categories=group?Array.from(new Map(group.fields.map(f=>[f.category.id,f.category.label])).entries()):[];
  const field=group?.fields.find(item=>item.id===path[1]);
  const course=field?.courses.find(item=>item.id===path[2]);
  const lesson=course?.lessons.find(item=>item.id===path[3]);
  const breadcrumb=[{label:locale==='vi'?'Tàng Thư':'Library',path:[] as string[]}];
- if(group)breadcrumb.push({label:authoredCopy(group.title),path:[group.id]});
+ if(group)breadcrumb.push({label:localized(locale,group.title,group.titleEn),path:[group.id]});
  if(field)breadcrumb.push({label:authoredCopy(field.name),path:[group!.id,field.id]});
  if(course)breadcrumb.push({label:authoredCopy(course.title),path:[group!.id,field!.id,course.id]});
  if(lesson)breadcrumb.push({label:authoredCopy(lesson.title),path:[group!.id,field!.id,course!.id,lesson.id]});
  const currentTitle=lesson?.title||course?.title||field?.name||group?.title;
- const heading=currentTitle?authoredCopy(currentTitle):(locale==='vi'?'Tàng Thư':'Library');
+ const heading=group&&!field?localized(locale,group.title,group.titleEn):
+  currentTitle?authoredCopy(currentTitle):(locale==='vi'?'Tàng Thư':'Library');
  const description=lesson?(personalStudyRoute(lesson.id)?
   (locale==='vi'?'Bài học cá nhân · Có thể học ngay trong Tàng Thư.':
    'Personal study lesson · Ready to learn in your library.'):
@@ -223,7 +229,7 @@ function Catalog(){
    {field&&!course&&field.image&&<img className="catalog-field-hero" src={field.image} alt="" loading="lazy" decoding="async"/>}
   {!group&&<><div className="catalog-group-grid">
    {groups.map((item,index)=><CatalogCard key={item.id} number={index+1}
-    title={authoredCopy(item.title)} eyebrow={locale==='vi'?'NHÓM NGÀNH':'DOMAIN GROUP'}
+    title={localized(locale,item.title,item.titleEn)} eyebrow={locale==='vi'?'NHÓM NGÀNH':'DOMAIN GROUP'}
     detail={item.fields.length+(locale==='vi'?' chuyên ngành':' fields')}
     locale={locale} onOpen={()=>openPath([item.id])}/>)}
   </div>
@@ -234,11 +240,22 @@ function Catalog(){
     (locale==='vi'?'Danh mục còn đề cương đang biên soạn. Chỉ bài đã phát hành mới có nội dung học.':
      'Some outlines are in progress. Only released lessons are available to study.')}
   </Text></>}
-  {group&&!field&&<div className="catalog-field-grid">
-   {group.fields.map((item,index)=><CatalogCard key={item.id} number={index+1}
-    title={authoredCopy(item.name)} image={item.image} eyebrow={locale==='vi'?'CHUYÊN NGÀNH':'FIELD'}
-    detail={item.courses.length+(locale==='vi'?' môn học theo lộ trình':' courses')}
-    locale={locale} onOpen={()=>openPath([group.id,item.id])}/>)}
+  {group&&!field&&<div className="catalog-field-browser">
+   {categories.length>1&&<div className="catalog-category-filters" role="group"
+    aria-label={locale==='vi'?'Lọc chuyên ngành theo danh mục':'Filter fields by category'}>
+    <button type="button" className="catalog-category-filter" aria-pressed={activeCategory==='all'}
+     onClick={()=>setActiveCategory('all')}>{locale==='vi'?'Tất cả':'All'}</button>
+    {categories.map(([id,label])=><button key={id} type="button" className="catalog-category-filter"
+     aria-pressed={activeCategory===id} onClick={()=>setActiveCategory(id)}>{label[locale]}</button>)}
+   </div>}
+   <div className="catalog-field-grid">
+    {group.fields.filter(item=>activeCategory==='all'||item.category.id===activeCategory)
+     .map((item,index)=><CatalogCard key={item.id} number={index+1}
+     title={authoredCopy(item.name)} image={item.image} eyebrow={locale==='vi'?'CHUYÊN NGÀNH':'FIELD'}
+     category={item.category.label[locale]}
+     detail={item.courses.length+(locale==='vi'?' môn học theo lộ trình':' courses')}
+     locale={locale} onOpen={()=>openPath([group.id,item.id])}/>)}
+   </div>
   </div>}
   {field&&!course&&<div className="catalog-roadmap">
    {levelNames.map(([level,vi,en],index)=><section key={level} className="catalog-level-band">

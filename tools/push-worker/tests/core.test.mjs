@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {validClock,validZone,validSubscription,allowedPushEndpoint,
- dueForPush,localMinute,safeAccountJwt,endpointId} from '../src/core.mjs';
+ dueForPush,duePushSlots,claimDays,validSchedules,localMinute,safeAccountJwt,endpointId} from '../src/core.mjs';
 test('five-minute clock window respects owner timezone and avoids repeat within day',()=>{
  const row={enabled:1,kind:'sleep',local_time:'21:00',zone:'Asia/Ho_Chi_Minh',last_day:null};
  const due=new Date('2026-11-21T14:02:00Z');
@@ -55,4 +55,31 @@ test('PWA reuses existing Workbox and only shows generic notification content',(
  assert.match(worker,/existing\.owner_id!==account/);
  assert.match(worker,/UPDATE push_subscriptions SET last_day=/);
  assert.doesNotMatch(handler,/localStorage|indexedDB|Neon|JWT|noteDetail|healthScore/);
+});
+
+test('four independent push schedules repeat on chosen local weekdays',()=>{
+ const kinds=['study','sleep','movement','rest'];
+ const schedules=kinds.map(kind=>({kind,enabled:true,time:'21:00',frequency:'daily',days:[]}));
+ schedules[1].frequency='weekdays';
+ schedules[2].frequency='weekends';
+ schedules[3].frequency='custom';schedules[3].days=[1,3,5];
+ assert.equal(validSchedules(schedules),true);
+ assert.equal(validSchedules([...schedules.slice(0,3),schedules[0]]),false);
+ assert.equal(validSchedules(schedules.map(s=>s.kind==='rest'?{...s,days:[7]}:s)),false);
+ const row={enabled:1,kind:'study',local_time:JSON.stringify({version:2,schedules}),
+  zone:'Asia/Ho_Chi_Minh',last_day:null};
+ const saturday=new Date('2026-11-21T14:02:00Z');
+ assert.deepEqual(duePushSlots(row,saturday).map(s=>s.kind),['study','movement']);
+ const claimed={...row,last_day:claimDays(row,duePushSlots(row,saturday))};
+ assert.deepEqual(duePushSlots(claimed,saturday),[]);
+ const monday=new Date('2026-11-23T14:02:00Z');
+ assert.deepEqual(duePushSlots(claimed,monday).map(s=>s.kind),['study','sleep','rest']);
+ assert.deepEqual(duePushSlots({...row,local_time:'{"version":2,"schedules":[]}'},monday),[]);
+});
+test('legacy push receipts remain valid when migrating existing subscriptions',()=>{
+ const old={enabled:1,kind:'sleep',local_time:'21:00',
+  zone:'Asia/Ho_Chi_Minh',last_day:'2026-11-21'};
+ const now=new Date('2026-11-21T14:02:00Z');
+ assert.deepEqual(duePushSlots(old,now),[]);
+ assert.deepEqual(duePushSlots({...old,last_day:null},now),[{kind:'sleep',day:'2026-11-21'}]);
 });

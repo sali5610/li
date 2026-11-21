@@ -50,15 +50,17 @@ async function pushRequest(api:string,method:'PUT'|'DELETE',payload:object):Prom
 }
 export async function registerPush(api:string,subscription:PushSubscription):Promise<void>{
  const preference=readReminderPreference();
- if(!preference.enabled||!preference.time)throw Error('PUSH_REMINDER_OFF');
+ if(!preference.schedules.some(s=>s.enabled))throw Error('PUSH_REMINDER_OFF');
  const zone=Intl.DateTimeFormat().resolvedOptions().timeZone;
  if(!zone)throw Error('PUSH_ZONE_UNAVAILABLE');
  const data=subscription.toJSON();
  if(!data.endpoint||!data.keys?.auth||!data.keys?.p256dh)
   throw Error('PUSH_SUBSCRIPTION_INVALID');
+ const first=preference.schedules.find(s=>s.enabled)!;
  await pushRequest(api,'PUT',{
   subscription:{endpoint:data.endpoint,keys:data.keys},
-  enabled:preference.enabled,kind:preference.kind,time:preference.time,zone
+  enabled:true,kind:first.kind,time:first.time,zone,
+  schedules:preference.schedules
  });
 }
 export async function updatePushSchedule(api:string,subscription:PushSubscription):Promise<void>{
@@ -68,9 +70,12 @@ export async function updatePushSchedule(api:string,subscription:PushSubscriptio
  const data=subscription.toJSON();
  if(!data.endpoint||!data.keys?.auth||!data.keys?.p256dh)
   throw Error('PUSH_SUBSCRIPTION_INVALID');
+ // Legacy worker sees first enabled kind; the updated worker reads all schedules.
+ const first=preference.schedules.find(s=>s.enabled);
  await pushRequest(api,'PUT',{
-  subscription:{endpoint:data.endpoint,keys:data.keys},enabled:preference.enabled,
-  kind:preference.kind,time:preference.time||'00:00',zone
+  subscription:{endpoint:data.endpoint,keys:data.keys},enabled:!!first,
+  kind:first?.kind||'study',time:first?.time||'00:00',zone,
+  schedules:preference.schedules
  });
 }
 export async function removePush(api:string,subscription:PushSubscription):Promise<void>{

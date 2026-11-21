@@ -41,3 +41,7 @@ export type {BookwormArtKind} from './BookwormIllustration';
 
 /** Notebook annotations are a shared, presentational component. */
 export {NotebookAnnotation} from './NotebookAnnotation';
+
+/** Content-preserving, opt-in Notebook illustration slots. */
+export {NotebookArt,notebookDisciplineImages} from './NotebookArt';
+export type {NotebookArtKind,NotebookArtSize} from './NotebookArt';

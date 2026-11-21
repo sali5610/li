@@ -108,6 +108,7 @@ setTimeout(()=>{
  const assert=(name:string,condition:boolean,detail?:unknown)=>checks.push({name,pass:condition,detail});
  const select=(q:string)=>document.querySelector(q);
  const windowWidth=document.documentElement.clientWidth||innerWidth;
+ assert('true-390-css-mobile-viewport',windowWidth===390,{innerWidth,clientWidth:windowWidth});
  assert('no-horizontal-overflow',document.documentElement.scrollWidth<=windowWidth+4,
   {scrollWidth:document.documentElement.scrollWidth,windowWidth});
  if(viewName==='journal'){
@@ -115,6 +116,7 @@ setTimeout(()=>{
   assert('real-DS-chart-visible',Boolean(chart&&bounds(chart)!.w>200),bounds(chart));
   assert('chart-under-calendar',Boolean(chart&&cal&&chart.getBoundingClientRect().top>cal.getBoundingClientRect().bottom),
     {chart:bounds(chart),calendar:bounds(cal)});
+  assert('chart-actually-above-first-fold',Boolean(chart&&chart.getBoundingClientRect().top<690),bounds(chart));
   assert('seven-day-chart',document.querySelectorAll('.li-legacy-chart-bars button').length===7);
   assert('thirty-month-dates',document.querySelectorAll('.li-diary-calendar button').length===30);
  } else if(viewName==='guide'){
@@ -124,10 +126,20 @@ setTimeout(()=>{
    select('#li-react-method-search')!.getBoundingClientRect().top<filter.getBoundingClientRect().top));
   assert('filter-before-mentor',Boolean(filter&&mentor&&filter.getBoundingClientRect().top<mentor.getBoundingClientRect().top),
    {filter:bounds(filter),mentor:bounds(mentor)});
+  const field=select('.guide-find .li-atom-field');
+  const index=select('.guide-index');
+  assert('mobile-search-full-width',Boolean(field&&index&&field.getBoundingClientRect().width>=index.getBoundingClientRect().width*0.94),
+   {field:bounds(field),index:bounds(index)});
+  const chips=[...document.querySelectorAll('.guide-find .li-ds-filter-chip')];
+  assert('all-categories-visible-not-clipped',chips.length===6&&chips.every(chip=>{
+   const c=chip.getBoundingClientRect();return c.left>=0&&c.right<=windowWidth+2;
+  }),chips.map(bounds));
   assert('thirteen-methods',document.querySelectorAll('.guide-method-entry').length===13);
  } else if(viewName==='library'){
   const titles=[...document.querySelectorAll('.library-saved-shortlist .library-list-copy strong')];
   assert('saved-bookmarks-have-rows',titles.length>0);
+  const resumeTitle=select('.library-resume-feature .library-list-item .library-list-copy');
+  assert('resume-title-full-width',Boolean(resumeTitle&&resumeTitle.getBoundingClientRect().width>=250),bounds(resumeTitle));
   assert('bookmark-title-usable-width',titles.every(n=>n.getBoundingClientRect().width>=170),
     titles.map(bounds));
  } else if(viewName==='buddy'){

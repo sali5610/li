@@ -293,7 +293,7 @@ const ownerByRoute={
  home:'home-catalog',catalog:'home-catalog',
  research:'research-case',case:'research-case',
  guide:'guide-library',guideDetail:'guide-library',
- library:'guide-library',resume:'guide-library',
+ library:'guide-library',resume:'guide-library',bookmarks:'guide-library',
  collection:'guide-library',noteDetail:'guide-library',
  dashboard:'journal-settings',settings:'journal-settings',
  search:'knowledge-search',capture:'capture-idea'
@@ -305,7 +305,7 @@ const routeFingerprints={
  home:"'page-home'",catalog:"'page-catalog'",
  research:"mountPage('research'",case:"mountPage('case'",
  guide:"route:'guide'",guideDetail:"route:'guideDetail'",
- library:"route:'library'",resume:"route:'resume'",
+ library:"route:'library'",resume:"route:'resume'",bookmarks:"route:'bookmarks'",
  collection:"route:'collection'",noteDetail:"route:'noteDetail'",
  dashboard:"route:'dashboard'",settings:"route:'settings'",
  search:"'page-search'",capture:"'page-capture'"

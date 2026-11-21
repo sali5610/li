@@ -458,7 +458,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       : <Text role="support">{vi?'Viết và lưu ít nhất 12 ký tự giải thích để xem phản hồi.':'Write and save at least 12 characters to unlock guided feedback.'}</Text>}
     </div>)}
     <details className="li-learning-extras li-sectioned-method-details"
-     key={'method-'+id} defaultOpen={!!methodData?.draft||!!savedMethod?.submittedAt}>
+     key={'method-'+id}>
      <summary>{vi?'Thử Thần Chú':'Try a study method'} · {method} {vi?'(tùy chọn)':'(optional)'}</summary>
      <div className="li-sectioned-method-content">
       <Text role="support">{vi?'Phương pháp luyện thêm, không bắt buộc trước bài độc lập.':

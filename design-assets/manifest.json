@@ -1,6 +1,6 @@
 {
   "schema": "li-visual-assets-index-v1",
-  "date": "2026-11-21",
+  "date": "2026-11-22",
   "purpose": "Asset-file custody/audit, not a statement of PO visual approval or original editable artwork source.",
   "authorities": {
     "decisions": "Notion Hub and UI Illustration Asset Library",
@@ -43,32 +43,39 @@
         "family": "brand",
         "canonical": "design-assets/brand/apple-touch-icon.png",
         "app": "site/assets/apple-touch-icon.png",
-        "git_blob_sha": "3df2fb3812f079113f5747aa94c7520240beec8c",
-        "bytes": 996,
-        "status": "deployed file snapshot; editable upstream source not confirmed"
+        "git_blob_sha": "654abe47333748b1637dc51fbd0ef9d7f31e21ca",
+        "bytes": 629,
+        "status": "new geometric square version; staging QA pending PO visual acceptance"
+      },
+      {
+        "name": "favicon-32.png",
+        "family": "brand",
+        "canonical": "design-assets/brand/favicon-32.png",
+        "app": "site/assets/favicon-32.png",
+        "git_blob_sha": "9bec62cbc6d567b16e902c330452a7ff7cfef59c",
+        "bytes": 308,
+        "status": "new 32px fallback icon; staging QA pending PO visual acceptance"
       },
       {
         "name": "li-favicon.svg",
         "family": "brand",
         "canonical": "design-assets/brand/li-favicon.svg",
         "app": "site/assets/li-favicon.svg",
-        "git_blob_sha": "3caed1c09f992d4c2c48d5e69c86fe7c26349923",
-        "bytes": 3967,
-        "status": "deployed file snapshot; editable upstream source not confirmed"
+        "git_blob_sha": "ebda8656eb3ea0072768cb5819fa6d7db5531e2f",
+        "status": "geometric SVG parity retained; staging QA pending PO visual acceptance"
       },
       {
         "name": "li-seal.svg",
         "family": "brand",
         "canonical": "design-assets/brand/li-seal.svg",
         "app": "site/assets/li-seal.svg",
-        "git_blob_sha": "1100261a1aad0bdd1c12ddae5a0c206aadd43722",
-        "bytes": 3908,
-        "status": "deployed file snapshot; editable upstream source not confirmed"
+        "git_blob_sha": "ebda8656eb3ea0072768cb5819fa6d7db5531e2f",
+        "status": "new geometric square version; staging QA pending PO visual acceptance"
       }
     ],
-    "canonical_count": 5,
+    "canonical_count": 6,
     "home_backgrounds": 2,
-    "brand_files": 3
+    "brand_files": 4
   },
   "embedded_css_images": {
     "owner": "site/assets/li-layout.css",
@@ -96,7 +103,7 @@
       "status": "Not confirmed uploaded to GitHub or Notion as individually managed PNG files; not deployed; do NOT mark shipped"
     }
   ],
-  "total_separate_tracked_canonical_image_files": 49,
+  "total_separate_tracked_canonical_image_files": 50,
   "total_is_not_all_proposed_artwork": true,
   "audit_basis": "GitHub staging source and user-supplied ZIP files",
   "discipline_landscapes": {

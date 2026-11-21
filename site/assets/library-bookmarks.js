@@ -8,7 +8,17 @@ const isEnglish=()=>window.liLanguage?.get?.()==="en";
 // Personal drafts are bookmarkable only through their existing invited
 // staging route registry. Production and guest accounts retain the 3 releases.
 function valid(type,id){
- if(type==="case")return Object.prototype.hasOwnProperty.call(CASES,id);
+ if(type==="case"){
+  if(Object.prototype.hasOwnProperty.call(CASES,id))return true;
+  if(!/^draft-case-L(?:03|09|15)-[1-3]-[1-3]$/.test(id))return false;
+  const lessonId=id.slice("draft-case-".length);
+  const item=(window.LI_MIRROR_DRAFT_HOOKS||[]).find(x=>x.id===lessonId&&
+   x.case?.publishState==="draft"&&x.case?.reviewState==="proposed");
+  const route=window.liPersonalStudyRoutes?.[lessonId];
+  return Boolean(item)&&document.documentElement.classList.contains("li-auth-verified")&&
+   typeof route==="string"&&/^draftLesson[A-Za-z0-9]{1,64}$/.test(route)&&
+   Boolean(document.getElementById("page-"+route));
+ }
  if(type!=="lesson")return false;
  if(Object.prototype.hasOwnProperty.call(LESSONS,id))return true;
  const route=window.liPersonalStudyRoutes?.[id];

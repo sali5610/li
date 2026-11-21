@@ -22,9 +22,13 @@ function element(parent,tag,cls,value){
  parent.append(x);return x;
 }
 function canonicalCaseField(note){
- // Older Sampling Bias notes also inherit the fixed case's Data Science parent.
- return note&&(note.caseKey==="sampling-bias-90"||note.caseSnapshot?.id==="sampling-bias-90"||
-  /Sampling Bias/i.test(note.title||""))?"data-science":null;
+ if(!note)return null;
+ const key=note.caseKey||note.caseSnapshot?.id||"";
+ if(key==="sampling-bias-90"||/Sampling Bias/i.test(note.title||""))return "data-science";
+ const match=/^draft-case-(L(?:03|09|15)-[1-3]-[1-3])$/.exec(key);
+ const item=match&&(window.LI_MIRROR_DRAFT_HOOKS||[]).find(x=>
+  x.id===match[1]&&x.case?.publishState==="draft");
+ return item?.fieldId||null;
 }
 function historyFor(item,type){
  const raw=item.versions;
@@ -85,6 +89,10 @@ function renderCaseContext(note,type){
  const allowed=isCase&&(hasSnapshot||known);
  surface.hidden=!allowed;
  if(bookmarks)bookmarks.hidden=!allowed;
+ if(bookmarks&&allowed){
+  const action=bookmarks.querySelector?.("[data-li-bookmark-kind='case']");
+  if(action)action.dataset.liBookmarkId=sourceKey||"sampling-bias-90";
+ }
  if(!allowed)return;
  const source=hasSnapshot?note.caseSnapshot:null;
  const root=document.querySelector("#page-case .editorial-grid .surface.tinted");
@@ -289,7 +297,7 @@ function getView(){
   history:history.map(v=>({...v})),context,backRoute,
   fieldId:(type==="case"?canonicalCaseField(note):null)||note.fieldId||null,
   storageAvailable:!liStorageError,
-  bookmarked:context?Boolean(window.liBookmarks?.isSaved("case","sampling-bias-90")):false
+  bookmarked:context?Boolean(window.liBookmarks?.isSaved("case",note.caseKey||note.caseSnapshot?.id||"sampling-bias-90")):false
  };
 }
 function saveFromReact(title,body,baseVersion,fieldId){

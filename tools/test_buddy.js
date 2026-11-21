@@ -14,7 +14,7 @@ function node(id){
 }
 const docs={getElementById:node,addEventListener(){},querySelector:()=>node("query"),querySelectorAll:()=>[]};
 const scenarios=[
- {buddy:"Lão muốn biết mẫu khảo sát được lấy từ đâu.",question:"90% hài lòng",observed:"Chỉ người đang dùng",unknown:"Người chưa dùng",branches:["Ai được hỏi?"]},
+ {buddy:"Lão muốn biết mẫu khảo sát được lấy từ đâu.",question:"90% hài lòng",lessonId:"L09-1-2",observed:"Chỉ người đang dùng",unknown:"Người chưa dùng",branches:["Ai được hỏi?"]},
  {buddy:"Chuẩn mực do ai đặt ra trong cộng đồng này?",question:"Ai đặt chuẩn mực?",observed:"Có nhãn",unknown:"Ai đặt ra nhãn",branches:["Ai tạo chuẩn?"]},
  {buddy:"Kho tổng còn hàng, nhưng cửa hàng lại hết — vì sao?",question:"Vì sao hết hàng?",observed:"Kho tổng còn",unknown:"Hàng ở đâu",branches:["Hàng nằm đâu?"]}
 ];
@@ -32,6 +32,7 @@ recover:{label:"Hồi trí",feedback:"Nhẹ",suggestions:["T04"]}};
 const ctx={document:docs,window:{},scenarios,methods,STUDY_MODES,
  qIndex:0,currentPage:"home",studyMode:"start",currentCategory:"Tất cả",savedQuestions:[],
  processedCases:[],selectedCaseAnswer:null,buddyDebateActive:false,
+ liCurrentProblem:()=>ctx.scenarios[ctx.qIndex],
  openLaoLy(){},closeModal(){},openModal(){},showBuddyQuote(){},refreshLucide(){},
  toast(){},navigate(){},showMethod(){},console};
 vm.createContext(ctx);

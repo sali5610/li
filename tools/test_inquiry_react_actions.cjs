@@ -14,7 +14,9 @@ const scenarios=[
  {question:"Q2",scene:"S2",branches:["When?"],observed:"X",unknown:"Y"}
 ];
 const ctx={
- qIndex:0,scenarios,LI_DRAFT_KEY:"li.private.case-draft.v1",liResearchFeedback:"Choose a branch",liCurrentProblem:()=>scenarios[0],
+ qIndex:0,scenarios,LI_DRAFT_KEY:"li.private.case-draft.v1",liResearchFeedback:"Choose a branch",
+ liCurrentProblem:()=>scenarios[0],liCurrentCase:()=>({id:"sampling-bias-90",fieldId:"data-science",lessonId:"L09-1-2",draft:false}),
+ liCaseDraftStorageKey:()=>ctx.LI_DRAFT_KEY,
  liToggleMirrorQuestion:()=>{saved=!saved;calls.push("toggle");return true;},
  findSavedMirrorQuestion:()=>saved?0:-1,
  shiftMirrorQuestion:d=>{ctx.qIndex=(ctx.qIndex+d+scenarios.length)%scenarios.length;calls.push("shift");},
@@ -210,6 +212,8 @@ const writerSandbox={
   dispatchEvent:event=>caseEvents.push(event.type)
  },
  LI_DRAFT_KEY:"li.private.case-draft.v1",processedCases:caseRecords,
+  liCurrentCase:()=>({id:"sampling-bias-90",fieldId:"data-science",lessonId:"L09-1-2",draft:false}),
+  liCaseDraftStorageKey:()=>writerSandbox.LI_DRAFT_KEY,
  liNewId:()=>("case-"+(++savedId)),
  liWriteState:()=>{caseWrites++;return caseCanWrite;},
  liCaseFeedback:choice=>"native feedback "+choice,
@@ -231,6 +235,8 @@ assert.equal(caseRecords[0].caseSnapshot.selectedText,reactCaseSnapshot.selected
 assert.equal(caseRecords[0].caseSnapshot.feedback,reactCaseSnapshot.feedback);
 assert.equal(caseRecords[0].caseSnapshot.options.length,2);
 assert.equal(caseRecords[0].fieldId,"data-science","Case inherits canonical Data Science field");
+assert.equal(caseRecords[0].lessonId,"L09-1-2","Legacy case still belongs to L09");
+assert.equal(caseRecords[0].caseKey,"sampling-bias-90","Legacy Case ID unchanged");
 assert.equal(caseDraft.get("li.private.case-draft.v1"),"","Successful save clears canonical React draft");
 assert.deepEqual(caseRoutes,["library"],"Successful Case returns to visible private library");
 assert.deepEqual(caseEvents,["li:activity","li:inquiry-changed"]);
@@ -268,6 +274,19 @@ assert.equal(caseRecords[0].caseSnapshot.question,"Native question");
 assert.equal(caseRecords[0].caseSnapshot.selectedText,"Native option wrong");
 assert.equal(caseRecords[0].caseSnapshot.feedback,"native feedback wrong");
 assert.equal(caseRecords[0].fieldId,"data-science","Native Case inherits same field without picker");
+// Draft Case must save its own snapshot and inherited discipline, not Sample Bias.
+writerSandbox.window.liReactRouter={};
+writerSandbox.liCurrentCase=()=>({
+ id:"draft-case-L03-1-1",fieldId:"hci",lessonId:"L03-1-1",draft:true});
+writerSandbox.liCaseDraftStorageKey=()=>writerSandbox.LI_DRAFT_KEY+".draft-case-L03-1-1";
+const draftCase={...reactCaseSnapshot,id:"draft-case-L03-1-1",
+ question:"Does a PDF request prove the need?",scene:"A hypothetical sharing problem"};
+writerSandbox.window.liCaseUi={getSnapshot:()=>draftCase};
+assert.equal(writerSandbox.liSubmitCaseAnswer("right","PDF may not address the sharing goal"),true);
+assert.equal(caseRecords[0].caseKey,"draft-case-L03-1-1");
+assert.equal(caseRecords[0].fieldId,"hci");
+assert.equal(caseRecords[0].lessonId,"L03-1-1");
+assert.equal(caseRecords[0].caseSnapshot.question,draftCase.question);
 // Open the REAL Bút Ký data reader on the React-saved record (not hardcoded test data).
 const noteElements=new Map();
 const noteElement=id=>{

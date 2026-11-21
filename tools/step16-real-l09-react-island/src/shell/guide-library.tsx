@@ -273,7 +273,7 @@ function ProblemRows({problems,limit}:{
    {item.kind==='case'&&<IconButton className="library-icon-action" icon="bookmark"
     label={item.saved?copy('Bỏ lưu case','Unsave case'):copy('Lưu case','Save case')}
     aria-pressed={item.saved}
-    onClick={()=>app.liBookmarks?.toggle('case','sampling-bias-90')}/>}
+    onClick={()=>app.liBookmarks?.toggle('case',item.key)}/>}
   </div>)}
  </div>;
 }
@@ -358,7 +358,7 @@ function BookmarkRows({items}:{
     <Button variant="ghost" className="library-text-link" disabled={!item.route}
      onClick={()=>app.liLibraryShelf?.openSavedQuestion(item.id)}>
      {item.route?copy('Mở lại','Open'):copy('Chưa có điểm đến','Unavailable')}</Button>:
-    <Button variant="ghost" className="library-text-link" onClick={()=>item.route&&openRoute(item.route)}
+    <Button variant="ghost" className="library-text-link" onClick={()=>item.kind==='case'?app.liLibraryShelf?.openProblemEntry('case',item.id):item.route&&openRoute(item.route)}
      disabled={!item.route}>{copy('Mở lại','Open')}</Button>}
    <IconButton className="library-icon-action" icon="bookmark"
     label={copy('Bỏ lưu','Remove bookmark')}

@@ -30,6 +30,7 @@ const accessClasses=new Set();
 const sandbox={
  Event:class{constructor(type){this.type=type;}},
  liResearchFeedback:"",
+ liCurrentCase:()=>({id:"sampling-bias-90",fieldId:"data-science",lessonId:"L09-1-2"}),
  currentPage:"home",
  scenarios:[{question:"Giới hạn kết luận khảo sát",type:"problem"}],
  qIndex:0,

@@ -30,6 +30,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "What alternatives exist?"
         ]
       }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Có nên làm nút PDF ngay?",
+          "scene": "Một nhân viên muốn gửi kết quả cho đồng nghiệp không có quyền vào hệ thống, nên yêu cầu thêm nút xuất PDF. Nhóm dự án kết luận: “Thêm nút xuất PDF chắc chắn là giải pháp phù hợp.”",
+          "options": {
+            "right": "Chưa đủ căn cứ chọn PDF; phải xác minh mục tiêu chia sẻ, quyền truy cập và các phương án an toàn.",
+            "wrong": "Thêm nút xuất PDF chắc chắn là giải pháp phù hợp."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Yêu cầu giao diện là một giả thuyết giải pháp, không tự chứng minh nhu cầu.",
+            "wrong": "Kết luận vượt quá dữ kiện. Yêu cầu giao diện là một giả thuyết giải pháp, không tự chứng minh nhu cầu."
+          },
+          "technique": {
+            "title": "Hỏi mục tiêu công việc trước khi chọn tính năng.",
+            "body": "Người dùng cần đạt kết quả gì, và PDF có phải cách duy nhất?"
+          }
+        },
+        "en": {
+          "question": "Should the team build PDF export now?",
+          "scene": "A colleague cannot access the system, so a user requests a PDF export button to share results. The project team concludes: “A PDF export button is definitely the right solution.”",
+          "options": {
+            "right": "PDF is not yet justified; verify the sharing goal, access constraints, and safe alternatives.",
+            "wrong": "A PDF export button is definitely the right solution."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. A requested UI feature is a solution hypothesis, not evidence of the underlying need.",
+            "wrong": "That claim goes beyond the evidence. A requested UI feature is a solution hypothesis, not evidence of the underlying need."
+          },
+          "technique": {
+            "title": "Discover the job before choosing a feature.",
+            "body": "What outcome is needed, and is PDF the only way?"
+          }
+        }
+      }
     }
   },
   {
@@ -61,6 +100,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "Who said it?",
           "What needs checking?"
         ]
+      }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "18 giây đứng hình có chứng minh người dùng không biết dùng?",
+          "scene": "Trong một buổi thử nghiệm giả định, người tham gia đổi bộ lọc rồi dừng thao tác 18 giây. Nhóm dự án kết luận: “Người tham gia không biết dùng hệ thống vì dừng 18 giây.”",
+          "options": {
+            "right": "Chỉ biết có lần dừng 18 giây; cần quan sát và hỏi thêm để phân biệt suy nghĩ, chờ tải hay bối rối.",
+            "wrong": "Người tham gia không biết dùng hệ thống vì dừng 18 giây."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Khoảng dừng là hành vi quan sát được, không phải chẩn đoán nguyên nhân.",
+            "wrong": "Kết luận vượt quá dữ kiện. Khoảng dừng là hành vi quan sát được, không phải chẩn đoán nguyên nhân."
+          },
+          "technique": {
+            "title": "Tách hành vi quan sát khỏi cách diễn giải.",
+            "body": "Điều gì đã quan sát được và điều gì chỉ là diễn giải?"
+          }
+        },
+        "en": {
+          "question": "Does an 18-second pause prove low user skill?",
+          "scene": "In a hypothetical usability session, a participant changes a filter and pauses for 18 seconds. The project team concludes: “The participant lacks skill because they paused for 18 seconds.”",
+          "options": {
+            "right": "We observed a pause; follow up before distinguishing deliberation, loading, or confusion.",
+            "wrong": "The participant lacks skill because they paused for 18 seconds."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. A pause is an observation, not a diagnosis of its cause.",
+            "wrong": "That claim goes beyond the evidence. A pause is an observation, not a diagnosis of its cause."
+          },
+          "technique": {
+            "title": "Separate observation from interpretation.",
+            "body": "Which facts were observed and which are interpretations?"
+          }
+        }
       }
     }
   },
@@ -94,6 +172,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "Is content duplicated?"
         ]
       }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Bài viết có ba nhãn thì nhân ba đường menu?",
+          "scene": "Một bài về gia hạn thẻ thư viện được gắn nhiều nhãn nội dung nhưng người đọc chỉ cần một đường tìm chính. Nhóm dự án kết luận: “Bài gắn ba nhãn phải xuất hiện ở ba nhánh menu chính.”",
+          "options": {
+            "right": "Có thể gắn nhiều nhãn nhưng vẫn chọn một đường điều hướng chính; cần kiểm tra khả năng tìm thấy.",
+            "wrong": "Bài gắn ba nhãn phải xuất hiện ở ba nhánh menu chính."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Nhãn phân loại và lối đi điều hướng làm hai nhiệm vụ khác nhau.",
+            "wrong": "Kết luận vượt quá dữ kiện. Nhãn phân loại và lối đi điều hướng làm hai nhiệm vụ khác nhau."
+          },
+          "technique": {
+            "title": "Phân biệt taxonomy với navigation.",
+            "body": "Nhãn taxonomy, phân cấp nội dung và điều hướng khác nhau thế nào?"
+          }
+        },
+        "en": {
+          "question": "Do three tags justify three menu locations?",
+          "scene": "A library-card renewal article has several content tags but may need one primary navigation path. The project team concludes: “A three-tag article must appear in three main menu branches.”",
+          "options": {
+            "right": "Multiple tags can coexist with one main navigation path; validate findability.",
+            "wrong": "A three-tag article must appear in three main menu branches."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. Classification tags and navigation paths serve different purposes.",
+            "wrong": "That claim goes beyond the evidence. Classification tags and navigation paths serve different purposes."
+          },
+          "technique": {
+            "title": "Distinguish taxonomy from navigation.",
+            "body": "How do taxonomy, hierarchy and navigation differ?"
+          }
+        }
+      }
     }
   },
   {
@@ -125,6 +242,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "What is the finding task?",
           "Was the menu tested?"
         ]
+      }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Card sorting đồng thuận, có được bỏ tree testing?",
+          "scene": "Những người tham gia card sorting thống nhất cách nhóm thẻ, nhưng chưa ai thử tìm một mục trong menu thật. Nhóm dự án kết luận: “Mười người nhóm thẻ giống nhau chứng minh menu dễ tìm.”",
+          "options": {
+            "right": "Card sorting gợi ý cách nhóm; vẫn phải dùng tác vụ tìm để kiểm tra menu đề xuất.",
+            "wrong": "Mười người nhóm thẻ giống nhau chứng minh menu dễ tìm."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Đồng thuận về nhóm không đo trực tiếp khả năng tìm đích.",
+            "wrong": "Kết luận vượt quá dữ kiện. Đồng thuận về nhóm không đo trực tiếp khả năng tìm đích."
+          },
+          "technique": {
+            "title": "Kiểm tra đường tìm bằng tree testing.",
+            "body": "Kết quả card sorting đã trả lời điều gì, còn tree testing cần kiểm tra gì?"
+          }
+        },
+        "en": {
+          "question": "Can card-sort agreement replace tree testing?",
+          "scene": "Participants agree on card categories, but nobody has yet tried locating an item in the proposed menu. The project team concludes: “Ten people sorting alike proves the menu is easy to navigate.”",
+          "options": {
+            "right": "Card sorting suggests groups; finding tasks must still test the proposed menu.",
+            "wrong": "Ten people sorting alike proves the menu is easy to navigate."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. Agreement on grouping does not directly measure destination-finding.",
+            "wrong": "That claim goes beyond the evidence. Agreement on grouping does not directly measure destination-finding."
+          },
+          "technique": {
+            "title": "Test paths with tree testing.",
+            "body": "What does card sorting reveal, and what must tree testing verify?"
+          }
+        }
       }
     }
   },
@@ -158,6 +314,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "Where did errors happen?"
         ]
       }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "8/10 hoàn thành thì luồng đã ổn?",
+          "scene": "Trong thử nghiệm giả định, sáu người tìm đúng ngay, hai người đi vòng rồi đúng, hai người thất bại. Nhóm dự án kết luận: “80% hoàn thành nghĩa là luồng không có lỗi điều hướng đáng kể.”",
+          "options": {
+            "right": "Sáu người đi thẳng, hai người vòng lại và hai người thất bại; cần xem đường đi và lỗi bên cạnh tỷ lệ.",
+            "wrong": "80% hoàn thành nghĩa là luồng không có lỗi điều hướng đáng kể."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Tỷ lệ hoàn thành gộp không thể hiện chi phí đi vòng hoặc số lần thất bại.",
+            "wrong": "Kết luận vượt quá dữ kiện. Tỷ lệ hoàn thành gộp không thể hiện chi phí đi vòng hoặc số lần thất bại."
+          },
+          "technique": {
+            "title": "Đọc tỷ lệ cùng hành vi thực tế.",
+            "body": "Tỷ lệ hoàn thành có đang che mất lỗi và đường đi vòng?"
+          }
+        },
+        "en": {
+          "question": "Is the flow fine because 8 of 10 succeeded?",
+          "scene": "In a hypothetical test, six succeed directly, two backtrack before succeeding, and two fail. The project team concludes: “An 80% completion rate means there are no meaningful navigation issues.”",
+          "options": {
+            "right": "Six succeeded directly, two backtracked, and two failed; inspect the paths and errors as well as the rate.",
+            "wrong": "An 80% completion rate means there are no meaningful navigation issues."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. A summary completion rate hides detours and failures.",
+            "wrong": "That claim goes beyond the evidence. A summary completion rate hides detours and failures."
+          },
+          "technique": {
+            "title": "Pair metrics with observed behavior.",
+            "body": "Does task completion hide backtracking and navigation errors?"
+          }
+        }
+      }
     }
   },
   {
@@ -189,6 +384,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "How wide is the range?",
           "Any extremes?"
         ]
+      }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Hai nhóm cùng trung bình có nghĩa hiệu suất giống nhau?",
+          "scene": "Nhóm X đều tốn 10 phút; nhóm Y có ca chỉ 2 phút và ca kéo dài 20 phút. Trung bình vẫn bằng nhau. Nhóm dự án kết luận: “Hai nhóm cùng trung bình 10 phút nên tính ổn định như nhau.”",
+          "options": {
+            "right": "Trung bình bằng nhau chưa đủ; cần xem độ phân tán và trường hợp cực đoan của mỗi nhóm.",
+            "wrong": "Hai nhóm cùng trung bình 10 phút nên tính ổn định như nhau."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Trung bình không mô tả được phân phối; nhóm Y có thời gian trải rộng hơn.",
+            "wrong": "Kết luận vượt quá dữ kiện. Trung bình không mô tả được phân phối; nhóm Y có thời gian trải rộng hơn."
+          },
+          "technique": {
+            "title": "So sánh cả trung tâm lẫn độ phân tán.",
+            "body": "Mức độ phân tán và hình dạng phân phối có khác nhau không?"
+          }
+        },
+        "en": {
+          "question": "Does the same mean imply equal performance?",
+          "scene": "Team X always takes ten minutes; Team Y ranges from two to twenty, yet has the same mean. The project team concludes: “Both groups average ten minutes, so their performance is equally consistent.”",
+          "options": {
+            "right": "Equal means are insufficient; compare variability and extreme cases.",
+            "wrong": "Both groups average ten minutes, so their performance is equally consistent."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. The mean does not describe the distribution; Team Y has a wider spread.",
+            "wrong": "That claim goes beyond the evidence. The mean does not describe the distribution; Team Y has a wider spread."
+          },
+          "technique": {
+            "title": "Compare center and spread.",
+            "body": "How do spread and distribution shape differ?"
+          }
+        }
       }
     }
   },
@@ -222,6 +456,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "How reliable is an alert?"
         ]
       }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Phát hiện 90% rủi ro có làm 90% cảnh báo đúng?",
+          "scene": "Trong ví dụ giả định, rủi ro hiếm gặp nhưng hệ thống cũng phát cảnh báo nhầm cho tình huống bình thường. Nhóm dự án kết luận: “Hệ thống bắt đúng 90% ca rủi ro nên 90% cảnh báo là rủi ro thật.”",
+          "options": {
+            "right": "Chưa thể biết tỷ lệ cảnh báo đúng nếu thiếu tỷ lệ nền và tỷ lệ báo nhầm.",
+            "wrong": "Hệ thống bắt đúng 90% ca rủi ro nên 90% cảnh báo là rủi ro thật."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Khả năng bắt được ca thật khác xác suất ca được báo là thật.",
+            "wrong": "Kết luận vượt quá dữ kiện. Khả năng bắt được ca thật khác xác suất ca được báo là thật."
+          },
+          "technique": {
+            "title": "Kiểm tra base rate và false positive.",
+            "body": "Tỷ lệ nền và tỷ lệ báo nhầm ảnh hưởng xác suất sau cảnh báo ra sao?"
+          }
+        },
+        "en": {
+          "question": "Does 90% sensitivity mean 90% of alerts are true?",
+          "scene": "In a hypothetical case, real risks are rare and the system also flags ordinary events. The project team concludes: “The system detects 90% of risks, therefore 90% of alerts are real risks.”",
+          "options": {
+            "right": "The share of true alerts is unknown without prevalence and false-positive rate.",
+            "wrong": "The system detects 90% of risks, therefore 90% of alerts are real risks."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. Detecting true cases differs from the probability a flagged case is true.",
+            "wrong": "That claim goes beyond the evidence. Detecting true cases differs from the probability a flagged case is true."
+          },
+          "technique": {
+            "title": "Check base rate and false positives.",
+            "body": "How do base rates and false positives affect a flagged case?"
+          }
+        }
+      }
     }
   },
   {
@@ -253,6 +526,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "Is the parameter random?",
           "Do assumptions hold?"
         ]
+      }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Khoảng tin cậy 95% có phải 95% xác suất cho tham số?",
+          "scene": "Một nhóm báo cáo confidence interval 95% rồi diễn giải nó như xác suất của tham số sau khi đã tính khoảng. Nhóm dự án kết luận: “Khoảng đã tính có đúng 95% xác suất chứa tham số cố định.”",
+          "options": {
+            "right": "Trong cách hiểu frequentist, 95% là độ phủ dài hạn của quy trình tạo khoảng dưới các giả định, không phải xác suất hậu nghiệm của khoảng đã tính.",
+            "wrong": "Khoảng đã tính có đúng 95% xác suất chứa tham số cố định."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Đừng nhầm tính chất quy trình lấy mẫu với xác suất hậu nghiệm.",
+            "wrong": "Kết luận vượt quá dữ kiện. Đừng nhầm tính chất quy trình lấy mẫu với xác suất hậu nghiệm."
+          },
+          "technique": {
+            "title": "Diễn giải đúng confidence interval.",
+            "body": "Điều gì có độ phủ 95% trong cách hiểu frequentist?"
+          }
+        },
+        "en": {
+          "question": "Is a 95% confidence interval a 95% posterior probability?",
+          "scene": "A team treats a computed frequentist confidence interval as a posterior probability for the parameter. The project team concludes: “A computed interval has a 95% probability of containing the fixed parameter.”",
+          "options": {
+            "right": "In frequentist inference, 95% refers to long-run procedure coverage under assumptions, not a posterior probability for this fixed interval.",
+            "wrong": "A computed interval has a 95% probability of containing the fixed parameter."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. Do not confuse sampling-procedure coverage with posterior probability.",
+            "wrong": "That claim goes beyond the evidence. Do not confuse sampling-procedure coverage with posterior probability."
+          },
+          "technique": {
+            "title": "Interpret confidence intervals precisely.",
+            "body": "What has 95% coverage under the frequentist interpretation?"
+          }
+        }
       }
     }
   },
@@ -286,6 +598,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "Is causation established?"
         ]
       }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Biểu đồ tương quan có chứng minh tính năng gây hiệu quả?",
+          "scene": "Những người có kinh nghiệm vừa dùng tính năng nhiều hơn vừa hoàn thành tác vụ tốt hơn. Nhóm dự án kết luận: “Người dùng tính năng nhiều hoàn thành tốt hơn, vậy tính năng gây ra kết quả tốt.”",
+          "options": {
+            "right": "Chưa xác lập nhân quả; kinh nghiệm hoặc biến thứ ba có thể ảnh hưởng cả mức dùng lẫn kết quả.",
+            "wrong": "Người dùng tính năng nhiều hoàn thành tốt hơn, vậy tính năng gây ra kết quả tốt."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Một mối tương quan vẫn có thể do confounding hoặc lựa chọn nhóm.",
+            "wrong": "Kết luận vượt quá dữ kiện. Một mối tương quan vẫn có thể do confounding hoặc lựa chọn nhóm."
+          },
+          "technique": {
+            "title": "Tìm biến gây nhiễu và thiết kế kiểm chứng.",
+            "body": "Biến gây nhiễu hoặc cách chia nhóm có thể giải thích tương quan không?"
+          }
+        },
+        "en": {
+          "question": "Does correlation prove the feature caused success?",
+          "scene": "Experienced users both view a feature more often and finish tasks more successfully. The project team concludes: “Heavier feature users succeed more, therefore the feature caused success.”",
+          "options": {
+            "right": "Causation is unproven; experience or another variable could affect both usage and outcomes.",
+            "wrong": "Heavier feature users succeed more, therefore the feature caused success."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. Confounding or group selection can produce the same correlation.",
+            "wrong": "That claim goes beyond the evidence. Confounding or group selection can produce the same correlation."
+          },
+          "technique": {
+            "title": "Investigate confounders and causal designs.",
+            "body": "Could confounding or group composition explain the relationship?"
+          }
+        }
+      }
     }
   },
   {
@@ -317,6 +668,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "When is validation used?",
           "Did test data leak?"
         ]
+      }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "99% trên test có đáng tin khi test bị rò rỉ?",
+          "scene": "Dữ liệu đánh giá bị dùng trong lúc chọn mô hình hoặc các bước xử lý đã làm rò rỉ thông tin. Nhóm dự án kết luận: “Mô hình đạt 99% nên chắc chắn dự báo tốt trên dữ liệu mới.”",
+          "options": {
+            "right": "Nếu dữ liệu test đã tác động tới lựa chọn hay tiền xử lý, kết quả có thể lạc quan; cần đánh giá độc lập.",
+            "wrong": "Mô hình đạt 99% nên chắc chắn dự báo tốt trên dữ liệu mới."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Rò rỉ làm mất tính độc lập của đánh giá, không chứng minh khả năng khái quát.",
+            "wrong": "Kết luận vượt quá dữ kiện. Rò rỉ làm mất tính độc lập của đánh giá, không chứng minh khả năng khái quát."
+          },
+          "technique": {
+            "title": "Cô lập đánh giá khỏi huấn luyện và tuning.",
+            "body": "Tập test đã thực sự độc lập với quá trình huấn luyện và chỉnh sửa chưa?"
+          }
+        },
+        "en": {
+          "question": "Can a 99% test score be trusted after leakage?",
+          "scene": "Evaluation data leaks into model selection or preprocessing before the final test. The project team concludes: “A 99% score guarantees strong performance on new data.”",
+          "options": {
+            "right": "If test data influenced selection or preprocessing, the score may be optimistic; evaluate on independent held-out data.",
+            "wrong": "A 99% score guarantees strong performance on new data."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. Leakage undermines evaluation independence, not generalization.",
+            "wrong": "That claim goes beyond the evidence. Leakage undermines evaluation independence, not generalization."
+          },
+          "technique": {
+            "title": "Keep evaluation separate from training and tuning.",
+            "body": "Was the test set truly held out from training and tuning?"
+          }
+        }
       }
     }
   },
@@ -350,6 +740,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "Which error costs more?"
         ]
       }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Accuracy 92% có đủ cho cảnh báo giao trễ?",
+          "scene": "Trong một tập dữ liệu giả lập, phần lớn đơn đúng hạn khiến accuracy trông đẹp dù nhiều đơn trễ không được cảnh báo. Nhóm dự án kết luận: “Accuracy 92% chứng tỏ hệ thống cảnh báo giao trễ tốt.”",
+          "options": {
+            "right": "Chưa đủ; cần xem recall của đơn trễ, precision và chi phí bỏ sót trong lớp hiếm.",
+            "wrong": "Accuracy 92% chứng tỏ hệ thống cảnh báo giao trễ tốt."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Dữ liệu lệch lớp khiến accuracy che số lần bỏ sót đơn trễ.",
+            "wrong": "Kết luận vượt quá dữ kiện. Dữ liệu lệch lớp khiến accuracy che số lần bỏ sót đơn trễ."
+          },
+          "technique": {
+            "title": "Đọc confusion matrix và lỗi theo mục tiêu.",
+            "body": "Precision, recall và chi phí của false negative có đang bị che khuất?"
+          }
+        },
+        "en": {
+          "question": "Is 92% accuracy enough for delay alerts?",
+          "scene": "In a simulated dataset, most orders are on time, making accuracy look strong despite missed late deliveries. The project team concludes: “A 92% accuracy score proves the delay alerts work well.”",
+          "options": {
+            "right": "Not enough; inspect recall on late orders, precision, and the cost of missed minority-class cases.",
+            "wrong": "A 92% accuracy score proves the delay alerts work well."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. Class imbalance lets accuracy hide missed delays.",
+            "wrong": "That claim goes beyond the evidence. Class imbalance lets accuracy hide missed delays."
+          },
+          "technique": {
+            "title": "Inspect the confusion matrix and task-relevant errors.",
+            "body": "Are precision, recall and false-negative costs being hidden?"
+          }
+        }
+      }
     }
   },
   {
@@ -381,6 +810,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "Recall by region?",
           "What harm follows?"
         ]
+      }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Hai vùng cùng accuracy đã đủ chứng minh công bằng?",
+          "scene": "Hai khu vực có cùng accuracy nhưng tỷ lệ phát hiện đơn giao trễ khác nhau đáng kể. Nhóm dự án kết luận: “Hai vùng đều accuracy 82% nên hệ thống công bằng với hai vùng.”",
+          "options": {
+            "right": "Chưa đủ; phải xem sai số, recall, cảnh báo nhầm và hệ quả theo từng vùng.",
+            "wrong": "Hai vùng đều accuracy 82% nên hệ thống công bằng với hai vùng."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Accuracy tổng có thể che chênh lệch lỗi và tác hại theo nhóm.",
+            "wrong": "Kết luận vượt quá dữ kiện. Accuracy tổng có thể che chênh lệch lỗi và tác hại theo nhóm."
+          },
+          "technique": {
+            "title": "So sánh sai số giữa các nhóm liên quan.",
+            "body": "Nhóm nào bị bỏ sót hoặc nhận cảnh báo sai nhiều hơn?"
+          }
+        },
+        "en": {
+          "question": "Does equal accuracy establish fairness across regions?",
+          "scene": "Two regions share the same overall accuracy but detect late orders at different rates. The project team concludes: “Both regions score 82% accuracy, so the system is fair to both.”",
+          "options": {
+            "right": "Not enough; compare misses, recall, false alarms, and consequences across regions.",
+            "wrong": "Both regions score 82% accuracy, so the system is fair to both."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. Overall accuracy can hide unequal errors and harms.",
+            "wrong": "That claim goes beyond the evidence. Overall accuracy can hide unequal errors and harms."
+          },
+          "technique": {
+            "title": "Compare group-level errors.",
+            "body": "Which groups face more missed delays or false alerts?"
+          }
+        }
       }
     }
   },
@@ -414,6 +882,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "What feeds the forecast?"
         ]
       }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Bán không được hàng có chứng minh không có nhu cầu?",
+          "scene": "Cửa hàng hết hàng nên không ghi nhận giao dịch, dù khách vẫn có thể muốn mua. Nhóm dự án kết luận: “Không có giao dịch hôm nay nên chắc chắn không ai muốn mua.”",
+          "options": {
+            "right": "Do hết hàng, doanh số quan sát bị giới hạn; cần tín hiệu nhu cầu chưa được đáp ứng.",
+            "wrong": "Không có giao dịch hôm nay nên chắc chắn không ai muốn mua."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Số bán bằng 0 khi hết hàng không đo trọn nhu cầu thực.",
+            "wrong": "Kết luận vượt quá dữ kiện. Số bán bằng 0 khi hết hàng không đo trọn nhu cầu thực."
+          },
+          "technique": {
+            "title": "Phân biệt sales với demand khi stockout.",
+            "body": "Doanh số có đang bị giới hạn bởi tình trạng hết hàng?"
+          }
+        },
+        "en": {
+          "question": "Does zero sales prove zero demand?",
+          "scene": "A store runs out of stock and records no sales, although customers may still want the product. The project team concludes: “No transactions today means there was no customer demand.”",
+          "options": {
+            "right": "Because stock was unavailable, observed sales are censored; seek unmet-demand signals.",
+            "wrong": "No transactions today means there was no customer demand."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. Zero sales during a stockout do not capture true demand.",
+            "wrong": "That claim goes beyond the evidence. Zero sales during a stockout do not capture true demand."
+          },
+          "technique": {
+            "title": "Distinguish sales from demand during stockouts.",
+            "body": "Did the stockout censor observed sales?"
+          }
+        }
+      }
     }
   },
   {
@@ -445,6 +952,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "When did arrival occur?",
           "When was it reported?"
         ]
+      }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Xe đến kho nhưng hệ thống chưa báo: ETA sai?",
+          "scene": "Sự kiện thực đã xảy ra, nhưng bản tin xác nhận về hệ thống muộn hơn; ETA vẫn chỉ là ước tính. Nhóm dự án kết luận: “Dashboard chưa cập nhật nên xe chắc chắn chưa đến kho.”",
+          "options": {
+            "right": "Phân biệt ETA, thời điểm xe thực sự đến và lúc hệ thống nhận sự kiện; dữ liệu có thể đến muộn.",
+            "wrong": "Dashboard chưa cập nhật nên xe chắc chắn chưa đến kho."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Trạng thái hệ thống không phải lúc nào phản ánh sự kiện vật lý ngay tức khắc.",
+            "wrong": "Kết luận vượt quá dữ kiện. Trạng thái hệ thống không phải lúc nào phản ánh sự kiện vật lý ngay tức khắc."
+          },
+          "technique": {
+            "title": "Phân biệt event time với processing time.",
+            "body": "Giờ dự kiến, giờ sự kiện thực tế và giờ nhận bản tin khác nhau ra sao?"
+          }
+        },
+        "en": {
+          "question": "Truck arrived but dashboard says not yet: is ETA wrong?",
+          "scene": "The physical arrival happened before the system received its confirmation; ETA is still only an estimate. The project team concludes: “The dashboard is not updated, so the truck definitely has not arrived.”",
+          "options": {
+            "right": "Separate ETA, actual arrival, and event ingestion time; the event may arrive late.",
+            "wrong": "The dashboard is not updated, so the truck definitely has not arrived."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. System status does not always reflect physical events immediately.",
+            "wrong": "That claim goes beyond the evidence. System status does not always reflect physical events immediately."
+          },
+          "technique": {
+            "title": "Separate event time from processing time.",
+            "body": "How do planned, actual and message receipt times differ?"
+          }
+        }
       }
     }
   },
@@ -478,6 +1024,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "What role do delays play?"
         ]
       }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Khách mua đều mà đơn đặt biến động: cầu thật bất ổn?",
+          "scene": "Nhu cầu cuối chuỗi ổn định nhưng cửa hàng đặt hàng theo lô, khiến tín hiệu đơn đặt lên xuống. Nhóm dự án kết luận: “Nhà cung cấp nhận đơn lúc 0 lúc 200 vì nhu cầu khách cuối tăng giảm mạnh.”",
+          "options": {
+            "right": "Nhu cầu cuối vẫn đều; quy tắc gom lô đặt hàng có thể khuếch đại biến động đơn đặt.",
+            "wrong": "Nhà cung cấp nhận đơn lúc 0 lúc 200 vì nhu cầu khách cuối tăng giảm mạnh."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Biến động đơn đặt không nhất thiết đến từ biến động tiêu dùng cuối.",
+            "wrong": "Kết luận vượt quá dữ kiện. Biến động đơn đặt không nhất thiết đến từ biến động tiêu dùng cuối."
+          },
+          "technique": {
+            "title": "Truy ngược batching và bullwhip effect.",
+            "body": "Biến động đơn đặt đã bị khuếch đại ở mắt xích nào?"
+          }
+        },
+        "en": {
+          "question": "Stable sales, volatile orders: is demand volatile?",
+          "scene": "End demand stays steady while the retailer orders in batches, creating volatile upstream orders. The project team concludes: “Supplier orders swing between zero and 200 because end demand fluctuates widely.”",
+          "options": {
+            "right": "End demand is steady; order batching can amplify order variability upstream.",
+            "wrong": "Supplier orders swing between zero and 200 because end demand fluctuates widely."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. Order volatility need not originate in consumer demand.",
+            "wrong": "That claim goes beyond the evidence. Order volatility need not originate in consumer demand."
+          },
+          "technique": {
+            "title": "Trace batching and bullwhip amplification.",
+            "body": "Where is order variability amplified?"
+          }
+        }
+      }
     }
   },
   {
@@ -510,6 +1095,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "Can service be maintained?"
         ]
       }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Gộp hai kho có luôn giảm tồn dự phòng?",
+          "scene": "Hai khu vực có nhu cầu dao động; gộp dự trữ chỉ hữu ích nếu biến động có thể bù trừ và mức phục vụ vẫn đạt. Nhóm dự án kết luận: “Cứ gộp hai kho là tồn an toàn chắc chắn giảm mà không đổi mức phục vụ.”",
+          "options": {
+            "right": "Lợi ích phụ thuộc tương quan nhu cầu, lead time và mức phục vụ; không thể kết luận luôn giảm.",
+            "wrong": "Cứ gộp hai kho là tồn an toàn chắc chắn giảm mà không đổi mức phục vụ."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Risk pooling có điều kiện, đặc biệt khi nhu cầu hai vùng cùng biến động.",
+            "wrong": "Kết luận vượt quá dữ kiện. Risk pooling có điều kiện, đặc biệt khi nhu cầu hai vùng cùng biến động."
+          },
+          "technique": {
+            "title": "Kiểm tra tương quan và giả định mức phục vụ.",
+            "body": "Mức tương quan nhu cầu và thời gian giao có cho phép pooling không?"
+          }
+        },
+        "en": {
+          "question": "Does warehouse pooling always reduce safety stock?",
+          "scene": "Two regions have variable demand; pooling helps only if variation offsets and service constraints remain workable. The project team concludes: “Pooling two warehouses always cuts safety stock without changing service.”",
+          "options": {
+            "right": "Benefits depend on demand correlation, lead times, and service targets; savings are not guaranteed.",
+            "wrong": "Pooling two warehouses always cuts safety stock without changing service."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. Risk pooling has conditions, especially when regional demand moves together.",
+            "wrong": "That claim goes beyond the evidence. Risk pooling has conditions, especially when regional demand moves together."
+          },
+          "technique": {
+            "title": "Check correlation and service assumptions.",
+            "body": "Do demand correlation and delivery time support pooling?"
+          }
+        }
+      }
     }
   },
   {
@@ -541,6 +1165,45 @@ window.LI_MIRROR_DRAFT_HOOKS=[
           "How many stockout cycles?",
           "What is the cost trade-off?"
         ]
+      }
+    },
+    "case": {
+      "kind": "fictional_problem_case",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Fill rate 98% có đảm bảo ít đợt hết hàng?",
+          "scene": "Tỷ lệ số đơn vị giao được cao nhưng một số chu kỳ bổ sung vẫn thiếu hàng. Nhóm dự án kết luận: “Fill rate 98% chứng minh gần như mọi chu kỳ đều không thiếu hàng.”",
+          "options": {
+            "right": "Fill rate đo tỷ lệ đơn vị đáp ứng, không phải tỷ lệ chu kỳ hoàn toàn không thiếu; cần xem thêm cycle service level.",
+            "wrong": "Fill rate 98% chứng minh gần như mọi chu kỳ đều không thiếu hàng."
+          },
+          "feedback": {
+            "right": "Hợp lý trong tình huống giả định. Một ít đơn vị thiếu trong nhiều chu kỳ vẫn có thể đi cùng fill rate cao.",
+            "wrong": "Kết luận vượt quá dữ kiện. Một ít đơn vị thiếu trong nhiều chu kỳ vẫn có thể đi cùng fill rate cao."
+          },
+          "technique": {
+            "title": "Phân biệt fill rate với cycle service level.",
+            "body": "Fill rate và cycle service level dùng mẫu số khác nhau thế nào?"
+          }
+        },
+        "en": {
+          "question": "Does 98% fill rate mean few stockout cycles?",
+          "scene": "A high share of requested units is filled, yet several replenishment cycles still experience shortages. The project team concludes: “A 98% fill rate proves almost all replenishment cycles avoid stockouts.”",
+          "options": {
+            "right": "Fill rate measures fulfilled unit demand, not the proportion of cycles with no stockout; compare cycle service level.",
+            "wrong": "A 98% fill rate proves almost all replenishment cycles avoid stockouts."
+          },
+          "feedback": {
+            "right": "Reasonable for this hypothetical case. Small shortages across many cycles can coexist with high fill rate.",
+            "wrong": "That claim goes beyond the evidence. Small shortages across many cycles can coexist with high fill rate."
+          },
+          "technique": {
+            "title": "Distinguish fill rate from cycle service level.",
+            "body": "How do fill rate and cycle service level use different denominators?"
+          }
+        }
       }
     }
   }

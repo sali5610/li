@@ -454,12 +454,24 @@ scenarios.splice(5,0,{
 const mirrorDrafts=(globalThis.window?.LI_MIRROR_DRAFT_HOOKS||[]).filter(x=>
  x.reviewState==="proposed"&&x.publishState==="draft"&&x.localized?.vi&&x.localized?.en
 ).map(x=>({type:"hook",key:"mirror-draft-"+x.id,lessonId:x.id,fieldId:x.fieldId,
- lessonRoute:"research",previewState:"draft",localized:x.localized,...x.localized.vi}));
+ lessonRoute:"research",previewState:"draft",case:x.case,localized:x.localized,...x.localized.vi}));
+/* Draft Hook and fictional Problem Case are separate Gương entries. */
+const mirrorDraftCases=mirrorDrafts.filter(x=>x.case?.localized?.vi&&x.case?.localized?.en).map(x=>{
+ const localized=Object.fromEntries(["vi","en"].map(locale=>[locale,{
+  ...x.localized[locale],question:x.case.localized[locale].question,
+  scene:x.case.localized[locale].scene
+ }]));
+ return {type:"problem",key:"mirror-problem-"+x.lessonId,
+  caseKey:"draft-case-"+x.lessonId,caseData:x.case,
+  lessonId:x.lessonId,fieldId:x.fieldId,previewState:"draft",
+  localized,...localized.vi};
+});
 const originalMirrorScenarios=[...scenarios];
 scenarios.splice(0,scenarios.length);
 mirrorDrafts.forEach((item,i)=>{
  if(i<originalMirrorScenarios.length)scenarios.push(originalMirrorScenarios[i]);
  scenarios.push(item);
+ if(mirrorDraftCases[i])scenarios.push(mirrorDraftCases[i]);
 });
 scenarios.push(...originalMirrorScenarios.slice(mirrorDrafts.length));
 /* Mix disciplines once per app load, not at every swipe: prev/next remain
@@ -567,7 +579,20 @@ let selectedCaseAnswer=null;
 let liResearchFeedback="Chọn một nhánh để đặt câu hỏi kiểm chứng.";
 function liCurrentProblem(){
  const item=scenarios[qIndex];
- return item.type==="hook"&&item.previewState!=="draft"?scenarios.find(candidate=>candidate.type!=="hook"):item;
+ if(item.type==="hook"&&item.previewState==="draft")
+  return mirrorDraftCases.find(candidate=>candidate.lessonId===item.lessonId)||item;
+ return item.type==="hook"?originalMirrorScenarios.find(candidate=>candidate.type!=="hook"):item;
+}
+function liCurrentCase(){
+ const item=liCurrentProblem();
+ if(item?.caseKey&&item.caseData?.localized)
+  return {id:item.caseKey,fieldId:item.fieldId,lessonId:item.lessonId,
+   draft:true,localized:item.caseData.localized};
+ return {id:"sampling-bias-90",fieldId:"data-science",lessonId:"L09-1-2",draft:false};
+}
+function liCaseDraftStorageKey(){
+ const id=liCurrentCase().id;
+ return id==="sampling-bias-90"?LI_DRAFT_KEY:LI_DRAFT_KEY+"."+id;
 }
 function liChooseResearchBranch(value){
  const problem=liCurrentProblem();
@@ -721,7 +746,10 @@ function liAfterNavigate(id){
    window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);
    window.dispatchEvent(new Event("li:inquiry-changed"));
   }
-  if(id==="case")window.liLibraryShelf?.trackProblem("case","sampling-bias-90");
+  if(id==="case"){
+   window.liLibraryShelf?.trackProblem("case",liCurrentCase().id);
+   window.dispatchEvent(new Event("li:inquiry-changed"));
+  }
   if(id==="noteDetail")window.dispatchEvent(new Event("li:note-view-changed"));
   // React Tủ Riêng uses its canonical getView() data port and event-driven
   // state. This replaces native renderHome/Resume/Collection/Bookmark DOM work.
@@ -739,7 +767,7 @@ function liAfterNavigate(id){
  if(Object.prototype.hasOwnProperty.call(LI_LESSON_ROUTES,id))
   window.liLibraryShelf?.trackLesson(id);
  if(id==="research"){syncResearch();window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);}
- if(id==="case")window.liLibraryShelf?.trackProblem("case","sampling-bias-90");
+ if(id==="case")window.liLibraryShelf?.trackProblem("case",liCurrentCase().id);
  refreshLucide();placeCompanion();
 }
 function navigate(id,{focus=true,remember=true,syncUrl=true}={}){
@@ -888,8 +916,9 @@ mirrorSwipeSurface.addEventListener("touchend",event=>{
 },{passive:true});
 mirrorSwipeSurface.addEventListener("touchcancel",()=>{mirrorSwipeStart=null},{passive:true});
 function liSubmitCaseAnswer(choice,revision){const v=String(revision||"").trim();
-// The fixed Sampling Bias case belongs to Data Science / L09-1-2, not a user-selected field.
-const linkedFieldId="data-science";
+// Every Case inherits its canonical subject, never a learner-selected field.
+const linkedCase=liCurrentCase();
+const linkedFieldId=linkedCase.fieldId;
 const validFields=window.liTaxonomyFieldIds||
  (window.LI_CATALOG_DATA||[]).flatMap(group=>group.fields.map(field=>field.id));
 if(!validFields.includes(linkedFieldId)){
@@ -898,7 +927,7 @@ if(!validFields.includes(linkedFieldId)){
 // vanilla question/options when the invited React router owns this screen.
 const reactSnapshot=window.liReactRouter?window.liCaseUi?.getSnapshot?.():null;
 if(window.liReactRouter&&(
- !reactSnapshot||reactSnapshot.id!=="sampling-bias-90"||
+ !reactSnapshot||reactSnapshot.id!==linkedCase.id||
  reactSnapshot.selectedKey!==choice||
  !reactSnapshot.question?.trim()||!reactSnapshot.scene?.trim()||
  !Array.isArray(reactSnapshot.options)||reactSnapshot.options.length!==2||
@@ -920,10 +949,13 @@ const caseSnapshot=reactSnapshot||{
  selectedText:caseOptions.find(x=>x.key===choice)?.text||"",
  feedback:liCaseFeedback(choice)
 };
-const item={id:liNewId(),caseKey:"sampling-bias-90",caseSnapshot,title:"90% người dùng hài lòng — Sampling Bias",correct:choice==="right",revision:v,fieldId:linkedFieldId,savedAt:new Date().toISOString()};
+const item={id:liNewId(),caseKey:linkedCase.id,caseSnapshot,
+ title:linkedCase.draft?reactSnapshot.question:"90% người dùng hài lòng — Sampling Bias",
+ correct:choice==="right",revision:v,fieldId:linkedFieldId,
+ lessonId:linkedCase.lessonId,savedAt:new Date().toISOString()};
 processedCases.unshift(item);
 if(!liWriteState()){processedCases.shift();toast("Không thể lưu Bút Ký trên thiết bị. Nội dung vẫn ở ô viết, hãy sao chép để tránh mất.");return false}
-try{window.localStorage.setItem(LI_DRAFT_KEY,"")}catch(e){}
+try{window.localStorage.setItem(liCaseDraftStorageKey(),"")}catch(e){}
 const noteKey=Array.from((item.title+"|"+v).normalize("NFKC").toLocaleLowerCase("vi")).reduce((h,ch)=>Math.imul(h^ch.codePointAt(0),16777619)>>>0,2166136261).toString(36);
 window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"input",id:"case:"+noteKey}}));navigate("library");toast("Đã lưu Bút Ký trên thiết bị này.");window.dispatchEvent(new Event("li:inquiry-changed"));return true;}
 document.getElementById("finish-case").addEventListener("click",()=>liSubmitCaseAnswer(selectedCaseAnswer,document.getElementById("case-revision").value));
@@ -1009,31 +1041,34 @@ window.liInquiryFlow=Object.freeze({
   if(!sc)return null;
   const c=sc.localized?.[window.liLanguage?.get?.()==="en"?"en":"vi"]||sc;
   return {question:c.question,branches:[...(c.branches||[])],
-   observed:c.observed,unknown:c.unknown,feedback:liResearchFeedback};
+   observed:c.observed,unknown:c.unknown,feedback:liResearchFeedback,
+   caseId:sc.caseKey||(sc.lessonId==="L09-1-2"&&sc.type!=="hook"?"sampling-bias-90":null)};
  },
  chooseBranch:index=>{
   if(!liInquiryAllowed()||!Number.isInteger(index))return false;
   return liChooseResearchBranch(liCurrentProblem()?.branches?.[index]);
  },
+ getCase:()=>liCurrentCase(),
  getCaseDraft:()=>{
   if(!liInquiryAllowed())return "";
-  try{return window.localStorage.getItem(LI_DRAFT_KEY)||""}catch{return ""}
+  try{return window.localStorage.getItem(liCaseDraftStorageKey())||""}catch{return ""}
  },
  setCaseDraft:text=>{
   if(!liInquiryAllowed()||typeof text!=="string")return false;
   try{
-   window.localStorage.setItem(LI_DRAFT_KEY,text);
-   return window.localStorage.getItem(LI_DRAFT_KEY)===text;
+   const key=liCaseDraftStorageKey();
+   window.localStorage.setItem(key,text);
+   return window.localStorage.getItem(key)===text;
   }catch{return false}
  },
  submitCase:(choice,revision)=>{
   if(!liInquiryAllowed())return false;
   return liSubmitCaseAnswer(choice,revision);
  },
- isCaseBookmarked:()=>liInquiryAllowed()&&Boolean(window.liBookmarks?.isSaved("case","sampling-bias-90")),
+ isCaseBookmarked:()=>liInquiryAllowed()&&Boolean(window.liBookmarks?.isSaved("case",liCurrentCase().id)),
  toggleCaseBookmark:()=>{
   if(!liInquiryAllowed()||!window.liBookmarks?.toggle)return false;
-  const changed=window.liBookmarks.toggle("case","sampling-bias-90");
+  const changed=window.liBookmarks.toggle("case",liCurrentCase().id);
   if(changed)window.dispatchEvent(new Event("li:inquiry-changed"));
   return changed;
  }

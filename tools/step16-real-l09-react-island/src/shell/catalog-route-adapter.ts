@@ -55,6 +55,11 @@ function locate(id:string){
  return null;
 }
 function emitPath(){window.dispatchEvent(new Event('li:catalog-pathchange'));}
+function emitBeforePath(from:CatalogPath,to:CatalogPath){
+ window.dispatchEvent(new CustomEvent('li:catalog-before-pathchange',{
+  detail:{from:[...from],to:[...to]}
+ }));
+}
 function writePath(path:CatalogPath,push:boolean,stripLesson:boolean){
  const url=new URL(window.location.href);
  if(path.length)url.searchParams.set('catalog',path.join('/'));
@@ -76,6 +81,7 @@ let path=urlPath();
 function setPath(next:CatalogPath,push=false,stripLesson=false){
  const chosen=normalize(next);
  const changed=chosen.join('/')!==path.join('/');
+ if(changed)emitBeforePath(path,chosen);
  path=chosen;
  if(changed)emitPath();
  writePath(chosen,push,stripLesson);
@@ -143,6 +149,7 @@ export function installReactCatalogPort():()=>void{
  const onPop=()=>{
   const updated=urlPath();
   if(updated.join('/')!==path.join('/')){
+   emitBeforePath(path,updated);
    path=updated;emitPath();
   }
  };

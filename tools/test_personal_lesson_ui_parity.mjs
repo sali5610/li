@@ -7,6 +7,8 @@ const root='tools/step16-real-l09-react-island/src/learning/';
 const sample03=read(root+'Wave1Journey.tsx');
 const sample09=read(root+'LearningJourney.tsx');
 const reader=read(root+'SectionedJourney.tsx');
+const editorial=read(root+'EditorialJourney.tsx');
+const fields=read('design-system/react/Controls.tsx');
 const entry=read(root+'staging-draft-preview.tsx');
 const ids=read(root+'personal-study-ids.ts').match(/'L\d+-\d+-\d+'/g)?.map(x=>x.slice(1,-1))??[];
 const drafts=JSON.parse(read('content/editorial/normalized/index.v1.json')).entries;
@@ -22,11 +24,27 @@ for(const src of [sample03,sample09,reader]){
 assert.doesNotMatch(reader,/phase==='methods'|setPhase\('methods'\)/,'Optional methods must not insert a sixth page');
 assert.match(reader,/className="li-sectioned-method-content"/,'Preserve optional method exercise in Guided');
 assert.match(reader,/savedMethod\?\.submittedAt/,'Method feedback must remain gated by a saved attempt');
-assert.match(reader,/function goToPractice\(/,'Skipping methods must still reach independent practice');
+assert.doesNotMatch(reader,/function goToPractice\(/,
+ 'Browsing to Practice must not save a skipped method or block on persistence');
 assert.match(reader,/function retryFailedSave\(/,'Unsaved drafts must have an explicit recovery action');
 assert.match(reader,/<LessonBookmark id={id} locale={locale}\/>/,'Use the same private bookmark action');
 assert.match(reader,/onPrevious={pageIndex>0/,'Previous page works as in samples');
-assert.match(reader,/phase==='guided'\?\(\)=>void goToPractice\(\)/,'Folio Next follows the guided flow');
+assert.match(reader,/onNext=\{pageIndex<PAGES\.length-1\?\(\)=>setPhase\(PAGES\[pageIndex\+1\]\)/,
+ 'Next navigates any page whether submitted or reviewed, matching all 3 samples');
+assert.match(reader,/phase==='feedback'&&!persisted\.submitted&&/,
+ 'Unsubmitted feedback is readable as a spoiler-free placeholder');
+assert.match(reader,/phase==='progress'&&!persisted\.reviewed&&/,
+ 'Unreviewed progress is readable as a not-yet-completed placeholder');
+assert.match(reader,/richLabel=\{<>\{i\+1\}\. \{formatLessonInline\(question\)\}<\/>\}/,
+ 'Question markup must be formatted as real inline emphasis, not raw <b> tags');
+assert.match(reader,/question\.replace\(\/<\[\^>\]\*\>\/g,''\)/,
+ 'Plain accessible label must never expose authored HTML tags');
+assert.match(editorial,/export function inline\(/,
+ 'Reuse the existing safe source-markup parser without dangerouslySetInnerHTML');
+assert.match(fields,/richLabel\?\?label/,
+ 'Design-system field renders accessible formatted label content');
+assert.match(reader,/<Markdown md=\{q\}\/>/,
+ 'Previously submitted questions must keep emphasis in the feedback phase');
 assert.doesNotMatch(reader,/className="li-lesson-status"/,'Remove the large redundant sync strip');
 assert.equal((reader.match(/\{mentor\(/g)||[]).length,1,
  'Personal reader must render one contextual Lao Ly companion, not six scattered buttons');

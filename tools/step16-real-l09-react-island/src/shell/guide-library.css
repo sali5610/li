@@ -365,3 +365,14 @@
 .li-react-library .library-list-item>.library-icon-action.li-atom-icon-button:focus-visible{
  outline:2px solid var(--moss);outline-offset:2px
 }
+
+/* The canonical filters remain pills even when legacy button resets load. */
+.li-react-guide .li-ds-filter-group>.li-ds-filter-chip,
+.li-react-library .li-ds-filter-group>.li-ds-filter-chip{
+ border-radius:999px;background:var(--paper);border:1px solid var(--moss);
+ color:var(--moss);box-shadow:none
+}
+.li-react-guide .li-ds-filter-group>.li-ds-filter-chip[aria-pressed="true"],
+.li-react-library .li-ds-filter-group>.li-ds-filter-chip[aria-pressed="true"]{
+ background:var(--moss);color:var(--cream)
+}

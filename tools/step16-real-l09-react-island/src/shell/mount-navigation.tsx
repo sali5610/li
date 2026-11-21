@@ -78,19 +78,17 @@ const libraryTrail:TrailPart={id:'library',vi:'Tủ Riêng',en:'My Shelf'};
 const guideTrail:TrailPart={id:'guide',vi:'Thần Chú',en:'Spells'};
 const researchTrail:TrailPart={id:'research',vi:'Khảo Chứng',en:'Investigate'};
 const collectionTrail:TrailPart={id:'collection',vi:'Bộ Sưu Tập',en:'Collection'};
+const routesWithoutTrail=new Set(['home','catalog','search','capture','settings']);
 const trails:Record<string,TrailPart[]>={
- search:[{vi:'Tra Cứu',en:'Search'}],
  research:[researchTrail],
  case:[researchTrail,{vi:'Phản Chứng',en:'Challenge'}],
- capture:[{vi:'Nhặt Ý',en:'Capture'}],
  guide:[guideTrail],
  guideDetail:[guideTrail,{vi:'Chi tiết Thần Chú',en:'Spell detail'}],
  library:[libraryTrail],
  resume:[libraryTrail,{vi:'Quay Lại',en:'Continue'}],
  collection:[libraryTrail,collectionTrail],
  noteDetail:[libraryTrail,collectionTrail,{vi:'Chi tiết ghi chú',en:'Note detail'}],
- dashboard:[libraryTrail,{vi:'Nhật Ký',en:'Journal'}],
- settings:[{vi:'Cài Đặt',en:'Settings'}]
+ dashboard:[libraryTrail,{vi:'Nhật Ký',en:'Journal'}]
 };
 /** Derive semantic ancestors from the same canonical Catalog source, never
  * fake an intermediate level from browser history or a generic 'Lesson' label. */
@@ -141,7 +139,7 @@ export function RouteTrail(){
  },[route,lessonRoute]);
  // Actual lesson routes still need the canonical clickable breadcrumb.
  // The global Back handles history; this trail shows hierarchy only.
- if(route==='home'||route==='catalog')return null;
+ if(routesWithoutTrail.has(route))return null;
  const flow=trails[route]||
   (lessonRoute?
    fullLessonTrail(route,lessonTitle)||

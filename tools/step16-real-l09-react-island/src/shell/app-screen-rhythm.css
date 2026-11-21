@@ -9,10 +9,11 @@
 .li-app-route-trail .li-ds-breadcrumb{overflow-wrap:anywhere}
 /* The canonical Breadcrumb owns the row layout and text baseline.
  * Do not re-style link/button/current-page separately inside each screen. */
-/* The legacy local Back is redundant only while the semantic trail exists.
- * One globally visible Back remains in the header. */
+/* Keep one Back control on pages with a trail and on header utilities. */
 #li-react-route-trail:has(.li-app-route-trail) ~ #main .page.active
- :is(.utility-back,.library-back-link){display:none}
+ :is(.utility-back,.library-back-link),
+:root:has(#li-react-global-back-root #li-global-back:not([hidden]))
+ :is(#page-search,#page-capture,#page-settings).active .utility-back{display:none}
 :root.li-auth-verified .page.active :where([data-li-react-screen]:not([data-li-react-screen="home"])){
  min-width:0;
 }

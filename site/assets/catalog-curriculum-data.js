@@ -1,10 +1,12 @@
 /* GENERATED from GitHub content/curriculum/legacy-catalog.v1.json — DO NOT EDIT.
-   8 groups / 15 fields / 45 course outlines / 135 lesson outlines.
+   5 ISCED-F groups / 15 fields / 45 course outlines / 135 lesson outlines.
    Navigation metadata only. A published route is NOT an academic release approval. */
 window.LI_CATALOG_DATA=[
   {
-    "id": "language",
-    "title": "Ngôn ngữ",
+    "id": "arts-humanities",
+    "title": "Nghệ thuật & Nhân văn",
+    "titleEn": "Arts & Humanities",
+    "iscedBroadCode": "02",
     "fields": [
       {
         "id": "chinese",
@@ -78,7 +80,16 @@ window.LI_CATALOG_DATA=[
               }
             ]
           }
-        ]
+        ],
+        "category": {
+          "id": "languages",
+          "label": {
+            "vi": "Ngôn ngữ",
+            "en": "Languages"
+          }
+        },
+        "iscedDetailCode": "0231",
+        "classificationStatus": "subject_based"
       },
       {
         "id": "english",
@@ -152,242 +163,190 @@ window.LI_CATALOG_DATA=[
               }
             ]
           }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "technology",
-    "title": "Công nghệ",
-    "fields": [
-      {
-        "id": "hci",
-        "name": "Human–Computer Interaction (HCI)",
-        "image": "./assets/discipline/human-computer-interaction.webp",
-        "source": "https://app.notion.com/p/41a6cf6db72a816da4ebf6c66338f505",
-        "courses": [
-          {
-            "id": "C03-1",
-            "level": "Foundation",
-            "title": "User Problems & Research Basics",
-            "lessons": [
-              {
-                "id": "L03-1-1",
-                "title": "User need versus proposed interface",
-                "published": false
-              },
-              {
-                "id": "L03-1-2",
-                "title": "Câu hỏi mở & thiên lệch phỏng vấn",
-                "published": true,
-                "route": "lessonL03"
-              },
-              {
-                "id": "L03-1-3",
-                "title": "Observation, quote, inference and confidence",
-                "published": false
-              }
-            ]
-          },
-          {
-            "id": "C03-2",
-            "level": "Intermediate",
-            "title": "Information Architecture & Interaction Evidence",
-            "lessons": [
-              {
-                "id": "L03-2-1",
-                "title": "Taxonomy, Hierarchy and Canonical Concepts",
-                "published": false
-              },
-              {
-                "id": "L03-2-2",
-                "title": "Card Sorting versus Tree Testing",
-                "published": false
-              },
-              {
-                "id": "L03-2-3",
-                "title": "Usability Tasks, Errors and Findability Measures",
-                "published": false
-              }
-            ]
-          },
-          {
-            "id": "C03-3",
-            "level": "Advanced-topic",
-            "title": "Evidence-led Product Decisions",
-            "lessons": [
-              {
-                "id": "L03-3-1",
-                "title": "JTBD and opportunities versus solutions",
-                "published": false
-              },
-              {
-                "id": "L03-3-2",
-                "title": "Experiment design and disconfirmation",
-                "published": false
-              },
-              {
-                "id": "L03-3-3",
-                "title": "Stakeholder trade-offs, metrics and ethics",
-                "published": false
-              }
-            ]
+        ],
+        "category": {
+          "id": "languages",
+          "label": {
+            "vi": "Ngôn ngữ",
+            "en": "Languages"
           }
-        ]
+        },
+        "iscedDetailCode": "0231",
+        "classificationStatus": "subject_based"
       },
       {
-        "id": "backend",
-        "name": "Backend",
-        "image": "./assets/discipline/backend-development.webp",
-        "source": "https://app.notion.com/p/41a6cf6db72a8185946ae55e49169fe7",
+        "id": "world-history",
+        "name": "Lịch sử thế giới",
+        "image": "./assets/discipline/world-history.webp",
+        "source": "https://app.notion.com/p/41a6cf6db72a81a2a103f5eca455b9fb",
         "courses": [
           {
-            "id": "C04-1",
+            "id": "C10-1",
             "level": "Foundation",
-            "title": "HTTP & Server Foundations",
+            "title": "How Historians Know the Past",
             "lessons": [
               {
-                "id": "L04-1-1",
-                "title": "Client/server request lifecycle and URL",
+                "id": "L10-1-1",
+                "title": "Primary versus secondary source",
                 "published": false
               },
               {
-                "id": "L04-1-2",
-                "title": "HTTP methods, status codes and routing",
+                "id": "L10-1-2",
+                "title": "Context, chronology and periodization",
                 "published": false
               },
               {
-                "id": "L04-1-3",
-                "title": "JSON, API resources and validation",
+                "id": "L10-1-3",
+                "title": "Corroborating a contested claim",
                 "published": false
               }
             ]
           },
           {
-            "id": "C04-2",
+            "id": "C10-2",
             "level": "Intermediate",
-            "title": "Persistence, Identity & Security",
+            "title": "States, Networks & Transformations",
             "lessons": [
               {
-                "id": "L04-2-1",
-                "title": "Tables, relations and transactions",
+                "id": "L10-2-1",
+                "title": "Early states, empires and institutions",
                 "published": false
               },
               {
-                "id": "L04-2-2",
-                "title": "Authentication versus authorization",
+                "id": "L10-2-2",
+                "title": "Trade networks and cultural exchange",
                 "published": false
               },
               {
-                "id": "L04-2-3",
-                "title": "Input validation and safe error handling",
+                "id": "L10-2-3",
+                "title": "Industrialization and social change",
                 "published": false
               }
             ]
           },
           {
-            "id": "C04-3",
+            "id": "C10-3",
             "level": "Advanced-topic",
-            "title": "Backend Reliability & System Design",
+            "title": "Historiography & Comparative Explanation",
             "lessons": [
               {
-                "id": "L04-3-1",
-                "title": "Idempotency and retry semantics",
+                "id": "L10-3-1",
+                "title": "Competing causes of a historical turning point",
                 "published": false
               },
               {
-                "id": "L04-3-2",
-                "title": "Caching, consistency and invalidation",
+                "id": "L10-3-2",
+                "title": "Compare imperial institutions across contexts",
                 "published": false
               },
               {
-                "id": "L04-3-3",
-                "title": "Observability, capacity and failure budgets",
+                "id": "L10-3-3",
+                "title": "Author perspective, silence and historical uncertainty",
                 "published": false
               }
             ]
           }
-        ]
+        ],
+        "category": {
+          "id": "history",
+          "label": {
+            "vi": "Lịch sử",
+            "en": "History"
+          }
+        },
+        "iscedDetailCode": "0222",
+        "classificationStatus": "subject_based"
       },
       {
-        "id": "generative-ai",
-        "name": "Generative AI",
-        "image": "./assets/discipline/artificial-intelligence.webp",
-        "source": "https://app.notion.com/p/41a6cf6db72a8196b87bfd951a856bd9",
+        "id": "music-theory",
+        "name": "Lý thuyết âm nhạc",
+        "image": "./assets/discipline/music-theory.webp",
+        "source": "https://app.notion.com/p/41a6cf6db72a819fab87cd27a70f12b6",
         "courses": [
           {
-            "id": "C05-1",
+            "id": "C14-1",
             "level": "Foundation",
-            "title": "Generative Model Fundamentals",
+            "title": "Notation, Rhythm & Intervals",
             "lessons": [
               {
-                "id": "L05-1-1",
-                "title": "Tokens, context and generation",
+                "id": "L14-1-1",
+                "title": "Staff, clefs and pitch naming",
                 "published": false
               },
               {
-                "id": "L05-1-2",
-                "title": "Embedding and representation basics",
+                "id": "L14-1-2",
+                "title": "Pulse, meter and rhythmic values",
                 "published": false
               },
               {
-                "id": "L05-1-3",
-                "title": "Training versus inference and factual limits",
+                "id": "L14-1-3",
+                "title": "Intervals and ear-based discrimination",
                 "published": false
               }
             ]
           },
           {
-            "id": "C05-2",
+            "id": "C14-2",
             "level": "Intermediate",
-            "title": "Prompting, Grounding & Evaluation",
+            "title": "Scales, Keys & Tonal Harmony",
             "lessons": [
               {
-                "id": "L05-2-1",
-                "title": "Task framing, instructions and constraints",
+                "id": "L14-2-1",
+                "title": "Major/minor scales and key signatures",
                 "published": false
               },
               {
-                "id": "L05-2-2",
-                "title": "Grounding and claim verification",
+                "id": "L14-2-2",
+                "title": "Triads and seventh chord structure",
                 "published": false
               },
               {
-                "id": "L05-2-3",
-                "title": "Build evaluation cases and failure taxonomy",
+                "id": "L14-2-3",
+                "title": "Functional harmony and cadences",
                 "published": false
               }
             ]
           },
           {
-            "id": "C05-3",
+            "id": "C14-3",
             "level": "Advanced-topic",
-            "title": "Agentic Systems & Responsible Design",
+            "title": "Voice Leading, Form & Analysis",
             "lessons": [
               {
-                "id": "L05-3-1",
-                "title": "Tool calling, permissions and provenance",
+                "id": "L14-3-1",
+                "title": "Voice-leading principles and tendency tones",
                 "published": false
               },
               {
-                "id": "L05-3-2",
-                "title": "Fallback, observability and evaluation harness",
+                "id": "L14-3-2",
+                "title": "Phrase, period and thematic form",
                 "published": false
               },
               {
-                "id": "L05-3-3",
-                "title": "Safety, cost, latency and human oversight",
+                "id": "L14-3-3",
+                "title": "Analyze harmonic movement in a short rights-cleared example",
                 "published": false
               }
             ]
           }
-        ]
+        ],
+        "category": {
+          "id": "music",
+          "label": {
+            "vi": "Âm nhạc",
+            "en": "Music"
+          }
+        },
+        "iscedDetailCode": "0215",
+        "classificationStatus": "subject_based"
       }
     ]
   },
   {
     "id": "social-sciences",
-    "title": "Khoa học xã hội",
+    "title": "Khoa học xã hội, Báo chí & Thông tin",
+    "titleEn": "Social Sciences, Journalism & Information",
+    "iscedBroadCode": "03",
     "fields": [
       {
         "id": "sociology",
@@ -461,7 +420,16 @@ window.LI_CATALOG_DATA=[
               }
             ]
           }
-        ]
+        ],
+        "category": {
+          "id": "social-cultural",
+          "label": {
+            "vi": "Xã hội & văn hóa",
+            "en": "Society & Culture"
+          }
+        },
+        "iscedDetailCode": "0314",
+        "classificationStatus": "subject_based"
       },
       {
         "id": "anthropology",
@@ -535,7 +503,16 @@ window.LI_CATALOG_DATA=[
               }
             ]
           }
-        ]
+        ],
+        "category": {
+          "id": "social-cultural",
+          "label": {
+            "vi": "Xã hội & văn hóa",
+            "en": "Society & Culture"
+          }
+        },
+        "iscedDetailCode": "0314",
+        "classificationStatus": "subject_based"
       },
       {
         "id": "economics",
@@ -609,175 +586,17 @@ window.LI_CATALOG_DATA=[
               }
             ]
           }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "mathematics",
-    "title": "Toán học & dữ liệu",
-    "fields": [
-      {
-        "id": "data-science",
-        "name": "Data Science",
-        "image": "./assets/discipline/data-science.webp",
-        "source": "https://app.notion.com/p/41a6cf6db72a81e1b554fb8dba570b64",
-        "courses": [
-          {
-            "id": "C09-1",
-            "level": "Foundation",
-            "title": "Data & Statistical Foundations",
-            "lessons": [
-              {
-                "id": "L09-1-1",
-                "title": "Population, sample and variable types",
-                "published": false
-              },
-              {
-                "id": "L09-1-2",
-                "title": "Sampling Bias · Sai lệch chọn mẫu",
-                "published": true,
-                "route": "lessonL09"
-              },
-              {
-                "id": "L09-1-3",
-                "title": "Center, spread and distribution shape",
-                "published": false
-              }
-            ]
-          },
-          {
-            "id": "C09-2",
-            "level": "Intermediate",
-            "title": "Statistical Reasoning & Modeling",
-            "lessons": [
-              {
-                "id": "L09-2-1",
-                "title": "Conditional Probability and Base Rates",
-                "published": false
-              },
-              {
-                "id": "L09-2-2",
-                "title": "Confidence Intervals and Uncertainty",
-                "published": false
-              },
-              {
-                "id": "L09-2-3",
-                "title": "Regression and Possible Confounding",
-                "published": false
-              }
-            ]
-          },
-          {
-            "id": "C09-3",
-            "level": "Advanced-topic",
-            "title": "Predictive Models & Evaluation",
-            "lessons": [
-              {
-                "id": "L09-3-1",
-                "title": "Train/validation/test and data leakage",
-                "published": false
-              },
-              {
-                "id": "L09-3-2",
-                "title": "Precision, recall and error trade-offs",
-                "published": false
-              },
-              {
-                "id": "L09-3-3",
-                "title": "Fairness, interpretability and model limits",
-                "published": false
-              }
-            ]
+        ],
+        "category": {
+          "id": "economics",
+          "label": {
+            "vi": "Kinh tế học",
+            "en": "Economics"
           }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "history",
-    "title": "Lịch sử",
-    "fields": [
-      {
-        "id": "world-history",
-        "name": "Lịch sử thế giới",
-        "image": "./assets/discipline/world-history.webp",
-        "source": "https://app.notion.com/p/41a6cf6db72a81a2a103f5eca455b9fb",
-        "courses": [
-          {
-            "id": "C10-1",
-            "level": "Foundation",
-            "title": "How Historians Know the Past",
-            "lessons": [
-              {
-                "id": "L10-1-1",
-                "title": "Primary versus secondary source",
-                "published": false
-              },
-              {
-                "id": "L10-1-2",
-                "title": "Context, chronology and periodization",
-                "published": false
-              },
-              {
-                "id": "L10-1-3",
-                "title": "Corroborating a contested claim",
-                "published": false
-              }
-            ]
-          },
-          {
-            "id": "C10-2",
-            "level": "Intermediate",
-            "title": "States, Networks & Transformations",
-            "lessons": [
-              {
-                "id": "L10-2-1",
-                "title": "Early states, empires and institutions",
-                "published": false
-              },
-              {
-                "id": "L10-2-2",
-                "title": "Trade networks and cultural exchange",
-                "published": false
-              },
-              {
-                "id": "L10-2-3",
-                "title": "Industrialization and social change",
-                "published": false
-              }
-            ]
-          },
-          {
-            "id": "C10-3",
-            "level": "Advanced-topic",
-            "title": "Historiography & Comparative Explanation",
-            "lessons": [
-              {
-                "id": "L10-3-1",
-                "title": "Competing causes of a historical turning point",
-                "published": false
-              },
-              {
-                "id": "L10-3-2",
-                "title": "Compare imperial institutions across contexts",
-                "published": false
-              },
-              {
-                "id": "L10-3-3",
-                "title": "Author perspective, silence and historical uncertainty",
-                "published": false
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "psychology",
-    "title": "Tâm lý học",
-    "fields": [
+        },
+        "iscedDetailCode": "0311",
+        "classificationStatus": "subject_based"
+      },
       {
         "id": "neurodiversity-studies",
         "name": "Neurodiversity Studies",
@@ -850,7 +669,16 @@ window.LI_CATALOG_DATA=[
               }
             ]
           }
-        ]
+        ],
+        "category": {
+          "id": "psychology",
+          "label": {
+            "vi": "Tâm lý học",
+            "en": "Psychology"
+          }
+        },
+        "iscedDetailCode": "0313",
+        "classificationStatus": "editorial_provisional"
       },
       {
         "id": "cognitive-psychology",
@@ -924,7 +752,16 @@ window.LI_CATALOG_DATA=[
               }
             ]
           }
-        ]
+        ],
+        "category": {
+          "id": "psychology",
+          "label": {
+            "vi": "Tâm lý học",
+            "en": "Psychology"
+          }
+        },
+        "iscedDetailCode": "0313",
+        "classificationStatus": "subject_based"
       },
       {
         "id": "behavioral-psychology",
@@ -998,93 +835,24 @@ window.LI_CATALOG_DATA=[
               }
             ]
           }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "music",
-    "title": "Âm nhạc",
-    "fields": [
-      {
-        "id": "music-theory",
-        "name": "Lý thuyết âm nhạc",
-        "image": "./assets/discipline/music-theory.webp",
-        "source": "https://app.notion.com/p/41a6cf6db72a819fab87cd27a70f12b6",
-        "courses": [
-          {
-            "id": "C14-1",
-            "level": "Foundation",
-            "title": "Notation, Rhythm & Intervals",
-            "lessons": [
-              {
-                "id": "L14-1-1",
-                "title": "Staff, clefs and pitch naming",
-                "published": false
-              },
-              {
-                "id": "L14-1-2",
-                "title": "Pulse, meter and rhythmic values",
-                "published": false
-              },
-              {
-                "id": "L14-1-3",
-                "title": "Intervals and ear-based discrimination",
-                "published": false
-              }
-            ]
-          },
-          {
-            "id": "C14-2",
-            "level": "Intermediate",
-            "title": "Scales, Keys & Tonal Harmony",
-            "lessons": [
-              {
-                "id": "L14-2-1",
-                "title": "Major/minor scales and key signatures",
-                "published": false
-              },
-              {
-                "id": "L14-2-2",
-                "title": "Triads and seventh chord structure",
-                "published": false
-              },
-              {
-                "id": "L14-2-3",
-                "title": "Functional harmony and cadences",
-                "published": false
-              }
-            ]
-          },
-          {
-            "id": "C14-3",
-            "level": "Advanced-topic",
-            "title": "Voice Leading, Form & Analysis",
-            "lessons": [
-              {
-                "id": "L14-3-1",
-                "title": "Voice-leading principles and tendency tones",
-                "published": false
-              },
-              {
-                "id": "L14-3-2",
-                "title": "Phrase, period and thematic form",
-                "published": false
-              },
-              {
-                "id": "L14-3-3",
-                "title": "Analyze harmonic movement in a short rights-cleared example",
-                "published": false
-              }
-            ]
+        ],
+        "category": {
+          "id": "psychology",
+          "label": {
+            "vi": "Tâm lý học",
+            "en": "Psychology"
           }
-        ]
+        },
+        "iscedDetailCode": "0313",
+        "classificationStatus": "subject_based"
       }
     ]
   },
   {
-    "id": "business",
-    "title": "Kinh doanh & vận hành",
+    "id": "business-administration-law",
+    "title": "Kinh doanh, Quản trị & Luật",
+    "titleEn": "Business, Administration & Law",
+    "iscedBroadCode": "04",
     "fields": [
       {
         "id": "supply-chain",
@@ -1159,8 +927,377 @@ window.LI_CATALOG_DATA=[
               }
             ]
           }
-        ]
+        ],
+        "category": {
+          "id": "management-operations",
+          "label": {
+            "vi": "Quản trị & vận hành",
+            "en": "Management & Operations"
+          }
+        },
+        "iscedDetailCode": "0413",
+        "classificationStatus": "editorial_provisional"
+      }
+    ]
+  },
+  {
+    "id": "natural-sciences-math",
+    "title": "Khoa học tự nhiên, Toán & Thống kê",
+    "titleEn": "Natural Sciences, Mathematics & Statistics",
+    "iscedBroadCode": "05",
+    "fields": [
+      {
+        "id": "data-science",
+        "name": "Data Science",
+        "image": "./assets/discipline/data-science.webp",
+        "source": "https://app.notion.com/p/41a6cf6db72a81e1b554fb8dba570b64",
+        "courses": [
+          {
+            "id": "C09-1",
+            "level": "Foundation",
+            "title": "Data & Statistical Foundations",
+            "lessons": [
+              {
+                "id": "L09-1-1",
+                "title": "Population, sample and variable types",
+                "published": false
+              },
+              {
+                "id": "L09-1-2",
+                "title": "Sampling Bias · Sai lệch chọn mẫu",
+                "published": true,
+                "route": "lessonL09"
+              },
+              {
+                "id": "L09-1-3",
+                "title": "Center, spread and distribution shape",
+                "published": false
+              }
+            ]
+          },
+          {
+            "id": "C09-2",
+            "level": "Intermediate",
+            "title": "Statistical Reasoning & Modeling",
+            "lessons": [
+              {
+                "id": "L09-2-1",
+                "title": "Conditional Probability and Base Rates",
+                "published": false
+              },
+              {
+                "id": "L09-2-2",
+                "title": "Confidence Intervals and Uncertainty",
+                "published": false
+              },
+              {
+                "id": "L09-2-3",
+                "title": "Regression and Possible Confounding",
+                "published": false
+              }
+            ]
+          },
+          {
+            "id": "C09-3",
+            "level": "Advanced-topic",
+            "title": "Predictive Models & Evaluation",
+            "lessons": [
+              {
+                "id": "L09-3-1",
+                "title": "Train/validation/test and data leakage",
+                "published": false
+              },
+              {
+                "id": "L09-3-2",
+                "title": "Precision, recall and error trade-offs",
+                "published": false
+              },
+              {
+                "id": "L09-3-3",
+                "title": "Fairness, interpretability and model limits",
+                "published": false
+              }
+            ]
+          }
+        ],
+        "category": {
+          "id": "data-statistics",
+          "label": {
+            "vi": "Dữ liệu & thống kê",
+            "en": "Data & Statistics"
+          }
+        },
+        "iscedDetailCode": "0542",
+        "classificationStatus": "editorial_provisional"
+      }
+    ]
+  },
+  {
+    "id": "ict",
+    "title": "Công nghệ thông tin & Truyền thông",
+    "titleEn": "Information & Communication Technologies",
+    "iscedBroadCode": "06",
+    "fields": [
+      {
+        "id": "hci",
+        "name": "Human–Computer Interaction (HCI)",
+        "image": "./assets/discipline/human-computer-interaction.webp",
+        "source": "https://app.notion.com/p/41a6cf6db72a816da4ebf6c66338f505",
+        "courses": [
+          {
+            "id": "C03-1",
+            "level": "Foundation",
+            "title": "User Problems & Research Basics",
+            "lessons": [
+              {
+                "id": "L03-1-1",
+                "title": "User need versus proposed interface",
+                "published": false
+              },
+              {
+                "id": "L03-1-2",
+                "title": "Câu hỏi mở & thiên lệch phỏng vấn",
+                "published": true,
+                "route": "lessonL03"
+              },
+              {
+                "id": "L03-1-3",
+                "title": "Observation, quote, inference and confidence",
+                "published": false
+              }
+            ]
+          },
+          {
+            "id": "C03-2",
+            "level": "Intermediate",
+            "title": "Information Architecture & Interaction Evidence",
+            "lessons": [
+              {
+                "id": "L03-2-1",
+                "title": "Taxonomy, Hierarchy and Canonical Concepts",
+                "published": false
+              },
+              {
+                "id": "L03-2-2",
+                "title": "Card Sorting versus Tree Testing",
+                "published": false
+              },
+              {
+                "id": "L03-2-3",
+                "title": "Usability Tasks, Errors and Findability Measures",
+                "published": false
+              }
+            ]
+          },
+          {
+            "id": "C03-3",
+            "level": "Advanced-topic",
+            "title": "Evidence-led Product Decisions",
+            "lessons": [
+              {
+                "id": "L03-3-1",
+                "title": "JTBD and opportunities versus solutions",
+                "published": false
+              },
+              {
+                "id": "L03-3-2",
+                "title": "Experiment design and disconfirmation",
+                "published": false
+              },
+              {
+                "id": "L03-3-3",
+                "title": "Stakeholder trade-offs, metrics and ethics",
+                "published": false
+              }
+            ]
+          }
+        ],
+        "category": {
+          "id": "interaction-design",
+          "label": {
+            "vi": "Thiết kế tương tác",
+            "en": "Interaction Design"
+          }
+        },
+        "iscedDetailCode": "0613",
+        "classificationStatus": "editorial_provisional"
+      },
+      {
+        "id": "backend",
+        "name": "Backend",
+        "image": "./assets/discipline/backend-development.webp",
+        "source": "https://app.notion.com/p/41a6cf6db72a8185946ae55e49169fe7",
+        "courses": [
+          {
+            "id": "C04-1",
+            "level": "Foundation",
+            "title": "HTTP & Server Foundations",
+            "lessons": [
+              {
+                "id": "L04-1-1",
+                "title": "Client/server request lifecycle and URL",
+                "published": false
+              },
+              {
+                "id": "L04-1-2",
+                "title": "HTTP methods, status codes and routing",
+                "published": false
+              },
+              {
+                "id": "L04-1-3",
+                "title": "JSON, API resources and validation",
+                "published": false
+              }
+            ]
+          },
+          {
+            "id": "C04-2",
+            "level": "Intermediate",
+            "title": "Persistence, Identity & Security",
+            "lessons": [
+              {
+                "id": "L04-2-1",
+                "title": "Tables, relations and transactions",
+                "published": false
+              },
+              {
+                "id": "L04-2-2",
+                "title": "Authentication versus authorization",
+                "published": false
+              },
+              {
+                "id": "L04-2-3",
+                "title": "Input validation and safe error handling",
+                "published": false
+              }
+            ]
+          },
+          {
+            "id": "C04-3",
+            "level": "Advanced-topic",
+            "title": "Backend Reliability & System Design",
+            "lessons": [
+              {
+                "id": "L04-3-1",
+                "title": "Idempotency and retry semantics",
+                "published": false
+              },
+              {
+                "id": "L04-3-2",
+                "title": "Caching, consistency and invalidation",
+                "published": false
+              },
+              {
+                "id": "L04-3-3",
+                "title": "Observability, capacity and failure budgets",
+                "published": false
+              }
+            ]
+          }
+        ],
+        "category": {
+          "id": "software",
+          "label": {
+            "vi": "Phát triển phần mềm",
+            "en": "Software Development"
+          }
+        },
+        "iscedDetailCode": "0613",
+        "classificationStatus": "subject_based"
+      },
+      {
+        "id": "generative-ai",
+        "name": "Generative AI",
+        "image": "./assets/discipline/artificial-intelligence.webp",
+        "source": "https://app.notion.com/p/41a6cf6db72a8196b87bfd951a856bd9",
+        "courses": [
+          {
+            "id": "C05-1",
+            "level": "Foundation",
+            "title": "Generative Model Fundamentals",
+            "lessons": [
+              {
+                "id": "L05-1-1",
+                "title": "Tokens, context and generation",
+                "published": false
+              },
+              {
+                "id": "L05-1-2",
+                "title": "Embedding and representation basics",
+                "published": false
+              },
+              {
+                "id": "L05-1-3",
+                "title": "Training versus inference and factual limits",
+                "published": false
+              }
+            ]
+          },
+          {
+            "id": "C05-2",
+            "level": "Intermediate",
+            "title": "Prompting, Grounding & Evaluation",
+            "lessons": [
+              {
+                "id": "L05-2-1",
+                "title": "Task framing, instructions and constraints",
+                "published": false
+              },
+              {
+                "id": "L05-2-2",
+                "title": "Grounding and claim verification",
+                "published": false
+              },
+              {
+                "id": "L05-2-3",
+                "title": "Build evaluation cases and failure taxonomy",
+                "published": false
+              }
+            ]
+          },
+          {
+            "id": "C05-3",
+            "level": "Advanced-topic",
+            "title": "Agentic Systems & Responsible Design",
+            "lessons": [
+              {
+                "id": "L05-3-1",
+                "title": "Tool calling, permissions and provenance",
+                "published": false
+              },
+              {
+                "id": "L05-3-2",
+                "title": "Fallback, observability and evaluation harness",
+                "published": false
+              },
+              {
+                "id": "L05-3-3",
+                "title": "Safety, cost, latency and human oversight",
+                "published": false
+              }
+            ]
+          }
+        ],
+        "category": {
+          "id": "ai",
+          "label": {
+            "vi": "Trí tuệ nhân tạo",
+            "en": "Artificial Intelligence"
+          }
+        },
+        "iscedDetailCode": "0619",
+        "classificationStatus": "editorial_provisional"
       }
     ]
   }
 ];
+window.LI_CATALOG_GROUP_ALIASES={
+  "language": "arts-humanities",
+  "technology": "ict",
+  "social-sciences": "social-sciences",
+  "mathematics": "natural-sciences-math",
+  "history": "arts-humanities",
+  "psychology": "social-sciences",
+  "music": "arts-humanities",
+  "business": "business-administration-law"
+};

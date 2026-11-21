@@ -25,15 +25,14 @@ const navControls=[{dataset:{page:"home"}},{dataset:{page:"catalog"}}].map(el=>(
 const utilityControls=["search","settings"].map(id=>({
  dataset:{page:id},classList:{toggle:()=>{}},setAttribute:()=>{},removeAttribute:()=>{}
 }));
-let visible=true,overlay=false,route="home",historyBefore=[],snapshot=null;
+let visible=true,route="home",historyBefore=[],snapshot=null;
 const visited=[],dispatched=[],uiRoutes=[],replaced=[];
 const listeners=new Map();
 const TestEvent=class{constructor(type,config){this.type=type;this.detail=config?.detail;}};
 const appUiStore={getState:()=>({setRoute:id=>{uiRoutes.push(id);}})};
 const appShell={classList:{toggle:()=>{}}};
 const document={
- documentElement:{classList:{contains:key=>key==="li-auth-verified"?visible:
- key==="li-account-open"?overlay:false}},
+ documentElement:{classList:{contains:key=>key==="li-auth-verified"?visible:false}},
  getElementById:id=>pages.get(id.replace(/^page-/,""))||null,
  querySelector:selector=>selector===".app"?appShell:null,
  querySelectorAll:selector=>selector==="section.page"?[...pages.values()]:
@@ -113,10 +112,9 @@ assert.equal(act.getCurrent(),"lessonL09");
 const previousUrl=location.href;
 assert.equal(act.navigate("catalog",{syncUrl:false,remember:false}),true);
 assert.equal(location.href,previousUrl,"popstate must not overwrite browser URL");
-overlay=true;
-assert.equal(act.navigate("home"),false,"account overlay blocks routes");
-assert.equal(act.back(),false,"account overlay blocks Back");
-overlay=false;visible=false;
+assert.equal(act.navigate("home"),true,"verified user routes without an account overlay");
+assert.equal(act.back(),true,"Back remains available without account overlay");
+visible=false;
 assert.equal(act.back(),false,"sign-out blocks history");
 visible=true;
 assert.equal(visited.at(-1),"catalog");
@@ -138,6 +136,8 @@ assert.equal(snapshot.id,"home");
 assert.ok(Array.isArray(snapshot.h));
 const nav=read("tools/step16-real-l09-react-island/src/shell/mount-navigation.tsx");
 const settings=read("tools/step16-real-l09-react-island/src/shell/journal-settings.tsx");
+const auth=read("tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx");
+const stagingApp=read("tools/step16-real-l09-react-island/src/auth/staging-app.tsx");
 const locale=read("site/assets/app-language.js");
 const native=read("site/index.html");
 assert.match(nav,/mountReactRouter\(\)/);
@@ -147,6 +147,10 @@ assert.match(nav,/useAppLocale\(\)/);
 assert.match(nav,/locale==='en'\?items\.map/);
 assert.match(settings,/app\.liLanguage\?\.set\(id\)/);
 assert.match(settings,/className="li-react-setting-card li-react-language-card"/);
+assert.match(settings,/id="li-account-settings-host"/);
+assert.match(auth,/createPortal\(settingsControls,accountSettingsHost\)/);
+assert.doesNotMatch(nav,/AccountControl/,"No separate User toolbar entry");
+assert.doesNotMatch(stagingApp,/liAccountOverlay/,"No separate account page");
 assert.match(locale,/data-li-react-navigation/);
 assert.match(locale,/li-react-language-card/);
 assert.match(native,/if\(window\.liReactRouter\?\.navigate\)/);

@@ -23,10 +23,8 @@ assert.match(controls,/onClick=\{onNavigate\?\(\)=>onNavigate\(item\.id\):undefi
 assert.match(nav,/onNavigate=\{openRoute\}/);
 assert.match(nav,/backRoot\.render/);
 assert.match(nav,/onClick=\{goBack\}/);
-assert.match(nav,/id="li-react-account-trigger"/,
- 'The account control is a visible React navigation action');
-assert.match(nav,/liAccountOverlay\?\.open\(trigger\)/,
- 'Account opens by direct action, never a hidden native button click');
+assert.doesNotMatch(nav,/li-react-account-trigger|liAccountOverlay/,
+ 'Account management lives in Settings; no separate User action');
 assert.doesNotMatch(nav,/data-nav-back/);
 assert.doesNotMatch(lesson,/button\[data-page=/);
 assert.doesNotMatch(lesson,/getElementById\(['"]global-search['"]\)/,
@@ -232,8 +230,10 @@ assert.match(reactCatalog,/window\.addEventListener\('li:auth-verified-changed',
  'Pending scroll location must be cleared across invited-account changes');
 assert.match(reactCatalog,/openPath\(\[\.\.\.path\.slice\(0,3\),item\.id\]\)/);
 assert.match(staging,/liReleasedLessonRoutes=Object\.freeze\(Object\.fromEntries\(/);
-assert.match(staging,/liAccountOverlay=accountOverlay/);
-assert.match(staging,/accountTrigger\?\.isConnected/);
+assert.doesNotMatch(staging,/liAccountOverlay|accountTrigger/,
+ 'No separate account overlay may be mounted in the invited app');
+assert.match(settings,/id="li-account-settings-host"/);
+assert.match(auth,/createPortal\(settingsControls,accountSettingsHost\)/);
 assert.doesNotMatch(staging,/opener\?\.addEventListener\('click'/);
 assert.match(catalog,/released\[id\]===lesson\.route/);
 assert.match(catalog,/if\(kind==="open-lesson"\)\{openCatalogLesson\(v\);return;\}/);

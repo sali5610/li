@@ -292,13 +292,6 @@ export function GuideDetail(){
      {guide&&<section className="spell-guide-section spell-evidence">
       <div className="kicker">V · {copy('BẰNG CHỨNG & GIỚI HẠN','EVIDENCE & LIMITS')}</div>
       <Text role="body">{guide.evidence}</Text>
-      <div className="spell-source-links">
-       <strong>{copy('Nguồn tham khảo','References')}</strong>
-       <ul>{guideRecord.sources.map(source=><li key={source.url}>
-        <a href={source.url} target="_blank" rel="noopener noreferrer"
-         aria-label={source.title+' · '+copy('Mở trong tab mới','Opens in a new tab')}>{source.title}<span aria-hidden="true"> ↗</span></a>
-       </li>)}</ul>
-      </div>
      </section>}
     </article>
     <aside className="li-react-spell-explainer li-react-spell-aside">

@@ -106,3 +106,52 @@
 @media(prefers-reduced-motion:reduce){
  #page-catalog .catalog-progress-fill{transition:none}
 }
+
+/* Lesson navigation: one viewport-fixed floating trigger, always the same spot.
+   The chapter list belongs to a LEFT modal side sheet, never the reading column. */
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .catalog-chapter-fab{
+ position:fixed!important;inset-block-start:auto!important;inset-inline-end:auto!important;
+ inset-inline-start:calc(var(--li-space-4) + env(safe-area-inset-left,0px))!important;
+ inset-block-end:calc(92px + env(safe-area-inset-bottom,0px))!important;
+ width:56px;height:56px;min-width:56px;min-height:56px;
+ display:grid;place-items:center;z-index:1990;
+ border:2px solid var(--moss);border-radius:50%!important;
+ background:var(--moss);color:var(--cream);
+ box-shadow:4px 4px 0 var(--wood);font-size:26px;
+}
+:is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .catalog-chapter-fab[aria-expanded="true"]{
+ visibility:hidden;pointer-events:none
+}
+.catalog-sheet-layer{position:fixed!important;inset:0!important;z-index:2200}
+.catalog-chapter-sheet{
+ inset-inline-start:0!important;inset-inline-end:auto!important;
+ width:min(380px,calc(100vw - var(--li-space-6)));
+ max-width:calc(100vw - var(--li-space-6));
+ background:var(--cream);box-shadow:8px 0 0 var(--wood)
+}
+.catalog-chapter-sheet .catalog-left-index a,
+.catalog-chapter-sheet .catalog-chapter-all{
+ border:0;border-bottom:1px solid var(--rule);border-radius:0!important;
+ background:transparent;color:var(--ink);box-shadow:none;
+ min-height:48px;padding:var(--li-space-3) var(--li-space-2)
+}
+.catalog-chapter-sheet .catalog-active-chapter{
+ border-inline-start:3px solid var(--moss)!important;
+ border-block-end-color:var(--rule)!important;
+ background:var(--li-color-nav-selected-fill)!important
+}
+.catalog-native-toolbar .catalog-chapter-step,
+.catalog-sheet-close{
+ background:transparent;border:0;box-shadow:none;
+ color:var(--moss);text-decoration:underline;
+ text-underline-offset:var(--li-space-1);
+ min-height:44px;padding:var(--li-space-2);
+}
+@media(min-width:700px){
+ :is(#page-lessonL09,#page-lessonL03,#page-lessonL15) .catalog-chapter-fab{
+  inset-block-end:var(--li-space-6)!important
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .catalog-sheet-layer *{scroll-behavior:auto;animation:none!important;transition:none!important}
+}

@@ -20,6 +20,7 @@
  * loading AND decoding. Never flash an unfinished image below the arch. */
 .li-portal-category-interior>img{width:100%;height:100%;object-fit:cover;object-position:center;
  opacity:0}
+.li-portal-category-interior[data-illustration-ready="true"]{background:var(--paper-2)}
 .li-portal-category-interior[data-illustration-ready="true"]>img{opacity:1}
 .li-portal-category-placeholder{width:100%;height:100%;display:grid;place-items:center;
  color:var(--cream)}

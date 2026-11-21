@@ -258,7 +258,7 @@ export function BuddyDialog({root}:{root:HTMLElement}){
      <Button variant="secondary" className="action alt" id="li-buddy-related-lesson"
       onClick={openRelatedLesson}>
       <LiIcon name="book-open" size={18}/>
-      {chooseLanguage('Mở bài liên quan · Thiên lệch chọn mẫu','Related lesson · Sampling Bias')}
+      {chooseLanguage('Mở bài liên quan','Related lesson')}
       <LiIcon name="arrow-right" size={16}/>
      </Button>}
     {(view.editorial?view.editorial.actions.map(action=>action.label):view.labels)

@@ -79,40 +79,43 @@ function scenarioPlan(){
  };
 }
 function researchPlan(){
- const sc=scenarios[qIndex];
+ const sc=liCurrentProblem(),locale=window.liLanguage?.get?.()==="en"?"en":"vi";
+ const c=sc.localized?.[locale]||sc;
  const feedback=window.liBuddyReactMounted&&window.liInquiryFlow?.getResearch
   ?(window.liInquiryFlow.getResearch()?.feedback||"")
   :(document.getElementById("branch-feedback")?.textContent||"");
- const selected=feedback.startsWith("Hãy kiểm chứng: ")?feedback.replace("Hãy kiểm chứng: ",""):"";
- return {
-  intro:selected?"Ngươi đang theo nhánh “"+selected+"”. Được. Giờ thử tìm dữ kiện có thể bác bỏ giả thuyết.":"Một câu hỏi hay chưa phải kết luận. Với “"+sc.question+"”, cứ bắt đầu từ điều quan sát được.",
+ const selected=feedback.replace(/^(Hãy kiểm chứng: |Investigate: )/,"");
+ const hasBranch=feedback.startsWith("Hãy kiểm chứng: ")||feedback.startsWith("Investigate: ");
+ const hasCase=Boolean(sc.caseKey)||(sc.lessonId==="L09-1-2"&&sc.type!=="hook");
+ return {intro:hasBranch?"Ngươi đang theo nhánh “"+selected+"”. Tìm dữ kiện bác bỏ giả thuyết.":"Với “"+c.question+"”, hãy tách quan sát khỏi suy luận.",
   actions:[
-   action("Điều đã biết",sc.observed),
-   action("Điều còn thiếu",sc.unknown+(selected?" Nhánh đang xét: "+selected+".":"")),
-   action(qIndex===0&&selected?"Sang Phản Chứng":qIndex!==0?"Xem đánh giá nguồn":"Chọn nhánh khảo sát",qIndex===0&&selected?"Ta thử một kết luận và xem nó đứng được tới đâu.":qIndex!==0?"Tình huống này chưa có Phản Chứng riêng. Hãy dùng "+methodSourceName("T09")+" để kiểm tra nguồn, đừng lạc qua ví dụ khảo sát 90%.":"Chọn một nhánh cụ thể rồi kiểm chứng. Đừng ôm cả ba một lúc.",()=>qIndex===0&&selected?go("case"):qIndex!==0?(closeModal("buddy-modal"),showMethod("T09")):go("research"))
-  ]
- };
+   action("Điều đã biết",c.observed),
+   action("Điều còn thiếu",c.unknown+(hasBranch?" Nhánh: "+selected+".":"")),
+   action(hasCase?"Sang Phản Chứng":"Xem đánh giá nguồn",
+    hasCase?"Case riêng cho câu hỏi này: chọn nhận định và sửa kết luận.":"Tình huống này chưa có case riêng; hãy kiểm tra nguồn.",
+    ()=>hasCase?go("case"):(closeModal("buddy-modal"),showMethod("T09")))
+  ]};
 }
 function casePlan(){
- const live=window.liBuddyReactMounted?
-  (window.liCaseUi?.getState?.()||{choice:null,revision:""}):null;
+ const live=window.liBuddyReactMounted?(window.liCaseUi?.getState?.()||{choice:null,revision:""}):null;
  const choice=live?live.choice:selectedCaseAnswer;
  const draft=live?live.revision.trim():(document.getElementById("case-revision")?.value.trim()||"");
  const valid=Boolean(choice)&&draft.length>=12;
- return {
-  intro:choice?"Ngươi đã chọn một nhận định. Giờ viết lại kết luận sao cho không vượt quá mẫu khảo sát.":"Đây là tình huống thiên lệch chọn mẫu. Trước hết, chọn nhận định nào thực sự được dữ kiện cho phép.",
+ const current=window.liInquiryFlow?.getCase?.();
+ const lc=current?.localized?.[window.liLanguage?.get?.()==="en"?"en":"vi"]||null;
+ return {intro:lc?"Case giả định: "+lc.question+" Hãy chọn nhận định rồi tự viết Luận Kết.":choice?
+   "Ngươi đã chọn một nhận định. Viết lại kết luận sao cho không vượt quá mẫu khảo sát.":
+   "Đây là tình huống thiên lệch chọn mẫu. Chọn nhận định mà dữ kiện cho phép.",
   actions:[
-   action("Giới hạn kết luận","90% chỉ mô tả những người được khảo sát. Chưa đủ căn cứ để suy ra toàn bộ thị trường."),
-   action("Thử phản chứng","Nếu người chưa sử dụng sản phẩm có ý kiến khác thì kết luận “ai cũng hài lòng” còn đứng vững không?"),
-   action(valid?"Lưu Bút Ký":"Viết Luận Kết",valid?"Ta dùng đúng chức năng lưu Bút Ký đang có.":"Chọn một nhận định, rồi viết lại kết luận ít nhất 12 ký tự trước khi lưu.",()=>{
+   action("Giới hạn kết luận",lc?.feedback?.right||"90% chỉ mô tả người được hỏi, chưa đại diện thị trường."),
+   action("Thử phản chứng",lc?.technique?.body||"Nếu người chưa dùng có ý kiến khác, kết luận ấy còn đúng không?"),
+   action(valid?"Lưu Bút Ký":"Viết Luận Kết",valid?"Lưu đúng case hiện tại.":"Chọn nhận định và viết ít nhất 12 ký tự trước khi lưu.",()=>{
     if(valid){
-     if(window.liBuddyReactMounted){
-      if(window.liCaseUi?.submit?.())closeModal("buddy-modal");
-     }else{closeModal("buddy-modal");document.getElementById("finish-case")?.click();}
+     if(window.liBuddyReactMounted){if(window.liCaseUi?.submit?.())closeModal("buddy-modal");}
+     else{closeModal("buddy-modal");document.getElementById("finish-case")?.click();}
     }else go("case","case-revision");
    })
-  ]
- };
+  ]};
 }
 function guidePlan(){
  const mode=STUDY_MODES[studyMode];
@@ -418,13 +421,12 @@ function reactView(trigger){
  // rights are still under review. Never attach an unrelated global quote.
  const lessonContext=window.liLessonCompanion?.getContext?.();
  const quote=lessonContext?.editorial?null:(window.liQuoteEngine?.getView?.()||null);
- // The sample-bias case links only to its existing, released L09 lesson.
- // Hide shortcuts to unpublished or unmounted lesson routes.
- const caseLessonRoute=currentPage==="case"?
-  window.liReleasedLessonRoutes?.["L09-1-2"]:null;
- const caseLesson=caseLessonRoute==="lessonL09"&&
-  window.liAppRouter?.hasRoute?.(caseLessonRoute)?
-  {id:"L09-1-2",route:caseLessonRoute}:null;
+ // Case links to its own registered lesson; draft routes stay invite-gated.
+ const selectedCase=currentPage==="case"?window.liInquiryFlow?.getCase?.():null;
+ const caseLesson=selectedCase?window.liMirrorRelatedLesson?.({
+  type:"problem",lessonId:selectedCase.lessonId,
+  previewState:selectedCase.draft?"draft":undefined
+ }):null;
  const mirrorLesson=(currentPage==="home"||currentPage==="research")?
   window.liMirrorRelatedLesson?.(currentPage==="home"?scenarios[qIndex]:liCurrentProblem()):null;
  const relatedLesson=caseLesson||mirrorLesson||null;
@@ -447,10 +449,11 @@ function reactReply(index){
  const line=localizePlanText(applyNickname(item.reply));
  // Actions preserve original navigation, saved-question, approved-source,
  // study-method and note-taking side effects.
- const supportsSamplingDebate=
-  (currentPage==="home"&&qIndex===0)||
-  (currentPage==="research"&&qIndex===0)||
-  currentPage==="case"||currentPage==="lesson"||currentPage==="lessonL09";
+ const source=(currentPage==="home"||currentPage==="research")?liCurrentProblem():null;
+ const supportsSamplingDebate=Boolean(
+  (source?.lessonId==="L09-1-2"&&!source.caseKey&&source.type!=="hook")||
+  (currentPage==="case"&&window.liInquiryFlow?.getCase?.()?.id==="sampling-bias-90")||
+  currentPage==="lesson"||currentPage==="lessonL09");
  if(typeof item.perform==="function")item.perform();
  return {text:line,showChallenge:index===1&&supportsSamplingDebate&&!item.perform&&!item.comparison,
   comparison:item.comparison||null};

@@ -309,6 +309,13 @@ setTimeout(()=>{
    'library-resume-heading,library-notes-heading,library-saved-heading,library-journal-heading'&&
    shelves.every((heading,index)=>index===0||
     heading.getBoundingClientRect().top>shelves[index-1].getBoundingClientRect().bottom));
+  const shelfBlocks=[...document.querySelectorAll('.library-resume-feature,.library-workspace-main,.library-saved-shortlist,.library-rhythm')];
+  assert('shelves-separated-by-whitespace',shelfBlocks.length===4&&shelfBlocks.every((block,index)=>
+   index===0||block.getBoundingClientRect().top-shelfBlocks[index-1].getBoundingClientRect().bottom>=24));
+  assert('shelf-actions-beside-headings',shelves.length===4&&shelves.every(heading=>{
+   const action=heading.parentElement?.querySelector('button');
+   return action&&action.getBoundingClientRect().left>=heading.getBoundingClientRect().right+8;
+  }));
   const notePreviews=[...document.querySelectorAll('.library-note-preview')];
   assert('notes-share-an-unframed-section',notePreviews.length===2&&notePreviews.every(preview=>
    preview.closest('.library-workspace-main')&&getComputedStyle(preview).borderTopWidth==='0px'));

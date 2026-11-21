@@ -88,7 +88,7 @@ const TEXT={
  "Ngôn ngữ":"Language","NGÔN NGỮ TOÀN APP":"APP LANGUAGE",
  "Ngôn ngữ áp dụng cho toàn bộ giao diện và mọi bài học đã có bản song ngữ. Nội dung chưa được dịch sẽ giữ bản gốc.":"Your choice applies across the app and every lesson with an authored translation. Content without an English edition stays in its original language.",
  "Tiếng Việt":"Vietnamese","Tiếng Anh":"English",
- "Tám nhóm ngành, những lối đi khác nhau vào cùng một thư viện tri thức.":"Eight domain groups, eight routes into one library of knowledge.",
+ "Khám phá năm nhóm ngành và các chuyên ngành bên trong.":"Explore five domain groups and their fields.",
  "Danh mục gồm chương trình đang biên soạn. Chỉ bài đã phát hành mới có nội dung học.":"The catalog includes works in progress. Only published lessons can be studied.",
  "Chọn chuyên ngành để xem lộ trình các môn học.":"Choose a field to browse its course progression.",
  "Các môn được sắp theo nền tảng → trung cấp → chuyên sâu. Thứ tự này là lộ trình đề xuất, không tự động khóa bài.":"Courses are ordered from foundation to intermediate and advanced; they are recommendations, not automatic locks.",
@@ -296,7 +296,7 @@ function apply(root=document.body){
  locked=true;
  try{
   document.documentElement.lang=locale;
-  if(root===document.body)document.title=locale==="en"?"理 · li. — Library of Knowledge":"理 · li. — Thư viện tri thức";
+  if(root===document.body)document.title="理 · li. — THE WORLD OF KNOWING WHY";
   if(!integratedReact()){
    walk(root);
    syncSettings();

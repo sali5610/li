@@ -102,7 +102,7 @@ function localize(root){
  if(typeof window.liLanguage?.apply==="function")window.liLanguage.apply(root||host);
 }
 function renderRoot(){
- header(copy("Tàng Thư","Library"),copy("Năm nhóm ngành, những lối đi khác nhau vào cùng một thư viện tri thức.","Five domains, different paths into one library of knowledge."),copy("KHÁM PHÁ TRI THỨC","EXPLORE KNOWLEDGE"));
+ header(copy("Tàng Thư","Library"),copy("Khám phá năm nhóm ngành và các chuyên ngành bên trong.","Explore five domain groups and their fields."),copy("KHÁM PHÁ TRI THỨC","EXPLORE KNOWLEDGE"));
  const grid=el("div","catalog-group-grid",null,host);
  groups.forEach((g,i)=>shelfCard(grid,copy(g.title,g.titleEn),copy("NHÓM NGÀNH","DOMAIN GROUP"),g.fields.length+copy(" chuyên ngành"," fields"),"group",g.id,i+1));
  el("p","catalog-quiet-note","Danh mục gồm chương trình đang biên soạn. Chỉ bài đã phát hành mới có nội dung học.",host);

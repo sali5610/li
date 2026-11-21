@@ -278,7 +278,7 @@ function KnowledgeSearch(){
   <section className="surface" aria-label={L("Kết quả tra cứu","Search results")}>
    <Heading level={2} role="titleMedium">{L("Kết quả tra cứu","Search results")}</Heading>
    {loadState==='error'&&query.trim()&&
-    <InlineFeedback tone="info" message={L("Dữ liệu quan hệ chưa khả dụng. Đang dùng danh mục bài đã phát hành.","Relationships are temporarily unavailable. Showing released lessons.")}/>}
+    <InlineFeedback tone="info" message={L("Knowledge Base chưa khả dụng. Vẫn có thể tìm ngành, môn và bài đã phát hành trong danh mục có sẵn.","Knowledge Base is unavailable. You can still browse available fields, courses and released lessons.")}/>}
    {navError&&<InlineFeedback tone="error" message={navError}/>}
    {response.status==='related_only'&&!searching&&
     <InlineFeedback tone="info" message={L("Chưa có bài trả lời trực tiếp câu hỏi này. Bài bên dưới chỉ có nội dung liên quan.","No lesson directly answers this question. The results below are only related.")}/>}

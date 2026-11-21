@@ -111,3 +111,95 @@ assert(css.includes("animation:li-mirror-copy-float 4.2s ease-in-out infinite;")
 assert(!css.includes("animation:li-mirror-float 4s ease-in-out infinite;"),"Controls must not float");
 assert(css.includes("#page-home .mirror-controls .mirror-refresh{\n  animation:none!important;"),"Arrow controls stay fixed");
 console.log("PASS S158 mirror: 6 cards / 3 hooks, action targets, context, arrows, swipe threshold, old problem path");
+
+
+// React Home & Khảo Chứng no longer keep a retired HTML research form alive.
+// Exercise the actual global functions against a DOM that throws on access.
+const reactArrowEnd=html.indexOf('document.getElementById("previous-question")',start);
+assert(reactArrowEnd>start,"Find real mirror step action for React");
+const reactEvents=[],reactScenes=[];
+const reactSandbox={
+ qIndex:0,scenarios,liResearchFeedback:"Prior branch explanation",
+ window:{liReactRouter:{},dispatchEvent:event=>reactEvents.push(event.type)},
+ Event:class{constructor(type){this.type=type;}},
+ renderMirrorItem:()=>{throw Error("React mirror touched hidden native Home")},
+ syncResearch:()=>{throw Error("React mirror touched hidden Research form")},
+ placeCompanion:()=>{throw Error("React mirror positioned native floating Lão Lý")}
+};
+vm.createContext(reactSandbox);
+vm.runInContext(html.slice(start,reactArrowEnd),reactSandbox);
+reactSandbox.shiftMirrorQuestion(1);
+assert.equal(reactSandbox.qIndex,1,"React moves to published lesson hook");
+assert.equal(reactSandbox.liResearchFeedback,"Prior branch explanation",
+ "Visiting a hook does not unexpectedly reset the research answer");
+reactSandbox.shiftMirrorQuestion(1);
+assert.equal(reactSandbox.qIndex,2,"React moves to the next research problem");
+assert.equal(reactSandbox.liResearchFeedback,"Chọn một nhánh để đặt câu hỏi kiểm chứng.",
+ "Switching problems clears the previous problem's research feedback");
+assert.deepEqual(reactEvents,["li:inquiry-changed","li:inquiry-changed"],
+ "Exactly one React state signal per mirror transition");
+
+const branchFrom=html.indexOf("function liChooseResearchBranch(value){");
+const branchTo=html.indexOf("function syncResearch()",branchFrom);
+assert(branchFrom>0&&branchTo>branchFrom);
+const researchEvents=[];
+const researchSandbox={
+ qIndex:0,scenarios:[{question:"Research question",branches:["Ai bị bỏ sót?"]}],
+ liResearchFeedback:"",liCurrentProblem(){
+  return this.scenarios?.[0];
+ },
+ document:{getElementById:()=>{throw Error("React branch touched native feedback element")}},
+ window:{liReactRouter:{},dispatchEvent:event=>researchEvents.push(event.type)},
+ Event:class{constructor(type){this.type=type;}},
+ CustomEvent:class{constructor(type,options){this.type=type;this.detail=options?.detail;}}
+};
+researchSandbox.liCurrentProblem=()=>researchSandbox.scenarios[0];
+vm.createContext(researchSandbox);
+vm.runInContext(html.slice(branchFrom,branchTo),researchSandbox);
+assert.equal(researchSandbox.liChooseResearchBranch("Ai bị bỏ sót?"),true);
+assert.equal(researchSandbox.liResearchFeedback,"Hãy kiểm chứng: Ai bị bỏ sót?");
+assert.deepEqual(researchEvents,["li:activity","li:inquiry-changed"]);
+assert.equal(researchSandbox.liChooseResearchBranch("Not in this problem"),false);
+assert.equal(researchEvents.length,2,"Invalid branch does not notify React");
+
+// Save → unsave → Undo on the real canonical bookmark writer.
+// The real React Library subscribes to li:library-view-changed; hidden
+// Resume buttons and native save state are NOT inspected or redrawn.
+const saveStart=html.indexOf("function liAfterQuestionBookmarkChange(){");
+const saveEnd=html.indexOf('document.getElementById("save-question")',saveStart);
+assert(saveStart>=0&&saveEnd>saveStart,"Locate canonical save/Undo writer");
+const bookmarkEvents=[],bookmarkToasts=[],savedQuestions=[];
+let nativeSaveRedraws=0;
+const bookmarkSandbox={
+ qIndex:0,scenarios,savedQuestions,liStorageError:false,
+ liWriteState:()=>true,liNewId:()=>"bookmark-1",
+ findSavedMirrorQuestion:sc=>savedQuestions.findIndex(x=>x.question===sc.question),
+ refreshQuestionBookmark:()=>{nativeSaveRedraws++;},
+ window:{
+  liReactRouter:{},
+  liLibraryShelf:{renderResume:()=>{nativeSaveRedraws++;}},
+  dispatchEvent:event=>bookmarkEvents.push(event.type)
+ },
+ Event:class{constructor(type){this.type=type;}},
+ toast:(message,options)=>bookmarkToasts.push({message,undo:options?.undo}),
+ Date
+};
+vm.createContext(bookmarkSandbox);
+vm.runInContext(html.slice(saveStart,saveEnd),bookmarkSandbox);
+assert.equal(bookmarkSandbox.liToggleMirrorQuestion(),true);
+assert.equal(savedQuestions.length,1,"React saved mirror question uses the canonical ledger");
+assert.equal(bookmarkSandbox.liToggleMirrorQuestion(),true);
+assert.equal(savedQuestions.length,0,"React unsave removes the same ledger entry");
+const undo=bookmarkToasts.at(-1)?.undo;
+assert.equal(typeof undo,"function");
+assert.equal(undo(),true,"React Undo restores the saved bookmark");
+assert.equal(savedQuestions.length,1);
+assert.deepEqual(bookmarkEvents,Array.from({length:3},()=>[
+ "li:library-view-changed","li:inquiry-changed"
+]).flat(),"React Home and Tủ Riêng refresh exactly once per write/Undo");
+assert.equal(nativeSaveRedraws,0,"React writes never redraw hidden Resume or bookmark buttons");
+delete bookmarkSandbox.window.liReactRouter;
+assert.equal(bookmarkSandbox.liToggleMirrorQuestion(),true,"Native standalone bookmark remains functional");
+assert.equal(savedQuestions.length,0);
+assert.equal(nativeSaveRedraws,2,"Native fallback still updates button and Resume UI");
+console.log("PASS React mirror/Khảo Chứng/bookmark/Undo without hidden DOM and native fallback");

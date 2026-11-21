@@ -472,8 +472,12 @@ function liChooseResearchBranch(value){
  const problem=liCurrentProblem();
  if(!problem?.branches?.includes(value))return false;
  liResearchFeedback="Hãy kiểm chứng: "+value;
- const target=document.getElementById("branch-feedback");
- if(target)target.textContent=liResearchFeedback;
+ // Only the standalone native Research panel owns its old feedback node.
+ // React reads the feedback from the canonical Inquiry port.
+ if(!window.liReactRouter){
+  const target=document.getElementById("branch-feedback");
+  if(target)target.textContent=liResearchFeedback;
+ }
  window.dispatchEvent(new CustomEvent("li:activity",{detail:{type:"branch",id:scenarios[qIndex].question+"::"+value}}));
  window.dispatchEvent(new Event("li:inquiry-changed"));
  return true;
@@ -722,6 +726,14 @@ document.addEventListener("DOMContentLoaded",()=>{
 function shiftMirrorQuestion(direction){
  if(!scenarios.length)return;
  qIndex=(qIndex+direction+scenarios.length)%scenarios.length;
+ if(window.liReactRouter){
+  // One state event updates React Home, Khảo Chứng and Lão Lý.
+  // Hidden native Research inputs are never required.
+  if(scenarios[qIndex].type!=="hook")
+   liResearchFeedback="Chọn một nhánh để đặt câu hỏi kiểm chứng.";
+  window.dispatchEvent(new Event("li:inquiry-changed"));
+  return;
+ }
  renderMirrorItem();
  if(scenarios[qIndex].type!=="hook")syncResearch();
  placeCompanion();
@@ -797,6 +809,16 @@ function refreshQuestionBookmark(){
  button.title=saved?"Bỏ lưu câu hỏi":"Lưu câu hỏi";
  const label=document.getElementById("mirror-save-label");if(label)label.textContent=saved?"Đã lưu":"Lưu câu hỏi";
 }
+function liAfterQuestionBookmarkChange(){
+ if(window.liReactRouter){
+  // Same savedQuestions owner, no hidden Home/Resume redraws.
+  window.dispatchEvent(new Event("li:library-view-changed"));
+ }else{
+  refreshQuestionBookmark();
+  window.liLibraryShelf?.renderResume();
+ }
+ window.dispatchEvent(new Event("li:inquiry-changed"));
+}
 function liToggleMirrorQuestion(){
  const sc=scenarios[qIndex],index=findSavedMirrorQuestion(sc);
  if(liStorageError){toast("Không đọc được Dấu Trang đã lưu. Chưa thay đổi dữ liệu.");return false;}
@@ -807,7 +829,7 @@ function liToggleMirrorQuestion(){
    if(savedQuestions.some(item=>item.id===removed.id))return true;
    const at=Math.min(index,savedQuestions.length);savedQuestions.splice(at,0,removed);
    if(!liWriteState()){savedQuestions.splice(at,1);return false;}
-   refreshQuestionBookmark();window.liLibraryShelf?.renderResume();window.dispatchEvent(new Event("li:inquiry-changed"));return true;
+   liAfterQuestionBookmarkChange();return true;
   }});
  }else{
   const item={id:liNewId(),scenarioKey:sc.key||null,question:sc.question,scene:sc.scene,type:sc.type||"problem",lessonRoute:sc.type==="hook"?sc.lessonRoute:null,savedAt:new Date().toISOString()};
@@ -815,8 +837,7 @@ function liToggleMirrorQuestion(){
   if(!liWriteState()){savedQuestions.shift();toast("Không thể lưu Dấu Trang trên thiết bị.");return false;}
   toast(sc.type==="hook"?"Đã lưu điều bất ngờ vào Dấu Trang.":"Đã lưu câu hỏi vào Dấu Trang.");
  }
- refreshQuestionBookmark();window.liLibraryShelf?.renderResume();
- window.dispatchEvent(new Event("li:inquiry-changed"));
+ liAfterQuestionBookmarkChange();
  return true;
 }
 document.getElementById("save-question").addEventListener("click",liToggleMirrorQuestion);

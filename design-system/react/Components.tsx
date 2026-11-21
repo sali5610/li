@@ -13,6 +13,17 @@ export function Button({variant='primary',loading=false,disabled=false,type='but
   {loading?<span className="li-ds-button-spinner" aria-hidden="true"/>:null}
   <span>{children}</span></button>;
 }
+/** Shared numbered process/evidence row. The number inset is owned by this component,
+ * rather than by each screen's card padding override. */
+export type NumberedCardProps=HTMLAttributes<HTMLDivElement>&{
+ number:string|number;children:ReactNode;
+};
+export function NumberedCard({number,className='',children,...props}:NumberedCardProps){
+ return <div {...props} data-li-component="numbered-card"
+  className={'path-item li-ds-numbered-card '+className}>
+  <span className="path-num li-ds-numbered-card__number">{number}</span>
+  {children}</div>;
+}
 export type CardVariant='raised'|'tinted'|'inverse'|'flat-study';
 export type CardProps=HTMLAttributes<HTMLElement>&{variant?:CardVariant;children:ReactNode};
 export function Card({variant='raised',className='',children,...props}:CardProps){

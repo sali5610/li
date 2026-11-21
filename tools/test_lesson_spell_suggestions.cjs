@@ -73,8 +73,8 @@ assert(sectioned.includes("app.LiSpellPractice?.setLessonContext?.(id)===true"),
  "Personal T02 must bind context through the existing invited-only port");
 assert(sectioned.includes("method:requestMethod"),
  "Personal T02 return token must remember T02, not the primary method");
-assert(sectioned.includes("token.method==='T02'&&saved.attempt.reviewed?'progress':'methods'"),
- "Back from T02 must restore the reviewed lesson progress screen");
+assert(sectioned.includes("token.method==='T02'&&saved.attempt.reviewed?'progress':'guided'"),
+ "Back from T02 restores reviewed progress; other method returns use Guided in the five-page reader");
 assert(react.includes("phase==='progress'")&&wave.includes("phase==='progress'")&&
  sectioned.includes("phase==='progress'&&persisted.reviewed"),
  "T02 entry belongs after a saved learning attempt, not before lesson exposure");

@@ -230,23 +230,8 @@
  display:grid;place-items:center;width:100%;min-width:0
 }
 #page-guideDetail .spell-visual-art img{
- display:block;width:min(100%,420px);height:clamp(180px,37vw,255px);
- object-fit:contain;object-position:center;
-}
-#page-guideDetail .spell-visual-credit{
- display:flex;justify-content:center;align-items:center;flex-wrap:wrap;
- gap:var(--li-space-1);font-size:.73rem;color:var(--muted);
- overflow-wrap:anywhere;text-align:center
-}
-#page-guideDetail .spell-visual-credit a{
- color:inherit;text-decoration:underline;text-underline-offset:2px
-}
-#page-guideDetail .spell-visual-credit a:focus-visible{
- outline:2px solid var(--moss);outline-offset:2px
-}
-#page-guideDetail .spell-concept-visual figcaption{
- font-size:.74rem;letter-spacing:.03em;color:var(--muted);
- padding-top:var(--li-space-2)
+ display:block;width:min(100%,680px);height:auto;max-height:400px;
+ object-fit:contain;object-position:center
 }
 #page-guideDetail .spell-visual-process{
  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
@@ -315,7 +300,7 @@
 #page-guideDetail .spell-source-links a:focus-visible{outline:2px solid var(--moss);outline-offset:3px}
 @media(max-width:520px){
  #page-guideDetail .spell-visual-art img{
-  width:100%;height:clamp(175px,53vw,235px)
+  width:100%;height:auto;max-height:300px;object-fit:contain
  }
  #page-guideDetail .spell-visual-process{
   gap:var(--li-space-2)

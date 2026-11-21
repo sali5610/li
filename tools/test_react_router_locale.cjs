@@ -41,7 +41,9 @@ const document={
 };
 const location=new URL("https://sali5610.github.io/li/?utm_source=app&lesson=L09-1-2#legacy");
 const window={
- location,scrollTo:()=>{},
+ location,scrollX:0,scrollY:0,
+ scrollTo(x,y){this.scrollX=x;this.scrollY=y;},
+ requestAnimationFrame(callback){callback();return 1;},
  history:{state:null,replaceState:(state,title,url)=>{
   location.href=new URL(url,location.origin).href;replaced.push(url);
  }},
@@ -299,14 +301,22 @@ assert.equal(pos,1,'Back traverses a Catalog breadcrumb without leaving Catalog'
 window.history.forward();
 assert.equal(browser.getCurrent(),'catalog');
 assert.equal(pos,2);
+// Scrolling a catalog page, opening Search, and using the header Back should
+// return to the reading position, including after a Forward/Back round trip.
+window.scrollTo(0,640);
 assert.equal(browser.navigate('search'),true);
 assert.equal(pos,3,'Route navigation follows the updated breadcrumb depth');
+assert.equal(window.scrollY,0,'A newly opened screen starts at the top');
+window.scrollTo(0,310);
 assert.equal(browser.back(),true);
 assert.equal(browser.getCurrent(),'catalog');
+assert.equal(window.scrollY,640,'Top navigation Back restores the previous page scroll');
 window.history.forward();
 assert.equal(browser.getCurrent(),'search','browser Forward returns to Search, not Home');
+assert.equal(window.scrollY,310,'Forward restores the newer page reading position');
 assert.equal(browser.back(),true);
 assert.equal(browser.getCurrent(),'catalog','Back still works after Forward');
+assert.equal(window.scrollY,640,'Back still restores after a Forward round trip');
 stopBrowser();
 // An initial "not yet verified" event must NOT erase a bookmarked lesson URL.
 visible=false;

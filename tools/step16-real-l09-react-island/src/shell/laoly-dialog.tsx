@@ -254,11 +254,6 @@ export function BuddyDialog({root}:{root:HTMLElement}){
     </div>}
    </div>
    <div className="action-row buddy-actions" aria-label={chooseLanguage('Lão Lý gợi ý','Companion actions')}>
-    {(view.editorial?view.editorial.actions.map(action=>action.label):view.labels)
-     .map((label,index)=><Button key={index} variant="secondary"
-     className="action alt" onClick={()=>choose(index)}>
-     <LiIcon name={index===0?'search':index===1?'chat':'book-open'} size={18}/>
-     {label}</Button>)}
     {view.relatedLesson?.id==='L09-1-2'&&view.relatedLesson.route==='lessonL09'&&
      <Button variant="secondary" className="action alt" id="li-buddy-related-lesson"
       onClick={openRelatedLesson}>
@@ -266,6 +261,11 @@ export function BuddyDialog({root}:{root:HTMLElement}){
       {chooseLanguage('Mở bài liên quan · Thiên lệch chọn mẫu','Related lesson · Sampling Bias')}
       <LiIcon name="arrow-right" size={16}/>
      </Button>}
+    {(view.editorial?view.editorial.actions.map(action=>action.label):view.labels)
+     .map((label,index)=><Button key={index} variant="secondary"
+     className="action alt" onClick={()=>choose(index)}>
+     <LiIcon name={index===0?'search':index===1?'chat':'book-open'} size={18}/>
+     {label}</Button>)}
     <Button variant="ghost" className="action"
      id="li-react-close-buddy" onClick={()=>close()}>
      <LiIcon name="close" size={18}/> {chooseLanguage('Đóng','Close')}</Button>

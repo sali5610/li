@@ -38,6 +38,8 @@ export {HomeLayout,homeLayoutVariants} from './HomeLayoutVariants';
 export type {HomeLayoutProps,HomeLayoutVariant} from './HomeLayoutVariants';
 export {BookwormIllustration} from './BookwormIllustration';
 export type {BookwormArtKind} from './BookwormIllustration';
+export {BookwormLessonBook} from './BookwormLessonBook';
+export type {BookwormLessonBookProps} from './BookwormLessonBook';
 
 /** Notebook annotations are a shared, presentational component. */
 export {NotebookAnnotation} from './NotebookAnnotation';

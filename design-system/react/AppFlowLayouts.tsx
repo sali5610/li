@@ -10,6 +10,8 @@ import {LiIcon} from './LucideIcons';
 import {NotebookAnnotation} from './NotebookAnnotation';
 import {NotebookArt,notebookDisciplineImages} from './NotebookArt';
 import {BookwormIllustration} from './BookwormIllustration';
+import type {BookwormArtKind} from './BookwormIllustration';
+import {BookwormLessonBook} from './BookwormLessonBook';
 import './app-flow-layouts.css';
 
 /** Exported presentational UI: Lab passes fixture props; the approved real
@@ -82,6 +84,8 @@ function ScreenBody(props:AppPageLayoutProps){
  const {page,variant,locale,query,answer,selected,saved,completed,onQuery,onAnswer,
   onSelect,onToggleSaved,onComplete,onNavigate,onNotice}=props;
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
+ const bookwormPlate=(kind:BookwormArtKind)=>variant==='bookworm'?
+  <div className="li-bw-inline-plate" aria-hidden="true"><BookwormIllustration kind={kind}/></div>:null;
  const action=(pageId:PageId,vi:string,en:string)=><Button onClick={()=>onNavigate(pageId)}>
   {t(vi,en)} <LiIcon name="arrow-right" size={17}/></Button>;
  const card=(heading:string,body:string,i:number)=><Card key={heading} variant={i%2?'raised':'tinted'}>
@@ -106,6 +110,7 @@ function ScreenBody(props:AppPageLayoutProps){
     .map((item,i)=><Card key={item.id} variant="tinted">
      {variant==='notebook'&&<NotebookArt kind="discipline" size="card"
       src={notebookDisciplineImages[item.id as keyof typeof notebookDisciplineImages]}/>}
+     {bookwormPlate(item.id==='society'?'balance':item.id==='hci'?'lens':'chart')}
      <span className="li-flow-index">{String(i+1).padStart(2,'0')}</span>
      <Heading level={3} role="titleMedium">{locale==='vi'?item.vi:item.en}</Heading>
      <Text role="support">{t(item.descVi,item.descEn)}</Text>
@@ -125,6 +130,7 @@ function ScreenBody(props:AppPageLayoutProps){
    <Card key={name} variant="flat-study">
     {variant==='notebook'&&<NotebookArt kind={i===0?'sampling':i===1?'discipline':'method'}
      src={i===1?notebookDisciplineImages.hci:undefined} size="spot"/>}
+    {bookwormPlate(i===0?'lens':i===1?'compass':'open')}
     <Badge>{desc}</Badge>
     <Heading level={3} role="titleMedium">{name}</Heading>
     <Button variant="secondary" onClick={()=>onNavigate(i===2?'guideDetail':'lesson')}>
@@ -135,6 +141,7 @@ function ScreenBody(props:AppPageLayoutProps){
   <Card variant="tinted">
    <Badge>{t('VÍ DỤ GIẢ ĐỊNH','HYPOTHETICAL EXAMPLE')}</Badge>
    {variant==='notebook'&&<NotebookArt kind="sampling" size="spot"/>}
+   {bookwormPlate('lens')}
    <Heading level={2} role="titleMedium">{t('90% người khảo sát hài lòng. Có đại diện cho tất cả không?',
     '90% were satisfied. Does that represent everyone?')}</Heading>
    <div className="li-flow-stack">{[
@@ -150,6 +157,7 @@ function ScreenBody(props:AppPageLayoutProps){
  </div>;
  case 'case':return <div className="li-flow-stack">
   <Heading level={2} role="titleMedium">{t('Chọn kết luận đáng tin hơn','Choose the more defensible claim')}</Heading>
+  {bookwormPlate('balance')}
   {[
    t('90% hài lòng nên mọi người đều thích tính năng.','90% are satisfied, so everyone likes it.'),
    t('Chưa thể khái quát khi chưa biết cách chọn mẫu.','We cannot generalize without the sampling method.')
@@ -162,6 +170,7 @@ function ScreenBody(props:AppPageLayoutProps){
  </div>;
  case 'capture':return <div className="li-flow-stack">
   <Card variant="tinted"><Heading level={2} role="titleMedium">{t('Nhặt một ý cần kiểm chứng','Capture a thought worth checking')}</Heading>
+   {bookwormPlate('quill')}
    <Field kind="textarea" rows={6} label={t('Ý nghĩ của mày','Your thought')}
     placeholder={t('Mình vừa đọc thấy…','I just read that…')} value={answer}
     onChange={event=>onAnswer(event.target.value)}/>
@@ -170,26 +179,38 @@ function ScreenBody(props:AppPageLayoutProps){
     'Preview memory only; nothing was sent to Neon.'))}>{t('Lưu thử','Sample save')}</Button>
   </Card>{action('collection','Mở Bộ Sưu Tập','Open collection')}
  </div>;
- case 'lesson':return <div className="li-flow-stack">
-  <div className="li-flow-lesson-top"><Badge>{t('BÀI HỌC · VÍ DỤ','LESSON · SAMPLE')}</Badge>
+ case 'lesson':{
+  // Canonical lesson copy is shared by ordinary card layout and Bookworm pages.
+  const intro=<div className="li-flow-lesson-top">
+   <Badge>{t('BÀI HỌC · VÍ DỤ','LESSON · SAMPLE')}</Badge>
    <Heading level={2} role="titleLarge">{lessonTitle}</Heading>
    <Text role="body">{t('Sai lệch chọn mẫu xuất hiện khi mẫu không phản ánh đúng tổng thể cần nghiên cứu.',
     'Sampling bias can arise when a sample does not reflect the population of interest.')}</Text>
-  </div>
-  <div className="li-flow-lesson-diagram" aria-label={t('Minh họa tổng thể và mẫu','Population and sample illustration')}>
+  </div>;
+  const diagram=<div className="li-flow-lesson-diagram" aria-label={t('Minh họa tổng thể và mẫu','Population and sample illustration')}>
    <div><span>{t('Tổng thể','Population')}</span><div className="li-flow-dots">
     {Array.from({length:24},(_,i)=><i key={i} data-highlight={i%5===0?'true':'false'}/>)}</div></div>
    <LiIcon name="arrow-right" size={26}/>
    <div><span>{t('Mẫu','Sample')}</span><div className="li-flow-dots sample">
     {Array.from({length:8},(_,i)=><i key={i} data-highlight={i%4===0?'true':'false'}/>)}</div></div>
-  </div>
-  <div className="li-flow-card-grid">{[
-   [t('Lý thuyết','Theory'),t('Phân biệt tính đại diện và cách chọn mẫu.','Distinguish representation from selection.')],
-   [t('Ví dụ','Example'),t('Khảo sát chỉ người đang dùng app có thể bỏ sót người đã rời đi.','Surveying current users can omit those who left.')],
-   [t('Hướng dẫn','Guided practice'),t('Xem phương pháp tuyển chọn trước khi kết luận.','Check recruitment before drawing conclusions.')]
-  ].map(([name,desc],i)=>card(name,desc,i))}</div>
-  {action('practice','Làm bài tập','Start practice')}
- </div>;
+  </div>;
+  const chapters=[
+   {title:t('Lý thuyết','Theory'),description:t('Phân biệt tính đại diện và cách chọn mẫu.','Distinguish representation from selection.'),art:'lens' as const},
+   {title:t('Ví dụ','Example'),description:t('Khảo sát chỉ người đang dùng app có thể bỏ sót người đã rời đi.','Surveying current users can omit those who left.'),art:'balance' as const},
+   {title:t('Hướng dẫn','Guided practice'),description:t('Xem phương pháp tuyển chọn trước khi kết luận.','Check recruitment before drawing conclusions.'),art:'compass' as const}
+  ];
+  const next=action('practice','Làm bài tập','Start practice');
+  if(variant==='bookworm')return <BookwormLessonBook
+   locale={locale} intro={intro} diagram={diagram} chapters={chapters}
+   practiceAction={next}/>;
+  return <div className="li-flow-stack">
+   {intro}
+   {diagram}
+   <div className="li-flow-card-grid">{chapters.map(({title,description},i)=>
+    card(title,description,i))}</div>
+   {next}
+  </div>;
+ }
  case 'practice':return <LearningFlowShell
   title={t('Luyện tập · Sampling Bias','Practice · Sampling Bias')}
   eyebrow={t('BÀI MẪU · KHÔNG GHI TIẾN ĐỘ','SAMPLE · NO PROGRESS IS STORED')}
@@ -198,7 +219,8 @@ function ScreenBody(props:AppPageLayoutProps){
   prompt={<div className="li-flow-stack"><Heading level={2} role="titleMedium">{t('Ai có thể bị bỏ sót?','Who might be excluded?')}</Heading>
    <Text role="body">{t('Một nhóm chỉ hỏi người đang sử dụng ứng dụng. Điều gì cần kiểm chứng?',
     'A team only interviews current app users. What needs checking?')}</Text>
-   {variant==='notebook'&&<NotebookArt kind="sampling" size="spot"/>}</div>}
+   {variant==='notebook'&&<NotebookArt kind="sampling" size="spot"/>}
+   {bookwormPlate('lens')}</div>}
   response={<Field kind="textarea" rows={5} label={t('Lập luận của mày','Your reasoning')}
    value={answer} onChange={event=>onAnswer(event.target.value)}/>}
   feedback={completed?<InlineFeedback tone="info" message={t('Phản hồi chỉ là ví dụ giao diện, chưa chấm bài thật.',
@@ -209,6 +231,7 @@ function ScreenBody(props:AppPageLayoutProps){
   <InlineFeedback tone="success" message={t('Lượt luyện tập mẫu đã hoàn tất. Không ghi vào tiến độ thật.',
    'Sample attempt completed. Real progress is unchanged.')}/>
   <Card variant="tinted"><Heading level={2} role="titleMedium">{t('Đối chiếu câu trả lời','Compare your reasoning')}</Heading>
+   {bookwormPlate('balance')}
    <Text role="body">{t('Một mẫu chỉ từ người đang dùng có thể bỏ sót người đã rời sản phẩm.',
     'A current-user-only sample may exclude people who left the product.')}</Text>
    <SourceStatus title={t('Nguồn học thuật','Reference')}
@@ -233,7 +256,10 @@ function ScreenBody(props:AppPageLayoutProps){
     const tile=<MethodTile code={code} title={title}
      purpose={purpose} actionLabel={t('Khám phá','Explore')}
      onActivate={()=>onNavigate('guideDetail')}/>;
-    return variant==='notebook'?<div className="li-flow-method-plate" key={code}>
+    return variant==='bookworm'?<div className="li-bw-method-plate" key={code}>
+     {bookwormPlate(code==='T01'?'open':code==='T02'?'compass':'lens')}
+     {tile}
+    </div>:variant==='notebook'?<div className="li-flow-method-plate" key={code}>
      <NotebookArt kind={code==='T01'?'recall':code==='T02'?'calendar':'question'} size="card"/>
      {tile}
     </div>:<React.Fragment key={code}>{tile}</React.Fragment>;
@@ -244,6 +270,7 @@ function ScreenBody(props:AppPageLayoutProps){
   <Card variant="tinted"><Badge>T02 · SPACED REPETITION</Badge>
    <Heading level={2} role="titleLarge">{t('Ôn tập cách quãng','Spaced Repetition')}</Heading>
    {variant==='notebook'&&<NotebookArt kind="calendar" size="spot"/>}
+   {bookwormPlate('compass')}
    <div className="li-flow-steps">{[
     t('Chọn bài đã học','Choose material you learned'),
     t('Đợi đến hạn, tự gọi nhớ','Wait until due, then retrieve'),
@@ -255,6 +282,7 @@ function ScreenBody(props:AppPageLayoutProps){
  </div>;
  case 'library':return <div className="li-flow-stack">
   {variant==='notebook'&&<div className="li-flow-library-art"><NotebookArt kind="shelf" size="spot"/></div>}
+  {bookwormPlate('shelf')}
   <div className="li-flow-stat-grid">{[
    [t('Bài đang học','Active lessons'),'03'],
    [t('Dấu Trang','Bookmarks'),'08'],
@@ -277,13 +305,16 @@ function ScreenBody(props:AppPageLayoutProps){
    [t('L03-1-2 · Phỏng vấn người dùng','L03-1-2 · User interviews'),
     t('Đã đọc lý thuyết','Theory reviewed'),'lesson']
   ].map(([name,desc,id],i)=><Card key={id+i} variant={i?'raised':'tinted'}>
-   <Badge>{t('GẦN ĐÂY','RECENT')}</Badge><Heading level={3} role="titleMedium">{name}</Heading>
+   <Badge>{t('GẦN ĐÂY','RECENT')}</Badge>
+   {bookwormPlate(i===0?'open':'quill')}
+   <Heading level={3} role="titleMedium">{name}</Heading>
    <Progress label={t('Tiến độ mẫu','Sample progress')} value={i?70:40}/>
    <Text role="support">{desc}</Text>
    <Button onClick={()=>onNavigate(id as PageId)}>{t('Tiếp tục','Continue')}</Button>
   </Card>)}
  </div>;
  case 'collection':return <div className="li-flow-stack">
+  {bookwormPlate('quill')}
   <div className="li-flow-actions">{['Bút Ký','Dấu Trang','Nhặt Ý'].map(label=>
    <Button key={label} variant={selected===label?'primary':'secondary'}
     onClick={()=>onSelect(label)}>{label}</Button>)}</div>
@@ -298,6 +329,7 @@ function ScreenBody(props:AppPageLayoutProps){
  </div>;
  case 'noteDetail':return <div className="li-flow-stack">
   <Card variant="tinted"><Badge>{t('BÚT KÝ · MẪU','NOTE · SAMPLE')}</Badge>
+   {bookwormPlate('quill')}
    <Field label={t('Tiêu đề','Title')} value={query} onChange={event=>onQuery(event.target.value)}
     placeholder={t('Một kết luận đáng ngờ…','A questionable claim…')}/>
    <Field kind="textarea" rows={7} label={t('Ghi chú','Note')}
@@ -315,6 +347,7 @@ function ScreenBody(props:AppPageLayoutProps){
    <Heading level={3} role="titleLarge">{val}</Heading><Text role="support">{label}</Text>
   </Card>)}</div>
   <Card variant="tinted"><Heading level={3} role="titleMedium">{t('Nhịp học tuần này','This week')}</Heading>
+   {bookwormPlate('chart')}
    <div className="li-flow-week" aria-label={t('Biểu đồ mẫu','Sample chart')}>
     {[30,55,22,78,48,100,60].map((size,i)=><span key={i}>
      <i style={{height:size+'%'}}/><small>{['T2','T3','T4','T5','T6','T7','CN'][i]}</small>
@@ -343,6 +376,7 @@ function ScreenBody(props:AppPageLayoutProps){
  case 'checkin':return <div className="li-flow-stack">
   <Card variant="tinted"><Heading level={2} role="titleLarge">{t('Hôm nay mày thế nào?','How are you today?')}</Heading>
    <Text role="body">{t('Ghi nhận trạng thái, không ép chỉ tiêu.','A gentle reflection without quotas.')}</Text>
+   {bookwormPlate('compass')}
    <div className="li-flow-choice-grid">{[
     ['calm',t('Ổn áp','Calm')],['tired',t('Hơi mệt','Tired')],['curious',t('Tò mò','Curious')]
    ].map(([id,label])=><Button key={id} variant={selected===id?'primary':'secondary'}

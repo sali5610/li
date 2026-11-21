@@ -575,3 +575,104 @@
   .li-flow-choice-grid .li-ds-button
  ){transition:none!important}
 }
+
+/* Contextual engravings: editorial figures rather than generic decorative cards. */
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-inline-plate{
+ display:block;width:clamp(124px,17vw,190px);max-width:100%;
+ align-self:start;justify-self:start;line-height:0;pointer-events:none;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-inline-plate svg{
+ width:100%;height:auto;display:block;mix-blend-mode:multiply;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-card-grid>.li-ds-card>.li-bw-inline-plate{
+ width:clamp(112px,13vw,150px);margin:0 0 8px auto;justify-self:end;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="catalog"] .li-flow-card-grid>.li-ds-card{
+ min-height:280px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="search"] .li-flow-card-grid>.li-ds-card{
+ min-height:230px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="research"] .li-bw-inline-plate,
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="case"] .li-bw-inline-plate,
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="guideDetail"] .li-bw-inline-plate{
+ width:clamp(150px,21vw,230px);margin:0 auto;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="capture"] .li-bw-inline-plate,
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="noteDetail"] .li-bw-inline-plate,
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="checkin"] .li-bw-inline-plate{
+ width:clamp(122px,18vw,180px);margin-left:auto;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="dashboard"] .li-bw-inline-plate{
+ width:140px;justify-self:end;margin-left:auto;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="library"]>.li-flow-page-columns .li-bw-inline-plate,
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="collection"]>.li-flow-page-columns .li-bw-inline-plate{
+ width:150px;margin:0 0 10px auto;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-method-plate{
+ display:grid;grid-template-columns:112px minmax(0,1fr);
+ align-items:center;gap:14px;padding:12px 16px;
+ border:1px solid #c5beb4;background:transparent;min-width:0;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-method-plate>.li-bw-inline-plate{
+ width:112px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-method-plate>.li-legacy-method{
+ min-width:0;border:0;box-shadow:none;background:transparent;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="guide"] .li-flow-card-grid{
+ border:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="resume"] .li-flow-page-main>.li-flow-stack>.li-ds-card{
+ display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="resume"] .li-flow-page-main>.li-flow-stack>.li-ds-card>.li-bw-inline-plate{
+ grid-column:2;grid-row:1 / span 3;width:135px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="resume"] .li-flow-page-main>.li-flow-stack>.li-ds-card>.li-ds-button{
+ justify-self:start;
+}
+/* Reading is full-width specifically for an actual open book, not a slim card column. */
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="lesson"][data-bookworm-composition="reading"] .li-flow-page-columns{
+ grid-template-columns:minmax(0,1fr);gap:32px;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="lesson"][data-bookworm-composition="reading"] .li-flow-page-main{
+ width:100%;max-width:1120px;justify-self:center;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="lesson"][data-bookworm-composition="reading"] .li-flow-page-aside{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;
+ border:0;border-top:1px solid #bdb7ae;padding:18px 0 0;
+}
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="lesson"][data-bookworm-composition="reading"] .li-flow-page-aside>.li-flow-page-kicker,
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="lesson"][data-bookworm-composition="reading"] .li-flow-page-aside>.li-atom-text{
+ grid-column:1/-1;
+}
+@media(hover:hover){
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-method-plate:hover{
+  background:#f0e8dc;
+ }
+}
+@container lab-preview (max-width:720px){
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="guide"] .li-flow-card-grid{
+  grid-template-columns:minmax(0,1fr);
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="lesson"][data-bookworm-composition="reading"] .li-flow-page-aside{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+}
+@container lab-preview (max-width:440px){
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-method-plate{
+  grid-template-columns:80px minmax(0,1fr);gap:8px;padding:10px;
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-method-plate>.li-bw-inline-plate{width:80px}
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="resume"] .li-flow-page-main>.li-flow-stack>.li-ds-card{
+  grid-template-columns:minmax(0,1fr);
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="resume"] .li-flow-page-main>.li-flow-stack>.li-ds-card>.li-bw-inline-plate{
+  grid-column:auto;grid-row:auto;width:120px;
+ }
+ .li-ui-lab-preview[data-visual-theme="bookworm"] .li-flow-page[data-page="lesson"][data-bookworm-composition="reading"] .li-flow-page-aside{
+  grid-template-columns:minmax(0,1fr);
+ }
+}

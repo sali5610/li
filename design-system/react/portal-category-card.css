@@ -29,11 +29,41 @@
  overflow-wrap:anywhere}
 .li-portal-category-copy p{margin:0;color:var(--ink);
  font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
-/* Only display an emergency arch until the actual transparent WebP arrives. */
-.li-portal-category-fallback-arch{position:absolute;z-index:1;inset:3% 7% 0;
- border:clamp(8px,2.5vw,20px) solid var(--wood);border-bottom-width:clamp(12px,3vw,24px);
- border-radius:49% 49% 0 0;pointer-events:none}
-.li-portal-category-art[data-overlay-loaded="true"] .li-portal-category-fallback-arch{display:none}
+/* No fake arch on a slow connection: show the Elder Ly state until
+ * the real foreground image has decoded. The illustration never mounts first. */
+.li-portal-category-probe{position:absolute;width:1px;height:1px;
+ inset:0;opacity:0;pointer-events:none;overflow:hidden}
+.li-portal-category-wait{display:grid;place-items:center;cursor:progress}
+.li-portal-category-loading{display:grid;place-items:center;width:100%;min-width:0;
+ padding:var(--li-space-4);box-sizing:border-box}
+.li-portal-category-loading .li-legacy-laoly-state{
+ display:grid;justify-items:center;text-align:center;gap:var(--li-space-3);
+ width:100%;max-width:360px;min-width:0;padding:var(--li-space-3);
+ box-sizing:border-box;background:transparent;color:var(--moss)}
+.li-portal-category-loading .li-legacy-laoly-state img{
+ display:block;width:min(38vw,152px);max-width:100%;height:auto;aspect-ratio:1;
+ object-fit:contain}
+.li-portal-category-loading[data-portal-load="loading"] .li-legacy-laoly-state img{
+ animation:li-portal-laoly-float 3.6s ease-in-out infinite}
+.li-portal-category-loading .li-legacy-laoly-state h3{margin:0;
+ font:600 var(--li-type-title-md)/var(--li-leading-title-md) var(--li-font-editorial)}
+.li-portal-category-loading .li-legacy-laoly-state p{margin:0;
+ font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);
+ overflow-wrap:anywhere}
+.li-portal-category-retry{min-height:44px;padding:var(--li-space-2) var(--li-space-4);
+ color:var(--moss);background:var(--paper);border:1px solid var(--moss);
+ cursor:pointer;font:700 var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
+.li-portal-category-retry:focus-visible{outline:3px solid var(--moss);outline-offset:3px}
+.li-portal-category-wait .li-portal-category-loading{padding:var(--li-space-1)}
+.li-portal-category-wait .li-legacy-laoly-state{gap:var(--li-space-1);padding:0}
+.li-portal-category-wait .li-legacy-laoly-state img{width:min(18vw,80px)}
+.li-portal-category-wait .li-legacy-laoly-state h3{font:600 var(--li-type-caption)/var(--li-leading-caption) var(--li-font-ui)}
+.li-portal-category-wait .li-legacy-laoly-state p{display:none}
+.li-portal-category-wait .li-portal-category-retry{padding:var(--li-space-1) var(--li-space-2)}
+@keyframes li-portal-laoly-float{50%{transform:translateY(-4px)}}
+@media(prefers-reduced-motion:reduce){
+ .li-portal-category-loading .li-legacy-laoly-state img{animation:none!important}
+}
 @media(max-width:599px){
  .li-portal-category-card{grid-template-columns:minmax(0,57%) minmax(0,1fr);
   gap:var(--li-space-2);padding:var(--li-space-3) 0}

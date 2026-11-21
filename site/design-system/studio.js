@@ -121,7 +121,8 @@ if(query.has('embed')){
  let resizeObserver;
  function previewURL(){
   const options=new URLSearchParams({embed:'1',story:active.id,variant:v.value,state:s.value,lang:language.value});
-  const entry=active.id==='lucideManager'?'./react-icon-manager.html':
+  const entry=active.id==='portalCategoryCard'?'./portal-category-card.html':
+   active.id==='lucideManager'?'./react-icon-manager.html':
    active.id==='layout'?'./react-layout.html':
    ['text','heading','link','divider','badge','progress'].includes(active.id)?'./react-atoms.html':
    ['checkbox','radio','field','icon','iconButton'].includes(active.id)?'./react-controls.html':

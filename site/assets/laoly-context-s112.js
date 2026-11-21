@@ -137,12 +137,25 @@ function guideDetailPlan(){
  const id=liveId||(!window.liBuddyReactMounted?
   (document.getElementById("detail-id")?.textContent||"").match(/T\d\d/)?.[0]:null)||"T01";
  const m=methods.find(x=>x[0]===id)||methods[0];
- const cross=methods.find(x=>x[4]===m[4]&&x[0]!==m[0])||methods[0];
+ // Compare techniques by a related task, not simply the first category sibling.
+ const related={
+  T01:"T02",T02:"T01",T13:"T01",T03:"T04",T04:"T05",T05:"T04",
+  T06:"T04",T07:"T08",T08:"T07",T09:"T08",T10:"T07",
+  T11:"T12",T12:"T11"
+ };
+ const cross=methods.find(x=>x[0]===related[m[0]])||methods.find(x=>x[0]!==m[0]);
+ const comparison={
+  ...action("So với "+methodActionName(cross),
+   "Khác ở việc cần làm: "+methodDisplayName(m)+" giúp "+methodPurpose(m).toLowerCase()+
+   "; còn "+methodDisplayName(cross)+" giúp "+methodPurpose(cross).toLowerCase()+
+   ". Lão đặt ví dụ cả hai bên dưới để ngươi đối chiếu trước khi chuyển trang."),
+  comparison:{from:m[0],to:cross[0]}
+ };
  return {
   intro:"Ngươi đang đọc "+methodDisplayName(m)+" ("+m[2]+"). Cốt lõi của nó là: "+methodPurpose(m).toLowerCase()+".",
   actions:[
    action("Dùng khi nào?",methodPurpose(m)+". Xác định mục tiêu và điều kiện trước, đừng xài thần chú như bùa vạn năng."),
-   action("So với "+methodActionName(cross),cross[2]+" · "+methodDisplayName(cross)+" phù hợp khi cần: "+methodPurpose(cross).toLowerCase()+".",()=>{closeModal("buddy-modal");showMethod(cross[0]);}),
+   comparison,
    action("Về 13 Thần Chú","Lão đưa ngươi về danh sách, giữ nguyên nhịp học và bộ lọc.",()=>go("guide","method-search"))
   ]
  };
@@ -425,7 +438,8 @@ function reactReply(index){
   (currentPage==="research"&&qIndex===0)||
   currentPage==="case"||currentPage==="lesson"||currentPage==="lessonL09";
  if(typeof item.perform==="function")item.perform();
- return {text:line,showChallenge:index===1&&supportsSamplingDebate&&!item.perform};
+ return {text:line,showChallenge:index===1&&supportsSamplingDebate&&!item.perform&&!item.comparison,
+  comparison:item.comparison||null};
 }
 window.liBuddyEngine=Object.freeze({open:reactView,choose:reactReply});
 openLaoLy=function(trigger){
@@ -452,6 +466,18 @@ document.addEventListener("click",function(event){
  if(!item)return;
  debateEl.hidden=true;buddyDebateActive=true;quoteEl.hidden=true;
  textEl.textContent=localizePlanText(window.liAddressLine?window.liAddressLine(item.reply):item.reply);
+ document.getElementById("li-native-buddy-compare-method")?.remove();
+ if(item.comparison){
+  const target=methods.find(method=>method[0]===item.comparison.to);
+  if(target){
+   const link=document.createElement("button");
+   link.id="li-native-buddy-compare-method";link.type="button";link.className="action alt";
+   link.textContent=inEnglish()?"Open "+target[0]+" · "+methodDisplayName(target):
+    "Mở "+target[0]+" · "+methodDisplayName(target);
+   link.addEventListener("click",()=>{closeModal("buddy-modal");showMethod(target[0]);},{once:true});
+   scrollEl.append(link);
+  }
+ }
  scrollEl.scrollTop=0;
  if(typeof item.perform==="function")item.perform();
 },true);

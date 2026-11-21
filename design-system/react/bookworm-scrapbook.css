@@ -150,3 +150,8 @@
   .li-bw-reader-ribbon,.li-bw-scrapbook-body .li-ds-card
  ){transition:none!important;animation:none!important}
 }
+
+/* Preserve the actual uploaded seal instead of drawing a fake stamp. */
+.li-ui-lab-preview[data-visual-theme="bookworm"] .li-bw-scrapbook-seal img{
+ display:block;width:24px;height:24px;object-fit:contain;
+}

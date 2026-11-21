@@ -645,24 +645,26 @@
 }
 
 
-/* Home micro-action: visually a short text link, still a 44px touch target. */
+/* Opaque, high-contrast micro-chip on the visually busy cinematic Home.
+   Keep the 44px hit area but don't let dark text disappear into the artwork. */
 #li-react-home-host .hero-left .li-ds-button.home-checkin{
  box-sizing:border-box;
+ display:inline-flex;
  width:max-content;
  max-width:100%;
  min-width:0;
  min-height:44px;
  align-self:flex-start;
- padding:0 2px!important;
+ padding:8px 13px!important;
  margin:0;
- border:0!important;
- border-radius:0!important;
- background:transparent!important;
+ border:1px solid var(--forest,#19382d)!important;
+ border-radius:999px!important;
+ background:var(--cream,#f5f1e7)!important;
+ color:var(--forest,#19382d)!important;
  box-shadow:none!important;
- color:var(--moss)!important;
  font-size:.82rem;
  line-height:1.2;
- font-weight:700;
+ font-weight:750;
  letter-spacing:.015em;
  text-transform:none;
 }
@@ -676,8 +678,9 @@
  text-align:left;
 }
 #li-react-home-host .hero-left .home-checkin-label{
- border-bottom:1px solid currentColor;
- padding-bottom:2px;
+ color:inherit!important;
+ border:0;
+ padding:0;
 }
 #li-react-home-host .hero-left .home-checkin svg{
  flex:0 0 16px;

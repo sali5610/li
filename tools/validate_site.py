@@ -480,7 +480,7 @@ assert '<article id="notebook-section" class="surface tinted"' not in library_se
 # UX-DASH-01: cards are grouped by the user's job, not the legacy card 03/04 DOM adjacency.
 # Dấu trang is a standalone fourth Tủ Riêng group, not nested in Quay lại.
 assert library_section.count('class="library-group" role="region"')==4
-assert all(x in library_section for x in ('library-resume-heading','library-collection-heading','library-reflection-heading'))
+assert all(x in library_section for x in ('library-resume-heading','library-collection-heading','library-bookmarks-heading','library-reflection-heading'))
 assert '<div class="surface-grid cols2">' in library_section
 assert library_section.count('id="case-archive-preview"')==1
 assert html.count('id="li-diary-calendar"')==1
@@ -492,11 +492,11 @@ assert (site/"assets"/"personal-diary.css").is_file()
 
 # UX-IA-03: no flattened top-level shelf items; latest truthful records and full details.
 library_section=section("library")
-assert all(x in library_section for x in ('library-resume-heading','library-collection-heading','library-reflection-heading'))
+assert all(x in library_section for x in ('library-resume-heading','library-collection-heading','library-bookmarks-heading','library-reflection-heading'))
 assert 'id="li-library-latest-lesson"' in library_section
 assert 'id="li-library-latest-idea"' in library_section
-assert 'id="li-saved-questions"' not in library_section, "Dấu Trang must live only in Quay lại details"
-assert 'id="page-resume"' in html and 'id="page-collection"' in html
+assert 'id="li-saved-questions"' not in library_section, "Saved questions belong to the standalone Dấu trang page"
+assert 'id="page-resume"' in html and 'id="page-collection"' in html and 'id="page-bookmarks"' in html
 assert html.count('id="li-saved-questions"')==1
 assert html.count('id="case-archive-preview"')==1
 assert 'data-demo="Chưa lưu được ý này' not in html
@@ -621,7 +621,7 @@ assert 'toast("Đã xóa ghi chép và lịch sử phiên bản.",{undo:' in (si
 assert 'window.liShowUndo("Đã xóa lịch hoạt động.",' in (site/"assets"/"personal-diary.js").read_text(encoding="utf-8")
 
 # UX-IA-08: Quay lại overview has exactly one actual lesson AND one actual
-# problem/case, while full rows and bookmarks remain on the detail route.
+# problem/case, while saved bookmarks remain on their own page.
 library=section("library")
 resume=section("resume")
 assert library.count('id="li-library-latest-lesson"')==1
@@ -631,7 +631,8 @@ assert 'id="li-lesson-history"' not in library
 assert 'id="li-problem-history"' not in library
 assert resume.count('id="li-lesson-history"')==1
 assert resume.count('id="li-problem-history"')==1
-assert resume.count('id="li-saved-questions"')==1
+assert resume.count('id="li-saved-questions"')==0
+assert section("bookmarks").count('id="li-saved-questions"')==1
 hub=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert 'PROBLEM_VISITS_KEY="li.private.problem.visits.v1"' in hub
 assert 'renderProblemRows($("li-library-latest-problem"),1)' in hub
@@ -647,21 +648,23 @@ assert 'if(id==="case")window.liLibraryShelf?.trackProblem("case","sampling-bias
 assert 'window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_resume_problem_case.cjs")],check=True,cwd=site.parent)
 
-# UX-IA-09: Dấu Trang is two exclusive accessible tabs, not a mixed list.
+# UX-IA-09: Dedicated Dấu trang page keeps two separate accessible tabs.
+bookmarks=section("bookmarks")
 resume=section("resume")
 library=section("library")
-assert resume.count('role="tablist"')==1
-assert resume.count('role="tabpanel"')==2
-assert resume.count('data-bookmark-tab="lesson"')==1
-assert resume.count('data-bookmark-tab="question"')==1
-assert resume.count('id="li-saved-lessons"')==1
-assert resume.count('id="li-saved-questions"')==1
-assert resume.count('id="li-bookmarks-empty-lessons"')==1
-assert resume.count('id="li-bookmarks-empty-questions"')==1
+assert 'role="tablist"' not in resume
+assert bookmarks.count('role="tablist"')==1
+assert bookmarks.count('role="tabpanel"')==2
+assert bookmarks.count('data-bookmark-tab="lesson"')==1
+assert bookmarks.count('data-bookmark-tab="question"')==1
+assert bookmarks.count('id="li-saved-lessons"')==1
+assert bookmarks.count('id="li-saved-questions"')==1
+assert bookmarks.count('id="li-bookmarks-empty-lessons"')==1
+assert bookmarks.count('id="li-bookmarks-empty-questions"')==1
 assert 'id="li-saved-lessons"' not in library and 'id="li-saved-questions"' not in library
-assert resume.count('aria-selected="true"')>=1
-assert 'id="li-bookmark-panel-questions"' in resume and 'tabindex="-1" data-bookmark-tab="question"' in resume
-assert 'Bài học, case và câu hỏi đã lưu' not in resume
+assert bookmarks.count('aria-selected="true"')>=1
+assert 'id="li-bookmark-panel-questions"' in bookmarks and 'tabindex="-1" data-bookmark-tab="question"' in bookmarks
+assert 'Bài học, case và câu hỏi đã lưu' not in bookmarks
 hub=(site/"assets"/"library-hub.js").read_text(encoding="utf-8")
 assert 'let bookmarkTab="lesson";' in hub
 assert 'function selectBookmarkTab(type,focus=false)' in hub

@@ -3,6 +3,7 @@ import {createRoot} from 'react-dom/client';
 import {Button,ChatBubble,LiIcon} from '../../../../design-system/react/index';
 import '../../../../design-system/react/legacy.css';
 import './laoly-dialog.css';
+import spellGuides from '../../../../content/editorial/l2-spell-guides.v1.json';
 
 /** Full React visual owner for the existing Lão Lý bubble.
  * Keeps the first-party contextual plan engine, all its real actions,
@@ -18,14 +19,17 @@ type BuddyView={
  /** Structured lesson extension; real native mentor actions remain unchanged. */
  editorial?:EditorialBuddy;
 };
-type BuddyReply={text:string;showChallenge:boolean};
+type SpellComparison={from:string;to:string};
+type BuddyReply={text:string;showChallenge:boolean;comparison?:SpellComparison|null};
 type BuddyPort={open:(trigger?:HTMLElement|null)=>BuddyView|null;choose:(index:number)=>BuddyReply|null};
 type AppWindow=Window&{
  liBuddyEngine?:BuddyPort;
  liBuddyReactMounted?:boolean;
  liCompanionDrag?:{getAvatar?:()=>string};
  liLanguage?:{get?:()=>string;translateComposed?:(value:string)=>string};
- liAddressLine?:(text:string)=>string
+ liAddressLine?:(text:string)=>string;
+ liMethods?:{getView:()=>{methods:{id:string;title:string;purpose:string;original:string}[]};
+  open:(id:string)=>boolean}
 };
 const app=window as AppWindow;
 const chooseLanguage=(vi:string,en:string)=>app.liLanguage?.get?.()==='en'?en:vi;
@@ -39,19 +43,23 @@ export function BuddyDialog({root}:{root:HTMLElement}){
  const [message,setMessage]=useState('');
  const [quoteIndex,setQuoteIndex]=useState(0);
  const [challenge,setChallenge]=useState(false);
+ const [comparison,setComparison]=useState<SpellComparison|null>(null);
  const [,setLocale]=useState(0);
  const [avatar,setAvatar]=useState('');
  const heading=useRef<HTMLHeadingElement|null>(null);
  const content=useRef<HTMLDivElement|null>(null);
  const restore=useRef<string>('laoly-fab');
  const current=useRef<BuddyView|null>(null);
- const close=()=>{
-  setOpen(false);setChallenge(false);
+ const close=(restoreFocus=true)=>{
+  setOpen(false);setChallenge(false);setComparison(null);
   root.classList.remove('open');
-  const focusId=restore.current;
-  requestAnimationFrame(()=>{
-   (document.getElementById(focusId)||document.getElementById('laoly-fab'))?.focus();
-  });
+  if(restoreFocus){
+   const focusId=restore.current;
+   requestAnimationFrame(()=>{
+    (document.getElementById(focusId)||document.getElementById('laoly-fab'))
+     ?.focus({preventScroll:true});
+   });
+  }
  };
  useEffect(()=>{
   const onOpen=(event:Event)=>{
@@ -69,7 +77,7 @@ export function BuddyDialog({root}:{root:HTMLElement}){
    current.current=next;
    restore.current=next.triggerId||'laoly-fab';
    setView(next);setMessage(next.text);setAvatar(next.avatar);
-   setChallenge(false);setQuoteIndex(0);setOpen(true);
+   setChallenge(false);setComparison(null);setQuoteIndex(0);setOpen(true);
    // Reopening the dialog must start at the conversation, not the last quote scroll.
    requestAnimationFrame(()=>content.current?.scrollTo({top:0,behavior:'auto'}));
    root.dataset.trigger=restore.current;
@@ -79,7 +87,7 @@ export function BuddyDialog({root}:{root:HTMLElement}){
   const mode=()=>setAvatar(app.liCompanionDrag?.getAvatar?.()||current.current?.avatar||'');
   const guard=new MutationObserver(()=>{
    if(!document.documentElement.classList.contains('li-auth-verified')){
-    setOpen(false);setView(null);setMessage('');setChallenge(false);
+    setOpen(false);setView(null);setMessage('');setChallenge(false);setComparison(null);
     current.current=null;root.classList.remove('open');
    }
   });
@@ -125,11 +133,14 @@ export function BuddyDialog({root}:{root:HTMLElement}){
   if(view?.editorial){
    const reply=view.editorial.actions[index];
    if(!reply)return;
-   setMessage(reply.reply);setChallenge(false);
+   setMessage(reply.reply);setChallenge(false);setComparison(null);
   }else{
    const reply=app.liBuddyEngine?.choose(index);
    if(!reply)return;
    setMessage(reply.text);setChallenge(reply.showChallenge);
+   const next=reply.comparison;
+   setComparison(next&&/^T(?:0[1-9]|1[0-3])$/.test(next.from)&&
+    /^T(?:0[1-9]|1[0-3])$/.test(next.to)&&next.from!==next.to?next:null);
   }
   content.current?.scrollTo({top:0,behavior:'auto'});
  };
@@ -140,6 +151,18 @@ export function BuddyDialog({root}:{root:HTMLElement}){
  };
  if(!view)return null;
  const quote=view.editorial?.quotes?.[quoteIndex]??view.quote;
+ const spellMethods=app.liMethods?.getView?.().methods||[];
+ const compareTarget=comparison?spellMethods.find(x=>x.id===comparison.to):null;
+ const sourceFor=(id:string)=>{
+  const guide=spellGuides.methods[id as keyof typeof spellGuides.methods];
+  return guide?.[chooseLanguage('vi','en') as 'vi'|'en']||null;
+ };
+ const openCompared=()=>{
+  if(!compareTarget)return;
+  const id=compareTarget.id;
+  close(false);
+  app.liMethods?.open(id);
+ };
  const quoteVisible=!challenge&&!!quote&&(!!view.editorial||message===view.text);
  return <div className="buddy-shell li-react-buddy-shell" onKeyDown={onKeyDown}>
   <div className="dialog">
@@ -173,6 +196,31 @@ export function BuddyDialog({root}:{root:HTMLElement}){
      {message!==view.text&&<p className="li-buddy-context">{view.text}</p>}
      <p id="buddy-text" role="status" aria-live="polite">{message}</p>
     </div>
+    {comparison&&<section className="li-buddy-spell-comparison"
+     aria-label={chooseLanguage('Đối chiếu hai Thần Chú','Compare learning techniques')}>
+     <h3>{chooseLanguage('Khác nhau ở đâu?','How are they different?')}</h3>
+     <div className="li-buddy-spell-pair">
+      {[comparison.from,comparison.to].map((id,index)=>{
+       const method=spellMethods.find(item=>item.id===id);
+       const guide=sourceFor(id);
+       if(!method)return null;
+       return <article key={id}>
+        <strong>{id} · {method.title}{index===0?
+         <span> · {chooseLanguage('Đang đọc','Current')}</span>:null}</strong>
+        <p>{method.purpose}</p>
+        {guide?.steps?.[0]&&<p className="li-buddy-spell-example">
+         <b>{chooseLanguage('Cách bắt đầu:','First step:')}</b> {guide.steps[0]}</p>}
+        {guide?.example&&<p className="li-buddy-spell-example">
+         <b>{chooseLanguage('Ví dụ:','Example:')}</b> {guide.example.scenario}</p>}
+       </article>;
+      })}
+     </div>
+     {compareTarget&&<Button variant="ghost" className="li-buddy-spell-link"
+      onClick={openCompared}>
+      {chooseLanguage('Mở Thần Chú','Open spell')} {compareTarget.id} · {compareTarget.title}
+      <LiIcon name="arrow-right" size={17}/>
+     </Button>}
+    </section>}
     {view.editorial?.quotes&&<div className="li-editorial-buddy-quotes" role="group"
      aria-label={chooseLanguage('Nguồn trích dẫn được chọn theo nội dung','Curated lesson quotations')}>
      {view.editorial.quotes.map((candidate,index)=><Button key={candidate.id}
@@ -203,7 +251,7 @@ export function BuddyDialog({root}:{root:HTMLElement}){
      <LiIcon name={index===0?'search':index===1?'chat':'book-open'} size={18}/>
      {label}</Button>)}
     <Button variant="ghost" className="action"
-     id="li-react-close-buddy" onClick={close}>
+     id="li-react-close-buddy" onClick={()=>close()}>
      <LiIcon name="close" size={18}/> {chooseLanguage('Đóng','Close')}</Button>
    </div>
   </div>

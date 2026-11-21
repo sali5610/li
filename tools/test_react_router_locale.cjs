@@ -12,7 +12,7 @@ const router=read("tools/step16-real-l09-react-island/src/shell/app-router.ts");
 const generated=ts.transpileModule(router,{compilerOptions:{
  module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022
 }}).outputText;
-const pages=new Map(["home","settings","catalog","search","library","guide",
+const pages=new Map(["home","settings","catalog","search","library","guide","guideDetail",
  "lessonL03","lessonL09","lessonL15","draftLessonL0913"].map(id=>{
  const classes=new Set(id==="home"?["active"]:[]);
  return [id,{id:"page-"+id,classList:{toggle:(name,enabled)=>{
@@ -317,6 +317,32 @@ assert.equal(window.scrollY,310,'Forward restores the newer page reading positio
 assert.equal(browser.back(),true);
 assert.equal(browser.getCurrent(),'catalog','Back still works after Forward');
 assert.equal(window.scrollY,640,'Back still restores after a Forward round trip');
+// A comparison link opens another method on the SAME React screen. URL,
+// history identity, Back and Forward must all restore the actual technique,
+// not just the shared guideDetail route.
+let activeSpell='T01';
+window.LiSpellPractice={
+ getView:()=>({active:activeSpell}),
+ open:id=>{activeSpell=id;}
+};
+assert.equal(browser.navigate('guideDetail'),true);
+assert.equal(location.searchParams.get('method'),'T01');
+window.scrollTo(0,740);
+activeSpell='T02';
+assert.equal(browser.navigate('guideDetail'),true);
+assert.equal(location.searchParams.get('method'),'T02',
+ 'A second spell gets a separate same-route browser entry');
+assert.equal(window.scrollY,0,'Related spell opens at its own beginning');
+window.scrollTo(0,260);
+assert.equal(browser.back(),true);
+assert.equal(browser.getCurrent(),'guideDetail');
+assert.equal(activeSpell,'T01','Back rehydrates the original spell');
+assert.equal(location.searchParams.get('method'),'T01');
+assert.equal(window.scrollY,740,'Back restores the original spell reading position');
+window.history.forward();
+assert.equal(activeSpell,'T02','Forward restores the compared spell');
+assert.equal(window.scrollY,260,'Forward restores its independent scroll');
+delete window.LiSpellPractice;
 stopBrowser();
 // An initial "not yet verified" event must NOT erase a bookmarked lesson URL.
 visible=false;

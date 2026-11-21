@@ -28,7 +28,7 @@ const layoutChoices:readonly {id:LayoutKey;label:string}[]=[
  {id:'cinematic',label:'Cinematic'},
  {id:'notebook',label:'Notebook · Handwritten'},
  {id:'vintagePop',label:'Vintage Pop · Stamp'},
- {id:'bookworm',label:'Bookworm · Illustrated Folio'}
+ {id:'bookworm',label:'Bookworm · Vintage Minimal'}
 ];
 const homeVariant:Record<LayoutKey,HomeLayoutVariant>={
  classic:'heritage',split:'editorial',cinematic:'immersive',notebook:'notebook',

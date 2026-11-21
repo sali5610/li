@@ -89,8 +89,8 @@ app.LiSpellPractice={getT02Status:()=>null};
 app.liBuddyEngine={choose:(i:number)=>({text:i===0?'Chọn cách học phù hợp với câu hỏi.':'Thử một bài luyện ngắn.',showChallenge:false})};
 const root=document.getElementById('visual-root')!;
 const buddyRoot=document.getElementById('buddy-modal')!;
-if(viewName==='breadcrumb'){
- appUiStore.getState().setRoute('lessonL09');
+if(viewName==='breadcrumb'||viewName==='breadcrumbPrivate'){
+ appUiStore.getState().setRoute(viewName==='breadcrumbPrivate'?'library':'lessonL09');
  root.id='li-react-route-trail';
  createRoot(root).render(<RouteTrail/>);
 } else if(viewName==='lesson'){
@@ -153,8 +153,28 @@ setTimeout(()=>{
  assert('true-390-css-mobile-viewport',windowWidth===390,{innerWidth,clientWidth:windowWidth});
  assert('no-horizontal-overflow',document.documentElement.scrollWidth<=windowWidth+4,
   {scrollWidth:document.documentElement.scrollWidth,windowWidth});
- if(viewName==='breadcrumb'){
+ const textCenter=(node:Element)=>{
+  const text=[...node.childNodes].find(n=>n.nodeType===Node.TEXT_NODE&&Boolean(n.textContent?.trim()));
+  if(!text)return NaN;
+  const range=document.createRange();range.selectNodeContents(text);
+  const rect=range.getBoundingClientRect();
+  return rect.top+rect.height/2;
+ };
+ const baseline=(crumb:Element|null)=>{
+  const nodes=[...(crumb?.querySelectorAll(':scope > ol > li > button,:scope > ol > li > [aria-current="page"],:scope > ol > li > .li-ds-action-menu > summary')||[])];
+  const measured=nodes.map(el=>({label:el.textContent?.trim(),textMid:textCenter(el),boxMid:el.getBoundingClientRect().top+el.getBoundingClientRect().height/2}));
+  return {measured,maxTextDiff:Math.max(...measured.map(m=>m.textMid))-Math.min(...measured.map(m=>m.textMid))};
+ };
+ if(viewName==='breadcrumbPrivate'){
   const trail=select('.li-app-route-trail .li-ds-breadcrumb');
+  const result=baseline(trail);
+  const labels=[...(trail?.querySelectorAll(':scope > ol > li')||[])].map(n=>n.textContent?.trim());
+  assert('actual-private-library-two-item-crumb',Boolean(trail&&labels.length===2&&labels[0]?.includes('Đại Sảnh')&&labels[1]==='Tủ Riêng'),labels);
+  assert('private-crumb-text-baseline-matches',result.measured.length===2&&result.maxTextDiff<=2,result);
+ } else if(viewName==='breadcrumb'){
+  const trail=select('.li-app-route-trail .li-ds-breadcrumb');
+  const result=baseline(trail);
+  assert('lesson-all-text-ink-lines-aligned',result.measured.length===4&&result.maxTextDiff<=2,result);
   const ancestors=[...document.querySelectorAll<HTMLButtonElement>(
    '.li-app-route-trail .li-ds-breadcrumb>ol>li>button')];
   const overflow=select('.li-ds-breadcrumb-overflow .li-ds-action-menu') as HTMLDetailsElement|null;

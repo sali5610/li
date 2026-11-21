@@ -22,7 +22,7 @@
  if(!/^[0-9a-f]{40}$/.test(sourceSha||""))return;
  const oauthReturn=["code","state","error"].some(key=>new URLSearchParams(location.search).has(key));
  let learnerInteracted=false,checking=false;
- for(const name of ["pointerdown","keydown","input"]){
+ for(const name of ["pointerdown","touchstart","keydown","input","scroll"]){
   window.addEventListener(name,()=>{learnerInteracted=true;},{once:true,capture:true});
  }
 

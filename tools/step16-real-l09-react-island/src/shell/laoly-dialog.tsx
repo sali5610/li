@@ -64,7 +64,7 @@ export function BuddyDialog({root}:{root:HTMLElement}){
       editorial.actions.some(action=>!action.label||!action.reply)||
       editorial.quotes.some(quote=>!quote.original||!quote.meta||!quote.url?.startsWith('https://')))
      return;
-   }else if(next.labels.length!==3)return;
+   }
    current.current=next;
    restore.current=next.triggerId||'laoly-fab';
    setView(next);setMessage(next.text);setAvatar(next.avatar);

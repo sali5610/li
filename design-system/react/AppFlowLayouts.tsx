@@ -391,12 +391,21 @@ export function AppPageLayout(props:AppPageLayoutProps){
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  const reduced=useReducedMotion();
  const [marginOpen,setMarginOpen]=React.useState(true);
- const reveal=(delay:number)=>variant==='notebook'&&!reduced?{
-  initial:{opacity:0,y:14},
+ const [indexOpen,setIndexOpen]=React.useState(true);
+ const indexId=React.useId();
+ const bookworm=variant==='bookworm';
+ // Layout composition changes with the content type, not the content itself.
+ const bookwormComposition=
+  ['lesson','guideDetail','noteDetail'].includes(page)?'reading':
+  ['practice','feedback','case','research','capture'].includes(page)?'study':
+  ['dashboard','checkin','settings','account','laoly'].includes(page)?'journal':'shelf';
+ const reveal=(delay:number)=>(variant==='notebook'||bookworm)&&!reduced?{
+  initial:{opacity:0,y:bookworm?20:14},
   animate:{opacity:1,y:0},
-  transition:{duration:.48,delay,ease:'easeOut' as const}
+  transition:{duration:bookworm?.56:.48,delay,ease:[.22,1,.36,1] as const}
  }:{};
- return <section className="li-flow-page" data-page={page} data-layout={variant} lang={locale}>
+ return <section className="li-flow-page" data-page={page} data-layout={variant}
+  data-bookworm-composition={bookworm?bookwormComposition:undefined} lang={locale}>
   {variant==='bookworm'&&<div className="li-flow-bookworm-masthead" aria-hidden="true">
    <span>li. · Illustrated Folio</span><span>THE LIBRARY OF QUESTIONS / VOL. 01</span>
   </div>}
@@ -409,6 +418,12 @@ export function AppPageLayout(props:AppPageLayoutProps){
     <span className="li-flow-page-kicker">li. / {t('THƯ VIỆN TRI THỨC','THE KNOWLEDGE LIBRARY')}</span>
     <Heading level={1} role="headline">{t(meta.vi,meta.en)}</Heading>
     <Text role="body">{t(meta.descriptionVi,meta.descriptionEn)}</Text>
+    {bookworm&&<button type="button" className="li-bookworm-index-toggle"
+      aria-controls={indexId} aria-expanded={indexOpen}
+      onClick={()=>setIndexOpen(open=>!open)}>
+      <LiIcon name={indexOpen?'book-open':'book'} size={16}/>
+      {indexOpen?t('Gập mục lục','Close index'):t('Mở mục lục','Open index')}
+     </button>}
     {variant==='notebook'&&<div className="li-flow-marginalia">
      <button className="li-flow-note-toggle" type="button"
       onClick={()=>setMarginOpen(value=>!value)} aria-expanded={marginOpen}
@@ -430,17 +445,27 @@ export function AppPageLayout(props:AppPageLayoutProps){
      </AnimatePresence>
     </div>}
    </motion.div>
-   {variant==='bookworm'&&<div className="li-flow-bookworm-hero-art" aria-hidden="true">
+   {bookworm&&<motion.div className="li-flow-bookworm-hero-art" aria-hidden="true"
+    initial={reduced?false:{opacity:0,x:24,rotate:2}}
+    animate={{opacity:1,x:0,rotate:0}}
+    transition={{duration:reduced?0:.65,delay:reduced?0:.12,ease:[.22,1,.36,1]}}
+    whileHover={reduced?undefined:{y:-4,rotate:-1}}>
     <BookwormIllustration kind={['catalog','search','library','resume','collection','noteDetail'].includes(page)?'shelf':
      ['lesson','practice','feedback','guide','guideDetail','research','case'].includes(page)?'open':'stack'}/>
-   </div>}
+   </motion.div>}
    <span className="li-flow-page-index" aria-hidden="true">{String(appLabPages.findIndex(item=>item.id===page)+1).padStart(2,'0')}</span>
   </header>
   <div className="li-flow-page-columns">
    <motion.div className="li-flow-page-main" {...reveal(.14)}>
     <ScreenBody {...props}/>
    </motion.div>
-   <motion.aside className="li-flow-page-aside" {...reveal(.25)}
+   <AnimatePresence initial={false}>
+   {(!bookworm||indexOpen)&&<motion.aside id={indexId} key="related-index"
+    className="li-flow-page-aside" {...reveal(.25)}
+    initial={bookworm&&!reduced?{opacity:0,height:0,y:-10}:undefined}
+    animate={bookworm?{opacity:1,height:'auto',y:0}:undefined}
+    exit={bookworm?{opacity:0,height:0,y:-8}:undefined}
+    transition={bookworm?{duration:reduced?0:.3,ease:[.22,1,.36,1]}:undefined}
     aria-label={t('Lối đi liên quan','Related paths')}>
     <span className="li-flow-page-kicker">{t('LỐI ĐI TIẾP','NEXT DESTINATIONS')}</span>
     <Text role="support">{t('Bản thiết kế thử nghiệm dùng dữ liệu giả lập.',
@@ -455,7 +480,8 @@ export function AppPageLayout(props:AppPageLayoutProps){
        {t(item.vi,item.en)} <LiIcon name="arrow-right" size={16}/>
       </Button>;
     })}
-   </motion.aside>
+   </motion.aside>}
+   </AnimatePresence>
   </div>
  </section>;
 }

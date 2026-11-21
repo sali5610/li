@@ -112,11 +112,14 @@ function renderGroup(g){
  const categories=[...new Map(g.fields.map(f=>[f.category.id,f.category.label])).entries()];
  if(activeCategory!=="all"&&!categories.some(([id])=>id===activeCategory))activeCategory="all";
  if(categories.length>1){
-  const bar=el("div","catalog-category-filters",null,host);
+  // Native fallback mirrors the canonical React FilterGroup/FilterChip DOM contract.
+  const bar=el("div","li-ds-filter-group catalog-field-filter-group",null,host);
   bar.setAttribute("role","group");bar.setAttribute("aria-label",copy("Lọc chuyên ngành theo danh mục","Filter fields by category"));
+  bar.dataset.liMolecule="filter-group";bar.dataset.mode="single";
   const options=[["all",{vi:"Tất cả",en:"All"}],...categories];
   options.forEach(([id,label])=>{
-   const b=action(bar,copy(label.vi,label.en),"filter-category",id,"catalog-category-filter");
+   const b=action(bar,copy(label.vi,label.en),"filter-category",id,"li-ds-filter-chip");
+   b.dataset.liComponent="filter-chip";
    b.setAttribute("aria-pressed",String(activeCategory===id));
   });
  }

@@ -115,7 +115,15 @@ export function Journal(){
        onClick={()=>act('next')}><LiIcon name="chevron-right" size={18}/></Button>
      </div>
     </div>
-    <div className="li-diary-weekdays" aria-hidden="true">
+    <section className="li-diary-trend" aria-label={copy('Hoạt động 7 ngày quanh ngày chọn','Seven-day activity around selection')}>
+     <div className="kicker"><LiIcon name="chart-column" size={16}/> {copy('NHỊP HOẠT ĐỘNG · 7 NGÀY','ACTIVITY RHYTHM · 7 DAYS')}</div>
+     <StackedActivityChart days={chartDays} selectedDate={view.selected}
+      todayDate={todayKey} onSelectDate={date=>act('select',date)}
+      locale={app.liLanguage?.get?.()==='en'?'en':'vi'}/>
+     <Text role="support">{copy(
+      'Bài · Vấn đề · Input; ngày chưa có ghi nhận để trống, không tính thành 0.',
+      'Lessons · Problems · Inputs; unrecorded days stay blank, not zero.')}</Text>
+    </section>\n    <div className="li-diary-weekdays" aria-hidden="true">
      {(app.liLanguage?.get?.()==='en'?['M','T','W','T','F','S','S']:
       ['T2','T3','T4','T5','T6','T7','CN']).map((label,i)=><span key={i}>{label}</span>)}
     </div>
@@ -129,15 +137,7 @@ export function Journal(){
       view.totals.counts[0]+copy(' bài · ',' lessons · ')+view.totals.counts[1]+
       copy(' vấn đề · ',' problems · ')+view.totals.counts[2]+' input.':
       copy('Tháng này chưa có dữ liệu được ghi nhận.','No recorded journal data this month.')}</Text>
-    <section className="li-diary-trend" aria-label={copy('Hoạt động 7 ngày quanh ngày chọn','Seven-day activity around selection')}>
-     <div className="kicker"><LiIcon name="chart-column" size={16}/> {copy('NHỊP HOẠT ĐỘNG · 7 NGÀY','ACTIVITY RHYTHM · 7 DAYS')}</div>
-     <StackedActivityChart days={chartDays} selectedDate={view.selected}
-      todayDate={todayKey} onSelectDate={date=>act('select',date)}
-      locale={app.liLanguage?.get?.()==='en'?'en':'vi'}/>
-     <Text role="support">{copy(
-      'Bài · Vấn đề · Input; ngày chưa có ghi nhận để trống, không tính thành 0.',
-      'Lessons · Problems · Inputs; unrecorded days stay blank, not zero.')}</Text>
-    </section>
+
    </Card>
    <section className="li-diary-detail" aria-label={copy('Chi tiết ngày','Daily details')}>
     <Heading level={2} role="titleLarge">{view.selectedLabel}</Heading>

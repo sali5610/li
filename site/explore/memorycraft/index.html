@@ -384,8 +384,15 @@
     var notes={a:"Đang thử Option A — phiên ôn toàn bộ thẻ đến hạn.",b:"Đang thử Option B — bắt đầu từ bài học mẫu, chọn ý để tự nhớ.",c:"Đang thử Option C — chọn chủ đề trước rồi luyện tập theo mục tiêu."};
     setText("selectedFlowNote",notes[selectedFlow]);
   }
-  function chooseFlow(flow) {
-    selectedFlow=flow; active="today"; updateFlowSurface();renderAll();window.scrollTo(0,0);
+  function chooseFlow(flow,initial) {
+    selectedFlow=flow; active="today"; updateFlowSurface();renderAll();
+    if(initial)return;
+    var target=flow==="a"?$("panel-today"):$("flow-"+flow+"-preview");
+    if(target){
+      target.scrollIntoView({behavior:"auto",block:"start"});
+      var heading=target.querySelector("h2");
+      if(heading){heading.setAttribute("tabindex","-1");heading.focus({preventScroll:true});}
+    }
   }
   function nav(route) {
     active=route;
@@ -580,7 +587,7 @@
     locusLinks[idx]=id;renderPalace();
     showStatus("palaceStatus",id?"Đã đổi liên kết tại "+locusNames[idx]+". Đây chỉ là lựa chọn trong phiên demo.":"Đã bỏ liên kết tại "+locusNames[idx]+".");
   });
-  chooseFlow("a");
+  chooseFlow("a",true);
 })();
 </script>
 </body>

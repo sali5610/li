@@ -38,7 +38,7 @@ assert.match(reader,/function FormattedLessonQuestion\(/,
  'All personal questions use one safely formatted text-field component');
 assert.match(reader,/<label htmlFor=\{inputId\}>\{index\+1\}\. \{formatLessonInline\(question\)\}<\/label>/,
  'Actual accessible question label includes bold emphasis instead of raw HTML');
-assert.match(reader,/className="li-atom-field" data-li-atom="field"/,
+assert.match(reader,/className="li-atom-field li-sectioned-question-field" data-li-atom="field"/,
  'Question textareas reuse the existing design-system field styling');
 assert.match(editorial,/export function inline\(/,
  'Reuse the existing safe inline source-markup parser, never HTML injection');

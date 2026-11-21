@@ -3,6 +3,7 @@ import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {LiIcon} from './LucideIcons';
 import {BookwormIllustration} from './BookwormIllustration';
 import type {BookwormArtKind} from './BookwormIllustration';
+import './bookworm-scrapbook.css';
 
 /** Scrapbook is presentation-only: children are the original screen UI.
  * Its open/closed state never touches saved notes, progress or the backend. */

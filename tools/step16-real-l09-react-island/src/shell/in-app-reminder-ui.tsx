@@ -2,9 +2,9 @@ import React,{useEffect,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {Button,Card,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
 import {
- DEFAULT_REMINDER,REMINDER_KEY,dueInApp,localDay,readReminderDelivery,
+ REMINDER_KEY,dueInApp,localDay,readReminderDelivery,
  readReminderPreference,validTime,writeReminderDelivery,writeReminderPreference,
- type ReminderKind,type ReminderPreference
+ type ReminderKind,type ReminderFrequency,type ReminderSchedule,type ReminderPreference
 } from './in-app-reminder.js';
 
 const OWNER='li.sync.local-owner.v1';
@@ -14,141 +14,192 @@ const kinds:readonly {id:ReminderKind;vi:string;en:string}[]=[
  {id:'movement',vi:'Đổi tư thế, vận động nhẹ',en:'Take a movement break'},
  {id:'rest',vi:'Nghỉ một nhịp',en:'Take a rest'}
 ];
-function uid():string{
- if(!document.documentElement.classList.contains('li-auth-verified'))return '';
- return localStorage.getItem(OWNER)||'';
+const frequencies:readonly {id:ReminderFrequency;vi:string;en:string}[]=[
+ {id:'daily',vi:'Mỗi ngày',en:'Every day'},
+ {id:'weekdays',vi:'Thứ 2–6',en:'Weekdays'},
+ {id:'weekends',vi:'Thứ 7 & Chủ nhật',en:'Weekends'},
+ {id:'custom',vi:'Chọn thứ trong tuần',en:'Selected weekdays'}
+];
+const weekDays=[
+ {day:1,vi:'T2',en:'Mo'},{day:2,vi:'T3',en:'Tu'},
+ {day:3,vi:'T4',en:'We'},{day:4,vi:'T5',en:'Th'},
+ {day:5,vi:'T6',en:'Fr'},{day:6,vi:'T7',en:'Sa'},
+ {day:0,vi:'CN',en:'Su'}
+];
+const owner=()=>document.documentElement.classList.contains('li-auth-verified')?
+ localStorage.getItem(OWNER)||'':'';
+const vietnamese=()=>(window as Window&{liLanguage?:{get?:()=>string}}).liLanguage?.get?.()!=='en';
+const reminderMessage=(kind:ReminderKind,lang:boolean)=>({
+ study:['Bài đang học vẫn ở đây. Khi muốn, quay lại đúng chỗ đang dở.',
+  'Your lesson is still here. Resume whenever you like.'],
+ sleep:['Nếu sắp đi ngủ, mày có thể dành chút thời gian thư giãn trước giờ nghỉ.',
+  'If bedtime is near, consider winding down.'],
+ movement:['Ngồi lâu rồi? Đổi tư thế hoặc vận động nhẹ khi tiện cũng được.',
+  'Been sitting a while? Change position or move a little if convenient.'],
+ rest:['Nghỉ cũng được. Khi sẵn sàng, quay lại đúng chỗ đang dở.',
+  'It is okay to rest. Your progress will be here when you return.']
+})[kind][lang?0:1];
+const replaceSchedule=(p:ReminderPreference,s:ReminderSchedule):ReminderPreference=>({
+ version:2,schedules:p.schedules.map(item=>item.kind===s.kind?s:item)
+});
+const labelFor=(kind:ReminderKind,lang:boolean)=>{
+ const item=kinds.find(i=>i.id===kind)!;return lang?item.vi:item.en;
+};
+function getDueKind():ReminderKind|null{
+ let uid='';try{uid=owner();}catch{return null;}
+ if(!uid||document.visibilityState==='hidden')return null;
+ const current=readReminderPreference(),now=new Date();
+ return current.schedules.find(s=>dueInApp(s,readReminderDelivery(uid,s.kind),now))?.kind||null;
 }
-function vi(){return (window as Window&{liLanguage?:{get?:()=>string}}).liLanguage?.get?.()!=='en';}
-function reminderCopy(kind:ReminderKind,vietnamese:boolean):string{
- const messages={
-  study:['Bài đang học vẫn ở đây. Khi muốn, quay lại đúng chỗ đang dở.',
-   'Your lesson is still here. Resume whenever you like.'],
-  sleep:['Nếu sắp đi ngủ, mày có thể dành chút thời gian thư giãn trước giờ nghỉ.',
-   'If bedtime is near, consider winding down.'],
-  movement:['Ngồi lâu rồi? Đổi tư thế hoặc vận động nhẹ khi tiện cũng được.',
-   'Been sitting a while? Change position or move a little if convenient.'],
-  rest:['Nghỉ cũng được. Khi sẵn sàng, quay lại đúng chỗ đang dở.',
-   'It is okay to rest. Your progress will be here when you return.']
- };
- return messages[kind][vietnamese?0:1];
-}
-/** Only renders for an authenticated owner. No OS push permission or fake closed-app timer. */
+
+/** Four independent, opt-in schedules. No OS notifications are faked. */
 export function InAppReminderPanel(){
- const [pref,setPref]=useState<ReminderPreference>(()=>readReminderPreference());
- const [draft,setDraft]=useState<ReminderPreference>(()=>readReminderPreference());
- const [due,setDue]=useState(false);
+ const [pref,setPref]=useState<ReminderPreference>(readReminderPreference);
+ const [draft,setDraft]=useState<ReminderPreference>(readReminderPreference);
+ const [dueKind,setDueKind]=useState<ReminderKind|null>(null);
  const [error,setError]=useState('');
- const [lang,setLang]=useState(vi);
- const translated=(v:string,en:string)=>lang?v:en;
+ const [feedback,setFeedback]=useState('');
+ const [lang,setLang]=useState(vietnamese);
+ const copy=(vi:string,en:string)=>lang?vi:en;
  useEffect(()=>{
-  const check=()=>{
-   const account=uid();
-   if(!account||document.visibilityState==='hidden'){setDue(false);return;}
-   const current=readReminderPreference();
-   setDue(dueInApp(current,readReminderDelivery(account),new Date()));
-  };
-  const settingsChanged=()=>{
-   const value=readReminderPreference();
-   setPref(value);setDraft(value);check();
-  };
-  const syncChanged=(event:Event)=>{
+  const check=()=>setDueKind(getDueKind());
+  const changed=()=>{const value=readReminderPreference();setPref(value);setDraft(value);check();};
+  const sync=(event:Event)=>{
    const keys=(event as CustomEvent<{keys?:string[]}>).detail?.keys;
-   if(!keys||keys.includes(REMINDER_KEY))settingsChanged();
+   if(!keys||keys.includes(REMINDER_KEY))changed();
   };
-  const locale=()=>setLang(vi());
+  const locale=()=>setLang(vietnamese());
   check();
-  const interval=setInterval(check,60_000);
+  const interval=window.setInterval(check,60_000);
   window.addEventListener('focus',check);
   window.addEventListener('pageshow',check);
-  window.addEventListener('li:reminder-preference-changed',settingsChanged);
-  window.addEventListener('li:personal-sync-applied',syncChanged);
+  window.addEventListener('li:reminder-preference-changed',changed);
+  window.addEventListener('li:personal-sync-applied',sync);
   window.addEventListener('li:localechange',locale);
   document.addEventListener('visibilitychange',check);
   return()=>{
-   clearInterval(interval);
+   window.clearInterval(interval);
    window.removeEventListener('focus',check);
    window.removeEventListener('pageshow',check);
-   window.removeEventListener('li:reminder-preference-changed',settingsChanged);
-   window.removeEventListener('li:personal-sync-applied',syncChanged);
+   window.removeEventListener('li:reminder-preference-changed',changed);
+   window.removeEventListener('li:personal-sync-applied',sync);
    window.removeEventListener('li:localechange',locale);
    document.removeEventListener('visibilitychange',check);
   };
  },[]);
- function save(enabled:boolean){
-  const account=uid();
-  if(!account){setError(translated('Cần đăng nhập trước.','Sign in first.'));return;}
-  if(enabled&&!validTime(draft.time)){
-   setError(translated('Chọn giờ trước khi bật lời nhắc.','Choose a time before enabling.'));return;
+ function edit(kind:ReminderKind,patch:Partial<ReminderSchedule>){
+  setDraft(p=>({...p,schedules:p.schedules.map(s=>s.kind===kind?{...s,...patch}:s)}));
+  setError('');setFeedback('');
+ }
+ function saveAll(){
+  let uid='';try{uid=owner();}catch{/* Local preference unavailable. */}
+  if(!uid){setError(copy('Cần đăng nhập trước.','Sign in first.'));return;}
+  if(draft.schedules.some(s=>s.enabled&&(!validTime(s.time)||
+    (s.frequency==='custom'&&!s.days.length)))){
+   setError(copy('Mỗi loại đang bật cần giờ và ít nhất một thứ nếu chọn lịch tùy chỉnh.',
+    'Each enabled reminder needs a time and selected days for a custom repeat.'));return;
   }
   try{
-   const next:ReminderPreference={version:1,kind:draft.kind,time:draft.time,enabled};
-   if(enabled&&(!pref.enabled||pref.time!==next.time||pref.kind!==next.kind)){
-    const now=new Date(),[h,m]=next.time.split(':').map(Number);
-    const scheduled=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m);
-    // Enabling an already elapsed clock time must not immediately interrupt the learner.
-    if(now.getTime()>=scheduled.getTime())
-     writeReminderDelivery(account,{lastDay:localDay(now),snoozedUntil:0});
+   const previous=readReminderPreference();
+   const now=new Date();
+   for(const next of draft.schedules){
+    const before=previous.schedules.find(s=>s.kind===next.kind)!;
+    if(!next.enabled||JSON.stringify(before)===JSON.stringify(next))continue;
+    const [h,m]=next.time.split(':').map(Number);
+    if(now.getTime()>=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m).getTime())
+     writeReminderDelivery(uid,next.kind,{lastDay:localDay(now),snoozedUntil:0});
    }
-   writeReminderPreference(next);
-   setPref(next);setDraft(next);setDue(false);setError('');
-  }catch{setError(translated('Không lưu được lời nhắc trên thiết bị.','Cannot save the reminder on this device.'));}
+   writeReminderPreference(draft);
+   setPref(draft);setDueKind(null);setError('');
+   setFeedback(copy('Đã lưu cả 4 lịch nhắc.','All four schedules saved.'));
+  }catch{setError(copy('Không lưu được lịch nhắc trên thiết bị.',
+   'Could not save reminder schedules on this device.'));}
  }
  function respond(action:'dismiss'|'snooze'|'disable'){
-  const account=uid();
-  if(!account){setDue(false);return;}
+  if(!dueKind)return;
+  let uid='';try{uid=owner();}catch{/* Storage error. */}
+  if(!uid){setDueKind(null);return;}
   try{
    if(action==='disable'){
-    writeReminderPreference({...readReminderPreference(),enabled:false});
+    const current=readReminderPreference(),chosen=current.schedules.find(s=>s.kind===dueKind)!;
+    writeReminderPreference(replaceSchedule(current,{...chosen,enabled:false}));
    }
    const now=new Date();
-   writeReminderDelivery(account,{
+   writeReminderDelivery(uid,dueKind,{
     lastDay:action==='snooze'?'':localDay(now),
     snoozedUntil:action==='snooze'?now.getTime()+60*60*1000:0
    });
-   setDue(false);setError('');
-  }catch{setError(translated('Không lưu được lựa chọn.','Cannot save your choice.'));}
+   setDueKind(null);setError('');
+   // Several types can share a time; show one at a time, not overlapping sheets.
+   window.setTimeout(()=>setDueKind(getDueKind()),0);
+  }catch{setError(copy('Không lưu được lựa chọn.','Could not save your response.'));}
  }
+ const active=pref.schedules.filter(s=>s.enabled).length;
  return <>
   <Card variant="raised" className="li-react-setting-card li-reminder-settings">
-   <Heading level={3} role="titleMedium">{translated('Nhắc nhở trong app','In-app reminders')}</Heading>
-   <Text role="support">{translated(
-    'Mặc định tắt. Chọn một lời nhắc và giờ của mày. Chỉ hiện khi li. đang mở (tối đa một lần/ngày); không phải thông báo đẩy khi đóng app.',
-    'Off by default. Choose one reminder and your own time. Only shown while li. is open (at most once a day); not background push.')}</Text>
-   <div className="li-reminder-inputs">
-    <label htmlFor="li-reminder-kind">{translated('Muốn được nhắc gì?','Reminder type')}</label>
-    <select id="li-reminder-kind" value={draft.kind}
-     onChange={e=>{const kind=e.currentTarget.value as ReminderKind;setDraft(value=>({...value,kind}));}}>
-     {kinds.map(item=><option key={item.id} value={item.id}>{lang?item.vi:item.en}</option>)}
-    </select>
-    <label htmlFor="li-reminder-time">{translated('Giờ địa phương','Local time')}</label>
-    <input id="li-reminder-time" type="time" value={draft.time}
-     onChange={e=>{const time=e.currentTarget.value;setDraft(value=>({...value,time}));}}/>
+   <Heading level={3} role="titleMedium">{copy('Nhắc nhở trong app','In-app reminders')}</Heading>
+   <Text role="support">{copy(
+    'Bật tối đa 4 loại cùng lúc; mỗi loại có giờ và lịch lặp riêng. Chỉ hiện khi li. đang mở, tối đa một lần mỗi ngày được chọn cho mỗi loại.',
+    'Enable all 4 types independently. Each has its own time and repeat schedule. Shown only while li. is open, at most once per selected day per type.')}</Text>
+   <Text role="support" aria-live="polite">{copy('Đang bật: ','Enabled: ')}{active}/4</Text>
+   <div className="li-reminder-schedules">
+    {draft.schedules.map(s=>{
+     const saved=pref.schedules.find(item=>item.kind===s.kind)!;
+     const changed=JSON.stringify(s)!==JSON.stringify(saved);
+     const invalid=s.enabled&&(!validTime(s.time)||(s.frequency==='custom'&&!s.days.length));
+     return <section className="li-reminder-schedule" key={s.kind} aria-label={labelFor(s.kind,lang)}>
+      <div className="li-reminder-schedule-top">
+       <Heading level={4} role="titleSmall">{labelFor(s.kind,lang)}</Heading>
+       <label className="li-reminder-toggle">
+        <input type="checkbox" checked={s.enabled}
+         onChange={e=>edit(s.kind,{enabled:e.target.checked})}/>
+        <span>{s.enabled?copy('Bật','On'):copy('Tắt','Off')}</span>
+       </label>
+      </div>
+      <div className="li-reminder-inputs">
+       <label htmlFor={'li-reminder-time-'+s.kind}>{copy('Giờ nhắc','Time')}</label>
+       <input id={'li-reminder-time-'+s.kind} type="time" value={s.time}
+        onChange={e=>edit(s.kind,{time:e.currentTarget.value})}/>
+       <label htmlFor={'li-reminder-frequency-'+s.kind}>{copy('Lặp lại','Repeat')}</label>
+       <select id={'li-reminder-frequency-'+s.kind} value={s.frequency}
+        onChange={e=>edit(s.kind,{frequency:e.currentTarget.value as ReminderFrequency})}>
+        {frequencies.map(f=><option key={f.id} value={f.id}>{lang?f.vi:f.en}</option>)}
+       </select>
+      </div>
+      {s.frequency==='custom'&&<fieldset className="li-reminder-days">
+       <legend>{copy('Nhắc vào các thứ','Repeat on')}</legend>
+       <div className="li-reminder-weekdays">
+        {weekDays.map(day=><label key={day.day} className="li-reminder-day">
+         <input type="checkbox" checked={s.days.includes(day.day)}
+          onChange={e=>edit(s.kind,{days:e.target.checked?
+           [...s.days,day.day].sort((a,b)=>a-b):s.days.filter(d=>d!==day.day)})}/>
+         <span>{lang?day.vi:day.en}</span>
+        </label>)}
+       </div>
+      </fieldset>}
+      <Text role="support">{saved.enabled?copy('Đã bật · ','On · ')+saved.time:
+       copy('Đang tắt','Off')}</Text>
+     </section>;
+    })}
    </div>
    <div className="action-row">
-    <Button variant="primary" disabled={!validTime(draft.time)}
-     onClick={()=>save(true)}>{pref.enabled?translated('Lưu thay đổi','Save changes'):
-      translated('Bật nhắc','Enable reminder')}</Button>
-    {pref.enabled&&<Button variant="secondary" onClick={()=>save(false)}>
-     {translated('Tắt nhắc','Disable')}</Button>}
+    <Button variant="primary" disabled={
+     JSON.stringify(draft)===JSON.stringify(pref)||
+     draft.schedules.some(s=>s.enabled&&(!validTime(s.time)||
+      (s.frequency==='custom'&&!s.days.length)))
+    } onClick={saveAll}>{copy('Lưu tất cả lịch nhắc','Save all schedules')}</Button>
    </div>
-   <Text role="support" aria-live="polite">{pref.enabled?
-    translated('Đang bật · ', 'Enabled · ')+
-    (lang?kinds.find(k=>k.id===pref.kind)?.vi:kinds.find(k=>k.id===pref.kind)?.en)+
-    ' · '+pref.time:
-    translated('Chưa bật nhắc nhở.','Reminders are off.')}</Text>
+   {feedback&&<Text role="support" aria-live="polite">{feedback}</Text>}
    {error&&<InlineFeedback tone="error" message={error}/>}
   </Card>
-  {due&&createPortal(<div className="li-in-app-reminder" role="status" aria-live="polite"
-    aria-label={translated('Lời nhắc của Lão Lý','Lao Ly reminder')}>
-   <div className="kicker">{translated('LÃO LÝ NHẮC KHẼ','A GENTLE REMINDER')}</div>
-   <p>{reminderCopy(pref.kind,lang)}</p>
+  {dueKind&&createPortal(<div className="li-in-app-reminder" role="status" aria-live="polite"
+    aria-label={copy('Lời nhắc của Lão Lý','Lao Ly reminder')}>
+   <div className="kicker">{copy('LÃO LÝ NHẮC KHẼ','A GENTLE REMINDER')}</div>
+   <p>{reminderMessage(dueKind,lang)}</p>
    <div className="action-row">
-    <Button variant="primary" onClick={()=>respond('dismiss')}>
-     {translated('Đã hiểu','Got it')}</Button>
-    <Button variant="secondary" onClick={()=>respond('snooze')}>
-     {translated('Nhắc sau 1 giờ','In 1 hour')}</Button>
-    <Button variant="secondary" onClick={()=>respond('disable')}>
-     {translated('Tắt nhắc','Turn off')}</Button>
+    <Button variant="primary" onClick={()=>respond('dismiss')}>{copy('Đã hiểu','Got it')}</Button>
+    <Button variant="secondary" onClick={()=>respond('snooze')}>{copy('Nhắc sau 1 giờ','In 1 hour')}</Button>
+    <Button variant="secondary" onClick={()=>respond('disable')}>{copy('Tắt loại này','Disable this type')}</Button>
    </div>
   </div>,document.body)}
  </>;

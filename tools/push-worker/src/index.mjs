@@ -1,6 +1,6 @@
 import {buildPushPayload} from '@block65/webcrypto-web-push';
-import {validKind,validClock,validZone,validSubscription,dueForPush,
- endpointId,safeAccountJwt} from './core.mjs';
+import {validKind,validClock,validZone,validSubscription,validSchedules,
+ duePushSlots,claimDays,endpointId,safeAccountJwt} from './core.mjs';
 
 const json=(body,status=200,extra={})=>new Response(JSON.stringify(body),{
  status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store',...extra}
@@ -66,9 +66,16 @@ async function fetchRequest(request,env){
    .bind(id,account).run();
   return json({ok:true},200,headers);
  }
- const s=body.subscription,kind=body.kind,localTime=body.time,zone=body.zone;
- if(!validSubscription(s)||!validKind(kind)||!validClock(localTime)||!validZone(zone)||
-  typeof body.enabled!=='boolean')return json({ok:false},400,headers);
+ const s=body.subscription,zone=body.zone,multi=Object.hasOwn(body,'schedules');
+ if(!validSubscription(s)||!validZone(zone)||
+  (multi?!validSchedules(body.schedules):
+   !validKind(body.kind)||!validClock(body.time)||typeof body.enabled!=='boolean'))
+  return json({ok:false},400,headers);
+ // Existing D1 columns support versioned JSON; no schema/data migration needed.
+ const schedules=multi?body.schedules:null;
+ const kind=multi?(schedules.find(item=>item.enabled)?.kind||'study'):body.kind;
+ const localTime=multi?JSON.stringify({version:2,schedules}):body.time;
+ const enabled=multi?schedules.some(item=>item.enabled):body.enabled;
  const id=await endpointId(s.endpoint);
  const existing=await env.PUSH_DB.prepare('SELECT owner_id FROM push_subscriptions WHERE id=?')
   .bind(id).first();
@@ -87,7 +94,7 @@ async function fetchRequest(request,env){
  enabled=excluded.enabled,updated_at=CURRENT_TIMESTAMP
  WHERE push_subscriptions.owner_id=excluded.owner_id`)
   .bind(id,account,s.endpoint,s.keys.p256dh,s.keys.auth,
-   kind,localTime,zone,body.enabled?1:0).run();
+   kind,localTime,zone,enabled?1:0).run();
  if(!result?.success)return json({ok:false},503,headers);
  return json({ok:true},200,headers);
 }
@@ -100,26 +107,29 @@ async function sendDue(env){
  const vapid={subject:env.VAPID_SUBJECT,publicKey:env.VAPID_PUBLIC_KEY,
   privateKey:env.VAPID_PRIVATE_KEY};
  for(const row of rows.results||[]){
-  const day=dueForPush(row,now);
-  if(!day)continue;
-  // Atomic claim before delivery: cron overlaps never double-ping the same device.
+  const slots=duePushSlots(row,now);
+  if(!slots.length)continue;
+  // One compare-and-swap claims every due kind atomically; concurrent cron
+  // invocations cannot double-send, even when multiple kinds share a time.
+  const nextDay=claimDays(row,slots);
   const changed=await env.PUSH_DB.prepare(
-   'UPDATE push_subscriptions SET last_day=? WHERE id=? AND (last_day IS NULL OR last_day<>?)'
-  ).bind(day,row.id,day).run();
+   'UPDATE push_subscriptions SET last_day=? WHERE id=? AND last_day IS ?'
+  ).bind(nextDay,row.id,row.last_day).run();
   if(!changed?.meta?.changes)continue;
-  try{
-   const subscription={endpoint:row.endpoint,expirationTime:null,
-    keys:{p256dh:row.p256dh,auth:row.auth}};
-   const message={data:JSON.stringify({v:1,kind:row.kind}),options:{ttl:300}};
-   const payload=await buildPushPayload(message,subscription,vapid);
-   const response=await fetch(row.endpoint,payload);
-   if(response.status===404||response.status===410){
-    await env.PUSH_DB.prepare('DELETE FROM push_subscriptions WHERE id=?')
-     .bind(row.id).run();
-   }
-   // Other failures are not retried: at-most-once, never duplicate notifications.
-   // No endpoint, JWT, user ID or push response body is logged.
-  }catch{/* Preserve quiet at-most-once policy; no sensitive logs. */}
+  for(const slot of slots){
+   try{
+    const subscription={endpoint:row.endpoint,expirationTime:null,
+     keys:{p256dh:row.p256dh,auth:row.auth}};
+    const message={data:JSON.stringify({v:1,kind:slot.kind}),options:{ttl:300}};
+    const payload=await buildPushPayload(message,subscription,vapid);
+    const response=await fetch(row.endpoint,payload);
+    if(response.status===404||response.status===410){
+     await env.PUSH_DB.prepare('DELETE FROM push_subscriptions WHERE id=?')
+      .bind(row.id).run();
+     break;
+    }
+   }catch{/* At-most-once; no sensitive logging or repeated notifications. */}
+  }
  }
 }
 export default {

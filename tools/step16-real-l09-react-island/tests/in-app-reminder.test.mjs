@@ -7,45 +7,77 @@ const script=readFileSync(new URL('../src/shell/in-app-reminder.ts',import.meta.
 const output=ts.transpileModule(script,{compilerOptions:{
  module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022
 }}).outputText;
-const {parseReminderPreference,validTime,dueInApp,localDay,DEFAULT_REMINDER}=
+const {parseReminderPreference,validTime,dueInApp,runsOnDay,localDay,
+ DEFAULT_REMINDER,readReminderDelivery,writeReminderDelivery}=
  await import('data:text/javascript;base64,'+Buffer.from(output).toString('base64'));
-const active={version:1,enabled:true,kind:'sleep',time:'21:00'};
-const inactive={...active,enabled:false};
+const legacy={version:1,enabled:true,kind:'sleep',time:'21:00'};
+const original=()=>parseReminderPreference(JSON.stringify(legacy));
 const day=new Date(2026,10,21,21,15);
+const empty={lastDay:'',snoozedUntil:0};
 
-test('in-app reminder is OFF by default and invalid preferences fail closed',()=>{
+test('off by default, strict input and legacy single reminder migration',()=>{
  assert.deepEqual(parseReminderPreference(null),DEFAULT_REMINDER);
  assert.deepEqual(parseReminderPreference('{'),DEFAULT_REMINDER);
- assert.deepEqual(parseReminderPreference(JSON.stringify({...active,kind:'diagnosis'})),DEFAULT_REMINDER);
- assert.deepEqual(parseReminderPreference(JSON.stringify({...active,time:'30:92'})),DEFAULT_REMINDER);
- assert.deepEqual(parseReminderPreference(JSON.stringify({...active,time:''})),DEFAULT_REMINDER);
- assert.deepEqual(parseReminderPreference(JSON.stringify(active)),active);
+ assert.deepEqual(parseReminderPreference(JSON.stringify({...legacy,kind:'diagnosis'})),DEFAULT_REMINDER);
+ assert.deepEqual(parseReminderPreference(JSON.stringify({...legacy,time:'30:92'})),DEFAULT_REMINDER);
  assert.equal(validTime('21:00'),true);
  assert.equal(validTime('7:00'),false);
+ const migrated=original();
+ assert.equal(migrated.version,2);
+ assert.equal(migrated.schedules.length,4);
+ assert.deepEqual(migrated.schedules.filter(s=>s.enabled).map(s=>s.kind),['sleep']);
+ assert.equal(migrated.schedules.find(s=>s.kind==='sleep').time,'21:00');
 });
-test('user chosen in-app daily time, visible window and one-per-day cap',()=>{
- const empty={lastDay:'',snoozedUntil:0};
- assert.equal(dueInApp(inactive,empty,day),false);
- assert.equal(dueInApp(active,empty,new Date(2026,10,21,20,59)),false);
- assert.equal(dueInApp(active,empty,day),true);
- assert.equal(dueInApp(active,empty,new Date(2026,10,21,23,0)),false);
- assert.equal(dueInApp(active,{lastDay:localDay(day),snoozedUntil:0},day),false);
- assert.equal(dueInApp(active,{lastDay:'2026-11-20',snoozedUntil:0},day),true);
+test('all four schedules can be enabled and survive serialization',()=>{
+ const pref=original();
+ pref.schedules.forEach((s,i)=>{s.enabled=true;s.time=['08:00','21:00','11:00','17:00'][i];});
+ assert.deepEqual(parseReminderPreference(JSON.stringify(pref)),pref);
+ assert.deepEqual(parseReminderPreference(JSON.stringify({...pref,
+  schedules:[...pref.schedules.slice(0,3),pref.schedules[0]]})),DEFAULT_REMINDER);
+ pref.schedules[0].frequency='custom';
+ assert.deepEqual(parseReminderPreference(JSON.stringify(pref)),DEFAULT_REMINDER,
+  'an enabled custom schedule must choose at least one weekday');
+ pref.schedules[0].days=[1,3,5];
+ assert.deepEqual(parseReminderPreference(JSON.stringify(pref)),pref);
 });
-test('snooze does not create a push task and does not show before the chosen delay',()=>{
+test('daily, weekdays, weekends, custom weekdays and window boundaries',()=>{
+ const s=original().schedules[1];
+ assert.equal(dueInApp(s,empty,new Date(2026,10,21,20,59)),false);
+ assert.equal(dueInApp(s,empty,day),true);
+ assert.equal(dueInApp(s,empty,new Date(2026,10,21,23,0)),false);
+ assert.equal(dueInApp(s,{lastDay:localDay(day),snoozedUntil:0},day),false);
+ s.frequency='weekdays';
+ assert.equal(runsOnDay(s,6),false);
+ assert.equal(runsOnDay(s,1),true);
+ assert.equal(dueInApp(s,empty,day),false,'Saturday must not trigger weekday reminder');
+ s.frequency='weekends';
+ assert.equal(dueInApp(s,empty,day),true);
+ s.frequency='custom';s.days=[1,3];
+ assert.equal(runsOnDay(s,1),true);
+ assert.equal(runsOnDay(s,0),false);
+ assert.equal(dueInApp(s,empty,day),false);
+});
+test('snooze and delivered receipts belong to one type, not the others',()=>{
  const later=new Date(2026,10,21,22,20).getTime();
- const state={lastDay:'',snoozedUntil:later};
- assert.equal(dueInApp(active,state,new Date(2026,10,21,21,35)),false);
- assert.equal(dueInApp(active,state,new Date(2026,10,21,22,20)),true);
- assert.equal(dueInApp(active,state,new Date(2026,10,22,21,15)),true,'stale snooze must not block tomorrow');
+ const s=original().schedules[1];
+ assert.equal(dueInApp(s,{lastDay:'',snoozedUntil:later},new Date(2026,10,21,21,35)),false);
+ assert.equal(dueInApp(s,{lastDay:'',snoozedUntil:later},new Date(2026,10,21,22,20)),true);
+ assert.equal(dueInApp(s,{lastDay:'',snoozedUntil:later},new Date(2026,10,22,21,15)),true);
+ const store=new Map();
+ globalThis.localStorage={getItem:key=>store.get(key)||null,setItem:(key,value)=>store.set(key,value)};
+ writeReminderDelivery('account-a','sleep',{lastDay:'2026-11-21',snoozedUntil:0});
+ writeReminderDelivery('account-a','study',{lastDay:'',snoozedUntil:later});
+ assert.equal(readReminderDelivery('account-a','sleep').lastDay,'2026-11-21');
+ assert.equal(readReminderDelivery('account-a','study').snoozedUntil,later);
+ assert.deepEqual(readReminderDelivery('account-b','study'),empty);
 });
-test('real settings and existing account-scoped Neon preferences own the reminder',()=>{
- const source=readFileSync(new URL('../src/shell/journal-settings.tsx',import.meta.url),'utf8');
+test('React settings and account-scoped sync still own the preference',()=>{
+ const settings=readFileSync(new URL('../src/shell/journal-settings.tsx',import.meta.url),'utf8');
  const ui=readFileSync(new URL('../src/shell/in-app-reminder-ui.tsx',import.meta.url),'utf8');
  const personal=readFileSync(new URL('../src/auth/private-state.ts',import.meta.url),'utf8');
- assert.match(source,/<InAppReminderPanel\s*\/>/);
- assert.match(ui,/writeReminderPreference\(next\)/);
- assert.match(ui,/writeReminderDelivery\(account,/);
+ assert.match(settings,/<InAppReminderPanel\s*\/>/);
+ assert.match(ui,/writeReminderPreference\(draft\)/);
+ assert.match(ui,/writeReminderDelivery\(uid,next.kind,/);
  assert.match(personal,/key:'li\.reminders\.in-app\.v1',type:'preference',id:'in-app-reminders'/);
  assert.match(script,/window\.dispatchEvent\(new Event\('li:private-sync-request'\)\)/);
 });

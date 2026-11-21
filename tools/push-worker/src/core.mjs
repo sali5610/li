@@ -8,6 +8,17 @@ export const KIND_MESSAGES={
 };
 export const validKind=kind=>Object.hasOwn(KIND_MESSAGES,kind);
 export const validClock=time=>typeof time==='string'&&/^([01][0-9]|2[0-3]):[0-5][0-9]$/.test(time);
+export const validFrequency=value=>['daily','weekdays','weekends','custom'].includes(value);
+const validDays=days=>Array.isArray(days)&&days.length<=7&&
+ days.every(n=>Number.isInteger(n)&&n>=0&&n<=6)&&new Set(days).size===days.length;
+export function validSchedules(schedules){
+ return Array.isArray(schedules)&&schedules.length===4&&
+  new Set(schedules.map(s=>s?.kind)).size===4&&
+  schedules.every(s=>s&&validKind(s.kind)&&typeof s.enabled==='boolean'&&
+   (s.time===''||validClock(s.time))&&(!s.enabled||validClock(s.time))&&
+   validFrequency(s.frequency)&&validDays(s.days)&&
+   (!s.enabled||s.frequency!=='custom'||s.days.length>0));
+}
 export function validZone(zone){
  if(typeof zone!=='string'||zone.length>70||!/^[A-Za-z0-9_+\/-]+$/.test(zone))return false;
  try{new Intl.DateTimeFormat('en-US',{timeZone:zone}).format(new Date());return true;}
@@ -21,15 +32,54 @@ export function localMinute(now,zone){
  return {day:[item('year'),item('month'),item('day')].join('-'),
   time:item('hour')+':'+item('minute')};
 }
-export function dueForPush(row,now){
- if(!row.enabled||!validKind(row.kind)||!validClock(row.local_time)||!validZone(row.zone))return null;
- const local=localMinute(now,row.zone);
- if(local.day===row.last_day)return null;
- const scheduled=Number(row.local_time.slice(0,2))*60+Number(row.local_time.slice(3));
- const at=Number(local.time.slice(0,2))*60+Number(local.time.slice(3));
- // Cron every 5 minutes: never send delayed reminders from many hours ago.
- return at>=scheduled&&at<scheduled+5?local.day:null;
+function runsOnDay(s,day){
+ return s.frequency==='daily'||s.frequency==='weekdays'&&day>=1&&day<=5||
+  s.frequency==='weekends'&&(day===0||day===6)||
+  s.frequency==='custom'&&s.days.includes(day);
 }
+function storedSchedules(row){
+ if(typeof row.local_time!=='string')return null;
+ if(!row.local_time.startsWith('{'))
+  return validKind(row.kind)&&validClock(row.local_time)?[
+   {kind:row.kind,enabled:true,time:row.local_time,frequency:'daily',days:[]}]:null;
+ try{
+  const value=JSON.parse(row.local_time);
+  return value?.version===2&&validSchedules(value.schedules)?value.schedules:null;
+ }catch{return null;}
+}
+function deliveredDays(row){
+ if(typeof row.last_day==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(row.last_day))
+  return validKind(row.kind)?{[row.kind]:row.last_day}:{};
+ if(typeof row.last_day!=='string')return {};
+ try{
+  const value=JSON.parse(row.last_day);
+  if(!value||typeof value!=='object'||Array.isArray(value))return {};
+  return Object.fromEntries(Object.entries(value).filter(([k,v])=>validKind(k)&&
+   typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)));
+ }catch{return {};}
+}
+export function duePushSlots(row,now){
+ if(!row.enabled||!validZone(row.zone))return [];
+ const schedules=storedSchedules(row);
+ if(!schedules)return [];
+ const local=localMinute(now,row.zone);
+ const weekday=new Date(local.day+'T12:00:00Z').getUTCDay();
+ const delivered=deliveredDays(row);
+ const at=Number(local.time.slice(0,2))*60+Number(local.time.slice(3));
+ // Cron every five minutes; never backfill old or missed notifications.
+ return schedules.filter(s=>{
+  if(!s.enabled||delivered[s.kind]===local.day||!runsOnDay(s,weekday))return false;
+  const scheduled=Number(s.time.slice(0,2))*60+Number(s.time.slice(3));
+  return at>=scheduled&&at<scheduled+5;
+ }).map(s=>({kind:s.kind,day:local.day}));
+}
+export function claimDays(row,slots){
+ const days=deliveredDays(row);
+ for(const {kind,day} of slots)days[kind]=day;
+ return JSON.stringify(days);
+}
+// Compatibility for existing v1 subscription rows and tests.
+export function dueForPush(row,now){return duePushSlots(row,now)[0]?.day||null;}
 export function allowedPushEndpoint(endpoint){
  if(typeof endpoint!=='string'||endpoint.length>2048)return false;
  let url;try{url=new URL(endpoint);}catch{return false;}

@@ -44,8 +44,8 @@ export function WebPushSettings(){
  async function enable(){
   if(!api||!userAllowed()||!installedPushSupported()||busy)return;
   const preference=readReminderPreference();
-  if(!preference.enabled){
-   setError(copy('Bật lời nhắc trong app và chọn giờ trước.','Enable an in-app reminder and set its time first.'));
+  if(!preference.schedules.some(s=>s.enabled)){
+   setError(copy('Bật ít nhất một lịch nhắc và chọn giờ trước.','Enable at least one reminder schedule first.'));
    return;
   }
   setError('');setNotice('');
@@ -93,8 +93,8 @@ export function WebPushSettings(){
     'On iPhone, open li. from its Home Screen app icon, not a Safari tab.')}</Text>:
    <>
     <Text role="support">{copy(
-     'Mặc định tắt. Chỉ bật sau khi mày bấm cho phép. Dùng loại nhắc và giờ đã chọn phía trên; tối đa một lần/ngày. Mỗi thiết bị bật riêng.',
-     'Off by default. Permission is only asked when you tap Enable. Uses your selected reminder and time, at most once daily, per device.')}</Text>
+     'Mặc định tắt. Chỉ xin quyền khi mày bấm cho phép. Dùng các lịch đã bật phía trên; mỗi loại tối đa một lần vào ngày được chọn. Mỗi thiết bị bật riêng.',
+     'Off by default. Permission is requested only on tap. Uses enabled schedules above, at most once per selected day per type. Enable per device.')}</Text>
     <div className="action-row">
      {!enabled?<Button variant="primary" disabled={busy} onClick={()=>void enable()}>
       {copy('Bật thông báo iPhone','Enable iPhone notifications')}</Button>:

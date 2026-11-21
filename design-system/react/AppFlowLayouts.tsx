@@ -14,6 +14,9 @@ import {NotebookLessonBook} from './NotebookLessonBook';
 import {BookwormIllustration} from './BookwormIllustration';
 import type {BookwormArtKind} from './BookwormIllustration';
 import {BookwormLessonBook} from './BookwormLessonBook';
+import {VintagePopLessonBook} from './VintagePopLessonBook';
+import {VintagePopArt} from './VintagePopArt';
+import type {VintagePopArtKind} from './VintagePopArt';
 import './app-flow-layouts.css';
 
 /** Exported presentational UI: Lab passes fixture props; the approved real
@@ -110,6 +113,8 @@ function ScreenBody(props:AppPageLayoutProps){
   <div className="li-flow-card-grid">
    {examples.filter(item=>(item.vi+item.en).toLowerCase().includes(query.toLowerCase()))
     .map((item,i)=><Card key={item.id} variant="tinted">
+     {variant==='vintagePop'&&<div className="li-pop-catalog-art"><VintagePopArt
+      kind={item.id==='hci'?'hci':item.id==='supply'?'supply':'globe'} size="spot"/></div>}
      {variant==='notebook'&&<NotebookArt kind="discipline" size="card"
       src={notebookDisciplineImages[item.id as keyof typeof notebookDisciplineImages]}/>}
      {bookwormPlate(item.id==='society'?'balance':item.id==='hci'?'lens':'chart')}
@@ -130,6 +135,8 @@ function ScreenBody(props:AppPageLayoutProps){
    [t('T06 · Elaborative Interrogation','T06 · Elaborative Interrogation'),t('Thần Chú liên quan','Related method')]
   ].filter(([name])=>!query||name.toLowerCase().includes(query.toLowerCase())).map(([name,desc],i)=>
    <Card key={name} variant="flat-study">
+    {variant==='vintagePop'&&<div className="li-pop-result-art"><VintagePopArt
+     kind={i===0?'sampling':i===1?'hci':'guide'} size="tiny"/></div>}
     {variant==='notebook'&&<NotebookArt kind={i===0?'sampling':i===1?'discipline':'method'}
      src={i===1?notebookDisciplineImages.hci:undefined} size="spot"/>}
     {bookwormPlate(i===0?'lens':i===1?'compass':'open')}
@@ -142,6 +149,7 @@ function ScreenBody(props:AppPageLayoutProps){
  case 'research':return <div className="li-flow-stack">
   <Card variant="tinted">
    <Badge>{t('VÍ DỤ GIẢ ĐỊNH','HYPOTHETICAL EXAMPLE')}</Badge>
+   {variant==='vintagePop'&&<div className="li-pop-research-art"><VintagePopArt kind="sampling" size="spot"/></div>}
    {variant==='notebook'&&<NotebookArt kind="sampling" size="spot"/>}
    {bookwormPlate('lens')}
    <Heading level={2} role="titleMedium">{t('90% người khảo sát hài lòng. Có đại diện cho tất cả không?',
@@ -204,6 +212,8 @@ function ScreenBody(props:AppPageLayoutProps){
    {title:t('Hướng dẫn','Guided practice'),description:t('Xem phương pháp tuyển chọn trước khi kết luận.','Check recruitment before drawing conclusions.'),art:'compass' as const}
   ];
   const next=action('practice','Làm bài tập','Start practice');
+  if(variant==='vintagePop')return <VintagePopLessonBook
+   intro={intro} diagram={diagram} chapters={chapters} practiceAction={next}/>;
   if(variant==='bookworm')return <BookwormLessonBook
    locale={locale} intro={intro} diagram={diagram} chapters={chapters}
    practiceAction={next}/>;
@@ -254,6 +264,7 @@ function ScreenBody(props:AppPageLayoutProps){
   {action('dashboard','Xem tiến độ','View progress')}
  </div>;
  case 'guide':return <div className="li-flow-stack">
+  {variant==='vintagePop'&&<div className="li-pop-guide-art"><VintagePopArt kind="guide" size="hero"/></div>}
   <Text role="body">{t('Các phương pháp học có hướng dẫn, luyện tập và phản hồi. Dưới đây là UI mẫu.',
    'Learning methods with instructions, practice and feedback. UI fixture only.')}</Text>
   <div className="li-flow-card-grid">
@@ -265,7 +276,10 @@ function ScreenBody(props:AppPageLayoutProps){
     const tile=<MethodTile code={code} title={title}
      purpose={purpose} actionLabel={t('Khám phá','Explore')}
      onActivate={()=>onNavigate('guideDetail')}/>;
-    return variant==='bookworm'?<div className="li-bw-method-plate" key={code}>
+    return variant==='vintagePop'?<div className="li-pop-method-plate" key={code}>
+     <VintagePopArt kind={code==='T02'?'journal':code==='T06'?'idea':'book'} size="spot"/>
+     {tile}
+    </div>:variant==='bookworm'?<div className="li-bw-method-plate" key={code}>
      {bookwormPlate(code==='T01'?'open':code==='T02'?'compass':'lens')}
      {tile}
     </div>:variant==='notebook'?<div className="li-flow-method-plate" key={code}>
@@ -290,6 +304,7 @@ function ScreenBody(props:AppPageLayoutProps){
   </Card>{action('practice','Thi triển thử','Try practice')}
  </div>;
  case 'library':return <div className="li-flow-stack">
+  {variant==='vintagePop'&&<div className="li-pop-workspace-art"><VintagePopArt kind="library" size="hero"/></div>}
   {variant==='notebook'&&<div className="li-flow-library-art"><NotebookArt kind="shelf" size="spot"/></div>}
   {bookwormPlate('shelf')}
   <div className="li-flow-stat-grid">{[
@@ -332,6 +347,7 @@ function ScreenBody(props:AppPageLayoutProps){
    [t('Sampling Bias','Sampling Bias'),t('Dấu Trang · Bài học','Bookmark · Lesson')],
    [t('Có đủ dữ kiện không?','Is this enough evidence?'),t('Nhặt Ý · Ví dụ','Capture · Example')]
   ].map(([name,desc],i)=><Card key={name} variant={i===0?'tinted':'flat-study'}>
+   {variant==='vintagePop'&&<VintagePopArt kind={i===0?'notes':i===1?'book':'idea'} size="tiny"/>}
    <Badge>{desc}</Badge><Heading level={3} role="titleMedium">{name}</Heading>
    <Button variant="secondary" onClick={()=>onNavigate('noteDetail')}>{t('Xem chi tiết','View detail')}</Button>
   </Card>)}
@@ -349,6 +365,7 @@ function ScreenBody(props:AppPageLayoutProps){
   </Card>
  </div>;
  case 'dashboard':return <div className="li-flow-stack">
+  {variant==='vintagePop'&&<div className="li-pop-workspace-art"><VintagePopArt kind="journal" size="hero"/></div>}
   <div className="li-flow-stat-grid">{[
    [t('Bài đã ôn','Reviewed'),'03'],[t('Ngày có hoạt động','Active days'),'07'],
    [t('Lượt check-in','Check-ins'),'05']
@@ -383,7 +400,8 @@ function ScreenBody(props:AppPageLayoutProps){
   </div>)}
  </AccountShell>;
  case 'checkin':return <div className="li-flow-stack">
-  <Card variant="tinted"><Heading level={2} role="titleLarge">{t('Hôm nay mày thế nào?','How are you today?')}</Heading>
+  <Card variant="tinted">{variant==='vintagePop'&&<VintagePopArt kind="journal" size="spot"/>}
+   <Heading level={2} role="titleLarge">{t('Hôm nay mày thế nào?','How are you today?')}</Heading>
    <Text role="body">{t('Ghi nhận trạng thái, không ép chỉ tiêu.','A gentle reflection without quotas.')}</Text>
    {bookwormPlate('compass')}
    <div className="li-flow-choice-grid">{[
@@ -443,6 +461,12 @@ const notebookNotes:Partial<Record<PageId,readonly [string,string]>>={
  checkin:['Hôm nay, một dòng cho mình.','One line to yourself today.'],
  laoly:['Lão Lý có vài lời ở lề trang.','A note from Lao Ly in the margin.'],
  account:['Trang cá nhân, giữ riêng tư.','Your own private pages.'],
+};
+const vintageArtForPage:Record<Exclude<PageId,'home'>,VintagePopArtKind>={
+ catalog:'library',search:'telescope',research:'sampling',case:'sampling',capture:'idea',
+ lesson:'book',practice:'sampling',feedback:'journal',guide:'guide',guideDetail:'guide',
+ library:'library',resume:'book',collection:'notes',noteDetail:'notes',dashboard:'journal',
+ settings:'notes',checkin:'journal',laoly:'idea',account:'library'
 };
 const notebookArtForPage:Record<Exclude<PageId,'home'>,React.ComponentProps<typeof NotebookArt>['kind']>={
  catalog:'shelf',search:'question',research:'sampling',case:'sampling',capture:'notes',
@@ -528,6 +552,12 @@ export function AppPageLayout(props:AppPageLayoutProps){
      </AnimatePresence>
     </div>}
    </motion.div>
+   {variant==='vintagePop'&&<motion.div className="li-pop-header-art" aria-hidden="true"
+    initial={reduced?false:{opacity:0,scale:.86,rotate:-8}}
+    animate={{opacity:1,scale:1,rotate:0}}
+    transition={{duration:reduced?0:.55,ease:[.22,1,.36,1]}}>
+    <VintagePopArt kind={vintageArtForPage[page]} size="hero"/>
+   </motion.div>}
    {variant==='notebook'&&<div className="li-flow-notebook-hero-art">
     <NotebookArt kind={notebookArtForPage[page]} size="hero"/>
    </div>}

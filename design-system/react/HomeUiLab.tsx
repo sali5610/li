@@ -18,6 +18,7 @@ import './legacy.css';
 import './focus.css';
 import './home-ui-lab.css';
 import './vintage-pop-theme.css';
+import './vintage-pop-book.css';
 import './bookworm-theme.css';
 
 type LayoutKey='classic'|'split'|'cinematic'|'notebook'|'vintagePop'|'bookworm';

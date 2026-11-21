@@ -156,6 +156,11 @@ setTimeout(()=>{
   }),links.map(n=>({label:n.textContent,border:getComputedStyle(n).borderTopWidth,shadow:getComputedStyle(n).boxShadow})));
   assert('canonical-icon-only-bookmarks',
    document.querySelectorAll('.li-react-library .library-icon-action[data-li-atom="icon-button"]').length>0);
+  const nestedRow=select('.library-resume-feature .library-list-item');
+  assert('resume-rows-are-not-nested-faux-cards',Boolean(nestedRow&&
+   getComputedStyle(nestedRow).borderTopWidth==='0px'&&
+   getComputedStyle(nestedRow).borderLeftWidth==='0px'),
+   nestedRow?{top:getComputedStyle(nestedRow).borderTopWidth,left:getComputedStyle(nestedRow).borderLeftWidth}:null);
   const resumeTitle=select('.library-resume-feature .library-list-item .library-list-copy');
   assert('resume-title-full-width',Boolean(resumeTitle&&resumeTitle.getBoundingClientRect().width>=250),bounds(resumeTitle));
   assert('bookmark-title-usable-width',titles.every(n=>n.getBoundingClientRect().width>=170),

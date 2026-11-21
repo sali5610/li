@@ -232,7 +232,10 @@
  --discovery-paper:var(--cream,#f5f1e7);
  width:min(100%,1200px);margin-inline:auto;
 }
-[data-li-react-screen="catalog"] .catalog-breadcrumbs{margin-block-end:var(--li-page-heading-gap)}
+#page-catalog [data-li-react-screen="catalog"] .catalog-breadcrumbs{margin:0}
+[data-li-react-screen="catalog"] .catalog-breadcrumbs + .catalog-lead{
+ padding-block-start:var(--li-page-heading-gap);
+}
 [data-li-react-screen="catalog"] .catalog-lead{
  padding-block-end:clamp(24px,3vw,40px);
  border-bottom:1px solid var(--discovery-rule);margin-bottom:var(--li-space-6,24px);

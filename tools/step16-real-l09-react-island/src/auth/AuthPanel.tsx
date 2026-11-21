@@ -129,24 +129,11 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  // Privacy consent is a DATA setting, never an authentication control.
  // Same verified invited owner, same remote revocation/tombstone path.
  useEffect(()=>{
-  const card=document.getElementById('li-journal-cloud-settings');
-  const checkbox=document.getElementById('li-journal-cloud-toggle') as HTMLInputElement|null;
-  const detail=document.getElementById('li-journal-cloud-description');
-  if(!card||!checkbox)return;
+  // The consent port belongs to Auth, NOT the retired native checkbox.
+  // React Settings must keep working when all old Settings markup is removed.
   const permitted=Boolean(IS_INTEGRATED_LI_APP&&accountId&&access==='granted'&&ownerReady);
-  card.hidden=!permitted;
-  checkbox.disabled=!permitted||journalBusy;
-  checkbox.checked=permitted&&journalChoice;
-  if(detail&&permitted){
-   const en=document.documentElement.lang==='en';
-   detail.textContent=journalError||(journalBusy?(en?'Updating journal permission…':'Đang cập nhật quyền Nhật Ký…'):
-    journalChoice?(en?'Private Journal & Check-ins are enabled for cloud sync.':
-     'Nhật Ký & Check-in đang được phép đồng bộ lên Neon.'):
-     (en?'Private by default: Journal and Check-ins stay on this device.':
-      'Mặc định riêng tư: Nhật Ký & Check-in chỉ lưu trên thiết bị.')); 
-  }
-  // One invited-account consent owner for both the native fallback and
-  // React Settings. React calls set() directly; no hidden checkbox clicks.
+  // One invited-account consent owner for both React and optional native
+  // fallback. React calls set() directly; no hidden checkbox clicks.
   const description=journalError||(journalBusy?(locale==='en'?'Updating journal permission…':'Đang cập nhật quyền Nhật Ký…'):
    journalChoice?(locale==='en'?'Private Journal & Check-ins are enabled for cloud sync.':
     'Nhật Ký & Check-in đang được phép đồng bộ lên Neon.'):
@@ -160,10 +147,21 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   const owner=window as Window & {liJournalCloudConsent?:typeof port};
   owner.liJournalCloudConsent=port;
   window.dispatchEvent(new Event('li:journal-cloud-view-changed'));
-  const onChange=()=>port.set(checkbox.checked);
-  checkbox.addEventListener('change',onChange);
+  // Keep the legacy fallback synchronized only if its markup exists.
+  // Missing native nodes must never disable the React privacy control.
+  const card=document.getElementById('li-journal-cloud-settings');
+  const checkbox=document.getElementById('li-journal-cloud-toggle') as HTMLInputElement|null;
+  const detail=document.getElementById('li-journal-cloud-description');
+  if(card)card.hidden=!permitted;
+  if(checkbox){
+   checkbox.disabled=!permitted||journalBusy;
+   checkbox.checked=permitted&&journalChoice;
+  }
+  if(detail&&permitted)detail.textContent=description;
+  const onChange=()=>port.set(Boolean(checkbox?.checked));
+  checkbox?.addEventListener('change',onChange);
   return()=>{
-   checkbox.removeEventListener('change',onChange);
+   checkbox?.removeEventListener('change',onChange);
    if(owner.liJournalCloudConsent===port)delete owner.liJournalCloudConsent;
   };
  },[accountId,access,ownerReady,journalChoice,journalBusy,journalError,locale]);

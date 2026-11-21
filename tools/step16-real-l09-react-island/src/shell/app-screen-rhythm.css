@@ -7,23 +7,8 @@
 #li-react-route-trail:empty{display:none}
 .li-app-route-trail{box-sizing:border-box;max-width:1180px;margin-inline:auto;min-width:0}
 .li-app-route-trail .li-ds-breadcrumb{overflow-wrap:anywhere}
-#li-react-route-trail .li-ds-breadcrumb li,
-.catalog-breadcrumbs .li-ds-breadcrumb li{align-items:stretch}
-#li-react-route-trail .li-ds-breadcrumb button,
-.catalog-breadcrumbs .li-ds-breadcrumb button{
- display:inline-flex;align-items:center;min-height:44px;
- padding:var(--li-space-2);border:0;border-radius:0;background:none;
- color:var(--moss);font:inherit;text-align:start;cursor:pointer;
- text-decoration:underline;text-underline-offset:var(--li-space-1);
-}
-#li-react-route-trail .li-ds-breadcrumb button:focus-visible,
-.catalog-breadcrumbs .li-ds-breadcrumb button:focus-visible{
- outline:3px solid var(--li-role-focus-ring,var(--olive));outline-offset:2px;
-}
-#li-react-route-trail .li-ds-breadcrumb [aria-current="page"],
-.catalog-breadcrumbs .li-ds-breadcrumb [aria-current="page"]{
- display:inline-flex;align-items:center;min-height:44px;padding:var(--li-space-2) 0;
-}
+/* The canonical Breadcrumb owns the row layout and text baseline.
+ * Do not re-style link/button/current-page separately inside each screen. */
 /* The legacy local Back is redundant only while the semantic trail exists.
  * One globally visible Back remains in the header. */
 #li-react-route-trail:has(.li-app-route-trail) ~ #main .page.active

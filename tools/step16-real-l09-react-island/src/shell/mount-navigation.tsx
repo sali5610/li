@@ -107,15 +107,27 @@ const trails:Record<string,TrailPart[]>={
  dashboard:[libraryTrail,{vi:'Nhật Ký',en:'Journal'}],
  settings:[{vi:'Cài Đặt',en:'Settings'}]
 };
-function RouteTrail(){
+export function RouteTrail(){
  const route=useAppUiStore(state=>state.route);
  const locale=useAppLocale(),en=locale==='en';
- // Learning screens already have global Back, bottom Catalog navigation and
- // their own lesson title. A second 3-level crumb only wastes mobile space.
- if(route==='home'||route==='catalog'||/^(lesson|draftLesson)/.test(route))return null;
+ const lessonRoute=/^(lesson|draftLesson)/.test(route);
+ const [lessonTitle,setLessonTitle]=useState('');
+ useEffect(()=>{
+  if(!lessonRoute){setLessonTitle('');return;}
+  const page=document.getElementById('page-'+route);
+  const sync=()=>setLessonTitle(page?.querySelector('h1')?.textContent?.trim()||'');
+  sync();
+  if(!page)return;
+  const observer=new MutationObserver(sync);
+  observer.observe(page,{childList:true,subtree:true,characterData:true});
+  return()=>observer.disconnect();
+ },[route,lessonRoute]);
+ // Actual lesson routes still need the canonical clickable breadcrumb.
+ // The global Back handles history; this trail shows hierarchy only.
+ if(route==='home'||route==='catalog')return null;
  const flow=trails[route]||
   (/^(lesson|draftLesson)/.test(route)?
-   [catalogTrail,{vi:'Bài Học',en:'Lesson'}]:
+   [catalogTrail,{vi:lessonTitle||'Bài Học',en:lessonTitle||'Lesson'}]:
    [{vi:'Trang hiện tại',en:'Current page'}]);
  const parts=[homeTrail,...flow];
  return <div className="li-app-route-trail" data-li-review-status="draft">

@@ -246,22 +246,22 @@
 #buddy-modal .li-react-buddy-shell .buddy-heading{
  display:grid;
  grid-template-columns:48px minmax(0,1fr);
- grid-template-rows:auto auto;
- align-items:center;
- gap:10px 12px;
+ grid-template-rows:auto;
+ align-items:start;
+ gap:0 12px;
  padding-bottom:14px;
 }
 #buddy-modal .li-react-buddy-shell .buddy-heading > #buddy-title-avatar{
- grid-column:1;grid-row:1;align-self:center;justify-self:center;
+ grid-column:1;grid-row:1;align-self:start;justify-self:center;
 }
-#buddy-modal .li-react-buddy-shell .buddy-heading > .buddy-heading-copy{
- grid-column:2;grid-row:1;min-width:0;
-}
-#buddy-modal .li-react-buddy-shell .buddy-heading-copy #buddy-title{
- margin:0;
+/* Retain a semantic heading for assistive tech, but no visible title in chat. */
+#buddy-modal #buddy-title.li-buddy-sr-title{
+ position:absolute;display:block;overflow:hidden;
+ width:1px;height:1px;padding:0;margin:0!important;border:0;
+ white-space:nowrap;clip:rect(0,0,0,0);clip-path:inset(50%);
 }
 #buddy-modal .li-react-buddy-shell .li-buddy-quote-thought{
- grid-column:2;grid-row:2;
+ grid-column:2;grid-row:1;
  min-width:0;max-width:100%;width:100%;
  padding:0;
  margin:0 0 2px;

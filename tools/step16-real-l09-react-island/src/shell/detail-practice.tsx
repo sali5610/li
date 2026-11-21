@@ -1,7 +1,7 @@
 import {openRoute} from './app-router.js';
 import React,{useEffect,useId,useRef,useState,useSyncExternalStore} from 'react';
 import {createPortal} from 'react-dom';
-import {Button,Card,Checkbox,Field,Heading,InlineFeedback,Radio,Text,LiIcon} from '../../../../design-system/react/index';
+import {Button,Checkbox,Field,Heading,InlineFeedback,Radio,Text,LiIcon} from '../../../../design-system/react/index';
 import {createFadedT03Flow,fadedT03Phase} from './spell-t03-flow.js';
 import {createLociT13Flow,lociT13Phase} from './spell-t13-flow.js';
 import {createResumeT12Flow,resumeT12Phase} from './spell-t12-flow.js';
@@ -384,21 +384,23 @@ export function GuideDetail(){
  const dueFuture=isDuePreparing&&view.dueAt!==null&&view.dueAt>Date.now();
  const ctaKind=preparing&&['faded','hide','resume','loci'].includes(view.mode)?'next':'check';
  return <div className="section-shell li-react-spell-detail" data-li-react-screen="guide-detail">
-  <div className="action-row">
-   {lessonRoute?<Button variant="secondary" onClick={()=>openRoute(lessonRoute)}
-    className="library-back-link">
-    <LiIcon name="chevron-left" size={18}/> {copy('Về bài học','Back to lesson')}
-   </Button>:personalRoute?<Button variant="secondary" onClick={()=>openRoute(personalRoute)}
-    className="library-back-link">
-    <LiIcon name="chevron-left" size={18}/> {copy('Về bài học','Back to lesson')}
-   </Button>:null}
+  <nav className="spell-detail-navigation" aria-label={copy('Điều hướng Thần Chú','Spell navigation')}>
    <Button variant="ghost" onClick={()=>openRoute('guide')} className="library-back-link">
     <LiIcon name="chevron-left" size={18}/> {copy('Sổ Tay Thần Chú','Learning Spells')}
    </Button>
-  </div>
-  <div className="kicker">{view.active} · {tr(method.category)}</div>
-  <Heading level={1} role="headline" className="display-title">{method.title}</Heading>
-  <Text role="body" className="intro">{method.original}</Text>
+   {lessonRoute?<Button variant="ghost" onClick={()=>openRoute(lessonRoute)}
+    className="spell-linked-lesson">
+    {copy('Mở bài học liên quan','Open related lesson')} <LiIcon name="arrow-right" size={18}/>
+   </Button>:personalRoute?<Button variant="ghost" onClick={()=>openRoute(personalRoute)}
+    className="spell-linked-lesson">
+    {copy('Mở bài học liên quan','Open related lesson')} <LiIcon name="arrow-right" size={18}/>
+   </Button>:null}
+  </nav>
+  <header className="spell-detail-heading">
+   <div className="kicker">{view.active} · {tr(method.category)}</div>
+   <Heading level={1} role="headline" className="display-title">{method.title}</Heading>
+   <Text role="body" className="intro">{method.original}</Text>
+  </header>
   <div className="spell-tabs" role="tablist" aria-label={copy('Chế độ Thần Chú','Spell mode')}
    onKeyDown={event=>{
     const next=['ArrowLeft','Home'].includes(event.key)?'guide':
@@ -413,7 +415,7 @@ export function GuideDetail(){
   </div>
   {view.tab==='guide'?
    <div role="tabpanel" aria-labelledby="li-react-spell-tab-guide" className="editorial-grid">
-    <Card variant="tinted" className="li-react-spell-explainer">
+    <section className="li-react-spell-explainer li-react-spell-manual">
      <div className="kicker">I · {copy('KHI DÙNG','WHEN TO USE')}</div>
      <Heading level={2} role="titleLarge">{method.purpose}</Heading>
      <div className="section-rule"/>
@@ -422,17 +424,17 @@ export function GuideDetail(){
       <span className="path-num">{String(index+1).padStart(2,'0')}</span>
       <Text role="body">{text}</Text>
      </div>)}</div>
-    </Card>
-    <Card variant="raised" className="li-react-spell-explainer">
+    </section>
+    <aside className="li-react-spell-explainer li-react-spell-aside">
      <div className="kicker">III · {copy('GIẢI CHÚ','APPLICATION')}</div>
      <Heading level={2} role="titleMedium">{copy('Dùng thế nào cho đúng?','How to apply it?')}</Heading>
      <Text role="body">{SPELL_GUIDANCE[view.active]?.[en()?'noteEn':'noteVi']}</Text>
      <div className="kicker">IV · {copy('LƯU Ý','WATCH OUT')}</div>
      <Text role="support">{copy('Hoàn thành tương tác không có nghĩa đã thông thạo. Hãy đối chiếu kết quả trước khi tự đánh giá.',
       'Completing an interaction is not proof of mastery. Check the feedback before self-rating.')}</Text>
-     <Button variant="secondary" onClick={()=>setTab('practice')}>
-      {copy('Thử thi triển','Try the practice')}</Button>
-    </Card>
+     <Button variant="primary" onClick={()=>setTab('practice')}>
+      {copy('Thử thi triển','Try the practice')} <LiIcon name="arrow-right" size={17}/></Button>
+    </aside>
    </div>:
    <section role="tabpanel" aria-labelledby="li-react-spell-tab-practice"
     data-li-react-t03-stage={view.active==='T03'?t03Stage:undefined}
@@ -602,7 +604,9 @@ export function ConfirmNoteAction({label,description,onConfirm,iconOnly=false,da
     <div className="action-row">
      <button ref={cancel} className="action alt" type="button" onClick={dismiss}>
       {copy('Hủy','Cancel')}</button>
-     <Button variant="primary" onClick={()=>{if(onConfirm())setAsking(false);}}>
+     <Button variant={danger?'secondary':'primary'}
+       className={danger?'library-confirm-danger':undefined}
+       onClick={()=>{if(onConfirm())setAsking(false);}}>
       {confirmLabel|| (danger?copy('Xóa ghi chép','Delete note'):copy('Khôi phục','Restore'))}</Button>
     </div>
    </div>
@@ -650,8 +654,8 @@ export function NoteDetail(){
   {note.status&&<Text role="body" className="intro">{note.status}</Text>}
   {!note.id||!note.type?<InlineFeedback tone="info" message={copy(
    'Ghi chép này không còn trong Tủ Riêng.','This note is no longer in your private library.')}/>:
-  <>
-   {note.context&&<Card variant="raised" className="library-note-context">
+  <div className="library-note-workspace">
+   {note.context&&<aside className="library-note-context">
     <div className="kicker">{copy('PHẢN CHỨNG · TÌNH HUỐNG GỐC','ORIGINAL CASE CONTEXT')}</div>
     <Heading level={2} role="titleMedium">{note.context.question}</Heading>
     <Text role="body">{note.context.scene}</Text>
@@ -662,22 +666,22 @@ export function NoteDetail(){
     <InlineFeedback tone="info" message={note.context.feedback}/>
     <Text role="support">{note.context.provenance}</Text>
     <Button variant="secondary" onClick={()=>openRoute('case')}>{copy('Làm lại Phản Chứng','Retry the Case')}</Button>
-   </Card>}
-   <Card variant="raised" className="library-note-review">
+   </aside>}
+   {!editing&&<article className="library-note-review">
     <div className="library-note-head">
      <div className="kicker">{copy('NỘI DUNG HIỆN TẠI','CURRENT CONTENT')}</div>
      <ConfirmNoteAction
-      label={copy('Xóa ghi chép và lịch sử phiên bản','Delete note and all versions')}
+      label={copy('Xóa ghi chép','Delete note')}
       description={copy('Xóa ghi chép này? Bạn có 7 giây để hoàn tác sau khi xóa.',
        'Delete this note? You have 7 seconds to undo after deletion.')}
-      danger iconOnly onConfirm={()=>Boolean(app.liNotes?.deleteFromReact(note.type!,note.id!))}/>
+      danger onConfirm={()=>Boolean(app.liNotes?.deleteFromReact(note.type!,note.id!))}/>
     </div>
     <Heading level={2} role="titleMedium">{note.bodyTitle||copy('Luận kết hiện tại','Current text')}</Heading>
     <Text role="body" className="library-entry-body">{note.body}</Text>
     <Text role="support">{note.date}</Text>
-    {!editing&&<Button variant="secondary" onClick={startEdit}>{copy('Chỉnh sửa','Edit')}</Button>}
-   </Card>
-   {editing&&<Card variant="tinted" className="library-note-edit">
+    <Button variant="primary" onClick={startEdit}>{copy('Chỉnh sửa','Edit')}</Button>
+   </article>}
+   {editing&&<section className="library-note-edit">
     <Heading level={2} role="titleMedium">{copy('Chỉnh sửa ghi chép','Edit note')}</Heading>
     <Text role="support">{copy('Lưu tạo phiên bản mới, không xóa bản cũ.','Saving creates a new version, preserving history.')}</Text>
     <Field label={copy('Tiêu đề','Title')} value={title}
@@ -690,18 +694,19 @@ export function NoteDetail(){
      <Button variant="secondary" onClick={()=>{setEditing(false);setMessage('');}}>
       {copy('Hủy','Cancel')}</Button>
     </div>
-   </Card>}
-   <Card variant="raised" className="library-note-history">
+   </section>}
+   <section className="library-note-history">
     <Heading level={2} role="titleMedium">{copy('Lịch sử phiên bản','Version history')}</Heading>
     <Text role="support">{copy('Khôi phục cũng tạo một phiên bản mới, không xóa lịch sử.',
      'Restoring creates a new version and preserves all previous versions.')}</Text>
     <div className="stack-sm" aria-live="polite">
-     {[...note.history].reverse().map((version,index)=><article className="library-version-entry" key={version.version}>
-      <div className="library-version-heading">
+     {[...note.history].reverse().map((version,index)=><details className="library-version-entry"
+      key={version.version} open={index===0}>
+      <summary className="library-version-heading">
        <strong>{copy('Phiên bản ','Version ')}{version.version}
         {index===0?copy(' · Hiện tại',' · Current'):''}</strong>
-       <Text role="support">{time(version.at)} · {version.change||copy('Chỉnh sửa','Edited')}</Text>
-      </div>
+       <Text as="span" role="support">{time(version.at)} · {version.change||copy('Chỉnh sửa','Edited')}</Text>
+      </summary>
       {version.title!==note.title&&<Text role="support">{copy('Tiêu đề lúc đó: ','Title then: ')}
        {version.title}</Text>}
       <Text role="body" className="library-entry-body">{version.body}</Text>
@@ -710,9 +715,9 @@ export function NoteDetail(){
        description={copy('Tạo một phiên bản mới, mọi bản cũ đều giữ nguyên.',
         'Creates a new version, preserving all previous versions.')}
        onConfirm={()=>restore(version.version)}/>} 
-     </article>)}
+     </details>)}
     </div>
-   </Card>
-  </>}
+   </section>
+  </div>}
  </div>;
 }

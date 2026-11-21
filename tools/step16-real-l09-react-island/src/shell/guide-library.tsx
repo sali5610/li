@@ -3,9 +3,9 @@ import curriculum from '../../../../content/curriculum/legacy-catalog.v1.json';
 import {personalStudyRoute} from '../learning/released-lessons.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button,Card,Field,FilterChip,Heading,InlineFeedback,MethodTile,Text,LiIcon} from '../../../../design-system/react/index';
-// MethodTile comes from LegacyCards: without its shared DS stylesheet,
-// iPhone renders a raw blue browser button with every label run together.
+import {Button,Field,FilterChip,Heading,InlineFeedback,Text,LiIcon} from '../../../../design-system/react/index';
+// Retain the canonical legacy stylesheet for the existing staging bundle contract;
+// the visible field-guide rows below no longer render legacy MethodTile cards.
 import '../../../../design-system/react/legacy.css';
 import './guide-library.css';
 import {GuideDetail,NoteDetail,ConfirmNoteAction} from './detail-practice.js';
@@ -88,60 +88,95 @@ function Guide(){
  const q=query.trim().toLocaleLowerCase('vi');
  const visible=view.methods.filter(method=>{
   if(category!=='Tất cả'&&method.categoryKey!==category)return false;
-  if(q&&![
-   method.id,method.title,method.original,method.purpose,method.category,method.categoryKey
-  ].join(' ').toLocaleLowerCase('vi').includes(q))return false;
-  return !!q||category!=='Tất cả'||!view.suggestions||view.suggestions.includes(method.id);
+  return !q||[method.id,method.title,method.original,method.purpose,method.category,method.categoryKey]
+   .join(' ').toLocaleLowerCase('vi').includes(q);
  });
+ const grouped=view.categories.filter(item=>item.key!=='Tất cả').map(group=>({
+  ...group,items:visible.filter(method=>method.categoryKey===group.key)
+ })).filter(group=>group.items.length);
  const icon=(categoryKey:string)=>{
-  if(categoryKey==='Luận Chứng Thuật')return <LiIcon name="layers" size={22}/>;
-  if(categoryKey==='Phá Giải Thuật')return <LiIcon name="sparkles" size={22}/>;
-  if(categoryKey==='Minh Giải Thuật')return <LiIcon name="info" size={22}/>;
-  if(categoryKey==='Tự Chủ Thuật')return <LiIcon name="star" size={22}/>;
-  return <LiIcon name="book-open" size={22}/>;
+  if(categoryKey==='Luận Chứng Thuật')return <LiIcon name="layers" size={21}/>;
+  if(categoryKey==='Phá Giải Thuật')return <LiIcon name="sparkles" size={21}/>;
+  if(categoryKey==='Minh Giải Thuật')return <LiIcon name="info" size={21}/>;
+  if(categoryKey==='Tự Chủ Thuật')return <LiIcon name="star" size={21}/>;
+  return <LiIcon name="book-open" size={21}/>;
  };
  return <div className="section-shell li-react-guide" data-li-react-screen="guide">
-  <div className="kicker">{copy('CẨM NANG TƯ DUY','THINKING FIELD GUIDE')}</div>
-  <Heading level={1} role="headline" className="display-title">{copy('Sổ Tay Thần Chú','Learning Spells')}</Heading>
-  <Text role="body" className="intro">{copy(
-   '13 phương pháp để học, ghi nhớ và suy nghĩ. Mỗi pháp danh đều có tên học thuật gốc đi kèm.',
-   '13 evidence-informed techniques for learning, memory and reasoning, with their academic names.'
-  )}</Text>
-  <div className="editorial-grid li-guide-tools" style={{marginTop:'var(--li-space-4)'}}>
-   <div className="stack-sm">
-    <Field id="li-react-method-search" label={copy('Tìm trong 13 phương pháp','Search all 13 methods')}
-     type="search" value={query} onChange={event=>setQuery(event.target.value)}
-     placeholder="Method of Loci, T01, Triệu Ức..."/>
-    <div className="filters li-react-method-filters"
-     role="group" aria-label={copy('Bộ lọc nhóm kỹ thuật','Method category filters')}>
-     {view.categories.map(item=><FilterChip key={item.key} pressed={item.key===category}
-      onClick={()=>setCategory(item.key)}>{item.label}</FilterChip>)}
-    </div>
+  <header className="guide-opening">
+   <div className="guide-opening-copy">
+    <div className="kicker">{copy('CẨM NANG TƯ DUY','THINKING FIELD GUIDE')}</div>
+    <Heading level={1} role="headline" className="display-title">{copy('Sổ Tay Thần Chú','Learning Spells')}</Heading>
+    <Text role="body" className="intro">{copy(
+     '13 phương pháp để học, ghi nhớ và suy nghĩ. Mỗi pháp danh đều có tên học thuật gốc đi kèm.',
+     '13 evidence-informed techniques for learning, memory and reasoning, with their academic names.'
+    )}</Text>
    </div>
-   <Card variant="tinted" className="guide-mentor" aria-label="Lời Lão Lý về nhịp học">
-    <img className="guide-mentor-illustration" src="./assets/laoly-guide-rest.png"
-     width="1024" height="1024" alt={copy('Lão Lý ngái ngủ','Sleepy mentor Lao Ly')}/>
-    <div className="guide-mentor-copy">
-     <div className="kicker">{copy('LÃO LÝ NHẮC KHẼ','MENTOR NOTE')}</div>
-     <Text role="body">{view.guide}</Text>
-     <Text role="support" className="guide-method-count">
+   <div className="guide-opening-mark" aria-hidden="true">
+    <LiIcon name="book-open" size={40}/><span>01—13</span>
+   </div>
+  </header>
+  <div className="guide-catalog-layout">
+   <div className="guide-index">
+    <div className="guide-find">
+     <Field id="li-react-method-search" label={copy('Tìm trong 13 phương pháp','Search all 13 methods')}
+      type="search" value={query} onChange={event=>setQuery(event.target.value)}
+      placeholder="Method of Loci, T01, Triệu Ức..."/>
+     <div className="filters li-react-method-filters" role="group"
+      aria-label={copy('Bộ lọc nhóm kỹ thuật','Method category filters')}>
+      {view.categories.map(item=><FilterChip key={item.key} pressed={item.key===category}
+       onClick={()=>setCategory(item.key)}>{item.label}</FilterChip>)}
+     </div>
+     <Text role="support" className="guide-result-count" aria-live="polite">
       {copy('Hiển thị ','Showing ')}{visible.length}/{view.methods.length}
       {q?copy(' · kết quả tìm kiếm',' · search results'):category!=='Tất cả'?
        copy(' · theo nhóm',' · filtered'):(' · '+view.modeLabel)}
      </Text>
     </div>
-   </Card>
+    <div className="guide-index-contents">
+     {grouped.map(group=><section key={group.key} className="guide-chapter"
+      aria-label={group.label}>
+      <div className="guide-chapter-heading">
+       <div className="guide-chapter-icon" aria-hidden="true">{icon(group.key)}</div>
+       <Heading level={2} role="titleMedium">{group.label}</Heading>
+       <Text role="support">{group.items.length}</Text>
+      </div>
+      <div className="guide-method-list">
+       {group.items.map(method=><button key={method.id} type="button"
+        className="guide-method-entry" onClick={()=>app.liMethods?.open(method.id)}
+        aria-label={method.id+' · '+method.title+' · '+method.original}>
+        <span className="guide-method-number">{method.id}</span>
+        <span className="guide-method-description">
+         <strong>{method.title}</strong>
+         <span className="guide-method-original">{method.original}</span>
+         <span className="guide-method-purpose">{method.purpose}</span>
+         {view.suggestions?.includes(method.id)&&<span className="guide-method-recommendation">
+          <LiIcon name="star" size={13}/> {copy('Hợp nhịp học hiện tại','Suggested for your learning rhythm')}
+         </span>}
+        </span>
+        <LiIcon name="arrow-right" size={20}/>
+       </button>)}
+      </div>
+     </section>)}
+     {!visible.length&&<div className="guide-no-results">
+      <InlineFeedback tone="info" message={copy(
+       'Không tìm thấy. Thử đổi bộ lọc hoặc tìm bằng tên học thuật.',
+       'Nothing found. Try a different filter or an academic method name.'
+      )}/>
+      <Button variant="secondary" onClick={()=>{setQuery('');setCategory('Tất cả');}}>
+       {copy('Xóa bộ lọc','Clear filters')}</Button>
+     </div>}
+    </div>
+   </div>
+   <aside className="guide-margin-note" aria-label={copy('Gợi ý từ Lão Lý','Lao Ly guidance')}>
+    <img className="guide-mentor-illustration" src="./assets/laoly-guide-rest.png"
+     width="1024" height="1024" loading="lazy"
+     alt={copy('Lão Lý ngái ngủ','Sleepy mentor Lao Ly')}/>
+    <div className="kicker">{copy('LÃO LÝ NHẮC KHẼ','MENTOR NOTE')}</div>
+    <Text role="body">{view.guide}</Text>
+    <Text role="support">{copy('Chọn một phương pháp để xem hướng dẫn và thử thực hành.',
+     'Choose a method to read its guide and try a practice.')}</Text>
+   </aside>
   </div>
-  <div className="method-grid li-react-method-grid">
-   {visible.map(method=><MethodTile key={method.id} code={method.id}
-    icon={icon(method.categoryKey)} title={method.title} original={method.original}
-    purpose={method.purpose} onActivate={()=>app.liMethods?.open(method.id)}
-    actionLabel={copy('CHÚ GIẢI','EXPLAIN')}/>)}
-  </div>
-  {!visible.length&&<InlineFeedback tone="info" message={copy(
-   'Không tìm thấy. Thử đổi bộ lọc hoặc tìm bằng tên học thuật.',
-   'Nothing found. Try a different filter or an academic method name.'
-  )}/>}
  </div>;
 }
 function useLibrary(){
@@ -263,52 +298,67 @@ function NotePreview({note,kind}:{
 function Library(){
  const view=useLibrary();
  return <div className="section-shell li-react-library" data-li-react-screen="library">
-  <div className="kicker">{copy('GÓC RIÊNG CỦA BẠN','YOUR PRIVATE SPACE')}</div>
-  <Heading level={1} role="headline" className="display-title">{copy('Tủ Riêng','Private Library')}</Heading>
-  <Text role="body" className="intro">{copy(
-   'Một góc nhìn nhanh. Mọi bài học, dấu trang và ghi chú đầy đủ đều nằm trong từng ngăn riêng.',
-   'Your recent learning, bookmarks and notes in one private place.')}</Text>
-  <div className="stack-sm library-groups">
-   <section className="library-group" aria-label={copy('Quay lại','Continue')}>
-    <ShelfHeader title={copy('Quay lại','Continue')}
-     description={copy('Tiếp tục hành trình đang học.','Resume recent learning.')} target="resume"/>
-    <div className="surface-grid cols2 library-resume-previews">
-     <Card variant="tinted"><div className="kicker"><LiIcon name="book-open" size={16}/> {copy('BÀI HỌC · GẦN NHẤT','LATEST LESSON')}</div>
-      <LessonRows lessons={view.lessons} limit={1}/></Card>
-     <Card variant="tinted"><div className="kicker"><LiIcon name="layers" size={16}/> {copy('VẤN ĐỀ / CASE · GẦN NHẤT','LATEST PROBLEM / CASE')}</div>
-      <ProblemRows problems={view.problems} limit={1}/></Card>
+  <header className="library-introduction">
+   <div className="kicker">{copy('GÓC RIÊNG CỦA BẠN','YOUR PRIVATE SPACE')}</div>
+   <Heading level={1} role="headline" className="display-title">{copy('Tủ Riêng','Private Library')}</Heading>
+   <Text role="body" className="intro">{copy(
+    'Một góc nhìn nhanh. Mọi bài học, dấu trang và ghi chú đầy đủ đều nằm trong từng ngăn riêng.',
+    'Your recent learning, bookmarks and notes in one private place.')}</Text>
+  </header>
+  <div className="library-workspace">
+   <section className="library-resume-feature" aria-label={copy('Tiếp tục học','Continue learning')}>
+    <div className="library-feature-heading">
+     <div><div className="kicker">{copy('TIẾP TỤC TỪ ĐÂY','PICK UP HERE')}</div>
+      <Heading level={2} role="titleLarge">{copy('Quay lại với bài học','Resume learning')}</Heading></div>
+     <Button variant="ghost" onClick={()=>openRoute('resume')}>
+      {copy('Tất cả hoạt động','All activity')} <LiIcon name="arrow-right" size={18}/></Button>
+    </div>
+    <div className="library-feature-grid">
+     <div className="library-feature-primary">
+      <div className="kicker"><LiIcon name="book-open" size={16}/> {copy('BÀI HỌC GẦN NHẤT','LATEST LESSON')}</div>
+      <LessonRows lessons={view.lessons} limit={1}/>
+     </div>
+     <div className="library-feature-secondary">
+      <div className="kicker"><LiIcon name="layers" size={16}/> {copy('VẤN ĐỀ / CASE GẦN NHẤT','LATEST PROBLEM / CASE')}</div>
+      <ProblemRows problems={view.problems} limit={1}/>
+     </div>
     </div>
    </section>
-   <section className="library-group" aria-label={copy('Bộ sưu tập','Collection')}>
-    <ShelfHeader title={copy('Bộ sưu tập','Collection')}
-     description={copy('Ghi chép mới nhất ở mỗi ngăn.','Recent notes in each drawer.')} target="collection"/>
-    <div className="surface-grid cols2">
-     <Card variant="raised"><div className="kicker"><LiIcon name="book-open" size={16}/> {copy('CASE ĐÃ XỬ LÝ','REVIEWED CASES')}</div>
-      <Heading level={3} role="titleSmall">{copy('Bút Ký','Case Notes')}</Heading>
-      <Text role="support">{copy('Kết luận do bạn tự viết · Gần nhất','Your own conclusions · Latest')}</Text>
-      <NotePreview note={view.cases[0]} kind="case"/></Card>
-     <Card variant="raised"><div className="kicker"><LiIcon name="feather" size={16}/> {copy('Ý TƯỞNG CHƯA XÁC MINH','UNVERIFIED IDEAS')}</div>
-      <Heading level={3} role="titleSmall">{copy('Ý đã nhặt','Captured Ideas')}</Heading>
-      <Text role="support">{copy('Ghi nhanh · Gần nhất','Quick notes · Latest')}</Text>
-      <NotePreview note={view.ideas[0]} kind="idea"/></Card>
-    </div>
-    <div className="library-create-actions action-row">
-     <Button variant="secondary" onClick={()=>openRoute('case')}>{copy('Viết Bút Ký','Write a Case Note')}</Button>
-     <Button variant="secondary" onClick={()=>openRoute('capture')}>{copy('Nhặt ý','Capture an Idea')}</Button>
-    </div>
-   </section>
-   <section className="library-group" aria-label={copy('Nhìn lại','Reflect')}>
-    <ShelfHeader title={copy('Nhìn lại','Reflect')}
-     description={copy('Theo dõi thể trạng và các hoạt động theo ngày.','Track each day and your learning rhythm.')}/>
-    <Card variant="raised" className="library-activity">
-     <div><div className="kicker"><LiIcon name="calendar" size={16}/> {copy('NHẬT KÝ','JOURNAL')}</div>
-      <Heading level={3} role="titleSmall">{copy('Nhịp học của bạn','Your Learning Rhythm')}</Heading>
+   <div className="library-workspace-columns">
+    <section className="library-workspace-main" aria-label={copy('Ghi chép gần đây','Recent notes')}>
+     <ShelfHeader title={copy('Ghi chép gần đây','Recent notes')}
+      description={copy('Kết luận và ý tưởng bạn đã giữ lại.','Your saved conclusions and ideas.')} target="collection"/>
+     <div className="library-note-previews">
+      <article className="library-note-preview">
+       <div className="kicker"><LiIcon name="book-open" size={16}/> {copy('BÚT KÝ','CASE NOTES')}</div>
+       <NotePreview note={view.cases[0]} kind="case"/>
+      </article>
+      <article className="library-note-preview">
+       <div className="kicker"><LiIcon name="feather" size={16}/> {copy('Ý ĐÃ NHẶT','CAPTURED IDEAS')}</div>
+       <NotePreview note={view.ideas[0]} kind="idea"/>
+      </article>
+     </div>
+     <div className="library-create-actions">
+      <Button variant="secondary" onClick={()=>openRoute('case')}>{copy('Viết Bút Ký','Write a Case Note')}</Button>
+      <Button variant="secondary" onClick={()=>openRoute('capture')}>{copy('Nhặt ý','Capture an Idea')}</Button>
+     </div>
+    </section>
+    <aside className="library-workspace-side">
+     <section className="library-saved-shortlist">
+      <ShelfHeader title={copy('Dấu trang','Bookmarks')}
+       description={copy('Giữ để mở lại khi cần.','Saved for a later visit.')} target="resume"/>
+      <BookmarkRows items={[...view.lessonBookmarks,...view.questionBookmarks].slice(0,3)}/>
+     </section>
+     <section className="library-rhythm">
+      <div className="kicker"><LiIcon name="calendar" size={16}/> {copy('NHẬT KÝ','JOURNAL')}</div>
+      <Heading level={2} role="titleMedium">{copy('Nhịp học của bạn','Your Learning Rhythm')}</Heading>
       <Text role="support">{copy('Ngủ, vận động, nghỉ ngơi, nhịp học và hoạt động mỗi ngày.',
        'Rest, activity, pace and learning each day.')}</Text>
-     </div>
-     <Button variant="secondary" onClick={()=>openRoute('dashboard')}>{copy('Xem Nhật Ký','Open Journal')}</Button>
-    </Card>
-   </section>
+      <Button variant="ghost" onClick={()=>openRoute('dashboard')}>
+       {copy('Xem Nhật Ký','Open Journal')} <LiIcon name="arrow-right" size={18}/></Button>
+     </section>
+    </aside>
+   </div>
   </div>
  </div>;
 }
@@ -338,7 +388,6 @@ function BookmarkRows({items}:{
 }
 function Resume(){
  const view=useLibrary();
- // The shared bookmark port owns the tab; mentor navigation may change it outside this component.
  const tab=view.bookmarkTab;
  const tabClick=(next:'lesson'|'question')=>app.liLibraryShelf?.selectBookmarkTab(next);
  return <div className="section-shell li-react-library" data-li-react-screen="resume">
@@ -349,14 +398,20 @@ function Resume(){
   <Text role="body" className="intro">{copy(
    'Tiếp tục bài học, quay lại vấn đề đang tìm hiểu và mở những Dấu Trang đã lưu.',
    'Pick up where you left off or revisit something you bookmarked.')}</Text>
-  <div className="stack-sm library-detail-groups">
-   <Card variant="raised"><div className="kicker">01 · {copy('TIẾP TỤC HỌC','CONTINUE LEARNING')}</div>
-    <Heading level={2} role="titleMedium">{copy('Bài học gần đây','Recent lessons')}</Heading>
-    <LessonRows lessons={view.lessons}/></Card>
-   <Card variant="raised"><div className="kicker">02 · {copy('PROBLEM / CASE','PROBLEM / CASE')}</div>
-    <Heading level={2} role="titleMedium">{copy('Tình huống đã xem','Recently viewed scenarios')}</Heading>
-    <ProblemRows problems={view.problems}/></Card>
-   <Card variant="raised" className="library-bookmark-section">
+  <div className="library-resume-layout">
+   <div className="library-resume-stream">
+    <section className="library-resume-section">
+     <div className="kicker">01 · {copy('TIẾP TỤC HỌC','CONTINUE LEARNING')}</div>
+     <Heading level={2} role="titleMedium">{copy('Bài học gần đây','Recent lessons')}</Heading>
+     <LessonRows lessons={view.lessons}/>
+    </section>
+    <section className="library-resume-section">
+     <div className="kicker">02 · {copy('VẤN ĐỀ / CASE','PROBLEM / CASE')}</div>
+     <Heading level={2} role="titleMedium">{copy('Tình huống đã xem','Recently viewed scenarios')}</Heading>
+     <ProblemRows problems={view.problems}/>
+    </section>
+   </div>
+   <aside className="library-resume-section library-bookmark-section">
     <div className="kicker">03 · {copy('DẤU TRANG','BOOKMARKS')}</div>
     <Heading level={2} role="titleMedium">{copy('Đã lưu để quay lại','Saved for later')}</Heading>
     <div className="library-bookmark-tabs" role="tablist" aria-label={copy('Loại Dấu Trang','Bookmark type')}
@@ -376,16 +431,19 @@ function Resume(){
     <div role="tabpanel" aria-labelledby={'li-react-tab-'+tab} tabIndex={0}>
      <BookmarkRows items={tab==='lesson'?view.lessonBookmarks:view.questionBookmarks}/>
     </div>
-   </Card>
+   </aside>
   </div>
  </div>;
 }
 function Collection(){
  const view=useLibrary();
+ const [search,setSearch]=useState('');
  const filter=view.collectionFilter;
+ const q=search.trim().toLocaleLowerCase('vi');
  const items=[...view.cases,...view.ideas]
   .sort((a,b)=>(Date.parse(b.sortDate)||0)-(Date.parse(a.sortDate)||0))
-  .filter(item=>filter==='all'||item.type===filter);
+  .filter(item=>(filter==='all'||item.type===filter)&&
+   (!q||[item.title,item.body,item.date].join(' ').toLocaleLowerCase('vi').includes(q)));
  return <div className="section-shell li-react-library" data-li-react-screen="collection">
   <Button variant="ghost" onClick={()=>openRoute('library')} className="library-back-link">
    <LiIcon name="chevron-left" size={18}/> {copy('Tủ Riêng','Private Library')}</Button>
@@ -394,38 +452,60 @@ function Collection(){
   <Text role="body" className="intro">{copy(
    'Bút Ký là kết luận sau Phản Chứng; Ý đã nhặt là điều bạn ghi lại nhưng chưa xác minh.',
    'Case Notes are revised conclusions; Captured Ideas are not yet verified.')}</Text>
-  <div className="library-filter-row" role="group" aria-label={copy('Lọc ghi chép','Filter notes')}>
-   {(['all','case','idea'] as const).map(key=><FilterChip key={key} pressed={filter===key}
-    onClick={()=>app.liLibraryShelf?.setCollectionFilter(key)}>
-    {key==='all'?copy('Tất cả','All'):key==='case'?copy('Bút Ký','Case Notes'):copy('Ý đã nhặt','Ideas')}</FilterChip>)}
-  </div>
-  <div className="stack-sm library-collection-list" aria-live="polite">
-   {!items.length&&<Empty message={copy('Chưa có ghi chép được lưu.','No saved notes yet.')}/>}
-   {items.map(item=><Card variant="raised" key={item.type+item.id}
-    className="library-collection-entry">
-    <div className="kicker">{item.type==='case'?
-     copy('BÚT KÝ · KẾT LUẬN SAU PHẢN CHỨNG','CASE NOTE · REVISED CONCLUSION'):
-     copy('Ý ĐÃ NHẶT · CHƯA XÁC MINH','CAPTURED IDEA · UNVERIFIED')}</div>
-    {item.type==='case'&&<Heading level={3} role="titleSmall">{item.title}</Heading>}
-    <Text role="support">{copy('Lưu ngày ','Saved ')}{item.date}</Text>
-    <Text role="body" className="library-entry-body">{item.body}</Text>
-    <div className="library-note-actions">
-     <Button variant="secondary" onClick={()=>app.liNotes?.openDetail(item.type,item.id)}>
-      {copy('Xem chi tiết','View details')}</Button>
-     <ConfirmNoteAction danger
-      label={copy('Xóa ghi chép: ','Delete note: ')+(item.type==='case'?item.title:item.body.slice(0,60))}
-      description={copy('Xóa cả lịch sử phiên bản? Bạn có 7 giây để hoàn tác.',
-       'Delete note and its history? Undo is available for 7 seconds.')}
-      onConfirm={()=>Boolean(app.liNotes?.deleteFromReact(item.type,item.id))}/>
+  <div className="library-collection-layout">
+   <div className="library-collection-main">
+    <div className="library-collection-tools">
+     <Field id="li-react-note-search" label={copy('Tìm ghi chép','Search notes')}
+      type="search" value={search} onChange={event=>setSearch(event.target.value)}
+      placeholder={copy('Tìm theo tiêu đề hoặc nội dung','Search title or content')}/>
+     <div className="library-filter-row" role="group" aria-label={copy('Lọc ghi chép','Filter notes')}>
+      {(['all','case','idea'] as const).map(key=><FilterChip key={key} pressed={filter===key}
+       onClick={()=>app.liLibraryShelf?.setCollectionFilter(key)}>
+       {key==='all'?copy('Tất cả','All'):key==='case'?copy('Bút Ký','Case Notes'):copy('Ý đã nhặt','Ideas')}</FilterChip>)}
+     </div>
+     <Text role="support" className="library-result-count" aria-live="polite">
+      {copy('Hiển thị ','Showing ')}{items.length}/{view.cases.length+view.ideas.length}
+     </Text>
     </div>
-   </Card>)}
-  </div>
-  <div className="library-collection-create">
-   <Heading level={2} role="titleMedium">{copy('Thêm ghi chép','Add a Note')}</Heading>
-   <div className="action-row library-collection-actions">
-    <Button variant="secondary" onClick={()=>openRoute('case')}>{copy('Viết Bút Ký','Write a Case Note')}</Button>
-    <Button variant="secondary" onClick={()=>openRoute('capture')}>{copy('Nhặt ý mới','Capture an Idea')}</Button>
+    <div className="library-collection-list" aria-live="polite">
+     {!items.length&&<div className="library-collection-empty">
+      <Empty message={q||filter!=='all'?copy('Không có ghi chép phù hợp.','No matching notes.'):
+       copy('Chưa có ghi chép được lưu.','No saved notes yet.')}/>
+      {(q||filter!=='all')&&<Button variant="secondary" onClick={()=>{
+       setSearch('');app.liLibraryShelf?.setCollectionFilter('all');
+      }}>{copy('Xóa bộ lọc','Clear filters')}</Button>}
+     </div>}
+     {items.map(item=><article key={item.type+item.id} className="library-collection-entry">
+      <div className="library-collection-entry-main">
+       <div className="kicker">{item.type==='case'?
+        copy('BÚT KÝ · KẾT LUẬN SAU PHẢN CHỨNG','CASE NOTE · REVISED CONCLUSION'):
+        copy('Ý ĐÃ NHẶT · CHƯA XÁC MINH','CAPTURED IDEA · UNVERIFIED')}</div>
+       {item.type==='case'&&<Heading level={3} role="titleSmall">{item.title}</Heading>}
+       <Text role="body" className="library-entry-body">{item.body}</Text>
+       <Text role="support">{copy('Lưu ngày ','Saved ')}{item.date}</Text>
+      </div>
+      <div className="library-note-actions">
+       <Button variant="ghost" onClick={()=>app.liNotes?.openDetail(item.type,item.id)}>
+        {copy('Mở ghi chép','Open note')} <LiIcon name="arrow-right" size={17}/></Button>
+       <ConfirmNoteAction danger
+        label={copy('Xóa ghi chép: ','Delete note: ')+(item.type==='case'?item.title:item.body.slice(0,60))}
+        description={copy('Xóa cả lịch sử phiên bản? Bạn có 7 giây để hoàn tác.',
+         'Delete note and its history? Undo is available for 7 seconds.')}
+        onConfirm={()=>Boolean(app.liNotes?.deleteFromReact(item.type,item.id))}/>
+      </div>
+     </article>)}
+    </div>
    </div>
+   <aside className="library-collection-side">
+    <div className="kicker">{copy('GHI NHANH','QUICK CAPTURE')}</div>
+    <Heading level={2} role="titleMedium">{copy('Thêm ghi chép','Add a Note')}</Heading>
+    <Text role="support">{copy('Ghi lại kết luận từ Phản Chứng hoặc một ý tưởng mới.',
+     'Save a conclusion from a case or capture a new idea.')}</Text>
+    <div className="library-collection-actions">
+     <Button variant="secondary" onClick={()=>openRoute('case')}>{copy('Viết Bút Ký','Write a Case Note')}</Button>
+     <Button variant="secondary" onClick={()=>openRoute('capture')}>{copy('Nhặt ý mới','Capture an Idea')}</Button>
+    </div>
+   </aside>
   </div>
  </div>;
 }

@@ -462,6 +462,15 @@ for(const item of mirrorDraft.items){
    return ["question","scene","buddy","observed","unknown"].every(k=>typeof c?.[k]==="string"&&c[k].trim())&&
     Array.isArray(c.branches)&&c.branches.length===3&&c.branches.every(x=>typeof x==="string"&&x.trim());
   })||
+  !["vi","en"].every(locale=>{
+   const c=item.case?.localized?.[locale];
+   return item.case?.reviewState==="proposed"&&item.case?.publishState==="draft"&&
+    typeof c?.question==="string"&&c.question.trim()&&
+    typeof c?.scene==="string"&&c.scene.trim()&&
+    ["right","wrong"].every(key=>typeof c.options?.[key]==="string"&&c.options[key].trim()&&
+     typeof c.feedback?.[key]==="string"&&c.feedback[key].trim())&&
+    typeof c.technique?.title==="string"&&typeof c.technique?.body==="string";
+  })||
   !readdirSync(resolve(root,"content/editorial/normalized")).includes(item.id+".draft.v1.json"))
   throw Error("LI_MIRROR_DRAFT_INVALID "+item.id);
  mirrorDraftIds.add(item.id);

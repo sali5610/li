@@ -1,4 +1,5 @@
 import React,{useEffect,useState} from 'react';
+import {createPortal} from 'react-dom';
 import {Button,Card,Heading,Text} from '../../../../design-system/react/index';
 import '../../../../design-system/react/atoms.css';
 import '../../../../design-system/react/components.css';
@@ -111,6 +112,18 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  const [journalError,setJournalError]=useState('');
  const [conflicts,setConflicts]=useState<PrivateConflictChoice[]>([]);
  const [resolving,setResolving]=useState(false);
+ // Auth remains the sole session, conflict and sign-out owner.
+ const [accountSettingsHost,setAccountSettingsHost]=useState<HTMLElement|null>(
+  ()=>IS_INTEGRATED_LI_APP?document.getElementById('li-account-settings-host'):null);
+ useEffect(()=>{
+  if(!IS_INTEGRATED_LI_APP)return;
+  const onHost=(event:Event)=>{
+   const detail=(event as CustomEvent<{host:HTMLElement|null}>).detail;
+   setAccountSettingsHost(detail?.host??null);
+  };
+  window.addEventListener('li:settings-account-host',onHost);
+  return()=>window.removeEventListener('li:settings-account-host',onHost);
+ },[]);
  useEffect(()=>{
   let cancelled=false;
   if(syncStatus!=='conflict'||!accountId||!ownerReady){setConflicts([]);return;}
@@ -187,7 +200,6 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    ((access==='granted'&&!isOffline&&!isPending&&!error)||
     (access==='offline'&&localOffline));
   document.documentElement.classList.toggle('li-auth-verified',Boolean(permitted));
-  if(!permitted)document.documentElement.classList.remove('li-account-open');
   // Explicit session state for React router cleanup. No DOM class observer or
   // cross-account Back stack survives a verified sign-out.
   window.dispatchEvent(new CustomEvent('li:auth-verified-changed',{
@@ -346,7 +358,52 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   }catch{setFeedback(t.leave);}
   finally{setBusy(null);}
  }
- return <main className="auth-pilot">
+ const showApp=Boolean(IS_INTEGRATED_LI_APP&&accountId&&ownerReady&&
+  ((access==='granted'&&!isOffline&&!isPending&&!error)||
+   (access==='offline'&&localOffline)));
+ const settingsControls=<section className="li-auth-settings" aria-label={locale==='vi'?'Tài khoản và đồng bộ':'Account and sync'}>
+  <div className="li-auth-settings-identity">
+   <Text role="support">{localOffline?
+    (locale==='vi'?'Bản học trên máy này':'This device’s learning copy'):t.signed}</Text>
+   <strong>{localOffline?'li.':session?.user?.email}</strong>
+  </div>
+  <Text role="support" className="li-auth-settings-access" data-access={access}>
+   {access==='granted'?t.granted:t.offline}
+  </Text>
+  <Text role="support" className="li-auth-settings-sync" aria-live="polite">
+   {access==='offline'?syncCopy[locale].offline:syncCopy[locale][syncStatus]}
+  </Text>
+  {access==='granted'&&syncStatus==='conflict'&&<section className="li-auth-settings-conflicts"
+   aria-label={locale==='vi'?'Khác biệt giữa các thiết bị':'Device conflicts'}>
+   <Heading level={4} role="titleSmall">{locale==='vi'?'Có dữ liệu khác nhau trên hai thiết bị':'Two versions differ'}</Heading>
+   <Text role="support">{locale==='vi'?
+    'Không tự ghi đè ghi chép. Chọn bản muốn giữ cho từng mục; bản còn lại sẽ được thay thế sau khi đồng bộ.':
+    'No silent overwrite. Choose which version to keep for each item; the other version is replaced after syncing.'}</Text>
+   {conflicts.map(c=><div className="li-auth-settings-conflict" key={c.itemType+':'+c.itemId}>
+    <strong>{c.label}</strong>
+    <div className="li-auth-settings-conflict-actions">
+     <Button variant="secondary" disabled={resolving} onClick={()=>void decideConflict(c,'keep-local')}>
+      {locale==='vi'?'Giữ bản trên máy này':'Keep this device'}</Button>
+     <Button variant="secondary" disabled={resolving} onClick={()=>void decideConflict(c,'use-remote')}>
+      {locale==='vi'?'Dùng bản trên Neon':'Use Neon version'}</Button>
+    </div>
+   </div>)}
+  </section>}
+  {access==='granted'&&!localOffline&&session?.user?.email&&
+   <AiOwnerControl email={session.user.email} locale={locale}/>}
+  {feedback&&<p className="li-auth-settings-error" role="alert">{feedback}</p>}
+  {showDeveloperQa&&accountId&&access==='granted'&&<>
+   <RlsQaPanel uid={accountId} granted/><SyncQaPanel uid={accountId} locale={locale}/>
+  </>}
+  <div className="li-auth-settings-actions">
+   <Button variant="secondary" onClick={()=>void signOut()} disabled={busy!==null}>
+    {busy?t.busy:localOffline?t.lockOffline:t.logout}
+   </Button>
+  </div>
+ </section>;
+ return <>
+  {showApp&&accountSettingsHost&&createPortal(settingsControls,accountSettingsHost)}
+  {!showApp&&<main className="auth-pilot">
   <header className="auth-header">
    <div><Text role="support" className="auth-tag">{stageLabel}</Text>
     <Heading level={1} role="headline" className="auth-title">{t.heading}</Heading></div>
@@ -410,5 +467,6 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    <p className="auth-local auth-sync-state" role="status">{access==='offline'?syncCopy[locale].offline:IS_INTEGRATED_LI_APP&&accountId&&access==='granted'?syncCopy[locale][syncStatus]:(IS_GITHUB_STAGING?t.l09Local:t.local)}</p>
    <p className="auth-privacy">{t.privacy}</p>
   </Card>
- </main>;
+ </main>}
+ </>;
 }

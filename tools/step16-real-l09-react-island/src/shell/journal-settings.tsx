@@ -214,7 +214,7 @@ function BuddyName({kind,header,placeholder,value,preview,commit}:{
 }
 const settingsSections=[
  {id:'learning',vi:'Học tập',en:'Learning'},
- {id:'companion',vi:'Lão Lý',en:'Elder Li'},
+ {id:'companion',vi:'Lão Lý',en:'Elder Ly'},
  {id:'reminders',vi:'Nhắc nhở',en:'Reminders'},
  {id:'data',vi:'Dữ liệu & riêng tư',en:'Data & privacy'},
 ] as const;
@@ -238,7 +238,7 @@ export function Settings(){
   <Heading level={1} role="headline" className="display-title">{copy('Cài đặt','Settings')}</Heading>
   <Text role="body" className="intro">{copy(
    'Tùy chỉnh cách học, cách Lão Lý trò chuyện và dữ liệu của bạn.',
-   'Customize learning, Lao Ly and your private data.')}</Text>
+   'Customize learning, Elder Ly and your private data.')}</Text>
   <div className="settings-section-selector" role="group" aria-label={copy('Mục cài đặt','Settings sections')}>
    {settingsSections.map(item=><Button key={item.id}
     variant={item.id===section?'primary':'secondary'}
@@ -264,7 +264,7 @@ export function Settings(){
      <Card variant="raised" className="li-react-setting-card">
       <div className="kicker">{copy('HỌC TẬP','LEARNING')}</div>
       <Heading level={2} role="titleMedium">{copy('Nhịp học của bạn','Your study rhythm')}</Heading>
-      <Text role="support">{copy('Lão Lý đồng hành theo nhịp bạn chọn.','Lao Ly adjusts to your chosen pace.')}</Text>
+      <Text role="support">{copy('Lão Lý đồng hành theo nhịp bạn chọn.','Elder Ly adjusts to your chosen pace.')}</Text>
       <div className="ly-mode-grid" role="group" aria-label={copy('Chọn một trong bốn nhịp học','Choose a study mode')}>
        {view.modes.map(item=><button type="button" key={item.key}
         className="ly-mode-choice" aria-pressed={item.key===view.mode}
@@ -282,7 +282,7 @@ export function Settings(){
      <Card variant="raised" className="li-react-setting-card li-react-companion-card">
       <div className="kicker">{copy('NGƯỜI ĐỒNG HÀNH','COMPANION')}</div>
       <div className="settings-buddy-heading">
-       <Heading level={2} role="titleMedium">{copy('Lão Lý','Elder Li')}</Heading>
+       <Heading level={2} role="titleMedium">{copy('Lão Lý','Elder Ly')}</Heading>
        <img className="settings-buddy-illustration" src="./assets/laoly-mirror-suy-nghi.png"
         alt="" aria-hidden="true" loading="lazy" decoding="async"/>
       </div>
@@ -293,7 +293,7 @@ export function Settings(){
       <Checkbox label={copy('Im Lặng — tắt lời thoại','Silence — mute companion dialogue')}
        checked={view.mute} onChange={event=>app.liSettingsPort?.setVoice('mute',event.target.checked)}/>
       <div className="buddy-address-settings">
-       <Heading level={3} role="titleSmall">{copy('Lão gọi bạn thế nào?','How should Lao Ly address you?')}</Heading>
+       <Heading level={3} role="titleSmall">{copy('Lão gọi bạn thế nào?','How should Elder Ly address you?')}</Heading>
        <Text role="support">{copy('Để trống để dùng cách gọi mặc định.','Leave blank to use the default address.')}</Text>
        <div className="buddy-address-grid">
         <BuddyName kind="warm" header={copy('Thân tình','Warm')} placeholder={copy('Tiểu hữu','Young friend')}
@@ -368,7 +368,7 @@ export function Settings(){
        onAction={chooseBackup}/>}
       <Text role="support">{copy(
        'Tệp JSON chỉ gồm Bút Ký, Ý đã nhặt, Dấu Trang và tên gọi Lão Lý; bản nháp legacy nếu có. KHÔNG gồm Nhật Ký, Check-in, tiến độ học, lịch ôn Thần Chú, lịch nhắc hay toàn bộ cài đặt. Bản nháp Nhặt Ý chưa lưu có thể vắng mặt.',
-       'This JSON includes case notes, captured ideas, bookmarks, Lao Ly nicknames and any legacy draft. It does NOT include Journal, Check-ins, learning progress, spell review schedules, reminders or all settings. Unsaved React Capture drafts may be missing.')}</Text>
+       'This JSON includes case notes, captured ideas, bookmarks, Elder Ly nicknames and any legacy draft. It does NOT include Journal, Check-ins, learning progress, spell review schedules, reminders or all settings. Unsaved React Capture drafts may be missing.')}</Text>
      <Text role="support">{copy(
       'Nhập tệp thay thế ghi chú và Dấu Trang hiện có sau khi xác nhận. Đây không phải bản sao toàn bộ tài khoản trước khi xóa dữ liệu máy.',
       'Import replaces existing notes and bookmarks after confirmation. This is not a complete account backup before clearing device data.')}</Text>

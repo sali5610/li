@@ -125,7 +125,7 @@ function Specimen(){
   panel=<div className="li-legacy-story-chat-pair">
    <ChatBubble text={t('90% phản hồi tích cực — nhưng mẫu khảo sát có đại diện không?',
     '90% positive responses — but is the survey representative?')}
-    speaker={t('Lão Lý hỏi','Lao Ly asks')}
+    speaker={t('Lão Lý hỏi','Elder Ly asks')}
     surface={selected('Paper')?'paper':'forest'} tail="left"/>
    <ChatBubble text={t('Phải kiểm tra nguồn mẫu trước khi kết luận.',
     'Check the sample source before drawing conclusions.')}
@@ -166,15 +166,15 @@ function Specimen(){
   panel=<LaoLyStateScene kind={selected('Error')?'error':'loading'}
    artworkSrc={asset(selected('Error')?'laoly-state-error.png':'laoly-state-loading.png')}
    title={selected('Error')?t('Bản đồ có chỗ sai rồi','Something went wrong'):
-    t('Lão đang giở sổ…','Lao Ly is reading…')}
+    t('Lão đang giở sổ…','Elder Ly is reading…')}
    description={t('Ảnh đã có sẵn trong assets. Trạng thái chỉ minh họa.',
     'Existing artwork; this is only a state fixture.')}
    action={selected('Error')?<SmallAction label={t('Thử lại (mẫu)','Retry (demo)')}
     onClick={click}/>:undefined}/>;
   break;
  case 'laoLyCompanion':
-  panel=<LaoLyCompanion label={t('Hỏi Lão Lý','Ask Lao Ly')}
-   title={t('Lão Lý','Lao Ly')} open={modal} onOpenChange={setModal}
+  panel=<LaoLyCompanion label={t('Hỏi Lão Lý','Ask Elder Ly')}
+   title={t('Lão Lý','Elder Ly')} open={modal} onOpenChange={setModal}
    artworkSrc={asset('laoly-neutral.png')}
    description={t('Bản mẫu companion, không kết nối AI.','Companion fixture, no AI connection.')}
    closeLabel={t('Đóng','Close')}>
@@ -248,8 +248,8 @@ const titles:Record<string,string>={
  methodTile:'Compact Method Tile',mediaCard:'Illustrated / Image Card',
  horizontalCard:'Horizontal Media Card',chatBubble:'Chat Bubble',tagChip:'Static Tag Chip',
  selectField:'Selection Dropdown',monthCalendar:'Monthly Calendar',
- stackedActivity:'Seven-Day Stacked Bar',laoLyState:'Lao Ly System State',
- laoLyCompanion:'Lao Ly Companion',editorialCard:'Editorial Card',
+ stackedActivity:'Seven-Day Stacked Bar',laoLyState:'Elder Ly System State',
+ laoLyCompanion:'Elder Ly Companion',editorialCard:'Editorial Card',
  notebookTextarea:'Notebook Textarea',functionalIcons:'Functional Icon System',
  smallAction:'Small / Text Link Action',progressVariants:'Progress Variants',
  iconField:'Icon-bearing Field',checkinRadioModal:'Check-in Radio Dialog'

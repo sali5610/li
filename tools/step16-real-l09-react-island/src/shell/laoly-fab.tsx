@@ -255,9 +255,9 @@ function FloatingLaoLy({host,initialAvatar,initialTitle}:{
  if(!authorized)return null;
  const english=app.liLanguage?.get?.()==='en';
  const label=MODE_NAMES[mode]||MODE_NAMES.start;
- const aria=english?'Chat with Lao Ly · '+label[1]:'Trò chuyện với Lão Lý · '+label[0];
+ const aria=english?'Chat with Elder Ly · '+label[1]:'Trò chuyện với Lão Lý · '+label[0];
  return <button id="laoly-fab" ref={fab} type="button"
-  aria-label={aria} title={english?'Lao Ly · '+label[1]:'Lão Lý · '+label[0]}
+  aria-label={aria} title={english?'Elder Ly · '+label[1]:'Lão Lý · '+label[0]}
   aria-description={english?
    'Drag to reposition. Use arrow keys to move, Shift for larger steps; Escape to reset.':
    'Kéo để di chuyển trên màn hình. Dùng phím mũi tên để di chuyển; Escape đặt lại vị trí.'}

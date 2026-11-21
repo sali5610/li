@@ -151,15 +151,15 @@ export function LessonMentor({id,locale}:{id:string;locale:Locale}){
   for(const evt of ['scroll','li:localechange','li:lesson-phase-changed'])window.addEventListener(evt,refresh,{passive:true});
   return()=>{for(const evt of ['scroll','li:localechange','li:lesson-phase-changed'])window.removeEventListener(evt,refresh);};
  },[id]);
- return <section className="li-lesson-companion" aria-label={locale==='vi'?'Lão Lý đồng hành':'Lao Ly companion'}>
-  <div className="kicker">{locale==='vi'?'LÃO LÝ ĐỌC CÙNG NGƯƠI':'LEARN WITH LAO LY'}</div>
+ return <section className="li-lesson-companion" aria-label={locale==='vi'?'Lão Lý đồng hành':'Elder Ly companion'}>
+  <div className="kicker">{locale==='vi'?'LÃO LÝ ĐỌC CÙNG NGƯƠI':'LEARN WITH ELDER LY'}</div>
   <Text role="support" data-lesson-mentor-stage="true" id={'li-react-mentor-'+id}>
    {context||(locale==='vi'?
     'Lão đang theo dõi phần học hiện tại để hỏi đúng vấn đề.':
-    'Lao Ly follows the active section to ask a relevant question.')}
+    'Elder Ly follows the active section to ask a relevant question.')}
   </Text>
   <Button variant="secondary" onClick={event=>app.openLaoLy?.(event.currentTarget)}>
-   {locale==='vi'?'Hỏi Lão Lý theo bài học':'Ask Lao Ly about this lesson'}
+   {locale==='vi'?'Hỏi Lão Lý theo bài học':'Ask Elder Ly about this lesson'}
   </Button>
  </section>;
 }

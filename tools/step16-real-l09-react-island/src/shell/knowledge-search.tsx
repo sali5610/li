@@ -184,7 +184,7 @@ function KnowledgeSearch(){
   const onAuth=(event:Event)=>{
    const verified=(event as CustomEvent<{verified?:boolean}>).detail?.verified;
    if(verified!==false&&document.documentElement.classList.contains('li-auth-verified'))return;
-   // Search terms, ontology results and Lao Ly context may describe private
+   // Search terms, ontology results and Elder Ly context may describe private
    // personal lessons: never carry them into the next invited user's session.
    generation.current++;
    returnPosition.current=null;
@@ -344,7 +344,7 @@ function KnowledgeSearch(){
         (record.links||[]).some(link=>link.sourceType==='academic'&&
          link.kind==='Lesson'&&sourceIsSafe(link.sourceUrl))&&
         <Button variant="secondary" onClick={()=>askMentor(record)}
-         aria-haspopup="dialog" aria-controls="buddy-modal">{L("Hỏi Lão Lý về kết nối này","Ask Lao Ly about this connection")}</Button>}
+         aria-haspopup="dialog" aria-controls="buddy-modal">{L("Hỏi Lão Lý về kết nối này","Ask Elder Ly about this connection")}</Button>}
       </motion.article>)}
      </div>}
   </section>

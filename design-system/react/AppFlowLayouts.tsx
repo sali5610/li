@@ -67,7 +67,7 @@ export const appLabPages:readonly {id:PageId;vi:string;en:string;descriptionVi:s
  {id:'dashboard',vi:'Nhật Ký / Tiến độ',en:'Journal / Progress',descriptionVi:'Nhịp học và check-in',descriptionEn:'Learning and check-in history'},
  {id:'settings',vi:'Cài Đặt',en:'Settings',descriptionVi:'Giao diện và nhắc học',descriptionEn:'Display and reminders'},
  {id:'checkin',vi:'Check-in',en:'Check-in',descriptionVi:'Ghi nhận hôm nay',descriptionEn:'Daily reflection'},
- {id:'laoly',vi:'Lão Lý',en:'Lao Ly',descriptionVi:'Trợ lý và ngữ cảnh',descriptionEn:'Companion and context'},
+ {id:'laoly',vi:'Lão Lý',en:'Elder Ly',descriptionVi:'Trợ lý và ngữ cảnh',descriptionEn:'Companion and context'},
  {id:'account',vi:'Tài khoản',en:'Account',descriptionVi:'Đăng nhập và đồng bộ',descriptionEn:'Sign-in and sync'}
 ];
 export const appLabPageVariants:readonly {id:PageVariant;vi:string;en:string}[]=[
@@ -479,7 +479,7 @@ function ScreenBody(props:AppPageLayoutProps){
   <Card variant="tinted">
    <div className="li-flow-companion"><img src="../assets/laoly-neutral.png" alt=""
     width={92} height={92} loading="lazy"/>
-    <div><Badge>{t('LÃO LÝ · TRỢ LÝ HỌC','LAO LY · STUDY COMPANION')}</Badge>
+    <div><Badge>{t('LÃO LÝ · TRỢ LÝ HỌC','ELDER LY · STUDY COMPANION')}</Badge>
      <ChatBubble text={t('Không biết chưa sao, biết hỏi đúng mới khó à nha.',
       'Not knowing is fine. Asking the right question is the tricky part!')} surface="forest"/></div>
    </div>
@@ -522,7 +522,7 @@ const notebookNotes:Partial<Record<PageId,readonly [string,string]>>={
  dashboard:['Dấu vết nhỏ của một hành trình dài.','Small marks of a longer journey.'],
  settings:['Một góc nhỏ chỉnh cho vừa ý.','Make this corner feel like yours.'],
  checkin:['Hôm nay, một dòng cho mình.','One line to yourself today.'],
- laoly:['Lão Lý có vài lời ở lề trang.','A note from Lao Ly in the margin.'],
+ laoly:['Lão Lý có vài lời ở lề trang.','A note from Elder Ly in the margin.'],
  account:['Trang cá nhân, giữ riêng tư.','Your own private pages.'],
 };
 const vintageMediaForPage:Record<Exclude<PageId,'home'>,VintagePopAsset>={

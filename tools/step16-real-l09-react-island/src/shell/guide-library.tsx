@@ -167,10 +167,10 @@ export function Guide(){
      </div>}
     </div>
    </div>
-   <aside className="guide-margin-note" aria-label={copy('Gợi ý từ Lão Lý','Lao Ly guidance')}>
+   <aside className="guide-margin-note" aria-label={copy('Gợi ý từ Lão Lý','Elder Ly guidance')}>
     <img className="guide-mentor-illustration" src="./assets/laoly-guide-rest.png"
      width="1024" height="1024" loading="lazy"
-     alt={copy('Lão Lý ngái ngủ','Sleepy mentor Lao Ly')}/>
+     alt={copy('Lão Lý ngái ngủ','Sleepy mentor Elder Ly')}/>
     <div className="kicker">{copy('LÃO LÝ NHẮC KHẼ','MENTOR NOTE')}</div>
     <Text role="body">{view.guide}</Text>
     <Text role="support">{copy('Chọn một phương pháp để xem hướng dẫn và thử thực hành.',

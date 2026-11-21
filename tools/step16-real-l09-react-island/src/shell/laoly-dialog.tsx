@@ -171,10 +171,10 @@ export function BuddyDialog({root}:{root:HTMLElement}){
      width={48} height={48} decoding="async"/>
     {/* Keep an accessible dialog name for VoiceOver without a visible title. */}
     <h2 id="buddy-title" className="li-buddy-sr-title"
-     ref={heading} tabIndex={-1}>{chooseLanguage('Lão Lý','Elder Li')}</h2>
+     ref={heading} tabIndex={-1}>{chooseLanguage('Lão Lý','Elder Ly')}</h2>
     {quoteVisible&&<ChatBubble surface="paper" tail="left" className="li-buddy-quote-thought">
      <details key={quote.id}>
-     <summary aria-label={chooseLanguage('Câu Lão Lý đang nghĩ. Chạm để xem diễn nghĩa và nguồn','What Lao Ly is thinking. Expand for translation and source')}>
+     <summary aria-label={chooseLanguage('Câu Lão Lý đang nghĩ. Chạm để xem diễn nghĩa và nguồn','What Elder Ly is thinking. Expand for translation and source')}>
       <span id="buddy-quote-original" className="ly-original" lang={quote.lang}>{quote.original}</span>
       <LiIcon name="chevron-right" size={16}/>
      </summary>
@@ -191,7 +191,7 @@ export function BuddyDialog({root}:{root:HTMLElement}){
     </ChatBubble>}
    </header>
    <div id="buddy-scroll" className="buddy-scroll" tabIndex={0}
-    ref={content} role="region" aria-label={chooseLanguage('Nội dung hội thoại với Lão Lý','Conversation with Lao Ly')}>
+    ref={content} role="region" aria-label={chooseLanguage('Nội dung hội thoại với Lão Lý','Conversation with Elder Ly')}>
     <div className="li-buddy-conversation">
      {message!==view.text&&<p className="li-buddy-context">{view.text}</p>}
      <p id="buddy-text" role="status" aria-live="polite">{message}</p>

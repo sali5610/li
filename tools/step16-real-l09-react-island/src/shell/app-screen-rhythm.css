@@ -127,8 +127,5 @@
  #li-react-route-trail .li-ds-breadcrumb li:last-child{
   max-width:min(44vw,18rem);min-width:0
  }
- #li-react-route-trail .li-ds-breadcrumb li:last-child [aria-current="page"]{
-  display:block;max-width:100%;min-width:0;overflow:hidden;
-  text-overflow:ellipsis;white-space:nowrap
- }
+
 }

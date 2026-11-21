@@ -461,6 +461,57 @@ mirrorDrafts.forEach((item,i)=>{
  scenarios.push(item);
 });
 scenarios.push(...originalMirrorScenarios.slice(mirrorDrafts.length));
+/* Mix disciplines once per app load, not at every swipe: prev/next remain
+   reversible and each question keeps its original image, context and route.
+   Weight by remaining question count so the larger fields still get fair
+   exposure, while avoiding consecutive questions from one field. */
+function liShuffleMirrorByField(items,random=Math.random){
+ const byField=new Map();
+ for(const item of items){
+  const field=item.fieldId||"unknown";
+  if(!byField.has(field))byField.set(field,[]);
+  byField.get(field).push(item);
+ }
+ for(const questions of byField.values()){
+  for(let i=questions.length-1;i>0;i--){
+   const j=Math.floor(random()*(i+1));
+   [questions[i],questions[j]]=[questions[j],questions[i]];
+  }
+ }
+ const order=[];
+ let previousField=null;
+ while(order.length<items.length){
+  const remaining=items.length-order.length-1;
+  const available=[...byField].filter(([field,questions])=>questions.length&&field!==previousField);
+  const candidates=available.length?available:[...byField].filter(([,questions])=>questions.length);
+  // A candidate is safe only if the rest can still alternate without
+  // trapping a field into an unavoidable adjacent repeat.
+  const safe=candidates.filter(([field])=>[...byField].every(([other,questions])=>{
+   const left=questions.length-(other===field?1:0);
+   return left<=(other===field?Math.floor(remaining/2):Math.ceil(remaining/2));
+  }));
+  const pool=safe.length?safe:candidates;
+  let pick=random()*pool.reduce((sum,[,questions])=>sum+questions.length,0);
+  let selected=pool[pool.length-1];
+  for(const option of pool){
+   pick-=option[1].length;
+   if(pick<0){selected=option;break;}
+  }
+  order.push(selected[1].pop());
+  previousField=selected[0];
+ }
+ // The carousel is circular. Avoid repeating the first field on wraparound.
+ if(order.length>2&&order[0].fieldId===order[order.length-1].fieldId){
+  const last=order.pop();
+  const gaps=[];
+  for(let i=2;i<order.length;i++)
+   if(order[i-1].fieldId!==last.fieldId&&order[i].fieldId!==last.fieldId)gaps.push(i);
+  if(gaps.length)order.splice(gaps[Math.floor(random()*gaps.length)],0,last);
+  else order.push(last);
+ }
+ return order;
+}
+scenarios.splice(0,scenarios.length,...liShuffleMirrorByField(scenarios));
 function renderMirrorItem(){
  const item=scenarios[qIndex],isHook=item.type==="hook",isDraft=item.previewState==="draft";
  const localized=item.localized?.[window.liLanguage?.get?.()==="en"?"en":"vi"]||item;

@@ -77,13 +77,18 @@ export function HorizontalCard({title,description,mediaKind,media,
  </article>;
 }
 
+/** A speech bubble with a real protruding tail, shared by Studio and app.
+ * Tail is decorative; content and interactions are owned by the consumer. */
 export interface ChatBubbleProps {
- text:string;speaker?:string;surface?:'paper'|'forest';
+ text?:string;speaker?:string;surface?:'paper'|'forest';
+ tail?:'left'|'right'|'none';children?:ReactNode;className?:string;
 }
-export function ChatBubble({text,speaker,surface='forest'}:ChatBubbleProps){
- return <aside className="li-legacy-chat-bubble" data-li-legacy="chat-bubble"
-  data-surface={surface}>
-  {speaker?<strong>{speaker}</strong>:null}<p>{text}</p>
+export function ChatBubble({text,speaker,surface='forest',tail='left',
+ children,className=''}:ChatBubbleProps){
+ return <aside className={'li-legacy-chat-bubble '+className}
+  data-li-legacy="chat-bubble" data-surface={surface} data-tail={tail}>
+  {speaker?<strong>{speaker}</strong>:null}
+  {text?<p>{text}</p>:null}{children}
  </aside>;
 }
 

@@ -122,10 +122,15 @@ function Specimen(){
   break;
  }
  case 'chatBubble':
-  panel=<ChatBubble text={t('90% phản hồi tích cực — nhưng mẫu khảo sát có đại diện không?',
-   '90% positive responses — but is the survey representative?')}
-   speaker={t('Lão Lý hỏi','Lao Ly asks')}
-   surface={selected('Paper')?'paper':'forest'}/>;
+  panel=<div className="li-legacy-story-chat-pair">
+   <ChatBubble text={t('90% phản hồi tích cực — nhưng mẫu khảo sát có đại diện không?',
+    '90% positive responses — but is the survey representative?')}
+    speaker={t('Lão Lý hỏi','Lao Ly asks')}
+    surface={selected('Paper')?'paper':'forest'} tail="left"/>
+   <ChatBubble text={t('Phải kiểm tra nguồn mẫu trước khi kết luận.',
+    'Check the sample source before drawing conclusions.')}
+    surface={selected('Paper')?'paper':'forest'} tail="right"/>
+  </div>;
   break;
  case 'tagChip':
   panel=<div className="li-legacy-story-inline">

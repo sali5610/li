@@ -326,6 +326,15 @@ setTimeout(()=>{
   assert('actions-fit-viewport',btns.length>0&&btns.every(n=>{
     const r=n.getBoundingClientRect();return r.left>=0&&r.right<=windowWidth+2;
    }),btns.map(bounds));
+  const thought=select('#buddy-modal .li-buddy-quote-thought[data-li-legacy="chat-bubble"]');
+  const hook=thought?getComputedStyle(thought,'::before'):null;
+  assert('shared-chat-bubble-has-real-left-hook',Boolean(thought&&
+   thought.getAttribute('data-tail')==='left'&&
+   hook?.content!=='none'&&hook?.clipPath.includes('polygon')&&
+   Number.parseFloat(hook?.left||'0')<0),{
+    bubble:bounds(thought),tail:hook?.clipPath,left:hook?.left
+   });
+  assert('only-name-in-companion-header',!select('#buddy-modal .li-buddy-subtitle'));
  }
  const ok=checks.length>0&&checks.every(c=>c.pass);
  const report={status:ok?'LI_VISUAL_QA_PASS':'LI_VISUAL_QA_FAIL',

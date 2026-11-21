@@ -6,6 +6,8 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const read=p=>fs.readFileSync(p,'utf8');
 const dialog=read('tools/step16-real-l09-react-island/src/shell/laoly-dialog.tsx');
+const chatBubble=read('design-system/react/LegacyCards.tsx');
+const chatStyle=read('design-system/react/legacy.css');
 const shell=read('tools/step16-real-l09-react-island/src/auth/staging-app.tsx');
 const plans=read('site/assets/laoly-context-s112.js');
 const quotes=read('site/assets/laoly-quotes-s121.js');
@@ -15,6 +17,10 @@ const page=read('site/index.html');
 const researchCase=read('tools/step16-real-l09-react-island/src/shell/research-case.tsx');
 const guide=read('tools/step16-real-l09-react-island/src/shell/guide-library.tsx');
 const capture=read('tools/step16-real-l09-react-island/src/shell/capture-idea.tsx');
+assert.match(chatBubble,/data-tail=\{tail\}/,
+ 'Shared library ChatBubble must expose a tail direction');
+assert.match(chatStyle,/clip-path:polygon\(100% 0,0 50%,100% 100%\)/,
+ 'Bubble tail must have a real protruding triangular silhouette');
 assert.match(shell,/mountLaoLyDialog/);
 assert.match(dialog,/createRoot\(root\)/);
 assert.match(dialog,/document\.getElementById\('buddy-modal'\)/,
@@ -28,8 +34,12 @@ assert.match(dialog,/view\.editorial\?view\.editorial\.actions\.map\(action=>act
  'All 3 native Lão Lý actions remain available, with exactly 2 per editorial stage');
 assert.match(dialog,/liBuddyEngine\?\.choose\(index\)/,
  'React actions must use the real contextual engine, not hardcoded replies');
-assert.match(dialog,/<details key=\{quote\.id\} className="li-buddy-quote-thought">/,
- 'The original quotation must appear in native collapsed accordion by the avatar');
+assert.match(dialog,/<ChatBubble surface="paper" tail="left" className="li-buddy-quote-thought">/,
+ 'Lão Lý quote must use the shared Design System chat frame with a real hook');
+assert.match(dialog,/<details key=\{quote\.id\}>/,
+ 'The original quotation remains inside a native collapsed accordion');
+assert.doesNotMatch(dialog,/Cùng học, cùng phản biện|Learn and question together/,
+ 'Remove the redundant Lão Lý subtitle');
 assert.match(dialog,/<summary aria-label=\{chooseLanguage/,
  'Thought bubble must be keyboard accessible');
 assert.ok(dialog.indexOf('li-buddy-quote-thought')<dialog.indexOf('id="buddy-scroll"'),

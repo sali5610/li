@@ -1,4 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
+import './home-catalog.css';
 import canonicalCatalog from '../../../../content/curriculum/legacy-catalog.v1.json';
 import searchableCatalog from '../../../../site/content-packs/course-catalog.json';
 import {openRoute,goBack,hasRoute} from './app-router.js';

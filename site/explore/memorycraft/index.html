@@ -325,6 +325,7 @@
   }
   function renderAll() { renderToday();renderLibrary();renderPalace(); }
   function startSession() {
+    done=0;
     sessionQueue=dueCards().slice(0,Number($("sessionSize").value)).map(function(c){return c.id;});
     current=null;skipped=0;
     if(!sessionQueue.length){showStatus("todayMessage","Không có thẻ đến hạn để ôn. Có thể lưu kiến thức mới trong Kho thẻ.");return;}

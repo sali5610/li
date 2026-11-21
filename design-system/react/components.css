@@ -33,6 +33,12 @@
 @media(max-width:599px){.li-ds-card{padding:var(--li-space-4)}}
 @media(prefers-reduced-motion:reduce){.li-ds-button,.li-ds-button-spinner{animation:none;transition:none}}
 
+/* NumberedCard: keep a 16px leading inset even in editorial rows whose
+ * layout overrides remove parent padding-inline. Direction-aware for RTL. */
+.li-ds-numbered-card > .li-ds-numbered-card__number{
+ margin-inline-start:var(--li-space-4);flex-shrink:0
+}
+
 /* Filter pills are reserved for filters, not generic CTAs. */
 .li-ds-filter-chip{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;
  max-width:100%;min-height:44px;padding:var(--li-space-2) var(--li-space-4);

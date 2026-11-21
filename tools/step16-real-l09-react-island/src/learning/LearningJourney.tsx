@@ -397,7 +397,6 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Text role="support">{strip(content.limit)}</Text>
     <Heading level={3} role="titleMedium">{content.goalsTitle}</Heading>
     <ul>{content.goals.map((goal:string,i:number)=><li key={i}>{goal}</li>)}</ul>
-    <Button onClick={()=>go('guided')}>{vi?'Tiếp: Thử áp dụng':'Next: Guided example'} →</Button>
    </Card>}
    {phase==='guided'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-learn-guided">
     <Heading level={2} id="li-learn-guided" role="titleLarge">{content.exTitle}</Heading>
@@ -541,5 +540,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   </section>}
   {phase==='progress'&&<RelatedLessons id="L09-1-2" locale={appLocale}/>} 
   <LessonMentor id="L09-1-2" locale={appLocale}/>
+  {phase==='read'&&<Button onClick={()=>go('guided')}>
+   {vi?'Tiếp: Thử áp dụng':'Next: Guided example'} →
+  </Button>}
  </section>;
 }

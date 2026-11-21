@@ -49,8 +49,8 @@ export function AiFeedbackPanel({id,locale,answers,openQuestionIndices}:{
     'AI is unavailable or the free Cloudflare quota is exhausted. The reference answer and rubric still work.');
   }finally{setBusy(false);}
  }
- return <section className="li-learning-next-action" aria-label={vi?'Lão Lý AI':'Lao Ly AI'}>
-  <Heading level={3} role="titleMedium">{vi?'Lão Lý AI · câu hỏi mở':'Lao Ly AI · open questions'}</Heading>
+ return <section className="li-learning-next-action" aria-label={vi?'Lão Lý AI':'Elder Ly AI'}>
+  <Heading level={3} role="titleMedium">{vi?'Lão Lý AI · câu hỏi mở':'Elder Ly AI · open questions'}</Heading>
   {exactCount>0&&<Text role="support">{vi?
    exactCount+' câu có đáp án xác định được đối chiếu trực tiếp với đáp án/rubric, không gửi AI.':
    exactCount+' exact-answer question(s) use the reference answer/rubric, not AI.'}</Text>}

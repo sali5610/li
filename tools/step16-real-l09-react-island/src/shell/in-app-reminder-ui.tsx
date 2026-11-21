@@ -193,7 +193,7 @@ export function InAppReminderPanel(){
    {error&&<InlineFeedback tone="error" message={error}/>}
   </Card>
   {dueKind&&createPortal(<div className="li-in-app-reminder" role="status" aria-live="polite"
-    aria-label={copy('Lời nhắc của Lão Lý','Lao Ly reminder')}>
+    aria-label={copy('Lời nhắc của Lão Lý','Elder Ly reminder')}>
    <div className="kicker">{copy('LÃO LÝ NHẮC KHẼ','A GENTLE REMINDER')}</div>
    <p>{reminderMessage(dueKind,lang)}</p>
    <div className="action-row">

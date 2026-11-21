@@ -52,7 +52,7 @@ const questions=[
  {questionVi:'Một điều nghe hợp lý có luôn là sự thật?',
   questionEn:'Is every plausible statement true?',
   sceneVi:'Lão Lý hỏi: mình đã kiểm chứng nguồn chưa?',
-  sceneEn:'Lao Ly asks: did we check the source?'}
+  sceneEn:'Elder Ly asks: did we check the source?'}
 ];
 const params=new URLSearchParams(location.search);
 const readChoice=<T extends string>(name:string,choices:readonly T[],fallback:T):T=>{

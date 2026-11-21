@@ -116,7 +116,7 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
      </motion.div>
     </AnimatePresence>:mirrorShell}
   </motion.div>
-  <motion.aside className="li-ui-home-guide" {...entrance(.27)} aria-label={t('Lão Lý kể chuyện','Lao Ly explains')}>
+  <motion.aside className="li-ui-home-guide" {...entrance(.27)} aria-label={t('Lão Lý kể chuyện','Elder Ly explains')}>
    <img src={avatarSrc} alt="" loading="lazy" width={84} height={84}/>
    <div className="li-ui-home-guide-copy">
     <span className="li-ui-home-guide-source">{source}</span>

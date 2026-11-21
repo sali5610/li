@@ -38,13 +38,13 @@ export function AiOwnerControl({email,locale}:{email:string;locale:'vi'|'en'}){
   }finally{setBusy(false);}
  }
  if(IS_GITHUB_STAGING)return <section className="auth-privacy" role="note">
-  <strong>{vi?'Lão Lý AI · một suất':'Lao Ly AI · one seat'}</strong>
+  <strong>{vi?'Lão Lý AI · một suất':'Elder Ly AI · one seat'}</strong>
   <p>{vi?'Bản staging chỉ xem trước; chuyển tài khoản cần Cloudflare backend được cấu hình và phát hành.':
    'Staging preview only. Assignment requires the configured, released Cloudflare backend.'}</p>
  </section>;
  if(!access?.owner)return null;
- return <section className="auth-privacy" aria-label={vi?'Quản lý quyền Lão Lý AI':'Manage Lao Ly AI'}>
-  <strong>{vi?'Quản lý quyền Lão Lý AI':'Manage Lao Ly AI access'}</strong>
+ return <section className="auth-privacy" aria-label={vi?'Quản lý quyền Lão Lý AI':'Manage Elder Ly AI'}>
+  <strong>{vi?'Quản lý quyền Lão Lý AI':'Manage Elder Ly AI access'}</strong>
   <p>{vi?'Chỉ một email được dùng AI. Tắt hoặc đổi sang email Google khác đã được mời bất kỳ lúc nào.':
    'Only one invited Google email can use AI. You can disable or transfer the seat at any time.'}</p>
   <p>{vi?'Tài khoản đang có AI: ':'Current AI seat: '}

@@ -230,7 +230,7 @@ function settingsPlan(){
    action("Nhịp này làm gì?",mode.feedback),
    action(inEnglish()?"What's in the backup?":"Bản sao gồm gì?",
     inEnglish()?
-     "Settings exports a partial notes JSON: case notes, captured ideas, bookmarks, Lao Ly nicknames and any legacy draft. It does not include Journal, Check-ins, lesson progress, spell reviews or reminders. Do not erase device data assuming this is a full backup.":
+     "Settings exports a partial notes JSON: case notes, captured ideas, bookmarks, Elder Ly nicknames and any legacy draft. It does not include Journal, Check-ins, lesson progress, spell reviews or reminders. Do not erase device data assuming this is a full backup.":
      "Settings chỉ xuất tệp JSON ghi chú: Bút Ký, Ý đã nhặt, Dấu Trang, tên gọi Lão Lý và bản nháp legacy nếu có. Không có Nhật Ký, Check-in, tiến độ học, lịch ôn Thần Chú hay lời nhắc. Đừng xóa dữ liệu máy vì tưởng đã sao lưu hết."),
    action("Đổi Nhịp học","Lão đưa ngươi tới đúng bốn lựa chọn. Đổi hay không là quyền của ngươi.",()=>go("settings","study-mode-settings"))
   ]

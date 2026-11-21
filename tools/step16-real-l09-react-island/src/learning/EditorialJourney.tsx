@@ -301,7 +301,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   if(!app.liBuddyReactMounted||candidates.length<3||
     candidates.some(q=>!q?.translation||!q.original||!q.url.startsWith('https://'))||
     candidates[0]?.id!==moment.quote_id){
-   setError(['Chưa mở được Lão Lý hoặc chưa có đủ trích dẫn có nguồn cho mục này.','Elder Li or the curated sources are unavailable for this section.']);
+   setError(['Chưa mở được Lão Lý hoặc chưa có đủ trích dẫn có nguồn cho mục này.','Elder Ly or the curated sources are unavailable for this section.']);
    return;
   }
   const quotes=candidates.map(q=>{
@@ -327,12 +327,12 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  function mentor(stage:CompanionMoment['stage']){
   const moment=lesson?.content.localized[appLocale].companion?.moments.find(m=>m.stage===stage);
   if(!moment||(moment.gate==='AFTER_VALID_INDEPENDENT_SUBMISSION'&&!persistedAttempt?.submitted))return null;
-  return <aside className="li-editorial-mentor" aria-label={localized(appLocale,'Lão Lý','Elder Li')}>
+  return <aside className="li-editorial-mentor" aria-label={localized(appLocale,'Lão Lý','Elder Ly')}>
    <img src="./assets/laoly-neutral.png" width="56" height="56" alt="" loading="lazy"/>
-   <div><Text role="support">{localized(appLocale,'Lão Lý','Elder Li')}</Text>
+   <div><Text role="support">{localized(appLocale,'Lão Lý','Elder Ly')}</Text>
     <Button id={'li-editorial-mentor-'+id+'-'+stage}
      variant="secondary" onClick={()=>openMentor(moment)}>
-     {appLocale==='en'?'Ask Elder Li about this section':'Hỏi Lão Lý theo mục này'}
+     {appLocale==='en'?'Ask Elder Ly about this section':'Hỏi Lão Lý theo mục này'}
     </Button>
    </div>
   </aside>;

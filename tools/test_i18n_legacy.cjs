@@ -96,17 +96,17 @@ assert(read("site/assets/library-hub.js").includes("item.title).dataset.liNoTran
 assert(read("site/assets/library-note-editor.js").includes("const ui=(vi,en)"),"Saved case provenance requires authored bilingual UI");
 /* S77 proper-name localization. Do not freeze the Vietnamese narrator's
    name in EN or alter the VI source; alternate names remain editorial choices. */
-assert.equal(translations["Lão Lý"],"Elder Li","English identity must be Elder Li");
-assert.equal(translations["LÃO LÝ"],"ELDER LI","Uppercase mentor identity needs an English form");
+assert.equal(translations["Lão Lý"],"Elder Ly","English identity must be Elder Ly");
+assert.equal(translations["LÃO LÝ"],"ELDER LY","Uppercase mentor identity needs an English form");
 const voice=Object.values(translations);
 for(const phrase of [
- "A NOTE FROM ELDER LI","A WHISPER FROM ELDER LI",
+ "A NOTE FROM ELDER LY","A WHISPER FROM ELDER LY",
  "Hmm. A question worth waking from a century of slumber for.",
  "Even an elder must yield when the evidence wins.",
  "Ah, seeking the deeper shelves? Thirteen spells await."
 ])assert(voice.some(value=>value.includes(phrase)),
  "Missing storybook EN character voice: "+phrase);
-assert(!voice.some(value=>value.includes("Old Li")),"Old Li must not appear in English");
+assert(!voice.some(value=>/\b(?:Old Li|Lao Ly|Elder Li)\b/i.test(value)),"Use Elder Ly consistently in English copy");
 
 for(const [vi,en] of Object.entries(translations)){
  assert(!en.includes("Lão Lý"),"Untranslated mentor name in English copy: "+vi);
@@ -114,7 +114,7 @@ for(const [vi,en] of Object.entries(translations)){
 const coreEnglishValues=[...runtime.matchAll(/"([^"\\]*(?:\\.[^"\\]*)*)":"([^"\\]*(?:\\.[^"\\]*)*)"/g)].map(m=>m[2]);
 assert(!coreEnglishValues.some(value=>value.includes("Lão Lý")),"Core UI English must not keep the Vietnamese companion name");
 for(const key of ["Lão hỏi ngược","Phản biện lão","Lão quên gì rồi?","Trò chuyện với Lão Lý","Lời Lão Lý về nhịp học","Lão Lý ngái ngủ"]){
- assert(translations[key]?.includes("Elder Li"),"Missing authored EN mentor alias in "+key);
+ assert(translations[key]?.includes("Elder Ly"),"Missing authored EN mentor alias in "+key);
 }
 /* Compile the browser fixture itself: a previous test edit accidentally
    reused a lexical name, leaving browser QA pending instead of executing. */

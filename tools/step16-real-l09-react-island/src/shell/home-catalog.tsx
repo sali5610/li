@@ -476,7 +476,7 @@ function Home(){
    </motion.div>
    </div>
   </div>
-  <motion.aside className="hero-dialogue" aria-label={L("Lão Lý kể bối cảnh câu hỏi","Lao Ly explains the question’s context")}
+  <motion.aside className="hero-dialogue" aria-label={L("Lão Lý kể bối cảnh câu hỏi","Elder Ly explains the question’s context")}
    initial={reduced?false:{opacity:0}} animate={{opacity:1}}
    transition={{duration:reduced?0:.52,delay:reduced?0:.14}}>
    <span className="hero-dialogue-avatar" aria-hidden="true">

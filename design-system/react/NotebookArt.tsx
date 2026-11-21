@@ -5,7 +5,7 @@ import './notebook-illustrations.css';
 import './notebook-existing-assets.css';
 
 /** Reusable, decor-only illustration slot for approved React compositions.
- * Reuses the existing li. discipline / Lao Ly assets; never mutates content.
+ * Reuses the existing li. discipline / Elder Ly assets; never mutates content.
  */
 export type NotebookArtKind=
  'book'|'shelf'|'discipline'|'sampling'|'method'|'recall'|'calendar'|

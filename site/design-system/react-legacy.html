@@ -6,4 +6,32 @@
 <link rel="stylesheet" href="../assets/design-tokens.css">
 <link rel="stylesheet" href="./react-legacy.css">
 <script type="module" src="./react-legacy.js"></script>
+
+<style>
+.portal-static{display:none;font-family:Arial,sans-serif;color:#283c2b;padding:20px;background:#f5f3ed}
+.portal-static[data-visible=true]{display:block}
+.portal-static h1{font-family:Georgia,serif;font-size:clamp(28px,5vw,48px);margin:20px 0}
+.portal-static .portal-demo{display:grid;grid-template-columns:minmax(0,44%) minmax(0,1fr);align-items:center;gap:20px;max-width:760px;border-bottom:1px solid #bcbeb3;padding:18px 0}
+.portal-static .portal-arch{position:relative;aspect-ratio:4/5;background:#d8d7cb;border:12px solid #80694b;border-bottom-width:18px;border-radius:48% 48% 0 0;overflow:hidden}
+.portal-static .portal-arch:after{content:'';position:absolute;inset:7% 9% 0;border:2px dashed #aaa99d;border-radius:48% 48% 0 0}
+.portal-static .portal-copy h2{font:600 clamp(24px,4vw,42px) Georgia,serif;margin:10px 0}.portal-static .portal-copy p{font-size:18px}.portal-static .portal-copy button{border:1px solid #283c2b;padding:12px 20px;background:#f5f3ed;color:#283c2b;box-shadow:4px 4px #80694b;font-weight:700}
+.portal-static .portal-variant{font-size:14px;letter-spacing:.13em;font-weight:700}
+@media(max-width:420px){.portal-static .portal-demo{gap:12px}.portal-static .portal-arch{border-width:8px;border-bottom-width:12px}.portal-static .portal-copy p{font-size:14px}}
+</style>
+<script>
+window.addEventListener('load',()=>{
+ if(new URLSearchParams(location.search).get('story')!=='portalCategoryCard')return;
+ setTimeout(()=>{
+  const root=document.getElementById('react-legacy-root');
+  if(root&&root.querySelector('[data-li-component="portal-category-card"]'))return;
+  const variant=new URLSearchParams(location.search).get('variant')||'Portal 01';
+  const n=Math.max(1,Math.min(7,parseInt(variant.replace(/[^0-9]/g,''),10)||1));
+  const en=new URLSearchParams(location.search).get('lang')==='en';
+  if(root)root.innerHTML='';
+  const el=document.createElement('main');el.className='portal-static';el.dataset.visible='true';
+  el.innerHTML='<small>UX-DS-35 / PORTAL CATEGORY CARD</small><h1>Portal Category Card</h1><p>React preview unavailable. Static layout fallback; original portal artwork pending hosting.</p><div class="portal-demo"><div class="portal-arch" aria-label="Illustration placeholder"></div><div class="portal-copy"><div class="portal-variant">'+(en?'DOMAIN GROUP':'NHÓM NGÀNH')+' · '+String(n).padStart(2,'0')+'</div><h2>'+(en?'Languages':'Ngôn ngữ')+'</h2><p>'+(en?'2 fields':'2 chuyên ngành')+'</p><button type="button">'+(en?'Explore':'Khám phá')+' →</button></div></div>';
+  document.body.appendChild(el);
+ },500);
+});
+</script>
 </head><body><div id="react-legacy-root"></div></body></html>

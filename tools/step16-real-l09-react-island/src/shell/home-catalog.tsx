@@ -205,17 +205,25 @@ function Catalog(){
  return <motion.div key={path.join('/')||'catalog-root'} data-li-react-screen="catalog"
    className="li-react-catalog" initial={reduced?false:{opacity:0,y:7}}
    animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.18}}>
-  <div className="catalog-breadcrumbs">
-   <Breadcrumb label={locale==='vi'?'Vị trí trong Tàng Thư':'Library path'}
-    items={breadcrumb.map((item,index)=>({
-     label:item.label,
-     onActivate:index<breadcrumb.length-1?()=>openPath(item.path):undefined
-    }))}/>
+  <div className={'catalog-breadcrumbs'+(lesson?' is-lesson':'')}>
+   <div className="catalog-breadcrumbs-full">
+    <Breadcrumb label={locale==='vi'?'Vị trí trong Tàng Thư':'Library path'}
+     items={breadcrumb.map((item,index)=>({
+      label:item.label,
+      onActivate:index<breadcrumb.length-1?()=>openPath(item.path):undefined
+     }))}/>
+   </div>
+   {lesson&&<nav className="catalog-breadcrumbs-short" aria-label={locale==='vi'?'Quay lại môn học':'Return to course'}>
+    <button type="button" onClick={()=>openPath(path.slice(0,3))}>
+     <span aria-hidden="true">‹</span> <span className="catalog-crumb-parent">{course?.title||group?.title}</span>
+    </button>
+    <span aria-current="page">{locale==='vi'?'Bài học':'Lesson'}</span>
+   </nav>}
   </div>
   <header className="catalog-lead">
    <div className="kicker">{eyebrow}</div>
    <Heading level={1} role="headline" className="display-title">{heading}</Heading>
-   <Text role="body" className="intro">{description}</Text>
+   {!lesson&&<Text role="body" className="intro">{description}</Text>}
   </header>
   {lessonNavError&&<p role="alert" className="li-catalog-error">{lessonNavError}</p>}
    {field&&!course&&field.image&&<img className="catalog-field-hero" src={field.image} alt="" loading="lazy" decoding="async"/>}

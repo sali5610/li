@@ -13,7 +13,7 @@ const clean=s=>String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"")
  .replace(/đ/gi,"d").toLocaleLowerCase("vi").replace(/\s+/g," ").trim();
 const items=[],routes=new Map();
 for(const group of groups)for(const field of group.fields||[])for(const course of field.courses||[]){
- const context=[group.title,field.name,course.title].filter(Boolean).join(" · ");
+ const context=[group.title,field.category?.label?.vi,field.name,course.title].filter(Boolean).join(" · ");
  for(const lesson of course.lessons||[]){
   const item={title:lesson.title,id:lesson.id,context,route:lesson.route||null,
    published:lesson.published===true,sourceUrl:field.source||null};

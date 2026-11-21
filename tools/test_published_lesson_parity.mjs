@@ -33,9 +33,17 @@ for(const [id,legacy] of Object.entries(legacyById)){
   }
  }
  const react=id==='L09-1-2'?react09:reactWave;
- for(const name of ['LessonBookmark','LessonMentor','LessonSectionIndex','LessonSources','RelatedLessons']){
+ for(const name of ['LessonBookmark','LessonMentor','LessonSources','RelatedLessons']){
   assert.ok(react.includes('<'+name),'React '+id+' dropped '+name);
  }
+ // The 7 authored content areas remain; a second clickable section menu is
+ // intentionally gone. StudyBookFolio + one active phase + Next is canonical.
+ assert.ok(!react.includes('<LessonSectionIndex'),id+' must not duplicate step navigation');
+ assert.ok(!react.includes('className="li-learning-steps"'),id+' has no phase tab menu');
+ assert.ok(react.includes('<StudyBookFolio'),id+' must show the current page only');
+ assert.ok(react.includes('Tiếp: Thử áp dụng'),id+' must offer a clear next-step action');
+ assert.ok(react.includes('useDiscoveryLocale'),id+' must follow Settings language');
+ assert.ok(!react.includes('li-learning-language'),id+' must not render a VI/EN selector');
  assert.ok(react.includes('content.clear'),'Draft clear button lost: '+id);
  assert.ok(react.includes('submission'),'Submitted work must remain accessible: '+id);
  for(const panel of ['goals','concept','guided','challenge','rubric','sources']){
@@ -47,7 +55,8 @@ assert.ok(react09.includes("['1.000','82%','?']"),'L09 example stats missing');
 assert.ok(react09.includes('content.answerCaution'),'L09 academic caution must be retained.');
 assert.ok(react09.includes('content.rubricLead'),'L09 self-scoring limitations missing.');
 assert.ok(react09.includes('content.guidedSaveNote'),'L09 guided draft persistence disclosure missing.');
-assert.ok(react09.includes('li-learning-language'),'L09 VI/EN switch missing.');
+assert.ok(react09.includes("phase==='read'&&"),'L09 Read page must be isolated by phase.');
+assert.ok(reactWave.includes("phase==='read'&&"),'Wave1 Read page must be isolated by phase.');
 assert.ok(reactWave.includes('<LessonFigure'),'L03/L15 source image and fallback missing.');
 assert.ok(component.includes('Simple_random_sampling.PNG'));
 assert.ok(component.includes('Statistical_bias_and_statistical_noise_illustration_No_text_in_image.png'));
@@ -72,4 +81,4 @@ assert.match(related,/const routes=new Map\(releasedLessonRoutes\.map/);
 assert.match(related,/li-related-source/);
 assert.match(nativeRelated,/location\.hostname==="sali5610\.github\.io"/);
 assert.match(nativeRelated,/location\.pathname\.startsWith\("\/li\/"\)\)return;/);
-console.log('LI_LESSON_PARITY_PASS L03/L09/L15: all 7 authored sections, source/figure credits, mentor, bookmark, reset, locale and feedback gates');
+console.log('LI_LESSON_PARITY_PASS L03/L09/L15: source/figure credits, mentor, bookmark, single step + Next, Settings locale and feedback gates');

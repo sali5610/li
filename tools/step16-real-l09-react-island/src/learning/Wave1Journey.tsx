@@ -285,26 +285,21 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
    </div>
    <div className="li-learning-header-actions">
     <LessonBookmark id={id} locale={attempt.locale}/>
-    <Button variant="secondary" onClick={ports.navigation.openCatalog}>
-     {vi?'Về Tàng Thư':'Back to library'}
-    </Button>
+    <div className="li-learning-language" role="group" aria-label={vi?'Ngôn ngữ bài học':'Lesson language'}>
+     {(['vi','en'] as const).map(lang=><Button key={lang}
+      variant={attempt.locale===lang?'primary':'secondary'}
+      aria-pressed={attempt.locale===lang} disabled={saving||locked}
+      onClick={()=>switchLocale(lang)}>{lang.toUpperCase()}</Button>)}
+    </div>
    </div>
   </header>
-  <Text role="support" className="li-lesson-status">{content.status}</Text>
-  <div className="li-learning-language" role="group" aria-label={vi?'Ngôn ngữ bài học':'Lesson language'}>
-   {(['vi','en'] as const).map(lang=><Button key={lang}
-    variant={attempt.locale===lang?'primary':'secondary'}
-    aria-pressed={attempt.locale===lang}
-    disabled={saving||locked}
-    onClick={()=>switchLocale(lang)}>{lang.toUpperCase()}</Button>)}
-  </div>
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
   <nav className="li-learning-steps" aria-label={vi?'Các bước học':'Learning steps'}>
-   {steps.map(step=><Button key={step}
+   {steps.map((step,index)=><Button key={step}
     variant={phase===step?'primary':'ghost'} aria-current={phase===step?'step':undefined}
     disabled={((step==='feedback'||step==='progress')&&!attempt.submitted)||
       (step==='progress'&&!attempt.reviewed)}
-    onClick={()=>setPhase(step)}>{labels[step]}</Button>)}
+    onClick={()=>setPhase(step)}><span className="li-learning-step-index">{String(index+1).padStart(2,'0')}</span><span>{labels[step]}</span></Button>)}
   </nav>
   <details className="li-learning-extras">
    <summary>{vi?'Mục lục & Thần Chú gợi ý':'Outline & optional study spells'}</summary>

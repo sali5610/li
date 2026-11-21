@@ -15,11 +15,13 @@
 <body>
 <div id="studio-root">
 <header class="studio-top">
+  <button id="studio-menu-toggle" class="studio-menu-toggle" type="button" aria-label="Mở menu Design System" aria-controls="studio-sidebar" aria-expanded="false"><span aria-hidden="true">☰</span></button>
   <a class="studio-mark" href="./" aria-label="li. Design System Studio"><span class="studio-glyph">理</span><span>li<span class="studio-dot">.</span></span><span class="studio-word">DESIGN SYSTEM</span></a>
   <div class="studio-top-right"><span class="studio-top-note">COMPONENT LIBRARY · UX-DS-35</span><span class="studio-status"><span aria-hidden="true">◌</span> G2 OPEN</span></div>
 </header>
 <div class="studio-shell">
-<aside class="studio-sidebar" aria-label="Design System catalog">
+<aside id="studio-sidebar" class="studio-sidebar" aria-label="Design System catalog">
+  <button id="studio-menu-close" class="studio-menu-close" type="button" aria-label="Đóng menu Design System">Đóng <span aria-hidden="true">×</span></button>
   <div class="studio-sidebar-head">
     <span class="studio-eyebrow">LIBRARY / v0.1</span>
     <h1>Everything<br>in its place<span class="studio-dot">.</span></h1>
@@ -34,7 +36,48 @@
     <a href="https://github.com/sali5610/li/blob/main/design-system/components.md" target="_blank" rel="noopener noreferrer">Component contract ↗</a>
   </div>
 </aside>
-<main class="studio-work">
+<main id="studio-work" class="studio-work" tabindex="-1">
+  <section id="studio-overview" class="studio-overview" aria-label="Giới thiệu Design System">
+    <div class="studio-home-hero">
+      <div class="studio-home-hero-copy">
+        <span class="studio-eyebrow">LI. (理) / DESIGN SYSTEM · v0.1</span>
+        <h1>Một bản sắc.<br><em>Nhiều cách học.</em></h1>
+        <p>Ngôn ngữ thiết kế cho không gian học hỏi của li. — nơi kiến thức được khám phá, chất vấn và kết nối.</p>
+        <span class="studio-home-gate">Visual identity · G2 đang chờ duyệt</span>
+      </div>
+      <div class="studio-home-brand-lockup" aria-label="Biểu trưng lý và tên li.">
+        <span class="studio-home-brand-symbol" aria-hidden="true">理</span>
+        <span class="studio-home-brand-word">li<span class="studio-dot">.</span></span>
+        <span class="studio-home-brand-caption">Learn · Question · Connect</span>
+      </div>
+    </div>
+    <div class="studio-home-intro">
+      <section class="studio-home-panel" aria-labelledby="studio-home-brand-title">
+        <span class="studio-eyebrow">01 / BRANDING</span>
+        <h2 id="studio-home-brand-title">Tri thức có hình hài.</h2>
+        <p>Ấn ký 理, giấy ngà, xanh rêu và tinh thần thư viện cổ thụ. Minh họa cắt giấy gợi sự tò mò; giao diện giữ đủ khoảng thở cho việc học.</p>
+        <div class="studio-home-palette" aria-label="Màu sắc chủ đạo">
+          <span class="studio-home-swatch studio-home-swatch-moss" title="Moss"></span>
+          <span class="studio-home-swatch studio-home-swatch-olive" title="Olive"></span>
+          <span class="studio-home-swatch studio-home-swatch-paper" title="Paper"></span>
+          <span class="studio-home-swatch studio-home-swatch-wood" title="Wood"></span>
+        </div>
+        <button class="studio-home-text-link" type="button" data-story="colors">Xem color foundations <span aria-hidden="true">↗</span></button>
+      </section>
+      <section class="studio-home-panel" aria-labelledby="studio-home-voice-title">
+        <span class="studio-eyebrow">02 / TONE OF VOICE</span>
+        <h2 id="studio-home-voice-title">Thông thái, không lên lớp.</h2>
+        <p>Gần gũi, gợi mở, dí dỏm vừa đủ. Hỏi để người học tự nghĩ; phân biệt điều biết chắc với điều còn phải kiểm chứng.</p>
+        <blockquote>“Ngươi có chắc kết luận ấy đúng với tất cả mọi người?”</blockquote>
+        <small>Ví dụ minh họa giọng Lão Lý · chưa phải câu thoại được duyệt</small>
+      </section>
+    </div>
+    <section class="studio-home-sections" aria-labelledby="studio-home-sections-title">
+      <div class="studio-home-sections-heading"><div><span class="studio-eyebrow">03 / EXPLORE THE SYSTEM</span><h2 id="studio-home-sections-title">Các khu vực chính</h2><p>Chọn một nhóm để khám phá component, trạng thái và ví dụ sử dụng.</p></div></div>
+      <div id="studio-home-group-list" class="studio-home-group-list"></div>
+    </section>
+  </section>
+  <div id="studio-story-view" hidden>
   <div class="studio-crumb"><span>LI. DESIGN SYSTEM</span><span aria-hidden="true">/</span><span id="studio-section-name">Foundations</span><span aria-hidden="true">/</span><strong id="studio-crumb-name">Colors</strong></div>
   <div class="studio-title-row">
     <div><span class="studio-eyebrow" id="studio-category">01 / FOUNDATIONS</span><h2 id="studio-title">Colors</h2><p id="studio-summary">Color roles from the canonical token file.</p></div>
@@ -54,8 +97,10 @@
     <div class="studio-tab-list" role="tablist" aria-label="Component documentation"><button type="button" role="tab" aria-selected="true" id="tab-usage" data-tab="usage">Usage & anatomy</button><button type="button" role="tab" aria-selected="false" id="tab-code" data-tab="code">Example code</button><button type="button" role="tab" aria-selected="false" id="tab-source" data-tab="source">Provenance</button></div>
     <div id="studio-details-content" role="tabpanel" aria-labelledby="tab-usage"></div>
   </section>
+  </div>
 </main>
 </div>
+<button type="button" id="studio-overlay" class="studio-overlay" hidden aria-label="Đóng menu Design System"></button>
 <footer class="studio-bottom"><span>li. 理 · Design System Studio · Draft workbench, not a production approval</span><span>Source values live in <code>design-system/tokens.json</code> · No user data</span></footer>
 </div>
 <div id="studio-canvas" hidden></div>

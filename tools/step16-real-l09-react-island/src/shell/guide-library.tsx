@@ -454,7 +454,11 @@ function Collection(){
        {value:'idea',label:copy('Ý đã nhặt','Ideas')}
       ]} selected={[filter]} multiple={false} allowEmpty={false}
       onChange={next=>app.liLibraryShelf?.setCollectionFilter(next[0]||'all')}/>
-     <TaxonomyFilters records={[...view.cases,...view.ideas]} value={taxonomy} onChange={setTaxonomy}/>
+     <TaxonomyFilters records={[...view.cases,...view.ideas]} value={taxonomy}
+      onChange={setTaxonomy} otherFiltersActive={Boolean(q||filter!=='all')}
+      onClear={()=>{
+       setSearch('');setTaxonomy(emptyTaxonomy);app.liLibraryShelf?.setCollectionFilter('all');
+      }}/>
      <Text role="support" className="library-result-count" aria-live="polite">
       {copy('Hiển thị ','Showing ')}{items.length}/{view.cases.length+view.ideas.length}
      </Text>
@@ -463,9 +467,7 @@ function Collection(){
      {!items.length&&<div className="library-collection-empty">
       <Empty message={q||filter!=='all'||taxonomy.group!=='all'||taxonomy.field!=='all'||taxonomy.lesson!=='all'?copy('Không có ghi chép phù hợp.','No matching notes.'):
        copy('Chưa có ghi chép được lưu.','No saved notes yet.')}/>
-      {(q||filter!=='all'||taxonomy.group!=='all'||taxonomy.field!=='all'||taxonomy.lesson!=='all')&&<Button variant="secondary" onClick={()=>{
-       setSearch('');setTaxonomy(emptyTaxonomy);app.liLibraryShelf?.setCollectionFilter('all');
-      }}>{copy('Xóa bộ lọc','Clear filters')}</Button>}
+
      </div>}
      {items.map(item=><article key={item.type+item.id} className="library-collection-entry">
       <div className="library-collection-entry-main">

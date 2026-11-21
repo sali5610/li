@@ -1,6 +1,6 @@
 import React from 'react';
 import curriculum from '../../../../content/curriculum/legacy-catalog.v1.json';
-import {FilterGroup,Text} from '../../../../design-system/react/index';
+import {Button,Text} from '../../../../design-system/react/index';
 import './library-taxonomy.css';
 
 /** The existing published Catalog owns taxonomy; private notes only store stable IDs. */
@@ -51,8 +51,22 @@ export function FieldPicker({id,value,onChange}:{
   </select>
  </label>;
 }
-export function TaxonomyFilters({records,value,onChange}:{
- records:TaxonomyRecord[];value:FilterValue;onChange:(next:FilterValue)=>void
+type DropdownOption={value:string;label:string};
+function TaxonomyDropdown({label:heading,value,options,onChange,disabled=false}:{
+ label:string;value:string;options:DropdownOption[];
+ onChange:(next:string)=>void;disabled?:boolean
+}){
+ return <label className="li-taxonomy-dropdown">
+  <span>{heading}</span>
+  <select className="li-taxonomy-select" value={value} disabled={disabled}
+   onChange={event=>onChange(event.target.value)}>
+   {options.map(option=><option value={option.value} key={option.value}>{option.label}</option>)}
+  </select>
+ </label>;
+}
+export function TaxonomyFilters({records,value,onChange,onClear,otherFiltersActive=false}:{
+ records:TaxonomyRecord[];value:FilterValue;onChange:(next:FilterValue)=>void;
+ onClear?:()=>void;otherFiltersActive?:boolean
 }){
  const available=records.map(metadataOf);
  const groupIds=new Set(available.map(item=>item.groupId).filter(Boolean));
@@ -76,16 +90,26 @@ export function TaxonomyFilters({records,value,onChange}:{
    const entry=id?byLesson.get(id):undefined;
    return entry?[{value:entry.id,label:entry.title}]:[];
   })];
- return <div className="li-library-taxonomy" aria-label={label('Lọc theo chương trình học','Filter by curriculum')}>
-  <FilterGroup label={label('Ngành','Group')} options={groupOptions}
-   selected={[value.group]} multiple={false} allowEmpty={false}
-   onChange={next=>onChange({group:next[0]||'all',field:'all',lesson:'all'})}/>
-  {value.group!=='unclassified'&&<FilterGroup label={label('Chuyên ngành','Field')}
-   options={fieldOptions} selected={[value.field]} multiple={false} allowEmpty={false}
-   onChange={next=>onChange({...value,field:next[0]||'all',lesson:'all'})}/>}
-  {value.group!=='unclassified'&&<FilterGroup label={label('Bài','Lesson')}
-   options={lessonOptions} selected={[value.lesson]} multiple={false} allowEmpty={false}
-   onChange={next=>onChange({...value,lesson:next[0]||'all'})}/>}
-  {!records.length&&<Text role="support">{label('Chưa có mục nào để lọc.','Nothing saved to filter yet.')}</Text>}
+ const isFiltered=value.group!=='all'||value.field!=='all'||value.lesson!=='all';
+ return <div className="li-library-taxonomy" role="group"
+  aria-label={label('Lọc theo chương trình học','Filter by curriculum')}>
+  <div className="li-library-taxonomy-fields">
+   <TaxonomyDropdown label={label('Ngành','Group')} value={value.group}
+    options={groupOptions} disabled={groupOptions.length===1}
+    onChange={group=>onChange({group,field:'all',lesson:'all'})}/>
+   <TaxonomyDropdown label={label('Chuyên ngành','Field')} value={value.field}
+    options={fieldOptions} disabled={value.group==='unclassified'||fieldOptions.length===1}
+    onChange={field=>onChange({...value,field,lesson:'all'})}/>
+   <TaxonomyDropdown label={label('Bài','Lesson')} value={value.lesson}
+    options={lessonOptions} disabled={value.group==='unclassified'||lessonOptions.length===1}
+    onChange={lesson=>onChange({...value,lesson})}/>
+  </div>
+  <div className="li-library-taxonomy-footer">
+   {!records.length&&<Text role="support">{label('Chưa có mục nào để lọc.','Nothing saved to filter yet.')}</Text>}
+   <Button variant="ghost" className="li-library-taxonomy-reset"
+    disabled={!isFiltered&&!otherFiltersActive} onClick={()=>onClear?onClear():onChange(emptyTaxonomy)}>
+    {label('Xóa bộ lọc','Clear filters')}
+   </Button>
+  </div>
  </div>;
 }

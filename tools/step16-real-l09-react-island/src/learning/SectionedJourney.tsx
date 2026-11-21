@@ -18,6 +18,19 @@ import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discover
 import {useStepScreen} from './step-screen.js';
 
 type Locale='vi'|'en';
+/** Keeps authored emphasis in the actual accessible question label without raw
+ * HTML or a separate design-system field variant. */
+function FormattedLessonQuestion({index,question,value,disabled,onChange}:{
+ index:number;question:string;value:string;disabled:boolean;onChange:(value:string)=>void
+}){
+ const inputId=React.useId();
+ return <div className="li-atom-field" data-li-atom="field" data-kind="textarea">
+  <label htmlFor={inputId}>{index+1}. {formatLessonInline(question)}</label>
+  <textarea id={inputId} rows={4} value={value} disabled={disabled}
+   onChange={e=>onChange(e.currentTarget.value)}/>
+ </div>;
+}
+
 type Phase='read'|'guided'|'practice'|'feedback'|'progress';
 type Role='goals'|'concept'|'guided'|'methods'|'independent'|'reflection'|'extension';
 type Section={
@@ -479,11 +492,10 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    {phase==='practice'&&<>
     <Heading level={2} role="titleLarge">{names.practice}</Heading>
     <Markdown md={independent(c).body_md.split(/^[1-4]\.\s*/m)[0]}/>
-    {c.assessment.questions.map((question,i)=><Field key={i} kind="textarea" rows={4}
-     label={String(i+1)+'. '+question.replace(/<[^>]*>/g,'')}
-     richLabel={<>{i+1}. {formatLessonInline(question)}</>}
-     disabled={locked||attempt.submitted}
-     value={attempt.draft[i]} onChange={e=>setAnswer(i,e.currentTarget.value)}/>)}
+    {c.assessment.questions.map((question,i)=><FormattedLessonQuestion
+     key={i} index={i} question={question}
+     value={attempt.draft[i]} disabled={locked||attempt.submitted}
+     onChange={v=>setAnswer(i,v)}/>)}
     {!persisted.submitted?<Button disabled={locked||pending>0} onClick={()=>void submit()}>
      {vi?'Nộp bốn câu':'Submit four answers'}</Button>:
      <Button onClick={()=>setPhase('feedback')}>{vi?'Tiếp: Đối chiếu':'Next: Feedback'} →</Button>}

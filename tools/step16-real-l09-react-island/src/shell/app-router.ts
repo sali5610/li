@@ -45,25 +45,48 @@ function isReload():boolean{
   return navigation?.type==='reload';
  }catch{return false;}
 }
+const reloadParams=['lesson','view','catalog','chapter','spell','spellTab','spellLesson'] as const;
 function saveReloadRoute(route:string){
  try{
-  if(route==='home')window.sessionStorage?.removeItem(reloadRouteKey);
-  else window.sessionStorage?.setItem(reloadRouteKey,JSON.stringify({
-   pathname:window.location.pathname,route
+  if(route==='home'){window.sessionStorage?.removeItem(reloadRouteKey);return;}
+  const current=new URLSearchParams(window.location.search);
+  const query=new URLSearchParams();
+  for(const key of reloadParams){
+   const value=current.get(key);
+   if(value!==null)query.set(key,value);
+  }
+  window.sessionStorage?.setItem(reloadRouteKey,JSON.stringify({
+   pathname:window.location.pathname,route,query:query.toString()
   }));
  }catch{/* Private browsing may disable session storage; URLs still work. */}
 }
 function reloadRoute():string|null{
  if(!isReload())return null;
  const fromHistory=window.history.state?.liRoute;
- if(typeof fromHistory==='string'&&pageOf(fromHistory))return fromHistory;
  try{
   const raw=window.sessionStorage?.getItem(reloadRouteKey);
-  if(!raw)return null;
-  const saved=JSON.parse(raw) as {pathname?:string;route?:string};
-  return saved.pathname===window.location.pathname&&
-   typeof saved.route==='string'&&pageOf(saved.route)?saved.route:null;
- }catch{return null;}
+  const saved=raw?JSON.parse(raw) as {
+   pathname?:string;route?:string;query?:string
+  }:null;
+  const validSaved=saved?.pathname===window.location.pathname&&
+   typeof saved.route==='string'&&!!pageOf(saved.route);
+  const route=typeof fromHistory==='string'&&pageOf(fromHistory)?
+   fromHistory:validSaved?saved!.route!:null;
+  if(route&&validSaved&&saved!.route===route&&saved!.query){
+   // Restore only known route parameters, never sign-in or tracking tokens.
+   const url=new URL(window.location.href);
+   const params=new URLSearchParams(saved!.query);
+   for(const key of reloadParams){
+    const value=params.get(key);
+    if(value!==null)url.searchParams.set(key,value);
+   }
+   window.history.replaceState({...window.history.state,liRoute:route},'',
+    url.pathname+url.search+url.hash);
+  }
+  return route;
+ }catch{
+  return typeof fromHistory==='string'&&pageOf(fromHistory)?fromHistory:null;
+ }
 }
 function hasExplicitRoute():boolean{
  const query=new URLSearchParams(window.location.search);
@@ -332,6 +355,7 @@ export function mountReactRouter():()=>void{
   const next=url.pathname+url.search+url.hash;
   if(next!==window.location.pathname+window.location.search+window.location.hash)
    window.history.replaceState({...window.history.state,liRoute:active},'',next);
+  saveReloadRoute(active);
  };
  window.addEventListener('li:spell-view-changed',onSpellView);
  window.addEventListener('popstate',onPopState);

@@ -23,13 +23,15 @@ type CatalogPort={
 type CatalogWindow=Window&{liCatalog?:CatalogPort};
 const app=window as CatalogWindow;
 const groups:readonly Group[]=canonical.groups as Group[];
+const aliases:Readonly<Record<string,string>>=canonical.legacyGroupAliases;
 const released=new Map(releasedLessonRoutes.map(({id,route})=>[id,route]));
 const canVisit=()=>document.documentElement.classList.contains('li-auth-verified')&&
  !document.documentElement.classList.contains('li-account-open');
 
 function normalize(parts:CatalogPath):string[]{
  const next=parts.filter(Boolean).slice(0,4);
- if(next[0]==='technology'&&next[1]==='ux-design')next[1]='hci';
+ if(next[1]==='ux-design')next[1]='hci';
+  if(next[0])next[0]=aliases[next[0]]||next[0];
  const group=groups.find(x=>x.id===next[0]);
  if(!group)return [];
  const field=group.fields.find(x=>x.id===next[1]);
@@ -128,6 +130,8 @@ export function installReactCatalogPort():()=>void{
  };
  const existing=app.liCatalog;
  app.liCatalog=port;
+  // Replace historical ?catalog= paths once, without creating a Back entry.
+  writePath(path,false,false);
  // Back/Forward within Catalog changes ?catalog without changing ?view.
  const onPop=()=>{
   const updated=urlPath();

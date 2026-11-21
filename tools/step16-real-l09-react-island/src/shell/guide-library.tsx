@@ -4,6 +4,9 @@ import {personalStudyRoute} from '../learning/released-lessons.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Button,Field,FilterChip,Heading,InlineFeedback,Text,LiIcon} from '../../../../design-system/react/index';
+// Retain the canonical legacy stylesheet for the existing staging bundle contract;
+// the visible field-guide rows below no longer render legacy MethodTile cards.
+import '../../../../design-system/react/legacy.css';
 import './guide-library.css';
 import {GuideDetail,NoteDetail,ConfirmNoteAction} from './detail-practice.js';
 

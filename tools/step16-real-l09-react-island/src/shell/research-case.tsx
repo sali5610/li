@@ -134,7 +134,7 @@ function CaseScene(){
  useEffect(()=>{
   const sync=()=>{
    const permitted=document.documentElement.classList.contains('li-auth-verified');
-   if(!permitted){setChoice(null);setMessage('');}
+   if(!permitted){setChoice(null);setCompleted(null);setMessage('');}
    setBookmarked(readBookmark());
    const saved=inquiryFlow().getCaseDraft();
    setRevision(previous=>previous===saved?previous:saved);

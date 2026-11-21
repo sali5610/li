@@ -319,4 +319,15 @@ assert.match(html,/route:sc.type==="hook"&&related\?related.route:/,
 assert.match(html,/sc.type==="hook"&&related\?"Khám phá vì sao":"Đào sâu"/,
  "Only genuine linked hooks promise to explore a lesson");
 
+// React CTA must recognize both route types: 17 invited drafts use "draftLesson...",
+// while published Wave1 uses "lessonL...". Both lead to learning, not Khảo Chứng.
+const homeReact=fs.readFileSync(path.resolve(__dirname,
+ "../tools/step16-real-l09-react-island/src/shell/home-catalog.tsx"),"utf8");
+assert.match(homeReact,/mirrorOpensLesson=\/\^\(\?:lessonL\|draftLessonL\)\/\.test\(mirror\.route\)/,
+ "Both real lesson route prefixes must receive the lesson CTA");
+assert.match(homeReact,/mirrorOpensLesson\?L\('Vào bài học','Open lesson'\)/,
+ "Lesson hooks must say Vào bài học, not Đào sâu");
+assert.match(homeReact,/mirrorOpensLesson\?L\('Vào bài học · Mở bài học liên quan'/,
+ "Lesson destination must also be accurate in the accessible label");
+
 console.log("PASS 17 VI/EN Home draft hooks: preview, correct context, safe routing, 3 Wave1 intact");

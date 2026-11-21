@@ -534,6 +534,8 @@ function Home(){
   };
  },[]);
  const shift=(direction:-1|1)=>inquiryFlow().shift(direction);
+ // Both approved lessons and invited draft lessons are real learning destinations.
+ const mirrorOpensLesson=/^(?:lessonL|draftLessonL)/.test(mirror.route);
  // Resolve artwork directly from Tàng Thư's canonical field-to-image entries.
  const mirrorImage=groups.flatMap(group=>group.fields)
   .find(field=>field.id===mirror.fieldId)?.image||'';
@@ -656,9 +658,9 @@ function Home(){
     <span>{mirror.saved?L('Đã lưu','Saved'):L('Lưu câu hỏi','Save question')}</span>
    </Button>
    <Button variant="primary" className="primary" onClick={()=>openRoute(mirror.route)}
-    aria-label={mirror.route.startsWith('lessonL')?L('Khám phá · Mở bài học liên quan','Explore · Open related lesson'):L('Đào sâu · Mở Khảo Chứng','Investigate · Open research')}>
+    aria-label={mirrorOpensLesson?L('Vào bài học · Mở bài học liên quan','Open lesson · Open related lesson'):L('Đào sâu · Mở Khảo Chứng','Investigate · Open research')}>
     <span className="action-icon"><LiIcon name="arrow-right" size={22}/></span>
-    <span>{mirror.route.startsWith('lessonL')?L('Khám phá','Explore'):L('Đào sâu','Investigate')}</span>
+    <span>{mirrorOpensLesson?L('Vào bài học','Open lesson'):L('Đào sâu','Investigate')}</span>
    </Button>
   </div>
  </div>;

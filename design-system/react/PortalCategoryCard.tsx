@@ -49,6 +49,9 @@ export function PortalCategoryCard({title,detail,eyebrow,portal,
  // Nested Studio stories pass ../assets/portals/ and ../assets/.
  const portalPath=portalSrc||'./assets/portals/cong-moi-'+String(portal).padStart(2,'0')+'.webp';
  const [decodedPath,setDecodedPath]=useState<string|null>(null);
+ // The arch can be ready while the interior illustration is still decoding.
+ // Keep the forest placeholder visible until the requested image is fully ready.
+ const [decodedIllustrationSrc,setDecodedIllustrationSrc]=useState<string|null>(null);
  const [failedPath,setFailedPath]=useState<string|null>(null);
  const [retryIndex,setRetryIndex]=useState(0);
  const [entry,setEntry]=useState<PortalEntry|null>(null);
@@ -56,6 +59,7 @@ export function PortalCategoryCard({title,detail,eyebrow,portal,
  const completed=useRef(false);
  const interactive=Boolean(href||onOpen);
  const ready=portalPreloaded||decodedPath===portalPath;
+ const illustrationReady=Boolean(illustrationSrc&&decodedIllustrationSrc===illustrationSrc);
  const failed=!ready&&failedPath===portalPath;
  const assetUrl=retryIndex?
   portalPath+(portalPath.includes('?')?'&':'?')+'retry='+retryIndex:portalPath;
@@ -99,9 +103,20 @@ export function PortalCategoryCard({title,detail,eyebrow,portal,
  }
  function visual(transition=false){
   return <>
-   <div className="li-portal-category-interior">
+   <div className="li-portal-category-interior"
+    data-illustration-ready={illustrationReady}>
     {illustrationSrc?<img src={illustrationSrc} alt={interactive||transition?'':illustrationAlt}
-     loading={transition?'eager':'lazy'} decoding="async"/>:
+     loading={transition?'eager':'lazy'} decoding="async"
+     onLoad={event=>{
+      const image=event.currentTarget;
+      const requestedSrc=illustrationSrc;
+      const markReady=()=>setDecodedIllustrationSrc(requestedSrc);
+      if(typeof image.decode==='function'){
+       void image.decode().then(markReady).catch(()=>{
+        if(image.complete&&image.naturalWidth>0)markReady();
+       });
+      }else if(image.complete&&image.naturalWidth>0)markReady();
+     }}/>:
      <span className="li-portal-category-placeholder" aria-hidden="true">
       {transition?null:placeholder||null}
      </span>}

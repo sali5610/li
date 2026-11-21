@@ -402,7 +402,7 @@ export function AppPageLayout(props:AppPageLayoutProps){
  const reveal=(delay:number)=>(variant==='notebook'||bookworm)&&!reduced?{
   initial:{opacity:0,y:bookworm?20:14},
   animate:{opacity:1,y:0},
-  transition:{duration:bookworm?.56:.48,delay,ease:[.22,1,.36,1] as const}
+  transition:{duration:bookworm?.56:.48,delay,ease:'easeOut' as const}
  }:{};
  return <section className="li-flow-page" data-page={page} data-layout={variant}
   data-bookworm-composition={bookworm?bookwormComposition:undefined}

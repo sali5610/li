@@ -330,7 +330,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  const saveMessage=locked?(vi?'Lưu thất bại':'Save failed'):
   saving?(vi?'Đang lưu…':'Saving…'):statusText(sync,vi);
  const transition=reduced?{duration:0}:{duration:0.18,ease:'easeOut' as const};
- return <section className="li-learning-journey" data-li-react-journey="L09-1-2" lang={attempt.locale}
+ return <section className="li-learning-journey" data-li-react-journey="L09-1-2" lang={appLocale}
   data-li-lesson-phase={phase} data-li-lesson-submitted={attempt.submitted?'true':'false'}
   data-li-lesson-reviewed={attempt.reviewed?'true':'false'}>
   <header className="li-learning-header">
@@ -482,11 +482,11 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
       </select>
      </div>)}
     </div>
-    <AiFeedbackPanel id="L09-1-2" locale={attempt.locale}
+    <AiFeedbackPanel id="L09-1-2" locale={appLocale}
      answers={attempt.submission??attempt.draft}
      openQuestionIndices={feedbackPolicy.lessons['L09-1-2'].modes.flatMap((mode,index)=>mode==='open'?[index]:[])}/>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
-     locale={attempt.locale} onReviewTheory={()=>go('read')}/>
+     locale={appLocale} onReviewTheory={()=>go('read')}/>
     <Text role="support">{vi?'Tự chấm theo rubric, không phải điểm tự động.':'Self-review, not automatic grading.'}</Text>
     {attempt.reviewed?<Button onClick={()=>go('progress')}>{vi?'Tiếp: Tiến độ':'Next: Progress'} →</Button>:
      <Button disabled={locked||saving} onClick={()=>void finish()}>{content.saveReview}</Button>}
@@ -498,7 +498,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Text>{vi?'Đây là một lượt học đã lưu, không phải chứng nhận thông thạo.':
      'This is one saved learning attempt, not a mastery certificate.'}</Text>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
-     locale={attempt.locale} onReviewTheory={()=>go('read')}/>
+     locale={appLocale} onReviewTheory={()=>go('read')}/>
     <Text role="support">{content.scoreLabel}: {attempt.ratings.reduce<number>((n,x)=>n+(x??0),0)} / 8</Text>
     <T02ReviewEntry lessonId="L09-1-2" vi={vi} disabled={locked||saving}
      onOpen={()=>{if(!openLessonSpell('L09-1-2','T02',true))

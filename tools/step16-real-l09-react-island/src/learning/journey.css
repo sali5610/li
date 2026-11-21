@@ -1094,19 +1094,38 @@
  font-weight:700;
 }
 
-/* Explicit copy-to-ChatGPT handoff: no automatic sharing of private work. */
+/* Lesson handoff is a quiet utility, not another large callout card.
+ * Keep manual copy/privacy semantics and minimum touch target. */
 .li-learning-copy-prompt{
  display:grid;
- justify-items:start;
- gap:var(--li-space-2);
- padding:var(--li-space-4);
- border:1px solid var(--rule);
- background:var(--porcelain);
+ grid-template-columns:minmax(0,1fr) auto;
+ align-items:center;
+ gap:var(--li-space-2) var(--li-space-3);
+ padding:var(--li-space-3) 0;
+ border:0;
+ border-block-start:1px solid var(--rule);
+ background:transparent;
  max-width:74ch;
  min-width:0;
 }
-.li-learning-copy-prompt .li-ds-button{max-width:100%;white-space:normal}
+.li-learning-copy-prompt>.li-atom-text{margin:0;min-width:0}
+.li-learning-copy-prompt>.li-atom-text[aria-live]{grid-column:1/-1}
+.li-learning-copy-prompt .li-ds-button{
+ justify-self:end;min-height:44px;max-width:100%;white-space:normal;
+}
+.li-learning-answer-gate{
+ display:flex;align-items:center;flex-wrap:wrap;
+ gap:var(--li-space-2) var(--li-space-3);
+}
+.li-learning-answer-gate>.li-atom-text{margin:0}
+.li-learning-answer-gate>.li-ds-button{min-height:44px}
 @media(max-width:599px){
- .li-learning-copy-prompt{width:100%}
- .li-learning-copy-prompt .li-ds-button{width:100%}
+ .li-learning-copy-prompt{
+  width:100%;grid-template-columns:minmax(0,1fr);
+ }
+ .li-learning-copy-prompt .li-ds-button{
+  justify-self:start;width:auto;
+ }
+ .li-learning-journey[data-li-react-journey][data-li-lesson-phase="feedback"]
+ .li-learning-current .li-study-book-page{padding-bottom:var(--li-space-3)}
 }

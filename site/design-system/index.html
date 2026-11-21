@@ -16,7 +16,7 @@
 <div id="studio-root">
 <header class="studio-top">
   <button id="studio-menu-toggle" class="studio-menu-toggle" type="button" aria-label="Mở menu Design System" aria-controls="studio-sidebar" aria-expanded="false"><span aria-hidden="true">☰</span></button>
-  <a class="studio-mark" href="./" aria-label="li. Design System Studio"><span class="studio-glyph"><img src="../assets/li-seal-home.svg" alt="" width="32" height="32"></span><span>li<span class="studio-dot">.</span></span><span class="studio-word">DESIGN SYSTEM</span></a>
+  <a class="studio-mark" href="./" aria-label="li. Design System Studio"><span class="studio-glyph"><img src="../assets/li-seal.svg" alt="" width="40" height="40"></span><span>li<span class="studio-dot">.</span></span><span class="studio-word">DESIGN SYSTEM</span></a>
   <div class="studio-top-right"><span class="studio-top-note">COMPONENT LIBRARY · UX-DS-35</span><span class="studio-status"><span aria-hidden="true">◌</span> G2 OPEN</span></div>
 </header>
 <div class="studio-shell">
@@ -48,7 +48,7 @@
       <div class="studio-home-brand-lockup" aria-label="Biểu trưng lý và tên li.">
         <span class="studio-home-brand-symbol" aria-hidden="true"><img src="../assets/li-seal-home.svg" alt="" width="94" height="94"></span>
         <span class="studio-home-brand-word">li<span class="studio-dot">.</span></span>
-        <span class="studio-home-brand-caption">Learn · Question · Connect</span>
+        <span class="studio-home-brand-caption">THE WORLD OF KNOWING WHY</span>
       </div>
     </div>
     <div class="studio-home-intro">
@@ -84,13 +84,13 @@
     <span class="studio-readiness" id="studio-readiness">RUNTIME</span>
   </div>
   <section class="studio-playground" aria-labelledby="studio-playground-title">
-    <div class="studio-playground-bar"><h3 id="studio-playground-title">Interactive preview</h3><div class="studio-device-actions"><label for="studio-width">Viewport</label><select id="studio-width"><option value="auto">Fluid</option><option value="320">iPhone · 320</option><option value="390">iPhone · 390</option><option value="820">iPad · 820</option><option value="820x1180" data-width="820" data-height="1180">iPad · 820×1180</option><option value="970x1408" data-width="970" data-height="1408">iPad · 970×1408</option><option value="1024">iPad · 1024</option><option value="1133x744" data-width="1133" data-height="744">iPad · 1133×744</option><option value="1408x832" data-width="1408" data-height="832">iPad · 1408×832</option><option value="1440">Desktop · 1440</option></select><a id="studio-full-preview" class="studio-preview-link" href="./" target="_blank" rel="noopener noreferrer">Open full preview ↗</a><button id="studio-copy-link" type="button">Copy review link</button><button id="studio-refresh" type="button" title="Reload preview" aria-label="Reload preview">↻</button></div></div>
+    <div class="studio-playground-bar"><h3 id="studio-playground-title">Interactive preview</h3><div class="studio-device-actions"><label for="studio-width">Viewport</label><select id="studio-width"><option value="auto">Fluid</option><option value="320">iPhone width · 320</option><option value="390">iPhone width · 390</option><option value="390x844" data-width="390" data-height="844">iPhone screen · 390×844</option><option value="402x874" data-width="402" data-height="874">iPhone screen · 402×874</option><option value="820">iPad · 820</option><option value="820x1180" data-width="820" data-height="1180">iPad · 820×1180</option><option value="970x1408" data-width="970" data-height="1408">iPad · 970×1408</option><option value="1024">iPad · 1024</option><option value="1133x744" data-width="1133" data-height="744">iPad · 1133×744</option><option value="1408x832" data-width="1408" data-height="832">iPad · 1408×832</option><option value="1440">Desktop · 1440</option></select><a id="studio-full-preview" class="studio-preview-link" href="./" target="_blank" rel="noopener noreferrer">Open full preview ↗</a><button id="studio-copy-link" type="button">Copy review link</button><button id="studio-refresh" type="button" title="Reload preview" aria-label="Reload preview">↻</button></div></div>
     <div class="studio-controls">
       <label>Variant<select id="studio-variant"></select></label>
       <label>State<select id="studio-state"></select></label>
       <label>Language<select id="studio-language"><option value="vi">Tiếng Việt</option><option value="en">English</option></select></label>
     </div>
-    <div class="studio-frame-scroll"><iframe id="studio-frame" title="Live component preview" loading="eager"></iframe></div>
+    <div class="studio-frame-scroll"><div id="studio-frame-stage" class="studio-frame-stage"><iframe id="studio-frame" title="Live component preview" loading="eager"></iframe></div></div>
     <div class="studio-frame-foot"><span>Real React stories · fixture data · G2 not yet approved</span><span id="studio-frame-label">FLUID</span><output id="studio-link-status" role="status" aria-live="polite"></output></div>
   </section>
   <section class="studio-details" aria-labelledby="studio-details-title">

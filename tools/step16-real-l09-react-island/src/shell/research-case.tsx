@@ -6,7 +6,7 @@ import type {ResearchView,CaseChoice} from './inquiry-port.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {motion,useReducedMotion} from 'motion/react';
-import {Badge,Button,Field,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
+import {Badge,Button,Field,Heading,InlineFeedback,NumberedCard,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
 import {FieldPicker} from './library-taxonomy.js';
 import {CopyAnalysisPrompt} from '../learning/CopyAnalysisPrompt.js';
@@ -67,12 +67,12 @@ function ResearchScene(){
     <div className="kicker">{L("II · NGUỒN / CHỨNG CỨ","II · SOURCES / EVIDENCE")}</div>
     <Heading level={2} role="titleMedium">{L("Chưa đủ dữ kiện","Insufficient evidence")}</Heading>
     <Text role="body">{L("Một tỷ lệ chưa cho biết cách chọn mẫu, nên chưa đủ để kết luận về toàn bộ tổng thể.","A percentage alone says nothing about sampling, so it cannot establish a population-wide conclusion.")}</Text>
-    <div className="path-item"><span className="path-num">01</span>
+    <NumberedCard number="01">
      <div><strong>{L("Điều quan sát","Observed")}</strong><Text role="support">{authoredCopy(state.observed)}</Text></div>
-    </div>
-    <div className="path-item"><span className="path-num">02</span>
+    </NumberedCard>
+    <NumberedCard number="02">
      <div><strong>{L("Điều chưa biết","Unknown")}</strong><Text role="support">{authoredCopy(state.unknown)}</Text></div>
-    </div>
+    </NumberedCard>
    </section>
   </section>
   <aside className="research-secondary">

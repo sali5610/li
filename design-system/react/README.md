@@ -109,3 +109,10 @@ Ontology compatibility: the existing registry permits **Component —USES_TOKEN�
 ### SaveStatus + real L09 sync semantics · 2026-11-20
 
 The canonical `SaveStatus` now distinguishes `queued` (a saved local outbox entry **waiting to sync**) from `offline` (offline explicitly known) and `unavailable` (cloud confirmation cannot be established). Both are different from `synced`. The React L09 learner must pass caller-owned `SyncState` and `saving/locked` data, **never infer cloud success from local persistence**, and must not describe a queued operation as known offline. The library owns display only; the auth/Dexie/Neon owner retains all writes and status evidence. The Studio demo has all eight states including queued/unavailable. No extra green focus outline.
+
+## Tàng Thư · CatalogFieldCard (draft, 2026-11-22)
+
+- Canonical presentational component: `CatalogFieldCard.tsx`; stylesheet: `catalog-field-card.css`; public export: `index.ts`.
+- Real consumer: Tàng Thư → Group → Field list in `tools/step16-real-l09-react-island/src/shell/home-catalog.tsx`. The app passes source image, editorial category, heading, course count, locale and navigation callback.
+- Visual anatomy: larger 40% desktop / 42% mobile illustration; the **entire image** is clipped to a 4:5 top arch, square-bottom silhouette. No rectangular panel, inset border or separate frame. No CHUYÊN NGÀNH/FIELD kicker. Preserve category tag, title, count and Explore action.
+- Studio review: `/li/design-system/#catalogFieldCard` → Cards; `Sociology` and `Anthropology` test the same reusable geometry with existing approved illustrations. Status **DRAFT** until PO visual approval; no new source of curriculum copy.

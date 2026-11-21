@@ -104,7 +104,6 @@ export function Guide(){
  return <div className="section-shell li-react-guide" data-li-react-screen="guide">
   <header className="guide-opening">
    <div className="guide-opening-copy">
-    <div className="kicker">{copy('CẨM NANG TƯ DUY','THINKING FIELD GUIDE')}</div>
     <Heading level={1} role="headline" className="display-title">{copy('Sổ Tay Thần Chú','Learning Spells')}</Heading>
     <Text role="body" className="intro">{copy(
      '13 phương pháp để học, ghi nhớ và suy nghĩ. Mỗi pháp danh đều có tên học thuật gốc đi kèm.',
@@ -296,7 +295,6 @@ export function Library(){
  const view=useLibrary();
  return <div className="section-shell li-react-library" data-li-react-screen="library">
   <header className="library-introduction">
-   <div className="kicker">{copy('GÓC RIÊNG CỦA BẠN','YOUR PRIVATE SPACE')}</div>
    <Heading level={1} role="headline" className="display-title">{copy('Tủ Riêng','Private Library')}</Heading>
    <Text role="body" className="intro">{copy(
     'Một góc nhìn nhanh. Mọi bài học, dấu trang và ghi chú đầy đủ đều nằm trong từng ngăn riêng.',
@@ -387,7 +385,6 @@ function Resume(){
  const tab=view.bookmarkTab;
  const tabClick=(next:'lesson'|'question')=>app.liLibraryShelf?.selectBookmarkTab(next);
  return <div className="section-shell li-react-library" data-li-react-screen="resume">
-  <div className="kicker">{copy('HÀNH TRÌNH CỦA BẠN','YOUR LEARNING HISTORY')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Quay lại','Continue')}</Heading>
   <Text role="body" className="intro">{copy(
    'Tiếp tục bài học, quay lại vấn đề đang tìm hiểu và mở những Dấu Trang đã lưu.',
@@ -439,7 +436,6 @@ function Collection(){
   .filter(item=>(filter==='all'||item.type===filter)&&
    (!q||[item.title,item.body,item.date].join(' ').toLocaleLowerCase('vi').includes(q)));
  return <div className="section-shell li-react-library" data-li-react-screen="collection">
-  <div className="kicker">{copy('GHI CHÉP CỦA BẠN','YOUR NOTES')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Bộ sưu tập','Collection')}</Heading>
   <Text role="body" className="intro">{copy(
    'Bút Ký là kết luận sau Phản Chứng; Ý đã nhặt là điều bạn ghi lại nhưng chưa xác minh.',

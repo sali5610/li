@@ -215,6 +215,11 @@ function BuddyName({kind,header,placeholder,value,preview,commit}:{
 export function Settings(){
  const view=useSettings();
  const backupInput=useRef<HTMLInputElement>(null);
+ const accountHost=useRef<HTMLDivElement>(null);
+ useEffect(()=>{
+  window.dispatchEvent(new CustomEvent('li:settings-account-host',{detail:{host:accountHost.current}}));
+  return()=>window.dispatchEvent(new CustomEvent('li:settings-account-host',{detail:{host:null}}));
+ },[]);
  const locale=app.liLanguage?.get?.()==='en'?'en':'vi';
  const act=(kind:string,key?:string,value?:string|boolean)=>app.liSettingsPort?.act(kind,key,value);
  const chooseBackup=()=>backupInput.current?.click();
@@ -306,6 +311,11 @@ export function Settings(){
       'Manage sync, backups and privacy.')}</Text>
     </div>
     <div className="settings-group-grid">
+     <Card variant="raised" className="li-react-setting-card li-react-account-card">
+      <div className="kicker">{copy('TÀI KHOẢN & ĐỒNG BỘ','ACCOUNT & SYNC')}</div>
+      <Heading level={3} role="titleMedium">{copy('Đăng nhập & tiến độ','Sign-in & progress')}</Heading>
+      <div id="li-account-settings-host" ref={accountHost}/>
+     </Card>
      <Card variant="raised" className="li-react-setting-card li-react-backup-card">
       <div className="kicker">{copy('SAO LƯU MỘT PHẦN','PARTIAL BACKUP')}</div>
       <Heading level={3} role="titleMedium">{copy('Ghi chú & Dấu Trang','Notes & Bookmarks')}</Heading>
@@ -314,8 +324,8 @@ export function Settings(){
         <Text role="support">{copy('Dữ liệu được lưu trước tiên trong trình duyệt này.',
          'Data is first stored in this browser.')}</Text></div></div>
        <div className="path-item"><div><strong>{copy('Đồng bộ giữa các thiết bị','Cross-device sync')}</strong>
-        <Text role="support">{copy('Dữ liệu được phép sẽ đồng bộ với tài khoản Neon khi kết nối. Trạng thái chi tiết ở Tài khoản.',
-         'Eligible data syncs through your Neon account when connected. See Account for status.')}</Text></div></div>
+        <Text role="support">{copy('Dữ liệu được phép sẽ đồng bộ với tài khoản Neon khi kết nối. Trạng thái đồng bộ ở ngay bên dưới.',
+         'Eligible data syncs through your Neon account when connected. See the sync status below.')}</Text></div></div>
        {view.cloudVisible&&<div className="path-item li-react-journal-cloud">
         <Checkbox label={copy('Đồng bộ Nhật Ký & Check-in lên Neon',
          'Sync Journal & Check-ins to Neon')}
@@ -353,8 +363,8 @@ export function Settings(){
       <div className="kicker">{copy('QUYỀN RIÊNG TƯ','PRIVACY')}</div>
       <Heading level={3} role="titleMedium">{copy('Kiểm soát thuộc về bạn','You stay in control')}</Heading>
       <Text role="body">{copy(
-       'Nhật Ký chỉ đồng bộ cloud khi được cho phép riêng. Ghi chép không tự gửi đến AI bên ngoài. Quản lý phiên đăng nhập trong Tài khoản.',
-       'Journal cloud sync requires separate permission. Notes are not automatically sent to an external AI. Manage sign-in in Account.')}</Text>
+       'Nhật Ký chỉ đồng bộ cloud khi được cho phép riêng. Ghi chép không tự gửi đến AI bên ngoài. Đăng xuất ngay trong Cài đặt.',
+       'Journal cloud sync requires separate permission. Notes are not automatically sent to an external AI. Sign out here in Settings.')}</Text>
      </Card>
     </div>
    </section>

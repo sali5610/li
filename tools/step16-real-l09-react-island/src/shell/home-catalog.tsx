@@ -335,7 +335,8 @@ function Home(){
   const checkBackdrop=()=>{
    const css=getComputedStyle(hero,'::before').backgroundImage;
    const url=css.match(/url\((["']?)(.*?)\1\)/)?.[2]||'';
-   if(!url||url===currentUrl)return;
+   if(!url){setBackdropReady(true);return;}
+   if(url===currentUrl)return;
    currentUrl=url;
    setBackdropReady(false);
    image=new Image();

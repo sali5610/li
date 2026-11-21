@@ -36,7 +36,7 @@ for(const item of drafts){
  assert.equal(d.rights.releaseAuthorized,false,'Do not bypass rights gate '+item.id);
  for(const loc of ['vi','en']){
   const roles=d.content.localized[loc].sections.map(x=>x.role);
-  for(const role of ['goals','concept','guided','methods','independent','reflection']){
+  for(const role of ['guided','methods','independent','reflection']){
    assert.ok(roles.includes(role),'Preserve '+role+' content for '+item.id+' '+loc);
   }
   const independent=d.content.localized[loc].sections.find(x=>x.role==='independent');

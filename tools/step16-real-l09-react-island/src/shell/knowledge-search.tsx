@@ -319,7 +319,9 @@ function KnowledgeSearch(){
          <a href={record.answerability.sourceUrl} target="_blank" rel="noopener noreferrer">
           {L("Nguồn tham khảo của bài","Lesson reference")}</a>}
        </div>}
-       {(record.links||[]).length>0&&<div className="li-search-related">
+       {(record.links||[]).length>0&&<details className="li-search-evidence">
+        <summary>{L('Kết nối kiến thức','Knowledge connections')} · {record.links!.length}</summary>
+        <div className="li-search-related">
         <Text role="support">{L("Kết nối kiến thức có nguồn · không mặc định là bài tiên quyết","Source-backed connections · not automatically prerequisites")}</Text>
         {record.links.map((link,i)=><div key={link.id+':'+i} className="li-search-relation">
          <Text role="support">{locale==='en'?link.relation||link.label:link.label}: {link.title} · {link.lessonId||link.id}</Text>
@@ -329,7 +331,7 @@ function KnowledgeSearch(){
          {sourceIsSafe(link.sourceUrl)&&record.links.findIndex(item=>item.sourceUrl===link.sourceUrl)===i&&<a href={link.sourceUrl} target="_blank" rel="noopener noreferrer">
           {link.sourceType==='academic'?L('Nguồn phương pháp','Method source'):L('Nguồn phân loại','Taxonomy source')}</a>}
         </div>)}
-       </div>}
+       </div></details>}
        {sourceIsSafe(record.sourceUrl)&&!(record.links||[]).some(link=>link.sourceUrl===record.sourceUrl)&&
         <a href={record.sourceUrl} target="_blank" rel="noopener noreferrer">{L("Nguồn danh mục","Catalog source")}</a>}
        {(record.kind==='Concept'||record.kind==='Lesson')&&

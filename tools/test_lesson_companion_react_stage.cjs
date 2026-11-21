@@ -18,7 +18,10 @@ assert.match(editorialReact,/liQuoteEngine/);
 assert.match(editorialReact,/AFTER_VALID_INDEPENDENT_SUBMISSION/);
 const sectionedReact=read("tools/step16-real-l09-react-island/src/learning/SectionedJourney.tsx");
 assert.match(sectionedReact,/validateSectionedLesson/);
-assert.match(sectionedReact,/li:buddy-open/);
+assert.match(sectionedReact,/registerEditorial\(/,
+ "Personal lessons reuse the native stage-aware Lão Lý plan instead of opening a one-off chat");
+assert.match(sectionedReact,/<LessonMentor id=\{id\} locale=\{locale\}\/>/,
+ "Use the same companion component as the three samples");
 assert.match(sectionedReact,/isReleasedLessonId/);
 // Real SectionedJourney opener: released lesson passes its exact ID to the
 // canonical allowlisted port; staging draft retains the invited-only bridge.

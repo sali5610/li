@@ -114,7 +114,7 @@ setTimeout(()=>{
  if(viewName==='journal'){
   const chart=select('.li-diary-month .li-legacy-chart'),cal=select('.li-diary-calendar');
   assert('real-DS-chart-visible',Boolean(chart&&bounds(chart)!.w>200),bounds(chart));
-  assert('chart-under-calendar',Boolean(chart&&cal&&chart.getBoundingClientRect().top>cal.getBoundingClientRect().bottom),
+  assert('chart-above-calendar',Boolean(chart&&cal&&chart.getBoundingClientRect().bottom<cal.getBoundingClientRect().top),
     {chart:bounds(chart),calendar:bounds(cal)});
   assert('chart-actually-above-first-fold',Boolean(chart&&chart.getBoundingClientRect().top<690),bounds(chart));
   assert('seven-day-chart',document.querySelectorAll('.li-legacy-chart-bars button').length===7);

@@ -47,13 +47,14 @@ function openDetail(type,id){
  renderDetail();
  return true;
 }
-function saveVersion(type,id,title,body,change){
+function saveVersion(type,id,title,body,change,fieldId){
  const arr=listFor(type),index=arr?.findIndex(x=>x.id===id);
  if(!arr||index<0||liStorageError)return false;
  const prior=arr[index],versions=historyFor(prior,type);
  const now=new Date().toISOString();
  const next={...prior,title,updatedAt:now,versions:[...versions,{version:versions.length+1,title,body,at:now,change}]};
  if(type==="case")next.revision=body;else next.text=body;
+ if(fieldId!==undefined)next.fieldId=fieldId;
  arr[index]=next;
  if(!liWriteState()){arr[index]=prior;return false;}
  return true;
@@ -281,22 +282,26 @@ function getView(){
    (note.updatedAt?ui(" · Sửa: "," · Edited: ")+stamp(note.updatedAt):"")+
    " · "+history.length+ui(" phiên bản",history.length===1?" version":" versions"),
   history:history.map(v=>({...v})),context,backRoute,
+  fieldId:note.fieldId||null,
   storageAvailable:!liStorageError,
   bookmarked:context?Boolean(window.liBookmarks?.isSaved("case","sampling-bias-90")):false
  };
 }
-function saveFromReact(title,body,baseVersion){
+function saveFromReact(title,body,baseVersion,fieldId){
  const note=current();if(!note)return {ok:false,message:ui("Ghi chép không còn tồn tại.","Note no longer exists.")};
  if(liStorageError)return {ok:false,message:ui("Không đọc được dữ liệu cá nhân.","Personal data cannot be read.")};
  title=String(title||"").trim();body=String(body||"").trim();
  const minimum=active.type==="case"?12:3;
+ const assigned=fieldId===undefined?(note.fieldId||null):(fieldId||null);
+ if(assigned&&!window.liTaxonomyFieldIds?.includes(assigned))
+  return {ok:false,message:ui("Chuyên ngành không hợp lệ.","Invalid field.")};
  if(!title||title.length>180||body.length<minimum||body.length>5000)
   return {ok:false,message:"Tiêu đề cần 1–180 ký tự; nội dung cần "+minimum+"–5.000 ký tự."};
  if(Number.isInteger(baseVersion)&&historyFor(note,active.type).length!==baseVersion)
   return {ok:false,message:ui("Bản ghi đã thay đổi. Hãy sao chép nháp rồi mở lại để tránh ghi đè.","Record changed. Copy your draft before refreshing.")};
- if(title===titleOf(note,active.type)&&body===bodyOf(note,active.type))
+ if(title===titleOf(note,active.type)&&body===bodyOf(note,active.type)&&assigned===(note.fieldId||null))
   return {ok:true,changed:false,message:ui("Không có thay đổi; không tạo phiên bản.","No changes; no version added.")};
- if(!saveVersion(active.type,active.id,title,body,"Chỉnh sửa"))
+ if(!saveVersion(active.type,active.id,title,body,"Chỉnh sửa",assigned))
   return {ok:false,message:ui("Lưu thất bại. Nháp vẫn còn trong ô sửa.","Save failed; draft kept.")};
  refreshAfterChange();toast("Đã lưu phiên bản mới; bản cũ vẫn nằm trong lịch sử.");
  return {ok:true,changed:true,message:ui("Đã lưu phiên bản mới.","Saved a new version.")};

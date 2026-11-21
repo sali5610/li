@@ -282,23 +282,24 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
    </div>
    <div className="li-learning-header-actions">
     <LessonBookmark id={id} locale={appLocale}/>
+    <details className="li-lesson-header-more">
+     <summary>{vi?'Tùy chọn':'Options'}</summary>
+     <Button variant="ghost" disabled={saving||locked}
+      onClick={()=>void restartLesson()}>{vi?'Học lại từ đầu':'Restart lesson'}</Button>
+    </details>
    </div>
   </header>
     <StudyBookFolio phase={phase} steps={steps} locale={appLocale}/>
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
 
   <div className="li-learning-save">
-   <Progress label={vi?'Tiến độ lượt học':'Lesson progress'} value={pct}/>
    <SaveStatus state={saveState} message={saveMessage} detail={locked?error:undefined}/>
-   <Text role="support">{attempt.reviewed?
-    (vi?'Đã tự đánh giá · không phải chứng nhận thông thạo':'Self-reviewed · not a mastery grade'):
-    attempt.submitted?(vi?'Đã nộp · tự đánh giá '+rated+'/4':'Submitted · '+rated+'/4 ratings'):
-    (vi?'Đủ điều kiện nộp '+answered+'/4 câu':'Ready to submit '+answered+'/4 answers')}</Text>
-   {attempt.assisted&&<Text role="support">{content.assistStatus}</Text>}
-   <div className="li-learning-recovery">
-    <Button variant="secondary" disabled={saving||locked}
-     onClick={()=>void restartLesson()}>{vi?'Học lại từ đầu':'Restart this lesson'}</Button>
-   </div>
+   <Text role="support" className="li-learning-ready-count">{attempt.reviewed?
+    (vi?'Đã tự đánh giá':'Self-reviewed'):
+    attempt.submitted?(vi?'Đã nộp · '+rated+'/4 tự chấm':'Submitted · '+rated+'/4 rated'):
+    (vi?answered+'/4 câu sẵn sàng':answered+'/4 answers ready')}</Text>
+   <Progress label={vi?'Tiến độ lượt học':'Lesson progress'} value={pct}/>
+   {attempt.assisted&&<Text role="support" className="li-learning-status-note">{content.assistStatus}</Text>}
   </div>
   </aside>
   {error&&!locked&&<p role="alert" className="li-learning-error">{error}</p>}

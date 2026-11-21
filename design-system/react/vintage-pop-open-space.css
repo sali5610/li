@@ -686,3 +686,98 @@
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-page="library"] .li-flow-stat-grid>.li-ds-card:nth-child(3n + 2){border-top-color:var(--vp-accent-yellow);}
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-page="dashboard"] .li-flow-stat-grid>.li-ds-card:nth-child(3n),
 .li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-page="library"] .li-flow-stat-grid>.li-ds-card:nth-child(3n){border-top-color:var(--vp-accent-lavender);}
+
+/* G2 draft · editorial decoration does not get stroked into a box.
+   Lines belong to actionable controls, actual cards and functional section
+   dividers. Artwork, tape, stamps and background shapes stay free-floating. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] :is(
+ .li-pop-collage,
+ .li-pop-collage img,
+ .li-pop-collage-tape,
+ .li-pop-collage-postmark,
+ .li-pop-catalog-art,
+ .li-pop-result-art,
+ .li-pop-guide-art,
+ .li-pop-workspace-art,
+ .li-pop-method-plate,
+ .li-pop-lesson-bookmark
+){
+ border:0;outline:0;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-collage{
+ box-shadow:0 12px 22px #102E2D18;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-method-plate{
+ box-shadow:none;
+}
+/* The illustrations need their internal explanatory marks, not outlines around
+   every cut-paper polygon. Magnifier rim remains meaningful in sampling art. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-art
+ :is(path,rect,circle,ellipse,polygon)[fill]:not([fill="none"]){
+ stroke:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-art--sampling circle[stroke]{
+ stroke:#AC552E;
+}
+/* Remove decorative boxes from hero, home cover and floating index stamps. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-head{
+ border:0;box-shadow:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"]{
+ border:0;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro{
+ border:0;box-shadow:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro::after{
+ border:0;box-shadow:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-index,
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card>.li-flow-index{
+ border:0;outline:0;box-shadow:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-header-art>.li-pop-collage,
+.li-ui-lab-preview[data-vintage-open="true"] .li-pop-header-art>.li-pop-collage,
+.li-ui-lab-preview[data-vintage-open="true"] :is(.li-pop-workspace-art,.li-pop-guide-art)>.li-pop-collage{
+ border:0;box-shadow:0 14px 32px #102E2D1c;
+}
+/* Mirror remains a functional content surface, but without a second decorative
+   outer frame or dotted perforation. Its inner content card stays delineated. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-mirror .li-ds-home-mirror{
+ border:0;outline:0;box-shadow:0 14px 30px #102E2D20;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-ui-home-mirror .li-ds-home-mirror::after{
+ content:none;
+}
+/* Filled papercut shape rather than a large decorative stroke-ring. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-flow-page-head::after{
+ border:0;background:var(--vp-accent-lavender);opacity:.26;
+}
+.li-ui-lab-preview[data-vintage-open="true"] .li-flow-page-head::after{
+ border:0;height:auto;aspect-ratio:1;
+ background:var(--vp-accent-lavender);opacity:.28;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"]:not([data-vintage-open="true"]) .li-flow-page-head::before{
+ content:none;
+}
+/* Reading material is a book, not three concentric borders. Retain the
+   page gradient, spine, fold, bookmarks and all actual learning controls. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson,
+.li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-page="lesson"] .li-pop-lesson{
+ border:0;box-shadow:0 12px 28px #102E2D1f;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-lesson-bookmark{
+ box-shadow:none;
+}
+/* Scrapbook spread may retain its functional internal separator, but not a
+   doubled border solely to mimic a poster or picture frame. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"] .li-pop-scrapbook{
+ border:0;box-shadow:0 10px 24px #102E2D14;
+}
+.li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-page="collection"] .li-pop-scrapbook,
+.li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-page="noteDetail"] .li-pop-scrapbook,
+.li-ui-lab-preview[data-vintage-open="true"] .li-flow-page[data-page="capture"] .li-pop-scrapbook{
+ border-top:2px solid var(--vp-primary);box-shadow:none;
+}
+/* Native focus rings, card boundaries, buttons and navigational/section rules
+   intentionally remain untouched for interaction and accessibility. */

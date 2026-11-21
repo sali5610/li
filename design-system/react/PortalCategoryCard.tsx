@@ -4,7 +4,7 @@ import {LiIcon} from './LucideIcons';
 
 /** Portal artwork stays independent of the future discipline illustration.
  * Portal images are transparent PNG overlays; the illustration is rendered behind.
- * The seven masters are supplied separately as /assets/portals/cong-moi-01..07.png.
+ * Runtime derivatives use seven WebP alpha overlays in site/assets/portals; original PNG masters are supplied separately.
  */
 export type PortalVariant=1|2|3|4|5|6|7;
 export interface PortalCategoryCardProps{

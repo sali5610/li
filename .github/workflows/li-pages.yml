@@ -333,10 +333,22 @@ jobs:
           test -s site/component-library-review.html
           test -s site/component-library-archive.html
           python3 - <<'PY'
+          import os
           from pathlib import Path
           for page in Path('site/design-system').glob('*.html'):
               html=page.read_text(encoding='utf-8')
               page.write_text(html.replace('../assets/','./assets/'),encoding='utf-8')
+          # UI Lab bundles keep the same filenames across deploys; force each
+          # staging revision to fetch its matching JS and CSS instead of cache.
+          lab=Path('site/design-system/ui-lab.html')
+          html=lab.read_text(encoding='utf-8')
+          rev=os.environ['GITHUB_SHA'][:12]
+          for asset,attr in (('react-ui-lab.js','src'),('react-ui-lab.css','href')):
+              old=f'{attr}="./{asset}"'
+              assert html.count(old)==1, f'Missing UI Lab asset: {asset}'
+              html=html.replace(old,f'{attr}="./{asset}?li_build={rev}"')
+          lab.write_text(html,encoding='utf-8')
+          print(f'PASS UI Lab bundle cache bust for {rev}')
           PY
           grep -Fq 'design-system/' site/component-library-review.html
           grep -Fq 'data-width="1408" data-height="832"' site/design-system/index.html

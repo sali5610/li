@@ -511,7 +511,7 @@ export function NoteDetail(){
   setMessage('');setEditing(true);
  };
  const save=()=>{
-  const result=app.liNotes?.saveFromReact(title,body,baseVersion,fieldId);
+  const result=app.liNotes?.saveFromReact(title,body,baseVersion,note.type==='case'?undefined:fieldId);
   if(!result){setMessage(copy('Không kết nối được bộ lưu.','Save service unavailable.'));return;}
   setMessage(result.message);
   if(result.ok){setEditing(false);refresh();}
@@ -573,7 +573,7 @@ export function NoteDetail(){
      onChange={event=>setTitle(event.target.value.slice(0,180))}/>
     <Field label={copy('Nội dung / Luận kết','Content / Conclusion')} kind="textarea" rows={7}
      value={body} onChange={event=>setBody(event.target.value.slice(0,5000))}/>
-    <FieldPicker id="li-note-specialization" value={fieldId} onChange={setFieldId}/>
+    {note.type==='idea'?<FieldPicker id="li-note-specialization" value={fieldId} onChange={setFieldId}/>:note.fieldId&&<Text role="support">{copy('Chuyên ngành','Field')}: {fieldLabel(note.fieldId)}</Text>}
     {message&&<InlineFeedback tone="error" message={message}/>}
     <div className="action-row">
      <Button variant="primary" onClick={save}>{copy('Lưu phiên bản mới','Save a new version')}</Button>

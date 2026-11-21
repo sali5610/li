@@ -114,6 +114,11 @@ if(viewName==='breadcrumb'){
    const page=document.getElementById('page-lessonL09');
    if(!page)throw Error('Real native L09 page was not mounted');
    page.classList.add('active');
+   const trail=document.createElement('div');
+   trail.id='li-react-route-trail';
+   document.getElementById('main')?.before(trail);
+   appUiStore.getState().setRoute('lessonL09');
+   createRoot(trail).render(<RouteTrail/>);
    window.dispatchEvent(new Event('li:route-changed'));
   }catch(error){
    (window as any).__liLessonFixtureError=String(error);
@@ -165,7 +170,11 @@ setTimeout(()=>{
   const layer=select('body > .catalog-sheet-layer[data-lesson-owner="page-lessonL09"]') as HTMLElement|null;
   const style=trigger?getComputedStyle(trigger):null;
   assert('real-native-L09-hifi-markup-loaded',Boolean(page&&
-   page.classList.contains('active')&&page.querySelector('.l09-index')));
+   page.classList.contains('active')&&page.querySelector('.l09-stack')&&
+   layer?.querySelector('.l09-index')));
+  const trail=select('#li-react-route-trail .li-ds-breadcrumb');
+  assert('breadcrumb-on-actual-lesson-page',Boolean(trail&&trail.textContent?.includes('Sampling Bias')&&
+   trail.querySelectorAll('button').length===2),bounds(trail));
   assert('visible-viewport-fixed-lesson-menu',Boolean(trigger&&!trigger.hidden&&style?.position==='fixed'&&
    style.display!=='none'&&trigger.getBoundingClientRect().width>=44&&
    trigger.getBoundingClientRect().bottom<=844&&trigger.getBoundingClientRect().left>=0),

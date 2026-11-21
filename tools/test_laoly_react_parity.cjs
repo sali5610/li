@@ -40,6 +40,12 @@ assert.match(dialog,/<details key=\{quote\.id\}>/,
  'The original quotation remains inside a native collapsed accordion');
 assert.doesNotMatch(dialog,/Cùng học, cùng phản biện|Learn and question together/,
  'Remove the redundant Lão Lý subtitle');
+assert.match(dialog,/className="li-buddy-sr-title"/,
+ 'Lão Lý remains a screen-reader name but must not display as modal title');
+assert.match(read('tools/step16-real-l09-react-island/src/shell/laoly-dialog.css'),
+ /#buddy-modal #buddy-title\.li-buddy-sr-title\{/,
+ 'Hide the heading visually without losing VoiceOver dialog label');
+
 assert.match(dialog,/<summary aria-label=\{chooseLanguage/,
  'Thought bubble must be keyboard accessible');
 assert.ok(dialog.indexOf('li-buddy-quote-thought')<dialog.indexOf('id="buddy-scroll"'),

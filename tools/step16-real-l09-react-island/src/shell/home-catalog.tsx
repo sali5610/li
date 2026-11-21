@@ -197,7 +197,7 @@ function Catalog(){
  };
  const available=course?courseProgress(course):null;
  return <motion.div key={path.join('/')||'catalog-root'} data-li-react-screen="catalog"
-   className="li-react-catalog" initial={reduced?false:{opacity:0,y:7}}
+   className="li-react-catalog" data-catalog-level={lesson?'lesson':course?'course':field?'field':group?'group':'root'} initial={reduced?false:{opacity:0,y:7}}
    animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.18}}>
   <div className="catalog-breadcrumbs">
    <Breadcrumb label={locale==='vi'?'Vị trí trong Tàng Thư':'Library path'}
@@ -238,7 +238,7 @@ function Catalog(){
      <Text role="support">{level}</Text>
     </div>
     <div className="catalog-course-list">
-     {field.courses.filter(item=>item.level===level).map(item=><Card variant="raised"
+     {field.courses.filter(item=>item.level===level).map(item=><Card variant="flat-study"
       key={item.id} className="catalog-course-card">
       <div className="kicker">{item.id} · {locale==='en'?en:vi}</div>
       <Heading level={3} role="titleMedium">{item.title}</Heading>
@@ -254,7 +254,7 @@ function Catalog(){
     </div>
    </section>)}
   </div>}
-  {course&&!lesson&&<><Card variant="raised" className="catalog-progress">
+  {course&&!lesson&&<><Card variant="flat-study" className="catalog-progress">
    <Heading level={2} role="titleMedium">
     {available?.unavailable?(locale==='vi'?'Tiến độ chưa xác minh':'Progress could not be verified'):
      String(available?.done||0)+'/'+course.lessons.length+

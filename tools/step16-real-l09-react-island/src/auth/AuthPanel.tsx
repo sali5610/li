@@ -201,10 +201,12 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    ((access==='granted'&&!isOffline&&!isPending&&!error)||
     (access==='offline'&&localOffline));
   document.documentElement.classList.toggle('li-auth-verified',Boolean(permitted));
-  // Explicit session state for React router cleanup. No DOM class observer or
-  // cross-account Back stack survives a verified sign-out.
+  // Focus/pageshow/online revalidation locks private UI but is NOT logout.
+  // Preserve the active Catalog/lesson URL until invite verification resolves.
+  const transient=!permitted&&(isPending||access==='checking'||
+   Boolean(error)||access==='error');
   window.dispatchEvent(new CustomEvent('li:auth-verified-changed',{
-   detail:{verified:Boolean(permitted)}
+   detail:{verified:Boolean(permitted),transient,accountId:accountId||null}
   }));
   return()=>{document.documentElement.classList.remove('li-auth-verified');};
  },[accountId,isPending,error,access,ownerReady,isOffline,localOffline]);

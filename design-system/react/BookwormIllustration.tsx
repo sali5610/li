@@ -2,7 +2,7 @@ import React from 'react';
 
 /** Monochrome blue, deliberately sparse archival line drawings.
  * Decorative only: all labels, data and actions stay in the shared React layouts. */
-export type BookwormArtKind='stack'|'open'|'shelf';
+export type BookwormArtKind='stack'|'open'|'shelf'|'lens'|'balance'|'quill'|'chart'|'compass';
 export function BookwormIllustration({kind='stack'}:{kind?:BookwormArtKind}){
  return <svg className={'li-bookworm-art li-bookworm-art--'+kind}
   viewBox="0 0 360 260" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -63,6 +63,64 @@ export function BookwormIllustration({kind='stack'}:{kind?:BookwormArtKind}){
     <path d="M152 127H163M157 113V148" strokeWidth="1.1"/>
     <path d="M89 213H302M83 218H306" strokeWidth="2.4"/>
     <path d="M212 75V43H227V75L219.5 67Z"/>
+   </>}
+   {kind==='lens'&&<>
+    {/* An archival magnifying lens, with a small sampled cluster. */}
+    <circle cx="174" cy="120" r="57" fill="#F6F1E8"/>
+    <circle cx="174" cy="120" r="48" strokeWidth=".8"/>
+    <path d="M212 160L277 226M204 166L264 230" strokeWidth="4"/>
+    <circle cx="153" cy="103" r="7"/><circle cx="178" cy="99" r="7"/>
+    <circle cx="198" cy="113" r="7"/><circle cx="162" cy="131" r="7"/>
+    <circle cx="187" cy="137" r="7" fill="#547E9F" fillOpacity=".17"/>
+    <path d="M95 66H127M103 80H135M240 79H264M250 95H280" strokeWidth="1"/>
+    <path d="M91 181L109 175M92 190L114 183" strokeWidth=".9"/>
+   </>}
+   {kind==='balance'&&<>
+    {/* Evidence and counter-evidence as an old brass-scale engraving. */}
+    <path d="M180 55V212M149 216H212M161 207H199M134 79H228" strokeWidth="2.6"/>
+    <circle cx="180" cy="78" r="8" fill="#F6F1E8"/>
+    <path d="M130 79L105 163H155L130 79ZM230 79L205 163H255L230 79Z"/>
+    <path d="M105 163Q130 185 155 163M205 163Q230 185 255 163"/>
+    <path d="M103 163H157M203 163H257"/>
+    <path d="M178 55C171 47 179 36 187 42C193 49 188 57 180 55"/>
+    <path d="M105 126L154 126M206 126H254" strokeWidth=".8" strokeDasharray="4 5"/>
+    <path d="M149 224H212" strokeWidth="1.1"/>
+   </>}
+   {kind==='quill'&&<>
+    {/* Pencil and leaf of paper: a spare writing desk engraving. */}
+    <path d="M90 86L235 69L268 91L251 208L101 222Z" fill="#F6F1E8"/>
+    <path d="M114 112L228 99M116 130L231 118M117 148L215 137M120 166L214 155"
+     strokeWidth="1.1"/>
+    <path d="M120 185L182 178M124 194L169 189" strokeWidth=".85"/>
+    <path d="M217 182C236 141 250 101 276 48C277 92 270 140 236 193"/>
+    <path d="M233 191L208 224L218 187L276 48" strokeWidth="1.7"/>
+    <path d="M227 187L250 153M233 175L256 143M240 162L262 132" strokeWidth=".9"/>
+    <path d="M207 226L222 230" strokeWidth="1.6"/>
+   </>}
+   {kind==='chart'&&<>
+    {/* A measured weekly line, no invented product data. */}
+    <path d="M85 75V207H281M85 173H279M85 140H279M85 107H279" strokeWidth="1"/>
+    <path d="M95 166L126 130L156 164L187 96L216 127L246 83L276 110"
+      strokeWidth="2.5"/>
+    <circle cx="95" cy="166" r="4" fill="#F6F1E8"/>
+    <circle cx="126" cy="130" r="4" fill="#F6F1E8"/>
+    <circle cx="156" cy="164" r="4" fill="#F6F1E8"/>
+    <circle cx="187" cy="96" r="4" fill="#F6F1E8"/>
+    <circle cx="216" cy="127" r="4" fill="#F6F1E8"/>
+    <circle cx="246" cy="83" r="4" fill="#F6F1E8"/>
+    <circle cx="276" cy="110" r="4" fill="#F6F1E8"/>
+    <path d="M113 213V220M160 213V220M207 213V220M254 213V220" strokeWidth=".85"/>
+   </>}
+   {kind==='compass'&&<>
+    {/* A quiet compass / study-route illustration. */}
+    <circle cx="180" cy="134" r="84" fill="#F6F1E8"/>
+    <circle cx="180" cy="134" r="68" strokeWidth=".9"/>
+    <circle cx="180" cy="134" r="14"/>
+    <path d="M180 65V50M180 218V202M97 134H112M248 134H264"/>
+    <path d="M164 151L208 91L197 163L152 176Z" fill="#F6F1E8"/>
+    <path d="M180 134L208 91M180 134L152 176M165 105L195 163" strokeWidth="1.3"/>
+    <path d="M130 84L139 93M222 178L231 187M132 185L141 176M222 93L230 85" strokeWidth=".95"/>
+    <circle cx="180" cy="134" r="4" fill="#547E9F" stroke="none"/>
    </>}
    <path d="M68 235H301M102 240H260" strokeWidth=".8" opacity=".52"/>
    <path d="M61 147L53 143M300 103L309 98M74 88L66 82" strokeWidth="1.05" opacity=".62"/>

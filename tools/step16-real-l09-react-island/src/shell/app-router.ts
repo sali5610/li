@@ -4,7 +4,7 @@ import {personalStudyLessonIds,personalStudyRoute} from '../learning/released-le
 /** One stateful React app router. The old script provides DATA side effects
  * (visited lessons, research, bookmarks) and a pre-mount fallback, but does
  * not own the active route, history or URL once this port is installed. */
-type RouteOptions={focus?:boolean;remember?:boolean;syncUrl?:boolean};
+type RouteOptions={focus?:boolean;remember?:boolean;syncUrl?:boolean;restoreScroll?:boolean};
 export type AppRoutePort={
  navigate:(id:string,options?:RouteOptions)=>boolean;
  back:()=>boolean;getCurrent:()=>string;hasRoute:(id:string)=>boolean;
@@ -26,6 +26,27 @@ const published:Readonly<Record<string,string>>={
 const preview=new Map(personalStudyLessonIds.map(id=>[personalStudyRoute(id),id]));
 // Browser history tracks real Back/Forward direction, not a second native stack.
 let browserDepth=0;
+// Scroll belongs to a browser history entry, not just a route: A -> B -> A
+// may visit the same screen at different reading positions.
+type ScrollPosition={x:number;y:number};
+const scrollByEntry=new Map<number,ScrollPosition>();
+let scrollEntrySequence=0;
+let currentScrollEntry=0;
+let scrollRestoreToken=0;
+let restoringScroll=false;
+function ensureScrollEntry():number{
+ const existing=Number(window.history.state?.liScrollEntryId);
+ if(Number.isInteger(existing)&&existing>0){
+  scrollEntrySequence=Math.max(scrollEntrySequence,existing);
+  return existing;
+ }
+ const id=++scrollEntrySequence;
+ window.history.replaceState({...window.history.state,liScrollEntryId:id},'',window.location.href);
+ return id;
+}
+function rememberScroll(){
+ if(currentScrollEntry>0)scrollByEntry.set(currentScrollEntry,{x:window.scrollX,y:window.scrollY});
+}
 const canVisit=()=>document.documentElement.classList.contains('li-auth-verified');
 function normalize(route:string){
  return route==='lesson'?
@@ -75,8 +96,15 @@ function writeUrl(route:string,remember=false){
    const current=Number(window.history.state?.liRouteDepth);
    if(Number.isInteger(current)&&current>=0)browserDepth=current;
    browserDepth++;
-   window.history.pushState({...window.history.state,liRoute:route,liRouteDepth:browserDepth},'',path);
-  }else window.history.replaceState({...window.history.state,liRoute:route,liRouteDepth:browserDepth},'',path);
+   window.history.pushState({
+    ...window.history.state,liRoute:route,liRouteDepth:browserDepth,
+    liScrollEntryId:++scrollEntrySequence
+   },'',path);
+   currentScrollEntry=scrollEntrySequence;
+  }else window.history.replaceState({
+   ...window.history.state,liRoute:route,liRouteDepth:browserDepth,
+   liScrollEntryId:currentScrollEntry
+  },'',path);
  }
 }
 function paintRoute(route:string,page:HTMLElement){
@@ -90,21 +118,45 @@ function paintRoute(route:string,page:HTMLElement){
  // feature owners finish removing native HTML data hosts.
 }
 export function mountReactRouter():()=>void{
+ // Manual mode prevents native scroll restoration racing the React route paint.
+ const previousScrollRestoration=window.history.scrollRestoration;
+ window.history.scrollRestoration='manual';
  browserDepth=Number.isInteger(window.history.state?.liRouteDepth)&&
   window.history.state.liRouteDepth>=0?window.history.state.liRouteDepth:0;
  if(!Number.isInteger(window.history.state?.liRouteDepth)){
   window.history.replaceState({...window.history.state,liRouteDepth:browserDepth},'',
    window.location.pathname+window.location.search+window.location.hash);
  }
+ currentScrollEntry=ensureScrollEntry();
+ rememberScroll();
+ const onScroll=()=>{if(!restoringScroll)rememberScroll();};
+ window.addEventListener('scroll',onScroll,{passive:true});
  const initial=window.liAppRouter?.getCurrent?.()||'home';
  let active=pageOf(initial)?initial:'home';
+ const applyScroll=(restore:boolean,route:string)=>{
+  const token=++scrollRestoreToken;
+  const position=restore?scrollByEntry.get(currentScrollEntry):undefined;
+  const x=position?.x||0,y=position?.y||0;
+  restoringScroll=restore;
+  window.scrollTo(x,y);
+  if(!restore){rememberScroll();return;}
+  // A mounted React page may complete layout one frame after its host becomes
+  // visible. Restore again after paint, without changing URL or focus.
+  window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>{
+   if(token!==scrollRestoreToken||active!==route)return;
+   window.scrollTo(x,y);
+   restoringScroll=false;
+   rememberScroll();
+  }));
+ };
  const history=(window.liNativeRouteEffects?.history?.()||[]).filter(id=>!!pageOf(id)).slice(-32);
  appUiStore.getState().setRoute(active);
  const change=(raw:string,options:RouteOptions={}):boolean=>{
   if(!canVisit()||typeof raw!=='string')return false;
   const route=normalize(raw),page=pageOf(route);
   if(!page)return false;
-  const {focus=true,remember=true,syncUrl=true}=options;
+  const {focus=true,remember=true,syncUrl=true,restoreScroll=false}=options;
+  rememberScroll();
   if(remember&&active!==route){
    history.push(active);
    if(history.length>32)history.shift();
@@ -112,9 +164,10 @@ export function mountReactRouter():()=>void{
   active=route;
   paintRoute(route,page);
   if(syncUrl)writeUrl(route,remember);
+  else currentScrollEntry=ensureScrollEntry();
   appUiStore.getState().setRoute(route);
   window.liNativeRouteEffects?.afterNavigate(route);
-  window.scrollTo(0,0);
+  applyScroll(restoreScroll,route);
   if(focus)page.focus({preventScroll:true});
   window.dispatchEvent(new CustomEvent('li:route-changed',{detail:{route}}));
   return true;
@@ -126,6 +179,7 @@ export function mountReactRouter():()=>void{
   const currentDepth=Number(window.history.state?.liRouteDepth);
   if((Number.isInteger(currentDepth)?currentDepth:browserDepth)>0&&
      typeof window.history.back==='function'){
+   rememberScroll();
    window.history.back();
    return true;
   }
@@ -163,6 +217,8 @@ export function mountReactRouter():()=>void{
   // A new invited account must never inherit the previous learner's Back
   // history or private lesson deep link. No persistence is touched.
   history.length=0;browserDepth=0;active='home';
+  scrollByEntry.clear();
+  currentScrollEntry=++scrollEntrySequence;
   window.liNativeRouteEffects?.restoreHistory([],active);
   const home=pageOf('home');
   if(home)paintRoute(active,home);
@@ -183,7 +239,12 @@ export function mountReactRouter():()=>void{
    }
    browserDepth=next;
   }else if(restored!==active&&history.length)history.pop();
-  if(restored!==active)change(restored,{remember:false,syncUrl:false});
+  if(restored!==active)change(restored,{remember:false,syncUrl:false,restoreScroll:true});
+  else{
+   // Catalog can push its own history entries without changing React screens.
+   rememberScroll();
+   currentScrollEntry=ensureScrollEntry();
+  }
  };
  window.addEventListener('popstate',onPopState);
  window.addEventListener('li:auth-verified-changed',onSession);
@@ -193,6 +254,8 @@ export function mountReactRouter():()=>void{
  }
  return ()=>{
   window.removeEventListener('popstate',onPopState);
+  window.removeEventListener('scroll',onScroll);
+  window.history.scrollRestoration=previousScrollRestoration;
   window.removeEventListener('li:auth-verified-changed',onSession);
   if(window.liReactRouter===port)delete window.liReactRouter;
   if(window.liAppRouter===port){

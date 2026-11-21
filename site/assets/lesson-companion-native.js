@@ -40,7 +40,7 @@ function pendingEditorialWording(data,stage,locale,submitted){
  const english=locale==="en";
  const practice=data.moments.find(m=>m.stage==="independent")?.[locale];
  const actions=practice?.actions||[];
- const label=text=>String(text||"").replace(/^(?:VI|EN) action [12]:\\s*/i,"").trim();
+ const label=text=>String(text||"").replace(/^(?:VI|EN) action [12]:\s*/i,"").trim();
  const first=label(actions[0]?.label)||data.lesson_id;
  const second=label(actions[1]?.label)||first;
  if(stage==="reflection"){

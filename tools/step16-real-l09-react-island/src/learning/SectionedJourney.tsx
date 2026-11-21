@@ -11,7 +11,7 @@ import {Heading,Text,Progress} from '../../../../design-system/react/Atoms';
 import {SelfReviewNextStep} from './SelfReviewNextStep';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
 import {Markdown,inline as formatLessonInline} from './EditorialJourney';
-import {LessonBookmark} from './LessonDetailParity.js';
+import {LessonBookmark,LessonMentor} from './LessonDetailParity.js';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
 import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discovery-locale.js';
@@ -161,6 +161,57 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  const current=useRef<Attempt|null>(null),revision=useRef('');
  const owner=useRef(''),chain=useRef<Promise<void>>(Promise.resolve());
  const failed=useRef(false),mounted=useRef(true),count=useRef(0);
+ /** Register the authored six moments with the SAME companion context engine
+  * used by the three sample lessons. No duplicate chat state or content. */
+ useEffect(()=>{
+  const api=(window as Window&{liLessonCompanion?:{
+   registerEditorial?:(manifest:{
+    schema:number;lesson_id:string;topics:string[];
+    moments:Array<MentorMoment&{anchor:string}>
+   })=>(()=>void)
+  }}).liLessonCompanion;
+  if(!api?.registerEditorial)return;
+  const vi=lesson.content.localized.vi;
+  const anchor=(role:Role)=>'li-sectioned-'+id+'-'+(section(vi,role)[0]?.id||role);
+  const anchors:Record<MentorMoment['stage'],string>={
+   opening:'li-sectioned-'+id+'-opening',
+   concept:anchor('concept'),
+   guided:anchor('guided'),
+   independent:'li-sectioned-'+id+'-practice',
+   reflection:'li-sectioned-'+id+'-feedback',
+   extension:'li-sectioned-'+id+'-progress'
+  };
+  const labels:{
+   vi:Record<MentorMoment['stage'],string>;en:Record<MentorMoment['stage'],string>
+  }={
+   vi:{opening:'Mở đầu',concept:'Khái niệm',guided:'Thử áp dụng',
+    independent:'Tự luyện tập',reflection:'Đối chiếu',extension:'Học tiếp'},
+   en:{opening:'Opening',concept:'Concept',guided:'Guided example',
+    independent:'Independent practice',reflection:'Feedback',extension:'Further study'}
+  };
+  const unregister=api.registerEditorial({
+   schema:1,lesson_id:id,topics:[],
+   moments:lesson.content.companion.structuredMoments.map(m=>({
+    ...m,anchor:anchors[m.stage],
+    vi:{...m.vi,label:labels.vi[m.stage]},
+    en:{...m.en,label:labels.en[m.stage]}
+   }))
+  });
+  window.dispatchEvent(new Event('li:lesson-phase-changed'));
+  return()=>unregister();
+ },[id,lesson]);
+ useEffect(()=>{
+  const onJump=(event:Event)=>{
+   const detail=(event as CustomEvent<{lessonId?:string;phase?:string}>).detail;
+   if(detail?.lessonId===id&&PAGES.includes(detail.phase as Phase))
+    setPhase(detail.phase as Phase);
+  };
+  window.addEventListener('li:mentor-phase-jump',onJump);
+  return()=>window.removeEventListener('li:mentor-phase-jump',onJump);
+ },[id]);
+ useEffect(()=>{
+  if(!busy&&attempt)window.dispatchEvent(new Event('li:lesson-phase-changed'));
+ },[phase,busy,attempt?.locale,persisted?.submitted,persisted?.reviewed,appLocale]);
  useEffect(()=>{
   let alive=true;mounted.current=true;
   (async()=>{
@@ -296,32 +347,6 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   if(JSON.stringify(next).length>55000){setError(['Lịch sử bài học vượt giới hạn lưu.','Lesson history exceeds the storage limit.']);return;}
   if(await persist(next))setPhase('read');
  }
- function mentor(stage:MentorMoment['stage']){
-  if((stage==='reflection'&&!persisted?.submitted)||
-   (stage==='extension'&&!persisted?.reviewed))return null;
-  const moment=lesson.content.companion.structuredMoments.find(m=>m.stage===stage);
-  if(!moment)return null;
-  return <section className="li-lesson-companion"
-   aria-label={appLocale==='vi'?'Lão Lý đồng hành':'Lao Ly companion'}>
-   <div className="kicker">{appLocale==='vi'?'LÃO LÝ ĐỌC CÙNG NGƯƠI':'LEARN WITH LAO LY'}</div>
-   <Text role="support" data-lesson-mentor-stage="true"
-    id={'li-react-mentor-'+id}>{moment[appLocale].prompt}</Text>
-   <Button id={'li-sectioned-mentor-'+id+'-'+stage} variant="secondary"
-    onClick={()=>{
-     const locale=appLocale;
-     const app=window as Window&{liBuddyReactMounted?:boolean};
-     if(!app.liBuddyReactMounted){
-      setError(['Lão Lý chưa khả dụng.','Elder Li is unavailable.']);return;
-     }
-     window.dispatchEvent(new CustomEvent('li:buddy-open',{detail:{
-      text:moment[locale].prompt,avatar:'./assets/laoly-neutral.png',
-      quote:null,triggerId:'li-sectioned-mentor-'+id+'-'+stage,
-      labels:moment[locale].actions.map(a=>a.label),
-      editorial:{actions:moment[locale].actions.map(a=>({label:a.label,reply:a.reply}))}
-     }}));
-    }}>{appLocale==='en'?'Ask Elder Li about this lesson':'Hỏi Lão Lý theo bài học'}</Button>
-  </section>;
- }
  function openGuide(requestMethod:string=method,practice=false){
   if(locked||pending)return;
   const app=window as Window&{
@@ -389,7 +414,10 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   </section>)}
  </>;
  return <section className="li-learning-journey" lang={locale}
-  data-li-react-journey={id} data-li-sectioned-journey={id} data-li-lesson-phase={phase}>
+  data-li-react-journey={id} data-li-sectioned-journey={id}
+  data-li-editorial-journey={id} data-li-lesson-phase={phase}
+  data-li-lesson-submitted={persisted.submitted?'true':'false'}
+  data-li-lesson-reviewed={persisted.reviewed?'true':'false'}>
   <header className="li-learning-header">
    <div>
     <Heading level={1} role="headline">{lesson.title[locale]}</Heading>
@@ -443,7 +471,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   
   <Card variant="flat-study" className="li-study-book-page" aria-label={names[phase]}>
    {phase==='read'&&<>
-    <Markdown md={c.intro_md}/>
+    <div id={'li-sectioned-'+id+'-opening'}><Markdown md={c.intro_md}/></div>
     {block('goals')}{block('concept')}
     <Button onClick={()=>setPhase('guided')}>{vi?'Tiếp: Thử áp dụng':'Next: Guided example'} →</Button>
    </>}
@@ -558,9 +586,6 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    </>}
   </Card>
   </motion.div>
-  {mentor(phase==='read'?'concept':
-   phase==='guided'?'guided':
-   phase==='practice'?'independent':
-   phase==='feedback'?'reflection':'extension')}
+  <LessonMentor id={id} locale={locale}/>
  </section>;
 }

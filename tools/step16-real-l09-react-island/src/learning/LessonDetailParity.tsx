@@ -138,7 +138,7 @@ export function LessonBookmark({id,locale}:{id:string;locale:Locale}){
    strokeLinecap="round" strokeLinejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
  </Button>;
 }
-export function LessonMentor({id,locale}:{id:LessonId;locale:Locale}){
+export function LessonMentor({id,locale}:{id:string;locale:Locale}){
  const [context,setContext]=useState('');
  useEffect(()=>{
   const refresh=()=>{

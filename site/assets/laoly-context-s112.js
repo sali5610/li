@@ -397,7 +397,10 @@ function reactView(trigger){
  const calm=buddyVoice("calm");
  const intro=calm?"Ta đi từng bước. "+activePlan.intro:activePlan.intro;
  const line=localizePlanText(applyNickname(intro));
- const quote=window.liQuoteEngine?.getView?.()||null;
+ // Draft personal lessons have step-authored dialogue, but their source quote
+ // rights are still under review. Never attach an unrelated global quote.
+ const lessonContext=window.liLessonCompanion?.getContext?.();
+ const quote=lessonContext?.editorial?null:(window.liQuoteEngine?.getView?.()||null);
  return {
   text:line,
   labels:activePlan.actions.map(item=>

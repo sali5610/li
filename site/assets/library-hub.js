@@ -385,6 +385,8 @@ function renderBookmarks(){
  if(!lessonRoot||!questionRoot)return;
  const currentSaved=typeof savedContent!=="undefined"?savedContent:[];
  const knownCases={"sampling-bias-90":{title:"90% trả lời hài lòng · Phản Chứng",route:"case"}};
+  for(const sc of scenarios.filter(x=>x.caseKey))
+   knownCases[sc.caseKey]={title:sc.caseData.localized.vi.question,route:"case"};
  const lessonById=Object.fromEntries(Object.entries(LESSONS).map(([route,meta])=>[meta.id,{...meta,route}]));
  const ordered=items=>items.sort((a,b)=>(Date.parse(b.savedAt)||0)-(Date.parse(a.savedAt)||0));
  const lessons=ordered(currentSaved.filter(x=>x&&x.type==="lesson"&&lessonById[x.id]).map(x=>({kind:"lesson",savedAt:x.savedAt,record:x})));
@@ -566,13 +568,15 @@ function getView(){
    detail:(entry.legacy?ui("Có Bút Ký · ","Saved case · ")+formatDate(entry.savedAt):
     ui("Mở ","Opened ")+formatDate(entry.visitedAt))+
     (note&&entry.kind==="case"?ui(" · Có luận kết"," · Revised conclusion available"):""),
-   saved:entry.kind==="case"&&Boolean(window.liBookmarks?.isSaved("case",NATIVE_CASE_KEY)),
-   lessonId:entry.kind==="case"?"L09-1-2":null}];
+   saved:entry.kind==="case"&&Boolean(window.liBookmarks?.isSaved("case",entry.key)),
+   lessonId:entry.kind==="case"?(scenarios.find(sc=>sc.caseKey===entry.key)?.lessonId||"L09-1-2"):null}];
  });
  const cases=sortedBySavedAt(processedCases).map(item=>({
   id:item.id,type:"case",title:item.title,body:item.revision,
   date:formatDate(item.updatedAt||item.savedAt),sortDate:item.updatedAt||item.savedAt,correct:item.correct,
-  fieldId:item.fieldId||null,lessonId:item.caseKey===NATIVE_CASE_KEY||item.caseSnapshot?.id===NATIVE_CASE_KEY||/Sampling Bias/i.test(item.title||"")?"L09-1-2":null
+  fieldId:item.fieldId||null,lessonId:item.lessonId||
+   (item.caseKey===NATIVE_CASE_KEY||item.caseSnapshot?.id===NATIVE_CASE_KEY||
+    /Sampling Bias/i.test(item.title||"")?"L09-1-2":null)
  }));
  const ideas=sortedBySavedAt(collectedIdeas).map(item=>({
   id:item.id,type:"idea",title:ui("Ý đã nhặt","Captured idea"),body:item.text,
@@ -594,10 +598,15 @@ function getView(){
     date:formatDate(item.savedAt),sortDate:item.savedAt,
     lessonId:Object.entries(LESSONS).find(([route])=>route===sc?.lessonRoute)?.[1]?.id||null};
   }),
-  ...savedContent.filter(item=>item.type==="case"&&item.id===NATIVE_CASE_KEY).map(item=>({
-   kind:"case",id:item.id,title:ui("90% trả lời hài lòng · Phản Chứng","90% satisfied · Test a claim"),
-   route:"case",date:formatDate(item.savedAt),sortDate:item.savedAt,lessonId:"L09-1-2"
-  }))
+  ...savedContent.filter(item=>item.type==="case"&&
+    (item.id===NATIVE_CASE_KEY||scenarios.some(sc=>sc.caseKey===item.id))).map(item=>{
+   const problem=scenarios.find(sc=>sc.caseKey===item.id);
+   return {kind:"case",id:item.id,
+    title:problem?.caseData?.localized?.[isEnglish()?"en":"vi"]?.question||
+     ui("90% trả lời hài lòng · Phản Chứng","90% satisfied · Test a claim"),
+    route:"case",date:formatDate(item.savedAt),sortDate:item.savedAt,
+    lessonId:problem?.lessonId||"L09-1-2"};
+  })
  ].sort((a,b)=>(Date.parse(b.sortDate)||0)-(Date.parse(a.sortDate)||0));
  return {lessons,problems,cases,ideas,lessonBookmarks,questionBookmarks,
   collectionFilter,bookmarkTab,storageAvailable:!liStorageError};
@@ -608,9 +617,12 @@ function openProblemEntry(kind,key){
   if(index<0){toast("Vấn đề không còn trong Gương Vạn Vấn.");return;}
   qIndex=index;renderMirrorItem();navigate("research");return;
  }
- if(kind!=="case"||key!==NATIVE_CASE_KEY)return;
- const note=findCaseNote();trackProblem("case",NATIVE_CASE_KEY);
- if(!note||!window.liNotes?.openDetail("case",note.id))navigate("case");
+ if(kind!=="case"||!isKnownProblem({kind:"case",key}))return;
+ const note=findCaseNote(key);trackProblem("case",key);
+ if(note&&window.liNotes?.openDetail("case",note.id))return;
+ const index=scenarios.findIndex(sc=>sc.caseKey===key);
+ if(index>=0){qIndex=index;renderMirrorItem();}
+ navigate("case");
 }
 function openSavedQuestion(id){
  const entry=savedQuestions.find(item=>item.id===id);if(!entry)return;

@@ -182,7 +182,7 @@ invited=true;
 // reminder or a blanket "due" badge for unscheduled lessons.
 const reactLibrary=fs.readFileSync(path.join(__dirname,
  "../tools/step16-real-l09-react-island/src/shell/guide-library.tsx"),"utf8");
-assert.match(reactLibrary,/LiSpellPractice\\?\\.getT02Status\\?\\.\\(item\\.id\\)/,
+assert(reactLibrary.includes("app.LiSpellPractice?.getT02Status?.(item.id)"),
  "Recent and Resume lesson rows must read the real T02 lesson schedule");
 assert(reactLibrary.includes("status?.awaitingRating===true")&&
  reactLibrary.includes("typeof status?.dueAt==='number'&&status.dueAt<=now"),

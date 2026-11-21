@@ -12,11 +12,11 @@ const out=resolve('.qa-iphone-screens');
 mkdirSync(out,{recursive:true});
 const proc=spawn(chrome,['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage',
  '--no-first-run','--no-default-browser-check','--remote-allow-origins=*',
- '--remote-debugging-port=0','--user-data-dir='+profile,'about:blank'],
+ '--remote-debugging-address=127.0.0.1','--remote-debugging-port=9222','--user-data-dir='+profile,'about:blank'],
  {stdio:['ignore','ignore','pipe']});
 let chromeError='';
 proc.stderr.on('data',b=>{chromeError+=String(b).slice(-2000);});
-const wait=async (fn,timeout=15000)=>{
+const wait=async (fn,timeout=40000)=>{
  const until=Date.now()+timeout;
  while(Date.now()<until){try{const result=await fn();if(result)return result;}catch{}await sleep(150);}
  throw Error('Timeout: '+chromeError.slice(-1200));
@@ -30,12 +30,8 @@ const send=(method,params={})=>new Promise((res,rej)=>{
  socket.send(JSON.stringify({id,method,params}));
 });
 try{
- const port=await wait(()=>{
-  const p=resolve(profile,'DevToolsActivePort');
-  return existsSync(p)?Number(readFileSync(p,'utf8').split('\n')[0]):null;
- });
  const tabs=await wait(async ()=>{
-  const r=await fetch('http://127.0.0.1:'+port+'/json/list');
+  const r=await fetch('http://127.0.0.1:9222/json/list');
   const arr=await r.json();
   return arr.find(t=>t.type==='page'&&t.webSocketDebuggerUrl);
  });

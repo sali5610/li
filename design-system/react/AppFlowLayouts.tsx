@@ -10,6 +10,8 @@ import {LiIcon} from './LucideIcons';
 import {NotebookAnnotation} from './NotebookAnnotation';
 import {NotebookArt,notebookDisciplineImages} from './NotebookArt';
 import {BookwormIllustration} from './BookwormIllustration';
+import type {BookwormArtKind} from './BookwormIllustration';
+import {BookwormLessonBook} from './BookwormLessonBook';
 import './app-flow-layouts.css';
 
 /** Exported presentational UI: Lab passes fixture props; the approved real
@@ -82,6 +84,8 @@ function ScreenBody(props:AppPageLayoutProps){
  const {page,variant,locale,query,answer,selected,saved,completed,onQuery,onAnswer,
   onSelect,onToggleSaved,onComplete,onNavigate,onNotice}=props;
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
+ const bookwormPlate=(kind:BookwormArtKind)=>variant==='bookworm'?
+  <div className="li-bw-inline-plate" aria-hidden="true"><BookwormIllustration kind={kind}/></div>:null;
  const action=(pageId:PageId,vi:string,en:string)=><Button onClick={()=>onNavigate(pageId)}>
   {t(vi,en)} <LiIcon name="arrow-right" size={17}/></Button>;
  const card=(heading:string,body:string,i:number)=><Card key={heading} variant={i%2?'raised':'tinted'}>
@@ -170,26 +174,38 @@ function ScreenBody(props:AppPageLayoutProps){
     'Preview memory only; nothing was sent to Neon.'))}>{t('Lưu thử','Sample save')}</Button>
   </Card>{action('collection','Mở Bộ Sưu Tập','Open collection')}
  </div>;
- case 'lesson':return <div className="li-flow-stack">
-  <div className="li-flow-lesson-top"><Badge>{t('BÀI HỌC · VÍ DỤ','LESSON · SAMPLE')}</Badge>
+ case 'lesson':{
+  // Canonical lesson copy is shared by ordinary card layout and Bookworm pages.
+  const intro=<div className="li-flow-lesson-top">
+   <Badge>{t('BÀI HỌC · VÍ DỤ','LESSON · SAMPLE')}</Badge>
    <Heading level={2} role="titleLarge">{lessonTitle}</Heading>
    <Text role="body">{t('Sai lệch chọn mẫu xuất hiện khi mẫu không phản ánh đúng tổng thể cần nghiên cứu.',
     'Sampling bias can arise when a sample does not reflect the population of interest.')}</Text>
-  </div>
-  <div className="li-flow-lesson-diagram" aria-label={t('Minh họa tổng thể và mẫu','Population and sample illustration')}>
+  </div>;
+  const diagram=<div className="li-flow-lesson-diagram" aria-label={t('Minh họa tổng thể và mẫu','Population and sample illustration')}>
    <div><span>{t('Tổng thể','Population')}</span><div className="li-flow-dots">
     {Array.from({length:24},(_,i)=><i key={i} data-highlight={i%5===0?'true':'false'}/>)}</div></div>
    <LiIcon name="arrow-right" size={26}/>
    <div><span>{t('Mẫu','Sample')}</span><div className="li-flow-dots sample">
     {Array.from({length:8},(_,i)=><i key={i} data-highlight={i%4===0?'true':'false'}/>)}</div></div>
-  </div>
-  <div className="li-flow-card-grid">{[
-   [t('Lý thuyết','Theory'),t('Phân biệt tính đại diện và cách chọn mẫu.','Distinguish representation from selection.')],
-   [t('Ví dụ','Example'),t('Khảo sát chỉ người đang dùng app có thể bỏ sót người đã rời đi.','Surveying current users can omit those who left.')],
-   [t('Hướng dẫn','Guided practice'),t('Xem phương pháp tuyển chọn trước khi kết luận.','Check recruitment before drawing conclusions.')]
-  ].map(([name,desc],i)=>card(name,desc,i))}</div>
-  {action('practice','Làm bài tập','Start practice')}
- </div>;
+  </div>;
+  const chapters=[
+   {title:t('Lý thuyết','Theory'),description:t('Phân biệt tính đại diện và cách chọn mẫu.','Distinguish representation from selection.'),art:'lens' as const},
+   {title:t('Ví dụ','Example'),description:t('Khảo sát chỉ người đang dùng app có thể bỏ sót người đã rời đi.','Surveying current users can omit those who left.'),art:'balance' as const},
+   {title:t('Hướng dẫn','Guided practice'),description:t('Xem phương pháp tuyển chọn trước khi kết luận.','Check recruitment before drawing conclusions.'),art:'compass' as const}
+  ];
+  const next=action('practice','Làm bài tập','Start practice');
+  if(variant==='bookworm')return <BookwormLessonBook
+   locale={locale} intro={intro} diagram={diagram} chapters={chapters}
+   practiceAction={next}/>;
+  return <div className="li-flow-stack">
+   {intro}
+   {diagram}
+   <div className="li-flow-card-grid">{chapters.map(({title,description},i)=>
+    card(title,description,i))}</div>
+   {next}
+  </div>;
+ }
  case 'practice':return <LearningFlowShell
   title={t('Luyện tập · Sampling Bias','Practice · Sampling Bias')}
   eyebrow={t('BÀI MẪU · KHÔNG GHI TIẾN ĐỘ','SAMPLE · NO PROGRESS IS STORED')}

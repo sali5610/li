@@ -300,7 +300,11 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    (stage==='extension'&&!persisted?.reviewed))return null;
   const moment=lesson.content.companion.structuredMoments.find(m=>m.stage===stage);
   if(!moment)return null;
-  return <aside className="li-editorial-mentor">
+  return <section className="li-lesson-companion"
+   aria-label={appLocale==='vi'?'Lão Lý đồng hành':'Lao Ly companion'}>
+   <div className="kicker">{appLocale==='vi'?'LÃO LÝ ĐỌC CÙNG NGƯƠI':'LEARN WITH LAO LY'}</div>
+   <Text role="support" data-lesson-mentor-stage="true"
+    id={'li-react-mentor-'+id}>{moment[appLocale].prompt}</Text>
    <Button id={'li-sectioned-mentor-'+id+'-'+stage} variant="secondary"
     onClick={()=>{
      const locale=appLocale;
@@ -317,8 +321,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       labels:moment[locale].actions.map(a=>a.label),
       editorial:{actions:moment[locale].actions.map(a=>({label:a.label,reply:a.reply})),quotes}
      }}));
-    }}>{appLocale==='en'?'Ask Elder Li':'Hỏi Lão Lý'}</Button>
-  </aside>;
+    }}>{appLocale==='en'?'Ask Elder Li about this lesson':'Hỏi Lão Lý theo bài học'}</Button>
+  </section>;
  }
  function openGuide(requestMethod:string=method,practice=false){
   if(locked||pending)return;
@@ -444,12 +448,12 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   
   <Card variant="flat-study" className="li-study-book-page" aria-label={names[phase]}>
    {phase==='read'&&<>
-    <Markdown md={c.intro_md}/>{mentor('opening')}
-    {block('goals')}{block('concept')}{mentor('concept')}
+    <Markdown md={c.intro_md}/>
+    {block('goals')}{block('concept')}
     <Button onClick={()=>setPhase('guided')}>{vi?'Tiếp: Thử áp dụng':'Next: Guided example'} →</Button>
    </>}
    {phase==='guided'&&<>
-    {block('guided')}{mentor('guided')}
+    {block('guided')}
     <Field kind="textarea" rows={4} label={vi?'Tự giải thích':'Explain in your words'}
      disabled={locked||attempt.submitted} value={attempt.guidedDraft}
      onChange={e=>{if(e.currentTarget.value.length<=MAX)edit(a=>({...a,guidedDraft:e.currentTarget.value}));}}/>
@@ -489,7 +493,6 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    {phase==='practice'&&<>
     <Heading level={2} role="titleLarge">{names.practice}</Heading>
     <Markdown md={independent(c).body_md.split(/^[1-4]\.\s*/m)[0]}/>
-    {mentor('independent')}
     {c.assessment.questions.map((question,i)=><Field key={i} kind="textarea" rows={4}
      label={String(i+1)+'. '+question} disabled={locked||attempt.submitted}
      value={attempt.draft[i]} onChange={e=>setAnswer(i,e.currentTarget.value)}/>)}
@@ -508,7 +511,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       {vi?'Mở đáp án và rubric':'Reveal answer and rubric'}</Button>
     </div>:<>
      <Markdown md={modelAnswer}/>
-     {block('reflection')}{mentor('reflection')}
+     {block('reflection')}
      {rubric.map((row,i)=><div key={i} className="li-learning-rating">
       <label htmlFor={'li-sectioned-rating-'+id+'-'+i}>{row[0]}</label>
       <select id={'li-sectioned-rating-'+id+'-'+i}
@@ -531,7 +534,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     <Heading level={2} role="titleLarge">{names.progress}</Heading>
     <Text>{vi?'Điểm tự chấm':'Self-rating'}: {persisted.ratings.reduce<number>((n,x)=>n+(x??0),0)} / 8</Text>
     <Text role="support">{vi?'K5 chưa đo: bài này chưa chứng minh ghi nhớ dài hạn.':'K5 not measured: long-term retention is not established.'}</Text>
-    {block('extension')}{mentor('extension')}
+    {block('extension')}
     <SelfReviewNextStep rubricItems={rubric} ratings={persisted.ratings}
      locale={locale} onReviewTheory={()=>setPhase('read')}/>
     <T02ReviewEntry lessonId={id} vi={vi} disabled={pending>0||locked}
@@ -541,5 +544,9 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    </>}
   </Card>
   </motion.div>
+  {mentor(phase==='read'?'concept':
+   phase==='guided'?'guided':
+   phase==='practice'?'independent':
+   phase==='feedback'?'reflection':'extension')}
  </section>;
 }

@@ -28,6 +28,16 @@ assert.match(reader,/<LessonBookmark id={id} locale={locale}\/>/,'Use the same p
 assert.match(reader,/onPrevious={pageIndex>0/,'Previous page works as in samples');
 assert.match(reader,/phase==='guided'\?\(\)=>void goToPractice\(\)/,'Folio Next follows the guided flow');
 assert.doesNotMatch(reader,/className="li-lesson-status"/,'Remove the large redundant sync strip');
+assert.equal((reader.match(/\{mentor\(/g)||[]).length,1,
+ 'Personal reader must render one contextual Lao Ly companion, not six scattered buttons');
+assert.match(reader,/className="li-lesson-companion"/,
+ 'Personal companion shares the exemplar panel style');
+assert.match(reader,/LÃO LÝ ĐỌC CÙNG NGƯƠI/,
+ 'Keep the approved Lao Ly companion heading');
+assert.match(reader,/phase==='feedback'\?'reflection':'extension'/,
+ 'Companion context follows the active page, never a different lesson stage');
+assert.match(reader,/li:buddy-open/,
+ 'Retain the verified source-backed Lao Ly dialogue action');
 assert.match(entry,/root.render\(<SectionedJourney lesson={lesson} ports={ports} preview\/>\)/,
  'Real personal routes must use the shared fixed renderer, not another static preview');
 for(const item of drafts){

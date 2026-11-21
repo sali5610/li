@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "status": "Editorial draft — source-reviewed, not PO-approved or production released",
-  "provenance": "Migrated existing 13 spell guidance from React detail; examples, Do & Don't, diagram captions and evidence bounds authored from linked academic/educational sources on 2026-11-22. Examples are explanatory, not empirical observations or certified task solutions. Illustration assets: 13 distinct original, published CC BY-SA 4.0 educational artworks from Wikimedia Commons (Wikimedia Foundation Education team). Source and licence link present per illustration; no drawn replacements. Illustrations are editorial/contextual, not evidence of technique effectiveness.",
+  "provenance": "Migrated existing 13 spell guidance from React detail; examples, Do & Don't, diagram captions and evidence bounds authored from linked academic/educational sources on 2026-11-22. Examples are explanatory, not empirical observations or certified task solutions. Illustration assets: 13 distinct original, published CC BY-SA 4.0 educational artworks from Wikimedia Commons (Wikimedia Foundation Education team). Source and licence link present per illustration; no drawn replacements. Illustrations are editorial/contextual, not evidence of technique effectiveness. Asset URLs use Commons original file paths, avoiding runtime Special:FilePath redirects.",
   "methods": {
     "T01": {
       "vi": {
@@ -80,7 +80,7 @@
         }
       ],
       "illustration": {
-        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_17.png?width=760",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Illustration_of_Reading_Wikipedia_in_the_Classroom_17.png",
         "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_17.png",
         "credit": "Wikimedia Foundation · Education team",
         "license": "CC BY-SA 4.0",
@@ -166,7 +166,7 @@
         }
       ],
       "illustration": {
-        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_18.png?width=760",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/6/63/Illustration_of_Reading_Wikipedia_in_the_Classroom_18.png",
         "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_18.png",
         "credit": "Wikimedia Foundation · Education team",
         "license": "CC BY-SA 4.0",
@@ -246,7 +246,7 @@
         }
       ],
       "illustration": {
-        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_19.png?width=760",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Illustration_of_Reading_Wikipedia_in_the_Classroom_19.png",
         "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_19.png",
         "credit": "Wikimedia Foundation · Education team",
         "license": "CC BY-SA 4.0",
@@ -328,7 +328,7 @@
         }
       ],
       "illustration": {
-        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_20.png?width=760",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Illustration_of_Reading_Wikipedia_in_the_Classroom_20.png",
         "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_20.png",
         "credit": "Wikimedia Foundation · Education team",
         "license": "CC BY-SA 4.0",
@@ -410,7 +410,7 @@
         }
       ],
       "illustration": {
-        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_21.png?width=760",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/7/77/Illustration_of_Reading_Wikipedia_in_the_Classroom_21.png",
         "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_21.png",
         "credit": "Wikimedia Foundation · Education team",
         "license": "CC BY-SA 4.0",
@@ -492,7 +492,7 @@
         }
       ],
       "illustration": {
-        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_22.png?width=760",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/c/c2/Illustration_of_Reading_Wikipedia_in_the_Classroom_22.png",
         "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_22.png",
         "credit": "Wikimedia Foundation · Education team",
         "license": "CC BY-SA 4.0",
@@ -574,7 +574,7 @@
         }
       ],
       "illustration": {
-        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_23.png?width=760",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/6/66/Illustration_of_Reading_Wikipedia_in_the_Classroom_23.png",
         "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_23.png",
         "credit": "Wikimedia Foundation · Education team",
         "license": "CC BY-SA 4.0",
@@ -660,7 +660,7 @@
         }
       ],
       "illustration": {
-        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_24.png?width=760",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Illustration_of_Reading_Wikipedia_in_the_Classroom_24.png",
         "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_24.png",
         "credit": "Wikimedia Foundation · Education team",
         "license": "CC BY-SA 4.0",
@@ -746,7 +746,7 @@
         }
       ],
       "illustration": {
-        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_25.png?width=760",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/1/11/Illustration_of_Reading_Wikipedia_in_the_Classroom_25.png",
         "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_25.png",
         "credit": "Wikimedia Foundation · Education team",
         "license": "CC BY-SA 4.0",
@@ -828,7 +828,7 @@
         }
       ],
       "illustration": {
-        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_26.png?width=760",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Illustration_of_Reading_Wikipedia_in_the_Classroom_26.png",
         "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_26.png",
         "credit": "Wikimedia Foundation · Education team",
         "license": "CC BY-SA 4.0",
@@ -914,7 +914,7 @@
         }
       ],
       "illustration": {
-        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_27.png?width=760",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/3/39/Illustration_of_Reading_Wikipedia_in_the_Classroom_27.png",
         "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_27.png",
         "credit": "Wikimedia Foundation · Education team",
         "license": "CC BY-SA 4.0",
@@ -1000,7 +1000,7 @@
         }
       ],
       "illustration": {
-        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_28.png?width=760",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Illustration_of_Reading_Wikipedia_in_the_Classroom_28.png",
         "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_28.png",
         "credit": "Wikimedia Foundation · Education team",
         "license": "CC BY-SA 4.0",
@@ -1080,7 +1080,7 @@
         }
       ],
       "illustration": {
-        "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Illustration_of_Reading_Wikipedia_in_the_Classroom_29.png?width=760",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Illustration_of_Reading_Wikipedia_in_the_Classroom_29.png",
         "source": "https://commons.wikimedia.org/wiki/File:Illustration_of_Reading_Wikipedia_in_the_Classroom_29.png",
         "credit": "Wikimedia Foundation · Education team",
         "license": "CC BY-SA 4.0",

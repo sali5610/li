@@ -63,16 +63,25 @@ type SpellIllustration = {
  src:string;source:string;credit:string;license:string;licenseUrl:string;
  altVi:string;altEn:string;match:string
 };
+type SpellVisualExample={title:string;equation:string;question:string;reasoning:string;check:string};
 // Display only imagery that explains the actual technique. Source and licensing
 // live with canonical content; do not surface attribution noise in the reader.
-function SpellDiagram({id,labels,illustration}:{
- id:string;labels:readonly string[];illustration:SpellIllustration|null
+function SpellDiagram({id,labels,illustration,visualExample}:{
+ id:string;labels:readonly string[];illustration:SpellIllustration|null;
+ visualExample?:SpellVisualExample|null
 }){
  return <figure className="spell-concept-visual" aria-label={id+' · '+labels.join(' → ')}>
   {illustration&&<div className="spell-visual-art">
    <img src={illustration.src}
     alt={en()?illustration.altEn:illustration.altVi}
     loading="lazy" decoding="async" width={1200} height={675}/>
+  </div>}
+  {visualExample&&<div className="spell-why-example" aria-label={visualExample.title}>
+   <span className="spell-why-title">{visualExample.title}</span>
+   <strong className="spell-why-equation">{visualExample.equation}</strong>
+   <p className="spell-why-question">{visualExample.question}</p>
+   <p className="spell-why-reason">{visualExample.reasoning}</p>
+   <p className="spell-why-check">{visualExample.check}</p>
   </div>}
   <div className="spell-visual-process" data-count={labels.length} role="list">
    {labels.map((label,index)=><div className="spell-visual-stage" role="listitem"
@@ -261,7 +270,9 @@ export function GuideDetail(){
      <div className="kicker">I · {copy('KHI NÊN DÙNG','WHEN IT HELPS')}</div>
      <Heading level={2} role="titleLarge">{method.purpose}</Heading>
      {guide&&<SpellDiagram id={view.active} labels={guide.diagram}
-     illustration={guideRecord.illustration}/>}
+     illustration={guideRecord.illustration}
+     visualExample={'visualExample' in guideRecord
+      ?guideRecord.visualExample[en()?'en':'vi']:null}/>}
      <section className="spell-guide-section">
       <div className="kicker">II · {copy('LÀM THEO TỪNG BƯỚC','STEP-BY-STEP')}</div>
       <div className="path-list">{(guide?.steps||[]).map((step,index)=><div className="path-item" key={step}>

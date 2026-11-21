@@ -9,7 +9,7 @@ import {createRoot} from 'react-dom/client';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {Badge,Breadcrumb,Button,FilterGroup,Heading,Progress,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
-import {PortalCategoryCard} from '../../../../design-system/react/PortalCategoryCard';
+import {PortalCategoryCard,PortalCategoryLoading} from '../../../../design-system/react/PortalCategoryCard';
 import {CatalogFieldCard} from '../../../../design-system/react/CatalogFieldCard';
 import '../../../../design-system/react/components.css';
 import '../../../../design-system/react/catalog-field-card.css';
@@ -94,6 +94,8 @@ function Catalog(){
  const [,forceProgress]=useState(0);
  const [lessonNavError,setLessonNavError]=useState('');
  const [activeCategory,setActiveCategory]=useState('all');
+ const [portalLoad,setPortalLoad]=useState<'loading'|'ready'|'error'>('loading');
+ const [portalRetry,setPortalRetry]=useState(0);
  useEffect(()=>{
   const onRoute=(event:Event)=>{
    if((event as CustomEvent<{route?:string}>).detail?.route!=='catalog'||!pendingCatalogReturn)return;
@@ -136,6 +138,29 @@ function Catalog(){
   };
  },[]);
  const group=groups.find(item=>item.id===path[0]);
+ // Render ONE Elder Ly loading state for the whole group list. Do not mount
+ // any illustration/placeholder until all foreground arch images decode.
+ useEffect(()=>{
+  if(group||portalLoad==='ready')return;
+  let active=true;
+  const loads=groups.map((_,index)=>new Promise<void>((resolve,reject)=>{
+   const img=new Image();
+   img.decoding='async';
+   img.onload=()=>{
+    if(typeof img.decode==='function')void img.decode().then(resolve,reject);
+    else resolve();
+   };
+   img.onerror=()=>reject(new Error('Portal arch could not load'));
+   img.src='./assets/portals/cong-moi-'+
+    String(groupPortals[index%groupPortals.length]).padStart(2,'0')+'.webp';
+  }));
+  void Promise.all(loads).then(()=>{
+   if(active)setPortalLoad('ready');
+  }).catch(()=>{
+   if(active)setPortalLoad('error');
+  });
+  return()=>{active=false;};
+ },[group?.id,portalRetry]);
  useEffect(()=>setActiveCategory('all'),[group?.id]);
  const categories=group?Array.from(new Map(group.fields.map(f=>[f.category.id,f.category.label])).entries()):[];
  const field=group?.fields.find(item=>item.id===path[1]);
@@ -216,15 +241,23 @@ function Catalog(){
   </header>
   {lessonNavError&&<p role="alert" className="li-catalog-error">{lessonNavError}</p>}
    {field&&!course&&field.image&&<img className="catalog-field-hero" src={field.image} alt="" loading="lazy" decoding="async"/>}
-  {!group&&<><div className="catalog-group-grid">
+  {!group&&<>{portalLoad==='ready'?<div className="catalog-group-grid">
    {groups.map((item,index)=><PortalCategoryCard key={item.id}
     portal={groupPortals[index%groupPortals.length]}
+    portalPreloaded
+    locale={locale}
     title={localized(locale,item.title,item.titleEn)}
     eyebrow={locale==='vi'?'NHÓM NGÀNH':'DOMAIN GROUP'}
     detail={item.fields.length+(locale==='vi'?' chuyên ngành':' fields')}
     openLabel={locale==='vi'?'Mở nhóm ngành '+item.title:'Open '+item.titleEn+' group'}
     onOpen={()=>openPath([item.id])}/>)}
-  </div>
+  </div>:<div className="catalog-group-loading">
+   <PortalCategoryLoading kind={portalLoad==='error'?'error':'loading'}
+    locale={locale}
+    onRetry={portalLoad==='error'?()=>{
+     setPortalLoad('loading');setPortalRetry(n=>n+1);
+    }:undefined}/>
+  </div>}
   <Text role="support" className="catalog-quiet-note">
    {personalStudyLessonIds.length?
     (locale==='vi'?'Đề cương vẫn đang biên soạn. Bài học cá nhân có thể học trên staging nhưng chưa phát hành công khai.':

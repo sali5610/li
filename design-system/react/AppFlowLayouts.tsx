@@ -584,10 +584,10 @@ export function AppPageLayout(props:AppPageLayoutProps){
   data-bookworm-composition={bookworm?bookwormComposition:undefined}
   data-bookworm-index={bookworm?(indexOpen?'open':'closed'):undefined} lang={locale}>
   {variant==='bookworm'&&<div className="li-flow-bookworm-masthead" aria-hidden="true">
-   <span>li. · Illustrated Folio</span><span>THE LIBRARY OF QUESTIONS / VOL. 01</span>
+   <span>li. · Illustrated Folio</span><span>THE WORLD OF KNOWING WHY</span>
   </div>}
   {variant==='notebook'&&<div className="li-flow-notebook-masthead" aria-hidden="true">
-   <span>li. <em>Notes on Knowing Why</em></span>
+   <span>li. <em>THE WORLD OF KNOWING WHY</em></span>
    <span>THE STUDY JOURNAL · VOL. 01</span>
   </div>}
   <header className="li-flow-page-head">
@@ -598,7 +598,7 @@ export function AppPageLayout(props:AppPageLayoutProps){
       <LiIcon name={notebookPageIcons[page]} size={bookworm?16:20}/>
      </span>}
      {variant==='vintagePop'&&<LiIcon name={notebookPageIcons[page]} size={17}/>}
-     li. / {t('THƯ VIỆN TRI THỨC','THE KNOWLEDGE LIBRARY')}
+     li. / THE WORLD OF KNOWING WHY
     </span>
     <Heading level={1} role="headline">
      {variant==='notebook'

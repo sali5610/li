@@ -1,4 +1,4 @@
-# li. (理) — Thư viện tri thức
+# li. (理) — THE WORLD OF KNOWING WHY
 
 **🎨 Design Library — one place to start:** [design-system/README.md](design-system/README.md). All li. UI/UX tasks must open this entrypoint first and follow its canonical tokens, component, Do/Don't interaction patterns, accessibility and QA links. AI/code agents are bound by [AGENTS.md](AGENTS.md); Notion continues to own decisions and Human PO approval.
 

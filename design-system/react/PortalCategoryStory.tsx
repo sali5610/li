@@ -55,7 +55,7 @@ function Story(){
     portalSrc={'../assets/portals/cong-moi-'+String(portal).padStart(2,'0')+'.webp'}
     eyebrow={tr('NHÓM NGÀNH','DOMAIN GROUP')} title={tr('Ngôn ngữ','Languages')}
     detail={tr('2 chuyên ngành','2 fields')}
-    onOpen={()=>setOpened(true)}
+    onOpen={()=>setOpened(true)} locale={en?'en':'vi'} loadingArtworkBase="../assets"
     openLabel={tr('Mở nhóm ngành Ngôn ngữ','Open Languages group')}
     illustrationSrc={illustration}
     illustrationAlt={tr('Hình minh hoạ thử','Preview illustration')}

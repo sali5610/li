@@ -3,6 +3,7 @@ import {createRoot} from 'react-dom/client';
 import {Button,Card,Dialog,Heading,Text} from './index';
 import {MobileBottomNav,SidebarMenu,TopNavContext,LaoLyCompanion} from './LegacyNavigation';
 import {EditorialCard,MethodTile,MediaCard,HorizontalCard,ChatBubble,TagChip} from './LegacyCards';
+import {PortalCategoryCard} from './PortalCategoryCard';
 import {SelectField,NotebookTextarea,IconField,SmallAction,ProgressVariants,
  CheckinRadioModal,FunctionalIcon} from './LegacyControls';
 import type {FunctionalIconName} from './LegacyControls';
@@ -13,6 +14,7 @@ import './components.css';
 import './controls.css';
 import './dialog.css';
 import './legacy.css';
+import './portal-category-card.css';
 import './focus.css';
 import './legacy-story.css';
 
@@ -246,6 +248,7 @@ function Specimen(){
 const titles:Record<string,string>={
  bottomNav:'Bottom Navigation',sidebarMenu:'Sidebar Menu',topNavVariants:'Top Navigation',
  methodTile:'Compact Method Tile',mediaCard:'Illustrated / Image Card',
+  portalCategoryCard:'Portal Category Card',
  horizontalCard:'Horizontal Media Card',chatBubble:'Chat Bubble',tagChip:'Static Tag Chip',
  selectField:'Selection Dropdown',monthCalendar:'Monthly Calendar',
  stackedActivity:'Seven-Day Stacked Bar',laoLyState:'Elder Ly System State',

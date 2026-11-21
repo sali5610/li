@@ -7,7 +7,7 @@ import type {MirrorView} from './inquiry-port.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
-import {Badge,Breadcrumb,Button,Card,Heading,Progress,Text} from '../../../../design-system/react/index';
+import {Badge,Breadcrumb,Button,Heading,Progress,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
 import './home-catalog.css';
 

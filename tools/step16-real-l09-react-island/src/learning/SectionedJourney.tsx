@@ -24,7 +24,7 @@ function FormattedLessonQuestion({index,question,value,disabled,onChange}:{
  index:number;question:string;value:string;disabled:boolean;onChange:(value:string)=>void
 }){
  const inputId=React.useId();
- return <div className="li-atom-field" data-li-atom="field" data-kind="textarea">
+ return <div className="li-atom-field li-sectioned-question-field" data-li-atom="field" data-kind="textarea">
   <label htmlFor={inputId}>{index+1}. {formatLessonInline(question)}</label>
   <textarea id={inputId} rows={4} value={value} disabled={disabled}
    onChange={e=>onChange(e.currentTarget.value)}/>

@@ -1,5 +1,5 @@
 /** React Portal Category specimen: seven foreground overlays and a tappable portal. */
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import type {ChangeEvent} from 'react';
 import {createRoot} from 'react-dom/client';
 import {PortalCategoryCard} from './PortalCategoryCard';
@@ -17,6 +17,8 @@ function Story(){
  const [portal,setPortal]=useState<PortalVariant>(initial);
  const [illustration,setIllustration]=useState<string|undefined>();
  const [opened,setOpened]=useState(false);
+ const openedHeadingRef=useRef<HTMLHeadingElement>(null);
+ useEffect(()=>{if(opened)openedHeadingRef.current?.focus({preventScroll:true});},[opened]);
  useEffect(()=>()=>{if(illustration)URL.revokeObjectURL(illustration)},[illustration]);
  function chooseFile(event:ChangeEvent<HTMLInputElement>){
   const file=event.target.files?.[0];
@@ -26,8 +28,8 @@ function Story(){
   <p className="li-portal-story-kicker">UX-DS-35 / CARDS / REACT</p>
   <h1>{tr('Thẻ nhóm ngành · Cổng vòm','Group category · Portal card')}</h1>
   <p className="li-portal-story-explain">{tr(
-   'Chạm vào toàn bộ hình và cổng để mở nhóm ngành. Không còn nút Khám phá; minh hoạ nằm dưới lớp cổng và có thể thay riêng.',
-   'Tap the full portal illustration to open the category. No Explore button; replace the illustration behind the arch independently.')}</p>
+   'Chạm vào cổng: cảnh tiến gần và mở rộng như đang bước xuyên qua. Hiệu ứng kết thúc bằng màn giấy dịu trước khi vào nhóm ngành. Không dùng hiệu ứng khi bật Giảm chuyển động.',
+   'Tap the arch to travel through it. The scene expands toward you and settles into a soft paper arrival. Reduced Motion skips the effect.')}</p>
   <nav className="li-portal-story-variants" aria-label={tr('Chọn cổng vòm','Select portal variant')}>
    {([1,2,3,4,5,6,7] as PortalVariant[]).map(v=>
     <button key={v} type="button" aria-pressed={portal===v}
@@ -39,7 +41,7 @@ function Story(){
      {tr('← Quay lại nhóm ngành','← Back to categories')}
     </button>
     <p className="li-portal-story-kicker">{tr('NHÓM NGÀNH','DOMAIN GROUP')}</p>
-    <h2>{tr('Ngôn ngữ','Languages')}</h2>
+    <h2 tabIndex={-1} ref={openedHeadingRef}>{tr('Ngôn ngữ','Languages')}</h2>
     <p>{tr('Chọn chuyên ngành để xem các môn học.','Choose a field to browse its courses.')}</p>
     <ul className="li-portal-story-fields">
      <li>{tr('Tiếng Trung','Chinese')}</li>

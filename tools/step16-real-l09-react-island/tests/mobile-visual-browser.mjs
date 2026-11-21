@@ -70,9 +70,8 @@ try{
   },15000);
   console.log('REAL_MOBILE_VIEWPORT '+view+' '+report.viewport);
   console.log(JSON.stringify(report));
-  if(report.viewport!==390 || report.status!=='LI_VISUAL_QA_PASS'){
-   throw Error('VISUAL_QA_FAILED '+view+' '+JSON.stringify(report));
-  }
+  // Keep screenshots even when a viewport check fails: debug the pixels,
+  // not just a green/red status.
   const result=await send('Page.captureScreenshot',{
    format:'png',captureBeyondViewport:false,fromSurface:true
   });
@@ -80,6 +79,9 @@ try{
   writeFileSync(file,Buffer.from(result.data,'base64'));
   if(!existsSync(file))throw Error('Missing screenshot '+file);
   console.log('SCREENSHOT '+file);
+  if(report.viewport!==390 || report.status!=='LI_VISUAL_QA_PASS'){
+   throw Error('VISUAL_QA_FAILED '+view+' '+JSON.stringify(report));
+  }
  }
  console.log('PASS 4 REAL CSS MOBILE VIEWPORT SCREENS 390x844');
 }finally{

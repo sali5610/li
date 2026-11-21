@@ -715,20 +715,18 @@
 [data-li-react-screen="catalog"] .catalog-feature-row[data-li-catalog-kind="field"]{
  grid-template-columns:minmax(104px,40%) minmax(0,1fr);
 }
+/* Crop the ENTIRE illustration to one arch silhouette. No rectangular paper
+   backing, extra frame, stroke, or smaller image sitting inside a square. */
 [data-li-react-screen="catalog"] .catalog-feature-row[data-li-catalog-kind="field"] .catalog-feature-media{
- position:relative;isolation:isolate;min-height:0;max-height:none;aspect-ratio:4/5;
- border-radius:0;background:var(--paper-2);
-}
-/* A thin inner arch OUTLINE sits in a rectangular paper panel, like a vintage
-   book niche. The image sits just inside it; the panel itself is never arched. */
-[data-li-react-screen="catalog"] .catalog-feature-row[data-li-catalog-kind="field"] .catalog-feature-media::after{
- content:"";position:absolute;z-index:2;inset:5% 7% 0;
- border:1px solid var(--rule);border-radius:50% 50% 0 0;
- pointer-events:none;
+ min-height:0;max-height:none;aspect-ratio:4/5;
+ border:0;border-radius:50% 50% 0 0 / 40% 40% 0 0;
+ background:transparent;overflow:hidden;
+ clip-path:inset(0 round 50% 50% 0 0 / 40% 40% 0 0);
 }
 [data-li-react-screen="catalog"] .catalog-feature-row[data-li-catalog-kind="field"] .catalog-card-art{
- position:absolute;inset:8% 10% 3%;width:80%;height:89%;
- object-fit:cover;object-position:center;border-radius:50% 50% 0 0;
+ position:static;inset:auto;display:block;width:100%;height:100%;
+ object-fit:cover;object-position:center;
+ border:0;border-radius:inherit;
 }
 @media(max-width:720px){
  [data-li-react-screen="catalog"] .catalog-feature-row[data-li-catalog-kind="field"]{

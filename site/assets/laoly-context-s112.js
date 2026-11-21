@@ -422,9 +422,12 @@ function reactView(trigger){
  // Hide shortcuts to unpublished or unmounted lesson routes.
  const caseLessonRoute=currentPage==="case"?
   window.liReleasedLessonRoutes?.["L09-1-2"]:null;
- const relatedLesson=caseLessonRoute==="lessonL09"&&
+ const caseLesson=caseLessonRoute==="lessonL09"&&
   window.liAppRouter?.hasRoute?.(caseLessonRoute)?
   {id:"L09-1-2",route:caseLessonRoute}:null;
+ const mirrorLesson=(currentPage==="home"||currentPage==="research")?
+  window.liMirrorRelatedLesson?.(currentPage==="home"?scenarios[qIndex]:liCurrentProblem()):null;
+ const relatedLesson=caseLesson||mirrorLesson||null;
  return {
   text:line,
   labels:activePlan.actions.map(item=>

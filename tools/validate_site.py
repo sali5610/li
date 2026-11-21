@@ -751,7 +751,9 @@ print("PASS 13 techniques, 4 modes, 7 assets, S107 Settings export/import and ca
 home = section("home")
 assert home.count('id="mirror-primary-action"') == 1
 assert home.count('id="mirror-primary-label"') == 1
-assert 'action.dataset.page=isHook?item.lessonRoute:"research";' in page_html
+# The native fallback opens a lesson only when a published hook has a route.
+# Preserve the safety guard; a missing lessonRoute must fall back to research.
+assert 'action.dataset.page=isHook&&item.lessonRoute?item.lessonRoute:"research";' in page_html
 assert 'document.getElementById("mirror-primary-label").textContent=isHook?"Khám phá vì sao":"Đào sâu";' in page_html
 assert 'function renderMirrorItem()' in page_html
 assert 'renderMirrorItem();' in page_html

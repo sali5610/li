@@ -228,3 +228,31 @@
  #page-dashboard .li-react-journal .li-diary-counters>div{padding:var(--li-space-2)}
  #page-settings .li-react-settings .li-react-setting-card.li-ds-card{padding:var(--li-space-4)}
 }
+
+/* Mobile integration · reuse DS data-viz without duplicating bar markup. */
+#page-dashboard .li-react-journal .li-diary-trend-content>.li-legacy-chart{
+ min-width:0;padding:var(--li-space-3);background:transparent;border-color:var(--rule)
+}
+#page-dashboard .li-react-journal .li-diary-trend-content .li-legacy-chart-bars{
+ min-width:0;gap:var(--li-space-1)
+}
+#page-dashboard .li-react-journal .li-diary-month-heading .action-row{
+ display:flex;gap:var(--li-space-2);flex-wrap:nowrap
+}
+#page-dashboard .li-react-journal .li-diary-month-heading .action-row>.li-ds-button{
+ display:grid;place-items:center;min-width:44px;width:44px;height:44px;padding:var(--li-space-2)
+}
+#page-dashboard .li-react-journal .li-diary-detail>.li-atom-heading{
+ min-width:0;overflow-wrap:break-word
+}
+@media(max-width:480px){
+ #page-dashboard .li-react-journal .li-diary-layout{gap:var(--li-space-5)}
+ #page-dashboard .li-react-journal .li-diary-month-heading{align-items:start;gap:var(--li-space-3)}
+ #page-dashboard .li-react-journal .li-diary-month-heading>div:first-child{min-width:0;flex:1}
+ #page-dashboard .li-react-journal .li-diary-month-heading .li-atom-heading{font-size:var(--li-type-title-md)}
+ #page-dashboard .li-react-journal .li-diary-month .li-atom-text{margin:0}
+ #page-dashboard .li-react-journal .li-diary-weekdays{gap:var(--li-space-1)}
+ #page-dashboard .li-react-journal .li-diary-detail{gap:var(--li-space-3)}
+ #page-dashboard .li-react-journal .li-diary-panel{gap:var(--li-space-2)}
+ #page-dashboard .li-react-journal .li-diary-trend-content>.li-legacy-chart{padding:var(--li-space-2)}
+}

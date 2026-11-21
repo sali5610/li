@@ -1,4 +1,5 @@
 import React,{useEffect,useState} from 'react';
+import './home-catalog.css';
 import {goBack} from './app-router.js';
 import {useDiscoveryLocale,localized} from './discovery-locale.js';
 import {createRoot} from 'react-dom/client';
@@ -56,7 +57,7 @@ function CaptureIdea(){
    <div className="kicker">{L("NHẶT Ý","CAPTURE AN IDEA")}</div>
    <Heading level={1} role="headline">{L("Nhặt ý","Capture")}</Heading>
   </header>
-  <main className="capture-writing">
+  <div className="capture-writing">
    <section className="capture-editor">
     <Heading level={2} role="titleMedium">{L("Nhặt một ý cần kiểm chứng","Capture an idea worth checking")}</Heading>
     <Field id="li-react-capture-note" label={L("Ý nghĩ, câu sách hoặc nhận định chưa được kiểm chứng","A thought, quotation or unverified claim")}
@@ -76,7 +77,7 @@ function CaptureIdea(){
     <Heading level={2} role="titleMedium">{L("Đừng nhầm chuyện được kể với bằng chứng.","A compelling story is not evidence.")}</Heading>
     <Text role="body">{L("Giữ lại câu hỏi và nguồn bạn gặp để tiện kiểm chứng sau.","Keep the question and source so you can verify them later.")}</Text>
    </aside>
-  </main>
+  </div>
  </div>;
 }
 export function mountCaptureIdea(){

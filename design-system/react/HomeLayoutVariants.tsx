@@ -1,5 +1,5 @@
 import React from 'react';
-import {motion,useReducedMotion} from 'motion/react';
+import {motion,AnimatePresence,useReducedMotion} from 'motion/react';
 import {Button} from './Components';
 import {Heading,Text} from './Atoms';
 import {HomeMirrorShell} from './Templates';
@@ -42,11 +42,25 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
  question,scene,source,saved,onPrevious,onNext,onExplore,onSave,onCheckin}:HomeLayoutProps){
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  const reduced=useReducedMotion();
- const entrance=(delay:number)=>variant==='notebook'&&!reduced?{
-  initial:{opacity:0,y:17},
+ const entrance=(delay:number)=>(variant==='notebook'||variant==='bookworm')&&!reduced?{
+  initial:{opacity:0,y:variant==='bookworm'?23:17},
   animate:{opacity:1,y:0},
-  transition:{duration:.48,delay,ease:'easeOut' as const}
+  transition:{duration:variant==='bookworm'?.58:.48,delay,ease:'easeOut' as const}
  }:{};
+ const mirrorShell=<HomeMirrorShell artwork={<motion.img src={mirrorArtSrc} alt=""
+    whileHover={variant==='notebook'&&!reduced?{scale:1.035}:undefined}
+    transition={{duration:.55,ease:'easeOut'}}/>}
+    artworkLabel={t('Minh họa câu hỏi trong gương','Question artwork in the mirror')}
+    title={t('GƯƠNG VẠN VẤN','MIRROR OF QUESTIONS')}
+    question={question}
+    actions={<div className="li-ui-home-mirror-actions">
+     <Button variant="ghost" onClick={onPrevious} aria-label={t('Câu trước','Previous question')}>
+      <LiIcon name="chevron-left" size={18}/>
+     </Button>
+     <Button variant="ghost" onClick={onNext} aria-label={t('Câu sau','Next question')}>
+      <LiIcon name="chevron-right" size={18}/>
+     </Button>
+    </div>}/>;
  return <section className="li-ui-home" data-home-layout={variant} lang={locale}
   aria-label={t('Khám phá layout Đại Sảnh','Home layout composition')}>
   {variant==='bookworm'&&<div className="li-ui-home-bookworm-masthead" aria-hidden="true">
@@ -69,24 +83,24 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
     'Jot down the question; let curiosity lead the way.')} tone="blue"/>
    <NotebookArt kind="book" size="spot"/>
   </div>}
-  {variant==='bookworm'&&<div className="li-ui-home-bookworm-art" aria-hidden="true">
+  {variant==='bookworm'&&<motion.div className="li-ui-home-bookworm-art" aria-hidden="true"
+    initial={reduced?false:{opacity:0,y:18,rotate:-2}}
+    animate={{opacity:1,y:0,rotate:0}}
+    transition={{duration:reduced?0:.72,delay:reduced?0:.14,ease:[.22,1,.36,1]}}
+    whileHover={reduced?undefined:{y:-6,rotate:1.5}}>
    <BookwormIllustration kind="stack"/>
-  </div>}
+  </motion.div>}
   <motion.div className="li-ui-home-mirror" {...entrance(.16)}>
-   <HomeMirrorShell artwork={<motion.img src={mirrorArtSrc} alt=""
-    whileHover={variant==='notebook'&&!reduced?{scale:1.035}:undefined}
-    transition={{duration:.55,ease:'easeOut'}}/>}
-    artworkLabel={t('Minh họa câu hỏi trong gương','Question artwork in the mirror')}
-    title={t('GƯƠNG VẠN VẤN','MIRROR OF QUESTIONS')}
-    question={question}
-    actions={<div className="li-ui-home-mirror-actions">
-     <Button variant="ghost" onClick={onPrevious} aria-label={t('Câu trước','Previous question')}>
-      <LiIcon name="chevron-left" size={18}/>
-     </Button>
-     <Button variant="ghost" onClick={onNext} aria-label={t('Câu sau','Next question')}>
-      <LiIcon name="chevron-right" size={18}/>
-     </Button>
-    </div>}/>;
+   {variant==='bookworm'?
+    <AnimatePresence mode="wait" initial={false}>
+     <motion.div key={question} className="li-bookworm-question-page"
+      initial={reduced?false:{opacity:0,x:22,rotateY:-4}}
+      animate={{opacity:1,x:0,rotateY:0}}
+      exit={reduced?undefined:{opacity:0,x:-16,rotateY:3}}
+      transition={{duration:reduced?0:.32,ease:[.22,1,.36,1]}}>
+      {mirrorShell}
+     </motion.div>
+    </AnimatePresence>:mirrorShell}
   </motion.div>
   <motion.aside className="li-ui-home-guide" {...entrance(.27)} aria-label={t('Lão Lý kể chuyện','Lao Ly explains')}>
    <img src={avatarSrc} alt="" loading="lazy" width={84} height={84}/>

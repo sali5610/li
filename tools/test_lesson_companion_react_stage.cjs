@@ -40,20 +40,20 @@ for(const source of [react,wave]){
 // Mentor and reader can navigate every lesson page without completing it.
 // Submission/review remain protected in the rendered content and save path.
 const phaseMachine=read("tools/step16-real-l09-react-island/src/learning/phase-machine.ts");
-assert.match(react,/phaseActor\\.send\\(\\{type:'OPEN',phase:next\\}\\)/);
-assert.match(phaseMachine,/event\\.phase==='feedback',target:'\\.feedback'/,
+assert.match(react,/phaseActor\.send\(\{type:'OPEN',phase:next\}\)/);
+assert.match(phaseMachine,/event\.phase==='feedback',target:'\.feedback'/,
  "XState must allow browsing feedback before submission");
-assert.match(phaseMachine,/event\\.phase==='progress',target:'\\.progress'/,
+assert.match(phaseMachine,/event\.phase==='progress',target:'\.progress'/,
  "XState must allow browsing progress before review");
-assert.match(react,/phase==='feedback'&&!attempt\\.submitted/,
+assert.match(react,/phase==='feedback'&&!attempt\.submitted/,
  "L09 must hide answers when browsing feedback before submission");
-assert.match(react,/phase==='progress'&&!attempt\\.reviewed/,
+assert.match(react,/phase==='progress'&&!attempt\.reviewed/,
  "L09 must not show completed progress before review");
-assert.match(wave,/phase==='feedback'&&!attempt\\.submitted/,
+assert.match(wave,/phase==='feedback'&&!attempt\.submitted/,
  "Wave1 must hide answers before submission");
-assert.match(wave,/phase==='progress'&&!attempt\\.reviewed/,
+assert.match(wave,/phase==='progress'&&!attempt\.reviewed/,
  "Wave1 must not show completed progress before review");
-assert.match(wave,/onNext=\\{pageIndex<steps\\.length-1/,
+assert.match(wave,/onNext=\{pageIndex<steps\.length-1/,
  "Wave1 must offer a next-page control independent of submission");
 assert.match(react,/data-li-lesson-phase=\{phase\}/);
 assert.match(react,/data-li-lesson-submitted=\{attempt\.submitted\?/);

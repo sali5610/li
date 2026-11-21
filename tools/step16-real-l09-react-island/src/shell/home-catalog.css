@@ -405,7 +405,6 @@
  padding:clamp(18px,2.5vw,28px);border:1px solid var(--discovery-rule);
  border-radius:var(--li-radius-md,12px);
 }
-[data-li-react-screen="research"] .research-mentor{margin:0;overflow:hidden}
 [data-li-react-screen="case"] .case-question{
  border-top:2px solid var(--discovery-ink);padding:var(--li-space-5,20px) 0;
 }

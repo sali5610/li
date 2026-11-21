@@ -81,17 +81,6 @@ function ResearchScene(){
     <div className="action-row"><Button variant="secondary" onClick={openNotebook}>
      {L("Mở Bút Ký","Open notebook")}</Button></div>
    </section>
-   <article className="research-mentor surface dark">
-    <div className="laoly-side-avatar"><span className="laoly-face smallface" aria-hidden="true">
-     <img src="./assets/laoly-neutral.png" alt="" width="128" height="128" loading="lazy"/></span>
-     <span className="kicker">{L("LÃO LÝ NHẮN NHỦ","A NOTE FROM LAO LY")}</span>
-    </div>
-    <Heading level={2} role="titleMedium" className="li-react-mentor-white">
-     {L("“Lập luận hay mà thiếu dữ kiện thì vẫn chỉ là một câu chuyện kể.”","“A compelling argument without evidence is still only a story.”")}
-    </Heading>
-    <Text role="body">{L("Muốn lão giúp soi tiền đề nào trước?","Which assumption should we examine first?")}</Text>
-    <Button variant="secondary" onClick={()=>window.openLaoLy?.()}>{L("Đối thoại cùng Lão Lý","Talk with Lao Ly")}</Button>
-   </article>
   </aside></div>
  </div>;
 }

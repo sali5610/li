@@ -1,0 +1,66 @@
+name: li. iPhone React screen smoke (isolated, no login)
+on:
+  pull_request:
+    branches: [integration/staging]
+    paths:
+      - 'tools/step16-real-l09-react-island/**'
+      - 'design-system/react/**'
+      - '.github/workflows/li-mobile-visual-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  iphone-visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned app and shared Design System dependencies
+        run: |
+          npm install --no-audit --no-fund --prefix design-system/react
+          npm install --no-audit --no-fund --prefix tools/step16-real-l09-react-island
+      - name: Build isolated fixture using real screen React and CSS
+        working-directory: tools/step16-real-l09-react-island
+        run: |
+          npx vite build --config vite.mobile-visual.config.mjs
+          test -s dist-mobile-visual/mobile-visual.html
+          cp -a dist-mobile-visual/. ../../site/
+          test -s ../../site/mobile-visual.html
+      - name: Open four iPhone screens in headless Chromium and check geometry
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$chrome" || { echo "Headless Chrome unavailable"; exit 1; }
+          mkdir -p .qa-iphone-screens
+          python3 -m http.server 8766 --bind 127.0.0.1 --directory site >/tmp/li-visual-http.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+          sleep 1
+          for view in journal guide library buddy; do
+            url="http://127.0.0.1:8766/mobile-visual.html?view=$view"
+            "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+              --hide-scrollbars --window-size=390,844 --virtual-time-budget=5000 \
+              --dump-dom "$url" > ".qa-iphone-screens/$view.dom" 2>"/tmp/li-visual-$view.log"
+            if ! grep -Fq 'LI_VISUAL_QA_PASS' ".qa-iphone-screens/$view.dom"; then
+              echo "FAIL $view viewport 390x844"
+              grep -o '<pre id="qa-report"[^>]*>[^<]*' ".qa-iphone-screens/$view.dom" | tail -1 || true
+              tail -25 "/tmp/li-visual-$view.log" || true
+              exit 1
+            fi
+            echo "PASS $view viewport 390x844 — real React DOM + computed mobile geometry"
+            "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+              --hide-scrollbars --window-size=390,844 --virtual-time-budget=5000 \
+              --screenshot="$PWD/.qa-iphone-screens/$view.png" "$url" >/dev/null 2>&1
+            test -s ".qa-iphone-screens/$view.png"
+          done
+      - name: Upload screenshots for self-inspection (never deployed)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-iphone-react-screen-smoke
+          path: .qa-iphone-screens/
+          retention-days: 3

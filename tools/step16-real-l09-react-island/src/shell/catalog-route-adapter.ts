@@ -148,7 +148,8 @@ export function installReactCatalogPort():()=>void{
  };
  let wasVerified=canVisit();
  const onAuth=(event:Event)=>{
-  const verified=(event as CustomEvent<{verified?:boolean}>).detail?.verified;
+  const detail=(event as CustomEvent<{verified?:boolean;transient?:boolean}>).detail;
+  const verified=detail?.verified;
   if(verified!==false){
    if(canVisit()){
     wasVerified=true;
@@ -157,6 +158,8 @@ export function installReactCatalogPort():()=>void{
    }
    return;
   }
+  // A transient Neon recheck is not a signed-out learner.
+  if(detail?.transient===true)return;
   // Auth starts as pending and emits false before inviting the learner.
   // Preserve their ?catalog= deep link until a REAL signed-in session ends.
   if(!wasVerified)return;

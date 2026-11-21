@@ -371,6 +371,25 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
+      # A green build is not a published app. Verify the public Pages URL serves
+      # this exact SHA before marking the staging release successful.
+      - name: Verify public staging serves this exact commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://sali5610.github.io/li/build-info.json?source=${GITHUB_SHA}"
+          for attempt in $(seq 1 15); do
+            payload="$(curl -fsSL --max-time 10 -H 'Cache-Control: no-cache' "$url" || true)"
+            if [[ "$payload" == *"\"sha\":\"${GITHUB_SHA}\""* ]]; then
+              echo "LIVE_SHA_PASS ${GITHUB_SHA} — $url"
+              exit 0
+            fi
+            echo "Public page not at expected SHA (attempt ${attempt}/15): ${payload:0:180}"
+            sleep 8
+          done
+          echo "LIVE_SHA_FAIL expected ${GITHUB_SHA} — GitHub Pages may still be stale"
+          exit 1
+
       - name: Staging-only release note
         run: |
           echo "Integrated source HEAD $(git rev-parse HEAD) published to one GitHub Pages staging URL."

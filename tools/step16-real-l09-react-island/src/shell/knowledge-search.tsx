@@ -268,9 +268,11 @@ function KnowledgeSearch(){
   <Button variant="ghost" className="utility-back" onClick={goBack}>
    <span aria-hidden="true">←</span> {L("Quay lại","Back")}
   </Button>
-  <div className="kicker">{L("TÌM TRONG THƯ VIỆN","SEARCH THE LIBRARY")}</div>
-  <Heading level={1} role="headline">{L("Tra Cứu","Search")}</Heading>
-  <Text role="body">{L("Tìm bằng tên, mã bài hoặc hỏi bằng câu tự nhiên. Li. chỉ dẫn đến nội dung bài thực sự có, không tự bịa đáp án.","Search by title, lesson ID or a natural-language question. Li. links to real lesson content instead of inventing answers.")}</Text>
+  <header className="li-search-intro">
+   <div className="kicker">{L("TÌM TRONG THƯ VIỆN","SEARCH THE LIBRARY")}</div>
+   <Heading level={1} role="headline">{L("Tra Cứu","Search")}</Heading>
+   <Text role="body">{L("Tìm bằng tên, mã bài hoặc hỏi bằng câu tự nhiên. Li. chỉ dẫn đến nội dung bài thực sự có, không tự bịa đáp án.","Search by title, lesson ID or a natural-language question. Li. links to real lesson content instead of inventing answers.")}</Text>
+  </header>
   <SearchField label={L("Bạn muốn tìm gì?","What would you like to explore?")} value={query} onQueryChange={changeQuery}
     onSearch={()=>setSubmitCount(n=>n+1)}
    placeholder={L("Ví dụ: Tại sao khảo sát 1.000 người vẫn có thể sai?","For example: Why can a survey of 1,000 people be misleading?")}
@@ -295,7 +297,6 @@ function KnowledgeSearch(){
       {response.results.map((record,index)=><motion.article key={record.kind+':'+record.id}
         className="li-search-result" initial={reduced?false:{opacity:0,y:6}}
         animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.17}}> 
-       {index===0&&<RelationMap record={record} locale={locale} onOpen={navigateTo}/>}
        <ListRow title={record.title}
         description={(locale==='en'?(englishKind[record.kind]||'Knowledge item'):(kindCopy[record.kind]||'Mục kiến thức'))+' · '+(record.lessonId||record.id)+
          (record.contentState==='review_only'?L(' · đang duyệt',' · under review'):'')+
@@ -304,6 +305,10 @@ function KnowledgeSearch(){
         onActivate={record.kind==='Lesson'&&!!availableRoute(record.lessonId||record.id)?
          ()=>navigateTo(record.lessonId||record.id):
          catalogBrowsePaths.has(record.id)?()=>browseCatalog(record.id):undefined}/>
+       {index===0&&(record.links||[]).length>0&&<details className="li-search-graph-disclosure">
+        <summary>{L('Xem sơ đồ kết nối kiến thức','Explore knowledge connections')}</summary>
+        <RelationMap record={record} locale={locale} onOpen={navigateTo}/>
+       </details>}
        {record.answerability&&<div className="li-search-related">
         <Text role="support"><strong>{record.answerability.level==='direct'?L('Mục tiêu bài học phù hợp','Relevant learning outcome'):
          record.answerability.level==='outcome_match'?

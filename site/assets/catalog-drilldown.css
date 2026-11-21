@@ -107,7 +107,7 @@
 
 /* UNESCO ISCED-F category filters — editable field tags inside a domain group. */
 #page-catalog .catalog-category-filters{display:flex;flex-wrap:wrap;gap:var(--li-space-2);margin:var(--li-space-4) 0}
-#page-catalog .catalog-category-filter{font:inherit;min-height:44px;cursor:pointer;padding:var(--li-space-2) var(--li-space-3);border:1px solid var(--rule);border-radius:999px;color:var(--moss);background:var(--paper)}
+#page-catalog .catalog-category-filter{font:var(--li-weight-500) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);min-height:44px;cursor:pointer;padding:var(--li-space-2) var(--li-space-3);border:1px solid var(--rule);border-radius:999px;color:var(--moss);background:var(--paper)}
 #page-catalog .catalog-category-filter[aria-pressed="true"]{background:var(--moss);border-color:var(--moss);color:var(--cream)}
 #page-catalog .catalog-category-filter:focus-visible{outline:2px solid var(--moss);outline-offset:3px}
 #page-catalog .catalog-category-tag{display:inline-flex;align-self:flex-start;background:var(--paper-3);color:var(--moss);border-radius:999px;padding:var(--li-space-1) var(--li-space-2);font-size:var(--li-type-support)}

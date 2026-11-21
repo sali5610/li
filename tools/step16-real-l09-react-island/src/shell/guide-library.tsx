@@ -4,6 +4,9 @@ import {personalStudyRoute} from '../learning/released-lessons.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Button,Card,Field,FilterChip,Heading,InlineFeedback,MethodTile,Text,LiIcon} from '../../../../design-system/react/index';
+// MethodTile comes from LegacyCards: without its shared DS stylesheet,
+// iPhone renders a raw blue browser button with every label run together.
+import '../../../../design-system/react/legacy.css';
 import './guide-library.css';
 import {GuideDetail,NoteDetail,ConfirmNoteAction} from './detail-practice.js';
 

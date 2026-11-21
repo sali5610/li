@@ -83,7 +83,6 @@ export function Journal(){
   {name:'Input',help:copy('Ghi chú đã lưu','Saved inputs')}
  ];
  return <div className="section-shell li-react-journal" data-li-react-screen="dashboard">
-  <div className="kicker">{copy('THEO DÕI THEO NGÀY','DAILY ACTIVITY')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Nhật Ký','Journal')}</Heading>
   <Text role="body" className="intro">{copy(
    'Xem thể trạng tự check-in, nhịp học đã áp dụng và hoạt động thực sự ghi nhận. Không phải điểm sức khỏe hay năng lực học tập.',
@@ -235,7 +234,6 @@ export function Settings(){
   if(file)void app.liPersonalBackup?.importFile(file);
  };
  return <div className="section-shell li-react-settings" data-li-react-screen="settings">
-  <div className="kicker">{copy('CÀI ĐẶT','SETTINGS')}</div>
   <Heading level={1} role="headline" className="display-title">{copy('Cài đặt','Settings')}</Heading>
   <Text role="body" className="intro">{copy(
    'Tùy chỉnh cách học, cách Lão Lý trò chuyện và dữ liệu của bạn.',

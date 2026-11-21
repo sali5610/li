@@ -368,8 +368,6 @@
 /* Khảo Chứng & Phản Chứng · keep evidence and action visible together. */
 [data-li-react-screen="research"],
 [data-li-react-screen="case"]{max-width:1160px}
-[data-li-react-screen="research"] > .kicker,
-[data-li-react-screen="case"] > .kicker{margin-top:clamp(18px,3vw,42px)}
 [data-li-react-screen="research"] > .li-atom-heading,
 [data-li-react-screen="case"] .library-heading-with-utility{margin:var(--li-space-3,12px) 0}
 [data-li-react-screen="research"] > .li-atom-text{max-width:68ch;margin-bottom:var(--li-space-6,24px)}
@@ -568,7 +566,7 @@
  display:flex;flex-direction:column;align-items:flex-start;gap:14px;
  max-width:860px;padding:10px 0 24px;margin-bottom:0;border:0;
 }
-[data-li-react-screen="catalog"] .catalog-outline-overline{
+[data-li-react-screen="catalog"] .catalog-outline-meta{
  display:flex;align-items:center;flex-wrap:wrap;gap:10px;
  font:650 .75rem/1.4 var(--li-font-ui);letter-spacing:.08em;
  color:var(--muted)
@@ -608,7 +606,7 @@
  [data-li-react-screen="catalog"] .catalog-lead--outline .display-title{
   max-width:100%;font-size:clamp(1.85rem,8.2vw,2.35rem);line-height:1.13
  }
- [data-li-react-screen="catalog"] .catalog-outline-overline{font-size:.68rem;gap:8px}
+ [data-li-react-screen="catalog"] .catalog-outline-meta{font-size:.68rem;gap:8px}
  [data-li-react-screen="catalog"] .catalog-draft-content{
   display:flex;flex-direction:column;gap:14px;
   background:transparent!important;padding:16px 0 36px!important;

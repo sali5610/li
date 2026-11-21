@@ -713,8 +713,8 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
   data-li-react-journey={id} data-li-lesson-phase={phase} lang={locale}>
   <header className="li-learning-header">
    <div>
-    <Text role="caption">{lesson.hierarchy.field.title} · {id}</Text>
     <Heading level={1} id={'li-react-'+id+'-title'} role="headline">{lesson.title[locale]}</Heading>
+    <Text role="caption">{lesson.hierarchy.field.title} · {id}</Text>
    </div>
    <div className="li-learning-header-actions">
     <details className="li-lesson-header-more">

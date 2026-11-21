@@ -269,7 +269,7 @@ function KnowledgeSearch(){
   <Button variant="ghost" className="utility-back" onClick={goBack}>
    <span aria-hidden="true">←</span> {L("Quay lại","Back")}
   </Button>
-  <header className="search-lead"><div className="kicker">{L("TÌM TRONG THƯ VIỆN","SEARCH THE LIBRARY")}</div>
+  <header className="search-lead">
   <Heading level={1} role="headline">{L("Tra Cứu","Search")}</Heading>
   <Text role="body">{L("Tìm bằng tên, mã bài hoặc hỏi bằng câu tự nhiên. Li. chỉ dẫn đến nội dung bài thực sự có, không tự bịa đáp án.","Search by title, lesson ID or a natural-language question. Li. links to real lesson content instead of inventing answers.")}</Text>
   </header>

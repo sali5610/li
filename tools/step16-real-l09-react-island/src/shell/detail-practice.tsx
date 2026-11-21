@@ -397,8 +397,8 @@ export function GuideDetail(){
    </Button>:null}
   </nav>
   <header className="spell-detail-heading">
-   <div className="kicker">{view.active} · {tr(method.category)}</div>
    <Heading level={1} role="headline" className="display-title">{method.title}</Heading>
+   <Text role="caption">{view.active} · {tr(method.category)}</Text>
    <Text role="body" className="intro">{method.original}</Text>
   </header>
   <div className="spell-tabs" role="tablist" aria-label={copy('Chế độ Thần Chú','Spell mode')}
@@ -642,7 +642,6 @@ export function NoteDetail(){
   <Button variant="ghost" onClick={()=>openRoute(back)} className="library-back-link">
    <LiIcon name="chevron-left" size={18}/> {back==='resume'?copy('Quay lại','Continue'):
     back==='library'?copy('Tủ Riêng','Private Library'):copy('Bộ sưu tập','Collection')}</Button>
-  <div className="kicker">{note.kind||copy('CHI TIẾT GHI CHÉP','NOTE DETAIL')}</div>
   <div className="library-heading-with-utility">
    <Heading level={1} role="headline" className="display-title">{note.title}</Heading>
    {note.context&&<Button variant="ghost"
@@ -651,6 +650,7 @@ export function NoteDetail(){
     onClick={()=>{app.liBookmarks?.toggle('case','sampling-bias-90');refresh();}}>
     <LiIcon name="bookmark" size={20}/></Button>}
   </div>
+  {note.kind&&<Text role="caption">{note.kind}</Text>}
   {note.status&&<Text role="body" className="intro">{note.status}</Text>}
   {!note.id||!note.type?<InlineFeedback tone="info" message={copy(
    'Ghi chép này không còn trong Tủ Riêng.','This note is no longer in your private library.')}/>:

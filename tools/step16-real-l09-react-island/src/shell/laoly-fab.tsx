@@ -105,7 +105,10 @@ function FloatingLaoLy({host,initialAvatar,initialTitle}:{
   const r=fab.current.getBoundingClientRect(),gap=8;
   return [...page.querySelectorAll<HTMLElement>(
    ".spell-tabs [role='tab'], .spell-activity-head, .catalog-progress, "+
-   ".catalog-lesson-card>.action, .catalog-course-card>.action"
+   ".catalog-lesson-card>.action, .catalog-course-card>.action, "+
+   ".li-diary-month-heading, .li-diary-weekdays, .li-diary-calendar button, "+
+   ".library-group-header, .library-saved-shortlist .li-ds-button, "+
+   ".guide-find, .guide-margin-note .kicker"
   )].some(node=>{
    if(!node.getClientRects().length)return false;
    const other=node.getBoundingClientRect();
@@ -178,11 +181,24 @@ function FloatingLaoLy({host,initialAvatar,initialTitle}:{
   );
   window.addEventListener('resize',move,{passive:true});
   window.addEventListener('orientationchange',move);
+  // A saved floating position must not obstruct calendar controls or library actions
+  // after a long page scroll. Reposition only when it actually overlaps a target.
+  let scrollFrame=0;
+  const onScroll=()=>{
+   if(scrollFrame)return;
+   scrollFrame=requestAnimationFrame(()=>{
+    scrollFrame=0;
+    if(occludesPriorityUI())place();
+   });
+  };
+  window.addEventListener('scroll',onScroll,{passive:true});
   if(authorized)requestAnimationFrame(place);
   return()=>{
    onRoute.disconnect();
    window.removeEventListener('resize',move);
    window.removeEventListener('orientationchange',move);
+   window.removeEventListener('scroll',onScroll);
+   if(scrollFrame)cancelAnimationFrame(scrollFrame);
    if(app.liCompanionDrag===port)delete app.liCompanionDrag;
    host.classList.remove('is-dragging');
   };

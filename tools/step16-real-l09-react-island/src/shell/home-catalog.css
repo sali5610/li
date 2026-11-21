@@ -5,9 +5,11 @@
 #li-react-home-host .mirror-controls{display:flex;align-items:center;justify-content:center}
 #li-react-home-host .mirror-refresh{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px}
 #li-react-home-host .mirror-refresh>span{display:flex;align-items:center;justify-content:center}
-#li-react-home-host .hero-actions .li-ds-button.primary{width:100%;text-align:left}
-#li-react-home-host .hero-actions .li-ds-button.primary>span{
- display:flex;justify-content:space-between;align-items:center;width:100%;gap:var(--li-space-3);
+/* Same canonical button content alignment for Save and Investigate.
+   Variants control the appearance, not the icon/label positioning. */
+#li-react-home-host .hero-actions .li-ds-button.primary{width:100%}
+#li-react-home-host .hero-actions .li-ds-button>span{
+ display:inline-flex;justify-content:center;align-items:center;gap:var(--li-space-3);
 }
 #li-react-home-host .hero-left .home-checkin>span{display:inline-flex;align-items:center;gap:var(--li-space-2)}
 #li-react-home-host .hero-dialogue-bubble .li-atom-text{margin:0}

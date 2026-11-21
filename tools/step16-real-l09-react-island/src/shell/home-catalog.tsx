@@ -79,13 +79,13 @@ const levelNames:readonly [string,string,string][]=[
 function CatalogCard({number,eyebrow,title,detail,onOpen,locale,image,category}:{
  number:number;eyebrow:string;title:string;detail:string;onOpen:()=>void;locale:Locale;image?:string;category?:string
 }){
- return <article className="catalog-feature-row" data-li-react-catalog-card>
+ return <article className="catalog-feature-row" data-li-react-catalog-card data-li-catalog-kind={category?'field':'group'}>
   <div className="catalog-feature-media">
    {image?<img className="catalog-card-art" src={image} alt="" loading="lazy" decoding="async"/>:
     <span className="catalog-card-mark" aria-hidden="true">{String(number).padStart(2,'0')}</span>}
   </div>
   <div className="catalog-card-copy">
-   <div className="kicker">{eyebrow}</div>
+   {!category&&<div className="kicker">{eyebrow}</div>}
    {category&&<span className="catalog-category-tag">{category}</span>}
    <Heading level={2} role="titleMedium">{title}</Heading>
    <Text role="support" className="small">{detail}</Text>

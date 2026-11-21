@@ -1,7 +1,7 @@
 import {goBack,openRoute} from './app-router.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button,Card,Checkbox,Field,Heading,InlineFeedback,LiIcon,Text} from '../../../../design-system/react/index';
+import {Button,Card,Checkbox,Field,Heading,InlineFeedback,LiIcon,StackedActivityChart,Text} from '../../../../design-system/react/index';
 import './journal-settings.css';
 import {InAppReminderPanel} from './in-app-reminder-ui.js';
 import {WebPushSettings} from './web-push-settings.js';
@@ -69,25 +69,20 @@ function DiaryDate({item,selected,onClick}:{
   {item.day}{item.recorded?<span className="li-diary-dot" aria-hidden="true">{item.total}</span>:null}
  </button>;
 }
-function DiaryBar({item,max,selected,onClick}:{
- item:Day;max:number;selected:boolean;onClick:()=>void
-}){
- const height=item.recorded?(item.total===0?'4px':Math.max(12,Math.round(item.total/max*100))+'%'):'0';
- return <button type="button" className={'li-diary-bar-day'+(selected?' selected':'')}
-  aria-label={copy(item.key+': '+(item.recorded?item.total+' hoạt động':'chưa ghi nhận'),
-    item.key+': '+(item.recorded?item.total+' activities':'no journal record'))}
-  aria-pressed={selected} onClick={onClick}>
-  <span className="li-diary-bar-track" aria-hidden="true">
-   <span className={'li-diary-bar-value'+(item.recorded?' recorded':'')}
-    style={{height}}/></span>
-  <span className="li-diary-bar-label">{item.day}</span>
-  <span className="li-diary-bar-total">{item.recorded?item.total:'—'}</span>
- </button>;
-}
 export function Journal(){
  const view=useDiary();
  const act=(kind:string,value?:string)=>app.liPersonalDiary?.act(kind,value);
- const max=Math.max(1,...view.days.map(day=>day.total));
+ const now=new Date();
+ const todayKey=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+
+  String(now.getDate()).padStart(2,'0');
+ const selectedIndex=Math.max(0,view.days.findIndex(day=>day.key===view.selected));
+ const chartStart=Math.min(Math.max(0,selectedIndex-6),Math.max(0,view.days.length-7));
+ const chartDays=view.days.slice(chartStart,chartStart+7).map(day=>({
+  date:day.key,
+  lesson:day.recorded?day.counts[0]:null,
+  problem:day.recorded?day.counts[1]:null,
+  input:day.recorded?day.counts[2]:null
+ }));
  const facts=[
   {label:copy('Ngủ đủ','Enough sleep'),value:view.physical.sleep},
   {label:copy('Vận động nhẹ','Gentle movement'),value:view.physical.move},
@@ -163,10 +158,9 @@ export function Journal(){
     <summary><LiIcon name="chart-column" size={18}/> {copy('Xem biểu đồ hoạt động từng ngày','View daily activity chart')}</summary>
     <div className="li-diary-trend-content">
     <div className="kicker">{copy('SỐ HOẠT ĐỘNG TỪNG NGÀY','DAILY ACTIVITY TOTALS')}</div>
-    <div className="li-diary-bars" role="group" aria-label={copy('Biểu đồ hoạt động theo ngày','Daily activity chart')}>
-     {view.days.map(day=><DiaryBar key={day.key} item={day} max={max}
-      selected={view.selected===day.key} onClick={()=>act('select',day.key)}/>)}
-    </div>
+    <StackedActivityChart days={chartDays} selectedDate={view.selected}
+     todayDate={todayKey} onSelectDate={date=>act('select',date)}
+     locale={app.liLanguage?.get?.()==='en'?'en':'vi'}/>
     <Text role="support">{copy(
      'Cột = Bài + Vấn đề + Input. Ngày chưa ghi nhận để trống, không tính thành 0.',
      'Bars show lessons + problems + inputs. Missing records are blank, not zero.')}</Text>

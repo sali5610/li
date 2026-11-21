@@ -338,3 +338,62 @@ assert.match(noteEditor,/if\(window\.liReactLibraryMounted\)\{notifyReactNote\(\
 assert.doesNotMatch(nativeLibrary,/document\.querySelector\?\.\("#page-case \.editorial-grid \.surface\.tinted h2"\)/);
 
 console.log('PASS explicit React routes and Back: direct actions, canonical history and search, no hidden click');
+
+
+// Study-mode changes are a real visible React Settings/Lão Lý action. Execute
+// the canonical setStudyMode implementation with every old Guide/FAB node
+// unavailable: only data + the React state event are permitted to survive.
+const modeFrom=old.indexOf('function setStudyMode(key,{persist=true}={}){');
+const modeTo=old.indexOf('document.querySelectorAll(".ly-mode-choice")',modeFrom);
+assert(modeFrom>=0&&modeTo>modeFrom,'Locate real canonical study-mode setter');
+const changes=[],writes=[],nativeRenders=[],modeAlerts=[];
+const modeData=new Map(),modeDocument={body:{dataset:{}}};
+const modeContext={
+ studyMode:'start',STUDY_MODES:{start:{},focus:{},overload:{},recover:{}},
+ STUDY_MODE_KEY:'li.personal.study-mode.v1',
+ window:{
+  liReactRouter:{},
+  localStorage:{
+   getItem:key=>modeData.get(key)||null,
+   setItem:(key,value)=>{writes.push([key,value]);modeData.set(key,value);},
+  },
+  dispatchEvent:event=>changes.push({type:event.type,mode:event.detail?.mode})
+ },
+ document:modeDocument,
+ syncStudyModeUI:()=>nativeRenders.push('native-mode'),
+ renderMethods:()=>nativeRenders.push('hidden-guide'),
+ toast:message=>modeAlerts.push(message),
+ CustomEvent:class{constructor(type,config){this.type=type;this.detail=config?.detail;}}
+};
+vm.createContext(modeContext);
+vm.runInContext(old.slice(modeFrom,modeTo),modeContext);
+assert.equal(modeContext.setStudyMode('focus'),true,
+ 'Visible React mode switching must succeed without old Guide or FAB');
+assert.equal(modeContext.studyMode,'focus');
+assert.equal(modeData.get(modeContext.STUDY_MODE_KEY),'focus',
+ 'The one canonical storage owner persists selected rhythm');
+assert.equal(modeDocument.body.dataset.studyMode,'focus',
+ 'CSS and new React mounts receive the latest study rhythm');
+assert.deepEqual(changes,[{type:'li:study-mode-applied',mode:'focus'}]);
+assert.deepEqual(nativeRenders,[],'No hidden Guide/Settings/FAB repaint in React mode');
+const writesBefore=writes.length;
+assert.equal(modeContext.setStudyMode('overload',{persist:false}),true,
+ 'A cloud-synced mode is applied without writing to local storage again');
+assert.equal(modeContext.studyMode,'overload');
+assert.equal(modeDocument.body.dataset.studyMode,'overload');
+assert.equal(writes.length,writesBefore);
+assert.deepEqual(changes.at(-1),{type:'li:study-mode-applied',mode:'overload'},
+ 'Cloud hydration also refreshes visible React Lao Ly and Settings');
+assert.equal(modeContext.setStudyMode('unknown'),false);
+assert.equal(changes.length,2,'Rejected modes never notify listeners');
+assert.deepEqual(nativeRenders,[]);
+// Standalone source site (no invited router) keeps its old UI behavior intact.
+delete modeContext.window.liReactRouter;
+assert.equal(modeContext.setStudyMode('recover'),true);
+assert.deepEqual(nativeRenders,['native-mode','hidden-guide']);
+assert.equal(changes.length,3);
+assert.equal(modeContext.setStudyMode('start',{persist:false}),true);
+assert.deepEqual(nativeRenders,['native-mode','hidden-guide','native-mode','hidden-guide']);
+assert.equal(changes.length,3,'Standalone startup refresh never invents a learner mode event');
+assert.deepEqual(modeAlerts,[]);
+console.log('PASS React study mode: local/cross-device updates without hidden Guide/FAB DOM; standalone fallback');

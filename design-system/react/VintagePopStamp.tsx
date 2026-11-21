@@ -1,5 +1,5 @@
 import React from 'react';
-import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
+import {AnimatePresence,motion,useInView,useReducedMotion} from 'motion/react';
 
 /** Reuses the archived official li. seal; purely a visual state reaction.
  * active changes only when the parent-owned fixture action changes. */
@@ -16,13 +16,26 @@ export function VintagePopStamp({active}:{active:boolean}){
  </AnimatePresence>;
 }
 
-/** Decorative postal cancellation, intentionally different from the existing
- * official li. seal. Linework is stamp INK, not a UI container border.
- * The arc has a per-instance ID so multiple previews can coexist. */
+/** A postal ink impression, distinct from the official li. seal.
+ * When the visitor SCROLLS to this mark, the ink lands once with a quick
+ * press-and-release. No looping or animation before it enters the viewport.
+ * Reduced-motion users see the imprint instantly once it becomes visible. */
 export function VintagePopPostalMark(){
  const arcId=React.useId();
- return <span className="li-pop-postal-cancel" aria-hidden="true">
-  <svg viewBox="0 0 220 124" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+ const stampRef=React.useRef<HTMLSpanElement>(null);
+ const inView=useInView(stampRef,{once:true,amount:0.5,margin:'0px 0px -8% 0px'});
+ const reduced=useReducedMotion();
+ return <span ref={stampRef} className="li-pop-postal-cancel" aria-hidden="true">
+  <motion.svg viewBox="0 0 220 124" fill="none" xmlns="http://www.w3.org/2000/svg"
+   focusable="false" initial={false}
+   animate={inView?
+    reduced?{opacity:1,y:0,scale:1,rotate:0}:
+     {opacity:[0,0,1,.82,1],y:[-42,-42,4,-3,0],
+      scale:[1.3,1.3,.93,1.04,1],rotate:[-18,-18,2,-2,0]}:
+    {opacity:0,y:-42,scale:1.3,rotate:-18}}
+   transition={reduced||!inView?{duration:0}:
+    {duration:.76,times:[0,.32,.55,.75,1],ease:[.18,.86,.24,1]}}
+   style={{transformOrigin:'75% 52%'}}>
    <defs><path id={arcId} d="M121 64 A43 43 0 0 1 207 64"/></defs>
    <g stroke="currentColor" strokeLinecap="round">
     <path d="M6 35 C30 28 48 43 72 35 S111 31 130 36
@@ -44,6 +57,6 @@ export function VintagePopPostalMark(){
     fontFamily="Georgia,serif" fontSize="16" fontWeight="700">理 · li.</text>
    <text x="164" y="80" textAnchor="middle" fill="currentColor"
     fontFamily="monospace" fontSize="9" letterSpacing="1.3">ARCHIVE 26</text>
-  </svg>
+  </motion.svg>
  </span>;
 }

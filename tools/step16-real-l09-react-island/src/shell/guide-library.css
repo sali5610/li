@@ -261,3 +261,28 @@
   padding-top:var(--li-space-4);border-top:1px solid var(--rule)
  }
 }
+
+/* On iPhone, let the actual search/filter be the first actionable block.
+   Lão Lý guidance remains available after the field-guide index. */
+@media(max-width:800px){
+ .li-react-guide .guide-catalog-layout>.guide-index{grid-row:1}
+ .li-react-guide .guide-catalog-layout>.guide-margin-note{
+  grid-row:2;position:static;margin-top:var(--li-space-4)
+ }
+}
+@media(max-width:600px){
+ .li-react-guide .guide-find{gap:var(--li-space-2)}
+ .li-react-guide .guide-find>.li-ds-filter-group{
+  margin-top:0;gap:var(--li-space-2)
+ }
+ .li-react-guide .guide-result-count{
+  margin-top:var(--li-space-1)
+ }
+ .li-react-guide .guide-margin-note{
+  grid-template-columns:56px minmax(0,1fr);gap:var(--li-space-3)
+ }
+ .li-react-guide .guide-mentor-illustration{max-width:56px}
+ .li-react-guide .guide-margin-note .li-atom-text{
+  font-size:var(--li-type-support);line-height:var(--li-leading-support)
+ }
+}

@@ -293,11 +293,12 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
 
   <div className="li-learning-save">
-   <SaveStatus state={saveState} message={saveMessage} detail={locked?error:undefined}/>
-   <Text role="support" className="li-learning-ready-count">{attempt.reviewed?
-    (vi?'Đã tự đánh giá':'Self-reviewed'):
-    attempt.submitted?(vi?'Đã nộp · '+rated+'/4 tự chấm':'Submitted · '+rated+'/4 rated'):
-    (vi?answered+'/4 câu sẵn sàng':answered+'/4 answers ready')}</Text>
+   {(saveState==='error'||status==='conflict')&&
+    <SaveStatus state={saveState} message={saveMessage} detail={locked?error:undefined}/>}
+   {(attempt.reviewed||attempt.submitted)&&
+    <Text role="support" className="li-learning-ready-count">{attempt.reviewed?
+     (vi?'Đã tự đánh giá':'Self-reviewed'):
+     (vi?'Đã nộp · '+rated+'/4 tự chấm':'Submitted · '+rated+'/4 rated')}</Text>}
    <Progress label={vi?'Tiến độ lượt học':'Lesson progress'} value={pct}/>
    {attempt.assisted&&<Text role="support" className="li-learning-status-note">{content.assistStatus}</Text>}
   </div>

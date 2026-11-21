@@ -351,12 +351,12 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   <aside className="li-learning-rail" aria-label="Learning navigation and status">
 
   <div className="li-learning-save">
-   <SaveStatus state={saveViewState} message={saveMessage}
-    detail={locked?error:undefined}/>
-   <Text role="support" className="li-learning-ready-count">{attempt.reviewed?
-    (vi?'Đã tự đánh giá':'Self-reviewed'):
-    attempt.submitted?(vi?'Đã nộp · '+rated+'/4 tự chấm':'Submitted · '+rated+'/4 rated'):
-    (vi?answered+'/4 câu sẵn sàng':answered+'/4 answers ready')}</Text>
+   {(saveViewState==='error'||sync==='conflict')&&
+    <SaveStatus state={saveViewState} message={saveMessage} detail={locked?error:undefined}/>}
+   {(attempt.reviewed||attempt.submitted)&&
+    <Text role="support" className="li-learning-ready-count">{attempt.reviewed?
+     (vi?'Đã tự đánh giá':'Self-reviewed'):
+     (vi?'Đã nộp · '+rated+'/4 tự chấm':'Submitted · '+rated+'/4 rated')}</Text>}
    <Progress label={accessibleProgress} value={percent}/>
    <details className="li-learning-attempt-meta">
     <summary>{vi?'Chi tiết lượt học':'Attempt details'}</summary>

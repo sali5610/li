@@ -6,6 +6,7 @@ import {SearchField,InlineFeedback,ListRow,SourceStatus} from './Molecules';
 import {CatalogShell,LearningFlowShell,AccountShell} from './Templates';
 import {MethodTile,ChatBubble} from './LegacyCards';
 import {LiIcon} from './LucideIcons';
+import {NotebookAnnotation} from './NotebookAnnotation';
 import './app-flow-layouts.css';
 
 /** Exported presentational UI: Lab passes fixture props; the approved real
@@ -15,7 +16,7 @@ import './app-flow-layouts.css';
 export type PageId='home'|'catalog'|'search'|'research'|'case'|'capture'|
  'lesson'|'practice'|'feedback'|'guide'|'guideDetail'|'library'|'resume'|
  'collection'|'noteDetail'|'dashboard'|'settings'|'checkin'|'laoly'|'account';
-export type PageVariant='editorial'|'split'|'cinematic';
+export type PageVariant='editorial'|'split'|'cinematic'|'notebook';
 export type AppLabFlowId='discovery'|'learning'|'techniques'|'personal'|'daily';
 export const appLabFlows:readonly {
  id:AppLabFlowId;vi:string;en:string;steps:readonly PageId[]
@@ -358,16 +359,45 @@ function ScreenBody(props:AppPageLayoutProps){
  </AccountShell>;
  }
 }
+const notebookNotes:Partial<Record<PageId,readonly [string,string]>>={
+ catalog:['Mỗi ngăn tủ là một cuộc phiêu lưu mới.','Every shelf starts a new little adventure.'],
+ search:['Tò mò một chút, khám phá thật nhiều.','One small question can lead so far.'],
+ research:['Khoan tin ngay. Thử hỏi vì sao?','Before believing, ask why.'],
+ case:['Khoanh tròn điều còn nghi ngờ.','Circle what still feels uncertain.'],
+ capture:['Bắt được một ý hay, ghi lại liền!','Caught a thought? Write it down!'],
+ lesson:['Đọc chậm thôi, nhớ sâu hơn.','Read slowly. Let it sink in.'],
+ practice:['Sai cũng được, miễn là hiểu thêm.','Mistakes are allowed. Curiosity stays.'],
+ feedback:['Gạch chân điều vừa vỡ lẽ.','Underline what just clicked.'],
+ guide:['Mỗi cách học là một lối nhỏ.','Every method opens another path.'],
+ guideDetail:['Thử một lần, rồi thử cách khác.','Try it once, then try another way.'],
+ library:['Những mảnh hiểu biết mang về.','The little things you brought home.'],
+ resume:['Gấp sách lại, câu chuyện vẫn tiếp.','The story carries on after a pause.'],
+ collection:['Những ý tưởng xứng đáng giữ lại.','Keep the ideas worth revisiting.'],
+ noteDetail:['Sửa, gạch, viết thêm — giấy còn rộng.','Cross it out, add a line. There is room.'],
+ dashboard:['Dấu vết nhỏ của một hành trình dài.','Small marks of a longer journey.'],
+ settings:['Một góc nhỏ chỉnh cho vừa ý.','Make this corner feel like yours.'],
+ checkin:['Hôm nay, một dòng cho mình.','One line to yourself today.'],
+ laoly:['Lão Lý có vài lời ở lề trang.','A note from Lao Ly in the margin.'],
+ account:['Trang cá nhân, giữ riêng tư.','Your own private pages.'],
+};
 export function AppPageLayout(props:AppPageLayoutProps){
  const {page,variant,locale,onNavigate}=props;
  const meta=appLabPages.find(item=>item.id===page)!;
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  return <section className="li-flow-page" data-page={page} data-layout={variant} lang={locale}>
+  {variant==='notebook'&&<div className="li-flow-notebook-masthead" aria-hidden="true">
+   <span>li. <em>Notes on Knowing Why</em></span>
+   <span>THE STUDY JOURNAL · VOL. 01</span>
+  </div>}
   <header className="li-flow-page-head">
    <div className="li-flow-page-heading">
     <span className="li-flow-page-kicker">li. / {t('THƯ VIỆN TRI THỨC','THE KNOWLEDGE LIBRARY')}</span>
     <Heading level={1} role="headline">{t(meta.vi,meta.en)}</Heading>
     <Text role="body">{t(meta.descriptionVi,meta.descriptionEn)}</Text>
+    {variant==='notebook'&&<NotebookAnnotation
+     text={locale==='vi'?notebookNotes[page]?.[0]||'Ghi lại điều đáng nhớ.':
+      notebookNotes[page]?.[1]||'A thought worth keeping.'}
+     tone={page==='capture'||page==='noteDetail'?'blue':'wine'}/>}
    </div>
    <span className="li-flow-page-index" aria-hidden="true">{String(appLabPages.findIndex(item=>item.id===page)+1).padStart(2,'0')}</span>
   </header>

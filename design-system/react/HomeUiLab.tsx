@@ -17,19 +17,20 @@ import './legacy.css';
 import './focus.css';
 import './home-ui-lab.css';
 
-type LayoutKey='classic'|'split'|'cinematic';
+type LayoutKey='classic'|'split'|'cinematic'|'notebook';
 type ViewMode='focus'|'gallery';
 type Viewport='fluid'|'390'|'820'|'1440';
 const layoutChoices:readonly {id:LayoutKey;label:string}[]=[
  {id:'classic',label:'Editorial'},
  {id:'split',label:'Split focus'},
- {id:'cinematic',label:'Cinematic'}
+ {id:'cinematic',label:'Cinematic'},
+ {id:'notebook',label:'Notebook · Handwritten'}
 ];
 const homeVariant:Record<LayoutKey,HomeLayoutVariant>={
- classic:'heritage',split:'editorial',cinematic:'immersive'
+ classic:'heritage',split:'editorial',cinematic:'immersive',notebook:'notebook'
 };
 const pageVariant:Record<LayoutKey,PageVariant>={
- classic:'editorial',split:'split',cinematic:'cinematic'
+ classic:'editorial',split:'split',cinematic:'cinematic',notebook:'notebook'
 };
 const questions=[
  {questionVi:'90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?',

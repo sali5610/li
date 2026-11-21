@@ -24,8 +24,10 @@
  min-width:0;gap:var(--li-space-3)}
 .li-portal-category-eyebrow{font:700 var(--li-type-caption)/var(--li-leading-caption) var(--li-font-ui);
  letter-spacing:.16em;text-transform:uppercase}
+/* Portal group names are card titles, not section headlines.
+ * Keep long EN/VI group names readable in the narrow copy column. */
 .li-portal-category-copy h2{margin:0;color:inherit;
- font:600 var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial);
+ font:600 var(--li-type-title-md)/var(--li-leading-title-md) var(--li-font-editorial);
  overflow-wrap:anywhere}
 .li-portal-category-copy p{margin:0;color:var(--ink);
  font:var(--li-type-support)/var(--li-leading-support) var(--li-font-ui)}
@@ -68,6 +70,8 @@
  .li-portal-category-card{grid-template-columns:minmax(0,57%) minmax(0,1fr);
   gap:var(--li-space-2);padding:var(--li-space-3) 0}
  .li-portal-category-copy{gap:var(--li-space-2)}
+ .li-portal-category-copy h2{
+  font:600 var(--li-type-title-sm)/var(--li-leading-title-sm) var(--li-font-editorial)}
 }
 @media(max-width:359px){
  .li-portal-category-card{grid-template-columns:minmax(0,53%) minmax(0,1fr)}

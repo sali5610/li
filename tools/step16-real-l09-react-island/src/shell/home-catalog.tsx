@@ -7,7 +7,7 @@ import type {MirrorView} from './inquiry-port.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
-import {Badge,Button,Card,Heading,Progress,Text} from '../../../../design-system/react/index';
+import {Badge,Breadcrumb,Button,Card,Heading,Progress,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
 import './home-catalog.css';
 
@@ -199,14 +199,13 @@ function Catalog(){
  return <motion.div key={path.join('/')||'catalog-root'} data-li-react-screen="catalog"
    className="li-react-catalog" initial={reduced?false:{opacity:0,y:7}}
    animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.18}}>
-  <nav className="catalog-breadcrumbs" aria-label={locale==='vi'?'Vị trí trong Tàng Thư':'Library path'}>
-   {breadcrumb.map((item,index)=><React.Fragment key={item.path.join('/')||'root'}>
-    {index>0&&<span aria-hidden="true" className="catalog-crumb-divider">›</span>}
-    {index===breadcrumb.length-1?
-     <span className="catalog-crumb-current" aria-current="page">{item.label}</span>:
-     <Button variant="ghost" className="catalog-crumb" onClick={()=>openPath(item.path)}>{item.label}</Button>}
-   </React.Fragment>)}
-  </nav>
+  <div className="catalog-breadcrumbs">
+   <Breadcrumb label={locale==='vi'?'Vị trí trong Tàng Thư':'Library path'}
+    items={breadcrumb.map((item,index)=>({
+     label:item.label,
+     onActivate:index<breadcrumb.length-1?()=>openPath(item.path):undefined
+    }))}/>
+  </div>
   <div className="kicker">{eyebrow}</div>
   <Heading level={1} role="headline" className="display-title">{heading}</Heading>
    {lessonNavError&&<p role="alert" className="li-catalog-error">{lessonNavError}</p>}

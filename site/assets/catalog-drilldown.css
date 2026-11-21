@@ -205,10 +205,11 @@
 }
 
 /* ISCED-F field navigation tags and functional filters (native fallback). */
-#page-catalog .catalog-category-filters{display:flex;flex-wrap:wrap;gap:var(--li-space-2);margin:var(--li-space-4) 0}
-#page-catalog .catalog-category-filter{font:inherit;min-height:44px;cursor:pointer;padding:var(--li-space-2) var(--li-space-3);border:1px solid var(--rule);border-radius:999px;color:var(--moss);background:var(--paper)}
-#page-catalog .catalog-category-filter[aria-pressed="true"]{background:var(--moss);border-color:var(--moss);color:var(--cream)}
-#page-catalog .catalog-category-filter:focus-visible{outline:2px solid var(--moss);outline-offset:3px}
+/* Match the canonical FilterGroup/FilterChip when React is unavailable. */
+#page-catalog .catalog-field-filter-group{display:flex;align-items:center;flex-wrap:wrap;gap:var(--li-space-2);min-width:0;max-width:100%;margin:var(--li-space-4) 0}
+#page-catalog .catalog-field-filter-group>.li-ds-filter-chip{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;max-width:100%;min-height:44px;padding:var(--li-space-2) var(--li-space-4);border:1px solid var(--moss);border-radius:999px!important;background:var(--paper);color:var(--moss);font:var(--li-weight-600) var(--li-type-support)/var(--li-leading-support) var(--li-font-ui);overflow-wrap:anywhere;cursor:pointer}
+#page-catalog .catalog-field-filter-group>.li-ds-filter-chip[aria-pressed="true"]{background:var(--moss);color:var(--cream)}
+#page-catalog .catalog-field-filter-group>.li-ds-filter-chip:focus-visible{outline:2px solid var(--moss);outline-offset:3px}
 #page-catalog .catalog-category-tag{display:inline-flex;align-self:flex-start;background:var(--paper-3);color:var(--moss);border-radius:999px;padding:var(--li-space-1) var(--li-space-2);font-size:var(--li-type-support)}
 
 /* Native fallback for the shared Tàng Thư field-card variant. */

@@ -19,7 +19,7 @@ const context={
  },
  window:{
   liPersonalStudyRoutes:{"L09-1-3":"draftLessonL0913"},
-  liLibraryShelf:{renderResume:()=>calls.push("render")}},
+  liLibraryShelf:{renderBookmarks:()=>calls.push("render")}},
  savedContent,processedCases,liStorageError:false,liWriteState:()=>writable,
  toast:(msg,opts)=>{messages.push(msg);if(typeof opts?.undo==="function")undoActions.push(opts.undo);},Date,console
 };

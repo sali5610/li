@@ -787,9 +787,11 @@ textarea::placeholder, input::placeholder { font-size: var(--li-type-body); }
   box-shadow:var(--li-uxds10-touch-no-shadow);
   color:var(--cream);
 }
-.app.home-focus > .header .brand-stamp{
-  filter:brightness(0) invert(1);
-}
+/* Same exact geometric mark on both header surfaces. Use a dedicated
+   light SVG for Home to avoid Safari/image-cache inversions of the old seal. */
+.header .brand-stamp--home{display:none}
+.app.home-focus > .header .brand-stamp--default{display:none}
+.app.home-focus > .header .brand-stamp--home{display:block;filter:none}
 .app.home-focus > .header .logo,
 .app.home-focus > .header .topnav .nav-btn:not(.active),
 .app.home-focus > .header .tool-button:not(.active):not([aria-current="page"]){

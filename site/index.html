@@ -195,6 +195,7 @@
 <div id="toast" class="li-snackbar" role="status" aria-live="polite" aria-atomic="true" style="display:none"></div>
 <script src="./assets/lucide.min.js"></script>
 <script src="./assets/app-language-legacy.js?v=20261122-elder-ly"></script><script src="./assets/app-language.js?v=20261122-elder-ly"></script>
+<script src="./content-packs/home-mirror-draft-hooks.js?v=20261122-draft-home-17"></script>
 <script>
 const methods=[["T01","Triệu Ức Chân Ngôn","Retrieval Practice / Active Recall","Tự nhớ trước khi xem đáp án","Ký Ức Thuật"],["T02","Thời Ấn Hồi Ức","Spaced Repetition / Distributed Practice","Ôn thứ đã học theo thời điểm","Ký Ức Thuật"],["T13","Cung Lộ Tàng Ức","Method of Loci / Memory Palace","Gắn điều cần nhớ vào những địa điểm quen thuộc","Ký Ức Thuật"],["T03","Minh Mẫu Tiệm Ẩn","Worked Examples & Guidance Fading","Nhìn ví dụ, giảm gợi ý, tự làm","Minh Giải Thuật"],["T04","Tự Giải Khai Minh","Guided Self-Explanation","Giải thích cơ chế bằng lời mình","Minh Giải Thuật"],["T05","Truy Nguyên Vấn Đạo","Elaborative Interrogation","Hỏi nguyên nhân và điều kiện","Minh Giải Thuật"],["T06","Song Tượng Phân Minh","Compare–Contrast / Interleaved Discrimination","Phân biệt hai dạng đã biết","Minh Giải Thuật"],["T07","Tiền Đề Giám Định","Logical Inference & Premise Checking","Kiểm tra tiền đề và kết luận","Luận Chứng Thuật"],["T08","Luận Ảnh Phản Chiếu","Argument Mapping & Counterevidence","Bóc lập luận, chứng cứ và phản biện","Luận Chứng Thuật"],["T09","Truy Nguyên Giám Chứng","Source Criticism & Evidence Appraisal","Rà nguồn và độ chắc chắn","Luận Chứng Thuật"],["T10","Phân Giải Giới Vực","Problem Decomposition & Boundary Tests","Chia vấn đề, thử điều kiện biên","Phá Giải Thuật"],["T11","Trạch Pháp Minh Tâm","Method Fit & Metacognitive Awareness","Chọn kỹ thuật đúng việc","Tự Chủ Thuật"],["T12","Quy Tâm Tiếp Mạch","Meaningful Focus & Attention Re-entry","Quay lại phần đang làm","Tự Chủ Thuật"]];
 const categories=["Tất cả","Ký Ức Thuật","Minh Giải Thuật","Luận Chứng Thuật","Phá Giải Thuật","Tự Chủ Thuật"];
@@ -448,8 +449,21 @@ scenarios.splice(5,0,{
  scene:"Một ngàn người đang dùng ứng dụng trả lời khảo sát. Những người đã bỏ đi hoặc chưa từng dùng có được nghe tiếng nói không?",
  buddy:"Con số lớn nghe rất thuyết phục. Nhưng ai đã có cơ hội trả lời mới đáng hỏi, tiểu hữu."
 });
+/* Draft Home hooks: previews only; no lesson manuscript or route is released. */
+const mirrorDrafts=(globalThis.window?.LI_MIRROR_DRAFT_HOOKS||[]).filter(x=>
+ x.reviewState==="proposed"&&x.publishState==="draft"&&x.localized?.vi&&x.localized?.en
+).map(x=>({type:"hook",key:"mirror-draft-"+x.id,lessonId:x.id,fieldId:x.fieldId,
+ lessonRoute:"research",previewState:"draft",localized:x.localized,...x.localized.vi}));
+const originalMirrorScenarios=[...scenarios];
+scenarios.splice(0,scenarios.length);
+mirrorDrafts.forEach((item,i)=>{
+ if(i<originalMirrorScenarios.length)scenarios.push(originalMirrorScenarios[i]);
+ scenarios.push(item);
+});
+scenarios.push(...originalMirrorScenarios.slice(mirrorDrafts.length));
 function renderMirrorItem(){
- const item=scenarios[qIndex],isHook=item.type==="hook";
+ const item=scenarios[qIndex],isHook=item.type==="hook",isDraft=item.previewState==="draft";
+ const localized=item.localized?.[window.liLanguage?.get?.()==="en"?"en":"vi"]||item;
  if(window.liReactRouter){
   // React Home imports canonical curriculum art and renders directly.
   // Keep the real mirror/inquiry data event without repainting hidden DOM.
@@ -466,12 +480,12 @@ function renderMirrorItem(){
   if(src&&topicImage.getAttribute("src")!==src)topicImage.setAttribute("src",src);
   topicImage.parentElement.hidden=!src;
  }
- document.getElementById("mirror-question").textContent=item.question;
- document.getElementById("home-scene").textContent=item.scene;
+ document.getElementById("mirror-question").textContent=localized.question;
+ document.getElementById("home-scene").textContent=localized.scene;
  const example=document.querySelector("#page-home .hero-dialogue .example-label");
- if(example)example.textContent=isHook?"TỪ BÀI HỌC ĐÃ XUẤT BẢN":"VÍ DỤ GIẢ ĐỊNH";
+ if(example)example.textContent=isDraft?(window.liLanguage?.get?.()==="en"?"DRAFT · NOT APPROVED":"BẢN THẢO · CHƯA DUYỆT"):isHook?"TỪ BÀI HỌC ĐÃ XUẤT BẢN":"VÍ DỤ GIẢ ĐỊNH";
  const action=document.getElementById("mirror-primary-action");
- action.dataset.page=isHook?item.lessonRoute:"research";
+ action.dataset.page=isHook&&item.lessonRoute?item.lessonRoute:"research";
  action.setAttribute("aria-label",isHook?"Khám phá vì sao · Mở bài học liên quan":"Đào sâu · Mở Khảo Chứng");
  document.getElementById("mirror-primary-label").textContent=isHook?"Khám phá vì sao":"Đào sâu";
  if(typeof refreshQuestionBookmark==="function")refreshQuestionBookmark();
@@ -485,12 +499,16 @@ function liCaseFeedback(answer){
 let selectedCaseAnswer=null;
 let liResearchFeedback="Chọn một nhánh để đặt câu hỏi kiểm chứng.";
 function liCurrentProblem(){
- return scenarios[qIndex].type==="hook"?scenarios.find(item=>item.type!=="hook"):scenarios[qIndex];
+ const item=scenarios[qIndex];
+ return item.type==="hook"&&item.previewState!=="draft"?scenarios.find(candidate=>candidate.type!=="hook"):item;
 }
 function liChooseResearchBranch(value){
  const problem=liCurrentProblem();
  if(!problem?.branches?.includes(value))return false;
- liResearchFeedback="Hãy kiểm chứng: "+value;
+ const index=problem.branches.indexOf(value);
+ const locale=window.liLanguage?.get?.()==="en"?"en":"vi";
+ const label=problem.localized?.[locale]?.branches?.[index]||value;
+ liResearchFeedback=(locale==="en"?"Investigate: ":"Hãy kiểm chứng: ")+label;
  // Only the standalone native Research panel owns its old feedback node.
  // React reads the feedback from the canonical Inquiry port.
  if(!window.liReactRouter){
@@ -501,7 +519,19 @@ function liChooseResearchBranch(value){
  window.dispatchEvent(new Event("li:inquiry-changed"));
  return true;
 }
-function syncResearch(){const s=scenarios[qIndex].type==="hook"?scenarios.find(item=>item.type!=="hook"):scenarios[qIndex];const title=document.querySelector("#page-research .surface.tinted h2");if(title)title.textContent=s.question;document.querySelectorAll('#page-research [data-branch]').forEach((el,i)=>{if(s.branches[i]){el.dataset.branch=s.branches[i];el.textContent=String(i+1).padStart(2,"0")+" · "+s.branches[i]}});document.getElementById("research-observed").textContent=s.observed;document.getElementById("research-unknown").textContent=s.unknown;liResearchFeedback="Chọn một nhánh để đặt câu hỏi kiểm chứng.";document.getElementById("branch-feedback").textContent=liResearchFeedback;window.dispatchEvent(new Event("li:inquiry-changed"));}
+function syncResearch(){
+ const s=liCurrentProblem(),c=s.localized?.[window.liLanguage?.get?.()==="en"?"en":"vi"]||s;
+ const title=document.querySelector("#page-research .surface.tinted h2");
+ if(title)title.textContent=c.question;
+ document.querySelectorAll('#page-research [data-branch]').forEach((el,i)=>{
+  if(s.branches[i]){el.dataset.branch=s.branches[i];el.textContent=String(i+1).padStart(2,"0")+" · "+(c.branches?.[i]||s.branches[i]);}
+ });
+ document.getElementById("research-observed").textContent=c.observed;
+ document.getElementById("research-unknown").textContent=c.unknown;
+ liResearchFeedback="Chọn một nhánh để đặt câu hỏi kiểm chứng.";
+ document.getElementById("branch-feedback").textContent=liResearchFeedback;
+ window.dispatchEvent(new Event("li:inquiry-changed"));
+}
 const buddyCopy={
 home:"Tiểu hữu nhìn vào gương rồi à? Ai được hỏi? Ai bị bỏ sót? Lão nghi câu sau mới thú vị.",
 catalog:"Đọc bản đồ trước khi đi. Đừng chọn cả khu rừng rồi than không thấy đường, nhóc.",
@@ -590,7 +620,7 @@ if(liBuddyVoice.mute){toast("Im Lặng · Lời thoại Lão Lý đang tắt. C�
 buddyDebateActive=false;document.getElementById("buddy-debate").hidden=true;
 document.getElementById("buddy-text").textContent=liBuddyLine(liBuddyVoice.calm
 ?"Chúng ta chưa biết đủ để kết luận. Hãy xác định điều quan sát được và dữ kiện còn thiếu."
-:(currentPage==="home"?scenarios[qIndex].buddy:buddyCopy[currentPage]||buddyCopy.default));
+:(currentPage==="home"?(scenarios[qIndex].localized?.[window.liLanguage?.get?.()==="en"?"en":"vi"]?.buddy||scenarios[qIndex].buddy):buddyCopy[currentPage]||buddyCopy.default));
 showBuddyQuote();document.getElementById("buddy-title-avatar").src=document.getElementById("laoly-current-icon").src;document.getElementById("buddy-scroll").scrollTop=0;openModal("buddy-modal",trigger);refreshLucide();
 }
 
@@ -882,12 +912,13 @@ function liInquiryAllowed(){
 window.liInquiryFlow=Object.freeze({
  getMirror:()=>{
   const sc=scenarios[qIndex];if(!sc)return null;
+  const en=window.liLanguage?.get?.()==="en",c=sc.localized?.[en?"en":"vi"]||sc;
   return {
-   index:qIndex,fieldId:sc.fieldId||"",question:sc.question,scene:sc.scene,
-   source:sc.type==="hook"?"TỪ BÀI HỌC ĐÃ XUẤT BẢN":"VÍ DỤ GIẢ ĐỊNH",
-   route:sc.type==="hook"?sc.lessonRoute:"research",
+   index:qIndex,fieldId:sc.fieldId||"",question:c.question,scene:c.scene,
+   source:sc.previewState==="draft"?(en?"DRAFT · NOT APPROVED":"BẢN THẢO · CHƯA DUYỆT"):sc.type==="hook"?"TỪ BÀI HỌC ĐÃ XUẤT BẢN":"VÍ DỤ GIẢ ĐỊNH",
+   route:sc.type==="hook"&&sc.lessonRoute?sc.lessonRoute:"research",
    cta:sc.type==="hook"?"Khám phá vì sao":"Đào sâu",
-   saved:findSavedMirrorQuestion(sc)>=0
+   draft:sc.previewState==="draft",saved:findSavedMirrorQuestion(sc)>=0
   };
  },
  shift:direction=>{
@@ -897,8 +928,10 @@ window.liInquiryFlow=Object.freeze({
  toggleQuestion:()=>liInquiryAllowed()?liToggleMirrorQuestion():false,
  getResearch:()=>{
   const sc=liCurrentProblem();
-  return sc?{question:sc.question,branches:[...(sc.branches||[])],
-   observed:sc.observed,unknown:sc.unknown,feedback:liResearchFeedback}:null;
+  if(!sc)return null;
+  const c=sc.localized?.[window.liLanguage?.get?.()==="en"?"en":"vi"]||sc;
+  return {question:c.question,branches:[...(c.branches||[])],
+   observed:c.observed,unknown:c.unknown,feedback:liResearchFeedback};
  },
  chooseBranch:index=>{
   if(!liInquiryAllowed()||!Number.isInteger(index))return false;

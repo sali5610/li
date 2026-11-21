@@ -446,6 +446,30 @@ const autoOutcomes=lessons.filter(l=>navLessons.has(l.id)&&
 compiled["site/content-packs/answerability.json"]={...answerability,autoOutcomes};
 
 
+// Gương Vạn Vấn editorial teaser preview; no gated lesson bodies are exported.
+const mirrorDraft=load("content/editorial/home-mirror-hooks.draft.v1.json");
+const mirrorDraftIds=new Set();
+if(mirrorDraft.reviewState!=="proposed"||mirrorDraft.publishState!=="draft"||
+ mirrorDraft.homePreview!=="staging_review"||mirrorDraft.lessonPublicationAuthorized!==false||
+ !Array.isArray(mirrorDraft.items)||mirrorDraft.items.length!==17)
+ throw Error("LI_MIRROR_DRAFT_RELEASE_GATE");
+for(const item of mirrorDraft.items){
+ if(!/^L(?:03|09|15)-[1-3]-[1-3]$/.test(item.id)||
+  !["hci","data-science","supply-chain"].includes(item.fieldId)||
+  mirrorDraftIds.has(item.id)||item.reviewState!=="proposed"||item.publishState!=="draft"||
+  !["vi","en"].every(locale=>{
+   const c=item.localized?.[locale];
+   return ["question","scene","buddy","observed","unknown"].every(k=>typeof c?.[k]==="string"&&c[k].trim())&&
+    Array.isArray(c.branches)&&c.branches.length===3&&c.branches.every(x=>typeof x==="string"&&x.trim());
+  })||
+  !readdirSync(resolve(root,"content/editorial/normalized")).includes(item.id+".draft.v1.json"))
+  throw Error("LI_MIRROR_DRAFT_INVALID "+item.id);
+ mirrorDraftIds.add(item.id);
+}
+compiled["site/content-packs/home-mirror-draft-hooks.js"]=
+ "/* GENERATED from content/editorial/home-mirror-hooks.draft.v1.json; DRAFT previews, NOT released lessons. */\n"+
+ "window.LI_MIRROR_DRAFT_HOOKS="+JSON.stringify(mirrorDraft.items,null,2)+";\n";
+
 const check=process.argv.includes("--check");
 for(const [path,value] of Object.entries(compiled)){
  const payload=path.endsWith(".js")?value:JSON.stringify(value,null,2)+"\n";

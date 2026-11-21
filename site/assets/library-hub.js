@@ -330,7 +330,7 @@ function renderSavedBookmarkEntries(root,entries,knownCases,lessonById){
    route=found.route;
   }
   const actions=add(row,"div","library-bookmark-actions");
-  const open=add(actions,"button","library-text-link library-open-lesson",entry.kind==="question"&&questionIndex>=0&&scenarios[questionIndex].type==="hook"?"Mở bài học":"Mở lại");
+  const open=add(actions,"button","library-text-link library-open-lesson",entry.kind==="question"&&questionIndex>=0&&scenarios[questionIndex].type==="hook"&&scenarios[questionIndex].lessonRoute!=="research"?"Mở bài học":"Mở lại");
   open.type="button";
   if(!route){open.disabled=true;open.textContent="Chưa có điểm đến";}
   else if(entry.kind==="question"){

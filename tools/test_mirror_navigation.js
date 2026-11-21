@@ -203,3 +203,47 @@ assert.equal(bookmarkSandbox.liToggleMirrorQuestion(),true,"Native standalone bo
 assert.equal(savedQuestions.length,0);
 assert.equal(nativeSaveRedraws,2,"Native fallback still updates button and Bookmarks UI");
 console.log("PASS React mirror/Khảo Chứng/bookmark/Undo without hidden DOM and native fallback");
+
+/* 17 drafted lesson hooks may preview on Home, but must not publish lesson
+ * routes, leak draft manuscripts or regress the original 3 Wave1 hooks. */
+const previewSource=JSON.parse(fs.readFileSync(path.resolve(__dirname,
+ "../content/editorial/home-mirror-hooks.draft.v1.json"),"utf8"));
+const previewPack=fs.readFileSync(path.resolve(__dirname,
+ "../site/content-packs/home-mirror-draft-hooks.js"),"utf8");
+const packContext={window:{}};
+vm.runInNewContext(previewPack,packContext);
+const draftItems=packContext.window.LI_MIRROR_DRAFT_HOOKS;
+assert.equal(previewSource.reviewState,"proposed");
+assert.equal(previewSource.publishState,"draft");
+assert.equal(previewSource.lessonPublicationAuthorized,false);
+assert.equal(draftItems.length,17);
+assert.deepEqual(Array.from(draftItems,x=>x.id),
+ previewSource.items.map(x=>x.id),"Preview pack must match canonical draft source");
+assert.equal(new Set(draftItems.map(x=>x.id)).size,17);
+for(const item of draftItems){
+ assert.equal(item.publishState,"draft");
+ for(const locale of ["vi","en"]){
+  const copy=item.localized[locale];
+  for(const k of ["question","scene","buddy","observed","unknown"])
+   assert.equal(typeof copy[k],"string",item.id+" "+locale+" "+k);
+  assert.equal(copy.branches.length,3);
+ }
+}
+const mixStart=html.indexOf("const mirrorDrafts=");
+const mixEnd=html.indexOf("function renderMirrorItem(){",mixStart);
+assert(mixStart>=0&&mixEnd>mixStart,"Draft hook adapter must load before Mirror render");
+const testMix={window:packContext.window,scenarios:scenarios.slice()};
+vm.runInNewContext(html.slice(mixStart,mixEnd),testMix);
+assert.equal(testMix.scenarios.length,23,"3 existing problems + 3 published hooks + 17 draft hooks");
+const draftMirrors=testMix.scenarios.filter(x=>x.previewState==="draft");
+assert.equal(draftMirrors.length,17);
+assert(draftMirrors.every(x=>x.type==="hook"&&x.lessonRoute==="research"),
+ "Draft teaser CTA must not claim an unpublished lesson route");
+assert.equal(testMix.scenarios.filter(x=>x.type==="hook"&&x.previewState!=="draft").length,3);
+const problemStart=html.indexOf("function liCurrentProblem(){");
+const problemEnd=html.indexOf("function liChooseResearchBranch",problemStart);
+const draftResearch={scenarios:testMix.scenarios,qIndex:1};
+vm.runInNewContext(html.slice(problemStart,problemEnd),draftResearch);
+assert.equal(draftResearch.liCurrentProblem().lessonId,"L03-1-1",
+ "Draft Home CTA must preserve its own lesson-specific Research context");
+console.log("PASS 17 VI/EN Home draft hooks: preview, correct context, safe routing, 3 Wave1 intact");

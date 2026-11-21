@@ -1,6 +1,5 @@
 import React,{useEffect,useState} from 'react';
 import {Heading,Text} from '../../../../design-system/react/Atoms';
-import {Card} from '../../../../design-system/react/Components';
 import {releasedLessonRoutes} from './released-lessons.js';
 
 /** Source-verified graph relations from the same read-only public content

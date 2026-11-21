@@ -79,17 +79,22 @@
 <article id="notebook-section" class="surface" tabindex="-1" aria-label="Bút Ký — sổ ghi chú các case đã xử lý"><div class="kicker"><i data-lucide="notebook-tabs" aria-hidden="true"></i> CASE ĐÃ XỬ LÝ</div><h3>Bút Ký</h3><p class="small">Kết luận do bạn tự viết · Gần nhất</p><div id="case-archive-preview" class="path-list" aria-live="polite"><div class="state-note">Chưa có Bút Ký.</div></div></article>
 <article class="surface"><div class="kicker"><i data-lucide="feather" aria-hidden="true"></i> Ý TƯỞNG CHƯA XÁC MINH</div><h3>Ý đã nhặt</h3><p class="small">Ghi nhanh · Gần nhất</p><div id="li-library-latest-idea" class="path-list" aria-live="polite"><div class="state-note">Chưa nhặt ý nào.</div></div></article>
 </div><div class="library-create-actions action-row" aria-label="Tạo ghi chú mới"><button class="action alt" type="button" data-page="case">Viết Bút Ký</button><button class="action alt" type="button" data-page="capture">Nhặt ý</button></div></div>
+<div class="library-group" role="region" aria-labelledby="library-bookmarks-heading"><div class="library-group-header"><h2 id="library-bookmarks-heading">Dấu trang</h2><button class="library-text-link library-more-link" type="button" data-page="bookmarks" aria-label="Xem tất cả Dấu trang">Xem tất cả <i data-lucide="arrow-right" aria-hidden="true"></i></button></div><p class="library-group-description">Bài học và câu hỏi đã lưu.</p></div>
 <div class="library-group" role="region" aria-labelledby="library-reflection-heading"><div class="library-group-header"><h2 id="library-reflection-heading">Nhìn lại</h2><p>Theo dõi thể trạng và các hoạt động theo ngày.</p></div>
 <article class="surface library-activity"><div><div class="kicker"><i data-lucide="calendar-days" aria-hidden="true"></i> NHẬT KÝ</div><h3>Nhịp học của bạn</h3><p>Ngủ, vận động, nghỉ ngơi, nhịp đã áp dụng và số Bài / Vấn đề / Input mỗi ngày.</p></div><button class="action alt" data-page="dashboard">Xem Nhật Ký</button></article>
 </div></div></div></section>
 <section id="page-resume" class="page" tabindex="-1"><div class="section-shell">
 <button class="action alt" type="button" data-page="library">← Tủ Riêng</button>
-<div class="kicker" style="margin-top:var(--li-space-6)">HÀNH TRÌNH CỦA BẠN</div><h1 class="display-title" data-li-i18n="resume.pageTitle">Quay lại</h1><p class="intro">Tiếp tục bài học, quay lại problem / case đang tìm hiểu và mở những Dấu Trang đã lưu.</p>
+<div class="kicker" style="margin-top:var(--li-space-6)">HÀNH TRÌNH CỦA BẠN</div><h1 class="display-title" data-li-i18n="resume.pageTitle">Quay lại</h1><p class="intro">Tiếp tục bài học hoặc tình huống đã xem gần đây.</p>
 <div class="stack-sm library-detail-groups">
 <article class="surface"><div class="kicker">01 · TIẾP TỤC HỌC</div><h2>Bài học gần đây</h2><div id="li-lesson-history" class="path-list" aria-live="polite"><div class="state-note">Chưa có lịch sử mở bài.</div></div></article>
 <article class="surface"><div class="kicker">02 · PROBLEM / CASE</div><h2>Tình huống đã xem gần đây</h2><div id="li-problem-history" class="path-list" aria-live="polite"><div class="state-note">Chưa có problem hay case đã mở.</div></div></article>
+
+</div></div></section>
+<section id="page-bookmarks" class="page" tabindex="-1"><div class="section-shell">
+<button class="action alt" type="button" data-page="library">← Tủ Riêng</button>
 <article class="surface library-bookmark-section" aria-labelledby="li-bookmark-heading">
-<div class="kicker">03 · DẤU TRANG</div><h2 id="li-bookmark-heading">Đã lưu để quay lại</h2>
+<h1 class="display-title" id="li-bookmark-heading">Dấu trang</h1><p class="intro">Những bài học và câu hỏi đã lưu để xem lại.</p>
 <div class="library-bookmark-tabs" role="tablist" aria-label="Loại Dấu Trang">
 <button id="li-bookmark-tab-lessons" class="library-bookmark-tab" type="button" role="tab" aria-selected="true" aria-controls="li-bookmark-panel-lessons" tabindex="0" data-bookmark-tab="lesson">Bài học</button>
 <button id="li-bookmark-tab-questions" class="library-bookmark-tab" type="button" role="tab" aria-selected="false" aria-controls="li-bookmark-panel-questions" tabindex="-1" data-bookmark-tab="question">Câu hỏi</button>
@@ -103,7 +108,7 @@
 <div id="li-saved-questions" class="path-list" aria-live="polite"></div>
 </div>
 </article>
-</div></div></section>
+</div></section>
 <section id="page-collection" class="page" tabindex="-1"><div class="section-shell">
 <button class="action alt" type="button" data-page="library">← Tủ Riêng</button>
 <div class="kicker" style="margin-top:var(--li-space-6)">GHI CHÉP CỦA BẠN</div><h1 class="display-title">Bộ sưu tập</h1><p class="intro">Bút Ký là kết luận đã qua bước Phản Chứng; Ý đã nhặt là điều bạn ghi lại nhưng chưa xác minh.</p>

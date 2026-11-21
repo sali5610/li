@@ -165,15 +165,23 @@ jobs:
            legacy='<script src="'+src+'"></script>'
            assert html.count(legacy)==1,'Native lesson decoration source changed: '+src
            html=html.replace(legacy,'',1)
-          # Fail CLOSED by default. No guest path or query bypass.
+          # Keep the auth gate fail-closed *before* everything else.
+          # React CSS is the final UI layer: inserting it at the opening <head>
+          # let legacy CSS silently override the redesigned iPhone layouts.
           gate=('<style id="li-auth-gate-critical">'
                 'html:not(.li-auth-verified) .app,'
                 'html.li-auth-verified.li-account-open .app{display:none!important}'
                 'html.li-auth-verified:not(.li-account-open) #li-staging-auth-root'
-                '{display:none!important}</style>'
-                '<link rel="stylesheet" href="./assets/staging-gate.css?v=invite-shell-1">'
-                '<link rel="stylesheet" href="./assets/li-react-learning-'+os.environ['GITHUB_SHA'][:12]+'.css">')
+                '{display:none!important}</style>')
           html=html.replace('<head>','<head>'+gate,1)
+          react_css='./assets/li-react-learning-'+os.environ['GITHUB_SHA'][:12]+'.css'
+          final_styles=(
+           '<link rel="stylesheet" href="./assets/staging-gate.css?v=invite-shell-1">'
+           '<link rel="stylesheet" href="'+react_css+'">')
+          assert html.count('</head>')==1,'Missing unique app head'
+          html=html.replace('</head>',final_styles+'</head>',1)
+          assert html.index('li-layout.css') < html.index(react_css),(
+           'React UI styles must load AFTER the legacy stylesheets')
           marker='<div class="settings-group-grid"><article class="surface"><div class="kicker">SAO LƯU</div>'
           assert html.count(marker)==1, 'Settings account slot changed'
           account=('<article class="surface" data-staging-only="true">'

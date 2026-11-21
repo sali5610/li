@@ -352,3 +352,18 @@
  #page-dashboard .li-react-journal .li-legacy-calendar-actions{gap:var(--li-space-2)}
  #page-dashboard .li-react-journal .li-legacy-calendar-grid{gap:2px}
 }
+
+/* Keep month heading and its two actions on the same line at 390 CSS px. */
+@media(max-width:480px){
+ #page-dashboard .li-react-journal .li-legacy-calendar>header{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;gap:var(--li-space-2)
+ }
+ #page-dashboard .li-react-journal .li-legacy-calendar>header strong{
+  min-width:0;white-space:nowrap;letter-spacing:-.025em;
+  font-size:clamp(19px,5.45vw,24px)
+ }
+ #page-dashboard .li-react-journal .li-legacy-calendar-actions button{
+  min-width:44px;width:44px;min-height:44px;height:44px
+ }
+}

@@ -274,7 +274,7 @@ function ProblemRows({problems,limit}:{
    {item.kind==='case'&&<IconButton className="library-icon-action" icon="bookmark"
     label={item.saved?copy('Bỏ lưu case','Unsave case'):copy('Lưu case','Save case')}
     aria-pressed={item.saved}
-    onClick={()=>app.liBookmarks?.toggle('case','sampling-bias-90')}/>
+    onClick={()=>app.liBookmarks?.toggle('case','sampling-bias-90')}/>}
   </div>)}
  </div>;
 }

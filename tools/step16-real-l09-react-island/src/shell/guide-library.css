@@ -417,7 +417,7 @@
 /* Remove legacy .path-item's faux cards inside actual DS Card containers.
    Recent activity and bookmarks are list rows, not nested framed surfaces. */
 .li-react-library .path-list>.path-item.library-list-item{
- display:flex;align-items:center;flex-wrap:wrap;gap:var(--li-space-3);
+ /* Preserve the responsive grid for full-width titles; only reset legacy paint. */
  min-width:0;padding:var(--li-space-3) 0;
  border:0 solid var(--rule);border-bottom:1px solid var(--rule);
  background:color-mix(in srgb,var(--paper) 0%,transparent);

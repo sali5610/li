@@ -789,11 +789,8 @@
 /* Native focus rings, card boundaries, buttons and navigational/section rules
    intentionally remain untouched for interaction and accessibility. */
 
-/* PO refinement: a stamp is die-cut paper, NOT a rectangle with fake cream
-   circles painted onto its border. CSS alpha masks punch *real transparent*
-   semicircles from all four edges at an even pitch. There is no outer stroke.
-   Two low-opacity cross-grain layers suggest woven canvas stock, not torn
-   or artificially stacked paper. Applies equally in Gallery and Focus/Fluid. */
+/* Stamp: real punched edge, clean solid lavender stock (no simulated grain).
+   Fine canvas weave is reserved for the ivory open BOOK pages below. */
 .li-ui-lab-preview[data-visual-theme="vintage-pop"]
  .li-flow-page[data-layout="vintagePop"]:is(
   [data-page="lesson"],[data-page="case"],[data-page="collection"]
@@ -803,9 +800,7 @@
  position:relative;
  isolation:isolate;
  background-color:var(--vp-accent-lavender);
- background-image:
-  repeating-linear-gradient(0deg,rgba(255,255,255,.09) 0 1px,transparent 1px 4px),
-  repeating-linear-gradient(90deg,rgba(16,46,45,.035) 0 1px,transparent 1px 5px);
+ background-image:none;
  background-blend-mode:normal;
  border:0;
  outline:0;
@@ -866,5 +861,35 @@
   ) .li-flow-page-aside{
   -webkit-mask:none;
   mask:none;
+ }
+}
+
+/* The subtle canvas-paper grain belongs to the open book, NOT the stamp.
+   Faint 1px fibers cross in both directions; reading surfaces remain cream,
+   with no artificial torn-paper or extra frame treatment. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"]
+ .li-flow-page[data-page="lesson"] .li-pop-lesson{
+ background-color:var(--vp-paper);
+ background-image:
+  repeating-linear-gradient(0deg,rgba(92,75,50,.028) 0 1px,transparent 1px 4px),
+  repeating-linear-gradient(90deg,rgba(92,75,50,.020) 0 1px,transparent 1px 5px),
+  linear-gradient(90deg,#fff0d0 0%,#fff7e8 3%,#fff9ee 47%,#ebdcc4 49.5%,
+   #cbb69c 50%,#f6f1e8 51.5%,#fffaf0 98%,#eddbbf 100%);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"]
+ .li-flow-page[data-page="lesson"] .li-pop-lesson .li-pop-book-left{
+ background-image:
+  repeating-linear-gradient(0deg,rgba(92,75,50,.028) 0 1px,transparent 1px 4px),
+  repeating-linear-gradient(90deg,rgba(92,75,50,.020) 0 1px,transparent 1px 5px),
+  linear-gradient(85deg,#fff2daee,#fffaf0dd);
+}
+/* The iPhone's vertically-open book retains its original mobile page gradient. */
+@container lab-preview (max-width:860px){
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"]
+  .li-flow-page[data-page="lesson"] .li-pop-lesson{
+  background-image:
+   repeating-linear-gradient(0deg,rgba(92,75,50,.028) 0 1px,transparent 1px 4px),
+   repeating-linear-gradient(90deg,rgba(92,75,50,.020) 0 1px,transparent 1px 5px),
+   linear-gradient(90deg,#f6f0e4,#fffaf0 6%,#fffaf0 94%,#edd8b8);
  }
 }

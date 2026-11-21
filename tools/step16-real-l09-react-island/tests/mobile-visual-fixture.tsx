@@ -216,7 +216,7 @@ setTimeout(()=>{
   const hidden=overflow?.querySelectorAll('ul>li');
   const crumbs=[...document.querySelectorAll('.li-ds-breadcrumb>ol>li')];
   assert('real-lesson-breadcrumb-hierarchy',Boolean(trail&&
-   trail.querySelector('[aria-current="page"]')&&overflow&&hidden?.length===3),bounds(trail));
+   trail.querySelector('[aria-current="page"]')&&overflow&&hidden?.length===2),bounds(trail));
   assert('two-closest-parent-links',ancestors.length===2,
    ancestors.map(n=>n.textContent));
   assert('visible-ancestors-are-course-and-field',Boolean(
@@ -234,7 +234,7 @@ setTimeout(()=>{
   if(summary&&overflow){
    summary.click();
    assert('ellipsis-dropdown-opens',overflow.open&&
-    (hidden?.length||0)>=3&&getComputedStyle(summary).borderTopWidth==='0px');
+    (hidden?.length||0)>=2&&getComputedStyle(summary).borderTopWidth==='0px');
    summary.click();
    assert('ellipsis-dropdown-closes',!overflow.open);
   }

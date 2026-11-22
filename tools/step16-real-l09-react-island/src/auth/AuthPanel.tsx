@@ -13,6 +13,9 @@ import {deferAuthScreen} from './auth-display.js';
 import {RlsQaPanel} from './RlsQaPanel.js';
 import {SyncQaPanel} from './SyncQaPanel.js';
 import {AiOwnerControl} from './AiOwnerControl.js';
+import {VaultSettings} from './VaultSettings.js';
+import {clearCurrentVault,currentVault} from '../sync/e2ee-cloud.js';
+const E2EE_PILOT=import.meta.env.VITE_LI_E2EE_PILOT==='1';
 import {prepareLearnerAccount,startLearnerSync,journalCloudConsent,changeJournalCloudConsent,
  listPrivateConflicts,resolvePrivateConflict,type PrivateConflictChoice,type SyncReport} from './learner-sync.js';
 
@@ -106,6 +109,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  // Offline continuity is scoped to the previously invited local owner, not a JWT.
  const offlineId=recentOfflineOwner(isOffline);
  const accountId=liveAccountId??offlineId;
+ useEffect(()=>()=>clearCurrentVault(),[accountId]);
  const localOffline=isOffline&&Boolean(offlineId)&&accountId===offlineId;
  // A signed-in device may switch to its verified offline lease on the next
  // render. Do not briefly unmount its private UI while the offline effect runs.
@@ -364,14 +368,14 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  async function signOut(){
   if(busy)return;
   if(isOffline){
-   forgetOfflineInvite();setAccess('error');setFeedback(t.lockedOffline);
+   clearCurrentVault();forgetOfflineInvite();setAccess('error');setFeedback(t.lockedOffline);
    return;
   }
   setBusy('logout');setFeedback('');
   try{
    const result=await authClient.signOut();
    if(result.error)throw Error('SIGN_OUT_FAILED');
-   forgetOfflineInvite();
+   clearCurrentVault();forgetOfflineInvite();
    setAccess('checking');
    await refetch();
   }catch{setFeedback(t.leave);}
@@ -395,7 +399,10 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    {access==='granted'?t.granted:t.offline}
   </Text>
   <Text role="support" className="li-auth-settings-sync" aria-live="polite">
-   {access==='offline'?syncCopy[locale].offline:syncCopy[locale][syncStatus]}
+   {E2EE_PILOT&&accountId&&!currentVault(accountId)?
+    (locale==='vi'?'Đồng bộ cloud đang khóa. Mở Quyền riêng tư · E2EE để tiếp tục.':
+     'Cloud sync locked. Open Privacy · E2EE to continue.'):
+    access==='offline'?syncCopy[locale].offline:syncCopy[locale][syncStatus]}
   </Text>
   {access==='granted'&&syncStatus==='conflict'&&<section className="li-auth-settings-conflicts"
    aria-label={locale==='vi'?'Khác biệt giữa các thiết bị':'Device conflicts'}>
@@ -413,6 +420,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     </div>
    </div>)}
   </section>}
+  {E2EE_PILOT&&accountId&&<VaultSettings accountId={accountId} locale={locale} online={!isOffline}/>}
   {access==='granted'&&!localOffline&&session?.user?.email&&
    <AiOwnerControl email={session.user.email} locale={locale}/>}
   {feedback&&<p className="li-auth-settings-error" role="alert">{feedback}</p>}

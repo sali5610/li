@@ -29,7 +29,11 @@ def get(origin, path="/v1/config", method="GET", data=None):
                     safe = {"_keys": sorted(payload.keys()),
                             "_numeric_error_codes": [e.get("code") for e in payload.get("errors", [])
                                 if isinstance(e, dict) and isinstance(e.get("code"), int)]
-                            if isinstance(payload.get("errors"), list) else []}
+                            if isinstance(payload.get("errors"), list) else [],
+                            "_edge_error_code": payload.get("error_code"),
+                            "_edge_error_name": payload.get("error_name"),
+                            "_edge_error_category": payload.get("error_category"),
+                            "_retryable": payload.get("retryable")}
                 payload = safe
             else:
                 payload = None
@@ -48,7 +52,11 @@ def main():
                                   "available" if isinstance(data, dict) and data.get("available") is True else "other") +
                   " server=" + str(headers.get("Server", "missing")) +
                   " response_keys=" + str(data.get("_keys", []) if isinstance(data, dict) else []) +
-                  " cf_error_codes=" + str(data.get("_numeric_error_codes", []) if isinstance(data, dict) else []))
+                  " cf_error_codes=" + str(data.get("_numeric_error_codes", []) if isinstance(data, dict) else []) +
+                  " edge_code=" + str(data.get("_edge_error_code", "none") if isinstance(data, dict) else "none") +
+                  " edge_name=" + str(data.get("_edge_error_name", "none") if isinstance(data, dict) else "none") +
+                  " edge_category=" + str(data.get("_edge_error_category", "none") if isinstance(data, dict) else "none") +
+                  " retryable=" + str(data.get("_retryable", "none") if isinstance(data, dict) else "none"))
             if status == 200 and isinstance(data, dict) and data.get("available") is True:
                 public = data.get("vapidPublicKey")
                 padded = public + "=" * (-len(public) % 4) if isinstance(public, str) else ""

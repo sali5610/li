@@ -74,7 +74,7 @@ export function rearmForFutureSchedule(before:ReminderSchedule,after:ReminderSch
  const [hour,minute]=after.time.split(':').map(Number);
  const next=new Date(now.getFullYear(),now.getMonth(),now.getDate(),hour,minute).getTime();
  // Push is sent one minute early; leave at least that much time to reschedule.
- return next-now.getTime()>=60_000;
+ return next-now.getTime()>60_000;
 }
 export function dueInApp(s:ReminderSchedule,delivery:ReminderDelivery,now:Date):boolean{
  if(!s.enabled||!validTime(s.time)||delivery.lastDay===localDay(now))return false;

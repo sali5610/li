@@ -66,7 +66,8 @@ test('manual reschedule re-arms a future same-day slot but refresh and past edit
  assert.equal(dueInApp(later,{lastDay:localDay(now),snoozedUntil:0},new Date(2026,10,23,9,20)),false);
  assert.equal(rearmForFutureSchedule(later,later,now),false,'unchanged/sync never replays');
  assert.equal(rearmForFutureSchedule(before,{...before,time:'09:10'},now),false);
- assert.equal(rearmForFutureSchedule(before,{...before,time:'09:16'},now),true);
+ assert.equal(rearmForFutureSchedule(before,{...before,time:'09:16'},now),false);
+ assert.equal(rearmForFutureSchedule(before,{...before,time:'09:17'},now),true);
  assert.equal(rearmForFutureSchedule(before,{...later,frequency:'weekends'},now),false);
  assert.equal(rearmForFutureSchedule(before,{...later,enabled:false},now),false);
 });

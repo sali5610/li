@@ -1,7 +1,7 @@
 name: Release li. to Cloudflare Pages Free — MANUAL ONLY
 
 # IMPORTANT: Manual dispatch is the ONLY deploy trigger. PR gate builds a candidate locally but NEVER deploys.
-# Auth-only uses the re-reviewed JWT proxy/cache fix SHA; AI retains the earlier pinned SHA,
+# Auth-only uses the staged and focused-tested Bút Ký/Neon sync fix SHA; AI retains the earlier pinned SHA,
 # without merging all staging changes into main. Never dispatch until preflight.
 on:
   # Focused PR gate builds the pinned Auth-only artifact; it never deploys.
@@ -43,12 +43,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: bf8f29c9200354e284f841f49ed4f37326bb7b1f
+          ref: 212a4d84ea015ff5cba5311ba4632686e93418dd
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "bf8f29c9200354e284f841f49ed4f37326bb7b1f"
+          test "$(git rev-parse HEAD)" = "212a4d84ea015ff5cba5311ba4632686e93418dd"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -64,6 +64,7 @@ jobs:
           npm install --no-audit --no-fund --prefix tools/step16-real-l09-react-island
           cd tools/step16-real-l09-react-island
           npm run extract
+          npm run test:sync
           npm run test:auth-pwa
           npx tsc --noEmit
           npm run build:worker:auth-only
@@ -100,7 +101,7 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.auth_only_mode && 'bf8f29c9200354e284f841f49ed4f37326bb7b1f' || (inputs.ai_mode && 'ea25f7a90b706812e211d3c5fc275e876bbd3f8d' || github.sha) }}
+          ref: ${{ inputs.auth_only_mode && '212a4d84ea015ff5cba5311ba4632686e93418dd' || (inputs.ai_mode && 'ea25f7a90b706812e211d3c5fc275e876bbd3f8d' || github.sha) }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
@@ -108,8 +109,8 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
-            expected='bf8f29c9200354e284f841f49ed4f37326bb7b1f'
-            echo 'Auth-only JWT proxy fix: integrated CI #44978054613 PASS; iPhone fixture CI #44978054636 PASS.'
+            expected='212a4d84ea015ff5cba5311ba4632686e93418dd'
+            echo 'Auth-only Bút Ký sync fix: staging #45012373681 PASS (149/149 sync, 11/11 state); prior Google Auth PASS by PO.'
           else
             expected='ea25f7a90b706812e211d3c5fc275e876bbd3f8d'
             echo 'AI mode retains previously reviewed source; no AI release approved.'
@@ -162,6 +163,7 @@ jobs:
           npm install --no-audit --no-fund --prefix tools/step16-real-l09-react-island
           cd tools/step16-real-l09-react-island
           npm run extract
+          npm run test:sync
           npm run test:auth-pwa
           npx tsc --noEmit
           npm run build:worker:auth-only

@@ -32,7 +32,9 @@ jobs:
           cd tools/push-worker
           npx wrangler deploy --dry-run --outdir /tmp/li-webpush-free-provision-check
           test -s /tmp/li-webpush-free-provision-check/index.js
-      - name: Verify Workers Free account, D1 slot and Worker availability BEFORE WRITES
+      - name: Verify Workers Free account and resume only the pre-existing approved D1
+        env:
+          LI_APPROVED_D1_RESUME: FREE_WEBPUSH_20261122
         run: python3 tools/push-worker/scripts/free_setup_preflight.py
       - name: Provision exactly one Free D1, VAPID and dedicated Worker
         env:

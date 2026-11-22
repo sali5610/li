@@ -36,7 +36,7 @@ def api(path, name, allow_404=False):
         raise Blocker(name + "_UNVERIFIED")
     return payload.get("result")
 
-def main():
+def main(*, allow_existing_d1=False):
     errors = []
     def probe(name, action):
         try:
@@ -77,12 +77,19 @@ def main():
     if databases is not None:
         if not isinstance(databases, list):
             errors.append("D1_LIST_UNVERIFIED")
-        elif any(d.get("name") == "li-push-staging" for d in databases if isinstance(d, dict)):
-            errors.append("PUSH_D1_ALREADY_EXISTS_STOP_TO_AVOID_OVERWRITE")
-        elif len(databases) >= 10:
-            errors.append("FREE_D1_DATABASE_COUNT_LIMIT")
         else:
-            print("LI_PUSH_FREE_D1_SLOT_PASS")
+            existing = [d for d in databases if isinstance(d, dict) and d.get("name") == "li-push-staging"]
+            if existing:
+                if not allow_existing_d1:
+                    errors.append("PUSH_D1_ALREADY_EXISTS_STOP_TO_AVOID_OVERWRITE")
+                elif len(existing) != 1 or not re.fullmatch(r"[a-fA-F0-9-]{36}", str(existing[0].get("uuid", ""))):
+                    errors.append("PUSH_D1_RESUME_REQUIRES_SINGLE_VALID_UUID")
+                else:
+                    print("LI_PUSH_RESUME_EXISTING_D1_PASS - no second D1")
+            elif len(databases) >= 10:
+                errors.append("FREE_D1_DATABASE_COUNT_LIMIT")
+            else:
+                print("LI_PUSH_FREE_D1_SLOT_PASS")
 
     # 404 means free, absent dedicated Worker. Other failures are blockers.
     def check_script():
@@ -98,7 +105,7 @@ def main():
 
 if __name__ == "__main__":
     try:
-        main()
+        main(allow_existing_d1=os.getenv("LI_APPROVED_D1_RESUME") == "FREE_WEBPUSH_20261122")
     except Blocker as exc:
         print("LI_PUSH_PREFLIGHT_BLOCKED " + str(exc), file=sys.stderr)
         sys.exit(1)

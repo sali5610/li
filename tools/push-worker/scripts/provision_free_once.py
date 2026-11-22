@@ -24,6 +24,15 @@ ORIGIN = "https://li5610.pages.dev"
 BASE = "https://api.cloudflare.com/client/v4"
 
 def create_free_d1():
+    # Recover the DB created by the first approved setup attempt if migration
+    # failed. Never create an additional DB or rotate a live Worker silently.
+    databases = api("d1/database?per_page=100", "D1_DATABASE_LIST")
+    existing = [d for d in databases if isinstance(d, dict) and d.get("name") == NAME]
+    if existing:
+        if len(existing) != 1 or not re.fullmatch(r"[0-9a-fA-F-]{36}", str(existing[0].get("uuid", ""))):
+            raise Blocker("D1_RESUME_IDENTITY_UNVERIFIED")
+        print("LI_PUSH_REUSING_EXISTING_D1 (ID redacted)")
+        return existing[0]["uuid"]
     account = os.environ["CLOUDFLARE_ACCOUNT_ID"]
     token = os.environ["CLOUDFLARE_API_TOKEN"]
     request = Request(
@@ -93,7 +102,7 @@ def main():
     args = parser.parse_args()
     if not args.apply or os.getenv("LI_APPROVED_SETUP") != "FREE_WEBPUSH_20261122":
         raise Blocker("EXPLICIT_PO_APPROVAL_GUARD_MISSING")
-    preflight()
+    preflight(allow_existing_d1=True)
     name = api("workers/subdomain", "WORKER_SUBDOMAIN_READ")["subdomain"]
     if not re.fullmatch(r"[a-z0-9-]{1,63}", name):
         raise Blocker("WORKER_SUBDOMAIN_INVALID")
@@ -106,8 +115,10 @@ def main():
         if config.count(marker) != 1 or '"ALLOWED_ORIGIN": "https://li5610.pages.dev"' not in config:
             raise Blocker("PUSH_SOURCE_CONFIG_CHANGED")
         config_path.write_text(config.replace(marker, db_id), encoding="utf-8")
+        # Wrangler v4 does not support --yes here: CI/non-interactive mode
+        # skips the confirmation prompt for a remote migration.
         run_command("npx", "wrangler", "d1", "migrations", "apply", "PUSH_DB",
-                    "--remote", "--yes", "--config", str(config_path))
+                    "--remote", "--config", str(config_path))
         print("LI_PUSH_D1_EMPTY_SCHEMA_APPLIED")
         keys = make_vapid()
         fd, filename = tempfile.mkstemp(prefix=".li-vapid-", suffix=".json", dir=str(ROOT))

@@ -31,7 +31,7 @@ async function invitedAccount(request,env){
  try{
   const base=env.NEON_DATA_API_URL.replace(/\/$/,'');
   answer=await fetch(base+'/rpc/li_is_invited',{
-   method:'POST',redirect:'error',cache:'no-store',credentials:'omit',
+   method:'POST',redirect:'manual',cache:'no-store',credentials:'omit',
    headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json'},
    body:'{}'
   });

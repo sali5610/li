@@ -296,7 +296,7 @@ function apply(root=document.body){
  locked=true;
  try{
   document.documentElement.lang=locale;
-  if(root===document.body)document.title="理 · li. — THE WORLD OF KNOWING WHY";
+  if(root===document.body)document.title="li. — THE WORLD OF KNOWING WHY";
   if(!integratedReact()){
    walk(root);
    syncSettings();

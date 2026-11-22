@@ -3,6 +3,7 @@ import {learnableLessonIds} from '../learning/released-lessons.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
 import {storageKey,type JsonValue,type ItemType} from '../sync/contract.js';
 import {PrivateDeviceStore} from '../sync/local-dexie.js';
+import {mergePersonalConflictRaw} from './personal-conflict-merge.js';
 import {syncOnce} from '../sync/sync-once.js';
 import type {NeonUserApi} from '../sync/neon-api.js';
 import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_INTEGRATED_LI_APP} from './config.js';
@@ -108,6 +109,60 @@ export async function resolvePrivateConflict(uid:string,type:ItemType,id:string,
  }
  await store.resolveConflict(uid,op,remote,choice);
  window.dispatchEvent(new Event('li:private-sync-request'));
+}
+/**
+ * Only automatically rebase independent notes/bookmarks and append-only visit
+ * history. Same-item divergent edits remain in the visible conflict chooser.
+ * This also heals pre-existing outbox conflicts created by older app builds.
+ */
+async function reconcileAdditivePersonalConflicts(uid:string,api:NeonUserApi,
+ observed:Map<string,string|null>):Promise<number>{
+ let recovered=0;
+ const fields=[
+  {type:'note' as const,id:'library'},
+  {type:'l2_progress' as const,id:'lesson-visits'},
+  {type:'l2_progress' as const,id:'problem-visits'}
+ ];
+ for(const field of fields){
+  const key=storageKey(uid,field.type,field.id);
+  const op=await store.outbox.get(key);
+  if(!op?.conflict||op.accountId!==uid)continue;
+  const pending=personalRemoteSnapshot(uid,field.type,field.id,op.payload);
+  if(!pending)continue;
+  const original=localStorage.getItem(pending.key);
+  // Do not change data under an open editor or a newer unsaved mutation.
+  if(original===null||original!==pending.raw)continue;
+  const remote=await api.one(field.type,field.id);
+  if(!remote||remote.deleted_at)continue;
+  const remoteValue=personalRemoteSnapshot(uid,field.type,field.id,remote.payload);
+  if(!remoteValue||remoteValue.key!==pending.key)continue;
+  const base=op.basePayload===null||op.basePayload===undefined?null:
+   personalRemoteSnapshot(uid,field.type,field.id,op.basePayload)?.raw;
+  if(op.basePayload!==null&&op.basePayload!==undefined&&base===undefined)continue;
+  const merged=mergePersonalConflictRaw(field.id,base??null,original,remoteValue.raw);
+  if(merged===null)continue; // An ambiguous edit must remain explicitly blocked.
+  const payload={schema:'li.personal.storage.v1' as const,storageKey:pending.key,raw:merged};
+  // Existing native/React library code reads localStorage synchronously.
+  // Persist and verify before the Dexie rebase; roll back if Dexie fails.
+  localStorage.setItem(pending.key,merged);
+  if(localStorage.getItem(pending.key)!==merged){
+   localStorage.setItem(pending.key,original);
+   throw Error('LIBRARY_MERGE_LOCAL_READBACK_FAILED');
+  }
+  try{
+   await store.rebaseConflict(uid,op,remote,payload);
+  }catch(error){
+   if(localStorage.getItem(pending.key)===merged)localStorage.setItem(pending.key,original);
+   throw error;
+  }
+  observed.set(pending.key,merged);
+  // Refresh the one canonical in-memory library owner, not a duplicate cache.
+  window.dispatchEvent(new CustomEvent('li:personal-sync-applied',{
+   detail:{accountId:uid,keys:[pending.key]}
+  }));
+  recovered++;
+ }
+ return recovered;
 }
 export async function waitForLearnerHydration(uid:string):Promise<void>{
  const state=activeSync;
@@ -346,7 +401,12 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
    // A conflict in ONE item must not block independent, conflict-free lessons
    // downloaded by syncOnce. hydrate() skips every locally queued/conflicted item,
    // so preserve those drafts while bringing the other browser up to date.
-   if(result.mode==='conflict')report('conflict');
+   if(result.mode==='conflict'){
+    report('conflict');
+    // A previously blocked Library write may be an independent addition from
+    // a second device. Repair once, then retry through the SAME signed CAS.
+    if(await reconcileAdditivePersonalConflicts(uid,api,observed)>0)pending=true;
+   }
    // The signed Data API has returned the uploaded row and read all owner rows.
    // Verify actual lesson readback, not merely a successful POST status.
    if(result.uploaded>0){

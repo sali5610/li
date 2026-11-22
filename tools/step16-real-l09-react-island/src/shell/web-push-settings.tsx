@@ -8,18 +8,22 @@ function copy(vi:string,en:string){
  return (window as Window&{liLanguage?:{get?:()=>string}}).liLanguage?.get?.()==='en'?en:vi;
 }
 const pause=(ms:number)=>new Promise<void>(resolve=>window.setTimeout(resolve,ms));
-// Diagnostics are intentionally bounded codes: never expose JWT, device endpoint,
-// response bodies or account identifiers in UI or logs.
+
+// Only deliberately bounded diagnostic codes are shown: never print a token,
+// endpoint, account, subscription key, or raw remote error message.
 function safePushIssue(reason:unknown):string{
  const message=reason instanceof Error?reason.message:'';
- const backend=/^PUSH_BACKEND_(400|401|403|404|409|429|500|503)$/.exec(message);
- if(backend)return 'PUSH-'+backend[1];
- if(message==='PUSH_AUTH_REQUIRED'||message.startsWith('NEON_AUTH_JWT_'))
-  return 'PUSH-AUTH';
- if(message==='PUSH_BACKEND_UNAVAILABLE')return 'PUSH-CONFIG';
+ const http=/^PUSH_BACKEND_(400|401|403|404|409|429|500|503)$/.exec(message);
+ if(http)return 'PUSH-'+http[1];
+ if(message==='PUSH_AUTH_REQUIRED'||message.startsWith('NEON_AUTH_JWT_'))return 'PUSH-AUTH';
+ if(message==='PUSH_BACKEND_UNAVAILABLE'||message==='PUSH_CONFIG_NETWORK')return 'PUSH-CONFIG';
+ if(message==='PUSH_SERVICE_WORKER')return 'PUSH-SW';
+ if(message==='PUSH_DEVICE_SUBSCRIBE')return 'PUSH-DEVICE';
+ if(message==='PUSH_SERVER_NETWORK')return 'PUSH-SERVER-NET';
  if(message==='PUSH_REMINDER_OFF')return 'PUSH-SCHEDULE';
- return 'PUSH-DEVICE-OR-NET';
+ return 'PUSH-UNKNOWN';
 }
+
 
 export function WebPushSettings(){
  const [enabled,setEnabled]=useState(false);
@@ -53,7 +57,7 @@ export function WebPushSettings(){
      setEnabled(false);
      return;
     }
-    if(!navigator.onLine)throw Error('PUSH_OFFLINE');
+    if(!navigator.onLine)throw Error('PUSH_SERVER_NETWORK');
     // A local Apple subscription is NOT the same as a successful server ACK.
     // Reconcile after permission changes/foregrounding without asking again.
     await updatePushSchedule(api,sub);
@@ -91,13 +95,25 @@ export function WebPushSettings(){
 
  async function connectDevice(){
   if(!api)throw Error('PUSH_BACKEND_UNAVAILABLE');
-  const key=await pushVapid(api);
-  const registration=await navigator.serviceWorker.ready;
-  const existing=await registration.pushManager.getSubscription();
-  const subscription=existing||await registration.pushManager.subscribe({
-   userVisibleOnly:true,applicationServerKey:key
-  });
-  await registerPush(api,subscription);
+  let key:ArrayBuffer;
+  try{key=await pushVapid(api);}
+  catch(err){
+   if(err instanceof Error&&err.message==='PUSH_BACKEND_UNAVAILABLE')throw err;
+   throw Error('PUSH_CONFIG_NETWORK');
+  }
+  let subscription:PushSubscription;
+  try{
+   const registration=await navigator.serviceWorker.ready;
+   const existing=await registration.pushManager.getSubscription();
+   subscription=existing||await registration.pushManager.subscribe({
+    userVisibleOnly:true,applicationServerKey:key
+   });
+  }catch{throw Error('PUSH_DEVICE_SUBSCRIBE');}
+  try{await registerPush(api,subscription);}
+  catch(err){
+   if(err instanceof Error&&(/^(PUSH_|NEON_AUTH_JWT_)/.test(err.message)))throw err;
+   throw Error('PUSH_SERVER_NETWORK');
+  }
  }
  async function enable(){
   if(!api||!userAllowed()||!installedPushSupported()||operation.current)return;
@@ -141,15 +157,15 @@ export function WebPushSettings(){
    const granted=Notification.permission==='granted';
    setPermissionGranted(granted);setPending(granted);
    setNotice('');
-   setError(denied?copy(
+   const explanation=denied?copy(
     'iPhone đang chặn Thông báo. Hãy bật quyền trong Cài đặt của iPhone.',
     'iPhone blocked notifications. Enable permission in iPhone Settings.'):
     granted?copy(
      'iPhone đã cấp quyền, nhưng chưa hoàn tất đăng ký với máy chủ. Hãy thử lại; không cần cấp quyền lần nữa.',
      'iPhone granted permission, but server registration is unfinished. Try again without granting permission again.'):
     copy('Quyền thông báo chưa được xác nhận. Hãy kiểm tra quyền trên iPhone rồi thử lại.',
-     'Notification permission is not confirmed. Check iPhone permission and try again.')+
-     (denied?'':' ('+safePushIssue(err)+')'));
+     'Notification permission is not confirmed. Check iPhone permission and try again.');
+   setError(explanation+(denied?'':' ('+safePushIssue(err)+')'));
   }finally{operation.current=false;setBusy(false);}
  }
  async function disable(){
@@ -176,8 +192,8 @@ export function WebPushSettings(){
     'On iPhone, open li. from its Home Screen app icon, not a Safari tab.')}</Text>:
    <>
     <Text role="support">{copy(
-     'Mặc định tắt. Chỉ xin quyền khi nhấn cho phép. Giữ nguyên giờ nhắc đã đặt; thông báo ngoài app có thể đến sớm hoặc trễ. Mỗi thiết bị bật riêng.',
-     'Off by default. Permission is requested only on tap. Reminder times remain unchanged; background notifications may arrive early or late. Enable per device.')}</Text>
+     'Mặc định tắt. Chỉ xin quyền khi nhấn cho phép. Giờ lịch hiển thị không đổi; máy chủ có thể bắt đầu gửi sớm 1 phút để bù độ trễ. Mỗi thiết bị bật riêng.',
+     'Off by default. Permission is requested only on tap. Your displayed time stays unchanged; the server may start delivery 1 minute early to offset delay. Enable per device.')}</Text>
     <div className="action-row">
      {!enabled?<Button variant="primary" disabled={busy} onClick={()=>void enable()}>
       {pending?copy('Thử hoàn tất đăng ký','Retry registration'):

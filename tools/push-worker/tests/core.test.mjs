@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {validClock,validZone,validSubscription,allowedPushEndpoint,
- dueForPush,duePushSlots,claimDays,withoutDays,newlySnoozedKinds,validSchedules,localMinute,safeAccountJwt,endpointId} from '../src/core.mjs';
+ dueForPush,duePushSlots,claimDays,withoutDays,newlySnoozedKinds,newlyRescheduledKinds,validSchedules,localMinute,safeAccountJwt,endpointId} from '../src/core.mjs';
 import {sendDue} from '../src/index.mjs';
 test('minute Cron sends one minute early, catches late ticks, never repeats',()=>{
  const row={enabled:1,kind:'sleep',local_time:'21:00',zone:'Asia/Ho_Chi_Minh',last_day:null};
@@ -89,6 +89,33 @@ test('four independent push schedules repeat on chosen local weekdays',()=>{
  const monday=new Date('2026-11-23T13:59:00Z');
  assert.deepEqual(duePushSlots(claimed,monday).map(s=>s.kind),['study','sleep','rest']);
  assert.deepEqual(duePushSlots({...row,local_time:'{"version":2,"schedules":[]}'},monday),[]);
+});
+test('future same-day edits re-arm only changed kind; repeat PUT and past edits do not',()=>{
+ const kinds=['study','sleep','movement','rest'];
+ const schedules=kinds.map(kind=>({
+  kind,enabled:kind==='study'||kind==='sleep',time:'09:00',frequency:'daily',days:[]
+ }));
+ const old={kind:'study',local_time:JSON.stringify({version:2,schedules})};
+ const later=schedules.map(s=>s.kind==='study'?{...s,time:'09:20'}:s);
+ const at=new Date('2026-11-23T02:15:00Z').getTime(); // Monday 09:15 ICT
+ assert.deepEqual(newlyRescheduledKinds(old,later,'Asia/Ho_Chi_Minh',at),['study']);
+ const next={...old,local_time:JSON.stringify({version:2,schedules:later})};
+ assert.deepEqual(newlyRescheduledKinds(next,later,'Asia/Ho_Chi_Minh',at),[],
+  'refresh and foreground re-registration must not replay');
+ assert.deepEqual(newlyRescheduledKinds(old,schedules,'Asia/Ho_Chi_Minh',at),[]);
+ const past=schedules.map(s=>s.kind==='study'?{...s,time:'09:10'}:s);
+ assert.deepEqual(newlyRescheduledKinds(old,past,'Asia/Ho_Chi_Minh',at),[]);
+ const weekend=later.map(s=>s.kind==='study'?{...s,frequency:'weekends'}:s);
+ assert.deepEqual(newlyRescheduledKinds(old,weekend,'Asia/Ho_Chi_Minh',at),[]);
+ const delivered=JSON.stringify({study:'2026-11-23',sleep:'2026-11-23'});
+ const cleared=withoutDays({kind:'study',last_day:delivered},['study']);
+ assert.deepEqual(JSON.parse(cleared),{sleep:'2026-11-23'});
+ const row={...next,enabled:1,zone:'Asia/Ho_Chi_Minh',last_day:cleared};
+ assert.deepEqual(duePushSlots(row,new Date('2026-11-23T02:19:00Z')),
+  [{kind:'study',day:'2026-11-23'}]);
+ assert.deepEqual(duePushSlots({...row,last_day:delivered},new Date('2026-11-23T02:19:00Z')),[]);
+ assert.deepEqual(duePushSlots({...row,last_day:claimDays(row,[{kind:'study',day:'2026-11-23'}])},
+  new Date('2026-11-23T02:20:00Z')),[]);
 });
 test('legacy push receipts remain valid when migrating existing subscriptions',()=>{
  const old={enabled:1,kind:'sleep',local_time:'21:00',

@@ -115,6 +115,26 @@ export function newlySnoozedKinds(previousTime,schedules,nowMs){
   s.snoozedUntil!==previous.find(p=>p?.kind===s.kind)?.snoozedUntil)
   .map(s=>s.kind);
 }
+/** Re-arm a kind ONLY when the user changes it to a future occurrence today.
+ * PUT on foreground, login, or sync must remain idempotent. Use the existing
+ * per-kind last_day receipt; no new D1 columns or background read needed. */
+export function newlyRescheduledKinds(previousRow,schedules,zone,nowMs){
+ if(!validZone(zone))return [];
+ const previous=storedSchedules(previousRow)||[];
+ const current=localMinute(new Date(nowMs),zone);
+ const weekDay=new Date(current.day+'T12:00:00Z').getUTCDay();
+ const currentMinute=Number(current.time.slice(0,2))*60+Number(current.time.slice(3));
+ return schedules.filter(s=>{
+  if(!s.enabled||!validClock(s.time)||!runsOnDay(s,weekDay))return false;
+  const before=previous.find(p=>p.kind===s.kind);
+  if(!before)return false;
+  const changed=before.enabled!==s.enabled||before.time!==s.time||
+   before.frequency!==s.frequency||before.days.length!==s.days.length||
+   before.days.some(day=>!s.days.includes(day));
+  const targetMinute=Number(s.time.slice(0,2))*60+Number(s.time.slice(3));
+  return changed&&targetMinute>currentMinute+1;
+ }).map(s=>s.kind);
+}
 // Compatibility for existing v1 subscription rows and tests.
 export function dueForPush(row,now){return duePushSlots(row,now)[0]?.day||null;}
 export function allowedPushEndpoint(endpoint){

@@ -1,6 +1,6 @@
 import {buildPushPayload} from '@block65/webcrypto-web-push';
 import {validKind,validClock,validZone,validSubscription,validSchedules,
- duePushSlots,claimDays,withoutDays,newlySnoozedKinds,endpointId,safeAccountJwt} from './core.mjs';
+ duePushSlots,claimDays,withoutDays,newlySnoozedKinds,newlyRescheduledKinds,endpointId,safeAccountJwt} from './core.mjs';
 
 const json=(body,status=200,extra={})=>new Response(JSON.stringify(body),{
  status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store',...extra}
@@ -100,8 +100,12 @@ async function fetchRequest(request,env){
    .bind(account).first();
   if(Number(num?.n||0)>=5)return json({ok:false},429,headers);
  }
+ const nowMs=Date.now();
  const resnoozed=multi&&existing?newlySnoozedKinds(
-  existing.local_time,schedules,Date.now()):[];
+  existing.local_time,schedules,nowMs):[];
+ const rescheduled=multi&&existing?newlyRescheduledKinds(
+  existing,schedules,zone,nowMs):[];
+ const rearmed=[...new Set([...resnoozed,...rescheduled])];
  const result=await env.PUSH_DB.prepare(`INSERT INTO push_subscriptions
  (id,owner_id,endpoint,p256dh,auth,kind,local_time,zone,enabled)
  VALUES(?,?,?,?,?,?,?,?,?)
@@ -113,7 +117,7 @@ async function fetchRequest(request,env){
   .bind(id,account,s.endpoint,s.keys.p256dh,s.keys.auth,
    kind,localTime,zone,enabled?1:0).run();
  if(!result?.success)return json({ok:false},503,headers);
- if(resnoozed.length){
+ if(rearmed.length){
   // The original reminder may have gone out before an in-app snooze.
   // Re-arm ONLY that kind so the requested later time can fire. Idempotent:
   // a foreground repeat with the same snooze timestamp resets nothing.
@@ -121,7 +125,7 @@ async function fetchRequest(request,env){
    .bind(id).first();
   if(current){
    const previous=current.last_day??null;
-   const cleared=withoutDays({kind:existing.kind,last_day:previous},resnoozed);
+   const cleared=withoutDays({kind:existing.kind,last_day:previous},rearmed);
    const reset=await env.PUSH_DB.prepare(
     'UPDATE push_subscriptions SET last_day=? WHERE id=? AND last_day IS ?'
    ).bind(cleared,id,previous).run();

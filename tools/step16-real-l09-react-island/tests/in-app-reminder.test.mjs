@@ -7,7 +7,7 @@ const script=readFileSync(new URL('../src/shell/in-app-reminder.ts',import.meta.
 const output=ts.transpileModule(script,{compilerOptions:{
  module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022
 }}).outputText;
-const {parseReminderPreference,validTime,dueInApp,runsOnDay,localDay,
+const {parseReminderPreference,validTime,dueInApp,rearmForFutureSchedule,runsOnDay,localDay,
  DEFAULT_REMINDER,readReminderDelivery,writeReminderDelivery}=
  await import('data:text/javascript;base64,'+Buffer.from(output).toString('base64'));
 const legacy={version:1,enabled:true,kind:'sleep',time:'21:00'};
@@ -57,6 +57,20 @@ test('daily, weekdays, weekends, custom weekdays and window boundaries',()=>{
  assert.equal(runsOnDay(s,0),false);
  assert.equal(dueInApp(s,empty,day),false);
 });
+test('manual reschedule re-arms a future same-day slot but refresh and past edits do not',()=>{
+ const now=new Date(2026,10,23,9,15);
+ const before={kind:'study',enabled:true,time:'09:00',frequency:'daily',days:[]};
+ const later={...before,time:'09:20'};
+ assert.equal(rearmForFutureSchedule(before,later,now),true);
+ assert.equal(dueInApp(later,{lastDay:'',snoozedUntil:0},new Date(2026,10,23,9,20)),true);
+ assert.equal(dueInApp(later,{lastDay:localDay(now),snoozedUntil:0},new Date(2026,10,23,9,20)),false);
+ assert.equal(rearmForFutureSchedule(later,later,now),false,'unchanged/sync never replays');
+ assert.equal(rearmForFutureSchedule(before,{...before,time:'09:10'},now),false);
+ assert.equal(rearmForFutureSchedule(before,{...before,time:'09:16'},now),false);
+ assert.equal(rearmForFutureSchedule(before,{...before,time:'09:17'},now),true);
+ assert.equal(rearmForFutureSchedule(before,{...later,frequency:'weekends'},now),false);
+ assert.equal(rearmForFutureSchedule(before,{...later,enabled:false},now),false);
+});
 test('snooze and delivered receipts belong to one type, not the others',()=>{
  const later=new Date(2026,10,21,22,20).getTime();
  const s=original().schedules[1];
@@ -78,6 +92,7 @@ test('React settings and account-scoped sync still own the preference',()=>{
  assert.match(settings,/<InAppReminderPanel\s*\/>/);
  assert.match(ui,/writeReminderPreference\(draft\)/);
  assert.match(ui,/writeReminderDelivery\(uid,next.kind,/);
+ assert.match(ui,/rearmForFutureSchedule\(before,next,now\)/);
  assert.match(personal,/key:'li\.reminders\.in-app\.v1',type:'preference',id:'in-app-reminders'/);
  assert.match(script,/window\.dispatchEvent\(new Event\('li:private-sync-request'\)\)/);
 });

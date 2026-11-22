@@ -16,19 +16,24 @@ import type {Vault,VaultManifest} from './e2ee-vault.js';
 
 export type CloudUserApi=Pick<NeonUserApi,'accountId'|'one'|'all'|'write'>;
 export type MigrationProgress={encrypted:number;alreadyEncrypted:number;total:number};
-let active:{accountId:string;vault:Vault}|null=null;
+let active:{accountId:string;vault:Vault;ready:boolean}|null=null;
 
 /** Keys are never stored in localStorage, IndexedDB, logs, URLs or Neon. */
 export function currentVault(accountId:string):Vault|null{
- return accountId&&active?.accountId===accountId?active.vault:null;
+ return accountId&&active?.accountId===accountId&&active.ready?active.vault:null;
 }
 export function setCurrentVault(accountId:string,vault:Vault){
  if(!accountId||vault.accountId!==accountId)throw Error('E2EE_ACCOUNT_OR_ITEM_MISMATCH');
  if(active&&active.accountId!==accountId)clearCurrentVault();
- active={accountId,vault};
- if(typeof window!=='undefined')window.dispatchEvent(new Event('li:e2ee-unlocked'));
+ active={accountId,vault,ready:false};
 }
 export function clearCurrentVault(){active=null;}
+/** Unlock for sync ONLY after the entire owner's remote scan is sealed. */
+export function finishVaultMigration(accountId:string,vault:Vault){
+ if(!active||active.accountId!==accountId||active.vault!==vault)throw Error('E2EE_ACCOUNT_OR_ITEM_MISMATCH');
+ active.ready=true;
+ if(typeof window!=='undefined')window.dispatchEvent(new Event('li:e2ee-unlocked'));
+}
 
 function manifestFromItem(row:PrivateItem|null,accountId:string):VaultManifest|null{
  if(!row)return null;
@@ -78,7 +83,7 @@ export async function replacePassphrase(api:CloudUserApi,vault:Vault,newPassword
  */
 export async function migrateLegacyPayloads(api:CloudUserApi,vault:Vault,
  onProgress?:(progress:MigrationProgress)=>void):Promise<MigrationProgress>{
- if(!currentVault(api.accountId)||currentVault(api.accountId)!==vault)
+ if(!active||active.accountId!==api.accountId||active.vault!==vault)
   throw Error('E2EE_VAULT_LOCKED');
  if(!await readVaultManifest(api))throw Error('E2EE_KEYBAG_MISSING');
  const rows=await api.all();

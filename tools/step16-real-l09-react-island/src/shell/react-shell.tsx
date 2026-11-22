@@ -1,6 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {useDiscoveryLocale} from './discovery-locale';
+import {InAppReminderNotifier} from './in-app-reminder-ui.js';
 import './react-shell.css';
 
 /** The visual chrome of the invited app is React-owned. The existing legacy
@@ -91,7 +92,8 @@ export function mountReactChrome(){
  toast.classList.add('li-react-toast-owner');
  brandRoot.render(<Brand/>);
  footerRoot.render(<Footer/>);
- toastRoot.render(<Notification host={toast}/>);
+ // Global notification stays mounted across route/Settings tabs, after login.
+ toastRoot.render(<><Notification host={toast}/><InAppReminderNotifier/></>);
  return ()=>{
   toastRoot.unmount();brandRoot.unmount();footerRoot.unmount();
   toast.classList.remove('li-react-toast-owner');

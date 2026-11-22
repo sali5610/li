@@ -24,7 +24,13 @@ def get(origin, path="/v1/config", method="GET", data=None):
         try:
             payload = json.loads(exc.read(2048))
             if isinstance(payload, dict):
-                payload = {k: payload.get(k) for k in ("ok", "available") if k in payload}
+                safe = {k: payload.get(k) for k in ("ok", "available") if k in payload}
+                if not safe:
+                    safe = {"_keys": sorted(payload.keys()),
+                            "_numeric_error_codes": [e.get("code") for e in payload.get("errors", [])
+                                if isinstance(e, dict) and isinstance(e.get("code"), int)]
+                            if isinstance(payload.get("errors"), list) else []}
+                payload = safe
             else:
                 payload = None
         except (ValueError, OSError):
@@ -40,7 +46,9 @@ def main():
                   " content_type=" + str(headers.get("Content-Type", "missing")).split(";")[0] +
                   " json_kind=" + ("worker_error" if isinstance(data, dict) and data.get("ok") is False else
                                   "available" if isinstance(data, dict) and data.get("available") is True else "other") +
-                  " server=" + str(headers.get("Server", "missing")))
+                  " server=" + str(headers.get("Server", "missing")) +
+                  " response_keys=" + str(data.get("_keys", []) if isinstance(data, dict) else []) +
+                  " cf_error_codes=" + str(data.get("_numeric_error_codes", []) if isinstance(data, dict) else []))
             if status == 200 and isinstance(data, dict) and data.get("available") is True:
                 public = data.get("vapidPublicKey")
                 padded = public + "=" * (-len(public) % 4) if isinstance(public, str) else ""

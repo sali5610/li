@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/li-webpush-live-smoke.yml'
       - 'tools/push-worker/scripts/live_smoke.py'
+      - 'tools/push-worker/scripts/check_route.py'
 permissions:
   contents: read
 jobs:
@@ -17,6 +18,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Read deployed Worker subdomain status via scoped Cloudflare token
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.LI_PUSH_CLOUDFLARE_API_TOKEN }}
+        run: |
+          python3 tools/push-worker/scripts/check_route.py
       - name: Check deployed Worker config, CORS and unauthenticated rejection
         run: python3 tools/push-worker/scripts/live_smoke.py
       - name: Confirm no changes

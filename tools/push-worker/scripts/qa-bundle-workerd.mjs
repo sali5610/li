@@ -18,10 +18,10 @@ const schedules=['study','sleep','movement','rest'].map(kind=>({
 const requestBody={subscription:{endpoint:'https://web.push.apple.com/qa-synthetic-never-sent',
  keys:{p256dh:'A'.repeat(87),auth:'B'.repeat(22)}},
  enabled:true,kind:'study',time:'23:36',zone:'Asia/Ho_Chi_Minh',schedules};
-const request=(subject='qa-owner-a',body=requestBody)=>new Request(
- 'https://li-push-qa.example.test/v1/subscriptions',
- {method:'PUT',headers:{...headers,Authorization:'Bearer '+token(subject)},
- body:JSON.stringify(body)});
+const dispatch=(mf,subject='qa-owner-a',body=requestBody)=>
+ mf.dispatchFetch('https://li-push-qa.example.test/v1/subscriptions',
+  {method:'PUT',headers:{...headers,Authorization:'Bearer '+token(subject)},
+   body:JSON.stringify(body)});
 const config={
  name:'li-push-runtime-qa',compatibilityDate:'2026-11-21',
  env:{
@@ -67,15 +67,14 @@ try{
   await db.prepare(sql).run();
  const count=async()=>Number((await db.prepare('SELECT COUNT(*) AS n FROM push_subscriptions').first()).n);
  const check=async (name,expected,sub='qa-owner-a')=>{
-  const response=await mf.dispatchFetch(request(sub));
+  const response=await dispatch(mf,sub);
   assert.equal(response.status,expected,name);
   assert.equal(response.headers.get('Access-Control-Allow-Origin'),origin);
   if(response.status!==200)assert.deepEqual(await response.json(),{ok:false});
   console.log('WORKERD_BUNDLE_PASS '+name+' HTTP '+response.status);
  };
- const unauthorized=await mf.dispatchFetch(
-  new Request('https://li-push-qa.example.test/v1/subscriptions',
-   {method:'PUT',headers:{...headers,Authorization:'Bearer invalid'},body:'{}'}));
+ const unauthorized=await mf.dispatchFetch('https://li-push-qa.example.test/v1/subscriptions',
+   {method:'PUT',headers:{...headers,Authorization:'Bearer invalid'},body:'{}'});
  assert.equal(unauthorized.status,401);
  assert.equal(calls,0,'invalid syntax must not even call Neon');
  console.log('WORKERD_BUNDLE_PASS early invalid-JWT 401 no RPC');
@@ -103,7 +102,7 @@ try{
 // Does not exercise a real owner or create/update any subscription.
 const live=mfBase();
 try{
- const response=await live.dispatchFetch(request('never-a-real-neon-user-qa'));
+ const response=await dispatch(live,'never-a-real-neon-user-qa');
  console.log('LI_WORKERD_LIVE_NEON_NEGATIVE_HTTP_'+response.status);
  assert.equal(response.status,401,
   'real Worker bundle in workerd must reach Neon and receive 401, NOT 503');

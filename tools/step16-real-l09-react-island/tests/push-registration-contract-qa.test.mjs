@@ -15,7 +15,7 @@ clientJs=[
  'const readReminderPreference=globalThis.__qaPreference;',
  'const readReminderDelivery=globalThis.__qaDelivery;',
  clientJs].join('\n');
-const client=await import('data:text/javascript;base64,'+Buffer.from(clientJs).toString('base64'));
+let client;
 
 const origin='https://li5610.pages.dev';
 const endpoint='https://li-push-staging.dungho-product.workers.dev';
@@ -92,6 +92,7 @@ override('fetch',async(url,init={})=>{
  throw Error('Synthetic test reached unexpected network URL: '+full);
 });
 try{
+ client=await import('data:text/javascript;base64,'+Buffer.from(clientJs).toString('base64'));
  test('same app client to Worker contract stores one valid invited synthetic subscription',async()=>{
   assert.equal(client.webPushApi(),endpoint);
   assert.equal(client.installedPushSupported(),false,'test does not impersonate iOS PWA');

@@ -14,7 +14,7 @@ function classify(error:unknown):'sign-in-required'|'security-error'|'offline'{
  const message=error instanceof Error?error.message:String(error);
  if(/^NEON_AUTH_|^NEON_DATA_API_HTTP_40[13]$/.test(message))return 'sign-in-required';
  if(/^NEON_DATA_API_HTTP_4(?!08$|29$)[0-9]{2}$/.test(message))return 'security-error';
- if(/^REMOTE_OWNER_MISMATCH$|^NEON_ITEM_MISMATCH$|^INVALID_REMOTE_ROW$|^INVALID_PRIVATE_SCOPE$|^NEON_SYNC_RPC_UNAVAILABLE$|^INVALID_RPC_ACK$|^INVALID_SYNC_OPERATION_ID$/.test(message))
+ if(/^REMOTE_OWNER_MISMATCH$|^NEON_ITEM_MISMATCH$|^INVALID_REMOTE_ROW$|^INVALID_PRIVATE_SCOPE$|^NEON_SYNC_RPC_UNAVAILABLE$|^INVALID_RPC_ACK$|^INVALID_SYNC_OPERATION_ID$|^E2EE_/.test(message))
    return 'security-error';
  return 'offline';
 }

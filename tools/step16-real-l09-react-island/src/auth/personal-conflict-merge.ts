@@ -57,7 +57,7 @@ function indexed(kind:ListName,items:Entry[]):Map<string,Entry>|null{
  return map;
 }
 function sameEntry(kind:ListName,a:Entry|undefined,b:Entry|undefined):boolean{
- if(kind==='questions'&&a&&b){
+ if((kind==='questions'||kind==='savedContent')&&a&&b){
   // Independent bookmark clicks have different generated IDs/timestamps.
   const strip=(x:Entry)=>{
    const v={...x};delete v.id;delete v.savedAt;return v;
@@ -84,7 +84,8 @@ function mergeList(kind:ListName,b:Entry[],l:Entry[],r:Entry[]):Entry[]|null{
   if(!leftChanged)value=right;
   else if(!rightChanged)value=left;
   else if(sameEntry(kind,left,right))
-   value=left&&right&&kind==='questions'?newerBookmark(left,right):left;
+   value=left&&right&&(kind==='questions'||kind==='savedContent')?
+    newerBookmark(left,right):left;
   else return null; // Same identity edited/deleted differently: human resolves.
   if(value)merged.push(value);
  }

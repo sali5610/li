@@ -148,6 +148,15 @@ test('prompt-injection learner text has no trust; only approved references',asyn
  assert.match(e.calls[0].payload.messages[2].content,/Ignore rules/);
  assert.doesNotMatch(e.calls[0].payload.messages[1].content,/Ignore rules/);
 });
+test('Gemma 4 Chat Completions choice is displayed, not mistaken for missing feedback',async()=>{
+ const e=env(fake());await assign(e,owner,owner.email);
+ e.AI.run=async()=>({choices:[{message:{content:
+  'The selected respondents can describe their group, not the entire population.'}}]});
+ const r=await feedback(e,owner);
+ assert.equal(r.code,200);
+ assert.match(r.data.feedback,/selected respondents/);
+ assert.equal(r.data.basis,'unverified-ai-coaching');
+});
 test('model absent or Workers Free exhausted: safe self-review fallback, no paid call',async()=>{
  const e=env(fake());await assign(e,owner,owner.email);
  assert.equal((await feedback({...e,AI:undefined},owner)).code,503);

@@ -20,4 +20,5 @@ jobs:
       - name: Check deployed Worker config, CORS and unauthenticated rejection
         run: python3 tools/push-worker/scripts/live_smoke.py
       - name: Confirm no changes
-        run: echo 'Read-only HTTP smoke: no Worker, Pages, D1 or secret writes.'
+        run: |
+          echo 'Read-only HTTP smoke: no Worker, Pages, D1 or secret writes.'

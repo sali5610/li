@@ -1,6 +1,6 @@
 import {buildPushPayload} from '@block65/webcrypto-web-push';
 import {validKind,validClock,validZone,validSubscription,validSchedules,
- duePushSlots,claimDays,endpointId,safeAccountJwt} from './core.mjs';
+ duePushSlots,claimDays,withoutDays,newlySnoozedKinds,endpointId,safeAccountJwt} from './core.mjs';
 
 const json=(body,status=200,extra={})=>new Response(JSON.stringify(body),{
  status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store',...extra}
@@ -78,7 +78,7 @@ async function fetchRequest(request,env){
  const localTime=multi?JSON.stringify({version:2,schedules}):body.time;
  const enabled=multi?schedules.some(item=>item.enabled):body.enabled;
  const id=await endpointId(s.endpoint);
- const existing=await env.PUSH_DB.prepare('SELECT owner_id FROM push_subscriptions WHERE id=?')
+ const existing=await env.PUSH_DB.prepare('SELECT owner_id,kind,local_time FROM push_subscriptions WHERE id=?')
   .bind(id).first();
  if(existing&&existing.owner_id!==account)return json({ok:false},403,headers);
  if(!existing){
@@ -86,6 +86,8 @@ async function fetchRequest(request,env){
    .bind(account).first();
   if(Number(num?.n||0)>=5)return json({ok:false},429,headers);
  }
+ const resnoozed=multi&&existing?newlySnoozedKinds(
+  existing.local_time,schedules,Date.now()):[];
  const result=await env.PUSH_DB.prepare(`INSERT INTO push_subscriptions
  (id,owner_id,endpoint,p256dh,auth,kind,local_time,zone,enabled)
  VALUES(?,?,?,?,?,?,?,?,?)
@@ -97,39 +99,75 @@ async function fetchRequest(request,env){
   .bind(id,account,s.endpoint,s.keys.p256dh,s.keys.auth,
    kind,localTime,zone,enabled?1:0).run();
  if(!result?.success)return json({ok:false},503,headers);
+ if(resnoozed.length){
+  // The original reminder may have gone out before an in-app snooze.
+  // Re-arm ONLY that kind so the requested later time can fire. Idempotent:
+  // a foreground repeat with the same snooze timestamp resets nothing.
+  const current=await env.PUSH_DB.prepare('SELECT last_day FROM push_subscriptions WHERE id=?')
+   .bind(id).first();
+  if(current){
+   const previous=current.last_day??null;
+   const cleared=withoutDays({kind:existing.kind,last_day:previous},resnoozed);
+   const reset=await env.PUSH_DB.prepare(
+    'UPDATE push_subscriptions SET last_day=? WHERE id=? AND last_day IS ?'
+   ).bind(cleared,id,previous).run();
+   if(!reset?.meta?.changes)return json({ok:false},503,headers);
+  }
+ }
  return json({ok:true},200,headers);
 }
-async function sendDue(env){
+async function deliverSlot(row,slot,vapid){
+ const subscription={endpoint:row.endpoint,expirationTime:null,
+  keys:{p256dh:row.p256dh,auth:row.auth}};
+ const message={data:JSON.stringify({v:1,kind:slot.kind}),options:{ttl:300}};
+ let payload;
+ try{payload=await buildPushPayload(message,subscription,vapid);}
+ catch{return {ok:false,status:503};} // Definitely not submitted to the provider.
+ return fetch(row.endpoint,payload);
+}
+export async function sendDue(env,now=new Date(),deliver=deliverSlot){
  if(!configured(env))return;
- const now=new Date();
+ // Per owner: <=5 subscriptions; invited-only pilot: <=30 accounts. Never
+ // silently discard devices beyond the old LIMIT 60.
  const rows=await env.PUSH_DB.prepare(
-  'SELECT id,endpoint,p256dh,auth,kind,local_time,zone,enabled,last_day FROM push_subscriptions WHERE enabled=1 LIMIT 60'
+  'SELECT id,endpoint,p256dh,auth,kind,local_time,zone,enabled,last_day FROM push_subscriptions WHERE enabled=1'
  ).all();
  const vapid={subject:env.VAPID_SUBJECT,publicKey:env.VAPID_PUBLIC_KEY,
   privateKey:env.VAPID_PRIVATE_KEY};
  for(const row of rows.results||[]){
   const slots=duePushSlots(row,now);
   if(!slots.length)continue;
-  // One compare-and-swap claims every due kind atomically; concurrent cron
-  // invocations cannot double-send, even when multiple kinds share a time.
+  // Claim first to prevent overlapping Cron dispatch from double-sending.
   const nextDay=claimDays(row,slots);
   const changed=await env.PUSH_DB.prepare(
    'UPDATE push_subscriptions SET last_day=? WHERE id=? AND last_day IS ?'
   ).bind(nextDay,row.id,row.last_day).run();
   if(!changed?.meta?.changes)continue;
+  const rejected=[];
+  let removed=false;
   for(const slot of slots){
    try{
-    const subscription={endpoint:row.endpoint,expirationTime:null,
-     keys:{p256dh:row.p256dh,auth:row.auth}};
-    const message={data:JSON.stringify({v:1,kind:slot.kind}),options:{ttl:300}};
-    const payload=await buildPushPayload(message,subscription,vapid);
-    const response=await fetch(row.endpoint,payload);
+    const response=await deliver(row,slot,vapid);
     if(response.status===404||response.status===410){
      await env.PUSH_DB.prepare('DELETE FROM push_subscriptions WHERE id=?')
       .bind(row.id).run();
+     removed=true;
      break;
     }
-   }catch{/* At-most-once; no sensitive logging or repeated notifications. */}
+    // An explicit provider rejection was NOT delivered: retry inside the
+    // narrow due window. A successful 2xx is never re-armed.
+    if(!response.ok)rejected.push(slot);
+   }catch{
+    // No response means an ambiguous outcome (e.g. ACK lost after send).
+    // Keep claim to avoid a second possibly duplicate notification.
+   }
+  }
+  if(!removed&&rejected.length){
+   const accepted=slots.filter(slot=>!rejected.includes(slot));
+   const receipt=claimDays(row,accepted);
+   await env.PUSH_DB.prepare(
+    'UPDATE push_subscriptions SET last_day=? WHERE id=? AND last_day=?'
+   ).bind(receipt,row.id,nextDay).run();
   }
  }
 }

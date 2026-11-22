@@ -1,5 +1,5 @@
 import {neonSessionPort} from '../auth/neon-client.js';
-import {readReminderPreference} from './in-app-reminder.js';
+import {readReminderPreference,readReminderDelivery} from './in-app-reminder.js';
 
 const urlValue=(import.meta.env.VITE_LI_PUSH_WORKER_URL||
  import.meta.env.VITE_LI_PUSH_STAGING_URL||'') as string;
@@ -51,6 +51,13 @@ async function pushRequest(api:string,method:'PUT'|'DELETE',payload:object):Prom
  });
  if(!response.ok)throw Error('PUSH_BACKEND_'+response.status);
 }
+function serverSchedules(){
+ const preference=readReminderPreference();
+ const owner=localStorage.getItem('li.sync.local-owner.v1');
+ return preference.schedules.map(s=>({
+  ...s,snoozedUntil:owner?readReminderDelivery(owner,s.kind).snoozedUntil:0
+ }));
+}
 export async function registerPush(api:string,subscription:PushSubscription):Promise<void>{
  const preference=readReminderPreference();
  if(!preference.schedules.some(s=>s.enabled))throw Error('PUSH_REMINDER_OFF');
@@ -63,7 +70,7 @@ export async function registerPush(api:string,subscription:PushSubscription):Pro
  await pushRequest(api,'PUT',{
   subscription:{endpoint:data.endpoint,keys:data.keys},
   enabled:true,kind:first.kind,time:first.time,zone,
-  schedules:preference.schedules
+  schedules:serverSchedules()
  });
 }
 export async function updatePushSchedule(api:string,subscription:PushSubscription):Promise<void>{
@@ -78,7 +85,7 @@ export async function updatePushSchedule(api:string,subscription:PushSubscriptio
  await pushRequest(api,'PUT',{
   subscription:{endpoint:data.endpoint,keys:data.keys},enabled:!!first,
   kind:first?.kind||'study',time:first?.time||'00:00',zone,
-  schedules:preference.schedules
+  schedules:serverSchedules()
  });
 }
 export async function removePush(api:string,subscription:PushSubscription):Promise<void>{

@@ -9,6 +9,22 @@ function copy(vi:string,en:string){
 }
 const pause=(ms:number)=>new Promise<void>(resolve=>window.setTimeout(resolve,ms));
 
+// Only deliberately bounded diagnostic codes are shown: never print a token,
+// endpoint, account, subscription key, or raw remote error message.
+function safePushIssue(reason:unknown):string{
+ const message=reason instanceof Error?reason.message:'';
+ const http=/^PUSH_BACKEND_(400|401|403|404|409|429|500|503)$/.exec(message);
+ if(http)return 'PUSH-'+http[1];
+ if(message==='PUSH_AUTH_REQUIRED'||message.startsWith('NEON_AUTH_JWT_'))return 'PUSH-AUTH';
+ if(message==='PUSH_BACKEND_UNAVAILABLE'||message==='PUSH_CONFIG_NETWORK')return 'PUSH-CONFIG';
+ if(message==='PUSH_SERVICE_WORKER')return 'PUSH-SW';
+ if(message==='PUSH_DEVICE_SUBSCRIBE')return 'PUSH-DEVICE';
+ if(message==='PUSH_SERVER_NETWORK')return 'PUSH-SERVER-NET';
+ if(message==='PUSH_REMINDER_OFF')return 'PUSH-SCHEDULE';
+ return 'PUSH-UNKNOWN';
+}
+
+
 export function WebPushSettings(){
  const [enabled,setEnabled]=useState(false);
  const [permissionGranted,setPermissionGranted]=useState(
@@ -41,18 +57,19 @@ export function WebPushSettings(){
      setEnabled(false);
      return;
     }
-    if(!navigator.onLine)throw Error('PUSH_OFFLINE');
+    if(!navigator.onLine)throw Error('PUSH_SERVER_NETWORK');
     // A local Apple subscription is NOT the same as a successful server ACK.
     // Reconcile after permission changes/foregrounding without asking again.
     await updatePushSchedule(api,sub);
     if(!alive||operation.current)return;
     setEnabled(true);setPending(false);setError('');
-   }catch{
+   }catch(err){
     if(alive&&!operation.current&&Notification.permission==='granted'){
      setPermissionGranted(true);setEnabled(false);setPending(true);
      setError(copy(
       'iPhone đã cấp quyền, nhưng chưa lưu được đăng ký. Mở lại app khi có mạng để thử lại.',
-      'iPhone granted permission, but registration is not saved yet. Reopen online to retry.'));
+      'iPhone granted permission, but registration is not saved yet. Reopen online to retry.')+
+      ' ('+safePushIssue(err)+')');
     }
    }finally{refreshing=false;}
   };
@@ -78,13 +95,25 @@ export function WebPushSettings(){
 
  async function connectDevice(){
   if(!api)throw Error('PUSH_BACKEND_UNAVAILABLE');
-  const key=await pushVapid(api);
-  const registration=await navigator.serviceWorker.ready;
-  const existing=await registration.pushManager.getSubscription();
-  const subscription=existing||await registration.pushManager.subscribe({
-   userVisibleOnly:true,applicationServerKey:key
-  });
-  await registerPush(api,subscription);
+  let key:ArrayBuffer;
+  try{key=await pushVapid(api);}
+  catch(err){
+   if(err instanceof Error&&err.message==='PUSH_BACKEND_UNAVAILABLE')throw err;
+   throw Error('PUSH_CONFIG_NETWORK');
+  }
+  let subscription:PushSubscription;
+  try{
+   const registration=await navigator.serviceWorker.ready;
+   const existing=await registration.pushManager.getSubscription();
+   subscription=existing||await registration.pushManager.subscribe({
+    userVisibleOnly:true,applicationServerKey:key
+   });
+  }catch{throw Error('PUSH_DEVICE_SUBSCRIBE');}
+  try{await registerPush(api,subscription);}
+  catch(err){
+   if(err instanceof Error&&(/^(PUSH_|NEON_AUTH_JWT_)/.test(err.message)))throw err;
+   throw Error('PUSH_SERVER_NETWORK');
+  }
  }
  async function enable(){
   if(!api||!userAllowed()||!installedPushSupported()||operation.current)return;
@@ -135,7 +164,8 @@ export function WebPushSettings(){
      'iPhone đã cấp quyền, nhưng chưa hoàn tất đăng ký với máy chủ. Hãy thử lại; không cần cấp quyền lần nữa.',
      'iPhone granted permission, but server registration is unfinished. Try again without granting permission again.'):
     copy('Quyền thông báo chưa được xác nhận. Hãy kiểm tra quyền trên iPhone rồi thử lại.',
-     'Notification permission is not confirmed. Check iPhone permission and try again.'));
+     'Notification permission is not confirmed. Check iPhone permission and try again.')+
+     (denied?'':' ('+safePushIssue(err)+')'));
   }finally{operation.current=false;setBusy(false);}
  }
  async function disable(){

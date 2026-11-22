@@ -59,8 +59,8 @@ jobs:
           node-version: '22'
       - name: Build first-party Auth-only Cloudflare candidate (NO DEPLOY)
         env:
-          # Public Worker URL only. Empty until separately approved Free D1/VAPID deployment.
-          VITE_LI_PUSH_WORKER_URL: ${{ vars.LI_PUSH_WORKER_URL }}
+          # Public Worker URL only; separate Free Worker live-smoke #45019926305 PASS (no Pages auto-deploy).
+          VITE_LI_PUSH_WORKER_URL: ${{ vars.LI_PUSH_WORKER_URL || 'https://li-push-staging.dungho-product.workers.dev' }}
         run: |
           set -euo pipefail
           npm install --no-audit --no-fund --prefix design-system/react
@@ -161,8 +161,8 @@ jobs:
       - name: Prepare first-party React Auth-only PWA (explicit Auth-only approval)
         if: inputs.auth_only_mode == true && inputs.ai_mode == false
         env:
-          # Public Worker URL only. Empty until separately approved Free D1/VAPID deployment.
-          VITE_LI_PUSH_WORKER_URL: ${{ vars.LI_PUSH_WORKER_URL }}
+          # Public Worker URL only; separate Free Worker live-smoke #45019926305 PASS (no Pages auto-deploy).
+          VITE_LI_PUSH_WORKER_URL: ${{ vars.LI_PUSH_WORKER_URL || 'https://li-push-staging.dungho-product.workers.dev' }}
         run: |
           set -euo pipefail
           npm install --no-audit --no-fund --prefix design-system/react

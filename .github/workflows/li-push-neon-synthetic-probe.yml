@@ -1,0 +1,19 @@
+name: li. Worker vs Neon synthetic negative JWT read-only probe (NO DEPLOY)
+on:
+  push:
+    branches: [qa/push-direct-neon-synthetic-negative-20261123]
+permissions:
+  contents: read
+jobs:
+  compare:
+    if: github.repository == 'sali5610/li'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Compare HTTP status only for deliberately invalid token and empty body
+        run: python3 tools/push-worker/scripts/probe_live_negative_neon_status.py
+      - name: No deployment or secrets
+        run: echo "Only two invalid-signature negative HTTP probes. No user JWT, D1 writes, VAPID or Cloudflare deployment."

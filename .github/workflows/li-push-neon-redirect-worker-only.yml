@@ -51,7 +51,7 @@ jobs:
           cd tools/push-worker
           ./node_modules/.bin/wrangler deploy --dry-run --outdir /tmp/li-push-neon-redirect-candidate
           test -s /tmp/li-push-neon-redirect-candidate/index.js
-      - name: REAL workerd bundle integration: local D1 and live Neon invalid signature
+      - name: REAL workerd bundle integration - local D1 and live Neon invalid signature
         env:
           LI_QA_WORKER_BUNDLE: /tmp/li-push-neon-redirect-candidate/index.js
         run: node tools/push-worker/scripts/qa-bundle-workerd.mjs

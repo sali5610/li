@@ -103,7 +103,7 @@ foundations=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert "html { touch-action: pan-x pan-y pinch-zoom; }" in foundations
 assert "#page-home .mirror-message { touch-action: pan-y pinch-zoom; }" in foundations
 # Assert the active Safari/iPad physical-shell stylesheet, not an obsolete cache-buster.
-assert re.search(r'ipad-home-canvas\\.css\\?v=[\\w-]+', page_html), "iPad physical shell stylesheet missing"
+assert re.search(r'ipad-home-canvas\.css\?v=[\w-]+', page_html), "iPad physical shell stylesheet missing"
 
 
 # S137: previous/next arrows cycle questions in both directions; buttons remain stationary.

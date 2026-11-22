@@ -72,3 +72,39 @@ test('Auth-only Worker keeps existing Neon session semantics but never bundles a
  assert(builder.includes('--build-auth-only'));
  assert(builder.includes('dist-cloudflare-auth-candidate'));
 });
+
+test('real Neon proxy routes /token upstream with session cookie, never session-cache body',async()=>{
+ const {handleAuthProxyRequest}=await import('@neondatabase/auth/server');
+ const nativeFetch=globalThis.fetch;
+ let upstreamCalls=0;
+ try{
+  // This exercises the installed server toolkit, not a mock of its handler.
+  // Only the upstream HTTP transport is simulated; no real identity or secret.
+  globalThis.fetch=async(url,init)=>{
+   upstreamCalls++;
+   assert.equal(new URL(url).pathname,'/li/auth/token');
+   assert.equal(init.method,'GET');
+   const cookie=new Headers(init.headers).get('cookie')||'';
+   assert.match(cookie,/__Secure-neon-auth\.session_token=test-opaque-session/);
+   assert.doesNotMatch(cookie,/tracking_cookie/);
+   return Response.json({token:'a.b.jwt'+upstreamCalls});
+  };
+  for(let i=1;i<=2;i++){
+   const request=new Request('https://li5610.pages.dev/api/auth/token',{
+    headers:{Cookie:'__Secure-neon-auth.session_token=test-opaque-session; tracking_cookie=x'}
+   });
+   const path=authProxyPath(new URL(request.url),request.method);
+   assert.equal(path,'token');
+   const response=await handleAuthProxyRequest({
+    request,path,baseUrl:'https://upstream.example/li/auth',
+    cookieSecret:'test-secret-32-characters-minimum-for-ci',
+    sameSite:'lax',sessionDataTtl:60
+   });
+   assert.equal(response.status,200);
+   assert.deepEqual(await response.json(),{token:'a.b.jwt'+i});
+  }
+  assert.equal(upstreamCalls,2,'The proxy must never serve /token from session cache');
+ }finally{
+  globalThis.fetch=nativeFetch;
+ }
+});

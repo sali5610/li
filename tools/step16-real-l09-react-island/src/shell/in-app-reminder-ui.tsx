@@ -3,7 +3,7 @@ import {createPortal} from 'react-dom';
 import {Button,Card,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
 import {
  REMINDER_KEY,dueInApp,localDay,readReminderDelivery,
- readReminderPreference,validTime,writeReminderDelivery,writeReminderPreference,
+ readReminderPreference,rearmForFutureSchedule,validTime,writeReminderDelivery,writeReminderPreference,
  type ReminderKind,type ReminderFrequency,type ReminderSchedule,type ReminderPreference
 } from './in-app-reminder.js';
 
@@ -101,7 +101,7 @@ export function InAppReminderPanel(){
     const past=next.enabled&&validTime(next.time)&&
      now.getTime()>=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m).getTime();
     writeReminderDelivery(uid,next.kind,{
-     lastDay:past?localDay(now):previousDelivery.lastDay,snoozedUntil:0
+     lastDay:rearmForFutureSchedule(before,next,now)?'':past?localDay(now):previousDelivery.lastDay,snoozedUntil:0
     });
    }
    writeReminderPreference(draft);

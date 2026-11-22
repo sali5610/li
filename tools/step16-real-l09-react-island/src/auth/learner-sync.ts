@@ -5,7 +5,8 @@ import {storageKey,type JsonValue,type ItemType} from '../sync/contract.js';
 import {PrivateDeviceStore} from '../sync/local-dexie.js';
 import {mergePersonalConflictRaw} from './personal-conflict-merge.js';
 import {syncOnce} from '../sync/sync-once.js';
-import type {NeonUserApi} from '../sync/neon-api.js';
+import {SealedNeonUserApi,currentVault} from '../sync/e2ee-cloud.js';
+import type {CloudUserApi} from '../sync/e2ee-cloud.js';
 import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_INTEGRATED_LI_APP} from './config.js';
 import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
@@ -19,6 +20,7 @@ import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
  * AND their transactionally durable offline outbox, then syncs using the signed
  * Neon Data API. No synthetic attempts, second app shell, or manual sync button.
  */
+const E2EE_PILOT=import.meta.env.VITE_LI_E2EE_PILOT==='1';
 const LESSONS=learnableLessonIds; // Released lessons + personal-use drafts on invited staging ONLY
 const OWNER='li.sync.local-owner.v1';
 const KEY=(id:string)=>'li.review.'+id+'.v1';
@@ -86,8 +88,11 @@ export async function resolvePrivateConflict(uid:string,type:ItemType,id:string,
  if(!uid||localStorage.getItem(OWNER)!==uid||
  !document.documentElement.classList.contains('li-auth-verified'))throw Error('LEARNER_ACCOUNT_OR_INVITE_REQUIRED');
  if(!await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort))throw Error('INVITE_REVOKED');
- const api=await bindNeonAccount(NEON_DATA_API_URL,neonSessionPort);
- if(!api||api.accountId!==uid)throw Error('SESSION_CHANGED');
+ const rawApi=await bindNeonAccount(NEON_DATA_API_URL,neonSessionPort);
+ if(!rawApi||rawApi.accountId!==uid)throw Error('SESSION_CHANGED');
+ const vault=E2EE_PILOT?currentVault(uid):null;
+ if(E2EE_PILOT&&!vault)throw Error('E2EE_VAULT_LOCKED');
+ const api:CloudUserApi=vault?new SealedNeonUserApi(rawApi,vault):rawApi;
  const key=storageKey(uid,type,id),op=await store.outbox.get(key);
  if(!op?.conflict||op.accountId!==uid)throw Error('CONFLICT_CHANGED_REFRESH_REQUIRED');
  const remote=await api.one(type,id);
@@ -115,7 +120,7 @@ export async function resolvePrivateConflict(uid:string,type:ItemType,id:string,
  * history. Same-item divergent edits remain in the visible conflict chooser.
  * This also heals pre-existing outbox conflicts created by older app builds.
  */
-async function reconcileAdditivePersonalConflicts(uid:string,api:NeonUserApi,
+async function reconcileAdditivePersonalConflicts(uid:string,api:CloudUserApi,
  observed:Map<string,string|null>):Promise<number>{
  let recovered=0;
  const fields=[
@@ -282,7 +287,7 @@ export function prepareLearnerAccount(uid:string):boolean{
  * or when its legacy checkpoint exactly matches the current remote revision.
  * Otherwise leave the draft queued at revision zero: conflict, never overwrite.
  */
-async function capture(uid:string,api:NeonUserApi|null):Promise<Snapshot[]>{
+async function capture(uid:string,api:CloudUserApi|null):Promise<Snapshot[]>{
  const snapshots:Snapshot[]=[];
  for(const id of LESSONS){
   const raw=localStorage.getItem(KEY(id));
@@ -370,14 +375,17 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
   busy=true;
   try{
    if(localStorage.getItem(OWNER)!==uid)throw new Error('ACCOUNT_CHANGED');
-   let api:NeonUserApi|null=null;
+   let api:CloudUserApi|null=null;
    let apiError:unknown=null;
    if(navigator.onLine){
     try{
      if(!await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort))
       throw new Error('INVITE_REVOKED');
-     api=await bindNeonAccount(NEON_DATA_API_URL,neonSessionPort);
-     if(!api||api.accountId!==uid)throw new Error('SESSION_CHANGED');
+     const rawApi=await bindNeonAccount(NEON_DATA_API_URL,neonSessionPort);
+     if(!rawApi||rawApi.accountId!==uid)throw new Error('SESSION_CHANGED');
+     const vault=E2EE_PILOT?currentVault(uid):null;
+     if(E2EE_PILOT&&!vault)throw new Error('E2EE_VAULT_LOCKED');
+     api=vault?new SealedNeonUserApi(rawApi,vault):rawApi;
     }catch(e){apiError=e;}
    }
    const snapshots=await capture(uid,api); // Native attempts
@@ -548,6 +556,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
  window.addEventListener('li:localechange',onPersonalEvent);
  window.addEventListener('li:private-sync-consent',resumed);
  window.addEventListener('li:private-sync-request',resumed);
+ window.addEventListener('li:e2ee-unlocked',resumed);
  window.addEventListener('storage',onPersonalEvent);
  void run();
  return()=>{
@@ -569,6 +578,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
   window.removeEventListener('li:localechange',onPersonalEvent);
   window.removeEventListener('li:private-sync-consent',resumed);
   window.removeEventListener('li:private-sync-request',resumed);
+  window.removeEventListener('li:e2ee-unlocked',resumed);
   window.removeEventListener('storage',onPersonalEvent);
   if(!current.settled){current.settled=true;current.finish();}
   if(activeSync===current)activeSync=null;

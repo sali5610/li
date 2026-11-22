@@ -1,6 +1,6 @@
 import {storageKey,type ItemType,type JsonValue} from '../sync/contract.js';
 import {PrivateDeviceStore} from '../sync/local-dexie.js';
-import type {NeonUserApi} from '../sync/neon-api.js';
+import type {CloudUserApi} from '../sync/e2ee-cloud.js';
 import {personalStudyManuscriptIds} from '../learning/personal-study-ids.js';
 
 /** One existing signed Dexie/Neon pipeline for ALL first-party personal state.
@@ -179,7 +179,7 @@ export function hasPersonalLocalChanges(uid:string,seen:Map<string,string|null>)
  return fieldsFor(uid).some(field=>active(uid,field)&&
   localStorage.getItem(field.key)!==(seen.get(field.key)??null));
 }
-export async function capturePersonalState(uid:string,api:NeonUserApi|null,
+export async function capturePersonalState(uid:string,api:CloudUserApi|null,
  store:PrivateDeviceStore,seen:Map<string,string|null>):Promise<PersonalSnapshot[]>{
  const snapshots:PersonalSnapshot[]=[];
  for(const field of fieldsFor(uid)){

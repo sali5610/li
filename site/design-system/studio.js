@@ -138,7 +138,7 @@ if(query.has('embed')){
   }
   select(next);
   if(wasOpen)$('#studio-work').focus({preventScroll:true});
-  window.scrollTo({top:0,left:0,behavior:'instant'});
+  window.scrollTo({top:0,left:0,behavior:'auto'});
   // Re-measure after the drawer/backdrop and keyboard layout have settled.
   requestAnimationFrame(()=>{
    layoutFrame();

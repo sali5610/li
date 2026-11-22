@@ -25,7 +25,7 @@ jobs:
         run: |
           cd tools/step16-real-l09-react-island
           npx vite build --config vite.qa-reminder.config.mjs
-          test -s dist-qa-reminder/reminder-qa-fixture.html
+          test -s dist-qa-reminder/tests/reminder-qa-fixture.html
       - name: Run actual Chromium DOM/portal/time/owner interaction
         run: |
           set -euo pipefail

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import ts from 'typescript';
-import worker from '../../../push-worker/src/index.mjs';
+import worker from '../../push-worker/src/index.mjs';
 
 const src=readFileSync(new URL('../src/shell/web-push-client.ts',import.meta.url),'utf8');
 let clientJs=ts.transpileModule(src,{compilerOptions:{

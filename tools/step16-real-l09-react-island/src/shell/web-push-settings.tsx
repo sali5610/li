@@ -157,15 +157,15 @@ export function WebPushSettings(){
    const granted=Notification.permission==='granted';
    setPermissionGranted(granted);setPending(granted);
    setNotice('');
-   setError(denied?copy(
+   const explanation=denied?copy(
     'iPhone đang chặn Thông báo. Hãy bật quyền trong Cài đặt của iPhone.',
     'iPhone blocked notifications. Enable permission in iPhone Settings.'):
     granted?copy(
      'iPhone đã cấp quyền, nhưng chưa hoàn tất đăng ký với máy chủ. Hãy thử lại; không cần cấp quyền lần nữa.',
      'iPhone granted permission, but server registration is unfinished. Try again without granting permission again.'):
     copy('Quyền thông báo chưa được xác nhận. Hãy kiểm tra quyền trên iPhone rồi thử lại.',
-     'Notification permission is not confirmed. Check iPhone permission and try again.')+
-     (denied?'':' ('+safePushIssue(err)+')'));
+     'Notification permission is not confirmed. Check iPhone permission and try again.');
+   setError(explanation+(denied?'':' ('+safePushIssue(err)+')'));
   }finally{operation.current=false;setBusy(false);}
  }
  async function disable(){

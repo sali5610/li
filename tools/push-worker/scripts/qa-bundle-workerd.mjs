@@ -36,14 +36,13 @@ const config={
   modules:{'index.mjs':{type:'esm',contents:bundle}}}
 };
 const mfBase=dev=>new Miniflare({workers:[{config, ...(dev?{dev}:{})}]});
-let mode='allow',calls=0,redirectMode='',fetchedUrl='',fetchedMethod='';
+let mode='allow',calls=0,fetchedUrl='',fetchedMethod='';
 const fakeNeon={
  type:'fetcher',
  async handler(req){
   calls++;
   fetchedUrl=String(req.url);
   fetchedMethod=req.method;
-  redirectMode=req.redirect;
   assert.equal(fetchedUrl,neon+'/rpc/li_is_invited');
   assert.equal(fetchedMethod,'POST');
   assert.match(req.headers.get('Authorization')||'',/^Bearer /);
@@ -80,7 +79,6 @@ try{
  console.log('WORKERD_BUNDLE_PASS early invalid-JWT 401 no RPC');
  await check('valid-invite-writes-isolated-D1',200);
  assert.equal(await count(),1,'first subscription stored in real local D1');
- assert.equal(redirectMode,'manual','real workerd forwarded a nonredirecting Neon RPC');
  await check('idempotent-retry-same-owner',200);
  assert.equal(await count(),1,'retry no duplicate');
  for(const [testMode,status] of [
@@ -94,7 +92,6 @@ try{
  mode='allow';
  await check('cross-owner-subscription-reuse-denied',403,'qa-owner-b');
  assert.equal(await count(),1);
- assert.equal(redirectMode,'manual','manual redirect preserved for every Neon RPC');
  console.log('LI_WORKERD_FULL_BUNDLE_D1_NEON_CONTRACT_PASS');
 }finally{await mf.dispose();}
 

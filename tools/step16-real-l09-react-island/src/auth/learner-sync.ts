@@ -397,7 +397,8 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
     twoUserJwtRlsVerified:true,remoteConsentForPrivateState:true
    });
    if(result.mode==='security-error'||result.mode==='sign-in-required'){
-    window.dispatchEvent(new Event('li:auth-recheck'));
+    // Damaged/unencrypted ciphertext is a vault problem, never Google logout.
+    if(result.mode==='sign-in-required')window.dispatchEvent(new Event('li:auth-recheck'));
     report('error');
     return;
    }
@@ -499,7 +500,7 @@ export function startLearnerSync(uid:string,onStatus:(value:SyncReport)=>void):(
     code==='ACCOUNT_CHANGED'||/^NEON_AUTH_|^INVITE_CHECK_HTTP_40[13]$|^NEON_DATA_API_HTTP_40[13]$/.test(code);
    if(authorizationFailure)window.dispatchEvent(new Event('li:auth-recheck'));
    report(navigator.onLine?'error':'offline');
-   if(!authorizationFailure)retryTransient();
+   if(!authorizationFailure&&code!=='E2EE_VAULT_LOCKED'&&!code.startsWith('E2EE_'))retryTransient();
   }finally{
    busy=false;
    if(!current.settled){current.settled=true;current.finish();}

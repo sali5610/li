@@ -1,5 +1,5 @@
 /**
- * Staging-only offline continuation for a recently invited learner on THIS browser.
+ * Trusted-origin offline continuation for a recently invited learner on THIS browser.
  * NOT a Google session, JWT, remote permission or proof of current membership.
  * Server checks remain required for all Neon requests on reconnect.
  * A revoked invite cannot be observed without a network: offline access is
@@ -7,7 +7,7 @@
  */
 const KEY='li.offline.recent-invite.v1';
 const OWNER='li.sync.local-owner.v1';
-const STAGING_ORIGIN='https://sali5610.github.io';
+const TRUSTED_ORIGINS=new Set(['https://sali5610.github.io','https://li5610.pages.dev']);
 export const OFFLINE_LEASE_MS=12*60*60*1000;
 type Store=Pick<Storage,'getItem'|'setItem'|'removeItem'>;
 type Lease={v:1;uid:string;verifiedAt:number};
@@ -19,7 +19,7 @@ export function forgetOfflineInvite(store:Store=localStorage):void{
 export function rememberOfflineInvite(
  uid:string,now=Date.now(),store:Store=localStorage,origin=location.origin
 ):boolean{
- if(origin!==STAGING_ORIGIN||typeof uid!=='string'||!uid.trim()||
+ if(!TRUSTED_ORIGINS.has(origin)||typeof uid!=='string'||!uid.trim()||
     !Number.isFinite(now)||now<=0)return false;
  try{
   if(store.getItem(OWNER)!==uid)return false;
@@ -33,7 +33,7 @@ export function rememberOfflineInvite(
 export function recentOfflineOwner(
  offline:boolean,now=Date.now(),store:Store=localStorage,origin=location.origin
 ):string|null{
- if(!offline||origin!==STAGING_ORIGIN||!Number.isFinite(now))return null;
+ if(!offline||!TRUSTED_ORIGINS.has(origin)||!Number.isFinite(now))return null;
  try{
   const raw=store.getItem(KEY);
   if(!raw||raw.length>500)return null;

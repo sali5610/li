@@ -137,18 +137,6 @@ jobs:
           set -euo pipefail
           cp tools/step16-real-l09-react-island/dist-staging-app/*.js site/assets/
           cp tools/step16-real-l09-react-island/dist-e2ee-qa/*.js site/assets/
-          # Bust static QA entrypoint without registering or mutating the main PWA SW.
-          python3 - <<'PY'
-          from pathlib import Path
-          import os
-          qa=Path('site/e2ee-qa/index.html')
-          h=qa.read_text(encoding='utf-8')
-          source='<script type="module" src="../assets/e2ee-qa.js"></script>'
-          assert h.count(source)==1,'E2EE QA HTML entrypoint changed'
-          qa.write_text(h.replace(source,
-            '<script type="module" src="../assets/e2ee-qa.js?li_build='+
-            os.environ['GITHUB_SHA'][:12]+'"></script>',1),encoding='utf-8')
-          PY
           test -s site/assets/e2ee-qa.js
           test -s site/e2ee-qa/index.html
           # Versioned filename means a newly opened iOS Safari page cannot use
@@ -161,6 +149,18 @@ jobs:
           bash tools/test_search_rendered.sh
           touch site/.nojekyll
           git diff --exit-code -- site/
+          # Bust static QA entrypoint without registering or mutating the main PWA SW.
+          python3 - <<'PY'
+          from pathlib import Path
+          import os
+          qa=Path('site/e2ee-qa/index.html')
+          h=qa.read_text(encoding='utf-8')
+          source='<script type="module" src="../assets/e2ee-qa.js"></script>'
+          assert h.count(source)==1,'E2EE QA HTML entrypoint changed'
+          qa.write_text(h.replace(source,
+            '<script type="module" src="../assets/e2ee-qa.js?li_build='+
+            os.environ['GITHUB_SHA'][:12]+'"></script>',1),encoding='utf-8')
+          PY
           python3 - <<'PY'
           from pathlib import Path
           import os

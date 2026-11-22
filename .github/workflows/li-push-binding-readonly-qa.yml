@@ -1,0 +1,22 @@
+name: li. Push Cloudflare + Neon binding READ ONLY (NO DEPLOY)
+on:
+  push:
+    branches: [qa/push-config-crosscheck-readonly-20261122]
+permissions:
+  contents: read
+jobs:
+  metadata:
+    if: github.repository == 'sali5610/li'
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Inspect existing Free Worker metadata only
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.LI_PUSH_CLOUDFLARE_API_TOKEN }}
+        run: python3 tools/push-worker/scripts/check_live_bindings_readonly.py
+      - name: No deploy and no private data
+        run: echo "No Worker, Pages, D1, VAPID, Neon or user data writes."

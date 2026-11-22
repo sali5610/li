@@ -20,13 +20,27 @@ def get(origin, path="/v1/config", method="GET", data=None):
             body = response.read(8192)
             return response.status, dict(response.headers), json.loads(body) if body else None
     except HTTPError as exc:
-        return exc.code, dict(exc.headers), None
+        # Classify edge HTML vs first-party Worker JSON without logging private values.
+        try:
+            payload = json.loads(exc.read(2048))
+            if isinstance(payload, dict):
+                payload = {k: payload.get(k) for k in ("ok", "available") if k in payload}
+            else:
+                payload = None
+        except (ValueError, OSError):
+            payload = None
+        return exc.code, dict(exc.headers), payload
 
 def main():
     first_failure = None
-    for attempt in range(6):
+    for attempt in range(2):
         try:
             status, headers, data = get(ORIGIN)
+            print("LI_PUSH_CONFIG_PROBE status=" + str(status) +
+                  " content_type=" + str(headers.get("Content-Type", "missing")).split(";")[0] +
+                  " json_kind=" + ("worker_error" if isinstance(data, dict) and data.get("ok") is False else
+                                  "available" if isinstance(data, dict) and data.get("available") is True else "other") +
+                  " server=" + str(headers.get("Server", "missing")))
             if status == 200 and isinstance(data, dict) and data.get("available") is True:
                 public = data.get("vapidPublicKey")
                 padded = public + "=" * (-len(public) % 4) if isinstance(public, str) else ""
@@ -39,7 +53,7 @@ def main():
             first_failure = "CONFIG_NOT_READY_HTTP_" + str(status)
         except (URLError, OSError, ValueError):
             first_failure = "CONFIG_NETWORK_OR_FORMAT_ERROR"
-        if attempt == 5:
+        if attempt == 1:
             raise RuntimeError(first_failure)
         time.sleep(3)
     if get("https://untrusted.example.test")[0] != 403:

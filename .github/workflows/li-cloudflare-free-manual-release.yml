@@ -1,9 +1,13 @@
 name: Release li. to Cloudflare Pages Free — MANUAL ONLY
 
-# IMPORTANT: No push or PR event. This never deploys from commits by itself.
+# IMPORTANT: Manual dispatch is the ONLY deploy trigger. PR gate builds a candidate locally but NEVER deploys.
 # First-party modes use the immutable staging SHA with successful staging CI,
 # without merging all staging changes into main. Never dispatch until preflight.
 on:
+  # Focused PR gate builds the pinned Auth-only artifact; it never deploys.
+  pull_request:
+    paths:
+      - '.github/workflows/li-cloudflare-free-manual-release.yml'
   workflow_dispatch:
     inputs:
       confirm:
@@ -29,8 +33,55 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  auth_candidate_check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout pinned, already reviewed staging source (no secrets)
+        uses: actions/checkout@v4
+        with:
+          ref: ea25f7a90b706812e211d3c5fc275e876bbd3f8d
+          persist-credentials: false
+      - name: Verify immutable source and validate app shell
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "ea25f7a90b706812e211d3c5fc275e876bbd3f8d"
+          python3 tools/validate_site.py
+          python3 tools/generate_design_tokens.py --check
+          python3 tools/validate_design_system.py
+          python3 tools/validate_ui_foundations.py
+      - name: Setup Node 22 for Auth-only candidate tests
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build first-party Auth-only Cloudflare candidate (NO DEPLOY)
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund --prefix design-system/react
+          npm install --no-audit --no-fund --prefix tools/step16-real-l09-react-island
+          cd tools/step16-real-l09-react-island
+          npm run extract
+          npm run test:auth-pwa
+          npx tsc --noEmit
+          npm run build:worker:auth-only
+          VITE_LI_AUTH_TARGET=cloudflare-first-party npx vite build --config vite.cloudflare-app.config.mjs
+          cd ../..
+          node tools/prepare_cloudflare_ai_candidate.mjs --build-auth-only
+          npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-auth-only-config.cjs
+          test -s dist-cloudflare-auth-candidate/_worker.js
+          test -s dist-cloudflare-auth-candidate/assets/li-first-party-app.js
+          test -s dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'li-first-party-app.js' dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'li-push-handler.js' dist-cloudflare-auth-candidate/sw.js
+          ! grep -Fq 'neon.tech' dist-cloudflare-auth-candidate/sw.js
+          test -z "$(find dist-cloudflare-auth-candidate -type f -name '*.map' -print -quit)"
+          git diff --exit-code -- site
   release:
     if: >-
+      github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/main' &&
       ((inputs.ai_mode == false && inputs.auth_only_mode == false && inputs.confirm == 'PUBLISH_LI_FREE_ONLY') ||
        (inputs.ai_mode == true && inputs.auth_only_mode == false && inputs.confirm == 'PUBLISH_LI_AI_FREE_ONLY') ||

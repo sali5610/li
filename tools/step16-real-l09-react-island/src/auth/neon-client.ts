@@ -27,8 +27,12 @@ export const neonSessionPort:NeonAuthSessionPort={
   // The official SDK obtains only a short-lived signed JWT, used directly for
   // Neon Data API requests. Never persist it across browser restarts.
   try{
-   const jwt=await neonAuth.getJWTToken();
-   return sessionJwtCandidate(jwt);
+   // Better Auth's cached session.token may be an opaque cookie identifier,
+   // not the signed Data API JWT. Ask the managed JWT plugin through the
+   // existing first-party /api/auth/token endpoint instead.
+   const response=await authClient.token();
+   if(response.error)throw safeJwtFetchError(response.error);
+   return sessionJwtCandidate(response.data?.token);
   }catch(problem){
    throw safeJwtFetchError(problem);
   }

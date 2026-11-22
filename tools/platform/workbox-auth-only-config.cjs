@@ -1,8 +1,10 @@
-/* Cloudflare Auth-only candidate PWA; no source-site mutation and no auth,
+/* Cloudflare first-party Auth-only or AI candidate PWA; no source-site mutation and no auth,
  * OAuth, Neon or private-data API response is ever cached. Origin scope is /.
  * Keep GitHub Pages' separate /li/ Workbox configuration unchanged. */
+const target=process.env.LI_CLOUDFLARE_AI_BUILD==='1'?
+ 'dist-cloudflare-ai-candidate':'dist-cloudflare-auth-candidate';
 module.exports={
- globDirectory:'dist-cloudflare-auth-candidate',
+ globDirectory:target,
  globPatterns:[
   'index.html','manifest.webmanifest','assets/*.{js,css,svg}',
   'assets/li-content-adapter.mjs',
@@ -11,7 +13,7 @@ module.exports={
  ],
  globIgnores:['**/*.map','**/*qa-secrets*'],
  importScripts:['assets/li-push-handler.js'],
- swDest:'dist-cloudflare-auth-candidate/sw.js',
+ swDest:target+'/sw.js',
  mode:'production',
  maximumFileSizeToCacheInBytes:5*1024*1024,
  cleanupOutdatedCaches:true,

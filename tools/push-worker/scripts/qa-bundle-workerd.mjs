@@ -63,7 +63,8 @@ const mf=mfBase({outboundService:fakeNeon});
 try{
  const db=await mf.getD1Database('PUSH_DB','li-push-runtime-qa');
  const schema=readFileSync(new URL('../db/0001_push_subscriptions.sql',import.meta.url),'utf8');
- await db.exec(schema);
+ for(const sql of schema.replace(/^--.*$/gm,'').split(';').map(s=>s.trim()).filter(Boolean))
+  await db.prepare(sql).run();
  const count=async()=>Number((await db.prepare('SELECT COUNT(*) AS n FROM push_subscriptions').first()).n);
  const check=async (name,expected,sub='qa-owner-a')=>{
   const response=await mf.dispatchFetch(request(sub));

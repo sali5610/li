@@ -124,3 +124,52 @@
  .li-flow-setting{align-items:flex-start;flex-direction:column}
 }
 @media(prefers-reduced-motion:reduce){.li-flow-page *{animation:none!important;transition:none!important}}
+
+
+/* Category navigation reuses the seven-variant PortalCategoryCard and actual group art. */
+.li-flow-portal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:clamp(12px,2vw,22px);align-items:start;min-width:0}
+.li-flow-portal-grid .li-portal-category-card{padding:12px;gap:10px;min-width:0;
+ border:1px solid var(--rule);background:var(--cream)}
+.li-flow-portal-grid .li-portal-category-copy{gap:8px;min-width:0}
+.li-flow-portal-grid .li-portal-category-copy h2{
+ font-size:clamp(16px,1.45vw,22px);line-height:1.18}
+.li-flow-portal-grid .li-portal-category-eyebrow{font-size:10px}
+.li-flow-portal-grid .li-portal-category-copy p{font-size:12px}
+.li-flow-page[data-layout="notebook"] .li-flow-portal-grid .li-portal-category-card{
+ background:var(--paper);border-style:dashed;border-color:var(--olive)}
+.li-flow-page[data-layout="vintagePop"] .li-flow-portal-grid .li-portal-category-card{
+ background:var(--cream);border:2px solid var(--moss);box-shadow:5px 5px 0 var(--olive)}
+.li-flow-page[data-layout="bookworm"] .li-flow-portal-grid .li-portal-category-card{
+ background:transparent;border:0;border-bottom:1px solid var(--rule);
+ padding-inline:0;box-shadow:none}
+.li-flow-catalog-fields>.li-ds-button{justify-self:start}
+/* The complete 1024px Lao Ly illustrations are deliberate large-size content. */
+.li-flow-laoly-rest{margin:0;justify-self:start;width:min(100%,260px)}
+.li-flow-laoly-rest img{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain}
+.li-flow-laoly-exhibition{display:grid;grid-template-columns:minmax(160px,.7fr) minmax(0,1fr);
+ gap:clamp(12px,2vw,28px);align-items:center}
+.li-flow-laoly-portrait{margin:0;min-width:0;display:grid;justify-items:center;
+ padding:12px;background:var(--paper);border:1px solid var(--rule)}
+.li-flow-laoly-portrait img{display:block;width:100%;max-width:340px;height:auto;
+ aspect-ratio:1;object-fit:contain}
+.li-flow-laoly-portrait figcaption{font-size:13px;line-height:1.5;color:var(--muted);
+ text-align:center;margin-top:8px}
+.li-flow-laoly-dialogue{display:grid;gap:14px;align-content:center;min-width:0}
+.li-flow-laoly-poses{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+ gap:8px;margin:12px 0 16px}
+.li-flow-laoly-poses .li-ds-button{min-width:0;min-height:108px;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:6px;padding:7px 5px;box-shadow:none;white-space:normal;text-align:center}
+.li-flow-laoly-poses .li-ds-button img{width:min(100%,78px);height:78px;
+ object-fit:contain;flex:none}
+.li-flow-laoly-poses .li-ds-button span{font-size:12px;line-height:1.2;
+ overflow-wrap:anywhere}
+.li-flow-page[data-layout="notebook"] .li-flow-laoly-portrait{
+ border-style:dashed;border-color:var(--olive);transform:rotate(-1deg)}
+.li-flow-page[data-layout="vintagePop"] .li-flow-laoly-portrait{
+ border:2px solid var(--moss);box-shadow:5px 5px 0 var(--olive)}
+.li-flow-page[data-layout="bookworm"] .li-flow-laoly-portrait{
+ border:0;border-bottom:1px solid var(--rule);background:transparent}
+.li-flow-page[data-layout="bookworm"] .li-flow-laoly-poses .li-ds-button{
+ border-radius:0;border:0;border-bottom:1px solid var(--rule)}

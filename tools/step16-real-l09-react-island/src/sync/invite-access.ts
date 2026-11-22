@@ -95,6 +95,7 @@ export function safeInviteErrorCode(error:unknown):string{
  }
  if(message==='NEON_AUTH_JWT_SESSION_FAILED'||message==='INVITE_AUTH_SESSION_FAILED')
   return 'INV-SESSION';
+ if(message==='NEON_AUTH_JWT_INVALID_RESPONSE')return 'INV-JWT-FORMAT';
  if(message==='INVITE_JWT_REQUIRED')return 'INV-JWT-MISSING';
  if(message==='INVITE_JWT_INVALID'||message==='INVITE_ACCOUNT_MISMATCH')
   return 'INV-JWT-BIND';

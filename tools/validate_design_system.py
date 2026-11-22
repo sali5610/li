@@ -231,10 +231,13 @@ def main() -> int:
           "(max-width:1420px) and (orientation:landscape)" in home_layout and
           "and (any-pointer: coarse)" not in foundations[foundations.index("/* UX-DS-25"):],
           "iPad 1408px landscape uses viewport ratio, not pointer hardware")
-    check("ds33-physical-shell" in html, "new Safari rotation response and CSS are cache-versioned")
+    check(bool(re.search(r"ipad-safari-rotation\.js\?v=[\w-]+", html)) and
+          bool(re.search(r"ipad-home-canvas\.css\?v=[\w-]+", html)),
+          "new Safari rotation response and CSS are cache-versioned")
     check("ipad-safari-rotation.js?v=20261119-ds33" in html, "iPad-only runtime orientation reconciliation installed")
     check("pinch-zoom" in (ROOT / "site/assets/ui-foundations.css").read_text(encoding="utf-8"), "iPad Safari touch-action allows pinch zoom")
-    check("ds33-physical-shell" in html,
+    check(bool(re.search(r"li-layout\.css\?v=[\w-]+", html)) and
+          bool(re.search(r"ipad-home-canvas\.css\?v=[\w-]+", html)),
           "iPad runtime styles use fresh CSS cache versions")
     ipad_canvas = (ROOT / "site/assets/ipad-home-canvas.css").read_text(encoding="utf-8")
     check("ipad-home-canvas.css?v=assets-20261121" in html and

@@ -32,7 +32,7 @@ test('offline owner restore hides login until ready, then shows app, never an on
  assert.equal(check(false,false,null,'offline',false),false);
  assert.equal(deferAuthScreen(false,true,false,null,'checking',false),false);
 });
-test('AuthPanel uses neutral cover while pending, real gate on denial, and time-limited offline owner',()=>{
+test('AuthPanel uses neutral cover while pending, real gate on denial, and session-scoped offline owner',()=>{
  const auth=readFileSync(new URL('../src/auth/AuthPanel.tsx',import.meta.url),'utf8');
  const boot=readFileSync(new URL('../src/auth/staging-app.tsx',import.meta.url),'utf8');
  const local=readFileSync(new URL('../src/auth/offline-local.ts',import.meta.url),'utf8');
@@ -43,6 +43,8 @@ test('AuthPanel uses neutral cover while pending, real gate on denial, and time-
  assert.match(auth,/const localOffline=isOffline&&Boolean\(offlineId\)&&accountId===offlineId/);
  assert.match(auth,/if\(online\)void refetch\(\)/);
  assert.match(boot,/if\(!isVerified\(\)\)revealBoot\(\)/);
- assert.match(local,/OFFLINE_LEASE_MS=12\*60\*60\*1000/);
+ assert.match(local,/const KEY='li\.offline\.active-session\.v1'/);
+ assert.match(local,/sessionStorage/);
+ assert.doesNotMatch(local,/OFFLINE_LEASE_MS/);
  assert.doesNotMatch(local,/localStorage\.setItem\([^\n]*jwt|localStorage\.setItem\([^\n]*token/i);
 });

@@ -139,7 +139,7 @@ async function reconcileAdditivePersonalConflicts(uid:string,api:NeonUserApi,
   const base=op.basePayload===null||op.basePayload===undefined?null:
    personalRemoteSnapshot(uid,field.type,field.id,op.basePayload)?.raw;
   if(op.basePayload!==null&&op.basePayload!==undefined&&base===undefined)continue;
-  const merged=mergePersonalConflictRaw(field.id,base,original,remoteValue.raw);
+  const merged=mergePersonalConflictRaw(field.id,base??null,original,remoteValue.raw);
   if(merged===null)continue; // An ambiguous edit must remain explicitly blocked.
   const payload={schema:'li.personal.storage.v1' as const,storageKey:pending.key,raw:merged};
   // Existing native/React library code reads localStorage synchronously.

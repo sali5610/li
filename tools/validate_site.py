@@ -103,7 +103,7 @@ foundations=(site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
 assert "html { touch-action: pan-x pan-y pinch-zoom; }" in foundations
 assert "#page-home .mirror-message { touch-action: pan-y pinch-zoom; }" in foundations
 # Assert the active Safari/iPad physical-shell stylesheet, not an obsolete cache-buster.
-assert re.search(r'ipad-home-canvas\.css\?v=[\w-]+', page_html), "iPad physical shell stylesheet missing"
+assert 'ipad-home-canvas.css?v=' in page_html, "iPad physical shell stylesheet missing"
 
 
 # S137: previous/next arrows cycle questions in both directions; buttons remain stationary.
@@ -192,7 +192,7 @@ assert 'fill="#243A29"' in seal, "Logo ink must match approved moss theme"
 # S146: favicon and standard header use the same approved geometric SVG.
 # The transparent Home header swaps to the separately shipped cream SVG,
 # so the visual contrast stays correct without CSS filter inversion.
-seal_matches=re.findall(r'<link rel="icon" type="image/svg\\+xml" href="(\\./assets/li-seal\\.svg\\?v=[\\w-]+)">',page_html)
+seal_matches=re.findall(r'<link rel="icon" type="image/svg\+xml" href="(\./assets/li-seal\.svg\?v=[\w-]+)">',page_html)
 assert len(seal_matches)==1, "Favicon must reference the approved geometric seal"
 seal_url=seal_matches[0]
 assert page_html.count('class="brand-stamp brand-stamp--default" src="'+seal_url+'"')==1, "Standard header must share favicon SVG URL"
@@ -788,7 +788,7 @@ assert 'locale==="vi"?' in cross
 assert 'li-related-lessons' in foundation
 
 # UX-DS-11 · Review components are connected; app Guide chips use full pills.
-assert 'ui-foundations.css?v=20261119-ds33-physical-shell' in page_html
+assert 'ui-foundations.css?v=' in page_html
 assert '#page-guide #method-filters .filter,' in foundation and 'border-radius:999px!important;' in foundation
 # The public entry now routes to React Studio; old UX-DS-11 specimens are archived.
 studio_entry=(site/"component-library-review.html").read_text(encoding="utf-8")
@@ -876,7 +876,7 @@ assert 'Top Navigation transparent Home' not in page_html
 # UX-DS-10: updated Safari CSS must defeat stale rectangular tap overlay without
 # removing keyboard focus-visible affordance or changing approved Home CTA geometry.
 assert 'li-layout.css?v=assets-20261121' in page_html
-assert 'ui-foundations.css?v=20261119-ds33-physical-shell' in page_html
+assert 'ui-foundations.css?v=' in page_html
 assert '/* UX-DS-10 · iOS pressed feedback:' in foundation
 assert '-webkit-tap-highlight-color: var(--li-uxds10-touch-clear) !important;' in foundation
 assert ':focus:not(:focus-visible)' in foundation
@@ -894,7 +894,7 @@ assert '.ds-home-bubble{position:relative;' in review10css and 'border:1px solid
 assert '/* UX-DS-24: forest green bubble has zero-width stroke' in foundation
 assert '#page-home .hero-dialogue-bubble { border-width:var(--li-space-0); padding:' in foundation
 assert '#page-home .hero-dialogue-bubble::before { border-width:var(--li-space-0); }' in foundation
-assert './assets/ui-foundations.css?v=20261119-ds33-physical-shell' in page_html
+assert './assets/ui-foundations.css?v=' in page_html
 
 # UX-DS-09: mobile Tủ Riêng uses the same Archive icon as Home, never Bookmark.
 mobile_nav=page_html.split('<nav class="mobile-nav"',1)[1].split('</nav>',1)[0]

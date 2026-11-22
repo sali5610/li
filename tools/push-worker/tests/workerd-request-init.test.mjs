@@ -22,7 +22,7 @@ test('real workerd RequestInit rejects redirect:error but accepts manual, withou
      }catch{manualWorks=false;}
      return Response.json({badThrows,manualWorks});
    }
-  }`}}}}]
+  }`}}}}}]
  });
  try{
   const res=await mf.dispatchFetch('http://localhost/');

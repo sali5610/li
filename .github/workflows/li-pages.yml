@@ -20,9 +20,10 @@ permissions:
   pages: write
   id-token: write
 
+# Keep only the newest staging Pages revision when UI commits arrive rapidly.
 concurrency:
   group: github-pages-li
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   publish:
@@ -86,11 +87,21 @@ jobs:
         with:
           node-version: '22'
 
+      # These two npm projects have no committed package-lock.json. Reuse
+      # download tarballs without changing dependency resolution.
+      - name: Cache staging npm package downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: li-staging-npm-${{ runner.os }}-node22-${{ hashFiles('design-system/react/package.json', 'tools/step16-real-l09-react-island/package.json') }}
+          restore-keys: |
+            li-staging-npm-${{ runner.os }}-node22-
+
       # The app imports canonical React DS components from a sibling directory.
       # Install its already-pinned icon/React dependencies before app TypeScript resolves them.
       - name: Install shared Design System dependencies once
         working-directory: design-system/react
-        run: npm install --no-audit --no-fund
+        run: npm install --prefer-offline --no-audit --no-fund
 
       - name: Build signed-in app shell and run focused Neon contracts
         working-directory: tools/step16-real-l09-react-island
@@ -100,7 +111,7 @@ jobs:
           VITE_LI_PUSH_STAGING_URL: ${{ vars.LI_PUSH_STAGING_URL }}
         run: |
           set -euo pipefail
-          npm install --no-audit --no-fund
+          npm install --prefer-offline --no-audit --no-fund
           npm run extract
           node ../checkin_adaptation_regression.mjs
           npm run test:sync

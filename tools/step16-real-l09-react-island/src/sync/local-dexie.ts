@@ -60,7 +60,8 @@ export class PrivateDeviceStore extends Dexie{
     // A new local edit arrived while an earlier operation was in flight.
     // Acknowledge its base revision without clobbering its newer payload.
     await this.records.update(op.key,{baseRevision:remote.revision});
-    await this.outbox.update(op.key,{baseRevision:remote.revision});
+    await this.outbox.update(op.key,{baseRevision:remote.revision,
+     basePayload:remote.payload});
    }
   });
  }

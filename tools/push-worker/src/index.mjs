@@ -18,21 +18,34 @@ function failure(status){return json({ok:false},status);}
 function isAllowedOrigin(request,env){
  return request.headers.get('Origin')===env.ALLOWED_ORIGIN;
 }
+// The previous implementation returned the SAME HTTP 403 for invalid JWT,
+// explicit invite denial, and broken upstream RPC. Preserve authorization,
+// but distinguish client re-auth (401), real denial (403), and upstream failure
+// (503). Do not echo JWT, identity, endpoint, provider body or exception text.
 async function invitedAccount(request,env){
  const value=request.headers.get('Authorization')||'';
  const token=value.startsWith('Bearer ')?value.slice(7):'';
  const account=safeAccountJwt(token);
- if(!account)return null;
+ if(!account)return {status:401};
+ let answer;
  try{
   const base=env.NEON_DATA_API_URL.replace(/\/$/,'');
-  const answer=await fetch(base+'/rpc/li_is_invited',{
+  answer=await fetch(base+'/rpc/li_is_invited',{
    method:'POST',redirect:'error',cache:'no-store',credentials:'omit',
    headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json'},
    body:'{}'
   });
-  if(!answer.ok||await answer.json()!==true)return null;
-  return account;
- }catch{return null;}
+ }catch{return {status:503};}
+ // A rejected JWT is not equivalent to a valid user being uninvited.
+ // Never turn upstream failures into an allow decision or a fake "denied".
+ if(answer.status===401||answer.status===403)return {status:401};
+ if(!answer.ok)return {status:503};
+ try{
+  const allowed=await answer.json();
+  if(allowed===true)return {account};
+  if(allowed===false)return {status:403};
+  return {status:503};
+ }catch{return {status:503};}
 }
 async function readBody(req){
  try{
@@ -55,8 +68,9 @@ async function fetchRequest(request,env){
   return json({available:true,vapidPublicKey:env.VAPID_PUBLIC_KEY},200,headers);
  if(url.pathname!=='/v1/subscriptions'||!['PUT','DELETE'].includes(request.method))
   return json({ok:false},405,headers);
- const account=await invitedAccount(request,env);
- if(!account)return json({ok:false},403,headers);
+ const authorized=await invitedAccount(request,env);
+ if(!authorized.account)return json({ok:false},authorized.status,headers);
+ const account=authorized.account;
  const body=await readBody(request);
  if(!body)return json({ok:false},400,headers);
  if(request.method==='DELETE'){

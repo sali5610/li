@@ -15,7 +15,13 @@ const app=window as ToastWindow;
 
 function Brand(){
  return <>
-  <img className="brand-stamp" src="./assets/li-seal.svg?v=exact-header-s146"
+  {/* React owns the visible header: mirror the canonical DS light-on-Home
+      and forest-on-other-pages variants already styled by ui-foundations. */}
+  <img className="brand-stamp brand-stamp--default"
+   src="./assets/li-seal.svg?v=brand-slogan-20261122"
+   alt="" aria-hidden="true" width={42} height={42}/>
+  <img className="brand-stamp brand-stamp--home"
+   src="./assets/li-seal-home.svg?v=brand-slogan-white-20261122"
    alt="" aria-hidden="true" width={42} height={42}/>
   <span className="brand-copy"><span className="logo">li.</span></span>
  </>;

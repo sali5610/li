@@ -332,6 +332,9 @@ assert.match(shell,/notice\.undo\?7000:2600/);
 assert.match(shell,/restored\?'Đã hoàn tác\.'/);
 assert.match(shell,/className="li-snackbar-undo"/);
 assert.match(shell,/function Brand\(\)/);
+assert.match(shell,/className="brand-stamp brand-stamp--default"[\s\S]*src="\.\/assets\/li-seal\.svg/, 'React header must use shared dark seal off Home');
+assert.match(shell,/className="brand-stamp brand-stamp--home"[\s\S]*src="\.\/assets\/li-seal-home\.svg/, 'React header must render the white Home seal');
+assert.match(read('site/assets/ui-foundations.css'),/\.app\.home-focus > \.header \.brand-stamp--home/, 'Canonical DS must switch seals on Home');
 assert.match(shell,/function Footer\(\)/);
 
 // These native modules own storage/undo but may not repaint duplicate hidden

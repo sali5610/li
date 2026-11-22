@@ -81,3 +81,26 @@ test('React settings and account-scoped sync still own the preference',()=>{
  assert.match(personal,/key:'li\.reminders\.in-app\.v1',type:'preference',id:'in-app-reminders'/);
  assert.match(script,/window\.dispatchEvent\(new Event\('li:private-sync-request'\)\)/);
 });
+
+test('snooze crosses midnight, preserves selected-day intent and survives reload',()=>{
+ const pref=original();
+ const study=pref.schedules[1];
+ study.frequency='weekdays';study.time='23:00';
+ const saturday=new Date(2026,10,21,0,30);
+ const receipt={lastDay:'',snoozedUntil:saturday.getTime()};
+ assert.equal(dueInApp(study,receipt,new Date(2026,10,20,23,20)),false);
+ assert.equal(dueInApp(study,receipt,saturday),true,
+  'a Friday snooze must still show on Saturday');
+ assert.equal(dueInApp(study,{...receipt,lastDay:localDay(saturday)},saturday),false);
+ assert.equal(dueInApp(study,receipt,new Date(2026,10,23,23,15)),true,
+  'next Monday returns to normal weekdays');
+});
+test('snooze cancellation is wired to device-specific Web Push refresh',()=>{
+ const ui=readFileSync(new URL('../src/shell/in-app-reminder-ui.tsx',import.meta.url),'utf8');
+ const push=readFileSync(new URL('../src/shell/web-push-settings.tsx',import.meta.url),'utf8');
+ const client=readFileSync(new URL('../src/shell/web-push-client.ts',import.meta.url),'utf8');
+ assert.match(ui,/dispatchEvent\(new Event\('li:reminder-delivery-changed'\)\)/);
+ assert.match(push,/addEventListener\('li:reminder-delivery-changed'/);
+ assert.match(push,/removeEventListener\('li:reminder-delivery-changed'/);
+ assert.match(client,/snoozedUntil:owner\?readReminderDelivery/);
+});

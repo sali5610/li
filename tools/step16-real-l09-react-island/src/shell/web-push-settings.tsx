@@ -73,6 +73,7 @@ export function WebPushSettings(){
   const visible=()=>{if(document.visibilityState==='visible')void refresh();};
   void refresh();
   window.addEventListener('li:reminder-preference-changed',eventRefresh);
+  window.addEventListener('li:reminder-delivery-changed',eventRefresh);
   window.addEventListener('li:personal-sync-applied',eventRefresh);
   window.addEventListener('online',eventRefresh);
   window.addEventListener('focus',eventRefresh);
@@ -80,6 +81,7 @@ export function WebPushSettings(){
   return()=>{
    alive=false;
    window.removeEventListener('li:reminder-preference-changed',eventRefresh);
+   window.removeEventListener('li:reminder-delivery-changed',eventRefresh);
    window.removeEventListener('li:personal-sync-applied',eventRefresh);
    window.removeEventListener('online',eventRefresh);
    window.removeEventListener('focus',eventRefresh);

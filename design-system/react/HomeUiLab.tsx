@@ -25,23 +25,20 @@ import './bookworm-open-space.css';
 import './notebook-open-space.css';
 import './vintage-pop-open-space.css';
 
-type LayoutKey='classic'|'split'|'cinematic'|'notebook'|'vintagePop'|'bookworm';
+type LayoutKey='notebook'|'vintagePop'|'bookworm';
 type ViewMode='focus'|'gallery';
 type Viewport='fluid'|'390'|'820'|'1440';
 const layoutChoices:readonly {id:LayoutKey;label:string}[]=[
- {id:'classic',label:'Editorial'},
- {id:'split',label:'Split focus'},
- {id:'cinematic',label:'Cinematic'},
  {id:'notebook',label:'Notebook · Handwritten'},
  {id:'vintagePop',label:'Vintage Pop · Stamp'},
  {id:'bookworm',label:'Bookworm · Vintage Minimal'}
 ];
 const homeVariant:Record<LayoutKey,HomeLayoutVariant>={
- classic:'heritage',split:'editorial',cinematic:'immersive',notebook:'notebook',
+ notebook:'notebook',
  vintagePop:'vintagePop',bookworm:'bookworm'
 };
 const pageVariant:Record<LayoutKey,PageVariant>={
- classic:'editorial',split:'split',cinematic:'cinematic',notebook:'notebook',
+ notebook:'notebook',
  vintagePop:'vintagePop',bookworm:'bookworm'
 };
 const questions=[
@@ -71,8 +68,8 @@ function Lab(){
  const reduceMotion=useReducedMotion();
  const [flow,setFlow]=useState<AppLabFlowId>(()=>readChoice('flow',flowChoices,'learning'));
  const [page,setPage]=useState<PageId>(()=>readChoice('page',pageChoices,'catalog'));
- const [layout,setLayout]=useState<LayoutKey>(()=>readChoice('layout',layouts,'classic'));
- const [other,setOther]=useState<LayoutKey>(()=>readChoice('compare',layouts,'split'));
+ const [layout,setLayout]=useState<LayoutKey>(()=>readChoice('layout',layouts,'notebook'));
+ const [other,setOther]=useState<LayoutKey>(()=>readChoice('compare',layouts,'vintagePop'));
  const [compare,setCompare]=useState(()=>params.has('compare'));
  const [mode,setMode]=useState<ViewMode>(()=>readChoice('mode',['focus','gallery'],'gallery'));
  const [viewport,setViewport]=useState<Viewport>(()=>readChoice('viewport',['fluid','390','820','1440'],'fluid'));

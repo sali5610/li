@@ -4,9 +4,8 @@ import {Miniflare} from 'miniflare';
 
 test('real workerd RequestInit rejects redirect:error but accepts manual, without external I/O',async()=>{
  const mf=new Miniflare({
-  defaultWorkerName:'li-redirect-qa',
-  workers:[{name:'li-redirect-qa',modules:true,compatibilityDate:'2026-11-21',
-  script:`export default {
+  workers:[{config:{name:'li-redirect-qa',compatibilityDate:'2026-11-21',env:{},
+   manifest:{mainModule:'index.mjs',modules:{'index.mjs':{type:'ESModule',contents:`export default {
    async fetch(){
      const common={method:'POST',cache:'no-store',credentials:'omit',
       headers:{Authorization:'Bearer synthetic-test-only'},body:'{}'};
@@ -23,7 +22,7 @@ test('real workerd RequestInit rejects redirect:error but accepts manual, withou
      }catch{manualWorks=false;}
      return Response.json({badThrows,manualWorks});
    }
-  }`}]
+  }`}}}}]
  });
  try{
   const res=await mf.dispatchFetch('http://localhost/');

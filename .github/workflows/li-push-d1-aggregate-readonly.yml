@@ -1,0 +1,24 @@
+name: li. Web Push D1 aggregate read-only QA (NO DEPLOY)
+on:
+  push:
+    branches:
+      - qa/webpush-d1-readonly-status-20261122
+    paths:
+      - '.github/workflows/li-push-d1-aggregate-readonly.yml'
+      - 'tools/push-worker/scripts/aggregate_status_readonly.py'
+permissions:
+  contents: read
+jobs:
+  inspect:
+    if: github.repository == 'sali5610/li'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Read account-wide aggregate counts only; no production mutation
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.LI_PUSH_CLOUDFLARE_API_TOKEN }}
+        run: python3 tools/push-worker/scripts/aggregate_status_readonly.py

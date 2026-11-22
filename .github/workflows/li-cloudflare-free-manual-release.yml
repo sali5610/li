@@ -1,7 +1,7 @@
 name: Release li. to Cloudflare Pages Free — MANUAL ONLY
 
 # IMPORTANT: Manual dispatch is the ONLY deploy trigger. PR gate builds a candidate locally but NEVER deploys.
-# Auth-only pins reviewed app SHA containing only the iPhone Web Push registration-status hotfix; AI retains the earlier pinned SHA,
+# Auth-only pins reviewed app SHA containing iPhone Web Push status hotfix + dedicated Worker 1-minute schedule; AI retains older pinned SHA,
 # without merging all staging changes into main. Never dispatch until preflight.
 on:
   # Focused PR gate builds the pinned Auth-only artifact; it never deploys.
@@ -24,6 +24,11 @@ on:
         required: false
         type: boolean
         default: false
+      push_minute_mode:
+        description: "Include ONE preflight-guarded existing Free Push Worker update: Cron 1 minute, send 1 minute early; keep VAPID/D1"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -43,12 +48,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: 1b800656434192dc725e9a7de6b28eb6600b859e
+          ref: cdc4b1a79f440d2623a99d68074ac57ff1c04f1e
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "1b800656434192dc725e9a7de6b28eb6600b859e"
+          test "$(git rev-parse HEAD)" = "cdc4b1a79f440d2623a99d68074ac57ff1c04f1e"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -57,6 +62,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Validate one-minute Worker code and Cron config locally (NO DEPLOY)
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund --prefix tools/push-worker
+          npm run check --prefix tools/push-worker
+          test "$(grep -Fc '"crons": ["* * * * *"]' tools/push-worker/wrangler.jsonc)" = 1
       - name: Build first-party Auth-only Cloudflare candidate (NO DEPLOY)
         env:
           # Public Worker URL only; separate Free Worker live-smoke #45019926305 PASS (no Pages auto-deploy).
@@ -88,9 +99,10 @@ jobs:
     if: >-
       github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/main' &&
-      ((inputs.ai_mode == false && inputs.auth_only_mode == false && inputs.confirm == 'PUBLISH_LI_FREE_ONLY') ||
-       (inputs.ai_mode == true && inputs.auth_only_mode == false && inputs.confirm == 'PUBLISH_LI_AI_FREE_ONLY') ||
-       (inputs.ai_mode == false && inputs.auth_only_mode == true && inputs.confirm == 'PUBLISH_LI_AUTH_ONLY'))
+      ((inputs.ai_mode == false && inputs.auth_only_mode == false && inputs.push_minute_mode == false && inputs.confirm == 'PUBLISH_LI_FREE_ONLY') ||
+       (inputs.ai_mode == true && inputs.auth_only_mode == false && inputs.push_minute_mode == false && inputs.confirm == 'PUBLISH_LI_AI_FREE_ONLY') ||
+       (inputs.ai_mode == false && inputs.auth_only_mode == true && inputs.push_minute_mode == false && inputs.confirm == 'PUBLISH_LI_AUTH_ONLY') ||
+       (inputs.ai_mode == false && inputs.auth_only_mode == true && inputs.push_minute_mode == true && inputs.confirm == 'PUBLISH_LI_AUTH_PUSH_MINUTE_FREE_ONLY'))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: cloudflare-free-production
@@ -104,7 +116,7 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.auth_only_mode && '1b800656434192dc725e9a7de6b28eb6600b859e' || (inputs.ai_mode && 'ea25f7a90b706812e211d3c5fc275e876bbd3f8d' || github.sha) }}
+          ref: ${{ inputs.auth_only_mode && 'cdc4b1a79f440d2623a99d68074ac57ff1c04f1e' || (inputs.ai_mode && 'ea25f7a90b706812e211d3c5fc275e876bbd3f8d' || github.sha) }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
@@ -112,8 +124,8 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
-            expected='1b800656434192dc725e9a7de6b28eb6600b859e'
-            echo 'Auth-only app: reviewed Web Push origin fix PR #582 plus first-grant registration-status fix PR #589; pinned minimal hotfix commit.'
+            expected='cdc4b1a79f440d2623a99d68074ac57ff1c04f1e'
+            echo 'Auth-only app: approved one-minute Worker cron + first-grant status hotfix; isolated from staging E2EE and Neon migrations.'
           else
             expected='ea25f7a90b706812e211d3c5fc275e876bbd3f8d'
             echo 'AI mode retains previously reviewed source; no AI release approved.'
@@ -215,6 +227,18 @@ jobs:
           else
             python3 tools/g3_cloudflare_free_guard.py --site site --online
           fi
+
+      - name: Update same EXISTING Free Push Worker to 1-minute Cron (no new DB/VAPID)
+        if: inputs.push_minute_mode == true && inputs.auth_only_mode == true && inputs.ai_mode == false
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.LI_PUSH_CLOUDFLARE_API_TOKEN }}
+          LI_APPROVED_CRON_CHANGE: LI_PUSH_CRON_1M_EXISTING_ONLY_20261122
+        run: |
+          set -euo pipefail
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo 'Missing scoped Free-only Worker token'; exit 1; }
+          npm install --no-audit --no-fund --prefix tools/push-worker
+          npm run check --prefix tools/push-worker
+          python3 tools/push-worker/scripts/update_existing_minute_cron.py --apply
 
       - name: Upload selected approved site only (manual main release)
         uses: cloudflare/wrangler-action@v3

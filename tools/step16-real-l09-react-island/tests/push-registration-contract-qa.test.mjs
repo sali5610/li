@@ -93,7 +93,7 @@ override('fetch',async(url,init={})=>{
 });
 try{
  client=await import('data:text/javascript;base64,'+Buffer.from(clientJs).toString('base64'));
- test('same app client to Worker contract stores one valid invited synthetic subscription',async()=>{
+ await test('same app client to Worker contract stores one valid invited synthetic subscription',async()=>{
   assert.equal(client.webPushApi(),endpoint);
   assert.equal(client.installedPushSupported(),false,'test does not impersonate iOS PWA');
   assert.equal(client.userAllowed(),true);
@@ -106,7 +106,7 @@ try{
   assert.equal(JSON.parse(rows[0].local_time).schedules[0].time,'20:53');
   console.log('LI_PUSH_CLIENT_WORKER_POSITIVE_CONTRACT_PASS (synthetic JWT + D1 only)');
  });
- test('Worker rejects user not invited even when same fake JWT shape is valid',async()=>{
+ await test('Worker rejects user not invited even when same fake JWT shape is valid',async()=>{
   const previous=rows.length;
   allowed=false;
   await assert.rejects(client.registerPush(endpoint,{toJSON:()=>fakeSub}),

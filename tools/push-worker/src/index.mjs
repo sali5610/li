@@ -5,10 +5,11 @@ import {validKind,validClock,validZone,validSubscription,validSchedules,
 const json=(body,status=200,extra={})=>new Response(JSON.stringify(body),{
  status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store',...extra}
 });
+const permittedOrigins=new Set(['https://sali5610.github.io','https://li5610.pages.dev']);
 function configured(env){return !!(env.PUSH_DB&&env.VAPID_PUBLIC_KEY&&
  env.VAPID_PRIVATE_KEY&&env.VAPID_SUBJECT&&
  env.NEON_DATA_API_URL?.startsWith('https://')&&
- env.ALLOWED_ORIGIN==='https://sali5610.github.io');}
+ permittedOrigins.has(env.ALLOWED_ORIGIN));}
 function cors(env){return {'Access-Control-Allow-Origin':env.ALLOWED_ORIGIN,
  'Access-Control-Allow-Headers':'Authorization, Content-Type',
  'Access-Control-Allow-Methods':'GET,PUT,DELETE,OPTIONS',

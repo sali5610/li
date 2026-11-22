@@ -1,14 +1,14 @@
 {
-  // Candidate only. NEVER run against production without Human PO approval.
-  // First create a dedicated FREE D1 database named li-push-staging
-  // and replace its binding ID here. Secrets are Wrangler secrets, never committed.
+  // Cloudflare-origin candidate only. NEVER deploy or create production D1
+  // without Human PO approval. Replace the FREE D1 binding ID after approval;
+  // keep VAPID keys in Wrangler secrets, never in Git.
   "name": "li-push-staging",
   "main": "src/index.mjs",
   "compatibility_date": "2026-11-21",
   "workers_dev": true,
   "triggers": {"crons": ["*/5 * * * *"]},
   "vars": {
-    "ALLOWED_ORIGIN": "https://sali5610.github.io",
+    "ALLOWED_ORIGIN": "https://li5610.pages.dev",
     "NEON_DATA_API_URL": "https://ep-misty-snow-azfrrm3o.apirest.c-3.ap-southeast-1.aws.neon.tech/li/rest/v1"
   },
   "d1_databases": [{

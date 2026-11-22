@@ -21,7 +21,7 @@ export function ScrapebookSheet({locale,mini,children}:{
     <NotebookAnnotation text={t('Nhặt một mảnh, ghép một ý.','Collect a piece, connect an idea.')} />
    </div>}
    {mini?<span className="li-scrapebook-sticker li-scrapebook-sticker--mini" aria-hidden="true">
-    <LiIcon name="asterisk" size={17}/> {t('SỔ GHÉP','SCRAPEBOOK')}
+    <LiIcon name="sparkles" size={17}/> {t('SỔ GHÉP','SCRAPEBOOK')}
    </span>:
    <motion.button type="button" className="li-scrapebook-sticker"
     aria-pressed={peeled}
@@ -31,7 +31,7 @@ export function ScrapebookSheet({locale,mini,children}:{
     animate={{opacity:1,y:peeled?-9:0,rotate:peeled?-18:6,scale:peeled?1.05:1}}
     whileTap={reduced?undefined:{scale:.94}}
     transition={reduced?{duration:0}:{type:'spring',stiffness:250,damping:18}}>
-    <LiIcon name={peeled?'pin':'asterisk'} size={18}/>
+    <LiIcon name={peeled?'bookmark':'sparkles'} size={18}/>
     <span>{peeled?t('DÁN LẠI','RE-STICK'):t('BÓC STICKER','PEEL STICKER')}</span>
    </motion.button>}
   </div>

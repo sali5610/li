@@ -1,0 +1,161 @@
+/* Scrapebook = Vintage Pop paint + Notebook paper craft.
+ * UI Lab opt-in only. Every colour is inherited from Vintage Pop;
+ * no global palette changes and no additional runtime dependency. */
+.li-ui-lab-preview[data-scrapebook="true"]{
+ --nb-wine:var(--vp-brick);
+ --nb-blue:var(--vp-forest);
+ --nb-rule:var(--vp-forest);
+ --nb-soft:var(--vp-lavender);
+ --scrap-ink:var(--vp-forest);
+ --scrap-paper:var(--vp-paper);
+ --scrap-olive:var(--vp-green-pop);
+ --scrap-lilac:var(--vp-lavender);
+ --scrap-brick:var(--vp-brick);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-sheet{
+ min-width:0;padding:clamp(8px,1.6vw,22px);
+ background:var(--scrap-paper);
+ background-image:radial-gradient(color-mix(in srgb,var(--scrap-ink) 13%,transparent) .7px,transparent 1px);
+ background-size:19px 19px;
+ color:var(--scrap-ink);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-masthead{
+ display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+ gap:10px 24px;min-height:72px;padding:4px 4px 18px;
+ border-bottom:2px dashed var(--scrap-ink);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-folio{
+ color:var(--scrap-ink);
+ font:700 11px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;
+ letter-spacing:.11em;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-handwriting{
+ margin-inline:auto;min-width:0;max-width:min(45%,330px);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-handwriting .li-notebook-annotation{
+ max-width:100%;font-size:clamp(20px,2.3vw,31px);
+ color:var(--scrap-brick);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-sticker{
+ flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;
+ min-height:46px;padding:9px 13px;border:2px solid var(--scrap-ink);
+ background:var(--scrap-lilac);color:var(--scrap-ink);
+ font:800 11px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;
+ letter-spacing:.09em;box-shadow:4px 5px 0 var(--scrap-ink);
+ cursor:pointer;transform-origin:15% 10%;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-sticker[aria-pressed="true"]{
+ background:var(--scrap-olive);box-shadow:8px 11px 0 var(--scrap-brick);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-sticker:focus-visible{
+ outline:3px solid var(--scrap-brick);outline-offset:4px;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-sticker--mini{
+ min-height:28px;padding:5px 7px;font-size:9px;transform:rotate(6deg);
+ cursor:default;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-canvas{
+ position:relative;isolation:isolate;min-width:0;
+ margin:19px 2px 14px;padding:clamp(5px,.8vw,13px);
+ background:var(--scrap-paper);
+ border:2px solid var(--scrap-ink);
+ box-shadow:8px 9px 0 var(--scrap-lilac),12px 14px 0 var(--scrap-ink);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-canvas>.li-flow-page,
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-canvas>.li-ui-home{
+ position:relative;width:100%;min-width:0;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-washi{
+ position:absolute;z-index:8;pointer-events:none;
+ top:-12px;left:clamp(24px,10%,115px);
+ width:clamp(58px,13%,114px);height:25px;
+ transform-origin:50% 50%;
+ background:var(--vp-accent-yellow,var(--scrap-olive));
+ border-block:1px solid var(--scrap-ink);
+ opacity:.84;
+ clip-path:polygon(0 0,100% 0,96% 14%,100% 32%,96% 48%,100% 65%,96% 82%,100% 100%,0 100%,4% 82%,0 66%,4% 49%,0 30%,4% 14%);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-paper-edge{
+ position:absolute;z-index:2;right:-3px;bottom:-9px;left:14px;height:12px;
+ pointer-events:none;
+ background:var(--scrap-paper);
+ clip-path:polygon(0 0,5% 48%,10% 10%,15% 57%,21% 22%,27% 64%,34% 12%,40% 70%,48% 14%,54% 60%,62% 20%,69% 76%,75% 15%,84% 61%,90% 20%,96% 69%,100% 0,100% 100%,0 100%);
+}
+/* Vintage Pop's collage, postmarks, lesson book and real page actions
+ * remain intact. Secondary Notebook cues appear on reusable paper cards. */
+.li-ui-lab-preview[data-scrapebook="true"] .li-flow-page-head,
+.li-ui-lab-preview[data-scrapebook="true"] .li-ui-home-intro{
+ box-shadow:6px 8px 0 var(--scrap-lilac),10px 12px 0 var(--scrap-ink);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-flow-page-head{
+ border-color:var(--scrap-ink);background-color:var(--scrap-olive);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card:nth-child(n){
+ background:var(--scrap-paper);border:2px solid var(--scrap-ink);
+ padding:clamp(14px,2vw,24px);margin-top:0;
+ box-shadow:5px 6px 0 var(--scrap-lilac);
+ transform:rotate(-1deg);transform-origin:50% 8%;
+ transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card:nth-child(3n+2){
+ background:var(--scrap-lilac);transform:rotate(1.3deg);
+ box-shadow:5px 6px 0 var(--scrap-brick);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card:nth-child(3n){
+ background:var(--scrap-olive);transform:rotate(-.7deg);
+ box-shadow:5px 6px 0 var(--scrap-ink);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card:nth-child(n):is(:hover,:focus-within){
+ transform:translateY(-5px) rotate(0);
+ box-shadow:8px 11px 0 var(--scrap-brick);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] :is(.li-ds-learning-response,.li-ds-account-note){
+ background-color:var(--scrap-paper);
+ background-image:repeating-linear-gradient(0deg,
+  transparent 0,transparent 33px,
+  color-mix(in srgb,var(--scrap-ink) 16%,transparent) 34px 35px);
+ background-size:100% 35px;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-pop-collage{
+ transition:transform .32s cubic-bezier(.2,.8,.2,1),box-shadow .32s ease;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-pop-collage:is(:hover,:focus-within){
+ transform:translateY(-5px) rotate(2deg);
+ box-shadow:7px 9px 0 var(--scrap-brick);
+}
+/* The mini-gallery is densely composed; keep textures without oversized props. */
+.li-ui-lab-preview[data-scrapebook="true"][data-mini="true"] .li-scrapebook-sheet{padding:8px;}
+.li-ui-lab-preview[data-scrapebook="true"][data-mini="true"] .li-scrapebook-masthead{
+ min-height:45px;padding-bottom:8px;
+}
+.li-ui-lab-preview[data-scrapebook="true"][data-mini="true"] .li-scrapebook-canvas{
+ margin:12px 0 9px;box-shadow:4px 5px 0 var(--scrap-lilac);
+}
+@container lab-preview (max-width:520px){
+ .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-masthead{
+  align-items:flex-start;padding-bottom:13px;
+ }
+ .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-handwriting{
+  flex:1 1 100%;max-width:100%;order:3;
+ }
+ .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-handwriting .li-notebook-annotation{
+  font-size:21px;
+ }
+ .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-sticker{
+  padding:8px;max-width:135px;white-space:normal;
+ }
+ .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-canvas{
+  padding:4px;margin-inline:0;box-shadow:4px 6px 0 var(--scrap-lilac);
+ }
+ .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card:nth-child(n){
+  transform:none;padding:14px;box-shadow:3px 4px 0 var(--scrap-lilac);
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .li-ui-lab-preview[data-scrapebook="true"] :is(.li-ds-card,.li-pop-collage,.li-scrapebook-washi){
+  animation:none!important;transition:none!important;
+ }
+ .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card:nth-child(n):is(:hover,:focus-within){
+  transform:none;
+ }
+}

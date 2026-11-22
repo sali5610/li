@@ -45,6 +45,33 @@ export function sessionJwtCandidate(value:unknown):string|null{
  return parts.length===3&&parts.every(part=>part.length>0)?value:null;
 }
 
+/** Fetch the official signed JWT without the pinned Neon SDK 0.7.0-beta cache.
+ * That SDK currently classifies /token as getSession and can return a cached
+ * session object instead of {token: JWT}. Never persist or log the JWT.
+ */
+export async function fetchSignedNeonJwt(
+ authBaseUrl:string,
+ request:Requester=fetch
+):Promise<string|null>{
+ const base=new URL(authBaseUrl);
+ if(base.protocol!=='https:'||base.username||base.password||base.search||base.hash)
+  throw new Error('INVALID_INVITE_API_URL');
+ const endpoint=base.toString().replace(/\/$/,'')+'/token';
+ let response:Response;
+ try{
+  response=await request(endpoint,{
+   method:'GET',credentials:'include',redirect:'error',cache:'no-store',
+   headers:{Accept:'application/json'}
+  });
+ }catch{throw safeJwtFetchError(null);}
+ if(!response.ok)throw safeJwtFetchError({status:response.status});
+ let data:unknown;
+ try{data=await response.json();}catch{throw new Error('NEON_AUTH_JWT_INVALID_RESPONSE');}
+ const candidate=data&&typeof data==='object'&&'token' in data
+  ?(data as {token?:unknown}).token:null;
+ return sessionJwtCandidate(candidate);
+}
+
 /** Preserve only a numeric Better Auth JWT endpoint status; never echo messages. */
 export function safeJwtFetchError(problem:unknown):Error{
  const detail=problem&&typeof problem==='object'?problem as {status?:unknown;statusCode?:unknown}:null;
@@ -68,6 +95,7 @@ export function safeInviteErrorCode(error:unknown):string{
  }
  if(message==='NEON_AUTH_JWT_SESSION_FAILED'||message==='INVITE_AUTH_SESSION_FAILED')
   return 'INV-SESSION';
+ if(message==='NEON_AUTH_JWT_INVALID_RESPONSE')return 'INV-JWT-FORMAT';
  if(message==='INVITE_JWT_REQUIRED')return 'INV-JWT-MISSING';
  if(message==='INVITE_JWT_INVALID'||message==='INVITE_ACCOUNT_MISMATCH')
   return 'INV-JWT-BIND';

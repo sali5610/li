@@ -28,14 +28,32 @@ test('real invited account can resume same-device work only while offline within
 test('account switch, explicit local lock, other origins and unverified owner fail closed',()=>{
  const s=makeStore('A');
  assert.equal(rememberOfflineInvite('B',now,s,origin),false);
- assert.equal(rememberOfflineInvite('A',now,s,'https://li5610.pages.dev'),false);
+ assert.equal(rememberOfflineInvite('A',now,s,'https://li5610.pages.dev'),true);
+ assert.equal(recentOfflineOwner(true,now,s,'https://li5610.pages.dev'),'A');
  assert.equal(rememberOfflineInvite('A',now,s,origin),true);
- assert.equal(recentOfflineOwner(true,now,s,'https://li5610.pages.dev'),null);
+ assert.equal(recentOfflineOwner(true,now,s,'https://evil.example'),null);
+ assert.equal(recentOfflineOwner(true,now,s,'https://27be6f06.li5610.pages.dev'),null);
  s.setItem('li.sync.local-owner.v1','B');
  assert.equal(recentOfflineOwner(true,now,s,origin),null);
  s.setItem('li.sync.local-owner.v1','A');
  forgetOfflineInvite(s);
  assert.equal(recentOfflineOwner(true,now,s,origin),null);
+});
+test('production Cloudflare same-device offline lease works until expiry; no signed auth is invented',()=>{
+ const cloud='https://li5610.pages.dev',s=makeStore('A');
+ assert.equal(recentOfflineOwner(true,now,s,cloud),null);
+ assert.equal(rememberOfflineInvite('A',now,s,cloud),true);
+ assert.equal(recentOfflineOwner(true,now+1000,s,cloud),'A');
+ assert.equal(recentOfflineOwner(false,now+1000,s,cloud),null,
+  'a local lease is never online authorization');
+ assert.equal(recentOfflineOwner(true,now+OFFLINE_LEASE_MS,s,cloud),null);
+ s.setItem('li.sync.local-owner.v1','B');
+ assert.equal(recentOfflineOwner(true,now+2000,s,cloud),null);
+ s.setItem('li.sync.local-owner.v1','A');
+ forgetOfflineInvite(s);
+ assert.equal(recentOfflineOwner(true,now+2000,s,cloud),null,
+  'logout explicitly revokes this browser offline access');
+ assert.equal(rememberOfflineInvite('A',now,s,'https://fake.li5610.pages.dev'),false);
 });
 test('corrupted, future and noninteger grants are refused without assuming remote authorization',()=>{
  const s=makeStore('A'),key='li.offline.recent-invite.v1';

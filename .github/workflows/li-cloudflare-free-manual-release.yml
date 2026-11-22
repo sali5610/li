@@ -1,7 +1,7 @@
 name: Release li. to Cloudflare Pages Free — MANUAL ONLY
 
 # IMPORTANT: Manual dispatch is the ONLY deploy trigger. PR gate builds a candidate locally but NEVER deploys.
-# Auth-only pins tested offline-session plus Cloudflare-origin Push/notification fix SHA; AI retains the earlier pinned SHA,
+# Auth-only pins reviewed app SHA containing only the iPhone Web Push registration-status hotfix; AI retains the earlier pinned SHA,
 # without merging all staging changes into main. Never dispatch until preflight.
 on:
   # Focused PR gate builds the pinned Auth-only artifact; it never deploys.
@@ -43,12 +43,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: 4c1c853d92760747305aae6a2661c77266481e44
+          ref: 1b800656434192dc725e9a7de6b28eb6600b859e
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "4c1c853d92760747305aae6a2661c77266481e44"
+          test "$(git rev-parse HEAD)" = "1b800656434192dc725e9a7de6b28eb6600b859e"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -104,7 +104,7 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.auth_only_mode && '4c1c853d92760747305aae6a2661c77266481e44' || (inputs.ai_mode && 'ea25f7a90b706812e211d3c5fc275e876bbd3f8d' || github.sha) }}
+          ref: ${{ inputs.auth_only_mode && '1b800656434192dc725e9a7de6b28eb6600b859e' || (inputs.ai_mode && 'ea25f7a90b706812e211d3c5fc275e876bbd3f8d' || github.sha) }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
@@ -112,8 +112,8 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
-            expected='4c1c853d92760747305aae6a2661c77266481e44'
-            echo 'Auth-only + Cloudflare Web Push origin fix: PR #580 and #582, Web Push CI #45017164735 PASS; staged source.'
+            expected='1b800656434192dc725e9a7de6b28eb6600b859e'
+            echo 'Auth-only app: reviewed Web Push origin fix PR #582 plus first-grant registration-status fix PR #589; pinned minimal hotfix commit.'
           else
             expected='ea25f7a90b706812e211d3c5fc275e876bbd3f8d'
             echo 'AI mode retains previously reviewed source; no AI release approved.'

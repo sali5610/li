@@ -13,6 +13,8 @@ ORIGIN = "https://li5610.pages.dev"
 def get(origin, path="/v1/config", method="GET", data=None):
     request = Request(URL + path, method=method, data=data, headers={
         "Origin": origin, "Accept": "application/json",
+        # Cloudflare workers.dev BIC blocks Python's default urllib UA (1010).
+        "User-Agent": "li-webpush-staging-smoke/1.0 (+https://li5610.pages.dev)",
         **({"Content-Type": "application/json"} if data is not None else {})
     })
     try:

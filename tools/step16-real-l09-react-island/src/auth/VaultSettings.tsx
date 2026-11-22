@@ -2,7 +2,7 @@ import React,{useEffect,useState} from 'react';
 import {Button,Card,Heading,Text} from '../../../../design-system/react/index';
 import {
  createVault,readVaultManifest,registerVault,unlockVault,recoverVault,
- migrateLegacyPayloads,setCurrentVault,currentVault,replacePassphrase
+ migrateLegacyPayloads,setCurrentVault,currentVault,finishVaultMigration,replacePassphrase
 } from '../sync/e2ee-cloud.js';
 import type {MigrationProgress} from '../sync/e2ee-cloud.js';
 import type {Vault,VaultManifest} from '../sync/e2ee-vault.js';
@@ -80,10 +80,14 @@ export function VaultSettings({accountId,locale,online}:{
   setBusy(true);setError('');
   try{
    const api=await connected();
-   await registerVault(api,pending.manifest);
+   const current=await readVaultManifest(api);
+   if(!current)await registerVault(api,pending.manifest);
+   else if(JSON.stringify(current)!==JSON.stringify(pending.manifest))
+    throw Error('E2EE_KEYBAG_ALREADY_EXISTS');
    setManifest(pending.manifest);
    setCurrentVault(accountId,pending.vault);
    const summary=await migrateLegacyPayloads(api,pending.vault,setMigration);
+   finishVaultMigration(accountId,pending.vault);
    setMigration(summary);setUnlocked(true);setPending(null);
   }catch(err){setError(message(err));}
   finally{setBusy(false);}
@@ -100,6 +104,7 @@ export function VaultSettings({accountId,locale,online}:{
    // never unlocks normal sync or marks data as protected.
    setCurrentVault(accountId,vault);
    const summary=await migrateLegacyPayloads(api,vault,setMigration);
+   finishVaultMigration(accountId,vault);
    setMigration(summary);setUnlocked(true);setPassword('');setRecoveryInput('');
   }catch(err){setError(message(err));}
   finally{setBusy(false);}

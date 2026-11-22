@@ -61,7 +61,9 @@ jobs:
           grep -Fq "checkInviteAccess" "$root/src/auth/AuthPanel.tsx"
           grep -Fq "classList.toggle('li-auth-verified'" "$root/src/auth/AuthPanel.tsx"
           grep -Fq "IS_GITHUB_STAGING" "$root/src/auth/config.ts"
-          grep -Fq "neonAuth.getJWTToken()" "$root/src/auth/neon-client.ts"
+          # JWT fetch deliberately bypasses the SDK getSession cache after the signed-token fix.
+          grep -Fq "async getJWTToken()" "$root/src/auth/neon-client.ts"
+          grep -Fq "return fetchSignedNeonJwt(AUTH_API_URL)" "$root/src/auth/neon-client.ts"
           grep -Fq "startLearnerSync" "$root/src/auth/AuthPanel.tsx"
           grep -Fq "prepareLearnerAccount" "$root/src/auth/AuthPanel.tsx"
           # Owner-scoped sync contains public pack-approved lessons plus the 17

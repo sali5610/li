@@ -48,12 +48,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: f576ff10f884dc5d4388b27dc1ab6d420cff3bb7
+          ref: 03491e88e32826529b8408799aa60a345acc74d9
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "f576ff10f884dc5d4388b27dc1ab6d420cff3bb7"
+          test "$(git rev-parse HEAD)" = "03491e88e32826529b8408799aa60a345acc74d9"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -103,6 +103,14 @@ jobs:
           npm run build:worker
           cd ../..
           node tools/prepare_cloudflare_ai_candidate.mjs --build
+          LI_CLOUDFLARE_AI_BUILD=1 npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-auth-only-config.cjs
+          test -s dist-cloudflare-ai-candidate/sw.js
+          grep -Fq 'li-first-party-app.js' dist-cloudflare-ai-candidate/sw.js
+          grep -Fq 'li-push-handler.js' dist-cloudflare-ai-candidate/sw.js
+          ! grep -Fq 'neon.tech' dist-cloudflare-ai-candidate/sw.js
+          grep -Fq 'serviceWorker.register' dist-cloudflare-ai-candidate/assets/pwa-register.js
+          grep -Fq '"start_url": "/"' dist-cloudflare-ai-candidate/manifest.webmanifest
+          grep -Fq '"scope": "/"' dist-cloudflare-ai-candidate/manifest.webmanifest
           test -s dist-cloudflare-ai-candidate/_worker.js
           test -s dist-cloudflare-ai-candidate/assets/li-first-party-app.js
           test -z "$(find dist-cloudflare-ai-candidate -type f -name '*.map' -print -quit)"
@@ -128,7 +136,7 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.auth_only_mode && 'f576ff10f884dc5d4388b27dc1ab6d420cff3bb7' || (inputs.ai_mode && 'f576ff10f884dc5d4388b27dc1ab6d420cff3bb7' || github.sha) }}
+          ref: ${{ inputs.auth_only_mode && 'f576ff10f884dc5d4388b27dc1ab6d420cff3bb7' || (inputs.ai_mode && '03491e88e32826529b8408799aa60a345acc74d9' || github.sha) }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
@@ -139,7 +147,7 @@ jobs:
             expected='f576ff10f884dc5d4388b27dc1ab6d420cff3bb7'
             echo 'Auth-only app: reviewed one-minute Worker cron + first-grant fix + Reminder #592; isolated from staging E2EE and Neon migrations.'
           else
-            expected='f576ff10f884dc5d4388b27dc1ab6d420cff3bb7'
+            expected='03491e88e32826529b8408799aa60a345acc74d9'
             echo 'AI mode reuses latest reviewed first-party source; approved Free-only AI pilot still requires verified private bindings and schema.'
           fi
           test "$(git rev-parse HEAD)" = "$expected"
@@ -177,6 +185,14 @@ jobs:
           VITE_LI_AUTH_TARGET=cloudflare-first-party npx vite build --config vite.cloudflare-app.config.mjs
           cd ../..
           node tools/prepare_cloudflare_ai_candidate.mjs --build
+          LI_CLOUDFLARE_AI_BUILD=1 npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-auth-only-config.cjs
+          test -s dist-cloudflare-ai-candidate/sw.js
+          grep -Fq 'li-first-party-app.js' dist-cloudflare-ai-candidate/sw.js
+          grep -Fq 'li-push-handler.js' dist-cloudflare-ai-candidate/sw.js
+          ! grep -Fq 'neon.tech' dist-cloudflare-ai-candidate/sw.js
+          grep -Fq 'serviceWorker.register' dist-cloudflare-ai-candidate/assets/pwa-register.js
+          grep -Fq '"start_url": "/"' dist-cloudflare-ai-candidate/manifest.webmanifest
+          grep -Fq '"scope": "/"' dist-cloudflare-ai-candidate/manifest.webmanifest
           test -s dist-cloudflare-ai-candidate/_worker.js
           test -s dist-cloudflare-ai-candidate/assets/li-first-party-app.js
           test -z "$(find dist-cloudflare-ai-candidate -type f -name '*.map' -print -quit)"

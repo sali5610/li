@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {Button,Card,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
 import {readReminderPreference} from './in-app-reminder.js';
 import {webPushApi,installedPushSupported,userAllowed,pushVapid,
@@ -7,83 +7,150 @@ import {webPushApi,installedPushSupported,userAllowed,pushVapid,
 function copy(vi:string,en:string){
  return (window as Window&{liLanguage?:{get?:()=>string}}).liLanguage?.get?.()==='en'?en:vi;
 }
+const pause=(ms:number)=>new Promise<void>(resolve=>window.setTimeout(resolve,ms));
+
 export function WebPushSettings(){
  const [enabled,setEnabled]=useState(false);
+ const [permissionGranted,setPermissionGranted]=useState(
+  ()=>typeof Notification!=='undefined'&&Notification.permission==='granted');
+ const [pending,setPending]=useState(false);
  const [busy,setBusy]=useState(false);
  const [notice,setNotice]=useState('');
  const [error,setError]=useState('');
+ const operation=useRef(false);
  const api=webPushApi();
+
  useEffect(()=>{
   if(!api||!installedPushSupported()||!userAllowed())return;
-  let alive=true;
+  let alive=true,refreshing=false;
   const refresh=async()=>{
+   if(!alive||operation.current||refreshing)return;
+   refreshing=true;
    try{
+    const granted=Notification.permission==='granted';
+    if(!alive||operation.current)return;
+    setPermissionGranted(granted);
+    if(!granted){
+     setEnabled(false);setPending(false);
+     return;
+    }
     const reg=await navigator.serviceWorker.ready;
     const sub=await reg.pushManager.getSubscription();
-    if(!alive)return;
-    setEnabled(!!sub&&Notification.permission==='granted');
-    // Sync only a subscription the user explicitly granted in the past.
-    // Never ask permission automatically or create new subscriptions on reload.
-    if(sub&&Notification.permission==='granted'&&navigator.onLine&&userAllowed()){
-     await updatePushSchedule(api,sub);
+    if(!alive||operation.current)return;
+    if(!sub){
+     setEnabled(false);
+     return;
     }
-   }catch{/* Offline preserves the local subscription; no false server ACK. */}
+    if(!navigator.onLine)throw Error('PUSH_OFFLINE');
+    // A local Apple subscription is NOT the same as a successful server ACK.
+    // Reconcile after permission changes/foregrounding without asking again.
+    await updatePushSchedule(api,sub);
+    if(!alive||operation.current)return;
+    setEnabled(true);setPending(false);setError('');
+   }catch{
+    if(alive&&!operation.current&&Notification.permission==='granted'){
+     setPermissionGranted(true);setEnabled(false);setPending(true);
+     setError(copy(
+      'iPhone đã cấp quyền, nhưng chưa lưu được đăng ký. Mở lại app khi có mạng để thử lại.',
+      'iPhone granted permission, but registration is not saved yet. Reopen online to retry.'));
+    }
+   }finally{refreshing=false;}
   };
+  const eventRefresh=()=>{void refresh();};
+  const visible=()=>{if(document.visibilityState==='visible')void refresh();};
   void refresh();
-  const change=()=>{void refresh();};
-  window.addEventListener('li:reminder-preference-changed',change);
-  window.addEventListener('li:personal-sync-applied',change);
-  window.addEventListener('online',change);
+  window.addEventListener('li:reminder-preference-changed',eventRefresh);
+  window.addEventListener('li:personal-sync-applied',eventRefresh);
+  window.addEventListener('online',eventRefresh);
+  window.addEventListener('focus',eventRefresh);
+  document.addEventListener('visibilitychange',visible);
   return()=>{
    alive=false;
-   window.removeEventListener('li:reminder-preference-changed',change);
-   window.removeEventListener('li:personal-sync-applied',change);
-   window.removeEventListener('online',change);
+   window.removeEventListener('li:reminder-preference-changed',eventRefresh);
+   window.removeEventListener('li:personal-sync-applied',eventRefresh);
+   window.removeEventListener('online',eventRefresh);
+   window.removeEventListener('focus',eventRefresh);
+   document.removeEventListener('visibilitychange',visible);
   };
  },[api]);
+
+ async function connectDevice(){
+  if(!api)throw Error('PUSH_BACKEND_UNAVAILABLE');
+  const key=await pushVapid(api);
+  const registration=await navigator.serviceWorker.ready;
+  const existing=await registration.pushManager.getSubscription();
+  const subscription=existing||await registration.pushManager.subscribe({
+   userVisibleOnly:true,applicationServerKey:key
+  });
+  await registerPush(api,subscription);
+ }
  async function enable(){
-  if(!api||!userAllowed()||!installedPushSupported()||busy)return;
+  if(!api||!userAllowed()||!installedPushSupported()||operation.current)return;
   const preference=readReminderPreference();
   if(!preference.schedules.some(s=>s.enabled)){
    setError(copy('Bật ít nhất một lịch nhắc và chọn giờ trước.','Enable at least one reminder schedule first.'));
    return;
   }
-  setError('');setNotice('');
-  setBusy(true);
+  setError('');setNotice('');operation.current=true;setBusy(true);
   try{
-   // iOS permission must be requested DURING the user's tap: no await before it.
-   const permissionRequest=Notification.requestPermission();
-   const permission=await permissionRequest;
-   if(permission!=='granted')throw Error('PUSH_PERMISSION_DENIED');
-   const key=await pushVapid(api);
-   const registration=await navigator.serviceWorker.ready;
-   const existing=await registration.pushManager.getSubscription();
-   const subscription=existing||await registration.pushManager.subscribe({
-    userVisibleOnly:true,applicationServerKey:key
-   });
-   await registerPush(api,subscription);
-   setEnabled(true);
-   setNotice(copy('Đã đăng ký thông báo trên thiết bị này.','Notifications enabled for this device.'));
-  }catch{
-   setError(copy('Chưa thể đăng ký. Kiểm tra quyền Thông báo và mạng, rồi thử lại.',
-    'Could not subscribe. Check notifications permission and connectivity.'));
-  }finally{setBusy(false);}
+   // iOS permission MUST be requested synchronously during the button tap.
+   const response=Notification.permission==='granted'?'granted':await Notification.requestPermission();
+   if(response!=='granted'&&Notification.permission!=='granted'){
+    if(response==='denied'||Notification.permission==='denied')throw Error('PUSH_PERMISSION_DENIED');
+    throw Error('PUSH_PERMISSION_NOT_YET_GRANTED');
+   }
+   setPermissionGranted(true);setPending(true);setEnabled(false);
+   setNotice(copy('iPhone đã cấp quyền. Đang hoàn tất đăng ký…',
+    'iPhone granted permission. Finishing registration…'));
+   // First-ever iOS permission prompts can outlive service-worker/PushManager
+   // readiness. Retry ONE transient registration failure without a page reload.
+   let failure:unknown=null;
+   for(let attempt=0;attempt<2;attempt++){
+    try{await connectDevice();failure=null;break;}
+    catch(err){
+     failure=err;
+     const reason=err instanceof Error?err.message:'';
+     if(attempt>0||!navigator.onLine||
+      /^PUSH_BACKEND_40[139]$|^PUSH_REMINDER_OFF$|^PUSH_AUTH_REQUIRED$/.test(reason))break;
+     await pause(800);
+    }
+   }
+   if(failure)throw failure;
+   setEnabled(true);setPending(false);setError('');
+   setNotice(copy('Đã đăng ký thông báo trên thiết bị này.',
+    'Notifications enabled for this device.'));
+  }catch(err){
+   setEnabled(false);
+   const reason=err instanceof Error?err.message:'';
+   const denied=Notification.permission==='denied'||reason==='PUSH_PERMISSION_DENIED';
+   const granted=Notification.permission==='granted';
+   setPermissionGranted(granted);setPending(granted);
+   setNotice('');
+   setError(denied?copy(
+    'iPhone đang chặn Thông báo. Hãy bật quyền trong Cài đặt của iPhone.',
+    'iPhone blocked notifications. Enable permission in iPhone Settings.'):
+    granted?copy(
+     'iPhone đã cấp quyền, nhưng chưa hoàn tất đăng ký với máy chủ. Hãy thử lại; không cần cấp quyền lần nữa.',
+     'iPhone granted permission, but server registration is unfinished. Try again without granting permission again.'):
+    copy('Quyền thông báo chưa được xác nhận. Hãy kiểm tra quyền trên iPhone rồi thử lại.',
+     'Notification permission is not confirmed. Check iPhone permission and try again.'));
+  }finally{operation.current=false;setBusy(false);}
  }
  async function disable(){
-  if(!api||busy)return;
-  setError('');setBusy(true);
+  if(!api||operation.current)return;
+  setError('');operation.current=true;setBusy(true);
   try{
    const registration=await navigator.serviceWorker.ready;
    const sub=await registration.pushManager.getSubscription();
-   if(sub)await removePush(api,sub); // Server revocation first, then local unsubscribe.
-   setEnabled(false);
+   if(sub)await removePush(api,sub); // Revoke owner-bound server record first.
+   setEnabled(false);setPending(false);
+   setPermissionGranted(Notification.permission==='granted');
    setNotice(copy('Đã tắt Web Push trên thiết bị này.','Web Push disabled on this device.'));
   }catch{
    setError(copy('Chưa tắt được trên máy chủ. Hãy kết nối mạng rồi thử lại.',
     'Could not revoke server subscription. Reconnect and try again.'));
-  }finally{setBusy(false);}
+  }finally{operation.current=false;setBusy(false);}
  }
- // A missing backend must not appear as an inert feature in the real learner app.
  if(!api)return null;
  return <Card variant="raised" className="li-react-setting-card li-web-push-card">
   <Heading level={3} role="titleMedium">{copy('Thông báo khi đóng app','Notifications while app is closed')}</Heading>
@@ -93,17 +160,22 @@ export function WebPushSettings(){
     'On iPhone, open li. from its Home Screen app icon, not a Safari tab.')}</Text>:
    <>
     <Text role="support">{copy(
-     'Mặc định tắt. Chỉ xin quyền khi nhấn cho phép. Dùng các lịch đã bật phía trên; mỗi loại tối đa một lần vào ngày được chọn. Mỗi thiết bị bật riêng.',
-     'Off by default. Permission is requested only on tap. Uses enabled schedules above, at most once per selected day per type. Enable per device.')}</Text>
+     'Mặc định tắt. Chỉ xin quyền khi nhấn cho phép. Giờ lịch hiển thị không đổi; máy chủ có thể bắt đầu gửi sớm 1 phút để bù độ trễ. Mỗi thiết bị bật riêng.',
+     'Off by default. Permission is requested only on tap. Your displayed time stays unchanged; the server may start delivery 1 minute early to offset delay. Enable per device.')}</Text>
     <div className="action-row">
      {!enabled?<Button variant="primary" disabled={busy} onClick={()=>void enable()}>
-      {copy('Bật thông báo iPhone','Enable iPhone notifications')}</Button>:
+      {pending?copy('Thử hoàn tất đăng ký','Retry registration'):
+       copy('Bật thông báo iPhone','Enable iPhone notifications')}</Button>:
       <Button variant="secondary" disabled={busy} onClick={()=>void disable()}>
        {copy('Tắt thông báo máy này','Disable on this device')}</Button>}
     </div>
     <Text role="support" aria-live="polite">{enabled?
-      copy('Thiết bị đã cho phép nhận Web Push.','This device allows Web Push.'):
-      copy('Web Push chưa bật trên thiết bị này.','Web Push is off for this device.')}</Text>
+     copy('Đã cấp quyền và đồng bộ đăng ký với máy chủ.','Permission granted and subscription saved on the server.'):
+     pending&&permissionGranted?
+      copy('iPhone đã cho phép. Đăng ký máy chủ chưa hoàn tất.','iPhone allowed notifications. Server registration is pending.'):
+      permissionGranted?
+       copy('iPhone đã cấp quyền; Web Push chưa bật trên thiết bị này.','iPhone granted permission; Web Push is off for this device.'):
+       copy('Web Push chưa bật trên thiết bị này.','Web Push is off for this device.')}</Text>
     {notice&&<InlineFeedback tone="info" message={notice}/>}
     {error&&<InlineFeedback tone="error" message={error}/>}
    </>}

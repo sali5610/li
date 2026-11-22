@@ -143,6 +143,9 @@ function Lab(){
    backgroundSrc="../assets/home-li-landscape-20261121.webp"
    mirrorArtSrc="../assets/home-li-landscape-20261121.webp"
    avatarSrc="../assets/laoly-neutral.png"
+   guideIllustrationSrc={questionIndex===0?
+    "../assets/laoly-illustrations/lao_ly_10_suy_nghi_mirror.png":
+    "../assets/laoly-illustrations/lao_ly_08_wow_mirror.png"}
    question={locale==='vi'?q.questionVi:q.questionEn}
    scene={locale==='vi'?q.sceneVi:q.sceneEn}
    source={t('VÍ DỤ GIẢ ĐỊNH','HYPOTHETICAL EXAMPLE')}

@@ -24,6 +24,8 @@ export interface HomeLayoutProps {
  backgroundSrc:string;
  mirrorArtSrc:string;
  avatarSrc:string;
+ /** Optional 1024px illustration in place of the mini avatar. */
+ guideIllustrationSrc?:string;
  question:string;
  scene:string;
  source:string;
@@ -43,7 +45,7 @@ export const homeLayoutVariants:readonly {id:HomeLayoutVariant;vi:string;en:stri
  {id:'vintagePop',vi:'Vintage Pop · Tem giấy',en:'Vintage Pop · Stamp'},
 ];
 export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
- question,scene,source,saved,onPrevious,onNext,onExplore,onSave,onCheckin}:HomeLayoutProps){
+ guideIllustrationSrc,question,scene,source,saved,onPrevious,onNext,onExplore,onSave,onCheckin}:HomeLayoutProps){
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  const reduced=useReducedMotion();
  const entrance=(delay:number)=>(variant==='notebook'||variant==='bookworm')&&!reduced?{
@@ -117,7 +119,9 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
     </AnimatePresence>:mirrorShell}
   </motion.div>
   <motion.aside className="li-ui-home-guide" {...entrance(.27)} aria-label={t('Lão Lý kể chuyện','Elder Ly explains')}>
-   <img src={avatarSrc} alt="" loading="lazy" width={84} height={84}/>
+   {guideIllustrationSrc?<figure className="li-ui-home-guide-illustration" aria-hidden="true">
+    <img src={guideIllustrationSrc} alt="" loading="lazy" decoding="async" width={184} height={184}/>
+   </figure>:<img src={avatarSrc} alt="" loading="lazy" width={84} height={84}/>}
    <div className="li-ui-home-guide-copy">
     <span className="li-ui-home-guide-source">{source}</span>
     <ChatBubble text={scene} surface="forest"/>

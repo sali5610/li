@@ -7,6 +7,8 @@ import {SearchField,InlineFeedback,ListRow,SourceStatus} from './Molecules';
 import {CatalogShell,LearningFlowShell,AccountShell} from './Templates';
 import {MethodTile,ChatBubble} from './LegacyCards';
 import {LiIcon} from './LucideIcons';
+import {PortalCategoryCard} from './PortalCategoryCard';
+import type {PortalVariant} from './PortalCategoryCard';
 import {NotebookAnnotation} from './NotebookAnnotation';
 import {NotebookArt,notebookDisciplineImages} from './NotebookArt';
 import {NotebookInk} from './NotebookInk';
@@ -24,6 +26,7 @@ import {VintagePopScrapbook} from './VintagePopScrapbook';
 import {VintagePopArt} from './VintagePopArt';
 import type {VintagePopArtKind} from './VintagePopArt';
 import './app-flow-layouts.css';
+import './portal-category-card.css';
 
 /** Exported presentational UI: Lab passes fixture props; the approved real
  * screen passes its actual read model and actions to the SAME JSX/CSS.
@@ -85,17 +88,58 @@ export interface AppPageLayoutProps {
  onToggleSaved:()=>void;onComplete:()=>void;onNavigate:(page:PageId)=>void;
  onNotice:(message:string)=>void;
 }
-const examples=[
- {id:'society',vi:'Xã hội học',en:'Sociology',descVi:'Con người, cộng đồng và phương pháp nghiên cứu',descEn:'People, society and research'},
- {id:'hci',vi:'Human–Computer Interaction',en:'Human–Computer Interaction',descVi:'Thiết kế giao diện và hành vi người dùng',descEn:'Interaction design and behaviour'},
- {id:'supply',vi:'Chuỗi cung ứng',en:'Supply Chain',descVi:'Vận hành, hàng hóa và quyết định',descEn:'Operations, goods and decisions'}
+const examples:readonly {id:string;group:string;vi:string;en:string;descVi:string;descEn:string;
+ illustration:string;collage:VintagePopAsset}[]=[
+ {id:'society',group:'social',vi:'Xã hội học',en:'Sociology',
+  descVi:'Con người, cộng đồng và phương pháp nghiên cứu',descEn:'People, society and research',
+  illustration:notebookDisciplineImages.society,collage:'sociology'},
+ {id:'hci',group:'ict',vi:'Human–Computer Interaction',en:'Human–Computer Interaction',
+  descVi:'Thiết kế giao diện và hành vi người dùng',descEn:'Interaction design and behaviour',
+  illustration:notebookDisciplineImages.hci,collage:'hci'},
+ {id:'supply',group:'business',vi:'Chuỗi cung ứng',en:'Supply Chain',
+  descVi:'Vận hành, hàng hóa và quyết định',descEn:'Operations, goods and decisions',
+  illustration:notebookDisciplineImages.supply,collage:'supply'},
+ {id:'data',group:'natural',vi:'Khoa học dữ liệu',en:'Data Science',
+  descVi:'Dữ liệu và suy luận có căn cứ',descEn:'Data and evidence-based reasoning',
+  illustration:notebookDisciplineImages.dataScience,collage:'data'},
+ {id:'history',group:'arts',vi:'Lịch sử thế giới',en:'World History',
+  descVi:'Sự kiện, con người và bối cảnh',descEn:'Events, people and context',
+  illustration:notebookDisciplineImages.worldHistory,collage:'history'}
 ];
+const catalogGroups:readonly {id:string;vi:string;en:string;illustration:string;portal:PortalVariant}[]=[
+ {id:'social',vi:'Khoa học xã hội',en:'Social Sciences',
+  illustration:'../assets/groups/social-sciences.webp',portal:1},
+ {id:'natural',vi:'Khoa học tự nhiên & Toán',en:'Natural Sciences & Mathematics',
+  illustration:'../assets/groups/natural-sciences-math.webp',portal:2},
+ {id:'ict',vi:'Công nghệ thông tin & Truyền thông',en:'Information & Communication Technology',
+  illustration:'../assets/groups/ict.webp',portal:3},
+ {id:'arts',vi:'Nghệ thuật & Nhân văn',en:'Arts & Humanities',
+  illustration:'../assets/groups/arts-humanities.webp',portal:4},
+ {id:'business',vi:'Kinh doanh, Quản trị & Luật',en:'Business, Administration & Law',
+  illustration:'../assets/groups/business-administration-law.webp',portal:5}
+];
+/** Human-approved full-size mirror illustrations, not 96px mode icons. */
+const laoLyExpressions=[
+ {id:'ngac-nhien',vi:'Ngạc nhiên',en:'Surprised',file:'lao_ly_01_ngac_nhien_mirror.png'},
+ {id:'chan-doi',vi:'Chán đời',en:'Unimpressed',file:'lao_ly_02_chan_doi_mirror.png'},
+ {id:'dang-tri',vi:'Đãng trí',en:'Distracted',file:'lao_ly_03_dang_tri_mirror.png'},
+ {id:'buon-ngu',vi:'Buồn ngủ',en:'Sleepy',file:'lao_ly_04_buon_ngu_mirror.png'},
+ {id:'bo-tay',vi:'Bó tay',en:'At a loss',file:'lao_ly_05_bo_tay_mirror.png'},
+ {id:'coc',vi:'Cộc',en:'Grumpy',file:'lao_ly_06_coc_mirror.png'},
+ {id:'gian',vi:'Giận',en:'Angry',file:'lao_ly_07_gian_mirror.png'},
+ {id:'wow',vi:'Wow',en:'Amazed',file:'lao_ly_08_wow_mirror.png'},
+ {id:'tam-dac',vi:'Tâm đắc',en:'Pleased',file:'lao_ly_09_tam_dac_mirror.png'},
+ {id:'suy-nghi',vi:'Suy nghĩ',en:'Thoughtful',file:'lao_ly_10_suy_nghi_mirror.png'}
+] as const;
+const laoLyArtUrl=(file:string)=>'../assets/laoly-illustrations/'+file;
 const lessonTitle='L09-1-2 · Sampling Bias';
 function ScreenBody(props:AppPageLayoutProps){
  const {page,variant,locale,query,answer,selected,saved,completed,onQuery,onAnswer,
   onSelect,onToggleSaved,onComplete,onNavigate,onNotice}=props;
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  const [imprint,setImprint]=React.useState(0);
+ const [catalogGroup,setCatalogGroup]=React.useState<string|null>(null);
+ const [laoLyIndex,setLaoLyIndex]=React.useState(9);
  const mark=()=>{if(variant==='vintagePop')setImprint(v=>v+1);};
  const bookwormPlate=(kind:BookwormArtKind)=>variant==='bookworm'?
   <div className="li-bw-inline-plate" aria-hidden="true"><BookwormIllustration kind={kind}/></div>:null;
@@ -112,41 +156,69 @@ function ScreenBody(props:AppPageLayoutProps){
   <Text role="support">{body}</Text>
  </Card>;
  switch(page){
- case 'catalog':return <CatalogShell title={t('Chọn lối học','Choose a learning path')}
-  description={t('Từ lĩnh vực đến môn và bài học. Nội dung ở đây chỉ để thử bố cục.',
-   'Browse fields, courses and lessons. Fixture-only preview.')}
-  search={<SearchField label={t('Tìm trong Tàng Thư','Find in catalog')} value={query}
-   onQueryChange={onQuery} clearLabel={t('Xóa','Clear')} submitLabel={t('Tìm','Search')}
-   placeholder={t('Tên ngành, môn, bài…','Field, course or lesson…')}/>}
-  asideTitle={t('Cấp độ khám phá','Browse levels')}
-  aside={<div className="li-flow-stack">
-   {['Nhóm ngành','Chuyên ngành','Môn học','Bài học'].map((name,i)=>
-    <div className="li-flow-mini" key={name}>
-     {variant==='bookworm'&&<LiIcon name={i===0?'layers':i===1?'library-big':i===2?'book-open':'bookmark'}
-      size={17} strokeWidth={1.6}/>}
-     {String(i+1).padStart(2,'0')} · {name}
-    </div>)}
-  </div>} countLabel={t('Nhóm ngành · Mẫu','Sample fields')}>
-  <div className="li-flow-card-grid">
-   {examples.filter(item=>(item.vi+item.en).toLowerCase().includes(query.toLowerCase()))
-    .map((item,i)=><Card key={item.id} variant="tinted">
-     {variant==='vintagePop'&&<div className="li-pop-catalog-art"><VintagePopCollage
-      kind={item.id==='hci'?'hci':item.id==='supply'?'supply':'sociology'} size="card"/></div>}
-     {variant==='notebook'&&<NotebookArt kind="discipline" size="card"
-      src={notebookDisciplineImages[item.id as keyof typeof notebookDisciplineImages]}/>}
-     {variant==='bookworm'&&<BookwormSourceArt format="card"
-      src={notebookDisciplineImages[item.id as keyof typeof notebookDisciplineImages]}
-      fallback={item.id==='society'?'balance':item.id==='hci'?'lens':'chart'}/>} 
-     <span className="li-flow-index">{String(i+1).padStart(2,'0')}</span>
-     {variant==='notebook'&&<span className="li-nb-card-icon" aria-hidden="true">
-      <LiIcon name={item.id==='hci'?'search':item.id==='supply'?'layers':'library-big'} size={19}/>
-     </span>}
-     <Heading level={3} role="titleMedium">{locale==='vi'?item.vi:item.en}</Heading>
-     <Text role="support">{t(item.descVi,item.descEn)}</Text>
-     {action('lesson','Xem bài mẫu','View example lesson')}
-    </Card>)}
-  </div>
- </CatalogShell>;
+ case 'catalog':{
+  const group=catalogGroups.find(item=>item.id===catalogGroup);
+  const matchingGroups=catalogGroups.filter(item=>{
+   const fields=examples.filter(field=>field.group===item.id).map(field=>field.vi+' '+field.en).join(' ');
+   return (item.vi+' '+item.en+' '+fields).toLowerCase().includes(query.toLowerCase());
+  });
+  const matchingFields=examples.filter(item=>item.group===catalogGroup&&
+   (item.vi+' '+item.en).toLowerCase().includes(query.toLowerCase()));
+  return <CatalogShell
+   title={group?t(group.vi,group.en):t('Chọn lối học','Choose a learning path')}
+   description={group?t('Chọn chuyên ngành để xem bài minh họa.',
+    'Choose a field to view the sample lesson.'):
+    t('Khám phá nhóm ngành qua các cổng vòm. Dữ liệu bên trong chỉ để thử bố cục.',
+     'Explore groups through their gateways. The content is for layout preview only.')}
+   search={<SearchField label={t('Tìm trong Tàng Thư','Find in catalog')} value={query}
+    onQueryChange={onQuery} clearLabel={t('Xóa','Clear')} submitLabel={t('Tìm','Search')}
+    placeholder={t('Nhóm ngành, chuyên ngành…','Group or field…')}/>}
+   asideTitle={t('Cấp độ khám phá','Browse levels')}
+   aside={<div className="li-flow-stack">
+    {[t('Nhóm ngành','Groups'),t('Chuyên ngành','Fields'),t('Môn học','Courses'),
+      t('Bài học','Lessons')].map((name,i)=>
+     <div className="li-flow-mini" key={name}>
+      {variant==='bookworm'&&<LiIcon
+       name={i===0?'layers':i===1?'library-big':i===2?'book-open':'bookmark'}
+       size={17} strokeWidth={1.6}/>}
+      {String(i+1).padStart(2,'0')} · {name}
+     </div>)}
+   </div>} countLabel={t('Nhóm ngành · Bản xem thử','Groups · Preview only')}>
+   {group?<div className="li-flow-stack li-flow-catalog-fields">
+    <Button variant="secondary" onClick={()=>{setCatalogGroup(null);onQuery('');}}>
+     <LiIcon name="arrow-left" size={17}/> {t('Tất cả nhóm ngành','All groups')}
+    </Button>
+    <div className="li-flow-card-grid">
+     {matchingFields.map((item,i)=><Card key={item.id} variant="tinted">
+      {variant==='vintagePop'&&<div className="li-pop-catalog-art">
+       <VintagePopCollage kind={item.collage} size="card"/></div>}
+      {variant==='notebook'&&<NotebookArt kind="discipline" size="card" src={item.illustration}/>}
+      {variant==='bookworm'&&<BookwormSourceArt format="card" src={item.illustration} fallback="open"/>}
+      <span className="li-flow-index">{String(i+1).padStart(2,'0')}</span>
+      <Heading level={3} role="titleMedium">{t(item.vi,item.en)}</Heading>
+      <Text role="support">{t(item.descVi,item.descEn)}</Text>
+      {action('lesson','Xem bài mẫu','View sample lesson')}
+     </Card>)}
+    </div>
+    {matchingFields.length===0&&<Text role="support">
+     {t('Chưa có chuyên ngành mẫu khớp tìm kiếm.','No sample field matches the search.')}
+    </Text>}
+   </div>:<div className="li-flow-portal-grid">
+    {matchingGroups.map(item=><PortalCategoryCard key={item.id}
+     portal={item.portal}
+     portalSrc={'../assets/portals/cong-moi-'+String(item.portal).padStart(2,'0')+'.webp'}
+     illustrationSrc={item.illustration} illustrationAlt=""
+     title={t(item.vi,item.en)} eyebrow={t('NHÓM NGÀNH','DOMAIN GROUP')}
+     detail={t('Khám phá chuyên ngành mẫu','Explore sample fields')}
+     openLabel={t('Mở nhóm ngành ','Open group ')+t(item.vi,item.en)}
+     onOpen={()=>{setCatalogGroup(item.id);onQuery('');}}
+     locale={locale} loadingArtworkBase="../assets"/>)}
+    {matchingGroups.length===0&&<Text role="support">
+     {t('Không tìm thấy nhóm ngành mẫu.','No sample group matches the search.')}
+    </Text>}
+   </div>}
+  </CatalogShell>;
+ }
  case 'search':return <div className="li-flow-stack">
   <SearchField label={t('Hỏi điều mày muốn hiểu','Ask what you want to understand')}
    value={query} onQueryChange={onQuery} clearLabel={t('Xóa','Clear')}
@@ -462,7 +534,10 @@ function ScreenBody(props:AppPageLayoutProps){
   </div>)}
  </AccountShell>;
  case 'checkin':return <div className="li-flow-stack">
-  <Card variant="tinted">{variant==='vintagePop'&&<VintagePopCollage kind="psychology" size="spot"/>}
+  <Card variant="tinted">
+   <figure className="li-flow-laoly-rest" aria-hidden="true">
+    <img src="../assets/laoly-guide-rest.png" alt="" loading="lazy" decoding="async"/>
+   </figure>{variant==='vintagePop'&&<VintagePopCollage kind="psychology" size="spot"/>}
    {variant==='vintagePop'&&<VintagePopStamp key={imprint} active={imprint>0}/>}
    <Heading level={2} role="titleLarge">{t('Hôm nay mày thế nào?','How are you today?')}</Heading>
    <Text role="body">{t('Ghi nhận trạng thái, không ép chỉ tiêu.','A gentle reflection without quotas.')}</Text>
@@ -475,23 +550,44 @@ function ScreenBody(props:AppPageLayoutProps){
     'Preview check-in recorded in memory only.'));}}>{t('Hoàn tất mẫu','Complete example')}</Button>
   </Card>
  </div>;
- case 'laoly':return <div className="li-flow-stack">
-  <Card variant="tinted">
-   <div className="li-flow-companion"><img src="../assets/laoly-neutral.png" alt=""
-    width={92} height={92} loading="lazy"/>
-    <div><Badge>{t('LÃO LÝ · TRỢ LÝ HỌC','ELDER LY · STUDY COMPANION')}</Badge>
-     <ChatBubble text={t('Không biết chưa sao, biết hỏi đúng mới khó à nha.',
-      'Not knowing is fine. Asking the right question is the tricky part!')} surface="forest"/></div>
-   </div>
-   <div className="li-flow-choice-grid">{[
-    t('Giải thích dễ hiểu','Explain simply'),
-    t('Cho ví dụ','Give an example'),
-    t('Hỏi ngược lại','Challenge my reasoning')
-   ].map(name=><Button key={name} variant="secondary"
-    onClick={()=>onNotice(t('Đây là lời nhắc mẫu, chưa gọi AI thật.',
-     'Sample suggestion only, no AI request.'))}>{name}</Button>)}</div>
-  </Card>
- </div>;
+ case 'laoly':{
+  const expression=laoLyExpressions[laoLyIndex];
+  return <div className="li-flow-stack">
+   <Card variant="tinted">
+    <div className="li-flow-laoly-exhibition">
+     <figure className="li-flow-laoly-portrait">
+      <img src={laoLyArtUrl(expression.file)}
+       alt={t('Minh họa Lão Lý: ','Elder Ly illustration: ')+t(expression.vi,expression.en)}
+       loading="lazy" decoding="async"/>
+      <figcaption>{t(expression.vi,expression.en)}</figcaption>
+     </figure>
+     <div className="li-flow-laoly-dialogue">
+      <Badge>{t('LÃO LÝ · TRỢ LÝ HỌC','ELDER LY · STUDY COMPANION')}</Badge>
+      <ChatBubble text={t('Không biết cũng được. Biết đặt câu hỏi mới thú vị.',
+       'You can start without knowing. Curiosity is the interesting part.')} surface="forest"/>
+      <Text role="support">{t('Chọn một biểu cảm để xem tranh minh họa khổ lớn.',
+       'Select an expression to browse the full-size illustration set.')}</Text>
+     </div>
+    </div>
+    <div className="li-flow-laoly-poses" role="group"
+     aria-label={t('Các biểu cảm Lão Lý','Elder Ly illustrations')}>
+     {laoLyExpressions.map((item,i)=><Button key={item.id}
+      variant={laoLyIndex===i?'primary':'secondary'} aria-pressed={laoLyIndex===i}
+      onClick={()=>setLaoLyIndex(i)}>
+      <img src={laoLyArtUrl(item.file)} alt="" loading="lazy" decoding="async"/>
+      <span>{t(item.vi,item.en)}</span>
+     </Button>)}
+    </div>
+    <div className="li-flow-choice-grid">{[
+     t('Giải thích dễ hiểu','Explain simply'),
+     t('Cho ví dụ','Give an example'),
+     t('Hỏi ngược lại','Challenge my reasoning')
+    ].map(name=><Button key={name} variant="secondary"
+     onClick={()=>onNotice(t('Đây là lời nhắc mẫu, chưa gọi AI thật.',
+      'Sample suggestion only, no AI request.'))}>{name}</Button>)}</div>
+   </Card>
+  </div>;
+ }
  case 'account':return <AccountShell title={t('Tài khoản','Account')} mode="access"
   description={t('Tài khoản được mời mới mở được dữ liệu học thật.',
    'Only invited users access real study data.')}

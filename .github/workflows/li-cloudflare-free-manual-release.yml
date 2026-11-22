@@ -1,7 +1,7 @@
 name: Release li. to Cloudflare Pages Free — MANUAL ONLY
 
 # IMPORTANT: Manual dispatch is the ONLY deploy trigger. PR gate builds a candidate locally but NEVER deploys.
-# Auth-only uses the staged and focused-tested offline-session + login-refresh fix SHA; AI retains the earlier pinned SHA,
+# Auth-only pins tested offline-session plus Cloudflare-origin Push/notification fix SHA; AI retains the earlier pinned SHA,
 # without merging all staging changes into main. Never dispatch until preflight.
 on:
   # Focused PR gate builds the pinned Auth-only artifact; it never deploys.
@@ -43,12 +43,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: 3bbab41c1019c8d2812b444cc447de1b7bbe6eab
+          ref: 4c1c853d92760747305aae6a2661c77266481e44
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "3bbab41c1019c8d2812b444cc447de1b7bbe6eab"
+          test "$(git rev-parse HEAD)" = "4c1c853d92760747305aae6a2661c77266481e44"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -58,6 +58,9 @@ jobs:
         with:
           node-version: '22'
       - name: Build first-party Auth-only Cloudflare candidate (NO DEPLOY)
+        env:
+          # Public Worker URL only. Empty until separately approved Free D1/VAPID deployment.
+          VITE_LI_PUSH_WORKER_URL: ${{ vars.LI_PUSH_WORKER_URL }}
         run: |
           set -euo pipefail
           npm install --no-audit --no-fund --prefix design-system/react
@@ -101,7 +104,7 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.auth_only_mode && '3bbab41c1019c8d2812b444cc447de1b7bbe6eab' || (inputs.ai_mode && 'ea25f7a90b706812e211d3c5fc275e876bbd3f8d' || github.sha) }}
+          ref: ${{ inputs.auth_only_mode && '4c1c853d92760747305aae6a2661c77266481e44' || (inputs.ai_mode && 'ea25f7a90b706812e211d3c5fc275e876bbd3f8d' || github.sha) }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
@@ -109,8 +112,8 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
-            expected='3bbab41c1019c8d2812b444cc447de1b7bbe6eab'
-            echo 'Auth-only offline session + refresh fix: integrated CI #45014880675 PASS (156 sync/auth, 11 state, 7 Auth/PWA); PR #580; staged source.'
+            expected='4c1c853d92760747305aae6a2661c77266481e44'
+            echo 'Auth-only + Cloudflare Web Push origin fix: PR #580 and #582, Web Push CI #45017164735 PASS; staged source.'
           else
             expected='ea25f7a90b706812e211d3c5fc275e876bbd3f8d'
             echo 'AI mode retains previously reviewed source; no AI release approved.'
@@ -157,6 +160,9 @@ jobs:
 
       - name: Prepare first-party React Auth-only PWA (explicit Auth-only approval)
         if: inputs.auth_only_mode == true && inputs.ai_mode == false
+        env:
+          # Public Worker URL only. Empty until separately approved Free D1/VAPID deployment.
+          VITE_LI_PUSH_WORKER_URL: ${{ vars.LI_PUSH_WORKER_URL }}
         run: |
           set -euo pipefail
           npm install --no-audit --no-fund --prefix design-system/react

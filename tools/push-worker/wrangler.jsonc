@@ -6,7 +6,7 @@
   "main": "src/index.mjs",
   "compatibility_date": "2026-11-21",
   "workers_dev": true,
-  "triggers": {"crons": ["*/5 * * * *"]},
+  "triggers": {"crons": ["* * * * *"]},
   "vars": {
     "ALLOWED_ORIGIN": "https://li5610.pages.dev",
     "NEON_DATA_API_URL": "https://ep-misty-snow-azfrrm3o.apirest.c-3.ap-southeast-1.aws.neon.tech/li/rest/v1"

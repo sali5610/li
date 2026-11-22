@@ -62,16 +62,28 @@ export function duePushSlots(row,now){
  if(!row.enabled||!validZone(row.zone))return [];
  const schedules=storedSchedules(row);
  if(!schedules)return [];
- const local=localMinute(now,row.zone);
- const weekday=new Date(local.day+'T12:00:00Z').getUTCDay();
+ // Keep the user's saved/displayed time untouched. The backend targets a
+ // send ONE minute before that clock time to compensate for push transit.
+ // A one-minute Cron may run late; allow up to two minutes of catch-up
+ // while last_day/claimDays prevents duplicate sends of a kind/day.
+ const target=localMinute(new Date(now.getTime()+60_000),row.zone);
+ const at=Number(target.time.slice(0,2))*60+Number(target.time.slice(3));
+ const candidates=[{day:target.day,at}];
+ // Catch yesterday's last 2 minutes after crossing local midnight.
+ if(at<3){
+  const previous=localMinute(new Date(now.getTime()-3*60_000),row.zone);
+  if(previous.day!==target.day)candidates.push({day:previous.day,at:at+1440});
+ }
  const delivered=deliveredDays(row);
- const at=Number(local.time.slice(0,2))*60+Number(local.time.slice(3));
- // Cron every five minutes; never backfill old or missed notifications.
- return schedules.filter(s=>{
-  if(!s.enabled||delivered[s.kind]===local.day||!runsOnDay(s,weekday))return false;
+ return schedules.flatMap(s=>{
+  if(!s.enabled)return [];
   const scheduled=Number(s.time.slice(0,2))*60+Number(s.time.slice(3));
-  return at>=scheduled&&at<scheduled+5;
- }).map(s=>({kind:s.kind,day:local.day}));
+  const match=candidates.find(({day,at:minute})=>
+   delivered[s.kind]!==day&&
+   runsOnDay(s,new Date(day+'T12:00:00Z').getUTCDay())&&
+   minute>=scheduled&&minute<scheduled+3);
+  return match?[{kind:s.kind,day:match.day}]:[];
+ });
 }
 export function claimDays(row,slots){
  const days=deliveredDays(row);

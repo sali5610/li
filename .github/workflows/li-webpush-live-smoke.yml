@@ -1,0 +1,23 @@
+name: li. Web Push dedicated Worker LIVE smoke (NO DEPLOY)
+on:
+  push:
+    branches:
+      - infra/li-webpush-setup-approved-20261122
+    paths:
+      - '.github/workflows/li-webpush-live-smoke.yml'
+      - 'tools/push-worker/scripts/live_smoke.py'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    if: github.repository == 'sali5610/li'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check deployed Worker config, CORS and unauthenticated rejection
+        run: python3 tools/push-worker/scripts/live_smoke.py
+      - name: Confirm no changes
+        run: echo 'Read-only HTTP smoke: no Worker, Pages, D1 or secret writes.'

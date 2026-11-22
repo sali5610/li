@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://ep-delicate-firefly-azsbs1xb.neonauth.c-3.ap-southeast-1.aws.neon.tech https://ep-delicate-firefly-azsbs1xb.apirest.c-3.ap-southeast-1.aws.neon.tech; form-action 'none'; frame-ancestors 'none'; base-uri 'none'; img-src 'self' data:; font-src 'self';">
+<title>li. — E2EE QA (dữ liệu giả)</title>
+<link rel="stylesheet" href="../assets/design-tokens.css">
+<style>
+:root{color-scheme:light;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f1f0e9;color:#263a30}
+*{box-sizing:border-box}body{margin:0;min-height:100svh;padding:clamp(16px,4vw,44px);line-height:1.5}
+main{max-width:740px;margin:auto}header{display:grid;gap:8px;margin-bottom:24px}
+h1{font-size:clamp(28px,4vw,40px);line-height:1.15;margin:0;letter-spacing:-.035em}
+small,.muted{color:#526459}p{margin:8px 0}
+section{margin:16px 0;background:#fdfcf7;border:1px solid #c5c9b8;border-radius:18px;padding:clamp(17px,3vw,26px);display:grid;gap:12px}
+h2{font-size:19px;line-height:1.25;margin:0}label{font-weight:600}
+input[type=text],input[type=password]{width:100%;padding:13px 14px;border-radius:9px;background:#fffef9;border:1px solid #9aa997;font:inherit;color:#203428}
+input:focus-visible,button:focus-visible{outline:3px solid #5d8d6e;outline-offset:2px}
+button{font:inherit;font-weight:600;border:1px solid #2c4937;border-radius:9px;padding:12px 16px;background:#304936;color:#fffdf0;cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.45}
+button.secondary{color:#294533;background:transparent}
+.choices{display:flex;gap:10px;flex-wrap:wrap}.choices>button{flex:1 1 180px}
+.notice{padding:12px 14px;border-left:3px solid #76916b;background:#e7ebdd;border-radius:4px}
+#qa-status{white-space:pre-wrap;overflow-wrap:anywhere;padding:14px;border:1px solid #adb8a5;border-radius:9px;background:#e5e9df;font-weight:600}
+#qa-status[data-state=error]{border-color:#bc8e79;background:#f9ede6}
+.check{display:flex;gap:9px;align-items:flex-start;font-weight:500}.check input{margin-top:7px}
+footer{margin:24px 0;color:#5e7163;font-size:13px}
+</style>
+</head>
+<body>
+<main>
+<header>
+<p class="muted"><strong>li.</strong> · E2EE QA · TEST ONLY</p>
+<h1>Thử mã hóa trên Neon</h1>
+<p>Trang kiểm thử độc lập, chỉ dành cho <strong>ghi chú giả</strong>. Không phải phiên bản app dùng hằng ngày và không dùng dữ liệu học tập thật.</p>
+<p class="notice">Neon branch tạm có lịch tự hết hạn. Không dùng mật khẩu chính hoặc nhập nội dung riêng tư ở đây. Các thao tác ghi chỉ dùng record QA trên branch, không đụng database production.</p>
+</header>
+<section>
+<h2>1. Xác thực Google trên QA branch</h2>
+<p class="muted">Dùng cùng một tài khoản Google đã được mời trên hai thiết bị. Token phải do Neon ký và được RLS cho phép, không dùng token giả.</p>
+<div class="choices">
+<button id="qa-login" type="button">Đăng nhập Google (QA)</button>
+<button id="qa-refresh" class="secondary" type="button">Kiểm tra phiên đã đăng nhập</button>
+</div>
+<p id="qa-account" class="muted" role="status">Chưa xác nhận phiên QA.</p>
+</section>
+<section>
+<h2>2. Thiết bị A — tạo ghi chú giả đã mã hóa</h2>
+<p class="muted">Tạo mật khẩu <em>thử nghiệm</em> riêng từ 12 ký tự trở lên. Mã khôi phục chỉ hiển thị trên máy này.</p>
+<label for="qa-password">Mật khẩu thử nghiệm</label>
+<input id="qa-password" type="password" minlength="12" autocomplete="new-password" placeholder="Ít nhất 12 ký tự">
+<button id="qa-generate" type="button" disabled>Tạo khóa thử nghiệm (chưa ghi dữ liệu)</button>
+<label for="qa-recovery-created">Recovery code — phải tự lưu</label>
+<input id="qa-recovery-created" type="text" readonly autocomplete="off" spellcheck="false" placeholder="Chỉ xuất hiện sau khi tạo">
+<label for="qa-item-created">ID của ghi chú giả</label>
+<input id="qa-item-created" type="text" readonly autocomplete="off" spellcheck="false" placeholder="Chỉ xuất hiện sau khi tạo">
+<label class="check"><input id="qa-confirm-save" type="checkbox">Tôi đã lưu recovery code và ID để mở trên thiết bị khác.</label>
+<button id="qa-save" type="button" disabled>Lưu bản mã lên Neon QA và kiểm tra</button>
+</section>
+<section>
+<h2>3. Thiết bị B — mở bằng recovery code</h2>
+<p class="muted">Mở cùng trang này trên thiết bị khác, đăng nhập cùng tài khoản QA. Dán recovery code và ID đã lưu. Không cần gửi mã này cho ai.</p>
+<label for="qa-item-input">ID ghi chú giả từ thiết bị A</label>
+<input id="qa-item-input" type="text" spellcheck="false" autocomplete="off">
+<label for="qa-recovery-input">Recovery code từ thiết bị A</label>
+<input id="qa-recovery-input" type="password" spellcheck="false" autocomplete="off">
+<button id="qa-recover" type="button">Kiểm tra giải mã từ Neon trên thiết bị B</button>
+</section>
+<section>
+<h2>Kết quả kiểm thử</h2>
+<p id="qa-status" role="status" aria-live="polite">Đang kiểm tra phiên thử nghiệm…</p>
+<p class="muted">Chỉ hiện PASS khi Google Auth, JWT, RLS và dữ liệu mã hóa trên Neon QA thực sự đáp ứng phép thử. Đây chưa phải kiểm thử PWA offline hay chuyển đổi dữ liệu production.</p>
+</section>
+<footer>li. — THE WORLD OF KNOWING WHY · QA không lưu mật khẩu, token, recovery code hoặc note vào localStorage/IndexedDB.</footer>
+</main>
+<script type="module" src="../assets/e2ee-qa.js"></script>
+</body>
+</html>

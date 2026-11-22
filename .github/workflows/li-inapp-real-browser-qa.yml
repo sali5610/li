@@ -1,0 +1,47 @@
+name: li. In-app reminders REAL Chrome interaction QA (NO DEPLOY)
+on:
+  push:
+    branches:
+      - qa/inapp-real-browser-20261122
+permissions:
+  contents: read
+jobs:
+  reminder:
+    if: github.repository == 'sali5610/li'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install existing pinned React and shared components
+        run: |
+          npm install --no-audit --no-fund --prefix design-system/react
+          npm install --no-audit --no-fund --prefix tools/step16-real-l09-react-island
+      - name: Build CI-only fixture from pinned real React modules
+        run: |
+          cd tools/step16-real-l09-react-island
+          npx vite build --config vite.qa-reminder.config.mjs
+          test -s dist-qa-reminder/reminder-qa-fixture.html
+      - name: Run actual Chromium DOM/portal/time/owner interaction
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$chrome"
+          python3 -m http.server 8767 --bind 127.0.0.1 --directory tools/step16-real-l09-react-island/dist-qa-reminder >/tmp/li-reminder-qa.log 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          sleep 1
+          CHROME_BIN="$chrome" node tools/step16-real-l09-react-island/tests/reminder-browser.mjs
+      - name: Attach synthetic screenshot for reviewer
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: in-app-reminder-synthetic-chrome-390px
+          path: .qa-reminder-evidence/
+          retention-days: 2
+      - name: No Cloudflare/Neon/D1/Worker writes
+        run: echo "CI-only local static server; no production services accessed."

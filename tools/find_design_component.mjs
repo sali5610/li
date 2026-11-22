@@ -62,7 +62,6 @@ if(!raw){
   portal:['portalcategorycard']
  };
  const results=[...components.values()].map(item=>{
-  const words=normalized(item.name).replace(/([a-z])([A-Z])/g,'$1 $2'); // fallback: substring also matches CamelCase
   const id=normalized(item.name);
   let score=0;
   for(const token of tokens){

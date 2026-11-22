@@ -104,3 +104,18 @@ test('snooze cancellation is wired to device-specific Web Push refresh',()=>{
  assert.match(push,/removeEventListener\('li:reminder-delivery-changed'/);
  assert.match(client,/snoozedUntil:owner\?readReminderDelivery/);
 });
+
+test('in-app due notifications are globally mounted and survive leaving Settings',()=>{
+ const ui=readFileSync(new URL('../src/shell/in-app-reminder-ui.tsx',import.meta.url),'utf8');
+ const chrome=readFileSync(new URL('../src/shell/react-shell.tsx',import.meta.url),'utf8');
+ assert.match(ui,/export function InAppReminderNotifier\(\)/);
+ assert.match(ui,/addEventListener\('li:auth-verified-changed',check\)/);
+ assert.match(ui,/addEventListener\('visibilitychange',check\)/);
+ assert.match(ui,/setInterval\(check,15_000\)/);
+ assert.match(chrome,/<InAppReminderNotifier\s*\/>/);
+ const settingsRegion=ui.slice(ui.indexOf('export function InAppReminderPanel()'),
+  ui.indexOf('export function InAppReminderNotifier()'));
+ assert.doesNotMatch(settingsRegion,/createPortal\(/,
+  'settings editor cannot own the app-wide notification portal');
+ assert.match(settingsRegion,/processedToday/);
+});

@@ -56,35 +56,26 @@ function getDueKind():ReminderKind|null{
 export function InAppReminderPanel(){
  const [pref,setPref]=useState<ReminderPreference>(readReminderPreference);
  const [draft,setDraft]=useState<ReminderPreference>(readReminderPreference);
- const [dueKind,setDueKind]=useState<ReminderKind|null>(null);
  const [error,setError]=useState('');
  const [feedback,setFeedback]=useState('');
  const [lang,setLang]=useState(vietnamese);
  const copy=(vi:string,en:string)=>lang?vi:en;
  useEffect(()=>{
-  const check=()=>setDueKind(getDueKind());
-  const changed=()=>{const value=readReminderPreference();setPref(value);setDraft(value);check();};
+  const changed=()=>{const value=readReminderPreference();setPref(value);setDraft(value);};
   const sync=(event:Event)=>{
    const keys=(event as CustomEvent<{keys?:string[]}>).detail?.keys;
    if(!keys||keys.includes(REMINDER_KEY))changed();
   };
   const locale=()=>setLang(vietnamese());
-  check();
-  const interval=window.setInterval(check,60_000);
-  window.addEventListener('focus',check);
-  window.addEventListener('pageshow',check);
   window.addEventListener('li:reminder-preference-changed',changed);
+  window.addEventListener('li:reminder-delivery-changed',changed);
   window.addEventListener('li:personal-sync-applied',sync);
   window.addEventListener('li:localechange',locale);
-  document.addEventListener('visibilitychange',check);
   return()=>{
-   window.clearInterval(interval);
-   window.removeEventListener('focus',check);
-   window.removeEventListener('pageshow',check);
    window.removeEventListener('li:reminder-preference-changed',changed);
+   window.removeEventListener('li:reminder-delivery-changed',changed);
    window.removeEventListener('li:personal-sync-applied',sync);
    window.removeEventListener('li:localechange',locale);
-   document.removeEventListener('visibilitychange',check);
   };
  },[]);
  function edit(kind:ReminderKind,patch:Partial<ReminderSchedule>){
@@ -114,32 +105,10 @@ export function InAppReminderPanel(){
     });
    }
    writeReminderPreference(draft);
-   setPref(draft);setDueKind(null);setError('');
+   setPref(draft);setError('');
    setFeedback(copy('Đã lưu cả 4 lịch nhắc.','All four schedules saved.'));
   }catch{setError(copy('Không lưu được lịch nhắc trên thiết bị.',
    'Could not save reminder schedules on this device.'));}
- }
- function respond(action:'dismiss'|'snooze'|'disable'){
-  if(!dueKind)return;
-  let uid='';try{uid=owner();}catch{/* Storage error. */}
-  if(!uid){setDueKind(null);return;}
-  try{
-   if(action==='disable'){
-    const current=readReminderPreference(),chosen=current.schedules.find(s=>s.kind===dueKind)!;
-    writeReminderPreference(replaceSchedule(current,{...chosen,enabled:false}));
-   }
-   const now=new Date();
-   writeReminderDelivery(uid,dueKind,{
-    lastDay:action==='snooze'?'':localDay(now),
-    snoozedUntil:action==='snooze'?now.getTime()+60*60*1000:0
-   });
-   setDueKind(null);setError('');
-   // Push is per-device; ask the mounted Push settings to upload this
-   // snooze or per-kind cancellation. No OS prompt is triggered.
-   window.dispatchEvent(new Event('li:reminder-delivery-changed'));
-   // Several types can share a time; show one at a time, not overlapping sheets.
-   window.setTimeout(()=>setDueKind(getDueKind()),0);
-  }catch{setError(copy('Không lưu được lựa chọn.','Could not save your response.'));}
  }
  const active=pref.schedules.filter(s=>s.enabled).length;
  return <>
@@ -153,6 +122,13 @@ export function InAppReminderPanel(){
     {draft.schedules.map(s=>{
      const saved=pref.schedules.find(item=>item.kind===s.kind)!;
      const changed=JSON.stringify(s)!==JSON.stringify(saved);
+     // Delivery receipts are per account, kind and day. Editing a schedule
+     // does not override a completed/previously skipped same-day slot.
+     let processedToday=false;
+     try{
+      const uid=owner();
+      processedToday=!!uid&&saved.enabled&&readReminderDelivery(uid,s.kind).lastDay===localDay(new Date());
+     }catch{/* Local receipt unavailable. */}
      const invalid=s.enabled&&(!validTime(s.time)||(s.frequency==='custom'&&!s.days.length));
      return <section className="li-reminder-schedule" key={s.kind} aria-label={labelFor(s.kind,lang)}>
       <div className="li-reminder-schedule-top">
@@ -185,7 +161,8 @@ export function InAppReminderPanel(){
        </div>
       </fieldset>}
       <Text role="support">{saved.enabled?copy('Đã bật · ','On · ')+saved.time:
-       copy('Đang tắt','Off')}</Text>
+       copy('Đang tắt','Off')}{processedToday?copy(
+       ' · Lịch hôm nay đã xử lý, không nhắc lại',' · Today already handled; no repeat'):''}</Text>
      </section>;
     })}
    </div>
@@ -199,15 +176,79 @@ export function InAppReminderPanel(){
    {feedback&&<Text role="support" aria-live="polite">{feedback}</Text>}
    {error&&<InlineFeedback tone="error" message={error}/>}
   </Card>
-  {dueKind&&createPortal(<div className="li-in-app-reminder" role="status" aria-live="polite"
-    aria-label={copy('Lời nhắc của Lão Lý','Elder Ly reminder')}>
-   <div className="kicker">{copy('LÃO LÝ NHẮC KHẼ','A GENTLE REMINDER')}</div>
-   <p>{reminderMessage(dueKind,lang)}</p>
-   <div className="action-row">
-    <Button variant="primary" onClick={()=>respond('dismiss')}>{copy('Đã hiểu','Got it')}</Button>
-    <Button variant="secondary" onClick={()=>respond('snooze')}>{copy('Nhắc sau 1 giờ','In 1 hour')}</Button>
-    <Button variant="secondary" onClick={()=>respond('disable')}>{copy('Tắt loại này','Disable this type')}</Button>
-   </div>
-  </div>,document.body)}
  </>;
 }
+
+/** App-wide, authenticated, foreground-only reminder. Settings owns editing,
+ * not the notification lifetime; navigating elsewhere cannot suspend it.
+ */
+export function InAppReminderNotifier(){
+ const [dueKind,setDueKind]=useState<ReminderKind|null>(null);
+ const [lang,setLang]=useState(vietnamese);
+ const [error,setError]=useState('');
+ const copy=(vi:string,en:string)=>lang?vi:en;
+ useEffect(()=>{
+  const check=()=>setDueKind(getDueKind());
+  const sync=(event:Event)=>{
+   const keys=(event as CustomEvent<{keys?:string[]}>).detail?.keys;
+   if(!keys||keys.includes(REMINDER_KEY))check();
+  };
+  const locale=()=>setLang(vietnamese());
+  check();
+  // Background timers are throttled on iOS. Recheck on every foreground
+  // event; while visible, poll periodically rather than tying it to Settings.
+  const interval=window.setInterval(check,15_000);
+  window.addEventListener('li:auth-verified-changed',check);
+  window.addEventListener('li:reminder-preference-changed',check);
+  window.addEventListener('li:personal-sync-applied',sync);
+  window.addEventListener('focus',check);
+  window.addEventListener('pageshow',check);
+  window.addEventListener('li:localechange',locale);
+  document.addEventListener('visibilitychange',check);
+  return()=>{
+   window.clearInterval(interval);
+   window.removeEventListener('li:auth-verified-changed',check);
+   window.removeEventListener('li:reminder-preference-changed',check);
+   window.removeEventListener('li:personal-sync-applied',sync);
+   window.removeEventListener('focus',check);
+   window.removeEventListener('pageshow',check);
+   window.removeEventListener('li:localechange',locale);
+   document.removeEventListener('visibilitychange',check);
+  };
+ },[]);
+ function respond(action:'dismiss'|'snooze'|'disable'){
+  if(!dueKind)return;
+  let uid='';try{uid=owner();}catch{/* Storage error. */}
+  if(!uid){setDueKind(null);return;}
+  try{
+   if(action==='disable'){
+    const current=readReminderPreference(),chosen=current.schedules.find(s=>s.kind===dueKind)!;
+    writeReminderPreference(replaceSchedule(current,{...chosen,enabled:false}));
+   }
+   const now=new Date();
+   writeReminderDelivery(uid,dueKind,{
+    lastDay:action==='snooze'?'':localDay(now),
+    snoozedUntil:action==='snooze'?now.getTime()+60*60*1000:0
+   });
+   setDueKind(null);setError('');
+   // Push is per-device; ask the mounted Push settings to upload this
+   // snooze or per-kind cancellation. No OS prompt is triggered.
+   window.dispatchEvent(new Event('li:reminder-delivery-changed'));
+   // Several types can share a time; show one at a time, not overlapping sheets.
+   window.setTimeout(()=>setDueKind(getDueKind()),0);
+  }catch{setError(copy('Không lưu được lựa chọn.','Could not save your response.'));}
+ }
+
+ return dueKind?createPortal(<div className="li-in-app-reminder" role="status" aria-live="polite"
+   aria-label={copy('Lời nhắc của Lão Lý','Elder Ly reminder')}>
+  <div className="kicker">{copy('LÃO LÝ NHẮC KHẼ','A GENTLE REMINDER')}</div>
+  <p>{reminderMessage(dueKind,lang)}</p>
+  <div className="action-row">
+   <Button variant="primary" onClick={()=>respond('dismiss')}>{copy('Đã hiểu','Got it')}</Button>
+   <Button variant="secondary" onClick={()=>respond('snooze')}>{copy('Nhắc sau 1 giờ','In 1 hour')}</Button>
+   <Button variant="secondary" onClick={()=>respond('disable')}>{copy('Tắt loại này','Disable this type')}</Button>
+  </div>
+  {error&&<InlineFeedback tone="error" message={error}/>}
+ </div>,document.body):null;
+}
+

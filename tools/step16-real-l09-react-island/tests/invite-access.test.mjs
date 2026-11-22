@@ -135,7 +135,7 @@ test('JWT endpoint failures stay fail-closed, expose only safe codes',async()=>{
  );
  await assert.rejects(
   fetchSignedNeonJwt('https://li5610.pages.dev/api/auth',async()=>new Response('unparseable')),
-  /NEON_AUTH_JWT_INVALID_RESPONSE/
+  err=>safeInviteErrorCode(err)==='INV-JWT-FORMAT'
  );
 });
 

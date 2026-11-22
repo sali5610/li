@@ -36,6 +36,8 @@ const cases=[
   upstream:()=>new Response('false',{status:200})},
  {title:'Neon 500 is fail-closed but not mislabelled as uninvited',status:503,
   upstream:()=>new Response('',{status:500})},
+ {title:'Neon 302 redirect is fail-closed, never forwards Bearer',status:503,
+  upstream:()=>new Response(null,{status:302,headers:{Location:'https://example.invalid/'}})},
  {title:'Neon 404 RPC failure is fail-closed and retryable',status:503,
   upstream:()=>new Response('',{status:404})},
  {title:'Neon returns nonboolean JSON',status:503,
@@ -55,6 +57,7 @@ for(const item of cases){
    called++;
    assert.equal(String(args[0]),env.NEON_DATA_API_URL+'/rpc/li_is_invited');
    assert.equal(args[1].method,'POST');
+   assert.equal(args[1].redirect,'manual','Cloudflare Workers only supports manual/follow; never use redirect:error');
    assert.match(args[1].headers.Authorization,/^Bearer /);
    return item.upstream();
   };

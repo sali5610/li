@@ -77,6 +77,7 @@ jobs:
           grep -Fq 'li-first-party-app.js' dist-cloudflare-auth-candidate/sw.js
           grep -Fq 'li-push-handler.js' dist-cloudflare-auth-candidate/sw.js
           ! grep -Fq 'neon.tech' dist-cloudflare-auth-candidate/sw.js
+          find dist-cloudflare-auth-candidate -type f -name '*.map' -delete
           test -z "$(find dist-cloudflare-auth-candidate -type f -name '*.map' -print -quit)"
           git diff --exit-code -- site
   release:

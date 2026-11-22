@@ -1,0 +1,98 @@
+name: li. Push Worker AUTH status fix — EXISTING Free Worker ONLY, MANUAL
+
+# Exactly one scoped Worker-only deployment after explicit PO approval.
+# PR checks build the pinned candidate and NEVER touch Cloudflare.
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/li-push-worker-auth-manual.yml'
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Enter PUBLISH_LI_PUSH_AUTH_STATUS_EXISTING_ONLY"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: li-push-auth-worker-only
+  cancel-in-progress: false
+
+jobs:
+  candidate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 03c615349d66f54f7983620d811163764b3599a6
+          persist-credentials: false
+      - name: Verify pinned code exactly
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "03c615349d66f54f7983620d811163764b3599a6"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Focused Worker contract and auth negative tests
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund --prefix tools/push-worker
+          npm run check --prefix tools/push-worker
+          python3 -m py_compile tools/push-worker/scripts/deploy_existing_auth_status.py
+      - name: Wrangler compile dry-run only — no Cloudflare writes
+        run: |
+          set -euo pipefail
+          cd tools/push-worker
+          ./node_modules/.bin/wrangler deploy --dry-run --outdir /tmp/li-push-auth-status-candidate
+          test -s /tmp/li-push-auth-status-candidate/index.js
+          grep -Fq '"crons": ["* * * * *"]' wrangler.jsonc
+      - name: Prove no deployment in PR run
+        run: echo "SOURCE_TESTED_ONLY — no Cloudflare, D1, VAPID, Neon or Pages writes."
+
+  deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main' &&
+      inputs.confirm == 'PUBLISH_LI_PUSH_AUTH_STATUS_EXISTING_ONLY'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: cloudflare-free-production
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.LI_PUSH_CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      LI_APPROVED_PUSH_AUTH_RELEASE: LI_PUSH_AUTH_STATUS_EXISTING_ONLY_20261122
+    steps:
+      - name: Checkout exactly reviewed Worker source, not general staging
+        uses: actions/checkout@v4
+        with:
+          ref: 03c615349d66f54f7983620d811163764b3599a6
+          persist-credentials: false
+      - name: Strict immutable SHA and Free-only scope check
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "03c615349d66f54f7983620d811163764b3599a6"
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          echo "LI_PUSH_PINNED_SOURCE_PASS 03c615349d66f54f7983620d811163764b3599a6"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run Worker auth, D1 and schedule focused tests before any write
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund --prefix tools/push-worker
+          npm run check --prefix tools/push-worker
+          python3 -m py_compile tools/push-worker/scripts/deploy_existing_auth_status.py
+          cd tools/push-worker
+          ./node_modules/.bin/wrangler deploy --dry-run --outdir /tmp/li-push-auth-status-preflight
+          test -s /tmp/li-push-auth-status-preflight/index.js
+      - name: One existing Free Worker deploy, preserve live D1/VAPID/Cron
+        run: |
+          set -euo pipefail
+          python3 tools/push-worker/scripts/deploy_existing_auth_status.py --apply
+      - name: Explicit result
+        run: echo "Worker auth classification updated; iPhone signed registration/Lock Screen remains pending real-device verification."

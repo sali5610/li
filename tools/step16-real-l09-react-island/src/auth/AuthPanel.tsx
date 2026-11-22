@@ -9,6 +9,7 @@ import {authClient,neonSessionPort} from './neon-client.js';
 import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING,IS_INTEGRATED_LI_APP} from './config.js';
 import {classifyOAuthReturn,type OAuthReturnCode} from './oauth-return.js';
 import {rememberOfflineInvite,recentOfflineOwner,forgetOfflineInvite} from './offline-local.js';
+import {deferAuthScreen} from './auth-display.js';
 import {RlsQaPanel} from './RlsQaPanel.js';
 import {SyncQaPanel} from './SyncQaPanel.js';
 import {AiOwnerControl} from './AiOwnerControl.js';
@@ -106,6 +107,9 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  const offlineId=recentOfflineOwner(isOffline);
  const accountId=liveAccountId??offlineId;
  const localOffline=isOffline&&Boolean(offlineId)&&accountId===offlineId;
+ // A signed-in device may switch to its verified offline lease on the next
+ // render. Do not briefly unmount its private UI while the offline effect runs.
+ const offlineAccess=localOffline&&(access==='offline'||access==='granted');
  const [ownerReady,setOwnerReady]=useState(false);
  const [syncStatus,setSyncStatus]=useState<SyncReport>('checking');
  const [journalChoice,setJournalChoice]=useState(false);
@@ -187,19 +191,19 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  // Local account ownership is prepared synchronously before the app is shown.
  useEffect(()=>{
   if(!accountId||(!localOffline&&(isPending||error))||
-    !(access==='granted'&&!isOffline||access==='offline'&&localOffline)){
+    !(access==='granted'&&!isOffline||offlineAccess)){
   setOwnerReady(false);return;
  }
   try{
    if(prepareLearnerAccount(accountId)){window.location.reload();return;}
    setOwnerReady(true);
   }catch{setOwnerReady(false);setSyncStatus('error');}
- },[accountId,isPending,error,access,localOffline,isOffline]);
+ },[accountId,isPending,error,access,localOffline,isOffline,offlineAccess]);
  useEffect(()=>{
   if(!document.getElementById('li-staging-auth-root'))return;
   const permitted=Boolean(accountId)&&ownerReady&&
    ((access==='granted'&&!isOffline&&!isPending&&!error)||
-    (access==='offline'&&localOffline));
+    offlineAccess);
   document.documentElement.classList.toggle('li-auth-verified',Boolean(permitted));
   // Focus/pageshow/online revalidation locks private UI but is NOT logout.
   // Preserve the active Catalog/lesson URL until invite verification resolves.
@@ -214,7 +218,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    detail:{verified:Boolean(permitted),transient,accountId:accountId||null}
   }));
   return()=>{document.documentElement.classList.remove('li-auth-verified');};
- },[accountId,isPending,error,access,ownerReady,isOffline,localOffline]);
+ },[accountId,isPending,error,access,ownerReady,isOffline,localOffline,offlineAccess]);
  // A signed-out/denied visitor can see the real Auth screen only after the
  // session check settles; never reveal a static Home during auth bootstrap.
  useEffect(()=>{
@@ -230,7 +234,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  // Existing Dexie outbox captures offline edits without server writes.
  useEffect(()=>{
   if(!IS_INTEGRATED_LI_APP||!ownerReady||!accountId||
-    !(access==='granted'&&!isOffline||access==='offline'&&localOffline))return;
+    !(access==='granted'&&!isOffline||offlineAccess))return;
   setSyncStatus('checking');
   return startLearnerSync(accountId,value=>{
    setSyncStatus(value);
@@ -238,7 +242,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    const status=document.getElementById('li-cloud-status');
    if(status)status.textContent=syncCopy[document.documentElement.lang==='en'?'en':'vi'][value];
   });
- },[accountId,ownerReady,access,isOffline,localOffline]);
+ },[accountId,ownerReady,access,isOffline,localOffline,offlineAccess]);
  const oauthReturn=classifyOAuthReturn(window.location.search,Boolean(accountId),isPending);
  const oauthMessage=(code:OAuthReturnCode)=>code==='account_not_linked'?t.oauthLink:
   code==='state_mismatch'||code==='state_security_mismatch'||code==='no_callback_url'||code==='invalid_callback_request'?t.oauthState:
@@ -375,7 +379,12 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  }
  const showApp=Boolean(IS_INTEGRATED_LI_APP&&accountId&&ownerReady&&
   ((access==='granted'&&!isOffline&&!isPending&&!error)||
-   (access==='offline'&&localOffline)));
+   offlineAccess));
+ // A managed session or signed invite may be restoring after refresh/focus.
+ // The neutral boot cover stays visible; rendering Auth here causes a login flash.
+ // Real signed-out/denied/error states still render the actual sign-in gate.
+ const deferSignIn=deferAuthScreen(IS_INTEGRATED_LI_APP,isPending,localOffline,
+  accountId,access,ownerReady);
  const settingsControls=<section className="li-auth-settings" aria-label={locale==='vi'?'Tài khoản và đồng bộ':'Account and sync'}>
   <div className="li-auth-settings-identity">
    <Text role="support">{localOffline?
@@ -418,7 +427,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  </section>;
  return <>
   {showApp&&accountSettingsHost&&createPortal(settingsControls,accountSettingsHost)}
-  {!showApp&&<main className="auth-pilot">
+  {!showApp&&!deferSignIn&&<main className="auth-pilot">
   <header className="auth-header">
    <div><Text role="support" className="auth-tag">{stageLabel}</Text>
     <Heading level={1} role="headline" className="auth-title">{t.heading}</Heading></div>

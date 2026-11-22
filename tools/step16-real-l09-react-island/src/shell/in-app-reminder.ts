@@ -64,14 +64,20 @@ export function runsOnDay(s:ReminderSchedule,day:number):boolean{
  return s.days.includes(day);
 }
 export function dueInApp(s:ReminderSchedule,delivery:ReminderDelivery,now:Date):boolean{
- if(!s.enabled||!validTime(s.time)||!runsOnDay(s,now.getDay())||
-   delivery.lastDay===localDay(now))return false;
+ if(!s.enabled||!validTime(s.time)||delivery.lastDay===localDay(now))return false;
+ const time=now.getTime();
+ const today=localDay(now);
+ if(delivery.snoozedUntil>0){
+  const snoozeDay=localDay(new Date(delivery.snoozedUntil));
+  // Snooze can cross midnight and a selected-weekday boundary. Tomorrow's
+  // postponed reminder must not cause today's original reminder to reappear.
+  if(snoozeDay>today)return false;
+  if(snoozeDay===today)
+   return time>=delivery.snoozedUntil&&time<delivery.snoozedUntil+90*60*1000;
+ }
+ if(!runsOnDay(s,now.getDay()))return false;
  const [hours,minutes]=s.time.split(':').map(Number);
  const due=new Date(now.getFullYear(),now.getMonth(),now.getDate(),hours,minutes).getTime();
- const time=now.getTime();
- // Snooze applies to the same local day only; never backfills missed days.
- if(delivery.snoozedUntil>0&&localDay(new Date(delivery.snoozedUntil))===localDay(now))
-  return time>=delivery.snoozedUntil&&time<delivery.snoozedUntil+90*60*1000;
  return time>=due&&time<due+90*60*1000;
 }
 export function readReminderPreference():ReminderPreference{

@@ -104,10 +104,14 @@ export function InAppReminderPanel(){
    const now=new Date();
    for(const next of draft.schedules){
     const before=previous.schedules.find(s=>s.kind===next.kind)!;
-    if(!next.enabled||JSON.stringify(before)===JSON.stringify(next))continue;
+    if(JSON.stringify(before)===JSON.stringify(next))continue;
+    const previousDelivery=readReminderDelivery(uid,next.kind);
     const [h,m]=next.time.split(':').map(Number);
-    if(now.getTime()>=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m).getTime())
-     writeReminderDelivery(uid,next.kind,{lastDay:localDay(now),snoozedUntil:0});
+    const past=next.enabled&&validTime(next.time)&&
+     now.getTime()>=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m).getTime();
+    writeReminderDelivery(uid,next.kind,{
+     lastDay:past?localDay(now):previousDelivery.lastDay,snoozedUntil:0
+    });
    }
    writeReminderPreference(draft);
    setPref(draft);setDueKind(null);setError('');
@@ -130,6 +134,9 @@ export function InAppReminderPanel(){
     snoozedUntil:action==='snooze'?now.getTime()+60*60*1000:0
    });
    setDueKind(null);setError('');
+   // Push is per-device; ask the mounted Push settings to upload this
+   // snooze or per-kind cancellation. No OS prompt is triggered.
+   window.dispatchEvent(new Event('li:reminder-delivery-changed'));
    // Several types can share a time; show one at a time, not overlapping sheets.
    window.setTimeout(()=>setDueKind(getDueKind()),0);
   }catch{setError(copy('Không lưu được lựa chọn.','Could not save your response.'));}

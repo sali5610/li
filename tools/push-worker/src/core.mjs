@@ -17,6 +17,7 @@ export function validSchedules(schedules){
   schedules.every(s=>s&&validKind(s.kind)&&typeof s.enabled==='boolean'&&
    (s.time===''||validClock(s.time))&&(!s.enabled||validClock(s.time))&&
    validFrequency(s.frequency)&&validDays(s.days)&&
+   (s.snoozedUntil===undefined||(Number.isSafeInteger(s.snoozedUntil)&&s.snoozedUntil>=0))&&
    (!s.enabled||s.frequency!=='custom'||s.days.length>0));
 }
 export function validZone(zone){
@@ -77,11 +78,18 @@ export function duePushSlots(row,now){
  const delivered=deliveredDays(row);
  return schedules.flatMap(s=>{
   if(!s.enabled)return [];
-  const scheduled=Number(s.time.slice(0,2))*60+Number(s.time.slice(3));
-  const match=candidates.find(({day,at:minute})=>
-   delivered[s.kind]!==day&&
-   runsOnDay(s,new Date(day+'T12:00:00Z').getUTCDay())&&
-   minute>=scheduled&&minute<scheduled+3);
+  // A device snooze is absolute UTC. On its target local day it replaces
+  // the regular clock, even if that hour falls on a non-recurring weekday.
+  const snoozed=s.snoozedUntil>0?localMinute(new Date(s.snoozedUntil),row.zone):null;
+  const match=candidates.find(({day,at:minute})=>{
+   const pendingSnooze=snoozed&&day<=snoozed.day;
+   if(pendingSnooze&&day!==snoozed.day)return false;
+   const clock=pendingSnooze?snoozed.time:s.time;
+   const scheduled=Number(clock.slice(0,2))*60+Number(clock.slice(3));
+   return delivered[s.kind]!==day&&
+    (pendingSnooze||runsOnDay(s,new Date(day+'T12:00:00Z').getUTCDay()))&&
+    minute>=scheduled&&minute<scheduled+3;
+  });
   return match?[{kind:s.kind,day:match.day}]:[];
  });
 }
@@ -89,6 +97,23 @@ export function claimDays(row,slots){
  const days=deliveredDays(row);
  for(const {kind,day} of slots)days[kind]=day;
  return JSON.stringify(days);
+}
+// Reset only kinds whose snooze changed; a repeated PUT must not replay a
+// previously accepted notification. Both helpers reuse legacy v1 receipts.
+export function withoutDays(row,kinds){
+ const value=deliveredDays(row);
+ for(const kind of kinds)delete value[kind];
+ return JSON.stringify(value);
+}
+export function newlySnoozedKinds(previousTime,schedules,nowMs){
+ let previous=[];
+ try{
+  const stored=JSON.parse(previousTime);
+  if(stored?.version===2&&Array.isArray(stored.schedules))previous=stored.schedules;
+ }catch{/* Legacy v1 row. */}
+ return schedules.filter(s=>s.enabled&&s.snoozedUntil>nowMs&&
+  s.snoozedUntil!==previous.find(p=>p?.kind===s.kind)?.snoozedUntil)
+  .map(s=>s.kind);
 }
 // Compatibility for existing v1 subscription rows and tests.
 export function dueForPush(row,now){return duePushSlots(row,now)[0]?.day||null;}

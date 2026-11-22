@@ -1,7 +1,7 @@
 name: Release li. to Cloudflare Pages Free — MANUAL ONLY
 
 # IMPORTANT: Manual dispatch is the ONLY deploy trigger. PR gate builds a candidate locally but NEVER deploys.
-# First-party modes use the immutable staging SHA with successful staging CI,
+# Auth-only uses the approved JWT-fix SHA; AI keeps its previously reviewed SHA,
 # without merging all staging changes into main. Never dispatch until preflight.
 on:
   # Focused PR gate builds the pinned Auth-only artifact; it never deploys.
@@ -43,12 +43,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: ea25f7a90b706812e211d3c5fc275e876bbd3f8d
+          ref: f04ab738de9386baf31a6d314820c9e701e08c34
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "ea25f7a90b706812e211d3c5fc275e876bbd3f8d"
+          test "$(git rev-parse HEAD)" = "f04ab738de9386baf31a6d314820c9e701e08c34"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -100,15 +100,22 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ (inputs.auth_only_mode || inputs.ai_mode) && 'ea25f7a90b706812e211d3c5fc275e876bbd3f8d' || github.sha }}
+          ref: ${{ inputs.auth_only_mode && 'f04ab738de9386baf31a6d314820c9e701e08c34' || (inputs.ai_mode && 'ea25f7a90b706812e211d3c5fc275e876bbd3f8d' || github.sha) }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
         if: inputs.auth_only_mode == true || inputs.ai_mode == true
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "ea25f7a90b706812e211d3c5fc275e876bbd3f8d"
-          echo "Verified pinned candidate ea25f7a90b706812e211d3c5fc275e876bbd3f8d; GitHub staging publisher #44971588827 PASS."
+          if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
+            expected='f04ab738de9386baf31a6d314820c9e701e08c34'
+            echo 'Auth-only JWT fix: integrated build #44975691020 PASS; iPhone fixture #44975691055 PASS.'
+          else
+            expected='ea25f7a90b706812e211d3c5fc275e876bbd3f8d'
+            echo 'AI mode retains previously reviewed source; no AI release approved.'
+          fi
+          test "$(git rev-parse HEAD)" = "$expected"
+          echo "Verified pinned first-party candidate $expected"
 
       - name: Validate deployed li. source and canonical tokens
         run: |

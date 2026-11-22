@@ -46,16 +46,21 @@ def main():
             print("LI_PUSH_SCOPE_" + name + "_BLOCKED")
             return None
 
-    subs = probe("BILLING", lambda: api("subscriptions?per_page=100", "BILLING_READ"))
+    # Cloudflare List Subscriptions accepts no per_page query parameter.
+    subs = probe("BILLING", lambda: api("subscriptions", "BILLING_READ"))
     if subs is not None:
         if not isinstance(subs, list):
             errors.append("WORKERS_FREE_PLAN_NOT_PROVABLE")
         else:
-            paid = [s for s in subs if isinstance(s, dict) and
-                    isinstance(s.get("rate_plan"), dict) and
-                    "workers" in str(s["rate_plan"].get("id", "")).lower() and
-                    "paid" in str(s["rate_plan"].get("id", "")).lower() and
-                    s.get("state", s.get("status", "active")) in ("active", "Active", None)]
+            # Cloudflare uses WORKERS_PAID and states Paid/Provisioned/Trial.
+            # Fail closed for any Workers subscription other than explicit Free.
+            workers = [s for s in subs if isinstance(s, dict) and
+                       isinstance(s.get("rate_plan"), dict) and
+                       "workers" in str(s["rate_plan"].get("id", "")).lower() and
+                       str(s.get("state", "")).lower() not in
+                       ("cancelled", "failed", "expired")]
+            paid = [s for s in workers if
+                    "free" not in str(s["rate_plan"].get("id", "")).lower()]
             if paid:
                 errors.append("WORKERS_PAID_SUBSCRIPTION_PRESENT_STOP")
             else:

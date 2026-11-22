@@ -1,0 +1,179 @@
+name: li. Reminder reschedule — exact-live Free Pages and Push Worker, MANUAL ONLY
+
+# No deploy on PR. A human must dispatch this from main with exact approval.
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/li-reminder-rearm-exact-release.yml'
+      - 'tools/push-worker/scripts/deploy_existing_reminder_rearm.py'
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: Enter PUBLISH_LI_REMINDER_REARM_BOTH_EXACT_FREE_ONLY
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: li-reminder-exact-live-free
+  cancel-in-progress: false
+
+jobs:
+  source_qa:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: sali5610/li
+          ref: 62fc1a8b44993cab9cf3b064f39984f81de14d86
+          path: candidate
+          persist-credentials: false
+      - name: Verify pinned candidate and release-guard Python syntax
+        run: |
+          set -euo pipefail
+          test "$(git -C candidate rev-parse HEAD)" = "62fc1a8b44993cab9cf3b064f39984f81de14d86"
+          python3 -m py_compile tools/push-worker/scripts/deploy_existing_reminder_rearm.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Focused Worker test and real workerd/D1 integration
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund --prefix candidate/tools/push-worker
+          npm run check --prefix candidate/tools/push-worker
+          (cd candidate/tools/push-worker && ./node_modules/.bin/wrangler deploy --dry-run --outdir /tmp/li-reminder-worker)
+          LI_QA_WORKER_BUNDLE=/tmp/li-reminder-worker/index.js node candidate/tools/push-worker/scripts/qa-bundle-workerd.mjs
+      - name: Compile actual live-derived Pages Auth-only PWA (no deployment)
+        env:
+          VITE_LI_PUSH_WORKER_URL: https://li-push-staging.dungho-product.workers.dev
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund --prefix candidate/design-system/react
+          npm install --no-audit --no-fund --prefix candidate/tools/step16-real-l09-react-island
+          (
+            cd candidate/tools/step16-real-l09-react-island
+            npm run extract
+            node --test tests/in-app-reminder.test.mjs
+            npm run test:sync
+            npm run test:auth-pwa
+            npx tsc --noEmit
+            npm run build:worker:auth-only
+            VITE_LI_AUTH_TARGET=cloudflare-first-party npx vite build --config vite.cloudflare-app.config.mjs
+          )
+          (
+            cd candidate
+            node tools/prepare_cloudflare_ai_candidate.mjs --build-auth-only
+            npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-auth-only-config.cjs
+            test -s dist-cloudflare-auth-candidate/_worker.js
+            test -s dist-cloudflare-auth-candidate/assets/li-first-party-app.js
+            test -s dist-cloudflare-auth-candidate/sw.js
+            grep -Fq 'li-push-handler.js' dist-cloudflare-auth-candidate/sw.js
+            ! grep -Fq 'neon.tech' dist-cloudflare-auth-candidate/sw.js
+            git diff --exit-code -- site
+          )
+      - name: No Cloudflare writes
+        run: echo 'SOURCE_QA_ONLY -- NO DEPLOY.'
+
+  release:
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main' &&
+      inputs.confirm == 'PUBLISH_LI_REMINDER_REARM_BOTH_EXACT_FREE_ONLY'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: cloudflare-free-production
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      LI_PUSH_CLOUDFLARE_API_TOKEN: ${{ secrets.LI_PUSH_CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+      VITE_LI_PUSH_WORKER_URL: https://li-push-staging.dungho-product.workers.dev
+      LI_REARM_WORKER_DIR: candidate/tools/push-worker
+      LI_APPROVED_REMINDER_REARM_RELEASE: LI_REMINDER_REARM_EXISTING_FREE_20261123
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: sali5610/li
+          ref: 62fc1a8b44993cab9cf3b064f39984f81de14d86
+          path: candidate
+          persist-credentials: false
+      - name: Confirm exact reviewed SHA and both existing Free credentials
+        run: |
+          set -euo pipefail
+          test "$(git -C candidate rev-parse HEAD)" = "62fc1a8b44993cab9cf3b064f39984f81de14d86"
+          test "$CLOUDFLARE_PAGES_PROJECT" = "li5610"
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$LI_PUSH_CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          python3 -m py_compile tools/push-worker/scripts/deploy_existing_reminder_rearm.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Before ANY deploy run all Worker tests, bundled workerd and isolated D1
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund --prefix candidate/tools/push-worker
+          npm run check --prefix candidate/tools/push-worker
+          (cd candidate/tools/push-worker && ./node_modules/.bin/wrangler deploy --dry-run --outdir /tmp/li-reminder-worker)
+          test -s /tmp/li-reminder-worker/index.js
+          LI_QA_WORKER_BUNDLE=/tmp/li-reminder-worker/index.js node candidate/tools/push-worker/scripts/qa-bundle-workerd.mjs
+      - name: Before ANY deploy build Auth-only Pages/PWA with focused React tests
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund --prefix candidate/design-system/react
+          npm install --no-audit --no-fund --prefix candidate/tools/step16-real-l09-react-island
+          (
+            cd candidate/tools/step16-real-l09-react-island
+            npm run extract
+            node --test tests/in-app-reminder.test.mjs
+            npm run test:sync
+            npm run test:auth-pwa
+            npx tsc --noEmit
+            npm run build:worker:auth-only
+            VITE_LI_AUTH_TARGET=cloudflare-first-party npx vite build --config vite.cloudflare-app.config.mjs
+          )
+          (
+            cd candidate
+            node tools/prepare_cloudflare_ai_candidate.mjs --build-auth-only
+            npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-auth-only-config.cjs
+            test -s dist-cloudflare-auth-candidate/_worker.js
+            test -s dist-cloudflare-auth-candidate/assets/li-first-party-app.js
+            test -s dist-cloudflare-auth-candidate/sw.js
+            grep -Fq 'li-push-handler.js' dist-cloudflare-auth-candidate/sw.js
+            ! grep -Fq 'neon.tech' dist-cloudflare-auth-candidate/sw.js
+            find dist-cloudflare-auth-candidate -type f -name '*.map' -delete
+            test -z "$(find dist-cloudflare-auth-candidate -type f -name '*.map' -print -quit)"
+            git diff --exit-code -- site
+            python3 tools/check_cloudflare_auth_binding.py
+            python3 tools/g3_cloudflare_free_guard.py --site dist-cloudflare-auth-candidate --online
+          )
+      - name: Verify exact old Worker+Pages versions, bindings/VAPID/Cron, then update existing Worker ONCE
+        run: |
+          set -euo pipefail
+          python3 tools/push-worker/scripts/deploy_existing_reminder_rearm.py --apply
+      - name: Deploy exact candidate to existing Free Pages ONCE
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy candidate/dist-cloudflare-auth-candidate --branch=main --project-name=li5610
+      - name: Verify Pages canonical deployment moved from expected previous version
+        run: |
+          python3 - <<'PY'
+          import runpy
+          helper=runpy.run_path('tools/push-worker/scripts/deploy_existing_reminder_rearm.py')
+          current=helper['current_pages_short_id']()
+          if current == helper['EXPECTED_PAGES_SHORT_ID']:
+              raise SystemExit('PAGES_VERSION_NOT_UPDATED')
+          print('LI_REMINDER_NEW_PAGES_VERSION_PASS')
+          PY
+      - name: User-validation gate remains
+        run: echo 'Both code releases completed. Real next-occurrence and next-day reminder delivery need user validation.'

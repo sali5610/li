@@ -1,7 +1,7 @@
 name: Release li. to Cloudflare Pages Free — MANUAL ONLY
 
 # IMPORTANT: Manual dispatch is the ONLY deploy trigger. PR gate builds a candidate locally but NEVER deploys.
-# Auth-only uses the approved JWT-fix SHA; AI keeps its previously reviewed SHA,
+# Auth-only uses the re-reviewed JWT proxy/cache fix SHA; AI retains the earlier pinned SHA,
 # without merging all staging changes into main. Never dispatch until preflight.
 on:
   # Focused PR gate builds the pinned Auth-only artifact; it never deploys.
@@ -43,12 +43,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: f04ab738de9386baf31a6d314820c9e701e08c34
+          ref: bf8f29c9200354e284f841f49ed4f37326bb7b1f
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "f04ab738de9386baf31a6d314820c9e701e08c34"
+          test "$(git rev-parse HEAD)" = "bf8f29c9200354e284f841f49ed4f37326bb7b1f"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -100,7 +100,7 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.auth_only_mode && 'f04ab738de9386baf31a6d314820c9e701e08c34' || (inputs.ai_mode && 'ea25f7a90b706812e211d3c5fc275e876bbd3f8d' || github.sha) }}
+          ref: ${{ inputs.auth_only_mode && 'bf8f29c9200354e284f841f49ed4f37326bb7b1f' || (inputs.ai_mode && 'ea25f7a90b706812e211d3c5fc275e876bbd3f8d' || github.sha) }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
@@ -108,8 +108,8 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
-            expected='f04ab738de9386baf31a6d314820c9e701e08c34'
-            echo 'Auth-only JWT fix: integrated build #44975691020 PASS; iPhone fixture #44975691055 PASS.'
+            expected='bf8f29c9200354e284f841f49ed4f37326bb7b1f'
+            echo 'Auth-only JWT proxy fix: integrated CI #44978054613 PASS; iPhone fixture CI #44978054636 PASS.'
           else
             expected='ea25f7a90b706812e211d3c5fc275e876bbd3f8d'
             echo 'AI mode retains previously reviewed source; no AI release approved.'

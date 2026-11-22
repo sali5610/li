@@ -47,7 +47,7 @@ try{
  await send('Runtime.enable');
  await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true,
   screenWidth:390,screenHeight:844});
- await send('Page.navigate',{url:'http://127.0.0.1:8767/reminder-qa-fixture.html'});
+ await send('Page.navigate',{url:'http://127.0.0.1:8767/tests/reminder-qa-fixture.html'});
  await wait(()=>evalJs('Boolean(window.__liQaReady && window.liReactToastPort)'));
  await assert("document.querySelector('#toast')?.style.display==='none'","toast hidden by default");
  await assert("!window.__liQa.isDue()","20:49 not due");

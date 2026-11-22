@@ -650,7 +650,7 @@ assert 'btn(row,"Tiếp tục",item.route,"library-text-link library-open-lesson
 assert 'window.liLibraryShelf=Object.freeze({' in hub
 library_port=hub.split('window.liLibraryShelf=Object.freeze({',1)[1].split('});',1)[0]
 assert {'trackProblem','renderProblemRows','registerPersonalLessons'}.issubset(set(library_port.split(',')))
-assert 'if(id==="case")window.liLibraryShelf?.trackProblem("case","sampling-bias-90");' in page_html
+assert 'if(id==="case")window.liLibraryShelf?.trackProblem("case",liCurrentCase().id);' in page_html
 assert 'window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_resume_problem_case.cjs")],check=True,cwd=site.parent)
 

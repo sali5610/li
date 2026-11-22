@@ -1,15 +1,18 @@
 import {neonSessionPort} from '../auth/neon-client.js';
 import {readReminderPreference} from './in-app-reminder.js';
 
-const urlValue=(import.meta.env.VITE_LI_PUSH_STAGING_URL||'') as string;
+const urlValue=(import.meta.env.VITE_LI_PUSH_WORKER_URL||
+ import.meta.env.VITE_LI_PUSH_STAGING_URL||'') as string;
 export function webPushApi():string|null{
  try{
   const u=new URL(urlValue);
   if(u.protocol!=='https:'||!/^li-push-staging\.[a-z0-9-]+\.workers\.dev$/.test(u.hostname)||
    u.pathname!=='/'||u.search||u.hash||u.username||u.password)return null;
-  // Never connect another app origin with the user's signed Neon JWT.
-  if(location.origin!=='https://sali5610.github.io'||!location.pathname.startsWith('/li/'))
-   return null;
+  // Never send the signed session to a backend from an unrelated app origin.
+  // Cloudflare's installed PWA uses /; GitHub staging uses /li/.
+  const cloudflare=location.origin==='https://li5610.pages.dev';
+  const github=location.origin==='https://sali5610.github.io'&&location.pathname.startsWith('/li/');
+  if(!cloudflare&&!github)return null;
   return u.origin;
  }catch{return null;}
 }

@@ -85,6 +85,9 @@ jobs:
 
       - name: Prepare first-party React Auth-only PWA (explicit Auth-only approval)
         if: inputs.auth_only_mode == true && inputs.ai_mode == false
+        env:
+          # Public URL only; blank until the separately approved Free Push Worker is ready.
+          VITE_LI_PUSH_WORKER_URL: ${{ vars.LI_PUSH_WORKER_URL }}
         run: |
           set -euo pipefail
           npm install --no-audit --no-fund --prefix design-system/react

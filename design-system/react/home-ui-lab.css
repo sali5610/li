@@ -135,3 +135,28 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--li-font
  .li-flow-page .li-flow-dots i{width:10px;height:10px}
  .li-ui-home .li-ds-home-mirror-content{padding:12px;margin:12px}
 }
+
+
+/* The Lab's Home passes a full-body Elder Ly pose; preserve small avatar fallback elsewhere. */
+.li-ui-home-guide-illustration{margin:0;flex:none;width:clamp(118px,15vw,184px);
+ max-width:42%;align-self:center}
+.li-ui-home-guide-illustration img{display:block;width:100%;height:auto;
+ aspect-ratio:1;object-fit:contain}
+.li-ui-home[data-home-layout="notebook"] .li-ui-home-guide-illustration{
+ background:var(--paper);border:1px dashed var(--olive);transform:rotate(-2deg)}
+.li-ui-home[data-home-layout="vintagePop"] .li-ui-home-guide-illustration{
+ background:var(--cream);border:2px solid var(--moss);box-shadow:4px 4px 0 var(--olive)}
+.li-ui-home[data-home-layout="bookworm"] .li-ui-home-guide-illustration{
+ border-bottom:1px solid var(--rule);background:transparent}
+@container lab-preview (max-width:760px){
+ .li-flow-portal-grid{grid-template-columns:minmax(0,1fr)}
+ .li-flow-laoly-exhibition{grid-template-columns:minmax(0,1fr)}
+ .li-flow-laoly-portrait{justify-self:center;width:min(100%,300px)}
+ .li-flow-laoly-poses{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .li-ui-home-guide-illustration{width:114px;max-width:38%}
+}
+@container lab-preview (max-width:420px){
+ .li-flow-portal-grid .li-portal-category-card{padding:8px}
+ .li-flow-laoly-poses{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .li-ui-home-guide-illustration{width:102px}
+}

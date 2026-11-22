@@ -63,6 +63,19 @@ export function runsOnDay(s:ReminderSchedule,day:number):boolean{
  if(s.frequency==='weekends')return day===0||day===6;
  return s.days.includes(day);
 }
+/** Manual edits to a future slot create a new occurrence. Passive sync, unchanged
+ * schedules and already-past times must not replay an acknowledged reminder. */
+export function rearmForFutureSchedule(before:ReminderSchedule,after:ReminderSchedule,now:Date):boolean{
+ if(!after.enabled||!validTime(after.time)||!runsOnDay(after,now.getDay()))return false;
+ const changed=before.enabled!==after.enabled||before.time!==after.time||
+  before.frequency!==after.frequency||before.days.length!==after.days.length||
+  before.days.some(day=>!after.days.includes(day));
+ if(!changed)return false;
+ const [hour,minute]=after.time.split(':').map(Number);
+ const next=new Date(now.getFullYear(),now.getMonth(),now.getDate(),hour,minute).getTime();
+ // Push is sent one minute early; leave at least that much time to reschedule.
+ return next-now.getTime()>60_000;
+}
 export function dueInApp(s:ReminderSchedule,delivery:ReminderDelivery,now:Date):boolean{
  if(!s.enabled||!validTime(s.time)||delivery.lastDay===localDay(now))return false;
  const time=now.getTime();

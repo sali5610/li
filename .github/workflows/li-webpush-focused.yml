@@ -1,5 +1,8 @@
 name: li. Web Push candidate (focused, no deploy)
 on:
+  push:
+    branches:
+      - 'release/reminder-reschedule-exact-live-20261123'
   pull_request:
     paths:
       - 'tools/push-worker/**'
@@ -28,5 +31,7 @@ jobs:
           cd tools/push-worker
           npx wrangler deploy --dry-run --outdir /tmp/li-webpush-candidate
           test -s /tmp/li-webpush-candidate/index.js
+      - name: Actual workerd bundle plus isolated D1 reschedule / duplicate test
+        run: LI_QA_WORKER_BUNDLE=/tmp/li-webpush-candidate/index.js node tools/push-worker/scripts/qa-bundle-workerd.mjs
       - name: Confirm no production deployment took place
         run: echo 'Web Push is code-only. D1/VAPID/Worker secrets and staged Free deployment require separate approval.'

@@ -75,7 +75,7 @@ test('offline lesson route does not ask Neon; online invite, RLS and sync contra
  assert.match(ports,/if\(!navigator\.onLine\)[\s\S]*recentOfflineOwner\(true\)[\s\S]*return \{subjectId:localUid\}/);
  assert.match(ports,/await checkInviteAccess\(NEON_DATA_API_URL,neonSessionPort\)/);
  assert.match(auth,/if\(!allowed\)forgetOfflineInvite\(\)/);
- assert.match(auth,/access==='offline'&&localOffline/);
+ assert.match(auth,/const offlineAccess=localOffline&&\(access==='offline'\|\|access==='granted'\)/);
  assert.match(auth,/startLearnerSync\(accountId/);
  assert.match(auth,/if\(isOffline\)\{[\s\S]*forgetOfflineInvite\(\)/);
 });

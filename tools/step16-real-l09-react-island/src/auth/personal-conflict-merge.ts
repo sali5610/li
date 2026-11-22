@@ -28,10 +28,14 @@ function parse(raw:string|null):unknown{
 }
 function library(raw:string|null):Library|null{
  const x=parse(raw);
- if(!object(x)||x.schema!==1||LISTS.some(k=>!Array.isArray(x[k]))||
+ if(!object(x)||x.schema!==1||!Array.isArray(x.cases)||
+    !Array.isArray(x.questions)||
+    (x.ideas!==undefined&&!Array.isArray(x.ideas))||
+    (x.savedContent!==undefined&&!Array.isArray(x.savedContent))||
     Object.keys(x).some(k=>!['schema','updatedAt',...LISTS].includes(k))||
     (x.updatedAt!==undefined&&typeof x.updatedAt!=='string'))return null;
- return x as Library;
+ // Older valid local libraries predate Ideas/Bookmarks arrays.
+ return {...x,ideas:x.ideas??[],savedContent:x.savedContent??[]} as Library;
 }
 function idFor(kind:ListName,e:Entry):string|null{
  if(kind==='questions'){

@@ -1,7 +1,7 @@
 import {createInternalNeonAuth,type ReactBetterAuthClient} from '@neondatabase/auth';
 import {BetterAuthReactAdapter} from '@neondatabase/auth/react/adapters';
 import type {NeonAuthSessionPort} from '../sync/neon-session.js';
-import {sessionJwtCandidate,safeJwtFetchError} from '../sync/invite-access.js';
+import {fetchSignedNeonJwt} from '../sync/invite-access.js';
 import {AUTH_API_URL} from './config.js';
 
 /**
@@ -24,17 +24,8 @@ export const neonSessionPort:NeonAuthSessionPort={
    error:response.error??undefined};
  },
  async getJWTToken(){
-  // The official SDK obtains only a short-lived signed JWT, used directly for
-  // Neon Data API requests. Never persist it across browser restarts.
-  try{
-   // Better Auth's cached session.token may be an opaque cookie identifier,
-   // not the signed Data API JWT. Ask the managed JWT plugin through the
-   // existing first-party /api/auth/token endpoint instead.
-   const response=await authClient.token();
-   if(response.error)throw safeJwtFetchError(response.error);
-   return sessionJwtCandidate(response.data?.token);
-  }catch(problem){
-   throw safeJwtFetchError(problem);
-  }
+  // The pinned SDK classifies /token as getSession, returning a cached
+  // session instead of JWT. Fetch the managed endpoint without that cache.
+  return fetchSignedNeonJwt(AUTH_API_URL);
  }
 };

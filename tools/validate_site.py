@@ -650,7 +650,9 @@ assert 'btn(row,"Tiếp tục",item.route,"library-text-link library-open-lesson
 assert 'window.liLibraryShelf=Object.freeze({' in hub
 library_port=hub.split('window.liLibraryShelf=Object.freeze({',1)[1].split('});',1)[0]
 assert {'trackProblem','renderProblemRows','registerPersonalLessons'}.issubset(set(library_port.split(',')))
-assert 'if(id==="case")window.liLibraryShelf?.trackProblem("case",liCurrentCase().id);' in page_html
+# Track whichever authored case is active in React and native fallback.
+assert 'function liCurrentCase()' in page_html
+assert page_html.count('window.liLibraryShelf?.trackProblem("case",liCurrentCase().id);')>=2
 assert 'window.liLibraryShelf?.trackProblem("research",scenarios[qIndex]);' in page_html
 subprocess.run(["node",str(site.parent/"tools"/"test_resume_problem_case.cjs")],check=True,cwd=site.parent)
 

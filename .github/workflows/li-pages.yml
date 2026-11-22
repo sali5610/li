@@ -10,6 +10,7 @@ on:
       - 'site/**'
       - 'content/editorial/l2-spell-guides.v1.json'
       - 'design-system/**'
+      - 'design-assets/brand/li-seal.svg'
       - 'tools/**'
       - 'db/migrations/**'
       - '.github/workflows/li-pages.yml'

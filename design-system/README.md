@@ -2,6 +2,30 @@
 
 > **SINGLE START HERE · Mandatory entrypoint for every li. UI/UX task.** This page is the one canonical **navigation and governance entrypoint** for the Design Library. Detailed rules remain in dedicated source-of-truth files linked below; do not maintain conflicting copies. Repository AI agents are instructed by [AGENTS.md](../AGENTS.md) to open this page before designing, reviewing, modifying or QA-testing any UI.
 
+## 30-second component finder — use BEFORE screen changes
+
+```bash
+node tools/find_design_component.mjs "filter"
+node tools/find_design_component.mjs "nút lưu"
+node tools/find_design_component.mjs "loading"
+```
+
+This searches **public React exports** from [`react/index.ts`](react/index.ts), including legacy-family wildcard exports. It returns candidate names and **their source owners**, not evidence of approval or live app adoption. If the tool is unavailable, inspect `react/index.ts` and `components.md` directly. Follow up by reading the actual exported component, the relevant variant and the current app consumer. On a missing match, look for the existing legacy pattern before inventing a new component.
+
+| What the task sounds like | Look here first |
+| --- | --- |
+| Filter / dropdown / tag / chip | `FilterGroup`, `FilterChip`, `ActionMenu` — `react/Molecules.tsx`, `react/Components.tsx` |
+| Save / investigate / action button / icon | `Button`, `IconButton`, `ActionGroup`, `SaveStatus` |
+| Card / numbered row / arched field or group portal | `Card`, `NumberedCard`, `CatalogFieldCard`, `PortalCategoryCard` |
+| Search / form / text field | `SearchField`, `Field` |
+| Menu / left sidebar / navigation / breadcrumbs | `AppNavigationControls`, `AppHeader`, `ActionMenu`, `Breadcrumb` |
+| Loading / error / success / Lão Lý state | `InlineFeedback`, `FeedbackScene`, shared [state art](../design-assets/lao-ly/README.md) |
+| Spacing / responsiveness / page layout | `Container`, `Stack`, `Grid`, `SafeArea` — `react/Layout.tsx`, semantic tokens |
+
+**Decision:** reuse an existing export → extend its owning component/variant → create a new component only after confirming no match. The Studio screenshot alone does **not** prove the app uses that export. Do not copy an illustration of a component into new JSX and call it reuse.
+
+**Every UI task must end with one short trace:** `DS: match + source + variant (or no match + reason) → actual consumer → verified interaction`. Keep QA scoped to the component and affected route. This is a behavior change in how AI agents work, not an additional release gate.
+
 ## Start here — mandatory UI/UX work protocol (UX-DS-23)
 
 **Before touching a screen, asset, copy, token, component, test or UI documentation:**

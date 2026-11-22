@@ -9,6 +9,7 @@ import {authClient,neonSessionPort} from './neon-client.js';
 import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING,IS_INTEGRATED_LI_APP} from './config.js';
 import {classifyOAuthReturn,type OAuthReturnCode} from './oauth-return.js';
 import {rememberOfflineInvite,recentOfflineOwner,forgetOfflineInvite} from './offline-local.js';
+import {deferAuthScreen} from './auth-display.js';
 import {RlsQaPanel} from './RlsQaPanel.js';
 import {SyncQaPanel} from './SyncQaPanel.js';
 import {AiOwnerControl} from './AiOwnerControl.js';
@@ -376,6 +377,11 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  const showApp=Boolean(IS_INTEGRATED_LI_APP&&accountId&&ownerReady&&
   ((access==='granted'&&!isOffline&&!isPending&&!error)||
    (access==='offline'&&localOffline)));
+ // A managed session or signed invite may be restoring after refresh/focus.
+ // The neutral boot cover stays visible; rendering Auth here causes a login flash.
+ // Real signed-out/denied/error states still render the actual sign-in gate.
+ const deferSignIn=deferAuthScreen(IS_INTEGRATED_LI_APP,isPending,localOffline,
+  accountId,access,ownerReady);
  const settingsControls=<section className="li-auth-settings" aria-label={locale==='vi'?'Tài khoản và đồng bộ':'Account and sync'}>
   <div className="li-auth-settings-identity">
    <Text role="support">{localOffline?
@@ -418,7 +424,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  </section>;
  return <>
   {showApp&&accountSettingsHost&&createPortal(settingsControls,accountSettingsHost)}
-  {!showApp&&<main className="auth-pilot">
+  {!showApp&&!deferSignIn&&<main className="auth-pilot">
   <header className="auth-header">
    <div><Text role="support" className="auth-tag">{stageLabel}</Text>
     <Heading level={1} role="headline" className="auth-title">{t.heading}</Heading></div>

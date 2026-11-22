@@ -9,7 +9,7 @@ import type {Edit,PrivateItem,ItemType} from './contract.js';
 import type {NeonUserApi} from './neon-api.js';
 import {
  createVault,unlockVault,recoverVault,changeVaultPassphrase,
- isVaultManifest,isSealedPayload,sealPrivatePayload,openPrivatePayload,
+ isVaultManifest,isSealedPayload,sealPrivatePayload,openPrivatePayload,canonical,
  VAULT_ITEM_ID
 } from './e2ee-vault.js';
 import type {Vault,VaultManifest} from './e2ee-vault.js';
@@ -60,7 +60,7 @@ export async function registerVault(api:CloudUserApi,manifest:VaultManifest):Pro
   throw error;
  }
  const readback=await readVaultManifest(api);
- if(!readback||JSON.stringify(readback)!==JSON.stringify(manifest))
+ if(!readback||canonical(readback)!==canonical(manifest))
   throw Error('E2EE_KEYBAG_READBACK_FAILED');
 }
 export {createVault,unlockVault,recoverVault,changeVaultPassphrase};
@@ -105,7 +105,7 @@ export async function migrateLegacyPayloads(api:CloudUserApi,vault:Vault,
   await api.write({...edit,payload:ciphertext});
   const confirmed=await api.one(row.item_type,row.item_id);
   if(!confirmed||confirmed.revision!==row.revision+1||
-      JSON.stringify(confirmed.payload)!==JSON.stringify(ciphertext))
+      canonical(confirmed.payload)!==canonical(ciphertext))
    throw Error('E2EE_MIGRATION_READBACK_FAILED');
   summary.encrypted++;onProgress?.({...summary});
  }

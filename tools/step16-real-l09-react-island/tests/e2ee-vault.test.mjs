@@ -219,3 +219,48 @@ test('migration detects a last-moment old client plaintext insertion and refuses
    {raw:'legacy client submitted plaintext during migration'});
  }finally{clearCurrentVault();}
 });
+
+
+test('Neon JSONB reorders nested keybag and ciphertext objects without breaking signed readback',async()=>{
+ // Actual Postgres JSONB returns schema/recovery/accountId/passphrase and
+ // nonce/schema/ciphertext in a different field order from the JavaScript write.
+ // The test adapter reproduces that API behavior at every read/write.
+ function reorder(value){
+  if(Array.isArray(value))return value.map(reorder);
+  if(value&&typeof value==='object')
+   return Object.fromEntries(Object.entries(value)
+    .sort(([a],[b])=>a.localeCompare(b))
+    .map(([k,v])=>[k,reorder(v)]));
+  return value;
+ }
+ const base=fakeRemote(user,[makeRow('note','library',note)]);
+ const jsonbRemote={
+  accountId:user,
+  async one(type,id){
+   const row=await base.one(type,id);
+   return row?{...row,payload:reorder(row.payload)}:null;
+  },
+  async all(){return (await base.all()).map(row=>({...row,payload:reorder(row.payload)}));},
+  async write(edit){
+   const row=await base.write({...edit,payload:reorder(edit.payload)});
+   return {...row,payload:reorder(row.payload)};
+  }
+ };
+ const created=await createVault(user,password);
+ try{
+  await registerVault(jsonbRemote,created.manifest);
+  const readback=await readVaultManifest(jsonbRemote);
+  assert.deepEqual(readback,reorder(created.manifest));
+  assert.notEqual(JSON.stringify(readback),JSON.stringify(created.manifest),
+   'this would falsely fail with positional JSON.stringify equality');
+  setCurrentVault(user,created.vault);
+  const summary=await migrateLegacyPayloads(jsonbRemote,created.vault);
+  assert.equal(summary.encrypted,1);
+  finishVaultMigration(user,created.vault);
+  const secure=new SealedNeonUserApi(jsonbRemote,created.vault);
+  assert.deepEqual((await secure.one('note','library')).payload,note);
+  assert.equal(base.rows.get('note:library').payload.schema,'li.e2ee.payload.v1');
+  const envelope=base.rows.get('note:library').payload;
+  assert.deepEqual(Object.keys(envelope),['ciphertext','nonce','schema']);
+ }finally{clearCurrentVault();}
+});

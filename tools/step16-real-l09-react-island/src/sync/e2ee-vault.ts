@@ -166,7 +166,8 @@ export async function changeVaultPassphrase(vault:Vault,manifest:VaultManifest,n
   salt:base64(salt),rounds:PBKDF2_ROUNDS,wrap:await wrap(vault.master,key,vault.accountId)
  }};
 }
-function canonical(value:unknown):string{
+/** Canonical JSONB-style equality for security-sensitive Neon round-trips. */
+export function canonical(value:unknown):string{
  if(value===null||typeof value!=='object')return JSON.stringify(value);
  if(Array.isArray(value))return '['+value.map(canonical).join(',')+']';
  const obj=value as Record<string,unknown>;

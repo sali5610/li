@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {checkInviteAccess,safeInviteErrorCode,sessionJwtCandidate,safeJwtFetchError} from '../.sync-test/invite-access.js';
+import {checkInviteAccess,fetchSignedNeonJwt,safeInviteErrorCode,sessionJwtCandidate,safeJwtFetchError} from '../.sync-test/invite-access.js';
 
 const endpoint='https://example.apirest.neon.tech/li/rest/v1';
 const tokenFor=sub=>['e30',Buffer.from(JSON.stringify({
@@ -93,16 +93,50 @@ test('failed invite RPC always keeps access closed, while safe diagnosis classif
  assert.equal(code,'INV-RPC-403');
 });
 
-test('regression: signed JWT uses managed first-party JWT plugin, never an opaque session token',()=>{
- const source=readFileSync(new URL('../src/auth/neon-client.ts',import.meta.url),'utf8');
- assert.match(source,/createInternalNeonAuth\(/);
- assert.match(source,/export const authClient=neonAuth\.adapter/);
- assert.match(source,/authClient\.token\(\)/);
- assert.match(source,/sessionJwtCandidate\(response\.data\?\.token\)/);
- assert.match(source,/if\(response\.error\)throw safeJwtFetchError\(response\.error\)/);
- assert.doesNotMatch(source,/neonAuth\.getJWTToken\(\)/);
- assert.doesNotMatch(source,/session\.data\?\.session\?\.token/);
- assert.doesNotMatch(source,/localStorage|sessionStorage|indexedDB/);
+test('regression: bypass Neon SDK 0.7.0-beta /token => getSession cache misclassification',()=>{
+ const client=readFileSync(new URL('../src/auth/neon-client.ts',import.meta.url),'utf8');
+ assert.match(client,/fetchSignedNeonJwt\(AUTH_API_URL\)/);
+ assert.doesNotMatch(client,/authClient\.token\(\)|neonAuth\.getJWTToken\(\)/);
+ assert.doesNotMatch(client,/localStorage|sessionStorage|indexedDB/);
+});
+
+test('signed JWT fetch uses official first-party endpoint and cookies, not SDK cache',async()=>{
+ let calls=0;
+ const jwt=tokenFor('invited-user');
+ const result=await fetchSignedNeonJwt('https://li5610.pages.dev/api/auth',async(url,init)=>{
+  calls++;
+  assert.equal(url,'https://li5610.pages.dev/api/auth/token');
+  assert.equal(init.method,'GET');
+  assert.equal(init.credentials,'include');
+  assert.equal(init.cache,'no-store');
+  assert.equal(init.redirect,'error');
+  assert.equal(init.headers.Accept,'application/json');
+  return ok({token:jwt});
+ });
+ assert.equal(result,jwt);
+ assert.equal(calls,1);
+});
+
+test('cached session object or opaque session token never grants invited access',async()=>{
+ for(const data of [{session:{token:'opaque-session'},user:{id:'invited-user'}},{token:'opaque-session'},{}]){
+  const candidate=await fetchSignedNeonJwt('https://li5610.pages.dev/api/auth',async()=>ok(data));
+  assert.equal(candidate,null);
+ }
+});
+
+test('JWT endpoint failures stay fail-closed, expose only safe codes',async()=>{
+ await assert.rejects(
+  fetchSignedNeonJwt('https://li5610.pages.dev/api/auth',async()=>ok({message:'sensitive'},401)),
+  err=>safeInviteErrorCode(err)==='INV-JWT-401'
+ );
+ await assert.rejects(
+  fetchSignedNeonJwt('https://li5610.pages.dev/api/auth',async()=>{throw TypeError('sensitive cookie');}),
+  err=>safeInviteErrorCode(err)==='INV-JWT-FETCH'
+ );
+ await assert.rejects(
+  fetchSignedNeonJwt('https://li5610.pages.dev/api/auth',async()=>new Response('unparseable')),
+  /NEON_AUTH_JWT_INVALID_RESPONSE/
+ );
 });
 
 test('safe JWT error captures only allowlisted HTTP status with no untrusted details',()=>{

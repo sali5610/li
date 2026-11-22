@@ -48,6 +48,34 @@ jobs:
           npm run check --prefix candidate/tools/push-worker
           (cd candidate/tools/push-worker && ./node_modules/.bin/wrangler deploy --dry-run --outdir /tmp/li-reminder-worker)
           LI_QA_WORKER_BUNDLE=/tmp/li-reminder-worker/index.js node candidate/tools/push-worker/scripts/qa-bundle-workerd.mjs
+      - name: Compile actual live-derived Pages Auth-only PWA (no deployment)
+        env:
+          VITE_LI_PUSH_WORKER_URL: https://li-push-staging.dungho-product.workers.dev
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund --prefix candidate/design-system/react
+          npm install --no-audit --no-fund --prefix candidate/tools/step16-real-l09-react-island
+          (
+            cd candidate/tools/step16-real-l09-react-island
+            npm run extract
+            node --test tests/in-app-reminder.test.mjs
+            npm run test:sync
+            npm run test:auth-pwa
+            npx tsc --noEmit
+            npm run build:worker:auth-only
+            VITE_LI_AUTH_TARGET=cloudflare-first-party npx vite build --config vite.cloudflare-app.config.mjs
+          )
+          (
+            cd candidate
+            node tools/prepare_cloudflare_ai_candidate.mjs --build-auth-only
+            npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-auth-only-config.cjs
+            test -s dist-cloudflare-auth-candidate/_worker.js
+            test -s dist-cloudflare-auth-candidate/assets/li-first-party-app.js
+            test -s dist-cloudflare-auth-candidate/sw.js
+            grep -Fq 'li-push-handler.js' dist-cloudflare-auth-candidate/sw.js
+            ! grep -Fq 'neon.tech' dist-cloudflare-auth-candidate/sw.js
+            git diff --exit-code -- site
+          )
       - name: No Cloudflare writes
         run: echo 'SOURCE_QA_ONLY -- NO DEPLOY.'
 

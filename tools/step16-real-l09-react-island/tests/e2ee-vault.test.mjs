@@ -229,7 +229,7 @@ test('Neon JSONB reorders nested keybag and ciphertext objects without breaking 
   if(Array.isArray(value))return value.map(reorder);
   if(value&&typeof value==='object')
    return Object.fromEntries(Object.entries(value)
-    .sort(([a],[b])=>a.localeCompare(b)).reverse()
+    .sort(([a],[b])=>a.localeCompare(b))
     .map(([k,v])=>[k,reorder(v)]));
   return value;
  }
@@ -261,6 +261,6 @@ test('Neon JSONB reorders nested keybag and ciphertext objects without breaking 
   assert.deepEqual((await secure.one('note','library')).payload,note);
   assert.equal(base.rows.get('note:library').payload.schema,'li.e2ee.payload.v1');
   const envelope=base.rows.get('note:library').payload;
-  assert.deepEqual(Object.keys(envelope),['schema','nonce','ciphertext'].sort().reverse());
+  assert.deepEqual(Object.keys(envelope),['ciphertext','nonce','schema']);
  }finally{clearCurrentVault();}
 });

@@ -1,0 +1,27 @@
+name: li. Web Push real client/Worker contract (SYNTHETIC ONLY)
+on:
+  push:
+    branches: [qa/push-registration-contract-20261122]
+permissions:
+  contents: read
+jobs:
+  contract:
+    if: github.repository == 'sali5610/li'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install exact pinned Worker + frontend TS dependencies
+        run: |
+          npm install --no-audit --no-fund --prefix tools/push-worker
+          npm install --no-audit --no-fund --prefix tools/step16-real-l09-react-island
+      - name: Test actual client serialization, Worker authorize path, D1 mock
+        run: |
+          node --test tools/step16-real-l09-react-island/tests/push-registration-contract-qa.test.mjs
+      - name: Confirm isolation from real systems
+        run: echo "Local synthetic owner/JWT, Apple subscription, Neon RPC and in-memory D1. No Cloudflare deployment or user data."

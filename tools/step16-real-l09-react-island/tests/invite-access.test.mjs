@@ -93,13 +93,16 @@ test('failed invite RPC always keeps access closed, while safe diagnosis classif
  assert.equal(code,'INV-RPC-403');
 });
 
-test('regression: signed JWT uses SDK-managed session helper, not ad hoc /token',()=>{
+test('regression: signed JWT uses managed first-party JWT plugin, never an opaque session token',()=>{
  const source=readFileSync(new URL('../src/auth/neon-client.ts',import.meta.url),'utf8');
  assert.match(source,/createInternalNeonAuth\(/);
- assert.match(source,/neonAuth\.getJWTToken\(\)/);
  assert.match(source,/export const authClient=neonAuth\.adapter/);
- assert.doesNotMatch(source,/authClient\.token\(\)/);
- assert.match(source,/sessionJwtCandidate\(jwt\)/);
+ assert.match(source,/authClient\.token\(\)/);
+ assert.match(source,/sessionJwtCandidate\(response\.data\?\.token\)/);
+ assert.match(source,/if\(response\.error\)throw safeJwtFetchError\(response\.error\)/);
+ assert.doesNotMatch(source,/neonAuth\.getJWTToken\(\)/);
+ assert.doesNotMatch(source,/session\.data\?\.session\?\.token/);
+ assert.doesNotMatch(source,/localStorage|sessionStorage|indexedDB/);
 });
 
 test('safe JWT error captures only allowlisted HTTP status with no untrusted details',()=>{

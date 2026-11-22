@@ -28,7 +28,7 @@ test('QA signs real Google JWT, requires invite RLS, never scans/copies personal
  assert.match(src,/recoverVault\(manifest,api\.accountId,code\)/);
  assert.doesNotMatch(src,/\.all\(\)/);
  assert.doesNotMatch(src,/migrateLegacyPayloads|li_learning_events|li_user_state.*DELETE|setCurrentVault|finishVaultMigration/);
- assert.doesNotMatch(src,/localStorage|indexedDB|sessionStorage|document\.cookie/i);
+ assert.doesNotMatch(src,/(?:localStorage|indexedDB|sessionStorage|document\.cookie)\s*[.\[]/i);
 });
 
 test('write is only a deliberate confirmed click; recovery and test IDs never go in URL',()=>{

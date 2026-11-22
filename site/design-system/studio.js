@@ -111,7 +111,9 @@ if(query.has('embed')){
   menuToggle.setAttribute('aria-expanded','true');
   menuToggle.setAttribute('aria-label','Đóng menu Design System');
   syncSidebarAccessibility();
-  search.focus();
+  // Focus a non-text control: auto-focusing Search summons the iOS keyboard,
+  // changes the visual viewport, and can displace the phone specimen below.
+  menuClose.focus({preventScroll:true});
  }
  function closeMenu(restoreFocus=true){
   const wasOpen=document.body.classList.contains('studio-menu-open');
@@ -119,20 +121,29 @@ if(query.has('embed')){
   menuOverlay.hidden=true;
   menuToggle.setAttribute('aria-expanded','false');
   menuToggle.setAttribute('aria-label','Mở menu Design System');
-  if(wasOpen&&restoreFocus)menuToggle.focus();
+  if(wasOpen&&restoreFocus)menuToggle.focus({preventScroll:true});
   syncSidebarAccessibility();
  }
  function navigate(id){
   const next=byId(id);
   const wasOpen=document.body.classList.contains('studio-menu-open');
+  // Dismiss any text keyboard before unmounting the selected sidebar item.
+  // iOS Safari otherwise keeps its keyboard-sized visual viewport during
+  // iframe measurement and may scroll the screen when focus moves.
+  if(wasOpen&&document.activeElement instanceof HTMLElement)document.activeElement.blur();
   closeMenu(false);
   if(next.id!==active.id){
    const url=new URL(location.href);url.hash=next.id;
    history.pushState(null,'',url.pathname+url.search+url.hash);
   }
   select(next);
-  window.scrollTo(0,0);
-  if(wasOpen)$('#studio-work').focus();
+  if(wasOpen)$('#studio-work').focus({preventScroll:true});
+  window.scrollTo({top:0,left:0,behavior:'instant'});
+  // Re-measure after the drawer/backdrop and keyboard layout have settled.
+  requestAnimationFrame(()=>{
+   layoutFrame();
+   requestAnimationFrame(layoutFrame);
+  });
  }
  menuToggle.addEventListener('click',()=>document.body.classList.contains('studio-menu-open')?closeMenu():openMenu());
  menuClose.addEventListener('click',()=>closeMenu());
@@ -214,6 +225,9 @@ if(query.has('embed')){
  const frameStage=$('#studio-frame-stage'),frameScroll=$('.studio-frame-scroll');
  let frameStageObserver;
  function layoutFrame(){
+  // A hidden preview has zero width while Overview is active. Never write
+  // a 1px stage from that measurement; wait until the story becomes visible.
+  if(!frameScroll.getClientRects().length||!frameScroll.clientWidth)return;
   const computed=getComputedStyle(frameScroll);
   const available=Math.max(1,frameScroll.clientWidth-
    parseFloat(computed.paddingLeft||0)-parseFloat(computed.paddingRight||0));
@@ -226,6 +240,9 @@ if(query.has('embed')){
   frame.style.transform=scale<1?'scale('+scale+')':'none';
   frameStage.style.width=Math.round(deviceWidth*scale)+'px';
   frameStage.style.height=Math.ceil(deviceHeight*scale)+'px';
+  // A previous component (or rotated viewport) must never leave the stage
+  // horizontally panned when the next sidebar item opens.
+  if(frameScroll.scrollLeft)frameScroll.scrollLeft=0;
   $('#studio-frame-label').textContent=width.value==='auto'?'FLUID · AUTO HEIGHT':
    (deviceWidth+' × '+(configuredHeight||'AUTO')+' CSS PX'+(scale<1?' · FIT '+Math.round(scale*100)+'%':''));
  }

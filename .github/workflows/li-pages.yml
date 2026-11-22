@@ -415,6 +415,9 @@ jobs:
           test -s site/design-system/index.html
           cp site/assets/design-tokens.css site/design-system/assets/
           cp site/assets/li-layout.css site/design-system/assets/
+          cp site/assets/li-seal.svg site/assets/li-seal-home.svg site/design-system/assets/
+          test -s site/design-system/assets/li-seal.svg
+          test -s site/design-system/assets/li-seal-home.svg
           test -s site/component-library-review.html
           test -s site/component-library-archive.html
           python3 - <<'PY'
@@ -495,6 +498,8 @@ jobs:
           app_url="https://sali5610.github.io/li/?li_build=${rev}"
           js_url="https://sali5610.github.io/li/assets/staging-auth-gate.js?li_build=${rev}"
           css_url="https://sali5610.github.io/li/assets/li-react-learning-${rev}.css"
+          studio_dark_seal="https://sali5610.github.io/li/design-system/assets/li-seal.svg?source=${GITHUB_SHA}"
+          studio_light_seal="https://sali5610.github.io/li/design-system/assets/li-seal-home.svg?source=${GITHUB_SHA}"
           for attempt in $(seq 1 15); do
             payload="$(curl -fsSL --max-time 10 -H 'Cache-Control: no-cache' "$url" || true)"
             lab="$(curl -fsSL --max-time 10 -H 'Cache-Control: no-cache' "$lab_url" || true)"
@@ -502,6 +507,8 @@ jobs:
             app="$(curl -fsSL --max-time 10 -H 'Cache-Control: no-cache' "$app_url" || true)"
             js_status="$(curl -sSL -o /dev/null --max-time 10 -w '%{http_code}' "$js_url" || true)"
             css_status="$(curl -sSL -o /dev/null --max-time 10 -w '%{http_code}' "$css_url" || true)"
+            studio_dark_status="$(curl -sSL -o /dev/null --max-time 10 -w '%{http_code}' "$studio_dark_seal" || true)"
+            studio_light_status="$(curl -sSL -o /dev/null --max-time 10 -w '%{http_code}' "$studio_light_seal" || true)"
             if [[ "$payload" == *"\"sha\":\"${GITHUB_SHA}\""* &&
                   "$lab" == *"react-ui-lab.js?li_build=${rev}"* &&
                   "$lab" == *"react-ui-lab.css?li_build=${rev}"* &&
@@ -509,6 +516,9 @@ jobs:
                   "$studio" == *"studio.css?li_build=${rev}"* &&
                   "$studio" == *"id=\"studio-menu-toggle\""* &&
                   "$studio" == *"id=\"studio-frame-stage\""* &&
+                  "$studio" == *"src=\"./assets/li-seal.svg\""* &&
+                  "$studio" == *"src=\"./assets/li-seal-home.svg\""* &&
+                  "$studio_dark_status" == "200" && "$studio_light_status" == "200" &&
                   "$app" == *"name=\"li-staging-build\" content=\"${GITHUB_SHA}\""* &&
                   "$app" == *"pwa-register.js?li_build=${rev}"* &&
                   "$app" == *"staging-auth-gate.js?li_build=${rev}"* &&

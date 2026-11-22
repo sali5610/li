@@ -5,6 +5,7 @@ import {Button} from './Components';
 import {Heading,Text,Badge} from './Atoms';
 import {LiIcon} from './LucideIcons';
 import {HomeLayout} from './HomeLayoutVariants';
+import {ScrapebookSheet} from './ScrapebookSheet';
 import {AppPageLayout,appLabFlows,appLabPages} from './AppFlowLayouts';
 import type {AppLabFlowId,PageId,PageVariant} from './AppFlowLayouts';
 import type {HomeLayoutVariant} from './HomeLayoutVariants';
@@ -24,22 +25,24 @@ import './bookworm-theme.css';
 import './bookworm-open-space.css';
 import './notebook-open-space.css';
 import './vintage-pop-open-space.css';
+import './scrapebook-theme.css';
 
-type LayoutKey='notebook'|'vintagePop'|'bookworm';
+type LayoutKey='notebook'|'vintagePop'|'scrapebook'|'bookworm';
 type ViewMode='focus'|'gallery';
 type Viewport='fluid'|'390'|'820'|'1440';
 const layoutChoices:readonly {id:LayoutKey;label:string}[]=[
  {id:'notebook',label:'Notebook · Handwritten'},
  {id:'vintagePop',label:'Vintage Pop · Stamp'},
+ {id:'scrapebook',label:'Scrapebook · Vintage Collage'},
  {id:'bookworm',label:'Bookworm · Vintage Minimal'}
 ];
 const homeVariant:Record<LayoutKey,HomeLayoutVariant>={
  notebook:'notebook',
- vintagePop:'vintagePop',bookworm:'bookworm'
+ vintagePop:'vintagePop',scrapebook:'vintagePop',bookworm:'bookworm'
 };
 const pageVariant:Record<LayoutKey,PageVariant>={
  notebook:'notebook',
- vintagePop:'vintagePop',bookworm:'bookworm'
+ vintagePop:'vintagePop',scrapebook:'vintagePop',bookworm:'bookworm'
 };
 const questions=[
  {questionVi:'90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?',
@@ -160,22 +163,28 @@ function Lab(){
   const item=allPages.find(item=>item.id===id)!;
   return locale==='vi'?item.vi:item.en;
  };
- const animateVariant=(style:LayoutKey)=>(style==='vintagePop'||style==='notebook'||style==='bookworm')&&!reduceMotion;
+ const animateVariant=(style:LayoutKey)=>(style==='vintagePop'||style==='notebook'||style==='bookworm'||style==='scrapebook')&&!reduceMotion;
  const preview=(target:PageId,style:LayoutKey,mini=false,slot='main')=><motion.section
   key={target+'-'+style+'-'+slot} className="li-ui-lab-preview"
   initial={animateVariant(style)?style==='bookworm'
    ?{opacity:0,x:mini?14:35,rotateY:mini?0:-3}
+   :style==='scrapebook'?{opacity:0,y:mini?14:27,rotate:mini?-.4:-1.4,scale:mini?.996:.985}
    :{opacity:0,y:mini?16:26,scale:mini?.993:.982}:false}
-  animate={mini&&animateVariant(style)?undefined:{opacity:1,y:0,x:0,scale:1,rotateY:0}}
+  animate={mini&&animateVariant(style)?undefined:{opacity:1,y:0,x:0,scale:1,rotateY:0,rotate:0}}
   whileInView={mini&&animateVariant(style)?{opacity:1,y:0,x:0,scale:1,rotateY:0}:undefined}
   viewport={{once:true,amount:.06}}
   exit={animateVariant(style)?style==='bookworm'
     ?{opacity:0,x:-25,rotateY:2}
+    :style==='scrapebook'?{opacity:0,y:-14,rotate:.65,scale:.992}
     :{opacity:0,y:-12,scale:.992}:undefined}
-  transition={{duration:animateVariant(style)?style==='bookworm'?.42:mini?.38:.42:0,
-   delay:mini&&animateVariant(style)?Math.min(activeFlow.steps.indexOf(target),5)*.045:0,
-   ease:[.22,1,.36,1]}}
-  data-visual-theme={style==='vintagePop'?'vintage-pop':style==='bookworm'?'bookworm':undefined}
+  transition={style==='scrapebook'&&!reduceMotion?
+   {type:'spring',stiffness:230,damping:25,
+    delay:mini?Math.max(0,Math.min(activeFlow.steps.indexOf(target),5))*.04:0}:
+   {duration:animateVariant(style)?style==='bookworm'?.42:mini?.38:.42:0,
+    delay:mini&&animateVariant(style)?Math.max(0,Math.min(activeFlow.steps.indexOf(target),5))*.045:0,
+    ease:[.22,1,.36,1]}}
+  data-visual-theme={style==='vintagePop'||style==='scrapebook'?'vintage-pop':style==='bookworm'?'bookworm':undefined}
+  data-scrapebook={style==='scrapebook'?'true':undefined}
   data-mini={mini?'true':'false'}
   data-open-space={style==='bookworm'&&!mini&&!compare&&viewport==='fluid'?'true':'false'}
   data-notebook-bleed={style==='notebook'&&!mini&&!compare&&viewport==='fluid'?'true':'false'}
@@ -183,14 +192,16 @@ function Lab(){
   aria-label={label(target)+' / '+style}>
   <header className="li-ui-lab-preview-label">
    <span>{label(target)}</span><span>{layoutChoices.find(item=>item.id===style)?.label}</span>
-   {stageFullscreen&&!mini&&(style==='bookworm'||style==='notebook'||style==='vintagePop')&&<Button variant="ghost" onClick={toggleStageFullscreen}>
+   {stageFullscreen&&!mini&&(style==='bookworm'||style==='notebook'||style==='vintagePop'||style==='scrapebook')&&<Button variant="ghost" onClick={toggleStageFullscreen}>
     {t('Thoát toàn màn hình','Exit fullscreen')} <LiIcon name="arrow-left" size={15}/>
    </Button>}
    {mini?<Button variant="ghost" onClick={()=>{choose(target);setMode('focus');}}> 
     {t('Phóng to','Open')} <LiIcon name="arrow-right" size={15}/></Button>:null}
   </header>
   <div className="li-ui-lab-viewport" data-viewport={viewport}>
-   {renderPage(target,style)}
+   {style==='scrapebook'?<ScrapebookSheet key={target} locale={locale} mini={mini}>
+    {renderPage(target,style)}
+   </ScrapebookSheet>:renderPage(target,style)}
   </div>
  </motion.section>;
  return <main className="li-ui-lab" lang={locale} data-li-react-ui-lab="mounted"
@@ -263,7 +274,7 @@ function Lab(){
        <option value="1440">Desktop · 1440</option>
       </select>
      </div>
-     {(layout==='bookworm'||layout==='notebook'||layout==='vintagePop')&&mode==='focus'&&!compare&&
+     {(layout==='bookworm'||layout==='notebook'||layout==='vintagePop'||layout==='scrapebook')&&mode==='focus'&&!compare&&
       <Button variant="secondary" onClick={toggleStageFullscreen}>
        <LiIcon name="book-open" size={17}/>
        {stageFullscreen?t('Thu nhỏ','Leave fullscreen'):t('Toàn màn hình','Fullscreen')}

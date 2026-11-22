@@ -48,12 +48,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: 67e9434d0b6d68b70de5a6884699e7f8c98a3d57
+          ref: f576ff10f884dc5d4388b27dc1ab6d420cff3bb7
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "67e9434d0b6d68b70de5a6884699e7f8c98a3d57"
+          test "$(git rev-parse HEAD)" = "f576ff10f884dc5d4388b27dc1ab6d420cff3bb7"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -116,7 +116,7 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.auth_only_mode && '67e9434d0b6d68b70de5a6884699e7f8c98a3d57' || (inputs.ai_mode && 'ea25f7a90b706812e211d3c5fc275e876bbd3f8d' || github.sha) }}
+          ref: ${{ inputs.auth_only_mode && 'f576ff10f884dc5d4388b27dc1ab6d420cff3bb7' || (inputs.ai_mode && 'ea25f7a90b706812e211d3c5fc275e876bbd3f8d' || github.sha) }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
@@ -124,7 +124,7 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
-            expected='67e9434d0b6d68b70de5a6884699e7f8c98a3d57'
+            expected='f576ff10f884dc5d4388b27dc1ab6d420cff3bb7'
             echo 'Auth-only app: reviewed one-minute Worker cron + first-grant fix + Reminder #592; isolated from staging E2EE and Neon migrations.'
           else
             expected='ea25f7a90b706812e211d3c5fc275e876bbd3f8d'

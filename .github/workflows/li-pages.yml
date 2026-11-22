@@ -434,6 +434,20 @@ jobs:
               html=html.replace(old,f'{attr}="./{asset}?li_build={rev}"')
           lab.write_text(html,encoding='utf-8')
           print(f'PASS UI Lab bundle cache bust for {rev}')
+          # Design System is a separate multipage route, but Safari may cache
+          # its static studio.js/studio.css even after HTML has changed.
+          import re
+          studio=Path('site/design-system/index.html')
+          studio_html=studio.read_text(encoding='utf-8')
+          for filename,attr in (('studio.js','src'),('studio.css','href')):
+              pattern=rf'{attr}="\./{re.escape(filename)}(?:\?[^" ]*)?"'
+              replacement=f'{attr}="./{filename}?li_build={rev}"'
+              studio_html,count=re.subn(pattern,replacement,studio_html)
+              assert count==1, f'Missing Design System bundle reference: {filename}'
+          assert 'id="studio-menu-toggle"' in studio_html, 'Design System mobile sidebar missing'
+          assert 'id="studio-frame-stage"' in studio_html, 'iPhone preview frame missing'
+          studio.write_text(studio_html,encoding='utf-8')
+          print(f'PASS Design System bundle cache bust for {rev}')
           PY
           grep -Fq 'design-system/' site/component-library-review.html
           grep -Fq 'data-width="1408" data-height="832"' site/design-system/index.html
@@ -476,6 +490,7 @@ jobs:
           set -euo pipefail
           url="https://sali5610.github.io/li/build-info.json?source=${GITHUB_SHA}"
           lab_url="https://sali5610.github.io/li/design-system/ui-lab.html?source=${GITHUB_SHA}"
+          studio_url="https://sali5610.github.io/li/design-system/?source=${GITHUB_SHA}"
           rev="${GITHUB_SHA:0:12}"
           app_url="https://sali5610.github.io/li/?li_build=${rev}"
           js_url="https://sali5610.github.io/li/assets/staging-auth-gate.js?li_build=${rev}"
@@ -483,12 +498,17 @@ jobs:
           for attempt in $(seq 1 15); do
             payload="$(curl -fsSL --max-time 10 -H 'Cache-Control: no-cache' "$url" || true)"
             lab="$(curl -fsSL --max-time 10 -H 'Cache-Control: no-cache' "$lab_url" || true)"
+            studio="$(curl -fsSL --max-time 10 -H 'Cache-Control: no-cache' "$studio_url" || true)"
             app="$(curl -fsSL --max-time 10 -H 'Cache-Control: no-cache' "$app_url" || true)"
             js_status="$(curl -sSL -o /dev/null --max-time 10 -w '%{http_code}' "$js_url" || true)"
             css_status="$(curl -sSL -o /dev/null --max-time 10 -w '%{http_code}' "$css_url" || true)"
             if [[ "$payload" == *"\"sha\":\"${GITHUB_SHA}\""* &&
                   "$lab" == *"react-ui-lab.js?li_build=${rev}"* &&
                   "$lab" == *"react-ui-lab.css?li_build=${rev}"* &&
+                  "$studio" == *"studio.js?li_build=${rev}"* &&
+                  "$studio" == *"studio.css?li_build=${rev}"* &&
+                  "$studio" == *"id=\"studio-menu-toggle\""* &&
+                  "$studio" == *"id=\"studio-frame-stage\""* &&
                   "$app" == *"name=\"li-staging-build\" content=\"${GITHUB_SHA}\""* &&
                   "$app" == *"pwa-register.js?li_build=${rev}"* &&
                   "$app" == *"staging-auth-gate.js?li_build=${rev}"* &&
@@ -496,6 +516,7 @@ jobs:
                   "$js_status" == "200" && "$css_status" == "200" ]]; then
               echo "LIVE_SHA_PASS ${GITHUB_SHA} — $url"
               echo "LIVE_UI_LAB_REV_PASS ${rev} — $lab_url"
+              echo "LIVE_DESIGN_SYSTEM_REV_PASS ${rev} — $studio_url"
               echo "LIVE_APP_REV_PASS ${rev} — HTML + React JS/CSS + updater"
               exit 0
             fi

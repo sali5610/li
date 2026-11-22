@@ -43,11 +43,12 @@ test('Safari can receive PWA lesson even when an unrelated preference is conflic
 
 test('React learner sync hydrates safe rows even if another item reports conflict',()=>{
  const source=readFileSync(new URL('../src/auth/learner-sync.ts',import.meta.url),'utf8');
- const mark="if(result.mode==='conflict')report('conflict');";
+ const mark="if(result.mode==='conflict'){";
  const index=source.indexOf(mark);
  const hydrate=source.indexOf('const changed=await hydrate(uid,snapshots',index);
  assert.ok(index>0&&hydrate>index,'conflict must not return before safe-row hydration');
- assert.doesNotMatch(source.slice(index,hydrate),/if\(result\.mode==='conflict'\)\s*\{?[^\n]*return/);
+ assert.doesNotMatch(source.slice(index,hydrate),/\breturn\s*;/);
+ assert.match(source.slice(index,hydrate),/reconcileAdditivePersonalConflicts\(uid,api,observed\)/);
  assert.match(source,/if\(await store\.outbox\.get\(key\)\)continue; \/\/ queued edits and conflicts win locally/);
  assert.match(source,/if\(!disposed&&changed\)window\.dispatchEvent\(new CustomEvent\('li:lesson-sync-applied'/);
 });

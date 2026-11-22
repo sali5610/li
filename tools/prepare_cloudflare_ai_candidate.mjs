@@ -10,8 +10,8 @@ import {fileURLToPath} from 'node:url';
 
 const repo=resolve(fileURLToPath(new URL('..',import.meta.url)));
 const src=join(repo,'site');
-// Keep the original AI candidate intact. The new Auth-only mode contains
-// the SAME React app, but no model endpoint, D1 or AI Worker bundle.
+// Both first-party candidates share the same PWA and React shell. Auth-only
+// intentionally excludes the AI endpoint and AI binding; AI adds them.
 const authOnly=process.argv.length===3&&process.argv[2]==='--build-auth-only';
 if(process.argv.length!==3||(!authOnly&&process.argv[2]!=='--build'))
  throw Error('Use --build (AI) or --build-auth-only (first-party Auth only)');
@@ -43,8 +43,8 @@ if(!origin.includes('id="page-settings"')||
  !origin.includes('lesson-l09-hifi-markup.js'))
  throw Error('APP_SHELL_PARITY_MISSING');
 let html=replaceOnce(origin,'<script src="./assets/lesson-l09-hifi.js"></script>','');
-if(authOnly){
- // Match the already-shipped invited React staging assembler. These legacy
+{
+ // Both Cloudflare modes use the invited React shell. These legacy
  // UI scripts are not data ports and must not run beside the React screens.
  // Keep the essential lesson/library data owners and standalone site untouched.
  for(const src of [
@@ -108,8 +108,9 @@ await copyFile(join(repo,'tools/step16-real-l09-react-island/src/auth/staging-ga
  join(assets,'staging-gate.css'));
 await copyFile(worker,join(output,'_worker.js'));
 await writeFile(join(output,'index.html'),html);
-if(authOnly){
+{
  // iOS Add to Home Screen must open Cloudflare /, never GitHub Pages /li/.
+ // Apply identically in AI and Auth-only modes to avoid PWA regression.
  // Do not change the existing published staging manifest or SW registration.
  const manifestPath=join(output,'manifest.webmanifest');
  const manifest=JSON.parse(await readFile(manifestPath,'utf8'));

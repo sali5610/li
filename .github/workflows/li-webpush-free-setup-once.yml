@@ -5,6 +5,7 @@ on:
       - infra/li-webpush-setup-approved-20261122
     paths:
       - '.github/workflows/li-webpush-free-setup-once.yml'
+      - 'tools/push-worker/scripts/free_setup_preflight.py'
 permissions:
   contents: read
 concurrency:

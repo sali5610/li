@@ -1,0 +1,33 @@
+name: li. Push full bundled workerd + isolated D1 + live Neon negative QA (NO DEPLOY)
+on:
+  push:
+    branches:
+      - qa/push-bundle-workerd-neon-gate-20261123
+permissions:
+  contents: read
+jobs:
+  runtime:
+    if: github.repository == 'sali5610/li'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Worker runtime tools
+        run: npm install --no-audit --no-fund --prefix tools/push-worker
+      - name: Bundle actual candidate WITHOUT DEPLOY
+        run: |
+          set -euo pipefail
+          cd tools/push-worker
+          ./node_modules/.bin/wrangler deploy --dry-run --outdir /tmp/li-push-qa-bundle
+          test -s /tmp/li-push-qa-bundle/index.js
+      - name: Test actual workerd bundle with local D1 plus read-only live Neon invalid JWT
+        env:
+          LI_QA_WORKER_BUNDLE: /tmp/li-push-qa-bundle/index.js
+        run: node tools/push-worker/scripts/qa-bundle-workerd.mjs
+      - name: Explicit no production Cloudflare changes
+        run: echo "No deploy, D1 writes only to local emulator, fake JWT and fake Apple endpoint only."

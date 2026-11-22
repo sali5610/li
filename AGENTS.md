@@ -1,6 +1,16 @@
 # li. (理) — Product-first implementation agreement v3.0
 Effective: 2026-11-20. Human Product Owner decision. Supersedes the older exhaustive "mandatory every UI change" protocol for process and QA scope; security/privacy/content release safeguards remain required.
 
+## UI FIRST: Design System component lookup is a required pre-edit step (PO 2026-11-22)
+This applies to **EVERY** request to create, change, fix or review an app/UI component, including small spacing, buttons, cards, filters, navigation, loading/error and responsive fixes. A visual imitation or duplicated JSX is **not** reuse.
+
+1. **Before editing the screen**, search existing canonical components and variants: `node tools/find_design_component.mjs "<function / component>"` (e.g. `"filter"`, `"card"`, `"loading"`). If shell is unavailable, inspect `design-system/react/index.ts`, its owning source, and `design-system/components.md` via the connected repository. Check actual usage in the affected app route, and read only the relevant behavior contract in `design-system/ux-patterns-and-behavior.md`. The finder lists candidates, **not proof** that any component is approved or used.
+2. Choose **REUSE → EXTEND EXISTING VARIANT → NEW COMPONENT (only if no fit)**. Import the existing React component from the shared Design System when possible; change its canonical source first if its anatomy/variant must change, then update consumers. For transitional native/legacy screens, reuse the documented existing contract without pretending copied markup is a shared React import. Never solve a shared-component bug by layering a one-screen CSS override.
+3. A UI task is **not reported as complete** without one concise trace: `DS match: <component, owner file, variant> → consumer <route/file> → changed source → focused verification`. For `NO MATCH`, state which existing candidates were checked, why they do not fit, and where the new source now lives. Explicitly distinguish `documented`, `implemented`, `used in app`, `tested`, `deployed` and `PO-approved`.
+4. Verify the actual component **and the affected interaction**, not the whole library. Do not add a broad CI/QA gate or delay urgent user-value work for bookkeeping. Global visual identity G2 remains open.
+
+The 30-second lookup and reporting trace are mandatory. Detailed UI ownership/lookup examples live in [Design Library README](design-system/README.md); the existing risk-based QA rules below still govern tests.
+
 ## Objective and operating priority
 - **Deliver a usable, valuable learning flow before polishing the system.** Measurable user outcome > quantity of PRs, tests, CI assertions, ontology models, pages, or reports.
 - First prioritize ONE complete vertical slice using permitted real content: entry/Home → course/lesson → learning content → exercise → feedback → visible or retained progress. Verify the smallest blocker and fix it; arrange a real user learning session before asserting usefulness.

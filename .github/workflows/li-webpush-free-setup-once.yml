@@ -1,0 +1,30 @@
+name: li. Free Web Push — approved setup preflight (READ ONLY)
+on:
+  push:
+    branches:
+      - infra/li-webpush-setup-approved-20261122
+    paths:
+      - '.github/workflows/li-webpush-free-setup-once.yml'
+permissions:
+  contents: read
+concurrency:
+  group: li-webpush-free-setup-approved-20261122
+  cancel-in-progress: false
+jobs:
+  prerequisites:
+    if: github.repository == 'sali5610/li' && github.ref == 'refs/heads/infra/li-webpush-setup-approved-20261122'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate read-only preflight script
+        run: python3 -m py_compile tools/push-worker/scripts/free_setup_preflight.py
+      - name: Verify actual Workers Free account, D1 slot, dedicated Worker availability
+        run: python3 tools/push-worker/scripts/free_setup_preflight.py
+      - name: Ensure no resources were created
+        run: echo 'Read-only verification finished; no D1, VAPID, Worker, Pages or Neon writes.'

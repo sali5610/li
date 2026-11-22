@@ -120,6 +120,10 @@ jobs:
           npm run test:sync
           npx tsc --noEmit
           npx vite build --config vite.staging-app.config.mjs
+          # Standalone QA page is explicitly built against a disposable Neon branch,
+          # NEVER the main learner app or Cloudflare production.
+          VITE_LI_E2EE_QA_BUILD=1 npx vite build --config vite.e2ee-qa.config.mjs
+          test -s dist-e2ee-qa/e2ee-qa.js
           test -s dist-staging-app/staging-auth-gate.js
           test "$(find dist-staging-app -maxdepth 1 -type f -name '*.css' | wc -l)" -eq 1
           grep -Fq 'data-li-react-journey' dist-staging-app/staging-auth-gate.js
@@ -132,6 +136,21 @@ jobs:
         run: |
           set -euo pipefail
           cp tools/step16-real-l09-react-island/dist-staging-app/*.js site/assets/
+          cp tools/step16-real-l09-react-island/dist-e2ee-qa/*.js site/assets/
+          # Bust static QA entrypoint without registering or mutating the main PWA SW.
+          python3 - <<'PY'
+          from pathlib import Path
+          import os
+          qa=Path('site/e2ee-qa/index.html')
+          h=qa.read_text(encoding='utf-8')
+          source='<script type="module" src="../assets/e2ee-qa.js"></script>'
+          assert h.count(source)==1,'E2EE QA HTML entrypoint changed'
+          qa.write_text(h.replace(source,
+            '<script type="module" src="../assets/e2ee-qa.js?li_build='+
+            os.environ['GITHUB_SHA'][:12]+'"></script>',1),encoding='utf-8')
+          PY
+          test -s site/assets/e2ee-qa.js
+          test -s site/e2ee-qa/index.html
           # Versioned filename means a newly opened iOS Safari page cannot use
           # the previous Workbox CSS precache before its new worker activates.
           # The new file is still precached by the generated worker for offline PWA.

@@ -149,3 +149,73 @@ test('recovery can rewrap passphrase without changing already-encrypted user pay
  const newVault=await unlockVault(renewed,user,'new very long passphrase!');
  assert.deepEqual(await openPrivatePayload(newVault,user,'note','library',sealed),note);
 });
+
+
+test('interrupted legacy conversion resumes without overwriting either learner row',async()=>{
+ const noteA={schema:'li.personal.storage.v1',raw:'First original, not lost'};
+ const noteB={schema:'li.personal.storage.v1',raw:'Second original, not lost'};
+ const raw=fakeRemote(user,[
+  makeRow('note','library',noteA),makeRow('note','case-draft',noteB),
+ ]);
+ const created=await createVault(user,password);
+ await registerVault(raw,created.manifest);
+ setCurrentVault(user,created.vault);
+ let converted=0;
+ const dropping={
+  accountId:user,
+  one:(type,id)=>raw.one(type,id),
+  all:()=>raw.all(),
+  async write(e){
+   if(e.itemId==='case-draft'&&converted===1){
+    converted++;throw Error('NETWORK_DROPPED_DURING_MIGRATION');
+   }
+   if(e.itemId!=='__li_e2ee_keybag_v1')converted++;
+   return raw.write(e);
+  }
+ };
+ try{
+  await assert.rejects(migrateLegacyPayloads(dropping,created.vault),
+   /NETWORK_DROPPED_DURING_MIGRATION/);
+  assert.equal(currentVault(user),null,'partial migration cannot unlock normal sync');
+  assert.equal(raw.rows.get('note:library').payload.schema,'li.e2ee.payload.v1');
+  assert.deepEqual(raw.rows.get('note:case-draft').payload,noteB,
+   'failed write must preserve exact original plaintext until successful retry');
+
+  // The next signed session can recover using ONLY the independent recovery code.
+  clearCurrentVault();
+  const fresh=await recoverVault(await readVaultManifest(raw),user,created.recoveryCode);
+  setCurrentVault(user,fresh);
+  const progress=await migrateLegacyPayloads(raw,fresh);
+  assert.deepEqual(progress,{encrypted:1,alreadyEncrypted:1,total:2});
+  finishVaultMigration(user,fresh);
+  const secure=new SealedNeonUserApi(raw,fresh);
+  assert.deepEqual((await secure.one('note','library')).payload,noteA);
+  assert.deepEqual((await secure.one('note','case-draft')).payload,noteB);
+ }finally{clearCurrentVault();}
+});
+
+test('migration detects a last-moment old client plaintext insertion and refuses unlocked state',async()=>{
+ const created=await createVault(user,password);
+ const remote=fakeRemote(user,[makeRow('note','library',note)]);
+ await registerVault(remote,created.manifest);
+ setCurrentVault(user,created.vault);
+ const originalAll=remote.all.bind(remote);
+ let scans=0;
+ remote.all=async()=>{
+  const rows=await originalAll();
+  scans++;
+  if(scans===2){
+   remote.rows.set('note:old-client-race',makeRow('note','old-client-race',
+     {raw:'legacy client submitted plaintext during migration'}));
+   return [...remote.rows.values()];
+  }
+  return rows;
+ };
+ try{
+  await assert.rejects(migrateLegacyPayloads(remote,created.vault),/E2EE_UNENCRYPTED_REMOTE/);
+  assert.equal(currentVault(user),null,
+   'a server-side plaintext writer must prevent declaring E2EE completed');
+  assert.deepEqual(remote.rows.get('note:old-client-race').payload,
+   {raw:'legacy client submitted plaintext during migration'});
+ }finally{clearCurrentVault();}
+});

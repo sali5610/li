@@ -54,11 +54,23 @@ async function start(){
   else if(x.method==='Runtime.exceptionThrown'||x.method==='Network.loadingFailed')events.push(x);
  });
  await send('Page.enable');await send('Runtime.enable');await send('Network.enable');
+ // Read-only diagnostics from before the app code runs. Only synthetic QA data.
+ await send('Page.addScriptToEvaluateOnNewDocument',{source:`if(location.origin==='https://li5610.pages.dev'){try{window.__qaInitial={online:navigator.onLine,owner:localStorage.getItem('li.sync.local-owner.v1')==='offline-qa-owner',grant:JSON.parse(localStorage.getItem('li.offline.device-invite.v3')||'null')?.uid==='offline-qa-owner'};}catch{window.__qaInitial={storageError:true};}}`});
  await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
 }
 async function stop(){
+ if(proc){
+  const p=proc;proc=null;
+  // Graceful profile shutdown is essential: SIGTERM can interrupt delayed
+  // localStorage LevelDB writes and falsely simulate eviction of the grant.
+  const exited=p.exitCode!==null||p.signalCode!==null?Promise.resolve(true):new Promise(r=>p.once('exit',()=>r(true)));
+  if(socket?.readyState===WebSocket.OPEN){
+   const id=++serial;socket.send(JSON.stringify({id,method:'Browser.close'}));
+  }
+  const clean=await Promise.race([exited,sleep(12000).then(()=>false)]);
+  if(!clean){p.kill('SIGTERM');await exited;throw Error('QA browser did not shut down cleanly');}
+ }
  if(socket){socket.close();socket=null;}
- if(proc){const p=proc;proc=null;p.kill('SIGTERM');await Promise.race([new Promise(r=>p.once('exit',r)),sleep(3000)]);}
 }
 async function evaluate(expression){const x=await send('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(x.exceptionDetails)throw Error(JSON.stringify(x.exceptionDetails));return x.result?.value;}
 async function navigate(path){const x=await send('Page.navigate',{url:origin+path});assert(!x.errorText,'navigation failed: '+path+' '+x.errorText);}
@@ -67,7 +79,7 @@ async function offline(){
  await send('Network.setBypassServiceWorker',{bypass:false});
  await send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
 }
-async function state(){return evaluate("({url:location.href,online:navigator.onLine,verified:document.documentElement.classList.contains('li-auth-verified'),ready:document.documentElement.classList.contains('li-boot-ready'),route:window.liReactRouter?.getCurrent(),home:!!document.querySelector('[data-li-react-screen=\"home\"]'),auth:!!document.querySelector('.auth-pilot'),boot:document.getElementById('li-boot-error-title')?.textContent,sw:!!navigator.serviceWorker?.controller})");}
+async function state(){return evaluate("({url:location.href,online:navigator.onLine,verified:document.documentElement.classList.contains('li-auth-verified'),ready:document.documentElement.classList.contains('li-boot-ready'),route:window.liReactRouter?.getCurrent(),home:!!document.querySelector('[data-li-react-screen=\"home\"]'),auth:!!document.querySelector('.auth-pilot'),boot:document.getElementById('li-boot-error-title')?.textContent,sw:!!navigator.serviceWorker?.controller,initial:window.__qaInitial,owner:localStorage.getItem('li.sync.local-owner.v1')==='offline-qa-owner',grant:JSON.parse(localStorage.getItem('li.offline.device-invite.v3')||'null')?.uid==='offline-qa-owner',authCopy:document.querySelector('.auth-card')?.innerText?.slice(0,500)})");}
 async function ready(route){
  try{await wait(async()=>{const s=await state();return !s.online&&s.verified&&s.ready&&s.route===route&&s.home&&s.sw;},'offline '+route,25000);}
  catch(e){console.error('BOOT_DIAGNOSTIC',await state().catch(()=>null),JSON.stringify(events.slice(-12)));throw e;}
@@ -87,10 +99,18 @@ try{
  await navigate('/__qa_seed');
  await wait(()=>evaluate("document.title==='isolated local QA seed'"),'seed page');
  await evaluate("localStorage.setItem('li.sync.local-owner.v1','offline-qa-owner');localStorage.setItem('li.offline.device-invite.v3',JSON.stringify({v:3,uid:'offline-qa-owner',verifiedAt:Date.now()}));true");
+ assert.equal(await evaluate("localStorage.getItem('li.sync.local-owner.v1')==='offline-qa-owner'&&JSON.parse(localStorage.getItem('li.offline.device-invite.v3')).uid==='offline-qa-owner'"),true,'QA seed readback');
+ // Chromium asynchronously batches localStorage writes. Do not race them.
+ await sleep(6000);
  await stop(); // new process with same persistent browser profile
  cut=true;
  await start();await offline();
- await navigate('/');await ready('home');
+ await navigate('/');
+ const initial=await wait(()=>evaluate('window.__qaInitial'), 'pre-app storage diagnostic');
+ console.log('COLD_LAUNCH_INITIAL',JSON.stringify(initial));
+ assert(initial.owner&&initial.grant,'QA profile lost its synthetic owner or grant before product startup');
+ assert.equal(initial.online,false,'cold navigation did not start offline');
+ await ready('home');
  await evaluate("window.liReactRouter.navigate('capture')");
  await ready('capture');
  const draft='Offline cold launch QA note';
@@ -98,6 +118,7 @@ try{
  await evaluate("document.getElementById('li-react-capture-note').focus()");
  await send('Input.insertText',{text:draft});
  await wait(()=>evaluate("window.liCaptureUi?.getDraft()==="+JSON.stringify(draft)+"&&window.liCaptureUi?.isReloadSafe()===true"),'offline draft durable');
+ await sleep(6000);
  await stop();
  await start();await offline();await navigate('/?view=capture');await ready('capture');
  await wait(()=>evaluate("window.liCaptureUi?.getDraft()==="+JSON.stringify(draft)),'offline draft restored after process restart');

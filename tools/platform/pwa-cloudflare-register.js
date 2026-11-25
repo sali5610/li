@@ -42,10 +42,11 @@
   const actions=document.createElement("div");
   actions.style.cssText="display:flex;flex-wrap:wrap;gap:8px";
   const update=document.createElement("button");
-  update.type="button";update.className="action";update.disabled=accepted||!safeToReload();
+  update.type="button";update.className="action";update.disabled=accepted;
   update.textContent=L("Cập nhật ngay","Update now");
   update.addEventListener("click",()=>{
-   if(!safeToReload()||accepted)return;
+   if(accepted)return;
+   if(!safeToReload()){render();return;}
    if(updatedElsewhere&&!registration?.waiting){location.reload();return;}
    const waiting=registration?.waiting;
    if(!waiting){render();return;}
@@ -85,7 +86,7 @@
   finally{checking=false;render();}
  }
  window.addEventListener("load",()=>{
-  sw.register("/sw.js",{scope:"/"}).then(reg=>{
+  navigator.serviceWorker.register("/sw.js",{scope:"/"}).then(reg=>{
    registration=reg;
    reg.addEventListener("updatefound",()=>watchInstalling(reg.installing));
    watchInstalling(reg.installing);
@@ -98,6 +99,5 @@
  window.addEventListener("online",()=>void check());
  for(const event of ["li:auth-verified-changed","li:route-changed","li:localechange"])
   window.addEventListener(event,render);
- // Re-evaluate safe update after writing a local draft or closing a dialog.
- document.addEventListener("focusin",()=>{if(panel&&!accepted)render();});
+
 })();

@@ -65,13 +65,19 @@ if(authOnly){
 const gate=(
  '<style id="li-auth-gate-critical">'+
  'html:not(.li-auth-verified) .app,'+
+ 'html:not(.li-boot-ready) .app,'+
  'html.li-auth-verified.li-account-open .app{display:none!important}'+
  'html.li-auth-verified:not(.li-account-open) #li-staging-auth-root'+
- '{display:none!important}</style>'+
+ '{display:none!important}'+
+ 'html:not(.li-boot-ready) #li-staging-auth-root{visibility:hidden!important}'+
+ '#li-boot-splash{position:fixed;inset:0;z-index:1400;display:grid;place-items:center;background:var(--paper,#F1F0E9);color:var(--ink,#243A29)}'+
+ 'html.li-boot-ready #li-boot-splash{display:none!important}</style>'+
  '<link rel="stylesheet" href="./assets/staging-gate.css">'+
  '<link rel="stylesheet" href="./assets/li-react-learning.css">'
 );
 html=replaceOnce(html,'<head>','<head>'+gate);
+const boot=await readFile(join(repo,'tools/platform/cloudflare-boot.html'),'utf8');
+html=replaceOnce(html,'<body>','<body>'+boot);
 const marker='<div class="settings-group-grid"><article class="surface"><div class="kicker">SAO LƯU</div>';
 const account=(
  '<article class="surface">'+
@@ -92,7 +98,7 @@ const shell=(
 );
 html=replaceOnce(html,'</body></html>',shell+'</body></html>');
 for(const name of ['li-auth-gate-critical','li-open-account',
- 'id="li-staging-auth-root"','li-first-party-app.js','li-cloud-status'])
+ 'id="li-staging-auth-root"','id="li-boot-splash"','id="li-boot-loading"','id="li-boot-error"','li-first-party-app.js','li-cloud-status'])
  requireOne(html,name);
 // Existing journal-cloud consent's native data-staging-only marker is part
 // of the canonical React consent bridge; it is not an alternate login gate.
@@ -124,15 +130,7 @@ if(authOnly){
  await writeFile(manifestPath,JSON.stringify(manifest,null,2)+'\n');
  // This candidate's worker is generated separately after assembly. Never
  // cache /api/auth, Neon responses, private note data or OAuth cookies.
- const registration=[
-  "(()=>{'use strict';",
-  "if(!('serviceWorker' in navigator)||location.protocol!=='https:'||",
-  "location.origin!=='https://li5610.pages.dev')return;",
-  "window.addEventListener('load',()=>{",
-  "navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(()=>{});",
-  "});})();"
- ].join('\n');
- await writeFile(join(assets,'pwa-register.js'),registration);
+ await copyFile(join(repo,'tools/platform/pwa-cloudflare-register.js'),join(assets,'pwa-register.js'));
 }
 const stale=[];
 for(const name of ['.env','.env.local']){try{await stat(join(output,name));stale.push(name);}catch{}}

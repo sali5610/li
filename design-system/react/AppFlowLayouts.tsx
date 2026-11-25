@@ -83,6 +83,7 @@ export const appLabPageVariants:readonly {id:PageVariant;vi:string;en:string}[]=
 ];
 export interface AppPageLayoutProps {
  page:Exclude<PageId,'home'>;variant:PageVariant;locale:'vi'|'en';
+ scrapebook?:boolean;
  query:string;answer:string;selected:string;saved:boolean;completed:boolean;
  onQuery:(query:string)=>void;onAnswer:(value:string)=>void;onSelect:(value:string)=>void;
  onToggleSaved:()=>void;onComplete:()=>void;onNavigate:(page:PageId)=>void;
@@ -315,7 +316,8 @@ function ScreenBody(props:AppPageLayoutProps){
   ];
   const next=action('practice','Làm bài tập','Start practice');
   if(variant==='vintagePop')return <VintagePopLessonBook
-   locale={locale} intro={intro} diagram={diagram} chapters={chapters} practiceAction={next}/>;
+   locale={locale} intro={intro} diagram={diagram} chapters={chapters} practiceAction={next}
+   showExamplePaper={props.scrapebook}/>;
   if(variant==='bookworm')return <BookwormLessonBook
    locale={locale} intro={intro} diagram={diagram} chapters={chapters}
    practiceAction={next}/>;

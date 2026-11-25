@@ -14,7 +14,7 @@ import {blankCaptureDraft,readCaptureDraft,writeCaptureDraft,type CaptureDraft} 
 type CaptureResult=
  |{ok:true;id:string}
  |{ok:false;reason:string;message:string};
-type CaptureUiPort={getDraft:()=>string};
+type CaptureUiPort={getDraft:()=>string;isReloadSafe:()=>boolean};
 declare global{interface Window{liCaptureUi?:CaptureUiPort;}}
 type CaptureWindow=Window&{
  liCaptureIdea?:{save:(text:string,fieldId?:string|null)=>CaptureResult};
@@ -53,7 +53,15 @@ function CaptureIdea(){
   };
   syncOwner();
   window.addEventListener('li:auth-verified-changed',syncOwner);
-  const port:CaptureUiPort={getDraft:()=>verified()&&owner.current?latest.current.text:''};
+  const port:CaptureUiPort={getDraft:()=>verified()&&owner.current?latest.current.text:'',
+   isReloadSafe:()=>{
+    try{
+     if(!owner.current||!verified())return false;
+     const saved=readCaptureDraft(localStorage,owner.current,true);
+     return saved.text===latest.current.text&&saved.fieldId===latest.current.fieldId;
+    }catch{return false;}
+   }};
+  
   window.liCaptureUi=port;
   return()=>{window.removeEventListener('li:auth-verified-changed',syncOwner);
    if(window.liCaptureUi===port)delete window.liCaptureUi;};

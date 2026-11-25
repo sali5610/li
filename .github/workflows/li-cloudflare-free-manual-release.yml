@@ -1,7 +1,7 @@
 name: Release li. to Cloudflare Pages Free — MANUAL ONLY
 
 # IMPORTANT: Manual dispatch is the ONLY deploy trigger. PR gate builds a candidate locally but NEVER deploys.
-# Auth-only pins the exact live PWA source plus the approved seven-day offline fix; AI retains its independent reviewed SHA,
+# Auth-only pins the exact live PWA source plus the offline bootstrap/cache fix; AI retains its independent reviewed SHA,
 # without merging all staging changes into main. Never dispatch until preflight.
 on:
   # Focused PR gate builds the pinned Auth-only artifact; it never deploys.
@@ -48,12 +48,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: 09b5113c3a4625bc4701cd48a2196d95a7f2e667
+          ref: c2ea9152e16ad51b91020239e71963c202a3b4ca
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "09b5113c3a4625bc4701cd48a2196d95a7f2e667"
+          test "$(git rev-parse HEAD)" = "c2ea9152e16ad51b91020239e71963c202a3b4ca"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -101,6 +101,13 @@ jobs:
           find dist-cloudflare-auth-candidate -type f -name '*.map' -delete
           test -z "$(find dist-cloudflare-auth-candidate -type f -name '*.map' -print -quit)"
           git diff --exit-code -- site
+      - name: Real offline cold-launch regression against emitted Auth-only Pages artifact (NO DEPLOY)
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$chrome"
+          CHROME_BIN="$chrome" node tools/test_cloudflare_offline_browser.mjs
       # Preserve the independently pinned AI pilot QA; never mix its source
       # with the exact-live Auth-only candidate or enable it here.
       - name: Checkout unchanged independently pinned AI candidate
@@ -155,7 +162,7 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.auth_only_mode && '09b5113c3a4625bc4701cd48a2196d95a7f2e667' || (inputs.ai_mode && 'c32d7213494e952702488336060346e867b6c51f' || github.sha) }}
+          ref: ${{ inputs.auth_only_mode && 'c2ea9152e16ad51b91020239e71963c202a3b4ca' || (inputs.ai_mode && 'c32d7213494e952702488336060346e867b6c51f' || github.sha) }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
@@ -163,8 +170,8 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
-            expected='09b5113c3a4625bc4701cd48a2196d95a7f2e667'
-            echo 'Auth-only app: exact live Pages baseline plus reviewed seven-day local offline access only; no staging-wide changes.'
+            expected='c2ea9152e16ad51b91020239e71963c202a3b4ca'
+            echo 'Auth-only app: exact live Pages baseline plus offline bootstrap/cache fix; no staging-wide changes.'
           else
             expected='c32d7213494e952702488336060346e867b6c51f'
             echo 'AI mode reuses latest reviewed first-party source; approved Free-only AI pilot still requires verified private bindings and schema.'
@@ -253,7 +260,7 @@ jobs:
           test -z "$(find dist-cloudflare-auth-candidate -type f -name '*.map' -print -quit)"
           git diff --exit-code -- site
 
-      - name: Verify current Pages baseline before offline-access release (read-only)
+      - name: Verify current Pages baseline before offline-bootstrap release (read-only)
         if: inputs.auth_only_mode == true && inputs.ai_mode == false
         run: |
           set -euo pipefail
@@ -268,7 +275,7 @@ jobs:
               headers={"Authorization": "Bearer " + token, "Accept": "application/json"})
           with urllib.request.urlopen(request, timeout=20) as response:
               project = json.load(response)
-          if project.get("success") is not True or (project.get("result", {}).get("canonical_deployment") or {}).get("short_id") != "73f4fc9f":
+          if project.get("success") is not True or (project.get("result", {}).get("canonical_deployment") or {}).get("short_id") != "5d9daa3b":
               raise SystemExit("LIVE_PAGES_BASELINE_CHANGED_STOP")
           print("EXPECTED_LIVE_PAGES_BASELINE_PASS")
           PY

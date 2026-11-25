@@ -33,13 +33,13 @@ export function ScrapebookSheet({locale,mini,hintText,coverInPage=false,homeBook
     aria-pressed={bookmarked}
     aria-label={homeBookmark?(bookmarked?t('Bỏ lưu câu hỏi','Unsave question'):t('Lưu câu hỏi','Save question')):
      bookmarked?t('Tháo dấu trang mẫu','Detach preview bookmark'):t('Gắn dấu trang mẫu','Attach preview bookmark')}
-    title={bookmarked?t('Tháo dấu trang','Detach bookmark'):t('Gắn dấu trang','Attach bookmark')}
+    title={homeBookmark?(bookmarked?t('Bỏ lưu câu hỏi','Unsave question'):t('Lưu câu hỏi','Save question')):bookmarked?t('Tháo dấu trang','Detach bookmark'):t('Gắn dấu trang','Attach bookmark')}
     onClick={homeBookmark?.onToggle??(()=>setBookmarked(value=>!value))}
     initial={false}
     animate={{y:bookmarked?0:coverInPage?-8:-18}}
     transition={reduced?{duration:0}:{type:'spring',stiffness:280,damping:20}}>
     <LiIcon name="bookmark" size={19}/>
-    <span>{bookmarked?t('ĐÃ GẮN','ATTACHED'):t('GẮN','ATTACH')}</span>
+    <span>{homeBookmark?(bookmarked?t('ĐÃ LƯU','SAVED'):t('LƯU','SAVE')):bookmarked?t('ĐÃ GẮN','ATTACHED'):t('GẮN','ATTACH')}</span>
    </motion.button>}
  </>;
  const hint=(!mini&&hintText!==undefined)?<div className="li-scrapebook-inline-hint">

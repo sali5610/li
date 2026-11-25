@@ -138,6 +138,8 @@ function Lab(){
   onToggleSaved:()=>setSaved(x=>!x),onComplete:()=>setCompleted(true),
   onNavigate:choose,onNotice:setNotice
  };
+ const saveHomeQuestion=()=>{setSaved(x=>!x);setNotice(t('Chỉ lưu trong bộ nhớ bản thử.',
+  'Preview memory only.'));};
  function renderPage(target:PageId,style:LayoutKey){
   if(target!=='home')return <AppPageLayout key={target+'-'+style}
    page={target} variant={pageVariant[style]} scrapebook={style==='scrapebook'} {...view}/>;
@@ -156,8 +158,7 @@ function Lab(){
    onPrevious={()=>setQuestionIndex(i=>(i+questions.length-1)%questions.length)}
    onNext={()=>setQuestionIndex(i=>(i+1)%questions.length)}
    onExplore={()=>choose('research')} onCheckin={()=>choose('checkin')}
-   onSave={()=>{setSaved(x=>!x);setNotice(t('Chỉ lưu trong bộ nhớ bản thử.',
-    'Preview memory only.'));}}/>;
+   onSave={saveHomeQuestion}/>;
  }
  const label=(id:PageId)=>{
   const item=allPages.find(item=>item.id===id)!;
@@ -206,7 +207,8 @@ function Lab(){
   </header>
   <div className="li-ui-lab-viewport" data-viewport={viewport}>
    {style==='scrapebook'?<ScrapebookSheet key={target} locale={locale} mini={mini}
-    coverInPage={target!=='home'} hintText={target==='lesson'?undefined:hintFor(target)}>
+    coverInPage homeBookmark={target==='home'?{saved,onToggle:saveHomeQuestion}:undefined}
+    hintText={target==='lesson'?undefined:hintFor(target)}>
     {renderPage(target,style)}
    </ScrapebookSheet>:renderPage(target,style)}
   </div>

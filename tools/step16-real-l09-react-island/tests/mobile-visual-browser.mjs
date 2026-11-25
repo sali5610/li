@@ -164,6 +164,72 @@ try{
   }
  }
  console.log('PASS 13 REAL CSS MOBILE VIEWPORT SCREENS + NATIVE OPEN SHEET 390x844');
+ // Focused UI Lab reflow checks: only when the real Lab sources change.
+ if(process.env.LI_UI_LAB_SMOKE==='1'){
+  await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
+  const pages=['home','catalog','search','research','case','capture','lesson','practice','feedback','guide','guideDetail','library','resume','collection','noteDetail','dashboard','settings','checkin','laoly','account'];
+  const evaluate=async expression=>(await send('Runtime.evaluate',{expression,returnByValue:true})).result?.value;
+  const failures=[];
+  for(const [width,view,locale,targets] of [
+   [390,'390','vi',pages],
+   [320,'fluid','en',['home','catalog','lesson','practice','collection','settings','laoly']],
+   [820,'820','vi',['home','catalog','lesson','practice','collection','dashboard']],
+   [1440,'1440','en',['home','lesson','catalog','noteDetail']]
+  ]){
+   await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<600,screenWidth:width,screenHeight:900});
+   for(const page of targets){
+    const query=new URLSearchParams({layout:'scrapebook',mode:'focus',page,viewport:view,lang:locale});
+    await send('Page.navigate',{url:'http://127.0.0.1:8766/design-system/ui-lab.html?'+query});
+    await wait(()=>evaluate("(()=>{const p=document.querySelector('.li-ui-lab-preview[data-scrapebook=true]');return document.readyState!=='loading'&&Boolean(p&&p.querySelector("+JSON.stringify(page==='home'?'.li-ui-home':'.li-flow-page[data-page="'+page+'"]')+"))&&new URLSearchParams(location.search).get('page')==="+JSON.stringify(page)+"})()"),15000);
+    await sleep(150);
+    const report=await evaluate(`(()=>{
+     const viewport=document.querySelector('.li-ui-lab-preview[data-scrapebook=true] .li-ui-lab-viewport');
+     const root=viewport.querySelector('.li-flow-page,.li-ui-home');
+     const cover=root.querySelector('.li-flow-page-head,.li-ui-home-intro');
+     const main=root.querySelector('.li-flow-page-main');
+     const columns=root.querySelector('.li-flow-page-columns');
+     const ribbon=root.querySelector('.li-scrapebook-bookmark');
+     const b=root.getBoundingClientRect(),h=cover.getBoundingClientRect();
+     const mainRect=main?.getBoundingClientRect();
+     const ribbonRect=ribbon?.getBoundingClientRect();
+     return {viewport:viewport.clientWidth,scroll:viewport.scrollWidth,page:root.clientWidth,cover:h.width,
+      coverAligned:Math.abs(b.left-h.left)<2&&Math.abs(b.right-h.right)<2,
+      mainFits:!mainRect||(mainRect.left>=b.left-1&&mainRect.right<=b.right+1),
+      gutter:columns?parseFloat(getComputedStyle(columns).paddingInlineStart):null,
+      ribbon:root.querySelectorAll('.li-scrapebook-bookmark,.li-pop-lesson-bookmark').length,
+      ribbonVisible:!!ribbonRect&&ribbonRect.left>=h.left-1&&ribbonRect.right<=h.right+1&&getComputedStyle(cover).overflow==='visible',
+      coverPhoto:!!cover.querySelector('.li-pop-header-art,.li-pop-home-art'),
+      overflowElements:[...root.querySelectorAll('button,input,textarea,select,.li-atom-heading,.li-atom-text')].filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&(r.left<b.left-3||r.right>b.right+3)}).slice(0,6).map(e=>e.className)
+     };
+    })()`);
+    console.log('SCRAPEBOOK_LAYOUT '+width+' '+page+' '+JSON.stringify(report));
+    if(!report||report.scroll>report.viewport+2||!report.coverAligned||!report.mainFits||report.ribbon!==1||!report.ribbonVisible||report.coverPhoto||report.overflowElements.length||(width<=390&&report.gutter!==null&&Math.abs(report.gutter-16)>1)){
+     failures.push({width,page,report});
+    }
+    if(width===390&&['home','lesson','practice','collection','settings'].includes(page)){
+     await evaluate("document.querySelector('.li-ui-lab-preview[data-scrapebook=true]').scrollIntoView({block:'start',behavior:'instant'})");
+     const shot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false,fromSurface:true});
+     writeFileSync(resolve(out,'scrapebook-'+page+'.png'),Buffer.from(shot.data,'base64'));
+    }
+    if(width===390&&['home','lesson'].includes(page)){
+     const before=await evaluate("document.querySelector('.li-scrapebook-bookmark').getAttribute('aria-pressed')");
+     await evaluate("document.querySelector('.li-scrapebook-bookmark').click()");
+     await wait(()=>evaluate("document.querySelector('.li-scrapebook-bookmark').getAttribute('aria-pressed')!=="+JSON.stringify(before)),3000);
+     const stamp=await evaluate("Boolean(document.querySelector('.li-ui-lab-preview .li-pop-stamp-imprint'))");
+     if(before==='false'&&!stamp)failures.push({page,interaction:'bookmark stamp missing'});
+     await evaluate("document.querySelector('.li-scrapebook-bookmark').click()");
+     if(page==='lesson'){
+      await evaluate("document.querySelector('.li-bw-reader-note-toggle').click()");
+      await wait(()=>evaluate("Boolean(document.querySelector('.li-scrapebook-example-paper .li-bw-reader-scrap-note'))"),3000);
+      await evaluate("document.querySelector('.li-bw-reader-note-toggle').click()");
+      await wait(()=>evaluate("!document.querySelector('.li-scrapebook-example-paper .li-bw-reader-scrap-note')"),3000);
+     }
+    }
+   }
+  }
+  if(failures.length)throw Error('SCRAPEBOOK_REFLOW_FAILED '+JSON.stringify(failures));
+  console.log('PASS Scrapebook all 20 screens at phone width and selected 320/820/1440 reflows, actual bookmark and note interactions');
+ }
 }finally{
  if(socket){for(const p of pending.values())clearTimeout(p.t);socket.close();}
  proc.kill('SIGTERM');

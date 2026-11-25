@@ -23,7 +23,7 @@ import {VintagePopCollage} from './VintagePopCollage';
 import type {VintagePopAsset} from './VintagePopCollage';
 import {VintagePopStamp,VintagePopPostalMark} from './VintagePopStamp';
 import {VintagePopScrapbook} from './VintagePopScrapbook';
-import {ScrapebookCoverContext} from './ScrapebookSheet';
+import {ScrapebookCoverContext,ScrapebookHintContext} from './ScrapebookSheet';
 import {VintagePopArt} from './VintagePopArt';
 import type {VintagePopArtKind} from './VintagePopArt';
 import './app-flow-layouts.css';
@@ -663,6 +663,7 @@ const notebookPageIcons={
 export function AppPageLayout(props:AppPageLayoutProps){
  const {page,variant,locale,onNavigate}=props;
  const coverDecorations=React.useContext(ScrapebookCoverContext);
+ const scrapebookHint=React.useContext(ScrapebookHintContext);
  const meta=appLabPages.find(item=>item.id===page)!;
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  const reduced=useReducedMotion();
@@ -754,6 +755,7 @@ export function AppPageLayout(props:AppPageLayoutProps){
    {props.scrapebook&&coverDecorations}
   </header>
   <div className="li-flow-page-columns">
+   {props.scrapebook&&scrapebookHint}
    <motion.div className="li-flow-page-main" layout={bookworm&&!reduced} {...reveal(.14)}>
     {variant==='vintagePop'&&['collection','noteDetail','capture'].includes(page)?
      <VintagePopScrapbook key={page} locale={locale}

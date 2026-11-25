@@ -110,7 +110,7 @@ export function FoldableLessonNote({locale,chapter,trailing}:{
    </button>
    {trailing}
   </div>
-  <div id={noteId}>
+  <div id={noteId} style={{display:'contents'}}>
    <AnimatePresence initial={false}>
     {paperNoteOpen&&<motion.div key="scrap-note" className="li-bw-reader-scrap-note"
       initial={reduced?false:{opacity:0,rotate:-5,y:-14,scale:.96}}

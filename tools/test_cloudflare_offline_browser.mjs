@@ -10,11 +10,36 @@ import {setTimeout as sleep} from 'node:timers/promises';
 const dir=resolve('dist-cloudflare-auth-candidate'), origin='https://li5610.pages.dev';
 const tmp=mkdtempSync(join(tmpdir(),'li-offline-browser-'));
 execFileSync('openssl',['req','-x509','-newkey','rsa:2048','-nodes','-days','1','-keyout',join(tmp,'key.pem'),'-out',join(tmp,'cert.pem'),'-subj','/CN=li5610.pages.dev'],{stdio:'ignore'});
-let cut=false,servedAfterCut=0;
+let cut=false,servedAfterCut=0,onlineFixture=false,inviteCalls=0,inviteFailures=0,invited=true;
+const fixtureId='offline-qa-owner';
+const dataHost='ep-misty-snow-azfrrm3o.apirest.c-3.ap-southeast-1.aws.neon.tech';
+const fixtureToken=()=>['e30',Buffer.from(JSON.stringify({sub:fixtureId,role:'authenticated',exp:Math.floor(Date.now()/1000)+600})).toString('base64url'),'qa-only-unsigned'].join('.');
+const json=(res,value,status=200,headers={})=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store',...headers});res.end(JSON.stringify(value));};
 const mime={'.html':'text/html','.js':'application/javascript','.mjs':'application/javascript','.css':'text/css','.json':'application/json','.webmanifest':'application/manifest+json','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml'};
 const server=createServer({key:readFileSync(join(tmp,'key.pem')),cert:readFileSync(join(tmp,'cert.pem'))},(req,res)=>{
  if(cut){servedAfterCut++;req.socket.destroy();return;}
  const url=new URL(req.url,origin);
+ // Isolated HTTPS provider simulator; DNS is pinned to loopback, every other
+ // host is blocked. No real account, cookie, signed JWT or Neon data is used.
+ if(req.headers.host===dataHost){
+  const cors={'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':'authorization,content-type,accept,prefer,range,range-unit'};
+  if(req.method==='OPTIONS'){res.writeHead(204,cors);res.end();return;}
+  if(!onlineFixture){json(res,{error:'QA_OFFLINE'},503,cors);return;}
+  if(url.pathname==='/li/rest/v1/rpc/li_is_invited'){
+   if(!req.headers.authorization?.startsWith('Bearer e30.')){json(res,false,401,cors);return;}
+   inviteCalls++;
+   if(inviteFailures>0){inviteFailures--;json(res,{error:'QA_TRANSIENT'},503,cors);return;}
+   json(res,invited,200,cors);return;
+  }
+  // Never permit writes: the fixture is not a data backend.
+  json(res,req.method==='GET'?[]:{error:'QA_WRITE_DISABLED'},req.method==='GET'?200:403,cors);return;
+ }
+ if(onlineFixture&&url.pathname.startsWith('/api/auth/')){
+  const now=new Date().toISOString(),expiresAt=new Date(Date.now()+3600000).toISOString();
+  if(url.pathname.endsWith('/get-session')){json(res,{session:{id:'qa-session',userId:fixtureId,token:'qa-opaque',expiresAt,createdAt:now,updatedAt:now},user:{id:fixtureId,email:'offline-qa@example.invalid',name:'QA',emailVerified:true,createdAt:now,updatedAt:now}});return;}
+  if(url.pathname.endsWith('/token')){json(res,{token:fixtureToken()});return;}
+  json(res,{error:'QA_OTHER_AUTH_DISABLED'},403);return;
+ }
  if(url.pathname==='/__qa_seed'){res.writeHead(200,{'Content-Type':'text/html','Cache-Control':'no-store'});res.end('<!doctype html><title>isolated local QA seed</title>');return;}
  if(url.pathname.startsWith('/api/')){res.writeHead(503,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end('{"error":"QA_NETWORK_UNAVAILABLE"}');return;}
  const file=resolve(dir,'.'+(url.pathname==='/'?'/index.html':url.pathname));
@@ -43,7 +68,7 @@ function send(method,params={}){
 }
 async function start(){
  events=[];
- proc=spawn(chrome,['--headless=new','--no-sandbox','--disable-dev-shm-usage','--disable-gpu','--no-first-run','--no-default-browser-check','--no-proxy-server','--ignore-certificate-errors','--host-resolver-rules=MAP li5610.pages.dev 127.0.0.1:8766, MAP * ~NOTFOUND, EXCLUDE localhost','--remote-allow-origins=*','--remote-debugging-port=9223','--user-data-dir='+join(tmp,'profile'),'about:blank'],{stdio:['ignore','ignore','pipe']});
+ proc=spawn(chrome,['--headless=new','--no-sandbox','--disable-dev-shm-usage','--disable-gpu','--no-first-run','--no-default-browser-check','--no-proxy-server','--ignore-certificate-errors','--host-resolver-rules=MAP li5610.pages.dev 127.0.0.1:8766, MAP '+dataHost+' 127.0.0.1:8766, MAP * ~NOTFOUND, EXCLUDE localhost','--remote-allow-origins=*','--remote-debugging-port=9223','--user-data-dir='+join(tmp,'profile'),'about:blank'],{stdio:['ignore','ignore','pipe']});
  proc.stderr.on('data',b=>{stderr+=String(b);});
  const tab=await wait(async()=>{const a=await (await fetch('http://127.0.0.1:9223/json/list')).json();return a.find(t=>t.type==='page'&&t.webSocketDebuggerUrl);},'chrome');
  socket=new WebSocket(tab.webSocketDebuggerUrl);
@@ -137,4 +162,28 @@ try{
  assert.equal(callback,true);
  assert.equal(await evaluate("fetch('/api/auth/get-session',{cache:'no-store'}).then(()=>false,()=>true)"),true);
  console.log('PASS cold launch, deep link, real draft persistence, expired/no-grant denial and uncached Auth endpoints. Origin server unavailable; blocked requests='+servedAfterCut);
+ // Reuse the exact artifact with the isolated provider simulator online.
+ // Exercise the real React/Auth SDK/HTTP path, not a mocked React hook.
+ await stop();cut=false;onlineFixture=true;inviteFailures=1;
+ await start();await navigate('/');
+ const onlineReady=async(label)=>{
+  try{await wait(async()=>{const s=await state();return s.online&&s.verified&&s.ready&&s.home&&!s.auth;},label,30000);}
+  catch(e){console.error('ONLINE_AUTH_DIAGNOSTIC',await state().catch(()=>null),{inviteCalls,inviteFailures},JSON.stringify(events.slice(-10)));throw e;}
+ };
+ await onlineReady('online initial transient invite recovery');
+ assert(inviteCalls>=2&&inviteFailures===0,'transient RPC retry not exercised');
+ assert.equal(await evaluate("JSON.parse(localStorage.getItem('li.offline.device-invite.v3')||'null')?.uid"),fixtureId,'real app did not issue local grant after fixture verification');
+ await sleep(1800);
+ await evaluate("window.__qaWakeMarker='same-document';true");
+ const previous=inviteCalls;inviteFailures=1;
+ await evaluate("window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}));true");
+ await wait(()=>inviteCalls>=previous+2&&inviteFailures===0,'resume retries actual RPC');
+ await onlineReady('online wake after transient invite failure');
+ assert.equal(await evaluate('window.__qaWakeMarker'),'same-document','wake must not reload the page');
+ console.log('PASS online managed-session resume recovered a transient invitation failure without reload');
+ await sleep(1800);invited=false;
+ await evaluate("window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}));true");
+ await wait(async()=>{const s=await state();return s.online&&!s.verified&&s.ready&&s.auth&&s.authCopy?.includes('Chưa xác minh được quyền truy cập');},'explicit server revocation closes private app');
+ assert.equal(await evaluate("localStorage.getItem('li.offline.device-invite.v3')"),null,'revoked grant still persisted');
+ console.log('PASS online revocation locks app and removes offline receipt');
 }finally{await stop();server.closeAllConnections();await new Promise(r=>server.close(r));rmSync(tmp,{recursive:true,force:true});}

@@ -29,7 +29,7 @@ const stripped=index.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,"")
 const visible=[...new Set([...stripped.matchAll(/>([^<>]+)</g)].map(m=>m[1].replace(/&[a-z]+;/g," ").replace(/\s+/g," ").trim())
  .filter(x=>x.length>1&&/[A-Za-zÀ-ỹ]/u.test(x)))];
 const accessibility=[...new Set([...stripped.matchAll(/\b(?:aria-label|placeholder|title|alt)="([^"]+)"/g)].map(m=>m[1]))];
-const unmatchedVisible=visible.filter(x=>x!=="理 · li. — THE WORLD OF KNOWING WHY"&&!paired(x));
+const unmatchedVisible=visible.filter(x=>x!=="li. — THE WORLD OF KNOWING WHY"&&!paired(x));
 const unmatchedAttrs=accessibility.filter(x=>!paired(x));
 assert.deepEqual(unmatchedVisible,[],"Unpaired static UI copy: "+unmatchedVisible.join("; "));
 assert.deepEqual(unmatchedAttrs,[],"Unpaired accessibility/tooltip copy: "+unmatchedAttrs.join("; "));

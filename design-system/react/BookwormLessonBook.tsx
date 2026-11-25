@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useId,useState} from 'react';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {Button} from './Components';
 import {Heading,Text} from './Atoms';
@@ -21,7 +21,6 @@ export function BookwormLessonBook({locale,intro,diagram,chapters,practiceAction
  const reduced=useReducedMotion();
  const [page,setPage]=useState(0);
  const [bookmark,setBookmark]=useState<number|null>(null);
- const [paperNoteOpen,setPaperNoteOpen]=useState(false);
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  const chapter=chapters[page];
  return <div className="li-bw-reader">
@@ -67,29 +66,12 @@ export function BookwormLessonBook({locale,intro,diagram,chapters,practiceAction
     <span className="li-bw-reader-folio" aria-hidden="true">{String(page+2).padStart(2,'0')}</span>
    </article>
   </div>
-  <div className="li-bw-reader-scrap-tools">
-   <button className="li-bw-reader-note-toggle" type="button"
-    aria-expanded={paperNoteOpen} onClick={()=>setPaperNoteOpen(v=>!v)}>
-    <LiIcon name="feather" size={16}/>
-    {paperNoteOpen?t('Gấp mẩu giấy','Fold note'):t('Mở mẩu giấy','Unfold note')}
-   </button>
-   {bookmark!==null&&<button className="li-bw-reader-bookmark-jump" type="button"
-     onClick={()=>setPage(bookmark)}>
-     <LiIcon name="bookmark" size={16}/>
-     {t('Dấu trang','Bookmarked')}: {chapters[bookmark].title}
-    </button>}
-  </div>
-  <AnimatePresence initial={false}>
-   {paperNoteOpen&&<motion.div key="scrap-note" className="li-bw-reader-scrap-note"
-     initial={reduced?false:{opacity:0,rotate:-5,y:-14,scale:.96}}
-     animate={{opacity:1,rotate:-1.5,y:0,scale:1}}
-     exit={reduced?{opacity:0}:{opacity:0,rotate:3,y:-8,scale:.97}}
-     transition={{duration:reduced?0:.32,ease:'easeOut'}}>
-     <LiIcon name="feather" size={18}/>
-     <span>{chapter.title}</span>
-     <Text role="support">{chapter.description}</Text>
-    </motion.div>}
-  </AnimatePresence>
+  <FoldableLessonNote locale={locale} chapter={chapter} trailing={bookmark!==null&&
+   <button className="li-bw-reader-bookmark-jump" type="button"
+    onClick={()=>setPage(bookmark)}>
+    <LiIcon name="bookmark" size={16}/>
+    {t('Dấu trang','Bookmarked')}: {chapters[bookmark].title}
+   </button>}/>
   <nav className="li-bw-reader-controls" aria-label={t('Điều hướng trang sách','Book page navigation')}>
    <Button variant="secondary" disabled={page===0} onClick={()=>setPage(i=>Math.max(0,i-1))}>
     <LiIcon name="chevron-left" size={17}/>{t('Trang trước','Previous page')}
@@ -107,4 +89,39 @@ export function BookwormLessonBook({locale,intro,diagram,chapters,practiceAction
   </nav>
   <div className="li-bw-reader-next">{practiceAction}</div>
  </div>;
+}
+
+/** Shared foldable chapter paper. The existing Bookworm and Scrapebook
+ * use the same behavior and actual chapter text, with theme-specific paint. */
+export function FoldableLessonNote({locale,chapter,trailing}:{
+ locale:'vi'|'en';chapter:{title:string;description:string};trailing?:React.ReactNode;
+}){
+ const reduced=useReducedMotion();
+ const [paperNoteOpen,setPaperNoteOpen]=useState(false);
+ const noteId=useId();
+ const t=(vi:string,en:string)=>locale==='vi'?vi:en;
+ return <>
+  <div className="li-bw-reader-scrap-tools">
+   <button className="li-bw-reader-note-toggle" type="button"
+    aria-expanded={paperNoteOpen} aria-controls={noteId}
+    onClick={()=>setPaperNoteOpen(v=>!v)}>
+    <LiIcon name="feather" size={16}/>
+    {paperNoteOpen?t('Gấp mẩu giấy','Fold note'):t('Mở mẩu giấy','Unfold note')}
+   </button>
+   {trailing}
+  </div>
+  <div id={noteId} style={{display:'contents'}}>
+   <AnimatePresence initial={false}>
+    {paperNoteOpen&&<motion.div key="scrap-note" className="li-bw-reader-scrap-note"
+      initial={reduced?false:{opacity:0,rotate:-5,y:-14,scale:.96}}
+      animate={{opacity:1,rotate:-1.5,y:0,scale:1}}
+      exit={reduced?{opacity:0}:{opacity:0,rotate:3,y:-8,scale:.97}}
+      transition={{duration:reduced?0:.32,ease:'easeOut'}}>
+      <LiIcon name="feather" size={18}/>
+      <span>{chapter.title}</span>
+      <Text role="support">{chapter.description}</Text>
+    </motion.div>}
+   </AnimatePresence>
+  </div>
+ </>;
 }

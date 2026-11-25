@@ -221,3 +221,38 @@
   transform:none;
  }
 }
+
+/* Actual lesson example sticker, shared with Bookworm's folding interaction.
+ * Solid Vintage Pop yellow paper and tape, without decorative perimeter ink. */
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-example-paper{
+ min-width:0;margin:18px 0 10px;display:grid;gap:14px;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-example-paper .li-bw-reader-scrap-tools{
+ display:flex;align-items:center;gap:12px;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-example-paper .li-bw-reader-note-toggle{
+ min-height:48px;display:inline-flex;align-items:center;gap:8px;
+ padding:8px 12px;background:var(--vp-accent-olive);color:var(--vp-primary);
+ border:0;font:600 14px/1.4 var(--li-font-ui);cursor:pointer;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-example-paper .li-bw-reader-note-toggle:focus-visible{
+ outline:3px solid var(--vp-secondary);outline-offset:3px;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-example-paper .li-bw-reader-scrap-note{
+ position:relative;min-width:0;display:grid;gap:10px;
+ padding:clamp(20px,4vw,34px);margin:6px 3px 12px;
+ background:var(--vp-accent-yellow);color:var(--vp-primary);
+ border:0;box-shadow:0 8px 16px color-mix(in srgb,var(--vp-primary) 14%,transparent);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-example-paper .li-bw-reader-scrap-note::before{
+ content:"";position:absolute;pointer-events:none;
+ top:-9px;left:calc(50% - 35px);width:70px;height:20px;
+ background:var(--vp-accent-lavender);opacity:.8;transform:rotate(-5deg);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-example-paper .li-bw-reader-scrap-note>span{
+ font:600 clamp(24px,3.2vw,32px)/1.2 Georgia,serif;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-example-paper .li-bw-reader-scrap-note .li-atom-text{
+ color:var(--vp-primary);max-width:100%;overflow-wrap:anywhere;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-example-paper>div:empty{display:none;}

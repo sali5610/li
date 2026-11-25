@@ -9,7 +9,7 @@ import {NotebookAnnotation} from './NotebookAnnotation';
  * The note reuses exactly the source text from Notebook marginalia.
  */
 export function ScrapebookSheet({locale,mini,hintText,children}:{
- locale:'vi'|'en';mini:boolean;hintText:string;children:React.ReactNode;
+ locale:'vi'|'en';mini:boolean;hintText?:string;children:React.ReactNode;
 }){
  const reduced=useReducedMotion();
  const [peeled,setPeeled]=useState(false);
@@ -23,7 +23,7 @@ export function ScrapebookSheet({locale,mini,hintText,children}:{
    {mini?<span className="li-scrapebook-sticker li-scrapebook-sticker--mini" aria-hidden="true">
     <LiIcon name="sparkles" size={17}/> {t('SỔ GHÉP','SCRAPEBOOK')}
    </span>:
-   <div className="li-scrapebook-tools">
+   hintText!==undefined?<div className="li-scrapebook-tools">
     <button type="button" className="li-scrapebook-note-toggle"
      aria-controls={noteId} aria-expanded={noteOpen}
      onClick={()=>setNoteOpen(value=>!value)}>
@@ -41,9 +41,9 @@ export function ScrapebookSheet({locale,mini,hintText,children}:{
      <LiIcon name={peeled?'bookmark':'sparkles'} size={18}/>
      <span>{peeled?t('DÁN LẠI','RE-STICK'):t('BÓC STICKER','PEEL STICKER')}</span>
     </motion.button>
-   </div>}
+   </div>:null}
   </div>
-  {!mini&&<AnimatePresence initial={false}>
+  {!mini&&hintText!==undefined&&<AnimatePresence initial={false}>
    {noteOpen&&<motion.aside key="hint" id={noteId}
     className="li-scrapebook-hint" role="note"
     aria-label={t('Ghi chú gợi ý bên lề','Marginal hint note')}

@@ -4,18 +4,21 @@ import {Heading,Text} from './Atoms';
 import {LiIcon} from './LucideIcons';
 import {VintagePopCollage} from './VintagePopCollage';
 import {VintagePopStamp} from './VintagePopStamp';
+import {FoldableLessonNote} from './BookwormLessonBook';
 
 /** Canonical lesson content is supplied from AppFlowLayouts. Only the
  * visual book, bookmark, paper-corner and collage are owned here. */
-export function VintagePopLessonBook({locale,intro,diagram,chapters,practiceAction}:{
+export function VintagePopLessonBook({locale,intro,diagram,chapters,practiceAction,showExamplePaper=false}:{
  locale:'vi'|'en';intro:React.ReactNode;diagram:React.ReactNode;
  chapters:ReadonlyArray<{title:string;description:string}>;
  practiceAction:React.ReactNode;
+ showExamplePaper?:boolean;
 }){
  const reduced=useReducedMotion();
  const [marked,setMarked]=useState(false);
  const [cornerOpen,setCornerOpen]=useState(false);
- return <article className="li-pop-lesson" data-corner={cornerOpen?'lifted':'flat'}>
+ return <>
+ <article className="li-pop-lesson" data-corner={cornerOpen?'lifted':'flat'}>
   <motion.button type="button" className="li-pop-lesson-bookmark"
    onClick={()=>setMarked(v=>!v)} aria-pressed={marked}
    aria-label={locale==='vi'?'Đánh dấu trang sách (bản thử)':'Bookmark the preview page'}
@@ -49,5 +52,9 @@ export function VintagePopLessonBook({locale,intro,diagram,chapters,practiceActi
   </motion.button>
   <VintagePopStamp active={marked}/>
   {practiceAction}
- </article>;
+ </article>
+ {showExamplePaper&&chapters[1]&&<div className="li-scrapebook-example-paper">
+  <FoldableLessonNote locale={locale} chapter={chapters[1]}/>
+ </div>}
+ </>;
 }

@@ -8,7 +8,7 @@
  * Do not publish this worker separately from the matching first-party client.
  */
 import {handleAuthProxyRequest,processAuthMiddleware} from '@neondatabase/auth/server';
-import {FIRST_PARTY_ORIGIN,FIRST_PARTY_AUTH_PREFIX,authProxyPath,isFirstPartyCallback}
+import {FIRST_PARTY_ORIGIN,FIRST_PARTY_AUTH_PREFIX,authProxyPath,isFirstPartyCallback,firstPartySessionRequest}
  from './first-party-contract.js';
 
 import {handleAiRoute,type AiServerEnv} from './ai-access-server.js';
@@ -53,7 +53,7 @@ export default {
    const path=authProxyPath(url,request.method);
    if(!path)return new Response('Not found',{status:404,headers:noCacheHeaders()});
    const response=await handleAuthProxyRequest({
-    request,path,baseUrl:UPSTREAM_NEON_AUTH_URL,
+    request:firstPartySessionRequest(request),path,baseUrl:UPSTREAM_NEON_AUTH_URL,
     cookieSecret:secret,sameSite:'lax',sessionDataTtl:60
    });
    return uncached(response);

@@ -494,3 +494,7 @@
  }
  .li-ui-lab-preview[data-scrapebook="true"] .li-ui-home-intro .li-scrapebook-bookmark{right:12px}
 }
+
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] :is(.li-legacy-method,.li-ds-card):focus-visible{
+ outline:2px solid var(--vp-secondary);outline-offset:2px;
+}

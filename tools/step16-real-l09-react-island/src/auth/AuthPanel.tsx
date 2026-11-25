@@ -1,5 +1,5 @@
 import {authoredCopy} from '../shell/discovery-locale.js';
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {Button,Card,Heading,Text} from '../../../../design-system/react/index';
 import '../../../../design-system/react/atoms.css';
@@ -10,6 +10,7 @@ import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING,IS_INTEGRATED_LI_APP} fr
 import {classifyOAuthReturn,type OAuthReturnCode} from './oauth-return.js';
 import {rememberOfflineInvite,recentOfflineOwner,forgetOfflineInvite} from './offline-local.js';
 import {deferAuthScreen} from './auth-display.js';
+import {recoverInviteAccess} from './auth-recovery.js';
 import {RlsQaPanel} from './RlsQaPanel.js';
 import {SyncQaPanel} from './SyncQaPanel.js';
 import {AiOwnerControl} from './AiOwnerControl.js';
@@ -28,7 +29,7 @@ const copy={
   intro:'Chỉ email được mời mới có thể vào li. Đăng nhập Google để học và đồng bộ tiến độ trên tài khoản.',
   google:'Tiếp tục với Google',logout:'Đăng xuất',busy:'Đang xử lý…',
   loading:'Đang kiểm tra phiên đăng nhập…',signed:'Đã đăng nhập với',
-  checking:'Đang kiểm tra lời mời trên máy chủ…',
+  checking:'Đang kiểm tra lời mời trên máy chủ…',retryAccess:'Thử xác minh lại',
   granted:'Email đã được mời. Quyền truy cập được xác minh.',
   offline:'Đang học offline. Quyền học trên máy có hiệu lực 7 ngày kể từ lần xác minh online gần nhất. Dữ liệu lưu trên máy và đồng bộ khi được xác minh lại.',
   offlineLocked:'Cần kết nối mạng để xác minh tài khoản và bật quyền học offline 7 ngày trên thiết bị này.',
@@ -56,7 +57,7 @@ const copy={
   intro:'Only invited Google accounts may enter li. Sign in to study and sync progress to your account.',
   google:'Continue with Google',logout:'Sign out',busy:'Working…',
   loading:'Checking your sign-in session…',signed:'Signed in as',
-  checking:'Checking your invitation with the server…',
+  checking:'Checking your invitation with the server…',retryAccess:'Verify again',
   granted:'Invitation confirmed. This account is authorized.',
   offline:'Learning offline. Device access lasts 7 days from the last online verification. Edits stay on this device and sync after revalidation.',
   offlineLocked:'Connect to verify your account and enable 7 days of offline learning on this device.',
@@ -115,7 +116,10 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  // A signed-in device may switch to its verified offline lease on the next
  // render. Do not briefly unmount its private UI while the offline effect runs.
  const offlineAccess=localOffline&&(access==='offline'||access==='granted');
- const [ownerReady,setOwnerReady]=useState(false);
+ const [readyOwner,setReadyOwner]=useState<string|null>(null);
+ const ownerReady=Boolean(accountId&&readyOwner===accountId);
+ const onlineAccess=Boolean(liveAccountId&&verifiedInvite?.uid===liveAccountId&&access==='granted'&&!isOffline&&!isPending&&!error);
+ const lastWake=useRef(0);
  const [syncStatus,setSyncStatus]=useState<SyncReport>('checking');
  const [journalChoice,setJournalChoice]=useState(false);
  const [journalBusy,setJournalBusy]=useState(false);
@@ -157,7 +161,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  useEffect(()=>{
   // The consent port belongs to Auth, NOT the retired native checkbox.
   // React Settings must keep working when all old Settings markup is removed.
-  const permitted=Boolean(IS_INTEGRATED_LI_APP&&accountId&&access==='granted'&&ownerReady);
+  const permitted=Boolean(IS_INTEGRATED_LI_APP&&accountId&&onlineAccess&&ownerReady);
   // One invited-account consent owner for both React and optional native
   // fallback. React calls set() directly; no hidden checkbox clicks.
   const description=journalError||(journalBusy?(locale==='en'?'Updating journal permission…':'Đang cập nhật quyền Nhật Ký…'):
@@ -190,25 +194,21 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    checkbox?.removeEventListener('change',onChange);
    if(owner.liJournalCloudConsent===port)delete owner.liJournalCloudConsent;
   };
- },[accountId,access,ownerReady,journalChoice,journalBusy,journalError,locale]);
+ },[accountId,access,onlineAccess,ownerReady,journalChoice,journalBusy,journalError,locale]);
 
- // Do not reveal native lesson state from another invited account.
- // Local account ownership is prepared synchronously before the app is shown.
+ // Local data must belong to the verified account before any private UI mounts.
  useEffect(()=>{
-  if(!accountId||(!localOffline&&(isPending||error))||
-    !(access==='granted'&&!isOffline||offlineAccess)){
-  setOwnerReady(false);return;
- }
+  if(!accountId||!(onlineAccess||offlineAccess)){
+   setReadyOwner(null);return;
+  }
   try{
    if(prepareLearnerAccount(accountId)){window.location.reload();return;}
-   setOwnerReady(true);
-  }catch{setOwnerReady(false);setSyncStatus('error');}
- },[accountId,isPending,error,access,localOffline,isOffline,offlineAccess]);
+   setReadyOwner(accountId);
+  }catch{setReadyOwner(null);setSyncStatus('error');setAccess('error');}
+ },[accountId,onlineAccess,offlineAccess]);
  useEffect(()=>{
   if(!document.getElementById('li-staging-auth-root'))return;
-  const permitted=Boolean(accountId)&&ownerReady&&
-   ((access==='granted'&&!isOffline&&!isPending&&!error)||
-    offlineAccess);
+  const permitted=Boolean(accountId)&&ownerReady&&(onlineAccess||offlineAccess);
   document.documentElement.classList.toggle('li-auth-verified',Boolean(permitted));
   // Focus/pageshow/online revalidation locks private UI but is NOT logout.
   // Preserve the active Catalog/lesson URL until invite verification resolves.
@@ -223,11 +223,11 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    detail:{verified:Boolean(permitted),transient,accountId:accountId||null}
   }));
   return()=>{document.documentElement.classList.remove('li-auth-verified');};
- },[accountId,isPending,error,access,ownerReady,isOffline,localOffline,offlineAccess]);
+ },[accountId,isPending,error,access,ownerReady,isOffline,localOffline,offlineAccess,onlineAccess]);
  // A signed-out/denied visitor can see the real Auth screen only after the
  // session check settles; never reveal a static Home during auth bootstrap.
  useEffect(()=>{
-  if(!IS_INTEGRATED_LI_APP||localOffline||(!isOffline&&isPending))return;
+  if(!IS_INTEGRATED_LI_APP||(localOffline&&access!=='error')||(!isOffline&&isPending))return;
   if(isOffline||!accountId||Boolean(error)||access==='denied'||access==='error')
    window.dispatchEvent(new Event('li:auth-startup-settled'));
  },[isPending,accountId,error,access,localOffline,isOffline]);
@@ -241,7 +241,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  // Existing Dexie outbox captures offline edits without server writes.
  useEffect(()=>{
   if(!IS_INTEGRATED_LI_APP||!ownerReady||!accountId||
-    !(access==='granted'&&!isOffline||offlineAccess))return;
+    !(onlineAccess||offlineAccess))return;
   setSyncStatus('checking');
   return startLearnerSync(accountId,value=>{
    setSyncStatus(value);
@@ -249,7 +249,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    const status=document.getElementById('li-cloud-status');
    if(status)status.textContent=syncCopy[document.documentElement.lang==='en'?'en':'vi'][value];
   });
- },[accountId,ownerReady,access,isOffline,localOffline,offlineAccess]);
+ },[accountId,ownerReady,access,isOffline,localOffline,offlineAccess,onlineAccess]);
  const oauthReturn=classifyOAuthReturn(window.location.search,Boolean(accountId),isPending);
  const oauthMessage=(code:OAuthReturnCode)=>code==='account_not_linked'?t.oauthLink:
   code==='state_mismatch'||code==='state_security_mismatch'||code==='no_callback_url'||code==='invalid_callback_request'?t.oauthState:
@@ -264,9 +264,12 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    if(document.visibilityState!=='visible')return;
    const online=navigator.onLine;
    setIsOffline(!online);
-   // An offline-failed Neon session hook may stay stale after the network returns.
-   // Refresh managed auth, not the JWT or the server invite permission cache.
-   if(online&&!isPending&&(!liveAccountId||error))void refetch();
+   // Coalesce iOS focus/pageshow/visibility events in one wake.
+   const now=Date.now();
+   if(online&&now-lastWake.current<1200)return;
+   lastWake.current=now;
+   // Even a cached Google user needs the actual managed session refreshed.
+   if(online)void refetch();
    setAccessEpoch(epoch=>epoch+1);
   };
   const network=()=>{
@@ -325,7 +328,10 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    try{
     // The server-backed invitation RPC verifies session↔JWT subject itself.
     // This auth-only pilot NEVER constructs a learner Data API adapter.
-    const allowed=await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort);
+    const allowed=await recoverInviteAccess(
+     ()=>checkInviteAccess(NEON_DATA_API_URL,neonSessionPort,undefined,liveAccountId),
+     ()=>!disposed&&navigator.onLine
+    );
     if(!disposed){
      if(!allowed)forgetOfflineInvite(); // Revocation or explicit denial.
      setVerifiedInvite(allowed&&navigator.onLine?{uid:liveAccountId,at:Date.now()}:null);
@@ -364,6 +370,12 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     'Could not resolve the difference. Both versions remain protected.');
   }finally{setResolving(false);}
  }
+ async function retryAccess(){
+  if(busy||!navigator.onLine)return;
+  setFeedback('');setAccess('checking');setVerifiedInvite(null);
+  try{await refetch();}catch{/* effect will report real verification failure */}
+  setAccessEpoch(epoch=>epoch+1);
+ }
  async function signInGoogle(){
   if(busy)return;
   setBusy('login');setFeedback('');
@@ -396,9 +408,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   }catch{setFeedback(t.leave);}
   finally{setBusy(null);}
  }
- const showApp=Boolean(IS_INTEGRATED_LI_APP&&accountId&&ownerReady&&
-  ((access==='granted'&&!isOffline&&!isPending&&!error)||
-   offlineAccess));
+ const showApp=Boolean(IS_INTEGRATED_LI_APP&&accountId&&ownerReady&&(onlineAccess||offlineAccess));
  // A managed session or signed invite may be restoring after refresh/focus.
  // The neutral boot cover stays visible; rendering Auth here causes a login flash.
  // Real signed-out/denied/error states still render the actual sign-in gate.
@@ -462,6 +472,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    {isPending&&!isOffline&&!localOffline&&<p role="status">{t.loading}</p>}
    {isOffline&&!localOffline&&<p role="alert">{t.offlineLocked}</p>}
    {!isOffline&&error&&!localOffline&&<p role="alert">{t.error}</p>}
+   {!isOffline&&!isPending&&(access==='error'||Boolean(error))&&<Button variant="secondary" onClick={()=>void retryAccess()} disabled={busy!==null}>{t.retryAccess}</Button>}
    {(!isOffline&&!isPending&&!error||localOffline)&&(accountId?
     <div className="auth-account" key={accountId}>
      <p className="auth-session-identity">

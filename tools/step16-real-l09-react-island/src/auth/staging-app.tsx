@@ -36,6 +36,9 @@ type BootFailure='timeout'|'offline'|'runtime'|'bundle';
 let bootFailure:BootFailure|null=null;
 let bootComplete=false;
 let bootFrame=0;
+let bootTimer=0;
+let lastBootVerified:boolean|null=null;
+let lastBootTransient:boolean|null=null;
 const isVerified=()=>document.documentElement.classList.contains('li-auth-verified');
 function localizeBoot(){
  const language=window as Window&{liLanguage?:{get?:()=>string}};
@@ -95,6 +98,7 @@ window.addEventListener('error',event=>{
 function revealBoot(){
  if(bootComplete)return;
  bootComplete=true;
+ window.clearTimeout(bootTimer);
  document.documentElement.classList.add('li-boot-ready');
  bootSplash?.setAttribute('aria-hidden','true');
 }
@@ -117,8 +121,18 @@ function checkAppBoot(){
   }));
  }else bootFrame=window.requestAnimationFrame(checkAppBoot);
 }
+function armBootTimeout(){
+ window.clearTimeout(bootTimer);
+ bootTimer=window.setTimeout(()=>{
+  if(!document.documentElement.classList.contains('li-boot-ready'))showBootError(navigator.onLine?'timeout':'offline');
+ },20000);
+}
 window.addEventListener('li:auth-verified-changed',event=>{
- const verified=Boolean((event as CustomEvent<{verified?:boolean}>).detail?.verified);
+ const detail=(event as CustomEvent<{verified?:boolean;transient?:boolean}>).detail;
+ const verified=Boolean(detail?.verified),transient=Boolean(detail?.transient);
+ if(verified===lastBootVerified&&(verified||transient===lastBootTransient))return;
+ lastBootVerified=verified;lastBootTransient=transient;
+ armBootTimeout();
  if(verified){
   resetBoot();
   // A guest may sign in without a full navigation; restore the cover before
@@ -141,10 +155,7 @@ window.addEventListener('li:auth-startup-settled',()=>{
 });
 // A genuine startup timeout is a recoverable failure, not endless loading.
 // We cannot infer its underlying cause; offer a clear message and real reload.
-window.setTimeout(()=>{
- if(document.documentElement.classList.contains('li-boot-ready'))return;
- showBootError(navigator.onLine?'timeout':'offline');
-},20000);
+armBootTimeout();
 
 // Replace the native Catalog path controller before any Home, Search or
 // lesson React mounts. Native fallback is still shipped in standalone site.

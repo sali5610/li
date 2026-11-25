@@ -9,7 +9,8 @@ import type {Requester} from './neon-api.js';
 export async function checkInviteAccess(
  endpoint:string,
  auth:NeonAuthSessionPort,
- request:Requester=fetch
+ request:Requester=fetch,
+ expectedAccountId?:string
 ):Promise<boolean>{
  const url=new URL(endpoint);
  if(url.protocol!=='https:'||!url.pathname.endsWith('/rest/v1')||url.username||url.password)
@@ -17,7 +18,11 @@ export async function checkInviteAccess(
  const session=await auth.getSession();
  if(session.error)throw new Error('INVITE_AUTH_SESSION_FAILED');
  const accountId=session.data?.user?.id;
- if(typeof accountId!=='string'||!accountId.trim())return false;
+ if(typeof accountId!=='string'||!accountId.trim()){
+  if(expectedAccountId)throw new Error('INVITE_AUTH_SESSION_FAILED');
+  return false;
+ }
+ if(expectedAccountId&&accountId!==expectedAccountId)throw new Error('INVITE_ACCOUNT_MISMATCH');
  const jwt=await auth.getJWTToken();
  if(typeof jwt!=='string'||jwt.split('.').length!==3)throw new Error('INVITE_JWT_REQUIRED');
  let subject:unknown;
@@ -85,6 +90,7 @@ export function safeJwtFetchError(problem:unknown):Error{
  * Never surface backend bodies, JWTs, identifiers or raw exception messages. */
 export function safeInviteErrorCode(error:unknown):string{
  const message=error instanceof Error?error.message:'';
+ if(message==='INVITE_CHECK_TIMEOUT')return 'INV-TIMEOUT';
  if(message==='NEON_AUTH_JWT_FETCH_FAILED')return 'INV-JWT-FETCH';
  const jwtStatus=/^NEON_AUTH_JWT_HTTP_(\d{3})$/.exec(message);
  if(jwtStatus){

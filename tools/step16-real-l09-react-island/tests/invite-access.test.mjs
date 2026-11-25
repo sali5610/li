@@ -162,3 +162,10 @@ test('staging has an exact compile-time origin and repository path, not an open 
  assert.match(panelSource,/IS_GITHUB_STAGING\?'理 · li\.':t\.tag/);
  assert.match(panelSource,/document\.documentElement\.classList\.toggle\('li-auth-verified'/);
 });
+
+test('cached user cannot confuse temporarily absent session with explicit invite denial or a different account',async()=>{
+ await assert.rejects(checkInviteAccess(endpoint,authFor(null),async()=>{throw Error('unexpected RPC');},'A'),/INVITE_AUTH_SESSION_FAILED/);
+ await assert.rejects(checkInviteAccess(endpoint,authFor('B'),async()=>{throw Error('unexpected RPC');},'A'),/INVITE_ACCOUNT_MISMATCH/);
+ assert.equal(await checkInviteAccess(endpoint,authFor('A'),async()=>ok(false),'A'),false);
+ assert.equal(await checkInviteAccess(endpoint,authFor('A'),async()=>ok(true),'A'),true);
+});

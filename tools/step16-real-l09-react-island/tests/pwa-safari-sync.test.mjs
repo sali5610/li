@@ -55,7 +55,7 @@ test('iPhone reconnect refreshes managed session and rechecks signed Neon invite
  assert.match(panel,/const network=\(\)=>\{[\s\S]*?if\(online\)void refetch\(\)/);
  assert.match(panel,/window\.addEventListener\('pageshow',refresh\)/);
  assert.match(panel,/window\.addEventListener\('online',network\)/);
- assert.match(panel,/const allowed=await checkInviteAccess\(NEON_DATA_API_URL,neonSessionPort\)/);
+ assert.match(panel,/checkInviteAccess\(NEON_DATA_API_URL,neonSessionPort,undefined,liveAccountId\)/);
  assert.match(panel,/return startLearnerSync\(accountId/);
 });
 

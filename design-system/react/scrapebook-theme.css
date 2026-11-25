@@ -17,8 +17,11 @@
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-sheet{
  min-width:0;padding:clamp(8px,1.6vw,22px);
  background:var(--scrap-paper);
- background-image:radial-gradient(color-mix(in srgb,var(--scrap-ink) 13%,transparent) .7px,transparent 1px);
- background-size:19px 19px;color:var(--scrap-ink);
+ background-image:none;color:var(--scrap-ink);
+}
+/* Plain outer/background paper; retain actual lesson texture and stamp masks. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page{
+ background-image:none;
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-masthead{
  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;

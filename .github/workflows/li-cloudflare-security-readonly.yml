@@ -72,8 +72,15 @@ jobs:
           def no_store(h):
               return 'no-store' in h.get('Cache-Control','').lower()
           def no_session(data):
-              v = obj(data)
-              return v is None or (isinstance(v,dict) and not v.get('session') and not v.get('user') and not v.get('token') and (v.get('data') is None or (isinstance(v.get('data'),dict) and not any(v['data'].get(k) for k in ('user','session','token')))))
+              try: v=json.loads(data)
+              except (ValueError,TypeError): return False
+              if v is None: return True
+              if not isinstance(v,dict): return False
+              if any(v.get(k) for k in ('session','user','token')): return False
+              if 'data' in v:
+                  d=v['data']
+                  return d is None or (isinstance(d,dict) and bool(set(d)&{'user','session','token'}) and not any(d.get(k) for k in ('user','session','token')))
+              return bool(set(v)&{'session','user','token'})
           def jwt(exp):
               def b64(x):
                   return base64.urlsafe_b64encode(json.dumps(x).encode()).decode().rstrip('=')
@@ -123,7 +130,7 @@ jobs:
               # For invite table owner_id may not exist; do not mistake 400 for auth denial.
               if s==400 and table=='li_invited_emails':
                   s,h,b=call(DATA+'/'+table+'?select=email&limit=0')
-              result('neon_anon_denied_'+table,s in (401,403,404),s,gap=s==200 and obj(b)==[])
+              result('neon_anon_denied_'+table,s in (401,403,404),s,gap=(s==200 and obj(b)==[]) or s in (301,302,307,308))
 
           # Bounded passive scan of deployed HTML and same-origin JS entrypoints.
           # This does NOT prove absence of secrets throughout all files/logs.

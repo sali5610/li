@@ -205,7 +205,7 @@ function Lab(){
   </header>
   <div className="li-ui-lab-viewport" data-viewport={viewport}>
    {style==='scrapebook'?<ScrapebookSheet key={target} locale={locale} mini={mini}
-    hintText={target==='lesson'?undefined:hintFor(target)}>
+    coverInPage={target!=='home'} hintText={target==='lesson'?undefined:hintFor(target)}>
     {renderPage(target,style)}
    </ScrapebookSheet>:renderPage(target,style)}
   </div>

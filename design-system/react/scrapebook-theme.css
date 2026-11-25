@@ -1,6 +1,8 @@
 /* Scrapebook only: Vintage Pop palette, Notebook ink and flat paper craft.
  * These overrides never touch Vintage Pop/Notebook or the real app.
- * The vintage stamps, postal marks, polaroid tape and page interactions stay. */
+ * PO visual rule: paper-cut decorations use solid fills and optional exterior
+ * shadows, never perimeter strokes. Functional controls, focus, ink marks
+ * and content separators remain. Stamp/postcard interactions stay. */
 .li-ui-lab-preview[data-scrapebook="true"]{
  --nb-wine:var(--vp-brick);
  --nb-blue:var(--vp-forest);
@@ -21,7 +23,6 @@
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-masthead{
  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
  gap:12px;min-height:64px;padding:4px 4px 12px;
- border-bottom:2px dashed var(--scrap-ink);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-folio{
  color:var(--scrap-ink);
@@ -37,10 +38,10 @@
  display:inline-flex;align-items:center;justify-content:center;gap:8px;
  min-height:48px;padding:9px 12px;cursor:pointer;
  font:700 12px/1.2 var(--li-font-ui);
- color:var(--scrap-ink);border:1.5px solid var(--scrap-ink);
+ color:var(--scrap-ink);border:0;
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-note-toggle{
- background:var(--scrap-paper);border-style:dashed;
+ background:var(--scrap-lilac);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-note-toggle[aria-expanded="true"]{
  background:var(--scrap-olive);
@@ -68,7 +69,7 @@
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-hint-inner{
  display:flex;align-items:center;gap:clamp(8px,2vw,25px);
  padding:12px 14px;margin:10px 2px 4px;
- border:1px dashed var(--scrap-ink);
+ border:0;
  background:var(--scrap-paper);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-hint-label{
@@ -83,7 +84,7 @@
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-canvas{
  position:relative;isolation:isolate;min-width:0;
  margin:23px 2px 12px;padding:clamp(10px,1.3vw,18px);
- background:var(--scrap-paper);border:2px solid var(--scrap-ink);
+ background:var(--scrap-paper);border:0;
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-canvas>.li-flow-page,
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-canvas>.li-ui-home{
@@ -94,7 +95,7 @@
  top:-12px;left:clamp(24px,10%,115px);
  width:clamp(58px,13%,114px);height:25px;transform-origin:50% 50%;
  background:var(--vp-accent-yellow,var(--scrap-olive));
- border-block:1px solid var(--scrap-ink);opacity:.84;
+ border:0;opacity:.84;
  clip-path:polygon(0 0,100% 0,96% 14%,100% 32%,96% 48%,100% 65%,96% 82%,100% 100%,0 100%,4% 82%,0 66%,4% 49%,0 30%,4% 14%);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-bookmark{
@@ -103,7 +104,7 @@
  gap:5px;width:58px;height:76px;padding:11px 4px 19px;
  cursor:pointer;color:var(--scrap-ink);
  background:var(--vp-accent-yellow,var(--scrap-olive));
- border:2px solid var(--scrap-ink);
+ border:0;
  clip-path:polygon(0 0,100% 0,100% 100%,50% 79%,0 100%);
  font:800 9px/1.1 ui-monospace,SFMono-Regular,Consolas,monospace;
  letter-spacing:.04em;
@@ -138,10 +139,10 @@
  background:transparent;
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page-head{
- border-color:var(--scrap-ink);background-color:var(--scrap-olive);
+ background-color:var(--scrap-olive);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card:nth-child(n){
- background:var(--scrap-paper);border:2px solid var(--scrap-ink);
+ background:var(--scrap-paper);
  padding:clamp(14px,2vw,24px);margin-top:0;
  transform:rotate(-1deg);transform-origin:50% 8%;
  transition:transform .3s cubic-bezier(.2,.8,.2,1);
@@ -161,6 +162,15 @@
   transparent 0,transparent 33px,
   color-mix(in srgb,var(--scrap-ink) 16%,transparent) 34px 35px);
  background-size:100% 35px;
+}
+/* Badge labels and cut-paper decorations are filled shapes, not framed
+ * illustrations. Preserve the existing Vintage Pop art rules and all
+ * functional section dividers. Keyboard focus styling is independent. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] :is(
+ .li-atom-badge,.li-pop-collage,.li-pop-collage img,.li-pop-collage-tape,
+ .li-pop-collage-postmark,.li-pop-lesson-bookmark,.li-pop-page-corner
+){
+ border:0;
 }
 /* Paper-polaroid movement and original external shadow stay. */
 .li-ui-lab-preview[data-scrapebook="true"] .li-pop-collage{

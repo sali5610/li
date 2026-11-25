@@ -1,0 +1,33 @@
+<div id="li-boot-splash">
+ <div id="li-boot-loading" class="li-state-scene" data-li-state="loading" role="status" aria-live="polite" aria-atomic="true">
+  <img class="li-state-scene__art" src="./assets/laoly-state-loading.png" width="220" height="220" loading="eager" fetchpriority="high" alt="" aria-hidden="true">
+  <p class="li-state-scene__title" id="li-boot-title">Đang mở Tàng Thư…</p>
+  <p class="li-state-scene__description" id="li-boot-description">Lão Lý đang chuẩn bị mọi thứ.</p>
+ </div>
+ <div id="li-boot-error" class="li-state-scene" data-li-state="error" role="alert" hidden>
+  <img class="li-state-scene__art" src="./assets/laoly-state-error.png" width="220" height="220" alt="" aria-hidden="true">
+  <p class="li-state-scene__title" id="li-boot-error-title">Chưa thể mở Tàng Thư</p>
+  <p class="li-state-scene__description" id="li-boot-error-description">Ứng dụng khởi động không thành công. Hãy thử tải lại.</p>
+  <button type="button" class="li-state-scene__action li-boot-retry action" id="li-boot-error-retry">Tải lại ứng dụng</button>
+ </div>
+</div>
+<script>(function(){
+ function fail(){
+  if(window.liBootRuntimeReady||document.documentElement.classList.contains("li-boot-ready"))return;
+  document.getElementById("li-boot-loading").hidden=true;
+  document.getElementById("li-boot-error").hidden=false;
+  if(document.documentElement.lang==="en"){
+   document.getElementById("li-boot-error-title").textContent="The app could not open";
+   document.getElementById("li-boot-error-description").textContent="A required app file did not load. Check your connection and reload.";
+   document.getElementById("li-boot-error-retry").textContent="Reload the app";
+  }
+ }
+ window.addEventListener("error",function(event){
+  var target=event.target;
+  if(target&&target.tagName==="SCRIPT"&&String(target.src||"").indexOf("/assets/li-first-party-"+"app.js")!==-1)fail();
+ },true);
+ window.setTimeout(fail,20000);
+ document.getElementById("li-boot-error-retry").addEventListener("click",function(){
+  if(!window.liBootRuntimeReady)location.reload();
+ });
+})();</script>

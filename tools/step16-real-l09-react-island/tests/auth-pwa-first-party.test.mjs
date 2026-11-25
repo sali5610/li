@@ -7,7 +7,7 @@ const source=readFileSync(new URL('../src/auth/first-party-contract.ts',import.m
 const js=ts.transpileModule(source,{compilerOptions:{
  module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022
 }}).outputText;
-const {authProxyPath,isFirstPartyCallback,FIRST_PARTY_ORIGIN}=await import(
+const {authProxyPath,isFirstPartyCallback,firstPartySessionRequest,FIRST_PARTY_ORIGIN}=await import(
  'data:text/javascript;base64,'+Buffer.from(js).toString('base64')
 );
 
@@ -107,4 +107,78 @@ test('real Neon proxy routes /token upstream with session cookie, never session-
  }finally{
   globalThis.fetch=nativeFetch;
  }
+});
+
+test('only allowlisted first-party GET session bypasses the lossy SDK cookie cache',()=>{
+ const origin=FIRST_PARTY_ORIGIN;
+ const request=new Request(origin+'/api/auth/get-session?disableCookieCache=false&other=1',{
+  headers:{Cookie:'__Secure-neon-auth.session_token=old-session'}
+ });
+ const restored=firstPartySessionRequest(request);
+ assert.equal(new URL(restored.url).searchParams.get('disableCookieCache'),'true');
+ assert.equal(new URL(restored.url).searchParams.get('other'),'1');
+ assert.equal(restored.headers.get('cookie'),request.headers.get('cookie'));
+ assert.equal(restored.method,'GET');
+ for(const other of [
+  new Request(origin+'/api/auth/token'),
+  new Request(origin+'/api/auth/sign-out',{method:'POST'}),
+  new Request(origin+'/api/auth/get-session',{method:'POST'}),
+  new Request('https://example.invalid/api/auth/get-session')
+ ])assert.equal(firstPartySessionRequest(other),other);
+ for(const name of ['cloudflare-auth-only-worker.ts','cloudflare-worker.ts']){
+  const worker=readFileSync(new URL('../src/auth/'+name,import.meta.url),'utf8');
+  assert.match(worker,/request:firstPartySessionRequest\(request\),path,baseUrl:/);
+ }
+});
+
+test('managed session restore forwards the real upstream renewal cookie; no session remains signed out',async()=>{
+ const {handleAuthProxyRequest}=await import('@neondatabase/auth/server');
+ const nativeFetch=globalThis.fetch;
+ const oldCookie='__Secure-neon-auth.session_token=old-session';
+ const renewedCookie='__Secure-neon-auth.session_token=renewed-session; Path=/; Max-Age=604800; HttpOnly; Secure; SameSite=Lax';
+ const now=new Date().toISOString();
+ const body={
+  session:{id:'test-session',userId:'test-user',token:'renewed-session',
+   createdAt:now,updatedAt:now,expiresAt:new Date(Date.now()+604800000).toISOString()},
+  user:{id:'test-user',email:'test@example.invalid',name:'Synthetic user',emailVerified:true,createdAt:now,updatedAt:now}
+ };
+ let directCalls=0;
+ let signedOut=false;
+ try{
+  globalThis.fetch=async(url,init)=>{
+   const u=new URL(url);
+   assert.equal(u.pathname,'/li/auth/get-session');
+   const cookie=new Headers(init?.headers).get('cookie')||'';
+   if(u.searchParams.get('disableCookieCache')==='true'){
+    directCalls++;
+    if(signedOut){
+     assert.equal(cookie,'');
+     return Response.json(null);
+    }
+    assert.equal(cookie,oldCookie);
+    return Response.json(body,{headers:{'Set-Cookie':renewedCookie}});
+   }
+   // Optional SDK session-data minting performs its own upstream read.
+   assert.match(cookie,/__Secure-neon-auth\.session_token=renewed-session/);
+   return Response.json(body);
+  };
+  const proxy=async(request)=>handleAuthProxyRequest({
+   request:firstPartySessionRequest(request),path:'get-session',
+   baseUrl:'https://upstream.example/li/auth',
+   cookieSecret:'test-secret-32-characters-minimum-for-ci',sameSite:'lax',sessionDataTtl:60
+  });
+  const response=await proxy(new Request(FIRST_PARTY_ORIGIN+'/api/auth/get-session',{
+   headers:{Cookie:oldCookie}
+  }));
+  assert.equal(response.status,200);
+  const cookies=response.headers.getSetCookie();
+  assert(cookies.some(c=>c.startsWith('__Secure-neon-auth.session_token=renewed-session;')&&
+   /Max-Age=604800/i.test(c)&&/HttpOnly/i.test(c)&&/Secure/i.test(c)&&/Path=\//i.test(c)),
+   'upstream session renewal and security attributes must reach the browser');
+  assert.equal((await response.json()).user.id,'test-user');
+  signedOut=true;
+  const expired=await proxy(new Request(FIRST_PARTY_ORIGIN+'/api/auth/get-session'));
+  assert.equal(await expired.json(),null);
+  assert.equal(directCalls,2);
+ }finally{globalThis.fetch=nativeFetch;}
 });

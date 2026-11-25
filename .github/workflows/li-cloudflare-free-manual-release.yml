@@ -48,12 +48,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: e03aa8f1fe334fba4008c510fe640b0ca04503a7
+          ref: 97ffe58d21a08dd767043df4e6510af366b8e6dd
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "e03aa8f1fe334fba4008c510fe640b0ca04503a7"
+          test "$(git rev-parse HEAD)" = "97ffe58d21a08dd767043df4e6510af366b8e6dd"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -89,6 +89,12 @@ jobs:
           test -s dist-cloudflare-auth-candidate/_worker.js
           test -s dist-cloudflare-auth-candidate/assets/li-first-party-app.js
           test -s dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'id="li-boot-splash"' dist-cloudflare-auth-candidate/index.html
+          grep -Fq 'id="li-boot-error"' dist-cloudflare-auth-candidate/index.html
+          grep -Fq 'laoly-state-loading.png' dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'laoly-state-error.png' dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'SKIP_WAITING' dist-cloudflare-auth-candidate/assets/pwa-register.js
+          grep -Fq 'SKIP_WAITING' dist-cloudflare-auth-candidate/sw.js
           grep -Fq 'li-first-party-app.js' dist-cloudflare-auth-candidate/sw.js
           grep -Fq 'li-push-handler.js' dist-cloudflare-auth-candidate/sw.js
           ! grep -Fq 'neon.tech' dist-cloudflare-auth-candidate/sw.js
@@ -149,7 +155,7 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.auth_only_mode && 'e03aa8f1fe334fba4008c510fe640b0ca04503a7' || (inputs.ai_mode && 'c32d7213494e952702488336060346e867b6c51f' || github.sha) }}
+          ref: ${{ inputs.auth_only_mode && '97ffe58d21a08dd767043df4e6510af366b8e6dd' || (inputs.ai_mode && 'c32d7213494e952702488336060346e867b6c51f' || github.sha) }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
@@ -157,8 +163,8 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
-            expected='e03aa8f1fe334fba4008c510fe640b0ca04503a7'
-            echo 'Auth-only app: exact live Reminder rearm baseline + reviewed PWA session renewal fix; no staging-wide changes.'
+            expected='97ffe58d21a08dd767043df4e6510af366b8e6dd'
+            echo 'Auth-only app: exact live Reminder rearm baseline + reviewed PWA session, draft, update and Lao Ly fixes; no staging-wide changes.'
           else
             expected='c32d7213494e952702488336060346e867b6c51f'
             echo 'AI mode reuses latest reviewed first-party source; approved Free-only AI pilot still requires verified private bindings and schema.'
@@ -234,6 +240,12 @@ jobs:
           test -s dist-cloudflare-auth-candidate/_worker.js
           test -s dist-cloudflare-auth-candidate/assets/li-first-party-app.js
           test -s dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'id="li-boot-splash"' dist-cloudflare-auth-candidate/index.html
+          grep -Fq 'id="li-boot-error"' dist-cloudflare-auth-candidate/index.html
+          grep -Fq 'laoly-state-loading.png' dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'laoly-state-error.png' dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'SKIP_WAITING' dist-cloudflare-auth-candidate/assets/pwa-register.js
+          grep -Fq 'SKIP_WAITING' dist-cloudflare-auth-candidate/sw.js
           grep -Fq 'li-first-party-app.js' dist-cloudflare-auth-candidate/sw.js
           grep -Fq 'li-push-handler.js' dist-cloudflare-auth-candidate/sw.js
           ! grep -Fq 'neon.tech' dist-cloudflare-auth-candidate/sw.js

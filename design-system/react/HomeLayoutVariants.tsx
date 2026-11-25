@@ -12,6 +12,7 @@ import {BookwormIllustration} from './BookwormIllustration';
 import {VintagePopArt} from './VintagePopArt';
 import {VintagePopCollage} from './VintagePopCollage';
 import {VintagePopStamp} from './VintagePopStamp';
+import {ScrapebookCoverContext,ScrapebookHintContext} from './ScrapebookSheet';
 import './home-layout-variants.css';
 
 /** Presentation only. Both the Lab and a future approved app Home import
@@ -48,6 +49,9 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
  guideIllustrationSrc,question,scene,source,saved,onPrevious,onNext,onExplore,onSave,onCheckin}:HomeLayoutProps){
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  const reduced=useReducedMotion();
+ const cover=React.useContext(ScrapebookCoverContext);
+ const hint=React.useContext(ScrapebookHintContext);
+ const scrapebook=variant==='vintagePop'&&cover!==null;
  const entrance=(delay:number)=>(variant==='notebook'||variant==='bookworm')&&!reduced?{
   initial:{opacity:0,y:variant==='bookworm'?23:17},
   animate:{opacity:1,y:0},
@@ -87,12 +91,13 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
    <Text role="body">{t('Không cần biết tất cả. Chỉ cần không ngừng tò mò.',
     'You needn’t know everything. Just stay curious.')}</Text>
    {variant==='vintagePop'&&<VintagePopStamp active={saved}/>}
-   {variant==='vintagePop'&&<motion.div className="li-pop-home-art" aria-hidden="true"
+   {variant==='vintagePop'&&!scrapebook&&<motion.div className="li-pop-home-art" aria-hidden="true"
     initial={reduced?false:{opacity:0,scale:.82,rotate:-14}}
     animate={{opacity:1,scale:1,rotate:0}}
     transition={{duration:reduced?0:.55,delay:reduced?0:.12}}>
     <VintagePopCollage kind="laoly" size="spot"/>
    </motion.div>}
+   {scrapebook&&cover}
   </motion.div>
   {variant==='notebook'&&<div className="li-ui-home-notebook-annotation">
    <NotebookAnnotation text={t('Viết xuống câu hỏi, rồi để trí tò mò dẫn đường.',
@@ -134,9 +139,10 @@ export function HomeLayout({variant,locale,backgroundSrc,mirrorArtSrc,avatarSrc,
    <Button onClick={onExplore}>
     <LiIcon name="arrow-right" size={18}/> {t('Đào sâu','Explore')}
    </Button>
-   <Button variant="secondary" onClick={onSave} aria-pressed={saved}>
+   {!scrapebook&&<Button variant="secondary" onClick={onSave} aria-pressed={saved}>
     <LiIcon name="bookmark" size={18}/> {saved?t('Đã lưu','Saved'):t('Lưu câu hỏi','Save')}
-   </Button>
+   </Button>}
   </motion.div>
+  {scrapebook&&hint}
  </section>;
 }

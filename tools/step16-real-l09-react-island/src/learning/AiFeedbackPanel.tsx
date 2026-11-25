@@ -69,7 +69,7 @@ export function AiFeedbackPanel({id,locale,answers,openQuestionIndices}:{
        'Only submitted open-ended answers and their reviewed rubric are sent on click. No automatic grade.'}</Text>
       <Button disabled={busy||!navigator.onLine} onClick={()=>void review()}>
        {busy?(vi?'Đang nhận xét…':'Reviewing…'):
-        vi?'Nhận feedback AI':'Get AI feedback'}</Button>
+        message?(vi?'Thử lại':'Retry'):(vi?'Nhận feedback AI':'Get AI feedback')}</Button>
       <Text role="support">{vi?
        'Không giới hạn 12 lượt trong app; Cloudflare Workers Free sẽ tự dừng khi hết quota Neurons.':
        'No 12-request app cap; Workers Free stops calls when its Neuron quota is exhausted.'}</Text>
@@ -77,7 +77,16 @@ export function AiFeedbackPanel({id,locale,answers,openQuestionIndices}:{
      <Text role="support">{vi?
       'Tài khoản này chưa được cấp AI hoặc backend chưa cấu hình. Vẫn tự đối chiếu bình thường.':
       'AI is not assigned or configured; deterministic self-review remains available.'}</Text>}
-  {message&&<Text role="support">{message}</Text>}
+  {busy&&<div className="li-state-scene" data-li-state="loading" role="status" aria-live="polite" aria-atomic="true">
+   <img className="li-state-scene__art" src="./assets/laoly-state-loading.png" width={220} height={220} alt="" aria-hidden="true"/>
+   <p className="li-state-scene__title">{vi?'Lão Lý đang nhận xét…':'Elder Ly is reviewing…'}</p>
+   <p className="li-state-scene__description">{vi?'Đang chờ phản hồi AI.':'Waiting for AI feedback.'}</p>
+  </div>}
+  {message&&!busy&&<div className="li-state-scene" data-li-state="error" role="alert">
+   <img className="li-state-scene__art" src="./assets/laoly-state-error.png" width={220} height={220} alt="" aria-hidden="true"/>
+   <p className="li-state-scene__title">{vi?'Chưa nhận được phản hồi':'Feedback unavailable'}</p>
+   <p className="li-state-scene__description">{message}</p>
+  </div>}
   {feedback&&<div aria-live="polite" role="status">
    <Text role="body">{feedback}</Text>
    <Text role="support">{vi?

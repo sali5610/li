@@ -300,3 +300,85 @@
  color:var(--vp-primary);max-width:100%;overflow-wrap:anywhere;
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-example-paper>div:empty{display:none;}
+
+/* Open reading: one page, not a book card nested inside a canvas.
+ * Keep the paper weave on the reading surface itself. One responsive
+ * gutter for the content; cover spans the preview width. */
+.li-ui-lab-preview[data-scrapebook-reading="true"] .li-scrapebook-sheet{
+ padding:0;
+}
+.li-ui-lab-preview[data-scrapebook-reading="true"] .li-scrapebook-canvas{
+ margin:0;padding:0;
+}
+.li-ui-lab-preview[data-scrapebook-reading="true"] .li-scrapebook-paper-edge{
+ display:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook-reading="true"] .li-flow-page[data-page="lesson"]{
+ display:grid;grid-template-columns:minmax(0,1fr);
+ width:100%;max-width:100%;padding:0;gap:0;min-height:0;
+}
+.li-ui-lab-preview[data-scrapebook-reading="true"] .li-flow-page[data-page="lesson"] .li-flow-page-columns{
+ --scrap-reading-gutter:clamp(16px,3cqi,32px);
+ grid-template-columns:minmax(0,1fr);min-width:0;
+ width:100%;padding:20px var(--scrap-reading-gutter) 24px;gap:24px;
+ background-color:var(--vp-paper);
+ background-image:
+  repeating-linear-gradient(0deg,rgba(92,75,50,.028) 0 1px,transparent 1px 4px),
+  repeating-linear-gradient(90deg,rgba(92,75,50,.020) 0 1px,transparent 1px 5px);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook-reading="true"] .li-flow-page[data-page="lesson"] .li-pop-lesson{
+ display:grid;grid-template-columns:minmax(0,1fr);
+ grid-template-rows:auto;grid-template-areas:"intro" "diagram" "chapters" "folio" "action";
+ width:100%;max-width:100%;min-width:0;min-height:0;gap:16px;
+ padding:0;margin:0;background:transparent;
+ border:0;border-radius:0;box-shadow:none;overflow:visible;
+}
+.li-ui-lab-preview[data-scrapebook-reading="true"] .li-flow-page[data-page="lesson"] .li-pop-lesson::after{
+ content:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook-reading="true"] .li-flow-page[data-page="lesson"] .li-pop-lesson .li-pop-book-left{
+ padding:0;min-height:0;min-width:0;background:transparent;
+}
+.li-ui-lab-preview[data-scrapebook-reading="true"] .li-pop-lesson .li-flow-lesson-top{
+ overflow-wrap:anywhere;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook-reading="true"] .li-pop-lesson .li-flow-lesson-top>.li-atom-text{
+ max-width:70ch;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook-reading="true"] .li-flow-page[data-page="lesson"] .li-pop-lesson>.li-flow-lesson-diagram{
+ display:grid;grid-template-columns:minmax(0,6fr) 26px minmax(0,4fr);
+ width:100%;min-width:0;min-height:0;margin:0;padding:16px 0;
+ gap:8px;align-items:center;overflow:visible;
+}
+.li-ui-lab-preview[data-scrapebook-reading="true"] .li-flow-lesson-diagram>div{
+ min-width:0;justify-items:center;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook-reading="true"] .li-pop-lesson .li-flow-dots{
+ width:100%;max-width:112px;grid-template-columns:repeat(6,minmax(0,1fr));
+ gap:clamp(3px,1.5cqi,8px);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook-reading="true"] .li-pop-lesson .li-flow-dots.sample{
+ max-width:72px;grid-template-columns:repeat(4,minmax(0,1fr));
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook-reading="true"] .li-pop-lesson .li-flow-dots i{
+ width:100%;max-width:12px;height:auto;aspect-ratio:1;justify-self:center;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook-reading="true"] .li-flow-page[data-page="lesson"] .li-pop-lesson>.li-flow-card-grid{
+ width:100%;padding:0;gap:0;
+}
+.li-ui-lab-preview[data-scrapebook-reading="true"] .li-pop-lesson .li-pop-book-chapter{
+ min-width:0;overflow-wrap:anywhere;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook-reading="true"] .li-pop-lesson-page-number{
+ padding:0 60px 0 0;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook-reading="true"] .li-pop-lesson>.li-ds-button{
+ margin:0;max-width:100%;width:100%;justify-self:stretch;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook-reading="true"] .li-pop-page-corner{
+ grid-area:folio;position:relative;justify-self:end;align-self:center;
+ bottom:auto;right:auto;
+}
+.li-ui-lab-preview[data-scrapebook-reading="true"] .li-scrapebook-example-paper{
+ margin-inline:0;
+}

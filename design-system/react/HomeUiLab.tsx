@@ -190,6 +190,7 @@ function Lab(){
     ease:[.22,1,.36,1]}}
   data-visual-theme={style==='vintagePop'||style==='scrapebook'?'vintage-pop':style==='bookworm'?'bookworm':undefined}
   data-scrapebook={style==='scrapebook'?'true':undefined}
+  data-scrapebook-reading={style==='scrapebook'&&target==='lesson'?'true':undefined}
   data-mini={mini?'true':'false'}
   data-open-space={style==='bookworm'&&!mini&&!compare&&viewport==='fluid'?'true':'false'}
   data-notebook-bleed={style==='notebook'&&!mini&&!compare&&viewport==='fluid'?'true':'false'}

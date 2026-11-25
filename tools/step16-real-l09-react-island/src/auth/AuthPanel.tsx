@@ -281,7 +281,8 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    setAccessEpoch(epoch=>epoch+1);
   };
   const storageChanged=(event:StorageEvent)=>{
-   if(event.key===null||event.key==='li.offline.device-invite.v3'||event.key==='li.sync.local-owner.v1')
+   // An online tab verifies its own session; do not start an invite-check / grant-write loop across tabs.
+   if(!navigator.onLine&&(event.key===null||event.key==='li.offline.device-invite.v3'||event.key==='li.sync.local-owner.v1'))
     setAccessEpoch(epoch=>epoch+1);
   };
   window.addEventListener('storage',storageChanged);

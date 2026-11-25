@@ -141,13 +141,13 @@
  .li-flow-page[data-page="lesson"] .li-pop-lesson .li-pop-book-left{
  background:transparent;
 }
-/* Compact cover: one content group with an attached tape/ribbon and postcard.
- * No detached masthead or decorative screen-number medallion. */
+/* Compact cover: text, tape and one upright ribbon only.
+ * Let the ribbon hang below the cover; clip only the background decoration. */
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-head[data-compact-cover="true"]{
- display:grid;grid-template-columns:minmax(0,1fr) clamp(76px,23%,140px);
- align-items:center;gap:12px;min-height:0;
- padding:clamp(18px,2.2vw,28px);background:var(--vp-primary);
- border:0;
+ display:grid;grid-template-columns:minmax(0,1fr);
+ align-items:center;gap:0;min-height:0;overflow:visible;z-index:2;
+ padding:clamp(18px,2.2vw,28px);padding-inline-end:80px;
+ margin-bottom:8px;background:var(--vp-primary);border:0;
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page-head[data-compact-cover="true"] .li-flow-page-heading{
  gap:8px;max-width:100%;
@@ -155,23 +155,25 @@
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page-head[data-compact-cover="true"] .li-flow-page-kicker{
  font-size:10px;line-height:1.4;letter-spacing:.06em;
 }
-.li-ui-lab-preview[data-scrapebook="true"] .li-flow-page-head[data-compact-cover="true"] .li-pop-header-art{
- position:relative;inset:auto;width:100%;height:auto;max-width:100%;
- align-self:end;padding-top:48px;
+.li-ui-lab-preview[data-scrapebook="true"] .li-flow-page-head[data-compact-cover="true"]::after{
+ inset:0;width:auto;height:auto;border:0;border-radius:0;
+ background:var(--vp-accent-lavender);
+ clip-path:circle(132px at calc(100% - 18px) 100%);
+ pointer-events:none;
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page-head[data-compact-cover="true"] .li-scrapebook-washi{
- top:-4px;left:18px;width:58px;height:14px;
+ top:0;left:18px;width:58px;height:14px;
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page-head[data-compact-cover="true"] .li-scrapebook-bookmark{
- top:0;right:18px;width:48px;height:66px;padding:8px 3px 14px;gap:3px;
+ top:auto;bottom:-14px;right:18px;width:48px;height:66px;padding:8px 3px 14px;gap:3px;
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page-head[data-compact-cover="true"] .li-scrapebook-bookmark:focus-visible{
  outline-offset:-3px;
 }
 @container lab-preview (max-width:520px){
  .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-head[data-compact-cover="true"]{
-  padding:20px 14px 14px;gap:10px;
-  grid-template-columns:minmax(0,1fr) 76px;
+  padding:18px 14px 16px;padding-inline-end:70px;gap:0;
+  grid-template-columns:minmax(0,1fr);
  }
  .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page-head[data-compact-cover="true"] .li-flow-page-heading .li-atom-heading{
   font-size:clamp(28px,7vw,34px);line-height:1.08;

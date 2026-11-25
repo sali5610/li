@@ -23,6 +23,7 @@ import {VintagePopCollage} from './VintagePopCollage';
 import type {VintagePopAsset} from './VintagePopCollage';
 import {VintagePopStamp,VintagePopPostalMark} from './VintagePopStamp';
 import {VintagePopScrapbook} from './VintagePopScrapbook';
+import {ScrapebookCoverContext} from './ScrapebookSheet';
 import {VintagePopArt} from './VintagePopArt';
 import type {VintagePopArtKind} from './VintagePopArt';
 import './app-flow-layouts.css';
@@ -661,6 +662,7 @@ const notebookPageIcons={
 } as const;
 export function AppPageLayout(props:AppPageLayoutProps){
  const {page,variant,locale,onNavigate}=props;
+ const coverDecorations=React.useContext(ScrapebookCoverContext);
  const meta=appLabPages.find(item=>item.id===page)!;
  const t=(vi:string,en:string)=>locale==='vi'?vi:en;
  const reduced=useReducedMotion();
@@ -688,7 +690,7 @@ export function AppPageLayout(props:AppPageLayoutProps){
    <span>li. <em>THE WORLD OF KNOWING WHY</em></span>
    <span>THE STUDY JOURNAL · VOL. 01</span>
   </div>}
-  <header className="li-flow-page-head">
+  <header className="li-flow-page-head" data-compact-cover={props.scrapebook?'true':undefined}>
    <motion.div className="li-flow-page-heading" {...reveal(.06)}>
     <span className="li-flow-page-kicker">
      {(variant==='notebook'||bookworm)&&<span
@@ -748,7 +750,8 @@ export function AppPageLayout(props:AppPageLayoutProps){
     <BookwormIllustration kind={['catalog','search','library','resume','collection','noteDetail'].includes(page)?'shelf':
      ['lesson','practice','feedback','guide','guideDetail','research','case'].includes(page)?'open':'stack'}/>
    </motion.div>}
-   <span className="li-flow-page-index" aria-hidden="true">{String(appLabPages.findIndex(item=>item.id===page)+1).padStart(2,'0')}</span>
+   {!props.scrapebook&&<span className="li-flow-page-index" aria-hidden="true">{String(appLabPages.findIndex(item=>item.id===page)+1).padStart(2,'0')}</span>}
+   {props.scrapebook&&coverDecorations}
   </header>
   <div className="li-flow-page-columns">
    <motion.div className="li-flow-page-main" layout={bookworm&&!reduced} {...reveal(.14)}>

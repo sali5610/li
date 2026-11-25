@@ -17,7 +17,8 @@ module.exports={
  cleanupOutdatedCaches:true,
  ignoreURLParametersMatching:[/^v$/,/^utm_/,/^fbclid$/],
  clientsClaim:true,
- skipWaiting:true,
+ // Wait for explicit learner consent; Workbox handles SKIP_WAITING messages.
+ skipWaiting:false,
  // Navigation to /api/auth/* or Google verifier callbacks must reach the
  // server's first-party Auth Worker (never a cached index.html response).
  runtimeCaching:[{

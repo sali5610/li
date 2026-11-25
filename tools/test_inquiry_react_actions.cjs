@@ -98,8 +98,14 @@ assert.match(home,/window\.addEventListener\('li:auth-verified-changed',update\)
  "Home follows the canonical auth lifecycle event");
 assert.match(research,/window\.addEventListener\('li:auth-verified-changed',sync\)/,
  "Research/Case follow the canonical auth event");
-assert.match(capture,/window\.addEventListener\('li:auth-verified-changed',clearOnSignOut\)/,
- "Drafts cannot cross account boundaries");
+assert.match(capture,/window\.addEventListener\('li:auth-verified-changed',syncOwner\)/,
+ "Capture follows canonical verified owner lifecycle");
+assert.match(capture,/if\(!detail\?\.transient\)\{owner\.current=null;apply\(blankCaptureDraft\(\)\)/,
+ "A settled logout clears visible private draft; transient rechecks do not erase it");
+assert.match(capture,/readCaptureDraft\(localStorage,uid,true\)/,
+ "Restore only after verified owner check");
+assert.match(capture,/writeCaptureDraft\(localStorage,owner\.current,verified\(\),next\)/,
+ "Draft writes are verified-owner scoped");
 assert.match(search,/client\.searchKnowledge\(query\)/,
  "React search queries real canonical data, not mock results");
 assert.match(search,/searchPersonalStudy\(query\)/,

@@ -124,15 +124,7 @@ if(authOnly){
  await writeFile(manifestPath,JSON.stringify(manifest,null,2)+'\n');
  // This candidate's worker is generated separately after assembly. Never
  // cache /api/auth, Neon responses, private note data or OAuth cookies.
- const registration=[
-  "(()=>{'use strict';",
-  "if(!('serviceWorker' in navigator)||location.protocol!=='https:'||",
-  "location.origin!=='https://li5610.pages.dev')return;",
-  "window.addEventListener('load',()=>{",
-  "navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(()=>{});",
-  "});})();"
- ].join('\n');
- await writeFile(join(assets,'pwa-register.js'),registration);
+ await copyFile(join(repo,'tools/platform/pwa-cloudflare-register.js'),join(assets,'pwa-register.js'));
 }
 const stale=[];
 for(const name of ['.env','.env.local']){try{await stat(join(output,name));stale.push(name);}catch{}}

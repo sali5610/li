@@ -128,7 +128,7 @@ assert.equal(events.length,priorActivity+1,"Only one li:activity event for confi
 assert.equal(events.at(-1).detail.id,"idea:"+saved.id);
 assert.equal(routes.at(-1),"collection","React save opens the real Collection route");
 const captureUi=fs.readFileSync(path.join(__dirname,"../tools/step16-real-l09-react-island/src/shell/capture-idea.tsx"),"utf8");
-assert.match(captureUi,/app\.liCaptureIdea\?\.save\(text,fieldId\)/,"React action passes optional field to canonical owner");
+assert.match(captureUi,/app\.liCaptureIdea\?\.save\(draft\.text,draft\.fieldId\)/,"React action passes optional field to canonical owner");
 ctx.window.liTaxonomyFieldIds=["hci"];
 const tagged=capture.save("Ý cần đối chiếu với ngành HCI","hci");
 assert.equal(tagged.ok,true,"A valid specialization can be saved");

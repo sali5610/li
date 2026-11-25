@@ -140,7 +140,7 @@ function Lab(){
  };
  function renderPage(target:PageId,style:LayoutKey){
   if(target!=='home')return <AppPageLayout key={target+'-'+style}
-   page={target} variant={pageVariant[style]} {...view}/>;
+   page={target} variant={pageVariant[style]} scrapebook={style==='scrapebook'} {...view}/>;
   const q=questions[questionIndex];
   return <HomeLayout key={'home-'+style} variant={homeVariant[style]} locale={locale}
    backgroundSrc="../assets/home-li-landscape-20261121.webp"
@@ -205,7 +205,7 @@ function Lab(){
   </header>
   <div className="li-ui-lab-viewport" data-viewport={viewport}>
    {style==='scrapebook'?<ScrapebookSheet key={target} locale={locale} mini={mini}
-    hintText={hintFor(target)}>
+    hintText={target==='lesson'?undefined:hintFor(target)}>
     {renderPage(target,style)}
    </ScrapebookSheet>:renderPage(target,style)}
   </div>

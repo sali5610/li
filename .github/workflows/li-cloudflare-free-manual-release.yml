@@ -1,7 +1,7 @@
 name: Release li. to Cloudflare Pages Free — MANUAL ONLY
 
 # IMPORTANT: Manual dispatch is the ONLY deploy trigger. PR gate builds a candidate locally but NEVER deploys.
-# Auth-only pins reviewed app SHA containing iPhone Web Push + Worker 1-minute schedule + recurring Reminder source fixes; AI uses same reviewed pinned SHA as Auth-only,
+# Auth-only pins the exact live Reminder rearm baseline plus PWA session renewal; AI retains its independent reviewed SHA,
 # without merging all staging changes into main. Never dispatch until preflight.
 on:
   # Focused PR gate builds the pinned Auth-only artifact; it never deploys.
@@ -48,12 +48,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: c32d7213494e952702488336060346e867b6c51f
+          ref: 97ffe58d21a08dd767043df4e6510af366b8e6dd
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "c32d7213494e952702488336060346e867b6c51f"
+          test "$(git rev-parse HEAD)" = "97ffe58d21a08dd767043df4e6510af366b8e6dd"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -89,18 +89,36 @@ jobs:
           test -s dist-cloudflare-auth-candidate/_worker.js
           test -s dist-cloudflare-auth-candidate/assets/li-first-party-app.js
           test -s dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'id="li-boot-splash"' dist-cloudflare-auth-candidate/index.html
+          grep -Fq 'id="li-boot-error"' dist-cloudflare-auth-candidate/index.html
+          grep -Fq 'laoly-state-loading.png' dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'laoly-state-error.png' dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'SKIP_WAITING' dist-cloudflare-auth-candidate/assets/pwa-register.js
+          grep -Fq 'SKIP_WAITING' dist-cloudflare-auth-candidate/sw.js
           grep -Fq 'li-first-party-app.js' dist-cloudflare-auth-candidate/sw.js
           grep -Fq 'li-push-handler.js' dist-cloudflare-auth-candidate/sw.js
           ! grep -Fq 'neon.tech' dist-cloudflare-auth-candidate/sw.js
           find dist-cloudflare-auth-candidate -type f -name '*.map' -delete
           test -z "$(find dist-cloudflare-auth-candidate -type f -name '*.map' -print -quit)"
           git diff --exit-code -- site
+      # Preserve the independently pinned AI pilot QA; never mix its source
+      # with the exact-live Auth-only candidate or enable it here.
+      - name: Checkout unchanged independently pinned AI candidate
+        uses: actions/checkout@v4
+        with:
+          ref: c32d7213494e952702488336060346e867b6c51f
+          persist-credentials: false
       - name: Build one-seat Workers AI candidate (NO DEPLOY)
         run: |
           set -euo pipefail
+          test "$(git rev-parse HEAD)" = "c32d7213494e952702488336060346e867b6c51f"
+          npm install --no-audit --no-fund --prefix design-system/react
+          npm install --no-audit --no-fund --prefix tools/step16-real-l09-react-island
           cd tools/step16-real-l09-react-island
+          npm run extract
           node --test tests/ai-one-seat.test.mjs
           npm run build:worker
+          VITE_LI_AUTH_TARGET=cloudflare-first-party npx vite build --config vite.cloudflare-app.config.mjs
           cd ../..
           node tools/prepare_cloudflare_ai_candidate.mjs --build
           LI_CLOUDFLARE_AI_BUILD=1 npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-auth-only-config.cjs
@@ -137,7 +155,7 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.auth_only_mode && 'f576ff10f884dc5d4388b27dc1ab6d420cff3bb7' || (inputs.ai_mode && 'c32d7213494e952702488336060346e867b6c51f' || github.sha) }}
+          ref: ${{ inputs.auth_only_mode && '97ffe58d21a08dd767043df4e6510af366b8e6dd' || (inputs.ai_mode && 'c32d7213494e952702488336060346e867b6c51f' || github.sha) }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
@@ -145,8 +163,8 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
-            expected='f576ff10f884dc5d4388b27dc1ab6d420cff3bb7'
-            echo 'Auth-only app: reviewed one-minute Worker cron + first-grant fix + Reminder #592; isolated from staging E2EE and Neon migrations.'
+            expected='97ffe58d21a08dd767043df4e6510af366b8e6dd'
+            echo 'Auth-only app: exact live Reminder rearm baseline + reviewed PWA session, draft, update and Lao Ly fixes; no staging-wide changes.'
           else
             expected='c32d7213494e952702488336060346e867b6c51f'
             echo 'AI mode reuses latest reviewed first-party source; approved Free-only AI pilot still requires verified private bindings and schema.'
@@ -222,12 +240,38 @@ jobs:
           test -s dist-cloudflare-auth-candidate/_worker.js
           test -s dist-cloudflare-auth-candidate/assets/li-first-party-app.js
           test -s dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'id="li-boot-splash"' dist-cloudflare-auth-candidate/index.html
+          grep -Fq 'id="li-boot-error"' dist-cloudflare-auth-candidate/index.html
+          grep -Fq 'laoly-state-loading.png' dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'laoly-state-error.png' dist-cloudflare-auth-candidate/sw.js
+          grep -Fq 'SKIP_WAITING' dist-cloudflare-auth-candidate/assets/pwa-register.js
+          grep -Fq 'SKIP_WAITING' dist-cloudflare-auth-candidate/sw.js
           grep -Fq 'li-first-party-app.js' dist-cloudflare-auth-candidate/sw.js
           grep -Fq 'li-push-handler.js' dist-cloudflare-auth-candidate/sw.js
           ! grep -Fq 'neon.tech' dist-cloudflare-auth-candidate/sw.js
           find dist-cloudflare-auth-candidate -type f -name '*.map' -delete
           test -z "$(find dist-cloudflare-auth-candidate -type f -name '*.map' -print -quit)"
           git diff --exit-code -- site
+
+      - name: Verify current Pages baseline before session-renewal release (read-only)
+        if: inputs.auth_only_mode == true && inputs.ai_mode == false
+        run: |
+          set -euo pipefail
+          test "${{ inputs.push_minute_mode }}" = "false"
+          test "$CLOUDFLARE_PAGES_PROJECT" = "li5610"
+          python3 - <<'PY'
+          import json, os, urllib.request
+          account = os.environ["CLOUDFLARE_ACCOUNT_ID"]
+          token = os.environ["CLOUDFLARE_API_TOKEN"]
+          request = urllib.request.Request(
+              f"https://api.cloudflare.com/client/v4/accounts/{account}/pages/projects/li5610",
+              headers={"Authorization": "Bearer " + token, "Accept": "application/json"})
+          with urllib.request.urlopen(request, timeout=20) as response:
+              project = json.load(response)
+          if project.get("success") is not True or (project.get("result", {}).get("canonical_deployment") or {}).get("short_id") != "af9f8a65":
+              raise SystemExit("LIVE_PAGES_BASELINE_CHANGED_STOP")
+          print("EXPECTED_LIVE_PAGES_BASELINE_PASS")
+          PY
 
       - name: Verify Cloudflare production Auth-only cookie binding (read-only)
         if: inputs.auth_only_mode == true && inputs.ai_mode == false

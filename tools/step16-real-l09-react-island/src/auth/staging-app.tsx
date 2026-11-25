@@ -86,7 +86,8 @@ document.getElementById('li-boot-error-retry')?.addEventListener('click',()=>win
 window.addEventListener('error',event=>{
  if(bootComplete)return;
  if(event.target instanceof HTMLScriptElement &&
-    event.target.src.includes('staging-auth-gate.js'))showBootError('bundle');
+    (event.target.src.includes('staging-auth-gate.js')||
+     event.target.src.includes('li-first-party-app.js')))showBootError('bundle');
  else if(event instanceof ErrorEvent &&
   /(?:REACT_.*(?:MISSING|FAILED|REQUIRED)|STAGING_.*MISSING|Failed to fetch dynamically imported module)/.test(event.message))
   showBootError('runtime');

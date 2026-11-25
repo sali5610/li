@@ -48,12 +48,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: c2ea9152e16ad51b91020239e71963c202a3b4ca
+          ref: 0b5c434588685783299ca413860492a2ca4d4235
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "c2ea9152e16ad51b91020239e71963c202a3b4ca"
+          test "$(git rev-parse HEAD)" = "0b5c434588685783299ca413860492a2ca4d4235"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -162,7 +162,7 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.auth_only_mode && 'c2ea9152e16ad51b91020239e71963c202a3b4ca' || (inputs.ai_mode && 'c32d7213494e952702488336060346e867b6c51f' || github.sha) }}
+          ref: ${{ inputs.auth_only_mode && '0b5c434588685783299ca413860492a2ca4d4235' || (inputs.ai_mode && 'c32d7213494e952702488336060346e867b6c51f' || github.sha) }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
@@ -170,7 +170,7 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
-            expected='c2ea9152e16ad51b91020239e71963c202a3b4ca'
+            expected='0b5c434588685783299ca413860492a2ca4d4235'
             echo 'Auth-only app: exact live Pages baseline plus offline bootstrap/cache fix; no staging-wide changes.'
           else
             expected='c32d7213494e952702488336060346e867b6c51f'

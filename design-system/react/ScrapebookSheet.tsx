@@ -34,7 +34,7 @@ export function ScrapebookSheet({locale,mini,hintText,coverInPage=false,children
     title={bookmarked?t('Tháo dấu trang','Detach bookmark'):t('Gắn dấu trang','Attach bookmark')}
     onClick={()=>setBookmarked(value=>!value)}
     initial={false}
-    animate={{y:bookmarked?0:-18}}
+    animate={{y:bookmarked?0:coverInPage?-8:-18}}
     transition={reduced?{duration:0}:{type:'spring',stiffness:280,damping:20}}>
     <LiIcon name="bookmark" size={19}/>
     <span>{bookmarked?t('ĐÃ GẮN','ATTACHED'):t('GẮN','ATTACH')}</span>

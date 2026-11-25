@@ -733,7 +733,7 @@ export function AppPageLayout(props:AppPageLayoutProps){
      </AnimatePresence>
     </div>}
    </motion.div>
-   {variant==='vintagePop'&&<motion.div className="li-pop-header-art" aria-hidden="true"
+   {variant==='vintagePop'&&!props.scrapebook&&<motion.div className="li-pop-header-art" aria-hidden="true"
     initial={reduced?false:{opacity:0,scale:.86,rotate:-8}}
     animate={{opacity:1,scale:1,rotate:0}}
     transition={{duration:reduced?0:.55,ease:[.22,1,.36,1]}}>

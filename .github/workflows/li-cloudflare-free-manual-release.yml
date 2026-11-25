@@ -1,7 +1,7 @@
 name: Release li. to Cloudflare Pages Free — MANUAL ONLY
 
 # IMPORTANT: Manual dispatch is the ONLY deploy trigger. PR gate builds a candidate locally but NEVER deploys.
-# Auth-only pins the exact live Reminder rearm baseline plus PWA session renewal; AI retains its independent reviewed SHA,
+# Auth-only pins the exact live PWA source plus the approved seven-day offline fix; AI retains its independent reviewed SHA,
 # without merging all staging changes into main. Never dispatch until preflight.
 on:
   # Focused PR gate builds the pinned Auth-only artifact; it never deploys.
@@ -48,12 +48,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: 97ffe58d21a08dd767043df4e6510af366b8e6dd
+          ref: 09b5113c3a4625bc4701cd48a2196d95a7f2e667
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "97ffe58d21a08dd767043df4e6510af366b8e6dd"
+          test "$(git rev-parse HEAD)" = "09b5113c3a4625bc4701cd48a2196d95a7f2e667"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -155,7 +155,7 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.auth_only_mode && '97ffe58d21a08dd767043df4e6510af366b8e6dd' || (inputs.ai_mode && 'c32d7213494e952702488336060346e867b6c51f' || github.sha) }}
+          ref: ${{ inputs.auth_only_mode && '09b5113c3a4625bc4701cd48a2196d95a7f2e667' || (inputs.ai_mode && 'c32d7213494e952702488336060346e867b6c51f' || github.sha) }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
@@ -163,8 +163,8 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
-            expected='97ffe58d21a08dd767043df4e6510af366b8e6dd'
-            echo 'Auth-only app: exact live Reminder rearm baseline + reviewed PWA session, draft, update and Lao Ly fixes; no staging-wide changes.'
+            expected='09b5113c3a4625bc4701cd48a2196d95a7f2e667'
+            echo 'Auth-only app: exact live Pages baseline plus reviewed seven-day local offline access only; no staging-wide changes.'
           else
             expected='c32d7213494e952702488336060346e867b6c51f'
             echo 'AI mode reuses latest reviewed first-party source; approved Free-only AI pilot still requires verified private bindings and schema.'
@@ -253,7 +253,7 @@ jobs:
           test -z "$(find dist-cloudflare-auth-candidate -type f -name '*.map' -print -quit)"
           git diff --exit-code -- site
 
-      - name: Verify current Pages baseline before session-renewal release (read-only)
+      - name: Verify current Pages baseline before offline-access release (read-only)
         if: inputs.auth_only_mode == true && inputs.ai_mode == false
         run: |
           set -euo pipefail
@@ -268,7 +268,7 @@ jobs:
               headers={"Authorization": "Bearer " + token, "Accept": "application/json"})
           with urllib.request.urlopen(request, timeout=20) as response:
               project = json.load(response)
-          if project.get("success") is not True or (project.get("result", {}).get("canonical_deployment") or {}).get("short_id") != "af9f8a65":
+          if project.get("success") is not True or (project.get("result", {}).get("canonical_deployment") or {}).get("short_id") != "73f4fc9f":
               raise SystemExit("LIVE_PAGES_BASELINE_CHANGED_STOP")
           print("EXPECTED_LIVE_PAGES_BASELINE_PASS")
           PY

@@ -6,7 +6,7 @@
  * approval and a Cloudflare secret with >=32 characters.
  */
 import {handleAuthProxyRequest,processAuthMiddleware} from '@neondatabase/auth/server';
-import {FIRST_PARTY_ORIGIN,FIRST_PARTY_AUTH_PREFIX,authProxyPath,isFirstPartyCallback}
+import {FIRST_PARTY_ORIGIN,FIRST_PARTY_AUTH_PREFIX,authProxyPath,isFirstPartyCallback,firstPartySessionRequest}
  from './first-party-contract.js';
 
 const UPSTREAM_NEON_AUTH_URL=
@@ -41,7 +41,7 @@ export default {
    const path=authProxyPath(url,request.method);
    if(!path)return errorResponse('Not found',404);
    const response=await handleAuthProxyRequest({
-    request,path,baseUrl:UPSTREAM_NEON_AUTH_URL,
+    request:firstPartySessionRequest(request),path,baseUrl:UPSTREAM_NEON_AUTH_URL,
     cookieSecret:secret,sameSite:'lax',sessionDataTtl:60
    });
    return uncached(response);

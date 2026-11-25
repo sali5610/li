@@ -1,7 +1,10 @@
-import React,{useId,useState} from 'react';
+import React,{createContext,useId,useState} from 'react';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {LiIcon} from './LucideIcons';
 import {NotebookAnnotation} from './NotebookAnnotation';
+
+/** One cover-owned preview bookmark; null outside Scrapebook. */
+export const ScrapebookBookmarkContext=createContext<boolean|null>(null);
 
 /**
  * UI Lab-only paper composition over the existing Vintage Pop page.
@@ -69,14 +72,13 @@ export function ScrapebookSheet({locale,mini,hintText,children}:{
     title={bookmarked?t('Tháo dấu trang','Detach bookmark'):t('Gắn dấu trang','Attach bookmark')}
     onClick={()=>setBookmarked(value=>!value)}
     initial={false}
-    animate={{y:bookmarked?0:-18,rotate:bookmarked?-2:3}}
-    whileTap={reduced?undefined:{scale:.94}}
+    animate={{y:bookmarked?0:-18}}
     transition={reduced?{duration:0}:{type:'spring',stiffness:280,damping:20}}>
     <LiIcon name="bookmark" size={19}/>
     <span>{bookmarked?t('ĐÃ GẮN','ATTACHED'):t('GẮN','ATTACH')}</span>
    </motion.button>}
    <span className="li-scrapebook-paper-edge" aria-hidden="true"/>
-   {children}
+   <ScrapebookBookmarkContext.Provider value={bookmarked}>{children}</ScrapebookBookmarkContext.Provider>
   </div>
  </div>;
 }

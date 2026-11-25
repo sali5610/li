@@ -46,12 +46,12 @@ function localizeBoot(){
   ['Đang mở Tàng Thư…','Lão Lý đang chuẩn bị mọi thứ.'];
  const errors:Record<BootFailure,[string,string]>=en?{
   timeout:['The library did not finish loading','Some parts of the app are still not ready. Reload to try again.'],
-  offline:['No internet connection','Check your connection, then reload the app.'],
+  offline:['The offline library could not open','Some required local app data is unavailable. Reconnect and open the library to restore it.'],
   runtime:['The library could not open','A part of the app failed during startup. Reload to try again.'],
   bundle:['The app could not be downloaded','A required app file did not load. Check your connection and reload.']
  }:{
   timeout:['Tàng Thư chưa tải xong','Một số phần của ứng dụng chưa sẵn sàng. Hãy thử tải lại.'],
-  offline:['Chưa có kết nối mạng','Kiểm tra kết nối rồi tải lại ứng dụng.'],
+  offline:['Chưa thể mở thư viện offline','Một phần dữ liệu ứng dụng trên máy chưa sẵn sàng. Kết nối mạng và mở thư viện để khôi phục.'],
   runtime:['Chưa thể mở Tàng Thư','Một phần ứng dụng gặp lỗi khi khởi động. Hãy thử tải lại.'],
   bundle:['Không tải được ứng dụng','Một tệp cần thiết chưa tải được. Kiểm tra mạng rồi thử lại.']
  };
@@ -105,7 +105,7 @@ function appPainted(){
  const navigation=document.querySelector('.header .topnav[data-li-react-navigation="desktop"] button');
  const catalogReady=route!=='catalog'||Boolean(page?.querySelector('[data-li-react-screen="catalog"]'));
  return Boolean(route&&page?.classList.contains('active')&&home&&navigation&&
-  catalogReady&&(route!=='home'||home.dataset.liBootArtReady==='true'));
+  catalogReady&&(route!=='home'||!navigator.onLine||home.dataset.liBootArtReady==='true'));
 }
 function checkAppBoot(){
  bootFrame=0;

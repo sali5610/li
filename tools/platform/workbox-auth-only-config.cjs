@@ -4,10 +4,10 @@
 module.exports={
  globDirectory:'dist-cloudflare-auth-candidate',
  globPatterns:[
-  'index.html','manifest.webmanifest','assets/*.{js,css,svg}',
-  'assets/li-content-adapter.mjs','assets/laoly-state-loading.png','assets/laoly-state-error.png',
-  'content-packs/search.json','content-packs/graph.json',
-  'content-packs/course-catalog.json','content-packs/answerability.json'
+  'index.html','manifest.webmanifest','assets/**/*.{js,mjs,css,svg,json}',
+  'assets/home-li-*.webp','assets/discipline/*.webp','assets/groups/*.webp','assets/portals/*.webp',
+  'assets/laoly-state-loading.png','assets/laoly-state-error.png','assets/laoly-*.png',
+  'content-packs/*.{js,json}','lessons/companion/*.json'
  ],
  globIgnores:['**/*.map','**/*qa-secrets*'],
  importScripts:['assets/li-push-handler.js'],
@@ -19,8 +19,12 @@ module.exports={
  clientsClaim:true,
  // Wait for explicit learner consent; Workbox handles SKIP_WAITING messages.
  skipWaiting:false,
- // Navigation to /api/auth/* or Google verifier callbacks must reach the
- // server's first-party Auth Worker (never a cached index.html response).
+ // Only public SPA document routes may fall back to the precached shell.
+ // OAuth callbacks and API paths must always reach the server, never the shell.
+ navigateFallback:'index.html',
+ navigateFallbackAllowlist:[/^\/(?:index\.html)?(?:\?|$)/],
+ navigateFallbackDenylist:[/[?&](?:code|state|error|neon_auth_session_verifier|oauth|pilot)=/i],
+ // Only public assets; never cache private API responses.
  runtimeCaching:[{
   urlPattern:new RegExp('^/assets/.*[.](?:png|jpe?g|webp|gif|avif)$','i'),
   handler:'CacheFirst',

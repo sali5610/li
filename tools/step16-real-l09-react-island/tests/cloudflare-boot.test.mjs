@@ -50,3 +50,16 @@ test('AI scene reflects actual request state, no fake delay or automatic inferen
  assert.match(ai,/await fetch\('\/api\/ai\/feedback'/);
  assert.doesNotMatch(ai,/setTimeout\(/);
 });
+
+test('offline shell includes required Home content script, public art and safe SPA route fallback',()=>{
+ assert.match(config,/content-packs\/\*\.\{js,json\}/);
+ assert.match(config,/assets\/discipline\/\*\.webp/);
+ assert.match(config,/assets\/home-li-\*\.webp/);
+ assert.match(config,/navigateFallback:'index\.html'/);
+ assert.match(config,/navigateFallbackDenylist:[^\n]*neon_auth_session_verifier/);
+ assert.match(app,/route!=='home'\|\|!navigator\.onLine\|\|home\.dataset\.liBootArtReady/);
+ const home=read('tools/step16-real-l09-react-island/src/shell/home-catalog.tsx');
+ assert.match(home,/candidate\.onerror=reveal/);
+ assert.match(home,/image\.onerror=fail/);
+ assert.match(home,/mirrorSettled/);
+});

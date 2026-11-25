@@ -227,10 +227,10 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  // A signed-out/denied visitor can see the real Auth screen only after the
  // session check settles; never reveal a static Home during auth bootstrap.
  useEffect(()=>{
-  if(!IS_INTEGRATED_LI_APP||isPending||localOffline)return;
-  if(!accountId||Boolean(error)||access==='denied'||access==='error')
+  if(!IS_INTEGRATED_LI_APP||localOffline||(!isOffline&&isPending))return;
+  if(isOffline||!accountId||Boolean(error)||access==='denied'||access==='error')
    window.dispatchEvent(new Event('li:auth-startup-settled'));
- },[isPending,accountId,error,access,localOffline]);
+ },[isPending,accountId,error,access,localOffline,isOffline]);
  // Record only the actual successful online invite-check timestamp. Merely
  // reopening, reconnecting, or rerendering cannot extend an old grant.
  useEffect(()=>{
@@ -402,7 +402,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  // A managed session or signed invite may be restoring after refresh/focus.
  // The neutral boot cover stays visible; rendering Auth here causes a login flash.
  // Real signed-out/denied/error states still render the actual sign-in gate.
- const deferSignIn=deferAuthScreen(IS_INTEGRATED_LI_APP,isPending,localOffline,
+ const deferSignIn=deferAuthScreen(IS_INTEGRATED_LI_APP,isPending&&!isOffline,localOffline,
   accountId,access,ownerReady);
  const settingsControls=<section className="li-auth-settings" aria-label={locale==='vi'?'Tài khoản và đồng bộ':'Account and sync'}>
   <div className="li-auth-settings-identity">
@@ -459,10 +459,10 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   </header>
   <Card variant="raised" className="auth-card" aria-busy={busy!==null||(Boolean(accountId)&&access==='checking')}>
    <Text role="body">{t.intro}</Text>
-   {isPending&&!localOffline&&<p role="status">{t.loading}</p>}
+   {isPending&&!isOffline&&!localOffline&&<p role="status">{t.loading}</p>}
    {isOffline&&!localOffline&&<p role="alert">{t.offlineLocked}</p>}
    {!isOffline&&error&&!localOffline&&<p role="alert">{t.error}</p>}
-   {(!isPending&&!error||localOffline)&&(accountId?
+   {(!isOffline&&!isPending&&!error||localOffline)&&(accountId?
     <div className="auth-account" key={accountId}>
      <p className="auth-session-identity">
       <span>{localOffline?(locale==='vi'?'Bản học trên máy này':'This device’s learning copy'):t.signed}</span>

@@ -110,7 +110,7 @@ test('offline lesson writes stay local; online invite, RLS and outbox contracts 
  assert.match(auth,/const allowed=await checkInviteAccess[\s\S]*setVerifiedInvite\(allowed&&navigator\.onLine\?\{uid:liveAccountId,at:Date\.now\(\)\}:null\)/);
  assert.match(auth,/verifiedInvite\?\.uid===liveAccountId\)[\s\S]*rememberOfflineInvite\(liveAccountId,verifiedInvite\.at\)/);
  assert.match(auth,/if\(isOffline\)\{[\s\S]*forgetOfflineInvite\(\)/);
- assert.match(auth,/if\(!IS_INTEGRATED_LI_APP\|\|isPending\|\|localOffline\)return/);
+ assert.match(auth,/if\(!IS_INTEGRATED_LI_APP\|\|localOffline\|\|\(!isOffline&&isPending\)\)return/);
  assert.match(sync,/capturePersonalState\(uid,api,store,observed\)/);
  assert.match(sync,/if\(!navigator\.onLine\|\|!api\)\{report\('offline'\);return;\}/);
 });

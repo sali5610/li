@@ -36,7 +36,7 @@ test('AuthPanel uses neutral cover while pending, real gate on denial, and bound
  const auth=readFileSync(new URL('../src/auth/AuthPanel.tsx',import.meta.url),'utf8');
  const boot=readFileSync(new URL('../src/auth/staging-app.tsx',import.meta.url),'utf8');
  const local=readFileSync(new URL('../src/auth/offline-local.ts',import.meta.url),'utf8');
- assert.match(auth,/const deferSignIn=deferAuthScreen\(IS_INTEGRATED_LI_APP,isPending,localOffline,/);
+ assert.match(auth,/const deferSignIn=deferAuthScreen\(IS_INTEGRATED_LI_APP,isPending&&!isOffline,localOffline,/);
  assert.match(auth,/!showApp&&!deferSignIn&&<main className="auth-pilot">/);
  assert.match(auth,/if\(!allowed\)forgetOfflineInvite\(\)/);
  assert.match(auth,/rememberOfflineInvite\(liveAccountId,verifiedInvite\.at\)/);

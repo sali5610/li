@@ -480,6 +480,7 @@ function Home(){
  const scene=useRef<HTMLDivElement>(null);
  const [backdropReady,setBackdropReady]=useState(false);
  const [decodedMirrorImage,setDecodedMirrorImage]=useState('');
+ const [mirrorSettled,setMirrorSettled]=useState(false);
  // CSS owns the iPhone/iPad/desktop crop. Read the actual ::before URL so
  // discipline artwork cannot request or reveal before that backdrop decodes.
  useEffect(()=>{
@@ -488,6 +489,7 @@ function Home(){
   let active=true;
   let currentUrl='';
   let frame=0;
+  let timer=0;
   let image:HTMLImageElement|null=null;
   const checkBackdrop=()=>{
    const css=getComputedStyle(hero,'::before').backgroundImage;
@@ -495,11 +497,13 @@ function Home(){
    if(!url){setBackdropReady(true);return;}
    if(url===currentUrl)return;
    currentUrl=url;
+   window.clearTimeout(timer);
    setBackdropReady(false);
    image=new Image();
    const candidate=image;
    const reveal=()=>{
     if(!active||currentUrl!==url)return;
+    window.clearTimeout(timer);
     frame=requestAnimationFrame(()=>{
      if(active&&currentUrl===url)setBackdropReady(true);
     });
@@ -508,6 +512,9 @@ function Home(){
     if(typeof candidate.decode==='function')candidate.decode().then(reveal,reveal);
     else reveal();
    };
+   // Optional illustration failure must never block the learning shell.
+   candidate.onerror=reveal;
+   timer=window.setTimeout(reveal,3500);
    candidate.src=url;
   };
   checkBackdrop();
@@ -516,7 +523,8 @@ function Home(){
   return ()=>{
    active=false;
    cancelAnimationFrame(frame);
-   if(image)image.onload=null;
+   window.clearTimeout(timer);
+   if(image){image.onload=null;image.onerror=null;}
    window.removeEventListener('resize',checkBackdrop);
    window.removeEventListener('orientationchange',checkBackdrop);
   };
@@ -541,18 +549,22 @@ function Home(){
   .find(field=>field.id===mirror.fieldId)?.image||'';
  useEffect(()=>{
   setDecodedMirrorImage('');
+  setMirrorSettled(false);
   if(!backdropReady||!mirrorImage)return;
   let active=true;
   const image=new Image();
-  const reveal=()=>{if(active)setDecodedMirrorImage(mirrorImage);};
+  const fail=()=>{if(active)setMirrorSettled(true);};
+  const reveal=()=>{if(active){setDecodedMirrorImage(mirrorImage);setMirrorSettled(true);}};
   const decodeArtwork=()=>{
-   if(typeof image.decode==='function')image.decode().then(reveal,reveal);
+   if(typeof image.decode==='function')image.decode().then(reveal,fail);
    else reveal();
   };
+  const timer=window.setTimeout(fail,3500);
   image.onload=decodeArtwork;
+  image.onerror=fail;
   image.src=mirrorImage;
   if(image.complete&&image.naturalWidth)decodeArtwork();
-  return ()=>{active=false;image.onload=null;};
+  return ()=>{active=false;window.clearTimeout(timer);image.onload=null;image.onerror=null;};
  },[backdropReady,mirrorImage]);
  // Depth is purely decorative. Never move the real mirror text, tap targets,
  // backdrop crop, or saved learner state with the pointer.
@@ -570,7 +582,7 @@ function Home(){
   scene.current?.style.setProperty('--li-home-depth-y','0px');
  };
  return <div ref={scene} data-li-react-screen="home" data-li-motion={reduced?'reduced':'full'}
-  data-li-boot-art-ready={backdropReady&&(!mirrorImage||!!decodedMirrorImage)?"true":"false"}
+  data-li-boot-art-ready={backdropReady&&(!mirrorImage||mirrorSettled)?"true":"false"}
   className="hero" role="region" aria-label={L("Cảnh thư viện cổ thụ và Gương Vạn Vấn","Ancient library and the Mirror of Questions")}
   onPointerMove={moveBackdrop} onPointerLeave={resetBackdrop}>
   <div className="li-home-ambient" aria-hidden="true">

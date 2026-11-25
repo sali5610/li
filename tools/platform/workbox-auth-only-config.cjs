@@ -5,7 +5,7 @@ module.exports={
  globDirectory:'dist-cloudflare-auth-candidate',
  globPatterns:[
   'index.html','manifest.webmanifest','assets/*.{js,css,svg}',
-  'assets/li-content-adapter.mjs',
+  'assets/li-content-adapter.mjs','assets/laoly-state-loading.png','assets/laoly-state-error.png',
   'content-packs/search.json','content-packs/graph.json',
   'content-packs/course-catalog.json','content-packs/answerability.json'
  ],

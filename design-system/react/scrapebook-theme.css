@@ -304,24 +304,26 @@
 /* Open reading: one page, not a book card nested inside a canvas.
  * Keep the paper weave on the reading surface itself. One responsive
  * gutter for the content; cover spans the preview width. */
-.li-ui-lab-preview[data-scrapebook-reading="true"] .li-scrapebook-sheet{
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-sheet{
  padding:0;
 }
-.li-ui-lab-preview[data-scrapebook-reading="true"] .li-scrapebook-canvas{
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-canvas{
  margin:0;padding:0;
 }
-.li-ui-lab-preview[data-scrapebook-reading="true"] .li-scrapebook-paper-edge{
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-paper-edge{
  display:none;
 }
-.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook-reading="true"] .li-flow-page[data-page="lesson"]{
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"]{
  display:grid;grid-template-columns:minmax(0,1fr);
  width:100%;max-width:100%;padding:0;gap:0;min-height:0;
 }
-.li-ui-lab-preview[data-scrapebook-reading="true"] .li-flow-page[data-page="lesson"] .li-flow-page-columns{
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-columns{
  --scrap-reading-gutter:clamp(16px,3cqi,32px);
  grid-template-columns:minmax(0,1fr);min-width:0;
  width:100%;padding:20px var(--scrap-reading-gutter) 24px;gap:24px;
  background-color:var(--vp-paper);
+}
+.li-ui-lab-preview[data-scrapebook-reading="true"] .li-flow-page[data-page="lesson"] .li-flow-page-columns{
  background-image:
   repeating-linear-gradient(0deg,rgba(92,75,50,.028) 0 1px,transparent 1px 4px),
   repeating-linear-gradient(90deg,rgba(92,75,50,.020) 0 1px,transparent 1px 5px);
@@ -381,4 +383,114 @@
 }
 .li-ui-lab-preview[data-scrapebook-reading="true"] .li-scrapebook-example-paper{
  margin-inline:0;
+}
+
+/* PO-approved open composition across the other screens. Keep functional
+ * cards/controls distinct, never reintroduce a full-page enclosing card. */
+.li-ui-lab-preview[data-scrapebook="true"][data-mini="true"] .li-scrapebook-sheet{padding:0}
+.li-ui-lab-preview[data-scrapebook="true"][data-mini="true"] .li-scrapebook-canvas{margin:0}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-page-main{
+ width:100%;max-width:none;min-width:0;margin:0;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-inline-hint{
+ display:grid;justify-items:start;min-width:0;gap:4px;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-inline-hint>div{width:100%;min-width:0}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-note-toggle{
+ min-height:44px;padding:8px 12px;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] :is(.li-ds-card,.li-legacy-method){
+ border:0;outline:0;box-shadow:0 6px 14px color-mix(in srgb,var(--vp-primary) 10%,transparent);
+ max-width:100%;min-width:0;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-ds-card[data-variant="inverse"]{
+ background:var(--vp-primary);color:var(--vp-paper);
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"]:is([data-page="capture"],[data-page="noteDetail"],[data-page="checkin"],[data-page="laoly"],[data-page="guideDetail"]) .li-flow-stack>.li-ds-card{
+ background:transparent;border:0;box-shadow:none;padding:0;transform:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] :is(.li-pop-scrapbook,.li-ds-account-panel,.li-ds-catalog-tools,.li-ds-catalog-aside,.li-ds-learning-prompt){
+ background:transparent;border:0;outline:0;box-shadow:none;padding:0;transform:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-ds-learning-response{
+ border:0;box-shadow:none;padding:0;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] :is(.li-ds-catalog,.li-ds-account,.li-ds-learning){
+ width:100%;max-width:none;min-width:0;padding-block:0;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-pop-scrapbook-top{
+ border:0;padding-bottom:0;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-pop-scrapbook-pages{
+ grid-template-columns:minmax(0,1fr);padding-top:16px;gap:16px;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-pop-scrapbook-photo{
+ margin:0;justify-self:end;max-width:100%;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"]:not([data-page="lesson"]):not([data-page="case"]):not([data-page="collection"]) .li-flow-page-aside{
+ width:100%;max-width:none;margin:0;
+ background:transparent;border:0;outline:0;box-shadow:none;padding:0;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-flow-page :is(.li-flow-stack,.li-flow-card-grid,.li-flow-stat-grid,.li-flow-portal-grid,.li-ds-catalog-body,.li-ds-catalog-results,.li-ds-learning,.li-ds-account-panel){
+ min-width:0;max-width:100%;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-flow-page :is(.li-atom-heading,.li-atom-text,.li-flow-setting){
+ overflow-wrap:anywhere;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-flow-page :is(input,textarea,select){
+ max-width:100%;
+}
+/* Home uses the same full-width cover, but the ribbon is the existing
+ * save-question action and the mirror is still a functional surface. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-ui-home[data-home-layout="vintagePop"]{
+ --scrap-reading-gutter:clamp(16px,3cqi,32px);
+ border:0;padding:0 0 24px;gap:24px;
+ grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);
+ grid-template-areas:"intro intro" "mirror guide" "mirror actions";
+ grid-template-rows:auto auto auto;min-height:0;overflow:visible;
+ background:var(--vp-paper);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-ui-home :is(.li-ui-home-backdrop,.li-ui-home-tint){display:none}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro{
+ position:relative;isolation:isolate;min-height:0;overflow:visible;
+ padding:24px 80px 20px 20px;margin-bottom:22px;
+ background:var(--vp-primary);border:0;box-shadow:none;transform:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro::after{
+ content:none;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-ui-home-intro :is(.li-atom-heading,.li-atom-text,.li-ui-home-kicker){color:var(--vp-paper)}
+.li-ui-lab-preview[data-scrapebook="true"] .li-ui-home-intro .li-scrapebook-washi{top:0;left:18px;width:58px;height:14px}
+.li-ui-lab-preview[data-scrapebook="true"] .li-ui-home-intro .li-scrapebook-bookmark{top:auto;bottom:-28px;right:18px;width:48px;height:66px;padding:8px 3px 14px;gap:3px}
+.li-ui-lab-preview[data-scrapebook="true"] .li-ui-home-intro>.li-pop-stamp-imprint{right:74px;bottom:6px}
+.li-ui-lab-preview[data-scrapebook="true"] .li-ui-home :is(.li-ui-home-mirror,.li-ui-home-guide,.li-ui-home-actions,.li-scrapebook-inline-hint){
+ margin-inline:var(--scrap-reading-gutter);min-width:0;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-ui-home .li-scrapebook-inline-hint{grid-column:1/-1}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-ui-home-mirror .li-ds-home-mirror-content{
+ border:0;box-shadow:none;
+}
+@container lab-preview (max-width:900px){
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-ui-home[data-home-layout="vintagePop"]{
+  grid-template-columns:minmax(0,1fr);grid-template-areas:"intro" "mirror" "guide" "actions";
+  grid-template-rows:auto auto auto auto;
+ }
+}
+@container lab-preview (max-width:580px){
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card:nth-child(n){
+  transform:none;
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-stat-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-ds-catalog-body[data-with-aside="true"]{
+  grid-template-columns:minmax(0,1fr);
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-ds-catalog-tools{
+  grid-template-columns:minmax(0,1fr);
+ }
+ .li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"] .li-ui-home[data-home-layout="vintagePop"] .li-ui-home-intro{
+  padding:20px 70px 16px 16px;
+ }
+ .li-ui-lab-preview[data-scrapebook="true"] .li-ui-home-intro .li-scrapebook-bookmark{right:12px}
 }

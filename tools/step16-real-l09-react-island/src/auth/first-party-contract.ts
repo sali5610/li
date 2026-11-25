@@ -23,3 +23,14 @@ export function isFirstPartyCallback(url:URL):boolean{
  return url.origin===FIRST_PARTY_ORIGIN&&callbackPaths.has(url.pathname)&&
   url.searchParams.has(NEON_OAUTH_VERIFIER);
 }
+
+/** The pinned Neon Auth 0.7.0-beta cookie-cache miss path fetches a fresh
+ * session but drops the upstream session_token renewal Set-Cookie. Let the
+ * managed upstream /get-session handle renewal, preserving its real cookie.
+ * This does not extend expiry, trust local state, or alter any other route. */
+export function firstPartySessionRequest(request:Request):Request{
+ const url=new URL(request.url);
+ if(authProxyPath(url,request.method)!=='get-session')return request;
+ url.searchParams.set('disableCookieCache','true');
+ return new Request(url.toString(),request);
+}

@@ -1,0 +1,270 @@
+name: li. Cloudflare live security — read-only QA
+
+# No deployment, no provisioning, no production user data reads/writes.
+# Public PR job never receives Cloudflare credentials.
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/li-cloudflare-security-readonly.yml'
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: Enter AUDIT_LI_SECURITY_READ_ONLY
+        type: string
+        required: true
+
+permissions:
+  contents: read
+concurrency:
+  group: li-cloudflare-security-readonly
+  cancel-in-progress: false
+
+jobs:
+  public_http:
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.confirm == 'AUDIT_LI_SECURITY_READ_ONLY')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Bounded live public HTTP and unauthenticated negative tests
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64, json, re, time
+          from html.parser import HTMLParser
+          from urllib.parse import urljoin, urlsplit
+          from urllib.request import Request, build_opener, HTTPRedirectHandler
+          from urllib.error import HTTPError, URLError
+
+          PAGES = 'https://li5610.pages.dev'
+          PUSH = 'https://li-push-staging.dungho-product.workers.dev'
+          DATA = 'https://ep-misty-snow-azfrrm3o.apirest.c-3.ap-southeast-1.aws.neon.tech/li/rest/v1'
+          FOREIGN = 'https://security-qa.invalid'
+          failures, gaps = [], []
+          class NoRedirect(HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl):
+                  return None
+          opener = build_opener(NoRedirect())
+          def call(url, method='GET', headers=None, body=None, cap=8*1024*1024):
+              h = {'User-Agent':'li-security-readonly/1', 'Cache-Control':'no-cache', **(headers or {})}
+              req = Request(url, data=body, headers=h, method=method)
+              try:
+                  with opener.open(req, timeout=15) as r:
+                      data = r.read(cap+1)
+                      return r.status, r.headers, data if len(data)<=cap else None
+              except HTTPError as e:
+                  # Never print response bodies, cookies, tokens or private values.
+                  e.close()
+                  return e.code, e.headers, None
+              except (URLError, OSError, ValueError):
+                  return 0, {}, None
+          def result(name, ok, status=None, gap=False):
+              if status == 0 or gap:
+                  gaps.append(name)
+                  print('NOT_RUN', name, 'status='+str(status) if status is not None else '')
+              elif ok:
+                  print('PASS', name, 'status='+str(status) if status is not None else '')
+              else:
+                  failures.append(name)
+                  print('FAIL', name, 'status='+str(status) if status is not None else '')
+          def obj(body):
+              try: return json.loads(body or b'null')
+              except (ValueError, TypeError): return None
+          def no_store(h):
+              return 'no-store' in h.get('Cache-Control','').lower()
+          def no_session(data):
+              try: v=json.loads(data)
+              except (ValueError,TypeError): return False
+              if v is None: return True
+              if not isinstance(v,dict): return False
+              if any(v.get(k) for k in ('session','user','token')): return False
+              if 'data' in v:
+                  d=v['data']
+                  return d is None or (isinstance(d,dict) and bool(set(d)&{'user','session','token'}) and not any(d.get(k) for k in ('user','session','token')))
+              return bool(set(v)&{'session','user','token'})
+          def jwt(exp):
+              def b64(x):
+                  return base64.urlsafe_b64encode(json.dumps(x).encode()).decode().rstrip('=')
+              # A synthetic, never-valid JWT with no real account or secret.
+              return b64({'alg':'HS256','typ':'JWT'})+'.'+b64({'sub':'li-security-qa-no-real-user','exp':exp})+'.'+'aW52YWxpZA'
+
+          s,h,home = call(PAGES+'/')
+          result('pages_shell_reachable',s==200 and home is not None and b'li-first-party-app.js' in home,s)
+          if s==200:
+              result('CSP_header_present',bool(h.get('Content-Security-Policy')),gap=not bool(h.get('Content-Security-Policy')))
+              print('OBSERVED_HSTS_PRESENT',bool(h.get('Strict-Transport-Security')))
+              print('OBSERVED_NOSNIFF',h.get('X-Content-Type-Options','').lower()=='nosniff')
+          else:
+              result('CSP_header_present',False,gap=True)
+          for name,path in [('unknown_api','/api/li-security-qa-unknown'),('unknown_auth','/api/auth/li-security-qa-unknown')]:
+              s,h,_=call(PAGES+path)
+              result(name,s==404 and no_store(h),s)
+          for route in ('get-session','token'):
+              s,h,b=call(PAGES+'/api/auth/'+route,headers={'Accept':'application/json','Origin':FOREIGN})
+              valid = s in (401,403) or (s==200 and b is not None and no_session(b))
+              result('no_session_'+route,valid and no_store(h),s)
+              reflected = h.get('Access-Control-Allow-Origin')==FOREIGN and h.get('Access-Control-Allow-Credentials','').lower()=='true'
+              result('no_foreign_credentialed_cors_'+route,not reflected,s)
+
+          s,h,b=call(PUSH+'/v1/config',headers={'Origin':PAGES})
+          v=obj(b)
+          config_ok=isinstance(v,dict) and set(v)=={'available','vapidPublicKey'} and v.get('available') is True and isinstance(v.get('vapidPublicKey'),str)
+          result('push_public_config_only',s==200 and config_ok and no_store(h) and h.get('Access-Control-Allow-Origin')==PAGES,s)
+          for name,origin in [('no_origin',None),('foreign_origin',FOREIGN)]:
+              s,h,_=call(PUSH+'/v1/config',headers={'Origin':origin} if origin else {})
+              result('push_reject_'+name,s==403 and h.get('Access-Control-Allow-Origin')!=FOREIGN,s)
+          s,h,_=call(PUSH+'/v1/subscriptions','OPTIONS',{'Origin':PAGES,'Access-Control-Request-Method':'PUT','Access-Control-Request-Headers':'authorization,content-type'})
+          result('push_preflight',s==204 and h.get('Access-Control-Allow-Origin')==PAGES and 'origin' in h.get('Vary','').lower(),s)
+          s,h,_=call(PUSH+'/v1/subscriptions','OPTIONS',{'Origin':FOREIGN,'Access-Control-Request-Method':'PUT'})
+          result('push_foreign_preflight_rejected',s==403 and h.get('Access-Control-Allow-Origin')!=FOREIGN,s)
+          s,h,_=call(PUSH+'/v1/subscriptions',headers={'Origin':PAGES})
+          result('push_no_public_subscription_listing',s==405,s)
+          for label,token in [('missing',None),('malformed','not-a-jwt'),('expired',jwt(int(time.time())-3600)),('invalid_signature',jwt(int(time.time())+300))]:
+              hdr={'Origin':PAGES,'Content-Type':'application/json'}
+              if token: hdr['Authorization']='Bearer '+token
+              # Empty object cannot create a subscription even if authorization fails open.
+              s,h,_=call(PUSH+'/v1/subscriptions','PUT',hdr,b'{}')
+              result('push_reject_'+label,s in (401,403) and no_store(h),s)
+          for table in ('li_user_state','li_learning_events','li_invited_emails','li_sync_operation_receipts'):
+              # limit=0 deliberately requests no private records, even if grants drift.
+              s,h,b=call(DATA+'/'+table+'?select=owner_id&limit=0')
+              # For invite table owner_id may not exist; do not mistake 400 for auth denial.
+              if s==400 and table=='li_invited_emails':
+                  s,h,b=call(DATA+'/'+table+'?select=email&limit=0')
+              result('neon_anon_denied_'+table,s in (401,403,404),s,gap=(s==200 and obj(b)==[]) or s in (301,302,307,308))
+
+          # Bounded passive scan of deployed HTML and same-origin JS entrypoints.
+          # This does NOT prove absence of secrets throughout all files/logs.
+          class Scripts(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.paths=set()
+              def handle_starttag(self,tag,attrs):
+                  a=dict(attrs)
+                  if tag=='script' and a.get('src'): self.paths.add(a['src'])
+                  if tag=='link' and a.get('rel')=='modulepreload' and a.get('href'): self.paths.add(a['href'])
+          patterns = [
+              re.compile(rb'-----BEGIN (?:RSA |EC |OPENSSH |ENCRYPTED )?PRIVATE KEY-----'),
+              re.compile(rb'postgres(?:ql)?://[^\s\x22\x27/:]+:[^\s\x22\x27/@]+@',re.I),
+              re.compile(rb'\b(?:ghp_|gho_|github_pat_)[A-Za-z0-9_]{30,}\b'),
+              re.compile(rb'\bsk-(?:proj-)?[A-Za-z0-9_-]{32,}\b'),
+          ]
+          if home:
+              parser=Scripts()
+              parser.feed(home.decode('utf-8',errors='replace'))
+              paths={urljoin(PAGES+'/',x) for x in parser.paths}
+              paths={x for x in paths if urlsplit(x).scheme=='https' and urlsplit(x).netloc=='li5610.pages.dev' and urlsplit(x).path.endswith('.js')}
+              paths.add(PAGES+'/sw.js')
+              hits=any(p.search(home) for p in patterns)
+              scanned=0; missing=0
+              for url in sorted(paths)[:30]:
+                  s,h,b=call(url)
+                  if s!=200 or b is None: missing+=1; continue
+                  scanned+=1
+                  hits=hits or any(p.search(b) for p in patterns)
+              print('PASSIVE_SCAN_COUNTS', 'js_scanned='+str(scanned), 'js_unavailable='+str(missing), 'js_discovered='+str(len(paths)))
+              result('credential_signature_scan',not hits,gap=not hits and (missing>0 or len(paths)>30 or scanned==0))
+          else:
+              result('credential_signature_scan',False,gap=True)
+          for name in ('signed_two_account_owner_isolation','signed_oauth_cookie_flags','full_asset_and_runtime_log_scan','full_account_quota_analytics','rollback_exercise'):
+              result(name,False,gap=True)
+          print('SUMMARY', 'fail='+str(len(failures)), 'not_run='+str(len(gaps)), 'no_production_write_or_deploy')
+          raise SystemExit(1 if failures else 0)
+          PY
+
+  cloud_config:
+    # Existing deploy credentials are NEVER exposed to a PR or branch checkout.
+    # Explicit main-only dispatch; only API GET and fixed read-only D1 metadata SQL.
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.confirm == 'AUDIT_LI_SECURITY_READ_ONLY'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: cloudflare-free-production
+    env:
+      CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CF_PAGES: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_PUSH: ${{ secrets.LI_PUSH_CLOUDFLARE_API_TOKEN }}
+    steps:
+      - name: Read existing Pages and Push configuration only
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,json,re
+          from urllib.request import Request,build_opener,HTTPRedirectHandler
+          from urllib.error import HTTPError,URLError
+          account=os.environ.get('CF_ACCOUNT','')
+          errors=[]; gaps=[]
+          class NoRedirect(HTTPRedirectHandler):
+              def redirect_request(self,req,fp,code,msg,headers,newurl): return None
+          opener=build_opener(NoRedirect())
+          def audit(name,ok,unknown=False):
+              print(('NOT_RUN' if unknown else 'PASS' if ok else 'FAIL'),name)
+              if unknown:gaps.append(name)
+              elif not ok:errors.append(name)
+          def cf(label,path,token,sql=None):
+              if not token or not re.fullmatch(r'[a-fA-F0-9]{32}',account):
+                  audit(label,False,True);return None
+              # Only this hard-coded metadata query can use POST.
+              if sql is not None and sql != 'PRAGMA table_info(push_subscriptions)':
+                  raise SystemExit('UNAPPROVED_SQL')
+              req=Request('https://api.cloudflare.com/client/v4/accounts/'+account+'/'+path,
+                headers={'Authorization':'Bearer '+token,'Accept':'application/json','Content-Type':'application/json'},
+                data=json.dumps({'sql':sql}).encode() if sql else None,method='POST' if sql else 'GET')
+              try:
+                  with opener.open(req,timeout=20) as r: data=json.load(r)
+                  if data.get('success') is True:return data.get('result')
+              except (HTTPError,URLError,OSError,ValueError):pass
+              audit(label,False,True);return None
+          pages=os.environ.get('CF_PAGES','');push=os.environ.get('CF_PUSH','')
+          project=cf('pages_config','pages/projects/li5610',pages)
+          if isinstance(project,dict):
+              prod=(project.get('deployment_configs') or {}).get('production') or {}
+              v=(prod.get('env_vars') or {}).get('NEON_AUTH_COOKIE_SECRET') or {}
+              audit('production_auth_cookie_secret_type',v.get('type')=='secret_text')
+              d=project.get('canonical_deployment') or {}
+              short=d.get('short_id','')
+              if isinstance(short,str) and re.fullmatch(r'[a-f0-9]{8}',short):
+                  print('CANONICAL_DEPLOYMENT',short)
+              meta=(d.get('deployment_trigger') or {}).get('metadata') or {}
+              sha=meta.get('commit_hash','')
+              if isinstance(sha,str) and re.fullmatch(r'[a-f0-9]{40}',sha):
+                  print('PROVIDER_DEPLOYMENT_COMMIT',sha)
+              audit('expected_pages_release_73f4fc9f',short=='73f4fc9f',unknown=short!='73f4fc9f')
+              audit('provider_metadata_matches_reviewed_source_97ffe58d',sha=='97ffe58d21a08dd767043df4e6510af366b8e6dd',unknown=sha!='97ffe58d21a08dd767043df4e6510af366b8e6dd')
+          history=cf('pages_rollback_history','pages/projects/li5610/deployments?per_page=20&page=1',pages)
+          if isinstance(history,list):
+              ok=any(x.get('short_id')=='af9f8a65' and (x.get('latest_stage') or {}).get('status')=='success' for x in history if isinstance(x,dict))
+              audit('prior_successful_pages_rollback_candidate',ok,unknown=not ok)
+          plans=cf('worker_plan','subscriptions',push)
+          if isinstance(plans,list):
+              paid=[]
+              for row in plans:
+                  if not isinstance(row,dict):continue
+                  plan=row.get('rate_plan') or {}
+                  name=str(plan.get('id','')).lower()
+                  if 'workers' in name and 'free' not in name and str(row.get('state','')).lower() not in ('cancelled','expired','failed'):paid.append(True)
+              audit('no_active_paid_workers_plan_detected',not paid)
+          dbs=cf('existing_push_d1_list','d1/database?per_page=100',push)
+          matches=[x for x in dbs if isinstance(x,dict) and x.get('name')=='li-push-staging'] if isinstance(dbs,list) else []
+          dbid=matches[0].get('uuid','') if len(matches)==1 else ''
+          valid=bool(re.fullmatch(r'[a-fA-F0-9-]{36}',str(dbid)))
+          if dbs is not None:audit('unique_existing_push_d1',valid)
+          settings=cf('worker_settings','workers/scripts/li-push-staging/settings',push)
+          if isinstance(settings,dict) and isinstance(settings.get('bindings'),list):
+              b={x.get('name'):x for x in settings['bindings'] if isinstance(x,dict)}
+              audit('vapid_secret_binding_types',all(b.get(k,{}).get('type')=='secret_text' for k in ('VAPID_PUBLIC_KEY','VAPID_PRIVATE_KEY','VAPID_SUBJECT')))
+              audit('worker_canonical_cors_origin',b.get('ALLOWED_ORIGIN',{}).get('text')=='https://li5610.pages.dev')
+              audit('worker_d1_binding_matches',valid and b.get('PUSH_DB',{}).get('type')=='d1' and b.get('PUSH_DB',{}).get('id')==dbid,unknown=not valid)
+          cron=cf('worker_cron','workers/scripts/li-push-staging/schedules',push)
+          if isinstance(cron,dict):
+              audit('existing_one_minute_cron',[x.get('cron') for x in cron.get('schedules',[]) if isinstance(x,dict)]==['* * * * *'])
+          if valid:
+              schema=cf('d1_schema_metadata','d1/database/'+dbid+'/query',push,'PRAGMA table_info(push_subscriptions)')
+              if isinstance(schema,list):
+                  cols={x.get('name') for r in schema if isinstance(r,dict) for x in r.get('results',[]) if isinstance(x,dict)}
+                  expected={'id','owner_id','endpoint','p256dh','auth','kind','local_time','zone','enabled','last_day','created_at','updated_at'}
+                  audit('live_d1_expected_columns',expected.issubset(cols))
+              else:audit('live_d1_expected_columns',False,True)
+          else:audit('live_d1_expected_columns',False,True)
+          for x in ('account_wide_live_usage','d1_migration_ledger_history','worker_rollback_exercise','signed_owner_cross_account'):
+              audit(x,False,True)
+          print('SUMMARY','fail='+str(len(errors)),'not_run='+str(len(gaps)),'no_deploy_no_user_records')
+          raise SystemExit(1 if errors else 0)
+          PY

@@ -116,18 +116,26 @@
  pointer-events:none;background:var(--scrap-paper);
  clip-path:polygon(0 0,5% 48%,10% 10%,15% 57%,21% 22%,27% 64%,34% 12%,40% 70%,48% 14%,54% 60%,62% 20%,69% 76%,75% 15%,84% 61%,90% 20%,96% 69%,100% 0,100% 100%,0 100%);
 }
-/* Flat paper: override layered and soft shadows inherited from the
- * Vintage Pop and postcard/lesson/collection specimens. UI Lab only.
- * Explicitly scoped !important beats stronger historical nested selectors. */
-.li-ui-lab-preview[data-scrapebook="true"] :is(
- .li-scrapebook-canvas,.li-scrapebook-sticker,.li-scrapebook-hint-inner,
- .li-scrapebook-bookmark,.li-flow-page-head,.li-ui-home-intro,
- .li-ds-card,.li-ds-home-mirror,.li-ds-home-mirror-content,
- .li-flow-page-aside,.li-ds-learning-response,.li-ds-account-note,
- .li-ds-catalog-aside,.li-pop-collage,.li-pop-lesson,
- .li-pop-scrapbook,.li-pop-page-corner,.li-pop-lesson-bookmark
-){
- box-shadow:none!important;
+/* PO clarification: remove simulated INTERNAL spine/fold and edge shading,
+ * not the real external drop shadow beneath the paper. Keep the existing
+ * crosshatch texture and the bottom page-edge treatment. The selector is
+ * stronger than the shared Vintage Pop mobile and desktop book rules. */
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"]
+ .li-flow-page[data-page="lesson"] .li-pop-lesson{
+ background-color:var(--vp-paper);
+ background-image:
+  repeating-linear-gradient(0deg,rgba(92,75,50,.028) 0 1px,transparent 1px 4px),
+  repeating-linear-gradient(90deg,rgba(92,75,50,.020) 0 1px,transparent 1px 5px);
+ box-shadow:0 12px 28px #102E2D1f;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"]
+ .li-flow-page[data-page="lesson"] .li-pop-lesson::before{
+ content:none;
+ background:none;
+}
+.li-ui-lab-preview[data-visual-theme="vintage-pop"][data-scrapebook="true"]
+ .li-flow-page[data-page="lesson"] .li-pop-lesson .li-pop-book-left{
+ background:transparent;
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page-head{
  border-color:var(--scrap-ink);background-color:var(--scrap-olive);
@@ -154,14 +162,14 @@
   color-mix(in srgb,var(--scrap-ink) 16%,transparent) 34px 35px);
  background-size:100% 35px;
 }
-/* Paper-polaroid movement stays, but the fake raised-paper shadow is gone. */
+/* Paper-polaroid movement and original external shadow stay. */
 .li-ui-lab-preview[data-scrapebook="true"] .li-pop-collage{
  transition:transform .32s cubic-bezier(.2,.8,.2,1);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-pop-collage:is(:hover,:focus-within){
  transform:rotate(2deg);
 }
-/* Mini gallery: paper cues stay compact; no extra controls or shadows. */
+/* Mini gallery: paper cues stay compact; no extra controls. */
 .li-ui-lab-preview[data-scrapebook="true"][data-mini="true"] .li-scrapebook-sheet{padding:8px;}
 .li-ui-lab-preview[data-scrapebook="true"][data-mini="true"] .li-scrapebook-masthead{
  min-height:45px;padding-bottom:8px;

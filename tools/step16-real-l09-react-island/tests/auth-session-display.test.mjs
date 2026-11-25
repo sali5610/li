@@ -32,19 +32,19 @@ test('offline owner restore hides login until ready, then shows app, never an on
  assert.equal(check(false,false,null,'offline',false),false);
  assert.equal(deferAuthScreen(false,true,false,null,'checking',false),false);
 });
-test('AuthPanel uses neutral cover while pending, real gate on denial, and session-scoped offline owner',()=>{
+test('AuthPanel uses neutral cover while pending, real gate on denial, and bounded device-scoped offline owner',()=>{
  const auth=readFileSync(new URL('../src/auth/AuthPanel.tsx',import.meta.url),'utf8');
  const boot=readFileSync(new URL('../src/auth/staging-app.tsx',import.meta.url),'utf8');
  const local=readFileSync(new URL('../src/auth/offline-local.ts',import.meta.url),'utf8');
  assert.match(auth,/const deferSignIn=deferAuthScreen\(IS_INTEGRATED_LI_APP,isPending,localOffline,/);
  assert.match(auth,/!showApp&&!deferSignIn&&<main className="auth-pilot">/);
  assert.match(auth,/if\(!allowed\)forgetOfflineInvite\(\)/);
- assert.match(auth,/rememberOfflineInvite\(liveAccountId\)/);
+ assert.match(auth,/rememberOfflineInvite\(liveAccountId,verifiedInvite\.at\)/);
  assert.match(auth,/const localOffline=isOffline&&Boolean\(offlineId\)&&accountId===offlineId/);
  assert.match(auth,/if\(online\)void refetch\(\)/);
  assert.match(boot,/if\(!isVerified\(\)\)revealBoot\(\)/);
- assert.match(local,/const KEY='li\.offline\.active-session\.v1'/);
- assert.match(local,/sessionStorage/);
- assert.doesNotMatch(local,/OFFLINE_LEASE_MS/);
+ assert.match(local,/const KEY='li\.offline\.device-invite\.v3'/);
+ assert.match(local,/OFFLINE_LEASE_MS=7\*24\*60\*60\*1000/);
+ assert.match(local,/device\.getItem\(KEY\)/);
  assert.doesNotMatch(local,/localStorage\.setItem\([^\n]*jwt|localStorage\.setItem\([^\n]*token/i);
 });

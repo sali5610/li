@@ -1,6 +1,6 @@
-/* Scrapebook = Vintage Pop paint + Notebook paper craft.
- * UI Lab opt-in only. Every colour is inherited from Vintage Pop;
- * no global palette changes and no additional runtime dependency. */
+/* Scrapebook only: Vintage Pop palette, Notebook ink and flat paper craft.
+ * These overrides never touch Vintage Pop/Notebook or the real app.
+ * The vintage stamps, postal marks, polaroid tape and page interactions stay. */
 .li-ui-lab-preview[data-scrapebook="true"]{
  --nb-wine:var(--vp-brick);
  --nb-blue:var(--vp-forest);
@@ -16,12 +16,11 @@
  min-width:0;padding:clamp(8px,1.6vw,22px);
  background:var(--scrap-paper);
  background-image:radial-gradient(color-mix(in srgb,var(--scrap-ink) 13%,transparent) .7px,transparent 1px);
- background-size:19px 19px;
- color:var(--scrap-ink);
+ background-size:19px 19px;color:var(--scrap-ink);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-masthead{
  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
- gap:10px 24px;min-height:72px;padding:4px 4px 18px;
+ gap:12px;min-height:64px;padding:4px 4px 12px;
  border-bottom:2px dashed var(--scrap-ink);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-folio{
@@ -29,37 +28,62 @@
  font:700 11px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;
  letter-spacing:.11em;
 }
-.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-handwriting{
- margin-inline:auto;min-width:0;max-width:min(45%,330px);
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-tools{
+ display:flex;align-items:center;justify-content:flex-end;gap:8px;
+ flex-wrap:wrap;min-width:0;
 }
-.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-handwriting .li-notebook-annotation{
- max-width:100%;font-size:clamp(20px,2.3vw,31px);
- color:var(--scrap-brick);
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-note-toggle,
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-sticker{
+ display:inline-flex;align-items:center;justify-content:center;gap:8px;
+ min-height:48px;padding:9px 12px;cursor:pointer;
+ font:700 12px/1.2 var(--li-font-ui);
+ color:var(--scrap-ink);border:1.5px solid var(--scrap-ink);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-note-toggle{
+ background:var(--scrap-paper);border-style:dashed;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-note-toggle[aria-expanded="true"]{
+ background:var(--scrap-olive);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-sticker{
- flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;
- min-height:46px;padding:9px 13px;border:2px solid var(--scrap-ink);
- background:var(--scrap-lilac);color:var(--scrap-ink);
+ background:var(--scrap-lilac);transform-origin:15% 10%;
  font:800 11px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;
- letter-spacing:.09em;box-shadow:4px 5px 0 var(--scrap-ink);
- cursor:pointer;transform-origin:15% 10%;
+ letter-spacing:.05em;
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-sticker[aria-pressed="true"]{
- background:var(--scrap-olive);box-shadow:8px 11px 0 var(--scrap-brick);
-}
-.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-sticker:focus-visible{
- outline:3px solid var(--scrap-brick);outline-offset:4px;
+ background:var(--scrap-olive);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-sticker--mini{
- min-height:28px;padding:5px 7px;font-size:9px;transform:rotate(6deg);
- cursor:default;
+ min-height:32px;padding:5px 7px;font-size:10px;
+ transform:rotate(6deg);cursor:default;
+}
+.li-ui-lab-preview[data-scrapebook="true"] :is(
+ .li-scrapebook-note-toggle,.li-scrapebook-sticker,.li-scrapebook-bookmark
+):focus-visible{
+ outline:3px solid var(--scrap-brick);outline-offset:3px;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-hint{
+ overflow:hidden;min-width:0;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-hint-inner{
+ display:flex;align-items:center;gap:clamp(8px,2vw,25px);
+ padding:12px 14px;margin:10px 2px 4px;
+ border:1px dashed var(--scrap-ink);
+ background:var(--scrap-paper);
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-hint-label{
+ flex:0 0 auto;align-self:start;color:var(--scrap-brick);
+ font:700 10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
+ letter-spacing:.1em;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-hint .li-notebook-annotation{
+ min-width:0;max-width:100%;margin:0;
+ font-size:clamp(20px,2.4vw,30px);color:var(--scrap-brick);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-canvas{
  position:relative;isolation:isolate;min-width:0;
- margin:19px 2px 14px;padding:clamp(5px,.8vw,13px);
- background:var(--scrap-paper);
- border:2px solid var(--scrap-ink);
- box-shadow:8px 9px 0 var(--scrap-lilac),12px 14px 0 var(--scrap-ink);
+ margin:23px 2px 12px;padding:clamp(10px,1.3vw,18px);
+ background:var(--scrap-paper);border:2px solid var(--scrap-ink);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-canvas>.li-flow-page,
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-canvas>.li-ui-home{
@@ -68,24 +92,42 @@
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-washi{
  position:absolute;z-index:8;pointer-events:none;
  top:-12px;left:clamp(24px,10%,115px);
- width:clamp(58px,13%,114px);height:25px;
- transform-origin:50% 50%;
+ width:clamp(58px,13%,114px);height:25px;transform-origin:50% 50%;
  background:var(--vp-accent-yellow,var(--scrap-olive));
- border-block:1px solid var(--scrap-ink);
- opacity:.84;
+ border-block:1px solid var(--scrap-ink);opacity:.84;
  clip-path:polygon(0 0,100% 0,96% 14%,100% 32%,96% 48%,100% 65%,96% 82%,100% 100%,0 100%,4% 82%,0 66%,4% 49%,0 30%,4% 14%);
 }
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-bookmark{
+ position:absolute;z-index:12;right:clamp(9px,3%,28px);top:-20px;
+ display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+ gap:5px;width:58px;height:76px;padding:11px 4px 19px;
+ cursor:pointer;color:var(--scrap-ink);
+ background:var(--vp-accent-yellow,var(--scrap-olive));
+ border:2px solid var(--scrap-ink);
+ clip-path:polygon(0 0,100% 0,100% 100%,50% 79%,0 100%);
+ font:800 9px/1.1 ui-monospace,SFMono-Regular,Consolas,monospace;
+ letter-spacing:.04em;
+}
+.li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-bookmark[aria-pressed="true"]{
+ background:var(--scrap-olive);
+}
 .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-paper-edge{
- position:absolute;z-index:2;right:-3px;bottom:-9px;left:14px;height:12px;
- pointer-events:none;
- background:var(--scrap-paper);
+ position:absolute;z-index:2;right:0;bottom:-9px;left:0;height:10px;
+ pointer-events:none;background:var(--scrap-paper);
  clip-path:polygon(0 0,5% 48%,10% 10%,15% 57%,21% 22%,27% 64%,34% 12%,40% 70%,48% 14%,54% 60%,62% 20%,69% 76%,75% 15%,84% 61%,90% 20%,96% 69%,100% 0,100% 100%,0 100%);
 }
-/* Vintage Pop's collage, postmarks, lesson book and real page actions
- * remain intact. Secondary Notebook cues appear on reusable paper cards. */
-.li-ui-lab-preview[data-scrapebook="true"] .li-flow-page-head,
-.li-ui-lab-preview[data-scrapebook="true"] .li-ui-home-intro{
- box-shadow:6px 8px 0 var(--scrap-lilac),10px 12px 0 var(--scrap-ink);
+/* Flat paper: override layered and soft shadows inherited from the
+ * Vintage Pop and postcard/lesson/collection specimens. UI Lab only.
+ * Explicitly scoped !important beats stronger historical nested selectors. */
+.li-ui-lab-preview[data-scrapebook="true"] :is(
+ .li-scrapebook-canvas,.li-scrapebook-sticker,.li-scrapebook-hint-inner,
+ .li-scrapebook-bookmark,.li-flow-page-head,.li-ui-home-intro,
+ .li-ds-card,.li-ds-home-mirror,.li-ds-home-mirror-content,
+ .li-flow-page-aside,.li-ds-learning-response,.li-ds-account-note,
+ .li-ds-catalog-aside,.li-pop-collage,.li-pop-lesson,
+ .li-pop-scrapbook,.li-pop-page-corner,.li-pop-lesson-bookmark
+){
+ box-shadow:none!important;
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page-head{
  border-color:var(--scrap-ink);background-color:var(--scrap-olive);
@@ -93,21 +135,17 @@
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card:nth-child(n){
  background:var(--scrap-paper);border:2px solid var(--scrap-ink);
  padding:clamp(14px,2vw,24px);margin-top:0;
- box-shadow:5px 6px 0 var(--scrap-lilac);
  transform:rotate(-1deg);transform-origin:50% 8%;
- transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease;
+ transition:transform .3s cubic-bezier(.2,.8,.2,1);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card:nth-child(3n+2){
  background:var(--scrap-lilac);transform:rotate(1.3deg);
- box-shadow:5px 6px 0 var(--scrap-brick);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card:nth-child(3n){
  background:var(--scrap-olive);transform:rotate(-.7deg);
- box-shadow:5px 6px 0 var(--scrap-ink);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card:nth-child(n):is(:hover,:focus-within){
- transform:translateY(-5px) rotate(0);
- box-shadow:8px 11px 0 var(--scrap-brick);
+ transform:translateY(-2px) rotate(0);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] :is(.li-ds-learning-response,.li-ds-account-note){
  background-color:var(--scrap-paper);
@@ -116,43 +154,49 @@
   color-mix(in srgb,var(--scrap-ink) 16%,transparent) 34px 35px);
  background-size:100% 35px;
 }
+/* Paper-polaroid movement stays, but the fake raised-paper shadow is gone. */
 .li-ui-lab-preview[data-scrapebook="true"] .li-pop-collage{
- transition:transform .32s cubic-bezier(.2,.8,.2,1),box-shadow .32s ease;
+ transition:transform .32s cubic-bezier(.2,.8,.2,1);
 }
 .li-ui-lab-preview[data-scrapebook="true"] .li-pop-collage:is(:hover,:focus-within){
- transform:translateY(-5px) rotate(2deg);
- box-shadow:7px 9px 0 var(--scrap-brick);
+ transform:rotate(2deg);
 }
-/* The mini-gallery is densely composed; keep textures without oversized props. */
+/* Mini gallery: paper cues stay compact; no extra controls or shadows. */
 .li-ui-lab-preview[data-scrapebook="true"][data-mini="true"] .li-scrapebook-sheet{padding:8px;}
 .li-ui-lab-preview[data-scrapebook="true"][data-mini="true"] .li-scrapebook-masthead{
  min-height:45px;padding-bottom:8px;
 }
 .li-ui-lab-preview[data-scrapebook="true"][data-mini="true"] .li-scrapebook-canvas{
- margin:12px 0 9px;box-shadow:4px 5px 0 var(--scrap-lilac);
+ margin:12px 0 9px;
 }
 @container lab-preview (max-width:520px){
  .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-masthead{
-  align-items:flex-start;padding-bottom:13px;
+  align-items:flex-start;padding-bottom:12px;
  }
- .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-handwriting{
-  flex:1 1 100%;max-width:100%;order:3;
+ .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-tools{
+  width:100%;justify-content:flex-start;
  }
- .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-handwriting .li-notebook-annotation{
-  font-size:21px;
+ .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-hint-inner{
+  display:grid;gap:2px;padding:10px;
  }
- .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-sticker{
-  padding:8px;max-width:135px;white-space:normal;
+ .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-hint .li-notebook-annotation{
+  font-size:22px;
  }
  .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-canvas{
-  padding:4px;margin-inline:0;box-shadow:4px 6px 0 var(--scrap-lilac);
+  padding:6px;margin-inline:0;
+ }
+ .li-ui-lab-preview[data-scrapebook="true"] .li-scrapebook-bookmark{
+  right:8px;width:52px;height:69px;padding-top:9px;
  }
  .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card:nth-child(n){
-  transform:none;padding:14px;box-shadow:3px 4px 0 var(--scrap-lilac);
+  transform:none;padding:14px;
  }
 }
 @media(prefers-reduced-motion:reduce){
- .li-ui-lab-preview[data-scrapebook="true"] :is(.li-ds-card,.li-pop-collage,.li-scrapebook-washi){
+ .li-ui-lab-preview[data-scrapebook="true"] :is(
+  .li-ds-card,.li-pop-collage,.li-scrapebook-washi,
+  .li-scrapebook-sticker,.li-scrapebook-bookmark,.li-scrapebook-hint
+ ){
   animation:none!important;transition:none!important;
  }
  .li-ui-lab-preview[data-scrapebook="true"] .li-flow-page[data-layout="vintagePop"] .li-flow-card-grid>.li-ds-card:nth-child(n):is(:hover,:focus-within){

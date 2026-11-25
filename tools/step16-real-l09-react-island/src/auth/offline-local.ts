@@ -1,66 +1,69 @@
 /**
- * Local-only offline continuation for the CURRENT browser/PWA session
- * after this SAME device was verified as invited while online.
- *
- * sessionStorage survives page refresh but is normally cleared at the end
- * of a tab/app session. iOS may restore browser sessions across device boots:
- * web apps CANNOT reliably detect a hardware restart. Never promise a
- * restart-exact lock; keep account ownership checks and revalidate on reconnect.
- *
- * This lease is NOT a Google session, JWT, remote permission, or authority to
- * access Neon. Local learning edits stay in the existing durable Dexie outbox.
+ * Owner-bound, local-only offline continuation for seven days after an
+ * actual online invite verification. Survives PWA/browser process eviction.
+ * This is a device-local UX grant, NOT a JWT or authority to access Neon.
+ * Device clock/storage are not a trusted security boundary; online access
+ * and every remote write still require the real Auth/invite/RLS checks.
  */
-const KEY='li.offline.active-session.v1';
-const LEGACY_KEY='li.offline.recent-invite.v1'; // Invalidate old 12h localStorage leases.
+export const OFFLINE_LEASE_MS=7*24*60*60*1000;
+const KEY='li.offline.device-invite.v3';
+const SESSION_KEY='li.offline.active-session.v1';
+const LEGACY_KEY='li.offline.recent-invite.v1';
 const OWNER='li.sync.local-owner.v1';
 const TRUSTED_ORIGINS=new Set(['https://sali5610.github.io','https://li5610.pages.dev']);
 type Store=Pick<Storage,'getItem'|'setItem'|'removeItem'>;
-type Lease={v:2;uid:string;verifiedAt:number};
+type Lease={v:3;uid:string;verifiedAt:number};
 
-/** Logout / denied invite locks this browser's offline continuation too. */
-export function forgetOfflineInvite(sessionStore?:Store,deviceStore?:Store):void{
- try{(sessionStore??sessionStorage).removeItem(KEY);}catch{/* fail closed */}
- try{(deviceStore??localStorage).removeItem(LEGACY_KEY);}catch{/* legacy ignored anyway */}
+/** Local lock/logout/explicit denial invalidates the durable grant, not drafts. */
+export function forgetOfflineInvite(deviceStore?:Store):boolean{
+ let locked=false;
+ try{
+  const device=deviceStore??localStorage;
+  // Prefer deletion; if unavailable try a non-authorizing tombstone.
+  try{device.removeItem(KEY);}catch{try{device.setItem(KEY,'locked');}catch{/* inaccessible */}}
+  locked=device.getItem(KEY)===null||device.getItem(KEY)==='locked';
+  try{device.removeItem(LEGACY_KEY);}catch{/* legacy ignored */}
+ }catch{/* unavailable storage cannot be reported as successfully locked */}
+ try{sessionStorage.removeItem(SESSION_KEY);}catch{/* legacy ignored */}
+ return locked;
 }
 
-/** Called ONLY after server-side invite verification, never on offline startup.
- * The offline pass lives in sessionStorage, not durable localStorage.
+/** Called ONLY after a successful live invite check for the matching owner.
+ * verifiedAt is the time of that result, never the time of offline use.
  */
 export function rememberOfflineInvite(
- uid:string,now=Date.now(),sessionStore?:Store,origin=location.origin,
- deviceStore?:Store
+ uid:string,verifiedAt=Date.now(),deviceStore?:Store,origin=location.origin
 ):boolean{
  if(!TRUSTED_ORIGINS.has(origin)||typeof uid!=='string'||!uid.trim()||
-    !Number.isSafeInteger(now)||now<=0)return false;
+    !Number.isSafeInteger(verifiedAt)||verifiedAt<=0)return false;
  try{
-  const device=deviceStore??localStorage,session=sessionStore??sessionStorage;
+  const device=deviceStore??localStorage;
   if(device.getItem(OWNER)!==uid)return false;
-  const value=JSON.stringify({v:2,uid,verifiedAt:now} satisfies Lease);
-  session.setItem(KEY,value);
-  if(session.getItem(KEY)!==value)return false;
-  device.removeItem(LEGACY_KEY); // Older durable grants cannot authorize offline.
+  const value=JSON.stringify({v:3,uid,verifiedAt} satisfies Lease);
+  device.setItem(KEY,value);
+  if(device.getItem(KEY)!==value)return false;
+  try{device.removeItem(LEGACY_KEY);}catch{/* legacy ignored */}
+  try{sessionStorage.removeItem(SESSION_KEY);}catch{/* legacy ignored */}
   return true;
  }catch{return false;}
 }
 
-/** Offline only, same owner, SAME browser session; no fixed 12-hour expiry.
- * Closing/restarting Safari or an iPhone PWA normally ends this session,
- * though iOS session restoration is not under web-app control.
- * Online never trusts this token; the real Google session/invite is required.
+/** Read-only; no refresh of expiry while offline or during startup.
+ * Never accept legacy grants, a changed owner, future timestamp, or age >= 7d.
  */
 export function recentOfflineOwner(
- offline:boolean,now=Date.now(),sessionStore?:Store,origin=location.origin,
- deviceStore?:Store
+ offline:boolean,now=Date.now(),deviceStore?:Store,origin=location.origin
 ):string|null{
  if(!offline||!TRUSTED_ORIGINS.has(origin)||!Number.isSafeInteger(now))return null;
  try{
-  const session=sessionStore??sessionStorage,device=deviceStore??localStorage;
-  const raw=session.getItem(KEY);
+  const device=deviceStore??localStorage;
+  const raw=device.getItem(KEY);
   if(!raw||raw.length>500)return null;
   const value=JSON.parse(raw) as Partial<Lease>|null;
-  if(!value||value.v!==2||typeof value.uid!=='string'||!value.uid.trim()||
+  if(!value||value.v!==3||typeof value.uid!=='string'||!value.uid.trim()||
     typeof value.verifiedAt!=='number'||!Number.isSafeInteger(value.verifiedAt)||
     value.verifiedAt>now||value.verifiedAt<=0||
+    now-value.verifiedAt>=OFFLINE_LEASE_MS||
     device.getItem(OWNER)!==value.uid)return null;
   return value.uid;
  }catch{return null;}

@@ -30,7 +30,9 @@ const copy={
   loading:'Đang kiểm tra phiên đăng nhập…',signed:'Đã đăng nhập với',
   checking:'Đang kiểm tra lời mời trên máy chủ…',
   granted:'Email đã được mời. Quyền truy cập được xác minh.',
-  offline:'Đang học offline trong phiên ứng dụng này. Dữ liệu lưu trên máy; sẽ kiểm tra lại quyền truy cập khi có mạng.',
+  offline:'Đang học offline. Quyền học trên máy có hiệu lực 7 ngày kể từ lần xác minh online gần nhất. Dữ liệu lưu trên máy và đồng bộ khi được xác minh lại.',
+  offlineLocked:'Cần kết nối mạng để xác minh tài khoản và bật quyền học offline 7 ngày trên thiết bị này.',
+  offlineLockFailed:'Chưa thể xác nhận đã khóa quyền offline trên máy. Kết nối mạng để đăng xuất an toàn.',
   lockOffline:'Khóa quyền mở offline trên máy này',
   lockedOffline:'Đã khóa chế độ offline. Kết nối mạng để xác minh hoặc đăng xuất Google.',
   denied:'Chưa xác minh được quyền truy cập của tài khoản Google này. Kiểm tra đúng email được mời rồi liên hệ chủ li. nếu vẫn bị chặn.',
@@ -56,7 +58,9 @@ const copy={
   loading:'Checking your sign-in session…',signed:'Signed in as',
   checking:'Checking your invitation with the server…',
   granted:'Invitation confirmed. This account is authorized.',
-  offline:'Offline learning in this app session. Edits stay on this device; invitation is rechecked once online.',
+  offline:'Learning offline. Device access lasts 7 days from the last online verification. Edits stay on this device and sync after revalidation.',
+  offlineLocked:'Connect to verify your account and enable 7 days of offline learning on this device.',
+  offlineLockFailed:'Could not confirm the device offline lock. Reconnect to sign out safely.',
   lockOffline:'Lock offline access on this device',
   lockedOffline:'Offline access locked. Reconnect to verify or sign out of Google.',
   denied:'This Google account is not authorized yet. Check the invited email and contact the owner if it should have access.',
@@ -99,6 +103,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  const [busy,setBusy]=useState<'login'|'logout'|null>(null);
  const [feedback,setFeedback]=useState('');
  const [access,setAccess]=useState<Access>('checking');
+ const [verifiedInvite,setVerifiedInvite]=useState<{uid:string;at:number}|null>(null);
  const [inviteError,setInviteError]=useState('');
  const [accessEpoch,setAccessEpoch]=useState(0);
  const [isOffline,setIsOffline]=useState(!navigator.onLine);
@@ -222,15 +227,17 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  // A signed-out/denied visitor can see the real Auth screen only after the
  // session check settles; never reveal a static Home during auth bootstrap.
  useEffect(()=>{
-  if(!IS_INTEGRATED_LI_APP||isPending)return;
+  if(!IS_INTEGRATED_LI_APP||isPending||localOffline)return;
   if(!accountId||Boolean(error)||access==='denied'||access==='error')
    window.dispatchEvent(new Event('li:auth-startup-settled'));
- },[isPending,accountId,error,access]);
- // Persist a local time limit only AFTER the real invited account and local owner agree.
+ },[isPending,accountId,error,access,localOffline]);
+ // Record only the actual successful online invite-check timestamp. Merely
+ // reopening, reconnecting, or rerendering cannot extend an old grant.
  useEffect(()=>{
-  if(IS_INTEGRATED_LI_APP&&!isOffline&&!isPending&&!error&&ownerReady&&
-     liveAccountId&&access==='granted')rememberOfflineInvite(liveAccountId);
- },[isOffline,isPending,error,ownerReady,liveAccountId,access]);
+  if(IS_INTEGRATED_LI_APP&&!isOffline&&navigator.onLine&&!isPending&&!error&&ownerReady&&
+     liveAccountId&&access==='granted'&&verifiedInvite?.uid===liveAccountId)
+   rememberOfflineInvite(liveAccountId,verifiedInvite.at);
+ },[isOffline,isPending,error,ownerReady,liveAccountId,access,verifiedInvite]);
  // Existing Dexie outbox captures offline edits without server writes.
  useEffect(()=>{
   if(!IS_INTEGRATED_LI_APP||!ownerReady||!accountId||
@@ -269,6 +276,12 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    if(online)void refetch();
    setAccessEpoch(epoch=>epoch+1);
   };
+  const storageChanged=(event:StorageEvent)=>{
+   // An online tab verifies its own session; do not start an invite-check / grant-write loop across tabs.
+   if(!navigator.onLine&&(event.key===null||event.key==='li.offline.device-invite.v3'||event.key==='li.sync.local-owner.v1'))
+    setAccessEpoch(epoch=>epoch+1);
+  };
+  window.addEventListener('storage',storageChanged);
   window.addEventListener('focus',refresh);
   window.addEventListener('pageshow',refresh);
   window.addEventListener('online',network);
@@ -278,6 +291,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   const expiry=setInterval(()=>{if(!navigator.onLine)setAccessEpoch(epoch=>epoch+1);},60000);
   return()=>{
    clearInterval(expiry);
+   window.removeEventListener('storage',storageChanged);
    window.removeEventListener('focus',refresh);
    window.removeEventListener('pageshow',refresh);
    window.removeEventListener('online',network);
@@ -295,6 +309,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    return()=>{disposed=true;};
   }
   setAccess('checking');
+  setVerifiedInvite(null);
   setInviteError('');
   if(isPending)return()=>{disposed=true;};
   if(!liveAccountId){
@@ -302,6 +317,8 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    setAccess('error');
    return()=>{disposed=true;};
   }
+  // A detected account switch must not leave the prior owner's offline grant.
+  try{if(localStorage.getItem('li.sync.local-owner.v1')!==liveAccountId)forgetOfflineInvite();}catch{/* owner preparation fails closed */}
   // A session is never an invitation. The RPC reads the verified identity in
   // neon_auth.user; its table RLS also independently denies all uninvited users.
   void (async()=>{
@@ -311,6 +328,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     const allowed=await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort);
     if(!disposed){
      if(!allowed)forgetOfflineInvite(); // Revocation or explicit denial.
+     setVerifiedInvite(allowed&&navigator.onLine?{uid:liveAccountId,at:Date.now()}:null);
      setAccess(allowed?'granted':'denied');
     }
    }catch(problem){
@@ -364,14 +382,15 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  async function signOut(){
   if(busy)return;
   if(isOffline){
-   forgetOfflineInvite();setAccess('error');setFeedback(t.lockedOffline);
+   setVerifiedInvite(null);
+   const locked=forgetOfflineInvite();setAccess('error');setFeedback(locked?t.lockedOffline:t.offlineLockFailed);
    return;
   }
   setBusy('logout');setFeedback('');
   try{
    const result=await authClient.signOut();
    if(result.error)throw Error('SIGN_OUT_FAILED');
-   forgetOfflineInvite();
+   setVerifiedInvite(null);forgetOfflineInvite();
    setAccess('checking');
    await refetch();
   }catch{setFeedback(t.leave);}
@@ -441,7 +460,8 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
   <Card variant="raised" className="auth-card" aria-busy={busy!==null||(Boolean(accountId)&&access==='checking')}>
    <Text role="body">{t.intro}</Text>
    {isPending&&!localOffline&&<p role="status">{t.loading}</p>}
-   {error&&!localOffline&&<p role="alert">{t.error}</p>}
+   {isOffline&&!localOffline&&<p role="alert">{t.offlineLocked}</p>}
+   {!isOffline&&error&&!localOffline&&<p role="alert">{t.error}</p>}
    {(!isPending&&!error||localOffline)&&(accountId?
     <div className="auth-account" key={accountId}>
      <p className="auth-session-identity">

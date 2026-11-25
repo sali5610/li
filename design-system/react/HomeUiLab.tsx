@@ -6,7 +6,7 @@ import {Heading,Text,Badge} from './Atoms';
 import {LiIcon} from './LucideIcons';
 import {HomeLayout} from './HomeLayoutVariants';
 import {ScrapebookSheet} from './ScrapebookSheet';
-import {AppPageLayout,appLabFlows,appLabPages} from './AppFlowLayouts';
+import {AppPageLayout,appLabFlows,appLabPages,notebookNotes} from './AppFlowLayouts';
 import type {AppLabFlowId,PageId,PageVariant} from './AppFlowLayouts';
 import type {HomeLayoutVariant} from './HomeLayoutVariants';
 import './atoms.css';
@@ -163,6 +163,11 @@ function Lab(){
   const item=allPages.find(item=>item.id===id)!;
   return locale==='vi'?item.vi:item.en;
  };
+ const hintFor=(target:PageId)=>target==='home'?
+  t('Viết xuống câu hỏi, rồi để trí tò mò dẫn đường.',
+   'Write the question down, then follow your curiosity.'):
+  locale==='vi'?(notebookNotes[target]?.[0]||'Ghi lại điều đáng nhớ.'):
+   (notebookNotes[target]?.[1]||'A thought worth keeping.');
  const animateVariant=(style:LayoutKey)=>(style==='vintagePop'||style==='notebook'||style==='bookworm'||style==='scrapebook')&&!reduceMotion;
  const preview=(target:PageId,style:LayoutKey,mini=false,slot='main')=><motion.section
   key={target+'-'+style+'-'+slot} className="li-ui-lab-preview"
@@ -199,7 +204,8 @@ function Lab(){
     {t('Phóng to','Open')} <LiIcon name="arrow-right" size={15}/></Button>:null}
   </header>
   <div className="li-ui-lab-viewport" data-viewport={viewport}>
-   {style==='scrapebook'?<ScrapebookSheet key={target} locale={locale} mini={mini}>
+   {style==='scrapebook'?<ScrapebookSheet key={target} locale={locale} mini={mini}
+    hintText={hintFor(target)}>
     {renderPage(target,style)}
    </ScrapebookSheet>:renderPage(target,style)}
   </div>

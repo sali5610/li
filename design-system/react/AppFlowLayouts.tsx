@@ -600,7 +600,7 @@ function ScreenBody(props:AppPageLayoutProps){
  </AccountShell>;
  }
 }
-const notebookNotes:Partial<Record<PageId,readonly [string,string]>>={
+export const notebookNotes:Partial<Record<PageId,readonly [string,string]>>={
  catalog:['Mỗi ngăn tủ là một cuộc phiêu lưu mới.','Every shelf starts a new little adventure.'],
  search:['Tò mò một chút, khám phá thật nhiều.','One small question can lead so far.'],
  research:['Khoan tin ngay. Thử hỏi vì sao?','Before believing, ask why.'],

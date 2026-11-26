@@ -64,9 +64,9 @@ if(authOnly){
 }
 const gate=(
  '<style id="li-auth-gate-critical">'+
- 'html:not(.li-auth-verified) .app,'+
- 'html:not(.li-boot-ready) .app,'+
- 'html.li-auth-verified.li-account-open .app{display:none!important}'+
+ 'html:not(.li-auth-verified) .app,html:not(.li-auth-verified) .mobile-nav,'+
+ 'html:not(.li-boot-ready) .app,html:not(.li-boot-ready) .mobile-nav,'+
+ 'html.li-auth-verified.li-account-open .app,html.li-auth-verified.li-account-open .mobile-nav{display:none!important}'+
  'html.li-auth-verified:not(.li-account-open) #li-staging-auth-root'+
  '{display:none!important}'+
  'html:not(.li-boot-ready) #li-staging-auth-root{visibility:hidden!important}'+

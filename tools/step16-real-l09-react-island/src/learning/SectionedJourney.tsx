@@ -390,8 +390,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  </section>;
  const locale=appLocale,vi=locale==='vi',c=lesson.content.localized[locale];
  const supplemental=preview?(supplements.lessons as Record<string,{
-  vi:{hint:string;guidedFeedback:string;guidedPrompt?:string;diagram:string;relatedReason:string};
-  en:{hint:string;guidedFeedback:string;guidedPrompt?:string;diagram:string;relatedReason:string};
+  vi:{hint:string;guidedFeedback:string;guidedPrompt?:string;answerAddendum?:string;diagram:string;relatedReason:string};
+  en:{hint:string;guidedFeedback:string;guidedPrompt?:string;answerAddendum?:string;diagram:string;relatedReason:string};
   sourceUrl:string;relatedLessonId:string
  }>)[id]:undefined;
  const extra=supplemental?.[locale];
@@ -588,6 +588,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       {vi?'Xem đáp án & rubric':'Reveal answer & rubric'}</Button>
     </div>:<>
      <Markdown md={modelAnswer}/>
+     {extra?.answerAddendum&&<div className="li-learning-hint"><Heading level={3} role="titleSmall">{vi?'Bổ sung đối chiếu':'Additional self-check'}</Heading><Text>{extra.answerAddendum}</Text></div>}
      {block('reflection')}
      {rubric.map((row,i)=><div key={i} className="li-learning-rating">
       <label htmlFor={'li-sectioned-rating-'+id+'-'+i}>{row[0]}</label>
@@ -609,7 +610,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     <CopyAnalysisPrompt locale={locale} step="feedback" data={{
      title:lesson.title[locale],lessonId:id,activity:independent(c).body_md,
      questions,answers:persisted.submission??persisted.draft,
-     reference:showAnswer&&!conflict?modelAnswer:undefined,
+     reference:showAnswer&&!conflict?[modelAnswer,extra?.answerAddendum].filter(Boolean).join('\n\n'):undefined,
      extra:showAnswer&&!conflict?rubric.map(row=>row.join(' · ')).join('\n'):undefined
     }}/>
    </>}
@@ -645,7 +646,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     <CopyAnalysisPrompt locale={locale} step="progress" data={{
      title:lesson.title[locale],lessonId:id,activity:section(c,'extension').map(x=>x.body_md).join('\n'),
      questions,answers:persisted.submission??persisted.draft,
-     reference:showAnswer&&!conflict?modelAnswer:undefined,
+     reference:showAnswer&&!conflict?[modelAnswer,extra?.answerAddendum].filter(Boolean).join('\n\n'):undefined,
      extra:(vi?'Điểm tự đánh giá: ':'Self-ratings: ')+persisted.ratings.join(', ')+' / 2'
     }}/>
    </>}

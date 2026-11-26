@@ -1,4 +1,5 @@
 import type {Attempt} from '../native-bridge.js';
+import {readingPositionKey} from './reading-position.js';
 import {validMethodAttempts} from './validate-method-attempts.js';
 import {initial} from '../native-bridge.js';
 import type {LearningPorts,SyncState} from './ports.js';
@@ -175,6 +176,20 @@ export function createStagingLearningPorts(lesson:string):LearningPorts{
   owner(subjectId);
   return learnerAttemptSyncState(subjectId,lessonId);
  }},
+ readingPosition:{
+  load({lessonId,subjectId}){
+   if(lessonId!==LESSON)throw Error('WRONG_LESSON');owner(subjectId);
+   return JSON.parse(localStorage.getItem(readingPositionKey(LESSON,subjectId))||'null');
+  },
+  save({lessonId,subjectId,position}){
+   if(lessonId!==LESSON)throw Error('WRONG_LESSON');owner(subjectId);
+   localStorage.setItem(readingPositionKey(LESSON,subjectId),JSON.stringify(position));
+  },
+  clear({lessonId,subjectId}){
+   if(lessonId!==LESSON)throw Error('WRONG_LESSON');owner(subjectId);
+   localStorage.removeItem(readingPositionKey(LESSON,subjectId));
+  }
+ },
  navigation:{openCatalog(){
   const owner=window as Window&{liCatalog?:{openForLesson?:(id:string)=>boolean}};
   // Direct lesson links also return to their real 5-tier course, not Catalogue root.

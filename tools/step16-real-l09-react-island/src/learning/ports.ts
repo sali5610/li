@@ -1,4 +1,5 @@
 import type {Attempt} from '../native-bridge';
+import type {ReadingPositionPort} from './reading-position.js';
 
 /** Production integration ports, never test doubles. Chat 3 owns auth/attempts/sync,
  * Chat 4 owns search, Chat 1 owns the app router and staging release.
@@ -28,6 +29,8 @@ export interface LearningPorts {
     /** Truthful status from persistence owner; NOT inferred from local form state. */
     getStatus(input:{lessonId:ReleasedLessonId;subjectId:string}):Promise<SyncState>;
   };
+  /** Optional device-only bookmark; never part of the synced attempt. */
+  readingPosition?: ReadingPositionPort;
   navigation: {openCatalog():void};
   search: {openSearch(query:string):void};
 }

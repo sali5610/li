@@ -20,6 +20,7 @@ import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
 import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discovery-locale.js';
 import {useStepScreen} from './step-screen.js';
+import {readPosition,clearPosition,type ReadingPosition} from './reading-position.js';
 import {LessonBookmark,LessonMentor,L09Figures,LessonSources,openLessonSpell} from './LessonDetailParity.js';
 import {CopyAnalysisPrompt} from './CopyAnalysisPrompt.js';
 import {RelatedLessons} from './RelatedLessons.js';
@@ -70,7 +71,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  },[phaseActor]);
  const phase=useSyncExternalStore(subscribePhase,
   ()=>phaseActor.getSnapshot().value as Phase);
- useStepScreen(phase,'L09-1-2');
+
  useEffect(()=>()=>{phaseActor.stop();},[phaseActor]);
  useEffect(()=>{
   appUiStore.getState().setLessonPhase(phase);
@@ -109,6 +110,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
  const writes=useRef<Promise<void>>(Promise.resolve());
  const failedWrite=useRef(false),pendingWrites=useRef(0);
  const mounted=useRef(true);
+ const resumePosition=useRef<ReadingPosition|null>(null);
+ useStepScreen(phase,L09_LESSON_ID,{ports,subjectId:subject.current,attempt:attempt,ready:!busy&&!!attempt&&!locked,locale:appLocale,resume:resumePosition});
  useEffect(()=>{
   const refresh=(event:Event)=>{
    const detail=(event as CustomEvent<{accountId?:string}>).detail;
@@ -156,7 +159,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     revision.current=saved.revision;
     setAttempt(saved.attempt);
     phaseActor.send({type:'COMMIT',submitted:data.submitted,reviewed:data.reviewed});
-    phaseActor.send({type:'OPEN',phase:resumedPhase(data)});
+    resumePosition.current=readPosition(ports,L09_LESSON_ID,learner.subjectId,data);
+    phaseActor.send({type:'OPEN',phase:resumePosition.current?.phase??resumedPhase(data)});
     setSync(status);
     setBusy(false);
    }catch{
@@ -292,6 +296,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
   if(!confirmLessonRestart(L09_LESSON_ID,attempt.locale))return;
   setError(null);
   if(await save(freshLessonAttempt(attempt))){
+   clearPosition(ports,L09_LESSON_ID,subject.current);resumePosition.current=null;window.scrollTo(0,0);
    phaseActor.send({type:'COMMIT',submitted:false,reviewed:false});
    phaseActor.send({type:'OPEN',phase:'read'});
   }

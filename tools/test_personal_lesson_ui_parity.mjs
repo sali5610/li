@@ -14,6 +14,23 @@ const nativeBuddy=read('site/assets/laoly-context-s112.js');
 const entry=read(root+'staging-draft-preview.tsx');
 const ids=read(root+'personal-study-ids.ts').match(/'L\d+-\d+-\d+'/g)?.map(x=>x.slice(1,-1))??[];
 const drafts=JSON.parse(read('content/editorial/normalized/index.v1.json')).entries;
+const titleData=JSON.parse(read('content/editorial/lesson-titles.v1.json')).lessons;
+assert.deepEqual(Object.keys(titleData).sort(),[...ids,'L03-1-2','L09-1-2','L15-2-2'].sort());
+for(const [id,t] of Object.entries(titleData)){
+ assert.ok(t.vi.trim()&&t.en.trim()&&t.vi!==t.en,id+' requires authored VI/EN titles');
+ if(!ids.includes(id))assert.deepEqual(t,JSON.parse(read('content/lessons/'+id+'.json')).title);
+}
+assert.match(entry,/title:lessonTitles\(id\)/);
+assert.doesNotMatch(entry,/title:\{vi:catalogEntry\.title,en:catalogEntry\.title\}/);
+assert.match(entry,/lessonTitleAliases\(id,entry\.title\)/);
+assert.match(entry,/lessonTitle\(id,discoveryLocale\(\),entry\.title\)/);
+const titleShell=root.replace('learning/','shell/');
+for(const file of ['home-catalog.tsx','knowledge-search.tsx','library-taxonomy.tsx']){
+ assert.match(read(titleShell+file),/lessonTitle\(/,file+' uses authored title');
+}
+assert.match(read(titleShell+'mount-navigation.tsx'),/lessonTitles\(id\)/);
+assert.match(read('site/assets/library-hub.js'),/liAuthoredLessonTitles/);
+assert.match(reader,/lessonTitle\(relatedId,locale,relatedId\)/);
 const pages=['read','guided','practice','feedback','progress'];
 assert.equal(ids.length,17,'Exactly 17 invited personal lessons');
 assert.deepEqual([...ids].sort(),drafts.map(x=>x.id).sort(),'Personal routes match all draft manuscripts');

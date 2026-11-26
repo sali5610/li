@@ -35,6 +35,38 @@ export function createContentClient({ baseUrl=new URL("../content-packs/",import
   if(!course)return null;
   return (await load(course.file)).lessons.find(l=>l.id===id)??null;
  };
+ // Wave1's actual React workflow pages are stable chapter references.
+ // Metadata only: no navigation, content reveal, completion, or private writes.
+ // Older lesson and course IDs and authored bodies stay untouched.
+ const getLessonStructure=async id=>{
+  const lesson=await getLesson(id);
+  if(!lesson||lesson.content?.format!=="locked-structured-v1"||
+   !["L03-1-2","L09-1-2","L15-2-2"].includes(id))return null;
+  const prefix=id==="L09-1-2"?"li-learn-":"li-wave1-";
+  const phases=[
+   ["read","Đọc hiểu","Read","none"],
+   ["guided","Luyện có hướng dẫn","Guided practice","none"],
+   ["practice","Thử sức","Independent practice","none"],
+   ["feedback","Phản hồi","Feedback","submitted"],
+   ["progress","Tiến độ","Progress","reviewed"]
+  ];
+  const chapters=phases.map(([phase,vi,en,gate],i)=>({
+   id:id+":"+phase,lessonId:id,order:i+1,phase,title:{vi,en},
+   readerAnchor:prefix+phase,anchorAvailableAfter:gate
+  }));
+  const registry=await load("../assets/lesson-spell-suggestions.v0.1.json");
+  if(registry.evidenceStatus!=="task_matched_editorial_candidates_not_reviewed_method_fit")
+   throw Error("LI_METHOD_SUGGESTION_EVIDENCE_INVALID");
+  const candidates=registry.lessons?.[id];
+  if(!Array.isArray(candidates)||!candidates.length||
+   new Set(candidates.map(x=>x.techniqueId)).size!==candidates.length||
+   candidates.some(x=>!/^L2-T(?:0[1-9]|1[0-3])$/.test(x.techniqueId)||
+    x.shortId!==x.techniqueId.slice(3)||!x.name?.vi||!x.name?.en||!x.why?.vi||!x.why?.en))
+   throw Error("LI_METHOD_SUGGESTION_REFERENCE_INVALID");
+  return {lessonId:id,contentVersion:lesson.version,kind:"wave1_reader_structure",
+   chapters,methodFit:lesson.methodFit,
+   methodSuggestions:{evidenceStatus:registry.evidenceStatus,items:candidates}};
+ };
  const getConceptLessons=async conceptId=>{
   const g=await graph(),concept=g.nodes.find(n=>n.id===conceptId&&n.kind==="Concept");
   if(!concept)return [];
@@ -252,6 +284,6 @@ export function createContentClient({ baseUrl=new URL("../content-packs/",import
  };
 
  const getBacklinks=async id=>(await backlinks()).backlinks[id]??[];
- return {manifest,graph,search,getCourseLevels,hierarchy,listGroups,getGroup,listFields,getField,listCourses,getCourse,listLessonOutlines,getLessonOutline,getBreadcrumbs,getLesson,getConceptLessons,getRelatedLessons,getBacklinks,searchKnowledge};
+ return {manifest,graph,search,getCourseLevels,hierarchy,listGroups,getGroup,listFields,getField,listCourses,getCourse,listLessonOutlines,getLessonOutline,getBreadcrumbs,getLesson,getLessonStructure,getConceptLessons,getRelatedLessons,getBacklinks,searchKnowledge};
 }
 export const contentClient=createContentClient();

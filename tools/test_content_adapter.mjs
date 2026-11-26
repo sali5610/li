@@ -40,6 +40,47 @@ requested.length=0; // isolate lazy course-pack fetch assertion from course cata
 const l09=await c.getLesson("L09-1-2");
 assert.equal(l09.id,"L09-1-2");assert.equal(l09.content.localized.vi.questions.length,4);
 assert.deepEqual(requested,["manifest.json","C09-1.json"],"lazy course load: no other course fetched");
+// Step18: the same read-only adapter exposes real reader phase references.
+const chapterIds=["read","guided","practice","feedback","progress"];
+const expectedMethodRefs={
+ "L03-1-2":["L2-T06","L2-T04"],"L09-1-2":["L2-T06","L2-T07"],
+ "L15-2-2":["L2-T03","L2-T10"]
+};
+const suggestionSource=JSON.parse(readFileSync(new URL("../site/assets/lesson-spell-suggestions.v0.1.json",import.meta.url),"utf8"));
+for(const [id,refs] of Object.entries(expectedMethodRefs)){
+ const lesson=await c.getLesson(id),snapshot=JSON.stringify(lesson);
+ const structure=await c.getLessonStructure(id);
+ assert.equal(structure.lessonId,id);
+ assert.equal(structure.contentVersion,lesson.version);
+ assert.deepEqual(structure.chapters.map(x=>x.id),chapterIds.map(x=>id+":"+x));
+ assert.deepEqual(structure.chapters.map(x=>x.order),[1,2,3,4,5]);
+ assert.ok(structure.chapters.every(x=>x.lessonId===id&&x.title.vi&&x.title.en));
+ assert.deepEqual(structure.chapters.map(x=>x.anchorAvailableAfter),["none","none","none","submitted","reviewed"]);
+ const readerPath=id==="L09-1-2"?"LearningJourney.tsx":"Wave1Journey.tsx";
+ const reader=readFileSync(new URL("./step16-real-l09-react-island/src/learning/"+readerPath,import.meta.url),"utf8");
+ for(const chapter of structure.chapters){
+  assert.ok(reader.includes('id="'+chapter.readerAnchor+'"'),"chapter anchor matches existing reader "+chapter.id);
+ }
+ assert.deepEqual(structure.methodFit,lesson.methodFit,"do not promote editorial candidates");
+ assert.equal(structure.methodFit.status,"not_reviewed");
+ assert.deepEqual(structure.methodSuggestions.items.map(x=>x.techniqueId),refs);
+ assert.deepEqual(structure.methodSuggestions.items,suggestionSource.lessons[id]);
+ assert.equal(structure.methodSuggestions.evidenceStatus,suggestionSource.evidenceStatus);
+ assert.equal(JSON.stringify(await c.getLesson(id)),snapshot,"no content/ID mutation");
+ assert.deepEqual(await c.getLessonStructure(id),structure,"stable on repeat");
+}
+assert.equal(await c.getLessonStructure("L00-0-0"),null);
+assert.equal(await c.getLessonStructure("L09-1-1"),null,"no invented outline chapters");
+// Reject a malformed method reference rather than silently treating it as a reviewed method.
+const badClient=createContentClient({baseUrl:"https://li.test/packs/",fetcher:async url=>{
+ if(url.endsWith("/lesson-spell-suggestions.v0.1.json")){
+  const bad=structuredClone(suggestionSource);
+  bad.lessons["L09-1-2"][0].techniqueId="L2-T14";
+  return {ok:true,json:async()=>bad};
+ }
+ return fetcher(url);
+}});
+await assert.rejects(()=>badClient.getLessonStructure("L09-1-2"),/LI_METHOD_SUGGESTION_REFERENCE_INVALID/);
 // Public reader packs must expose current UNESCO navigation, but must not
 // mutate the three original PO-locked manuscripts or their lesson body.
 const currentGroups=new Map(groups.map(g=>[g.id,g]));

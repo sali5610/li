@@ -88,6 +88,9 @@ export function Journal(){
   <Text role="body" className="intro">{copy(
    'Xem thể trạng tự check-in, nhịp học đã áp dụng và hoạt động thực sự ghi nhận. Không phải điểm sức khỏe hay năng lực học tập.',
    'Your self-reported check-ins, study rhythm and actual activity. Not a health or learning ability score.')}</Text>
+  {view.storageError&&<InlineFeedback tone="error" message={copy(
+   'Không thể đọc hoặc ghi lịch. Đã dừng ghi mới để bảo vệ dữ liệu.',
+   'Journal storage cannot be read or written; recording is paused.')}/>}
   <div className="stack-sm li-diary-layout">
    <div className="li-diary-workspace">
     <section className="li-diary-month" aria-label={copy('Lịch và hoạt động theo tháng','Month calendar and activity')}>
@@ -352,7 +355,7 @@ export function Settings(){
      </Card>
      <Card variant="raised" className="li-react-setting-card li-diary-privacy">
       <div><div className="kicker">{copy('QUYỀN RIÊNG TƯ','PRIVACY')}</div>
-       <Heading level={3} role="titleMedium">{copy('Nhật Ký & Check-in','Journal & Check-ins')}</Heading>
+       <Heading level={3} role="titleMedium">{copy('Nhật Ký và Check-in','Journal & Check-ins')}</Heading>
        <Text role="support" aria-live="polite">{authoredCopy(diary.consentStatus)}</Text>
       </div>
       {diary.storageError&&<InlineFeedback tone="error" message={copy(

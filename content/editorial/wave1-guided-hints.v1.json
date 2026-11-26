@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewState": "proposed",
+  "description": "Procedural hints before the guided attempt; original locked guided explanation is shown as self-check feedback after saved response. Not independent answers or academic signoff.",
+  "lessons": {
+    "L03-1-2": {
+      "vi": "Gạch chân từ đánh giá trong mỗi câu, rồi tự hỏi người trả lời có thể kể một trải nghiệm trái với kỳ vọng của người hỏi hay không.",
+      "en": "Underline evaluative wording in each question, then ask whether the respondent could describe an experience contrary to the interviewer's expectation."
+    },
+    "L09-1-2": {
+      "vi": "Viết riêng nhóm được mời, nhóm trả lời và tổng thể muốn nói tới. So sánh phạm vi của ba nhóm, rồi kiểm tra cách đặt câu hỏi.",
+      "en": "List the invited group, respondents and intended population separately. Compare their scope, then inspect the question wording."
+    },
+    "L15-2-2": {
+      "vi": "Viết riêng hai câu hỏi: khi nào đặt hàng và đặt bao nhiêu. Đối chiếu đơn vị, ngưỡng và dữ kiện còn thiếu cho từng quyết định.",
+      "en": "Write the two decisions separately: when to order and how much. Check units, threshold and missing information for each."
+    }
+  }
+}

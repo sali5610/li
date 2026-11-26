@@ -142,6 +142,25 @@ assert.match(understandingUi,/analogy\.limit/);
 assert.match(understandingUi,/not a prerequisite/);
 assert.match(understandingUi,/<Disclosure/);
 assert.ok(!understandingUi.includes('dangerouslySetInnerHTML'));
+const guidedHints=JSON.parse(read('content/editorial/wave1-guided-hints.v1.json'));
+assert.deepEqual(Object.keys(guidedHints.lessons).sort(),['L03-1-2','L09-1-2','L15-2-2']);
+assert.equal(guidedHints.reviewState,'proposed');
+for(const [id,localized] of Object.entries(guidedHints.lessons)){
+ const original=JSON.parse(read('content/lessons/'+id+'.json'));
+ for(const loc of ['vi','en']){
+  const feedback=original.content.localized[loc].guidedHint??original.content.localized[loc].exHelp;
+  assert.ok(localized[loc].trim()&&feedback.trim());
+  assert.notEqual(localized[loc],feedback,'Separate hint and worked feedback '+id+' '+loc);
+ }
+}
+for(const [src,feedback] of [[sample03,'guidedHint'],[sample09,'exHelp']]){
+ const guided=src.slice(src.indexOf("{phase==='guided'&&"),src.indexOf("{phase==='practice'&&"));
+ assert.match(guided,/guidedHints\.lessons/);
+ assert.ok(guided.includes('!saving&&!locked&&attempt.guidedDraft.trim().length>=12?'));
+ assert.ok(guided.includes('reference:!saving&&!locked&&attempt.guidedDraft.trim().length>=12?content.'+feedback+':undefined'));
+ assert.ok(!guided.includes('reference:attempt.hint?'));
+ assert.ok(guided.indexOf('guidedHints.lessons')<guided.indexOf('content.'+feedback));
+}
 const chapterIds=new Set();
 for(const item of drafts){
  const d=JSON.parse(read(item.normalizedPath));

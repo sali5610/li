@@ -23,8 +23,6 @@ import {CopyAnalysisPrompt} from './CopyAnalysisPrompt.js';
 import {RelatedLessons} from './RelatedLessons.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
-import {AiFeedbackPanel} from './AiFeedbackPanel.js';
-import feedbackPolicy from '../../../../content/feedback/ai-question-modes.v1.json';
 import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 
 /** A real invited-only React learner screen, not a second app.
@@ -460,6 +458,10 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
       placeholder={content.placeholder}
       onChange={event=>editDraft(i,event.currentTarget.value)}/>)}</div>
     <Text role="support">{content.saveHint}</Text>
+    <CopyAnalysisPrompt locale={appLocale} step="practice" data={{
+     title:content.title,lessonId:'L09-1-2',activity:content.caseText+'\n'+content.caseClaim,
+     questions:content.questions,answers:attempt.draft
+    }}/>
     {!attempt.submitted?<div className="li-learning-recovery">
      <Button disabled={locked||saving} onClick={()=>void submit()}>{content.submit}</Button>
      <Button variant="secondary" disabled={locked||saving} onClick={clearDraft}>{content.clear}</Button>
@@ -503,9 +505,6 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
       </select>
      </div>)}
     </div>
-    <AiFeedbackPanel id="L09-1-2" locale={appLocale}
-     answers={attempt.submission??attempt.draft}
-     openQuestionIndices={feedbackPolicy.lessons['L09-1-2'].modes.flatMap((mode,index)=>mode==='open'?[index]:[])}/>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
      locale={appLocale} onReviewTheory={()=>go('read')}/>
     <Text role="support">{vi?'Tự chấm theo rubric, không phải điểm tự động.':'Self-review, not automatic grading.'}</Text>

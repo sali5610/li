@@ -12,7 +12,6 @@ import {rememberOfflineInvite,recentOfflineOwner,forgetOfflineInvite} from './of
 import {deferAuthScreen} from './auth-display.js';
 import {RlsQaPanel} from './RlsQaPanel.js';
 import {SyncQaPanel} from './SyncQaPanel.js';
-import {AiOwnerControl} from './AiOwnerControl.js';
 import {VaultSettings} from './VaultSettings.js';
 import {clearCurrentVault,currentVault} from '../sync/e2ee-cloud.js';
 const E2EE_PILOT=import.meta.env.VITE_LI_E2EE_PILOT==='1';
@@ -440,8 +439,6 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    </div>)}
   </section>}
   {E2EE_PILOT&&accountId&&<VaultSettings accountId={accountId} locale={locale} online={!isOffline}/>}
-  {access==='granted'&&!localOffline&&session?.user?.email&&
-   <AiOwnerControl email={session.user.email} locale={locale}/>}
   {feedback&&<p className="li-auth-settings-error" role="alert">{feedback}</p>}
   {showDeveloperQa&&accountId&&access==='granted'&&<>
    <RlsQaPanel uid={accountId} granted/><SyncQaPanel uid={accountId} locale={locale}/>
@@ -496,8 +493,6 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
         onClick={()=>void decideConflict(c,'use-remote')}>{locale==='vi'?'Dùng bản trên Neon':'Use Neon version'}</Button>
       </div>)}
      </section>}
-     {access==='granted'&&!localOffline&&session?.user?.email&&
-      <AiOwnerControl email={session.user.email} locale={locale}/>}
      <Button variant="secondary" onClick={()=>void signOut()} disabled={busy!==null}>
       {busy?t.busy:localOffline?t.lockOffline:t.logout}
      </Button>

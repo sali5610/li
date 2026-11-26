@@ -1,15 +1,15 @@
 import React from 'react';
-import {Heading,Text,Link} from '../../../../design-system/react/Atoms';
+import {Heading,Text} from '../../../../design-system/react/Atoms';
 import {Stack} from '../../../../design-system/react/Layout';
 import {Disclosure} from '../../../../design-system/react/Molecules';
-import {CopyPromptAction} from './CopyAnalysisPrompt.js';
+import {LessonSources} from './LessonDetailParity.js';
 import data from '../../../../content/editorial/lesson-visual-evidence.v1.json';
 
 type Locale='vi'|'en';
 type Bilingual=Record<Locale,string>;
 type Cell=Bilingual|string;
-type Source={title:string;url:string;scope:Bilingual;limit:Bilingual;access:string};
-type Base={title:Bilingual;caption:Bilingual;sources:Source[]};
+type Source={title:string;url:string;scope:Bilingual;limit:Bilingual;access:string;tier?:string};
+type Base={title:Bilingual;caption:Bilingual;sources:Source[];queries:string[]};
 type Flow=Base&{kind:'flow';items:Bilingual[]};
 type Table=Base&{kind:'table';headers:Bilingual[];rows:Cell[][]};
 type Bars=Base&{kind:'bars';labels:Bilingual[];values:number[];unit:Bilingual;max?:number};
@@ -74,7 +74,7 @@ function BarsFigure({entry,locale}:{entry:Bars;locale:Locale}){
 /** Read-only first-party lesson figures; no answer, grade or progress write.
  * Shares existing learner figure/table styling and DS text, link, stack and disclosure.
  * Numeric examples are independent of the assessed case and explicitly fictional. */
-export function LessonVisualEvidence({id,locale,title}:{id:string;locale:Locale;title:string}){
+export function LessonVisualEvidence({id,locale,title,onSearch}:{id:string;locale:Locale;title:string;onSearch:(query:string)=>void}){
  const entry=figures[id];if(!entry)return null;
  const vi=locale==='vi';
  return <Stack space="4">
@@ -90,19 +90,29 @@ export function LessonVisualEvidence({id,locale,title}:{id:string;locale:Locale;
    {entry.kind==='plot'&&<PlotFigure entry={entry} locale={locale}/>}
    <figcaption><Text role="support">{entry.caption[locale]}</Text></figcaption>
   </figure>
-  <Disclosure summary={vi?'Nguồn đọc thêm và phạm vi chứng cứ':'Reading sources and evidence scope'}>
-   <Stack space="3">
-    {entry.sources.map(source=><div key={source.url}>
-     <Link href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</Link>
-     <Text role="support">{source.access==='readable'?
-      (vi?'Đã đọc phần liên quan · 26/11/2026':'Relevant portion read · 26 Nov 2026'):
-      (vi?'Chưa kiểm chứng trong lượt này':'Not checked in this pass')}</Text>
-     <Text>{source.scope[locale]}</Text>
-     <Text role="support">{source.limit[locale]}</Text>
-    </div>)}
-    <Text role="support">{vi?'Đối chiếu nguồn có giới hạn; chưa phải duyệt học thuật toàn bài.':'Scoped source check, not academic approval of the full lesson.'}</Text>
-    <CopyPromptAction locale={locale} prompt={(vi?'Giúp tôi kiểm chứng khái niệm trong bài ':'Help me verify the concepts in lesson ')+title+' ('+id+').\n'+entry.sources.map(s=>s.title+': '+s.url).join('\n')+'\n'+(vi?'Chỉ dùng phần thực sự truy cập được; nói rõ nếu không đọc được, phân biệt chứng cứ và suy luận.':'Use only material you can access; flag unavailable content and distinguish evidence from inference.')}/>
-   </Stack>
-  </Disclosure>
+  <details className="li-learning-extra-sources">
+   <summary>{vi?'Nguồn & đọc thêm':'Sources & further reading'}</summary>
+   <LessonSources id={id} locale={locale}
+    copy={vi?{
+     sourcesTitle:'Đọc thêm từ nguồn chính',sourcesLead:'Mở nguồn trực tiếp hoặc sao chép prompt để tìm hiểu sâu hơn.',
+     sourceNote:'Chỉ sử dụng tài liệu thực sự truy cập được. Đối chiếu nguồn có giới hạn; chưa phải duyệt học thuật toàn bài.',
+     queriesTitle:'Gợi ý tìm kiếm',openSource:'Mở nguồn',allPrompt:'Copy prompt tổng hợp',openChat:'Mở ChatGPT',
+     tiers:{core:'Nguồn chính',deep:'Đọc chuyên sâu',intro:'Đọc nhập môn',further:'Đọc thêm'}
+    }:{
+     sourcesTitle:'Read from primary references',sourcesLead:'Open a source directly or copy a contextual research prompt.',
+     sourceNote:'Use only material actually accessed. Scoped source check, not academic approval of the full lesson.',
+     queriesTitle:'Suggested searches',openSource:'Open source',allPrompt:'Copy cross-source prompt',openChat:'Open ChatGPT',
+     tiers:{core:'Core reference',deep:'Further reading',intro:'Introduction',further:'Further reading'}
+    }}
+    sources={entry.sources.map((source,i)=>({
+     title:source.title,url:source.url,tier:source.tier??(i===0?'core':'deep'),
+     usage:source.scope[locale],
+     note:(source.access==='readable'?
+      (vi?'Đã đối chiếu phần liên quan. ':'Relevant portion checked. '):
+      (vi?'Nguồn đọc mở rộng, chưa rà toàn văn. ':'Further reading, full text not reviewed. '))+source.limit[locale]
+    }))}
+    subject={id.startsWith('L03')?'HCI':id.startsWith('L09')?'Data Science':'Supply Chain'}
+    conceptTitle={title} searchQueries={entry.queries} onSearch={onSearch}/>
+  </details>
  </Stack>;
 }

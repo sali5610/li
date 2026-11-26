@@ -1,20 +1,22 @@
 {
   "schemaVersion": "1.0.0",
   "status": "draft_editorial_supplement_not_release_approval",
-  "description": "First-party procedural hints, guided feedback, simple concept schematics and pedagogical reading suggestions for invited personal drafts. Source links copied from the actual normalized manuscript; not newly verified or academic approval. Existing independent assessment and answer gates unchanged.",
+  "description": "First-party procedural hints, guided feedback, simple concept schematics and pedagogical reading suggestions for invited personal drafts. Source links copied from the actual normalized manuscript; not newly verified or academic approval. Existing independent assessment and answer gates unchanged. Worked examples remain intact; a fresh bilingual guided transfer question precedes the self-check for 16 lessons; L09-3-2 keeps its existing separate practice. Existing draft text is preserved; self-check is not graded or proof of a new attempt.",
   "lessons": {
     "L03-1-1": {
       "vi": {
         "hint": "Tách lời yêu cầu khỏi mục đích công việc. Viết giả thuyết nhu cầu, câu hỏi về lần gần nhất và điều kiện cần kiểm chứng; chưa chọn kênh liên lạc.",
-        "guidedFeedback": "Một giả thuyết tốt mô tả kết quả cần đạt mà không khóa vào badge đỏ. Quan sát lần bỏ lỡ ngoại lệ để phân biệt nhu cầu và giải pháp.",
+        "guidedFeedback": "Nhu cầu giả định: chia sẻ kết quả kiểm kê đúng lúc với người cần đối chiếu. Hỏi họ kể lần gần nhất phải gửi dữ liệu, người nhận và trở ngại. Chưa chọn định dạng.",
         "diagram": "Yêu cầu → Giả thuyết nhu cầu → Kiểm chứng",
-        "relatedReason": "Câu hỏi trung lập giúp kiểm chứng nhu cầu."
+        "relatedReason": "Câu hỏi trung lập giúp kiểm chứng nhu cầu.",
+        "guidedPrompt": "Một nhân viên yêu cầu thêm nút xuất Excel để gửi kết quả kiểm kê. Viết một giả thuyết nhu cầu không khóa vào Excel, và một câu hỏi về lần gần nhất."
       },
       "en": {
         "hint": "Separate the feature request from the job outcome. Write a need hypothesis, last-event questions and validation conditions; do not choose a channel yet.",
-        "guidedFeedback": "A useful hypothesis states the outcome without locking in a red badge. Examine the last missed exception to distinguish the need from a solution.",
+        "guidedFeedback": "Possible need: share stocktake results in time with people who reconcile them. Ask about the last sharing event, recipients and obstacles; do not select a format yet.",
         "diagram": "Request → Need hypothesis → Validation",
-        "relatedReason": "Neutral interviewing helps test a need hypothesis."
+        "relatedReason": "Neutral interviewing helps test a need hypothesis.",
+        "guidedPrompt": "A worker requests an Excel export to share stocktaking results. Write a need hypothesis without locking into Excel and one question about the last occasion."
       },
       "sourceUrl": "https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs",
       "relatedLessonId": "L03-1-2"
@@ -22,15 +24,17 @@
     "L03-1-3": {
       "vi": {
         "hint": "Gắn từng dữ kiện với người và hành vi thật sự quan sát. Đặt suy luận ở câu riêng, tránh từ chỉ toàn bộ người dùng.",
-        "guidedFeedback": "Ghi lời P01 và hành động mở menu riêng biệt. Lý do export chỉ là giả thuyết cho đến khi có thêm bằng chứng.",
+        "guidedFeedback": "Observation: P04 mở Settings rồi quay lại. Quote: lời P04 về lịch sử. Giả thuyết: nhãn hoặc vị trí lịch sử có thể không khớp kỳ vọng; chưa đủ để nói mọi người gặp lỗi.",
         "diagram": "Quan sát + lời nói → Suy luận → Kiểm chứng",
-        "relatedReason": "Cách hỏi ảnh hưởng độ tin cậy của lời kể."
+        "relatedReason": "Cách hỏi ảnh hưởng độ tin cậy của lời kể.",
+        "guidedPrompt": "P04 mở mục Settings rồi quay lại và nói “Tôi tưởng ở đây có lịch sử.” Viết riêng observation, quote và một inference chưa kiểm chứng."
       },
       "en": {
         "hint": "Attach each fact to the participant and observed behavior. Separate inferences and avoid population-wide wording.",
-        "guidedFeedback": "Record P01’s words separately from opening the menu. The reason for exporting remains a hypothesis pending evidence.",
+        "guidedFeedback": "Observation: P04 opens Settings and returns. Quote: the statement about history. Hypothesis: its label or location may conflict with expectations; no population-wide conclusion.",
         "diagram": "Observation + quote → Inference → Validation",
-        "relatedReason": "Interview wording affects the reliability of accounts."
+        "relatedReason": "Interview wording affects the reliability of accounts.",
+        "guidedPrompt": "P04 opens Settings, returns and says “I thought the history was here.” Write an observation, quote and unverified inference separately."
       },
       "sourceUrl": "https://www.gov.uk/service-manual/user-research/analyse-a-research-session",
       "relatedLessonId": "L03-1-2"
@@ -38,15 +42,19 @@
     "L03-2-1": {
       "vi": {
         "hint": "Tạo ID chủ đề trước khi chọn nhãn; thử gắn nhiều tag cho tài liệu giao thoa. Menu phục vụ tác vụ chứ không nhất thiết sao chép taxonomy.",
-        "guidedFeedback": "Một ID ổn định có thể có nhãn và alias khác nhau. Loại How-to và chủ đề nhập dữ liệu là hai thuộc tính, không phải hai cấp của cùng cây.",
+        "guidedFeedback": "How-to là content type; account-security hoặc password-change là topic theo phạm vi đã định; reset password chỉ là alias nếu đúng nghĩa; Tài khoản → Đổi mật khẩu là một lối vào. Cần thử nhãn, không đồng nhất reset với change nếu khác quy trình.",
         "diagram": "Đối tượng → Chủ đề/alias → Lối điều hướng",
-        "relatedReason": "Kiểm chứng từ ngữ và tác vụ qua phỏng vấn."
+        "relatedReason": "Kiểm chứng từ ngữ và tác vụ qua phỏng vấn.",
+        "guidedPrompt": "Tài liệu “Đổi mật khẩu” thuộc nhóm Security nội bộ. Đề xuất content type, topic ID, một alias và lối menu hướng tác vụ; phân biệt các vai trò.",
+        "answerAddendum": "Ví dụ kiểm chứng cho câu 4: mời người đang hoặc chuẩn bị làm nghiên cứu tại trường; giao tác vụ “Ngươi muốn xin kinh phí cho một nghiên cứu mới, hãy tìm hướng dẫn cần thiết.” Trong cây đề xuất, định trước R1 là đích đúng; ghi tỷ lệ tới R1 không trợ giúp, đường đi và các điểm rẽ sai. Đây là kế hoạch thử, chưa có kết quả để khẳng định taxonomy hay UI đã tốt."
       },
       "en": {
         "hint": "Create topic IDs before labels; consider multiple tags for cross-topic material. Menus serve tasks rather than necessarily copying the taxonomy.",
-        "guidedFeedback": "A stable ID can have different labels and aliases. How-to and data import describe different attributes, not levels of one tree.",
+        "guidedFeedback": "How-to is the type; account-security or password-change is a topic with defined scope; reset password is an alias only if meaning matches; Account → Change password is a route. Test labels; do not conflate reset and change if workflows differ.",
         "diagram": "Object → Topic/alias → Navigation path",
-        "relatedReason": "Validate language and tasks through interviews."
+        "relatedReason": "Validate language and tasks through interviews.",
+        "guidedPrompt": "An article “Change password” belongs to internal Security. Propose a content type, topic ID, alias and task-based menu path; distinguish their roles.",
+        "answerAddendum": "Example validation for question 4: recruit current or prospective university researchers; ask, “You want funding for a new study. Find the instructions you need.” In the proposed tree, predefine R1 as the target; record unassisted arrival at R1, paths and wrong turns. This is a test plan, not evidence that the taxonomy or full UI works."
       },
       "sourceUrl": "https://www.nngroup.com/articles/taxonomy-101/",
       "relatedLessonId": "L03-1-2"
@@ -54,15 +62,17 @@
     "L03-2-2": {
       "vi": {
         "hint": "Hỏi mục tiêu là khám phá nhóm hay đánh giá khả năng tìm trong cây có sẵn. Viết tác vụ không lộ nhãn đích.",
-        "guidedFeedback": "Tree testing phù hợp khi đã có cấu trúc và cần kiểm tra tìm đúng đích. Card sorting giúp khám phá cách người dùng nhóm nội dung; không thay thế kiểm thử UI.",
+        "guidedFeedback": "Card sorting phù hợp để khám phá cách nhóm/nhãn. Sau khi có cây giả định, tree testing kiểm tra tìm đích. Cả hai không tự xác nhận UI hoàn chỉnh.",
         "diagram": "Khám phá nhóm → Cây thử nghiệm → Tìm đích",
-        "relatedReason": "Taxonomy là đầu vào để thử cấu trúc điều hướng."
+        "relatedReason": "Taxonomy là đầu vào để thử cấu trúc điều hướng.",
+        "guidedPrompt": "Một thư viện mới chưa biết người đọc nhóm các tài liệu hướng dẫn thế nào. Chọn phương pháp đầu tiên và nêu khi nào dùng phương pháp còn lại."
       },
       "en": {
         "hint": "Ask whether the goal is discovering groups or evaluating an existing tree. Write tasks without exposing target labels.",
-        "guidedFeedback": "Tree testing fits an existing structure and findability goal. Card sorting explores grouping; neither replaces testing the interface.",
+        "guidedFeedback": "Card sorting explores groupings and labels. Once a candidate tree exists, tree testing checks findability. Neither establishes usability of the full interface.",
         "diagram": "Discover groups → Test tree → Find destination",
-        "relatedReason": "Taxonomy informs a navigational structure to test."
+        "relatedReason": "Taxonomy informs a navigational structure to test.",
+        "guidedPrompt": "A new library does not know how readers group help articles. Choose a first method and say when to use the other."
       },
       "sourceUrl": "https://www.nngroup.com/articles/card-sorting-tree-testing-differences/",
       "relatedLessonId": "L03-2-1"
@@ -70,15 +80,17 @@
     "L03-2-3": {
       "vi": {
         "hint": "Lập bảng outcome theo attempt trước. Đếm lỗi theo event riêng; mọi tỷ lệ cần mẫu số và giới hạn của mẫu.",
-        "guidedFeedback": "Direct và indirect cùng có thể thành công. Nhiều lỗi trong một attempt không tạo thêm người thất bại; phân tích thời gian theo protocol.",
+        "guidedFeedback": "Completion 17/20=85%; direct 60%; failure 15%; indirect 25%. Hai lần đi sai là hai sự kiện lỗi, không thêm hai lượt thất bại.",
         "diagram": "Attempts → Outcome rates | Error events → Error count",
-        "relatedReason": "Tree test cung cấp đường đi và kết quả để đo."
+        "relatedReason": "Tree test cung cấp đường đi và kết quả để đo.",
+        "guidedPrompt": "Trong 20 lượt hợp lệ: 12 direct, 5 indirect, 3 failed. Một lượt thành công đi sai 2 nhánh. Tính completion/direct/failure, phân biệt error events."
       },
       "en": {
         "hint": "Tabulate outcomes by attempt first. Count error events separately; every rate needs its denominator and sample limitation.",
-        "guidedFeedback": "Direct and indirect paths can both succeed. Multiple errors in one attempt do not create additional failed people; follow the timing protocol.",
+        "guidedFeedback": "Completion 17/20=85%; direct 60%; failure 15%; indirect 25%. Two wrong turns are two error events, not two additional failed attempts.",
         "diagram": "Attempts → Outcome rates | Error events → Error count",
-        "relatedReason": "Tree tests provide paths and outcomes to measure."
+        "relatedReason": "Tree tests provide paths and outcomes to measure.",
+        "guidedPrompt": "Of 20 valid attempts, 12 are direct, 5 indirect and 3 failed. One successful attempt takes two wrong branches. Compute completion/direct/failure and distinguish errors."
       },
       "sourceUrl": "https://www.nngroup.com/articles/success-rate-the-simplest-usability-metric/",
       "relatedLessonId": "L03-2-2"
@@ -86,15 +98,17 @@
     "L09-1-3": {
       "vi": {
         "hint": "Sắp xếp hai dãy trước khi tính median và mode. So khoảng cách min–max, đừng suy hình dạng dân số từ ít điểm.",
-        "guidedFeedback": "Mean chịu ảnh hưởng giá trị xa; median dựa thứ tự. Range chỉ mô tả độ trải quan sát, không đủ xác nhận hình dạng dân số.",
+        "guidedFeedback": "Cả hai mean=4, median=4; range lần lượt 4 và 6 phút. Dãy hai có range rộng hơn; không kết luận phân phối tổng thể từ năm điểm.",
         "diagram": "Dãy số → Trung tâm + độ trải → Giới hạn mẫu",
-        "relatedReason": "Phân biệt mô tả mẫu với suy rộng dân số."
+        "relatedReason": "Phân biệt mô tả mẫu với suy rộng dân số.",
+        "guidedPrompt": "Hai dãy phút: 2,3,4,5,6 và 1,1,4,7,7. Tính mean, median, range; giải thích điều không thể kết luận về tổng thể."
       },
       "en": {
         "hint": "Sort both lists before finding medians and modes. Compare min–max spans; do not infer population shape from few points.",
-        "guidedFeedback": "Mean reacts to distant values; median uses order. Range describes observed spread, not population shape.",
+        "guidedFeedback": "Both mean=4 and median=4; ranges are 4 and 6 minutes. The second has a wider observed range; five observations do not establish a population distribution.",
         "diagram": "Data → Center + spread → Sample limits",
-        "relatedReason": "Distinguish sample descriptions from population inference."
+        "relatedReason": "Distinguish sample descriptions from population inference.",
+        "guidedPrompt": "Two duration lists: 2,3,4,5,6 and 1,1,4,7,7. Compute mean, median and range; explain what cannot be inferred about the population."
       },
       "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data",
       "relatedLessonId": "L09-1-2"
@@ -102,15 +116,17 @@
     "L09-2-1": {
       "vi": {
         "hint": "Chia tổng theo có/không rủi ro, lập bảng cảnh báo đúng/sai. Khi đảo điều kiện, kiểm tra mẫu số mới.",
-        "guidedFeedback": "Tính số đếm trước, rồi lấy cảnh báo đúng chia tổng cảnh báo. Sensitivity sử dụng nhóm thật sự có vấn đề, không phải toàn bộ cảnh báo.",
+        "guidedFeedback": "TP=30, FP=16, PPV=30/46≈65,22%. Độ nhạy dùng 40 ca thật; PPV dùng 46 cảnh báo.",
         "diagram": "Tổng → Hai nhóm thật → Cảnh báo → Tỷ lệ có điều kiện",
-        "relatedReason": "Cơ chế chọn mẫu ảnh hưởng diễn giải tỷ lệ."
+        "relatedReason": "Cơ chế chọn mẫu ảnh hưởng diễn giải tỷ lệ.",
+        "guidedPrompt": "200 sự kiện: 40 có vấn đề, độ nhạy 75%, FPR 10%. Tính true alerts, false alerts và PPV."
       },
       "en": {
         "hint": "Split the total by risk status, tabulate true and false alerts. When reversing the condition, check the new denominator.",
-        "guidedFeedback": "Count first, then divide true alerts by all alerts. Sensitivity uses truly problematic cases, not all alerts.",
+        "guidedFeedback": "TP=30, FP=16, PPV=30/46≈65.22%. Sensitivity uses 40 actual problems; PPV uses 46 alerts.",
         "diagram": "Total → True groups → Alerts → Conditional rate",
-        "relatedReason": "Sampling mechanisms affect rate interpretation."
+        "relatedReason": "Sampling mechanisms affect rate interpretation.",
+        "guidedPrompt": "200 events: 40 actual problems, sensitivity 75%, FPR 10%. Compute true alerts, false alerts and PPV."
       },
       "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/3-4-contingency-tables",
       "relatedLessonId": "L09-1-2"
@@ -118,15 +134,17 @@
     "L09-2-2": {
       "vi": {
         "hint": "Tính tỷ lệ mẫu, kiểm số đếm, rồi SE và biên sai số. Viết kết luận về quy trình lặp lại thay vì xác suất tham số cố định.",
-        "guidedFeedback": "Khi các giả định giữ nguyên, tăng n làm SE nhỏ hơn. Khoảng hẹp không sửa thiên lệch chọn mẫu; coverage thuộc quy trình lấy mẫu.",
+        "guidedFeedback": "p̂=.6, SE=√(.24/100)≈.049, MOE≈.096, CI ≈ [.504,.696]. Coverage là tính chất xấp xỉ của quy trình lặp lại theo giả định; không phải xác suất tham số cố định.",
         "diagram": "Tỷ lệ mẫu → SE → Biên sai số → Khoảng",
-        "relatedReason": "Selection bias vẫn là rủi ro khi khoảng tin cậy hẹp."
+        "relatedReason": "Selection bias vẫn là rủi ro khi khoảng tin cậy hẹp.",
+        "guidedPrompt": "Mẫu ngẫu nhiên đơn giả định n=100, 60 Có. Dùng z=1,96, Wald CI 95%; giải thích coverage và điều kiện."
       },
       "en": {
         "hint": "Compute the sample proportion, check counts, then SE and margin. Describe repeated procedures rather than probability for a fixed parameter.",
-        "guidedFeedback": "With assumptions fixed, greater n reduces SE. A narrow interval does not repair selection bias; coverage belongs to the sampling procedure.",
+        "guidedFeedback": "p̂=.6, SE=√(.24/100)≈.049, MOE≈.096, CI ≈ [.504,.696]. Coverage is an approximate repeated-procedure property under assumptions, not probability for a fixed parameter.",
         "diagram": "Sample proportion → SE → Margin → Interval",
-        "relatedReason": "Selection bias remains a risk even with a narrow interval."
+        "relatedReason": "Selection bias remains a risk even with a narrow interval.",
+        "guidedPrompt": "A fictional simple random sample of n=100 has 60 Yes responses. Use z=1.96 for a 95% Wald interval; explain coverage and conditions."
       },
       "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/8-3-a-population-proportion",
       "relatedLessonId": "L09-1-2"
@@ -134,15 +152,17 @@
     "L09-2-3": {
       "vi": {
         "hint": "Lập bảng độ lệch khỏi trung bình và tích độ lệch. So slope gộp với từng nhóm trước khi nói về nguyên nhân.",
-        "guidedFeedback": "Đường hồi quy mô tả liên hệ quan sát. Khớp tốt hoặc residual bằng 0 ở ví dụ không chứng minh tác động nhân quả.",
+        "guidedFeedback": "ŷ=1+3x; tại x=2, ŷ=7, residual=0. Khớp hoàn hảo trong ba điểm không chứng minh nhân quả hay hiệu năng ngoài mẫu.",
         "diagram": "Dữ liệu → Hồi quy → So nhóm → Giới hạn nhân quả",
-        "relatedReason": "Xem xét điều kiện và nhóm trước khi diễn giải kết quả gộp."
+        "relatedReason": "Xem xét điều kiện và nhóm trước khi diễn giải kết quả gộp.",
+        "guidedPrompt": "Các cặp (1,4),(2,7),(3,10). Tính đường OLS, dự báo tại x=2 và residual; có chứng minh nhân quả không?"
       },
       "en": {
         "hint": "Tabulate deviations from means and their products. Compare pooled and within-group slopes before causal claims.",
-        "guidedFeedback": "Regression describes observed association. A good fit or zero residual in an example does not prove a causal effect.",
+        "guidedFeedback": "ŷ=1+3x; at x=2, ŷ=7, residual=0. Perfect fit on three points proves neither causality nor out-of-sample performance.",
         "diagram": "Data → Regression → Compare groups → Causal limits",
-        "relatedReason": "Consider conditions and groups before interpreting pooled results."
+        "relatedReason": "Consider conditions and groups before interpreting pooled results.",
+        "guidedPrompt": "Pairs (1,4),(2,7),(3,10). Find the OLS line, prediction at x=2 and residual; does this prove causation?"
       },
       "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation",
       "relatedLessonId": "L09-2-1"
@@ -150,15 +170,17 @@
     "L09-3-1": {
       "vi": {
         "hint": "Viết mốc dự báo và thông tin có sẵn ở mốc đó trước. Tách dữ liệu theo đơn vị triển khai; xác định nơi fit biến đổi và nơi đánh giá cuối.",
-        "guidedFeedback": "Chỉ fit scaler trên train hoặc training fold rồi áp lên phần giữ lại. Feature phát sinh sau mốc dự báo không thể dùng để dự báo ở mốc trước.",
+        "guidedFeedback": "Chia theo khách trước; fit scaler trên train/fold; bỏ feature chỉ có sau mốc dự báo. Dùng tập test chưa tham gia chọn mô hình.",
         "diagram": "Mốc dự báo → Split → Fit train → Đánh giá giữ lại",
-        "relatedReason": "Giới hạn dự đoán ngoài điều kiện đã quan sát."
+        "relatedReason": "Giới hạn dự đoán ngoài điều kiện đã quan sát.",
+        "guidedPrompt": "Dự báo khách mới khi tạo đơn. Team chuẩn hóa cả tập rồi chia theo đơn, và dùng timestamp giao thật. Nêu ba sửa đổi trước khi đánh giá."
       },
       "en": {
         "hint": "Write the prediction time and available information first. Split by deployment unit; identify where transformations are fitted and final evaluation occurs.",
-        "guidedFeedback": "Fit a scaler on training data or folds only, then transform held-out data. Features created after prediction time cannot be used at that earlier time.",
+        "guidedFeedback": "Split by customer first; fit scaler on training data/folds; remove features unavailable at prediction time. Keep test out of model selection.",
         "diagram": "Prediction time → Split → Fit train → Held-out evaluation",
-        "relatedReason": "Limits of predictions outside observed conditions."
+        "relatedReason": "Limits of predictions outside observed conditions.",
+        "guidedPrompt": "Predict new-customer orders at creation. The team scales the full dataset, splits by order and uses actual delivery time. Name three fixes."
       },
       "sourceUrl": "https://scikit-learn.org/stable/common_pitfalls.html",
       "relatedLessonId": "L09-2-3"
@@ -182,15 +204,17 @@
     "L09-3-3": {
       "vi": {
         "hint": "Tính từng chỉ số theo nhóm trước khi gộp. So chênh lệch theo điểm phần trăm; phân biệt mức giảm score và nguyên nhân.",
-        "guidedFeedback": "Accuracy bằng nhau không bảo đảm recall hay tỷ lệ cảnh báo sai bằng nhau. Chênh lệch là tín hiệu cần đánh giá tiếp, không tự chứng minh bất công hay tính hợp pháp.",
+        "guidedFeedback": "Cả hai accuracy 80%; recall A=70%, B=40%, gap 30 điểm phần trăm. Cần xem tác động, dữ liệu và bối cảnh; không đủ bằng chứng kết luận công bằng hay vi phạm luật.",
         "diagram": "Metric theo nhóm → Chênh lệch → Điều tra giới hạn",
-        "relatedReason": "Dùng confusion matrix để nhìn sai sót theo nhóm."
+        "relatedReason": "Dùng confusion matrix để nhìn sai sót theo nhóm.",
+        "guidedPrompt": "Hai nhóm 100 đơn, mỗi nhóm 20 trễ thật. A: TP=14, FN=6, FP=14, TN=66; B: TP=8, FN=12, FP=8, TN=72. So accuracy và recall; không kết luận quá mức."
       },
       "en": {
         "hint": "Compute metrics by group before pooling. Compare percentage-point gaps; distinguish score decrease from causation.",
-        "guidedFeedback": "Equal accuracy does not imply equal recall or false-positive rates. A gap calls for assessment, not an automatic legal or fairness conclusion.",
+        "guidedFeedback": "Both accuracy 80%; recall A=70%, B=40%, gap 30 percentage points. Investigate impacts, data and context; insufficient evidence for a fairness or legal verdict.",
         "diagram": "Group metrics → Disparities → Investigate limits",
-        "relatedReason": "Use confusion matrices to examine group-level errors."
+        "relatedReason": "Use confusion matrices to examine group-level errors.",
+        "guidedPrompt": "Two groups of 100 orders, 20 truly late each. A: TP=14, FN=6, FP=14, TN=66; B: TP=8, FN=12, FP=8, TN=72. Compare accuracy and recall without overclaiming."
       },
       "sourceUrl": "https://fairlearn.org/v0.15/user_guide/assessment/common_fairness_metrics.html",
       "relatedLessonId": "L09-3-2"
@@ -198,15 +222,17 @@
     "L15-2-1": {
       "vi": {
         "hint": "Viết quy tắc forecast và kỳ dự báo trước. Giữ đúng quy ước dấu error; phân biệt hàng bán và demand nếu hết hàng.",
-        "guidedFeedback": "Forecast theo trung bình là kỳ vọng có giả định, không phải cam kết bán hay lệnh mua. Cần tồn kho và lead time để ra quyết định bổ sung.",
+        "guidedFeedback": "Forecast=24, error=+3 bộ (dự báo thấp). Cần inventory position, lead time, chính sách lượng đặt và mức phục vụ; lịch sử sales có thể thiếu demand do stockout.",
         "diagram": "Lịch sử → Forecast → Error → Quyết định riêng",
-        "relatedReason": "Dự báo nhu cầu là đầu vào cho chính sách tồn kho."
+        "relatedReason": "Dự báo nhu cầu là đầu vào cho chính sách tồn kho.",
+        "guidedPrompt": "Ba tuần bán 18,24,30 bộ; dùng mean làm forecast tuần 4. Nếu nhu cầu thực 27, tính error actual−forecast và nêu dữ liệu cần để đặt hàng."
       },
       "en": {
         "hint": "Write the forecasting rule and horizon first. Preserve the error sign convention; distinguish sales from demand during stockouts.",
-        "guidedFeedback": "An average-based forecast is an assumption-dependent expectation, not guaranteed sales or a purchase order. Replenishment needs inventory and lead time.",
+        "guidedFeedback": "Forecast=24, error=+3 units (underforecast). Need inventory position, lead time, quantity policy and service target; sales history may censor demand during stockouts.",
         "diagram": "History → Forecast → Error → Separate decision",
-        "relatedReason": "Demand forecasts inform inventory policies."
+        "relatedReason": "Demand forecasts inform inventory policies.",
+        "guidedPrompt": "Three weeks of sales: 18,24,30 units; use the mean as week-4 forecast. Actual demand is 27; compute actual-minus-forecast error and list inputs for ordering."
       },
       "sourceUrl": "https://www.ibm.com/think/topics/demand-planning",
       "relatedLessonId": "L15-2-2"
@@ -214,15 +240,17 @@
     "L15-2-3": {
       "vi": {
         "hint": "Xếp các mốc theo loại sự kiện và thời điểm biết thông tin. Chỉ so hai mốc cùng loại; ghi dấu và đơn vị thời gian.",
-        "guidedFeedback": "ETA là dự báo tại thời điểm ghi nhận. Chênh ETA với planned là độ trễ dự báo; actual còn cần sự kiện và nguồn xác nhận.",
+        "guidedFeedback": "Lúc 09:00 dự kiến arrival trễ 40 phút; chưa xác nhận actual. 09:00 là as-of, 11:40 là thời điểm dự báo đến.",
         "diagram": "Planned | ETA tại as-of | Actual + receipt",
-        "relatedReason": "Lead time ảnh hưởng quyết định bổ sung hàng."
+        "relatedReason": "Lead time ảnh hưởng quyết định bổ sung hàng.",
+        "guidedPrompt": "Arrival planned 11:00, ETA 11:40 ghi lúc 09:00; actual chưa báo. Viết trạng thái lúc 09:00 và phân biệt hai loại thời điểm."
       },
       "en": {
         "hint": "Sort timestamps by event type and information availability. Compare like events; state the sign and time unit.",
-        "guidedFeedback": "ETA is a forecast as of a recorded time. ETA minus planned gives forecast delay; actual requires an event and source confirmation.",
+        "guidedFeedback": "At 09:00, arrival is forecast to be 40 minutes late; actual unconfirmed. 09:00 is as-of, 11:40 is predicted arrival time.",
         "diagram": "Planned | ETA as-of | Actual + receipt",
-        "relatedReason": "Lead time affects replenishment decisions."
+        "relatedReason": "Lead time affects replenishment decisions.",
+        "guidedPrompt": "Planned arrival 11:00, ETA 11:40 recorded at 09:00; no actual report. Write the 09:00 status and distinguish time types."
       },
       "sourceUrl": "https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/planning/shipment_manager/multi_create_shipments/shipment_stop_dtail.htm",
       "relatedLessonId": "L15-2-2"
@@ -230,15 +258,17 @@
     "L15-3-1": {
       "vi": {
         "hint": "Tính range và mean riêng theo cùng đơn vị. So sales với orders; viết các nguyên nhân như giả thuyết cần dữ liệu.",
-        "guidedFeedback": "Cùng tổng và trung bình vẫn có thể có mức biến động khác. Chuỗi đơn đặt hàng biến động hơn chưa tự chứng minh nguyên nhân bullwhip.",
+        "guidedFeedback": "Mean cả hai=10, range 2 và 10. Orders biến động rộng hơn trong mẫu; kiểm lịch gom đơn, promo, tồn kho hoặc lead time để phân biệt nguyên nhân.",
         "diagram": "Sales → Retail orders → Upstream orders → So biến động",
-        "relatedReason": "Sai số và giả định dự báo có thể ảnh hưởng đơn đặt hàng."
+        "relatedReason": "Sai số và giả định dự báo có thể ảnh hưởng đơn đặt hàng.",
+        "guidedPrompt": "Cùng ba kỳ: sales 9,10,11; orders 5,10,15. Tính mean/range, và một dữ liệu cần biết trước khi quy nguyên nhân."
       },
       "en": {
         "hint": "Calculate range and mean separately in the same units. Compare sales and orders; treat causes as hypotheses needing evidence.",
-        "guidedFeedback": "Equal totals and means can coexist with different variability. More variable order series do not independently establish the cause of bullwhip.",
+        "guidedFeedback": "Both means=10; ranges 2 and 10. Orders have greater observed spread; examine batching dates, promotions, inventory or lead time to distinguish causes.",
         "diagram": "Sales → Retail orders → Upstream orders → Compare variability",
-        "relatedReason": "Forecast errors and assumptions can affect orders."
+        "relatedReason": "Forecast errors and assumptions can affect orders.",
+        "guidedPrompt": "Same three periods: sales 9,10,11; orders 5,10,15. Compute means/ranges and name evidence needed before assigning a cause."
       },
       "sourceUrl": "https://pubsonline.informs.org/doi/10.1287/mnsc.43.4.546",
       "relatedLessonId": "L15-2-1"
@@ -246,15 +276,17 @@
     "L15-3-2": {
       "vi": {
         "hint": "Ghi cùng horizon và z; tách trường hợp độc lập với tương quan hoàn hảo. Đừng dùng tổng độ lệch chuẩn cho mọi trường hợp.",
-        "guidedFeedback": "Khi nhu cầu độc lập, cộng phương sai trước khi lấy căn. Tương quan dương hoàn hảo không tạo lợi ích đa dạng hóa; vẫn cần kiểm tra chi phí và lead time.",
+        "guidedFeedback": "Riêng=14; độc lập=2√(9+16)=10; ρ=1 thì 14 hộp. Giảm đệm 4 hộp chưa chứng minh tối ưu khi chi phí chuyển hàng hoặc thời gian đáp ứng thay đổi.",
         "diagram": "Nhu cầu riêng → Tương quan → Buffer gộp → Trade-off",
-        "relatedReason": "Safety stock là nền tảng để so mức đệm riêng và gộp."
+        "relatedReason": "Safety stock là nền tảng để so mức đệm riêng và gộp.",
+        "guidedPrompt": "Hai vùng có σ=3 và 4 hộp, cùng horizon, z=2. Tính buffer riêng, gộp độc lập và gộp khi ρ=1; nêu một trade-off."
       },
       "en": {
         "hint": "Use the same horizon and z; separate independence from perfect correlation. Do not sum standard deviations in every case.",
-        "guidedFeedback": "For independent demands, sum variances before taking the square root. Perfect positive correlation removes diversification gains; still examine costs and lead time.",
+        "guidedFeedback": "Separate=14; independent=2√(9+16)=10; ρ=1 gives 14 units. Four units saved do not establish optimality if transport cost or service time changes.",
         "diagram": "Separate demand → Correlation → Pooled buffer → Trade-offs",
-        "relatedReason": "Safety stock supports comparing separate and pooled buffers."
+        "relatedReason": "Safety stock supports comparing separate and pooled buffers.",
+        "guidedPrompt": "Two regions have σ=3 and 4 units, same horizon, z=2. Compute separate, independent pooled and perfectly correlated buffers; name a trade-off."
       },
       "sourceUrl": "https://ocw.mit.edu/courses/15-762j-supply-chain-planning-spring-2011/",
       "relatedLessonId": "L15-2-2"
@@ -262,15 +294,17 @@
     "L15-3-3": {
       "vi": {
         "hint": "Tách mẫu số cycle và unit. Loại phương án vi phạm bất kỳ ràng buộc nào rồi mới so cost; thử lại khi đổi ngưỡng.",
-        "guidedFeedback": "CSL và unit fill đo hai kết quả khác nhau. Lựa chọn rẻ nhất chỉ có nghĩa trong tập phương án đáp ứng mọi ràng buộc đang xét.",
+        "guidedFeedback": "CSL=75%; unit fill=95%. Mẫu số khác nhau. Cần kịch bản gián đoạn, tiêu chuẩn phục hồi và chi phí; không thể kết luận resilience chỉ từ service history.",
         "diagram": "Service metrics → Ràng buộc → Feasible → So cost",
-        "relatedReason": "Risk pooling có đánh đổi service, chi phí và thời gian."
+        "relatedReason": "Risk pooling có đánh đổi service, chi phí và thời gian.",
+        "guidedPrompt": "8 chu kỳ có 6 không stockout; 200 hộp nhu cầu, 190 đáp ứng ngay. Tính CSL và unit fill. Có đủ để nói hệ thống resilient không?"
       },
       "en": {
         "hint": "Separate cycle and unit denominators. Exclude options violating any constraint before comparing costs; reassess after thresholds change.",
-        "guidedFeedback": "CSL and unit fill measure different outcomes. The cheapest choice is meaningful only among options satisfying every stated constraint.",
+        "guidedFeedback": "CSL=75%; unit fill=95%. Denominators differ. Need disruption scenarios, recovery targets and costs; service history alone does not establish resilience.",
         "diagram": "Service metrics → Constraints → Feasible → Compare cost",
-        "relatedReason": "Risk pooling involves service, cost and time trade-offs."
+        "relatedReason": "Risk pooling involves service, cost and time trade-offs.",
+        "guidedPrompt": "Of 8 cycles, 6 have no stockout; 190 of 200 demanded units are immediately filled. Compute CSL and unit fill. Is resilience established?"
       },
       "sourceUrl": "https://www.gov.uk/government/publications/global-supply-chains-a-foresight-report-on-risk-and-resilience/annex-a-evidence-and-trends-for-supply-chain-vulnerability-and-resilience",
       "relatedLessonId": "L15-3-2"

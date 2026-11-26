@@ -1,7 +1,7 @@
 name: Release li. to Cloudflare Pages Free — MANUAL ONLY
 
 # IMPORTANT: Manual dispatch is the ONLY deploy trigger. PR gate builds a candidate locally but NEVER deploys.
-# Auth-only pins the exact live PWA source plus the false-invitation confirmation and fresh managed session fix; AI retains its independent reviewed SHA,
+# Auth-only pins the exact live PWA source plus the false-invitation confirmation and fresh managed session fix; integrated Workers AI retired by PO,
 # without merging all staging changes into main. Never dispatch until preflight.
 on:
   # Focused PR gate builds the pinned Auth-only artifact; it never deploys.
@@ -11,11 +11,11 @@ on:
   workflow_dispatch:
     inputs:
       confirm:
-        description: "Enter the mode-specific confirmation (static, AI, or Auth-only)."
+        description: "Enter the mode-specific confirmation (static, Auth-only, or approved Auth + Push)."
         required: true
         type: string
       ai_mode:
-        description: "AI Free mode: blocked until approved D1/AI bindings and G4 gate."
+        description: "Retired compatibility input. Keep false; true always blocks release."
         required: false
         type: boolean
         default: false
@@ -108,45 +108,11 @@ jobs:
           chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
           test -n "$chrome"
           CHROME_BIN="$chrome" node tools/test_cloudflare_offline_browser.mjs
-      # Preserve the independently pinned AI pilot QA; never mix its source
-      # with the exact-live Auth-only candidate or enable it here.
-      - name: Checkout unchanged independently pinned AI candidate
-        uses: actions/checkout@v4
-        with:
-          ref: c32d7213494e952702488336060346e867b6c51f
-          persist-credentials: false
-      - name: Build one-seat Workers AI candidate (NO DEPLOY)
-        run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD)" = "c32d7213494e952702488336060346e867b6c51f"
-          npm install --no-audit --no-fund --prefix design-system/react
-          npm install --no-audit --no-fund --prefix tools/step16-real-l09-react-island
-          cd tools/step16-real-l09-react-island
-          npm run extract
-          node --test tests/ai-one-seat.test.mjs
-          npm run build:worker
-          VITE_LI_AUTH_TARGET=cloudflare-first-party npx vite build --config vite.cloudflare-app.config.mjs
-          cd ../..
-          node tools/prepare_cloudflare_ai_candidate.mjs --build
-          LI_CLOUDFLARE_AI_BUILD=1 npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-auth-only-config.cjs
-          find dist-cloudflare-ai-candidate -type f -name '*.map' -delete
-          test -s dist-cloudflare-ai-candidate/sw.js
-          grep -Fq 'li-first-party-app.js' dist-cloudflare-ai-candidate/sw.js
-          grep -Fq 'li-push-handler.js' dist-cloudflare-ai-candidate/sw.js
-          ! grep -Fq 'neon.tech' dist-cloudflare-ai-candidate/sw.js
-          grep -Fq 'serviceWorker.register' dist-cloudflare-ai-candidate/assets/pwa-register.js
-          grep -Fq '"start_url": "/"' dist-cloudflare-ai-candidate/manifest.webmanifest
-          grep -Fq '"scope": "/"' dist-cloudflare-ai-candidate/manifest.webmanifest
-          test -s dist-cloudflare-ai-candidate/_worker.js
-          test -s dist-cloudflare-ai-candidate/assets/li-first-party-app.js
-          test -z "$(find dist-cloudflare-ai-candidate -type f -name '*.map' -print -quit)"
-          git diff --exit-code -- site
   release:
     if: >-
       github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/main' &&
       ((inputs.ai_mode == false && inputs.auth_only_mode == false && inputs.push_minute_mode == false && inputs.confirm == 'PUBLISH_LI_FREE_ONLY') ||
-       (inputs.ai_mode == true && inputs.auth_only_mode == false && inputs.push_minute_mode == false && inputs.confirm == 'PUBLISH_LI_AI_FREE_ONLY') ||
        (inputs.ai_mode == false && inputs.auth_only_mode == true && inputs.push_minute_mode == false && inputs.confirm == 'PUBLISH_LI_AUTH_ONLY') ||
        (inputs.ai_mode == false && inputs.auth_only_mode == true && inputs.push_minute_mode == true && inputs.confirm == 'PUBLISH_LI_AUTH_PUSH_MINUTE_FREE_ONLY'))
     runs-on: ubuntu-latest
@@ -162,20 +128,15 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.auth_only_mode && '8130a2c6589bc68073909a44c241995ceb880df4' || (inputs.ai_mode && 'c32d7213494e952702488336060346e867b6c51f' || github.sha) }}
+          ref: ${{ inputs.auth_only_mode && '8130a2c6589bc68073909a44c241995ceb880df4' || github.sha }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
-        if: inputs.auth_only_mode == true || inputs.ai_mode == true
+        if: inputs.auth_only_mode == true
         run: |
           set -euo pipefail
-          if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
-            expected='8130a2c6589bc68073909a44c241995ceb880df4'
-            echo 'Auth-only app: exact live Pages baseline plus offline bootstrap/cache fix; no staging-wide changes.'
-          else
-            expected='c32d7213494e952702488336060346e867b6c51f'
-            echo 'AI mode reuses latest reviewed first-party source; approved Free-only AI pilot still requires verified private bindings and schema.'
-          fi
+          expected='8130a2c6589bc68073909a44c241995ceb880df4'
+          echo 'Auth-only app: exact reviewed source; no staging-wide changes.'
           test "$(git rev-parse HEAD)" = "$expected"
           echo "Verified pinned first-party candidate $expected"
 
@@ -191,39 +152,10 @@ jobs:
       # on approved main, after separately configuring the Cloudflare bindings.
       # It produces a local artifact, not a second staging site.
       - name: Set up Node 22 (explicit first-party mode only)
-        if: inputs.ai_mode == true || inputs.auth_only_mode == true
+        if: inputs.auth_only_mode == true
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-
-      - name: Prepare first-party React AI backend (explicit AI mode only)
-        if: inputs.ai_mode == true
-        run: |
-          set -euo pipefail
-          npm install --no-audit --no-fund --prefix design-system/react
-          npm install --no-audit --no-fund --prefix tools/step16-real-l09-react-island
-          cd tools/step16-real-l09-react-island
-          npm run extract
-          npm run test:auth-pwa
-          node --test tests/ai-one-seat.test.mjs
-          npx tsc --noEmit
-          npm run build:worker
-          VITE_LI_AUTH_TARGET=cloudflare-first-party npx vite build --config vite.cloudflare-app.config.mjs
-          cd ../..
-          node tools/prepare_cloudflare_ai_candidate.mjs --build
-          LI_CLOUDFLARE_AI_BUILD=1 npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-auth-only-config.cjs
-          find dist-cloudflare-ai-candidate -type f -name '*.map' -delete
-          test -s dist-cloudflare-ai-candidate/sw.js
-          grep -Fq 'li-first-party-app.js' dist-cloudflare-ai-candidate/sw.js
-          grep -Fq 'li-push-handler.js' dist-cloudflare-ai-candidate/sw.js
-          ! grep -Fq 'neon.tech' dist-cloudflare-ai-candidate/sw.js
-          grep -Fq 'serviceWorker.register' dist-cloudflare-ai-candidate/assets/pwa-register.js
-          grep -Fq '"start_url": "/"' dist-cloudflare-ai-candidate/manifest.webmanifest
-          grep -Fq '"scope": "/"' dist-cloudflare-ai-candidate/manifest.webmanifest
-          test -s dist-cloudflare-ai-candidate/_worker.js
-          test -s dist-cloudflare-ai-candidate/assets/li-first-party-app.js
-          test -z "$(find dist-cloudflare-ai-candidate -type f -name '*.map' -print -quit)"
-          git diff --exit-code -- site
 
       - name: Prepare first-party React Auth-only PWA (explicit Auth-only approval)
         if: inputs.auth_only_mode == true && inputs.ai_mode == false
@@ -284,26 +216,13 @@ jobs:
         if: inputs.auth_only_mode == true && inputs.ai_mode == false
         run: python3 tools/check_cloudflare_auth_binding.py
 
-      - name: Verify Cloudflare production AI/D1 bindings (read-only)
-        if: inputs.ai_mode == true
-        run: |
-          set -euo pipefail
-          python3 tools/check_cloudflare_ai_bindings.py
-
       - name: Hard-stop when Free plan setup or quota cannot be verified
         run: |
           set -euo pipefail
           test -n "$CLOUDFLARE_API_TOKEN" || { echo 'Missing required Free-only Cloudflare token'; exit 1; }
           test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo 'Missing account ID'; exit 1; }
           test -n "$CLOUDFLARE_PAGES_PROJECT" || { echo 'Missing Pages project name'; exit 1; }
-          if [[ "${{ inputs.ai_mode }}" == "true" ]]; then
-            # This flag is a human Free-plan dashboard confirmation; it does
-            # not replace provider-side Free-only quota enforcement.
-            test "${{ vars.LI_AI_FREE_PLAN_CONFIRMED }}" = "true" || {
-              echo "Workers Free plan not explicitly confirmed; stop AI release"; exit 1;
-            }
-            python3 tools/g3_cloudflare_free_guard.py --site dist-cloudflare-ai-candidate --online
-          elif [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
+          if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
             python3 tools/g3_cloudflare_free_guard.py --site dist-cloudflare-auth-candidate --online
           else
             python3 tools/g3_cloudflare_free_guard.py --site site --online
@@ -326,7 +245,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy ${{ inputs.auth_only_mode && 'dist-cloudflare-auth-candidate' || (inputs.ai_mode && 'dist-cloudflare-ai-candidate' || 'site') }} --branch=main --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+          command: pages deploy ${{ inputs.auth_only_mode && 'dist-cloudflare-auth-candidate' || 'site' }} --branch=main --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }}
 
       - name: Explicit release log
         run: echo "Manual Cloudflare release completed; Auth-only must still pass signed iPhone PWA session persistence and invite-RLS validation before claiming P0 resolved."

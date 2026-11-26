@@ -1,3 +1,4 @@
+import {LessonVisualEvidence} from './LessonVisualEvidence.js';
 import {LessonUnderstanding} from './LessonUnderstanding.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
@@ -14,7 +15,7 @@ import {SelfReviewNextStep} from './SelfReviewNextStep';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
 import {Markdown,inline as formatLessonInline} from './EditorialJourney';
 import {LessonBookmark,LessonMentor} from './LessonDetailParity.js';
-import {CopyAnalysisPrompt,CopyPromptAction} from './CopyAnalysisPrompt.js';
+import {CopyAnalysisPrompt} from './CopyAnalysisPrompt.js';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
 import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discovery-locale.js';
@@ -488,19 +489,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     <div id={'li-sectioned-'+id+'-opening'}><Markdown md={c.intro_md}/></div>
     {block('goals')}{block('concept')}
     <LessonUnderstanding id={id} locale={locale}/>
-    {extra&&supplemental&&<>
-     <figure className="li-learning-hint">
-      <Heading level={3} role="titleMedium">{vi?'Sơ đồ khái niệm':'Concept map'}</Heading>
-      <Text>{extra.diagram}</Text>
-      <figcaption><Text role="support">{vi?'Sơ đồ minh họa tự biên soạn; không phải dữ liệu thực nghiệm.':'First-party conceptual schematic; not empirical data.'}</Text></figcaption>
-     </figure>
-     <details className="li-learning-extra-sources">
-      <summary>{vi?'Nguồn đọc thêm':'Further reading'}</summary>
-      <Text role="support">{vi?'Nguồn đã dẫn trong bản thảo; chưa xác nhận duyệt phát hành.':'Reference cited in the draft; release review not confirmed.'}</Text>
-      <a href={supplemental.sourceUrl} target="_blank" rel="noopener noreferrer">{new URL(supplemental.sourceUrl).hostname}</a>
-      <CopyPromptAction locale={locale} prompt={(vi?'Giúp tôi kiểm chứng khái niệm trong bài ':'Help me verify the concepts in lesson ')+lesson.title[locale]+' ('+id+'). '+(vi?'Chỉ dùng nguồn có thể kiểm tra, nói rõ nếu không truy cập được: ':'Use verifiable sources and say if you cannot access: ')+supplemental.sourceUrl}/>
-     </details>
-    </>}
+    <LessonVisualEvidence id={id} locale={locale} title={lesson.title[locale]}/>
     <Button onClick={()=>setPhase('guided')}>{vi?'Tiếp: Thử áp dụng':'Next: Guided example'} →</Button>
    </>}
    {phase==='guided'&&<>

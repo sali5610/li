@@ -703,14 +703,15 @@
           "title": "scikit-learn — Permutation importance",
           "url": "https://scikit-learn.org/stable/modules/permutation_importance.html",
           "scope": {
-            "vi": "Nguồn bổ sung cho feature importance; chưa đối chiếu toàn bộ trong lượt này.",
-            "en": "Supplementary feature-importance reference; not fully checked this turn."
+            "vi": "Hoán vị feature và đo thay đổi score của mô hình đã fit.",
+            "en": "Permute a feature and measure score degradation of the fitted model."
           },
           "limit": {
-            "vi": "Chưa xác minh claim-level.",
-            "en": "Claim-level review pending."
+            "vi": "Feature tương quan mạnh có thể cùng bị đánh giá thấp; không suy ra nguyên nhân.",
+            "en": "Strongly correlated features can both appear less important; not causal evidence."
           },
-          "access": "not_checked"
+          "access": "readable",
+          "checkedOn": "2026-11-26"
         }
       ]
     },

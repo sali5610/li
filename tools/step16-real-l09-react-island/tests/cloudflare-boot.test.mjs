@@ -8,7 +8,8 @@ const boot=read('tools/platform/cloudflare-boot.html');
 const builder=read('tools/prepare_cloudflare_ai_candidate.mjs');
 const config=read('tools/platform/workbox-auth-only-config.cjs');
 const app=read('tools/step16-real-l09-react-island/src/auth/staging-app.tsx');
-const ai=read('tools/step16-real-l09-react-island/src/learning/AiFeedbackPanel.tsx');
+const learner=read('tools/step16-real-l09-react-island/src/learning/LearningJourney.tsx');
+const account=read('tools/step16-real-l09-react-island/src/auth/AuthPanel.tsx');
 test('Cloudflare assembly inserts real boot scenes before protected app and retains approved assets',()=>{
  assert.match(builder,/cloudflare-boot\.html/);
  assert.match(builder,/html:not\(\.li-boot-ready\) \.app/);
@@ -42,13 +43,11 @@ test('fallback timeout only acts before React startup ownership',()=>{
  const live=fixture(true);live.timeout();live.error();assert.equal(live.get('li-boot-error').hidden,true);
  live.get('li-boot-error-retry').click();assert.equal(live.reloads(),0);
 });
-test('AI scene reflects actual request state, no fake delay or automatic inference',()=>{
- assert.match(ai,/busy&&<div className="li-state-scene" data-li-state="loading"/);
- assert.match(ai,/message&&!busy&&<div className="li-state-scene" data-li-state="error"/);
- assert.match(ai,/message\?\(vi\?'Thử lại':'Retry'\)/);
- assert.match(ai,/onClick=\{\(\)=>void review\(\)\}/);
- assert.match(ai,/await fetch\('\/api\/ai\/feedback'/);
- assert.doesNotMatch(ai,/setTimeout\(/);
+test('retired integrated AI preserves mentor and boot scenes',()=>{
+ assert.doesNotMatch(learner,/AiFeedbackPanel|\/api\/ai\//);
+ assert.doesNotMatch(account,/AiOwnerControl|\/api\/ai\//);
+ assert.match(learner,/<LessonMentor/);
+ assert.match(learner,/<CopyAnalysisPrompt/);
 });
 
 test('offline shell includes required Home content script, public art and safe SPA route fallback',()=>{

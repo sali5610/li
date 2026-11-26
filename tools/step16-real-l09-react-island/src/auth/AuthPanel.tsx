@@ -13,7 +13,6 @@ import {deferAuthScreen} from './auth-display.js';
 import {recoverInviteAccess} from './auth-recovery.js';
 import {RlsQaPanel} from './RlsQaPanel.js';
 import {SyncQaPanel} from './SyncQaPanel.js';
-import {AiOwnerControl} from './AiOwnerControl.js';
 import {prepareLearnerAccount,startLearnerSync,journalCloudConsent,changeJournalCloudConsent,
  listPrivateConflicts,resolvePrivateConflict,type PrivateConflictChoice,type SyncReport} from './learner-sync.js';
 
@@ -445,8 +444,6 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     </div>
    </div>)}
   </section>}
-  {access==='granted'&&!localOffline&&session?.user?.email&&
-   <AiOwnerControl email={session.user.email} locale={locale}/>}
   {feedback&&<p className="li-auth-settings-error" role="alert">{feedback}</p>}
   {showDeveloperQa&&accountId&&access==='granted'&&<>
    <RlsQaPanel uid={accountId} granted/><SyncQaPanel uid={accountId} locale={locale}/>
@@ -502,8 +499,6 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
         onClick={()=>void decideConflict(c,'use-remote')}>{locale==='vi'?'Dùng bản trên Neon':'Use Neon version'}</Button>
       </div>)}
      </section>}
-     {access==='granted'&&!localOffline&&session?.user?.email&&
-      <AiOwnerControl email={session.user.email} locale={locale}/>}
      <Button variant="secondary" onClick={()=>void signOut()} disabled={busy!==null}>
       {busy?t.busy:localOffline?t.lockOffline:t.logout}
      </Button>

@@ -71,7 +71,7 @@ assert.ok(component.includes('index===5&&!submitted'),'Index must not reveal rub
 assert.ok(companion.includes('reactLesson(item.data.lesson_id)'),'Native Lao Ly must observe all 3 current React lessons.');
 assert.ok(companion.includes('window.liLessonCompanion='),'Existing Lão Lý context owner must remain.');
 assert.ok(component.includes('onSearch(query)'),'Deep search entry points must remain.');
-assert.ok(component.includes('copyText(buildPrompt('),'Per-source prompt must be copyable.');
+assert.ok(component.includes('prompt={buildPrompt(id,locale,[source]'),'Per-source prompt must be copyable.');
 assert.match(related,/getRelatedLessons\(id\)/);
 assert.match(related,/client\.graph\(\)/);
 assert.match(related,/x\.predicate==='RELATED_TO'/);

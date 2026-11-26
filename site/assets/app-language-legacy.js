@@ -523,6 +523,8 @@ window.LI_LEGACY_EN={
   "Bút Ký, Ý đã nhặt và Dấu Trang": "Case notes, captured ideas and bookmarks",
   "Bản nháp Phản Chứng": "Claim challenge draft",
   "Nhật Ký & Check-in": "Journal & check-in",
+  "Nhật Ký và Check-in": "Journal & Check-ins",
+  "Đang lưu Check-in và đồng bộ với Neon. Có thể dừng ghi trong Cài đặt → Dữ liệu của bạn.": "Check-ins are saved and synced to Neon. You can pause recording in Settings → Your Data.",
   "Bật/tắt ghi Nhật Ký": "Journal recording preference",
   "Quyền đồng bộ Nhật Ký": "Journal sync consent",
   "Nhịp học": "Study rhythm",

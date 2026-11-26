@@ -43,6 +43,8 @@ The 30-second lookup and reporting trace are mandatory. Detailed UI ownership/lo
 - Follow [UX patterns and behavior](design-system/ux-patterns-and-behavior.md) for the specific component changed. Don't redo the full Home/Catalog/Guide/Library/Research/Search/Capture/Settings instance inventory unless a shared-contract change actually reaches them.
 - Make the smallest implementation change that solves the real bug or unblocks the learning journey. Preserve private user data, auth/invite boundaries, access control, academic source quality, and approved cost constraints.
 
+- **PO IA rule (2026-11-27):** Settings → Data & privacy is the sole location for privacy configuration, recording consent, sync consent and history deletion controls (React and native fallback). Tủ Riêng/Journal displays personal learning and activity, not duplicate configuration. Keep contextual disclosure/errors where necessary; do not remove consent, confirmation, Undo or owner-scoped protections.
+
 ## QA-SLIM: risk-based, NOT six-script mandatory
 1. Docs/copy/ordinary content: direct review of changed text; verify academic claims/sources when affected. No browser/E2E/device suite.
 2. Local UI/React component: suitable lint/typecheck or component smoke, then affected interaction/viewport. No blanket full visual suite or manual device demand for each commit.

@@ -24,6 +24,7 @@ import {LessonBookmark,LessonMentor,L09Figures,LessonSources,openLessonSpell} fr
 import {CopyAnalysisPrompt} from './CopyAnalysisPrompt.js';
 import {RelatedLessons} from './RelatedLessons.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
+import {SavedLearningEvidence} from './SavedLearningEvidence';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
 import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 
@@ -527,6 +528,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    </Card>}
    {phase==='progress'&&!attempt.reviewed&&<Card variant="flat-study" className="li-study-book-page">
     <Heading level={2} role="titleLarge">{labels.progress}</Heading>
+     {!saving&&!locked&&<SavedLearningEvidence attempt={attempt} vi={vi}/>}
     <Text>{vi?'Chưa hoàn thành lượt học. Chuyển phần không tự nộp bài, tự chấm hay cộng tiến độ.':
      'This attempt is not complete. Skipping sections does not submit, score or mark progress.'}</Text>
     <Button variant="secondary" onClick={()=>go('practice')}>
@@ -536,7 +538,8 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Heading level={2} id="li-learn-progress" role="titleLarge">
      {vi?'Hoàn thành lượt tự đánh giá':'Self-review completed'}
     </Heading>
-    <Text>{vi?'Đây là một lượt học đã lưu, không phải chứng nhận thông thạo.':
+    {!saving&&!locked&&<SavedLearningEvidence attempt={attempt} vi={vi}/>}
+     <Text>{vi?'Đây là một lượt học đã lưu, không phải chứng nhận thông thạo.':
      'This is one saved learning attempt, not a mastery certificate.'}</Text>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
      locale={appLocale} onReviewTheory={()=>go('read')}/>

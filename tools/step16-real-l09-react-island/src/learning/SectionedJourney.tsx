@@ -13,6 +13,7 @@ import {Button,Card} from '../../../../design-system/react/Components';
 import {Field} from '../../../../design-system/react/Controls';
 import {Heading,Text,Progress} from '../../../../design-system/react/Atoms';
 import {SelfReviewNextStep} from './SelfReviewNextStep';
+import {SavedLearningEvidence} from './SavedLearningEvidence';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
 import {Markdown,inline as formatLessonInline} from './EditorialJourney';
 import {LessonBookmark,LessonMentor} from './LessonDetailParity.js';
@@ -617,6 +618,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    </>}
    {phase==='progress'&&!persisted.reviewed&&<>
     <Heading id={'li-sectioned-'+id+'-progress'} level={2} role="titleLarge">{names.progress}</Heading>
+     <SavedLearningEvidence attempt={persisted} vi={vi}/>
     <Text role="support">{vi?
      'Chưa hoàn thành lượt tự đánh giá. Ngươi vẫn xem được trang này; tiến độ hoàn thành chỉ ghi nhận sau khi nộp bài và lưu tự đánh giá.':
      'Self-review is not complete. This page is still accessible; completion is recorded after submission and saved self-review.'}</Text>
@@ -626,6 +628,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    </>}
    {phase==='progress'&&persisted.reviewed&&<>
     <Heading id={'li-sectioned-'+id+'-progress'} level={2} role="titleLarge">{names.progress}</Heading>
+     <SavedLearningEvidence attempt={persisted} vi={vi}/>
     <Text>{vi?'Điểm tự chấm':'Self-rating'}: {persisted.ratings.reduce<number>((n,x)=>n+(x??0),0)} / 8</Text>
     <Text role="support">{vi?'K5 chưa đo: bài này chưa chứng minh ghi nhớ dài hạn.':'K5 not measured: long-term retention is not established.'}</Text>
     {block('extension')}

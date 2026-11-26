@@ -19,6 +19,7 @@ import {useStepScreen} from './step-screen.js';
 import {LessonBookmark,LessonMentor,LessonSources,LessonFigure,openLessonSpell} from './LessonDetailParity.js';
 import {RelatedLessons} from './RelatedLessons.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
+import {SavedLearningEvidence} from './SavedLearningEvidence';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
 import {CopyAnalysisPrompt} from './CopyAnalysisPrompt.js';
 import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
@@ -460,6 +461,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
    </Card>}
    {phase==='progress'&&!attempt.reviewed&&<Card variant="flat-study" className="li-study-book-page">
     <Heading level={2} role="titleLarge">{labels.progress}</Heading>
+     {!saving&&!locked&&<SavedLearningEvidence attempt={attempt} vi={vi}/>}
     <Text>{vi?'Chưa hoàn thành lượt học. Chuyển phần không tự nộp bài, tự chấm hay cộng tiến độ.':
      'This attempt is not complete. Skipping sections does not submit, score or mark progress.'}</Text>
     <Button variant="secondary" onClick={()=>setPhase('practice')}>
@@ -467,6 +469,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
    </Card>}
    {phase==='progress'&&attempt.reviewed&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-wave1-progress">
     <Heading level={2} id="li-wave1-progress" role="titleLarge">{content.reviewDone}</Heading>
+     {!saving&&!locked&&<SavedLearningEvidence attempt={attempt} vi={vi}/>}
     <Text>{content.progressDone}</Text>
     <CopyAnalysisPrompt locale={appLocale} step="progress" data={{
      title:content.conceptTitle,lessonId:id,activity:content.challengeText,

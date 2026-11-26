@@ -74,3 +74,17 @@ export function summarizeLearning(inputs) {
   // No performance score, K2/K3 mastery or transfer inference from clicks or submissions.
   mastery:null,untrainedProbeOutcome:null};
 }
+
+// Read-only projection of authorized saved records, never backfilled events.
+export function summarizeSavedAttempt(attempt) {
+ const receipt=r=>typeof r?.submittedAt==='string'&&Number.isFinite(Date.parse(r.submittedAt))&&Array.isArray(r.submission)&&r.submission.length===4&&r.submission.every(s=>typeof s==='string'&&s.trim().length>=12);
+ const rated=r=>Array.isArray(r?.ratings)&&r.ratings.length===4&&r.ratings.every(x=>x===0||x===1||x===2);
+ const submitted=attempt?.submitted===true&&receipt(attempt);
+ const completed=submitted&&attempt.reviewed===true&&rated(attempt);
+ const methods=Object.entries(attempt?.methodAttempts??{}).filter(([id,r])=>/^T(0[1-9]|1[0-3])$/.test(id)&&typeof r?.submittedAt==='string'&&Number.isFinite(Date.parse(r.submittedAt))&&typeof r.submission==='string'&&r.submission.trim().length>=12).map(([id])=>id).sort();
+ const current=Number.isSafeInteger(attempt?.attemptNumber)&&attempt.attemptNumber>0?attempt.attemptNumber:1;
+ const prior=new Set();
+ for(const r of attempt?.attemptHistory??[])if(Number.isSafeInteger(r?.attemptNumber)&&r.attemptNumber>0&&r.attemptNumber<current&&receipt(r)&&rated(r)&&r.answerRevealed===true)prior.add(r.attemptNumber);
+ const choice=attempt?.methodChoice==='skip'?'skip':/^T(0[1-9]|1[0-3])$/.test(attempt?.methodChoice??'')?attempt.methodChoice:null;
+ return {submitted,completed,completedRounds:prior.size+Number(completed),methodChoice:choice,methodApplications:methods,selfRating:completed?attempt.ratings.reduce((sum,x)=>sum+x,0):null,assistance:submitted&&(attempt.hint===true||attempt.assisted===true)?'hint_recorded':'unknown',untrainedProbeOutcome:null};
+}

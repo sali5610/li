@@ -35,3 +35,22 @@ test('stable identity ignores locale, retries conflict rather than overwrite',()
  const start=e('unit_start');assert.equal(learningEvent(start).eventId,learningEvent({...start}).eventId);
  assert.throws(()=>summarizeLearning([start,{...start,occurredAt:'2026-11-27T00:01:00Z'}]),/EVENT_ID_CONFLICT/);
 });
+
+import {summarizeSavedAttempt} from '../src/learning/learning-analytics.mjs';
+const receipt={submission:['answer length 1','answer length 2','answer length 3','answer length 4'],submittedAt:'2026-11-27T00:00:00Z',ratings:[2,1,2,1]};
+test('saved projection distinguishes submission, self-review and unknown transfer',()=>{
+ const draft=summarizeSavedAttempt({submitted:false,reviewed:true,ratings:[2,2,2,2]});
+ assert.equal(draft.completed,false);assert.equal(draft.completedRounds,0);assert.equal(draft.selfRating,null);
+ const submitted=summarizeSavedAttempt({...receipt,submitted:true,reviewed:false,methodChoice:'T03',methodAttempts:{T03:{draft:'not submitted',submittedAt:null,submission:null}}});
+ assert.equal(submitted.submitted,true);assert.equal(submitted.completed,false);assert.deepEqual(submitted.methodApplications,[]);
+ const done=summarizeSavedAttempt({...receipt,submitted:true,reviewed:true,hint:true,methodChoice:'T03',methodAttempts:{T03:{submission:'saved exercise',submittedAt:receipt.submittedAt}}});
+ assert.equal(done.completedRounds,1);assert.equal(done.selfRating,6);assert.deepEqual(done.methodApplications,['T03']);assert.equal(done.assistance,'hint_recorded');assert.equal(done.untrainedProbeOutcome,null);
+ assert.equal(JSON.stringify(done).includes('answer length'),false);
+});
+test('history deduplication and locale independence; missing method data not fabricated',()=>{
+ const past={...receipt,attemptNumber:1,answerRevealed:true};
+ const next={submitted:false,reviewed:false,attemptNumber:2,attemptHistory:[past,past],methodChoice:'skip',locale:'vi'};
+ const a=summarizeSavedAttempt(next);assert.equal(a.completedRounds,1);assert.equal(a.methodChoice,'skip');assert.deepEqual(a.methodApplications,[]);
+ assert.deepEqual(a,summarizeSavedAttempt({...next,locale:'en'}));
+ assert.equal(summarizeSavedAttempt({...next,...receipt,submitted:true,reviewed:true}).completedRounds,2);
+});

@@ -1,3 +1,4 @@
+import guidedHints from '../../../../content/editorial/wave1-guided-hints.v1.json';
 import {LessonUnderstanding} from './LessonUnderstanding.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
@@ -349,8 +350,13 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     <Text role="support">{content.guidedSave}</Text>
     <details className="li-learning-hint">
      <summary>{content.guidedShow}</summary>
-     <p className="li-learning-copy">{safeText(content.guidedHint)}</p>
+     <p className="li-learning-copy">{guidedHints.lessons[id][appLocale]}</p>
     </details>
+    <div className="li-learning-hint">
+     {!saving&&!locked&&attempt.guidedDraft.trim().length>=12?<><Heading level={3} role="titleSmall">{vi?'Đối chiếu sau lượt tự giải thích':'Self-check after your explanation'}</Heading>
+      <Text>{safeText(content.guidedHint)}</Text></>:
+      <Text role="support">{vi?'Viết và lưu ít nhất 12 ký tự giải thích để mở phần đối chiếu.':'Write and save at least 12 characters to unlock the self-check.'}</Text>}
+    </div>
     <details className="li-learning-extras">
        <summary>{vi?'Thần Chú gợi ý':'Optional study methods'}</summary>
       <aside className="li-lesson-spells" aria-label={vi?'Thần Chú gợi ý':'Suggested spells'}>
@@ -374,7 +380,8 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
       </details>
     <CopyAnalysisPrompt locale={appLocale} step="guided" data={{
      title:content.conceptTitle,lessonId:id,activity:content.guidedText,
-     questions:[content.guidedQuestion],answers:[attempt.guidedDraft]
+     questions:[content.guidedQuestion],answers:[attempt.guidedDraft],
+     reference:!saving&&!locked&&attempt.guidedDraft.trim().length>=12?content.guidedHint:undefined
     }}/>
     <Button onClick={()=>setPhase('practice')}>{vi?'Tiếp: Làm bài':'Next: Practice'} →</Button>
    </Card>}

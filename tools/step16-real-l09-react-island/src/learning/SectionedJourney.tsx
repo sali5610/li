@@ -390,8 +390,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  </section>;
  const locale=appLocale,vi=locale==='vi',c=lesson.content.localized[locale];
  const supplemental=preview?(supplements.lessons as Record<string,{
-  vi:{hint:string;guidedFeedback:string;diagram:string;relatedReason:string};
-  en:{hint:string;guidedFeedback:string;diagram:string;relatedReason:string};
+  vi:{hint:string;guidedFeedback:string;guidedPrompt?:string;diagram:string;relatedReason:string};
+  en:{hint:string;guidedFeedback:string;guidedPrompt?:string;diagram:string;relatedReason:string};
   sourceUrl:string;relatedLessonId:string
  }>)[id]:undefined;
  const extra=supplemental?.[locale];
@@ -494,6 +494,11 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    </>}
    {phase==='guided'&&<>
     {block('guided')}
+    {extra?.guidedPrompt&&<>
+     <Heading level={3} role="titleSmall">{vi?'Thử áp dụng · Tình huống mới':'Try applying it · New scenario'}</Heading>
+     <Text>{extra.guidedPrompt}</Text>
+     <Text role="support">{vi?'Nếu ngươi đã lưu lời giải ở phiên bản trước, có thể giữ hoặc sửa lại theo câu hỏi mới. Đây là tự đối chiếu, không chấm điểm.':'If you saved a response in an earlier version, keep or revise it for the new question. This is self-check, not grading.'}</Text>
+    </>}
     <Field kind="textarea" rows={4} label={vi?'Tự giải thích':'Explain in your words'}
      disabled={locked||attempt.submitted} value={attempt.guidedDraft}
      onChange={e=>{if(e.currentTarget.value.length<=MAX)edit(a=>({...a,guidedDraft:e.currentTarget.value}));}}/>
@@ -533,7 +538,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     <CopyAnalysisPrompt locale={locale} step="guided" data={{
      title:lesson.title[locale],lessonId:id,
      activity:section(c,'guided').map(x=>x.body_md).join('\n'),
-     questions:[vi?'Hãy tự giải thích ví dụ bằng lời của mình.':'Explain the guided example in your own words.'],
+     questions:[extra?.guidedPrompt||(vi?'Hãy tự giải thích ví dụ bằng lời của mình.':'Explain the guided example in your own words.')],
      answers:[attempt.guidedDraft],
      reference:persisted.guidedDraft.trim().length>=MIN
       ?guidedReference:undefined

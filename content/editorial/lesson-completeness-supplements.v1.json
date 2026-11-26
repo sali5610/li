@@ -1,0 +1,279 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "draft_editorial_supplement_not_release_approval",
+  "description": "First-party procedural hints, guided feedback, simple concept schematics and pedagogical reading suggestions for invited personal drafts. Source links copied from the actual normalized manuscript; not newly verified or academic approval. Existing independent assessment and answer gates unchanged.",
+  "lessons": {
+    "L03-1-1": {
+      "vi": {
+        "hint": "Tách lời yêu cầu khỏi mục đích công việc. Viết giả thuyết nhu cầu, câu hỏi về lần gần nhất và điều kiện cần kiểm chứng; chưa chọn kênh liên lạc.",
+        "guidedFeedback": "Một giả thuyết tốt mô tả kết quả cần đạt mà không khóa vào badge đỏ. Quan sát lần bỏ lỡ ngoại lệ để phân biệt nhu cầu và giải pháp.",
+        "diagram": "Yêu cầu → Giả thuyết nhu cầu → Kiểm chứng",
+        "relatedReason": "Câu hỏi trung lập giúp kiểm chứng nhu cầu."
+      },
+      "en": {
+        "hint": "Separate the feature request from the job outcome. Write a need hypothesis, last-event questions and validation conditions; do not choose a channel yet.",
+        "guidedFeedback": "A useful hypothesis states the outcome without locking in a red badge. Examine the last missed exception to distinguish the need from a solution.",
+        "diagram": "Request → Need hypothesis → Validation",
+        "relatedReason": "Neutral interviewing helps test a need hypothesis."
+      },
+      "sourceUrl": "https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs",
+      "relatedLessonId": "L03-1-2"
+    },
+    "L03-1-3": {
+      "vi": {
+        "hint": "Gắn từng dữ kiện với người và hành vi thật sự quan sát. Đặt suy luận ở câu riêng, tránh từ chỉ toàn bộ người dùng.",
+        "guidedFeedback": "Ghi lời P01 và hành động mở menu riêng biệt. Lý do export chỉ là giả thuyết cho đến khi có thêm bằng chứng.",
+        "diagram": "Quan sát + lời nói → Suy luận → Kiểm chứng",
+        "relatedReason": "Cách hỏi ảnh hưởng độ tin cậy của lời kể."
+      },
+      "en": {
+        "hint": "Attach each fact to the participant and observed behavior. Separate inferences and avoid population-wide wording.",
+        "guidedFeedback": "Record P01’s words separately from opening the menu. The reason for exporting remains a hypothesis pending evidence.",
+        "diagram": "Observation + quote → Inference → Validation",
+        "relatedReason": "Interview wording affects the reliability of accounts."
+      },
+      "sourceUrl": "https://www.gov.uk/service-manual/user-research/analyse-a-research-session",
+      "relatedLessonId": "L03-1-2"
+    },
+    "L03-2-1": {
+      "vi": {
+        "hint": "Tạo ID chủ đề trước khi chọn nhãn; thử gắn nhiều tag cho tài liệu giao thoa. Menu phục vụ tác vụ chứ không nhất thiết sao chép taxonomy.",
+        "guidedFeedback": "Một ID ổn định có thể có nhãn và alias khác nhau. Loại How-to và chủ đề nhập dữ liệu là hai thuộc tính, không phải hai cấp của cùng cây.",
+        "diagram": "Đối tượng → Chủ đề/alias → Lối điều hướng",
+        "relatedReason": "Kiểm chứng từ ngữ và tác vụ qua phỏng vấn."
+      },
+      "en": {
+        "hint": "Create topic IDs before labels; consider multiple tags for cross-topic material. Menus serve tasks rather than necessarily copying the taxonomy.",
+        "guidedFeedback": "A stable ID can have different labels and aliases. How-to and data import describe different attributes, not levels of one tree.",
+        "diagram": "Object → Topic/alias → Navigation path",
+        "relatedReason": "Validate language and tasks through interviews."
+      },
+      "sourceUrl": "https://www.nngroup.com/articles/taxonomy-101/",
+      "relatedLessonId": "L03-1-2"
+    },
+    "L03-2-2": {
+      "vi": {
+        "hint": "Hỏi mục tiêu là khám phá nhóm hay đánh giá khả năng tìm trong cây có sẵn. Viết tác vụ không lộ nhãn đích.",
+        "guidedFeedback": "Tree testing phù hợp khi đã có cấu trúc và cần kiểm tra tìm đúng đích. Card sorting giúp khám phá cách người dùng nhóm nội dung; không thay thế kiểm thử UI.",
+        "diagram": "Khám phá nhóm → Cây thử nghiệm → Tìm đích",
+        "relatedReason": "Taxonomy là đầu vào để thử cấu trúc điều hướng."
+      },
+      "en": {
+        "hint": "Ask whether the goal is discovering groups or evaluating an existing tree. Write tasks without exposing target labels.",
+        "guidedFeedback": "Tree testing fits an existing structure and findability goal. Card sorting explores grouping; neither replaces testing the interface.",
+        "diagram": "Discover groups → Test tree → Find destination",
+        "relatedReason": "Taxonomy informs a navigational structure to test."
+      },
+      "sourceUrl": "https://www.nngroup.com/articles/card-sorting-tree-testing-differences/",
+      "relatedLessonId": "L03-2-1"
+    },
+    "L03-2-3": {
+      "vi": {
+        "hint": "Lập bảng outcome theo attempt trước. Đếm lỗi theo event riêng; mọi tỷ lệ cần mẫu số và giới hạn của mẫu.",
+        "guidedFeedback": "Direct và indirect cùng có thể thành công. Nhiều lỗi trong một attempt không tạo thêm người thất bại; phân tích thời gian theo protocol.",
+        "diagram": "Attempts → Outcome rates | Error events → Error count",
+        "relatedReason": "Tree test cung cấp đường đi và kết quả để đo."
+      },
+      "en": {
+        "hint": "Tabulate outcomes by attempt first. Count error events separately; every rate needs its denominator and sample limitation.",
+        "guidedFeedback": "Direct and indirect paths can both succeed. Multiple errors in one attempt do not create additional failed people; follow the timing protocol.",
+        "diagram": "Attempts → Outcome rates | Error events → Error count",
+        "relatedReason": "Tree tests provide paths and outcomes to measure."
+      },
+      "sourceUrl": "https://www.nngroup.com/articles/success-rate-the-simplest-usability-metric/",
+      "relatedLessonId": "L03-2-2"
+    },
+    "L09-1-3": {
+      "vi": {
+        "hint": "Sắp xếp hai dãy trước khi tính median và mode. So khoảng cách min–max, đừng suy hình dạng dân số từ ít điểm.",
+        "guidedFeedback": "Mean chịu ảnh hưởng giá trị xa; median dựa thứ tự. Range chỉ mô tả độ trải quan sát, không đủ xác nhận hình dạng dân số.",
+        "diagram": "Dãy số → Trung tâm + độ trải → Giới hạn mẫu",
+        "relatedReason": "Phân biệt mô tả mẫu với suy rộng dân số."
+      },
+      "en": {
+        "hint": "Sort both lists before finding medians and modes. Compare min–max spans; do not infer population shape from few points.",
+        "guidedFeedback": "Mean reacts to distant values; median uses order. Range describes observed spread, not population shape.",
+        "diagram": "Data → Center + spread → Sample limits",
+        "relatedReason": "Distinguish sample descriptions from population inference."
+      },
+      "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data",
+      "relatedLessonId": "L09-1-2"
+    },
+    "L09-2-1": {
+      "vi": {
+        "hint": "Chia tổng theo có/không rủi ro, lập bảng cảnh báo đúng/sai. Khi đảo điều kiện, kiểm tra mẫu số mới.",
+        "guidedFeedback": "Tính số đếm trước, rồi lấy cảnh báo đúng chia tổng cảnh báo. Sensitivity sử dụng nhóm thật sự có vấn đề, không phải toàn bộ cảnh báo.",
+        "diagram": "Tổng → Hai nhóm thật → Cảnh báo → Tỷ lệ có điều kiện",
+        "relatedReason": "Cơ chế chọn mẫu ảnh hưởng diễn giải tỷ lệ."
+      },
+      "en": {
+        "hint": "Split the total by risk status, tabulate true and false alerts. When reversing the condition, check the new denominator.",
+        "guidedFeedback": "Count first, then divide true alerts by all alerts. Sensitivity uses truly problematic cases, not all alerts.",
+        "diagram": "Total → True groups → Alerts → Conditional rate",
+        "relatedReason": "Sampling mechanisms affect rate interpretation."
+      },
+      "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/3-4-contingency-tables",
+      "relatedLessonId": "L09-1-2"
+    },
+    "L09-2-2": {
+      "vi": {
+        "hint": "Tính tỷ lệ mẫu, kiểm số đếm, rồi SE và biên sai số. Viết kết luận về quy trình lặp lại thay vì xác suất tham số cố định.",
+        "guidedFeedback": "Khi các giả định giữ nguyên, tăng n làm SE nhỏ hơn. Khoảng hẹp không sửa thiên lệch chọn mẫu; coverage thuộc quy trình lấy mẫu.",
+        "diagram": "Tỷ lệ mẫu → SE → Biên sai số → Khoảng",
+        "relatedReason": "Selection bias vẫn là rủi ro khi khoảng tin cậy hẹp."
+      },
+      "en": {
+        "hint": "Compute the sample proportion, check counts, then SE and margin. Describe repeated procedures rather than probability for a fixed parameter.",
+        "guidedFeedback": "With assumptions fixed, greater n reduces SE. A narrow interval does not repair selection bias; coverage belongs to the sampling procedure.",
+        "diagram": "Sample proportion → SE → Margin → Interval",
+        "relatedReason": "Selection bias remains a risk even with a narrow interval."
+      },
+      "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/8-3-a-population-proportion",
+      "relatedLessonId": "L09-1-2"
+    },
+    "L09-2-3": {
+      "vi": {
+        "hint": "Lập bảng độ lệch khỏi trung bình và tích độ lệch. So slope gộp với từng nhóm trước khi nói về nguyên nhân.",
+        "guidedFeedback": "Đường hồi quy mô tả liên hệ quan sát. Khớp tốt hoặc residual bằng 0 ở ví dụ không chứng minh tác động nhân quả.",
+        "diagram": "Dữ liệu → Hồi quy → So nhóm → Giới hạn nhân quả",
+        "relatedReason": "Xem xét điều kiện và nhóm trước khi diễn giải kết quả gộp."
+      },
+      "en": {
+        "hint": "Tabulate deviations from means and their products. Compare pooled and within-group slopes before causal claims.",
+        "guidedFeedback": "Regression describes observed association. A good fit or zero residual in an example does not prove a causal effect.",
+        "diagram": "Data → Regression → Compare groups → Causal limits",
+        "relatedReason": "Consider conditions and groups before interpreting pooled results."
+      },
+      "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation",
+      "relatedLessonId": "L09-2-1"
+    },
+    "L09-3-1": {
+      "vi": {
+        "hint": "Viết mốc dự báo và thông tin có sẵn ở mốc đó trước. Tách dữ liệu theo đơn vị triển khai; xác định nơi fit biến đổi và nơi đánh giá cuối.",
+        "guidedFeedback": "Chỉ fit scaler trên train hoặc training fold rồi áp lên phần giữ lại. Feature phát sinh sau mốc dự báo không thể dùng để dự báo ở mốc trước.",
+        "diagram": "Mốc dự báo → Split → Fit train → Đánh giá giữ lại",
+        "relatedReason": "Giới hạn dự đoán ngoài điều kiện đã quan sát."
+      },
+      "en": {
+        "hint": "Write the prediction time and available information first. Split by deployment unit; identify where transformations are fitted and final evaluation occurs.",
+        "guidedFeedback": "Fit a scaler on training data or folds only, then transform held-out data. Features created after prediction time cannot be used at that earlier time.",
+        "diagram": "Prediction time → Split → Fit train → Held-out evaluation",
+        "relatedReason": "Limits of predictions outside observed conditions."
+      },
+      "sourceUrl": "https://scikit-learn.org/stable/common_pitfalls.html",
+      "relatedLessonId": "L09-2-3"
+    },
+    "L09-3-2": {
+      "vi": {
+        "hint": "Vẽ bốn ô TP/FP/FN/TN cho mỗi mô hình, ghi đúng mẫu số cho từng metric. Tính chi phí theo hai giả định riêng.",
+        "guidedFeedback": "Giữ nguyên phản hồi bài luyện đã có; kiểm tổng bốn ô bằng tổng đơn, sau đó diễn giải mỗi tỷ lệ theo nhóm thích hợp.",
+        "diagram": "TP/FP/FN/TN → Metrics → Chi phí sai sót",
+        "relatedReason": "Mẫu số có điều kiện giúp hiểu precision và recall."
+      },
+      "en": {
+        "hint": "Draw TP/FP/FN/TN for each model, label each metric denominator. Calculate cost separately for each assumption.",
+        "guidedFeedback": "Use the existing exercise feedback; verify the four cells sum to all orders, then interpret each rate for its proper group.",
+        "diagram": "TP/FP/FN/TN → Metrics → Error costs",
+        "relatedReason": "Conditional denominators clarify precision and recall."
+      },
+      "sourceUrl": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html",
+      "relatedLessonId": "L09-2-1"
+    },
+    "L09-3-3": {
+      "vi": {
+        "hint": "Tính từng chỉ số theo nhóm trước khi gộp. So chênh lệch theo điểm phần trăm; phân biệt mức giảm score và nguyên nhân.",
+        "guidedFeedback": "Accuracy bằng nhau không bảo đảm recall hay tỷ lệ cảnh báo sai bằng nhau. Chênh lệch là tín hiệu cần đánh giá tiếp, không tự chứng minh bất công hay tính hợp pháp.",
+        "diagram": "Metric theo nhóm → Chênh lệch → Điều tra giới hạn",
+        "relatedReason": "Dùng confusion matrix để nhìn sai sót theo nhóm."
+      },
+      "en": {
+        "hint": "Compute metrics by group before pooling. Compare percentage-point gaps; distinguish score decrease from causation.",
+        "guidedFeedback": "Equal accuracy does not imply equal recall or false-positive rates. A gap calls for assessment, not an automatic legal or fairness conclusion.",
+        "diagram": "Group metrics → Disparities → Investigate limits",
+        "relatedReason": "Use confusion matrices to examine group-level errors."
+      },
+      "sourceUrl": "https://fairlearn.org/v0.15/user_guide/assessment/common_fairness_metrics.html",
+      "relatedLessonId": "L09-3-2"
+    },
+    "L15-2-1": {
+      "vi": {
+        "hint": "Viết quy tắc forecast và kỳ dự báo trước. Giữ đúng quy ước dấu error; phân biệt hàng bán và demand nếu hết hàng.",
+        "guidedFeedback": "Forecast theo trung bình là kỳ vọng có giả định, không phải cam kết bán hay lệnh mua. Cần tồn kho và lead time để ra quyết định bổ sung.",
+        "diagram": "Lịch sử → Forecast → Error → Quyết định riêng",
+        "relatedReason": "Dự báo nhu cầu là đầu vào cho chính sách tồn kho."
+      },
+      "en": {
+        "hint": "Write the forecasting rule and horizon first. Preserve the error sign convention; distinguish sales from demand during stockouts.",
+        "guidedFeedback": "An average-based forecast is an assumption-dependent expectation, not guaranteed sales or a purchase order. Replenishment needs inventory and lead time.",
+        "diagram": "History → Forecast → Error → Separate decision",
+        "relatedReason": "Demand forecasts inform inventory policies."
+      },
+      "sourceUrl": "https://www.ibm.com/think/topics/demand-planning",
+      "relatedLessonId": "L15-2-2"
+    },
+    "L15-2-3": {
+      "vi": {
+        "hint": "Xếp các mốc theo loại sự kiện và thời điểm biết thông tin. Chỉ so hai mốc cùng loại; ghi dấu và đơn vị thời gian.",
+        "guidedFeedback": "ETA là dự báo tại thời điểm ghi nhận. Chênh ETA với planned là độ trễ dự báo; actual còn cần sự kiện và nguồn xác nhận.",
+        "diagram": "Planned | ETA tại as-of | Actual + receipt",
+        "relatedReason": "Lead time ảnh hưởng quyết định bổ sung hàng."
+      },
+      "en": {
+        "hint": "Sort timestamps by event type and information availability. Compare like events; state the sign and time unit.",
+        "guidedFeedback": "ETA is a forecast as of a recorded time. ETA minus planned gives forecast delay; actual requires an event and source confirmation.",
+        "diagram": "Planned | ETA as-of | Actual + receipt",
+        "relatedReason": "Lead time affects replenishment decisions."
+      },
+      "sourceUrl": "https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/planning/shipment_manager/multi_create_shipments/shipment_stop_dtail.htm",
+      "relatedLessonId": "L15-2-2"
+    },
+    "L15-3-1": {
+      "vi": {
+        "hint": "Tính range và mean riêng theo cùng đơn vị. So sales với orders; viết các nguyên nhân như giả thuyết cần dữ liệu.",
+        "guidedFeedback": "Cùng tổng và trung bình vẫn có thể có mức biến động khác. Chuỗi đơn đặt hàng biến động hơn chưa tự chứng minh nguyên nhân bullwhip.",
+        "diagram": "Sales → Retail orders → Upstream orders → So biến động",
+        "relatedReason": "Sai số và giả định dự báo có thể ảnh hưởng đơn đặt hàng."
+      },
+      "en": {
+        "hint": "Calculate range and mean separately in the same units. Compare sales and orders; treat causes as hypotheses needing evidence.",
+        "guidedFeedback": "Equal totals and means can coexist with different variability. More variable order series do not independently establish the cause of bullwhip.",
+        "diagram": "Sales → Retail orders → Upstream orders → Compare variability",
+        "relatedReason": "Forecast errors and assumptions can affect orders."
+      },
+      "sourceUrl": "https://pubsonline.informs.org/doi/10.1287/mnsc.43.4.546",
+      "relatedLessonId": "L15-2-1"
+    },
+    "L15-3-2": {
+      "vi": {
+        "hint": "Ghi cùng horizon và z; tách trường hợp độc lập với tương quan hoàn hảo. Đừng dùng tổng độ lệch chuẩn cho mọi trường hợp.",
+        "guidedFeedback": "Khi nhu cầu độc lập, cộng phương sai trước khi lấy căn. Tương quan dương hoàn hảo không tạo lợi ích đa dạng hóa; vẫn cần kiểm tra chi phí và lead time.",
+        "diagram": "Nhu cầu riêng → Tương quan → Buffer gộp → Trade-off",
+        "relatedReason": "Safety stock là nền tảng để so mức đệm riêng và gộp."
+      },
+      "en": {
+        "hint": "Use the same horizon and z; separate independence from perfect correlation. Do not sum standard deviations in every case.",
+        "guidedFeedback": "For independent demands, sum variances before taking the square root. Perfect positive correlation removes diversification gains; still examine costs and lead time.",
+        "diagram": "Separate demand → Correlation → Pooled buffer → Trade-offs",
+        "relatedReason": "Safety stock supports comparing separate and pooled buffers."
+      },
+      "sourceUrl": "https://ocw.mit.edu/courses/15-762j-supply-chain-planning-spring-2011/",
+      "relatedLessonId": "L15-2-2"
+    },
+    "L15-3-3": {
+      "vi": {
+        "hint": "Tách mẫu số cycle và unit. Loại phương án vi phạm bất kỳ ràng buộc nào rồi mới so cost; thử lại khi đổi ngưỡng.",
+        "guidedFeedback": "CSL và unit fill đo hai kết quả khác nhau. Lựa chọn rẻ nhất chỉ có nghĩa trong tập phương án đáp ứng mọi ràng buộc đang xét.",
+        "diagram": "Service metrics → Ràng buộc → Feasible → So cost",
+        "relatedReason": "Risk pooling có đánh đổi service, chi phí và thời gian."
+      },
+      "en": {
+        "hint": "Separate cycle and unit denominators. Exclude options violating any constraint before comparing costs; reassess after thresholds change.",
+        "guidedFeedback": "CSL and unit fill measure different outcomes. The cheapest choice is meaningful only among options satisfying every stated constraint.",
+        "diagram": "Service metrics → Constraints → Feasible → Compare cost",
+        "relatedReason": "Risk pooling involves service, cost and time trade-offs."
+      },
+      "sourceUrl": "https://www.gov.uk/government/publications/global-supply-chains-a-foresight-report-on-risk-and-resilience/annex-a-evidence-and-trends-for-supply-chain-vulnerability-and-resilience",
+      "relatedLessonId": "L15-3-2"
+    }
+  }
+}

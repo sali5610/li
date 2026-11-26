@@ -1214,5 +1214,149 @@
         }
       }
     }
+  ],
+  "sampleCases": [
+    {
+      "id": "L03-1-2",
+      "fieldId": "hci",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Câu hỏi mở này có trung lập không?",
+          "scene": "Tình huống giả định: nghiên cứu viên hỏi “Vì sao bộ lọc mới làm bạn chậm hơn?” dù chưa quan sát tác vụ nào.",
+          "buddy": "Nhìn giả định trong câu hỏi trước khi tin câu trả lời.",
+          "observed": "Câu hỏi dùng từ vì sao và giả định bộ lọc làm chậm.",
+          "unknown": "Bộ lọc có thật sự ảnh hưởng tác vụ hay không.",
+          "branches": [
+            "Giả định nào bị gài?",
+            "Hỏi lại thế nào?",
+            "Cần quan sát gì?"
+          ]
+        },
+        "en": {
+          "question": "Is this open question neutral?",
+          "scene": "Fictional case: a researcher asks “Why did the new filter slow you down?” before observing any task.",
+          "buddy": "Inspect the assumption before trusting the response.",
+          "observed": "The question assumes that the filter caused delay.",
+          "unknown": "Whether the filter actually affects the task.",
+          "branches": [
+            "What is assumed?",
+            "How to rephrase?",
+            "What should we observe?"
+          ]
+        }
+      },
+      "case": {
+        "kind": "fictional_problem_case",
+        "reviewState": "proposed",
+        "publishState": "draft",
+        "localized": {
+          "vi": {
+            "question": "Câu hỏi mở này có trung lập không?",
+            "scene": "Tình huống giả định: nghiên cứu viên hỏi “Vì sao bộ lọc mới làm bạn chậm hơn?” dù chưa quan sát tác vụ nào.",
+            "options": {
+              "right": "Chưa trung lập; hỏi người dùng kể lại một lần dùng bộ lọc và quan sát kết quả.",
+              "wrong": "Trung lập vì bắt đầu bằng vì sao."
+            },
+            "feedback": {
+              "right": "Hợp lý: câu hỏi mở vẫn có thể chứa giả định. Hỏi về sự kiện cụ thể trước khi đánh giá.",
+              "wrong": "Hình thức mở không loại bỏ tiền giả định rằng bộ lọc gây chậm."
+            },
+            "technique": {
+              "title": "Tách giả định khỏi câu hỏi",
+              "body": "Viết lại câu hỏi sao cho cả trải nghiệm tốt lẫn xấu đều có thể được kể."
+            }
+          },
+          "en": {
+            "question": "Is this open question neutral?",
+            "scene": "Fictional case: a researcher asks “Why did the new filter slow you down?” before observing any task.",
+            "options": {
+              "right": "Not neutral; ask for a specific filter-use event and observe the outcome.",
+              "wrong": "Neutral because it starts with why."
+            },
+            "feedback": {
+              "right": "Reasonable: open wording can contain a presupposition. Ask about a concrete event first.",
+              "wrong": "Open form does not remove the assumption that the filter caused delay."
+            },
+            "technique": {
+              "title": "Separate assumptions from questions",
+              "body": "Rephrase so both positive and negative experiences can be described."
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "L15-2-2",
+      "fieldId": "supply-chain",
+      "reviewState": "proposed",
+      "publishState": "draft",
+      "localized": {
+        "vi": {
+          "question": "Chạm điểm đặt hàng lại có nghĩa mua đúng bằng ngưỡng đó?",
+          "scene": "Tình huống giả định: một cửa hàng đạt ngưỡng đặt lại 60 hộp. Nhân viên đề nghị luôn mua 60 hộp mà không kiểm chính sách lượng đặt.",
+          "buddy": "Ngưỡng kích hoạt và số lượng mua là hai quyết định khác nhau.",
+          "observed": "Tồn kho đạt ngưỡng 60 hộp; chưa có quy tắc lượng đặt.",
+          "unknown": "Nhu cầu, lead time, tồn khả dụng và chính sách lượng đặt.",
+          "branches": [
+            "Ngưỡng dùng để làm gì?",
+            "Lượng đặt dựa trên gì?",
+            "Cần biết tồn nào?"
+          ]
+        },
+        "en": {
+          "question": "Does reaching the reorder point mean buying exactly that amount?",
+          "scene": "Fictional case: a store reaches a reorder point of 60 boxes. A worker proposes always buying 60 boxes without checking the order-quantity policy.",
+          "buddy": "Trigger and order quantity are separate decisions.",
+          "observed": "The 60-box threshold is reached; no quantity policy is given.",
+          "unknown": "Demand, lead time, available stock and quantity policy.",
+          "branches": [
+            "What does the threshold do?",
+            "What determines quantity?",
+            "Which inventory measure matters?"
+          ]
+        }
+      },
+      "case": {
+        "kind": "fictional_problem_case",
+        "reviewState": "proposed",
+        "publishState": "draft",
+        "localized": {
+          "vi": {
+            "question": "Chạm điểm đặt hàng lại có nghĩa mua đúng bằng ngưỡng đó?",
+            "scene": "Tình huống giả định: một cửa hàng đạt ngưỡng đặt lại 60 hộp. Nhân viên đề nghị luôn mua 60 hộp mà không kiểm chính sách lượng đặt.",
+            "options": {
+              "right": "Kiểm vị thế tồn kho và quy tắc lượng đặt; ngưỡng không tự xác định số lượng mua.",
+              "wrong": "Mua 60 hộp vì điểm đặt hàng lại luôn bằng lượng đặt."
+            },
+            "feedback": {
+              "right": "Hợp lý: điểm đặt lại là tín hiệu theo chính sách; lượng đặt còn phụ thuộc quy tắc bổ sung hàng.",
+              "wrong": "Đã nhầm điều kiện kích hoạt với lượng đặt; không có đủ dữ kiện để chọn 60."
+            },
+            "technique": {
+              "title": "Phân biệt ngưỡng và lượng",
+              "body": "Ghi riêng điều kiện ra quyết định, dữ kiện đầu vào và quy tắc tính lượng."
+            }
+          },
+          "en": {
+            "question": "Does reaching the reorder point mean buying exactly that amount?",
+            "scene": "Fictional case: a store reaches a reorder point of 60 boxes. A worker proposes always buying 60 boxes without checking the order-quantity policy.",
+            "options": {
+              "right": "Check inventory position and the quantity policy; the threshold does not determine purchase quantity.",
+              "wrong": "Buy 60 boxes because reorder point always equals order quantity."
+            },
+            "feedback": {
+              "right": "Reasonable: a reorder point is a policy trigger; quantity also depends on replenishment rules.",
+              "wrong": "This confuses the trigger with order quantity; evidence is insufficient to choose 60."
+            },
+            "technique": {
+              "title": "Separate threshold and quantity",
+              "body": "Record the decision condition, inputs and quantity rule separately."
+            }
+          }
+        }
+      }
+    }
   ]
 }

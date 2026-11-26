@@ -453,7 +453,11 @@ if(mirrorDraft.reviewState!=="proposed"||mirrorDraft.publishState!=="draft"||
  mirrorDraft.homePreview!=="staging_review"||mirrorDraft.lessonPublicationAuthorized!==false||
  !Array.isArray(mirrorDraft.items)||mirrorDraft.items.length!==17)
  throw Error("LI_MIRROR_DRAFT_RELEASE_GATE");
-for(const item of mirrorDraft.items){
+const sampleCases=mirrorDraft.sampleCases;
+if(!Array.isArray(sampleCases)||sampleCases.length!==2||
+ sampleCases.map(x=>x.id).sort().join(",")!=="L03-1-2,L15-2-2")
+ throw Error("LI_MIRROR_SAMPLE_CASES_MISSING");
+for(const item of [...mirrorDraft.items,...sampleCases]){
  if(!/^L(?:03|09|15)-[1-3]-[1-3]$/.test(item.id)||
   !["hci","data-science","supply-chain"].includes(item.fieldId)||
   mirrorDraftIds.has(item.id)||item.reviewState!=="proposed"||item.publishState!=="draft"||
@@ -471,13 +475,14 @@ for(const item of mirrorDraft.items){
      typeof c.feedback?.[key]==="string"&&c.feedback[key].trim())&&
     typeof c.technique?.title==="string"&&typeof c.technique?.body==="string";
   })||
-  !readdirSync(resolve(root,"content/editorial/normalized")).includes(item.id+".draft.v1.json"))
+  !(sampleCases.includes(item)?ids.includes(item.id):readdirSync(resolve(root,"content/editorial/normalized")).includes(item.id+".draft.v1.json")))
   throw Error("LI_MIRROR_DRAFT_INVALID "+item.id);
  mirrorDraftIds.add(item.id);
 }
 compiled["site/content-packs/home-mirror-draft-hooks.js"]=
  "/* GENERATED from content/editorial/home-mirror-hooks.draft.v1.json; DRAFT previews, NOT released lessons. */\n"+
- "window.LI_MIRROR_DRAFT_HOOKS="+JSON.stringify(mirrorDraft.items,null,2)+";\n";
+ "window.LI_MIRROR_DRAFT_HOOKS="+JSON.stringify(mirrorDraft.items,null,2)+";\n"+
+ "window.LI_MIRROR_SAMPLE_CASES="+JSON.stringify(sampleCases,null,2)+";\n";
 
 const check=process.argv.includes("--check");
 for(const [path,value] of Object.entries(compiled)){

@@ -1,0 +1,727 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "editorial_lesson_projection_not_graph_promotion",
+  "description": "Bilingual lesson-level ontology projection using canonical graph IDs where available and stable proposed concept IDs otherwise. Candidate relations are not global graph facts, prerequisites or academic release approval. Analogies are first-party illustrative explanations, not evidence.",
+  "lessons": {
+    "L03-1-1": {
+      "concepts": [
+        {
+          "id": "concept:lesson:feature-request",
+          "vi": "Yêu cầu tính năng",
+          "en": "Feature request"
+        },
+        {
+          "id": "concept:lesson:user-need",
+          "vi": "Nhu cầu người dùng",
+          "en": "User need"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:feature-request",
+        "predicate": "CONTRASTS_WITH",
+        "to": "concept:lesson:user-need",
+        "reason": {
+          "vi": "Yêu cầu mô tả một giải pháp; nhu cầu mô tả kết quả cần đạt.",
+          "en": "A request names a solution; a need describes an outcome."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Người bệnh xin thuốc giảm đau: thuốc là giải pháp họ nghĩ tới, còn mục tiêu là hết đau để sinh hoạt.",
+          "limit": "Đây chỉ là ví von về mục tiêu và giải pháp, không hướng dẫn điều trị."
+        },
+        "en": {
+          "example": "A patient asks for painkillers: the drug is a proposed solution; the goal is relief that enables daily life.",
+          "limit": "This illustrates goals versus solutions, not medical treatment."
+        }
+      },
+      "sourceRef": "L03-1-1",
+      "reviewState": "proposed"
+    },
+    "L03-1-2": {
+      "concepts": [
+        {
+          "id": "concept:wave1:leading-interview-question",
+          "vi": "Câu hỏi dẫn dắt trong phỏng vấn",
+          "en": "Leading interview question"
+        },
+        {
+          "id": "concept:lesson:neutral-interview-question",
+          "vi": "Câu hỏi trung lập",
+          "en": "Neutral interview question"
+        }
+      ],
+      "relation": {
+        "from": "concept:wave1:leading-interview-question",
+        "predicate": "CONTRASTS_WITH",
+        "to": "concept:lesson:neutral-interview-question",
+        "reason": {
+          "vi": "Câu hỏi dẫn dắt gài kỳ vọng; câu hỏi trung lập để người trả lời mô tả trải nghiệm.",
+          "en": "Leading wording embeds an expectation; neutral wording leaves room for the person's experience."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Hỏi 'Món này dở ở đâu?' giống như đặt sẵn một cái khung quanh câu trả lời; hỏi 'Món này thế nào?' mở thêm khả năng.",
+          "limit": "Câu hỏi trung lập không tự đảm bảo người trả lời không có thiên lệch."
+        },
+        "en": {
+          "example": "Asking where a dish is bad frames the answer; asking how the dish was leaves more possibilities.",
+          "limit": "Neutral wording alone does not guarantee unbiased responses."
+        }
+      },
+      "sourceRef": "L03-1-2",
+      "reviewState": "proposed"
+    },
+    "L03-1-3": {
+      "concepts": [
+        {
+          "id": "concept:lesson:observation",
+          "vi": "Quan sát",
+          "en": "Observation"
+        },
+        {
+          "id": "concept:lesson:inference",
+          "vi": "Suy luận",
+          "en": "Inference"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:observation",
+        "predicate": "CONTRASTS_WITH",
+        "to": "concept:lesson:inference",
+        "reason": {
+          "vi": "Quan sát là điều ghi nhận; suy luận giải thích điều đó và cần kiểm chứng.",
+          "en": "Observation records what happened; inference explains it and needs testing."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Thấy ô ướt ngoài cửa là quan sát; đoán trời vừa mưa là suy luận.",
+          "limit": "Ô có thể ướt vì nguyên nhân khác; không biến giả thuyết thành sự thật."
+        },
+        "en": {
+          "example": "Seeing a wet umbrella is observation; guessing it rained is inference.",
+          "limit": "Other causes may wet an umbrella; a hypothesis is not a fact."
+        }
+      },
+      "sourceRef": "L03-1-3",
+      "reviewState": "proposed"
+    },
+    "L03-2-1": {
+      "concepts": [
+        {
+          "id": "concept:lesson:taxonomy",
+          "vi": "Hệ phân loại",
+          "en": "Taxonomy"
+        },
+        {
+          "id": "concept:lesson:navigation",
+          "vi": "Điều hướng",
+          "en": "Navigation"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:taxonomy",
+        "predicate": "RELATED_TO",
+        "to": "concept:lesson:navigation",
+        "reason": {
+          "vi": "Phân loại tổ chức khái niệm; điều hướng giúp tìm nội dung theo tác vụ.",
+          "en": "Taxonomy organizes concepts; navigation supports finding content by task."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Thư viện có mã phân loại sách, nhưng biển chỉ đường có thể ghi 'Sách cho người mới'.",
+          "limit": "Menu không nhất thiết là cây phân loại; một tài liệu có thể có nhiều lối vào."
+        },
+        "en": {
+          "example": "A library uses classification codes, while signs may say 'Books for beginners'.",
+          "limit": "Menus need not mirror taxonomy; one resource may have multiple paths."
+        }
+      },
+      "sourceRef": "L03-2-1",
+      "reviewState": "proposed"
+    },
+    "L03-2-2": {
+      "concepts": [
+        {
+          "id": "concept:lesson:card-sorting",
+          "vi": "Card sorting",
+          "en": "Card sorting"
+        },
+        {
+          "id": "concept:lesson:tree-testing",
+          "vi": "Tree testing",
+          "en": "Tree testing"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:card-sorting",
+        "predicate": "CONTRASTS_WITH",
+        "to": "concept:lesson:tree-testing",
+        "reason": {
+          "vi": "Card sorting khám phá cách nhóm; tree testing đánh giá khả năng tìm trên cấu trúc có sẵn.",
+          "en": "Card sorting explores groupings; tree testing evaluates findability in an existing structure."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Một người chia đồ vào ngăn kéo; người khác thử tìm đồ chỉ theo nhãn các ngăn.",
+          "limit": "Hai phương pháp không thay thế thử nghiệm giao diện hoàn chỉnh."
+        },
+        "en": {
+          "example": "One person groups objects in drawers; another tries finding objects from drawer labels alone.",
+          "limit": "Neither replaces testing the full interface."
+        }
+      },
+      "sourceRef": "L03-2-2",
+      "reviewState": "proposed"
+    },
+    "L03-2-3": {
+      "concepts": [
+        {
+          "id": "concept:lesson:task-completion",
+          "vi": "Hoàn thành tác vụ",
+          "en": "Task completion"
+        },
+        {
+          "id": "concept:lesson:error-event",
+          "vi": "Sự kiện lỗi",
+          "en": "Error event"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:task-completion",
+        "predicate": "RELATED_TO",
+        "to": "concept:lesson:error-event",
+        "reason": {
+          "vi": "Một lượt tác vụ có kết quả riêng và có thể chứa nhiều sự kiện lỗi.",
+          "en": "A task attempt has one outcome and may contain multiple error events."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Một người đi nhầm ba ngã rẽ nhưng vẫn tới đích: một chuyến hoàn thành, ba lần rẽ sai.",
+          "limit": "Cần định nghĩa lỗi và hoàn thành trước khi đo; chuyến đi chỉ là ví von."
+        },
+        "en": {
+          "example": "Someone takes three wrong turns but arrives: one completed journey, three errors.",
+          "limit": "Define errors and completion before measuring; the journey is only an analogy."
+        }
+      },
+      "sourceRef": "L03-2-3",
+      "reviewState": "proposed"
+    },
+    "L09-1-2": {
+      "concepts": [
+        {
+          "id": "concept:ont01:selection-bias",
+          "vi": "Sai lệch chọn mẫu",
+          "en": "Selection bias"
+        },
+        {
+          "id": "concept:ont01:random-variation",
+          "vi": "Biến thiên lấy mẫu ngẫu nhiên",
+          "en": "Random sampling variation"
+        }
+      ],
+      "relation": {
+        "from": "concept:ont01:selection-bias",
+        "predicate": "CONTRASTS_WITH",
+        "to": "concept:ont01:random-variation",
+        "reason": {
+          "vi": "Chọn mẫu lệch là sai lệch hệ thống; biến thiên ngẫu nhiên là khác biệt do cơ hội lấy mẫu.",
+          "en": "Selection bias is systematic distortion; random variation reflects chance differences across samples."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Múc canh: chỉ múc lớp dầu trên mặt gây lệch; hai muỗng từ nồi đã khuấy đều vẫn có thể hơi khác nhau.",
+          "limit": "Khuấy canh không tương đương thiết kế lấy mẫu xác suất; ví von không chứng minh tính đại diện."
+        },
+        "en": {
+          "example": "Scooping soup only from the oily surface is biased; two scoops from a well-stirred pot can still differ by chance.",
+          "limit": "Stirring soup is not probability sampling and does not prove representativeness."
+        }
+      },
+      "sourceRef": "L09-1-2",
+      "reviewState": "proposed"
+    },
+    "L09-1-3": {
+      "concepts": [
+        {
+          "id": "concept:lesson:central-tendency",
+          "vi": "Xu hướng trung tâm",
+          "en": "Central tendency"
+        },
+        {
+          "id": "concept:lesson:dispersion",
+          "vi": "Độ phân tán",
+          "en": "Dispersion"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:central-tendency",
+        "predicate": "CONTRASTS_WITH",
+        "to": "concept:lesson:dispersion",
+        "reason": {
+          "vi": "Trung tâm mô tả giá trị điển hình; độ phân tán mô tả mức trải rộng.",
+          "en": "Center describes typical location; dispersion describes spread."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Hai lớp cùng điểm trung bình nhưng một lớp điểm sát nhau, lớp kia chênh lệch nhiều.",
+          "limit": "Trung bình không đủ mô tả shape; cần thêm thước đo và dữ liệu."
+        },
+        "en": {
+          "example": "Two classes share a mean but one has tightly clustered scores and the other wide variation.",
+          "limit": "A mean does not describe shape; additional measures and data are needed."
+        }
+      },
+      "sourceRef": "L09-1-3",
+      "reviewState": "proposed"
+    },
+    "L09-2-1": {
+      "concepts": [
+        {
+          "id": "concept:lesson:sensitivity",
+          "vi": "Độ nhạy",
+          "en": "Sensitivity"
+        },
+        {
+          "id": "concept:lesson:positive-predictive-value",
+          "vi": "Giá trị dự báo dương",
+          "en": "Positive predictive value"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:sensitivity",
+        "predicate": "CONTRASTS_WITH",
+        "to": "concept:lesson:positive-predictive-value",
+        "reason": {
+          "vi": "Độ nhạy chia theo nhóm dương thật; PPV chia theo nhóm được cảnh báo dương.",
+          "en": "Sensitivity conditions on actual positives; PPV conditions on predicted positives."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Một báo cháy bắt được đa số đám cháy thật, nhưng khi cháy hiếm thì nhiều tiếng chuông có thể do báo nhầm.",
+          "limit": "Tỷ lệ thật phụ thuộc prevalence và đặc tính hệ thống, không suy từ ví dụ chung."
+        },
+        "en": {
+          "example": "An alarm catches most real fires, yet when fires are rare many rings may be false alarms.",
+          "limit": "Actual rates depend on prevalence and system characteristics, not this example alone."
+        }
+      },
+      "sourceRef": "L09-2-1",
+      "reviewState": "proposed"
+    },
+    "L09-2-2": {
+      "concepts": [
+        {
+          "id": "concept:lesson:confidence-interval",
+          "vi": "Khoảng tin cậy",
+          "en": "Confidence interval"
+        },
+        {
+          "id": "concept:ont01:selection-bias",
+          "vi": "Sai lệch chọn mẫu",
+          "en": "Selection bias"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:confidence-interval",
+        "predicate": "RELATED_TO",
+        "to": "concept:ont01:selection-bias",
+        "reason": {
+          "vi": "Khoảng tin cậy mô tả bất định theo giả định; sai lệch chọn mẫu có thể làm suy luận mất hiệu lực.",
+          "en": "An interval describes uncertainty under assumptions; biased selection can invalidate inference."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Bắn nhiều loạt vào bia: độ phân tán có thể nhỏ nhưng cả cụm lệch tâm.",
+          "limit": "Độ rộng khoảng tin cậy không trực tiếp là độ phân tán mũi tên; coverage là thuộc tính quy trình."
+        },
+        "en": {
+          "example": "Several arrow groups may be tight yet consistently off-center.",
+          "limit": "Interval width is not literally arrow spread; coverage belongs to the procedure."
+        }
+      },
+      "sourceRef": "L09-2-2",
+      "reviewState": "proposed"
+    },
+    "L09-2-3": {
+      "concepts": [
+        {
+          "id": "concept:lesson:regression",
+          "vi": "Hồi quy",
+          "en": "Regression"
+        },
+        {
+          "id": "concept:lesson:confounding",
+          "vi": "Nhiễu do yếu tố thứ ba",
+          "en": "Confounding"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:regression",
+        "predicate": "RELATED_TO",
+        "to": "concept:lesson:confounding",
+        "reason": {
+          "vi": "Hồi quy mô tả liên hệ; yếu tố nhiễu có thể tạo liên hệ không phản ánh tác động nhân quả.",
+          "en": "Regression describes associations; confounding can create associations that do not reflect causal effects."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Kem bán nhiều và người đi bơi nhiều vào ngày nóng; nhiệt độ có thể giải thích cả hai.",
+          "limit": "Ví dụ gợi cơ chế, không chứng minh mọi liên hệ đều bị nhiễu."
+        },
+        "en": {
+          "example": "Ice cream sales and swimming both rise on hot days; temperature may explain both.",
+          "limit": "The example suggests a mechanism, not that every association is confounded."
+        }
+      },
+      "sourceRef": "L09-2-3",
+      "reviewState": "proposed"
+    },
+    "L09-3-1": {
+      "concepts": [
+        {
+          "id": "concept:lesson:held-out-test",
+          "vi": "Tập kiểm thử giữ lại",
+          "en": "Held-out test set"
+        },
+        {
+          "id": "concept:lesson:data-leakage",
+          "vi": "Rò rỉ dữ liệu",
+          "en": "Data leakage"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:held-out-test",
+        "predicate": "CONTRASTS_WITH",
+        "to": "concept:lesson:data-leakage",
+        "reason": {
+          "vi": "Tập giữ lại dùng đánh giá độc lập; rò rỉ làm thông tin không được phép đi vào huấn luyện hoặc lựa chọn.",
+          "en": "A holdout supports independent evaluation; leakage lets unavailable information enter fitting or selection."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Ôn bằng đề luyện rồi làm đề thi chưa thấy; nếu đọc đáp án đề thi trước thì điểm không còn phản ánh năng lực độc lập.",
+          "limit": "Rò rỉ còn có thể đến từ feature tương lai hay preprocessing, không chỉ đọc đáp án."
+        },
+        "en": {
+          "example": "Study practice exams then take an unseen test; seeing its answers first undermines independent evaluation.",
+          "limit": "Leakage can also arise from future features or preprocessing, not just answer exposure."
+        }
+      },
+      "sourceRef": "L09-3-1",
+      "reviewState": "proposed"
+    },
+    "L09-3-2": {
+      "concepts": [
+        {
+          "id": "concept:lesson:positive-predictive-value",
+          "vi": "Giá trị dự báo dương",
+          "en": "Positive predictive value"
+        },
+        {
+          "id": "concept:lesson:sensitivity",
+          "vi": "Độ nhạy",
+          "en": "Sensitivity"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:positive-predictive-value",
+        "predicate": "CONTRASTS_WITH",
+        "to": "concept:lesson:sensitivity",
+        "reason": {
+          "vi": "Precision tương ứng PPV, recall tương ứng sensitivity trong bài phân loại nhị phân.",
+          "en": "Precision corresponds to PPV and recall to sensitivity in this binary classification lesson."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Lưới lọc có thể bắt gần hết đồ cần giữ nhưng vướng nhiều rác; hoặc chỉ giữ đồ tốt nhưng bỏ sót nhiều món.",
+          "limit": "Không phải lúc nào precision và recall cũng đánh đổi cố định; phụ thuộc mô hình và ngưỡng."
+        },
+        "en": {
+          "example": "A net may catch nearly all desired objects along with debris, or catch only desired objects while missing many.",
+          "limit": "Precision and recall need not have a fixed trade-off; it depends on model and threshold."
+        }
+      },
+      "sourceRef": "L09-3-2",
+      "reviewState": "proposed"
+    },
+    "L09-3-3": {
+      "concepts": [
+        {
+          "id": "concept:lesson:group-metrics",
+          "vi": "Chỉ số theo nhóm",
+          "en": "Group metrics"
+        },
+        {
+          "id": "concept:lesson:permutation-importance",
+          "vi": "Tầm quan trọng hoán vị",
+          "en": "Permutation importance"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:group-metrics",
+        "predicate": "RELATED_TO",
+        "to": "concept:lesson:permutation-importance",
+        "reason": {
+          "vi": "Chỉ số theo nhóm mô tả sai sót; permutation importance mô tả mức phụ thuộc score vào feature theo phép thử.",
+          "en": "Group metrics describe errors; permutation importance describes score dependence on features under a test."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Bảng điểm trường có thể che chênh lệch giữa lớp; thử bỏ một loại tài liệu xem điểm thay đổi giúp đặt câu hỏi về phụ thuộc.",
+          "limit": "Không chứng minh nguyên nhân, tính hợp pháp hay công bằng tuyệt đối; hoán vị không phải can thiệp thực tế."
+        },
+        "en": {
+          "example": "School averages can hide differences between classes; removing a kind of material suggests questions about dependence.",
+          "limit": "Neither proves causation, legality or absolute fairness; permutation is not a real intervention."
+        }
+      },
+      "sourceRef": "L09-3-3",
+      "reviewState": "proposed"
+    },
+    "L15-2-1": {
+      "concepts": [
+        {
+          "id": "concept:lesson:demand-forecast",
+          "vi": "Dự báo nhu cầu",
+          "en": "Demand forecast"
+        },
+        {
+          "id": "concept:lesson:replenishment-decision",
+          "vi": "Quyết định bổ sung hàng",
+          "en": "Replenishment decision"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:demand-forecast",
+        "predicate": "CONTRASTS_WITH",
+        "to": "concept:lesson:replenishment-decision",
+        "reason": {
+          "vi": "Dự báo ước tính nhu cầu; quyết định bổ sung còn phụ thuộc tồn, lead time và chính sách.",
+          "en": "Forecast estimates demand; replenishment also depends on inventory, lead time and policy."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Dự báo trời mưa khác với quyết định mang bao nhiêu áo mưa: còn tùy người và chuyến đi.",
+          "limit": "Dự báo thời tiết không phải mô hình demand; đây chỉ là ví von dự báo–hành động."
+        },
+        "en": {
+          "example": "A rain forecast differs from deciding how many raincoats to bring; people and trip details matter.",
+          "limit": "Weather is not a demand model; this only illustrates forecast versus action."
+        }
+      },
+      "sourceRef": "L15-2-1",
+      "reviewState": "proposed"
+    },
+    "L15-2-2": {
+      "concepts": [
+        {
+          "id": "concept:wave1:reorder-point",
+          "vi": "Điểm đặt hàng lại",
+          "en": "Reorder point"
+        },
+        {
+          "id": "concept:wave1:safety-stock",
+          "vi": "Tồn kho an toàn",
+          "en": "Safety stock"
+        }
+      ],
+      "relation": {
+        "from": "concept:wave1:reorder-point",
+        "predicate": "RELATED_TO",
+        "to": "concept:wave1:safety-stock",
+        "reason": {
+          "vi": "Tồn kho an toàn có thể là phần đệm của ngưỡng đặt hàng lại theo mô hình trong bài; không phải lượng đặt.",
+          "en": "Safety stock can contribute to the reorder threshold in the lesson model; it is not order quantity."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Bình nước còn một vạch thì đi mua thêm; phần nước dự phòng giúp chịu được lúc cửa hàng đóng lâu hơn.",
+          "limit": "Ngưỡng và lượng mua phụ thuộc nhu cầu, lead time, inventory position và chính sách thực tế."
+        },
+        "en": {
+          "example": "Refill a bottle at a marked level; a reserve helps when a shop stays closed longer.",
+          "limit": "Threshold and order quantity depend on demand, lead time, inventory position and actual policy."
+        }
+      },
+      "sourceRef": "L15-2-2",
+      "reviewState": "proposed"
+    },
+    "L15-2-3": {
+      "concepts": [
+        {
+          "id": "concept:lesson:eta",
+          "vi": "Thời gian đến dự kiến",
+          "en": "Estimated time of arrival"
+        },
+        {
+          "id": "concept:lesson:actual-event",
+          "vi": "Sự kiện thực tế",
+          "en": "Actual event"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:eta",
+        "predicate": "CONTRASTS_WITH",
+        "to": "concept:lesson:actual-event",
+        "reason": {
+          "vi": "ETA là dự báo tại một thời điểm; actual là sự kiện đã được ghi nhận.",
+          "en": "ETA is a prediction as of a time; actual is a recorded event."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "App xe báo tài xế đến sau 10 phút; chỉ khi xe thật sự đến mới có thời điểm đến thực tế.",
+          "limit": "Timestamp báo cáo có thể đến muộn, khác thời điểm sự kiện."
+        },
+        "en": {
+          "example": "A ride app predicts arrival in ten minutes; actual arrival exists only when the car arrives.",
+          "limit": "A report timestamp may lag the event itself."
+        }
+      },
+      "sourceRef": "L15-2-3",
+      "reviewState": "proposed"
+    },
+    "L15-3-1": {
+      "concepts": [
+        {
+          "id": "concept:lesson:bullwhip-effect",
+          "vi": "Hiệu ứng bullwhip",
+          "en": "Bullwhip effect"
+        },
+        {
+          "id": "concept:lesson:order-variability",
+          "vi": "Biến động đơn đặt",
+          "en": "Order variability"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:bullwhip-effect",
+        "predicate": "RELATED_TO",
+        "to": "concept:lesson:order-variability",
+        "reason": {
+          "vi": "Khuếch đại biến động đơn upstream so với nhu cầu là dấu hiệu bullwhip; cơ chế cần chứng cứ.",
+          "en": "Amplified upstream order variability relative to demand is a bullwhip pattern; its mechanism needs evidence."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Một người nghe tin cần thêm ít hàng rồi đặt dư; từng tầng tiếp theo lại thêm phần đệm, dao động lớn dần.",
+          "limit": "Không phải mọi dao động đều do thông tin chậm hoặc hành vi đặt dư."
+        },
+        "en": {
+          "example": "One party hears of a small demand change and orders extra; each upstream layer adds a buffer and swings grow.",
+          "limit": "Not all variability comes from delay or over-ordering."
+        }
+      },
+      "sourceRef": "L15-3-1",
+      "reviewState": "proposed"
+    },
+    "L15-3-2": {
+      "concepts": [
+        {
+          "id": "concept:lesson:risk-pooling",
+          "vi": "Gộp rủi ro",
+          "en": "Risk pooling"
+        },
+        {
+          "id": "concept:wave1:safety-stock",
+          "vi": "Tồn kho an toàn",
+          "en": "Safety stock"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:risk-pooling",
+        "predicate": "RELATED_TO",
+        "to": "concept:wave1:safety-stock",
+        "reason": {
+          "vi": "Gộp nhu cầu có thể giảm buffer dưới giả định tương quan thích hợp.",
+          "en": "Pooling can reduce buffers under suitable correlation assumptions."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Hai nhà dùng chung quỹ dự phòng nếu ít khi cùng gặp sự cố, thay vì mỗi nhà giữ quỹ riêng lớn.",
+          "limit": "Tương quan, lead time, khả năng chuyển hàng và chi phí có thể làm lợi ích giảm hoặc mất."
+        },
+        "en": {
+          "example": "Two households share an emergency fund if their emergencies rarely coincide instead of maintaining large separate funds.",
+          "limit": "Correlation, lead time, transfer feasibility and costs can reduce or remove the benefit."
+        }
+      },
+      "sourceRef": "L15-3-2",
+      "reviewState": "proposed"
+    },
+    "L15-3-3": {
+      "concepts": [
+        {
+          "id": "concept:lesson:cycle-service-level",
+          "vi": "Mức phục vụ theo chu kỳ",
+          "en": "Cycle service level"
+        },
+        {
+          "id": "concept:lesson:unit-fill-rate",
+          "vi": "Tỷ lệ đáp ứng theo đơn vị",
+          "en": "Unit fill rate"
+        }
+      ],
+      "relation": {
+        "from": "concept:lesson:cycle-service-level",
+        "predicate": "CONTRASTS_WITH",
+        "to": "concept:lesson:unit-fill-rate",
+        "reason": {
+          "vi": "CSL dùng mẫu số chu kỳ, fill rate dùng lượng nhu cầu; chúng không thay thế nhau.",
+          "en": "CSL uses cycles as its denominator; fill rate uses demanded units; they are not interchangeable."
+        },
+        "reviewState": "proposed"
+      },
+      "analogy": {
+        "vi": {
+          "example": "Một quán hết đúng một món mỗi ngày có thể thất bại ở nhiều ngày nhưng vẫn bán đủ phần lớn suất khách gọi.",
+          "limit": "Ngày chỉ là ví von cho cycle; cần định nghĩa chu kỳ và cách tính fill rate trong protocol."
+        },
+        "en": {
+          "example": "A café may run out of one item on many days yet fulfill most requested units.",
+          "limit": "Days only illustrate cycles; define cycles and fill-rate protocol."
+        }
+      },
+      "sourceRef": "L15-3-3",
+      "reviewState": "proposed"
+    }
+  }
+}

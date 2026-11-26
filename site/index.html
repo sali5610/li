@@ -474,6 +474,15 @@ mirrorDrafts.forEach((item,i)=>{
  if(mirrorDraftCases[i])scenarios.push(mirrorDraftCases[i]);
 });
 scenarios.push(...originalMirrorScenarios.slice(mirrorDrafts.length));
+// Independent fictional cases for the locked sample lessons. They retain
+// draft case status, not draft lesson routing, and never alter locked bodies.
+const mirrorSampleCases=(globalThis.window?.LI_MIRROR_SAMPLE_CASES||[]).filter(x=>
+ x.reviewState==="proposed"&&x.publishState==="draft"&&
+ x.case?.localized?.vi&&x.case?.localized?.en
+).map(x=>({type:"problem",key:"mirror-problem-"+x.id,
+ caseKey:"draft-case-"+x.id,caseData:x.case,lessonId:x.id,fieldId:x.fieldId,
+ previewState:"case_draft",localized:x.localized,...x.localized.vi}));
+scenarios.push(...mirrorSampleCases);
 /* Mix disciplines once per app load, not at every swipe: prev/next remain
    reversible and each question keeps its original image, context and route.
    Weight by remaining question count so the larger fields still get fair
@@ -581,6 +590,10 @@ function liCurrentProblem(){
  const item=scenarios[qIndex];
  if(item.type==="hook"&&item.previewState==="draft")
   return mirrorDraftCases.find(candidate=>candidate.lessonId===item.lessonId)||item;
+ if(item.type==="hook"){
+  const matching=scenarios.find(candidate=>candidate.caseKey&&candidate.lessonId===item.lessonId);
+  if(matching)return matching;
+ }
  return item.type==="hook"?originalMirrorScenarios.find(candidate=>candidate.type!=="hook"):item;
 }
 function liCurrentCase(){

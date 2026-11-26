@@ -26,7 +26,7 @@ function canonicalCaseField(note){
  const key=note.caseKey||note.caseSnapshot?.id||"";
  if(key==="sampling-bias-90"||/Sampling Bias/i.test(note.title||""))return "data-science";
  const match=/^draft-case-(L(?:03|09|15)-[1-3]-[1-3])$/.exec(key);
- const item=match&&(window.LI_MIRROR_DRAFT_HOOKS||[]).find(x=>
+ const item=match&&[...(window.LI_MIRROR_DRAFT_HOOKS||[]),...(window.LI_MIRROR_SAMPLE_CASES||[])].find(x=>
   x.id===match[1]&&x.case?.publishState==="draft");
  return item?.fieldId||null;
 }

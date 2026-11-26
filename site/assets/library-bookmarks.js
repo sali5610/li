@@ -12,11 +12,13 @@ function valid(type,id){
   if(Object.prototype.hasOwnProperty.call(CASES,id))return true;
   if(!/^draft-case-L(?:03|09|15)-[1-3]-[1-3]$/.test(id))return false;
   const lessonId=id.slice("draft-case-".length);
-  const item=(window.LI_MIRROR_DRAFT_HOOKS||[]).find(x=>x.id===lessonId&&
+  const personal=(window.LI_MIRROR_DRAFT_HOOKS||[]).find(x=>x.id===lessonId&&
    x.case?.publishState==="draft"&&x.case?.reviewState==="proposed");
-  const route=window.liPersonalStudyRoutes?.[lessonId];
-  return Boolean(item)&&document.documentElement.classList.contains("li-auth-verified")&&
-   typeof route==="string"&&/^draftLesson[A-Za-z0-9]{1,64}$/.test(route)&&
+  const sample=(window.LI_MIRROR_SAMPLE_CASES||[]).find(x=>x.id===lessonId&&
+   x.case?.publishState==="draft"&&x.case?.reviewState==="proposed");
+  const route=personal?window.liPersonalStudyRoutes?.[lessonId]:sample?window.liReleasedLessonRoutes?.[lessonId]:null;
+  return Boolean(personal||sample)&&document.documentElement.classList.contains("li-auth-verified")&&
+   typeof route==="string"&&/^(?:draftLesson|lessonL)[A-Za-z0-9]{1,64}$/.test(route)&&
    Boolean(document.getElementById("page-"+route));
  }
  if(type!=="lesson")return false;

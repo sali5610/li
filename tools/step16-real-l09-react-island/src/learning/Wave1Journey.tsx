@@ -1,3 +1,4 @@
+import {LessonUnderstanding} from './LessonUnderstanding.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
 import lesson03 from '../../../../content/lessons/L03-1-2.json';
@@ -327,6 +328,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
       <p className="li-learning-copy">{safeText(content.compareText2)}</p></div>
     </div>
     <Text>{safeText(content.conceptNote)}</Text>
+    <LessonUnderstanding id={id} locale={appLocale}/>
     <div id={'li-react-'+id+'-visuals'} className="li-lesson-single-figure">
      <Heading level={3} role="titleMedium">{content.visualTitle}</Heading>
      <LessonFigure src={sourceImg.src} link={sourceImg.link} credit={sourceImg.credit}

@@ -1,9 +1,11 @@
+import {LessonUnderstanding} from './LessonUnderstanding.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
 import {initial} from '../native-bridge';
 import type {Attempt,EditorialMethodId,EditorialReviewSnapshot,PastEditorialAttempt} from '../native-bridge';
 import type {LearningPorts,SyncState} from './ports';
-import {isReleasedLessonId} from './released-lessons';
+import {isReleasedLessonId,personalStudyRoute,releasedLessonRoutes} from './released-lessons';
+import supplements from '../../../../content/editorial/lesson-completeness-supplements.v1.json';
 import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 import {Button,Card} from '../../../../design-system/react/Components';
 import {Field} from '../../../../design-system/react/Controls';
@@ -12,7 +14,7 @@ import {SelfReviewNextStep} from './SelfReviewNextStep';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
 import {Markdown,inline as formatLessonInline} from './EditorialJourney';
 import {LessonBookmark,LessonMentor} from './LessonDetailParity.js';
-import {CopyAnalysisPrompt} from './CopyAnalysisPrompt.js';
+import {CopyAnalysisPrompt,CopyPromptAction} from './CopyAnalysisPrompt.js';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
 import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discovery-locale.js';
@@ -386,6 +388,16 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   <Text>{error||localized(appLocale,'Không tải được bài.','Could not load the lesson.')}</Text>
  </section>;
  const locale=appLocale,vi=locale==='vi',c=lesson.content.localized[locale];
+ const supplemental=preview?(supplements.lessons as Record<string,{
+  vi:{hint:string;guidedFeedback:string;diagram:string;relatedReason:string};
+  en:{hint:string;guidedFeedback:string;diagram:string;relatedReason:string};
+  sourceUrl:string;relatedLessonId:string
+ }>)[id]:undefined;
+ const extra=supplemental?.[locale];
+ const relatedId=supplemental?.relatedLessonId;
+ const relatedRoute=relatedId&&(personalStudyRoute(relatedId)||
+  releasedLessonRoutes.find(r=>r.id===relatedId)?.route);
+ const guidedReference=section(c,'guided').map(x=>x.feedback_md||'').filter(Boolean).join('\n')||extra?.guidedFeedback||'';
  const names:Record<Phase,string>=vi?
   {read:'Đọc bài',guided:'Thử áp dụng',practice:'Làm bài',feedback:'Đối chiếu',progress:'Tiến độ'}:
   {read:'Learn',guided:'Guided',practice:'Practice',feedback:'Feedback',progress:'Progress'};
@@ -475,6 +487,20 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    {phase==='read'&&<>
     <div id={'li-sectioned-'+id+'-opening'}><Markdown md={c.intro_md}/></div>
     {block('goals')}{block('concept')}
+    <LessonUnderstanding id={id} locale={locale}/>
+    {extra&&supplemental&&<>
+     <figure className="li-learning-hint">
+      <Heading level={3} role="titleMedium">{vi?'Sơ đồ khái niệm':'Concept map'}</Heading>
+      <Text>{extra.diagram}</Text>
+      <figcaption><Text role="support">{vi?'Sơ đồ minh họa tự biên soạn; không phải dữ liệu thực nghiệm.':'First-party conceptual schematic; not empirical data.'}</Text></figcaption>
+     </figure>
+     <details className="li-learning-extra-sources">
+      <summary>{vi?'Nguồn đọc thêm':'Further reading'}</summary>
+      <Text role="support">{vi?'Nguồn đã dẫn trong bản thảo; chưa xác nhận duyệt phát hành.':'Reference cited in the draft; release review not confirmed.'}</Text>
+      <a href={supplemental.sourceUrl} target="_blank" rel="noopener noreferrer">{new URL(supplemental.sourceUrl).hostname}</a>
+      <CopyPromptAction locale={locale} prompt={(vi?'Giúp tôi kiểm chứng khái niệm trong bài ':'Help me verify the concepts in lesson ')+lesson.title[locale]+' ('+id+'). '+(vi?'Chỉ dùng nguồn có thể kiểm tra, nói rõ nếu không truy cập được: ':'Use verifiable sources and say if you cannot access: ')+supplemental.sourceUrl}/>
+     </details>
+    </>}
     <Button onClick={()=>setPhase('guided')}>{vi?'Tiếp: Thử áp dụng':'Next: Guided example'} →</Button>
    </>}
    {phase==='guided'&&<>
@@ -487,6 +513,10 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       ? <Markdown md={x.feedback_md||''}/>
       : <Text role="support">{vi?'Viết và lưu ít nhất 12 ký tự giải thích để xem phản hồi.':'Write and save at least 12 characters to unlock guided feedback.'}</Text>}
     </div>)}
+    {extra&&!section(c,'guided').some(x=>!!x.feedback_md)&&<div className="li-learning-hint">
+     {persisted.guidedDraft.trim().length>=MIN?<Text>{extra.guidedFeedback}</Text>:
+      <Text role="support">{vi?'Viết và lưu ít nhất 12 ký tự giải thích để xem phản hồi.':'Write and save at least 12 characters to unlock guided feedback.'}</Text>}
+    </div>}
     <details className="li-learning-extras li-sectioned-method-details"
      key={'method-'+id}>
      <summary>{vi?'Thử Thần Chú':'Try a study method'} · {method} {vi?'(tùy chọn)':'(optional)'}</summary>
@@ -517,7 +547,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      questions:[vi?'Hãy tự giải thích ví dụ bằng lời của mình.':'Explain the guided example in your own words.'],
      answers:[attempt.guidedDraft],
      reference:persisted.guidedDraft.trim().length>=MIN
-      ?section(c,'guided').map(x=>x.feedback_md||'').filter(Boolean).join('\n'):undefined
+      ?guidedReference:undefined
     }}/>
     <Button onClick={()=>setPhase('practice')}>
      {vi?'Tiếp: Làm bài':'Next: Practice'} →
@@ -530,6 +560,16 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      key={i} index={i} question={question}
      value={attempt.draft[i]} disabled={locked||attempt.submitted}
      onChange={v=>setAnswer(i,v)}/>)}
+    {extra&&!attempt.submitted&&!attempt.hint&&<Button variant="secondary" disabled={locked||pending>0}
+     onClick={()=>{if(!current.current||current.current.submitted||locked)return;edit(a=>({...a,hint:true,assisted:true}));}}>
+     {vi?'Xem gợi ý':'Show hint'}</Button>}
+    {extra&&attempt.hint&&<div className="li-learning-hint" role="note"><Text>{extra.hint}</Text></div>}
+    <CopyAnalysisPrompt locale={locale} step="practice" data={{
+     title:lesson.title[locale],lessonId:id,
+     activity:independent(c).body_md.split(/^[1-4]\.\s*/m)[0],
+     questions:c.assessment.questions,answers:attempt.draft,
+     extra:attempt.hint?extra?.hint:undefined
+    }}/>
     {!persisted.submitted?<Button disabled={locked||pending>0} onClick={()=>void submit()}>
      {vi?'Nộp bốn câu':'Submit four answers'}</Button>:
      <Button onClick={()=>setPhase('feedback')}>{vi?'Tiếp: Đối chiếu':'Next: Feedback'} →</Button>}
@@ -593,6 +633,15 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     <Text>{vi?'Điểm tự chấm':'Self-rating'}: {persisted.ratings.reduce<number>((n,x)=>n+(x??0),0)} / 8</Text>
     <Text role="support">{vi?'K5 chưa đo: bài này chưa chứng minh ghi nhớ dài hạn.':'K5 not measured: long-term retention is not established.'}</Text>
     {block('extension')}
+    {extra&&relatedId&&relatedRoute&&<section className="li-related-lessons">
+     <Heading level={2} role="titleMedium">{vi?'Học tiếp':'Related lesson'}</Heading>
+     <Text>{extra.relatedReason}</Text>
+     <Text role="support">{vi?'Gợi ý biên tập, không phải prerequisite bắt buộc.':'Editorial suggestion, not a required prerequisite.'}</Text>
+     <a href={'./?lesson='+encodeURIComponent(relatedId)} onClick={event=>{
+      if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+      if(window.liAppRouter?.navigate?.(relatedRoute))event.preventDefault();
+     }}>{vi?'Mở bài học':'Open lesson'} · {relatedId}</a>
+    </section>}
     <SelfReviewNextStep rubricItems={rubric} ratings={persisted.ratings}
      locale={locale} onReviewTheory={()=>setPhase('read')}/>
     <T02ReviewEntry lessonId={id} vi={vi} disabled={pending>0||locked}

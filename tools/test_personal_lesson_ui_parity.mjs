@@ -89,9 +89,72 @@ for(const phase of ['practice','feedback','progress']){
  assert.equal(reader.split(target).length-1,phase==='practice'?1:2,
   'Stable anchor in each applicable gated and placeholder branch '+phase);
 }
+const supplements=JSON.parse(read('content/editorial/lesson-completeness-supplements.v1.json'));
+assert.equal(supplements.status,'draft_editorial_supplement_not_release_approval');
+assert.deepEqual(Object.keys(supplements.lessons).sort(),[...ids].sort());
+assert.match(reader,/preview\?\(supplements\.lessons/,'Personal drafts only');
+assert.match(reader,/hint:true,assisted:true/,'A revealed hint must record assistance');
+assert.match(reader,/extra&&attempt\.hint&&/,'Hints require reveal');
+assert.match(reader,/persisted\.guidedDraft\.trim\(\)\.length>=MIN\?<Text>\{extra\.guidedFeedback\}/,'Supplement feedback requires saved attempt');
+assert.match(reader,/<CopyAnalysisPrompt locale=\{locale\} step="practice"/,'Independent practice prompt available');
+assert.match(reader,/reference:persisted\.guidedDraft\.trim\(\)\.length>=MIN/,'Guided prompt reference remains gated');
+// Ontology and analogy are part of the reading phase for all active readers.
+const understanding=JSON.parse(read('content/editorial/lesson-ontology-analogy.v1.json'));
+const canonicalConcepts=JSON.parse(read('content/graph/concepts.json'));
+const known=new Map(canonicalConcepts.map(c=>[c.id,c]));
+const currentIds=[...ids,'L03-1-2','L09-1-2','L15-2-2'];
+assert.deepEqual(Object.keys(understanding.lessons).sort(),currentIds.sort());
+assert.equal(understanding.status,'editorial_lesson_projection_not_graph_promotion');
+const proposed=new Map();
+for(const [id,item] of Object.entries(understanding.lessons)){
+ assert.equal(item.sourceRef,id);
+ assert.equal(item.reviewState,'proposed');
+ assert.equal(item.relation.reviewState,'proposed');
+ const conceptIds=new Set(item.concepts.map(c=>c.id));
+ assert.equal(conceptIds.size,item.concepts.length);
+ assert.ok(conceptIds.has(item.relation.from)&&conceptIds.has(item.relation.to)&&item.relation.from!==item.relation.to);
+ assert.ok(['RELATED_TO','CONTRASTS_WITH'].includes(item.relation.predicate));
+ for(const c of item.concepts){
+  assert.ok(c.vi.trim()&&c.en.trim());
+  if(known.has(c.id)){
+   const canon=known.get(c.id);
+   assert.equal(c.en,canon.title);
+   assert.equal(c.vi,canon.aliases.find(x=>x.locale==='vi').text);
+  }else{
+   assert.match(c.id,/^concept:lesson:[a-z0-9-]+$/);
+   if(proposed.has(c.id))assert.deepEqual(c,proposed.get(c.id));
+   proposed.set(c.id,c);
+  }
+ }
+ for(const loc of ['vi','en']){
+  assert.ok(item.relation.reason[loc].trim(),id+' relation reason');
+  assert.ok(item.analogy[loc].example.trim()&&item.analogy[loc].limit.trim(),id+' analogy and limits');
+ }
+}
+for(const src of [sample03,sample09,reader]){
+ assert.match(src,/<LessonUnderstanding id=/,'Shared reading element on all reader types');
+ const readPhase=src.slice(src.indexOf("{phase==='read'&&"),src.indexOf("{phase==='guided'&&"));
+ assert.match(readPhase,/<LessonUnderstanding /,'Ontology and analogy must be inside reading phase');
+}
+const understandingUi=read(root+'LessonUnderstanding.tsx');
+assert.match(understandingUi,/data-li-ontology-relation/);
+assert.match(understandingUi,/analogy\.limit/);
+assert.match(understandingUi,/not a prerequisite/);
+assert.match(understandingUi,/<Disclosure/);
+assert.ok(!understandingUi.includes('dangerouslySetInnerHTML'));
 const chapterIds=new Set();
 for(const item of drafts){
  const d=JSON.parse(read(item.normalizedPath));
+ const supplement=supplements.lessons[d.id];
+ for(const loc of ['vi','en']) {
+  for(const key of ['hint','guidedFeedback','diagram','relatedReason'])
+   assert.ok(supplement[loc][key].trim(),d.id+' '+loc+' '+key);
+  assert.ok(JSON.stringify(d.content.localized[loc]).includes(supplement.sourceUrl),
+   'Reading reference must be present in manuscript '+d.id+' '+loc);
+ }
+ assert.ok(/^https:\/\//.test(supplement.sourceUrl),'HTTPS reference');
+ assert.ok(supplement.relatedLessonId!==d.id&&
+  [...ids,'L03-1-2','L09-1-2','L15-2-2'].includes(supplement.relatedLessonId),'Related accessible lesson '+d.id);
  assert.equal(d.publishState,'draft','Do not publish '+item.id);
  assert.equal(d.rights.releaseAuthorized,false,'Do not bypass rights gate '+item.id);
  // Every authored manuscript has one identity per actual reader phase,

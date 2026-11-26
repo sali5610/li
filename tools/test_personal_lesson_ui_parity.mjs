@@ -215,6 +215,23 @@ assert.deepEqual(fig['L15-3-1'].series.map(s=>avg(s.values)),[50,50,50]);
 assert.deepEqual(fig['L15-3-1'].series.map(s=>spread(s.values)),[4,20,50]);
 assert.equal(fig['L15-3-2'].values[1],Math.round(2*Math.sqrt(72)*100)/100);
 assert.equal(fig['L03-2-3'].values.reduce((a,b)=>a+b,0),10);
+// Each formerly solved guided example now has a distinct application prompt.
+const freshGuided=Object.entries(supplements.lessons).filter(([id,x])=>x.vi.guidedPrompt||x.en.guidedPrompt);
+assert.deepEqual(freshGuided.map(([id])=>id).sort(),ids.filter(id=>id!=='L09-3-2').sort());
+for(const [id,supp] of freshGuided){
+ const manuscript=JSON.parse(read('content/editorial/normalized/'+id+'.draft.v1.json'));
+ for(const loc of ['vi','en']){
+  assert.ok(supp[loc].guidedPrompt.trim()&&supp[loc].guidedFeedback.trim());
+  const original=manuscript.content.localized[loc].sections.filter(s=>s.role==='guided').map(s=>s.body_md).join('\n');
+  assert.ok(!original.includes(supp[loc].guidedPrompt),'New application must not simply copy the worked example '+id);
+  assert.ok(!original.includes(supp[loc].guidedFeedback),'Do not repeat new application solution inside the old example '+id);
+ }
+}
+assert.match(reader,/extra\?\.guidedPrompt&&/);
+assert.match(reader,/questions:\[extra\?\.guidedPrompt\|\|/);
+assert.match(reader,/keep or revise it for the new question/);
+assert.ok(reader.indexOf('<Text>{extra.guidedPrompt}</Text>')<reader.indexOf('value={attempt.guidedDraft}'));
+assert.match(reader,/persisted\.guidedDraft\.trim\(\)\.length>=MIN\?<Text>\{extra\.guidedFeedback\}/);
 const chapterIds=new Set();
 for(const item of drafts){
  const d=JSON.parse(read(item.normalizedPath));

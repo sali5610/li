@@ -92,7 +92,11 @@ app.LiSpellPractice={getT02Status:()=>null};
 app.liBuddyEngine={choose:(i:number)=>({text:i===0?'Chọn cách học phù hợp với câu hỏi.':'Thử một bài luyện ngắn.',showChallenge:false})};
 const root=document.getElementById('visual-root')!;
 const buddyRoot=document.getElementById('buddy-modal')!;
-if(viewName==='bilingualReaders'){
+if(viewName==='checkinResume'){
+ void import('./checkin-resume-fixture.js').then(m=>m.runCheckinResumeFixture(root))
+  .then(result=>{app.__liCheckinResumeReport=result;})
+  .catch(error=>{app.__liCheckinResumeReport={status:'FAIL',error:String(error)};});
+} else if(viewName==='bilingualReaders'){
  void import('./bilingual-reader-fixture.js').then(m=>m.runBilingualReaderFixture(root))
   .then(result=>{app.__liBilingualReaderReport=result;})
   .catch(error=>{app.__liBilingualReaderReport={status:'FAIL',error:String(error)};});

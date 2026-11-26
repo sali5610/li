@@ -164,6 +164,15 @@ try{
   }
  }
  console.log('PASS 13 REAL CSS MOBILE VIEWPORT SCREENS + NATIVE OPEN SHEET 390x844');
+ // One focused real Check-in interaction, using an isolated owner-scoped diary port.
+ await send('Page.navigate',{url:target+'?view=checkinResume'});
+ const checkin=await wait(async()=>{
+  const r=await send('Runtime.evaluate',{expression:'window.__liCheckinResumeReport || null',returnByValue:true});
+  return r.result?.value||null;
+ },20000);
+ console.log('CHECKIN_RESUME_REPORT '+JSON.stringify(checkin));
+ if(checkin.status!=='PASS'||checkin.checks!==14)
+  throw Error('CHECKIN_RESUME_FAIL '+JSON.stringify(checkin));
  // Actual learner components, both locale directions on all five pages.
  await send('Page.navigate',{url:target+'?view=bilingualReaders'});
  const bilingual=await wait(async()=>{

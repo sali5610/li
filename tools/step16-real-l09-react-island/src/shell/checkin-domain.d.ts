@@ -16,3 +16,10 @@ export declare function recommendStudyRhythm(
  physical:PhysicalAnswers,
  energy?:EnergyAnswer,attention?:AttentionAnswer
 ):RhythmRecommendation|null;
+
+export type SavedCheckin=Required<PhysicalAnswers>&{
+ energy:EnergyAnswer;attention:AttentionAnswer;override:StudyRhythm|'';
+ selectedMode:StudyRhythm;recordedAt:string;
+};
+export declare function checkinDay(when:string|number|Date):string|null;
+export declare function savedCheckin(value:unknown,now:string|number|Date):SavedCheckin|null;

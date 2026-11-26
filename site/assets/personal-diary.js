@@ -133,6 +133,17 @@ function getView(){
   enabled,storageError,hasRecords:Object.keys(diary.days).length>0
  };
 }
+// Today is independent of the selected calendar date. No guest access, no
+// separate storage: restore only the signed-in owner's existing Journal.
+function getTodayCheckin(uid){
+ try{
+  if(!uid||!document.documentElement.classList.contains("li-auth-verified")||
+   localStorage.getItem("li.sync.local-owner.v1")!==uid||storageError)return null;
+  const record=safeDay(localDay()),physical=record?.physical;
+  if(!physical)return null;
+  return {...physical,selectedMode:physical.selectedMode||record.mode};
+ }catch{return null;}
+}
 function actReact(kind,value){
  if(kind==="select"&&typeof value==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(value)&&
   value.slice(0,7)===month&&Number(value.slice(8))>=1&&
@@ -177,7 +188,7 @@ function deleteDiary(confirmed=false){
  try{
   const empty=JSON.stringify({schema:1,days:{}});
   localStorage.setItem(KEY,empty);if(localStorage.getItem(KEY)!==empty)throw Error("readback");
-  diary={schema:1,days:{}};render();personalChanged();
+  diary={schema:1,days:{}};window.dispatchEvent(new Event("li:checkin-history-deleted"));render();personalChanged();
   if(typeof window.liShowUndo==="function")window.liShowUndo("Đã xóa lịch hoạt động.",()=>{
    if(storageError)return false;
    const restored=JSON.parse(JSON.stringify(prior));
@@ -209,7 +220,16 @@ $("li-diary-delete").addEventListener("click",deleteDiary);
 window.addEventListener("li:l1-physical-checkin",e=>{
  const x=e.detail;
  if(!x||!["yes","no","unsure"].includes(x.sleep)||!["yes","no","unsure"].includes(x.move)||!["yes","no","unsure"].includes(x.rest))return;
- put(d=>{d.physical={sleep:x.sleep,move:x.move,rest:x.rest,recordedAt:x.recordedAt};d.mode=MODE[x.selectedMode]?x.selectedMode:d.mode;d.checkins=(d.checkins||0)+1;return true;},localDay(x.recordedAt));
+ put(d=>{
+  d.physical={sleep:x.sleep,move:x.move,rest:x.rest,recordedAt:x.recordedAt};
+  // Only explicitly applied inputs, under the same existing Journal
+  // recording and optional cloud consent. Older records remain readable.
+  if(["high","medium","low"].includes(x.energy))d.physical.energy=x.energy;
+  if(["steady","warming","hard"].includes(x.attention))d.physical.attention=x.attention;
+  if(MODE[x.override]||x.override==="")d.physical.override=x.override;
+  if(MODE[x.selectedMode]){d.physical.selectedMode=x.selectedMode;d.mode=x.selectedMode;}
+  d.checkins=(d.checkins||0)+1;return true;
+ },localDay(x.recordedAt));
 });
 window.addEventListener("li:study-mode-applied",e=>{const mode=e.detail?.mode;if(MODE[mode])put(d=>{if(d.mode===mode)return false;d.mode=mode;return true;});});
 window.addEventListener("li:lesson-submitted",e=>{const id=e.detail?.lessonId;if(typeof id==="string"&&["L09-1-2","L03-1-2","L15-2-2"].includes(id))put(d=>{if(d.activities.lesson.includes(id))return false;d.activities.lesson.push(id);return true;});});
@@ -257,5 +277,5 @@ window.addEventListener?.("li:personal-sync-applied",event=>{
  render(); // Live calendar + check-ins, not a whole-page refresh
 });
 render();
-window.liPersonalDiary=Object.freeze({getView,act:actReact,refreshNative:render});
+window.liPersonalDiary=Object.freeze({getView,getTodayCheckin,act:actReact,refreshNative:render});
 })();

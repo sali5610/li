@@ -9,7 +9,7 @@ import './lesson-detail-parity.css';
  * markup or new private writer is introduced here. */
 export type LessonId='L03-1-2'|'L09-1-2'|'L15-2-2';
 export type Locale='vi'|'en';
-export type LessonSource={title:string;url:string;tier:string;usage?:string};
+export type LessonSource={title:string;url:string;tier:string;usage?:string;note?:string};
 export type ReferenceLabels={
  sourcesTitle:string;sourcesLead:string;sourceNote:string;queriesTitle:string;
  openSource:string;copySource?:string;copyPrompt?:string;allPrompt:string;
@@ -55,7 +55,7 @@ const queryByLesson:Record<LessonId,readonly string[]>={
 function external(url:string):boolean{
  try{const u=new URL(url);return u.protocol==='https:';}catch{return false;}
 }
-function buildPrompt(id:LessonId,locale:Locale,sources:LessonSource[],subject:string,conceptTitle:string){
+function buildPrompt(id:string,locale:Locale,sources:LessonSource[],subject:string,conceptTitle:string){
  const list=sources.map(x=>'- '+x.title+': '+x.url).join('\n');
  if(id==='L09-1-2'){
   const start=locale==='vi'?
@@ -68,7 +68,7 @@ function buildPrompt(id:LessonId,locale:Locale,sources:LessonSource[],subject:st
  }
  // Equivalent to the old L03/L15 authored source-aware copy workflow.
  const start=locale==='vi'?
-  'Tôi đang học bài '+id+' thuộc '+subject+' trong app li. (理), nội dung đã chốt: '+conceptTitle+'.\nNguồn đọc:\n':
+  'Tôi đang học bài '+id+' thuộc '+subject+' trong app li. (理), chủ đề: '+conceptTitle+'.\nNguồn đọc:\n':
   'I am studying li. (理) lesson '+id+' in '+subject+': '+conceptTitle+'.\nSources:\n';
  const end=locale==='vi'?
   '\n\nChỉ tóm tắt phần bạn thực sự truy cập. Nếu URL bị chặn hoặc không có toàn văn, hãy nói rõ và đề nghị tôi dán nội dung, tuyệt đối không bịa trích dẫn. Trả lời bằng tiếng Việt: 1) tóm tắt 5 ý có link nguồn; 2) định nghĩa các khái niệm của bài; 3) tách điều nguồn nói và suy luận; 4) phân tích một tình huống thực tế cùng giới hạn suy rộng; 5) giả định/cảnh báo; 6) ba câu active recall không hiện đáp án. Nếu nguồn có mô hình khác bài học, hãy giải thích sự khác biệt thay vì ép đồng nhất.':
@@ -201,12 +201,12 @@ export function LessonFigure({src,link,credit,title,note,fallback,openLabel}:{
   </figcaption>
  </figure>;
 }
-export function LessonSources({id,locale,copy,sources,subject,conceptTitle,onSearch}:{
- id:LessonId;locale:Locale;copy:ReferenceLabels;sources:LessonSource[];
- subject:string;conceptTitle:string;onSearch:(query:string)=>void
+export function LessonSources({id,locale,copy,sources,subject,conceptTitle,onSearch,searchQueries}:{
+ id:string;locale:Locale;copy:ReferenceLabels;sources:LessonSource[];
+ subject:string;conceptTitle:string;onSearch:(query:string)=>void;searchQueries?:readonly string[]
 }){
  const safe=sources.filter(s=>external(s.url));
- const queries=queryByLesson[id];
+ const queries=searchQueries??queryByLesson[id as LessonId]??[];
  return <section className="li-learning-sources li-lesson-reference-extra"
   id={'li-react-'+id+'-sources'} aria-label={copy.sourcesTitle}>
   <div className="kicker">{locale==='vi'?'VII · ĐÀO SÂU':'VII · LEARN MORE'}</div>
@@ -216,6 +216,8 @@ export function LessonSources({id,locale,copy,sources,subject,conceptTitle,onSea
    {safe.map(source=><Card variant="raised" key={source.url} className="li-learning-source-item">
     <div className="kicker">{copy.tiers[source.tier]||source.tier}</div>
     <strong>{source.title}</strong>
+    {source.usage&&<Text role="support">{source.usage}</Text>}
+    {source.note&&<Text role="support">{source.note}</Text>}
     <div className="li-learning-reference-actions">
      <a href={source.url} target="_blank" rel="noopener noreferrer">
       {copy.openSource}</a>

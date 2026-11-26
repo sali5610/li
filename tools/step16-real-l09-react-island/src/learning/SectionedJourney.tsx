@@ -489,7 +489,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     <div id={'li-sectioned-'+id+'-opening'}><Markdown md={c.intro_md}/></div>
     {block('goals')}{block('concept')}
     <LessonUnderstanding id={id} locale={locale}/>
-    <LessonVisualEvidence id={id} locale={locale} title={lesson.title[locale]}/>
+    <LessonVisualEvidence id={id} locale={locale} title={lesson.title[locale]} onSearch={ports.search.openSearch}/>
     <Button onClick={()=>setPhase('guided')}>{vi?'Tiếp: Thử áp dụng':'Next: Guided example'} →</Button>
    </>}
    {phase==='guided'&&<>

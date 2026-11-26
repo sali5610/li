@@ -10,15 +10,12 @@ import {fileURLToPath} from 'node:url';
 
 const repo=resolve(fileURLToPath(new URL('..',import.meta.url)));
 const src=join(repo,'site');
-// Keep the original AI candidate intact. The new Auth-only mode contains
-// the SAME React app, but no model endpoint, D1 or AI Worker bundle.
-const authOnly=process.argv.length===3&&process.argv[2]==='--build-auth-only';
-if(process.argv.length!==3||(!authOnly&&process.argv[2]!=='--build'))
- throw Error('Use --build (AI) or --build-auth-only (first-party Auth only)');
-const output=join(repo,authOnly?'dist-cloudflare-auth-candidate':'dist-cloudflare-ai-candidate');
+// Integrated AI is retired. Preserve the historical script filename for pinned callers.
+if(process.argv.length!==3||process.argv[2]!=='--build-auth-only')
+ throw Error('Integrated AI retired; use --build-auth-only');
+const output=join(repo,'dist-cloudflare-auth-candidate');
 const app=join(repo,'tools/step16-real-l09-react-island/dist-cloudflare-app');
-const worker=join(repo,'tools/step16-real-l09-react-island',
- authOnly?'dist-auth-worker/_worker.js':'dist-worker/_worker.js');
+const worker=join(repo,'tools/step16-real-l09-react-island/dist-auth-worker/_worker.js');
 
 function replaceOnce(html,search,replacement){
  const first=html.indexOf(search);
@@ -43,7 +40,7 @@ if(!origin.includes('id="page-settings"')||
  !origin.includes('lesson-l09-hifi-markup.js'))
  throw Error('APP_SHELL_PARITY_MISSING');
 let html=replaceOnce(origin,'<script src="./assets/lesson-l09-hifi.js"></script>','');
-if(authOnly){
+{
  // Match the already-shipped invited React staging assembler. These legacy
  // UI scripts are not data ports and must not run beside the React screens.
  // Keep the essential lesson/library data owners and standalone site untouched.
@@ -82,7 +79,7 @@ const marker='<div class="settings-group-grid"><article class="surface"><div cla
 const account=(
  '<article class="surface">'+
  '<div class="kicker">TÀI KHOẢN</div><h2>Tài khoản Google</h2>'+
- '<p class="small">Đăng nhập, đồng bộ và quản lý quyền Lão Lý AI tại đây.</p>'+
+ '<p class="small">Đăng nhập và đồng bộ dữ liệu cá nhân tại đây.</p>'+
  '<button type="button" class="action alt" id="li-open-account">'+
  'Quản lý tài khoản</button></article>'
 );
@@ -114,7 +111,7 @@ await copyFile(join(repo,'tools/step16-real-l09-react-island/src/auth/staging-ga
  join(assets,'staging-gate.css'));
 await copyFile(worker,join(output,'_worker.js'));
 await writeFile(join(output,'index.html'),html);
-if(authOnly){
+{
  // iOS Add to Home Screen must open Cloudflare /, never GitHub Pages /li/.
  // Do not change the existing published staging manifest or SW registration.
  const manifestPath=join(output,'manifest.webmanifest');
@@ -139,6 +136,6 @@ if(!html.includes('html:not(.li-auth-verified) .app')||
  !html.includes('id="li-staging-auth-root"')||
  !html.includes('id="li-open-account"'))
  throw Error('INVITED_ONLY_GATE_NOT_ASSEMBLED');
-console.log('PASS first-party '+(authOnly?'AUTH-ONLY':'AI')+
+console.log('PASS first-party AUTH-ONLY'+
  ' Cloudflare candidate assembled locally: '+basename(output));
 console.log('Does NOT deploy, configure Cloudflare bindings, or grant access.');

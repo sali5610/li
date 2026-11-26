@@ -44,7 +44,7 @@ test('client uses first-party proxy only outside GitHub static staging',()=>{
  assert.doesNotMatch(client,/localStorage|indexedDB|sessionStorage/);
 });
 test('worker uses managed toolkit and never grants membership or stores bearer credentials',()=>{
- const worker=readFileSync(new URL('../src/auth/cloudflare-worker.ts',import.meta.url),'utf8');
+ const worker=readFileSync(new URL('../src/auth/cloudflare-auth-only-worker.ts',import.meta.url),'utf8');
  assert.match(worker,/handleAuthProxyRequest/);
  assert.match(worker,/processAuthMiddleware/);
  assert.match(worker,/NEON_AUTH_COOKIE_SECRET/);
@@ -67,7 +67,10 @@ test('Auth-only Worker keeps existing Neon session semantics but never bundles a
   'handleAiRoute','serverAiActor','reviewedAiLesson','D1Database','WorkersAI',
   'localStorage','indexedDB','sessionStorage',"Authorization: 'Bearer "
  ])assert(!worker.includes(prohibited),'Auth-only Worker must not include '+prohibited);
- assert(vite.includes('LI_AUTH_ONLY_WORKER'));
+ assert(vite.includes('src/auth/cloudflare-auth-only-worker.ts'));
+ assert(!vite.includes('src/auth/cloudflare-worker.ts'));
+ assert(!builder.includes('dist-cloudflare-ai-candidate'));
+ assert.match(builder,/process\.argv\[2\]!=='--build-auth-only'/);
  assert(vite.includes('dist-auth-worker'));
  assert(builder.includes('--build-auth-only'));
  assert(builder.includes('dist-cloudflare-auth-candidate'));
@@ -125,7 +128,7 @@ test('only allowlisted first-party GET session bypasses the lossy SDK cookie cac
   new Request(origin+'/api/auth/get-session',{method:'POST'}),
   new Request('https://example.invalid/api/auth/get-session')
  ])assert.equal(firstPartySessionRequest(other),other);
- for(const name of ['cloudflare-auth-only-worker.ts','cloudflare-worker.ts']){
+ for(const name of ['cloudflare-auth-only-worker.ts']){
   const worker=readFileSync(new URL('../src/auth/'+name,import.meta.url),'utf8');
   assert.match(worker,/request:firstPartySessionRequest\(request\),path,baseUrl:/);
  }

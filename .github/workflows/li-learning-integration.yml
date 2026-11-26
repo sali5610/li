@@ -54,18 +54,9 @@ jobs:
           npx tsc --noEmit
           # P0 #295: targeted first-party Auth cookie/proxy build contract.
           npm run test:auth-pwa
-          npm run build:worker
-          test -s dist-worker/_worker.js
-          test -z "$(find dist-worker -type f -name '*.map' -print -quit)"
-          # First-party candidate only. No Cloudflare API, secrets or deploy.
-          VITE_LI_AUTH_TARGET=cloudflare-first-party npx vite build --config vite.cloudflare-app.config.mjs
-          node ../../tools/prepare_cloudflare_ai_candidate.mjs --build
-          test -s ../../dist-cloudflare-ai-candidate/_worker.js
-          grep -Fq 'li-first-party-app.js' ../../dist-cloudflare-ai-candidate/index.html
-          grep -Fq 'li-auth-gate-critical' ../../dist-cloudflare-ai-candidate/index.html
-          # A real separate Auth-only release candidate, not an AI/D1 build.
           npm run build:worker:auth-only
           test -s dist-auth-worker/_worker.js
+          node --input-type=module -e "import worker from './dist-auth-worker/_worker.js'; const env={ASSETS:{fetch(){throw Error('AI route must not reach assets')}}}; for(const path of ['access','feedback','seat']){const r=await worker.fetch(new Request('https://li5610.pages.dev/api/ai/'+path,{method:'POST'}),env); if(r.status!==404||r.headers.get('cache-control')!=='no-store')throw Error('Retired AI route not blocked: '+path)}; console.log('PASS retired AI routes return uncached 404')"
           VITE_LI_AUTH_TARGET=cloudflare-first-party npx vite build --config vite.cloudflare-app.config.mjs
           node ../../tools/prepare_cloudflare_ai_candidate.mjs --build-auth-only
           (cd ../.. && npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-auth-only-config.cjs)

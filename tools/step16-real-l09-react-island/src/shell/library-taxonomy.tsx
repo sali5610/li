@@ -1,3 +1,4 @@
+import {lessonTitle} from '../learning/lesson-titles.js';
 import React from 'react';
 import curriculum from '../../../../content/curriculum/legacy-catalog.v1.json';
 import {Button,Text} from '../../../../design-system/react/index';
@@ -88,7 +89,7 @@ export function TaxonomyFilters({records,value,onChange,onClear,otherFiltersActi
  const lessonOptions=[{value:'all',label:label('Tất cả bài','All lessons')},
   ...Array.from(lessonIds).flatMap(id=>{
    const entry=id?byLesson.get(id):undefined;
-   return entry?[{value:entry.id,label:entry.title}]:[];
+   return entry?[{value:entry.id,label:lessonTitle(entry.id,english()?'en':'vi',entry.title)}]:[];
   })];
  const isFiltered=value.group!=='all'||value.field!=='all'||value.lesson!=='all';
  return <div className="li-library-taxonomy" role="group"

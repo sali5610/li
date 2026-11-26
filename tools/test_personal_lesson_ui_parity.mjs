@@ -232,6 +232,11 @@ assert.match(reader,/questions:\[extra\?\.guidedPrompt\|\|/);
 assert.match(reader,/keep or revise it for the new question/);
 assert.ok(reader.indexOf('<Text>{extra.guidedPrompt}</Text>')<reader.indexOf('value={attempt.guidedDraft}'));
 assert.match(reader,/persisted\.guidedDraft\.trim\(\)\.length>=MIN\?<Text>\{extra\.guidedFeedback\}/);
+// Editorial clarification must remain behind existing independent reveal.
+assert.ok(supplements.lessons['L03-2-1'].vi.answerAddendum.trim());
+assert.ok(supplements.lessons['L03-2-1'].en.answerAddendum.trim());
+assert.match(reader,/<Markdown md=\{modelAnswer\}\/>\s*\{extra\?\.answerAddendum&&/);
+assert.match(reader,/reference:showAnswer&&!conflict\?\[modelAnswer,extra\?\.answerAddendum\]/);
 const chapterIds=new Set();
 for(const item of drafts){
  const d=JSON.parse(read(item.normalizedPath));

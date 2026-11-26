@@ -96,7 +96,7 @@ export async function runBilingualReaderFixture(host:HTMLElement){
    attempt={...structuredClone(saved),submitted:true,submittedAt:'2026-11-26T00:00:00Z',submission:[...saved.draft],submissionLocale:'vi',ratings:[2,1,2,1],reviewed:true,answerRevealed:true};
    revision++;
    render(id+'-reviewed');
-   await until(()=>journey()?.dataset.liReactJourney===id&&journey()?.dataset.liLessonPhase==='progress',id+' completed fixture');
+   await until(()=>journey()?.dataset.liReactJourney===id&&journey()?.dataset.liLessonPhase==='progress'&&journey()?.dataset.liLessonSubmitted==='true',id+' completed fixture');
    click('.li-study-book-previous');await until(()=>journey()?.dataset.liLessonPhase==='feedback',id+' feedback');
    for(const locale of locales){
     app.liLanguage.set(locale);

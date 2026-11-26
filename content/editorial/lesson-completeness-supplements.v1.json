@@ -45,14 +45,16 @@
         "guidedFeedback": "How-to là content type; account-security hoặc password-change là topic theo phạm vi đã định; reset password chỉ là alias nếu đúng nghĩa; Tài khoản → Đổi mật khẩu là một lối vào. Cần thử nhãn, không đồng nhất reset với change nếu khác quy trình.",
         "diagram": "Đối tượng → Chủ đề/alias → Lối điều hướng",
         "relatedReason": "Kiểm chứng từ ngữ và tác vụ qua phỏng vấn.",
-        "guidedPrompt": "Tài liệu “Đổi mật khẩu” thuộc nhóm Security nội bộ. Đề xuất content type, topic ID, một alias và lối menu hướng tác vụ; phân biệt các vai trò."
+        "guidedPrompt": "Tài liệu “Đổi mật khẩu” thuộc nhóm Security nội bộ. Đề xuất content type, topic ID, một alias và lối menu hướng tác vụ; phân biệt các vai trò.",
+        "answerAddendum": "Ví dụ kiểm chứng cho câu 4: mời người đang hoặc chuẩn bị làm nghiên cứu tại trường; giao tác vụ “Ngươi muốn xin kinh phí cho một nghiên cứu mới, hãy tìm hướng dẫn cần thiết.” Trong cây đề xuất, định trước R1 là đích đúng; ghi tỷ lệ tới R1 không trợ giúp, đường đi và các điểm rẽ sai. Đây là kế hoạch thử, chưa có kết quả để khẳng định taxonomy hay UI đã tốt."
       },
       "en": {
         "hint": "Create topic IDs before labels; consider multiple tags for cross-topic material. Menus serve tasks rather than necessarily copying the taxonomy.",
         "guidedFeedback": "How-to is the type; account-security or password-change is a topic with defined scope; reset password is an alias only if meaning matches; Account → Change password is a route. Test labels; do not conflate reset and change if workflows differ.",
         "diagram": "Object → Topic/alias → Navigation path",
         "relatedReason": "Validate language and tasks through interviews.",
-        "guidedPrompt": "An article “Change password” belongs to internal Security. Propose a content type, topic ID, alias and task-based menu path; distinguish their roles."
+        "guidedPrompt": "An article “Change password” belongs to internal Security. Propose a content type, topic ID, alias and task-based menu path; distinguish their roles.",
+        "answerAddendum": "Example validation for question 4: recruit current or prospective university researchers; ask, “You want funding for a new study. Find the instructions you need.” In the proposed tree, predefine R1 as the target; record unassisted arrival at R1, paths and wrong turns. This is a test plan, not evidence that the taxonomy or full UI works."
       },
       "sourceUrl": "https://www.nngroup.com/articles/taxonomy-101/",
       "relatedLessonId": "L03-1-2"

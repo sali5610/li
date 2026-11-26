@@ -1,8 +1,8 @@
 import {createInternalNeonAuth,type ReactBetterAuthClient} from '@neondatabase/auth';
 import {BetterAuthReactAdapter} from '@neondatabase/auth/react/adapters';
 import type {NeonAuthSessionPort} from '../sync/neon-session.js';
-import {fetchSignedNeonJwt} from '../sync/invite-access.js';
-import {AUTH_API_URL} from './config.js';
+import {fetchSignedNeonJwt,fetchFreshNeonSession} from '../sync/invite-access.js';
+import {AUTH_API_URL,IS_GITHUB_STAGING} from './config.js';
 
 /**
  * Managed Neon Better Auth with invite-only RLS. On the Cloudflare app origin
@@ -28,4 +28,11 @@ export const neonSessionPort:NeonAuthSessionPort={
   // session instead of JWT. Fetch the managed endpoint without that cache.
   return fetchSignedNeonJwt(AUTH_API_URL);
  }
+};
+
+/** Only the entry gate needs a fresh managed session on every verification.
+ * Keep the existing sync adapter and static staging path unchanged. */
+export const neonInviteSessionPort:NeonAuthSessionPort={
+ ...neonSessionPort,
+ getSession:()=>IS_GITHUB_STAGING?neonSessionPort.getSession():fetchFreshNeonSession(AUTH_API_URL)
 };

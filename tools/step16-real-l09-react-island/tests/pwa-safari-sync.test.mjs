@@ -52,10 +52,10 @@ test('PWA offline outbox uploads to Neon and Safari separate browser profile pul
 
 test('iPhone reconnect refreshes managed session and rechecks signed Neon invite before sync',()=>{
  const panel=readFileSync(new URL('../src/auth/AuthPanel.tsx',import.meta.url),'utf8');
- assert.match(panel,/const network=\(\)=>\{[\s\S]*?if\(online\)void refetch\(\)/);
+ assert.match(panel,/const network=\(\)=>\{[\s\S]*?if\(online&&\(!liveAccountId\|\|error\)\)void refetch\(\)/);
  assert.match(panel,/window\.addEventListener\('pageshow',refresh\)/);
  assert.match(panel,/window\.addEventListener\('online',network\)/);
- assert.match(panel,/checkInviteAccess\(NEON_DATA_API_URL,neonSessionPort,undefined,liveAccountId\)/);
+ assert.match(panel,/checkInviteAccess\(NEON_DATA_API_URL,neonInviteSessionPort,undefined,liveAccountId\)/);
  assert.match(panel,/return startLearnerSync\(accountId/);
 });
 

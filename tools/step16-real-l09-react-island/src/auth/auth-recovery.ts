@@ -1,6 +1,7 @@
-/** Bounded read-only recovery for a waking managed session. Never retry an
- * explicit denial, account mismatch, invalid payload or forbidden response.
- * The caller still requires successful signed invitation RPC and local owner. */
+/** Bounded read-only recovery for a waking managed session. A false RPC
+ * result immediately invalidates the local receipt and stays locked; confirm
+ * it once with a fresh session and token. Never grant without a true RPC.
+ * Mismatch, invalid payload, forbidden and rate limit errors are terminal. */
 export function isRecoverableInviteFailure(problem:unknown):boolean{
  const message=problem instanceof Error?problem.message:'';
  return problem instanceof TypeError||
@@ -11,9 +12,11 @@ export function isRecoverableInviteFailure(problem:unknown):boolean{
 export async function recoverInviteAccess(
  verify:()=>Promise<boolean>,active:()=>boolean,
  pause:(ms:number)=>Promise<void>=ms=>new Promise(resolve=>setTimeout(resolve,ms)),
- timeoutMs=6000
+ timeoutMs=6000,
+ onDenial:()=>void=()=>{}
 ):Promise<boolean>{
  const delays=[0,500,1000];
+ let denied=false;
  for(let i=0;i<delays.length;i++){
   if(delays[i])await pause(delays[i]);
   if(!active())throw new Error('INVITE_CHECK_CANCELLED');
@@ -23,7 +26,11 @@ export async function recoverInviteAccess(
     timer=setTimeout(()=>reject(new Error('INVITE_CHECK_TIMEOUT')),timeoutMs);
    })]);
    if(!active())throw new Error('INVITE_CHECK_CANCELLED');
-   return result;
+   if(result)return true;
+   // Revoke immediately, including if the next request fails or goes offline.
+   onDenial();
+   if(denied||i===delays.length-1)return false;
+   denied=true;
   }catch(problem){
    if(!active()||i===delays.length-1||!isRecoverableInviteFailure(problem))throw problem;
   }finally{if(timer!==undefined)clearTimeout(timer);}

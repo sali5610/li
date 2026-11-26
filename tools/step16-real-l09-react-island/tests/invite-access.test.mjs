@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {checkInviteAccess,fetchSignedNeonJwt,safeInviteErrorCode,sessionJwtCandidate,safeJwtFetchError} from '../.sync-test/invite-access.js';
+import {checkInviteAccess,fetchFreshNeonSession,fetchSignedNeonJwt,safeInviteErrorCode,sessionJwtCandidate,safeJwtFetchError} from '../.sync-test/invite-access.js';
 
 const endpoint='https://example.apirest.neon.tech/li/rest/v1';
 const tokenFor=sub=>['e30',Buffer.from(JSON.stringify({
@@ -168,4 +168,14 @@ test('cached user cannot confuse temporarily absent session with explicit invite
  await assert.rejects(checkInviteAccess(endpoint,authFor('B'),async()=>{throw Error('unexpected RPC');},'A'),/INVITE_ACCOUNT_MISMATCH/);
  assert.equal(await checkInviteAccess(endpoint,authFor('A'),async()=>ok(false),'A'),false);
  assert.equal(await checkInviteAccess(endpoint,authFor('A'),async()=>ok(true),'A'),true);
+});
+
+test('first-party invite identity is freshly obtained with managed cookies and no cache',async()=>{
+ const result=await fetchFreshNeonSession('https://li5610.pages.dev/api/auth',async(url,init)=>{
+  assert.equal(new URL(url).pathname,'/api/auth/get-session');assert.equal(new URL(url).searchParams.get('disableCookieCache'),'true');
+  assert.equal(init.credentials,'include');assert.equal(init.cache,'no-store');assert.equal(init.redirect,'error');
+  return ok({session:{userId:'A',token:'never-return'},user:{id:'A',email:'unused@example.invalid'}});
+ });assert.deepEqual(result,{data:{user:{id:'A'}}});
+ assert.deepEqual(await fetchFreshNeonSession('https://li5610.pages.dev/api/auth',async()=>ok(null)),{data:null});
+ await assert.rejects(fetchFreshNeonSession('https://li5610.pages.dev/api/auth',async()=>ok({session:{userId:'B'},user:{id:'A'}})),/INVITE_AUTH_SESSION_FAILED/);
 });

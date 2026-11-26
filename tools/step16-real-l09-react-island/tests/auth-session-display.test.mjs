@@ -41,7 +41,7 @@ test('AuthPanel uses neutral cover while pending, real gate on denial, and bound
  assert.match(auth,/if\(!allowed\)forgetOfflineInvite\(\)/);
  assert.match(auth,/rememberOfflineInvite\(liveAccountId,verifiedInvite\.at\)/);
  assert.match(auth,/const localOffline=isOffline&&Boolean\(offlineId\)&&accountId===offlineId/);
- assert.match(auth,/if\(online\)void refetch\(\)/);
+ assert.match(auth,/if\(online&&\(!liveAccountId\|\|error\)\)void refetch\(\)/);
  assert.match(boot,/if\(!isVerified\(\)\)revealBoot\(\)/);
  assert.match(local,/const KEY='li\.offline\.device-invite\.v3'/);
  assert.match(local,/OFFLINE_LEASE_MS=7\*24\*60\*60\*1000/);

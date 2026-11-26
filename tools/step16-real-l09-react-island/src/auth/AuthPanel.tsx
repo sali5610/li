@@ -5,7 +5,7 @@ import {Button,Card,Heading,Text} from '../../../../design-system/react/index';
 import '../../../../design-system/react/atoms.css';
 import '../../../../design-system/react/components.css';
 import {checkInviteAccess,safeInviteErrorCode} from '../sync/invite-access.js';
-import {authClient,neonSessionPort} from './neon-client.js';
+import {authClient,neonInviteSessionPort} from './neon-client.js';
 import {AUTH_ORIGIN,NEON_DATA_API_URL,IS_GITHUB_STAGING,IS_INTEGRATED_LI_APP} from './config.js';
 import {classifyOAuthReturn,type OAuthReturnCode} from './oauth-return.js';
 import {rememberOfflineInvite,recentOfflineOwner,forgetOfflineInvite} from './offline-local.js';
@@ -268,15 +268,17 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    const now=Date.now();
    if(online&&now-lastWake.current<1200)return;
    lastWake.current=now;
-   // Even a cached Google user needs the actual managed session refreshed.
-   if(online)void refetch();
+   // For a known user, the entry gate itself requests a fresh managed session.
+   // Avoid competing SDK session renewal requests when resuming.
+   if(online&&(!liveAccountId||error))void refetch();
    setAccessEpoch(epoch=>epoch+1);
   };
   const network=()=>{
    const online=navigator.onLine;
    setIsOffline(!online);
-   // Force the official Neon session hook to recover BEFORE invite/RLS sync.
-   if(online)void refetch();
+   // A stale/missing SDK identity still needs recovery; known identities are
+   // verified by the direct fresh-session gate before starting cloud sync.
+   if(online&&(!liveAccountId||error))void refetch();
    setAccessEpoch(epoch=>epoch+1);
   };
   const storageChanged=(event:StorageEvent)=>{
@@ -329,8 +331,9 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     // The server-backed invitation RPC verifies session↔JWT subject itself.
     // This auth-only pilot NEVER constructs a learner Data API adapter.
     const allowed=await recoverInviteAccess(
-     ()=>checkInviteAccess(NEON_DATA_API_URL,neonSessionPort,undefined,liveAccountId),
-     ()=>!disposed&&navigator.onLine
+     ()=>checkInviteAccess(NEON_DATA_API_URL,neonInviteSessionPort,undefined,liveAccountId),
+     ()=>!disposed&&navigator.onLine,
+     undefined,undefined,()=>{forgetOfflineInvite();}
     );
     if(!disposed){
      if(!allowed)forgetOfflineInvite(); // Revocation or explicit denial.
@@ -373,7 +376,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
  async function retryAccess(){
   if(busy||!navigator.onLine)return;
   setFeedback('');setAccess('checking');setVerifiedInvite(null);
-  try{await refetch();}catch{/* effect will report real verification failure */}
+  if(!liveAccountId||error){try{await refetch();}catch{/* effect reports actual failure */}}
   setAccessEpoch(epoch=>epoch+1);
  }
  async function signInGoogle(){
@@ -472,7 +475,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
    {isPending&&!isOffline&&!localOffline&&<p role="status">{t.loading}</p>}
    {isOffline&&!localOffline&&<p role="alert">{t.offlineLocked}</p>}
    {!isOffline&&error&&!localOffline&&<p role="alert">{t.error}</p>}
-   {!isOffline&&!isPending&&(access==='error'||Boolean(error))&&<Button variant="secondary" onClick={()=>void retryAccess()} disabled={busy!==null}>{t.retryAccess}</Button>}
+   {!isOffline&&!isPending&&(access==='denied'||access==='error'||Boolean(error))&&<Button variant="secondary" onClick={()=>void retryAccess()} disabled={busy!==null}>{t.retryAccess}</Button>}
    {(!isOffline&&!isPending&&!error||localOffline)&&(accountId?
     <div className="auth-account" key={accountId}>
      <p className="auth-session-identity">
@@ -484,7 +487,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
       {access==='checking'?t.checking:access==='granted'?t.granted:
        access==='offline'?t.offline:access==='denied'?t.denied:t.blocked}
      </p>
-     {access==='error'&&<p className="auth-error" role="status" data-invite-error-code={inviteError}>{t.inviteErrorCode} <strong>{inviteError||'INV-UNKNOWN'}</strong></p>}
+     {(access==='error'||access==='denied')&&<p className="auth-error" role="status" data-invite-error-code={access==='denied'?'INV-RPC-DENIED':inviteError}>{t.inviteErrorCode} <strong>{access==='denied'?'INV-RPC-DENIED':inviteError||'INV-UNKNOWN'}</strong></p>}
      {access==='granted'&&syncStatus==='conflict'&&<section className="auth-conflicts"
       aria-label={locale==='vi'?'Khác biệt giữa các thiết bị':'Device conflicts'}>
       <p><strong>{locale==='vi'?'Có dữ liệu khác nhau trên hai thiết bị':'Two versions differ'}</strong></p>

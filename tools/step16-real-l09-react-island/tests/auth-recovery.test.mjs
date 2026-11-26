@@ -10,10 +10,11 @@ test('waking signed user recovers a transient session and server failure without
  assert.equal(await recoverInviteAccess(async()=>{calls++;if(calls===1)throw Error('INVITE_AUTH_SESSION_FAILED');if(calls===2)throw Error('INVITE_CHECK_HTTP_503');return true;},()=>true,noWait),true);
  assert.equal(calls,3);
 });
-test('definitive denial and account mismatch never retry or grant',async()=>{
+test('false invitation is confirmed once, mismatch and forbidden never retry or grant',async()=>{
  let calls=0;
- assert.equal(await recoverInviteAccess(async()=>{calls++;return false;},()=>true,noWait),false);
- assert.equal(calls,1);
+ let invalidations=0;
+ assert.equal(await recoverInviteAccess(async()=>{calls++;return false;},()=>true,noWait,6000,()=>{invalidations++;}),false);
+ assert.equal(calls,2);assert.equal(invalidations,2);
  for(const code of ['INVITE_ACCOUNT_MISMATCH','INVITE_CHECK_HTTP_403','INVITE_JWT_INVALID','INVITE_CHECK_INVALID_RESPONSE','INVITE_CHECK_HTTP_429']){
   calls=0;await assert.rejects(recoverInviteAccess(async()=>{calls++;throw Error(code);},()=>true,noWait),new RegExp(code));assert.equal(calls,1);
  }
@@ -39,8 +40,17 @@ test('React gate binds verified invitation and prepared local owner to current a
  assert.match(auth,/readyOwner===accountId/);
  assert.match(auth,/verifiedInvite\?\.uid===liveAccountId/);
  assert.match(auth,/ownerReady&&\(onlineAccess\|\|offlineAccess\)/);
- assert.match(auth,/checkInviteAccess\(NEON_DATA_API_URL,neonSessionPort,undefined,liveAccountId\)/);
+ assert.match(auth,/checkInviteAccess\(NEON_DATA_API_URL,neonInviteSessionPort,undefined,liveAccountId\)/);
  assert.match(auth,/\(\)=>!disposed&&navigator\.onLine/);
  assert.match(auth,/if\(online&&now-lastWake\.current<1200\)return/);
  assert.match(auth,/onClick=\{\(\)=>void retryAccess\(\)\}/);
+});
+
+test('false then true can recover only after fresh server confirmation, revoking local access first',async()=>{
+ let calls=0,revoked=false;
+ assert.equal(await recoverInviteAccess(async()=>{calls++;if(calls===2)assert.equal(revoked,true);return calls===2;},()=>true,noWait,6000,()=>{revoked=true;}),true);
+ assert.equal(calls,2);
+ let active=true;calls=0;revoked=false;
+ await assert.rejects(recoverInviteAccess(async()=>{calls++;return false;},()=>active,async()=>{active=false;},6000,()=>{revoked=true;}),/CANCELLED/);
+ assert.equal(calls,1);assert.equal(revoked,true);
 });

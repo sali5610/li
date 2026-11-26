@@ -42,6 +42,25 @@ export async function checkInviteAccess(
  return allowed;
 }
 
+/** Fresh managed identity for the first-party invite gate, independent of the
+ * React SDK's cached useSession user. Never persist or expose session tokens.
+ * Browser accepts any renewed HttpOnly cookie before the following /token. */
+export async function fetchFreshNeonSession(authBaseUrl:string,request:Requester=fetch):ReturnType<NeonAuthSessionPort['getSession']>{
+ const base=new URL(authBaseUrl);
+ if(base.protocol!=='https:'||base.username||base.password||base.search||base.hash)throw new Error('INVALID_INVITE_API_URL');
+ const url=new URL(base.toString().replace(/\/$/,'')+'/get-session');
+ url.searchParams.set('disableCookieCache','true');
+ const response=await request(url.toString(),{method:'GET',credentials:'include',redirect:'error',cache:'no-store',headers:{Accept:'application/json'}});
+ if(!response.ok)throw new Error('INVITE_AUTH_SESSION_FAILED');
+ const data:unknown=await response.json();
+ if(data===null)return {data:null};
+ if(!data||typeof data!=='object')throw new Error('INVITE_AUTH_SESSION_FAILED');
+ const value=data as {user?:{id?:unknown};session?:{userId?:unknown}};
+ const uid=value.user?.id;
+ if(typeof uid!=='string'||!uid.trim()||value.session?.userId!==uid)throw new Error('INVITE_AUTH_SESSION_FAILED');
+ return {data:{user:{id:uid}}};
+}
+
 /** Only a three-segment JWT candidate may be sent to Data API.
  * This is a SHAPE check, never a signature/authorization check. */
 export function sessionJwtCandidate(value:unknown):string|null{

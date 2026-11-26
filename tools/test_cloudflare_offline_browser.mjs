@@ -10,7 +10,7 @@ import {setTimeout as sleep} from 'node:timers/promises';
 const dir=resolve('dist-cloudflare-auth-candidate'), origin='https://li5610.pages.dev';
 const tmp=mkdtempSync(join(tmpdir(),'li-offline-browser-'));
 execFileSync('openssl',['req','-x509','-newkey','rsa:2048','-nodes','-days','1','-keyout',join(tmp,'key.pem'),'-out',join(tmp,'cert.pem'),'-subj','/CN=li5610.pages.dev'],{stdio:'ignore'});
-let cut=false,servedAfterCut=0,onlineFixture=false,inviteCalls=0,inviteFailures=0,invited=true;
+let cut=false,servedAfterCut=0,onlineFixture=false,inviteCalls=0,inviteFailures=0,invited=true,inviteDenials=0,freshSessions=0;
 const fixtureId='offline-qa-owner';
 const dataHost='ep-misty-snow-azfrrm3o.apirest.c-3.ap-southeast-1.aws.neon.tech';
 const fixtureToken=()=>['e30',Buffer.from(JSON.stringify({sub:fixtureId,role:'authenticated',exp:Math.floor(Date.now()/1000)+600})).toString('base64url'),'qa-only-unsigned'].join('.');
@@ -29,6 +29,7 @@ const server=createServer({key:readFileSync(join(tmp,'key.pem')),cert:readFileSy
    if(!req.headers.authorization?.startsWith('Bearer e30.')){json(res,false,401,cors);return;}
    inviteCalls++;
    if(inviteFailures>0){inviteFailures--;json(res,{error:'QA_TRANSIENT'},503,cors);return;}
+   if(inviteDenials>0){inviteDenials--;json(res,false,200,cors);return;}
    json(res,invited,200,cors);return;
   }
   // Never permit writes: the fixture is not a data backend.
@@ -36,7 +37,7 @@ const server=createServer({key:readFileSync(join(tmp,'key.pem')),cert:readFileSy
  }
  if(onlineFixture&&url.pathname.startsWith('/api/auth/')){
   const now=new Date().toISOString(),expiresAt=new Date(Date.now()+3600000).toISOString();
-  if(url.pathname.endsWith('/get-session')){json(res,{session:{id:'qa-session',userId:fixtureId,token:'qa-opaque',expiresAt,createdAt:now,updatedAt:now},user:{id:fixtureId,email:'offline-qa@example.invalid',name:'QA',emailVerified:true,createdAt:now,updatedAt:now}});return;}
+  if(url.pathname.endsWith('/get-session')){if(url.searchParams.get('disableCookieCache')==='true')freshSessions++;json(res,{session:{id:'qa-session',userId:fixtureId,token:'qa-opaque',expiresAt,createdAt:now,updatedAt:now},user:{id:fixtureId,email:'offline-qa@example.invalid',name:'QA',emailVerified:true,createdAt:now,updatedAt:now}});return;}
   if(url.pathname.endsWith('/token')){json(res,{token:fixtureToken()});return;}
   json(res,{error:'QA_OTHER_AUTH_DISABLED'},403);return;
  }
@@ -181,9 +182,22 @@ try{
  await onlineReady('online wake after transient invite failure');
  assert.equal(await evaluate('window.__qaWakeMarker'),'same-document','wake must not reload the page');
  console.log('PASS online managed-session resume recovered a transient invitation failure without reload');
+ // Reproduce the actual PO screenshot branch: successful HTTP with false,
+ // followed by a fresh managed session and authoritative true. No grant while false.
+ await sleep(1800);inviteDenials=1;
+ const beforeFalse=inviteCalls,beforeFresh=freshSessions;
+ await evaluate("window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}));true");
+ await wait(()=>inviteDenials===0,'false RPC observed');
+ await wait(()=>inviteCalls>=beforeFalse+2&&freshSessions>=beforeFresh+2,'fresh session confirmation after false');
+ await onlineReady('online false-then-true recovery');
+ assert.equal(await evaluate('window.__qaWakeMarker'),'same-document');
+ console.log('PASS HTTP 200 false then true recovers after fresh managed identity without reload');
  await sleep(1800);invited=false;
+ const beforeRevocation=inviteCalls;
  await evaluate("window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}));true");
  await wait(async()=>{const s=await state();return s.online&&!s.verified&&s.ready&&s.auth&&s.authCopy?.includes('Chưa xác minh được quyền truy cập');},'explicit server revocation closes private app');
+ assert(inviteCalls>=beforeRevocation+2,'persistent denial must be confirmed without granting access');
  assert.equal(await evaluate("localStorage.getItem('li.offline.device-invite.v3')"),null,'revoked grant still persisted');
+ assert.equal(await evaluate("document.querySelector('[data-invite-error-code]')?.dataset.inviteErrorCode"),'INV-RPC-DENIED');
  console.log('PASS online revocation locks app and removes offline receipt');
 }finally{await stop();server.closeAllConnections();await new Promise(r=>server.close(r));rmSync(tmp,{recursive:true,force:true});}

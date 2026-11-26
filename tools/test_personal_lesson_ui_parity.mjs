@@ -89,9 +89,28 @@ for(const phase of ['practice','feedback','progress']){
  assert.equal(reader.split(target).length-1,phase==='practice'?1:2,
   'Stable anchor in each applicable gated and placeholder branch '+phase);
 }
+const supplements=JSON.parse(read('content/editorial/lesson-completeness-supplements.v1.json'));
+assert.equal(supplements.status,'draft_editorial_supplement_not_release_approval');
+assert.deepEqual(Object.keys(supplements.lessons).sort(),[...ids].sort());
+assert.match(reader,/preview\?\(supplements\.lessons/,'Personal drafts only');
+assert.match(reader,/hint:true,assisted:true/,'A revealed hint must record assistance');
+assert.match(reader,/extra&&attempt\.hint&&/,'Hints require reveal');
+assert.match(reader,/persisted\.guidedDraft\.trim\(\)\.length>=MIN\?<Text>\{extra\.guidedFeedback\}/,'Supplement feedback requires saved attempt');
+assert.match(reader,/<CopyAnalysisPrompt locale=\{locale\} step="practice"/,'Independent practice prompt available');
+assert.match(reader,/reference:persisted\.guidedDraft\.trim\(\)\.length>=MIN/,'Guided prompt reference remains gated');
 const chapterIds=new Set();
 for(const item of drafts){
  const d=JSON.parse(read(item.normalizedPath));
+ const supplement=supplements.lessons[d.id];
+ for(const loc of ['vi','en']) {
+  for(const key of ['hint','guidedFeedback','diagram','relatedReason'])
+   assert.ok(supplement[loc][key].trim(),d.id+' '+loc+' '+key);
+  assert.ok(JSON.stringify(d.content.localized[loc]).includes(supplement.sourceUrl),
+   'Reading reference must be present in manuscript '+d.id+' '+loc);
+ }
+ assert.ok(/^https:\/\//.test(supplement.sourceUrl),'HTTPS reference');
+ assert.ok(supplement.relatedLessonId!==d.id&&
+  [...ids,'L03-1-2','L09-1-2','L15-2-2'].includes(supplement.relatedLessonId),'Related accessible lesson '+d.id);
  assert.equal(d.publishState,'draft','Do not publish '+item.id);
  assert.equal(d.rights.releaseAuthorized,false,'Do not bypass rights gate '+item.id);
  // Every authored manuscript has one identity per actual reader phase,

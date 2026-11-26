@@ -33,7 +33,7 @@ function PlotFigure({entry,locale}:{entry:Plot;locale:Locale}){
  const xmin=Math.min(...entry.x),xmax=Math.max(xmin+1,...entry.x);
  const px=(v:number)=>38+(v-xmin)/(xmax-xmin)*264;
  const py=(v:number)=>156-(v-lo)/(hi-lo)*128;
- const strokes=['var(--li-color-moss)','var(--li-color-wood)','currentColor'];
+ const strokes=['var(--moss)','var(--wood)','currentColor'];
  const dashes=['','6 4','2 4'];
  const vi=locale==='vi';
  return <>
@@ -67,7 +67,7 @@ function BarsFigure({entry,locale}:{entry:Bars;locale:Locale}){
   <Text>{label[locale]} · <strong>{fmt(entry.values[i],locale)}{entry.unit[locale]==='%'?'%':' '+entry.unit[locale]}</strong></Text>
   <svg viewBox="0 0 320 10" aria-hidden="true" focusable="false">
    <rect x="0" y="0" width="320" height="10" fill="currentColor" opacity=".12"/>
-   <rect x="0" y="0" width={320*entry.values[i]/max} height="10" fill="var(--li-color-moss)"/>
+   <rect x="0" y="0" width={320*entry.values[i]/max} height="10" fill="var(--moss)"/>
   </svg>
  </div>)}</Stack>;
 }
@@ -82,7 +82,7 @@ export function LessonVisualEvidence({id,locale,title}:{id:string;locale:Locale;
    <Heading level={3} role="titleMedium" id={'li-figure-title-'+id}>{entry.title[locale]}</Heading>
    <Text role="support">{vi?'Minh họa tự biên soạn · Dữ liệu/tình huống giả định':'First-party illustration · Fictional data/scenario'}</Text>
    {entry.kind==='flow'&&<Stack space="2">{entry.items.map((item,i)=><React.Fragment key={i}>
-    <div className="li-learning-comparison"><div><Text><strong>{i+1}.</strong> {item[locale]}</Text></div></div>
+    <Text><strong>{i+1}.</strong> {item[locale]}</Text>
     {i<entry.items.length-1&&<Text role="support" aria-hidden="true">↓</Text>}
    </React.Fragment>)}</Stack>}
    {entry.kind==='table'&&<DataTable headers={entry.headers} rows={entry.rows} locale={locale} label={entry.title[locale]}/>}

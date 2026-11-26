@@ -2,11 +2,18 @@ import {checkScope,kinds,type ItemType,type JsonValue} from './contract.js';
 import {PrivateDeviceStore} from './local-dexie.js';
 
 /**
- * Account-scoped offline JSON backup for the existing Settings export/import UI.
- * No cookie/JWT/Neon credential is included. Import never overwrites existing
- * local work; imported items enter the SAME durable outbox as learner edits.
+ * Account-scoped recovery helper for materialized Dexie learner records.
+ * NOT a full device/account backup or wired Settings export. Output is plaintext.
+ * Excludes journal/consent and keybag records: recovery must not silently change
+ * cloud consent or enqueue private diary content. No credentials or key material.
+ * Import never overwrites existing records/outbox and commits atomically.
  */
 type BackupItem={itemType:ItemType;itemId:string;payload:JsonValue;deletedAt:string|null};
+// These scopes require their own explicit privacy/recovery flow.
+function protectedScope(type:ItemType,id:string):boolean{
+ return (type==='preference'&&['journal-cloud-consent','daily-enabled','__li_e2ee_keybag_v1'].includes(id))||
+  (type==='note'&&id==='daily-journal');
+}
 type Backup={schema:'li.private.backup.v1';accountId:string;createdAt:string;items:BackupItem[]};
 
 export async function exportAccountBackup(store:PrivateDeviceStore,accountId:string):Promise<string>{
@@ -14,7 +21,7 @@ export async function exportAccountBackup(store:PrivateDeviceStore,accountId:str
  const rows=await store.accountRecords(accountId);
  const result:Backup={
   schema:'li.private.backup.v1',accountId,createdAt:new Date().toISOString(),
-  items:rows.map(x=>({
+  items:rows.filter(x=>!protectedScope(x.itemType,x.itemId)).map(x=>({
    itemType:x.itemType,itemId:x.itemId,payload:x.payload,deletedAt:x.deletedAt
   }))
  };
@@ -40,6 +47,7 @@ export async function restoreAccountBackup(store:PrivateDeviceStore,accountId:st
   if(typeof row.itemType!=='string'||!kinds.includes(row.itemType as ItemType)||
      typeof row.itemId!=='string')throw new Error('BACKUP_INVALID_ITEM');
   checkScope(accountId,row.itemType,row.itemId);
+  if(protectedScope(row.itemType,row.itemId))throw new Error('BACKUP_PROTECTED_SCOPE');
   if(row.payload===undefined||
      !(row.deletedAt===null||typeof row.deletedAt==='string'&&!Number.isNaN(Date.parse(row.deletedAt))))
    throw new Error('BACKUP_INVALID_ITEM');
@@ -49,12 +57,17 @@ export async function restoreAccountBackup(store:PrivateDeviceStore,accountId:st
   checked.push({itemType:row.itemType,itemId:row.itemId,
    payload:row.payload as JsonValue,deletedAt:row.deletedAt as string|null});
  }
- let restored=0,skipped=0;
- for(const item of checked){
-  const key=JSON.stringify([accountId,item.itemType,item.itemId]);
-  if(await store.records.get(key)||await store.outbox.get(key)){skipped++;continue;}
-  await store.edit(accountId,item.itemType,item.itemId,item.payload,item.deletedAt);
-  restored++;
- }
- return{restored,skipped};
+ // Keep the existence check and all nested edit transactions under one
+ // read/write transaction. Concurrent changes serialize; a failure rolls back
+ // every restored record and its upload intent.
+ return store.transaction('rw',store.records,store.outbox,async()=>{
+  let restored=0,skipped=0;
+  for(const item of checked){
+   const key=JSON.stringify([accountId,item.itemType,item.itemId]);
+   if(await store.records.get(key)||await store.outbox.get(key)){skipped++;continue;}
+   await store.edit(accountId,item.itemType,item.itemId,item.payload,item.deletedAt);
+   restored++;
+  }
+  return{restored,skipped};
+ });
 }

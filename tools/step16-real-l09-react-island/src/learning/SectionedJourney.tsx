@@ -1,3 +1,4 @@
+import {LessonUnderstanding} from './LessonUnderstanding.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
 import {initial} from '../native-bridge';
@@ -486,6 +487,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    {phase==='read'&&<>
     <div id={'li-sectioned-'+id+'-opening'}><Markdown md={c.intro_md}/></div>
     {block('goals')}{block('concept')}
+    <LessonUnderstanding id={id} locale={locale}/>
     {extra&&supplemental&&<>
      <figure className="li-learning-hint">
       <Heading level={3} role="titleMedium">{vi?'Sơ đồ khái niệm':'Concept map'}</Heading>

@@ -132,17 +132,17 @@
     "L09-2-2": {
       "vi": {
         "hint": "Tính tỷ lệ mẫu, kiểm số đếm, rồi SE và biên sai số. Viết kết luận về quy trình lặp lại thay vì xác suất tham số cố định.",
-        "guidedFeedback": "p̂=.5, SE=.05, MOE=.098, CI [.402,.598]. Coverage là tính chất xấp xỉ của quy trình lặp lại theo giả định; không phải xác suất tham số cố định.",
+        "guidedFeedback": "p̂=.6, SE=√(.24/100)≈.049, MOE≈.096, CI ≈ [.504,.696]. Coverage là tính chất xấp xỉ của quy trình lặp lại theo giả định; không phải xác suất tham số cố định.",
         "diagram": "Tỷ lệ mẫu → SE → Biên sai số → Khoảng",
         "relatedReason": "Selection bias vẫn là rủi ro khi khoảng tin cậy hẹp.",
-        "guidedPrompt": "Mẫu ngẫu nhiên đơn giả định n=100, 50 Có. Dùng z=1,96, Wald CI 95%; giải thích coverage và điều kiện."
+        "guidedPrompt": "Mẫu ngẫu nhiên đơn giả định n=100, 60 Có. Dùng z=1,96, Wald CI 95%; giải thích coverage và điều kiện."
       },
       "en": {
         "hint": "Compute the sample proportion, check counts, then SE and margin. Describe repeated procedures rather than probability for a fixed parameter.",
-        "guidedFeedback": "p̂=.5, SE=.05, MOE=.098, CI [.402,.598]. Coverage is an approximate repeated-procedure property under assumptions, not probability for a fixed parameter.",
+        "guidedFeedback": "p̂=.6, SE=√(.24/100)≈.049, MOE≈.096, CI ≈ [.504,.696]. Coverage is an approximate repeated-procedure property under assumptions, not probability for a fixed parameter.",
         "diagram": "Sample proportion → SE → Margin → Interval",
         "relatedReason": "Selection bias remains a risk even with a narrow interval.",
-        "guidedPrompt": "A fictional simple random sample of n=100 has 50 Yes responses. Use z=1.96 for a 95% Wald interval; explain coverage and conditions."
+        "guidedPrompt": "A fictional simple random sample of n=100 has 60 Yes responses. Use z=1.96 for a 95% Wald interval; explain coverage and conditions."
       },
       "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/8-3-a-population-proportion",
       "relatedLessonId": "L09-1-2"

@@ -16,6 +16,7 @@ import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
 import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discovery-locale.js';
 import {useStepScreen} from './step-screen.js';
+import {readPosition,clearPosition,type ReadingPosition} from './reading-position.js';
 import {LessonBookmark,LessonMentor,LessonSources,LessonFigure,openLessonSpell} from './LessonDetailParity.js';
 import {RelatedLessons} from './RelatedLessons.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
@@ -55,7 +56,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
  const source=id==='L03-1-2'?lesson03:lesson15;
  const [attempt,setAttempt]=useState<Attempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
- useStepScreen(phase,id);
+
  useEffect(()=>{window.dispatchEvent(new Event('li:lesson-phase-changed'));},[phase]);
  // Lão Lý's Read this section must navigate the visible React workflow, not
  // hidden legacy lesson anchors. Navigating does not submit or review work.
@@ -90,6 +91,8 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
  const pending=useRef(0);
  const failed=useRef(false);
  const mounted=useRef(true);
+ const resumePosition=useRef<ReadingPosition|null>(null);
+ useStepScreen(phase,id,{ports,subjectId:subject.current,attempt:attempt,ready:!loading&&!!attempt&&!locked,locale:appLocale,resume:resumePosition});
 
  async function refreshStatus(){
   if(!subject.current)return;
@@ -133,7 +136,8 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
      .catch(()=>'unavailable' as SyncState);
     if(cancelled)return;
     subject.current=learner.subjectId;revision.current=saved.revision;
-    setAttempt(a);setPhase(resume(a));setStatus(cloud);setLoading(false);
+    resumePosition.current=readPosition(ports,id,learner.subjectId,a);
+    setAttempt(a);setPhase(resumePosition.current?.phase??resume(a));setStatus(cloud);setLoading(false);
    }catch{
     if(!cancelled){
      setError(['Không thể xác minh quyền học hoặc tải bài. Không mở chế độ khách.','Could not verify access or load the lesson. Guest access is unavailable.']);
@@ -211,7 +215,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
   if(!attempt||locked||saving||pending.current>0)return;
   if(!confirmLessonRestart(id,attempt.locale))return;
   setError(null);
-  if(await save(freshLessonAttempt(attempt)))setPhase('read');
+  if(await save(freshLessonAttempt(attempt))){clearPosition(ports,id,subject.current);resumePosition.current=null;setPhase('read');window.scrollTo(0,0);}
  }
  function revealHint(){
   if(!attempt||locked||attempt.submitted||attempt.hint)return;

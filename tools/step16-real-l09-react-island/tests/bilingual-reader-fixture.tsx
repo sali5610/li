@@ -6,6 +6,7 @@ import {Wave1Journey} from '../src/learning/Wave1Journey';
 import {LearningJourney} from '../src/learning/LearningJourney';
 import {initial,type Attempt} from '../src/native-bridge';
 import type {LearningPorts} from '../src/learning/ports';
+import {readingStamp,readingPositionKey,readPosition,type ReadingPosition} from '../src/learning/reading-position';
 import {lessonTitles} from '../src/learning/lesson-titles';
 import titles from '../../../content/editorial/lesson-titles.v1.json';
 import sample03 from '../../../content/lessons/L03-1-2.json';
@@ -29,7 +30,7 @@ const marker='QA saved response — bản nháp giữ nguyên';
 type FixtureApp={liLanguage:{get:()=>string;set:(locale:'vi'|'en')=>void}};
 export async function runBilingualReaderFixture(host:HTMLElement){
  const app=window as unknown as FixtureApp;
- let checks=0,readers=0,reviewChecks=0,evidenceChecks=0;
+ let checks=0,readers=0,reviewChecks=0,evidenceChecks=0,resumeChecks=0;
  const root=createRoot(host);
  const journey=()=>host.querySelector<HTMLElement>('[data-li-react-journey]');
  const click=(selector:string)=>{const b=host.querySelector<HTMLButtonElement>(selector);check(!!b&&!b.disabled,'Missing enabled '+selector);b!.click();};
@@ -128,9 +129,39 @@ export async function runBilingualReaderFixture(host:HTMLElement){
     check(evidence.includes(locale==='vi'?'Chưa có ghi nhận trong bài này':'Not recorded in this lesson'),id+' invented spell application');
     evidenceChecks++;reviewChecks++;
    }
+   // One representative per real reader implementation: no answers needed
+   // to remember the last page; preserve saved scroll on a fresh mount.
+   if(['L03-1-2','L09-1-2',Object.keys(titles.lessons).find(x=>!!drafts.find(d=>d.id===x))].includes(id)){
+    const records=new Map<string,ReadingPosition>();
+    const uid='qa-bilingual-fixture';
+    ports.readingPosition={
+     load:({lessonId,subjectId})=>records.get(readingPositionKey(lessonId,subjectId)),
+     save:({lessonId,subjectId,position})=>{records.set(readingPositionKey(lessonId,subjectId),position);},
+     clear:({lessonId,subjectId})=>{records.delete(readingPositionKey(lessonId,subjectId));}
+    };
+    attempt=initial();revision++;
+    render(id+'-position-start');
+    await until(()=>journey()?.dataset.liLessonPhase==='read'&&records.get(readingPositionKey(id,uid))?.phase==='read',id+' blank reader');
+    click('.li-study-book-next');
+    await until(()=>journey()?.dataset.liLessonPhase==='guided'&&records.get(readingPositionKey(id,uid))?.phase==='guided',id+' save reading-only page');
+    const top=Math.min(160,Math.max(0,document.documentElement.scrollHeight-window.innerHeight));
+    check(top>0,id+' position fixture requires scrollable page');
+    window.scrollTo(0,top);
+    await until(()=>Math.abs((records.get(readingPositionKey(id,uid))?.top??-100)-top)<3,id+' save scroll offset');
+    check(!attempt.submitted&&!attempt.reviewed&&attempt.draft.every(x=>!x)&&!attempt.guidedDraft,id+' position altered attempt');
+    check(readPosition(ports,id,'qa-other-owner',attempt)===null,id+' position leaked across accounts');
+    check(readPosition(ports,id,uid,{...attempt,attemptNumber:2})===null,id+' stale round position reused');
+    check(records.get(readingPositionKey(id,uid))?.stamp===readingStamp(attempt),id+' wrong position stamp');
+    window.scrollTo(0,0);
+    // Capture a genuine route-away unmount without overwriting the recorded
+    // offset with the new page's zero; remount from the saved position.
+    render(id+'-position-restored');
+    await until(()=>journey()?.dataset.liLessonPhase==='guided'&&Math.abs(window.scrollY-top)<3,id+' restored page and scroll');
+    resumeChecks++;
+   }
    readers++;
    console.log('BILINGUAL_READER_PASS '+id+' 5 phases × VI→EN→VI; saved drafts unchanged');
   }
-  return {status:'PASS',readers,checks,reviewChecks,evidenceChecks,scope:'actual reader render, pre-submit phases and completed receipt render, in-memory locale persistence; not physical device or live cloud'};
+  return {status:'PASS',readers,checks,reviewChecks,evidenceChecks,resumeChecks,scope:'actual reader render, pre-submit phases and completed receipt render, in-memory locale persistence; not physical device or live cloud'};
  }finally{root.unmount();}
 }

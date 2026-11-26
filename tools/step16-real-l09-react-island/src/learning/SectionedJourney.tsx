@@ -22,6 +22,7 @@ import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
 import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discovery-locale.js';
 import {useStepScreen} from './step-screen.js';
+import {readPosition,clearPosition,readingStamp,type ReadingPosition} from './reading-position.js';
 
 type Locale='vi'|'en';
 /** Keeps authored emphasis in the actual accessible question label without raw
@@ -158,7 +159,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  const [attempt,setAttempt]=useState<Attempt|null>(null);
  const [persisted,setPersisted]=useState<Attempt|null>(null);
  const [phase,setPhase]=useState<Phase>('read');
- useStepScreen(phase,id);
+
  const [busy,setBusy]=useState(true),[pending,setPending]=useState(0);
  const [reload,setReload]=useState(0);
  const [locked,setLocked]=useState(false),[errorCopy,setError]=useState<BilingualCopy|null>(null);
@@ -167,6 +168,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  const current=useRef<Attempt|null>(null),revision=useRef('');
  const owner=useRef(''),chain=useRef<Promise<void>>(Promise.resolve());
  const failed=useRef(false),mounted=useRef(true),count=useRef(0);
+ const resumePosition=useRef<ReadingPosition|null>(null);
+ useStepScreen(phase,id,{ports,subjectId:owner.current,attempt:persisted,ready:!busy&&!!persisted&&!locked,locale:appLocale,resume:resumePosition});
  /** Register the authored six moments with the SAME companion context engine
   * used by the three sample lessons. No duplicate chat state or content. */
  useEffect(()=>{
@@ -233,18 +236,20 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     owner.current=auth.subjectId;revision.current=saved.revision;
     current.current=saved.attempt;
     setAttempt(saved.attempt);setPersisted(saved.attempt);
-    setPhase(phaseFor(saved.attempt,method));
+    resumePosition.current=readPosition(ports,id,auth.subjectId,saved.attempt);
+    setPhase(resumePosition.current?.phase??phaseFor(saved.attempt,method));
     setSync(await ports.sync.getStatus({lessonId:id,subjectId:auth.subjectId}).catch(()=>'unavailable' as SyncState));
     setBusy(false);
     try{
      const key='li.sectioned.guide-return.v1';
      const token=JSON.parse(sessionStorage.getItem(key)||'null') as
-      {id?:string;at?:number;scrollY?:number;method?:string}|null;
-     if(token?.id===id&&(token.method===method||token.method==='T02')&&token.at&&
+      {id?:string;at?:number;scrollY?:number;method?:string;owner?:string}|null;
+     if(token?.id===id&&token.owner===auth.subjectId&&(token.method===method||token.method==='T02')&&token.at&&
       Date.now()-token.at<3600000&&Number.isFinite(token.scrollY)){
-      setPhase(token.method==='T02'&&saved.attempt.reviewed?'progress':'guided');
+      const returnPhase=token.method==='T02'&&saved.attempt.reviewed?'progress':'guided';
+      resumePosition.current={phase:returnPhase,top:Math.max(0,token.scrollY??0),stamp:readingStamp(saved.attempt),locale:saved.attempt.locale};
+      setPhase(returnPhase);
       sessionStorage.removeItem(key);
-      requestAnimationFrame(()=>window.scrollTo({top:token.scrollY??0}));
      }
     }catch{/* still display the saved lesson */}
    }catch{
@@ -332,7 +337,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  async function restartLesson(){
   const a=current.current;
   if(!a||locked||pending>0||!confirmLessonRestart(id,a.locale))return;
-  if(await persist(freshLessonAttempt(a)))setPhase('read');
+  if(await persist(freshLessonAttempt(a))){clearPosition(ports,id,owner.current);resumePosition.current=null;setPhase('read');window.scrollTo(0,0);}
  }
  async function newRound(){
   const a=persisted;if(!a?.reviewed||!a.submission||!a.submittedAt||!a.submissionLocale||
@@ -351,7 +356,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    attemptNumber:previous.attemptNumber+1,attemptHistory:[...(a.attemptHistory||[]),previous],
    answerRevealed:false,contentVersion:lesson.version};
   if(JSON.stringify(next).length>55000){setError(['Lịch sử bài học vượt giới hạn lưu.','Lesson history exceeds the storage limit.']);return;}
-  if(await persist(next))setPhase('read');
+  if(await persist(next)){clearPosition(ports,id,owner.current);resumePosition.current=null;setPhase('read');window.scrollTo(0,0);}
  }
  function openGuide(requestMethod:string=method,practice=false){
   if(locked||pending)return;
@@ -376,7 +381,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    // must not stop a legitimate exercise.
    try{
     sessionStorage.setItem('li.sectioned.guide-return.v1',
-     JSON.stringify({id,method:requestMethod,at:Date.now(),scrollY:returnScrollY}));
+     JSON.stringify({id,owner:owner.current,method:requestMethod,at:Date.now(),scrollY:returnScrollY}));
    }catch{/* Lesson return still works without scroll restoration. */}
   }catch{setError(['Chưa mở được Thần Chú; bản nháp vẫn được giữ.','Could not open the spell. Your draft was kept.']);}
  }

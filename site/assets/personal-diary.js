@@ -62,7 +62,7 @@ function render(){
  $("li-diary-consent").disabled=storageError;
  $("li-diary-consent-status").textContent=recordingStatus();
  const disclosure=$("li-checkin-recording-disclosure");
- if(disclosure)disclosure.textContent=storageError?"Không thể lưu nhật ký trên thiết bị này. Check-in chỉ giữ trong phiên; hãy tự ghi lại nếu cần.":enabled?(journalCloudEnabled()?"Đang lưu Check-in và đồng bộ với Neon. Có thể dừng ghi trong Nhật Ký.":"Đang lưu Check-in trên máy; chưa gửi lên cloud. Bật đồng bộ Nhật Ký trong Cài đặt → Dữ liệu của bạn."):"Bạn đã dừng lưu Nhật Ký. Check-in này chỉ giữ trong phiên, không ghi thêm vào lịch.";
+ if(disclosure)disclosure.textContent=storageError?"Không thể lưu nhật ký trên thiết bị này. Check-in chỉ giữ trong phiên; hãy tự ghi lại nếu cần.":enabled?(journalCloudEnabled()?"Đang lưu Check-in và đồng bộ với Neon. Có thể dừng ghi trong Cài đặt → Dữ liệu của bạn.":"Đang lưu Check-in trên máy; chưa gửi lên cloud. Bật đồng bộ Nhật Ký trong Cài đặt → Dữ liệu của bạn."):"Bạn đã dừng lưu Nhật Ký. Check-in này chỉ giữ trong phiên, không ghi thêm vào lịch.";
  $("li-diary-delete").disabled=storageError||!Object.keys(diary.days).length;
  $("li-diary-month").textContent=monthLabel();
  const parts=month.split("-").map(Number),yr=parts[0],mo=parts[1];

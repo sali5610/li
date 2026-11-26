@@ -150,31 +150,7 @@ export function Journal(){
    </section>
   </div>
 
-   <Card variant="tinted" className="li-diary-privacy">
-    <div><div className="kicker">{copy('QUYỀN RIÊNG TƯ','PRIVACY')}</div>
-     <Heading level={2} role="titleMedium">{copy('Lưu trên thiết bị','Device-first storage')}</Heading>
-     <Text role="support" aria-live="polite">{authoredCopy(view.consentStatus)}</Text>
-    </div>
-    {view.storageError&&<InlineFeedback tone="error" message={copy(
-     'Không thể đọc hoặc ghi lịch. Đã dừng ghi mới để bảo vệ dữ liệu.',
-     'Journal storage cannot be read or written; recording is paused.')}/>}
-    <div className="action-row">
-     <Button variant="primary" disabled={view.storageError}
-      onClick={()=>act('consent')}>{view.enabled?copy('Dừng ghi mới','Pause recording'):
-       copy('Bật lưu lịch','Resume recording')}</Button>
-     {!view.storageError&&view.hasRecords&&<ConfirmNoteAction danger
-      label={copy('Xóa lịch','Delete history')}
-      confirmLabel={copy('Xóa lịch','Delete history')}
-      description={copy('Xóa toàn bộ lịch hoạt động trên thiết bị này? Bạn có 7 giây để hoàn tác.',
-       'Delete all activity history on this device? Undo is available for 7 seconds.')}
-      onConfirm={()=>app.liPersonalDiary?.act('deleteConfirmed')===true}/>}
-     {(view.storageError||!view.hasRecords)&&<Button variant="secondary" disabled>
-      {copy('Xóa lịch','Delete history')}</Button>}
-    </div>
-    <Text role="support">{copy(
-     'Dữ liệu lưu trên thiết bị trước. Chỉ đồng bộ Nhật Ký & Check-in lên Neon khi bật quyền trong Cài đặt → Dữ liệu của bạn. Dừng ghi không xóa lịch cũ; Xóa lịch có xác nhận và hoàn tác.',
-     'Saved on device first. Cloud replication requires separate consent in Settings → Your Data. Pausing keeps history; deletion requires confirmation and supports Undo.')}</Text>
-   </Card>
+
   </div>
  </div>;
 }
@@ -221,6 +197,7 @@ const settingsSections=[
 
 export function Settings(){
  const view=useSettings();
+ const diary=useDiary();
  const [section,setSection]=useState<(typeof settingsSections)[number]['id']>('learning');
  const backupInput=useRef<HTMLInputElement>(null);
  const accountHost=useRef<HTMLDivElement>(null);
@@ -372,6 +349,31 @@ export function Settings(){
      <Text role="support">{copy(
       'Nhập tệp thay thế ghi chú và Dấu Trang hiện có sau khi xác nhận. Đây không phải bản sao toàn bộ tài khoản trước khi xóa dữ liệu máy.',
       'Import replaces existing notes and bookmarks after confirmation. This is not a complete account backup before clearing device data.')}</Text>
+     </Card>
+     <Card variant="raised" className="li-react-setting-card li-diary-privacy">
+      <div><div className="kicker">{copy('QUYỀN RIÊNG TƯ','PRIVACY')}</div>
+       <Heading level={3} role="titleMedium">{copy('Nhật Ký & Check-in','Journal & Check-ins')}</Heading>
+       <Text role="support" aria-live="polite">{authoredCopy(diary.consentStatus)}</Text>
+      </div>
+      {diary.storageError&&<InlineFeedback tone="error" message={copy(
+       'Không thể đọc hoặc ghi lịch. Đã dừng ghi mới để bảo vệ dữ liệu.',
+       'Journal storage cannot be read or written; recording is paused.')}/>}
+      <div className="action-row">
+       <Button variant="primary" disabled={diary.storageError}
+        onClick={()=>app.liPersonalDiary?.act('consent')}>{diary.enabled?copy('Dừng ghi mới','Pause recording'):
+         copy('Bật lưu lịch','Resume recording')}</Button>
+       {!diary.storageError&&diary.hasRecords&&<ConfirmNoteAction danger
+        label={copy('Xóa lịch','Delete history')}
+        confirmLabel={copy('Xóa lịch','Delete history')}
+        description={copy('Xóa toàn bộ lịch hoạt động trên thiết bị này? Bạn có 7 giây để hoàn tác.',
+         'Delete all activity history on this device? Undo is available for 7 seconds.')}
+        onConfirm={()=>app.liPersonalDiary?.act('deleteConfirmed')===true}/>}
+       {(diary.storageError||!diary.hasRecords)&&<Button variant="secondary" disabled>
+        {copy('Xóa lịch','Delete history')}</Button>}
+      </div>
+      <Text role="support">{copy(
+       'Dữ liệu lưu trên thiết bị trước. Chỉ đồng bộ Nhật Ký & Check-in lên Neon khi bật quyền trong Dữ liệu của bạn. Dừng ghi không xóa lịch cũ; Xóa lịch có xác nhận và hoàn tác.',
+       'Saved on device first. Cloud replication requires separate consent in Your Data. Pausing keeps history; deletion requires confirmation and supports Undo.')}</Text>
      </Card>
      <Card variant="raised" className="li-react-setting-card li-react-privacy-card">
       <div className="kicker">{copy('QUYỀN RIÊNG TƯ','PRIVACY')}</div>

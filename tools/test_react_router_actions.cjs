@@ -133,8 +133,21 @@ assert.doesNotMatch(old,/el\("import-personal-trigger"\)\?\.click\(\)/);
 assert.doesNotMatch(old,/el\("export-personal-data"\)\?\.click\(\)/);
 assert.doesNotMatch(old,/el\("li-journal-cloud-toggle"\)/);
 
-// Journal screen: complete Check-in → recording → deletion/Undo controls now
-// use the SAME canonical ledger functions as the native fallback.
+// Journal displays activity; Settings alone owns recording and history controls.
+const journalUI=settings.slice(settings.indexOf('export function Journal()'),settings.indexOf('function useSettings()'));
+const settingsUI=settings.slice(settings.indexOf('export function Settings()'),settings.indexOf('export function mountJournalAndSettings()'));
+assert.doesNotMatch(journalUI,/li-diary-privacy|deleteConfirmed|act\('consent'\)/);
+assert.match(settingsUI,/const diary=useDiary\(\)/);
+assert.match(settingsUI,/id="li-settings-data"[\s\S]*className="li-react-setting-card li-diary-privacy"/);
+assert.match(settingsUI,/app\.liPersonalDiary\?\.act\('consent'\)/);
+assert.match(settingsUI,/onConfirm=\{\(\)=>app\.liPersonalDiary\?\.act\('deleteConfirmed'\)===true\}/);
+const nativeJournal=old.slice(old.indexOf('id="page-dashboard"'),old.indexOf('id="page-settings"'));
+const nativeSettings=old.slice(old.indexOf('id="page-settings"'),old.indexOf('id="page-search"'));
+assert.ok(nativeJournal.length>0&&nativeSettings.length>0);
+assert.doesNotMatch(nativeJournal,/id="li-diary-(consent|delete)"/);
+assert.match(nativeSettings,/id="li-diary-consent"/);
+assert.match(nativeSettings,/id="li-diary-delete"/);
+// Check-in, recording and deletion/Undo still use the SAME canonical ledger functions.
 const diary=read('site/assets/personal-diary.js');
 const diaryActions=diary.slice(diary.indexOf('function actReact('),
  diary.indexOf('function notifyReactDiary('));

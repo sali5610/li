@@ -48,12 +48,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: 8130a2c6589bc68073909a44c241995ceb880df4
+          ref: 7d511588ae1888df52320151944c7cd73658e57a
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "8130a2c6589bc68073909a44c241995ceb880df4"
+          test "$(git rev-parse HEAD)" = "7d511588ae1888df52320151944c7cd73658e57a"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -87,6 +87,7 @@ jobs:
           node tools/prepare_cloudflare_ai_candidate.mjs --build-auth-only
           npx --yes --package workbox-cli@7.4.1 workbox generateSW tools/platform/workbox-auth-only-config.cjs
           test -s dist-cloudflare-auth-candidate/_worker.js
+          (cd tools/step16-real-l09-react-island && node --input-type=module -e "import worker from './dist-auth-worker/_worker.js'; const env={ASSETS:{fetch(){throw Error('AI route must not reach assets')}}}; for(const path of ['access','feedback','seat']){const r=await worker.fetch(new Request('https://li5610.pages.dev/api/ai/'+path,{method:'POST'}),env); if(r.status!==404||r.headers.get('cache-control')!=='no-store')throw Error('Retired AI route not blocked: '+path)}; console.log('PASS retired AI routes return uncached 404')")
           test -s dist-cloudflare-auth-candidate/assets/li-first-party-app.js
           test -s dist-cloudflare-auth-candidate/sw.js
           grep -Fq 'id="li-boot-splash"' dist-cloudflare-auth-candidate/index.html

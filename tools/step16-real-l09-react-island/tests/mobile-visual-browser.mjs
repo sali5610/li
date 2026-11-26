@@ -164,6 +164,16 @@ try{
   }
  }
  console.log('PASS 13 REAL CSS MOBILE VIEWPORT SCREENS + NATIVE OPEN SHEET 390x844');
+ // Actual learner components, both locale directions on all five pages.
+ await send('Page.navigate',{url:target+'?view=bilingualReaders'});
+ const bilingual=await wait(async()=>{
+  const r=await send('Runtime.evaluate',{expression:'window.__liBilingualReaderReport || null',returnByValue:true});
+  return r.result?.value||null;
+ },180000);
+ console.log('BILINGUAL_READER_REPORT '+JSON.stringify(bilingual));
+ if(bilingual.status!=='PASS'||bilingual.readers!==20||bilingual.checks!==300)
+  throw Error('BILINGUAL_READER_FAIL '+JSON.stringify(bilingual));
+
  // Focused UI Lab reflow checks: only when the real Lab sources change.
  if(process.env.LI_UI_LAB_SMOKE==='1'){
   await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});

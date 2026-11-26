@@ -38,3 +38,21 @@ export function recommendStudyRhythm(physical,energy='',attention=''){
  }
  return {mode,reason,points,physicalPoints,energyPoints,attentionPoints,positives};
 }
+
+/** Device-local calendar day, matching the existing Journal ledger. */
+export function checkinDay(when){
+ const date=new Date(when);
+ if(!Number.isFinite(date.getTime()))return null;
+ return [date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-');
+}
+export function savedCheckin(value,now){
+ if(!value||!completePhysical(value)||typeof value.recordedAt!=='string'||
+  checkinDay(value.recordedAt)!==checkinDay(now)||!checkinDay(now))return null;
+ const energy=['high','medium','low'].includes(value.energy)?value.energy:'';
+ const attention=['steady','warming','hard'].includes(value.attention)?value.attention:'';
+ const selectedMode=Object.hasOwn(STUDY_RHYTHMS,value.selectedMode)?value.selectedMode:
+  recommendStudyRhythm(value,energy,attention).mode;
+ const override=Object.hasOwn(STUDY_RHYTHMS,value.override)?value.override:
+  value.override===''?'':selectedMode!==recommendStudyRhythm(value,energy,attention).mode?selectedMode:'';
+ return {sleep:value.sleep,move:value.move,rest:value.rest,energy,attention,override,selectedMode,recordedAt:value.recordedAt};
+}

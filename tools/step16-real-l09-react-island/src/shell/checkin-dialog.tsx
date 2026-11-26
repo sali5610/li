@@ -3,27 +3,36 @@ import {authoredCopy} from './discovery-locale.js';
 import {createRoot} from 'react-dom/client';
 import {Button,Progress} from '../../../../design-system/react/index';
 import {
- CHECKIN_PHYSICAL,STUDY_RHYTHMS,completePhysical,recommendStudyRhythm
+ CHECKIN_PHYSICAL,STUDY_RHYTHMS,completePhysical,recommendStudyRhythm,checkinDay,savedCheckin
 } from './checkin-domain.js';
 import type {
  PhysicalAnswers,PhysicalAnswer,PhysicalKey,EnergyAnswer,
- AttentionAnswer,StudyRhythm
+ AttentionAnswer,StudyRhythm,SavedCheckin
 } from './checkin-domain.js';
 
 /** The L1 dialog has one React owner, one pure decision engine and one
  * in-memory result. No hidden native dialog/form/event forwarding. */
-type PhysicalRecord=Required<PhysicalAnswers>&{
- selectedMode:StudyRhythm;recordedAt:string
-};
+type PhysicalRecord=SavedCheckin;
+type Draft={physical:PhysicalAnswers;energy:EnergyAnswer;attention:AttentionAnswer;override:StudyRhythm|''};
+type ReadyForCheckin=(uid:string)=>Promise<void>;
 type AppWindow=Window&{
  LiL1?:Readonly<{getPhysicalState:()=>PhysicalRecord|null}>;
  liSettingsPort?:{setMode?:(mode:StudyRhythm)=>boolean};
- liPersonalDiary?:{getView:()=>{consentStatus:string}};
+ liPersonalDiary?:{getView:()=>{consentStatus:string};getTodayCheckin?:(uid:string)=>unknown};
  liLanguage?:{get:()=>string};
  toast?:(message:string)=>void
 };
 const app=window as AppWindow;
 let latest:PhysicalRecord|null=null;
+let latestOwner='';
+function verifiedOwner(){
+ try{return document.documentElement.classList.contains('li-auth-verified')?
+  localStorage.getItem('li.sync.local-owner.v1')||'':'';}catch{return '';}
+}
+const emptyDraft=():Draft=>({physical:{},energy:'',attention:'',override:''});
+function fromSaved(record:PhysicalRecord|null):Draft{
+ return record?{physical:{sleep:record.sleep,move:record.move,rest:record.rest},energy:record.energy,attention:record.attention,override:record.override}:emptyDraft();
+}
 const copy=(vi:string,en:string)=>app.liLanguage?.get?.()==='en'?en:vi;
 const labels:Record<PhysicalKey,[string,string]>={
  sleep:['Đã ngủ tương đối đủ?','Did you sleep relatively well?'],
@@ -38,12 +47,16 @@ const attentionItems:readonly [AttentionAnswer,string,string][]=[
 ];
 const rhythmNames:Record<StudyRhythm,string>={...STUDY_RHYTHMS};
 const defaultConsent='Đang lưu Check-in trong Nhật Ký trên thiết bị; chỉ đồng bộ lên Neon khi bạn đã bật quyền Nhật Ký.';
-function CheckinDialog(){
+function CheckinDialog({waitForReady}:{waitForReady?:ReadyForCheckin}){
  const [open,setOpen]=useState(false);
  const [physical,setPhysical]=useState<PhysicalAnswers>({});
  const [energy,setEnergy]=useState<EnergyAnswer>('');
  const [attention,setAttention]=useState<AttentionAnswer>('');
  const [override,setOverride]=useState<StudyRhythm|''>('');
+ const [saved,setSaved]=useState(false);
+ const owner=useRef(''),day=useRef(''),prompted=useRef(''),dirty=useRef(false);
+ const isOpen=useRef(false),wasStored=useRef(false);
+ const draft=useRef<Draft>(emptyDraft());
  const [trigger,setTrigger]=useState('');
  const [locale,setLocale]=useState(0);
  const [consent,setConsent]=useState(defaultConsent);
@@ -54,37 +67,127 @@ function CheckinDialog(){
  const answered=CHECKIN_PHYSICAL.filter(key=>Boolean(physical[key])).length;
  const chosen=complete?(override||suggestion?.mode||''):'';
  const updateConsent=()=>setConsent(app.liPersonalDiary?.getView()?.consentStatus||defaultConsent);
+ function fill(value:Draft){
+  draft.current=value;
+  setPhysical(value.physical);setEnergy(value.energy);setAttention(value.attention);setOverride(value.override);
+ }
+ function reset(uid='',today=''){
+  latest=null;latestOwner='';owner.current=uid;day.current=today;
+  prompted.current='';dirty.current=false;wasStored.current=false;isOpen.current=false;
+  fill(emptyDraft());setSaved(false);setOpen(false);
+ }
+ function todayRecord(uid:string){
+  const now=new Date();
+  const stored=savedCheckin(app.liPersonalDiary?.getTodayCheckin?.(uid),now);
+  const inSession=latestOwner===uid?savedCheckin(latest,now):null;
+  if(wasStored.current&&!stored){
+   // A deleted or cleared Journal must not be resurrected by an old form.
+   latest=null;latestOwner='';dirty.current=false;fill(emptyDraft());
+  }
+  wasStored.current=!!stored;
+  const record=inSession&&(!stored||Date.parse(inSession.recordedAt)>=Date.parse(stored.recordedAt))&&latestOwner===uid?inSession:stored;
+  if(record){latest=record;latestOwner=uid;}
+  return record;
+ }
+ function align(uid:string){
+  const today=checkinDay(new Date())||'';
+  if(!uid||!today)return false;
+  if(owner.current!==uid||day.current!==today)reset(uid,today);
+  return true;
+ }
+ function show(uid:string,triggerId:string,record:PhysicalRecord|null){
+  if(verifiedOwner()!==uid||!align(uid)||isOpen.current)return;
+  if(!dirty.current)fill(fromSaved(record));
+  setSaved(!!record);setTrigger(triggerId);updateConsent();
+  prompted.current=day.current;isOpen.current=true;setOpen(true);
+ }
+ // Keep an unsubmitted draft only in memory, not in the Journal.
+ const edit=(next:Partial<Draft>)=>{
+  if(!verifiedOwner()||verifiedOwner()!==owner.current)return;
+  dirty.current=true;fill({...draft.current,...next});
+ };
  useEffect(()=>{
+  let disposed=false,checking='';
   const onOpen=(event:Event)=>{
-   if(!document.documentElement.classList.contains('li-auth-verified'))return;
+   const uid=verifiedOwner();if(!uid||!align(uid))return;
    const detail=(event as CustomEvent<{triggerId?:string}>).detail;
-   setTrigger(detail?.triggerId||((document.activeElement as HTMLElement|null)?.id||'checkin'));
-   setPhysical({});setEnergy('');setAttention('');setOverride('');
-   updateConsent();setOpen(true);
+   show(uid,detail?.triggerId||((document.activeElement as HTMLElement|null)?.id||'checkin'),todayRecord(uid));
   };
-  const refresh=()=>updateConsent();
-  const language=()=>setLocale(x=>x+1);
-  const watch=new MutationObserver(()=>{
-   if(!document.documentElement.classList.contains('li-auth-verified')){
-    latest=null;setOpen(false);
+  const onAuto=()=>{
+   const uid=verifiedOwner();
+   if(!uid||!align(uid)||isOpen.current||prompted.current===day.current||
+    !document.getElementById('page-home')?.classList.contains('active'))return;
+   const key=uid+'|'+day.current;if(checking===key)return;
+   checking=key;
+   // Wait until the existing owner sync has hydrated; never block learning
+   // or overwrite a user who opened and edited the form in the meantime.
+   requestAnimationFrame(()=>{void (async()=>{
+    try{
+     if(waitForReady)await waitForReady(uid);
+     if(disposed||verifiedOwner()!==uid||owner.current!==uid||day.current!==checkinDay(new Date())||
+      isOpen.current||prompted.current===day.current||
+      !document.getElementById('page-home')?.classList.contains('active'))return;
+     const record=todayRecord(uid);
+     if(record){if(!dirty.current)fill(fromSaved(record));setSaved(true);return;}
+     show(uid,'checkin',null);
+    }catch{/* Manual Check-in stays available; retry on next route/sync event. */}
+    finally{if(checking===key)checking='';}
+   })();});
+  };
+  const refresh=()=>{
+   updateConsent();
+   const uid=verifiedOwner();
+   if(uid&&owner.current===uid){
+    const record=todayRecord(uid);
+    setSaved(!!record);
+    if(!isOpen.current&&!dirty.current&&record)fill(fromSaved(record));
    }
+  };
+  const language=()=>setLocale(x=>x+1);
+  const deleted=()=>{const uid=verifiedOwner();if(uid)reset(uid,checkinDay(new Date())||'');};
+  const auth=(event:Event)=>{
+   const detail=(event as CustomEvent<{verified?:boolean;transient?:boolean;accountId?:string|null}>).detail;
+   if(detail?.verified===false){
+    if(detail.transient===true&&detail.accountId===owner.current){isOpen.current=false;setOpen(false);}
+    else reset();
+    return;
+   }
+   onAuto();
+  };
+  // Fail closed even if a class changes without a normal auth event.
+  const watch=new MutationObserver(()=>{
+   if(!verifiedOwner()){isOpen.current=false;setOpen(false);}
+   else onAuto();
   });
   watch.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
   window.addEventListener('li:open-checkin',onOpen);
+  window.addEventListener('li:auth-verified-changed',auth);
+  window.addEventListener('li:route-changed',onAuto);
+  window.addEventListener('li:learning-sync-report',onAuto);
+  window.addEventListener('pageshow',onAuto);
+  window.addEventListener('focus',onAuto);
+  window.addEventListener('li:checkin-history-deleted',deleted);
   window.addEventListener('li:diary-view-changed',refresh);
   window.addEventListener('li:personal-sync-applied',refresh);
   window.addEventListener('li:localechange',language);
+  onAuto();
   return()=>{
-   watch.disconnect();window.removeEventListener('li:open-checkin',onOpen);
+   disposed=true;watch.disconnect();window.removeEventListener('li:open-checkin',onOpen);
+   window.removeEventListener('li:auth-verified-changed',auth);
+   window.removeEventListener('li:route-changed',onAuto);
+   window.removeEventListener('li:learning-sync-report',onAuto);
+   window.removeEventListener('pageshow',onAuto);
+   window.removeEventListener('focus',onAuto);
+   window.removeEventListener('li:checkin-history-deleted',deleted);
    window.removeEventListener('li:diary-view-changed',refresh);
    window.removeEventListener('li:personal-sync-applied',refresh);
    window.removeEventListener('li:localechange',language);
   };
- },[]);
+ },[waitForReady]);
  useEffect(()=>{if(open)focusRef.current?.focus();},[open]);
  // Escape, focus trap and focus restoration: one real modal, not the native DOM.
  const close=()=>{
-  setOpen(false);
+  isOpen.current=false;setOpen(false);
   requestAnimationFrame(()=>{
    (document.getElementById(trigger)||document.getElementById('checkin'))?.focus();
   });
@@ -102,17 +205,19 @@ function CheckinDialog(){
  };
  const apply=()=>{
   if(!chosen||!complete)return;
+  const uid=verifiedOwner();
+  if(!uid||uid!==owner.current||day.current!==checkinDay(new Date()))return;
   if(!app.liSettingsPort?.setMode?.(chosen as StudyRhythm))return;
   const recorded:PhysicalRecord={
-   sleep:physical.sleep!,move:physical.move!,rest:physical.rest!,
+   sleep:physical.sleep!,move:physical.move!,rest:physical.rest!,energy,attention,override,
    selectedMode:chosen as StudyRhythm,recordedAt:new Date().toISOString()
   };
-  latest=recorded;
+  latest=recorded;latestOwner=uid;dirty.current=false;setSaved(true);
   window.dispatchEvent(new CustomEvent('li:l1-physical-checkin',{detail:{...recorded}}));
   close();
   app.toast?.('Đã chọn nhịp '+rhythmNames[recorded.selectedMode]+'. Đổi lúc nào cũng được!');
  };
- if(!open)return null;
+ if(!open||verifiedOwner()!==owner.current)return null;
  const missing=CHECKIN_PHYSICAL.filter(k=>!physical[k]).map(k=>k==='sleep'?'Ngủ':k==='move'?'Vận động':'Nghỉ ngơi');
  const recommendation=!complete?
   copy('Chưa thể áp dụng. Hãy trả lời: '+missing.join(', ')+'. Hoặc chọn Bỏ qua để học mà không ghi check-in.',
@@ -133,7 +238,7 @@ function CheckinDialog(){
    <div className="checkin-scroll" tabIndex={0}
     aria-label={copy('Nội dung check-in có thể cuộn','Scrollable check-in content')}>
     <div className="kicker">{copy('L1 · THỂ TRẠNG → NHỊP HỌC','PHYSICAL REPORT → STUDY RHYTHM')}</div>
-    <h2 id="checkin-title">{copy('Hôm nay cơ thể ra sao?','How does your body feel today?')}</h2>
+    <h2 id="checkin-title">{saved?copy('Cập nhật Check-in hôm nay','Update today’s check-in'):copy('Hôm nay cơ thể ra sao?','How does your body feel today?')}</h2>
     <p id="checkin-description">{copy(
      'Chọn Có hoặc Chưa cho cả ba mục để nhận gợi ý nhịp học.',
      'Answer all three questions to get a study-rhythm suggestion.')}</p>
@@ -154,7 +259,7 @@ function CheckinDialog(){
         <input type="radio" name={'checkin-'+key} value={value}
          checked={physical[key]===value}
          ref={key==='sleep'&&value==='yes'?focusRef:undefined}
-         onChange={()=>setPhysical(prev=>({...prev,[key]:value}))}/>
+         onChange={()=>edit({physical:{...draft.current.physical,[key]:value}})}/>
         <span>{i===0?copy('Có','Yes'):copy('Chưa','Not yet')}</span>
        </label>)}
       </div>
@@ -162,7 +267,7 @@ function CheckinDialog(){
     </div>
     <p id="checkin-recommendation" className={"state-note checkin-result"+(complete?" is-ready":"") }
      role="status" aria-live="polite">{recommendation}</p>
-    <details className="checkin-context">
+    <details className="checkin-context" open={energy!==''||attention!==''?true:undefined}>
      <summary>{copy('Cảm nhận hiện tại · Bổ sung','Current feelings · Optional')}</summary>
      <p>{copy(
       'Không bắt buộc. Cảm nhận hiện tại điều chỉnh gợi ý, nhưng ba mục thể trạng vẫn được ưu tiên.',
@@ -171,25 +276,25 @@ function CheckinDialog(){
       <div className="checkin-choices">
        {energyItems.map(([value,vi,en])=><label key={value} className="checkin-choice">
         <input type="radio" name="checkin-energy" value={value} checked={energy===value}
-         onChange={()=>setEnergy(value)}/><span>{copy(vi,en)}</span></label>)}
+         onChange={()=>edit({energy:value})}/><span>{copy(vi,en)}</span></label>)}
       </div>
      </fieldset>
      <fieldset className="checkin-question"><legend>{copy('Khả năng tập trung','Ability to focus')}</legend>
       <div className="checkin-choices">
        {attentionItems.map(([value,vi,en])=><label key={value} className="checkin-choice">
         <input type="radio" name="checkin-attention" value={value} checked={attention===value}
-         onChange={()=>setAttention(value)}/><span>{copy(vi,en)}</span></label>)}
+         onChange={()=>edit({attention:value})}/><span>{copy(vi,en)}</span></label>)}
       </div>
      </fieldset>
     </details>
-    <details className="checkin-manual" id="checkin-override">
+    <details className="checkin-manual" id="checkin-override" open={override!==''?true:undefined}>
      <summary>{copy('Tự chọn nhịp khác','Choose another rhythm')}</summary>
      <fieldset className="checkin-question"><legend>{copy('Nhịp muốn áp dụng','Desired study rhythm')}</legend>
       <div className="checkin-override-options">
        {([['',copy('Theo gợi ý','Use suggestion')],...Object.entries(rhythmNames)] as [string,string][])
         .map(([key,label])=><label key={key} className="checkin-radio">
          <input type="radio" name="checkin-override" value={key}
-          checked={override===key} onChange={()=>setOverride(key as StudyRhythm|'')}/>
+          checked={override===key} onChange={()=>edit({override:key as StudyRhythm|''})}/>
          <span>{authoredCopy(label)}</span></label>)}
       </div>
      </fieldset>
@@ -198,18 +303,18 @@ function CheckinDialog(){
    </div>
    <div className="action-row checkin-actions">
     <Button variant="secondary" className="action alt" id="close-checkin" onClick={close}>
-     {copy('Bỏ qua','Skip')}</Button>
+     {saved?copy('Đóng','Close'):copy('Bỏ qua','Skip')}</Button>
     <Button variant="primary" className="action" id="apply-checkin"
-     disabled={!chosen} onClick={apply}>{copy('Áp dụng nhịp','Apply rhythm')}</Button>
+     disabled={!chosen} onClick={apply}>{saved?copy('Cập nhật','Update'):copy('Áp dụng nhịp','Apply rhythm')}</Button>
    </div>
   </div>
  </div>;
 }
-export function mountCheckinDialog(){
+export function mountCheckinDialog(waitForReady?:ReadyForCheckin){
  const root=document.getElementById('li-react-checkin-root');
  if(!root)throw Error('REACT_CHECKIN_ROOT_MISSING');
- app.LiL1=Object.freeze({getPhysicalState:()=>latest?{...latest}:null});
+ app.LiL1=Object.freeze({getPhysicalState:()=>verifiedOwner()===latestOwner?savedCheckin(latest,new Date()):null});
  const reactRoot=createRoot(root);
- reactRoot.render(<CheckinDialog/>);
+ reactRoot.render(<CheckinDialog waitForReady={waitForReady}/>);
  return()=>reactRoot.unmount();
 }

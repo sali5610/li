@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {
- completePhysical,recommendStudyRhythm,STUDY_RHYTHMS
+ completePhysical,recommendStudyRhythm,STUDY_RHYTHMS,savedCheckin,checkinDay
 } from './step16-real-l09-react-island/src/shell/checkin-domain.js';
 
 const read=p=>readFileSync(new URL(p,import.meta.url),'utf8');
@@ -72,4 +72,15 @@ assert.equal(base.mode,'recover');assert.equal(high.mode,'start');assert.equal(h
 assert.equal(both.points,base.points+2);
 assert.ok(both.positives.some(x=>x.includes('Năng lượng dồi dào +1')));
 assert.ok(both.positives.some(x=>x.includes('Tập trung rõ +1')));
+const now=new Date(2026,10,27,10);
+const recorded={sleep:'yes',move:'no',rest:'yes',energy:'low',attention:'hard',override:'start',selectedMode:'start',recordedAt:now.toISOString()};
+assert.deepEqual(savedCheckin(recorded,now),recorded);
+assert.equal(savedCheckin(recorded,new Date(2026,10,28,10)),null);
+assert.equal(savedCheckin({...recorded,sleep:'unsure'},now),null);
+assert.equal(savedCheckin({...recorded,recordedAt:'bad'},now),null);
+assert.equal(savedCheckin({...recorded,energy:'invalid',attention:'invalid'},now).energy,'');
+assert.equal(checkinDay(now),'2026-11-27');
+assert.ok(diary.includes('getTodayCheckin(uid)')&&diary.includes('localStorage.getItem("li.sync.local-owner.v1")!==uid'));
+assert.ok(react.includes('waitForReady(uid)')&&react.includes('prompted.current===day.current'));
+console.log('LI_CHECKIN_PREFILL_PASS saved inputs, local day, stale or invalid record, owner guard, hydration and single prompt contracts');
 console.log('LI_REACT_CHECKIN_PASS '+examples.length+' pure decision cases; React UI owner; invite/record/skip/consent contracts');

@@ -13,6 +13,7 @@ import {mountHomeAndCatalog} from '../shell/home-catalog.js';
 import {mountGuideAndLibrary} from '../shell/guide-library.js';
 import {mountJournalAndSettings} from '../shell/journal-settings.js';
 import {mountCheckinDialog} from '../shell/checkin-dialog.js';
+import {waitForLearnerHydration} from './learner-sync.js';
 import {mountLaoLyDialog} from '../shell/laoly-dialog.js';
 import {mountLaoLyFab} from '../shell/laoly-fab.js';
 import {mountReactChrome} from '../shell/react-shell.js';
@@ -287,8 +288,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 else mountJournalAndSettings();
 
 // React owns the physical-first Check-in modal and session state, without the legacy form.
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountCheckinDialog,{once:true});
-else mountCheckinDialog();
+const startCheckin=()=>mountCheckinDialog(waitForLearnerHydration);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startCheckin,{once:true});
+else startCheckin();
 
 // The complete Lão Lý popup is React-rendered inside its existing single modal host.
 // Existing contextual dialog plans, sourced quote rotation and draggable avatar are reused.

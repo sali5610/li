@@ -1,7 +1,7 @@
 name: Release li. to Cloudflare Pages Free — MANUAL ONLY
 
 # IMPORTANT: Manual dispatch is the ONLY deploy trigger. PR gate builds a candidate locally but NEVER deploys.
-# Auth-only pins the exact live PWA source plus the managed-session wake recovery fix; AI retains its independent reviewed SHA,
+# Auth-only pins the exact live PWA source plus the false-invitation confirmation and fresh managed session fix; AI retains its independent reviewed SHA,
 # without merging all staging changes into main. Never dispatch until preflight.
 on:
   # Focused PR gate builds the pinned Auth-only artifact; it never deploys.
@@ -48,12 +48,12 @@ jobs:
       - name: Checkout pinned, already reviewed staging source (no secrets)
         uses: actions/checkout@v4
         with:
-          ref: eb775067f7fc4e2f2ec22828cc7a73921bac238e
+          ref: 8130a2c6589bc68073909a44c241995ceb880df4
           persist-credentials: false
       - name: Verify immutable source and validate app shell
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "eb775067f7fc4e2f2ec22828cc7a73921bac238e"
+          test "$(git rev-parse HEAD)" = "8130a2c6589bc68073909a44c241995ceb880df4"
           python3 tools/validate_site.py
           python3 tools/generate_design_tokens.py --check
           python3 tools/validate_design_system.py
@@ -101,7 +101,7 @@ jobs:
           find dist-cloudflare-auth-candidate -type f -name '*.map' -delete
           test -z "$(find dist-cloudflare-auth-candidate -type f -name '*.map' -print -quit)"
           git diff --exit-code -- site
-      - name: Real offline cold-launch and online session-wake regression against emitted Auth-only Pages artifact (NO DEPLOY)
+      - name: Real offline cold-launch and online session-wake and false-invite regression against emitted Auth-only Pages artifact (NO DEPLOY)
         shell: bash
         run: |
           set -euo pipefail
@@ -162,7 +162,7 @@ jobs:
       - name: Checkout main (static) or reviewed staging SHA (first-party)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.auth_only_mode && 'eb775067f7fc4e2f2ec22828cc7a73921bac238e' || (inputs.ai_mode && 'c32d7213494e952702488336060346e867b6c51f' || github.sha) }}
+          ref: ${{ inputs.auth_only_mode && '8130a2c6589bc68073909a44c241995ceb880df4' || (inputs.ai_mode && 'c32d7213494e952702488336060346e867b6c51f' || github.sha) }}
           persist-credentials: false
 
       - name: Verify the exact reviewed first-party source
@@ -170,7 +170,7 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
-            expected='eb775067f7fc4e2f2ec22828cc7a73921bac238e'
+            expected='8130a2c6589bc68073909a44c241995ceb880df4'
             echo 'Auth-only app: exact live Pages baseline plus offline bootstrap/cache fix; no staging-wide changes.'
           else
             expected='c32d7213494e952702488336060346e867b6c51f'
@@ -260,7 +260,7 @@ jobs:
           test -z "$(find dist-cloudflare-auth-candidate -type f -name '*.map' -print -quit)"
           git diff --exit-code -- site
 
-      - name: Verify current Pages baseline before session wake recovery release (read-only)
+      - name: Verify current Pages baseline before false-invite recovery release (read-only)
         if: inputs.auth_only_mode == true && inputs.ai_mode == false
         run: |
           set -euo pipefail
@@ -275,7 +275,7 @@ jobs:
               headers={"Authorization": "Bearer " + token, "Accept": "application/json"})
           with urllib.request.urlopen(request, timeout=20) as response:
               project = json.load(response)
-          if project.get("success") is not True or (project.get("result", {}).get("canonical_deployment") or {}).get("short_id") != "9d23289d":
+          if project.get("success") is not True or (project.get("result", {}).get("canonical_deployment") or {}).get("short_id") != "180488b2":
               raise SystemExit("LIVE_PAGES_BASELINE_CHANGED_STOP")
           print("EXPECTED_LIVE_PAGES_BASELINE_PASS")
           PY

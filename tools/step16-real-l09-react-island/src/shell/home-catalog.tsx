@@ -1,3 +1,4 @@
+import {lessonTitle} from '../learning/lesson-titles.js';
 import {openRoute} from './app-router.js';
 import canonicalCatalog from '../../../../content/curriculum/legacy-catalog.v1.json';
 import {releasedLessonRoutes,personalStudyRoute,personalStudyLessonIds} from '../learning/released-lessons.js';
@@ -281,9 +282,9 @@ function Catalog(){
  if(group)breadcrumb.push({label:localized(locale,group.title,group.titleEn),path:[group.id]});
  if(field)breadcrumb.push({label:authoredCopy(field.name),path:[group!.id,field.id]});
  if(course)breadcrumb.push({label:authoredCopy(course.title),path:[group!.id,field!.id,course.id]});
- if(lesson)breadcrumb.push({label:authoredCopy(lesson.title),path:[group!.id,field!.id,course!.id,lesson.id]});
+ if(lesson)breadcrumb.push({label:lessonTitle(lesson.id,locale,authoredCopy(lesson.title)),path:[group!.id,field!.id,course!.id,lesson.id]});
  const currentTitle=lesson?.title||course?.title||field?.name||group?.title;
- const heading=group&&!field?localized(locale,group.title,group.titleEn):
+ const heading=lesson?lessonTitle(lesson.id,locale,authoredCopy(lesson.title)):group&&!field?localized(locale,group.title,group.titleEn):
   currentTitle?authoredCopy(currentTitle):(locale==='vi'?'Tàng Thư':'Library');
  const description=lesson?(personalStudyRoute(lesson.id)?
   (locale==='vi'?'Bài học cá nhân · Có thể học ngay trong Tàng Thư.':
@@ -411,7 +412,7 @@ function Catalog(){
       <Heading level={3} role="titleMedium">{authoredCopy(item.title)}</Heading>
       <ol className="catalog-preview-lessons">
        {item.lessons.map(l=><li key={l.id}
-        className={canOpenLesson(l)?'catalog-preview-published':undefined}>{authoredCopy(l.title)}</li>)}
+        className={canOpenLesson(l)?'catalog-preview-published':undefined}>{lessonTitle(l.id,locale,authoredCopy(l.title))}</li>)}
       </ol>
       <Button variant="secondary" className="catalog-card-action"
        onClick={()=>openPath([group!.id,field!.id,item.id])}>
@@ -442,7 +443,7 @@ function Catalog(){
    {course.lessons.map((item,index)=><li key={item.id} className="catalog-lesson-card">
     <span className="catalog-lesson-order" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>
     <div className="catalog-lesson-desc">
-     <Heading level={2} role="titleSmall">{authoredCopy(item.title)}</Heading>
+     <Heading level={2} role="titleSmall">{lessonTitle(item.id,locale,authoredCopy(item.title))}</Heading>
      <Text role="support">{item.id} · {personalStudyRoute(item.id)?
       (locale==='vi'?'Học cá nhân · Có bài đầy đủ':'Personal study · Complete lesson'):
       canOpenLesson(item)?(locale==='vi'?'Đã phát hành':'Released'):

@@ -271,7 +271,11 @@ for(const [name,src] of [['L09',l09],['L03/L15',wave]]){
   name+' keeps the current-step heading outside the animated page for sticky reading');
  assert.match(src,/LessonMentor id=/);
  assert.match(src,/onClick=\{\(\)=>void restartLesson\(\)\}/);
- assert.match(src,/AiFeedbackPanel id=/);
+ assert.doesNotMatch(src,/AiFeedbackPanel|feedbackPolicy/,'Retired integrated AI must not be mounted');
+ for(const step of ['guided','practice','feedback','progress']){
+  assert.ok(src.includes('step="'+step+'"'),name+' retains contextual external coaching at '+step);
+ }
+ assert.match(src,/<CopyAnalysisPrompt locale=\{appLocale\} step="feedback"/);
  assert.match(src,/SelfReviewNextStep rubricItems=/);
 }
 assert.match(parity,/export function openLessonSpell\(lessonId:LessonId,methodId:string,practice:boolean\):boolean/);

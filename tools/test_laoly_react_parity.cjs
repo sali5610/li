@@ -128,8 +128,16 @@ assert.match(researchCase,/data-li-case-analysis-state=\{completed\?'saved':anal
 assert.match(researchCase,/setCompleted\(\{choice,conclusion:revision\}\)/,
  'Saved conclusion must persist in the in-session analysis prompt');
 assert.match(copyPrompt,/disabled\?:boolean/);
-assert.match(copyPrompt,/<Button variant="secondary" disabled=\{disabled\}/,
- 'Shared copy button must honor disabled state instead of copying an empty draft');
+assert.match(copyPrompt,/<CopyPromptAction locale=\{locale\} prompt=\{prompt\} disabled=\{disabled\}/,
+ 'Analysis wrapper must forward disabled state to shared action');
+assert.match(copyPrompt,/<Button variant=\{variant\} disabled=\{disabled\|\|status==='copying'\}/,
+ 'Shared copy button must honor disabled state and prevent duplicate copying');
+assert.match(copyPrompt,/if\(copied\)\{open\(\);return;\}/);
+assert.match(copyPrompt,/writeText\(prompt\)\.then\(open,\(\)=>setStatus\('error'\)\)/,
+ 'Do not request external navigation before successful copy');
+assert.match(copyPrompt,/window\.location\.href='chatgpt:\/\/'/);
+assert.match(copyPrompt,/href="https:\/\/chatgpt\.com\/" target="_blank" rel="noopener noreferrer"/,
+ 'Keep an explicit web fallback without a private prompt in the URL');
 assert.match(researchCase,/if\(!permitted\)\{setChoice\(null\);setMessage\(''\);\}/);
 assert.match(guide,/window\.liGuideUi=port/);
 assert.match(capture,/window\.liCaptureUi=port/);

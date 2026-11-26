@@ -16,7 +16,7 @@ from urllib import error, parse, request
 
 MAX_FILES = 20_000
 MAX_FILE_BYTES = 25 * 1024 * 1024
-MAX_PROJECT_RELEASES_PER_MONTH = 30  # Deliberately below Pages Free's 500 builds/account.
+MAX_PROJECT_RELEASES_PER_MONTH = 300  # PO-approved project budget; below Pages Free's 500 builds/account.
 UNSAFE_PARTS = {".git", "node_modules", ".env", "__pycache__", ".venv"}
 
 

@@ -1,3 +1,9 @@
+# Step 17 — integrated Workers AI retired (2026-11-26)
+
+**Historical record only — superseded by PO decision 2026-11-26.** Do not follow the activation instructions below. li. now copies prompts locally and opens external ChatGPT; no integrated inference, AI seat or quota. Production database/bindings are not deleted by this repository change. Keep the old SQL migration solely as history until a separately authorized resource review. Auth, Push, Neon and deterministic Elder Ly stay in scope.
+
+---
+
 # Step 17 — one transferable AI seat (Cloudflare Free)
 
 **State:** feature code integrated on staging only; **AI NOT LIVE** until an

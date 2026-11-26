@@ -29,7 +29,7 @@ const marker='QA saved response — bản nháp giữ nguyên';
 type FixtureApp={liLanguage:{get:()=>string;set:(locale:'vi'|'en')=>void}};
 export async function runBilingualReaderFixture(host:HTMLElement){
  const app=window as unknown as FixtureApp;
- let checks=0,readers=0,reviewChecks=0;
+ let checks=0,readers=0,reviewChecks=0,evidenceChecks=0;
  const root=createRoot(host);
  const journey=()=>host.querySelector<HTMLElement>('[data-li-react-journey]');
  const click=(selector:string)=>{const b=host.querySelector<HTMLButtonElement>(selector);check(!!b&&!b.disabled,'Missing enabled '+selector);b!.click();};
@@ -88,6 +88,14 @@ export async function runBilingualReaderFixture(host:HTMLElement){
       check(!!node.querySelector('.li-learning-sources'),id+' missing sources');
       check((locale==='vi'?/Gợi ý tìm kiếm|Từ khóa tìm/:/Suggested searches|Search keywords|Research keywords/).test(node.querySelector('.li-learning-query-details summary')?.textContent||''),id+' query labels');
      }
+     if(phase==='progress'){
+      const selector='[data-li-saved-learning-evidence]';
+      await until(()=>!!journey()?.querySelector(selector),id+' draft evidence settled');
+      const evidence=normalize(journey()!.querySelector(selector)!.textContent||'');
+      check(evidence.includes(locale==='vi'?'Chưa có bài nộp':'No submission'),id+' draft evidence false submission');
+      check(evidence.includes(locale==='vi'?'Lượt hoàn tất tự đánh giá (gồm lịch sử): 0':'Completed self-review rounds (including saved history): 0'),id+' draft evidence false completion');
+      evidenceChecks++;
+     }
      checks++;
     }
     if(i<phases.length-1){click('.li-study-book-next');await until(()=>journey()?.dataset.liLessonPhase===phases[i+1],id+' next '+phase);}
@@ -109,10 +117,20 @@ export async function runBilingualReaderFixture(host:HTMLElement){
     reviewChecks++;
    }
    click('.li-study-book-next');await until(()=>journey()?.dataset.liLessonPhase==='progress',id+' reviewed progress');
-   for(const locale of locales){app.liLanguage.set(locale);await until(()=>journey()?.lang===locale&&attempt.locale===locale,id+' completed progress '+locale);check(attempt.reviewed&&attempt.submission?.[0]===marker,id+' completion lost');reviewChecks++;}
+   for(const locale of locales){
+    app.liLanguage.set(locale);
+    const selector='[data-li-saved-learning-evidence]';
+    await until(()=>journey()?.lang===locale&&attempt.locale===locale&&!!journey()?.querySelector(selector),id+' completed progress '+locale);
+    check(attempt.reviewed&&attempt.submission?.[0]===marker,id+' completion lost');
+    const evidence=normalize(journey()!.querySelector(selector)!.textContent||'');
+    check(evidence.includes(locale==='vi'?'Đã nộp':'Submitted'),id+' saved evidence missing submission');
+    check(evidence.includes(locale==='vi'?'Lượt hoàn tất tự đánh giá (gồm lịch sử): 1':'Completed self-review rounds (including saved history): 1'),id+' saved evidence wrong completed count');
+    check(evidence.includes(locale==='vi'?'Chưa có ghi nhận trong bài này':'Not recorded in this lesson'),id+' invented spell application');
+    evidenceChecks++;reviewChecks++;
+   }
    readers++;
    console.log('BILINGUAL_READER_PASS '+id+' 5 phases × VI→EN→VI; saved drafts unchanged');
   }
-  return {status:'PASS',readers,checks,reviewChecks,scope:'actual reader render, pre-submit phases and completed receipt render, in-memory locale persistence; not physical device or live cloud'};
+  return {status:'PASS',readers,checks,reviewChecks,evidenceChecks,scope:'actual reader render, pre-submit phases and completed receipt render, in-memory locale persistence; not physical device or live cloud'};
  }finally{root.unmount();}
 }

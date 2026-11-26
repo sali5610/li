@@ -3,12 +3,13 @@ import './home-catalog.css';
 import {inquiryFlow} from './inquiry-port.js';
 import {authoredCopy,useDiscoveryLocale,localized} from './discovery-locale.js';
 import type {ResearchView,CaseChoice} from './inquiry-port.js';
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {motion,useReducedMotion} from 'motion/react';
 import {Badge,Button,Field,Heading,InlineFeedback,NumberedCard,Text} from '../../../../design-system/react/index';
 import {LiIcon} from '../../../../design-system/react/LucideIcons';
 import {CopyAnalysisPrompt} from '../learning/CopyAnalysisPrompt.js';
+import {readCaseChoice,writeCaseChoice,keepCaseOnRecheck,type CaseOwner} from './case-selection.js';
 
 const empty:ResearchView={question:'',branches:[],observed:'',unknown:'',feedback:''};
 const readResearch=():ResearchView=>inquiryFlow().getResearch()||empty;
@@ -159,20 +160,40 @@ function CaseScene(){
  const [caseCopy,setCaseCopy]=useState(readCaseCopy);
  const [choice,setChoice]=useState<CaseChoice|null>(null);
  const [completed,setCompleted]=useState<{choice:CaseChoice;conclusion:string}|null>(null);
- const [revision,setRevision]=useState(()=>inquiryFlow().getCaseDraft());
+ const [revision,setRevision]=useState('');
+ const owner=useRef<CaseOwner|null>(null);
  const [message,setMessage]=useState('');
  const [bookmarked,setBookmarked]=useState(readBookmark);
  useEffect(()=>{
-  const sync=()=>{
-   const permitted=document.documentElement.classList.contains('li-auth-verified');
-   if(!permitted){setChoice(null);setMessage('');}
-   if(!permitted)setCompleted(null);
-   setBookmarked(readBookmark());
-   const latest=readCaseCopy();
-   setCaseCopy(previous=>previous.id===latest.id?previous:latest);
-   const saved=inquiryFlow().getCaseDraft();
-   setRevision(previous=>previous===saved?previous:saved);
+  const clear=()=>{owner.current=null;setChoice(null);setCompleted(null);setRevision('');setMessage('');setBookmarked(false);};
+  const sync=(event?:Event)=>{
+   const detail=(event as CustomEvent<{verified?:boolean;transient?:boolean;accountId?:string|null}>|undefined)?.detail;
+   if(!document.documentElement.classList.contains('li-auth-verified')){
+    // Same-account focus/pageshow rechecks hide private UI, not discard drafts.
+    if(!keepCaseOnRecheck(owner.current,detail))clear();
+    return;
+   }
+   if(document.documentElement.classList.contains('li-account-open'))return;
+   try{
+    const uid=localStorage.getItem('li.sync.local-owner.v1');
+    if(!uid||(detail?.accountId&&detail.accountId!==uid)){clear();return;}
+    const latest=readCaseCopy();
+    const changed=owner.current?.uid!==uid||owner.current?.caseId!==latest.id;
+    setCaseCopy(previous=>previous.id===latest.id?previous:latest);
+    setBookmarked(readBookmark());
+    if(changed){
+     clear();
+     owner.current={uid,caseId:latest.id};
+     setBookmarked(readBookmark());
+     setRevision(inquiryFlow().getCaseDraft());
+     setChoice(readCaseChoice(localStorage,owner.current,true));
+    }else if(event?.type==='li:personal-sync-applied'||event?.type==='li:inquiry-changed'){
+     const saved=inquiryFlow().getCaseDraft();
+     setRevision(previous=>previous===saved?previous:saved);
+    }
+   }catch{clear();setMessage(L('Không thể khôi phục lựa chọn trên thiết bị này. Hãy chọn lại nhận định.','Could not restore the choice on this device. Select a claim again.'));}
   };
+  sync();
   window.addEventListener('li:auth-verified-changed',sync);
   window.addEventListener('li:inquiry-changed',sync);
   window.addEventListener('li:personal-sync-applied',sync);
@@ -182,11 +203,13 @@ function CaseScene(){
    window.removeEventListener('li:personal-sync-applied',sync);
   };
  },[]);
- useEffect(()=>{
-  setChoice(null);setCompleted(null);setMessage('');
-  setRevision(inquiryFlow().getCaseDraft());
-  setBookmarked(readBookmark());
- },[caseCopy.id]);
+ const selectChoice=(next:CaseChoice)=>{
+  const current=owner.current;
+  if(!current||current.caseId!==caseCopy.id||!document.documentElement.classList.contains('li-auth-verified'))return;
+  setChoice(next);setCompleted(null);setMessage('');
+  try{writeCaseChoice(localStorage,current,true,next);}
+  catch{setMessage(L('Không thể lưu lựa chọn trên thiết bị này. Hãy giữ app đang mở.','Could not retain this choice on the device. Keep the app open.'));}
+ };
  const updateRevision=(next:string)=>{
   setRevision(next);
   setCompleted(null);
@@ -198,7 +221,10 @@ function CaseScene(){
   if(!choice){setMessage(L('Hãy chọn một nhận định trước khi lưu.','Choose an answer before saving.'));return false;}
   if(revision.trim().length<12){setMessage(L('Viết lại kết luận ít nhất 12 ký tự.','Revise your conclusion using at least 12 characters.'));return false;}
   const saved=inquiryFlow().submitCase(choice,revision);
-  if(saved){setCompleted({choice,conclusion:revision});setMessage('');setRevision('');setChoice(null);}
+  if(saved){
+   try{if(owner.current)writeCaseChoice(localStorage,owner.current,document.documentElement.classList.contains('li-auth-verified'),null);}catch{/* saved note remains authoritative */}
+   setCompleted({choice,conclusion:revision});setMessage('');setRevision('');setChoice(null);
+  }
   else setMessage(L('Không thể lưu Bút Ký trên thiết bị này. Nội dung vẫn giữ trong ô viết.','Unable to save to Notebook on this device. Your text is preserved here.'));
   return saved;
  };
@@ -240,10 +266,10 @@ function CaseScene(){
     </div>
     <div className="path-list case-options">
      <Button className="branch" variant="secondary" aria-pressed={choice==='right'}
-      onClick={()=>{setChoice('right');setCompleted(null);setMessage('');}}>
+      onClick={()=>selectChoice('right')}>
       {L(caseCopy.options.right.vi,caseCopy.options.right.en)}</Button>
      <Button className="branch" variant="secondary" aria-pressed={choice==='wrong'}
-      onClick={()=>{setChoice('wrong');setCompleted(null);setMessage('');}}>
+      onClick={()=>selectChoice('wrong')}>
       {L(caseCopy.options.wrong.vi,caseCopy.options.wrong.en)}</Button>
     </div>
     <motion.p key={choice||'none'} className="state-note" role="status"

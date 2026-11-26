@@ -138,7 +138,10 @@ assert.match(copyPrompt,/writeText\(prompt\)\.then\(open,\(\)=>setStatus\('error
 assert.match(copyPrompt,/window\.location\.href='chatgpt:\/\/'/);
 assert.match(copyPrompt,/href="https:\/\/chatgpt\.com\/" target="_blank" rel="noopener noreferrer"/,
  'Keep an explicit web fallback without a private prompt in the URL');
-assert.match(researchCase,/if\(!permitted\)\{setChoice\(null\);setMessage\(''\);\}/);
+assert.match(researchCase,/if\(!keepCaseOnRecheck\(owner.current,detail\)\)clear\(\);\s*return;/,
+ 'Transient same-account rechecks must not erase selected claim; settled denial clears visible state');
+assert.match(researchCase,/const clear=\(\)=>\{owner.current=null;setChoice\(null\);setCompleted\(null\);setRevision\(''\)/,
+ 'Settled denial or owner change must clear private state');
 assert.match(guide,/window\.liGuideUi=port/);
 assert.match(capture,/window\.liCaptureUi=port/);
 
@@ -162,8 +165,8 @@ assert.match(routing,/window\.history\.pushState\(/,
 assert.match(routing,/window\.history\.back\(\)/,
  'Existing global Back returns to the exact originating Case entry');
 assert.match(researchCase,/const \[choice,setChoice\]=useState<CaseChoice\|null>\(null\)/);
-assert.match(researchCase,/const \[revision,setRevision\]=useState\(\(\)=>inquiryFlow\(\)\.getCaseDraft\(\)\)/,
- 'Case text remains on its mounted page and canonical draft storage during lesson navigation');
+assert.match(researchCase,/setRevision\(inquiryFlow\(\)\.getCaseDraft\(\)\);\s*setChoice\(readCaseChoice\(localStorage,owner.current,true\)\)/,
+ 'Case text and selection are hydrated only after matching verified owner and case');
 
 
 assert.match(plans,/window\.liMirrorRelatedLesson\?\.\(currentPage==="home"\?scenarios\[qIndex\]:liCurrentProblem\(\)\)/,

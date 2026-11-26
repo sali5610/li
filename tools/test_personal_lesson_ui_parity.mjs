@@ -202,6 +202,22 @@ for(const [id,f] of Object.entries(visualEvidence.lessons)){
   bilingual(f.unit);bilingual(f.xLabel);
  }else assert.fail('Unknown figure '+id);
 }
+// Personal lessons must use the same actionable source section as Wave1.
+const readingUi=read(root+'LessonDetailParity.tsx');
+assert.match(visualUi,/<LessonSources id=\{id\} locale=\{locale\}/);
+assert.match(visualUi,/searchQueries=\{entry\.queries\} onSearch=\{onSearch\}/);
+assert.match(reader,/<LessonVisualEvidence id=\{id\} locale=\{locale\} title=\{lesson\.title\[locale\]\} onSearch=\{ports\.search\.openSearch\}/);
+assert.match(readingUi,/onClick=\{\(\)=>onSearch\(query\)\}/);
+assert.match(readingUi,/buildPrompt\(id,locale,\[source\],subject,conceptTitle\)/);
+assert.match(readingUi,/buildPrompt\(id,locale,safe,subject,conceptTitle\)/);
+assert.match(readingUi,/href="https:\/\/chatgpt\.com\/"/);
+for(const [id,f] of Object.entries(visualEvidence.lessons)){
+ assert.ok(f.sources.length>=2,id+' current source coverage');
+ assert.equal(new Set(f.sources.map(x=>x.url)).size,f.sources.length);
+ assert.ok(Array.isArray(f.queries)&&f.queries.length>0,id+' missing suggested searches');
+ assert.equal(new Set(f.queries).size,f.queries.length);
+ assert.ok(f.queries.every(q=>typeof q==='string'&&q.trim().length>0));
+}
 const fig=visualEvidence.lessons;
 const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
 const spread=a=>Math.max(...a)-Math.min(...a);

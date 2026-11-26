@@ -42,7 +42,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "GOV.UK — Plan user research for your service",
+          "url": "https://www.gov.uk/service-manual/user-research/plan-user-research-for-your-service",
+          "scope": {
+            "vi": "Lập kế hoạch kiểm chứng giả thuyết nhu cầu.",
+            "en": "Plan research to test need hypotheses."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "user need vs feature request",
+        "problem statement UX research",
+        "neutral interview questions user needs",
+        "site:gov.uk/service-manual/user-research user needs"
       ]
     },
     "L03-1-3": {
@@ -111,7 +131,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "GOV.UK — Taking notes and recording user research sessions",
+          "url": "https://www.gov.uk/service-manual/user-research/taking-notes-and-recording-user-research-sessions",
+          "scope": {
+            "vi": "Ghi chép và lưu chứng cứ nghiên cứu.",
+            "en": "Research note-taking and evidence recording."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "observation vs inference user research",
+        "verbatim quote research analysis",
+        "qualitative research triangulation",
+        "site:gov.uk/service-manual/user-research analyse research session"
       ]
     },
     "L03-2-1": {
@@ -152,7 +192,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "Canada.ca — Organizing content on Canada.ca: IA and findability",
+          "url": "https://design.canada.ca/specifications/information-findability/organizing-content.html",
+          "scope": {
+            "vi": "Tổ chức nội dung và khả năng tìm thấy.",
+            "en": "Content organization and findability."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "taxonomy vs navigation UX",
+        "controlled vocabulary synonyms metadata",
+        "content model information architecture",
+        "site:nngroup.com taxonomy 101"
       ]
     },
     "L03-2-2": {
@@ -221,7 +281,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "NN/g — Tree Testing: Fast, Iterative Evaluation of Menu Labels and Categories",
+          "url": "https://www.nngroup.com/articles/tree-testing/",
+          "scope": {
+            "vi": "Kiểm tra nhãn menu bằng tree test.",
+            "en": "Evaluate menu labels with tree tests."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "open closed card sorting",
+        "tree testing task wording",
+        "tree testing direct indirect success",
+        "site:nngroup.com card sorting tree testing differences"
       ]
     },
     "L03-2-3": {
@@ -271,7 +351,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "NN/g — Low Findability and Discoverability: Four Testing Methods",
+          "url": "https://www.nngroup.com/articles/navigation-ia-tests/",
+          "scope": {
+            "vi": "Các phép thử khả năng tìm thấy.",
+            "en": "Testing methods for findability."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "task success rate usability",
+        "tree testing direct indirect success",
+        "first click versus task completion",
+        "site:nngroup.com navigation IA tests"
       ]
     },
     "L09-1-3": {
@@ -342,7 +442,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "OpenStax — Measures of the Spread of the Data",
+          "url": "https://openstax.org/books/introductory-statistics-2e/pages/2-7-measures-of-the-spread-of-the-data",
+          "scope": {
+            "vi": "Độ phân tán và độ lệch chuẩn.",
+            "en": "Spread and standard deviation."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "mean median mode outliers",
+        "range interquartile range standard deviation",
+        "dot plot distribution shape",
+        "site:openstax.org measures of spread"
       ]
     },
     "L09-2-1": {
@@ -401,7 +521,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "OpenStax — Independent and Mutually Exclusive Events",
+          "url": "https://openstax.org/books/introductory-statistics-2e/pages/3-2-independent-and-mutually-exclusive-events",
+          "scope": {
+            "vi": "Xác suất có điều kiện và độc lập.",
+            "en": "Conditional probability and independence."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "conditional probability contingency table",
+        "base rate fallacy positive predictive value",
+        "sensitivity versus precision",
+        "site:openstax.org conditional probability"
       ]
     },
     "L09-2-2": {
@@ -454,7 +594,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "OpenStax — Introduction to Confidence Intervals",
+          "url": "https://openstax.org/books/introductory-statistics-2e/pages/8-introduction",
+          "scope": {
+            "vi": "Khung suy luận khoảng tin cậy.",
+            "en": "Introduction to interval estimation."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "Wald confidence interval population proportion",
+        "confidence interval repeated sampling coverage",
+        "Wilson vs Wald interval",
+        "site:openstax.org population proportion confidence interval"
       ]
     },
     "L09-2-3": {
@@ -523,7 +683,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "OpenStax — Data, Sampling, and Variation in Data and Sampling",
+          "url": "https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling",
+          "scope": {
+            "vi": "Bối cảnh lấy mẫu và giới hạn suy luận.",
+            "en": "Sampling context and inference limits."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "ordinary least squares slope intercept residual",
+        "confounding pooled versus within group regression",
+        "correlation does not imply causation",
+        "site:openstax.org regression equation"
       ]
     },
     "L09-3-1": {
@@ -568,7 +748,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "scikit-learn — Cross-validation: evaluating estimator performance",
+          "url": "https://scikit-learn.org/stable/modules/cross_validation.html",
+          "scope": {
+            "vi": "Chia tập, đánh giá và lựa chọn mô hình.",
+            "en": "Splits, evaluation and model selection."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "data leakage preprocessing pipeline",
+        "group split new customer generalization",
+        "time series validation future leakage",
+        "site:scikit-learn.org common pitfalls cross validation"
       ]
     },
     "L09-3-2": {
@@ -627,7 +827,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "scikit-learn — Precision-Recall",
+          "url": "https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html",
+          "scope": {
+            "vi": "Đường precision–recall và ngưỡng quyết định.",
+            "en": "Precision–recall curves and thresholds."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "confusion matrix precision recall accuracy",
+        "precision recall threshold tradeoff",
+        "false negative false positive costs",
+        "site:scikit-learn.org precision recall"
       ]
     },
     "L09-3-3": {
@@ -712,7 +932,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "scikit-learn — Permutation Importance with Multicollinear or Correlated Features",
+          "url": "https://scikit-learn.org/stable/auto_examples/inspection/plot_permutation_importance_multicollinear.html",
+          "scope": {
+            "vi": "Giới hạn importance khi feature tương quan.",
+            "en": "Importance limitations with correlated features."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "group fairness metrics equalized odds",
+        "selection rate TPR FPR disparity",
+        "permutation importance correlated features",
+        "site:fairlearn.org common fairness metrics"
       ]
     },
     "L15-2-1": {
@@ -780,7 +1020,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "Hyndman & Athanasopoulos — Evaluating point forecast accuracy",
+          "url": "https://otexts.com/fpp3/accuracy.html",
+          "scope": {
+            "vi": "Sai số dự báo và đánh giá ngoài mẫu.",
+            "en": "Forecast errors and out-of-sample evaluation."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "demand forecast moving average baseline",
+        "forecast error bias actual minus forecast",
+        "stockout censored demand",
+        "site:otexts.com/fpp3 forecast accuracy"
       ]
     },
     "L15-2-3": {
@@ -867,7 +1127,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "Oracle — Shipment Event: Shipment Status Table",
+          "url": "https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/execution/25_shipment_status/event-status_table.htm",
+          "scope": {
+            "vi": "Sự kiện cập nhật thời điểm chuyến hàng.",
+            "en": "Shipment event time updates."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "planned estimated actual arrival departure",
+        "ETA as of timestamp event time receipt time",
+        "shipment milestone exception monitoring",
+        "site:docs.oracle.com shipment stop details"
       ]
     },
     "L15-3-1": {
@@ -947,7 +1227,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "MIT Sloan Management Review — The Bullwhip Effect in Supply Chains",
+          "url": "https://shop.sloanreview.mit.edu/store/the-bullwhip-effect-in-supply-chains",
+          "scope": {
+            "vi": "Bản giới thiệu cơ chế bullwhip; toàn văn có thể mất phí.",
+            "en": "Overview of bullwhip mechanisms; full text may require payment."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "bullwhip effect demand signal processing",
+        "order batching price variation rationing gaming",
+        "order variance versus sales variance",
+        "Lee Padmanabhan Whang bullwhip effect 1997"
       ]
     },
     "L15-3-2": {
@@ -1011,7 +1311,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "MIT OpenCourseWare — Supply Chain Planning",
+          "url": "https://ocw.mit.edu/courses/15-762j-supply-chain-planning-spring-2011/",
+          "scope": {
+            "vi": "Tài liệu khóa học mở về hoạch định chuỗi cung ứng.",
+            "en": "Open course resources on supply chain planning."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "inventory risk pooling square root law",
+        "safety stock demand correlation covariance",
+        "risk pooling heavy tailed demand",
+        "site:ocw.mit.edu supply chain planning inventory"
       ]
     },
     "L15-3-3": {
@@ -1071,7 +1391,27 @@
           },
           "access": "readable",
           "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "MIT News — Building resilience for the next supply chain disruption",
+          "url": "https://news.mit.edu/2022/building-resilience-next-supply-chain-disruption-james-rice-1121",
+          "scope": {
+            "vi": "Bối cảnh chuẩn bị và phục hồi khi gián đoạn.",
+            "en": "Preparation and recovery in disruption contexts."
+          },
+          "limit": {
+            "vi": "Nguồn đọc mở rộng; chưa đối chiếu từng nhận định trong toàn văn.",
+            "en": "Further reading; not a full claim-level review."
+          },
+          "access": "not_checked",
+          "tier": "further"
         }
+      ],
+      "queries": [
+        "cycle service level vs unit fill rate",
+        "supply chain resilience time to recover",
+        "service cost inventory tradeoff",
+        "site:mit.edu supply chain disruption resilience"
       ]
     }
   }

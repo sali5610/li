@@ -57,37 +57,61 @@ export function buildAnalysisPrompt(locale:Locale,step:AnalysisStep,data:Analysi
  ];
  return parts.join('\n\n')+'\n\n'+directions.map((x,i)=>`${i+1}. ${x}`).join('\n');
 }
-async function copyPrompt(value:string):Promise<void>{
- if(navigator.clipboard?.writeText&&window.isSecureContext){
-  await navigator.clipboard.writeText(value);return;
- }
- const textarea=document.createElement('textarea');
- textarea.value=value;textarea.readOnly=true;
- textarea.style.cssText='position:fixed;left:-9999px;opacity:0';
- document.body.appendChild(textarea);textarea.focus();textarea.select();
- try{if(!document.execCommand('copy'))throw Error('COPY_FAILED');}
- finally{textarea.remove();}
+/** Copy locally before requesting external navigation; never put the prompt in a URL. */
+export function CopyPromptAction({locale,prompt,disabled=false,variant='secondary'}:{
+ locale:Locale;prompt:string;disabled?:boolean;variant?:'primary'|'secondary'|'ghost';
+}){
+ const [status,setStatus]=useState<'idle'|'copying'|'copied'|'error'>('idle');
+ useEffect(()=>setStatus('idle'),[prompt]);
+ const vi=locale==='vi';
+ const open=()=>{
+  setStatus('copied');
+  // Best-effort iOS app switch. A PWA cannot determine app installation.
+  if(/iPhone|iPad|iPod/.test(navigator.userAgent)||
+     (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){
+   try{window.location.href='chatgpt://';return;}catch{/* HTTPS below */}
+  }
+  window.open('https://chatgpt.com/','_blank','noopener,noreferrer');
+ };
+ const activate=()=>{
+  setStatus('copying');
+  // Synchronous clipboard command preserves the user gesture on iOS.
+  // Modern clipboard API is the fallback when the command is unavailable.
+  const area=document.createElement('textarea');
+  area.value=prompt;area.readOnly=true;
+  area.style.cssText='position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none';
+  const previous=document.activeElement as HTMLElement|null;
+  let copied=false;
+  document.body.appendChild(area);
+  try{area.focus({preventScroll:true});area.select();area.setSelectionRange(0,area.value.length);
+   copied=document.execCommand('copy');}catch{/* modern clipboard fallback */}
+  finally{area.remove();previous?.focus({preventScroll:true});}
+  if(copied){open();return;}
+  if(!navigator.clipboard?.writeText){setStatus('error');return;}
+  void navigator.clipboard.writeText(prompt).then(open,()=>setStatus('error'));
+ };
+ return <>
+  <Button variant={variant} disabled={disabled||status==='copying'} onClick={activate}>
+   {status==='copying'?(vi?'Đang sao chép…':'Copying…'):
+    (vi?'Sao chép & mở ChatGPT':'Copy & open ChatGPT')}
+  </Button>
+  {status==='error'&&<Text role="support" aria-live="polite">{vi?
+   'Chưa sao chép được. Hãy thử lại.':'Copy failed. Please try again.'}</Text>}
+  {status==='copied'&&<><Text role="support" aria-live="polite">{vi?
+   'Đã sao chép. Dán prompt vào ChatGPT khi sẵn sàng.':'Copied. Paste into ChatGPT when ready.'}</Text>
+   <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">{vi?
+    'Không mở được app? Mở ChatGPT trên web':'App did not open? Open ChatGPT on web'}</a></>}
+ </>;
 }
 export function CopyAnalysisPrompt({locale,step,data,disabled=false}:{
  locale:Locale;step:AnalysisStep;data:AnalysisContext;disabled?:boolean;
 }){
- const [status,setStatus]=useState<'idle'|'copied'|'error'>('idle');
  const prompt=buildAnalysisPrompt(locale,step,data);
- useEffect(()=>setStatus('idle'),[prompt]);
  const vi=locale==='vi';
  return <div className="li-learning-copy-prompt" data-li-copy-analysis={step}>
   <Text role="support">{vi?
-   'Muốn ChatGPT góp ý? Sao chép prompt rồi dán vào chat. Không tự gửi dữ liệu.':
-   'Want ChatGPT feedback? Copy the prompt into a chat. Nothing is sent automatically.'}</Text>
-  <Button variant="secondary" disabled={disabled} onClick={()=>void copyPrompt(prompt)
-   .then(()=>setStatus('copied')).catch(()=>setStatus('error'))}>
-   {status==='copied'?(vi?'Đã sao chép':'Prompt copied'):(vi?'Sao chép prompt':'Copy prompt')}
-  </Button>
-  {status==='error'&&<Text role="support" aria-live="polite">{vi?
-   'Không thể sao chép. Hãy thử lại trên kết nối HTTPS.':
-   'Copy failed. Please try again on HTTPS.'}</Text>}
-  {status==='copied'&&<Text role="support" aria-live="polite">{vi?
-   'Đã sao chép · Dán vào ChatGPT để xem phân tích.':
-   'Copied · Paste into ChatGPT to get feedback.'}</Text>}
+   'Prompt có thể chứa bài làm của ngươi. Chỉ sao chép vào bộ nhớ tạm; ngươi tự quyết định dán và gửi.':
+   'The prompt may include your answers. It is copied locally; you decide whether to paste and send.'}</Text>
+  <CopyPromptAction locale={locale} prompt={prompt} disabled={disabled}/>
  </div>;
 }

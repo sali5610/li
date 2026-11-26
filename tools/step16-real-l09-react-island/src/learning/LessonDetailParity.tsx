@@ -1,3 +1,4 @@
+import {CopyPromptAction} from './CopyAnalysisPrompt.js';
 import React,{useEffect,useState} from 'react';
 import {Button,Card,Heading,Text} from '../../../../design-system/react/index';
 import './lesson-detail-parity.css';
@@ -73,15 +74,6 @@ function buildPrompt(id:LessonId,locale:Locale,sources:LessonSource[],subject:st
   '\n\nChỉ tóm tắt phần bạn thực sự truy cập. Nếu URL bị chặn hoặc không có toàn văn, hãy nói rõ và đề nghị tôi dán nội dung, tuyệt đối không bịa trích dẫn. Trả lời bằng tiếng Việt: 1) tóm tắt 5 ý có link nguồn; 2) định nghĩa các khái niệm của bài; 3) tách điều nguồn nói và suy luận; 4) phân tích một tình huống thực tế cùng giới hạn suy rộng; 5) giả định/cảnh báo; 6) ba câu active recall không hiện đáp án. Nếu nguồn có mô hình khác bài học, hãy giải thích sự khác biệt thay vì ép đồng nhất.':
   '\n\nSummarize only materials you can actually access. If URLs are blocked or full text is missing, say so and request excerpts rather than inventing citations. In English: (1) five source-linked insights; (2) main concepts; (3) verified source claims versus your inferences; (4) a practical case with limits; (5) assumptions and cautions; and (6) three active recall questions without immediate answers. Explain differences if a source uses a different model.';
  return start+list+end;
-}
-async function copyText(text:string){
- if(navigator.clipboard&&window.isSecureContext){
-  await navigator.clipboard.writeText(text);return;
- }
- const area=document.createElement('textarea');area.value=text;area.readOnly=true;
- area.style.cssText='position:fixed;left:-9999px;opacity:0';
- document.body.appendChild(area);area.select();
- try{if(!document.execCommand('copy'))throw Error('COPY_FAILED');}finally{area.remove();}
 }
 /** Existing lesson/case bookmark store, including undo and remote sync, is the
  * only write owner. A real React icon button replaces the missing native one.
@@ -213,16 +205,7 @@ export function LessonSources({id,locale,copy,sources,subject,conceptTitle,onSea
  id:LessonId;locale:Locale;copy:ReferenceLabels;sources:LessonSource[];
  subject:string;conceptTitle:string;onSearch:(query:string)=>void
 }){
- const [feedback,setFeedback]=useState('');
  const safe=sources.filter(s=>external(s.url));
- const copyPrompt=async(source?:LessonSource)=>{
-  try{
-   await copyText(buildPrompt(id,locale,source?[source]:safe,subject,conceptTitle));
-   setFeedback(copy.copied||(locale==='vi'?'Đã copy prompt.':'Prompt copied.'));
-  }catch{
-   setFeedback(copy.copyFailed||(locale==='vi'?'Không thể sao chép.':'Clipboard unavailable.'));
-  }
- };
  const queries=queryByLesson[id];
  return <section className="li-learning-sources li-lesson-reference-extra"
   id={'li-react-'+id+'-sources'} aria-label={copy.sourcesTitle}>
@@ -236,9 +219,7 @@ export function LessonSources({id,locale,copy,sources,subject,conceptTitle,onSea
     <div className="li-learning-reference-actions">
      <a href={source.url} target="_blank" rel="noopener noreferrer">
       {copy.openSource}</a>
-     <Button variant="secondary" onClick={()=>void copyPrompt(source)}>
-      {copy.copySource||copy.copyPrompt||(locale==='vi'?'Copy prompt':'Copy prompt')}
-     </Button>
+     <CopyPromptAction locale={locale} prompt={buildPrompt(id,locale,[source],subject,conceptTitle)}/>
     </div>
    </Card>)}
   </div>
@@ -250,10 +231,9 @@ export function LessonSources({id,locale,copy,sources,subject,conceptTitle,onSea
    </div>
   </details>
   <div className="li-learning-reference-actions">
-   <Button variant="primary" onClick={()=>void copyPrompt()}>{copy.allPrompt}</Button>
+   <CopyPromptAction variant="primary" locale={locale} prompt={buildPrompt(id,locale,safe,subject,conceptTitle)}/>
    <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">{copy.openChat}</a>
   </div>
-  {feedback&&<Text role="support" aria-live="polite">{feedback}</Text>}
   <Text role="support">{copy.sourceNote}</Text>
  </section>;
 }

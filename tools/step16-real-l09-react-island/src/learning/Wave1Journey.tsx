@@ -18,8 +18,7 @@ import {LessonBookmark,LessonMentor,LessonSources,LessonFigure,openLessonSpell} 
 import {RelatedLessons} from './RelatedLessons.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
-import {AiFeedbackPanel} from './AiFeedbackPanel.js';
-import feedbackPolicy from '../../../../content/feedback/ai-question-modes.v1.json';
+import {CopyAnalysisPrompt} from './CopyAnalysisPrompt.js';
 import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 
 type LessonId='L03-1-2'|'L15-2-2';
@@ -371,6 +370,10 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
        </div>
       </aside>
       </details>
+    <CopyAnalysisPrompt locale={appLocale} step="guided" data={{
+     title:content.conceptTitle,lessonId:id,activity:content.guidedText,
+     questions:[content.guidedQuestion],answers:[attempt.guidedDraft]
+    }}/>
     <Button onClick={()=>setPhase('practice')}>{vi?'Tiếp: Làm bài':'Next: Practice'} →</Button>
    </Card>}
    {phase==='practice'&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-wave1-practice">
@@ -388,6 +391,10 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
       onChange={e=>editAnswer(i,e.currentTarget.value)}/>)}
     </div>
     <Text role="support">{content.saveHint}</Text>
+    <CopyAnalysisPrompt locale={appLocale} step="practice" data={{
+     title:content.conceptTitle,lessonId:id,activity:content.challengeText+'\n'+content.challengeClaim,
+     questions:content.questions,answers:attempt.draft
+    }}/>
     {!attempt.submitted?<div className="li-learning-recovery">
      <Button disabled={saving||locked} onClick={()=>void submit()}>{content.submit}</Button>
      <Button variant="secondary" disabled={saving||locked} onClick={clearDraft}>{content.clear}</Button>
@@ -432,9 +439,11 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     </div>
     <Text role="support">{content.scoreLabel}: {attempt.ratings.every(x=>x!==null)?
      attempt.ratings.reduce<number>((sum,v)=>sum+(v??0),0)+' / 8':'— / 8'}</Text>
-    <AiFeedbackPanel id={id} locale={appLocale}
-     answers={attempt.submission??attempt.draft}
-     openQuestionIndices={feedbackPolicy.lessons[id].modes.flatMap((mode,index)=>mode==='open'?[index]:[])}/>
+    <CopyAnalysisPrompt locale={appLocale} step="feedback" data={{
+     title:content.conceptTitle,lessonId:id,activity:content.challengeText+'\n'+content.challengeClaim,
+     questions:content.questions,answers:attempt.submission??attempt.draft,
+     reference:content.answer+'\n'+content.answerNote
+    }}/>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
      locale={appLocale} onReviewTheory={()=>setPhase('read')}/>
     {attempt.reviewed?<Button onClick={()=>setPhase('progress')}>{vi?'Tiếp: Tiến độ':'Next: Progress'} →</Button>:
@@ -450,6 +459,11 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
    {phase==='progress'&&attempt.reviewed&&<Card variant="flat-study" className="li-study-book-page" aria-labelledby="li-wave1-progress">
     <Heading level={2} id="li-wave1-progress" role="titleLarge">{content.reviewDone}</Heading>
     <Text>{content.progressDone}</Text>
+    <CopyAnalysisPrompt locale={appLocale} step="progress" data={{
+     title:content.conceptTitle,lessonId:id,activity:content.challengeText,
+     questions:content.questions,answers:attempt.submission??attempt.draft,
+     reference:content.answer,extra:(vi?'Tự đánh giá: ':'Self-ratings: ')+attempt.ratings.join(', ')
+    }}/>
     <Text>{content.scoreLabel}: {attempt.ratings.reduce<number>((n,v)=>n+(v??0),0)} / 8</Text>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}
      locale={appLocale} onReviewTheory={()=>setPhase('read')}/>

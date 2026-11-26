@@ -12,7 +12,7 @@ import {SaveStatus} from '../../../../design-system/react/Molecules';
 import type {SaveState} from '../../../../design-system/react/Molecules';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
-import {CopyAnalysisPrompt} from './CopyAnalysisPrompt.js';
+import {CopyAnalysisPrompt,CopyPromptAction} from './CopyAnalysisPrompt.js';
 import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discovery-locale.js';
 import {useStepScreen} from './step-screen.js';
 
@@ -274,7 +274,6 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
  const chain=useRef<Promise<void>>(Promise.resolve());
  const pending=useRef(0),failed=useRef(false),mounted=useRef(true);
  const focusFrame=useRef(0);
- const [copiedPrompt,setCopiedPrompt]=useState(false);
  useEffect(()=>()=>{cancelAnimationFrame(focusFrame.current);},[]);
  function moveTo(next:Phase){
   setPhase(next);
@@ -977,10 +976,7 @@ export function EditorialJourney({id,ports}:{id:string;ports:LearningPorts}){
       onClick={()=>ports.search.openSearch(q)}>{q}</Button></li>)}</ul>
      <Heading level={3} role="titleMedium">{vi?'Đối chiếu với nguồn':'Source-aware research prompt'}</Heading>
      <p className="li-learning-copy">{content.extension.sourcePrompt}</p>
-     <Button variant="secondary" onClick={()=>void navigator.clipboard.writeText(content.extension.sourcePrompt)
-      .then(()=>setCopiedPrompt(true)).catch(()=>setCopiedPrompt(false))}>
-      {copiedPrompt?(vi?'Đã sao chép':'Copied'):(vi?'Sao chép prompt':'Copy prompt')}
-     </Button>
+     <CopyPromptAction locale={locale} prompt={content.extension.sourcePrompt}/>
      <Heading level={3} role="titleMedium">{vi?'Tự nhớ lại · chưa có đáp án':'Active recall · no answers shown'}</Heading>
      <ol>{content.extension.recallQuestions.map(q=><li key={q}>{q}</li>)}</ol>
      <Text role="support">{vi?'K5 · Chưa đo khả năng nhớ lại sau nhiều ngày.':'K5 · Delayed recall has not been measured.'}</Text>

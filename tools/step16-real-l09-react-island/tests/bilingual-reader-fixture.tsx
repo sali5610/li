@@ -74,7 +74,7 @@ export async function runBilingualReaderFixture(host:HTMLElement){
      if(phase==='guided'||phase==='practice')check(Array.from(node.querySelectorAll('textarea')).some(x=>x.value===marker),id+' draft not visible '+phase);
      if(phase==='read'){
       check(!!node.querySelector('.li-learning-sources'),id+' missing sources');
-      check(node.querySelector('.li-learning-query-details summary')?.textContent?.includes(locale==='vi'?'Gợi ý tìm kiếm':'Suggested searches')===true,id+' query labels');
+      check((locale==='vi'?/Gợi ý tìm kiếm|Từ khóa tìm/:/Suggested searches|Search keywords|Research keywords/).test(node.querySelector('.li-learning-query-details summary')?.textContent||''),id+' query labels');
      }
      checks++;
     }

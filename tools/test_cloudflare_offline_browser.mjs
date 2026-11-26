@@ -199,5 +199,13 @@ try{
  assert(inviteCalls>=beforeRevocation+2,'persistent denial must be confirmed without granting access');
  assert.equal(await evaluate("localStorage.getItem('li.offline.device-invite.v3')"),null,'revoked grant still persisted');
  assert.equal(await evaluate("document.querySelector('[data-invite-error-code]')?.dataset.inviteErrorCode"),'INV-RPC-DENIED');
- console.log('PASS online revocation locks app and removes offline receipt');
+ assert.equal(await evaluate("getComputedStyle(document.querySelector('.mobile-nav')).display"),'none','mobile navigation must be hidden while Auth is locked');
+ console.log('PASS online revocation locks app, hides navigation and removes offline receipt');
+ invited=true;
+ const beforeManual=inviteCalls;
+ await evaluate("Array.from(document.querySelectorAll('.auth-card button')).find(b=>b.textContent?.includes('Thử xác minh lại'))?.click()");
+ await wait(()=>inviteCalls>beforeManual,'manual in-app verification request');
+ await onlineReady('manual recovery without reload');
+ assert.equal(await evaluate('window.__qaWakeMarker'),'same-document');
+ console.log('PASS in-app verification retry from denied state without page refresh');
 }finally{await stop();server.closeAllConnections();await new Promise(r=>server.close(r));rmSync(tmp,{recursive:true,force:true});}

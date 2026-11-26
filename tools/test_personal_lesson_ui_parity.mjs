@@ -78,10 +78,36 @@ assert.match(nativeBuddy,/lessonContext\?\.editorial\?null/,
  'No unrelated global quote during authored lesson chat');
 assert.match(entry,/root.render\(<SectionedJourney lesson={lesson} ports={ports} preview\/>\)/,
  'Real personal routes must use the shared fixed renderer, not another static preview');
+// Step18: stable phase identity and mentor target across locale changes.
+assert.ok(reader.includes("data-li-chapter-id={id+':'+phase}"));
+assert.ok(reader.includes("const anchor=(role:Role)=>'li-sectioned-'+id+'-chapter-'+role"));
+assert.ok(reader.includes("id={index===0?'li-sectioned-'+id+'-chapter-'+role:undefined}"));
+assert.ok(reader.includes("id={'li-sectioned-'+id+'-'+x.id}"),'Retain original localized source anchors');
+assert.ok(!reader.includes("section(vi,role)[0]"),'Never target VI source IDs while reading EN');
+for(const phase of ['practice','feedback','progress']){
+ const target="id={'li-sectioned-'+id+'-"+phase+"'}";
+ assert.equal(reader.split(target).length-1,phase==='practice'?1:2,
+  'Stable anchor in each applicable gated and placeholder branch '+phase);
+}
+const chapterIds=new Set();
 for(const item of drafts){
  const d=JSON.parse(read(item.normalizedPath));
  assert.equal(d.publishState,'draft','Do not publish '+item.id);
  assert.equal(d.rights.releaseAuthorized,false,'Do not bypass rights gate '+item.id);
+ // Every authored manuscript has one identity per actual reader phase,
+ // not one completion per language or per source subsection.
+ for(const phase of pages){
+  const chapterId=d.id+':'+phase;
+  assert.ok(!chapterIds.has(chapterId),'Duplicate chapter '+chapterId);
+  chapterIds.add(chapterId);
+ }
+ for(const loc of ['vi','en']){
+  const sections=d.content.localized[loc].sections;
+  assert.ok(sections.every(x=>typeof x.id==='string'&&/^[a-z0-9-]+$/.test(x.id)));
+  assert.equal(new Set(sections.map(x=>x.id)).size,sections.length,'Unique source anchors '+d.id+' '+loc);
+  for(const role of ['concept','guided'])assert.ok(sections.some(x=>x.role===role),
+   'Mentor anchor exists in both locales '+d.id+' '+loc+' '+role);
+ }
  const moments=d.content.companion?.structuredMoments||[];
  assert.deepEqual(moments.map(m=>m.stage),
   ['opening','concept','guided','independent','reflection','extension'],
@@ -103,4 +129,5 @@ for(const item of drafts){
   assert.equal(d.content.localized[loc].assessment.questions.length,4);
  }
 }
+assert.equal(chapterIds.size,17*5);
 console.log('PERSONAL_17_UI_PARITY_PASS: 5 pages, 17 contextual six-stage mentors, spoiler-safe and draft rights intact');

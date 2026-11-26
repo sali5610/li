@@ -64,7 +64,7 @@ function receiptKey(){
  const uid=verifiedOwner();
  return uid?PRACTICE_PREFIX+encodeURIComponent(uid):null;
 }
-function receiptStore(){
+function receiptStore(reportError=true){
  const key=receiptKey();if(!key)return null;
  try{
   const raw=localStorage.getItem(key),d=raw===null?{schema:PRACTICE_SCHEMA,scopes:{}}:JSON.parse(raw);
@@ -93,7 +93,22 @@ function receiptStore(){
   }
   // A successful read must not erase a failed write warning.
   return d;
- }catch{practiceError="Không đọc được lịch sử luyện, chưa ghi đè bản cũ.";return null;}
+ }catch{if(reportError)practiceError="Không đọc được lịch sử luyện, chưa ghi đè bản cũ.";return null;}
+}
+// Read-only lesson history for the current authorized reader; no raw answers.
+function getLessonPracticeSummary(lessonId,subjectId){
+ const owner=verifiedOwner();
+ if(!owner||owner!==subjectId||typeof lessonId!=="string"||
+    !/^L\d{2}-\d+-\d+$/.test(lessonId))return null;
+ const known=["L03-1-2","L09-1-2","L15-2-2"].includes(lessonId)||
+   Object.prototype.hasOwnProperty.call(window.liPersonalStudyRoutes||{},lessonId);
+ if(!known)return null;
+ const store=receiptStore(false);
+ if(!store)return null;
+ return Object.entries(store.scopes[lessonId]||{})
+  .filter(([id,r])=>id!=="T02"&&r.count>0)
+  .map(([methodId,r])=>({methodId,count:r.count}))
+  .sort((a,b)=>a.methodId.localeCompare(b.methodId));
 }
 function receipt(){
  if(!active||active==="T02")return blankReceipt();
@@ -1120,7 +1135,7 @@ function setup(){
    notifyReactSpell();
   });
  }
- window.LiSpellPractice={open,methods:Object.keys(exercises),getView,getT02Status,
+ window.LiSpellPractice={open,methods:Object.keys(exercises),getView,getT02Status,getLessonPracticeSummary,
   perform:performReact,setTab:switchTab,setT12Draft,setLessonContext,
   refreshNative:()=>{if(!reactOwnsSpell())switchTab(activeTab);}};
 }

@@ -27,10 +27,13 @@ const plain=(s:string)=>normalize(s.replace(/<[^>]*>/g,'').replace(/\\([\[\]_*|]
 const locales=['vi','en','vi'] as const;
 const phases=['read','guided','practice','feedback','progress'] as const;
 const marker='QA saved response — bản nháp giữ nguyên';
-type FixtureApp={liLanguage:{get:()=>string;set:(locale:'vi'|'en')=>void}};
+type FixtureApp={liLanguage:{get:()=>string;set:(locale:'vi'|'en')=>void};LiSpellPractice?:{getLessonPracticeSummary?:(lessonId:string,subjectId:string)=>{methodId:string;count:number}[]|null}};
 export async function runBilingualReaderFixture(host:HTMLElement){
  const app=window as unknown as FixtureApp;
  let checks=0,readers=0,reviewChecks=0,evidenceChecks=0,resumeChecks=0;
+ const priorSpell=app.LiSpellPractice;
+ app.LiSpellPractice={...priorSpell,getLessonPracticeSummary:(lessonId,subjectId)=>
+  subjectId==='qa-bilingual-fixture'&&lessonId==='L03-1-2'?[{methodId:'T06',count:2}]:[]};
  const root=createRoot(host);
  const journey=()=>host.querySelector<HTMLElement>('[data-li-react-journey]');
  const click=(selector:string)=>{const b=host.querySelector<HTMLButtonElement>(selector);check(!!b&&!b.disabled,'Missing enabled '+selector);b!.click();};
@@ -127,7 +130,8 @@ export async function runBilingualReaderFixture(host:HTMLElement){
     check(evidence.includes(locale==='vi'?'Đã nộp':'Submitted'),id+' saved evidence missing submission');
     check(evidence.includes(locale==='vi'?'Lượt hoàn tất tự đánh giá (gồm lịch sử): 1':'Completed self-review rounds (including saved history): 1'),id+' saved evidence wrong completed count');
     check(evidence.includes(locale==='vi'?'Chưa có ghi nhận trong bài này':'Not recorded in this lesson'),id+' invented spell application');
-    evidenceChecks++;reviewChecks++;
+    check(evidence.includes('T06 × 2')===(id==='L03-1-2'),id+' incorrect lesson Spellbook history');
+     evidenceChecks++;reviewChecks++;
    }
    // One representative per real reader implementation: no answers needed
    // to remember the last page; preserve saved scroll on a fresh mount.
@@ -163,5 +167,5 @@ export async function runBilingualReaderFixture(host:HTMLElement){
    console.log('BILINGUAL_READER_PASS '+id+' 5 phases × VI→EN→VI; saved drafts unchanged');
   }
   return {status:'PASS',readers,checks,reviewChecks,evidenceChecks,resumeChecks,scope:'actual reader render, pre-submit phases and completed receipt render, in-memory locale persistence; not physical device or live cloud'};
- }finally{root.unmount();}
+ }finally{root.unmount();app.LiSpellPractice=priorSpell;}
 }

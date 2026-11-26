@@ -533,7 +533,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
    </Card>}
    {phase==='progress'&&!attempt.reviewed&&<Card variant="flat-study" className="li-study-book-page">
     <Heading level={2} role="titleLarge">{labels.progress}</Heading>
-     {!saving&&!locked&&<SavedLearningEvidence attempt={attempt} vi={vi}/>}
+     {!saving&&!locked&&<SavedLearningEvidence attempt={attempt} vi={vi} lessonId={L09_LESSON_ID} subjectId={subject.current}/>}
     <Text>{vi?'Chưa hoàn thành lượt học. Chuyển phần không tự nộp bài, tự chấm hay cộng tiến độ.':
      'This attempt is not complete. Skipping sections does not submit, score or mark progress.'}</Text>
     <Button variant="secondary" onClick={()=>go('practice')}>
@@ -543,7 +543,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <Heading level={2} id="li-learn-progress" role="titleLarge">
      {vi?'Hoàn thành lượt tự đánh giá':'Self-review completed'}
     </Heading>
-    {!saving&&!locked&&<SavedLearningEvidence attempt={attempt} vi={vi}/>}
+    {!saving&&!locked&&<SavedLearningEvidence attempt={attempt} vi={vi} lessonId={L09_LESSON_ID} subjectId={subject.current}/>}
      <Text>{vi?'Đây là một lượt học đã lưu, không phải chứng nhận thông thạo.':
      'This is one saved learning attempt, not a mastery certificate.'}</Text>
     <SelfReviewNextStep rubricItems={content.rubricItems} ratings={attempt.ratings}

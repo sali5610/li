@@ -171,7 +171,7 @@ try{
   return r.result?.value||null;
  },180000);
  console.log('BILINGUAL_READER_REPORT '+JSON.stringify(bilingual));
- if(bilingual.status!=='PASS'||bilingual.readers!==20||bilingual.checks!==300)
+ if(bilingual.status!=='PASS'||bilingual.readers!==20||bilingual.checks!==300||bilingual.reviewChecks!==120)
   throw Error('BILINGUAL_READER_FAIL '+JSON.stringify(bilingual));
 
  // Focused UI Lab reflow checks: only when the real Lab sources change.

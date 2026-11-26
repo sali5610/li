@@ -213,6 +213,9 @@ const previewPack=fs.readFileSync(path.resolve(__dirname,
 const packContext={window:{}};
 vm.runInNewContext(previewPack,packContext);
 const draftItems=packContext.window.LI_MIRROR_DRAFT_HOOKS;
+const sampleCases=packContext.window.LI_MIRROR_SAMPLE_CASES;
+assert.deepEqual(Array.from(sampleCases,x=>x.id),['L03-1-2','L15-2-2']);
+assert.deepEqual(JSON.parse(JSON.stringify(sampleCases)),previewSource.sampleCases);
 assert.equal(previewSource.reviewState,"proposed");
 assert.equal(previewSource.publishState,"draft");
 assert.equal(previewSource.lessonPublicationAuthorized,false);
@@ -253,13 +256,13 @@ const makeMirrorMix=(seed)=>{
  return mix;
 };
 const testMix=makeMirrorMix(1);
-assert.equal(testMix.scenarios.length,40,"6 original + 17 hooks + 17 Problem Cases");
+assert.equal(testMix.scenarios.length,42,"6 original + 17 hooks + 17 personal Problem Cases + 2 sample cases");
 // Each app load has a new discipline-aware playlist. Check stable identity,
 // source/route parity, different orders, no adjacent or wraparound repeats.
 const signature=item=>item.key||item.lessonId||item.question;
 const expectedItems=[...scenarios.map(signature),
  ...draftItems.map(x=>"mirror-draft-"+x.id),
- ...draftItems.map(x=>"mirror-problem-"+x.id)].sort();
+ ...draftItems.map(x=>"mirror-problem-"+x.id),...sampleCases.map(x=>"mirror-problem-"+x.id)].sort();
 const observedOrders=new Set();
 for(let seed=1;seed<=32;seed++){
  const shuffled=makeMirrorMix(seed).scenarios;
@@ -289,6 +292,12 @@ assert(draftResearch.qIndex>=0,"Preview lesson remains reachable after shuffle")
 vm.runInNewContext(html.slice(problemStart,problemEnd),draftResearch);
 assert.equal(draftResearch.liCurrentProblem().caseKey,"draft-case-L03-1-1",
  "Draft hook's Research context resolves its matching Case");
+for(const sample of sampleCases){
+ draftResearch.qIndex=testMix.scenarios.findIndex(x=>x.lessonId===sample.id&&x.type==="hook");
+ assert.equal(draftResearch.liCurrentCase().id,"draft-case-"+sample.id);
+ assert.equal(draftResearch.liCurrentCase().lessonId,sample.id);
+ assert.equal(draftResearch.liCaseDraftStorageKey(),"li.private.case-draft.v1.draft-case-"+sample.id);
+}
 
 // The 17 authored personal previews link to their corresponding existing
 // invited STAGING lesson, never to a fabricated public or missing route.
@@ -299,8 +308,9 @@ const realMirrorSandbox={};
 vm.runInNewContext(html.slice(fullStart,fullEnd)+";globalThis.canonical=scenarios;",realMirrorSandbox);
 const allQuestions=[...realMirrorSandbox.canonical,
  ...draftItems.map(x=>({type:"hook",lessonId:x.id,lessonRoute:"research",previewState:"draft"})),
- ...draftItems.map(x=>({type:"problem",lessonId:x.id,previewState:"draft",caseKey:"draft-case-"+x.id}))];
-assert.equal(allQuestions.length,40,"40 entries, 17 with individual Cases");
+ ...draftItems.map(x=>({type:"problem",lessonId:x.id,previewState:"draft",caseKey:"draft-case-"+x.id})),
+ ...sampleCases.map(x=>({type:"problem",lessonId:x.id,previewState:"case_draft",caseKey:"draft-case-"+x.id}))];
+assert.equal(allQuestions.length,42,"42 entries, 19 with individual draft Cases");
 const personalRoutes=Object.fromEntries(draftItems.map(x=>
  [x.id,"draftLesson"+x.id.replace(/[^a-z0-9]/gi,"")]));
 const releasedRoutes={"L03-1-2":"lessonL03","L09-1-2":"lessonL09","L15-2-2":"lessonL15"};
@@ -313,7 +323,7 @@ const mountWindow={liPersonalStudyRoutes:personalRoutes,
 const resolverCtx={window:mountWindow};
 vm.runInNewContext(html.slice(resolverStart,resolverEnd),resolverCtx);
 const links=allQuestions.map(q=>({q,match:resolverCtx.liMirrorRelatedLesson(q)}));
-assert.equal(links.filter(x=>x.match).length,39,
+assert.equal(links.filter(x=>x.match).length,41,
  "34 draft entries + 3 published hooks + 2 originals; Sociology unlinked");
 for(const item of links){
  if(!item.match)continue;

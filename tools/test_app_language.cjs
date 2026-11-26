@@ -53,7 +53,7 @@ class CustomEvent{constructor(type,options){this.type=type;this.detail=options.d
 vm.runInNewContext(code,{window,document,localStorage,CustomEvent,NodeFilter:{SHOW_ELEMENT:1,SHOW_TEXT:4},console});
 assert.equal(window.liLanguage.get(),"en","Previously chosen locale restored");
 assert.equal(document.documentElement.lang,"en","Root document language reflects global setting");
-assert.equal(document.title,"理 · li. — THE WORLD OF KNOWING WHY");
+assert.equal(document.title,"li. — THE WORLD OF KNOWING WHY");
 assert.equal(labelNode.nodeValue,"Library","Primary navigation UI follows app locale");
 const controls=body.descendants().filter(x=>x.dataset?.liAppLocale);
 assert.equal(controls.length,2,"Exactly two locale choices in global Settings");

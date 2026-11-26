@@ -55,8 +55,8 @@
  font:var(--li-weight-600) var(--li-type-title-lg)/var(--li-leading-title-lg) var(--li-font-editorial)
 }
 #page-dashboard .li-react-journal .li-diary-counters small{color:var(--muted)}
-#page-dashboard .li-react-journal .li-diary-privacy{display:grid;gap:var(--li-space-4)}
-#page-dashboard .li-react-journal .li-diary-privacy .action-row{display:flex;flex-wrap:wrap;gap:var(--li-space-3)}
+#page-settings .li-react-settings .li-diary-privacy{display:grid;gap:var(--li-space-4)}
+#page-settings .li-react-settings .li-diary-privacy .action-row{display:flex;flex-wrap:wrap;gap:var(--li-space-3)}
 #page-settings .li-react-settings .settings-groups{display:grid;gap:var(--li-space-8);margin-top:var(--li-space-6)}
 #page-settings .li-react-settings .settings-group{display:grid;gap:var(--li-space-5)}
 #page-settings .li-react-settings .settings-group-heading{display:grid;gap:var(--li-space-2)}

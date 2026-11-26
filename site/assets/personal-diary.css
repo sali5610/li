@@ -1,7 +1,7 @@
 /* Daily dashboard for Tủ Riêng — uses approved palette/type/4px tokens. */
 #page-dashboard .li-diary-layout{gap:var(--li-space-8)}
-#page-dashboard .li-diary-privacy{display:grid;gap:var(--li-space-4)}
-#page-dashboard .li-diary-privacy .action-row{flex-wrap:wrap}
+#page-settings .li-diary-privacy{display:grid;gap:var(--li-space-4)}
+#page-settings .li-diary-privacy .action-row{flex-wrap:wrap}
 #page-dashboard .li-diary-month{display:grid;gap:var(--li-space-4)}
 #page-dashboard .li-diary-month-heading{display:flex;align-items:center;justify-content:space-between;gap:var(--li-space-4);flex-wrap:wrap}
 #page-dashboard .li-diary-month-heading h2{margin:var(--li-space-0)}

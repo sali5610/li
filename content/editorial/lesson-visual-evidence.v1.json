@@ -1,0 +1,1077 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewState": "proposed",
+  "rights": "first_party_illustrations",
+  "description": "New fictional examples for the reading phase, separate from guided and independent assessment fixtures. Source notes verify limited concept scope only; no academic signoff or claim of review of entire manuscript.",
+  "lessons": {
+    "L03-1-1": {
+      "title": {
+        "vi": "Từ yêu cầu đến nhu cầu",
+        "en": "From request to need"
+      },
+      "kind": "flow",
+      "items": [
+        {
+          "vi": "Yêu cầu: thêm nút tải PDF",
+          "en": "Request: add a PDF button"
+        },
+        {
+          "vi": "Giả thuyết: cần mang thông tin đi họp",
+          "en": "Hypothesis: carry information into a meeting"
+        },
+        {
+          "vi": "Kiểm chứng: hỏi lần họp gần nhất",
+          "en": "Validate: ask about the last meeting"
+        }
+      ],
+      "caption": {
+        "vi": "Một yêu cầu tính năng có thể gợi ý nhiều nhu cầu; nghiên cứu trước khi chọn giải pháp.",
+        "en": "A feature request may suggest multiple needs; research before selecting a solution."
+      },
+      "sources": [
+        {
+          "title": "GOV.UK — Learning about users and their needs",
+          "url": "https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs",
+          "scope": {
+            "vi": "Nhu cầu dựa trên chứng cứ và vấn đề, không định sẵn giải pháp.",
+            "en": "Needs should be evidence-based and problem-focused."
+          },
+          "limit": {
+            "vi": "Ví dụ PDF là minh họa tự biên soạn, không phải nghiên cứu thật.",
+            "en": "The PDF example is fictional, not a research finding."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L03-1-3": {
+      "title": {
+        "vi": "Ba lớp ghi chú nghiên cứu",
+        "en": "Three layers of research notes"
+      },
+      "kind": "table",
+      "headers": [
+        {
+          "vi": "Loại",
+          "en": "Type"
+        },
+        {
+          "vi": "Ví dụ giả định",
+          "en": "Fictional example"
+        }
+      ],
+      "rows": [
+        [
+          {
+            "vi": "Quan sát",
+            "en": "Observation"
+          },
+          {
+            "vi": "P02 mở mục Tìm kiếm.",
+            "en": "P02 opens Search."
+          }
+        ],
+        [
+          {
+            "vi": "Lời kể",
+            "en": "Quote"
+          },
+          {
+            "vi": "P02: “Tôi thường dùng tìm kiếm”.",
+            "en": "P02: “I usually use search”."
+          }
+        ],
+        [
+          {
+            "vi": "Suy luận",
+            "en": "Inference"
+          },
+          {
+            "vi": "Có thể chưa biết menu; cần hỏi thêm.",
+            "en": "May not know the menu; investigate."
+          }
+        ]
+      ],
+      "caption": {
+        "vi": "Giữ nguồn và mức chắc chắn riêng biệt.",
+        "en": "Separate evidence and confidence."
+      },
+      "sources": [
+        {
+          "title": "GOV.UK — Analyse a research session",
+          "url": "https://www.gov.uk/service-manual/user-research/analyse-a-research-session",
+          "scope": {
+            "vi": "Ghi nhận điều thấy/nghe và kiểm lại trích dẫn trước tổng hợp.",
+            "en": "Capture what was seen/heard and check quotes before synthesis."
+          },
+          "limit": {
+            "vi": "Các suy luận minh họa không phải phát hiện về người dùng thật.",
+            "en": "Illustrative inference is not a real user finding."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L03-2-1": {
+      "title": {
+        "vi": "Một đối tượng, hai lối tìm",
+        "en": "One object, two paths"
+      },
+      "kind": "flow",
+      "items": [
+        {
+          "vi": "Tài liệu: tạo biểu đồ",
+          "en": "Resource: create a chart"
+        },
+        {
+          "vi": "Metadata: chủ đề data-visualization; loại How-to",
+          "en": "Metadata: topic data-visualization; type How-to"
+        },
+        {
+          "vi": "Lối vào: Làm báo cáo / Công cụ phân tích",
+          "en": "Entry paths: Reporting / Analysis tools"
+        }
+      ],
+      "caption": {
+        "vi": "Metadata và navigation có vai trò khác nhau; đây là cấu trúc đề xuất.",
+        "en": "Metadata and navigation play distinct roles; this is a proposed structure."
+      },
+      "sources": [
+        {
+          "title": "NN/g — Taxonomy 101",
+          "url": "https://www.nngroup.com/articles/taxonomy-101/",
+          "scope": {
+            "vi": "Taxonomy là từ vựng phân loại có kiểm soát, khác cấu trúc điều hướng.",
+            "en": "Controlled taxonomy differs from navigation."
+          },
+          "limit": {
+            "vi": "Nhãn, alias và lối vào cụ thể vẫn cần thử với người dùng.",
+            "en": "Specific labels, aliases and paths need user validation."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L03-2-2": {
+      "title": {
+        "vi": "Hai câu hỏi nghiên cứu khác nhau",
+        "en": "Two distinct research questions"
+      },
+      "kind": "table",
+      "headers": [
+        {
+          "vi": "Card sorting",
+          "en": "Card sorting"
+        },
+        {
+          "vi": "Tree testing",
+          "en": "Tree testing"
+        }
+      ],
+      "rows": [
+        [
+          {
+            "vi": "Người dùng nhóm thẻ thế nào?",
+            "en": "How do users group cards?"
+          },
+          {
+            "vi": "Người dùng tìm đúng đích không?",
+            "en": "Can users find the destination?"
+          }
+        ],
+        [
+          {
+            "vi": "Đầu vào: thẻ nội dung",
+            "en": "Input: content cards"
+          },
+          {
+            "vi": "Đầu vào: cây và tác vụ",
+            "en": "Input: tree and tasks"
+          }
+        ],
+        [
+          {
+            "vi": "Đầu ra: nhóm và nhãn đề xuất",
+            "en": "Output: proposed groups and labels"
+          },
+          {
+            "vi": "Đầu ra: đường đi và kết quả",
+            "en": "Output: paths and outcomes"
+          }
+        ]
+      ],
+      "caption": {
+        "vi": "Không đo toàn bộ trải nghiệm UI chỉ bằng một cây chữ.",
+        "en": "A text tree alone does not measure the entire UI experience."
+      },
+      "sources": [
+        {
+          "title": "NN/g — Card Sorting vs. Tree Testing",
+          "url": "https://www.nngroup.com/articles/card-sorting-tree-testing-differences/",
+          "scope": {
+            "vi": "Card sorting khám phá nhóm; tree testing đánh giá findability của cây.",
+            "en": "Card sorting explores grouping; tree testing evaluates tree findability."
+          },
+          "limit": {
+            "vi": "Tree test loại bỏ các tín hiệu thị giác của giao diện đầy đủ.",
+            "en": "Tree testing removes visual cues of the full interface."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L03-2-3": {
+      "title": {
+        "vi": "10 lượt tác vụ giả định",
+        "en": "10 fictional task attempts"
+      },
+      "kind": "bars",
+      "labels": [
+        {
+          "vi": "Đúng trực tiếp",
+          "en": "Direct success"
+        },
+        {
+          "vi": "Đúng qua đường vòng",
+          "en": "Indirect success"
+        },
+        {
+          "vi": "Thất bại",
+          "en": "Failure"
+        }
+      ],
+      "values": [
+        6,
+        2,
+        2
+      ],
+      "unit": {
+        "vi": "lượt",
+        "en": "attempts"
+      },
+      "caption": {
+        "vi": "Hoàn thành = (6 + 2)/10 = 80%; số lần nhấp sai phải ghi riêng.",
+        "en": "Completion = (6 + 2)/10 = 80%; wrong-click events are counted separately."
+      },
+      "sources": [
+        {
+          "title": "NN/g — Success Rate: The Simplest Usability Metric",
+          "url": "https://www.nngroup.com/articles/success-rate-the-simplest-usability-metric/",
+          "scope": {
+            "vi": "Định nghĩa mức thành công tác vụ và mẫu số nhất quán.",
+            "en": "Define success and use consistent denominators."
+          },
+          "limit": {
+            "vi": "Quy ước direct/indirect là protocol minh họa của bài; không suy rộng tỷ lệ.",
+            "en": "Direct/indirect is this lesson's illustrative protocol; no population inference."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L09-1-3": {
+      "title": {
+        "vi": "Cùng trung tâm, khác độ trải",
+        "en": "Similar center, different spread"
+      },
+      "kind": "plot",
+      "x": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "series": [
+        {
+          "label": {
+            "vi": "A",
+            "en": "A"
+          },
+          "values": [
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        {
+          "label": {
+            "vi": "B",
+            "en": "B"
+          },
+          "values": [
+            1,
+            2,
+            5,
+            8,
+            9
+          ]
+        }
+      ],
+      "xLabel": {
+        "vi": "Thứ tự sau sắp xếp",
+        "en": "Sorted order"
+      },
+      "unit": {
+        "vi": "phút",
+        "en": "min"
+      },
+      "mode": "dots",
+      "caption": {
+        "vi": "Cả hai mean và median = 5 phút; range A = 4, B = 8. Đây là dữ liệu giả lập, không phải phân phối dân số.",
+        "en": "Both means and medians are 5 min; ranges are 4 and 8. Fictional observations, not population distributions."
+      },
+      "sources": [
+        {
+          "title": "OpenStax — Measures of the Center of the Data",
+          "url": "https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data",
+          "scope": {
+            "vi": "Định nghĩa mean và median; ví dụ dùng thêm max–min để mô tả độ trải.",
+            "en": "Mean and median definitions; example additionally uses max–min spread."
+          },
+          "limit": {
+            "vi": "Không kết luận shape của dân số từ năm điểm.",
+            "en": "Five observations cannot establish population shape."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L09-2-1": {
+      "title": {
+        "vi": "Mẫu số thay đổi theo điều kiện",
+        "en": "The denominator changes with the condition"
+      },
+      "kind": "table",
+      "headers": [
+        {
+          "vi": "Thực tế / Cảnh báo",
+          "en": "Actual / alert"
+        },
+        {
+          "vi": "Có",
+          "en": "Yes"
+        },
+        {
+          "vi": "Không",
+          "en": "No"
+        }
+      ],
+      "rows": [
+        [
+          {
+            "vi": "Có vấn đề",
+            "en": "Problem"
+          },
+          "18",
+          "2"
+        ],
+        [
+          {
+            "vi": "Bình thường",
+            "en": "Normal"
+          },
+          "8",
+          "72"
+        ]
+      ],
+      "caption": {
+        "vi": "100 sự kiện giả định. Độ nhạy = 18/20; P(vấn đề | cảnh báo) = 18/26. Hai mẫu số khác nhau.",
+        "en": "100 fictional events. Sensitivity = 18/20; P(problem | alert) = 18/26. Different denominators."
+      },
+      "sources": [
+        {
+          "title": "OpenStax — Contingency Tables",
+          "url": "https://openstax.org/books/introductory-statistics-2e/pages/3-4-contingency-tables",
+          "scope": {
+            "vi": "Bảng chéo giúp tính xác suất có điều kiện đúng mẫu số.",
+            "en": "Contingency tables support conditional probabilities with correct denominators."
+          },
+          "limit": {
+            "vi": "Số đếm là giả lập, không phải hiệu năng hệ thống thực.",
+            "en": "Counts are fictional, not real system performance."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L09-2-2": {
+      "title": {
+        "vi": "Cùng tỷ lệ mẫu, khác độ rộng khoảng",
+        "en": "Same sample proportion, different interval widths"
+      },
+      "kind": "table",
+      "headers": [
+        {
+          "vi": "n",
+          "en": "n"
+        },
+        {
+          "vi": "p̂",
+          "en": "p̂"
+        },
+        {
+          "vi": "CI 95% xấp xỉ",
+          "en": "Approx. 95% CI"
+        }
+      ],
+      "rows": [
+        [
+          "100",
+          "0.50",
+          "0.402–0.598"
+        ],
+        [
+          "400",
+          "0.50",
+          "0.451–0.549"
+        ]
+      ],
+      "caption": {
+        "vi": "Ví dụ giả định dùng Wald CI, mẫu ngẫu nhiên và điều kiện xấp xỉ phù hợp; khoảng hẹp không sửa selection bias.",
+        "en": "Fictional Wald intervals under suitable random sampling and approximation assumptions; narrow intervals do not fix selection bias."
+      },
+      "sources": [
+        {
+          "title": "OpenStax — A Population Proportion",
+          "url": "https://openstax.org/books/introductory-statistics-2e/pages/8-3-a-population-proportion",
+          "scope": {
+            "vi": "Khoảng tin cậy tỷ lệ và biên sai số theo điều kiện mô hình.",
+            "en": "Proportion intervals and margins under model conditions."
+          },
+          "limit": {
+            "vi": "Không diễn giải thành xác suất tham số cố định nằm trong một khoảng đã tính.",
+            "en": "Do not interpret as probability that a fixed parameter lies in this realized interval."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L09-2-3": {
+      "title": {
+        "vi": "Đường khớp và điểm quan sát",
+        "en": "Fit line and observations"
+      },
+      "kind": "plot",
+      "x": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "series": [
+        {
+          "label": {
+            "vi": "Quan sát",
+            "en": "Observed"
+          },
+          "values": [
+            3,
+            6,
+            5,
+            8
+          ]
+        },
+        {
+          "label": {
+            "vi": "Đường OLS",
+            "en": "OLS fit"
+          },
+          "values": [
+            3.4,
+            4.8,
+            6.2,
+            7.6
+          ],
+          "line": true
+        }
+      ],
+      "mode": "dots",
+      "xLabel": {
+        "vi": "Số lần luyện",
+        "en": "Practice sessions"
+      },
+      "unit": {
+        "vi": "điểm",
+        "en": "points"
+      },
+      "caption": {
+        "vi": "Đường OLS minh họa ŷ = 2 + 1,4x. Khoảng cách dọc là residual; không chứng minh luyện gây tăng điểm.",
+        "en": "Illustrative OLS ŷ = 2 + 1.4x. Vertical differences are residuals; not proof of causation."
+      },
+      "sources": [
+        {
+          "title": "OpenStax — The Regression Equation",
+          "url": "https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation",
+          "scope": {
+            "vi": "Đường least-squares, slope và residual.",
+            "en": "Least-squares line, slope and residual."
+          },
+          "limit": {
+            "vi": "Ví dụ nhỏ chỉ minh họa phép tính; không xác nhận quan hệ nhân quả.",
+            "en": "Tiny example illustrates computation, not causality."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L09-3-1": {
+      "title": {
+        "vi": "Ranh giới dữ liệu khi huấn luyện",
+        "en": "Data boundaries during training"
+      },
+      "kind": "flow",
+      "items": [
+        {
+          "vi": "Tách dữ liệu trước; giữ riêng test",
+          "en": "Split first; hold test aside"
+        },
+        {
+          "vi": "Fit preprocessing và model chỉ trên train",
+          "en": "Fit preprocessing and model on train only"
+        },
+        {
+          "vi": "Transform validation; chọn mô hình",
+          "en": "Transform validation; select model"
+        },
+        {
+          "vi": "Đánh giá cuối trên test chưa dùng chọn mô hình",
+          "en": "Final evaluation on test not used for model selection"
+        }
+      ],
+      "caption": {
+        "vi": "Không fit bằng dữ liệu tương lai hay test. Dùng split phù hợp mục tiêu triển khai.",
+        "en": "Do not fit on future or test information. Split for the deployment objective."
+      },
+      "sources": [
+        {
+          "title": "scikit-learn — Common pitfalls: Data leakage",
+          "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+          "scope": {
+            "vi": "Split trước preprocessing; fit chỉ trên train, dùng cùng transform.",
+            "en": "Split before preprocessing; fit only on training data; reuse transform."
+          },
+          "limit": {
+            "vi": "Group/time split còn tùy mục tiêu và dữ liệu triển khai.",
+            "en": "Group/time splitting depends on deployment goal and data."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L09-3-2": {
+      "title": {
+        "vi": "Confusion matrix: 100 đơn giả định",
+        "en": "Confusion matrix: 100 fictional orders"
+      },
+      "kind": "table",
+      "headers": [
+        {
+          "vi": "Thực tế / Dự đoán",
+          "en": "Actual / predicted"
+        },
+        {
+          "vi": "Trễ",
+          "en": "Late"
+        },
+        {
+          "vi": "Không trễ",
+          "en": "Not late"
+        }
+      ],
+      "rows": [
+        [
+          {
+            "vi": "Trễ",
+            "en": "Late"
+          },
+          "TP 12",
+          "FN 8"
+        ],
+        [
+          {
+            "vi": "Không trễ",
+            "en": "Not late"
+          },
+          "FP 18",
+          "TN 62"
+        ]
+      ],
+      "caption": {
+        "vi": "Precision = 12/30 = 40%; recall = 12/20 = 60%; accuracy = 74/100 = 74%.",
+        "en": "Precision = 12/30 = 40%; recall = 12/20 = 60%; accuracy = 74/100 = 74%."
+      },
+      "sources": [
+        {
+          "title": "scikit-learn — precision_recall_fscore_support",
+          "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html",
+          "scope": {
+            "vi": "Precision TP/(TP+FP), recall TP/(TP+FN).",
+            "en": "Precision TP/(TP+FP), recall TP/(TP+FN)."
+          },
+          "limit": {
+            "vi": "Không suy ra chi phí thực tế hoặc hiệu năng nhóm từ một bảng giả lập.",
+            "en": "A fictional matrix cannot establish real costs or subgroup performance."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L09-3-3": {
+      "title": {
+        "vi": "Accuracy giống nhau, sai sót khác nhau",
+        "en": "Equal accuracy, different errors"
+      },
+      "kind": "table",
+      "headers": [
+        {
+          "vi": "Nhóm (50 đơn)",
+          "en": "Group (50 orders)"
+        },
+        {
+          "vi": "TP / FN",
+          "en": "TP / FN"
+        },
+        {
+          "vi": "FP / TN",
+          "en": "FP / TN"
+        },
+        {
+          "vi": "Accuracy",
+          "en": "Accuracy"
+        },
+        {
+          "vi": "Recall",
+          "en": "Recall"
+        }
+      ],
+      "rows": [
+        [
+          {
+            "vi": "A",
+            "en": "A"
+          },
+          "8 / 2",
+          "8 / 32",
+          "80%",
+          "80%"
+        ],
+        [
+          {
+            "vi": "B",
+            "en": "B"
+          },
+          "4 / 6",
+          "4 / 36",
+          "80%",
+          "40%"
+        ]
+      ],
+      "caption": {
+        "vi": "Bộ giả lập. Cùng accuracy, recall lệch 40 điểm phần trăm; không chứng minh công bằng hoặc nguyên nhân.",
+        "en": "Fictional example. Same accuracy, recall differs by 40 percentage points; no fairness or causal verdict."
+      },
+      "sources": [
+        {
+          "title": "Fairlearn — Common fairness metrics (main documentation)",
+          "url": "https://fairlearn.org/main/user_guide/assessment/common_fairness_metrics.html",
+          "scope": {
+            "vi": "So TPR/FPR giữa nhóm; equalized odds không chỉ nhìn accuracy.",
+            "en": "Compare TPR/FPR across groups; equalized odds is not just accuracy."
+          },
+          "limit": {
+            "vi": "URL v0.15 trong bản thảo không tải được; dùng bản main đã đọc. Không kết luận pháp lý hoặc công bằng tuyệt đối.",
+            "en": "Draft v0.15 URL did not load; readable main docs used. No legal or absolute fairness verdict."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "scikit-learn — Permutation importance",
+          "url": "https://scikit-learn.org/stable/modules/permutation_importance.html",
+          "scope": {
+            "vi": "Nguồn bổ sung cho feature importance; chưa đối chiếu toàn bộ trong lượt này.",
+            "en": "Supplementary feature-importance reference; not fully checked this turn."
+          },
+          "limit": {
+            "vi": "Chưa xác minh claim-level.",
+            "en": "Claim-level review pending."
+          },
+          "access": "not_checked"
+        }
+      ]
+    },
+    "L15-2-1": {
+      "title": {
+        "vi": "Forecast và lượng bán thực tế",
+        "en": "Forecast and actual sales"
+      },
+      "kind": "plot",
+      "x": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "series": [
+        {
+          "label": {
+            "vi": "Bán thực tế",
+            "en": "Actual sales"
+          },
+          "values": [
+            20,
+            25,
+            30,
+            29
+          ]
+        },
+        {
+          "label": {
+            "vi": "Dự báo tuần 4",
+            "en": "Week 4 forecast"
+          },
+          "values": [
+            null,
+            null,
+            null,
+            25
+          ]
+        }
+      ],
+      "mode": "line",
+      "xLabel": {
+        "vi": "Tuần",
+        "en": "Week"
+      },
+      "unit": {
+        "vi": "bộ",
+        "en": "units"
+      },
+      "caption": {
+        "vi": "Giả định trung bình ba tuần: forecast tuần 4 = 25 bộ; error = 29 − 25 = +4. Forecast không tự quyết lượng đặt.",
+        "en": "Fictional three-week mean: week-4 forecast 25 units; error = 29 − 25 = +4. Forecast does not determine order quantity."
+      },
+      "sources": [
+        {
+          "title": "IBM — What is demand planning?",
+          "url": "https://www.ibm.com/think/topics/demand-planning",
+          "scope": {
+            "vi": "Dự báo nhu cầu là đầu vào cho quyết định vận hành.",
+            "en": "Demand forecasting informs operational decisions."
+          },
+          "limit": {
+            "vi": "Quy tắc trung bình và dấu sai số được định nghĩa riêng trong ví dụ.",
+            "en": "The mean rule and error sign are defined within the example."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L15-2-3": {
+      "title": {
+        "vi": "Kế hoạch, dự báo, sự kiện",
+        "en": "Plan, forecast, event"
+      },
+      "kind": "table",
+      "headers": [
+        {
+          "vi": "Loại mốc",
+          "en": "Time type"
+        },
+        {
+          "vi": "Giờ",
+          "en": "Time"
+        },
+        {
+          "vi": "Điều biết được",
+          "en": "What is known"
+        }
+      ],
+      "rows": [
+        [
+          {
+            "vi": "Planned arrival",
+            "en": "Planned arrival"
+          },
+          "10:00",
+          {
+            "vi": "Kế hoạch",
+            "en": "Plan"
+          }
+        ],
+        [
+          {
+            "vi": "ETA ghi lúc 09:00",
+            "en": "ETA as of 09:00"
+          },
+          "10:30",
+          {
+            "vi": "Dự báo, chưa đến",
+            "en": "Forecast, not arrived"
+          }
+        ],
+        [
+          {
+            "vi": "Actual arrival",
+            "en": "Actual arrival"
+          },
+          "10:45",
+          {
+            "vi": "Đã ghi sự kiện",
+            "en": "Recorded event"
+          }
+        ],
+        [
+          {
+            "vi": "Report receipt",
+            "en": "Report receipt"
+          },
+          "10:50",
+          {
+            "vi": "Nhận tin, không phải giờ đến",
+            "en": "Message received, not arrival"
+          }
+        ]
+      ],
+      "caption": {
+        "vi": "Timeline giả định; actual trễ kế hoạch 45 phút. ETA trước đó không phải actual.",
+        "en": "Fictional timeline; actual is 45 min late versus plan. Earlier ETA is not actual."
+      },
+      "sources": [
+        {
+          "title": "Oracle — Shipment Stop Details",
+          "url": "https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/planning/shipment_manager/multi_create_shipments/shipment_stop_dtail.htm",
+          "scope": {
+            "vi": "Phân biệt planned, estimated và actual arrival/departure.",
+            "en": "Distinguishes planned, estimated and actual arrival/departure."
+          },
+          "limit": {
+            "vi": "Receipt timestamp là mô hình dữ liệu minh họa, không khẳng định tất cả hệ thống dùng cùng trường.",
+            "en": "Receipt timestamp is an illustrative data model, not a universal system field."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L15-3-1": {
+      "title": {
+        "vi": "Dao động tăng dần về upstream",
+        "en": "Variation increases upstream"
+      },
+      "kind": "plot",
+      "x": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "series": [
+        {
+          "label": {
+            "vi": "Bán",
+            "en": "Sales"
+          },
+          "values": [
+            48,
+            52,
+            50,
+            50
+          ]
+        },
+        {
+          "label": {
+            "vi": "Cửa hàng đặt",
+            "en": "Retail orders"
+          },
+          "values": [
+            40,
+            60,
+            45,
+            55
+          ]
+        },
+        {
+          "label": {
+            "vi": "Kho đặt",
+            "en": "Warehouse orders"
+          },
+          "values": [
+            25,
+            75,
+            35,
+            65
+          ]
+        }
+      ],
+      "mode": "line",
+      "xLabel": {
+        "vi": "Tuần",
+        "en": "Week"
+      },
+      "unit": {
+        "vi": "hộp",
+        "en": "boxes"
+      },
+      "caption": {
+        "vi": "Cùng trung bình 50 hộp/tuần; range lần lượt 4, 20, 50. Mẫu giả định không xác định nguyên nhân.",
+        "en": "Same mean of 50 boxes/week; ranges 4, 20 and 50. Fictional example does not establish cause."
+      },
+      "sources": [
+        {
+          "title": "Lee, Padmanabhan & Whang (1997) — Information Distortion in a Supply Chain",
+          "url": "https://pubsonline.informs.org/doi/10.1287/mnsc.43.4.546",
+          "scope": {
+            "vi": "Abstract xác nhận orders có thể biến động hơn sales khi đi upstream.",
+            "en": "Abstract supports amplified order variability upstream relative to sales."
+          },
+          "limit": {
+            "vi": "Chỉ đối chiếu abstract, không claim đọc toàn văn hay nguyên nhân của fixture.",
+            "en": "Abstract checked only; no full-text or fixture-cause claim."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L15-3-2": {
+      "title": {
+        "vi": "Buffer riêng và buffer gộp",
+        "en": "Separate and pooled buffers"
+      },
+      "kind": "bars",
+      "labels": [
+        {
+          "vi": "Hai kho riêng",
+          "en": "Separate warehouses"
+        },
+        {
+          "vi": "Gộp, độc lập",
+          "en": "Pooled, independent"
+        },
+        {
+          "vi": "Gộp, tương quan +1",
+          "en": "Pooled, correlation +1"
+        }
+      ],
+      "values": [
+        24,
+        16.97,
+        24
+      ],
+      "unit": {
+        "vi": "hộp",
+        "en": "boxes"
+      },
+      "caption": {
+        "vi": "Giả định σA=σB=6, cùng horizon, z=2: riêng 24; độc lập 2√72≈16,97; ρ=1 thì 24. Giả định hệ số đệm phù hợp; chưa tính chi phí giao.",
+        "en": "Assume σA=σB=6, same horizon, z=2: separate 24; independent 2√72≈16.97; ρ=1 gives 24. Assumes appropriate buffer factor; delivery costs excluded."
+      },
+      "sources": [
+        {
+          "title": "NC State — Safety Stock Analysis",
+          "url": "https://scm.ncsu.edu/scm-articles/article/safety-stock-analysis-inventory-management-models-a-tutorial",
+          "scope": {
+            "vi": "Hệ số z và độ lệch chuẩn nhu cầu trong lead time.",
+            "en": "z factor and lead-time demand standard deviation."
+          },
+          "limit": {
+            "vi": "Mô hình minh họa giữ cùng horizon và z; variance của tổng cần covariance.",
+            "en": "Illustrative model holds horizon and z fixed; summed variance needs covariance."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "Bimpikis & Markakis (2016) — Inventory Pooling under Heavy-Tailed Demand",
+          "url": "https://web.stanford.edu/~kostasb/research/pooling/",
+          "scope": {
+            "vi": "Abstract nhấn mạnh giới hạn lợi ích căn bậc hai khi demand heavy-tailed.",
+            "en": "Abstract highlights square-root pooling limits under heavy-tailed demand."
+          },
+          "limit": {
+            "vi": "Không dùng bài báo làm bằng chứng mọi hệ thống đều tiết kiệm như ví dụ.",
+            "en": "Not evidence that every system saves the illustrated amount."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    },
+    "L15-3-3": {
+      "title": {
+        "vi": "Hai mẫu số, hai chỉ số",
+        "en": "Two denominators, two metrics"
+      },
+      "kind": "bars",
+      "labels": [
+        {
+          "vi": "CSL: 9/10 chu kỳ",
+          "en": "CSL: 9/10 cycles"
+        },
+        {
+          "vi": "Unit fill: 196/200 hộp",
+          "en": "Unit fill: 196/200 boxes"
+        }
+      ],
+      "values": [
+        90,
+        98
+      ],
+      "unit": {
+        "vi": "%",
+        "en": "%"
+      },
+      "max": 100,
+      "caption": {
+        "vi": "Bộ giả định: một chu kỳ thiếu hàng, 4 hộp chưa đáp ứng ngay. So chi phí chỉ sau khi thỏa mọi ràng buộc.",
+        "en": "Fictional: one stockout cycle, four units not immediately filled. Compare costs only among feasible options."
+      },
+      "sources": [
+        {
+          "title": "GOV.UK — Evidence and trends for supply chain vulnerability and resilience",
+          "url": "https://www.gov.uk/government/publications/global-supply-chains-a-foresight-report-on-risk-and-resilience/annex-a-evidence-and-trends-for-supply-chain-vulnerability-and-resilience",
+          "scope": {
+            "vi": "Resilience đa chiều gồm khả năng chịu đựng, thích ứng và phục hồi.",
+            "en": "Resilience spans absorption, adaptation and recovery."
+          },
+          "limit": {
+            "vi": "Nguồn không định nghĩa toàn bộ công thức CSL/fill rate của bài; ví dụ dùng mẫu số quy định rõ.",
+            "en": "Source does not define all lesson CSL/fill formulas; example explicitly defines denominators."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        },
+        {
+          "title": "NC State — Safety Stock Analysis",
+          "url": "https://scm.ncsu.edu/scm-articles/article/safety-stock-analysis-inventory-management-models-a-tutorial",
+          "scope": {
+            "vi": "CSL liên quan xác suất không cạn hàng trong một chu kỳ bổ sung.",
+            "en": "CSL concerns avoiding stockout in a replenishment cycle."
+          },
+          "limit": {
+            "vi": "Không đánh đồng CSL với lượng nhu cầu được đáp ứng.",
+            "en": "Do not equate CSL with fraction of units filled."
+          },
+          "access": "readable",
+          "checkedOn": "2026-11-26"
+        }
+      ]
+    }
+  }
+}

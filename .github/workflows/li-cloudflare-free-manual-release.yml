@@ -216,6 +216,16 @@ jobs:
         if: inputs.auth_only_mode == true && inputs.ai_mode == false
         run: python3 tools/check_cloudflare_auth_binding.py
 
+      # The release budget follows the approved workflow revision, not an older app SHA.
+      - name: Checkout approved release policy (no app source changes)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: .li-release-policy
+          sparse-checkout: tools/g3_cloudflare_free_guard.py
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+
       - name: Hard-stop when Free plan setup or quota cannot be verified
         run: |
           set -euo pipefail
@@ -223,9 +233,9 @@ jobs:
           test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo 'Missing account ID'; exit 1; }
           test -n "$CLOUDFLARE_PAGES_PROJECT" || { echo 'Missing Pages project name'; exit 1; }
           if [[ "${{ inputs.auth_only_mode }}" == "true" ]]; then
-            python3 tools/g3_cloudflare_free_guard.py --site dist-cloudflare-auth-candidate --online
+            python3 .li-release-policy/tools/g3_cloudflare_free_guard.py --site dist-cloudflare-auth-candidate --online
           else
-            python3 tools/g3_cloudflare_free_guard.py --site site --online
+            python3 .li-release-policy/tools/g3_cloudflare_free_guard.py --site site --online
           fi
 
       - name: Update same EXISTING Free Push Worker to 1-minute Cron (no new DB/VAPID)

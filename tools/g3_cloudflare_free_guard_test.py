@@ -65,14 +65,24 @@ class FreeGuardTest(unittest.TestCase):
             "result_info": {"total_pages": 1},
         }).encode()
 
-    def test_passes_with_less_than_30_project_deployments(self):
+    @staticmethod
+    def fake_pages(count):
+        timestamp = dt.datetime.now(dt.timezone.utc).isoformat()
+        records = [{"created_on": timestamp, "is_skipped": False}] * count
+        chunks = [records[i:i+20] for i in range(0, count, 20)]
+        return [json.dumps({"success": True, "result": chunk,
+                            "result_info": {"total_pages": len(chunks)}}).encode()
+                for chunk in chunks]
+
+    def test_passes_with_299_project_deployments(self):
+        self.assertEqual(guard.MAX_PROJECT_RELEASES_PER_MONTH, 300)
         with patch.object(guard.request, "urlopen") as fetch:
-            fetch.return_value.__enter__.return_value.read.return_value = self.fake_result(29)
-            self.assertEqual(guard.count_current_month_deployments("account","li","token"), 29)
+            fetch.return_value.__enter__.return_value.read.side_effect = self.fake_pages(299)
+            self.assertEqual(guard.count_current_month_deployments("account","li","token"), 299)
 
     def test_fails_closed_at_project_release_budget(self):
         with patch.object(guard.request, "urlopen") as fetch:
-            fetch.return_value.__enter__.return_value.read.return_value = self.fake_result(30)
+            fetch.return_value.__enter__.return_value.read.side_effect = self.fake_pages(300)
             with self.assertRaises(guard.GateError):
                 guard.count_current_month_deployments("account","li","token")
 
@@ -112,20 +122,17 @@ class FreeGuardTest(unittest.TestCase):
 
     def test_skipped_events_never_hide_real_monthly_budget_exhaustion(self):
         now = dt.datetime.now(dt.timezone.utc).isoformat()
-        real = [{"created_on": now, "is_skipped": False} for _ in range(30)]
+        real = [{"created_on": now, "is_skipped": False} for _ in range(300)]
         ignored = [{"created_on": now, "is_skipped": True,
                     "skip_reason": "preview_deployments_disabled"} for _ in range(10)]
-        pages = [
-            json.dumps({
-                "success": True,
-                "result": chunk,
-                "result_info": {"total_pages": 2}
-            }).encode()
-            for chunk in (ignored + real[:10], real[10:])
-        ]
+        records = ignored + real
+        chunks = [records[i:i+20] for i in range(0, len(records), 20)]
+        pages = [json.dumps({"success": True, "result": chunk,
+                             "result_info": {"total_pages": len(chunks)}}).encode()
+                 for chunk in chunks]
         with patch.object(guard.request, "urlopen") as fetch:
             fetch.return_value.__enter__.return_value.read.side_effect = pages
-            with self.assertRaisesRegex(guard.GateError, "30 non-skipped"):
+            with self.assertRaisesRegex(guard.GateError, "300 non-skipped"):
                 guard.count_current_month_deployments("account", "li", "token")
 
     def test_missing_or_invalid_is_skipped_fails_closed(self):

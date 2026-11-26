@@ -136,7 +136,7 @@ function RelationMap({record,locale,onOpen}:{record:KnowledgeItem;locale:'vi'|'e
  const L=(vi:string,en:string)=>localized(locale,vi,en);
  return <div className="li-knowledge-graph" role="group" aria-label={L('Bản đồ kết nối tri thức','Knowledge connection map')}>
   <Text role="caption">{L('BẢN ĐỒ KẾT NỐI','CONNECTION MAP')}</Text>
-  <div className="li-knowledge-graph-root">{lessonTitle(record.lessonId||record.id,locale,authoredCopy(record.title))}</div>
+  <div className="li-knowledge-graph-root">{lessonTitle(record.kind==='Lesson'?(record.lessonId||record.id):record.id,locale,authoredCopy(record.title))}</div>
   <div className="li-knowledge-graph-edges">
    {links.map((link,i)=>{
     const id=link.lessonId||link.id;
@@ -144,8 +144,8 @@ function RelationMap({record,locale,onOpen}:{record:KnowledgeItem;locale:'vi'|'e
     return <div key={link.id+':'+i} className="li-knowledge-graph-edge">
      <span className="li-knowledge-graph-connector" aria-hidden="true"/>
      {canOpen?<Button variant="secondary" onClick={()=>onOpen(id)}>
-      <span>{lessonTitle(link.lessonId||link.id,locale,authoredCopy(link.title))}</span><span className="li-knowledge-graph-kind">{L('Mở bài','Open lesson')} · {id}</span>
-     </Button>:<span className="li-knowledge-graph-node">{lessonTitle(link.lessonId||link.id,locale,authoredCopy(link.title))}
+      <span>{lessonTitle(link.kind==='Lesson'?(link.lessonId||link.id):link.id,locale,authoredCopy(link.title))}</span><span className="li-knowledge-graph-kind">{L('Mở bài','Open lesson')} · {id}</span>
+     </Button>:<span className="li-knowledge-graph-node">{lessonTitle(link.kind==='Lesson'?(link.lessonId||link.id):link.id,locale,authoredCopy(link.title))}
       <span className="li-knowledge-graph-kind">{link.kind==='Concept'?L('Khái niệm','Concept'):id}</span>
      </span>}
     </div>;
@@ -302,7 +302,7 @@ function KnowledgeSearch(){
         className={index===0?'li-search-result is-featured':'li-search-result'} initial={reduced?false:{opacity:0,y:6}}
         animate={{opacity:1,y:0}} transition={reduced?{duration:0}:{duration:0.17}}> 
        
-       <ListRow title={lessonTitle(record.lessonId||record.id,locale,authoredCopy(record.title))}
+       <ListRow title={lessonTitle(record.kind==='Lesson'?(record.lessonId||record.id):record.id,locale,authoredCopy(record.title))}
         description={(locale==='en'?(englishKind[record.kind]||'Knowledge item'):(kindCopy[record.kind]||'Mục kiến thức'))+' · '+(record.lessonId||record.id)+
          (record.contentState==='review_only'?L(' · đang duyệt',' · under review'):'')+
          (record.context?' · '+localizedContext(record.context):'')+
@@ -331,7 +331,7 @@ function KnowledgeSearch(){
         <div className="li-search-related">
         <Text role="support">{L("Kết nối kiến thức có nguồn · không mặc định là bài tiên quyết","Source-backed connections · not automatically prerequisites")}</Text>
         {record.links.map((link,i)=><div key={link.id+':'+i} className="li-search-relation">
-         <Text role="support">{locale==='en'?link.relation||link.label:link.label}: {lessonTitle(link.lessonId||link.id,locale,authoredCopy(link.title))} · {link.lessonId||link.id}</Text>
+         <Text role="support">{locale==='en'?link.relation||link.label:link.label}: {lessonTitle(link.kind==='Lesson'?(link.lessonId||link.id):link.id,locale,authoredCopy(link.title))} · {link.lessonId||link.id}</Text>
          {(link.reasonLocalized?.[locale]||link.reason)&&<Text role="support">{link.reasonLocalized?.[locale]||link.reason}</Text>}
          {link.kind==='Lesson'&&!!availableRoute(link.lessonId||'')&&
           <Button variant="secondary" onClick={()=>navigateTo(link.lessonId!)}>{L("Mở bài","Open lesson")} {link.lessonId}</Button>}

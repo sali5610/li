@@ -1,4 +1,4 @@
-# Lesson Completeness Checklist v1.0 — li.
+# Lesson Completeness Checklist v1.1 — li.
 
 Binding PO scope (2026-11-26): applies to every existing and future teachable lesson, not outline-only catalog entries. GitHub is the sole lesson source. One bilingual identity, no fixed course quota, no AI integration requirement. Status per element: PRESENT / TESTED / SOURCE-REVIEWED / NOT APPLICABLE (with rationale) / MISSING; do not equate a populated field with correctness or production approval.
 
@@ -15,9 +15,12 @@ Binding PO scope (2026-11-26): applies to every existing and future teachable le
 10. Valid submission unlocks model answer and four rubric rows; explicit self-review, no invented scores/mastery.
 11. Real progress/resume, restart confirmation, due-review/T02, no duplicate locale or method completion.
 12. Real source references (title/URL/relevance, rights and checked claim scope), related accessible lesson(s) with reason; if academic review or visual rights pending, keep draft.
-13. Confirm bilingual content and correct route/interaction in shared reader; verify affected controls/gates and review actual source claims, no needless full QA.
+13. Ontology: show lesson-level concept IDs, bilingual labels, typed meaningful relation(s), explanation, evidence/review status and connection to canonical graph IDs when available. Reuse identities; proposed concepts/edges stay editorial and never enter verified search/graph or become prerequisites automatically. Keep link to actual lesson source. No fabricated edges or fixed concept quota.
+14. Analogy: show a specific everyday comparison with correspondence to the actual concept and explicit limits. Never use analogy as evidence or reveal independent answers. Both locales; preserve rigorous explanation.
+15. Confirm bilingual content and correct route/interaction in shared reader; verify affected controls/gates and review actual source claims, no needless full QA.
 
 ## Existing coverage / remaining
+- 20 current lessons have draft ontology projections and bounded analogies in `content/editorial/lesson-ontology-analogy.v1.json`; existing canonical IDs reused, new candidates not promoted. Shared `LessonUnderstanding` in all three active readers. Structural checks are not academic approval.
 - Three locked Wave1 exemplar bodies: preserve unchanged; audit own Problem Case, method fit and actual usable micropractice independently.
 - 17 invited personal drafts: supplemental JSON contains contextual procedural hints, guided feedback, first-party text schematics, source links from the actual manuscript and editorial related-reading suggestions. Review status remains draft, not source/expert/PO approval. Preserve original authored guided feedback where present. These are instructional schematics, not final illustrations or comprehensive source review.
 - Do not publish a draft merely because checklist structure passes. Future content must meet checklist before review/release; check relevant existing tests and state gate. No speculative new system or QA framework.

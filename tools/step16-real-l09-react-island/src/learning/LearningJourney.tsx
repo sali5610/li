@@ -1,3 +1,4 @@
+import {LessonUnderstanding} from './LessonUnderstanding.js';
 import React,{useCallback,useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
 import exact from '../l09-exact.generated.json';
@@ -395,6 +396,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      <div><Heading level={3} role="titleSmall">{content.variationTitle}</Heading><Text>{strip(content.variationText)}</Text></div>
     </div>
     <Text role="support">{strip(content.limit)}</Text>
+    <LessonUnderstanding id="L09-1-2" locale={appLocale}/>
     <Heading level={3} role="titleMedium">{content.goalsTitle}</Heading>
     <ul>{content.goals.map((goal:string,i:number)=><li key={i}>{goal}</li>)}</ul>
    </Card>}

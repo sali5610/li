@@ -172,8 +172,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    })=>(()=>void)
   }}).liLessonCompanion;
   if(!api?.registerEditorial)return;
-  const vi=lesson.content.localized.vi;
-  const anchor=(role:Role)=>'li-sectioned-'+id+'-'+(section(vi,role)[0]?.id||role);
+  // Locale-independent role anchors; retain the original source-section IDs.
+  const anchor=(role:Role)=>'li-sectioned-'+id+'-chapter-'+role;
   const anchors:Record<MentorMoment['stage'],string>={
    opening:'li-sectioned-'+id+'-opening',
    concept:anchor('concept'),
@@ -408,8 +408,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   edit(a=>{const draft=[...a.draft] as Attempt['draft'];draft[i]=v;return {...a,draft};});
  };
  const block=(role:Role)=><>
-  {section(c,role).map(x=><section key={x.id} id={'li-sectioned-'+id+'-'+x.id}>
-   <Heading level={['goals','concept','guided'].includes(role)?2:3}
+  {section(c,role).map((x,index)=><section key={x.id} id={'li-sectioned-'+id+'-'+x.id}>
+   <Heading id={index===0?'li-sectioned-'+id+'-chapter-'+role:undefined} level={['goals','concept','guided'].includes(role)?2:3}
     role={['goals','concept','guided'].includes(role)?'titleLarge':'titleMedium'}>{x.heading}</Heading>
    <Markdown md={x.body_md}/>
   </section>)}
@@ -417,6 +417,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  return <section className="li-learning-journey" lang={locale}
   data-li-react-journey={id} data-li-sectioned-journey={id}
   data-li-editorial-journey={id} data-li-lesson-phase={phase}
+  data-li-chapter-id={id+':'+phase}
   data-li-lesson-submitted={persisted.submitted?'true':'false'}
   data-li-lesson-reviewed={persisted.reviewed?'true':'false'}>
   <header className="li-learning-header">
@@ -523,7 +524,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     </Button>
    </>}
    {phase==='practice'&&<>
-    <Heading level={2} role="titleLarge">{names.practice}</Heading>
+    <Heading id={'li-sectioned-'+id+'-practice'} level={2} role="titleLarge">{names.practice}</Heading>
     <Markdown md={independent(c).body_md.split(/^[1-4]\.\s*/m)[0]}/>
     {c.assessment.questions.map((question,i)=><FormattedLessonQuestion
      key={i} index={i} question={question}
@@ -534,7 +535,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      <Button onClick={()=>setPhase('feedback')}>{vi?'Tiếp: Đối chiếu':'Next: Feedback'} →</Button>}
    </>}
    {phase==='feedback'&&!persisted.submitted&&<>
-    <Heading level={2} role="titleLarge">{names.feedback}</Heading>
+    <Heading id={'li-sectioned-'+id+'-feedback'} level={2} role="titleLarge">{names.feedback}</Heading>
     <Text role="support">{vi?
      'Ngươi chưa nộp bài. Vẫn có thể xem các phần khác; đáp án và tự đánh giá chỉ mở sau khi nộp.':
      'Not submitted yet. You can browse all pages; model answers and self-review unlock after submission.'}</Text>
@@ -543,7 +544,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     </Button>
    </>}
    {phase==='feedback'&&persisted.submitted&&<>
-    <Heading level={2} role="titleLarge">{names.feedback}</Heading>
+    <Heading id={'li-sectioned-'+id+'-feedback'} level={2} role="titleLarge">{names.feedback}</Heading>
     <ol>{questions.map((q,i)=><li key={i}><Markdown md={q}/>
      <p>{(persisted.submission??persisted.draft)[i]}</p></li>)}</ol>
     {!showAnswer||conflict?<div className="li-learning-answer-gate">
@@ -579,7 +580,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     }}/>
    </>}
    {phase==='progress'&&!persisted.reviewed&&<>
-    <Heading level={2} role="titleLarge">{names.progress}</Heading>
+    <Heading id={'li-sectioned-'+id+'-progress'} level={2} role="titleLarge">{names.progress}</Heading>
     <Text role="support">{vi?
      'Chưa hoàn thành lượt tự đánh giá. Ngươi vẫn xem được trang này; tiến độ hoàn thành chỉ ghi nhận sau khi nộp bài và lưu tự đánh giá.':
      'Self-review is not complete. This page is still accessible; completion is recorded after submission and saved self-review.'}</Text>
@@ -588,7 +589,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
     </Button>
    </>}
    {phase==='progress'&&persisted.reviewed&&<>
-    <Heading level={2} role="titleLarge">{names.progress}</Heading>
+    <Heading id={'li-sectioned-'+id+'-progress'} level={2} role="titleLarge">{names.progress}</Heading>
     <Text>{vi?'Điểm tự chấm':'Self-rating'}: {persisted.ratings.reduce<number>((n,x)=>n+(x??0),0)} / 8</Text>
     <Text role="support">{vi?'K5 chưa đo: bài này chưa chứng minh ghi nhớ dài hạn.':'K5 not measured: long-term retention is not established.'}</Text>
     {block('extension')}

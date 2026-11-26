@@ -1,3 +1,4 @@
+import {lessonTitles} from '../learning/lesson-titles.js';
 import {authoredCopy} from './discovery-locale.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
@@ -115,7 +116,7 @@ function fullLessonTrail(route:string,title:string):TrailPart[]|null{
     {vi:group.title,en:group.title,path:groupPath},
     {vi:field.name,en:field.name,path:fieldPath},
     {vi:course.title,en:course.title,path:coursePath},
-    {vi:label,en:label}
+    lessonTitles(id)??{vi:label,en:label}
    ];
   }
  return null;

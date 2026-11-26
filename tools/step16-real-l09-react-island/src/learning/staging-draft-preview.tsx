@@ -1,3 +1,5 @@
+import {lessonTitles,lessonTitle,lessonTitleAliases} from './lesson-titles.js';
+import {discoveryLocale} from '../shell/discovery-locale.js';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {SectionedJourney} from './SectionedJourney';
@@ -46,7 +48,7 @@ export function searchPersonalStudy(query:string):Array<{
  return personalStudyLessonIds.map(id=>{
   const draft=byId.get(id),entry=catalogLessons.get(id);
   if(!draft||!entry)return null;
-  const title=normalize(entry.title),code=normalize(id);
+  const title=normalize(lessonTitleAliases(id,entry.title)),code=normalize(id);
   const source=draft.content.localized;
   const body=normalize([source.vi?.intro_md||'',source.en?.intro_md||'',
    ...(['vi','en'] as const).flatMap(loc=>
@@ -60,7 +62,7 @@ export function searchPersonalStudy(query:string):Array<{
   const score=code===q?150:title.includes(q)?110:
    code.includes(q)?100:normalize(course).includes(q)?75:
    tokens.every(t=>(title+' '+context+' '+normalize(course)).includes(t))?65:25;
-  return {id,title:entry.title,context:entry.field+' · '+course,score};
+  return {id,title:lessonTitle(id,discoveryLocale(),entry.title),context:entry.field+' · '+course,score};
  }).filter((x):x is {id:string;title:string;context:string;score:number}=>x!==null)
   .sort((a,b)=>b.score-a.score)
   .slice(0,17).map(({id,title,context})=>({id,title,context}));
@@ -86,7 +88,7 @@ function lessonForStudy(id:string):SectionedLesson{
  const field=catalogEntry.field;
  return {...d,
   version:'personal-study-2026-11-21-'+id,
-  title:{vi:catalogEntry.title,en:catalogEntry.title},
+  title:lessonTitles(id)??(()=>{throw Error('PERSONAL_LESSON_TITLE_MISSING '+id)})(),
   hierarchy:{field:{title:field}},
   content:{...d.content,format:'editorial-sectioned-v1'}
  } as unknown as SectionedLesson;

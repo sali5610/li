@@ -353,7 +353,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
     <StudyBookFolio phase={phase} steps={sequence} locale={appLocale}
    onPrevious={pageIndex>0?()=>go(sequence[pageIndex-1]):undefined}
    onNext={pageIndex<sequence.length-1?()=>go(sequence[pageIndex+1]):undefined}/>
-  <aside className="li-learning-rail" aria-label="Learning navigation and status">
+  <aside className="li-learning-rail" aria-label={vi?'Điều hướng và tiến độ học':'Learning navigation and status'}>
 
   <div className="li-learning-save">
    {(saveViewState==='error'||sync==='conflict')&&

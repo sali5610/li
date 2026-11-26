@@ -62,7 +62,7 @@ const libraryData={
                      route:'research',date:'20/11/2026'}],
  collectionFilter:'all',bookmarkTab:'question',storageAvailable:true
 };
-if(viewName!=='searchEnglish')app.liLanguage={get:()=> 'vi'};
+if(!['searchEnglish','bilingualReaders'].includes(viewName))app.liLanguage={get:()=> 'vi'};
 app.liPersonalDiary={
  getView:()=>({...journalView}),
  act:(kind:string,value?:string)=>{
@@ -86,13 +86,17 @@ app.liLibraryShelf={
  openSavedQuestion:()=>{},removeSavedQuestion:()=>{},
  selectBookmarkTab:(next:string)=>{libraryData.bookmarkTab=next;window.dispatchEvent(new Event('li:library-view-changed'));}
 };
-app.liBookmarks={toggle:()=>true};
+app.liBookmarks={toggle:()=>true,isSaved:()=>false};
 app.liNotes={openDetail:()=>true,deleteFromReact:()=>true};
 app.LiSpellPractice={getT02Status:()=>null};
 app.liBuddyEngine={choose:(i:number)=>({text:i===0?'Chọn cách học phù hợp với câu hỏi.':'Thử một bài luyện ngắn.',showChallenge:false})};
 const root=document.getElementById('visual-root')!;
 const buddyRoot=document.getElementById('buddy-modal')!;
-if(viewName==='searchEnglish'){
+if(viewName==='bilingualReaders'){
+ void import('./bilingual-reader-fixture.js').then(m=>m.runBilingualReaderFixture(root))
+  .then(result=>{app.__liBilingualReaderReport=result;})
+  .catch(error=>{app.__liBilingualReaderReport={status:'FAIL',error:String(error)};});
+} else if(viewName==='searchEnglish'){
  const header=document.querySelector('.header')!;
  header.insertAdjacentHTML('beforeend','<button id="li-global-back"></button><div class="topnav"></div><div class="tools"></div>');
  header.insertAdjacentHTML('afterend','<nav class="mobile-nav"></nav>');

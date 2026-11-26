@@ -1,3 +1,4 @@
+import {lessonTitle} from './lesson-titles.js';
 import {LessonVisualEvidence} from './LessonVisualEvidence.js';
 import {LessonUnderstanding} from './LessonUnderstanding.js';
 import React,{useEffect,useRef,useState} from 'react';
@@ -635,7 +636,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      <a href={'./?lesson='+encodeURIComponent(relatedId)} onClick={event=>{
       if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
       if(window.liAppRouter?.navigate?.(relatedRoute))event.preventDefault();
-     }}>{vi?'Mở bài học':'Open lesson'} · {relatedId}</a>
+     }}>{lessonTitle(relatedId,locale,relatedId)} · {relatedId}</a>
     </section>}
     <SelfReviewNextStep rubricItems={rubric} ratings={persisted.ratings}
      locale={locale} onReviewTheory={()=>setPhase('read')}/>

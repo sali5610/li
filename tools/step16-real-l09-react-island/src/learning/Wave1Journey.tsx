@@ -294,7 +294,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
     <StudyBookFolio phase={phase} steps={steps} locale={appLocale}
    onPrevious={pageIndex>0?()=>setPhase(steps[pageIndex-1]):undefined}
    onNext={pageIndex<steps.length-1?()=>setPhase(steps[pageIndex+1]):undefined}/>
-  <aside className="li-learning-rail" aria-label="Learning navigation and status">
+  <aside className="li-learning-rail" aria-label={vi?'Điều hướng và tiến độ học':'Learning navigation and status'}>
 
   <div className="li-learning-save">
    {(saveState==='error'||status==='conflict')&&

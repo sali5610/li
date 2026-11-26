@@ -6,7 +6,7 @@ const $=id=>document.getElementById(id);
 const isEnglish=()=>window.liLanguage?.get?.()==="en";
 const ui=(vi,en)=>isEnglish()?en:vi;
 const lessonTitlesEN={"L03-1-2":"Open Questions & Interview Bias","L09-1-2":"Sampling Bias","L15-2-2":"Reorder Points & Safety Stock"};
-const lessonTitle=info=>isEnglish()?(lessonTitlesEN[info.id]||window.liLanguage?.translate?.(info.title)||info.title):info.title;
+const lessonTitle=info=>window.liAuthoredLessonTitles?.[info.id]?.[isEnglish()?"en":"vi"]||(isEnglish()?(lessonTitlesEN[info.id]||window.liLanguage?.translate?.(info.title)||info.title):info.title);
 const lessonStatusText=info=>{
  const vi=lessonStatus(info);
  return isEnglish()?({"Đã tự đánh giá":"Self-reviewed","Đã nộp bài":"Submitted","Đã mở gần đây":"Recently opened"}[vi]||vi):vi;

@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "1.0.0",
+  "lessons": {
+    "L03-1-1": {
+      "vi": "Nhu cầu người dùng và giải pháp giao diện",
+      "en": "User Needs versus Proposed Interfaces"
+    },
+    "L03-1-2": {
+      "vi": "Câu hỏi mở & thiên lệch phỏng vấn",
+      "en": "Open Questions and Interview Bias"
+    },
+    "L03-1-3": {
+      "vi": "Quan sát, lời kể, suy luận và độ tin cậy",
+      "en": "Observation, Quote, Inference and Confidence"
+    },
+    "L03-2-1": {
+      "vi": "Hệ phân loại, phân cấp và khái niệm chuẩn",
+      "en": "Taxonomy, Hierarchy and Canonical Concepts"
+    },
+    "L03-2-2": {
+      "vi": "Phân nhóm thẻ và kiểm thử cây danh mục",
+      "en": "Card Sorting versus Tree Testing"
+    },
+    "L03-2-3": {
+      "vi": "Tác vụ, lỗi thao tác và khả năng tìm thấy",
+      "en": "Usability Tasks, Errors and Findability Measures"
+    },
+    "L09-1-2": {
+      "vi": "Sampling Bias · Sai lệch chọn mẫu",
+      "en": "Sampling Bias versus Random Sampling Variation"
+    },
+    "L09-1-3": {
+      "vi": "Xu hướng trung tâm, độ phân tán và dạng phân phối",
+      "en": "Center, Spread and Distribution Shape"
+    },
+    "L09-2-1": {
+      "vi": "Xác suất có điều kiện và tỷ lệ nền",
+      "en": "Conditional Probability and Base Rates"
+    },
+    "L09-2-2": {
+      "vi": "Khoảng tin cậy và độ bất định",
+      "en": "Confidence Intervals and Uncertainty"
+    },
+    "L09-2-3": {
+      "vi": "Hồi quy và yếu tố gây nhiễu",
+      "en": "Regression and Possible Confounding"
+    },
+    "L09-3-1": {
+      "vi": "Tập huấn luyện, xác thực, kiểm thử và rò rỉ dữ liệu",
+      "en": "Train/Validation/Test and Data Leakage"
+    },
+    "L09-3-2": {
+      "vi": "Precision, Recall và đánh đổi sai sót",
+      "en": "Precision, Recall and Error Trade-offs"
+    },
+    "L09-3-3": {
+      "vi": "Công bằng, khả năng diễn giải và giới hạn mô hình",
+      "en": "Fairness, Interpretability and Model Limits"
+    },
+    "L15-2-1": {
+      "vi": "Dự báo nhu cầu và giả định hoạch định",
+      "en": "Demand Forecasting and Planning Assumptions"
+    },
+    "L15-2-2": {
+      "vi": "Điểm đặt hàng lại & tồn kho an toàn",
+      "en": "Reorder Points and Safety Stock"
+    },
+    "L15-2-3": {
+      "vi": "Sự kiện kế hoạch, thực tế và thời gian đến dự kiến",
+      "en": "Planned versus Actual Events and ETA"
+    },
+    "L15-3-1": {
+      "vi": "Hiệu ứng roi da và độ trễ thông tin",
+      "en": "Bullwhip Effect and Information Delays"
+    },
+    "L15-3-2": {
+      "vi": "Gộp rủi ro và bố trí tồn kho",
+      "en": "Risk Pooling and Inventory Placement"
+    },
+    "L15-3-3": {
+      "vi": "Mức phục vụ, khả năng phục hồi và tối ưu chi phí",
+      "en": "Service Level, Resilience and Cost Optimization"
+    }
+  }
+}

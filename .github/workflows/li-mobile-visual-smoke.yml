@@ -48,6 +48,7 @@ jobs:
       - name: Build isolated fixture using real screen React and CSS
         working-directory: tools/step16-real-l09-react-island
         run: |
+          npm run extract
           npx vite build --config vite.mobile-visual.config.mjs
           test -s dist-mobile-visual/mobile-visual.html
           cp -a dist-mobile-visual/. ../../site/

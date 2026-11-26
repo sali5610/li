@@ -293,10 +293,18 @@ vm.runInNewContext(html.slice(problemStart,problemEnd),draftResearch);
 assert.equal(draftResearch.liCurrentProblem().caseKey,"draft-case-L03-1-1",
  "Draft hook's Research context resolves its matching Case");
 for(const sample of sampleCases){
- draftResearch.qIndex=testMix.scenarios.findIndex(x=>x.lessonId===sample.id&&x.type==="hook");
+ const caseIndex=testMix.scenarios.findIndex(x=>x.lessonId===sample.id&&x.type==="problem");
+ assert.ok(caseIndex>=0,"Sample case exists");
+ draftResearch.qIndex=caseIndex;
  assert.equal(draftResearch.liCurrentCase().id,"draft-case-"+sample.id);
  assert.equal(draftResearch.liCurrentCase().lessonId,sample.id);
  assert.equal(draftResearch.liCaseDraftStorageKey(),"li.private.case-draft.v1.draft-case-"+sample.id);
+ // The early fixture predates stable lesson IDs on the original hooks.
+ // Exercise the actual published-hook shape without mutating the mix.
+ draftResearch.scenarios=[...testMix.scenarios,{type:"hook",lessonId:sample.id}];
+ draftResearch.qIndex=draftResearch.scenarios.length-1;
+ assert.equal(draftResearch.liCurrentCase().id,"draft-case-"+sample.id);
+ draftResearch.scenarios=testMix.scenarios;
 }
 
 // The 17 authored personal previews link to their corresponding existing

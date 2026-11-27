@@ -415,7 +415,6 @@ function DueReviewQueue(){
       <Text role="support" className="library-review-due">{item.awaitingRating?
        copy('Đã xem phản hồi · Chờ tự đánh giá','Feedback seen · Awaiting self-rating'):
        copy('Tự nhớ trước khi xem phản hồi','Recall before seeing feedback')}</Text>
-     </div>
      <div className="action-row">
       <Button variant="secondary" onClick={()=>open(item)}>{item.awaitingRating?
        copy('Tự đánh giá','Self-rate'):copy('Ôn ngay','Review now')}</Button>
@@ -423,6 +422,7 @@ function DueReviewQueue(){
        const ok=app.LiSpellPractice?.postponeT02?.(item.id,item.dueAt)===true;
        setError(!ok);refresh();
       }}>{copy('Hoãn 1 ngày','Defer 1 day')}</Button>}
+     </div>
      </div>
     </div>)}
    </div>

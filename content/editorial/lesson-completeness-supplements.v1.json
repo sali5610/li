@@ -9,14 +9,66 @@
         "guidedFeedback": "Nhu cầu giả định: chia sẻ kết quả kiểm kê đúng lúc với người cần đối chiếu. Hỏi họ kể lần gần nhất phải gửi dữ liệu, người nhận và trở ngại. Chưa chọn định dạng.",
         "diagram": "Yêu cầu → Giả thuyết nhu cầu → Kiểm chứng",
         "relatedReason": "Câu hỏi trung lập giúp kiểm chứng nhu cầu.",
-        "guidedPrompt": "Một nhân viên yêu cầu thêm nút xuất Excel để gửi kết quả kiểm kê. Viết một giả thuyết nhu cầu không khóa vào Excel, và một câu hỏi về lần gần nhất."
+        "guidedPrompt": "Một nhân viên yêu cầu thêm nút xuất Excel để gửi kết quả kiểm kê. Viết một giả thuyết nhu cầu không khóa vào Excel, và một câu hỏi về lần gần nhất.",
+        "reasoningRubric": [
+          [
+            "Nhu cầu và yêu cầu",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Tách đúng WhatsApp khỏi giả thuyết nhu cầu có thể kiểm chứng, không khóa giải pháp."
+          ],
+          [
+            "Câu hỏi nghiên cứu",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Hai câu trung lập về sự cố thực tế, không gài kênh hay câu trả lời."
+          ],
+          [
+            "Phương án khác",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Hai hướng thực sự khác nhau, mỗi hướng có một rủi ro hoặc giả định cần thử."
+          ],
+          [
+            "Kết luận và giới hạn",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Phân biệt lời đề xuất của một người với nhu cầu đã xác nhận, nêu bằng chứng còn thiếu."
+          ]
+        ]
       },
       "en": {
         "hint": "Separate the feature request from the job outcome. Write a need hypothesis, last-event questions and validation conditions; do not choose a channel yet.",
         "guidedFeedback": "Possible need: share stocktake results in time with people who reconcile them. Ask about the last sharing event, recipients and obstacles; do not select a format yet.",
         "diagram": "Request → Need hypothesis → Validation",
         "relatedReason": "Neutral interviewing helps test a need hypothesis.",
-        "guidedPrompt": "A worker requests an Excel export to share stocktaking results. Write a need hypothesis without locking into Excel and one question about the last occasion."
+        "guidedPrompt": "A worker requests an Excel export to share stocktaking results. Write a need hypothesis without locking into Excel and one question about the last occasion.",
+        "reasoningRubric": [
+          [
+            "Need vs request",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Separates WhatsApp from a testable need hypothesis without locking the solution."
+          ],
+          [
+            "Research questions",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Two neutral questions about a real incident, without cueing a channel or response."
+          ],
+          [
+            "Alternatives",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Two distinct approaches, each with a risk or assumption to test."
+          ],
+          [
+            "Bounded conclusion",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Distinguishes one person's proposal from a validated need and names missing evidence."
+          ]
+        ]
       },
       "sourceUrl": "https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs",
       "relatedLessonId": "L03-1-2"
@@ -27,14 +79,66 @@
         "guidedFeedback": "Observation: P04 mở Settings rồi quay lại. Quote: lời P04 về lịch sử. Giả thuyết: nhãn hoặc vị trí lịch sử có thể không khớp kỳ vọng; chưa đủ để nói mọi người gặp lỗi.",
         "diagram": "Quan sát + lời nói → Suy luận → Kiểm chứng",
         "relatedReason": "Cách hỏi ảnh hưởng độ tin cậy của lời kể.",
-        "guidedPrompt": "P04 mở mục Settings rồi quay lại và nói “Tôi tưởng ở đây có lịch sử.” Viết riêng observation, quote và một inference chưa kiểm chứng."
+        "guidedPrompt": "P04 mở mục Settings rồi quay lại và nói “Tôi tưởng ở đây có lịch sử.” Viết riêng observation, quote và một inference chưa kiểm chứng.",
+        "reasoningRubric": [
+          [
+            "Dữ kiện có nguồn",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Hai quan sát và một trích dẫn đúng người, không lẫn suy diễn."
+          ],
+          [
+            "Giả thuyết cạnh tranh",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Hai cách giải thích khả dĩ khác nhau, đều được đánh dấu giả thuyết."
+          ],
+          [
+            "Phát hiện có phạm vi",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Kết luận đúng hai phiên quan sát và giải thích vì sao không suy rộng đa số."
+          ],
+          [
+            "Kiểm chứng và tự tin",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Hai cách kiểm chứng phù hợp và mức tự tin có lý do dựa trên dữ kiện."
+          ]
+        ]
       },
       "en": {
         "hint": "Attach each fact to the participant and observed behavior. Separate inferences and avoid population-wide wording.",
         "guidedFeedback": "Observation: P04 opens Settings and returns. Quote: the statement about history. Hypothesis: its label or location may conflict with expectations; no population-wide conclusion.",
         "diagram": "Observation + quote → Inference → Validation",
         "relatedReason": "Interview wording affects the reliability of accounts.",
-        "guidedPrompt": "P04 opens Settings, returns and says “I thought the history was here.” Write an observation, quote and unverified inference separately."
+        "guidedPrompt": "P04 opens Settings, returns and says “I thought the history was here.” Write an observation, quote and unverified inference separately.",
+        "reasoningRubric": [
+          [
+            "Attributed evidence",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Two observations and one quote correctly attributed, without inference."
+          ],
+          [
+            "Competing hypotheses",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Two distinct plausible interpretations explicitly labeled hypotheses."
+          ],
+          [
+            "Bounded finding",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Finding bounded to the two sessions with a reason not to infer prevalence."
+          ],
+          [
+            "Verification and confidence",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Two suitable verification steps and a confidence level justified by evidence."
+          ]
+        ]
       },
       "sourceUrl": "https://www.gov.uk/service-manual/user-research/analyse-a-research-session",
       "relatedLessonId": "L03-1-2"
@@ -47,7 +151,33 @@
         "relatedReason": "Kiểm chứng từ ngữ và tác vụ qua phỏng vấn.",
         "guidedPrompt": "Tài liệu “Đổi mật khẩu” thuộc nhóm Security nội bộ. Đề xuất content type, topic ID, một alias và lối menu hướng tác vụ; phân biệt các vai trò.",
         "answerAddendum": "Ví dụ kiểm chứng cho câu 4: mời người đang hoặc chuẩn bị làm nghiên cứu tại trường; giao tác vụ “Ngươi muốn xin kinh phí cho một nghiên cứu mới, hãy tìm hướng dẫn cần thiết.” Trong cây đề xuất, định trước R1 là đích đúng; ghi tỷ lệ tới R1 không trợ giúp, đường đi và các điểm rẽ sai. Đây là kế hoạch thử, chưa có kết quả để khẳng định taxonomy hay UI đã tốt.",
-        "methodNote": "T10 bổ trợ (tự chọn): thử điều kiện biên khi hai khái niệm khác nhau có cùng nhãn, hoặc một khái niệm có nhiều đường điều hướng. Giữ ID theo nghĩa; nêu điều cần xác minh trước khi đổi alias hay gộp ID. Đây là gợi ý thử biên, không phải lượt luyện riêng."
+        "methodNote": "T10 bổ trợ (tự chọn): thử điều kiện biên khi hai khái niệm khác nhau có cùng nhãn, hoặc một khái niệm có nhiều đường điều hướng. Giữ ID theo nghĩa; nêu điều cần xác minh trước khi đổi alias hay gộp ID. Đây là gợi ý thử biên, không phải lượt luyện riêng.",
+        "reasoningRubric": [
+          [
+            "Taxonomy và loại nội dung",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Tối đa bốn ID ổn định với nhãn ưu tiên, ít nhất hai alias và phân biệt loại nội dung."
+          ],
+          [
+            "Ánh xạ tài liệu",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Ánh xạ đủ R1–R6, giải thích hợp lý các trường hợp nhiều tag nếu có."
+          ],
+          [
+            "Điều hướng theo tác vụ",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Hai đường dẫn theo nhiệm vụ, không sao chép taxonomy nội bộ; nêu giả định."
+          ],
+          [
+            "Kiểm tra IA",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Có nhiệm vụ, tiêu chí đạt, nhóm người phù hợp và giới hạn kết luận."
+          ]
+        ]
       },
       "en": {
         "hint": "Create topic IDs before labels; consider multiple tags for cross-topic material. Menus serve tasks rather than necessarily copying the taxonomy.",
@@ -56,7 +186,33 @@
         "relatedReason": "Validate language and tasks through interviews.",
         "guidedPrompt": "An article “Change password” belongs to internal Security. Propose a content type, topic ID, alias and task-based menu path; distinguish their roles.",
         "answerAddendum": "Example validation for question 4: recruit current or prospective university researchers; ask, “You want funding for a new study. Find the instructions you need.” In the proposed tree, predefine R1 as the target; record unassisted arrival at R1, paths and wrong turns. This is a test plan, not evidence that the taxonomy or full UI works.",
-        "methodNote": "Optional T10: test a boundary where two distinct concepts share a label or one concept has multiple navigation paths. Keep IDs tied to meaning; state what must be verified before changing aliases or merging IDs. This is a boundary-test suggestion, not a separate recorded attempt."
+        "methodNote": "Optional T10: test a boundary where two distinct concepts share a label or one concept has multiple navigation paths. Keep IDs tied to meaning; state what must be verified before changing aliases or merging IDs. This is a boundary-test suggestion, not a separate recorded attempt.",
+        "reasoningRubric": [
+          [
+            "Taxonomy vs content types",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "At most four stable IDs with preferred labels, two or more aliases, and distinct content types."
+          ],
+          [
+            "Document mapping",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Maps all R1–R6 and justifies any multiple tags."
+          ],
+          [
+            "Task navigation",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Two task-oriented paths distinct from internal taxonomy, with assumptions."
+          ],
+          [
+            "IA evaluation",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Specifies task, success criterion, participant group and inference limit."
+          ]
+        ]
       },
       "sourceUrl": "https://www.nngroup.com/articles/taxonomy-101/",
       "relatedLessonId": "L03-1-2"
@@ -67,14 +223,66 @@
         "guidedFeedback": "Card sorting phù hợp để khám phá cách nhóm/nhãn. Sau khi có cây giả định, tree testing kiểm tra tìm đích. Cả hai không tự xác nhận UI hoàn chỉnh.",
         "diagram": "Khám phá nhóm → Cây thử nghiệm → Tìm đích",
         "relatedReason": "Taxonomy là đầu vào để thử cấu trúc điều hướng.",
-        "guidedPrompt": "Một thư viện mới chưa biết người đọc nhóm các tài liệu hướng dẫn thế nào. Chọn phương pháp đầu tiên và nêu khi nào dùng phương pháp còn lại."
+        "guidedPrompt": "Một thư viện mới chưa biết người đọc nhóm các tài liệu hướng dẫn thế nào. Chọn phương pháp đầu tiên và nêu khi nào dùng phương pháp còn lại.",
+        "reasoningRubric": [
+          [
+            "Chọn phương pháp",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Chọn tree test cho cây hiện có, nêu khi nào cần khám phá cách nhóm trước."
+          ],
+          [
+            "Nhiệm vụ và đường dẫn",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Hai nhiệm vụ không lộ nhãn; đúng đích theo cây và dữ liệu đường đi cần ghi."
+          ],
+          [
+            "Giả thuyết và bằng chứng",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Hai lý do cạnh tranh, cách phân biệt bằng dữ liệu; không bịa tỷ lệ."
+          ],
+          [
+            "Vòng lặp kiểm chứng",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Khám phá, IA, đánh giá, sửa; nêu giới hạn mẫu và kiểm thử giao diện thật."
+          ]
+        ]
       },
       "en": {
         "hint": "Ask whether the goal is discovering groups or evaluating an existing tree. Write tasks without exposing target labels.",
         "guidedFeedback": "Card sorting explores groupings and labels. Once a candidate tree exists, tree testing checks findability. Neither establishes usability of the full interface.",
         "diagram": "Discover groups → Test tree → Find destination",
         "relatedReason": "Taxonomy informs a navigational structure to test.",
-        "guidedPrompt": "A new library does not know how readers group help articles. Choose a first method and say when to use the other."
+        "guidedPrompt": "A new library does not know how readers group help articles. Choose a first method and say when to use the other.",
+        "reasoningRubric": [
+          [
+            "Method choice",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Chooses tree testing for the existing tree and when grouping discovery should precede it."
+          ],
+          [
+            "Tasks and paths",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Two non-leading tasks, correct predefined destinations and route measurements."
+          ],
+          [
+            "Hypotheses and evidence",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Two competing explanations and discriminating evidence, without invented rates."
+          ],
+          [
+            "Evaluation loop",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Discovery, candidate IA, evaluation and revision, with sampling limits and real-UI validation."
+          ]
+        ]
       },
       "sourceUrl": "https://www.nngroup.com/articles/card-sorting-tree-testing-differences/",
       "relatedLessonId": "L03-2-1"
@@ -85,14 +293,66 @@
         "guidedFeedback": "Completion 17/20=85%; direct 60%; failure 15%; indirect 25%. Hai lần đi sai là hai sự kiện lỗi, không thêm hai lượt thất bại.",
         "diagram": "Attempts → Outcome rates | Error events → Error count",
         "relatedReason": "Tree test cung cấp đường đi và kết quả để đo.",
-        "guidedPrompt": "Trong 20 lượt hợp lệ: 12 direct, 5 indirect, 3 failed. Một lượt thành công đi sai 2 nhánh. Tính completion/direct/failure, phân biệt error events."
+        "guidedPrompt": "Trong 20 lượt hợp lệ: 12 direct, 5 indirect, 3 failed. Một lượt thành công đi sai 2 nhánh. Tính completion/direct/failure, phân biệt error events.",
+        "reasoningRubric": [
+          [
+            "Tỷ lệ và mẫu số",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "11/15 hoàn tất, 8/15 trực tiếp, 3/15 gián tiếp, 4/15 thất bại; đơn vị lượt."
+          ],
+          [
+            "Lượt và sự kiện",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Phân biệt 6 lượt click đầu sai và 9 sự kiện sai; một lượt có thể sai nhiều lần."
+          ],
+          [
+            "Phạm vi kết luận",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Bác bỏ 80% và suy rộng mọi người; nêu trợ giúp chưa ánh xạ, mẫu thuận tiện và thiếu thời gian."
+          ],
+          [
+            "Thiết kế kiểm chứng",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Nêu người tham gia, nhiệm vụ, đích, metric đường đi, protocol và kiểm UI thật cùng giới hạn."
+          ]
+        ]
       },
       "en": {
         "hint": "Tabulate outcomes by attempt first. Count error events separately; every rate needs its denominator and sample limitation.",
         "guidedFeedback": "Completion 17/20=85%; direct 60%; failure 15%; indirect 25%. Two wrong turns are two error events, not two additional failed attempts.",
         "diagram": "Attempts → Outcome rates | Error events → Error count",
         "relatedReason": "Tree tests provide paths and outcomes to measure.",
-        "guidedPrompt": "Of 20 valid attempts, 12 are direct, 5 indirect and 3 failed. One successful attempt takes two wrong branches. Compute completion/direct/failure and distinguish errors."
+        "guidedPrompt": "Of 20 valid attempts, 12 are direct, 5 indirect and 3 failed. One successful attempt takes two wrong branches. Compute completion/direct/failure and distinguish errors.",
+        "reasoningRubric": [
+          [
+            "Rates and denominator",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "11/15 complete, 8/15 direct, 3/15 indirect, 4/15 failed; unit is attempts."
+          ],
+          [
+            "Attempts vs events",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Distinguishes six wrong-first-click attempts from nine events; one attempt can contain multiple errors."
+          ],
+          [
+            "Inference scope",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Rejects 80% and population claim; notes unmapped assistance, convenience sample and absent timing."
+          ],
+          [
+            "Follow-up design",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Specifies participants, task, target, route metrics, protocol, real-UI check and limits."
+          ]
+        ]
       },
       "sourceUrl": "https://www.nngroup.com/articles/success-rate-the-simplest-usability-metric/",
       "relatedLessonId": "L03-2-2"
@@ -103,14 +363,66 @@
         "guidedFeedback": "Cả hai mean=4, median=4; range lần lượt 4 và 6 phút. Dãy hai có range rộng hơn; không kết luận phân phối tổng thể từ năm điểm.",
         "diagram": "Dãy số → Trung tâm + độ trải → Giới hạn mẫu",
         "relatedReason": "Phân biệt mô tả mẫu với suy rộng dân số.",
-        "guidedPrompt": "Hai dãy phút: 2,3,4,5,6 và 1,1,4,7,7. Tính mean, median, range; giải thích điều không thể kết luận về tổng thể."
+        "guidedPrompt": "Hai dãy phút: 2,3,4,5,6 và 1,1,4,7,7. Tính mean, median, range; giải thích điều không thể kết luận về tổng thể.",
+        "reasoningRubric": [
+          [
+            "Thống kê nhóm A",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Mean 7, median 5, hai mode 4 và 5, range 21 phút; diễn giải đúng."
+          ],
+          [
+            "Thống kê nhóm B",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Mean 5, median 5, mode 5, range 2 phút; giải thích mean riêng lẻ che độ phân tán."
+          ],
+          [
+            "Giá trị cực trị",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Nhận diện 23 phút và đuôi phải quan sát được; không kết luận phân phối tổng thể."
+          ],
+          [
+            "Biểu diễn và giới hạn",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Ít nhất hai thống kê hoặc biểu đồ bổ trợ phù hợp, nêu giới hạn lấy mẫu."
+          ]
+        ]
       },
       "en": {
         "hint": "Sort both lists before finding medians and modes. Compare min–max spans; do not infer population shape from few points.",
         "guidedFeedback": "Both mean=4 and median=4; ranges are 4 and 6 minutes. The second has a wider observed range; five observations do not establish a population distribution.",
         "diagram": "Data → Center + spread → Sample limits",
         "relatedReason": "Distinguish sample descriptions from population inference.",
-        "guidedPrompt": "Two duration lists: 2,3,4,5,6 and 1,1,4,7,7. Compute mean, median and range; explain what cannot be inferred about the population."
+        "guidedPrompt": "Two duration lists: 2,3,4,5,6 and 1,1,4,7,7. Compute mean, median and range; explain what cannot be inferred about the population.",
+        "reasoningRubric": [
+          [
+            "Group A statistics",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Mean 7, median 5, modes 4 and 5, range 21 minutes, with interpretation."
+          ],
+          [
+            "Group B statistics",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Mean 5, median 5, mode 5, range 2 minutes; explains why mean alone hides spread."
+          ],
+          [
+            "Observed extreme",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Identifies 23-minute extreme and observed right tail without asserting population shape."
+          ],
+          [
+            "Presentation and limits",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "At least two useful complementary statistics or plots and the sampling boundary."
+          ]
+        ]
       },
       "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data",
       "relatedLessonId": "L09-1-2"
@@ -121,14 +433,66 @@
         "guidedFeedback": "TP=30, FP=16, PPV=30/46≈65,22%. Độ nhạy dùng 40 ca thật; PPV dùng 46 cảnh báo.",
         "diagram": "Tổng → Hai nhóm thật → Cảnh báo → Tỷ lệ có điều kiện",
         "relatedReason": "Cơ chế chọn mẫu ảnh hưởng diễn giải tỷ lệ.",
-        "guidedPrompt": "200 sự kiện: 40 có vấn đề, độ nhạy 75%, FPR 10%. Tính true alerts, false alerts và PPV."
+        "guidedPrompt": "200 sự kiện: 40 có vấn đề, độ nhạy 75%, FPR 10%. Tính true alerts, false alerts và PPV.",
+        "reasoningRubric": [
+          [
+            "Tách nhóm gốc",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "200 rủi ro và 4.800 không rủi ro, xác định đúng nhóm làm mẫu số."
+          ],
+          [
+            "Số cảnh báo",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "170 cảnh báo đúng, 240 sai, tổng 410 sự kiện; đơn vị rõ."
+          ],
+          [
+            "Xác suất có điều kiện",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "170/410 ≈ 41,46%; phân biệt với 170/200 = 85%."
+          ],
+          [
+            "Phản biện báo cáo",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Bác bỏ 85% cảnh báo đúng bằng mẫu số; nêu bằng chứng cần có ở kỳ mới."
+          ]
+        ]
       },
       "en": {
         "hint": "Split the total by risk status, tabulate true and false alerts. When reversing the condition, check the new denominator.",
         "guidedFeedback": "TP=30, FP=16, PPV=30/46≈65.22%. Sensitivity uses 40 actual problems; PPV uses 46 alerts.",
         "diagram": "Total → True groups → Alerts → Conditional rate",
         "relatedReason": "Sampling mechanisms affect rate interpretation.",
-        "guidedPrompt": "200 events: 40 actual problems, sensitivity 75%, FPR 10%. Compute true alerts, false alerts and PPV."
+        "guidedPrompt": "200 events: 40 actual problems, sensitivity 75%, FPR 10%. Compute true alerts, false alerts and PPV.",
+        "reasoningRubric": [
+          [
+            "Base population",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "200 risky and 4,800 nonrisky events, with correct base denominators."
+          ],
+          [
+            "Alert counts",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "170 true alerts, 240 false alerts, 410 alerts total, with units."
+          ],
+          [
+            "Conditional probability",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "170/410 ≈ 41.46%; distinguishes it from 170/200 = 85%."
+          ],
+          [
+            "Report critique",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Rejects 85% alert precision using denominators and names evidence needed for a later period."
+          ]
+        ]
       },
       "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/3-4-contingency-tables",
       "relatedLessonId": "L09-1-2"
@@ -139,14 +503,66 @@
         "guidedFeedback": "p̂=.6, SE=√(.24/100)≈.049, MOE≈.096, CI ≈ [.504,.696]. Coverage là tính chất xấp xỉ của quy trình lặp lại theo giả định; không phải xác suất tham số cố định.",
         "diagram": "Tỷ lệ mẫu → SE → Biên sai số → Khoảng",
         "relatedReason": "Selection bias vẫn là rủi ro khi khoảng tin cậy hẹp.",
-        "guidedPrompt": "Mẫu ngẫu nhiên đơn giả định n=100, 60 Có. Dùng z=1,96, Wald CI 95%; giải thích coverage và điều kiện."
+        "guidedPrompt": "Mẫu ngẫu nhiên đơn giả định n=100, 60 Có. Dùng z=1,96, Wald CI 95%; giải thích coverage và điều kiện.",
+        "reasoningRubric": [
+          [
+            "Tỷ lệ và điều kiện",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "p̂=0,65, q̂=0,35; 260 Có, 140 Không; kiểm điều kiện số đếm."
+          ],
+          [
+            "Khoảng tin cậy",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "SE≈0,024, biên≈0,047, khoảng [0,603;0,697] với công thức và làm tròn."
+          ],
+          [
+            "Ý nghĩa coverage",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Giải thích 95% qua lặp lấy mẫu và tham số cố định, không gán xác suất cho khoảng đã tính."
+          ],
+          [
+            "Sai lệch chọn mẫu",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Nêu vì sao banner tự nguyện không bảo đảm suy rộng hoặc coverage danh nghĩa."
+          ]
+        ]
       },
       "en": {
         "hint": "Compute the sample proportion, check counts, then SE and margin. Describe repeated procedures rather than probability for a fixed parameter.",
         "guidedFeedback": "p̂=.6, SE=√(.24/100)≈.049, MOE≈.096, CI ≈ [.504,.696]. Coverage is an approximate repeated-procedure property under assumptions, not probability for a fixed parameter.",
         "diagram": "Sample proportion → SE → Margin → Interval",
         "relatedReason": "Selection bias remains a risk even with a narrow interval.",
-        "guidedPrompt": "A fictional simple random sample of n=100 has 60 Yes responses. Use z=1.96 for a 95% Wald interval; explain coverage and conditions."
+        "guidedPrompt": "A fictional simple random sample of n=100 has 60 Yes responses. Use z=1.96 for a 95% Wald interval; explain coverage and conditions.",
+        "reasoningRubric": [
+          [
+            "Proportion and conditions",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "p-hat=.65, q-hat=.35; 260 Yes and 140 No; checks count conditions."
+          ],
+          [
+            "Confidence interval",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "SE≈.024, margin≈.047, interval [.603,.697], with formula and rounding."
+          ],
+          [
+            "Coverage interpretation",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Explains 95% repeated-sampling coverage and fixed parameter, not probability for this realized interval."
+          ],
+          [
+            "Sampling bias",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Explains why voluntary banner recruitment does not justify population inference or nominal coverage."
+          ]
+        ]
       },
       "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/8-3-a-population-proportion",
       "relatedLessonId": "L09-1-2"
@@ -157,14 +573,66 @@
         "guidedFeedback": "ŷ=1+3x; tại x=2, ŷ=7, residual=0. Khớp hoàn hảo trong ba điểm không chứng minh nhân quả hay hiệu năng ngoài mẫu.",
         "diagram": "Dữ liệu → Hồi quy → So nhóm → Giới hạn nhân quả",
         "relatedReason": "Xem xét điều kiện và nhóm trước khi diễn giải kết quả gộp.",
-        "guidedPrompt": "Các cặp (1,4),(2,7),(3,10). Tính đường OLS, dự báo tại x=2 và residual; có chứng minh nhân quả không?"
+        "guidedPrompt": "Các cặp (1,4),(2,7),(3,10). Tính đường OLS, dự báo tại x=2 và residual; có chứng minh nhân quả không?",
+        "reasoningRubric": [
+          [
+            "Hồi quy gộp",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "x̄=3,5, ȳ=6, b=54/35≈1,543, a=0,6; công thức và đơn vị đúng."
+          ],
+          [
+            "Trong nhóm và gộp",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Hai nhóm có slope 0, đối lập slope gộp dương; phân biệt hai mức so sánh."
+          ],
+          [
+            "Nhân quả và biến nhiễu",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Kinh nghiệm là biến nhiễu khả dĩ; nêu thêm giới hạn quan sát và không kết luận nhân quả."
+          ],
+          [
+            "Thiết kế và ngoại suy",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "So sánh/thử nghiệm phù hợp, dữ liệu thiếu, giải thích X=10 ngoài phạm vi quan sát."
+          ]
+        ]
       },
       "en": {
         "hint": "Tabulate deviations from means and their products. Compare pooled and within-group slopes before causal claims.",
         "guidedFeedback": "ŷ=1+3x; at x=2, ŷ=7, residual=0. Perfect fit on three points proves neither causality nor out-of-sample performance.",
         "diagram": "Data → Regression → Compare groups → Causal limits",
         "relatedReason": "Consider conditions and groups before interpreting pooled results.",
-        "guidedPrompt": "Pairs (1,4),(2,7),(3,10). Find the OLS line, prediction at x=2 and residual; does this prove causation?"
+        "guidedPrompt": "Pairs (1,4),(2,7),(3,10). Find the OLS line, prediction at x=2 and residual; does this prove causation?",
+        "reasoningRubric": [
+          [
+            "Pooled regression",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "x-bar=3.5, y-bar=6, b=54/35≈1.543, a=.6; correct formula and units."
+          ],
+          [
+            "Within vs pooled",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Both groups have zero slope versus a positive pooled slope; distinguishes levels of comparison."
+          ],
+          [
+            "Causality and confounding",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Identifies experience as plausible confounder, another observational limitation, and rejects causality."
+          ],
+          [
+            "Design and extrapolation",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Credible comparison/trial, missing measures, and why X=10 is outside observed range."
+          ]
+        ]
       },
       "sourceUrl": "https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation",
       "relatedLessonId": "L09-2-1"
@@ -180,6 +648,32 @@
           "Phân biệt vai trò train, validation và test; giữ test độc lập cho đánh giá cuối.",
           "Nhận ra rò rỉ từ tiền xử lý, chọn ngưỡng và bản ghi cùng khách hàng ở hai tập.",
           "Đề xuất cách chia dữ liệu, fit pipeline và chọn ngưỡng phù hợp với mục tiêu dự đoán."
+        ],
+        "reasoningRubric": [
+          [
+            "Nhận diện lỗi",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Ít nhất ba lỗi A–D có giải thích đúng, gắn thời điểm dự đoán và vai trò dữ liệu."
+          ],
+          [
+            "Pipeline đúng",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Tách dữ liệu trước, fit trên train, chỉ dùng validation chọn ngưỡng, test cuối không động tới."
+          ],
+          [
+            "Chia theo mục tiêu",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Group theo buyer cho khách mới, nêu khi cần holdout theo thời gian và lý do."
+          ],
+          [
+            "Đánh giá độc lập",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Bác 97% do test bị dùng để chọn; cần tập test mới phù hợp mục tiêu và khóa pipeline."
+          ]
         ]
       },
       "en": {
@@ -192,6 +686,32 @@
           "Distinguish training, validation and test roles; reserve an independent final test.",
           "Identify leakage through preprocessing, threshold selection and repeated customer records across splits.",
           "Design a split, fitting pipeline and threshold selection consistent with the deployment objective."
+        ],
+        "reasoningRubric": [
+          [
+            "Identify flaws",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "At least three A–D flaws correctly explained in terms of prediction time and data roles."
+          ],
+          [
+            "Correct pipeline",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Split first, fit on train, choose thresholds on validation, keep final test untouched."
+          ],
+          [
+            "Deployment-aligned split",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Groups by buyer for new customers and explains when temporal holdout matters."
+          ],
+          [
+            "Independent evaluation",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Rejects 97% as independently evaluated after tuning on test; requires a fresh aligned holdout and locked pipeline."
+          ]
         ]
       },
       "sourceUrl": "https://scikit-learn.org/stable/common_pitfalls.html",
@@ -208,7 +728,33 @@
           "Tính precision và recall với đúng mẫu số; so sánh các ngưỡng trên cùng tập đánh giá.",
           "Giải thích đánh đổi giữa bỏ sót đơn trễ, báo nhầm và năng lực xử lý; không chọn ngưỡng chỉ vì accuracy cao."
         ],
-        "methodNote": "T07 bổ trợ (tự chọn): nêu giả định về khả năng xử lý cảnh báo và dữ liệu đánh giá trước khi chọn ngưỡng; đây là gợi ý kiểm tra tiền đề, không phải lượt luyện được ghi nhận riêng."
+        "methodNote": "T07 bổ trợ (tự chọn): nêu giả định về khả năng xử lý cảnh báo và dữ liệu đánh giá trước khi chọn ngưỡng; đây là gợi ý kiểm tra tiền đề, không phải lượt luyện được ghi nhận riêng.",
+        "reasoningRubric": [
+          [
+            "Tính sáu metric",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "A: 91,5%/60%/45%; B: 86,5%/40%/70%; đúng tử và mẫu số accuracy/precision/recall."
+          ],
+          [
+            "Baseline và bỏ sót",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Baseline accuracy 90%, recall 0%; A bỏ sót 66/120 dù accuracy >90%."
+          ],
+          [
+            "Quyết định theo chi phí",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "FN=20: A 1356, B 846 chọn B; FN=2: A 168, B 198 chọn A; nêu đánh đổi."
+          ],
+          [
+            "Giới hạn triển khai",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Một giới hạn cụ thể về quần thể holdout, chi phí giả định hoặc ảnh hưởng nhóm và hệ quả."
+          ]
+        ]
       },
       "en": {
         "hint": "Draw TP/FP/FN/TN for each model, label each metric denominator. Calculate cost separately for each assumption.",
@@ -220,7 +766,33 @@
           "Calculate precision and recall with the correct denominators; compare thresholds on the same evaluation set.",
           "Explain trade-offs between missed delays, false alerts and operational capacity rather than choosing a threshold from accuracy alone."
         ],
-        "methodNote": "Optional T07: state assumptions about alert-handling capacity and evaluation data before choosing a threshold; this is a premise-checking suggestion, not a separately recorded method attempt."
+        "methodNote": "Optional T07: state assumptions about alert-handling capacity and evaluation data before choosing a threshold; this is a premise-checking suggestion, not a separately recorded method attempt.",
+        "reasoningRubric": [
+          [
+            "Six metrics",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "A: 91.5%/60%/45%; B: 86.5%/40%/70%; correct accuracy/precision/recall numerators and denominators."
+          ],
+          [
+            "Baseline and misses",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Baseline accuracy 90%, recall 0%; A misses 66/120 despite accuracy above 90%."
+          ],
+          [
+            "Cost-sensitive choice",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "FN=20: A 1356, B 846, choose B; FN=2: A 168, B 198, choose A; explain trade-off."
+          ],
+          [
+            "Deployment limits",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "One concrete limitation about holdout population, assumed costs or subgroup impacts and its consequence."
+          ]
+        ]
       },
       "sourceUrl": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html",
       "relatedLessonId": "L09-2-1"
@@ -236,6 +808,32 @@
           "So sánh accuracy, recall, FPR và selection rate theo nhóm với đúng mẫu số.",
           "Phân biệt câu hỏi của demographic parity, equal opportunity và equalized odds; nêu giới hạn của từng chỉ số.",
           "Diễn giải permutation importance trong phạm vi mô hình, metric và dữ liệu; không suy ra nhân quả hay kết luận pháp lý từ một chỉ số."
+        ],
+        "reasoningRubric": [
+          [
+            "Metric theo nhóm",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "East: 82%,70%,15%,26%; West:84%,40%,5%,12%; West accuracy cao hơn và bỏ sót nhiều hơn."
+          ],
+          [
+            "Chênh lệch và fairness",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Recall 30 điểm %, selection 14 điểm %; đặt câu hỏi vận hành, không suy ra công bằng/pháp lý."
+          ],
+          [
+            "Accuracy gộp",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "332/400=83%; chỉ ra mất thông tin nhóm và hai bằng chứng cần bổ sung."
+          ],
+          [
+            "Diễn giải permutation",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Giảm 0,08 và 0,01 trên holdout; phụ thuộc mô hình/dữ liệu, tương quan có thể che hoặc chia tầm quan trọng; không nhân quả."
+          ]
         ]
       },
       "en": {
@@ -248,6 +846,32 @@
           "Compare group accuracy, recall, FPR and selection rate with correct denominators.",
           "Distinguish the questions asked by demographic parity, equal opportunity and equalized odds, and state their limits.",
           "Interpret permutation importance within the fitted model, metric and dataset without claiming causality or legal conclusions from a single metric."
+        ],
+        "reasoningRubric": [
+          [
+            "Group metrics",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "East: 82%,70%,15%,26%; West:84%,40%,5%,12%; West has higher accuracy and more misses."
+          ],
+          [
+            "Gaps and fairness",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Recall gap 30 pp and selection gap 14 pp; raises operational questions without legal/fairness verdict."
+          ],
+          [
+            "Overall accuracy",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "332/400=83%; identifies masked group differences and two missing evidence items."
+          ],
+          [
+            "Permutation interpretation",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Drops .08 and .01 on holdout; model/data dependent, correlation may mask or share importance; not causal."
+          ]
         ]
       },
       "sourceUrl": "https://fairlearn.org/v0.15/user_guide/assessment/common_fairness_metrics.html",
@@ -259,14 +883,66 @@
         "guidedFeedback": "Forecast=24, error=+3 bộ (dự báo thấp). Cần inventory position, lead time, chính sách lượng đặt và mức phục vụ; lịch sử sales có thể thiếu demand do stockout.",
         "diagram": "Lịch sử → Forecast → Error → Quyết định riêng",
         "relatedReason": "Dự báo nhu cầu là đầu vào cho chính sách tồn kho.",
-        "guidedPrompt": "Ba tuần bán 18,24,30 bộ; dùng mean làm forecast tuần 4. Nếu nhu cầu thực 27, tính error actual−forecast và nêu dữ liệu cần để đặt hàng."
+        "guidedPrompt": "Ba tuần bán 18,24,30 bộ; dùng mean làm forecast tuần 4. Nếu nhu cầu thực 27, tính error actual−forecast và nêu dữ liệu cần để đặt hàng.",
+        "reasoningRubric": [
+          [
+            "Dự báo cơ sở",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "55 bộ cho tuần 5, nêu quy tắc trung bình và giả định tuần tương đồng."
+          ],
+          [
+            "Sai số",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Actual−forecast=+18 bộ, tuyệt đối 18; dự báo thấp hơn nhu cầu."
+          ],
+          [
+            "Sales và demand",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Thiếu hàng có thể làm doanh số thấp hơn nhu cầu; nêu dữ liệu cần kiểm trước khi chỉnh."
+          ],
+          [
+            "Cải thiện và giới hạn",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Một cải thiện quy trình và hai kết luận không được suy từ một kỳ."
+          ]
+        ]
       },
       "en": {
         "hint": "Write the forecasting rule and horizon first. Preserve the error sign convention; distinguish sales from demand during stockouts.",
         "guidedFeedback": "Forecast=24, error=+3 units (underforecast). Need inventory position, lead time, quantity policy and service target; sales history may censor demand during stockouts.",
         "diagram": "History → Forecast → Error → Separate decision",
         "relatedReason": "Demand forecasts inform inventory policies.",
-        "guidedPrompt": "Three weeks of sales: 18,24,30 units; use the mean as week-4 forecast. Actual demand is 27; compute actual-minus-forecast error and list inputs for ordering."
+        "guidedPrompt": "Three weeks of sales: 18,24,30 units; use the mean as week-4 forecast. Actual demand is 27; compute actual-minus-forecast error and list inputs for ordering.",
+        "reasoningRubric": [
+          [
+            "Forecast baseline",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "55 sets for week 5, with averaging rule and comparable-week assumption."
+          ],
+          [
+            "Forecast error",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Actual−forecast=+18 sets, absolute error 18; forecast underestimated demand."
+          ],
+          [
+            "Sales vs demand",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Stockouts may censor sales below demand; identifies evidence before adjustment."
+          ],
+          [
+            "Improvement and limits",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "One process improvement and two conclusions not justified by a single period."
+          ]
+        ]
       },
       "sourceUrl": "https://www.ibm.com/think/topics/demand-planning",
       "relatedLessonId": "L15-2-2"
@@ -277,14 +953,66 @@
         "guidedFeedback": "Lúc 09:00 dự kiến arrival trễ 40 phút; chưa xác nhận actual. 09:00 là as-of, 11:40 là thời điểm dự báo đến.",
         "diagram": "Planned | ETA tại as-of | Actual + receipt",
         "relatedReason": "Lead time ảnh hưởng quyết định bổ sung hàng.",
-        "guidedPrompt": "Arrival planned 11:00, ETA 11:40 ghi lúc 09:00; actual chưa báo. Viết trạng thái lúc 09:00 và phân biệt hai loại thời điểm."
+        "guidedPrompt": "Arrival planned 11:00, ETA 11:40 ghi lúc 09:00; actual chưa báo. Viết trạng thái lúc 09:00 và phân biệt hai loại thời điểm.",
+        "reasoningRubric": [
+          [
+            "Loại timestamp",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Phân loại đúng departure/arrival, plan, ETA tại 13:00, actual và receipt."
+          ],
+          [
+            "Chênh lệch thời gian",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Arrival−plan=185 phút, arrival−ETA=35 phút; dấu và đơn vị đúng, departure +10 nếu tính."
+          ],
+          [
+            "Kết luận tại 13:00",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Tại 13:00 chỉ biết ETA trễ 150 phút so với plan, không xác nhận arrival thật."
+          ],
+          [
+            "Truy vết và ngoại lệ",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Ít nhất bốn trường phù hợp và một ngoại lệ thiếu dữ liệu, múi giờ hoặc phiên bản ETA."
+          ]
+        ]
       },
       "en": {
         "hint": "Sort timestamps by event type and information availability. Compare like events; state the sign and time unit.",
         "guidedFeedback": "At 09:00, arrival is forecast to be 40 minutes late; actual unconfirmed. 09:00 is as-of, 11:40 is predicted arrival time.",
         "diagram": "Planned | ETA as-of | Actual + receipt",
         "relatedReason": "Lead time affects replenishment decisions.",
-        "guidedPrompt": "Planned arrival 11:00, ETA 11:40 recorded at 09:00; no actual report. Write the 09:00 status and distinguish time types."
+        "guidedPrompt": "Planned arrival 11:00, ETA 11:40 recorded at 09:00; no actual report. Write the 09:00 status and distinguish time types.",
+        "reasoningRubric": [
+          [
+            "Timestamp types",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Correctly distinguishes departure/arrival, plan, ETA as of 13:00, actual and receipt."
+          ],
+          [
+            "Time differences",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Arrival−plan=185 min, arrival−ETA=35 min; correct sign and units, departure +10 if included."
+          ],
+          [
+            "As-of claim",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "At 13:00 ETA predicts 150-minute delay; actual arrival is not established."
+          ],
+          [
+            "Traceability and edge case",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Four or more useful fields and a missing-data, time-zone or ETA-version edge case."
+          ]
+        ]
       },
       "sourceUrl": "https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/planning/shipment_manager/multi_create_shipments/shipment_stop_dtail.htm",
       "relatedLessonId": "L15-2-2"
@@ -295,14 +1023,66 @@
         "guidedFeedback": "Mean cả hai=10, range 2 và 10. Orders biến động rộng hơn trong mẫu; kiểm lịch gom đơn, promo, tồn kho hoặc lead time để phân biệt nguyên nhân.",
         "diagram": "Sales → Retail orders → Upstream orders → So biến động",
         "relatedReason": "Sai số và giả định dự báo có thể ảnh hưởng đơn đặt hàng.",
-        "guidedPrompt": "Cùng ba kỳ: sales 9,10,11; orders 5,10,15. Tính mean/range, và một dữ liệu cần biết trước khi quy nguyên nhân."
+        "guidedPrompt": "Cùng ba kỳ: sales 9,10,11; orders 5,10,15. Tính mean/range, và một dữ liệu cần biết trước khi quy nguyên nhân.",
+        "reasoningRubric": [
+          [
+            "Mean và range",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Cả ba mean 80 hộp/tuần; range 10,40,90 hộp; mô tả khuếch đại quan sát."
+          ],
+          [
+            "Sales và orders",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Phân biệt hai đại lượng và giải thích tổng bằng nhau không bảo đảm độ biến động bằng nhau."
+          ],
+          [
+            "Cơ chế cạnh tranh",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Hai cơ chế khả dĩ với dữ liệu hoặc test phân biệt, không kết luận nhân quả."
+          ],
+          [
+            "Can thiệp và đánh đổi",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Một can thiệp, hai chi phí/rủi ro cụ thể và giới hạn quan sát bốn tuần."
+          ]
+        ]
       },
       "en": {
         "hint": "Calculate range and mean separately in the same units. Compare sales and orders; treat causes as hypotheses needing evidence.",
         "guidedFeedback": "Both means=10; ranges 2 and 10. Orders have greater observed spread; examine batching dates, promotions, inventory or lead time to distinguish causes.",
         "diagram": "Sales → Retail orders → Upstream orders → Compare variability",
         "relatedReason": "Forecast errors and assumptions can affect orders.",
-        "guidedPrompt": "Same three periods: sales 9,10,11; orders 5,10,15. Compute means/ranges and name evidence needed before assigning a cause."
+        "guidedPrompt": "Same three periods: sales 9,10,11; orders 5,10,15. Compute means/ranges and name evidence needed before assigning a cause.",
+        "reasoningRubric": [
+          [
+            "Means and ranges",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "All means 80 boxes/week; ranges 10,40,90 boxes; describes observed amplification."
+          ],
+          [
+            "Sales vs orders",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Distinguishes quantities and why equal totals do not imply equal variability."
+          ],
+          [
+            "Competing mechanisms",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Two plausible mechanisms with discriminating evidence or tests, without claiming causality."
+          ],
+          [
+            "Mitigation and trade-offs",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "One intervention, two concrete costs/risks and the four-week observation limit."
+          ]
+        ]
       },
       "sourceUrl": "https://pubsonline.informs.org/doi/10.1287/mnsc.43.4.546",
       "relatedLessonId": "L15-2-1"
@@ -313,7 +1093,33 @@
         "guidedFeedback": "Riêng=14; độc lập=2√(9+16)=10; ρ=1 thì 14 hộp. Giảm đệm 4 hộp chưa chứng minh tối ưu khi chi phí chuyển hàng hoặc thời gian đáp ứng thay đổi.",
         "diagram": "Nhu cầu riêng → Tương quan → Buffer gộp → Trade-off",
         "relatedReason": "Safety stock là nền tảng để so mức đệm riêng và gộp.",
-        "guidedPrompt": "Hai vùng có σ=3 và 4 hộp, cùng horizon, z=2. Tính buffer riêng, gộp độc lập và gộp khi ρ=1; nêu một trade-off."
+        "guidedPrompt": "Hai vùng có σ=3 và 4 hộp, cùng horizon, z=2. Tính buffer riêng, gộp độc lập và gộp khi ρ=1; nêu một trade-off.",
+        "reasoningRubric": [
+          [
+            "Buffer riêng và chung",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "36 hộp riêng, 12√3≈20,78 hộp chung; cùng horizon, z=2, độc lập."
+          ],
+          [
+            "Mức giảm và demand",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Giảm khoảng 15,22 hộp safety stock; không suy ra nhu cầu trung bình giảm."
+          ],
+          [
+            "Tương quan hoàn hảo",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "ρ=1 cho buffer chung 36 hộp, không còn lợi ích giảm buffer theo mô hình."
+          ],
+          [
+            "Bố trí và giới hạn",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Lựa chọn có điều kiện, hai đánh đổi vận hành và lý do SD không chứng minh tối ưu."
+          ]
+        ]
       },
       "en": {
         "hint": "Use the same horizon and z; separate independence from perfect correlation. Do not sum standard deviations in every case.",
@@ -321,7 +1127,33 @@
         "diagram": "Separate demand → Correlation → Pooled buffer → Trade-offs",
         "relatedReason": "Safety stock supports comparing separate and pooled buffers.",
         "guidedPrompt": "Two regions have σ=3 and 4 units, same horizon, z=2. Compute separate, independent pooled and perfectly correlated buffers; name a trade-off.",
-        "methodNote": "Optional T06: contrast two scenarios with identical σ1 and σ2 but different ρ; explain why the independence assumption changes the result. Do not count repeating a copied calculation as a separate method attempt."
+        "methodNote": "Optional T06: contrast two scenarios with identical σ1 and σ2 but different ρ; explain why the independence assumption changes the result. Do not count repeating a copied calculation as a separate method attempt.",
+        "reasoningRubric": [
+          [
+            "Separate and pooled buffers",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "36 boxes separate, 12√3≈20.78 pooled; same horizon, z=2, independence."
+          ],
+          [
+            "Reduction vs demand",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Reduction ≈15.22 boxes of safety stock, not a reduction in mean demand."
+          ],
+          [
+            "Perfect correlation",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "At rho=1 pooled buffer is 36 boxes, eliminating buffer reduction in the model."
+          ],
+          [
+            "Placement and limits",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Conditional placement choice, two operating trade-offs, and why SD alone cannot establish optimality."
+          ]
+        ]
       },
       "sourceUrl": "https://ocw.mit.edu/courses/15-762j-supply-chain-planning-spring-2011/",
       "relatedLessonId": "L15-2-2"
@@ -332,14 +1164,66 @@
         "guidedFeedback": "CSL=75%; unit fill=95%. Mẫu số khác nhau. Cần kịch bản gián đoạn, tiêu chuẩn phục hồi và chi phí; không thể kết luận resilience chỉ từ service history.",
         "diagram": "Service metrics → Ràng buộc → Feasible → So cost",
         "relatedReason": "Risk pooling có đánh đổi service, chi phí và thời gian.",
-        "guidedPrompt": "8 chu kỳ có 6 không stockout; 200 hộp nhu cầu, 190 đáp ứng ngay. Tính CSL và unit fill. Có đủ để nói hệ thống resilient không?"
+        "guidedPrompt": "8 chu kỳ có 6 không stockout; 200 hộp nhu cầu, 190 đáp ứng ngay. Tính CSL và unit fill. Có đủ để nói hệ thống resilient không?",
+        "reasoningRubric": [
+          [
+            "Hai chỉ số service",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "CSL=10/12≈83,33%, fill=585/600=97,5%; phân biệt chu kỳ và đơn vị."
+          ],
+          [
+            "Tập phương án khả thi",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "C không đạt fill/recovery, E vượt budget; D đạt cả ba và rẻ nhất trong tập khả thi."
+          ],
+          [
+            "Đánh đổi và dữ liệu thiếu",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Hai đánh đổi và hai dữ kiện thiếu, không gọi phương án dự báo là tối ưu đã kiểm chứng."
+          ],
+          [
+            "Ràng buộc mới",
+            "Thiếu, sai hoặc không có căn cứ ở tiêu chí này.",
+            "Đúng một phần nhưng thiếu yêu cầu, lý do hoặc giới hạn nêu ở mức 2.",
+            "Recovery≤3 và budget≤1350: không có phương án khả thi; nêu bước tiếp theo không vi phạm ràng buộc."
+          ]
+        ]
       },
       "en": {
         "hint": "Separate cycle and unit denominators. Exclude options violating any constraint before comparing costs; reassess after thresholds change.",
         "guidedFeedback": "CSL=75%; unit fill=95%. Denominators differ. Need disruption scenarios, recovery targets and costs; service history alone does not establish resilience.",
         "diagram": "Service metrics → Constraints → Feasible → Compare cost",
         "relatedReason": "Risk pooling involves service, cost and time trade-offs.",
-        "guidedPrompt": "Of 8 cycles, 6 have no stockout; 190 of 200 demanded units are immediately filled. Compute CSL and unit fill. Is resilience established?"
+        "guidedPrompt": "Of 8 cycles, 6 have no stockout; 190 of 200 demanded units are immediately filled. Compute CSL and unit fill. Is resilience established?",
+        "reasoningRubric": [
+          [
+            "Service measures",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "CSL=10/12≈83.33%, fill=585/600=97.5%; distinguishes cycles and units."
+          ],
+          [
+            "Feasible candidates",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "C fails fill/recovery, E exceeds budget; D meets all three and is least-cost feasible among candidates."
+          ],
+          [
+            "Trade-offs and unknowns",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Two trade-offs and two unknowns, without calling forecast policy a proven optimum."
+          ],
+          [
+            "Tighter boundary",
+            "Missing, incorrect or unsupported on this criterion.",
+            "Partly correct but missing a requirement, justification or boundary in level 2.",
+            "Recovery≤3 and budget≤1350: no feasible candidate; proposes a next step without violating constraints."
+          ]
+        ]
       },
       "sourceUrl": "https://www.gov.uk/government/publications/global-supply-chains-a-foresight-report-on-risk-and-resilience/annex-a-evidence-and-trends-for-supply-chain-vulnerability-and-resilience",
       "relatedLessonId": "L15-3-2"

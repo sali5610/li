@@ -174,6 +174,7 @@ function registerPersonalLessons(entries){
 // personal-lesson visit; the released-lesson history remains unchanged.
 window.addEventListener?.("li:route-changed",event=>{
  const route=event.detail?.route;
+ if(route==="library")renderDueReviewQueue();
  if(!document.documentElement.classList.contains("li-auth-verified")||
   typeof route!=="string"||!route.startsWith("draftLesson")||
   !Object.prototype.hasOwnProperty.call(LESSONS,route)||
@@ -403,9 +404,50 @@ function renderBookmarks(){
  selectBookmarkTab(bookmarkTab);
  notifyReactLibrary();
 }
+function renderDueReviewQueue(){
+ if(window.liReactLibraryMounted)return;
+ const root=$("li-native-due-review");if(!root)return;
+ root.replaceChildren();
+ const items=getT02ReviewQueue();
+ if(items===null){empty(root,ui("Chưa đọc được lịch ôn.","Review schedule unavailable."));return;}
+ const now=Date.now(),due=items.filter(x=>!x.awaitingRating&&x.dueAt<=now),
+  pending=items.filter(x=>x.awaitingRating),
+  attempted=items.filter(x=>x.reviewCount>0||x.awaitingRating).length;
+ add(root,"p","small",ui("Đến hạn: ","Due: ")+due.length+"/"+items.length+
+  ui(" · Đã thử gọi nhớ: "," · Recall attempted: ")+attempted+"/"+items.length+
+  ui(" · Chờ tự đánh giá: "," · Awaiting self-rating: ")+pending.length);
+ add(root,"p","small",ui("Ôn kiến thức đã học, không phải bài đo độc lập.","Previously taught recall, not independent assessment."));
+ if(!due.length&&!pending.length)empty(root,ui("Chưa có bài cần ôn ngay.","Nothing needs review now."));
+ for(const item of [...pending,...due]){
+  const row=add(root,"div","path-item");
+  const content=add(row,"div","library-list-copy");
+  add(content,"strong","",item.title);
+  add(content,"p","small",item.id+" · "+ui("Gọi nhớ khái niệm · Cơ bản","Concept recall · Basic"));
+  const actions=add(row,"div","action-row");
+  const open=add(actions,"button","action alt",item.awaitingRating?ui("Tự đánh giá","Self-rate"):ui("Ôn ngay","Review now"));
+  open.type="button";open.addEventListener("click",()=>{
+   const fresh=window.LiSpellPractice?.getT02Status?.(item.id);
+   if(!fresh||fresh.dueAt!==item.dueAt||fresh.awaitingRating!==item.awaitingRating||
+    (!fresh.awaitingRating&&fresh.dueAt>Date.now())){renderDueReviewQueue();return;}
+   const personal=window.liPersonalStudyRoutes?.[item.id]===item.route;
+   const ok=personal?window.liMethods?.open("T02",true)===true&&window.LiSpellPractice?.setLessonContext?.(item.id)===true:
+    window.liMethods?.open("T02",true,item.id)===true;
+   if(!ok)toast(ui("Chưa mở được lượt ôn.","Could not open review."));
+  });
+  if(!item.awaitingRating){
+   const defer=add(actions,"button","action alt",ui("Hoãn 1 ngày","Defer 1 day"));
+   defer.type="button";defer.addEventListener("click",()=>{
+    if(!window.LiSpellPractice?.postponeT02?.(item.id,item.dueAt))
+     toast(ui("Lịch ôn đã thay đổi hoặc chưa lưu được.","Review changed or could not be saved."));
+    renderDueReviewQueue();
+   });
+  }
+ }
+}
 function renderHome(){
  // React Library reads the same canonical model; never repaint hidden HTML.
  if(window.liReactLibraryMounted){notifyReactLibrary();return;}
+ renderDueReviewQueue();
  renderLessonRows($("li-library-latest-lesson"),1);
  renderProblemRows($("li-library-latest-problem"),1);
  renderCases();
@@ -528,6 +570,8 @@ window.addEventListener?.("li:personal-sync-applied",event=>{
  }
  if(detail.keys.some(key=>[VISITS_KEY,PROBLEM_VISITS_KEY,"li.private.library.v1"].includes(key))){
   renderHome();renderResume();renderCollection();renderBookmarks();
+ }else if(detail.keys.some(key=>typeof key==="string"&&key.startsWith("li.spell.t02.schedule.v2:"))&&$("page-library")?.classList?.contains("active")){
+  renderDueReviewQueue();
  }
 });
 window.addEventListener?.("li:lesson-cloud-state",event=>{
@@ -544,6 +588,21 @@ window.addEventListener?.("li:lesson-cloud-state",event=>{
  renderHome();renderResume();
 });
 
+/** Review queue spans all registered learnable lessons, not just visit history.
+ * No standalone sample, unscheduled lesson, raw answer or cross-account record. */
+function getT02ReviewQueue(){
+ const spell=window.LiSpellPractice;
+ if(!spell?.getT02Status||
+    !document.documentElement.classList.contains("li-auth-verified")||
+    document.documentElement.classList.contains("li-account-open"))return null;
+ const items=[];
+ for(const [route,info] of Object.entries(LESSONS)){
+  const status=spell.getT02Status(info.id);
+  if(!status)return null;
+  if(status.dueAt!==null)items.push({id:info.id,route,title:lessonTitle(info),...status});
+ }
+ return items.sort((a,b)=>Number(b.awaitingRating)-Number(a.awaitingRating)||a.dueAt-b.dueAt);
+}
 /* Read-only, same-account view for the React Library. Existing legacy closure
  * remains the ONLY owner of synced records, visits, bookmarks and mutations. */
 function getView(){
@@ -655,5 +714,8 @@ function notifyReactLibrary(){
  if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
   window.dispatchEvent(new Event("li:library-view-changed"));
 }
-window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,registerPersonalLessons,renderProblemRows,getView,openProblemEntry,openSavedQuestion,removeSavedQuestion,setCollectionFilter});
+for(const name of ["li:private-personal-change","focus","pageshow"])
+ window.addEventListener?.(name,()=>{if($("page-library")?.classList?.contains("active"))renderDueReviewQueue();});
+window.setInterval?.(()=>{if($("page-library")?.classList?.contains("active"))renderDueReviewQueue();},60000);
+window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,registerPersonalLessons,renderProblemRows,getView,getT02ReviewQueue,openProblemEntry,openSavedQuestion,removeSavedQuestion,setCollectionFilter});
 })();

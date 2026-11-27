@@ -12,7 +12,7 @@ assert.doesNotMatch(source,/button\.click\(\)/);
 assert.doesNotMatch(source,/textarea\.value=val/);
 assert.doesNotMatch(source,/root\.querySelector\('\[data-spell-action="'\+action/);
 const instrumented=source.replace(/\}\)\(\);\s*$/,
- 'window.__spellTest={open,getView,performReact,setT12Draft,switchTab,setLessonContext,getT02Status,getLessonPracticeSummary};\n})();');
+ 'window.__spellTest={open,getView,performReact,setT12Draft,switchTab,setLessonContext,getT02Status,postponeT02,getLessonPracticeSummary};\n})();');
 assert.notEqual(instrumented,source,"The test must instrument the real IIFE engine");
 const storage=new Map([["li.sync.local-owner.v1","test-invited-owner"]]);
 let verified=true,accountOpen=false,locale="vi";
@@ -34,7 +34,7 @@ const localStorage={
 };
 vm.runInNewContext(instrumented,{window,document,localStorage,Event:class{},Date,console});
 const api=window.__spellTest;
-assert.ok(api&&Object.keys(api).length===8);
+assert.ok(api&&Object.keys(api).length===9);
 let covered=0;
 function begin(id,lesson=null){
  api.open(id,"practice",lesson);
@@ -151,6 +151,14 @@ assert.equal(new Set(recallCues).size,20,"Every lesson requires its own retrieva
 // and keep the schedule in that lesson, not sampling bias or standalone.
 begin("T02","L15-2-2");
 assert.match(api.getView().prompt,/ROP|inventory position/);
+assert.equal(api.getView().t02Eligible,false,"Unlearned subject must not enter review queue");
+assert.equal(act("schedule"),false);
+const learnedAttempt={submitted:true,reviewed:true,submittedAt:new Date().toISOString(),
+ submission:["answer one","answer two","answer three","answer four"],ratings:[0,1,2,1]};
+storage.set("li.review.L15-2-2.v1",JSON.stringify({...learnedAttempt,reviewed:false}));
+assert.equal(act("schedule"),false,"Submission alone is not completed self-review");
+storage.set("li.review.L15-2-2.v1",JSON.stringify(learnedAttempt));
+assert.equal(api.getView().t02Eligible,true);
 assert.equal(act("check",{reason:sentence}),false,"No checking before due");
 assert.equal(act("schedule"),true);
 const l15DueKey=[...storage.keys()].find(key=>
@@ -167,6 +175,28 @@ assert.match(api.getView().feedback,/ROP/,"Must show the L15 feedback only after
 assert.doesNotMatch(api.getView().feedback,/Selection bias/i);
 assert.equal(act("rate-retry"),true);
 assert.equal(JSON.parse(storage.get(l15DueKey)).reviewCount,1,"Review must stay scoped to L15");
+const priorReview=JSON.parse(storage.get(l15DueKey));
+const dueBeforeDefer=Date.now()-2000;
+storage.set(l15DueKey,JSON.stringify({...priorReview,due:dueBeforeDefer}));
+assert.equal(api.postponeT02("L15-2-2",dueBeforeDefer-1),false,"Stale due date cannot overwrite schedule");
+assert.equal(api.postponeT02("unknown",dueBeforeDefer),false,"Unknown lesson cannot be deferred");
+accountOpen=true;
+assert.equal(api.postponeT02("L15-2-2",dueBeforeDefer),false,"Account overlay blocks deferral");
+accountOpen=false;
+storage.set("li.sync.local-owner.v1","other-owner");
+assert.equal(api.postponeT02("L15-2-2",dueBeforeDefer),false,"Other owner cannot defer the original schedule");
+storage.set("li.sync.local-owner.v1","test-invited-owner");
+storage.set(l15DueKey,JSON.stringify({...priorReview,due:dueBeforeDefer,awaitingRating:true}));
+assert.equal(api.postponeT02("L15-2-2",dueBeforeDefer),false,"Revealed feedback must finish rating, not become a fresh recall");
+storage.set(l15DueKey,JSON.stringify({...priorReview,due:dueBeforeDefer}));
+assert.equal(api.postponeT02("L15-2-2",dueBeforeDefer),true,"Defer due review without rating");
+const deferred=JSON.parse(storage.get(l15DueKey));
+assert.equal(deferred.reviewCount,priorReview.reviewCount);
+assert.equal(deferred.streak,priorReview.streak);
+assert.equal(deferred.lastRating,priorReview.lastRating);
+assert.equal(deferred.lastReviewedAt,priorReview.lastReviewedAt);
+assert.ok(Math.abs(deferred.due-Date.now()-86400000)<20000);
+assert.equal(api.postponeT02("L15-2-2",deferred.due),false,"Future review cannot be deferred from due queue");
 assert.equal(JSON.parse(storage.get(t02key)).reviewCount,0,"L15 cannot modify standalone T02 history");
 window.liPersonalStudyRoutes={"L03-1-1":"draftLessonL0311"};
 begin("T03");
@@ -240,6 +270,8 @@ begin("T02");
 assert.equal(api.setLessonContext("L03-1-1"),true);
 assert.equal(api.getView().lessonId,"L03-1-1");
 assert.equal(api.getT02Status("L03-1-1").dueAt,null);
+assert.equal(act("schedule"),false,"Invited draft is not automatically learned");
+storage.set("li.review.L03-1-1.v1",JSON.stringify(learnedAttempt));
 assert.equal(act("schedule"),true);
 assert.ok(api.getT02Status("L03-1-1").dueAt>Date.now(),
  "Personal lesson Progress reads its own upcoming due date");

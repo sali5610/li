@@ -24,7 +24,23 @@
           "vi": "Yêu cầu mô tả một giải pháp; nhu cầu mô tả kết quả cần đạt.",
           "en": "A request names a solution; a need describes an outcome."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "GOV.UK — Learning about users and their needs",
+              "url": "https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs",
+              "section": "Writing user needs: problem rather than solution, evidence rather than assumptions"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Yêu cầu tính năng có thể chỉ là một giải pháp được đề xuất; cần nghiên cứu vấn đề thực. Không suy ra mọi yêu cầu đều sai.",
+            "en": "A feature request may describe a proposed solution; research the underlying problem. Not every request is mistaken."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -98,7 +114,23 @@
           "vi": "Quan sát là điều ghi nhận; suy luận giải thích điều đó và cần kiểm chứng.",
           "en": "Observation records what happened; inference explains it and needs testing."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "GOV.UK — Analyse a research session",
+              "url": "https://www.gov.uk/service-manual/user-research/analyse-a-research-session",
+              "section": "Capture observations before grouping and interpreting them"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Ghi nguyên điều quan sát hoặc nghe được trước khi diễn giải; một suy luận cần thêm chứng cứ, không phải bản ghi nguyên văn.",
+            "en": "Record observed behavior or speech before interpreting it; an inference needs evidence and is not a verbatim observation."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -135,7 +167,23 @@
           "vi": "Phân loại tổ chức khái niệm; điều hướng giúp tìm nội dung theo tác vụ.",
           "en": "Taxonomy organizes concepts; navigation supports finding content by task."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "NN/g — Taxonomy 101",
+              "url": "https://www.nngroup.com/articles/taxonomy-101/",
+              "section": "Taxonomy as backstage metadata structure complementing visible navigation"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Hệ phân loại chuẩn hóa cấu trúc và metadata; điều hướng là bề mặt giúp người dùng tìm nội dung. Không bắt buộc hai cấu trúc giống hệt nhau.",
+            "en": "Taxonomy standardizes structure and metadata; navigation exposes paths to content. They need not be identical."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -172,7 +220,23 @@
           "vi": "Card sorting khám phá cách nhóm; tree testing đánh giá khả năng tìm trên cấu trúc có sẵn.",
           "en": "Card sorting explores groupings; tree testing evaluates findability in an existing structure."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "NN/g — Card Sorting vs. Tree Testing",
+              "url": "https://www.nngroup.com/articles/card-sorting-tree-testing-differences/",
+              "section": "Definitions and different research purposes"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Card sorting khám phá cách nhóm nội dung; tree testing đo khả năng tìm trong cấu trúc đã có. Tree test không kiểm tra đầy đủ giao diện trực quan.",
+            "en": "Card sorting explores groupings; tree testing evaluates findability in a defined structure. A tree test does not evaluate the full visual interface."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -209,7 +273,28 @@
           "vi": "Một lượt tác vụ có kết quả riêng và có thể chứa nhiều sự kiện lỗi.",
           "en": "A task attempt has one outcome and may contain multiple error events."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "NN/g — Success Rate: The Simplest Usability Metric",
+              "url": "https://www.nngroup.com/articles/success-rate-the-simplest-usability-metric/",
+              "section": "Task success scoring and denominator"
+            },
+            {
+              "title": "NN/g — Usability 101",
+              "url": "https://www.nngroup.com/articles/usability-101-introduction-to-usability/",
+              "section": "Success rate and errors as distinct usability measures"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Tách kết quả của mỗi lượt tác vụ khỏi số lần mắc lỗi. Một lượt hoàn thành vẫn có thể chứa lỗi; cách phân loại lỗi cần quy ước trước.",
+            "en": "Separate each task outcome from error counts. A successful attempt may still contain errors; specify the error coding protocol first."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -283,7 +368,28 @@
           "vi": "Trung tâm mô tả giá trị điển hình; độ phân tán mô tả mức trải rộng.",
           "en": "Center describes typical location; dispersion describes spread."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "OpenStax — Measures of the Center of the Data",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data",
+              "section": "§2.5 mean and median"
+            },
+            {
+              "title": "OpenStax — Measures of the Spread of the Data",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/2-7-measures-of-the-spread-of-the-data",
+              "section": "§2.7 spread and standard deviation"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Trung tâm và độ phân tán mô tả hai thuộc tính khác nhau; cùng trung bình không bảo đảm cùng độ phân tán hoặc hình dạng.",
+            "en": "Location and spread describe different properties; equal means do not imply equal dispersion or shape."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -440,7 +546,28 @@
           "vi": "Hồi quy mô tả liên hệ; yếu tố nhiễu có thể tạo liên hệ không phản ánh tác động nhân quả.",
           "en": "Regression describes associations; confounding can create associations that do not reflect causal effects."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "OpenStax — The Regression Equation",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation",
+              "section": "§12.3 regression and association not causation"
+            },
+            {
+              "title": "OpenStax — Experimental Design and Ethics",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/1-4-experimental-design-and-ethics",
+              "section": "§1.4 randomized experiments and lurking variables"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Hồi quy có thể mô tả liên hệ hoặc hỗ trợ dự báo; nếu còn nhiễu, hệ số không tự chứng minh tác động nhân quả.",
+            "en": "Regression can describe associations or support prediction; under confounding a coefficient is not by itself causal evidence."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -477,7 +604,23 @@
           "vi": "Tập giữ lại dùng đánh giá độc lập; rò rỉ làm thông tin không được phép đi vào huấn luyện hoặc lựa chọn.",
           "en": "A holdout supports independent evaluation; leakage lets unavailable information enter fitting or selection."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "scikit-learn — Common pitfalls",
+              "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+              "section": "Data leakage: split first, do not fit on test data"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Giữ test ngoài fit và lựa chọn mô hình. Rò rỉ có thể đến từ tiền xử lý hoặc thông tin không sẵn có khi dự báo; kiểu split phụ thuộc mục tiêu.",
+            "en": "Keep the test set outside fitting and model selection. Leakage can arise through preprocessing or unavailable prediction-time information; the split depends on the objective."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -574,7 +717,28 @@
           "vi": "Chỉ số theo nhóm mô tả sai sót; permutation importance mô tả mức phụ thuộc score vào feature theo phép thử.",
           "en": "Group metrics describe errors; permutation importance describes score dependence on features under a test."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "Fairlearn — Common fairness metrics",
+              "url": "https://fairlearn.org/main/user_guide/assessment/common_fairness_metrics.html",
+              "section": "Demographic parity, equal opportunity and equalized odds"
+            },
+            {
+              "title": "scikit-learn — Permutation feature importance",
+              "url": "https://scikit-learn.org/stable/modules/permutation_importance.html",
+              "section": "Score degradation under permutation; model and data dependence"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Chỉ số nhóm so sánh kết quả theo nhóm; hoán vị đánh giá độ phụ thuộc điểm số vào feature. Không suy ra nhân quả, kết luận pháp lý hay công bằng tuyệt đối.",
+            "en": "Group metrics compare outcomes across groups; permutation importance assesses score dependence on features. Neither supplies causal, legal or absolute fairness conclusions."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -611,7 +775,23 @@
           "vi": "Dự báo ước tính nhu cầu; quyết định bổ sung còn phụ thuộc tồn, lead time và chính sách.",
           "en": "Forecast estimates demand; replenishment also depends on inventory, lead time and policy."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "IBM — What is demand planning?",
+              "url": "https://www.ibm.com/think/topics/demand-planning",
+              "section": "Forecasting informs inventory planning and operational decisions"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Dự báo hỗ trợ quyết định tồn kho nhưng không phải chính sách đặt hàng; cần xét tồn kho, thời gian bổ sung và điều kiện vận hành.",
+            "en": "A forecast informs inventory decisions but is not a replenishment policy; inventory, lead time and operational constraints matter."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -685,7 +865,23 @@
           "vi": "ETA là dự báo tại một thời điểm; actual là sự kiện đã được ghi nhận.",
           "en": "ETA is a prediction as of a time; actual is a recorded event."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "Oracle — Shipment Stop Details",
+              "url": "https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/planning/shipment_manager/multi_create_shipments/shipment_stop_dtail.htm",
+              "section": "Planned, estimated and actual shipment times"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "ETA là giá trị dự kiến, actual là thời điểm đã ghi nhận; các trường này được phân biệt trong tài liệu Oracle, không khẳng định mọi hệ thống có schema giống nhau.",
+            "en": "ETA is an estimate; actual is a recorded event time. Oracle documents distinct fields; this does not establish a universal schema."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -722,7 +918,23 @@
           "vi": "Khuếch đại biến động đơn upstream so với nhu cầu là dấu hiệu bullwhip; cơ chế cần chứng cứ.",
           "en": "Amplified upstream order variability relative to demand is a bullwhip pattern; its mechanism needs evidence."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "Lee, Padmanabhan & Whang (1997) — Information Distortion in a Supply Chain",
+              "url": "https://pubsonline.informs.org/doi/10.1287/mnsc.43.4.546",
+              "section": "Abstract: upstream orders may have greater variance than sales; four mechanisms"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Bullwhip là khuếch đại biến động đơn hàng so với nhu cầu khi đi upstream; abstract hỗ trợ định nghĩa, không xác minh nguyên nhân của ví dụ giả lập.",
+            "en": "Bullwhip is amplified order variability relative to demand upstream; the abstract supports the definition, not a cause of a fictional example."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -819,7 +1031,23 @@
           "vi": "CSL dùng mẫu số chu kỳ, fill rate dùng lượng nhu cầu; chúng không thay thế nhau.",
           "en": "CSL uses cycles as its denominator; fill rate uses demanded units; they are not interchangeable."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "Rossetti — Analysis of Inventory Systems",
+              "url": "https://rossetti.github.io/RossettiInventoryBook/08-Chapter8.html",
+              "section": "Continuous review systems: alpha cycle service and beta fill rate"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "CSL là xác suất không thiếu hàng trong một chu kỳ; unit fill rate là phần nhu cầu theo đơn vị được đáp ứng từ tồn kho. Chỉ so sánh khi định nghĩa và kỳ đo rõ.",
+            "en": "CSL is the probability of no stockout per cycle; unit fill rate is the fraction of unit demand met from stock. Compare only with clear definitions and measurement periods."
+          }
+        }
       },
       "analogy": {
         "vi": {

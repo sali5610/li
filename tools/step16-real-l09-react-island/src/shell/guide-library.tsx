@@ -313,6 +313,7 @@ export function Library(){
      </div>
     </div>
    </Card>
+   <DueReviewQueue/>
    <div className="library-workspace-columns">
     <section className="library-workspace-main" aria-labelledby="library-notes-heading">
      <ShelfHeader id="library-notes-heading" title={copy('Ghi chép','Notes')}
@@ -441,7 +442,6 @@ export function Resume(){
   <TaxonomyFilters records={[...view.lessons,...view.problems]} value={taxonomy} onChange={setTaxonomy}/>
   <div className="library-resume-layout">
    <div className="library-resume-stream">
-    <DueReviewQueue/>
     <section className="library-resume-section">
      <Heading level={2} role="titleMedium">{copy('Bài học gần đây','Recent lessons')}</Heading>
      <LessonRows lessons={view.lessons.filter(item=>matchesTaxonomy(item,taxonomy))}/>

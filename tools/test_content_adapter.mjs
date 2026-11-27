@@ -286,7 +286,8 @@ const ontGraphById=new Map(navGraph.nodes.map(x=>[x.id,x]));
 const ontManifest=await c.manifest();
 const ontPackIds=new Set(ontManifest.courses.flatMap(x=>x.lessonIds));
 const ontKnownConcepts=new Map();
-const ontCoverage={authored:0,canonicalPack:0,editorialDraft:0,conceptReferences:0,methodReferences:0,goalsNeedReconciliation:[],methodTextNeedsReconciliation:[]};
+const ontSupplements=JSON.parse(readFileSync(new URL('../content/editorial/lesson-completeness-supplements.v1.json',import.meta.url),'utf8')).lessons;
+const ontCoverage={authored:0,canonicalPack:0,editorialDraft:0,conceptReferences:0,methodReferences:0,goalCoverage:0,primaryMethodCoverage:0,methodTextNeedsReconciliation:[]};
 assert.equal(ontProjection.status,"editorial_lesson_projection_not_graph_promotion");
 assert.equal(ontTechniqueIds.size,13);
 assert.ok([...ontPackIds].every(id=>ontProjection.lessons[id]),"Every current canonical body must have a projection");
@@ -329,6 +330,7 @@ for(const [id,p] of Object.entries(ontProjection.lessons)){
   for(const m of structure.methodSuggestions.items){
    assert.ok(ontTechniqueIds.has(m.techniqueId));ontCoverage.methodReferences++;
   }
+  ontCoverage.goalCoverage+=2;
   ontCoverage.canonicalPack++;
  }else{
   assert.equal(authored.reviewState,"proposed");assert.equal(authored.publishState,"draft");
@@ -336,11 +338,18 @@ for(const [id,p] of Object.entries(ontProjection.lessons)){
   assert.equal((await c.searchKnowledge(id)).status,"no_match","Personal draft leaked into reviewed Search");
   assert.deepEqual(await c.getRelatedLessons(id),[],"Personal draft leaked into reviewed graph expansion");
   const methodSets={};
+  const primary=authored.content.technique?.primary;
+  assert.ok(ontTechniqueIds.has(primary),id+" invalid primary method");
+  assert.equal(authored.content.technique.status,"source_mapped_not_release_approved");
+  ontCoverage.primaryMethodCoverage++;
   for(const locale of ["vi","en"]){
    const local=authored.content.localized[locale];
    assert.ok(local.sections.some(x=>x.role==="concept"&&x.body_md?.trim()),id+" missing concept section "+locale);
-   if(!local.sections.some(x=>x.role==="goals"&&x.body_md?.trim()))ontCoverage.goalsNeedReconciliation.push(id+":"+locale);
-   const refs=[...new Set(local.sections.filter(x=>x.role==="methods").flatMap(x=>[...(x.body_md||"").matchAll(/\bT(0[1-9]|1[0-3])\b/g)].map(m=>"L2-T"+m[1])))].sort();
+   const extra=ontSupplements[id]?.[locale];
+   assert.ok(local.sections.some(x=>x.role==="goals"&&x.body_md?.trim())|| (Array.isArray(extra?.learningGoals)&&extra.learningGoals.length>0&&extra.learningGoals.every(x=>x.trim())),id+" missing effective reader goals "+locale);
+   ontCoverage.goalCoverage++;
+   const methodText=[...local.sections.filter(x=>x.role==="methods").flatMap(x=>[x.heading,x.body_md]),extra?.methodNote||""].join(" ");
+   const refs=[...new Set([primary,...[...methodText.matchAll(/\bT(0[1-9]|1[0-3])\b/g)].map(m=>"L2-T"+m[1])])].sort();
    assert.ok(refs.every(x=>ontTechniqueIds.has(x)),id+" invalid technique identity");
    methodSets[locale]=refs;ontCoverage.methodReferences+=refs.length;
   }
@@ -352,6 +361,5 @@ for(const [id,p] of Object.entries(ontProjection.lessons)){
 assert.ok(navGraph.nodes.every(x=>x.visibility==="public_curated"));
 assert.ok(navGraph.edges.every(x=>x.visibility==="public_curated"));
 console.log("LI_ONT03C_SOURCE_BOUNDARY_PASS "+JSON.stringify(ontCoverage));
-// This is structural/visibility evidence only. Goal/method text diagnostics
-// require reconciliation with the current reader supplements before claiming
-// full outcome or academic method-fit coverage; no manuscript is promoted.
+// This is structural/visibility evidence only, not academic approval.
+// Method mentions are not separate enacted attempts or verified method fit.

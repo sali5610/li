@@ -3,6 +3,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {PrivateDeviceStore} from '../.sync-private-test/sync/local-dexie.js';
 import {storageKey} from '../.sync-private-test/sync/contract.js';
+import {RevisionConflict} from '../.sync-test/contract.js';
+import {syncOnce} from '../.sync-test/sync-once.js';
+import {exportAccountBackup} from '../.sync-test/account-backup.js';
 import {PERSONAL_FIELDS,capturePersonalState,hydratePersonalState,
  preparePersonalAccount,journalCloudConsent,personalRemoteSnapshot,t02Fields,practiceField,snapshotLearnerDevice,t12Fields,restoreLocalOnlyBackup,restoreMissingSyncedBackup,queueLessonDeletion} from '../.sync-private-test/auth/private-state.js';
 
@@ -459,4 +462,64 @@ test('lesson deletion refuses wrong remote owner or a changed local revision bef
   await assert.rejects(queueLessonDeletion(uid,id,[id],store,changed,()=>true),/DELETE_LOCAL_CHANGED/);
   assert.equal(map.get(local),'newer');assert.equal((await store.accountRecords(uid)).length,0);
  });
+});
+
+
+// One synthetic end-to-end path through the actual export, restore, deletion,
+ // Dexie and sync coordinator. Fake signed server enforces owner + CAS and
+ // simulates a lost receipt. This is not a live Neon RLS test.
+test('backup -> restore -> lost deletion receipt -> retry -> old backup blocked on second device',async()=>{
+ const map=device(),uid='owner-A',id='L09-1-2',other='L03-1-2';
+ map.set('li.sync.local-owner.v1',uid);
+ const lessonKey='li.review.'+id+'.v1';
+ const key=storageKey(uid,'lesson_attempt',id);
+ const attempt={draft:['saved answer','','',''],ratings:[null,null,null,null]};
+ const remote=new Map();
+ let loseDeleteReceipt=false;
+ const api={accountId:uid,
+  all:async()=>[...remote.values()].map(x=>structuredClone(x)),
+  one:async(type,id)=>structuredClone(remote.get(storageKey(uid,type,id))??null),
+  write:async edit=>{
+   const k=storageKey(uid,edit.itemType,edit.itemId),current=remote.get(k);
+   if(current?.last_op_id===edit.opId)return structuredClone(current);
+   if((current?.revision??0)!==edit.baseRevision)throw new RevisionConflict();
+   const row={owner_id:uid,item_type:edit.itemType,item_id:edit.itemId,
+    revision:edit.baseRevision+1,payload:structuredClone(edit.payload),
+    deleted_at:edit.deletedAt,changed_at:new Date().toISOString(),last_op_id:edit.opId};
+   remote.set(k,row);
+   if(edit.deletedAt&&loseDeleteReceipt){loseDeleteReceipt=false;throw Error('NETWORK_LOST');}
+   return structuredClone(row);
+  }};
+ const gate={twoUserJwtRlsVerified:true,remoteConsentForPrivateState:true};
+ await withStore(async source=>withStore(async target=>withStore(async fresh=>{
+  await source.edit(uid,'lesson_attempt',id,{schema:'li.native.lesson.v1',data:attempt});
+  await source.edit('owner-B','note','other-only',{text:'private other'});
+  const file=JSON.stringify({schema:'li.learner.device-backup.v2',accountId:uid,
+   deviceRecords:[{key:lessonKey,raw:JSON.stringify(attempt)}],
+   materialized:JSON.parse(await exportAccountBackup(source,uid))});
+  assert.doesNotMatch(file,/private other/);
+  assert.equal((await restoreMissingSyncedBackup(uid,[id,other],file,target,api,()=>true)).queued,1);
+  assert.equal((await syncOnce(target,api,uid,gate)).mode,'synced');
+  assert.equal(remote.get(key).revision,1);
+  assert.equal(remote.get(key).payload.data.draft[0],'saved answer');
+  map.set(lessonKey,JSON.stringify(attempt));
+  map.set('li.review.'+other+'.v1','keep');
+  assert.equal(await queueLessonDeletion(uid,id,[id,other],target,api,()=>true),'queued');
+  assert.equal(map.has(lessonKey),false);
+  assert.equal(map.get('li.review.'+other+'.v1'),'keep');
+  loseDeleteReceipt=true;
+  assert.equal((await syncOnce(target,api,uid,gate)).mode,'offline');
+  assert.ok(remote.get(key).deleted_at);
+  assert.equal(remote.get(key).payload.data.draft.join(''),'');
+  assert.equal((await target.pending(uid)).length,1);
+  assert.equal((await syncOnce(target,api,uid,gate)).mode,'synced');
+  assert.equal(remote.get(key).revision,2,'retry must not create another revision');
+  assert.equal((await target.pending(uid)).length,0);
+  assert.deepEqual(await restoreMissingSyncedBackup(uid,[id,other],file,fresh,api,()=>true),
+   {queued:0,skipped:1,unresolved:0});
+  assert.equal((await fresh.pending(uid)).length,0);
+  assert.equal((await syncOnce(fresh,api,uid,gate)).mode,'synced');
+  assert.ok((await fresh.records.get(key)).deletedAt);
+  assert.equal((await fresh.accountRecords('owner-B')).length,0);
+ })));
 });

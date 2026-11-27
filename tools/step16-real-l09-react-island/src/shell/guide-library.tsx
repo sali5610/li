@@ -21,6 +21,7 @@ type MethodsView={
 };
 type Lesson={id:string;route:string;title:string;status:string;detail:string;saved:boolean;lessonId?:string|null;fieldId?:string|null};
 type T02Status={dueAt:number|null;awaitingRating:boolean;reviewCount:number};
+type T02QueueItem=T02Status&{id:string;route:string;title:string;dueAt:number};
 type Problem={kind:string;key:string;title:string;detail:string;saved:boolean;lessonId?:string|null;fieldId?:string|null};
 type Note={id:string;type:'case'|'idea';title:string;body:string;date:string;sortDate:string;correct?:boolean;fieldId?:string|null;lessonId?:string|null};
 type Bookmark={kind:string;id:string;title:string;route:string|null;date:string;fieldId?:string|null;lessonId?:string|null};
@@ -29,11 +30,12 @@ type LibraryView={
  lessonBookmarks:Bookmark[];questionBookmarks:Bookmark[];
  collectionFilter:'all'|'case'|'idea';bookmarkTab:'lesson'|'question';storageAvailable:boolean
 };
-type MethodsPort={getView:()=>MethodsView;open:(id:string,practice?:boolean)=>void};
+type MethodsPort={getView:()=>MethodsView;open:(id:string,practice?:boolean,lessonId?:string)=>boolean};
 type GuideUiPort={getState:()=>{query:string;category:string}|null};
 declare global{interface Window{liGuideUi?:GuideUiPort;}}
 type LibraryPort={
  getView:()=>LibraryView;renderHome:()=>void;renderResume:()=>void;renderCollection:()=>void;
+ getT02ReviewQueue?:()=>T02QueueItem[]|null;
  openProblemEntry:(kind:string,key:string)=>void;openSavedQuestion:(id:string)=>void;
  removeSavedQuestion:(id:string)=>void;selectBookmarkTab:(type:string)=>void;
  setCollectionFilter:(next:string)=>void;
@@ -45,7 +47,8 @@ type AppWindow=Window&{
  liNotes?:{openDetail:(kind:string,id:string)=>boolean;deleteNote:(kind:string,id:string)=>boolean;
   deleteFromReact:(kind:string,id:string)=>boolean};
  liLanguage?:{get:()=>string};
- LiSpellPractice?:{getT02Status?:(id:string)=>T02Status|null};
+ LiSpellPractice?:{getT02Status?:(id:string)=>T02Status|null;
+  postponeT02?:(id:string,expectedDue:number)=>boolean;setLessonContext?:(id:string)=>boolean};
 };
 const app=window as AppWindow;
 // The canonical Catalog and staging allowlist are the only source of
@@ -367,6 +370,66 @@ function BookmarkRows({items}:{
   </div>)}
  </div>;
 }
+/** Existing shelf list and buttons: no separate route, schedule or data store. */
+function DueReviewQueue(){
+ const [items,setItems]=useState<T02QueueItem[]|null>(()=>app.liLibraryShelf?.getT02ReviewQueue?.()??null);
+ const [now,setNow]=useState(()=>Date.now());
+ const [error,setError]=useState(false);
+ const refresh=()=>{setItems(app.liLibraryShelf?.getT02ReviewQueue?.()??null);setNow(Date.now());};
+ useEffect(()=>{
+  const events=['li:route-changed','li:private-personal-change','li:personal-sync-applied',
+   'li:lesson-sync-applied','li:library-view-changed','li:localechange','focus','pageshow'];
+  for(const name of events)window.addEventListener(name,refresh);
+  document.addEventListener('visibilitychange',refresh);
+  const timer=window.setInterval(refresh,60_000);
+  refresh();
+  return()=>{window.clearInterval(timer);for(const name of events)window.removeEventListener(name,refresh);
+   document.removeEventListener('visibilitychange',refresh);};
+ },[]);
+ const due=(items??[]).filter(item=>!item.awaitingRating&&item.dueAt<=now);
+ const pending=(items??[]).filter(item=>item.awaitingRating);
+ const attempted=(items??[]).filter(item=>item.reviewCount>0||item.awaitingRating).length;
+ const open=(item:T02QueueItem)=>{
+  const fresh=app.LiSpellPractice?.getT02Status?.(item.id);
+  if(!fresh||fresh.dueAt!==item.dueAt||fresh.awaitingRating!==item.awaitingRating||
+     (!fresh.awaitingRating&&fresh.dueAt>Date.now())){setError(true);refresh();return;}
+  const personal=personalStudyRoute(item.id)!==null;
+  const ok=personal?app.liMethods?.open('T02',true)===true&&
+   app.LiSpellPractice?.setLessonContext?.(item.id)===true:app.liMethods?.open('T02',true,item.id)===true;
+  setError(!ok);
+ };
+ return <section className="library-resume-section" aria-labelledby="li-due-review-heading">
+  <Heading id="li-due-review-heading" level={2} role="titleMedium">{copy('Ôn đến hạn','Due review')}</Heading>
+  {items===null?<Text role="support">{copy('Chưa đọc được lịch ôn.','Review schedule unavailable.')}</Text>:<>
+   <Text role="support" aria-live="polite">{copy('Đến hạn: ','Due: ')}{due.length}/{items.length}
+    {' · '}{copy('Đã thử gọi nhớ: ','Recall attempted: ')}{attempted}/{items.length}
+    {' · '}{copy('Chờ tự đánh giá: ','Awaiting self-rating: ')}{pending.length}</Text>
+   <Text role="support">{copy('Chỉ tính bài đã hẹn ôn. Đây là lượt luyện lại kiến thức, không phải bài đo độc lập.',
+    'Counts include scheduled lessons only. These are previously taught recall tasks, not independent assessments.')}</Text>
+   {!due.length&&!pending.length&&<Text role="body">{copy('Chưa có bài cần ôn ngay.','Nothing needs review now.')}</Text>}
+   <div className="path-list li-react-shelf-list">
+    {[...pending,...due].map(item=><div key={item.id} className="path-item library-list-item">
+     <div className="library-list-copy"><strong>{item.title}</strong>
+      <Text role="support">{item.id} · {copy('Gọi nhớ khái niệm · Cơ bản','Concept recall · Basic')}</Text>
+      <Text role="support" className="library-review-due">{item.awaitingRating?
+       copy('Đã xem phản hồi · Chờ tự đánh giá','Feedback seen · Awaiting self-rating'):
+       copy('Tự nhớ trước khi xem phản hồi','Recall before seeing feedback')}</Text>
+     </div>
+     <div className="action-row">
+      <Button variant="secondary" onClick={()=>open(item)}>{item.awaitingRating?
+       copy('Tự đánh giá','Self-rate'):copy('Ôn ngay','Review now')}</Button>
+      {!item.awaitingRating&&<Button variant="ghost" onClick={()=>{
+       const ok=app.LiSpellPractice?.postponeT02?.(item.id,item.dueAt)===true;
+       setError(!ok);refresh();
+      }}>{copy('Hoãn 1 ngày','Defer 1 day')}</Button>}
+     </div>
+    </div>)}
+   </div>
+  </>}
+  {error&&<Text role="support" aria-live="polite">{copy(
+   'Lịch ôn vừa thay đổi hoặc chưa lưu được. Kiểm tra lại.','Review changed or could not be saved. Check again.')}</Text>}
+ </section>;
+}
 export function Resume(){
  const view=useLibrary();
  const [taxonomy,setTaxonomy]=useState(emptyTaxonomy);
@@ -378,6 +441,7 @@ export function Resume(){
   <TaxonomyFilters records={[...view.lessons,...view.problems]} value={taxonomy} onChange={setTaxonomy}/>
   <div className="library-resume-layout">
    <div className="library-resume-stream">
+    <DueReviewQueue/>
     <section className="library-resume-section">
      <Heading level={2} role="titleMedium">{copy('Bài học gần đây','Recent lessons')}</Heading>
      <LessonRows lessons={view.lessons.filter(item=>matchesTaxonomy(item,taxonomy))}/>

@@ -570,6 +570,8 @@ window.addEventListener?.("li:personal-sync-applied",event=>{
  }
  if(detail.keys.some(key=>[VISITS_KEY,PROBLEM_VISITS_KEY,"li.private.library.v1"].includes(key))){
   renderHome();renderResume();renderCollection();renderBookmarks();
+ }else if(detail.keys.some(key=>typeof key==="string"&&key.startsWith("li.spell.t02.schedule.v2:"))&&$("page-library")?.classList?.contains("active")){
+  renderDueReviewQueue();
  }
 });
 window.addEventListener?.("li:lesson-cloud-state",event=>{
@@ -712,7 +714,7 @@ function notifyReactLibrary(){
  if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
   window.dispatchEvent(new Event("li:library-view-changed"));
 }
-for(const name of ["li:private-personal-change","li:personal-sync-applied","focus","pageshow"])
+for(const name of ["li:private-personal-change","focus","pageshow"])
  window.addEventListener?.(name,()=>{if($("page-library")?.classList?.contains("active"))renderDueReviewQueue();});
 window.setInterval?.(()=>{if($("page-library")?.classList?.contains("active"))renderDueReviewQueue();},60000);
 window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,registerPersonalLessons,renderProblemRows,getView,getT02ReviewQueue,openProblemEntry,openSavedQuestion,removeSavedQuestion,setCollectionFilter});

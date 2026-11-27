@@ -77,7 +77,23 @@
           "vi": "Câu hỏi dẫn dắt gài kỳ vọng; câu hỏi trung lập để người trả lời mô tả trải nghiệm.",
           "en": "Leading wording embeds an expectation; neutral wording leaves room for the person's experience."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "AAPOR — Best Practices for Survey Research",
+              "url": "https://aapor.org/standards-and-ethics/best-practices/",
+              "section": "Designing your questionnaire: avoid leading language"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Câu hỏi trung lập tránh gợi ý câu trả lời mong muốn; câu hỏi mở vẫn có thể dẫn dắt. Nguyên tắc về wording không tự loại bỏ mọi thiên lệch phỏng vấn.",
+            "en": "Neutral wording avoids pushing a preferred answer; open-ended questions can still be leading. Wording alone cannot remove all interview biases."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -331,7 +347,25 @@
           "vi": "Chọn mẫu lệch là sai lệch hệ thống; biến thiên ngẫu nhiên là khác biệt do cơ hội lấy mẫu.",
           "en": "Selection bias is systematic distortion; random variation reflects chance differences across samples."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "OpenStax — Data, Sampling, and Variation in Data and Sampling",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling",
+              "section": "§1.2 variation in samples and critical evaluation"
+            }
+          ],
+          "relatedLessonIds": [
+            "L09-2-2"
+          ],
+          "scope": {
+            "vi": "Chọn mẫu lệch khác với biến thiên ngẫu nhiên giữa các mẫu. Tăng cỡ mẫu theo thiết kế phù hợp có thể giảm sai số ngẫu nhiên nhưng không tự sửa cơ chế chọn lệch.",
+            "en": "Systematic selection bias differs from chance variation across samples. Larger appropriately designed samples can reduce random error but cannot automatically repair biased selection."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -828,7 +862,25 @@
           "vi": "Tồn kho an toàn có thể là phần đệm của ngưỡng đặt hàng lại theo mô hình trong bài; không phải lượng đặt.",
           "en": "Safety stock can contribute to the reorder threshold in the lesson model; it is not order quantity."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "NC State — Safety Stock Analysis",
+              "url": "https://scm.ncsu.edu/scm-articles/article/safety-stock-analysis-inventory-management-models-a-tutorial",
+              "section": "Safety stock and recalculating reorder point; order timing versus quantity"
+            }
+          ],
+          "relatedLessonIds": [
+            "L15-3-2"
+          ],
+          "scope": {
+            "vi": "Khi xét bất định, tồn kho an toàn là phần đệm bổ sung vào ngưỡng đặt lại trong mô hình bài học; không phải lượng đặt hàng.",
+            "en": "Under uncertainty, safety stock is an added buffer in the lesson's reorder threshold model, not the order quantity."
+          }
+        }
       },
       "analogy": {
         "vi": {

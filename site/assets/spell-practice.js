@@ -726,6 +726,8 @@ function scheduleRead(){
    const saved=JSON.parse(raw);
    return t02Valid(saved)?saved:null;
   }
+  // Legacy standalone demo may never become a subject review.
+  if(activeLessonId!==null)return null;
   // Migrate previous 24h review once after verifying the signed owner.
   const legacy=JSON.parse(localStorage.getItem(T02_LEGACY)||"null");
   if(!legacy||!Number.isSafeInteger(legacy.due)||legacy.due<=0)return null;

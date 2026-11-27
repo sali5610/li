@@ -3,7 +3,7 @@ import {PrivateDeviceStore} from './local-dexie.js';
 
 /**
  * Account-scoped recovery helper for materialized Dexie learner records.
- * NOT a full device/account backup or wired Settings export. Output is plaintext.
+ * NOT a full device/account backup. Output is plaintext.
  * Excludes journal/consent and keybag records: recovery must not silently change
  * cloud consent or enqueue private diary content. No credentials or key material.
  * Import never overwrites existing records/outbox and commits atomically.
@@ -26,6 +26,15 @@ export async function exportAccountBackup(store:PrivateDeviceStore,accountId:str
   }))
  };
  return JSON.stringify(result,null,2);
+}
+
+/** Recheck authorization across the asynchronous Dexie read before releasing bytes. */
+export async function exportAuthorizedAccountBackup(store:PrivateDeviceStore,accountId:string,
+ isAuthorized:()=>boolean):Promise<string>{
+ if(!accountId.trim()||!isAuthorized())throw Error('BACKUP_OWNER_REQUIRED');
+ const json=await exportAccountBackup(store,accountId);
+ if(!isAuthorized())throw Error('BACKUP_OWNER_CHANGED');
+ return json;
 }
 
 export async function restoreAccountBackup(store:PrivateDeviceStore,accountId:string,json:string):

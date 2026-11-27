@@ -3,6 +3,7 @@ import {learnableLessonIds} from '../learning/released-lessons.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
 import {storageKey,type JsonValue,type ItemType} from '../sync/contract.js';
 import {PrivateDeviceStore} from '../sync/local-dexie.js';
+import {exportAuthorizedAccountBackup} from '../sync/account-backup.js';
 import {mergePersonalConflictRaw} from './personal-conflict-merge.js';
 import {syncOnce} from '../sync/sync-once.js';
 import {SealedNeonUserApi,currentVault} from '../sync/e2ee-cloud.js';
@@ -33,6 +34,26 @@ type Snapshot={id:string;raw:string|null};
 export type SyncReport='checking'|'saved'|'empty'|'offline'|'queued'|'conflict'|'error';
 type ActiveSync={uid:string;ready:Promise<void>;finish:()=>void;last:SyncReport;settled:boolean};
 let activeSync:ActiveSync|null=null;
+
+/** Explicit download of account-scoped records already materialized on this device. */
+export async function downloadLearnerAccountBackup(uid:string):Promise<void>{
+ const authorized=()=>IS_INTEGRATED_LI_APP&&location.origin===AUTH_ORIGIN&&
+  localStorage.getItem(OWNER)===uid&&activeSync?.uid===uid&&
+  document.documentElement.classList.contains('li-auth-verified');
+ const json=await exportAuthorizedAccountBackup(store,uid,authorized);
+ if(!authorized())throw Error('BACKUP_OWNER_CHANGED');
+ const url=URL.createObjectURL(new Blob([json],{type:'application/json'}));
+ const link=document.createElement('a');
+ try{
+  link.href=url;
+  link.download='li-learner-records-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(link);
+  link.click();
+ }finally{
+  link.remove();
+  window.setTimeout(()=>URL.revokeObjectURL(url),60000);
+ }
+}
 
 /** Per-user, explicit remote consent for private wellness diary / check-ins. */
 export {journalCloudConsent};

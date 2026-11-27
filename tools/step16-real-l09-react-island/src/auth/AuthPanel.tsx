@@ -1,7 +1,7 @@
 import {authoredCopy} from '../shell/discovery-locale.js';
 import React,{useEffect,useState} from 'react';
 import {createPortal} from 'react-dom';
-import {Button,Card,Heading,Text} from '../../../../design-system/react/index';
+import {Button,Card,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
 import '../../../../design-system/react/atoms.css';
 import '../../../../design-system/react/components.css';
 import {checkInviteAccess,safeInviteErrorCode} from '../sync/invite-access.js';
@@ -16,10 +16,32 @@ import {VaultSettings} from './VaultSettings.js';
 import {clearCurrentVault,currentVault} from '../sync/e2ee-cloud.js';
 const E2EE_PILOT=import.meta.env.VITE_LI_E2EE_PILOT==='1';
 import {prepareLearnerAccount,startLearnerSync,journalCloudConsent,changeJournalCloudConsent,
- listPrivateConflicts,resolvePrivateConflict,type PrivateConflictChoice,type SyncReport} from './learner-sync.js';
+ listPrivateConflicts,resolvePrivateConflict,downloadLearnerAccountBackup,type PrivateConflictChoice,type SyncReport} from './learner-sync.js';
 
 type Locale='vi'|'en';
 type Access='checking'|'granted'|'offline'|'denied'|'error';
+function AccountBackupDownload({accountId,locale}:{accountId:string;locale:Locale}){
+ const [state,setState]=useState<'idle'|'loading'|'requested'|'error'>('idle');
+ const vi=locale==='vi';
+ async function download(){
+  if(state==='loading')return;
+  setState('loading');
+  try{await downloadLearnerAccountBackup(accountId);setState('requested');}
+  catch{setState('error');}
+ }
+ return <section aria-label={vi?'Xuất dữ liệu học':'Export learning records'}>
+  <Heading level={4} role="titleSmall">{vi?'Bản sao dữ liệu học':'Learning records backup'}</Heading>
+  <Text role="support">{vi?
+   'Xuất các bản ghi tài khoản đã lưu vào bộ đồng bộ trên máy, kể cả bản ghi đang chờ gửi. Không gồm Nhật Ký/Check-in, khóa mã hóa, dữ liệu chỉ có trên cloud hoặc bản nháp chưa vào bộ đồng bộ. Tệp JSON không mã hóa; hãy giữ riêng tư. Chưa hỗ trợ nhập lại từ Settings.':
+   'Export account records already saved to the device sync store, including queued records. Excludes Journal/Check-ins, encryption keys, cloud-only data and drafts not yet captured by sync. The JSON is unencrypted; keep it private. Restore in Settings is not yet available.'}</Text>
+  <Button variant="secondary" loading={state==='loading'} onClick={()=>void download()}>
+   {vi?'Xuất bản ghi học (.json)':'Export learning records (.json)'}</Button>
+  {state==='error'&&<InlineFeedback tone="error" message={vi?
+   'Không xuất được dữ liệu. Kiểm tra tài khoản và thử lại.':'Could not export data. Check your account and retry.'}/>}
+  {state==='requested'&&<InlineFeedback tone="info" message={vi?
+   'Đã yêu cầu tải tệp. Kiểm tra mục Tệp đã tải về.':'Download requested. Check your downloaded files.'}/>}
+ </section>;
+}
 const syncCopy={
  vi:{checking:'Đang kết nối tiến độ học với Neon…',saved:'Đã đồng bộ dữ liệu được phép lưu trên Neon.',empty:'Đã kết nối Neon. Tiến độ sẽ tự đồng bộ khi học.',queued:'Đã lưu, chờ đồng bộ với Neon.',offline:'Đang offline; tiến độ vẫn lưu trên máy và sẽ thử lại.',conflict:'Hai thiết bị có tiến độ khác nhau. Dữ liệu được giữ, chưa ghi đè.',error:'Chưa đồng bộ được với Neon; tiến độ vẫn lưu trên máy.'},
  en:{checking:'Connecting learning progress to Neon…',saved:'Permitted personal data synced to Neon.',empty:'Connected to Neon. Progress will sync while studying.',queued:'Saved, awaiting Neon sync.',offline:'Offline. Progress remains on device and will retry.',conflict:'Progress differs across devices. Both copies are preserved; nothing was overwritten.',error:'Cannot sync with Neon yet; device progress is preserved.'}
@@ -438,6 +460,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     </div>
    </div>)}
   </section>}
+  {accountId&&ownerReady&&<AccountBackupDownload key={accountId} accountId={accountId} locale={locale}/>}
   {E2EE_PILOT&&accountId&&<VaultSettings accountId={accountId} locale={locale} online={!isOffline}/>}
   {feedback&&<p className="li-auth-settings-error" role="alert">{feedback}</p>}
   {showDeveloperQa&&accountId&&access==='granted'&&<>

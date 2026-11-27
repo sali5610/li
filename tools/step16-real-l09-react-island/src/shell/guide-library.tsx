@@ -3,7 +3,7 @@ import curriculum from '../../../../content/curriculum/legacy-catalog.v1.json';
 import {personalStudyRoute} from '../learning/released-lessons.js';
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button,Card,FilterGroup,Heading,IconButton,InlineFeedback,SearchField,Text,LiIcon} from '../../../../design-system/react/index';
+import {Button,Card,FilterGroup,Heading,IconButton,InlineFeedback,SearchField,Text,LiIcon,Progress} from '../../../../design-system/react/index';
 // Retain the canonical legacy stylesheet for the existing staging bundle contract;
 // the visible field-guide rows below no longer render legacy MethodTile cards.
 import '../../../../design-system/react/legacy.css';
@@ -22,6 +22,10 @@ type MethodsView={
 type Lesson={id:string;route:string;title:string;status:string;detail:string;saved:boolean;lessonId?:string|null;fieldId?:string|null};
 type T02Status={dueAt:number|null;awaitingRating:boolean;reviewCount:number};
 type T02QueueItem=T02Status&{id:string;route:string;title:string;dueAt:number};
+type StudyProgress={
+ lessons:{id:string;submitted:boolean|null;completed:boolean|null;review:T02Status|null}[];
+ technique:{used:string[];total:number;contextual:number;standalone:number}|null
+};
 type Problem={kind:string;key:string;title:string;detail:string;saved:boolean;lessonId?:string|null;fieldId?:string|null};
 type Note={id:string;type:'case'|'idea';title:string;body:string;date:string;sortDate:string;correct?:boolean;fieldId?:string|null;lessonId?:string|null};
 type Bookmark={kind:string;id:string;title:string;route:string|null;date:string;fieldId?:string|null;lessonId?:string|null};
@@ -47,7 +51,7 @@ type AppWindow=Window&{
  liNotes?:{openDetail:(kind:string,id:string)=>boolean;deleteNote:(kind:string,id:string)=>boolean;
   deleteFromReact:(kind:string,id:string)=>boolean};
  liLanguage?:{get:()=>string};
- LiSpellPractice?:{getT02Status?:(id:string)=>T02Status|null;
+ LiSpellPractice?:{getStudyProgress?:()=>StudyProgress|null;getT02Status?:(id:string)=>T02Status|null;
   postponeT02?:(id:string,expectedDue:number)=>boolean;setLessonContext?:(id:string)=>boolean};
 };
 const app=window as AppWindow;
@@ -294,6 +298,64 @@ function NotePreview({note,kind}:{
    onClick={()=>app.liNotes?.openDetail(kind,note.id)}>{copy('Xem chi tiết','View details')}</Button>
  </div>;
 }
+function StudyProgressShelf(){
+ const read=()=>app.LiSpellPractice?.getStudyProgress?.()??null;
+ const [view,setView]=useState<StudyProgress|null>(read);
+ useEffect(()=>{
+  const refresh=()=>setView(read());
+  const events=['li:route-changed','li:localechange','li:lesson-attempt-changed','li:lesson-sync-applied',
+   'li:personal-sync-applied','li:private-personal-change','li:lesson-cloud-state','li:library-view-changed','focus','pageshow'];
+  for(const name of events)window.addEventListener(name,refresh);
+  const observer=new MutationObserver(refresh);
+  observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+  document.addEventListener('visibilitychange',refresh);
+  const timer=window.setInterval(()=>{if(document.visibilityState==='visible')refresh();},60_000);
+  return ()=>{for(const name of events)window.removeEventListener(name,refresh);
+   observer.disconnect();document.removeEventListener('visibilitychange',refresh);window.clearInterval(timer);};
+ },[]);
+ const lessons=view?.lessons??[];
+ const complete=lessons.filter(l=>l.completed===true).length;
+ const submitted=lessons.filter(l=>l.submitted===true).length;
+ const unknown=lessons.filter(l=>l.completed===null).length;
+ const now=Date.now();
+ const reviewKnown=lessons.filter(l=>l.review!==null);
+ const scheduled=reviewKnown.filter(l=>l.review!.dueAt!==null);
+ const due=scheduled.filter(l=>!l.review!.awaitingRating&&l.review!.dueAt!<=now).length;
+ const pending=scheduled.filter(l=>l.review!.awaitingRating).length;
+ const reviewed=reviewKnown.reduce((sum,l)=>sum+l.review!.reviewCount,0);
+ return <Card variant="flat-study" aria-labelledby="library-progress-heading">
+  <Heading level={2} role="titleMedium" id="library-progress-heading">{copy('Tiến độ học tập','Learning progress')}</Heading>
+  {!view?<Text role="support">{copy('Chưa đọc được tiến độ của tài khoản hiện tại.','Progress for this account is not available yet.')}</Text>:<>
+   <Heading level={3} role="titleSmall">{copy('Kiến thức chuyên ngành','Domain learning')}</Heading>
+   <Text role="body">{complete}/{lessons.length} {copy('bài đã hoàn thành','lessons completed')}</Text>
+   {unknown>0?<Text role="support">{unknown} {copy('bài chưa xác định được trạng thái','lessons with unknown status')}</Text>:
+    lessons.length>0&&<Progress label={copy('Bài đã hoàn thành','Lessons completed')} value={complete} max={lessons.length}/>}
+   {curriculum.groups.flatMap(group=>group.fields).map(field=>{
+    const ids=new Set(field.courses.flatMap(course=>course.lessons.map(lesson=>lesson.id)));
+    const rows=lessons.filter(l=>ids.has(l.id));
+    if(!rows.length)return null;
+    const fieldUnknown=rows.filter(l=>l.completed===null).length;
+    return <Text role="support" key={field.id}>{fieldLabel(field.id)||field.name} · {rows.filter(l=>l.completed===true).length}/{rows.length}
+     {fieldUnknown>0?' · '+fieldUnknown+' '+copy('chưa rõ','unknown'):''}</Text>;
+   })}
+   <Text role="support">{copy('Chỉ tính bài có thể học, không tính đề cương. Mỗi bài chỉ tính một lần.','Only learnable lessons, not outlines. Each lesson counts once.')}</Text>
+   <Heading level={3} role="titleSmall">{copy('Thực hành Thần Chú','Technique practice')}</Heading>
+   {view.technique?<><Text role="body">{view.technique.used.length}/{view.technique.total} {copy('phương pháp có bằng chứng thực hành','techniques with practice evidence')}</Text>
+    <Text role="support">{copy('Lượt luyện Thần Chú theo bài: ','Lesson-linked spell practice rounds: ')}{view.technique.contextual}
+     {' · '}{copy('Luyện riêng: ','Standalone rounds: ')}{view.technique.standalone}</Text>
+    {view.technique.used.length>0&&<Text role="support">{view.technique.used.map(id=>{const method=app.liMethods?.getView().methods.find(m=>m.id===id);return method?(isEnglish()?method.original:method.title):id;}).join(' · ')}</Text>}
+    {(unknown>0||reviewKnown.length<lessons.length)&&<Text role="support">{copy('Một số bằng chứng bài học hoặc lịch ôn chưa đọc được.','Some lesson or review evidence is unavailable.')}</Text>}
+   </>:<Text role="support">{copy('Chưa đọc được lịch sử luyện Thần Chú.','Technique practice history is unavailable.')}</Text>}
+   <Heading level={3} role="titleSmall">{copy('Lập luận & tự đánh giá','Reasoning & self-review')}</Heading>
+   <Text role="body">{complete}/{submitted} {copy('bài đã tự đánh giá / bài đã nộp','self-reviewed / submitted lessons')}</Text>
+   <Text role="support">{copy('Chưa đo khả năng vận dụng vào tình huống mới; không phải điểm thông thạo.','Transfer to an untrained task is not measured; this is not a mastery score.')}</Text>
+   <Heading level={3} role="titleSmall">{copy('Ôn tập cách quãng · T02','Spaced review · T02')}</Heading>
+   <Text role="body">{reviewed} {copy('lượt ôn đã tự đánh giá','self-rated reviews')} · {due}/{scheduled.length} {copy('bài đến hạn','lessons due')}</Text>
+   <Text role="support">{pending} {copy('chờ tự đánh giá','awaiting self-rating')}
+    {reviewKnown.length<lessons.length?' · '+(lessons.length-reviewKnown.length)+' '+copy('lịch chưa rõ','unknown schedules'):''}</Text>
+  </>}
+ </Card>;
+}
 export function Library(){
  const view=useLibrary();
  return <div className="section-shell li-react-library" data-li-react-screen="library">
@@ -314,6 +376,7 @@ export function Library(){
     </div>
    </Card>
    <DueReviewQueue/>
+   <StudyProgressShelf/>
    <div className="library-workspace-columns">
     <section className="library-workspace-main" aria-labelledby="library-notes-heading">
      <ShelfHeader id="library-notes-heading" title={copy('Ghi chép','Notes')}

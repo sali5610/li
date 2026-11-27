@@ -12,7 +12,7 @@ assert.doesNotMatch(source,/button\.click\(\)/);
 assert.doesNotMatch(source,/textarea\.value=val/);
 assert.doesNotMatch(source,/root\.querySelector\('\[data-spell-action="'\+action/);
 const instrumented=source.replace(/\}\)\(\);\s*$/,
- 'window.__spellTest={open,getView,performReact,setT12Draft,switchTab,setLessonContext,getT02Status,postponeT02,getLessonPracticeSummary};\n})();');
+ 'window.__spellTest={open,getView,performReact,setT12Draft,switchTab,setLessonContext,getT02Status,postponeT02,getLessonPracticeSummary,getStudyProgress};\n})();');
 assert.notEqual(instrumented,source,"The test must instrument the real IIFE engine");
 const storage=new Map([["li.sync.local-owner.v1","test-invited-owner"]]);
 let verified=true,accountOpen=false,locale="vi";
@@ -34,7 +34,7 @@ const localStorage={
 };
 vm.runInNewContext(instrumented,{window,document,localStorage,Event:class{},Date,console});
 const api=window.__spellTest;
-assert.ok(api&&Object.keys(api).length===9);
+assert.ok(api&&Object.keys(api).length===10);
 let covered=0;
 function begin(id,lesson=null){
  api.open(id,"practice",lesson);
@@ -62,6 +62,25 @@ let practice=JSON.parse(storage.get(practiceKey));
 assert.equal(practice.scopes.standalone.T01.count,1,"T01 review receipt must persist");
 assert.equal(practice.scopes.standalone.T01.phase,0);
 assert.ok(!storage.get(practiceKey).includes(sentence),"Do not persist raw answers");
+// New summary only consumes the existing owner-scoped storage; no page opens.
+let progress=api.getStudyProgress();
+assert.equal(progress.lessons.length,3);
+assert.equal(progress.lessons.filter(l=>l.completed).length,0);
+assert.equal(progress.technique.standalone,1);
+assert.equal(progress.technique.contextual,0);
+assert.equal(progress.technique.used.join(","),"T01");
+const sampleKey="li.review.L09-1-2.v1";
+const completedRecord={submitted:true,reviewed:true,submission:[sentence,sentence,sentence,sentence],
+ submittedAt:new Date().toISOString(),ratings:[2,1,2,1],methodAttempts:{T01:{submittedAt:new Date().toISOString(),submission:sentence}}};
+storage.set(sampleKey,JSON.stringify({...completedRecord,attemptHistory:[{...completedRecord,answerRevealed:true}]}));
+progress=api.getStudyProgress();
+assert.equal(progress.lessons.filter(l=>l.completed).length,1,"current and prior rounds count one lesson");
+assert.equal(progress.technique.used.length,1,"practice and lesson evidence deduplicate method");
+storage.set(sampleKey,"broken");
+assert.equal(api.getStudyProgress().lessons.find(l=>l.id==="L09-1-2").completed,null);
+storage.delete(sampleKey);
+verified=false;assert.equal(api.getStudyProgress(),null,"no signed-out progress");verified=true;
+accountOpen=true;assert.equal(api.getStudyProgress(),null,"no progress under account overlay");accountOpen=false;
 begin("T01");
 assert.equal(api.getView().practiceCount,1);
 assert.equal(api.getView().phase,0,"Completed round starts fresh after reopen");

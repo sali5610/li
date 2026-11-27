@@ -22,7 +22,7 @@ import {RelatedLessons} from './RelatedLessons.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
 import {SavedLearningEvidence} from './SavedLearningEvidence';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
-import {CopyAnalysisPrompt} from './CopyAnalysisPrompt.js';
+import {CopyAnalysisPrompt,ReasoningReflectionFields} from './CopyAnalysisPrompt.js';
 import {freshLessonAttempt,confirmLessonRestart} from './restart-lesson.js';
 
 type LessonId='L03-1-2'|'L15-2-2';
@@ -409,6 +409,7 @@ export function Wave1Journey({id,ports}:{id:LessonId;ports:LearningPorts}){
      title:content.conceptTitle,lessonId:id,activity:content.challengeText+'\n'+content.challengeClaim,
      questions:content.questions,answers:attempt.draft
     }}/>
+    <ReasoningReflectionFields locale={appLocale} attempt={attempt} disabled={locked||saving} onChange={reflection=>{if(!attempt.submitted&&!locked&&!saving)void save({...attempt,reflection});}}/>
     {!attempt.submitted?<div className="li-learning-recovery">
      <Button disabled={saving||locked} onClick={()=>void submit()}>{content.submit}</Button>
      <Button variant="secondary" disabled={saving||locked} onClick={clearDraft}>{content.clear}</Button>

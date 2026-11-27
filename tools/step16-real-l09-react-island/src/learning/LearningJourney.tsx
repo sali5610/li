@@ -22,7 +22,7 @@ import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discover
 import {useStepScreen} from './step-screen.js';
 import {readPosition,clearPosition,type ReadingPosition} from './reading-position.js';
 import {LessonBookmark,LessonMentor,L09Figures,LessonSources,openLessonSpell} from './LessonDetailParity.js';
-import {CopyAnalysisPrompt} from './CopyAnalysisPrompt.js';
+import {CopyAnalysisPrompt,ReasoningReflectionFields} from './CopyAnalysisPrompt.js';
 import {RelatedLessons} from './RelatedLessons.js';
 import {SelfReviewNextStep} from './SelfReviewNextStep.js';
 import {SavedLearningEvidence} from './SavedLearningEvidence';
@@ -476,6 +476,7 @@ export function LearningJourney({ports}:{ports:LearningPorts}){
      title:content.title,lessonId:'L09-1-2',activity:content.caseText+'\n'+content.caseClaim,
      questions:content.questions,answers:attempt.draft
     }}/>
+    <ReasoningReflectionFields locale={appLocale} attempt={attempt} disabled={locked||saving} onChange={reflection=>{if(!attempt.submitted&&!locked&&!saving)void save({...attempt,reflection});}}/>
     {!attempt.submitted?<div className="li-learning-recovery">
      <Button disabled={locked||saving} onClick={()=>void submit()}>{content.submit}</Button>
      <Button variant="secondary" disabled={locked||saving} onClick={clearDraft}>{content.clear}</Button>

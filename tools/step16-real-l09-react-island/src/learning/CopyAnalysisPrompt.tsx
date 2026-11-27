@@ -1,4 +1,6 @@
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useState,useId} from 'react';
+import {Radio} from '../../../../design-system/react/Controls';
+import type {Attempt,ReasoningReflection} from '../native-bridge';
 import {Button} from '../../../../design-system/react/Components';
 import {Text} from '../../../../design-system/react/Atoms';
 import {Disclosure} from '../../../../design-system/react/Molecules';
@@ -121,6 +123,28 @@ function ReasoningSupport({locale,lessonId}:{locale:Locale;lessonId:string}){
    <Text>{prompt[vi?0:1]}</Text>
    <Text role="support">{vi?'Đây là câu hỏi định hướng, không phải lời giải. Tự đánh giá theo rubric của bài; không có điểm sáng tạo hay suy luận tổng quát.':'These are process prompts, not solutions. Self-review uses the lesson rubric; there is no general creativity or reasoning score.'}</Text>
   </Disclosure>
+ </section>;
+}
+
+/** Optional, explicitly learner-reported evidence; no inference of independence. */
+export function ReasoningReflectionFields({locale,attempt,disabled,onChange}:{
+ locale:Locale;attempt:Attempt;disabled:boolean;onChange:(value:ReasoningReflection)=>void;
+}){
+ const id=useId(),vi=locale==='vi';
+ const value=attempt.reflection??{confidence:'unknown',assistance:'unknown'};
+ const confidence=[['unknown','Chưa ghi nhận','Not recorded'],['low','Thấp','Low'],['medium','Vừa','Medium'],['high','Cao','High']] as const;
+ const assistance=[['unknown','Chưa ghi nhận','Not recorded'],['none_reported','Tự làm, không nhờ trợ giúp','No help (self-reported)'],['assisted_reported','Có dùng gợi ý, tài liệu hoặc AI','Used hints, resources or AI']] as const;
+ return <section data-li-reasoning-reflection>
+  <fieldset disabled={disabled||attempt.submitted}>
+   <legend>{vi?'Mức tự tin trước khi xem đáp án (tùy chọn)':'Confidence before seeing the answer (optional)'}</legend>
+   {confidence.map(([key,v,e])=><Radio key={key} name={id+'-confidence'} label={vi?v:e} value={key} checked={value.confidence===key} onChange={()=>onChange({...value,confidence:key})}/>)}
+  </fieldset>
+  <fieldset disabled={disabled||attempt.submitted}>
+   <legend>{vi?'Trợ giúp đã dùng trong lượt này (tùy chọn)':'Help used in this round (optional)'}</legend>
+   {assistance.map(([key,v,e])=><Radio key={key} name={id+'-assistance'} label={vi?v:e} value={key} checked={value.assistance===key} onChange={()=>onChange({...value,assistance:key})}/>)}
+  </fieldset>
+  {(attempt.hint||attempt.assisted)&&<Text role="support">{vi?'App đã ghi nhận dùng gợi ý; tự khai không xóa ghi nhận này.':'The app recorded hint use; self-report does not erase it.'}</Text>}
+  <Text role="support">{vi?'Đây là tự khai báo, không tính điểm và không chứng minh ngươi đã làm độc lập.':'Self-reported, not scored and not proof of independent work.'}</Text>
  </section>;
 }
 

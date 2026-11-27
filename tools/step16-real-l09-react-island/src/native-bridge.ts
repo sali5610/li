@@ -13,7 +13,15 @@ export type MethodAttempt={
 };
 export type EditorialMethodId='T03'|'T04'|'T06'|'T07'|'T09'|'T10';
 export type MethodChoice=EditorialMethodId|'skip'|null;
+export type ReasoningReflection={confidence:'unknown'|'low'|'medium'|'high';assistance:'unknown'|'none_reported'|'assisted_reported'};
+export function validReasoningReflection(value:unknown):value is ReasoningReflection|undefined{
+ if(value===undefined)return true;
+ if(!value||typeof value!=='object'||Array.isArray(value))return false;
+ const v=value as Record<string,unknown>;
+ return Object.keys(v).length===2&&['unknown','low','medium','high'].includes(String(v.confidence))&&typeof v.confidence==='string'&&['unknown','none_reported','assisted_reported'].includes(String(v.assistance))&&typeof v.assistance==='string';
+}
 export type PastEditorialAttempt={
+ reflection?:ReasoningReflection;
  submission:[string,string,string,string];submissionLocale:Locale;submittedAt:string;
  ratings:[Rating,Rating,Rating,Rating];reviewedAt:string|null;answerRevealed:boolean;
  contentVersion:string;rubricVersion:string;attemptNumber:number;
@@ -31,6 +39,8 @@ export type EditorialReviewSnapshot={
  criteria:Record<Locale,[string,string,string,string][]>;
 };
 export type Attempt={
+ /** Optional self-report, frozen by the existing submitted-attempt gate. */
+ reflection?:ReasoningReflection;
  locale:Locale;
  draft:[string,string,string,string];
  guidedDraft:string;
@@ -79,7 +89,7 @@ function object(input:unknown):input is Record<string,unknown>{
 }
 function nativeShape(input:Record<string,unknown>):boolean{
  // Strict on fields present; native lesson has shipped records with no schema property.
- return (!('draft' in input)||isTextTuple(input.draft))&&
+ return validReasoningReflection(input.reflection)&&(!('draft' in input)||isTextTuple(input.draft))&&
    (!('ratings' in input)||isRatingTuple(input.ratings))&&
    (!('guidedDraft' in input)||typeof input.guidedDraft==='string')&&
    (!('hint' in input)||typeof input.hint==='boolean')&&

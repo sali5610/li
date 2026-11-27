@@ -17,7 +17,7 @@ import {SavedLearningEvidence} from './SavedLearningEvidence';
 import {T02ReviewEntry} from './T02ReviewEntry.js';
 import {Markdown,inline as formatLessonInline} from './EditorialJourney';
 import {LessonBookmark,LessonMentor} from './LessonDetailParity.js';
-import {CopyAnalysisPrompt} from './CopyAnalysisPrompt.js';
+import {CopyAnalysisPrompt,ReasoningReflectionFields} from './CopyAnalysisPrompt.js';
 import './journey.css';
 import {StudyBookFolio} from './StudyBookFolio';
 import {useDiscoveryLocale,localized,type BilingualCopy} from '../shell/discovery-locale.js';
@@ -360,6 +360,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
    rubricVersion:a.rubricVersion||lesson.version+':rubric:0-8',
    attemptNumber:a.attemptNumber||1,guidedDraft:a.guidedDraft,hint:a.hint,
    methodChoice:a.methodChoice??null,methodAttempts:a.methodAttempts,
+   ...(a.reflection?{reflection:a.reflection}:{}),
    questionPrompts:a.reviewSnapshot?.questions
   };
   const next:Attempt={...initial(),locale:a.locale,
@@ -587,6 +588,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
      questions:c.assessment.questions,answers:attempt.draft,
      extra:attempt.hint?extra?.hint:undefined
     }}/>
+    <ReasoningReflectionFields locale={locale} attempt={attempt} disabled={locked||pending>0} onChange={reflection=>{if(!current.current?.submitted)edit(a=>({...a,reflection}));}}/>
     {!persisted.submitted?<Button disabled={locked||pending>0} onClick={()=>void submit()}>
      {vi?'Nộp bốn câu':'Submit four answers'}</Button>:
      <Button onClick={()=>setPhase('feedback')}>{vi?'Tiếp: Đối chiếu':'Next: Feedback'} →</Button>}

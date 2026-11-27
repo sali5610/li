@@ -18,7 +18,7 @@ type SpellView={
  active:string;title:string;mode:string;phase:number;tab:'guide'|'practice';
  lesson:string;prompt:string;fields:SpellField[];feedback:string;
  resumeNote:string;places:string[];dueAt:number|null;
- t02ReviewCount:number;t02Streak:number;t02AwaitingRating:boolean;
+ t02ReviewCount:number;t02Streak:number;t02AwaitingRating:boolean;t02Eligible?:boolean;
  lessonId:string|null;reviewedInSession:boolean;viewSession:number;
  t12Draft?:{context:string;next:string;answer:string};
  t12SavedOnDevice?:boolean;t12Synced?:boolean;t12StorageError?:string;
@@ -350,7 +350,7 @@ export function GuideDetail(){
       }}/>)}
      {view.active==='T02'&&<Text role="support" className="spell-honest">
       {view.lessonId?
-       copy('Đang ôn kiến thức bài ','Reviewing lesson ')+view.lessonId:
+       copy('Nguồn: bài ','Source: lesson ')+view.lessonId+copy(' · Gọi nhớ khái niệm cơ bản · Không phải bài đo năng lực mới',' · Basic concept recall · Not an unseen ability assessment'):
        copy('Bài ôn mẫu · Không gắn với bài cụ thể','Standalone demo · Not linked to a lesson')}
      </Text>}
      {view.active==='T02'&&<Text role="support" className="spell-honest">
@@ -364,7 +364,8 @@ export function GuideDetail(){
        {new Date(view.dueAt!).toLocaleString(en()?'en-US':'vi-VN')}
        {copy(' · Chưa đến hạn nên chưa tính lượt ôn.',' · Not due yet; this does not count as a review.')}
       </Text>}
-      <Button variant="secondary" onClick={()=>action(dueFuture?'clear':'schedule')}>
+      {!dueFuture&&view.t02Eligible===false&&<Text role="support" className="spell-honest">{copy('Hoàn thành bài học và tự đánh giá trước khi hẹn ôn.','Complete the lesson and self-review before scheduling recall.')}</Text>}
+      <Button variant="secondary" disabled={!dueFuture&&view.t02Eligible===false} onClick={()=>action(dueFuture?'clear':'schedule')}>
        {dueFuture?copy('Hủy lịch lượt tới','Cancel next review'):
         copy('Bắt đầu · ôn lần đầu sau 24 giờ','Start · first review after 24 hours')}</Button>
      </>:

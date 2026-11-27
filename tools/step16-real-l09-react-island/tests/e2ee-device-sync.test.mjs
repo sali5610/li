@@ -146,7 +146,7 @@ test('E2EE: tampered or legacy plaintext remote row is a SECURITY error, not off
   const valid=await sealPrivatePayload(created.vault,uid,{itemType:'note',itemId:'corrupt',
    payload:{raw:'secret'},baseRevision:0,deletedAt:null,opId});
   remote.rows.set('note:corrupt',{owner_id:uid,item_type:'note',item_id:'corrupt',
-   payload:{...valid,ciphertext:valid.ciphertext.slice(0,-2)+'AA'},
+   payload:{...valid,ciphertext:(valid.ciphertext[0]==='A'?'B':'A')+valid.ciphertext.slice(1)},
    revision:1,changed_at:stamp,deleted_at:null});
   const tampered=await syncOnce(device,new SealedNeonUserApi(remote,created.vault),uid,gate);
   assert.equal(tampered.mode,'security-error');

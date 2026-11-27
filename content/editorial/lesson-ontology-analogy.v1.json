@@ -320,7 +320,30 @@
           "vi": "Độ nhạy chia theo nhóm dương thật; PPV chia theo nhóm được cảnh báo dương.",
           "en": "Sensitivity conditions on actual positives; PPV conditions on predicted positives."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "OpenStax — Contingency Tables",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/3-4-contingency-tables",
+              "section": "§3.4 Example 3.21(c): conditional sample-space denominator"
+            },
+            {
+              "title": "scikit-learn — precision_recall_fscore_support",
+              "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html",
+              "section": "Definitions of precision and recall; binary pos_label and averaging scope"
+            }
+          ],
+          "relatedLessonIds": [
+            "L09-3-2"
+          ],
+          "scope": {
+            "vi": "Với lớp dương cố định trong phân loại nhị phân, sensitivity/recall = TP/(TP+FN), PPV/precision = TP/(TP+FP). Chỉ đối chiếu khi mẫu số khác 0; không áp dụng đồng nhất cho macro/micro-average.",
+            "en": "For a fixed positive class in binary classification, sensitivity/recall = TP/(TP+FN), PPV/precision = TP/(TP+FP). Compare only when denominators are nonzero; do not equate aggregate averaging schemes."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -357,7 +380,30 @@
           "vi": "Khoảng tin cậy mô tả bất định theo giả định; sai lệch chọn mẫu có thể làm suy luận mất hiệu lực.",
           "en": "An interval describes uncertainty under assumptions; biased selection can invalidate inference."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "OpenStax — A Population Proportion",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/8-3-a-population-proportion",
+              "section": "§8.3 normal approximation and Example 8.10 repeated-sampling coverage"
+            },
+            {
+              "title": "OpenStax — Data, Sampling, and Variation",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling",
+              "section": "§1.2 Critical Evaluation and Sampling Bias"
+            }
+          ],
+          "relatedLessonIds": [
+            "L09-1-2"
+          ],
+          "scope": {
+            "vi": "Biên sai số lấy mẫu theo mô hình không tự hiệu chỉnh sai lệch do cơ chế chọn mẫu. Khoảng hẹp không chứng minh tính đại diện.",
+            "en": "A model-based sampling margin does not automatically correct selection bias. A narrow interval does not establish representativeness."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -468,7 +514,30 @@
           "vi": "Precision tương ứng PPV, recall tương ứng sensitivity trong bài phân loại nhị phân.",
           "en": "Precision corresponds to PPV and recall to sensitivity in this binary classification lesson."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "scikit-learn — precision_recall_fscore_support",
+              "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html",
+              "section": "Definitions of precision and recall; binary pos_label and averaging scope"
+            },
+            {
+              "title": "OpenStax — Contingency Tables",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/3-4-contingency-tables",
+              "section": "§3.4 Example 3.21(c): conditional sample-space denominator"
+            }
+          ],
+          "relatedLessonIds": [
+            "L09-2-1"
+          ],
+          "scope": {
+            "vi": "Hai bài dùng cùng khái niệm và mẫu số điều kiện; không coi precision/recall là chứng cứ hiệu năng thực từ dữ liệu giả lập.",
+            "en": "Both lessons use the same concepts and conditional denominators; fictional data do not establish real model performance."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -690,7 +759,30 @@
           "vi": "Gộp nhu cầu có thể giảm buffer dưới giả định tương quan thích hợp.",
           "en": "Pooling can reduce buffers under suitable correlation assumptions."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "MITx — SCM Key Concepts",
+              "url": "https://scx-static-assets.s3.amazonaws.com/SCx%20Key%20Concept%20Documents/MITx_MicroMasters_SCM_KeyConcepts.pdf",
+              "section": "Supply Chain Fundamentals p.99, Managing Multiple Locations (text extraction checked; page image unavailable)"
+            },
+            {
+              "title": "Bimpikis & Markakis — Inventory Pooling under Heavy-Tailed Demand",
+              "url": "https://web.stanford.edu/~kostasb/research/pooling/",
+              "section": "Management Science (2016), abstract on conditional inventory pooling benefits"
+            }
+          ],
+          "relatedLessonIds": [
+            "L15-2-2"
+          ],
+          "scope": {
+            "vi": "Gộp tồn kho có thể giảm đệm khi các điều kiện về nhu cầu và khả năng phục vụ phù hợp; không suy ra mọi mạng lưới đều tiết kiệm theo quy tắc căn bậc hai.",
+            "en": "Pooling can reduce buffers under appropriate demand and service conditions; no universal square-root saving is implied."
+          }
+        }
       },
       "analogy": {
         "vi": {

@@ -173,14 +173,24 @@
         "guidedFeedback": "Chia theo khách trước; fit scaler trên train/fold; bỏ feature chỉ có sau mốc dự báo. Dùng tập test chưa tham gia chọn mô hình.",
         "diagram": "Mốc dự báo → Split → Fit train → Đánh giá giữ lại",
         "relatedReason": "Giới hạn dự đoán ngoài điều kiện đã quan sát.",
-        "guidedPrompt": "Dự báo khách mới khi tạo đơn. Team chuẩn hóa cả tập rồi chia theo đơn, và dùng timestamp giao thật. Nêu ba sửa đổi trước khi đánh giá."
+        "guidedPrompt": "Dự báo khách mới khi tạo đơn. Team chuẩn hóa cả tập rồi chia theo đơn, và dùng timestamp giao thật. Nêu ba sửa đổi trước khi đánh giá.",
+        "learningGoals": [
+          "Phân biệt vai trò train, validation và test; giữ test độc lập cho đánh giá cuối.",
+          "Nhận ra rò rỉ từ tiền xử lý, chọn ngưỡng và bản ghi cùng khách hàng ở hai tập.",
+          "Đề xuất cách chia dữ liệu, fit pipeline và chọn ngưỡng phù hợp với mục tiêu dự đoán."
+        ]
       },
       "en": {
         "hint": "Write the prediction time and available information first. Split by deployment unit; identify where transformations are fitted and final evaluation occurs.",
         "guidedFeedback": "Split by customer first; fit scaler on training data/folds; remove features unavailable at prediction time. Keep test out of model selection.",
         "diagram": "Prediction time → Split → Fit train → Held-out evaluation",
         "relatedReason": "Limits of predictions outside observed conditions.",
-        "guidedPrompt": "Predict new-customer orders at creation. The team scales the full dataset, splits by order and uses actual delivery time. Name three fixes."
+        "guidedPrompt": "Predict new-customer orders at creation. The team scales the full dataset, splits by order and uses actual delivery time. Name three fixes.",
+        "learningGoals": [
+          "Distinguish training, validation and test roles; reserve an independent final test.",
+          "Identify leakage through preprocessing, threshold selection and repeated customer records across splits.",
+          "Design a split, fitting pipeline and threshold selection consistent with the deployment objective."
+        ]
       },
       "sourceUrl": "https://scikit-learn.org/stable/common_pitfalls.html",
       "relatedLessonId": "L09-2-3"
@@ -190,13 +200,25 @@
         "hint": "Vẽ bốn ô TP/FP/FN/TN cho mỗi mô hình, ghi đúng mẫu số cho từng metric. Tính chi phí theo hai giả định riêng.",
         "guidedFeedback": "Giữ nguyên phản hồi bài luyện đã có; kiểm tổng bốn ô bằng tổng đơn, sau đó diễn giải mỗi tỷ lệ theo nhóm thích hợp.",
         "diagram": "TP/FP/FN/TN → Metrics → Chi phí sai sót",
-        "relatedReason": "Mẫu số có điều kiện giúp hiểu precision và recall."
+        "relatedReason": "Mẫu số có điều kiện giúp hiểu precision và recall.",
+        "learningGoals": [
+          "Xác định lớp positive và phân biệt TP, FP, FN, TN.",
+          "Tính precision và recall với đúng mẫu số; so sánh các ngưỡng trên cùng tập đánh giá.",
+          "Giải thích đánh đổi giữa bỏ sót đơn trễ, báo nhầm và năng lực xử lý; không chọn ngưỡng chỉ vì accuracy cao."
+        ],
+        "methodNote": "T07 bổ trợ (tự chọn): nêu giả định về khả năng xử lý cảnh báo và dữ liệu đánh giá trước khi chọn ngưỡng; đây là gợi ý kiểm tra tiền đề, không phải lượt luyện được ghi nhận riêng."
       },
       "en": {
         "hint": "Draw TP/FP/FN/TN for each model, label each metric denominator. Calculate cost separately for each assumption.",
         "guidedFeedback": "Use the existing exercise feedback; verify the four cells sum to all orders, then interpret each rate for its proper group.",
         "diagram": "TP/FP/FN/TN → Metrics → Error costs",
-        "relatedReason": "Conditional denominators clarify precision and recall."
+        "relatedReason": "Conditional denominators clarify precision and recall.",
+        "learningGoals": [
+          "Define the positive class and distinguish TP, FP, FN and TN.",
+          "Calculate precision and recall with the correct denominators; compare thresholds on the same evaluation set.",
+          "Explain trade-offs between missed delays, false alerts and operational capacity rather than choosing a threshold from accuracy alone."
+        ],
+        "methodNote": "Optional T07: state assumptions about alert-handling capacity and evaluation data before choosing a threshold; this is a premise-checking suggestion, not a separately recorded method attempt."
       },
       "sourceUrl": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html",
       "relatedLessonId": "L09-2-1"
@@ -207,14 +229,24 @@
         "guidedFeedback": "Cả hai accuracy 80%; recall A=70%, B=40%, gap 30 điểm phần trăm. Cần xem tác động, dữ liệu và bối cảnh; không đủ bằng chứng kết luận công bằng hay vi phạm luật.",
         "diagram": "Metric theo nhóm → Chênh lệch → Điều tra giới hạn",
         "relatedReason": "Dùng confusion matrix để nhìn sai sót theo nhóm.",
-        "guidedPrompt": "Hai nhóm 100 đơn, mỗi nhóm 20 trễ thật. A: TP=14, FN=6, FP=14, TN=66; B: TP=8, FN=12, FP=8, TN=72. So accuracy và recall; không kết luận quá mức."
+        "guidedPrompt": "Hai nhóm 100 đơn, mỗi nhóm 20 trễ thật. A: TP=14, FN=6, FP=14, TN=66; B: TP=8, FN=12, FP=8, TN=72. So accuracy và recall; không kết luận quá mức.",
+        "learningGoals": [
+          "So sánh accuracy, recall, FPR và selection rate theo nhóm với đúng mẫu số.",
+          "Phân biệt câu hỏi của demographic parity, equal opportunity và equalized odds; nêu giới hạn của từng chỉ số.",
+          "Diễn giải permutation importance trong phạm vi mô hình, metric và dữ liệu; không suy ra nhân quả hay kết luận pháp lý từ một chỉ số."
+        ]
       },
       "en": {
         "hint": "Compute metrics by group before pooling. Compare percentage-point gaps; distinguish score decrease from causation.",
         "guidedFeedback": "Both accuracy 80%; recall A=70%, B=40%, gap 30 percentage points. Investigate impacts, data and context; insufficient evidence for a fairness or legal verdict.",
         "diagram": "Group metrics → Disparities → Investigate limits",
         "relatedReason": "Use confusion matrices to examine group-level errors.",
-        "guidedPrompt": "Two groups of 100 orders, 20 truly late each. A: TP=14, FN=6, FP=14, TN=66; B: TP=8, FN=12, FP=8, TN=72. Compare accuracy and recall without overclaiming."
+        "guidedPrompt": "Two groups of 100 orders, 20 truly late each. A: TP=14, FN=6, FP=14, TN=66; B: TP=8, FN=12, FP=8, TN=72. Compare accuracy and recall without overclaiming.",
+        "learningGoals": [
+          "Compare group accuracy, recall, FPR and selection rate with correct denominators.",
+          "Distinguish the questions asked by demographic parity, equal opportunity and equalized odds, and state their limits.",
+          "Interpret permutation importance within the fitted model, metric and dataset without claiming causality or legal conclusions from a single metric."
+        ]
       },
       "sourceUrl": "https://fairlearn.org/v0.15/user_guide/assessment/common_fairness_metrics.html",
       "relatedLessonId": "L09-3-2"
@@ -286,7 +318,8 @@
         "guidedFeedback": "Separate=14; independent=2√(9+16)=10; ρ=1 gives 14 units. Four units saved do not establish optimality if transport cost or service time changes.",
         "diagram": "Separate demand → Correlation → Pooled buffer → Trade-offs",
         "relatedReason": "Safety stock supports comparing separate and pooled buffers.",
-        "guidedPrompt": "Two regions have σ=3 and 4 units, same horizon, z=2. Compute separate, independent pooled and perfectly correlated buffers; name a trade-off."
+        "guidedPrompt": "Two regions have σ=3 and 4 units, same horizon, z=2. Compute separate, independent pooled and perfectly correlated buffers; name a trade-off.",
+        "methodNote": "Optional T06: contrast two scenarios with identical σ1 and σ2 but different ρ; explain why the independence assumption changes the result. Do not count repeating a copied calculation as a separate method attempt."
       },
       "sourceUrl": "https://ocw.mit.edu/courses/15-762j-supply-chain-planning-spring-2011/",
       "relatedLessonId": "L15-2-2"

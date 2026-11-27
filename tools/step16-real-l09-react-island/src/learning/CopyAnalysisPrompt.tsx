@@ -118,9 +118,10 @@ function ReasoningSupport({locale,lessonId}:{locale:Locale;lessonId:string}){
  const vi=locale==='vi',prompt=reasoningPrompts[lessonId.split('-')[0]];
  if(!prompt)return null;
  return <section data-li-reasoning-support={lessonId}>
-  <Text role="support">{vi?'Thử tự trả lời trước khi nhờ trợ giúp. Trong bài làm, có thể ghi mức tự tin (thấp/vừa/cao), lý do và trợ giúp đã dùng (nếu có).':'Try answering independently before asking for help. In your response, optionally record confidence (low/medium/high), why, and any assistance used.'}</Text>
+  <Text role="support">{vi?'Thử tự trả lời trước khi nhờ trợ giúp. Trong bài làm, có thể ghi lý do cho mức tự tin (thấp/vừa/cao) và trợ giúp đã dùng (nếu có).':'Try answering independently before asking for help. In your response, optionally explain confidence (low/medium/high) and any assistance used.'}</Text>
   <Disclosure summary={vi?'Khung lập luận tùy chọn':'Optional reasoning scaffold'}>
    <Text>{prompt[vi?0:1]}</Text>
+   <Text role="support">{vi?'Khi đề bài yêu cầu phương án mới, giả thuyết khác hoặc đổi điều kiện, hãy nêu điểm khác với ví dụ hướng dẫn và vì sao lựa chọn phù hợp dữ kiện/ràng buộc. Với câu có đáp án xác định, ưu tiên tính đúng và lý giải, không ép sáng tạo.':'When a question asks for a new approach, alternative hypothesis or changed condition, explain what differs from the worked example and why it fits the evidence or constraints. For determinate questions, prioritize correctness and reasoning, not forced originality.'}</Text>
    <Text role="support">{vi?'Đây là câu hỏi định hướng, không phải lời giải. Tự đánh giá theo rubric của bài; không có điểm sáng tạo hay suy luận tổng quát.':'These are process prompts, not solutions. Self-review uses the lesson rubric; there is no general creativity or reasoning score.'}</Text>
   </Disclosure>
  </section>;

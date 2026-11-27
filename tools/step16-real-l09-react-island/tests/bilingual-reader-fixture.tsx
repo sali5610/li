@@ -4,7 +4,7 @@ import {createRoot} from 'react-dom/client';
 import {SectionedJourney,type SectionedLesson} from '../src/learning/SectionedJourney';
 import {Wave1Journey} from '../src/learning/Wave1Journey';
 import {LearningJourney} from '../src/learning/LearningJourney';
-import {initial,type Attempt} from '../src/native-bridge';
+import {initial,validReasoningReflection,type Attempt} from '../src/native-bridge';
 import {buildReasoningReceipt} from '../src/learning/SavedLearningEvidence';
 import type {LearningPorts} from '../src/learning/ports';
 import {readingStamp,readingPositionKey,readPosition,type ReadingPosition} from '../src/learning/reading-position';
@@ -33,7 +33,8 @@ const marker='QA saved response — bản nháp giữ nguyên';
 type FixtureApp={liLanguage:{get:()=>string;set:(locale:'vi'|'en')=>void};LiSpellPractice?:{getLessonPracticeSummary?:(lessonId:string,subjectId:string)=>{methodId:string;count:number}[]|null}};
 export async function runBilingualReaderFixture(host:HTMLElement){
  const app=window as unknown as FixtureApp;
- let checks=0,readers=0,reviewChecks=0,evidenceChecks=0,resumeChecks=0,guideReturnChecks=0,reasoningRubricChecks=0,exportChecks=0;
+ let checks=0,readers=0,reviewChecks=0,evidenceChecks=0,resumeChecks=0,guideReturnChecks=0,reasoningRubricChecks=0,exportChecks=0,reflectionChecks=0;
+ check(validReasoningReflection(undefined)&&validReasoningReflection({confidence:'high',assistance:'none_reported'})&&!validReasoningReflection({confidence:'99',assistance:'unknown'})&&!validReasoningReflection({confidence:'high',assistance:'unknown',extra:'x'}),'reflection shape');
  const priorSpell=app.LiSpellPractice;
  app.LiSpellPractice={...priorSpell,getLessonPracticeSummary:(lessonId,subjectId)=>
   subjectId==='qa-bilingual-fixture'&&lessonId==='L03-1-2'?[{methodId:'T06',count:2}]:[]};
@@ -87,6 +88,21 @@ export async function runBilingualReaderFixture(host:HTMLElement){
      check(attempt.guidedDraft===marker&&attempt.draft[0]===marker&&!attempt.submitted&&!attempt.reviewed,id+' corrupted saved progress');
      if(phase==='guided'||phase==='practice')check(Array.from(node.querySelectorAll('textarea')).some(x=>x.value===marker),id+' draft not visible '+phase);
      if(phase==='practice'){
+      const selectReflection=async(key:string)=>{
+       const field=()=>node.querySelector<HTMLInputElement>('[data-li-reasoning-reflection] input[value="'+key+'"]');
+       await until(()=>!!field()&&!field()!.matches(':disabled'),id+' reflection enabled '+key);
+       field()!.click();
+       await until(()=>!!field()?.checked,id+' reflection checked '+key);
+      };
+      if(!attempt.reflection){
+       await selectReflection('medium');
+       await until(()=>attempt.reflection?.confidence==='medium',id+' saved confidence');
+       await selectReflection('assisted_reported');
+       await until(()=>attempt.reflection?.assistance==='assisted_reported',id+' saved assistance');
+      }
+      check(attempt.reflection?.confidence==='medium'&&attempt.reflection?.assistance==='assisted_reported',id+' reflection lost across locale');
+      reflectionChecks++;
+
       const scaffold=node.querySelector<HTMLElement>('[data-li-reasoning-support="'+id+'"]');
       check(!!scaffold,id+' missing reasoning scaffold');
       check(scaffold!.textContent!.includes(locale==='vi'?'mức tự tin':'confidence'),id+' missing confidence prompt');
@@ -183,6 +199,12 @@ export async function runBilingualReaderFixture(host:HTMLElement){
      await until(()=>!!button()&&!button()!.disabled,id+' '+label+' enabled');
      button()!.click();
     };
+    const pick=async(key:string)=>{
+     const field=()=>journey()?.querySelector<HTMLInputElement>('[data-li-reasoning-reflection] input[value="'+key+'"]');
+     await until(()=>!!field()&&!field()!.matches(':disabled'),id+' new reflection enabled '+key);field()!.click();
+    };
+    await pick('high');await until(()=>attempt.reflection?.confidence==='high',id+' new confidence saved');
+    await pick('assisted_reported');await until(()=>attempt.reflection?.assistance==='assisted_reported',id+' new assistance saved');
     await clickText('Nộp bốn câu');
     await until(()=>attempt.submitted&&journey()?.dataset.liLessonPhase==='feedback',id+' new submission saved');
     check(!!attempt.rubricVersion?.endsWith(':rubric:step24-v1')&&!!attempt.reviewSnapshot,id+' new rubric not versioned');
@@ -209,7 +231,7 @@ export async function runBilingualReaderFixture(host:HTMLElement){
       click('[data-li-reasoning-export] button');
       check(!!payload&&filename==='li-'+id+'-submission.json',id+' export did not create local JSON');
       const exported=JSON.parse(await payload!.text());
-      check(exported.responses[0].answer===marker&&exported.responses[0].question&&exported.selfReview===null&&exported.untrainedTransferMeasured===false,id+' export wrong saved payload');
+      check(exported.responses[0].answer===marker&&exported.responses[0].question&&exported.selfReview===null&&exported.untrainedTransferMeasured===false&&exported.reflection?.confidence==='high'&&exported.reflection?.assistance==='assisted_reported',id+' export wrong saved payload');
       await until(()=>revoked==='blob:step24-test',id+' blob URL not released');
       exportChecks++;
      }finally{URL.createObjectURL=oldCreate;URL.revokeObjectURL=oldRevoke;HTMLAnchorElement.prototype.click=oldClick;}
@@ -305,6 +327,6 @@ export async function runBilingualReaderFixture(host:HTMLElement){
    readers++;
    console.log('BILINGUAL_READER_PASS '+id+' 5 phases × VI→EN→VI; saved drafts unchanged');
   }
-  return {status:'PASS',readers,checks,reviewChecks,evidenceChecks,resumeChecks,guideReturnChecks,reasoningRubricChecks,exportChecks,scope:'actual reader render, pre-submit phases and completed receipt render, in-memory locale persistence and simulated guide navigation; not physical device or live cloud'};
+  return {status:'PASS',readers,checks,reviewChecks,evidenceChecks,resumeChecks,guideReturnChecks,reasoningRubricChecks,exportChecks,reflectionChecks,scope:'actual reader render, pre-submit phases and completed receipt render, in-memory locale persistence and simulated guide navigation; not physical device or live cloud'};
  }finally{root.unmount();app.LiSpellPractice=priorSpell;}
 }

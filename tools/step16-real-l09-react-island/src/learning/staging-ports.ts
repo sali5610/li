@@ -1,7 +1,7 @@
 import type {Attempt} from '../native-bridge.js';
 import {readingPositionKey} from './reading-position.js';
 import {validMethodAttempts} from './validate-method-attempts.js';
-import {initial} from '../native-bridge.js';
+import {initial,validReasoningReflection} from '../native-bridge.js';
 import type {LearningPorts,SyncState} from './ports.js';
 import {isLearnableLessonId} from './released-lessons.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
@@ -79,7 +79,7 @@ function validHistory(a:Attempt):boolean{
      return Array.isArray(questions)&&questions.length===4&&
       questions.every(q=>typeof q==='string'&&q.trim().length>0&&q.length<=4000);
     }))||
-   !validMethodAttempts(p))return false;
+   !validMethodAttempts(p)||!validReasoningReflection(p.reflection))return false;
   last=p.attemptNumber;
  }
  return a.attemptHistory.length===0||a.attemptNumber===undefined||a.attemptNumber>last;
@@ -94,7 +94,7 @@ function valid(a:Attempt){
  (a.submissionLocale===null||a.submissionLocale==='vi'||a.submissionLocale==='en')&&
  Array.isArray(a.ratings)&&a.ratings.length===4&&
  a.ratings.every(x=>x===null||x===0||x===1||x===2)&&
- validMethodAttempts(a)&&validHistory(a)&&validReviewSnapshot(a);
+ validReasoningReflection(a.reflection)&&validMethodAttempts(a)&&validHistory(a)&&validReviewSnapshot(a);
 }
 function owner(uid:string){
  if(!IS_INTEGRATED_LI_APP||location.origin!==AUTH_ORIGIN||

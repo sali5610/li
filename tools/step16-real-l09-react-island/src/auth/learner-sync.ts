@@ -11,6 +11,7 @@ import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_INTEGRATED_LI_APP} from './config.js';
 import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
 import {validMethodAttempts} from '../learning/validate-method-attempts.js';
+import {validReasoningReflection} from '../native-bridge.js';
 import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
  hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS,t12Fields,practiceField} from './private-state.js';
 
@@ -229,7 +230,8 @@ function attempt(raw:string|null):Attempt|null{
  if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('INVALID_LOCAL_ATTEMPT');
  const a=value as Attempt;
  if(!Array.isArray(a.draft)||a.draft.length!==4||!a.draft.every(x=>typeof x==='string'&&x.length<=4000)||
-   !Array.isArray(a.ratings)||a.ratings.length!==4||!validMethodAttempts(a))
+   !Array.isArray(a.ratings)||a.ratings.length!==4||!validMethodAttempts(a)||!validReasoningReflection(a.reflection)||
+   (Array.isArray(a.attemptHistory)&&a.attemptHistory.some(p=>!p||typeof p!=='object'||!validReasoningReflection(p.reflection))))
   throw new Error('INVALID_LOCAL_ATTEMPT');
  return a;
 }

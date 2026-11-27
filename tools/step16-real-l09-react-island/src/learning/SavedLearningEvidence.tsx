@@ -1,7 +1,7 @@
 import React,{useState} from 'react';
 import {Button} from '../../../../design-system/react/Components';
 import {Heading,Text} from '../../../../design-system/react/Atoms';
-import type {Attempt} from '../native-bridge';
+import {validReasoningReflection,type Attempt} from '../native-bridge';
 import {summarizeSavedAttempt} from './learning-analytics.mjs';
 
 /** Private per-lesson progress from an already saved attempt only. */
@@ -23,6 +23,7 @@ export function buildReasoningReceipt(lessonId:string,attempt:Attempt){
   selfReview:attempt.reviewed&&attempt.ratings.every(x=>x===0||x===1||x===2)?
    attempt.ratings.map((rating,i)=>({criterion:criteria?.[i]?.[0]??null,rating})):null,
   assistance:attempt.hint||attempt.assisted?'hint_recorded':'unknown',
+  reflection:validReasoningReflection(attempt.reflection)?attempt.reflection??null:null,
   assessment:'self_review_only',untrainedTransferMeasured:false
  };
 }
@@ -61,6 +62,10 @@ export function SavedLearningEvidence({attempt,vi,lessonId,subjectId}:{attempt:A
   <Text role="support">{vi?'Thần Chú có bài luyện đã nộp: ':'Spells with a saved exercise: '}{e.methodApplications.length?e.methodApplications.join(', '):(vi?'Chưa có ghi nhận trong bài này':'Not recorded in this lesson')}</Text>
   {!!history?.length&&<Text role="support">{vi?'Lượt tự đối chiếu trong Sổ Tay (theo bài, gồm các lần trước): ':'Spellbook self-checks (lesson history, all rounds): '}{history.map(r=>r.methodId+' × '+r.count).join(', ')}</Text>}
   {e.assistance==='hint_recorded'&&<Text role="support">{vi?'Có ghi nhận dùng gợi ý.':'Hint use is recorded.'}</Text>}
+  {e.submitted&&attempt.reflection&&validReasoningReflection(attempt.reflection)&&<>
+   <Text role="support">{vi?'Mức tự tin tự khai trước khi xem đáp án: ':'Self-reported confidence before answer reveal: '}{({unknown:vi?'Chưa ghi nhận':'Not recorded',low:vi?'Thấp':'Low',medium:vi?'Vừa':'Medium',high:vi?'Cao':'High'})[attempt.reflection.confidence]}</Text>
+   <Text role="support">{vi?'Trợ giúp tự khai: ':'Self-reported assistance: '}{({unknown:vi?'Chưa ghi nhận':'Not recorded',none_reported:vi?'Không nhờ trợ giúp':'No help reported',assisted_reported:vi?'Có dùng trợ giúp':'Help reported'})[attempt.reflection.assistance]}</Text>
+  </>}
   <ReasoningExport attempt={attempt} lessonId={lessonId} vi={vi}/>
   <Text role="support">{vi?'Tự đánh giá không phải điểm thông thạo. Chưa đo khả năng áp dụng vào tình huống mới chưa luyện.':'Self-review is not mastery. Transfer to an untrained task has not been measured.'}</Text>
  </section>;

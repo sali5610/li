@@ -5,6 +5,7 @@ import {SectionedJourney,type SectionedLesson} from '../src/learning/SectionedJo
 import {Wave1Journey} from '../src/learning/Wave1Journey';
 import {LearningJourney} from '../src/learning/LearningJourney';
 import {initial,type Attempt} from '../src/native-bridge';
+import {buildReasoningReceipt} from '../src/learning/SavedLearningEvidence';
 import type {LearningPorts} from '../src/learning/ports';
 import {readingStamp,readingPositionKey,readPosition,type ReadingPosition} from '../src/learning/reading-position';
 import {lessonTitles} from '../src/learning/lesson-titles';
@@ -32,7 +33,7 @@ const marker='QA saved response — bản nháp giữ nguyên';
 type FixtureApp={liLanguage:{get:()=>string;set:(locale:'vi'|'en')=>void};LiSpellPractice?:{getLessonPracticeSummary?:(lessonId:string,subjectId:string)=>{methodId:string;count:number}[]|null}};
 export async function runBilingualReaderFixture(host:HTMLElement){
  const app=window as unknown as FixtureApp;
- let checks=0,readers=0,reviewChecks=0,evidenceChecks=0,resumeChecks=0,guideReturnChecks=0;
+ let checks=0,readers=0,reviewChecks=0,evidenceChecks=0,resumeChecks=0,guideReturnChecks=0,reasoningRubricChecks=0,exportChecks=0;
  const priorSpell=app.LiSpellPractice;
  app.LiSpellPractice={...priorSpell,getLessonPracticeSummary:(lessonId,subjectId)=>
   subjectId==='qa-bilingual-fixture'&&lessonId==='L03-1-2'?[{methodId:'T06',count:2}]:[]};
@@ -86,6 +87,12 @@ export async function runBilingualReaderFixture(host:HTMLElement){
      check(attempt.guidedDraft===marker&&attempt.draft[0]===marker&&!attempt.submitted&&!attempt.reviewed,id+' corrupted saved progress');
      if(phase==='guided'||phase==='practice')check(Array.from(node.querySelectorAll('textarea')).some(x=>x.value===marker),id+' draft not visible '+phase);
      if(phase==='practice'){
+      const scaffold=node.querySelector<HTMLElement>('[data-li-reasoning-support="'+id+'"]');
+      check(!!scaffold,id+' missing reasoning scaffold');
+      check(scaffold!.textContent!.includes(locale==='vi'?'mức tự tin':'confidence'),id+' missing confidence prompt');
+      const details=scaffold!.querySelector('details');
+      check(!!details&&!details.open,id+' optional reasoning scaffold should start closed');
+      check(!buildReasoningReceipt(id,attempt),id+' unsaved/draft receipt must not export');
       const authored=source[locale].assessment?.questions??source[locale].questions;
       const labels=Array.from(node.querySelectorAll('textarea')).map(x=>plain(Array.from(x.labels||[]).map(y=>y.textContent||'').join(' ')));
       check(authored.length===4&&authored.every((q:string,i:number)=>labels.some(l=>l.includes(plain(q).slice(0,Math.min(35,plain(q).length))))),id+' '+locale+' actual question text mismatch');
@@ -124,6 +131,7 @@ export async function runBilingualReaderFixture(host:HTMLElement){
       await until(()=>!!journey()?.querySelector(selector),id+' draft evidence settled');
       const evidence=normalize(journey()!.querySelector(selector)!.textContent||'');
       check(evidence.includes(locale==='vi'?'Chưa có bài nộp':'No submission'),id+' draft evidence false submission');
+      check(!journey()!.querySelector('[data-li-reasoning-export]'),id+' draft export exposed');
       check(evidence.includes(locale==='vi'?'Lượt hoàn tất tự đánh giá (gồm lịch sử): 0':'Completed self-review rounds (including saved history): 0'),id+' draft evidence false completion');
       evidenceChecks++;
      }
@@ -155,10 +163,57 @@ export async function runBilingualReaderFixture(host:HTMLElement){
     check(attempt.reviewed&&attempt.submission?.[0]===marker,id+' completion lost');
     const evidence=normalize(journey()!.querySelector(selector)!.textContent||'');
     check(evidence.includes(locale==='vi'?'Đã nộp':'Submitted'),id+' saved evidence missing submission');
+    check(!!journey()!.querySelector('[data-li-reasoning-export="'+id+'"] button'),id+' saved receipt export absent');
+    const receipt=buildReasoningReceipt(id,attempt);
+    check(receipt?.responses[0].answer===marker&&receipt.assistance==='unknown'&&receipt.untrainedTransferMeasured===false&&receipt.selfReview?.[0].rating===2,id+' incorrect saved receipt');
+    check(receipt?.responses[0].question===null&&receipt?.selfReview?.[0].criterion===null,id+' fabricated historical question or rubric');
+    check(!JSON.stringify(receipt).includes('qa-bilingual-fixture'),id+' account identifier in receipt');
     check(evidence.includes(locale==='vi'?'Lượt hoàn tất tự đánh giá (gồm lịch sử): 1':'Completed self-review rounds (including saved history): 1'),id+' saved evidence wrong completed count');
     check(evidence.includes(locale==='vi'?'Chưa có ghi nhận trong bài này':'Not recorded in this lesson'),id+' invented spell application');
     check(evidence.includes('T06 × 2')===(id==='L03-1-2'),id+' incorrect lesson Spellbook history');
      evidenceChecks++;reviewChecks++;
+   }
+   // Exercise new submissions, not just synthetic completed attempts. Existing
+   // legacy rubric assertions above intentionally retain the original labels.
+   if(lesson){
+    attempt=structuredClone(saved);revision++;render(id+'-step24-new');
+    await until(()=>journey()?.dataset.liLessonPhase==='practice'&&journey()?.dataset.liLessonSubmitted==='false',id+' new submission practice');
+    const clickText=async(label:string)=>{
+     const button=()=>Array.from(journey()?.querySelectorAll<HTMLButtonElement>('button')||[]).find(b=>b.textContent?.trim()===label);
+     await until(()=>!!button()&&!button()!.disabled,id+' '+label+' enabled');
+     button()!.click();
+    };
+    await clickText('Nộp bốn câu');
+    await until(()=>attempt.submitted&&journey()?.dataset.liLessonPhase==='feedback',id+' new submission saved');
+    check(!!attempt.rubricVersion?.endsWith(':rubric:step24-v1')&&!!attempt.reviewSnapshot,id+' new rubric not versioned');
+    check(!journey()!.querySelector('.li-learning-rating'),id+' rubric exposed before reveal');
+    await clickText('Xem đáp án & rubric');
+    await until(()=>attempt.answerRevealed&&journey()!.querySelectorAll('.li-learning-rating').length===4,id+' reveal new rubric');
+    for(const locale of locales){
+     app.liLanguage.set(locale);
+     await until(()=>journey()?.lang===locale&&attempt.locale===locale,id+' new rubric locale');
+     const expected=(goalSupplements[id][locale] as {reasoningRubric?:string[][]}).reasoningRubric;
+     check(!!expected&&expected.length===4&&JSON.stringify(attempt.reviewSnapshot?.criteria[locale])===JSON.stringify(expected),id+' frozen rubric differs from authored supplement');
+     const options=Array.from(journey()!.querySelectorAll<HTMLSelectElement>('.li-learning-rating select'));
+     check(options.length===4&&options.every((sel,i)=>normalize(sel.options[3]?.textContent||'')===normalize('2 · '+expected![i][3])),id+' new rubric descriptors not rendered');
+     reasoningRubricChecks++;
+    }
+    if(id==='L03-1-1'){
+     click('.li-study-book-next');await until(()=>journey()?.dataset.liLessonPhase==='progress',id+' export saved incomplete review');
+     let payload:Blob|undefined,filename='',revoked='';
+     const oldCreate=URL.createObjectURL,oldRevoke=URL.revokeObjectURL,oldClick=HTMLAnchorElement.prototype.click;
+     try{
+      URL.createObjectURL=(blob)=>{payload=blob as Blob;return 'blob:step24-test';};
+      URL.revokeObjectURL=(url)=>{revoked=url;};
+      HTMLAnchorElement.prototype.click=function(){filename=this.download;};
+      click('[data-li-reasoning-export] button');
+      check(!!payload&&filename==='li-'+id+'-submission.json',id+' export did not create local JSON');
+      const exported=JSON.parse(await payload!.text());
+      check(exported.responses[0].answer===marker&&exported.responses[0].question&&exported.selfReview===null&&exported.untrainedTransferMeasured===false,id+' export wrong saved payload');
+      await until(()=>revoked==='blob:step24-test',id+' blob URL not released');
+      exportChecks++;
+     }finally{URL.createObjectURL=oldCreate;URL.revokeObjectURL=oldRevoke;HTMLAnchorElement.prototype.click=oldClick;}
+    }
    }
    // One representative per real reader implementation: no answers needed
    // to remember the last page; preserve saved scroll on a fresh mount.
@@ -250,6 +305,6 @@ export async function runBilingualReaderFixture(host:HTMLElement){
    readers++;
    console.log('BILINGUAL_READER_PASS '+id+' 5 phases × VI→EN→VI; saved drafts unchanged');
   }
-  return {status:'PASS',readers,checks,reviewChecks,evidenceChecks,resumeChecks,guideReturnChecks,scope:'actual reader render, pre-submit phases and completed receipt render, in-memory locale persistence and simulated guide navigation; not physical device or live cloud'};
+  return {status:'PASS',readers,checks,reviewChecks,evidenceChecks,resumeChecks,guideReturnChecks,reasoningRubricChecks,exportChecks,scope:'actual reader render, pre-submit phases and completed receipt render, in-memory locale persistence and simulated guide navigation; not physical device or live cloud'};
  }finally{root.unmount();app.LiSpellPractice=priorSpell;}
 }

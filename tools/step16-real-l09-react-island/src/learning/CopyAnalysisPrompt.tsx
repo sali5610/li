@@ -1,6 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {Button} from '../../../../design-system/react/Components';
 import {Text} from '../../../../design-system/react/Atoms';
+import {Disclosure} from '../../../../design-system/react/Molecules';
 
 export type AnalysisStep='guided'|'practice'|'feedback'|'progress'|'case';
 type Locale='vi'|'en';
@@ -103,12 +104,33 @@ export function CopyPromptAction({locale,prompt,disabled=false,variant='secondar
     'Không mở được app? Mở ChatGPT trên web':'App did not open? Open ChatGPT on web'}</a></>}
  </>;
 }
+/** Non-answer-bearing prompts for the actual authored subject families.
+ * The four existing answers remain the saved artifact; no new score or storage.
+ */
+const reasoningPrompts:Record<string,[string,string]>={
+ 'L03':['Phân biệt điều quan sát được, cách diễn giải và quyết định đề xuất. Nêu một cách giải thích hoặc phương án khác, bằng chứng cần thu thập và điều kiện khiến ngươi đổi quyết định.','Separate observation, interpretation and proposed decision. Name an alternative explanation or approach, the evidence needed, and what would change your decision.'],
+ 'L09':['Ghi rõ dữ kiện, phép tính hoặc giả định đang dùng. Kiểm tra một cách giải thích khác, mẫu số hay điều kiện áp dụng; nêu điều dữ liệu chưa chứng minh.','State the data, calculation or assumption you use. Check an alternative explanation, denominator or applicability condition; state what the data do not establish.'],
+ 'L15':['Nêu mục tiêu, dữ liệu và ràng buộc vận hành. So sánh một phương án khác hoặc thay đổi một giả định; giải thích ảnh hưởng đến quyết định và điều cần kiểm chứng.','State the objective, data and operating constraints. Compare an alternative or vary an assumption; explain the decision impact and what needs verification.']
+};
+function ReasoningSupport({locale,lessonId}:{locale:Locale;lessonId:string}){
+ const vi=locale==='vi',prompt=reasoningPrompts[lessonId.split('-')[0]];
+ if(!prompt)return null;
+ return <section data-li-reasoning-support={lessonId}>
+  <Text role="support">{vi?'Thử tự trả lời trước khi nhờ trợ giúp. Trong bài làm, có thể ghi mức tự tin (thấp/vừa/cao), lý do và trợ giúp đã dùng (nếu có).':'Try answering independently before asking for help. In your response, optionally record confidence (low/medium/high), why, and any assistance used.'}</Text>
+  <Disclosure summary={vi?'Khung lập luận tùy chọn':'Optional reasoning scaffold'}>
+   <Text>{prompt[vi?0:1]}</Text>
+   <Text role="support">{vi?'Đây là câu hỏi định hướng, không phải lời giải. Tự đánh giá theo rubric của bài; không có điểm sáng tạo hay suy luận tổng quát.':'These are process prompts, not solutions. Self-review uses the lesson rubric; there is no general creativity or reasoning score.'}</Text>
+  </Disclosure>
+ </section>;
+}
+
 export function CopyAnalysisPrompt({locale,step,data,disabled=false}:{
  locale:Locale;step:AnalysisStep;data:AnalysisContext;disabled?:boolean;
 }){
  const prompt=buildAnalysisPrompt(locale,step,data);
  const vi=locale==='vi';
  return <div className="li-learning-copy-prompt" data-li-copy-analysis={step}>
+  {step==='practice'&&data.lessonId&&<ReasoningSupport locale={locale} lessonId={data.lessonId}/> }
   <Text role="support">{vi?
    'Prompt có thể chứa bài làm của ngươi. Chỉ sao chép vào bộ nhớ tạm; ngươi tự quyết định dán và gửi.':
    'The prompt may include your answers. It is copied locally; you decide whether to paste and send.'}</Text>

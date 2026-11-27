@@ -713,7 +713,7 @@ function notifyReactLibrary(){
   window.dispatchEvent(new Event("li:library-view-changed"));
 }
 for(const name of ["li:private-personal-change","li:personal-sync-applied","focus","pageshow"])
- window.addEventListener?.(name,()=>{if($("page-library")?.classList.contains("active"))renderDueReviewQueue();});
-window.setInterval?.(()=>{if($("page-library")?.classList.contains("active"))renderDueReviewQueue();},60000);
+ window.addEventListener?.(name,()=>{if($("page-library")?.classList?.contains("active"))renderDueReviewQueue();});
+window.setInterval?.(()=>{if($("page-library")?.classList?.contains("active"))renderDueReviewQueue();},60000);
 window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,registerPersonalLessons,renderProblemRows,getView,getT02ReviewQueue,openProblemEntry,openSavedQuestion,removeSavedQuestion,setCollectionFilter});
 })();

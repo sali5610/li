@@ -151,6 +151,14 @@ assert.equal(new Set(recallCues).size,20,"Every lesson requires its own retrieva
 // and keep the schedule in that lesson, not sampling bias or standalone.
 begin("T02","L15-2-2");
 assert.match(api.getView().prompt,/ROP|inventory position/);
+assert.equal(api.getView().t02Eligible,false,"Unlearned subject must not enter review queue");
+assert.equal(act("schedule"),false);
+const learnedAttempt={submitted:true,reviewed:true,submittedAt:new Date().toISOString(),
+ submission:["answer one","answer two","answer three","answer four"],ratings:[0,1,2,1]};
+storage.set("li.review.L15-2-2.v1",JSON.stringify({...learnedAttempt,reviewed:false}));
+assert.equal(act("schedule"),false,"Submission alone is not completed self-review");
+storage.set("li.review.L15-2-2.v1",JSON.stringify(learnedAttempt));
+assert.equal(api.getView().t02Eligible,true);
 assert.equal(act("check",{reason:sentence}),false,"No checking before due");
 assert.equal(act("schedule"),true);
 const l15DueKey=[...storage.keys()].find(key=>
@@ -262,6 +270,8 @@ begin("T02");
 assert.equal(api.setLessonContext("L03-1-1"),true);
 assert.equal(api.getView().lessonId,"L03-1-1");
 assert.equal(api.getT02Status("L03-1-1").dueAt,null);
+assert.equal(act("schedule"),false,"Invited draft is not automatically learned");
+storage.set("li.review.L03-1-1.v1",JSON.stringify(learnedAttempt));
 assert.equal(act("schedule"),true);
 assert.ok(api.getT02Status("L03-1-1").dueAt>Date.now(),
  "Personal lesson Progress reads its own upcoming due date");

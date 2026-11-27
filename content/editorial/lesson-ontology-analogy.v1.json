@@ -54,7 +54,24 @@
       },
       "sourceRef": "L03-1-1",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L03-1-1.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L03-1-1.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T04"
+        ],
+        "sourcePath": "content/editorial/normalized/L03-1-1.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Phân loại ba phát biểu mới theo dấu hiệu nhu cầu hoặc giải pháp; giải thích dấu hiệu.",
+          "en": "Classify three fresh statements as need hypotheses or solutions and explain diagnostic cues."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L03-1-2": {
       "concepts": [
@@ -107,7 +124,24 @@
       },
       "sourceRef": "L03-1-2",
       "reviewState": "proposed",
-      "sourcePath": "content/lessons/L03-1-2.json"
+      "sourcePath": "content/lessons/L03-1-2.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T04"
+        ],
+        "sourcePath": "content/lessons/L03-1-2.json",
+        "practiceRef": "site/assets/spell-practice.js",
+        "suggestionRef": "site/assets/lesson-spell-suggestions.v0.1.json",
+        "independentRef": "content.localized.*.questions",
+        "action": {
+          "vi": "So sánh câu hỏi trung lập/dẫn dắt; T04 giải thích vì sao lời đáp không chứng minh tính năng tốt hơn.",
+          "en": "Contrast neutral and leading questions; T04 explains why a reply does not establish a better feature."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L03-1-3": {
       "concepts": [
@@ -160,7 +194,24 @@
       },
       "sourceRef": "L03-1-3",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L03-1-3.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L03-1-3.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T09",
+        "optionalTechniqueIds": [
+          "L2-T07"
+        ],
+        "sourcePath": "content/editorial/normalized/L03-1-3.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Đối chiếu hai bản ghi giả lập, truy provenance, tách quan sát/trích dẫn/suy luận và chỉ rõ chứng cứ thiếu.",
+          "en": "Compare two fictional records, trace provenance, distinguish observation/quote/inference and identify missing corroboration."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L03-2-1": {
       "concepts": [
@@ -213,7 +264,24 @@
       },
       "sourceRef": "L03-2-1",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L03-2-1.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L03-2-1.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T10"
+        ],
+        "sourcePath": "content/editorial/normalized/L03-2-1.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Phân biệt navigation, concept ID, alias và content model theo chức năng. T10 bổ trợ thử trùng nhãn/đa đường dẫn.",
+          "en": "Distinguish navigation, concept ID, alias and content model by function. Optional T10 tests label collisions and multiple paths."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L03-2-2": {
       "concepts": [
@@ -266,7 +334,24 @@
       },
       "sourceRef": "L03-2-2",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L03-2-2.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L03-2-2.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T09"
+        ],
+        "sourcePath": "content/editorial/normalized/L03-2-2.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Chọn card sorting hay tree testing theo bốn mục tiêu nghiên cứu và nêu dấu hiệu quyết định.",
+          "en": "Choose card sorting or tree testing for four research purposes and explain the decisive cue."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L03-2-3": {
       "concepts": [
@@ -324,7 +409,24 @@
       },
       "sourceRef": "L03-2-3",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L03-2-3.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L03-2-3.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T09",
+        "optionalTechniqueIds": [
+          "L2-T06"
+        ],
+        "sourcePath": "content/editorial/normalized/L03-2-3.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Kiểm chứng claim dashboard bằng raw log, mẫu số, trợ giúp chưa ghi và metadata còn thiếu.",
+          "en": "Appraise a dashboard claim using raw logs, denominators, unmapped assistance and missing metadata."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-1-2": {
       "concepts": [
@@ -379,7 +481,24 @@
       },
       "sourceRef": "L09-1-2",
       "reviewState": "proposed",
-      "sourcePath": "content/lessons/L09-1-2.json"
+      "sourcePath": "content/lessons/L09-1-2.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T07"
+        ],
+        "sourcePath": "content/lessons/L09-1-2.json",
+        "practiceRef": "site/assets/spell-practice.js",
+        "suggestionRef": "site/assets/lesson-spell-suggestions.v0.1.json",
+        "independentRef": "content.localized.*.questions",
+        "action": {
+          "vi": "Phân biệt cơ chế chọn mẫu với ngẫu nhiên; T07 phân biệt tính hợp lệ logic và tiền đề chưa được xác minh.",
+          "en": "Distinguish selection mechanisms from chance; T07 separates valid argument form from unsupported premises."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-1-3": {
       "concepts": [
@@ -437,7 +556,24 @@
       },
       "sourceRef": "L09-1-3",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L09-1-3.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L09-1-3.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T04"
+        ],
+        "sourcePath": "content/editorial/normalized/L09-1-3.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Đối chiếu ba nhóm có cùng mean/median nhưng range khác; nêu giới hạn suy rộng.",
+          "en": "Contrast three groups with equal mean/median but different ranges; bound generalization."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-2-1": {
       "concepts": [
@@ -497,7 +633,24 @@
       },
       "sourceRef": "L09-2-1",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L09-2-1.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L09-2-1.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T03",
+        "optionalTechniqueIds": [
+          "L2-T07"
+        ],
+        "sourcePath": "content/editorial/normalized/L09-2-1.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Sau bước đã giải, tự điền true/false alerts và PPV với mẫu số đúng; bài độc lập dùng bộ khác.",
+          "en": "After a worked step, fill in true/false alerts and PPV with correct denominator; independent case is distinct."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-2-2": {
       "concepts": [
@@ -557,7 +710,24 @@
       },
       "sourceRef": "L09-2-2",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L09-2-2.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L09-2-2.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T03",
+        "optionalTechniqueIds": [
+          "L2-T07"
+        ],
+        "sourcePath": "content/editorial/normalized/L09-2-2.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Sau p-hat cho sẵn, tự tính SE, margin và endpoints; giải thích ý nghĩa frequentist.",
+          "en": "Given p-hat, compute SE, margin and endpoints; explain the frequentist interpretation."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-2-3": {
       "concepts": [
@@ -615,7 +785,24 @@
       },
       "sourceRef": "L09-2-3",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L09-2-3.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L09-2-3.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T07",
+        "optionalTechniqueIds": [
+          "L2-T06"
+        ],
+        "sourcePath": "content/editorial/normalized/L09-2-3.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Đối chiếu xu hướng gộp và từng nhóm, nhận diện tiền đề nhân quả còn thiếu và phép kiểm phân biệt.",
+          "en": "Compare pooled and within-group trends, identify missing causal assumptions and a discriminating test."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-3-1": {
       "concepts": [
@@ -668,7 +855,22 @@
       },
       "sourceRef": "L09-3-1",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L09-3-1.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L09-3-1.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T10",
+        "optionalTechniqueIds": [],
+        "sourcePath": "content/editorial/normalized/L09-3-1.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Phân rã train/validation/test và fit/tuning; thử trường hợp cùng buyer ở hai tập theo mục tiêu khách mới.",
+          "en": "Decompose split, fitting and tuning; test repeated buyers across splits against the new-customer objective."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-3-2": {
       "concepts": [
@@ -728,7 +930,24 @@
       },
       "sourceRef": "L09-3-2",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L09-3-2.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L09-3-2.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T07"
+        ],
+        "sourcePath": "content/editorial/normalized/L09-3-2.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Đối chiếu hai threshold trên cùng dữ liệu bằng precision, recall, số cảnh báo và capacity.",
+          "en": "Compare thresholds on identical data using precision, recall, alert counts and capacity."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-3-3": {
       "concepts": [
@@ -786,7 +1005,24 @@
       },
       "sourceRef": "L09-3-3",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L09-3-3.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L09-3-3.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T09"
+        ],
+        "sourcePath": "content/editorial/normalized/L09-3-3.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Đối chiếu ít nhất hai metric nhóm và giới hạn kết luận. Dùng lại bảng đã học để đánh giá claim mới; bài độc lập dùng dữ liệu khác.",
+          "en": "Contrast at least two group metrics and limits of inference. Reuses the taught table for a new claim; independent dataset differs."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L15-2-1": {
       "concepts": [
@@ -839,7 +1075,24 @@
       },
       "sourceRef": "L15-2-1",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L15-2-1.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L15-2-1.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T03",
+        "optionalTechniqueIds": [
+          "L2-T10"
+        ],
+        "sourcePath": "content/editorial/normalized/L15-2-1.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Điền bước thiếu trong forecast trung bình và signed error rồi giải thích khác biệt với quyết định đặt hàng.",
+          "en": "Fill missing forecast and signed-error steps; explain why forecasting is not an order decision."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L15-2-2": {
       "concepts": [
@@ -894,7 +1147,24 @@
       },
       "sourceRef": "L15-2-2",
       "reviewState": "proposed",
-      "sourcePath": "content/lessons/L15-2-2.json"
+      "sourcePath": "content/lessons/L15-2-2.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T03",
+        "optionalTechniqueIds": [
+          "L2-T10"
+        ],
+        "sourcePath": "content/lessons/L15-2-2.json",
+        "practiceRef": "site/assets/spell-practice.js",
+        "suggestionRef": "site/assets/lesson-spell-suggestions.v0.1.json",
+        "independentRef": "content.localized.*.questions",
+        "action": {
+          "vi": "T03 luyện ROP theo mẫu đã giải, bước giảm gợi ý và bài mới; T10 thử lead time tăng.",
+          "en": "T03 practices ROP with a worked step, fading and a new item; T10 tests increased lead time."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L15-2-3": {
       "concepts": [
@@ -947,7 +1217,24 @@
       },
       "sourceRef": "L15-2-3",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L15-2-3.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L15-2-3.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T10",
+        "optionalTechniqueIds": [
+          "L2-T06"
+        ],
+        "sourcePath": "content/editorial/normalized/L15-2-3.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Tách các mốc thời gian, tính ba chênh lệch và thử trường hợp chưa có actual.",
+          "en": "Separate timestamp roles, calculate three differences and test missing actual occurrence."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L15-3-1": {
       "concepts": [
@@ -1000,7 +1287,24 @@
       },
       "sourceRef": "L15-3-1",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L15-3-1.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L15-3-1.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T10",
+        "optionalTechniqueIds": [
+          "L2-T06"
+        ],
+        "sourcePath": "content/editorial/normalized/L15-3-1.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Phân rã ba tầng biến động, đề xuất giả thuyết cạnh tranh và thử biên stockout hoặc thông tin trễ.",
+          "en": "Decompose three levels of variability, propose competing explanations and test stockout or delayed reporting."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L15-3-2": {
       "concepts": [
@@ -1060,7 +1364,24 @@
       },
       "sourceRef": "L15-3-2",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L15-3-2.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L15-3-2.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T10",
+        "optionalTechniqueIds": [
+          "L2-T06"
+        ],
+        "sourcePath": "content/editorial/normalized/L15-3-2.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Tính buffer riêng/gộp, đổi tương quan thành 1 và nêu ràng buộc vận hành.",
+          "en": "Compute separate/pooled buffers, switch correlation to 1 and identify an operational constraint."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L15-3-3": {
       "concepts": [
@@ -1113,7 +1434,24 @@
       },
       "sourceRef": "L15-3-3",
       "reviewState": "proposed",
-      "sourcePath": "content/editorial/normalized/L15-3-3.draft.v1.json"
+      "sourcePath": "content/editorial/normalized/L15-3-3.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T10",
+        "optionalTechniqueIds": [
+          "L2-T06"
+        ],
+        "sourcePath": "content/editorial/normalized/L15-3-3.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Tách service/cost/recovery, kiểm tra feasibility rồi siết budget để thử biên.",
+          "en": "Separate service/cost/recovery, assess feasibility and tighten the budget as a boundary test."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     }
   }
 }

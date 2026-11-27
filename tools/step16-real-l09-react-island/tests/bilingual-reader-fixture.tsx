@@ -99,6 +99,17 @@ export async function runBilingualReaderFixture(host:HTMLElement){
       details!.open=wasOpen;
      }
      if(phase==='read'){
+      if(['L09-2-1','L09-3-2','L09-2-2','L15-3-2'].includes(id)){
+       const proof=node.querySelector<HTMLElement>('[data-li-ontology-evidence]');
+       check(!!proof,id+' missing source-checked concept relation');
+       const disclosure=proof!.closest('details');
+       check(!!disclosure,id+' missing ontology disclosure');
+       const wasOpen=disclosure!.open;disclosure!.open=true;
+       check(proof!.innerText.includes(locale==='vi'?'chưa duyệt toàn bài':'not full lesson approval'),id+' relation review status');
+       const sources=Array.from(proof!.querySelectorAll('a'));
+       check(sources.length>=2&&sources.every(a=>a.href.startsWith('https://')&&a.rel.includes('noopener')),id+' source links');
+       disclosure!.open=wasOpen;
+      }
       const goals=goalSupplements[id]?.[locale]?.learningGoals;
       if(goals){
        const group=node.querySelector<HTMLElement>('[data-li-supplement-goals]');

@@ -46,7 +46,8 @@
         "diagram": "Đối tượng → Chủ đề/alias → Lối điều hướng",
         "relatedReason": "Kiểm chứng từ ngữ và tác vụ qua phỏng vấn.",
         "guidedPrompt": "Tài liệu “Đổi mật khẩu” thuộc nhóm Security nội bộ. Đề xuất content type, topic ID, một alias và lối menu hướng tác vụ; phân biệt các vai trò.",
-        "answerAddendum": "Ví dụ kiểm chứng cho câu 4: mời người đang hoặc chuẩn bị làm nghiên cứu tại trường; giao tác vụ “Ngươi muốn xin kinh phí cho một nghiên cứu mới, hãy tìm hướng dẫn cần thiết.” Trong cây đề xuất, định trước R1 là đích đúng; ghi tỷ lệ tới R1 không trợ giúp, đường đi và các điểm rẽ sai. Đây là kế hoạch thử, chưa có kết quả để khẳng định taxonomy hay UI đã tốt."
+        "answerAddendum": "Ví dụ kiểm chứng cho câu 4: mời người đang hoặc chuẩn bị làm nghiên cứu tại trường; giao tác vụ “Ngươi muốn xin kinh phí cho một nghiên cứu mới, hãy tìm hướng dẫn cần thiết.” Trong cây đề xuất, định trước R1 là đích đúng; ghi tỷ lệ tới R1 không trợ giúp, đường đi và các điểm rẽ sai. Đây là kế hoạch thử, chưa có kết quả để khẳng định taxonomy hay UI đã tốt.",
+        "methodNote": "T10 bổ trợ (tự chọn): thử điều kiện biên khi hai khái niệm khác nhau có cùng nhãn, hoặc một khái niệm có nhiều đường điều hướng. Giữ ID theo nghĩa; nêu điều cần xác minh trước khi đổi alias hay gộp ID. Đây là gợi ý thử biên, không phải lượt luyện riêng."
       },
       "en": {
         "hint": "Create topic IDs before labels; consider multiple tags for cross-topic material. Menus serve tasks rather than necessarily copying the taxonomy.",
@@ -54,7 +55,8 @@
         "diagram": "Object → Topic/alias → Navigation path",
         "relatedReason": "Validate language and tasks through interviews.",
         "guidedPrompt": "An article “Change password” belongs to internal Security. Propose a content type, topic ID, alias and task-based menu path; distinguish their roles.",
-        "answerAddendum": "Example validation for question 4: recruit current or prospective university researchers; ask, “You want funding for a new study. Find the instructions you need.” In the proposed tree, predefine R1 as the target; record unassisted arrival at R1, paths and wrong turns. This is a test plan, not evidence that the taxonomy or full UI works."
+        "answerAddendum": "Example validation for question 4: recruit current or prospective university researchers; ask, “You want funding for a new study. Find the instructions you need.” In the proposed tree, predefine R1 as the target; record unassisted arrival at R1, paths and wrong turns. This is a test plan, not evidence that the taxonomy or full UI works.",
+        "methodNote": "Optional T10: test a boundary where two distinct concepts share a label or one concept has multiple navigation paths. Keep IDs tied to meaning; state what must be verified before changing aliases or merging IDs. This is a boundary-test suggestion, not a separate recorded attempt."
       },
       "sourceUrl": "https://www.nngroup.com/articles/taxonomy-101/",
       "relatedLessonId": "L03-1-2"

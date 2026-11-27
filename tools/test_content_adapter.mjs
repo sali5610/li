@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {readFileSync,readdirSync} from "node:fs";
+import {createHash} from "node:crypto";
 import {createContentClient} from "../site/assets/li-content-adapter.mjs";
 const root=new URL("../site/content-packs/",import.meta.url);
 const requested=[];
@@ -332,11 +333,27 @@ assert.throws(()=>assertExactCoverage(expectedAuthoredIds,[...projectedIds,futur
 const ontologyTitles=JSON.parse(readFileSync(new URL("../content/editorial/lesson-titles.v1.json",import.meta.url),"utf8"));
 assert.ok(expectedAuthoredIds.every(id=>ontologyTitles.lessons[id]?.vi?.trim()&&ontologyTitles.lessons[id]?.en?.trim()),"Every authored lesson must have a bilingual title mapping for the Reader fixture");
 console.log("LI_LESSON_ONTOLOGY_COVERAGE_PASS "+JSON.stringify({authored:expectedAuthoredIds.length,canonical:canonicalBodyIds.length,normalized:normalizedBodyIds.length,negativeControls:2}));
+// Step25: retain the scoped review for an exact authored body. This is a
+// provenance/coverage check, not automated scientific fact verification.
+// Source/supplement-only changes still require editorial impact review.
+function assertAcademicReview(record,bytes,id){
+ assert.ok(record&&record.status==="targeted_desk_review",id+" missing scoped academic review");
+ assert.match(record.checkedOn||"",/^\d{4}-\d{2}-\d{2}$/,id+" missing academic review date");
+ assert.ok(record.scope?.trim()&&record.limitations?.trim(),id+" missing academic review scope/limits");
+ const expected=createHash("sha1").update("blob "+bytes.length+"\0").update(bytes).digest("hex");
+ assert.equal(record.bodySha,expected,id+" stale academic review: review changed claims or carry forward unaffected evidence, then record git hash-object of source body");
+}
+const academicSample=ontProjection.lessons[expectedAuthoredIds[0]];
+const academicSampleBytes=readFileSync(new URL("../"+academicSample.sourcePath,import.meta.url));
+assert.throws(()=>assertAcademicReview(undefined,academicSampleBytes,"new-lesson-probe"),/missing scoped academic review/);
+assert.throws(()=>assertAcademicReview(academicSample.academicReview,Buffer.concat([academicSampleBytes,Buffer.from(" ")]),"changed-lesson-probe"),/stale academic review/);
 for(const [id,p] of Object.entries(ontProjection.lessons)){
  const packed=ontPackIds.has(id);
  const expectedPath=packed?"content/lessons/"+id+".json":"content/editorial/normalized/"+id+".draft.v1.json";
  assert.equal(p.sourceRef,id);assert.equal(p.sourcePath,expectedPath);
- const authored=JSON.parse(readFileSync(new URL("../"+p.sourcePath,import.meta.url),"utf8"));
+ const authoredBytes=readFileSync(new URL("../"+p.sourcePath,import.meta.url));
+ assertAcademicReview(p.academicReview,authoredBytes,id);
+ const authored=JSON.parse(authoredBytes.toString("utf8"));
  assert.equal(authored.id,id);assert.equal(authored.kind,"Lesson");
  const fit=p.methodFit;
  assert.equal(fit.status,"editorial_task_alignment_reviewed");
@@ -439,6 +456,7 @@ for(const id of Object.keys(ontProjection.lessons)){
  if(!ontPackIds.has(id))assert.equal((await c.searchKnowledge(id)).status,"no_match");
 }
 console.log("LI_ONT03C_RELATION_EVIDENCE_PASS "+Object.keys(ontProjection.lessons).length);
+console.log("LI_ACADEMIC_REVIEW_COVERAGE_PASS "+JSON.stringify({authored:expectedAuthoredIds.length,negativeControls:2}));
 assert.ok(navGraph.nodes.every(x=>x.visibility==="public_curated"));
 assert.ok(navGraph.edges.every(x=>x.visibility==="public_curated"));
 console.log("LI_ONT03C_SOURCE_BOUNDARY_PASS "+JSON.stringify(ontCoverage));

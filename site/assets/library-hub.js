@@ -544,6 +544,21 @@ window.addEventListener?.("li:lesson-cloud-state",event=>{
  renderHome();renderResume();
 });
 
+/** Review queue spans all registered learnable lessons, not just visit history.
+ * No standalone sample, unscheduled lesson, raw answer or cross-account record. */
+function getT02ReviewQueue(){
+ const spell=window.LiSpellPractice;
+ if(!spell?.getT02Status||
+    !document.documentElement.classList.contains("li-auth-verified")||
+    document.documentElement.classList.contains("li-account-open"))return null;
+ const items=[];
+ for(const [route,info] of Object.entries(LESSONS)){
+  const status=spell.getT02Status(info.id);
+  if(!status)return null;
+  if(status.dueAt!==null)items.push({id:info.id,route,title:lessonTitle(info),...status});
+ }
+ return items.sort((a,b)=>Number(b.awaitingRating)-Number(a.awaitingRating)||a.dueAt-b.dueAt);
+}
 /* Read-only, same-account view for the React Library. Existing legacy closure
  * remains the ONLY owner of synced records, visits, bookmarks and mutations. */
 function getView(){
@@ -655,5 +670,5 @@ function notifyReactLibrary(){
  if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
   window.dispatchEvent(new Event("li:library-view-changed"));
 }
-window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,registerPersonalLessons,renderProblemRows,getView,openProblemEntry,openSavedQuestion,removeSavedQuestion,setCollectionFilter});
+window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,registerPersonalLessons,renderProblemRows,getView,getT02ReviewQueue,openProblemEntry,openSavedQuestion,removeSavedQuestion,setCollectionFilter});
 })();

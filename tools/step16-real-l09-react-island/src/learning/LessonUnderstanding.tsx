@@ -1,12 +1,12 @@
 import React from 'react';
-import {Heading,Text} from '../../../../design-system/react/Atoms';
+import {Heading,Text,Link} from '../../../../design-system/react/Atoms';
 import {Disclosure} from '../../../../design-system/react/Molecules';
 import data from '../../../../content/editorial/lesson-ontology-analogy.v1.json';
 
 type Locale='vi'|'en';
 type Concept={id:string;vi:string;en:string};
 type Entry={concepts:Concept[];relation:{from:string;to:string;predicate:string;
- reason:Record<Locale,string>;reviewState:string};
+ reason:Record<Locale,string>;reviewState:string;evidence?:{status:string;checkedOn:string;sources:{title:string;url:string;section:string}[];relatedLessonIds:string[];scope:Record<Locale,string>}};
  analogy:Record<Locale,{example:string;limit:string}>;reviewState:string};
 
 /** Read-only lesson-level view of proposed concept mappings. The canonical
@@ -31,6 +31,11 @@ export function LessonUnderstanding({id,locale}:{id:string;locale:Locale}){
    </div>
    <Text role="support">{relationship} · {entry.relation.reason[locale]}</Text>
    <Text role="support">{vi?'Liên kết biên tập đề xuất; không phải điều kiện tiên quyết.':'Proposed editorial relation; not a prerequisite.'}</Text>
+   {entry.relation.evidence?.status==='source_checked_relation_only'&&<div data-li-ontology-evidence={id}>
+    <Text role="support">{vi?'Đã đối chiếu nguồn cho quan hệ này; chưa duyệt toàn bài.':'Sources checked for this relation only; not full lesson approval.'}</Text>
+    <Text role="support">{entry.relation.evidence.scope[locale]}</Text>
+    <ul>{entry.relation.evidence.sources.map(source=><li key={source.url}><Link href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</Link></li>)}</ul>
+   </div>}
   </Disclosure>
   <Disclosure summary={vi?'Analogy · Liên tưởng dễ hiểu':'Analogy · Familiar comparison'}>
    <Text>{analogy.example}</Text>

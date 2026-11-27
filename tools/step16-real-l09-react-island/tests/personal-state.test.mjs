@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {PrivateDeviceStore} from '../.sync-private-test/sync/local-dexie.js';
 import {storageKey} from '../.sync-private-test/sync/contract.js';
 import {PERSONAL_FIELDS,capturePersonalState,hydratePersonalState,
- preparePersonalAccount,journalCloudConsent,personalRemoteSnapshot,t02Fields,practiceField,snapshotLearnerDevice,t12Fields,restoreLocalOnlyBackup} from '../.sync-private-test/auth/private-state.js';
+ preparePersonalAccount,journalCloudConsent,personalRemoteSnapshot,t02Fields,practiceField,snapshotLearnerDevice,t12Fields,restoreLocalOnlyBackup,restoreMissingSyncedBackup} from '../.sync-private-test/auth/private-state.js';
 
 function device(){
  const data=new Map();
@@ -401,6 +401,35 @@ test('local recovery compensates earlier additions on storage write failure',asy
  await withStore(async store=>{
   await assert.rejects(restoreLocalOnlyBackup(uid,[],recoveryFile(uid,[{key:journal,raw:'{"schema":1,"days":{}}'},{key:draft,raw:'{"text":"draft","fieldId":null}'}]),store,()=>true),/QUOTA/);
   assert.equal(map.has(journal),false);assert.equal(map.has(draft),false);
+  assert.equal((await store.accountRecords(uid)).length,0);
+ });
+});
+
+
+test('signed recovery queues only missing registered records at revision zero; protects server and local tombstones',async()=>{
+ const map=device(),uid='owner-A',other='owner-B';map.set('li.sync.local-owner.v1',uid);
+ const attempt=JSON.stringify({draft:['new answer','','',''],ratings:[null,null,null,null]});
+ const files=['L03-1-2','L09-1-2','L15-2-2'];
+ const rows=files.map(id=>({key:'li.review.'+id+'.v1',raw:attempt}));
+ const file=recoveryFile(uid,rows);
+ const api={accountId:uid,all:async()=>[{owner_id:uid,item_type:'lesson_attempt',item_id:files[0],revision:3,deleted_at:'2026-11-27T00:00:00Z'}]};
+ await withStore(async store=>{
+  await store.edit(uid,'lesson_attempt',files[1],{},'2026-11-27T00:00:00Z');
+  assert.deepEqual(await restoreMissingSyncedBackup(uid,files,file,store,api,()=>true),{queued:1,skipped:2,unresolved:0});
+  const item=await store.outbox.get(storageKey(uid,'lesson_attempt',files[2]));
+  assert.equal(item.baseRevision,0);assert.equal(item.payload.data.draft[0],'new answer');
+  assert.equal(map.has(rows[2].key),false,'do not hydrate until signed sync');
+  assert.equal((await store.accountRecords(other)).length,0);
+  assert.deepEqual(await restoreMissingSyncedBackup(uid,files,file,store,api,()=>true),{queued:0,skipped:3,unresolved:0});
+ });
+});
+test('signed recovery denies mismatched owner and malformed learning payload before creating writes',async()=>{
+ const map=device(),uid='owner-A';map.set('li.sync.local-owner.v1',uid);
+ const file=recoveryFile(uid,[{key:'li.review.L09-1-2.v1',raw:'{}'}]);
+ await withStore(async store=>{
+  const api={accountId:uid,all:async()=>[]};
+  await assert.rejects(restoreMissingSyncedBackup(uid,['L09-1-2'],file,store,api,()=>true),/INVALID_LOCAL_ATTEMPT/);
+  await assert.rejects(restoreMissingSyncedBackup(uid,['L09-1-2'],file,store,{...api,accountId:'other'},()=>true),/RESTORE_OWNER_REQUIRED/);
   assert.equal((await store.accountRecords(uid)).length,0);
  });
 });

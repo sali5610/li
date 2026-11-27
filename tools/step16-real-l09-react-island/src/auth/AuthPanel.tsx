@@ -22,7 +22,7 @@ type Locale='vi'|'en';
 type Access='checking'|'granted'|'offline'|'denied'|'error';
 function AccountBackupDownload({accountId,locale}:{accountId:string;locale:Locale}){
  const [state,setState]=useState<'idle'|'loading'|'requested'|'error'>('idle');
- const [restore,setRestore]=useState<{restored:number;skipped:number;deferred:number}|null>(null);
+ const [restore,setRestore]=useState<Awaited<ReturnType<typeof restoreLearnerLocalBackup>>|null>(null);
  const [restoreState,setRestoreState]=useState<'idle'|'loading'|'error'>('idle');
  const input=useRef<HTMLInputElement>(null);
  const vi=locale==='vi';
@@ -49,10 +49,10 @@ function AccountBackupDownload({accountId,locale}:{accountId:string;locale:Local
   {state==='requested'&&<InlineFeedback tone="info" message={vi?
    'Đã yêu cầu tải tệp. Kiểm tra mục Tệp đã tải về.':'Download requested. Check your downloaded files.'}/>}
   <Text role="support">{vi?
-   'Khôi phục hiện chỉ áp dụng cho bản nháp Nhặt Ý và Nhật Ký lưu riêng trên máy, nếu chưa có dữ liệu. Không nhập quyền riêng tư, bản ghi đồng bộ hay tiến độ.':
-   'Restore currently covers only missing Capture drafts and device-only Journal. It does not import privacy settings, synced records or progress.'}</Text>
+   'Chỉ thêm dữ liệu còn thiếu. Khi online, kiểm tra Neon trước khi đưa tiến độ và bản ghi học vào hàng đợi đồng bộ. Không ghi đè dữ liệu đang có, khôi phục dấu xóa hay thay đổi consent.':
+   'Only add missing data. When online, check Neon before queuing progress and learning records for sync. Never overwrite existing data, restore deleted records or change consent.'}</Text>
   <Button variant="secondary" disabled={restoreState==='loading'||state==='loading'} onClick={()=>input.current?.click()}>
-   {vi?'Khôi phục dữ liệu riêng trên máy':'Restore device-only data'}</Button>
+   {vi?'Khôi phục dữ liệu học (.json)':'Restore learning data (.json)'}</Button>
   <input ref={input} type="file" accept=".json,application/json" hidden
    onChange={event=>{const file=event.currentTarget.files?.[0];event.currentTarget.value='';if(file)void importLocal(file);}}/>
   {restoreState==='loading'&&<InlineFeedback tone="loading" message={vi?'Đang kiểm tra và khôi phục…':'Checking and restoring…'}/>}
@@ -60,8 +60,14 @@ function AccountBackupDownload({accountId,locale}:{accountId:string;locale:Local
    'Không hoàn tất khôi phục. Kiểm tra đúng tài khoản, tệp JSON và dữ liệu trên máy rồi thử lại.':
    'Restore did not complete. Check the account, JSON file and device data before retrying.'}/>}
   {restore&&<InlineFeedback tone="info" message={vi?
-   'Đã thêm '+restore.restored+' bản ghi; bỏ qua '+restore.skipped+' bản đã có hoặc thuộc đồng bộ; '+restore.deferred+' bản ghi ngoài phạm vi.':
-   'Added '+restore.restored+' records; skipped '+restore.skipped+' existing or sync-managed records; '+restore.deferred+' records outside scope.'}/>}
+   'Trên máy: đã thêm '+restore.restored+', bỏ qua '+restore.skipped+'.':
+   'On device: added '+restore.restored+', skipped '+restore.skipped+'.'}/>}
+  {restore?.signed&&<InlineFeedback tone="info" message={vi?
+   'Đồng bộ: '+restore.signed.queued+' bản ghi đang chờ gửi; '+restore.signed.skipped+' bản bỏ qua; '+restore.signed.unresolved+' bản chưa xử lý.':
+   'Sync: '+restore.signed.queued+' records queued, '+restore.signed.skipped+' skipped, '+restore.signed.unresolved+' unresolved.'}/>}
+  {restore&&restore.signedStatus!=='queued'&&<InlineFeedback tone="info" message={vi?
+   'Chưa khôi phục phần đồng bộ. Giữ tệp và thử lại khi kết nối Neon và mở khóa dữ liệu (nếu có).':
+   'Synced recovery did not complete. Keep the file and retry with Neon connected and the vault unlocked if applicable.'}/>}
  </section>;
 }
 const syncCopy={

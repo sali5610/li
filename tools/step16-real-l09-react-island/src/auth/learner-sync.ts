@@ -11,9 +11,8 @@ import type {CloudUserApi} from '../sync/e2ee-cloud.js';
 import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_INTEGRATED_LI_APP} from './config.js';
 import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
-import {validMethodAttempts} from '../learning/validate-method-attempts.js';
 import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
- hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS,t12Fields,practiceField,snapshotLearnerDevice,restoreLocalOnlyBackup,type LocalRecoveryResult} from './private-state.js';
+ hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS,t12Fields,practiceField,snapshotLearnerDevice,restoreLocalOnlyBackup,restoreMissingSyncedBackup,parseLearnerAttempt as attempt,type LocalRecoveryResult,type SyncedRecoveryResult} from './private-state.js';
 
 /**
  * The native lesson UI still writes li.review.* localStorage synchronously.
@@ -59,8 +58,12 @@ export async function downloadLearnerAccountBackup(uid:string):Promise<void>{
  }
 }
 
-/** Restore only the device-only slice, without upload or consent. */
-export async function restoreLearnerLocalBackup(uid:string,file:File):Promise<LocalRecoveryResult>{
+/** Restore device-only data and queue missing signed learning records separately.
+ * Report partial outcomes if online recovery is unavailable; never imply upload.
+ */
+export async function restoreLearnerLocalBackup(uid:string,file:File):Promise<LocalRecoveryResult&{
+ signed:SyncedRecoveryResult|null;signedStatus:'queued'|'unavailable'|'failed'
+}>{
  const session=activeSync;
  const authorized=()=>IS_INTEGRATED_LI_APP&&location.origin===AUTH_ORIGIN&&
   localStorage.getItem(OWNER)===uid&&session?.uid===uid&&activeSync===session&&
@@ -73,7 +76,19 @@ export async function restoreLearnerLocalBackup(uid:string,file:File):Promise<Lo
  if(result.restored)window.dispatchEvent(new CustomEvent('li:personal-sync-applied',{
   detail:{accountId:uid,keys:['li.personal.daily.v1']}
  }));
- return result;
+ if(!navigator.onLine)return {...result,signed:null,signedStatus:'unavailable'};
+ try{
+  if(!await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort))throw Error('INVITE_REVOKED');
+  const rawApi=await bindNeonAccount(NEON_DATA_API_URL,neonSessionPort);
+  if(!rawApi||rawApi.accountId!==uid||!authorized())throw Error('RESTORE_OWNER_CHANGED');
+  const vault=E2EE_PILOT?currentVault(uid):null;
+  if(E2EE_PILOT&&!vault)return {...result,signed:null,signedStatus:'unavailable'};
+  const api:CloudUserApi=vault?new SealedNeonUserApi(rawApi,vault):rawApi;
+  const signed=await restoreMissingSyncedBackup(uid,LESSONS,json,store,api,authorized);
+  if(!authorized())throw Error('RESTORE_OWNER_CHANGED');
+  if(signed.queued)window.dispatchEvent(new Event('li:private-sync-request'));
+  return {...result,signed,signedStatus:'queued'};
+ }catch{return {...result,signed:null,signedStatus:'failed'};}
 }
 
 /** Per-user, explicit remote consent for private wellness diary / check-ins. */
@@ -264,17 +279,6 @@ function canonical(value:unknown):string{
  return '{'+Object.keys(object).sort().map(k=>JSON.stringify(k)+':'+canonical(object[k])).join(',')+'}';
 }
 
-function attempt(raw:string|null):Attempt|null{
- if(raw===null)return null;
- if(raw.length>60000)throw new Error('LOCAL_ATTEMPT_TOO_LARGE');
- const value:unknown=JSON.parse(raw);
- if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('INVALID_LOCAL_ATTEMPT');
- const a=value as Attempt;
- if(!Array.isArray(a.draft)||a.draft.length!==4||!a.draft.every(x=>typeof x==='string'&&x.length<=4000)||
-   !Array.isArray(a.ratings)||a.ratings.length!==4||!validMethodAttempts(a))
-  throw new Error('INVALID_LOCAL_ATTEMPT');
- return a;
-}
 function cloud(value:unknown):Attempt{
  if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('INVALID_CLOUD_ATTEMPT');
  const item=value as Record<string,unknown>;

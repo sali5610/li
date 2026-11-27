@@ -3,6 +3,9 @@ import {PrivateDeviceStore} from '../sync/local-dexie.js';
 import type {CloudUserApi} from '../sync/e2ee-cloud.js';
 import {personalStudyManuscriptIds} from '../learning/personal-study-ids.js';
 import {captureDraftKey} from '../shell/capture-draft.js';
+import {validMethodAttempts} from '../learning/validate-method-attempts.js';
+import {isBlankNativeAttempt} from './native-progress.js';
+import {validSchedule,validTime,isReminderKind} from '../shell/in-app-reminder.js';
 
 /** One existing signed Dexie/Neon pipeline for ALL first-party personal state.
  * App shell, lesson drafts and auth tokens themselves are NOT mirrored.
@@ -224,6 +227,143 @@ export async function restoreLocalOnlyBackup(uid:string,lessonIds:readonly strin
    for(const item of written.reverse())if(localStorage.getItem(item.key)===item.raw)localStorage.removeItem(item.key);
   throw error;
  }
+}
+/** Canonical lesson parser, shared by capture and explicit recovery. */
+export function parseLearnerAttempt(raw:string|null):Record<string,unknown>|null{
+ if(raw===null)return null;
+ if(raw.length>60000)throw new Error('LOCAL_ATTEMPT_TOO_LARGE');
+ const value:unknown=JSON.parse(raw);
+ if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('INVALID_LOCAL_ATTEMPT');
+ const a=value as Record<string,unknown>;
+ if(!Array.isArray(a.draft)||a.draft.length!==4||!a.draft.every(x=>typeof x==='string'&&x.length<=4000)||
+   !Array.isArray(a.ratings)||a.ratings.length!==4||!validMethodAttempts(a))
+  throw new Error('INVALID_LOCAL_ATTEMPT');
+ return a;
+}
+
+export type SyncedRecoveryResult={queued:number;skipped:number;unresolved:number};
+function validRegisteredRecovery(field:Field,raw:string):JsonValue{
+ const payload=wrap(field,raw);
+ const id=field.id;
+ if(id==='case-draft')return payload;
+ if(id==='study-mode'){if(!['start','focus','overload','recover'].includes(raw))throw Error('RESTORE_INVALID_MODE');return payload;}
+ if(id==='locale'){if(!['vi','en'].includes(raw))throw Error('RESTORE_INVALID_LOCALE');return payload;}
+ const v:unknown=JSON.parse(raw);
+ if(!recoveryObject(v)||!safeRecoveryJson(v))throw Error('RESTORE_INVALID_RECORD');
+ if(id==='library'){
+  const checks:Record<string,(x:Record<string,unknown>)=>boolean>={
+   cases:x=>typeof x.title==='string'&&typeof x.revision==='string'&&typeof x.correct==='boolean',
+   questions:x=>typeof x.question==='string',
+   ideas:x=>typeof x.id==='string'&&typeof x.text==='string'&&x.text.length<=5000&&typeof x.savedAt==='string',
+   savedContent:x=>['lesson','case'].includes(String(x.type))&&typeof x.id==='string'&&typeof x.savedAt==='string'
+  };
+  if(v.schema!==1||Object.entries(checks).some(([k,check])=>!Array.isArray(v[k])||
+   !(v[k] as unknown[]).every(x=>recoveryObject(x)&&check(x))))throw Error('RESTORE_INVALID_LIBRARY');
+ }else if(id==='lesson-visits'||id==='problem-visits'){
+  if(v.schema!==1||!Array.isArray(v.items)||v.items.length>40||
+   !v.items.every(x=>recoveryObject(x)&&typeof x.visitedAt==='string'&&Number.isFinite(Date.parse(x.visitedAt))))
+   throw Error('RESTORE_INVALID_VISITS');
+ }else if(id==='buddy-address'){
+  if(!['warm','teasing','serious'].every(k=>typeof v[k]==='string'&&(v[k] as string).length<=100))
+   throw Error('RESTORE_INVALID_NAMES');
+ }else if(id==='in-app-reminders'){
+  if(v.version===1){
+   if(!isReminderKind(v.kind)||typeof v.enabled!=='boolean'||
+    !(v.time===''||validTime(v.time))||(v.enabled&&!validTime(v.time)))throw Error('RESTORE_INVALID_REMINDERS');
+  }else if(v.version!==2||!Array.isArray(v.schedules)||v.schedules.length!==4||
+   !v.schedules.every(validSchedule)||new Set(v.schedules.map(s=>s.kind)).size!==4)
+    throw Error('RESTORE_INVALID_REMINDERS');
+ }else if(id==='spell-t02-due'){
+  if(!(v.due===null||(Number.isSafeInteger(v.due)&&Number(v.due)>0)))throw Error('RESTORE_INVALID_DUE');
+ }
+ // T02, T12 and spell practice already have strict shared validators in wrap.
+ return payload;
+}
+/** Missing-only online restore. Never import backup revisions, tombstones,
+ * consent, arbitrary scopes or divergent copies. All writes use the existing
+ * durable outbox and revision zero CAS; a concurrent server insert conflicts.
+ */
+export async function restoreMissingSyncedBackup(uid:string,lessonIds:readonly string[],json:string,
+ store:PrivateDeviceStore,api:Pick<CloudUserApi,'accountId'|'all'>,
+ isAuthorized:()=>boolean):Promise<SyncedRecoveryResult>{
+ const authorized=()=>Boolean(uid)&&api.accountId===uid&&isAuthorized()&&
+  localStorage.getItem('li.sync.local-owner.v1')===uid;
+ if(!authorized())throw Error('RESTORE_OWNER_REQUIRED');
+ if(json.length>8_000_000)throw Error('RESTORE_TOO_LARGE');
+ const data:unknown=JSON.parse(json);
+ if(!recoveryObject(data)||data.schema!=='li.learner.device-backup.v2'||data.accountId!==uid||
+  !Array.isArray(data.deviceRecords)||data.deviceRecords.length>5000||
+  !recoveryObject(data.materialized)||data.materialized.schema!=='li.private.backup.v1'||
+  data.materialized.accountId!==uid||!Array.isArray(data.materialized.items)||data.materialized.items.length>5000)
+   throw Error('RESTORE_WRONG_ACCOUNT_OR_SCHEMA');
+ const fields=[...fieldsFor(uid).filter(f=>!f.diary&&f.id!=='journal-cloud-consent'),
+  ...lessonIds.map(id=>({key:'li.review.'+id+'.v1',type:'lesson_attempt' as const,id}))];
+ const byKey=new Map(fields.map(f=>[f.key,f]));
+ const byScope=new Map(fields.map(f=>[storageKey(uid,f.type,f.id),f]));
+ const device=new Map<string,string>(),materialized=new Map<string,{raw:string|null;deleted:boolean}>();
+ let unresolved=0;
+ for(const r of data.deviceRecords){
+  if(!recoveryObject(r)||typeof r.key!=='string'||typeof r.raw!=='string')throw Error('RESTORE_INVALID_RECORD');
+  if(!byKey.has(r.key))continue;
+  if(device.has(r.key))throw Error('RESTORE_DUPLICATE');
+  device.set(r.key,r.raw);
+ }
+ for(const r of data.materialized.items){
+  if(!recoveryObject(r)||typeof r.itemType!=='string'||typeof r.itemId!=='string'||
+   !(r.deletedAt===null||typeof r.deletedAt==='string'))throw Error('RESTORE_INVALID_RECORD');
+  const f=byScope.get(JSON.stringify([uid,r.itemType,r.itemId]));
+  if(!f){unresolved++;continue;}
+  if(materialized.has(f.key))throw Error('RESTORE_DUPLICATE');
+  if(r.deletedAt!==null){materialized.set(f.key,{raw:null,deleted:true});continue;}
+  if(!recoveryObject(r.payload))throw Error('RESTORE_INVALID_RECORD');
+  const payload=r.payload;
+  let raw:string;
+  if(f.type==='lesson_attempt'){
+   const attempt=payload.schema==='li.native.lesson.v1'?payload.data:
+    payload.schema==='li.step16.l09.native.v1'?payload.attempt:null;
+   if(!recoveryObject(attempt))throw Error('RESTORE_INVALID_ATTEMPT');
+   raw=JSON.stringify(attempt);
+  }else raw=unpack(payload,f.key);
+  materialized.set(f.key,{raw,deleted:false});
+ }
+ const candidates:{field:Field;payload:JsonValue}[]=[];
+ let skipped=0;
+ for(const field of fields){
+  const a=device.get(field.key),b=materialized.get(field.key);
+  if(a===undefined&&!b)continue;
+  if(b?.deleted){skipped++;continue;}
+  // Never silently choose between two distinct snapshots in the same file.
+  if(a!==undefined&&b?.raw!==undefined&&b.raw!==null&&a!==b.raw){unresolved++;continue;}
+  const raw=a??b?.raw;
+  if(raw===null||raw===undefined){unresolved++;continue;}
+  let payload:JsonValue;
+  if(field.type==='lesson_attempt'){
+   const value=parseLearnerAttempt(raw);
+   if(!value||!safeRecoveryJson(value))throw Error('RESTORE_INVALID_ATTEMPT');
+   if(isBlankNativeAttempt(value)){skipped++;continue;}
+   payload={schema:'li.native.lesson.v1',data:value as Record<string,JsonValue>};
+  }else payload=validRegisteredRecovery(field,raw);
+  candidates.push({field,payload});
+ }
+ if(!candidates.length)return {queued:0,skipped,unresolved};
+ const remote=await api.all();
+ if(!authorized())throw Error('RESTORE_OWNER_CHANGED');
+ if(remote.some(r=>r.owner_id!==uid))throw Error('REMOTE_OWNER_MISMATCH');
+ const remoteKeys=new Set(remote.map(r=>storageKey(uid,r.item_type,r.item_id)));
+ return store.transaction('rw',store.records,store.outbox,async()=>{
+  let queued=0;
+  for(const {field,payload} of candidates){
+   if(!authorized())throw Error('RESTORE_OWNER_CHANGED');
+   const key=storageKey(uid,field.type,field.id);
+   if(remoteKeys.has(key)||await store.records.get(key)||await store.outbox.get(key)||
+    localStorage.getItem(field.key)!==null){skipped++;continue;}
+   if(!authorized())throw Error('RESTORE_OWNER_CHANGED');
+   await store.edit(uid,field.type,field.id,payload);
+   queued++;
+  }
+  if(!authorized())throw Error('RESTORE_OWNER_CHANGED');
+  return {queued,skipped,unresolved};
+ });
 }
 export type PersonalSnapshot={field:Field;raw:string|null};
 const active=(uid:string,field:Field)=>!field.diary||journalCloudConsent(uid);

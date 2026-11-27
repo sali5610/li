@@ -32,10 +32,10 @@ function AccountBackupDownload({accountId,locale}:{accountId:string;locale:Local
  return <section aria-label={vi?'Xuất dữ liệu học':'Export learning records'}>
   <Heading level={4} role="titleSmall">{vi?'Bản sao dữ liệu học':'Learning records backup'}</Heading>
   <Text role="support">{vi?
-   'Xuất các bản ghi tài khoản đã lưu vào bộ đồng bộ trên máy, kể cả bản ghi đang chờ gửi. Không gồm Nhật Ký/Check-in, khóa mã hóa, dữ liệu chỉ có trên cloud hoặc bản nháp chưa vào bộ đồng bộ. Tệp JSON không mã hóa; hãy giữ riêng tư. Chưa hỗ trợ nhập lại từ Settings.':
-   'Export account records already saved to the device sync store, including queued records. Excludes Journal/Check-ins, encryption keys, cloud-only data and drafts not yet captured by sync. The JSON is unencrypted; keep it private. Restore in Settings is not yet available.'}</Text>
+   'Xuất bản ghi đồng bộ và dữ liệu học đã lưu trên máy: tiến độ, bản nháp, lịch ôn, lịch nhắc trong app, Nhật Ký và Check-in. Không gồm dữ liệu chỉ có trên cloud, khóa đăng nhập/mã hóa hay trạng thái đăng ký push. Tệp JSON không mã hóa, có thông tin riêng tư; hãy giữ an toàn. Chưa hỗ trợ nhập lại từ Settings.':
+   'Export synced records and saved device data: progress, drafts, review schedules, in-app reminders, Journal and Check-ins. Excludes cloud-only data, login/encryption keys and push subscription state. The JSON is unencrypted and contains private information; keep it safe. Restore in Settings is not yet available.'}</Text>
   <Button variant="secondary" loading={state==='loading'} onClick={()=>void download()}>
-   {vi?'Xuất bản ghi học (.json)':'Export learning records (.json)'}</Button>
+   {vi?'Xuất dữ liệu học (.json)':'Export learning data (.json)'}</Button>
   {state==='error'&&<InlineFeedback tone="error" message={vi?
    'Không xuất được dữ liệu. Kiểm tra tài khoản và thử lại.':'Could not export data. Check your account and retry.'}/>}
   {state==='requested'&&<InlineFeedback tone="info" message={vi?

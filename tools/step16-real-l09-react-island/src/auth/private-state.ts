@@ -2,6 +2,7 @@ import {storageKey,type ItemType,type JsonValue} from '../sync/contract.js';
 import {PrivateDeviceStore} from '../sync/local-dexie.js';
 import type {CloudUserApi} from '../sync/e2ee-cloud.js';
 import {personalStudyManuscriptIds} from '../learning/personal-study-ids.js';
+import {captureDraftKey} from '../shell/capture-draft.js';
 
 /** One existing signed Dexie/Neon pipeline for ALL first-party personal state.
  * App shell, lesson drafts and auth tokens themselves are NOT mirrored.
@@ -118,6 +119,25 @@ const fieldsFor=(uid:string):readonly Field[]=>[
  {key:CONSENT(uid),type:'preference',id:'journal-cloud-consent'},
  ...PERSONAL_FIELDS,...t02Fields(uid),...t12Fields(uid),practiceField(uid)
 ];
+/** Read only registered active-owner device fields, including uncaptured
+ * drafts and local-only journal. Consent is a separate explicit action and
+ * must never be granted by backup or recovery. No storage enumeration.
+ * Local and materialized copies may differ: preserve both for recovery.
+ */
+export function snapshotLearnerDevice(uid:string,lessonIds:readonly string[],
+ isAuthorized:()=>boolean):{key:string;raw:string}[]{
+ const authorized=()=>Boolean(uid)&&isAuthorized()&&localStorage.getItem('li.sync.local-owner.v1')===uid;
+ if(!authorized())throw Error('BACKUP_OWNER_REQUIRED');
+ const keys=new Set([...fieldsFor(uid).filter(field=>field.id!=='journal-cloud-consent').map(field=>field.key),
+  ...lessonIds.map(id=>'li.review.'+id+'.v1'),captureDraftKey(uid)]);
+ const result:{key:string;raw:string}[]=[];
+ for(const key of keys){
+  const raw=localStorage.getItem(key);
+  if(raw!==null)result.push({key,raw});
+ }
+ if(!authorized())throw Error('BACKUP_OWNER_CHANGED');
+ return result;
+}
 export type PersonalSnapshot={field:Field;raw:string|null};
 const active=(uid:string,field:Field)=>!field.diary||journalCloudConsent(uid);
 export function journalCloudConsent(uid:string):boolean{

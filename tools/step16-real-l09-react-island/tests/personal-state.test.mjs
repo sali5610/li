@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {PrivateDeviceStore} from '../.sync-private-test/sync/local-dexie.js';
 import {storageKey} from '../.sync-private-test/sync/contract.js';
 import {PERSONAL_FIELDS,capturePersonalState,hydratePersonalState,
- preparePersonalAccount,journalCloudConsent,personalRemoteSnapshot,t02Fields,practiceField} from '../.sync-private-test/auth/private-state.js';
+ preparePersonalAccount,journalCloudConsent,personalRemoteSnapshot,t02Fields,practiceField,snapshotLearnerDevice,t12Fields} from '../.sync-private-test/auth/private-state.js';
 
 function device(){
  const data=new Map();
@@ -330,4 +330,31 @@ test('spell cloud contract rejects unsafe contexts, arbitrary answers and malfor
   assert.equal(await store.outbox.get(storageKey(uid,field.type,field.id)),undefined,
    'invalid browser state never reaches the signed outbox');
  });
+});
+
+
+test('device backup reads registered current owner state without mutating it or granting journal consent',()=>{
+ const map=device(),uid='owner-A',other='owner-B';
+ map.set('li.sync.local-owner.v1',uid);
+ const entries=[
+  ['li.private.library.v1','{"cases":[]}'],['li.review.L09-1-2.v1','{"draft":"not synced"}'],
+  ['li.personal.daily.v1','{"schema":1,"days":{}}'],['li.personal.daily.enabled.v1','true'],
+  ['li.reminders.in-app.v1','{"schedules":[]}'],['li.private.capture-draft.v1:owner-A','{"text":"unsaved","fieldId":null}'],
+  [t02Fields(uid)[0].key,'schedule'],[t12Fields(uid)[0].key,'resume'],[practiceField(uid).key,'practice']
+ ];
+ for(const [key,raw] of entries)map.set(key,raw);
+ map.set('li.sync.journal-cloud-consent.v1:'+uid,'false');
+ map.set('li.sync.local-backup.v1:'+other+':li.private.library.v1','other note');
+ map.set('li.private.capture-draft.v1:owner-B','other draft');
+ map.set(t02Fields(other)[0].key,'other schedule');
+ map.set('li.review.unknown.v1','unregistered');
+ map.set('neon.auth.token','credential');
+ const before=[...map];
+ assert.deepEqual(new Map(snapshotLearnerDevice(uid,['L09-1-2'],()=>true).map(r=>[r.key,r.raw])),new Map(entries));
+ assert.deepEqual([...map],before);
+ assert.equal(journalCloudConsent(uid),false);
+ assert.throws(()=>snapshotLearnerDevice(other,['L09-1-2'],()=>true),/BACKUP_OWNER_REQUIRED/);
+ assert.throws(()=>snapshotLearnerDevice(uid,[],()=>false),/BACKUP_OWNER_REQUIRED/);
+ let calls=0;
+ assert.throws(()=>snapshotLearnerDevice(uid,[],()=>++calls===1),/BACKUP_OWNER_CHANGED/);
 });

@@ -13,7 +13,7 @@ import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
 import {validMethodAttempts} from '../learning/validate-method-attempts.js';
 import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
- hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS,t12Fields,practiceField} from './private-state.js';
+ hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS,t12Fields,practiceField,snapshotLearnerDevice} from './private-state.js';
 
 /**
  * The native lesson UI still writes li.review.* localStorage synchronously.
@@ -35,18 +35,22 @@ export type SyncReport='checking'|'saved'|'empty'|'offline'|'queued'|'conflict'|
 type ActiveSync={uid:string;ready:Promise<void>;finish:()=>void;last:SyncReport;settled:boolean};
 let activeSync:ActiveSync|null=null;
 
-/** Explicit download of account-scoped records already materialized on this device. */
+/** Explicit read-only export of the current device and its materialized account records. */
 export async function downloadLearnerAccountBackup(uid:string):Promise<void>{
+ const session=activeSync;
  const authorized=()=>IS_INTEGRATED_LI_APP&&location.origin===AUTH_ORIGIN&&
-  localStorage.getItem(OWNER)===uid&&activeSync?.uid===uid&&
+  localStorage.getItem(OWNER)===uid&&session?.uid===uid&&activeSync===session&&
   document.documentElement.classList.contains('li-auth-verified');
- const json=await exportAuthorizedAccountBackup(store,uid,authorized);
+ const materialized=JSON.parse(await exportAuthorizedAccountBackup(store,uid,authorized));
+ const deviceRecords=snapshotLearnerDevice(uid,LESSONS,authorized);
  if(!authorized())throw Error('BACKUP_OWNER_CHANGED');
+ const json=JSON.stringify({schema:'li.learner.device-backup.v2',accountId:uid,
+  createdAt:new Date().toISOString(),deviceRecords,materialized},null,2);
  const url=URL.createObjectURL(new Blob([json],{type:'application/json'}));
  const link=document.createElement('a');
  try{
   link.href=url;
-  link.download='li-learner-records-'+new Date().toISOString().slice(0,10)+'.json';
+  link.download='li-learner-backup-'+new Date().toISOString().slice(0,10)+'.json';
   document.body.appendChild(link);
   link.click();
  }finally{

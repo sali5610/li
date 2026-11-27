@@ -92,8 +92,9 @@ function criteria(c:Localized):RubricRow[]{
 export function reasoningRubric(lesson:SectionedLesson,locale:Locale,preview:boolean):RubricRow[]{
  const original=criteria(lesson.content.localized[locale]);
  if(!preview)return original;
- const entry=(supplements.lessons as Record<string,Partial<Record<Locale,{reasoningRubric?:RubricRow[]}>>>)[lesson.id]?.[locale]?.reasoningRubric;
- return entry?.length===4&&entry.every(row=>row.length===4&&row.every(x=>typeof x==='string'&&x.trim()))?entry:original;
+ const entry=(supplements.lessons as Record<string,Partial<Record<Locale,{reasoningRubric?:unknown}>>>)[lesson.id]?.[locale]?.reasoningRubric;
+ const isRow=(row:unknown):row is RubricRow=>Array.isArray(row)&&row.length===4&&row.every(x=>typeof x==='string'&&x.trim().length>0);
+ return Array.isArray(entry)&&entry.length===4&&entry.every(isRow)?entry:original;
 }
 
 /** Fail closed: a migrated draft never becomes a lesson just by carrying a JSON file.

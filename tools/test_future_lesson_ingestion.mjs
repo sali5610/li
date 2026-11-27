@@ -11,9 +11,9 @@ import {fileURLToPath} from 'node:url';
 import {createContentClient} from '../site/assets/li-content-adapter.mjs';
 
 const sourceRoot=resolve(dirname(fileURLToPath(import.meta.url)),'..');
-// Verify all 17 migrated manuscripts in the existing focused content check.
+// Verify every indexed normalized manuscript, including future personal-study lessons.
 const draftIndex=JSON.parse(readFileSync(join(sourceRoot,'content/editorial/normalized/index.v1.json'),'utf8'));
-assert.equal(draftIndex.entries.length,17);
+assert.equal(draftIndex.entries.length,draftIndex.totalCanonicalDrafts);
 let methodGated=0;
 for(const entry of draftIndex.entries){
  const draft=JSON.parse(readFileSync(join(sourceRoot,entry.normalizedPath),'utf8'));
@@ -63,8 +63,8 @@ for(const entry of draftIndex.entries){
   }
  }
 }
-assert.equal(methodGated,34);
-console.log('LI_BATCH_17_METHOD_GATE_PASS: 17 bilingual pairs gated; all remain draft');
+assert.equal(methodGated,draftIndex.entries.length*2);
+console.log('LI_DRAFT_METHOD_GATE_PASS: '+draftIndex.entries.length+' bilingual pairs gated; all remain draft');
 const temp=mkdtempSync(join(tmpdir(),'li-content-onboarding-'));
 const load=path=>JSON.parse(readFileSync(join(temp,path),'utf8'));
 const save=(path,data)=>writeFileSync(join(temp,path),JSON.stringify(data,null,2)+'\n');

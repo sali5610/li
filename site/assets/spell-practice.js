@@ -685,6 +685,24 @@ function getT02Status(lessonId){
 }
 /** Postpone one genuinely due, unexposed lesson review. Preserve all history,
  * and reject stale UI/sync values, pending feedback, or inaccessible lessons. */
+function canScheduleT02(lessonId=activeLessonId){
+ if(!verifiedOwner())return false;
+ if(lessonId===null)return true; // standalone demo is not subject evidence
+ const status=getT02Status(lessonId);
+ if(!status)return false;
+ if(status.reviewCount>0)return true; // retain already-established review history
+ try{
+  const state=JSON.parse(localStorage.getItem("li.review."+lessonId+".v1")||"null");
+  // Read the existing signed-in learner projection, never create a second attempt.
+  const completed=attempt=>!!attempt&&Array.isArray(attempt.submission)&&
+   attempt.submission.length===4&&attempt.submission.every(x=>typeof x==="string"&&x.trim().length>0)&&
+   Number.isFinite(Date.parse(attempt.submittedAt||attempt.submissionAt||""))&&
+   Array.isArray(attempt.ratings)&&attempt.ratings.length===4&&
+   attempt.ratings.every(x=>[0,1,2].includes(x));
+  return !!state&&((state.submitted===true&&state.reviewed===true&&completed(state))||
+   (Array.isArray(state.attemptHistory)&&state.attemptHistory.some(x=>x.answerRevealed===true&&completed(x))));
+ }catch{return false;}
+}
 function postponeT02(lessonId,expectedDue){
  const status=getT02Status(lessonId),now=Date.now();
  if(!status||status.awaitingRating||status.dueAt===null||
@@ -774,7 +792,8 @@ function draw(){
    if(due?.due&&due.due>Date.now()){
     inner+='<p class="spell-honest">Lần ôn tiếp: '+fmt(due.due)+'. Chưa đến hạn thì không tính là ôn giãn cách.</p>'+act("clear","Hủy lịch lượt tới","action alt");
    }else if(due?.due&&due.due<=Date.now()){phase=1;draw();return;}
-   else inner+=act("schedule","Bắt đầu · hẹn ôn lần 1 sau 24 giờ");
+   else if(canScheduleT02())inner+=act("schedule","Bắt đầu · hẹn ôn lần 1 sau 24 giờ");
+   else inner+='<p class="spell-honest">'+(window.liLanguage?.get?.()==="en"?"Complete the lesson and self-review before scheduling recall.":"Hoàn thành bài học và tự đánh giá trước khi hẹn ôn.")+'</p>';
   }else if(["hide","faded","resume","loci"].includes(e.mode)){
    if(["resume","loci"].includes(e.mode))inner+=e.fields.map(field).join("");
    inner+=act("next",e.mode==="resume"?"Tạm ngắt · Lưu dấu vết trong phiên":e.mode==="loci"?"Giấu nguồn · Đi qua lộ trình":"Giấu nguồn · Tiếp tục");
@@ -995,7 +1014,7 @@ function getView(){
   })),
   feedback,resumeNote,places:privatePlaces.slice(),dueAt:due?.due??null,
   t02ReviewCount:due?.reviewCount??0,t02Streak:due?.streak??0,
-  t02AwaitingRating:!!due?.awaitingRating,
+  t02AwaitingRating:!!due?.awaitingRating,t02Eligible:mode==="due"&&canScheduleT02(),
   lessonId:activeLessonId,reviewedInSession,viewSession,
   t12Draft:active==="T12"?{...t12Draft}:undefined,
   t12SavedOnDevice:active==="T12"&&t12SavedOnDevice,
@@ -1033,6 +1052,7 @@ function runAction(action){
  case "next":next();return true;
  case "check":check();return true;
  case "schedule":{
+  if(!canScheduleT02())return false;
   const saved=scheduleRead()||t02Empty();
   if(saved.due!==null)return false;
   if(!t02Write({...saved,due:Date.now()+T02_DAY_MS,awaitingRating:false})){

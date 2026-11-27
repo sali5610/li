@@ -12,7 +12,7 @@ assert.doesNotMatch(source,/button\.click\(\)/);
 assert.doesNotMatch(source,/textarea\.value=val/);
 assert.doesNotMatch(source,/root\.querySelector\('\[data-spell-action="'\+action/);
 const instrumented=source.replace(/\}\)\(\);\s*$/,
- 'window.__spellTest={open,getView,performReact,setT12Draft,switchTab,setLessonContext,getT02Status};\n})();');
+ 'window.__spellTest={open,getView,performReact,setT12Draft,switchTab,setLessonContext,getT02Status,getLessonPracticeSummary};\n})();');
 assert.notEqual(instrumented,source,"The test must instrument the real IIFE engine");
 const storage=new Map([["li.sync.local-owner.v1","test-invited-owner"]]);
 let verified=true,accountOpen=false,locale="vi";
@@ -34,7 +34,7 @@ const localStorage={
 };
 vm.runInNewContext(instrumented,{window,document,localStorage,Event:class{},Date,console});
 const api=window.__spellTest;
-assert.ok(api&&Object.keys(api).length===7);
+assert.ok(api&&Object.keys(api).length===8);
 let covered=0;
 function begin(id,lesson=null){
  api.open(id,"practice",lesson);
@@ -204,6 +204,25 @@ for(const lesson of ["L03-1-2","L09-1-2","L15-2-2"]){
  const stored=JSON.parse(storage.get(practiceKey));
  assert.equal(stored.scopes[lesson]?.T04?.count,1);
 }
+const summaryBefore=storage.get(practiceKey);
+assert.equal(JSON.stringify(api.getLessonPracticeSummary("L03-1-2","test-invited-owner")),JSON.stringify([{methodId:"T04",count:1}]));
+assert.equal(api.getLessonPracticeSummary("L03-1-2","other-invited-owner"),null);
+assert.equal(api.getLessonPracticeSummary("standalone","test-invited-owner"),null);
+assert.equal(api.getLessonPracticeSummary("L99-1-1","test-invited-owner"),null);
+storage.set("li.sync.local-owner.v1","other-invited-owner");
+assert.equal(api.getLessonPracticeSummary("L03-1-2","test-invited-owner"),null);
+assert.equal(JSON.stringify(api.getLessonPracticeSummary("L03-1-2","other-invited-owner")),"[]");
+storage.set("li.sync.local-owner.v1","test-invited-owner");
+accountOpen=true;
+assert.equal(api.getLessonPracticeSummary("L03-1-2","test-invited-owner"),null);
+accountOpen=false;verified=false;
+assert.equal(api.getLessonPracticeSummary("L03-1-2","test-invited-owner"),null);
+verified=true;
+assert.equal(storage.get(practiceKey),summaryBefore,"Reader must not write or mutate saved practice");
+storage.set(practiceKey,"broken");
+assert.equal(api.getLessonPracticeSummary("L03-1-2","test-invited-owner"),null);
+assert.equal(storage.get(practiceKey),"broken");
+storage.set(practiceKey,summaryBefore);
 begin("T04");
 assert.equal(api.getView().practiceCount,1,"Published lessons do not inflate standalone count");
 window.liPersonalStudyRoutes={"L03-1-1":"draftLessonL0311"};

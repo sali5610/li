@@ -144,8 +144,22 @@ assert.ok(lessonSearch.results[0].links.some(x=>x.lessonId==="L03-1-2"&&
  x.relation==="RELATED_TO"));
 assert.equal((await c.searchKnowledge("Data Science")).results[0].id,"field:F09");
 assert.equal((await c.searchKnowledge("C09-1")).results[0].kind,"Course");
-assert.ok(!(await c.searchKnowledge("Reorder point")).results.some(x=>
- x.id==="concept:wave1:reorder-point"),"proposed concepts must remain hidden");
+// ONT-03C: inventory concepts are now source-verified. The draft bridge to statistics is still hidden.
+for(const [query,conceptId] of [
+ ["Reorder point","concept:wave1:reorder-point"],["Điểm đặt hàng lại","concept:wave1:reorder-point"],
+ ["Safety stock","concept:wave1:safety-stock"],["Tồn kho an toàn","concept:wave1:safety-stock"]
+]){
+ const hit=(await c.searchKnowledge(query)).results[0];
+ assert.equal(hit?.id,conceptId,query+" should resolve the verified canonical concept");
+ assert.ok(hit.links.some(x=>x.lessonId==="L15-2-2"&&x.relation==="TEACHES"&&x.sourceUrl.includes("MITx_MicroMasters_SCM_KeyConcepts.pdf")));
+ assert.ok(!hit.links.some(x=>x.lessonId&&x.lessonId!=="L15-2-2"),"do not promote an unreviewed bridge");
+}
+const stockRelation=navGraph.edges.find(e=>e.id==="edge:wave1:l15-rop-stock");
+assert.equal(stockRelation?.reviewState,"verified");
+assert.equal(stockRelation?.predicate,"RELATED_TO");
+assert.ok(stockRelation.reasonLocalized.vi&&stockRelation.reasonLocalized.en);
+assert.ok((await c.getBacklinks("concept:wave1:safety-stock")).some(e=>e.id===stockRelation.id&&e.reviewState==="verified"));
+assert.ok(navGraph.edges.some(e=>e.id==="edge:wave1:l09-l15-bridge"&&e.reviewState==="proposed"));
 assert.ok(!(await c.searchKnowledge("L09-1-1")).results.some(x=>
  x.id==="lesson:L09-1-1"),"outline-only lesson must not become a search result");
 assert.deepEqual((await c.searchKnowledge("L15-2-2")).results[0].links

@@ -484,9 +484,13 @@ library_section=section("library")
 assert '<article id="notebook-section" class="surface" tabindex="-1"' in library_section
 assert '<article id="notebook-section" class="surface tinted"' not in library_section
 # UX-DASH-01: cards are grouped by the user's job, not the legacy card 03/04 DOM adjacency.
-# Dấu trang is a standalone fourth Tủ Riêng group, not nested in Quay lại.
-assert library_section.count('class="library-group" role="region"')==4
-assert all(x in library_section for x in ('library-resume-heading','library-collection-heading','library-bookmarks-heading','library-reflection-heading'))
+# Dấu trang and due review are standalone groups, not nested in Quay lại.
+# Validate exact accessible group identities and order, not just a count.
+library_group_ids = re.findall(r'class="library-group" role="region" aria-labelledby="([^"]+)"', library_section)
+assert library_group_ids == ['library-resume-heading','li-native-due-heading','library-collection-heading','library-bookmarks-heading','library-reflection-heading'], library_group_ids
+assert library_section.count('id="li-native-due-review"') == 1
+assert 'id="li-native-due-review"' in library_section and 'aria-live="polite"' in library_section
+assert library_section.index('id="li-native-due-review"') < library_section.index('id="library-collection-heading"')
 assert '<div class="surface-grid cols2">' in library_section
 assert library_section.count('id="case-archive-preview"')==1
 assert html.count('id="li-diary-calendar"')==1
@@ -515,7 +519,7 @@ assert 'id="checkin-modal"' not in page_html, "Legacy L1 modal must not reappear
 assert 'id="li-checkin-recording-disclosure"' in checkin_react
 assert 'data-react-owner="checkin"' in checkin_react
 assert html.index('li-diary-privacy')>html.index('li-diary-day-status')
-assert '<script src="./assets/library-hub.js?v=8"></script>' in html
+assert len(re.findall(r'<script src="\./assets/library-hub\.js\?v=[A-Za-z0-9._-]+"></script>', page_html)) == 1, "Exactly one versioned library script"
 subprocess.run(["node",str(site.parent/"tools"/"test_library_hub_v2.cjs")],check=True,cwd=site.parent)
 
 # UX-IA-05: lesson modules only own lesson/catalog DOM, never Tủ Riêng overview.
@@ -547,7 +551,7 @@ assert 'id="li-note-case-context"' in page_html
 assert 'data-li-bookmark-kind="case"' in page_html
 assert '<script src="./assets/library-bookmarks.js?v=4"></script>' in page_html
 assert '<script src="./assets/library-note-editor.js?v=5"></script>' in page_html
-assert '<script src="./assets/library-hub.js?v=8"></script>' in page_html
+assert len(re.findall(r'<script src="\./assets/library-hub\.js\?v=[A-Za-z0-9._-]+"></script>', page_html)) == 1, "Exactly one versioned library script"
 for lesson_id,slug in (("L03-1-2","l03"),("L09-1-2","l09"),("L15-2-2","l15")):
     content=(site/"assets"/f"lesson-{slug}-hifi-markup.js").read_text(encoding="utf-8")
     assert f'data-li-bookmark-id="{lesson_id}"' in content

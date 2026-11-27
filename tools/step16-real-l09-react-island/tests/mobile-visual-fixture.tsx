@@ -75,20 +75,31 @@ app.liPersonalDiary={
   }
  }
 };
+let openedReview:string|null=null;
+const dueReviewItems=[{id:'L09-1-2',route:'lessonL09',title:'Sai lệch chọn mẫu',dueAt:Date.now()-60000,awaitingRating:false,reviewCount:1},
+ {id:'L15-2-2',route:'lessonL15',title:'Điểm đặt hàng lại',dueAt:Date.now()-30000,awaitingRating:true,reviewCount:0},
+ {id:'L03-1-2',route:'lessonL03',title:'Câu hỏi mở',dueAt:Date.now()+86400000,awaitingRating:false,reviewCount:0}];
 app.liMethods={
  getView:()=>({methods,categories:methodCategories,suggestions:['T01'],
                modeLabel:'Đào sâu',guide:'Đã muốn đào sâu thì lão mở cả mười ba phép. Chọn thứ Cô Hồ muốn hiểu kỹ.'}),
- open:()=>{}
+ open:(id:string,practice:boolean,lessonId:string)=>{if(id==='T02'&&practice)openedReview=lessonId;return true;}
 };
 app.liLibraryShelf={
- getView:()=>({...libraryData}),setCollectionFilter:()=>{},
+ getView:()=>({...libraryData}),getT02ReviewQueue:()=>dueReviewItems.map(x=>({...x})),setCollectionFilter:()=>{},
  registerPersonalLessons:()=>0,openProblemEntry:()=>{},
  openSavedQuestion:()=>{},removeSavedQuestion:()=>{},
  selectBookmarkTab:(next:string)=>{libraryData.bookmarkTab=next;window.dispatchEvent(new Event('li:library-view-changed'));}
 };
 app.liBookmarks={toggle:()=>true,isSaved:()=>false};
 app.liNotes={openDetail:()=>true,deleteFromReact:()=>true};
-app.LiSpellPractice={getT02Status:()=>null};
+app.LiSpellPractice={
+ getT02Status:(id:string)=>dueReviewItems.find(x=>x.id===id)??null,
+ postponeT02:(id:string,dueAt:number)=>{
+  const item=dueReviewItems.find(x=>x.id===id&&x.dueAt===dueAt&&!x.awaitingRating);
+  if(!item)return false;
+  item.dueAt=Date.now()+86400000;return true;
+ }
+};
 app.liBuddyEngine={choose:(i:number)=>({text:i===0?'Chọn cách học phù hợp với câu hỏi.':'Thử một bài luyện ngắn.',showChallenge:false})};
 const root=document.getElementById('visual-root')!;
 const buddyRoot=document.getElementById('buddy-modal')!;
@@ -192,7 +203,7 @@ const bounds=(node:Element|null)=>{
  const r=node.getBoundingClientRect();
  return {x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.width),h:Math.round(r.height)};
 };
-setTimeout(()=>{
+setTimeout(async()=>{
  const checks:{name:string;pass:boolean;detail?:unknown}[]=[];
  const assert=(name:string,condition:boolean,detail?:unknown)=>checks.push({name,pass:condition,detail});
  const select=(q:string)=>document.querySelector(q);
@@ -369,14 +380,15 @@ setTimeout(()=>{
   assert('saved-bookmarks-have-rows',titles.length>0);
   assert('canonical-feature-card',Boolean(select('.library-resume-feature[data-li-component="card"][data-variant="flat-study"]')));
   const shelves=[...document.querySelectorAll('.library-workspace h2')];
-  assert('four-shelves-in-reading-order',shelves.map(heading=>heading.id).join(',')===
-   'library-resume-heading,library-notes-heading,library-saved-heading,library-journal-heading'&&
+  assert('five-shelves-in-reading-order',shelves.map(heading=>heading.id).join(',')===
+   'library-resume-heading,li-due-review-heading,library-notes-heading,library-saved-heading,library-journal-heading'&&
    shelves.every((heading,index)=>index===0||
     heading.getBoundingClientRect().top>shelves[index-1].getBoundingClientRect().bottom));
-  const shelfBlocks=[...document.querySelectorAll('.library-resume-feature,.library-workspace-main,.library-saved-shortlist,.library-rhythm')];
-  assert('shelves-separated-by-whitespace',shelfBlocks.length===4&&shelfBlocks.every((block,index)=>
+  const shelfBlocks=[...document.querySelectorAll('.library-resume-feature,.library-resume-section,.library-workspace-main,.library-saved-shortlist,.library-rhythm')];
+  assert('shelves-separated-by-whitespace',shelfBlocks.length===5&&shelfBlocks.every((block,index)=>
    index===0||block.getBoundingClientRect().top-shelfBlocks[index-1].getBoundingClientRect().bottom>=24));
-  assert('shelf-actions-beside-headings',shelves.length===4&&shelves.every(heading=>{
+  const navigationShelves=shelves.filter(heading=>heading.id!=='li-due-review-heading');
+  assert('shelf-actions-beside-headings',navigationShelves.length===4&&navigationShelves.every(heading=>{
    const action=heading.parentElement?.querySelector('button');
    return action&&action.getBoundingClientRect().left>=heading.getBoundingClientRect().right+8;
   }));
@@ -398,6 +410,18 @@ setTimeout(()=>{
   assert('resume-title-full-width',Boolean(resumeTitle&&resumeTitle.getBoundingClientRect().width>=250),bounds(resumeTitle));
   assert('bookmark-title-usable-width',titles.every(n=>n.getBoundingClientRect().width>=170),
     titles.map(bounds));
+  const dueShelf=select('[aria-labelledby="li-due-review-heading"]');
+  const dueRows=()=>[...dueShelf?.querySelectorAll('.library-list-item')??[]];
+  assert('due-shelf-actual-denominator',Boolean(dueShelf?.textContent?.includes('Đến hạn: 1/3')&&dueShelf.textContent.includes('Đã thử gọi nhớ: 2/3')));
+  assert('due-shelf-excludes-future-and-prioritizes-rating',dueRows().length===2&&dueRows()[0].textContent?.includes('Điểm đặt hàng lại')&&dueRows()[1].textContent?.includes('Sai lệch chọn mẫu')||false);
+  const dueButtons=()=>[...dueShelf?.querySelectorAll('button')??[]] as HTMLButtonElement[];
+  dueButtons().find(b=>b.textContent?.trim()==='Ôn ngay')?.click();
+  assert('due-shelf-contextual-open',openedReview==='L09-1-2');
+  dueButtons().find(b=>b.textContent?.trim()==='Tự đánh giá')?.click();
+  assert('due-shelf-pending-rating-open',openedReview==='L15-2-2');
+  dueButtons().find(b=>b.textContent?.trim()==='Hoãn 1 ngày')?.click();
+  await new Promise(resolve=>setTimeout(resolve,80));
+  assert('due-shelf-deferral-preserves-count',dueRows().length===1&&dueShelf?.textContent?.includes('Đến hạn: 0/3')&&dueReviewItems[0].reviewCount===1||false);
  } else if(viewName==='resume'){
   assert('continue-only-recency',document.querySelectorAll('[data-li-react-screen="resume"] .library-resume-section').length===2);
   assert('continue-has-no-bookmarks',!select('[data-li-react-screen="resume"] .library-bookmark-tabs'));

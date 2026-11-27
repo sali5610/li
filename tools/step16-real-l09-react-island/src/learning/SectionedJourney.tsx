@@ -397,8 +397,8 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
  </section>;
  const locale=appLocale,vi=locale==='vi',c=lesson.content.localized[locale];
  const supplemental=preview?(supplements.lessons as Record<string,{
-  vi:{hint:string;guidedFeedback:string;guidedPrompt?:string;answerAddendum?:string;diagram:string;relatedReason:string};
-  en:{hint:string;guidedFeedback:string;guidedPrompt?:string;answerAddendum?:string;diagram:string;relatedReason:string};
+  vi:{hint:string;guidedFeedback:string;guidedPrompt?:string;answerAddendum?:string;learningGoals?:string[];methodNote?:string;diagram:string;relatedReason:string};
+  en:{hint:string;guidedFeedback:string;guidedPrompt?:string;answerAddendum?:string;learningGoals?:string[];methodNote?:string;diagram:string;relatedReason:string};
   sourceUrl:string;relatedLessonId:string
  }>)[id]:undefined;
  const extra=supplemental?.[locale];
@@ -494,7 +494,12 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   <Card variant="flat-study" className="li-study-book-page" aria-label={names[phase]}>
    {phase==='read'&&<>
     <div id={'li-sectioned-'+id+'-opening'}><Markdown md={c.intro_md}/></div>
-    {block('goals')}{block('concept')}
+    {block('goals')}
+    {!section(c,'goals').length&&extra?.learningGoals?.length&&<section data-li-supplement-goals={id}>
+     <Heading id={'li-sectioned-'+id+'-chapter-goals'} level={2} role="titleLarge">{vi?'Mục tiêu bài học':'Learning objectives'}</Heading>
+     <ul>{extra.learningGoals.map((goal,index)=><li key={index}>{goal}</li>)}</ul>
+    </section>}
+    {block('concept')}
     <LessonUnderstanding id={id} locale={locale}/>
     <LessonVisualEvidence id={id} locale={locale} title={lesson.title[locale]} onSearch={ports.search.openSearch}/>
     <Button onClick={()=>setPhase('guided')}>{vi?'Tiếp: Thử áp dụng':'Next: Guided example'} →</Button>
@@ -525,6 +530,7 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
       <Text role="support">{vi?'Phương pháp luyện thêm, không bắt buộc trước bài độc lập.':
        'Optional method practice, not required for the independent exercise.'}</Text>
       {block('methods')}
+      {extra?.methodNote&&<Text role="support">{extra.methodNote}</Text>}
       <Button variant="secondary" onClick={()=>openGuide()}>
        {vi?'Xem Sổ Tay Thần Chú':'Open Spellbook'} · {method}
       </Button>

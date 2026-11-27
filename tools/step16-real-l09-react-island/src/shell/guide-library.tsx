@@ -304,7 +304,7 @@ function StudyProgressShelf(){
  useEffect(()=>{
   const refresh=()=>setView(read());
   const events=['li:route-changed','li:localechange','li:lesson-attempt-changed','li:lesson-sync-applied',
-   'li:personal-sync-applied','li:private-personal-change','li:lesson-cloud-state','focus','pageshow'];
+   'li:personal-sync-applied','li:private-personal-change','li:lesson-cloud-state','li:library-view-changed','focus','pageshow'];
   for(const name of events)window.addEventListener(name,refresh);
   const observer=new MutationObserver(refresh);
   observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
@@ -343,8 +343,8 @@ function StudyProgressShelf(){
    {view.technique?<><Text role="body">{view.technique.used.length}/{view.technique.total} {copy('phương pháp có bằng chứng thực hành','techniques with practice evidence')}</Text>
     <Text role="support">{copy('Lượt luyện Thần Chú theo bài: ','Lesson-linked spell practice rounds: ')}{view.technique.contextual}
      {' · '}{copy('Luyện riêng: ','Standalone rounds: ')}{view.technique.standalone}</Text>
-    {view.technique.used.length>0&&<Text role="support">{view.technique.used.join(' · ')}</Text>}
-    {unknown>0&&<Text role="support">{copy('Một số bằng chứng bài học chưa đọc được.','Some lesson evidence is unavailable.')}</Text>}
+    {view.technique.used.length>0&&<Text role="support">{view.technique.used.map(id=>{const method=app.liMethods?.getView().methods.find(m=>m.id===id);return method?(isEnglish()?method.original:method.title):id;}).join(' · ')}</Text>}
+    {(unknown>0||reviewKnown.length<lessons.length)&&<Text role="support">{copy('Một số bằng chứng bài học hoặc lịch ôn chưa đọc được.','Some lesson or review evidence is unavailable.')}</Text>}
    </>:<Text role="support">{copy('Chưa đọc được lịch sử luyện Thần Chú.','Technique practice history is unavailable.')}</Text>}
    <Heading level={3} role="titleSmall">{copy('Lập luận & tự đánh giá','Reasoning & self-review')}</Heading>
    <Text role="body">{complete}/{submitted} {copy('bài đã tự đánh giá / bài đã nộp','self-reviewed / submitted lessons')}</Text>
@@ -375,8 +375,8 @@ export function Library(){
      </div>
     </div>
    </Card>
-   <StudyProgressShelf/>
    <DueReviewQueue/>
+   <StudyProgressShelf/>
    <div className="library-workspace-columns">
     <section className="library-workspace-main" aria-labelledby="library-notes-heading">
      <ShelfHeader id="library-notes-heading" title={copy('Ghi chép','Notes')}

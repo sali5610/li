@@ -92,12 +92,17 @@ app.liLibraryShelf={
 };
 app.liBookmarks={toggle:()=>true,isSaved:()=>false};
 app.liNotes={openDetail:()=>true,deleteFromReact:()=>true};
+let progressAvailable=true,progressUnknown=false,progressLocale='vi';
 app.LiSpellPractice={
+ getStudyProgress:()=>progressAvailable?({
+  lessons:dueReviewItems.map((x,i)=>({id:x.id,submitted:i<2,completed:i===0?true:i===2&&progressUnknown?null:false,review:{...x}})),
+  technique:{used:['T01','T02','T04'],total:13,contextual:2,standalone:1}
+ }):null,
  getT02Status:(id:string)=>dueReviewItems.find(x=>x.id===id)??null,
  postponeT02:(id:string,dueAt:number)=>{
   const item=dueReviewItems.find(x=>x.id===id&&x.dueAt===dueAt&&!x.awaitingRating);
   if(!item)return false;
-  item.dueAt=Date.now()+86400000;return true;
+  item.dueAt=Date.now()+86400000;window.dispatchEvent(new Event("li:private-personal-change"));return true;
  }
 };
 app.liBuddyEngine={choose:(i:number)=>({text:i===0?'Chọn cách học phù hợp với câu hỏi.':'Thử một bài luyện ngắn.',showChallenge:false})};
@@ -380,14 +385,14 @@ setTimeout(async()=>{
   assert('saved-bookmarks-have-rows',titles.length>0);
   assert('canonical-feature-card',Boolean(select('.library-resume-feature[data-li-component="card"][data-variant="flat-study"]')));
   const shelves=[...document.querySelectorAll('.library-workspace h2')];
-  assert('five-shelves-in-reading-order',shelves.map(heading=>heading.id).join(',')===
-   'library-resume-heading,li-due-review-heading,library-notes-heading,library-saved-heading,library-journal-heading'&&
+  assert('six-shelves-in-reading-order',shelves.map(heading=>heading.id).join(',')===
+   'library-resume-heading,li-due-review-heading,library-progress-heading,library-notes-heading,library-saved-heading,library-journal-heading'&&
    shelves.every((heading,index)=>index===0||
     heading.getBoundingClientRect().top>shelves[index-1].getBoundingClientRect().bottom));
-  const shelfBlocks=[...document.querySelectorAll('.library-resume-feature,.library-resume-section,.library-workspace-main,.library-saved-shortlist,.library-rhythm')];
-  assert('shelves-separated-by-whitespace',shelfBlocks.length===5&&shelfBlocks.every((block,index)=>
+  const shelfBlocks=[...document.querySelectorAll('.library-resume-feature,.library-resume-section,[aria-labelledby="library-progress-heading"],.library-workspace-main,.library-saved-shortlist,.library-rhythm')];
+  assert('shelves-separated-by-whitespace',shelfBlocks.length===6&&shelfBlocks.every((block,index)=>
    index===0||block.getBoundingClientRect().top-shelfBlocks[index-1].getBoundingClientRect().bottom>=24));
-  const navigationShelves=shelves.filter(heading=>heading.id!=='li-due-review-heading');
+  const navigationShelves=shelves.filter(heading=>!['li-due-review-heading','library-progress-heading'].includes(heading.id));
   assert('shelf-actions-beside-headings',navigationShelves.length===4&&navigationShelves.every(heading=>{
    const action=heading.parentElement?.querySelector('button');
    return action&&action.getBoundingClientRect().left>=heading.getBoundingClientRect().right+8;
@@ -410,6 +415,29 @@ setTimeout(async()=>{
   assert('resume-title-full-width',Boolean(resumeTitle&&resumeTitle.getBoundingClientRect().width>=250),bounds(resumeTitle));
   assert('bookmark-title-usable-width',titles.every(n=>n.getBoundingClientRect().width>=170),
     titles.map(bounds));
+  const progressShelf=select('[aria-labelledby="library-progress-heading"]');
+  const progressText=()=>progressShelf?.textContent||'';
+  const progressBar=()=>progressShelf?.querySelector('progress');
+  assert('progress-real-denominators',Boolean(progressText().includes('1/3 bài đã hoàn thành')&&progressText().includes('3/13 phương pháp')&&progressText().includes('1/2 bài đã tự đánh giá')&&progressBar()?.value===1&&progressBar()?.max===3));
+  assert('progress-spell-rounds-separate',progressText().includes('Lượt luyện Thần Chú theo bài: 2')&&progressText().includes('Luyện riêng: 1'));
+  assert('progress-real-reviews',progressText().includes('1 lượt ôn đã tự đánh giá')&&progressText().includes('1/3 bài đến hạn')&&progressText().includes('1 chờ tự đánh giá'));
+  assert('progress-no-mastery-inference',progressText().includes('không phải điểm thông thạo'));
+  progressUnknown=true;
+  window.dispatchEvent(new Event('li:private-personal-change'));
+  await new Promise(resolve=>setTimeout(resolve,80));
+  assert('progress-unknown-not-zero',!progressBar()&&progressText().includes('1 bài chưa xác định được trạng thái'));
+  progressUnknown=false;progressAvailable=false;
+  window.dispatchEvent(new Event('li:private-personal-change'));
+  await new Promise(resolve=>setTimeout(resolve,80));
+  assert('progress-unavailable-hides-counts',!progressBar()&&!progressText().includes('1/3')&&progressText().includes('Chưa đọc được tiến độ'));
+  progressAvailable=true;progressLocale='en';app.liLanguage={get:()=>progressLocale};
+  window.dispatchEvent(new Event('li:localechange'));
+  await new Promise(resolve=>setTimeout(resolve,80));
+  assert('progress-english-same-counts',progressText().includes('1/3 lessons completed')&&progressText().includes('3/13 techniques')&&progressText().includes('1/2 self-reviewed / submitted lessons'));
+  progressLocale='vi';
+  window.dispatchEvent(new Event('li:localechange'));
+  await new Promise(resolve=>setTimeout(resolve,80));
+  assert('progress-vi-restored',progressText().includes('1/3 bài đã hoàn thành'));
   const dueShelf=select('[aria-labelledby="li-due-review-heading"]');
   const dueRows=()=>[...dueShelf?.querySelectorAll('.library-list-item')??[]];
   assert('due-shelf-actual-denominator',Boolean(dueShelf?.textContent?.includes('Đến hạn: 1/3')&&dueShelf.textContent.includes('Đã thử gọi nhớ: 2/3')));
@@ -422,6 +450,7 @@ setTimeout(async()=>{
   dueButtons().find(b=>b.textContent?.trim()==='Hoãn 1 ngày')?.click();
   await new Promise(resolve=>setTimeout(resolve,80));
   assert('due-shelf-deferral-preserves-count',dueRows().length===1&&dueShelf?.textContent?.includes('Đến hạn: 0/3')&&dueReviewItems[0].reviewCount===1||false);
+  assert('progress-deferral-refresh',progressText().includes('0/3 bài đến hạn')&&progressText().includes('1 lượt ôn đã tự đánh giá'));
  } else if(viewName==='resume'){
   assert('continue-only-recency',document.querySelectorAll('[data-li-react-screen="resume"] .library-resume-section').length===2);
   assert('continue-has-no-bookmarks',!select('[data-li-react-screen="resume"] .library-bookmark-tabs'));

@@ -174,6 +174,7 @@ function registerPersonalLessons(entries){
 // personal-lesson visit; the released-lesson history remains unchanged.
 window.addEventListener?.("li:route-changed",event=>{
  const route=event.detail?.route;
+ if(route==="library")renderDueReviewQueue();
  if(!document.documentElement.classList.contains("li-auth-verified")||
   typeof route!=="string"||!route.startsWith("draftLesson")||
   !Object.prototype.hasOwnProperty.call(LESSONS,route)||
@@ -711,7 +712,7 @@ function notifyReactLibrary(){
  if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
   window.dispatchEvent(new Event("li:library-view-changed"));
 }
-for(const name of ["li:private-personal-change","li:personal-sync-applied","li:route-changed","focus","pageshow"])
+for(const name of ["li:private-personal-change","li:personal-sync-applied","focus","pageshow"])
  window.addEventListener?.(name,()=>{if($("page-library")?.classList.contains("active"))renderDueReviewQueue();});
 window.setInterval?.(()=>{if($("page-library")?.classList.contains("active"))renderDueReviewQueue();},60000);
 window.liLibraryShelf=Object.freeze({renderHome,renderResume,renderCollection,renderCases,renderIdeas,renderBookmarks,selectBookmarkTab,trackLesson,trackProblem,registerPersonalLessons,renderProblemRows,getView,getT02ReviewQueue,openProblemEntry,openSavedQuestion,removeSavedQuestion,setCollectionFilter});

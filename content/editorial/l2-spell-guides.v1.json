@@ -28,7 +28,7 @@
           "Đọc lặp lại rồi tự nhận là đã nhớ.",
           "Dùng để kiểm tra kiến thức chưa từng được dạy."
         ],
-        "evidence": "Có bằng chứng mạnh cho ghi nhớ dài hạn sau khi đã học; không tự đo hiểu sâu hay khả năng chuyển giao.",
+        "evidence": "Nghiên cứu retrieval practice hỗ trợ giữ nhớ lâu hơn đối với nội dung đã học. Tự kiểm tra không tự đo hiểu sâu hoặc chuyển giao; cần đối chiếu và sửa lỗi.",
         "diagram": [
           "Học",
           "Giấu",
@@ -60,7 +60,7 @@
           "Keep rereading and call recognition 'recall'.",
           "Test unfamiliar material before teaching it."
         ],
-        "evidence": "Strong evidence for long-term retention of previously taught material; not a standalone test of deep understanding.",
+        "evidence": "Retrieval-practice studies support longer retention of studied material. Self-testing alone does not establish deep understanding or transfer; check and correct errors.",
         "diagram": [
           "Learn",
           "Hide",
@@ -115,7 +115,7 @@
           "Tính lượt mở thẻ trước hạn như đã ôn.",
           "Coi một chuỗi ngày là lịch tối ưu cho mọi người."
         ],
-        "evidence": "Bằng chứng mạnh về hiệu ứng giãn cách; khoảng cách phù hợp còn tùy mục tiêu giữ nhớ và độ khó.",
+        "evidence": "Tổng hợp nghiên cứu về luyện phân bố, đặc biệt nhớ nội dung ngôn từ, hỗ trợ giãn cách thay vì dồn lượt. Khoảng ôn phù hợp tùy mục tiêu giữ nhớ, độ khó; lịch trong li. chưa được kiểm nghiệm là tối ưu.",
         "diagram": [
           "Học",
           "Ôn 1",
@@ -147,7 +147,7 @@
           "Count opening an early card as a due review.",
           "Treat one fixed interval pattern as universal."
         ],
-        "evidence": "Strong evidence for spacing; optimal intervals depend on retention goals and task difficulty.",
+        "evidence": "Distributed-practice research, particularly on verbal retention, supports spacing rather than massing sessions. Intervals depend on retention goals and difficulty; li.'s schedule has not been validated as optimal.",
         "diagram": [
           "Learn",
           "Review 1",
@@ -622,7 +622,7 @@
           "Vẽ mũi tên cho đẹp rồi coi là có bằng chứng.",
           "Dựng phản biện yếu để thắng dễ."
         ],
-        "evidence": "Sơ đồ lập luận có ứng dụng giáo dục nhưng kết quả nghiên cứu đa dạng; không bảo đảm tăng tư duy phản biện.",
+        "evidence": "Tổng quan hệ thống năm 2025 về sinh viên sau phổ thông ghi nhận nhiều thiết kế nghiên cứu về sơ đồ lập luận và tư duy phản biện; không cung cấp một hiệu quả chung bảo đảm cho mọi người học hay cho li.",
         "diagram": [
           "Bằng chứng",
           "Cầu nối",
@@ -654,7 +654,7 @@
           "Draw arrows and call them evidence.",
           "Use a straw-man counterargument."
         ],
-        "evidence": "Educational argument maps have mixed outcomes; no guaranteed critical-thinking gain.",
+        "evidence": "A 2025 systematic review of postsecondary argument mapping describes varied study designs and critical-thinking outcomes; it does not establish a guaranteed effect for every learner or for li.",
         "diagram": [
           "Evidence",
           "Warrant",
@@ -709,7 +709,7 @@
           "Chỉ đọc tiêu đề rồi khẳng định đã xác minh.",
           "Lấy quy mô mẫu nhỏ để nói cho toàn dân số."
         ],
-        "evidence": "Đây là kỹ năng đánh giá nguồn theo lĩnh vực; hoàn thành checklist không đồng nghĩa nguồn đã đáng tin.",
+        "evidence": "Tài liệu về đánh giá thông tin trực tuyến (Stanford, lớp 6–12) và phân tích sử liệu (OpenStax) minh họa kỹ năng theo ngữ cảnh. Checklist không chứng nhận nguồn đáng tin hoặc khả năng phản biện chung.",
         "diagram": [
           "Tuyên bố",
           "Nguồn gốc",
@@ -741,7 +741,7 @@
           "Read a headline and claim full verification.",
           "Generalise a convenience sample to a whole population."
         ],
-        "evidence": "Source appraisal is disciplinary; completing a checklist does not certify a source.",
+        "evidence": "Stanford's grades 6–12 online-information curriculum and OpenStax historical-source guidance illustrate contextual appraisal skills. A checklist does not certify a source or general critical-thinking ability.",
         "diagram": [
           "Claim",
           "Origin",
@@ -879,7 +879,7 @@
           "Ép mọi bài đều chọn một Thần Chú.",
           "Coi cảm giác 'học dễ' là bằng chứng học tốt."
         ],
-        "evidence": "Siêu nhận thức có cơ sở trong giáo dục; hiệu quả riêng của giao diện chọn phương pháp trong li. chưa được kiểm nghiệm.",
+        "evidence": "Hướng dẫn EEF 2025 về dạy siêu nhận thức và tự điều chỉnh chủ yếu dành cho trường phổ thông. Chưa kiểm nghiệm hiệu quả riêng của giao diện chọn phương pháp trong li.",
         "diagram": [
           "Mục tiêu",
           "Điều kiện",
@@ -911,7 +911,7 @@
           "Force a spell choice in every lesson.",
           "Mistake feeling fluent for evidence of learning."
         ],
-        "evidence": "Metacognitive teaching has support; this app's specific selection interface has not been efficacy-tested.",
+        "evidence": "EEF's 2025 metacognition and self-regulated learning guidance primarily addresses school education. The specific method-selection interface in li. has not been efficacy-tested.",
         "diagram": [
           "Goal",
           "Prerequisites",
@@ -922,7 +922,7 @@
       "diagramKind": "fit",
       "sources": [
         {
-          "title": "Education Endowment Foundation · Metacognition",
+          "title": "Education Endowment Foundation (2025, 2nd ed.) · Metacognition",
           "url": "https://educationendowmentfoundation.org.uk/education-evidence/guidance-reports/metacognition"
         },
         {
@@ -966,7 +966,7 @@
           "Ghi việc mơ hồ như 'học tiếp'.",
           "Ép đồng hồ, streak hoặc cam kết tập trung."
         ],
-        "evidence": "Nghiên cứu về kế hoạch quay lại nhiệm vụ hỗ trợ tình huống gián đoạn; không chứng minh điều trị vấn đề chú ý.",
+        "evidence": "Leroy & Glomb (2018) nghiên cứu gián đoạn công việc: chuẩn bị kế hoạch quay lại có thể giảm dư âm chú ý và giúp hiệu suất ở nhiệm vụ xen ngang. Chưa chứng minh hiệu quả riêng của luồng học li. hoặc điều trị vấn đề chú ý.",
         "diagram": [
           "Đang làm",
           "Tạm ngắt",
@@ -998,7 +998,7 @@
           "Write only a vague 'study more'.",
           "Force timers, streaks or focus promises."
         ],
-        "evidence": "Task-resumption research supports a re-entry plan in interrupted work; no clinical attention claim follows.",
+        "evidence": "Leroy & Glomb (2018) studied work interruptions: a ready-to-resume plan can reduce attention residue and support performance on the interrupting task. This does not establish efficacy for li.'s learning flow or treatment of attention difficulties.",
         "diagram": [
           "Working",
           "Pause",
@@ -1009,7 +1009,7 @@
       "diagramKind": "resume",
       "sources": [
         {
-          "title": "Leroy (2018) · Ready-to-resume plans",
+          "title": "Leroy & Glomb (2018) · Ready-to-resume plans",
           "url": "https://experts.umn.edu/en/publications/tasks-interrupted-how-anticipating-time-pressure-on-resumption-of/"
         },
         {
@@ -1053,7 +1053,7 @@
           "Chỉ ngắm hình và nhận là thuộc.",
           "Gắn nhiều ý na ná vào cùng một chỗ."
         ],
-        "evidence": "Có bằng chứng về hỗ trợ nhớ danh sách; chất lượng tổng hợp nghiên cứu còn hạn chế và không đồng nghĩa tăng trí nhớ toàn diện.",
+        "evidence": "Tổng quan và phân tích gộp năm 2025 ở người lớn cho thấy lợi ích với nhớ lại ngay theo thứ tự; chất lượng chứng cứ thấp đến rất thấp do nguy cơ sai lệch và các giới hạn khác. Không suy ra cải thiện trí nhớ toàn diện.",
         "diagram": [
           "Cửa",
           "Bàn",
@@ -1084,7 +1084,7 @@
           "Simply view pictures and count it as recall.",
           "Attach similar ideas to one undifferentiated place."
         ],
-        "evidence": "Some evidence for list recall, but the research base has limitations; no proof of broad memory enhancement.",
+        "evidence": "A 2025 adult systematic review and meta-analysis supports immediate serial recall, but rates evidence quality low to very low because of bias and other limitations. This does not establish broad memory enhancement.",
         "diagram": [
           "Door",
           "Desk",
@@ -1094,7 +1094,7 @@
       "diagramKind": "route",
       "sources": [
         {
-          "title": "Method of Loci · Meta-analysis (2025)",
+          "title": "Ondřej (2025) · Method of Loci systematic review and meta-analysis",
           "url": "https://pubmed.ncbi.nlm.nih.gov/40457944/"
         }
       ],

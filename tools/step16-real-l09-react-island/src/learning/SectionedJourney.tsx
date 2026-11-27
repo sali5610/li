@@ -87,6 +87,15 @@ function independent(c:Localized):Section{
 function criteria(c:Localized):RubricRow[]{
  return c.assessment.rubricCriteria;
 }
+/** Editorial refinement for NEW personal-study submissions only. Historical
+ * attempts keep the rubric that was frozen at their own submission. */
+export function reasoningRubric(lesson:SectionedLesson,locale:Locale,preview:boolean):RubricRow[]{
+ const original=criteria(lesson.content.localized[locale]);
+ if(!preview)return original;
+ const entry=(supplements.lessons as Record<string,Partial<Record<Locale,{reasoningRubric?:RubricRow[]}>>>)[lesson.id]?.[locale]?.reasoningRubric;
+ return entry?.length===4&&entry.every(row=>row.length===4&&row.every(x=>typeof x==='string'&&x.trim()))?entry:original;
+}
+
 /** Fail closed: a migrated draft never becomes a lesson just by carrying a JSON file.
  * Release registry, invited-user session, academic rights and full two-locale
  * interaction shape must all agree. No direct URL or Notion fallback.
@@ -305,11 +314,11 @@ export function SectionedJourney({lesson,ports,preview=false}:{lesson:SectionedL
   if(a.draft.some(x=>x.trim().length<MIN)){setError(['Cần đủ bốn câu trả lời, mỗi câu ít nhất 12 ký tự.','Answer all four questions with at least 12 characters each.']);return;}
   const local=lesson.content.localized,version=lesson.version;
   const frozen:EditorialReviewSnapshot={
-   contentVersion:version,rubricVersion:version+':rubric:0-8',
+   contentVersion:version,rubricVersion:version+(preview&&reasoningRubric(lesson,'vi',true)!==criteria(local.vi)?':rubric:step24-v1':':rubric:0-8'),
    modelAnswer:{vi:independent(local.vi).model_answer_md||'',en:independent(local.en).model_answer_md||''},
    questions:{vi:[...local.vi.assessment.questions] as [string,string,string,string],
     en:[...local.en.assessment.questions] as [string,string,string,string]},
-   criteria:{vi:local.vi.assessment.rubricCriteria,en:local.en.assessment.rubricCriteria}
+   criteria:{vi:reasoningRubric(lesson,'vi',preview),en:reasoningRubric(lesson,'en',preview)}
   };
   setError(null);
   if(await persist({...a,submission:[...a.draft],submitted:true,

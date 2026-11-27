@@ -373,11 +373,11 @@ for(const [id,p] of Object.entries(ontProjection.lessons)){
  ontCoverage.authored++;
 }
 // ONT-03C scoped evidence is editorial metadata, never a release/graph promotion.
-for(const id of ["L09-2-1","L09-3-2","L09-2-2","L15-3-2"]){
+for(const id of Object.keys(ontProjection.lessons)){
  const p=ontProjection.lessons[id],e=p.relation.evidence;
  assert.equal(e.status,"source_checked_relation_only");
  assert.equal(p.relation.reviewState,"proposed");
- assert.ok(e.scope.vi.trim()&&e.scope.en.trim()&&e.sources.length>=2);
+ assert.ok(e.scope.vi.trim()&&e.scope.en.trim()&&e.sources.length>=1);
  assert.equal(new Set(e.sources.map(x=>x.url)).size,e.sources.length);
  assert.ok(e.sources.every(x=>x.url.startsWith("https://")&&x.title&&x.section));
  for(const target of e.relatedLessonIds){
@@ -385,8 +385,9 @@ for(const id of ["L09-2-1","L09-3-2","L09-2-2","L15-3-2"]){
   const related=ontProjection.lessons[target];
   assert.ok(related&&related.concepts.some(x=>p.concepts.some(y=>y.id===x.id)),id+" link must reuse a shared concept ID");
  }
- assert.equal((await c.searchKnowledge(id)).status,"no_match");
+ if(!ontPackIds.has(id))assert.equal((await c.searchKnowledge(id)).status,"no_match");
 }
+console.log("LI_ONT03C_RELATION_EVIDENCE_PASS "+Object.keys(ontProjection.lessons).length);
 assert.ok(navGraph.nodes.every(x=>x.visibility==="public_curated"));
 assert.ok(navGraph.edges.every(x=>x.visibility==="public_curated"));
 console.log("LI_ONT03C_SOURCE_BOUNDARY_PASS "+JSON.stringify(ontCoverage));

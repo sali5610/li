@@ -12,7 +12,7 @@ assert.doesNotMatch(source,/button\.click\(\)/);
 assert.doesNotMatch(source,/textarea\.value=val/);
 assert.doesNotMatch(source,/root\.querySelector\('\[data-spell-action="'\+action/);
 const instrumented=source.replace(/\}\)\(\);\s*$/,
- 'window.__spellTest={open,getView,performReact,setT12Draft,switchTab,setLessonContext,getT02Status,getLessonPracticeSummary};\n})();');
+ 'window.__spellTest={open,getView,performReact,setT12Draft,switchTab,setLessonContext,getT02Status,postponeT02,getLessonPracticeSummary};\n})();');
 assert.notEqual(instrumented,source,"The test must instrument the real IIFE engine");
 const storage=new Map([["li.sync.local-owner.v1","test-invited-owner"]]);
 let verified=true,accountOpen=false,locale="vi";
@@ -167,6 +167,19 @@ assert.match(api.getView().feedback,/ROP/,"Must show the L15 feedback only after
 assert.doesNotMatch(api.getView().feedback,/Selection bias/i);
 assert.equal(act("rate-retry"),true);
 assert.equal(JSON.parse(storage.get(l15DueKey)).reviewCount,1,"Review must stay scoped to L15");
+const priorReview=JSON.parse(storage.get(l15DueKey));
+const dueBeforeDefer=Date.now()-2000;
+storage.set(l15DueKey,JSON.stringify({...priorReview,due:dueBeforeDefer}));
+assert.equal(api.postponeT02("L15-2-2",dueBeforeDefer-1),false,"Stale due date cannot overwrite schedule");
+assert.equal(api.postponeT02("unknown",dueBeforeDefer),false,"Unknown lesson cannot be deferred");
+assert.equal(api.postponeT02("L15-2-2",dueBeforeDefer),true,"Defer due review without rating");
+const deferred=JSON.parse(storage.get(l15DueKey));
+assert.equal(deferred.reviewCount,priorReview.reviewCount);
+assert.equal(deferred.streak,priorReview.streak);
+assert.equal(deferred.lastRating,priorReview.lastRating);
+assert.equal(deferred.lastReviewedAt,priorReview.lastReviewedAt);
+assert.ok(Math.abs(deferred.due-Date.now()-86400000)<20000);
+assert.equal(api.postponeT02("L15-2-2",deferred.due),false,"Future review cannot be deferred from due queue");
 assert.equal(JSON.parse(storage.get(t02key)).reviewCount,0,"L15 cannot modify standalone T02 history");
 window.liPersonalStudyRoutes={"L03-1-1":"draftLessonL0311"};
 begin("T03");

@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {PrivateDeviceStore} from '../.sync-private-test/sync/local-dexie.js';
 import {storageKey} from '../.sync-private-test/sync/contract.js';
 import {PERSONAL_FIELDS,capturePersonalState,hydratePersonalState,
- preparePersonalAccount,journalCloudConsent,personalRemoteSnapshot,t02Fields,practiceField,snapshotLearnerDevice,t12Fields} from '../.sync-private-test/auth/private-state.js';
+ preparePersonalAccount,journalCloudConsent,personalRemoteSnapshot,t02Fields,practiceField,snapshotLearnerDevice,t12Fields,restoreLocalOnlyBackup} from '../.sync-private-test/auth/private-state.js';
 
 function device(){
  const data=new Map();
@@ -357,4 +357,50 @@ test('device backup reads registered current owner state without mutating it or 
  assert.throws(()=>snapshotLearnerDevice(uid,[],()=>false),/BACKUP_OWNER_REQUIRED/);
  let calls=0;
  assert.throws(()=>snapshotLearnerDevice(uid,[],()=>++calls===1),/BACKUP_OWNER_CHANGED/);
+});
+
+
+function recoveryFile(uid,deviceRecords){return JSON.stringify({schema:'li.learner.device-backup.v2',accountId:uid,deviceRecords,materialized:{schema:'li.private.backup.v1',accountId:uid,items:[]}});}
+test('local recovery fills only missing journal/capture, never grants consent or queues cloud data',async()=>{
+ const map=device(),uid='owner-A',journal='li.personal.daily.v1',draft='li.private.capture-draft.v1:owner-A';
+ map.set('li.sync.local-owner.v1',uid);
+ const file=recoveryFile(uid,[{key:journal,raw:'{"schema":1,"days":{}}'},{key:draft,raw:'{"text":"draft","fieldId":null}'},{key:'li.review.L09-1-2.v1',raw:'{}'}]);
+ await withStore(async store=>{
+  assert.deepEqual(await restoreLocalOnlyBackup(uid,['L09-1-2'],file,store,()=>true),{restored:2,skipped:0,deferred:1});
+  assert.equal(map.get(draft),'{"text":"draft","fieldId":null}');
+  assert.equal(journalCloudConsent(uid),false);
+  assert.equal((await store.accountRecords(uid)).length,0);
+  map.set(draft,'newer');
+  assert.deepEqual(await restoreLocalOnlyBackup(uid,['L09-1-2'],file,store,()=>true),{restored:0,skipped:2,deferred:1});
+  assert.equal(map.get(draft),'newer');
+  await assert.rejects(restoreLocalOnlyBackup('owner-B',[],file,store,()=>true),/RESTORE_OWNER_REQUIRED/);
+ });
+});
+test('local recovery rejects unregistered, duplicate and malformed data before writing; preserves consent and known tombstone',async()=>{
+ const map=device(),uid='owner-A',journal='li.personal.daily.v1',draft='li.private.capture-draft.v1:owner-A';
+ map.set('li.sync.local-owner.v1',uid);
+ const good={key:draft,raw:'{"text":"draft","fieldId":null}'};
+ await withStore(async store=>{
+  for(const bad of [{key:'neon.auth.token',raw:'secret'},good,{key:journal,raw:'{"schema":1,"days":[]}' }]){
+   await assert.rejects(restoreLocalOnlyBackup(uid,[],recoveryFile(uid,[good,bad]),store,()=>true));
+   assert.equal(map.has(draft),false);
+  }
+  const journalFile=recoveryFile(uid,[{key:journal,raw:'{"schema":1,"days":{}}'}]);
+  map.set('li.sync.journal-cloud-consent.v1:'+uid,'true');
+  assert.equal((await restoreLocalOnlyBackup(uid,[],journalFile,store,()=>true)).skipped,1);
+  map.set('li.sync.journal-cloud-consent.v1:'+uid,'false');
+  await store.edit(uid,'note','daily-journal',{},'2026-11-27T00:00:00Z');
+  assert.equal((await restoreLocalOnlyBackup(uid,[],journalFile,store,()=>true)).skipped,1);
+  assert.equal(map.has(journal),false);
+ });
+});
+test('local recovery compensates earlier additions on storage write failure',async()=>{
+ const map=device(),uid='owner-A',journal='li.personal.daily.v1',draft='li.private.capture-draft.v1:owner-A';
+ map.set('li.sync.local-owner.v1',uid);
+ const set=localStorage.setItem;localStorage.setItem=(key,raw)=>{if(key===draft)throw Error('QUOTA');set(key,raw);};
+ await withStore(async store=>{
+  await assert.rejects(restoreLocalOnlyBackup(uid,[],recoveryFile(uid,[{key:journal,raw:'{"schema":1,"days":{}}'},{key:draft,raw:'{"text":"draft","fieldId":null}'}]),store,()=>true),/QUOTA/);
+  assert.equal(map.has(journal),false);assert.equal(map.has(draft),false);
+  assert.equal((await store.accountRecords(uid)).length,0);
+ });
 });

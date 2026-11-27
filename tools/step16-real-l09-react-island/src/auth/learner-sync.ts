@@ -13,7 +13,7 @@ import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
 import {validMethodAttempts} from '../learning/validate-method-attempts.js';
 import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
- hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS,t12Fields,practiceField,snapshotLearnerDevice} from './private-state.js';
+ hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS,t12Fields,practiceField,snapshotLearnerDevice,restoreLocalOnlyBackup,type LocalRecoveryResult} from './private-state.js';
 
 /**
  * The native lesson UI still writes li.review.* localStorage synchronously.
@@ -57,6 +57,23 @@ export async function downloadLearnerAccountBackup(uid:string):Promise<void>{
   link.remove();
   window.setTimeout(()=>URL.revokeObjectURL(url),60000);
  }
+}
+
+/** Restore only the device-only slice, without upload or consent. */
+export async function restoreLearnerLocalBackup(uid:string,file:File):Promise<LocalRecoveryResult>{
+ const session=activeSync;
+ const authorized=()=>IS_INTEGRATED_LI_APP&&location.origin===AUTH_ORIGIN&&
+  localStorage.getItem(OWNER)===uid&&session?.uid===uid&&activeSync===session&&
+  document.documentElement.classList.contains('li-auth-verified');
+ if(!authorized())throw Error('RESTORE_OWNER_REQUIRED');
+ if(file.size>8_000_000)throw Error('RESTORE_TOO_LARGE');
+ const json=await file.text();
+ const result=await restoreLocalOnlyBackup(uid,LESSONS,json,store,authorized);
+ if(!authorized())throw Error('RESTORE_OWNER_CHANGED');
+ if(result.restored)window.dispatchEvent(new CustomEvent('li:personal-sync-applied',{
+  detail:{accountId:uid,keys:['li.personal.daily.v1']}
+ }));
+ return result;
 }
 
 /** Per-user, explicit remote consent for private wellness diary / check-ins. */

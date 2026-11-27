@@ -1,5 +1,5 @@
 import {authoredCopy} from '../shell/discovery-locale.js';
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {Button,Card,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
 import '../../../../design-system/react/atoms.css';
@@ -16,13 +16,21 @@ import {VaultSettings} from './VaultSettings.js';
 import {clearCurrentVault,currentVault} from '../sync/e2ee-cloud.js';
 const E2EE_PILOT=import.meta.env.VITE_LI_E2EE_PILOT==='1';
 import {prepareLearnerAccount,startLearnerSync,journalCloudConsent,changeJournalCloudConsent,
- listPrivateConflicts,resolvePrivateConflict,downloadLearnerAccountBackup,type PrivateConflictChoice,type SyncReport} from './learner-sync.js';
+ listPrivateConflicts,resolvePrivateConflict,downloadLearnerAccountBackup,restoreLearnerLocalBackup,type PrivateConflictChoice,type SyncReport} from './learner-sync.js';
 
 type Locale='vi'|'en';
 type Access='checking'|'granted'|'offline'|'denied'|'error';
 function AccountBackupDownload({accountId,locale}:{accountId:string;locale:Locale}){
  const [state,setState]=useState<'idle'|'loading'|'requested'|'error'>('idle');
+ const [restore,setRestore]=useState<{restored:number;skipped:number;deferred:number}|null>(null);
+ const [restoreState,setRestoreState]=useState<'idle'|'loading'|'error'>('idle');
+ const input=useRef<HTMLInputElement>(null);
  const vi=locale==='vi';
+ async function importLocal(file:File){
+  setRestore(null);setRestoreState('loading');
+  try{setRestore(await restoreLearnerLocalBackup(accountId,file));setRestoreState('idle');}
+  catch{setRestoreState('error');}
+ }
  async function download(){
   if(state==='loading')return;
   setState('loading');
@@ -32,14 +40,28 @@ function AccountBackupDownload({accountId,locale}:{accountId:string;locale:Local
  return <section aria-label={vi?'Xuất dữ liệu học':'Export learning records'}>
   <Heading level={4} role="titleSmall">{vi?'Bản sao dữ liệu học':'Learning records backup'}</Heading>
   <Text role="support">{vi?
-   'Xuất bản ghi đồng bộ và dữ liệu học đã lưu trên máy: tiến độ, bản nháp, lịch ôn, lịch nhắc trong app, Nhật Ký và Check-in. Không gồm dữ liệu chỉ có trên cloud, khóa đăng nhập/mã hóa hay trạng thái đăng ký push. Tệp JSON không mã hóa, có thông tin riêng tư; hãy giữ an toàn. Chưa hỗ trợ nhập lại từ Settings.':
-   'Export synced records and saved device data: progress, drafts, review schedules, in-app reminders, Journal and Check-ins. Excludes cloud-only data, login/encryption keys and push subscription state. The JSON is unencrypted and contains private information; keep it safe. Restore in Settings is not yet available.'}</Text>
+   'Xuất bản ghi đồng bộ và dữ liệu học đã lưu trên máy: tiến độ, bản nháp, lịch ôn, lịch nhắc trong app, Nhật Ký và Check-in. Không gồm dữ liệu chỉ có trên cloud, khóa đăng nhập/mã hóa hay trạng thái đăng ký push. Tệp JSON không mã hóa, có thông tin riêng tư; hãy giữ an toàn.':
+   'Export synced records and saved device data: progress, drafts, review schedules, in-app reminders, Journal and Check-ins. Excludes cloud-only data, login/encryption keys and push subscription state. The JSON is unencrypted and contains private information; keep it safe.'}</Text>
   <Button variant="secondary" loading={state==='loading'} onClick={()=>void download()}>
    {vi?'Xuất dữ liệu học (.json)':'Export learning data (.json)'}</Button>
   {state==='error'&&<InlineFeedback tone="error" message={vi?
    'Không xuất được dữ liệu. Kiểm tra tài khoản và thử lại.':'Could not export data. Check your account and retry.'}/>}
   {state==='requested'&&<InlineFeedback tone="info" message={vi?
    'Đã yêu cầu tải tệp. Kiểm tra mục Tệp đã tải về.':'Download requested. Check your downloaded files.'}/>}
+  <Text role="support">{vi?
+   'Khôi phục hiện chỉ áp dụng cho bản nháp Nhặt Ý và Nhật Ký lưu riêng trên máy, nếu chưa có dữ liệu. Không nhập quyền riêng tư, bản ghi đồng bộ hay tiến độ.':
+   'Restore currently covers only missing Capture drafts and device-only Journal. It does not import privacy settings, synced records or progress.'}</Text>
+  <Button variant="secondary" disabled={restoreState==='loading'||state==='loading'} onClick={()=>input.current?.click()}>
+   {vi?'Khôi phục dữ liệu riêng trên máy':'Restore device-only data'}</Button>
+  <input ref={input} type="file" accept=".json,application/json" hidden
+   onChange={event=>{const file=event.currentTarget.files?.[0];event.currentTarget.value='';if(file)void importLocal(file);}}/>
+  {restoreState==='loading'&&<InlineFeedback tone="loading" message={vi?'Đang kiểm tra và khôi phục…':'Checking and restoring…'}/>}
+  {restoreState==='error'&&<InlineFeedback tone="error" message={vi?
+   'Không hoàn tất khôi phục. Kiểm tra đúng tài khoản, tệp JSON và dữ liệu trên máy rồi thử lại.':
+   'Restore did not complete. Check the account, JSON file and device data before retrying.'}/>}
+  {restore&&<InlineFeedback tone="info" message={vi?
+   'Đã thêm '+restore.restored+' bản ghi; bỏ qua '+restore.skipped+' bản đã có hoặc thuộc đồng bộ; '+restore.deferred+' bản ghi ngoài phạm vi.':
+   'Added '+restore.restored+' records; skipped '+restore.skipped+' existing or sync-managed records; '+restore.deferred+' records outside scope.'}/>}
  </section>;
 }
 const syncCopy={

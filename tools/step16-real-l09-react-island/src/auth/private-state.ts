@@ -138,6 +138,93 @@ export function snapshotLearnerDevice(uid:string,lessonIds:readonly string[],
  if(!authorized())throw Error('BACKUP_OWNER_CHANGED');
  return result;
 }
+/** Restore only registered device-only data; never generate an upload intent. */
+export type LocalRecoveryResult={restored:number;skipped:number;deferred:number};
+type RecoveryRecord={key:string;raw:string};
+function recoveryObject(value:unknown):value is Record<string,unknown>{
+ return Boolean(value)&&typeof value==='object'&&!Array.isArray(value);
+}
+function safeRecoveryJson(value:unknown,depth=0):boolean{
+ if(depth>30)return false;
+ if(value===null||typeof value==='string'||typeof value==='boolean'||typeof value==='number')return true;
+ if(Array.isArray(value))return value.every(x=>safeRecoveryJson(x,depth+1));
+ return recoveryObject(value)&&Object.entries(value).every(([key,v])=>
+  !['__proto__','constructor','prototype'].includes(key)&&safeRecoveryJson(v,depth+1));
+}
+function validateLocalRecovery(key:string,raw:string,uid:string){
+ if(raw.length>300000)throw Error('RESTORE_INVALID_RECORD');
+ const value:unknown=JSON.parse(raw);
+ if(!recoveryObject(value)||!safeRecoveryJson(value))throw Error('RESTORE_INVALID_RECORD');
+ if(key===captureDraftKey(uid)){
+  if(Object.keys(value).sort().join(',')!=='fieldId,text'||typeof value.text!=='string'||
+   !(value.fieldId===null||typeof value.fieldId==='string'))throw Error('RESTORE_INVALID_CAPTURE');
+ }else{
+  if(value.schema!==1||!recoveryObject(value.days))throw Error('RESTORE_INVALID_JOURNAL');
+  for(const [date,day] of Object.entries(value.days)){
+   if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!recoveryObject(day)||!recoveryObject(day.activities)||
+     !Number.isSafeInteger(day.checkins)||Number(day.checkins)<0||
+     !['lesson','branch','input'].every(k=>Array.isArray((day.activities as Record<string,unknown>)[k])&&
+      ((day.activities as Record<string,unknown>)[k] as unknown[]).every(x=>typeof x==='string'&&x.length<=256)))
+    throw Error('RESTORE_INVALID_JOURNAL');
+   if(day.physical!==null&&day.physical!==undefined&&(!recoveryObject(day.physical)||
+    !['sleep','move','rest'].every(k=>['yes','no','unsure'].includes(String((day.physical as Record<string,unknown>)[k])))))
+    throw Error('RESTORE_INVALID_JOURNAL');
+  }
+ }
+}
+export async function restoreLocalOnlyBackup(uid:string,lessonIds:readonly string[],json:string,
+ store:PrivateDeviceStore,isAuthorized:()=>boolean):Promise<LocalRecoveryResult>{
+ const authorized=()=>Boolean(uid)&&isAuthorized()&&localStorage.getItem('li.sync.local-owner.v1')===uid;
+ if(!authorized())throw Error('RESTORE_OWNER_REQUIRED');
+ if(json.length>8_000_000)throw Error('RESTORE_TOO_LARGE');
+ const data:unknown=JSON.parse(json);
+ if(!recoveryObject(data)||data.schema!=='li.learner.device-backup.v2'||data.accountId!==uid||
+   !Array.isArray(data.deviceRecords)||data.deviceRecords.length>5000||
+   !recoveryObject(data.materialized)||data.materialized.schema!=='li.private.backup.v1'||
+   data.materialized.accountId!==uid||!Array.isArray(data.materialized.items))
+  throw Error('RESTORE_WRONG_ACCOUNT_OR_SCHEMA');
+ const allowed=new Set([...fieldsFor(uid).filter(field=>field.id!=='journal-cloud-consent').map(field=>field.key),
+  ...lessonIds.map(id=>'li.review.'+id+'.v1'),captureDraftKey(uid)]);
+ const seen=new Set<string>(),candidates:RecoveryRecord[]=[];
+ // Count all deferred materialized rows separately; they are never applied here.
+ let deferred=data.materialized.items.length;
+ const journal='li.personal.daily.v1';
+ for(const record of data.deviceRecords){
+  if(!recoveryObject(record)||typeof record.key!=='string'||typeof record.raw!=='string'||
+    !allowed.has(record.key)||seen.has(record.key))throw Error('RESTORE_INVALID_RECORD');
+  seen.add(record.key);
+  if(record.key!==journal&&record.key!==captureDraftKey(uid)){deferred++;continue;}
+  validateLocalRecovery(record.key,record.raw,uid);
+  candidates.push({key:record.key,raw:record.raw});
+ }
+ const written:RecoveryRecord[]=[];
+ try{
+  return await store.transaction('rw',store.records,store.outbox,async()=>{
+   let skipped=0;
+   const journalKey=storageKey(uid,'note','daily-journal');
+   const [cached,pending]=await Promise.all([store.records.get(journalKey),store.outbox.get(journalKey)]);
+   if(!authorized())throw Error('RESTORE_OWNER_CHANGED');
+   for(const item of candidates){
+    if(!authorized())throw Error('RESTORE_OWNER_CHANGED');
+    // A known cloud row (including deletion), pending edit or enabled consent
+    // requires separate signed recovery. Never re-enable journal sync here.
+    if(item.key===journal&&(journalCloudConsent(uid)||cached||pending)){skipped++;continue;}
+    if(localStorage.getItem(item.key)!==null){skipped++;continue;}
+    written.push(item);
+    localStorage.setItem(item.key,item.raw);
+    if(localStorage.getItem(item.key)!==item.raw)throw Error('RESTORE_READBACK_FAILED');
+   }
+   if(!authorized())throw Error('RESTORE_OWNER_CHANGED');
+   return {restored:written.length,skipped,deferred};
+  });
+ }catch(error){
+  // Compensate only additions still owned by this operation. No cross-store
+  // atomicity claim; a browser crash or storage denial may prevent rollback.
+  if(localStorage.getItem('li.sync.local-owner.v1')===uid)
+   for(const item of written.reverse())if(localStorage.getItem(item.key)===item.raw)localStorage.removeItem(item.key);
+  throw error;
+ }
+}
 export type PersonalSnapshot={field:Field;raw:string|null};
 const active=(uid:string,field:Field)=>!field.diary||journalCloudConsent(uid);
 export function journalCloudConsent(uid:string):boolean{

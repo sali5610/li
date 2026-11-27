@@ -53,7 +53,7 @@
           "text": "Điểm đặt hàng lại"
         }
       ],
-      "reviewState": "proposed",
+      "reviewState": "verified",
       "publishState": "draft",
       "fieldId": null
     },
@@ -67,7 +67,7 @@
           "text": "Tồn kho an toàn"
         }
       ],
-      "reviewState": "proposed",
+      "reviewState": "verified",
       "publishState": "draft",
       "fieldId": null
     },

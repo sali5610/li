@@ -34,7 +34,7 @@ const localStorage={
 };
 vm.runInNewContext(instrumented,{window,document,localStorage,Event:class{},Date,console});
 const api=window.__spellTest;
-assert.ok(api&&Object.keys(api).length===8);
+assert.ok(api&&Object.keys(api).length===9);
 let covered=0;
 function begin(id,lesson=null){
  api.open(id,"practice",lesson);
@@ -172,6 +172,15 @@ const dueBeforeDefer=Date.now()-2000;
 storage.set(l15DueKey,JSON.stringify({...priorReview,due:dueBeforeDefer}));
 assert.equal(api.postponeT02("L15-2-2",dueBeforeDefer-1),false,"Stale due date cannot overwrite schedule");
 assert.equal(api.postponeT02("unknown",dueBeforeDefer),false,"Unknown lesson cannot be deferred");
+accountOpen=true;
+assert.equal(api.postponeT02("L15-2-2",dueBeforeDefer),false,"Account overlay blocks deferral");
+accountOpen=false;
+storage.set("li.sync.local-owner.v1","other-owner");
+assert.equal(api.postponeT02("L15-2-2",dueBeforeDefer),false,"Other owner cannot defer the original schedule");
+storage.set("li.sync.local-owner.v1","test-invited-owner");
+storage.set(l15DueKey,JSON.stringify({...priorReview,due:dueBeforeDefer,awaitingRating:true}));
+assert.equal(api.postponeT02("L15-2-2",dueBeforeDefer),false,"Revealed feedback must finish rating, not become a fresh recall");
+storage.set(l15DueKey,JSON.stringify({...priorReview,due:dueBeforeDefer}));
 assert.equal(api.postponeT02("L15-2-2",dueBeforeDefer),true,"Defer due review without rating");
 const deferred=JSON.parse(storage.get(l15DueKey));
 assert.equal(deferred.reviewCount,priorReview.reviewCount);

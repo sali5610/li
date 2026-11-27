@@ -53,14 +53,14 @@
     "predicate": "TEACHES",
     "from": "lesson:L15-2-2",
     "to": "concept:wave1:reorder-point",
-    "reviewState": "proposed",
+    "reviewState": "verified",
     "visibility": "public_curated",
-    "reason": "Lesson explains reorder points under stated simplifying assumptions",
+    "reason": "L15-2-2 outcomes and concept section teach the inventory-position reorder threshold under stated assumptions.",
     "provenance": {
-      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
-      "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explains reorder points under stated simplifying assumptions",
-      "evidenceType": "editorial",
-      "checkedOn": "2026-11-20"
+      "sourceUrl": "https://scx-static-assets.s3.amazonaws.com/SCx%20Key%20Concept%20Documents/MITx_MicroMasters_SCM_KeyConcepts.pdf",
+      "sourceSection": "Supply Chain Fundamentals pp. 91–92, Continuous Review Policies (s,Q); aligned to L15-2-2 outcomes 1–3",
+      "evidenceType": "documented",
+      "checkedOn": "2026-11-27"
     }
   },
   {
@@ -68,14 +68,14 @@
     "predicate": "TEACHES",
     "from": "lesson:L15-2-2",
     "to": "concept:wave1:safety-stock",
-    "reviewState": "proposed",
+    "reviewState": "verified",
     "visibility": "public_curated",
-    "reason": "Lesson explains safety-stock buffer and its tradeoffs",
+    "reason": "L15-2-2 distinguishes safety stock from order quantity and explains its role in the simplified reorder threshold.",
     "provenance": {
-      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
-      "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Lesson explains safety-stock buffer and its tradeoffs",
-      "evidenceType": "editorial",
-      "checkedOn": "2026-11-20"
+      "sourceUrl": "https://scx-static-assets.s3.amazonaws.com/SCx%20Key%20Concept%20Documents/MITx_MicroMasters_SCM_KeyConcepts.pdf",
+      "sourceSection": "Supply Chain Fundamentals pp. 91–92, Safety stock and continuous-review threshold; aligned to L15-2-2 outcomes 1, 2 and 4",
+      "evidenceType": "documented",
+      "checkedOn": "2026-11-27"
     }
   },
   {
@@ -129,6 +129,25 @@
       "sourceSection": "Existing locked lesson / site/assets/lesson-related-wave1.js · Existing Wave1 navigation suggests checking data scope before inventory decisions; candidate bridge, not prerequisite",
       "evidenceType": "editorial",
       "checkedOn": "2026-11-20"
+    }
+  },
+  {
+    "id": "edge:wave1:l15-rop-stock",
+    "predicate": "RELATED_TO",
+    "from": "concept:wave1:reorder-point",
+    "to": "concept:wave1:safety-stock",
+    "reviewState": "verified",
+    "visibility": "public_curated",
+    "reason": "In the continuous-review model, the reorder threshold combines expected lead-time demand and safety stock; safety stock is not the order quantity.",
+    "provenance": {
+      "sourceUrl": "https://scx-static-assets.s3.amazonaws.com/SCx%20Key%20Concept%20Documents/MITx_MicroMasters_SCM_KeyConcepts.pdf",
+      "sourceSection": "Supply Chain Fundamentals pp. 91–92, Continuous Review Policies (s,Q), s = μ_DL + kσ_DL; safety stock kσ_DL",
+      "evidenceType": "documented",
+      "checkedOn": "2026-11-27"
+    },
+    "reasonLocalized": {
+      "vi": "Trong mô hình kiểm tra liên tục, ngưỡng đặt hàng lại gồm nhu cầu kỳ vọng trong lead time và tồn kho an toàn. Phần đệm không phải số lượng đặt hàng.",
+      "en": "In the continuous-review model, the reorder threshold combines expected lead-time demand and safety stock. The buffer is not the order quantity."
     }
   }
 ]

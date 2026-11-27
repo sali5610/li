@@ -365,6 +365,54 @@ export async function restoreMissingSyncedBackup(uid:string,lessonIds:readonly s
   return {queued,skipped,unresolved};
  });
 }
+/** Explicit, single-lesson deletion. Never enumerate or delete other records.
+ * The signed current revision is the only permissible CAS baseline.
+ * Local removal is compensated if IndexedDB fails; not physical media erasure.
+ */
+export async function queueLessonDeletion(uid:string,id:string,lessonIds:readonly string[],
+ store:PrivateDeviceStore,api:Pick<CloudUserApi,'accountId'|'one'>,
+ isAuthorized:()=>boolean):Promise<'queued'|'already-deleted'>{
+ const allowed=()=>Boolean(uid)&&api.accountId===uid&&lessonIds.includes(id)&&isAuthorized()&&
+  localStorage.getItem('li.sync.local-owner.v1')===uid;
+ if(!allowed())throw Error('DELETE_OWNER_OR_LESSON_REQUIRED');
+ const keys=['li.review.'+id+'.v1','li.sync.local-backup.v1:'+uid+':'+id,
+  'li.sync.checkpoint.v1:'+uid+':'+id,'li.reader.position.'+encodeURIComponent(uid)+'.'+id+'.v1'];
+ const prior=keys.map(key=>({key,raw:localStorage.getItem(key)}));
+ const remote=await api.one('lesson_attempt',id);
+ if(!allowed())throw Error('DELETE_OWNER_CHANGED');
+ if(remote&&(remote.owner_id!==uid||remote.item_type!=='lesson_attempt'||remote.item_id!==id||
+  !Number.isSafeInteger(remote.revision)||remote.revision<1))throw Error('DELETE_REMOTE_SCOPE');
+ const key=storageKey(uid,'lesson_attempt',id);
+ const removed:typeof prior=[];
+ try{
+  return await store.transaction('rw',store.records,store.outbox,async()=>{
+   const [existing,pending]=await Promise.all([store.records.get(key),store.outbox.get(key)]);
+   if(!allowed())throw Error('DELETE_OWNER_CHANGED');
+   if(pending||existing&&existing.baseRevision!==(remote?.revision??0))
+    throw Error('DELETE_SYNC_FIRST');
+   if(prior.some(x=>localStorage.getItem(x.key)!==x.raw))throw Error('DELETE_LOCAL_CHANGED');
+   if(remote&&!existing)await store.apply(uid,remote);
+   const alreadyDeleted=Boolean(remote?.deleted_at);
+   if(!alreadyDeleted){
+    // No old answers or self-ratings in the tombstone payload.
+    await store.edit(uid,'lesson_attempt',id,{schema:'li.native.lesson.v1',
+     data:{draft:['','','',''],ratings:[null,null,null,null]}},new Date().toISOString());
+   }
+   if(!allowed()||prior.some(x=>localStorage.getItem(x.key)!==x.raw))throw Error('DELETE_LOCAL_CHANGED');
+   for(const x of prior){
+    if(x.raw===null)continue;
+    removed.push(x);localStorage.removeItem(x.key);
+    if(localStorage.getItem(x.key)!==null)throw Error('DELETE_READBACK_FAILED');
+   }
+   if(!allowed())throw Error('DELETE_OWNER_CHANGED');
+   return alreadyDeleted?'already-deleted':'queued';
+  });
+ }catch(error){
+  if(localStorage.getItem('li.sync.local-owner.v1')===uid)
+   for(const x of removed.reverse())if(localStorage.getItem(x.key)===null&&x.raw!==null)localStorage.setItem(x.key,x.raw);
+  throw error;
+ }
+}
 export type PersonalSnapshot={field:Field;raw:string|null};
 const active=(uid:string,field:Field)=>!field.diary||journalCloudConsent(uid);
 export function journalCloudConsent(uid:string):boolean{

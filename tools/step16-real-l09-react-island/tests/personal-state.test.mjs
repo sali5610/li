@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {PrivateDeviceStore} from '../.sync-private-test/sync/local-dexie.js';
 import {storageKey} from '../.sync-private-test/sync/contract.js';
 import {PERSONAL_FIELDS,capturePersonalState,hydratePersonalState,
- preparePersonalAccount,journalCloudConsent,personalRemoteSnapshot,t02Fields,practiceField,snapshotLearnerDevice,t12Fields,restoreLocalOnlyBackup,restoreMissingSyncedBackup} from '../.sync-private-test/auth/private-state.js';
+ preparePersonalAccount,journalCloudConsent,personalRemoteSnapshot,t02Fields,practiceField,snapshotLearnerDevice,t12Fields,restoreLocalOnlyBackup,restoreMissingSyncedBackup,queueLessonDeletion} from '../.sync-private-test/auth/private-state.js';
 
 function device(){
  const data=new Map();
@@ -431,5 +431,32 @@ test('signed recovery denies mismatched owner and malformed learning payload bef
   await assert.rejects(restoreMissingSyncedBackup(uid,['L09-1-2'],file,store,api,()=>true),/INVALID_LOCAL_ATTEMPT/);
   await assert.rejects(restoreMissingSyncedBackup(uid,['L09-1-2'],file,store,{...api,accountId:'other'},()=>true),/RESTORE_OWNER_REQUIRED/);
   assert.equal((await store.accountRecords(uid)).length,0);
+ });
+});
+
+
+test('lesson deletion queues only selected owner scope with a sanitized tombstone and clears known local copies',async()=>{
+ const map=device(),uid='owner-A',id='L09-1-2',other='L03-1-2';map.set('li.sync.local-owner.v1',uid);
+ const local='li.review.'+id+'.v1',backup='li.sync.local-backup.v1:'+uid+':'+id;
+ map.set(local,'saved answer');map.set(backup,'old answer');map.set('li.review.'+other+'.v1','keep');
+ const api={accountId:uid,one:async()=>null};
+ await withStore(async store=>{
+  assert.equal(await queueLessonDeletion(uid,id,[id,other],store,api,()=>true),'queued');
+  const op=await store.outbox.get(storageKey(uid,'lesson_attempt',id));
+  assert.equal(op.baseRevision,0);assert.ok(op.deletedAt);assert.equal(op.payload.data.draft.join(''),'');
+  assert.equal(map.has(local),false);assert.equal(map.has(backup),false);assert.equal(map.get('li.review.'+other+'.v1'),'keep');
+  await assert.rejects(queueLessonDeletion(uid,id,[id],store,api,()=>true),/DELETE_SYNC_FIRST/);
+  await assert.rejects(queueLessonDeletion(uid,other,[id],store,api,()=>true),/DELETE_OWNER_OR_LESSON_REQUIRED/);
+  await assert.rejects(queueLessonDeletion('owner-B',id,[id],store,api,()=>true),/DELETE_OWNER_OR_LESSON_REQUIRED/);
+ });
+});
+test('lesson deletion refuses wrong remote owner or a changed local revision before removing work',async()=>{
+ const map=device(),uid='owner-A',id='L09-1-2',local='li.review.'+id+'.v1';map.set('li.sync.local-owner.v1',uid);map.set(local,'keep');
+ await withStore(async store=>{
+  const wrong={accountId:uid,one:async()=>({owner_id:'owner-B',item_type:'lesson_attempt',item_id:id,revision:1})};
+  await assert.rejects(queueLessonDeletion(uid,id,[id],store,wrong,()=>true),/DELETE_REMOTE_SCOPE/);
+  const changed={accountId:uid,one:async()=>{map.set(local,'newer');return null;}};
+  await assert.rejects(queueLessonDeletion(uid,id,[id],store,changed,()=>true),/DELETE_LOCAL_CHANGED/);
+  assert.equal(map.get(local),'newer');assert.equal((await store.accountRecords(uid)).length,0);
  });
 });

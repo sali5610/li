@@ -1,7 +1,9 @@
 import {authoredCopy} from '../shell/discovery-locale.js';
+import {learnableLessonIds} from '../learning/released-lessons.js';
+import {lessonTitle} from '../learning/lesson-titles.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
-import {Button,Card,Heading,InlineFeedback,Text} from '../../../../design-system/react/index';
+import {Button,Card,Heading,InlineFeedback,Text,SelectField} from '../../../../design-system/react/index';
 import '../../../../design-system/react/atoms.css';
 import '../../../../design-system/react/components.css';
 import {checkInviteAccess,safeInviteErrorCode} from '../sync/invite-access.js';
@@ -16,7 +18,7 @@ import {VaultSettings} from './VaultSettings.js';
 import {clearCurrentVault,currentVault} from '../sync/e2ee-cloud.js';
 const E2EE_PILOT=import.meta.env.VITE_LI_E2EE_PILOT==='1';
 import {prepareLearnerAccount,startLearnerSync,journalCloudConsent,changeJournalCloudConsent,
- listPrivateConflicts,resolvePrivateConflict,downloadLearnerAccountBackup,restoreLearnerLocalBackup,type PrivateConflictChoice,type SyncReport} from './learner-sync.js';
+ listPrivateConflicts,resolvePrivateConflict,downloadLearnerAccountBackup,restoreLearnerLocalBackup,deleteLearnerLesson,type PrivateConflictChoice,type SyncReport} from './learner-sync.js';
 
 type Locale='vi'|'en';
 type Access='checking'|'granted'|'offline'|'denied'|'error';
@@ -25,7 +27,17 @@ function AccountBackupDownload({accountId,locale}:{accountId:string;locale:Local
  const [restore,setRestore]=useState<Awaited<ReturnType<typeof restoreLearnerLocalBackup>>|null>(null);
  const [restoreState,setRestoreState]=useState<'idle'|'loading'|'error'>('idle');
  const input=useRef<HTMLInputElement>(null);
+ const [selectedLesson,setSelectedLesson]=useState('');
+ const [deleteState,setDeleteState]=useState<'idle'|'loading'|'queued'|'already-deleted'|'error'>('idle');
  const vi=locale==='vi';
+ async function deleteLesson(){
+  if(!selectedLesson||deleteState==='loading')return;
+  const name=lessonTitle(selectedLesson,locale,selectedLesson);
+  if(!window.confirm(vi?'Xóa toàn bộ bài làm và lịch sử làm bài của '+name+'? Không thể hoàn tác; các bài khác, lịch ôn độc lập, Bút Ký và Nhật Ký giữ nguyên.':'Delete all saved attempts and attempt history for '+name+'? This cannot be undone. Other lessons, separate reviews, notes and Journal stay unchanged.'))return;
+  setDeleteState('loading');
+  try{setDeleteState(await deleteLearnerLesson(accountId,selectedLesson));}
+  catch{setDeleteState('error');}
+ }
  async function importLocal(file:File){
   setRestore(null);setRestoreState('loading');
   try{setRestore(await restoreLearnerLocalBackup(accountId,file));setRestoreState('idle');}
@@ -68,6 +80,17 @@ function AccountBackupDownload({accountId,locale}:{accountId:string;locale:Local
   {restore&&restore.signedStatus!=='queued'&&<InlineFeedback tone="info" message={vi?
    'Chưa khôi phục phần đồng bộ. Giữ tệp và thử lại khi kết nối Neon và mở khóa dữ liệu (nếu có).':
    'Synced recovery did not complete. Keep the file and retry with Neon connected and the vault unlocked if applicable.'}/>}
+  <Heading level={4} role="titleSmall">{vi?'Xóa bài làm đã lưu':'Delete saved lesson attempts'}</Heading>
+  <Text role="support">{vi?'Chọn một bài để xóa bài làm và lịch sử làm bài trên máy, đồng thời gửi yêu cầu xóa tới Neon. Cần online và không có dữ liệu đang chờ đồng bộ. Không xóa tài khoản, ghi chú hay lịch ôn độc lập.':'Choose one lesson to remove its saved attempts and queue deletion on Neon. Requires an online session and no pending edits for that lesson. Does not delete the account, notes or separate review schedules.'}</Text>
+  <SelectField label={vi?'Bài học':'Lesson'} value={selectedLesson}
+   options={[{value:'',label:vi?'Chọn bài học':'Select a lesson'},...learnableLessonIds.map(id=>({value:id,label:lessonTitle(id,locale,id)}))]}
+   disabled={deleteState==='loading'} onChange={value=>{setSelectedLesson(value);setDeleteState('idle');}}/>
+  <Button variant="secondary" disabled={!selectedLesson||deleteState==='loading'||restoreState==='loading'||state==='loading'}
+   onClick={()=>void deleteLesson()}>{vi?'Xóa bài làm':'Delete lesson attempts'}</Button>
+  {deleteState==='loading'&&<InlineFeedback tone="loading" message={vi?'Đang kiểm tra phiên bản…':'Checking revision…'}/>}
+  {deleteState==='queued'&&<InlineFeedback tone="info" message={vi?'Đã xóa bản sao trên máy và đưa yêu cầu xóa vào hàng đợi. Chưa xác nhận xóa trên Neon.':'Device copy removed and deletion queued. Neon deletion is not yet confirmed.'}/>}
+  {deleteState==='already-deleted'&&<InlineFeedback tone="info" message={vi?'Neon đã có dấu xóa; bản sao trên máy đã được dọn.':'Neon already has a deletion marker; the device copy was cleared.'}/>}
+  {deleteState==='error'&&<InlineFeedback tone="error" message={vi?'Chưa hoàn tất xóa. Kiểm tra kết nối, trạng thái đồng bộ và thử lại.':'Deletion did not complete. Check connection and sync status before retrying.'}/>}
  </section>;
 }
 const syncCopy={

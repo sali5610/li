@@ -12,7 +12,7 @@ import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_INTEGRATED_LI_APP} from './config.js';
 import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
 import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
- hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS,t12Fields,practiceField,snapshotLearnerDevice,restoreLocalOnlyBackup,restoreMissingSyncedBackup,parseLearnerAttempt as attempt,type LocalRecoveryResult,type SyncedRecoveryResult} from './private-state.js';
+ hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS,t12Fields,practiceField,snapshotLearnerDevice,restoreLocalOnlyBackup,restoreMissingSyncedBackup,queueLessonDeletion,parseLearnerAttempt as attempt,type LocalRecoveryResult,type SyncedRecoveryResult} from './private-state.js';
 
 /**
  * The native lesson UI still writes li.review.* localStorage synchronously.
@@ -89,6 +89,28 @@ export async function restoreLearnerLocalBackup(uid:string,file:File):Promise<Lo
   if(signed.queued)window.dispatchEvent(new Event('li:private-sync-request'));
   return {...result,signed,signedStatus:'queued'};
  }catch{return {...result,signed:null,signedStatus:'failed'};}
+}
+
+/** Online-only explicit single-lesson deletion; regular signed sync replays
+ * the durable deletion intent. The UI reports queued, not remotely erased.
+ */
+export async function deleteLearnerLesson(uid:string,id:string):Promise<'queued'|'already-deleted'>{
+ const session=activeSync;
+ const authorized=()=>IS_INTEGRATED_LI_APP&&location.origin===AUTH_ORIGIN&&
+  localStorage.getItem(OWNER)===uid&&session?.uid===uid&&activeSync===session&&
+  document.documentElement.classList.contains('li-auth-verified');
+ if(!authorized()||!navigator.onLine)throw Error('DELETE_ONLINE_OWNER_REQUIRED');
+ if(!await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort))throw Error('INVITE_REVOKED');
+ const rawApi=await bindNeonAccount(NEON_DATA_API_URL,neonSessionPort);
+ if(!rawApi||rawApi.accountId!==uid||!authorized())throw Error('DELETE_OWNER_CHANGED');
+ const vault=E2EE_PILOT?currentVault(uid):null;
+ if(E2EE_PILOT&&!vault)throw Error('E2EE_VAULT_LOCKED');
+ const api:CloudUserApi=vault?new SealedNeonUserApi(rawApi,vault):rawApi;
+ const outcome=await queueLessonDeletion(uid,id,LESSONS,store,api,authorized);
+ if(!authorized())throw Error('DELETE_OWNER_CHANGED');
+ window.dispatchEvent(new CustomEvent('li:lesson-sync-applied',{detail:{accountId:uid,lessonIds:[id]}}));
+ window.dispatchEvent(new Event('li:private-sync-request'));
+ return outcome;
 }
 
 /** Per-user, explicit remote consent for private wellness diary / check-ins. */
@@ -358,6 +380,9 @@ async function capture(uid:string,api:CloudUserApi|null):Promise<Snapshot[]>{
     // A network/read failure cannot erase the local draft; queue it instead.
    }
   }
+  // A materialized tombstone is authoritative for passive capture. Only
+  // an explicit new lesson save may create new work after deletion.
+  if(existing?.deletedAt)continue;
   if(!existing||canonical(cloud(existing.payload))!==canonical(local))
    await store.edit(uid,'lesson_attempt',id,pack(local));
  }
@@ -370,10 +395,19 @@ async function hydrate(uid:string,snapshots:Snapshot[],retry:()=>void,onHydrated
   const key=storageKey(uid,'lesson_attempt',id);
   if(await store.outbox.get(key))continue; // queued edits and conflicts win locally
   const row=await store.records.get(key);
-  if(!row||row.deletedAt)continue;
-  const data=cloud(row.payload);
+  if(!row)continue;
   const current=localStorage.getItem(KEY(id));
   if(current!==raw){retry();continue;}
+  if(localStorage.getItem(OWNER)!==uid)return restored;
+  if(row.deletedAt){
+   // Do not resurrect an old device copy after a signed deletion.
+   localStorage.removeItem(BACKUP(uid,id));
+   localStorage.removeItem(CHECKPOINT(uid,id));
+   localStorage.removeItem('li.reader.position.'+encodeURIComponent(uid)+'.'+id+'.v1');
+   if(current!==null){localStorage.removeItem(KEY(id));restored=true;onHydrated?.(id);}
+   continue;
+  }
+  const data=cloud(row.payload);
   const native=attempt(current);
   if(!native||canonical(native)!==canonical(data)){
    localStorage.setItem(KEY(id),JSON.stringify(data));

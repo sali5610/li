@@ -5,6 +5,7 @@ import {SectionedJourney,type SectionedLesson} from '../src/learning/SectionedJo
 import {Wave1Journey} from '../src/learning/Wave1Journey';
 import {LearningJourney} from '../src/learning/LearningJourney';
 import {initial,type Attempt} from '../src/native-bridge';
+import {buildReasoningReceipt} from '../src/learning/SavedLearningEvidence';
 import type {LearningPorts} from '../src/learning/ports';
 import {readingStamp,readingPositionKey,readPosition,type ReadingPosition} from '../src/learning/reading-position';
 import {lessonTitles} from '../src/learning/lesson-titles';
@@ -86,6 +87,12 @@ export async function runBilingualReaderFixture(host:HTMLElement){
      check(attempt.guidedDraft===marker&&attempt.draft[0]===marker&&!attempt.submitted&&!attempt.reviewed,id+' corrupted saved progress');
      if(phase==='guided'||phase==='practice')check(Array.from(node.querySelectorAll('textarea')).some(x=>x.value===marker),id+' draft not visible '+phase);
      if(phase==='practice'){
+      const scaffold=node.querySelector<HTMLElement>('[data-li-reasoning-support="'+id+'"]');
+      check(!!scaffold,id+' missing reasoning scaffold');
+      check(scaffold!.textContent!.includes(locale==='vi'?'mức tự tin':'confidence'),id+' missing confidence prompt');
+      const details=scaffold!.querySelector('details');
+      check(!!details&&!details.open,id+' optional reasoning scaffold should start closed');
+      check(!buildReasoningReceipt(id,attempt),id+' unsaved/draft receipt must not export');
       const authored=source[locale].assessment?.questions??source[locale].questions;
       const labels=Array.from(node.querySelectorAll('textarea')).map(x=>plain(Array.from(x.labels||[]).map(y=>y.textContent||'').join(' ')));
       check(authored.length===4&&authored.every((q:string,i:number)=>labels.some(l=>l.includes(plain(q).slice(0,Math.min(35,plain(q).length))))),id+' '+locale+' actual question text mismatch');
@@ -124,6 +131,7 @@ export async function runBilingualReaderFixture(host:HTMLElement){
       await until(()=>!!journey()?.querySelector(selector),id+' draft evidence settled');
       const evidence=normalize(journey()!.querySelector(selector)!.textContent||'');
       check(evidence.includes(locale==='vi'?'Chưa có bài nộp':'No submission'),id+' draft evidence false submission');
+      check(!journey()!.querySelector('[data-li-reasoning-export]'),id+' draft export exposed');
       check(evidence.includes(locale==='vi'?'Lượt hoàn tất tự đánh giá (gồm lịch sử): 0':'Completed self-review rounds (including saved history): 0'),id+' draft evidence false completion');
       evidenceChecks++;
      }
@@ -155,6 +163,11 @@ export async function runBilingualReaderFixture(host:HTMLElement){
     check(attempt.reviewed&&attempt.submission?.[0]===marker,id+' completion lost');
     const evidence=normalize(journey()!.querySelector(selector)!.textContent||'');
     check(evidence.includes(locale==='vi'?'Đã nộp':'Submitted'),id+' saved evidence missing submission');
+    check(!!journey()!.querySelector('[data-li-reasoning-export="'+id+'"] button'),id+' saved receipt export absent');
+    const receipt=buildReasoningReceipt(id,attempt);
+    check(receipt?.responses[0].answer===marker&&receipt.assistance==='unknown'&&receipt.untrainedTransferMeasured===false&&receipt.selfReview?.[0].rating===2,id+' incorrect saved receipt');
+    check(receipt?.responses[0].question===null&&receipt?.selfReview?.[0].criterion===null,id+' fabricated historical question or rubric');
+    check(!JSON.stringify(receipt).includes('qa-bilingual-fixture'),id+' account identifier in receipt');
     check(evidence.includes(locale==='vi'?'Lượt hoàn tất tự đánh giá (gồm lịch sử): 1':'Completed self-review rounds (including saved history): 1'),id+' saved evidence wrong completed count');
     check(evidence.includes(locale==='vi'?'Chưa có ghi nhận trong bài này':'Not recorded in this lesson'),id+' invented spell application');
     check(evidence.includes('T06 × 2')===(id==='L03-1-2'),id+' incorrect lesson Spellbook history');

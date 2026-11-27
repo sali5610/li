@@ -683,12 +683,31 @@ function getT02Status(lessonId){
   return {dueAt:saved.due,awaitingRating:saved.awaitingRating,reviewCount:saved.reviewCount};
  }catch{return null;}
 }
+/** Postpone one genuinely due, unexposed lesson review. Preserve all history,
+ * and reject stale UI/sync values, pending feedback, or inaccessible lessons. */
+function postponeT02(lessonId,expectedDue){
+ const status=getT02Status(lessonId),now=Date.now();
+ if(!status||status.awaitingRating||status.dueAt===null||
+    status.dueAt!==expectedDue||status.dueAt>now)return false;
+ const key=t02Key(lessonId);if(!key)return false;
+ try{
+  const raw=localStorage.getItem(key);
+  if(!raw||raw.length>2400)return false;
+  const saved=JSON.parse(raw);
+  if(!t02Valid(saved)||saved.awaitingRating||saved.due!==expectedDue)return false;
+  const ok=t02Write({...saved,due:now+T02_DAY_MS},lessonId);
+  if(ok&&active==="T02"&&activeLessonId===lessonId){
+   phase=0;feedback="";reviewedInSession=false;viewSession++;tabDraft=null;draw();
+  }
+  return ok;
+ }catch{return false;}
+}
 function t02NotifySync(){
  if(typeof window.dispatchEvent==="function"&&typeof Event==="function")
   window.dispatchEvent(new Event("li:private-personal-change"));
 }
-function t02Write(data){
- const key=t02Key();if(!key)return false;
+function t02Write(data,lessonId=activeLessonId){
+ const key=t02Key(lessonId);if(!key)return false;
  try{
   const next={...data,schema:"li.spell.t02.v2",updatedAt:new Date().toISOString()};
   if(!t02Valid(next))return false;
@@ -1135,7 +1154,7 @@ function setup(){
    notifyReactSpell();
   });
  }
- window.LiSpellPractice={open,methods:Object.keys(exercises),getView,getT02Status,getLessonPracticeSummary,
+ window.LiSpellPractice={open,methods:Object.keys(exercises),getView,getT02Status,postponeT02,getLessonPracticeSummary,
   perform:performReact,setTab:switchTab,setT12Draft,setLessonContext,
   refreshNative:()=>{if(!reactOwnsSpell())switchTab(activeTab);}};
 }

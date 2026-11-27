@@ -197,7 +197,7 @@ export async function runBilingualReaderFixture(host:HTMLElement){
      bridge.liMethods={open:(m,p,l)=>{calls.push({method:m,practice:!!p,lessonId:l});return true;}};
      bridge.LiSpellPractice={...oldPractice,setLessonContext:l=>{contexts.push(l);return true;}};
      guide!.click();
-     check(calls.length===1&&/^T\\d{2}$/.test(calls[0].method),id+' wrong guide method');
+     check(calls.length===1&&/^T[0-9]{2}$/.test(calls[0].method),id+' wrong guide method: '+JSON.stringify(calls));
      check(lesson?contexts.length===1&&contexts[0]===id&&!calls[0].practice:
       calls[0].lessonId===id&&calls[0].practice,id+' wrong guide lesson context');
      if(lesson){

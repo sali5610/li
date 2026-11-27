@@ -9,6 +9,8 @@ import type {LearningPorts} from '../src/learning/ports';
 import {readingStamp,readingPositionKey,readPosition,type ReadingPosition} from '../src/learning/reading-position';
 import {lessonTitles} from '../src/learning/lesson-titles';
 import titles from '../../../content/editorial/lesson-titles.v1.json';
+import supplements from '../../../content/editorial/lesson-completeness-supplements.v1.json';
+const goalSupplements=supplements.lessons as Record<string,Record<'vi'|'en',{learningGoals?:string[];methodNote?:string}>>;
 import sample03 from '../../../content/lessons/L03-1-2.json';
 import sample09 from '../../../content/lessons/L09-1-2.json';
 import sample15 from '../../../content/lessons/L15-2-2.json';
@@ -88,7 +90,32 @@ export async function runBilingualReaderFixture(host:HTMLElement){
       const labels=Array.from(node.querySelectorAll('textarea')).map(x=>plain(Array.from(x.labels||[]).map(y=>y.textContent||'').join(' ')));
       check(authored.length===4&&authored.every((q:string,i:number)=>labels.some(l=>l.includes(plain(q).slice(0,Math.min(35,plain(q).length))))),id+' '+locale+' actual question text mismatch');
      }
+     if(phase==='guided'&&goalSupplements[id]?.[locale]?.methodNote){
+      const note=goalSupplements[id][locale].methodNote!;
+      const details=node.querySelector<HTMLDetailsElement>('.li-sectioned-method-details');
+      check(!!details,id+' missing optional methods');
+      const wasOpen=details!.open;details!.open=true;
+      check(normalize(details!.innerText).includes(normalize(note)),id+' '+locale+' missing optional method note');
+      details!.open=wasOpen;
+     }
      if(phase==='read'){
+      {
+       const proof=node.querySelector<HTMLElement>('[data-li-ontology-evidence]');
+       check(!!proof,id+' missing source-checked concept relation');
+       const disclosure=proof!.closest('details');
+       check(!!disclosure,id+' missing ontology disclosure');
+       const wasOpen=disclosure!.open;disclosure!.open=true;
+       check(proof!.innerText.includes(locale==='vi'?'chưa duyệt toàn bài':'not full lesson approval'),id+' relation review status');
+       const sources=Array.from(proof!.querySelectorAll('a'));
+       check(sources.length>=1&&sources.every(a=>a.href.startsWith('https://')&&a.rel.includes('noopener')),id+' source links');
+       disclosure!.open=wasOpen;
+      }
+      const goals=goalSupplements[id]?.[locale]?.learningGoals;
+      if(goals){
+       const group=node.querySelector<HTMLElement>('[data-li-supplement-goals]');
+       check(!!group&&goals.every(goal=>normalize(group!.innerText).includes(normalize(goal))),id+' '+locale+' supplemental objectives missing');
+       check(group!.querySelectorAll('li').length===goals.length,id+' duplicate objectives');
+      }
       check(!!node.querySelector('.li-learning-sources'),id+' missing sources');
       check((locale==='vi'?/Gợi ý tìm kiếm|Từ khóa tìm/:/Suggested searches|Search keywords|Research keywords/).test(node.querySelector('.li-learning-query-details summary')?.textContent||''),id+' query labels');
      }

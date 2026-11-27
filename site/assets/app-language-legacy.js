@@ -1,6 +1,7 @@
 /* Legacy VI/EN UX copy register. Source: Step 13 canon; authored, not machine-translated.
    Literal copy only. Human PO G2/real-device verification remains open. */
 window.LI_LEGACY_EN={
+  "Ôn đến hạn": "Due review",
   "li.": "li.",
   "90% người tham gia nói họ hài lòng. Vậy có đủ kết luận chưa?": "90% of respondents say they're satisfied. Is that enough to draw a conclusion?",
   "Nhóm UX khảo sát người đang dùng sản phẩm. 90% phản hồi tích cực, nên họ kết luận: “Ai cũng muốn tính năng này”.": "A UX team surveys current users. With 90% positive responses, they conclude: “Everyone wants this feature.”",

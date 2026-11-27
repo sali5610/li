@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import {readFileSync} from "node:fs";
+import {readFileSync,readdirSync} from "node:fs";
 import {createContentClient} from "../site/assets/li-content-adapter.mjs";
 const root=new URL("../site/content-packs/",import.meta.url);
 const requested=[];
@@ -304,7 +304,34 @@ const ontSupplements=JSON.parse(readFileSync(new URL('../content/editorial/lesso
 const ontCoverage={authored:0,canonicalPack:0,editorialDraft:0,conceptReferences:0,methodReferences:0,goalCoverage:0,primaryMethodCoverage:0,taskFitCoverage:0,methodTextNeedsReconciliation:[]};
 assert.equal(ontProjection.status,"editorial_lesson_projection_not_graph_promotion");
 assert.equal(ontTechniqueIds.size,13);
-assert.ok([...ontPackIds].every(id=>ontProjection.lessons[id]),"Every current canonical body must have a projection");
+// Discover independently from authored files, never from the ontology or a fixed lesson count.
+// The staging Reader imports every normalized draft via glob; the gate must see the same set.
+const listBodyIds=(directory,suffix)=>readdirSync(new URL(directory,import.meta.url),{withFileTypes:true})
+ .filter(f=>f.isFile()&&f.name.endsWith(suffix))
+ .map(f=>f.name.slice(0,-suffix.length));
+const canonicalBodyIds=listBodyIds("../content/lessons/",".json");
+const normalizedBodyIds=listBodyIds("../content/editorial/normalized/",".draft.v1.json");
+const normalizedIndex=JSON.parse(readFileSync(new URL("../content/editorial/normalized/index.v1.json",import.meta.url),"utf8"));
+function assertExactCoverage(expected,actual,label){
+ assert.equal(new Set(expected).size,expected.length,label+" duplicate source ID");
+ assert.equal(new Set(actual).size,actual.length,label+" duplicate entry");
+ const actualSet=new Set(actual),expectedSet=new Set(expected);
+ const missing=expected.filter(id=>!actualSet.has(id));
+ const extra=actual.filter(id=>!expectedSet.has(id));
+ assert.ok(!missing.length&&!extra.length,label+" missing=["+missing.join(",")+"] extra=["+extra.join(",")+"]");
+}
+assertExactCoverage(canonicalBodyIds,[...ontPackIds],"LI_CANONICAL_BODY_COVERAGE");
+assertExactCoverage(normalizedBodyIds,normalizedIndex.entries.map(x=>x.id),"LI_NORMALIZED_INDEX_COVERAGE");
+const expectedAuthoredIds=[...canonicalBodyIds,...normalizedBodyIds];
+const projectedIds=Object.keys(ontProjection.lessons);
+assertExactCoverage(expectedAuthoredIds,projectedIds,"LI_LESSON_ONTOLOGY_COVERAGE");
+// Negative controls: a new manuscript without projection and an orphan projection must fail.
+const futureId="__new_lesson_probe__";
+assert.throws(()=>assertExactCoverage([...expectedAuthoredIds,futureId],projectedIds,"LI_LESSON_ONTOLOGY_COVERAGE"),/missing=\[__new_lesson_probe__\]/);
+assert.throws(()=>assertExactCoverage(expectedAuthoredIds,[...projectedIds,futureId],"LI_LESSON_ONTOLOGY_COVERAGE"),/extra=\[__new_lesson_probe__\]/);
+const ontologyTitles=JSON.parse(readFileSync(new URL("../content/editorial/lesson-titles.v1.json",import.meta.url),"utf8"));
+assert.ok(expectedAuthoredIds.every(id=>ontologyTitles.lessons[id]?.vi?.trim()&&ontologyTitles.lessons[id]?.en?.trim()),"Every authored lesson must have a bilingual title mapping for the Reader fixture");
+console.log("LI_LESSON_ONTOLOGY_COVERAGE_PASS "+JSON.stringify({authored:expectedAuthoredIds.length,canonical:canonicalBodyIds.length,normalized:normalizedBodyIds.length,negativeControls:2}));
 for(const [id,p] of Object.entries(ontProjection.lessons)){
  const packed=ontPackIds.has(id);
  const expectedPath=packed?"content/lessons/"+id+".json":"content/editorial/normalized/"+id+".draft.v1.json";
@@ -331,7 +358,10 @@ for(const [id,p] of Object.entries(ontProjection.lessons)){
  const localIds=new Set(p.concepts.map(x=>x.id));
  assert.equal(localIds.size,p.concepts.length,id+" duplicate concept");
  assert.ok(localIds.has(p.relation.from)&&localIds.has(p.relation.to)&&p.relation.from!==p.relation.to,id+" dangling or self relation");
- for(const locale of ["vi","en"])assert.ok(p.relation.reason[locale]?.trim());
+ for(const locale of ["vi","en"]){
+  assert.ok(p.relation.reason[locale]?.trim(),id+" missing "+locale+" relation explanation");
+  assert.ok(p.analogy?.[locale]?.example?.trim()&&p.analogy?.[locale]?.limit?.trim(),id+" missing "+locale+" bounded analogy");
+ }
  for(const concept of p.concepts){
   assert.ok(concept.vi?.trim()&&concept.en?.trim(),id+" missing bilingual concept");
   const prior=ontKnownConcepts.get(concept.id);

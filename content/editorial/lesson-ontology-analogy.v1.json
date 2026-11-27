@@ -24,7 +24,23 @@
           "vi": "Yêu cầu mô tả một giải pháp; nhu cầu mô tả kết quả cần đạt.",
           "en": "A request names a solution; a need describes an outcome."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "GOV.UK — Learning about users and their needs",
+              "url": "https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs",
+              "section": "Writing user needs: problem rather than solution, evidence rather than assumptions"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Yêu cầu tính năng có thể chỉ là một giải pháp được đề xuất; cần nghiên cứu vấn đề thực. Không suy ra mọi yêu cầu đều sai.",
+            "en": "A feature request may describe a proposed solution; research the underlying problem. Not every request is mistaken."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -37,7 +53,25 @@
         }
       },
       "sourceRef": "L03-1-1",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L03-1-1.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T04"
+        ],
+        "sourcePath": "content/editorial/normalized/L03-1-1.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Phân loại ba phát biểu mới theo dấu hiệu nhu cầu hoặc giải pháp; giải thích dấu hiệu.",
+          "en": "Classify three fresh statements as need hypotheses or solutions and explain diagnostic cues."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L03-1-2": {
       "concepts": [
@@ -60,7 +94,23 @@
           "vi": "Câu hỏi dẫn dắt gài kỳ vọng; câu hỏi trung lập để người trả lời mô tả trải nghiệm.",
           "en": "Leading wording embeds an expectation; neutral wording leaves room for the person's experience."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "AAPOR — Best Practices for Survey Research",
+              "url": "https://aapor.org/standards-and-ethics/best-practices/",
+              "section": "Designing your questionnaire: avoid leading language"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Câu hỏi trung lập tránh gợi ý câu trả lời mong muốn; câu hỏi mở vẫn có thể dẫn dắt. Nguyên tắc về wording không tự loại bỏ mọi thiên lệch phỏng vấn.",
+            "en": "Neutral wording avoids pushing a preferred answer; open-ended questions can still be leading. Wording alone cannot remove all interview biases."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -73,7 +123,25 @@
         }
       },
       "sourceRef": "L03-1-2",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/lessons/L03-1-2.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T04"
+        ],
+        "sourcePath": "content/lessons/L03-1-2.json",
+        "practiceRef": "site/assets/spell-practice.js",
+        "suggestionRef": "site/assets/lesson-spell-suggestions.v0.1.json",
+        "independentRef": "content.localized.*.questions",
+        "action": {
+          "vi": "So sánh câu hỏi trung lập/dẫn dắt; T04 giải thích vì sao lời đáp không chứng minh tính năng tốt hơn.",
+          "en": "Contrast neutral and leading questions; T04 explains why a reply does not establish a better feature."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L03-1-3": {
       "concepts": [
@@ -96,7 +164,23 @@
           "vi": "Quan sát là điều ghi nhận; suy luận giải thích điều đó và cần kiểm chứng.",
           "en": "Observation records what happened; inference explains it and needs testing."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "GOV.UK — Analyse a research session",
+              "url": "https://www.gov.uk/service-manual/user-research/analyse-a-research-session",
+              "section": "Capture observations before grouping and interpreting them"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Ghi nguyên điều quan sát hoặc nghe được trước khi diễn giải; một suy luận cần thêm chứng cứ, không phải bản ghi nguyên văn.",
+            "en": "Record observed behavior or speech before interpreting it; an inference needs evidence and is not a verbatim observation."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -109,7 +193,25 @@
         }
       },
       "sourceRef": "L03-1-3",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L03-1-3.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T09",
+        "optionalTechniqueIds": [
+          "L2-T07"
+        ],
+        "sourcePath": "content/editorial/normalized/L03-1-3.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Đối chiếu hai bản ghi giả lập, truy provenance, tách quan sát/trích dẫn/suy luận và chỉ rõ chứng cứ thiếu.",
+          "en": "Compare two fictional records, trace provenance, distinguish observation/quote/inference and identify missing corroboration."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L03-2-1": {
       "concepts": [
@@ -132,7 +234,23 @@
           "vi": "Phân loại tổ chức khái niệm; điều hướng giúp tìm nội dung theo tác vụ.",
           "en": "Taxonomy organizes concepts; navigation supports finding content by task."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "NN/g — Taxonomy 101",
+              "url": "https://www.nngroup.com/articles/taxonomy-101/",
+              "section": "Taxonomy as backstage metadata structure complementing visible navigation"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Hệ phân loại chuẩn hóa cấu trúc và metadata; điều hướng là bề mặt giúp người dùng tìm nội dung. Không bắt buộc hai cấu trúc giống hệt nhau.",
+            "en": "Taxonomy standardizes structure and metadata; navigation exposes paths to content. They need not be identical."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -145,7 +263,25 @@
         }
       },
       "sourceRef": "L03-2-1",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L03-2-1.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T10"
+        ],
+        "sourcePath": "content/editorial/normalized/L03-2-1.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Phân biệt navigation, concept ID, alias và content model theo chức năng. T10 bổ trợ thử trùng nhãn/đa đường dẫn.",
+          "en": "Distinguish navigation, concept ID, alias and content model by function. Optional T10 tests label collisions and multiple paths."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L03-2-2": {
       "concepts": [
@@ -168,7 +304,23 @@
           "vi": "Card sorting khám phá cách nhóm; tree testing đánh giá khả năng tìm trên cấu trúc có sẵn.",
           "en": "Card sorting explores groupings; tree testing evaluates findability in an existing structure."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "NN/g — Card Sorting vs. Tree Testing",
+              "url": "https://www.nngroup.com/articles/card-sorting-tree-testing-differences/",
+              "section": "Definitions and different research purposes"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Card sorting khám phá cách nhóm nội dung; tree testing đo khả năng tìm trong cấu trúc đã có. Tree test không kiểm tra đầy đủ giao diện trực quan.",
+            "en": "Card sorting explores groupings; tree testing evaluates findability in a defined structure. A tree test does not evaluate the full visual interface."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -181,7 +333,25 @@
         }
       },
       "sourceRef": "L03-2-2",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L03-2-2.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T09"
+        ],
+        "sourcePath": "content/editorial/normalized/L03-2-2.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Chọn card sorting hay tree testing theo bốn mục tiêu nghiên cứu và nêu dấu hiệu quyết định.",
+          "en": "Choose card sorting or tree testing for four research purposes and explain the decisive cue."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L03-2-3": {
       "concepts": [
@@ -204,7 +374,28 @@
           "vi": "Một lượt tác vụ có kết quả riêng và có thể chứa nhiều sự kiện lỗi.",
           "en": "A task attempt has one outcome and may contain multiple error events."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "NN/g — Success Rate: The Simplest Usability Metric",
+              "url": "https://www.nngroup.com/articles/success-rate-the-simplest-usability-metric/",
+              "section": "Task success scoring and denominator"
+            },
+            {
+              "title": "NN/g — Usability 101",
+              "url": "https://www.nngroup.com/articles/usability-101-introduction-to-usability/",
+              "section": "Success rate and errors as distinct usability measures"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Tách kết quả của mỗi lượt tác vụ khỏi số lần mắc lỗi. Một lượt hoàn thành vẫn có thể chứa lỗi; cách phân loại lỗi cần quy ước trước.",
+            "en": "Separate each task outcome from error counts. A successful attempt may still contain errors; specify the error coding protocol first."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -217,7 +408,25 @@
         }
       },
       "sourceRef": "L03-2-3",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L03-2-3.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T09",
+        "optionalTechniqueIds": [
+          "L2-T06"
+        ],
+        "sourcePath": "content/editorial/normalized/L03-2-3.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Kiểm chứng claim dashboard bằng raw log, mẫu số, trợ giúp chưa ghi và metadata còn thiếu.",
+          "en": "Appraise a dashboard claim using raw logs, denominators, unmapped assistance and missing metadata."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-1-2": {
       "concepts": [
@@ -240,7 +449,25 @@
           "vi": "Chọn mẫu lệch là sai lệch hệ thống; biến thiên ngẫu nhiên là khác biệt do cơ hội lấy mẫu.",
           "en": "Selection bias is systematic distortion; random variation reflects chance differences across samples."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "OpenStax — Data, Sampling, and Variation in Data and Sampling",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling",
+              "section": "§1.2 variation in samples and critical evaluation"
+            }
+          ],
+          "relatedLessonIds": [
+            "L09-2-2"
+          ],
+          "scope": {
+            "vi": "Chọn mẫu lệch khác với biến thiên ngẫu nhiên giữa các mẫu. Tăng cỡ mẫu theo thiết kế phù hợp có thể giảm sai số ngẫu nhiên nhưng không tự sửa cơ chế chọn lệch.",
+            "en": "Systematic selection bias differs from chance variation across samples. Larger appropriately designed samples can reduce random error but cannot automatically repair biased selection."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -253,7 +480,25 @@
         }
       },
       "sourceRef": "L09-1-2",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/lessons/L09-1-2.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T07"
+        ],
+        "sourcePath": "content/lessons/L09-1-2.json",
+        "practiceRef": "site/assets/spell-practice.js",
+        "suggestionRef": "site/assets/lesson-spell-suggestions.v0.1.json",
+        "independentRef": "content.localized.*.questions",
+        "action": {
+          "vi": "Phân biệt cơ chế chọn mẫu với ngẫu nhiên; T07 phân biệt tính hợp lệ logic và tiền đề chưa được xác minh.",
+          "en": "Distinguish selection mechanisms from chance; T07 separates valid argument form from unsupported premises."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-1-3": {
       "concepts": [
@@ -276,7 +521,28 @@
           "vi": "Trung tâm mô tả giá trị điển hình; độ phân tán mô tả mức trải rộng.",
           "en": "Center describes typical location; dispersion describes spread."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "OpenStax — Measures of the Center of the Data",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data",
+              "section": "§2.5 mean and median"
+            },
+            {
+              "title": "OpenStax — Measures of the Spread of the Data",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/2-7-measures-of-the-spread-of-the-data",
+              "section": "§2.7 spread and standard deviation"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Trung tâm và độ phân tán mô tả hai thuộc tính khác nhau; cùng trung bình không bảo đảm cùng độ phân tán hoặc hình dạng.",
+            "en": "Location and spread describe different properties; equal means do not imply equal dispersion or shape."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -289,7 +555,25 @@
         }
       },
       "sourceRef": "L09-1-3",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L09-1-3.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T04"
+        ],
+        "sourcePath": "content/editorial/normalized/L09-1-3.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Đối chiếu ba nhóm có cùng mean/median nhưng range khác; nêu giới hạn suy rộng.",
+          "en": "Contrast three groups with equal mean/median but different ranges; bound generalization."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-2-1": {
       "concepts": [
@@ -312,7 +596,30 @@
           "vi": "Độ nhạy chia theo nhóm dương thật; PPV chia theo nhóm được cảnh báo dương.",
           "en": "Sensitivity conditions on actual positives; PPV conditions on predicted positives."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "OpenStax — Contingency Tables",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/3-4-contingency-tables",
+              "section": "§3.4 Example 3.21(c): conditional sample-space denominator"
+            },
+            {
+              "title": "scikit-learn — precision_recall_fscore_support",
+              "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html",
+              "section": "Definitions of precision and recall; binary pos_label and averaging scope"
+            }
+          ],
+          "relatedLessonIds": [
+            "L09-3-2"
+          ],
+          "scope": {
+            "vi": "Với lớp dương cố định trong phân loại nhị phân, sensitivity/recall = TP/(TP+FN), PPV/precision = TP/(TP+FP). Chỉ đối chiếu khi mẫu số khác 0; không áp dụng đồng nhất cho macro/micro-average.",
+            "en": "For a fixed positive class in binary classification, sensitivity/recall = TP/(TP+FN), PPV/precision = TP/(TP+FP). Compare only when denominators are nonzero; do not equate aggregate averaging schemes."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -325,7 +632,25 @@
         }
       },
       "sourceRef": "L09-2-1",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L09-2-1.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T03",
+        "optionalTechniqueIds": [
+          "L2-T07"
+        ],
+        "sourcePath": "content/editorial/normalized/L09-2-1.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Sau bước đã giải, tự điền true/false alerts và PPV với mẫu số đúng; bài độc lập dùng bộ khác.",
+          "en": "After a worked step, fill in true/false alerts and PPV with correct denominator; independent case is distinct."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-2-2": {
       "concepts": [
@@ -348,7 +673,30 @@
           "vi": "Khoảng tin cậy mô tả bất định theo giả định; sai lệch chọn mẫu có thể làm suy luận mất hiệu lực.",
           "en": "An interval describes uncertainty under assumptions; biased selection can invalidate inference."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "OpenStax — A Population Proportion",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/8-3-a-population-proportion",
+              "section": "§8.3 normal approximation and Example 8.10 repeated-sampling coverage"
+            },
+            {
+              "title": "OpenStax — Data, Sampling, and Variation",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling",
+              "section": "§1.2 Critical Evaluation and Sampling Bias"
+            }
+          ],
+          "relatedLessonIds": [
+            "L09-1-2"
+          ],
+          "scope": {
+            "vi": "Biên sai số lấy mẫu theo mô hình không tự hiệu chỉnh sai lệch do cơ chế chọn mẫu. Khoảng hẹp không chứng minh tính đại diện.",
+            "en": "A model-based sampling margin does not automatically correct selection bias. A narrow interval does not establish representativeness."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -361,7 +709,25 @@
         }
       },
       "sourceRef": "L09-2-2",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L09-2-2.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T03",
+        "optionalTechniqueIds": [
+          "L2-T07"
+        ],
+        "sourcePath": "content/editorial/normalized/L09-2-2.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Sau p-hat cho sẵn, tự tính SE, margin và endpoints; giải thích ý nghĩa frequentist.",
+          "en": "Given p-hat, compute SE, margin and endpoints; explain the frequentist interpretation."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-2-3": {
       "concepts": [
@@ -384,7 +750,28 @@
           "vi": "Hồi quy mô tả liên hệ; yếu tố nhiễu có thể tạo liên hệ không phản ánh tác động nhân quả.",
           "en": "Regression describes associations; confounding can create associations that do not reflect causal effects."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "OpenStax — The Regression Equation",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation",
+              "section": "§12.3 regression and association not causation"
+            },
+            {
+              "title": "OpenStax — Experimental Design and Ethics",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/1-4-experimental-design-and-ethics",
+              "section": "§1.4 randomized experiments and lurking variables"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Hồi quy có thể mô tả liên hệ hoặc hỗ trợ dự báo; nếu còn nhiễu, hệ số không tự chứng minh tác động nhân quả.",
+            "en": "Regression can describe associations or support prediction; under confounding a coefficient is not by itself causal evidence."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -397,7 +784,25 @@
         }
       },
       "sourceRef": "L09-2-3",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L09-2-3.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T07",
+        "optionalTechniqueIds": [
+          "L2-T06"
+        ],
+        "sourcePath": "content/editorial/normalized/L09-2-3.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Đối chiếu xu hướng gộp và từng nhóm, nhận diện tiền đề nhân quả còn thiếu và phép kiểm phân biệt.",
+          "en": "Compare pooled and within-group trends, identify missing causal assumptions and a discriminating test."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-3-1": {
       "concepts": [
@@ -420,7 +825,23 @@
           "vi": "Tập giữ lại dùng đánh giá độc lập; rò rỉ làm thông tin không được phép đi vào huấn luyện hoặc lựa chọn.",
           "en": "A holdout supports independent evaluation; leakage lets unavailable information enter fitting or selection."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "scikit-learn — Common pitfalls",
+              "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+              "section": "Data leakage: split first, do not fit on test data"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Giữ test ngoài fit và lựa chọn mô hình. Rò rỉ có thể đến từ tiền xử lý hoặc thông tin không sẵn có khi dự báo; kiểu split phụ thuộc mục tiêu.",
+            "en": "Keep the test set outside fitting and model selection. Leakage can arise through preprocessing or unavailable prediction-time information; the split depends on the objective."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -433,7 +854,23 @@
         }
       },
       "sourceRef": "L09-3-1",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L09-3-1.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T10",
+        "optionalTechniqueIds": [],
+        "sourcePath": "content/editorial/normalized/L09-3-1.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Phân rã train/validation/test và fit/tuning; thử trường hợp cùng buyer ở hai tập theo mục tiêu khách mới.",
+          "en": "Decompose split, fitting and tuning; test repeated buyers across splits against the new-customer objective."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-3-2": {
       "concepts": [
@@ -456,7 +893,30 @@
           "vi": "Precision tương ứng PPV, recall tương ứng sensitivity trong bài phân loại nhị phân.",
           "en": "Precision corresponds to PPV and recall to sensitivity in this binary classification lesson."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "scikit-learn — precision_recall_fscore_support",
+              "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html",
+              "section": "Definitions of precision and recall; binary pos_label and averaging scope"
+            },
+            {
+              "title": "OpenStax — Contingency Tables",
+              "url": "https://openstax.org/books/introductory-statistics-2e/pages/3-4-contingency-tables",
+              "section": "§3.4 Example 3.21(c): conditional sample-space denominator"
+            }
+          ],
+          "relatedLessonIds": [
+            "L09-2-1"
+          ],
+          "scope": {
+            "vi": "Hai bài dùng cùng khái niệm và mẫu số điều kiện; không coi precision/recall là chứng cứ hiệu năng thực từ dữ liệu giả lập.",
+            "en": "Both lessons use the same concepts and conditional denominators; fictional data do not establish real model performance."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -469,7 +929,25 @@
         }
       },
       "sourceRef": "L09-3-2",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L09-3-2.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T07"
+        ],
+        "sourcePath": "content/editorial/normalized/L09-3-2.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Đối chiếu hai threshold trên cùng dữ liệu bằng precision, recall, số cảnh báo và capacity.",
+          "en": "Compare thresholds on identical data using precision, recall, alert counts and capacity."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L09-3-3": {
       "concepts": [
@@ -492,7 +970,28 @@
           "vi": "Chỉ số theo nhóm mô tả sai sót; permutation importance mô tả mức phụ thuộc score vào feature theo phép thử.",
           "en": "Group metrics describe errors; permutation importance describes score dependence on features under a test."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "Fairlearn — Common fairness metrics",
+              "url": "https://fairlearn.org/main/user_guide/assessment/common_fairness_metrics.html",
+              "section": "Demographic parity, equal opportunity and equalized odds"
+            },
+            {
+              "title": "scikit-learn — Permutation feature importance",
+              "url": "https://scikit-learn.org/stable/modules/permutation_importance.html",
+              "section": "Score degradation under permutation; model and data dependence"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Chỉ số nhóm so sánh kết quả theo nhóm; hoán vị đánh giá độ phụ thuộc điểm số vào feature. Không suy ra nhân quả, kết luận pháp lý hay công bằng tuyệt đối.",
+            "en": "Group metrics compare outcomes across groups; permutation importance assesses score dependence on features. Neither supplies causal, legal or absolute fairness conclusions."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -505,7 +1004,25 @@
         }
       },
       "sourceRef": "L09-3-3",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L09-3-3.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T06",
+        "optionalTechniqueIds": [
+          "L2-T09"
+        ],
+        "sourcePath": "content/editorial/normalized/L09-3-3.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Đối chiếu ít nhất hai metric nhóm và giới hạn kết luận. Dùng lại bảng đã học để đánh giá claim mới; bài độc lập dùng dữ liệu khác.",
+          "en": "Contrast at least two group metrics and limits of inference. Reuses the taught table for a new claim; independent dataset differs."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L15-2-1": {
       "concepts": [
@@ -528,7 +1045,23 @@
           "vi": "Dự báo ước tính nhu cầu; quyết định bổ sung còn phụ thuộc tồn, lead time và chính sách.",
           "en": "Forecast estimates demand; replenishment also depends on inventory, lead time and policy."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "IBM — What is demand planning?",
+              "url": "https://www.ibm.com/think/topics/demand-planning",
+              "section": "Forecasting informs inventory planning and operational decisions"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Dự báo hỗ trợ quyết định tồn kho nhưng không phải chính sách đặt hàng; cần xét tồn kho, thời gian bổ sung và điều kiện vận hành.",
+            "en": "A forecast informs inventory decisions but is not a replenishment policy; inventory, lead time and operational constraints matter."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -541,7 +1074,25 @@
         }
       },
       "sourceRef": "L15-2-1",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L15-2-1.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T03",
+        "optionalTechniqueIds": [
+          "L2-T10"
+        ],
+        "sourcePath": "content/editorial/normalized/L15-2-1.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Điền bước thiếu trong forecast trung bình và signed error rồi giải thích khác biệt với quyết định đặt hàng.",
+          "en": "Fill missing forecast and signed-error steps; explain why forecasting is not an order decision."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L15-2-2": {
       "concepts": [
@@ -564,7 +1115,25 @@
           "vi": "Tồn kho an toàn có thể là phần đệm của ngưỡng đặt hàng lại theo mô hình trong bài; không phải lượng đặt.",
           "en": "Safety stock can contribute to the reorder threshold in the lesson model; it is not order quantity."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "NC State — Safety Stock Analysis",
+              "url": "https://scm.ncsu.edu/scm-articles/article/safety-stock-analysis-inventory-management-models-a-tutorial",
+              "section": "Safety stock and recalculating reorder point; order timing versus quantity"
+            }
+          ],
+          "relatedLessonIds": [
+            "L15-3-2"
+          ],
+          "scope": {
+            "vi": "Khi xét bất định, tồn kho an toàn là phần đệm bổ sung vào ngưỡng đặt lại trong mô hình bài học; không phải lượng đặt hàng.",
+            "en": "Under uncertainty, safety stock is an added buffer in the lesson's reorder threshold model, not the order quantity."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -577,7 +1146,25 @@
         }
       },
       "sourceRef": "L15-2-2",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/lessons/L15-2-2.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T03",
+        "optionalTechniqueIds": [
+          "L2-T10"
+        ],
+        "sourcePath": "content/lessons/L15-2-2.json",
+        "practiceRef": "site/assets/spell-practice.js",
+        "suggestionRef": "site/assets/lesson-spell-suggestions.v0.1.json",
+        "independentRef": "content.localized.*.questions",
+        "action": {
+          "vi": "T03 luyện ROP theo mẫu đã giải, bước giảm gợi ý và bài mới; T10 thử lead time tăng.",
+          "en": "T03 practices ROP with a worked step, fading and a new item; T10 tests increased lead time."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L15-2-3": {
       "concepts": [
@@ -600,7 +1187,23 @@
           "vi": "ETA là dự báo tại một thời điểm; actual là sự kiện đã được ghi nhận.",
           "en": "ETA is a prediction as of a time; actual is a recorded event."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "Oracle — Shipment Stop Details",
+              "url": "https://docs.oracle.com/en/cloud/saas/transportation/25c/otmol/planning/shipment_manager/multi_create_shipments/shipment_stop_dtail.htm",
+              "section": "Planned, estimated and actual shipment times"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "ETA là giá trị dự kiến, actual là thời điểm đã ghi nhận; các trường này được phân biệt trong tài liệu Oracle, không khẳng định mọi hệ thống có schema giống nhau.",
+            "en": "ETA is an estimate; actual is a recorded event time. Oracle documents distinct fields; this does not establish a universal schema."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -613,7 +1216,25 @@
         }
       },
       "sourceRef": "L15-2-3",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L15-2-3.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T10",
+        "optionalTechniqueIds": [
+          "L2-T06"
+        ],
+        "sourcePath": "content/editorial/normalized/L15-2-3.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Tách các mốc thời gian, tính ba chênh lệch và thử trường hợp chưa có actual.",
+          "en": "Separate timestamp roles, calculate three differences and test missing actual occurrence."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L15-3-1": {
       "concepts": [
@@ -636,7 +1257,23 @@
           "vi": "Khuếch đại biến động đơn upstream so với nhu cầu là dấu hiệu bullwhip; cơ chế cần chứng cứ.",
           "en": "Amplified upstream order variability relative to demand is a bullwhip pattern; its mechanism needs evidence."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "Lee, Padmanabhan & Whang (1997) — Information Distortion in a Supply Chain",
+              "url": "https://pubsonline.informs.org/doi/10.1287/mnsc.43.4.546",
+              "section": "Abstract: upstream orders may have greater variance than sales; four mechanisms"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "Bullwhip là khuếch đại biến động đơn hàng so với nhu cầu khi đi upstream; abstract hỗ trợ định nghĩa, không xác minh nguyên nhân của ví dụ giả lập.",
+            "en": "Bullwhip is amplified order variability relative to demand upstream; the abstract supports the definition, not a cause of a fictional example."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -649,7 +1286,25 @@
         }
       },
       "sourceRef": "L15-3-1",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L15-3-1.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T10",
+        "optionalTechniqueIds": [
+          "L2-T06"
+        ],
+        "sourcePath": "content/editorial/normalized/L15-3-1.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Phân rã ba tầng biến động, đề xuất giả thuyết cạnh tranh và thử biên stockout hoặc thông tin trễ.",
+          "en": "Decompose three levels of variability, propose competing explanations and test stockout or delayed reporting."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L15-3-2": {
       "concepts": [
@@ -672,7 +1327,30 @@
           "vi": "Gộp nhu cầu có thể giảm buffer dưới giả định tương quan thích hợp.",
           "en": "Pooling can reduce buffers under suitable correlation assumptions."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "MITx — SCM Key Concepts",
+              "url": "https://scx-static-assets.s3.amazonaws.com/SCx%20Key%20Concept%20Documents/MITx_MicroMasters_SCM_KeyConcepts.pdf",
+              "section": "Supply Chain Fundamentals p.99, Managing Multiple Locations (text extraction checked; page image unavailable)"
+            },
+            {
+              "title": "Bimpikis & Markakis — Inventory Pooling under Heavy-Tailed Demand",
+              "url": "https://web.stanford.edu/~kostasb/research/pooling/",
+              "section": "Management Science (2016), abstract on conditional inventory pooling benefits"
+            }
+          ],
+          "relatedLessonIds": [
+            "L15-2-2"
+          ],
+          "scope": {
+            "vi": "Gộp tồn kho có thể giảm đệm khi các điều kiện về nhu cầu và khả năng phục vụ phù hợp; không suy ra mọi mạng lưới đều tiết kiệm theo quy tắc căn bậc hai.",
+            "en": "Pooling can reduce buffers under appropriate demand and service conditions; no universal square-root saving is implied."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -685,7 +1363,25 @@
         }
       },
       "sourceRef": "L15-3-2",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L15-3-2.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T10",
+        "optionalTechniqueIds": [
+          "L2-T06"
+        ],
+        "sourcePath": "content/editorial/normalized/L15-3-2.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Tính buffer riêng/gộp, đổi tương quan thành 1 và nêu ràng buộc vận hành.",
+          "en": "Compute separate/pooled buffers, switch correlation to 1 and identify an operational constraint."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     },
     "L15-3-3": {
       "concepts": [
@@ -708,7 +1404,23 @@
           "vi": "CSL dùng mẫu số chu kỳ, fill rate dùng lượng nhu cầu; chúng không thay thế nhau.",
           "en": "CSL uses cycles as its denominator; fill rate uses demanded units; they are not interchangeable."
         },
-        "reviewState": "proposed"
+        "reviewState": "proposed",
+        "evidence": {
+          "status": "source_checked_relation_only",
+          "checkedOn": "2026-11-27",
+          "sources": [
+            {
+              "title": "Rossetti — Analysis of Inventory Systems",
+              "url": "https://rossetti.github.io/RossettiInventoryBook/08-Chapter8.html",
+              "section": "Continuous review systems: alpha cycle service and beta fill rate"
+            }
+          ],
+          "relatedLessonIds": [],
+          "scope": {
+            "vi": "CSL là xác suất không thiếu hàng trong một chu kỳ; unit fill rate là phần nhu cầu theo đơn vị được đáp ứng từ tồn kho. Chỉ so sánh khi định nghĩa và kỳ đo rõ.",
+            "en": "CSL is the probability of no stockout per cycle; unit fill rate is the fraction of unit demand met from stock. Compare only with clear definitions and measurement periods."
+          }
+        }
       },
       "analogy": {
         "vi": {
@@ -721,7 +1433,25 @@
         }
       },
       "sourceRef": "L15-3-3",
-      "reviewState": "proposed"
+      "reviewState": "proposed",
+      "sourcePath": "content/editorial/normalized/L15-3-3.draft.v1.json",
+      "methodFit": {
+        "status": "editorial_task_alignment_reviewed",
+        "checkedOn": "2026-11-27",
+        "primaryTechniqueId": "L2-T10",
+        "optionalTechniqueIds": [
+          "L2-T06"
+        ],
+        "sourcePath": "content/editorial/normalized/L15-3-3.draft.v1.json",
+        "practiceRef": "content.localized.*.sections[role=methods]",
+        "suggestionRef": null,
+        "independentRef": "content.localized.*.sections[role=independent]",
+        "action": {
+          "vi": "Tách service/cost/recovery, kiểm tra feasibility rồi siết budget để thử biên.",
+          "en": "Separate service/cost/recovery, assess feasibility and tighten the budget as a boundary test."
+        },
+        "evidenceLimit": "Task alignment only; optional, not measured efficacy, mastery, separate secondary completion or academic publication approval."
+      }
     }
   }
 }

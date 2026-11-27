@@ -73,7 +73,7 @@
     "kind": "Concept",
     "title": "Reorder point",
     "version": "0.1.0",
-    "reviewState": "proposed",
+    "reviewState": "verified",
     "publishState": "draft",
     "visibility": "public_curated",
     "rightsState": "first_party",
@@ -84,19 +84,19 @@
       }
     ],
     "provenance": {
-      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
-      "sourceSection": "Locked lesson §concepts; proposed stable concept identity",
-      "evidenceType": "editorial",
-      "checkedOn": "2026-11-20"
+      "sourceUrl": "https://scx-static-assets.s3.amazonaws.com/SCx%20Key%20Concept%20Documents/MITx_MicroMasters_SCM_KeyConcepts.pdf",
+      "sourceSection": "Supply Chain Fundamentals pp. 91–92, Continuous Review Policies (s,Q); reorder threshold s and inventory position notation",
+      "evidenceType": "documented",
+      "checkedOn": "2026-11-27"
     },
-    "note": "Worked example assumptions retained in locked text"
+    "note": "Source-checked concept: threshold of inventory position triggering replenishment in a continuous-review policy; distinct from quantity ordered."
   },
   {
     "id": "concept:wave1:safety-stock",
     "kind": "Concept",
     "title": "Safety stock",
     "version": "0.1.0",
-    "reviewState": "proposed",
+    "reviewState": "verified",
     "publishState": "draft",
     "visibility": "public_curated",
     "rightsState": "first_party",
@@ -107,11 +107,11 @@
       }
     ],
     "provenance": {
-      "sourceUrl": "https://app.notion.com/p/41b6cf6db72a8114af14feef43cdc467",
-      "sourceSection": "Locked lesson §concepts; proposed stable concept identity",
-      "evidenceType": "editorial",
-      "checkedOn": "2026-11-20"
+      "sourceUrl": "https://scx-static-assets.s3.amazonaws.com/SCx%20Key%20Concept%20Documents/MITx_MicroMasters_SCM_KeyConcepts.pdf",
+      "sourceSection": "Supply Chain Fundamentals pp. 91–92, Safety stock kσDL and level-of-service metrics; forecast error over lead time",
+      "evidenceType": "documented",
+      "checkedOn": "2026-11-27"
     },
-    "note": "Not equivalent to order quantity"
+    "note": "Source-checked buffer against uncertain lead-time demand; not an order quantity, and no universal service-level target is implied."
   }
 ]

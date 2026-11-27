@@ -96,7 +96,14 @@ cat > site/li-search-source-smoke.html <<'HTML'
  if(window.liSearch?.getMentorContext?.()!==null){
   fail("MENTOR_STALE_CONTEXT");return;
  }
- if(results.querySelector('[data-search-result="concept:wave1:reorder-point"]')){
+ if(!results.querySelector('[data-search-result="concept:wave1:reorder-point"]')||
+    !results.textContent.includes("L15-2-2")||
+    !Array.from(results.querySelectorAll("a")).some(a=>a.href.includes("MITx_MicroMasters_SCM_KeyConcepts.pdf"))||
+    results.textContent.includes("L09-1-2")){
+  fail("VERIFIED_INVENTORY_CONCEPT_OR_BRIDGE");return;
+ }
+ await query("Data leakage");
+ if(results.querySelector('[data-search-result="concept:lesson:data-leakage"]')){
   fail("PROPOSED_CONCEPT_LEAK");return;
  }
  await query("L09-1-1");

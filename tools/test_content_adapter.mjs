@@ -144,8 +144,22 @@ assert.ok(lessonSearch.results[0].links.some(x=>x.lessonId==="L03-1-2"&&
  x.relation==="RELATED_TO"));
 assert.equal((await c.searchKnowledge("Data Science")).results[0].id,"field:F09");
 assert.equal((await c.searchKnowledge("C09-1")).results[0].kind,"Course");
-assert.ok(!(await c.searchKnowledge("Reorder point")).results.some(x=>
- x.id==="concept:wave1:reorder-point"),"proposed concepts must remain hidden");
+// ONT-03C: inventory concepts are now source-verified. The draft bridge to statistics is still hidden.
+for(const [query,conceptId] of [
+ ["Reorder point","concept:wave1:reorder-point"],["Điểm đặt hàng lại","concept:wave1:reorder-point"],
+ ["Safety stock","concept:wave1:safety-stock"],["Tồn kho an toàn","concept:wave1:safety-stock"]
+]){
+ const hit=(await c.searchKnowledge(query)).results[0];
+ assert.equal(hit?.id,conceptId,query+" should resolve the verified canonical concept");
+ assert.ok(hit.links.some(x=>x.lessonId==="L15-2-2"&&x.relation==="TEACHES"&&x.sourceUrl.includes("MITx_MicroMasters_SCM_KeyConcepts.pdf")));
+ assert.ok(!hit.links.some(x=>x.lessonId&&x.lessonId!=="L15-2-2"),"do not promote an unreviewed bridge");
+}
+const stockRelation=navGraph.edges.find(e=>e.id==="edge:wave1:l15-rop-stock");
+assert.equal(stockRelation?.reviewState,"verified");
+assert.equal(stockRelation?.predicate,"RELATED_TO");
+assert.ok(stockRelation.reasonLocalized.vi&&stockRelation.reasonLocalized.en);
+assert.ok((await c.getBacklinks("concept:wave1:safety-stock")).some(e=>e.id===stockRelation.id&&e.reviewState==="verified"));
+assert.ok(navGraph.edges.some(e=>e.id==="edge:wave1:l09-l15-bridge"&&e.reviewState==="proposed"));
 assert.ok(!(await c.searchKnowledge("L09-1-1")).results.some(x=>
  x.id==="lesson:L09-1-1"),"outline-only lesson must not become a search result");
 assert.deepEqual((await c.searchKnowledge("L15-2-2")).results[0].links
@@ -275,3 +289,128 @@ assert.equal((await futureClient.searchKnowledge("L07-1-8")).status,"no_match",
  "not-yet-authored lesson IDs remain unavailable");
 
 console.log("LI_CONTENT_ADAPTER_PASS 8 groups / 15 fields / 45 courses / 135 lesson outlines, 3 full lessons, ontology graph and lazy packs");
+
+// ONT-03C: exercise actual authored lesson sources, not the old demo graph.
+// Personal-study projections remain editorial; never use them to promote search.
+const ontProjection=JSON.parse(readFileSync(new URL("../content/editorial/lesson-ontology-analogy.v1.json",import.meta.url),"utf8"));
+const ontRegistry=JSON.parse(readFileSync(new URL("../docs/ontology/registry.v0.1.json",import.meta.url),"utf8"));
+const ontMethods=JSON.parse(readFileSync(new URL("../docs/ontology/pedagogy/techniques.v0.2.json",import.meta.url),"utf8"));
+const ontTechniqueIds=new Set(ontMethods.entries.map(x=>x.id));
+const ontGraphById=new Map(navGraph.nodes.map(x=>[x.id,x]));
+const ontManifest=await c.manifest();
+const ontPackIds=new Set(ontManifest.courses.flatMap(x=>x.lessonIds));
+const ontKnownConcepts=new Map();
+const ontSupplements=JSON.parse(readFileSync(new URL('../content/editorial/lesson-completeness-supplements.v1.json',import.meta.url),'utf8')).lessons;
+const ontCoverage={authored:0,canonicalPack:0,editorialDraft:0,conceptReferences:0,methodReferences:0,goalCoverage:0,primaryMethodCoverage:0,taskFitCoverage:0,methodTextNeedsReconciliation:[]};
+assert.equal(ontProjection.status,"editorial_lesson_projection_not_graph_promotion");
+assert.equal(ontTechniqueIds.size,13);
+assert.ok([...ontPackIds].every(id=>ontProjection.lessons[id]),"Every current canonical body must have a projection");
+for(const [id,p] of Object.entries(ontProjection.lessons)){
+ const packed=ontPackIds.has(id);
+ const expectedPath=packed?"content/lessons/"+id+".json":"content/editorial/normalized/"+id+".draft.v1.json";
+ assert.equal(p.sourceRef,id);assert.equal(p.sourcePath,expectedPath);
+ const authored=JSON.parse(readFileSync(new URL("../"+p.sourcePath,import.meta.url),"utf8"));
+ assert.equal(authored.id,id);assert.equal(authored.kind,"Lesson");
+ const fit=p.methodFit;
+ assert.equal(fit.status,"editorial_task_alignment_reviewed");
+ assert.equal(fit.sourcePath,p.sourcePath);
+ assert.ok(fit.action.vi.trim()&&fit.action.en.trim()&&fit.evidenceLimit.includes("not measured efficacy"));
+ const fitIds=[fit.primaryTechniqueId,...fit.optionalTechniqueIds];
+ assert.ok(fit.optionalTechniqueIds.length<=1&&new Set(fitIds).size===fitIds.length);
+ assert.ok(fitIds.every(x=>ontMethods.entries.some(t=>t.id===x&&t.defaultOptional===true)));
+ assert.ok(fit.practiceRef!==fit.independentRef);
+ ontCoverage.taskFitCoverage++;
+ assert.ok(authored.provenance?.sourceUrl?.startsWith("https://"),id+" missing source provenance");
+ const crumbs=await c.getBreadcrumbs(id);
+ const field=id.slice(1,3),course="C"+id.slice(1,id.lastIndexOf("-"));
+ assert.deepEqual(crumbs.map(x=>x.kind),["group","field","course","lesson"],id+" broken hierarchy");
+ assert.deepEqual(crumbs.slice(1).map(x=>x.id),["F"+field,course,id]);
+ assert.equal(p.reviewState,"proposed");assert.equal(p.relation.reviewState,"proposed");
+ const rel=ontRegistry.predicates.find(x=>x.name===p.relation.predicate);
+ assert.ok(rel?.from.includes("Concept")&&rel?.to.includes("Concept"),id+" invalid concept relation");
+ const localIds=new Set(p.concepts.map(x=>x.id));
+ assert.equal(localIds.size,p.concepts.length,id+" duplicate concept");
+ assert.ok(localIds.has(p.relation.from)&&localIds.has(p.relation.to)&&p.relation.from!==p.relation.to,id+" dangling or self relation");
+ for(const locale of ["vi","en"])assert.ok(p.relation.reason[locale]?.trim());
+ for(const concept of p.concepts){
+  assert.ok(concept.vi?.trim()&&concept.en?.trim(),id+" missing bilingual concept");
+  const prior=ontKnownConcepts.get(concept.id);
+  if(prior)assert.deepEqual([concept.vi,concept.en],prior,concept.id+" inconsistent labels");
+  ontKnownConcepts.set(concept.id,[concept.vi,concept.en]);
+  if(concept.id.startsWith("concept:lesson:")){
+   assert.ok(!ontGraphById.has(concept.id),"Unreviewed projection escaped into canonical graph: "+concept.id);
+   for(const q of [concept.id,concept.vi,concept.en]){
+    const hit=await c.searchKnowledge(q);
+    assert.ok(hit.results.every(x=>x.id!==concept.id&&x.links.every(y=>y.id!==concept.id)));
+   }
+  }else assert.equal(ontGraphById.get(concept.id)?.kind,"Concept",id+" missing canonical concept reference");
+  ontCoverage.conceptReferences++;
+ }
+ if(packed){
+  const body=await c.getLesson(id);assert.equal(body.id,id);
+  assert.ok(body.learningOutcomes.vi.length&&body.learningOutcomes.en.length&&body.sources.length);
+  const structure=await c.getLessonStructure(id);
+  assert.deepEqual(structure.methodSuggestions.items.map(x=>x.techniqueId),fitIds);
+  assert.equal(fit.practiceRef,"site/assets/spell-practice.js");
+  assert.equal(fit.suggestionRef,"site/assets/lesson-spell-suggestions.v0.1.json");
+  for(const m of structure.methodSuggestions.items){
+   assert.ok(ontTechniqueIds.has(m.techniqueId));ontCoverage.methodReferences++;
+  }
+  ontCoverage.goalCoverage+=2;
+  ontCoverage.canonicalPack++;
+ }else{
+  assert.equal(authored.reviewState,"proposed");assert.equal(authored.publishState,"draft");
+  assert.equal(await c.getLesson(id),null,"Personal draft leaked into approved pack");
+  assert.equal((await c.searchKnowledge(id)).status,"no_match","Personal draft leaked into reviewed Search");
+  assert.deepEqual(await c.getRelatedLessons(id),[],"Personal draft leaked into reviewed graph expansion");
+  const methodSets={};
+  const primary=authored.content.technique?.primary;
+  assert.ok(ontTechniqueIds.has(primary),id+" invalid primary method");
+  assert.equal(primary,fit.primaryTechniqueId);
+  assert.equal(fit.practiceRef,"content.localized.*.sections[role=methods]");
+  assert.equal(fit.independentRef,"content.localized.*.sections[role=independent]");
+  assert.equal(authored.content.technique.status,"source_mapped_not_release_approved");
+  ontCoverage.primaryMethodCoverage++;
+  for(const locale of ["vi","en"]){
+   const local=authored.content.localized[locale];
+   assert.ok(local.sections.some(x=>x.role==="concept"&&x.body_md?.trim()),id+" missing concept section "+locale);
+   const extra=ontSupplements[id]?.[locale];
+   assert.ok(local.sections.some(x=>x.role==="goals"&&x.body_md?.trim())|| (Array.isArray(extra?.learningGoals)&&extra.learningGoals.length>0&&extra.learningGoals.every(x=>x.trim())),id+" missing effective reader goals "+locale);
+   ontCoverage.goalCoverage++;
+   const methodText=[...local.sections.filter(x=>x.role==="methods").flatMap(x=>[x.heading,x.body_md]),extra?.methodNote||""].join(" ");
+   const refs=[...new Set([primary,...[...methodText.matchAll(/\bT(0[1-9]|1[0-3])\b/g)].map(m=>"L2-T"+m[1])])].sort();
+   assert.ok(refs.every(x=>ontTechniqueIds.has(x)),id+" invalid technique identity");
+   assert.deepEqual(refs,[...fitIds].sort(),id+" "+locale+" method alignment drift");
+   const practices=local.sections.filter(x=>x.role==="methods");
+   const independent=local.sections.find(x=>x.role==="independent");
+   assert.ok(practices.length&&practices.every(x=>x.feedback_md?.trim()&&x.feedback_gate==="AFTER_MEANINGFUL_METHOD_ATTEMPT"));
+   assert.ok(independent?.model_answer_md?.trim()&&independent.model_answer_gate==="AFTER_VALID_INDEPENDENT_SUBMISSION");
+   assert.ok(practices.every(x=>x.id!==independent.id&&x.body_md!==independent.body_md));
+   methodSets[locale]=refs;ontCoverage.methodReferences+=refs.length;
+  }
+  if(!methodSets.vi.length||!methodSets.en.length||JSON.stringify(methodSets.vi)!==JSON.stringify(methodSets.en))ontCoverage.methodTextNeedsReconciliation.push({id,...methodSets});
+  ontCoverage.editorialDraft++;
+ }
+ ontCoverage.authored++;
+}
+// ONT-03C scoped evidence is editorial metadata, never a release/graph promotion.
+for(const id of Object.keys(ontProjection.lessons)){
+ const p=ontProjection.lessons[id],e=p.relation.evidence;
+ assert.equal(e.status,"source_checked_relation_only");
+ assert.equal(p.relation.reviewState,"proposed");
+ assert.ok(e.scope.vi.trim()&&e.scope.en.trim()&&e.sources.length>=1);
+ assert.equal(new Set(e.sources.map(x=>x.url)).size,e.sources.length);
+ assert.ok(e.sources.every(x=>x.url.startsWith("https://")&&x.title&&x.section));
+ for(const target of e.relatedLessonIds){
+  assert.notEqual(target,id);
+  const related=ontProjection.lessons[target];
+  assert.ok(related&&related.concepts.some(x=>p.concepts.some(y=>y.id===x.id)),id+" link must reuse a shared concept ID");
+ }
+ if(!ontPackIds.has(id))assert.equal((await c.searchKnowledge(id)).status,"no_match");
+}
+console.log("LI_ONT03C_RELATION_EVIDENCE_PASS "+Object.keys(ontProjection.lessons).length);
+assert.ok(navGraph.nodes.every(x=>x.visibility==="public_curated"));
+assert.ok(navGraph.edges.every(x=>x.visibility==="public_curated"));
+console.log("LI_ONT03C_SOURCE_BOUNDARY_PASS "+JSON.stringify(ontCoverage));
+// This is structural/visibility evidence only, not academic approval.
+// Method mentions are not separate enacted attempts or verified method fit.

@@ -683,6 +683,56 @@ function getT02Status(lessonId){
   return {dueAt:saved.due,awaitingRating:saved.awaitingRating,reviewCount:saved.reviewCount};
  }catch{return null;}
 }
+/* Read only the existing authorized learner projection. One canonical lesson
+ * can be completed once, even after several self-reviewed rounds. */
+function readLessonEvidence(lessonId){
+ try{
+  const raw=localStorage.getItem("li.review."+lessonId+".v1");
+  if(raw===null)return {submitted:false,completed:false,methods:[]};
+  const state=JSON.parse(raw);
+  if(!state||typeof state!=="object"||Array.isArray(state)||
+     (state.attemptHistory!==undefined&&!Array.isArray(state.attemptHistory)))return null;
+  const receipt=a=>!!a&&Array.isArray(a.submission)&&a.submission.length===4&&
+   a.submission.every(x=>typeof x==="string"&&x.trim().length>0)&&
+   Number.isFinite(Date.parse(a.submittedAt||a.submissionAt||""));
+  const rated=a=>Array.isArray(a.ratings)&&a.ratings.length===4&&a.ratings.every(x=>[0,1,2].includes(x));
+  const currentSubmitted=state.submitted===true&&receipt(state);
+  if(state.submitted===true&&!currentSubmitted||
+     state.reviewed===true&&(!currentSubmitted||!rated(state)))return null;
+  const prior=(state.attemptHistory||[]).some(a=>a?.answerRevealed===true&&receipt(a)&&rated(a));
+  const methods=Object.entries(state.methodAttempts||{}).filter(([id,r])=>
+   Object.prototype.hasOwnProperty.call(exercises,id)&&typeof r?.submittedAt==="string"&&
+   Number.isFinite(Date.parse(r.submittedAt))&&typeof r?.submission==="string"&&r.submission.trim().length>=12
+  ).map(([id])=>id);
+  return {submitted:currentSubmitted||prior,completed:prior||(currentSubmitted&&state.reviewed===true&&rated(state)),methods};
+ }catch{return null;}
+}
+/* Answer-free, read-only summary. Denominator is learnable registered IDs,
+ * never the outline, visit history or lesson language. No new writes/events. */
+function getStudyProgress(){
+ const owner=verifiedOwner();if(!owner)return null;
+ const ids=[...new Set(["L03-1-2","L09-1-2","L15-2-2",
+  ...Object.keys(window.liPersonalStudyRoutes||{}).filter(id=>/^L\d{2}-\d+-\d+$/.test(id))])];
+ const lessons=ids.map(id=>({id,evidence:readLessonEvidence(id),review:getT02Status(id)}));
+ const store=receiptStore(false);
+ const methods=new Set(lessons.flatMap(l=>l.evidence?.methods||[]));
+ let contextual=0,standalone=0;
+ if(store){
+  for(const [scope,records] of Object.entries(store.scopes)){
+   if(scope!=="standalone"&&!ids.includes(scope))continue;
+   for(const [method,r] of Object.entries(records)){
+    if(r.count<=0)continue;
+    methods.add(method);
+    if(scope==="standalone")standalone+=r.count;else contextual+=r.count;
+   }
+  }
+ }
+ if(lessons.some(l=>l.review?.reviewCount>0))methods.add("T02");
+ if(verifiedOwner()!==owner)return null;
+ return {lessons:lessons.map(l=>({id:l.id,submitted:l.evidence?.submitted??null,
+  completed:l.evidence?.completed??null,review:l.review})),
+  technique:store?{used:[...methods].sort(),total:Object.keys(exercises).length,contextual,standalone}:null};
+}
 /** Postpone one genuinely due, unexposed lesson review. Preserve all history,
  * and reject stale UI/sync values, pending feedback, or inaccessible lessons. */
 function canScheduleT02(lessonId=activeLessonId){
@@ -1176,7 +1226,7 @@ function setup(){
    notifyReactSpell();
   });
  }
- window.LiSpellPractice={open,methods:Object.keys(exercises),getView,getT02Status,postponeT02,getLessonPracticeSummary,
+ window.LiSpellPractice={open,methods:Object.keys(exercises),getView,getT02Status,postponeT02,getLessonPracticeSummary,getStudyProgress,
   perform:performReact,setTab:switchTab,setT12Draft,setLessonContext,
   refreshNative:()=>{if(!reactOwnsSpell())switchTab(activeTab);}};
 }

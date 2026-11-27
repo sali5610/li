@@ -178,9 +178,14 @@ export async function runBilingualReaderFixture(host:HTMLElement){
     check(!!guide,id+' missing guide CTA');
     if(guide!.closest('details'))guide!.closest('details')!.open=true;
     await until(()=>!guide!.disabled,id+' guide enabled');
+    // Wait for the new reader's two-frame position initialization before
+    // issuing a user-like scroll; the phase attribute can appear earlier.
+    await until(()=>records.get(readingPositionKey(id,uid))?.phase==='guided',id+' guide position initialized');
+    await nextFrame();await nextFrame();await nextFrame();
     const guideTop=Math.min(120,Math.max(0,document.documentElement.scrollHeight-window.innerHeight));
-    window.scrollTo(0,guideTop);
-    await until(()=>records.get(readingPositionKey(id,uid))?.phase==='guided'&&Math.abs((records.get(readingPositionKey(id,uid))?.top??-100)-guideTop)<3,id+' guide position saved');
+    check(guideTop>0,id+' guide fixture requires scrollable page');
+    window.scrollTo({top:guideTop,left:0,behavior:'instant'});
+    await until(()=>Math.abs(window.scrollY-guideTop)<3&&records.get(readingPositionKey(id,uid))?.phase==='guided'&&Math.abs((records.get(readingPositionKey(id,uid))?.top??-100)-guideTop)<3,id+' guide position saved');
     const bridge=window as unknown as {liMethods?:{open:(m:string,p?:boolean,l?:string)=>boolean};LiSpellPractice?:{setLessonContext?:(id:string)=>boolean}};
     const oldMethods=bridge.liMethods,oldPractice=bridge.LiSpellPractice;
     const html=document.documentElement,wasVerified=html.classList.contains('li-auth-verified'),wasAccount=html.classList.contains('li-account-open');

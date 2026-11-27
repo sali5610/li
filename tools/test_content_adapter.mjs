@@ -301,7 +301,7 @@ const ontManifest=await c.manifest();
 const ontPackIds=new Set(ontManifest.courses.flatMap(x=>x.lessonIds));
 const ontKnownConcepts=new Map();
 const ontSupplements=JSON.parse(readFileSync(new URL('../content/editorial/lesson-completeness-supplements.v1.json',import.meta.url),'utf8')).lessons;
-const ontCoverage={authored:0,canonicalPack:0,editorialDraft:0,conceptReferences:0,methodReferences:0,goalCoverage:0,primaryMethodCoverage:0,methodTextNeedsReconciliation:[]};
+const ontCoverage={authored:0,canonicalPack:0,editorialDraft:0,conceptReferences:0,methodReferences:0,goalCoverage:0,primaryMethodCoverage:0,taskFitCoverage:0,methodTextNeedsReconciliation:[]};
 assert.equal(ontProjection.status,"editorial_lesson_projection_not_graph_promotion");
 assert.equal(ontTechniqueIds.size,13);
 assert.ok([...ontPackIds].every(id=>ontProjection.lessons[id]),"Every current canonical body must have a projection");
@@ -311,6 +311,15 @@ for(const [id,p] of Object.entries(ontProjection.lessons)){
  assert.equal(p.sourceRef,id);assert.equal(p.sourcePath,expectedPath);
  const authored=JSON.parse(readFileSync(new URL("../"+p.sourcePath,import.meta.url),"utf8"));
  assert.equal(authored.id,id);assert.equal(authored.kind,"Lesson");
+ const fit=p.methodFit;
+ assert.equal(fit.status,"editorial_task_alignment_reviewed");
+ assert.equal(fit.sourcePath,p.sourcePath);
+ assert.ok(fit.action.vi.trim()&&fit.action.en.trim()&&fit.evidenceLimit.includes("not measured efficacy"));
+ const fitIds=[fit.primaryTechniqueId,...fit.optionalTechniqueIds];
+ assert.ok(fit.optionalTechniqueIds.length<=1&&new Set(fitIds).size===fitIds.length);
+ assert.ok(fitIds.every(x=>ontMethods.entries.some(t=>t.id===x&&t.defaultOptional===true)));
+ assert.ok(fit.practiceRef!==fit.independentRef);
+ ontCoverage.taskFitCoverage++;
  assert.ok(authored.provenance?.sourceUrl?.startsWith("https://"),id+" missing source provenance");
  const crumbs=await c.getBreadcrumbs(id);
  const field=id.slice(1,3),course="C"+id.slice(1,id.lastIndexOf("-"));
@@ -341,6 +350,9 @@ for(const [id,p] of Object.entries(ontProjection.lessons)){
   const body=await c.getLesson(id);assert.equal(body.id,id);
   assert.ok(body.learningOutcomes.vi.length&&body.learningOutcomes.en.length&&body.sources.length);
   const structure=await c.getLessonStructure(id);
+  assert.deepEqual(structure.methodSuggestions.items.map(x=>x.techniqueId),fitIds);
+  assert.equal(fit.practiceRef,"site/assets/spell-practice.js");
+  assert.equal(fit.suggestionRef,"site/assets/lesson-spell-suggestions.v0.1.json");
   for(const m of structure.methodSuggestions.items){
    assert.ok(ontTechniqueIds.has(m.techniqueId));ontCoverage.methodReferences++;
   }
@@ -354,6 +366,9 @@ for(const [id,p] of Object.entries(ontProjection.lessons)){
   const methodSets={};
   const primary=authored.content.technique?.primary;
   assert.ok(ontTechniqueIds.has(primary),id+" invalid primary method");
+  assert.equal(primary,fit.primaryTechniqueId);
+  assert.equal(fit.practiceRef,"content.localized.*.sections[role=methods]");
+  assert.equal(fit.independentRef,"content.localized.*.sections[role=independent]");
   assert.equal(authored.content.technique.status,"source_mapped_not_release_approved");
   ontCoverage.primaryMethodCoverage++;
   for(const locale of ["vi","en"]){
@@ -365,6 +380,12 @@ for(const [id,p] of Object.entries(ontProjection.lessons)){
    const methodText=[...local.sections.filter(x=>x.role==="methods").flatMap(x=>[x.heading,x.body_md]),extra?.methodNote||""].join(" ");
    const refs=[...new Set([primary,...[...methodText.matchAll(/\bT(0[1-9]|1[0-3])\b/g)].map(m=>"L2-T"+m[1])])].sort();
    assert.ok(refs.every(x=>ontTechniqueIds.has(x)),id+" invalid technique identity");
+   assert.deepEqual(refs,[...fitIds].sort(),id+" "+locale+" method alignment drift");
+   const practices=local.sections.filter(x=>x.role==="methods");
+   const independent=local.sections.find(x=>x.role==="independent");
+   assert.ok(practices.length&&practices.every(x=>x.feedback_md?.trim()&&x.feedback_gate==="AFTER_MEANINGFUL_METHOD_ATTEMPT"));
+   assert.ok(independent?.model_answer_md?.trim()&&independent.model_answer_gate==="AFTER_VALID_INDEPENDENT_SUBMISSION");
+   assert.ok(practices.every(x=>x.id!==independent.id&&x.body_md!==independent.body_md));
    methodSets[locale]=refs;ontCoverage.methodReferences+=refs.length;
   }
   if(!methodSets.vi.length||!methodSets.en.length||JSON.stringify(methodSets.vi)!==JSON.stringify(methodSets.en))ontCoverage.methodTextNeedsReconciliation.push({id,...methodSets});

@@ -3,6 +3,7 @@ import {discoveryLocale} from '../shell/discovery-locale.js';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {SectionedJourney} from './SectionedJourney';
+import {lessonConceptAliases} from './LessonUnderstanding';
 import type {SectionedLesson} from './SectionedJourney';
 import {createStagingLearningPorts} from './staging-ports';
 import {personalStudyLessonIds,personalStudyRoute} from './released-lessons';
@@ -56,11 +57,12 @@ export function searchPersonalStudy(query:string):Array<{
   const context=normalize(entry.field);
   const course=catalog.groups.flatMap(g=>g.fields.flatMap(f=>f.courses))
    .find(c=>c.lessons.some(l=>l.id===id))?.title||'';
-  const searchable=title+' '+code+' '+context+' '+normalize(course)+' '+body;
+  const concepts=normalize(lessonConceptAliases(id));
+  const searchable=title+' '+code+' '+context+' '+normalize(course)+' '+concepts+' '+body;
   const matched=tokens.filter(t=>searchable.includes(t));
   if(matched.length!==tokens.length)return null;
   const score=code===q?150:title.includes(q)?110:
-   code.includes(q)?100:normalize(course).includes(q)?75:
+   code.includes(q)?100:concepts.includes(q)?90:normalize(course).includes(q)?75:
    tokens.every(t=>(title+' '+context+' '+normalize(course)).includes(t))?65:25;
   return {id,title:lessonTitle(id,discoveryLocale(),entry.title),context:entry.field+' · '+course,score};
  }).filter((x):x is {id:string;title:string;context:string;score:number}=>x!==null)

@@ -1176,6 +1176,27 @@ window.addEventListener("resize",placeCompanion,{passive:true});
   if(importTrigger)importTrigger.disabled=liBackupImport.loading;
   window.dispatchEvent(new Event("li:settings-view-changed"));
  }
+ // Legacy files lack an account ID and deletion history. Add only new
+ // identities; never replace a current item, draft, or preference.
+ function liMergeLegacyLibrary(current,incoming){
+  const identity=(kind,x)=>{
+   if(kind==="questions")return "question:"+String(x.scenarioKey||x.question);
+   if(kind==="savedContent")return x.type+":"+x.id;
+   if(typeof x.id==="string"&&x.id)return "id:"+x.id;
+   return "legacy:"+JSON.stringify([x.title,x.revision,x.correct]);
+  };
+  const merged={};let added=0,skipped=0;
+  for(const kind of ["cases","questions","ideas","savedContent"]){
+   const items=current[kind].slice(),seen=new Set(items.map(x=>identity(kind,x)));
+   for(const x of incoming[kind]||[]){
+    const key=identity(kind,x);
+    if(seen.has(key)){skipped++;continue;}
+    seen.add(key);items.push(x);added++;
+   }
+   merged[kind]=items;
+  }
+  return {merged,added,skipped};
+ }
  async function liImportPersonalData(file){
   if(!file||liBackupImport.loading)return false;
   if(liHasPendingCaptureDraft()){
@@ -1186,6 +1207,12 @@ window.addEventListener("resize",placeCompanion,{passive:true});
   }
   liBackupImport.loading=true;liBackupImport.error="";liPublishBackup();
   try{
+   const owner=window.localStorage.getItem("li.sync.local-owner.v1");
+   const requiresOwner=Boolean(document.getElementById("li-staging-auth-root")||window.liReactRouter);
+   const authorized=()=>!requiresOwner||Boolean(owner&&
+    window.localStorage.getItem("li.sync.local-owner.v1")===owner&&
+    document.documentElement.classList.contains("li-auth-verified"));
+   if(!authorized())throw Error("owner");
    if(file.size>10*1024*1024)throw Error("large");
    const data=JSON.parse(await file.text());
    if(!data||data.schema!==1||!Array.isArray(data.cases)||!Array.isArray(data.questions)||
@@ -1198,16 +1225,25 @@ window.addEventListener("resize",placeCompanion,{passive:true});
    const oldRaw=window.localStorage.getItem(LI_STORAGE_KEY);
    const oldDraft=window.localStorage.getItem(LI_DRAFT_KEY);
    const oldNames=window.localStorage.getItem(LI_BUDDY_NAMES_KEY);
-   const existing=Boolean(processedCases.length||savedQuestions.length||collectedIdeas.length||savedContent.length||oldDraft||field?.value);
-   if(!window.confirm(existing
-     ?"Nhập sẽ THAY THẾ Bút Ký, Dấu Trang, bài/case đã lưu, Ý đã nhặt và bản nháp ở đây. Hãy xuất bản sao trước. Tiếp tục?"
-     :"Nhập bản sao vào thiết bị này?"))return false;
-   const next=JSON.stringify({schema:1,cases:data.cases,questions:data.questions,ideas:data.ideas||[],savedContent:data.savedContent||[],updatedAt:new Date().toISOString()});
+   if(!authorized()||liStorageError)throw Error("owner");
+   const {merged,added,skipped}=liMergeLegacyLibrary(
+    {cases:processedCases,questions:savedQuestions,ideas:collectedIdeas,savedContent},data);
+   const vi=window.liLanguage?.get?.()!=="en";
+   if(!window.confirm(vi?
+    "Bản sao cũ chỉ chứa một phần dữ liệu, không xác minh được tài khoản hoặc lịch sử xóa. Chỉ nhập tệp của chính bạn. Thêm "+added+" mục, bỏ qua "+skipped+" mục trùng; giữ dữ liệu hiện có. Tiếp tục?":
+    "This partial legacy backup has no verified account or deletion history. Import only your own file. Add "+added+" items, skip "+skipped+" duplicates and keep existing data. Continue?"))return false;
+   const next=JSON.stringify({schema:1,...merged,updatedAt:new Date().toISOString()});
+   if(next.length>300000)throw Error("large");
+   const nextDraft=oldDraft===null?data.draft:oldDraft;
+   const nextNames=oldNames===null&&data.buddyNames!==undefined?
+    JSON.stringify(Object.fromEntries(Object.keys(LI_BUDDY_DEFAULT_NAMES).map(k=>[k,liNormalizeBuddyName(data.buddyNames[k])]))):oldNames;
+   if(!authorized()||window.localStorage.getItem(LI_STORAGE_KEY)!==oldRaw||
+    window.localStorage.getItem(LI_DRAFT_KEY)!==oldDraft||window.localStorage.getItem(LI_BUDDY_NAMES_KEY)!==oldNames)throw Error("owner");
    try{
     window.localStorage.setItem(LI_STORAGE_KEY,next);
-    window.localStorage.setItem(LI_DRAFT_KEY,data.draft);
-    if(data.buddyNames!==undefined)window.localStorage.setItem(LI_BUDDY_NAMES_KEY,JSON.stringify(Object.fromEntries(Object.keys(LI_BUDDY_DEFAULT_NAMES).map(k=>[k,liNormalizeBuddyName(data.buddyNames[k])]))));
-    if(window.localStorage.getItem(LI_STORAGE_KEY)!==next||window.localStorage.getItem(LI_DRAFT_KEY)!==data.draft||(data.buddyNames!==undefined&&!window.localStorage.getItem(LI_BUDDY_NAMES_KEY)))throw Error("readback");
+    if(oldDraft===null)window.localStorage.setItem(LI_DRAFT_KEY,nextDraft);
+    if(oldNames===null&&nextNames!==null)window.localStorage.setItem(LI_BUDDY_NAMES_KEY,nextNames);
+    if(window.localStorage.getItem(LI_STORAGE_KEY)!==next||window.localStorage.getItem(LI_DRAFT_KEY)!==nextDraft||window.localStorage.getItem(LI_BUDDY_NAMES_KEY)!==nextNames)throw Error("readback");
    }catch(e){
     try{
      if(oldRaw===null)window.localStorage.removeItem(LI_STORAGE_KEY);else window.localStorage.setItem(LI_STORAGE_KEY,oldRaw);
@@ -1216,11 +1252,11 @@ window.addEventListener("resize",placeCompanion,{passive:true});
     }catch(recoverError){}
     throw Error("write");
    }
-   processedCases.splice(0,processedCases.length,...data.cases);
-   savedQuestions.splice(0,savedQuestions.length,...data.questions);
-   collectedIdeas.splice(0,collectedIdeas.length,...(data.ideas||[]));
-   savedContent.splice(0,savedContent.length,...(data.savedContent||[]));
-   if(data.buddyNames!==undefined){liBuddyNames=liRestoreBuddyNames();liRefreshBuddyNameInputs();}
+   processedCases.splice(0,processedCases.length,...merged.cases);
+   savedQuestions.splice(0,savedQuestions.length,...merged.questions);
+   collectedIdeas.splice(0,collectedIdeas.length,...merged.ideas);
+   savedContent.splice(0,savedContent.length,...merged.savedContent);
+   if(nextNames!==oldNames){liBuddyNames=liRestoreBuddyNames();liRefreshBuddyNameInputs();}
    liStorageError=false;
    if(window.liReactRouter){
     // React reads canonical state directly; notify mounted screens instead
@@ -1229,11 +1265,11 @@ window.addEventListener("resize",placeCompanion,{passive:true});
     window.dispatchEvent(new Event("li:inquiry-changed"));
     window.dispatchEvent(new Event("li:note-view-changed"));
    }else{
-    if(field)field.value=data.draft;
+    if(field)field.value=nextDraft;
     renderCaseArchive();renderSavedQuestions();window.liLibraryShelf?.renderHome();
     window.liLibraryShelf?.renderCollection();window.liBookmarks?.refresh();refreshQuestionBookmark();
    }
-   toast("Đã nhập "+data.cases.length+" Bút Ký, "+(data.questions.length+(data.savedContent||[]).length)+" Dấu Trang và "+collectedIdeas.length+" Ý đã nhặt.");
+   toast(vi?"Đã thêm "+added+" mục, bỏ qua "+skipped+" mục trùng.":"Added "+added+" items; skipped "+skipped+" duplicates.");
    return true;
   }catch(e){
    const message=e.message==="large"?"Tệp vượt quá 10 MB.":e.message==="write"?

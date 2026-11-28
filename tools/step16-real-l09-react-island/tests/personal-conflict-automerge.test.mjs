@@ -130,3 +130,18 @@ test('integrated app retries safe conflicts through signed outbox, not an insecu
  assert.match(source,/personalRemoteSnapshot\(uid,field\.type,field\.id,op\.payload\)/);
  assert.match(source,/window\.dispatchEvent\(new CustomEvent\('li:personal-sync-applied'/);
 });
+
+
+test('legacy partial import adds distinct entries and retains current versions',()=>{
+ const site=readFileSync(new URL('../../../site/index.html',import.meta.url),'utf8');
+ const from=site.indexOf(' function liMergeLegacyLibrary('),to=site.indexOf(' async function liImportPersonalData(',from);
+ assert.ok(from>=0&&to>from);
+ const merge=new Function(site.slice(from,to)+';return liMergeLegacyLibrary;')();
+ const current={cases:[caseNote('same','newer')],questions:[bookmark('current')],ideas:[idea('keep')],savedContent:[saved('lesson','L09-1-2')]};
+ const incoming={cases:[caseNote('same','older'),caseNote('new')],questions:[bookmark('old')],ideas:[idea('new')],savedContent:[saved('lesson','L09-1-2'),saved('case','new')]};
+ const result=merge(current,incoming);
+ assert.equal(result.added,3);assert.equal(result.skipped,3);
+ assert.equal(result.merged.cases[0].title,'newer');assert.equal(result.merged.questions[0].id,'current');
+ assert.equal(result.merged.ideas[0].id,'keep');assert.equal(current.cases.length,1);
+ assert.equal(merge(result.merged,incoming).added,0);
+});

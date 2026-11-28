@@ -350,8 +350,8 @@ export function Settings(){
        'Tệp JSON chỉ gồm Bút Ký, Ý đã nhặt, Dấu Trang và tên gọi Lão Lý; bản nháp legacy nếu có. KHÔNG gồm Nhật Ký, Check-in, tiến độ học, lịch ôn Thần Chú, lịch nhắc hay toàn bộ cài đặt. Bản nháp Nhặt Ý chưa lưu có thể vắng mặt.',
        'This JSON includes case notes, captured ideas, bookmarks, Elder Ly nicknames and any legacy draft. It does NOT include Journal, Check-ins, learning progress, spell review schedules, reminders or all settings. Unsaved React Capture drafts may be missing.')}</Text>
      <Text role="support">{copy(
-      'Nhập tệp thay thế ghi chú và Dấu Trang hiện có sau khi xác nhận. Đây không phải bản sao toàn bộ tài khoản trước khi xóa dữ liệu máy.',
-      'Import replaces existing notes and bookmarks after confirmation. This is not a complete account backup before clearing device data.')}</Text>
+      'Nhập bản sao cũ chỉ bổ sung mục chưa có, giữ ghi chú và Dấu Trang hiện tại. Tệp không xác minh được tài khoản hay lịch sử xóa; chỉ dùng tệp của chính bạn.',
+      'Legacy import adds missing items and preserves current notes and bookmarks. The file has no verified account or deletion history; use only your own file.')}</Text>
      </Card>
      <Card variant="raised" className="li-react-setting-card li-diary-privacy">
       <div><div className="kicker">{copy('QUYỀN RIÊNG TƯ','PRIVACY')}</div>

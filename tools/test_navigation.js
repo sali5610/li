@@ -203,12 +203,12 @@ assert.match(nativeBackup,/document\.getElementById\("li-staging-auth-root"\)\)r
  "No hidden native backup event delegation in invited React app");
 assert.match(nativeBackup,/importInput\?\.addEventListener\("change"/,
  "Standalone native backup input still works");
-const importFrom=html.indexOf(" async function liImportPersonalData(file){");
+const importFrom=html.indexOf(" function liMergeLegacyLibrary(current,incoming){");
 const importTo=html.indexOf(" window.liPersonalBackup=Object.freeze",importFrom);
 assert.ok(importFrom>=0&&importTo>importFrom,"Locate validated backup importer");
 const importSource=helperSource+html.slice(importFrom,importTo);
 const emittedImport=[],dataStore=new Map(),nativeRenders=[];
-let pendingImportCapture="Uncommitted React Capture text";
+let pendingImportCapture="Uncommitted React Capture text",importVerified=false;
 const failNative=name=>()=>nativeRenders.push(name);
 const importData={
  schema:1,cases:[{title:"Imported",revision:"Sample",correct:false}],
@@ -223,6 +223,7 @@ const importSandbox={
  field:{value:"OLD_HIDDEN_DRAFT"},processedCases:[],savedQuestions:[],collectedIdeas:[],savedContent:[],
  liStorageError:false,liBuddyNames:{},liRestoreBuddyNames(){return{};},liRefreshBuddyNameInputs(){},
  liNormalizeBuddyName:x=>x,Date,JSON,Event:class{constructor(type){this.type=type;}},
+ document:{getElementById:()=>null,documentElement:{classList:{contains:name=>name==="li-auth-verified"&&importVerified}}},
  window:{
   liReactRouter:{},liCaptureUi:{getDraft:()=>pendingImportCapture},
   localStorage:{
@@ -248,6 +249,13 @@ vm.runInContext(importSource+"\nliImportPersonalData(backupFile)",importContext)
  assert.equal(importSandbox.savedContent.length,0,"Blocked import must not mutate records");
  assert.equal(emittedImport.length,0,"Blocked import must not redraw any React data");
  pendingImportCapture="";
+ assert.equal(await vm.runInContext("liImportPersonalData(backupFile)",importContext),false,"Unverified account cannot import");
+ assert.equal(dataStore.size,0);
+ dataStore.set("li.sync.local-owner.v1","invited-A");importVerified=true;
+ importContext.switchedFile={size:512,text:async()=>{dataStore.set("li.sync.local-owner.v1","invited-B");return JSON.stringify(importData);}};
+ assert.equal(await vm.runInContext("liImportPersonalData(switchedFile)",importContext),false,"Account change during file read denies import");
+ assert.equal(dataStore.size,1,"Only owner marker changes; no imported data");
+ dataStore.set("li.sync.local-owner.v1","invited-A");
  const ok=await vm.runInContext("liImportPersonalData(backupFile)",importContext);
  assert.equal(ok,true,"Validated React backup import succeeds after draft is handled");
  assert.equal(dataStore.get("li.private.case-draft.v1"),"IMPORTED_REACT_DRAFT");
@@ -257,7 +265,15 @@ vm.runInContext(importSource+"\nliImportPersonalData(backupFile)",importContext)
   "li:library-view-changed,li:inquiry-changed,li:note-view-changed",
   "React Library/Case/Note surfaces refresh from canonical imported data");
  assert.equal(importSandbox.savedContent.length,1);
- console.log("PASS S118 native+React routing and canonical React backup import/export");
+ const next={...importData,cases:[{title:"Second",revision:"New",correct:true}],ideas:[{id:"idea-1",text:"Old conflicting content",savedAt:"2026-11-20"},{id:"idea-2",text:"New idea",savedAt:"2026-11-22"}],draft:"DO NOT OVERWRITE"};
+ importContext.nextFile={size:512,text:async()=>JSON.stringify(next)};
+ assert.equal(await vm.runInContext("liImportPersonalData(nextFile)",importContext),true);
+ assert.equal(importSandbox.processedCases.length,2);
+ assert.equal(importSandbox.collectedIdeas.length,2);
+ assert.equal(importSandbox.collectedIdeas[0].text,"Idea");
+ assert.equal(dataStore.get("li.private.case-draft.v1"),"IMPORTED_REACT_DRAFT");
+ assert.equal(importSandbox.savedContent.length,1);
+ console.log("PASS S118 native+React routing, owner-gated non-destructive React backup import/export");
 }).catch(error=>{console.error(error);process.exitCode=1;});
 
 

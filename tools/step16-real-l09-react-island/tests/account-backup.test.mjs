@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import 'fake-indexeddb/auto';
 import {PrivateDeviceStore} from '../.sync-test/local-dexie.js';
-import {exportAccountBackup,restoreAccountBackup} from '../.sync-test/account-backup.js';
+import {exportAccountBackup,exportAuthorizedAccountBackup,restoreAccountBackup} from '../.sync-test/account-backup.js';
 import {storageKey,kinds} from '../.sync-test/contract.js';
 
 const owner='backup-owner',other='other-owner';
@@ -67,4 +67,26 @@ test('mid-import failure rolls back all new records and outbox entries, preservi
   target.edit=original;
   assert.deepEqual(await restoreAccountBackup(target,owner,json),{restored:2,skipped:0});
  }finally{await clean(source,target);}
+});
+
+
+test('authorized export fails closed before read and when session changes during read; no writes',async()=>{
+ const source=make();
+ try{
+  await source.edit(owner,'note','one',{text:'owner note'});
+  await source.edit(other,'note','two',{text:'other note'});
+  let allowed=false,reads=0;
+  const original=source.accountRecords.bind(source);
+  source.accountRecords=async(...args)=>{reads++;const rows=await original(...args);allowed=false;return rows;};
+  await assert.rejects(exportAuthorizedAccountBackup(source,owner,()=>allowed),/BACKUP_OWNER_REQUIRED/);
+  assert.equal(reads,0);
+  allowed=true;
+  await assert.rejects(exportAuthorizedAccountBackup(source,owner,()=>allowed),/BACKUP_OWNER_CHANGED/);
+  assert.equal(reads,1);
+  source.accountRecords=original;allowed=true;
+  const result=await exportAuthorizedAccountBackup(source,owner,()=>allowed);
+  assert.match(result,/owner note/);assert.doesNotMatch(result,/other note/);
+  assert.equal((await source.pending(owner)).length,1);
+  assert.equal((await source.pending(other)).length,1);
+ }finally{await clean(source);}
 });

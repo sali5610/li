@@ -37,9 +37,11 @@ test('lesson UI and persisted offline sync share validator, and a conflicting at
  const ui=readFileSync(new URL('../src/learning/staging-ports.ts',import.meta.url),'utf8');
  const sync=readFileSync(new URL('../src/auth/learner-sync.ts',import.meta.url),'utf8');
  const ports=readFileSync(new URL('../src/learning/ports.ts',import.meta.url),'utf8');
+ const shared=readFileSync(new URL('../src/auth/private-state.ts',import.meta.url),'utf8');
  assert.match(ui,/import \{validMethodAttempts\} from '\.\/validate-method-attempts\.js'/);
- assert.match(sync,/import \{validMethodAttempts\} from '\.\.\/learning\/validate-method-attempts\.js'/);
- assert.match(sync,/!validMethodAttempts\(a\)/);
+ assert.match(sync,/parseLearnerAttempt as attempt/);
+ assert.match(shared,/import \{validMethodAttempts\} from '\.\.\/learning\/validate-method-attempts\.js'/);
+ assert.match(shared,/!validMethodAttempts\(a\)/);
  assert.match(sync,/if\(pending\?\.conflict\)return 'conflict'/);
  assert.match(ports,/type SyncState = 'on-device'\|'queued'\|'synced'\|'conflict'\|'unavailable'/);
 });

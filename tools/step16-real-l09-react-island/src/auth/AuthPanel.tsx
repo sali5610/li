@@ -1,7 +1,9 @@
 import {authoredCopy} from '../shell/discovery-locale.js';
-import React,{useEffect,useState} from 'react';
+import {learnableLessonIds} from '../learning/released-lessons.js';
+import {lessonTitle} from '../learning/lesson-titles.js';
+import React,{useEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
-import {Button,Card,Heading,Text} from '../../../../design-system/react/index';
+import {Button,Card,Heading,InlineFeedback,Text,SelectField} from '../../../../design-system/react/index';
 import '../../../../design-system/react/atoms.css';
 import '../../../../design-system/react/components.css';
 import {checkInviteAccess,safeInviteErrorCode} from '../sync/invite-access.js';
@@ -16,10 +18,81 @@ import {VaultSettings} from './VaultSettings.js';
 import {clearCurrentVault,currentVault} from '../sync/e2ee-cloud.js';
 const E2EE_PILOT=import.meta.env.VITE_LI_E2EE_PILOT==='1';
 import {prepareLearnerAccount,startLearnerSync,journalCloudConsent,changeJournalCloudConsent,
- listPrivateConflicts,resolvePrivateConflict,type PrivateConflictChoice,type SyncReport} from './learner-sync.js';
+ listPrivateConflicts,resolvePrivateConflict,downloadLearnerAccountBackup,restoreLearnerLocalBackup,deleteLearnerLesson,type PrivateConflictChoice,type SyncReport} from './learner-sync.js';
 
 type Locale='vi'|'en';
 type Access='checking'|'granted'|'offline'|'denied'|'error';
+function AccountBackupDownload({accountId,locale}:{accountId:string;locale:Locale}){
+ const [state,setState]=useState<'idle'|'loading'|'requested'|'error'>('idle');
+ const [restore,setRestore]=useState<Awaited<ReturnType<typeof restoreLearnerLocalBackup>>|null>(null);
+ const [restoreState,setRestoreState]=useState<'idle'|'loading'|'error'>('idle');
+ const input=useRef<HTMLInputElement>(null);
+ const [selectedLesson,setSelectedLesson]=useState('');
+ const [deleteState,setDeleteState]=useState<'idle'|'loading'|'queued'|'already-deleted'|'error'>('idle');
+ const vi=locale==='vi';
+ async function deleteLesson(){
+  if(!selectedLesson||deleteState==='loading')return;
+  const name=lessonTitle(selectedLesson,locale,selectedLesson);
+  if(!window.confirm(vi?'Xóa toàn bộ bài làm và lịch sử làm bài của '+name+'? Không thể hoàn tác; các bài khác, lịch ôn độc lập, Bút Ký và Nhật Ký giữ nguyên.':'Delete all saved attempts and attempt history for '+name+'? This cannot be undone. Other lessons, separate reviews, notes and Journal stay unchanged.'))return;
+  setDeleteState('loading');
+  try{setDeleteState(await deleteLearnerLesson(accountId,selectedLesson));}
+  catch{setDeleteState('error');}
+ }
+ async function importLocal(file:File){
+  setRestore(null);setRestoreState('loading');
+  try{setRestore(await restoreLearnerLocalBackup(accountId,file));setRestoreState('idle');}
+  catch{setRestoreState('error');}
+ }
+ async function download(){
+  if(state==='loading')return;
+  setState('loading');
+  try{await downloadLearnerAccountBackup(accountId);setState('requested');}
+  catch{setState('error');}
+ }
+ return <section aria-label={vi?'Xuất dữ liệu học':'Export learning records'}>
+  <Heading level={4} role="titleSmall">{vi?'Bản sao dữ liệu học':'Learning records backup'}</Heading>
+  <Text role="support">{vi?
+   'Xuất bản ghi đồng bộ và dữ liệu học đã lưu trên máy: tiến độ, bản nháp, lịch ôn, lịch nhắc trong app, Nhật Ký và Check-in. Không gồm dữ liệu chỉ có trên cloud, khóa đăng nhập/mã hóa hay trạng thái đăng ký push. Tệp JSON không mã hóa, có thông tin riêng tư; hãy giữ an toàn.':
+   'Export synced records and saved device data: progress, drafts, review schedules, in-app reminders, Journal and Check-ins. Excludes cloud-only data, login/encryption keys and push subscription state. The JSON is unencrypted and contains private information; keep it safe.'}</Text>
+  <Button variant="secondary" loading={state==='loading'} onClick={()=>void download()}>
+   {vi?'Xuất dữ liệu học (.json)':'Export learning data (.json)'}</Button>
+  {state==='error'&&<InlineFeedback tone="error" message={vi?
+   'Không xuất được dữ liệu. Kiểm tra tài khoản và thử lại.':'Could not export data. Check your account and retry.'}/>}
+  {state==='requested'&&<InlineFeedback tone="info" message={vi?
+   'Đã yêu cầu tải tệp. Kiểm tra mục Tệp đã tải về.':'Download requested. Check your downloaded files.'}/>}
+  <Text role="support">{vi?
+   'Chỉ thêm dữ liệu còn thiếu. Khi online, kiểm tra Neon trước khi đưa tiến độ và bản ghi học vào hàng đợi đồng bộ. Không ghi đè dữ liệu đang có, khôi phục dấu xóa hay thay đổi consent.':
+   'Only add missing data. When online, check Neon before queuing progress and learning records for sync. Never overwrite existing data, restore deleted records or change consent.'}</Text>
+  <Button variant="secondary" disabled={restoreState==='loading'||state==='loading'} onClick={()=>input.current?.click()}>
+   {vi?'Khôi phục dữ liệu học (.json)':'Restore learning data (.json)'}</Button>
+  <input ref={input} type="file" accept=".json,application/json" hidden
+   onChange={event=>{const file=event.currentTarget.files?.[0];event.currentTarget.value='';if(file)void importLocal(file);}}/>
+  {restoreState==='loading'&&<InlineFeedback tone="loading" message={vi?'Đang kiểm tra và khôi phục…':'Checking and restoring…'}/>}
+  {restoreState==='error'&&<InlineFeedback tone="error" message={vi?
+   'Không hoàn tất khôi phục. Kiểm tra đúng tài khoản, tệp JSON và dữ liệu trên máy rồi thử lại.':
+   'Restore did not complete. Check the account, JSON file and device data before retrying.'}/>}
+  {restore&&<InlineFeedback tone="info" message={vi?
+   'Trên máy: đã thêm '+restore.restored+', bỏ qua '+restore.skipped+'.':
+   'On device: added '+restore.restored+', skipped '+restore.skipped+'.'}/>}
+  {restore?.signed&&<InlineFeedback tone="info" message={vi?
+   'Đồng bộ: '+restore.signed.queued+' bản ghi đang chờ gửi; '+restore.signed.skipped+' bản bỏ qua; '+restore.signed.unresolved+' bản chưa xử lý.':
+   'Sync: '+restore.signed.queued+' records queued, '+restore.signed.skipped+' skipped, '+restore.signed.unresolved+' unresolved.'}/>}
+  {restore&&restore.signedStatus!=='queued'&&<InlineFeedback tone="info" message={vi?
+   'Chưa khôi phục phần đồng bộ. Giữ tệp và thử lại khi kết nối Neon và mở khóa dữ liệu (nếu có).':
+   'Synced recovery did not complete. Keep the file and retry with Neon connected and the vault unlocked if applicable.'}/>}
+  <Heading level={4} role="titleSmall">{vi?'Xóa bài làm đã lưu':'Delete saved lesson attempts'}</Heading>
+  <Text role="support">{vi?'Chọn một bài để xóa bài làm và lịch sử làm bài trên máy, đồng thời gửi yêu cầu xóa tới Neon. Cần online và không có dữ liệu đang chờ đồng bộ. Không xóa tài khoản, ghi chú hay lịch ôn độc lập.':'Choose one lesson to remove its saved attempts and queue deletion on Neon. Requires an online session and no pending edits for that lesson. Does not delete the account, notes or separate review schedules.'}</Text>
+  <SelectField label={vi?'Bài học':'Lesson'} value={selectedLesson}
+   options={[{value:'',label:vi?'Chọn bài học':'Select a lesson'},...learnableLessonIds.map(id=>({value:id,label:lessonTitle(id,locale,id)}))]}
+   disabled={deleteState==='loading'} onChange={value=>{setSelectedLesson(value);setDeleteState('idle');}}/>
+  <Button variant="secondary" disabled={!selectedLesson||deleteState==='loading'||restoreState==='loading'||state==='loading'}
+   onClick={()=>void deleteLesson()}>{vi?'Xóa bài làm':'Delete lesson attempts'}</Button>
+  {deleteState==='loading'&&<InlineFeedback tone="loading" message={vi?'Đang kiểm tra phiên bản…':'Checking revision…'}/>}
+  {deleteState==='queued'&&<InlineFeedback tone="info" message={vi?'Đã xóa bản sao trên máy và đưa yêu cầu xóa vào hàng đợi. Chưa xác nhận xóa trên Neon.':'Device copy removed and deletion queued. Neon deletion is not yet confirmed.'}/>}
+  {deleteState==='already-deleted'&&<InlineFeedback tone="info" message={vi?'Neon đã có dấu xóa; bản sao trên máy đã được dọn.':'Neon already has a deletion marker; the device copy was cleared.'}/>}
+  {deleteState==='error'&&<InlineFeedback tone="error" message={vi?'Chưa hoàn tất xóa. Kiểm tra kết nối, trạng thái đồng bộ và thử lại.':'Deletion did not complete. Check connection and sync status before retrying.'}/>}
+ </section>;
+}
 const syncCopy={
  vi:{checking:'Đang kết nối tiến độ học với Neon…',saved:'Đã đồng bộ dữ liệu được phép lưu trên Neon.',empty:'Đã kết nối Neon. Tiến độ sẽ tự đồng bộ khi học.',queued:'Đã lưu, chờ đồng bộ với Neon.',offline:'Đang offline; tiến độ vẫn lưu trên máy và sẽ thử lại.',conflict:'Hai thiết bị có tiến độ khác nhau. Dữ liệu được giữ, chưa ghi đè.',error:'Chưa đồng bộ được với Neon; tiến độ vẫn lưu trên máy.'},
  en:{checking:'Connecting learning progress to Neon…',saved:'Permitted personal data synced to Neon.',empty:'Connected to Neon. Progress will sync while studying.',queued:'Saved, awaiting Neon sync.',offline:'Offline. Progress remains on device and will retry.',conflict:'Progress differs across devices. Both copies are preserved; nothing was overwritten.',error:'Cannot sync with Neon yet; device progress is preserved.'}
@@ -438,6 +511,7 @@ export function AuthPanel({onClose}:{onClose?:()=>void}={}){
     </div>
    </div>)}
   </section>}
+  {accountId&&ownerReady&&<AccountBackupDownload key={accountId} accountId={accountId} locale={locale}/>}
   {E2EE_PILOT&&accountId&&<VaultSettings accountId={accountId} locale={locale} online={!isOffline}/>}
   {feedback&&<p className="li-auth-settings-error" role="alert">{feedback}</p>}
   {showDeveloperQa&&accountId&&access==='granted'&&<>

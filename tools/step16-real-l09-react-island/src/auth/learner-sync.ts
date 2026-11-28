@@ -3,6 +3,7 @@ import {learnableLessonIds} from '../learning/released-lessons.js';
 import {checkInviteAccess} from '../sync/invite-access.js';
 import {storageKey,type JsonValue,type ItemType} from '../sync/contract.js';
 import {PrivateDeviceStore} from '../sync/local-dexie.js';
+import {exportAuthorizedAccountBackup} from '../sync/account-backup.js';
 import {mergePersonalConflictRaw} from './personal-conflict-merge.js';
 import {syncOnce} from '../sync/sync-once.js';
 import {SealedNeonUserApi,currentVault} from '../sync/e2ee-cloud.js';
@@ -10,9 +11,8 @@ import type {CloudUserApi} from '../sync/e2ee-cloud.js';
 import {NEON_DATA_API_URL,AUTH_ORIGIN,IS_INTEGRATED_LI_APP} from './config.js';
 import {neonSessionPort} from './neon-client.js';
 import {isBlankNativeAttempt} from './native-progress.js';
-import {validMethodAttempts} from '../learning/validate-method-attempts.js';
 import {preparePersonalAccount,capturePersonalState,hydratePersonalState,
- hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS,t12Fields,practiceField} from './private-state.js';
+ hasPersonalLocalChanges,journalCloudConsent,setJournalCloudConsent,personalRemoteSnapshot,PERSONAL_FIELDS,t12Fields,practiceField,snapshotLearnerDevice,restoreLocalOnlyBackup,restoreMissingSyncedBackup,queueLessonDeletion,parseLearnerAttempt as attempt,type LocalRecoveryResult,type SyncedRecoveryResult} from './private-state.js';
 
 /**
  * The native lesson UI still writes li.review.* localStorage synchronously.
@@ -33,6 +33,85 @@ type Snapshot={id:string;raw:string|null};
 export type SyncReport='checking'|'saved'|'empty'|'offline'|'queued'|'conflict'|'error';
 type ActiveSync={uid:string;ready:Promise<void>;finish:()=>void;last:SyncReport;settled:boolean};
 let activeSync:ActiveSync|null=null;
+
+/** Explicit read-only export of the current device and its materialized account records. */
+export async function downloadLearnerAccountBackup(uid:string):Promise<void>{
+ const session=activeSync;
+ const authorized=()=>IS_INTEGRATED_LI_APP&&location.origin===AUTH_ORIGIN&&
+  localStorage.getItem(OWNER)===uid&&session?.uid===uid&&activeSync===session&&
+  document.documentElement.classList.contains('li-auth-verified');
+ const materialized=JSON.parse(await exportAuthorizedAccountBackup(store,uid,authorized));
+ const deviceRecords=snapshotLearnerDevice(uid,LESSONS,authorized);
+ if(!authorized())throw Error('BACKUP_OWNER_CHANGED');
+ const json=JSON.stringify({schema:'li.learner.device-backup.v2',accountId:uid,
+  createdAt:new Date().toISOString(),deviceRecords,materialized},null,2);
+ const url=URL.createObjectURL(new Blob([json],{type:'application/json'}));
+ const link=document.createElement('a');
+ try{
+  link.href=url;
+  link.download='li-learner-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(link);
+  link.click();
+ }finally{
+  link.remove();
+  window.setTimeout(()=>URL.revokeObjectURL(url),60000);
+ }
+}
+
+/** Restore device-only data and queue missing signed learning records separately.
+ * Report partial outcomes if online recovery is unavailable; never imply upload.
+ */
+export async function restoreLearnerLocalBackup(uid:string,file:File):Promise<LocalRecoveryResult&{
+ signed:SyncedRecoveryResult|null;signedStatus:'queued'|'unavailable'|'failed'
+}>{
+ const session=activeSync;
+ const authorized=()=>IS_INTEGRATED_LI_APP&&location.origin===AUTH_ORIGIN&&
+  localStorage.getItem(OWNER)===uid&&session?.uid===uid&&activeSync===session&&
+  document.documentElement.classList.contains('li-auth-verified');
+ if(!authorized())throw Error('RESTORE_OWNER_REQUIRED');
+ if(file.size>8_000_000)throw Error('RESTORE_TOO_LARGE');
+ const json=await file.text();
+ const result=await restoreLocalOnlyBackup(uid,LESSONS,json,store,authorized);
+ if(!authorized())throw Error('RESTORE_OWNER_CHANGED');
+ if(result.restored)window.dispatchEvent(new CustomEvent('li:personal-sync-applied',{
+  detail:{accountId:uid,keys:['li.personal.daily.v1']}
+ }));
+ if(!navigator.onLine)return {...result,signed:null,signedStatus:'unavailable'};
+ try{
+  if(!await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort))throw Error('INVITE_REVOKED');
+  const rawApi=await bindNeonAccount(NEON_DATA_API_URL,neonSessionPort);
+  if(!rawApi||rawApi.accountId!==uid||!authorized())throw Error('RESTORE_OWNER_CHANGED');
+  const vault=E2EE_PILOT?currentVault(uid):null;
+  if(E2EE_PILOT&&!vault)return {...result,signed:null,signedStatus:'unavailable'};
+  const api:CloudUserApi=vault?new SealedNeonUserApi(rawApi,vault):rawApi;
+  const signed=await restoreMissingSyncedBackup(uid,LESSONS,json,store,api,authorized);
+  if(!authorized())throw Error('RESTORE_OWNER_CHANGED');
+  if(signed.queued)window.dispatchEvent(new Event('li:private-sync-request'));
+  return {...result,signed,signedStatus:'queued'};
+ }catch{return {...result,signed:null,signedStatus:'failed'};}
+}
+
+/** Online-only explicit single-lesson deletion; regular signed sync replays
+ * the durable deletion intent. The UI reports queued, not remotely erased.
+ */
+export async function deleteLearnerLesson(uid:string,id:string):Promise<'queued'|'already-deleted'>{
+ const session=activeSync;
+ const authorized=()=>IS_INTEGRATED_LI_APP&&location.origin===AUTH_ORIGIN&&
+  localStorage.getItem(OWNER)===uid&&session?.uid===uid&&activeSync===session&&
+  document.documentElement.classList.contains('li-auth-verified');
+ if(!authorized()||!navigator.onLine)throw Error('DELETE_ONLINE_OWNER_REQUIRED');
+ if(!await checkInviteAccess(NEON_DATA_API_URL,neonSessionPort))throw Error('INVITE_REVOKED');
+ const rawApi=await bindNeonAccount(NEON_DATA_API_URL,neonSessionPort);
+ if(!rawApi||rawApi.accountId!==uid||!authorized())throw Error('DELETE_OWNER_CHANGED');
+ const vault=E2EE_PILOT?currentVault(uid):null;
+ if(E2EE_PILOT&&!vault)throw Error('E2EE_VAULT_LOCKED');
+ const api:CloudUserApi=vault?new SealedNeonUserApi(rawApi,vault):rawApi;
+ const outcome=await queueLessonDeletion(uid,id,LESSONS,store,api,authorized);
+ if(!authorized())throw Error('DELETE_OWNER_CHANGED');
+ window.dispatchEvent(new CustomEvent('li:lesson-sync-applied',{detail:{accountId:uid,lessonIds:[id]}}));
+ window.dispatchEvent(new Event('li:private-sync-request'));
+ return outcome;
+}
 
 /** Per-user, explicit remote consent for private wellness diary / check-ins. */
 export {journalCloudConsent};
@@ -222,17 +301,6 @@ function canonical(value:unknown):string{
  return '{'+Object.keys(object).sort().map(k=>JSON.stringify(k)+':'+canonical(object[k])).join(',')+'}';
 }
 
-function attempt(raw:string|null):Attempt|null{
- if(raw===null)return null;
- if(raw.length>60000)throw new Error('LOCAL_ATTEMPT_TOO_LARGE');
- const value:unknown=JSON.parse(raw);
- if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('INVALID_LOCAL_ATTEMPT');
- const a=value as Attempt;
- if(!Array.isArray(a.draft)||a.draft.length!==4||!a.draft.every(x=>typeof x==='string'&&x.length<=4000)||
-   !Array.isArray(a.ratings)||a.ratings.length!==4||!validMethodAttempts(a))
-  throw new Error('INVALID_LOCAL_ATTEMPT');
- return a;
-}
 function cloud(value:unknown):Attempt{
  if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('INVALID_CLOUD_ATTEMPT');
  const item=value as Record<string,unknown>;
@@ -312,6 +380,9 @@ async function capture(uid:string,api:CloudUserApi|null):Promise<Snapshot[]>{
     // A network/read failure cannot erase the local draft; queue it instead.
    }
   }
+  // A materialized tombstone is authoritative for passive capture. Only
+  // an explicit new lesson save may create new work after deletion.
+  if(existing?.deletedAt)continue;
   if(!existing||canonical(cloud(existing.payload))!==canonical(local))
    await store.edit(uid,'lesson_attempt',id,pack(local));
  }
@@ -324,10 +395,19 @@ async function hydrate(uid:string,snapshots:Snapshot[],retry:()=>void,onHydrated
   const key=storageKey(uid,'lesson_attempt',id);
   if(await store.outbox.get(key))continue; // queued edits and conflicts win locally
   const row=await store.records.get(key);
-  if(!row||row.deletedAt)continue;
-  const data=cloud(row.payload);
+  if(!row)continue;
   const current=localStorage.getItem(KEY(id));
   if(current!==raw){retry();continue;}
+  if(localStorage.getItem(OWNER)!==uid)return restored;
+  if(row.deletedAt){
+   // Do not resurrect an old device copy after a signed deletion.
+   localStorage.removeItem(BACKUP(uid,id));
+   localStorage.removeItem(CHECKPOINT(uid,id));
+   localStorage.removeItem('li.reader.position.'+encodeURIComponent(uid)+'.'+id+'.v1');
+   if(current!==null){localStorage.removeItem(KEY(id));restored=true;onHydrated?.(id);}
+   continue;
+  }
+  const data=cloud(row.payload);
   const native=attempt(current);
   if(!native||canonical(native)!==canonical(data)){
    localStorage.setItem(KEY(id),JSON.stringify(data));

@@ -7,6 +7,7 @@ import {openRoute,goBack,hasRoute} from './app-router.js';
 import {authoredCopy,useDiscoveryLocale,localized} from './discovery-locale.js';
 import {personalStudyRoute} from '../learning/released-lessons.js';
 import {searchPersonalStudy} from '../learning/staging-draft-preview.js';
+import {LessonUnderstanding} from '../learning/LessonUnderstanding';
 import {createRoot} from 'react-dom/client';
 import {motion,useReducedMotion} from 'motion/react';
 import {Button,Heading,InlineFeedback,ListRow,SearchField,Text} from '../../../../design-system/react/index';
@@ -304,7 +305,7 @@ function KnowledgeSearch(){
        
        <ListRow title={lessonTitle(record.kind==='Lesson'?(record.lessonId||record.id):record.id,locale,authoredCopy(record.title))}
         description={(locale==='en'?(englishKind[record.kind]||'Knowledge item'):(kindCopy[record.kind]||'Mục kiến thức'))+' · '+(record.lessonId||record.id)+
-         (record.contentState==='review_only'?L(' · đang duyệt',' · under review'):'')+
+         (record.contentState==='review_only'?L(' · đang duyệt',' · under review'):record.contentState==='personal_study'?L(' · bài học cá nhân',' · personal study'):'')+
          (record.context?' · '+localizedContext(record.context):'')+
          (catalogBrowsePaths.has(record.id)?L(' · Xem trong Tàng Thư',' · Browse in Catalog'):'')}
         onActivate={record.kind==='Lesson'&&!!availableRoute(record.lessonId||record.id)?
@@ -314,6 +315,10 @@ function KnowledgeSearch(){
          <summary>{L('Xem bản đồ kết nối','Show knowledge map')}</summary>
          <RelationMap record={record} locale={locale} onOpen={navigateTo}/>
         </details>}
+       {import.meta.env.VITE_LI_AUTH_TARGET==='github-pages-staging'&&record.kind==='Lesson'&&
+        !!availableRoute(record.lessonId||record.id)&&
+        <LessonUnderstanding id={record.lessonId||record.id} locale={locale}
+         searchContext={{canOpen:id=>!!availableRoute(id)&&hasRoute(availableRoute(id)!),onOpen:navigateTo}}/>}
        {record.answerability&&<div className="li-search-related">
         <Text role="support"><strong>{record.answerability.level==='direct'?L('Mục tiêu bài học phù hợp','Relevant learning outcome'):
          record.answerability.level==='outcome_match'?

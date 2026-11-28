@@ -977,7 +977,13 @@ assert 'importTrigger.disabled=liBackupImport.loading' in page_html
 assert 'importInput.value="";' in page_html, "Selecting same file must work on Retry"
 assert 'document.getElementById("import-state-retry")?.addEventListener("click",()=>importInput?.click());' in page_html
 assert 'const data=JSON.parse(await file.text());' in page_html, "Only real async file read may show Loading"
-assert 'if(!window.confirm(existing' in page_html, "Import must still request explicit overwrite confirmation"
+# Confirmation is required for the partial, unbound legacy add-only import.
+legacy_import=page_html[page_html.index(" async function liImportPersonalData(file){"):page_html.index(" window.liPersonalBackup=Object.freeze")]
+assert 'if(!window.confirm(vi?' in legacy_import
+assert 'This partial legacy backup has no verified account or deletion history.' in legacy_import
+assert 'keep existing data. Continue?"))return false;' in legacy_import
+assert legacy_import.index('if(!window.confirm(vi?') < legacy_import.index('window.localStorage.setItem(LI_STORAGE_KEY,next);')
+assert 'if(!authorized()||window.localStorage.getItem(LI_STORAGE_KEY)!==oldRaw' in legacy_import
 assert 'if(window.localStorage.getItem(LI_STORAGE_KEY)!==next' in page_html, "No success before localStorage readback"
 review_status=(site/"component-library-archive.html").read_text(encoding="utf-8")
 assert 'id="feedback"' in review_status and 'li-state-scene-showcase' in review_status

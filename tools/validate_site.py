@@ -240,7 +240,9 @@ assert 'id="buddy-name-feedback" role="status" aria-live="polite"' in settings
 assert 'const LI_BUDDY_NAMES_KEY="li.buddy-address.v1";' in page_html
 assert 'window.liAddressLine=liBuddyLine;' in page_html
 assert 'buddyNames:liBuddyNames' in page_html
-assert 'if(data.buddyNames!==undefined)' in page_html
+# Legacy files may supply nicknames only when the current device has none.
+assert 'const nextNames=oldNames===null&&data.buddyNames!==undefined?' in page_html
+assert 'if(oldNames===null&&nextNames!==null)window.localStorage.setItem(LI_BUDDY_NAMES_KEY,nextNames);' in page_html
 contextual=(site/"assets"/"laoly-context-s112.js").read_text(encoding="utf-8")
 assert contextual.count('window.liAddressLine?window.liAddressLine(')==2
 assert 'Settings IA: action-first grouping' in (site/"assets"/"ui-foundations.css").read_text(encoding="utf-8")
@@ -536,7 +538,11 @@ subprocess.run(["node",str(site.parent/"tools"/"test_library_wave1_mount_ia.cjs"
 # UX-IA-06: Save and Unsave have distinct semantics from submitting an answer
 # or deleting a Bút Ký. Full case context must survive in the saved snapshot.
 assert 'const savedContent=liInitialState.savedContent;' in page_html
-assert 'savedContent:data.savedContent||[]' in page_html
+# All four collections must pass through the non-destructive legacy merge.
+assert 'function liMergeLegacyLibrary(current,incoming)' in page_html
+assert '["cases","questions","ideas","savedContent"]' in page_html
+assert 'const next=JSON.stringify({schema:1,...merged,updatedAt:new Date().toISOString()});' in page_html
+assert 'savedContent.splice(0,savedContent.length,...merged.savedContent);' in page_html
 # React Case persists to canonical storage; the hidden native textarea may be stale.
 # Keep the notes-only backup shape and assert its data source, not old code formatting.
 assert 'ideas:collectedIdeas,savedContent,draft,buddyNames:liBuddyNames' in page_html

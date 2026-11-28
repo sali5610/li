@@ -9,6 +9,8 @@ import {buildReasoningReceipt} from '../src/learning/SavedLearningEvidence';
 import type {LearningPorts} from '../src/learning/ports';
 import {readingStamp,readingPositionKey,readPosition,type ReadingPosition} from '../src/learning/reading-position';
 import {lessonTitles} from '../src/learning/lesson-titles';
+import {LessonUnderstanding,lessonConceptAliases} from '../src/learning/LessonUnderstanding';
+import ontology from '../../../content/editorial/lesson-ontology-analogy.v1.json';
 import titles from '../../../content/editorial/lesson-titles.v1.json';
 import supplements from '../../../content/editorial/lesson-completeness-supplements.v1.json';
 const goalSupplements=supplements.lessons as Record<string,Record<'vi'|'en',{learningGoals?:string[];methodNote?:string}>>;
@@ -305,6 +307,35 @@ export async function runBilingualReaderFixture(host:HTMLElement){
    readers++;
    console.log('BILINGUAL_READER_PASS '+id+' 5 phases × VI→EN→VI; saved drafts unchanged');
   }
-  return {status:'PASS',readers,checks,reviewChecks,evidenceChecks,resumeChecks,guideReturnChecks,reasoningRubricChecks,exportChecks,scope:'actual reader render, pre-submit phases and completed receipt render, in-memory locale persistence and simulated guide navigation; not physical device or live cloud'};
+  // Reuse the actual search disclosure, not a second ontology renderer.
+  let searchConnectionChecks=0;
+  const allowed=new Set(Object.keys(titles.lessons));
+  const entries=ontology.lessons as Record<string,{concepts:{vi:string;en:string}[];relation:{evidence:{relatedLessonIds:string[]}}}>;
+  for(const [id,entry] of Object.entries(entries)){
+   for(const c of entry.concepts)check(lessonConceptAliases(id).includes(c.vi)&&lessonConceptAliases(id).includes(c.en),id+' missing bilingual concept aliases');
+   for(const locale of ['vi','en'] as const){
+    const opened:string[]=[];
+    const related=entry.relation.evidence.relatedLessonIds.filter(other=>other!==id&&allowed.has(other));
+    root.render(<LessonUnderstanding key={id+'-search-'+locale} id={id} locale={locale}
+      searchContext={{canOpen:other=>allowed.has(other),onOpen:other=>opened.push(other)}}/>);
+    await until(()=>host.querySelector('[data-li-lesson-understanding]')?.getAttribute('data-li-lesson-understanding')===id&&
+      host.querySelector('summary')?.textContent===(locale==='vi'?'Mạng khái niệm · đề xuất':'Concept relations · proposed'),id+' search projection '+locale);
+    const disclosure=host.querySelector('details')!;
+    disclosure.open=true;
+    check(host.querySelectorAll('details').length===1,id+' search should not duplicate analogy');
+    check(entry.concepts.every(c=>disclosure.textContent?.includes(c[locale])),id+' missing localized concepts');
+    check(!!disclosure.querySelector('[data-li-ontology-evidence] a[href^="https://"]'),id+' missing source');
+    const buttons=Array.from(disclosure.querySelectorAll<HTMLButtonElement>('[data-li-editorial-related-lessons] button'));
+    check(buttons.length===related.length,id+' incorrect related routes');
+    buttons.forEach(b=>b.click());
+    check(JSON.stringify(opened)===JSON.stringify(related),id+' wrong related route');
+    searchConnectionChecks++;
+   }
+  }
+  root.render(<LessonUnderstanding key="blocked-search-route" id="L09-2-1" locale="en"
+   searchContext={{canOpen:()=>false,onOpen:()=>{throw Error('Unauthorized related route opened');}}}/>);
+  await until(()=>host.querySelector('[data-li-lesson-understanding]')?.getAttribute('data-li-lesson-understanding')==='L09-2-1','blocked search relation rendered');
+  check(!host.querySelector('[data-li-editorial-related-lessons] button'),'Unavailable routes must not be actionable');
+  return {status:'PASS',readers,checks,reviewChecks,evidenceChecks,resumeChecks,guideReturnChecks,reasoningRubricChecks,exportChecks,searchConnectionChecks,scope:'actual reader render, pre-submit phases and completed receipt render, in-memory locale persistence and simulated guide navigation; not physical device or live cloud'};
  }finally{root.unmount();app.LiSpellPractice=priorSpell;}
 }
